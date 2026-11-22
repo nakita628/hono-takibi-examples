@@ -4,7 +4,7 @@
 
 Base URLs:
 
-* <a href="https://api.apis.guru//app.files.com/api/rest/v1">https://api.apis.guru//app.files.com/api/rest/v1</a>
+* <a href="//app.files.com/api/rest/v1">//app.files.com/api/rest/v1</a>
 
 Email: <a href="mailto:support@files.com">Files.com Customer Success Team</a> 
 

@@ -1722,6 +1722,13 @@ const IoK8sApiCoreV1ContainerSchema = z
           "envFrom is the list of sources to populate environment variables in the container. The keys defined within a source may consist of any printable ASCII characters except '='. When a key exists in multiple sources, the value associated with the last source will take precedence. Values defined by an Env with a duplicate key will take precedence. Cannot be updated.",
         'x-kubernetes-list-type': 'atomic',
       }),
+    hostCgroupNamespace: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          "hostCgroupNamespace specifies whether the container uses the host's cgroup namespace. If true, the container shares the cgroup namespace with the host, so cgroups other than the container's own cgroup are visible to the container. If false, a new cgroup namespace rooted at the container's own cgroup is created for the container. If unset, the container runtime selects the behavior. Must not be set to true when the pod uses user namespaces (spec.hostUsers is false). Must not be set to true with securityContext.cgroupOptions.mountMode set to ReadWrite, unless securityContext.privileged is true. Must not be set when spec.os.name is windows. The runtime handler must support cgroup namespaces, otherwise the container will fail to start. Cannot be updated.",
+      }),
     image: z
       .string()
       .exactOptional()
@@ -1961,6 +1968,10 @@ const IoK8sApiCoreV1EphemeralContainerSchema = z
           "envFrom is the list of sources to populate environment variables in the container. The keys defined within a source may consist of any printable ASCII characters except '='. When a key exists in multiple sources, the value associated with the last source will take precedence. Values defined by an Env with a duplicate key will take precedence. Cannot be updated.",
         'x-kubernetes-list-type': 'atomic',
       }),
+    hostCgroupNamespace: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'hostCgroupNamespace is not allowed for ephemeral containers.' }),
     image: z
       .string()
       .exactOptional()
@@ -4429,6 +4440,7 @@ type IoK8sApiCoreV1PodSpecType = {
   nodeSelector?: { [key: string]: string }
   os?: z.infer<typeof IoK8sApiCoreV1PodOSSchema>
   overhead?: { [key: string]: z.infer<typeof IoK8sApimachineryPkgApiResourceQuantitySchema> }
+  podNetwork?: string
   preemptionPolicy?: string
   priority?: number
   priorityClassName?: string
@@ -4553,7 +4565,7 @@ const IoK8sApiCoreV1PodSpecSchema: z.ZodType<IoK8sApiCoreV1PodSpecType> = z
       .exactOptional()
       .openapi({
         description:
-          "hostNetwork indicates that the pod should use the host's network namespace. When using hostNetwork you should specify ports so the scheduler is aware. When `hostNetwork` is true, specified `hostPort` fields in port definitions must match `containerPort`, and unspecified `hostPort` fields in port definitions are defaulted to match `containerPort`. Default to false.",
+          "hostNetwork indicates that the pod should use the host's network namespace. When using hostNetwork you should specify ports so the scheduler is aware. When `hostNetwork` is true, specified `hostPort` fields in port definitions must match `containerPort`, and unspecified `hostPort` fields in port definitions are defaulted to match `containerPort`. Default to false. When true, podNetwork may not be set: the pod has no network namespace of its own.",
       }),
     hostPID: z
       .boolean()
@@ -4629,6 +4641,13 @@ const IoK8sApiCoreV1PodSpecSchema: z.ZodType<IoK8sApiCoreV1PodSpecType> = z
       .openapi({
         description:
           'overhead represents the resource overhead associated with running a pod for a given RuntimeClass. This field will be autopopulated at admission time by the RuntimeClass admission controller. If the RuntimeClass admission controller is enabled, overhead must not be set in Pod create requests. The RuntimeClass admission controller will reject Pod create requests which have the overhead already set. If RuntimeClass is configured and selected in the PodSpec, Overhead will be set to the value defined in the corresponding RuntimeClass, otherwise it will remain unset and treated as zero. More info: https://git.k8s.io/enhancements/keps/sig-node/688-pod-overhead/README.md',
+      }),
+    podNetwork: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'podNetwork selects whether a non-hostNetwork pod is attached to the pod network. "Default" attaches the pod to the pod network. "Isolated" gives the pod an isolated network namespace with only the loopback interface configured, not attached to the pod network. This field must be unset if hostNetwork is true. For non-hostNetwork pods, this behaves as if it was set to "Default" if it is not set. If a pod is "Isolated", hostPort and network-based probes and lifecycle handlers are not allowed. This field is immutable on Pods.',
       }),
     preemptionPolicy: z
       .string()
@@ -5159,6 +5178,184 @@ type IoK8sApiAppsV1DaemonSetListType = {
   metadata?: z.infer<typeof IoK8sApimachineryPkgApisMetaV1ListMetaSchema>
 }
 
+const IoK8sApiSchedulingV1WorkloadPodGroupAllDisruptionModeSchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      'WorkloadPodGroupAllDisruptionMode indicates that all pods in the group must be disrupted together.',
+  })
+  .openapi('IoK8sApiSchedulingV1WorkloadPodGroupAllDisruptionMode')
+
+const IoK8sApiSchedulingV1WorkloadPodGroupSingleDisruptionModeSchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      'WorkloadPodGroupSingleDisruptionMode indicates that individual pods can be disrupted independently.',
+  })
+  .openapi('IoK8sApiSchedulingV1WorkloadPodGroupSingleDisruptionMode')
+
+const IoK8sApiSchedulingV1WorkloadPodGroupDisruptionModeSchema = z
+  .object({
+    all: IoK8sApiSchedulingV1WorkloadPodGroupAllDisruptionModeSchema.exactOptional().openapi({
+      description: 'all specifies that all pods in the group must be disrupted together.',
+    }),
+    single: IoK8sApiSchedulingV1WorkloadPodGroupSingleDisruptionModeSchema.exactOptional().openapi({
+      description: 'single specifies that pods can be disrupted independently from each other.',
+    }),
+  })
+  .openapi({
+    description:
+      'WorkloadPodGroupDisruptionMode defines how individual pods within a group can be disrupted. Exactly one mode must be set.',
+    'x-kubernetes-unions': [{ 'fields-to-discriminateBy': { all: 'All', single: 'Single' } }],
+    required: [],
+  })
+  .openapi('IoK8sApiSchedulingV1WorkloadPodGroupDisruptionMode')
+
+const IoK8sApiSchedulingV1WorkloadPodGroupResourceClaimSchema = z
+  .object({
+    name: z
+      .string()
+      .default('')
+      .openapi({
+        description:
+          'name uniquely identifies this resource claim inside the group. This field is required. It must be a DNS_LABEL.',
+      }),
+    resourceClaimName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'resourceClaimName is the name of a ResourceClaim object in the same namespace. This field is optional. If it is not specified, no resource claim is used. If set, it must be a DNS subdomain.',
+      }),
+    resourceClaimTemplateName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'resourceClaimTemplateName is the name of a ResourceClaimTemplate object in the same namespace. This field is optional. If it is not specified, no resource claim template is used. If set, it must be a DNS subdomain.',
+      }),
+  })
+  .openapi({
+    description:
+      'WorkloadPodGroupResourceClaim references a dynamic resource claim that is shared across pods in the group.',
+    required: ['name'],
+  })
+  .openapi('IoK8sApiSchedulingV1WorkloadPodGroupResourceClaim')
+
+const IoK8sApiSchedulingV1WorkloadTopologyConstraintSchema = z
+  .object({
+    key: z
+      .string()
+      .default('')
+      .openapi({
+        description:
+          'key specifies the key of the node label representing the topology domain. All pods within the PodGroup (or CompositePodGroup) must be colocated within the same domain instance. Different groups can land on different domain instances even if they derive from the same template. Nodes where this label is missing or has an empty value do not belong to any domain instance, so pods within the PodGroup/CompositePodGroup cannot be scheduled onto them. Examples: "topology.kubernetes.io/rack"',
+      }),
+  })
+  .openapi({
+    description:
+      'WorkloadTopologyConstraint defines a topology constraint for a group of pods managed by a workload controller.',
+    required: ['key'],
+  })
+  .openapi('IoK8sApiSchedulingV1WorkloadTopologyConstraint')
+
+const IoK8sApiSchedulingV1WorkloadPodGroupSchedulingConstraintsSchema = z
+  .object({
+    topology: z
+      .array(IoK8sApiSchedulingV1WorkloadTopologyConstraintSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'topology specifies desired topological placements for all pods within the pod group. If unset, no topology placement is requested.',
+        'x-kubernetes-list-type': 'atomic',
+      }),
+  })
+  .openapi({
+    description:
+      'WorkloadPodGroupSchedulingConstraints defines leaf-level scheduling constraints, such as topology.',
+    required: [],
+  })
+  .openapi('IoK8sApiSchedulingV1WorkloadPodGroupSchedulingConstraints')
+
+const IoK8sApiSchedulingV1WorkloadPodGroupBasicSchedulingPolicySchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      'WorkloadPodGroupBasicSchedulingPolicy indicates standard Kubernetes scheduling behavior.',
+  })
+  .openapi('IoK8sApiSchedulingV1WorkloadPodGroupBasicSchedulingPolicy')
+
+const IoK8sApiSchedulingV1WorkloadPodGroupGangSchedulingPolicySchema = z
+  .object({
+    minCount: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'minCount is the minimum number of pods that must be scheduled at the same time for the scheduler to admit the entire group. This field is optional. If it is not specified, the controller should inject a context-specific sane default (e.g., parallelism for a Job). If set, it must be a positive integer.',
+      }),
+  })
+  .openapi({
+    description:
+      'WorkloadPodGroupGangSchedulingPolicy defines the parameters for gang (all-or-nothing) scheduling.',
+    required: [],
+  })
+  .openapi('IoK8sApiSchedulingV1WorkloadPodGroupGangSchedulingPolicy')
+
+const IoK8sApiSchedulingV1WorkloadPodGroupSchedulingPolicySchema = z
+  .object({
+    basic: IoK8sApiSchedulingV1WorkloadPodGroupBasicSchedulingPolicySchema.exactOptional().openapi({
+      description:
+        'basic specifies that standard, pod-by-pod Kubernetes scheduling behavior should be used.',
+    }),
+    gang: IoK8sApiSchedulingV1WorkloadPodGroupGangSchedulingPolicySchema.exactOptional().openapi({
+      description: 'gang specifies all-or-nothing scheduling semantics.',
+    }),
+  })
+  .openapi({
+    description:
+      'WorkloadPodGroupSchedulingPolicy defines the scheduling policy for a group of pods managed by a workload controller. Exactly one policy must be set.',
+    'x-kubernetes-unions': [{ 'fields-to-discriminateBy': { basic: 'Basic', gang: 'Gang' } }],
+    required: [],
+  })
+  .openapi('IoK8sApiSchedulingV1WorkloadPodGroupSchedulingPolicy')
+
+const IoK8sApiAppsV1DeploymentSchedulingConfigurationSchema = z
+  .object({
+    disruptionMode:
+      IoK8sApiSchedulingV1WorkloadPodGroupDisruptionModeSchema.exactOptional().openapi({
+        description:
+          "disruptionMode defines the mode in which the Deployment's pods can be disrupted. One of Single or All. If omitted, standard per-pod disruption behavior is used. The All mode requires a gang schedulingPolicy. disruptionMode affects scheduler preemption only. It does not affect eviction or PodDisruptionBudgets.",
+      }),
+    resourceClaims: z
+      .array(IoK8sApiSchedulingV1WorkloadPodGroupResourceClaimSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          "resourceClaims defines which ResourceClaims may be shared among Pods in the Deployment. Pods consume the devices allocated to a PodGroup's claim by defining a claim in its own Spec.ResourceClaims that matches the PodGroup's claim exactly. The claim must have the same name and refer to the same ResourceClaim or ResourceClaimTemplate. At most 4 claims may be set, matching the limit on the resulting PodGroup.",
+        'x-kubernetes-list-map-keys': ['name'],
+        'x-kubernetes-list-type': 'map',
+        'x-kubernetes-patch-merge-key': 'name',
+        'x-kubernetes-patch-strategy': 'merge',
+      }),
+    schedulingConstraints:
+      IoK8sApiSchedulingV1WorkloadPodGroupSchedulingConstraintsSchema.exactOptional().openapi({
+        description:
+          "schedulingConstraints defines optional scheduling constraints (e.g. topology) for the Deployment's pods.",
+      }),
+    schedulingPolicy:
+      IoK8sApiSchedulingV1WorkloadPodGroupSchedulingPolicySchema.exactOptional().openapi({
+        description:
+          'schedulingPolicy defines the scheduling policy for this Deployment. If spec.scheduling.schedulingPolicy is omitted, the Basic policy is used. Otherwise, exactly one of Basic or Gang must be set. For Gang, minCount may be omitted to derive it from replicas.',
+      }),
+  })
+  .openapi({
+    description:
+      'DeploymentSchedulingConfiguration composes the reusable scheduling building blocks from scheduling.k8s.io for use on a Deployment.',
+    required: [],
+  })
+  .openapi('IoK8sApiAppsV1DeploymentSchedulingConfiguration')
+
 const IoK8sApiAppsV1RollingUpdateDeploymentSchema = z
   .object({
     maxSurge: IoK8sApimachineryPkgUtilIntstrIntOrStringSchema.exactOptional().openapi({
@@ -5198,6 +5395,7 @@ type IoK8sApiAppsV1DeploymentSpecType = {
   progressDeadlineSeconds?: number
   replicas?: number
   revisionHistoryLimit?: number
+  scheduling?: z.infer<typeof IoK8sApiAppsV1DeploymentSchedulingConfigurationSchema>
   selector: z.infer<typeof IoK8sApimachineryPkgApisMetaV1LabelSelectorSchema>
   strategy?: z.infer<typeof IoK8sApiAppsV1DeploymentStrategySchema>
   template: z.infer<typeof IoK8sApiCoreV1PodTemplateSpecSchema>
@@ -5237,6 +5435,10 @@ const IoK8sApiAppsV1DeploymentSpecSchema: z.ZodType<IoK8sApiAppsV1DeploymentSpec
         description:
           'revisionHistoryLimit is the maximum number of old ReplicaSets to retain to allow rollback. This is a pointer to distinguish between explicit zero and not specified. Defaults to 10.',
       }),
+    scheduling: IoK8sApiAppsV1DeploymentSchedulingConfigurationSchema.exactOptional().openapi({
+      description:
+        'scheduling defines the Workload-aware Scheduling configuration for this Deployment. When set, it specifies the scheduling policy (basic or gang), topology constraints, disruption mode, and shared resource claims. When spec.scheduling is omitted, no Workload or PodGroup is created and the Deployment uses standard pod-by-pod scheduling. This field is gated by the WorkloadWithDeployment feature gate. Once set, this field is immutable except for schedulingPolicy.gang.minCount.\n\n- The scheduling field can only be set when the Deployment is created. - A gang schedulingPolicy requires strategy.type Recreate. - When schedulingPolicy.gang.minCount is set, replicas must be 0 or at least minCount. - template.spec.schedulingGroup must be unset.',
+    }),
     selector: IoK8sApimachineryPkgApisMetaV1LabelSelectorSchema.openapi({
       description:
         "selector is a label selector for pods. Existing ReplicaSets whose pods are selected by this will be the ones affected by this deployment. It must match the pod template's labels.",

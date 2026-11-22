@@ -12,33 +12,20 @@ const QueryStagePlanNodeSchema: z.ZodType<QueryStagePlanNodeType> = z
   .lazy(() =>
     z
       .object({
-        Name: StringSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'Name of the query stage plan that describes the operation this stage is performing as part of query execution.',
-            }),
-        ).exactOptional(),
-        Identifier: StringSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'Information about the operation this query stage plan node is performing.',
-            }),
-        ).exactOptional(),
-        Children: QueryStagePlanNodesSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'Stage plan information such as name, identifier, sub plans, and remote sources of child plan nodes/',
-            }),
-        ).exactOptional(),
-        RemoteSources: StringListSchema.and(
-          z.any().openapi({ description: 'Source plan node IDs.' }),
-        ).exactOptional(),
+        Name: StringSchema.exactOptional().openapi({
+          description:
+            'Name of the query stage plan that describes the operation this stage is performing as part of query execution.',
+        }),
+        Identifier: StringSchema.exactOptional().openapi({
+          description: 'Information about the operation this query stage plan node is performing.',
+        }),
+        Children: QueryStagePlanNodesSchema.exactOptional().openapi({
+          description:
+            'Stage plan information such as name, identifier, sub plans, and remote sources of child plan nodes/',
+        }),
+        RemoteSources: StringListSchema.exactOptional().openapi({
+          description: 'Source plan node IDs.',
+        }),
       })
       .openapi({
         description:
@@ -53,15 +40,15 @@ const QueryStagesSchema: z.ZodType<QueryStagesType> = z
   .openapi('QueryStages')
 
 type QueryStageType = {
-  StageId?: z.infer<typeof LongSchema> & { [key: string]: unknown }
-  State?: z.infer<typeof StringSchema> & { [key: string]: unknown }
-  OutputBytes?: z.infer<typeof LongSchema> & { [key: string]: unknown }
-  OutputRows?: z.infer<typeof LongSchema> & { [key: string]: unknown }
-  InputBytes?: z.infer<typeof LongSchema> & { [key: string]: unknown }
-  InputRows?: z.infer<typeof LongSchema> & { [key: string]: unknown }
-  ExecutionTime?: z.infer<typeof LongSchema> & { [key: string]: unknown }
-  QueryStagePlan?: z.infer<typeof QueryStagePlanNodeSchema> & { [key: string]: unknown }
-  SubStages?: z.infer<typeof QueryStagesSchema> & { [key: string]: unknown }
+  StageId?: z.infer<typeof LongSchema> & unknown
+  State?: z.infer<typeof StringSchema> & unknown
+  OutputBytes?: z.infer<typeof LongSchema> & unknown
+  OutputRows?: z.infer<typeof LongSchema> & unknown
+  InputBytes?: z.infer<typeof LongSchema> & unknown
+  InputRows?: z.infer<typeof LongSchema> & unknown
+  ExecutionTime?: z.infer<typeof LongSchema> & unknown
+  QueryStagePlan?: z.infer<typeof QueryStagePlanNodeSchema> & unknown
+  SubStages?: z.infer<typeof QueryStagesSchema> & unknown
 }
 
 const QueryStagePlanNodesSchema: z.ZodType<QueryStagePlanNodesType> = z
@@ -73,60 +60,42 @@ type StringListType = z.infer<typeof StringSchema>[]
 const StringListSchema: z.ZodType<StringListType> = z.array(StringSchema).openapi('StringList')
 
 type QueryStagePlanNodeType = {
-  Name?: z.infer<typeof StringSchema> & { [key: string]: unknown }
-  Identifier?: z.infer<typeof StringSchema> & { [key: string]: unknown }
-  Children?: z.infer<typeof QueryStagePlanNodesSchema> & { [key: string]: unknown }
-  RemoteSources?: z.infer<typeof StringListSchema> & { [key: string]: unknown }
+  Name?: z.infer<typeof StringSchema> & unknown
+  Identifier?: z.infer<typeof StringSchema> & unknown
+  Children?: z.infer<typeof QueryStagePlanNodesSchema> & unknown
+  RemoteSources?: z.infer<typeof StringListSchema> & unknown
 }
 
 const QueryStageSchema: z.ZodType<QueryStageType> = z
   .lazy(() =>
     z
       .object({
-        StageId: LongSchema.and(
-          z.any().openapi({ description: 'The identifier for a stage.' }),
-        ).exactOptional(),
-        State: StringSchema.and(
-          z.any().openapi({ description: 'State of the stage after query execution.' }),
-        ).exactOptional(),
-        OutputBytes: LongSchema.and(
-          z
-            .any()
-            .openapi({ description: 'The number of bytes output from the stage after execution.' }),
-        ).exactOptional(),
-        OutputRows: LongSchema.and(
-          z
-            .any()
-            .openapi({ description: 'The number of rows output from the stage after execution.' }),
-        ).exactOptional(),
-        InputBytes: LongSchema.and(
-          z
-            .any()
-            .openapi({ description: 'The number of bytes input into the stage for execution.' }),
-        ).exactOptional(),
-        InputRows: LongSchema.and(
-          z
-            .any()
-            .openapi({ description: 'The number of rows input into the stage for execution.' }),
-        ).exactOptional(),
-        ExecutionTime: LongSchema.and(
-          z.any().openapi({ description: 'Time taken to execute this stage.' }),
-        ).exactOptional(),
-        QueryStagePlan: QueryStagePlanNodeSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'Stage plan information such as name, identifier, sub plans, and source stages.',
-            }),
-        ).exactOptional(),
-        SubStages: QueryStagesSchema.and(
-          z
-            .any()
-            .openapi({
-              description: 'List of sub query stages that form this stage execution plan.',
-            }),
-        ).exactOptional(),
+        StageId: LongSchema.exactOptional().openapi({ description: 'The identifier for a stage.' }),
+        State: StringSchema.exactOptional().openapi({
+          description: 'State of the stage after query execution.',
+        }),
+        OutputBytes: LongSchema.exactOptional().openapi({
+          description: 'The number of bytes output from the stage after execution.',
+        }),
+        OutputRows: LongSchema.exactOptional().openapi({
+          description: 'The number of rows output from the stage after execution.',
+        }),
+        InputBytes: LongSchema.exactOptional().openapi({
+          description: 'The number of bytes input into the stage for execution.',
+        }),
+        InputRows: LongSchema.exactOptional().openapi({
+          description: 'The number of rows input into the stage for execution.',
+        }),
+        ExecutionTime: LongSchema.exactOptional().openapi({
+          description: 'Time taken to execute this stage.',
+        }),
+        QueryStagePlan: QueryStagePlanNodeSchema.exactOptional().openapi({
+          description:
+            'Stage plan information such as name, identifier, sub plans, and source stages.',
+        }),
+        SubStages: QueryStagesSchema.exactOptional().openapi({
+          description: 'List of sub query stages that form this stage execution plan.',
+        }),
       })
       .openapi({
         description:
@@ -157,22 +126,22 @@ const WorkGroupNameSchema = z
 
 const NamedQuerySchema = z
   .object({
-    Name: NameStringSchema.and(z.any().openapi({ description: 'The query name.' })),
-    Description: DescriptionStringSchema.and(
-      z.any().openapi({ description: 'The query description.' }),
-    ).exactOptional(),
-    Database: DatabaseStringSchema.and(
-      z.any().openapi({ description: 'The database to which the query belongs.' }),
-    ),
-    QueryString: QueryStringSchema.and(
-      z.any().openapi({ description: 'The SQL statements that make up the query.' }),
-    ),
-    NamedQueryId: NamedQueryIdSchema.and(
-      z.any().openapi({ description: 'The unique identifier of the query.' }),
-    ).exactOptional(),
-    WorkGroup: WorkGroupNameSchema.and(
-      z.any().openapi({ description: 'The name of the workgroup that contains the named query.' }),
-    ).exactOptional(),
+    Name: NameStringSchema.openapi({ description: 'The query name.' }),
+    Description: DescriptionStringSchema.exactOptional().openapi({
+      description: 'The query description.',
+    }),
+    Database: DatabaseStringSchema.openapi({
+      description: 'The database to which the query belongs.',
+    }),
+    QueryString: QueryStringSchema.openapi({
+      description: 'The SQL statements that make up the query.',
+    }),
+    NamedQueryId: NamedQueryIdSchema.exactOptional().openapi({
+      description: 'The unique identifier of the query.',
+    }),
+    WorkGroup: WorkGroupNameSchema.exactOptional().openapi({
+      description: 'The name of the workgroup that contains the named query.',
+    }),
   })
   .openapi({
     required: ['Name', 'Database', 'QueryString'],
@@ -197,25 +166,17 @@ const ErrorMessageSchema = z.string().openapi('ErrorMessage')
 
 const UnprocessedNamedQueryIdSchema = z
   .object({
-    NamedQueryId: NamedQueryIdSchema.and(
-      z.any().openapi({ description: 'The unique identifier of the named query.' }),
-    ).exactOptional(),
-    ErrorCode: ErrorCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The error code returned when the processing request for the named query failed, if applicable.',
-        }),
-    ).exactOptional(),
-    ErrorMessage: ErrorMessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The error message returned when the processing request for the named query failed, if applicable.',
-        }),
-    ).exactOptional(),
+    NamedQueryId: NamedQueryIdSchema.exactOptional().openapi({
+      description: 'The unique identifier of the named query.',
+    }),
+    ErrorCode: ErrorCodeSchema.exactOptional().openapi({
+      description:
+        'The error code returned when the processing request for the named query failed, if applicable.',
+    }),
+    ErrorMessage: ErrorMessageSchema.exactOptional().openapi({
+      description:
+        'The error message returned when the processing request for the named query failed, if applicable.',
+    }),
   })
   .openapi({
     description: 'Information about a named query ID that could not be processed.',
@@ -229,12 +190,12 @@ const UnprocessedNamedQueryIdListSchema = z
 
 const BatchGetNamedQueryOutputSchema = z
   .object({
-    NamedQueries: NamedQueryListSchema.and(
-      z.any().openapi({ description: 'Information about the named query IDs submitted.' }),
-    ).exactOptional(),
-    UnprocessedNamedQueryIds: UnprocessedNamedQueryIdListSchema.and(
-      z.any().openapi({ description: 'Information about provided query IDs.' }),
-    ).exactOptional(),
+    NamedQueries: NamedQueryListSchema.exactOptional().openapi({
+      description: 'Information about the named query IDs submitted.',
+    }),
+    UnprocessedNamedQueryIds: UnprocessedNamedQueryIdListSchema.exactOptional().openapi({
+      description: 'Information about provided query IDs.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('BatchGetNamedQueryOutput')
@@ -247,9 +208,7 @@ const NamedQueryIdListSchema = z
 
 const BatchGetNamedQueryInputSchema = z
   .object({
-    NamedQueryIds: NamedQueryIdListSchema.and(
-      z.any().openapi({ description: 'An array of query IDs.' }),
-    ),
+    NamedQueryIds: NamedQueryIdListSchema.openapi({ description: 'An array of query IDs.' }),
   })
   .openapi({
     required: ['NamedQueryIds'],
@@ -273,25 +232,21 @@ const DateSchema = z.iso.datetime({ offset: true }).openapi('Date')
 
 const PreparedStatementSchema = z
   .object({
-    StatementName: StatementNameSchema.and(
-      z.any().openapi({ description: 'The name of the prepared statement.' }),
-    ).exactOptional(),
-    QueryStatement: QueryStringSchema.and(
-      z.any().openapi({ description: 'The query string for the prepared statement.' }),
-    ).exactOptional(),
-    WorkGroupName: WorkGroupNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the workgroup to which the prepared statement belongs.',
-        }),
-    ).exactOptional(),
-    Description: DescriptionStringSchema.and(
-      z.any().openapi({ description: 'The description of the prepared statement.' }),
-    ).exactOptional(),
-    LastModifiedTime: DateSchema.and(
-      z.any().openapi({ description: 'The last modified time of the prepared statement.' }),
-    ).exactOptional(),
+    StatementName: StatementNameSchema.exactOptional().openapi({
+      description: 'The name of the prepared statement.',
+    }),
+    QueryStatement: QueryStringSchema.exactOptional().openapi({
+      description: 'The query string for the prepared statement.',
+    }),
+    WorkGroupName: WorkGroupNameSchema.exactOptional().openapi({
+      description: 'The name of the workgroup to which the prepared statement belongs.',
+    }),
+    Description: DescriptionStringSchema.exactOptional().openapi({
+      description: 'The description of the prepared statement.',
+    }),
+    LastModifiedTime: DateSchema.exactOptional().openapi({
+      description: 'The last modified time of the prepared statement.',
+    }),
   })
   .openapi({ description: 'A prepared SQL statement for use with Athena.', required: [] })
   .openapi('PreparedStatement')
@@ -302,30 +257,16 @@ const PreparedStatementDetailsListSchema = z
 
 const UnprocessedPreparedStatementNameSchema = z
   .object({
-    StatementName: StatementNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of a prepared statement that could not be returned due to an error.',
-        }),
-    ).exactOptional(),
-    ErrorCode: ErrorCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The error code returned when the request for the prepared statement failed.',
-        }),
-    ).exactOptional(),
-    ErrorMessage: ErrorMessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The error message containing the reason why the prepared statement could not be returned. The following error messages are possible:</p> <ul> <li> <p> <code>INVALID_INPUT</code> - The name of the prepared statement that was provided is not valid (for example, the name is too long).</p> </li> <li> <p> <code>STATEMENT_NOT_FOUND</code> - A prepared statement with the name provided could not be found.</p> </li> <li> <p> <code>UNAUTHORIZED</code> - The requester does not have permission to access the workgroup that contains the prepared statement.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    StatementName: StatementNameSchema.exactOptional().openapi({
+      description: 'The name of a prepared statement that could not be returned due to an error.',
+    }),
+    ErrorCode: ErrorCodeSchema.exactOptional().openapi({
+      description: 'The error code returned when the request for the prepared statement failed.',
+    }),
+    ErrorMessage: ErrorMessageSchema.exactOptional().openapi({
+      description:
+        '<p>The error message containing the reason why the prepared statement could not be returned. The following error messages are possible:</p> <ul> <li> <p> <code>INVALID_INPUT</code> - The name of the prepared statement that was provided is not valid (for example, the name is too long).</p> </li> <li> <p> <code>STATEMENT_NOT_FOUND</code> - A prepared statement with the name provided could not be found.</p> </li> <li> <p> <code>UNAUTHORIZED</code> - The requester does not have permission to access the workgroup that contains the prepared statement.</p> </li> </ul>',
+    }),
   })
   .openapi({
     description: 'The name of a prepared statement that could not be returned.',
@@ -339,17 +280,14 @@ const UnprocessedPreparedStatementNameListSchema = z
 
 const BatchGetPreparedStatementOutputSchema = z
   .object({
-    PreparedStatements: PreparedStatementDetailsListSchema.and(
-      z.any().openapi({ description: 'The list of prepared statements returned.' }),
-    ).exactOptional(),
-    UnprocessedPreparedStatementNames: UnprocessedPreparedStatementNameListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of one or more prepared statements that were requested but could not be returned.',
-        }),
-    ).exactOptional(),
+    PreparedStatements: PreparedStatementDetailsListSchema.exactOptional().openapi({
+      description: 'The list of prepared statements returned.',
+    }),
+    UnprocessedPreparedStatementNames:
+      UnprocessedPreparedStatementNameListSchema.exactOptional().openapi({
+        description:
+          'A list of one or more prepared statements that were requested but could not be returned.',
+      }),
   })
   .openapi({ required: [] })
   .openapi('BatchGetPreparedStatementOutput')
@@ -360,16 +298,12 @@ const PreparedStatementNameListSchema = z
 
 const BatchGetPreparedStatementInputSchema = z
   .object({
-    PreparedStatementNames: PreparedStatementNameListSchema.and(
-      z.any().openapi({ description: 'A list of prepared statement names to return.' }),
-    ),
-    WorkGroup: WorkGroupNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the workgroup to which the prepared statements belong.',
-        }),
-    ),
+    PreparedStatementNames: PreparedStatementNameListSchema.openapi({
+      description: 'A list of prepared statement names to return.',
+    }),
+    WorkGroup: WorkGroupNameSchema.openapi({
+      description: 'The name of the workgroup to which the prepared statements belong.',
+    }),
   })
   .openapi({
     required: ['PreparedStatementNames', 'WorkGroup'],
@@ -387,22 +321,14 @@ const EncryptionOptionSchema = z.enum(['SSE_S3', 'SSE_KMS', 'CSE_KMS']).openapi(
 
 const EncryptionConfigurationSchema = z
   .object({
-    EncryptionOption: EncryptionOptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Indicates whether Amazon S3 server-side encryption with Amazon S3-managed keys (<code>SSE_S3</code>), server-side encryption with KMS-managed keys (<code>SSE_KMS</code>), or client-side encryption with KMS-managed keys (<code>CSE_KMS</code>) is used.</p> <p>If a query runs in a workgroup and the workgroup overrides client-side settings, then the workgroup's setting for encryption is used. It specifies whether query results must be encrypted, for all queries that run in this workgroup. </p>",
-        }),
-    ),
-    KmsKey: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'For <code>SSE_KMS</code> and <code>CSE_KMS</code>, this is the KMS key ARN or ID.',
-        }),
-    ).exactOptional(),
+    EncryptionOption: EncryptionOptionSchema.openapi({
+      description:
+        "<p>Indicates whether Amazon S3 server-side encryption with Amazon S3-managed keys (<code>SSE_S3</code>), server-side encryption with KMS-managed keys (<code>SSE_KMS</code>), or client-side encryption with KMS-managed keys (<code>CSE_KMS</code>) is used.</p> <p>If a query runs in a workgroup and the workgroup overrides client-side settings, then the workgroup's setting for encryption is used. It specifies whether query results must be encrypted, for all queries that run in this workgroup. </p>",
+    }),
+    KmsKey: StringSchema.exactOptional().openapi({
+      description:
+        'For <code>SSE_KMS</code> and <code>CSE_KMS</code>, this is the KMS key ARN or ID.',
+    }),
   })
   .openapi({
     required: ['EncryptionOption'],
@@ -421,14 +347,10 @@ const S3AclOptionSchema = z.literal('BUCKET_OWNER_FULL_CONTROL').openapi('S3AclO
 
 const AclConfigurationSchema = z
   .object({
-    S3AclOption: S3AclOptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon S3 canned ACL that Athena should specify when storing query results. Currently the only supported canned ACL is <code>BUCKET_OWNER_FULL_CONTROL</code>. If a query runs in a workgroup and the workgroup overrides client-side settings, then the Amazon S3 canned ACL specified in the workgroup\'s settings is used for all queries that run in the workgroup. For more information about Amazon S3 canned ACLs, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/acl-overview.html#canned-acl">Canned ACL</a> in the <i>Amazon S3 User Guide</i>.',
-        }),
-    ),
+    S3AclOption: S3AclOptionSchema.openapi({
+      description:
+        'The Amazon S3 canned ACL that Athena should specify when storing query results. Currently the only supported canned ACL is <code>BUCKET_OWNER_FULL_CONTROL</code>. If a query runs in a workgroup and the workgroup overrides client-side settings, then the Amazon S3 canned ACL specified in the workgroup\'s settings is used for all queries that run in the workgroup. For more information about Amazon S3 canned ACLs, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/acl-overview.html#canned-acl">Canned ACL</a> in the <i>Amazon S3 User Guide</i>.',
+    }),
   })
   .openapi({
     required: ['S3AclOption'],
@@ -439,38 +361,22 @@ const AclConfigurationSchema = z
 
 const ResultConfigurationSchema = z
   .object({
-    OutputLocation: ResultOutputLocationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The location in Amazon S3 where your query and calculation results are stored, such as <code>s3://path/to/query/bucket/</code>. To run the query, you must specify the query results location using one of the ways: either for individual queries using either this setting (client-side), or in the workgroup, using <a>WorkGroupConfiguration</a>. If none of them is set, Athena issues an error that no output location is provided. For more information, see <a href="https://docs.aws.amazon.com/athena/latest/ug/querying.html">Working with query results, recent queries, and output files</a>. If workgroup settings override client-side settings, then the query uses the settings specified for the workgroup. See <a>WorkGroupConfiguration$EnforceWorkGroupConfiguration</a>.',
-        }),
-    ).exactOptional(),
-    EncryptionConfiguration: EncryptionConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If query and calculation results are encrypted in Amazon S3, indicates the encryption option used (for example, <code>SSE_KMS</code> or <code>CSE_KMS</code>) and key information. This is a client-side setting. If workgroup settings override client-side settings, then the query uses the encryption configuration that is specified for the workgroup, and also uses the location for storing query results specified in the workgroup. See <a>WorkGroupConfiguration$EnforceWorkGroupConfiguration</a> and <a href="https://docs.aws.amazon.com/athena/latest/ug/workgroups-settings-override.html">Workgroup Settings Override Client-Side Settings</a>.',
-        }),
-    ).exactOptional(),
-    ExpectedBucketOwner: AwsAccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Web Services account ID that you expect to be the owner of the Amazon S3 bucket specified by <a>ResultConfiguration$OutputLocation</a>. If set, Athena uses the value for <code>ExpectedBucketOwner</code> when it makes Amazon S3 calls to your specified output location. If the <code>ExpectedBucketOwner</code> Amazon Web Services account ID does not match the actual owner of the Amazon S3 bucket, the call fails with a permissions error.</p> <p>This is a client-side setting. If workgroup settings override client-side settings, then the query uses the <code>ExpectedBucketOwner</code> setting that is specified for the workgroup, and also uses the location for storing query results specified in the workgroup. See <a>WorkGroupConfiguration$EnforceWorkGroupConfiguration</a> and <a href="https://docs.aws.amazon.com/athena/latest/ug/workgroups-settings-override.html">Workgroup Settings Override Client-Side Settings</a>.</p>',
-        }),
-    ).exactOptional(),
-    AclConfiguration: AclConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates that an Amazon S3 canned ACL should be set to control ownership of stored query results. Currently the only supported canned ACL is <code>BUCKET_OWNER_FULL_CONTROL</code>. This is a client-side setting. If workgroup settings override client-side settings, then the query uses the ACL configuration that is specified for the workgroup, and also uses the location for storing query results specified in the workgroup. For more information, see <a>WorkGroupConfiguration$EnforceWorkGroupConfiguration</a> and <a href="https://docs.aws.amazon.com/athena/latest/ug/workgroups-settings-override.html">Workgroup Settings Override Client-Side Settings</a>.',
-        }),
-    ).exactOptional(),
+    OutputLocation: ResultOutputLocationSchema.exactOptional().openapi({
+      description:
+        'The location in Amazon S3 where your query and calculation results are stored, such as <code>s3://path/to/query/bucket/</code>. To run the query, you must specify the query results location using one of the ways: either for individual queries using either this setting (client-side), or in the workgroup, using <a>WorkGroupConfiguration</a>. If none of them is set, Athena issues an error that no output location is provided. For more information, see <a href="https://docs.aws.amazon.com/athena/latest/ug/querying.html">Working with query results, recent queries, and output files</a>. If workgroup settings override client-side settings, then the query uses the settings specified for the workgroup. See <a>WorkGroupConfiguration$EnforceWorkGroupConfiguration</a>.',
+    }),
+    EncryptionConfiguration: EncryptionConfigurationSchema.exactOptional().openapi({
+      description:
+        'If query and calculation results are encrypted in Amazon S3, indicates the encryption option used (for example, <code>SSE_KMS</code> or <code>CSE_KMS</code>) and key information. This is a client-side setting. If workgroup settings override client-side settings, then the query uses the encryption configuration that is specified for the workgroup, and also uses the location for storing query results specified in the workgroup. See <a>WorkGroupConfiguration$EnforceWorkGroupConfiguration</a> and <a href="https://docs.aws.amazon.com/athena/latest/ug/workgroups-settings-override.html">Workgroup Settings Override Client-Side Settings</a>.',
+    }),
+    ExpectedBucketOwner: AwsAccountIdSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Web Services account ID that you expect to be the owner of the Amazon S3 bucket specified by <a>ResultConfiguration$OutputLocation</a>. If set, Athena uses the value for <code>ExpectedBucketOwner</code> when it makes Amazon S3 calls to your specified output location. If the <code>ExpectedBucketOwner</code> Amazon Web Services account ID does not match the actual owner of the Amazon S3 bucket, the call fails with a permissions error.</p> <p>This is a client-side setting. If workgroup settings override client-side settings, then the query uses the <code>ExpectedBucketOwner</code> setting that is specified for the workgroup, and also uses the location for storing query results specified in the workgroup. See <a>WorkGroupConfiguration$EnforceWorkGroupConfiguration</a> and <a href="https://docs.aws.amazon.com/athena/latest/ug/workgroups-settings-override.html">Workgroup Settings Override Client-Side Settings</a>.</p>',
+    }),
+    AclConfiguration: AclConfigurationSchema.exactOptional().openapi({
+      description:
+        'Indicates that an Amazon S3 canned ACL should be set to control ownership of stored query results. Currently the only supported canned ACL is <code>BUCKET_OWNER_FULL_CONTROL</code>. This is a client-side setting. If workgroup settings override client-side settings, then the query uses the ACL configuration that is specified for the workgroup, and also uses the location for storing query results specified in the workgroup. For more information, see <a>WorkGroupConfiguration$EnforceWorkGroupConfiguration</a> and <a href="https://docs.aws.amazon.com/athena/latest/ug/workgroups-settings-override.html">Workgroup Settings Override Client-Side Settings</a>.',
+    }),
   })
   .openapi({
     description:
@@ -485,22 +391,14 @@ const AgeSchema = z.int().min(0).max(10080).openapi('Age')
 
 const ResultReuseByAgeConfigurationSchema = z
   .object({
-    Enabled: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'True if previous query results can be reused when the query is run; otherwise, false. The default is false.',
-        }),
-    ),
-    MaxAgeInMinutes: AgeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies, in minutes, the maximum age of a previous query result that Athena should consider for reuse. The default is 60.',
-        }),
-    ).exactOptional(),
+    Enabled: BooleanSchema.openapi({
+      description:
+        'True if previous query results can be reused when the query is run; otherwise, false. The default is false.',
+    }),
+    MaxAgeInMinutes: AgeSchema.exactOptional().openapi({
+      description:
+        'Specifies, in minutes, the maximum age of a previous query result that Athena should consider for reuse. The default is 60.',
+    }),
   })
   .openapi({
     required: ['Enabled'],
@@ -511,14 +409,10 @@ const ResultReuseByAgeConfigurationSchema = z
 
 const ResultReuseConfigurationSchema = z
   .object({
-    ResultReuseByAgeConfiguration: ResultReuseByAgeConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether previous query results are reused, and if so, their maximum age.',
-        }),
-    ).exactOptional(),
+    ResultReuseByAgeConfiguration: ResultReuseByAgeConfigurationSchema.exactOptional().openapi({
+      description:
+        'Specifies whether previous query results are reused, and if so, their maximum age.',
+    }),
   })
   .openapi({
     description: 'Specifies the query result reuse behavior for the query.',
@@ -535,17 +429,13 @@ const CatalogNameStringSchema = z
 
 const QueryExecutionContextSchema = z
   .object({
-    Database: DatabaseStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the database used in the query execution. The database must exist in the catalog.',
-        }),
-    ).exactOptional(),
-    Catalog: CatalogNameStringSchema.and(
-      z.any().openapi({ description: 'The name of the data catalog used in the query execution.' }),
-    ).exactOptional(),
+    Database: DatabaseStringSchema.exactOptional().openapi({
+      description:
+        'The name of the database used in the query execution. The database must exist in the catalog.',
+    }),
+    Catalog: CatalogNameStringSchema.exactOptional().openapi({
+      description: 'The name of the data catalog used in the query execution.',
+    }),
   })
   .openapi({
     description: 'The database and data catalog context in which the query execution occurs.',
@@ -563,28 +453,20 @@ const ErrorTypeSchema = z.int().min(0).max(9999).openapi('ErrorType')
 
 const AthenaErrorSchema = z
   .object({
-    ErrorCategory: ErrorCategorySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An integer value that specifies the category of a query failure error. The following list shows the category for each integer value.</p> <p> <b>1</b> - System</p> <p> <b>2</b> - User</p> <p> <b>3</b> - Other</p>',
-        }),
-    ).exactOptional(),
-    ErrorType: ErrorTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An integer value that provides specific information about an Athena query error. For the meaning of specific values, see the <a href="https://docs.aws.amazon.com/athena/latest/ug/error-reference.html#error-reference-error-type-reference">Error Type Reference</a> in the <i>Amazon Athena User Guide</i>.',
-        }),
-    ).exactOptional(),
-    Retryable: BooleanSchema.and(
-      z.any().openapi({ description: 'True if the query might succeed if resubmitted.' }),
-    ).exactOptional(),
-    ErrorMessage: StringSchema.and(
-      z.any().openapi({ description: 'Contains a short description of the error that occurred.' }),
-    ).exactOptional(),
+    ErrorCategory: ErrorCategorySchema.exactOptional().openapi({
+      description:
+        '<p>An integer value that specifies the category of a query failure error. The following list shows the category for each integer value.</p> <p> <b>1</b> - System</p> <p> <b>2</b> - User</p> <p> <b>3</b> - Other</p>',
+    }),
+    ErrorType: ErrorTypeSchema.exactOptional().openapi({
+      description:
+        'An integer value that provides specific information about an Athena query error. For the meaning of specific values, see the <a href="https://docs.aws.amazon.com/athena/latest/ug/error-reference.html#error-reference-error-type-reference">Error Type Reference</a> in the <i>Amazon Athena User Guide</i>.',
+    }),
+    Retryable: BooleanSchema.exactOptional().openapi({
+      description: 'True if the query might succeed if resubmitted.',
+    }),
+    ErrorMessage: StringSchema.exactOptional().openapi({
+      description: 'Contains a short description of the error that occurred.',
+    }),
   })
   .openapi({
     description:
@@ -595,26 +477,22 @@ const AthenaErrorSchema = z
 
 const QueryExecutionStatusSchema = z
   .object({
-    State: QueryExecutionStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The state of query execution. <code>QUEUED</code> indicates that the query has been submitted to the service, and Athena will execute the query as soon as resources are available. <code>RUNNING</code> indicates that the query is in execution phase. <code>SUCCEEDED</code> indicates that the query completed without errors. <code>FAILED</code> indicates that the query experienced an error and did not complete processing. <code>CANCELLED</code> indicates that a user input interrupted query execution.</p> <note> <p>Athena automatically retries your queries in cases of certain transient errors. As a result, you may see the query state transition from <code>RUNNING</code> or <code>FAILED</code> to <code>QUEUED</code>. </p> </note>',
-        }),
-    ).exactOptional(),
-    StateChangeReason: StringSchema.and(
-      z.any().openapi({ description: 'Further detail about the status of the query.' }),
-    ).exactOptional(),
-    SubmissionDateTime: DateSchema.and(
-      z.any().openapi({ description: 'The date and time that the query was submitted.' }),
-    ).exactOptional(),
-    CompletionDateTime: DateSchema.and(
-      z.any().openapi({ description: 'The date and time that the query completed.' }),
-    ).exactOptional(),
-    AthenaError: AthenaErrorSchema.and(
-      z.any().openapi({ description: 'Provides information about an Athena query error.' }),
-    ).exactOptional(),
+    State: QueryExecutionStateSchema.exactOptional().openapi({
+      description:
+        '<p>The state of query execution. <code>QUEUED</code> indicates that the query has been submitted to the service, and Athena will execute the query as soon as resources are available. <code>RUNNING</code> indicates that the query is in execution phase. <code>SUCCEEDED</code> indicates that the query completed without errors. <code>FAILED</code> indicates that the query experienced an error and did not complete processing. <code>CANCELLED</code> indicates that a user input interrupted query execution.</p> <note> <p>Athena automatically retries your queries in cases of certain transient errors. As a result, you may see the query state transition from <code>RUNNING</code> or <code>FAILED</code> to <code>QUEUED</code>. </p> </note>',
+    }),
+    StateChangeReason: StringSchema.exactOptional().openapi({
+      description: 'Further detail about the status of the query.',
+    }),
+    SubmissionDateTime: DateSchema.exactOptional().openapi({
+      description: 'The date and time that the query was submitted.',
+    }),
+    CompletionDateTime: DateSchema.exactOptional().openapi({
+      description: 'The date and time that the query completed.',
+    }),
+    AthenaError: AthenaErrorSchema.exactOptional().openapi({
+      description: 'Provides information about an Athena query error.',
+    }),
   })
   .openapi({
     description:
@@ -625,14 +503,10 @@ const QueryExecutionStatusSchema = z
 
 const ResultReuseInformationSchema = z
   .object({
-    ReusedPreviousResult: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'True if a previous query result was reused; false if the result was generated from a new run of the query.',
-        }),
-    ),
+    ReusedPreviousResult: BooleanSchema.openapi({
+      description:
+        'True if a previous query result was reused; false if the result was generated from a new run of the query.',
+    }),
   })
   .openapi({
     required: ['ReusedPreviousResult'],
@@ -642,59 +516,35 @@ const ResultReuseInformationSchema = z
 
 const QueryExecutionStatisticsSchema = z
   .object({
-    EngineExecutionTimeInMillis: LongSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The number of milliseconds that the query took to execute.' }),
-    ).exactOptional(),
-    DataScannedInBytes: LongSchema.and(
-      z.any().openapi({ description: 'The number of bytes in the data that was queried.' }),
-    ).exactOptional(),
-    DataManifestLocation: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The location and file name of a data manifest file. The manifest file is saved to the Athena query results location in Amazon S3. The manifest file tracks files that the query wrote to Amazon S3. If the query fails, the manifest file also tracks files that the query intended to write. The manifest is useful for identifying orphaned files resulting from a failed query. For more information, see <a href="https://docs.aws.amazon.com/athena/latest/ug/querying.html">Working with Query Results, Output Files, and Query History</a> in the <i>Amazon Athena User Guide</i>.',
-        }),
-    ).exactOptional(),
-    TotalExecutionTimeInMillis: LongSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The number of milliseconds that Athena took to run the query.' }),
-    ).exactOptional(),
-    QueryQueueTimeInMillis: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of milliseconds that the query was in your query queue waiting for resources. Note that if transient errors occur, Athena might automatically add the query back to the queue.',
-        }),
-    ).exactOptional(),
-    QueryPlanningTimeInMillis: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of milliseconds that Athena took to plan the query processing flow. This includes the time spent retrieving table partitions from the data source. Note that because the query engine performs the query planning, query planning time is a subset of engine processing time.',
-        }),
-    ).exactOptional(),
-    ServiceProcessingTimeInMillis: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of milliseconds that Athena took to finalize and publish the query results after the query engine finished running the query.',
-        }),
-    ).exactOptional(),
-    ResultReuseInformation: ResultReuseInformationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains information about whether previous query results were reused for the query.',
-        }),
-    ).exactOptional(),
+    EngineExecutionTimeInMillis: LongSchema.exactOptional().openapi({
+      description: 'The number of milliseconds that the query took to execute.',
+    }),
+    DataScannedInBytes: LongSchema.exactOptional().openapi({
+      description: 'The number of bytes in the data that was queried.',
+    }),
+    DataManifestLocation: StringSchema.exactOptional().openapi({
+      description:
+        'The location and file name of a data manifest file. The manifest file is saved to the Athena query results location in Amazon S3. The manifest file tracks files that the query wrote to Amazon S3. If the query fails, the manifest file also tracks files that the query intended to write. The manifest is useful for identifying orphaned files resulting from a failed query. For more information, see <a href="https://docs.aws.amazon.com/athena/latest/ug/querying.html">Working with Query Results, Output Files, and Query History</a> in the <i>Amazon Athena User Guide</i>.',
+    }),
+    TotalExecutionTimeInMillis: LongSchema.exactOptional().openapi({
+      description: 'The number of milliseconds that Athena took to run the query.',
+    }),
+    QueryQueueTimeInMillis: LongSchema.exactOptional().openapi({
+      description:
+        'The number of milliseconds that the query was in your query queue waiting for resources. Note that if transient errors occur, Athena might automatically add the query back to the queue.',
+    }),
+    QueryPlanningTimeInMillis: LongSchema.exactOptional().openapi({
+      description:
+        'The number of milliseconds that Athena took to plan the query processing flow. This includes the time spent retrieving table partitions from the data source. Note that because the query engine performs the query planning, query planning time is a subset of engine processing time.',
+    }),
+    ServiceProcessingTimeInMillis: LongSchema.exactOptional().openapi({
+      description:
+        'The number of milliseconds that Athena took to finalize and publish the query results after the query engine finished running the query.',
+    }),
+    ResultReuseInformation: ResultReuseInformationSchema.exactOptional().openapi({
+      description:
+        'Contains information about whether previous query results were reused for the query.',
+    }),
   })
   .openapi({
     description:
@@ -705,22 +555,14 @@ const QueryExecutionStatisticsSchema = z
 
 const EngineVersionSchema = z
   .object({
-    SelectedEngineVersion: NameStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The engine version requested by the user. Possible values are determined by the output of <code>ListEngineVersions</code>, including AUTO. The default is AUTO.',
-        }),
-    ).exactOptional(),
-    EffectiveEngineVersion: NameStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Read only. The engine version on which the query runs. If the user requests a valid engine version other than Auto, the effective engine version is the same as the engine version that the user requested. If the user requests Auto, the effective engine version is chosen by Athena. When a request to update the engine version is made by a <code>CreateWorkGroup</code> or <code>UpdateWorkGroup</code> operation, the <code>EffectiveEngineVersion</code> field is ignored.',
-        }),
-    ).exactOptional(),
+    SelectedEngineVersion: NameStringSchema.exactOptional().openapi({
+      description:
+        'The engine version requested by the user. Possible values are determined by the output of <code>ListEngineVersions</code>, including AUTO. The default is AUTO.',
+    }),
+    EffectiveEngineVersion: NameStringSchema.exactOptional().openapi({
+      description:
+        'Read only. The engine version on which the query runs. If the user requests a valid engine version other than Auto, the effective engine version is the same as the engine version that the user requested. If the user requests Auto, the effective engine version is chosen by Athena. When a request to update the engine version is made by a <code>CreateWorkGroup</code> or <code>UpdateWorkGroup</code> operation, the <code>EffectiveEngineVersion</code> field is ignored.',
+    }),
   })
   .openapi({
     description:
@@ -738,71 +580,47 @@ const ExecutionParametersSchema = z
 
 const QueryExecutionSchema = z
   .object({
-    QueryExecutionId: QueryExecutionIdSchema.and(
-      z.any().openapi({ description: 'The unique identifier for each query execution.' }),
-    ).exactOptional(),
-    Query: QueryStringSchema.and(
-      z.any().openapi({ description: 'The SQL query statements which the query execution ran.' }),
-    ).exactOptional(),
-    StatementType: StatementTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of query statement that was run. <code>DDL</code> indicates DDL query statements. <code>DML</code> indicates DML (Data Manipulation Language) query statements, such as <code>CREATE TABLE AS SELECT</code>. <code>UTILITY</code> indicates query statements other than DDL and DML, such as <code>SHOW CREATE TABLE</code>, or <code>DESCRIBE TABLE</code>.',
-        }),
-    ).exactOptional(),
-    ResultConfiguration: ResultConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The location in Amazon S3 where query and calculation results are stored and the encryption option, if any, used for query results. These are known as "client-side settings". If workgroup settings override client-side settings, then the query uses the location for the query results and the encryption configuration that are specified for the workgroup.',
-        }),
-    ).exactOptional(),
-    ResultReuseConfiguration: ResultReuseConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specifies the query result reuse behavior that was used for the query.',
-        }),
-    ).exactOptional(),
-    QueryExecutionContext: QueryExecutionContextSchema.and(
-      z.any().openapi({ description: 'The database in which the query execution occurred.' }),
-    ).exactOptional(),
-    Status: QueryExecutionStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The completion date, current state, submission time, and state change reason (if applicable) for the query execution.',
-        }),
-    ).exactOptional(),
-    Statistics: QueryExecutionStatisticsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Query execution statistics, such as the amount of data scanned, the amount of time that the query took to process, and the type of statement that was run.',
-        }),
-    ).exactOptional(),
-    WorkGroup: WorkGroupNameSchema.and(
-      z.any().openapi({ description: 'The name of the workgroup in which the query ran.' }),
-    ).exactOptional(),
-    EngineVersion: EngineVersionSchema.and(
-      z.any().openapi({ description: 'The engine version that executed the query.' }),
-    ).exactOptional(),
-    ExecutionParameters: ExecutionParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of values for the parameters in a query. The values are applied sequentially to the parameters in the query in the order in which the parameters occur. The list of parameters is not returned in the response.',
-        }),
-    ).exactOptional(),
-    SubstatementType: StringSchema.and(
-      z.any().openapi({ description: 'The kind of query statement that was run.' }),
-    ).exactOptional(),
+    QueryExecutionId: QueryExecutionIdSchema.exactOptional().openapi({
+      description: 'The unique identifier for each query execution.',
+    }),
+    Query: QueryStringSchema.exactOptional().openapi({
+      description: 'The SQL query statements which the query execution ran.',
+    }),
+    StatementType: StatementTypeSchema.exactOptional().openapi({
+      description:
+        'The type of query statement that was run. <code>DDL</code> indicates DDL query statements. <code>DML</code> indicates DML (Data Manipulation Language) query statements, such as <code>CREATE TABLE AS SELECT</code>. <code>UTILITY</code> indicates query statements other than DDL and DML, such as <code>SHOW CREATE TABLE</code>, or <code>DESCRIBE TABLE</code>.',
+    }),
+    ResultConfiguration: ResultConfigurationSchema.exactOptional().openapi({
+      description:
+        'The location in Amazon S3 where query and calculation results are stored and the encryption option, if any, used for query results. These are known as "client-side settings". If workgroup settings override client-side settings, then the query uses the location for the query results and the encryption configuration that are specified for the workgroup.',
+    }),
+    ResultReuseConfiguration: ResultReuseConfigurationSchema.exactOptional().openapi({
+      description: 'Specifies the query result reuse behavior that was used for the query.',
+    }),
+    QueryExecutionContext: QueryExecutionContextSchema.exactOptional().openapi({
+      description: 'The database in which the query execution occurred.',
+    }),
+    Status: QueryExecutionStatusSchema.exactOptional().openapi({
+      description:
+        'The completion date, current state, submission time, and state change reason (if applicable) for the query execution.',
+    }),
+    Statistics: QueryExecutionStatisticsSchema.exactOptional().openapi({
+      description:
+        'Query execution statistics, such as the amount of data scanned, the amount of time that the query took to process, and the type of statement that was run.',
+    }),
+    WorkGroup: WorkGroupNameSchema.exactOptional().openapi({
+      description: 'The name of the workgroup in which the query ran.',
+    }),
+    EngineVersion: EngineVersionSchema.exactOptional().openapi({
+      description: 'The engine version that executed the query.',
+    }),
+    ExecutionParameters: ExecutionParametersSchema.exactOptional().openapi({
+      description:
+        'A list of values for the parameters in a query. The values are applied sequentially to the parameters in the query in the order in which the parameters occur. The list of parameters is not returned in the response.',
+    }),
+    SubstatementType: StringSchema.exactOptional().openapi({
+      description: 'The kind of query statement that was run.',
+    }),
   })
   .openapi({
     description: 'Information about a single instance of a query execution.',
@@ -814,25 +632,17 @@ const QueryExecutionListSchema = z.array(QueryExecutionSchema).openapi('QueryExe
 
 const UnprocessedQueryExecutionIdSchema = z
   .object({
-    QueryExecutionId: QueryExecutionIdSchema.and(
-      z.any().openapi({ description: 'The unique identifier of the query execution.' }),
-    ).exactOptional(),
-    ErrorCode: ErrorCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The error code returned when the query execution failed to process, if applicable.',
-        }),
-    ).exactOptional(),
-    ErrorMessage: ErrorMessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The error message returned when the query execution failed to process, if applicable.',
-        }),
-    ).exactOptional(),
+    QueryExecutionId: QueryExecutionIdSchema.exactOptional().openapi({
+      description: 'The unique identifier of the query execution.',
+    }),
+    ErrorCode: ErrorCodeSchema.exactOptional().openapi({
+      description:
+        'The error code returned when the query execution failed to process, if applicable.',
+    }),
+    ErrorMessage: ErrorMessageSchema.exactOptional().openapi({
+      description:
+        'The error message returned when the query execution failed to process, if applicable.',
+    }),
   })
   .openapi({ description: 'Describes a query execution that failed to process.', required: [] })
   .openapi('UnprocessedQueryExecutionId')
@@ -843,14 +653,12 @@ const UnprocessedQueryExecutionIdListSchema = z
 
 const BatchGetQueryExecutionOutputSchema = z
   .object({
-    QueryExecutions: QueryExecutionListSchema.and(
-      z.any().openapi({ description: 'Information about a query execution.' }),
-    ).exactOptional(),
-    UnprocessedQueryExecutionIds: UnprocessedQueryExecutionIdListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Information about the query executions that failed to run.' }),
-    ).exactOptional(),
+    QueryExecutions: QueryExecutionListSchema.exactOptional().openapi({
+      description: 'Information about a query execution.',
+    }),
+    UnprocessedQueryExecutionIds: UnprocessedQueryExecutionIdListSchema.exactOptional().openapi({
+      description: 'Information about the query executions that failed to run.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('BatchGetQueryExecutionOutput')
@@ -863,9 +671,9 @@ const QueryExecutionIdListSchema = z
 
 const BatchGetQueryExecutionInputSchema = z
   .object({
-    QueryExecutionIds: QueryExecutionIdListSchema.and(
-      z.any().openapi({ description: 'An array of query execution IDs.' }),
-    ),
+    QueryExecutionIds: QueryExecutionIdListSchema.openapi({
+      description: 'An array of query execution IDs.',
+    }),
   })
   .openapi({
     required: ['QueryExecutionIds'],
@@ -875,7 +683,7 @@ const BatchGetQueryExecutionInputSchema = z
   .openapi('BatchGetQueryExecutionInput')
 
 const CancelCapacityReservationOutputSchema = z
-  .object({})
+  .looseObject({})
   .openapi('CancelCapacityReservationOutput')
 
 const CapacityReservationNameSchema = z
@@ -887,15 +695,15 @@ const CapacityReservationNameSchema = z
 
 const CancelCapacityReservationInputSchema = z
   .object({
-    Name: CapacityReservationNameSchema.and(
-      z.any().openapi({ description: 'The name of the capacity reservation to cancel.' }),
-    ),
+    Name: CapacityReservationNameSchema.openapi({
+      description: 'The name of the capacity reservation to cancel.',
+    }),
   })
   .openapi({ required: ['Name'], title: 'CancelCapacityReservationInput' })
   .openapi('CancelCapacityReservationInput')
 
 const CreateCapacityReservationOutputSchema = z
-  .object({})
+  .looseObject({})
   .openapi('CreateCapacityReservationOutput')
 
 const TargetDpusIntegerSchema = z.int().min(24).openapi('TargetDpusInteger')
@@ -906,22 +714,14 @@ const TagValueSchema = z.string().min(0).max(256).openapi('TagValue')
 
 const TagSchema = z
   .object({
-    Key: TagKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A tag key. The tag key length is from 1 to 128 Unicode characters in UTF-8. You can use letters and numbers representable in UTF-8, and the following characters: + - = . _ : / @. Tag keys are case-sensitive and must be unique per resource. ',
-        }),
-    ).exactOptional(),
-    Value: TagValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A tag value. The tag value length is from 0 to 256 Unicode characters in UTF-8. You can use letters and numbers representable in UTF-8, and the following characters: + - = . _ : / @. Tag values are case-sensitive. ',
-        }),
-    ).exactOptional(),
+    Key: TagKeySchema.exactOptional().openapi({
+      description:
+        'A tag key. The tag key length is from 1 to 128 Unicode characters in UTF-8. You can use letters and numbers representable in UTF-8, and the following characters: + - = . _ : / @. Tag keys are case-sensitive and must be unique per resource. ',
+    }),
+    Value: TagValueSchema.exactOptional().openapi({
+      description:
+        'A tag value. The tag value length is from 0 to 256 Unicode characters in UTF-8. You can use letters and numbers representable in UTF-8, and the following characters: + - = . _ : / @. Tag values are case-sensitive. ',
+    }),
   })
   .openapi({
     description:
@@ -934,20 +734,20 @@ const TagListSchema = z.array(TagSchema).openapi('TagList')
 
 const CreateCapacityReservationInputSchema = z
   .object({
-    TargetDpus: TargetDpusIntegerSchema.and(
-      z.any().openapi({ description: 'The number of requested data processing units.' }),
-    ),
-    Name: CapacityReservationNameSchema.and(
-      z.any().openapi({ description: 'The name of the capacity reservation to create.' }),
-    ),
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'The tags for the capacity reservation.' }),
-    ).exactOptional(),
+    TargetDpus: TargetDpusIntegerSchema.openapi({
+      description: 'The number of requested data processing units.',
+    }),
+    Name: CapacityReservationNameSchema.openapi({
+      description: 'The name of the capacity reservation to create.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'The tags for the capacity reservation.',
+    }),
   })
   .openapi({ required: ['TargetDpus', 'Name'], title: 'CreateCapacityReservationInput' })
   .openapi('CreateCapacityReservationInput')
 
-const CreateDataCatalogOutputSchema = z.object({}).openapi('CreateDataCatalogOutput')
+const CreateDataCatalogOutputSchema = z.looseObject({}).openapi('CreateDataCatalogOutput')
 
 const DataCatalogTypeSchema = z.enum(['LAMBDA', 'GLUE', 'HIVE']).openapi('DataCatalogType')
 
@@ -957,49 +757,33 @@ const ParametersMapSchema = z.record(z.string(), ParametersMapValueSchema).opena
 
 const CreateDataCatalogInputSchema = z
   .object({
-    Name: CatalogNameStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the data catalog to create. The catalog name must be unique for the Amazon Web Services account and can use a maximum of 127 alphanumeric, underscore, at sign, or hyphen characters. The remainder of the length constraint of 256 is reserved for use by Athena.',
-        }),
-    ),
-    Type: DataCatalogTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of data catalog to create: <code>LAMBDA</code> for a federated catalog, <code>HIVE</code> for an external hive metastore, or <code>GLUE</code> for an Glue Data Catalog.',
-        }),
-    ),
-    Description: DescriptionStringSchema.and(
-      z.any().openapi({ description: 'A description of the data catalog to be created.' }),
-    ).exactOptional(),
-    Parameters: ParametersMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies the Lambda function or functions to use for creating the data catalog. This is a mapping whose values depend on the catalog type. </p> <ul> <li> <p>For the <code>HIVE</code> data catalog type, use the following syntax. The <code>metadata-function</code> parameter is required. <code>The sdk-version</code> parameter is optional and defaults to the currently supported version.</p> <p> <code>metadata-function=<i>lambda_arn</i>, sdk-version=<i>version_number</i> </code> </p> </li> <li> <p>For the <code>LAMBDA</code> data catalog type, use one of the following sets of required parameters, but not both.</p> <ul> <li> <p>If you have one Lambda function that processes metadata and another for reading the actual data, use the following syntax. Both parameters are required.</p> <p> <code>metadata-function=<i>lambda_arn</i>, record-function=<i>lambda_arn</i> </code> </p> </li> <li> <p> If you have a composite Lambda function that processes both metadata and data, use the following syntax to specify your Lambda function.</p> <p> <code>function=<i>lambda_arn</i> </code> </p> </li> </ul> </li> <li> <p>The <code>GLUE</code> type takes a catalog ID parameter and is required. The <code> <i>catalog_id</i> </code> is the account ID of the Amazon Web Services account to which the Glue Data Catalog belongs.</p> <p> <code>catalog-id=<i>catalog_id</i> </code> </p> <ul> <li> <p>The <code>GLUE</code> data catalog type also applies to the default <code>AwsDataCatalog</code> that already exists in your account, of which you can have only one and cannot modify.</p> </li> <li> <p>Queries that specify a Glue Data Catalog other than the default <code>AwsDataCatalog</code> must be run on Athena engine version 2.</p> </li> <li> <p>In Regions where Athena engine version 2 is not available, creating new Glue data catalogs results in an <code>INVALID_INPUT</code> error.</p> </li> </ul> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of comma separated tags to add to the data catalog that is created.',
-        }),
-    ).exactOptional(),
+    Name: CatalogNameStringSchema.openapi({
+      description:
+        'The name of the data catalog to create. The catalog name must be unique for the Amazon Web Services account and can use a maximum of 127 alphanumeric, underscore, at sign, or hyphen characters. The remainder of the length constraint of 256 is reserved for use by Athena.',
+    }),
+    Type: DataCatalogTypeSchema.openapi({
+      description:
+        'The type of data catalog to create: <code>LAMBDA</code> for a federated catalog, <code>HIVE</code> for an external hive metastore, or <code>GLUE</code> for an Glue Data Catalog.',
+    }),
+    Description: DescriptionStringSchema.exactOptional().openapi({
+      description: 'A description of the data catalog to be created.',
+    }),
+    Parameters: ParametersMapSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies the Lambda function or functions to use for creating the data catalog. This is a mapping whose values depend on the catalog type. </p> <ul> <li> <p>For the <code>HIVE</code> data catalog type, use the following syntax. The <code>metadata-function</code> parameter is required. <code>The sdk-version</code> parameter is optional and defaults to the currently supported version.</p> <p> <code>metadata-function=<i>lambda_arn</i>, sdk-version=<i>version_number</i> </code> </p> </li> <li> <p>For the <code>LAMBDA</code> data catalog type, use one of the following sets of required parameters, but not both.</p> <ul> <li> <p>If you have one Lambda function that processes metadata and another for reading the actual data, use the following syntax. Both parameters are required.</p> <p> <code>metadata-function=<i>lambda_arn</i>, record-function=<i>lambda_arn</i> </code> </p> </li> <li> <p> If you have a composite Lambda function that processes both metadata and data, use the following syntax to specify your Lambda function.</p> <p> <code>function=<i>lambda_arn</i> </code> </p> </li> </ul> </li> <li> <p>The <code>GLUE</code> type takes a catalog ID parameter and is required. The <code> <i>catalog_id</i> </code> is the account ID of the Amazon Web Services account to which the Glue Data Catalog belongs.</p> <p> <code>catalog-id=<i>catalog_id</i> </code> </p> <ul> <li> <p>The <code>GLUE</code> data catalog type also applies to the default <code>AwsDataCatalog</code> that already exists in your account, of which you can have only one and cannot modify.</p> </li> <li> <p>Queries that specify a Glue Data Catalog other than the default <code>AwsDataCatalog</code> must be run on Athena engine version 2.</p> </li> <li> <p>In Regions where Athena engine version 2 is not available, creating new Glue data catalogs results in an <code>INVALID_INPUT</code> error.</p> </li> </ul> </li> </ul>',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'A list of comma separated tags to add to the data catalog that is created.',
+    }),
   })
   .openapi({ required: ['Name', 'Type'], title: 'CreateDataCatalogInput' })
   .openapi('CreateDataCatalogInput')
 
 const CreateNamedQueryOutputSchema = z
   .object({
-    NamedQueryId: NamedQueryIdSchema.and(
-      z.any().openapi({ description: 'The unique ID of the query.' }),
-    ).exactOptional(),
+    NamedQueryId: NamedQueryIdSchema.exactOptional().openapi({
+      description: 'The unique ID of the query.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateNamedQueryOutput')
@@ -1008,31 +792,23 @@ const IdempotencyTokenSchema = z.string().min(32).max(128).openapi('IdempotencyT
 
 const CreateNamedQueryInputSchema = z
   .object({
-    Name: NameStringSchema.and(z.any().openapi({ description: 'The query name.' })),
-    Description: DescriptionStringSchema.and(
-      z.any().openapi({ description: 'The query description.' }),
-    ).exactOptional(),
-    Database: DatabaseStringSchema.and(
-      z.any().openapi({ description: 'The database to which the query belongs.' }),
-    ),
-    QueryString: QueryStringSchema.and(
-      z.any().openapi({ description: 'The contents of the query with all query statements.' }),
-    ),
-    ClientRequestToken: IdempotencyTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A unique case-sensitive string used to ensure the request to create the query is idempotent (executes only once). If another <code>CreateNamedQuery</code> request is received, the same response is returned and another query is not created. If a parameter has changed, for example, the <code>QueryString</code>, an error is returned.</p> <important> <p>This token is listed as not required because Amazon Web Services SDKs (for example the Amazon Web Services SDK for Java) auto-generate the token for users. If you are not using the Amazon Web Services SDK or the Amazon Web Services CLI, you must provide this token or the action will fail.</p> </important>',
-        }),
-    ).exactOptional(),
-    WorkGroup: WorkGroupNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the workgroup in which the named query is being created.',
-        }),
-    ).exactOptional(),
+    Name: NameStringSchema.openapi({ description: 'The query name.' }),
+    Description: DescriptionStringSchema.exactOptional().openapi({
+      description: 'The query description.',
+    }),
+    Database: DatabaseStringSchema.openapi({
+      description: 'The database to which the query belongs.',
+    }),
+    QueryString: QueryStringSchema.openapi({
+      description: 'The contents of the query with all query statements.',
+    }),
+    ClientRequestToken: IdempotencyTokenSchema.exactOptional().openapi({
+      description:
+        '<p>A unique case-sensitive string used to ensure the request to create the query is idempotent (executes only once). If another <code>CreateNamedQuery</code> request is received, the same response is returned and another query is not created. If a parameter has changed, for example, the <code>QueryString</code>, an error is returned.</p> <important> <p>This token is listed as not required because Amazon Web Services SDKs (for example the Amazon Web Services SDK for Java) auto-generate the token for users. If you are not using the Amazon Web Services SDK or the Amazon Web Services CLI, you must provide this token or the action will fail.</p> </important>',
+    }),
+    WorkGroup: WorkGroupNameSchema.exactOptional().openapi({
+      description: 'The name of the workgroup in which the named query is being created.',
+    }),
   })
   .openapi({ required: ['Name', 'Database', 'QueryString'], title: 'CreateNamedQueryInput' })
   .openapi('CreateNamedQueryInput')
@@ -1046,9 +822,9 @@ const NotebookIdSchema = z
 
 const CreateNotebookOutputSchema = z
   .object({
-    NotebookId: NotebookIdSchema.and(
-      z.any().openapi({ description: 'A unique identifier for the notebook.' }),
-    ).exactOptional(),
+    NotebookId: NotebookIdSchema.exactOptional().openapi({
+      description: 'A unique identifier for the notebook.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateNotebookOutput')
@@ -1069,56 +845,41 @@ const ClientRequestTokenSchema = z
 
 const CreateNotebookInputSchema = z
   .object({
-    WorkGroup: WorkGroupNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the Spark enabled workgroup in which the notebook will be created.',
-        }),
-    ),
-    Name: NotebookNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the <code>ipynb</code> file to be created in the Spark workgroup, without the <code>.ipynb</code> extension.',
-        }),
-    ),
-    ClientRequestToken: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A unique case-sensitive string used to ensure the request to create the notebook is idempotent (executes only once).</p> <important> <p>This token is listed as not required because Amazon Web Services SDKs (for example the Amazon Web Services SDK for Java) auto-generate the token for you. If you are not using the Amazon Web Services SDK or the Amazon Web Services CLI, you must provide this token or the action will fail.</p> </important>',
-        }),
-    ).exactOptional(),
+    WorkGroup: WorkGroupNameSchema.openapi({
+      description: 'The name of the Spark enabled workgroup in which the notebook will be created.',
+    }),
+    Name: NotebookNameSchema.openapi({
+      description:
+        'The name of the <code>ipynb</code> file to be created in the Spark workgroup, without the <code>.ipynb</code> extension.',
+    }),
+    ClientRequestToken: ClientRequestTokenSchema.exactOptional().openapi({
+      description:
+        '<p>A unique case-sensitive string used to ensure the request to create the notebook is idempotent (executes only once).</p> <important> <p>This token is listed as not required because Amazon Web Services SDKs (for example the Amazon Web Services SDK for Java) auto-generate the token for you. If you are not using the Amazon Web Services SDK or the Amazon Web Services CLI, you must provide this token or the action will fail.</p> </important>',
+    }),
   })
   .openapi({ required: ['WorkGroup', 'Name'], title: 'CreateNotebookInput' })
   .openapi('CreateNotebookInput')
 
 const TooManyRequestsExceptionSchema = z.any().openapi('TooManyRequestsException')
 
-const CreatePreparedStatementOutputSchema = z.object({}).openapi('CreatePreparedStatementOutput')
+const CreatePreparedStatementOutputSchema = z
+  .looseObject({})
+  .openapi('CreatePreparedStatementOutput')
 
 const CreatePreparedStatementInputSchema = z
   .object({
-    StatementName: StatementNameSchema.and(
-      z.any().openapi({ description: 'The name of the prepared statement.' }),
-    ),
-    WorkGroup: WorkGroupNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the workgroup to which the prepared statement belongs.',
-        }),
-    ),
-    QueryStatement: QueryStringSchema.and(
-      z.any().openapi({ description: 'The query string for the prepared statement.' }),
-    ),
-    Description: DescriptionStringSchema.and(
-      z.any().openapi({ description: 'The description of the prepared statement.' }),
-    ).exactOptional(),
+    StatementName: StatementNameSchema.openapi({
+      description: 'The name of the prepared statement.',
+    }),
+    WorkGroup: WorkGroupNameSchema.openapi({
+      description: 'The name of the workgroup to which the prepared statement belongs.',
+    }),
+    QueryStatement: QueryStringSchema.openapi({
+      description: 'The query string for the prepared statement.',
+    }),
+    Description: DescriptionStringSchema.exactOptional().openapi({
+      description: 'The description of the prepared statement.',
+    }),
   })
   .openapi({
     required: ['StatementName', 'WorkGroup', 'QueryStatement'],
@@ -1130,20 +891,16 @@ const AuthTokenSchema = z.string().max(2048).openapi('AuthToken')
 
 const CreatePresignedNotebookUrlResponseSchema = z
   .object({
-    NotebookUrl: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The URL of the notebook. The URL includes the authentication token and notebook file name and points directly to the opened notebook.',
-        }),
-    ),
-    AuthToken: AuthTokenSchema.and(
-      z.any().openapi({ description: 'The authentication token for the notebook.' }),
-    ),
-    AuthTokenExpirationTime: LongSchema.and(
-      z.any().openapi({ description: 'The UTC epoch time when the authentication token expires.' }),
-    ),
+    NotebookUrl: StringSchema.openapi({
+      description:
+        'The URL of the notebook. The URL includes the authentication token and notebook file name and points directly to the opened notebook.',
+    }),
+    AuthToken: AuthTokenSchema.openapi({
+      description: 'The authentication token for the notebook.',
+    }),
+    AuthTokenExpirationTime: LongSchema.openapi({
+      description: 'The UTC epoch time when the authentication token expires.',
+    }),
   })
   .openapi({ required: ['NotebookUrl', 'AuthToken', 'AuthTokenExpirationTime'] })
   .openapi('CreatePresignedNotebookUrlResponse')
@@ -1151,13 +908,13 @@ const CreatePresignedNotebookUrlResponseSchema = z
 const SessionIdSchema = z.string().min(1).max(256).openapi('SessionId')
 
 const CreatePresignedNotebookUrlRequestSchema = z
-  .object({ SessionId: SessionIdSchema.and(z.any().openapi({ description: 'The session ID.' })) })
+  .object({ SessionId: SessionIdSchema.openapi({ description: 'The session ID.' }) })
   .openapi({ required: ['SessionId'], title: 'CreatePresignedNotebookUrlRequest' })
   .openapi('CreatePresignedNotebookUrlRequest')
 
 const ResourceNotFoundExceptionSchema = z.any().openapi('ResourceNotFoundException')
 
-const CreateWorkGroupOutputSchema = z.object({}).openapi('CreateWorkGroupOutput')
+const CreateWorkGroupOutputSchema = z.looseObject({}).openapi('CreateWorkGroupOutput')
 
 const BoxedBooleanSchema = z.boolean().openapi('BoxedBoolean')
 
@@ -1181,13 +938,9 @@ const KmsKeySchema = z
 
 const CustomerContentEncryptionConfigurationSchema = z
   .object({
-    KmsKey: KmsKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The KMS key that is used to encrypt the user's data stores in Athena.",
-        }),
-    ),
+    KmsKey: KmsKeySchema.openapi({
+      description: "The KMS key that is used to encrypt the user's data stores in Athena.",
+    }),
   })
   .openapi({
     required: ['KmsKey'],
@@ -1198,83 +951,44 @@ const CustomerContentEncryptionConfigurationSchema = z
 
 const WorkGroupConfigurationSchema = z
   .object({
-    ResultConfiguration: ResultConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The configuration for the workgroup, which includes the location in Amazon S3 where query and calculation results are stored and the encryption option, if any, used for query and calculation results. To run the query, you must specify the query results location using one of the ways: either in the workgroup using this setting, or for individual queries (client-side), using <a>ResultConfiguration$OutputLocation</a>. If none of them is set, Athena issues an error that no output location is provided. For more information, see <a href="https://docs.aws.amazon.com/athena/latest/ug/querying.html">Working with query results, recent queries, and output files</a>.',
-        }),
-    ).exactOptional(),
-    EnforceWorkGroupConfiguration: BoxedBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If set to "true", the settings for the workgroup override client-side settings. If set to "false", client-side settings are used. For more information, see <a href="https://docs.aws.amazon.com/athena/latest/ug/workgroups-settings-override.html">Workgroup Settings Override Client-Side Settings</a>.',
-        }),
-    ).exactOptional(),
-    PublishCloudWatchMetricsEnabled: BoxedBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates that the Amazon CloudWatch metrics are enabled for the workgroup.',
-        }),
-    ).exactOptional(),
-    BytesScannedCutoffPerQuery: BytesScannedCutoffValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The upper data usage limit (cutoff) for the amount of bytes a single query in a workgroup is allowed to scan.',
-        }),
-    ).exactOptional(),
-    RequesterPaysEnabled: BoxedBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If set to <code>true</code>, allows members assigned to a workgroup to reference Amazon S3 Requester Pays buckets in queries. If set to <code>false</code>, workgroup members cannot query data from Requester Pays buckets, and queries that retrieve data from Requester Pays buckets cause an error. The default is <code>false</code>. For more information about Requester Pays buckets, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/RequesterPaysBuckets.html">Requester Pays Buckets</a> in the <i>Amazon Simple Storage Service Developer Guide</i>.',
-        }),
-    ).exactOptional(),
-    EngineVersion: EngineVersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The engine version that all queries running on the workgroup use. Queries on the <code>AmazonAthenaPreviewFunctionality</code> workgroup run on the preview engine regardless of this setting.',
-        }),
-    ).exactOptional(),
-    AdditionalConfiguration: NameStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies a user defined JSON string that is passed to the notebook engine.',
-        }),
-    ).exactOptional(),
-    ExecutionRole: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({ description: "Role used in a session for accessing the user's resources." }),
-    ).exactOptional(),
-    CustomerContentEncryptionConfiguration: CustomerContentEncryptionConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Specifies the KMS key that is used to encrypt the user's data stores in Athena. This setting does not apply to Athena SQL workgroups.",
-        }),
-    ).exactOptional(),
-    EnableMinimumEncryptionConfiguration: BoxedBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Enforces a minimal level of encryption for the workgroup for query and calculation results that are written to Amazon S3. When enabled, workgroup users can set encryption only to the minimum level set by the administrator or higher when they submit queries.</p> <p>The <code>EnforceWorkGroupConfiguration</code> setting takes precedence over the <code>EnableMinimumEncryptionConfiguration</code> flag. This means that if <code>EnforceWorkGroupConfiguration</code> is true, the <code>EnableMinimumEncryptionConfiguration</code> flag is ignored, and the workgroup configuration for encryption is used.</p>',
-        }),
-    ).exactOptional(),
+    ResultConfiguration: ResultConfigurationSchema.exactOptional().openapi({
+      description:
+        'The configuration for the workgroup, which includes the location in Amazon S3 where query and calculation results are stored and the encryption option, if any, used for query and calculation results. To run the query, you must specify the query results location using one of the ways: either in the workgroup using this setting, or for individual queries (client-side), using <a>ResultConfiguration$OutputLocation</a>. If none of them is set, Athena issues an error that no output location is provided. For more information, see <a href="https://docs.aws.amazon.com/athena/latest/ug/querying.html">Working with query results, recent queries, and output files</a>.',
+    }),
+    EnforceWorkGroupConfiguration: BoxedBooleanSchema.exactOptional().openapi({
+      description:
+        'If set to "true", the settings for the workgroup override client-side settings. If set to "false", client-side settings are used. For more information, see <a href="https://docs.aws.amazon.com/athena/latest/ug/workgroups-settings-override.html">Workgroup Settings Override Client-Side Settings</a>.',
+    }),
+    PublishCloudWatchMetricsEnabled: BoxedBooleanSchema.exactOptional().openapi({
+      description: 'Indicates that the Amazon CloudWatch metrics are enabled for the workgroup.',
+    }),
+    BytesScannedCutoffPerQuery: BytesScannedCutoffValueSchema.exactOptional().openapi({
+      description:
+        'The upper data usage limit (cutoff) for the amount of bytes a single query in a workgroup is allowed to scan.',
+    }),
+    RequesterPaysEnabled: BoxedBooleanSchema.exactOptional().openapi({
+      description:
+        'If set to <code>true</code>, allows members assigned to a workgroup to reference Amazon S3 Requester Pays buckets in queries. If set to <code>false</code>, workgroup members cannot query data from Requester Pays buckets, and queries that retrieve data from Requester Pays buckets cause an error. The default is <code>false</code>. For more information about Requester Pays buckets, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/RequesterPaysBuckets.html">Requester Pays Buckets</a> in the <i>Amazon Simple Storage Service Developer Guide</i>.',
+    }),
+    EngineVersion: EngineVersionSchema.exactOptional().openapi({
+      description:
+        'The engine version that all queries running on the workgroup use. Queries on the <code>AmazonAthenaPreviewFunctionality</code> workgroup run on the preview engine regardless of this setting.',
+    }),
+    AdditionalConfiguration: NameStringSchema.exactOptional().openapi({
+      description: 'Specifies a user defined JSON string that is passed to the notebook engine.',
+    }),
+    ExecutionRole: RoleArnSchema.exactOptional().openapi({
+      description: "Role used in a session for accessing the user's resources.",
+    }),
+    CustomerContentEncryptionConfiguration:
+      CustomerContentEncryptionConfigurationSchema.exactOptional().openapi({
+        description:
+          "Specifies the KMS key that is used to encrypt the user's data stores in Athena. This setting does not apply to Athena SQL workgroups.",
+      }),
+    EnableMinimumEncryptionConfiguration: BoxedBooleanSchema.exactOptional().openapi({
+      description:
+        '<p>Enforces a minimal level of encryption for the workgroup for query and calculation results that are written to Amazon S3. When enabled, workgroup users can set encryption only to the minimum level set by the administrator or higher when they submit queries.</p> <p>The <code>EnforceWorkGroupConfiguration</code> setting takes precedence over the <code>EnableMinimumEncryptionConfiguration</code> flag. This means that if <code>EnforceWorkGroupConfiguration</code> is true, the <code>EnableMinimumEncryptionConfiguration</code> flag is ignored, and the workgroup configuration for encryption is used.</p>',
+    }),
   })
   .openapi({
     description:
@@ -1291,106 +1005,92 @@ const WorkGroupDescriptionStringSchema = z
 
 const CreateWorkGroupInputSchema = z
   .object({
-    Name: WorkGroupNameSchema.and(z.any().openapi({ description: 'The workgroup name.' })),
-    Configuration: WorkGroupConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Contains configuration information for creating an Athena SQL workgroup or Spark enabled Athena workgroup. Athena SQL workgroup configuration includes the location in Amazon S3 where query and calculation results are stored, the encryption configuration, if any, used for encrypting query results, whether the Amazon CloudWatch Metrics are enabled for the workgroup, the limit for the amount of bytes scanned (cutoff) per query, if it is specified, and whether workgroup's settings (specified with <code>EnforceWorkGroupConfiguration</code>) in the <code>WorkGroupConfiguration</code> override client-side settings. See <a>WorkGroupConfiguration$EnforceWorkGroupConfiguration</a>.",
-        }),
-    ).exactOptional(),
-    Description: WorkGroupDescriptionStringSchema.and(
-      z.any().openapi({ description: 'The workgroup description.' }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of comma separated tags to add to the workgroup that is created.',
-        }),
-    ).exactOptional(),
+    Name: WorkGroupNameSchema.openapi({ description: 'The workgroup name.' }),
+    Configuration: WorkGroupConfigurationSchema.exactOptional().openapi({
+      description:
+        "Contains configuration information for creating an Athena SQL workgroup or Spark enabled Athena workgroup. Athena SQL workgroup configuration includes the location in Amazon S3 where query and calculation results are stored, the encryption configuration, if any, used for encrypting query results, whether the Amazon CloudWatch Metrics are enabled for the workgroup, the limit for the amount of bytes scanned (cutoff) per query, if it is specified, and whether workgroup's settings (specified with <code>EnforceWorkGroupConfiguration</code>) in the <code>WorkGroupConfiguration</code> override client-side settings. See <a>WorkGroupConfiguration$EnforceWorkGroupConfiguration</a>.",
+    }),
+    Description: WorkGroupDescriptionStringSchema.exactOptional().openapi({
+      description: 'The workgroup description.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'A list of comma separated tags to add to the workgroup that is created.',
+    }),
   })
   .openapi({ required: ['Name'], title: 'CreateWorkGroupInput' })
   .openapi('CreateWorkGroupInput')
 
 const DeleteCapacityReservationOutputSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DeleteCapacityReservationOutput')
 
 const DeleteCapacityReservationInputSchema = z
   .object({
-    Name: CapacityReservationNameSchema.and(
-      z.any().openapi({ description: 'The name of the capacity reservation to delete.' }),
-    ),
+    Name: CapacityReservationNameSchema.openapi({
+      description: 'The name of the capacity reservation to delete.',
+    }),
   })
   .openapi({ required: ['Name'], title: 'DeleteCapacityReservationInput' })
   .openapi('DeleteCapacityReservationInput')
 
-const DeleteDataCatalogOutputSchema = z.object({}).openapi('DeleteDataCatalogOutput')
+const DeleteDataCatalogOutputSchema = z.looseObject({}).openapi('DeleteDataCatalogOutput')
 
 const DeleteDataCatalogInputSchema = z
   .object({
-    Name: CatalogNameStringSchema.and(
-      z.any().openapi({ description: 'The name of the data catalog to delete.' }),
-    ),
+    Name: CatalogNameStringSchema.openapi({
+      description: 'The name of the data catalog to delete.',
+    }),
   })
   .openapi({ required: ['Name'], title: 'DeleteDataCatalogInput' })
   .openapi('DeleteDataCatalogInput')
 
-const DeleteNamedQueryOutputSchema = z.object({}).openapi('DeleteNamedQueryOutput')
+const DeleteNamedQueryOutputSchema = z.looseObject({}).openapi('DeleteNamedQueryOutput')
 
 const DeleteNamedQueryInputSchema = z
   .object({
-    NamedQueryId: NamedQueryIdSchema.and(
-      z.any().openapi({ description: 'The unique ID of the query to delete.' }),
-    ),
+    NamedQueryId: NamedQueryIdSchema.openapi({
+      description: 'The unique ID of the query to delete.',
+    }),
   })
   .openapi({ required: ['NamedQueryId'], title: 'DeleteNamedQueryInput' })
   .openapi('DeleteNamedQueryInput')
 
-const DeleteNotebookOutputSchema = z.object({}).openapi('DeleteNotebookOutput')
+const DeleteNotebookOutputSchema = z.looseObject({}).openapi('DeleteNotebookOutput')
 
 const DeleteNotebookInputSchema = z
   .object({
-    NotebookId: NotebookIdSchema.and(
-      z.any().openapi({ description: 'The ID of the notebook to delete.' }),
-    ),
+    NotebookId: NotebookIdSchema.openapi({ description: 'The ID of the notebook to delete.' }),
   })
   .openapi({ required: ['NotebookId'], title: 'DeleteNotebookInput' })
   .openapi('DeleteNotebookInput')
 
-const DeletePreparedStatementOutputSchema = z.object({}).openapi('DeletePreparedStatementOutput')
+const DeletePreparedStatementOutputSchema = z
+  .looseObject({})
+  .openapi('DeletePreparedStatementOutput')
 
 const DeletePreparedStatementInputSchema = z
   .object({
-    StatementName: StatementNameSchema.and(
-      z.any().openapi({ description: 'The name of the prepared statement to delete.' }),
-    ),
-    WorkGroup: WorkGroupNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The workgroup to which the statement to be deleted belongs.' }),
-    ),
+    StatementName: StatementNameSchema.openapi({
+      description: 'The name of the prepared statement to delete.',
+    }),
+    WorkGroup: WorkGroupNameSchema.openapi({
+      description: 'The workgroup to which the statement to be deleted belongs.',
+    }),
   })
   .openapi({ required: ['StatementName', 'WorkGroup'], title: 'DeletePreparedStatementInput' })
   .openapi('DeletePreparedStatementInput')
 
-const DeleteWorkGroupOutputSchema = z.object({}).openapi('DeleteWorkGroupOutput')
+const DeleteWorkGroupOutputSchema = z.looseObject({}).openapi('DeleteWorkGroupOutput')
 
 const DeleteWorkGroupInputSchema = z
   .object({
-    WorkGroup: WorkGroupNameSchema.and(
-      z.any().openapi({ description: 'The unique name of the workgroup to delete.' }),
-    ),
-    RecursiveDeleteOption: BoxedBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The option to delete the workgroup and its contents even if the workgroup contains any named queries, query executions, or notebooks.',
-        }),
-    ).exactOptional(),
+    WorkGroup: WorkGroupNameSchema.openapi({
+      description: 'The unique name of the workgroup to delete.',
+    }),
+    RecursiveDeleteOption: BoxedBooleanSchema.exactOptional().openapi({
+      description:
+        'The option to delete the workgroup and its contents even if the workgroup contains any named queries, query executions, or notebooks.',
+    }),
   })
   .openapi({ required: ['WorkGroup'], title: 'DeleteWorkGroupInput' })
   .openapi('DeleteWorkGroupInput')
@@ -1399,33 +1099,20 @@ const NotebookTypeSchema = z.literal('IPYNB').openapi('NotebookType')
 
 const NotebookMetadataSchema = z
   .object({
-    NotebookId: NotebookIdSchema.and(
-      z.any().openapi({ description: 'The notebook ID.' }),
-    ).exactOptional(),
-    Name: NotebookNameSchema.and(
-      z.any().openapi({ description: 'The name of the notebook.' }),
-    ).exactOptional(),
-    WorkGroup: WorkGroupNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the Spark enabled workgroup to which the notebook belongs.',
-        }),
-    ).exactOptional(),
-    CreationTime: DateSchema.and(
-      z.any().openapi({ description: 'The time when the notebook was created.' }),
-    ).exactOptional(),
-    Type: NotebookTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of notebook. Currently, the only valid type is <code>IPYNB</code>.',
-        }),
-    ).exactOptional(),
-    LastModifiedTime: DateSchema.and(
-      z.any().openapi({ description: 'The time when the notebook was last modified.' }),
-    ).exactOptional(),
+    NotebookId: NotebookIdSchema.exactOptional().openapi({ description: 'The notebook ID.' }),
+    Name: NotebookNameSchema.exactOptional().openapi({ description: 'The name of the notebook.' }),
+    WorkGroup: WorkGroupNameSchema.exactOptional().openapi({
+      description: 'The name of the Spark enabled workgroup to which the notebook belongs.',
+    }),
+    CreationTime: DateSchema.exactOptional().openapi({
+      description: 'The time when the notebook was created.',
+    }),
+    Type: NotebookTypeSchema.exactOptional().openapi({
+      description: 'The type of notebook. Currently, the only valid type is <code>IPYNB</code>.',
+    }),
+    LastModifiedTime: DateSchema.exactOptional().openapi({
+      description: 'The time when the notebook was last modified.',
+    }),
   })
   .openapi({
     description:
@@ -1438,26 +1125,20 @@ const PayloadSchema = z.string().min(1).max(10485760).openapi('Payload')
 
 const ExportNotebookOutputSchema = z
   .object({
-    NotebookMetadata: NotebookMetadataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The notebook metadata, including notebook ID, notebook name, and workgroup name.',
-        }),
-    ).exactOptional(),
-    Payload: PayloadSchema.and(
-      z.any().openapi({ description: 'The content of the exported notebook.' }),
-    ).exactOptional(),
+    NotebookMetadata: NotebookMetadataSchema.exactOptional().openapi({
+      description:
+        'The notebook metadata, including notebook ID, notebook name, and workgroup name.',
+    }),
+    Payload: PayloadSchema.exactOptional().openapi({
+      description: 'The content of the exported notebook.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ExportNotebookOutput')
 
 const ExportNotebookInputSchema = z
   .object({
-    NotebookId: NotebookIdSchema.and(
-      z.any().openapi({ description: 'The ID of the notebook to export.' }),
-    ),
+    NotebookId: NotebookIdSchema.openapi({ description: 'The ID of the notebook to export.' }),
   })
   .openapi({ required: ['NotebookId'], title: 'ExportNotebookInput' })
   .openapi('ExportNotebookInput')
@@ -1485,32 +1166,20 @@ const CalculationExecutionStateSchema = z
 
 const CalculationStatusSchema = z
   .object({
-    SubmissionDateTime: DateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The date and time the calculation was submitted for processing.',
-        }),
-    ).exactOptional(),
-    CompletionDateTime: DateSchema.and(
-      z.any().openapi({ description: 'The date and time the calculation completed processing.' }),
-    ).exactOptional(),
-    State: CalculationExecutionStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The state of the calculation execution. A description of each state follows.</p> <p> <code>CREATING</code> - The calculation is in the process of being created.</p> <p> <code>CREATED</code> - The calculation has been created and is ready to run.</p> <p> <code>QUEUED</code> - The calculation has been queued for processing.</p> <p> <code>RUNNING</code> - The calculation is running.</p> <p> <code>CANCELING</code> - A request to cancel the calculation has been received and the system is working to stop it.</p> <p> <code>CANCELED</code> - The calculation is no longer running as the result of a cancel request.</p> <p> <code>COMPLETED</code> - The calculation has completed without error.</p> <p> <code>FAILED</code> - The calculation failed and is no longer running.</p>',
-        }),
-    ).exactOptional(),
-    StateChangeReason: DescriptionStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The reason for the calculation state change (for example, the calculation was canceled because the session was terminated).',
-        }),
-    ).exactOptional(),
+    SubmissionDateTime: DateSchema.exactOptional().openapi({
+      description: 'The date and time the calculation was submitted for processing.',
+    }),
+    CompletionDateTime: DateSchema.exactOptional().openapi({
+      description: 'The date and time the calculation completed processing.',
+    }),
+    State: CalculationExecutionStateSchema.exactOptional().openapi({
+      description:
+        '<p>The state of the calculation execution. A description of each state follows.</p> <p> <code>CREATING</code> - The calculation is in the process of being created.</p> <p> <code>CREATED</code> - The calculation has been created and is ready to run.</p> <p> <code>QUEUED</code> - The calculation has been queued for processing.</p> <p> <code>RUNNING</code> - The calculation is running.</p> <p> <code>CANCELING</code> - A request to cancel the calculation has been received and the system is working to stop it.</p> <p> <code>CANCELED</code> - The calculation is no longer running as the result of a cancel request.</p> <p> <code>COMPLETED</code> - The calculation has completed without error.</p> <p> <code>FAILED</code> - The calculation failed and is no longer running.</p>',
+    }),
+    StateChangeReason: DescriptionStringSchema.exactOptional().openapi({
+      description:
+        'The reason for the calculation state change (for example, the calculation was canceled because the session was terminated).',
+    }),
   })
   .openapi({
     description: 'Contains information about the status of a notebook calculation.',
@@ -1520,17 +1189,12 @@ const CalculationStatusSchema = z
 
 const CalculationStatisticsSchema = z
   .object({
-    DpuExecutionInMillis: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The data processing unit execution time in milliseconds for the calculation.',
-        }),
-    ).exactOptional(),
-    Progress: DescriptionStringSchema.and(
-      z.any().openapi({ description: 'The progress of the calculation.' }),
-    ).exactOptional(),
+    DpuExecutionInMillis: LongSchema.exactOptional().openapi({
+      description: 'The data processing unit execution time in milliseconds for the calculation.',
+    }),
+    Progress: DescriptionStringSchema.exactOptional().openapi({
+      description: 'The progress of the calculation.',
+    }),
   })
   .openapi({ description: 'Contains statistics for a notebook calculation.', required: [] })
   .openapi('CalculationStatistics')
@@ -1544,32 +1208,19 @@ const CalculationResultTypeSchema = z
 
 const CalculationResultSchema = z
   .object({
-    StdOutS3Uri: S3UriSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon S3 location of the <code>stdout</code> file for the calculation.',
-        }),
-    ).exactOptional(),
-    StdErrorS3Uri: S3UriSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon S3 location of the <code>stderr</code> error messages file for the calculation.',
-        }),
-    ).exactOptional(),
-    ResultS3Uri: S3UriSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon S3 location of the folder for the calculation results.',
-        }),
-    ).exactOptional(),
-    ResultType: CalculationResultTypeSchema.and(
-      z.any().openapi({ description: 'The data format of the calculation result.' }),
-    ).exactOptional(),
+    StdOutS3Uri: S3UriSchema.exactOptional().openapi({
+      description: 'The Amazon S3 location of the <code>stdout</code> file for the calculation.',
+    }),
+    StdErrorS3Uri: S3UriSchema.exactOptional().openapi({
+      description:
+        'The Amazon S3 location of the <code>stderr</code> error messages file for the calculation.',
+    }),
+    ResultS3Uri: S3UriSchema.exactOptional().openapi({
+      description: 'The Amazon S3 location of the folder for the calculation results.',
+    }),
+    ResultType: CalculationResultTypeSchema.exactOptional().openapi({
+      description: 'The data format of the calculation result.',
+    }),
   })
   .openapi({
     description: 'Contains information about an application-specific calculation result.',
@@ -1579,50 +1230,38 @@ const CalculationResultSchema = z
 
 const GetCalculationExecutionResponseSchema = z
   .object({
-    CalculationExecutionId: CalculationExecutionIdSchema.and(
-      z.any().openapi({ description: 'The calculation execution UUID.' }),
-    ).exactOptional(),
-    SessionId: SessionIdSchema.and(
-      z.any().openapi({ description: 'The session ID that the calculation ran in.' }),
-    ).exactOptional(),
-    Description: DescriptionStringSchema.and(
-      z.any().openapi({ description: 'The description of the calculation execution.' }),
-    ).exactOptional(),
-    WorkingDirectory: S3UriSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon S3 location in which calculation results are stored.',
-        }),
-    ).exactOptional(),
-    Status: CalculationStatusSchema.and(
-      z.any().openapi({ description: 'Contains information about the status of the calculation.' }),
-    ).exactOptional(),
-    Statistics: CalculationStatisticsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains information about the data processing unit (DPU) execution time and progress. This field is populated only when statistics are available.',
-        }),
-    ).exactOptional(),
-    Result: CalculationResultSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains result information. This field is populated only if the calculation is completed.',
-        }),
-    ).exactOptional(),
+    CalculationExecutionId: CalculationExecutionIdSchema.exactOptional().openapi({
+      description: 'The calculation execution UUID.',
+    }),
+    SessionId: SessionIdSchema.exactOptional().openapi({
+      description: 'The session ID that the calculation ran in.',
+    }),
+    Description: DescriptionStringSchema.exactOptional().openapi({
+      description: 'The description of the calculation execution.',
+    }),
+    WorkingDirectory: S3UriSchema.exactOptional().openapi({
+      description: 'The Amazon S3 location in which calculation results are stored.',
+    }),
+    Status: CalculationStatusSchema.exactOptional().openapi({
+      description: 'Contains information about the status of the calculation.',
+    }),
+    Statistics: CalculationStatisticsSchema.exactOptional().openapi({
+      description:
+        'Contains information about the data processing unit (DPU) execution time and progress. This field is populated only when statistics are available.',
+    }),
+    Result: CalculationResultSchema.exactOptional().openapi({
+      description:
+        'Contains result information. This field is populated only if the calculation is completed.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetCalculationExecutionResponse')
 
 const GetCalculationExecutionRequestSchema = z
   .object({
-    CalculationExecutionId: CalculationExecutionIdSchema.and(
-      z.any().openapi({ description: 'The calculation execution UUID.' }),
-    ),
+    CalculationExecutionId: CalculationExecutionIdSchema.openapi({
+      description: 'The calculation execution UUID.',
+    }),
   })
   .openapi({ required: ['CalculationExecutionId'], title: 'GetCalculationExecutionRequest' })
   .openapi('GetCalculationExecutionRequest')
@@ -1631,47 +1270,39 @@ const CodeBlockSchema = z.string().max(68000).openapi('CodeBlock')
 
 const GetCalculationExecutionCodeResponseSchema = z
   .object({
-    CodeBlock: CodeBlockSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The unencrypted code that was executed for the calculation.' }),
-    ).exactOptional(),
+    CodeBlock: CodeBlockSchema.exactOptional().openapi({
+      description: 'The unencrypted code that was executed for the calculation.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetCalculationExecutionCodeResponse')
 
 const GetCalculationExecutionCodeRequestSchema = z
   .object({
-    CalculationExecutionId: CalculationExecutionIdSchema.and(
-      z.any().openapi({ description: 'The calculation execution UUID.' }),
-    ),
+    CalculationExecutionId: CalculationExecutionIdSchema.openapi({
+      description: 'The calculation execution UUID.',
+    }),
   })
   .openapi({ required: ['CalculationExecutionId'], title: 'GetCalculationExecutionCodeRequest' })
   .openapi('GetCalculationExecutionCodeRequest')
 
 const GetCalculationExecutionStatusResponseSchema = z
   .object({
-    Status: CalculationStatusSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Contains information about the calculation execution status.' }),
-    ).exactOptional(),
-    Statistics: CalculationStatisticsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Contains information about the DPU execution time and progress.',
-        }),
-    ).exactOptional(),
+    Status: CalculationStatusSchema.exactOptional().openapi({
+      description: 'Contains information about the calculation execution status.',
+    }),
+    Statistics: CalculationStatisticsSchema.exactOptional().openapi({
+      description: 'Contains information about the DPU execution time and progress.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetCalculationExecutionStatusResponse')
 
 const GetCalculationExecutionStatusRequestSchema = z
   .object({
-    CalculationExecutionId: CalculationExecutionIdSchema.and(
-      z.any().openapi({ description: 'The calculation execution UUID.' }),
-    ),
+    CalculationExecutionId: CalculationExecutionIdSchema.openapi({
+      description: 'The calculation execution UUID.',
+    }),
   })
   .openapi({ required: ['CalculationExecutionId'], title: 'GetCalculationExecutionStatusRequest' })
   .openapi('GetCalculationExecutionStatusRequest')
@@ -1680,9 +1311,9 @@ const WorkGroupNamesListSchema = z.array(WorkGroupNameSchema).openapi('WorkGroup
 
 const CapacityAssignmentSchema = z
   .object({
-    WorkGroupNames: WorkGroupNamesListSchema.and(
-      z.any().openapi({ description: 'The list of workgroup names for the capacity assignment.' }),
-    ).exactOptional(),
+    WorkGroupNames: WorkGroupNamesListSchema.exactOptional().openapi({
+      description: 'The list of workgroup names for the capacity assignment.',
+    }),
   })
   .openapi({
     description: 'A mapping between one or more workgroups and a capacity reservation.',
@@ -1696,22 +1327,12 @@ const CapacityAssignmentsListSchema = z
 
 const CapacityAssignmentConfigurationSchema = z
   .object({
-    CapacityReservationName: CapacityReservationNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the reservation that the capacity assignment configuration is for.',
-        }),
-    ).exactOptional(),
-    CapacityAssignments: CapacityAssignmentsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of assignments that make up the capacity assignment configuration.',
-        }),
-    ).exactOptional(),
+    CapacityReservationName: CapacityReservationNameSchema.exactOptional().openapi({
+      description: 'The name of the reservation that the capacity assignment configuration is for.',
+    }),
+    CapacityAssignments: CapacityAssignmentsListSchema.exactOptional().openapi({
+      description: 'The list of assignments that make up the capacity assignment configuration.',
+    }),
   })
   .openapi({
     description:
@@ -1722,28 +1343,20 @@ const CapacityAssignmentConfigurationSchema = z
 
 const GetCapacityAssignmentConfigurationOutputSchema = z
   .object({
-    CapacityAssignmentConfiguration: CapacityAssignmentConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The requested capacity assignment configuration for the specified capacity reservation.',
-        }),
-    ),
+    CapacityAssignmentConfiguration: CapacityAssignmentConfigurationSchema.openapi({
+      description:
+        'The requested capacity assignment configuration for the specified capacity reservation.',
+    }),
   })
   .openapi({ required: ['CapacityAssignmentConfiguration'] })
   .openapi('GetCapacityAssignmentConfigurationOutput')
 
 const GetCapacityAssignmentConfigurationInputSchema = z
   .object({
-    CapacityReservationName: CapacityReservationNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the capacity reservation to retrieve the capacity assignment configuration for.',
-        }),
-    ),
+    CapacityReservationName: CapacityReservationNameSchema.openapi({
+      description:
+        'The name of the capacity reservation to retrieve the capacity assignment configuration for.',
+    }),
   })
   .openapi({
     required: ['CapacityReservationName'],
@@ -1765,20 +1378,18 @@ const TimestampSchema = z.iso.datetime({ offset: true }).openapi('Timestamp')
 
 const CapacityAllocationSchema = z
   .object({
-    Status: CapacityAllocationStatusSchema.and(
-      z.any().openapi({ description: 'The status of the capacity allocation.' }),
-    ),
-    StatusMessage: StringSchema.and(
-      z.any().openapi({ description: 'The status message of the capacity allocation.' }),
-    ).exactOptional(),
-    RequestTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The time when the capacity allocation was requested.' }),
-    ),
-    RequestCompletionTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The time when the capacity allocation request was completed.' }),
-    ).exactOptional(),
+    Status: CapacityAllocationStatusSchema.openapi({
+      description: 'The status of the capacity allocation.',
+    }),
+    StatusMessage: StringSchema.exactOptional().openapi({
+      description: 'The status message of the capacity allocation.',
+    }),
+    RequestTime: TimestampSchema.openapi({
+      description: 'The time when the capacity allocation was requested.',
+    }),
+    RequestCompletionTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time when the capacity allocation request was completed.',
+    }),
   })
   .openapi({
     required: ['Status', 'RequestTime'],
@@ -1789,33 +1400,25 @@ const CapacityAllocationSchema = z
 
 const CapacityReservationSchema = z
   .object({
-    Name: CapacityReservationNameSchema.and(
-      z.any().openapi({ description: 'The name of the capacity reservation.' }),
-    ),
-    Status: CapacityReservationStatusSchema.and(
-      z.any().openapi({ description: 'The status of the capacity reservation.' }),
-    ),
-    TargetDpus: TargetDpusIntegerSchema.and(
-      z.any().openapi({ description: 'The number of data processing units requested.' }),
-    ),
-    AllocatedDpus: AllocatedDpusIntegerSchema.and(
-      z.any().openapi({ description: 'The number of data processing units currently allocated.' }),
-    ),
+    Name: CapacityReservationNameSchema.openapi({
+      description: 'The name of the capacity reservation.',
+    }),
+    Status: CapacityReservationStatusSchema.openapi({
+      description: 'The status of the capacity reservation.',
+    }),
+    TargetDpus: TargetDpusIntegerSchema.openapi({
+      description: 'The number of data processing units requested.',
+    }),
+    AllocatedDpus: AllocatedDpusIntegerSchema.openapi({
+      description: 'The number of data processing units currently allocated.',
+    }),
     LastAllocation: CapacityAllocationSchema.exactOptional(),
-    LastSuccessfulAllocationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time of the most recent capacity allocation that succeeded.',
-        }),
-    ).exactOptional(),
-    CreationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time in UTC epoch millis when the capacity reservation was created.',
-        }),
-    ),
+    LastSuccessfulAllocationTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time of the most recent capacity allocation that succeeded.',
+    }),
+    CreationTime: TimestampSchema.openapi({
+      description: 'The time in UTC epoch millis when the capacity reservation was created.',
+    }),
   })
   .openapi({
     required: ['Name', 'Status', 'TargetDpus', 'AllocatedDpus', 'CreationTime'],
@@ -1826,51 +1429,39 @@ const CapacityReservationSchema = z
 
 const GetCapacityReservationOutputSchema = z
   .object({
-    CapacityReservation: CapacityReservationSchema.and(
-      z.any().openapi({ description: 'The requested capacity reservation structure.' }),
-    ),
+    CapacityReservation: CapacityReservationSchema.openapi({
+      description: 'The requested capacity reservation structure.',
+    }),
   })
   .openapi({ required: ['CapacityReservation'] })
   .openapi('GetCapacityReservationOutput')
 
 const GetCapacityReservationInputSchema = z
   .object({
-    Name: CapacityReservationNameSchema.and(
-      z.any().openapi({ description: 'The name of the capacity reservation.' }),
-    ),
+    Name: CapacityReservationNameSchema.openapi({
+      description: 'The name of the capacity reservation.',
+    }),
   })
   .openapi({ required: ['Name'], title: 'GetCapacityReservationInput' })
   .openapi('GetCapacityReservationInput')
 
 const DataCatalogSchema = z
   .object({
-    Name: CatalogNameStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the data catalog. The catalog name must be unique for the Amazon Web Services account and can use a maximum of 127 alphanumeric, underscore, at sign, or hyphen characters. The remainder of the length constraint of 256 is reserved for use by Athena.',
-        }),
-    ),
-    Description: DescriptionStringSchema.and(
-      z.any().openapi({ description: 'An optional description of the data catalog.' }),
-    ).exactOptional(),
-    Type: DataCatalogTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of data catalog to create: <code>LAMBDA</code> for a federated catalog, <code>HIVE</code> for an external hive metastore, or <code>GLUE</code> for an Glue Data Catalog.',
-        }),
-    ),
-    Parameters: ParametersMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies the Lambda function or functions to use for the data catalog. This is a mapping whose values depend on the catalog type. </p> <ul> <li> <p>For the <code>HIVE</code> data catalog type, use the following syntax. The <code>metadata-function</code> parameter is required. <code>The sdk-version</code> parameter is optional and defaults to the currently supported version.</p> <p> <code>metadata-function=<i>lambda_arn</i>, sdk-version=<i>version_number</i> </code> </p> </li> <li> <p>For the <code>LAMBDA</code> data catalog type, use one of the following sets of required parameters, but not both.</p> <ul> <li> <p>If you have one Lambda function that processes metadata and another for reading the actual data, use the following syntax. Both parameters are required.</p> <p> <code>metadata-function=<i>lambda_arn</i>, record-function=<i>lambda_arn</i> </code> </p> </li> <li> <p> If you have a composite Lambda function that processes both metadata and data, use the following syntax to specify your Lambda function.</p> <p> <code>function=<i>lambda_arn</i> </code> </p> </li> </ul> </li> <li> <p>The <code>GLUE</code> type takes a catalog ID parameter and is required. The <code> <i>catalog_id</i> </code> is the account ID of the Amazon Web Services account to which the Glue catalog belongs.</p> <p> <code>catalog-id=<i>catalog_id</i> </code> </p> <ul> <li> <p>The <code>GLUE</code> data catalog type also applies to the default <code>AwsDataCatalog</code> that already exists in your account, of which you can have only one and cannot modify.</p> </li> <li> <p>Queries that specify a Glue Data Catalog other than the default <code>AwsDataCatalog</code> must be run on Athena engine version 2.</p> </li> </ul> </li> </ul>',
-        }),
-    ).exactOptional(),
+    Name: CatalogNameStringSchema.openapi({
+      description:
+        'The name of the data catalog. The catalog name must be unique for the Amazon Web Services account and can use a maximum of 127 alphanumeric, underscore, at sign, or hyphen characters. The remainder of the length constraint of 256 is reserved for use by Athena.',
+    }),
+    Description: DescriptionStringSchema.exactOptional().openapi({
+      description: 'An optional description of the data catalog.',
+    }),
+    Type: DataCatalogTypeSchema.openapi({
+      description:
+        'The type of data catalog to create: <code>LAMBDA</code> for a federated catalog, <code>HIVE</code> for an external hive metastore, or <code>GLUE</code> for an Glue Data Catalog.',
+    }),
+    Parameters: ParametersMapSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies the Lambda function or functions to use for the data catalog. This is a mapping whose values depend on the catalog type. </p> <ul> <li> <p>For the <code>HIVE</code> data catalog type, use the following syntax. The <code>metadata-function</code> parameter is required. <code>The sdk-version</code> parameter is optional and defaults to the currently supported version.</p> <p> <code>metadata-function=<i>lambda_arn</i>, sdk-version=<i>version_number</i> </code> </p> </li> <li> <p>For the <code>LAMBDA</code> data catalog type, use one of the following sets of required parameters, but not both.</p> <ul> <li> <p>If you have one Lambda function that processes metadata and another for reading the actual data, use the following syntax. Both parameters are required.</p> <p> <code>metadata-function=<i>lambda_arn</i>, record-function=<i>lambda_arn</i> </code> </p> </li> <li> <p> If you have a composite Lambda function that processes both metadata and data, use the following syntax to specify your Lambda function.</p> <p> <code>function=<i>lambda_arn</i> </code> </p> </li> </ul> </li> <li> <p>The <code>GLUE</code> type takes a catalog ID parameter and is required. The <code> <i>catalog_id</i> </code> is the account ID of the Amazon Web Services account to which the Glue catalog belongs.</p> <p> <code>catalog-id=<i>catalog_id</i> </code> </p> <ul> <li> <p>The <code>GLUE</code> data catalog type also applies to the default <code>AwsDataCatalog</code> that already exists in your account, of which you can have only one and cannot modify.</p> </li> <li> <p>Queries that specify a Glue Data Catalog other than the default <code>AwsDataCatalog</code> must be run on Athena engine version 2.</p> </li> </ul> </li> </ul>',
+    }),
   })
   .openapi({
     required: ['Name', 'Type'],
@@ -1881,31 +1472,31 @@ const DataCatalogSchema = z
 
 const GetDataCatalogOutputSchema = z
   .object({
-    DataCatalog: DataCatalogSchema.and(
-      z.any().openapi({ description: 'The data catalog returned.' }),
-    ).exactOptional(),
+    DataCatalog: DataCatalogSchema.exactOptional().openapi({
+      description: 'The data catalog returned.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetDataCatalogOutput')
 
 const GetDataCatalogInputSchema = z
   .object({
-    Name: CatalogNameStringSchema.and(
-      z.any().openapi({ description: 'The name of the data catalog to return.' }),
-    ),
+    Name: CatalogNameStringSchema.openapi({
+      description: 'The name of the data catalog to return.',
+    }),
   })
   .openapi({ required: ['Name'], title: 'GetDataCatalogInput' })
   .openapi('GetDataCatalogInput')
 
 const DatabaseSchema = z
   .object({
-    Name: NameStringSchema.and(z.any().openapi({ description: 'The name of the database.' })),
-    Description: DescriptionStringSchema.and(
-      z.any().openapi({ description: 'An optional description of the database.' }),
-    ).exactOptional(),
-    Parameters: ParametersMapSchema.and(
-      z.any().openapi({ description: 'A set of custom key/value pairs.' }),
-    ).exactOptional(),
+    Name: NameStringSchema.openapi({ description: 'The name of the database.' }),
+    Description: DescriptionStringSchema.exactOptional().openapi({
+      description: 'An optional description of the database.',
+    }),
+    Parameters: ParametersMapSchema.exactOptional().openapi({
+      description: 'A set of custom key/value pairs.',
+    }),
   })
   .openapi({
     required: ['Name'],
@@ -1915,25 +1506,17 @@ const DatabaseSchema = z
 
 const GetDatabaseOutputSchema = z
   .object({
-    Database: DatabaseSchema.and(
-      z.any().openapi({ description: 'The database returned.' }),
-    ).exactOptional(),
+    Database: DatabaseSchema.exactOptional().openapi({ description: 'The database returned.' }),
   })
   .openapi({ required: [] })
   .openapi('GetDatabaseOutput')
 
 const GetDatabaseInputSchema = z
   .object({
-    CatalogName: CatalogNameStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the data catalog that contains the database to return.',
-        }),
-    ),
-    DatabaseName: NameStringSchema.and(
-      z.any().openapi({ description: 'The name of the database to return.' }),
-    ),
+    CatalogName: CatalogNameStringSchema.openapi({
+      description: 'The name of the data catalog that contains the database to return.',
+    }),
+    DatabaseName: NameStringSchema.openapi({ description: 'The name of the database to return.' }),
   })
   .openapi({ required: ['CatalogName', 'DatabaseName'], title: 'GetDatabaseInput' })
   .openapi('GetDatabaseInput')
@@ -1942,83 +1525,75 @@ const MetadataExceptionSchema = z.any().openapi('MetadataException')
 
 const GetNamedQueryOutputSchema = z
   .object({
-    NamedQuery: NamedQuerySchema.and(
-      z.any().openapi({ description: 'Information about the query.' }),
-    ).exactOptional(),
+    NamedQuery: NamedQuerySchema.exactOptional().openapi({
+      description: 'Information about the query.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetNamedQueryOutput')
 
 const GetNamedQueryInputSchema = z
   .object({
-    NamedQueryId: NamedQueryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The unique ID of the query. Use <a>ListNamedQueries</a> to get query IDs.',
-        }),
-    ),
+    NamedQueryId: NamedQueryIdSchema.openapi({
+      description: 'The unique ID of the query. Use <a>ListNamedQueries</a> to get query IDs.',
+    }),
   })
   .openapi({ required: ['NamedQueryId'], title: 'GetNamedQueryInput' })
   .openapi('GetNamedQueryInput')
 
 const GetNotebookMetadataOutputSchema = z
   .object({
-    NotebookMetadata: NotebookMetadataSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The metadata that is returned for the specified notebook ID.' }),
-    ).exactOptional(),
+    NotebookMetadata: NotebookMetadataSchema.exactOptional().openapi({
+      description: 'The metadata that is returned for the specified notebook ID.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetNotebookMetadataOutput')
 
 const GetNotebookMetadataInputSchema = z
   .object({
-    NotebookId: NotebookIdSchema.and(
-      z.any().openapi({ description: 'The ID of the notebook whose metadata is to be retrieved.' }),
-    ),
+    NotebookId: NotebookIdSchema.openapi({
+      description: 'The ID of the notebook whose metadata is to be retrieved.',
+    }),
   })
   .openapi({ required: ['NotebookId'], title: 'GetNotebookMetadataInput' })
   .openapi('GetNotebookMetadataInput')
 
 const GetPreparedStatementOutputSchema = z
   .object({
-    PreparedStatement: PreparedStatementSchema.and(
-      z.any().openapi({ description: 'The name of the prepared statement that was retrieved.' }),
-    ).exactOptional(),
+    PreparedStatement: PreparedStatementSchema.exactOptional().openapi({
+      description: 'The name of the prepared statement that was retrieved.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetPreparedStatementOutput')
 
 const GetPreparedStatementInputSchema = z
   .object({
-    StatementName: StatementNameSchema.and(
-      z.any().openapi({ description: 'The name of the prepared statement to retrieve.' }),
-    ),
-    WorkGroup: WorkGroupNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The workgroup to which the statement to be retrieved belongs.' }),
-    ),
+    StatementName: StatementNameSchema.openapi({
+      description: 'The name of the prepared statement to retrieve.',
+    }),
+    WorkGroup: WorkGroupNameSchema.openapi({
+      description: 'The workgroup to which the statement to be retrieved belongs.',
+    }),
   })
   .openapi({ required: ['StatementName', 'WorkGroup'], title: 'GetPreparedStatementInput' })
   .openapi('GetPreparedStatementInput')
 
 const GetQueryExecutionOutputSchema = z
   .object({
-    QueryExecution: QueryExecutionSchema.and(
-      z.any().openapi({ description: 'Information about the query execution.' }),
-    ).exactOptional(),
+    QueryExecution: QueryExecutionSchema.exactOptional().openapi({
+      description: 'Information about the query execution.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetQueryExecutionOutput')
 
 const GetQueryExecutionInputSchema = z
   .object({
-    QueryExecutionId: QueryExecutionIdSchema.and(
-      z.any().openapi({ description: 'The unique ID of the query execution.' }),
-    ),
+    QueryExecutionId: QueryExecutionIdSchema.openapi({
+      description: 'The unique ID of the query execution.',
+    }),
   })
   .openapi({ required: ['QueryExecutionId'], title: 'GetQueryExecutionInput' })
   .openapi('GetQueryExecutionInput')
@@ -2027,9 +1602,9 @@ const DatumStringSchema = z.string().openapi('DatumString')
 
 const DatumSchema = z
   .object({
-    VarCharValue: DatumStringSchema.and(
-      z.any().openapi({ description: 'The value of the datum.' }),
-    ).exactOptional(),
+    VarCharValue: DatumStringSchema.exactOptional().openapi({
+      description: 'The value of the datum.',
+    }),
   })
   .openapi({ description: 'A piece of data (a field in the table).', required: [] })
   .openapi('Datum')
@@ -2038,9 +1613,9 @@ const DatumListSchema = z.array(DatumSchema).openapi('DatumList')
 
 const RowSchema = z
   .object({
-    Data: DatumListSchema.and(
-      z.any().openapi({ description: 'The data that populates a row in a query result table.' }),
-    ).exactOptional(),
+    Data: DatumListSchema.exactOptional().openapi({
+      description: 'The data that populates a row in a query result table.',
+    }),
   })
   .openapi({ description: 'The rows that make up a query result table.', required: [] })
   .openapi('Row')
@@ -2053,46 +1628,32 @@ const ColumnNullableSchema = z.enum(['NOT_NULL', 'NULLABLE', 'UNKNOWN']).openapi
 
 const ColumnInfoSchema = z
   .object({
-    CatalogName: StringSchema.and(
-      z.any().openapi({ description: 'The catalog to which the query results belong.' }),
-    ).exactOptional(),
-    SchemaName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The schema name (database name) to which the query results belong.',
-        }),
-    ).exactOptional(),
-    TableName: StringSchema.and(
-      z.any().openapi({ description: 'The table name for the query results.' }),
-    ).exactOptional(),
-    Name: StringSchema.and(z.any().openapi({ description: 'The name of the column.' })),
-    Label: StringSchema.and(z.any().openapi({ description: 'A column label.' })).exactOptional(),
-    Type: StringSchema.and(z.any().openapi({ description: 'The data type of the column.' })),
-    Precision: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'For <code>DECIMAL</code> data types, specifies the total number of digits, up to 38. For performance reasons, we recommend up to 18 digits.',
-        }),
-    ).exactOptional(),
-    Scale: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'For <code>DECIMAL</code> data types, specifies the total number of digits in the fractional part of the value. Defaults to 0.',
-        }),
-    ).exactOptional(),
-    Nullable: ColumnNullableSchema.and(
-      z.any().openapi({ description: "Indicates the column's nullable status." }),
-    ).exactOptional(),
-    CaseSensitive: BooleanSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Indicates whether values in the column are case-sensitive.' }),
-    ).exactOptional(),
+    CatalogName: StringSchema.exactOptional().openapi({
+      description: 'The catalog to which the query results belong.',
+    }),
+    SchemaName: StringSchema.exactOptional().openapi({
+      description: 'The schema name (database name) to which the query results belong.',
+    }),
+    TableName: StringSchema.exactOptional().openapi({
+      description: 'The table name for the query results.',
+    }),
+    Name: StringSchema.openapi({ description: 'The name of the column.' }),
+    Label: StringSchema.exactOptional().openapi({ description: 'A column label.' }),
+    Type: StringSchema.openapi({ description: 'The data type of the column.' }),
+    Precision: IntegerSchema.exactOptional().openapi({
+      description:
+        'For <code>DECIMAL</code> data types, specifies the total number of digits, up to 38. For performance reasons, we recommend up to 18 digits.',
+    }),
+    Scale: IntegerSchema.exactOptional().openapi({
+      description:
+        'For <code>DECIMAL</code> data types, specifies the total number of digits in the fractional part of the value. Defaults to 0.',
+    }),
+    Nullable: ColumnNullableSchema.exactOptional().openapi({
+      description: "Indicates the column's nullable status.",
+    }),
+    CaseSensitive: BooleanSchema.exactOptional().openapi({
+      description: 'Indicates whether values in the column are case-sensitive.',
+    }),
   })
   .openapi({
     required: ['Name', 'Type'],
@@ -2104,13 +1665,9 @@ const ColumnInfoListSchema = z.array(ColumnInfoSchema).openapi('ColumnInfoList')
 
 const ResultSetMetadataSchema = z
   .object({
-    ColumnInfo: ColumnInfoListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Information about the columns returned in a query result metadata.',
-        }),
-    ).exactOptional(),
+    ColumnInfo: ColumnInfoListSchema.exactOptional().openapi({
+      description: 'Information about the columns returned in a query result metadata.',
+    }),
   })
   .openapi({
     description:
@@ -2121,17 +1678,11 @@ const ResultSetMetadataSchema = z
 
 const ResultSetSchema = z
   .object({
-    Rows: RowListSchema.and(
-      z.any().openapi({ description: 'The rows in the table.' }),
-    ).exactOptional(),
-    ResultSetMetadata: ResultSetMetadataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The metadata that describes the column structure and data types of a table of query results.',
-        }),
-    ).exactOptional(),
+    Rows: RowListSchema.exactOptional().openapi({ description: 'The rows in the table.' }),
+    ResultSetMetadata: ResultSetMetadataSchema.exactOptional().openapi({
+      description:
+        'The metadata that describes the column structure and data types of a table of query results.',
+    }),
   })
   .openapi({
     description:
@@ -2144,25 +1695,17 @@ const TokenSchema = z.string().min(1).max(1024).openapi('Token')
 
 const GetQueryResultsOutputSchema = z
   .object({
-    UpdateCount: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of rows inserted with a <code>CREATE TABLE AS SELECT</code> statement. ',
-        }),
-    ).exactOptional(),
-    ResultSet: ResultSetSchema.and(
-      z.any().openapi({ description: 'The results of the query execution.' }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token generated by the Athena service that specifies where to continue pagination if a previous request was truncated. To obtain the next set of pages, pass in the <code>NextToken</code> from the response object of the previous page call.',
-        }),
-    ).exactOptional(),
+    UpdateCount: LongSchema.exactOptional().openapi({
+      description:
+        'The number of rows inserted with a <code>CREATE TABLE AS SELECT</code> statement. ',
+    }),
+    ResultSet: ResultSetSchema.exactOptional().openapi({
+      description: 'The results of the query execution.',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'A token generated by the Athena service that specifies where to continue pagination if a previous request was truncated. To obtain the next set of pages, pass in the <code>NextToken</code> from the response object of the previous page call.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetQueryResultsOutput')
@@ -2171,64 +1714,40 @@ const MaxQueryResultsSchema = z.int().min(1).max(1000).openapi('MaxQueryResults'
 
 const GetQueryResultsInputSchema = z
   .object({
-    QueryExecutionId: QueryExecutionIdSchema.and(
-      z.any().openapi({ description: 'The unique ID of the query execution.' }),
-    ),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token generated by the Athena service that specifies where to continue pagination if a previous request was truncated. To obtain the next set of pages, pass in the <code>NextToken</code> from the response object of the previous page call.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxQueryResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The maximum number of results (rows) to return in this request.',
-        }),
-    ).exactOptional(),
+    QueryExecutionId: QueryExecutionIdSchema.openapi({
+      description: 'The unique ID of the query execution.',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'A token generated by the Athena service that specifies where to continue pagination if a previous request was truncated. To obtain the next set of pages, pass in the <code>NextToken</code> from the response object of the previous page call.',
+    }),
+    MaxResults: MaxQueryResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of results (rows) to return in this request.',
+    }),
   })
   .openapi({ required: ['QueryExecutionId'], title: 'GetQueryResultsInput' })
   .openapi('GetQueryResultsInput')
 
 const QueryRuntimeStatisticsTimelineSchema = z
   .object({
-    QueryQueueTimeInMillis: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of milliseconds that the query was in your query queue waiting for resources. Note that if transient errors occur, Athena might automatically add the query back to the queue.',
-        }),
-    ).exactOptional(),
-    QueryPlanningTimeInMillis: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of milliseconds that Athena took to plan the query processing flow. This includes the time spent retrieving table partitions from the data source. Note that because the query engine performs the query planning, query planning time is a subset of engine processing time.',
-        }),
-    ).exactOptional(),
-    EngineExecutionTimeInMillis: LongSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The number of milliseconds that the query took to execute.' }),
-    ).exactOptional(),
-    ServiceProcessingTimeInMillis: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of milliseconds that Athena took to finalize and publish the query results after the query engine finished running the query.',
-        }),
-    ).exactOptional(),
-    TotalExecutionTimeInMillis: LongSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The number of milliseconds that Athena took to run the query.' }),
-    ).exactOptional(),
+    QueryQueueTimeInMillis: LongSchema.exactOptional().openapi({
+      description:
+        'The number of milliseconds that the query was in your query queue waiting for resources. Note that if transient errors occur, Athena might automatically add the query back to the queue.',
+    }),
+    QueryPlanningTimeInMillis: LongSchema.exactOptional().openapi({
+      description:
+        'The number of milliseconds that Athena took to plan the query processing flow. This includes the time spent retrieving table partitions from the data source. Note that because the query engine performs the query planning, query planning time is a subset of engine processing time.',
+    }),
+    EngineExecutionTimeInMillis: LongSchema.exactOptional().openapi({
+      description: 'The number of milliseconds that the query took to execute.',
+    }),
+    ServiceProcessingTimeInMillis: LongSchema.exactOptional().openapi({
+      description:
+        'The number of milliseconds that Athena took to finalize and publish the query results after the query engine finished running the query.',
+    }),
+    TotalExecutionTimeInMillis: LongSchema.exactOptional().openapi({
+      description: 'The number of milliseconds that Athena took to run the query.',
+    }),
   })
   .openapi({
     description:
@@ -2239,18 +1758,18 @@ const QueryRuntimeStatisticsTimelineSchema = z
 
 const QueryRuntimeStatisticsRowsSchema = z
   .object({
-    InputRows: LongSchema.and(
-      z.any().openapi({ description: 'The number of rows read to execute the query.' }),
-    ).exactOptional(),
-    InputBytes: LongSchema.and(
-      z.any().openapi({ description: 'The number of bytes read to execute the query.' }),
-    ).exactOptional(),
-    OutputBytes: LongSchema.and(
-      z.any().openapi({ description: 'The number of bytes returned by the query.' }),
-    ).exactOptional(),
-    OutputRows: LongSchema.and(
-      z.any().openapi({ description: 'The number of rows returned by the query.' }),
-    ).exactOptional(),
+    InputRows: LongSchema.exactOptional().openapi({
+      description: 'The number of rows read to execute the query.',
+    }),
+    InputBytes: LongSchema.exactOptional().openapi({
+      description: 'The number of bytes read to execute the query.',
+    }),
+    OutputBytes: LongSchema.exactOptional().openapi({
+      description: 'The number of bytes returned by the query.',
+    }),
+    OutputRows: LongSchema.exactOptional().openapi({
+      description: 'The number of rows returned by the query.',
+    }),
   })
   .openapi({
     description:
@@ -2263,14 +1782,10 @@ const QueryRuntimeStatisticsSchema = z
   .object({
     Timeline: QueryRuntimeStatisticsTimelineSchema.exactOptional(),
     Rows: QueryRuntimeStatisticsRowsSchema.exactOptional(),
-    OutputStage: QueryStageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Stage statistics such as input and output rows and bytes, execution time, and stage state. This information also includes substages and the query stage plan.',
-        }),
-    ).exactOptional(),
+    OutputStage: QueryStageSchema.exactOptional().openapi({
+      description:
+        'Stage statistics such as input and output rows and bytes, execution time, and stage state. This information also includes substages and the query stage plan.',
+    }),
   })
   .openapi({
     description:
@@ -2281,18 +1796,18 @@ const QueryRuntimeStatisticsSchema = z
 
 const GetQueryRuntimeStatisticsOutputSchema = z
   .object({
-    QueryRuntimeStatistics: QueryRuntimeStatisticsSchema.and(
-      z.any().openapi({ description: 'Runtime statistics about the query execution.' }),
-    ).exactOptional(),
+    QueryRuntimeStatistics: QueryRuntimeStatisticsSchema.exactOptional().openapi({
+      description: 'Runtime statistics about the query execution.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetQueryRuntimeStatisticsOutput')
 
 const GetQueryRuntimeStatisticsInputSchema = z
   .object({
-    QueryExecutionId: QueryExecutionIdSchema.and(
-      z.any().openapi({ description: 'The unique ID of the query execution.' }),
-    ),
+    QueryExecutionId: QueryExecutionIdSchema.openapi({
+      description: 'The unique ID of the query execution.',
+    }),
   })
   .openapi({ required: ['QueryExecutionId'], title: 'GetQueryRuntimeStatisticsInput' })
   .openapi('GetQueryRuntimeStatisticsInput')
@@ -2305,41 +1820,25 @@ const DefaultExecutorDpuSizeSchema = z.int().min(1).max(1).openapi('DefaultExecu
 
 const EngineConfigurationSchema = z
   .object({
-    CoordinatorDpuSize: CoordinatorDpuSizeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of DPUs to use for the coordinator. A coordinator is a special executor that orchestrates processing work and manages other executors in a notebook session. The default is 1.',
-        }),
-    ).exactOptional(),
-    MaxConcurrentDpus: MaxConcurrentDpusSchema.and(
-      z.any().openapi({ description: 'The maximum number of DPUs that can run concurrently.' }),
-    ),
-    DefaultExecutorDpuSize: DefaultExecutorDpuSizeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The default number of DPUs to use for executors. An executor is the smallest unit of compute that a notebook session can request from Athena. The default is 1.',
-        }),
-    ).exactOptional(),
-    AdditionalConfigs: ParametersMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains additional notebook engine <code>MAP&lt;string, string&gt;</code> parameter mappings in the form of key-value pairs. To specify an Athena notebook that the Jupyter server will download and serve, specify a value for the <a>StartSessionRequest$NotebookVersion</a> field, and then add a key named <code>NotebookId</code> to <code>AdditionalConfigs</code> that has the value of the Athena notebook ID.',
-        }),
-    ).exactOptional(),
-    SparkProperties: ParametersMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies custom jar files and Spark properties for use cases like cluster encryption, table formats, and general Spark tuning.',
-        }),
-    ).exactOptional(),
+    CoordinatorDpuSize: CoordinatorDpuSizeSchema.exactOptional().openapi({
+      description:
+        'The number of DPUs to use for the coordinator. A coordinator is a special executor that orchestrates processing work and manages other executors in a notebook session. The default is 1.',
+    }),
+    MaxConcurrentDpus: MaxConcurrentDpusSchema.openapi({
+      description: 'The maximum number of DPUs that can run concurrently.',
+    }),
+    DefaultExecutorDpuSize: DefaultExecutorDpuSizeSchema.exactOptional().openapi({
+      description:
+        'The default number of DPUs to use for executors. An executor is the smallest unit of compute that a notebook session can request from Athena. The default is 1.',
+    }),
+    AdditionalConfigs: ParametersMapSchema.exactOptional().openapi({
+      description:
+        'Contains additional notebook engine <code>MAP&lt;string, string&gt;</code> parameter mappings in the form of key-value pairs. To specify an Athena notebook that the Jupyter server will download and serve, specify a value for the <a>StartSessionRequest$NotebookVersion</a> field, and then add a key named <code>NotebookId</code> to <code>AdditionalConfigs</code> that has the value of the Athena notebook ID.',
+    }),
+    SparkProperties: ParametersMapSchema.exactOptional().openapi({
+      description:
+        'Specifies custom jar files and Spark properties for use cases like cluster encryption, table formats, and general Spark tuning.',
+    }),
   })
   .openapi({
     required: ['MaxConcurrentDpus'],
@@ -2350,19 +1849,15 @@ const EngineConfigurationSchema = z
 
 const SessionConfigurationSchema = z
   .object({
-    ExecutionRole: RoleArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the execution role used for the session.' }),
-    ).exactOptional(),
-    WorkingDirectory: ResultOutputLocationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon S3 location that stores information for the notebook.',
-        }),
-    ).exactOptional(),
-    IdleTimeoutSeconds: LongSchema.and(
-      z.any().openapi({ description: 'The idle timeout in seconds for the session.' }),
-    ).exactOptional(),
+    ExecutionRole: RoleArnSchema.exactOptional().openapi({
+      description: 'The ARN of the execution role used for the session.',
+    }),
+    WorkingDirectory: ResultOutputLocationSchema.exactOptional().openapi({
+      description: 'The Amazon S3 location that stores information for the notebook.',
+    }),
+    IdleTimeoutSeconds: LongSchema.exactOptional().openapi({
+      description: 'The idle timeout in seconds for the session.',
+    }),
     EncryptionConfiguration: EncryptionConfigurationSchema.exactOptional(),
   })
   .openapi({ description: 'Contains session configuration information.', required: [] })
@@ -2374,119 +1869,89 @@ const SessionStateSchema = z
 
 const SessionStatusSchema = z
   .object({
-    StartDateTime: DateSchema.and(
-      z.any().openapi({ description: 'The date and time that the session started.' }),
-    ).exactOptional(),
-    LastModifiedDateTime: DateSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The most recent date and time that the session was modified.' }),
-    ).exactOptional(),
-    EndDateTime: DateSchema.and(
-      z.any().openapi({ description: 'The date and time that the session ended.' }),
-    ).exactOptional(),
-    IdleSinceDateTime: DateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time starting at which the session became idle. Can be empty if the session is not currently idle.',
-        }),
-    ).exactOptional(),
-    State: SessionStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The state of the session. A description of each state follows.</p> <p> <code>CREATING</code> - The session is being started, including acquiring resources.</p> <p> <code>CREATED</code> - The session has been started.</p> <p> <code>IDLE</code> - The session is able to accept a calculation.</p> <p> <code>BUSY</code> - The session is processing another task and is unable to accept a calculation.</p> <p> <code>TERMINATING</code> - The session is in the process of shutting down.</p> <p> <code>TERMINATED</code> - The session and its resources are no longer running.</p> <p> <code>DEGRADED</code> - The session has no healthy coordinators.</p> <p> <code>FAILED</code> - Due to a failure, the session and its resources are no longer running.</p>',
-        }),
-    ).exactOptional(),
-    StateChangeReason: DescriptionStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The reason for the session state change (for example, canceled because the session was terminated).',
-        }),
-    ).exactOptional(),
+    StartDateTime: DateSchema.exactOptional().openapi({
+      description: 'The date and time that the session started.',
+    }),
+    LastModifiedDateTime: DateSchema.exactOptional().openapi({
+      description: 'The most recent date and time that the session was modified.',
+    }),
+    EndDateTime: DateSchema.exactOptional().openapi({
+      description: 'The date and time that the session ended.',
+    }),
+    IdleSinceDateTime: DateSchema.exactOptional().openapi({
+      description:
+        'The date and time starting at which the session became idle. Can be empty if the session is not currently idle.',
+    }),
+    State: SessionStateSchema.exactOptional().openapi({
+      description:
+        '<p>The state of the session. A description of each state follows.</p> <p> <code>CREATING</code> - The session is being started, including acquiring resources.</p> <p> <code>CREATED</code> - The session has been started.</p> <p> <code>IDLE</code> - The session is able to accept a calculation.</p> <p> <code>BUSY</code> - The session is processing another task and is unable to accept a calculation.</p> <p> <code>TERMINATING</code> - The session is in the process of shutting down.</p> <p> <code>TERMINATED</code> - The session and its resources are no longer running.</p> <p> <code>DEGRADED</code> - The session has no healthy coordinators.</p> <p> <code>FAILED</code> - Due to a failure, the session and its resources are no longer running.</p>',
+    }),
+    StateChangeReason: DescriptionStringSchema.exactOptional().openapi({
+      description:
+        'The reason for the session state change (for example, canceled because the session was terminated).',
+    }),
   })
   .openapi({ description: 'Contains information about the status of a session.', required: [] })
   .openapi('SessionStatus')
 
 const SessionStatisticsSchema = z
   .object({
-    DpuExecutionInMillis: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The data processing unit execution time for a session in milliseconds.',
-        }),
-    ).exactOptional(),
+    DpuExecutionInMillis: LongSchema.exactOptional().openapi({
+      description: 'The data processing unit execution time for a session in milliseconds.',
+    }),
   })
   .openapi({ description: 'Contains statistics for a session.', required: [] })
   .openapi('SessionStatistics')
 
 const GetSessionResponseSchema = z
   .object({
-    SessionId: SessionIdSchema.and(
-      z.any().openapi({ description: 'The session ID.' }),
-    ).exactOptional(),
-    Description: DescriptionStringSchema.and(
-      z.any().openapi({ description: 'The session description.' }),
-    ).exactOptional(),
-    WorkGroup: WorkGroupNameSchema.and(
-      z.any().openapi({ description: 'The workgroup to which the session belongs.' }),
-    ).exactOptional(),
-    EngineVersion: NameStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The engine version used by the session (for example, <code>PySpark engine version 3</code>). You can get a list of engine versions by calling <a>ListEngineVersions</a>.',
-        }),
-    ).exactOptional(),
-    EngineConfiguration: EngineConfigurationSchema.and(
-      z.any().openapi({ description: 'Contains engine configuration information like DPU usage.' }),
-    ).exactOptional(),
-    NotebookVersion: NameStringSchema.and(
-      z.any().openapi({ description: 'The notebook version.' }),
-    ).exactOptional(),
-    SessionConfiguration: SessionConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Contains the workgroup configuration information used by the session.',
-        }),
-    ).exactOptional(),
-    Status: SessionStatusSchema.and(
-      z.any().openapi({ description: 'Contains information about the status of the session.' }),
-    ).exactOptional(),
-    Statistics: SessionStatisticsSchema.and(
-      z.any().openapi({ description: 'Contains the DPU execution time.' }),
-    ).exactOptional(),
+    SessionId: SessionIdSchema.exactOptional().openapi({ description: 'The session ID.' }),
+    Description: DescriptionStringSchema.exactOptional().openapi({
+      description: 'The session description.',
+    }),
+    WorkGroup: WorkGroupNameSchema.exactOptional().openapi({
+      description: 'The workgroup to which the session belongs.',
+    }),
+    EngineVersion: NameStringSchema.exactOptional().openapi({
+      description:
+        'The engine version used by the session (for example, <code>PySpark engine version 3</code>). You can get a list of engine versions by calling <a>ListEngineVersions</a>.',
+    }),
+    EngineConfiguration: EngineConfigurationSchema.exactOptional().openapi({
+      description: 'Contains engine configuration information like DPU usage.',
+    }),
+    NotebookVersion: NameStringSchema.exactOptional().openapi({
+      description: 'The notebook version.',
+    }),
+    SessionConfiguration: SessionConfigurationSchema.exactOptional().openapi({
+      description: 'Contains the workgroup configuration information used by the session.',
+    }),
+    Status: SessionStatusSchema.exactOptional().openapi({
+      description: 'Contains information about the status of the session.',
+    }),
+    Statistics: SessionStatisticsSchema.exactOptional().openapi({
+      description: 'Contains the DPU execution time.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetSessionResponse')
 
 const GetSessionRequestSchema = z
-  .object({ SessionId: SessionIdSchema.and(z.any().openapi({ description: 'The session ID.' })) })
+  .object({ SessionId: SessionIdSchema.openapi({ description: 'The session ID.' }) })
   .openapi({ required: ['SessionId'], title: 'GetSessionRequest' })
   .openapi('GetSessionRequest')
 
 const GetSessionStatusResponseSchema = z
   .object({
-    SessionId: SessionIdSchema.and(
-      z.any().openapi({ description: 'The session ID.' }),
-    ).exactOptional(),
-    Status: SessionStatusSchema.and(
-      z.any().openapi({ description: 'Contains information about the status of the session.' }),
-    ).exactOptional(),
+    SessionId: SessionIdSchema.exactOptional().openapi({ description: 'The session ID.' }),
+    Status: SessionStatusSchema.exactOptional().openapi({
+      description: 'Contains information about the status of the session.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetSessionStatusResponse')
 
 const GetSessionStatusRequestSchema = z
-  .object({ SessionId: SessionIdSchema.and(z.any().openapi({ description: 'The session ID.' })) })
+  .object({ SessionId: SessionIdSchema.openapi({ description: 'The session ID.' }) })
   .openapi({ required: ['SessionId'], title: 'GetSessionStatusRequest' })
   .openapi('GetSessionStatusRequest')
 
@@ -2508,13 +1973,11 @@ const CommentStringSchema = z
 
 const ColumnSchema = z
   .object({
-    Name: NameStringSchema.and(z.any().openapi({ description: 'The name of the column.' })),
-    Type: TypeStringSchema.and(
-      z.any().openapi({ description: 'The data type of the column.' }),
-    ).exactOptional(),
-    Comment: CommentStringSchema.and(
-      z.any().openapi({ description: 'Optional information about the column.' }),
-    ).exactOptional(),
+    Name: NameStringSchema.openapi({ description: 'The name of the column.' }),
+    Type: TypeStringSchema.exactOptional().openapi({ description: 'The data type of the column.' }),
+    Comment: CommentStringSchema.exactOptional().openapi({
+      description: 'Optional information about the column.',
+    }),
   })
   .openapi({ required: ['Name'], description: 'Contains metadata for a column in a table.' })
   .openapi('Column')
@@ -2523,63 +1986,50 @@ const ColumnListSchema = z.array(ColumnSchema).openapi('ColumnList')
 
 const TableMetadataSchema = z
   .object({
-    Name: NameStringSchema.and(z.any().openapi({ description: 'The name of the table.' })),
-    CreateTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The time that the table was created.' }),
-    ).exactOptional(),
-    LastAccessTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The last time the table was accessed.' }),
-    ).exactOptional(),
-    TableType: TableTypeStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of table. In Athena, only <code>EXTERNAL_TABLE</code> is supported.',
-        }),
-    ).exactOptional(),
-    Columns: ColumnListSchema.and(
-      z.any().openapi({ description: 'A list of the columns in the table.' }),
-    ).exactOptional(),
-    PartitionKeys: ColumnListSchema.and(
-      z.any().openapi({ description: 'A list of the partition keys in the table.' }),
-    ).exactOptional(),
-    Parameters: ParametersMapSchema.and(
-      z.any().openapi({ description: 'A set of custom key/value pairs for table properties.' }),
-    ).exactOptional(),
+    Name: NameStringSchema.openapi({ description: 'The name of the table.' }),
+    CreateTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time that the table was created.',
+    }),
+    LastAccessTime: TimestampSchema.exactOptional().openapi({
+      description: 'The last time the table was accessed.',
+    }),
+    TableType: TableTypeStringSchema.exactOptional().openapi({
+      description: 'The type of table. In Athena, only <code>EXTERNAL_TABLE</code> is supported.',
+    }),
+    Columns: ColumnListSchema.exactOptional().openapi({
+      description: 'A list of the columns in the table.',
+    }),
+    PartitionKeys: ColumnListSchema.exactOptional().openapi({
+      description: 'A list of the partition keys in the table.',
+    }),
+    Parameters: ParametersMapSchema.exactOptional().openapi({
+      description: 'A set of custom key/value pairs for table properties.',
+    }),
   })
   .openapi({ required: ['Name'], description: 'Contains metadata for a table.' })
   .openapi('TableMetadata')
 
 const GetTableMetadataOutputSchema = z
   .object({
-    TableMetadata: TableMetadataSchema.and(
-      z.any().openapi({ description: 'An object that contains table metadata.' }),
-    ).exactOptional(),
+    TableMetadata: TableMetadataSchema.exactOptional().openapi({
+      description: 'An object that contains table metadata.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetTableMetadataOutput')
 
 const GetTableMetadataInputSchema = z
   .object({
-    CatalogName: CatalogNameStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the data catalog that contains the database and table metadata to return.',
-        }),
-    ),
-    DatabaseName: NameStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the database that contains the table metadata to return.',
-        }),
-    ),
-    TableName: NameStringSchema.and(
-      z.any().openapi({ description: 'The name of the table for which metadata is returned.' }),
-    ),
+    CatalogName: CatalogNameStringSchema.openapi({
+      description:
+        'The name of the data catalog that contains the database and table metadata to return.',
+    }),
+    DatabaseName: NameStringSchema.openapi({
+      description: 'The name of the database that contains the table metadata to return.',
+    }),
+    TableName: NameStringSchema.openapi({
+      description: 'The name of the table for which metadata is returned.',
+    }),
   })
   .openapi({
     required: ['CatalogName', 'DatabaseName', 'TableName'],
@@ -2591,24 +2041,20 @@ const WorkGroupStateSchema = z.enum(['ENABLED', 'DISABLED']).openapi('WorkGroupS
 
 const WorkGroupSchema = z
   .object({
-    Name: WorkGroupNameSchema.and(z.any().openapi({ description: 'The workgroup name.' })),
-    State: WorkGroupStateSchema.and(
-      z.any().openapi({ description: 'The state of the workgroup: ENABLED or DISABLED.' }),
-    ).exactOptional(),
-    Configuration: WorkGroupConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The configuration of the workgroup, which includes the location in Amazon S3 where query and calculation results are stored, the encryption configuration, if any, used for query and calculation results; whether the Amazon CloudWatch Metrics are enabled for the workgroup; whether workgroup settings override client-side settings; and the data usage limits for the amount of data scanned per query or per workgroup. The workgroup settings override is specified in <code>EnforceWorkGroupConfiguration</code> (true/false) in the <code>WorkGroupConfiguration</code>. See <a>WorkGroupConfiguration$EnforceWorkGroupConfiguration</a>.',
-        }),
-    ).exactOptional(),
-    Description: WorkGroupDescriptionStringSchema.and(
-      z.any().openapi({ description: 'The workgroup description.' }),
-    ).exactOptional(),
-    CreationTime: DateSchema.and(
-      z.any().openapi({ description: 'The date and time the workgroup was created.' }),
-    ).exactOptional(),
+    Name: WorkGroupNameSchema.openapi({ description: 'The workgroup name.' }),
+    State: WorkGroupStateSchema.exactOptional().openapi({
+      description: 'The state of the workgroup: ENABLED or DISABLED.',
+    }),
+    Configuration: WorkGroupConfigurationSchema.exactOptional().openapi({
+      description:
+        'The configuration of the workgroup, which includes the location in Amazon S3 where query and calculation results are stored, the encryption configuration, if any, used for query and calculation results; whether the Amazon CloudWatch Metrics are enabled for the workgroup; whether workgroup settings override client-side settings; and the data usage limits for the amount of data scanned per query or per workgroup. The workgroup settings override is specified in <code>EnforceWorkGroupConfiguration</code> (true/false) in the <code>WorkGroupConfiguration</code>. See <a>WorkGroupConfiguration$EnforceWorkGroupConfiguration</a>.',
+    }),
+    Description: WorkGroupDescriptionStringSchema.exactOptional().openapi({
+      description: 'The workgroup description.',
+    }),
+    CreationTime: DateSchema.exactOptional().openapi({
+      description: 'The date and time the workgroup was created.',
+    }),
   })
   .openapi({
     required: ['Name'],
@@ -2619,62 +2065,42 @@ const WorkGroupSchema = z
 
 const GetWorkGroupOutputSchema = z
   .object({
-    WorkGroup: WorkGroupSchema.and(
-      z.any().openapi({ description: 'Information about the workgroup.' }),
-    ).exactOptional(),
+    WorkGroup: WorkGroupSchema.exactOptional().openapi({
+      description: 'Information about the workgroup.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetWorkGroupOutput')
 
 const GetWorkGroupInputSchema = z
-  .object({
-    WorkGroup: WorkGroupNameSchema.and(
-      z.any().openapi({ description: 'The name of the workgroup.' }),
-    ),
-  })
+  .object({ WorkGroup: WorkGroupNameSchema.openapi({ description: 'The name of the workgroup.' }) })
   .openapi({ required: ['WorkGroup'], title: 'GetWorkGroupInput' })
   .openapi('GetWorkGroupInput')
 
 const ImportNotebookOutputSchema = z
   .object({
-    NotebookId: NotebookIdSchema.and(
-      z.any().openapi({ description: 'The ID assigned to the imported notebook.' }),
-    ).exactOptional(),
+    NotebookId: NotebookIdSchema.exactOptional().openapi({
+      description: 'The ID assigned to the imported notebook.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ImportNotebookOutput')
 
 const ImportNotebookInputSchema = z
   .object({
-    WorkGroup: WorkGroupNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the Spark enabled workgroup to import the notebook to.',
-        }),
-    ),
-    Name: NotebookNameSchema.and(
-      z.any().openapi({ description: 'The name of the notebook to import.' }),
-    ),
-    Payload: PayloadSchema.and(
-      z.any().openapi({ description: 'The notebook content to be imported.' }),
-    ),
-    Type: NotebookTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The notebook content type. Currently, the only valid type is <code>IPYNB</code>.',
-        }),
-    ),
-    ClientRequestToken: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A unique case-sensitive string used to ensure the request to import the notebook is idempotent (executes only once).</p> <important> <p>This token is listed as not required because Amazon Web Services SDKs (for example the Amazon Web Services SDK for Java) auto-generate the token for you. If you are not using the Amazon Web Services SDK or the Amazon Web Services CLI, you must provide this token or the action will fail.</p> </important>',
-        }),
-    ).exactOptional(),
+    WorkGroup: WorkGroupNameSchema.openapi({
+      description: 'The name of the Spark enabled workgroup to import the notebook to.',
+    }),
+    Name: NotebookNameSchema.openapi({ description: 'The name of the notebook to import.' }),
+    Payload: PayloadSchema.openapi({ description: 'The notebook content to be imported.' }),
+    Type: NotebookTypeSchema.openapi({
+      description:
+        'The notebook content type. Currently, the only valid type is <code>IPYNB</code>.',
+    }),
+    ClientRequestToken: ClientRequestTokenSchema.exactOptional().openapi({
+      description:
+        '<p>A unique case-sensitive string used to ensure the request to import the notebook is idempotent (executes only once).</p> <important> <p>This token is listed as not required because Amazon Web Services SDKs (for example the Amazon Web Services SDK for Java) auto-generate the token for you. If you are not using the Amazon Web Services SDK or the Amazon Web Services CLI, you must provide this token or the action will fail.</p> </important>',
+    }),
   })
   .openapi({ required: ['WorkGroup', 'Name', 'Payload', 'Type'], title: 'ImportNotebookInput' })
   .openapi('ImportNotebookInput')
@@ -2683,21 +2109,13 @@ const SupportedDPUSizeListSchema = z.array(IntegerSchema).openapi('SupportedDPUS
 
 const ApplicationDPUSizesSchema = z
   .object({
-    ApplicationRuntimeId: NameStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the supported application runtime (for example, <code>Athena notebook version 1</code>).',
-        }),
-    ).exactOptional(),
-    SupportedDPUSizes: SupportedDPUSizeListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of the supported DPU sizes that the application runtime supports.',
-        }),
-    ).exactOptional(),
+    ApplicationRuntimeId: NameStringSchema.exactOptional().openapi({
+      description:
+        'The name of the supported application runtime (for example, <code>Athena notebook version 1</code>).',
+    }),
+    SupportedDPUSizes: SupportedDPUSizeListSchema.exactOptional().openapi({
+      description: 'A list of the supported DPU sizes that the application runtime supports.',
+    }),
   })
   .openapi({
     description: 'Contains the application runtime IDs and their supported DPU sizes.',
@@ -2711,21 +2129,13 @@ const ApplicationDPUSizesListSchema = z
 
 const ListApplicationDPUSizesOutputSchema = z
   .object({
-    ApplicationDPUSizes: ApplicationDPUSizesListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of the supported DPU sizes that the application runtime supports.',
-        }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token generated by the Athena service that specifies where to continue pagination if a previous request was truncated. To obtain the next set of pages, pass in the <code>NextToken</code> from the response object of the previous page call.',
-        }),
-    ).exactOptional(),
+    ApplicationDPUSizes: ApplicationDPUSizesListSchema.exactOptional().openapi({
+      description: 'A list of the supported DPU sizes that the application runtime supports.',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'A token generated by the Athena service that specifies where to continue pagination if a previous request was truncated. To obtain the next set of pages, pass in the <code>NextToken</code> from the response object of the previous page call.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListApplicationDPUSizesOutput')
@@ -2738,17 +2148,13 @@ const MaxApplicationDPUSizesCountSchema = z
 
 const ListApplicationDPUSizesInputSchema = z
   .object({
-    MaxResults: MaxApplicationDPUSizesCountSchema.and(
-      z.any().openapi({ description: 'Specifies the maximum number of results to return.' }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token generated by the Athena service that specifies where to continue pagination if a previous request was truncated.',
-        }),
-    ).exactOptional(),
+    MaxResults: MaxApplicationDPUSizesCountSchema.exactOptional().openapi({
+      description: 'Specifies the maximum number of results to return.',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'A token generated by the Athena service that specifies where to continue pagination if a previous request was truncated.',
+    }),
   })
   .openapi({ title: 'ListApplicationDPUSizesInput', required: [] })
   .openapi('ListApplicationDPUSizesInput')
@@ -2757,15 +2163,15 @@ const SessionManagerTokenSchema = z.string().max(2048).openapi('SessionManagerTo
 
 const CalculationSummarySchema = z
   .object({
-    CalculationExecutionId: CalculationExecutionIdSchema.and(
-      z.any().openapi({ description: 'The calculation execution UUID.' }),
-    ).exactOptional(),
-    Description: DescriptionStringSchema.and(
-      z.any().openapi({ description: 'A description of the calculation.' }),
-    ).exactOptional(),
-    Status: CalculationStatusSchema.and(
-      z.any().openapi({ description: 'Contains information about the status of the calculation.' }),
-    ).exactOptional(),
+    CalculationExecutionId: CalculationExecutionIdSchema.exactOptional().openapi({
+      description: 'The calculation execution UUID.',
+    }),
+    Description: DescriptionStringSchema.exactOptional().openapi({
+      description: 'A description of the calculation.',
+    }),
+    Status: CalculationStatusSchema.exactOptional().openapi({
+      description: 'Contains information about the status of the calculation.',
+    }),
   })
   .openapi({ description: 'Summary information for a notebook calculation.', required: [] })
   .openapi('CalculationSummary')
@@ -2778,17 +2184,13 @@ const CalculationsListSchema = z
 
 const ListCalculationExecutionsResponseSchema = z
   .object({
-    NextToken: SessionManagerTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token generated by the Athena service that specifies where to continue pagination if a previous request was truncated. To obtain the next set of pages, pass in the <code>NextToken</code> from the response object of the previous page call.',
-        }),
-    ).exactOptional(),
-    Calculations: CalculationsListSchema.and(
-      z.any().openapi({ description: 'A list of <a>CalculationSummary</a> objects.' }),
-    ).exactOptional(),
+    NextToken: SessionManagerTokenSchema.exactOptional().openapi({
+      description:
+        'A token generated by the Athena service that specifies where to continue pagination if a previous request was truncated. To obtain the next set of pages, pass in the <code>NextToken</code> from the response object of the previous page call.',
+    }),
+    Calculations: CalculationsListSchema.exactOptional().openapi({
+      description: 'A list of <a>CalculationSummary</a> objects.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListCalculationExecutionsResponse')
@@ -2797,26 +2199,18 @@ const MaxCalculationsCountSchema = z.int().min(1).max(100).openapi('MaxCalculati
 
 const ListCalculationExecutionsRequestSchema = z
   .object({
-    SessionId: SessionIdSchema.and(z.any().openapi({ description: 'The session ID.' })),
-    StateFilter: CalculationExecutionStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A filter for a specific calculation execution state. A description of each state follows.</p> <p> <code>CREATING</code> - The calculation is in the process of being created.</p> <p> <code>CREATED</code> - The calculation has been created and is ready to run.</p> <p> <code>QUEUED</code> - The calculation has been queued for processing.</p> <p> <code>RUNNING</code> - The calculation is running.</p> <p> <code>CANCELING</code> - A request to cancel the calculation has been received and the system is working to stop it.</p> <p> <code>CANCELED</code> - The calculation is no longer running as the result of a cancel request.</p> <p> <code>COMPLETED</code> - The calculation has completed without error.</p> <p> <code>FAILED</code> - The calculation failed and is no longer running.</p>',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxCalculationsCountSchema.and(
-      z.any().openapi({ description: 'The maximum number of calculation executions to return.' }),
-    ).exactOptional(),
-    NextToken: SessionManagerTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token generated by the Athena service that specifies where to continue pagination if a previous request was truncated. To obtain the next set of pages, pass in the <code>NextToken</code> from the response object of the previous page call.',
-        }),
-    ).exactOptional(),
+    SessionId: SessionIdSchema.openapi({ description: 'The session ID.' }),
+    StateFilter: CalculationExecutionStateSchema.exactOptional().openapi({
+      description:
+        '<p>A filter for a specific calculation execution state. A description of each state follows.</p> <p> <code>CREATING</code> - The calculation is in the process of being created.</p> <p> <code>CREATED</code> - The calculation has been created and is ready to run.</p> <p> <code>QUEUED</code> - The calculation has been queued for processing.</p> <p> <code>RUNNING</code> - The calculation is running.</p> <p> <code>CANCELING</code> - A request to cancel the calculation has been received and the system is working to stop it.</p> <p> <code>CANCELED</code> - The calculation is no longer running as the result of a cancel request.</p> <p> <code>COMPLETED</code> - The calculation has completed without error.</p> <p> <code>FAILED</code> - The calculation failed and is no longer running.</p>',
+    }),
+    MaxResults: MaxCalculationsCountSchema.exactOptional().openapi({
+      description: 'The maximum number of calculation executions to return.',
+    }),
+    NextToken: SessionManagerTokenSchema.exactOptional().openapi({
+      description:
+        'A token generated by the Athena service that specifies where to continue pagination if a previous request was truncated. To obtain the next set of pages, pass in the <code>NextToken</code> from the response object of the previous page call.',
+    }),
   })
   .openapi({ required: ['SessionId'], title: 'ListCalculationExecutionsRequest' })
   .openapi('ListCalculationExecutionsRequest')
@@ -2827,17 +2221,13 @@ const CapacityReservationsListSchema = z
 
 const ListCapacityReservationsOutputSchema = z
   .object({
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token generated by the Athena service that specifies where to continue pagination if a previous request was truncated. To obtain the next set of pages, pass in the NextToken from the response object of the previous page call.',
-        }),
-    ).exactOptional(),
-    CapacityReservations: CapacityReservationsListSchema.and(
-      z.any().openapi({ description: 'The capacity reservations for the current account.' }),
-    ),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'A token generated by the Athena service that specifies where to continue pagination if a previous request was truncated. To obtain the next set of pages, pass in the NextToken from the response object of the previous page call.',
+    }),
+    CapacityReservations: CapacityReservationsListSchema.openapi({
+      description: 'The capacity reservations for the current account.',
+    }),
   })
   .openapi({ required: ['CapacityReservations'] })
   .openapi('ListCapacityReservationsOutput')
@@ -2850,34 +2240,24 @@ const MaxCapacityReservationsCountSchema = z
 
 const ListCapacityReservationsInputSchema = z
   .object({
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token generated by the Athena service that specifies where to continue pagination if a previous request was truncated.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxCapacityReservationsCountSchema.and(
-      z.any().openapi({ description: 'Specifies the maximum number of results to return.' }),
-    ).exactOptional(),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'A token generated by the Athena service that specifies where to continue pagination if a previous request was truncated.',
+    }),
+    MaxResults: MaxCapacityReservationsCountSchema.exactOptional().openapi({
+      description: 'Specifies the maximum number of results to return.',
+    }),
   })
   .openapi({ title: 'ListCapacityReservationsInput', required: [] })
   .openapi('ListCapacityReservationsInput')
 
 const DataCatalogSummarySchema = z
   .object({
-    CatalogName: CatalogNameStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the data catalog. The catalog name is unique for the Amazon Web Services account and can use a maximum of 127 alphanumeric, underscore, at sign, or hyphen characters. The remainder of the length constraint of 256 is reserved for use by Athena.',
-        }),
-    ).exactOptional(),
-    Type: DataCatalogTypeSchema.and(
-      z.any().openapi({ description: 'The data catalog type.' }),
-    ).exactOptional(),
+    CatalogName: CatalogNameStringSchema.exactOptional().openapi({
+      description:
+        'The name of the data catalog. The catalog name is unique for the Amazon Web Services account and can use a maximum of 127 alphanumeric, underscore, at sign, or hyphen characters. The remainder of the length constraint of 256 is reserved for use by Athena.',
+    }),
+    Type: DataCatalogTypeSchema.exactOptional().openapi({ description: 'The data catalog type.' }),
   })
   .openapi({
     description: 'The summary information for the data catalog, which includes its name and type.',
@@ -2891,17 +2271,13 @@ const DataCatalogSummaryListSchema = z
 
 const ListDataCatalogsOutputSchema = z
   .object({
-    DataCatalogsSummary: DataCatalogSummaryListSchema.and(
-      z.any().openapi({ description: 'A summary list of data catalogs.' }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token generated by the Athena service that specifies where to continue pagination if a previous request was truncated. To obtain the next set of pages, pass in the NextToken from the response object of the previous page call.',
-        }),
-    ).exactOptional(),
+    DataCatalogsSummary: DataCatalogSummaryListSchema.exactOptional().openapi({
+      description: 'A summary list of data catalogs.',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'A token generated by the Athena service that specifies where to continue pagination if a previous request was truncated. To obtain the next set of pages, pass in the NextToken from the response object of the previous page call.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListDataCatalogsOutput')
@@ -2910,17 +2286,13 @@ const MaxDataCatalogsCountSchema = z.int().min(2).max(50).openapi('MaxDataCatalo
 
 const ListDataCatalogsInputSchema = z
   .object({
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token generated by the Athena service that specifies where to continue pagination if a previous request was truncated. To obtain the next set of pages, pass in the NextToken from the response object of the previous page call.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxDataCatalogsCountSchema.and(
-      z.any().openapi({ description: 'Specifies the maximum number of data catalogs to return.' }),
-    ).exactOptional(),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'A token generated by the Athena service that specifies where to continue pagination if a previous request was truncated. To obtain the next set of pages, pass in the NextToken from the response object of the previous page call.',
+    }),
+    MaxResults: MaxDataCatalogsCountSchema.exactOptional().openapi({
+      description: 'Specifies the maximum number of data catalogs to return.',
+    }),
   })
   .openapi({ title: 'ListDataCatalogsInput', required: [] })
   .openapi('ListDataCatalogsInput')
@@ -2929,17 +2301,13 @@ const DatabaseListSchema = z.array(DatabaseSchema).openapi('DatabaseList')
 
 const ListDatabasesOutputSchema = z
   .object({
-    DatabaseList: DatabaseListSchema.and(
-      z.any().openapi({ description: 'A list of databases from a data catalog.' }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token generated by the Athena service that specifies where to continue pagination if a previous request was truncated. To obtain the next set of pages, pass in the NextToken from the response object of the previous page call.',
-        }),
-    ).exactOptional(),
+    DatabaseList: DatabaseListSchema.exactOptional().openapi({
+      description: 'A list of databases from a data catalog.',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'A token generated by the Athena service that specifies where to continue pagination if a previous request was truncated. To obtain the next set of pages, pass in the NextToken from the response object of the previous page call.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListDatabasesOutput')
@@ -2948,24 +2316,16 @@ const MaxDatabasesCountSchema = z.int().min(1).max(50).openapi('MaxDatabasesCoun
 
 const ListDatabasesInputSchema = z
   .object({
-    CatalogName: CatalogNameStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the data catalog that contains the databases to return.',
-        }),
-    ),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token generated by the Athena service that specifies where to continue pagination if a previous request was truncated. To obtain the next set of pages, pass in the <code>NextToken</code> from the response object of the previous page call.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxDatabasesCountSchema.and(
-      z.any().openapi({ description: 'Specifies the maximum number of results to return.' }),
-    ).exactOptional(),
+    CatalogName: CatalogNameStringSchema.openapi({
+      description: 'The name of the data catalog that contains the databases to return.',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'A token generated by the Athena service that specifies where to continue pagination if a previous request was truncated. To obtain the next set of pages, pass in the <code>NextToken</code> from the response object of the previous page call.',
+    }),
+    MaxResults: MaxDatabasesCountSchema.exactOptional().openapi({
+      description: 'Specifies the maximum number of results to return.',
+    }),
   })
   .openapi({ required: ['CatalogName'], title: 'ListDatabasesInput' })
   .openapi('ListDatabasesInput')
@@ -2978,19 +2338,13 @@ const EngineVersionsListSchema = z
 
 const ListEngineVersionsOutputSchema = z
   .object({
-    EngineVersions: EngineVersionsListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A list of engine versions that are available to choose from.' }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token generated by the Athena service that specifies where to continue pagination if a previous request was truncated. To obtain the next set of pages, pass in the <code>NextToken</code> from the response object of the previous page call.',
-        }),
-    ).exactOptional(),
+    EngineVersions: EngineVersionsListSchema.exactOptional().openapi({
+      description: 'A list of engine versions that are available to choose from.',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'A token generated by the Athena service that specifies where to continue pagination if a previous request was truncated. To obtain the next set of pages, pass in the <code>NextToken</code> from the response object of the previous page call.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListEngineVersionsOutput')
@@ -2999,21 +2353,13 @@ const MaxEngineVersionsCountSchema = z.int().min(1).max(10).openapi('MaxEngineVe
 
 const ListEngineVersionsInputSchema = z
   .object({
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token generated by the Athena service that specifies where to continue pagination if a previous request was truncated. To obtain the next set of pages, pass in the <code>NextToken</code> from the response object of the previous page call.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxEngineVersionsCountSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The maximum number of engine versions to return in this request.',
-        }),
-    ).exactOptional(),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'A token generated by the Athena service that specifies where to continue pagination if a previous request was truncated. To obtain the next set of pages, pass in the <code>NextToken</code> from the response object of the previous page call.',
+    }),
+    MaxResults: MaxEngineVersionsCountSchema.exactOptional().openapi({
+      description: 'The maximum number of engine versions to return in this request.',
+    }),
   })
   .openapi({ title: 'ListEngineVersionsInput', required: [] })
   .openapi('ListEngineVersionsInput')
@@ -3028,37 +2374,25 @@ const ExecutorStateSchema = z
 
 const ExecutorsSummarySchema = z
   .object({
-    ExecutorId: ExecutorIdSchema.and(z.any().openapi({ description: 'The UUID of the executor.' })),
-    ExecutorType: ExecutorTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of executor used for the application (<code>COORDINATOR</code>, <code>GATEWAY</code>, or <code>WORKER</code>).',
-        }),
-    ).exactOptional(),
-    StartDateTime: LongSchema.and(
-      z.any().openapi({ description: 'The date and time that the executor started.' }),
-    ).exactOptional(),
-    TerminationDateTime: LongSchema.and(
-      z.any().openapi({ description: 'The date and time that the executor was terminated.' }),
-    ).exactOptional(),
-    ExecutorState: ExecutorStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The processing state of the executor. A description of each state follows.</p> <p> <code>CREATING</code> - The executor is being started, including acquiring resources.</p> <p> <code>CREATED</code> - The executor has been started.</p> <p> <code>REGISTERED</code> - The executor has been registered.</p> <p> <code>TERMINATING</code> - The executor is in the process of shutting down.</p> <p> <code>TERMINATED</code> - The executor is no longer running.</p> <p> <code>FAILED</code> - Due to a failure, the executor is no longer running.</p>',
-        }),
-    ).exactOptional(),
-    ExecutorSize: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The smallest unit of compute that a session can request from Athena. Size is measured in data processing unit (DPU) values, a relative measure of processing power.',
-        }),
-    ).exactOptional(),
+    ExecutorId: ExecutorIdSchema.openapi({ description: 'The UUID of the executor.' }),
+    ExecutorType: ExecutorTypeSchema.exactOptional().openapi({
+      description:
+        'The type of executor used for the application (<code>COORDINATOR</code>, <code>GATEWAY</code>, or <code>WORKER</code>).',
+    }),
+    StartDateTime: LongSchema.exactOptional().openapi({
+      description: 'The date and time that the executor started.',
+    }),
+    TerminationDateTime: LongSchema.exactOptional().openapi({
+      description: 'The date and time that the executor was terminated.',
+    }),
+    ExecutorState: ExecutorStateSchema.exactOptional().openapi({
+      description:
+        '<p>The processing state of the executor. A description of each state follows.</p> <p> <code>CREATING</code> - The executor is being started, including acquiring resources.</p> <p> <code>CREATED</code> - The executor has been started.</p> <p> <code>REGISTERED</code> - The executor has been registered.</p> <p> <code>TERMINATING</code> - The executor is in the process of shutting down.</p> <p> <code>TERMINATED</code> - The executor is no longer running.</p> <p> <code>FAILED</code> - Due to a failure, the executor is no longer running.</p>',
+    }),
+    ExecutorSize: LongSchema.exactOptional().openapi({
+      description:
+        'The smallest unit of compute that a session can request from Athena. Size is measured in data processing unit (DPU) values, a relative measure of processing power.',
+    }),
   })
   .openapi({
     required: ['ExecutorId'],
@@ -3070,18 +2404,14 @@ const ExecutorsSummaryListSchema = z.array(ExecutorsSummarySchema).openapi('Exec
 
 const ListExecutorsResponseSchema = z
   .object({
-    SessionId: SessionIdSchema.and(z.any().openapi({ description: 'The session ID.' })),
-    NextToken: SessionManagerTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token generated by the Athena service that specifies where to continue pagination if a previous request was truncated. To obtain the next set of pages, pass in the <code>NextToken</code> from the response object of the previous page call.',
-        }),
-    ).exactOptional(),
-    ExecutorsSummary: ExecutorsSummaryListSchema.and(
-      z.any().openapi({ description: 'Contains summary information about the executor.' }),
-    ).exactOptional(),
+    SessionId: SessionIdSchema.openapi({ description: 'The session ID.' }),
+    NextToken: SessionManagerTokenSchema.exactOptional().openapi({
+      description:
+        'A token generated by the Athena service that specifies where to continue pagination if a previous request was truncated. To obtain the next set of pages, pass in the <code>NextToken</code> from the response object of the previous page call.',
+    }),
+    ExecutorsSummary: ExecutorsSummaryListSchema.exactOptional().openapi({
+      description: 'Contains summary information about the executor.',
+    }),
   })
   .openapi({ required: ['SessionId'] })
   .openapi('ListExecutorsResponse')
@@ -3090,43 +2420,31 @@ const MaxListExecutorsCountSchema = z.int().min(1).max(100).openapi('MaxListExec
 
 const ListExecutorsRequestSchema = z
   .object({
-    SessionId: SessionIdSchema.and(z.any().openapi({ description: 'The session ID.' })),
-    ExecutorStateFilter: ExecutorStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A filter for a specific executor state. A description of each state follows.</p> <p> <code>CREATING</code> - The executor is being started, including acquiring resources.</p> <p> <code>CREATED</code> - The executor has been started.</p> <p> <code>REGISTERED</code> - The executor has been registered.</p> <p> <code>TERMINATING</code> - The executor is in the process of shutting down.</p> <p> <code>TERMINATED</code> - The executor is no longer running.</p> <p> <code>FAILED</code> - Due to a failure, the executor is no longer running.</p>',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxListExecutorsCountSchema.and(
-      z.any().openapi({ description: 'The maximum number of executors to return.' }),
-    ).exactOptional(),
-    NextToken: SessionManagerTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token generated by the Athena service that specifies where to continue pagination if a previous request was truncated. To obtain the next set of pages, pass in the <code>NextToken</code> from the response object of the previous page call.',
-        }),
-    ).exactOptional(),
+    SessionId: SessionIdSchema.openapi({ description: 'The session ID.' }),
+    ExecutorStateFilter: ExecutorStateSchema.exactOptional().openapi({
+      description:
+        '<p>A filter for a specific executor state. A description of each state follows.</p> <p> <code>CREATING</code> - The executor is being started, including acquiring resources.</p> <p> <code>CREATED</code> - The executor has been started.</p> <p> <code>REGISTERED</code> - The executor has been registered.</p> <p> <code>TERMINATING</code> - The executor is in the process of shutting down.</p> <p> <code>TERMINATED</code> - The executor is no longer running.</p> <p> <code>FAILED</code> - Due to a failure, the executor is no longer running.</p>',
+    }),
+    MaxResults: MaxListExecutorsCountSchema.exactOptional().openapi({
+      description: 'The maximum number of executors to return.',
+    }),
+    NextToken: SessionManagerTokenSchema.exactOptional().openapi({
+      description:
+        'A token generated by the Athena service that specifies where to continue pagination if a previous request was truncated. To obtain the next set of pages, pass in the <code>NextToken</code> from the response object of the previous page call.',
+    }),
   })
   .openapi({ required: ['SessionId'], title: 'ListExecutorsRequest' })
   .openapi('ListExecutorsRequest')
 
 const ListNamedQueriesOutputSchema = z
   .object({
-    NamedQueryIds: NamedQueryIdListSchema.and(
-      z.any().openapi({ description: 'The list of unique query IDs.' }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token generated by the Athena service that specifies where to continue pagination if a previous request was truncated. To obtain the next set of pages, pass in the <code>NextToken</code> from the response object of the previous page call.',
-        }),
-    ).exactOptional(),
+    NamedQueryIds: NamedQueryIdListSchema.exactOptional().openapi({
+      description: 'The list of unique query IDs.',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'A token generated by the Athena service that specifies where to continue pagination if a previous request was truncated. To obtain the next set of pages, pass in the <code>NextToken</code> from the response object of the previous page call.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListNamedQueriesOutput')
@@ -3135,25 +2453,17 @@ const MaxNamedQueriesCountSchema = z.int().min(0).max(50).openapi('MaxNamedQueri
 
 const ListNamedQueriesInputSchema = z
   .object({
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token generated by the Athena service that specifies where to continue pagination if a previous request was truncated. To obtain the next set of pages, pass in the <code>NextToken</code> from the response object of the previous page call.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxNamedQueriesCountSchema.and(
-      z.any().openapi({ description: 'The maximum number of queries to return in this request.' }),
-    ).exactOptional(),
-    WorkGroup: WorkGroupNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the workgroup from which the named queries are being returned. If a workgroup is not specified, the saved queries for the primary workgroup are returned.',
-        }),
-    ).exactOptional(),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'A token generated by the Athena service that specifies where to continue pagination if a previous request was truncated. To obtain the next set of pages, pass in the <code>NextToken</code> from the response object of the previous page call.',
+    }),
+    MaxResults: MaxNamedQueriesCountSchema.exactOptional().openapi({
+      description: 'The maximum number of queries to return in this request.',
+    }),
+    WorkGroup: WorkGroupNameSchema.exactOptional().openapi({
+      description:
+        'The name of the workgroup from which the named queries are being returned. If a workgroup is not specified, the saved queries for the primary workgroup are returned.',
+    }),
   })
   .openapi({ title: 'ListNamedQueriesInput', required: [] })
   .openapi('ListNamedQueriesInput')
@@ -3162,28 +2472,22 @@ const NotebookMetadataArraySchema = z.array(NotebookMetadataSchema).openapi('Not
 
 const ListNotebookMetadataOutputSchema = z
   .object({
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token generated by the Athena service that specifies where to continue pagination if a previous request was truncated. To obtain the next set of pages, pass in the <code>NextToken</code> from the response object of the previous page call.',
-        }),
-    ).exactOptional(),
-    NotebookMetadataList: NotebookMetadataArraySchema.and(
-      z
-        .any()
-        .openapi({ description: 'The list of notebook metadata for the specified workgroup.' }),
-    ).exactOptional(),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'A token generated by the Athena service that specifies where to continue pagination if a previous request was truncated. To obtain the next set of pages, pass in the <code>NextToken</code> from the response object of the previous page call.',
+    }),
+    NotebookMetadataList: NotebookMetadataArraySchema.exactOptional().openapi({
+      description: 'The list of notebook metadata for the specified workgroup.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListNotebookMetadataOutput')
 
 const FilterDefinitionSchema = z
   .object({
-    Name: NotebookNameSchema.and(
-      z.any().openapi({ description: 'The name of the notebook to search for.' }),
-    ).exactOptional(),
+    Name: NotebookNameSchema.exactOptional().openapi({
+      description: 'The name of the notebook to search for.',
+    }),
   })
   .openapi({ description: 'A string for searching notebook names.', required: [] })
   .openapi('FilterDefinition')
@@ -3192,39 +2496,29 @@ const MaxNotebooksCountSchema = z.int().min(1).max(50).openapi('MaxNotebooksCoun
 
 const ListNotebookMetadataInputSchema = z
   .object({
-    Filters: FilterDefinitionSchema.and(
-      z.any().openapi({ description: 'Search filter string.' }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token generated by the Athena service that specifies where to continue pagination if a previous request was truncated.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxNotebooksCountSchema.and(
-      z.any().openapi({ description: 'Specifies the maximum number of results to return.' }),
-    ).exactOptional(),
-    WorkGroup: WorkGroupNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the Spark enabled workgroup to retrieve notebook metadata for.',
-        }),
-    ),
+    Filters: FilterDefinitionSchema.exactOptional().openapi({
+      description: 'Search filter string.',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'A token generated by the Athena service that specifies where to continue pagination if a previous request was truncated.',
+    }),
+    MaxResults: MaxNotebooksCountSchema.exactOptional().openapi({
+      description: 'Specifies the maximum number of results to return.',
+    }),
+    WorkGroup: WorkGroupNameSchema.openapi({
+      description: 'The name of the Spark enabled workgroup to retrieve notebook metadata for.',
+    }),
   })
   .openapi({ required: ['WorkGroup'], title: 'ListNotebookMetadataInput' })
   .openapi('ListNotebookMetadataInput')
 
 const NotebookSessionSummarySchema = z
   .object({
-    SessionId: SessionIdSchema.and(
-      z.any().openapi({ description: 'The notebook session ID.' }),
-    ).exactOptional(),
-    CreationTime: DateSchema.and(
-      z.any().openapi({ description: 'The time when the notebook session was created.' }),
-    ).exactOptional(),
+    SessionId: SessionIdSchema.exactOptional().openapi({ description: 'The notebook session ID.' }),
+    CreationTime: DateSchema.exactOptional().openapi({
+      description: 'The time when the notebook session was created.',
+    }),
   })
   .openapi({
     description: 'Contains the notebook session ID and notebook session creation time.',
@@ -3241,17 +2535,13 @@ const NotebookSessionsListSchema = z
 
 const ListNotebookSessionsResponseSchema = z
   .object({
-    NotebookSessionsList: NotebookSessionsListSchema.and(
-      z.any().openapi({ description: 'A list of the sessions belonging to the notebook.' }),
-    ),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token generated by the Athena service that specifies where to continue pagination if a previous request was truncated. To obtain the next set of pages, pass in the <code>NextToken</code> from the response object of the previous page call.',
-        }),
-    ).exactOptional(),
+    NotebookSessionsList: NotebookSessionsListSchema.openapi({
+      description: 'A list of the sessions belonging to the notebook.',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'A token generated by the Athena service that specifies where to continue pagination if a previous request was truncated. To obtain the next set of pages, pass in the <code>NextToken</code> from the response object of the previous page call.',
+    }),
   })
   .openapi({ required: ['NotebookSessionsList'] })
   .openapi('ListNotebookSessionsResponse')
@@ -3260,32 +2550,28 @@ const MaxSessionsCountSchema = z.int().min(1).max(100).openapi('MaxSessionsCount
 
 const ListNotebookSessionsRequestSchema = z
   .object({
-    NotebookId: NotebookIdSchema.and(
-      z.any().openapi({ description: 'The ID of the notebook to list sessions for.' }),
-    ),
-    MaxResults: MaxSessionsCountSchema.and(
-      z.any().openapi({ description: 'The maximum number of notebook sessions to return.' }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token generated by the Athena service that specifies where to continue pagination if a previous request was truncated. To obtain the next set of pages, pass in the <code>NextToken</code> from the response object of the previous page call.',
-        }),
-    ).exactOptional(),
+    NotebookId: NotebookIdSchema.openapi({
+      description: 'The ID of the notebook to list sessions for.',
+    }),
+    MaxResults: MaxSessionsCountSchema.exactOptional().openapi({
+      description: 'The maximum number of notebook sessions to return.',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'A token generated by the Athena service that specifies where to continue pagination if a previous request was truncated. To obtain the next set of pages, pass in the <code>NextToken</code> from the response object of the previous page call.',
+    }),
   })
   .openapi({ required: ['NotebookId'], title: 'ListNotebookSessionsRequest' })
   .openapi('ListNotebookSessionsRequest')
 
 const PreparedStatementSummarySchema = z
   .object({
-    StatementName: StatementNameSchema.and(
-      z.any().openapi({ description: 'The name of the prepared statement.' }),
-    ).exactOptional(),
-    LastModifiedTime: DateSchema.and(
-      z.any().openapi({ description: 'The last modified time of the prepared statement.' }),
-    ).exactOptional(),
+    StatementName: StatementNameSchema.exactOptional().openapi({
+      description: 'The name of the prepared statement.',
+    }),
+    LastModifiedTime: DateSchema.exactOptional().openapi({
+      description: 'The last modified time of the prepared statement.',
+    }),
   })
   .openapi({
     description: 'The name and last modified time of the prepared statement.',
@@ -3301,17 +2587,13 @@ const PreparedStatementsListSchema = z
 
 const ListPreparedStatementsOutputSchema = z
   .object({
-    PreparedStatements: PreparedStatementsListSchema.and(
-      z.any().openapi({ description: 'The list of prepared statements for the workgroup.' }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token generated by the Athena service that specifies where to continue pagination if a previous request was truncated. To obtain the next set of pages, pass in the <code>NextToken</code> from the response object of the previous page call.',
-        }),
-    ).exactOptional(),
+    PreparedStatements: PreparedStatementsListSchema.exactOptional().openapi({
+      description: 'The list of prepared statements for the workgroup.',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'A token generated by the Athena service that specifies where to continue pagination if a previous request was truncated. To obtain the next set of pages, pass in the <code>NextToken</code> from the response object of the previous page call.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListPreparedStatementsOutput')
@@ -3324,38 +2606,28 @@ const MaxPreparedStatementsCountSchema = z
 
 const ListPreparedStatementsInputSchema = z
   .object({
-    WorkGroup: WorkGroupNameSchema.and(
-      z.any().openapi({ description: 'The workgroup to list the prepared statements for.' }),
-    ),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token generated by the Athena service that specifies where to continue pagination if a previous request was truncated. To obtain the next set of pages, pass in the <code>NextToken</code> from the response object of the previous page call.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxPreparedStatementsCountSchema.and(
-      z.any().openapi({ description: 'The maximum number of results to return in this request.' }),
-    ).exactOptional(),
+    WorkGroup: WorkGroupNameSchema.openapi({
+      description: 'The workgroup to list the prepared statements for.',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'A token generated by the Athena service that specifies where to continue pagination if a previous request was truncated. To obtain the next set of pages, pass in the <code>NextToken</code> from the response object of the previous page call.',
+    }),
+    MaxResults: MaxPreparedStatementsCountSchema.exactOptional().openapi({
+      description: 'The maximum number of results to return in this request.',
+    }),
   })
   .openapi({ required: ['WorkGroup'], title: 'ListPreparedStatementsInput' })
   .openapi('ListPreparedStatementsInput')
 
 const ListQueryExecutionsOutputSchema = z
   .object({
-    QueryExecutionIds: QueryExecutionIdListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The unique IDs of each query execution as an array of strings.' }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A token to be used by the next request if this request is truncated.',
-        }),
-    ).exactOptional(),
+    QueryExecutionIds: QueryExecutionIdListSchema.exactOptional().openapi({
+      description: 'The unique IDs of each query execution as an array of strings.',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description: 'A token to be used by the next request if this request is truncated.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListQueryExecutionsOutput')
@@ -3364,55 +2636,37 @@ const MaxQueryExecutionsCountSchema = z.int().min(0).max(50).openapi('MaxQueryEx
 
 const ListQueryExecutionsInputSchema = z
   .object({
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token generated by the Athena service that specifies where to continue pagination if a previous request was truncated. To obtain the next set of pages, pass in the <code>NextToken</code> from the response object of the previous page call.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxQueryExecutionsCountSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The maximum number of query executions to return in this request.',
-        }),
-    ).exactOptional(),
-    WorkGroup: WorkGroupNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the workgroup from which queries are being returned. If a workgroup is not specified, a list of available query execution IDs for the queries in the primary workgroup is returned.',
-        }),
-    ).exactOptional(),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'A token generated by the Athena service that specifies where to continue pagination if a previous request was truncated. To obtain the next set of pages, pass in the <code>NextToken</code> from the response object of the previous page call.',
+    }),
+    MaxResults: MaxQueryExecutionsCountSchema.exactOptional().openapi({
+      description: 'The maximum number of query executions to return in this request.',
+    }),
+    WorkGroup: WorkGroupNameSchema.exactOptional().openapi({
+      description:
+        'The name of the workgroup from which queries are being returned. If a workgroup is not specified, a list of available query execution IDs for the queries in the primary workgroup is returned.',
+    }),
   })
   .openapi({ title: 'ListQueryExecutionsInput', required: [] })
   .openapi('ListQueryExecutionsInput')
 
 const SessionSummarySchema = z
   .object({
-    SessionId: SessionIdSchema.and(
-      z.any().openapi({ description: 'The session ID.' }),
-    ).exactOptional(),
-    Description: DescriptionStringSchema.and(
-      z.any().openapi({ description: 'The session description.' }),
-    ).exactOptional(),
-    EngineVersion: EngineVersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The engine version used by the session (for example, <code>PySpark engine version 3</code>).',
-        }),
-    ).exactOptional(),
-    NotebookVersion: NameStringSchema.and(
-      z.any().openapi({ description: 'The notebook version.' }),
-    ).exactOptional(),
-    Status: SessionStatusSchema.and(
-      z.any().openapi({ description: 'Contains information about the session status.' }),
-    ).exactOptional(),
+    SessionId: SessionIdSchema.exactOptional().openapi({ description: 'The session ID.' }),
+    Description: DescriptionStringSchema.exactOptional().openapi({
+      description: 'The session description.',
+    }),
+    EngineVersion: EngineVersionSchema.exactOptional().openapi({
+      description:
+        'The engine version used by the session (for example, <code>PySpark engine version 3</code>).',
+    }),
+    NotebookVersion: NameStringSchema.exactOptional().openapi({
+      description: 'The notebook version.',
+    }),
+    Status: SessionStatusSchema.exactOptional().openapi({
+      description: 'Contains information about the session status.',
+    }),
   })
   .openapi({ description: 'Contains summary information about a session.', required: [] })
   .openapi('SessionSummary')
@@ -3421,45 +2675,31 @@ const SessionsListSchema = z.array(SessionSummarySchema).min(0).max(100).openapi
 
 const ListSessionsResponseSchema = z
   .object({
-    NextToken: SessionManagerTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token generated by the Athena service that specifies where to continue pagination if a previous request was truncated. To obtain the next set of pages, pass in the <code>NextToken</code> from the response object of the previous page call.',
-        }),
-    ).exactOptional(),
-    Sessions: SessionsListSchema.and(
-      z.any().openapi({ description: 'A list of sessions.' }),
-    ).exactOptional(),
+    NextToken: SessionManagerTokenSchema.exactOptional().openapi({
+      description:
+        'A token generated by the Athena service that specifies where to continue pagination if a previous request was truncated. To obtain the next set of pages, pass in the <code>NextToken</code> from the response object of the previous page call.',
+    }),
+    Sessions: SessionsListSchema.exactOptional().openapi({ description: 'A list of sessions.' }),
   })
   .openapi({ required: [] })
   .openapi('ListSessionsResponse')
 
 const ListSessionsRequestSchema = z
   .object({
-    WorkGroup: WorkGroupNameSchema.and(
-      z.any().openapi({ description: 'The workgroup to which the session belongs.' }),
-    ),
-    StateFilter: SessionStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A filter for a specific session state. A description of each state follows.</p> <p> <code>CREATING</code> - The session is being started, including acquiring resources.</p> <p> <code>CREATED</code> - The session has been started.</p> <p> <code>IDLE</code> - The session is able to accept a calculation.</p> <p> <code>BUSY</code> - The session is processing another task and is unable to accept a calculation.</p> <p> <code>TERMINATING</code> - The session is in the process of shutting down.</p> <p> <code>TERMINATED</code> - The session and its resources are no longer running.</p> <p> <code>DEGRADED</code> - The session has no healthy coordinators.</p> <p> <code>FAILED</code> - Due to a failure, the session and its resources are no longer running.</p>',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxSessionsCountSchema.and(
-      z.any().openapi({ description: 'The maximum number of sessions to return.' }),
-    ).exactOptional(),
-    NextToken: SessionManagerTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token generated by the Athena service that specifies where to continue pagination if a previous request was truncated. To obtain the next set of pages, pass in the <code>NextToken</code> from the response object of the previous page call.',
-        }),
-    ).exactOptional(),
+    WorkGroup: WorkGroupNameSchema.openapi({
+      description: 'The workgroup to which the session belongs.',
+    }),
+    StateFilter: SessionStateSchema.exactOptional().openapi({
+      description:
+        '<p>A filter for a specific session state. A description of each state follows.</p> <p> <code>CREATING</code> - The session is being started, including acquiring resources.</p> <p> <code>CREATED</code> - The session has been started.</p> <p> <code>IDLE</code> - The session is able to accept a calculation.</p> <p> <code>BUSY</code> - The session is processing another task and is unable to accept a calculation.</p> <p> <code>TERMINATING</code> - The session is in the process of shutting down.</p> <p> <code>TERMINATED</code> - The session and its resources are no longer running.</p> <p> <code>DEGRADED</code> - The session has no healthy coordinators.</p> <p> <code>FAILED</code> - Due to a failure, the session and its resources are no longer running.</p>',
+    }),
+    MaxResults: MaxSessionsCountSchema.exactOptional().openapi({
+      description: 'The maximum number of sessions to return.',
+    }),
+    NextToken: SessionManagerTokenSchema.exactOptional().openapi({
+      description:
+        'A token generated by the Athena service that specifies where to continue pagination if a previous request was truncated. To obtain the next set of pages, pass in the <code>NextToken</code> from the response object of the previous page call.',
+    }),
   })
   .openapi({ required: ['WorkGroup'], title: 'ListSessionsRequest' })
   .openapi('ListSessionsRequest')
@@ -3468,17 +2708,13 @@ const TableMetadataListSchema = z.array(TableMetadataSchema).openapi('TableMetad
 
 const ListTableMetadataOutputSchema = z
   .object({
-    TableMetadataList: TableMetadataListSchema.and(
-      z.any().openapi({ description: 'A list of table metadata.' }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token generated by the Athena service that specifies where to continue pagination if a previous request was truncated. To obtain the next set of pages, pass in the NextToken from the response object of the previous page call.',
-        }),
-    ).exactOptional(),
+    TableMetadataList: TableMetadataListSchema.exactOptional().openapi({
+      description: 'A list of table metadata.',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'A token generated by the Athena service that specifies where to continue pagination if a previous request was truncated. To obtain the next set of pages, pass in the NextToken from the response object of the previous page call.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTableMetadataOutput')
@@ -3489,55 +2725,35 @@ const MaxTableMetadataCountSchema = z.int().min(1).max(50).openapi('MaxTableMeta
 
 const ListTableMetadataInputSchema = z
   .object({
-    CatalogName: CatalogNameStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the data catalog for which table metadata should be returned.',
-        }),
-    ),
-    DatabaseName: NameStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the database for which table metadata should be returned.',
-        }),
-    ),
-    Expression: ExpressionStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A regex filter that pattern-matches table names. If no expression is supplied, metadata for all tables are listed.',
-        }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token generated by the Athena service that specifies where to continue pagination if a previous request was truncated. To obtain the next set of pages, pass in the NextToken from the response object of the previous page call.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxTableMetadataCountSchema.and(
-      z.any().openapi({ description: 'Specifies the maximum number of results to return.' }),
-    ).exactOptional(),
+    CatalogName: CatalogNameStringSchema.openapi({
+      description: 'The name of the data catalog for which table metadata should be returned.',
+    }),
+    DatabaseName: NameStringSchema.openapi({
+      description: 'The name of the database for which table metadata should be returned.',
+    }),
+    Expression: ExpressionStringSchema.exactOptional().openapi({
+      description:
+        'A regex filter that pattern-matches table names. If no expression is supplied, metadata for all tables are listed.',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'A token generated by the Athena service that specifies where to continue pagination if a previous request was truncated. To obtain the next set of pages, pass in the NextToken from the response object of the previous page call.',
+    }),
+    MaxResults: MaxTableMetadataCountSchema.exactOptional().openapi({
+      description: 'Specifies the maximum number of results to return.',
+    }),
   })
   .openapi({ required: ['CatalogName', 'DatabaseName'], title: 'ListTableMetadataInput' })
   .openapi('ListTableMetadataInput')
 
 const ListTagsForResourceOutputSchema = z
   .object({
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'The list of tags associated with the specified resource.' }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A token to be used by the next request if this request is truncated.',
-        }),
-    ).exactOptional(),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'The list of tags associated with the specified resource.',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description: 'A token to be used by the next request if this request is truncated.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTagsForResourceOutput')
@@ -3548,51 +2764,39 @@ const MaxTagsCountSchema = z.int().min(75).openapi('MaxTagsCount')
 
 const ListTagsForResourceInputSchema = z
   .object({
-    ResourceARN: AmazonResourceNameSchema.and(
-      z.any().openapi({ description: 'Lists the tags for the resource with the specified ARN.' }),
-    ),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of results, or null if there are no additional results for this request, where the request lists the tags for the resource with the specified ARN.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxTagsCountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results to be returned per request that lists the tags for the resource.',
-        }),
-    ).exactOptional(),
+    ResourceARN: AmazonResourceNameSchema.openapi({
+      description: 'Lists the tags for the resource with the specified ARN.',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'The token for the next set of results, or null if there are no additional results for this request, where the request lists the tags for the resource with the specified ARN.',
+    }),
+    MaxResults: MaxTagsCountSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results to be returned per request that lists the tags for the resource.',
+    }),
   })
   .openapi({ required: ['ResourceARN'], title: 'ListTagsForResourceInput' })
   .openapi('ListTagsForResourceInput')
 
 const WorkGroupSummarySchema = z
   .object({
-    Name: WorkGroupNameSchema.and(
-      z.any().openapi({ description: 'The name of the workgroup.' }),
-    ).exactOptional(),
-    State: WorkGroupStateSchema.and(
-      z.any().openapi({ description: 'The state of the workgroup.' }),
-    ).exactOptional(),
-    Description: WorkGroupDescriptionStringSchema.and(
-      z.any().openapi({ description: 'The workgroup description.' }),
-    ).exactOptional(),
-    CreationTime: DateSchema.and(
-      z.any().openapi({ description: 'The workgroup creation date and time.' }),
-    ).exactOptional(),
-    EngineVersion: EngineVersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The engine version setting for all queries on the workgroup. Queries on the <code>AmazonAthenaPreviewFunctionality</code> workgroup run on the preview engine regardless of this setting.',
-        }),
-    ).exactOptional(),
+    Name: WorkGroupNameSchema.exactOptional().openapi({
+      description: 'The name of the workgroup.',
+    }),
+    State: WorkGroupStateSchema.exactOptional().openapi({
+      description: 'The state of the workgroup.',
+    }),
+    Description: WorkGroupDescriptionStringSchema.exactOptional().openapi({
+      description: 'The workgroup description.',
+    }),
+    CreationTime: DateSchema.exactOptional().openapi({
+      description: 'The workgroup creation date and time.',
+    }),
+    EngineVersion: EngineVersionSchema.exactOptional().openapi({
+      description:
+        'The engine version setting for all queries on the workgroup. Queries on the <code>AmazonAthenaPreviewFunctionality</code> workgroup run on the preview engine regardless of this setting.',
+    }),
   })
   .openapi({
     description:
@@ -3609,22 +2813,14 @@ const WorkGroupsListSchema = z
 
 const ListWorkGroupsOutputSchema = z
   .object({
-    WorkGroups: WorkGroupsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of <a>WorkGroupSummary</a> objects that include the names, descriptions, creation times, and states for each workgroup.',
-        }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token generated by the Athena service that specifies where to continue pagination if a previous request was truncated. To obtain the next set of pages, pass in the <code>NextToken</code> from the response object of the previous page call.',
-        }),
-    ).exactOptional(),
+    WorkGroups: WorkGroupsListSchema.exactOptional().openapi({
+      description:
+        'A list of <a>WorkGroupSummary</a> objects that include the names, descriptions, creation times, and states for each workgroup.',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'A token generated by the Athena service that specifies where to continue pagination if a previous request was truncated. To obtain the next set of pages, pass in the <code>NextToken</code> from the response object of the previous page call.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListWorkGroupsOutput')
@@ -3633,44 +2829,30 @@ const MaxWorkGroupsCountSchema = z.int().min(1).max(50).openapi('MaxWorkGroupsCo
 
 const ListWorkGroupsInputSchema = z
   .object({
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token generated by the Athena service that specifies where to continue pagination if a previous request was truncated. To obtain the next set of pages, pass in the <code>NextToken</code> from the response object of the previous page call.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxWorkGroupsCountSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The maximum number of workgroups to return in this request.' }),
-    ).exactOptional(),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'A token generated by the Athena service that specifies where to continue pagination if a previous request was truncated. To obtain the next set of pages, pass in the <code>NextToken</code> from the response object of the previous page call.',
+    }),
+    MaxResults: MaxWorkGroupsCountSchema.exactOptional().openapi({
+      description: 'The maximum number of workgroups to return in this request.',
+    }),
   })
   .openapi({ title: 'ListWorkGroupsInput', required: [] })
   .openapi('ListWorkGroupsInput')
 
 const PutCapacityAssignmentConfigurationOutputSchema = z
-  .object({})
+  .looseObject({})
   .openapi('PutCapacityAssignmentConfigurationOutput')
 
 const PutCapacityAssignmentConfigurationInputSchema = z
   .object({
-    CapacityReservationName: CapacityReservationNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the capacity reservation to put a capacity assignment configuration for.',
-        }),
-    ),
-    CapacityAssignments: CapacityAssignmentsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The list of assignments for the capacity assignment configuration.',
-        }),
-    ),
+    CapacityReservationName: CapacityReservationNameSchema.openapi({
+      description:
+        'The name of the capacity reservation to put a capacity assignment configuration for.',
+    }),
+    CapacityAssignments: CapacityAssignmentsListSchema.openapi({
+      description: 'The list of assignments for the capacity assignment configuration.',
+    }),
   })
   .openapi({
     required: ['CapacityReservationName', 'CapacityAssignments'],
@@ -3680,130 +2862,94 @@ const PutCapacityAssignmentConfigurationInputSchema = z
 
 const StartCalculationExecutionResponseSchema = z
   .object({
-    CalculationExecutionId: CalculationExecutionIdSchema.and(
-      z.any().openapi({ description: 'The calculation execution UUID.' }),
-    ).exactOptional(),
-    State: CalculationExecutionStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> <code>CREATING</code> - The calculation is in the process of being created.</p> <p> <code>CREATED</code> - The calculation has been created and is ready to run.</p> <p> <code>QUEUED</code> - The calculation has been queued for processing.</p> <p> <code>RUNNING</code> - The calculation is running.</p> <p> <code>CANCELING</code> - A request to cancel the calculation has been received and the system is working to stop it.</p> <p> <code>CANCELED</code> - The calculation is no longer running as the result of a cancel request.</p> <p> <code>COMPLETED</code> - The calculation has completed without error.</p> <p> <code>FAILED</code> - The calculation failed and is no longer running.</p>',
-        }),
-    ).exactOptional(),
+    CalculationExecutionId: CalculationExecutionIdSchema.exactOptional().openapi({
+      description: 'The calculation execution UUID.',
+    }),
+    State: CalculationExecutionStateSchema.exactOptional().openapi({
+      description:
+        '<p> <code>CREATING</code> - The calculation is in the process of being created.</p> <p> <code>CREATED</code> - The calculation has been created and is ready to run.</p> <p> <code>QUEUED</code> - The calculation has been queued for processing.</p> <p> <code>RUNNING</code> - The calculation is running.</p> <p> <code>CANCELING</code> - A request to cancel the calculation has been received and the system is working to stop it.</p> <p> <code>CANCELED</code> - The calculation is no longer running as the result of a cancel request.</p> <p> <code>COMPLETED</code> - The calculation has completed without error.</p> <p> <code>FAILED</code> - The calculation failed and is no longer running.</p>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StartCalculationExecutionResponse')
 
 const CalculationConfigurationSchema = z
   .object({
-    CodeBlock: CodeBlockSchema.and(
-      z.any().openapi({ description: 'A string that contains the code for the calculation.' }),
-    ).exactOptional(),
+    CodeBlock: CodeBlockSchema.exactOptional().openapi({
+      description: 'A string that contains the code for the calculation.',
+    }),
   })
   .openapi({ description: 'Contains configuration information for the calculation.', required: [] })
   .openapi('CalculationConfiguration')
 
 const StartCalculationExecutionRequestSchema = z
   .object({
-    SessionId: SessionIdSchema.and(z.any().openapi({ description: 'The session ID.' })),
-    Description: DescriptionStringSchema.and(
-      z.any().openapi({ description: 'A description of the calculation.' }),
-    ).exactOptional(),
-    CalculationConfiguration: CalculationConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          description:
-            'Contains configuration information for the calculation.Kepler Post GA Tasks : https://sim.amazon.com/issues/ATHENA-39828',
-        }),
-    ).exactOptional(),
-    CodeBlock: CodeBlockSchema.and(
-      z.any().openapi({ description: 'A string that contains the code of the calculation.' }),
-    ).exactOptional(),
-    ClientRequestToken: IdempotencyTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A unique case-sensitive string used to ensure the request to create the calculation is idempotent (executes only once). If another <code>StartCalculationExecutionRequest</code> is received, the same response is returned and another calculation is not created. If a parameter has changed, an error is returned.</p> <important> <p>This token is listed as not required because Amazon Web Services SDKs (for example the Amazon Web Services SDK for Java) auto-generate the token for users. If you are not using the Amazon Web Services SDK or the Amazon Web Services CLI, you must provide this token or the action will fail.</p> </important>',
-        }),
-    ).exactOptional(),
+    SessionId: SessionIdSchema.openapi({ description: 'The session ID.' }),
+    Description: DescriptionStringSchema.exactOptional().openapi({
+      description: 'A description of the calculation.',
+    }),
+    CalculationConfiguration: CalculationConfigurationSchema.exactOptional().openapi({
+      deprecated: true,
+      description:
+        'Contains configuration information for the calculation.Kepler Post GA Tasks : https://sim.amazon.com/issues/ATHENA-39828',
+    }),
+    CodeBlock: CodeBlockSchema.exactOptional().openapi({
+      description: 'A string that contains the code of the calculation.',
+    }),
+    ClientRequestToken: IdempotencyTokenSchema.exactOptional().openapi({
+      description:
+        '<p>A unique case-sensitive string used to ensure the request to create the calculation is idempotent (executes only once). If another <code>StartCalculationExecutionRequest</code> is received, the same response is returned and another calculation is not created. If a parameter has changed, an error is returned.</p> <important> <p>This token is listed as not required because Amazon Web Services SDKs (for example the Amazon Web Services SDK for Java) auto-generate the token for users. If you are not using the Amazon Web Services SDK or the Amazon Web Services CLI, you must provide this token or the action will fail.</p> </important>',
+    }),
   })
   .openapi({ required: ['SessionId'], title: 'StartCalculationExecutionRequest' })
   .openapi('StartCalculationExecutionRequest')
 
 const StartQueryExecutionOutputSchema = z
   .object({
-    QueryExecutionId: QueryExecutionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The unique ID of the query that ran as a result of this request.',
-        }),
-    ).exactOptional(),
+    QueryExecutionId: QueryExecutionIdSchema.exactOptional().openapi({
+      description: 'The unique ID of the query that ran as a result of this request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StartQueryExecutionOutput')
 
 const StartQueryExecutionInputSchema = z
   .object({
-    QueryString: QueryStringSchema.and(
-      z.any().openapi({ description: 'The SQL query statements to be executed.' }),
-    ),
-    ClientRequestToken: IdempotencyTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A unique case-sensitive string used to ensure the request to create the query is idempotent (executes only once). If another <code>StartQueryExecution</code> request is received, the same response is returned and another query is not created. If a parameter has changed, for example, the <code>QueryString</code>, an error is returned.</p> <important> <p>This token is listed as not required because Amazon Web Services SDKs (for example the Amazon Web Services SDK for Java) auto-generate the token for users. If you are not using the Amazon Web Services SDK or the Amazon Web Services CLI, you must provide this token or the action will fail.</p> </important>',
-        }),
-    ).exactOptional(),
-    QueryExecutionContext: QueryExecutionContextSchema.and(
-      z.any().openapi({ description: 'The database within which the query executes.' }),
-    ).exactOptional(),
-    ResultConfiguration: ResultConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Specifies information about where and how to save the results of the query execution. If the query runs in a workgroup, then workgroup's settings may override query settings. This affects the query results location. The workgroup settings override is specified in EnforceWorkGroupConfiguration (true/false) in the WorkGroupConfiguration. See <a>WorkGroupConfiguration$EnforceWorkGroupConfiguration</a>.",
-        }),
-    ).exactOptional(),
-    WorkGroup: WorkGroupNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the workgroup in which the query is being started.' }),
-    ).exactOptional(),
-    ExecutionParameters: ExecutionParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of values for the parameters in a query. The values are applied sequentially to the parameters in the query in the order in which the parameters occur.',
-        }),
-    ).exactOptional(),
-    ResultReuseConfiguration: ResultReuseConfigurationSchema.and(
-      z.any().openapi({ description: 'Specifies the query result reuse behavior for the query.' }),
-    ).exactOptional(),
+    QueryString: QueryStringSchema.openapi({
+      description: 'The SQL query statements to be executed.',
+    }),
+    ClientRequestToken: IdempotencyTokenSchema.exactOptional().openapi({
+      description:
+        '<p>A unique case-sensitive string used to ensure the request to create the query is idempotent (executes only once). If another <code>StartQueryExecution</code> request is received, the same response is returned and another query is not created. If a parameter has changed, for example, the <code>QueryString</code>, an error is returned.</p> <important> <p>This token is listed as not required because Amazon Web Services SDKs (for example the Amazon Web Services SDK for Java) auto-generate the token for users. If you are not using the Amazon Web Services SDK or the Amazon Web Services CLI, you must provide this token or the action will fail.</p> </important>',
+    }),
+    QueryExecutionContext: QueryExecutionContextSchema.exactOptional().openapi({
+      description: 'The database within which the query executes.',
+    }),
+    ResultConfiguration: ResultConfigurationSchema.exactOptional().openapi({
+      description:
+        "Specifies information about where and how to save the results of the query execution. If the query runs in a workgroup, then workgroup's settings may override query settings. This affects the query results location. The workgroup settings override is specified in EnforceWorkGroupConfiguration (true/false) in the WorkGroupConfiguration. See <a>WorkGroupConfiguration$EnforceWorkGroupConfiguration</a>.",
+    }),
+    WorkGroup: WorkGroupNameSchema.exactOptional().openapi({
+      description: 'The name of the workgroup in which the query is being started.',
+    }),
+    ExecutionParameters: ExecutionParametersSchema.exactOptional().openapi({
+      description:
+        'A list of values for the parameters in a query. The values are applied sequentially to the parameters in the query in the order in which the parameters occur.',
+    }),
+    ResultReuseConfiguration: ResultReuseConfigurationSchema.exactOptional().openapi({
+      description: 'Specifies the query result reuse behavior for the query.',
+    }),
   })
   .openapi({ required: ['QueryString'], title: 'StartQueryExecutionInput' })
   .openapi('StartQueryExecutionInput')
 
 const StartSessionResponseSchema = z
   .object({
-    SessionId: SessionIdSchema.and(
-      z.any().openapi({ description: 'The session ID.' }),
-    ).exactOptional(),
-    State: SessionStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The state of the session. A description of each state follows.</p> <p> <code>CREATING</code> - The session is being started, including acquiring resources.</p> <p> <code>CREATED</code> - The session has been started.</p> <p> <code>IDLE</code> - The session is able to accept a calculation.</p> <p> <code>BUSY</code> - The session is processing another task and is unable to accept a calculation.</p> <p> <code>TERMINATING</code> - The session is in the process of shutting down.</p> <p> <code>TERMINATED</code> - The session and its resources are no longer running.</p> <p> <code>DEGRADED</code> - The session has no healthy coordinators.</p> <p> <code>FAILED</code> - Due to a failure, the session and its resources are no longer running.</p>',
-        }),
-    ).exactOptional(),
+    SessionId: SessionIdSchema.exactOptional().openapi({ description: 'The session ID.' }),
+    State: SessionStateSchema.exactOptional().openapi({
+      description:
+        '<p>The state of the session. A description of each state follows.</p> <p> <code>CREATING</code> - The session is being started, including acquiring resources.</p> <p> <code>CREATED</code> - The session has been started.</p> <p> <code>IDLE</code> - The session is able to accept a calculation.</p> <p> <code>BUSY</code> - The session is processing another task and is unable to accept a calculation.</p> <p> <code>TERMINATING</code> - The session is in the process of shutting down.</p> <p> <code>TERMINATED</code> - The session and its resources are no longer running.</p> <p> <code>DEGRADED</code> - The session has no healthy coordinators.</p> <p> <code>FAILED</code> - Due to a failure, the session and its resources are no longer running.</p>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StartSessionResponse')
@@ -3816,39 +2962,27 @@ const SessionIdleTimeoutInMinutesSchema = z
 
 const StartSessionRequestSchema = z
   .object({
-    Description: DescriptionStringSchema.and(
-      z.any().openapi({ description: 'The session description.' }),
-    ).exactOptional(),
-    WorkGroup: WorkGroupNameSchema.and(
-      z.any().openapi({ description: 'The workgroup to which the session belongs.' }),
-    ),
-    EngineConfiguration: EngineConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains engine data processing unit (DPU) configuration settings and parameter mappings.',
-        }),
-    ),
-    NotebookVersion: NameStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The notebook version. This value is supplied automatically for notebook sessions in the Athena console and is not required for programmatic session access. The only valid notebook version is <code>Athena notebook version 1</code>. If you specify a value for <code>NotebookVersion</code>, you must also specify a value for <code>NotebookId</code>. See <a>EngineConfiguration$AdditionalConfigs</a>.',
-        }),
-    ).exactOptional(),
-    SessionIdleTimeoutInMinutes: SessionIdleTimeoutInMinutesSchema.and(
-      z.any().openapi({ description: 'The idle timeout in minutes for the session.' }),
-    ).exactOptional(),
-    ClientRequestToken: IdempotencyTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A unique case-sensitive string used to ensure the request to create the session is idempotent (executes only once). If another <code>StartSessionRequest</code> is received, the same response is returned and another session is not created. If a parameter has changed, an error is returned.</p> <important> <p>This token is listed as not required because Amazon Web Services SDKs (for example the Amazon Web Services SDK for Java) auto-generate the token for users. If you are not using the Amazon Web Services SDK or the Amazon Web Services CLI, you must provide this token or the action will fail.</p> </important>',
-        }),
-    ).exactOptional(),
+    Description: DescriptionStringSchema.exactOptional().openapi({
+      description: 'The session description.',
+    }),
+    WorkGroup: WorkGroupNameSchema.openapi({
+      description: 'The workgroup to which the session belongs.',
+    }),
+    EngineConfiguration: EngineConfigurationSchema.openapi({
+      description:
+        'Contains engine data processing unit (DPU) configuration settings and parameter mappings.',
+    }),
+    NotebookVersion: NameStringSchema.exactOptional().openapi({
+      description:
+        'The notebook version. This value is supplied automatically for notebook sessions in the Athena console and is not required for programmatic session access. The only valid notebook version is <code>Athena notebook version 1</code>. If you specify a value for <code>NotebookVersion</code>, you must also specify a value for <code>NotebookId</code>. See <a>EngineConfiguration$AdditionalConfigs</a>.',
+    }),
+    SessionIdleTimeoutInMinutes: SessionIdleTimeoutInMinutesSchema.exactOptional().openapi({
+      description: 'The idle timeout in minutes for the session.',
+    }),
+    ClientRequestToken: IdempotencyTokenSchema.exactOptional().openapi({
+      description:
+        '<p>A unique case-sensitive string used to ensure the request to create the session is idempotent (executes only once). If another <code>StartSessionRequest</code> is received, the same response is returned and another session is not created. If a parameter has changed, an error is returned.</p> <important> <p>This token is listed as not required because Amazon Web Services SDKs (for example the Amazon Web Services SDK for Java) auto-generate the token for users. If you are not using the Amazon Web Services SDK or the Amazon Web Services CLI, you must provide this token or the action will fail.</p> </important>',
+    }),
   })
   .openapi({ required: ['WorkGroup', 'EngineConfiguration'], title: 'StartSessionRequest' })
   .openapi('StartSessionRequest')
@@ -3857,157 +2991,121 @@ const SessionAlreadyExistsExceptionSchema = z.any().openapi('SessionAlreadyExist
 
 const StopCalculationExecutionResponseSchema = z
   .object({
-    State: CalculationExecutionStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> <code>CREATING</code> - The calculation is in the process of being created.</p> <p> <code>CREATED</code> - The calculation has been created and is ready to run.</p> <p> <code>QUEUED</code> - The calculation has been queued for processing.</p> <p> <code>RUNNING</code> - The calculation is running.</p> <p> <code>CANCELING</code> - A request to cancel the calculation has been received and the system is working to stop it.</p> <p> <code>CANCELED</code> - The calculation is no longer running as the result of a cancel request.</p> <p> <code>COMPLETED</code> - The calculation has completed without error.</p> <p> <code>FAILED</code> - The calculation failed and is no longer running.</p>',
-        }),
-    ).exactOptional(),
+    State: CalculationExecutionStateSchema.exactOptional().openapi({
+      description:
+        '<p> <code>CREATING</code> - The calculation is in the process of being created.</p> <p> <code>CREATED</code> - The calculation has been created and is ready to run.</p> <p> <code>QUEUED</code> - The calculation has been queued for processing.</p> <p> <code>RUNNING</code> - The calculation is running.</p> <p> <code>CANCELING</code> - A request to cancel the calculation has been received and the system is working to stop it.</p> <p> <code>CANCELED</code> - The calculation is no longer running as the result of a cancel request.</p> <p> <code>COMPLETED</code> - The calculation has completed without error.</p> <p> <code>FAILED</code> - The calculation failed and is no longer running.</p>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StopCalculationExecutionResponse')
 
 const StopCalculationExecutionRequestSchema = z
   .object({
-    CalculationExecutionId: CalculationExecutionIdSchema.and(
-      z.any().openapi({ description: 'The calculation execution UUID.' }),
-    ),
+    CalculationExecutionId: CalculationExecutionIdSchema.openapi({
+      description: 'The calculation execution UUID.',
+    }),
   })
   .openapi({ required: ['CalculationExecutionId'], title: 'StopCalculationExecutionRequest' })
   .openapi('StopCalculationExecutionRequest')
 
-const StopQueryExecutionOutputSchema = z.object({}).openapi('StopQueryExecutionOutput')
+const StopQueryExecutionOutputSchema = z.looseObject({}).openapi('StopQueryExecutionOutput')
 
 const StopQueryExecutionInputSchema = z
   .object({
-    QueryExecutionId: QueryExecutionIdSchema.and(
-      z.any().openapi({ description: 'The unique ID of the query execution to stop.' }),
-    ),
+    QueryExecutionId: QueryExecutionIdSchema.openapi({
+      description: 'The unique ID of the query execution to stop.',
+    }),
   })
   .openapi({ required: ['QueryExecutionId'], title: 'StopQueryExecutionInput' })
   .openapi('StopQueryExecutionInput')
 
-const TagResourceOutputSchema = z.object({}).openapi('TagResourceOutput')
+const TagResourceOutputSchema = z.looseObject({}).openapi('TagResourceOutput')
 
 const TagResourceInputSchema = z
   .object({
-    ResourceARN: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specifies the ARN of the Athena resource to which tags are to be added.',
-        }),
-    ),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A collection of one or more tags, separated by commas, to be added to an Athena resource.',
-        }),
-    ),
+    ResourceARN: AmazonResourceNameSchema.openapi({
+      description: 'Specifies the ARN of the Athena resource to which tags are to be added.',
+    }),
+    Tags: TagListSchema.openapi({
+      description:
+        'A collection of one or more tags, separated by commas, to be added to an Athena resource.',
+    }),
   })
   .openapi({ required: ['ResourceARN', 'Tags'], title: 'TagResourceInput' })
   .openapi('TagResourceInput')
 
 const TerminateSessionResponseSchema = z
   .object({
-    State: SessionStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The state of the session. A description of each state follows.</p> <p> <code>CREATING</code> - The session is being started, including acquiring resources.</p> <p> <code>CREATED</code> - The session has been started.</p> <p> <code>IDLE</code> - The session is able to accept a calculation.</p> <p> <code>BUSY</code> - The session is processing another task and is unable to accept a calculation.</p> <p> <code>TERMINATING</code> - The session is in the process of shutting down.</p> <p> <code>TERMINATED</code> - The session and its resources are no longer running.</p> <p> <code>DEGRADED</code> - The session has no healthy coordinators.</p> <p> <code>FAILED</code> - Due to a failure, the session and its resources are no longer running.</p>',
-        }),
-    ).exactOptional(),
+    State: SessionStateSchema.exactOptional().openapi({
+      description:
+        '<p>The state of the session. A description of each state follows.</p> <p> <code>CREATING</code> - The session is being started, including acquiring resources.</p> <p> <code>CREATED</code> - The session has been started.</p> <p> <code>IDLE</code> - The session is able to accept a calculation.</p> <p> <code>BUSY</code> - The session is processing another task and is unable to accept a calculation.</p> <p> <code>TERMINATING</code> - The session is in the process of shutting down.</p> <p> <code>TERMINATED</code> - The session and its resources are no longer running.</p> <p> <code>DEGRADED</code> - The session has no healthy coordinators.</p> <p> <code>FAILED</code> - Due to a failure, the session and its resources are no longer running.</p>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('TerminateSessionResponse')
 
 const TerminateSessionRequestSchema = z
-  .object({ SessionId: SessionIdSchema.and(z.any().openapi({ description: 'The session ID.' })) })
+  .object({ SessionId: SessionIdSchema.openapi({ description: 'The session ID.' }) })
   .openapi({ required: ['SessionId'], title: 'TerminateSessionRequest' })
   .openapi('TerminateSessionRequest')
 
-const UntagResourceOutputSchema = z.object({}).openapi('UntagResourceOutput')
+const UntagResourceOutputSchema = z.looseObject({}).openapi('UntagResourceOutput')
 
 const TagKeyListSchema = z.array(TagKeySchema).openapi('TagKeyList')
 
 const UntagResourceInputSchema = z
   .object({
-    ResourceARN: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specifies the ARN of the resource from which tags are to be removed.',
-        }),
-    ),
-    TagKeys: TagKeyListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A comma-separated list of one or more tag keys whose tags are to be removed from the specified resource.',
-        }),
-    ),
+    ResourceARN: AmazonResourceNameSchema.openapi({
+      description: 'Specifies the ARN of the resource from which tags are to be removed.',
+    }),
+    TagKeys: TagKeyListSchema.openapi({
+      description:
+        'A comma-separated list of one or more tag keys whose tags are to be removed from the specified resource.',
+    }),
   })
   .openapi({ required: ['ResourceARN', 'TagKeys'], title: 'UntagResourceInput' })
   .openapi('UntagResourceInput')
 
 const UpdateCapacityReservationOutputSchema = z
-  .object({})
+  .looseObject({})
   .openapi('UpdateCapacityReservationOutput')
 
 const UpdateCapacityReservationInputSchema = z
   .object({
-    TargetDpus: TargetDpusIntegerSchema.and(
-      z.any().openapi({ description: 'The new number of requested data processing units.' }),
-    ),
-    Name: CapacityReservationNameSchema.and(
-      z.any().openapi({ description: 'The name of the capacity reservation.' }),
-    ),
+    TargetDpus: TargetDpusIntegerSchema.openapi({
+      description: 'The new number of requested data processing units.',
+    }),
+    Name: CapacityReservationNameSchema.openapi({
+      description: 'The name of the capacity reservation.',
+    }),
   })
   .openapi({ required: ['TargetDpus', 'Name'], title: 'UpdateCapacityReservationInput' })
   .openapi('UpdateCapacityReservationInput')
 
-const UpdateDataCatalogOutputSchema = z.object({}).openapi('UpdateDataCatalogOutput')
+const UpdateDataCatalogOutputSchema = z.looseObject({}).openapi('UpdateDataCatalogOutput')
 
 const UpdateDataCatalogInputSchema = z
   .object({
-    Name: CatalogNameStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the data catalog to update. The catalog name must be unique for the Amazon Web Services account and can use a maximum of 127 alphanumeric, underscore, at sign, or hyphen characters. The remainder of the length constraint of 256 is reserved for use by Athena.',
-        }),
-    ),
-    Type: DataCatalogTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the type of data catalog to update. Specify <code>LAMBDA</code> for a federated catalog, <code>HIVE</code> for an external hive metastore, or <code>GLUE</code> for an Glue Data Catalog.',
-        }),
-    ),
-    Description: DescriptionStringSchema.and(
-      z.any().openapi({ description: 'New or modified text that describes the data catalog.' }),
-    ).exactOptional(),
-    Parameters: ParametersMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies the Lambda function or functions to use for updating the data catalog. This is a mapping whose values depend on the catalog type. </p> <ul> <li> <p>For the <code>HIVE</code> data catalog type, use the following syntax. The <code>metadata-function</code> parameter is required. <code>The sdk-version</code> parameter is optional and defaults to the currently supported version.</p> <p> <code>metadata-function=<i>lambda_arn</i>, sdk-version=<i>version_number</i> </code> </p> </li> <li> <p>For the <code>LAMBDA</code> data catalog type, use one of the following sets of required parameters, but not both.</p> <ul> <li> <p>If you have one Lambda function that processes metadata and another for reading the actual data, use the following syntax. Both parameters are required.</p> <p> <code>metadata-function=<i>lambda_arn</i>, record-function=<i>lambda_arn</i> </code> </p> </li> <li> <p> If you have a composite Lambda function that processes both metadata and data, use the following syntax to specify your Lambda function.</p> <p> <code>function=<i>lambda_arn</i> </code> </p> </li> </ul> </li> </ul>',
-        }),
-    ).exactOptional(),
+    Name: CatalogNameStringSchema.openapi({
+      description:
+        'The name of the data catalog to update. The catalog name must be unique for the Amazon Web Services account and can use a maximum of 127 alphanumeric, underscore, at sign, or hyphen characters. The remainder of the length constraint of 256 is reserved for use by Athena.',
+    }),
+    Type: DataCatalogTypeSchema.openapi({
+      description:
+        'Specifies the type of data catalog to update. Specify <code>LAMBDA</code> for a federated catalog, <code>HIVE</code> for an external hive metastore, or <code>GLUE</code> for an Glue Data Catalog.',
+    }),
+    Description: DescriptionStringSchema.exactOptional().openapi({
+      description: 'New or modified text that describes the data catalog.',
+    }),
+    Parameters: ParametersMapSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies the Lambda function or functions to use for updating the data catalog. This is a mapping whose values depend on the catalog type. </p> <ul> <li> <p>For the <code>HIVE</code> data catalog type, use the following syntax. The <code>metadata-function</code> parameter is required. <code>The sdk-version</code> parameter is optional and defaults to the currently supported version.</p> <p> <code>metadata-function=<i>lambda_arn</i>, sdk-version=<i>version_number</i> </code> </p> </li> <li> <p>For the <code>LAMBDA</code> data catalog type, use one of the following sets of required parameters, but not both.</p> <ul> <li> <p>If you have one Lambda function that processes metadata and another for reading the actual data, use the following syntax. Both parameters are required.</p> <p> <code>metadata-function=<i>lambda_arn</i>, record-function=<i>lambda_arn</i> </code> </p> </li> <li> <p> If you have a composite Lambda function that processes both metadata and data, use the following syntax to specify your Lambda function.</p> <p> <code>function=<i>lambda_arn</i> </code> </p> </li> </ul> </li> </ul>',
+    }),
   })
   .openapi({ required: ['Name', 'Type'], title: 'UpdateDataCatalogInput' })
   .openapi('UpdateDataCatalogInput')
 
-const UpdateNamedQueryOutputSchema = z.object({}).openapi('UpdateNamedQueryOutput')
+const UpdateNamedQueryOutputSchema = z.looseObject({}).openapi('UpdateNamedQueryOutput')
 
 const NamedQueryDescriptionStringSchema = z
   .string()
@@ -4017,96 +3115,76 @@ const NamedQueryDescriptionStringSchema = z
 
 const UpdateNamedQueryInputSchema = z
   .object({
-    NamedQueryId: NamedQueryIdSchema.and(
-      z.any().openapi({ description: 'The unique identifier (UUID) of the query.' }),
-    ),
-    Name: NameStringSchema.and(z.any().openapi({ description: 'The name of the query.' })),
-    Description: NamedQueryDescriptionStringSchema.and(
-      z.any().openapi({ description: 'The query description.' }),
-    ).exactOptional(),
-    QueryString: QueryStringSchema.and(
-      z.any().openapi({ description: 'The contents of the query with all query statements.' }),
-    ),
+    NamedQueryId: NamedQueryIdSchema.openapi({
+      description: 'The unique identifier (UUID) of the query.',
+    }),
+    Name: NameStringSchema.openapi({ description: 'The name of the query.' }),
+    Description: NamedQueryDescriptionStringSchema.exactOptional().openapi({
+      description: 'The query description.',
+    }),
+    QueryString: QueryStringSchema.openapi({
+      description: 'The contents of the query with all query statements.',
+    }),
   })
   .openapi({ required: ['NamedQueryId', 'Name', 'QueryString'], title: 'UpdateNamedQueryInput' })
   .openapi('UpdateNamedQueryInput')
 
-const UpdateNotebookOutputSchema = z.object({}).openapi('UpdateNotebookOutput')
+const UpdateNotebookOutputSchema = z.looseObject({}).openapi('UpdateNotebookOutput')
 
 const UpdateNotebookInputSchema = z
   .object({
-    NotebookId: NotebookIdSchema.and(
-      z.any().openapi({ description: 'The ID of the notebook to update.' }),
-    ),
-    Payload: PayloadSchema.and(
-      z.any().openapi({ description: 'The updated content for the notebook.' }),
-    ),
-    Type: NotebookTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The notebook content type. Currently, the only valid type is <code>IPYNB</code>.',
-        }),
-    ),
-    SessionId: SessionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The active notebook session ID. Required if the notebook has an active session.',
-        }),
-    ).exactOptional(),
-    ClientRequestToken: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A unique case-sensitive string used to ensure the request to create the notebook is idempotent (executes only once).</p> <important> <p>This token is listed as not required because Amazon Web Services SDKs (for example the Amazon Web Services SDK for Java) auto-generate the token for you. If you are not using the Amazon Web Services SDK or the Amazon Web Services CLI, you must provide this token or the action will fail.</p> </important>',
-        }),
-    ).exactOptional(),
+    NotebookId: NotebookIdSchema.openapi({ description: 'The ID of the notebook to update.' }),
+    Payload: PayloadSchema.openapi({ description: 'The updated content for the notebook.' }),
+    Type: NotebookTypeSchema.openapi({
+      description:
+        'The notebook content type. Currently, the only valid type is <code>IPYNB</code>.',
+    }),
+    SessionId: SessionIdSchema.exactOptional().openapi({
+      description:
+        'The active notebook session ID. Required if the notebook has an active session.',
+    }),
+    ClientRequestToken: ClientRequestTokenSchema.exactOptional().openapi({
+      description:
+        '<p>A unique case-sensitive string used to ensure the request to create the notebook is idempotent (executes only once).</p> <important> <p>This token is listed as not required because Amazon Web Services SDKs (for example the Amazon Web Services SDK for Java) auto-generate the token for you. If you are not using the Amazon Web Services SDK or the Amazon Web Services CLI, you must provide this token or the action will fail.</p> </important>',
+    }),
   })
   .openapi({ required: ['NotebookId', 'Payload', 'Type'], title: 'UpdateNotebookInput' })
   .openapi('UpdateNotebookInput')
 
-const UpdateNotebookMetadataOutputSchema = z.object({}).openapi('UpdateNotebookMetadataOutput')
+const UpdateNotebookMetadataOutputSchema = z.looseObject({}).openapi('UpdateNotebookMetadataOutput')
 
 const UpdateNotebookMetadataInputSchema = z
   .object({
-    NotebookId: NotebookIdSchema.and(
-      z.any().openapi({ description: 'The ID of the notebook to update the metadata for.' }),
-    ),
-    ClientRequestToken: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A unique case-sensitive string used to ensure the request to create the notebook is idempotent (executes only once).</p> <important> <p>This token is listed as not required because Amazon Web Services SDKs (for example the Amazon Web Services SDK for Java) auto-generate the token for you. If you are not using the Amazon Web Services SDK or the Amazon Web Services CLI, you must provide this token or the action will fail.</p> </important>',
-        }),
-    ).exactOptional(),
-    Name: NotebookNameSchema.and(
-      z.any().openapi({ description: 'The name to update the notebook to.' }),
-    ),
+    NotebookId: NotebookIdSchema.openapi({
+      description: 'The ID of the notebook to update the metadata for.',
+    }),
+    ClientRequestToken: ClientRequestTokenSchema.exactOptional().openapi({
+      description:
+        '<p>A unique case-sensitive string used to ensure the request to create the notebook is idempotent (executes only once).</p> <important> <p>This token is listed as not required because Amazon Web Services SDKs (for example the Amazon Web Services SDK for Java) auto-generate the token for you. If you are not using the Amazon Web Services SDK or the Amazon Web Services CLI, you must provide this token or the action will fail.</p> </important>',
+    }),
+    Name: NotebookNameSchema.openapi({ description: 'The name to update the notebook to.' }),
   })
   .openapi({ required: ['NotebookId', 'Name'], title: 'UpdateNotebookMetadataInput' })
   .openapi('UpdateNotebookMetadataInput')
 
-const UpdatePreparedStatementOutputSchema = z.object({}).openapi('UpdatePreparedStatementOutput')
+const UpdatePreparedStatementOutputSchema = z
+  .looseObject({})
+  .openapi('UpdatePreparedStatementOutput')
 
 const UpdatePreparedStatementInputSchema = z
   .object({
-    StatementName: StatementNameSchema.and(
-      z.any().openapi({ description: 'The name of the prepared statement.' }),
-    ),
-    WorkGroup: WorkGroupNameSchema.and(
-      z.any().openapi({ description: 'The workgroup for the prepared statement.' }),
-    ),
-    QueryStatement: QueryStringSchema.and(
-      z.any().openapi({ description: 'The query string for the prepared statement.' }),
-    ),
-    Description: DescriptionStringSchema.and(
-      z.any().openapi({ description: 'The description of the prepared statement.' }),
-    ).exactOptional(),
+    StatementName: StatementNameSchema.openapi({
+      description: 'The name of the prepared statement.',
+    }),
+    WorkGroup: WorkGroupNameSchema.openapi({
+      description: 'The workgroup for the prepared statement.',
+    }),
+    QueryStatement: QueryStringSchema.openapi({
+      description: 'The query string for the prepared statement.',
+    }),
+    Description: DescriptionStringSchema.exactOptional().openapi({
+      description: 'The description of the prepared statement.',
+    }),
   })
   .openapi({
     required: ['StatementName', 'WorkGroup', 'QueryStatement'],
@@ -4114,68 +3192,40 @@ const UpdatePreparedStatementInputSchema = z
   })
   .openapi('UpdatePreparedStatementInput')
 
-const UpdateWorkGroupOutputSchema = z.object({}).openapi('UpdateWorkGroupOutput')
+const UpdateWorkGroupOutputSchema = z.looseObject({}).openapi('UpdateWorkGroupOutput')
 
 const ResultConfigurationUpdatesSchema = z
   .object({
-    OutputLocation: ResultOutputLocationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The location in Amazon S3 where your query and calculation results are stored, such as <code>s3://path/to/query/bucket/</code>. For more information, see <a href="https://docs.aws.amazon.com/athena/latest/ug/querying.html">Working with query results, recent queries, and output files</a>. If workgroup settings override client-side settings, then the query uses the location for the query results and the encryption configuration that are specified for the workgroup. The "workgroup settings override" is specified in <code>EnforceWorkGroupConfiguration</code> (true/false) in the <code>WorkGroupConfiguration</code>. See <a>WorkGroupConfiguration$EnforceWorkGroupConfiguration</a>.',
-        }),
-    ).exactOptional(),
-    RemoveOutputLocation: BoxedBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If set to "true", indicates that the previously-specified query results location (also known as a client-side setting) for queries in this workgroup should be ignored and set to null. If set to "false" or not set, and a value is present in the <code>OutputLocation</code> in <code>ResultConfigurationUpdates</code> (the client-side setting), the <code>OutputLocation</code> in the workgroup\'s <code>ResultConfiguration</code> will be updated with the new value. For more information, see <a href="https://docs.aws.amazon.com/athena/latest/ug/workgroups-settings-override.html">Workgroup Settings Override Client-Side Settings</a>.',
-        }),
-    ).exactOptional(),
-    EncryptionConfiguration: EncryptionConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The encryption configuration for query and calculation results.',
-        }),
-    ).exactOptional(),
-    RemoveEncryptionConfiguration: BoxedBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If set to "true", indicates that the previously-specified encryption configuration (also known as the client-side setting) for queries in this workgroup should be ignored and set to null. If set to "false" or not set, and a value is present in the <code>EncryptionConfiguration</code> in <code>ResultConfigurationUpdates</code> (the client-side setting), the <code>EncryptionConfiguration</code> in the workgroup\'s <code>ResultConfiguration</code> will be updated with the new value. For more information, see <a href="https://docs.aws.amazon.com/athena/latest/ug/workgroups-settings-override.html">Workgroup Settings Override Client-Side Settings</a>.',
-        }),
-    ).exactOptional(),
-    ExpectedBucketOwner: AwsAccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Web Services account ID that you expect to be the owner of the Amazon S3 bucket specified by <a>ResultConfiguration$OutputLocation</a>. If set, Athena uses the value for <code>ExpectedBucketOwner</code> when it makes Amazon S3 calls to your specified output location. If the <code>ExpectedBucketOwner</code> Amazon Web Services account ID does not match the actual owner of the Amazon S3 bucket, the call fails with a permissions error.</p> <p>If workgroup settings override client-side settings, then the query uses the <code>ExpectedBucketOwner</code> setting that is specified for the workgroup, and also uses the location for storing query results specified in the workgroup. See <a>WorkGroupConfiguration$EnforceWorkGroupConfiguration</a> and <a href="https://docs.aws.amazon.com/athena/latest/ug/workgroups-settings-override.html">Workgroup Settings Override Client-Side Settings</a>.</p>',
-        }),
-    ).exactOptional(),
-    RemoveExpectedBucketOwner: BoxedBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If set to "true", removes the Amazon Web Services account ID previously specified for <a>ResultConfiguration$ExpectedBucketOwner</a>. If set to "false" or not set, and a value is present in the <code>ExpectedBucketOwner</code> in <code>ResultConfigurationUpdates</code> (the client-side setting), the <code>ExpectedBucketOwner</code> in the workgroup\'s <code>ResultConfiguration</code> is updated with the new value. For more information, see <a href="https://docs.aws.amazon.com/athena/latest/ug/workgroups-settings-override.html">Workgroup Settings Override Client-Side Settings</a>.',
-        }),
-    ).exactOptional(),
-    AclConfiguration: AclConfigurationSchema.and(
-      z.any().openapi({ description: 'The ACL configuration for the query results.' }),
-    ).exactOptional(),
-    RemoveAclConfiguration: BoxedBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If set to <code>true</code>, indicates that the previously-specified ACL configuration for queries in this workgroup should be ignored and set to null. If set to <code>false</code> or not set, and a value is present in the <code>AclConfiguration</code> of <code>ResultConfigurationUpdates</code>, the <code>AclConfiguration</code> in the workgroup\'s <code>ResultConfiguration</code> is updated with the new value. For more information, see <a href="https://docs.aws.amazon.com/athena/latest/ug/workgroups-settings-override.html">Workgroup Settings Override Client-Side Settings</a>.',
-        }),
-    ).exactOptional(),
+    OutputLocation: ResultOutputLocationSchema.exactOptional().openapi({
+      description:
+        'The location in Amazon S3 where your query and calculation results are stored, such as <code>s3://path/to/query/bucket/</code>. For more information, see <a href="https://docs.aws.amazon.com/athena/latest/ug/querying.html">Working with query results, recent queries, and output files</a>. If workgroup settings override client-side settings, then the query uses the location for the query results and the encryption configuration that are specified for the workgroup. The "workgroup settings override" is specified in <code>EnforceWorkGroupConfiguration</code> (true/false) in the <code>WorkGroupConfiguration</code>. See <a>WorkGroupConfiguration$EnforceWorkGroupConfiguration</a>.',
+    }),
+    RemoveOutputLocation: BoxedBooleanSchema.exactOptional().openapi({
+      description:
+        'If set to "true", indicates that the previously-specified query results location (also known as a client-side setting) for queries in this workgroup should be ignored and set to null. If set to "false" or not set, and a value is present in the <code>OutputLocation</code> in <code>ResultConfigurationUpdates</code> (the client-side setting), the <code>OutputLocation</code> in the workgroup\'s <code>ResultConfiguration</code> will be updated with the new value. For more information, see <a href="https://docs.aws.amazon.com/athena/latest/ug/workgroups-settings-override.html">Workgroup Settings Override Client-Side Settings</a>.',
+    }),
+    EncryptionConfiguration: EncryptionConfigurationSchema.exactOptional().openapi({
+      description: 'The encryption configuration for query and calculation results.',
+    }),
+    RemoveEncryptionConfiguration: BoxedBooleanSchema.exactOptional().openapi({
+      description:
+        'If set to "true", indicates that the previously-specified encryption configuration (also known as the client-side setting) for queries in this workgroup should be ignored and set to null. If set to "false" or not set, and a value is present in the <code>EncryptionConfiguration</code> in <code>ResultConfigurationUpdates</code> (the client-side setting), the <code>EncryptionConfiguration</code> in the workgroup\'s <code>ResultConfiguration</code> will be updated with the new value. For more information, see <a href="https://docs.aws.amazon.com/athena/latest/ug/workgroups-settings-override.html">Workgroup Settings Override Client-Side Settings</a>.',
+    }),
+    ExpectedBucketOwner: AwsAccountIdSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Web Services account ID that you expect to be the owner of the Amazon S3 bucket specified by <a>ResultConfiguration$OutputLocation</a>. If set, Athena uses the value for <code>ExpectedBucketOwner</code> when it makes Amazon S3 calls to your specified output location. If the <code>ExpectedBucketOwner</code> Amazon Web Services account ID does not match the actual owner of the Amazon S3 bucket, the call fails with a permissions error.</p> <p>If workgroup settings override client-side settings, then the query uses the <code>ExpectedBucketOwner</code> setting that is specified for the workgroup, and also uses the location for storing query results specified in the workgroup. See <a>WorkGroupConfiguration$EnforceWorkGroupConfiguration</a> and <a href="https://docs.aws.amazon.com/athena/latest/ug/workgroups-settings-override.html">Workgroup Settings Override Client-Side Settings</a>.</p>',
+    }),
+    RemoveExpectedBucketOwner: BoxedBooleanSchema.exactOptional().openapi({
+      description:
+        'If set to "true", removes the Amazon Web Services account ID previously specified for <a>ResultConfiguration$ExpectedBucketOwner</a>. If set to "false" or not set, and a value is present in the <code>ExpectedBucketOwner</code> in <code>ResultConfigurationUpdates</code> (the client-side setting), the <code>ExpectedBucketOwner</code> in the workgroup\'s <code>ResultConfiguration</code> is updated with the new value. For more information, see <a href="https://docs.aws.amazon.com/athena/latest/ug/workgroups-settings-override.html">Workgroup Settings Override Client-Side Settings</a>.',
+    }),
+    AclConfiguration: AclConfigurationSchema.exactOptional().openapi({
+      description: 'The ACL configuration for the query results.',
+    }),
+    RemoveAclConfiguration: BoxedBooleanSchema.exactOptional().openapi({
+      description:
+        'If set to <code>true</code>, indicates that the previously-specified ACL configuration for queries in this workgroup should be ignored and set to null. If set to <code>false</code> or not set, and a value is present in the <code>AclConfiguration</code> of <code>ResultConfigurationUpdates</code>, the <code>AclConfiguration</code> in the workgroup\'s <code>ResultConfiguration</code> is updated with the new value. For more information, see <a href="https://docs.aws.amazon.com/athena/latest/ug/workgroups-settings-override.html">Workgroup Settings Override Client-Side Settings</a>.',
+    }),
   })
   .openapi({
     description:
@@ -4186,91 +3236,50 @@ const ResultConfigurationUpdatesSchema = z
 
 const WorkGroupConfigurationUpdatesSchema = z
   .object({
-    EnforceWorkGroupConfiguration: BoxedBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If set to "true", the settings for the workgroup override client-side settings. If set to "false" client-side settings are used. For more information, see <a href="https://docs.aws.amazon.com/athena/latest/ug/workgroups-settings-override.html">Workgroup Settings Override Client-Side Settings</a>.',
-        }),
-    ).exactOptional(),
-    ResultConfigurationUpdates: ResultConfigurationUpdatesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The result configuration information about the queries in this workgroup that will be updated. Includes the updated results location and an updated option for encrypting query results.',
-        }),
-    ).exactOptional(),
-    PublishCloudWatchMetricsEnabled: BoxedBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether this workgroup enables publishing metrics to Amazon CloudWatch.',
-        }),
-    ).exactOptional(),
-    BytesScannedCutoffPerQuery: BytesScannedCutoffValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The upper limit (cutoff) for the amount of bytes a single query in a workgroup is allowed to scan.',
-        }),
-    ).exactOptional(),
-    RemoveBytesScannedCutoffPerQuery: BoxedBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates that the data usage control limit per query is removed. <a>WorkGroupConfiguration$BytesScannedCutoffPerQuery</a> ',
-        }),
-    ).exactOptional(),
-    RequesterPaysEnabled: BoxedBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If set to <code>true</code>, allows members assigned to a workgroup to specify Amazon S3 Requester Pays buckets in queries. If set to <code>false</code>, workgroup members cannot query data from Requester Pays buckets, and queries that retrieve data from Requester Pays buckets cause an error. The default is <code>false</code>. For more information about Requester Pays buckets, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/RequesterPaysBuckets.html">Requester Pays Buckets</a> in the <i>Amazon Simple Storage Service Developer Guide</i>.',
-        }),
-    ).exactOptional(),
-    EngineVersion: EngineVersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The engine version requested when a workgroup is updated. After the update, all queries on the workgroup run on the requested engine version. If no value was previously set, the default is Auto. Queries on the <code>AmazonAthenaPreviewFunctionality</code> workgroup run on the preview engine regardless of this setting.',
-        }),
-    ).exactOptional(),
-    RemoveCustomerContentEncryptionConfiguration: BoxedBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Removes content encryption configuration from an Apache Spark-enabled Athena workgroup.',
-        }),
-    ).exactOptional(),
-    AdditionalConfiguration: NameStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains a user defined string in JSON format for a Spark-enabled workgroup.',
-        }),
-    ).exactOptional(),
-    ExecutionRole: RoleArnSchema.and(
-      z.any().openapi({ description: 'Contains the ARN of the execution role for the workgroup' }),
-    ).exactOptional(),
+    EnforceWorkGroupConfiguration: BoxedBooleanSchema.exactOptional().openapi({
+      description:
+        'If set to "true", the settings for the workgroup override client-side settings. If set to "false" client-side settings are used. For more information, see <a href="https://docs.aws.amazon.com/athena/latest/ug/workgroups-settings-override.html">Workgroup Settings Override Client-Side Settings</a>.',
+    }),
+    ResultConfigurationUpdates: ResultConfigurationUpdatesSchema.exactOptional().openapi({
+      description:
+        'The result configuration information about the queries in this workgroup that will be updated. Includes the updated results location and an updated option for encrypting query results.',
+    }),
+    PublishCloudWatchMetricsEnabled: BoxedBooleanSchema.exactOptional().openapi({
+      description:
+        'Indicates whether this workgroup enables publishing metrics to Amazon CloudWatch.',
+    }),
+    BytesScannedCutoffPerQuery: BytesScannedCutoffValueSchema.exactOptional().openapi({
+      description:
+        'The upper limit (cutoff) for the amount of bytes a single query in a workgroup is allowed to scan.',
+    }),
+    RemoveBytesScannedCutoffPerQuery: BoxedBooleanSchema.exactOptional().openapi({
+      description:
+        'Indicates that the data usage control limit per query is removed. <a>WorkGroupConfiguration$BytesScannedCutoffPerQuery</a> ',
+    }),
+    RequesterPaysEnabled: BoxedBooleanSchema.exactOptional().openapi({
+      description:
+        'If set to <code>true</code>, allows members assigned to a workgroup to specify Amazon S3 Requester Pays buckets in queries. If set to <code>false</code>, workgroup members cannot query data from Requester Pays buckets, and queries that retrieve data from Requester Pays buckets cause an error. The default is <code>false</code>. For more information about Requester Pays buckets, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/RequesterPaysBuckets.html">Requester Pays Buckets</a> in the <i>Amazon Simple Storage Service Developer Guide</i>.',
+    }),
+    EngineVersion: EngineVersionSchema.exactOptional().openapi({
+      description:
+        'The engine version requested when a workgroup is updated. After the update, all queries on the workgroup run on the requested engine version. If no value was previously set, the default is Auto. Queries on the <code>AmazonAthenaPreviewFunctionality</code> workgroup run on the preview engine regardless of this setting.',
+    }),
+    RemoveCustomerContentEncryptionConfiguration: BoxedBooleanSchema.exactOptional().openapi({
+      description:
+        'Removes content encryption configuration from an Apache Spark-enabled Athena workgroup.',
+    }),
+    AdditionalConfiguration: NameStringSchema.exactOptional().openapi({
+      description: 'Contains a user defined string in JSON format for a Spark-enabled workgroup.',
+    }),
+    ExecutionRole: RoleArnSchema.exactOptional().openapi({
+      description: 'Contains the ARN of the execution role for the workgroup',
+    }),
     CustomerContentEncryptionConfiguration:
       CustomerContentEncryptionConfigurationSchema.exactOptional(),
-    EnableMinimumEncryptionConfiguration: BoxedBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Enforces a minimal level of encryption for the workgroup for query and calculation results that are written to Amazon S3. When enabled, workgroup users can set encryption only to the minimum level set by the administrator or higher when they submit queries. This setting does not apply to Spark-enabled workgroups.</p> <p>The <code>EnforceWorkGroupConfiguration</code> setting takes precedence over the <code>EnableMinimumEncryptionConfiguration</code> flag. This means that if <code>EnforceWorkGroupConfiguration</code> is true, the <code>EnableMinimumEncryptionConfiguration</code> flag is ignored, and the workgroup configuration for encryption is used.</p>',
-        }),
-    ).exactOptional(),
+    EnableMinimumEncryptionConfiguration: BoxedBooleanSchema.exactOptional().openapi({
+      description:
+        '<p>Enforces a minimal level of encryption for the workgroup for query and calculation results that are written to Amazon S3. When enabled, workgroup users can set encryption only to the minimum level set by the administrator or higher when they submit queries. This setting does not apply to Spark-enabled workgroups.</p> <p>The <code>EnforceWorkGroupConfiguration</code> setting takes precedence over the <code>EnableMinimumEncryptionConfiguration</code> flag. This means that if <code>EnforceWorkGroupConfiguration</code> is true, the <code>EnableMinimumEncryptionConfiguration</code> flag is ignored, and the workgroup configuration for encryption is used.</p>',
+    }),
   })
   .openapi({
     description:
@@ -4281,24 +3290,18 @@ const WorkGroupConfigurationUpdatesSchema = z
 
 const UpdateWorkGroupInputSchema = z
   .object({
-    WorkGroup: WorkGroupNameSchema.and(
-      z.any().openapi({ description: 'The specified workgroup that will be updated.' }),
-    ),
-    Description: WorkGroupDescriptionStringSchema.and(
-      z.any().openapi({ description: 'The workgroup description.' }),
-    ).exactOptional(),
-    ConfigurationUpdates: WorkGroupConfigurationUpdatesSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Contains configuration updates for an Athena SQL workgroup.' }),
-    ).exactOptional(),
-    State: WorkGroupStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The workgroup state that will be updated for the given workgroup.',
-        }),
-    ).exactOptional(),
+    WorkGroup: WorkGroupNameSchema.openapi({
+      description: 'The specified workgroup that will be updated.',
+    }),
+    Description: WorkGroupDescriptionStringSchema.exactOptional().openapi({
+      description: 'The workgroup description.',
+    }),
+    ConfigurationUpdates: WorkGroupConfigurationUpdatesSchema.exactOptional().openapi({
+      description: 'Contains configuration updates for an Athena SQL workgroup.',
+    }),
+    State: WorkGroupStateSchema.exactOptional().openapi({
+      description: 'The workgroup state that will be updated for the given workgroup.',
+    }),
   })
   .openapi({ required: ['WorkGroup'], title: 'UpdateWorkGroupInput' })
   .openapi('UpdateWorkGroupInput')

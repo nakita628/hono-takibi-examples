@@ -399,23 +399,17 @@ const UnauthorisedResponse = {
     },
   },
   headers: z.object({
-    'WWW-Authenticate': {
-      description: '`Bearer`, or `insufficient_scope` when the token lacks the required scope.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: '`Bearer`, or `insufficient_scope` when the token lacks the required scope.',
-          param: { required: false },
-        }),
-    },
-    'Xero-Correlation-Id': {
-      description: 'The correlation ID of the request.',
-      schema: z
-        .uuid()
-        .exactOptional()
-        .openapi({ description: 'The correlation ID of the request.', param: { required: false } }),
-    },
+    'WWW-Authenticate': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: '`Bearer`, or `insufficient_scope` when the token lacks the required scope.',
+        param: { required: false },
+      }),
+    'Xero-Correlation-Id': z
+      .uuid()
+      .exactOptional()
+      .openapi({ description: 'The correlation ID of the request.', param: { required: false } }),
   }),
 }
 
@@ -423,48 +417,34 @@ const TooManyRequestsResponse = {
   description:
     '**Too Many Requests** - Returned by the gateway when the app has exceeded a rate limit. The response has no body. Wait the number of seconds in `Retry-After` before retrying; `X-Rate-Limit-Problem` says which limit was exceeded (for example `day` for the daily limit).\n',
   headers: z.object({
-    'Retry-After': {
-      description: 'Number of seconds to wait before retrying.',
-      example: 33155,
-      schema: z
-        .int()
-        .exactOptional()
-        .openapi({
-          description: 'Number of seconds to wait before retrying.',
-          example: 33155,
-          param: { required: false },
-        }),
-    },
-    'X-Rate-Limit-Problem': {
-      description: 'The limit that was exceeded, for example `day`.',
-      example: 'day',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'The limit that was exceeded, for example `day`.',
-          example: 'day',
-          param: { required: false },
-        }),
-    },
-    'X-DayLimit-Remaining': {
-      description: 'Calls remaining for the app and organisation today.',
-      example: 0,
-      schema: z
-        .int()
-        .exactOptional()
-        .openapi({
-          description: 'Calls remaining for the app and organisation today.',
-          param: { required: false },
-        }),
-    },
-    'Xero-Correlation-Id': {
-      description: 'The correlation ID of the request.',
-      schema: z
-        .uuid()
-        .exactOptional()
-        .openapi({ description: 'The correlation ID of the request.', param: { required: false } }),
-    },
+    'Retry-After': z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'Number of seconds to wait before retrying.',
+        example: 33155,
+        param: { required: false },
+      }),
+    'X-Rate-Limit-Problem': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The limit that was exceeded, for example `day`.',
+        example: 'day',
+        param: { required: false },
+      }),
+    'X-DayLimit-Remaining': z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'Calls remaining for the app and organisation today.',
+        example: 0,
+        param: { required: false },
+      }),
+    'Xero-Correlation-Id': z
+      .uuid()
+      .exactOptional()
+      .openapi({ description: 'The correlation ID of the request.', param: { required: false } }),
   }),
 }
 

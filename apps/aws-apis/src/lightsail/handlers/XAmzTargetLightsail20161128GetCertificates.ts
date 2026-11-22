@@ -1,0 +1,11 @@
+import { OpenAPIHono } from '@hono/zod-openapi'
+import { postXAmzTargetLightsail20161128GetCertificatesRoute } from '../routes'
+
+const app = new OpenAPIHono()
+
+export const XAmzTargetLightsail20161128GetCertificatesHandler = app.openapi(
+  postXAmzTargetLightsail20161128GetCertificatesRoute,
+  (c) => {
+    throw new Error('Not implemented')
+  },
+)

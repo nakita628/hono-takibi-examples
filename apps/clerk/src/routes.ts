@@ -1,1927 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const VerificationPasskeySchema = z
-  .strictObject({
-    object: z.literal('verification_passkey').exactOptional(),
-    status: z.literal('verified'),
-    strategy: z.literal('passkey'),
-    nonce: z.literal('nonce').exactOptional(),
-    message: z.string().nullable().exactOptional(),
-    attempts: z.int().nullable(),
-    expire_at: z.int().nullable(),
-    verified_at_client: z.string().nullable().exactOptional(),
-  })
-  .openapi({
-    'x-speakeasy-name-override': 'Passkey',
-    required: ['status', 'strategy', 'attempts', 'expire_at'],
-  })
-  .openapi('VerificationPasskey')
-
-type PasskeyType = {
-  id?: string
-  object: 'passkey'
-  name: string
-  last_used_at: bigint
-  verification: z.infer<typeof VerificationPasskeySchema> | null
-}
-
-const JWKSEd25519PublicKeySchema = z
-  .object({
-    kid: z.string(),
-    alg: z.string(),
-    use: z.string(),
-    kty: z.literal('OKP'),
-    crv: z.literal('Ed25519'),
-    x: z.string(),
-    x5c: z.array(z.string()).exactOptional(),
-    x5t: z.string().exactOptional(),
-    'x5t#S256': z.string().exactOptional(),
-    x5u: z.string().exactOptional(),
-  })
-  .openapi({ required: ['kid', 'alg', 'use', 'kty', 'crv', 'x'] })
-  .openapi('JWKSEd25519PublicKey')
-
-const JWKSEcdsaPublicKeySchema = z
-  .object({
-    kid: z.string(),
-    alg: z.string(),
-    use: z.string(),
-    kty: z.literal('EC'),
-    crv: z.string(),
-    x: z.string(),
-    y: z.string(),
-    x5c: z.array(z.string()).exactOptional(),
-    x5t: z.string().exactOptional(),
-    'x5t#S256': z.string().exactOptional(),
-    x5u: z.string().exactOptional(),
-  })
-  .openapi({ required: ['kid', 'alg', 'use', 'kty', 'crv', 'x', 'y'] })
-  .openapi('JWKSEcdsaPublicKey')
-
-const JWKSRsaPublicKeySchema = z
-  .object({
-    kid: z.string(),
-    alg: z.string(),
-    use: z.string(),
-    kty: z.literal('RSA'),
-    n: z.string(),
-    e: z.string(),
-    x5c: z.array(z.string()).exactOptional(),
-    x5t: z.string().exactOptional(),
-    'x5t#S256': z.string().exactOptional(),
-    x5u: z.string().exactOptional(),
-  })
-  .openapi({ required: ['kid', 'alg', 'use', 'kty', 'n', 'e'] })
-  .openapi('JWKSRsaPublicKey')
-
-const JWKSEd25519PrivateKeySchema = z
-  .object({
-    kid: z.string(),
-    alg: z.string(),
-    use: z.string(),
-    kty: z.literal('OKP'),
-    crv: z.literal('Ed25519'),
-    x: z.string(),
-    d: z.string(),
-    x5c: z.array(z.string()).exactOptional(),
-    x5t: z.string().exactOptional(),
-    'x5t#S256': z.string().exactOptional(),
-    x5u: z.string().exactOptional(),
-  })
-  .openapi({ required: ['kid', 'alg', 'use', 'kty', 'crv', 'x', 'd'] })
-  .openapi('JWKSEd25519PrivateKey')
-
-const JWKSEcdsaPrivateKeySchema = z
-  .object({
-    kid: z.string(),
-    alg: z.string(),
-    use: z.string(),
-    kty: z.literal('EC'),
-    crv: z.string(),
-    x: z.string(),
-    y: z.string(),
-    d: z.string(),
-    x5c: z.array(z.string()).exactOptional(),
-    x5t: z.string().exactOptional(),
-    'x5t#S256': z.string().exactOptional(),
-    x5u: z.string().exactOptional(),
-  })
-  .openapi({ required: ['kid', 'alg', 'use', 'kty', 'crv', 'x', 'y', 'd'] })
-  .openapi('JWKSEcdsaPrivateKey')
-
-const JWKSRsaPrivateKeySchema = z
-  .object({
-    kid: z.string(),
-    alg: z.string(),
-    use: z.string(),
-    kty: z.literal('RSA'),
-    n: z.string(),
-    e: z.string(),
-    d: z.string(),
-    p: z.string(),
-    q: z.string(),
-    dp: z.string().exactOptional(),
-    dq: z.string().exactOptional(),
-    qi: z.string().exactOptional(),
-    x5c: z.array(z.string()).exactOptional(),
-    x5t: z.string().exactOptional(),
-    'x5t#S256': z.string().exactOptional(),
-    x5u: z.string().exactOptional(),
-  })
-  .openapi({ required: ['kid', 'alg', 'use', 'kty', 'crv', 'n', 'e', 'd', 'p', 'q'] })
-  .openapi('JWKSRsaPrivateKey')
-
-const JWKSSymmetricKeySchema = z
-  .object({
-    kid: z.string(),
-    alg: z.string(),
-    use: z.string(),
-    kty: z.literal('oct'),
-    k: z.string(),
-    x5c: z.array(z.string()).exactOptional(),
-    x5t: z.string().exactOptional(),
-    'x5t#S256': z.string().exactOptional(),
-    x5u: z.string().exactOptional(),
-  })
-  .openapi({ required: ['kid', 'alg', 'use', 'kty', 'k'] })
-  .openapi('JWKSSymmetricKey')
-
-const JWKSSchema = z
-  .strictObject({
-    keys: z
-      .array(
-        z.xor([
-          JWKSEd25519PublicKeySchema,
-          JWKSEcdsaPublicKeySchema,
-          JWKSRsaPublicKeySchema,
-          JWKSEd25519PrivateKeySchema,
-          JWKSEcdsaPrivateKeySchema,
-          JWKSRsaPrivateKeySchema,
-          JWKSSymmetricKeySchema,
-        ]),
-      )
-      .exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('JWKS')
-
-const SessionActivityResponseSchema = z
-  .object({
-    object: z.string(),
-    id: z.string(),
-    device_type: z.string().exactOptional(),
-    is_mobile: z.boolean(),
-    browser_name: z.string().exactOptional(),
-    browser_version: z.string().exactOptional(),
-    ip_address: z.string().exactOptional(),
-    city: z.string().exactOptional(),
-    country: z.string().exactOptional(),
-  })
-  .nullable()
-  .openapi({ required: ['id', 'object', 'is_mobile'] })
-  .openapi('SessionActivityResponse')
-
-const SessionTaskSchema = z
-  .object({ key: z.string() })
-  .openapi({ required: ['key'] })
-  .openapi('SessionTask')
-
-const SessionSchema = z
-  .strictObject({
-    object: z
-      .literal('session')
-      .openapi({
-        description:
-          "String representing the object's type. Objects of the same type share the same value.\n",
-      }),
-    id: z.string(),
-    user_id: z.string(),
-    client_id: z.string(),
-    actor: z.object({}).nullable().exactOptional(),
-    status: z.enum([
-      'active',
-      'revoked',
-      'ended',
-      'expired',
-      'removed',
-      'abandoned',
-      'replaced',
-      'pending',
-    ]),
-    last_active_organization_id: z.string().nullable().exactOptional(),
-    last_active_at: z.int(),
-    latest_activity: SessionActivityResponseSchema.exactOptional(),
-    expire_at: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'Unix timestamp in milliseconds of expiration. Zero means no maximum lifetime.\n',
-      }),
-    abandon_at: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'Unix timestamp in milliseconds of abandonment. Zero means no abandonment deadline.\n',
-      }),
-    updated_at: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'Unix timestamp of last update.\n',
-      }),
-    created_at: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({ type: 'integer', format: 'int64', description: 'Unix timestamp of creation.\n' }),
-    tasks: z.array(SessionTaskSchema).nullable().exactOptional(),
-  })
-  .openapi({
-    required: [
-      'object',
-      'id',
-      'user_id',
-      'client_id',
-      'status',
-      'last_active_at',
-      'expire_at',
-      'abandon_at',
-      'updated_at',
-      'created_at',
-    ],
-  })
-  .openapi('Session')
-
-const ClientSchema = z
-  .strictObject({
-    object: z
-      .literal('client')
-      .openapi({
-        description:
-          "String representing the object's type. Objects of the same type share the same value.\n",
-      }),
-    id: z.string().openapi({ description: 'String representing the identifier of the session.\n' }),
-    session_ids: z.array(z.string()),
-    sessions: z.array(SessionSchema),
-    sign_in_id: z.string().nullable(),
-    sign_up_id: z.string().nullable(),
-    last_active_session_id: z
-      .string()
-      .nullable()
-      .openapi({ description: 'Last active session_id.\n' }),
-    last_authentication_strategy: z
-      .string()
-      .nullable()
-      .openapi({
-        description:
-          'The authentication strategy that was last used to authenticate the user on this client.\n',
-      }),
-    updated_at: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'Unix timestamp of last update.\n',
-      }),
-    created_at: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({ type: 'integer', format: 'int64', description: 'Unix timestamp of creation.\n' }),
-  })
-  .openapi({
-    required: [
-      'object',
-      'id',
-      'session_ids',
-      'sessions',
-      'sign_in_id',
-      'sign_up_id',
-      'last_active_session_id',
-      'last_authentication_strategy',
-      'updated_at',
-      'created_at',
-    ],
-  })
-  .openapi('Client')
-
-const ClerkErrorSchema = z
-  .object({
-    message: z.string(),
-    long_message: z.string(),
-    code: z.string(),
-    meta: z.looseObject({}).exactOptional(),
-  })
-  .openapi({ required: ['message', 'long_message', 'code'] })
-  .openapi('ClerkError')
-
-const ClerkErrorsSchema = z
-  .object({
-    errors: z.array(ClerkErrorSchema),
-    meta: z.looseObject({}).exactOptional(),
-    clerk_trace_id: z.string().exactOptional(),
-  })
-  .openapi({ required: ['errors'] })
-  .openapi('ClerkErrors')
-
-const VerificationOtpSchema = z
-  .strictObject({
-    object: z.literal('verification_otp').exactOptional(),
-    status: z.enum(['unverified', 'verified', 'failed', 'expired']),
-    strategy: z
-      .enum(['phone_code', 'email_code', 'reset_password_email_code'])
-      .openapi({ 'x-speakeasy-unknown-values': 'allow' }),
-    attempts: z.int().nullable(),
-    expire_at: z.int().nullable(),
-    channel: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The delivery channel of the code (phone codes only).' }),
-    verified_at_client: z.string().nullable().exactOptional(),
-  })
-  .openapi({
-    'x-speakeasy-name-override': 'OTP',
-    required: ['status', 'strategy', 'attempts', 'expire_at'],
-  })
-  .openapi('VerificationOtp')
-
-const VerificationAdminSchema = z
-  .strictObject({
-    object: z.literal('verification_admin').exactOptional(),
-    status: z.literal('verified'),
-    strategy: z.literal('admin').openapi({ 'x-speakeasy-unknown-values': 'allow' }),
-    attempts: z.int().nullable(),
-    expire_at: z.int().nullable(),
-    verified_at_client: z.string().nullable().exactOptional(),
-  })
-  .openapi({
-    'x-speakeasy-name-override': 'Admin',
-    required: ['status', 'strategy', 'attempts', 'expire_at'],
-  })
-  .openapi('VerificationAdmin')
-
-const VerificationFromOauthSchema = z
-  .strictObject({
-    object: z.literal('verification_from_oauth').exactOptional(),
-    status: z.enum(['unverified', 'verified']),
-    strategy: z.string().regex(/^from_oauth_(?:(?:token_)|(?:custom_))?[a-z]+$/),
-    error: z.xor([ClerkErrorSchema]).nullable().exactOptional(),
-    expire_at: z.int().nullable(),
-    attempts: z.int().nullable(),
-    verified_at_client: z.string().nullable().exactOptional(),
-  })
-  .openapi({
-    'x-speakeasy-name-override': 'FromOAuth',
-    required: ['status', 'strategy', 'attempts', 'expire_at'],
-  })
-  .openapi('VerificationFromOauth')
-
-const VerificationTicketSchema = z
-  .strictObject({
-    object: z.literal('verification_ticket').exactOptional(),
-    status: z.enum(['unverified', 'verified', 'expired']),
-    strategy: z.literal('ticket').openapi({ 'x-speakeasy-unknown-values': 'allow' }),
-    attempts: z.int().nullable(),
-    expire_at: z.int().nullable(),
-    verified_at_client: z.string().nullable().exactOptional(),
-  })
-  .openapi({
-    'x-speakeasy-name-override': 'Ticket',
-    required: ['status', 'strategy', 'attempts', 'expire_at'],
-  })
-  .openapi('VerificationTicket')
-
-const VerificationSamlSchema = z
-  .strictObject({
-    object: z.literal('verification_saml').exactOptional(),
-    status: z.enum(['unverified', 'verified', 'failed', 'expired', 'transferable']),
-    strategy: z.literal('saml'),
-    external_verification_redirect_url: z.string().nullable().exactOptional(),
-    error: z.xor([ClerkErrorSchema]).nullable().exactOptional(),
-    expire_at: z.int().nullable().exactOptional(),
-    attempts: z.int().nullable(),
-    verified_at_client: z.string().nullable().exactOptional(),
-  })
-  .openapi({ 'x-speakeasy-name-override': 'SAML', required: ['status', 'strategy', 'attempts'] })
-  .openapi('VerificationSaml')
-
-const VerificationEmailLinkSchema = z
-  .strictObject({
-    object: z.literal('verification_email_link').exactOptional(),
-    status: z.enum(['unverified', 'verified', 'failed', 'expired']),
-    strategy: z.literal('email_link'),
-    attempts: z.int().nullable(),
-    expire_at: z.int().nullable(),
-    verified_at_client: z.string().nullable().exactOptional(),
-  })
-  .openapi({
-    'x-speakeasy-name-override': 'EmailLink',
-    required: ['status', 'strategy', 'attempts', 'expire_at'],
-  })
-  .openapi('VerificationEmailLink')
-
-const VerificationScimSchema = z
-  .strictObject({
-    object: z.literal('verification_scim').exactOptional(),
-    status: z.literal('verified'),
-    strategy: z.literal('scim'),
-    attempts: z.int().nullable(),
-    expire_at: z.int().nullable(),
-  })
-  .openapi({
-    'x-speakeasy-name-override': 'SCIM',
-    required: ['status', 'strategy', 'attempts', 'expire_at'],
-  })
-  .openapi('VerificationScim')
-
-const IdentificationLinkSchema = z
-  .strictObject({ type: z.string().regex(/^oauth_[a-z]+$/), id: z.string() })
-  .openapi({ required: ['type', 'id'] })
-  .openapi('IdentificationLink')
-
-const EmailAddressSchema = z
-  .strictObject({
-    id: z.string().exactOptional(),
-    object: z
-      .literal('email_address')
-      .openapi({
-        'x-speakeasy-unknown-values': 'allow',
-        description:
-          "String representing the object's type. Objects of the same type share the same value.\n",
-      }),
-    email_address: z.string(),
-    reserved: z.boolean(),
-    verification: z
-      .xor([
-        VerificationOtpSchema,
-        VerificationAdminSchema,
-        VerificationFromOauthSchema,
-        VerificationTicketSchema,
-        VerificationSamlSchema,
-        VerificationEmailLinkSchema,
-        VerificationScimSchema,
-      ])
-      .nullable()
-      .openapi({
-        discriminator: {
-          propertyName: 'object',
-          mapping: {
-            verification_otp: '#/components/schemas/verification_otp',
-            verification_admin: '#/components/schemas/verification_admin',
-            verification_from_oauth: '#/components/schemas/verification_from_oauth',
-            verification_ticket: '#/components/schemas/verification_ticket',
-            verification_saml: '#/components/schemas/verification_saml',
-            verification_email_link: '#/components/schemas/verification_email_link',
-            verification_scim: '#/components/schemas/verification_scim',
-          },
-        },
-      }),
-    linked_to: z.array(IdentificationLinkSchema),
-    matches_sso_connection: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates whether this email address domain matches an active enterprise connection.\n',
-      }),
-    created_at: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({ type: 'integer', format: 'int64', description: 'Unix timestamp of creation\n' }),
-    updated_at: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({ type: 'integer', format: 'int64', description: 'Unix timestamp of creation\n' }),
-  })
-  .openapi({
-    required: [
-      'object',
-      'email_address',
-      'verification',
-      'linked_to',
-      'reserved',
-      'created_at',
-      'updated_at',
-    ],
-  })
-  .openapi('EmailAddress')
-
-const DeletedObjectSchema = z
-  .strictObject({
-    object: z.string(),
-    id: z.string().exactOptional(),
-    slug: z.string().exactOptional(),
-    deleted: z.boolean(),
-    external_id: z.string().exactOptional(),
-  })
-  .openapi({ required: ['object', 'deleted'] })
-  .openapi('DeletedObject')
-
-const PhoneNumberSchema = z
-  .strictObject({
-    id: z.string().exactOptional(),
-    object: z
-      .literal('phone_number')
-      .openapi({
-        description:
-          "String representing the object's type. Objects of the same type share the same value.\n",
-      }),
-    phone_number: z.string(),
-    reserved_for_second_factor: z.boolean().exactOptional(),
-    default_second_factor: z.boolean().exactOptional(),
-    reserved: z.boolean(),
-    verification: z
-      .xor([VerificationOtpSchema, VerificationAdminSchema])
-      .nullable()
-      .openapi({
-        discriminator: {
-          propertyName: 'object',
-          mapping: {
-            verification_otp: '#/components/schemas/verification_otp',
-            verification_admin: '#/components/schemas/verification_admin',
-          },
-        },
-      }),
-    linked_to: z.array(IdentificationLinkSchema),
-    backup_codes: z.array(z.string()).nullable().exactOptional(),
-    created_at: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({ type: 'integer', format: 'int64', description: 'Unix timestamp of creation\n' }),
-    updated_at: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({ type: 'integer', format: 'int64', description: 'Unix timestamp of creation\n' }),
-  })
-  .openapi({
-    required: [
-      'object',
-      'phone_number',
-      'verification',
-      'linked_to',
-      'reserved',
-      'created_at',
-      'updated_at',
-    ],
-  })
-  .openapi('PhoneNumber')
-
-const TokenSchema = z
-  .strictObject({
-    object: z
-      .literal('token')
-      .openapi({
-        description:
-          "String representing the object's type. Objects of the same type share the same value.\n",
-      }),
-    jwt: z
-      .string()
-      .openapi({ description: 'String representing the encoded JSON Web Token (JWT) value.\n' }),
-  })
-  .openapi({ required: ['object', 'jwt'] })
-  .openapi('Token')
-
-const CookiesSchema = z
-  .strictObject({
-    object: z
-      .literal('cookies')
-      .openapi({
-        description:
-          "String representing the object's type. Objects of the same type share the same value.",
-      }),
-    cookies: z.array(z.string()).openapi({ description: 'Array of cookie directives.' }),
-  })
-  .openapi({ required: ['object', 'cookies'] })
-  .openapi('Cookies')
-
-const SessionRefreshSchema = z.xor([TokenSchema, CookiesSchema]).openapi('SessionRefresh')
-
-const ReverificationSchema = z
-  .strictObject({
-    object: z
-      .literal('reverification')
-      .openapi({
-        description:
-          "String representing the object's type. Objects of the same type share the same value.\n",
-      }),
-    id: z.string(),
-    session_id: z.string(),
-    user_id: z.string(),
-    level: z
-      .enum(['first_factor', 'second_factor', 'multi_factor'])
-      .openapi({ description: 'The level used for the reverification' }),
-    status: z.enum(['needs_first_factor', 'needs_second_factor', 'complete']),
-    first_factor_verified_at: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .nullable()
-      .openapi({
-        type: ['integer', 'null'],
-        format: 'int64',
-        description:
-          'Unix timestamp (ms) of the first factor verification, or null if not verified.\n',
-      }),
-    second_factor_verified_at: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .nullable()
-      .openapi({
-        type: ['integer', 'null'],
-        format: 'int64',
-        description:
-          'Unix timestamp (ms) of the second factor verification, or null if not verified.\n',
-      }),
-    created_at: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({ type: 'integer', format: 'int64', description: 'Unix timestamp of creation.\n' }),
-    updated_at: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'Unix timestamp of last update.\n',
-      }),
-  })
-  .openapi({
-    description:
-      'A reverification scoped to a session. Returned so a resource server can validate a reverification id received from its client.\n',
-    required: [
-      'object',
-      'id',
-      'session_id',
-      'user_id',
-      'level',
-      'status',
-      'first_factor_verified_at',
-      'second_factor_verified_at',
-      'created_at',
-      'updated_at',
-    ],
-  })
-  .openapi('Reverification')
-
-const TemplateSchema = z
-  .strictObject({
-    id: z.string().exactOptional(),
-    object: z
-      .literal('template')
-      .exactOptional()
-      .openapi({
-        description:
-          "String representing the object's type. Objects of the same type share the same value.\n",
-      }),
-    instance_id: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The ID of the instance to which the template belongs' }),
-    resource_type: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'whether this is a system (default) or user overridden) template' }),
-    template_type: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'whether this is an email or SMS template' }),
-    name: z.string().exactOptional().openapi({ description: 'user-friendly name of the template' }),
-    slug: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'machine-friendly name of the template' }),
-    position: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'position with the listing of templates' }),
-    can_revert: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'whether this template can be reverted to the corresponding system default',
-      }),
-    can_delete: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'whether this template can be deleted' }),
-    can_edit_body: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'whether the body of this template can be edited' }),
-    can_toggle: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'whether this template can be enabled or disabled, true only for notification SMS templates',
-      }),
-    subject: z.string().nullable().exactOptional().openapi({ description: 'email subject' }),
-    markup: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'the editor markup used to generate the body of the template' }),
-    body: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'the template body before variable interpolation' }),
-    available_variables: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description: 'list of variables that are available for use in the template body',
-      }),
-    required_variables: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'list of variables that must be contained in the template body' }),
-    from_email_name: z.string().exactOptional(),
-    reply_to_email_name: z.string().exactOptional(),
-    delivered_by_clerk: z.boolean().exactOptional(),
-    enabled: z.boolean().exactOptional(),
-    flagged_as_suspicious: z.boolean().exactOptional(),
-    updated_at: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'Unix timestamp of last update.\n',
-      }),
-    created_at: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64', description: 'Unix timestamp of creation.\n' }),
-  })
-  .openapi({ required: [] })
-  .openapi('Template')
-
-const VerificationWeb3Schema = z
-  .strictObject({
-    object: z.literal('verification_web3').exactOptional(),
-    status: z.enum(['unverified', 'verified', 'failed', 'expired']),
-    strategy: z.enum([
-      'web3_metamask_signature',
-      'web3_base_signature',
-      'web3_coinbase_wallet_signature',
-      'web3_okx_wallet_signature',
-      'web3_solana_signature',
-    ]),
-    nonce: z.string().nullable().exactOptional(),
-    message: z.string().nullable().exactOptional(),
-    attempts: z.int().nullable(),
-    expire_at: z.int().nullable(),
-    verified_at_client: z.string().nullable().exactOptional(),
-  })
-  .openapi({
-    'x-speakeasy-name-override': 'Web3Signature',
-    required: ['status', 'strategy', 'attempts', 'expire_at'],
-  })
-  .openapi('VerificationWeb3')
-
-const Web3WalletSchema = z
-  .strictObject({
-    id: z.string().exactOptional(),
-    object: z
-      .literal('web3_wallet')
-      .openapi({
-        description:
-          "String representing the object's type. Objects of the same type share the same value.\n",
-      }),
-    web3_wallet: z.string(),
-    verification: z
-      .xor([VerificationWeb3Schema, VerificationAdminSchema])
-      .nullable()
-      .openapi({ discriminator: { propertyName: 'object' } }),
-    created_at: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({ type: 'integer', format: 'int64', description: 'Unix timestamp of creation\n' }),
-    updated_at: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({ type: 'integer', format: 'int64', description: 'Unix timestamp of creation\n' }),
-  })
-  .openapi({ required: ['object', 'web3_wallet', 'verification', 'created_at', 'updated_at'] })
-  .openapi('Web3Wallet')
-
-const PasskeySchema: z.ZodType<PasskeyType> = z
-  .lazy(() =>
-    z
-      .strictObject({
-        id: z.string().exactOptional(),
-        object: z
-          .literal('passkey')
-          .openapi({
-            description:
-              "String representing the object's type. Objects of the same type share the same value.\n",
-          }),
-        name: z.string(),
-        last_used_at: z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({
-            type: 'integer',
-            format: 'int64',
-            description: 'Unix timestamp of when the passkey was last used.\n',
-          }),
-        verification: z
-          .xor([VerificationPasskeySchema])
-          .nullable()
-          .openapi({ discriminator: { propertyName: 'object' } }),
-      })
-      .openapi({ required: ['object', 'name', 'last_used_at', 'verification'] }),
-  )
-  .openapi('Passkey')
-
-const VerificationOauthSchema = z
-  .strictObject({
-    object: z.literal('verification_oauth').exactOptional(),
-    status: z
-      .enum(['unverified', 'verified', 'failed', 'expired', 'transferable'])
-      .openapi({ 'x-speakeasy-unknown-values': 'allow' }),
-    strategy: z
-      .string()
-      .regex(/^oauth_(?:(?:token_)|(?:custom_))?[a-z]+$/)
-      .openapi({ 'x-speakeasy-unknown-values': 'allow' }),
-    external_verification_redirect_url: z.string().exactOptional(),
-    error: z.xor([ClerkErrorSchema]).nullable().exactOptional(),
-    expire_at: z.int(),
-    attempts: z.int().nullable(),
-    verified_at_client: z.string().nullable().exactOptional(),
-  })
-  .openapi({
-    'x-speakeasy-name-override': 'Oauth',
-    required: ['status', 'strategy', 'attempts', 'expire_at'],
-  })
-  .openapi('VerificationOauth')
-
-const VerificationGoogleOneTapSchema = z
-  .strictObject({
-    object: z.literal('verification_google_one_tap').exactOptional(),
-    status: z.enum(['unverified', 'verified']),
-    strategy: z.literal('google_one_tap'),
-    expire_at: z.int().nullable(),
-    attempts: z.int().nullable(),
-    verified_at_client: z.string().nullable().exactOptional(),
-    error: z.xor([ClerkErrorSchema]).nullable().exactOptional(),
-  })
-  .openapi({
-    'x-speakeasy-name-override': 'GoogleOneTap',
-    required: ['status', 'strategy', 'attempts', 'expire_at'],
-  })
-  .openapi('VerificationGoogleOneTap')
-
-const ExternalAccountWithVerificationSchema = z
-  .looseObject({
-    object: z
-      .enum(['external_account', 'facebook_account', 'google_account'])
-      .openapi({
-        description:
-          "String representing the object's type. Objects of the same type share the same value.",
-      }),
-    id: z.string(),
-    provider: z.string(),
-    identification_id: z.string(),
-    provider_user_id: z
-      .string()
-      .openapi({ description: "The unique ID of the user in the external provider's system" }),
-    approved_scopes: z.string(),
-    email_address: z.string(),
-    email_address_verified: z
-      .boolean()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether the email was verified by the OAuth provider at creation time. null = unknown (pre-migration data or custom OAuth providers), true = provider confirmed email was verified, false = provider confirmed email was NOT verified\n',
-      }),
-    first_name: z.string(),
-    last_name: z.string(),
-    avatar_url: z
-      .string()
-      .exactOptional()
-      .openapi({ deprecated: true, description: 'Please use `image_url` instead' }),
-    image_url: z.string().nullable().exactOptional(),
-    username: z.string().nullable().exactOptional(),
-    phone_number: z.string().nullable().exactOptional(),
-    public_metadata: z.looseObject({}),
-    label: z.string().nullable().exactOptional(),
-    created_at: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({ type: 'integer', format: 'int64', description: 'Unix timestamp of creation\n' }),
-    updated_at: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({ type: 'integer', format: 'int64', description: 'Unix timestamp of creation\n' }),
-    verification: z
-      .xor([VerificationOauthSchema, VerificationGoogleOneTapSchema])
-      .nullable()
-      .openapi({ discriminator: { propertyName: 'object' } }),
-  })
-  .openapi({
-    required: [
-      'object',
-      'id',
-      'provider',
-      'identification_id',
-      'provider_user_id',
-      'approved_scopes',
-      'email_address',
-      'first_name',
-      'last_name',
-      'public_metadata',
-      'created_at',
-      'updated_at',
-      'verification',
-    ],
-  })
-  .openapi('ExternalAccountWithVerification')
-
-const SAMLAccountConnectionSchema = z
-  .union([
-    z
-      .unknown()
-      .superRefine((val, ctx) => {
-        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-          if (!Object.hasOwn(val, 'domain')) {
-            ctx.addIssue({ code: 'custom' })
-          }
-        }
-      })
-      .openapi({ required: ['domain'] }),
-    z
-      .unknown()
-      .superRefine((val, ctx) => {
-        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-          if (!Object.hasOwn(val, 'domains')) {
-            ctx.addIssue({ code: 'custom' })
-          }
-        }
-      })
-      .openapi({ required: ['domains'] }),
-  ])
-  .and(
-    z
-      .object({
-        id: z.string(),
-        name: z.string(),
-        domain: z.string().exactOptional().openapi({ deprecated: true }),
-        domains: z.array(z.string()).exactOptional(),
-        active: z.boolean(),
-        provider: z.string(),
-        sync_user_attributes: z.boolean(),
-        allow_subdomains: z.boolean().exactOptional(),
-        allow_idp_initiated: z.boolean().exactOptional(),
-        disable_additional_identifications: z.boolean().exactOptional(),
-        created_at: z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({
-            type: 'integer',
-            format: 'int64',
-            description: 'Unix timestamp of creation.\n',
-          }),
-        updated_at: z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({
-            type: 'integer',
-            format: 'int64',
-            description: 'Unix timestamp of last update.\n',
-          }),
-      })
-      .openapi({
-        required: [
-          'id',
-          'name',
-          'active',
-          'provider',
-          'sync_user_attributes',
-          'created_at',
-          'updated_at',
-        ],
-      }),
-  )
-  .openapi({
-    required: [
-      'id',
-      'name',
-      'active',
-      'provider',
-      'sync_user_attributes',
-      'created_at',
-      'updated_at',
-    ],
-  })
-  .openapi('SAMLAccountConnection')
-
-const SAMLAccountSchema = z
-  .strictObject({
-    id: z.string(),
-    object: z
-      .literal('saml_account')
-      .openapi({
-        description:
-          "String representing the object's type. Objects of the same type share the same value.\n",
-      }),
-    provider: z.string(),
-    active: z.boolean(),
-    email_address: z.string(),
-    first_name: z.string().nullable().exactOptional(),
-    last_name: z.string().nullable().exactOptional(),
-    provider_user_id: z.string().nullable().exactOptional(),
-    last_authenticated_at: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .nullable()
-      .exactOptional()
-      .openapi({
-        type: ['integer', 'null'],
-        format: 'int64',
-        description: 'Unix timestamp of last authentication.\n',
-      }),
-    public_metadata: z.looseObject({}).exactOptional(),
-    verification: z
-      .xor([VerificationSamlSchema, VerificationTicketSchema])
-      .nullable()
-      .openapi({ discriminator: { propertyName: 'object' } }),
-    saml_connection: z.xor([SAMLAccountConnectionSchema]).nullable().exactOptional(),
-  })
-  .openapi({ required: ['id', 'object', 'provider', 'active', 'email_address', 'verification'] })
-  .openapi('SAMLAccount')
-
-const EnterpriseAccountConnectionSchema = z
-  .union([
-    z
-      .unknown()
-      .superRefine((val, ctx) => {
-        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-          if (!Object.hasOwn(val, 'domain')) {
-            ctx.addIssue({ code: 'custom' })
-          }
-        }
-      })
-      .openapi({ required: ['domain'] }),
-    z
-      .unknown()
-      .superRefine((val, ctx) => {
-        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-          if (!Object.hasOwn(val, 'domains')) {
-            ctx.addIssue({ code: 'custom' })
-          }
-        }
-      })
-      .openapi({ required: ['domains'] }),
-  ])
-  .and(
-    z
-      .object({
-        id: z.string(),
-        protocol: z.string(),
-        provider: z.string(),
-        name: z.string(),
-        logo_public_url: z.string().nullable(),
-        domain: z.string().exactOptional().openapi({ deprecated: true }),
-        domains: z.array(z.string()).exactOptional(),
-        active: z.boolean(),
-        sync_user_attributes: z.boolean(),
-        allow_subdomains: z.boolean(),
-        allow_idp_initiated: z.boolean(),
-        disable_additional_identifications: z.boolean(),
-        created_at: z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({
-            type: 'integer',
-            format: 'int64',
-            description: 'Unix timestamp of creation.\n',
-          }),
-        updated_at: z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({
-            type: 'integer',
-            format: 'int64',
-            description: 'Unix timestamp of last update.\n',
-          }),
-      })
-      .openapi({
-        required: [
-          'id',
-          'protocol',
-          'name',
-          'logo_public_url',
-          'active',
-          'provider',
-          'sync_user_attributes',
-          'disable_additional_identifications',
-          'allow_subdomains',
-          'allow_idp_initiated',
-          'created_at',
-          'updated_at',
-        ],
-      }),
-  )
-  .openapi({
-    required: [
-      'id',
-      'protocol',
-      'name',
-      'logo_public_url',
-      'active',
-      'provider',
-      'sync_user_attributes',
-      'disable_additional_identifications',
-      'allow_subdomains',
-      'allow_idp_initiated',
-      'created_at',
-      'updated_at',
-    ],
-  })
-  .openapi('EnterpriseAccountConnection')
-
-const EnterpriseAccountSchema = z
-  .strictObject({
-    id: z.string(),
-    object: z
-      .literal('enterprise_account')
-      .openapi({
-        description:
-          "String representing the object's type. Objects of the same type share the same value.\n",
-      }),
-    protocol: z
-      .enum(['oauth', 'saml'])
-      .exactOptional()
-      .openapi({ description: 'The authentication protocol used to sign in.\n' }),
-    provider: z.string(),
-    active: z.boolean(),
-    email_address: z.string(),
-    first_name: z.string().nullable().exactOptional(),
-    last_name: z.string().nullable().exactOptional(),
-    provider_user_id: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: "The unique ID of the user in the external provider's system" }),
-    enterprise_connection_id: z.string().nullable().exactOptional(),
-    public_metadata: z.looseObject({}).exactOptional(),
-    verification: z
-      .xor([VerificationTicketSchema, VerificationSamlSchema, VerificationOauthSchema])
-      .nullable()
-      .openapi({ discriminator: { propertyName: 'object' } }),
-    enterprise_connection: z.xor([EnterpriseAccountConnectionSchema]).nullable().exactOptional(),
-    last_authenticated_at: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .nullable()
-      .exactOptional()
-      .openapi({
-        type: ['integer', 'null'],
-        format: 'int64',
-        description: 'Unix timestamp of last authentication.\n',
-      }),
-  })
-  .openapi({ required: ['id', 'object', 'provider', 'active', 'email_address', 'verification'] })
-  .openapi('EnterpriseAccount')
-
-const OrganizationSchema = z
-  .object({
-    object: z.literal('organization'),
-    id: z.string(),
-    name: z.string(),
-    slug: z.string(),
-    image_url: z.string().exactOptional(),
-    has_image: z.boolean(),
-    members_count: z.int().exactOptional(),
-    missing_member_with_elevated_permissions: z.boolean().exactOptional(),
-    pending_invitations_count: z.int().exactOptional(),
-    max_allowed_memberships: z.int(),
-    admin_delete_enabled: z.boolean(),
-    self_serve_sso_enabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Whether this organization can configure self-serve enterprise SSO.\n',
-      }),
-    public_metadata: z.looseObject({}),
-    private_metadata: z.looseObject({}).exactOptional(),
-    created_by: z.string().exactOptional(),
-    created_at: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({ type: 'integer', format: 'int64', description: 'Unix timestamp of creation.\n' }),
-    updated_at: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'Unix timestamp of last update.\n',
-      }),
-    last_active_at: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'Unix timestamp of last activity.\n',
-      }),
-    role_set_key: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The key of the [role set](https://clerk.com/docs/guides/organizations/control-access/role-sets) assigned to this organization.\n',
-      }),
-  })
-  .openapi({
-    required: [
-      'object',
-      'id',
-      'name',
-      'slug',
-      'has_image',
-      'max_allowed_memberships',
-      'admin_delete_enabled',
-      'public_metadata',
-      'created_at',
-      'updated_at',
-    ],
-  })
-  .openapi('Organization')
-
-const OrganizationMembershipPublicUserDataSchema = z
-  .strictObject({
-    user_id: z.string(),
-    first_name: z.string().nullable(),
-    last_name: z.string().nullable(),
-    profile_image_url: z.string().nullable().openapi({ deprecated: true }),
-    image_url: z.string(),
-    has_image: z.boolean(),
-    identifier: z.string().nullable().exactOptional(),
-    username: z.string().nullable().exactOptional(),
-    banned: z.boolean().exactOptional(),
-    deprovisioned: z.boolean().exactOptional(),
-  })
-  .openapi({
-    description: 'An organization membership with public user data populated',
-    required: ['user_id', 'first_name', 'last_name', 'profile_image_url', 'image_url', 'has_image'],
-  })
-  .openapi('OrganizationMembershipPublicUserData')
-
-const OrganizationMembershipSchema = z
-  .object({
-    id: z.string(),
-    object: z
-      .literal('organization_membership')
-      .openapi({
-        description:
-          "String representing the object's type. Objects of the same type share the same value.\n",
-      }),
-    role: z.string(),
-    role_name: z.string().exactOptional(),
-    permissions: z.array(z.string()),
-    public_metadata: z
-      .looseObject({})
-      .openapi({
-        description:
-          'Metadata saved on the organization membership, accessible from both Frontend and Backend APIs',
-      }),
-    private_metadata: z
-      .looseObject({})
-      .exactOptional()
-      .openapi({
-        description:
-          'Metadata saved on the organization membership, accessible only from the Backend API',
-      }),
-    organization: OrganizationSchema,
-    public_user_data: OrganizationMembershipPublicUserDataSchema.exactOptional(),
-    created_at: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({ type: 'integer', format: 'int64', description: 'Unix timestamp of creation.' }),
-    updated_at: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({ type: 'integer', format: 'int64', description: 'Unix timestamp of last update.' }),
-  })
-  .openapi({
-    description: "A user's membership in an organization",
-    required: [
-      'object',
-      'id',
-      'role',
-      'permissions',
-      'public_metadata',
-      'created_at',
-      'updated_at',
-      'organization',
-    ],
-  })
-  .openapi('OrganizationMembership')
-
-const SCIMUserMetadataSchema = z
-  .strictObject({
-    id: z.string().openapi({ description: "The user's resource ID in this directory." }),
-    directory_name: z.string(),
-    provider: z.string(),
-    enterprise_connection_id: z.string().nullable(),
-    groups: z
-      .array(
-        z
-          .strictObject({ id: z.string(), display_name: z.string() })
-          .openapi({ required: ['id', 'display_name'] }),
-      )
-      .exactOptional()
-      .openapi({
-        description:
-          'Omitted when groups were not loaded; an empty array means no group memberships.',
-      }),
-    directory_id: z
-      .string()
-      .openapi({ description: 'The ID of the directory the user is provisioned from.\n' }),
-    directory_enabled: z
-      .boolean()
-      .openapi({ description: 'Whether the directory is currently enabled.\n' }),
-    external_id: z
-      .string()
-      .nullable()
-      .openapi({ description: "The user's external ID as reported by the directory, if any.\n" }),
-  })
-  .openapi({
-    description:
-      "Metadata describing a user's linkage to a directory. Included in user responses when directory data is requested, and in directory-triggered user webhooks. Its absence does not necessarily mean the user is not managed by a directory.\n",
-    required: [
-      'id',
-      'directory_name',
-      'provider',
-      'enterprise_connection_id',
-      'directory_enabled',
-      'directory_id',
-      'external_id',
-    ],
-  })
-  .openapi('SCIMUserMetadata')
-
-const UserSchema = z
-  .strictObject({
-    id: z.string(),
-    object: z
-      .literal('user')
-      .openapi({
-        description:
-          "String representing the object's type. Objects of the same type share the same value.\n",
-      }),
-    external_id: z.string().nullable(),
-    primary_email_address_id: z.string().nullable(),
-    primary_phone_number_id: z.string().nullable(),
-    primary_web3_wallet_id: z.string().nullable(),
-    username: z.string().nullable(),
-    first_name: z.string().nullable(),
-    last_name: z.string().nullable(),
-    locale: z.string().nullable().exactOptional(),
-    timezone: z.string().nullable().exactOptional(),
-    profile_image_url: z.string().exactOptional().openapi({ deprecated: true }),
-    image_url: z.string().exactOptional(),
-    has_image: z.boolean(),
-    public_metadata: z.looseObject({}),
-    private_metadata: z.looseObject({}).nullable().exactOptional(),
-    unsafe_metadata: z.looseObject({}).exactOptional(),
-    email_addresses: z.array(EmailAddressSchema),
-    phone_numbers: z.array(PhoneNumberSchema),
-    web3_wallets: z.array(Web3WalletSchema),
-    passkeys: z.array(PasskeySchema),
-    password_enabled: z.boolean(),
-    two_factor_enabled: z.boolean(),
-    totp_enabled: z.boolean(),
-    backup_code_enabled: z.boolean(),
-    mfa_enabled_at: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .nullable()
-      .openapi({
-        type: ['integer', 'null'],
-        format: 'int64',
-        description:
-          'Unix timestamp of when MFA was last enabled for this user. It should be noted that this field is not nullified if MFA is disabled.\n',
-      }),
-    mfa_disabled_at: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .nullable()
-      .openapi({
-        type: ['integer', 'null'],
-        format: 'int64',
-        description:
-          'Unix timestamp of when MFA was last disabled for this user. It should be noted that this field is not nullified if MFA is enabled again.\n',
-      }),
-    password_last_updated_at: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .nullable()
-      .exactOptional()
-      .openapi({
-        type: ['integer', 'null'],
-        format: 'int64',
-        description: "Unix timestamp of when the user's password was last updated.\n",
-      }),
-    external_accounts: z.array(ExternalAccountWithVerificationSchema),
-    saml_accounts: z.array(SAMLAccountSchema),
-    enterprise_accounts: z.array(EnterpriseAccountSchema),
-    organization_memberships: z.array(OrganizationMembershipSchema).exactOptional(),
-    last_sign_in_at: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .nullable()
-      .openapi({
-        type: ['integer', 'null'],
-        format: 'int64',
-        description: 'Unix timestamp of last sign-in.\n',
-      }),
-    banned: z.boolean().openapi({ description: 'Flag to denote whether user is banned or not.\n' }),
-    locked: z
-      .boolean()
-      .openapi({
-        description:
-          'Flag to denote whether user is currently locked, i.e. restricted from signing in or not.\n',
-      }),
-    deprovisioned: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Flag to denote whether user has been deprovisioned and is restricted from signing in.\n',
-      }),
-    lockout_expires_in_seconds: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .nullable()
-      .openapi({
-        type: ['integer', 'null'],
-        format: 'int64',
-        description:
-          'The number of seconds remaining until the lockout period expires for a locked user. A null value for a locked user indicates that lockout never expires.\n',
-      }),
-    verification_attempts_remaining: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .nullable()
-      .openapi({
-        type: ['integer', 'null'],
-        format: 'int64',
-        description:
-          'The number of verification attempts remaining until the user is locked. Null if account lockout is not enabled. Note: if a user is locked explicitly via the Backend API, they may still have verification attempts remaining.\n',
-      }),
-    updated_at: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'Unix timestamp of last update.\n',
-      }),
-    created_at: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({ type: 'integer', format: 'int64', description: 'Unix timestamp of creation.\n' }),
-    delete_self_enabled: z
-      .boolean()
-      .openapi({ description: 'If enabled, user can delete themselves via FAPI.\n' }),
-    create_organization_enabled: z
-      .boolean()
-      .openapi({ description: 'If enabled, user can create organizations via FAPI.\n' }),
-    create_organizations_limit: z
-      .int()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The maximum number of organizations the user can create. 0 means unlimited.\n',
-      }),
-    last_active_at: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .nullable()
-      .openapi({
-        type: ['integer', 'null'],
-        format: 'int64',
-        description: 'Unix timestamp of the latest session activity, with day precision.\n',
-        example: 1700690400000,
-      }),
-    legal_accepted_at: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .nullable()
-      .openapi({
-        type: ['integer', 'null'],
-        format: 'int64',
-        description: 'Unix timestamp of when the user accepted the legal requirements.\n',
-        example: 1700690400000,
-      }),
-    bypass_client_trust: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({
-        description: 'When set to `true`, the user will bypass Device Trust checks during sign-in.',
-      }),
-    directories: z
-      .array(SCIMUserMetadataSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'All loaded directory links. Omitted when links were not loaded; an empty array means the user has no directory links.\n',
-      }),
-    directory: SCIMUserMetadataSchema.exactOptional().openapi({
-      deprecated: true,
-      description: 'The most recently updated directory link. Use directories for all links.',
-    }),
-    scim: SCIMUserMetadataSchema.nullable()
-      .exactOptional()
-      .openapi({
-        deprecated: true,
-        description: 'Alias of directory. Use directories for all links.',
-      }),
-  })
-  .openapi({
-    required: [
-      'id',
-      'object',
-      'username',
-      'first_name',
-      'last_name',
-      'has_image',
-      'primary_email_address_id',
-      'primary_phone_number_id',
-      'primary_web3_wallet_id',
-      'password_enabled',
-      'two_factor_enabled',
-      'totp_enabled',
-      'backup_code_enabled',
-      'email_addresses',
-      'phone_numbers',
-      'web3_wallets',
-      'passkeys',
-      'external_accounts',
-      'saml_accounts',
-      'enterprise_accounts',
-      'public_metadata',
-      'external_id',
-      'last_sign_in_at',
-      'banned',
-      'locked',
-      'lockout_expires_in_seconds',
-      'verification_attempts_remaining',
-      'created_at',
-      'updated_at',
-      'delete_self_enabled',
-      'create_organization_enabled',
-      'last_active_at',
-      'mfa_enabled_at',
-      'mfa_disabled_at',
-      'legal_accepted_at',
-    ],
-  })
-  .openapi('User')
-
-const PasswordHasherSchema = z
-  .string()
-  .openapi({
-    description:
-      'The hashing algorithm that was used to generate the password digest.\n\nThe algorithms we support at the moment are [`bcrypt`](https://en.wikipedia.org/wiki/Bcrypt), [`bcrypt_sha256_django`](https://docs.djangoproject.com/en/4.0/topics/auth/passwords/), [`md5`](https://en.wikipedia.org/wiki/MD5), `pbkdf2_sha1`, `pbkdf2_sha256`, [`pbkdf2_sha256_django`](https://docs.djangoproject.com/en/4.0/topics/auth/passwords/),\n`pbkdf2_sha512`, [`phpass`](https://www.openwall.com/phpass/), `md5_phpass`, [`scrypt_firebase`](https://firebaseopensource.com/projects/firebase/scrypt/),\n[`scrypt_werkzeug`](https://werkzeug.palletsprojects.com/en/3.0.x/utils/#werkzeug.security.generate_password_hash), [`sha256`](https://en.wikipedia.org/wiki/SHA-2),\n[`ldap_ssha`](https://www.openldap.org/faq/data/cache/347.html), the [`argon2`](https://argon2.online/) variants: `argon2i` and `argon2id`, `sha512_symfony`, the SHA-512 variant of the [Symfony](https://symfony.com/doc/current/security/passwords.html) legacy hasher,\nand `pbkdf2_sha512_hex`, a variant of `pbkdf2_sha512` that accepts hex-encoded salt and hash.\n\nEach of the supported hashers expects the incoming digest to be in a particular format. See the [Clerk docs](https://clerk.com/docs/references/backend/user/create-user) for more information.',
-  })
-  .openapi('PasswordHasher')
-
-const TotalCountSchema = z
-  .strictObject({
-    object: z
-      .literal('total_count')
-      .openapi({
-        description:
-          "String representing the object's type. Objects of the same type share the same value.\n",
-      }),
-    total_count: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({ type: 'integer', format: 'int64' }),
-  })
-  .openapi({ required: ['object', 'total_count'] })
-  .openapi('TotalCount')
-
 const CommerceMoneyResponseSchema = z
   .strictObject({
     amount: z
@@ -2490,7 +568,36 @@ const CommercePayerResponseSchema = z
   })
   .openapi('CommercePayerResponse')
 
-const CommerceSubscriptionItemSchema = z
+type CommerceSubscriptionItemType = {
+  object: 'commerce_subscription_item'
+  id: string
+  instance_id: string
+  status: 'active' | 'ended' | 'past_due' | 'upcoming' | 'incomplete' | 'abandoned'
+  credit?: z.infer<typeof CommerceSubscriptionCreditResponseSchema> | null
+  plan_id: string
+  price_id?: string
+  plan: z.infer<typeof CommercePlanSchema> | null
+  plan_period: 'month' | 'annual'
+  payment_source_id: string
+  payment_source?: z.infer<typeof CommercePaymentSourceResponseSchema> | null
+  lifetime_paid?: z.infer<typeof CommerceMoneyResponseSchema> | null
+  amount?: z.infer<typeof CommerceMoneyResponseSchema> | null
+  next_invoice?: z.infer<typeof CommerceSubscriptionItemNextPaymentResponseSchema> | null
+  next_payment?: z.infer<typeof CommerceSubscriptionItemNextPaymentResponseSchema> | null
+  payer_id: string
+  payer?: z.infer<typeof CommercePayerResponseSchema> | null
+  is_free_trial: boolean
+  period_start?: bigint | null
+  period_end?: bigint | null
+  proration_date: string
+  canceled_at?: bigint | null
+  past_due_at?: bigint | null
+  ended_at?: bigint | null
+  created_at: bigint
+  updated_at: bigint
+}
+
+const CommerceSubscriptionItemSchema: z.ZodType<CommerceSubscriptionItemType> = z
   .strictObject({
     object: z
       .literal('commerce_subscription_item')
@@ -2728,7 +835,2356 @@ const CommerceSubscriptionNextPaymentSchema = z
   .openapi({ required: ['time', 'date', 'amount'] })
   .openapi('CommerceSubscriptionNextPayment')
 
-const CommerceSubscriptionSchema = z
+type CommerceSubscriptionType = {
+  object: 'commerce_subscription'
+  id: string
+  instance_id: string
+  status: 'active' | 'past_due' | 'canceled' | 'ended' | 'abandoned' | 'incomplete'
+  payer_id: string
+  created_at: bigint
+  updated_at: bigint
+  active_at?: bigint | null
+  past_due_at?: bigint | null
+  subscription_items: z.infer<typeof CommerceSubscriptionItemSchema>[]
+  next_payment?: z.infer<typeof CommerceSubscriptionNextPaymentSchema> | null
+  eligible_for_free_trial?: boolean | null
+}
+
+type PaginatedCommerceSubscriptionItemResponseType = {
+  data: z.infer<typeof CommerceSubscriptionItemSchema>[]
+  total_count: bigint
+}
+
+const BillingPriceResponseSchema = z
+  .strictObject({
+    object: z
+      .literal('commerce_price')
+      .openapi({
+        description:
+          "String representing the object's type. Objects of the same type share the same value.",
+      }),
+    id: z.string().openapi({ description: 'Unique identifier for the price.' }),
+    plan_id: z.string().openapi({ description: 'Unique identifier for the associated plan.' }),
+    instance_id: z.string().openapi({ description: 'Unique identifier for the instance.' }),
+    currency: z.string().openapi({ description: 'The currency code (e.g., "USD").' }),
+    currency_symbol: z.string().openapi({ description: 'The currency symbol (e.g., "$").' }),
+    amount: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The amount in cents for the price.',
+      }),
+    annual_monthly_amount: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The monthly amount in cents when billed annually.',
+      }),
+    fee: CommerceMoneyResponseSchema.nullable(),
+    annual_monthly_fee: CommerceMoneyResponseSchema.nullable(),
+    description: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The description of the price.' }),
+    is_default: z
+      .boolean()
+      .openapi({ description: 'Whether this price is the default price for its plan.' }),
+    created_at: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Unix timestamp (milliseconds) of creation.',
+      }),
+    supported_billing_periods: z
+      .enum(['month', 'annual', 'both'])
+      .openapi({ description: 'Which billing periods this price supports.' }),
+  })
+  .openapi({
+    required: [
+      'object',
+      'id',
+      'plan_id',
+      'instance_id',
+      'currency',
+      'currency_symbol',
+      'amount',
+      'annual_monthly_amount',
+      'fee',
+      'annual_monthly_fee',
+      'is_default',
+      'created_at',
+      'supported_billing_periods',
+    ],
+  })
+  .openapi('BillingPriceResponse')
+
+const CommercePriceTransitionDetailsSchema = z
+  .strictObject({
+    previous_plan: CommercePlanSchema,
+    previous_price: BillingPriceResponseSchema,
+    effective_at: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Unix timestamp (milliseconds) when the new price takes effect.',
+      }),
+    effective_mode: z
+      .enum(['immediate', 'end_of_period'])
+      .openapi({ description: 'When the new price takes effect.' }),
+    next_billing_date: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description: 'Unix timestamp (milliseconds) for the next billing date.',
+      }),
+    charged_immediately: z
+      .boolean()
+      .openapi({ description: 'Whether an immediate charge was made.' }),
+    immediate_charge: CommerceMoneyResponseSchema.nullable()
+      .exactOptional()
+      .openapi({ description: 'Amount charged immediately, if any.' }),
+    previous_subscription_item_status: z
+      .enum(['canceled', 'ended', 'abandoned'])
+      .openapi({ description: 'The status of the previous subscription item after transition.' }),
+    previous_subscription_item_id: z
+      .string()
+      .openapi({ description: 'The ID of the previous subscription item.' }),
+  })
+  .openapi({
+    required: [
+      'previous_plan',
+      'previous_price',
+      'effective_at',
+      'effective_mode',
+      'charged_immediately',
+      'previous_subscription_item_status',
+      'previous_subscription_item_id',
+    ],
+  })
+  .openapi('CommercePriceTransitionDetails')
+
+type CommercePriceTransitionResponseType = {
+  object: 'commerce_price_transition'
+  subscription_item: z.infer<typeof CommerceSubscriptionItemSchema>
+  transition: z.infer<typeof CommercePriceTransitionDetailsSchema>
+}
+
+const JWKSEd25519PublicKeySchema = z
+  .object({
+    kid: z.string(),
+    alg: z.string(),
+    use: z.string(),
+    kty: z.literal('OKP'),
+    crv: z.literal('Ed25519'),
+    x: z.string(),
+    x5c: z.array(z.string()).exactOptional(),
+    x5t: z.string().exactOptional(),
+    'x5t#S256': z.string().exactOptional(),
+    x5u: z.string().exactOptional(),
+  })
+  .openapi({ required: ['kid', 'alg', 'use', 'kty', 'crv', 'x'] })
+  .openapi('JWKSEd25519PublicKey')
+
+const JWKSEcdsaPublicKeySchema = z
+  .object({
+    kid: z.string(),
+    alg: z.string(),
+    use: z.string(),
+    kty: z.literal('EC'),
+    crv: z.string(),
+    x: z.string(),
+    y: z.string(),
+    x5c: z.array(z.string()).exactOptional(),
+    x5t: z.string().exactOptional(),
+    'x5t#S256': z.string().exactOptional(),
+    x5u: z.string().exactOptional(),
+  })
+  .openapi({ required: ['kid', 'alg', 'use', 'kty', 'crv', 'x', 'y'] })
+  .openapi('JWKSEcdsaPublicKey')
+
+const JWKSRsaPublicKeySchema = z
+  .object({
+    kid: z.string(),
+    alg: z.string(),
+    use: z.string(),
+    kty: z.literal('RSA'),
+    n: z.string(),
+    e: z.string(),
+    x5c: z.array(z.string()).exactOptional(),
+    x5t: z.string().exactOptional(),
+    'x5t#S256': z.string().exactOptional(),
+    x5u: z.string().exactOptional(),
+  })
+  .openapi({ required: ['kid', 'alg', 'use', 'kty', 'n', 'e'] })
+  .openapi('JWKSRsaPublicKey')
+
+const JWKSEd25519PrivateKeySchema = z
+  .object({
+    kid: z.string(),
+    alg: z.string(),
+    use: z.string(),
+    kty: z.literal('OKP'),
+    crv: z.literal('Ed25519'),
+    x: z.string(),
+    d: z.string(),
+    x5c: z.array(z.string()).exactOptional(),
+    x5t: z.string().exactOptional(),
+    'x5t#S256': z.string().exactOptional(),
+    x5u: z.string().exactOptional(),
+  })
+  .openapi({ required: ['kid', 'alg', 'use', 'kty', 'crv', 'x', 'd'] })
+  .openapi('JWKSEd25519PrivateKey')
+
+const JWKSEcdsaPrivateKeySchema = z
+  .object({
+    kid: z.string(),
+    alg: z.string(),
+    use: z.string(),
+    kty: z.literal('EC'),
+    crv: z.string(),
+    x: z.string(),
+    y: z.string(),
+    d: z.string(),
+    x5c: z.array(z.string()).exactOptional(),
+    x5t: z.string().exactOptional(),
+    'x5t#S256': z.string().exactOptional(),
+    x5u: z.string().exactOptional(),
+  })
+  .openapi({ required: ['kid', 'alg', 'use', 'kty', 'crv', 'x', 'y', 'd'] })
+  .openapi('JWKSEcdsaPrivateKey')
+
+const JWKSRsaPrivateKeySchema = z
+  .object({
+    kid: z.string(),
+    alg: z.string(),
+    use: z.string(),
+    kty: z.literal('RSA'),
+    n: z.string(),
+    e: z.string(),
+    d: z.string(),
+    p: z.string(),
+    q: z.string(),
+    dp: z.string().exactOptional(),
+    dq: z.string().exactOptional(),
+    qi: z.string().exactOptional(),
+    x5c: z.array(z.string()).exactOptional(),
+    x5t: z.string().exactOptional(),
+    'x5t#S256': z.string().exactOptional(),
+    x5u: z.string().exactOptional(),
+  })
+  .openapi({ required: ['kid', 'alg', 'use', 'kty', 'crv', 'n', 'e', 'd', 'p', 'q'] })
+  .openapi('JWKSRsaPrivateKey')
+
+const JWKSSymmetricKeySchema = z
+  .object({
+    kid: z.string(),
+    alg: z.string(),
+    use: z.string(),
+    kty: z.literal('oct'),
+    k: z.string(),
+    x5c: z.array(z.string()).exactOptional(),
+    x5t: z.string().exactOptional(),
+    'x5t#S256': z.string().exactOptional(),
+    x5u: z.string().exactOptional(),
+  })
+  .openapi({ required: ['kid', 'alg', 'use', 'kty', 'k'] })
+  .openapi('JWKSSymmetricKey')
+
+const JWKSSchema = z
+  .strictObject({
+    keys: z
+      .array(
+        z.xor([
+          JWKSEd25519PublicKeySchema,
+          JWKSEcdsaPublicKeySchema,
+          JWKSRsaPublicKeySchema,
+          JWKSEd25519PrivateKeySchema,
+          JWKSEcdsaPrivateKeySchema,
+          JWKSRsaPrivateKeySchema,
+          JWKSSymmetricKeySchema,
+        ]),
+      )
+      .exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('JWKS')
+
+const SessionActivityResponseSchema = z
+  .object({
+    object: z.string(),
+    id: z.string(),
+    device_type: z.string().exactOptional(),
+    is_mobile: z.boolean(),
+    browser_name: z.string().exactOptional(),
+    browser_version: z.string().exactOptional(),
+    ip_address: z.string().exactOptional(),
+    city: z.string().exactOptional(),
+    country: z.string().exactOptional(),
+  })
+  .nullable()
+  .openapi({ required: ['id', 'object', 'is_mobile'] })
+  .openapi('SessionActivityResponse')
+
+const SessionTaskSchema = z
+  .object({ key: z.string() })
+  .openapi({ required: ['key'] })
+  .openapi('SessionTask')
+
+const SessionSchema = z
+  .strictObject({
+    object: z
+      .literal('session')
+      .openapi({
+        description:
+          "String representing the object's type. Objects of the same type share the same value.\n",
+      }),
+    id: z.string(),
+    user_id: z.string(),
+    client_id: z.string(),
+    actor: z.looseObject({}).nullable().exactOptional(),
+    status: z.enum([
+      'active',
+      'revoked',
+      'ended',
+      'expired',
+      'removed',
+      'abandoned',
+      'replaced',
+      'pending',
+    ]),
+    last_active_organization_id: z.string().nullable().exactOptional(),
+    last_active_at: z.int(),
+    latest_activity: SessionActivityResponseSchema.exactOptional(),
+    expire_at: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Unix timestamp in milliseconds of expiration.\n',
+      }),
+    abandon_at: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Unix timestamp in milliseconds of abandonment.\n',
+      }),
+    updated_at: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Unix timestamp of last update.\n',
+      }),
+    created_at: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64', description: 'Unix timestamp of creation.\n' }),
+    tasks: z.array(SessionTaskSchema).nullable().exactOptional(),
+  })
+  .openapi({
+    required: [
+      'object',
+      'id',
+      'user_id',
+      'client_id',
+      'status',
+      'last_active_at',
+      'expire_at',
+      'abandon_at',
+      'updated_at',
+      'created_at',
+    ],
+  })
+  .openapi('Session')
+
+const ClientSchema = z
+  .strictObject({
+    object: z
+      .literal('client')
+      .openapi({
+        description:
+          "String representing the object's type. Objects of the same type share the same value.\n",
+      }),
+    id: z.string().openapi({ description: 'String representing the identifier of the session.\n' }),
+    revoked_at: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description: 'Unix timestamp in milliseconds when this client was revoked.',
+      }),
+    session_ids: z.array(z.string()),
+    sessions: z.array(SessionSchema),
+    sign_in_id: z.string().nullable(),
+    sign_up_id: z.string().nullable(),
+    last_active_session_id: z
+      .string()
+      .nullable()
+      .openapi({ description: 'Last active session_id.\n' }),
+    last_authentication_strategy: z
+      .string()
+      .nullable()
+      .openapi({
+        description:
+          'The authentication strategy that was last used to authenticate the user on this client.\n',
+      }),
+    updated_at: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Unix timestamp of last update.\n',
+      }),
+    created_at: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64', description: 'Unix timestamp of creation.\n' }),
+  })
+  .openapi({
+    required: [
+      'object',
+      'id',
+      'session_ids',
+      'sessions',
+      'sign_in_id',
+      'sign_up_id',
+      'last_active_session_id',
+      'last_authentication_strategy',
+      'updated_at',
+      'created_at',
+    ],
+  })
+  .openapi('Client')
+
+const ClerkErrorSchema = z
+  .object({
+    message: z.string(),
+    long_message: z.string(),
+    code: z.string(),
+    meta: z.looseObject({}).exactOptional(),
+  })
+  .openapi({ required: ['message', 'long_message', 'code'] })
+  .openapi('ClerkError')
+
+const ClerkErrorsSchema = z
+  .object({
+    errors: z.array(ClerkErrorSchema),
+    meta: z.looseObject({}).exactOptional(),
+    clerk_trace_id: z.string().exactOptional(),
+  })
+  .openapi({ required: ['errors'] })
+  .openapi('ClerkErrors')
+
+const Session_2Schema = z
+  .strictObject({
+    object: z
+      .literal('session')
+      .openapi({
+        description:
+          "String representing the object's type. Objects of the same type share the same value.\n",
+      }),
+    id: z.string(),
+    user_id: z.string(),
+    client_id: z.string(),
+    actor: z.looseObject({}).nullable().exactOptional(),
+    status: z.enum(['active', 'revoked', 'ended', 'expired', 'removed', 'abandoned', 'replaced']),
+    last_active_organization_id: z.string().nullable().exactOptional(),
+    last_active_at: z.int(),
+    latest_activity: SessionActivityResponseSchema.exactOptional(),
+    expire_at: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Unix timestamp in milliseconds of expiration.\n',
+      }),
+    abandon_at: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Unix timestamp in milliseconds of abandonment.\n',
+      }),
+    updated_at: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Unix timestamp of last update.\n',
+      }),
+    created_at: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64', description: 'Unix timestamp of creation.\n' }),
+  })
+  .openapi({
+    required: [
+      'object',
+      'id',
+      'user_id',
+      'client_id',
+      'status',
+      'last_active_at',
+      'expire_at',
+      'abandon_at',
+      'updated_at',
+      'created_at',
+    ],
+  })
+  .openapi('Session_2')
+
+const Client_2Schema = z
+  .strictObject({
+    object: z
+      .literal('client')
+      .openapi({
+        description:
+          "String representing the object's type. Objects of the same type share the same value.\n",
+      }),
+    id: z.string().openapi({ description: 'String representing the identifier of the session.\n' }),
+    revoked_at: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description: 'Unix timestamp in milliseconds when this client was revoked.',
+      }),
+    session_ids: z.array(z.string()),
+    sessions: z.array(Session_2Schema),
+    sign_in_id: z.string().nullable(),
+    sign_up_id: z.string().nullable(),
+    last_active_session_id: z
+      .string()
+      .nullable()
+      .openapi({ description: 'Last active session_id.\n' }),
+    last_authentication_strategy: z
+      .string()
+      .nullable()
+      .openapi({
+        description:
+          'The authentication strategy that was last used to authenticate the user on this client.\n',
+      }),
+    updated_at: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Unix timestamp of last update.\n',
+      }),
+    created_at: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64', description: 'Unix timestamp of creation.\n' }),
+  })
+  .openapi({
+    required: [
+      'object',
+      'id',
+      'session_ids',
+      'sessions',
+      'sign_in_id',
+      'sign_up_id',
+      'last_active_session_id',
+      'last_authentication_strategy',
+      'updated_at',
+      'created_at',
+    ],
+  })
+  .openapi('Client_2')
+
+const VerificationOtpSchema = z
+  .strictObject({
+    object: z.literal('verification_otp').exactOptional(),
+    status: z.enum(['unverified', 'verified', 'failed', 'expired']),
+    strategy: z
+      .enum(['phone_code', 'email_code', 'reset_password_email_code'])
+      .openapi({ 'x-speakeasy-unknown-values': 'allow' }),
+    attempts: z.int().nullable(),
+    expire_at: z.int().nullable(),
+    channel: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The delivery channel of the code (phone codes only).' }),
+    verified_at_client: z.string().nullable().exactOptional(),
+  })
+  .openapi({
+    'x-speakeasy-name-override': 'OTP',
+    required: ['status', 'strategy', 'attempts', 'expire_at'],
+  })
+  .openapi('VerificationOtp')
+
+const VerificationAdminSchema = z
+  .strictObject({
+    object: z.literal('verification_admin').exactOptional(),
+    status: z.literal('verified'),
+    strategy: z.literal('admin').openapi({ 'x-speakeasy-unknown-values': 'allow' }),
+    attempts: z.int().nullable(),
+    expire_at: z.int().nullable(),
+    verified_at_client: z.string().nullable().exactOptional(),
+  })
+  .openapi({
+    'x-speakeasy-name-override': 'Admin',
+    required: ['status', 'strategy', 'attempts', 'expire_at'],
+  })
+  .openapi('VerificationAdmin')
+
+const VerificationFromOauthSchema = z
+  .strictObject({
+    object: z.literal('verification_from_oauth').exactOptional(),
+    status: z.enum(['unverified', 'verified']),
+    strategy: z.string().regex(/^from_oauth_(?:(?:token_)|(?:custom_))?[a-z]+$/),
+    error: z.xor([ClerkErrorSchema]).nullable().exactOptional(),
+    expire_at: z.int().nullable(),
+    attempts: z.int().nullable(),
+    verified_at_client: z.string().nullable().exactOptional(),
+  })
+  .openapi({
+    'x-speakeasy-name-override': 'FromOAuth',
+    required: ['status', 'strategy', 'attempts', 'expire_at'],
+  })
+  .openapi('VerificationFromOauth')
+
+const VerificationTicketSchema = z
+  .strictObject({
+    object: z.literal('verification_ticket').exactOptional(),
+    status: z.enum(['unverified', 'verified', 'expired']),
+    strategy: z.literal('ticket').openapi({ 'x-speakeasy-unknown-values': 'allow' }),
+    attempts: z.int().nullable(),
+    expire_at: z.int().nullable(),
+    verified_at_client: z.string().nullable().exactOptional(),
+  })
+  .openapi({
+    'x-speakeasy-name-override': 'Ticket',
+    required: ['status', 'strategy', 'attempts', 'expire_at'],
+  })
+  .openapi('VerificationTicket')
+
+const VerificationSamlSchema = z
+  .strictObject({
+    object: z.literal('verification_saml').exactOptional(),
+    status: z.enum(['unverified', 'verified', 'failed', 'expired', 'transferable']),
+    strategy: z.literal('saml'),
+    external_verification_redirect_url: z.string().nullable().exactOptional(),
+    error: z.xor([ClerkErrorSchema]).nullable().exactOptional(),
+    expire_at: z.int().nullable().exactOptional(),
+    attempts: z.int().nullable(),
+    verified_at_client: z.string().nullable().exactOptional(),
+  })
+  .openapi({ 'x-speakeasy-name-override': 'SAML', required: ['status', 'strategy', 'attempts'] })
+  .openapi('VerificationSaml')
+
+const VerificationEmailLinkSchema = z
+  .strictObject({
+    object: z.literal('verification_email_link').exactOptional(),
+    status: z.enum(['unverified', 'verified', 'failed', 'expired']),
+    strategy: z.literal('email_link'),
+    attempts: z.int().nullable(),
+    expire_at: z.int().nullable(),
+    verified_at_client: z.string().nullable().exactOptional(),
+  })
+  .openapi({
+    'x-speakeasy-name-override': 'EmailLink',
+    required: ['status', 'strategy', 'attempts', 'expire_at'],
+  })
+  .openapi('VerificationEmailLink')
+
+const VerificationScimSchema = z
+  .strictObject({
+    object: z.literal('verification_scim').exactOptional(),
+    status: z.literal('verified'),
+    strategy: z.literal('scim'),
+    attempts: z.int().nullable(),
+    expire_at: z.int().nullable(),
+  })
+  .openapi({
+    'x-speakeasy-name-override': 'SCIM',
+    required: ['status', 'strategy', 'attempts', 'expire_at'],
+  })
+  .openapi('VerificationScim')
+
+const IdentificationLinkSchema = z
+  .strictObject({ type: z.string().regex(/^oauth_[a-z]+$/), id: z.string() })
+  .openapi({ required: ['type', 'id'] })
+  .openapi('IdentificationLink')
+
+const EmailAddressSchema = z
+  .strictObject({
+    id: z.string().exactOptional(),
+    object: z
+      .literal('email_address')
+      .openapi({
+        'x-speakeasy-unknown-values': 'allow',
+        description:
+          "String representing the object's type. Objects of the same type share the same value.\n",
+      }),
+    email_address: z.string(),
+    reserved: z.boolean(),
+    verification: z
+      .xor([
+        VerificationOtpSchema,
+        VerificationAdminSchema,
+        VerificationFromOauthSchema,
+        VerificationTicketSchema,
+        VerificationSamlSchema,
+        VerificationEmailLinkSchema,
+        VerificationScimSchema,
+      ])
+      .nullable()
+      .openapi({
+        discriminator: {
+          propertyName: 'object',
+          mapping: {
+            verification_otp: '#/components/schemas/verification_otp',
+            verification_admin: '#/components/schemas/verification_admin',
+            verification_from_oauth: '#/components/schemas/verification_from_oauth',
+            verification_ticket: '#/components/schemas/verification_ticket',
+            verification_saml: '#/components/schemas/verification_saml',
+            verification_email_link: '#/components/schemas/verification_email_link',
+            verification_scim: '#/components/schemas/verification_scim',
+          },
+        },
+      }),
+    linked_to: z.array(IdentificationLinkSchema),
+    matches_sso_connection: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates whether this email address domain matches an active enterprise connection.\n',
+      }),
+    created_at: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64', description: 'Unix timestamp of creation\n' }),
+    updated_at: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64', description: 'Unix timestamp of creation\n' }),
+  })
+  .openapi({
+    required: [
+      'object',
+      'email_address',
+      'verification',
+      'linked_to',
+      'reserved',
+      'created_at',
+      'updated_at',
+    ],
+  })
+  .openapi('EmailAddress')
+
+const DeletedObjectSchema = z
+  .strictObject({
+    object: z.string(),
+    id: z.string().exactOptional(),
+    slug: z.string().exactOptional(),
+    deleted: z.boolean(),
+    external_id: z.string().exactOptional(),
+  })
+  .openapi({ required: ['object', 'deleted'] })
+  .openapi('DeletedObject')
+
+const PhoneNumberSchema = z
+  .strictObject({
+    id: z.string().exactOptional(),
+    object: z
+      .literal('phone_number')
+      .openapi({
+        description:
+          "String representing the object's type. Objects of the same type share the same value.\n",
+      }),
+    phone_number: z.string(),
+    reserved_for_second_factor: z.boolean().exactOptional(),
+    default_second_factor: z.boolean().exactOptional(),
+    reserved: z.boolean(),
+    verification: z
+      .xor([VerificationOtpSchema, VerificationAdminSchema])
+      .nullable()
+      .openapi({
+        discriminator: {
+          propertyName: 'object',
+          mapping: {
+            verification_otp: '#/components/schemas/verification_otp',
+            verification_admin: '#/components/schemas/verification_admin',
+          },
+        },
+      }),
+    linked_to: z.array(IdentificationLinkSchema),
+    backup_codes: z.array(z.string()).nullable().exactOptional(),
+    created_at: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64', description: 'Unix timestamp of creation\n' }),
+    updated_at: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64', description: 'Unix timestamp of creation\n' }),
+  })
+  .openapi({
+    required: [
+      'object',
+      'phone_number',
+      'verification',
+      'linked_to',
+      'reserved',
+      'created_at',
+      'updated_at',
+    ],
+  })
+  .openapi('PhoneNumber')
+
+const TokenSchema = z
+  .strictObject({
+    object: z
+      .literal('token')
+      .openapi({
+        description:
+          "String representing the object's type. Objects of the same type share the same value.\n",
+      }),
+    jwt: z
+      .string()
+      .openapi({ description: 'String representing the encoded JSON Web Token (JWT) value.\n' }),
+  })
+  .openapi({ required: ['object', 'jwt'] })
+  .openapi('Token')
+
+const CookiesSchema = z
+  .strictObject({
+    object: z
+      .literal('cookies')
+      .openapi({
+        description:
+          "String representing the object's type. Objects of the same type share the same value.",
+      }),
+    cookies: z.array(z.string()).openapi({ description: 'Array of cookie directives.' }),
+  })
+  .openapi({ required: ['object', 'cookies'] })
+  .openapi('Cookies')
+
+const SessionRefreshSchema = z.xor([TokenSchema, CookiesSchema]).openapi('SessionRefresh')
+
+const ReverificationSchema = z
+  .strictObject({
+    object: z
+      .literal('reverification')
+      .openapi({
+        description:
+          "String representing the object's type. Objects of the same type share the same value.\n",
+      }),
+    id: z.string(),
+    session_id: z.string(),
+    user_id: z.string(),
+    level: z
+      .enum(['first_factor', 'second_factor', 'multi_factor'])
+      .openapi({ description: 'The level used for the reverification' }),
+    status: z.enum(['needs_first_factor', 'needs_second_factor', 'complete']),
+    first_factor_verified_at: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description:
+          'Unix timestamp (ms) of the first factor verification, or null if not verified.\n',
+      }),
+    second_factor_verified_at: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description:
+          'Unix timestamp (ms) of the second factor verification, or null if not verified.\n',
+      }),
+    created_at: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64', description: 'Unix timestamp of creation.\n' }),
+    updated_at: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Unix timestamp of last update.\n',
+      }),
+  })
+  .openapi({
+    description:
+      'A reverification scoped to a session. Returned so a resource server can validate a reverification id received from its client.\n',
+    required: [
+      'object',
+      'id',
+      'session_id',
+      'user_id',
+      'level',
+      'status',
+      'first_factor_verified_at',
+      'second_factor_verified_at',
+      'created_at',
+      'updated_at',
+    ],
+  })
+  .openapi('Reverification')
+
+const TemplateSchema = z
+  .strictObject({
+    id: z.string().exactOptional(),
+    object: z
+      .literal('template')
+      .exactOptional()
+      .openapi({
+        description:
+          "String representing the object's type. Objects of the same type share the same value.\n",
+      }),
+    instance_id: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The ID of the instance to which the template belongs' }),
+    resource_type: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'whether this is a system (default) or user overridden) template' }),
+    template_type: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'whether this is an email or SMS template' }),
+    name: z.string().exactOptional().openapi({ description: 'user-friendly name of the template' }),
+    slug: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'machine-friendly name of the template' }),
+    position: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'position with the listing of templates' }),
+    can_revert: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'whether this template can be reverted to the corresponding system default',
+      }),
+    can_delete: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'whether this template can be deleted' }),
+    can_edit_body: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'whether the body of this template can be edited' }),
+    can_toggle: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'whether this template can be enabled or disabled, true only for notification SMS templates',
+      }),
+    subject: z.string().nullable().exactOptional().openapi({ description: 'email subject' }),
+    markup: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'the editor markup used to generate the body of the template' }),
+    body: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'the template body before variable interpolation' }),
+    available_variables: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description: 'list of variables that are available for use in the template body',
+      }),
+    required_variables: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'list of variables that must be contained in the template body' }),
+    from_email_name: z.string().exactOptional(),
+    reply_to_email_name: z.string().exactOptional(),
+    delivered_by_clerk: z.boolean().exactOptional(),
+    enabled: z.boolean().exactOptional(),
+    flagged_as_suspicious: z.boolean().exactOptional(),
+    updated_at: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Unix timestamp of last update.\n',
+      }),
+    created_at: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64', description: 'Unix timestamp of creation.\n' }),
+  })
+  .openapi({ required: [] })
+  .openapi('Template')
+
+const VerificationWeb3Schema = z
+  .strictObject({
+    object: z.literal('verification_web3').exactOptional(),
+    status: z.enum(['unverified', 'verified', 'failed', 'expired']),
+    strategy: z.enum([
+      'web3_metamask_signature',
+      'web3_base_signature',
+      'web3_coinbase_wallet_signature',
+      'web3_okx_wallet_signature',
+      'web3_solana_signature',
+    ]),
+    nonce: z.string().nullable().exactOptional(),
+    message: z.string().nullable().exactOptional(),
+    attempts: z.int().nullable(),
+    expire_at: z.int().nullable(),
+    verified_at_client: z.string().nullable().exactOptional(),
+  })
+  .openapi({
+    'x-speakeasy-name-override': 'Web3Signature',
+    required: ['status', 'strategy', 'attempts', 'expire_at'],
+  })
+  .openapi('VerificationWeb3')
+
+const Web3WalletSchema = z
+  .strictObject({
+    id: z.string().exactOptional(),
+    object: z
+      .literal('web3_wallet')
+      .openapi({
+        description:
+          "String representing the object's type. Objects of the same type share the same value.\n",
+      }),
+    web3_wallet: z.string(),
+    verification: z
+      .xor([VerificationWeb3Schema, VerificationAdminSchema])
+      .nullable()
+      .openapi({ discriminator: { propertyName: 'object' } }),
+    created_at: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64', description: 'Unix timestamp of creation\n' }),
+    updated_at: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64', description: 'Unix timestamp of creation\n' }),
+  })
+  .openapi({ required: ['object', 'web3_wallet', 'verification', 'created_at', 'updated_at'] })
+  .openapi('Web3Wallet')
+
+const VerificationPasskeySchema = z
+  .strictObject({
+    object: z.literal('verification_passkey').exactOptional(),
+    status: z.literal('verified'),
+    strategy: z.literal('passkey'),
+    nonce: z.literal('nonce').exactOptional(),
+    message: z.string().nullable().exactOptional(),
+    attempts: z.int().nullable(),
+    expire_at: z.int().nullable(),
+    verified_at_client: z.string().nullable().exactOptional(),
+  })
+  .openapi({
+    'x-speakeasy-name-override': 'Passkey',
+    required: ['status', 'strategy', 'attempts', 'expire_at'],
+  })
+  .openapi('VerificationPasskey')
+
+const PasskeySchema = z
+  .strictObject({
+    id: z.string().exactOptional(),
+    object: z
+      .literal('passkey')
+      .openapi({
+        description:
+          "String representing the object's type. Objects of the same type share the same value.\n",
+      }),
+    name: z.string(),
+    last_used_at: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Unix timestamp of when the passkey was last used.\n',
+      }),
+    verification: z
+      .xor([VerificationPasskeySchema])
+      .nullable()
+      .openapi({ discriminator: { propertyName: 'object' } }),
+  })
+  .openapi({ required: ['object', 'name', 'last_used_at', 'verification'] })
+  .openapi('Passkey')
+
+const VerificationOauthSchema = z
+  .strictObject({
+    object: z.literal('verification_oauth').exactOptional(),
+    status: z
+      .enum(['unverified', 'verified', 'failed', 'expired', 'transferable'])
+      .openapi({ 'x-speakeasy-unknown-values': 'allow' }),
+    strategy: z
+      .string()
+      .regex(/^oauth_(?:(?:token_)|(?:custom_))?[a-z]+$/)
+      .openapi({ 'x-speakeasy-unknown-values': 'allow' }),
+    external_verification_redirect_url: z.string().exactOptional(),
+    error: z.xor([ClerkErrorSchema]).nullable().exactOptional(),
+    expire_at: z.int(),
+    attempts: z.int().nullable(),
+    verified_at_client: z.string().nullable().exactOptional(),
+  })
+  .openapi({
+    'x-speakeasy-name-override': 'Oauth',
+    required: ['status', 'strategy', 'attempts', 'expire_at'],
+  })
+  .openapi('VerificationOauth')
+
+const VerificationGoogleOneTapSchema = z
+  .strictObject({
+    object: z.literal('verification_google_one_tap').exactOptional(),
+    status: z.enum(['unverified', 'verified']),
+    strategy: z.literal('google_one_tap'),
+    expire_at: z.int().nullable(),
+    attempts: z.int().nullable(),
+    verified_at_client: z.string().nullable().exactOptional(),
+    error: z.xor([ClerkErrorSchema]).nullable().exactOptional(),
+  })
+  .openapi({
+    'x-speakeasy-name-override': 'GoogleOneTap',
+    required: ['status', 'strategy', 'attempts', 'expire_at'],
+  })
+  .openapi('VerificationGoogleOneTap')
+
+const ExternalAccountWithVerificationSchema = z
+  .looseObject({
+    object: z
+      .enum(['external_account', 'facebook_account', 'google_account'])
+      .openapi({
+        description:
+          "String representing the object's type. Objects of the same type share the same value.",
+      }),
+    id: z.string(),
+    provider: z.string(),
+    identification_id: z.string(),
+    provider_user_id: z
+      .string()
+      .openapi({ description: "The unique ID of the user in the external provider's system" }),
+    approved_scopes: z.string(),
+    email_address: z.string(),
+    email_address_verified: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether the email was verified by the OAuth provider at creation time. null = unknown (pre-migration data or custom OAuth providers), true = provider confirmed email was verified, false = provider confirmed email was NOT verified\n',
+      }),
+    first_name: z.string(),
+    last_name: z.string(),
+    avatar_url: z
+      .string()
+      .exactOptional()
+      .openapi({ deprecated: true, description: 'Please use `image_url` instead' }),
+    image_url: z.string().nullable().exactOptional(),
+    username: z.string().nullable().exactOptional(),
+    phone_number: z.string().nullable().exactOptional(),
+    public_metadata: z.looseObject({}),
+    label: z.string().nullable().exactOptional(),
+    created_at: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64', description: 'Unix timestamp of creation\n' }),
+    updated_at: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64', description: 'Unix timestamp of creation\n' }),
+    verification: z
+      .xor([VerificationOauthSchema, VerificationGoogleOneTapSchema])
+      .nullable()
+      .openapi({ discriminator: { propertyName: 'object' } }),
+  })
+  .openapi({
+    required: [
+      'object',
+      'id',
+      'provider',
+      'identification_id',
+      'provider_user_id',
+      'approved_scopes',
+      'email_address',
+      'first_name',
+      'last_name',
+      'public_metadata',
+      'created_at',
+      'updated_at',
+      'verification',
+    ],
+  })
+  .openapi('ExternalAccountWithVerification')
+
+const SAMLAccountConnectionSchema = (() => {
+  const Schema = z
+    .union([
+      z
+        .unknown()
+        .superRefine((val, ctx) => {
+          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+            if (!Object.hasOwn(val, 'domain')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+          }
+        })
+        .openapi({ required: ['domain'] }),
+      z
+        .unknown()
+        .superRefine((val, ctx) => {
+          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+            if (!Object.hasOwn(val, 'domains')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+          }
+        })
+        .openapi({ required: ['domains'] }),
+    ])
+    .and(
+      z
+        .object({
+          id: z.string(),
+          name: z.string(),
+          domain: z.string().exactOptional().openapi({ deprecated: true }),
+          domains: z.array(z.string()).exactOptional(),
+          active: z.boolean(),
+          provider: z.string(),
+          sync_user_attributes: z.boolean(),
+          allow_subdomains: z.boolean().exactOptional(),
+          allow_idp_initiated: z.boolean().exactOptional(),
+          disable_additional_identifications: z.boolean().exactOptional(),
+          created_at: z
+            .preprocess(
+              (val) =>
+                typeof val === 'number' && Number.isSafeInteger(val)
+                  ? BigInt(val)
+                  : typeof val === 'string' && /^-?\d+$/.test(val)
+                    ? BigInt(val)
+                    : val,
+              z.int64(),
+            )
+            .openapi({
+              type: 'integer',
+              format: 'int64',
+              description: 'Unix timestamp of creation.\n',
+            }),
+          updated_at: z
+            .preprocess(
+              (val) =>
+                typeof val === 'number' && Number.isSafeInteger(val)
+                  ? BigInt(val)
+                  : typeof val === 'string' && /^-?\d+$/.test(val)
+                    ? BigInt(val)
+                    : val,
+              z.int64(),
+            )
+            .openapi({
+              type: 'integer',
+              format: 'int64',
+              description: 'Unix timestamp of last update.\n',
+            }),
+        })
+        .openapi({
+          required: [
+            'id',
+            'name',
+            'active',
+            'provider',
+            'sync_user_attributes',
+            'created_at',
+            'updated_at',
+          ],
+        }),
+    )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (
+          ![
+            'id',
+            'name',
+            'domain',
+            'domains',
+            'active',
+            'provider',
+            'sync_user_attributes',
+            'allow_subdomains',
+            'allow_idp_initiated',
+            'disable_additional_identifications',
+            'created_at',
+            'updated_at',
+          ].includes(k)
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({ additionalProperties: false })
+  .openapi({
+    required: [
+      'id',
+      'name',
+      'active',
+      'provider',
+      'sync_user_attributes',
+      'created_at',
+      'updated_at',
+    ],
+  })
+  .openapi('SAMLAccountConnection')
+
+const SAMLAccountSchema = z
+  .strictObject({
+    id: z.string(),
+    object: z
+      .literal('saml_account')
+      .openapi({
+        description:
+          "String representing the object's type. Objects of the same type share the same value.\n",
+      }),
+    provider: z.string(),
+    active: z.boolean(),
+    email_address: z.string(),
+    first_name: z.string().nullable().exactOptional(),
+    last_name: z.string().nullable().exactOptional(),
+    provider_user_id: z.string().nullable().exactOptional(),
+    last_authenticated_at: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description: 'Unix timestamp of last authentication.\n',
+      }),
+    public_metadata: z.looseObject({}).exactOptional(),
+    verification: z
+      .xor([VerificationSamlSchema, VerificationTicketSchema])
+      .nullable()
+      .openapi({ discriminator: { propertyName: 'object' } }),
+    saml_connection: z.xor([SAMLAccountConnectionSchema]).nullable().exactOptional(),
+  })
+  .openapi({ required: ['id', 'object', 'provider', 'active', 'email_address', 'verification'] })
+  .openapi('SAMLAccount')
+
+const EnterpriseAccountConnectionSchema = (() => {
+  const Schema = z
+    .union([
+      z
+        .unknown()
+        .superRefine((val, ctx) => {
+          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+            if (!Object.hasOwn(val, 'domain')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+          }
+        })
+        .openapi({ required: ['domain'] }),
+      z
+        .unknown()
+        .superRefine((val, ctx) => {
+          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+            if (!Object.hasOwn(val, 'domains')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+          }
+        })
+        .openapi({ required: ['domains'] }),
+    ])
+    .and(
+      z
+        .object({
+          id: z.string(),
+          protocol: z.string(),
+          provider: z.string(),
+          name: z.string(),
+          logo_public_url: z.string().nullable(),
+          domain: z.string().exactOptional().openapi({ deprecated: true }),
+          domains: z.array(z.string()).exactOptional(),
+          active: z.boolean(),
+          sync_user_attributes: z.boolean(),
+          allow_subdomains: z.boolean(),
+          allow_idp_initiated: z.boolean(),
+          disable_additional_identifications: z.boolean(),
+          created_at: z
+            .preprocess(
+              (val) =>
+                typeof val === 'number' && Number.isSafeInteger(val)
+                  ? BigInt(val)
+                  : typeof val === 'string' && /^-?\d+$/.test(val)
+                    ? BigInt(val)
+                    : val,
+              z.int64(),
+            )
+            .openapi({
+              type: 'integer',
+              format: 'int64',
+              description: 'Unix timestamp of creation.\n',
+            }),
+          updated_at: z
+            .preprocess(
+              (val) =>
+                typeof val === 'number' && Number.isSafeInteger(val)
+                  ? BigInt(val)
+                  : typeof val === 'string' && /^-?\d+$/.test(val)
+                    ? BigInt(val)
+                    : val,
+              z.int64(),
+            )
+            .openapi({
+              type: 'integer',
+              format: 'int64',
+              description: 'Unix timestamp of last update.\n',
+            }),
+        })
+        .openapi({
+          required: [
+            'id',
+            'protocol',
+            'name',
+            'logo_public_url',
+            'active',
+            'provider',
+            'sync_user_attributes',
+            'disable_additional_identifications',
+            'allow_subdomains',
+            'allow_idp_initiated',
+            'created_at',
+            'updated_at',
+          ],
+        }),
+    )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (
+          ![
+            'id',
+            'protocol',
+            'provider',
+            'name',
+            'logo_public_url',
+            'domain',
+            'domains',
+            'active',
+            'sync_user_attributes',
+            'allow_subdomains',
+            'allow_idp_initiated',
+            'disable_additional_identifications',
+            'created_at',
+            'updated_at',
+          ].includes(k)
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({ additionalProperties: false })
+  .openapi({
+    required: [
+      'id',
+      'protocol',
+      'name',
+      'logo_public_url',
+      'active',
+      'provider',
+      'sync_user_attributes',
+      'disable_additional_identifications',
+      'allow_subdomains',
+      'allow_idp_initiated',
+      'created_at',
+      'updated_at',
+    ],
+  })
+  .openapi('EnterpriseAccountConnection')
+
+const EnterpriseAccountSchema = z
+  .strictObject({
+    id: z.string(),
+    object: z
+      .literal('enterprise_account')
+      .openapi({
+        description:
+          "String representing the object's type. Objects of the same type share the same value.\n",
+      }),
+    protocol: z
+      .enum(['oauth', 'saml'])
+      .exactOptional()
+      .openapi({ description: 'The authentication protocol used to sign in.\n' }),
+    provider: z.string(),
+    active: z.boolean(),
+    email_address: z.string(),
+    first_name: z.string().nullable().exactOptional(),
+    last_name: z.string().nullable().exactOptional(),
+    provider_user_id: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: "The unique ID of the user in the external provider's system" }),
+    enterprise_connection_id: z.string().nullable().exactOptional(),
+    public_metadata: z.looseObject({}).exactOptional(),
+    verification: z
+      .xor([VerificationTicketSchema, VerificationSamlSchema, VerificationOauthSchema])
+      .nullable()
+      .openapi({ discriminator: { propertyName: 'object' } }),
+    enterprise_connection: z.xor([EnterpriseAccountConnectionSchema]).nullable().exactOptional(),
+    last_authenticated_at: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description: 'Unix timestamp of last authentication.\n',
+      }),
+  })
+  .openapi({ required: ['id', 'object', 'provider', 'active', 'email_address', 'verification'] })
+  .openapi('EnterpriseAccount')
+
+const OrganizationSchema = z
+  .object({
+    object: z.literal('organization'),
+    id: z.string(),
+    name: z.string(),
+    slug: z.string(),
+    image_url: z.string().exactOptional(),
+    has_image: z.boolean(),
+    members_count: z.int().exactOptional(),
+    missing_member_with_elevated_permissions: z.boolean().exactOptional(),
+    pending_invitations_count: z.int().exactOptional(),
+    max_allowed_memberships: z.int(),
+    admin_delete_enabled: z.boolean(),
+    self_serve_sso_enabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Whether this organization can configure self-serve enterprise SSO.\n',
+      }),
+    self_serve_directory_sync_enabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Whether this organization can configure self-serve Directory Sync (SCIM).\n',
+      }),
+    public_metadata: z.looseObject({}),
+    private_metadata: z.looseObject({}).exactOptional(),
+    created_by: z.string().exactOptional(),
+    created_at: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64', description: 'Unix timestamp of creation.\n' }),
+    updated_at: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Unix timestamp of last update.\n',
+      }),
+    last_active_at: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Unix timestamp of last activity.\n',
+      }),
+    role_set_key: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The key of the [role set](https://clerk.com/docs/guides/organizations/control-access/role-sets) assigned to this organization.\n',
+      }),
+  })
+  .openapi({
+    required: [
+      'object',
+      'id',
+      'name',
+      'slug',
+      'has_image',
+      'max_allowed_memberships',
+      'admin_delete_enabled',
+      'public_metadata',
+      'created_at',
+      'updated_at',
+    ],
+  })
+  .openapi('Organization')
+
+const OrganizationMembershipPublicUserDataSchema = z
+  .strictObject({
+    user_id: z.string(),
+    first_name: z.string().nullable(),
+    last_name: z.string().nullable(),
+    profile_image_url: z.string().nullable().openapi({ deprecated: true }),
+    image_url: z.string(),
+    has_image: z.boolean(),
+    identifier: z.string().nullable().exactOptional(),
+    username: z.string().nullable().exactOptional(),
+    banned: z.boolean().exactOptional(),
+    deprovisioned: z.boolean().exactOptional(),
+  })
+  .openapi({
+    description: 'An organization membership with public user data populated',
+    required: ['user_id', 'first_name', 'last_name', 'profile_image_url', 'image_url', 'has_image'],
+  })
+  .openapi('OrganizationMembershipPublicUserData')
+
+const OrganizationMembershipSchema = z
+  .object({
+    id: z.string(),
+    object: z
+      .literal('organization_membership')
+      .openapi({
+        description:
+          "String representing the object's type. Objects of the same type share the same value.\n",
+      }),
+    role: z.string(),
+    role_name: z.string().exactOptional(),
+    permissions: z.array(z.string()),
+    public_metadata: z
+      .looseObject({})
+      .openapi({
+        description:
+          'Metadata saved on the organization membership, accessible from both Frontend and Backend APIs',
+      }),
+    private_metadata: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({
+        description:
+          'Metadata saved on the organization membership, accessible only from the Backend API',
+      }),
+    organization: OrganizationSchema,
+    public_user_data: OrganizationMembershipPublicUserDataSchema.exactOptional(),
+    created_at: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64', description: 'Unix timestamp of creation.' }),
+    updated_at: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64', description: 'Unix timestamp of last update.' }),
+  })
+  .openapi({
+    description: "A user's membership in an organization",
+    required: [
+      'object',
+      'id',
+      'role',
+      'permissions',
+      'public_metadata',
+      'created_at',
+      'updated_at',
+      'organization',
+    ],
+  })
+  .openapi('OrganizationMembership')
+
+const SCIMUserMetadataSchema = z
+  .strictObject({
+    id: z.string().openapi({ description: "The user's resource ID in this directory." }),
+    directory_name: z.string(),
+    provider: z.string(),
+    enterprise_connection_id: z.string().nullable(),
+    groups: z
+      .array(
+        z
+          .strictObject({ id: z.string(), display_name: z.string() })
+          .openapi({ required: ['id', 'display_name'] }),
+      )
+      .exactOptional()
+      .openapi({
+        description:
+          'Omitted when groups were not loaded; an empty array means no group memberships.',
+      }),
+    directory_id: z
+      .string()
+      .openapi({ description: 'The ID of the directory the user is provisioned from.\n' }),
+    directory_enabled: z
+      .boolean()
+      .openapi({ description: 'Whether the directory is currently enabled.\n' }),
+    external_id: z
+      .string()
+      .nullable()
+      .openapi({ description: "The user's external ID as reported by the directory, if any.\n" }),
+  })
+  .openapi({
+    description:
+      "Metadata describing a user's linkage to a directory. Included in user responses when directory data is requested, and in directory-triggered user webhooks. Its absence does not necessarily mean the user is not managed by a directory.\n",
+    required: [
+      'id',
+      'directory_name',
+      'provider',
+      'enterprise_connection_id',
+      'directory_enabled',
+      'directory_id',
+      'external_id',
+    ],
+  })
+  .openapi('SCIMUserMetadata')
+
+const UserSchema = z
+  .strictObject({
+    id: z.string(),
+    object: z
+      .literal('user')
+      .openapi({
+        description:
+          "String representing the object's type. Objects of the same type share the same value.\n",
+      }),
+    external_id: z.string().nullable(),
+    primary_email_address_id: z.string().nullable(),
+    primary_phone_number_id: z.string().nullable(),
+    primary_web3_wallet_id: z.string().nullable(),
+    username: z.string().nullable(),
+    first_name: z.string().nullable(),
+    last_name: z.string().nullable(),
+    locale: z.string().nullable().exactOptional(),
+    timezone: z.string().nullable().exactOptional(),
+    profile_image_url: z.string().exactOptional().openapi({ deprecated: true }),
+    image_url: z.string().exactOptional(),
+    has_image: z.boolean(),
+    public_metadata: z.looseObject({}),
+    private_metadata: z.looseObject({}).nullable().exactOptional(),
+    unsafe_metadata: z.looseObject({}).exactOptional(),
+    email_addresses: z.array(EmailAddressSchema),
+    phone_numbers: z.array(PhoneNumberSchema),
+    web3_wallets: z.array(Web3WalletSchema),
+    passkeys: z.array(PasskeySchema),
+    password_enabled: z.boolean(),
+    two_factor_enabled: z.boolean(),
+    totp_enabled: z.boolean(),
+    backup_code_enabled: z.boolean(),
+    mfa_enabled_at: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description:
+          'Unix timestamp of when MFA was last enabled for this user. It should be noted that this field is not nullified if MFA is disabled.\n',
+      }),
+    mfa_disabled_at: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description:
+          'Unix timestamp of when MFA was last disabled for this user. It should be noted that this field is not nullified if MFA is enabled again.\n',
+      }),
+    password_last_updated_at: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description: "Unix timestamp of when the user's password was last updated.\n",
+      }),
+    external_accounts: z.array(ExternalAccountWithVerificationSchema),
+    saml_accounts: z.array(SAMLAccountSchema),
+    enterprise_accounts: z.array(EnterpriseAccountSchema),
+    organization_memberships: z.array(OrganizationMembershipSchema).exactOptional(),
+    last_sign_in_at: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description: 'Unix timestamp of last sign-in.\n',
+      }),
+    banned: z.boolean().openapi({ description: 'Flag to denote whether user is banned or not.\n' }),
+    locked: z
+      .boolean()
+      .openapi({
+        description:
+          'Flag to denote whether user is currently locked, i.e. restricted from signing in or not.\n',
+      }),
+    deprovisioned: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Flag to denote whether user has been deprovisioned and is restricted from signing in.\n',
+      }),
+    lockout_expires_in_seconds: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description:
+          'The number of seconds remaining until the lockout period expires for a locked user. A null value for a locked user indicates that lockout never expires.\n',
+      }),
+    verification_attempts_remaining: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description:
+          'The number of verification attempts remaining until the user is locked. Null if account lockout is not enabled. Note: if a user is locked explicitly via the Backend API, they may still have verification attempts remaining.\n',
+      }),
+    updated_at: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Unix timestamp of last update.\n',
+      }),
+    created_at: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64', description: 'Unix timestamp of creation.\n' }),
+    delete_self_enabled: z
+      .boolean()
+      .openapi({ description: 'If enabled, user can delete themselves via FAPI.\n' }),
+    create_organization_enabled: z
+      .boolean()
+      .openapi({ description: 'If enabled, user can create organizations via FAPI.\n' }),
+    create_organizations_limit: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The maximum number of organizations the user can create. 0 means unlimited.\n',
+      }),
+    last_active_at: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description: 'Unix timestamp of the latest session activity, with day precision.\n',
+        example: 1700690400000,
+      }),
+    legal_accepted_at: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description: 'Unix timestamp of when the user accepted the legal requirements.\n',
+        example: 1700690400000,
+      }),
+    bypass_client_trust: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description: 'When set to `true`, the user will bypass Device Trust checks during sign-in.',
+      }),
+    directories: z
+      .array(SCIMUserMetadataSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'All loaded directory links. Omitted when links were not loaded; an empty array means the user has no directory links.\n',
+      }),
+    directory: SCIMUserMetadataSchema.exactOptional().openapi({
+      deprecated: true,
+      description: 'The most recently updated directory link. Use directories for all links.',
+    }),
+    scim: SCIMUserMetadataSchema.nullable()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description: 'Alias of directory. Use directories for all links.',
+      }),
+  })
+  .openapi({
+    required: [
+      'id',
+      'object',
+      'username',
+      'first_name',
+      'last_name',
+      'has_image',
+      'primary_email_address_id',
+      'primary_phone_number_id',
+      'primary_web3_wallet_id',
+      'password_enabled',
+      'two_factor_enabled',
+      'totp_enabled',
+      'backup_code_enabled',
+      'email_addresses',
+      'phone_numbers',
+      'web3_wallets',
+      'passkeys',
+      'external_accounts',
+      'saml_accounts',
+      'enterprise_accounts',
+      'public_metadata',
+      'external_id',
+      'last_sign_in_at',
+      'banned',
+      'locked',
+      'lockout_expires_in_seconds',
+      'verification_attempts_remaining',
+      'created_at',
+      'updated_at',
+      'delete_self_enabled',
+      'create_organization_enabled',
+      'last_active_at',
+      'mfa_enabled_at',
+      'mfa_disabled_at',
+      'legal_accepted_at',
+    ],
+  })
+  .openapi('User')
+
+const PasswordHasherSchema = z
+  .string()
+  .openapi({
+    description:
+      'The hashing algorithm that was used to generate the password digest.\n\nThe algorithms we support at the moment are [`bcrypt`](https://en.wikipedia.org/wiki/Bcrypt), [`bcrypt_sha256_django`](https://docs.djangoproject.com/en/4.0/topics/auth/passwords/), [`md5`](https://en.wikipedia.org/wiki/MD5), `pbkdf2_sha1`, `pbkdf2_sha256`, [`pbkdf2_sha256_django`](https://docs.djangoproject.com/en/4.0/topics/auth/passwords/),\n`pbkdf2_sha512`, [`phpass`](https://www.openwall.com/phpass/), `md5_phpass`, [`scrypt_firebase`](https://firebaseopensource.com/projects/firebase/scrypt/),\n[`scrypt_werkzeug`](https://werkzeug.palletsprojects.com/en/3.0.x/utils/#werkzeug.security.generate_password_hash), [`sha256`](https://en.wikipedia.org/wiki/SHA-2),\n[`ldap_ssha`](https://www.openldap.org/faq/data/cache/347.html), the [`argon2`](https://argon2.online/) variants: `argon2i` and `argon2id`, `sha512_symfony`, the SHA-512 variant of the [Symfony](https://symfony.com/doc/current/security/passwords.html) legacy hasher,\nand `pbkdf2_sha512_hex`, a variant of `pbkdf2_sha512` that accepts hex-encoded salt and hash.\n\nEach of the supported hashers expects the incoming digest to be in a particular format. See the [Clerk docs](https://clerk.com/docs/references/backend/user/create-user) for more information.',
+  })
+  .openapi('PasswordHasher')
+
+const TotalCountSchema = z
+  .strictObject({
+    object: z
+      .literal('total_count')
+      .openapi({
+        description:
+          "String representing the object's type. Objects of the same type share the same value.\n",
+      }),
+    total_count: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64' }),
+  })
+  .openapi({ required: ['object', 'total_count'] })
+  .openapi('TotalCount')
+
+const CommerceSubscriptionSchema: z.ZodType<CommerceSubscriptionType> = z
   .strictObject({
     object: z
       .literal('commerce_subscription')
@@ -3100,6 +3556,66 @@ const OrganizationInvitationWithPublicOrganizationDataSchema = z
   .openapi({ required: [] })
   .and(
     z
+      .looseObject({})
+      .openapi({
+        required: [
+          'object',
+          'id',
+          'email_address',
+          'role',
+          'role_name',
+          'public_metadata',
+          'url',
+          'expires_at',
+          'created_at',
+          'updated_at',
+          'inviter_id',
+          'public_inviter_data',
+        ],
+      }),
+  )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'object')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'email_address')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'role')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'role_name')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'public_metadata')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'url')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'expires_at')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'created_at')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'updated_at')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'inviter_id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'public_inviter_data')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
       .object({
         public_organization_data:
           OrganizationInvitationPublicOrganizationDataSchema.exactOptional(),
@@ -3428,7 +3944,7 @@ const ActorTokenSchema = z
     id: z.string(),
     status: z.enum(['pending', 'accepted', 'revoked']),
     user_id: z.string(),
-    actor: z.object({}),
+    actor: z.looseObject({}),
     token: z.string().exactOptional(),
     url: z.string().exactOptional(),
     created_at: z
@@ -3865,7 +4381,7 @@ const JWTTemplateSchema = z
     object: z.literal('jwt_template'),
     id: z.string(),
     name: z.string(),
-    claims: z.object({}),
+    claims: z.looseObject({}),
     lifetime: z.int(),
     allowed_clock_skew: z.int(),
     custom_signing_key: z.boolean(),
@@ -4556,7 +5072,7 @@ const SignUpVerificationsSchema = z
     email_address: SignUpVerificationSchema,
     phone_number: SignUpVerificationSchema,
     web3_wallet: SignUpVerificationSchema,
-    external_account: z.object({}).nullable(),
+    external_account: z.looseObject({}).nullable(),
   })
   .openapi({ required: ['email_address', 'phone_number', 'web3_wallet', 'external_account'] })
   .openapi('SignUpVerifications')
@@ -4634,7 +5150,7 @@ const SignUpSchema = z
           'The user locale preference for the sign-up specified as a BCP-47 language tag.',
         example: 'en-US',
       }),
-    external_account: z.object({}).exactOptional().openapi({ deprecated: true }),
+    external_account: z.looseObject({}).exactOptional().openapi({ deprecated: true }),
   })
   .openapi({
     required: [
@@ -5665,29 +6181,30 @@ const PaginatedCommercePlanResponseSchema = z
   .openapi({ required: ['data', 'total_count'] })
   .openapi('PaginatedCommercePlanResponse')
 
-const PaginatedCommerceSubscriptionItemResponseSchema = z
-  .strictObject({
-    data: z
-      .array(CommerceSubscriptionItemSchema)
-      .openapi({ description: 'Array of commerce subscription items.' }),
-    total_count: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
+const PaginatedCommerceSubscriptionItemResponseSchema: z.ZodType<PaginatedCommerceSubscriptionItemResponseType> =
+  z
+    .strictObject({
+      data: z
+        .array(CommerceSubscriptionItemSchema)
+        .openapi({ description: 'Array of commerce subscription items.' }),
+      total_count: z
+        .preprocess(
+          (val) =>
+            typeof val === 'number' && Number.isSafeInteger(val)
               ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'Total number of commerce subscription items.',
-      }),
-  })
-  .openapi({ required: ['data', 'total_count'] })
-  .openapi('PaginatedCommerceSubscriptionItemResponse')
+              : typeof val === 'string' && /^-?\d+$/.test(val)
+                ? BigInt(val)
+                : val,
+          z.int64(),
+        )
+        .openapi({
+          type: 'integer',
+          format: 'int64',
+          description: 'Total number of commerce subscription items.',
+        }),
+    })
+    .openapi({ required: ['data', 'total_count'] })
+    .openapi('PaginatedCommerceSubscriptionItemResponse')
 
 const ExtendFreeTrialRequestSchema = z
   .strictObject({
@@ -5712,163 +6229,7 @@ const PriceTransitionRequestSchema = z
   .openapi({ required: ['from_price_id', 'to_price_id'] })
   .openapi('PriceTransitionRequest')
 
-const BillingPriceResponseSchema = z
-  .strictObject({
-    object: z
-      .literal('commerce_price')
-      .openapi({
-        description:
-          "String representing the object's type. Objects of the same type share the same value.",
-      }),
-    id: z.string().openapi({ description: 'Unique identifier for the price.' }),
-    plan_id: z.string().openapi({ description: 'Unique identifier for the associated plan.' }),
-    instance_id: z.string().openapi({ description: 'Unique identifier for the instance.' }),
-    currency: z.string().openapi({ description: 'The currency code (e.g., "USD").' }),
-    currency_symbol: z.string().openapi({ description: 'The currency symbol (e.g., "$").' }),
-    amount: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'The amount in cents for the price.',
-      }),
-    annual_monthly_amount: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'The monthly amount in cents when billed annually.',
-      }),
-    fee: CommerceMoneyResponseSchema.nullable(),
-    annual_monthly_fee: CommerceMoneyResponseSchema.nullable(),
-    description: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The description of the price.' }),
-    is_default: z
-      .boolean()
-      .openapi({ description: 'Whether this price is the default price for its plan.' }),
-    created_at: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'Unix timestamp (milliseconds) of creation.',
-      }),
-    supported_billing_periods: z
-      .enum(['month', 'annual', 'both'])
-      .openapi({ description: 'Which billing periods this price supports.' }),
-  })
-  .openapi({
-    required: [
-      'object',
-      'id',
-      'plan_id',
-      'instance_id',
-      'currency',
-      'currency_symbol',
-      'amount',
-      'annual_monthly_amount',
-      'fee',
-      'annual_monthly_fee',
-      'is_default',
-      'created_at',
-      'supported_billing_periods',
-    ],
-  })
-  .openapi('BillingPriceResponse')
-
-const CommercePriceTransitionDetailsSchema = z
-  .strictObject({
-    previous_plan: CommercePlanSchema,
-    previous_price: BillingPriceResponseSchema,
-    effective_at: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'Unix timestamp (milliseconds) when the new price takes effect.',
-      }),
-    effective_mode: z
-      .enum(['immediate', 'end_of_period'])
-      .openapi({ description: 'When the new price takes effect.' }),
-    next_billing_date: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .nullable()
-      .exactOptional()
-      .openapi({
-        type: ['integer', 'null'],
-        format: 'int64',
-        description: 'Unix timestamp (milliseconds) for the next billing date.',
-      }),
-    charged_immediately: z
-      .boolean()
-      .openapi({ description: 'Whether an immediate charge was made.' }),
-    immediate_charge: CommerceMoneyResponseSchema.nullable()
-      .exactOptional()
-      .openapi({ description: 'Amount charged immediately, if any.' }),
-    previous_subscription_item_status: z
-      .enum(['canceled', 'ended', 'abandoned'])
-      .openapi({ description: 'The status of the previous subscription item after transition.' }),
-    previous_subscription_item_id: z
-      .string()
-      .openapi({ description: 'The ID of the previous subscription item.' }),
-  })
-  .openapi({
-    required: [
-      'previous_plan',
-      'previous_price',
-      'effective_at',
-      'effective_mode',
-      'charged_immediately',
-      'previous_subscription_item_status',
-      'previous_subscription_item_id',
-    ],
-  })
-  .openapi('CommercePriceTransitionDetails')
-
-const CommercePriceTransitionResponseSchema = z
+const CommercePriceTransitionResponseSchema: z.ZodType<CommercePriceTransitionResponseType> = z
   .strictObject({
     object: z
       .literal('commerce_price_transition')
@@ -6289,6 +6650,511 @@ const RoleSetsSchema = z
   .openapi({ required: ['data', 'total_count'] })
   .openapi('RoleSets')
 
+const LogApplicationContextSchema = z
+  .object({
+    id: z.string().nullable().exactOptional().openapi({ description: 'The application ID.' }),
+    name: z.string().nullable().exactOptional().openapi({ description: 'The application name.' }),
+  })
+  .openapi({ description: 'Application context information.', required: [] })
+  .openapi('LogApplicationContext')
+
+const LogDomainContextSchema = z
+  .object({
+    id: z.string().nullable().exactOptional().openapi({ description: 'The domain ID.' }),
+    name: z.string().nullable().exactOptional().openapi({ description: 'The domain name.' }),
+  })
+  .openapi({ description: 'Domain context information.', required: [] })
+  .openapi('LogDomainContext')
+
+const LogEnvironmentContextSchema = z
+  .object({
+    type: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The environment type (e.g., "development", "production").' }),
+    application: LogApplicationContextSchema.exactOptional(),
+    domain: LogDomainContextSchema.exactOptional(),
+    primary_domain: LogDomainContextSchema.exactOptional(),
+  })
+  .openapi({ description: 'Environment context for the log event.', required: [] })
+  .openapi('LogEnvironmentContext')
+
+const LogBrowserContextSchema = z
+  .object({
+    name: z.string().nullable().exactOptional().openapi({ description: 'The browser name.' }),
+    version: z.string().nullable().exactOptional().openapi({ description: 'The browser version.' }),
+  })
+  .openapi({ description: 'Browser information.', required: [] })
+  .openapi('LogBrowserContext')
+
+const LogLocationContextSchema = z
+  .object({
+    city: z.string().nullable().exactOptional().openapi({ description: 'The city name.' }),
+    country: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The country, as recorded for the event.' }),
+    country_code: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The ISO 3166-1 alpha-2 code of `country`. Omitted when the\ncountry cannot be resolved to a known code.',
+        example: 'US',
+      }),
+  })
+  .openapi({ description: 'Geographic location information.', required: [] })
+  .openapi('LogLocationContext')
+
+const LogDeviceContextSchema = z
+  .object({
+    ip_address: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The IP address of the client.' }),
+    user_agent: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The user agent string of the client.' }),
+    browser: LogBrowserContextSchema.exactOptional(),
+    device_type: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The type of device (e.g., "desktop", "mobile", "tablet").' }),
+    is_mobile: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Whether the device is a mobile device.' }),
+    location: LogLocationContextSchema.exactOptional(),
+    clerk_js_version: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The version of Clerk.js used by the client.' }),
+    is_native: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Whether the client is a native application.' }),
+  })
+  .openapi({ description: 'Device information for the log event.', required: [] })
+  .openapi('LogDeviceContext')
+
+const LogContextSchema = z
+  .object({
+    environment: LogEnvironmentContextSchema.exactOptional(),
+    device: LogDeviceContextSchema.nullable().exactOptional(),
+  })
+  .openapi({
+    description: 'Context information about the environment and device where the event occurred.',
+    required: [],
+  })
+  .openapi('LogContext')
+
+const LogSchema = z
+  .object({
+    object: z
+      .string()
+      .openapi({
+        description: 'String representing the object\'s type. Always "log".',
+        example: 'log',
+      }),
+    id: z.uuid().openapi({ description: 'Unique identifier for the log event.' }),
+    event_time: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The timestamp when the event occurred (Unix timestamp in milliseconds).',
+      }),
+    actor: z
+      .string()
+      .openapi({
+        description:
+          'The ID of whoever triggered the event. `actor_type` says what kind\nof principal it is: an end user, a Clerk Dashboard user, an\ninstance key, an API key, an integration, or Clerk itself. In an\nimpersonated session, it is the impersonated user and\n`impersonator` holds whoever started the impersonation.',
+      }),
+    actor_type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The kind of principal the `actor` identifies, classified when the\nevent was recorded: `user` (an end user of your application),\n`dashboard_user` (a member of your Clerk Dashboard workspace),\n`instance_key`, `api_key`, `integration`, or `clerk_system`.',
+        example: 'dashboard_user',
+      }),
+    impersonator: z
+      .object({
+        user_id: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'The user ID of the impersonator.' }),
+      })
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The impersonator that performed the action.', required: [] }),
+    subject: z
+      .string()
+      .openapi({
+        description:
+          "The ID of the resource the event is about, such as a user or an\norganization. A change to a child record, such as an email address\nor a membership, uses the ID of its parent user or organization.\nEvents that affect several resources use their lowest common\nparent, and side effects use the primary resource's subject. The\ninstance ID is used when nothing more specific applies.\nEvents in the same flow can have different subjects; use\n`group_id` to follow a flow.",
+      }),
+    type: z.string().openapi({ description: 'The type of the log event.' }),
+    client_id: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'The client ID of the request. Set on FAPI requests, unset on BAPI requests.',
+      }),
+    source: z
+      .string()
+      .nullable()
+      .openapi({ description: 'The source service that generated the event.' }),
+    session_id: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The ID of the session the event occurred in, if any.' }),
+    trace_id: z
+      .string()
+      .openapi({ description: 'Trace ID for distributed tracing (32 hex characters).' }),
+    span_id: z
+      .string()
+      .openapi({ description: 'Span ID for distributed tracing (16 hex characters).' }),
+    parent_span_id: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Parent span ID for hierarchical tracing.' }),
+    event_context: LogContextSchema,
+    group_id: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The ID of the event group (a flow such as a sign-in) the event\nbelongs to, e.g. a sign-in ID. Null for an event outside any group.',
+      }),
+    group_type: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The kind of event group the event belongs to, e.g. `sign_in`. Null for an event outside any group.',
+      }),
+    group_started_at: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description:
+          "When the event's group started (Unix timestamp in milliseconds). Null for an event outside any group.",
+      }),
+    payload: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({
+        description:
+          "Present only when the request selected payload fields via\n`payload_fields`. Partial by construction: contains just the\nrequested fields, keyed by their dot-paths, with fields absent\nfrom this event's payload omitted (an empty object when the\nevent carries none of them). Use the single-event endpoint for\nthe full payload.",
+      }),
+  })
+  .openapi({
+    description: 'A log entry representing a recorded event.',
+    required: [
+      'object',
+      'id',
+      'event_time',
+      'actor',
+      'subject',
+      'type',
+      'source',
+      'trace_id',
+      'span_id',
+      'event_context',
+    ],
+  })
+  .openapi('Log')
+
+const LogGroupSchema = z
+  .object({
+    object: z
+      .literal('log_group')
+      .openapi({ description: 'String representing the object\'s type. Always "log_group".' }),
+    group_id: z.string().openapi({ description: "The group's ID, e.g. a sign-in ID." }),
+    group_type: z
+      .string()
+      .openapi({ description: 'The kind of flow the group collects, e.g. `sign_in`.' }),
+    started_at: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'When the flow started (Unix timestamp in milliseconds). The list sorts groups by it.',
+      }),
+    event_count: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The number of events in the group.',
+      }),
+    matched_event_count: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          "How many of the group's events matched the request's event filters. Present only when event filters were applied.",
+      }),
+    status: z
+      .string()
+      .nullable()
+      .openapi({
+        description:
+          'How the flow ended: `completed`, `failed`, or `abandoned` when\nnothing concluded it before its abandon deadline passed (a\nsign-in or sign-up nobody finished). Null while the flow is still\ngoing.',
+      }),
+    status_label: z
+      .string()
+      .nullable()
+      .openapi({ description: 'A display label for `status`. Null when `status` is.' }),
+    subject: z
+      .string()
+      .openapi({
+        description:
+          "Who the flow is about: the user ID of the latest event in the\ngroup whose subject is a user, or, when the flow never\nidentified a user, the first event's subject (usually the\ninstance ID). Unlike `first_event.subject`, it names the user\neven when the flow started before the user was known.",
+      }),
+    first_event: LogSchema.nullable().openapi({
+      description:
+        "The group's first log, even when event filters left it out of\n`events`, for showing how the flow started (subject, IP,\nlocation).",
+    }),
+    events: z
+      .array(LogSchema)
+      .openapi({
+        description:
+          "The group's first events, oldest first. Only events matching the request's event filters when any were applied.",
+      }),
+    has_more_events: z
+      .boolean()
+      .openapi({
+        description:
+          'Whether the group has more events than `events` holds. Load them from the group events endpoint.',
+      }),
+    events_cursor: z
+      .string()
+      .nullable()
+      .openapi({
+        description:
+          'When `has_more_events` is true, the `starting_after` to pass to the group events endpoint to load the rest. Null otherwise.',
+      }),
+  })
+  .openapi({
+    description:
+      'An event group in the grouped log list: the events of one flow, such\nas a sign-in, shown as a single item.',
+    required: [
+      'object',
+      'group_id',
+      'group_type',
+      'started_at',
+      'event_count',
+      'status',
+      'status_label',
+      'subject',
+      'first_event',
+      'events',
+      'has_more_events',
+      'events_cursor',
+    ],
+  })
+  .openapi('LogGroup')
+
+const LogSchemaFieldSchema = z
+  .object({
+    path: z
+      .string()
+      .openapi({
+        description:
+          "The field's dot-path (nested fields use dots, e.g.\n`captcha_attempt_payload.provider`) — the exact string\n`payload_filter` and `payload_fields` accept.",
+        example: 'user_id',
+      }),
+    type: z
+      .enum(['string', 'boolean', 'integer', 'number'])
+      .openapi({ description: "The field's data type." }),
+    optional: z
+      .boolean()
+      .openapi({
+        description:
+          'Whether the field is optional in the payload. Note that even\nnon-optional fields can be absent from a stored event when they\nheld their zero value at record time.',
+      }),
+    enum: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'The accepted values, present for enum-backed fields (which have\ntype `string`).',
+      }),
+  })
+  .openapi({
+    description: 'One payload field, addressed by dot-path.',
+    required: ['path', 'type', 'optional'],
+  })
+  .openapi('LogSchemaField')
+
+const LogSchemaSchema = z
+  .object({
+    object: z
+      .string()
+      .openapi({
+        description: 'String representing the object\'s type. Always "log_schema".',
+        example: 'log_schema',
+      }),
+    event_type: z
+      .string()
+      .openapi({
+        description:
+          'The event type this schema describes: a concrete type\n(`sign_in.completed`) or a trailing-`*` wildcard (`sign_in.*`).\nA bare family name in the request (`sign_in`) is normalized to\nits wildcard form here.',
+        example: 'sign_in.completed',
+      }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Human-readable description of the event type. Present only for\nconcrete types.',
+        example: 'Sign in was completed',
+      }),
+    severity: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Severity of the event type (e.g. `info`, `success`,\n`warning_external`). Present only for concrete types.',
+        example: 'success',
+      }),
+    docs_group: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The documentation group the event type belongs to. Present only\nfor concrete types.',
+        example: 'Sign-in events',
+      }),
+    matched_event_types: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'The concrete event types a wildcard expanded to. Present only\nfor wildcard lookups, whose `fields` are the intersection across\nthese types.',
+      }),
+    fields: z.array(LogSchemaFieldSchema),
+  })
+  .openapi({
+    description:
+      'The payload schema of a log event type: the fields its payload\ncarries, addressed by the dot-paths that `payload_filter` and\n`payload_fields` accept. Field entries use JSON Schema vocabulary\n(`type` is the data type, `enum` the accepted values); the event\ntype identifier lives in `event_type`.',
+    required: ['object', 'event_type', 'fields'],
+  })
+  .openapi('LogSchema')
+
+const LogSchemaListSchema = z
+  .object({
+    object: z
+      .string()
+      .openapi({
+        description: 'String representing the object\'s type. Always "list".',
+        example: 'list',
+      }),
+    data: z
+      .array(LogSchemaSchema)
+      .openapi({
+        description:
+          'One schema per concrete event type, each the same as the\nresponse to a lookup by that type.',
+      }),
+    total_count: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Total number of event type schemas in the list.',
+      }),
+  })
+  .openapi({
+    description:
+      'The schema of every log event type the instance can see, sorted by\n`event_type`. Not paginated.',
+    required: ['object', 'data', 'total_count'],
+  })
+  .openapi('LogSchemaList')
+
+const LogWithPayloadSchema = LogSchema.and(
+  z
+    .object({
+      payload: z.looseObject({}).openapi({ description: 'Additional event-specific data.' }),
+    })
+    .openapi({ required: ['payload'] }),
+)
+  .openapi({
+    description:
+      'A log entry with the full event payload. Returned by the\nsingle-event endpoint. List responses use Log, whose payload is\nabsent unless specific fields were requested via `payload_fields`.',
+  })
+  .openapi('LogWithPayload')
+
 const WellKnownJWKSResponse = {
   description: 'Get the JSON Web Key Set',
   content: { 'application/json': { schema: JWKSSchema } },
@@ -6327,6 +7193,11 @@ const ClientResponse = {
 const ResourceNotFoundResponse = {
   description: 'Resource not found',
   content: { 'application/json': { schema: ClerkErrorsSchema } },
+}
+
+const Client_2Response = {
+  description: 'Success',
+  content: { 'application/json': { schema: Client_2Schema } },
 }
 
 const EmailAddressResponse = {
@@ -6425,6 +7296,11 @@ const SessionResponse = {
   content: { 'application/json': { schema: SessionSchema } },
 }
 
+const PaymentRequiredResponse = {
+  description: 'Payment required',
+  content: { 'application/json': { schema: ClerkErrorsSchema } },
+}
+
 const SessionRefreshResponse = {
   description: 'Success',
   content: { 'application/json': { schema: SessionRefreshSchema } },
@@ -6445,11 +7321,6 @@ const TemplateResponse = {
   content: { 'application/json': { schema: TemplateSchema } },
 }
 
-const PaymentRequiredResponse = {
-  description: 'Payment required',
-  content: { 'application/json': { schema: ClerkErrorsSchema } },
-}
-
 const LockedResponse = {
   description: 'Locked',
   content: { 'application/json': { schema: ClerkErrorsSchema } },
@@ -6460,9 +7331,14 @@ const TooManyRequestsResponse = {
   content: { 'application/json': { schema: ClerkErrorsSchema } },
 }
 
-const UserListResponse = {
+const UserListOrCursorPageResponse = {
   description: 'Success',
-  content: { 'application/json': { schema: z.array(UserSchema) } },
+  content: { 'application/json': { schema: z.xor([z.array(UserSchema)]) } },
+}
+
+const FeatureNotEnabledResponse = {
+  description: 'Feature not enabled',
+  content: { 'application/json': { schema: ClerkErrorsSchema } },
 }
 
 const UserResponse = {
@@ -6473,6 +7349,11 @@ const UserResponse = {
 const UserCountResponse = {
   description: 'Success',
   content: { 'application/json': { schema: TotalCountSchema } },
+}
+
+const UserListResponse = {
+  description: 'Success',
+  content: { 'application/json': { schema: z.array(UserSchema) } },
 }
 
 const CommerceSubscriptionResponse = {
@@ -6554,14 +7435,41 @@ const InvitationRevokedResponse = {
   description: 'Success',
   content: {
     'application/json': {
-      schema: InvitationSchema.and(
-        z
-          .object({
-            revoked: z.literal(true).exactOptional().openapi({ example: true }),
-            status: z.literal('revoked').exactOptional().openapi({ example: 'revoked' }),
-          })
-          .openapi({ required: [] }),
-      ),
+      schema: (() => {
+        const Schema = InvitationSchema.and(
+          z
+            .object({
+              revoked: z.literal(true).exactOptional().openapi({ example: true }),
+              status: z.literal('revoked').exactOptional().openapi({ example: 'revoked' }),
+            })
+            .openapi({ required: [] }),
+        )
+        return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+          ;((ctx) => {
+            const o = ctx.value
+            if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+            for (const k of Object.keys(o)) {
+              if (
+                ![
+                  'object',
+                  'id',
+                  'email_address',
+                  'public_metadata',
+                  'revoked',
+                  'status',
+                  'url',
+                  'expires_at',
+                  'created_at',
+                  'updated_at',
+                ].includes(k)
+              ) {
+                ctx.issues.push({ code: 'custom', path: [k], input: o })
+              }
+            }
+          })(ctx)
+          return val
+        }, Schema)
+      })(),
     },
   },
 }
@@ -6620,11 +7528,6 @@ const InstanceSettingsResponse = {
 const ActorTokenResponse = {
   description: 'Success',
   content: { 'application/json': { schema: ActorTokenSchema } },
-}
-
-const FeatureNotEnabledResponse = {
-  description: 'Feature not enabled',
-  content: { 'application/json': { schema: ClerkErrorsSchema } },
 }
 
 const DomainsResponse = {
@@ -6978,6 +7881,145 @@ const RoleSetResponse = {
   content: { 'application/json': { schema: RoleSetSchema } },
 }
 
+const LogListResponse = {
+  description: 'A list of log entries with cursor-based pagination.',
+  content: {
+    'application/json': {
+      schema: z
+        .object({
+          data: z
+            .array(
+              z
+                .xor([LogSchema, LogGroupSchema])
+                .openapi({
+                  discriminator: {
+                    propertyName: 'object',
+                    mapping: {
+                      log: '#/components/schemas/Log',
+                      log_group: '#/components/schemas/LogGroup',
+                    },
+                  },
+                }),
+            )
+            .openapi({
+              description:
+                'The log entries. In the grouped view (the default), each\nitem is either an event group or a log entry outside any\ngroup, told apart by `object`. With `view=flat`, every item\nis a log entry.',
+            }),
+          cursor: z
+            .object({
+              starting_after: z
+                .string()
+                .nullable()
+                .exactOptional()
+                .openapi({ description: 'Cursor to fetch the next page of results.' }),
+              ending_before: z
+                .string()
+                .nullable()
+                .exactOptional()
+                .openapi({ description: 'Cursor to fetch the previous page of results.' }),
+              has_next_page: z
+                .boolean()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'Deprecated: use next_page_status instead. If true, more results may be fetched using the starting_after cursor. True when next_page_status is "true", or when it is "unknown" and the page returned data.',
+                }),
+              next_page_status: z
+                .enum(['true', 'false', 'unknown'])
+                .exactOptional()
+                .openapi({
+                  description:
+                    'Pagination status. "true" means more results exist, "false" means no more results, "unknown" means the query was time-windowed and more results may exist beyond the window.',
+                }),
+              retention_limit_reached: z
+                .boolean()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'When true, next_page_status is "false" because event_time_after was clamped to the plan\'s retention floor. Extending event_time_after further back will not yield additional results.',
+                }),
+              retention_days: z
+                .int()
+                .exactOptional()
+                .openapi({
+                  description:
+                    "The plan's log retention window, in days. Events older than this are not kept and cannot be returned at any page size.",
+                }),
+              retention_floor: z
+                .preprocess(
+                  (val) =>
+                    typeof val === 'number' && Number.isSafeInteger(val)
+                      ? BigInt(val)
+                      : typeof val === 'string' && /^-?\d+$/.test(val)
+                        ? BigInt(val)
+                        : val,
+                  z.int64(),
+                )
+                .exactOptional()
+                .openapi({
+                  type: 'integer',
+                  format: 'int64',
+                  description:
+                    'The oldest timestamp this plan can return, in Unix milliseconds: `retention_days` before the time the request was served. `searched_from` is never earlier than this, whatever `event_time_after` asked for.\n\nCompare your own `event_time_after` against it to tell whether part of the range you asked for is unavailable.',
+                }),
+              searched_from: z
+                .preprocess(
+                  (val) =>
+                    typeof val === 'number' && Number.isSafeInteger(val)
+                      ? BigInt(val)
+                      : typeof val === 'string' && /^-?\d+$/.test(val)
+                        ? BigInt(val)
+                        : val,
+                  z.int64(),
+                )
+                .exactOptional()
+                .openapi({
+                  type: 'integer',
+                  format: 'int64',
+                  description:
+                    'Lower bound of the time range this page was actually read from, in Unix milliseconds.\n\nA request is not served by scanning the whole range you ask for. The endpoint picks a sub-window of it per request and pages through your range one sub-window at a time, which is why `next_page_status` can be `"unknown"` on a page that looks short. `searched_from` and `searched_to` are that sub-window, so you can tell where in your requested range a page sits without decoding the cursor.\n\nNever earlier than `event_time_after`, or than the plan\'s retention floor when that is later.',
+                }),
+              searched_to: z
+                .preprocess(
+                  (val) =>
+                    typeof val === 'number' && Number.isSafeInteger(val)
+                      ? BigInt(val)
+                      : typeof val === 'string' && /^-?\d+$/.test(val)
+                        ? BigInt(val)
+                        : val,
+                  z.int64(),
+                )
+                .exactOptional()
+                .openapi({
+                  type: 'integer',
+                  format: 'int64',
+                  description:
+                    'Upper bound of the time range this page was actually read from, in Unix milliseconds. See `searched_from`.\n\nOn a first page with no `event_time_before`, this sits a few minutes ahead of the current time on purpose: events can arrive with timestamps marginally ahead of the service clock, and this is the bound the query ran with.',
+                }),
+            })
+            .exactOptional()
+            .openapi({ description: 'Cursor information for pagination.', required: [] }),
+        })
+        .openapi({ required: ['data'] }),
+    },
+  },
+}
+
+const LogSchemaResponse = {
+  description: 'The payload schema of a log event type.',
+  content: { 'application/json': { schema: LogSchemaSchema } },
+}
+
+const LogTypeListResponse = {
+  description: 'Every log event type the instance can see, with its payload schema.',
+  content: { 'application/json': { schema: LogSchemaListSchema } },
+}
+
+const LogReadResponse = {
+  description: 'A single log entry with full payload.',
+  content: { 'application/json': { schema: LogWithPayloadSchema } },
+}
+
 const PaginatedParamsSchema = z
   .stringbool()
   .exactOptional()
@@ -7246,6 +8288,30 @@ export const getClientsClientIdRoute = createRoute({
   },
 })
 
+export const postClientsClientIdRevokeRoute = createRoute({
+  method: 'post',
+  path: '/clients/{client_id}/revoke',
+  tags: ['Clients'],
+  summary: 'Revoke a client',
+  description:
+    "Permanently revokes a client in a development or production instance, including its active and pending sessions and its linked development browser tokens. Other clients are unaffected. Repeating the request is safe.\nReturns the client with a non-null revoked_at timestamp and no current sessions. Revoked development browser tokens receive dev_browser_unauthenticated on authenticated Frontend API routes. Previously issued session JWTs remain valid until their expiration.\nTo sign in again, the browser must initialize a new client. Unlike Frontend API DELETE /client, this operation requires a backend credential and the target client ID, not the affected browser's cookies.",
+  operationId: 'RevokeClient',
+  request: {
+    params: z.object({
+      client_id: z
+        .string()
+        .openapi({
+          param: { name: 'client_id', in: 'path', required: true, schema: { type: 'string' } },
+        }),
+    }),
+  },
+  responses: {
+    200: Client_2Response,
+    401: AuthenticationInvalidResponse,
+    404: ResourceNotFoundResponse,
+  },
+})
+
 export const postEmailAddressesRoute = createRoute({
   method: 'post',
   path: '/email_addresses',
@@ -7504,6 +8570,14 @@ export const postEmailAddressesEmailAddressIdAttemptVerificationRoute = createRo
                 .string()
                 .openapi({
                   description: 'The verification code that was sent to the email address',
+                }),
+              honor_lockout: z
+                .boolean()
+                .default(false)
+                .exactOptional()
+                .openapi({
+                  description:
+                    "When `true`, a wrong code counts toward the user's lockout, and a locked user is rejected with a `user_locked` error before the code is checked.\nHas no effect on instances with user lockout disabled.\nTo enforce lockout across a password check and a sign-in token, set this parameter on both requests.",
                 }),
             })
             .openapi({ required: ['verification_id', 'code'] }),
@@ -7843,6 +8917,14 @@ export const postPhoneNumbersPhoneNumberIdAttemptVerificationRoute = createRoute
                 .openapi({
                   description: 'The verification code that was sent to the phone number',
                 }),
+              honor_lockout: z
+                .boolean()
+                .default(false)
+                .exactOptional()
+                .openapi({
+                  description:
+                    "When `true`, a wrong code counts toward the user's lockout, and a locked user is rejected with a `user_locked` error before the code is checked.\nHas no effect on instances with user lockout disabled.\nTo enforce lockout across a password check and a sign-in token, set this parameter on both requests.",
+                }),
             })
             .openapi({ required: ['verification_id', 'code'] }),
         },
@@ -8048,6 +9130,56 @@ export const getSessionsSessionIdRoute = createRoute({
   },
 })
 
+export const patchSessionsSessionIdRoute = createRoute({
+  method: 'patch',
+  path: '/sessions/{session_id}',
+  tags: ['Sessions'],
+  summary: 'Update a session',
+  description:
+    "Changes when a session expires. Use this to give one session a longer or shorter lifetime than the one configured for your instance, for example to keep a user signed in on a device they chose to remember.\n\n`expire_at` can exceed the instance's session lifetime. The change applies only to this session, so new sign-ins still start from the instance's session lifetime. If `expire_at` is later than the session's `abandon_at`, `abandon_at` moves to the same time. The inactivity timeout, if your instance has one, still applies.\n\nOnly active and pending sessions can be updated. Expired, revoked, and other ended sessions can't be revived, and sessions with an actor, such as impersonation and agent sessions, can't be updated. To end a session immediately, revoke it instead.\n\nTake the session ID from the `sid` claim of a verified session token. Never take it from an unverified client request, or a user could change another user's session.\n\nRequires a plan that includes custom session duration.",
+  operationId: 'UpdateSession',
+  request: {
+    params: z.object({
+      session_id: z
+        .string()
+        .openapi({
+          param: {
+            name: 'session_id',
+            in: 'path',
+            description: 'The ID of the session',
+            required: true,
+            schema: { type: 'string' },
+          },
+        }),
+    }),
+    body: {
+      content: {
+        'application/json': {
+          schema: z
+            .strictObject({
+              expire_at: z.iso
+                .datetime({ offset: true })
+                .openapi({
+                  description:
+                    'When the session should expire, as an RFC3339 datetime (for example `2030-10-20T10:00:27.645Z`).\nMust be at least 5 minutes and at most 10 years from now.',
+                }),
+            })
+            .openapi({ required: ['expire_at'] }),
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    200: SessionResponse,
+    400: ClerkErrorsResponse,
+    401: AuthenticationInvalidResponse,
+    402: PaymentRequiredResponse,
+    404: ResourceNotFoundResponse,
+    422: UnprocessableEntityResponse,
+  },
+})
+
 export const postSessionsSessionIdRefreshRoute = createRoute({
   method: 'post',
   path: '/sessions/{session_id}/refresh',
@@ -8115,6 +9247,7 @@ export const postSessionsSessionIdRefreshRoute = createRoute({
     200: SessionRefreshResponse,
     400: ClerkErrorsResponse,
     401: AuthenticationInvalidResponse,
+    403: AuthorizationInvalidResponse,
   },
 })
 
@@ -8182,12 +9315,31 @@ export const postSessionsSessionIdRevokeRoute = createRoute({
           },
         }),
     }),
+    body: {
+      content: {
+        'application/json': {
+          schema: z
+            .strictObject({
+              reset_client_trust: z
+                .boolean()
+                .default(false)
+                .exactOptional()
+                .openapi({
+                  description:
+                    "When set to `true`, also clears Device Trust for the session's user and client, including when the session is already revoked.\nTrust belongs to the user and client rather than the session, so this applies to the whole device, including any other session the user has on that client. Other users on the same client are unaffected.\nFor a session a native application received through hosted auth, this also clears the browser client the user signed in on.\nThe next sign-in by this user on the client counts as a new device: it can require a Device Trust challenge and sends the new device email.\nA value that is not a boolean returns a 422 and does not revoke the session.",
+                }),
+            })
+            .openapi({ required: [] }),
+        },
+      },
+    },
   },
   responses: {
     200: SessionResponse,
     400: ClerkErrorsResponse,
     401: AuthenticationInvalidResponse,
     404: ResourceNotFoundResponse,
+    422: UnprocessableEntityResponse,
   },
 })
 
@@ -8244,6 +9396,7 @@ export const postSessionsSessionIdTokensRoute = createRoute({
       },
     },
     401: AuthenticationInvalidResponse,
+    403: AuthorizationInvalidResponse,
     404: ResourceNotFoundResponse,
   },
 })
@@ -8312,6 +9465,7 @@ export const postSessionsSessionIdTokensTemplateNameRoute = createRoute({
       },
     },
     401: AuthenticationInvalidResponse,
+    403: AuthorizationInvalidResponse,
     404: ResourceNotFoundResponse,
   },
 })
@@ -8608,7 +9762,7 @@ export const postTemplatesTemplateTypeSlugPreviewRoute = createRoute({
     },
   },
   responses: {
-    200: { description: 'OK', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: 'OK', content: { 'application/json': { schema: z.looseObject({}) } } },
     400: ClerkErrorsResponse,
     401: AuthenticationInvalidResponse,
     404: ResourceNotFoundResponse,
@@ -9095,10 +10249,12 @@ export const getUsersRoute = createRoute({
     }),
   },
   responses: {
-    200: UserListResponse,
+    200: UserListOrCursorPageResponse,
     400: ClerkErrorsResponse,
     401: AuthenticationInvalidResponse,
+    403: FeatureNotEnabledResponse,
     422: UnprocessableEntityResponse,
+    503: ClerkErrorsResponse,
   },
 })
 
@@ -10065,7 +11221,7 @@ export const postUsersUserIdBanRoute = createRoute({
   tags: ['Users'],
   summary: 'Ban a user',
   description:
-    'Marks the given user as banned, which means that all their sessions are revoked and they are not allowed to sign in again.',
+    'Marks the given user as banned, which means that all their sessions and OAuth grants are revoked and they are not allowed to sign in again. Revoked OAuth grants are not restored if the user is unbanned.',
   operationId: 'BanUser',
   request: {
     params: z.object({
@@ -10588,7 +11744,7 @@ export const getUsersUserIdOauthAccessTokensProviderRoute = createRoute({
   tags: ['Users'],
   summary: 'Retrieve the OAuth access token of a user',
   description:
-    'Fetch the corresponding OAuth access token for a user that has previously authenticated with a particular OAuth provider.\nFor OAuth 2.0, if the access token has expired and we have a corresponding refresh token, the access token will be refreshed transparently the new one will be returned.',
+    'Fetch the corresponding OAuth access token for a user that has previously authenticated with a particular OAuth provider.\nFor OAuth 2.0, if the access token has expired and we have a corresponding refresh token, the access token will be refreshed transparently the new one will be returned.\nIf another request is still refreshing the token, this endpoint may return HTTP 409 with the `resource_locked` error code. Retry the request after a short delay.',
   operationId: 'GetOAuthAccessToken',
   request: {
     params: z.object({
@@ -10625,6 +11781,7 @@ export const getUsersUserIdOauthAccessTokensProviderRoute = createRoute({
     200: OAuthAccessTokenResponse,
     400: ClerkErrorsResponse,
     404: ResourceNotFoundResponse,
+    409: ConflictResponse,
     422: UnprocessableEntityResponse,
   },
 })
@@ -10780,6 +11937,14 @@ export const postUsersUserIdVerifyPasswordRoute = createRoute({
           schema: z
             .strictObject({
               password: z.string().openapi({ description: 'The user password to verify' }),
+              honor_lockout: z
+                .boolean()
+                .default(false)
+                .exactOptional()
+                .openapi({
+                  description:
+                    "When `true`, a wrong password counts toward the user's lockout, and a locked user is rejected with a `user_locked` error before the password is checked.\nHas no effect on instances with user lockout disabled.\nTo enforce lockout across a password check and a sign-in token, set this parameter on both requests.",
+                }),
             })
             .openapi({ required: ['password'] }),
         },
@@ -10798,8 +11963,13 @@ export const postUsersUserIdVerifyPasswordRoute = createRoute({
       },
     },
     400: { description: 'The user does not have a password set.' },
+    403: { description: 'The user is locked. Returned only when `honor_lockout` is `true`.' },
     404: { description: 'The user does not exist.' },
     422: { description: 'The provided password was incorrect.' },
+    429: {
+      description:
+        'Another password check for the user is in progress. Nothing was counted and the check can be retried.',
+    },
     500: ClerkErrorsResponse,
   },
 })
@@ -10832,6 +12002,14 @@ export const postUsersUserIdVerifyTotpRoute = createRoute({
           schema: z
             .strictObject({
               code: z.string().openapi({ description: 'The TOTP or backup code to verify' }),
+              honor_lockout: z
+                .boolean()
+                .default(false)
+                .exactOptional()
+                .openapi({
+                  description:
+                    "When `true`, a wrong code counts toward the user's lockout, and a locked user is rejected with a `user_locked` error before the code is checked.\nHas no effect on instances with user lockout disabled.\nTo enforce lockout across a password check and a sign-in token, set this parameter on both requests.",
+                }),
             })
             .openapi({ required: ['code'] }),
         },
@@ -10853,8 +12031,13 @@ export const postUsersUserIdVerifyTotpRoute = createRoute({
       },
     },
     400: { description: 'The user does not have TOTP configured for their account.' },
+    403: { description: 'The user is locked. Returned only when `honor_lockout` is `true`.' },
     404: { description: 'The user does not exist.' },
     422: { description: 'The provided TOTP or backup code was incorrect.' },
+    429: {
+      description:
+        'Another code check for the user is in progress. Nothing was counted and the check can be retried.',
+    },
     500: ClerkErrorsResponse,
   },
 })
@@ -11172,7 +12355,8 @@ export const getInvitationsRoute = createRoute({
   path: '/invitations',
   tags: ['Invitations'],
   summary: 'List all invitations',
-  description: 'Returns all non-revoked invitations for your application, sorted by creation date',
+  description:
+    'Returns non-revoked invitations for your application, sorted by creation date.\nWithout `limit`, `offset` or `paginated=true`, returns at most 500 invitations.',
   operationId: 'ListInvitations',
   request: {
     query: z.object({
@@ -11198,6 +12382,22 @@ export const getInvitationsRoute = createRoute({
             name: 'query',
             description: 'Filter invitations based on their `email_address` or `id`',
             schema: { type: 'string' },
+          },
+        }),
+      email_address: z
+        .preprocess(
+          (val) => (val === undefined || Array.isArray(val) ? val : [val]),
+          z.array(z.string()),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            in: 'query',
+            required: false,
+            name: 'email_address',
+            description:
+              'Returns invitations with the specified email addresses.\nAccepts up to 100 email addresses.',
+            schema: { type: 'array', items: { type: 'string' } },
           },
         }),
       order_by: z
@@ -11790,7 +12990,16 @@ export const postActorTokensRoute = createRoute({
                 .string()
                 .openapi({ description: 'The ID of the user being impersonated.' }),
               actor: z
-                .looseObject({ sub: z.string().openapi({ description: 'The ID of the actor.' }) })
+                .looseObject({
+                  sub: z.string().openapi({ description: 'The ID of the actor.' }),
+                  type: z
+                    .string()
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'Optional actor type. The value `agent` is reserved for agent task sessions and is rejected.',
+                    }),
+                })
                 .openapi({
                   description:
                     'The actor payload. It needs to include a sub property which should contain the ID of the actor.\nThis whole payload will be also included in the JWT session token.',
@@ -12521,7 +13730,9 @@ export const postJwtTemplatesRoute = createRoute({
           schema: z
             .object({
               name: z.string().openapi({ description: 'JWT template name' }),
-              claims: z.object({}).openapi({ description: 'JWT template claims in JSON format' }),
+              claims: z
+                .looseObject({})
+                .openapi({ description: 'JWT template claims in JSON format' }),
               lifetime: z
                 .int()
                 .min(30)
@@ -12653,7 +13864,9 @@ export const patchJwtTemplatesTemplateIdRoute = createRoute({
           schema: z
             .object({
               name: z.string().openapi({ description: 'JWT template name' }),
-              claims: z.object({}).openapi({ description: 'JWT template claims in JSON format' }),
+              claims: z
+                .looseObject({})
+                .openapi({ description: 'JWT template claims in JSON format' }),
               lifetime: z
                 .int()
                 .min(30)
@@ -13464,6 +14677,14 @@ export const patchOrganizationsOrganizationIdRoute = createRoute({
                 .openapi({
                   description: 'Whether this organization can configure self-serve enterprise SSO.',
                 }),
+              self_serve_directory_sync_enabled: z
+                .boolean()
+                .nullable()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'Whether this organization can configure self-serve Directory Sync (SCIM).',
+                }),
               created_at: z
                 .string()
                 .nullable()
@@ -13972,6 +15193,7 @@ export const postOrganizationsOrganizationIdInvitationsRoute = createRoute({
     403: AuthorizationInvalidResponse,
     404: ResourceNotFoundResponse,
     422: UnprocessableEntityResponse,
+    429: TooManyRequestsResponse,
   },
 })
 
@@ -14080,6 +15302,7 @@ export const postOrganizationsOrganizationIdInvitationsBulkRoute = createRoute({
     403: AuthorizationInvalidResponse,
     404: ResourceNotFoundResponse,
     422: UnprocessableEntityResponse,
+    429: TooManyRequestsResponse,
   },
 })
 
@@ -15650,6 +16873,14 @@ export const postSignInTokensRoute = createRoute({
                   description:
                     "Optional parameter that lets a user with a second factor enabled complete the sign in without being prompted for it.\nWhen omitted, redeeming the token completes only the first factor, and the user must still complete their second factor.\n`fresh`: the second factor is treated as verified at sign in. The session token's `fva` claim reports a second factor age of 0.\n`stale`: the second factor is treated as unverified. The session token's `fva` claim reports the maximum second factor age of 99999, so any reverification that requires a second factor prompts the user to complete one.\nHas no effect for users without a second factor enabled.\nA token created with this parameter signs in a user with a second factor enabled without prompting for it, so `expires_in_seconds` defaults to 10 minutes. We recommend keeping it short.",
                 }),
+              honor_lockout: z
+                .boolean()
+                .default(false)
+                .exactOptional()
+                .openapi({
+                  description:
+                    'When `true`, creating the token is rejected with a `user_locked` error if the user is locked, and so is redeeming it. A token rejected on redemption stays pending and can be redeemed once the user is unlocked.\nHas no effect on instances with user lockout disabled.\nTo enforce lockout across a password check and a sign-in token, set this parameter on both requests.',
+                }),
             })
             .openapi({ required: ['user_id'] }),
         },
@@ -16316,150 +17547,182 @@ export const postSamlConnectionsRoute = createRoute({
     body: {
       content: {
         'application/json': {
-          schema: z
-            .union([
-              z
-                .unknown()
-                .superRefine((val, ctx) => {
-                  if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                    if (!Object.hasOwn(val, 'domain')) {
-                      ctx.addIssue({ code: 'custom' })
+          schema: (() => {
+            const Schema = z
+              .union([
+                z
+                  .unknown()
+                  .superRefine((val, ctx) => {
+                    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                      if (!Object.hasOwn(val, 'domain')) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
                     }
-                  }
-                })
-                .openapi({ required: ['domain'] }),
-              z
-                .unknown()
-                .superRefine((val, ctx) => {
-                  if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                    if (!Object.hasOwn(val, 'domains')) {
-                      ctx.addIssue({ code: 'custom' })
+                  })
+                  .openapi({ required: ['domain'] }),
+                z
+                  .unknown()
+                  .superRefine((val, ctx) => {
+                    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                      if (!Object.hasOwn(val, 'domains')) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
                     }
+                  })
+                  .openapi({ required: ['domains'] }),
+              ])
+              .and(
+                z
+                  .object({
+                    name: z
+                      .string()
+                      .openapi({
+                        description: 'The name to use as a label for this SAML Connection',
+                      }),
+                    domain: z
+                      .string()
+                      .exactOptional()
+                      .openapi({
+                        deprecated: true,
+                        description:
+                          'The domain of your organization. Sign in flows using an email with this domain, will use this SAML Connection.',
+                      }),
+                    domains: z
+                      .array(z.string())
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          'The domains of your organization. Sign in flows using an email with one of these domains, will use this SAML Connection.',
+                      }),
+                    provider: z
+                      .enum(['saml_custom', 'saml_okta', 'saml_google', 'saml_microsoft'])
+                      .openapi({ description: 'The IdP provider of the connection.' }),
+                    idp_entity_id: z
+                      .string()
+                      .nullable()
+                      .exactOptional()
+                      .openapi({ description: 'The Entity ID as provided by the IdP' }),
+                    idp_sso_url: z
+                      .string()
+                      .nullable()
+                      .exactOptional()
+                      .openapi({ description: 'The Single-Sign On URL as provided by the IdP' }),
+                    idp_certificate: z
+                      .string()
+                      .nullable()
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          "Deprecated, use idp_certificates. One X.509 certificate, PEM or bare base64, or several concatenated PEM certificates; replaces the connection's whole certificate set",
+                        deprecated: true,
+                      }),
+                    idp_certificates: z
+                      .array(z.string())
+                      .min(1)
+                      .max(5)
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          "The IdP X.509 signing certificates the connection trusts, one per entry, in PEM or bare base64. Replaces the connection's whole certificate set and takes precedence over idp_certificate",
+                      }),
+                    idp_metadata_url: z
+                      .string()
+                      .nullable()
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          'The URL which serves the IdP metadata. If present, it takes priority over the corresponding individual properties',
+                      }),
+                    idp_metadata: z
+                      .string()
+                      .nullable()
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          'The XML content of the IdP metadata file. If present, it takes priority over the corresponding individual properties',
+                      }),
+                    organization_id: z
+                      .string()
+                      .nullable()
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          'The ID of the organization to which users of this SAML Connection will be added',
+                      }),
+                    attribute_mapping: z
+                      .strictObject({
+                        user_id: z.string().exactOptional(),
+                        email_address: z.string().exactOptional(),
+                        first_name: z.string().exactOptional(),
+                        last_name: z.string().exactOptional(),
+                      })
+                      .nullable()
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          "Define the attribute name mapping between Identity Provider and Clerk's user properties",
+                        required: [],
+                      }),
+                    force_authn: z
+                      .boolean()
+                      .exactOptional()
+                      .openapi({ description: 'Enable or deactivate ForceAuthn' }),
+                    login_hint: z
+                      .strictObject({
+                        mode: z
+                          .enum(['email_address', 'custom_attribute', 'off'])
+                          .openapi({
+                            description: 'Controls the login_hint sent to the IdP on SSO sign-in',
+                          }),
+                        source: z
+                          .string()
+                          .exactOptional()
+                          .openapi({
+                            description:
+                              'The user public_metadata key whose value is sent as the login_hint when mode is custom_attribute',
+                          }),
+                      })
+                      .nullable()
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          'Configuration for the login_hint sent to the IdP on SSO sign-in',
+                        required: ['mode'],
+                      }),
+                  })
+                  .openapi({ required: ['name', 'provider'] }),
+              )
+            return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+              ;((ctx) => {
+                const o = ctx.value
+                if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+                for (const k of Object.keys(o)) {
+                  if (
+                    ![
+                      'name',
+                      'domain',
+                      'domains',
+                      'provider',
+                      'idp_entity_id',
+                      'idp_sso_url',
+                      'idp_certificate',
+                      'idp_certificates',
+                      'idp_metadata_url',
+                      'idp_metadata',
+                      'organization_id',
+                      'attribute_mapping',
+                      'force_authn',
+                      'login_hint',
+                    ].includes(k)
+                  ) {
+                    ctx.issues.push({ code: 'custom', path: [k], input: o })
                   }
-                })
-                .openapi({ required: ['domains'] }),
-            ])
-            .and(
-              z
-                .object({
-                  name: z
-                    .string()
-                    .openapi({
-                      description: 'The name to use as a label for this SAML Connection',
-                    }),
-                  domain: z
-                    .string()
-                    .exactOptional()
-                    .openapi({
-                      deprecated: true,
-                      description:
-                        'The domain of your organization. Sign in flows using an email with this domain, will use this SAML Connection.',
-                    }),
-                  domains: z
-                    .array(z.string())
-                    .exactOptional()
-                    .openapi({
-                      description:
-                        'The domains of your organization. Sign in flows using an email with one of these domains, will use this SAML Connection.',
-                    }),
-                  provider: z
-                    .enum(['saml_custom', 'saml_okta', 'saml_google', 'saml_microsoft'])
-                    .openapi({ description: 'The IdP provider of the connection.' }),
-                  idp_entity_id: z
-                    .string()
-                    .nullable()
-                    .exactOptional()
-                    .openapi({ description: 'The Entity ID as provided by the IdP' }),
-                  idp_sso_url: z
-                    .string()
-                    .nullable()
-                    .exactOptional()
-                    .openapi({ description: 'The Single-Sign On URL as provided by the IdP' }),
-                  idp_certificate: z
-                    .string()
-                    .nullable()
-                    .exactOptional()
-                    .openapi({
-                      description:
-                        "Deprecated, use idp_certificates. One X.509 certificate, PEM or bare base64, or several concatenated PEM certificates; replaces the connection's whole certificate set",
-                      deprecated: true,
-                    }),
-                  idp_certificates: z
-                    .array(z.string())
-                    .min(1)
-                    .max(5)
-                    .exactOptional()
-                    .openapi({
-                      description:
-                        "The IdP X.509 signing certificates the connection trusts, one per entry, in PEM or bare base64. Replaces the connection's whole certificate set and takes precedence over idp_certificate",
-                    }),
-                  idp_metadata_url: z
-                    .string()
-                    .nullable()
-                    .exactOptional()
-                    .openapi({
-                      description:
-                        'The URL which serves the IdP metadata. If present, it takes priority over the corresponding individual properties',
-                    }),
-                  idp_metadata: z
-                    .string()
-                    .nullable()
-                    .exactOptional()
-                    .openapi({
-                      description:
-                        'The XML content of the IdP metadata file. If present, it takes priority over the corresponding individual properties',
-                    }),
-                  organization_id: z
-                    .string()
-                    .nullable()
-                    .exactOptional()
-                    .openapi({
-                      description:
-                        'The ID of the organization to which users of this SAML Connection will be added',
-                    }),
-                  attribute_mapping: z
-                    .strictObject({
-                      user_id: z.string().exactOptional(),
-                      email_address: z.string().exactOptional(),
-                      first_name: z.string().exactOptional(),
-                      last_name: z.string().exactOptional(),
-                    })
-                    .nullable()
-                    .exactOptional()
-                    .openapi({
-                      description:
-                        "Define the attribute name mapping between Identity Provider and Clerk's user properties",
-                      required: [],
-                    }),
-                  force_authn: z
-                    .boolean()
-                    .exactOptional()
-                    .openapi({ description: 'Enable or deactivate ForceAuthn' }),
-                  login_hint: z
-                    .strictObject({
-                      mode: z
-                        .enum(['email_address', 'custom_attribute', 'off'])
-                        .openapi({
-                          description: 'Controls the login_hint sent to the IdP on SSO sign-in',
-                        }),
-                      source: z
-                        .string()
-                        .exactOptional()
-                        .openapi({
-                          description:
-                            'The user public_metadata key whose value is sent as the login_hint when mode is custom_attribute',
-                        }),
-                    })
-                    .nullable()
-                    .exactOptional()
-                    .openapi({
-                      description:
-                        'Configuration for the login_hint sent to the IdP on SSO sign-in',
-                      required: ['mode'],
-                    }),
-                })
-                .openapi({ required: ['name', 'provider'] }),
-            )
+                }
+              })(ctx)
+              return val
+            }, Schema)
+          })()
+            .openapi({ additionalProperties: false })
             .openapi({ required: ['name', 'provider'] }),
         },
       },
@@ -18697,6 +19960,647 @@ export const postRoleSetsRoleSetKeyOrIdRolesReplaceRoute = createRoute({
   },
 })
 
+export const getLogsRoute = createRoute({
+  method: 'get',
+  path: '/logs',
+  tags: ['Logs'],
+  summary: 'List all logs',
+  description:
+    'Returns a list of logs for the authenticated instance.\n\nUse it to find specific events, such as one user\'s failed sign-ins or\nevery event in a trace. Narrow the search with filters and a time range\n(`event_time_after` and `event_time_before`), and stop paginating once\nyou have what you need. Syncing or exporting logs through this endpoint\nisn\'t allowed; use log drains, part of the Enterprise plan, instead.\n\nResults are paginated with cursors. The `next_page_status` field in the\ncursor object says whether more results exist:\n- `"true"`: more results are available. Pass `starting_after` to get the\n  next page.\n- `"unknown"`: to keep latency predictable, the server read only part of\n  the time range, reported as `searched_from` and `searched_to`. More\n  matches may exist in the rest of the range; pass `starting_after` to\n  keep searching.\n- `"false"`: no more results exist within the requested range.\n\nResults never go back further than the plan\'s log retention.\n`retention_floor` in the cursor object is the oldest timestamp the plan\ncan return. `retention_limit_reached` is `true` when `next_page_status`\nis `"false"` because the search ended at that floor, either because\n`event_time_after` asked for older events or because it was omitted.',
+  operationId: 'ListLogs',
+  request: {
+    query: z
+      .looseObject({})
+      .transform((val) => {
+        const rest: [string, unknown][] = []
+        const groups = new Map<string, Record<string, unknown>>()
+        const group = (name: string) => {
+          const found = groups.get(name)
+          if (found !== undefined) return found
+          const made: Record<string, unknown> = Object.create(null)
+          groups.set(name, made)
+          return made
+        }
+        const isGroup = (item: unknown): item is Record<string, unknown> =>
+          typeof item === 'object' && item !== null && !Array.isArray(item)
+        const lists = new WeakSet<object>()
+        const isIndex = (part: string | undefined) => part !== undefined && /^\d*$/.test(part)
+        const child = (target: Record<string, unknown>, key: string, asList: boolean) => {
+          const held = target[key]
+          if (isGroup(held)) return held
+          const made: Record<string, unknown> = Object.create(null)
+          if (asList) lists.add(made)
+          target[key] = made
+          return made
+        }
+        const set = (
+          root: Record<string, unknown>,
+          path: readonly string[],
+          item: unknown,
+        ): void => {
+          const work: [Record<string, unknown>, number, unknown, boolean][] = [
+            [root, 0, item, false],
+          ]
+          for (let job = work.pop(); job !== undefined; job = work.pop()) {
+            const [target, at, value, split] = job
+            const head = path[at]
+            if (head === undefined) continue
+            const next = path[at + 1]
+            if (head === '') {
+              if (!split && Array.isArray(value)) {
+                for (let i = value.length - 1; i >= 0; i -= 1)
+                  work.push([target, at, value[i], true])
+                continue
+              }
+              const size = Object.keys(target).length
+              if (next === undefined) {
+                target[String(size)] = value
+                continue
+              }
+              const free =
+                next === ''
+                  ? -1
+                  : Object.values(target).findIndex((held) => isGroup(held) && !(next in held))
+              work.push([
+                child(target, String(free < 0 ? size : free), isIndex(next)),
+                at + 1,
+                value,
+                false,
+              ])
+              continue
+            }
+            if (next === undefined) {
+              target[head] = value
+              continue
+            }
+            work.push([child(target, head, isIndex(next)), at + 1, value, false])
+          }
+        }
+        const settle = (root: unknown): unknown => {
+          if (!isGroup(root)) return root
+          const found: [Record<string, unknown>, string, Record<string, unknown>][] = []
+          const queue: Record<string, unknown>[] = [root]
+          for (const node of queue) {
+            for (const [key, inner] of Object.entries(node)) {
+              if (isGroup(inner)) {
+                found.push([node, key, inner])
+                queue.push(inner)
+              }
+            }
+          }
+          const finish = (group: Record<string, unknown>): unknown =>
+            lists.has(group)
+              ? Object.entries(group)
+                  .sort((a, b) => Number(a[0]) - Number(b[0]))
+                  .map(([, inner]) => inner)
+              : Object.assign(Object.create(null), group)
+          for (const [parent, key, group] of found.reverse()) {
+            parent[key] = finish(group)
+          }
+          return finish(root)
+        }
+        const deep: string[] = ['payload_filter']
+        for (const [key, item] of Object.entries(val)) {
+          const match = /^([^\[\]]+)((?:\[[^\[\]]*\])+)$/.exec(key)
+          const name = match?.[1]
+          const path = match?.[2]
+          if (name !== undefined && path !== undefined && deep.includes(name)) {
+            const parts = path.slice(1, -1).split('][')
+            set(group(name), parts, item)
+            continue
+          }
+          rest.push([key, item])
+        }
+        return Object.fromEntries([
+          ...rest,
+          ...[...groups].map(([name, held]) => [name, settle(held)] as const),
+        ])
+      })
+      .pipe(
+        z.object({
+          limit: z
+            .preprocess(
+              (val) =>
+                typeof val === 'string' &&
+                /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+                (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+                  ? Number(val)
+                  : val,
+              z.int().min(1).max(500),
+            )
+            .default(10)
+            .exactOptional()
+            .openapi({
+              param: {
+                name: 'limit',
+                in: 'query',
+                description:
+                  'Applies a limit to the number of results returned.\nCan be used for paginating the results together with `starting_after` or `ending_before`.\nAt most 100 in the grouped view (the default), and up to 500 with `view=flat`.',
+                required: false,
+                schema: { type: 'integer', default: 10, minimum: 1, maximum: 500 },
+              },
+            }),
+          starting_after: z
+            .string()
+            .exactOptional()
+            .openapi({
+              param: {
+                name: 'starting_after',
+                in: 'query',
+                description:
+                  'A cursor for pagination. Provide the starting_after cursor from a previous response to fetch the next page.',
+                required: false,
+                schema: { type: 'string' },
+              },
+            }),
+          ending_before: z
+            .string()
+            .exactOptional()
+            .openapi({
+              param: {
+                name: 'ending_before',
+                in: 'query',
+                description:
+                  'A cursor for pagination. Provide the ending_before cursor from a previous response to fetch the previous page.\nOnly with `view=flat`, since the grouped view only pages forward.',
+                required: false,
+                schema: { type: 'string' },
+              },
+            }),
+          subject: z
+            .string()
+            .exactOptional()
+            .openapi({
+              param: {
+                name: 'subject',
+                in: 'query',
+                description:
+                  'Filter logs by subject: the ID of the resource the event is about,\nsuch as a user, an organization, or the instance when nothing more\nspecific applies.',
+                required: false,
+                schema: { type: 'string' },
+              },
+            }),
+          actor: z
+            .string()
+            .exactOptional()
+            .openapi({
+              param: {
+                name: 'actor',
+                in: 'query',
+                description:
+                  'Filter logs by actor: the ID of whoever triggered the event, such as\na user, a Clerk Dashboard user, an instance key, or an API key. In\nan impersonated session, the actor is the impersonated user.',
+                required: false,
+                schema: { type: 'string' },
+              },
+            }),
+          user_id: z
+            .string()
+            .exactOptional()
+            .openapi({
+              param: {
+                name: 'user_id',
+                in: 'query',
+                description:
+                  "Filter logs to events involving one user, as either the actor or\nthe subject. Takes the user's ID.\n\nReturns a 422 if the value is not a user ID (use `identifier` to\nfilter by email address, phone number, username, or web3 wallet) or\nif `actor`, `subject`, or `identifier` is also set.",
+                required: false,
+                schema: { type: 'string', example: 'user_2abcDEF' },
+              },
+              example: 'user_2abcDEF',
+            }),
+          identifier: z
+            .string()
+            .exactOptional()
+            .openapi({
+              param: {
+                name: 'identifier',
+                in: 'query',
+                description:
+                  'Filter logs to events where the user is the actor or the subject.\nTakes an identifier associated with a user: an email address, phone\nnumber, username, or web3 wallet.\n\nThe value must exactly match an identifier stored on a user; it is\nnot a partial or fuzzy match. Verification status is not considered,\nso an identifier associated with several users matches events for\nall of them. If it is associated with no user in the instance, the\nresponse is an empty page, not an error.\n\nReturns a 422 if the value is a user ID (use `user_id` instead) or\nif `actor`, `subject`, or `user_id` is also set.',
+                required: false,
+                schema: { type: 'string', example: 'ana@example.com' },
+              },
+              example: 'ana@example.com',
+            }),
+          trace_id: z
+            .string()
+            .regex(/^[0-9a-f]{32}$/)
+            .exactOptional()
+            .openapi({
+              param: {
+                name: 'trace_id',
+                in: 'query',
+                description: 'Filter logs by trace ID (32 hex characters).',
+                required: false,
+                schema: {
+                  type: 'string',
+                  pattern: '^[0-9a-f]{32}$',
+                  example: '1234567890abcdef1234567890abcdef',
+                },
+              },
+              example: '1234567890abcdef1234567890abcdef',
+            }),
+          type: z
+            .string()
+            .exactOptional()
+            .openapi({
+              param: {
+                name: 'type',
+                in: 'query',
+                description:
+                  'Filter logs by event type (e.g., `sign_in.completed`). A trailing\n`*` matches an event-type family by prefix (e.g. `sign_in.*`\nmatches `sign_in.created`, `sign_in.completed`, ...); the wildcard\nis only allowed as the last character.',
+                required: false,
+                schema: { type: 'string' },
+              },
+            }),
+          client_id: z
+            .string()
+            .exactOptional()
+            .openapi({
+              param: {
+                name: 'client_id',
+                in: 'query',
+                description: 'Filter logs by client ID.',
+                required: false,
+                schema: { type: 'string' },
+              },
+            }),
+          session_id: z
+            .string()
+            .exactOptional()
+            .openapi({
+              param: {
+                name: 'session_id',
+                in: 'query',
+                description:
+                  'Filter logs to events produced by one session: the session that was\nauthenticated on the request behind the event.\n\nThis is the acting session, not the session an event is about. A\nsign-in creates a session on a request that had none, so\n`session.created` carries no `session_id` and names the new session\nin its payload instead. Use `payload_filter[session_id]` with a\n`type` to filter on that.\n\nEvents with no authenticated session behind them, such as sign-in,\nsign-up and verification requests, or anything originating from the\nBackend API or a background job, carry no `session_id` and never\nmatch.',
+                required: false,
+                schema: { type: 'string', example: 'sess_2abcDEF' },
+              },
+              example: 'sess_2abcDEF',
+            }),
+          impersonator_user_id: z
+            .string()
+            .exactOptional()
+            .openapi({
+              param: {
+                name: 'impersonator_user_id',
+                in: 'query',
+                description: 'Filter logs by impersonator user ID.',
+                required: false,
+                schema: { type: 'string' },
+              },
+            }),
+          ip_address: z
+            .string()
+            .exactOptional()
+            .openapi({
+              param: {
+                name: 'ip_address',
+                in: 'query',
+                description: 'Filter logs by the client IP address recorded on the event.',
+                required: false,
+                schema: { type: 'string' },
+              },
+            }),
+          payload_filter: z
+            .record(z.string(), z.string())
+            .exactOptional()
+            .openapi({
+              param: {
+                name: 'payload_filter',
+                in: 'query',
+                style: 'deepObject',
+                explode: true,
+                description:
+                  "Exact-match filters on event payload fields, keyed by the field's\ndot-path: `payload_filter[user_id]=user_123` or\n`payload_filter[captcha_attempt_payload.provider]=turnstile`.\n\nRequires `type`. Fields are validated against the payload schema of\nthat event type (discoverable via `GET /logs/schemas`); for a\ntrailing-`*` type the valid fields are those common to every\nmatching event type. An unknown field returns a 422 listing the\nallowed fields.\n\nOne value per field — repeating a field is a 422. Values must parse\nas the field's type (a non-numeric value against an integer field\nis a 422) and match exactly; an event whose payload lacks the field\nnever matches. At most 10 filters per request, paths at most 4\nsegments deep, values at most 256 characters.\n\nPayload filters join the same `filter_match` group as the string\nfilters above.",
+                required: false,
+                schema: { type: 'object', additionalProperties: { type: 'string' } },
+              },
+            }),
+          payload_fields: z
+            .string()
+            .exactOptional()
+            .openapi({
+              param: {
+                name: 'payload_fields',
+                in: 'query',
+                description:
+                  "Comma-separated payload field dot-paths to include per returned\nlog: `payload_fields=user_id,strategy`. Requires `type`, and the\nfields are validated against that event type's payload schema the\nsame way as `payload_filter` (with the same caps).\n\nEach returned log gains a `payload` object containing only the\nrequested fields, keyed by their dot-paths, with fields absent\nfrom an event's payload omitted. Without this parameter, list\nresponses carry no `payload` key.\n\nNot allowed together with `filter_match=any`: the fields are\nvalidated against `type`'s schema, and with `any` the type filter\nno longer constrains every returned row.",
+                required: false,
+                schema: { type: 'string' },
+              },
+            }),
+          filter_match: z
+            .enum(['all', 'any'])
+            .default('all')
+            .exactOptional()
+            .openapi({
+              param: {
+                name: 'filter_match',
+                in: 'query',
+                description:
+                  'Controls how `subject`, `type`, `actor`, `user_id`, `identifier`,\n`trace_id`, `client_id`, `session_id`, `impersonator_user_id`,\n`ip_address`, and `payload_filter` entries\nare combined: `all` (default) requires every supplied filter to\nmatch; `any` returns events that match at least one of the\nsupplied filters. `event_time_after` and `event_time_before` are\nalways ANDed with the (possibly OR-ed) string filter group.',
+                required: false,
+                schema: { type: 'string', enum: ['all', 'any'], default: 'all' },
+              },
+            }),
+          event_time_after: z
+            .preprocess((val) => {
+              if (typeof val !== 'string' || !/^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val))
+                return val
+              if (/^-?\d+$/.test(val)) return BigInt(val)
+              const num = Number(val)
+              return Number.isSafeInteger(num) ? BigInt(num) : val
+            }, z.int64())
+            .exactOptional()
+            .openapi({
+              param: {
+                name: 'event_time_after',
+                in: 'query',
+                description:
+                  'Sets a lower time boundary for the query (Unix timestamp in milliseconds).\nOnly events on or after this timestamp are eligible to be returned.\n\nThis parameter constrains the search range but does not guarantee that\nevery matching event within the range is returned in a single response.\nThe server may use an internal time window smaller than the requested range\nto keep query latency predictable. When this happens, `next_page_status`\nwill be `"unknown"` and a continuation cursor is provided so the caller\ncan paginate through the full range. The window that was actually read\nis reported as `searched_from` and `searched_to`.',
+                required: false,
+                schema: { type: 'integer', format: 'int64', example: 1705315800000 },
+              },
+              example: 1705315800000,
+            }),
+          event_time_before: z
+            .preprocess((val) => {
+              if (typeof val !== 'string' || !/^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val))
+                return val
+              if (/^-?\d+$/.test(val)) return BigInt(val)
+              const num = Number(val)
+              return Number.isSafeInteger(num) ? BigInt(num) : val
+            }, z.int64())
+            .exactOptional()
+            .openapi({
+              param: {
+                name: 'event_time_before',
+                in: 'query',
+                description:
+                  'Sets an upper time boundary for the query (Unix timestamp in milliseconds).\nOnly events on or before this timestamp are eligible to be returned.\n\nThis parameter constrains the search range but does not guarantee that\nevery matching event within the range is returned in a single response.\nThe server may use an internal time window smaller than the requested range\nto keep query latency predictable. When this happens, `next_page_status`\nwill be `"unknown"` and a continuation cursor is provided so the caller\ncan paginate through the full range.',
+                required: false,
+                schema: { type: 'integer', format: 'int64', example: 1705319400000 },
+              },
+              example: 1705319400000,
+            }),
+          end_user_facing_only: z
+            .stringbool()
+            .exactOptional()
+            .openapi({
+              param: {
+                name: 'end_user_facing_only',
+                in: 'query',
+                deprecated: true,
+                description: 'Deprecated. This parameter has no effect.',
+                required: false,
+                schema: { type: 'boolean' },
+              },
+            }),
+          view: z
+            .enum(['flat', 'grouped'])
+            .default('grouped')
+            .exactOptional()
+            .openapi({
+              param: {
+                name: 'view',
+                in: 'query',
+                description:
+                  "`grouped`, the default, lists each event group (a flow such as a\nsign-in) as a single item, next to the logs that belong to no\ngroup, newest first: a group sorts by when it started, a log by\nwhen it happened. Groups and logs are told apart by `object`.\n`flat` lists every log on its own.\n\nParameters that only work in one view are rejected with a 422\nrather than ignored:\n- The grouped view only pages forward: `ending_before` is not\n  allowed, and `starting_after` takes only a cursor from a grouped\n  page.\n- The flat list takes only flat cursors.\n- `group_type` and `status` aren't allowed with `view=flat`.\n- The grouped view takes a `limit` of at most 100, since each group\n  brings its first logs along.\n\nIn the grouped view, event filters keep the groups with at least\none matching log, each group lists only its matching logs, and time\nfilters pick groups by when they started.",
+                required: false,
+                schema: { type: 'string', enum: ['flat', 'grouped'], default: 'grouped' },
+              },
+            }),
+          group_type: z
+            .preprocess(
+              (val) => (val === undefined || Array.isArray(val) ? val : [val]),
+              z.array(z.string()),
+            )
+            .exactOptional()
+            .openapi({
+              param: {
+                name: 'group_type',
+                in: 'query',
+                description:
+                  'Not allowed with `view=flat`. Group types to keep, e.g. `sign_in`,\nrepeated for several (`group_type=sign_in&group_type=sign_up`).\nDrops the logs outside any group.',
+                required: false,
+                style: 'form',
+                explode: true,
+                schema: { type: 'array', items: { type: 'string' } },
+              },
+            }),
+          status: z
+            .preprocess(
+              (val) => (val === undefined || Array.isArray(val) ? val : [val]),
+              z.array(z.string()),
+            )
+            .exactOptional()
+            .openapi({
+              param: {
+                name: 'status',
+                in: 'query',
+                description:
+                  'Not allowed with `view=flat`. Group statuses to keep, e.g. `failed`,\nrepeated for several (`status=failed&status=completed`). Keeps only\ngroups with one of those statuses and drops the logs outside any\ngroup. A status is `completed`, `failed` or `abandoned`. A group\nthat is still going has no status and never matches.',
+                required: false,
+                style: 'form',
+                explode: true,
+                schema: { type: 'array', items: { type: 'string' } },
+              },
+            }),
+        }),
+      ),
+  },
+  responses: {
+    200: LogListResponse,
+    401: AuthenticationInvalidResponse,
+    403: AuthorizationInvalidResponse,
+    422: UnprocessableEntityResponse,
+    429: TooManyRequestsResponse,
+    503: {
+      description: 'Application log storage is not configured or is temporarily unavailable.',
+      content: { 'application/json': { schema: ClerkErrorsSchema } },
+    },
+  },
+})
+
+export const getLogsSchemasRoute = createRoute({
+  method: 'get',
+  path: '/logs/schemas',
+  tags: ['Logs'],
+  summary: 'Retrieve the payload schema of a log event type',
+  description:
+    "Returns the payload schema of a log event type: which fields its\npayload carries, addressed by the dot-paths that the `payload_filter`\nand `payload_fields` parameters of the list endpoint accept.\n\n`type` accepts a concrete event type (`sign_in.completed`), a\ntrailing-`*` wildcard (`sign_in.*`), or a bare family name (`sign_in`,\nnormalized to `sign_in.*` when no concrete type matches — the\nresponse's `event_type`\nechoes the normalized form). For wildcard lookups the fields are the\nintersection across every matching event type, and `matched_event_types`\nlists what the intersection was computed over; per-type metadata\n(description, severity, docs_group) is present only for concrete types.",
+  operationId: 'GetLogSchema',
+  request: {
+    query: z.object({
+      type: z
+        .string()
+        .openapi({
+          param: {
+            name: 'type',
+            in: 'query',
+            required: true,
+            description:
+              'The event type to describe: concrete (`sign_in.completed`),\ntrailing-`*` wildcard (`sign_in.*`), or bare family name\n(`sign_in`). Unknown types return a 422. A bare `*` is not\naccepted; to list every event type, use `GET /logs/types`.',
+            schema: { type: 'string', example: 'sign_in.*' },
+          },
+          example: 'sign_in.*',
+        }),
+    }),
+  },
+  responses: {
+    200: LogSchemaResponse,
+    401: AuthenticationInvalidResponse,
+    403: AuthorizationInvalidResponse,
+    422: UnprocessableEntityResponse,
+    429: TooManyRequestsResponse,
+  },
+})
+
+export const getLogsTypesRoute = createRoute({
+  method: 'get',
+  path: '/logs/types',
+  tags: ['Logs'],
+  summary: 'List all log event types',
+  description:
+    'Returns every event type the instance can see in its logs, each with\nits payload schema, sorted by `event_type`. Each entry is the same as\nthe response of `GET /logs/schemas` for that type.\n\nUse it to discover the values that the `type` parameter of the list\nendpoint accepts, and the payload fields each one carries. The list is\nnot paginated. Event types whose logs are enabled per instance (such as\n`sms.*` and `email.*`) are listed only once enabled.',
+  operationId: 'ListLogTypes',
+  responses: {
+    200: LogTypeListResponse,
+    401: AuthenticationInvalidResponse,
+    403: AuthorizationInvalidResponse,
+    429: TooManyRequestsResponse,
+  },
+})
+
+export const getLogsGroupsGroupIdEventsRoute = createRoute({
+  method: 'get',
+  path: '/logs/groups/{group_id}/events',
+  tags: ['Logs'],
+  summary: "List an event group's logs",
+  description:
+    'Returns the log entries of one event group past the ones a grouped\npage of `GET /logs` includes, oldest first, for loading\nmore of a group. Accepts the same event filters as listing logs, so a\nfiltered page keeps loading only matching events.',
+  operationId: 'ListLogGroupEvents',
+  request: {
+    params: z.object({
+      group_id: z
+        .string()
+        .openapi({
+          param: {
+            name: 'group_id',
+            in: 'path',
+            description: 'The ID of the event group, e.g. a sign-in ID.',
+            required: true,
+            schema: { type: 'string' },
+          },
+        }),
+    }),
+    query: z.object({
+      started_at: z
+        .preprocess((val) => {
+          if (typeof val !== 'string' || !/^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val))
+            return val
+          if (/^-?\d+$/.test(val)) return BigInt(val)
+          const num = Number(val)
+          return Number.isSafeInteger(num) ? BigInt(num) : val
+        }, z.int64())
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'started_at',
+            in: 'query',
+            description:
+              "When the group started (Unix timestamp in milliseconds), the\n`started_at` of the group item. Optional: when omitted, it is\nlooked up from `group_id`, and a group that can't be found or is\npast the retention window returns a 404.",
+            required: false,
+            schema: { type: 'integer', format: 'int64' },
+          },
+        }),
+      limit: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int().min(1).max(500),
+        )
+        .default(10)
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'limit',
+            in: 'query',
+            description: 'Applies a limit to the number of results returned.',
+            required: false,
+            schema: { type: 'integer', default: 10, minimum: 1, maximum: 500 },
+          },
+        }),
+      starting_after: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'starting_after',
+            in: 'query',
+            description:
+              "The group's `events_cursor` from the grouped view, or the\n`starting_after` cursor this endpoint returned. Only forward\npagination is supported.",
+            required: false,
+            schema: { type: 'string' },
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: LogListResponse,
+    401: AuthenticationInvalidResponse,
+    403: AuthorizationInvalidResponse,
+    404: ResourceNotFoundResponse,
+    422: UnprocessableEntityResponse,
+    429: TooManyRequestsResponse,
+    503: {
+      description: 'Application log storage is not configured or is temporarily unavailable.',
+      content: { 'application/json': { schema: ClerkErrorsSchema } },
+    },
+  },
+})
+
+export const getLogsEventTimeAndIdRoute = createRoute({
+  method: 'get',
+  path: '/logs/{event_time_and_id}',
+  tags: ['Logs'],
+  summary: 'Retrieve a single log',
+  description:
+    'Returns a single log entry by its composite key ({event_time_ms}:{event_id}).\nUnlike the list endpoint, this returns the full payload for the event.',
+  operationId: 'GetLog',
+  request: {
+    params: z.object({
+      event_time_and_id: z
+        .string()
+        .openapi({
+          param: {
+            name: 'event_time_and_id',
+            in: 'path',
+            required: true,
+            description:
+              'Composite identifier in the format `{event_time_ms}:{event_id}`, where\n`event_time_ms` is the event timestamp as a Unix timestamp in milliseconds\nand `event_id` is the UUID of the event.',
+            schema: {
+              type: 'string',
+              example: '1776207110588:019d8e31-a1bc-7e07-9347-0fd20b25c475',
+            },
+          },
+          example: '1776207110588:019d8e31-a1bc-7e07-9347-0fd20b25c475',
+        }),
+    }),
+  },
+  responses: {
+    200: LogReadResponse,
+    401: AuthenticationInvalidResponse,
+    403: AuthorizationInvalidResponse,
+    404: ResourceNotFoundResponse,
+    429: TooManyRequestsResponse,
+  },
+})
+
 export const postAdminPortalLinkTokensRoute = createRoute({
   method: 'post',
   path: '/admin_portal_link_tokens',
@@ -19380,7 +21284,12 @@ export const postApiKeysRoute = createRoute({
                 .regex(/^user_\w{27}$/)
                 .nullable()
                 .exactOptional(),
-              seconds_until_expiration: z.number().positive().nullable().exactOptional(),
+              seconds_until_expiration: z
+                .number()
+                .positive()
+                .max(2147483647)
+                .nullable()
+                .exactOptional(),
             })
             .openapi({ required: ['name', 'subject'] }),
         },
@@ -19788,7 +21697,12 @@ export const patchApiKeysApiKeyIDRoute = createRoute({
                 .string()
                 .regex(/^(user|org|mch|scim)_\w{27}$/)
                 .exactOptional(),
-              seconds_until_expiration: z.number().positive().nullable().exactOptional(),
+              seconds_until_expiration: z
+                .number()
+                .positive()
+                .max(2147483647)
+                .nullable()
+                .exactOptional(),
             })
             .openapi({ required: [] }),
         },
@@ -20577,7 +22491,12 @@ export const postM2mTokensRoute = createRoute({
           schema: z
             .strictObject({
               token_format: z.enum(['opaque', 'jwt']).default('opaque').exactOptional(),
-              seconds_until_expiration: z.number().positive().nullable().exactOptional(),
+              seconds_until_expiration: z
+                .number()
+                .positive()
+                .max(2147483647)
+                .nullable()
+                .exactOptional(),
               claims: z.any().nullable().exactOptional(),
               min_remaining_ttl_seconds: z
                 .int()

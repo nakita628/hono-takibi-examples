@@ -1,528 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const CustomFieldDefinitionBaseSchema = z
-  .strictObject({
-    id: z
-      .string()
-      .openapi({ description: 'カスタム項目定義のID', example: '01JPP4FD1CVQWCDSWA90VE1ZTM' }),
-    key: z.string().openapi({ description: 'カスタム項目定義のキー', example: 'custom_field_001' }),
-    display_name: z.string().openapi({ description: '表示名', example: 'プロジェクトコード' }),
-    type: z
-      .enum([
-        'text',
-        'textarea',
-        'amount',
-        'quantity',
-        'number',
-        'date',
-        'enum',
-        'partner',
-        'employee',
-        'section',
-        'master_item',
-        'member',
-      ])
-      .openapi({
-        description:
-          'カスタム項目の入力形式\n* `text` - 一行テキスト\n* `textarea` - 複数行テキスト\n* `amount` - 金額\n* `quantity` - 数量\n* `number` - 数値\n* `date` - 日付\n* `enum` - プルダウン\n* `partner` - 取引先\n* `employee` - 従業員\n* `section` - 部門\n* `master_item` - 商品\n* `member` - メンバー',
-        example: 'text',
-      }),
-    required: z.boolean().openapi({ description: '必須項目かどうか', example: false }),
-    description: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: '項目の説明', example: 'プロジェクトを識別するためのコード' }),
-  })
-  .openapi({ required: ['id', 'key', 'display_name', 'type', 'required'] })
-  .openapi('CustomFieldDefinitionBase')
-
-const TextCustomFieldDefinitionSchema = CustomFieldDefinitionBaseSchema.and(
-  z
-    .strictObject({ type: z.literal('text').openapi({ example: 'text' }) })
-    .openapi({ required: ['type'] }),
-).openapi('TextCustomFieldDefinition')
-
-const TextareaCustomFieldDefinitionSchema = CustomFieldDefinitionBaseSchema.and(
-  z
-    .strictObject({ type: z.literal('textarea').openapi({ example: 'textarea' }) })
-    .openapi({ required: ['type'] }),
-).openapi('TextareaCustomFieldDefinition')
-
-const AmountCustomFieldDefinitionSchema = CustomFieldDefinitionBaseSchema.and(
-  z
-    .strictObject({ type: z.literal('amount').openapi({ example: 'amount' }) })
-    .openapi({ required: ['type'] }),
-).openapi('AmountCustomFieldDefinition')
-
-const QuantityCustomFieldDefinitionSchema = CustomFieldDefinitionBaseSchema.and(
-  z
-    .strictObject({ type: z.literal('quantity').openapi({ example: 'quantity' }) })
-    .openapi({ required: ['type'] }),
-).openapi('QuantityCustomFieldDefinition')
-
-const NumberCustomFieldDefinitionSchema = CustomFieldDefinitionBaseSchema.and(
-  z
-    .strictObject({
-      type: z.literal('number').openapi({ example: 'number' }),
-      unit: z.string().nullable().exactOptional().openapi({ description: '単位', example: '個' }),
-    })
-    .openapi({ required: ['type'] }),
-).openapi('NumberCustomFieldDefinition')
-
-const DateCustomFieldDefinitionSchema = CustomFieldDefinitionBaseSchema.and(
-  z
-    .strictObject({ type: z.literal('date').openapi({ example: 'date' }) })
-    .openapi({ required: ['type'] }),
-).openapi('DateCustomFieldDefinition')
-
-const EnumCustomFieldDefinitionSchema = CustomFieldDefinitionBaseSchema.and(
-  z
-    .strictObject({
-      type: z.literal('enum').openapi({ example: 'enum' }),
-      enumerations: z
-        .array(
-          z
-            .strictObject({
-              id: z.string().openapi({ description: 'ID', example: '01JPP4FD1CVQWCDSWA90VE1ZTM' }),
-              name: z.string().openapi({ description: '表示名', example: 'オプション1' }),
-              usable: z
-                .boolean()
-                .openapi({
-                  description:
-                    '入力候補に使用可能かどうか<br><br>※falseの場合、その選択肢自体は削除せず、Web画面での案件登録時などに入力候補として表示されません。ただし案件登録APIなどでfalseの選択肢をパラメータに指定すれば設定できます。',
-                  example: true,
-                }),
-            })
-            .openapi({ required: ['id', 'name', 'usable'] }),
-        )
-        .openapi({ description: '選択肢' }),
-    })
-    .openapi({ required: ['type', 'enumerations'] }),
-).openapi('EnumCustomFieldDefinition')
-
-const PartnerCustomFieldDefinitionSchema = CustomFieldDefinitionBaseSchema.and(
-  z
-    .strictObject({ type: z.literal('partner').openapi({ example: 'partner' }) })
-    .openapi({ required: ['type'] }),
-).openapi('PartnerCustomFieldDefinition')
-
-const EmployeeCustomFieldDefinitionSchema = CustomFieldDefinitionBaseSchema.and(
-  z
-    .strictObject({ type: z.literal('employee').openapi({ example: 'employee' }) })
-    .openapi({ required: ['type'] }),
-).openapi('EmployeeCustomFieldDefinition')
-
-const SectionCustomFieldDefinitionSchema = CustomFieldDefinitionBaseSchema.and(
-  z
-    .strictObject({ type: z.literal('section').openapi({ example: 'section' }) })
-    .openapi({ required: ['type'] }),
-).openapi('SectionCustomFieldDefinition')
-
-const MasterItemCustomFieldDefinitionSchema = CustomFieldDefinitionBaseSchema.and(
-  z
-    .strictObject({ type: z.literal('master_item').openapi({ example: 'master_item' }) })
-    .openapi({ required: ['type'] }),
-).openapi('MasterItemCustomFieldDefinition')
-
-const MemberCustomFieldDefinitionSchema = CustomFieldDefinitionBaseSchema.and(
-  z
-    .strictObject({ type: z.literal('member').openapi({ example: 'member' }) })
-    .openapi({ required: ['type'] }),
-).openapi('MemberCustomFieldDefinition')
-
-type CustomFieldDefinitionType =
-  | z.infer<typeof TextCustomFieldDefinitionSchema>
-  | z.infer<typeof TextareaCustomFieldDefinitionSchema>
-  | z.infer<typeof AmountCustomFieldDefinitionSchema>
-  | z.infer<typeof QuantityCustomFieldDefinitionSchema>
-  | z.infer<typeof NumberCustomFieldDefinitionSchema>
-  | z.infer<typeof DateCustomFieldDefinitionSchema>
-  | z.infer<typeof EnumCustomFieldDefinitionSchema>
-  | z.infer<typeof PartnerCustomFieldDefinitionSchema>
-  | z.infer<typeof EmployeeCustomFieldDefinitionSchema>
-  | z.infer<typeof SectionCustomFieldDefinitionSchema>
-  | z.infer<typeof MasterItemCustomFieldDefinitionSchema>
-  | z.infer<typeof MemberCustomFieldDefinitionSchema>
-
-const LineTypeSchema = z
-  .enum(['basic', 'text'])
-  .openapi({ description: '明細種別' })
-  .openapi('LineType')
-
-const BasicLineParamsSchema = z
-  .strictObject({
-    line_type: LineTypeSchema,
-    master_item_id: z
-      .string()
-      .length(26)
-      .nullable()
-      .exactOptional()
-      .openapi({ description: '商品ID', example: '01JPP4FD1CVQWCDSWA90VE1ZTM' }),
-    deal_line_type_id: z
-      .string()
-      .length(26)
-      .openapi({ description: '明細取引タイプID', example: '01JPP4FD1CVQWCDSWA90VE1ZTM' }),
-    description: z
-      .string()
-      .max(200)
-      .nullable()
-      .exactOptional()
-      .openapi({ description: '摘要', example: 'パンフレットデザイン料' }),
-    quantity: z.float64().openapi({ description: '数量', example: 100 }),
-    uom_name: z
-      .string()
-      .max(10)
-      .nullable()
-      .exactOptional()
-      .openapi({ description: '単位', example: '個' }),
-    unit_price: z
-      .float64()
-      .min(-999999999999)
-      .max(999999999999)
-      .openapi({ description: '単価', example: 1000 }),
-    accounting_reporting_section_id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64().min(1n).max(9223372036854776000n),
-      )
-      .nullable()
-      .exactOptional()
-      .openapi({
-        type: ['integer', 'null'],
-        format: 'int64',
-        minimum: 1,
-        maximum: 9223372036854776000,
-        description: '会計計上部門ID<br>\n※ 親部門のIDは指定できません',
-        example: 67890,
-      }),
-    item_tag_id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64().min(1n).max(9223372036854776000n),
-      )
-      .nullable()
-      .exactOptional()
-      .openapi({
-        type: ['integer', 'null'],
-        format: 'int64',
-        minimum: 1,
-        maximum: 9223372036854776000,
-        description: '会計品目タグID',
-        example: 2001,
-      }),
-    memo_tags: z
-      .array(
-        z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64().min(1n).max(9223372036854776000n),
-          )
-          .openapi({
-            type: 'integer',
-            format: 'int64',
-            minimum: 1,
-            maximum: 9223372036854776000,
-            example: 3001,
-          }),
-      )
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'メモタグID' }),
-    withholding_enabled: z
-      .boolean()
-      .openapi({ description: '源泉徴収税対象明細かどうか', example: false }),
-    is_manual_tax_entry: z
-      .boolean()
-      .openapi({ description: '税の手動入力を行うかどうか', example: false }),
-    tax: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64().min(-999999999999n).max(999999999999n),
-      )
-      .nullable()
-      .exactOptional()
-      .openapi({
-        type: ['integer', 'null'],
-        format: 'int64',
-        minimum: -999999999999,
-        maximum: 999999999999,
-        description:
-          '手動入力した税額<br>\n※is_manual_tax_entryがtrueの場合のみ参照されます。falseの場合は値を設定しても無視されます。',
-        example: 10000,
-      }),
-  })
-  .openapi({
-    description: '通常明細パラメータ',
-    required: [
-      'line_type',
-      'deal_line_type_id',
-      'quantity',
-      'unit_price',
-      'withholding_enabled',
-      'is_manual_tax_entry',
-    ],
-  })
-  .openapi('BasicLineParams')
-
-const TextLineParamsSchema = z
-  .strictObject({
-    line_type: LineTypeSchema.openapi({ example: 'text' }),
-    text: z
-      .string()
-      .max(200)
-      .openapi({ description: 'テキスト行', example: '備考：特急料金が含まれます' }),
-  })
-  .openapi({ description: 'テキスト明細パラメータ', required: ['line_type', 'text'] })
-  .openapi('TextLineParams')
-
-type LineParamsType = z.infer<typeof BasicLineParamsSchema> | z.infer<typeof TextLineParamsSchema>
-
-const MasterItemDetailSchema = z
-  .strictObject({
-    id: z.string().openapi({ description: '商品ID', example: '01JPP4FD1CVQWCDSWA90VE1ZTM' }),
-    code: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: '商品コード', example: 'P-001' }),
-    name: z.string().openapi({ description: '商品名', example: 'パンフレットA4' }),
-  })
-  .nullable()
-  .openapi({ description: '商品情報', required: ['id', 'name'] })
-  .openapi('MasterItemDetail')
-
-const DealLineTypeDetailSchema = z
-  .strictObject({
-    id: z
-      .string()
-      .openapi({ description: '明細取引タイプID', example: '01JPP4FD1CVQWCDSWA90VE1ZTM' }),
-    name: z.string().openapi({ description: '明細取引タイプ名', example: '課税売上10%' }),
-  })
-  .openapi({ description: '明細取引タイプ', required: ['id', 'name'] })
-  .openapi('DealLineTypeDetail')
-
-const AmountSetSchema = z
-  .strictObject({
-    excluding_tax: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64().min(-999999999999n).max(999999999999n),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        minimum: -999999999999,
-        maximum: 999999999999,
-        description: '税抜金額',
-        example: 100000,
-      }),
-    tax: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64().min(-999999999999n).max(999999999999n),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        minimum: -999999999999,
-        maximum: 999999999999,
-        description: '税額',
-        example: 10000,
-      }),
-    including_tax: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64().min(-999999999999n).max(999999999999n),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        minimum: -999999999999,
-        maximum: 999999999999,
-        description: '税込金額',
-        example: 110000,
-      }),
-  })
-  .openapi({ required: ['excluding_tax', 'tax', 'including_tax'], description: '金額セット' })
-  .openapi('AmountSet')
-
-const TaxTypeDetailSchema = z
-  .strictObject({
-    code: z
-      .int32()
-      .max(2147483647)
-      .openapi({
-        description: '税区分コード<br>※freee会計 APIで参照可能な税区分のコードです',
-        example: 10,
-      }),
-    name: z.string().openapi({ description: '税区分名', example: '課税売上10%' }),
-  })
-  .nullable()
-  .openapi({ description: '税区分', required: ['code', 'name'] })
-  .openapi('TaxTypeDetail')
-
-const AccountingReportingSectionDetailSchema = z
-  .strictObject({
-    id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64().max(9223372036854776000n),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        maximum: 9223372036854776000,
-        description: '部門ID',
-        example: 1001,
-      }),
-    name: z.string().openapi({ description: '部門名', example: '営業部' }),
-  })
-  .nullable()
-  .openapi({ description: '会計計上部門', required: ['id', 'name'] })
-  .openapi('AccountingReportingSectionDetail')
-
-const ItemTagDetailSchema = z
-  .strictObject({
-    id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64().max(9223372036854776000n),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        maximum: 9223372036854776000,
-        description: '会計品目タグID',
-        example: 2001,
-      }),
-    name: z.string().openapi({ description: '会計品目タグ名', example: '印刷物' }),
-  })
-  .nullable()
-  .openapi({ description: '会計品目タグ', required: ['id', 'name'] })
-  .openapi('ItemTagDetail')
-
-const MemoTagDetailSchema = z
-  .strictObject({
-    id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64().max(9223372036854776000n),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        maximum: 9223372036854776000,
-        description: 'メモタグID',
-        example: 3001,
-      }),
-    name: z.string().openapi({ description: 'メモタグ名', example: '重要案件' }),
-  })
-  .openapi({ description: 'メモタグ', required: ['id', 'name'] })
-  .openapi('MemoTagDetail')
-
-const BasicLineDetailSchema = z
-  .strictObject({
-    line_no: z.int32().max(2147483647).openapi({ description: '明細行番号', example: 1 }),
-    line_type: LineTypeSchema,
-    master_item: MasterItemDetailSchema.exactOptional(),
-    deal_line_type: DealLineTypeDetailSchema,
-    description: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: '摘要', example: 'パンフレットデザイン料' }),
-    quantity: z.float64().openapi({ description: '数量', example: 100 }),
-    uom_name: z.string().nullable().exactOptional().openapi({ description: '単位', example: '個' }),
-    unit_price: z.float64().openapi({ description: '単価', example: 1000 }),
-    amount_set: AmountSetSchema,
-    tax_type: TaxTypeDetailSchema.exactOptional(),
-    accounting_reporting_section: AccountingReportingSectionDetailSchema.exactOptional(),
-    item_tag: ItemTagDetailSchema.exactOptional(),
-    memo_tags: z
-      .array(MemoTagDetailSchema)
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'メモタグ' }),
-    withholding_enabled: z
-      .boolean()
-      .openapi({ description: '源泉徴収税対象明細かどうか', example: false }),
-  })
-  .openapi({
-    description: '通常明細詳細',
-    required: [
-      'line_no',
-      'line_type',
-      'deal_line_type',
-      'quantity',
-      'unit_price',
-      'amount_set',
-      'withholding_enabled',
-    ],
-  })
-  .openapi('BasicLineDetail')
-
-const TextLineDetailSchema = z
-  .strictObject({
-    line_no: z.int32().max(2147483647).openapi({ description: '明細行番号', example: 1 }),
-    line_type: LineTypeSchema.openapi({ example: 'text' }),
-    text: z.string().openapi({ description: 'テキスト行', example: '備考：特急料金が含まれます' }),
-  })
-  .openapi({ description: 'テキスト明細詳細', required: ['line_no', 'line_type', 'text'] })
-  .openapi('TextLineDetail')
-
-type LineDetailType = z.infer<typeof BasicLineDetailSchema> | z.infer<typeof TextLineDetailSchema>
-
 const EmployeeSchema = z
   .strictObject({
     id: z
@@ -533,7 +10,7 @@ const EmployeeSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().max(9223372036854776000n),
+        z.int64().max(9223372036854775807n),
       )
       .openapi({
         type: 'integer',
@@ -568,7 +45,7 @@ const PartnerSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().max(9223372036854776000n),
+        z.int64().max(9223372036854775807n),
       )
       .openapi({
         type: 'integer',
@@ -615,7 +92,7 @@ const ReportingSectionSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().max(9223372036854776000n),
+        z.int64().max(9223372036854775807n),
       )
       .openapi({
         type: 'integer',
@@ -769,7 +246,7 @@ const WithCompanyIdSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854776000n),
+        z.int64().min(1n).max(9223372036854775807n),
       )
       .openapi({
         type: 'integer',
@@ -791,7 +268,7 @@ const ChargeEmployeeIdSchema = z
         : typeof val === 'string' && /^-?\d+$/.test(val)
           ? BigInt(val)
           : val,
-    z.int64().min(0n).max(9223372036854776000n),
+    z.int64().min(0n).max(9223372036854775807n),
   )
   .nullable()
   .openapi({
@@ -824,7 +301,7 @@ const CustomerIdSchema = z
         : typeof val === 'string' && /^-?\d+$/.test(val)
           ? BigInt(val)
           : val,
-    z.int64().min(1n).max(9223372036854776000n),
+    z.int64().min(1n).max(9223372036854775807n),
   )
   .nullable()
   .openapi({
@@ -845,7 +322,7 @@ const ReportingSectionIdSchema = z
         : typeof val === 'string' && /^-?\d+$/.test(val)
           ? BigInt(val)
           : val,
-    z.int64().min(1n).max(9223372036854776000n),
+    z.int64().min(1n).max(9223372036854775807n),
   )
   .nullable()
   .openapi({
@@ -898,7 +375,7 @@ const BusinessRequestBaseSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().max(9223372036854776000n),
+        z.int64().max(9223372036854775807n),
       )
       .default(0n)
       .exactOptional()
@@ -1009,25 +486,6 @@ const CustomFieldPartnerValueSchema = z
   .openapi({ description: '取引先型カスタム項目の値', required: ['type', 'id', 'name'] })
   .openapi('CustomFieldPartnerValue')
 
-const CustomFieldEmployeeValueSchema = z
-  .strictObject({
-    type: z.literal('employee').openapi({ description: 'マスタ型の種別', example: 'employee' }),
-    id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({ type: 'integer', format: 'int64', description: '従業員ID', example: 101 }),
-    name: z.string().openapi({ description: '従業員名', example: 'サンプル従業員' }),
-  })
-  .openapi({ description: '従業員型カスタム項目の値', required: ['type', 'id', 'name'] })
-  .openapi('CustomFieldEmployeeValue')
-
 const CustomFieldSectionValueSchema = z
   .strictObject({
     type: z.literal('section').openapi({ description: 'マスタ型の種別', example: 'section' }),
@@ -1075,7 +533,6 @@ const CustomFieldMemberValueSchema = z
 const CustomFieldMasterValueSchema = z
   .discriminatedUnion('type', [
     CustomFieldPartnerValueSchema,
-    CustomFieldEmployeeValueSchema,
     CustomFieldSectionValueSchema,
     CustomFieldMasterItemValueSchema,
     CustomFieldMemberValueSchema,
@@ -1086,7 +543,6 @@ const CustomFieldMasterValueSchema = z
       propertyName: 'type',
       mapping: {
         partner: '#/components/schemas/CustomFieldPartnerValue',
-        employee: '#/components/schemas/CustomFieldEmployeeValue',
         section: '#/components/schemas/CustomFieldSectionValue',
         master_item: '#/components/schemas/CustomFieldMasterItemValue',
         member: '#/components/schemas/CustomFieldMemberValue',
@@ -1102,7 +558,7 @@ const CustomFieldSchema = z
       .nullable()
       .openapi({
         description:
-          'カスタム項目の値\n* 文字列型（text, textarea, date）: 文字列\n* 数値型（number, amount, quantity）: 数値\n* プルダウン型（enum）: 選択肢の名称（文字列）\n* マスタ型（partner, employee, section, master_item, member）: マスタ情報オブジェクト',
+          'カスタム項目の値\n* 文字列型（text, textarea, date）: 文字列\n* 数値型（number, amount, quantity）: 数値\n* プルダウン型（enum）: 選択肢の名称（文字列）\n* マスタ型（partner, section, master_item, member）: マスタ情報オブジェクト',
         example: 'サンプル値',
       }),
     definition_id: z
@@ -1116,369 +572,435 @@ const CustomFieldSchema = z
   .openapi({ description: 'カスタム項目', required: ['value', 'definition_id', 'definition_name'] })
   .openapi('CustomField')
 
-const BusinessDetailSchema = BusinessDigestSchema.and(
-  z
-    .strictObject({
-      common_business_id: z
-        .string()
-        .nullable()
-        .exactOptional()
-        .openapi({
-          description: '案件マスタID（ULID形式）',
-          example: '01JPP4FD1CVQWCDSWA90VE1ZTM',
-        }),
-      actual_profit: z
-        .preprocess(
-          (val) =>
-            typeof val === 'number' && Number.isSafeInteger(val)
-              ? BigInt(val)
-              : typeof val === 'string' && /^-?\d+$/.test(val)
+const BusinessDetailSchema = (() => {
+  const Schema = BusinessDigestSchema.and(
+    z
+      .strictObject({
+        common_business_id: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: '案件マスタID（ULID形式）',
+            example: '01JPP4FD1CVQWCDSWA90VE1ZTM',
+          }),
+        actual_profit: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
                 ? BigInt(val)
-                : val,
-          z.int64().max(9223372036854776000n),
-        )
-        .nullable()
-        .exactOptional()
-        .openapi({
-          type: ['integer', 'null'],
-          format: 'int64',
-          maximum: 9223372036854776000,
-          description: '粗利(実績)',
-          example: 1000000,
-        }),
-      sales_totals_excluding_tax: z
-        .preprocess(
-          (val) =>
-            typeof val === 'number' && Number.isSafeInteger(val)
-              ? BigInt(val)
-              : typeof val === 'string' && /^-?\d+$/.test(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64().max(9223372036854775807n),
+          )
+          .nullable()
+          .exactOptional()
+          .openapi({
+            type: ['integer', 'null'],
+            format: 'int64',
+            maximum: 9223372036854776000,
+            description: '粗利(実績)',
+            example: 1000000,
+          }),
+        sales_totals_excluding_tax: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
                 ? BigInt(val)
-                : val,
-          z.int64().max(9223372036854776000n),
-        )
-        .nullable()
-        .exactOptional()
-        .openapi({
-          type: ['integer', 'null'],
-          format: 'int64',
-          maximum: 9223372036854776000,
-          description: '売上合計金額(税抜)',
-          example: 5000000,
-        }),
-      procurement_totals_excluding_tax: z
-        .preprocess(
-          (val) =>
-            typeof val === 'number' && Number.isSafeInteger(val)
-              ? BigInt(val)
-              : typeof val === 'string' && /^-?\d+$/.test(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64().max(9223372036854775807n),
+          )
+          .nullable()
+          .exactOptional()
+          .openapi({
+            type: ['integer', 'null'],
+            format: 'int64',
+            maximum: 9223372036854776000,
+            description: '売上合計金額(税抜)',
+            example: 5000000,
+          }),
+        procurement_totals_excluding_tax: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
                 ? BigInt(val)
-                : val,
-          z.int64().max(9223372036854776000n),
-        )
-        .nullable()
-        .exactOptional()
-        .openapi({
-          type: ['integer', 'null'],
-          format: 'int64',
-          maximum: 9223372036854776000,
-          description: '仕入合計金額(税抜)',
-          example: 3000000,
-        }),
-      other_cost_totals_excluding_tax: z
-        .preprocess(
-          (val) =>
-            typeof val === 'number' && Number.isSafeInteger(val)
-              ? BigInt(val)
-              : typeof val === 'string' && /^-?\d+$/.test(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64().max(9223372036854775807n),
+          )
+          .nullable()
+          .exactOptional()
+          .openapi({
+            type: ['integer', 'null'],
+            format: 'int64',
+            maximum: 9223372036854776000,
+            description: '仕入合計金額(税抜)',
+            example: 3000000,
+          }),
+        other_cost_totals_excluding_tax: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
                 ? BigInt(val)
-                : val,
-          z.int64().max(9223372036854776000n),
-        )
-        .nullable()
-        .exactOptional()
-        .openapi({
-          type: ['integer', 'null'],
-          format: 'int64',
-          maximum: 9223372036854776000,
-          description: 'その他原価実績',
-          example: 1000000,
-        }),
-      prospect_sales_order: z
-        .preprocess(
-          (val) =>
-            typeof val === 'number' && Number.isSafeInteger(val)
-              ? BigInt(val)
-              : typeof val === 'string' && /^-?\d+$/.test(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64().max(9223372036854775807n),
+          )
+          .nullable()
+          .exactOptional()
+          .openapi({
+            type: ['integer', 'null'],
+            format: 'int64',
+            maximum: 9223372036854776000,
+            description: 'その他原価実績',
+            example: 1000000,
+          }),
+        prospect_sales_order: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
                 ? BigInt(val)
-                : val,
-          z.int64().max(9223372036854776000n),
-        )
-        .nullable()
-        .exactOptional()
-        .openapi({
-          type: ['integer', 'null'],
-          format: 'int64',
-          maximum: 9223372036854776000,
-          description: '受注見込',
-          example: 6000000,
-        }),
-      prospect_purchase_order: z
-        .preprocess(
-          (val) =>
-            typeof val === 'number' && Number.isSafeInteger(val)
-              ? BigInt(val)
-              : typeof val === 'string' && /^-?\d+$/.test(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64().max(9223372036854775807n),
+          )
+          .nullable()
+          .exactOptional()
+          .openapi({
+            type: ['integer', 'null'],
+            format: 'int64',
+            maximum: 9223372036854776000,
+            description: '受注見込',
+            example: 6000000,
+          }),
+        prospect_purchase_order: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
                 ? BigInt(val)
-                : val,
-          z.int64().max(9223372036854776000n),
-        )
-        .nullable()
-        .exactOptional()
-        .openapi({
-          type: ['integer', 'null'],
-          format: 'int64',
-          maximum: 9223372036854776000,
-          description: '発注見込',
-          example: 3500000,
-        }),
-      prospect_other_cost: z
-        .preprocess(
-          (val) =>
-            typeof val === 'number' && Number.isSafeInteger(val)
-              ? BigInt(val)
-              : typeof val === 'string' && /^-?\d+$/.test(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64().max(9223372036854775807n),
+          )
+          .nullable()
+          .exactOptional()
+          .openapi({
+            type: ['integer', 'null'],
+            format: 'int64',
+            maximum: 9223372036854776000,
+            description: '発注見込',
+            example: 3500000,
+          }),
+        prospect_other_cost: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
                 ? BigInt(val)
-                : val,
-          z.int64().max(9223372036854776000n),
-        )
-        .nullable()
-        .exactOptional()
-        .openapi({
-          type: ['integer', 'null'],
-          format: 'int64',
-          maximum: 9223372036854776000,
-          description: 'その他費用見込',
-          example: 1200000,
-        }),
-      quotation_totals_excluding_tax: z
-        .preprocess(
-          (val) =>
-            typeof val === 'number' && Number.isSafeInteger(val)
-              ? BigInt(val)
-              : typeof val === 'string' && /^-?\d+$/.test(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64().max(9223372036854775807n),
+          )
+          .nullable()
+          .exactOptional()
+          .openapi({
+            type: ['integer', 'null'],
+            format: 'int64',
+            maximum: 9223372036854776000,
+            description: 'その他費用見込',
+            example: 1200000,
+          }),
+        quotation_totals_excluding_tax: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
                 ? BigInt(val)
-                : val,
-          z.int64().max(9223372036854776000n),
-        )
-        .nullable()
-        .exactOptional()
-        .openapi({
-          type: ['integer', 'null'],
-          format: 'int64',
-          maximum: 9223372036854776000,
-          description: '見積合計金額(税抜)',
-          example: 5500000,
-        }),
-      sales_order_totals_excluding_tax: z
-        .preprocess(
-          (val) =>
-            typeof val === 'number' && Number.isSafeInteger(val)
-              ? BigInt(val)
-              : typeof val === 'string' && /^-?\d+$/.test(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64().max(9223372036854775807n),
+          )
+          .nullable()
+          .exactOptional()
+          .openapi({
+            type: ['integer', 'null'],
+            format: 'int64',
+            maximum: 9223372036854776000,
+            description: '見積合計金額(税抜)',
+            example: 5500000,
+          }),
+        sales_order_totals_excluding_tax: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
                 ? BigInt(val)
-                : val,
-          z.int64().max(9223372036854776000n),
-        )
-        .nullable()
-        .exactOptional()
-        .openapi({
-          type: ['integer', 'null'],
-          format: 'int64',
-          maximum: 9223372036854776000,
-          description: '受注合計金額(税抜)',
-          example: 5200000,
-        }),
-      delivered_totals_excluding_tax: z
-        .preprocess(
-          (val) =>
-            typeof val === 'number' && Number.isSafeInteger(val)
-              ? BigInt(val)
-              : typeof val === 'string' && /^-?\d+$/.test(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64().max(9223372036854775807n),
+          )
+          .nullable()
+          .exactOptional()
+          .openapi({
+            type: ['integer', 'null'],
+            format: 'int64',
+            maximum: 9223372036854776000,
+            description: '受注合計金額(税抜)',
+            example: 5200000,
+          }),
+        delivered_totals_excluding_tax: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
                 ? BigInt(val)
-                : val,
-          z.int64().max(9223372036854776000n),
-        )
-        .nullable()
-        .exactOptional()
-        .openapi({
-          type: ['integer', 'null'],
-          format: 'int64',
-          maximum: 9223372036854776000,
-          description: '納品確定金額(税抜)',
-          example: 4800000,
-        }),
-      bill_totals_excluding_tax: z
-        .preprocess(
-          (val) =>
-            typeof val === 'number' && Number.isSafeInteger(val)
-              ? BigInt(val)
-              : typeof val === 'string' && /^-?\d+$/.test(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64().max(9223372036854775807n),
+          )
+          .nullable()
+          .exactOptional()
+          .openapi({
+            type: ['integer', 'null'],
+            format: 'int64',
+            maximum: 9223372036854776000,
+            description: '納品確定金額(税抜)',
+            example: 4800000,
+          }),
+        bill_totals_excluding_tax: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
                 ? BigInt(val)
-                : val,
-          z.int64().max(9223372036854776000n),
-        )
-        .nullable()
-        .exactOptional()
-        .openapi({
-          type: ['integer', 'null'],
-          format: 'int64',
-          maximum: 9223372036854776000,
-          description: '請求合計金額(税抜)',
-          example: 4800000,
-        }),
-      purchase_order_totals_excluding_tax: z
-        .preprocess(
-          (val) =>
-            typeof val === 'number' && Number.isSafeInteger(val)
-              ? BigInt(val)
-              : typeof val === 'string' && /^-?\d+$/.test(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64().max(9223372036854775807n),
+          )
+          .nullable()
+          .exactOptional()
+          .openapi({
+            type: ['integer', 'null'],
+            format: 'int64',
+            maximum: 9223372036854776000,
+            description: '請求合計金額(税抜)',
+            example: 4800000,
+          }),
+        purchase_order_totals_excluding_tax: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
                 ? BigInt(val)
-                : val,
-          z.int64().max(9223372036854776000n),
-        )
-        .nullable()
-        .exactOptional()
-        .openapi({
-          type: ['integer', 'null'],
-          format: 'int64',
-          maximum: 9223372036854776000,
-          description: '発注合計金額(税抜)',
-          example: 3200000,
-        }),
-      actual_other_cost: z
-        .preprocess(
-          (val) =>
-            typeof val === 'number' && Number.isSafeInteger(val)
-              ? BigInt(val)
-              : typeof val === 'string' && /^-?\d+$/.test(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64().max(9223372036854775807n),
+          )
+          .nullable()
+          .exactOptional()
+          .openapi({
+            type: ['integer', 'null'],
+            format: 'int64',
+            maximum: 9223372036854776000,
+            description: '発注合計金額(税抜)',
+            example: 3200000,
+          }),
+        actual_other_cost: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
                 ? BigInt(val)
-                : val,
-          z.int64().max(9223372036854776000n),
-        )
-        .nullable()
-        .exactOptional()
-        .openapi({
-          type: ['integer', 'null'],
-          format: 'int64',
-          maximum: 9223372036854776000,
-          description: 'その他費用実績',
-          example: 900000,
-        }),
-      prospect_profit: z
-        .preprocess(
-          (val) =>
-            typeof val === 'number' && Number.isSafeInteger(val)
-              ? BigInt(val)
-              : typeof val === 'string' && /^-?\d+$/.test(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64().max(9223372036854775807n),
+          )
+          .nullable()
+          .exactOptional()
+          .openapi({
+            type: ['integer', 'null'],
+            format: 'int64',
+            maximum: 9223372036854776000,
+            description: 'その他費用実績',
+            example: 900000,
+          }),
+        prospect_profit: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
                 ? BigInt(val)
-                : val,
-          z.int64().max(9223372036854776000n),
-        )
-        .nullable()
-        .exactOptional()
-        .openapi({
-          type: ['integer', 'null'],
-          format: 'int64',
-          maximum: 9223372036854776000,
-          description: '粗利(見込)',
-          example: 1300000,
-        }),
-      budget_profit: z
-        .preprocess(
-          (val) =>
-            typeof val === 'number' && Number.isSafeInteger(val)
-              ? BigInt(val)
-              : typeof val === 'string' && /^-?\d+$/.test(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64().max(9223372036854775807n),
+          )
+          .nullable()
+          .exactOptional()
+          .openapi({
+            type: ['integer', 'null'],
+            format: 'int64',
+            maximum: 9223372036854776000,
+            description: '粗利(見込)',
+            example: 1300000,
+          }),
+        budget_profit: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
                 ? BigInt(val)
-                : val,
-          z.int64().max(9223372036854776000n),
-        )
-        .nullable()
-        .exactOptional()
-        .openapi({
-          type: ['integer', 'null'],
-          format: 'int64',
-          maximum: 9223372036854776000,
-          description: '受発注差額(税抜)',
-          example: 1500000,
-        }),
-      margin_actual_rate_percent: z
-        .float32()
-        .nullable()
-        .exactOptional()
-        .openapi({ description: '粗利率実績', example: 20.5 }),
-      budget_total_labor_cost: z
-        .preprocess(
-          (val) =>
-            typeof val === 'number' && Number.isSafeInteger(val)
-              ? BigInt(val)
-              : typeof val === 'string' && /^-?\d+$/.test(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64().max(9223372036854775807n),
+          )
+          .nullable()
+          .exactOptional()
+          .openapi({
+            type: ['integer', 'null'],
+            format: 'int64',
+            maximum: 9223372036854776000,
+            description: '受発注差額(税抜)',
+            example: 1500000,
+          }),
+        margin_actual_rate_percent: z
+          .float32()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: '粗利率実績', example: 20.5 }),
+        budget_total_labor_cost: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
                 ? BigInt(val)
-                : val,
-          z.int64().max(9223372036854776000n),
-        )
-        .nullable()
-        .exactOptional()
-        .openapi({
-          type: ['integer', 'null'],
-          format: 'int64',
-          maximum: 9223372036854776000,
-          description: '人件費(予算)\n\n※freee工数管理と連携している場合のみ値が反映されます\n',
-          example: 2000000,
-        }),
-      actual_total_labor_cost: z
-        .preprocess(
-          (val) =>
-            typeof val === 'number' && Number.isSafeInteger(val)
-              ? BigInt(val)
-              : typeof val === 'string' && /^-?\d+$/.test(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64().max(9223372036854775807n),
+          )
+          .nullable()
+          .exactOptional()
+          .openapi({
+            type: ['integer', 'null'],
+            format: 'int64',
+            maximum: 9223372036854776000,
+            description: '人件費(予算)\n\n※freee工数管理と連携している場合のみ値が反映されます\n',
+            example: 2000000,
+          }),
+        actual_total_labor_cost: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
                 ? BigInt(val)
-                : val,
-          z.int64().max(9223372036854776000n),
-        )
-        .nullable()
-        .exactOptional()
-        .openapi({
-          type: ['integer', 'null'],
-          format: 'int64',
-          maximum: 9223372036854776000,
-          description: '人件費(実績)\n\n※freee工数管理と連携している場合のみ値が反映されます\n',
-          example: 1800000,
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64().max(9223372036854775807n),
+          )
+          .nullable()
+          .exactOptional()
+          .openapi({
+            type: ['integer', 'null'],
+            format: 'int64',
+            maximum: 9223372036854776000,
+            description: '人件費(実績)\n\n※freee工数管理と連携している場合のみ値が反映されます\n',
+            example: 1800000,
+          }),
+        internal_memo: InternalMemoSchema.exactOptional(),
+        custom_fields: z.array(CustomFieldSchema).openapi({
+          description: 'カスタム項目一覧',
+          example: [
+            {
+              value: 'サンプルテキスト',
+              definition_id: '01JPP4FD1CVQWCDSWA90VE1ZTM',
+              definition_name: 'カスタム項目1',
+            },
+            {
+              value: 12345,
+              definition_id: '01JPP4FD1CVQWCDSWA90VE1ZTN',
+              definition_name: 'カスタム項目2',
+            },
+            {
+              value: { type: 'partner', id: 1001, name: 'サンプル取引先', code: 'P-001' },
+              definition_id: '01JPP4FD1CVQWCDSWA90VE1ZTO',
+              definition_name: '担当取引先',
+            },
+          ],
         }),
-      internal_memo: InternalMemoSchema.exactOptional(),
-      custom_fields: z.array(CustomFieldSchema).openapi({
-        description: 'カスタム項目一覧',
-        example: [
-          {
-            value: 'サンプルテキスト',
-            definition_id: '01JPP4FD1CVQWCDSWA90VE1ZTM',
-            definition_name: 'カスタム項目1',
-          },
-          {
-            value: 12345,
-            definition_id: '01JPP4FD1CVQWCDSWA90VE1ZTN',
-            definition_name: 'カスタム項目2',
-          },
-          {
-            value: { type: 'partner', id: 1001, name: 'サンプル取引先', code: 'P-001' },
-            definition_id: '01JPP4FD1CVQWCDSWA90VE1ZTO',
-            definition_name: '担当取引先',
-          },
-        ],
-      }),
-    })
-    .openapi({ required: ['custom_fields'] }),
-).openapi('BusinessDetail')
+      })
+      .openapi({ required: ['custom_fields'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (
+          ![
+            'id',
+            'name',
+            'business_date',
+            'charge_employee',
+            'charge_member',
+            'code',
+            'canceled',
+            'closed',
+            'customer',
+            'sales_progression',
+            'scheduled_completion_date',
+            'completion_date',
+            'business_phase',
+            'reporting_section',
+            'registered_at',
+            'registered_by',
+            'registered_by_member',
+            'last_updated_at',
+            'last_updated_by',
+            'last_updated_by_member',
+          ].includes(k)
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (
+          ![
+            'common_business_id',
+            'actual_profit',
+            'sales_totals_excluding_tax',
+            'procurement_totals_excluding_tax',
+            'other_cost_totals_excluding_tax',
+            'prospect_sales_order',
+            'prospect_purchase_order',
+            'prospect_other_cost',
+            'quotation_totals_excluding_tax',
+            'sales_order_totals_excluding_tax',
+            'delivered_totals_excluding_tax',
+            'bill_totals_excluding_tax',
+            'purchase_order_totals_excluding_tax',
+            'actual_other_cost',
+            'prospect_profit',
+            'budget_profit',
+            'margin_actual_rate_percent',
+            'budget_total_labor_cost',
+            'actual_total_labor_cost',
+            'internal_memo',
+            'custom_fields',
+          ].includes(k)
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})().openapi('BusinessDetail')
 
 const ReportingSectionIdsSchema = z
   .array(
@@ -1490,7 +1012,7 @@ const ReportingSectionIdsSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854776000n),
+        z.int64().min(1n).max(9223372036854775807n),
       )
       .openapi({
         type: 'integer',
@@ -1597,6 +1119,45 @@ const CostBudgetBaseSchema = z
   })
   .openapi('CostBudgetBase')
 
+const MasterItemDetailSchema = z
+  .strictObject({
+    id: z.string().openapi({ description: '商品ID', example: '01JPP4FD1CVQWCDSWA90VE1ZTM' }),
+    code: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: '商品コード', example: 'P-001' }),
+    name: z.string().openapi({ description: '商品名', example: 'パンフレットA4' }),
+  })
+  .nullable()
+  .openapi({ description: '商品情報', required: ['id', 'name'] })
+  .openapi('MasterItemDetail')
+
+const DealLineTypeDetailSchema = z
+  .strictObject({
+    id: z
+      .string()
+      .openapi({ description: '明細取引タイプID', example: '01JPP4FD1CVQWCDSWA90VE1ZTM' }),
+    name: z.string().openapi({ description: '明細取引タイプ名', example: '課税売上10%' }),
+  })
+  .openapi({ description: '明細取引タイプ', required: ['id', 'name'] })
+  .openapi('DealLineTypeDetail')
+
+const TaxTypeDetailSchema = z
+  .strictObject({
+    code: z
+      .int32()
+      .max(2147483647)
+      .openapi({
+        description: '税区分コード<br>※freee会計 APIで参照可能な税区分のコードです',
+        example: 10,
+      }),
+    name: z.string().openapi({ description: '税区分名', example: '課税売上10%' }),
+  })
+  .nullable()
+  .openapi({ description: '税区分', required: ['code', 'name'] })
+  .openapi('TaxTypeDetail')
+
 const AccountItemSchema = z
   .strictObject({
     id: z
@@ -1607,7 +1168,7 @@ const AccountItemSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().max(9223372036854776000n),
+        z.int64().max(9223372036854775807n),
       )
       .openapi({
         type: 'integer',
@@ -1621,6 +1182,55 @@ const AccountItemSchema = z
   .openapi({ description: '勘定科目', required: ['id', 'name'] })
   .openapi('AccountItem')
 
+const MemoTagDetailSchema = z
+  .strictObject({
+    id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64().max(9223372036854775807n),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        maximum: 9223372036854776000,
+        description: 'メモタグID',
+        example: 3001,
+      }),
+    name: z.string().openapi({ description: 'メモタグ名', example: '重要案件' }),
+  })
+  .openapi({ description: 'メモタグ', required: ['id', 'name'] })
+  .openapi('MemoTagDetail')
+
+const ItemTagDetailSchema = z
+  .strictObject({
+    id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64().max(9223372036854775807n),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        maximum: 9223372036854776000,
+        description: '会計品目タグID',
+        example: 2001,
+      }),
+    name: z.string().openapi({ description: '会計品目タグ名', example: '印刷物' }),
+  })
+  .nullable()
+  .openapi({ description: '会計品目タグ', required: ['id', 'name'] })
+  .openapi('ItemTagDetail')
+
 const SegmentTagSchema = z
   .strictObject({
     id: z
@@ -1631,7 +1241,7 @@ const SegmentTagSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().max(9223372036854776000n),
+        z.int64().max(9223372036854775807n),
       )
       .openapi({
         type: 'integer',
@@ -1646,54 +1256,179 @@ const SegmentTagSchema = z
   .openapi({ description: 'セグメントタグ', required: ['id', 'name'] })
   .openapi('SegmentTag')
 
-const ProcurementCostBudgetSchema = CostBudgetBaseSchema.and(
-  z
-    .strictObject({
-      type: z.literal('procurement').exactOptional(),
-      supplier: PartnerSchema.nullable().exactOptional().openapi({ description: '仕入先' }),
-      payment_partner: PartnerSchema.nullable().exactOptional().openapi({ description: '支払先' }),
-      master_item: MasterItemDetailSchema.exactOptional().openapi({ description: '商品' }),
-      deal_line_type: DealLineTypeDetailSchema.openapi({ description: '明細取引タイプ' }),
-      quantity: z.float64().openapi({ description: '数量', example: 10 }),
-      uom_name: z
-        .string()
-        .nullable()
-        .exactOptional()
-        .openapi({ description: '単位', example: '個' }),
-      unit_price: z
-        .float64()
-        .min(-999999999999)
-        .max(999999999999)
-        .openapi({ description: '単価', example: 1000 }),
-      tax_division: TaxTypeDetailSchema.openapi({ description: '税区分' }),
-      account_item: AccountItemSchema.openapi({ description: '勘定科目' }),
-      memo_tags: z
-        .array(MemoTagDetailSchema)
-        .nullable()
-        .exactOptional()
-        .openapi({ description: 'メモタグ' }),
-      item_tag: ItemTagDetailSchema.nullable()
-        .exactOptional()
-        .openapi({ description: '会計品目タグ' }),
-      segment_tag_1: SegmentTagSchema.exactOptional().openapi({ description: 'セグメントタグ1' }),
-      segment_tag_2: SegmentTagSchema.exactOptional().openapi({ description: 'セグメントタグ2' }),
-      segment_tag_3: SegmentTagSchema.exactOptional().openapi({ description: 'セグメントタグ3' }),
-      accounting_reporting_section: AccountingReportingSectionDetailSchema.exactOptional().openapi({
-        description: '会計計上部門',
+const AccountingReportingSectionDetailSchema = z
+  .strictObject({
+    id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64().max(9223372036854775807n),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        maximum: 9223372036854776000,
+        description: '部門ID',
+        example: 1001,
       }),
-    })
-    .openapi({
-      required: ['deal_line_type', 'quantity', 'unit_price', 'tax_division', 'account_item'],
-    }),
-)
+    name: z.string().openapi({ description: '部門名', example: '営業部' }),
+  })
+  .nullable()
+  .openapi({ description: '会計計上部門', required: ['id', 'name'] })
+  .openapi('AccountingReportingSectionDetail')
+
+const ProcurementCostBudgetSchema = (() => {
+  const Schema = CostBudgetBaseSchema.and(
+    z
+      .strictObject({
+        type: z.literal('procurement').exactOptional(),
+        supplier: PartnerSchema.nullable().exactOptional().openapi({ description: '仕入先' }),
+        payment_partner: PartnerSchema.nullable()
+          .exactOptional()
+          .openapi({ description: '支払先' }),
+        master_item: MasterItemDetailSchema.exactOptional().openapi({ description: '商品' }),
+        deal_line_type: DealLineTypeDetailSchema.openapi({ description: '明細取引タイプ' }),
+        quantity: z.float64().openapi({ description: '数量', example: 10 }),
+        uom_name: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: '単位', example: '個' }),
+        unit_price: z
+          .float64()
+          .min(-999999999999)
+          .max(999999999999)
+          .openapi({ description: '単価', example: 1000 }),
+        tax_division: TaxTypeDetailSchema.openapi({ description: '税区分' }),
+        account_item: AccountItemSchema.openapi({ description: '勘定科目' }),
+        memo_tags: z
+          .array(MemoTagDetailSchema)
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'メモタグ' }),
+        item_tag: ItemTagDetailSchema.nullable()
+          .exactOptional()
+          .openapi({ description: '会計品目タグ' }),
+        segment_tag_1: SegmentTagSchema.exactOptional().openapi({ description: 'セグメントタグ1' }),
+        segment_tag_2: SegmentTagSchema.exactOptional().openapi({ description: 'セグメントタグ2' }),
+        segment_tag_3: SegmentTagSchema.exactOptional().openapi({ description: 'セグメントタグ3' }),
+        accounting_reporting_section:
+          AccountingReportingSectionDetailSchema.exactOptional().openapi({
+            description: '会計計上部門',
+          }),
+      })
+      .openapi({
+        required: ['deal_line_type', 'quantity', 'unit_price', 'tax_division', 'account_item'],
+      }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (
+          ![
+            'id',
+            'cost_budget_no',
+            'canceled',
+            'type',
+            'amount_excluding_tax',
+            'date_period',
+            'business',
+            'memo',
+            'reporting_section',
+            'charge_employee',
+            'charge_member',
+            'registered_by',
+            'registered_by_member',
+            'last_updated_by',
+            'last_updated_by_member',
+            'registered_at',
+            'last_updated_at',
+          ].includes(k)
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (
+          ![
+            'type',
+            'supplier',
+            'payment_partner',
+            'master_item',
+            'deal_line_type',
+            'quantity',
+            'uom_name',
+            'unit_price',
+            'tax_division',
+            'account_item',
+            'memo_tags',
+            'item_tag',
+            'segment_tag_1',
+            'segment_tag_2',
+            'segment_tag_3',
+            'accounting_reporting_section',
+          ].includes(k)
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({ description: '原価予算 (仕入)' })
   .openapi('ProcurementCostBudget')
 
-const BasicCostBudgetSchema = CostBudgetBaseSchema.and(
-  z
-    .strictObject({ type: z.enum(['external_procurement', 'other_cost']).exactOptional() })
-    .openapi({ required: [] }),
-)
+const BasicCostBudgetSchema = (() => {
+  const Schema = CostBudgetBaseSchema.and(
+    z
+      .strictObject({ type: z.enum(['external_procurement', 'other_cost']).exactOptional() })
+      .openapi({ required: [] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (
+          ![
+            'id',
+            'cost_budget_no',
+            'canceled',
+            'type',
+            'amount_excluding_tax',
+            'date_period',
+            'business',
+            'memo',
+            'reporting_section',
+            'charge_employee',
+            'charge_member',
+            'registered_by',
+            'registered_by_member',
+            'last_updated_by',
+            'last_updated_by_member',
+            'registered_at',
+            'last_updated_at',
+          ].includes(k)
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['type'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({ description: '原価予算 (外部仕入・その他原価)' })
   .openapi('BasicCostBudget')
 
@@ -1743,7 +1478,7 @@ const CostBudgetRequestBaseSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854776000n),
+        z.int64().min(1n).max(9223372036854775807n),
       )
       .nullable()
       .exactOptional()
@@ -1769,7 +1504,7 @@ const ProcurementCostBudgetRequestPropertiesSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854776000n),
+        z.int64().min(1n).max(9223372036854775807n),
       )
       .nullable()
       .exactOptional()
@@ -1789,7 +1524,7 @@ const ProcurementCostBudgetRequestPropertiesSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854776000n),
+        z.int64().min(1n).max(9223372036854775807n),
       )
       .nullable()
       .exactOptional()
@@ -1838,7 +1573,7 @@ const ProcurementCostBudgetRequestPropertiesSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854776000n),
+        z.int64().min(1n).max(9223372036854775807n),
       )
       .nullable()
       .exactOptional()
@@ -1858,7 +1593,7 @@ const ProcurementCostBudgetRequestPropertiesSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854776000n),
+        z.int64().min(1n).max(9223372036854775807n),
       )
       .nullable()
       .exactOptional()
@@ -1880,7 +1615,7 @@ const ProcurementCostBudgetRequestPropertiesSchema = z
                 : typeof val === 'string' && /^-?\d+$/.test(val)
                   ? BigInt(val)
                   : val,
-            z.int64().min(1n).max(9223372036854776000n),
+            z.int64().min(1n).max(9223372036854775807n),
           )
           .openapi({
             type: 'integer',
@@ -1901,7 +1636,7 @@ const ProcurementCostBudgetRequestPropertiesSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854776000n),
+        z.int64().min(1n).max(9223372036854775807n),
       )
       .nullable()
       .exactOptional()
@@ -1921,7 +1656,7 @@ const ProcurementCostBudgetRequestPropertiesSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854776000n),
+        z.int64().min(1n).max(9223372036854775807n),
       )
       .nullable()
       .exactOptional()
@@ -1941,7 +1676,7 @@ const ProcurementCostBudgetRequestPropertiesSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854776000n),
+        z.int64().min(1n).max(9223372036854775807n),
       )
       .nullable()
       .exactOptional()
@@ -1957,10 +1692,8 @@ const ProcurementCostBudgetRequestPropertiesSchema = z
   .openapi({ description: '原価予算リクエスト 仕入固有プロパティ', required: [] })
   .openapi('ProcurementCostBudgetRequestProperties')
 
-const ProcurementCostBudgetCreateRequestSchema = CostBudgetRequestBaseSchema.and(
-  ProcurementCostBudgetRequestPropertiesSchema,
-)
-  .and(
+const ProcurementCostBudgetCreateRequestSchema = (() => {
+  const Schema = CostBudgetRequestBaseSchema.and(ProcurementCostBudgetRequestPropertiesSchema).and(
     z
       .strictObject({ type: z.literal('procurement') })
       .openapi({
@@ -1974,6 +1707,34 @@ const ProcurementCostBudgetCreateRequestSchema = CostBudgetRequestBaseSchema.and
         ],
       }),
   )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (
+          ![
+            'business_id',
+            'period_from_date',
+            'period_to_date',
+            'memo',
+            'charge_employee_id',
+            'charge_member_id',
+            'reporting_section_id',
+          ].includes(k)
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['type'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({ description: '原価予算登録リクエスト (仕入)' })
   .openapi('ProcurementCostBudgetCreateRequest')
 
@@ -2002,16 +1763,42 @@ const BasicCostBudgetRequestPropertiesSchema = z
   .openapi({ description: '原価予算リクエスト 外部仕入・その他原価固有プロパティ', required: [] })
   .openapi('BasicCostBudgetRequestProperties')
 
-const BasicCostBudgetCreateRequestSchema = CostBudgetRequestBaseSchema.and(
-  BasicCostBudgetRequestPropertiesSchema,
-)
-  .and(
+const BasicCostBudgetCreateRequestSchema = (() => {
+  const Schema = CostBudgetRequestBaseSchema.and(BasicCostBudgetRequestPropertiesSchema).and(
     z
       .object({ type: z.enum(['external_procurement', 'other_cost']) })
       .openapi({
         required: ['type', 'period_from_date', 'period_to_date', 'amount_excluding_tax'],
       }),
   )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (
+          ![
+            'business_id',
+            'period_from_date',
+            'period_to_date',
+            'memo',
+            'charge_employee_id',
+            'charge_member_id',
+            'reporting_section_id',
+          ].includes(k)
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['amount_excluding_tax'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({ description: '原価予算登録リクエスト (外部仕入・その他原価)' })
   .openapi('BasicCostBudgetCreateRequest')
 
@@ -2068,11 +1855,7 @@ const SalesProgression_2Schema = z
 const MasterItemSchema = z
   .strictObject({
     id: z.string().openapi({ description: 'ID', example: '01JPP4FD1CVQWCDSWA90VE1ZTM' }),
-    code: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: '商品コード', example: 'ITEM-001' }),
+    code: z.string().openapi({ description: '商品コード', example: 'ITEM-001' }),
     name: z.string().openapi({ description: '商品名', example: 'サンプル商品' }),
     display_name: z.string().openapi({ description: '表示名', example: 'サンプル商品（表示用）' }),
     uom_name: z.string().nullable().exactOptional().openapi({ description: '単位', example: '個' }),
@@ -2095,7 +1878,7 @@ const MasterItemSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().max(9223372036854776000n),
+        z.int64().max(9223372036854775807n),
       )
       .nullable()
       .exactOptional()
@@ -2116,7 +1899,7 @@ const MasterItemSchema = z
                 : typeof val === 'string' && /^-?\d+$/.test(val)
                   ? BigInt(val)
                   : val,
-            z.int64().max(9223372036854776000n),
+            z.int64().max(9223372036854775807n),
           )
           .openapi({
             type: 'integer',
@@ -2139,7 +1922,7 @@ const MasterItemSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().max(9223372036854776000n),
+        z.int64().max(9223372036854775807n),
       )
       .nullable()
       .exactOptional()
@@ -2156,7 +1939,7 @@ const MasterItemSchema = z
       .exactOptional()
       .openapi({ description: '軽減税率対象フラグ', example: false }),
   })
-  .openapi({ required: ['id', 'name', 'display_name', 'memo_tag_ids'] })
+  .openapi({ required: ['id', 'code', 'name', 'display_name', 'memo_tag_ids'] })
   .openapi('MasterItem')
 
 const DealLineTypeSchema = z
@@ -2177,7 +1960,7 @@ const DealLineTypeSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().max(9223372036854776000n),
+        z.int64().max(9223372036854775807n),
       )
       .openapi({
         type: 'integer',
@@ -2226,43 +2009,373 @@ const MasterMemberSchema = z
   .openapi({ required: ['id', 'num', 'display_name'] })
   .openapi('MasterMember')
 
-const CustomFieldDefinitionSchema: z.ZodType<CustomFieldDefinitionType> = z
-  .lazy(() =>
-    z
-      .xor([
-        TextCustomFieldDefinitionSchema,
-        TextareaCustomFieldDefinitionSchema,
-        AmountCustomFieldDefinitionSchema,
-        QuantityCustomFieldDefinitionSchema,
-        NumberCustomFieldDefinitionSchema,
-        DateCustomFieldDefinitionSchema,
-        EnumCustomFieldDefinitionSchema,
-        PartnerCustomFieldDefinitionSchema,
-        EmployeeCustomFieldDefinitionSchema,
-        SectionCustomFieldDefinitionSchema,
-        MasterItemCustomFieldDefinitionSchema,
-        MemberCustomFieldDefinitionSchema,
+const CustomFieldDefinitionBaseSchema = z
+  .strictObject({
+    id: z
+      .string()
+      .openapi({ description: 'カスタム項目定義のID', example: '01JPP4FD1CVQWCDSWA90VE1ZTM' }),
+    key: z.string().openapi({ description: 'カスタム項目定義のキー', example: 'custom_field_001' }),
+    display_name: z.string().openapi({ description: '表示名', example: 'プロジェクトコード' }),
+    type: z
+      .enum([
+        'text',
+        'textarea',
+        'amount',
+        'quantity',
+        'number',
+        'date',
+        'enum',
+        'partner',
+        'section',
+        'master_item',
+        'member',
       ])
       .openapi({
-        discriminator: {
-          propertyName: 'type',
-          mapping: {
-            text: '#/components/schemas/TextCustomFieldDefinition',
-            textarea: '#/components/schemas/TextareaCustomFieldDefinition',
-            amount: '#/components/schemas/AmountCustomFieldDefinition',
-            quantity: '#/components/schemas/QuantityCustomFieldDefinition',
-            number: '#/components/schemas/NumberCustomFieldDefinition',
-            date: '#/components/schemas/DateCustomFieldDefinition',
-            enum: '#/components/schemas/EnumCustomFieldDefinition',
-            partner: '#/components/schemas/PartnerCustomFieldDefinition',
-            employee: '#/components/schemas/EmployeeCustomFieldDefinition',
-            section: '#/components/schemas/SectionCustomFieldDefinition',
-            master_item: '#/components/schemas/MasterItemCustomFieldDefinition',
-            member: '#/components/schemas/MemberCustomFieldDefinition',
-          },
-        },
+        description:
+          'カスタム項目の入力形式\n* `text` - 一行テキスト\n* `textarea` - 複数行テキスト\n* `amount` - 金額\n* `quantity` - 数量\n* `number` - 数値\n* `date` - 日付\n* `enum` - プルダウン\n* `partner` - 取引先\n* `section` - 部門\n* `master_item` - 商品\n* `member` - メンバー',
+        example: 'text',
       }),
+    required: z.boolean().openapi({ description: '必須項目かどうか', example: false }),
+    description: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: '項目の説明', example: 'プロジェクトを識別するためのコード' }),
+  })
+  .openapi({ required: ['id', 'key', 'display_name', 'type', 'required'] })
+  .openapi('CustomFieldDefinitionBase')
+
+const TextCustomFieldDefinitionSchema = (() => {
+  const Schema = CustomFieldDefinitionBaseSchema.and(
+    z
+      .strictObject({ type: z.literal('text').openapi({ example: 'text' }) })
+      .openapi({ required: ['type'] }),
   )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['id', 'key', 'display_name', 'type', 'required', 'description'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['type'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})().openapi('TextCustomFieldDefinition')
+
+const TextareaCustomFieldDefinitionSchema = (() => {
+  const Schema = CustomFieldDefinitionBaseSchema.and(
+    z
+      .strictObject({ type: z.literal('textarea').openapi({ example: 'textarea' }) })
+      .openapi({ required: ['type'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['id', 'key', 'display_name', 'type', 'required', 'description'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['type'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})().openapi('TextareaCustomFieldDefinition')
+
+const AmountCustomFieldDefinitionSchema = (() => {
+  const Schema = CustomFieldDefinitionBaseSchema.and(
+    z
+      .strictObject({ type: z.literal('amount').openapi({ example: 'amount' }) })
+      .openapi({ required: ['type'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['id', 'key', 'display_name', 'type', 'required', 'description'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['type'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})().openapi('AmountCustomFieldDefinition')
+
+const QuantityCustomFieldDefinitionSchema = (() => {
+  const Schema = CustomFieldDefinitionBaseSchema.and(
+    z
+      .strictObject({ type: z.literal('quantity').openapi({ example: 'quantity' }) })
+      .openapi({ required: ['type'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['id', 'key', 'display_name', 'type', 'required', 'description'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['type'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})().openapi('QuantityCustomFieldDefinition')
+
+const NumberCustomFieldDefinitionSchema = (() => {
+  const Schema = CustomFieldDefinitionBaseSchema.and(
+    z
+      .strictObject({
+        type: z.literal('number').openapi({ example: 'number' }),
+        unit: z.string().nullable().exactOptional().openapi({ description: '単位', example: '個' }),
+      })
+      .openapi({ required: ['type'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['id', 'key', 'display_name', 'type', 'required', 'description'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['type', 'unit'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})().openapi('NumberCustomFieldDefinition')
+
+const DateCustomFieldDefinitionSchema = (() => {
+  const Schema = CustomFieldDefinitionBaseSchema.and(
+    z
+      .strictObject({ type: z.literal('date').openapi({ example: 'date' }) })
+      .openapi({ required: ['type'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['id', 'key', 'display_name', 'type', 'required', 'description'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['type'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})().openapi('DateCustomFieldDefinition')
+
+const EnumCustomFieldDefinitionSchema = (() => {
+  const Schema = CustomFieldDefinitionBaseSchema.and(
+    z
+      .strictObject({
+        type: z.literal('enum').openapi({ example: 'enum' }),
+        enumerations: z
+          .array(
+            z
+              .strictObject({
+                id: z
+                  .string()
+                  .openapi({ description: 'ID', example: '01JPP4FD1CVQWCDSWA90VE1ZTM' }),
+                name: z.string().openapi({ description: '表示名', example: 'オプション1' }),
+                usable: z
+                  .boolean()
+                  .openapi({
+                    description:
+                      '入力候補に使用可能かどうか<br><br>※falseの場合、その選択肢自体は削除せず、Web画面での案件登録時などに入力候補として表示されません。ただし案件登録APIなどでfalseの選択肢をパラメータに指定すれば設定できます。',
+                    example: true,
+                  }),
+              })
+              .openapi({ required: ['id', 'name', 'usable'] }),
+          )
+          .openapi({ description: '選択肢' }),
+      })
+      .openapi({ required: ['type', 'enumerations'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['id', 'key', 'display_name', 'type', 'required', 'description'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['type', 'enumerations'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})().openapi('EnumCustomFieldDefinition')
+
+const PartnerCustomFieldDefinitionSchema = (() => {
+  const Schema = CustomFieldDefinitionBaseSchema.and(
+    z
+      .strictObject({ type: z.literal('partner').openapi({ example: 'partner' }) })
+      .openapi({ required: ['type'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['id', 'key', 'display_name', 'type', 'required', 'description'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['type'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})().openapi('PartnerCustomFieldDefinition')
+
+const SectionCustomFieldDefinitionSchema = (() => {
+  const Schema = CustomFieldDefinitionBaseSchema.and(
+    z
+      .strictObject({ type: z.literal('section').openapi({ example: 'section' }) })
+      .openapi({ required: ['type'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['id', 'key', 'display_name', 'type', 'required', 'description'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['type'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})().openapi('SectionCustomFieldDefinition')
+
+const MasterItemCustomFieldDefinitionSchema = (() => {
+  const Schema = CustomFieldDefinitionBaseSchema.and(
+    z
+      .strictObject({ type: z.literal('master_item').openapi({ example: 'master_item' }) })
+      .openapi({ required: ['type'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['id', 'key', 'display_name', 'type', 'required', 'description'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['type'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})().openapi('MasterItemCustomFieldDefinition')
+
+const MemberCustomFieldDefinitionSchema = (() => {
+  const Schema = CustomFieldDefinitionBaseSchema.and(
+    z
+      .strictObject({ type: z.literal('member').openapi({ example: 'member' }) })
+      .openapi({ required: ['type'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['id', 'key', 'display_name', 'type', 'required', 'description'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['type'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})().openapi('MemberCustomFieldDefinition')
+
+const CustomFieldDefinitionSchema = z
+  .xor([
+    TextCustomFieldDefinitionSchema,
+    TextareaCustomFieldDefinitionSchema,
+    AmountCustomFieldDefinitionSchema,
+    QuantityCustomFieldDefinitionSchema,
+    NumberCustomFieldDefinitionSchema,
+    DateCustomFieldDefinitionSchema,
+    EnumCustomFieldDefinitionSchema,
+    PartnerCustomFieldDefinitionSchema,
+    SectionCustomFieldDefinitionSchema,
+    MasterItemCustomFieldDefinitionSchema,
+    MemberCustomFieldDefinitionSchema,
+  ])
+  .openapi({
+    discriminator: {
+      propertyName: 'type',
+      mapping: {
+        text: '#/components/schemas/TextCustomFieldDefinition',
+        textarea: '#/components/schemas/TextareaCustomFieldDefinition',
+        amount: '#/components/schemas/AmountCustomFieldDefinition',
+        quantity: '#/components/schemas/QuantityCustomFieldDefinition',
+        number: '#/components/schemas/NumberCustomFieldDefinition',
+        date: '#/components/schemas/DateCustomFieldDefinition',
+        enum: '#/components/schemas/EnumCustomFieldDefinition',
+        partner: '#/components/schemas/PartnerCustomFieldDefinition',
+        section: '#/components/schemas/SectionCustomFieldDefinition',
+        master_item: '#/components/schemas/MasterItemCustomFieldDefinition',
+        member: '#/components/schemas/MemberCustomFieldDefinition',
+      },
+    },
+  })
   .openapi('CustomFieldDefinition')
 
 const ProcurementStatusSchema = z
@@ -2289,6 +2402,66 @@ const PaymentMethodTypeSchema = z
     example: 'transfer',
   })
   .openapi('PaymentMethodType')
+
+const AmountSetSchema = z
+  .strictObject({
+    excluding_tax: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64().min(-999999999999n).max(999999999999n),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        minimum: -999999999999,
+        maximum: 999999999999,
+        description: '税抜金額',
+        example: 100000,
+      }),
+    tax: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64().min(-999999999999n).max(999999999999n),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        minimum: -999999999999,
+        maximum: 999999999999,
+        description: '税額',
+        example: 10000,
+      }),
+    including_tax: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64().min(-999999999999n).max(999999999999n),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        minimum: -999999999999,
+        maximum: 999999999999,
+        description: '税込金額',
+        example: 110000,
+      }),
+  })
+  .openapi({ required: ['excluding_tax', 'tax', 'including_tax'], description: '金額セット' })
+  .openapi('AmountSet')
 
 const PurchaseOrderDigestSchema = z
   .strictObject({
@@ -2369,7 +2542,7 @@ const PurchaseOrderDigestSchema = z
                 : typeof val === 'string' && /^-?\d+$/.test(val)
                   ? BigInt(val)
                   : val,
-            z.int64().max(9223372036854776000n),
+            z.int64().max(9223372036854775807n),
           )
           .openapi({
             type: 'integer',
@@ -2543,6 +2716,157 @@ const RecipientAddressSchema = z
   .openapi({ description: '宛先', required: [] })
   .openapi('RecipientAddress')
 
+const LineTypeSchema = z
+  .enum(['basic', 'text'])
+  .openapi({ description: '明細種別' })
+  .openapi('LineType')
+
+const BasicLineParamsSchema = z
+  .strictObject({
+    line_type: LineTypeSchema,
+    master_item_id: z
+      .string()
+      .length(26)
+      .nullable()
+      .exactOptional()
+      .openapi({ description: '商品ID', example: '01JPP4FD1CVQWCDSWA90VE1ZTM' }),
+    deal_line_type_id: z
+      .string()
+      .length(26)
+      .openapi({ description: '明細取引タイプID', example: '01JPP4FD1CVQWCDSWA90VE1ZTM' }),
+    description: z
+      .string()
+      .max(200)
+      .nullable()
+      .exactOptional()
+      .openapi({ description: '摘要', example: 'パンフレットデザイン料' }),
+    quantity: z.float64().openapi({ description: '数量', example: 100 }),
+    uom_name: z
+      .string()
+      .max(10)
+      .nullable()
+      .exactOptional()
+      .openapi({ description: '単位', example: '個' }),
+    unit_price: z
+      .float64()
+      .min(-999999999999)
+      .max(999999999999)
+      .openapi({ description: '単価', example: 1000 }),
+    accounting_reporting_section_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64().min(1n).max(9223372036854775807n),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        minimum: 1,
+        maximum: 9223372036854776000,
+        description: '会計計上部門ID<br>\n※ 親部門のIDは指定できません',
+        example: 67890,
+      }),
+    item_tag_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64().min(1n).max(9223372036854775807n),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        minimum: 1,
+        maximum: 9223372036854776000,
+        description: '会計品目タグID',
+        example: 2001,
+      }),
+    memo_tags: z
+      .array(
+        z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64().min(1n).max(9223372036854775807n),
+          )
+          .openapi({
+            type: 'integer',
+            format: 'int64',
+            minimum: 1,
+            maximum: 9223372036854776000,
+            example: 3001,
+          }),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'メモタグID' }),
+    withholding_enabled: z
+      .boolean()
+      .openapi({ description: '源泉徴収税対象明細かどうか', example: false }),
+    is_manual_tax_entry: z
+      .boolean()
+      .openapi({ description: '税の手動入力を行うかどうか', example: false }),
+    tax: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64().min(-999999999999n).max(999999999999n),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        minimum: -999999999999,
+        maximum: 999999999999,
+        description:
+          '手動入力した税額<br>\n※is_manual_tax_entryがtrueの場合のみ参照されます。falseの場合は値を設定しても無視されます。',
+        example: 10000,
+      }),
+  })
+  .openapi({
+    description: '通常明細パラメータ',
+    required: [
+      'line_type',
+      'deal_line_type_id',
+      'quantity',
+      'unit_price',
+      'withholding_enabled',
+      'is_manual_tax_entry',
+    ],
+  })
+  .openapi('BasicLineParams')
+
+const TextLineParamsSchema = z
+  .strictObject({
+    line_type: LineTypeSchema.openapi({ example: 'text' }),
+    text: z
+      .string()
+      .max(200)
+      .openapi({ description: 'テキスト行', example: '備考：特急料金が含まれます' }),
+  })
+  .openapi({ description: 'テキスト明細パラメータ', required: ['line_type', 'text'] })
+  .openapi('TextLineParams')
+
 const PurchaseOrderLineParamsSchema = z
   .xor([BasicLineParamsSchema, TextLineParamsSchema])
   .openapi({
@@ -2588,7 +2912,7 @@ const PurchaseOrderRequestBaseSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854776000n),
+        z.int64().min(1n).max(9223372036854775807n),
       )
       .exactOptional()
       .openapi({
@@ -2633,7 +2957,7 @@ const PurchaseOrderRequestBaseSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854776000n),
+        z.int64().min(1n).max(9223372036854775807n),
       )
       .nullable()
       .exactOptional()
@@ -2668,7 +2992,7 @@ const PurchaseOrderRequestBaseSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854776000n),
+        z.int64().min(1n).max(9223372036854775807n),
       )
       .exactOptional()
       .openapi({
@@ -2719,7 +3043,7 @@ const AmountSetRateSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().max(9223372036854776000n),
+        z.int64().max(9223372036854775807n),
       )
       .openapi({
         type: 'integer',
@@ -2752,6 +3076,56 @@ const AmountSetRateSchema = z
   .openapi({ description: '税率を含む金額セット', required: ['rate', 'reduced', 'amount_set'] })
   .openapi('AmountSetRate')
 
+const BasicLineDetailSchema = z
+  .strictObject({
+    line_no: z.int32().max(2147483647).openapi({ description: '明細行番号', example: 1 }),
+    line_type: LineTypeSchema,
+    master_item: MasterItemDetailSchema.exactOptional(),
+    deal_line_type: DealLineTypeDetailSchema,
+    description: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: '摘要', example: 'パンフレットデザイン料' }),
+    quantity: z.float64().openapi({ description: '数量', example: 100 }),
+    uom_name: z.string().nullable().exactOptional().openapi({ description: '単位', example: '個' }),
+    unit_price: z.float64().openapi({ description: '単価', example: 1000 }),
+    amount_set: AmountSetSchema,
+    tax_type: TaxTypeDetailSchema.exactOptional(),
+    accounting_reporting_section: AccountingReportingSectionDetailSchema.exactOptional(),
+    item_tag: ItemTagDetailSchema.exactOptional(),
+    memo_tags: z
+      .array(MemoTagDetailSchema)
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'メモタグ' }),
+    withholding_enabled: z
+      .boolean()
+      .openapi({ description: '源泉徴収税対象明細かどうか', example: false }),
+  })
+  .openapi({
+    description: '通常明細詳細',
+    required: [
+      'line_no',
+      'line_type',
+      'deal_line_type',
+      'quantity',
+      'unit_price',
+      'amount_set',
+      'withholding_enabled',
+    ],
+  })
+  .openapi('BasicLineDetail')
+
+const TextLineDetailSchema = z
+  .strictObject({
+    line_no: z.int32().max(2147483647).openapi({ description: '明細行番号', example: 1 }),
+    line_type: LineTypeSchema.openapi({ example: 'text' }),
+    text: z.string().openapi({ description: 'テキスト行', example: '備考：特急料金が含まれます' }),
+  })
+  .openapi({ description: 'テキスト明細詳細', required: ['line_no', 'line_type', 'text'] })
+  .openapi('TextLineDetail')
+
 const PurchaseOrderLineDetailSchema = z
   .xor([BasicLineDetailSchema, TextLineDetailSchema])
   .openapi({
@@ -2766,15 +3140,73 @@ const PurchaseOrderLineDetailSchema = z
   })
   .openapi('PurchaseOrderLineDetail')
 
-const PurchaseOrderDetailSchema = PurchaseOrderDigestSchema.and(
-  z
-    .strictObject({
-      amount_set_rates: z.array(AmountSetRateSchema),
-      recipient_address: RecipientAddressSchema,
-      lines: z.array(PurchaseOrderLineDetailSchema).openapi({ description: '明細リスト' }),
-    })
-    .openapi({ required: ['amount_set_rates', 'lines', 'recipient_address'] }),
-)
+const PurchaseOrderDetailSchema = (() => {
+  const Schema = PurchaseOrderDigestSchema.and(
+    z
+      .strictObject({
+        amount_set_rates: z.array(AmountSetRateSchema),
+        recipient_address: RecipientAddressSchema,
+        lines: z.array(PurchaseOrderLineDetailSchema).openapi({ description: '明細リスト' }),
+      })
+      .openapi({ required: ['amount_set_rates', 'lines', 'recipient_address'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (
+          ![
+            'id',
+            'canceled',
+            'registered_by',
+            'registered_by_member',
+            'registered_at',
+            'last_updated_by',
+            'last_updated_by_member',
+            'last_updated_at',
+            'business',
+            'purchase_order_no',
+            'branch_no',
+            'internal_subject',
+            'purchase_order_date',
+            'procurements_on',
+            'supplier',
+            'is_qualified_invoice_issuer',
+            'delivery_deadline',
+            'delivery_location',
+            'purchase_order_note',
+            'issued',
+            'issued_on',
+            'purchase_order_template',
+            'purchase_order_subject',
+            'procurement_status',
+            'recorded_procurement_amount_excluding_tax',
+            'remaining_procurement_amount_excluding_tax',
+            'payment_status',
+            'payments_on',
+            'payment_method_type',
+            'payment_partner',
+            'charge_employee',
+            'charge_member',
+            'reporting_section',
+            'internal_memo',
+            'amount_set',
+            'amount_of_withholding_tax',
+          ].includes(k)
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['amount_set_rates', 'recipient_address', 'lines'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({ description: '発注詳細' })
   .openapi('PurchaseOrderDetail')
 
@@ -2880,7 +3312,7 @@ const QuotationDigestSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().max(9223372036854776000n),
+        z.int64().max(9223372036854775807n),
       )
       .openapi({
         type: 'integer',
@@ -2955,34 +3387,89 @@ const QuotationDigestSchema = z
   })
   .openapi('QuotationDigest')
 
-const QuotationListItemSchema = QuotationDigestSchema.and(
-  z
-    .strictObject({
-      gross_profit_amount_excluding_tax: z
-        .float64()
-        .min(-999999999999)
-        .max(999999999999)
-        .nullable()
-        .exactOptional()
-        .openapi({
-          description:
-            '粗利額計(税抜)。税込入力の見積、または粗利情報を持つ明細が1件もない見積では null',
-          example: 30000,
-        }),
-      gross_profit_rate: z
-        .float64()
-        .min(-99999.999)
-        .max(99999.999)
-        .nullable()
-        .exactOptional()
-        .openapi({
-          description:
-            '粗利率(%)。粗利額計が null の場合、または原価計・売価計のいずれかが0以下の場合は null',
-          example: 30,
-        }),
-    })
-    .openapi({ required: [] }),
-)
+const QuotationListItemSchema = (() => {
+  const Schema = QuotationDigestSchema.and(
+    z
+      .strictObject({
+        gross_profit_amount_excluding_tax: z
+          .float64()
+          .min(-999999999999)
+          .max(999999999999)
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              '粗利額計(税抜)。税込入力の見積、または粗利情報を持つ明細が1件もない見積では null',
+            example: 30000,
+          }),
+        gross_profit_rate: z
+          .float64()
+          .min(-99999.999)
+          .max(99999.999)
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              '粗利率(%)。粗利額計が null の場合、または原価計・売価計のいずれかが0以下の場合は null',
+            example: 30,
+          }),
+      })
+      .openapi({ required: [] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (
+          ![
+            'id',
+            'canceled',
+            'registered_by',
+            'registered_by_member',
+            'quotation_no',
+            'branch_no',
+            'quotation_date',
+            'quotation_subject',
+            'internal_subject',
+            'expires_on',
+            'delivery_deadline',
+            'delivery_location',
+            'issued',
+            'issued_on',
+            'registered_at',
+            'last_updated_at',
+            'total_amount',
+            'amount_set',
+            'amount_of_withholding_tax',
+            'quotation_status',
+            'delivery_progress',
+            'delivery_issue_progress',
+            'sales_status',
+            'billing_status',
+            'customer',
+            'charge_employee',
+            'charge_member',
+            'reporting_section',
+            'business',
+            'internal_memo',
+            'quotation_note',
+            'last_updated_by',
+            'last_updated_by_member',
+          ].includes(k)
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['gross_profit_amount_excluding_tax', 'gross_profit_rate'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({ description: '見積一覧の要素' })
   .openapi('QuotationListItem')
 
@@ -3004,11 +3491,46 @@ const QuotationGrossProfitParamsSchema = z
   })
   .openapi('QuotationGrossProfitParams')
 
-const QuotationBasicLineParamsSchema = BasicLineParamsSchema.and(
-  z
-    .strictObject({ gross_profit: QuotationGrossProfitParamsSchema.exactOptional() })
-    .openapi({ required: [] }),
-)
+const QuotationBasicLineParamsSchema = (() => {
+  const Schema = BasicLineParamsSchema.and(
+    z
+      .strictObject({ gross_profit: QuotationGrossProfitParamsSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (
+          ![
+            'line_type',
+            'master_item_id',
+            'deal_line_type_id',
+            'description',
+            'quantity',
+            'uom_name',
+            'unit_price',
+            'accounting_reporting_section_id',
+            'item_tag_id',
+            'memo_tags',
+            'withholding_enabled',
+            'is_manual_tax_entry',
+            'tax',
+          ].includes(k)
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['gross_profit'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({ description: '見積通常明細パラメータ' })
   .openapi('QuotationBasicLineParams')
 
@@ -3052,7 +3574,7 @@ const QuotationRequestBaseSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854776000n),
+        z.int64().min(1n).max(9223372036854775807n),
       )
       .exactOptional()
       .openapi({
@@ -3087,7 +3609,7 @@ const QuotationRequestBaseSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854776000n),
+        z.int64().min(1n).max(9223372036854775807n),
       )
       .nullable()
       .exactOptional()
@@ -3195,11 +3717,47 @@ const QuotationGrossProfitDetailSchema = z
   })
   .openapi('QuotationGrossProfitDetail')
 
-const QuotationBasicLineDetailSchema = BasicLineDetailSchema.and(
-  z
-    .strictObject({ gross_profit: QuotationGrossProfitDetailSchema.exactOptional() })
-    .openapi({ required: [] }),
-)
+const QuotationBasicLineDetailSchema = (() => {
+  const Schema = BasicLineDetailSchema.and(
+    z
+      .strictObject({ gross_profit: QuotationGrossProfitDetailSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (
+          ![
+            'line_no',
+            'line_type',
+            'master_item',
+            'deal_line_type',
+            'description',
+            'quantity',
+            'uom_name',
+            'unit_price',
+            'amount_set',
+            'tax_type',
+            'accounting_reporting_section',
+            'item_tag',
+            'memo_tags',
+            'withholding_enabled',
+          ].includes(k)
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['gross_profit'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({ description: '見積通常明細詳細' })
   .openapi('QuotationBasicLineDetail')
 
@@ -3238,21 +3796,84 @@ const QuotationGrossProfitSummarySchema = z
   })
   .openapi('QuotationGrossProfitSummary')
 
-const QuotationDetailSchema = QuotationDigestSchema.and(
-  z
-    .strictObject({
-      amount_set_rates: z.array(AmountSetRateSchema),
-      quotation_template_name: z
-        .string()
-        .openapi({ description: '見積書テンプレート名称', example: 'デフォルトテンプレート' }),
-      recipient_address: RecipientAddressSchema,
-      lines: z.array(QuotationLineDetailSchema).openapi({ description: '明細リスト' }),
-      gross_profit_summary: QuotationGrossProfitSummarySchema.exactOptional(),
-    })
-    .openapi({
-      required: ['amount_set_rates', 'quotation_template_name', 'lines', 'recipient_address'],
-    }),
-).openapi('QuotationDetail')
+const QuotationDetailSchema = (() => {
+  const Schema = QuotationDigestSchema.and(
+    z
+      .strictObject({
+        amount_set_rates: z.array(AmountSetRateSchema),
+        quotation_template_name: z
+          .string()
+          .openapi({ description: '見積書テンプレート名称', example: 'デフォルトテンプレート' }),
+        recipient_address: RecipientAddressSchema,
+        lines: z.array(QuotationLineDetailSchema).openapi({ description: '明細リスト' }),
+        gross_profit_summary: QuotationGrossProfitSummarySchema.exactOptional(),
+      })
+      .openapi({
+        required: ['amount_set_rates', 'quotation_template_name', 'lines', 'recipient_address'],
+      }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (
+          ![
+            'id',
+            'canceled',
+            'registered_by',
+            'registered_by_member',
+            'quotation_no',
+            'branch_no',
+            'quotation_date',
+            'quotation_subject',
+            'internal_subject',
+            'expires_on',
+            'delivery_deadline',
+            'delivery_location',
+            'issued',
+            'issued_on',
+            'registered_at',
+            'last_updated_at',
+            'total_amount',
+            'amount_set',
+            'amount_of_withholding_tax',
+            'quotation_status',
+            'delivery_progress',
+            'delivery_issue_progress',
+            'sales_status',
+            'billing_status',
+            'customer',
+            'charge_employee',
+            'charge_member',
+            'reporting_section',
+            'business',
+            'internal_memo',
+            'quotation_note',
+            'last_updated_by',
+            'last_updated_by_member',
+          ].includes(k)
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (
+          ![
+            'amount_set_rates',
+            'quotation_template_name',
+            'recipient_address',
+            'lines',
+            'gross_profit_summary',
+          ].includes(k)
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})().openapi('QuotationDetail')
 
 const QuotationStatusForUpdateSchema = z
   .enum(['unanswered', 'order_lost'])
@@ -3262,11 +3883,30 @@ const QuotationStatusForUpdateSchema = z
   })
   .openapi('QuotationStatusForUpdate')
 
-const QuotationStatusChangeRequestSchema = WithCompanyIdSchema.and(
-  z
-    .strictObject({ quotation_status: QuotationStatusForUpdateSchema })
-    .openapi({ required: ['quotation_status'] }),
-)
+const QuotationStatusChangeRequestSchema = (() => {
+  const Schema = WithCompanyIdSchema.and(
+    z
+      .strictObject({ quotation_status: QuotationStatusForUpdateSchema })
+      .openapi({ required: ['quotation_status'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['company_id'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['quotation_status'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({ description: '見積ステータス変更リクエスト' })
   .openapi('QuotationStatusChangeRequest')
 
@@ -3352,7 +3992,7 @@ const SalesOrderDigestSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().max(9223372036854776000n),
+        z.int64().max(9223372036854775807n),
       )
       .openapi({
         type: 'integer',
@@ -3400,21 +4040,18 @@ const CollectionMethodTypeSchema = z
   })
   .openapi('CollectionMethodType')
 
-const LineParamsSchema: z.ZodType<LineParamsType> = z
-  .lazy(() =>
-    z
-      .xor([BasicLineParamsSchema, TextLineParamsSchema])
-      .openapi({
-        description: '明細パラメータ',
-        discriminator: {
-          propertyName: 'line_type',
-          mapping: {
-            basic: '#/components/schemas/BasicLineParams',
-            text: '#/components/schemas/TextLineParams',
-          },
-        },
-      }),
-  )
+const LineParamsSchema = z
+  .xor([BasicLineParamsSchema, TextLineParamsSchema])
+  .openapi({
+    description: '明細パラメータ',
+    discriminator: {
+      propertyName: 'line_type',
+      mapping: {
+        basic: '#/components/schemas/BasicLineParams',
+        text: '#/components/schemas/TextLineParams',
+      },
+    },
+  })
   .openapi('LineParams')
 
 const SalesOrderRequestBaseSchema = z
@@ -3443,7 +4080,7 @@ const SalesOrderRequestBaseSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854776000n),
+        z.int64().min(1n).max(9223372036854775807n),
       )
       .exactOptional()
       .openapi({
@@ -3477,7 +4114,7 @@ const SalesOrderRequestBaseSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854776000n),
+        z.int64().min(1n).max(9223372036854775807n),
       )
       .nullable()
       .exactOptional()
@@ -3515,7 +4152,7 @@ const SalesOrderRequestBaseSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854776000n),
+        z.int64().min(1n).max(9223372036854775807n),
       )
       .exactOptional()
       .openapi({
@@ -3534,7 +4171,7 @@ const SalesOrderRequestBaseSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854776000n),
+        z.int64().min(1n).max(9223372036854775807n),
       )
       .nullable()
       .exactOptional()
@@ -3574,7 +4211,7 @@ const SalesOrderRequestBaseSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854776000n),
+        z.int64().min(1n).max(9223372036854775807n),
       )
       .exactOptional()
       .openapi({
@@ -3620,175 +4257,246 @@ const SalesOrderMinimalResponseSchema = z
   .openapi({ required: ['id', 'registered_at', 'last_updated_at'] })
   .openapi('SalesOrderMinimalResponse')
 
-const LineDetailSchema: z.ZodType<LineDetailType> = z
-  .lazy(() =>
-    z
-      .xor([BasicLineDetailSchema, TextLineDetailSchema])
-      .openapi({
-        description: '明細詳細',
-        discriminator: {
-          propertyName: 'line_type',
-          mapping: {
-            basic: '#/components/schemas/BasicLineDetail',
-            text: '#/components/schemas/TextLineDetail',
-          },
-        },
-      }),
-  )
+const LineDetailSchema = z
+  .xor([BasicLineDetailSchema, TextLineDetailSchema])
+  .openapi({
+    description: '明細詳細',
+    discriminator: {
+      propertyName: 'line_type',
+      mapping: {
+        basic: '#/components/schemas/BasicLineDetail',
+        text: '#/components/schemas/TextLineDetail',
+      },
+    },
+  })
   .openapi('LineDetail')
 
-const SalesOrderDetailSchema = SalesOrderDigestSchema.and(
-  z
-    .strictObject({
-      amount_set_rates: z.array(AmountSetRateSchema),
-      deliveries_on: z.iso
-        .date()
-        .nullable()
-        .exactOptional()
-        .openapi({ description: '納品予定日', example: '2025-04-01' }),
-      accepts_on: z.iso
-        .date()
-        .nullable()
-        .exactOptional()
-        .openapi({ description: '検収予定日', example: '2025-04-01' }),
-      delivery_template_name: z
-        .string()
-        .openapi({ description: '納品書テンプレート名称', example: 'デフォルトテンプレート' }),
-      delivery_subject: z
-        .string()
-        .nullable()
-        .exactOptional()
-        .openapi({ description: '納品書件名', example: 'サンプル案件受注の件' }),
-      delivery_note: z
-        .string()
-        .nullable()
-        .exactOptional()
-        .openapi({ description: '納品書の備考欄に掲載する内容', example: '納品時の注意事項' }),
-      delivered_excluding_tax: z
-        .preprocess(
-          (val) =>
-            typeof val === 'number' && Number.isSafeInteger(val)
-              ? BigInt(val)
-              : typeof val === 'string' && /^-?\d+$/.test(val)
+const SalesOrderDetailSchema = (() => {
+  const Schema = SalesOrderDigestSchema.and(
+    z
+      .strictObject({
+        amount_set_rates: z.array(AmountSetRateSchema),
+        deliveries_on: z.iso
+          .date()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: '納品予定日', example: '2025-04-01' }),
+        accepts_on: z.iso
+          .date()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: '検収予定日', example: '2025-04-01' }),
+        delivery_template_name: z
+          .string()
+          .openapi({ description: '納品書テンプレート名称', example: 'デフォルトテンプレート' }),
+        delivery_subject: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: '納品書件名', example: 'サンプル案件受注の件' }),
+        delivery_note: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: '納品書の備考欄に掲載する内容', example: '納品時の注意事項' }),
+        delivered_excluding_tax: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
                 ? BigInt(val)
-                : val,
-          z.int64().max(9223372036854776000n),
-        )
-        .nullable()
-        .exactOptional()
-        .openapi({
-          type: ['integer', 'null'],
-          format: 'int64',
-          maximum: 9223372036854776000,
-          description: '納品済金額(税抜)',
-          example: 5200000,
-        }),
-      remaining_delivered_tax: z
-        .preprocess(
-          (val) =>
-            typeof val === 'number' && Number.isSafeInteger(val)
-              ? BigInt(val)
-              : typeof val === 'string' && /^-?\d+$/.test(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64().max(9223372036854775807n),
+          )
+          .nullable()
+          .exactOptional()
+          .openapi({
+            type: ['integer', 'null'],
+            format: 'int64',
+            maximum: 9223372036854776000,
+            description: '納品済金額(税抜)',
+            example: 5200000,
+          }),
+        remaining_delivered_tax: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
                 ? BigInt(val)
-                : val,
-          z.int64().max(9223372036854776000n),
-        )
-        .nullable()
-        .exactOptional()
-        .openapi({
-          type: ['integer', 'null'],
-          format: 'int64',
-          maximum: 9223372036854776000,
-          description: '納品残金額(税抜)',
-          example: 5200000,
-        }),
-      sales_excluding_tax: z
-        .preprocess(
-          (val) =>
-            typeof val === 'number' && Number.isSafeInteger(val)
-              ? BigInt(val)
-              : typeof val === 'string' && /^-?\d+$/.test(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64().max(9223372036854775807n),
+          )
+          .nullable()
+          .exactOptional()
+          .openapi({
+            type: ['integer', 'null'],
+            format: 'int64',
+            maximum: 9223372036854776000,
+            description: '納品残金額(税抜)',
+            example: 5200000,
+          }),
+        sales_excluding_tax: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
                 ? BigInt(val)
-                : val,
-          z.int64().max(9223372036854776000n),
-        )
-        .nullable()
-        .exactOptional()
-        .openapi({
-          type: ['integer', 'null'],
-          format: 'int64',
-          maximum: 9223372036854776000,
-          description: '売上金額(税抜)',
-          example: 5200000,
-        }),
-      remaining_sales_order_excluding_tax: z
-        .preprocess(
-          (val) =>
-            typeof val === 'number' && Number.isSafeInteger(val)
-              ? BigInt(val)
-              : typeof val === 'string' && /^-?\d+$/.test(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64().max(9223372036854775807n),
+          )
+          .nullable()
+          .exactOptional()
+          .openapi({
+            type: ['integer', 'null'],
+            format: 'int64',
+            maximum: 9223372036854776000,
+            description: '売上金額(税抜)',
+            example: 5200000,
+          }),
+        remaining_sales_order_excluding_tax: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
                 ? BigInt(val)
-                : val,
-          z.int64().max(9223372036854776000n),
-        )
-        .nullable()
-        .exactOptional()
-        .openapi({
-          type: ['integer', 'null'],
-          format: 'int64',
-          maximum: 9223372036854776000,
-          description: '受注残金額(税抜)',
-          example: 5200000,
-        }),
-      billing_creating_method_type: BillingCreatingMethodTypeSchema,
-      bills_on: z.iso
-        .date()
-        .nullable()
-        .exactOptional()
-        .openapi({ description: '請求予定日', example: '2025-04-01' }),
-      billing_partner: PartnerSchema.openapi({ description: '請求先' }),
-      invoice_template_name: z
-        .string()
-        .openapi({ description: '請求書テンプレート名称', example: 'デフォルトテンプレート' }),
-      invoice_subject: z
-        .string()
-        .nullable()
-        .exactOptional()
-        .openapi({ description: '請求書件名', example: 'サンプル案件受注の件' }),
-      invoice_note: z
-        .string()
-        .nullable()
-        .exactOptional()
-        .openapi({
-          description: '請求書の備考欄に掲載する内容',
-          example: 'お振込期限は月末までとなります',
-        }),
-      collects_on: z.iso
-        .date()
-        .nullable()
-        .exactOptional()
-        .openapi({ description: '入金予定日', example: '2025-04-01' }),
-      collecting_partner: PartnerSchema.openapi({ description: '入金元' }),
-      collection_method_type: CollectionMethodTypeSchema,
-      charge_employee: EmployeeSchema.nullable().exactOptional(),
-      charge_member: MemberSchema.nullable().exactOptional().openapi({ description: '社内担当者' }),
-      reporting_section: ReportingSectionSchema.exactOptional(),
-      internal_memo: InternalMemoSchema.exactOptional(),
-      lines: z.array(LineDetailSchema).openapi({ description: '明細リスト' }),
-    })
-    .openapi({
-      required: [
-        'amount_set_rates',
-        'billing_partner',
-        'collecting_partner',
-        'billing_creating_method_type',
-        'collection_method_type',
-        'delivery_template_name',
-        'invoice_template_name',
-        'lines',
-      ],
-    }),
-).openapi('SalesOrderDetail')
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64().max(9223372036854775807n),
+          )
+          .nullable()
+          .exactOptional()
+          .openapi({
+            type: ['integer', 'null'],
+            format: 'int64',
+            maximum: 9223372036854776000,
+            description: '受注残金額(税抜)',
+            example: 5200000,
+          }),
+        billing_creating_method_type: BillingCreatingMethodTypeSchema,
+        bills_on: z.iso
+          .date()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: '請求予定日', example: '2025-04-01' }),
+        billing_partner: PartnerSchema.openapi({ description: '請求先' }),
+        invoice_template_name: z
+          .string()
+          .openapi({ description: '請求書テンプレート名称', example: 'デフォルトテンプレート' }),
+        invoice_subject: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: '請求書件名', example: 'サンプル案件受注の件' }),
+        invoice_note: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: '請求書の備考欄に掲載する内容',
+            example: 'お振込期限は月末までとなります',
+          }),
+        collects_on: z.iso
+          .date()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: '入金予定日', example: '2025-04-01' }),
+        collecting_partner: PartnerSchema.openapi({ description: '入金元' }),
+        collection_method_type: CollectionMethodTypeSchema,
+        charge_employee: EmployeeSchema.nullable().exactOptional(),
+        charge_member: MemberSchema.nullable()
+          .exactOptional()
+          .openapi({ description: '社内担当者' }),
+        reporting_section: ReportingSectionSchema.exactOptional(),
+        internal_memo: InternalMemoSchema.exactOptional(),
+        lines: z.array(LineDetailSchema).openapi({ description: '明細リスト' }),
+      })
+      .openapi({
+        required: [
+          'amount_set_rates',
+          'billing_partner',
+          'collecting_partner',
+          'billing_creating_method_type',
+          'collection_method_type',
+          'delivery_template_name',
+          'invoice_template_name',
+          'lines',
+        ],
+      }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (
+          ![
+            'id',
+            'sales_order_no',
+            'sales_order_subject',
+            'sales_order_date',
+            'customer_order_no',
+            'amount_set',
+            'amount_of_withholding_tax',
+            'registered_at',
+            'registered_by',
+            'registered_by_member',
+            'last_updated_at',
+            'last_updated_by',
+            'last_updated_by_member',
+            'customer',
+            'sales_on',
+            'delivery_progress',
+            'sales_status',
+            'billing_status',
+            'collection_status',
+            'business',
+            'quotation_id',
+            'total_amount',
+            'canceled',
+          ].includes(k)
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (
+          ![
+            'amount_set_rates',
+            'deliveries_on',
+            'accepts_on',
+            'delivery_template_name',
+            'delivery_subject',
+            'delivery_note',
+            'delivered_excluding_tax',
+            'remaining_delivered_tax',
+            'sales_excluding_tax',
+            'remaining_sales_order_excluding_tax',
+            'billing_creating_method_type',
+            'bills_on',
+            'billing_partner',
+            'invoice_template_name',
+            'invoice_subject',
+            'invoice_note',
+            'collects_on',
+            'collecting_partner',
+            'collection_method_type',
+            'charge_employee',
+            'charge_member',
+            'reporting_section',
+            'internal_memo',
+            'lines',
+          ].includes(k)
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})().openapi('SalesOrderDetail')
 
 const DeliveryStatusSchema = z
   .enum(['not_delivered', 'delivered'])
@@ -3858,7 +4566,7 @@ const DeliveryDigestSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().max(9223372036854776000n),
+        z.int64().max(9223372036854775807n),
       )
       .openapi({
         type: 'integer',
@@ -3976,7 +4684,7 @@ const DeliveryRequestBaseSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854776000n),
+        z.int64().min(1n).max(9223372036854775807n),
       )
       .exactOptional()
       .openapi({
@@ -4001,7 +4709,7 @@ const DeliveryRequestBaseSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854776000n),
+        z.int64().min(1n).max(9223372036854775807n),
       )
       .nullable()
       .exactOptional()
@@ -4034,7 +4742,7 @@ const DeliveryRequestBaseSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854776000n),
+        z.int64().min(1n).max(9223372036854775807n),
       )
       .nullable()
       .exactOptional()
@@ -4054,7 +4762,7 @@ const DeliveryRequestBaseSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854776000n),
+        z.int64().min(1n).max(9223372036854775807n),
       )
       .exactOptional()
       .openapi({
@@ -4094,7 +4802,7 @@ const DeliveryRequestBaseSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854776000n),
+        z.int64().min(1n).max(9223372036854775807n),
       )
       .exactOptional()
       .openapi({
@@ -4127,118 +4835,234 @@ const DeliveryMinimalResponseSchema = z
   .openapi({ required: ['id', 'registered_at', 'last_updated_at'] })
   .openapi('DeliveryMinimalResponse')
 
-const DeliveryDetailSchema = DeliveryDigestSchema.and(
-  z
-    .strictObject({
-      amount_set_rates: z.array(AmountSetRateSchema),
-      delivery_note: z
-        .string()
-        .nullable()
-        .exactOptional()
-        .openapi({ description: '納品書の備考欄に記載する内容', example: '納品時の注意事項' }),
-      delivery_template_name: z
-        .string()
-        .openapi({ description: '納品書テンプレート名称', example: 'デフォルトテンプレート' }),
-      recipient_address: RecipientAddressSchema,
-      recorded_sales_amount_excluding_tax: z
-        .preprocess(
-          (val) =>
-            typeof val === 'number' && Number.isSafeInteger(val)
-              ? BigInt(val)
-              : typeof val === 'string' && /^-?\d+$/.test(val)
+const DeliveryDetailSchema = (() => {
+  const Schema = DeliveryDigestSchema.and(
+    z
+      .strictObject({
+        amount_set_rates: z.array(AmountSetRateSchema),
+        delivery_note: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: '納品書の備考欄に記載する内容', example: '納品時の注意事項' }),
+        delivery_template_name: z
+          .string()
+          .openapi({ description: '納品書テンプレート名称', example: 'デフォルトテンプレート' }),
+        recipient_address: RecipientAddressSchema,
+        recorded_sales_amount_excluding_tax: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
                 ? BigInt(val)
-                : val,
-          z.int64(),
-        )
-        .openapi({
-          type: 'integer',
-          format: 'int64',
-          description: '売上金額(税抜)',
-          example: 5200000,
-        }),
-      remaining_sales_amount_excluding_tax: z
-        .preprocess(
-          (val) =>
-            typeof val === 'number' && Number.isSafeInteger(val)
-              ? BigInt(val)
-              : typeof val === 'string' && /^-?\d+$/.test(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({
+            type: 'integer',
+            format: 'int64',
+            description: '売上金額(税抜)',
+            example: 5200000,
+          }),
+        remaining_sales_amount_excluding_tax: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
                 ? BigInt(val)
-                : val,
-          z.int64(),
-        )
-        .openapi({
-          type: 'integer',
-          format: 'int64',
-          description: '売上残金額(税抜)',
-          example: 5200000,
-        }),
-      billing_creating_method_type: BillingCreatingMethodTypeSchema,
-      bills_on: z.iso
-        .date()
-        .nullable()
-        .exactOptional()
-        .openapi({ description: '請求予定日', example: '2025-04-01' }),
-      invoice_template_name: z
-        .string()
-        .openapi({ description: '請求書テンプレート名称', example: 'デフォルトテンプレート' }),
-      customer: PartnerSchema.nullable().exactOptional().openapi({ description: '顧客' }),
-      billing_partner: PartnerSchema.nullable().exactOptional().openapi({ description: '請求先' }),
-      invoice_subject: z
-        .string()
-        .nullable()
-        .exactOptional()
-        .openapi({ description: '請求書件名', example: 'サンプル案件納品の件' }),
-      invoice_note: z
-        .string()
-        .nullable()
-        .exactOptional()
-        .openapi({
-          description: '請求書の備考欄に掲載する内容',
-          example: 'お振込期限は月末までとなります',
-        }),
-      collects_on: z.iso
-        .date()
-        .nullable()
-        .exactOptional()
-        .openapi({ description: '入金予定日', example: '2025-04-01' }),
-      collection_method_type: CollectionMethodTypeSchema,
-      collecting_partner: PartnerSchema.nullable()
-        .exactOptional()
-        .openapi({ description: '入金元' }),
-      charge_employee: EmployeeSchema.nullable().exactOptional(),
-      charge_member: MemberSchema.nullable().exactOptional().openapi({ description: '社内担当者' }),
-      reporting_section: ReportingSectionSchema.exactOptional(),
-      internal_memo: InternalMemoSchema.exactOptional(),
-      lines: z.array(LineDetailSchema).openapi({ description: '明細リスト' }),
-    })
-    .openapi({
-      required: [
-        'delivery_template_name',
-        'invoice_template_name',
-        'collection_method_type',
-        'lines',
-        'recipient_address',
-        'billing_creating_method_type',
-        'amount_set_rates',
-        'recorded_sales_amount_excluding_tax',
-        'remaining_sales_amount_excluding_tax',
-      ],
-    }),
-).openapi('DeliveryDetail')
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({
+            type: 'integer',
+            format: 'int64',
+            description: '売上残金額(税抜)',
+            example: 5200000,
+          }),
+        billing_creating_method_type: BillingCreatingMethodTypeSchema,
+        bills_on: z.iso
+          .date()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: '請求予定日', example: '2025-04-01' }),
+        invoice_template_name: z
+          .string()
+          .openapi({ description: '請求書テンプレート名称', example: 'デフォルトテンプレート' }),
+        customer: PartnerSchema.nullable().exactOptional().openapi({ description: '顧客' }),
+        billing_partner: PartnerSchema.nullable()
+          .exactOptional()
+          .openapi({ description: '請求先' }),
+        invoice_subject: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: '請求書件名', example: 'サンプル案件納品の件' }),
+        invoice_note: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: '請求書の備考欄に掲載する内容',
+            example: 'お振込期限は月末までとなります',
+          }),
+        collects_on: z.iso
+          .date()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: '入金予定日', example: '2025-04-01' }),
+        collection_method_type: CollectionMethodTypeSchema,
+        collecting_partner: PartnerSchema.nullable()
+          .exactOptional()
+          .openapi({ description: '入金元' }),
+        charge_employee: EmployeeSchema.nullable().exactOptional(),
+        charge_member: MemberSchema.nullable()
+          .exactOptional()
+          .openapi({ description: '社内担当者' }),
+        reporting_section: ReportingSectionSchema.exactOptional(),
+        internal_memo: InternalMemoSchema.exactOptional(),
+        lines: z.array(LineDetailSchema).openapi({ description: '明細リスト' }),
+      })
+      .openapi({
+        required: [
+          'delivery_template_name',
+          'invoice_template_name',
+          'collection_method_type',
+          'lines',
+          'recipient_address',
+          'billing_creating_method_type',
+          'amount_set_rates',
+          'recorded_sales_amount_excluding_tax',
+          'remaining_sales_amount_excluding_tax',
+        ],
+      }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (
+          ![
+            'id',
+            'sales_order_id',
+            'delivery_status',
+            'acceptance_status',
+            'canceled',
+            'registered_at',
+            'registered_by',
+            'registered_by_member',
+            'last_updated_at',
+            'last_updated_by',
+            'last_updated_by_member',
+            'amount_set',
+            'amount_of_withholding_tax',
+            'total_amount',
+            'business',
+            'delivery_no',
+            'branch_no',
+            'internal_subject',
+            'customer_order_no',
+            'delivery_date',
+            'acceptance_date',
+            'customer',
+            'issued',
+            'issued_on',
+            'subject',
+            'sales_status',
+            'billing_status',
+            'collection_status',
+          ].includes(k)
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (
+          ![
+            'amount_set_rates',
+            'delivery_note',
+            'delivery_template_name',
+            'recipient_address',
+            'recorded_sales_amount_excluding_tax',
+            'remaining_sales_amount_excluding_tax',
+            'billing_creating_method_type',
+            'bills_on',
+            'invoice_template_name',
+            'customer',
+            'billing_partner',
+            'invoice_subject',
+            'invoice_note',
+            'collects_on',
+            'collection_method_type',
+            'collecting_partner',
+            'charge_employee',
+            'charge_member',
+            'reporting_section',
+            'internal_memo',
+            'lines',
+          ].includes(k)
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})().openapi('DeliveryDetail')
 
-const DeliveryStatusChangeRequestSchema = WithCompanyIdSchema.and(
-  z
-    .strictObject({ delivery_status: DeliveryStatusSchema })
-    .openapi({ required: ['delivery_status'] }),
-)
+const DeliveryStatusChangeRequestSchema = (() => {
+  const Schema = WithCompanyIdSchema.and(
+    z
+      .strictObject({ delivery_status: DeliveryStatusSchema })
+      .openapi({ required: ['delivery_status'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['company_id'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['delivery_status'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({ description: '納品ステータス変更リクエスト' })
   .openapi('DeliveryStatusChangeRequest')
 
-const AcceptanceStatusChangeRequestSchema = WithCompanyIdSchema.and(
-  z
-    .strictObject({ acceptance_status: AcceptanceStatusSchema })
-    .openapi({ required: ['acceptance_status'] }),
-)
+const AcceptanceStatusChangeRequestSchema = (() => {
+  const Schema = WithCompanyIdSchema.and(
+    z
+      .strictObject({ acceptance_status: AcceptanceStatusSchema })
+      .openapi({ required: ['acceptance_status'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['company_id'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['acceptance_status'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({ description: '検収ステータス変更リクエスト' })
   .openapi('AcceptanceStatusChangeRequest')
 
@@ -4326,7 +5150,7 @@ const SaleDigestSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().max(9223372036854776000n),
+        z.int64().max(9223372036854775807n),
       )
       .openapi({
         type: 'integer',
@@ -4469,72 +5293,107 @@ const SaleDigestSchema = z
   })
   .openapi('SaleDigest')
 
-const SaleBasicLineParamsSchema = BasicLineParamsSchema.and(
-  z
-    .strictObject({
-      segment_tag_1_id: z
-        .preprocess(
-          (val) =>
-            typeof val === 'number' && Number.isSafeInteger(val)
-              ? BigInt(val)
-              : typeof val === 'string' && /^-?\d+$/.test(val)
+const SaleBasicLineParamsSchema = (() => {
+  const Schema = BasicLineParamsSchema.and(
+    z
+      .strictObject({
+        segment_tag_1_id: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
                 ? BigInt(val)
-                : val,
-          z.int64().min(1n).max(9223372036854776000n),
-        )
-        .nullable()
-        .exactOptional()
-        .openapi({
-          type: ['integer', 'null'],
-          format: 'int64',
-          minimum: 1,
-          maximum: 9223372036854776000,
-          description: 'セグメントタグ1のID',
-          example: 12345,
-        }),
-      segment_tag_2_id: z
-        .preprocess(
-          (val) =>
-            typeof val === 'number' && Number.isSafeInteger(val)
-              ? BigInt(val)
-              : typeof val === 'string' && /^-?\d+$/.test(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64().min(1n).max(9223372036854775807n),
+          )
+          .nullable()
+          .exactOptional()
+          .openapi({
+            type: ['integer', 'null'],
+            format: 'int64',
+            minimum: 1,
+            maximum: 9223372036854776000,
+            description: 'セグメントタグ1のID',
+            example: 12345,
+          }),
+        segment_tag_2_id: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
                 ? BigInt(val)
-                : val,
-          z.int64().min(1n).max(9223372036854776000n),
-        )
-        .nullable()
-        .exactOptional()
-        .openapi({
-          type: ['integer', 'null'],
-          format: 'int64',
-          minimum: 1,
-          maximum: 9223372036854776000,
-          description: 'セグメントタグ2のID',
-          example: 12345,
-        }),
-      segment_tag_3_id: z
-        .preprocess(
-          (val) =>
-            typeof val === 'number' && Number.isSafeInteger(val)
-              ? BigInt(val)
-              : typeof val === 'string' && /^-?\d+$/.test(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64().min(1n).max(9223372036854775807n),
+          )
+          .nullable()
+          .exactOptional()
+          .openapi({
+            type: ['integer', 'null'],
+            format: 'int64',
+            minimum: 1,
+            maximum: 9223372036854776000,
+            description: 'セグメントタグ2のID',
+            example: 12345,
+          }),
+        segment_tag_3_id: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
                 ? BigInt(val)
-                : val,
-          z.int64().min(1n).max(9223372036854776000n),
-        )
-        .nullable()
-        .exactOptional()
-        .openapi({
-          type: ['integer', 'null'],
-          format: 'int64',
-          minimum: 1,
-          maximum: 9223372036854776000,
-          description: 'セグメントタグ3のID',
-          example: 12345,
-        }),
-    })
-    .openapi({ required: [] }),
-)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64().min(1n).max(9223372036854775807n),
+          )
+          .nullable()
+          .exactOptional()
+          .openapi({
+            type: ['integer', 'null'],
+            format: 'int64',
+            minimum: 1,
+            maximum: 9223372036854776000,
+            description: 'セグメントタグ3のID',
+            example: 12345,
+          }),
+      })
+      .openapi({ required: [] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (
+          ![
+            'line_type',
+            'master_item_id',
+            'deal_line_type_id',
+            'description',
+            'quantity',
+            'uom_name',
+            'unit_price',
+            'accounting_reporting_section_id',
+            'item_tag_id',
+            'memo_tags',
+            'withholding_enabled',
+            'is_manual_tax_entry',
+            'tax',
+          ].includes(k)
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['segment_tag_1_id', 'segment_tag_2_id', 'segment_tag_3_id'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({ description: '売上通常明細パラメータ' })
   .openapi('SaleBasicLineParams')
 
@@ -4584,7 +5443,7 @@ const SaleRequestBaseSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854776000n),
+        z.int64().min(1n).max(9223372036854775807n),
       )
       .exactOptional()
       .openapi({
@@ -4608,7 +5467,7 @@ const SaleRequestBaseSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854776000n),
+        z.int64().min(1n).max(9223372036854775807n),
       )
       .nullable()
       .exactOptional()
@@ -4628,7 +5487,7 @@ const SaleRequestBaseSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854776000n),
+        z.int64().min(1n).max(9223372036854775807n),
       )
       .exactOptional()
       .openapi({
@@ -4668,7 +5527,7 @@ const SaleRequestBaseSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854776000n),
+        z.int64().min(1n).max(9223372036854775807n),
       )
       .exactOptional()
       .openapi({
@@ -4701,19 +5560,63 @@ const SaleMinimalResponseSchema = z
   .openapi({ required: ['id', 'registered_at', 'last_updated_at'] })
   .openapi('SaleMinimalResponse')
 
-const SaleBasicLineDetailSchema = BasicLineDetailSchema.and(
-  z
-    .strictObject({
-      is_manual_tax_entry: z
-        .boolean()
-        .openapi({ description: '税の手動入力フラグ', example: false }),
-      account_item: AccountItemSchema,
-      segment_tag_1: SegmentTagSchema.exactOptional(),
-      segment_tag_2: SegmentTagSchema.exactOptional(),
-      segment_tag_3: SegmentTagSchema.exactOptional(),
-    })
-    .openapi({ required: ['is_manual_tax_entry', 'account_item'] }),
-)
+const SaleBasicLineDetailSchema = (() => {
+  const Schema = BasicLineDetailSchema.and(
+    z
+      .strictObject({
+        is_manual_tax_entry: z
+          .boolean()
+          .openapi({ description: '税の手動入力フラグ', example: false }),
+        account_item: AccountItemSchema,
+        segment_tag_1: SegmentTagSchema.exactOptional(),
+        segment_tag_2: SegmentTagSchema.exactOptional(),
+        segment_tag_3: SegmentTagSchema.exactOptional(),
+      })
+      .openapi({ required: ['is_manual_tax_entry', 'account_item'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (
+          ![
+            'line_no',
+            'line_type',
+            'master_item',
+            'deal_line_type',
+            'description',
+            'quantity',
+            'uom_name',
+            'unit_price',
+            'amount_set',
+            'tax_type',
+            'accounting_reporting_section',
+            'item_tag',
+            'memo_tags',
+            'withholding_enabled',
+          ].includes(k)
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (
+          ![
+            'is_manual_tax_entry',
+            'account_item',
+            'segment_tag_1',
+            'segment_tag_2',
+            'segment_tag_3',
+          ].includes(k)
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({ description: '売上通常明細詳細' })
   .openapi('SaleBasicLineDetail')
 
@@ -4731,104 +5634,195 @@ const SaleLineDetailSchema = z
   })
   .openapi('SaleLineDetail')
 
-const SaleDetailSchema = SaleDigestSchema.and(
-  z
-    .strictObject({
-      sales_order_id: z
-        .string()
-        .length(26)
-        .nullable()
-        .exactOptional()
-        .openapi({ description: '受注ID', example: '01JPP4FD1CVQWCDSWA90VE1ZTM' }),
-      delivery_id: z
-        .string()
-        .length(26)
-        .nullable()
-        .exactOptional()
-        .openapi({ description: '納品ID', example: '01JPP4FD1CVQWCDSWA90VE1ZTM' }),
-      advance_receipt_id: z
-        .string()
-        .length(26)
-        .nullable()
-        .exactOptional()
-        .openapi({ description: '前受金ID', example: '01JPP4FD1CVQWCDSWA90VE1ZTM' }),
-      periodic_sales_id: z
-        .string()
-        .length(26)
-        .nullable()
-        .exactOptional()
-        .openapi({ description: '作成元の定期売上ID', example: '01JPP4FD1CVQWCDSWA90VE1ZTM' }),
-      amount_set_rates: z.array(AmountSetRateSchema),
-      bills_on: z.iso
-        .date()
-        .nullable()
-        .exactOptional()
-        .openapi({ description: '請求日', example: '2024-02-01' }),
-      invoice_template_name: z
-        .string()
-        .exactOptional()
-        .openapi({ description: '請求書テンプレート名称', example: 'デフォルトテンプレート' }),
-      customer: PartnerSchema.nullable().exactOptional().openapi({ description: '顧客' }),
-      billing_partner: PartnerSchema.nullable().exactOptional().openapi({ description: '請求先' }),
-      invoice_subject: z
-        .string()
-        .nullable()
-        .exactOptional()
-        .openapi({ description: '請求書件名', example: 'Webシステム開発業務' }),
-      invoice_note: z
-        .string()
-        .nullable()
-        .exactOptional()
-        .openapi({
-          description: '請求書の備考欄に掲載する内容',
-          example: 'お振込期限は月末までとなります',
-        }),
-      billing_amount_excluding_tax: z
-        .preprocess(
-          (val) =>
-            typeof val === 'number' && Number.isSafeInteger(val)
-              ? BigInt(val)
-              : typeof val === 'string' && /^-?\d+$/.test(val)
+const SaleDetailSchema = (() => {
+  const Schema = SaleDigestSchema.and(
+    z
+      .strictObject({
+        sales_order_id: z
+          .string()
+          .length(26)
+          .nullable()
+          .exactOptional()
+          .openapi({ description: '受注ID', example: '01JPP4FD1CVQWCDSWA90VE1ZTM' }),
+        delivery_id: z
+          .string()
+          .length(26)
+          .nullable()
+          .exactOptional()
+          .openapi({ description: '納品ID', example: '01JPP4FD1CVQWCDSWA90VE1ZTM' }),
+        advance_receipt_id: z
+          .string()
+          .length(26)
+          .nullable()
+          .exactOptional()
+          .openapi({ description: '前受金ID', example: '01JPP4FD1CVQWCDSWA90VE1ZTM' }),
+        periodic_sales_id: z
+          .string()
+          .length(26)
+          .nullable()
+          .exactOptional()
+          .openapi({ description: '作成元の定期売上ID', example: '01JPP4FD1CVQWCDSWA90VE1ZTM' }),
+        amount_set_rates: z.array(AmountSetRateSchema),
+        bills_on: z.iso
+          .date()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: '請求日', example: '2024-02-01' }),
+        invoice_template_name: z
+          .string()
+          .exactOptional()
+          .openapi({ description: '請求書テンプレート名称', example: 'デフォルトテンプレート' }),
+        customer: PartnerSchema.nullable().exactOptional().openapi({ description: '顧客' }),
+        billing_partner: PartnerSchema.nullable()
+          .exactOptional()
+          .openapi({ description: '請求先' }),
+        invoice_subject: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: '請求書件名', example: 'Webシステム開発業務' }),
+        invoice_note: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: '請求書の備考欄に掲載する内容',
+            example: 'お振込期限は月末までとなります',
+          }),
+        billing_amount_excluding_tax: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
                 ? BigInt(val)
-                : val,
-          z.int64(),
-        )
-        .nullable()
-        .exactOptional()
-        .openapi({
-          type: ['integer', 'null'],
-          format: 'int64',
-          description: '請求金額(税抜)',
-          example: 5200000,
-        }),
-      invoice_no: z
-        .string()
-        .nullable()
-        .exactOptional()
-        .openapi({ description: '請求書番号', example: 'INV-2024-0001' }),
-      bill_id: z
-        .string()
-        .length(26)
-        .nullable()
-        .exactOptional()
-        .openapi({ description: '請求ID', example: '01JPP4FD1CVQWCDSWA90VE1ZTM' }),
-      collects_on: z.iso
-        .date()
-        .nullable()
-        .exactOptional()
-        .openapi({ description: '入金期日', example: '2024-02-28' }),
-      collection_method_type: CollectionMethodTypeWithNoneSchema,
-      collecting_partner: PartnerSchema.nullable()
-        .exactOptional()
-        .openapi({ description: '入金元' }),
-      charge_employee: EmployeeSchema.nullable().exactOptional(),
-      charge_member: MemberSchema.nullable().exactOptional().openapi({ description: '社内担当者' }),
-      reporting_section: ReportingSectionSchema.exactOptional(),
-      internal_memo: InternalMemoSchema.exactOptional(),
-      lines: z.array(SaleLineDetailSchema).openapi({ description: '明細リスト' }),
-    })
-    .openapi({ required: ['amount_set_rates', 'collection_method_type', 'lines'] }),
-).openapi('SaleDetail')
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .nullable()
+          .exactOptional()
+          .openapi({
+            type: ['integer', 'null'],
+            format: 'int64',
+            description: '請求金額(税抜)',
+            example: 5200000,
+          }),
+        invoice_no: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: '請求書番号', example: 'INV-2024-0001' }),
+        bill_id: z
+          .string()
+          .length(26)
+          .nullable()
+          .exactOptional()
+          .openapi({ description: '請求ID', example: '01JPP4FD1CVQWCDSWA90VE1ZTM' }),
+        collects_on: z.iso
+          .date()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: '入金期日', example: '2024-02-28' }),
+        collection_method_type: CollectionMethodTypeWithNoneSchema,
+        collecting_partner: PartnerSchema.nullable()
+          .exactOptional()
+          .openapi({ description: '入金元' }),
+        charge_employee: EmployeeSchema.nullable().exactOptional(),
+        charge_member: MemberSchema.nullable()
+          .exactOptional()
+          .openapi({ description: '社内担当者' }),
+        reporting_section: ReportingSectionSchema.exactOptional(),
+        internal_memo: InternalMemoSchema.exactOptional(),
+        lines: z.array(SaleLineDetailSchema).openapi({ description: '明細リスト' }),
+      })
+      .openapi({ required: ['amount_set_rates', 'collection_method_type', 'lines'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (
+          ![
+            'id',
+            'deal_id',
+            'canceled',
+            'registered_at',
+            'registered_by',
+            'registered_by_member',
+            'last_updated_at',
+            'last_updated_by',
+            'last_updated_by_member',
+            'amount_set',
+            'amount_of_withholding_tax',
+            'total_amount',
+            'business',
+            'sales_no',
+            'subject',
+            'customer_order_no',
+            'revenue_recognition_date',
+            'customer',
+            'billing_creating_status',
+            'billing_status',
+            'collection_status',
+            'sales_order_id',
+            'delivery_id',
+            'advance_receipt_id',
+            'periodic_sales_id',
+            'bills_on',
+            'invoice_template_name',
+            'billing_partner',
+            'invoice_subject',
+            'invoice_note',
+            'billing_amount_excluding_tax',
+            'invoice_no',
+            'bill_id',
+            'collects_on',
+            'collection_method_type',
+            'collecting_partner',
+            'charge_employee',
+            'charge_member',
+            'reporting_section',
+            'internal_memo',
+          ].includes(k)
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (
+          ![
+            'sales_order_id',
+            'delivery_id',
+            'advance_receipt_id',
+            'periodic_sales_id',
+            'amount_set_rates',
+            'bills_on',
+            'invoice_template_name',
+            'customer',
+            'billing_partner',
+            'invoice_subject',
+            'invoice_note',
+            'billing_amount_excluding_tax',
+            'invoice_no',
+            'bill_id',
+            'collects_on',
+            'collection_method_type',
+            'collecting_partner',
+            'charge_employee',
+            'charge_member',
+            'reporting_section',
+            'internal_memo',
+            'lines',
+          ].includes(k)
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})().openapi('SaleDetail')
 
 const ManualSettlementStatusSchema = z
   .enum(['not_settled', 'partially_settled', 'settled', 'none'])
@@ -4839,11 +5833,30 @@ const ManualSettlementStatusSchema = z
   })
   .openapi('ManualSettlementStatus')
 
-const SaleCollectionStatusChangeRequestSchema = WithCompanyIdSchema.and(
-  z
-    .strictObject({ collection_status: ManualSettlementStatusSchema })
-    .openapi({ required: ['collection_status'] }),
-)
+const SaleCollectionStatusChangeRequestSchema = (() => {
+  const Schema = WithCompanyIdSchema.and(
+    z
+      .strictObject({ collection_status: ManualSettlementStatusSchema })
+      .openapi({ required: ['collection_status'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['company_id'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['collection_status'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({ description: '決済ステータス変更リクエスト' })
   .openapi('SaleCollectionStatusChangeRequest')
 
@@ -4928,72 +5941,107 @@ const PeriodicSaleDigestSchema = z
   })
   .openapi('PeriodicSaleDigest')
 
-const PeriodicSaleBasicLineParamsSchema = BasicLineParamsSchema.and(
-  z
-    .strictObject({
-      segment_tag_1_id: z
-        .preprocess(
-          (val) =>
-            typeof val === 'number' && Number.isSafeInteger(val)
-              ? BigInt(val)
-              : typeof val === 'string' && /^-?\d+$/.test(val)
+const PeriodicSaleBasicLineParamsSchema = (() => {
+  const Schema = BasicLineParamsSchema.and(
+    z
+      .strictObject({
+        segment_tag_1_id: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
                 ? BigInt(val)
-                : val,
-          z.int64().min(1n).max(9223372036854776000n),
-        )
-        .nullable()
-        .exactOptional()
-        .openapi({
-          type: ['integer', 'null'],
-          format: 'int64',
-          minimum: 1,
-          maximum: 9223372036854776000,
-          description: 'セグメントタグ1のID',
-          example: 12345,
-        }),
-      segment_tag_2_id: z
-        .preprocess(
-          (val) =>
-            typeof val === 'number' && Number.isSafeInteger(val)
-              ? BigInt(val)
-              : typeof val === 'string' && /^-?\d+$/.test(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64().min(1n).max(9223372036854775807n),
+          )
+          .nullable()
+          .exactOptional()
+          .openapi({
+            type: ['integer', 'null'],
+            format: 'int64',
+            minimum: 1,
+            maximum: 9223372036854776000,
+            description: 'セグメントタグ1のID',
+            example: 12345,
+          }),
+        segment_tag_2_id: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
                 ? BigInt(val)
-                : val,
-          z.int64().min(1n).max(9223372036854776000n),
-        )
-        .nullable()
-        .exactOptional()
-        .openapi({
-          type: ['integer', 'null'],
-          format: 'int64',
-          minimum: 1,
-          maximum: 9223372036854776000,
-          description: 'セグメントタグ2のID',
-          example: 12345,
-        }),
-      segment_tag_3_id: z
-        .preprocess(
-          (val) =>
-            typeof val === 'number' && Number.isSafeInteger(val)
-              ? BigInt(val)
-              : typeof val === 'string' && /^-?\d+$/.test(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64().min(1n).max(9223372036854775807n),
+          )
+          .nullable()
+          .exactOptional()
+          .openapi({
+            type: ['integer', 'null'],
+            format: 'int64',
+            minimum: 1,
+            maximum: 9223372036854776000,
+            description: 'セグメントタグ2のID',
+            example: 12345,
+          }),
+        segment_tag_3_id: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
                 ? BigInt(val)
-                : val,
-          z.int64().min(1n).max(9223372036854776000n),
-        )
-        .nullable()
-        .exactOptional()
-        .openapi({
-          type: ['integer', 'null'],
-          format: 'int64',
-          minimum: 1,
-          maximum: 9223372036854776000,
-          description: 'セグメントタグ3のID',
-          example: 12345,
-        }),
-    })
-    .openapi({ required: [] }),
-)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64().min(1n).max(9223372036854775807n),
+          )
+          .nullable()
+          .exactOptional()
+          .openapi({
+            type: ['integer', 'null'],
+            format: 'int64',
+            minimum: 1,
+            maximum: 9223372036854776000,
+            description: 'セグメントタグ3のID',
+            example: 12345,
+          }),
+      })
+      .openapi({ required: [] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (
+          ![
+            'line_type',
+            'master_item_id',
+            'deal_line_type_id',
+            'description',
+            'quantity',
+            'uom_name',
+            'unit_price',
+            'accounting_reporting_section_id',
+            'item_tag_id',
+            'memo_tags',
+            'withholding_enabled',
+            'is_manual_tax_entry',
+            'tax',
+          ].includes(k)
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['segment_tag_1_id', 'segment_tag_2_id', 'segment_tag_3_id'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({ description: '定期売上通常明細パラメータ' })
   .openapi('PeriodicSaleBasicLineParams')
 
@@ -5027,7 +6075,7 @@ const PeriodicSaleRequestBaseSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854776000n),
+        z.int64().min(1n).max(9223372036854775807n),
       )
       .exactOptional()
       .openapi({
@@ -5082,7 +6130,7 @@ const PeriodicSaleRequestBaseSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854776000n),
+        z.int64().min(1n).max(9223372036854775807n),
       )
       .exactOptional()
       .openapi({
@@ -5101,7 +6149,7 @@ const PeriodicSaleRequestBaseSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854776000n),
+        z.int64().min(1n).max(9223372036854775807n),
       )
       .nullable()
       .exactOptional()
@@ -5168,7 +6216,7 @@ const PeriodicSaleRequestBaseSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854776000n),
+        z.int64().min(1n).max(9223372036854775807n),
       )
       .exactOptional()
       .openapi({
@@ -5267,20 +6315,58 @@ const RecurrenceRuleSchema = z
   })
   .openapi('RecurrenceRule')
 
-const PeriodicSaleBasicLineDetailSchema = BasicLineDetailSchema.and(
-  z
-    .strictObject({
-      is_manual_tax_entry: z
-        .boolean()
-        .openapi({ description: '税の手動入力フラグ', example: false }),
-      segment_tag_1: SegmentTagSchema.openapi({ description: 'セグメントタグ1' }),
-      segment_tag_2: SegmentTagSchema.openapi({ description: 'セグメントタグ2' }),
-      segment_tag_3: SegmentTagSchema.openapi({ description: 'セグメントタグ3' }),
-    })
-    .openapi({
-      required: ['is_manual_tax_entry', 'segment_tag_1', 'segment_tag_2', 'segment_tag_3'],
-    }),
-)
+const PeriodicSaleBasicLineDetailSchema = (() => {
+  const Schema = BasicLineDetailSchema.and(
+    z
+      .strictObject({
+        is_manual_tax_entry: z
+          .boolean()
+          .openapi({ description: '税の手動入力フラグ', example: false }),
+        segment_tag_1: SegmentTagSchema.openapi({ description: 'セグメントタグ1' }),
+        segment_tag_2: SegmentTagSchema.openapi({ description: 'セグメントタグ2' }),
+        segment_tag_3: SegmentTagSchema.openapi({ description: 'セグメントタグ3' }),
+      })
+      .openapi({
+        required: ['is_manual_tax_entry', 'segment_tag_1', 'segment_tag_2', 'segment_tag_3'],
+      }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (
+          ![
+            'line_no',
+            'line_type',
+            'master_item',
+            'deal_line_type',
+            'description',
+            'quantity',
+            'uom_name',
+            'unit_price',
+            'amount_set',
+            'tax_type',
+            'accounting_reporting_section',
+            'item_tag',
+            'memo_tags',
+            'withholding_enabled',
+          ].includes(k)
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (
+          !['is_manual_tax_entry', 'segment_tag_1', 'segment_tag_2', 'segment_tag_3'].includes(k)
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({ description: '定期売上通常明細詳細' })
   .openapi('PeriodicSaleBasicLineDetail')
 
@@ -5528,19 +6614,63 @@ const SalesScheduleDigestSchema = z
   })
   .openapi('SalesScheduleDigest')
 
-const SalesScheduleBasicLineDetailSchema = BasicLineDetailSchema.and(
-  z
-    .strictObject({
-      is_manual_tax_entry: z
-        .boolean()
-        .openapi({ description: '税の手動入力フラグ', example: false }),
-      account_item: AccountItemSchema,
-      segment_tag_1: SegmentTagSchema.exactOptional(),
-      segment_tag_2: SegmentTagSchema.exactOptional(),
-      segment_tag_3: SegmentTagSchema.exactOptional(),
-    })
-    .openapi({ required: ['is_manual_tax_entry', 'account_item'] }),
-)
+const SalesScheduleBasicLineDetailSchema = (() => {
+  const Schema = BasicLineDetailSchema.and(
+    z
+      .strictObject({
+        is_manual_tax_entry: z
+          .boolean()
+          .openapi({ description: '税の手動入力フラグ', example: false }),
+        account_item: AccountItemSchema,
+        segment_tag_1: SegmentTagSchema.exactOptional(),
+        segment_tag_2: SegmentTagSchema.exactOptional(),
+        segment_tag_3: SegmentTagSchema.exactOptional(),
+      })
+      .openapi({ required: ['is_manual_tax_entry', 'account_item'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (
+          ![
+            'line_no',
+            'line_type',
+            'master_item',
+            'deal_line_type',
+            'description',
+            'quantity',
+            'uom_name',
+            'unit_price',
+            'amount_set',
+            'tax_type',
+            'accounting_reporting_section',
+            'item_tag',
+            'memo_tags',
+            'withholding_enabled',
+          ].includes(k)
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (
+          ![
+            'is_manual_tax_entry',
+            'account_item',
+            'segment_tag_1',
+            'segment_tag_2',
+            'segment_tag_3',
+          ].includes(k)
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({ description: '売上予定通常明細詳細' })
   .openapi('SalesScheduleBasicLineDetail')
 
@@ -5716,72 +6846,107 @@ const SalesScheduleMinimalResponseSchema = z
   .openapi({ required: ['id', 'registered_at', 'last_updated_at'] })
   .openapi('SalesScheduleMinimalResponse')
 
-const SalesScheduleBasicLineParamsSchema = BasicLineParamsSchema.and(
-  z
-    .strictObject({
-      segment_tag_1_id: z
-        .preprocess(
-          (val) =>
-            typeof val === 'number' && Number.isSafeInteger(val)
-              ? BigInt(val)
-              : typeof val === 'string' && /^-?\d+$/.test(val)
+const SalesScheduleBasicLineParamsSchema = (() => {
+  const Schema = BasicLineParamsSchema.and(
+    z
+      .strictObject({
+        segment_tag_1_id: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
                 ? BigInt(val)
-                : val,
-          z.int64().min(1n).max(9223372036854776000n),
-        )
-        .nullable()
-        .exactOptional()
-        .openapi({
-          type: ['integer', 'null'],
-          format: 'int64',
-          minimum: 1,
-          maximum: 9223372036854776000,
-          description: 'セグメントタグ1のID',
-          example: 12345,
-        }),
-      segment_tag_2_id: z
-        .preprocess(
-          (val) =>
-            typeof val === 'number' && Number.isSafeInteger(val)
-              ? BigInt(val)
-              : typeof val === 'string' && /^-?\d+$/.test(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64().min(1n).max(9223372036854775807n),
+          )
+          .nullable()
+          .exactOptional()
+          .openapi({
+            type: ['integer', 'null'],
+            format: 'int64',
+            minimum: 1,
+            maximum: 9223372036854776000,
+            description: 'セグメントタグ1のID',
+            example: 12345,
+          }),
+        segment_tag_2_id: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
                 ? BigInt(val)
-                : val,
-          z.int64().min(1n).max(9223372036854776000n),
-        )
-        .nullable()
-        .exactOptional()
-        .openapi({
-          type: ['integer', 'null'],
-          format: 'int64',
-          minimum: 1,
-          maximum: 9223372036854776000,
-          description: 'セグメントタグ2のID',
-          example: 12345,
-        }),
-      segment_tag_3_id: z
-        .preprocess(
-          (val) =>
-            typeof val === 'number' && Number.isSafeInteger(val)
-              ? BigInt(val)
-              : typeof val === 'string' && /^-?\d+$/.test(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64().min(1n).max(9223372036854775807n),
+          )
+          .nullable()
+          .exactOptional()
+          .openapi({
+            type: ['integer', 'null'],
+            format: 'int64',
+            minimum: 1,
+            maximum: 9223372036854776000,
+            description: 'セグメントタグ2のID',
+            example: 12345,
+          }),
+        segment_tag_3_id: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
                 ? BigInt(val)
-                : val,
-          z.int64().min(1n).max(9223372036854776000n),
-        )
-        .nullable()
-        .exactOptional()
-        .openapi({
-          type: ['integer', 'null'],
-          format: 'int64',
-          minimum: 1,
-          maximum: 9223372036854776000,
-          description: 'セグメントタグ3のID',
-          example: 12345,
-        }),
-    })
-    .openapi({ required: [] }),
-)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64().min(1n).max(9223372036854775807n),
+          )
+          .nullable()
+          .exactOptional()
+          .openapi({
+            type: ['integer', 'null'],
+            format: 'int64',
+            minimum: 1,
+            maximum: 9223372036854776000,
+            description: 'セグメントタグ3のID',
+            example: 12345,
+          }),
+      })
+      .openapi({ required: [] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (
+          ![
+            'line_type',
+            'master_item_id',
+            'deal_line_type_id',
+            'description',
+            'quantity',
+            'uom_name',
+            'unit_price',
+            'accounting_reporting_section_id',
+            'item_tag_id',
+            'memo_tags',
+            'withholding_enabled',
+            'is_manual_tax_entry',
+            'tax',
+          ].includes(k)
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['segment_tag_1_id', 'segment_tag_2_id', 'segment_tag_3_id'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({ description: '売上予定通常明細パラメータ' })
   .openapi('SalesScheduleBasicLineParams')
 
@@ -5809,7 +6974,7 @@ const SalesScheduleUpdateParamsSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854776000n),
+        z.int64().min(1n).max(9223372036854775807n),
       )
       .exactOptional()
       .openapi({
@@ -5850,7 +7015,7 @@ const SalesScheduleUpdateParamsSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854776000n),
+        z.int64().min(1n).max(9223372036854775807n),
       )
       .exactOptional()
       .openapi({
@@ -5869,7 +7034,7 @@ const SalesScheduleUpdateParamsSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854776000n),
+        z.int64().min(1n).max(9223372036854775807n),
       )
       .nullable()
       .exactOptional()
@@ -5909,7 +7074,7 @@ const SalesScheduleUpdateParamsSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854776000n),
+        z.int64().min(1n).max(9223372036854775807n),
       )
       .exactOptional()
       .openapi({
@@ -5972,7 +7137,7 @@ const OtherCostDetailSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().max(9223372036854776000n),
+        z.int64().max(9223372036854775807n),
       )
       .openapi({
         type: 'integer',
@@ -6012,7 +7177,7 @@ const OtherCostDetailSchema = z
                 : typeof val === 'string' && /^-?\d+$/.test(val)
                   ? BigInt(val)
                   : val,
-            z.int64().max(9223372036854776000n),
+            z.int64().max(9223372036854775807n),
           )
           .openapi({
             type: 'integer',
@@ -6029,7 +7194,7 @@ const OtherCostDetailSchema = z
                 : typeof val === 'string' && /^-?\d+$/.test(val)
                   ? BigInt(val)
                   : val,
-            z.int64().max(9223372036854776000n),
+            z.int64().max(9223372036854775807n),
           )
           .openapi({
             type: 'integer',
@@ -6270,7 +7435,7 @@ const ProcurementLineParamsSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854776000n),
+        z.int64().min(1n).max(9223372036854775807n),
       )
       .nullable()
       .exactOptional()
@@ -6290,7 +7455,7 @@ const ProcurementLineParamsSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854776000n),
+        z.int64().min(1n).max(9223372036854775807n),
       )
       .nullable()
       .exactOptional()
@@ -6312,7 +7477,7 @@ const ProcurementLineParamsSchema = z
                 : typeof val === 'string' && /^-?\d+$/.test(val)
                   ? BigInt(val)
                   : val,
-            z.int64().min(1n).max(9223372036854776000n),
+            z.int64().min(1n).max(9223372036854775807n),
           )
           .openapi({
             type: 'integer',
@@ -6333,7 +7498,7 @@ const ProcurementLineParamsSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854776000n),
+        z.int64().min(1n).max(9223372036854775807n),
       )
       .nullable()
       .exactOptional()
@@ -6353,7 +7518,7 @@ const ProcurementLineParamsSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854776000n),
+        z.int64().min(1n).max(9223372036854775807n),
       )
       .nullable()
       .exactOptional()
@@ -6373,7 +7538,7 @@ const ProcurementLineParamsSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854776000n),
+        z.int64().min(1n).max(9223372036854775807n),
       )
       .nullable()
       .exactOptional()
@@ -6418,7 +7583,7 @@ const ProcurementRequestBaseSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854776000n),
+        z.int64().min(1n).max(9223372036854775807n),
       )
       .exactOptional()
       .openapi({
@@ -6451,7 +7616,7 @@ const ProcurementRequestBaseSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854776000n),
+        z.int64().min(1n).max(9223372036854775807n),
       )
       .exactOptional()
       .openapi({
@@ -6544,14 +7709,62 @@ const ProcurementLineDetailSchema = z
   })
   .openapi('ProcurementLineDetail')
 
-const ProcurementDetailSchema = ProcurementDigestSchema.and(
-  z
-    .strictObject({
-      amount_set_rates: z.array(AmountSetRateSchema),
-      lines: z.array(ProcurementLineDetailSchema).openapi({ description: '明細リスト' }),
-    })
-    .openapi({ required: ['amount_set_rates', 'lines'] }),
-).openapi('ProcurementDetail')
+const ProcurementDetailSchema = (() => {
+  const Schema = ProcurementDigestSchema.and(
+    z
+      .strictObject({
+        amount_set_rates: z.array(AmountSetRateSchema),
+        lines: z.array(ProcurementLineDetailSchema).openapi({ description: '明細リスト' }),
+      })
+      .openapi({ required: ['amount_set_rates', 'lines'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (
+          ![
+            'id',
+            'deal_id',
+            'canceled',
+            'registered_by',
+            'registered_by_member',
+            'procurement_no',
+            'internal_subject',
+            'procurement_date',
+            'supplier',
+            'is_qualified_invoice_issuer',
+            'payment_status',
+            'payments_on',
+            'payment_method_type',
+            'payment_partner',
+            'charge_employee',
+            'charge_member',
+            'reporting_section',
+            'business',
+            'purchase_order_id',
+            'internal_memo',
+            'amount_set',
+            'amount_of_withholding_tax',
+            'registered_at',
+            'last_updated_at',
+            'last_updated_by',
+            'last_updated_by_member',
+          ].includes(k)
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['amount_set_rates', 'lines'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})().openapi('ProcurementDetail')
 
 const ProcurementUpdateLineParamsSchema = z
   .strictObject({
@@ -6634,7 +7847,7 @@ const ProcurementUpdateLineParamsSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854776000n),
+        z.int64().min(1n).max(9223372036854775807n),
       )
       .nullable()
       .exactOptional()
@@ -6654,7 +7867,7 @@ const ProcurementUpdateLineParamsSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854776000n),
+        z.int64().min(1n).max(9223372036854775807n),
       )
       .nullable()
       .exactOptional()
@@ -6676,7 +7889,7 @@ const ProcurementUpdateLineParamsSchema = z
                 : typeof val === 'string' && /^-?\d+$/.test(val)
                   ? BigInt(val)
                   : val,
-            z.int64().min(1n).max(9223372036854776000n),
+            z.int64().min(1n).max(9223372036854775807n),
           )
           .openapi({
             type: 'integer',
@@ -6697,7 +7910,7 @@ const ProcurementUpdateLineParamsSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854776000n),
+        z.int64().min(1n).max(9223372036854775807n),
       )
       .nullable()
       .exactOptional()
@@ -6717,7 +7930,7 @@ const ProcurementUpdateLineParamsSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854776000n),
+        z.int64().min(1n).max(9223372036854775807n),
       )
       .nullable()
       .exactOptional()
@@ -6737,7 +7950,7 @@ const ProcurementUpdateLineParamsSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854776000n),
+        z.int64().min(1n).max(9223372036854775807n),
       )
       .nullable()
       .exactOptional()
@@ -6782,7 +7995,7 @@ const ProcurementUpdateRequestBodySchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854776000n),
+        z.int64().min(1n).max(9223372036854775807n),
       )
       .exactOptional()
       .openapi({
@@ -6815,7 +8028,7 @@ const ProcurementUpdateRequestBodySchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854776000n),
+        z.int64().min(1n).max(9223372036854775807n),
       )
       .exactOptional()
       .openapi({
@@ -6843,11 +8056,30 @@ const ProcurementUpdateRequestBodySchema = z
   .openapi({ description: '仕入更新リクエストボディ', required: [] })
   .openapi('ProcurementUpdateRequestBody')
 
-const ProcurementPaymentStatusChangeRequestSchema = WithCompanyIdSchema.and(
-  z
-    .strictObject({ payment_status: ManualSettlementStatusSchema })
-    .openapi({ required: ['payment_status'] }),
-)
+const ProcurementPaymentStatusChangeRequestSchema = (() => {
+  const Schema = WithCompanyIdSchema.and(
+    z
+      .strictObject({ payment_status: ManualSettlementStatusSchema })
+      .openapi({ required: ['payment_status'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['company_id'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['payment_status'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({ description: '決済ステータス変更リクエスト' })
   .openapi('ProcurementPaymentStatusChangeRequest')
 
@@ -6865,7 +8097,7 @@ const AdvanceReceiptDigestSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().max(9223372036854776000n),
+        z.int64().max(9223372036854775807n),
       )
       .nullable()
       .exactOptional()
@@ -6900,7 +8132,7 @@ const AdvanceReceiptDigestSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().max(9223372036854776000n),
+        z.int64().max(9223372036854775807n),
       )
       .openapi({
         type: 'integer',
@@ -7107,7 +8339,7 @@ const AdvanceReceiptRequestBaseSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854776000n),
+        z.int64().min(1n).max(9223372036854775807n),
       )
       .exactOptional()
       .openapi({
@@ -7126,7 +8358,7 @@ const AdvanceReceiptRequestBaseSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854776000n),
+        z.int64().min(1n).max(9223372036854775807n),
       )
       .nullable()
       .exactOptional()
@@ -7150,7 +8382,7 @@ const AdvanceReceiptRequestBaseSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854776000n),
+        z.int64().min(1n).max(9223372036854775807n),
       )
       .exactOptional()
       .openapi({
@@ -7180,7 +8412,7 @@ const AdvanceReceiptRequestBaseSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854776000n),
+        z.int64().min(1n).max(9223372036854775807n),
       )
       .exactOptional()
       .openapi({
@@ -7204,7 +8436,7 @@ const AdvanceReceiptRequestBaseSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854776000n),
+        z.int64().min(1n).max(9223372036854775807n),
       )
       .exactOptional()
       .openapi({
@@ -7251,7 +8483,7 @@ const AdvanceReceiptRequestBaseSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854776000n),
+        z.int64().min(1n).max(9223372036854775807n),
       )
       .nullable()
       .exactOptional()
@@ -7271,7 +8503,7 @@ const AdvanceReceiptRequestBaseSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854776000n),
+        z.int64().min(1n).max(9223372036854775807n),
       )
       .nullable()
       .exactOptional()
@@ -7299,7 +8531,7 @@ const AdvanceReceiptRequestBaseSchema = z
                 : typeof val === 'string' && /^-?\d+$/.test(val)
                   ? BigInt(val)
                   : val,
-            z.int64().min(1n).max(9223372036854776000n),
+            z.int64().min(1n).max(9223372036854775807n),
           )
           .openapi({
             type: 'integer',
@@ -7327,7 +8559,7 @@ const AdvanceReceiptRequestBaseSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854776000n),
+        z.int64().min(1n).max(9223372036854775807n),
       )
       .nullable()
       .exactOptional()
@@ -7347,7 +8579,7 @@ const AdvanceReceiptRequestBaseSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854776000n),
+        z.int64().min(1n).max(9223372036854775807n),
       )
       .nullable()
       .exactOptional()
@@ -7367,7 +8599,7 @@ const AdvanceReceiptRequestBaseSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854776000n),
+        z.int64().min(1n).max(9223372036854775807n),
       )
       .nullable()
       .exactOptional()
@@ -7426,7 +8658,7 @@ const InvoiceTemplateSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().max(9223372036854776000n),
+        z.int64().max(9223372036854775807n),
       )
       .openapi({
         type: 'integer',
@@ -7475,25 +8707,94 @@ const AdvanceReceiptBasicLineDetailSchema = z
   })
   .openapi('AdvanceReceiptBasicLineDetail')
 
-const AdvanceReceiptDetailSchema = AdvanceReceiptDigestSchema.and(
-  z
-    .strictObject({
-      account_item: AccountItemSchema.openapi({ description: '勘定科目' }),
-      item_tag: ItemTagDetailSchema.exactOptional().openapi({ description: '会計品目タグ' }),
-      memo_tags: z
-        .array(MemoTagDetailSchema)
-        .nullable()
-        .exactOptional()
-        .openapi({ description: 'メモタグ' }),
-      segment_tag_1: SegmentTagSchema.exactOptional().openapi({ description: 'セグメントタグ1' }),
-      segment_tag_2: SegmentTagSchema.exactOptional().openapi({ description: 'セグメントタグ2' }),
-      segment_tag_3: SegmentTagSchema.exactOptional().openapi({ description: 'セグメントタグ3' }),
-      invoice_template: InvoiceTemplateSchema,
-      lines: z.array(AdvanceReceiptBasicLineDetailSchema).openapi({ description: '明細リスト' }),
-      amount_set_rates: z.array(AmountSetRateSchema),
-    })
-    .openapi({ required: ['account_item', 'lines', 'invoice_template', 'amount_set_rates'] }),
-)
+const AdvanceReceiptDetailSchema = (() => {
+  const Schema = AdvanceReceiptDigestSchema.and(
+    z
+      .strictObject({
+        account_item: AccountItemSchema.openapi({ description: '勘定科目' }),
+        item_tag: ItemTagDetailSchema.exactOptional().openapi({ description: '会計品目タグ' }),
+        memo_tags: z
+          .array(MemoTagDetailSchema)
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'メモタグ' }),
+        segment_tag_1: SegmentTagSchema.exactOptional().openapi({ description: 'セグメントタグ1' }),
+        segment_tag_2: SegmentTagSchema.exactOptional().openapi({ description: 'セグメントタグ2' }),
+        segment_tag_3: SegmentTagSchema.exactOptional().openapi({ description: 'セグメントタグ3' }),
+        invoice_template: InvoiceTemplateSchema,
+        lines: z.array(AdvanceReceiptBasicLineDetailSchema).openapi({ description: '明細リスト' }),
+        amount_set_rates: z.array(AmountSetRateSchema),
+      })
+      .openapi({ required: ['account_item', 'lines', 'invoice_template', 'amount_set_rates'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (
+          ![
+            'id',
+            'deal_id',
+            'canceled',
+            'registered_at',
+            'registered_by',
+            'registered_by_member',
+            'last_updated_at',
+            'last_updated_by',
+            'last_updated_by_member',
+            'amount_set',
+            'total_amount',
+            'business',
+            'advance_receipt_no',
+            'advance_receipt_date',
+            'internal_subject',
+            'customer_order_no',
+            'customer',
+            'bill_id',
+            'billing_status',
+            'billing_partner',
+            'bills_on',
+            'is_reduced',
+            'invoice_subject',
+            'invoice_note',
+            'collecting_partner',
+            'collection_method_type',
+            'collects_on',
+            'collection_status',
+            'charge_employee',
+            'charge_member',
+            'reporting_section',
+            'internal_memo',
+            'sales_order_id',
+            'consumption_total_amount',
+            'remaining_total_expense',
+          ].includes(k)
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (
+          ![
+            'account_item',
+            'item_tag',
+            'memo_tags',
+            'segment_tag_1',
+            'segment_tag_2',
+            'segment_tag_3',
+            'invoice_template',
+            'lines',
+            'amount_set_rates',
+          ].includes(k)
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({ description: '前受金詳細情報' })
   .openapi('AdvanceReceiptDetail')
 
@@ -7538,7 +8839,7 @@ const AdvanceReceiptReductionLineParamsSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854776000n),
+        z.int64().min(1n).max(9223372036854775807n),
       )
       .nullable()
       .exactOptional()
@@ -7558,7 +8859,7 @@ const AdvanceReceiptReductionLineParamsSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854776000n),
+        z.int64().min(1n).max(9223372036854775807n),
       )
       .nullable()
       .exactOptional()
@@ -7580,7 +8881,7 @@ const AdvanceReceiptReductionLineParamsSchema = z
                 : typeof val === 'string' && /^-?\d+$/.test(val)
                   ? BigInt(val)
                   : val,
-            z.int64().min(1n).max(9223372036854776000n),
+            z.int64().min(1n).max(9223372036854775807n),
           )
           .openapi({
             type: 'integer',
@@ -7625,7 +8926,7 @@ const AdvanceReceiptReductionLineParamsSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854776000n),
+        z.int64().min(1n).max(9223372036854775807n),
       )
       .nullable()
       .exactOptional()
@@ -7645,7 +8946,7 @@ const AdvanceReceiptReductionLineParamsSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854776000n),
+        z.int64().min(1n).max(9223372036854775807n),
       )
       .nullable()
       .exactOptional()
@@ -7665,7 +8966,7 @@ const AdvanceReceiptReductionLineParamsSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854776000n),
+        z.int64().min(1n).max(9223372036854775807n),
       )
       .nullable()
       .exactOptional()
@@ -7724,18 +9025,37 @@ const AdvanceReceiptPeriodicReductionResultSchema = z
   .openapi({ required: ['id', 'periodic_sales_id', 'registered_at', 'last_updated_at'] })
   .openapi('AdvanceReceiptPeriodicReductionResult')
 
-const AdvanceReceiptCollectionStatusChangeRequestSchema = WithCompanyIdSchema.and(
-  z
-    .strictObject({
-      collection_status: z
-        .enum(['not_settled', 'settled', 'none'])
-        .openapi({
-          description: '決済ステータス (未決済: not_settled, 決済済み: settled, 対象外: none)',
-          example: 'settled',
-        }),
-    })
-    .openapi({ required: ['collection_status'] }),
-)
+const AdvanceReceiptCollectionStatusChangeRequestSchema = (() => {
+  const Schema = WithCompanyIdSchema.and(
+    z
+      .strictObject({
+        collection_status: z
+          .enum(['not_settled', 'settled', 'none'])
+          .openapi({
+            description: '決済ステータス (未決済: not_settled, 決済済み: settled, 対象外: none)',
+            example: 'settled',
+          }),
+      })
+      .openapi({ required: ['collection_status'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['company_id'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['collection_status'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({ description: '決済ステータス変更リクエスト' })
   .openapi('AdvanceReceiptCollectionStatusChangeRequest')
 
@@ -8056,8 +9376,8 @@ const CustomFieldDefinitionsIndexResponseResponse = {
           {
             id: '01JPP4FD1CVQWCDSWA90VE1ZTX',
             key: 'custom_field_009',
-            display_name: '担当従業員',
-            type: 'employee',
+            display_name: '担当メンバー',
+            type: 'member',
             required: false,
             description: null,
           },
@@ -8239,60 +9559,99 @@ const PeriodicSaleShowResponseResponse = {
   description: '定期売上詳細取得のレスポンス',
   content: {
     'application/json': {
-      schema: PeriodicSaleDigestSchema.and(
-        z
-          .object({
-            total_amount_set: AmountSetSchema,
-            each_amount_set: AmountSetSchema.openapi({ description: '定期売上額（単体）' }),
-            each_amount_set_rates: z
-              .array(AmountSetRateSchema)
-              .openapi({ description: '定期売上単体の税率' }),
-            customer_order_no: z
-              .string()
-              .nullable()
-              .openapi({ description: '顧客注文No.', example: 'PO-2025-001' }),
-            recurrence_rule: RecurrenceRuleSchema,
-            next_sales_on: z.iso
-              .date()
-              .nullable()
-              .openapi({ description: '次回売上予定日', example: '2025-05-31' }),
-            lines: z
-              .array(PeriodicSaleLineDetailSchema)
-              .openapi({ description: '定期売上明細リスト' }),
-            billing_creating_method_type: BillingCreatingMethodTypeWithNoneSchema,
-            bills_on_rule: ScheduledDateRuleSchema.nullable(),
-            invoice_template_name: z
-              .string()
-              .nullable()
-              .exactOptional()
-              .openapi({
-                description: '請求書テンプレート名称',
-                example: 'デフォルトテンプレート',
-              }),
-            invoice_subject: z
-              .string()
-              .nullable()
-              .exactOptional()
-              .openapi({ description: '請求書件名', example: '月額保守費用' }),
-            collects_on_rule: ScheduledDateRuleSchema.nullable(),
-            collection_method_type: CollectionMethodTypeWithNoneSchema,
-          })
-          .openapi({
-            required: [
-              'total_amount_set',
-              'each_amount_set',
-              'each_amount_set_rates',
-              'customer_order_no',
-              'recurrence_rule',
-              'next_sales_on',
-              'lines',
-              'billing_creating_method_type',
-              'bills_on_rule',
-              'collects_on_rule',
-              'collection_method_type',
-            ],
-          }),
-      ),
+      schema: (() => {
+        const Schema = PeriodicSaleDigestSchema.and(
+          z
+            .object({
+              total_amount_set: AmountSetSchema,
+              each_amount_set: AmountSetSchema.openapi({ description: '定期売上額（単体）' }),
+              each_amount_set_rates: z
+                .array(AmountSetRateSchema)
+                .openapi({ description: '定期売上単体の税率' }),
+              customer_order_no: z
+                .string()
+                .nullable()
+                .openapi({ description: '顧客注文No.', example: 'PO-2025-001' }),
+              recurrence_rule: RecurrenceRuleSchema,
+              next_sales_on: z.iso
+                .date()
+                .nullable()
+                .openapi({ description: '次回売上予定日', example: '2025-05-31' }),
+              lines: z
+                .array(PeriodicSaleLineDetailSchema)
+                .openapi({ description: '定期売上明細リスト' }),
+              billing_creating_method_type: BillingCreatingMethodTypeWithNoneSchema,
+              bills_on_rule: ScheduledDateRuleSchema.nullable(),
+              invoice_template_name: z
+                .string()
+                .nullable()
+                .exactOptional()
+                .openapi({
+                  description: '請求書テンプレート名称',
+                  example: 'デフォルトテンプレート',
+                }),
+              invoice_subject: z
+                .string()
+                .nullable()
+                .exactOptional()
+                .openapi({ description: '請求書件名', example: '月額保守費用' }),
+              collects_on_rule: ScheduledDateRuleSchema.nullable(),
+              collection_method_type: CollectionMethodTypeWithNoneSchema,
+            })
+            .openapi({
+              required: [
+                'total_amount_set',
+                'each_amount_set',
+                'each_amount_set_rates',
+                'customer_order_no',
+                'recurrence_rule',
+                'next_sales_on',
+                'lines',
+                'billing_creating_method_type',
+                'bills_on_rule',
+                'collects_on_rule',
+                'collection_method_type',
+              ],
+            }),
+        )
+        return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+          ;((ctx) => {
+            const o = ctx.value
+            if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+            for (const k of Object.keys(o)) {
+              if (
+                ![
+                  'id',
+                  'periodic_sales_no',
+                  'subject',
+                  'canceled',
+                  'total_schedule_count',
+                  'recorded_count',
+                  'advance_receipt_id',
+                  'registered_at',
+                  'last_updated_at',
+                  'registered_by',
+                  'registered_by_member',
+                  'last_updated_by',
+                  'last_updated_by_member',
+                  'customer',
+                  'business',
+                  'charge_employee',
+                  'charge_member',
+                  'reporting_section',
+                  'billing_partner',
+                  'collecting_partner',
+                  'invoice_note',
+                  'internal_memo',
+                ].includes(k)
+              ) {
+                ctx.issues.push({ code: 'custom', path: [k], input: o })
+              }
+            }
+          })(ctx)
+          return val
+        }, Schema)
+      })(),
     },
   },
 }
@@ -8343,11 +9702,7 @@ const SalesScheduleShowSeeOtherResponseResponse = {
   description:
     '売上予定は既に計上されています。Locationヘッダーに計上された売上の詳細情報APIのURLが含まれます。',
   headers: z.object({
-    Location: {
-      description: '計上された売上詳細取得APIのURL',
-      required: true,
-      schema: z.url().openapi({ description: '計上された売上詳細取得APIのURL' }),
-    },
+    Location: z.url().openapi({ description: '計上された売上詳細取得APIのURL' }),
   }),
 }
 
@@ -8473,7 +9828,7 @@ const CompanyIdParamsSchema = z
     if (/^-?\d+$/.test(val)) return BigInt(val)
     const num = Number(val)
     return Number.isSafeInteger(num) ? BigInt(num) : val
-  }, z.int64().min(1n).max(9223372036854776000n))
+  }, z.int64().min(1n).max(9223372036854775807n))
   .openapi({
     param: {
       name: 'company_id',
@@ -8608,7 +9963,7 @@ const ChargeEmployeeIdsParamsSchema = z
           if (/^-?\d+$/.test(val)) return BigInt(val)
           const num = Number(val)
           return Number.isSafeInteger(num) ? BigInt(num) : val
-        }, z.int64().min(1n).max(9223372036854776000n))
+        }, z.int64().min(1n).max(9223372036854775807n))
         .openapi({
           type: 'integer',
           format: 'int64',
@@ -8679,7 +10034,7 @@ const CustomerIdsParamsSchema = z
           if (/^-?\d+$/.test(val)) return BigInt(val)
           const num = Number(val)
           return Number.isSafeInteger(num) ? BigInt(num) : val
-        }, z.int64().min(1n).max(9223372036854776000n))
+        }, z.int64().min(1n).max(9223372036854775807n))
         .openapi({
           type: 'integer',
           format: 'int64',
@@ -9015,7 +10370,7 @@ const ReportingSectionIdsParamsSchema = z
         if (/^-?\d+$/.test(val)) return BigInt(val)
         const num = Number(val)
         return Number.isSafeInteger(num) ? BigInt(num) : val
-      }, z.int64().min(1n).max(9223372036854776000n))
+      }, z.int64().min(1n).max(9223372036854775807n))
       .openapi({
         type: 'integer',
         format: 'int64',
@@ -9061,7 +10416,7 @@ const SupplierIdsParamsSchema = z
           if (/^-?\d+$/.test(val)) return BigInt(val)
           const num = Number(val)
           return Number.isSafeInteger(num) ? BigInt(num) : val
-        }, z.int64().min(1n).max(9223372036854776000n))
+        }, z.int64().min(1n).max(9223372036854775807n))
         .openapi({
           type: 'integer',
           format: 'int64',
@@ -9104,7 +10459,7 @@ const PaymentPartnerIdsParamsSchema = z
           if (/^-?\d+$/.test(val)) return BigInt(val)
           const num = Number(val)
           return Number.isSafeInteger(num) ? BigInt(num) : val
-        }, z.int64().min(1n).max(9223372036854776000n))
+        }, z.int64().min(1n).max(9223372036854775807n))
         .openapi({
           type: 'integer',
           format: 'int64',
@@ -9145,7 +10500,7 @@ const AccountingReportingSectionIdsParamsSchema = z
         if (/^-?\d+$/.test(val)) return BigInt(val)
         const num = Number(val)
         return Number.isSafeInteger(num) ? BigInt(num) : val
-      }, z.int64().min(1n).max(9223372036854776000n))
+      }, z.int64().min(1n).max(9223372036854775807n))
       .openapi({
         type: 'integer',
         format: 'int64',
@@ -9191,7 +10546,7 @@ const ItemTagIdsParamsSchema = z
           if (/^-?\d+$/.test(val)) return BigInt(val)
           const num = Number(val)
           return Number.isSafeInteger(num) ? BigInt(num) : val
-        }, z.int64().min(1n).max(9223372036854776000n))
+        }, z.int64().min(1n).max(9223372036854775807n))
         .openapi({
           type: 'integer',
           format: 'int64',
@@ -9234,7 +10589,7 @@ const SegmentTag_1IdsParamsSchema = z
           if (/^-?\d+$/.test(val)) return BigInt(val)
           const num = Number(val)
           return Number.isSafeInteger(num) ? BigInt(num) : val
-        }, z.int64().min(1n).max(9223372036854776000n))
+        }, z.int64().min(1n).max(9223372036854775807n))
         .openapi({
           type: 'integer',
           format: 'int64',
@@ -9277,7 +10632,7 @@ const SegmentTag_2IdsParamsSchema = z
           if (/^-?\d+$/.test(val)) return BigInt(val)
           const num = Number(val)
           return Number.isSafeInteger(num) ? BigInt(num) : val
-        }, z.int64().min(1n).max(9223372036854776000n))
+        }, z.int64().min(1n).max(9223372036854775807n))
         .openapi({
           type: 'integer',
           format: 'int64',
@@ -9320,7 +10675,7 @@ const SegmentTag_3IdsParamsSchema = z
           if (/^-?\d+$/.test(val)) return BigInt(val)
           const num = Number(val)
           return Number.isSafeInteger(num) ? BigInt(num) : val
-        }, z.int64().min(1n).max(9223372036854776000n))
+        }, z.int64().min(1n).max(9223372036854775807n))
         .openapi({
           type: 'integer',
           format: 'int64',
@@ -10695,16 +12050,97 @@ const BusinessCreateRequestRequestBody = {
   description: '案件登録リクエスト',
   content: {
     'application/json': {
-      schema: WithCompanyIdSchema.and(BusinessRequestBaseSchema).and(
-        z.strictObject({}).openapi({ required: ['name'] }),
-      ),
+      schema: (() => {
+        const Schema = WithCompanyIdSchema.and(BusinessRequestBaseSchema).and(
+          z.strictObject({}).openapi({ required: ['name'] }),
+        )
+        return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+          ;((ctx) => {
+            const o = ctx.value
+            if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+            for (const k of Object.keys(o)) {
+              if (!['company_id'].includes(k)) {
+                ctx.issues.push({ code: 'custom', path: [k], input: o })
+              }
+            }
+            for (const k of Object.keys(o)) {
+              if (
+                ![
+                  'name',
+                  'code',
+                  'business_date',
+                  'charge_employee_id',
+                  'charge_member_id',
+                  'customer_id',
+                  'prospect_sales_order',
+                  'sales_progression_id',
+                  'scheduled_completion_date',
+                  'completion_date',
+                  'business_phase_id',
+                  'reporting_section_id',
+                  'internal_memo',
+                  'common_business_id',
+                  'custom_fields',
+                ].includes(k)
+              ) {
+                ctx.issues.push({ code: 'custom', path: [k], input: o })
+              }
+            }
+            for (const k of Object.keys(o)) {
+              ctx.issues.push({ code: 'custom', path: [k], input: o })
+            }
+          })(ctx)
+          return val
+        }, Schema)
+      })(),
     },
   },
 }
 
 const BusinessUpdateRequestRequestBody = {
   description: '案件更新リクエスト',
-  content: { 'application/json': { schema: WithCompanyIdSchema.and(BusinessRequestBaseSchema) } },
+  content: {
+    'application/json': {
+      schema: (() => {
+        const Schema = WithCompanyIdSchema.and(BusinessRequestBaseSchema)
+        return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+          ;((ctx) => {
+            const o = ctx.value
+            if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+            for (const k of Object.keys(o)) {
+              if (!['company_id'].includes(k)) {
+                ctx.issues.push({ code: 'custom', path: [k], input: o })
+              }
+            }
+            for (const k of Object.keys(o)) {
+              if (
+                ![
+                  'name',
+                  'code',
+                  'business_date',
+                  'charge_employee_id',
+                  'charge_member_id',
+                  'customer_id',
+                  'prospect_sales_order',
+                  'sales_progression_id',
+                  'scheduled_completion_date',
+                  'completion_date',
+                  'business_phase_id',
+                  'reporting_section_id',
+                  'internal_memo',
+                  'common_business_id',
+                  'custom_fields',
+                ].includes(k)
+              ) {
+                ctx.issues.push({ code: 'custom', path: [k], input: o })
+              }
+            }
+          })(ctx)
+          return val
+        }, Schema)
+      })(),
+    },
+  },
 }
 
 const BusinessCancelRequestRequestBody = {
@@ -10726,7 +12162,21 @@ const CostBudgetCreateRequestRequestBody = {
   description: '原価予算登録リクエスト',
   content: {
     'application/json': {
-      schema: WithCompanyIdSchema.and(CostBudgetCreateRequestDetailSchema),
+      schema: (() => {
+        const Schema = WithCompanyIdSchema.and(CostBudgetCreateRequestDetailSchema)
+        return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+          ;((ctx) => {
+            const o = ctx.value
+            if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+            for (const k of Object.keys(o)) {
+              if (!['company_id'].includes(k)) {
+                ctx.issues.push({ code: 'custom', path: [k], input: o })
+              }
+            }
+          })(ctx)
+          return val
+        }, Schema)
+      })(),
       example: {
         company_id: 1,
         type: 'procurement',
@@ -10747,9 +12197,43 @@ const CostBudgetUpdateRequestRequestBody = {
   description: '原価予算更新リクエスト',
   content: {
     'application/json': {
-      schema: WithCompanyIdSchema.and(CostBudgetRequestBaseSchema)
-        .and(BasicCostBudgetRequestPropertiesSchema)
-        .and(ProcurementCostBudgetRequestPropertiesSchema),
+      schema: (() => {
+        const Schema = WithCompanyIdSchema.and(CostBudgetRequestBaseSchema)
+          .and(BasicCostBudgetRequestPropertiesSchema)
+          .and(ProcurementCostBudgetRequestPropertiesSchema)
+        return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+          ;((ctx) => {
+            const o = ctx.value
+            if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+            for (const k of Object.keys(o)) {
+              if (!['company_id'].includes(k)) {
+                ctx.issues.push({ code: 'custom', path: [k], input: o })
+              }
+            }
+            for (const k of Object.keys(o)) {
+              if (
+                ![
+                  'business_id',
+                  'period_from_date',
+                  'period_to_date',
+                  'memo',
+                  'charge_employee_id',
+                  'charge_member_id',
+                  'reporting_section_id',
+                ].includes(k)
+              ) {
+                ctx.issues.push({ code: 'custom', path: [k], input: o })
+              }
+            }
+            for (const k of Object.keys(o)) {
+              if (!['amount_excluding_tax'].includes(k)) {
+                ctx.issues.push({ code: 'custom', path: [k], input: o })
+              }
+            }
+          })(ctx)
+          return val
+        }, Schema)
+      })(),
       example: {
         company_id: 1,
         period_from_date: '2025-04-01',
@@ -10771,19 +12255,64 @@ const PurchaseOrderCreateRequestRequestBody = {
   description: '発注登録リクエスト',
   content: {
     'application/json': {
-      schema: WithCompanyIdSchema.and(
-        z
-          .strictObject({})
-          .openapi({
-            required: [
-              'purchase_order_date',
-              'supplier_id',
-              'payment_method_type',
-              'payment_partner_id',
-              'lines',
-            ],
-          }),
-      ).and(PurchaseOrderRequestBaseSchema),
+      schema: (() => {
+        const Schema = WithCompanyIdSchema.and(
+          z
+            .strictObject({})
+            .openapi({
+              required: [
+                'purchase_order_date',
+                'supplier_id',
+                'payment_method_type',
+                'payment_partner_id',
+                'lines',
+              ],
+            }),
+        ).and(PurchaseOrderRequestBaseSchema)
+        return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+          ;((ctx) => {
+            const o = ctx.value
+            if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+            for (const k of Object.keys(o)) {
+              if (!['company_id'].includes(k)) {
+                ctx.issues.push({ code: 'custom', path: [k], input: o })
+              }
+            }
+            for (const k of Object.keys(o)) {
+              ctx.issues.push({ code: 'custom', path: [k], input: o })
+            }
+            for (const k of Object.keys(o)) {
+              if (
+                ![
+                  'business_id',
+                  'internal_subject',
+                  'purchase_order_date',
+                  'procurements_on',
+                  'supplier_id',
+                  'is_qualified_invoice_issuer',
+                  'delivery_deadline',
+                  'delivery_location',
+                  'purchase_order_note',
+                  'purchase_order_template_id',
+                  'purchase_order_subject',
+                  'recipient_address',
+                  'payments_on',
+                  'payment_method_type',
+                  'payment_partner_id',
+                  'charge_employee_id',
+                  'charge_member_id',
+                  'reporting_section_id',
+                  'internal_memo',
+                  'lines',
+                ].includes(k)
+              ) {
+                ctx.issues.push({ code: 'custom', path: [k], input: o })
+              }
+            }
+          })(ctx)
+          return val
+        }, Schema)
+      })(),
     },
   },
   required: true,
@@ -10793,17 +12322,64 @@ const PurchaseOrderUpdateRequestRequestBody = {
   description: '発注更新リクエスト',
   content: {
     'application/json': {
-      schema: WithCompanyIdSchema.and(
-        z
-          .strictObject({
-            branch_no: z
-              .int32()
-              .nullable()
-              .exactOptional()
-              .openapi({ description: '枝番', example: 1 }),
-          })
-          .openapi({ required: [] }),
-      ).and(PurchaseOrderRequestBaseSchema),
+      schema: (() => {
+        const Schema = WithCompanyIdSchema.and(
+          z
+            .strictObject({
+              branch_no: z
+                .int32()
+                .nullable()
+                .exactOptional()
+                .openapi({ description: '枝番', example: 1 }),
+            })
+            .openapi({ required: [] }),
+        ).and(PurchaseOrderRequestBaseSchema)
+        return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+          ;((ctx) => {
+            const o = ctx.value
+            if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+            for (const k of Object.keys(o)) {
+              if (!['company_id'].includes(k)) {
+                ctx.issues.push({ code: 'custom', path: [k], input: o })
+              }
+            }
+            for (const k of Object.keys(o)) {
+              if (!['branch_no'].includes(k)) {
+                ctx.issues.push({ code: 'custom', path: [k], input: o })
+              }
+            }
+            for (const k of Object.keys(o)) {
+              if (
+                ![
+                  'business_id',
+                  'internal_subject',
+                  'purchase_order_date',
+                  'procurements_on',
+                  'supplier_id',
+                  'is_qualified_invoice_issuer',
+                  'delivery_deadline',
+                  'delivery_location',
+                  'purchase_order_note',
+                  'purchase_order_template_id',
+                  'purchase_order_subject',
+                  'recipient_address',
+                  'payments_on',
+                  'payment_method_type',
+                  'payment_partner_id',
+                  'charge_employee_id',
+                  'charge_member_id',
+                  'reporting_section_id',
+                  'internal_memo',
+                  'lines',
+                ].includes(k)
+              ) {
+                ctx.issues.push({ code: 'custom', path: [k], input: o })
+              }
+            }
+          })(ctx)
+          return val
+        }, Schema)
+      })(),
     },
   },
   required: true,
@@ -10818,9 +12394,50 @@ const QuotationCreateRequestRequestBody = {
   description: '見積登録リクエスト',
   content: {
     'application/json': {
-      schema: WithCompanyIdSchema.and(
-        z.strictObject({}).openapi({ required: ['quotation_date', 'customer_id', 'lines'] }),
-      ).and(QuotationRequestBaseSchema),
+      schema: (() => {
+        const Schema = WithCompanyIdSchema.and(
+          z.strictObject({}).openapi({ required: ['quotation_date', 'customer_id', 'lines'] }),
+        ).and(QuotationRequestBaseSchema)
+        return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+          ;((ctx) => {
+            const o = ctx.value
+            if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+            for (const k of Object.keys(o)) {
+              if (!['company_id'].includes(k)) {
+                ctx.issues.push({ code: 'custom', path: [k], input: o })
+              }
+            }
+            for (const k of Object.keys(o)) {
+              ctx.issues.push({ code: 'custom', path: [k], input: o })
+            }
+            for (const k of Object.keys(o)) {
+              if (
+                ![
+                  'business_id',
+                  'internal_subject',
+                  'quotation_date',
+                  'customer_id',
+                  'expires_on',
+                  'delivery_deadline',
+                  'delivery_location',
+                  'quotation_template_id',
+                  'quotation_subject',
+                  'quotation_note',
+                  'recipient_address',
+                  'charge_employee_id',
+                  'charge_member_id',
+                  'reporting_section_id',
+                  'internal_memo',
+                  'lines',
+                ].includes(k)
+              ) {
+                ctx.issues.push({ code: 'custom', path: [k], input: o })
+              }
+            }
+          })(ctx)
+          return val
+        }, Schema)
+      })(),
     },
   },
 }
@@ -10829,17 +12446,60 @@ const QuotationUpdateRequestRequestBody = {
   description: '見積更新リクエスト',
   content: {
     'application/json': {
-      schema: WithCompanyIdSchema.and(QuotationRequestBaseSchema).and(
-        z
-          .strictObject({
-            branch_no: z
-              .int32()
-              .nullable()
-              .exactOptional()
-              .openapi({ description: '枝番', example: 1 }),
-          })
-          .openapi({ required: [] }),
-      ),
+      schema: (() => {
+        const Schema = WithCompanyIdSchema.and(QuotationRequestBaseSchema).and(
+          z
+            .strictObject({
+              branch_no: z
+                .int32()
+                .nullable()
+                .exactOptional()
+                .openapi({ description: '枝番', example: 1 }),
+            })
+            .openapi({ required: [] }),
+        )
+        return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+          ;((ctx) => {
+            const o = ctx.value
+            if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+            for (const k of Object.keys(o)) {
+              if (!['company_id'].includes(k)) {
+                ctx.issues.push({ code: 'custom', path: [k], input: o })
+              }
+            }
+            for (const k of Object.keys(o)) {
+              if (
+                ![
+                  'business_id',
+                  'internal_subject',
+                  'quotation_date',
+                  'customer_id',
+                  'expires_on',
+                  'delivery_deadline',
+                  'delivery_location',
+                  'quotation_template_id',
+                  'quotation_subject',
+                  'quotation_note',
+                  'recipient_address',
+                  'charge_employee_id',
+                  'charge_member_id',
+                  'reporting_section_id',
+                  'internal_memo',
+                  'lines',
+                ].includes(k)
+              ) {
+                ctx.issues.push({ code: 'custom', path: [k], input: o })
+              }
+            }
+            for (const k of Object.keys(o)) {
+              if (!['branch_no'].includes(k)) {
+                ctx.issues.push({ code: 'custom', path: [k], input: o })
+              }
+            }
+          })(ctx)
+          return val
+        }, Schema)
+      })(),
     },
   },
 }
@@ -10853,21 +12513,72 @@ const SalesOrderCreateRequestRequestBody = {
   description: '受注登録リクエスト',
   content: {
     'application/json': {
-      schema: WithCompanyIdSchema.and(SalesOrderRequestBaseSchema).and(
-        z
-          .strictObject({})
-          .openapi({
-            required: [
-              'sales_order_date',
-              'customer_id',
-              'billing_creating_method_type',
-              'billing_partner_id',
-              'collecting_partner_id',
-              'collection_method_type',
-              'lines',
-            ],
-          }),
-      ),
+      schema: (() => {
+        const Schema = WithCompanyIdSchema.and(SalesOrderRequestBaseSchema).and(
+          z
+            .strictObject({})
+            .openapi({
+              required: [
+                'sales_order_date',
+                'customer_id',
+                'billing_creating_method_type',
+                'billing_partner_id',
+                'collecting_partner_id',
+                'collection_method_type',
+                'lines',
+              ],
+            }),
+        )
+        return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+          ;((ctx) => {
+            const o = ctx.value
+            if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+            for (const k of Object.keys(o)) {
+              if (!['company_id'].includes(k)) {
+                ctx.issues.push({ code: 'custom', path: [k], input: o })
+              }
+            }
+            for (const k of Object.keys(o)) {
+              if (
+                ![
+                  'sales_order_subject',
+                  'sales_order_date',
+                  'customer_order_no',
+                  'customer_id',
+                  'sales_on',
+                  'deliveries_on',
+                  'accepts_on',
+                  'delivery_template_id',
+                  'delivery_subject',
+                  'delivery_note',
+                  'billing_creating_method_type',
+                  'bills_on',
+                  'billing_partner_id',
+                  'invoice_template_id',
+                  'invoice_subject',
+                  'invoice_note',
+                  'collects_on',
+                  'collecting_partner_id',
+                  'collection_method_type',
+                  'charge_employee_id',
+                  'charge_member_id',
+                  'reporting_section_id',
+                  'internal_memo',
+                  'business_id',
+                  'quotation_id',
+                  'lines',
+                ].includes(k)
+              ) {
+                ctx.issues.push({ code: 'custom', path: [k], input: o })
+              }
+            }
+            for (const k of Object.keys(o)) {
+              ctx.issues.push({ code: 'custom', path: [k], input: o })
+            }
+          })(ctx)
+          return val
+        }, Schema)
+      })(),
     },
   },
 }
@@ -10876,50 +12587,103 @@ const SalesOrderUpdateRequestRequestBody = {
   description: '受注更新リクエスト',
   content: {
     'application/json': {
-      schema: WithCompanyIdSchema.and(SalesOrderRequestBaseSchema).and(
-        z
-          .strictObject({
-            delivery_template_id: z
-              .preprocess(
-                (val) =>
-                  typeof val === 'number' && Number.isSafeInteger(val)
-                    ? BigInt(val)
-                    : typeof val === 'string' && /^-?\d+$/.test(val)
+      schema: (() => {
+        const Schema = WithCompanyIdSchema.and(SalesOrderRequestBaseSchema).and(
+          z
+            .strictObject({
+              delivery_template_id: z
+                .preprocess(
+                  (val) =>
+                    typeof val === 'number' && Number.isSafeInteger(val)
                       ? BigInt(val)
-                      : val,
-                z.int64().min(1n).max(9223372036854776000n),
-              )
-              .exactOptional()
-              .openapi({
-                type: 'integer',
-                format: 'int64',
-                minimum: 1,
-                maximum: 9223372036854776000,
-                description: '納品書テンプレートID',
-                example: 10001,
-              }),
-            invoice_template_id: z
-              .preprocess(
-                (val) =>
-                  typeof val === 'number' && Number.isSafeInteger(val)
-                    ? BigInt(val)
-                    : typeof val === 'string' && /^-?\d+$/.test(val)
+                      : typeof val === 'string' && /^-?\d+$/.test(val)
+                        ? BigInt(val)
+                        : val,
+                  z.int64().min(1n).max(9223372036854775807n),
+                )
+                .exactOptional()
+                .openapi({
+                  type: 'integer',
+                  format: 'int64',
+                  minimum: 1,
+                  maximum: 9223372036854776000,
+                  description: '納品書テンプレートID',
+                  example: 10001,
+                }),
+              invoice_template_id: z
+                .preprocess(
+                  (val) =>
+                    typeof val === 'number' && Number.isSafeInteger(val)
                       ? BigInt(val)
-                      : val,
-                z.int64().min(1n).max(9223372036854776000n),
-              )
-              .exactOptional()
-              .openapi({
-                type: 'integer',
-                format: 'int64',
-                minimum: 1,
-                maximum: 9223372036854776000,
-                description: '請求書テンプレートID',
-                example: 10002,
-              }),
-          })
-          .openapi({ required: [] }),
-      ),
+                      : typeof val === 'string' && /^-?\d+$/.test(val)
+                        ? BigInt(val)
+                        : val,
+                  z.int64().min(1n).max(9223372036854775807n),
+                )
+                .exactOptional()
+                .openapi({
+                  type: 'integer',
+                  format: 'int64',
+                  minimum: 1,
+                  maximum: 9223372036854776000,
+                  description: '請求書テンプレートID',
+                  example: 10002,
+                }),
+            })
+            .openapi({ required: [] }),
+        )
+        return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+          ;((ctx) => {
+            const o = ctx.value
+            if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+            for (const k of Object.keys(o)) {
+              if (!['company_id'].includes(k)) {
+                ctx.issues.push({ code: 'custom', path: [k], input: o })
+              }
+            }
+            for (const k of Object.keys(o)) {
+              if (
+                ![
+                  'sales_order_subject',
+                  'sales_order_date',
+                  'customer_order_no',
+                  'customer_id',
+                  'sales_on',
+                  'deliveries_on',
+                  'accepts_on',
+                  'delivery_template_id',
+                  'delivery_subject',
+                  'delivery_note',
+                  'billing_creating_method_type',
+                  'bills_on',
+                  'billing_partner_id',
+                  'invoice_template_id',
+                  'invoice_subject',
+                  'invoice_note',
+                  'collects_on',
+                  'collecting_partner_id',
+                  'collection_method_type',
+                  'charge_employee_id',
+                  'charge_member_id',
+                  'reporting_section_id',
+                  'internal_memo',
+                  'business_id',
+                  'quotation_id',
+                  'lines',
+                ].includes(k)
+              ) {
+                ctx.issues.push({ code: 'custom', path: [k], input: o })
+              }
+            }
+            for (const k of Object.keys(o)) {
+              if (!['delivery_template_id', 'invoice_template_id'].includes(k)) {
+                ctx.issues.push({ code: 'custom', path: [k], input: o })
+              }
+            }
+          })(ctx)
+          return val
+        }, Schema)
+      })(),
     },
   },
 }
@@ -10933,28 +12697,79 @@ const DeliveryCreateRequestRequestBody = {
   description: '納品登録リクエスト',
   content: {
     'application/json': {
-      schema: WithCompanyIdSchema.and(
-        z
-          .strictObject({
-            sales_order_id: z
-              .string()
-              .length(26)
-              .nullable()
-              .exactOptional()
-              .openapi({ description: '受注ID', example: '01JPP4FD1CVQWCDSWA90VE1ZTM' }),
-          })
-          .openapi({
-            required: [
-              'delivery_date',
-              'customer_id',
-              'billing_partner_id',
-              'billing_creating_method_type',
-              'collecting_partner_id',
-              'collection_method_type',
-              'lines',
-            ],
-          }),
-      ).and(DeliveryRequestBaseSchema),
+      schema: (() => {
+        const Schema = WithCompanyIdSchema.and(
+          z
+            .strictObject({
+              sales_order_id: z
+                .string()
+                .length(26)
+                .nullable()
+                .exactOptional()
+                .openapi({ description: '受注ID', example: '01JPP4FD1CVQWCDSWA90VE1ZTM' }),
+            })
+            .openapi({
+              required: [
+                'delivery_date',
+                'customer_id',
+                'billing_partner_id',
+                'billing_creating_method_type',
+                'collecting_partner_id',
+                'collection_method_type',
+                'lines',
+              ],
+            }),
+        ).and(DeliveryRequestBaseSchema)
+        return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+          ;((ctx) => {
+            const o = ctx.value
+            if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+            for (const k of Object.keys(o)) {
+              if (!['company_id'].includes(k)) {
+                ctx.issues.push({ code: 'custom', path: [k], input: o })
+              }
+            }
+            for (const k of Object.keys(o)) {
+              if (!['sales_order_id'].includes(k)) {
+                ctx.issues.push({ code: 'custom', path: [k], input: o })
+              }
+            }
+            for (const k of Object.keys(o)) {
+              if (
+                ![
+                  'business_id',
+                  'internal_subject',
+                  'customer_order_no',
+                  'delivery_date',
+                  'acceptance_date',
+                  'customer_id',
+                  'delivery_note',
+                  'delivery_template_id',
+                  'subject',
+                  'recipient_address',
+                  'billing_creating_method_type',
+                  'bills_on',
+                  'invoice_template_id',
+                  'billing_partner_id',
+                  'invoice_subject',
+                  'invoice_note',
+                  'collects_on',
+                  'collection_method_type',
+                  'collecting_partner_id',
+                  'charge_employee_id',
+                  'charge_member_id',
+                  'reporting_section_id',
+                  'internal_memo',
+                  'lines',
+                ].includes(k)
+              ) {
+                ctx.issues.push({ code: 'custom', path: [k], input: o })
+              }
+            }
+          })(ctx)
+          return val
+        }, Schema)
+      })(),
     },
   },
 }
@@ -10963,17 +12778,68 @@ const DeliveryUpdateRequestRequestBody = {
   description: '納品更新リクエスト',
   content: {
     'application/json': {
-      schema: WithCompanyIdSchema.and(DeliveryRequestBaseSchema).and(
-        z
-          .strictObject({
-            branch_no: z
-              .int32()
-              .nullable()
-              .exactOptional()
-              .openapi({ description: '枝番', example: 1 }),
-          })
-          .openapi({ required: [] }),
-      ),
+      schema: (() => {
+        const Schema = WithCompanyIdSchema.and(DeliveryRequestBaseSchema).and(
+          z
+            .strictObject({
+              branch_no: z
+                .int32()
+                .nullable()
+                .exactOptional()
+                .openapi({ description: '枝番', example: 1 }),
+            })
+            .openapi({ required: [] }),
+        )
+        return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+          ;((ctx) => {
+            const o = ctx.value
+            if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+            for (const k of Object.keys(o)) {
+              if (!['company_id'].includes(k)) {
+                ctx.issues.push({ code: 'custom', path: [k], input: o })
+              }
+            }
+            for (const k of Object.keys(o)) {
+              if (
+                ![
+                  'business_id',
+                  'internal_subject',
+                  'customer_order_no',
+                  'delivery_date',
+                  'acceptance_date',
+                  'customer_id',
+                  'delivery_note',
+                  'delivery_template_id',
+                  'subject',
+                  'recipient_address',
+                  'billing_creating_method_type',
+                  'bills_on',
+                  'invoice_template_id',
+                  'billing_partner_id',
+                  'invoice_subject',
+                  'invoice_note',
+                  'collects_on',
+                  'collection_method_type',
+                  'collecting_partner_id',
+                  'charge_employee_id',
+                  'charge_member_id',
+                  'reporting_section_id',
+                  'internal_memo',
+                  'lines',
+                ].includes(k)
+              ) {
+                ctx.issues.push({ code: 'custom', path: [k], input: o })
+              }
+            }
+            for (const k of Object.keys(o)) {
+              if (!['branch_no'].includes(k)) {
+                ctx.issues.push({ code: 'custom', path: [k], input: o })
+              }
+            }
+          })(ctx)
+          return val
+        }, Schema)
+      })(),
     },
   },
 }
@@ -10987,35 +12853,80 @@ const SaleCreateRequestRequestBody = {
   description: '売上登録リクエスト',
   content: {
     'application/json': {
-      schema: WithCompanyIdSchema.and(
-        z
-          .strictObject({
-            sales_order_id: z
-              .string()
-              .length(26)
-              .nullable()
-              .exactOptional()
-              .openapi({ description: '受注ID', example: '01JPP4FD1CVQWCDSWA90VE1ZTM' }),
-            delivery_id: z
-              .string()
-              .length(26)
-              .nullable()
-              .exactOptional()
-              .openapi({ description: '納品ID', example: '01JPP4FD1CVQWCDSWA90VE1ZTM' }),
-            billing_creating_method_type: BillingCreatingMethodTypeSchema,
-          })
-          .openapi({
-            required: [
-              'revenue_recognition_date',
-              'customer_id',
-              'billing_partner_id',
-              'collecting_partner_id',
-              'collection_method_type',
-              'billing_creating_method_type',
-              'lines',
-            ],
-          }),
-      ).and(SaleRequestBaseSchema),
+      schema: (() => {
+        const Schema = WithCompanyIdSchema.and(
+          z
+            .strictObject({
+              sales_order_id: z
+                .string()
+                .length(26)
+                .nullable()
+                .exactOptional()
+                .openapi({ description: '受注ID', example: '01JPP4FD1CVQWCDSWA90VE1ZTM' }),
+              delivery_id: z
+                .string()
+                .length(26)
+                .nullable()
+                .exactOptional()
+                .openapi({ description: '納品ID', example: '01JPP4FD1CVQWCDSWA90VE1ZTM' }),
+              billing_creating_method_type: BillingCreatingMethodTypeSchema,
+            })
+            .openapi({
+              required: [
+                'revenue_recognition_date',
+                'customer_id',
+                'billing_partner_id',
+                'collecting_partner_id',
+                'collection_method_type',
+                'billing_creating_method_type',
+                'lines',
+              ],
+            }),
+        ).and(SaleRequestBaseSchema)
+        return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+          ;((ctx) => {
+            const o = ctx.value
+            if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+            for (const k of Object.keys(o)) {
+              if (!['company_id'].includes(k)) {
+                ctx.issues.push({ code: 'custom', path: [k], input: o })
+              }
+            }
+            for (const k of Object.keys(o)) {
+              if (!['sales_order_id', 'delivery_id', 'billing_creating_method_type'].includes(k)) {
+                ctx.issues.push({ code: 'custom', path: [k], input: o })
+              }
+            }
+            for (const k of Object.keys(o)) {
+              if (
+                ![
+                  'business_id',
+                  'subject',
+                  'customer_order_no',
+                  'revenue_recognition_date',
+                  'customer_id',
+                  'bills_on',
+                  'invoice_template_id',
+                  'billing_partner_id',
+                  'invoice_subject',
+                  'invoice_note',
+                  'collects_on',
+                  'collection_method_type',
+                  'collecting_partner_id',
+                  'charge_employee_id',
+                  'charge_member_id',
+                  'reporting_section_id',
+                  'internal_memo',
+                  'lines',
+                ].includes(k)
+              ) {
+                ctx.issues.push({ code: 'custom', path: [k], input: o })
+              }
+            }
+          })(ctx)
+          return val
+        }, Schema)
+      })(),
     },
   },
 }
@@ -11024,31 +12935,76 @@ const SaleUpdateRequestRequestBody = {
   description: '売上更新リクエスト',
   content: {
     'application/json': {
-      schema: WithCompanyIdSchema.and(SaleRequestBaseSchema).and(
-        z
-          .strictObject({
-            invoice_template_id: z
-              .preprocess(
-                (val) =>
-                  typeof val === 'number' && Number.isSafeInteger(val)
-                    ? BigInt(val)
-                    : typeof val === 'string' && /^-?\d+$/.test(val)
+      schema: (() => {
+        const Schema = WithCompanyIdSchema.and(SaleRequestBaseSchema).and(
+          z
+            .strictObject({
+              invoice_template_id: z
+                .preprocess(
+                  (val) =>
+                    typeof val === 'number' && Number.isSafeInteger(val)
                       ? BigInt(val)
-                      : val,
-                z.int64().min(1n).max(9223372036854776000n),
-              )
-              .exactOptional()
-              .openapi({
-                type: 'integer',
-                format: 'int64',
-                minimum: 1,
-                maximum: 9223372036854776000,
-                description: '請求書テンプレートID',
-                example: 10002,
-              }),
-          })
-          .openapi({ required: [] }),
-      ),
+                      : typeof val === 'string' && /^-?\d+$/.test(val)
+                        ? BigInt(val)
+                        : val,
+                  z.int64().min(1n).max(9223372036854775807n),
+                )
+                .exactOptional()
+                .openapi({
+                  type: 'integer',
+                  format: 'int64',
+                  minimum: 1,
+                  maximum: 9223372036854776000,
+                  description: '請求書テンプレートID',
+                  example: 10002,
+                }),
+            })
+            .openapi({ required: [] }),
+        )
+        return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+          ;((ctx) => {
+            const o = ctx.value
+            if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+            for (const k of Object.keys(o)) {
+              if (!['company_id'].includes(k)) {
+                ctx.issues.push({ code: 'custom', path: [k], input: o })
+              }
+            }
+            for (const k of Object.keys(o)) {
+              if (
+                ![
+                  'business_id',
+                  'subject',
+                  'customer_order_no',
+                  'revenue_recognition_date',
+                  'customer_id',
+                  'bills_on',
+                  'invoice_template_id',
+                  'billing_partner_id',
+                  'invoice_subject',
+                  'invoice_note',
+                  'collects_on',
+                  'collection_method_type',
+                  'collecting_partner_id',
+                  'charge_employee_id',
+                  'charge_member_id',
+                  'reporting_section_id',
+                  'internal_memo',
+                  'lines',
+                ].includes(k)
+              ) {
+                ctx.issues.push({ code: 'custom', path: [k], input: o })
+              }
+            }
+            for (const k of Object.keys(o)) {
+              if (!['invoice_template_id'].includes(k)) {
+                ctx.issues.push({ code: 'custom', path: [k], input: o })
+              }
+            }
+          })(ctx)
+          return val
+        }, Schema)
+      })(),
     },
   },
 }
@@ -11062,21 +13018,65 @@ const PeriodicSaleCreateRequestRequestBody = {
   description: '定期売上登録リクエスト',
   content: {
     'application/json': {
-      schema: WithCompanyIdSchema.and(
-        z
-          .strictObject({})
-          .openapi({
-            required: [
-              'customer_id',
-              'recurrence_rule',
-              'billing_partner_id',
-              'billing_creating_method_type',
-              'collecting_partner_id',
-              'collection_method_type',
-              'lines',
-            ],
-          }),
-      ).and(PeriodicSaleRequestBaseSchema),
+      schema: (() => {
+        const Schema = WithCompanyIdSchema.and(
+          z
+            .strictObject({})
+            .openapi({
+              required: [
+                'customer_id',
+                'recurrence_rule',
+                'billing_partner_id',
+                'billing_creating_method_type',
+                'collecting_partner_id',
+                'collection_method_type',
+                'lines',
+              ],
+            }),
+        ).and(PeriodicSaleRequestBaseSchema)
+        return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+          ;((ctx) => {
+            const o = ctx.value
+            if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+            for (const k of Object.keys(o)) {
+              if (!['company_id'].includes(k)) {
+                ctx.issues.push({ code: 'custom', path: [k], input: o })
+              }
+            }
+            for (const k of Object.keys(o)) {
+              ctx.issues.push({ code: 'custom', path: [k], input: o })
+            }
+            for (const k of Object.keys(o)) {
+              if (
+                ![
+                  'business_id',
+                  'customer_id',
+                  'subject',
+                  'customer_order_no',
+                  'recurrence_rule',
+                  'billing_partner_id',
+                  'invoice_template_id',
+                  'bills_on_rule',
+                  'billing_creating_method_type',
+                  'invoice_subject',
+                  'invoice_note',
+                  'collecting_partner_id',
+                  'collection_method_type',
+                  'collects_on_rule',
+                  'charge_employee_id',
+                  'charge_member_id',
+                  'reporting_section_id',
+                  'internal_memo',
+                  'lines',
+                ].includes(k)
+              ) {
+                ctx.issues.push({ code: 'custom', path: [k], input: o })
+              }
+            }
+          })(ctx)
+          return val
+        }, Schema)
+      })(),
     },
   },
 }
@@ -11085,31 +13085,77 @@ const PeriodicSaleUpdateRequestRequestBody = {
   description: '定期売上更新リクエスト',
   content: {
     'application/json': {
-      schema: WithCompanyIdSchema.and(PeriodicSaleRequestBaseSchema).and(
-        z
-          .strictObject({
-            invoice_template_id: z
-              .preprocess(
-                (val) =>
-                  typeof val === 'number' && Number.isSafeInteger(val)
-                    ? BigInt(val)
-                    : typeof val === 'string' && /^-?\d+$/.test(val)
+      schema: (() => {
+        const Schema = WithCompanyIdSchema.and(PeriodicSaleRequestBaseSchema).and(
+          z
+            .strictObject({
+              invoice_template_id: z
+                .preprocess(
+                  (val) =>
+                    typeof val === 'number' && Number.isSafeInteger(val)
                       ? BigInt(val)
-                      : val,
-                z.int64().min(1n).max(9223372036854776000n),
-              )
-              .exactOptional()
-              .openapi({
-                type: 'integer',
-                format: 'int64',
-                minimum: 1,
-                maximum: 9223372036854776000,
-                description: '請求書テンプレートID',
-                example: 10002,
-              }),
-          })
-          .openapi({ required: [] }),
-      ),
+                      : typeof val === 'string' && /^-?\d+$/.test(val)
+                        ? BigInt(val)
+                        : val,
+                  z.int64().min(1n).max(9223372036854775807n),
+                )
+                .exactOptional()
+                .openapi({
+                  type: 'integer',
+                  format: 'int64',
+                  minimum: 1,
+                  maximum: 9223372036854776000,
+                  description: '請求書テンプレートID',
+                  example: 10002,
+                }),
+            })
+            .openapi({ required: [] }),
+        )
+        return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+          ;((ctx) => {
+            const o = ctx.value
+            if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+            for (const k of Object.keys(o)) {
+              if (!['company_id'].includes(k)) {
+                ctx.issues.push({ code: 'custom', path: [k], input: o })
+              }
+            }
+            for (const k of Object.keys(o)) {
+              if (
+                ![
+                  'business_id',
+                  'customer_id',
+                  'subject',
+                  'customer_order_no',
+                  'recurrence_rule',
+                  'billing_partner_id',
+                  'invoice_template_id',
+                  'bills_on_rule',
+                  'billing_creating_method_type',
+                  'invoice_subject',
+                  'invoice_note',
+                  'collecting_partner_id',
+                  'collection_method_type',
+                  'collects_on_rule',
+                  'charge_employee_id',
+                  'charge_member_id',
+                  'reporting_section_id',
+                  'internal_memo',
+                  'lines',
+                ].includes(k)
+              ) {
+                ctx.issues.push({ code: 'custom', path: [k], input: o })
+              }
+            }
+            for (const k of Object.keys(o)) {
+              if (!['invoice_template_id'].includes(k)) {
+                ctx.issues.push({ code: 'custom', path: [k], input: o })
+              }
+            }
+          })(ctx)
+          return val
+        }, Schema)
+      })(),
     },
   },
 }
@@ -11123,7 +13169,49 @@ const PeriodicSaleCancelRequestRequestBody = {
 const SalesScheduleUpdateRequestRequestBody = {
   description: '売上予定更新リクエスト',
   content: {
-    'application/json': { schema: WithCompanyIdSchema.and(SalesScheduleUpdateParamsSchema) },
+    'application/json': {
+      schema: (() => {
+        const Schema = WithCompanyIdSchema.and(SalesScheduleUpdateParamsSchema)
+        return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+          ;((ctx) => {
+            const o = ctx.value
+            if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+            for (const k of Object.keys(o)) {
+              if (!['company_id'].includes(k)) {
+                ctx.issues.push({ code: 'custom', path: [k], input: o })
+              }
+            }
+            for (const k of Object.keys(o)) {
+              if (
+                ![
+                  'customer_id',
+                  'subject',
+                  'customer_order_no',
+                  'scheduled_date',
+                  'billing_creating_method_type',
+                  'bills_on',
+                  'billing_partner_id',
+                  'invoice_template_id',
+                  'invoice_subject',
+                  'invoice_note',
+                  'collects_on',
+                  'collecting_partner_id',
+                  'collection_method_type',
+                  'charge_employee_id',
+                  'charge_member_id',
+                  'reporting_section_id',
+                  'internal_memo',
+                  'lines',
+                ].includes(k)
+              ) {
+                ctx.issues.push({ code: 'custom', path: [k], input: o })
+              }
+            }
+          })(ctx)
+          return val
+        }, Schema)
+      })(),
+    },
   },
   required: true,
 }
@@ -11137,42 +13225,61 @@ const OtherCostCreateRequestRequestBody = {
   description: 'その他原価登録リクエスト',
   content: {
     'application/json': {
-      schema: WithCompanyIdSchema.and(
-        z
-          .strictObject({
-            business_id: z
-              .string()
-              .length(26)
-              .nullable()
-              .exactOptional()
-              .openapi({ description: '案件ID', example: '01JPP4FD1CVQWCDSWA90VE1ZTM' }),
-            amount_excluding_tax: z
-              .preprocess(
-                (val) =>
-                  typeof val === 'number' && Number.isSafeInteger(val)
-                    ? BigInt(val)
-                    : typeof val === 'string' && /^-?\d+$/.test(val)
+      schema: (() => {
+        const Schema = WithCompanyIdSchema.and(
+          z
+            .strictObject({
+              business_id: z
+                .string()
+                .length(26)
+                .nullable()
+                .exactOptional()
+                .openapi({ description: '案件ID', example: '01JPP4FD1CVQWCDSWA90VE1ZTM' }),
+              amount_excluding_tax: z
+                .preprocess(
+                  (val) =>
+                    typeof val === 'number' && Number.isSafeInteger(val)
                       ? BigInt(val)
-                      : val,
-                z.int64().min(-999999999999n).max(999999999999n),
-              )
-              .openapi({
-                type: 'integer',
-                format: 'int64',
-                minimum: -999999999999,
-                maximum: 999999999999,
-                description: '税抜金額',
-                example: 10000,
-              }),
-            incurred_date: z.iso.date().openapi({ description: '発生日', example: '2025-04-01' }),
-            memo: z
-              .string()
-              .nullable()
-              .exactOptional()
-              .openapi({ description: 'メモ', example: 'その他原価メモ' }),
-          })
-          .openapi({ required: ['amount_excluding_tax', 'incurred_date'] }),
-      ),
+                      : typeof val === 'string' && /^-?\d+$/.test(val)
+                        ? BigInt(val)
+                        : val,
+                  z.int64().min(-999999999999n).max(999999999999n),
+                )
+                .openapi({
+                  type: 'integer',
+                  format: 'int64',
+                  minimum: -999999999999,
+                  maximum: 999999999999,
+                  description: '税抜金額',
+                  example: 10000,
+                }),
+              incurred_date: z.iso.date().openapi({ description: '発生日', example: '2025-04-01' }),
+              memo: z
+                .string()
+                .nullable()
+                .exactOptional()
+                .openapi({ description: 'メモ', example: 'その他原価メモ' }),
+            })
+            .openapi({ required: ['amount_excluding_tax', 'incurred_date'] }),
+        )
+        return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+          ;((ctx) => {
+            const o = ctx.value
+            if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+            for (const k of Object.keys(o)) {
+              if (!['company_id'].includes(k)) {
+                ctx.issues.push({ code: 'custom', path: [k], input: o })
+              }
+            }
+            for (const k of Object.keys(o)) {
+              if (!['business_id', 'amount_excluding_tax', 'incurred_date', 'memo'].includes(k)) {
+                ctx.issues.push({ code: 'custom', path: [k], input: o })
+              }
+            }
+          })(ctx)
+          return val
+        }, Schema)
+      })(),
     },
   },
 }
@@ -11181,46 +13288,65 @@ const OtherCostUpdateRequestRequestBody = {
   description: 'その他原価更新リクエスト',
   content: {
     'application/json': {
-      schema: WithCompanyIdSchema.and(
-        z
-          .strictObject({
-            business_id: z
-              .string()
-              .length(26)
-              .nullable()
-              .exactOptional()
-              .openapi({ description: '案件ID', example: '01JPP4FD1CVQWCDSWA90VE1ZTM' }),
-            amount_excluding_tax: z
-              .preprocess(
-                (val) =>
-                  typeof val === 'number' && Number.isSafeInteger(val)
-                    ? BigInt(val)
-                    : typeof val === 'string' && /^-?\d+$/.test(val)
+      schema: (() => {
+        const Schema = WithCompanyIdSchema.and(
+          z
+            .strictObject({
+              business_id: z
+                .string()
+                .length(26)
+                .nullable()
+                .exactOptional()
+                .openapi({ description: '案件ID', example: '01JPP4FD1CVQWCDSWA90VE1ZTM' }),
+              amount_excluding_tax: z
+                .preprocess(
+                  (val) =>
+                    typeof val === 'number' && Number.isSafeInteger(val)
                       ? BigInt(val)
-                      : val,
-                z.int64().min(-999999999999n).max(999999999999n),
-              )
-              .exactOptional()
-              .openapi({
-                type: 'integer',
-                format: 'int64',
-                minimum: -999999999999,
-                maximum: 999999999999,
-                description: '税抜金額',
-                example: 10000,
-              }),
-            incurred_date: z.iso
-              .date()
-              .exactOptional()
-              .openapi({ description: '発生日', example: '2025-04-01' }),
-            memo: z
-              .string()
-              .nullable()
-              .exactOptional()
-              .openapi({ description: 'メモ', example: 'その他原価メモ' }),
-          })
-          .openapi({ required: [] }),
-      ),
+                      : typeof val === 'string' && /^-?\d+$/.test(val)
+                        ? BigInt(val)
+                        : val,
+                  z.int64().min(-999999999999n).max(999999999999n),
+                )
+                .exactOptional()
+                .openapi({
+                  type: 'integer',
+                  format: 'int64',
+                  minimum: -999999999999,
+                  maximum: 999999999999,
+                  description: '税抜金額',
+                  example: 10000,
+                }),
+              incurred_date: z.iso
+                .date()
+                .exactOptional()
+                .openapi({ description: '発生日', example: '2025-04-01' }),
+              memo: z
+                .string()
+                .nullable()
+                .exactOptional()
+                .openapi({ description: 'メモ', example: 'その他原価メモ' }),
+            })
+            .openapi({ required: [] }),
+        )
+        return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+          ;((ctx) => {
+            const o = ctx.value
+            if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+            for (const k of Object.keys(o)) {
+              if (!['company_id'].includes(k)) {
+                ctx.issues.push({ code: 'custom', path: [k], input: o })
+              }
+            }
+            for (const k of Object.keys(o)) {
+              if (!['business_id', 'amount_excluding_tax', 'incurred_date', 'memo'].includes(k)) {
+                ctx.issues.push({ code: 'custom', path: [k], input: o })
+              }
+            }
+          })(ctx)
+          return val
+        }, Schema)
+      })(),
     },
   },
 }
@@ -11239,20 +13365,57 @@ const ProcurementCreateRequestRequestBody = {
   description: '仕入登録リクエスト',
   content: {
     'application/json': {
-      schema: WithCompanyIdSchema.and(
-        z
-          .strictObject({})
-          .openapi({
-            required: [
-              'procurement_date',
-              'supplier_id',
-              'payments_on',
-              'payment_method_type',
-              'payment_partner_id',
-              'lines',
-            ],
-          }),
-      ).and(ProcurementRequestBaseSchema),
+      schema: (() => {
+        const Schema = WithCompanyIdSchema.and(
+          z
+            .strictObject({})
+            .openapi({
+              required: [
+                'procurement_date',
+                'supplier_id',
+                'payments_on',
+                'payment_method_type',
+                'payment_partner_id',
+                'lines',
+              ],
+            }),
+        ).and(ProcurementRequestBaseSchema)
+        return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+          ;((ctx) => {
+            const o = ctx.value
+            if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+            for (const k of Object.keys(o)) {
+              if (!['company_id'].includes(k)) {
+                ctx.issues.push({ code: 'custom', path: [k], input: o })
+              }
+            }
+            for (const k of Object.keys(o)) {
+              ctx.issues.push({ code: 'custom', path: [k], input: o })
+            }
+            for (const k of Object.keys(o)) {
+              if (
+                ![
+                  'internal_subject',
+                  'procurement_date',
+                  'supplier_id',
+                  'is_qualified_invoice_issuer',
+                  'payments_on',
+                  'payment_method_type',
+                  'payment_partner_id',
+                  'charge_employee_id',
+                  'charge_member_id',
+                  'reporting_section_id',
+                  'internal_memo',
+                  'lines',
+                ].includes(k)
+              ) {
+                ctx.issues.push({ code: 'custom', path: [k], input: o })
+              }
+            }
+          })(ctx)
+          return val
+        }, Schema)
+      })(),
     },
   },
 }
@@ -11260,7 +13423,43 @@ const ProcurementCreateRequestRequestBody = {
 const ProcurementUpdateRequestRequestBody = {
   description: '仕入更新リクエスト',
   content: {
-    'application/json': { schema: WithCompanyIdSchema.and(ProcurementUpdateRequestBodySchema) },
+    'application/json': {
+      schema: (() => {
+        const Schema = WithCompanyIdSchema.and(ProcurementUpdateRequestBodySchema)
+        return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+          ;((ctx) => {
+            const o = ctx.value
+            if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+            for (const k of Object.keys(o)) {
+              if (!['company_id'].includes(k)) {
+                ctx.issues.push({ code: 'custom', path: [k], input: o })
+              }
+            }
+            for (const k of Object.keys(o)) {
+              if (
+                ![
+                  'internal_subject',
+                  'procurement_date',
+                  'supplier_id',
+                  'is_qualified_invoice_issuer',
+                  'payments_on',
+                  'payment_method_type',
+                  'payment_partner_id',
+                  'charge_employee_id',
+                  'charge_member_id',
+                  'reporting_section_id',
+                  'internal_memo',
+                  'lines',
+                ].includes(k)
+              ) {
+                ctx.issues.push({ code: 'custom', path: [k], input: o })
+              }
+            }
+          })(ctx)
+          return val
+        }, Schema)
+      })(),
+    },
   },
 }
 
@@ -11273,24 +13472,75 @@ const AdvanceReceiptCreateRequestRequestBody = {
   description: '前受金登録リクエスト',
   content: {
     'application/json': {
-      schema: WithCompanyIdSchema.and(
-        z
-          .strictObject({})
-          .openapi({
-            required: [
-              'account_item_id',
-              'advance_receipt_date',
-              'billing_partner_id',
-              'bills_on',
-              'business_id',
-              'collecting_partner_id',
-              'collection_method_type',
-              'collects_on',
-              'customer_id',
-              'lines',
-            ],
-          }),
-      ).and(AdvanceReceiptRequestBaseSchema),
+      schema: (() => {
+        const Schema = WithCompanyIdSchema.and(
+          z
+            .strictObject({})
+            .openapi({
+              required: [
+                'account_item_id',
+                'advance_receipt_date',
+                'billing_partner_id',
+                'bills_on',
+                'business_id',
+                'collecting_partner_id',
+                'collection_method_type',
+                'collects_on',
+                'customer_id',
+                'lines',
+              ],
+            }),
+        ).and(AdvanceReceiptRequestBaseSchema)
+        return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+          ;((ctx) => {
+            const o = ctx.value
+            if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+            for (const k of Object.keys(o)) {
+              if (!['company_id'].includes(k)) {
+                ctx.issues.push({ code: 'custom', path: [k], input: o })
+              }
+            }
+            for (const k of Object.keys(o)) {
+              ctx.issues.push({ code: 'custom', path: [k], input: o })
+            }
+            for (const k of Object.keys(o)) {
+              if (
+                ![
+                  'account_item_id',
+                  'accounting_reporting_section_id',
+                  'advance_receipt_date',
+                  'billing_partner_id',
+                  'bills_on',
+                  'business_id',
+                  'charge_employee_id',
+                  'charge_member_id',
+                  'collecting_partner_id',
+                  'collection_method_type',
+                  'collects_on',
+                  'customer_id',
+                  'customer_order_no',
+                  'internal_memo',
+                  'internal_subject',
+                  'invoice_note',
+                  'invoice_subject',
+                  'invoice_template_id',
+                  'item_tag_id',
+                  'lines',
+                  'memo_tags',
+                  'reporting_section_id',
+                  'sales_order_id',
+                  'segment_tag_1_id',
+                  'segment_tag_2_id',
+                  'segment_tag_3_id',
+                ].includes(k)
+              ) {
+                ctx.issues.push({ code: 'custom', path: [k], input: o })
+              }
+            }
+          })(ctx)
+          return val
+        }, Schema)
+      })(),
     },
   },
 }
@@ -11299,204 +13549,243 @@ const AdvanceReceiptUpdateRequestRequestBody = {
   description: '前受金更新リクエスト',
   content: {
     'application/json': {
-      schema: WithCompanyIdSchema.and(
-        z
-          .strictObject({
-            account_item_id: z
-              .preprocess(
-                (val) =>
-                  typeof val === 'number' && Number.isSafeInteger(val)
-                    ? BigInt(val)
-                    : typeof val === 'string' && /^-?\d+$/.test(val)
+      schema: (() => {
+        const Schema = WithCompanyIdSchema.and(
+          z
+            .strictObject({
+              account_item_id: z
+                .preprocess(
+                  (val) =>
+                    typeof val === 'number' && Number.isSafeInteger(val)
                       ? BigInt(val)
-                      : val,
-                z.int64().min(1n).max(9223372036854776000n),
-              )
-              .exactOptional()
-              .openapi({
-                type: 'integer',
-                format: 'int64',
-                minimum: 1,
-                maximum: 9223372036854776000,
-                description: '勘定科目ID',
-                example: 12345,
-              }),
-            accounting_reporting_section_id: z
-              .preprocess(
-                (val) =>
-                  typeof val === 'number' && Number.isSafeInteger(val)
-                    ? BigInt(val)
-                    : typeof val === 'string' && /^-?\d+$/.test(val)
-                      ? BigInt(val)
-                      : val,
-                z.int64().min(1n).max(9223372036854776000n),
-              )
-              .nullable()
-              .exactOptional()
-              .openapi({
-                type: ['integer', 'null'],
-                format: 'int64',
-                minimum: 1,
-                maximum: 9223372036854776000,
-                description: '会計計上部門ID<br>\n※ 親部門のIDは指定できません',
-                example: 67890,
-              }),
-            advance_receipt_date: z.iso
-              .date()
-              .exactOptional()
-              .openapi({ description: '前受金発生日', example: '2024-01-31' }),
-            business_id: z
-              .string()
-              .length(26)
-              .exactOptional()
-              .openapi({ description: '案件ID', example: '01JPP4FD1CVQWCDSWA90VE1ZTM' }),
-            charge_employee_id: ChargeEmployeeIdSchema.exactOptional(),
-            charge_member_id: ChargeMemberIdSchema.exactOptional(),
-            customer_id: z
-              .preprocess(
-                (val) =>
-                  typeof val === 'number' && Number.isSafeInteger(val)
-                    ? BigInt(val)
-                    : typeof val === 'string' && /^-?\d+$/.test(val)
-                      ? BigInt(val)
-                      : val,
-                z.int64().min(1n).max(9223372036854776000n),
-              )
-              .exactOptional()
-              .openapi({
-                type: 'integer',
-                format: 'int64',
-                minimum: 1,
-                maximum: 9223372036854776000,
-                description: '顧客の取引先ID',
-                example: 1001,
-              }),
-            customer_order_no: z
-              .string()
-              .max(100)
-              .nullable()
-              .exactOptional()
-              .openapi({ description: '顧客注文No.', example: 'C-PO-20211212-001' }),
-            internal_memo: InternalMemoSchema.exactOptional(),
-            internal_subject: z
-              .string()
-              .max(100)
-              .nullable()
-              .exactOptional()
-              .openapi({ description: '前受金タイトル', example: '前受金サンプル案件' }),
-            item_tag_id: z
-              .preprocess(
-                (val) =>
-                  typeof val === 'number' && Number.isSafeInteger(val)
-                    ? BigInt(val)
-                    : typeof val === 'string' && /^-?\d+$/.test(val)
-                      ? BigInt(val)
-                      : val,
-                z.int64().min(1n).max(9223372036854776000n),
-              )
-              .nullable()
-              .exactOptional()
-              .openapi({
-                type: ['integer', 'null'],
-                format: 'int64',
-                minimum: 1,
-                maximum: 9223372036854776000,
-                description: '会計品目タグID',
-                example: 2001,
-              }),
-            lines: z
-              .array(AdvanceReceiptBasicLineParamsSchema)
-              .min(1)
-              .max(500)
-              .exactOptional()
-              .openapi({ description: '明細リスト' }),
-            memo_tags: z
-              .array(
-                z
-                  .preprocess(
-                    (val) =>
-                      typeof val === 'number' && Number.isSafeInteger(val)
+                      : typeof val === 'string' && /^-?\d+$/.test(val)
                         ? BigInt(val)
-                        : typeof val === 'string' && /^-?\d+$/.test(val)
+                        : val,
+                  z.int64().min(1n).max(9223372036854775807n),
+                )
+                .exactOptional()
+                .openapi({
+                  type: 'integer',
+                  format: 'int64',
+                  minimum: 1,
+                  maximum: 9223372036854776000,
+                  description: '勘定科目ID',
+                  example: 12345,
+                }),
+              accounting_reporting_section_id: z
+                .preprocess(
+                  (val) =>
+                    typeof val === 'number' && Number.isSafeInteger(val)
+                      ? BigInt(val)
+                      : typeof val === 'string' && /^-?\d+$/.test(val)
+                        ? BigInt(val)
+                        : val,
+                  z.int64().min(1n).max(9223372036854775807n),
+                )
+                .nullable()
+                .exactOptional()
+                .openapi({
+                  type: ['integer', 'null'],
+                  format: 'int64',
+                  minimum: 1,
+                  maximum: 9223372036854776000,
+                  description: '会計計上部門ID<br>\n※ 親部門のIDは指定できません',
+                  example: 67890,
+                }),
+              advance_receipt_date: z.iso
+                .date()
+                .exactOptional()
+                .openapi({ description: '前受金発生日', example: '2024-01-31' }),
+              business_id: z
+                .string()
+                .length(26)
+                .exactOptional()
+                .openapi({ description: '案件ID', example: '01JPP4FD1CVQWCDSWA90VE1ZTM' }),
+              charge_employee_id: ChargeEmployeeIdSchema.exactOptional(),
+              charge_member_id: ChargeMemberIdSchema.exactOptional(),
+              customer_id: z
+                .preprocess(
+                  (val) =>
+                    typeof val === 'number' && Number.isSafeInteger(val)
+                      ? BigInt(val)
+                      : typeof val === 'string' && /^-?\d+$/.test(val)
+                        ? BigInt(val)
+                        : val,
+                  z.int64().min(1n).max(9223372036854775807n),
+                )
+                .exactOptional()
+                .openapi({
+                  type: 'integer',
+                  format: 'int64',
+                  minimum: 1,
+                  maximum: 9223372036854776000,
+                  description: '顧客の取引先ID',
+                  example: 1001,
+                }),
+              customer_order_no: z
+                .string()
+                .max(100)
+                .nullable()
+                .exactOptional()
+                .openapi({ description: '顧客注文No.', example: 'C-PO-20211212-001' }),
+              internal_memo: InternalMemoSchema.exactOptional(),
+              internal_subject: z
+                .string()
+                .max(100)
+                .nullable()
+                .exactOptional()
+                .openapi({ description: '前受金タイトル', example: '前受金サンプル案件' }),
+              item_tag_id: z
+                .preprocess(
+                  (val) =>
+                    typeof val === 'number' && Number.isSafeInteger(val)
+                      ? BigInt(val)
+                      : typeof val === 'string' && /^-?\d+$/.test(val)
+                        ? BigInt(val)
+                        : val,
+                  z.int64().min(1n).max(9223372036854775807n),
+                )
+                .nullable()
+                .exactOptional()
+                .openapi({
+                  type: ['integer', 'null'],
+                  format: 'int64',
+                  minimum: 1,
+                  maximum: 9223372036854776000,
+                  description: '会計品目タグID',
+                  example: 2001,
+                }),
+              lines: z
+                .array(AdvanceReceiptBasicLineParamsSchema)
+                .min(1)
+                .max(500)
+                .exactOptional()
+                .openapi({ description: '明細リスト' }),
+              memo_tags: z
+                .array(
+                  z
+                    .preprocess(
+                      (val) =>
+                        typeof val === 'number' && Number.isSafeInteger(val)
                           ? BigInt(val)
-                          : val,
-                    z.int64().min(1n).max(9223372036854776000n),
-                  )
-                  .openapi({
-                    type: 'integer',
-                    format: 'int64',
-                    minimum: 1,
-                    maximum: 9223372036854776000,
-                    example: 3001,
-                  }),
-              )
-              .nullable()
-              .exactOptional()
-              .openapi({ description: 'メモタグID' }),
-            reporting_section_id: ReportingSectionIdSchema.exactOptional(),
-            segment_tag_1_id: z
-              .preprocess(
-                (val) =>
-                  typeof val === 'number' && Number.isSafeInteger(val)
-                    ? BigInt(val)
-                    : typeof val === 'string' && /^-?\d+$/.test(val)
+                          : typeof val === 'string' && /^-?\d+$/.test(val)
+                            ? BigInt(val)
+                            : val,
+                      z.int64().min(1n).max(9223372036854775807n),
+                    )
+                    .openapi({
+                      type: 'integer',
+                      format: 'int64',
+                      minimum: 1,
+                      maximum: 9223372036854776000,
+                      example: 3001,
+                    }),
+                )
+                .nullable()
+                .exactOptional()
+                .openapi({ description: 'メモタグID' }),
+              reporting_section_id: ReportingSectionIdSchema.exactOptional(),
+              segment_tag_1_id: z
+                .preprocess(
+                  (val) =>
+                    typeof val === 'number' && Number.isSafeInteger(val)
                       ? BigInt(val)
-                      : val,
-                z.int64().min(1n).max(9223372036854776000n),
-              )
-              .nullable()
-              .exactOptional()
-              .openapi({
-                type: ['integer', 'null'],
-                format: 'int64',
-                minimum: 1,
-                maximum: 9223372036854776000,
-                description: 'セグメントタグ1のID',
-                example: 12345,
-              }),
-            segment_tag_2_id: z
-              .preprocess(
-                (val) =>
-                  typeof val === 'number' && Number.isSafeInteger(val)
-                    ? BigInt(val)
-                    : typeof val === 'string' && /^-?\d+$/.test(val)
+                      : typeof val === 'string' && /^-?\d+$/.test(val)
+                        ? BigInt(val)
+                        : val,
+                  z.int64().min(1n).max(9223372036854775807n),
+                )
+                .nullable()
+                .exactOptional()
+                .openapi({
+                  type: ['integer', 'null'],
+                  format: 'int64',
+                  minimum: 1,
+                  maximum: 9223372036854776000,
+                  description: 'セグメントタグ1のID',
+                  example: 12345,
+                }),
+              segment_tag_2_id: z
+                .preprocess(
+                  (val) =>
+                    typeof val === 'number' && Number.isSafeInteger(val)
                       ? BigInt(val)
-                      : val,
-                z.int64().min(1n).max(9223372036854776000n),
-              )
-              .nullable()
-              .exactOptional()
-              .openapi({
-                type: ['integer', 'null'],
-                format: 'int64',
-                minimum: 1,
-                maximum: 9223372036854776000,
-                description: 'セグメントタグ2のID',
-                example: 12345,
-              }),
-            segment_tag_3_id: z
-              .preprocess(
-                (val) =>
-                  typeof val === 'number' && Number.isSafeInteger(val)
-                    ? BigInt(val)
-                    : typeof val === 'string' && /^-?\d+$/.test(val)
+                      : typeof val === 'string' && /^-?\d+$/.test(val)
+                        ? BigInt(val)
+                        : val,
+                  z.int64().min(1n).max(9223372036854775807n),
+                )
+                .nullable()
+                .exactOptional()
+                .openapi({
+                  type: ['integer', 'null'],
+                  format: 'int64',
+                  minimum: 1,
+                  maximum: 9223372036854776000,
+                  description: 'セグメントタグ2のID',
+                  example: 12345,
+                }),
+              segment_tag_3_id: z
+                .preprocess(
+                  (val) =>
+                    typeof val === 'number' && Number.isSafeInteger(val)
                       ? BigInt(val)
-                      : val,
-                z.int64().min(1n).max(9223372036854776000n),
-              )
-              .nullable()
-              .exactOptional()
-              .openapi({
-                type: ['integer', 'null'],
-                format: 'int64',
-                minimum: 1,
-                maximum: 9223372036854776000,
-                description: 'セグメントタグ3のID',
-                example: 12345,
-              }),
-          })
-          .openapi({ required: [] }),
-      ),
+                      : typeof val === 'string' && /^-?\d+$/.test(val)
+                        ? BigInt(val)
+                        : val,
+                  z.int64().min(1n).max(9223372036854775807n),
+                )
+                .nullable()
+                .exactOptional()
+                .openapi({
+                  type: ['integer', 'null'],
+                  format: 'int64',
+                  minimum: 1,
+                  maximum: 9223372036854776000,
+                  description: 'セグメントタグ3のID',
+                  example: 12345,
+                }),
+            })
+            .openapi({ required: [] }),
+        )
+        return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+          ;((ctx) => {
+            const o = ctx.value
+            if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+            for (const k of Object.keys(o)) {
+              if (!['company_id'].includes(k)) {
+                ctx.issues.push({ code: 'custom', path: [k], input: o })
+              }
+            }
+            for (const k of Object.keys(o)) {
+              if (
+                ![
+                  'account_item_id',
+                  'accounting_reporting_section_id',
+                  'advance_receipt_date',
+                  'business_id',
+                  'charge_employee_id',
+                  'charge_member_id',
+                  'customer_id',
+                  'customer_order_no',
+                  'internal_memo',
+                  'internal_subject',
+                  'item_tag_id',
+                  'lines',
+                  'memo_tags',
+                  'reporting_section_id',
+                  'segment_tag_1_id',
+                  'segment_tag_2_id',
+                  'segment_tag_3_id',
+                ].includes(k)
+              ) {
+                ctx.issues.push({ code: 'custom', path: [k], input: o })
+              }
+            }
+          })(ctx)
+          return val
+        }, Schema)
+      })(),
     },
   },
 }
@@ -11510,72 +13799,106 @@ const AdvanceReceiptReductionRequestRequestBody = {
   description: '前受金取崩（売上登録）リクエスト',
   content: {
     'application/json': {
-      schema: WithCompanyIdSchema.and(
-        z
-          .strictObject({
-            revenue_recognition_date: z.iso
-              .date()
-              .openapi({ description: '売上日', example: '2024-01-31' }),
-            customer_id: z
-              .preprocess(
-                (val) =>
-                  typeof val === 'number' && Number.isSafeInteger(val)
-                    ? BigInt(val)
-                    : typeof val === 'string' && /^-?\d+$/.test(val)
+      schema: (() => {
+        const Schema = WithCompanyIdSchema.and(
+          z
+            .strictObject({
+              revenue_recognition_date: z.iso
+                .date()
+                .openapi({ description: '売上日', example: '2024-01-31' }),
+              customer_id: z
+                .preprocess(
+                  (val) =>
+                    typeof val === 'number' && Number.isSafeInteger(val)
                       ? BigInt(val)
-                      : val,
-                z.int64().min(1n).max(9223372036854776000n),
-              )
-              .openapi({
-                type: 'integer',
-                format: 'int64',
-                minimum: 1,
-                maximum: 9223372036854776000,
-                description: '顧客の取引先ID',
-                example: 1001,
-              }),
-            business_id: z
-              .string()
-              .length(26)
-              .nullable()
-              .exactOptional()
-              .openapi({ description: '案件ID', example: '01JPP4FD1CVQWCDSWA90VE1ZTM' }),
-            subject: z
-              .string()
-              .max(100)
-              .nullable()
-              .exactOptional()
-              .openapi({ description: '売上タイトル', example: '売上サンプル案件' }),
-            customer_order_no: z
-              .string()
-              .max(100)
-              .nullable()
-              .exactOptional()
-              .openapi({ description: '顧客注文No.', example: 'C-PO-20211212-001' }),
-            charge_employee_id: ChargeEmployeeIdSchema.exactOptional(),
-            charge_member_id: ChargeMemberIdSchema.exactOptional(),
-            reporting_section_id: ReportingSectionIdSchema.exactOptional(),
-            internal_memo: InternalMemoSchema.exactOptional(),
-            sales_order_id: z
-              .string()
-              .length(26)
-              .nullable()
-              .exactOptional()
-              .openapi({ description: '受注ID', example: '01JPP4FD1CVQWCDSWA90VE1ZTM' }),
-            delivery_id: z
-              .string()
-              .length(26)
-              .nullable()
-              .exactOptional()
-              .openapi({ description: '納品ID', example: '01JPP4FD1CVQWCDSWA90VE1ZTM' }),
-            lines: z
-              .array(AdvanceReceiptReductionLineParamsSchema)
-              .min(1)
-              .max(500)
-              .openapi({ description: '明細リスト' }),
-          })
-          .openapi({ required: ['revenue_recognition_date', 'customer_id', 'lines'] }),
-      ),
+                      : typeof val === 'string' && /^-?\d+$/.test(val)
+                        ? BigInt(val)
+                        : val,
+                  z.int64().min(1n).max(9223372036854775807n),
+                )
+                .openapi({
+                  type: 'integer',
+                  format: 'int64',
+                  minimum: 1,
+                  maximum: 9223372036854776000,
+                  description: '顧客の取引先ID',
+                  example: 1001,
+                }),
+              business_id: z
+                .string()
+                .length(26)
+                .nullable()
+                .exactOptional()
+                .openapi({ description: '案件ID', example: '01JPP4FD1CVQWCDSWA90VE1ZTM' }),
+              subject: z
+                .string()
+                .max(100)
+                .nullable()
+                .exactOptional()
+                .openapi({ description: '売上タイトル', example: '売上サンプル案件' }),
+              customer_order_no: z
+                .string()
+                .max(100)
+                .nullable()
+                .exactOptional()
+                .openapi({ description: '顧客注文No.', example: 'C-PO-20211212-001' }),
+              charge_employee_id: ChargeEmployeeIdSchema.exactOptional(),
+              charge_member_id: ChargeMemberIdSchema.exactOptional(),
+              reporting_section_id: ReportingSectionIdSchema.exactOptional(),
+              internal_memo: InternalMemoSchema.exactOptional(),
+              sales_order_id: z
+                .string()
+                .length(26)
+                .nullable()
+                .exactOptional()
+                .openapi({ description: '受注ID', example: '01JPP4FD1CVQWCDSWA90VE1ZTM' }),
+              delivery_id: z
+                .string()
+                .length(26)
+                .nullable()
+                .exactOptional()
+                .openapi({ description: '納品ID', example: '01JPP4FD1CVQWCDSWA90VE1ZTM' }),
+              lines: z
+                .array(AdvanceReceiptReductionLineParamsSchema)
+                .min(1)
+                .max(500)
+                .openapi({ description: '明細リスト' }),
+            })
+            .openapi({ required: ['revenue_recognition_date', 'customer_id', 'lines'] }),
+        )
+        return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+          ;((ctx) => {
+            const o = ctx.value
+            if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+            for (const k of Object.keys(o)) {
+              if (!['company_id'].includes(k)) {
+                ctx.issues.push({ code: 'custom', path: [k], input: o })
+              }
+            }
+            for (const k of Object.keys(o)) {
+              if (
+                ![
+                  'revenue_recognition_date',
+                  'customer_id',
+                  'business_id',
+                  'subject',
+                  'customer_order_no',
+                  'charge_employee_id',
+                  'charge_member_id',
+                  'reporting_section_id',
+                  'internal_memo',
+                  'sales_order_id',
+                  'delivery_id',
+                  'lines',
+                ].includes(k)
+              ) {
+                ctx.issues.push({ code: 'custom', path: [k], input: o })
+              }
+            }
+          })(ctx)
+          return val
+        }, Schema)
+      })(),
     },
   },
 }
@@ -11584,57 +13907,89 @@ const AdvanceReceiptPeriodicReductionRequestRequestBody = {
   description: '前受金取崩（定期売上登録）リクエスト',
   content: {
     'application/json': {
-      schema: WithCompanyIdSchema.and(
-        z
-          .strictObject({
-            customer_id: z
-              .preprocess(
-                (val) =>
-                  typeof val === 'number' && Number.isSafeInteger(val)
-                    ? BigInt(val)
-                    : typeof val === 'string' && /^-?\d+$/.test(val)
+      schema: (() => {
+        const Schema = WithCompanyIdSchema.and(
+          z
+            .strictObject({
+              customer_id: z
+                .preprocess(
+                  (val) =>
+                    typeof val === 'number' && Number.isSafeInteger(val)
                       ? BigInt(val)
-                      : val,
-                z.int64().min(1n).max(9223372036854776000n),
-              )
-              .openapi({
-                type: 'integer',
-                format: 'int64',
-                minimum: 1,
-                maximum: 9223372036854776000,
-                description: '顧客の取引先ID',
-                example: 1001,
-              }),
-            recurrence_rule: RecurrenceRuleSchema,
-            business_id: z
-              .string()
-              .length(26)
-              .nullable()
-              .exactOptional()
-              .openapi({ description: '案件ID', example: '01JPP4FD1CVQWCDSWA90VE1ZTM' }),
-            subject: z
-              .string()
-              .max(100)
-              .nullable()
-              .exactOptional()
-              .openapi({ description: '定期売上タイトル', example: 'サンプル案件定期売上の件' }),
-            customer_order_no: z
-              .string()
-              .max(100)
-              .nullable()
-              .exactOptional()
-              .openapi({ description: '顧客注文No.', example: 'C-PO-20211212-001' }),
-            charge_employee_id: ChargeEmployeeIdSchema.exactOptional(),
-            charge_member_id: ChargeMemberIdSchema.exactOptional(),
-            reporting_section_id: ReportingSectionIdSchema.exactOptional(),
-            internal_memo: InternalMemoSchema.exactOptional(),
-            lines: z
-              .array(AdvanceReceiptReductionLineParamsSchema)
-              .min(1)
-              .openapi({ description: '明細リスト' }),
-          })
-          .openapi({ required: ['customer_id', 'recurrence_rule', 'lines'] }),
-      ),
+                      : typeof val === 'string' && /^-?\d+$/.test(val)
+                        ? BigInt(val)
+                        : val,
+                  z.int64().min(1n).max(9223372036854775807n),
+                )
+                .openapi({
+                  type: 'integer',
+                  format: 'int64',
+                  minimum: 1,
+                  maximum: 9223372036854776000,
+                  description: '顧客の取引先ID',
+                  example: 1001,
+                }),
+              recurrence_rule: RecurrenceRuleSchema,
+              business_id: z
+                .string()
+                .length(26)
+                .nullable()
+                .exactOptional()
+                .openapi({ description: '案件ID', example: '01JPP4FD1CVQWCDSWA90VE1ZTM' }),
+              subject: z
+                .string()
+                .max(100)
+                .nullable()
+                .exactOptional()
+                .openapi({ description: '定期売上タイトル', example: 'サンプル案件定期売上の件' }),
+              customer_order_no: z
+                .string()
+                .max(100)
+                .nullable()
+                .exactOptional()
+                .openapi({ description: '顧客注文No.', example: 'C-PO-20211212-001' }),
+              charge_employee_id: ChargeEmployeeIdSchema.exactOptional(),
+              charge_member_id: ChargeMemberIdSchema.exactOptional(),
+              reporting_section_id: ReportingSectionIdSchema.exactOptional(),
+              internal_memo: InternalMemoSchema.exactOptional(),
+              lines: z
+                .array(AdvanceReceiptReductionLineParamsSchema)
+                .min(1)
+                .openapi({ description: '明細リスト' }),
+            })
+            .openapi({ required: ['customer_id', 'recurrence_rule', 'lines'] }),
+        )
+        return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+          ;((ctx) => {
+            const o = ctx.value
+            if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+            for (const k of Object.keys(o)) {
+              if (!['company_id'].includes(k)) {
+                ctx.issues.push({ code: 'custom', path: [k], input: o })
+              }
+            }
+            for (const k of Object.keys(o)) {
+              if (
+                ![
+                  'customer_id',
+                  'recurrence_rule',
+                  'business_id',
+                  'subject',
+                  'customer_order_no',
+                  'charge_employee_id',
+                  'charge_member_id',
+                  'reporting_section_id',
+                  'internal_memo',
+                  'lines',
+                ].includes(k)
+              ) {
+                ctx.issues.push({ code: 'custom', path: [k], input: o })
+              }
+            }
+          })(ctx)
+          return val
+        }, Schema)
+      })(),
     },
   },
 }
@@ -12347,7 +14702,7 @@ export const getMasterCustomFieldsBusinessDefinitionsRoute = createRoute({
   tags: ['master'],
   summary: '案件カスタム項目定義一覧',
   description:
-    '<h2 id="">概要</h2>\n<p>\nカスタム項目定義の一覧を取得します。\n使用可能なもののみを返却します。\n</p>\n\n<h3>入力形式の一覧</h3>\n<ul>\n  <li><code>text</code>: 一行テキスト</li>\n  <li><code>textarea</code>: 複数行テキスト</li>\n  <li><code>amount</code>: 金額</li>\n  <li><code>quantity</code>: 数量</li>\n  <li><code>number</code>: 数値</li>\n  <li><code>date</code>: 日付</li>\n  <li><code>enum</code>: プルダウン</li>\n  <li><code>partner</code>: 取引先</li>\n  <li><code>employee</code>: 従業員</li>\n  <li><code>section</code>: 部門</li>\n  <li><code>master_item</code>: 商品</li>\n  <li><code>member</code>: メンバー</li>\n</ul>',
+    '<h2 id="">概要</h2>\n<p>\nカスタム項目定義の一覧を取得します。\n使用可能なもののみを返却します。\n</p>\n\n<h3>入力形式の一覧</h3>\n<ul>\n  <li><code>text</code>: 一行テキスト</li>\n  <li><code>textarea</code>: 複数行テキスト</li>\n  <li><code>amount</code>: 金額</li>\n  <li><code>quantity</code>: 数量</li>\n  <li><code>number</code>: 数値</li>\n  <li><code>date</code>: 日付</li>\n  <li><code>enum</code>: プルダウン</li>\n  <li><code>partner</code>: 取引先</li>\n  <li><code>section</code>: 部門</li>\n  <li><code>master_item</code>: 商品</li>\n  <li><code>member</code>: メンバー</li>\n</ul>',
   operationId: 'get_master_custom_fields_business_definitions',
   request: { query: z.object({ company_id: CompanyIdParamsSchema }) },
   responses: {

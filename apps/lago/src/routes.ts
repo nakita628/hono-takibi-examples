@@ -146,3402 +146,6 @@ const CurrencySchema = z
   .openapi({ example: 'USD' })
   .openapi('Currency')
 
-const CountryOrNullSchema = z
-  .union([
-    z.literal(null),
-    z.literal('AD'),
-    z.literal('AE'),
-    z.literal('AF'),
-    z.literal('AG'),
-    z.literal('AI'),
-    z.literal('AL'),
-    z.literal('AM'),
-    z.literal('AO'),
-    z.literal('AQ'),
-    z.literal('AR'),
-    z.literal('AS'),
-    z.literal('AT'),
-    z.literal('AU'),
-    z.literal('AW'),
-    z.literal('AX'),
-    z.literal('AZ'),
-    z.literal('BA'),
-    z.literal('BB'),
-    z.literal('BD'),
-    z.literal('BE'),
-    z.literal('BF'),
-    z.literal('BG'),
-    z.literal('BH'),
-    z.literal('BI'),
-    z.literal('BJ'),
-    z.literal('BL'),
-    z.literal('BM'),
-    z.literal('BN'),
-    z.literal('BO'),
-    z.literal('BQ'),
-    z.literal('BR'),
-    z.literal('BS'),
-    z.literal('BT'),
-    z.literal('BV'),
-    z.literal('BW'),
-    z.literal('BY'),
-    z.literal('BZ'),
-    z.literal('CA'),
-    z.literal('CC'),
-    z.literal('CD'),
-    z.literal('CF'),
-    z.literal('CG'),
-    z.literal('CH'),
-    z.literal('CI'),
-    z.literal('CK'),
-    z.literal('CL'),
-    z.literal('CM'),
-    z.literal('CN'),
-    z.literal('CO'),
-    z.literal('CR'),
-    z.literal('CU'),
-    z.literal('CV'),
-    z.literal('CW'),
-    z.literal('CX'),
-    z.literal('CY'),
-    z.literal('CZ'),
-    z.literal('DE'),
-    z.literal('DJ'),
-    z.literal('DK'),
-    z.literal('DM'),
-    z.literal('DO'),
-    z.literal('DZ'),
-    z.literal('EC'),
-    z.literal('EE'),
-    z.literal('EG'),
-    z.literal('EH'),
-    z.literal('ER'),
-    z.literal('ES'),
-    z.literal('ET'),
-    z.literal('FI'),
-    z.literal('FJ'),
-    z.literal('FK'),
-    z.literal('FM'),
-    z.literal('FO'),
-    z.literal('FR'),
-    z.literal('GA'),
-    z.literal('GB'),
-    z.literal('GD'),
-    z.literal('GE'),
-    z.literal('GF'),
-    z.literal('GG'),
-    z.literal('GH'),
-    z.literal('GI'),
-    z.literal('GL'),
-    z.literal('GM'),
-    z.literal('GN'),
-    z.literal('GP'),
-    z.literal('GQ'),
-    z.literal('GR'),
-    z.literal('GS'),
-    z.literal('GT'),
-    z.literal('GU'),
-    z.literal('GW'),
-    z.literal('GY'),
-    z.literal('HK'),
-    z.literal('HM'),
-    z.literal('HN'),
-    z.literal('HR'),
-    z.literal('HT'),
-    z.literal('HU'),
-    z.literal('ID'),
-    z.literal('IE'),
-    z.literal('IL'),
-    z.literal('IM'),
-    z.literal('IN'),
-    z.literal('IO'),
-    z.literal('IQ'),
-    z.literal('IR'),
-    z.literal('IS'),
-    z.literal('IT'),
-    z.literal('JE'),
-    z.literal('JM'),
-    z.literal('JO'),
-    z.literal('JP'),
-    z.literal('KE'),
-    z.literal('KG'),
-    z.literal('KH'),
-    z.literal('KI'),
-    z.literal('KM'),
-    z.literal('KN'),
-    z.literal('KP'),
-    z.literal('KR'),
-    z.literal('KW'),
-    z.literal('KY'),
-    z.literal('KZ'),
-    z.literal('LA'),
-    z.literal('LB'),
-    z.literal('LC'),
-    z.literal('LI'),
-    z.literal('LK'),
-    z.literal('LR'),
-    z.literal('LS'),
-    z.literal('LT'),
-    z.literal('LU'),
-    z.literal('LV'),
-    z.literal('LY'),
-    z.literal('MA'),
-    z.literal('MC'),
-    z.literal('MD'),
-    z.literal('ME'),
-    z.literal('MF'),
-    z.literal('MG'),
-    z.literal('MH'),
-    z.literal('MK'),
-    z.literal('ML'),
-    z.literal('MM'),
-    z.literal('MN'),
-    z.literal('MO'),
-    z.literal('MP'),
-    z.literal('MQ'),
-    z.literal('MR'),
-    z.literal('MS'),
-    z.literal('MT'),
-    z.literal('MU'),
-    z.literal('MV'),
-    z.literal('MW'),
-    z.literal('MX'),
-    z.literal('MY'),
-    z.literal('MZ'),
-    z.literal('NA'),
-    z.literal('NC'),
-    z.literal('NE'),
-    z.literal('NF'),
-    z.literal('NG'),
-    z.literal('NI'),
-    z.literal('NL'),
-    z.literal('NO'),
-    z.literal('NP'),
-    z.literal('NR'),
-    z.literal('NU'),
-    z.literal('NZ'),
-    z.literal('OM'),
-    z.literal('PA'),
-    z.literal('PE'),
-    z.literal('PF'),
-    z.literal('PG'),
-    z.literal('PH'),
-    z.literal('PK'),
-    z.literal('PL'),
-    z.literal('PM'),
-    z.literal('PN'),
-    z.literal('PR'),
-    z.literal('PS'),
-    z.literal('PT'),
-    z.literal('PW'),
-    z.literal('PY'),
-    z.literal('QA'),
-    z.literal('RE'),
-    z.literal('RO'),
-    z.literal('RS'),
-    z.literal('RU'),
-    z.literal('RW'),
-    z.literal('SA'),
-    z.literal('SB'),
-    z.literal('SC'),
-    z.literal('SD'),
-    z.literal('SE'),
-    z.literal('SG'),
-    z.literal('SH'),
-    z.literal('SI'),
-    z.literal('SJ'),
-    z.literal('SK'),
-    z.literal('SL'),
-    z.literal('SM'),
-    z.literal('SN'),
-    z.literal('SO'),
-    z.literal('SR'),
-    z.literal('SS'),
-    z.literal('ST'),
-    z.literal('SV'),
-    z.literal('SX'),
-    z.literal('SY'),
-    z.literal('SZ'),
-    z.literal('TC'),
-    z.literal('TD'),
-    z.literal('TF'),
-    z.literal('TG'),
-    z.literal('TH'),
-    z.literal('TJ'),
-    z.literal('TK'),
-    z.literal('TL'),
-    z.literal('TM'),
-    z.literal('TN'),
-    z.literal('TO'),
-    z.literal('TR'),
-    z.literal('TT'),
-    z.literal('TV'),
-    z.literal('TW'),
-    z.literal('TZ'),
-    z.literal('UA'),
-    z.literal('UG'),
-    z.literal('UM'),
-    z.literal('US'),
-    z.literal('UY'),
-    z.literal('UZ'),
-    z.literal('VA'),
-    z.literal('VC'),
-    z.literal('VE'),
-    z.literal('VG'),
-    z.literal('VI'),
-    z.literal('VN'),
-    z.literal('VU'),
-    z.literal('WF'),
-    z.literal('WS'),
-    z.literal('YE'),
-    z.literal('YT'),
-    z.literal('ZA'),
-    z.literal('ZM'),
-    z.literal('ZW'),
-  ])
-  .nullable()
-  .openapi({ example: 'US' })
-  .openapi('CountryOrNull')
-
-const TimezoneSchema = z
-  .enum([
-    'UTC',
-    'Africa/Algiers',
-    'Africa/Cairo',
-    'Africa/Casablanca',
-    'Africa/Harare',
-    'Africa/Johannesburg',
-    'Africa/Monrovia',
-    'Africa/Nairobi',
-    'America/Argentina/Buenos_Aires',
-    'America/Bogota',
-    'America/Caracas',
-    'America/Chicago',
-    'America/Chihuahua',
-    'America/Denver',
-    'America/Guatemala',
-    'America/Guyana',
-    'America/Halifax',
-    'America/Indiana/Indianapolis',
-    'America/Juneau',
-    'America/La_Paz',
-    'America/Lima',
-    'America/Los_Angeles',
-    'America/Mazatlan',
-    'America/Mexico_City',
-    'America/Monterrey',
-    'America/Montevideo',
-    'America/New_York',
-    'America/Nuuk',
-    'America/Phoenix',
-    'America/Puerto_Rico',
-    'America/Regina',
-    'America/Santiago',
-    'America/Sao_Paulo',
-    'America/St_Johns',
-    'America/Tijuana',
-    'Asia/Almaty',
-    'Asia/Baghdad',
-    'Asia/Baku',
-    'Asia/Bangkok',
-    'Asia/Chongqing',
-    'Asia/Colombo',
-    'Asia/Dhaka',
-    'Asia/Hong_Kong',
-    'Asia/Irkutsk',
-    'Asia/Jakarta',
-    'Asia/Jerusalem',
-    'Asia/Kabul',
-    'Asia/Kamchatka',
-    'Asia/Karachi',
-    'Asia/Kathmandu',
-    'Asia/Kolkata',
-    'Asia/Krasnoyarsk',
-    'Asia/Kuala_Lumpur',
-    'Asia/Kuwait',
-    'Asia/Magadan',
-    'Asia/Muscat',
-    'Asia/Novosibirsk',
-    'Asia/Riyadh',
-    'Asia/Seoul',
-    'Asia/Shanghai',
-    'Asia/Singapore',
-    'Asia/Srednekolymsk',
-    'Asia/Taipei',
-    'Asia/Tashkent',
-    'Asia/Tbilisi',
-    'Asia/Tehran',
-    'Asia/Tokyo',
-    'Asia/Ulaanbaatar',
-    'Asia/Urumqi',
-    'Asia/Vladivostok',
-    'Asia/Yakutsk',
-    'Asia/Yangon',
-    'Asia/Yekaterinburg',
-    'Asia/Yerevan',
-    'Atlantic/Azores',
-    'Atlantic/Cape_Verde',
-    'Atlantic/South_Georgia',
-    'Australia/Adelaide',
-    'Australia/Brisbane',
-    'Australia/Darwin',
-    'Australia/Hobart',
-    'Australia/Melbourne',
-    'Australia/Perth',
-    'Australia/Sydney',
-    'Europe/Amsterdam',
-    'Europe/Athens',
-    'Europe/Belgrade',
-    'Europe/Berlin',
-    'Europe/Bratislava',
-    'Europe/Brussels',
-    'Europe/Bucharest',
-    'Europe/Budapest',
-    'Europe/Copenhagen',
-    'Europe/Dublin',
-    'Europe/Helsinki',
-    'Europe/Istanbul',
-    'Europe/Kaliningrad',
-    'Europe/Kyiv',
-    'Europe/Lisbon',
-    'Europe/Ljubljana',
-    'Europe/London',
-    'Europe/Madrid',
-    'Europe/Minsk',
-    'Europe/Moscow',
-    'Europe/Paris',
-    'Europe/Prague',
-    'Europe/Riga',
-    'Europe/Rome',
-    'Europe/Samara',
-    'Europe/Sarajevo',
-    'Europe/Skopje',
-    'Europe/Sofia',
-    'Europe/Stockholm',
-    'Europe/Tallinn',
-    'Europe/Vienna',
-    'Europe/Vilnius',
-    'Europe/Volgograd',
-    'Europe/Warsaw',
-    'Europe/Zagreb',
-    'Europe/Zurich',
-    'GMT+12',
-    'Pacific/Apia',
-    'Pacific/Auckland',
-    'Pacific/Chatham',
-    'Pacific/Fakaofo',
-    'Pacific/Fiji',
-    'Pacific/Guadalcanal',
-    'Pacific/Guam',
-    'Pacific/Honolulu',
-    'Pacific/Majuro',
-    'Pacific/Midway',
-    'Pacific/Noumea',
-    'Pacific/Pago_Pago',
-    'Pacific/Port_Moresby',
-    'Pacific/Tongatapu',
-  ])
-  .openapi({ example: 'America/Los_Angeles' })
-  .openapi('Timezone')
-
-const BillingEntityObjectSchema = z
-  .object({
-    lago_id: z
-      .uuid()
-      .openapi({
-        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
-        description: 'A unique identifier for the billing entity in the Lago application',
-      }),
-    code: z
-      .string()
-      .openapi({ example: 'acme_corp', description: 'The unique code of the billing entity' }),
-    name: z
-      .string()
-      .openapi({ example: 'Acme Corp', description: 'The name of the billing entity' }),
-    default_currency: CurrencySchema.openapi({
-      description: 'The default currency of the billing entity',
-      example: 'USD',
-    }),
-    document_locale: z
-      .string()
-      .openapi({
-        example: 'en',
-        description:
-          'The language of the documents generated for this billing entity, in the ISO 639-1 format.',
-      }),
-    document_numbering: z
-      .enum(['per_customer', 'per_billing_entity'])
-      .openapi({
-        description:
-          'The type of document numbering for this billing entity:\n- `per_customer`: document numbers are unique per customer\n- `per_billing_entity`: document numbers are unique per billing entity',
-        example: 'per_customer',
-      }),
-    document_number_prefix: z
-      .string()
-      .nullable()
-      .openapi({
-        example: 'ABC-123',
-        description:
-          'The prefix used in document numbers for this billing entity. It is upper cased. When no prefix is given at creation, Lago builds one from the first three letters of the name and the last four characters of the identifier.',
-      }),
-    finalize_zero_amount_invoice: z
-      .boolean()
-      .openapi({
-        example: true,
-        description: 'Whether to finalize invoices with zero amount for this billing entity',
-      }),
-    invoice_footer: z
-      .string()
-      .nullable()
-      .openapi({
-        example: 'Thank you for your business',
-        description: 'The footer text to be displayed on invoices for this billing entity',
-      }),
-    invoice_grace_period: z
-      .int()
-      .openapi({ example: 0, description: 'The grace period (in days) for invoice finalization' }),
-    subscription_invoice_issuing_date_anchor: z
-      .enum(['current_period_end', 'next_period_start'])
-      .default('next_period_start')
-      .openapi({
-        description:
-          "Defines whether the issuing date follows the current billing period's end date or the next period starting date.",
-      }),
-    subscription_invoice_issuing_date_adjustment: z
-      .enum(['align_with_finalization_date', 'keep_anchor'])
-      .default('align_with_finalization_date')
-      .openapi({
-        description:
-          'The logic applied on top of the subscription_invoice_issuing_date_anchor rule. You can opt to use the invoice finalization date, that includes any configured grace period.',
-      }),
-    is_default: z
-      .boolean()
-      .openapi({
-        example: false,
-        description:
-          "Whether this billing entity is the organization's default billing entity. The default billing entity is the oldest active one, and is used as a fallback whenever no billing entity is provided, for example when an invoice is created. This flag cannot be changed.",
-      }),
-    net_payment_term: z
-      .int()
-      .openapi({
-        example: 0,
-        description: 'The net payment term (in days) for this billing entity',
-      }),
-    address_line1: z
-      .string()
-      .nullable()
-      .openapi({
-        example: '5230 Penfield Ave',
-        description: 'The first line of the billing address',
-      }),
-    address_line2: z
-      .string()
-      .nullable()
-      .openapi({ example: 'Suite 100', description: 'The second line of the billing address' }),
-    phone: z
-      .string()
-      .nullable()
-      .openapi({
-        example: '1-171-883-3711 x245',
-        description: 'The phone number of the billing entity',
-      }),
-    city: z
-      .string()
-      .nullable()
-      .openapi({ example: 'Woodland Hills', description: 'The city of the billing address' }),
-    state: z
-      .string()
-      .nullable()
-      .openapi({ example: 'CA', description: 'The state of the billing address' }),
-    country: CountryOrNullSchema.openapi({
-      description: 'The country code of the billing address',
-    }),
-    zipcode: z
-      .string()
-      .nullable()
-      .openapi({ example: '91364', description: 'The zipcode of the billing address' }),
-    email: z
-      .email()
-      .nullable()
-      .openapi({
-        example: 'billing@acme.com',
-        description: 'The email address of the billing entity',
-      }),
-    legal_name: z
-      .string()
-      .nullable()
-      .openapi({
-        example: 'Acme Corporation',
-        description: 'The legal name of the billing entity',
-      }),
-    legal_number: z
-      .string()
-      .nullable()
-      .openapi({
-        example: 'US123456789',
-        description: 'The legal registration number of the billing entity',
-      }),
-    tax_identification_number: z
-      .string()
-      .nullable()
-      .openapi({
-        example: 'EU123456789',
-        description: 'The tax identification number of the billing entity',
-      }),
-    timezone: TimezoneSchema.openapi({
-      description: 'The timezone of the billing entity',
-      example: 'UTC',
-    }),
-    email_settings: z
-      .array(z.enum(['invoice.finalized', 'credit_note.created', 'payment_receipt.created']))
-      .openapi({ description: 'The email notification settings for this billing entity' }),
-    eu_tax_management: z
-      .boolean()
-      .nullable()
-      .openapi({
-        example: false,
-        description:
-          'Whether EU tax management is enabled for this billing entity. It can only be enabled when the billing entity country is in the European Union.',
-      }),
-    einvoicing: z
-      .boolean()
-      .openapi({
-        example: false,
-        description:
-          'Whether e-invoicing is enabled for this billing entity. It can only be enabled when the billing entity country is `FR` or `DE`.',
-      }),
-    logo_url: z
-      .url()
-      .nullable()
-      .openapi({
-        example: 'https://getlago.com/logo.png',
-        description: "The URL of the billing entity's logo",
-      }),
-    created_at: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        example: '2022-04-29T08:59:51Z',
-        description: 'The date and time when the billing entity was created',
-      }),
-    updated_at: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        example: '2022-04-29T08:59:51Z',
-        description: 'The date and time when the billing entity was last updated',
-      }),
-  })
-  .openapi({
-    description: 'Billing entity object',
-    required: [
-      'lago_id',
-      'code',
-      'name',
-      'default_currency',
-      'document_locale',
-      'document_numbering',
-      'document_number_prefix',
-      'finalize_zero_amount_invoice',
-      'invoice_footer',
-      'invoice_grace_period',
-      'subscription_invoice_issuing_date_anchor',
-      'subscription_invoice_issuing_date_adjustment',
-      'is_default',
-      'net_payment_term',
-      'address_line1',
-      'address_line2',
-      'phone',
-      'city',
-      'state',
-      'country',
-      'zipcode',
-      'email',
-      'legal_name',
-      'legal_number',
-      'tax_identification_number',
-      'timezone',
-      'email_settings',
-      'eu_tax_management',
-      'einvoicing',
-      'logo_url',
-      'created_at',
-      'updated_at',
-    ],
-  })
-  .openapi('BillingEntityObject')
-
-const ApiErrorUnauthorizedSchema = z
-  .object({
-    status: z.int32().openapi({ example: 401 }),
-    error: z.string().openapi({ example: 'Unauthorized' }),
-  })
-  .openapi({ required: ['status', 'error'] })
-  .openapi('ApiErrorUnauthorized')
-
-const BillingEntityCreateInputSchema = z
-  .object({
-    billing_entity: z
-      .object({
-        code: z
-          .string()
-          .openapi({ example: 'acme_corp', description: 'The unique code of the billing entity' }),
-        name: z
-          .string()
-          .openapi({ example: 'Acme Corp', description: 'The name of the billing entity' }),
-        default_currency: CurrencySchema.exactOptional().openapi({
-          description: 'The default currency of the billing entity',
-          example: 'USD',
-        }),
-        document_numbering: z
-          .enum(['per_customer', 'per_billing_entity'])
-          .exactOptional()
-          .openapi({
-            description:
-              'The type of document numbering for this billing entity:\n- `per_customer`: document numbers are unique per customer\n- `per_billing_entity`: document numbers are unique per billing entity',
-          }),
-        document_number_prefix: z
-          .string()
-          .min(1)
-          .max(10)
-          .nullable()
-          .exactOptional()
-          .openapi({
-            example: 'ABC-123',
-            description:
-              'The prefix used in document numbers for this billing entity (1 to 10 characters). It is upper cased. When it is not provided, Lago builds one from the first three letters of the name and the last four characters of the identifier.',
-          }),
-        finalize_zero_amount_invoice: z
-          .boolean()
-          .exactOptional()
-          .openapi({
-            example: true,
-            description: 'Whether to finalize invoices with zero amount for this billing entity',
-          }),
-        billing_configuration: z
-          .object({
-            invoice_footer: z
-              .string()
-              .max(600)
-              .exactOptional()
-              .openapi({
-                example: 'Thank you for your business',
-                description:
-                  'The footer text to be displayed on invoices for this billing entity (600 characters max).',
-              }),
-            document_locale: z
-              .string()
-              .exactOptional()
-              .openapi({
-                example: 'en',
-                description:
-                  'The language of the documents generated for this billing entity, in the ISO 639-1 format.',
-              }),
-            invoice_grace_period: z
-              .int()
-              .exactOptional()
-              .openapi({
-                example: 0,
-                description:
-                  'The grace period (in days) for invoice finalization. This is a premium feature, the value is ignored without a premium license.',
-              }),
-            subscription_invoice_issuing_date_anchor: z
-              .enum(['current_period_end', 'next_period_start'])
-              .default('next_period_start')
-              .exactOptional()
-              .openapi({
-                description:
-                  "Defines whether the issuing date follows the current billing period's end date or the next period starting date.",
-              }),
-            subscription_invoice_issuing_date_adjustment: z
-              .enum(['align_with_finalization_date', 'keep_anchor'])
-              .default('align_with_finalization_date')
-              .exactOptional()
-              .openapi({
-                description:
-                  'The logic applied on top of the subscription_invoice_issuing_date_anchor rule. You can opt to use the invoice finalization date, that includes any configured grace period.',
-              }),
-          })
-          .exactOptional()
-          .openapi({ required: [] }),
-        net_payment_term: z
-          .int()
-          .exactOptional()
-          .openapi({
-            example: 0,
-            description: 'The net payment term (in days) for this billing entity',
-          }),
-        address_line1: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            example: '5230 Penfield Ave',
-            description: 'The first line of the billing address',
-          }),
-        address_line2: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ example: 'Suite 100', description: 'The second line of the billing address' }),
-        phone: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            example: '1-171-883-3711 x245',
-            description: 'The phone number of the billing entity',
-          }),
-        city: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ example: 'Woodland Hills', description: 'The city of the billing address' }),
-        state: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ example: 'CA', description: 'The state of the billing address' }),
-        country: CountryOrNullSchema.exactOptional().openapi({
-          description: 'The country code of the billing address',
-        }),
-        zipcode: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ example: '91364', description: 'The zipcode of the billing address' }),
-        email: z
-          .email()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            example: 'billing@acme.com',
-            description: 'The email address of the billing entity',
-          }),
-        legal_name: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            example: 'Acme Corporation',
-            description: 'The legal name of the billing entity',
-          }),
-        legal_number: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            example: 'US123456789',
-            description: 'The legal registration number of the billing entity',
-          }),
-        tax_identification_number: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            example: 'EU123456789',
-            description: 'The tax identification number of the billing entity',
-          }),
-        timezone: TimezoneSchema.exactOptional().openapi({
-          description:
-            'The timezone of the billing entity. This is a premium feature, the value is ignored without a premium license.',
-          example: 'UTC',
-        }),
-        email_settings: z
-          .array(z.enum(['invoice.finalized', 'credit_note.created', 'payment_receipt.created']))
-          .exactOptional()
-          .openapi({
-            description:
-              'The email notification settings for this billing entity. This is a premium feature, the value is ignored without a premium license.',
-          }),
-        eu_tax_management: z
-          .boolean()
-          .exactOptional()
-          .openapi({
-            example: false,
-            description:
-              'Whether EU tax management is enabled for this billing entity. It can only be enabled when the billing entity country is in the European Union.',
-          }),
-        einvoicing: z
-          .boolean()
-          .exactOptional()
-          .openapi({
-            example: false,
-            description:
-              'Whether e-invoicing is enabled for this billing entity. It can only be enabled when the billing entity country is `FR` or `DE`.',
-          }),
-        logo: z
-          .url()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            example: 'data:image/png;base64,...',
-            description:
-              'The base64 encoded logo image for the billing entity. Accepted formats are PNG, JPG and JPEG, up to 800 kB.',
-          }),
-      })
-      .openapi({ required: ['code', 'name'] }),
-  })
-  .openapi({ description: 'Billing entity create input', required: ['billing_entity'] })
-  .openapi('BillingEntityCreateInput')
-
-const ApiErrorBadRequestSchema = z
-  .object({
-    status: z.int32().openapi({ example: 400 }),
-    error: z.string().openapi({ example: 'Bad request' }),
-  })
-  .openapi({ required: ['status', 'error'] })
-  .openapi('ApiErrorBadRequest')
-
-const ApiErrorForbiddenSchema = z
-  .object({
-    status: z.int32().openapi({ example: 403 }),
-    error: z.string().openapi({ example: 'Forbidden' }),
-    code: z.string().openapi({ example: 'feature_unavailable' }),
-  })
-  .openapi({ required: ['status', 'error', 'code'] })
-  .openapi('ApiErrorForbidden')
-
-const ApiErrorUnprocessableEntitySchema = z
-  .object({
-    status: z.int32().openapi({ example: 422 }),
-    error: z.string().openapi({ example: 'Unprocessable entity' }),
-    code: z.string().openapi({ example: 'validation_errors' }),
-    error_details: z.object({}),
-  })
-  .openapi({ required: ['status', 'error', 'code', 'error_details'] })
-  .openapi('ApiErrorUnprocessableEntity')
-
-const TaxObjectSchema = z
-  .object({
-    lago_id: z
-      .uuid()
-      .openapi({
-        description: 'Unique identifier of the tax, created by Lago.',
-        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
-      }),
-    name: z.string().openapi({ description: 'Name of the tax.', example: 'TVA' }),
-    code: z
-      .string()
-      .openapi({
-        description: 'Unique code used to identify the tax associated with the API request.',
-        example: 'french_standard_vat',
-      }),
-    description: z
-      .string()
-      .nullable()
-      .openapi({ description: 'Internal description of the tax.', example: 'French standard VAT' }),
-    rate: z.number().openapi({ description: 'The percentage rate of the tax.', example: 20 }),
-    applied_to_organization: z
-      .boolean()
-      .openapi({
-        deprecated: true,
-        description:
-          "**Deprecated.** This field will be removed in a future version. When set to true, it applies the tax to the organization's default billing entity. To apply or remove a tax from any billing entity (including the default one), please use the `PUT /billing_entities/:code` endpoint instead.",
-        example: true,
-      }),
-    applied_to_billing_entities_codes: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'The codes of the billing entities the tax is applied to, sorted alphabetically. It is empty when the tax is only attached to customers. This field is only returned by the tax endpoints, not by taxes nested in another object.',
-        example: ['acme_corp', 'foo_bar'],
-      }),
-    created_at: z.iso
-      .datetime({ offset: true })
-      .openapi({ description: 'Creation date of the tax.', example: '2023-07-06T14:35:58Z' }),
-  })
-  .openapi({
-    required: [
-      'lago_id',
-      'name',
-      'code',
-      'description',
-      'rate',
-      'applied_to_organization',
-      'created_at',
-    ],
-  })
-  .openapi('TaxObject')
-
-const InvoiceCustomSectionObjectSchema = z
-  .object({
-    lago_id: z
-      .uuid()
-      .openapi({
-        description:
-          'Unique identifier for the invoice custom section in the Lago application, generated by Lago to ensure record uniqueness within the system.',
-        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
-      }),
-    name: z
-      .string()
-      .openapi({ description: 'Name of the invoice custom section.', example: 'EU Bank Details' }),
-    code: z
-      .string()
-      .openapi({
-        description: 'Unique code identifying the invoice custom section for the API request.',
-        example: 'eu_bank_details',
-      }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Internal description of the invoice custom section.',
-        example: 'This section contains the bank details for EU customers.',
-      }),
-    details: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The value shown on the invoice PDF.',
-        example: 'Bank Name: Lago Bank, IBAN: FR7630004000031234567890143',
-      }),
-    display_name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The name of the invoice custom section displayed on the invoice.',
-        example: 'Bank Details:',
-      }),
-    applied_to_organization: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        deprecated: true,
-        description:
-          "**Deprecated.** This field will be removed in a future version. When set to true, it applies the invoice custom section to the organization's default billing entity. To apply or remove an invoice custom section from any billing entity (including the default one), please use the `PUT /billing_entities/:code` endpoint instead.",
-        example: true,
-      }),
-    organization_id: z
-      .uuid()
-      .exactOptional()
-      .openapi({
-        description:
-          'Unique identifier for the organization associated with the invoice custom section.',
-        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
-      }),
-    created_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'Creation date of the tax.', example: '2023-07-06T14:35:58Z' }),
-  })
-  .openapi({ required: ['lago_id', 'name', 'code'] })
-  .openapi('InvoiceCustomSectionObject')
-
-const BillingEntityObjectExtendedSchema = BillingEntityObjectSchema.and(
-  z
-    .object({
-      taxes: z.array(TaxObjectSchema).exactOptional(),
-      selected_invoice_custom_sections: z.array(InvoiceCustomSectionObjectSchema).exactOptional(),
-    })
-    .openapi({ required: [] }),
-).openapi('BillingEntityObjectExtended')
-
-const ApiErrorNotFoundSchema = z
-  .object({
-    status: z.int32().openapi({ example: 404 }),
-    error: z.string().openapi({ example: 'Not Found' }),
-    code: z.string().openapi({ example: 'object_not_found' }),
-  })
-  .openapi({ required: ['status', 'error', 'code'] })
-  .openapi('ApiErrorNotFound')
-
-const TaxCodesSchema = z
-  .array(z.string())
-  .openapi({
-    description: 'List of unique code used to identify the taxes.',
-    example: ['french_standard_vat'],
-  })
-  .openapi('TaxCodes')
-
-const BillingEntityUpdateInputSchema = z
-  .object({
-    billing_entity: z
-      .object({
-        name: z
-          .string()
-          .exactOptional()
-          .openapi({ example: 'Acme Corp', description: 'The name of the billing entity' }),
-        default_currency: CurrencySchema.exactOptional().openapi({
-          description: 'The default currency of the billing entity',
-          example: 'USD',
-        }),
-        document_numbering: z
-          .enum(['per_customer', 'per_billing_entity'])
-          .exactOptional()
-          .openapi({
-            description:
-              'The type of document numbering for this billing entity:\n- `per_customer`: document numbers are unique per customer\n- `per_billing_entity`: document numbers are unique per billing entity',
-          }),
-        document_number_prefix: z
-          .string()
-          .min(1)
-          .max(10)
-          .exactOptional()
-          .openapi({
-            example: 'ABC-123',
-            description:
-              'The prefix used in document numbers for this billing entity (1 to 10 characters). It is upper cased. It cannot be removed once the billing entity exists, and sending `null` returns a `422` error.',
-          }),
-        finalize_zero_amount_invoice: z
-          .boolean()
-          .exactOptional()
-          .openapi({
-            example: true,
-            description: 'Whether to finalize invoices with zero amount for this billing entity',
-          }),
-        billing_configuration: z
-          .object({
-            invoice_footer: z
-              .string()
-              .max(600)
-              .exactOptional()
-              .openapi({
-                example: 'Thank you for your business',
-                description:
-                  'The footer text to be displayed on invoices for this billing entity (600 characters max).',
-              }),
-            document_locale: z
-              .string()
-              .exactOptional()
-              .openapi({
-                example: 'en',
-                description:
-                  'The language of the documents generated for this billing entity, in the ISO 639-1 format.',
-              }),
-            invoice_grace_period: z
-              .int()
-              .exactOptional()
-              .openapi({
-                example: 0,
-                description:
-                  'The grace period (in days) for invoice finalization. This is a premium feature, the value is ignored without a premium license.',
-              }),
-            subscription_invoice_issuing_date_anchor: z
-              .enum(['current_period_end', 'next_period_start'])
-              .default('next_period_start')
-              .exactOptional()
-              .openapi({
-                description:
-                  "Defines whether the issuing date follows the current billing period's end date or the next period starting date.",
-              }),
-            subscription_invoice_issuing_date_adjustment: z
-              .enum(['align_with_finalization_date', 'keep_anchor'])
-              .default('align_with_finalization_date')
-              .exactOptional()
-              .openapi({
-                description:
-                  'The logic applied on top of the subscription_invoice_issuing_date_anchor rule. You can opt to use the invoice finalization date, that includes any configured grace period.',
-              }),
-          })
-          .exactOptional()
-          .openapi({ required: [] }),
-        net_payment_term: z
-          .int()
-          .exactOptional()
-          .openapi({
-            example: 0,
-            description: 'The net payment term (in days) for this billing entity',
-          }),
-        address_line1: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            example: '5230 Penfield Ave',
-            description: 'The first line of the billing address',
-          }),
-        address_line2: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ example: 'Suite 100', description: 'The second line of the billing address' }),
-        phone: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            example: '1-171-883-3711 x245',
-            description: 'The phone number of the billing entity',
-          }),
-        city: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ example: 'Woodland Hills', description: 'The city of the billing address' }),
-        state: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ example: 'CA', description: 'The state of the billing address' }),
-        country: CountryOrNullSchema.exactOptional().openapi({
-          description: 'The country code of the billing address',
-        }),
-        zipcode: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ example: '91364', description: 'The zipcode of the billing address' }),
-        email: z
-          .email()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            example: 'billing@acme.com',
-            description: 'The email address of the billing entity',
-          }),
-        legal_name: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            example: 'Acme Corporation',
-            description: 'The legal name of the billing entity',
-          }),
-        legal_number: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            example: 'US123456789',
-            description: 'The legal registration number of the billing entity',
-          }),
-        tax_identification_number: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            example: 'EU123456789',
-            description: 'The tax identification number of the billing entity',
-          }),
-        timezone: TimezoneSchema.exactOptional().openapi({
-          description:
-            'The timezone of the billing entity. This is a premium feature, the value is ignored without a premium license.',
-          example: 'UTC',
-        }),
-        tax_codes: TaxCodesSchema.exactOptional().openapi({
-          description:
-            'The tax codes that should be associated with this billing entity. Codes are matched without case sensitivity, and two codes that differ only by case count as one. An unknown code returns a `404` error.',
-        }),
-        email_settings: z
-          .array(z.enum(['invoice.finalized', 'credit_note.created', 'payment_receipt.created']))
-          .exactOptional()
-          .openapi({
-            description:
-              'The email notification settings for this billing entity. This is a premium feature, the value is ignored without a premium license.',
-          }),
-        eu_tax_management: z
-          .boolean()
-          .exactOptional()
-          .openapi({
-            example: false,
-            description:
-              'Whether EU tax management is enabled for this billing entity. It can only be enabled when the billing entity country is in the European Union.',
-          }),
-        einvoicing: z
-          .boolean()
-          .exactOptional()
-          .openapi({
-            example: false,
-            description:
-              'Whether e-invoicing is enabled for this billing entity. It can only be enabled when the billing entity country is `FR` or `DE`.',
-          }),
-        logo: z
-          .url()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            example: 'data:image/png;base64,...',
-            description:
-              'The base64 encoded logo image for the billing entity. Accepted formats are PNG, JPG and JPEG, up to 800 kB. Sending "null" removes the current logo.',
-          }),
-        invoice_custom_section_codes: z
-          .array(z.string())
-          .exactOptional()
-          .openapi({
-            example: ['custom_section_1', 'custom_section_2'],
-            description:
-              'The codes of the invoice custom section that should be associated with this billing entity',
-          }),
-      })
-      .openapi({ required: [] }),
-  })
-  .openapi({ description: 'Billing entity update input', required: ['billing_entity'] })
-  .openapi('BillingEntityUpdateInput')
-
-const ActivityLogObjectSchema = z
-  .object({
-    activity_id: z
-      .uuid()
-      .openapi({
-        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
-        description:
-          'Unique identifier assigned to the activity log within the Lago application. This ID is exclusively created by Lago and serves as a unique identifier for the activity log record within the Lago system.',
-      }),
-    user_email: z
-      .email()
-      .nullable()
-      .openapi({
-        example: 'dinesh@piedpiper.example',
-        description:
-          'The email of the user who performed the activity. It is null when the action was performed with an API key or by the system.',
-      }),
-    activity_type: z
-      .string()
-      .openapi({
-        example: 'billable_metric.created',
-        description: 'The action that was performed on the resource.',
-      }),
-    activity_source: z
-      .enum(['api', 'front', 'system'])
-      .openapi({ example: 'api', description: 'The source that triggered the action.' }),
-    activity_object: z
-      .object({})
-      .nullable()
-      .openapi({
-        example: {
-          lago_id: 'dad68bc7-c01a-4ad8-a87b-13e78693a5bc',
-          plan_id: 'b9155544-e261-4e92-b54e-f65d7609294c',
-        },
-        description:
-          'The state of the resource after the action, keyed by top-level attribute name. Nested values are returned JSON-encoded.',
-      }),
-    activity_object_changes: z
-      .object({})
-      .nullable()
-      .openapi({
-        example: { plan_id: '[null,"b9155544-e261-4e92-b54e-f65d7609294c"]' },
-        description:
-          'The attributes the action changed, keyed by attribute name. Each value is the JSON-encoded pair of the previous and the new value. It is empty when the activity type is not an update.',
-      }),
-    external_customer_id: z
-      .string()
-      .nullable()
-      .openapi({
-        description: 'The customer external unique identifier (provided by your own application).',
-        example: '5eb02857-a71e-4ea2-bcf9-57d3a41bc6ba',
-      }),
-    external_subscription_id: z
-      .string()
-      .nullable()
-      .openapi({
-        description: 'Unique identifier assigned to the subscription in your application.',
-        example: 'external_id',
-      }),
-    resource_id: z
-      .uuid()
-      .openapi({
-        description: 'The unique identifier of the resource the action was applied to.',
-        example: '5eb02857-a71e-4ea2-bcf9-57d3a41bc6ba',
-      }),
-    resource_type: z
-      .string()
-      .openapi({
-        description: 'The type of the resource the action was applied to.',
-        example: 'BillableMetric',
-      }),
-    logged_at: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        example: '2025-03-31T12:31:44Z',
-        description:
-          'The date when the action happened, presented in the ISO 8601 datetime format, specifically in Coordinated Universal Time (UTC).',
-      }),
-    created_at: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        example: '2022-04-29T08:59:51Z',
-        description:
-          'The creation date of the activity log record in the Lago application, presented in the ISO 8601 datetime format, specifically in Coordinated Universal Time (UTC).',
-      }),
-  })
-  .openapi({
-    required: [
-      'activity_id',
-      'activity_source',
-      'activity_type',
-      'activity_object',
-      'activity_object_changes',
-      'user_email',
-      'external_customer_id',
-      'external_subscription_id',
-      'logged_at',
-      'resource_id',
-      'resource_type',
-      'created_at',
-    ],
-  })
-  .openapi('ActivityLogObject')
-
-const PaginationMetaSchema = z
-  .object({
-    current_page: z.int().openapi({ description: 'Current page.', example: 2 }),
-    next_page: z
-      .int()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Next page.', example: 3 }),
-    prev_page: z
-      .int()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Previous page.', example: 1 }),
-    total_pages: z.int().openapi({ description: 'Total number of pages.', example: 4 }),
-    total_count: z.int().openapi({ description: 'Total number of records.', example: 70 }),
-  })
-  .openapi({ required: ['current_page', 'total_pages', 'total_count'] })
-  .openapi('PaginationMeta')
-
-const ActivityLogsPaginatedSchema = z
-  .object({ activity_logs: z.array(ActivityLogObjectSchema), meta: PaginationMetaSchema })
-  .openapi({ required: ['activity_logs', 'meta'] })
-  .openapi('ActivityLogsPaginated')
-
-const ActivityLogSchema = z
-  .object({ activity_log: ActivityLogObjectSchema })
-  .openapi({ required: ['activity_log'] })
-  .openapi('ActivityLog')
-
-const AddOnObjectSchema = z
-  .object({
-    lago_id: z
-      .uuid()
-      .openapi({
-        description: 'Unique identifier of the add-on, created by Lago.',
-        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
-      }),
-    name: z.string().openapi({ description: 'The name of the add-on.', example: 'Setup Fee' }),
-    invoice_display_name: z
-      .string()
-      .nullable()
-      .openapi({
-        description:
-          'Specifies the name that will be displayed on an invoice. If no value is set for this field, the name of the actual charge will be used as the default display name.',
-        example: 'Setup Fee (SF1)',
-      }),
-    code: z
-      .string()
-      .openapi({ description: 'Unique code used to identify the add-on.', example: 'setup_fee' }),
-    amount_cents: z
-      .int()
-      .openapi({
-        description:
-          'The cost of the add-on in cents, excluding any applicable taxes, that is billed to a customer. By creating a one-off invoice, you will be able to override this value.',
-        example: 50000,
-      }),
-    amount_currency: CurrencySchema.openapi({
-      description: 'The currency of the add-on.',
-      example: 'USD',
-    }),
-    description: z
-      .string()
-      .nullable()
-      .openapi({
-        description: 'The description of the add-on.',
-        example: 'Implementation fee for new customers.',
-      }),
-    created_at: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description:
-          'The date and time when the add-on was created. It is expressed in UTC format according to the ISO 8601 datetime standard. This field provides the timestamp for the exact moment when the add-on was initially created.',
-        example: '2022-04-29T08:59:51Z',
-      }),
-    taxes: z.array(TaxObjectSchema).openapi({ description: 'All taxes applied to the add-on.' }),
-  })
-  .openapi({
-    required: [
-      'lago_id',
-      'name',
-      'invoice_display_name',
-      'code',
-      'amount_cents',
-      'amount_currency',
-      'description',
-      'created_at',
-      'taxes',
-    ],
-  })
-  .openapi('AddOnObject')
-
-const AddOnsPaginatedSchema = z
-  .object({ add_ons: z.array(AddOnObjectSchema), meta: PaginationMetaSchema })
-  .openapi({ required: ['add_ons', 'meta'] })
-  .openapi('AddOnsPaginated')
-
-const AddOnBaseInputSchema = z
-  .object({
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The name of the add-on.', example: 'Setup Fee' }),
-    invoice_display_name: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Specifies the name that will be displayed on an invoice. If no value is set for this field, the name of the actual charge will be used as the default display name.',
-        example: 'Setup Fee (SF1)',
-      }),
-    code: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Unique code used to identify the add-on.', example: 'setup_fee' }),
-    amount_cents: z
-      .int()
-      .min(1)
-      .exactOptional()
-      .openapi({
-        description:
-          'The cost of the add-on in cents, excluding any applicable taxes, that is billed to a customer. It must be greater than zero. By creating a one-off invoice, you will be able to override this value.',
-        example: 50000,
-      }),
-    amount_currency: CurrencySchema.exactOptional().openapi({
-      description: 'The currency of the add-on.',
-      example: 'USD',
-    }),
-    description: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'The description of the add-on.',
-        example: 'Implementation fee for new customers.',
-      }),
-    tax_codes: TaxCodesSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('AddOnBaseInput')
-
-const AddOnCreateInputSchema = z
-  .object({
-    add_on: AddOnBaseInputSchema.openapi({
-      required: ['name', 'code', 'amount_cents', 'amount_currency'],
-    }),
-  })
-  .openapi({ required: ['add_on'] })
-  .openapi('AddOnCreateInput')
-
-const AddOnSchema = z
-  .object({ add_on: AddOnObjectSchema })
-  .openapi({ required: ['add_on'] })
-  .openapi('AddOn')
-
-const AddOnUpdateInputSchema = z
-  .object({ add_on: AddOnBaseInputSchema })
-  .openapi({ required: ['add_on'] })
-  .openapi('AddOnUpdateInput')
-
-const ApiLogObjectSchema = z
-  .object({
-    api_version: z
-      .string()
-      .openapi({ example: 'v1', description: 'Lago API version used in the request.' }),
-    client: z
-      .string()
-      .openapi({
-        example: 'Lago Ruby v1.26.0',
-        description: 'The client that made the request, as reported by its user agent.',
-      }),
-    http_method: z
-      .enum(['post', 'put', 'patch', 'delete'])
-      .openapi({
-        example: 'post',
-        description:
-          'The HTTP method of the request. Requests made with the GET method are not logged.',
-      }),
-    http_status: z
-      .int()
-      .openapi({ example: 200, description: 'The HTTP status Lago returned for the request.' }),
-    logged_at: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        example: '2025-03-31T12:31:44Z',
-        description:
-          'The date when the request was logged, presented in the ISO 8601 datetime format, specifically in Coordinated Universal Time (UTC).',
-      }),
-    request_body: z
-      .looseObject({})
-      .openapi({
-        description:
-          'The parameters of the request, keyed by their top-level name. Nested values are returned JSON-encoded. When the log is too large to be stored, this object is replaced by a `truncated` key set to `"true"` and an `original_bytesize` key holding the size of the log before truncation.',
-        example: { billable_metric: '{"name":"Storage","code":"storage"}' },
-      }),
-    request_origin: z
-      .string()
-      .openapi({
-        description: 'The base URL the request was sent to.',
-        example: 'https://api.getlago.com',
-      }),
-    request_path: z
-      .string()
-      .openapi({ description: 'The path of the request.', example: '/api/v1/billable_metrics' }),
-    created_at: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        example: '2022-04-29T08:59:51Z',
-        description:
-          'The creation date of the API log record in the Lago application, presented in the ISO 8601 datetime format, specifically in Coordinated Universal Time (UTC).',
-      }),
-    request_id: z
-      .string()
-      .openapi({
-        description:
-          'Unique identifier of the API log. It is the identifier of the request, taken from the `X-Request-Id` header when the request carries one, and generated by Lago otherwise.',
-        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
-      }),
-    request_response: z
-      .looseObject({})
-      .nullable()
-      .openapi({
-        description:
-          'The body Lago returned for the request, keyed by its top-level name. Nested values are returned JSON-encoded. It is `null` when the response had no body. When the log is too large to be stored, this object is replaced by a `truncated` key set to `"true"` and an `original_bytesize` key holding the size of the log before truncation.',
-        example: { billable_metric: '{"lago_id":"b9155544-e261-4e92-b54e-f65d7609294c"}' },
-      }),
-  })
-  .openapi({
-    required: [
-      'api_version',
-      'client',
-      'http_method',
-      'http_status',
-      'logged_at',
-      'request_body',
-      'request_origin',
-      'request_path',
-      'created_at',
-      'request_id',
-      'request_response',
-    ],
-  })
-  .openapi('ApiLogObject')
-
-const ApiLogsPaginatedSchema = z
-  .object({ api_logs: z.array(ApiLogObjectSchema), meta: PaginationMetaSchema })
-  .openapi({ required: ['api_logs', 'meta'] })
-  .openapi('ApiLogsPaginated')
-
-const ApiLogSchema = z
-  .object({ api_log: ApiLogObjectSchema })
-  .openapi({ required: ['api_log'] })
-  .openapi('ApiLog')
-
-const GrossRevenueObjectSchema = z
-  .object({
-    month: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description:
-          'The month the revenue is reported for, returned as the first instant of that month in UTC.',
-        example: '2023-11-01T00:00:00.000Z',
-      }),
-    amount_cents: z
-      .int()
-      .openapi({
-        description: 'The total amount of revenue for a period, expressed in cents.',
-        example: 50000,
-      }),
-    currency: CurrencySchema.openapi({
-      description: 'The currency of revenue analytics. Format must be ISO 4217.',
-      example: 'USD',
-    }),
-    invoices_count: z
-      .int()
-      .openapi({
-        description:
-          'The number of `finalized` invoices issued during the month. Fees paid in advance that are not attached to an invoice are not counted.',
-        example: 10,
-      }),
-    billing_entity_id: z
-      .uuid()
-      .openapi({
-        description:
-          'Unique identifier assigned to the billing entity the revenue is attributed to, created by Lago.',
-        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
-      }),
-  })
-  .openapi({
-    required: ['month', 'amount_cents', 'currency', 'invoices_count', 'billing_entity_id'],
-  })
-  .openapi('GrossRevenueObject')
-
-const GrossRevenuesSchema = z
-  .object({ gross_revenues: z.array(GrossRevenueObjectSchema) })
-  .openapi({ required: ['gross_revenues'] })
-  .openapi('GrossRevenues')
-
-const InvoiceCollectionObjectSchema = z
-  .object({
-    month: z
-      .string()
-      .openapi({
-        description: 'Identifies the month of the invoice issuing date.',
-        example: '2023-11-01T00:00:00.000Z',
-      }),
-    payment_status: z
-      .union([z.literal('pending'), z.literal('succeeded'), z.literal('failed'), z.literal(null)])
-      .nullable()
-      .openapi({
-        description:
-          'The payment status of the finalized invoices counted in this row. It is `null` for a month without finalized invoices.',
-        example: 'succeeded',
-      }),
-    invoices_count: z
-      .int()
-      .openapi({
-        description:
-          'The number of finalized invoices issued during the month with this payment status.',
-        example: 10,
-      }),
-    amount_cents: z
-      .int()
-      .openapi({
-        description:
-          'The total amount of the finalized invoices counted in this row, expressed in cents.',
-        example: 50000,
-      }),
-    currency: z
-      .xor([CurrencySchema, z.null().nullable()])
-      .openapi({
-        description:
-          'The currency of the finalized invoices counted in this row. Format must be ISO 4217. It is `null` for a month without finalized invoices.',
-        example: 'USD',
-      }),
-  })
-  .openapi({ required: ['month', 'payment_status', 'invoices_count', 'amount_cents', 'currency'] })
-  .openapi('InvoiceCollectionObject')
-
-const InvoiceCollectionsSchema = z
-  .object({ invoice_collections: z.array(InvoiceCollectionObjectSchema) })
-  .openapi({ required: ['invoice_collections'] })
-  .openapi('InvoiceCollections')
-
-const InvoicedUsageObjectSchema = z
-  .object({
-    month: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description:
-          'The month the invoiced usage is reported for, returned as the first instant of that month in UTC.',
-        example: '2023-11-01T00:00:00.000Z',
-      }),
-    code: z
-      .string()
-      .openapi({
-        description: 'The code of the billable metric the usage fees were charged for.',
-        example: 'code1',
-      }),
-    amount_cents: z
-      .int()
-      .openapi({
-        description:
-          'The total invoiced usage for the month and the billable metric, expressed in cents. It excludes taxes and is net of coupons.',
-        example: 50000,
-      }),
-    currency: CurrencySchema.openapi({
-      description: 'The currency of revenue analytics. Format must be ISO 4217.',
-      example: 'USD',
-    }),
-  })
-  .openapi({ required: ['month', 'code', 'amount_cents', 'currency'] })
-  .openapi('InvoicedUsageObject')
-
-const InvoicedUsagesSchema = z
-  .object({ invoiced_usages: z.array(InvoicedUsageObjectSchema) })
-  .openapi({ required: ['invoiced_usages'] })
-  .openapi('InvoicedUsages')
-
-const MrrObjectSchema = z
-  .object({
-    month: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description:
-          'The month the MRR is reported for, returned as the first instant of that month in UTC.',
-        example: '2023-11-01T00:00:00.000Z',
-      }),
-    amount_cents: z
-      .int()
-      .nullable()
-      .openapi({
-        description:
-          'The total amount of MRR, expressed in cents. It is `null` for a month with no subscription fee.',
-        example: 50000,
-      }),
-    currency: z
-      .xor([CurrencySchema, z.null().nullable()])
-      .openapi({
-        description:
-          'The currency of MRR analytics. Format must be ISO 4217. It is `null` for a month with no subscription fee.',
-        example: 'USD',
-      }),
-  })
-  .openapi({ required: ['month', 'amount_cents', 'currency'] })
-  .openapi('MrrObject')
-
-const MrrsSchema = z
-  .object({ mrrs: z.array(MrrObjectSchema) })
-  .openapi({ required: ['mrrs'] })
-  .openapi('Mrrs')
-
-const OverdueBalanceObjectSchema = z
-  .object({
-    month: z
-      .string()
-      .openapi({
-        description: 'Identifies the month of the payment due date of the overdue invoices.',
-        example: '2023-11-01T00:00:00.000Z',
-      }),
-    amount_cents: z
-      .int()
-      .openapi({
-        description:
-          'The amount still due for this month, expressed in cents. It is the total of the overdue invoices minus the amounts already paid and minus the credits applied by finalized credit notes.',
-        example: 50000,
-      }),
-    currency: CurrencySchema.openapi({
-      description: 'The currency of the overdue invoices. Format must be ISO 4217.',
-      example: 'USD',
-    }),
-    lago_invoice_ids: z
-      .array(z.uuid())
-      .openapi({
-        description:
-          'Unique identifiers of the overdue invoices included in this amount, created by Lago.',
-        example: ['5eb02857-a71e-4ea2-bcf9-57d3a41bc6ba'],
-      }),
-    billing_entity_id: z
-      .uuid()
-      .openapi({
-        description:
-          'Unique identifier assigned to the billing entity the overdue balance is attributed to, created by Lago.',
-        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
-      }),
-  })
-  .openapi({
-    required: ['month', 'amount_cents', 'currency', 'lago_invoice_ids', 'billing_entity_id'],
-  })
-  .openapi('OverdueBalanceObject')
-
-const OverdueBalancesSchema = z
-  .object({ overdue_balances: z.array(OverdueBalanceObjectSchema) })
-  .openapi({ required: ['overdue_balances'] })
-  .openapi('OverdueBalances')
-
-const CountrySchema = z
-  .enum([
-    'AD',
-    'AE',
-    'AF',
-    'AG',
-    'AI',
-    'AL',
-    'AM',
-    'AO',
-    'AQ',
-    'AR',
-    'AS',
-    'AT',
-    'AU',
-    'AW',
-    'AX',
-    'AZ',
-    'BA',
-    'BB',
-    'BD',
-    'BE',
-    'BF',
-    'BG',
-    'BH',
-    'BI',
-    'BJ',
-    'BL',
-    'BM',
-    'BN',
-    'BO',
-    'BQ',
-    'BR',
-    'BS',
-    'BT',
-    'BV',
-    'BW',
-    'BY',
-    'BZ',
-    'CA',
-    'CC',
-    'CD',
-    'CF',
-    'CG',
-    'CH',
-    'CI',
-    'CK',
-    'CL',
-    'CM',
-    'CN',
-    'CO',
-    'CR',
-    'CU',
-    'CV',
-    'CW',
-    'CX',
-    'CY',
-    'CZ',
-    'DE',
-    'DJ',
-    'DK',
-    'DM',
-    'DO',
-    'DZ',
-    'EC',
-    'EE',
-    'EG',
-    'EH',
-    'ER',
-    'ES',
-    'ET',
-    'FI',
-    'FJ',
-    'FK',
-    'FM',
-    'FO',
-    'FR',
-    'GA',
-    'GB',
-    'GD',
-    'GE',
-    'GF',
-    'GG',
-    'GH',
-    'GI',
-    'GL',
-    'GM',
-    'GN',
-    'GP',
-    'GQ',
-    'GR',
-    'GS',
-    'GT',
-    'GU',
-    'GW',
-    'GY',
-    'HK',
-    'HM',
-    'HN',
-    'HR',
-    'HT',
-    'HU',
-    'ID',
-    'IE',
-    'IL',
-    'IM',
-    'IN',
-    'IO',
-    'IQ',
-    'IR',
-    'IS',
-    'IT',
-    'JE',
-    'JM',
-    'JO',
-    'JP',
-    'KE',
-    'KG',
-    'KH',
-    'KI',
-    'KM',
-    'KN',
-    'KP',
-    'KR',
-    'KW',
-    'KY',
-    'KZ',
-    'LA',
-    'LB',
-    'LC',
-    'LI',
-    'LK',
-    'LR',
-    'LS',
-    'LT',
-    'LU',
-    'LV',
-    'LY',
-    'MA',
-    'MC',
-    'MD',
-    'ME',
-    'MF',
-    'MG',
-    'MH',
-    'MK',
-    'ML',
-    'MM',
-    'MN',
-    'MO',
-    'MP',
-    'MQ',
-    'MR',
-    'MS',
-    'MT',
-    'MU',
-    'MV',
-    'MW',
-    'MX',
-    'MY',
-    'MZ',
-    'NA',
-    'NC',
-    'NE',
-    'NF',
-    'NG',
-    'NI',
-    'NL',
-    'NO',
-    'NP',
-    'NR',
-    'NU',
-    'NZ',
-    'OM',
-    'PA',
-    'PE',
-    'PF',
-    'PG',
-    'PH',
-    'PK',
-    'PL',
-    'PM',
-    'PN',
-    'PR',
-    'PS',
-    'PT',
-    'PW',
-    'PY',
-    'QA',
-    'RE',
-    'RO',
-    'RS',
-    'RU',
-    'RW',
-    'SA',
-    'SB',
-    'SC',
-    'SD',
-    'SE',
-    'SG',
-    'SH',
-    'SI',
-    'SJ',
-    'SK',
-    'SL',
-    'SM',
-    'SN',
-    'SO',
-    'SR',
-    'SS',
-    'ST',
-    'SV',
-    'SX',
-    'SY',
-    'SZ',
-    'TC',
-    'TD',
-    'TF',
-    'TG',
-    'TH',
-    'TJ',
-    'TK',
-    'TL',
-    'TM',
-    'TN',
-    'TO',
-    'TR',
-    'TT',
-    'TV',
-    'TW',
-    'TZ',
-    'UA',
-    'UG',
-    'UM',
-    'US',
-    'UY',
-    'UZ',
-    'VA',
-    'VC',
-    'VE',
-    'VG',
-    'VI',
-    'VN',
-    'VU',
-    'WF',
-    'WS',
-    'YE',
-    'YT',
-    'ZA',
-    'ZM',
-    'ZW',
-  ])
-  .openapi({ example: 'US' })
-  .openapi('Country')
-
-const UsageObjectSchema = z
-  .object({
-    organization_id: z
-      .uuid()
-      .openapi({
-        description:
-          'The unique identifier of the organization for which the usage analytics is calculated.',
-        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
-      }),
-    start_of_period_dt: z.iso
-      .date()
-      .exactOptional()
-      .openapi({
-        description: 'The start date of the period for which the usage analytics is calculated.',
-        example: '2023-11-01',
-      }),
-    end_of_period_dt: z.iso
-      .date()
-      .exactOptional()
-      .openapi({
-        description: 'The end date of the period for which the usage analytics is calculated.',
-        example: '2023-11-30',
-      }),
-    amount_currency: CurrencySchema.openapi({
-      description: 'The currency of usage analytics. Format must be ISO 4217.',
-      example: 'USD',
-    }),
-    amount_cents: z
-      .int()
-      .openapi({
-        description: 'The total amount for usages for a period, expressed in cents.',
-        example: 50000,
-      }),
-    billable_metric_code: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The code of the usage-based billable metrics.', example: 'code1' }),
-    units: z
-      .string()
-      .regex(/^[0-9]+.?[0-9]*$/)
-      .exactOptional()
-      .openapi({
-        description: 'The total number of units for the usage-based billable metrics.',
-        example: '1.0',
-      }),
-    is_billable_metric_deleted: z
-      .boolean()
-      .openapi({
-        description:
-          'Indicates whether the billable metric associated with the usage has been deleted. It is set on every entry of the response.',
-        example: false,
-      }),
-  })
-  .openapi({
-    required: ['organization_id', 'amount_cents', 'amount_currency', 'is_billable_metric_deleted'],
-  })
-  .openapi('UsageObject')
-
-const UsagesSchema = z
-  .object({ usages: z.array(UsageObjectSchema) })
-  .openapi({ required: ['usages'] })
-  .openapi('Usages')
-
-const CurrencyOrNullSchema = z
-  .union([
-    z.literal(null),
-    z.literal('AED'),
-    z.literal('AFN'),
-    z.literal('ALL'),
-    z.literal('AMD'),
-    z.literal('ANG'),
-    z.literal('AOA'),
-    z.literal('ARS'),
-    z.literal('AUD'),
-    z.literal('AWG'),
-    z.literal('AZN'),
-    z.literal('BAM'),
-    z.literal('BBD'),
-    z.literal('BDT'),
-    z.literal('BGN'),
-    z.literal('BIF'),
-    z.literal('BMD'),
-    z.literal('BND'),
-    z.literal('BOB'),
-    z.literal('BRL'),
-    z.literal('BSD'),
-    z.literal('BWP'),
-    z.literal('BYN'),
-    z.literal('BZD'),
-    z.literal('CAD'),
-    z.literal('CDF'),
-    z.literal('CHF'),
-    z.literal('CLF'),
-    z.literal('CLP'),
-    z.literal('CNY'),
-    z.literal('COP'),
-    z.literal('CRC'),
-    z.literal('CVE'),
-    z.literal('CZK'),
-    z.literal('DJF'),
-    z.literal('DKK'),
-    z.literal('DOP'),
-    z.literal('DZD'),
-    z.literal('EGP'),
-    z.literal('ETB'),
-    z.literal('EUR'),
-    z.literal('FJD'),
-    z.literal('FKP'),
-    z.literal('GBP'),
-    z.literal('GEL'),
-    z.literal('GIP'),
-    z.literal('GMD'),
-    z.literal('GNF'),
-    z.literal('GTQ'),
-    z.literal('GYD'),
-    z.literal('HKD'),
-    z.literal('HNL'),
-    z.literal('HRK'),
-    z.literal('HTG'),
-    z.literal('HUF'),
-    z.literal('IDR'),
-    z.literal('ILS'),
-    z.literal('INR'),
-    z.literal('ISK'),
-    z.literal('JMD'),
-    z.literal('JPY'),
-    z.literal('KES'),
-    z.literal('KGS'),
-    z.literal('KHR'),
-    z.literal('KMF'),
-    z.literal('KRW'),
-    z.literal('KYD'),
-    z.literal('KZT'),
-    z.literal('LAK'),
-    z.literal('LBP'),
-    z.literal('LKR'),
-    z.literal('LRD'),
-    z.literal('LSL'),
-    z.literal('MAD'),
-    z.literal('MDL'),
-    z.literal('MGA'),
-    z.literal('MKD'),
-    z.literal('MMK'),
-    z.literal('MNT'),
-    z.literal('MOP'),
-    z.literal('MRO'),
-    z.literal('MUR'),
-    z.literal('MVR'),
-    z.literal('MWK'),
-    z.literal('MXN'),
-    z.literal('MYR'),
-    z.literal('MZN'),
-    z.literal('NAD'),
-    z.literal('NGN'),
-    z.literal('NIO'),
-    z.literal('NOK'),
-    z.literal('NPR'),
-    z.literal('NZD'),
-    z.literal('PAB'),
-    z.literal('PEN'),
-    z.literal('PGK'),
-    z.literal('PHP'),
-    z.literal('PKR'),
-    z.literal('PLN'),
-    z.literal('PYG'),
-    z.literal('QAR'),
-    z.literal('RON'),
-    z.literal('RSD'),
-    z.literal('RUB'),
-    z.literal('RWF'),
-    z.literal('SAR'),
-    z.literal('SBD'),
-    z.literal('SCR'),
-    z.literal('SEK'),
-    z.literal('SGD'),
-    z.literal('SHP'),
-    z.literal('SLL'),
-    z.literal('SOS'),
-    z.literal('SRD'),
-    z.literal('STD'),
-    z.literal('SYP'),
-    z.literal('SZL'),
-    z.literal('THB'),
-    z.literal('TJS'),
-    z.literal('TND'),
-    z.literal('TOP'),
-    z.literal('TRY'),
-    z.literal('TTD'),
-    z.literal('TWD'),
-    z.literal('TZS'),
-    z.literal('UAH'),
-    z.literal('UGX'),
-    z.literal('USD'),
-    z.literal('UYU'),
-    z.literal('UZS'),
-    z.literal('VND'),
-    z.literal('VUV'),
-    z.literal('WST'),
-    z.literal('XAF'),
-    z.literal('XCD'),
-    z.literal('XOF'),
-    z.literal('XPF'),
-    z.literal('YER'),
-    z.literal('ZAR'),
-    z.literal('ZMW'),
-  ])
-  .nullable()
-  .openapi({ example: 'USD' })
-  .openapi('CurrencyOrNull')
-
-const AppliedCouponObjectSchema = z
-  .object({
-    lago_id: z
-      .uuid()
-      .openapi({
-        description: 'Unique identifier of the applied coupon, created by Lago.',
-        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
-      }),
-    lago_coupon_id: z
-      .uuid()
-      .openapi({
-        description: 'Unique identifier of the coupon, created by Lago.',
-        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
-      }),
-    coupon_code: z
-      .string()
-      .openapi({
-        description: 'Unique code used to identify the coupon.',
-        example: 'startup_deal',
-      }),
-    coupon_name: z
-      .string()
-      .openapi({ description: 'The name of the coupon.', example: 'Startup Deal' }),
-    coupon_description: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'The description of the parent coupon.',
-        example: 'I am a coupon description',
-      }),
-    coupon_status: z
-      .enum(['active', 'terminated'])
-      .openapi({
-        description: 'The status of the parent coupon. Can be either `active` or `terminated`.',
-        example: 'active',
-      }),
-    coupon_deleted_at: z.iso
-      .datetime({ offset: true })
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The date and time when the parent coupon was deleted. If null, the coupon still exists. It is expressed in UTC format according to the ISO 8601 datetime standard.',
-        example: '2022-04-29T08:59:51Z',
-      }),
-    lago_customer_id: z
-      .uuid()
-      .openapi({
-        description: 'Unique identifier of the customer, created by Lago.',
-        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
-      }),
-    external_customer_id: z
-      .string()
-      .openapi({
-        description: 'The customer external unique identifier (provided by your own application)',
-        example: '5eb02857-a71e-4ea2-bcf9-57d3a41bc6ba',
-      }),
-    status: z
-      .enum(['active', 'terminated'])
-      .openapi({
-        description: 'The status of the coupon. Can be either `active` or `terminated`.',
-        example: 'active',
-      }),
-    amount_cents: z
-      .int()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The amount of the coupon in cents. It is set for a coupon with the `fixed_amount` type.',
-        example: 2000,
-      }),
-    amount_cents_remaining: z
-      .int()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The remaining amount in cents for a `fixed_amount` coupon with a frequency set to `once`. This field indicates the remaining balance or value that can still be utilized from the coupon.',
-        example: 50,
-      }),
-    amount_currency: CurrencyOrNullSchema.exactOptional().openapi({
-      description:
-        'The currency of the coupon amount. It is set for a coupon with the `fixed_amount` type.',
-      example: 'EUR',
-    }),
-    percentage_rate: z
-      .string()
-      .regex(/^[0-9]+.?[0-9]*$/)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The percentage rate of the coupon. It is set for a coupon with the `percentage` type.',
-        example: null,
-      }),
-    frequency: z
-      .enum(['once', 'recurring', 'forever'])
-      .openapi({
-        description:
-          'The type of frequency for the coupon. It can have three possible values: `once`, `recurring` or `forever`.\n\n- If set to `once`, the coupon is applicable only for a single use.\n- If set to `recurring`, the coupon can be used multiple times for recurring billing periods.\n- If set to `forever`, the coupon has unlimited usage and can be applied indefinitely.',
-        example: 'recurring',
-      }),
-    frequency_duration: z
-      .int()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The number of billing periods to which the coupon applies. It is set when the frequency is `recurring`.',
-        example: 3,
-      }),
-    frequency_duration_remaining: z
-      .int()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The remaining number of billing periods to which the coupon is applicable. This field determines the remaining usage or availability of the coupon based on the remaining billing periods.',
-        example: 1,
-      }),
-    expiration_at: z.iso
-      .datetime({ offset: true })
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          "The date and time after which the coupon will stop applying to customer's invoices. Once the expiration date is reached, the coupon will no longer be applicable, and any further invoices generated for the customer will not include the coupon discount.",
-        example: '2022-04-29T08:59:51Z',
-      }),
-    created_at: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description:
-          'The date and time when the coupon was assigned to a customer. It is expressed in UTC format according to the ISO 8601 datetime standard.',
-        example: '2022-04-29T08:59:51Z',
-      }),
-    terminated_at: z.iso
-      .datetime({ offset: true })
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          "This field indicates the specific moment when the coupon amount is fully utilized or when the coupon is removed from the customer's coupon list. It is expressed in UTC format according to the ISO 8601 datetime standard.",
-        example: '2022-04-29T08:59:51Z',
-      }),
-  })
-  .openapi({
-    required: [
-      'lago_id',
-      'lago_coupon_id',
-      'coupon_code',
-      'coupon_name',
-      'external_customer_id',
-      'lago_customer_id',
-      'status',
-      'coupon_status',
-      'frequency',
-      'created_at',
-    ],
-  })
-  .openapi('AppliedCouponObject')
-
-const CreditObjectSchema = z
-  .object({
-    lago_id: z
-      .uuid()
-      .openapi({
-        description:
-          "Unique identifier assigned to the credit within the Lago application. This ID is exclusively created by Lago and serves as a unique identifier for the credit's item record within the Lago system.",
-        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
-      }),
-    amount_cents: z
-      .int()
-      .openapi({
-        description: 'The amount of credit associated with the invoice, expressed in cents.',
-        example: 1200,
-      }),
-    amount_currency: CurrencySchema.openapi({
-      description: 'The currency of the credit.',
-      example: 'EUR',
-    }),
-    before_taxes: z
-      .boolean()
-      .openapi({
-        description:
-          'Indicates whether the credit is applied on the amount before taxes (coupons) or after taxes (credit notes). This flag helps determine the order in which credits are applied to the invoice calculation',
-        example: false,
-      }),
-    item: z
-      .object({
-        lago_item_id: z
-          .uuid()
-          .openapi({
-            description:
-              'Unique identifier assigned to the credit item within the Lago application.',
-            example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
-          }),
-        type: z
-          .enum(['coupon', 'credit_note', 'invoice'])
-          .openapi({
-            description:
-              'The type of credit applied. Possible values are `coupon`, `credit_note` or `invoice` (for `progressive_billing` invoice).',
-            example: 'coupon',
-          }),
-        code: z
-          .string()
-          .openapi({
-            description:
-              "The code of the credit applied. It can be the code of the coupon attached to the credit, the credit note's number or the `progressive_billing` invoice number.",
-            example: 'startup_deal',
-          }),
-        name: z
-          .string()
-          .openapi({
-            description:
-              "The name of the credit applied. It can be the name of the coupon attached to the credit, the initial invoice's number linked to the credit note or the `progressive_billing` invoice number.",
-            example: 'Startup Deal',
-          }),
-      })
-      .openapi({
-        description: 'The item attached to the credit.',
-        required: ['lago_item_id', 'type', 'code', 'name'],
-      }),
-    invoice: z
-      .object({
-        lago_id: z.uuid().openapi({ example: '1a901a90-1a90-1a90-1a90-1a901a901a90' }),
-        payment_status: z
-          .enum(['pending', 'succeeded', 'failed'])
-          .openapi({ example: 'succeeded' }),
-      })
-      .openapi({ required: ['lago_id', 'payment_status'] }),
-  })
-  .openapi({
-    required: ['lago_id', 'item', 'amount_cents', 'amount_currency', 'invoice', 'before_taxes'],
-  })
-  .openapi('CreditObject')
-
-const AppliedCouponObjectExtendedSchema = AppliedCouponObjectSchema.and(
-  z.object({ credits: z.array(CreditObjectSchema) }).openapi({ required: ['credits'] }),
-).openapi('AppliedCouponObjectExtended')
-
-const AppliedCouponsPaginatedSchema = z
-  .object({
-    applied_coupons: z.array(AppliedCouponObjectExtendedSchema),
-    meta: PaginationMetaSchema,
-  })
-  .openapi({ required: ['applied_coupons', 'meta'] })
-  .openapi('AppliedCouponsPaginated')
-
-const AppliedCouponInputSchema = z
-  .object({
-    applied_coupon: z
-      .object({
-        external_customer_id: z
-          .string()
-          .openapi({
-            description:
-              'The customer external unique identifier (provided by your own application)',
-            example: '5eb02857-a71e-4ea2-bcf9-57d3a41bc6ba',
-          }),
-        coupon_code: z
-          .string()
-          .openapi({
-            description: 'Unique code used to identify the coupon.',
-            example: 'startup_deal',
-          }),
-        frequency: z
-          .union([z.literal('once'), z.literal('recurring'), z.literal('forever'), z.literal(null)])
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'The type of frequency for the coupon. It can have three possible values: `once`, `recurring` or `forever`.\n\n- If set to `once`, the coupon is applicable only for a single use.\n- If set to `recurring`, the coupon can be used multiple times for recurring billing periods.\n- If set to `forever`, the coupon has unlimited usage and can be applied indefinitely.\n\nIf it is not set, the frequency of the coupon is used.',
-            example: 'recurring',
-          }),
-        frequency_duration: z
-          .int()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'The number of billing periods to which the coupon applies. If it is not set, the frequency duration of the coupon is used. A `recurring` applied coupon must end up with a frequency duration greater than 0.',
-            example: 3,
-          }),
-        amount_cents: z
-          .int()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'The amount of the coupon in cents. If it is not set, the amount of the coupon is used.',
-            example: 2000,
-          }),
-        amount_currency: CurrencyOrNullSchema.exactOptional().openapi({
-          description:
-            'The currency of the coupon amount. If it is not set, the currency of the coupon is used.',
-          example: 'EUR',
-        }),
-        percentage_rate: z
-          .string()
-          .regex(/^[0-9]+.?[0-9]*$/)
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'The percentage rate of the coupon. If it is not set, the percentage rate of the coupon is used.',
-            example: null,
-          }),
-      })
-      .openapi({ required: ['external_customer_id', 'coupon_code'] }),
-  })
-  .openapi({ required: ['applied_coupon'] })
-  .openapi('AppliedCouponInput')
-
-const AppliedCouponSchema = z
-  .object({ applied_coupon: AppliedCouponObjectSchema })
-  .openapi({ required: ['applied_coupon'] })
-  .openapi('AppliedCoupon')
-
-const BillableMetricFilterObjectSchema = z
-  .object({
-    key: z
-      .string()
-      .openapi({
-        example: 'region',
-        description: 'Filter key to add to the event properties payload',
-      }),
-    values: z
-      .array(z.string().openapi({ example: 'us-east-1' }))
-      .openapi({ description: 'List of possible filter values' }),
-  })
-  .openapi({
-    description:
-      'Values used to apply differentiated pricing based on additional event properties.',
-    required: ['key', 'values'],
-  })
-  .openapi('BillableMetricFilterObject')
-
-const BillableMetricObjectSchema = z
-  .object({
-    lago_id: z
-      .uuid()
-      .openapi({
-        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
-        description: 'Unique identifier of the billable metric created by Lago.',
-      }),
-    name: z.string().openapi({ example: 'Storage', description: 'Name of the billable metric.' }),
-    code: z
-      .string()
-      .openapi({
-        example: 'storage',
-        description:
-          'Unique code used to identify the billable metric associated with the API request. This code associates each event with the correct metric.',
-      }),
-    description: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        example: 'GB of storage used in my application',
-        description: 'Internal description of the billable metric.',
-      }),
-    recurring: z
-      .boolean()
-      .openapi({
-        example: false,
-        description:
-          'Defines if the billable metric is persisted billing period over billing period.\n\n- If set to `true`: the accumulated number of units calculated from the previous billing period is persisted to the next billing period.\n- If set to `false`: the accumulated number of units is reset to 0 at the end of the billing period.\n- If not defined in the request, default value is `false`.',
-      }),
-    rounding_function: z
-      .union([z.literal('ceil'), z.literal('floor'), z.literal('round'), z.literal(null)])
-      .nullable()
-      .exactOptional()
-      .openapi({
-        example: 'round',
-        description:
-          'Refers to the numeric value or mathematical expression that will be rounded based on the calculated number of billing units. Possible values are `round`, `ceil` and `floor`.',
-      }),
-    rounding_precision: z
-      .int()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        example: 2,
-        description:
-          'Specifies the number of decimal places to which the `rounding_function` will be rounded. It can be a positive or negative value.',
-      }),
-    created_at: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        example: '2022-09-14T16:35:31Z',
-        description: 'Creation date of the billable metric.',
-      }),
-    expression: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        example:
-          'round((event.properties.ended_at - event.properties.started_at) * event.properties.units)',
-        description:
-          'Expression used to calculate the event units. The expression is evaluated for each event and the result is then used to calculate the total aggregated units.',
-      }),
-    field_name: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        example: 'gb',
-        description:
-          'Property of the billable metric used for aggregating usage data. This field is not required for `count_agg`.',
-      }),
-    aggregation_type: z
-      .enum([
-        'count_agg',
-        'sum_agg',
-        'max_agg',
-        'unique_count_agg',
-        'weighted_sum_agg',
-        'latest_agg',
-      ])
-      .openapi({
-        description: 'Aggregation method used to compute usage for this billable metric.',
-        example: 'sum_agg',
-      }),
-    weighted_interval: z
-      .union([z.literal('seconds'), z.literal(null)])
-      .nullable()
-      .exactOptional()
-      .openapi({
-        example: 'seconds',
-        description:
-          'Parameter exclusively utilized in conjunction with the `weighted_sum_agg` aggregation type. It serves to adjust the aggregation result by assigning weights and proration to the result based on time intervals.',
-      }),
-    filters: z.array(BillableMetricFilterObjectSchema),
-  })
-  .openapi({
-    required: ['lago_id', 'name', 'code', 'aggregation_type', 'recurring', 'created_at', 'filters'],
-  })
-  .openapi('BillableMetricObject')
-
-const BillableMetricsPaginatedSchema = z
-  .object({ billable_metrics: z.array(BillableMetricObjectSchema), meta: PaginationMetaSchema })
-  .openapi({ required: ['billable_metrics', 'meta'] })
-  .openapi('BillableMetricsPaginated')
-
-const BillableMetricFilterInputSchema = z
-  .object({
-    key: z
-      .string()
-      .openapi({
-        example: 'region',
-        description: 'Filter key to add to the event properties payload',
-      }),
-    values: z
-      .array(z.string().openapi({ example: 'us-east-1' }))
-      .openapi({ description: 'List of possible filter values' }),
-  })
-  .openapi({
-    description:
-      'Values used to apply differentiated pricing based on additional event properties.',
-    required: ['key', 'values'],
-  })
-  .openapi('BillableMetricFilterInput')
-
-const BillableMetricBaseInputSchema = z
-  .object({
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ example: 'Storage', description: 'Name of the billable metric.' }),
-    code: z
-      .string()
-      .exactOptional()
-      .openapi({
-        example: 'storage',
-        description:
-          'Unique code used to identify the billable metric associated with the API request. This code associates each event with the correct metric.',
-      }),
-    description: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        example: 'GB of storage used in my application',
-        description: 'Internal description of the billable metric.',
-      }),
-    recurring: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        example: false,
-        description:
-          'Defines if the billable metric is persisted billing period over billing period.\n\n- If set to `true`: the accumulated number of units calculated from the previous billing period is persisted to the next billing period.\n- If set to `false`: the accumulated number of units is reset to 0 at the end of the billing period.\n- If not defined in the request, default value is `false`.',
-      }),
-    expression: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        example:
-          'round((event.properties.ended_at - event.properties.started_at) * event.properties.units)',
-        description:
-          'Expression used to calculate the event units. The expression is evaluated for each event and the result is then used to calculate the total aggregated units.\nEvent values are read with `event.code`, `event.timestamp` and `event.properties.<name>`.\nAccepted functions are `ceil`, `concat`, `floor`, `greatest`, `least` and `round` as well as `+`, `-`, `/` and `*` operations.\n`ceil`, `floor` and `round` accept an optional second parameter to specify the number of decimals.\n',
-      }),
-    rounding_function: z
-      .union([z.literal('ceil'), z.literal('floor'), z.literal('round'), z.literal(null)])
-      .nullable()
-      .exactOptional()
-      .openapi({
-        example: 'round',
-        description:
-          'Refers to the numeric value or mathematical expression that will be rounded based on the calculated number of billing units. Possible values are `round`, `ceil` and `floor`.',
-      }),
-    rounding_precision: z
-      .int()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        example: 2,
-        description:
-          'Specifies the number of decimal places to which the `rounding_function` will be rounded. It can be a positive or negative value.',
-      }),
-    field_name: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        example: 'gb',
-        description:
-          'Property of the billable metric used for aggregating usage data. This field is not required for `count_agg`.',
-      }),
-    aggregation_type: z
-      .enum([
-        'count_agg',
-        'sum_agg',
-        'max_agg',
-        'unique_count_agg',
-        'weighted_sum_agg',
-        'latest_agg',
-      ])
-      .exactOptional()
-      .openapi({
-        example: 'sum_agg',
-        description: 'Aggregation method used to compute usage for this billable metric.',
-      }),
-    weighted_interval: z
-      .union([z.literal('seconds'), z.literal(null)])
-      .nullable()
-      .exactOptional()
-      .openapi({
-        example: 'seconds',
-        description:
-          'Parameter exclusively utilized in conjunction with the `weighted_sum_agg` aggregation type. It serves to adjust the aggregation result by assigning weights and proration to the result based on time intervals. It is required when `aggregation_type` is `weighted_sum_agg`, and `seconds` is the only accepted value.',
-      }),
-    filters: z
-      .array(BillableMetricFilterInputSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'List of filters of the billable metric. On update, this list replaces the existing filters: a filter that is not sent is deleted.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('BillableMetricBaseInput')
-
-const BillableMetricCreateInputSchema = z
-  .object({
-    billable_metric: BillableMetricBaseInputSchema.openapi({
-      required: ['name', 'code', 'aggregation_type'],
-    }),
-  })
-  .openapi({ required: ['billable_metric'] })
-  .openapi('BillableMetricCreateInput')
-
-const BillableMetricSchema = z
-  .object({ billable_metric: BillableMetricObjectSchema })
-  .openapi({ required: ['billable_metric'] })
-  .openapi('BillableMetric')
-
-const BillableMetricEvaluateExpressionInputSchema = z
-  .object({
-    expression: z
-      .string()
-      .openapi({
-        example:
-          'round((event.properties.ended_at - event.properties.started_at) * event.properties.units)',
-        description:
-          'Expression used to calculate the event units. The expression is evaluated for each event and the result is then used to calculate the total aggregated units.\nEvent values are read with `event.code`, `event.timestamp` and `event.properties.<name>`.\nAccepted functions are `ceil`, `concat`, `floor`, `greatest`, `least` and `round` as well as `+`, `-`, `/` and `*` operations.\n`ceil`, `floor` and `round` accept an optional second parameter to specify the number of decimals.\n',
-      }),
-    event: z
-      .object({
-        code: z
-          .string()
-          .openapi({
-            example: 'storage',
-            description: 'The code that identifies a targeted billable metric.',
-          }),
-        timestamp: z
-          .union([z.int(), z.string()])
-          .exactOptional()
-          .openapi({
-            example: '1651240791',
-            description:
-              'This field captures the Unix timestamp in seconds indicating the occurrence of the event in Coordinated Universal Time (UTC).\nIf this timestamp is not provided, the API will automatically set it to the time of event reception.\n',
-          }),
-        properties: z
-          .record(z.string(), z.xor([z.string(), z.int(), z.number()]))
-          .openapi({
-            description:
-              'This field represents additional properties associated with the event. They can be used when evaluating the expression.',
-            example: { gb: 10 },
-          }),
-      })
-      .openapi({ required: ['code', 'properties'] }),
-  })
-  .openapi({ required: ['expression', 'event'] })
-  .openapi('BillableMetricEvaluateExpressionInput')
-
-const BillableMetricEvaluateExpressionResultSchema = z
-  .object({
-    expression_result: z
-      .object({
-        value: z
-          .string()
-          .openapi({
-            example: '2.0',
-            description:
-              'Result of evaluating the expression. A numeric result is returned as a decimal string.',
-          }),
-      })
-      .openapi({ required: ['value'] }),
-  })
-  .openapi({ required: ['expression_result'] })
-  .openapi('BillableMetricEvaluateExpressionResult')
-
-const BillableMetricUpdateInputSchema = z
-  .object({ billable_metric: BillableMetricBaseInputSchema })
-  .openapi({ required: ['billable_metric'] })
-  .openapi('BillableMetricUpdateInput')
-
-const FeaturePrivilegeObjectSchema = z
-  .object({
-    code: z.string().openapi({ example: 'max', description: 'Unique code for the privilege.' }),
-    name: z
-      .string()
-      .nullable()
-      .openapi({ example: 'Maximum', description: 'Display name for the privilege.' }),
-    value_type: z
-      .enum(['integer', 'boolean', 'string', 'select'])
-      .openapi({
-        example: 'integer',
-        description: 'Data type of the privilege value. It defaults to `string`.',
-      }),
-    config: z
-      .object({
-        select_options: z
-          .array(z.string())
-          .exactOptional()
-          .openapi({
-            example: ['google', 'okta'],
-            description:
-              'The values the privilege accepts. It is only sent when the value type is `select`.',
-          }),
-      })
-      .openapi({
-        description:
-          'Extra configuration of the privilege. It is empty unless the value type is `select`.',
-        required: [],
-      }),
-  })
-  .openapi({ required: ['code', 'name', 'value_type', 'config'] })
-  .openapi('FeaturePrivilegeObject')
-
-const FeatureObjectSchema = z
-  .object({
-    code: z
-      .string()
-      .openapi({
-        example: 'seats',
-        description: 'Unique code used to identify the feature. Max 255 characters.',
-      }),
-    name: z
-      .string()
-      .nullable()
-      .openapi({
-        example: 'Number of seats',
-        description: 'Name of the feature. Max 255 characters.',
-      }),
-    description: z
-      .string()
-      .nullable()
-      .openapi({
-        example: 'Number of users of the account',
-        description: 'Description of the feature. Max 600 characters.',
-      }),
-    privileges: z.array(FeaturePrivilegeObjectSchema).openapi({
-      example: [
-        { code: 'max', name: 'Maximum', value_type: 'integer', config: {} },
-        { code: 'max_admins', name: 'Max Admins', value_type: 'integer', config: {} },
-        { code: 'root', name: 'Allow root user', value_type: 'boolean', config: {} },
-        {
-          code: 'provider',
-          name: 'SSO Provider',
-          value_type: 'select',
-          config: { select_options: ['google', 'okta'] },
-        },
-      ],
-      description: 'Privileges associated with this feature. Can be empty.',
-    }),
-    created_at: z.iso
-      .datetime({ offset: true })
-      .openapi({ example: '2025-07-17T12:34:35Z', description: 'Creation date of the feature.' }),
-  })
-  .openapi({ required: ['code', 'name', 'description', 'privileges', 'created_at'] })
-  .openapi('FeatureObject')
-
-const FeaturesPaginatedSchema = z
-  .object({ features: z.array(FeatureObjectSchema), meta: PaginationMetaSchema })
-  .openapi({ required: ['features', 'meta'] })
-  .openapi('FeaturesPaginated')
-
-const FeatureBaseInputSchema = z
-  .object({
-    name: z
-      .string()
-      .max(255)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        example: 'Number of seats',
-        description: 'Name of the feature. Max 255 characters.',
-      }),
-    description: z
-      .string()
-      .max(600)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        example: 'Number of users of the account',
-        description: 'Internal description of the feature. Max 600 characters.',
-      }),
-    privileges: z
-      .array(
-        z
-          .object({
-            code: z
-              .string()
-              .max(255)
-              .openapi({
-                example: 'max',
-                description: 'Unique code for the privilege. Max 255 characters.',
-              }),
-            name: z
-              .string()
-              .max(255)
-              .nullable()
-              .exactOptional()
-              .openapi({
-                example: 'Maximum',
-                description: 'Display name for the privilege. Max 255 characters.',
-              }),
-            value_type: z
-              .enum(['integer', 'boolean', 'string', 'select'])
-              .exactOptional()
-              .openapi({
-                example: 'integer',
-                description:
-                  'Data type of the privilege value. It defaults to `string`. It cannot be changed once the privilege exists.',
-              }),
-            config: z
-              .object({
-                select_options: z
-                  .array(z.string())
-                  .exactOptional()
-                  .openapi({
-                    example: ['google', 'okta'],
-                    description:
-                      'The values the privilege accepts. It is required when the value type is `select`, must hold at least one value, and must be left out for the other value types.',
-                  }),
-              })
-              .exactOptional()
-              .openapi({
-                description:
-                  'Extra configuration of the privilege. It must be left out unless the value type is `select`.',
-                required: [],
-              }),
-          })
-          .openapi({ required: ['code'] }),
-      )
-      .exactOptional()
-      .openapi({
-        example: [
-          { code: 'max', name: 'Maximum', value_type: 'integer' },
-          { code: 'max_admins', name: 'Max Admins', value_type: 'integer' },
-          { code: 'root', name: 'Allow root user', value_type: 'boolean' },
-          {
-            code: 'provider',
-            name: 'SSO Provider',
-            value_type: 'select',
-            config: { select_options: ['google', 'okta'] },
-          },
-        ],
-        description: 'Privileges associated with this feature. Can be empty.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('FeatureBaseInput')
-
-const FeatureCreateInputSchema = z
-  .object({
-    feature: FeatureBaseInputSchema.and(
-      z
-        .object({
-          code: z
-            .string()
-            .max(255)
-            .openapi({
-              example: 'seats',
-              description: 'Unique code used to identify the feature. Max 255 characters.',
-            }),
-        })
-        .openapi({ required: ['code'] }),
-    ),
-  })
-  .openapi({ required: ['feature'] })
-  .openapi('FeatureCreateInput')
-
-const FeatureSchema = z
-  .object({ feature: FeatureObjectSchema })
-  .openapi({ required: ['feature'] })
-  .openapi('Feature')
-
-const FeatureUpdateInputSchema = z
-  .object({ feature: FeatureBaseInputSchema })
-  .openapi({ required: ['feature'] })
-  .openapi('FeatureUpdateInput')
-
-const CouponObjectSchema = z
-  .object({
-    lago_id: z
-      .uuid()
-      .openapi({
-        description: 'Unique identifier of the coupon, created by Lago.',
-        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
-      }),
-    name: z.string().openapi({ description: 'The name of the coupon.', example: 'Startup Deal' }),
-    code: z
-      .string()
-      .openapi({
-        description: 'Unique code used to identify the coupon.',
-        example: 'startup_deal',
-      }),
-    description: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Description of the coupon.', example: 'I am a coupon description' }),
-    coupon_type: z
-      .enum(['fixed_amount', 'percentage'])
-      .openapi({
-        description:
-          'The type of the coupon. It can have two possible values: `fixed_amount` or `percentage`.\n\n- If set to `fixed_amount`, the coupon represents a fixed amount discount.\n- If set to `percentage`, the coupon represents a percentage-based discount.',
-        example: 'fixed_amount',
-      }),
-    amount_cents: z
-      .int()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The amount of the coupon in cents. This field is required only for coupon with `fixed_amount` type.',
-        example: 5000,
-      }),
-    amount_currency: CurrencyOrNullSchema.exactOptional().openapi({
-      description:
-        'The currency of the coupon. This field is required only for coupon with `fixed_amount` type.',
-      example: 'USD',
-    }),
-    reusable: z
-      .boolean()
-      .openapi({
-        description:
-          'Indicates whether the coupon can be reused or not. If set to `true`, the coupon is reusable, meaning it can be applied multiple times to the same customer. If set to `false`, the coupon can only be used once and is not reusable. If not specified, this field is set to `true` by default.',
-        example: true,
-      }),
-    limited_plans: z
-      .boolean()
-      .openapi({
-        description:
-          'The coupon is limited to specific plans. The possible values can be `true` or `false`.',
-        example: true,
-      }),
-    plan_codes: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          "An array of plan codes to which the coupon is applicable. By specifying the plan codes in this field, you can restrict the coupon's usage to specific plans only.",
-        example: ['startup_plan'],
-      }),
-    limited_billable_metrics: z
-      .boolean()
-      .openapi({
-        description:
-          'The coupon is limited to specific billable metrics. The possible values can be `true` or `false`.',
-        example: false,
-      }),
-    billable_metric_codes: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          "An array of billable metric codes to which the coupon is applicable. By specifying the billable metric codes in this field, you can restrict the coupon's usage to specific metrics only.",
-        example: [],
-      }),
-    percentage_rate: z
-      .string()
-      .regex(/^[0-9]+.?[0-9]*$/)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The percentage rate of the coupon. This field is required only for coupons with a `percentage` coupon type.',
-        example: null,
-      }),
-    frequency: z
-      .enum(['once', 'recurring', 'forever'])
-      .openapi({
-        description:
-          'The type of frequency for the coupon. It can have three possible values: `once`, `recurring`, or `forever`.\n\n- If set to `once`, the coupon is applicable only for a single use.\n- If set to `recurring`, the coupon can be used multiple times for recurring billing periods.\n- If set to `forever`, the coupon has unlimited usage and can be applied indefinitely.',
-        example: 'recurring',
-      }),
-    frequency_duration: z
-      .int()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Specifies the number of billing periods to which the coupon applies. This field is required only for coupons with a `recurring` frequency type.',
-        example: 6,
-      }),
-    expiration: z
-      .enum(['no_expiration', 'time_limit'])
-      .openapi({
-        description:
-          'Specifies the type of expiration for the coupon. It can have two possible values: `time_limit` or `no_expiration`.\n\n- If set to `time_limit`, the coupon has an expiration based on a specified time limit.\n- If set to `no_expiration`, the coupon does not have an expiration date and remains valid indefinitely.',
-        example: 'time_limit',
-      }),
-    expiration_at: z.iso
-      .datetime({ offset: true })
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The expiration date and time of the coupon. This field is required only for coupons with `expiration` set to `time_limit`. The expiration date and time should be specified in UTC format according to the ISO 8601 datetime standard. It indicates the exact moment when the coupon will expire and is no longer valid.',
-        example: '2022-08-08T23:59:59Z',
-      }),
-    created_at: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description:
-          'The date and time when the coupon was created. It is expressed in UTC format according to the ISO 8601 datetime standard. This field provides the timestamp for the exact moment when the coupon was initially created.',
-        example: '2022-04-29T08:59:51Z',
-      }),
-    terminated_at: z.iso
-      .datetime({ offset: true })
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          "This field indicates if the coupon has been terminated and is no longer usable. If it's not null, it won't be removed for existing customers using it, but it prevents the coupon from being applied in the future.",
-        example: '2022-08-08T23:59:59Z',
-      }),
-  })
-  .openapi({
-    required: [
-      'lago_id',
-      'name',
-      'code',
-      'expiration',
-      'coupon_type',
-      'frequency',
-      'created_at',
-      'reusable',
-      'limited_plans',
-      'limited_billable_metrics',
-    ],
-  })
-  .openapi('CouponObject')
-
-const CouponsPaginatedSchema = z
-  .object({ coupons: z.array(CouponObjectSchema), meta: PaginationMetaSchema })
-  .openapi({ required: ['coupons', 'meta'] })
-  .openapi('CouponsPaginated')
-
-const CouponBaseInputSchema = z
-  .object({
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The name of the coupon.', example: 'Startup Deal' }),
-    code: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Unique code used to identify the coupon.',
-        example: 'startup_deal',
-      }),
-    description: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Description of the coupon.', example: 'I am a coupon description' }),
-    coupon_type: z
-      .enum(['fixed_amount', 'percentage'])
-      .exactOptional()
-      .openapi({
-        description:
-          'The type of the coupon. It can have two possible values: `fixed_amount` or `percentage`.\n\n- If set to `fixed_amount`, the coupon represents a fixed amount discount.\n- If set to `percentage`, the coupon represents a percentage-based discount.',
-        example: 'fixed_amount',
-      }),
-    amount_cents: z
-      .int()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The amount of the coupon in cents. This field is required only for coupon with `fixed_amount` type.',
-        example: 5000,
-      }),
-    amount_currency: CurrencyOrNullSchema.exactOptional().openapi({
-      description:
-        'The currency of the coupon. This field is required only for coupon with `fixed_amount` type.',
-      example: 'USD',
-    }),
-    reusable: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates whether the coupon can be reused or not. If set to `true`, the coupon is reusable, meaning it can be applied multiple times to the same customer. If set to `false`, the coupon can only be used once and is not reusable. If not specified, this field is set to `true` by default.',
-        example: false,
-      }),
-    percentage_rate: z
-      .string()
-      .regex(/^[0-9]+.?[0-9]*$/)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The percentage rate of the coupon. This field is required only for coupons with a `percentage` coupon type.',
-        example: null,
-      }),
-    frequency: z
-      .enum(['once', 'recurring', 'forever'])
-      .exactOptional()
-      .openapi({
-        description:
-          'The type of frequency for the coupon. It can have three possible values: `once`, `recurring` or `forever`.\n\n- If set to `once`, the coupon is applicable only for a single use.\n- If set to `recurring`, the coupon can be used multiple times for recurring billing periods.\n- If set to `forever`, the coupon has unlimited usage and can be applied indefinitely.',
-        example: 'recurring',
-      }),
-    frequency_duration: z
-      .int()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Specifies the number of billing periods to which the coupon applies. This field is required only for coupons with a `recurring` frequency type.',
-        example: 6,
-      }),
-    expiration: z
-      .enum(['no_expiration', 'time_limit'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Specifies the type of expiration for the coupon. It can have two possible values: `time_limit` or `no_expiration`.\n\n- If set to `time_limit`, the coupon has an expiration based on a specified time limit.\n- If set to `no_expiration`, the coupon does not have an expiration date and remains valid indefinitely.',
-        example: 'time_limit',
-      }),
-    expiration_at: z.iso
-      .datetime({ offset: true })
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The expiration date and time of the coupon. This field is required only for coupons with `expiration` set to `time_limit`. The expiration date and time should be specified in UTC format according to the ISO 8601 datetime standard. It indicates the exact moment when the coupon will expire and is no longer valid.',
-        example: '2022-08-08T23:59:59Z',
-      }),
-    applies_to: z
-      .object({
-        plan_codes: z
-          .array(z.string())
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              "An array of plan codes to which the coupon is applicable. By specifying the plan codes in this field, you can restrict the coupon's usage to specific plans only.",
-            example: ['startup_plan'],
-          }),
-        billable_metric_codes: z
-          .array(z.string())
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              "An array of billable metric codes to which the coupon is applicable. By specifying the billable metric codes in this field, you can restrict the coupon's usage to specific metrics only.",
-            example: [],
-          }),
-      })
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Set coupon limitations to plans or specific metrics.',
-        required: [],
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('CouponBaseInput')
-
-const CouponCreateInputSchema = z
-  .object({
-    coupon: CouponBaseInputSchema.openapi({
-      required: ['name', 'code', 'coupon_type', 'frequency', 'expiration'],
-    }),
-  })
-  .openapi({ required: ['coupon'] })
-  .openapi('CouponCreateInput')
-
-const CouponSchema = z
-  .object({ coupon: CouponObjectSchema })
-  .openapi({ required: ['coupon'] })
-  .openapi('Coupon')
-
-const ApiErrorNotAllowedSchema = z
-  .object({
-    status: z.int32().openapi({ example: 405 }),
-    error: z.string().openapi({ example: 'Method Not Allowed' }),
-    code: z.string().openapi({ example: 'not_allowed' }),
-  })
-  .openapi({ required: ['status', 'error', 'code'] })
-  .openapi('ApiErrorNotAllowed')
-
-const CouponUpdateInputSchema = z
-  .object({ coupon: CouponBaseInputSchema })
-  .openapi({ required: ['coupon'] })
-  .openapi('CouponUpdateInput')
-
 const FeeAmountDetailsSchema = z
   .object({
     plan_amount_cents: z
@@ -4412,6 +1016,551 @@ const CreditNoteAppliedTaxObjectSchema = BaseAppliedTaxSchema.and(
     .openapi({ required: [] }),
 ).openapi('CreditNoteAppliedTaxObject')
 
+const TimezoneSchema = z
+  .enum([
+    'UTC',
+    'Africa/Algiers',
+    'Africa/Cairo',
+    'Africa/Casablanca',
+    'Africa/Harare',
+    'Africa/Johannesburg',
+    'Africa/Monrovia',
+    'Africa/Nairobi',
+    'America/Argentina/Buenos_Aires',
+    'America/Bogota',
+    'America/Caracas',
+    'America/Chicago',
+    'America/Chihuahua',
+    'America/Denver',
+    'America/Guatemala',
+    'America/Guyana',
+    'America/Halifax',
+    'America/Indiana/Indianapolis',
+    'America/Juneau',
+    'America/La_Paz',
+    'America/Lima',
+    'America/Los_Angeles',
+    'America/Mazatlan',
+    'America/Mexico_City',
+    'America/Monterrey',
+    'America/Montevideo',
+    'America/New_York',
+    'America/Nuuk',
+    'America/Phoenix',
+    'America/Puerto_Rico',
+    'America/Regina',
+    'America/Santiago',
+    'America/Sao_Paulo',
+    'America/St_Johns',
+    'America/Tijuana',
+    'Asia/Almaty',
+    'Asia/Baghdad',
+    'Asia/Baku',
+    'Asia/Bangkok',
+    'Asia/Chongqing',
+    'Asia/Colombo',
+    'Asia/Dhaka',
+    'Asia/Hong_Kong',
+    'Asia/Irkutsk',
+    'Asia/Jakarta',
+    'Asia/Jerusalem',
+    'Asia/Kabul',
+    'Asia/Kamchatka',
+    'Asia/Karachi',
+    'Asia/Kathmandu',
+    'Asia/Kolkata',
+    'Asia/Krasnoyarsk',
+    'Asia/Kuala_Lumpur',
+    'Asia/Kuwait',
+    'Asia/Magadan',
+    'Asia/Muscat',
+    'Asia/Novosibirsk',
+    'Asia/Riyadh',
+    'Asia/Seoul',
+    'Asia/Shanghai',
+    'Asia/Singapore',
+    'Asia/Srednekolymsk',
+    'Asia/Taipei',
+    'Asia/Tashkent',
+    'Asia/Tbilisi',
+    'Asia/Tehran',
+    'Asia/Tokyo',
+    'Asia/Ulaanbaatar',
+    'Asia/Urumqi',
+    'Asia/Vladivostok',
+    'Asia/Yakutsk',
+    'Asia/Yangon',
+    'Asia/Yekaterinburg',
+    'Asia/Yerevan',
+    'Atlantic/Azores',
+    'Atlantic/Cape_Verde',
+    'Atlantic/South_Georgia',
+    'Australia/Adelaide',
+    'Australia/Brisbane',
+    'Australia/Darwin',
+    'Australia/Hobart',
+    'Australia/Melbourne',
+    'Australia/Perth',
+    'Australia/Sydney',
+    'Europe/Amsterdam',
+    'Europe/Athens',
+    'Europe/Belgrade',
+    'Europe/Berlin',
+    'Europe/Bratislava',
+    'Europe/Brussels',
+    'Europe/Bucharest',
+    'Europe/Budapest',
+    'Europe/Copenhagen',
+    'Europe/Dublin',
+    'Europe/Helsinki',
+    'Europe/Istanbul',
+    'Europe/Kaliningrad',
+    'Europe/Kyiv',
+    'Europe/Lisbon',
+    'Europe/Ljubljana',
+    'Europe/London',
+    'Europe/Madrid',
+    'Europe/Minsk',
+    'Europe/Moscow',
+    'Europe/Paris',
+    'Europe/Prague',
+    'Europe/Riga',
+    'Europe/Rome',
+    'Europe/Samara',
+    'Europe/Sarajevo',
+    'Europe/Skopje',
+    'Europe/Sofia',
+    'Europe/Stockholm',
+    'Europe/Tallinn',
+    'Europe/Vienna',
+    'Europe/Vilnius',
+    'Europe/Volgograd',
+    'Europe/Warsaw',
+    'Europe/Zagreb',
+    'Europe/Zurich',
+    'GMT+12',
+    'Pacific/Apia',
+    'Pacific/Auckland',
+    'Pacific/Chatham',
+    'Pacific/Fakaofo',
+    'Pacific/Fiji',
+    'Pacific/Guadalcanal',
+    'Pacific/Guam',
+    'Pacific/Honolulu',
+    'Pacific/Majuro',
+    'Pacific/Midway',
+    'Pacific/Noumea',
+    'Pacific/Pago_Pago',
+    'Pacific/Port_Moresby',
+    'Pacific/Tongatapu',
+  ])
+  .openapi({ example: 'America/Los_Angeles' })
+  .openapi('Timezone')
+
+const CountryOrNullSchema = z
+  .union([
+    z.literal(null),
+    z.literal('AD'),
+    z.literal('AE'),
+    z.literal('AF'),
+    z.literal('AG'),
+    z.literal('AI'),
+    z.literal('AL'),
+    z.literal('AM'),
+    z.literal('AO'),
+    z.literal('AQ'),
+    z.literal('AR'),
+    z.literal('AS'),
+    z.literal('AT'),
+    z.literal('AU'),
+    z.literal('AW'),
+    z.literal('AX'),
+    z.literal('AZ'),
+    z.literal('BA'),
+    z.literal('BB'),
+    z.literal('BD'),
+    z.literal('BE'),
+    z.literal('BF'),
+    z.literal('BG'),
+    z.literal('BH'),
+    z.literal('BI'),
+    z.literal('BJ'),
+    z.literal('BL'),
+    z.literal('BM'),
+    z.literal('BN'),
+    z.literal('BO'),
+    z.literal('BQ'),
+    z.literal('BR'),
+    z.literal('BS'),
+    z.literal('BT'),
+    z.literal('BV'),
+    z.literal('BW'),
+    z.literal('BY'),
+    z.literal('BZ'),
+    z.literal('CA'),
+    z.literal('CC'),
+    z.literal('CD'),
+    z.literal('CF'),
+    z.literal('CG'),
+    z.literal('CH'),
+    z.literal('CI'),
+    z.literal('CK'),
+    z.literal('CL'),
+    z.literal('CM'),
+    z.literal('CN'),
+    z.literal('CO'),
+    z.literal('CR'),
+    z.literal('CU'),
+    z.literal('CV'),
+    z.literal('CW'),
+    z.literal('CX'),
+    z.literal('CY'),
+    z.literal('CZ'),
+    z.literal('DE'),
+    z.literal('DJ'),
+    z.literal('DK'),
+    z.literal('DM'),
+    z.literal('DO'),
+    z.literal('DZ'),
+    z.literal('EC'),
+    z.literal('EE'),
+    z.literal('EG'),
+    z.literal('EH'),
+    z.literal('ER'),
+    z.literal('ES'),
+    z.literal('ET'),
+    z.literal('FI'),
+    z.literal('FJ'),
+    z.literal('FK'),
+    z.literal('FM'),
+    z.literal('FO'),
+    z.literal('FR'),
+    z.literal('GA'),
+    z.literal('GB'),
+    z.literal('GD'),
+    z.literal('GE'),
+    z.literal('GF'),
+    z.literal('GG'),
+    z.literal('GH'),
+    z.literal('GI'),
+    z.literal('GL'),
+    z.literal('GM'),
+    z.literal('GN'),
+    z.literal('GP'),
+    z.literal('GQ'),
+    z.literal('GR'),
+    z.literal('GS'),
+    z.literal('GT'),
+    z.literal('GU'),
+    z.literal('GW'),
+    z.literal('GY'),
+    z.literal('HK'),
+    z.literal('HM'),
+    z.literal('HN'),
+    z.literal('HR'),
+    z.literal('HT'),
+    z.literal('HU'),
+    z.literal('ID'),
+    z.literal('IE'),
+    z.literal('IL'),
+    z.literal('IM'),
+    z.literal('IN'),
+    z.literal('IO'),
+    z.literal('IQ'),
+    z.literal('IR'),
+    z.literal('IS'),
+    z.literal('IT'),
+    z.literal('JE'),
+    z.literal('JM'),
+    z.literal('JO'),
+    z.literal('JP'),
+    z.literal('KE'),
+    z.literal('KG'),
+    z.literal('KH'),
+    z.literal('KI'),
+    z.literal('KM'),
+    z.literal('KN'),
+    z.literal('KP'),
+    z.literal('KR'),
+    z.literal('KW'),
+    z.literal('KY'),
+    z.literal('KZ'),
+    z.literal('LA'),
+    z.literal('LB'),
+    z.literal('LC'),
+    z.literal('LI'),
+    z.literal('LK'),
+    z.literal('LR'),
+    z.literal('LS'),
+    z.literal('LT'),
+    z.literal('LU'),
+    z.literal('LV'),
+    z.literal('LY'),
+    z.literal('MA'),
+    z.literal('MC'),
+    z.literal('MD'),
+    z.literal('ME'),
+    z.literal('MF'),
+    z.literal('MG'),
+    z.literal('MH'),
+    z.literal('MK'),
+    z.literal('ML'),
+    z.literal('MM'),
+    z.literal('MN'),
+    z.literal('MO'),
+    z.literal('MP'),
+    z.literal('MQ'),
+    z.literal('MR'),
+    z.literal('MS'),
+    z.literal('MT'),
+    z.literal('MU'),
+    z.literal('MV'),
+    z.literal('MW'),
+    z.literal('MX'),
+    z.literal('MY'),
+    z.literal('MZ'),
+    z.literal('NA'),
+    z.literal('NC'),
+    z.literal('NE'),
+    z.literal('NF'),
+    z.literal('NG'),
+    z.literal('NI'),
+    z.literal('NL'),
+    z.literal('NO'),
+    z.literal('NP'),
+    z.literal('NR'),
+    z.literal('NU'),
+    z.literal('NZ'),
+    z.literal('OM'),
+    z.literal('PA'),
+    z.literal('PE'),
+    z.literal('PF'),
+    z.literal('PG'),
+    z.literal('PH'),
+    z.literal('PK'),
+    z.literal('PL'),
+    z.literal('PM'),
+    z.literal('PN'),
+    z.literal('PR'),
+    z.literal('PS'),
+    z.literal('PT'),
+    z.literal('PW'),
+    z.literal('PY'),
+    z.literal('QA'),
+    z.literal('RE'),
+    z.literal('RO'),
+    z.literal('RS'),
+    z.literal('RU'),
+    z.literal('RW'),
+    z.literal('SA'),
+    z.literal('SB'),
+    z.literal('SC'),
+    z.literal('SD'),
+    z.literal('SE'),
+    z.literal('SG'),
+    z.literal('SH'),
+    z.literal('SI'),
+    z.literal('SJ'),
+    z.literal('SK'),
+    z.literal('SL'),
+    z.literal('SM'),
+    z.literal('SN'),
+    z.literal('SO'),
+    z.literal('SR'),
+    z.literal('SS'),
+    z.literal('ST'),
+    z.literal('SV'),
+    z.literal('SX'),
+    z.literal('SY'),
+    z.literal('SZ'),
+    z.literal('TC'),
+    z.literal('TD'),
+    z.literal('TF'),
+    z.literal('TG'),
+    z.literal('TH'),
+    z.literal('TJ'),
+    z.literal('TK'),
+    z.literal('TL'),
+    z.literal('TM'),
+    z.literal('TN'),
+    z.literal('TO'),
+    z.literal('TR'),
+    z.literal('TT'),
+    z.literal('TV'),
+    z.literal('TW'),
+    z.literal('TZ'),
+    z.literal('UA'),
+    z.literal('UG'),
+    z.literal('UM'),
+    z.literal('US'),
+    z.literal('UY'),
+    z.literal('UZ'),
+    z.literal('VA'),
+    z.literal('VC'),
+    z.literal('VE'),
+    z.literal('VG'),
+    z.literal('VI'),
+    z.literal('VN'),
+    z.literal('VU'),
+    z.literal('WF'),
+    z.literal('WS'),
+    z.literal('YE'),
+    z.literal('YT'),
+    z.literal('ZA'),
+    z.literal('ZM'),
+    z.literal('ZW'),
+  ])
+  .nullable()
+  .openapi({ example: 'US' })
+  .openapi('CountryOrNull')
+
+const CurrencyOrNullSchema = z
+  .union([
+    z.literal(null),
+    z.literal('AED'),
+    z.literal('AFN'),
+    z.literal('ALL'),
+    z.literal('AMD'),
+    z.literal('ANG'),
+    z.literal('AOA'),
+    z.literal('ARS'),
+    z.literal('AUD'),
+    z.literal('AWG'),
+    z.literal('AZN'),
+    z.literal('BAM'),
+    z.literal('BBD'),
+    z.literal('BDT'),
+    z.literal('BGN'),
+    z.literal('BIF'),
+    z.literal('BMD'),
+    z.literal('BND'),
+    z.literal('BOB'),
+    z.literal('BRL'),
+    z.literal('BSD'),
+    z.literal('BWP'),
+    z.literal('BYN'),
+    z.literal('BZD'),
+    z.literal('CAD'),
+    z.literal('CDF'),
+    z.literal('CHF'),
+    z.literal('CLF'),
+    z.literal('CLP'),
+    z.literal('CNY'),
+    z.literal('COP'),
+    z.literal('CRC'),
+    z.literal('CVE'),
+    z.literal('CZK'),
+    z.literal('DJF'),
+    z.literal('DKK'),
+    z.literal('DOP'),
+    z.literal('DZD'),
+    z.literal('EGP'),
+    z.literal('ETB'),
+    z.literal('EUR'),
+    z.literal('FJD'),
+    z.literal('FKP'),
+    z.literal('GBP'),
+    z.literal('GEL'),
+    z.literal('GIP'),
+    z.literal('GMD'),
+    z.literal('GNF'),
+    z.literal('GTQ'),
+    z.literal('GYD'),
+    z.literal('HKD'),
+    z.literal('HNL'),
+    z.literal('HRK'),
+    z.literal('HTG'),
+    z.literal('HUF'),
+    z.literal('IDR'),
+    z.literal('ILS'),
+    z.literal('INR'),
+    z.literal('ISK'),
+    z.literal('JMD'),
+    z.literal('JPY'),
+    z.literal('KES'),
+    z.literal('KGS'),
+    z.literal('KHR'),
+    z.literal('KMF'),
+    z.literal('KRW'),
+    z.literal('KYD'),
+    z.literal('KZT'),
+    z.literal('LAK'),
+    z.literal('LBP'),
+    z.literal('LKR'),
+    z.literal('LRD'),
+    z.literal('LSL'),
+    z.literal('MAD'),
+    z.literal('MDL'),
+    z.literal('MGA'),
+    z.literal('MKD'),
+    z.literal('MMK'),
+    z.literal('MNT'),
+    z.literal('MOP'),
+    z.literal('MRO'),
+    z.literal('MUR'),
+    z.literal('MVR'),
+    z.literal('MWK'),
+    z.literal('MXN'),
+    z.literal('MYR'),
+    z.literal('MZN'),
+    z.literal('NAD'),
+    z.literal('NGN'),
+    z.literal('NIO'),
+    z.literal('NOK'),
+    z.literal('NPR'),
+    z.literal('NZD'),
+    z.literal('PAB'),
+    z.literal('PEN'),
+    z.literal('PGK'),
+    z.literal('PHP'),
+    z.literal('PKR'),
+    z.literal('PLN'),
+    z.literal('PYG'),
+    z.literal('QAR'),
+    z.literal('RON'),
+    z.literal('RSD'),
+    z.literal('RUB'),
+    z.literal('RWF'),
+    z.literal('SAR'),
+    z.literal('SBD'),
+    z.literal('SCR'),
+    z.literal('SEK'),
+    z.literal('SGD'),
+    z.literal('SHP'),
+    z.literal('SLL'),
+    z.literal('SOS'),
+    z.literal('SRD'),
+    z.literal('STD'),
+    z.literal('SYP'),
+    z.literal('SZL'),
+    z.literal('THB'),
+    z.literal('TJS'),
+    z.literal('TND'),
+    z.literal('TOP'),
+    z.literal('TRY'),
+    z.literal('TTD'),
+    z.literal('TWD'),
+    z.literal('TZS'),
+    z.literal('UAH'),
+    z.literal('UGX'),
+    z.literal('USD'),
+    z.literal('UYU'),
+    z.literal('UZS'),
+    z.literal('VND'),
+    z.literal('VUV'),
+    z.literal('WST'),
+    z.literal('XAF'),
+    z.literal('XCD'),
+    z.literal('XOF'),
+    z.literal('XPF'),
+    z.literal('YER'),
+    z.literal('ZAR'),
+    z.literal('ZMW'),
+  ])
+  .nullable()
+  .openapi({ example: 'USD' })
+  .openapi('CurrencyOrNull')
+
 const TimezoneOrNullSchema = z
   .union([
     z.literal(null),
@@ -4554,6 +1703,61 @@ const TimezoneOrNullSchema = z
   .nullable()
   .openapi({ example: 'America/Los_Angeles' })
   .openapi('TimezoneOrNull')
+
+const PaymentTermObjectSchema = z
+  .object({
+    term_type: z
+      .enum([
+        'due_on_receipt',
+        'net',
+        'end_of_month',
+        'net_end_of_month',
+        'days_end_of_month',
+        'day_of_month',
+      ])
+      .openapi({
+        example: 'net',
+        description:
+          'The type of payment term. It decides which other fields are accepted and returned.',
+      }),
+    days: z
+      .int()
+      .min(0)
+      .max(365)
+      .exactOptional()
+      .openapi({
+        example: 30,
+        description:
+          'The number of days. Required for `net`, `net_end_of_month` and `days_end_of_month`; not accepted for other term types.',
+      }),
+    day_of_month: z
+      .int()
+      .min(1)
+      .max(31)
+      .exactOptional()
+      .openapi({
+        example: 15,
+        description:
+          'The day of the month the invoice is due on. Required for `day_of_month`; not accepted for other term types.',
+      }),
+    month_offset: z
+      .int()
+      .min(0)
+      .max(12)
+      .default(1)
+      .exactOptional()
+      .openapi({
+        example: 1,
+        description:
+          'The number of months after the issuing month. Only accepted for `day_of_month`. Defaults to `1` (the following month) when omitted; always returned for a `day_of_month` term.',
+      }),
+  })
+  .openapi({
+    description:
+      'A structured payment term. It defines how the payment due date of an invoice is computed from its issuing date.\n\nThe fields accepted and returned depend on `term_type`:\n- `due_on_receipt`: no other field. The invoice is due on its issuing date.\n- `net`: `days`. Due `days` days after the issuing date.\n- `end_of_month`: no other field. Due on the last day of the issuing month.\n- `net_end_of_month`: `days`. Due `days` days after the last day of the issuing month.\n- `days_end_of_month`: `days`. Due on the last day of the month reached `days` days after the issuing date.\n- `day_of_month`: `day_of_month` and `month_offset`. Due on `day_of_month` of the month `month_offset` months after the issuing month. A day past the end of the target month is clamped to its last day. With a `month_offset` of `0`, a day already past on the issuing date rolls over to the following month.\n\nAny field not listed for the `term_type` is rejected with a `422` and the error code `unexpected_fields`. Other error codes on this field: `invalid_format`, `invalid_term_type`, `invalid_days`, `invalid_day_of_month`, `invalid_month_offset`.\n\nThe legacy integer field `net_payment_term` is an alias of this object: `days` for a `net` term, `0` for `due_on_receipt`, and `null` for every other term type.\n',
+    required: ['term_type'],
+  })
+  .openapi('PaymentTermObject')
 
 const CustomerBillingConfigurationSchema = z
   .object({
@@ -4887,13 +2091,20 @@ const CustomerBaseObjectSchema = z
       .string()
       .nullable()
       .openapi({ example: '91364', description: "The zipcode of the customer's billing address" }),
+    payment_term: z
+      .xor([PaymentTermObjectSchema, z.null().nullable()])
+      .openapi({
+        description:
+          'The structured payment term of the customer. It is `null` when the customer has no term of its own, in which case the term of its billing entity applies.',
+      }),
     net_payment_term: z
       .int()
       .nullable()
       .openapi({
+        deprecated: true,
         example: 30,
         description:
-          'The net payment term, expressed in days, specifies the duration within which a customer is expected to remit payment after the invoice is finalized.',
+          '**Deprecated.** Use `payment_term` instead. Legacy alias of `payment_term`, expressed in days. It is the `days` of a `net` term, `0` for a `due_on_receipt` term, and `null` for every other term type or when the customer has no term of its own.',
       }),
     external_salesforce_id: z
       .string()
@@ -4963,6 +2174,7 @@ const CustomerBaseObjectSchema = z
       'url',
       'zipcode',
       'net_payment_term',
+      'payment_term',
       'external_salesforce_id',
       'created_at',
       'updated_at',
@@ -5109,7 +2321,7 @@ const CreditNoteErrorDetailsObjectSchema = z
     error_code: z
       .enum(['not_provided', 'tax_error', 'tax_voiding_error', 'invoice_generation_error'])
       .openapi({ description: 'The type of the error.', example: 'tax_error' }),
-    details: z.object({}).openapi({ description: 'The details of the error.' }),
+    details: z.looseObject({}).openapi({ description: 'The details of the error.' }),
   })
   .openapi({ required: ['lago_id', 'error_code', 'details'] })
   .openapi('CreditNoteErrorDetailsObject')
@@ -5357,1652 +2569,109 @@ const CreditNoteObjectSchema = z
   })
   .openapi('CreditNoteObject')
 
-const CreditNotesPaginatedSchema = z
-  .object({ credit_notes: z.array(CreditNoteObjectSchema), meta: PaginationMetaSchema })
-  .openapi({ required: ['credit_notes', 'meta'] })
-  .openapi('CreditNotesPaginated')
-
-const MetadataInputSchema = z
-  .record(z.string(), z.string().nullable())
-  .openapi({
-    description:
-      'Metadata to set as key-value pairs. Keys are strings (max 100 characters), values can be strings (max 255 characters) or null.',
-    example: { external_id: 'ext-123', synced_at: '2024-01-15' },
-  })
-  .openapi('MetadataInput')
-
-const CreditNoteCreateInputSchema = z
+const PaginationMetaSchema = z
   .object({
-    credit_note: z
-      .object({
-        invoice_id: z
-          .uuid()
-          .openapi({
-            description: 'The invoice unique identifier, created by Lago.',
-            example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
-          }),
-        reason: z
-          .union([
-            z.literal('duplicated_charge'),
-            z.literal('product_unsatisfactory'),
-            z.literal('order_change'),
-            z.literal('order_cancellation'),
-            z.literal('fraudulent_charge'),
-            z.literal('other'),
-            z.literal(null),
-          ])
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'The reason of the credit note creation.\nPossible values are `duplicated_charge`, `product_unsatisfactory`, `order_change`, `order_cancellation`, `fraudulent_charge` or `other`.',
-            example: 'duplicated_charge',
-          }),
-        description: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The description of the credit note.', example: 'description' }),
-        credit_amount_cents: z
-          .int()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              "The total amount to be credited to the customer balance for discounts on future invoices. For a total or partial refund, credit or offset, the amount in cents must include both the item amount and the applicable tax. The refunded, credited and offsetted amounts should always balance. The total, including taxes, cannot exceed the invoice's total fees.",
-            example: 100,
-          }),
-        refund_amount_cents: z
-          .int()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              "The total amount to be refunded immediately to the payment method used by the customer. For a total or partial refund, credit or offset, the amount in cents must include both the item amount and the applicable tax. The refunded, credited and offsetted amounts should always balance. The total, including taxes, cannot exceed the invoice's total fees.",
-            example: 500,
-          }),
-        offset_amount_cents: z
-          .int()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              "The total amount to be immediately deducted from the invoice balance. For a total or partial refund, credit or offset, the amount in cents must include both the item amount and the applicable tax. The refunded, credited and offsetted amounts should always balance. The total, including taxes, cannot exceed the invoice's total fees.",
-            example: 200,
-          }),
-        items: z
-          .array(
-            z
-              .object({
-                fee_id: z
-                  .uuid()
-                  .openapi({
-                    description: 'The fee unique identifier, created by Lago.',
-                    example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
-                  }),
-                amount_cents: z
-                  .int()
-                  .openapi({
-                    description:
-                      'This is the amount of the credit note item excluding taxes, expressed in cents.',
-                    example: 100,
-                  }),
-              })
-              .openapi({ required: ['fee_id', 'amount_cents'] }),
-          )
-          .openapi({
-            description: "The list of credit note's items.",
-            example: [
-              { fee_id: '1a901a90-1a90-1a90-1a90-1a901a901a90', amount_cents: 100 },
-              { fee_id: '1a901a90-1a90-1a90-1a90-1a901a901a91', amount_cents: 500 },
-              { fee_id: '1a901a90-1a90-1a90-1a90-1a901a901a92', amount_cents: 200 },
-            ],
-          }),
-        metadata: MetadataInputSchema.exactOptional(),
-      })
-      .openapi({ required: ['invoice_id', 'items'] }),
+    current_page: z.int().openapi({ description: 'Current page.', example: 2 }),
+    next_page: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Next page.', example: 3 }),
+    prev_page: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Previous page.', example: 1 }),
+    total_pages: z.int().openapi({ description: 'Total number of pages.', example: 4 }),
+    total_count: z.int().openapi({ description: 'Total number of records.', example: 70 }),
   })
-  .openapi({ required: ['credit_note'] })
-  .openapi('CreditNoteCreateInput')
+  .openapi({ required: ['current_page', 'total_pages', 'total_count'] })
+  .openapi('PaginationMeta')
+
+type CreditNotesPaginatedType = {
+  credit_notes: z.infer<typeof CreditNoteObjectSchema>[]
+  meta: z.infer<typeof PaginationMetaSchema>
+}
 
 const CreditNoteExtendedObjectSchema = CreditNoteObjectSchema.and(
   z.object({ customer: CustomerObjectSchema.exactOptional() }).openapi({ required: [] }),
 ).openapi('CreditNoteExtendedObject')
 
-const CreditNoteExtendedSchema = z
-  .object({ credit_note: CreditNoteExtendedObjectSchema })
-  .openapi({ required: ['credit_note'] })
-  .openapi('CreditNoteExtended')
+type CreditNoteExtendedType = { credit_note: z.infer<typeof CreditNoteExtendedObjectSchema> }
 
-const CreditNoteUpdateInputSchema = z
-  .object({
-    credit_note: z
-      .object({
-        refund_status: z
-          .enum(['pending', 'succeeded', 'failed'])
-          .exactOptional()
-          .openapi({
-            description:
-              'The status of the refund portion of the credit note. It indicates the current state or condition of the refund associated with the credit note. The possible values for this field are:\n\n- `pending`: this status indicates that the refund is pending execution. The refund request has been initiated but has not been processed or completed yet.\n- `succeeded`: this status indicates that the refund has been successfully executed. The refund amount has been processed and returned to the customer or the designated recipient.\n- `failed`: this status indicates that the refund failed to execute. The refund request encountered an error or unsuccessful processing, and the refund amount could not be returned.',
-            example: 'succeeded',
-          }),
-        metadata: MetadataInputSchema.exactOptional(),
-      })
-      .openapi({ required: [] }),
-  })
-  .openapi({ required: ['credit_note'] })
-  .openapi('CreditNoteUpdateInput')
+type CreditNoteType = { credit_note: z.infer<typeof CreditNoteObjectSchema> }
 
-const CreditNoteSchema = z
-  .object({ credit_note: CreditNoteObjectSchema })
-  .openapi({ required: ['credit_note'] })
-  .openapi('CreditNote')
-
-const CreditNoteEstimateInputSchema = z
-  .object({
-    credit_note: z
-      .object({
-        invoice_id: z
-          .uuid()
-          .openapi({
-            description: 'The invoice unique identifier, created by Lago.',
-            example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
-          }),
-        items: z
-          .array(
-            z
-              .object({
-                fee_id: z
-                  .uuid()
-                  .openapi({
-                    description: 'The fee unique identifier, created by Lago.',
-                    example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
-                  }),
-                amount_cents: z
-                  .int()
-                  .openapi({
-                    description: 'The amount of the credit note item, expressed in cents.',
-                    example: 10,
-                  }),
-              })
-              .openapi({ required: ['fee_id', 'amount_cents'] }),
-          )
-          .openapi({
-            description: "The list of credit note's items.",
-            example: [
-              { fee_id: '1a901a90-1a90-1a90-1a90-1a901a901a90', amount_cents: 10 },
-              { fee_id: '1a901a90-1a90-1a90-1a90-1a901a901a91', amount_cents: 5 },
-            ],
-          }),
-      })
-      .openapi({ required: ['invoice_id', 'items'] }),
-  })
-  .openapi({ required: ['credit_note'] })
-  .openapi('CreditNoteEstimateInput')
-
-const CreditNoteEstimatedSchema = z
-  .object({
-    estimated_credit_note: z
-      .object({
-        lago_invoice_id: z
-          .uuid()
-          .openapi({
-            description:
-              'Unique identifier assigned to the invoice that the credit note belongs to',
-            example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
-          }),
-        invoice_number: z
-          .string()
-          .openapi({
-            description: 'The invoice unique number, related to the credit note.',
-            example: 'LAG-1234',
-          }),
-        currency: CurrencySchema.openapi({
-          description: 'The currency of the credit note.',
-          example: 'EUR',
-        }),
-        taxes_amount_cents: z
-          .int()
-          .openapi({
-            description: 'The tax amount of the credit note, expressed in cents.',
-            example: 20,
-          }),
-        precise_taxes_amount_cents: z
-          .string()
-          .openapi({
-            description:
-              'The precise tax amount of the credit note, expressed in cents with decimal precision.',
-            example: '20.1',
-          }),
-        taxes_rate: z
-          .number()
-          .openapi({
-            description: 'The tax rate associated with this specific credit note.',
-            example: 20,
-          }),
-        sub_total_excluding_taxes_amount_cents: z
-          .int()
-          .openapi({
-            description:
-              'The subtotal of the credit note excluding any applicable taxes, expressed in cents.',
-            example: 100,
-          }),
-        max_creditable_amount_cents: z
-          .int()
-          .openapi({
-            description:
-              'The maximum amount that can be credited to the customer balance for the requested items, taxes included, expressed in cents.',
-            example: 100,
-          }),
-        max_refundable_amount_cents: z
-          .int()
-          .openapi({
-            description:
-              'The maximum amount that can be refunded for the requested items, expressed in cents. It is capped by the amount the customer already paid on the invoice, so it is lower than `max_creditable_amount_cents` on an unpaid invoice.',
-            example: 0,
-          }),
-        max_offsettable_amount_cents: z
-          .int()
-          .openapi({
-            description:
-              'The maximum amount that can be deducted from the invoice balance for the requested items, expressed in cents.',
-            example: 0,
-          }),
-        coupons_adjustment_amount_cents: z
-          .int()
-          .openapi({
-            description: 'The pro-rated amount of the coupons applied to the source invoice.',
-            example: 20,
-          }),
-        precise_coupons_adjustment_amount_cents: z
-          .string()
-          .openapi({
-            description:
-              'The precise pro-rated amount with decimal precision of the coupons applied to the source invoice.',
-            example: '20.1',
-          }),
-        items: z
-          .array(
-            z
-              .object({
-                amount_cents: z
-                  .int()
-                  .openapi({
-                    description: "The credit note's item amount, expressed in cents.",
-                    example: 100,
-                  }),
-                lago_fee_id: z
-                  .uuid()
-                  .nullable()
-                  .openapi({
-                    description:
-                      "Unique identifier assigned to the fee within the Lago application. This ID is exclusively created by Lago and serves as a unique identifier for the fee's record within the Lago system.",
-                    example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
-                  }),
-              })
-              .openapi({ required: ['amount_cents', 'lago_fee_id'] }),
-          )
-          .openapi({ description: "Array of credit note's items." }),
-        applied_taxes: z
-          .array(
-            z
-              .object({
-                lago_tax_id: z
-                  .uuid()
-                  .exactOptional()
-                  .openapi({
-                    description: 'Unique identifier of the tax, created by Lago.',
-                    example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
-                  }),
-                tax_name: z
-                  .string()
-                  .exactOptional()
-                  .openapi({ description: 'Name of the tax.', example: 'TVA' }),
-                tax_code: z
-                  .string()
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'Unique code used to identify the tax associated with the API request.',
-                    example: 'french_standard_vat',
-                  }),
-                tax_rate: z
-                  .number()
-                  .exactOptional()
-                  .openapi({ description: 'The percentage rate of the tax', example: 20 }),
-                tax_description: z
-                  .string()
-                  .exactOptional()
-                  .openapi({
-                    description: 'Internal description of the tax',
-                    example: 'French standard VAT',
-                  }),
-                base_amount_cents: z.int().exactOptional().openapi({ example: 100 }),
-                amount_cents: z
-                  .int()
-                  .exactOptional()
-                  .openapi({ description: 'Amount of the tax', example: 2000 }),
-                amount_currency: CurrencySchema.exactOptional().openapi({
-                  description: 'Currency of the tax',
-                  example: 'USD',
-                }),
-              })
-              .openapi({ required: [] }),
-          )
-          .exactOptional(),
-      })
-      .openapi({
-        required: [
-          'lago_invoice_id',
-          'invoice_number',
-          'currency',
-          'taxes_amount_cents',
-          'precise_taxes_amount_cents',
-          'sub_total_excluding_taxes_amount_cents',
-          'max_creditable_amount_cents',
-          'max_refundable_amount_cents',
-          'max_offsettable_amount_cents',
-          'coupons_adjustment_amount_cents',
-          'precise_coupons_adjustment_amount_cents',
-          'taxes_rate',
-          'items',
-        ],
-      }),
-  })
-  .openapi({ required: ['estimated_credit_note'] })
-  .openapi('CreditNoteEstimated')
-
-const CreditNoteMetadataResponseSchema = z
-  .object({ metadata: MetadataObjectSchema })
-  .openapi({ required: ['metadata'] })
-  .openapi('CreditNoteMetadataResponse')
-
-const ErrorDetailObjectSchema = z
-  .object({
-    lago_id: z
-      .uuid()
-      .nullable()
-      .openapi({
-        description:
-          "Unique identifier assigned to the error_detail within the Lago application. This ID is exclusively created by Lago and serves as a unique identifier for the error's record within the Lago system.",
-        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
-      }),
-    error_code: z
-      .string()
-      .openapi({
-        description:
-          'Code that specifies part of the application / connection, where the error originally happened',
-        example: 'tax_error',
-      }),
-    details: z
-      .record(z.string(), z.string())
-      .openapi({
-        description:
-          'Key value list of more elaborated error detail, where by the key of error_code an external service error details are stored',
-        example: { tax_error: 'taxDateTooFarInFuture' },
-      }),
-  })
-  .openapi({ required: ['lago_id', 'error_code', 'details'] })
-  .openapi('ErrorDetailObject')
-
-const CustomerObjectExtendedSchema = CustomerObjectSchema.and(
-  z
-    .object({
-      metadata: z.array(CustomerMetadataSchema).exactOptional(),
-      taxes: z
-        .array(TaxObjectSchema)
-        .exactOptional()
-        .openapi({ description: 'List of customer taxes' }),
-      applicable_invoice_custom_sections: z
-        .array(InvoiceCustomSectionObjectSchema)
-        .exactOptional()
-        .openapi({
-          description: "The customer's invoice custom sections used for generating invoices.",
-        }),
-      error_details: z
-        .array(ErrorDetailObjectSchema)
-        .exactOptional()
-        .openapi({
-          description:
-            'List of errors with details that might have been raised while processing background actions for the customer',
-        }),
-    })
-    .openapi({ required: [] }),
-).openapi('CustomerObjectExtended')
-
-const CustomersPaginatedSchema = z
-  .object({ customers: z.array(CustomerObjectExtendedSchema), meta: PaginationMetaSchema })
-  .openapi({ required: ['customers', 'meta'] })
-  .openapi('CustomersPaginated')
-
-const CustomerCreateInputSchema = z
-  .object({
-    customer: z
-      .object({
-        external_id: z
-          .string()
-          .openapi({
-            example: '5eb02857-a71e-4ea2-bcf9-57d3a41bc6ba',
-            description:
-              'The customer external unique identifier (provided by your own application)',
-          }),
-        billing_entity_code: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            example: 'acme_corp',
-            description:
-              'The unique code of the billing entity to associate with the customer. If not provided, the default billing entity will be used.',
-          }),
-        address_line1: z
-          .string()
-          .max(500)
-          .nullable()
-          .exactOptional()
-          .openapi({
-            example: '5230 Penfield Ave',
-            description: 'The first line of the billing address (500 characters max).',
-          }),
-        address_line2: z
-          .string()
-          .max(500)
-          .nullable()
-          .exactOptional()
-          .openapi({
-            example: '',
-            description: 'The second line of the billing address (500 characters max).',
-          }),
-        city: z
-          .string()
-          .max(255)
-          .nullable()
-          .exactOptional()
-          .openapi({
-            example: 'Woodland Hills',
-            description: "The city of the customer's billing address (255 characters max).",
-          }),
-        country: CountryOrNullSchema.exactOptional().openapi({
-          description:
-            "Country code of the customer's billing address. Format must be ISO 3166 (alpha-2)",
-          example: 'US',
-        }),
-        currency: CurrencyOrNullSchema.exactOptional().openapi({
-          description: 'Currency of the customer. Format must be ISO 4217',
-        }),
-        email: z
-          .email()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            example: 'dinesh@piedpiper.example',
-            description: 'The email of the customer',
-          }),
-        legal_name: z
-          .string()
-          .max(255)
-          .nullable()
-          .exactOptional()
-          .openapi({
-            example: 'Coleman-Blair',
-            description: 'The legal company name of the customer (255 characters max).',
-          }),
-        legal_number: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            example: '49-008-2965',
-            description: 'The legal company number of the customer',
-          }),
-        logo_url: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            example: 'http://hooli.com/logo.png',
-            description: 'The logo URL of the customer',
-          }),
-        name: z
-          .string()
-          .max(255)
-          .nullable()
-          .exactOptional()
-          .openapi({
-            example: 'Gavin Belson',
-            description: 'The full name of the customer (255 characters max).',
-          }),
-        firstname: z
-          .string()
-          .max(255)
-          .nullable()
-          .exactOptional()
-          .openapi({
-            example: 'Gavin',
-            description: 'First name of the customer (255 characters max).',
-          }),
-        lastname: z
-          .string()
-          .max(255)
-          .nullable()
-          .exactOptional()
-          .openapi({
-            example: 'Belson',
-            description: 'Last name of the customer (255 characters max).',
-          }),
-        account_type: z
-          .enum(['customer', 'partner'])
-          .exactOptional()
-          .openapi({
-            example: 'customer',
-            description:
-              'The type of the account. It can have one of the following values:\n- `customer`: the account is a customer, default value.\n- `partner`: the account is a partner.\n\nThis field is only applied when revenue share is enabled on your organization and the customer has no subscription, invoice, add-on, fixed-amount coupon or wallet yet; otherwise it is ignored.',
-          }),
-        customer_type: z
-          .union([z.literal('company'), z.literal('individual'), z.literal(null)])
-          .nullable()
-          .exactOptional()
-          .openapi({
-            example: 'company',
-            description:
-              'The type of the customer. It can have one of the following values:\n- `company`: the customer is a company.\n- `individual`: the customer is an individual.',
-          }),
-        phone: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            example: '1-171-883-3711 x245',
-            description: 'The phone number of the customer',
-          }),
-        state: z
-          .string()
-          .max(255)
-          .nullable()
-          .exactOptional()
-          .openapi({
-            example: 'CA',
-            description: "The state of the customer's billing address (255 characters max).",
-          }),
-        tax_codes: TaxCodesSchema.exactOptional(),
-        tax_identification_number: z
-          .string()
-          .max(255)
-          .nullable()
-          .exactOptional()
-          .openapi({
-            example: 'EU123456789',
-            description: 'The tax identification number of the customer (255 characters max).',
-          }),
-        timezone: TimezoneOrNullSchema.exactOptional().openapi({
-          description:
-            "The customer's timezone, used for billing purposes in their local time. Overrides the organization's timezone. This is a premium feature, the value is ignored without a premium license.",
-        }),
-        url: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            example: 'http://hooli.com',
-            description: 'The custom website URL of the customer',
-          }),
-        zipcode: z
-          .string()
-          .max(255)
-          .nullable()
-          .exactOptional()
-          .openapi({
-            example: '91364',
-            description: "The zipcode of the customer's billing address (255 characters max).",
-          }),
-        net_payment_term: z
-          .int()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            example: 30,
-            description:
-              'The net payment term, expressed in days, specifies the duration within which a customer is expected to remit payment after the invoice is finalized.',
-          }),
-        external_salesforce_id: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            example: '0015p00001JQx1QAAT',
-            description: 'The customer ID within the Salesforce system',
-          }),
-        finalize_zero_amount_invoice: z
-          .enum(['inherit', 'skip', 'finalize'])
-          .exactOptional()
-          .openapi({
-            example: 'inherit',
-            description:
-              'Specifies how invoices with a zero total amount should be handled:\n- `inherit`: (Default) Follows the organization-level configuration.\n- `finalize`: Invoices are issued and finalized even if the total amount is zero.\n- `skip`: Invoices with a total amount of zero are not finalized.',
-          }),
-        billing_configuration: CustomerBillingConfigurationSchema.exactOptional(),
-        shipping_address: AddressSchema.and(
-          z
-            .object({
-              address_line1: z
-                .unknown()
-                .superRefine((val, ctx) => {
-                  if (typeof val === 'string') {
-                    if ([...val].length > 500) {
-                      ctx.addIssue({ code: 'custom' })
-                    }
-                  }
-                })
-                .exactOptional(),
-              address_line2: z
-                .unknown()
-                .superRefine((val, ctx) => {
-                  if (typeof val === 'string') {
-                    if ([...val].length > 500) {
-                      ctx.addIssue({ code: 'custom' })
-                    }
-                  }
-                })
-                .exactOptional(),
-              city: z
-                .unknown()
-                .superRefine((val, ctx) => {
-                  if (typeof val === 'string') {
-                    if ([...val].length > 255) {
-                      ctx.addIssue({ code: 'custom' })
-                    }
-                  }
-                })
-                .exactOptional(),
-              state: z
-                .unknown()
-                .superRefine((val, ctx) => {
-                  if (typeof val === 'string') {
-                    if ([...val].length > 255) {
-                      ctx.addIssue({ code: 'custom' })
-                    }
-                  }
-                })
-                .exactOptional(),
-              zipcode: z
-                .unknown()
-                .superRefine((val, ctx) => {
-                  if (typeof val === 'string') {
-                    if ([...val].length > 255) {
-                      ctx.addIssue({ code: 'custom' })
-                    }
-                  }
-                })
-                .exactOptional(),
-            })
-            .openapi({ required: [] }),
-        )
-          .exactOptional()
-          .openapi({
-            description:
-              'The shipping address of the customer. The address lines accept up to 500 characters, the city, state and zipcode up to 255.',
-          }),
-        integration_customers: z
-          .array(
-            z
-              .object({
-                id: z
-                  .uuid()
-                  .exactOptional()
-                  .openapi({
-                    example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
-                    description:
-                      'A unique identifier for the integration customer object in the Lago application.',
-                  }),
-                integration_type: z
-                  .enum(['netsuite', 'anrok', 'avalara', 'xero', 'hubspot', 'salesforce'])
-                  .exactOptional()
-                  .openapi({
-                    example: 'netsuite',
-                    description:
-                      'The integration type used for accounting, tax and CRM syncs.\nAccepted values: `netsuite`, `anrok`, `avalara`, `xero`, `hubspot`, `salesforce`.',
-                  }),
-                integration_code: z
-                  .string()
-                  .exactOptional()
-                  .openapi({
-                    example: 'netsuite-eu-1',
-                    description: 'Unique code used to identify an integration connection.',
-                  }),
-                code: z
-                  .string()
-                  .exactOptional()
-                  .openapi({
-                    example: 'netsuite-eu-1',
-                    description:
-                      'Unique code identifying this integration customer. If it is not provided, the code of the integration connection is used.',
-                  }),
-                external_customer_id: z
-                  .string()
-                  .exactOptional()
-                  .openapi({
-                    example: 'cus_12345',
-                    description:
-                      "The customer ID within the integration's system. If this field is not provided, Lago has the option to create a new customer record within the integration's system on behalf of the customer.",
-                  }),
-                sync_with_provider: z
-                  .boolean()
-                  .exactOptional()
-                  .openapi({
-                    example: true,
-                    description:
-                      "Set this field to `true` if you want to create a customer record in the integration's system. This option is applicable only when the `external_customer_id` is null and the `sync_with_provider` field is set to `true`. By default, the value is set to `false`",
-                  }),
-                subsidiary_id: z
-                  .string()
-                  .exactOptional()
-                  .openapi({
-                    example: '2',
-                    description:
-                      'This optional field is needed only when working with `netsuite` connection.',
-                  }),
-                targeted_object: z
-                  .string()
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    example: 'contacts',
-                    description:
-                      'This optional field is needed only when working with `hubspot` connection.',
-                  }),
-              })
-              .openapi({ required: [] }),
-          )
-          .exactOptional()
-          .openapi({
-            description:
-              'The integration customers to create or update for this customer. Only one entry per `integration_type` is accepted; sending two entries with the same type returns a `422` error with `invalid_count_per_integration_type` on `integration_customers`.',
-          }),
-        metadata: z
-          .array(
-            z
-              .object({
-                id: z
-                  .uuid()
-                  .exactOptional()
-                  .openapi({
-                    example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
-                    description:
-                      'Identifier for the metadata object, only required when updating a key-value pair',
-                  }),
-                key: z
-                  .string()
-                  .max(20)
-                  .openapi({
-                    example: 'Purchase Order',
-                    description:
-                      'The metadata object key (20 characters max). It must be unique for the customer.',
-                  }),
-                value: z
-                  .string()
-                  .max(100)
-                  .openapi({
-                    example: '123456789',
-                    description: 'The metadata object value (100 characters max).',
-                  }),
-                display_in_invoice: z
-                  .boolean()
-                  .exactOptional()
-                  .openapi({
-                    example: true,
-                    description:
-                      'Determines whether the item or information should be displayed in the invoice. If set to true, the item or information will be included and visible in the generated invoice. If set to false, the item or information will be excluded and not displayed in the invoice.',
-                  }),
-              })
-              .openapi({ required: ['key', 'value'] }),
-          )
-          .max(5)
-          .exactOptional()
-          .openapi({
-            description:
-              'Set of key-value pairs that you can attach to a customer. This can be useful for storing additional information about the customer in a structured format. A customer can hold up to 5 key-value pairs.',
-          }),
-        skip_invoice_custom_sections: z
-          .boolean()
-          .exactOptional()
-          .openapi({
-            example: false,
-            description:
-              'Set to `true` to exclude all invoice custom sections from PDF generation for this customer only. False by default',
-          }),
-        invoice_custom_section_codes: z
-          .array(z.string())
-          .exactOptional()
-          .openapi({
-            description: 'List of unique codes identifying the invoice custom sections.',
-            example: ['eu_bank_details'],
-          }),
-      })
-      .openapi({ required: ['external_id'] }),
-  })
-  .openapi({ required: ['customer'] })
-  .openapi('CustomerCreateInput')
-
-const CustomerSchema = z
-  .object({ customer: CustomerObjectExtendedSchema })
-  .openapi({ required: ['customer'] })
-  .openapi('Customer')
-
-const InvoiceBaseObjectSchema = z
-  .object({
-    lago_id: z
-      .uuid()
-      .openapi({
-        description:
-          "Unique identifier assigned to the invoice within the Lago application. This ID is exclusively created by Lago and serves as a unique identifier for the invoice's record within the Lago system.",
-        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
-      }),
-    billing_entity_code: z
-      .string()
-      .openapi({
-        example: 'acme_corp',
-        description: 'The unique code of the billing entity the invoice was issued from.',
-      }),
-    sequential_id: z
-      .int()
-      .nullable()
-      .openapi({
-        description:
-          "This ID helps in uniquely identifying and organizing the invoices associated with a specific customer. It provides a sequential numbering system specific to the customer, allowing for easy tracking and management of invoices within the customer's context. It is assigned when the invoice is finalized, so it is `null` on draft invoices.",
-        example: 2,
-      }),
-    number: z
-      .string()
-      .openapi({
-        description:
-          'The unique number assigned to the invoice. This number serves as a distinct identifier for the invoice and helps in differentiating it from other invoices in the system.',
-        example: 'LAG-1234-001-002',
-      }),
-    purchase_order_number: z
-      .string()
-      .nullable()
-      .openapi({
-        example: 'PO-123',
-        description:
-          'The purchase order number associated with the invoice. It is inherited from the subscription, wallet or wallet transaction the invoice was generated for.',
-      }),
-    issuing_date: z.iso
-      .date()
-      .openapi({
-        description:
-          'The date when the invoice was issued. It is provided in the ISO 8601 date format.',
-        example: '2022-04-30',
-      }),
-    payment_dispute_lost_at: z.iso
-      .datetime({ offset: true })
-      .nullable()
-      .openapi({
-        description:
-          'The date when the payment dispute was lost. It is expressed in Coordinated Universal Time (UTC). It is `null` until a dispute is lost on the invoice.',
-        example: '2022-09-14T16:35:31Z',
-      }),
-    payment_due_date: z.iso
-      .date()
-      .nullable()
-      .openapi({
-        description: 'The payment due date for the invoice, specified in the ISO 8601 date format.',
-        example: '2022-04-30',
-      }),
-    payment_overdue: z
-      .boolean()
-      .openapi({
-        description: 'Specifies if the payment is considered as overdue.',
-        example: true,
-      }),
-    net_payment_term: z
-      .int()
-      .openapi({
-        example: 30,
-        description:
-          'The net payment term, expressed in days, specifies the duration within which a customer is expected to remit payment after the invoice is finalized.',
-      }),
-    invoice_type: z
-      .enum([
-        'subscription',
-        'add_on',
-        'credit',
-        'one_off',
-        'advance_charges',
-        'progressive_billing',
-      ])
-      .openapi({
-        description:
-          'The type of invoice issued. Possible values are `subscription`, `add_on`, `credit`, `one_off`, `advance_charges` or `progressive_billing`.',
-        example: 'subscription',
-      }),
-    status: z
-      .enum(['draft', 'finalized', 'voided', 'failed', 'pending', 'deleted'])
-      .openapi({
-        description:
-          "The status of the invoice. It indicates the current state of the invoice and can have following values:\n- `draft`: the invoice is in the draft state, waiting for the end of the grace period to be finalized. During this period, events can still be ingested and added to the invoice.\n- `finalized`: the invoice has been issued and finalized. In this state, events cannot be ingested or added to the invoice anymore.\n- `voided`: the invoice has been issued and subsequently voided. In this state, events cannot be ingested or added to the invoice anymore.\n- `pending`: the invoice remains pending until the taxes are fetched from the external provider.\n- `failed`: during an attempt of finalization of the invoice, an error happened. This invoice will have an array of error_details, explaining, in which part of the system an error happened and how it's possible to fix it. This invoice can't be edited or updated, only retried. This action will discard current error_details and will create new ones if the finalization failed again.\n- `deleted`: the draft invoice has been permanently deleted. This status is only returned by the delete endpoint and its webhook; a deleted invoice is no longer retrievable afterwards.",
-        example: 'finalized',
-      }),
-    payment_status: z
-      .enum(['pending', 'succeeded', 'failed'])
-      .openapi({
-        description:
-          'The status of the payment associated with the invoice. It can have one of the following values:\n- `pending`: the payment is pending, waiting for processing by the payment provider, or the invoice has been issued and its payment status has not been updated through the update endpoint.\n- `succeeded`: the payment of the invoice has been successfully processed.\n- `failed`: the payment of the invoice has failed or encountered an error during processing.',
-        example: 'succeeded',
-      }),
-    currency: CurrencySchema.openapi({
-      description: 'The currency of the invoice issued.',
-      example: 'EUR',
-    }),
-    fees_amount_cents: z
-      .int()
-      .openapi({
-        description:
-          'The total sum of fees amount in cents. It calculates the cumulative amount of all the fees associated with the invoice, providing a consolidated value.',
-        example: 100,
-      }),
-    coupons_amount_cents: z
-      .int()
-      .openapi({
-        description:
-          'The total sum of all coupons discounted on the invoice. It calculates the cumulative discount amount applied by coupons, expressed in cents.',
-        example: 10,
-      }),
-    credit_notes_amount_cents: z
-      .int()
-      .openapi({
-        description:
-          'The total sum of all credit notes discounted on the invoice. It calculates the cumulative discount amount applied by credit notes, expressed in cents.',
-        example: 10,
-      }),
-    sub_total_excluding_taxes_amount_cents: z
-      .int()
-      .openapi({
-        description:
-          'Subtotal amount, excluding taxes, expressed in cents.\nThis field depends on the version number. Here are the definitions based on the version:\n- Version 1: is equal to the sum of `fees_amount_cents`, minus `coupons_amount_cents`, and minus `prepaid_credit_amount_cents`.\n- Version 2: is equal to the `fees_amount_cents`.\n- Version 3 & 4: is equal to the `fees_amount_cents`, minus `coupons_amount_cents`.',
-        example: 100,
-      }),
-    taxes_amount_cents: z
-      .int()
-      .openapi({
-        description: 'The sum of tax amount associated with the invoice, expressed in cents.',
-        example: 20,
-      }),
-    sub_total_including_taxes_amount_cents: z
-      .int()
-      .openapi({
-        description:
-          'Subtotal amount, including taxes, expressed in cents.\nThis field depends on the version number. Here are the definitions based on the version:\n- Version 1: is equal to the `total_amount_cents`.\n- Version 2: is equal to the sum of `fees_amount_cents` and `taxes_amount_cents`.\n- Version 3 & 4: is equal to the sum of `sub_total_excluding_taxes_amount_cents` and `taxes_amount_cents`.',
-        example: 120,
-      }),
-    prepaid_credit_amount_cents: z
-      .int()
-      .openapi({
-        description:
-          'The total sum of all prepaid credits discounted on the invoice. It calculates the cumulative discount amount applied by prepaid credits, expressed in cents.',
-        example: 0,
-      }),
-    prepaid_granted_credit_amount_cents: z
-      .int()
-      .nullable()
-      .openapi({
-        description:
-          'The portion of prepaid credits discounted on the invoice that originated from granted (free) credits, expressed in cents. Only populated for invoices associated with traceable wallets.',
-        example: 0,
-      }),
-    prepaid_purchased_credit_amount_cents: z
-      .int()
-      .nullable()
-      .openapi({
-        description:
-          'The portion of prepaid credits discounted on the invoice that originated from purchased (paid) credits, expressed in cents. Only populated for invoices associated with traceable wallets.',
-        example: 0,
-      }),
-    progressive_billing_credit_amount_cents: z
-      .int()
-      .openapi({
-        description:
-          'The usage already billed in previous invoices. Only apply to `progressive_billing` and `subscription` invoices.',
-        example: 0,
-      }),
-    total_amount_cents: z
-      .int()
-      .openapi({
-        description:
-          'The sum of the amount and taxes amount on the invoice, expressed in cents. It calculates the total financial value of the invoice, including both the original amount and any applicable taxes.',
-        example: 100,
-      }),
-    total_paid_amount_cents: z
-      .int()
-      .openapi({
-        description: 'The amount already paid on the invoice, expressed in cents.',
-        example: 40,
-      }),
-    total_offsetted_credit_note_amount_cents: z
-      .int()
-      .openapi({
-        description:
-          'The amount of the invoice settled by finalized credit notes, expressed in cents.',
-        example: 10,
-      }),
-    total_due_amount_cents: z
-      .int()
-      .openapi({
-        description:
-          'The amount still due on the invoice, expressed in cents. It is equal to `total_amount_cents` minus `total_paid_amount_cents` and `total_offsetted_credit_note_amount_cents`, and is `0` for voided invoices.',
-        example: 50,
-      }),
-    version_number: z
-      .int()
-      .openapi({
-        example: 3,
-        description:
-          'The version of the invoice calculation rules applied to this invoice. It determines how the subtotals are computed.',
-      }),
-    self_billed: z
-      .boolean()
-      .openapi({
-        example: false,
-        description:
-          'Indicates if the invoice is self-billed. Self-billing is a process where an organization creates the invoice on behalf of the partner. This field specifies whether the invoice is self-billed or not.',
-      }),
-    file_url: z
-      .url()
-      .nullable()
-      .openapi({
-        description:
-          'Contains the URL that provides direct access to the invoice PDF file. You can use this URL to download or view the PDF document of the invoice. It is `null` while no PDF has been generated, which is the case for draft invoices.',
-        example: 'https://getlago.com/invoice/file',
-      }),
-    xml_url: z
-      .url()
-      .nullable()
-      .openapi({
-        description:
-          'Contains the URL that provides direct access to the e-invoicing XML file. It is `null` while no XML file has been generated for the invoice.',
-        example: 'https://getlago.com/invoice/xml',
-      }),
-    web_url: z
-      .url()
-      .nullable()
-      .openapi({
-        description:
-          'Contains the URL to the invoice page in the Lago dashboard. It is `null` for invoices that are not visible in the dashboard (for example while still generating). Use it to link users directly to the invoice overview page.',
-        example:
-          'https://app.getlago.com/acme/customer/1a901a90-1a90-1a90-1a90-1a901a901a90/invoice/2b012b01-2b01-2b01-2b01-2b012b012b01/overview',
-      }),
-    created_at: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        example: '2022-04-29T08:59:51Z',
-        description:
-          'The date of the invoice creation, represented in ISO 8601 datetime format and expressed in Coordinated Universal Time (UTC). It provides a standardized and internationally recognized timestamp for when the invoice object was created.',
-      }),
-    updated_at: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        example: '2022-04-29T08:59:51Z',
-        description:
-          'The date of the invoice update, represented in ISO 8601 datetime format and expressed in Coordinated Universal Time (UTC). It provides a standardized and internationally recognized timestamp for when the invoice object was last updated.',
-      }),
-    voided_at: z.iso
-      .datetime({ offset: true })
-      .nullable()
-      .openapi({
-        example: '2022-04-29T08:59:51Z',
-        description:
-          'The date when the invoice was voided, represented in ISO 8601 datetime format and expressed in Coordinated Universal Time (UTC). It is `null` for invoices that have not been voided.',
-      }),
-  })
+const WalletFeeTypeEnumSchema = z
+  .enum(['charge', 'subscription', 'commitment', 'fixed_charge', 'credit'])
   .openapi({
-    required: [
-      'lago_id',
-      'billing_entity_code',
-      'sequential_id',
-      'number',
-      'purchase_order_number',
-      'issuing_date',
-      'payment_dispute_lost_at',
-      'payment_due_date',
-      'payment_overdue',
-      'net_payment_term',
-      'invoice_type',
-      'status',
-      'payment_status',
-      'currency',
-      'fees_amount_cents',
-      'coupons_amount_cents',
-      'credit_notes_amount_cents',
-      'sub_total_excluding_taxes_amount_cents',
-      'taxes_amount_cents',
-      'sub_total_including_taxes_amount_cents',
-      'prepaid_credit_amount_cents',
-      'prepaid_granted_credit_amount_cents',
-      'prepaid_purchased_credit_amount_cents',
-      'progressive_billing_credit_amount_cents',
-      'total_amount_cents',
-      'total_paid_amount_cents',
-      'total_offsetted_credit_note_amount_cents',
-      'total_due_amount_cents',
-      'version_number',
-      'self_billed',
-      'file_url',
-      'xml_url',
-      'web_url',
-      'created_at',
-      'updated_at',
-      'voided_at',
-    ],
+    description:
+      'Fee type to which a wallet can be restricted. It can be any of the following values:\n  - `charge`\n  - `subscription`\n  - `commitment`\n  - `fixed_charge`\n  - `credit`\n',
   })
-  .openapi('InvoiceBaseObject')
+  .openapi('WalletFeeTypeEnum')
 
-const InvoiceMetadataObjectSchema = z
-  .object({
-    lago_id: z
-      .uuid()
-      .exactOptional()
-      .openapi({
-        description:
-          'Unique identifier assigned to the invoice metadata within the Lago application.',
-        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
-      }),
-    key: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: "Represents the key of the metadata's key-value pair.",
-        example: 'digital_ref_id',
-      }),
-    value: z
-      .string()
-      .max(140)
-      .exactOptional()
-      .openapi({
-        description: "Represents the value of the metadata's key-value pair (140 characters max).",
-        example: 'INV-0123456-98765',
-      }),
-    created_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description:
-          'The date and time when the metadata object was created. It follows the ISO 8601 datetime format and is expressed in Coordinated Universal Time (UTC).',
-        example: '2022-04-29T08:59:51Z',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('InvoiceMetadataObject')
-
-const InvoiceAppliedTaxObjectSchema = BaseAppliedTaxSchema.and(
-  z
-    .object({
-      lago_invoice_id: z
-        .uuid()
-        .exactOptional()
-        .openapi({
-          description: 'Unique identifier of the invoice, created by Lago.',
-          example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
-        }),
-      fees_amount_cents: z
-        .int()
-        .exactOptional()
-        .openapi({ description: 'Fees total amount on which the tax is applied', example: 20000 }),
-    })
-    .openapi({ required: [] }),
-).openapi('InvoiceAppliedTaxObject')
-
-const InvoiceAppliedInvoiceCustomSectionObjectSchema = z
+const InvoiceCustomSectionObjectSchema = z
   .object({
     lago_id: z
       .uuid()
       .openapi({
         description:
-          'Unique identifier of the applied invoice custom section in the Lago application.',
+          'Unique identifier for the invoice custom section in the Lago application, generated by Lago to ensure record uniqueness within the system.',
         example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
       }),
-    lago_invoice_id: z
-      .uuid()
-      .openapi({
-        description: 'Unique identifier of the invoice this custom section is applied to.',
-        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
-      }),
+    name: z
+      .string()
+      .openapi({ description: 'Name of the invoice custom section.', example: 'EU Bank Details' }),
     code: z
       .string()
       .openapi({
-        description: 'Unique code identifying the invoice custom section.',
+        description: 'Unique code identifying the invoice custom section for the API request.',
         example: 'eu_bank_details',
+      }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Internal description of the invoice custom section.',
+        example: 'This section contains the bank details for EU customers.',
       }),
     details: z
       .string()
+      .exactOptional()
       .openapi({
         description: 'The value shown on the invoice PDF.',
         example: 'Bank Name: Lago Bank, IBAN: FR7630004000031234567890143',
       }),
     display_name: z
       .string()
+      .exactOptional()
       .openapi({
         description: 'The name of the invoice custom section displayed on the invoice.',
         example: 'Bank Details:',
       }),
-    created_at: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description:
-          'The date of the applied invoice custom section creation, represented in ISO 8601 datetime format and expressed in Coordinated Universal Time (UTC).',
-        example: '2023-07-06T14:35:58Z',
-      }),
-  })
-  .openapi({
-    required: ['lago_id', 'lago_invoice_id', 'code', 'details', 'display_name', 'created_at'],
-  })
-  .openapi('InvoiceAppliedInvoiceCustomSectionObject')
-
-const UsageThresholdObjectSchema = z
-  .object({
-    lago_id: z
-      .uuid()
-      .openapi({
-        description: 'Unique identifier of the usage threshold created by Lago.',
-        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
-      }),
-    threshold_display_name: z
-      .string()
-      .nullable()
-      .openapi({ description: 'The display name of the usage threshold.', example: 'Threshold 1' }),
-    amount_cents: z
-      .int()
-      .openapi({
-        description: 'The amount to reach to trigger a `progressive_billing` invoice.',
-        example: 10000,
-      }),
-    recurring: z
+    applied_to_organization: z
       .boolean()
-      .openapi({
-        description:
-          'This field when set to `true` indicates that a `progressive_billing` invoice will be created every time the lifetime usage increases by the specified amount.',
-        example: true,
-      }),
-    created_at: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description:
-          'The date and time when the usage threshold was created. It is expressed in UTC format according to the ISO 8601 datetime standard.',
-        example: '2023-06-27T19:43:42Z',
-      }),
-    updated_at: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description:
-          'The date and time when the usage threshold was last updated. It is expressed in UTC format according to the ISO 8601 datetime standard.',
-        example: '2023-06-27T19:43:42Z',
-      }),
-  })
-  .openapi({
-    required: [
-      'lago_id',
-      'threshold_display_name',
-      'amount_cents',
-      'recurring',
-      'created_at',
-      'updated_at',
-    ],
-  })
-  .openapi('UsageThresholdObject')
-
-const AppliedUsageThresholdObjectSchema = z
-  .object({
-    lifetime_usage_amount_cents: z
-      .int()
-      .openapi({
-        description:
-          'The amount of usage in cents that has been accumulated over the lifetime of the subscription.',
-        example: 2000,
-      }),
-    created_at: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description:
-          'The date and time when the lifetime usage was computed. It is expressed in UTC format according to the ISO 8601 datetime standard.',
-        example: '2025-03-31T12:31:44Z',
-      }),
-    usage_threshold: UsageThresholdObjectSchema,
-  })
-  .openapi({ required: ['lifetime_usage_amount_cents', 'created_at', 'usage_threshold'] })
-  .openapi('AppliedUsageThresholdObject')
-
-const InvoiceObjectSchema = InvoiceBaseObjectSchema.and(
-  z
-    .object({
-      customer: CustomerObjectSchema.exactOptional().openapi({
-        description:
-          'The customer on which the invoice applies. It refers to the customer account or entity associated with the invoice.',
-      }),
-      metadata: z.array(InvoiceMetadataObjectSchema).exactOptional(),
-      applied_taxes: z.array(InvoiceAppliedTaxObjectSchema).exactOptional(),
-      applied_invoice_custom_sections: z
-        .array(InvoiceAppliedInvoiceCustomSectionObjectSchema)
-        .exactOptional()
-        .openapi({
-          description: 'The invoice custom sections applied to this invoice for PDF generation.',
-        }),
-      applied_usage_thresholds: z.array(AppliedUsageThresholdObjectSchema).exactOptional(),
-    })
-    .openapi({ required: [] }),
-).openapi('InvoiceObject')
-
-const InvoicesPaginatedSchema = z
-  .object({ invoices: z.array(InvoiceObjectSchema), meta: PaginationMetaSchema })
-  .openapi({ required: ['invoices', 'meta'] })
-  .openapi('InvoicesPaginated')
-
-const PaymentMethodObjectSchema = z
-  .object({
-    lago_id: z
-      .uuid()
-      .openapi({
-        description: 'The unique identifier of the payment method, created by Lago.',
-        example: '4cf085a7-c196-4f07-a543-97c50ec6e8b2',
-      }),
-    is_default: z
-      .boolean()
-      .openapi({
-        description: 'Indicates whether this payment method is the default one for the customer.',
-        example: true,
-      }),
-    payment_provider_code: z
-      .string()
-      .nullable()
-      .openapi({
-        description: 'Code of the payment provider associated with this payment method.',
-        example: 'stripe_prod',
-      }),
-    payment_provider_name: z
-      .string()
-      .nullable()
-      .openapi({ description: 'Human-readable name of the payment provider.', example: 'Stripe' }),
-    payment_provider_type: z
-      .union([
-        z.literal(null),
-        z.literal('adyen'),
-        z.literal('cashfree'),
-        z.literal('gocardless'),
-        z.literal('stripe'),
-        z.literal('flutterwave'),
-        z.literal('moneyhash'),
-      ])
-      .nullable()
-      .openapi({
-        description:
-          'The type of the payment provider. It is `null` when the payment method is no longer attached to a payment provider.',
-        example: 'stripe',
-      }),
-    provider_method_id: z
-      .string()
-      .openapi({
-        description: 'Unique identifier of the payment method within the payment provider.',
-        example: 'pm_1N8ZQX2eZvKYlo2CkL9Y8XYZ',
-      }),
-    created_at: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: "Timestamp when the payment method was created in Lago's database.",
-        example: '2025-01-21T00:10:29Z',
-      }),
-  })
-  .openapi({
-    required: [
-      'lago_id',
-      'is_default',
-      'payment_provider_code',
-      'payment_provider_name',
-      'payment_provider_type',
-      'provider_method_id',
-      'created_at',
-    ],
-  })
-  .openapi('PaymentMethodObject')
-
-const PaymentObjectSchema = z
-  .object({
-    lago_id: z
-      .uuid()
-      .openapi({
-        description: 'The unique identifier of the payment, created by Lago.',
-        example: '4cf085a7-c196-4f07-a543-97c50ec6e8b2',
-      }),
-    lago_customer_id: z
-      .uuid()
-      .openapi({
-        description: 'Unique identifier of the customer, created by Lago.',
-        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
-      }),
-    external_customer_id: z
-      .string()
-      .openapi({
-        example: '5eb02857-a71e-4ea2-bcf9-57d3a41bc6ba',
-        description: 'The customer external unique identifier (provided by your own application).',
-      }),
-    invoice_ids: z
-      .array(z.uuid().openapi({ example: '486b147a-02a1-4ccf-8603-f3541fc25e7a' }))
-      .openapi({ description: 'List of invoice IDs associated with the payment.' }),
-    invoice_numbers: z
-      .array(z.string().openapi({ example: 'HOO-202D-005-001' }))
-      .openapi({ description: 'List of invoice numbers associated with the payment.' }),
-    lago_payable_id: z
-      .uuid()
-      .openapi({
-        description: 'The unique identifier of the paid resource, created by Lago.',
-        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
-      }),
-    payable_type: z
-      .enum(['Invoice', 'PaymentRequest'])
-      .openapi({
-        description: 'The type of the paid resource, associated with the `lago_payable_id`.',
-        example: 'Invoice',
-      }),
-    amount_cents: z
-      .int()
-      .openapi({ description: 'The amount of the payment in cents.', example: 1099 }),
-    amount_currency: CurrencySchema.openapi({
-      description: 'The currency of the payment amount.',
-      example: 'USD',
-    }),
-    status: z
-      .string()
-      .openapi({
-        description:
-          'The status of the payment within the payment provider. It differs from one payment provider to another. It is always `succeeded` for a manual payment.',
-        example: 'Completed',
-      }),
-    payment_status: z
-      .enum(['succeeded', 'failed', 'pending', 'processing'])
-      .openapi({
-        description:
-          'The payment status, normalized by Lago so that it is the same for every payment provider.',
-        example: 'succeeded',
-      }),
-    type: z
-      .enum(['manual', 'provider'])
-      .openapi({ description: 'The type of payment.', example: 'manual' }),
-    reference: z
-      .string()
-      .nullable()
-      .openapi({
-        description:
-          'Reference for the payment. Set on manual payments only; it is always `null` for payments collected through a payment provider.',
-        example: 'ref1',
-      }),
-    payment_provider_code: z
-      .string()
-      .nullable()
-      .openapi({
-        description:
-          'Code of the payment provider. It is `null` for manual payments, which are not attached to a payment provider.',
-        example: 'stripe_prod',
-      }),
-    payment_provider_type: z
-      .union([
-        z.literal(null),
-        z.literal('adyen'),
-        z.literal('cashfree'),
-        z.literal('gocardless'),
-        z.literal('stripe'),
-        z.literal('flutterwave'),
-        z.literal('moneyhash'),
-      ])
-      .nullable()
-      .openapi({
-        description:
-          'The type of payment provider. It is `null` for manual payments, which are not attached to a payment provider.',
-        example: 'stripe',
-      }),
-    external_payment_id: z
-      .string()
-      .nullable()
+      .exactOptional()
       .openapi({
         deprecated: true,
-        description: '**Deprecated.** Use `provider_payment_id` instead. It holds the same value.',
-        example: 'pi_5eb0285741bc6ba',
-      }),
-    provider_payment_id: z
-      .string()
-      .nullable()
-      .openapi({
         description:
-          'Unique identifier of the payment within the payment provider (if applicable).',
-        example: 'pi_5eb0285741bc6ba',
+          "**Deprecated.** This field will be removed in a future version. When set to true, it applies the invoice custom section to the organization's default billing entity. To apply or remove an invoice custom section from any billing entity (including the default one), please use the `PUT /billing_entities/:code` endpoint instead.",
+        example: true,
       }),
-    provider_customer_id: z
-      .string()
-      .nullable()
-      .openapi({
-        description:
-          'Unique identifier of the customer within the payment provider. It is `null` for manual payments.',
-        example: 'cus_5eb0285bcf941bc6ba',
-      }),
-    next_action: z
-      .looseObject({})
-      .openapi({
-        description:
-          'The next action to be taken by the customer to complete the payment. Should usually be empty, except when receiving the `payment.requires_action` webhook.',
-        example: {
-          type: 'redirect_to_url',
-          redirect_to_url: {
-            url: 'https://hooks.stripe.com/3d_secure_2/hosted?merchant=acct_AAA&payment_intent=pi_BBB&payment_intent_client_secret=pi_BBB&publishable_key=pk_test_CCC',
-            return_url: 'https://app.example.com',
-          },
-        },
-      }),
-    created_at: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description:
-          "Timestamp of the payment in Lago's database, not on the payment provider. On a manual payment recorded with `paid_at`, it holds the `paid_at` value instead of the time the payment was recorded.",
-        example: '2025-01-21T00:10:29Z',
-      }),
-    payment_method: PaymentMethodObjectSchema.exactOptional().openapi({
-      description:
-        'The payment method used for the payment. It is only sent on the `payment.succeeded` webhook, and only when a payment method is attached to the payment.',
-    }),
-  })
-  .openapi({
-    required: [
-      'lago_id',
-      'lago_customer_id',
-      'external_customer_id',
-      'invoice_ids',
-      'invoice_numbers',
-      'lago_payable_id',
-      'payable_type',
-      'amount_cents',
-      'amount_currency',
-      'status',
-      'payment_status',
-      'type',
-      'reference',
-      'payment_provider_code',
-      'payment_provider_type',
-      'external_payment_id',
-      'provider_payment_id',
-      'provider_customer_id',
-      'next_action',
-      'created_at',
-    ],
-  })
-  .openapi('PaymentObject')
-
-const PaymentsPaginatedSchema = z
-  .object({ payments: z.array(PaymentObjectSchema), meta: PaginationMetaSchema })
-  .openapi({ required: ['payments', 'meta'] })
-  .openapi('PaymentsPaginated')
-
-const PaymentRequestObjectSchema = z
-  .object({
-    lago_id: z
+    organization_id: z
       .uuid()
+      .exactOptional()
       .openapi({
-        description: 'Unique identifier of the payment request, created by Lago.',
+        description:
+          'Unique identifier for the organization associated with the invoice custom section.',
         example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
       }),
-    email: z
-      .email()
-      .nullable()
-      .openapi({
-        example: 'dinesh@piedpiper.example',
-        description:
-          "The email address used for sending dunning notifications. It defaults to the customer's own email address, and is `null` when the customer has none.",
-      }),
-    amount_cents: z
-      .int()
-      .openapi({
-        description:
-          'The amount the payment request collects, expressed in cents. It is the sum of the amounts still due on the invoices it covers, minus the credit notes offset against those invoices.',
-        example: 100,
-      }),
-    amount_currency: CurrencySchema.openapi({
-      description: 'The currency of the payment request.',
-      example: 'EUR',
-    }),
-    payment_status: z
-      .enum(['pending', 'succeeded', 'failed'])
-      .openapi({
-        description:
-          'The status of the payment associated with the payment request. It can have one of the following values:\n- `pending`: the payment has not been processed yet. A payment request starts with this status.\n- `succeeded`: the payment of the payment request has been successfully processed.\n- `failed`: the payment of the payment request has failed or encountered an error during processing.',
-        example: 'succeeded',
-      }),
     created_at: z.iso
       .datetime({ offset: true })
-      .openapi({
-        description:
-          'The date and time when the payment request was created. It is expressed in UTC format according to the ISO 8601 datetime standard. This field provides the timestamp for the exact moment when the payment request was initially created.',
-        example: '2022-04-29T08:59:51Z',
-      }),
-    customer: CustomerBaseObjectSchema.openapi({
-      description:
-        'The customer on which the payment request applies. It refers to the customer account or entity associated with the payment request.',
-    }),
-    invoices: z
-      .array(InvoiceBaseObjectSchema)
-      .openapi({
-        description: 'The overdue invoices the payment request collects the payment for.',
-      }),
+      .exactOptional()
+      .openapi({ description: 'Creation date of the tax.', example: '2023-07-06T14:35:58Z' }),
   })
-  .openapi({
-    required: [
-      'lago_id',
-      'email',
-      'amount_cents',
-      'amount_currency',
-      'payment_status',
-      'created_at',
-      'customer',
-      'invoices',
-    ],
-  })
-  .openapi('PaymentRequestObject')
-
-const PaymentRequestsPaginatedSchema = z
-  .object({ payment_requests: z.array(PaymentRequestObjectSchema), meta: PaginationMetaSchema })
-  .openapi({ required: ['payment_requests', 'meta'] })
-  .openapi('PaymentRequestsPaginated')
+  .openapi({ required: ['lago_id', 'name', 'code'] })
+  .openapi('InvoiceCustomSectionObject')
 
 const AppliedInvoiceCustomSectionObjectSchema = z
   .object({
@@ -7054,363 +2723,6 @@ const PaymentMethodReferenceSchema = z
     required: [],
   })
   .openapi('PaymentMethodReference')
-
-const SubscriptionActivationRuleObjectSchema = z
-  .object({
-    lago_id: z
-      .uuid()
-      .openapi({
-        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
-        description:
-          'Unique identifier assigned to the activation rule within the Lago application. This ID is exclusively created by Lago.',
-      }),
-    type: z
-      .literal('payment')
-      .openapi({
-        description:
-          'The type of the activation rule. Only `payment` is currently supported. A `payment` rule gates the subscription activation on a successful payment of the first invoice.',
-        example: 'payment',
-      }),
-    timeout_hours: z
-      .int()
-      .openapi({
-        description:
-          'The number of hours the subscription stays in the `incomplete` state waiting for the payment to succeed before it is automatically canceled.',
-        example: 48,
-      }),
-    status: z
-      .enum(['inactive', 'pending', 'satisfied', 'declined', 'failed', 'expired', 'not_applicable'])
-      .openapi({
-        description:
-          'The evaluation status of the activation rule:\n- `inactive`: the rule has not been evaluated yet.\n- `pending`: the rule is applicable and is waiting to be satisfied (e.g. waiting for the payment).\n- `satisfied`: the rule has been satisfied and no longer blocks activation.\n- `declined`: the rule was applicable but was declined.\n- `failed`: the rule could not be satisfied (e.g. the payment failed).\n- `expired`: the rule was not satisfied before its timeout elapsed.\n- `not_applicable`: the rule did not apply to this subscription.',
-        example: 'pending',
-      }),
-    expires_at: z.iso
-      .datetime({ offset: true })
-      .nullable()
-      .openapi({
-        example: '2022-08-10T00:00:00Z',
-        description:
-          'The date and time when the rule expires, after which an unsatisfied rule causes the subscription to be canceled. Represented in ISO 8601 datetime format and expressed in Coordinated Universal Time (UTC). Null until the rule starts being evaluated.',
-      }),
-    created_at: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        example: '2022-08-08T00:00:00Z',
-        description:
-          'The creation date of the activation rule, represented in ISO 8601 datetime format and expressed in Coordinated Universal Time (UTC).',
-      }),
-    updated_at: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        example: '2022-08-08T00:00:00Z',
-        description:
-          'The last update date of the activation rule, represented in ISO 8601 datetime format and expressed in Coordinated Universal Time (UTC).',
-      }),
-  })
-  .openapi({
-    required: [
-      'lago_id',
-      'type',
-      'timeout_hours',
-      'status',
-      'expires_at',
-      'created_at',
-      'updated_at',
-    ],
-  })
-  .openapi('SubscriptionActivationRuleObject')
-
-const SubscriptionObjectSchema = z
-  .object({
-    lago_id: z
-      .uuid()
-      .openapi({
-        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
-        description:
-          "Unique identifier assigned to the subscription within the Lago application. This ID is exclusively created by Lago and serves as a unique identifier for the subscription's record within the Lago system",
-      }),
-    external_id: z
-      .string()
-      .openapi({
-        example: '5eb02857-a71e-4ea2-bcf9-57d3a41bc6ba',
-        description:
-          'The subscription external unique identifier (provided by your own application).',
-      }),
-    lago_customer_id: z
-      .uuid()
-      .openapi({
-        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
-        description:
-          "Unique identifier assigned to the customer within the Lago application. This ID is exclusively created by Lago and serves as a unique identifier for the customer's record within the Lago system",
-      }),
-    external_customer_id: z
-      .string()
-      .openapi({
-        example: '5eb02857-a71e-4ea2-bcf9-57d3a41bc6ba',
-        description: 'The customer external unique identifier (provided by your own application).',
-      }),
-    billing_entity_code: z
-      .string()
-      .exactOptional()
-      .openapi({
-        example: 'default',
-        description: 'The code of the billing entity associated with the subscription.',
-      }),
-    billing_time: z
-      .enum(['calendar', 'anniversary'])
-      .openapi({
-        description:
-          'The billing time for the subscription, which can be set as either `anniversary` or `calendar`. If not explicitly provided, it will default to `calendar`. The billing time determines the timing of recurring billing cycles for the subscription. By specifying `anniversary`, the billing cycle will be based on the specific date the subscription started (billed fully), while `calendar` sets the billing cycle at the first day of the week/month/year (billed with proration).',
-        example: 'anniversary',
-      }),
-    name: z
-      .string()
-      .nullable()
-      .openapi({
-        example: 'Repository A',
-        description:
-          "The display name of the subscription on an invoice. This field allows for customization of the subscription's name for billing purposes, especially useful when a single customer has multiple subscriptions using the same plan.",
-      }),
-    plan_code: z
-      .string()
-      .openapi({
-        example: 'premium',
-        description:
-          'The unique code representing the plan to be attached to the customer. This code must correspond to the `code` property of one of the active plans.',
-      }),
-    plan_amount_cents: z
-      .int()
-      .openapi({
-        description:
-          'The base cost of the related plan, excluding any applicable taxes, that is billed on a recurring basis.',
-        example: 10000,
-      }),
-    plan_amount_currency: CurrencySchema.openapi({
-      description:
-        "The currency of the related plan. It indicates the monetary unit in which the plan's cost, including taxes and usage-based charges, is expressed.",
-      example: 'USD',
-    }),
-    status: z
-      .enum(['active', 'canceled', 'incomplete', 'pending', 'terminated'])
-      .openapi({
-        description:
-          'The status of the subscription, which can have the following values:\n- `active`: the subscription is currently active and applied to the customer.\n- `canceled`: the subscription has been stopped before its activation. This can occur when two consecutive downgrades have been applied to a customer, when a subscription with a pending status is terminated, or when a payment-gated subscription fails to be paid (or its activation rule expires) before activation. When caused by payment gating, the `cancellation_reason` field is set.\n- `incomplete`: the subscription was created with a payment activation rule and is waiting for the gating payment to succeed before it becomes `active`. It is automatically `canceled` if the payment fails or the activation rule expires.\n- `pending`: a previous subscription has been downgraded, and the current one is awaiting automatic activation at the end of the billing period.\n- `terminated`: the subscription is no longer active.',
-        example: 'active',
-      }),
-    created_at: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        example: '2022-08-08T00:00:00Z',
-        description:
-          'The creation date of the subscription, represented in ISO 8601 datetime format and expressed in Coordinated Universal Time (UTC). This date provides a timestamp indicating when the subscription was initially created.',
-      }),
-    canceled_at: z.iso
-      .datetime({ offset: true })
-      .nullable()
-      .openapi({
-        example: '2022-09-14T16:35:31Z',
-        description:
-          'The cancellation date of the subscription. This field is not null when the subscription is `canceled`. This date should be provided in ISO 8601 datetime format and expressed in Coordinated Universal Time (UTC).',
-      }),
-    started_at: z.iso
-      .datetime({ offset: true })
-      .nullable()
-      .openapi({
-        example: '2022-08-08T00:00:00Z',
-        description:
-          'The effective start date of the subscription. This field can be null if the subscription is `pending` or `canceled`. This date should be provided in ISO 8601 datetime format and expressed in Coordinated Universal Time (UTC).',
-      }),
-    ending_at: z.iso
-      .datetime({ offset: true })
-      .nullable()
-      .openapi({
-        example: '2022-10-08T00:00:00Z',
-        description:
-          'The effective end date of the subscription. If this field is set to null, the subscription will automatically renew. This date should be provided in ISO 8601 datetime format, and use Coordinated Universal Time (UTC).',
-      }),
-    subscription_at: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        example: '2022-08-08T00:00:00Z',
-        description:
-          'The anniversary date and time of the initial subscription. This date serves as the basis for billing subscriptions with `anniversary` billing time. The `anniversary_date` should be provided in ISO 8601 datetime format and expressed in Coordinated Universal Time (UTC).',
-      }),
-    terminated_at: z.iso
-      .datetime({ offset: true })
-      .nullable()
-      .openapi({
-        example: '2022-09-14T16:35:31Z',
-        description:
-          'The termination date of the subscription. This field is not null when the subscription is `terminated`. This date should be provided in ISO 8601 datetime format and expressed in Coordinated Universal Time (UTC)',
-      }),
-    previous_plan_code: z
-      .string()
-      .nullable()
-      .openapi({
-        example: null,
-        description: 'The code identifying the previous plan associated with this subscription.',
-      }),
-    next_plan_code: z
-      .string()
-      .nullable()
-      .openapi({
-        example: null,
-        description: 'The code identifying the next plan in the case of a downgrade.',
-      }),
-    downgrade_plan_date: z.iso
-      .date()
-      .nullable()
-      .openapi({
-        example: '2022-04-30',
-        description:
-          'The date when the plan will be downgraded, represented in ISO 8601 date format.',
-      }),
-    trial_ended_at: z.iso
-      .datetime({ offset: true })
-      .nullable()
-      .openapi({
-        example: '2022-08-08T00:00:00Z',
-        description: 'The date when the free trial is ended, represented in ISO 8601 date format.',
-      }),
-    current_billing_period_started_at: z.iso
-      .datetime({ offset: true })
-      .nullable()
-      .openapi({
-        example: '2022-08-08T00:00:00Z',
-        description:
-          'The date and time when the current billing period started, represented in ISO 8601 date format.',
-      }),
-    current_billing_period_ending_at: z.iso
-      .datetime({ offset: true })
-      .nullable()
-      .openapi({
-        example: '2022-09-08T00:00:00Z',
-        description:
-          'The date and time when the current billing period ends, represented in ISO 8601 date format.',
-      }),
-    on_termination_credit_note: z
-      .enum(['credit', 'refund', 'offset', 'skip'])
-      .nullable()
-      .openapi({
-        description:
-          'When a pay-in-advance subscription is terminated before the end of its billing period, we generate a credit note for the unused subscription time by default.\nThis field allows you to control the behavior of the credit note generation:\n\n- `credit`: A credit note is generated for the unused subscription time. The unused amount is credited back to the customer.\n- `refund`: A credit note is generated for the unused subscription time. If the invoice is paid or partially paid, the unused paid amount is refunded; any unpaid unused amount is credited back to the customer.\n- `offset`: A credit note is generated for the unused subscription time. If the invoice is paid or partially paid, the unused paid amount is refunded; any unpaid unused amount is applied to the invoice reducing its amount due.\n- `skip`: No credit note is generated for the unused subscription time.\n\n_Note: This field is only applicable to pay-in-advance plans and will be `null` for pay-in-arrears plans._\n',
-        example: 'credit',
-      }),
-    on_termination_invoice: z
-      .enum(['generate', 'skip'])
-      .default('generate')
-      .openapi({
-        example: 'generate',
-        description:
-          'When a subscription is terminated before the end of its billing period, we generate an invoice for the unbilled usage.\nThis field allows you to control the behavior of the invoice generation:\n\n- `generate`: An invoice is generated for the unbilled usage.\n- `skip`: No invoice is generated for the unbilled usage.\n',
-      }),
-    applied_invoice_custom_sections: z
-      .array(AppliedInvoiceCustomSectionObjectSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The invoice custom sections applied to invoices generated by this subscription. Only returned when creating, retrieving, updating or terminating a subscription, not when listing subscriptions and not in subscription webhooks.',
-      }),
-    payment_method: PaymentMethodReferenceSchema.openapi({
-      description: 'The payment method assigned to this subscription for processing payments.',
-    }),
-    consolidate_invoice: z
-      .boolean()
-      .default(true)
-      .openapi({
-        example: true,
-        description:
-          "Controls whether this subscription is eligible to be grouped with other subscriptions of the same customer on a consolidated recurring invoice.\n\n- `true` (default): the subscription is included in the customer's standard invoice grouping (by billing entity, currency and payment method).\n- `false`: the subscription is excluded from consolidation and always billed on its own dedicated invoice, regardless of other grouping criteria.\n",
-      }),
-    progressive_billing_disabled: z
-      .boolean()
-      .default(false)
-      .openapi({
-        example: false,
-        description:
-          'Indicates whether progressive billing is switched off for this subscription, regardless of any usage thresholds defined on the plan (including thresholds inherited from a parent plan when the subscription runs on a plan override).\n\nWhen `true`, no progressive billing invoice is issued for this subscription.\n',
-      }),
-    cancellation_reason: z
-      .enum(['payment_failed', 'timeout', 'manual'])
-      .nullable()
-      .openapi({
-        example: 'payment_failed',
-        description:
-          'The reason a payment-gated subscription was canceled while still `incomplete`. Null unless the subscription was canceled before activation.\n\n- `payment_failed`: the gating payment failed.\n- `timeout`: the activation rule expired before the payment succeeded.\n- `manual`: the incomplete subscription was canceled on demand, via a terminate request with `status=incomplete`.\n',
-      }),
-    activated_at: z.iso
-      .datetime({ offset: true })
-      .nullable()
-      .openapi({
-        example: '2022-08-08T00:00:00Z',
-        description:
-          'The date and time when a payment-gated subscription was activated (i.e. moved from `incomplete` to `active` once the gating payment succeeded), represented in ISO 8601 datetime format and expressed in Coordinated Universal Time (UTC). Null while the subscription is still `incomplete`.\n',
-      }),
-    activation_rules: z
-      .array(SubscriptionActivationRuleObjectSchema)
-      .openapi({
-        description:
-          'The activation rules attached to the subscription. A payment activation rule gates activation on a successful first payment, keeping the subscription in the `incomplete` state until the payment succeeds or the rule expires.\n',
-      }),
-    purchase_order_number: z
-      .string()
-      .nullable()
-      .openapi({
-        example: 'PO-123',
-        description:
-          'The purchase order number associated with the subscription. It will be added to invoices generated for this subscription.',
-      }),
-  })
-  .openapi({
-    required: [
-      'activated_at',
-      'activation_rules',
-      'billing_time',
-      'canceled_at',
-      'cancellation_reason',
-      'consolidate_invoice',
-      'created_at',
-      'current_billing_period_ending_at',
-      'current_billing_period_started_at',
-      'downgrade_plan_date',
-      'ending_at',
-      'external_customer_id',
-      'external_id',
-      'lago_customer_id',
-      'lago_id',
-      'name',
-      'next_plan_code',
-      'on_termination_credit_note',
-      'on_termination_invoice',
-      'payment_method',
-      'plan_amount_cents',
-      'plan_amount_currency',
-      'plan_code',
-      'previous_plan_code',
-      'progressive_billing_disabled',
-      'purchase_order_number',
-      'started_at',
-      'status',
-      'subscription_at',
-      'terminated_at',
-      'trial_ended_at',
-    ],
-  })
-  .openapi('SubscriptionObject')
-
-const SubscriptionsPaginatedSchema = z
-  .object({ subscriptions: z.array(SubscriptionObjectSchema), meta: PaginationMetaSchema })
-  .openapi({ required: ['subscriptions', 'meta'] })
-  .openapi('SubscriptionsPaginated')
-
-const WalletFeeTypeEnumSchema = z
-  .enum(['charge', 'subscription', 'commitment', 'fixed_charge', 'credit'])
-  .openapi({
-    description:
-      'Fee type to which a wallet can be restricted. It can be any of the following values:\n  - `charge`\n  - `subscription`\n  - `commitment`\n  - `fixed_charge`\n  - `credit`\n',
-  })
-  .openapi('WalletFeeTypeEnum')
 
 const WalletRecurringTransactionRuleSchema = z
   .object({
@@ -7831,6 +3143,12 @@ const WalletObjectSchema = z
         description:
           'The purchase order number associated with the wallet. It will be added to invoices generated for wallet top-ups, unless a more specific purchase order number is set on the wallet transaction or recurring transaction rule that triggered the top-up.',
       }),
+    payment_term: z
+      .xor([PaymentTermObjectSchema, z.null().nullable()])
+      .openapi({
+        description:
+          'The structured payment term applied to the invoices generated for wallet top-ups. It is `null` when the wallet has no term of its own, in which case the term of the customer, then of the billing entity, applies.',
+      }),
     metadata: MetadataObjectSchema.exactOptional(),
   })
   .openapi({
@@ -7844,6 +3162,7 @@ const WalletObjectSchema = z
       'name',
       'code',
       'purchase_order_number',
+      'payment_term',
       'rate_amount',
       'credits_balance',
       'credits_ongoing_balance',
@@ -7866,1000 +3185,10 @@ const WalletObjectSchema = z
   })
   .openapi('WalletObject')
 
-const WalletsPaginatedSchema = z
-  .object({ wallets: z.array(WalletObjectSchema), meta: PaginationMetaSchema })
-  .openapi({ required: ['wallets', 'meta'] })
-  .openapi('WalletsPaginated')
-
-const InvoiceCustomSectionInputSchema = z
-  .object({
-    skip_invoice_custom_sections: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        example: false,
-        description:
-          'Set to `true` to exclude all invoice custom sections from PDF generation for invoices related to this resource. When `true`, `invoice_custom_section_codes` is ignored.',
-      }),
-    invoice_custom_section_codes: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'List of unique codes identifying the invoice custom sections to apply. These override the default invoice custom sections configured at the customer or billing entity level.',
-        example: ['eu_bank_details'],
-      }),
-  })
-  .openapi({
-    description:
-      'Configuration for invoice custom sections to apply to invoices generated by this resource.',
-    required: [],
-  })
-  .openapi('InvoiceCustomSectionInput')
-
-const WalletCreateInputSchema = z
-  .object({
-    wallet: z
-      .object({
-        name: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'The name of the wallet.', example: 'Prepaid' }),
-        code: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'The code of the wallet.', example: 'prepaid' }),
-        priority: z
-          .int()
-          .min(1)
-          .max(50)
-          .exactOptional()
-          .openapi({
-            description:
-              'Wallet priority for ordering when a customer has multiple wallets. Allowed values: 1-50, where 1 is highest priority and 50 is lowest. Defaults to 50. Wallets with the same priority are applied by expiration date, soonest first, with wallets without an expiration date last, then by creation date, oldest first.',
-            example: 50,
-          }),
-        rate_amount: z
-          .string()
-          .regex(/^[0-9]+.?[0-9]*$/)
-          .openapi({
-            description:
-              'The rate of conversion between credits and the amount in the specified currency. It indicates the ratio or factor used to convert credits into the corresponding monetary value in the currency of the transaction.',
-            example: '1.5',
-          }),
-        currency: CurrencySchema.exactOptional().openapi({
-          description:
-            "The currency of the wallet. Required when the customer has no currency yet. When omitted, the wallet uses the customer's currency. When provided on a customer without a currency, it also sets the customer's currency.",
-          example: 'USD',
-        }),
-        paid_credits: z
-          .string()
-          .regex(/^[0-9]+.?[0-9]*$/)
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'The number of paid credits. Required only if there is no granted credits.',
-            example: '20.0',
-          }),
-        granted_credits: z
-          .string()
-          .regex(/^[0-9]+.?[0-9]*$/)
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'The number of free granted credits. Required only if there is no paid credits.',
-            example: '10.0',
-          }),
-        external_customer_id: z
-          .string()
-          .openapi({
-            description:
-              'The customer external unique identifier (provided by your own application)',
-            example: 'hooli_1234',
-          }),
-        billing_entity_code: z
-          .string()
-          .exactOptional()
-          .openapi({
-            example: 'default',
-            description:
-              "The code of the billing entity associated with the wallet. If not provided, the customer's billing entity is used.",
-          }),
-        expiration_at: z.iso
-          .datetime({ offset: true })
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'The date and time that determines when the wallet will expire. It follows the ISO 8601 datetime format and is expressed in Coordinated Universal Time (UTC).',
-            example: '2022-07-07T23:59:59Z',
-          }),
-        invoice_requires_successful_payment: z
-          .boolean()
-          .exactOptional()
-          .openapi({
-            description:
-              'A boolean setting that, when set to true, delays issuing an invoice for a wallet top-up until a successful payment is made; if false, the invoice is issued immediately upon wallet top-up, regardless of the payment status. Default value of false.',
-            example: false,
-          }),
-        transaction_metadata: z
-          .array(
-            z
-              .object({
-                key: z
-                  .string()
-                  .exactOptional()
-                  .openapi({ description: 'The unique identifier for the attribute.' }),
-                value: z
-                  .string()
-                  .exactOptional()
-                  .openapi({ description: 'The corresponding value for the key.' }),
-              })
-              .openapi({ required: [] }),
-          )
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'This optional field allows you to store a list of key-value pairs that provide additional information or custom attributes. These key-value pairs will be included in the metadata of wallet transactions generated during the wallet creation process.',
-            example: [
-              { key: 'example_key', value: 'example_value' },
-              { key: 'another_key', value: 'another_value' },
-            ],
-          }),
-        transaction_name: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'The name of the wallet transactions triggered when creating the wallet. It will appear on the invoice as the label for the fee. If not set, the label on the invoice will fallback to either `Prepaid credits - {{wallet_name}}` if the wallet name is set, or `Prepaid credits`.',
-            example: "Tokens for models 'high-fidelity-boost'",
-          }),
-        transaction_priority: z
-          .int()
-          .min(1)
-          .max(50)
-          .exactOptional()
-          .openapi({
-            description:
-              'The priority of the wallet transactions triggered when creating the wallet. It drives the order in which credits are consumed. Allowed values: 1-50, where 1 is highest priority and 50 is lowest. Defaults to 50.',
-            example: 50,
-          }),
-        purchase_order_number: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            example: 'PO-123',
-            description:
-              'The purchase order number associated with the wallet. It will be added to invoices generated for wallet top-ups, unless a more specific purchase order number is set on the wallet transaction or recurring transaction rule that triggered the top-up.',
-          }),
-        applies_to: z
-          .object({
-            fee_types: z
-              .array(WalletFeeTypeEnumSchema)
-              .nullable()
-              .exactOptional()
-              .openapi({
-                description:
-                  "An array of fee types to which the wallet is applicable. By specifying the fee types in this field, you can restrict the wallet's usage to specific fee types only.",
-                example: ['charge'],
-              }),
-            billable_metric_codes: z
-              .array(z.string())
-              .nullable()
-              .exactOptional()
-              .openapi({
-                description:
-                  "An array of billable metric codes to which the wallet is applicable. By specifying the billable metric codes in this field, you can restrict the wallet's usage to specific metrics only.",
-                example: [],
-              }),
-          })
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'Limitations that restrict where the wallet credits apply. They can be set on fee types, on billable metrics, or on both.',
-            required: [],
-          }),
-        paid_top_up_min_amount_cents: z
-          .int()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description: 'The minimum amount, in cents, of a single paid top-up transaction.',
-            example: 100,
-          }),
-        paid_top_up_max_amount_cents: z
-          .int()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description: 'The maximum amount, in cents, of a single paid top-up transaction.',
-            example: 1000,
-          }),
-        ignore_paid_top_up_limits_on_creation: z
-          .boolean()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description: 'If set to true, the wallet will ignore paid top-up limits on creation.',
-            example: false,
-          }),
-        invoice_custom_section: InvoiceCustomSectionInputSchema.exactOptional(),
-        recurring_transaction_rules: z
-          .array(
-            z
-              .object({
-                paid_credits: z
-                  .string()
-                  .regex(/^[0-9]+.?[0-9]*$/)
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    description: 'The number of paid credits used for recurring top-up.',
-                    example: '20.0',
-                  }),
-                granted_credits: z
-                  .string()
-                  .regex(/^[0-9]+.?[0-9]*$/)
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    description: 'The number of free granted credits used for recurring top-up.',
-                    example: '10.0',
-                  }),
-                grants_target_top_up: z
-                  .boolean()
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'Applies only to `target` rules. When `true`, the recurring top-up grants free credits to reach the target ongoing balance instead of creating a paid top-up (and bypasses the paid top-up minimum). When `false`, the gap is filled with a paid top-up. `null` for `fixed` rules. Defaults to `false` for target rules when omitted.',
-                    example: false,
-                  }),
-                method: z
-                  .enum(['fixed', 'target'])
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'The method used for recurring top-up. Possible values are `fixed` or `target`.',
-                    example: 'target',
-                  }),
-                trigger: z
-                  .enum(['interval', 'threshold'])
-                  .openapi({
-                    description: 'The trigger. Possible values are `interval` or `threshold`.',
-                    example: 'interval',
-                  }),
-                interval: z
-                  .enum(['weekly', 'monthly', 'quarterly', 'semiannual', 'yearly'])
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'The interval used for recurring top-up. It represents the frequency at which automatic top-up occurs. The interval can be one of the following values: `weekly`, `monthly`, `quarterly`, `semiannual` or `yearly`. Required only when trigger is `interval`.',
-                    example: 'monthly',
-                  }),
-                started_at: z.iso
-                  .datetime({ offset: true })
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    example: '2022-08-08T00:00:00Z',
-                    description:
-                      'The effective start date for recurring top-ups. This date should be provided in ISO 8601 datetime format and expressed in Coordinated Universal Time (UTC).',
-                  }),
-                expiration_at: z.iso
-                  .datetime({ offset: true })
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'The expiration date and time for this specific recurring transaction rule. It follows the ISO 8601 datetime format and is expressed in Coordinated Universal Time (UTC).',
-                    example: '2023-09-30T23:59:59Z',
-                  }),
-                threshold_credits: z
-                  .string()
-                  .regex(/^[0-9]+.?[0-9]*$/)
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'The threshold for recurring top-ups is the value at which an automatic top-up is triggered. For example, if this threshold is set at 10 credits, an automatic top-up will occur whenever the wallet balance falls to or below 10 credits. Required only when trigger is set to `threshold`.',
-                    example: '20.0',
-                  }),
-                target_ongoing_balance: z
-                  .string()
-                  .regex(/^[0-9]+.?[0-9]*$/)
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'The target ongoing balance is the value set for the ongoing balance to be reached by the automatic top-up. Required only when trigger is set to `target`.',
-                    example: '200.0',
-                  }),
-                invoice_requires_successful_payment: z
-                  .boolean()
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'A boolean setting that, when set to true, delays issuing an invoice for a wallet top-up until a successful payment is made; if false, the invoice is issued immediately upon wallet top-up, regardless of the payment status. Default value of false.',
-                    example: false,
-                  }),
-                transaction_metadata: z
-                  .array(
-                    z
-                      .object({
-                        key: z
-                          .string()
-                          .exactOptional()
-                          .openapi({ description: 'The unique identifier for the attribute.' }),
-                        value: z
-                          .string()
-                          .exactOptional()
-                          .openapi({ description: 'The value associated with the key.' }),
-                      })
-                      .openapi({ required: [] }),
-                  )
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'This optional field allows you to store a list of key-value pairs containing additional information or custom attributes. These key-value pairs will populate the metadata of the wallet transactions triggered by this rule.',
-                    example: [
-                      { key: 'example_key', value: 'example_value' },
-                      { key: 'another_key', value: 'another_value' },
-                    ],
-                  }),
-                transaction_name: z
-                  .string()
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'The name of the wallet transactions triggered by this rule. It will appear on the invoice as the label for the fee. If not set, the label on the invoice will fallback to either `Prepaid credits - {{wallet_name}}` if the wallet name is set, or `Prepaid credits`.',
-                    example: "Tokens for models 'high-fidelity-boost'",
-                  }),
-                purchase_order_number: z
-                  .string()
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    example: 'PO-123',
-                    description:
-                      "The purchase order number associated with this recurring transaction rule. It will be added to invoices generated for the resulting wallet top-ups. If not set, falls back to the wallet's `purchase_order_number`.",
-                  }),
-                ignore_paid_top_up_limits: z
-                  .boolean()
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'When true, this rule can top up the wallet with transactions that exceed the paid top-up limits. Defaults to false.',
-                    example: false,
-                  }),
-                invoice_custom_section: InvoiceCustomSectionInputSchema.exactOptional(),
-                payment_method: PaymentMethodReferenceSchema.exactOptional().openapi({
-                  description:
-                    'Optional payment method to use for processing recurring top-up payments.',
-                }),
-              })
-              .openapi({
-                description: 'Object that represents rule for wallet recurring transactions.',
-                required: ['trigger'],
-              }),
-          )
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'List of recurring transaction rules. Only one recurring rule is allowed per wallet. This is a premium feature, the rules are ignored without a premium license.',
-          }),
-        payment_method: PaymentMethodReferenceSchema.exactOptional().openapi({
-          description: 'Optional payment method to use for processing wallet top-up payments.',
-        }),
-        metadata: MetadataInputSchema.exactOptional(),
-      })
-      .openapi({ required: ['rate_amount', 'external_customer_id'] }),
-  })
-  .openapi({ required: ['wallet'] })
-  .openapi('WalletCreateInput')
-
-const WalletSchema = z
-  .object({ wallet: WalletObjectSchema })
-  .openapi({ required: ['wallet'] })
-  .openapi('Wallet')
-
-const WalletUpdateInputSchema = z
-  .object({
-    wallet: z
-      .object({
-        name: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'The name of the wallet.', example: 'new_name' }),
-        code: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'The code of the wallet.', example: 'prepaid' }),
-        priority: z
-          .int()
-          .min(1)
-          .max(50)
-          .exactOptional()
-          .openapi({
-            description:
-              'Wallet priority for ordering when a customer has multiple wallets. Allowed values: 1-50, where 1 is highest priority and 50 is lowest. Defaults to 50. Wallets with the same priority are applied by expiration date, soonest first, with wallets without an expiration date last, then by creation date, oldest first.',
-            example: 50,
-          }),
-        expiration_at: z.iso
-          .datetime({ offset: true })
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'The date and time that determines when the wallet will expire. It follows the ISO 8601 datetime format and is expressed in Coordinated Universal Time (UTC).',
-            example: '2022-07-07T23:59:59Z',
-          }),
-        invoice_requires_successful_payment: z
-          .boolean()
-          .exactOptional()
-          .openapi({
-            description:
-              'A boolean setting that, when set to true, delays issuing an invoice for a wallet top-up until a successful payment is made; if false, the invoice is issued immediately upon wallet top-up, regardless of the payment status. Default value of false.',
-            example: false,
-          }),
-        paid_top_up_min_amount_cents: z
-          .int()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description: 'The minimum amount, in cents, of a single paid top-up transaction.',
-            example: 100,
-          }),
-        paid_top_up_max_amount_cents: z
-          .int()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description: 'The maximum amount, in cents, of a single paid top-up transaction.',
-            example: 1000,
-          }),
-        billing_entity_code: z
-          .string()
-          .exactOptional()
-          .openapi({
-            example: 'default',
-            description: 'The code of the billing entity associated with the wallet.',
-          }),
-        purchase_order_number: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            example: 'PO-123',
-            description:
-              'The purchase order number associated with the wallet. It will be added to invoices generated for wallet top-ups, unless a more specific purchase order number is set on the wallet transaction or recurring transaction rule that triggered the top-up.',
-          }),
-        invoice_custom_section: InvoiceCustomSectionInputSchema.exactOptional(),
-        recurring_transaction_rules: z
-          .array(
-            z
-              .object({
-                lago_id: z
-                  .uuid()
-                  .exactOptional()
-                  .openapi({
-                    example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
-                    description:
-                      'A unique identifier for the recurring transaction rule in the Lago application. Can be used to update a recurring transaction rule.',
-                  }),
-                trigger: z
-                  .enum(['interval', 'threshold'])
-                  .openapi({
-                    description: 'The trigger. Possible values are `interval` or `threshold`.',
-                    example: 'interval',
-                  }),
-                method: z
-                  .enum(['fixed', 'target'])
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'The method used for recurring top-up. Possible values are `fixed` or `target`.',
-                    example: 'target',
-                  }),
-                interval: z
-                  .enum(['weekly', 'monthly', 'quarterly', 'semiannual', 'yearly'])
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'The interval used for recurring top-up. It represents the frequency at which automatic top-up occurs. The interval can be one of the following values: `weekly`, `monthly`, `quarterly`, `semiannual` or `yearly`. Required only when trigger is set to `interval`.',
-                    example: 'monthly',
-                  }),
-                threshold_credits: z
-                  .string()
-                  .regex(/^[0-9]+.?[0-9]*$/)
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'The threshold for recurring top-ups is the value at which an automatic top-up is triggered. For example, if this threshold is set at 10 credits, an automatic top-up will occur whenever the wallet balance falls to or below 10 credits. Required only when trigger is set to `threshold`.',
-                    example: '20.0',
-                  }),
-                paid_credits: z
-                  .string()
-                  .regex(/^[0-9]+.?[0-9]*$/)
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'The number of paid credits. Required only if there is no granted credits.',
-                    example: '20.0',
-                  }),
-                granted_credits: z
-                  .string()
-                  .regex(/^[0-9]+.?[0-9]*$/)
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'The number of free granted credits. Required only if there is no paid credits.',
-                    example: '10.0',
-                  }),
-                grants_target_top_up: z
-                  .boolean()
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'Applies only to `target` rules. When `true`, the recurring top-up grants free credits to reach the target ongoing balance instead of creating a paid top-up (and bypasses the paid top-up minimum). When `false`, the gap is filled with a paid top-up. `null` for `fixed` rules. Defaults to `false` for target rules when omitted.',
-                    example: false,
-                  }),
-                started_at: z.iso
-                  .datetime({ offset: true })
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    example: '2022-08-08T00:00:00Z',
-                    description:
-                      'The effective start date for recurring top-ups. This date should be provided in ISO 8601 datetime format and expressed in Coordinated Universal Time (UTC).',
-                  }),
-                expiration_at: z.iso
-                  .datetime({ offset: true })
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'The expiration date and time for this specific recurring transaction rule. It follows the ISO 8601 datetime format and is expressed in Coordinated Universal Time (UTC).',
-                    example: '2023-09-30T23:59:59Z',
-                  }),
-                target_ongoing_balance: z
-                  .string()
-                  .regex(/^[0-9]+.?[0-9]*$/)
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'The target ongoing balance is the value set for the ongoing balance to be reached by the automatic top-up. Required only when trigger is set to `target`.',
-                    example: '200.0',
-                  }),
-                invoice_requires_successful_payment: z
-                  .boolean()
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'A boolean setting that, when set to true, delays issuing an invoice for a wallet top-up until a successful payment is made; if false, the invoice is issued immediately upon wallet top-up, regardless of the payment status. Default value of false.',
-                    example: false,
-                  }),
-                transaction_metadata: z
-                  .array(
-                    z
-                      .object({
-                        key: z
-                          .string()
-                          .exactOptional()
-                          .openapi({ description: 'The unique identifier for the attribute.' }),
-                        value: z
-                          .string()
-                          .exactOptional()
-                          .openapi({ description: 'The value associated with the key.' }),
-                      })
-                      .openapi({ required: [] }),
-                  )
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'This optional field allows you to store a list of key-value pairs containing additional information or custom attributes. These key-value pairs will populate the metadata of the wallet transactions triggered by this rule.',
-                    example: [
-                      { key: 'example_key', value: 'example_value' },
-                      { key: 'another_key', value: 'another_value' },
-                    ],
-                  }),
-                transaction_name: z
-                  .string()
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'The name of the wallet transactions triggered by this rule. It will appear on the invoice as the label for the fee. If not set, the label on the invoice will fallback to either `Prepaid credits - {{wallet_name}}` if the wallet name is set, or `Prepaid credits`.',
-                    example: "Tokens for models 'high-fidelity-boost'",
-                  }),
-                purchase_order_number: z
-                  .string()
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    example: 'PO-123',
-                    description:
-                      "The purchase order number associated with this recurring transaction rule. It will be added to invoices generated for the resulting wallet top-ups. If not set, falls back to the wallet's `purchase_order_number`.",
-                  }),
-                ignore_paid_top_up_limits: z
-                  .boolean()
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'When true, this rule can top up the wallet with transactions that exceed the paid top-up limits. Defaults to false.',
-                    example: false,
-                  }),
-                invoice_custom_section: InvoiceCustomSectionInputSchema.exactOptional(),
-                payment_method: PaymentMethodReferenceSchema.exactOptional().openapi({
-                  description:
-                    'Optional payment method to use for processing recurring top-up payments.',
-                }),
-              })
-              .openapi({
-                description: 'Object that represents rule for wallet recurring transactions.',
-                required: ['trigger'],
-              }),
-          )
-          .exactOptional()
-          .openapi({
-            description:
-              'List of recurring transaction rules. Only one recurring rule is allowed per wallet. This is a premium feature, the rules are ignored without a premium license.',
-          }),
-        payment_method: PaymentMethodReferenceSchema.exactOptional().openapi({
-          description: 'Optional payment method to use for processing wallet top-up payments.',
-        }),
-        applies_to: z
-          .object({
-            fee_types: z
-              .array(WalletFeeTypeEnumSchema)
-              .nullable()
-              .exactOptional()
-              .openapi({
-                description:
-                  "An array of fee types to which the wallet is applicable. By specifying the fee types in this field, you can restrict the wallet's usage to specific fee types only.",
-                example: ['charge'],
-              }),
-            billable_metric_codes: z
-              .array(z.string())
-              .nullable()
-              .exactOptional()
-              .openapi({
-                description:
-                  "An array of billable metric codes to which the wallet is applicable. By specifying the billable metric codes in this field, you can restrict the wallet's usage to specific metrics only.",
-                example: [],
-              }),
-          })
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'Limitations that restrict where the wallet credits apply. They can be set on fee types, on billable metrics, or on both.',
-            required: [],
-          }),
-        metadata: MetadataInputSchema.exactOptional(),
-      })
-      .openapi({ required: [] }),
-  })
-  .openapi({ required: ['wallet'] })
-  .openapi('WalletUpdateInput')
-
-const WalletMetadataResponseSchema = z
-  .object({ metadata: MetadataObjectSchema })
-  .openapi({ required: ['metadata'] })
-  .openapi('WalletMetadataResponse')
-
-const AlertThresholdBaseObjectSchema = z
-  .object({
-    code: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Code identifying the threshold inside the alert. You set it when you create or update the alert.',
-        example: 'warn',
-      }),
-    notify_on: z
-      .array(z.enum(['triggered', 'resolved']))
-      .default(['triggered'])
-      .exactOptional()
-      .openapi({
-        description:
-          'The transitions this threshold notifies on. `triggered` is always included. Opting in to `resolved` additionally sends an `alert.resolved` webhook when the value returns past the threshold, and requires the threshold to carry a code that is unique within the alert. Not available on recurring thresholds.',
-        example: ['triggered', 'resolved'],
-      }),
-    recurring: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({
-        description:
-          'This field when set to `true` indicates that the alert will be retriggered when this threshold is reached after the last non-recurring threshold. Only one recurring threshold per alert allowed.',
-        example: false,
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('AlertThresholdBaseObject')
-
-const AlertThresholdObjectSchema = AlertThresholdBaseObjectSchema.and(
-  z
-    .object({
-      value: z
-        .string()
-        .regex(/^-?[0-9]+(\.[0-9]+)?$/)
-        .openapi({
-          description:
-            'A value that should trigger this alert, formatted as a BigDecimal.\n\nThe unit depends on the alert type: `billable_metric_current_usage_units` and `billable_metric_lifetime_usage_units` are expressed in units, `wallet_credits_balance` and `wallet_credits_ongoing_balance` in credits, and all other types in cents.',
-          example: '99.0',
-        }),
-    })
-    .openapi({ required: ['code', 'value', 'recurring', 'notify_on'] }),
-).openapi('AlertThresholdObject')
-
-const WalletAlertObjectSchema = z
-  .object({
-    lago_id: z
-      .uuid()
-      .openapi({
-        description: 'Unique identifier of the alert, created by Lago.',
-        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
-      }),
-    lago_organization_id: z
-      .uuid()
-      .openapi({
-        description: 'Unique identifier of the organization, created by Lago.',
-        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
-      }),
-    external_subscription_id: z
-      .null()
-      .nullable()
-      .openapi({
-        description:
-          'Always null. An alert returned by the wallet endpoints is never attached to a subscription.',
-      }),
-    lago_wallet_id: z
-      .string()
-      .openapi({
-        description: 'Unique identifier of the wallet, created by Lago.',
-        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
-      }),
-    wallet_code: z
-      .string()
-      .openapi({
-        description: 'The wallet external unique identifier (provided by your own application).',
-        example: 'wallet_code',
-      }),
-    billable_metric: z
-      .null()
-      .nullable()
-      .openapi({ description: 'Always null. A wallet alert is never based on a billable metric.' }),
-    alert_type: z
-      .enum([
-        'wallet_balance_amount',
-        'wallet_credits_balance',
-        'wallet_ongoing_balance_amount',
-        'wallet_credits_ongoing_balance',
-      ])
-      .openapi({ description: 'The type of alert.', example: 'wallet_balance_amount' }),
-    code: z
-      .string()
-      .openapi({
-        description: 'Unique code used to identify the alert.',
-        example: 'wallet_balance_alert',
-      }),
-    name: z
-      .string()
-      .nullable()
-      .openapi({ description: 'The name of the alert.', example: 'Wallet Balance Alert' }),
-    direction: z
-      .enum(['increasing', 'decreasing'])
-      .openapi({
-        description:
-          'Indicates whether the alert is triggered when the monitored metric goes above or below the threshold. Lago sets it from the alert type and you cannot change it. A wallet alert is always `decreasing`.',
-        example: 'decreasing',
-      }),
-    previous_value: z
-      .string()
-      .openapi({
-        description:
-          'When the system checked if this alert should be triggered, this value was retrieved and checked against the thresholds. Returned as a string formatted as a BigDecimal.',
-        example: '1000.0',
-      }),
-    last_processed_at: z.iso
-      .datetime({ offset: true })
-      .nullable()
-      .openapi({
-        description:
-          "The date and time in UTC (ISO 8601) when the system checked if this alert should be triggered. Null until it's processed for the first time.",
-        example: '2025-05-19T10:04:21Z',
-      }),
-    thresholds: z
-      .array(AlertThresholdObjectSchema)
-      .openapi({ description: 'Array of thresholds associated with the alert.' }),
-    created_at: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'The date and time in UTC (ISO 8601) when the alert was created.',
-        example: '2025-03-20T10:00:00Z',
-      }),
-  })
-  .openapi({
-    required: [
-      'lago_id',
-      'lago_organization_id',
-      'external_subscription_id',
-      'lago_wallet_id',
-      'wallet_code',
-      'billable_metric',
-      'alert_type',
-      'code',
-      'name',
-      'direction',
-      'previous_value',
-      'last_processed_at',
-      'thresholds',
-      'created_at',
-    ],
-  })
-  .openapi('WalletAlertObject')
-
-const WalletAlertsSchema = z
-  .object({ alerts: z.array(WalletAlertObjectSchema), meta: PaginationMetaSchema.exactOptional() })
-  .openapi({ required: ['alerts'] })
-  .openapi('WalletAlerts')
-
-const AlertThresholdInputSchema = AlertThresholdBaseObjectSchema.and(
-  z
-    .object({
-      value: z
-        .xor([z.number(), z.string()])
-        .openapi({
-          description:
-            'A value that should trigger this alert. This can be a number or a string formatted as a BigDecimal.\n\nThe unit depends on the alert type: `billable_metric_current_usage_units` and `billable_metric_lifetime_usage_units` are expressed in units, `wallet_credits_balance` and `wallet_credits_ongoing_balance` in credits, and all other types in cents.',
-          example: 99,
-        }),
-    })
-    .openapi({ required: ['value'] }),
-).openapi('AlertThresholdInput')
-
-const AlertBaseInputSchema = z
-  .object({
-    code: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Unique code used to identify the alert.',
-        example: 'storage_threshold_alert',
-      }),
-    name: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The name of the alert.', example: 'Storage Usage Alert' }),
-    thresholds: z
-      .array(AlertThresholdInputSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Array of thresholds associated with the alert. An alert accepts at most 20 thresholds, and a larger array returns a `422` error with `too_many_thresholds` on `thresholds`. Two thresholds cannot share the same value and the same `recurring` flag. The value of a recurring threshold must be positive.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('AlertBaseInput')
-
-const WalletAlertCreateInputSchema = z
-  .object({
-    alert: AlertBaseInputSchema.and(
-      z
-        .object({
-          alert_type: z
-            .enum([
-              'wallet_balance_amount',
-              'wallet_credits_balance',
-              'wallet_ongoing_balance_amount',
-              'wallet_credits_ongoing_balance',
-            ])
-            .openapi({ description: 'The type of alert.', example: 'wallet_balance_amount' }),
-          code: z
-            .string()
-            .openapi({
-              description: 'Unique code used to identify the alert.',
-              example: 'wallet_balance_alert',
-            }),
-          name: z
-            .string()
-            .nullable()
-            .exactOptional()
-            .openapi({ description: 'The name of the alert.', example: 'Wallet Balance Alert' }),
-        })
-        .openapi({ required: ['alert_type', 'code', 'thresholds'] }),
-    ),
-  })
-  .openapi({ required: ['alert'] })
-  .openapi('WalletAlertCreateInput')
-
-const WalletAlertBatchCreateInputSchema = z
-  .object({
-    alerts: z
-      .array(
-        AlertBaseInputSchema.and(
-          z
-            .object({
-              alert_type: z
-                .enum([
-                  'wallet_balance_amount',
-                  'wallet_credits_balance',
-                  'wallet_ongoing_balance_amount',
-                  'wallet_credits_ongoing_balance',
-                ])
-                .openapi({ description: 'The type of alert.', example: 'wallet_balance_amount' }),
-              code: z
-                .string()
-                .openapi({
-                  description: 'Unique code used to identify the alert.',
-                  example: 'wallet_balance_alert',
-                }),
-              name: z
-                .string()
-                .nullable()
-                .exactOptional()
-                .openapi({
-                  description: 'The name of the alert.',
-                  example: 'Wallet Balance Alert',
-                }),
-            })
-            .openapi({ required: ['alert_type', 'code', 'thresholds'] }),
-        ),
-      )
-      .openapi({
-        description:
-          'Array of alerts to create. All alerts are created atomically - if any fail validation, none are created.',
-      }),
-  })
-  .openapi({ required: ['alerts'] })
-  .openapi('WalletAlertBatchCreateInput')
-
-const WalletAlertSchema = z
-  .object({ alert: WalletAlertObjectSchema })
-  .openapi({ required: ['alert'] })
-  .openapi('WalletAlert')
-
-const WalletAlertUpdateInputSchema = z
-  .object({
-    alert: AlertBaseInputSchema.and(
-      z
-        .object({
-          code: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Unique code used to identify the alert.',
-              example: 'wallet_balance_alert',
-            }),
-          name: z
-            .string()
-            .nullable()
-            .exactOptional()
-            .openapi({ description: 'The name of the alert.', example: 'Wallet Balance Alert' }),
-        })
-        .openapi({ required: [] }),
-    ),
-  })
-  .openapi({ required: ['alert'] })
-  .openapi('WalletAlertUpdateInput')
+type WalletsPaginatedType = {
+  wallets: z.infer<typeof WalletObjectSchema>[]
+  meta: z.infer<typeof PaginationMetaSchema>
+}
 
 const UsagePricingUnitDetailsObjectSchema = z
   .object({
@@ -8958,7 +3287,7 @@ const CustomerChargeFiltersUsageObjectSchema = z
       }),
   )
   .openapi({
-    description: 'Array of filter object, representing multiple dimensions for a charge item.',
+    description: 'Array of filter objects, representing multiple dimensions for a charge item.',
   })
   .openapi('CustomerChargeFiltersUsageObject')
 
@@ -9015,7 +3344,37 @@ const CustomerChargeGroupedUsageObjectSchema = z
   })
   .openapi('CustomerChargeGroupedUsageObject')
 
-const CustomerChargeUsageObjectSchema = z
+type CustomerChargeUsageObjectType = {
+  units: string
+  total_aggregated_units: string
+  events_count: number
+  amount_cents: number
+  amount_currency: z.infer<typeof CurrencySchema>
+  pricing_unit_details?: z.infer<typeof UsagePricingUnitDetailsObjectSchema>
+  charge: {
+    lago_id: string
+    code: string
+    charge_model: z.infer<typeof ChargeModelEnumSchema>
+    invoice_display_name?: string | null
+  }
+  billable_metric: {
+    lago_id: string
+    name: string
+    code: string
+    aggregation_type:
+      | 'count_agg'
+      | 'sum_agg'
+      | 'max_agg'
+      | 'unique_count_agg'
+      | 'weighted_sum_agg'
+      | 'latest_agg'
+  }
+  filters?: z.infer<typeof CustomerChargeFiltersUsageObjectSchema>
+  grouped_usage?: z.infer<typeof CustomerChargeGroupedUsageObjectSchema>
+  presentation_breakdowns?: z.infer<typeof PresentationBreakdownsObjectSchema>
+}
+
+const CustomerChargeUsageObjectSchema: z.ZodType<CustomerChargeUsageObjectType> = z
   .object({
     units: z
       .string()
@@ -9137,7 +3496,19 @@ const CustomerChargeUsageObjectSchema = z
   })
   .openapi('CustomerChargeUsageObject')
 
-const CustomerUsageObjectSchema = z
+type CustomerUsageObjectType = {
+  from_datetime: string
+  to_datetime: string
+  issuing_date: string
+  lago_invoice_id: string | null
+  currency: z.infer<typeof CurrencySchema>
+  amount_cents: number
+  taxes_amount_cents: number
+  total_amount_cents: number
+  charges_usage: z.infer<typeof CustomerChargeUsageObjectSchema>[]
+}
+
+const CustomerUsageObjectSchema: z.ZodType<CustomerUsageObjectType> = z
   .object({
     from_datetime: z.iso
       .datetime({ offset: true })
@@ -9197,10 +3568,32 @@ const CustomerUsageObjectSchema = z
   })
   .openapi('CustomerUsageObject')
 
-const CustomerUsageSchema = z
-  .object({ customer_usage: CustomerUsageObjectSchema })
-  .openapi({ required: ['customer_usage'] })
-  .openapi('CustomerUsage')
+type CustomerUsageType = { customer_usage: z.infer<typeof CustomerUsageObjectSchema> }
+
+const ProjectedUsagePricingUnitDetailsObjectSchema = z
+  .object({
+    amount_cents: z
+      .int()
+      .openapi({ example: 200, description: 'The amount in cents in the pricing unit.' }),
+    projected_amount_cents: z
+      .int()
+      .openapi({ example: 400, description: 'The projected amount in cents in the pricing unit.' }),
+    short_name: z
+      .string()
+      .openapi({ example: 'CR', description: 'The short name of the pricing unit.' }),
+    conversion_rate: z
+      .string()
+      .openapi({
+        example: '0.5',
+        description: "The conversion rate from pricing units to the plan's currency.",
+      }),
+  })
+  .nullable()
+  .openapi({
+    required: ['amount_cents', 'projected_amount_cents', 'short_name', 'conversion_rate'],
+    description: 'Details about the pricing unit used for charge usage.',
+  })
+  .openapi('ProjectedUsagePricingUnitDetailsObject')
 
 const CustomerProjectedChargeFiltersUsageObjectSchema = z
   .array(
@@ -9252,7 +3645,7 @@ const CustomerProjectedChargeFiltersUsageObjectSchema = z
               'Specifies the name that will be displayed on an invoice. It is `null` for the entry that holds the usage recorded outside of any charge filter.',
             example: 'AWS eu-east-1',
           }),
-        pricing_unit_details: UsagePricingUnitDetailsObjectSchema.exactOptional(),
+        pricing_unit_details: ProjectedUsagePricingUnitDetailsObjectSchema.exactOptional(),
         values: z
           .record(z.string(), z.array(z.string()))
           .nullable()
@@ -9276,7 +3669,7 @@ const CustomerProjectedChargeFiltersUsageObjectSchema = z
       }),
   )
   .openapi({
-    description: 'Array of filter object, representing multiple dimensions for a charge item.',
+    description: 'Array of filter objects, representing multiple dimensions for a charge item.',
   })
   .openapi('CustomerProjectedChargeFiltersUsageObject')
 
@@ -9321,7 +3714,7 @@ const CustomerProjectedChargeGroupedUsageObjectSchema = z
             description:
               'The projected number of units that can be consumed for a specific group related to a charge item.',
           }),
-        pricing_unit_details: UsagePricingUnitDetailsObjectSchema.exactOptional(),
+        pricing_unit_details: ProjectedUsagePricingUnitDetailsObjectSchema.exactOptional(),
         grouped_by: z
           .record(z.string(), z.string())
           .openapi({
@@ -9348,133 +3741,178 @@ const CustomerProjectedChargeGroupedUsageObjectSchema = z
   })
   .openapi('CustomerProjectedChargeGroupedUsageObject')
 
-const CustomerProjectedChargeUsageObjectSchema = z
-  .object({
-    units: z
-      .string()
-      .regex(/^[0-9]+.?[0-9]*$/)
-      .openapi({
-        example: '1.0',
-        description: 'The number of units consumed by the customer for a specific charge item.',
-      }),
-    projected_units: z
-      .string()
-      .regex(/^[0-9]+.?[0-9]*$/)
-      .openapi({
-        example: '2.0',
-        description:
-          'The projected number of units that can be consumed by the customer for a specific charge item.',
-      }),
-    events_count: z
-      .int()
-      .openapi({
-        example: 10,
-        description:
-          'The quantity of usage events that have been recorded for a particular charge during the specified time period. These events may also be referred to as the number of transactions in some contexts.',
-      }),
-    amount_cents: z
-      .int()
-      .openapi({
-        example: 123,
-        description:
-          'The amount in cents, tax excluded, consumed by the customer for a specific charge item.',
-      }),
-    projected_amount_cents: z
-      .int()
-      .openapi({
-        example: 256,
-        description:
-          'The projected amount in cents, tax excluded, that can be consumed by the customer for a specific charge item.',
-      }),
-    amount_currency: CurrencySchema.openapi({
-      description: 'The currency of a usage item consumed by the customer.',
-      example: 'EUR',
-    }),
-    pricing_unit_details: UsagePricingUnitDetailsObjectSchema.exactOptional(),
-    charge: z
-      .object({
-        lago_id: z
-          .uuid()
-          .openapi({
-            example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
-            description:
-              "Unique identifier assigned to the charge within the Lago application. This ID is exclusively created by Lago and serves as a unique identifier for the charge's record within the Lago system.",
-          }),
-        charge_model: ChargeModelEnumSchema,
-        invoice_display_name: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'Specifies the name that will be displayed on an invoice. If no value is set for this field, the name of the actual charge will be used as the default display name.',
-            example: 'Setup',
-          }),
-      })
-      .openapi({
-        description: 'Object listing all the properties for a specific charge item.',
-        required: ['lago_id', 'charge_model'],
-      }),
-    billable_metric: z
-      .object({
-        lago_id: z
-          .uuid()
-          .openapi({
-            example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
-            description:
-              "Unique identifier assigned to the billable metric within the Lago application. This ID is exclusively created by Lago and serves as a unique identifier for the billable metric's record within the Lago system.",
-          }),
-        name: z
-          .string()
-          .openapi({
-            example: 'Storage',
-            description: 'The name of the billable metric used for this charge.',
-          }),
-        code: z
-          .string()
-          .openapi({
-            example: 'storage',
-            description: 'The code of the billable metric used for this charge.',
-          }),
-        aggregation_type: z
-          .enum([
-            'count_agg',
-            'sum_agg',
-            'max_agg',
-            'unique_count_agg',
-            'weighted_sum_agg',
-            'latest_agg',
-          ])
-          .openapi({
-            description: 'The aggregation type of the billable metric used for this charge.',
-            example: 'sum_agg',
-          }),
-      })
-      .openapi({
-        description: 'The related billable metric object.',
-        required: ['lago_id', 'name', 'code', 'aggregation_type'],
-      }),
-    filters: CustomerProjectedChargeFiltersUsageObjectSchema.exactOptional(),
-    grouped_usage: CustomerProjectedChargeGroupedUsageObjectSchema,
-    presentation_breakdowns: PresentationBreakdownsObjectSchema.exactOptional(),
-    projected_presentation_breakdowns: PresentationBreakdownsObjectSchema.exactOptional(),
-  })
-  .openapi({
-    required: [
-      'units',
-      'projected_units',
-      'events_count',
-      'amount_cents',
-      'projected_amount_cents',
-      'amount_currency',
-      'charge',
-      'billable_metric',
-      'grouped_usage',
-    ],
-  })
-  .openapi('CustomerProjectedChargeUsageObject')
+type CustomerProjectedChargeUsageObjectType = {
+  units: string
+  projected_units: string
+  events_count: number
+  amount_cents: number
+  projected_amount_cents: number
+  amount_currency: z.infer<typeof CurrencySchema>
+  pricing_unit_details?: z.infer<typeof ProjectedUsagePricingUnitDetailsObjectSchema>
+  charge: {
+    lago_id: string
+    charge_model: z.infer<typeof ChargeModelEnumSchema>
+    invoice_display_name?: string | null
+  }
+  billable_metric: {
+    lago_id: string
+    name: string
+    code: string
+    aggregation_type:
+      | 'count_agg'
+      | 'sum_agg'
+      | 'max_agg'
+      | 'unique_count_agg'
+      | 'weighted_sum_agg'
+      | 'latest_agg'
+  }
+  filters?: z.infer<typeof CustomerProjectedChargeFiltersUsageObjectSchema>
+  grouped_usage: z.infer<typeof CustomerProjectedChargeGroupedUsageObjectSchema>
+  presentation_breakdowns?: z.infer<typeof PresentationBreakdownsObjectSchema>
+  projected_presentation_breakdowns?: z.infer<typeof PresentationBreakdownsObjectSchema>
+}
 
-const CustomerProjectedUsageObjectSchema = z
+const CustomerProjectedChargeUsageObjectSchema: z.ZodType<CustomerProjectedChargeUsageObjectType> =
+  z
+    .object({
+      units: z
+        .string()
+        .regex(/^[0-9]+.?[0-9]*$/)
+        .openapi({
+          example: '1.0',
+          description: 'The number of units consumed by the customer for a specific charge item.',
+        }),
+      projected_units: z
+        .string()
+        .regex(/^[0-9]+.?[0-9]*$/)
+        .openapi({
+          example: '2.0',
+          description:
+            'The projected number of units that can be consumed by the customer for a specific charge item.',
+        }),
+      events_count: z
+        .int()
+        .openapi({
+          example: 10,
+          description:
+            'The quantity of usage events that have been recorded for a particular charge during the specified time period. These events may also be referred to as the number of transactions in some contexts.',
+        }),
+      amount_cents: z
+        .int()
+        .openapi({
+          example: 123,
+          description:
+            'The amount in cents, tax excluded, consumed by the customer for a specific charge item.',
+        }),
+      projected_amount_cents: z
+        .int()
+        .openapi({
+          example: 256,
+          description:
+            'The projected amount in cents, tax excluded, that can be consumed by the customer for a specific charge item.',
+        }),
+      amount_currency: CurrencySchema.openapi({
+        description: 'The currency of a usage item consumed by the customer.',
+        example: 'EUR',
+      }),
+      pricing_unit_details: ProjectedUsagePricingUnitDetailsObjectSchema.exactOptional(),
+      charge: z
+        .object({
+          lago_id: z
+            .uuid()
+            .openapi({
+              example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
+              description:
+                "Unique identifier assigned to the charge within the Lago application. This ID is exclusively created by Lago and serves as a unique identifier for the charge's record within the Lago system.",
+            }),
+          charge_model: ChargeModelEnumSchema,
+          invoice_display_name: z
+            .string()
+            .nullable()
+            .exactOptional()
+            .openapi({
+              description:
+                'Specifies the name that will be displayed on an invoice. If no value is set for this field, the name of the actual charge will be used as the default display name.',
+              example: 'Setup',
+            }),
+        })
+        .openapi({
+          description: 'Object listing all the properties for a specific charge item.',
+          required: ['lago_id', 'charge_model'],
+        }),
+      billable_metric: z
+        .object({
+          lago_id: z
+            .uuid()
+            .openapi({
+              example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
+              description:
+                "Unique identifier assigned to the billable metric within the Lago application. This ID is exclusively created by Lago and serves as a unique identifier for the billable metric's record within the Lago system.",
+            }),
+          name: z
+            .string()
+            .openapi({
+              example: 'Storage',
+              description: 'The name of the billable metric used for this charge.',
+            }),
+          code: z
+            .string()
+            .openapi({
+              example: 'storage',
+              description: 'The code of the billable metric used for this charge.',
+            }),
+          aggregation_type: z
+            .enum([
+              'count_agg',
+              'sum_agg',
+              'max_agg',
+              'unique_count_agg',
+              'weighted_sum_agg',
+              'latest_agg',
+            ])
+            .openapi({
+              description: 'The aggregation type of the billable metric used for this charge.',
+              example: 'sum_agg',
+            }),
+        })
+        .openapi({
+          description: 'The related billable metric object.',
+          required: ['lago_id', 'name', 'code', 'aggregation_type'],
+        }),
+      filters: CustomerProjectedChargeFiltersUsageObjectSchema.exactOptional(),
+      grouped_usage: CustomerProjectedChargeGroupedUsageObjectSchema,
+      presentation_breakdowns: PresentationBreakdownsObjectSchema.exactOptional(),
+      projected_presentation_breakdowns: PresentationBreakdownsObjectSchema.exactOptional(),
+    })
+    .openapi({
+      required: [
+        'units',
+        'projected_units',
+        'events_count',
+        'amount_cents',
+        'projected_amount_cents',
+        'amount_currency',
+        'charge',
+        'billable_metric',
+        'grouped_usage',
+      ],
+    })
+    .openapi('CustomerProjectedChargeUsageObject')
+
+type CustomerProjectedUsageObjectType = {
+  from_datetime: string
+  to_datetime: string
+  issuing_date: string
+  lago_invoice_id: string | null
+  currency: z.infer<typeof CurrencySchema>
+  amount_cents: number
+  projected_amount_cents: number
+  taxes_amount_cents: number
+  total_amount_cents: number
+  charges_usage: z.infer<typeof CustomerProjectedChargeUsageObjectSchema>[]
+}
+
+const CustomerProjectedUsageObjectSchema: z.ZodType<CustomerProjectedUsageObjectType> = z
   .object({
     from_datetime: z.iso
       .datetime({ offset: true })
@@ -9538,1448 +3976,284 @@ const CustomerProjectedUsageObjectSchema = z
   })
   .openapi('CustomerProjectedUsageObject')
 
-const CustomerProjectedUsageSchema = z
-  .object({ customer_projected_usage: CustomerProjectedUsageObjectSchema })
-  .openapi({ required: ['customer_projected_usage'] })
-  .openapi('CustomerProjectedUsage')
+type CustomerProjectedUsageType = {
+  customer_projected_usage: z.infer<typeof CustomerProjectedUsageObjectSchema>
+}
 
-const CustomerPastUsageSchema = z
-  .object({ usage_periods: z.array(CustomerUsageObjectSchema), meta: PaginationMetaSchema })
-  .openapi({ required: ['usage_periods', 'meta'] })
-  .openapi('CustomerPastUsage')
+type CustomerPastUsageType = {
+  usage_periods: z.infer<typeof CustomerUsageObjectSchema>[]
+  meta: z.infer<typeof PaginationMetaSchema>
+}
 
-const CustomerCheckoutUrlSchema = z
+const AttributedUsageChargeUsageObjectSchema = z
   .object({
-    lago_customer_id: z
-      .string()
-      .openapi({
-        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
-        description:
-          "Unique identifier assigned to the customer within the Lago application. This ID is exclusively created by Lago and serves as a unique identifier for the customer's record within the Lago system",
-      }),
-    external_customer_id: z
-      .string()
-      .openapi({
-        example: '5eb02857-a71e-4ea2-bcf9-57d3a41bc6ba',
-        description: 'The customer external unique identifier (provided by your own application)',
-      }),
-    payment_provider: z
-      .string()
-      .openapi({
-        example: 'stripe',
-        description: 'The Payment Provider name linked to the Customer.',
-      }),
-    payment_provider_code: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Code of the payment provider', example: 'Stripe Prod' }),
-    checkout_url: z
-      .string()
-      .exactOptional()
-      .openapi({
-        example: 'https://foo.bar',
-        description: 'The new generated Payment Provider Checkout URL for the Customer.',
-      }),
-  })
-  .openapi({ required: ['lago_customer_id', 'external_customer_id', 'payment_provider'] })
-  .openapi('CustomerCheckoutUrl')
-
-const PaymentMethodsPaginatedSchema = z
-  .object({ payment_methods: z.array(PaymentMethodObjectSchema), meta: PaginationMetaSchema })
-  .openapi({ required: ['payment_methods', 'meta'] })
-  .openapi('PaymentMethodsPaginated')
-
-const PaymentMethodSchema = z
-  .object({ payment_method: PaymentMethodObjectSchema })
-  .openapi({ required: ['payment_method'] })
-  .openapi('PaymentMethod')
-
-const EventObjectSchema = z
-  .object({
-    lago_id: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
-        description:
-          "Unique identifier assigned to the event within the Lago application. This ID is exclusively created by Lago and serves as a unique identifier for the event's record within the Lago system. It is an opaque identifier and is not guaranteed to be a UUID; on organizations using the ClickHouse events store it is a composite string.",
-      }),
-    transaction_id: z
-      .string()
-      .openapi({
-        example: 'transaction_1234567890',
-        description:
-          'This field represents a unique identifier for the event. It is crucial for ensuring idempotency, meaning that each event can be uniquely identified and processed without causing any unintended side effects.',
-      }),
-    lago_customer_id: z
-      .uuid()
-      .nullable()
-      .openapi({
-        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
-        description:
-          "Unique identifier assigned to the customer within the Lago application. This ID is exclusively created by Lago and serves as a unique identifier for the customer's record within the Lago system",
-      }),
-    code: z
-      .string()
-      .openapi({
-        example: 'storage',
-        description:
-          'The code that identifies a targeted billable metric. It is essential that this code matches the `code` property of one of your active billable metrics. If the provided code does not correspond to any active billable metric, it will be ignored during the process.',
-      }),
-    timestamp: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        example: '2022-04-29T08:59:51.123Z',
-        description:
-          'The date and time at which the event occurred, in ISO 8601 format with millisecond precision and expressed in Coordinated Universal Time (UTC). When no timestamp is sent on the event, it is set to the time of event reception.',
-      }),
-    precise_total_amount_cents: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        example: '1234.56',
-        description:
-          'The precise total amount that was sent in the event payload. This field is used by the `dynamic` pricing model.',
-      }),
-    properties: z
-      .object({
-        operation_type: z
-          .enum(['add', 'remove'])
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'The `operation_type` field is only necessary when adding or removing a specific unit when the targeted billable metric adopts a `unique_count_agg` aggregation method. In other cases, the `operation_type` field is not required. The valid values for the `operation_type` field are `add` or `remove`, which indicate whether the unit is being added or removed from the unique count aggregation, respectively.',
-          }),
-      })
-      .catchall(z.xor([z.string(), z.int(), z.number()]))
-      .exactOptional()
-      .openapi({
-        description:
-          'This field represents additional properties associated with the event, which are utilized in the calculation of the final fee. This object becomes mandatory when the targeted billable metric employs a `sum_agg`, `max_agg`, or `unique_count_agg` aggregation method. However, when using a simple `count_agg`, this object is not required.',
-        example: { gb: 10 },
-      }),
-    lago_subscription_id: z
-      .uuid()
-      .nullable()
-      .openapi({
-        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
-        description:
-          "Unique identifier assigned to the subscription within the Lago application. This ID is exclusively created by Lago and serves as a unique identifier for the subscription's record within the Lago system",
-      }),
-    external_subscription_id: z
-      .string()
-      .openapi({
-        example: 'sub_1234567890',
-        description:
-          'The unique identifier of the subscription within your application, as sent on the event. It is the value Lago uses to attach the event to a subscription.',
-      }),
-    created_at: z.iso
-      .datetime({ offset: true })
-      .nullable()
-      .exactOptional()
-      .openapi({
-        example: '2022-04-29T08:59:51Z',
-        description:
-          "The creation date of the event's record in the Lago application, presented in the ISO 8601 datetime format, specifically in Coordinated Universal Time (UTC). It provides the precise timestamp of when the event's record was created within the Lago application",
-      }),
-  })
-  .openapi({
-    required: [
-      'transaction_id',
-      'lago_customer_id',
-      'code',
-      'timestamp',
-      'lago_subscription_id',
-      'external_subscription_id',
-    ],
-  })
-  .openapi('EventObject')
-
-const EventsPaginatedSchema = z
-  .object({ events: z.array(EventObjectSchema), meta: PaginationMetaSchema })
-  .openapi({ required: ['events', 'meta'] })
-  .openapi('EventsPaginated')
-
-const EventInputObjectSchema = z
-  .object({
-    transaction_id: z
-      .string()
-      .openapi({
-        example: 'transaction_1234567890',
-        description:
-          'This field represents a unique identifier for the event.\nIt is crucial for ensuring idempotency, meaning that each event can be uniquely identified and processed without causing any unintended side effects.\n\nWARNING: If the Lago organization is configured to use the new Clickhouse-based event pipeline (designed for high-volume processing), the idempotency logic is handled differently.\nEvent uniqueness is maintained with both `transaction_id` and `timestamp` fields.\nIf a new event arrives with identical values for these two fields as an existing event, the new one will overwrite the previous event rather than being rejected.\n',
-      }),
-    external_subscription_id: z
-      .string()
-      .openapi({
-        example: 'sub_1234567890',
-        description:
-          'The unique identifier of the subscription in your application. This field is mandatory in order to link events to the correct customer subscription.',
-      }),
-    code: z
-      .string()
-      .openapi({
-        example: 'storage',
-        description:
-          'The code that identifies a targeted billable metric. It is essential that this code matches the `code` property of one of your active billable metrics. If the provided code does not correspond to any active billable metric, it will be ignored during the process.',
-      }),
-    timestamp: z
-      .xor([z.int(), z.string()])
-      .exactOptional()
-      .openapi({
-        example: '1651240791.123',
-        description:
-          'This field captures the Unix timestamp in seconds indicating the occurrence of the event in Coordinated Universal Time (UTC).\nIf this timestamp is not provided, the API will automatically set it to the time of event reception.\nYou can also provide milliseconds precision by appending decimals to the timestamp.\n',
-      }),
-    precise_total_amount_cents: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        example: '1234.56',
-        description:
-          'The precise total amount in cents with precision used by the `dynamic` pricing model to compute the usage amount.',
-      }),
-    properties: z
-      .object({
-        target_wallet_code: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            example: 'main_wallet',
-            description:
-              'The code of the wallet targeted by this event for prepaid credits deduction.\nWhen provided, credits are drawn from this specific wallet instead of following the standard wallet selection logic.\nIf the code does not match an existing wallet, no credits will be applied for the event.\nThis field is only taken into account when the targeted charge has `accepts_target_wallet` set to `true`.\nThis field requires a premium integration.',
-          }),
-      })
-      .catchall(z.xor([z.string(), z.int(), z.number()]))
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'This field represents additional properties associated with the event, which are utilized in the calculation of the final fee. This object becomes mandatory when the targeted billable metric employs a `sum_agg`, `max_agg`, or `unique_count_agg` aggregation method. However, when using a simple `count_agg`, this object is not required.',
-        example: { gb: 10 },
-      }),
-  })
-  .openapi({ required: ['transaction_id', 'external_subscription_id', 'code'] })
-  .openapi('EventInputObject')
-
-const EventInputSchema = z
-  .object({ event: EventInputObjectSchema })
-  .openapi({ required: ['event'] })
-  .openapi('EventInput')
-
-const EventCreatedSchema = z
-  .object({
-    event: EventObjectSchema.and(
-      z
-        .object({
-          lago_customer_id: z
-            .null()
-            .nullable()
-            .exactOptional()
-            .openapi({
-              description:
-                'The value will always be null in this response as the event processing is done asynchronously',
-              example: null,
-            }),
-        })
-        .openapi({ required: [] }),
-    ),
-  })
-  .openapi({ required: ['event'] })
-  .openapi('EventCreated')
-
-const EventBatchInputSchema = z
-  .object({ events: z.array(EventInputObjectSchema) })
-  .openapi({ required: ['events'] })
-  .openapi('EventBatchInput')
-
-const EventsCreatedSchema = z
-  .object({
-    events: z.array(
-      EventObjectSchema.and(
-        z
-          .object({
-            lago_customer_id: z
-              .null()
-              .nullable()
-              .exactOptional()
-              .openapi({
-                description:
-                  'The value will always be null in this response as the event processing is done asynchronously',
-                example: null,
-              }),
-          })
-          .openapi({ required: [] }),
-      ),
-    ),
-  })
-  .openapi({ required: ['events'] })
-  .openapi('EventsCreated')
-
-const EventEstimateFeesInputSchema = z
-  .object({
-    event: z
-      .object({
-        code: z
-          .string()
-          .openapi({
-            example: 'storage',
-            description:
-              'The code that identifies a targeted billable metric. It is essential that this code matches the `code` property of one of your active billable metrics. If the provided code does not correspond to any active billable metric, it will be ignored during the process.',
-          }),
-        external_subscription_id: z
-          .string()
-          .openapi({
-            example: 'sub_1234567890',
-            description: 'The unique identifier of the subscription within your application.',
-          }),
-        precise_total_amount_cents: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            example: '1234.56',
-            description:
-              'The precise total amount in cents with precision used by the `dynamic` pricing model to compute the estimated usage amount. Defaults to `0` when omitted.',
-          }),
-        properties: z
-          .looseObject({
-            target_wallet_code: z
-              .string()
-              .nullable()
-              .exactOptional()
-              .openapi({
-                example: 'main_wallet',
-                description:
-                  'The code of the wallet targeted by this event for prepaid credits deduction.\nWhen provided, credits are drawn from this specific wallet instead of following the standard wallet selection logic.\nIf the code does not match an existing wallet, no credits will be applied for the event.\nThis field is only taken into account when the targeted charge has `accepts_target_wallet` set to `true`.\nThis field requires a premium integration.',
-              }),
-          })
-          .exactOptional()
-          .openapi({
-            description:
-              'This field represents additional properties associated with the event, which are utilized in the calculation of the final fee. This object becomes mandatory when the targeted billable metric employs a `sum_agg`, `max_agg`, or `unique_count_agg` aggregation method. However, when using a simple `count_agg`, this object is not required. Any property of the targeted billable metric can be sent here, in addition to the documented fields below.',
-            required: [],
-          }),
-      })
-      .openapi({ required: ['code', 'external_subscription_id'] }),
-  })
-  .openapi({ required: ['event'] })
-  .openapi('EventEstimateFeesInput')
-
-const FeesSchema = z
-  .object({ fees: z.array(FeeObjectSchema) })
-  .openapi({ required: ['fees'] })
-  .openapi('Fees')
-
-const EventEstimateInstantFeesInputObjectSchema = z
-  .object({
-    code: z
-      .string()
-      .openapi({
-        example: 'storage',
-        description:
-          'The code that identifies a targeted billable metric. It is essential that this code matches the `code` property of one of your active billable metrics. If the provided code does not correspond to any active billable metric, it will be ignored during the process.',
-      }),
-    external_subscription_id: z
-      .string()
-      .openapi({
-        example: 'sub_1234567890',
-        description: 'The unique identifier of the subscription within your application.',
-      }),
-    properties: z
-      .object({})
-      .exactOptional()
-      .openapi({
-        description:
-          'This field represents additional properties associated with the event, which are utilized in the calculation of the final fee. This object becomes mandatory when the targeted billable metric employs a `sum_agg`, `max_agg`, or `unique_count_agg` aggregation method. However, when using a simple `count_agg`, this object is not required.',
-      }),
-    transaction_id: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        example: 'transaction_1234567890',
-        description: 'This field represents a unique identifier for the event.',
-      }),
-  })
-  .openapi({ required: ['code', 'external_subscription_id'] })
-  .openapi('EventEstimateInstantFeesInputObject')
-
-const EventEstimateInstantFeesInputSchema = z
-  .object({ event: EventEstimateInstantFeesInputObjectSchema })
-  .openapi({ required: ['event'] })
-  .openapi('EventEstimateInstantFeesInput')
-
-const FeeEstimateObjectSchema = z
-  .object({
-    lago_id: z.null().nullable().exactOptional(),
     lago_charge_id: z
       .uuid()
-      .exactOptional()
       .openapi({
-        description: 'Unique identifier assigned to the charge that the fee belongs to',
+        description: 'Unique identifier of the charge, created by Lago.',
         example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
       }),
+    charge_code: z.string().openapi({ description: 'Code of the charge.', example: 'tokens' }),
+    billable_metric_code: z
+      .string()
+      .openapi({ description: 'Code of the billable metric of the charge.', example: 'tokens' }),
     lago_charge_filter_id: z
       .uuid()
       .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Unique identifier assigned to the charge filter that the fee belongs to',
-        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
-      }),
-    lago_invoice_id: z.null().nullable().exactOptional(),
-    lago_true_up_fee_id: z.null().nullable().exactOptional(),
-    lago_true_up_parent_fee_id: z.null().nullable().exactOptional(),
-    lago_subscription_id: z
-      .uuid()
-      .exactOptional()
       .openapi({
         description:
-          'Unique identifier assigned to the subscription, created by Lago. This field is specifically displayed when the fee type is charge or subscription.',
+          'Unique identifier of the charge filter, created by Lago. It is set only for the charge split by `split_charge_code`, and is `null` for the usage that matches none of its filters.',
         example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
       }),
-    lago_customer_id: z
-      .uuid()
-      .exactOptional()
+    charge_filter_values: z
+      .record(z.string(), z.array(z.string()))
+      .nullable()
       .openapi({
         description:
-          'Unique identifier assigned to the customer, created by Lago. This field is specifically displayed when the fee type is charge or subscription.',
-        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
+          'Values of the charge filter, by billable metric filter key. It is `null` when `lago_charge_filter_id` is `null`.',
+        example: { model: ['opus'] },
       }),
-    external_customer_id: z
+    charge_filter_invoice_display_name: z
       .string()
-      .exactOptional()
+      .nullable()
       .openapi({
         description:
-          'Unique identifier assigned to the customer in your application. This field is specifically displayed when the fee type is charge or subscription.',
-        example: 'external_id',
+          'Name of the charge filter displayed on the invoice. It is `null` when `lago_charge_filter_id` is `null` or when the filter has no display name.',
+        example: 'Opus tokens',
       }),
-    external_subscription_id: z
+    units: z
       .string()
-      .exactOptional()
+      .regex(/^-?[0-9]+(\.[0-9]+)?$/)
       .openapi({
-        description:
-          'Unique identifier assigned to the subscription in your application. This field is specifically displayed when the fee type is charge or subscription.',
-        example: 'external_id',
+        description: 'Number of units consumed, sent as a decimal string.',
+        example: '1250.5',
       }),
     amount_cents: z
       .int()
-      .openapi({
-        description: 'The cost of this specific fee, excluding any applicable taxes.',
-        example: 100,
-      }),
-    precise_amount: z
-      .number()
-      .exactOptional()
+      .nullable()
       .openapi({
         description:
-          'The cost of this specific fee, excluding any applicable taxes, with precision.',
-        example: 1.0001,
+          'Amount of the usage in cents, rounded to the nearest cent. It is `null` when `basis` is `units`, or when the charge cannot be priced (only charges with the `standard` charge model are priced).',
+        example: 1200,
       }),
-    precise_total_amount: z
-      .number()
-      .exactOptional()
+    precise_amount_cents: z
+      .string()
+      .regex(/^-?[0-9]+(\.[0-9]+)?$/)
+      .nullable()
       .openapi({
         description:
-          'The cost of this specific fee, including any applicable taxes, with precision.',
-        example: 1.0212,
+          'Amount of the usage in cents, sent as a decimal string. It is `null` in the same cases as `amount_cents`.',
+        example: '1200.4567',
       }),
-    amount_currency: CurrencySchema.openapi({
-      description:
-        "The currency of this specific fee. It indicates the monetary unit in which the fee's cost is expressed.",
-      example: 'EUR',
-    }),
-    taxes_amount_cents: z
-      .int()
-      .openapi({
-        description: 'The cost of the tax associated with this specific fee.',
-        example: 0,
-      }),
-    taxes_precise_amount: z
-      .number()
-      .exactOptional()
-      .openapi({
-        description: 'The cost of the tax associated with this specific fee, with precision.',
-        example: 0,
-      }),
-    taxes_rate: z
-      .number()
-      .openapi({ description: 'The tax rate associated with this specific fee.', example: 20 }),
-    units: z
+    events_count: z.int().openapi({ description: 'Number of events.', example: 42 }),
+  })
+  .openapi({
+    required: [
+      'lago_charge_id',
+      'charge_code',
+      'billable_metric_code',
+      'lago_charge_filter_id',
+      'charge_filter_values',
+      'charge_filter_invoice_display_name',
+      'units',
+      'amount_cents',
+      'precise_amount_cents',
+      'events_count',
+    ],
+  })
+  .openapi('AttributedUsageChargeUsageObject')
+
+const AttributedUsageRowObjectSchema = z
+  .object({
+    value: z
       .string()
       .openapi({
         description:
-          'The number of units used to charge the customer. This field indicates the quantity or count of units consumed or utilized in the context of the charge. It helps in determining the basis for calculating the fee or cost associated with the usage of the service or product provided to the customer.',
-        example: '0.32',
+          'Attribution value the usage is attributed to, at the level of the `group_by` usage attribution type.',
+        example: 'engineering',
       }),
-    description: z.null().nullable().exactOptional(),
-    precise_unit_amount: z
-      .number()
-      .openapi({
-        description: 'The unit amount of the fee per unit, with precision.',
-        example: 312.5,
-      }),
-    precise_coupons_amount_cents: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The coupon amount applied to the estimated instant fee. It is always `0.0`.',
-        example: '0.0',
-      }),
-    total_amount_cents: z
+    rank: z
       .int()
-      .openapi({
-        description: 'The cost of this specific fee, including any applicable taxes.',
-        example: 120,
-      }),
-    total_amount_currency: CurrencySchema.openapi({
-      description: 'The currency of this specific fee, including any applicable taxes.',
-      example: 'EUR',
-    }),
-    events_count: z
-      .int()
-      .exactOptional()
       .openapi({
         description:
-          'The number of events that have been sent and used to charge the customer. This field indicates the count or quantity of events that have been processed and considered in the charging process.',
+          'Rank of the value in the level, starting at 1. Values are ranked by amount when `basis` is `amount`, and by units, summed across the selected charges, when `basis` is `units`. Values with the same amount or units are ranked by value, in ascending order.',
         example: 1,
       }),
-    pay_in_advance: z
-      .boolean()
+    amount_cents: z
+      .int()
+      .nullable()
       .openapi({
         description:
-          'Flag that indicates whether the fee was paid in advance. It serves as a boolean value, where `true` represents that the fee was paid in advance (straightaway), and `false` indicates that the fee was not paid in arrears (at the end of the period).',
-        example: true,
+          'Amount of the usage in cents, rounded to the nearest cent. It is `null` when `basis` is `units`.',
+        example: 1200,
       }),
-    invoiceable: z
-      .boolean()
-      .openapi({
-        description:
-          'Flag that indicates whether the fee was included on the invoice. It serves as a boolean value, where `true` represents that the fee was included on the invoice, and `false` indicates that the fee was not included on the invoice.',
-        example: true,
-      }),
-    payment_status: z
-      .literal('pending')
-      .openapi({
-        description:
-          'Indicates the payment status of the fee. It represents the current status of the payment associated with the fee. The value is always `pending`.',
-        example: 'pending',
-      }),
-    created_at: z.null().nullable().exactOptional(),
-    succeeded_at: z.null().nullable().exactOptional(),
-    failed_at: z.null().nullable().exactOptional(),
-    refunded_at: z.null().nullable().exactOptional(),
-    event_transaction_id: z
+    precise_amount_cents: z
       .string()
-      .exactOptional()
+      .regex(/^-?[0-9]+(\.[0-9]+)?$/)
+      .nullable()
       .openapi({
         description:
-          'Unique identifier assigned to the transaction. This field is specifically displayed when the fee type is `charge` and the payment for the fee is made in advance (`pay_in_advance` is set to `true`).',
-        example: 'transaction_1234567890',
+          'Amount of the usage in cents, sent as a decimal string. It is `null` when `basis` is `units`.',
+        example: '1200.4567',
       }),
-    amount_details: z.null().nullable().exactOptional(),
-    item: z
-      .object({
-        type: z
-          .literal('charge')
-          .openapi({ description: 'The fee type. The value will be `charge`.', example: 'charge' }),
-        code: z
-          .string()
-          .openapi({
-            description: 'The code of the fee item. It will be the code of the `billable_metric`.',
-            example: 'startup',
-          }),
-        name: z
-          .string()
-          .openapi({
-            description: 'The name of the fee item. It will be the name of the `billable_metric`.',
-            example: 'Startup',
-          }),
-        description: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'The description of the fee item. It will be the description of the `billable_metric`.',
-            example: 'Startup description',
-          }),
-        invoice_display_name: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Specifies the name that will be displayed on an invoice. If no value is set for this field, the name of the actual charge will be used as the default display name.',
-            example: 'Setup Fee (SF1)',
-          }),
-        filter_invoice_display_name: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'Specifies the name that will be displayed on an invoice. If no value is set for this field, the actual charge filter values will be used as the default display name.',
-            example: 'AWS eu-east-1',
-          }),
-        filters: z
-          .record(z.string(), z.array(z.string()))
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Key value list of event properties' }),
-        lago_item_id: z
-          .uuid()
-          .openapi({
-            example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
-            description:
-              'Unique identifier of the fee item, created by Lago. It will be the identifier of the `billable_metric`.',
-          }),
-        item_type: z
-          .literal('BillableMetric')
-          .openapi({
-            description: 'The type of the fee item. The value is `BillableMetric`.',
-            example: 'BillableMetric',
-          }),
-        grouped_by: z
-          .record(z.string(), z.string())
-          .exactOptional()
-          .openapi({
-            description: 'Key value list of event properties aggregated by the charge model',
-          }),
-      })
+    events_count: z.int().openapi({ description: 'Number of events.', example: 42 }),
+    split_charge_units: z
+      .string()
+      .regex(/^-?[0-9]+(\.[0-9]+)?$/)
+      .nullable()
       .openapi({
-        description: 'Item attached to the fee',
-        required: ['type', 'code', 'name', 'lago_item_id', 'item_type'],
+        description:
+          'Units of the charge split by `split_charge_code`, across all its filters and the usage that matches none of them, sent as a decimal string. Unlike `charges_usage`, it covers the filters of every page. It is `null` when no charge is split.',
+        example: '15000.5',
+      }),
+    charges_usage: z
+      .array(AttributedUsageChargeUsageObjectSchema)
+      .openapi({
+        description:
+          'Usage of each charge of the plan, in the order of the charges. A charge split by `split_charge_code` has one entry per filter of the page selected by `split_filters_offset`, then one for the usage that matches none of its filters. The filters of other pages have no entry, but their usage still counts in the amount.',
       }),
   })
   .openapi({
     required: [
-      'item',
+      'value',
+      'rank',
       'amount_cents',
-      'amount_currency',
-      'taxes_amount_cents',
-      'taxes_rate',
-      'total_amount_cents',
-      'total_amount_currency',
-      'pay_in_advance',
-      'invoiceable',
-      'units',
-      'precise_unit_amount',
-      'payment_status',
+      'precise_amount_cents',
+      'events_count',
+      'split_charge_units',
+      'charges_usage',
     ],
   })
-  .openapi('FeeEstimateObject')
+  .openapi('AttributedUsageRowObject')
 
-const FeesEstimateSchema = z
-  .object({ fees: z.array(FeeEstimateObjectSchema) })
-  .openapi({ required: ['fees'] })
-  .openapi('FeesEstimate')
-
-const EventBatchEstimateInstantFeesInputSchema = z
-  .object({ events: z.array(EventEstimateInstantFeesInputObjectSchema) })
-  .openapi({ required: ['events'] })
-  .openapi('EventBatchEstimateInstantFeesInput')
-
-const EventSchema = z
-  .object({ event: EventObjectSchema })
-  .openapi({ required: ['event'] })
-  .openapi('Event')
-
-const FeesPaginatedSchema = z
-  .object({ fees: z.array(FeeObjectSchema), meta: PaginationMetaSchema })
-  .openapi({ required: ['fees', 'meta'] })
-  .openapi('FeesPaginated')
-
-const FeeSchema = z
-  .object({ fee: FeeObjectSchema })
-  .openapi({ required: ['fee'] })
-  .openapi('Fee')
-
-const FeeUpdateInputSchema = z
+const AttributedUsageTotalsObjectSchema = z
   .object({
-    fee: z
-      .object({
-        payment_status: z
-          .enum(['pending', 'succeeded', 'failed', 'refunded'])
-          .openapi({
-            description:
-              'The payment status of the fee. Possible values are `pending`, `succeeded`, `failed` or `refunded`.',
-            example: 'succeeded',
-          }),
-      })
-      .openapi({ required: ['payment_status'] }),
+    amount_cents: z
+      .int()
+      .nullable()
+      .openapi({
+        description:
+          'Amount of the usage in cents, rounded to the nearest cent. It is `null` when `basis` is `units`.',
+        example: 1200,
+      }),
+    precise_amount_cents: z
+      .string()
+      .regex(/^-?[0-9]+(\.[0-9]+)?$/)
+      .nullable()
+      .openapi({
+        description:
+          'Amount of the usage in cents, sent as a decimal string. It is `null` when `basis` is `units`.',
+        example: '1200.4567',
+      }),
+    events_count: z.int().openapi({ description: 'Number of events.', example: 42 }),
+    split_charge_units: z
+      .string()
+      .regex(/^-?[0-9]+(\.[0-9]+)?$/)
+      .nullable()
+      .openapi({
+        description:
+          'Units of the charge split by `split_charge_code`, across all its filters and the usage that matches none of them, sent as a decimal string. Unlike `charges_usage`, it covers the filters of every page. It is `null` when no charge is split.',
+        example: '15000.5',
+      }),
+    charges_usage: z
+      .array(AttributedUsageChargeUsageObjectSchema)
+      .openapi({
+        description:
+          'Usage of each charge of the plan, in the order of the charges. A charge split by `split_charge_code` has one entry per filter of the page selected by `split_filters_offset`, then one for the usage that matches none of its filters. The filters of other pages have no entry, but their usage still counts in the amount.',
+      }),
   })
-  .openapi({ required: ['fee'] })
-  .openapi('FeeUpdateInput')
-
-const InvoiceOneOffCreateInputSchema = z
-  .object({
-    invoice: z
-      .object({
-        external_customer_id: z
-          .string()
-          .openapi({
-            description: 'Unique identifier assigned to the customer in your application.',
-            example: 'hooli_1234',
-          }),
-        billing_entity_code: z
-          .string()
-          .exactOptional()
-          .openapi({
-            example: 'default',
-            description:
-              "The code of the billing entity to issue the invoice from. If not provided, the customer's billing entity is used.",
-          }),
-        currency: CurrencySchema.exactOptional().openapi({
-          description: 'The currency of the invoice.',
-          example: 'EUR',
-        }),
-        skip_psp: z
-          .boolean()
-          .nullable()
-          .default(false)
-          .exactOptional()
-          .openapi({
-            description:
-              'If true, the invoice will be created but not sent to the payment provider.',
-            example: true,
-          }),
-        purchase_order_number: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            example: 'PO-123',
-            description: 'The purchase order number to associate with the invoice.',
-          }),
-        fees: z.array(
-          z
-            .object({
-              add_on_code: z
-                .string()
-                .openapi({
-                  description: 'The code of the add-on used as invoice item.',
-                  example: 'setup_fee',
-                }),
-              invoice_display_name: z
-                .string()
-                .exactOptional()
-                .openapi({
-                  description:
-                    'Specifies the name that will be displayed on an invoice. If no value is set for this field, the name of the actual charge will be used as the default display name.',
-                  example: 'Setup Fee (SF1)',
-                }),
-              unit_amount_cents: z
-                .int()
-                .nullable()
-                .exactOptional()
-                .openapi({
-                  description:
-                    'The amount of the fee per unit, expressed in cents. By default, the amount of the add-on is used.',
-                  example: 12000,
-                }),
-              units: z
-                .union([z.string().regex(/^[0-9]+.?[0-9]*$/), z.number()])
-                .nullable()
-                .exactOptional()
-                .openapi({
-                  description:
-                    'The quantity of units associated with the fee. Accepts a number or a decimal string. By default, only 1 unit is added to the invoice.',
-                  example: '2.5',
-                }),
-              description: z
-                .string()
-                .nullable()
-                .exactOptional()
-                .openapi({
-                  description:
-                    'The description of the fee line item in the invoice. By default, the description of the add-on is used.',
-                  example: 'Onboarding session, June 2024',
-                }),
-              from_datetime: z.iso
-                .datetime({ offset: true })
-                .exactOptional()
-                .openapi({
-                  description:
-                    'The lower boundary of the invoice billing interval. The `from_datetime` should be provided in ISO 8601 datetime format and expressed in Coordinated Universal Time (UTC).',
-                  example: '2022-08-08T00:00:00Z',
-                }),
-              to_datetime: z.iso
-                .datetime({ offset: true })
-                .exactOptional()
-                .openapi({
-                  description:
-                    'The upper boundary of the invoice billing interval. The `to_datetime` should be provided in ISO 8601 datetime format and expressed in Coordinated Universal Time (UTC).',
-                  example: '2022-08-08T00:00:00Z',
-                }),
-              tax_codes: TaxCodesSchema.exactOptional(),
-            })
-            .openapi({ required: ['add_on_code'] }),
-        ),
-        invoice_custom_section: InvoiceCustomSectionInputSchema.exactOptional(),
-        payment_method: PaymentMethodReferenceSchema.exactOptional().openapi({
-          description: 'Optional payment method to use for processing the invoice payment.',
-        }),
-      })
-      .openapi({ required: ['external_customer_id', 'fees'] }),
+  .openapi({
+    required: [
+      'amount_cents',
+      'precise_amount_cents',
+      'events_count',
+      'split_charge_units',
+      'charges_usage',
+    ],
   })
-  .openapi({ required: ['invoice'] })
-  .openapi('InvoiceOneOffCreateInput')
+  .openapi('AttributedUsageTotalsObject')
 
-const BillingPeriodObjectSchema = z
+const AttributedUsageObjectSchema = z
   .object({
     lago_subscription_id: z
       .uuid()
       .openapi({
-        description: 'Unique identifier assigned to the subscription, created by Lago.',
+        description: 'Unique identifier of the subscription, created by Lago.',
         example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
       }),
     external_subscription_id: z
       .string()
       .openapi({
-        description: 'Unique identifier assigned to the subscription in your application.',
-        example: 'external_id',
+        description: 'Unique identifier of the subscription in your application.',
+        example: 'sub_1234567890',
       }),
-    lago_plan_id: z
-      .uuid()
+    group_by: z
+      .string()
       .openapi({
-        description: 'Unique identifier assigned to the plan, created by Lago.',
-        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
+        description: 'Code of the usage attribution type the usage is grouped by.',
+        example: 'team',
       }),
-    subscription_from_datetime: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description:
-          'The beginning date of the subscription billing period. This field indicates the start date of the billing period associated with the subscription fee.',
-        example: '2022-04-29T08:59:51Z',
-      }),
-    subscription_to_datetime: z.iso
-      .datetime({ offset: true })
+    basis: z
+      .enum(['units', 'amount'])
       .openapi({
         description:
-          'The ending date of the subscription billing period. This field indicates the end date of the billing period associated with the subscription fee.',
-        example: '2022-05-29T08:59:51Z',
+          'Basis of the breakdown. With `units`, amounts are `null` and values are ranked by units, summed across the selected charges. With `amount`, amounts are computed and values are ranked by amount.',
+        example: 'amount',
       }),
-    charges_from_datetime: z.iso
+    from_datetime: z.iso
       .datetime({ offset: true })
       .openapi({
-        description:
-          'The beginning date of the period that covers the charge fees. It is applicable only to the `charge` fees attached to the subscription. This field indicates the start date of the billing period or subscription period associated with the fees.',
-        example: '2022-04-29T08:59:51Z',
+        description: 'Start of the period of the usage, in UTC.',
+        example: '2022-04-01T00:00:00Z',
       }),
-    charges_to_datetime: z.iso
+    to_datetime: z.iso
       .datetime({ offset: true })
       .openapi({
-        description:
-          'The ending date of the period that covers the charge fees. It is applicable only to the `charge` fees attached to the subscription. This field indicates the end date of the billing period or subscription period associated with the fees.',
-        example: '2022-05-29T08:59:51Z',
+        description: 'End of the period of the usage, in UTC.',
+        example: '2022-04-30T23:59:59Z',
       }),
-    fixed_charges_from_datetime: z.iso
-      .datetime({ offset: true })
+    currency: CurrencySchema,
+    split_filters_count: z
+      .int()
       .nullable()
-      .exactOptional()
       .openapi({
         description:
-          'The beginning date of the period that covers the fixed charge fees. It is `null` when the billing period carries no fixed charge, for example on an `advance_charges` invoice.',
-        example: '2022-04-29T08:59:51Z',
+          'Number of filters of the charge split by `split_charge_code`, across all pages. Each response returns up to 10 of them, starting at `split_filters_offset`. It is `null` when no charge is split.',
+        example: 42,
       }),
-    fixed_charges_to_datetime: z.iso
-      .datetime({ offset: true })
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The ending date of the period that covers the fixed charge fees. It is `null` when the billing period carries no fixed charge, for example on an `advance_charges` invoice.',
-        example: '2022-05-29T08:59:51Z',
-      }),
-    invoicing_reason: z
-      .enum([
-        'subscription_starting',
-        'subscription_periodic',
-        'subscription_terminating',
-        'in_advance_charge',
-        'in_advance_charge_periodic',
-        'progressive_billing',
-      ])
-      .openapi({
-        description: 'The reason explaining why this subscription appears on the invoice.',
-        example: 'subscription_starting',
-      }),
+    rows: z
+      .array(AttributedUsageRowObjectSchema)
+      .openapi({ description: 'Usage of each attribution value of the page, ordered by rank.' }),
+    unattributed: AttributedUsageTotalsObjectSchema.openapi({
+      description:
+        'Usage of the events that carry no value for the `group_by` usage attribution type.',
+    }),
+    totals: AttributedUsageTotalsObjectSchema.openapi({
+      description:
+        'Usage of the whole level, attributed and unattributed, for all pages. A `search_term` does not narrow the totals.',
+    }),
   })
   .openapi({
     required: [
       'lago_subscription_id',
       'external_subscription_id',
-      'lago_plan_id',
-      'subscription_from_datetime',
-      'subscription_to_datetime',
-      'charges_from_datetime',
-      'charges_to_datetime',
-      'invoicing_reason',
+      'group_by',
+      'basis',
+      'from_datetime',
+      'to_datetime',
+      'currency',
+      'split_filters_count',
+      'rows',
+      'unattributed',
+      'totals',
     ],
   })
-  .openapi('BillingPeriodObject')
+  .openapi('AttributedUsageObject')
 
-const InvoiceObjectExtendedSchema = InvoiceObjectSchema.and(
-  z
-    .object({
-      billing_periods: z.array(BillingPeriodObjectSchema).exactOptional(),
-      credits: z.array(CreditObjectSchema).exactOptional(),
-      fees: z.array(FeeObjectSchema).exactOptional(),
-      subscriptions: z.array(SubscriptionObjectSchema).exactOptional(),
-      error_details: z.array(ErrorDetailObjectSchema).exactOptional(),
-    })
-    .openapi({ required: [] }),
-).openapi('InvoiceObjectExtended')
-
-const InvoiceSchema = z
-  .object({ invoice: InvoiceObjectExtendedSchema })
-  .openapi({ required: ['invoice'] })
-  .openapi('Invoice')
-
-const InvoiceUpdateInputSchema = z
-  .object({
-    invoice: z
-      .object({
-        payment_status: z
-          .enum(['pending', 'succeeded', 'failed'])
-          .exactOptional()
-          .openapi({
-            description:
-              'The payment status of the invoice. Possible values are `pending`, `failed` or `succeeded`.',
-            example: 'succeeded',
-          }),
-        metadata: z
-          .array(
-            z
-              .object({
-                id: z
-                  .uuid()
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'The metadata object identifier. Only required when updating existing metadata.',
-                    example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
-                  }),
-                key: z
-                  .string()
-                  .exactOptional()
-                  .openapi({
-                    description: 'The key in the key-value pair of the metadata.',
-                    example: 'digital_ref_id',
-                  }),
-                value: z
-                  .string()
-                  .max(140)
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'The value in the key-value pair of the metadata (140 characters max).',
-                    example: 'INV-0123456-98765',
-                  }),
-              })
-              .openapi({ required: [] }),
-          )
-          .exactOptional(),
-      })
-      .openapi({ required: [] }),
-  })
-  .openapi({ required: ['invoice'] })
-  .openapi('InvoiceUpdateInput')
-
-const InvoicePaymentUrlSchema = z
-  .object({
-    invoice_payment_details: z
-      .object({
-        lago_customer_id: z
-          .string()
-          .exactOptional()
-          .openapi({
-            example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
-            description:
-              "Unique identifier assigned to the customer within the Lago application. This ID is exclusively created by Lago and serves as a unique identifier for the customer's record within the Lago system",
-          }),
-        lago_invoice_id: z
-          .string()
-          .exactOptional()
-          .openapi({
-            example: '1e501a90-1a90-1a90-1a90-1a901a901a80',
-            description:
-              "Unique identifier assigned to the invoice within the Lago application. This ID is exclusively created by Lago and serves as a unique identifier for the invoice's record within the Lago system",
-          }),
-        external_customer_id: z
-          .string()
-          .exactOptional()
-          .openapi({
-            example: '5eb02857-a71e-4ea2-bcf9-57d3a41bc6ba',
-            description:
-              'The customer external unique identifier (provided by your own application)',
-          }),
-        payment_provider: z
-          .string()
-          .exactOptional()
-          .openapi({
-            example: 'stripe',
-            description: 'The Payment Provider name linked to the Customer.',
-          }),
-        payment_url: z
-          .string()
-          .exactOptional()
-          .openapi({
-            example: 'https://foo.bar',
-            description: 'The generated Payment URL for the Invoice.',
-          }),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-  })
-  .openapi({
-    description:
-      'The checkout link generated for an invoice, with the customer and invoice it belongs to.',
-    required: [],
-  })
-  .openapi('InvoicePaymentUrl')
-
-const InvoicePreviewInputSchema = z
-  .object({
-    customer: z
-      .object({
-        address_line1: z
-          .string()
-          .exactOptional()
-          .openapi({
-            example: '5230 Penfield Ave',
-            description: 'The first line of the billing address',
-          }),
-        address_line2: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ example: null, description: 'The second line of the billing address' }),
-        city: z
-          .string()
-          .exactOptional()
-          .openapi({
-            example: 'Woodland Hills',
-            description: "The city of the customer's billing address",
-          }),
-        country: CountrySchema.exactOptional().openapi({
-          description:
-            "Country code of the customer's billing address. Format must be ISO 3166 (alpha-2)",
-          example: 'US',
-        }),
-        external_id: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'Unique identifier assigned to the customer in your application.',
-            example: 'hooli_1234',
-          }),
-        integration_customers: z
-          .array(
-            z
-              .object({
-                integration_type: z
-                  .enum(['anrok', 'avalara', 'xero', 'hubspot', 'salesforce'])
-                  .openapi({
-                    example: 'anrok',
-                    description:
-                      'The integration type used for accounting, tax and CRM syncs.\nAccepted values: `anrok`, `avalara`, `xero`, `hubspot`, `salesforce`.',
-                  }),
-                integration_code: z
-                  .string()
-                  .openapi({
-                    example: 'anrok1',
-                    description: 'Unique code used to identify an integration connection.',
-                  }),
-              })
-              .openapi({ required: ['integration_type', 'integration_code'] }),
-          )
-          .exactOptional(),
-        name: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The full name of the customer', example: 'Gavin Belson' }),
-        currency: CurrencySchema.exactOptional().openapi({
-          description: 'The currency of the invoice.',
-          example: 'EUR',
-        }),
-        shipping_address: AddressSchema.exactOptional(),
-        state: z
-          .string()
-          .exactOptional()
-          .openapi({ example: 'CA', description: "The state of the customer's billing address" }),
-        zipcode: z
-          .string()
-          .exactOptional()
-          .openapi({
-            example: '91364',
-            description: "The zipcode of the customer's billing address.",
-          }),
-        tax_identification_number: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'The tax identification number of the customer',
-            example: 'EU123456789',
-          }),
-        timezone: TimezoneSchema.exactOptional().openapi({
-          description:
-            "The customer's timezone, used for billing purposes in their local time. Overrides the organization's timezone",
-        }),
-      })
-      .openapi({ required: [] }),
-    plan_code: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The code of the plan. It serves as a unique identifier associated with a particular plan. The code is typically used for internal or system-level identification purposes, like assigning a subscription, for instance.',
-        example: 'startup',
-      }),
-    subscription_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description:
-          'The anniversary date and time of the initial subscription. This date serves as the basis for billing subscriptions with `anniversary` billing time. The `anniversary_date` should be provided in ISO 8601 datetime format and expressed in Coordinated Universal Time (UTC).',
-        example: '2022-08-08T00:00:00Z',
-      }),
-    billing_time: z
-      .enum(['calendar', 'anniversary'])
-      .exactOptional()
-      .openapi({
-        description:
-          'The billing time for the subscription, which can be set as either `anniversary` or `calendar`. If not explicitly provided, it will default to `calendar`. The billing time determines the timing of recurring billing cycles for the subscription. By specifying `anniversary`, the billing cycle will be based on the specific date the subscription started (billed fully), while `calendar` sets the billing cycle at the first day of the week/month/year (billed with proration).',
-        example: 'anniversary',
-      }),
-    coupons: z
-      .array(
-        z
-          .object({
-            name: z
-              .string()
-              .exactOptional()
-              .openapi({ description: 'The name of the coupon.', example: 'Startup Deal' }),
-            code: z
-              .string()
-              .openapi({
-                description: 'Unique code used to identify the coupon.',
-                example: 'startup_deal',
-              }),
-            coupon_type: z
-              .enum(['fixed_amount', 'percentage'])
-              .exactOptional()
-              .openapi({
-                description:
-                  'The type of the coupon. It can have two possible values: `fixed_amount` or `percentage`.\n\n- If set to `fixed_amount`, the coupon represents a fixed amount discount.\n- If set to `percentage`, the coupon represents a percentage-based discount.',
-                example: 'fixed_amount',
-              }),
-            amount_cents: z
-              .int()
-              .nullable()
-              .exactOptional()
-              .openapi({
-                description:
-                  'The amount of the coupon in cents. This field is required only for coupon with `fixed_amount` type.',
-                example: 5000,
-              }),
-            amount_currency: CurrencyOrNullSchema.exactOptional().openapi({
-              description:
-                'The currency of the coupon. This field is required only for coupon with `fixed_amount` type.',
-              example: 'USD',
-            }),
-            percentage_rate: z
-              .string()
-              .regex(/^[0-9]+.?[0-9]*$/)
-              .nullable()
-              .exactOptional()
-              .openapi({
-                description:
-                  'The percentage rate of the coupon. This field is required only for coupons with a `percentage` coupon type.',
-              }),
-            frequency: z
-              .enum(['once', 'recurring', 'forever'])
-              .exactOptional()
-              .openapi({
-                description:
-                  'The frequency of the coupon. It can have three possible values: `once`, `recurring` or `forever`.\n\n- If set to `once`, the coupon applies to a single invoice.\n- If set to `recurring`, the coupon applies to the number of billing periods set in `frequency_duration`.\n- If set to `forever`, the coupon applies to every invoice of the subscription.',
-                example: 'once',
-              }),
-            frequency_duration: z
-              .int()
-              .nullable()
-              .exactOptional()
-              .openapi({
-                description:
-                  'Specifies the number of billing periods to which the coupon applies. This field is required only for coupons with a `recurring` frequency type',
-                example: 6,
-              }),
-          })
-          .openapi({ required: ['code'] }),
-      )
-      .exactOptional(),
-    subscriptions: z
-      .object({
-        external_ids: z.array(
-          z
-            .string()
-            .openapi({
-              description: "External identifiers of the customer's subscription.",
-              example: '441edbe3-9136-4688-a763-e57b6f1dca82',
-            }),
-        ),
-        plan_code: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'The code of the plan. It serves as a unique identifier associated with the new plan to which the customer is upgrading or downgrading.',
-            example: 'new_code',
-          }),
-        terminated_at: z.iso
-          .datetime({ offset: true })
-          .exactOptional()
-          .openapi({
-            description:
-              'The date and time when the subscription is terminated. It should defined in the future.',
-            example: '2022-08-08T00:00:00Z',
-          }),
-      })
-      .exactOptional()
-      .openapi({ required: ['external_ids'] }),
-    billing_entity_code: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The code of the billing entity to which will be associated a customer if the external_id is not provided. If billing_entity_code is not provided, default billing_entity of organization will be used.',
-        example: 'acme_corp',
-      }),
-  })
-  .openapi({ required: ['customer'] })
-  .openapi('InvoicePreviewInput')
-
-const InvoiceVoidInputSchema = z
-  .object({
-    generate_credit_note: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Set to `true` to force voiding the invoice and generate a credit note.',
-        example: true,
-      }),
-    refund_amount: z
-      .int()
-      .min(0)
-      .exactOptional()
-      .openapi({
-        description:
-          'Portion of the invoice amount (in cents) to be refunded to the customer in the generated credit note.',
-        example: 2000,
-      }),
-    credit_amount: z
-      .int()
-      .min(0)
-      .exactOptional()
-      .openapi({
-        description:
-          "Portion of the invoice amount (in cents) to be credited to the customer's balance in the generated credit note.",
-        example: 1150,
-      }),
-  })
-  .openapi({
-    required: [],
-    description:
-      'Parameters available when voiding an invoice that optionally generate credit notes.',
-  })
-  .openapi('InvoiceVoidInput')
-
-const OrderFormStatusEnumSchema = z
-  .enum(['generated', 'signed', 'expired', 'voided'])
-  .openapi({
-    description:
-      "The status of the order form. It can be any of the following values:\n  - `generated`: the order form is waiting for the customer's signature.\n  - `signed`: the customer has signed, and an order has been created from the order form.\n  - `expired`: the order form reached its `expires_at` without being signed.\n  - `voided`: the order form has been voided before being signed.\n\nOnly a `generated` order form is actionable. Reaching `expired` or `voided` also voids the quote version the order form was generated from; signing does not, since the deal it quotes goes on to be executed.\n",
-    example: 'generated',
-  })
-  .openapi('OrderFormStatusEnum')
-
-const OrderFormVoidReasonEnumSchema = z
-  .union([z.literal(null), z.literal('manual'), z.literal('expired'), z.literal('invalid')])
-  .nullable()
-  .openapi({
-    description:
-      'The reason why the order form is no longer actionable. It is `null` unless the `status` is `voided` or `expired`. It can be any of the following values:\n  - `manual`: the order form has been voided explicitly, through the API or the Lago user interface.\n  - `expired`: the order form reached its `expires_at` without being signed.\n  - `invalid`: reserved for an order form Lago voids because it can no longer be executed. No flow writes it yet.\n',
-    example: 'manual',
-  })
-  .openapi('OrderFormVoidReasonEnum')
-
-const OrderFormObjectSchema = z
-  .object({
-    lago_id: z
-      .uuid()
-      .openapi({
-        description: 'Unique identifier of the order form, created by Lago.',
-        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
-      }),
-    number: z
-      .string()
-      .openapi({
-        description: 'The unique number assigned to the order form by Lago.',
-        example: 'OF-2026-0001',
-      }),
-    status: OrderFormStatusEnumSchema,
-    void_reason: OrderFormVoidReasonEnumSchema,
-    expires_at: z.iso
-      .datetime({ offset: true })
-      .nullable()
-      .openapi({
-        description:
-          'The date and time in UTC (ISO 8601) after which the order form is meant to expire. It is `null` when the order form never expires. It is validated when the quote is approved, where a value on or after the day the quoted deal stops being executable is rejected rather than clamped. Expiry is then swept hourly and compared by calendar date, so signing keeps succeeding until the sweep moves the order form to `expired`.',
-        example: '2026-06-30T23:59:59Z',
-      }),
-    signed_at: z.iso
-      .datetime({ offset: true })
-      .nullable()
-      .openapi({
-        description:
-          'The date and time in UTC (ISO 8601) when the order form was marked as signed. It is `null` unless the `status` is `signed`.',
-        example: '2026-04-29T08:59:51Z',
-      }),
-    voided_at: z.iso
-      .datetime({ offset: true })
-      .nullable()
-      .openapi({
-        description:
-          'The date and time in UTC (ISO 8601) when the order form stopped being actionable. It is set both when the order form is voided and when it expires, and is `null` otherwise.',
-        example: '2026-04-29T08:59:51Z',
-      }),
-    signed_document_url: z
-      .url()
-      .nullable()
-      .openapi({
-        description:
-          'The URL of the signed document attached to the order form. It is `null` when no document was uploaded.',
-        example:
-          'https://api.getlago.com/rails/active_storage/blobs/redirect/eyJfcmFpbHMi/OF-2026-0001',
-      }),
-    lago_organization_id: z
-      .uuid()
-      .openapi({
-        description: 'Unique identifier of the organization, created by Lago.',
-        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
-      }),
-    lago_customer_id: z
-      .uuid()
-      .openapi({
-        description:
-          'Unique identifier of the customer the order form is addressed to, created by Lago.',
-        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
-      }),
-    lago_quote_id: z
-      .uuid()
-      .openapi({
-        description: 'Unique identifier of the quote the order form comes from, created by Lago.',
-        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
-      }),
-    lago_quote_version_id: z
-      .uuid()
-      .openapi({
-        description:
-          'Unique identifier of the approved quote version the order form was generated from, created by Lago. A quote version carries at most one order form.',
-        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
-      }),
-    created_at: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'The date and time in UTC (ISO 8601) when the order form was created.',
-        example: '2026-04-29T08:59:51Z',
-      }),
-    updated_at: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'The date and time in UTC (ISO 8601) when the order form was last updated.',
-        example: '2026-04-29T08:59:51Z',
-      }),
-  })
-  .openapi({
-    required: [
-      'lago_id',
-      'number',
-      'status',
-      'void_reason',
-      'expires_at',
-      'signed_at',
-      'voided_at',
-      'signed_document_url',
-      'lago_organization_id',
-      'lago_customer_id',
-      'lago_quote_id',
-      'lago_quote_version_id',
-      'created_at',
-      'updated_at',
-    ],
-  })
-  .openapi('OrderFormObject')
-
-const OrderFormsPaginatedSchema = z
-  .object({ order_forms: z.array(OrderFormObjectSchema), meta: PaginationMetaSchema })
-  .openapi({ required: ['order_forms', 'meta'] })
-  .openapi('OrderFormsPaginated')
-
-const OrderFormSchema = z
-  .object({ order_form: OrderFormObjectSchema })
-  .openapi({ required: ['order_form'] })
-  .openapi('OrderForm')
-
-const OrderExecutionModeEnumSchema = z
-  .enum(['execute_in_lago', 'order_only'])
-  .openapi({
-    description:
-      'How the order created from the order form is carried out. It can be any of the following values:\n  - `execute_in_lago`: Lago applies the quoted deal itself, creating the subscriptions, coupons, wallets or one-off invoice it describes.\n  - `order_only`: Lago records the order without applying it, leaving the execution to your own systems.\n',
-    example: 'execute_in_lago',
-  })
-  .openapi('OrderExecutionModeEnum')
-
-const OrderFormMarkAsSignedInputSchema = z
-  .object({
-    order_form: z
-      .object({
-        signed_document: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'The document signed by the customer, as a base64 data URI (`data:<content_type>;base64,<data>`). Accepted content types are `application/pdf`, `image/jpeg` and `image/png`, for a maximum of 10 MB. Once attached, it is exposed as `signed_document_url` on the order form.',
-            example: 'data:application/pdf;base64,JVBERi0xLjQKJcfs...',
-          }),
-        execution_mode: OrderExecutionModeEnumSchema.exactOptional().openapi({
-          description:
-            'How the order created from the order form is carried out. It becomes mandatory as soon as `execute_at` is provided.',
-        }),
-        execute_at: z.iso
-          .datetime({ offset: true })
-          .exactOptional()
-          .openapi({
-            description:
-              'The date and time in UTC (ISO 8601) when Lago executes the order created from the order form. It must be in the future, requires `execution_mode` to be set, and must fall strictly before the day the quoted deal stops being executable, otherwise signing is rejected with a `422`. When it is omitted, the order is created but not scheduled, and waits to be executed on demand.',
-            example: '2026-07-01T00:00:00Z',
-          }),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-  })
-  .openapi({
-    description:
-      'Parameters available when marking an order form as signed. Every parameter is optional, so an empty body records the signature without attaching a document, and creates an order that is not scheduled for execution.',
-    required: [],
-  })
-  .openapi('OrderFormMarkAsSignedInput')
+type AttributedUsageType = {
+  attributed_usage: z.infer<typeof AttributedUsageObjectSchema>
+  meta: z.infer<typeof PaginationMetaSchema>
+}
 
 const OrderStatusEnumSchema = z
   .enum(['created', 'executed', 'failed'])
@@ -11615,7 +4889,7 @@ const QuoteBillingItemPlanObjectSchema = z
                     example: 'standard',
                   }),
                 properties: z
-                  .object({})
+                  .looseObject({})
                   .nullable()
                   .exactOptional()
                   .openapi({
@@ -11668,7 +4942,7 @@ const QuoteBillingItemPlanObjectSchema = z
                     example: '10',
                   }),
                 properties: z
-                  .object({})
+                  .looseObject({})
                   .nullable()
                   .exactOptional()
                   .openapi({
@@ -12080,7 +5354,11 @@ const QuoteBillingItemsSchema = z
   })
   .openapi('QuoteBillingItems')
 
-const OrderObjectExtendedSchema = OrderObjectSchema.and(
+type OrderObjectExtendedType = z.infer<typeof OrderObjectSchema> & {
+  billing_snapshot: z.infer<typeof QuoteBillingItemsSchema>
+}
+
+const OrderObjectExtendedSchema: z.ZodType<OrderObjectExtendedType> = OrderObjectSchema.and(
   z
     .object({
       billing_snapshot: QuoteBillingItemsSchema.openapi({
@@ -12091,545 +5369,65 @@ const OrderObjectExtendedSchema = OrderObjectSchema.and(
     .openapi({ required: ['billing_snapshot'] }),
 ).openapi('OrderObjectExtended')
 
-const OrdersPaginatedSchema = z
-  .object({ orders: z.array(OrderObjectExtendedSchema), meta: PaginationMetaSchema })
-  .openapi({ required: ['orders', 'meta'] })
-  .openapi('OrdersPaginated')
+type OrdersPaginatedType = {
+  orders: z.infer<typeof OrderObjectExtendedSchema>[]
+  meta: z.infer<typeof PaginationMetaSchema>
+}
 
-const OrderSchema = z
-  .object({ order: OrderObjectExtendedSchema })
-  .openapi({ required: ['order'] })
-  .openapi('Order')
+type OrderType = { order: z.infer<typeof OrderObjectExtendedSchema> }
 
-const OrderExecuteInputSchema = z
-  .object({
-    order: z
-      .object({
-        execution_mode: OrderExecutionModeEnumSchema.exactOptional().openapi({
-          description:
-            'How the order is carried out. It is only persisted when it differs from the mode already stored on the order, so restating the current mode never fails. Changing the mode of an order that has already been executed is rejected.',
-        }),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-  })
-  .openapi({
-    description:
-      'Parameters available when executing an order. The body is optional, as the execution mode is normally chosen when the order form is signed.',
-    required: [],
-  })
-  .openapi('OrderExecuteInput')
-
-const OrganizationBillingConfigurationSchema = z
-  .object({
-    invoice_footer: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        example: 'This is my customer footer',
-        description:
-          'The customer invoice message that appears at the bottom of each billing documents. It accepts up to 600 characters.',
-      }),
-    invoice_grace_period: z
-      .int()
-      .exactOptional()
-      .openapi({
-        example: 3,
-        description:
-          "The grace period, expressed in days, for finalizing the invoice. This period refers to the additional time granted to your customers beyond the invoice due date to adjust usage and line items. Can be overwritten by the customer's grace period. This is a premium feature, the value is ignored without a premium license.",
-      }),
-    document_locale: z
-      .string()
-      .exactOptional()
-      .openapi({
-        example: 'en',
-        description:
-          'The locale of the billing documents, expressed in the ISO 639-1 format. This field indicates the language or regional variant used for the documents content issued or the embeddable customer portal.',
-      }),
-  })
-  .openapi({ description: 'The custom billing settings for your organization.', required: [] })
-  .openapi('OrganizationBillingConfiguration')
-
-const OrganizationObjectSchema = z
+const TaxObjectSchema = z
   .object({
     lago_id: z
       .uuid()
       .openapi({
+        description: 'Unique identifier of the tax, created by Lago.',
         example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
-        description:
-          "Unique identifier assigned to the organization within the Lago application. This ID is exclusively created by Lago and serves as a unique identifier for the organization's record within the Lago system",
       }),
-    name: z.string().openapi({ example: 'Name1', description: 'The name of your organization.' }),
-    slug: z
+    name: z.string().openapi({ description: 'Name of the tax.', example: 'TVA' }),
+    code: z
       .string()
       .openapi({
-        example: 'name1',
+        description: 'Unique code used to identify the tax associated with the API request.',
+        example: 'french_standard_vat',
+      }),
+    description: z
+      .string()
+      .nullable()
+      .openapi({ description: 'Internal description of the tax.', example: 'French standard VAT' }),
+    rate: z.number().openapi({ description: 'The percentage rate of the tax.', example: 20 }),
+    applied_to_organization: z
+      .boolean()
+      .openapi({
+        deprecated: true,
         description:
-          'A concise and unique identifier for your organization, derived from its `name`. It contains between 3 and 40 characters, limited to lowercase letters, digits and hyphens, and it starts and ends with a letter or a digit.',
+          "**Deprecated.** This field will be removed in a future version. When set to true, it applies the tax to the organization's default billing entity. To apply or remove a tax from any billing entity (including the default one), please use the `PUT /billing_entities/:code` endpoint instead.",
+        example: true,
+      }),
+    applied_to_billing_entities_codes: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'The codes of the billing entities the tax is applied to, sorted alphabetically. It is empty when the tax is only attached to customers. This field is only returned by the tax endpoints, not by taxes nested in another object.',
+        example: ['acme_corp', 'foo_bar'],
       }),
     created_at: z.iso
       .datetime({ offset: true })
-      .openapi({
-        example: '2022-05-02T13:04:09Z',
-        description:
-          'The date of creation of your organization, represented in ISO 8601 datetime format and expressed in Coordinated Universal Time (UTC).',
-      }),
-    webhook_url: z
-      .string()
-      .openapi({
-        example: 'https://webhook.brex.com',
-        description:
-          'The URL of the first webhook endpoint of your organization. This URL allows your organization to receive important messages, notifications, or data from the Lago system. It is an empty string when your organization has no webhook endpoint yet.',
-      }),
-    webhook_urls: z
-      .array(z.string())
-      .openapi({
-        example: ['https://webhook.brex.com', 'https://webhook2.brex.com'],
-        description: 'The array containing your webhooks URLs.',
-      }),
-    country: CountryOrNullSchema.openapi({
-      description: 'The country of your organization.',
-      example: 'US',
-    }),
-    default_currency: CurrencySchema.openapi({
-      description: 'The default currency of an organization.',
-      example: 'USD',
-    }),
-    address_line1: z
-      .string()
-      .nullable()
-      .openapi({
-        example: '100 Brex Street',
-        description: "The first line of your organization's billing address.",
-      }),
-    address_line2: z
-      .string()
-      .nullable()
-      .openapi({
-        example: null,
-        description: "The second line of your organization's billing address.",
-      }),
-    state: z
-      .string()
-      .nullable()
-      .openapi({
-        example: 'NYC',
-        description: "The state of your organization's billing address.",
-      }),
-    zipcode: z
-      .string()
-      .nullable()
-      .openapi({
-        example: '10000',
-        description: "The zipcode of your organization's billing address.",
-      }),
-    email: z
-      .email()
-      .nullable()
-      .openapi({
-        example: 'brex@brex.com',
-        description: 'The email address of your organization used to bill your customers.',
-      }),
-    city: z
-      .string()
-      .nullable()
-      .openapi({
-        example: 'New York',
-        description: "The city of your organization's billing address.",
-      }),
-    legal_name: z
-      .string()
-      .nullable()
-      .openapi({ example: null, description: 'The legal name of your organization.' }),
-    legal_number: z
-      .string()
-      .nullable()
-      .openapi({ example: null, description: 'The legal number of your organization.' }),
-    document_numbering: z
-      .enum(['per_customer', 'per_organization'])
-      .openapi({
-        example: 'per_customer',
-        description:
-          "This parameter configures the method of incrementing invoice numbers for your customers.\n\n- `per_customer`: Invoice numbers are incremented individually for each customer. This means every customer will have their own unique sequence of invoice numbers, separate from other customers. It ensures that each customer's invoice numbers follow a distinct and isolated numbering pattern.\n- `per_organization`: Invoice number incrementation is made across your entire organization. Rather than individual sequences for each customer, all invoices within the organization follow a single, unified numbering system. This creates a continuous and organization-wide sequence for all invoice numbers. Invoices are incremented per month (dynamic value used is YYYYMM), and invoice numbers are reset at the end of each month.\n\nThe default value for `document_numbering` is set to `per_customer`, meaning that, unless changed, invoice numbers will increment uniquely for each customer.",
-      }),
-    document_number_prefix: z
-      .string()
-      .openapi({
-        example: 'ORG-1234',
-        description:
-          'Sets the prefix for invoices and credit notes. Default is the first three letters of your organization name plus the last four characters of your organization ID. Customizable within 1-10 characters, and automatically capitalized by Lago.',
-      }),
-    net_payment_term: z
-      .int()
-      .openapi({
-        example: 30,
-        description:
-          'The net payment term, expressed in days, specifies the duration within which a customer is expected to remit payment after the invoice is finalized.',
-      }),
-    tax_identification_number: z
-      .string()
-      .nullable()
-      .openapi({
-        example: 'US123456789',
-        description: 'The tax identification number of your organization.',
-      }),
-    timezone: TimezoneSchema.openapi({
-      description:
-        "Your organization's timezone, used for billing purposes in your own local time. Can be overwritten by the customer's timezone.",
-      example: 'America/New_York',
-    }),
-    email_settings: z
-      .array(z.enum(['invoice.finalized', 'credit_note.created', 'payment_receipt.created']))
-      .openapi({
-        description:
-          'Represents the email settings of the organization. It allows you to define which documents are sent by email. The field value determines the types of documents that trigger email notifications. Possible values are `invoice.finalized`, `credit_note.created` and `payment_receipt.created`.',
-        example: ['invoice.finalized', 'credit_note.created'],
-      }),
-    billing_configuration: OrganizationBillingConfigurationSchema,
-    taxes: z
-      .array(TaxObjectSchema)
-      .exactOptional()
-      .openapi({ description: 'List of default organization taxes' }),
-    finalize_zero_amount_invoice: z
-      .boolean()
-      .openapi({
-        example: false,
-        description:
-          'Indicates whether invoices with a zero total amount should be finalized. If set to true, zero amount invoices will be finalized. If set to false, zero amount invoices will not be finalized.',
-      }),
-    events_store: z
-      .enum(['clickhouse', 'postgres'])
-      .openapi({
-        example: 'clickhouse',
-        description:
-          'The store that holds the events of your organization. It is `clickhouse` when the ClickHouse event store is enabled for your organization, and `postgres` otherwise.',
-      }),
+      .openapi({ description: 'Creation date of the tax.', example: '2023-07-06T14:35:58Z' }),
   })
   .openapi({
     required: [
       'lago_id',
       'name',
-      'slug',
+      'code',
+      'description',
+      'rate',
+      'applied_to_organization',
       'created_at',
-      'webhook_url',
-      'webhook_urls',
-      'country',
-      'default_currency',
-      'address_line1',
-      'address_line2',
-      'state',
-      'zipcode',
-      'email',
-      'city',
-      'legal_name',
-      'legal_number',
-      'document_numbering',
-      'document_number_prefix',
-      'net_payment_term',
-      'tax_identification_number',
-      'timezone',
-      'email_settings',
-      'billing_configuration',
-      'finalize_zero_amount_invoice',
-      'events_store',
     ],
   })
-  .openapi('OrganizationObject')
-
-const OrganizationSchema = z
-  .object({ organization: OrganizationObjectSchema })
-  .openapi({ required: ['organization'] })
-  .openapi('Organization')
-
-const OrganizationUpdateInputSchema = z
-  .object({
-    organization: z
-      .object({
-        webhook_url: z
-          .string()
-          .exactOptional()
-          .openapi({
-            example: 'https://webhook.brex.com',
-            description:
-              'Sets the URL of the first webhook endpoint of your organization. This URL allows your organization to receive important messages, notifications, or data from the Lago system. When your organization has no webhook endpoint yet, this creates one.',
-          }),
-        country: CountryOrNullSchema.exactOptional().openapi({
-          description: 'The country of your organization.',
-          example: 'US',
-        }),
-        default_currency: CurrencySchema.exactOptional().openapi({
-          description: 'The default currency of an organization.',
-          example: 'USD',
-        }),
-        address_line1: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            example: '100 Brex Street',
-            description: "The first line of your organization's billing address.",
-          }),
-        address_line2: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            example: null,
-            description: "The second line of your organization's billing address.",
-          }),
-        state: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            example: 'NYC',
-            description: "The state of your organization's billing address.",
-          }),
-        zipcode: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            example: '10000',
-            description: "The zipcode of your organization's billing address.",
-          }),
-        email: z
-          .email()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            example: 'brex@brex.com',
-            description: 'The email address of your organization used to bill your customers.',
-          }),
-        city: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            example: 'New York',
-            description: "The city of your organization's billing address.",
-          }),
-        legal_name: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ example: null, description: 'The legal name of your organization.' }),
-        legal_number: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ example: null, description: 'The legal number of your organization.' }),
-        document_numbering: z
-          .enum(['per_customer', 'per_organization'])
-          .exactOptional()
-          .openapi({
-            example: 'per_customer',
-            description:
-              "This parameter configures the method of incrementing invoice numbers for your customers.\n\n- `per_customer`: Invoice numbers are incremented individually for each customer. This means every customer will have their own unique sequence of invoice numbers, separate from other customers. It ensures that each customer's invoice numbers follow a distinct and isolated numbering pattern.\n- `per_organization`: Invoice number incrementation is made across your entire organization. Rather than individual sequences for each customer, all invoices within the organization follow a single, unified numbering system. This creates a continuous and organization-wide sequence for all invoice numbers. Invoices are incremented per month (dynamic value used is YYYYMM), and invoice numbers are reset at the end of each month.\n\nThe default value for `document_numbering` is set to `per_customer`, meaning that, unless changed, invoice numbers will increment uniquely for each customer.",
-          }),
-        document_number_prefix: z
-          .string()
-          .exactOptional()
-          .openapi({
-            example: 'ORG-1234',
-            description:
-              'Sets the prefix for invoices and credit notes. Default is the first three letters of your organization name plus the last four characters of your organization ID. Customizable within 1-10 characters, and automatically capitalized by Lago.',
-          }),
-        net_payment_term: z
-          .int()
-          .exactOptional()
-          .openapi({
-            example: 30,
-            description:
-              'The net payment term, expressed in days, specifies the duration within which a customer is expected to remit payment after the invoice is finalized.',
-          }),
-        tax_identification_number: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            example: 'US123456789',
-            description: 'The tax identification number of your organization.',
-          }),
-        timezone: TimezoneSchema.exactOptional().openapi({
-          description:
-            "Your organization's timezone, used for billing purposes in your own local time. Can be overwritten by the customer's timezone. This is a premium feature, the value is ignored without a premium license.",
-          example: 'America/New_York',
-        }),
-        email_settings: z
-          .array(z.enum(['invoice.finalized', 'credit_note.created', 'payment_receipt.created']))
-          .exactOptional()
-          .openapi({
-            description:
-              'Represents the email settings of the organization. It allows you to define which documents are sent by email. The field value determines the types of documents that trigger email notifications. Possible values are `invoice.finalized`, `credit_note.created` and `payment_receipt.created`. This is a premium feature, the value is ignored without a premium license.',
-            example: ['invoice.finalized', 'credit_note.created'],
-          }),
-        billing_configuration: OrganizationBillingConfigurationSchema.exactOptional(),
-        finalize_zero_amount_invoice: z
-          .boolean()
-          .exactOptional()
-          .openapi({
-            example: false,
-            description:
-              'Determines whether invoices with a zero total amount should be finalized. If set to true, zero amount invoices will be finalized. If set to false, zero amount invoices will not be finalized.',
-          }),
-        slug: z
-          .string()
-          .exactOptional()
-          .openapi({
-            example: 'name1',
-            description:
-              'A concise and unique identifier for your organization. It must contain between 3 and 40 characters, limited to lowercase letters, digits and hyphens, and it must start and end with a letter or a digit. Lago trims it and converts it to lowercase before saving it. A value already taken by another organization, or one of the names Lago reserves for its own routes, is rejected.',
-          }),
-      })
-      .openapi({ required: [] }),
-  })
-  .openapi({ required: ['organization'] })
-  .openapi('OrganizationUpdateInput')
-
-const PaymentReceiptObjectSchema = z
-  .object({
-    lago_id: z
-      .uuid()
-      .openapi({
-        description: 'Unique identifier of the payment receipt, created by Lago.',
-        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
-      }),
-    created_at: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description:
-          'The date and time when the payment receipt was created. It is expressed in UTC format according to the ISO 8601 datetime standard. This field provides the timestamp for the exact moment when the payment receipt was initially created.',
-        example: '2022-04-29T08:59:51Z',
-      }),
-    number: z
-      .string()
-      .openapi({
-        description: 'The unique number assigned to the payment receipt.',
-        example: 'LAG-1234-001-002',
-      }),
-    file_url: z
-      .string()
-      .nullable()
-      .openapi({
-        description:
-          'The PDF file of the payment receipt. It is `null` while no PDF has been generated.',
-        example: 'https://getlago.com/payment_receipt/file',
-      }),
-    xml_url: z
-      .string()
-      .nullable()
-      .openapi({
-        description:
-          'The e-invoicing XML file of the payment receipt. It is `null` while no XML file has been generated.',
-        example: 'https://getlago.com/payment_receipt/xml',
-      }),
-    payment: PaymentObjectSchema,
-  })
-  .openapi({ required: ['lago_id', 'created_at', 'number', 'file_url', 'xml_url', 'payment'] })
-  .openapi('PaymentReceiptObject')
-
-const PaymentReceiptsPaginatedSchema = z
-  .object({ payment_receipts: z.array(PaymentReceiptObjectSchema), meta: PaginationMetaSchema })
-  .openapi({ required: ['payment_receipts', 'meta'] })
-  .openapi('PaymentReceiptsPaginated')
-
-const PaymentReceiptSchema = z
-  .object({ payment_receipt: PaymentReceiptObjectSchema })
-  .openapi({ required: ['payment_receipt'] })
-  .openapi('PaymentReceipt')
-
-const PaymentRequestCreateInputSchema = z
-  .object({
-    payment_request: z
-      .object({
-        external_customer_id: z
-          .string()
-          .openapi({
-            example: '5eb02857-a71e-4ea2-bcf9-57d3a41bc6ba',
-            description:
-              'The customer external unique identifier (provided by your own application).',
-          }),
-        email: z
-          .email()
-          .exactOptional()
-          .openapi({
-            example: 'dinesh@piedpiper.example',
-            description:
-              "The email address used for sending dunning notifications. When omitted, the customer's own email address is used.",
-          }),
-        lago_invoice_ids: z
-          .array(
-            z
-              .uuid()
-              .openapi({
-                example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
-                description:
-                  "Unique identifier assigned to the invoice within the Lago application. This ID is exclusively created by Lago and serves as a unique identifier for the invoice's record within the Lago system.",
-              }),
-          )
-          .openapi({
-            description:
-              "A list of Lago IDs for the customer's overdue invoices to start the dunning process.",
-          }),
-        payment_method: PaymentMethodReferenceSchema.exactOptional().openapi({
-          description: 'Optional payment method to use for processing the payment request.',
-        }),
-      })
-      .openapi({ required: ['external_customer_id', 'lago_invoice_ids'] }),
-  })
-  .openapi({ required: ['payment_request'] })
-  .openapi('PaymentRequestCreateInput')
-
-const PaymentRequestSchema = z
-  .object({ payment_request: PaymentRequestObjectSchema })
-  .openapi({ required: ['payment_request'] })
-  .openapi('PaymentRequest')
-
-const PaymentCreateInputSchema = z
-  .object({
-    payment: z
-      .object({
-        invoice_id: z
-          .uuid()
-          .openapi({
-            example: '486b147a-02a1-4ccf-8603-f3541fc25e7a',
-            description:
-              'Unique identifier of the invoice the payment is recorded on, created by Lago.',
-          }),
-        amount_cents: z
-          .int()
-          .min(1)
-          .openapi({
-            example: 100,
-            description: 'The payment amount in cents. It must be greater than zero.',
-          }),
-        reference: z
-          .string()
-          .max(40)
-          .openapi({
-            example: 'ref1',
-            description: 'Reference for the payment, such as the bank transfer or cheque number.',
-          }),
-        paid_at: z.iso
-          .date()
-          .exactOptional()
-          .openapi({
-            example: '2025-02-20',
-            description:
-              "The date the payment was made. It is returned as the payment's `created_at`. When omitted, the date and time of the request is used.",
-          }),
-      })
-      .openapi({ required: ['invoice_id', 'amount_cents', 'reference'] }),
-  })
-  .openapi({ required: ['payment'] })
-  .openapi('PaymentCreateInput')
-
-const PaymentSchema = z
-  .object({ payment: PaymentObjectSchema })
-  .openapi({ required: ['payment'] })
-  .openapi('Payment')
+  .openapi('TaxObject')
 
 const MinimumCommitmentObjectSchema = z
   .object({
@@ -12954,14 +5752,12 @@ const ChargeFilterObjectSchema = z
   .object({
     lago_id: z
       .uuid()
-      .exactOptional()
       .openapi({
         description: 'Unique identifier of the charge filter, created by Lago.',
         example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
       }),
     charge_code: z
       .string()
-      .exactOptional()
       .openapi({
         description: 'Unique code identifying the charge this filter belongs to.',
         example: 'api_requests_charge',
@@ -12988,7 +5784,7 @@ const ChargeFilterObjectSchema = z
   .openapi({
     description:
       'Values used to apply differentiated pricing based on additional event properties.',
-    required: ['invoice_display_name', 'properties', 'values'],
+    required: ['lago_id', 'charge_code', 'invoice_display_name', 'properties', 'values'],
   })
   .openapi('ChargeFilterObject')
 
@@ -13332,6 +6128,58 @@ const FixedChargeObjectSchema = z
   })
   .openapi('FixedChargeObject')
 
+const UsageThresholdObjectSchema = z
+  .object({
+    lago_id: z
+      .uuid()
+      .openapi({
+        description: 'Unique identifier of the usage threshold created by Lago.',
+        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
+      }),
+    threshold_display_name: z
+      .string()
+      .nullable()
+      .openapi({ description: 'The display name of the usage threshold.', example: 'Threshold 1' }),
+    amount_cents: z
+      .int()
+      .openapi({
+        description: 'The amount to reach to trigger a `progressive_billing` invoice.',
+        example: 10000,
+      }),
+    recurring: z
+      .boolean()
+      .openapi({
+        description:
+          'This field when set to `true` indicates that a `progressive_billing` invoice will be created every time the lifetime usage increases by the specified amount.',
+        example: true,
+      }),
+    created_at: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description:
+          'The date and time when the usage threshold was created. It is expressed in UTC format according to the ISO 8601 datetime standard.',
+        example: '2023-06-27T19:43:42Z',
+      }),
+    updated_at: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description:
+          'The date and time when the usage threshold was last updated. It is expressed in UTC format according to the ISO 8601 datetime standard.',
+        example: '2023-06-27T19:43:42Z',
+      }),
+  })
+  .openapi({
+    required: [
+      'lago_id',
+      'threshold_display_name',
+      'amount_cents',
+      'recurring',
+      'created_at',
+      'updated_at',
+    ],
+  })
+  .openapi('UsageThresholdObject')
+
 const ApplicableUsageThresholdSchema = z
   .object({
     threshold_display_name: z
@@ -13354,6 +6202,39 @@ const ApplicableUsageThresholdSchema = z
   })
   .openapi({ required: ['threshold_display_name', 'amount_cents', 'recurring'] })
   .openapi('ApplicableUsageThreshold')
+
+const FeaturePrivilegeObjectSchema = z
+  .object({
+    code: z.string().openapi({ example: 'max', description: 'Unique code for the privilege.' }),
+    name: z
+      .string()
+      .nullable()
+      .openapi({ example: 'Maximum', description: 'Display name for the privilege.' }),
+    value_type: z
+      .enum(['integer', 'boolean', 'string', 'select'])
+      .openapi({
+        example: 'integer',
+        description: 'Data type of the privilege value. It defaults to `string`.',
+      }),
+    config: z
+      .object({
+        select_options: z
+          .array(z.string())
+          .exactOptional()
+          .openapi({
+            example: ['google', 'okta'],
+            description:
+              'The values the privilege accepts. It is only sent when the value type is `select`.',
+          }),
+      })
+      .openapi({
+        description:
+          'Extra configuration of the privilege. It is empty unless the value type is `select`.',
+        required: [],
+      }),
+  })
+  .openapi({ required: ['code', 'name', 'value_type', 'config'] })
+  .openapi('FeaturePrivilegeObject')
 
 const PlanEntitlementPrivilegeObjectSchema = FeaturePrivilegeObjectSchema.and(
   z
@@ -13420,7 +6301,33 @@ const PlanEntitlementSchema = z
   .openapi({ required: ['entitlement'] })
   .openapi('PlanEntitlement')
 
-const PlanObjectSchema = z
+type PlanObjectType = {
+  lago_id: string
+  name: string
+  invoice_display_name?: string | null
+  created_at: string
+  code: string
+  interval: 'weekly' | 'monthly' | 'quarterly' | 'semiannual' | 'yearly'
+  description?: string | null
+  amount_cents: number
+  amount_currency: z.infer<typeof CurrencySchema>
+  trial_period?: number | null
+  pay_in_advance?: boolean
+  bill_charges_monthly?: boolean | null
+  bill_fixed_charges_monthly?: boolean | null
+  parent_id?: string | null
+  pending_deletion?: boolean
+  minimum_commitment?: z.infer<typeof MinimumCommitmentObjectSchema>
+  charges?: z.infer<typeof ChargeObjectSchema>[]
+  fixed_charges?: z.infer<typeof FixedChargeObjectSchema>[]
+  taxes?: z.infer<typeof TaxObjectSchema>[]
+  usage_thresholds?: z.infer<typeof UsageThresholdObjectSchema>[]
+  applicable_usage_thresholds?: z.infer<typeof ApplicableUsageThresholdSchema>[]
+  entitlements?: z.infer<typeof PlanEntitlementSchema>[]
+  metadata?: z.infer<typeof MetadataObjectSchema>
+}
+
+const PlanObjectSchema: z.ZodType<PlanObjectType> = z
   .object({
     lago_id: z
       .uuid()
@@ -13588,16 +6495,22 @@ const PlanObjectSchema = z
             properties: {},
             filters: [
               {
+                lago_id: '1a901a90-1a90-1a90-1a90-1a901a901a95',
+                charge_code: 'seats_standard',
                 invoice_display_name: 'Europe',
                 properties: { amount: '10' },
                 values: { region: ['Europe'] },
               },
               {
+                lago_id: '1a901a90-1a90-1a90-1a90-1a901a901a96',
+                charge_code: 'seats_standard',
                 invoice_display_name: 'USA',
                 properties: { amount: '5' },
                 values: { region: ['USA'] },
               },
               {
+                lago_id: '1a901a90-1a90-1a90-1a90-1a901a901a97',
+                charge_code: 'seats_standard',
                 invoice_display_name: 'Africa',
                 properties: { amount: '8' },
                 values: { region: ['Africa'] },
@@ -13757,10 +6670,18 @@ const PlanObjectSchema = z
   })
   .openapi('PlanObject')
 
-const PlansPaginatedSchema = z
-  .object({ plans: z.array(PlanObjectSchema), meta: PaginationMetaSchema })
-  .openapi({ required: ['plans', 'meta'] })
-  .openapi('PlansPaginated')
+type PlansPaginatedType = {
+  plans: z.infer<typeof PlanObjectSchema>[]
+  meta: z.infer<typeof PaginationMetaSchema>
+}
+
+const TaxCodesSchema = z
+  .array(z.string())
+  .openapi({
+    description: 'List of unique code used to identify the taxes.',
+    example: ['french_standard_vat'],
+  })
+  .openapi('TaxCodes')
 
 const MinimumCommitmentInputSchema = z
   .object({
@@ -13792,7 +6713,7 @@ const ChargeFilterInputSchema = z
           'Specifies the name that will be displayed on an invoice. If no value is set for this field, the values of the filter will be used as the default display name.',
         example: 'AWS',
       }),
-    properties: ChargePropertiesSchema.openapi({
+    properties: ChargePropertiesSchema.exactOptional().openapi({
       description: 'List of all thresholds utilized for calculating the charge.',
     }),
     values: z
@@ -13806,7 +6727,7 @@ const ChargeFilterInputSchema = z
   .openapi({
     description:
       'Values used to apply differentiated pricing based on additional event properties.',
-    required: ['properties', 'values'],
+    required: ['values'],
   })
   .openapi('ChargeFilterInput')
 
@@ -13836,7 +6757,8566 @@ const UsageThresholdInputSchema = z
   .openapi({ required: ['amount_cents'] })
   .openapi('UsageThresholdInput')
 
-const PlanCreateInputSchema = z
+const MetadataInputSchema = z
+  .record(z.string(), z.string().nullable())
+  .openapi({
+    description:
+      'Metadata to set as key-value pairs. Keys are strings (max 100 characters), values can be strings (max 255 characters) or null.',
+    example: { external_id: 'ext-123', synced_at: '2024-01-15' },
+  })
+  .openapi('MetadataInput')
+
+type PlanCreateInputType = {
+  plan: {
+    name: string
+    invoice_display_name?: string | null
+    code: string
+    interval: 'weekly' | 'monthly' | 'quarterly' | 'semiannual' | 'yearly'
+    description?: string | null
+    amount_cents: number
+    amount_currency: z.infer<typeof CurrencySchema>
+    trial_period?: number | null
+    pay_in_advance: boolean
+    bill_charges_monthly?: boolean | null
+    bill_fixed_charges_monthly?: boolean | null
+    tax_codes?: z.infer<typeof TaxCodesSchema>
+    minimum_commitment?: z.infer<typeof MinimumCommitmentInputSchema>
+    charges?: {
+      billable_metric_id: string
+      code?: string
+      charge_model: z.infer<typeof ChargeModelEnumSchema>
+      pay_in_advance?: boolean
+      invoiceable?: boolean
+      regroup_paid_fees?: 'invoice' | null
+      invoice_display_name?: string
+      prorated?: boolean
+      min_amount_cents?: number
+      properties?: z.infer<typeof ChargeObjectPropertiesSchema>
+      filters?: z.infer<typeof ChargeFilterInputSchema>[]
+      tax_codes?: z.infer<typeof TaxCodesSchema>
+      applied_pricing_unit?: { code?: string; conversion_rate?: string }
+      accepts_target_wallet?: boolean | null
+    }[]
+    fixed_charges?: {
+      add_on_id: string
+      code?: string
+      invoice_display_name?: string
+      units?: number
+      charge_model: 'standard' | 'graduated' | 'volume'
+      pay_in_advance?: boolean
+      prorated?: boolean
+      properties?: z.infer<typeof FixedChargePropertiesSchema>
+      tax_codes?: z.infer<typeof TaxCodesSchema>
+      apply_units_immediately?: boolean
+    }[]
+    usage_thresholds?: z.infer<typeof UsageThresholdInputSchema>[]
+    metadata?: z.infer<typeof MetadataInputSchema>
+  }
+}
+
+type PlanType = { plan: z.infer<typeof PlanObjectSchema> }
+
+type PlanUpdateInputType = {
+  plan: {
+    name?: string
+    invoice_display_name?: string | null
+    code?: string
+    interval?: 'weekly' | 'monthly' | 'quarterly' | 'semiannual' | 'yearly'
+    description?: string | null
+    amount_cents?: number
+    amount_currency?: z.infer<typeof CurrencySchema>
+    trial_period?: number | null
+    pay_in_advance?: boolean
+    bill_charges_monthly?: boolean | null
+    bill_fixed_charges_monthly?: boolean | null
+    tax_codes?: z.infer<typeof TaxCodesSchema>
+    minimum_commitment?: z.infer<typeof MinimumCommitmentInputSchema>
+    charges?: {
+      id?: string
+      billable_metric_id?: string
+      code?: string
+      charge_model?: z.infer<typeof ChargeModelEnumSchema>
+      pay_in_advance?: boolean
+      invoiceable?: boolean
+      regroup_paid_fees?: 'invoice' | null
+      invoice_display_name?: string
+      prorated?: boolean
+      min_amount_cents?: number
+      properties?: z.infer<typeof ChargeObjectPropertiesSchema>
+      filters?: z.infer<typeof ChargeFilterInputSchema>[]
+      tax_codes?: z.infer<typeof TaxCodesSchema>
+      applied_pricing_unit?: { code?: string; conversion_rate?: string }
+      accepts_target_wallet?: boolean | null
+    }[]
+    fixed_charges?: {
+      id?: string
+      add_on_id?: string
+      code?: string
+      invoice_display_name?: string
+      units?: number
+      charge_model?: 'standard' | 'graduated' | 'volume'
+      pay_in_advance?: boolean
+      prorated?: boolean
+      properties?: z.infer<typeof FixedChargePropertiesSchema>
+      tax_codes?: z.infer<typeof TaxCodesSchema>
+      apply_units_immediately?: boolean
+    }[]
+    usage_thresholds?: z.infer<typeof UsageThresholdInputSchema>[]
+    cascade_updates?: boolean
+    metadata?: z.infer<typeof MetadataInputSchema>
+  }
+}
+
+type ChargesPaginatedType = {
+  charges: z.infer<typeof ChargeObjectSchema>[]
+  meta: z.infer<typeof PaginationMetaSchema>
+}
+
+const QuoteVersionStatusEnumSchema = z
+  .enum(['draft', 'approved', 'voided'])
+  .openapi({
+    description:
+      'The status of the quote version. It can be any of the following values:\n  - `draft`: the version is still editable.\n  - `approved`: the version has been approved and an order form has been generated from it.\n  - `voided`: the version is no longer actionable.\n\nA quote has at most one version in `draft` or `approved` status at any time; all the other versions are `voided`.\n',
+    example: 'draft',
+  })
+  .openapi('QuoteVersionStatusEnum')
+
+const QuoteVersionVoidReasonEnumSchema = z
+  .union([
+    z.literal(null),
+    z.literal('manual'),
+    z.literal('superseded'),
+    z.literal('cascade_of_expired'),
+    z.literal('cascade_of_voided'),
+  ])
+  .nullable()
+  .openapi({
+    description:
+      'The reason why the quote version was voided. It is `null` unless the `status` is `voided`. It can be any of the following values:\n  - `manual`: voided explicitly, through the API or the Lago user interface.\n  - `superseded`: voided because the version was cloned into a new draft.\n  - `cascade_of_expired`: voided because the order form generated from the version expired.\n  - `cascade_of_voided`: voided because the order form generated from the version was voided.\n',
+    example: 'manual',
+  })
+  .openapi('QuoteVersionVoidReasonEnum')
+
+const QuoteVersionObjectSchema = z
+  .object({
+    lago_id: z
+      .uuid()
+      .openapi({
+        description: 'Unique identifier of the quote version, created by Lago.',
+        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
+      }),
+    lago_quote_id: z
+      .uuid()
+      .openapi({
+        description: 'Unique identifier of the quote the version belongs to, created by Lago.',
+        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
+      }),
+    lago_organization_id: z
+      .uuid()
+      .openapi({
+        description: 'Unique identifier of the organization, created by Lago.',
+        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
+      }),
+    version: z
+      .int()
+      .openapi({
+        description:
+          'The number of the version within the quote. It starts at 1 and increases by 1 for every new version created by cloning.',
+        example: 1,
+      }),
+    status: QuoteVersionStatusEnumSchema,
+    currency: CurrencyOrNullSchema.openapi({
+      description: 'The currency the version is quoted in.',
+    }),
+    billing_entity_code: z
+      .string()
+      .nullable()
+      .openapi({
+        description:
+          "Unique code identifying the billing entity that issues the deal. It is resolved rather than stored: the version's own entity when it names one, then the entity of the subscription being amended for a `subscription_amendment` quote, then the customer's own. It is `null` when none of them resolves. An amendment cannot name an entity itself, since the subscription it restates is already bound to one, and naming one on an amendment is rejected.",
+        example: 'acme_corp',
+      }),
+    void_reason: QuoteVersionVoidReasonEnumSchema,
+    approved_at: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .openapi({
+        description:
+          'The date and time in UTC (ISO 8601) when the version was approved. It is `null` unless the `status` is `approved`.',
+        example: '2026-04-29T08:59:51Z',
+      }),
+    voided_at: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .openapi({
+        description:
+          'The date and time in UTC (ISO 8601) when the version was voided. It is `null` unless the `status` is `voided`.',
+        example: '2026-04-29T08:59:51Z',
+      }),
+    created_at: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'The date and time in UTC (ISO 8601) when the version was created.',
+        example: '2026-04-29T08:59:51Z',
+      }),
+    updated_at: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'The date and time in UTC (ISO 8601) when the version was last updated.',
+        example: '2026-04-29T08:59:51Z',
+      }),
+  })
+  .openapi({
+    required: [
+      'lago_id',
+      'lago_quote_id',
+      'lago_organization_id',
+      'version',
+      'status',
+      'currency',
+      'billing_entity_code',
+      'void_reason',
+      'approved_at',
+      'voided_at',
+      'created_at',
+      'updated_at',
+    ],
+  })
+  .openapi('QuoteVersionObject')
+
+type QuoteVersionObjectExtendedType = z.infer<typeof QuoteVersionObjectSchema> & {
+  content: string | null
+  billing_items: z.infer<typeof QuoteBillingItemsSchema>
+}
+
+const QuoteVersionObjectExtendedSchema: z.ZodType<QuoteVersionObjectExtendedType> =
+  QuoteVersionObjectSchema.and(
+    z
+      .object({
+        content: z
+          .string()
+          .nullable()
+          .openapi({
+            description:
+              'The HTML body of the quote document, as authored in the Lago user interface. It may reference the entries of `billing_items` through their `localId`.',
+            example: '<h1>Quote QT-2026-0001</h1><p>Prepared for Acme Corp.</p>',
+          }),
+        billing_items: QuoteBillingItemsSchema,
+      })
+      .openapi({ required: ['content', 'billing_items'] }),
+  ).openapi('QuoteVersionObjectExtended')
+
+type QuoteVersionType = { quote_version: z.infer<typeof QuoteVersionObjectExtendedSchema> }
+
+type PlanOverridesObjectType = {
+  amount_cents?: number
+  amount_currency?: z.infer<typeof CurrencySchema>
+  description?: string
+  invoice_display_name?: string
+  name?: string
+  tax_codes?: z.infer<typeof TaxCodesSchema>
+  trial_period?: number
+  minimum_commitment?: z.infer<typeof MinimumCommitmentInputSchema>
+  charges?: {
+    id?: string
+    billable_metric_id?: string
+    code?: string
+    charge_model?: z.infer<typeof ChargeModelEnumSchema>
+    invoice_display_name?: string
+    min_amount_cents?: number
+    properties?: z.infer<typeof ChargeObjectPropertiesSchema>
+    filters?: z.infer<typeof ChargeFilterInputSchema>[]
+    tax_codes?: z.infer<typeof TaxCodesSchema>
+    applied_pricing_unit?: { code?: string; conversion_rate?: string }
+  }[]
+  fixed_charges?: {
+    id: string
+    invoice_display_name?: string
+    units?: number
+    apply_units_immediately?: boolean
+    properties?: z.infer<typeof FixedChargePropertiesSchema>
+    tax_codes?: z.infer<typeof TaxCodesSchema>
+  }[]
+  usage_thresholds?: z.infer<typeof UsageThresholdInputSchema>[]
+}
+
+const PlanOverridesObjectSchema: z.ZodType<PlanOverridesObjectType> = z
+  .object({
+    amount_cents: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          'The base cost of the plan, excluding any applicable taxes, that is billed on a recurring basis. This value is defined at 0 if your plan is a pay-as-you-go plan.',
+        example: 10000,
+      }),
+    amount_currency: CurrencySchema.exactOptional().openapi({
+      description:
+        "The currency of the plan. It indicates the monetary unit in which the plan's cost, including taxes and usage-based charges, is expressed.",
+      example: 'USD',
+    }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The description on the plan.',
+        example: 'Plan for early stage startups.',
+      }),
+    invoice_display_name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        example: 'Startup plan',
+        description:
+          'Specifies the name that will be displayed on an invoice. If no value is set for this field, the name of the plan will be used as the default display name.',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ example: 'Startup', description: 'The name of the plan.' }),
+    tax_codes: TaxCodesSchema.exactOptional(),
+    trial_period: z
+      .number()
+      .exactOptional()
+      .openapi({
+        description:
+          'The duration in days during which the base cost of the plan is offered for free.',
+        example: 5,
+      }),
+    minimum_commitment: MinimumCommitmentInputSchema.exactOptional(),
+    charges: z
+      .array(
+        z
+          .object({
+            id: z
+              .uuid()
+              .exactOptional()
+              .openapi({
+                description: 'Unique identifier of the charge created by Lago.',
+                example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
+              }),
+            billable_metric_id: z
+              .uuid()
+              .exactOptional()
+              .openapi({
+                description: 'Unique identifier of the billable metric created by Lago.',
+                example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
+              }),
+            code: z
+              .string()
+              .exactOptional()
+              .openapi({
+                description: 'Unique code identifying the charge within the plan.',
+                example: 'api_requests_charge',
+              }),
+            charge_model: ChargeModelEnumSchema.exactOptional(),
+            invoice_display_name: z
+              .string()
+              .exactOptional()
+              .openapi({
+                description:
+                  'Specifies the name that will be displayed on an invoice. If no value is set for this field, the name of the actual charge will be used as the default display name.',
+                example: 'Setup',
+              }),
+            min_amount_cents: z
+              .int()
+              .exactOptional()
+              .openapi({
+                description:
+                  'The minimum spending amount required for the charge, measured in cents and excluding any applicable taxes. It indicates the minimum amount that needs to be charged for each billing period.',
+                example: 0,
+              }),
+            properties: ChargeObjectPropertiesSchema.exactOptional().openapi({
+              description: 'List of all thresholds utilized for calculating the charge.',
+            }),
+            filters: z
+              .array(ChargeFilterInputSchema)
+              .exactOptional()
+              .openapi({
+                description:
+                  'List of filters used to apply differentiated pricing based on additional event properties.',
+              }),
+            tax_codes: TaxCodesSchema.exactOptional(),
+            applied_pricing_unit: z
+              .object({
+                code: z
+                  .string()
+                  .exactOptional()
+                  .openapi({ description: 'The code of the pricing unit.', example: 'credits' }),
+                conversion_rate: z
+                  .string()
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      "The conversion rate from pricing units to the plan's currency.\nThis rate determines how many currency units (in the plan's base currency) equal one pricing unit.\nFor example, if the plan uses USD and the conversion rate is 0.5, then 1 pricing unit = $0.50 USD.",
+                    example: '0.5',
+                  }),
+              })
+              .exactOptional()
+              .openapi({
+                description:
+                  'Updates the pricing unit conversion rate for this charge. Only applies if the charge has applied pricing unit.',
+                required: [],
+              }),
+          })
+          .openapi({ required: [] }),
+      )
+      .exactOptional()
+      .openapi({ description: 'Additional usage-based charges for this plan.' }),
+    fixed_charges: z
+      .array(
+        z
+          .object({
+            id: z
+              .uuid()
+              .openapi({
+                description: 'Unique identifier of the fixed charge created by Lago.',
+                example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
+              }),
+            invoice_display_name: z
+              .string()
+              .exactOptional()
+              .openapi({
+                description:
+                  'Specifies the name that will be displayed on an invoice. If no value is set for this field, the name of the actual charge will be used as the default display name.',
+                example: 'Setup fee',
+              }),
+            units: z
+              .number()
+              .default(0)
+              .exactOptional()
+              .openapi({
+                description:
+                  'The number of units for the fixed charge. Defaults to 0 if not provided.',
+                example: 1,
+              }),
+            apply_units_immediately: z
+              .boolean()
+              .exactOptional()
+              .openapi({
+                description:
+                  'Determines if the units should be applied immediately upon assignment or deferred to the next billing cycle.',
+                example: true,
+              }),
+            properties: FixedChargePropertiesSchema.exactOptional().openapi({
+              description: 'List of all thresholds utilized for calculating the fixed charge.',
+            }),
+            tax_codes: TaxCodesSchema.exactOptional().openapi({
+              description: 'List of taxes applied to the fixed charge.',
+            }),
+          })
+          .openapi({ required: ['id'] }),
+      )
+      .exactOptional()
+      .openapi({
+        description:
+          'Fixed charge overrides for the subscription. When `plan_overrides` contains only `fixed_charges` and every entry contains only `id`, `units`, and optionally `apply_units_immediately`, the units are recorded as a per-subscription override without creating a plan override, and subscription-scoped reads return these units. If any entry carries other fields, or `plan_overrides` contains any other key, the request is applied as a full plan override for the subscription instead.',
+      }),
+    usage_thresholds: z
+      .array(UsageThresholdInputSchema)
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          '**Deprecated.** Managing usage thresholds through `plan_overrides` is deprecated and its behavior is inconsistent: an empty array does not reliably clear thresholds (it is ignored the first time a subscription is overridden), and it never affects thresholds inherited from a parent plan. Use the top-level `usage_thresholds` array on the subscription instead, or `progressive_billing_disabled` to switch progressive billing off.\n',
+      }),
+  })
+  .openapi({ description: 'Based plan overrides.', required: [] })
+  .openapi('PlanOverridesObject')
+
+const InvoiceCustomSectionInputSchema = z
+  .object({
+    skip_invoice_custom_sections: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        example: false,
+        description:
+          'Set to `true` to exclude all invoice custom sections from PDF generation for invoices related to this resource. When `true`, `invoice_custom_section_codes` is ignored.',
+      }),
+    invoice_custom_section_codes: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'List of unique codes identifying the invoice custom sections to apply. These override the default invoice custom sections configured at the customer or billing entity level.',
+        example: ['eu_bank_details'],
+      }),
+  })
+  .openapi({
+    description:
+      'Configuration for invoice custom sections to apply to invoices generated by this resource.',
+    required: [],
+  })
+  .openapi('InvoiceCustomSectionInput')
+
+const SubscriptionActivationRuleInputSchema = z
+  .object({
+    type: z
+      .literal('payment')
+      .openapi({
+        description:
+          'The type of the activation rule. Only `payment` is currently supported. A `payment` rule gates the subscription activation on a successful payment of the first invoice.',
+        example: 'payment',
+      }),
+    timeout_hours: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          'The number of hours the subscription stays in the `incomplete` state waiting for the payment to succeed before it is automatically canceled. Must be a positive integer or zero.',
+        example: 48,
+      }),
+  })
+  .openapi({ required: ['type'] })
+  .openapi('SubscriptionActivationRuleInput')
+
+type SubscriptionCreateInputType = {
+  authorization?: { amount_cents: number; amount_currency: string }
+  subscription: {
+    billing_entity_code?: string
+    external_customer_id: string
+    plan_code: string
+    name?: string
+    external_id: string
+    billing_time?: 'calendar' | 'anniversary'
+    ending_at?: string
+    subscription_at?: string
+    plan_overrides?: z.infer<typeof PlanOverridesObjectSchema>
+    invoice_custom_section?: z.infer<typeof InvoiceCustomSectionInputSchema>
+    payment_method?: z.infer<typeof PaymentMethodReferenceSchema>
+    consolidate_invoice?: boolean
+    purchase_order_number?: string | null
+    payment_term?: z.infer<typeof PaymentTermObjectSchema> | null
+    progressive_billing_disabled?: boolean
+    usage_thresholds?: z.infer<typeof UsageThresholdInputSchema>[]
+    activation_rules?: z.infer<typeof SubscriptionActivationRuleInputSchema>[]
+  }
+}
+
+const SubscriptionActivationRuleObjectSchema = z
+  .object({
+    lago_id: z
+      .uuid()
+      .openapi({
+        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
+        description:
+          'Unique identifier assigned to the activation rule within the Lago application. This ID is exclusively created by Lago.',
+      }),
+    type: z
+      .literal('payment')
+      .openapi({
+        description:
+          'The type of the activation rule. Only `payment` is currently supported. A `payment` rule gates the subscription activation on a successful payment of the first invoice.',
+        example: 'payment',
+      }),
+    timeout_hours: z
+      .int()
+      .openapi({
+        description:
+          'The number of hours the subscription stays in the `incomplete` state waiting for the payment to succeed before it is automatically canceled.',
+        example: 48,
+      }),
+    status: z
+      .enum(['inactive', 'pending', 'satisfied', 'declined', 'failed', 'expired', 'not_applicable'])
+      .openapi({
+        description:
+          'The evaluation status of the activation rule:\n- `inactive`: the rule has not been evaluated yet.\n- `pending`: the rule is applicable and is waiting to be satisfied (e.g. waiting for the payment).\n- `satisfied`: the rule has been satisfied and no longer blocks activation.\n- `declined`: the rule was applicable but was declined.\n- `failed`: the rule could not be satisfied (e.g. the payment failed).\n- `expired`: the rule was not satisfied before its timeout elapsed.\n- `not_applicable`: the rule did not apply to this subscription.',
+        example: 'pending',
+      }),
+    expires_at: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .openapi({
+        example: '2022-08-10T00:00:00Z',
+        description:
+          'The date and time when the rule expires, after which an unsatisfied rule causes the subscription to be canceled. Represented in ISO 8601 datetime format and expressed in Coordinated Universal Time (UTC). Null until the rule starts being evaluated.',
+      }),
+    created_at: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        example: '2022-08-08T00:00:00Z',
+        description:
+          'The creation date of the activation rule, represented in ISO 8601 datetime format and expressed in Coordinated Universal Time (UTC).',
+      }),
+    updated_at: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        example: '2022-08-08T00:00:00Z',
+        description:
+          'The last update date of the activation rule, represented in ISO 8601 datetime format and expressed in Coordinated Universal Time (UTC).',
+      }),
+  })
+  .openapi({
+    required: [
+      'lago_id',
+      'type',
+      'timeout_hours',
+      'status',
+      'expires_at',
+      'created_at',
+      'updated_at',
+    ],
+  })
+  .openapi('SubscriptionActivationRuleObject')
+
+const SubscriptionObjectSchema = z
+  .object({
+    lago_id: z
+      .uuid()
+      .openapi({
+        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
+        description:
+          "Unique identifier assigned to the subscription within the Lago application. This ID is exclusively created by Lago and serves as a unique identifier for the subscription's record within the Lago system",
+      }),
+    external_id: z
+      .string()
+      .openapi({
+        example: '5eb02857-a71e-4ea2-bcf9-57d3a41bc6ba',
+        description:
+          'The subscription external unique identifier (provided by your own application).',
+      }),
+    lago_customer_id: z
+      .uuid()
+      .openapi({
+        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
+        description:
+          "Unique identifier assigned to the customer within the Lago application. This ID is exclusively created by Lago and serves as a unique identifier for the customer's record within the Lago system",
+      }),
+    external_customer_id: z
+      .string()
+      .openapi({
+        example: '5eb02857-a71e-4ea2-bcf9-57d3a41bc6ba',
+        description: 'The customer external unique identifier (provided by your own application).',
+      }),
+    billing_entity_code: z
+      .string()
+      .exactOptional()
+      .openapi({
+        example: 'default',
+        description: 'The code of the billing entity associated with the subscription.',
+      }),
+    billing_time: z
+      .enum(['calendar', 'anniversary'])
+      .openapi({
+        description:
+          'The billing time for the subscription, which can be set as either `anniversary` or `calendar`. If not explicitly provided, it will default to `calendar`. The billing time determines the timing of recurring billing cycles for the subscription. By specifying `anniversary`, the billing cycle will be based on the specific date the subscription started (billed fully), while `calendar` sets the billing cycle at the first day of the week/month/year (billed with proration).',
+        example: 'anniversary',
+      }),
+    name: z
+      .string()
+      .nullable()
+      .openapi({
+        example: 'Repository A',
+        description:
+          "The display name of the subscription on an invoice. This field allows for customization of the subscription's name for billing purposes, especially useful when a single customer has multiple subscriptions using the same plan.",
+      }),
+    plan_code: z
+      .string()
+      .openapi({
+        example: 'premium',
+        description:
+          'The unique code representing the plan to be attached to the customer. This code must correspond to the `code` property of one of the active plans.',
+      }),
+    plan_amount_cents: z
+      .int()
+      .openapi({
+        description:
+          'The base cost of the related plan, excluding any applicable taxes, that is billed on a recurring basis.',
+        example: 10000,
+      }),
+    plan_amount_currency: CurrencySchema.openapi({
+      description:
+        "The currency of the related plan. It indicates the monetary unit in which the plan's cost, including taxes and usage-based charges, is expressed.",
+      example: 'USD',
+    }),
+    status: z
+      .enum(['active', 'canceled', 'incomplete', 'pending', 'terminated'])
+      .openapi({
+        description:
+          'The status of the subscription, which can have the following values:\n- `active`: the subscription is currently active and applied to the customer.\n- `canceled`: the subscription has been stopped before its activation. This can occur when two consecutive downgrades have been applied to a customer, when a subscription with a pending status is terminated, or when a payment-gated subscription fails to be paid (or its activation rule expires) before activation. When caused by payment gating, the `cancellation_reason` field is set.\n- `incomplete`: the subscription was created with a payment activation rule and is waiting for the gating payment to succeed before it becomes `active`. It is automatically `canceled` if the payment fails or the activation rule expires.\n- `pending`: a previous subscription has been downgraded, and the current one is awaiting automatic activation at the end of the billing period.\n- `terminated`: the subscription is no longer active.',
+        example: 'active',
+      }),
+    created_at: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        example: '2022-08-08T00:00:00Z',
+        description:
+          'The creation date of the subscription, represented in ISO 8601 datetime format and expressed in Coordinated Universal Time (UTC). This date provides a timestamp indicating when the subscription was initially created.',
+      }),
+    canceled_at: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .openapi({
+        example: '2022-09-14T16:35:31Z',
+        description:
+          'The cancellation date of the subscription. This field is not null when the subscription is `canceled`. This date should be provided in ISO 8601 datetime format and expressed in Coordinated Universal Time (UTC).',
+      }),
+    started_at: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .openapi({
+        example: '2022-08-08T00:00:00Z',
+        description:
+          'The effective start date of the subscription. This field can be null if the subscription is `pending` or `canceled`. This date should be provided in ISO 8601 datetime format and expressed in Coordinated Universal Time (UTC).',
+      }),
+    ending_at: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .openapi({
+        example: '2022-10-08T00:00:00Z',
+        description:
+          'The effective end date of the subscription. If this field is set to null, the subscription will automatically renew. This date should be provided in ISO 8601 datetime format, and use Coordinated Universal Time (UTC).',
+      }),
+    subscription_at: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        example: '2022-08-08T00:00:00Z',
+        description:
+          'The anniversary date and time of the initial subscription. This date serves as the basis for billing subscriptions with `anniversary` billing time. The `anniversary_date` should be provided in ISO 8601 datetime format and expressed in Coordinated Universal Time (UTC).',
+      }),
+    terminated_at: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .openapi({
+        example: '2022-09-14T16:35:31Z',
+        description:
+          'The termination date of the subscription. This field is not null when the subscription is `terminated`. This date should be provided in ISO 8601 datetime format and expressed in Coordinated Universal Time (UTC)',
+      }),
+    previous_plan_code: z
+      .string()
+      .nullable()
+      .openapi({
+        example: null,
+        description: 'The code identifying the previous plan associated with this subscription.',
+      }),
+    next_plan_code: z
+      .string()
+      .nullable()
+      .openapi({
+        example: null,
+        description: 'The code identifying the next plan in the case of a downgrade.',
+      }),
+    downgrade_plan_date: z.iso
+      .date()
+      .nullable()
+      .openapi({
+        example: '2022-04-30',
+        description:
+          'The date when the plan will be downgraded, represented in ISO 8601 date format.',
+      }),
+    trial_ended_at: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .openapi({
+        example: '2022-08-08T00:00:00Z',
+        description: 'The date when the free trial is ended, represented in ISO 8601 date format.',
+      }),
+    current_billing_period_started_at: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .openapi({
+        example: '2022-08-08T00:00:00Z',
+        description:
+          'The date and time when the current billing period started, represented in ISO 8601 date format.',
+      }),
+    current_billing_period_ending_at: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .openapi({
+        example: '2022-09-08T00:00:00Z',
+        description:
+          'The date and time when the current billing period ends, represented in ISO 8601 date format.',
+      }),
+    on_termination_credit_note: z
+      .enum(['credit', 'refund', 'offset', 'skip'])
+      .nullable()
+      .openapi({
+        description:
+          'When a pay-in-advance subscription is terminated before the end of its billing period, we generate a credit note for the unused subscription time by default.\nThis field allows you to control the behavior of the credit note generation:\n\n- `credit`: A credit note is generated for the unused subscription time. The unused amount is credited back to the customer.\n- `refund`: A credit note is generated for the unused subscription time. If the invoice is paid or partially paid, the unused paid amount is refunded; any unpaid unused amount is credited back to the customer.\n- `offset`: A credit note is generated for the unused subscription time. If the invoice is paid or partially paid, the unused paid amount is refunded; any unpaid unused amount is applied to the invoice reducing its amount due.\n- `skip`: No credit note is generated for the unused subscription time.\n\n_Note: This field is only applicable to pay-in-advance plans and will be `null` for pay-in-arrears plans._\n',
+        example: 'credit',
+      }),
+    on_termination_invoice: z
+      .enum(['generate', 'skip'])
+      .default('generate')
+      .openapi({
+        example: 'generate',
+        description:
+          'When a subscription is terminated before the end of its billing period, we generate an invoice for the unbilled usage.\nThis field allows you to control the behavior of the invoice generation:\n\n- `generate`: An invoice is generated for the unbilled usage.\n- `skip`: No invoice is generated for the unbilled usage.\n',
+      }),
+    applied_invoice_custom_sections: z
+      .array(AppliedInvoiceCustomSectionObjectSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The invoice custom sections applied to invoices generated by this subscription. Only returned when creating, retrieving, updating or terminating a subscription, not when listing subscriptions and not in subscription webhooks.',
+      }),
+    payment_method: PaymentMethodReferenceSchema.openapi({
+      description: 'The payment method assigned to this subscription for processing payments.',
+    }),
+    consolidate_invoice: z
+      .boolean()
+      .default(true)
+      .openapi({
+        example: true,
+        description:
+          "Controls whether this subscription is eligible to be grouped with other subscriptions of the same customer on a consolidated recurring invoice.\n\n- `true` (default): the subscription is included in the customer's standard invoice grouping (by billing entity, currency and payment method).\n- `false`: the subscription is excluded from consolidation and always billed on its own dedicated invoice, regardless of other grouping criteria.\n",
+      }),
+    progressive_billing_disabled: z
+      .boolean()
+      .default(false)
+      .openapi({
+        example: false,
+        description:
+          'Indicates whether progressive billing is switched off for this subscription, regardless of any usage thresholds defined on the plan (including thresholds inherited from a parent plan when the subscription runs on a plan override).\n\nWhen `true`, no progressive billing invoice is issued for this subscription.\n',
+      }),
+    cancellation_reason: z
+      .enum(['payment_failed', 'timeout', 'manual'])
+      .nullable()
+      .openapi({
+        example: 'payment_failed',
+        description:
+          'The reason a payment-gated subscription was canceled while still `incomplete`. Null unless the subscription was canceled before activation.\n\n- `payment_failed`: the gating payment failed.\n- `timeout`: the activation rule expired before the payment succeeded.\n- `manual`: the incomplete subscription was canceled on demand, via a terminate request with `status=incomplete`.\n',
+      }),
+    activated_at: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .openapi({
+        example: '2022-08-08T00:00:00Z',
+        description:
+          'The date and time when a payment-gated subscription was activated (i.e. moved from `incomplete` to `active` once the gating payment succeeded), represented in ISO 8601 datetime format and expressed in Coordinated Universal Time (UTC). Null while the subscription is still `incomplete`.\n',
+      }),
+    activation_rules: z
+      .array(SubscriptionActivationRuleObjectSchema)
+      .openapi({
+        description:
+          'The activation rules attached to the subscription. A payment activation rule gates activation on a successful first payment, keeping the subscription in the `incomplete` state until the payment succeeds or the rule expires.\n',
+      }),
+    purchase_order_number: z
+      .string()
+      .nullable()
+      .openapi({
+        example: 'PO-123',
+        description:
+          'The purchase order number associated with the subscription. It will be added to invoices generated for this subscription.',
+      }),
+    payment_term: z
+      .xor([PaymentTermObjectSchema, z.null().nullable()])
+      .openapi({
+        description:
+          'The structured payment term of the subscription. It is `null` when the subscription has no term of its own, in which case the term of the customer, then of the billing entity, applies to its invoices.',
+      }),
+  })
+  .openapi({
+    required: [
+      'activated_at',
+      'activation_rules',
+      'billing_time',
+      'canceled_at',
+      'cancellation_reason',
+      'consolidate_invoice',
+      'created_at',
+      'current_billing_period_ending_at',
+      'current_billing_period_started_at',
+      'downgrade_plan_date',
+      'ending_at',
+      'external_customer_id',
+      'external_id',
+      'lago_customer_id',
+      'lago_id',
+      'name',
+      'next_plan_code',
+      'on_termination_credit_note',
+      'on_termination_invoice',
+      'payment_method',
+      'payment_term',
+      'plan_amount_cents',
+      'plan_amount_currency',
+      'plan_code',
+      'previous_plan_code',
+      'progressive_billing_disabled',
+      'purchase_order_number',
+      'started_at',
+      'status',
+      'subscription_at',
+      'terminated_at',
+      'trial_ended_at',
+    ],
+  })
+  .openapi('SubscriptionObject')
+
+const SubscriptionEntitlementPrivilegeObjectSchema = FeaturePrivilegeObjectSchema.and(
+  z
+    .object({
+      value: z
+        .xor([
+          z.int().openapi({ description: 'Value for integer type privileges' }),
+          z.boolean().openapi({ description: 'Value for boolean type privileges' }),
+          z.string().openapi({ description: 'Value for string or select type privileges' }),
+        ])
+        .openapi({
+          example: 10,
+          description:
+            "Applicable value for this subscription (override_value if set, plan_value otherwise). Type depends on the privilege's value_type.",
+        }),
+      plan_value: z
+        .xor([
+          z.int().openapi({ description: 'Value for integer type privileges' }),
+          z.boolean().openapi({ description: 'Value for boolean type privileges' }),
+          z.string().openapi({ description: 'Value for string or select type privileges' }),
+          z.null().nullable().openapi({ description: 'No plan value set' }),
+        ])
+        .openapi({
+          example: 10,
+          description:
+            "Value assigned to this privilege in the plan. Type depends on the privilege's value_type. Null when the privilege only exists as a subscription override.",
+        }),
+      override_value: z
+        .xor([
+          z.int().openapi({ description: 'Value for integer type privileges' }),
+          z.boolean().openapi({ description: 'Value for boolean type privileges' }),
+          z.string().openapi({ description: 'Value for string or select type privileges' }),
+          z.null().nullable().openapi({ description: 'No override value set' }),
+        ])
+        .openapi({
+          example: 10,
+          description:
+            "Value assigned to this subscription specifically. Type depends on the privilege's value_type. Null if no override is set.",
+        }),
+    })
+    .openapi({ required: ['value', 'plan_value', 'override_value'] }),
+).openapi('SubscriptionEntitlementPrivilegeObject')
+
+const SubscriptionEntitlementObjectSchema = z
+  .object({
+    code: z
+      .string()
+      .openapi({
+        example: 'seats',
+        description: 'Unique code used to identify the feature. Max 255 characters.',
+      }),
+    name: z
+      .string()
+      .nullable()
+      .openapi({
+        example: 'Number of seats',
+        description: 'Name of the feature. Max 255 characters.',
+      }),
+    description: z
+      .string()
+      .nullable()
+      .openapi({
+        example: 'Number of users of the account',
+        description: 'Description of the feature. Max 600 characters.',
+      }),
+    privileges: z.array(SubscriptionEntitlementPrivilegeObjectSchema).openapi({
+      example: [
+        {
+          code: 'max',
+          name: 'Maximum',
+          value_type: 'integer',
+          config: {},
+          value: 15,
+          plan_value: 10,
+          override_value: 15,
+        },
+        {
+          code: 'max_admins',
+          name: 'Max Admins',
+          value_type: 'integer',
+          config: {},
+          value: 5,
+          plan_value: 5,
+          override_value: null,
+        },
+        {
+          code: 'root',
+          name: 'Allow root user',
+          value_type: 'boolean',
+          config: {},
+          value: true,
+          plan_value: true,
+          override_value: null,
+        },
+        {
+          code: 'provider',
+          name: 'SSO Provider',
+          value_type: 'select',
+          value: 'okta',
+          plan_value: 'google',
+          override_value: 'okta',
+          config: { select_options: ['google', 'okta'] },
+        },
+      ],
+      description:
+        'Privileges associated with this feature. Each privilege shows the plan value and any subscription override.',
+    }),
+    overrides: z
+      .looseObject({})
+      .openapi({
+        example: { max: 15, provider: 'okta' },
+        description:
+          'Privilege values set on this subscription only. Each key is a privilege code and each value is the subscription override. Privileges that use the plan value are not listed.',
+      }),
+  })
+  .openapi({ required: ['code', 'name', 'description', 'privileges', 'overrides'] })
+  .openapi('SubscriptionEntitlementObject')
+
+type SubscriptionObjectExtendedType = z.infer<typeof SubscriptionObjectSchema> & {
+  plan?: z.infer<typeof PlanObjectSchema>
+  applicable_usage_thresholds?: z.infer<typeof ApplicableUsageThresholdSchema>[]
+  entitlements?: z.infer<typeof SubscriptionEntitlementObjectSchema>[]
+}
+
+const SubscriptionObjectExtendedSchema: z.ZodType<SubscriptionObjectExtendedType> =
+  SubscriptionObjectSchema.and(
+    z
+      .object({
+        plan: PlanObjectSchema.exactOptional(),
+        applicable_usage_thresholds: z
+          .array(ApplicableUsageThresholdSchema)
+          .exactOptional()
+          .openapi({
+            description:
+              'List of usage thresholds applicable to this subscription. Not returned when terminating a subscription.',
+          }),
+        entitlements: z
+          .array(SubscriptionEntitlementObjectSchema)
+          .exactOptional()
+          .openapi({
+            description:
+              'The feature entitlements of the subscription. Only returned when creating or retrieving a subscription.',
+          }),
+      })
+      .openapi({ required: [] }),
+  ).openapi('SubscriptionObjectExtended')
+
+type SubscriptionExtendedType = {
+  subscription: z.infer<typeof SubscriptionObjectExtendedSchema>
+  authorization?: {
+    id: string
+    object: string
+    amount: number
+    amount_capturable: number
+    status: string
+  }
+}
+
+type SubscriptionUpdateInputType = {
+  status?: 'active' | 'pending'
+  subscription: {
+    name?: string | null
+    ending_at?: string | null
+    subscription_at?: string
+    plan_overrides?: z.infer<typeof PlanOverridesObjectSchema>
+    invoice_custom_section?: z.infer<typeof InvoiceCustomSectionInputSchema>
+    payment_method?: z.infer<typeof PaymentMethodReferenceSchema>
+    consolidate_invoice?: boolean
+    billing_entity_code?: string
+    on_termination_credit_note?: 'credit' | 'refund' | 'offset' | 'skip'
+    on_termination_invoice?: 'generate' | 'skip'
+    purchase_order_number?: string | null
+    payment_term?: z.infer<typeof PaymentTermObjectSchema> | null
+    progressive_billing_disabled?: boolean
+    usage_thresholds?: z.infer<typeof UsageThresholdInputSchema>[]
+    activation_rules?: z.infer<typeof SubscriptionActivationRuleInputSchema>[]
+  }
+}
+
+type SubscriptionWithCustomerObjectType = z.infer<typeof SubscriptionObjectSchema> & {
+  plan: z.infer<typeof PlanObjectSchema>
+  customer: z.infer<typeof CustomerObjectSchema>
+  entitlements?: z.infer<typeof SubscriptionEntitlementObjectSchema>[]
+}
+
+type SubscriptionWithThresholdObjectType = z.infer<typeof SubscriptionObjectSchema> & {
+  plan: z.infer<typeof PlanObjectSchema>
+  customer: z.infer<typeof CustomerObjectSchema>
+  usage_threshold: z.infer<typeof UsageThresholdObjectSchema>
+  applicable_usage_thresholds: z.infer<typeof ApplicableUsageThresholdSchema>[]
+}
+
+const BillingEntityObjectSchema = z
+  .object({
+    lago_id: z
+      .uuid()
+      .openapi({
+        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
+        description: 'A unique identifier for the billing entity in the Lago application',
+      }),
+    code: z
+      .string()
+      .openapi({ example: 'acme_corp', description: 'The unique code of the billing entity' }),
+    name: z
+      .string()
+      .openapi({ example: 'Acme Corp', description: 'The name of the billing entity' }),
+    default_currency: CurrencySchema.openapi({
+      description: 'The default currency of the billing entity',
+      example: 'USD',
+    }),
+    document_locale: z
+      .string()
+      .openapi({
+        example: 'en',
+        description:
+          'The language of the documents generated for this billing entity, in the ISO 639-1 format.',
+      }),
+    document_numbering: z
+      .enum(['per_customer', 'per_billing_entity'])
+      .openapi({
+        description:
+          'The type of document numbering for this billing entity:\n- `per_customer`: document numbers are unique per customer\n- `per_billing_entity`: document numbers are unique per billing entity',
+        example: 'per_customer',
+      }),
+    document_number_prefix: z
+      .string()
+      .nullable()
+      .openapi({
+        example: 'ABC-123',
+        description:
+          'The prefix used in document numbers for this billing entity. It is upper cased. When no prefix is given at creation, Lago builds one from the first three letters of the name and the last four characters of the identifier.',
+      }),
+    finalize_zero_amount_invoice: z
+      .boolean()
+      .openapi({
+        example: true,
+        description: 'Whether to finalize invoices with zero amount for this billing entity',
+      }),
+    invoice_footer: z
+      .string()
+      .nullable()
+      .openapi({
+        example: 'Thank you for your business',
+        description: 'The footer text to be displayed on invoices for this billing entity',
+      }),
+    invoice_grace_period: z
+      .int()
+      .openapi({ example: 0, description: 'The grace period (in days) for invoice finalization' }),
+    subscription_invoice_issuing_date_anchor: z
+      .enum(['current_period_end', 'next_period_start'])
+      .default('next_period_start')
+      .openapi({
+        description:
+          "Defines whether the issuing date follows the current billing period's end date or the next period starting date.",
+      }),
+    subscription_invoice_issuing_date_adjustment: z
+      .enum(['align_with_finalization_date', 'keep_anchor'])
+      .default('align_with_finalization_date')
+      .openapi({
+        description:
+          'The logic applied on top of the subscription_invoice_issuing_date_anchor rule. You can opt to use the invoice finalization date, that includes any configured grace period.',
+      }),
+    is_default: z
+      .boolean()
+      .openapi({
+        example: false,
+        description:
+          "Whether this billing entity is the organization's default billing entity. The default billing entity is the oldest active one, and is used as a fallback whenever no billing entity is provided, for example when an invoice is created. This flag cannot be changed.",
+      }),
+    payment_term: z
+      .xor([PaymentTermObjectSchema, z.null().nullable()])
+      .openapi({
+        description:
+          'The structured payment term of the billing entity. It applies to every customer and subscription of the billing entity that has no term of its own. New billing entities default to a `net` term of `0` days.',
+      }),
+    net_payment_term: z
+      .int()
+      .nullable()
+      .openapi({
+        deprecated: true,
+        example: 0,
+        description:
+          '**Deprecated.** Use `payment_term` instead. Legacy alias of `payment_term`, expressed in days. It is the `days` of a `net` term, `0` for a `due_on_receipt` term, and `null` for every other term type.',
+      }),
+    address_line1: z
+      .string()
+      .nullable()
+      .openapi({
+        example: '5230 Penfield Ave',
+        description: 'The first line of the billing address',
+      }),
+    address_line2: z
+      .string()
+      .nullable()
+      .openapi({ example: 'Suite 100', description: 'The second line of the billing address' }),
+    phone: z
+      .string()
+      .nullable()
+      .openapi({
+        example: '1-171-883-3711 x245',
+        description: 'The phone number of the billing entity',
+      }),
+    city: z
+      .string()
+      .nullable()
+      .openapi({ example: 'Woodland Hills', description: 'The city of the billing address' }),
+    state: z
+      .string()
+      .nullable()
+      .openapi({ example: 'CA', description: 'The state of the billing address' }),
+    country: CountryOrNullSchema.openapi({
+      description: 'The country code of the billing address',
+    }),
+    zipcode: z
+      .string()
+      .nullable()
+      .openapi({ example: '91364', description: 'The zipcode of the billing address' }),
+    email: z
+      .email()
+      .nullable()
+      .openapi({
+        example: 'billing@acme.com',
+        description: 'The email address of the billing entity',
+      }),
+    legal_name: z
+      .string()
+      .nullable()
+      .openapi({
+        example: 'Acme Corporation',
+        description: 'The legal name of the billing entity',
+      }),
+    legal_number: z
+      .string()
+      .nullable()
+      .openapi({
+        example: 'US123456789',
+        description: 'The legal registration number of the billing entity',
+      }),
+    tax_identification_number: z
+      .string()
+      .nullable()
+      .openapi({
+        example: 'EU123456789',
+        description: 'The tax identification number of the billing entity',
+      }),
+    timezone: TimezoneSchema.openapi({
+      description: 'The timezone of the billing entity',
+      example: 'UTC',
+    }),
+    email_settings: z
+      .array(z.enum(['invoice.finalized', 'credit_note.created', 'payment_receipt.created']))
+      .openapi({ description: 'The email notification settings for this billing entity' }),
+    eu_tax_management: z
+      .boolean()
+      .nullable()
+      .openapi({
+        example: false,
+        description:
+          'Whether EU tax management is enabled for this billing entity. It can only be enabled when the billing entity country is in the European Union.',
+      }),
+    einvoicing: z
+      .boolean()
+      .openapi({
+        example: false,
+        description:
+          'Whether e-invoicing is enabled for this billing entity. It can only be enabled when the billing entity country is `FR` or `DE`.',
+      }),
+    logo_url: z
+      .url()
+      .nullable()
+      .openapi({
+        example: 'https://getlago.com/logo.png',
+        description: "The URL of the billing entity's logo",
+      }),
+    created_at: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        example: '2022-04-29T08:59:51Z',
+        description: 'The date and time when the billing entity was created',
+      }),
+    updated_at: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        example: '2022-04-29T08:59:51Z',
+        description: 'The date and time when the billing entity was last updated',
+      }),
+  })
+  .openapi({
+    description: 'Billing entity object',
+    required: [
+      'lago_id',
+      'code',
+      'name',
+      'default_currency',
+      'document_locale',
+      'document_numbering',
+      'document_number_prefix',
+      'finalize_zero_amount_invoice',
+      'invoice_footer',
+      'invoice_grace_period',
+      'subscription_invoice_issuing_date_anchor',
+      'subscription_invoice_issuing_date_adjustment',
+      'is_default',
+      'net_payment_term',
+      'payment_term',
+      'address_line1',
+      'address_line2',
+      'phone',
+      'city',
+      'state',
+      'country',
+      'zipcode',
+      'email',
+      'legal_name',
+      'legal_number',
+      'tax_identification_number',
+      'timezone',
+      'email_settings',
+      'eu_tax_management',
+      'einvoicing',
+      'logo_url',
+      'created_at',
+      'updated_at',
+    ],
+  })
+  .openapi('BillingEntityObject')
+
+const ApiErrorUnauthorizedSchema = z
+  .object({
+    status: z.int32().openapi({ example: 401 }),
+    error: z.string().openapi({ example: 'Unauthorized' }),
+  })
+  .openapi({ required: ['status', 'error'] })
+  .openapi('ApiErrorUnauthorized')
+
+const ApiErrorForbiddenSchema = z
+  .object({
+    status: z.int32().openapi({ example: 403 }),
+    error: z.string().openapi({ example: 'Forbidden' }),
+    code: z.string().openapi({ example: 'feature_unavailable' }),
+  })
+  .openapi({ required: ['status', 'error', 'code'] })
+  .openapi('ApiErrorForbidden')
+
+const BillingEntityCreateInputSchema = z
+  .object({
+    billing_entity: z
+      .object({
+        code: z
+          .string()
+          .openapi({ example: 'acme_corp', description: 'The unique code of the billing entity' }),
+        name: z
+          .string()
+          .openapi({ example: 'Acme Corp', description: 'The name of the billing entity' }),
+        default_currency: CurrencySchema.exactOptional().openapi({
+          description: 'The default currency of the billing entity',
+          example: 'USD',
+        }),
+        document_numbering: z
+          .enum(['per_customer', 'per_billing_entity'])
+          .exactOptional()
+          .openapi({
+            description:
+              'The type of document numbering for this billing entity:\n- `per_customer`: document numbers are unique per customer\n- `per_billing_entity`: document numbers are unique per billing entity',
+          }),
+        document_number_prefix: z
+          .string()
+          .min(1)
+          .max(10)
+          .nullable()
+          .exactOptional()
+          .openapi({
+            example: 'ABC-123',
+            description:
+              'The prefix used in document numbers for this billing entity (1 to 10 characters). It is upper cased. When it is not provided, Lago builds one from the first three letters of the name and the last four characters of the identifier.',
+          }),
+        finalize_zero_amount_invoice: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            example: true,
+            description: 'Whether to finalize invoices with zero amount for this billing entity',
+          }),
+        billing_configuration: z
+          .object({
+            invoice_footer: z
+              .string()
+              .max(600)
+              .exactOptional()
+              .openapi({
+                example: 'Thank you for your business',
+                description:
+                  'The footer text to be displayed on invoices for this billing entity (600 characters max).',
+              }),
+            document_locale: z
+              .string()
+              .exactOptional()
+              .openapi({
+                example: 'en',
+                description:
+                  'The language of the documents generated for this billing entity, in the ISO 639-1 format.',
+              }),
+            invoice_grace_period: z
+              .int()
+              .exactOptional()
+              .openapi({
+                example: 0,
+                description:
+                  'The grace period (in days) for invoice finalization. This is a premium feature, the value is ignored without a premium license.',
+              }),
+            subscription_invoice_issuing_date_anchor: z
+              .enum(['current_period_end', 'next_period_start'])
+              .default('next_period_start')
+              .exactOptional()
+              .openapi({
+                description:
+                  "Defines whether the issuing date follows the current billing period's end date or the next period starting date.",
+              }),
+            subscription_invoice_issuing_date_adjustment: z
+              .enum(['align_with_finalization_date', 'keep_anchor'])
+              .default('align_with_finalization_date')
+              .exactOptional()
+              .openapi({
+                description:
+                  'The logic applied on top of the subscription_invoice_issuing_date_anchor rule. You can opt to use the invoice finalization date, that includes any configured grace period.',
+              }),
+          })
+          .exactOptional()
+          .openapi({ required: [] }),
+        payment_term: z
+          .xor([PaymentTermObjectSchema, z.null().nullable()])
+          .exactOptional()
+          .openapi({
+            description:
+              'The structured payment term of the billing entity. It applies to every customer and subscription of the billing entity that has no term of its own. When neither `payment_term` nor `net_payment_term` is sent, the billing entity gets a `net` term of `0` days.\n\nIt supersedes the legacy `net_payment_term`, which is kept in sync as an alias. Whenever `payment_term` is sent, it wins and `net_payment_term` is ignored, even when `payment_term` is `null`, which clears both.\n',
+          }),
+        net_payment_term: z
+          .int()
+          .min(0)
+          .max(365)
+          .exactOptional()
+          .openapi({
+            deprecated: true,
+            example: 0,
+            description:
+              '**Deprecated.** Use `payment_term` instead. The net payment term (in days) for this billing entity. When `payment_term` is sent in the same request, even as `null`, `payment_term` wins and this field is ignored; see `payment_term` for the full rules. It must be between 0 and 365 days.',
+          }),
+        address_line1: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            example: '5230 Penfield Ave',
+            description: 'The first line of the billing address',
+          }),
+        address_line2: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ example: 'Suite 100', description: 'The second line of the billing address' }),
+        phone: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            example: '1-171-883-3711 x245',
+            description: 'The phone number of the billing entity',
+          }),
+        city: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ example: 'Woodland Hills', description: 'The city of the billing address' }),
+        state: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ example: 'CA', description: 'The state of the billing address' }),
+        country: CountryOrNullSchema.exactOptional().openapi({
+          description: 'The country code of the billing address',
+        }),
+        zipcode: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ example: '91364', description: 'The zipcode of the billing address' }),
+        email: z
+          .email()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            example: 'billing@acme.com',
+            description: 'The email address of the billing entity',
+          }),
+        legal_name: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            example: 'Acme Corporation',
+            description: 'The legal name of the billing entity',
+          }),
+        legal_number: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            example: 'US123456789',
+            description: 'The legal registration number of the billing entity',
+          }),
+        tax_identification_number: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            example: 'EU123456789',
+            description: 'The tax identification number of the billing entity',
+          }),
+        timezone: TimezoneSchema.exactOptional().openapi({
+          description:
+            'The timezone of the billing entity. This is a premium feature, the value is ignored without a premium license.',
+          example: 'UTC',
+        }),
+        email_settings: z
+          .array(z.enum(['invoice.finalized', 'credit_note.created', 'payment_receipt.created']))
+          .exactOptional()
+          .openapi({
+            description:
+              'The email notification settings for this billing entity. This is a premium feature, the value is ignored without a premium license.',
+          }),
+        eu_tax_management: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            example: false,
+            description:
+              'Whether EU tax management is enabled for this billing entity. It can only be enabled when the billing entity country is in the European Union.',
+          }),
+        einvoicing: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            example: false,
+            description:
+              'Whether e-invoicing is enabled for this billing entity. It can only be enabled when the billing entity country is `FR` or `DE`.',
+          }),
+        logo: z
+          .url()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            example: 'data:image/png;base64,...',
+            description:
+              'The base64 encoded logo image for the billing entity. Accepted formats are PNG, JPG and JPEG, up to 800 kB.',
+          }),
+      })
+      .openapi({ required: ['code', 'name'] }),
+  })
+  .openapi({ description: 'Billing entity create input', required: ['billing_entity'] })
+  .openapi('BillingEntityCreateInput')
+
+const ApiErrorBadRequestSchema = z
+  .object({
+    status: z.int32().openapi({ example: 400 }),
+    error: z.string().openapi({ example: 'Bad request' }),
+  })
+  .openapi({ required: ['status', 'error'] })
+  .openapi('ApiErrorBadRequest')
+
+const ApiErrorUnprocessableEntitySchema = z
+  .object({
+    status: z.int32().openapi({ example: 422 }),
+    error: z.string().openapi({ example: 'Unprocessable entity' }),
+    code: z.string().openapi({ example: 'validation_errors' }),
+    error_details: z.looseObject({}),
+  })
+  .openapi({ required: ['status', 'error', 'code', 'error_details'] })
+  .openapi('ApiErrorUnprocessableEntity')
+
+const BillingEntityObjectExtendedSchema = BillingEntityObjectSchema.and(
+  z
+    .object({
+      taxes: z.array(TaxObjectSchema).exactOptional(),
+      selected_invoice_custom_sections: z.array(InvoiceCustomSectionObjectSchema).exactOptional(),
+    })
+    .openapi({ required: [] }),
+).openapi('BillingEntityObjectExtended')
+
+const ApiErrorNotFoundSchema = z
+  .object({
+    status: z.int32().openapi({ example: 404 }),
+    error: z.string().openapi({ example: 'Not Found' }),
+    code: z.string().openapi({ example: 'object_not_found' }),
+  })
+  .openapi({ required: ['status', 'error', 'code'] })
+  .openapi('ApiErrorNotFound')
+
+const BillingEntityUpdateInputSchema = z
+  .object({
+    billing_entity: z
+      .object({
+        name: z
+          .string()
+          .exactOptional()
+          .openapi({ example: 'Acme Corp', description: 'The name of the billing entity' }),
+        default_currency: CurrencySchema.exactOptional().openapi({
+          description: 'The default currency of the billing entity',
+          example: 'USD',
+        }),
+        document_numbering: z
+          .enum(['per_customer', 'per_billing_entity'])
+          .exactOptional()
+          .openapi({
+            description:
+              'The type of document numbering for this billing entity:\n- `per_customer`: document numbers are unique per customer\n- `per_billing_entity`: document numbers are unique per billing entity',
+          }),
+        document_number_prefix: z
+          .string()
+          .min(1)
+          .max(10)
+          .exactOptional()
+          .openapi({
+            example: 'ABC-123',
+            description:
+              'The prefix used in document numbers for this billing entity (1 to 10 characters). It is upper cased. It cannot be removed once the billing entity exists, and sending `null` returns a `422` error.',
+          }),
+        finalize_zero_amount_invoice: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            example: true,
+            description: 'Whether to finalize invoices with zero amount for this billing entity',
+          }),
+        billing_configuration: z
+          .object({
+            invoice_footer: z
+              .string()
+              .max(600)
+              .exactOptional()
+              .openapi({
+                example: 'Thank you for your business',
+                description:
+                  'The footer text to be displayed on invoices for this billing entity (600 characters max).',
+              }),
+            document_locale: z
+              .string()
+              .exactOptional()
+              .openapi({
+                example: 'en',
+                description:
+                  'The language of the documents generated for this billing entity, in the ISO 639-1 format.',
+              }),
+            invoice_grace_period: z
+              .int()
+              .exactOptional()
+              .openapi({
+                example: 0,
+                description:
+                  'The grace period (in days) for invoice finalization. This is a premium feature, the value is ignored without a premium license.',
+              }),
+            subscription_invoice_issuing_date_anchor: z
+              .enum(['current_period_end', 'next_period_start'])
+              .default('next_period_start')
+              .exactOptional()
+              .openapi({
+                description:
+                  "Defines whether the issuing date follows the current billing period's end date or the next period starting date.",
+              }),
+            subscription_invoice_issuing_date_adjustment: z
+              .enum(['align_with_finalization_date', 'keep_anchor'])
+              .default('align_with_finalization_date')
+              .exactOptional()
+              .openapi({
+                description:
+                  'The logic applied on top of the subscription_invoice_issuing_date_anchor rule. You can opt to use the invoice finalization date, that includes any configured grace period.',
+              }),
+          })
+          .exactOptional()
+          .openapi({ required: [] }),
+        payment_term: z
+          .xor([PaymentTermObjectSchema, z.null().nullable()])
+          .exactOptional()
+          .openapi({
+            description:
+              'The structured payment term of the billing entity. It applies to every customer and subscription of the billing entity that has no term of its own. Send `null` to remove it.\n\nIt supersedes the legacy `net_payment_term`, which is kept in sync as an alias. Whenever `payment_term` is sent, it wins and `net_payment_term` is ignored, even when `payment_term` is `null`, which clears both.\n\nWhen only `net_payment_term` is sent, the term becomes a `net` term of that many days, and `null` clears both.\n',
+          }),
+        net_payment_term: z
+          .int()
+          .min(0)
+          .max(365)
+          .exactOptional()
+          .openapi({
+            deprecated: true,
+            example: 0,
+            description:
+              '**Deprecated.** Use `payment_term` instead. The net payment term (in days) for this billing entity. When `payment_term` is sent in the same request, even as `null`, `payment_term` wins and this field is ignored; see `payment_term` for the full rules. It must be between 0 and 365 days.',
+          }),
+        address_line1: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            example: '5230 Penfield Ave',
+            description: 'The first line of the billing address',
+          }),
+        address_line2: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ example: 'Suite 100', description: 'The second line of the billing address' }),
+        phone: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            example: '1-171-883-3711 x245',
+            description: 'The phone number of the billing entity',
+          }),
+        city: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ example: 'Woodland Hills', description: 'The city of the billing address' }),
+        state: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ example: 'CA', description: 'The state of the billing address' }),
+        country: CountryOrNullSchema.exactOptional().openapi({
+          description: 'The country code of the billing address',
+        }),
+        zipcode: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ example: '91364', description: 'The zipcode of the billing address' }),
+        email: z
+          .email()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            example: 'billing@acme.com',
+            description: 'The email address of the billing entity',
+          }),
+        legal_name: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            example: 'Acme Corporation',
+            description: 'The legal name of the billing entity',
+          }),
+        legal_number: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            example: 'US123456789',
+            description: 'The legal registration number of the billing entity',
+          }),
+        tax_identification_number: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            example: 'EU123456789',
+            description: 'The tax identification number of the billing entity',
+          }),
+        timezone: TimezoneSchema.exactOptional().openapi({
+          description:
+            'The timezone of the billing entity. This is a premium feature, the value is ignored without a premium license.',
+          example: 'UTC',
+        }),
+        tax_codes: TaxCodesSchema.exactOptional().openapi({
+          description:
+            'The tax codes that should be associated with this billing entity. Codes are matched without case sensitivity, and two codes that differ only by case count as one. An unknown code returns a `404` error.',
+        }),
+        email_settings: z
+          .array(z.enum(['invoice.finalized', 'credit_note.created', 'payment_receipt.created']))
+          .exactOptional()
+          .openapi({
+            description:
+              'The email notification settings for this billing entity. This is a premium feature, the value is ignored without a premium license.',
+          }),
+        eu_tax_management: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            example: false,
+            description:
+              'Whether EU tax management is enabled for this billing entity. It can only be enabled when the billing entity country is in the European Union.',
+          }),
+        einvoicing: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            example: false,
+            description:
+              'Whether e-invoicing is enabled for this billing entity. It can only be enabled when the billing entity country is `FR` or `DE`.',
+          }),
+        logo: z
+          .url()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            example: 'data:image/png;base64,...',
+            description:
+              'The base64 encoded logo image for the billing entity. Accepted formats are PNG, JPG and JPEG, up to 800 kB. Sending "null" removes the current logo.',
+          }),
+        invoice_custom_section_codes: z
+          .array(z.string())
+          .exactOptional()
+          .openapi({
+            example: ['custom_section_1', 'custom_section_2'],
+            description:
+              'The codes of the invoice custom section that should be associated with this billing entity',
+          }),
+      })
+      .openapi({ required: [] }),
+  })
+  .openapi({ description: 'Billing entity update input', required: ['billing_entity'] })
+  .openapi('BillingEntityUpdateInput')
+
+const ActivityLogObjectSchema = z
+  .object({
+    activity_id: z
+      .uuid()
+      .openapi({
+        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
+        description:
+          'Unique identifier assigned to the activity log within the Lago application. This ID is exclusively created by Lago and serves as a unique identifier for the activity log record within the Lago system.',
+      }),
+    user_email: z
+      .email()
+      .nullable()
+      .openapi({
+        example: 'dinesh@piedpiper.example',
+        description:
+          'The email of the user who performed the activity. It is null when the action was performed with an API key or by the system.',
+      }),
+    activity_type: z
+      .string()
+      .openapi({
+        example: 'billable_metric.created',
+        description: 'The action that was performed on the resource.',
+      }),
+    activity_source: z
+      .enum(['api', 'front', 'system'])
+      .openapi({ example: 'api', description: 'The source that triggered the action.' }),
+    activity_object: z
+      .looseObject({})
+      .openapi({
+        example: {
+          lago_id: 'dad68bc7-c01a-4ad8-a87b-13e78693a5bc',
+          plan_id: 'b9155544-e261-4e92-b54e-f65d7609294c',
+        },
+        description:
+          'The state of the resource after the action, keyed by top-level attribute name. Nested values are returned JSON-encoded.',
+      }),
+    activity_object_changes: z
+      .looseObject({})
+      .openapi({
+        example: { plan_id: '[null,"b9155544-e261-4e92-b54e-f65d7609294c"]' },
+        description:
+          'The attributes the action changed, keyed by attribute name. Each value is the JSON-encoded pair of the previous and the new value. It is an empty object when the activity type is not an update.',
+      }),
+    external_customer_id: z
+      .string()
+      .nullable()
+      .openapi({
+        description: 'The customer external unique identifier (provided by your own application).',
+        example: '5eb02857-a71e-4ea2-bcf9-57d3a41bc6ba',
+      }),
+    external_subscription_id: z
+      .string()
+      .nullable()
+      .openapi({
+        description: 'Unique identifier assigned to the subscription in your application.',
+        example: 'external_id',
+      }),
+    resource_id: z
+      .uuid()
+      .openapi({
+        description: 'The unique identifier of the resource the action was applied to.',
+        example: '5eb02857-a71e-4ea2-bcf9-57d3a41bc6ba',
+      }),
+    resource_type: z
+      .string()
+      .openapi({
+        description: 'The type of the resource the action was applied to.',
+        example: 'BillableMetric',
+      }),
+    logged_at: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        example: '2025-03-31T12:31:44Z',
+        description:
+          'The date when the action happened, presented in the ISO 8601 datetime format, specifically in Coordinated Universal Time (UTC).',
+      }),
+    created_at: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        example: '2022-04-29T08:59:51Z',
+        description:
+          'The creation date of the activity log record in the Lago application, presented in the ISO 8601 datetime format, specifically in Coordinated Universal Time (UTC).',
+      }),
+  })
+  .openapi({
+    required: [
+      'activity_id',
+      'activity_source',
+      'activity_type',
+      'activity_object',
+      'activity_object_changes',
+      'user_email',
+      'external_customer_id',
+      'external_subscription_id',
+      'logged_at',
+      'resource_id',
+      'resource_type',
+      'created_at',
+    ],
+  })
+  .openapi('ActivityLogObject')
+
+const ActivityLogsPaginatedSchema = z
+  .object({ activity_logs: z.array(ActivityLogObjectSchema), meta: PaginationMetaSchema })
+  .openapi({ required: ['activity_logs', 'meta'] })
+  .openapi('ActivityLogsPaginated')
+
+const ActivityLogSchema = z
+  .object({ activity_log: ActivityLogObjectSchema })
+  .openapi({ required: ['activity_log'] })
+  .openapi('ActivityLog')
+
+const AddOnObjectSchema = z
+  .object({
+    lago_id: z
+      .uuid()
+      .openapi({
+        description: 'Unique identifier of the add-on, created by Lago.',
+        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
+      }),
+    name: z.string().openapi({ description: 'The name of the add-on.', example: 'Setup Fee' }),
+    invoice_display_name: z
+      .string()
+      .nullable()
+      .openapi({
+        description:
+          'Specifies the name that will be displayed on an invoice. If no value is set for this field, the name of the add-on will be used as the default display name.',
+        example: 'Setup Fee (SF1)',
+      }),
+    code: z
+      .string()
+      .openapi({ description: 'Unique code used to identify the add-on.', example: 'setup_fee' }),
+    amount_cents: z
+      .int()
+      .openapi({
+        description:
+          'The cost of the add-on in cents, excluding any applicable taxes, that is billed to a customer. By creating a one-off invoice, you will be able to override this value.',
+        example: 50000,
+      }),
+    amount_currency: CurrencySchema.openapi({
+      description: 'The currency of the add-on.',
+      example: 'USD',
+    }),
+    description: z
+      .string()
+      .nullable()
+      .openapi({
+        description: 'The description of the add-on.',
+        example: 'Implementation fee for new customers.',
+      }),
+    created_at: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description:
+          'The date and time when the add-on was created. It is expressed in UTC format according to the ISO 8601 datetime standard. This field provides the timestamp for the exact moment when the add-on was initially created.',
+        example: '2022-04-29T08:59:51Z',
+      }),
+    taxes: z.array(TaxObjectSchema).openapi({ description: 'All taxes applied to the add-on.' }),
+  })
+  .openapi({
+    required: [
+      'lago_id',
+      'name',
+      'invoice_display_name',
+      'code',
+      'amount_cents',
+      'amount_currency',
+      'description',
+      'created_at',
+      'taxes',
+    ],
+  })
+  .openapi('AddOnObject')
+
+const AddOnsPaginatedSchema = z
+  .object({ add_ons: z.array(AddOnObjectSchema), meta: PaginationMetaSchema })
+  .openapi({ required: ['add_ons', 'meta'] })
+  .openapi('AddOnsPaginated')
+
+const AddOnBaseInputSchema = z
+  .object({
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the add-on.', example: 'Setup Fee' }),
+    invoice_display_name: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Specifies the name that will be displayed on an invoice. If no value is set for this field, the name of the add-on will be used as the default display name.',
+        example: 'Setup Fee (SF1)',
+      }),
+    code: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Unique code used to identify the add-on.', example: 'setup_fee' }),
+    amount_cents: z
+      .int()
+      .min(1)
+      .exactOptional()
+      .openapi({
+        description:
+          'The cost of the add-on in cents, excluding any applicable taxes, that is billed to a customer. It must be greater than zero. By creating a one-off invoice, you will be able to override this value.',
+        example: 50000,
+      }),
+    amount_currency: CurrencySchema.exactOptional().openapi({
+      description: 'The currency of the add-on.',
+      example: 'USD',
+    }),
+    description: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'The description of the add-on.',
+        example: 'Implementation fee for new customers.',
+      }),
+    tax_codes: TaxCodesSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('AddOnBaseInput')
+
+const AddOnCreateInputSchema = z
+  .object({
+    add_on: AddOnBaseInputSchema.openapi({
+      required: ['name', 'code', 'amount_cents', 'amount_currency'],
+    }),
+  })
+  .openapi({ required: ['add_on'] })
+  .openapi('AddOnCreateInput')
+
+const AddOnSchema = z
+  .object({ add_on: AddOnObjectSchema })
+  .openapi({ required: ['add_on'] })
+  .openapi('AddOn')
+
+const AddOnUpdateInputSchema = z
+  .object({ add_on: AddOnBaseInputSchema })
+  .openapi({ required: ['add_on'] })
+  .openapi('AddOnUpdateInput')
+
+const ApiLogObjectSchema = z
+  .object({
+    api_version: z
+      .string()
+      .openapi({ example: 'v1', description: 'Lago API version used in the request.' }),
+    client: z
+      .string()
+      .openapi({
+        example: 'Lago Ruby v1.26.0',
+        description: 'The client that made the request, as reported by its user agent.',
+      }),
+    http_method: z
+      .enum(['post', 'put', 'patch', 'delete'])
+      .openapi({
+        example: 'post',
+        description:
+          'The HTTP method of the request. Requests made with the GET method are not logged.',
+      }),
+    http_status: z
+      .int()
+      .openapi({ example: 200, description: 'The HTTP status Lago returned for the request.' }),
+    logged_at: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        example: '2025-03-31T12:31:44Z',
+        description:
+          'The date when the request was logged, presented in the ISO 8601 datetime format, specifically in Coordinated Universal Time (UTC).',
+      }),
+    request_body: z
+      .looseObject({})
+      .openapi({
+        description:
+          'The parameters of the request, keyed by their top-level name. Nested values are returned JSON-encoded. When the log is too large to be stored, this object is replaced by a `truncated` key set to `"true"` and an `original_bytesize` key holding the size of the log before truncation.',
+        example: { billable_metric: '{"name":"Storage","code":"storage"}' },
+      }),
+    request_origin: z
+      .string()
+      .openapi({
+        description: 'The base URL the request was sent to.',
+        example: 'https://api.getlago.com',
+      }),
+    request_path: z
+      .string()
+      .openapi({ description: 'The path of the request.', example: '/api/v1/billable_metrics' }),
+    created_at: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        example: '2022-04-29T08:59:51Z',
+        description:
+          'The creation date of the API log record in the Lago application, presented in the ISO 8601 datetime format, specifically in Coordinated Universal Time (UTC).',
+      }),
+    request_id: z
+      .string()
+      .openapi({
+        description:
+          'Unique identifier of the API log. It is the identifier of the request, taken from the `X-Request-Id` header when the request carries one, and generated by Lago otherwise.',
+        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
+      }),
+    request_response: z
+      .looseObject({})
+      .openapi({
+        description:
+          'The body Lago returned for the request, keyed by its top-level name. Nested values are returned JSON-encoded. It is an empty object when the response had no body. When the log is too large to be stored, this object is replaced by a `truncated` key set to `"true"` and an `original_bytesize` key holding the size of the log before truncation.',
+        example: { billable_metric: '{"lago_id":"b9155544-e261-4e92-b54e-f65d7609294c"}' },
+      }),
+  })
+  .openapi({
+    required: [
+      'api_version',
+      'client',
+      'http_method',
+      'http_status',
+      'logged_at',
+      'request_body',
+      'request_origin',
+      'request_path',
+      'created_at',
+      'request_id',
+      'request_response',
+    ],
+  })
+  .openapi('ApiLogObject')
+
+const ApiLogsPaginatedSchema = z
+  .object({ api_logs: z.array(ApiLogObjectSchema), meta: PaginationMetaSchema })
+  .openapi({ required: ['api_logs', 'meta'] })
+  .openapi('ApiLogsPaginated')
+
+const ApiLogSchema = z
+  .object({ api_log: ApiLogObjectSchema })
+  .openapi({ required: ['api_log'] })
+  .openapi('ApiLog')
+
+const GrossRevenueObjectSchema = z
+  .object({
+    month: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description:
+          'The month the revenue is reported for, returned as the first instant of that month in UTC.',
+        example: '2023-11-01T00:00:00.000Z',
+      }),
+    amount_cents: z
+      .int()
+      .openapi({
+        description: 'The total amount of revenue for a period, expressed in cents.',
+        example: 50000,
+      }),
+    currency: CurrencySchema.openapi({
+      description: 'The currency of revenue analytics. Format must be ISO 4217.',
+      example: 'USD',
+    }),
+    invoices_count: z
+      .int()
+      .openapi({
+        description:
+          'The number of `finalized` invoices issued during the month. Fees paid in advance that are not attached to an invoice are not counted.',
+        example: 10,
+      }),
+    billing_entity_id: z
+      .uuid()
+      .openapi({
+        description:
+          'Unique identifier assigned to the billing entity the revenue is attributed to, created by Lago.',
+        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
+      }),
+  })
+  .openapi({
+    required: ['month', 'amount_cents', 'currency', 'invoices_count', 'billing_entity_id'],
+  })
+  .openapi('GrossRevenueObject')
+
+const GrossRevenuesSchema = z
+  .object({ gross_revenues: z.array(GrossRevenueObjectSchema) })
+  .openapi({ required: ['gross_revenues'] })
+  .openapi('GrossRevenues')
+
+const InvoiceCollectionObjectSchema = z
+  .object({
+    month: z
+      .string()
+      .openapi({
+        description: 'Identifies the month of the invoice issuing date.',
+        example: '2023-11-01T00:00:00.000Z',
+      }),
+    payment_status: z
+      .union([z.literal('pending'), z.literal('succeeded'), z.literal('failed'), z.literal(null)])
+      .nullable()
+      .openapi({
+        description:
+          'The payment status of the finalized invoices counted in this row. It is `null` for a month without finalized invoices.',
+        example: 'succeeded',
+      }),
+    invoices_count: z
+      .int()
+      .openapi({
+        description:
+          'The number of finalized invoices issued during the month with this payment status.',
+        example: 10,
+      }),
+    amount_cents: z
+      .int()
+      .openapi({
+        description:
+          'The total amount of the finalized invoices counted in this row, expressed in cents.',
+        example: 50000,
+      }),
+    currency: z
+      .xor([CurrencySchema, z.null().nullable()])
+      .openapi({
+        description:
+          'The currency of the finalized invoices counted in this row. Format must be ISO 4217. It is `null` for a month without finalized invoices.',
+        example: 'USD',
+      }),
+  })
+  .openapi({ required: ['month', 'payment_status', 'invoices_count', 'amount_cents', 'currency'] })
+  .openapi('InvoiceCollectionObject')
+
+const InvoiceCollectionsSchema = z
+  .object({ invoice_collections: z.array(InvoiceCollectionObjectSchema) })
+  .openapi({ required: ['invoice_collections'] })
+  .openapi('InvoiceCollections')
+
+const InvoicedUsageObjectSchema = z
+  .object({
+    month: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description:
+          'The month the invoiced usage is reported for, returned as the first instant of that month in UTC.',
+        example: '2023-11-01T00:00:00.000Z',
+      }),
+    code: z
+      .string()
+      .openapi({
+        description: 'The code of the billable metric the usage fees were charged for.',
+        example: 'code1',
+      }),
+    amount_cents: z
+      .int()
+      .openapi({
+        description:
+          'The total invoiced usage for the month and the billable metric, expressed in cents. It excludes taxes and is net of coupons.',
+        example: 50000,
+      }),
+    currency: CurrencySchema.openapi({
+      description: 'The currency of revenue analytics. Format must be ISO 4217.',
+      example: 'USD',
+    }),
+  })
+  .openapi({ required: ['month', 'code', 'amount_cents', 'currency'] })
+  .openapi('InvoicedUsageObject')
+
+const InvoicedUsagesSchema = z
+  .object({ invoiced_usages: z.array(InvoicedUsageObjectSchema) })
+  .openapi({ required: ['invoiced_usages'] })
+  .openapi('InvoicedUsages')
+
+const MrrObjectSchema = z
+  .object({
+    month: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description:
+          'The month the MRR is reported for, returned as the first instant of that month in UTC.',
+        example: '2023-11-01T00:00:00.000Z',
+      }),
+    amount_cents: z
+      .int()
+      .nullable()
+      .openapi({
+        description:
+          'The total amount of MRR, expressed in cents. It is `null` for a month with no subscription fee.',
+        example: 50000,
+      }),
+    currency: z
+      .xor([CurrencySchema, z.null().nullable()])
+      .openapi({
+        description:
+          'The currency of MRR analytics. Format must be ISO 4217. It is `null` for a month with no subscription fee.',
+        example: 'USD',
+      }),
+  })
+  .openapi({ required: ['month', 'amount_cents', 'currency'] })
+  .openapi('MrrObject')
+
+const MrrsSchema = z
+  .object({ mrrs: z.array(MrrObjectSchema) })
+  .openapi({ required: ['mrrs'] })
+  .openapi('Mrrs')
+
+const OverdueBalanceObjectSchema = z
+  .object({
+    month: z
+      .string()
+      .openapi({
+        description: 'Identifies the month of the payment due date of the overdue invoices.',
+        example: '2023-11-01T00:00:00.000Z',
+      }),
+    amount_cents: z
+      .int()
+      .openapi({
+        description:
+          'The amount still due for this month, expressed in cents. It is the total of the overdue invoices minus the amounts already paid and minus the credits applied by finalized credit notes.',
+        example: 50000,
+      }),
+    currency: CurrencySchema.openapi({
+      description: 'The currency of the overdue invoices. Format must be ISO 4217.',
+      example: 'USD',
+    }),
+    lago_invoice_ids: z
+      .array(z.uuid())
+      .openapi({
+        description:
+          'Unique identifiers of the overdue invoices included in this amount, created by Lago.',
+        example: ['5eb02857-a71e-4ea2-bcf9-57d3a41bc6ba'],
+      }),
+    billing_entity_id: z
+      .uuid()
+      .openapi({
+        description:
+          'Unique identifier assigned to the billing entity the overdue balance is attributed to, created by Lago.',
+        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
+      }),
+  })
+  .openapi({
+    required: ['month', 'amount_cents', 'currency', 'lago_invoice_ids', 'billing_entity_id'],
+  })
+  .openapi('OverdueBalanceObject')
+
+const OverdueBalancesSchema = z
+  .object({ overdue_balances: z.array(OverdueBalanceObjectSchema) })
+  .openapi({ required: ['overdue_balances'] })
+  .openapi('OverdueBalances')
+
+const CountrySchema = z
+  .enum([
+    'AD',
+    'AE',
+    'AF',
+    'AG',
+    'AI',
+    'AL',
+    'AM',
+    'AO',
+    'AQ',
+    'AR',
+    'AS',
+    'AT',
+    'AU',
+    'AW',
+    'AX',
+    'AZ',
+    'BA',
+    'BB',
+    'BD',
+    'BE',
+    'BF',
+    'BG',
+    'BH',
+    'BI',
+    'BJ',
+    'BL',
+    'BM',
+    'BN',
+    'BO',
+    'BQ',
+    'BR',
+    'BS',
+    'BT',
+    'BV',
+    'BW',
+    'BY',
+    'BZ',
+    'CA',
+    'CC',
+    'CD',
+    'CF',
+    'CG',
+    'CH',
+    'CI',
+    'CK',
+    'CL',
+    'CM',
+    'CN',
+    'CO',
+    'CR',
+    'CU',
+    'CV',
+    'CW',
+    'CX',
+    'CY',
+    'CZ',
+    'DE',
+    'DJ',
+    'DK',
+    'DM',
+    'DO',
+    'DZ',
+    'EC',
+    'EE',
+    'EG',
+    'EH',
+    'ER',
+    'ES',
+    'ET',
+    'FI',
+    'FJ',
+    'FK',
+    'FM',
+    'FO',
+    'FR',
+    'GA',
+    'GB',
+    'GD',
+    'GE',
+    'GF',
+    'GG',
+    'GH',
+    'GI',
+    'GL',
+    'GM',
+    'GN',
+    'GP',
+    'GQ',
+    'GR',
+    'GS',
+    'GT',
+    'GU',
+    'GW',
+    'GY',
+    'HK',
+    'HM',
+    'HN',
+    'HR',
+    'HT',
+    'HU',
+    'ID',
+    'IE',
+    'IL',
+    'IM',
+    'IN',
+    'IO',
+    'IQ',
+    'IR',
+    'IS',
+    'IT',
+    'JE',
+    'JM',
+    'JO',
+    'JP',
+    'KE',
+    'KG',
+    'KH',
+    'KI',
+    'KM',
+    'KN',
+    'KP',
+    'KR',
+    'KW',
+    'KY',
+    'KZ',
+    'LA',
+    'LB',
+    'LC',
+    'LI',
+    'LK',
+    'LR',
+    'LS',
+    'LT',
+    'LU',
+    'LV',
+    'LY',
+    'MA',
+    'MC',
+    'MD',
+    'ME',
+    'MF',
+    'MG',
+    'MH',
+    'MK',
+    'ML',
+    'MM',
+    'MN',
+    'MO',
+    'MP',
+    'MQ',
+    'MR',
+    'MS',
+    'MT',
+    'MU',
+    'MV',
+    'MW',
+    'MX',
+    'MY',
+    'MZ',
+    'NA',
+    'NC',
+    'NE',
+    'NF',
+    'NG',
+    'NI',
+    'NL',
+    'NO',
+    'NP',
+    'NR',
+    'NU',
+    'NZ',
+    'OM',
+    'PA',
+    'PE',
+    'PF',
+    'PG',
+    'PH',
+    'PK',
+    'PL',
+    'PM',
+    'PN',
+    'PR',
+    'PS',
+    'PT',
+    'PW',
+    'PY',
+    'QA',
+    'RE',
+    'RO',
+    'RS',
+    'RU',
+    'RW',
+    'SA',
+    'SB',
+    'SC',
+    'SD',
+    'SE',
+    'SG',
+    'SH',
+    'SI',
+    'SJ',
+    'SK',
+    'SL',
+    'SM',
+    'SN',
+    'SO',
+    'SR',
+    'SS',
+    'ST',
+    'SV',
+    'SX',
+    'SY',
+    'SZ',
+    'TC',
+    'TD',
+    'TF',
+    'TG',
+    'TH',
+    'TJ',
+    'TK',
+    'TL',
+    'TM',
+    'TN',
+    'TO',
+    'TR',
+    'TT',
+    'TV',
+    'TW',
+    'TZ',
+    'UA',
+    'UG',
+    'UM',
+    'US',
+    'UY',
+    'UZ',
+    'VA',
+    'VC',
+    'VE',
+    'VG',
+    'VI',
+    'VN',
+    'VU',
+    'WF',
+    'WS',
+    'YE',
+    'YT',
+    'ZA',
+    'ZM',
+    'ZW',
+  ])
+  .openapi({ example: 'US' })
+  .openapi('Country')
+
+const UsageObjectSchema = z
+  .object({
+    organization_id: z
+      .uuid()
+      .openapi({
+        description:
+          'The unique identifier of the organization for which the usage analytics is calculated.',
+        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
+      }),
+    start_of_period_dt: z.iso
+      .date()
+      .openapi({
+        description: 'The start date of the period for which the usage analytics is calculated.',
+        example: '2023-11-01',
+      }),
+    end_of_period_dt: z.iso
+      .date()
+      .openapi({
+        description: 'The end date of the period for which the usage analytics is calculated.',
+        example: '2023-11-30',
+      }),
+    amount_currency: CurrencySchema.openapi({
+      description: 'The currency of usage analytics. Format must be ISO 4217.',
+      example: 'USD',
+    }),
+    amount_cents: z
+      .int()
+      .openapi({
+        description: 'The total amount for usages for a period, expressed in cents.',
+        example: 50000,
+      }),
+    billable_metric_code: z
+      .string()
+      .openapi({ description: 'The code of the usage-based billable metrics.', example: 'code1' }),
+    units: z
+      .number()
+      .openapi({
+        description: 'The total number of units for the usage-based billable metrics.',
+        example: 1,
+      }),
+    is_billable_metric_deleted: z
+      .boolean()
+      .openapi({
+        description:
+          'Indicates whether the billable metric associated with the usage has been deleted. It is set on every entry of the response.',
+        example: false,
+      }),
+  })
+  .openapi({
+    required: [
+      'organization_id',
+      'start_of_period_dt',
+      'end_of_period_dt',
+      'amount_cents',
+      'amount_currency',
+      'billable_metric_code',
+      'units',
+      'is_billable_metric_deleted',
+    ],
+  })
+  .openapi('UsageObject')
+
+const UsagesSchema = z
+  .object({ usages: z.array(UsageObjectSchema) })
+  .openapi({ required: ['usages'] })
+  .openapi('Usages')
+
+const AppliedCouponObjectSchema = z
+  .object({
+    lago_id: z
+      .uuid()
+      .openapi({
+        description: 'Unique identifier of the applied coupon, created by Lago.',
+        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
+      }),
+    lago_coupon_id: z
+      .uuid()
+      .openapi({
+        description: 'Unique identifier of the coupon, created by Lago.',
+        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
+      }),
+    coupon_code: z
+      .string()
+      .openapi({
+        description: 'Unique code used to identify the coupon.',
+        example: 'startup_deal',
+      }),
+    coupon_name: z
+      .string()
+      .openapi({ description: 'The name of the coupon.', example: 'Startup Deal' }),
+    coupon_description: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'The description of the parent coupon.',
+        example: 'I am a coupon description',
+      }),
+    coupon_status: z
+      .enum(['active', 'terminated'])
+      .openapi({
+        description: 'The status of the parent coupon. Can be either `active` or `terminated`.',
+        example: 'active',
+      }),
+    coupon_deleted_at: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The date and time when the parent coupon was deleted. If null, the coupon still exists. It is expressed in UTC format according to the ISO 8601 datetime standard.',
+        example: '2022-04-29T08:59:51Z',
+      }),
+    lago_customer_id: z
+      .uuid()
+      .openapi({
+        description: 'Unique identifier of the customer, created by Lago.',
+        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
+      }),
+    external_customer_id: z
+      .string()
+      .openapi({
+        description: 'The customer external unique identifier (provided by your own application)',
+        example: '5eb02857-a71e-4ea2-bcf9-57d3a41bc6ba',
+      }),
+    status: z
+      .enum(['active', 'terminated'])
+      .openapi({
+        description: 'The status of the coupon. Can be either `active` or `terminated`.',
+        example: 'active',
+      }),
+    amount_cents: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The amount of the coupon in cents. It is set for a coupon with the `fixed_amount` type.',
+        example: 2000,
+      }),
+    amount_cents_remaining: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The remaining amount in cents for a `fixed_amount` coupon with a frequency set to `once`. This field indicates the remaining balance or value that can still be utilized from the coupon.',
+        example: 50,
+      }),
+    amount_currency: CurrencyOrNullSchema.exactOptional().openapi({
+      description:
+        'The currency of the coupon amount. It is set for a coupon with the `fixed_amount` type.',
+      example: 'EUR',
+    }),
+    percentage_rate: z
+      .string()
+      .regex(/^[0-9]+.?[0-9]*$/)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The percentage rate of the coupon. It is set for a coupon with the `percentage` type.',
+        example: null,
+      }),
+    frequency: z
+      .enum(['once', 'recurring', 'forever'])
+      .openapi({
+        description:
+          'The type of frequency for the coupon. It can have three possible values: `once`, `recurring` or `forever`.\n\n- If set to `once`, the coupon is applicable only for a single use.\n- If set to `recurring`, the coupon can be used multiple times for recurring billing periods.\n- If set to `forever`, the coupon has unlimited usage and can be applied indefinitely.',
+        example: 'recurring',
+      }),
+    frequency_duration: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The number of billing periods to which the coupon applies. It is set when the frequency is `recurring`.',
+        example: 3,
+      }),
+    frequency_duration_remaining: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The remaining number of billing periods to which the coupon is applicable. This field determines the remaining usage or availability of the coupon based on the remaining billing periods.',
+        example: 1,
+      }),
+    expiration_at: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          "The date and time after which the coupon will stop applying to customer's invoices. Once the expiration date is reached, the coupon will no longer be applicable, and any further invoices generated for the customer will not include the coupon discount. This value comes from the parent coupon.",
+        example: '2022-04-29T08:59:51Z',
+      }),
+    created_at: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description:
+          'The date and time when the coupon was assigned to a customer. It is expressed in UTC format according to the ISO 8601 datetime standard.',
+        example: '2022-04-29T08:59:51Z',
+      }),
+    terminated_at: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          "This field indicates the specific moment when the coupon amount is fully utilized or when the coupon is removed from the customer's coupon list. It is expressed in UTC format according to the ISO 8601 datetime standard.",
+        example: '2022-04-29T08:59:51Z',
+      }),
+  })
+  .openapi({
+    required: [
+      'lago_id',
+      'lago_coupon_id',
+      'coupon_code',
+      'coupon_name',
+      'external_customer_id',
+      'lago_customer_id',
+      'status',
+      'coupon_status',
+      'frequency',
+      'created_at',
+    ],
+  })
+  .openapi('AppliedCouponObject')
+
+const CreditObjectSchema = z
+  .object({
+    lago_id: z
+      .uuid()
+      .openapi({
+        description:
+          "Unique identifier assigned to the credit within the Lago application. This ID is exclusively created by Lago and serves as a unique identifier for the credit's item record within the Lago system.",
+        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
+      }),
+    amount_cents: z
+      .int()
+      .openapi({
+        description: 'The amount of credit associated with the invoice, expressed in cents.',
+        example: 1200,
+      }),
+    amount_currency: CurrencySchema.openapi({
+      description: 'The currency of the credit.',
+      example: 'EUR',
+    }),
+    before_taxes: z
+      .boolean()
+      .openapi({
+        description:
+          'Indicates whether the credit is applied on the amount before taxes (coupons) or after taxes (credit notes). This flag helps determine the order in which credits are applied to the invoice calculation',
+        example: false,
+      }),
+    item: z
+      .object({
+        lago_item_id: z
+          .uuid()
+          .openapi({
+            description:
+              'Unique identifier assigned to the credit item within the Lago application.',
+            example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
+          }),
+        type: z
+          .enum(['coupon', 'credit_note', 'invoice'])
+          .openapi({
+            description:
+              'The type of credit applied. Possible values are `coupon`, `credit_note` or `invoice` (for `progressive_billing` invoice).',
+            example: 'coupon',
+          }),
+        code: z
+          .string()
+          .openapi({
+            description:
+              "The code of the credit applied. It can be the code of the coupon attached to the credit, the credit note's number or the `progressive_billing` invoice number.",
+            example: 'startup_deal',
+          }),
+        name: z
+          .string()
+          .openapi({
+            description:
+              "The name of the credit applied. It can be the name of the coupon attached to the credit, the initial invoice's number linked to the credit note or the `progressive_billing` invoice number.",
+            example: 'Startup Deal',
+          }),
+        description: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'The description of the credit applied. It is the description of the coupon attached to the credit or the description of the credit note. It is null for a `progressive_billing` invoice.',
+            example: 'I am a coupon description',
+          }),
+      })
+      .openapi({
+        description: 'The item attached to the credit.',
+        required: ['lago_item_id', 'type', 'code', 'name'],
+      }),
+    invoice: z
+      .object({
+        lago_id: z.uuid().openapi({ example: '1a901a90-1a90-1a90-1a90-1a901a901a90' }),
+        payment_status: z
+          .enum(['pending', 'succeeded', 'failed'])
+          .openapi({ example: 'succeeded' }),
+      })
+      .openapi({ required: ['lago_id', 'payment_status'] }),
+  })
+  .openapi({
+    required: ['lago_id', 'item', 'amount_cents', 'amount_currency', 'invoice', 'before_taxes'],
+  })
+  .openapi('CreditObject')
+
+const AppliedCouponObjectExtendedSchema = AppliedCouponObjectSchema.and(
+  z.object({ credits: z.array(CreditObjectSchema) }).openapi({ required: ['credits'] }),
+).openapi('AppliedCouponObjectExtended')
+
+const AppliedCouponsPaginatedSchema = z
+  .object({
+    applied_coupons: z.array(AppliedCouponObjectExtendedSchema),
+    meta: PaginationMetaSchema,
+  })
+  .openapi({ required: ['applied_coupons', 'meta'] })
+  .openapi('AppliedCouponsPaginated')
+
+const AppliedCouponInputSchema = z
+  .object({
+    applied_coupon: z
+      .object({
+        external_customer_id: z
+          .string()
+          .openapi({
+            description:
+              'The customer external unique identifier (provided by your own application)',
+            example: '5eb02857-a71e-4ea2-bcf9-57d3a41bc6ba',
+          }),
+        coupon_code: z
+          .string()
+          .openapi({
+            description: 'Unique code used to identify the coupon.',
+            example: 'startup_deal',
+          }),
+        frequency: z
+          .union([z.literal('once'), z.literal('recurring'), z.literal('forever'), z.literal(null)])
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'The type of frequency for the coupon. It can have three possible values: `once`, `recurring` or `forever`.\n\n- If set to `once`, the coupon is applicable only for a single use.\n- If set to `recurring`, the coupon can be used multiple times for recurring billing periods.\n- If set to `forever`, the coupon has unlimited usage and can be applied indefinitely.\n\nIf it is not set, the frequency of the coupon is used.',
+            example: 'recurring',
+          }),
+        frequency_duration: z
+          .int()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'The number of billing periods to which the coupon applies. If it is not set, the frequency duration of the coupon is used. A `recurring` applied coupon must end up with a frequency duration greater than 0.',
+            example: 3,
+          }),
+        amount_cents: z
+          .int()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'The amount of the coupon in cents. If it is not set, the amount of the coupon is used.',
+            example: 2000,
+          }),
+        amount_currency: CurrencyOrNullSchema.exactOptional().openapi({
+          description:
+            'The currency of the coupon amount. If it is not set, the currency of the coupon is used.',
+          example: 'EUR',
+        }),
+        percentage_rate: z
+          .union([z.string().regex(/^[0-9]+.?[0-9]*$/), z.number()])
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'The percentage rate of the coupon. Accepts a number or a decimal string. If it is not set, the percentage rate of the coupon is used.',
+            example: null,
+          }),
+      })
+      .openapi({ required: ['external_customer_id', 'coupon_code'] }),
+  })
+  .openapi({ required: ['applied_coupon'] })
+  .openapi('AppliedCouponInput')
+
+const AppliedCouponSchema = z
+  .object({ applied_coupon: AppliedCouponObjectSchema })
+  .openapi({ required: ['applied_coupon'] })
+  .openapi('AppliedCoupon')
+
+const ApiErrorNotAllowedSchema = z
+  .object({
+    status: z.int32().openapi({ example: 405 }),
+    error: z.string().openapi({ example: 'Method Not Allowed' }),
+    code: z.string().openapi({ example: 'not_allowed' }),
+  })
+  .openapi({ required: ['status', 'error', 'code'] })
+  .openapi('ApiErrorNotAllowed')
+
+const BillableMetricFilterObjectSchema = z
+  .object({
+    key: z
+      .string()
+      .openapi({
+        example: 'region',
+        description: 'Filter key to add to the event properties payload',
+      }),
+    values: z
+      .array(z.string().openapi({ example: 'us-east-1' }))
+      .openapi({ description: 'List of possible filter values' }),
+  })
+  .openapi({
+    description:
+      'Values used to apply differentiated pricing based on additional event properties.',
+    required: ['key', 'values'],
+  })
+  .openapi('BillableMetricFilterObject')
+
+const BillableMetricObjectSchema = z
+  .object({
+    lago_id: z
+      .uuid()
+      .openapi({
+        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
+        description: 'Unique identifier of the billable metric created by Lago.',
+      }),
+    name: z.string().openapi({ example: 'Storage', description: 'Name of the billable metric.' }),
+    code: z
+      .string()
+      .openapi({
+        example: 'storage',
+        description:
+          'Unique code used to identify the billable metric associated with the API request. This code associates each event with the correct metric.',
+      }),
+    description: z
+      .string()
+      .nullable()
+      .openapi({
+        example: 'GB of storage used in my application',
+        description: 'Internal description of the billable metric.',
+      }),
+    recurring: z
+      .boolean()
+      .openapi({
+        example: false,
+        description:
+          'Defines if the billable metric is persisted billing period over billing period.\n\n- If set to `true`: the accumulated number of units calculated from the previous billing period is persisted to the next billing period.\n- If set to `false`: the accumulated number of units is reset to 0 at the end of the billing period.\n- If not defined in the request, default value is `false`.',
+      }),
+    rounding_function: z
+      .union([z.literal('ceil'), z.literal('floor'), z.literal('round'), z.literal(null)])
+      .nullable()
+      .openapi({
+        example: 'round',
+        description:
+          'Rounding applied to the aggregated number of units. Possible values are `round`, `ceil` and `floor`. When it is not set, the units are not rounded.',
+      }),
+    rounding_precision: z
+      .int()
+      .nullable()
+      .openapi({
+        example: 2,
+        description:
+          'Number of decimal places kept when `rounding_function` is applied. It can be a positive or negative value, and it defaults to 0.',
+      }),
+    created_at: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        example: '2022-09-14T16:35:31Z',
+        description: 'Creation date of the billable metric.',
+      }),
+    expression: z
+      .string()
+      .nullable()
+      .openapi({
+        example:
+          'round((event.properties.ended_at - event.properties.started_at) * event.properties.units)',
+        description:
+          'Expression used to calculate the event units. The expression is evaluated for each event and the result is then used to calculate the total aggregated units.',
+      }),
+    field_name: z
+      .string()
+      .nullable()
+      .openapi({
+        example: 'gb',
+        description:
+          'Property of the billable metric used for aggregating usage data. It is `null` when `aggregation_type` is `count_agg`.',
+      }),
+    aggregation_type: z
+      .enum([
+        'count_agg',
+        'sum_agg',
+        'max_agg',
+        'unique_count_agg',
+        'weighted_sum_agg',
+        'latest_agg',
+      ])
+      .openapi({
+        description: 'Aggregation method used to compute usage for this billable metric.',
+        example: 'sum_agg',
+      }),
+    weighted_interval: z
+      .union([z.literal('seconds'), z.literal(null)])
+      .nullable()
+      .openapi({
+        example: 'seconds',
+        description:
+          'Parameter exclusively utilized in conjunction with the `weighted_sum_agg` aggregation type. It serves to adjust the aggregation result by assigning weights and proration to the result based on time intervals.',
+      }),
+    filters: z.array(BillableMetricFilterObjectSchema),
+  })
+  .openapi({
+    required: [
+      'lago_id',
+      'name',
+      'code',
+      'description',
+      'recurring',
+      'rounding_function',
+      'rounding_precision',
+      'created_at',
+      'expression',
+      'field_name',
+      'aggregation_type',
+      'weighted_interval',
+      'filters',
+    ],
+  })
+  .openapi('BillableMetricObject')
+
+const BillableMetricsPaginatedSchema = z
+  .object({ billable_metrics: z.array(BillableMetricObjectSchema), meta: PaginationMetaSchema })
+  .openapi({ required: ['billable_metrics', 'meta'] })
+  .openapi('BillableMetricsPaginated')
+
+const BillableMetricFilterInputSchema = z
+  .object({
+    key: z
+      .string()
+      .openapi({
+        example: 'region',
+        description: 'Filter key to add to the event properties payload',
+      }),
+    values: z
+      .array(z.string().openapi({ example: 'us-east-1' }))
+      .openapi({ description: 'List of possible filter values. It must hold at least one value.' }),
+  })
+  .openapi({
+    description:
+      'Values used to apply differentiated pricing based on additional event properties.',
+    required: ['key', 'values'],
+  })
+  .openapi('BillableMetricFilterInput')
+
+const BillableMetricBaseInputSchema = z
+  .object({
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ example: 'Storage', description: 'Name of the billable metric.' }),
+    code: z
+      .string()
+      .exactOptional()
+      .openapi({
+        example: 'storage',
+        description:
+          'Unique code used to identify the billable metric associated with the API request. This code associates each event with the correct metric.',
+      }),
+    description: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        example: 'GB of storage used in my application',
+        description: 'Internal description of the billable metric.',
+      }),
+    recurring: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        example: false,
+        description:
+          'Defines if the billable metric is persisted billing period over billing period.\n\n- If set to `true`: the accumulated number of units calculated from the previous billing period is persisted to the next billing period.\n- If set to `false`: the accumulated number of units is reset to 0 at the end of the billing period.\n- If not defined in the request, default value is `false`.\n- It cannot be set to `true` when `aggregation_type` is `count_agg`, `max_agg` or `latest_agg`.',
+      }),
+    expression: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        example:
+          'round((event.properties.ended_at - event.properties.started_at) * event.properties.units)',
+        description:
+          'Expression used to calculate the event units. The expression is evaluated for each event and the result is then used to calculate the total aggregated units.\nEvent values are read with `event.code`, `event.timestamp` and `event.properties.<name>`.\nAccepted functions are `ceil`, `concat`, `floor`, `greatest`, `least` and `round` as well as `+`, `-`, `/` and `*` operations.\n`ceil`, `floor` and `round` accept an optional second parameter to specify the number of decimals.\n',
+      }),
+    rounding_function: z
+      .union([z.literal('ceil'), z.literal('floor'), z.literal('round'), z.literal(null)])
+      .nullable()
+      .exactOptional()
+      .openapi({
+        example: 'round',
+        description:
+          'Rounding applied to the aggregated number of units. Possible values are `round`, `ceil` and `floor`. When it is not set, the units are not rounded.',
+      }),
+    rounding_precision: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        example: 2,
+        description:
+          'Number of decimal places kept when `rounding_function` is applied. It can be a positive or negative value, and it defaults to 0.',
+      }),
+    field_name: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        example: 'gb',
+        description:
+          'Property of the billable metric used for aggregating usage data. It is required for every aggregation type except `count_agg`, which ignores it and stores `null`.',
+      }),
+    aggregation_type: z
+      .enum([
+        'count_agg',
+        'sum_agg',
+        'max_agg',
+        'unique_count_agg',
+        'weighted_sum_agg',
+        'latest_agg',
+      ])
+      .exactOptional()
+      .openapi({
+        example: 'sum_agg',
+        description: 'Aggregation method used to compute usage for this billable metric.',
+      }),
+    weighted_interval: z
+      .union([z.literal('seconds'), z.literal(null)])
+      .nullable()
+      .exactOptional()
+      .openapi({
+        example: 'seconds',
+        description:
+          'Parameter exclusively utilized in conjunction with the `weighted_sum_agg` aggregation type. It serves to adjust the aggregation result by assigning weights and proration to the result based on time intervals. It is required when `aggregation_type` is `weighted_sum_agg`, and `seconds` is the only accepted value.',
+      }),
+    filters: z
+      .array(BillableMetricFilterInputSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'List of filters of the billable metric. On update, this list replaces the existing filters: a filter that is not sent is deleted.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('BillableMetricBaseInput')
+
+const BillableMetricCreateInputSchema = z
+  .object({
+    billable_metric: BillableMetricBaseInputSchema.openapi({
+      required: ['name', 'code', 'aggregation_type'],
+    }),
+  })
+  .openapi({ required: ['billable_metric'] })
+  .openapi('BillableMetricCreateInput')
+
+const BillableMetricSchema = z
+  .object({ billable_metric: BillableMetricObjectSchema })
+  .openapi({ required: ['billable_metric'] })
+  .openapi('BillableMetric')
+
+const BillableMetricEvaluateExpressionInputSchema = z
+  .object({
+    expression: z
+      .string()
+      .openapi({
+        example:
+          'round((event.properties.ended_at - event.properties.started_at) * event.properties.units)',
+        description:
+          'Expression used to calculate the event units. The expression is evaluated for each event and the result is then used to calculate the total aggregated units.\nEvent values are read with `event.code`, `event.timestamp` and `event.properties.<name>`.\nAccepted functions are `ceil`, `concat`, `floor`, `greatest`, `least` and `round` as well as `+`, `-`, `/` and `*` operations.\n`ceil`, `floor` and `round` accept an optional second parameter to specify the number of decimals.\n',
+      }),
+    event: z
+      .object({
+        code: z
+          .string()
+          .exactOptional()
+          .openapi({
+            example: 'storage',
+            description: 'The code that identifies a targeted billable metric.',
+          }),
+        timestamp: z
+          .union([z.int(), z.string()])
+          .exactOptional()
+          .openapi({
+            example: '1651240791',
+            description:
+              'This field captures the Unix timestamp in seconds indicating the occurrence of the event in Coordinated Universal Time (UTC).\nIf this timestamp is not provided, the API will automatically set it to the time of event reception.\n',
+          }),
+        properties: z
+          .record(z.string(), z.xor([z.string(), z.int(), z.number()]))
+          .exactOptional()
+          .openapi({
+            description:
+              'This field represents additional properties associated with the event. They can be used when evaluating the expression.',
+            example: { gb: 10 },
+          }),
+      })
+      .openapi({ required: [] }),
+  })
+  .openapi({ required: ['expression', 'event'] })
+  .openapi('BillableMetricEvaluateExpressionInput')
+
+const BillableMetricEvaluateExpressionResultSchema = z
+  .object({
+    expression_result: z
+      .object({
+        value: z
+          .string()
+          .openapi({
+            example: '2.0',
+            description:
+              'Result of evaluating the expression. A numeric result is returned as a decimal string.',
+          }),
+      })
+      .openapi({ required: ['value'] }),
+  })
+  .openapi({ required: ['expression_result'] })
+  .openapi('BillableMetricEvaluateExpressionResult')
+
+const BillableMetricUpdateInputSchema = z
+  .object({ billable_metric: BillableMetricBaseInputSchema })
+  .openapi({ required: ['billable_metric'] })
+  .openapi('BillableMetricUpdateInput')
+
+const FeatureObjectSchema = z
+  .object({
+    code: z
+      .string()
+      .openapi({
+        example: 'seats',
+        description: 'Unique code used to identify the feature. Max 255 characters.',
+      }),
+    name: z
+      .string()
+      .nullable()
+      .openapi({
+        example: 'Number of seats',
+        description: 'Name of the feature. Max 255 characters.',
+      }),
+    description: z
+      .string()
+      .nullable()
+      .openapi({
+        example: 'Number of users of the account',
+        description: 'Description of the feature. Max 600 characters.',
+      }),
+    privileges: z.array(FeaturePrivilegeObjectSchema).openapi({
+      example: [
+        { code: 'max', name: 'Maximum', value_type: 'integer', config: {} },
+        { code: 'max_admins', name: 'Max Admins', value_type: 'integer', config: {} },
+        { code: 'root', name: 'Allow root user', value_type: 'boolean', config: {} },
+        {
+          code: 'provider',
+          name: 'SSO Provider',
+          value_type: 'select',
+          config: { select_options: ['google', 'okta'] },
+        },
+      ],
+      description: 'Privileges associated with this feature. Can be empty.',
+    }),
+    created_at: z.iso
+      .datetime({ offset: true })
+      .openapi({ example: '2025-07-17T12:34:35Z', description: 'Creation date of the feature.' }),
+  })
+  .openapi({ required: ['code', 'name', 'description', 'privileges', 'created_at'] })
+  .openapi('FeatureObject')
+
+const FeaturesPaginatedSchema = z
+  .object({ features: z.array(FeatureObjectSchema), meta: PaginationMetaSchema })
+  .openapi({ required: ['features', 'meta'] })
+  .openapi('FeaturesPaginated')
+
+const FeatureBaseInputSchema = z
+  .object({
+    name: z
+      .string()
+      .max(255)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        example: 'Number of seats',
+        description: 'Name of the feature. Max 255 characters.',
+      }),
+    description: z
+      .string()
+      .max(600)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        example: 'Number of users of the account',
+        description: 'Internal description of the feature. Max 600 characters.',
+      }),
+    privileges: z
+      .array(
+        z
+          .object({
+            code: z
+              .string()
+              .max(255)
+              .openapi({
+                example: 'max',
+                description: 'Unique code for the privilege. Max 255 characters.',
+              }),
+            name: z
+              .string()
+              .max(255)
+              .nullable()
+              .exactOptional()
+              .openapi({
+                example: 'Maximum',
+                description: 'Display name for the privilege. Max 255 characters.',
+              }),
+            value_type: z
+              .enum(['integer', 'boolean', 'string', 'select'])
+              .exactOptional()
+              .openapi({
+                example: 'integer',
+                description:
+                  'Data type of the privilege value. It defaults to `string`. It cannot be changed once the privilege exists.',
+              }),
+            config: z
+              .object({
+                select_options: z
+                  .array(z.string())
+                  .exactOptional()
+                  .openapi({
+                    example: ['google', 'okta'],
+                    description:
+                      'The values the privilege accepts. It is required when the value type is `select`, must hold at least one value, and must be left out for the other value types.',
+                  }),
+              })
+              .exactOptional()
+              .openapi({
+                description:
+                  'Extra configuration of the privilege. It must be left out unless the value type is `select`.',
+                required: [],
+              }),
+          })
+          .openapi({ required: ['code'] }),
+      )
+      .exactOptional()
+      .openapi({
+        example: [
+          { code: 'max', name: 'Maximum', value_type: 'integer' },
+          { code: 'max_admins', name: 'Max Admins', value_type: 'integer' },
+          { code: 'root', name: 'Allow root user', value_type: 'boolean' },
+          {
+            code: 'provider',
+            name: 'SSO Provider',
+            value_type: 'select',
+            config: { select_options: ['google', 'okta'] },
+          },
+        ],
+        description:
+          'Privileges associated with this feature. Can be empty. Each privilege code must appear only once in the list.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('FeatureBaseInput')
+
+const FeatureCreateInputSchema = z
+  .object({
+    feature: FeatureBaseInputSchema.and(
+      z
+        .object({
+          code: z
+            .string()
+            .max(255)
+            .openapi({
+              example: 'seats',
+              description: 'Unique code used to identify the feature. Max 255 characters.',
+            }),
+        })
+        .openapi({ required: ['code'] }),
+    ),
+  })
+  .openapi({ required: ['feature'] })
+  .openapi('FeatureCreateInput')
+
+const FeatureSchema = z
+  .object({ feature: FeatureObjectSchema })
+  .openapi({ required: ['feature'] })
+  .openapi('Feature')
+
+const FeatureUpdateInputSchema = z
+  .object({ feature: FeatureBaseInputSchema })
+  .openapi({ required: ['feature'] })
+  .openapi('FeatureUpdateInput')
+
+const CouponObjectSchema = z
+  .object({
+    lago_id: z
+      .uuid()
+      .openapi({
+        description: 'Unique identifier of the coupon, created by Lago.',
+        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
+      }),
+    name: z.string().openapi({ description: 'The name of the coupon.', example: 'Startup Deal' }),
+    code: z
+      .string()
+      .openapi({
+        description: 'Unique code used to identify the coupon.',
+        example: 'startup_deal',
+      }),
+    description: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Description of the coupon.', example: 'I am a coupon description' }),
+    coupon_type: z
+      .enum(['fixed_amount', 'percentage'])
+      .openapi({
+        description:
+          'The type of the coupon. It can have two possible values: `fixed_amount` or `percentage`.\n\n- If set to `fixed_amount`, the coupon represents a fixed amount discount.\n- If set to `percentage`, the coupon represents a percentage-based discount.',
+        example: 'fixed_amount',
+      }),
+    amount_cents: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The amount of the coupon in cents. This field is required only for coupon with `fixed_amount` type.',
+        example: 5000,
+      }),
+    amount_currency: CurrencyOrNullSchema.exactOptional().openapi({
+      description:
+        'The currency of the coupon. This field is required only for coupon with `fixed_amount` type.',
+      example: 'USD',
+    }),
+    reusable: z
+      .boolean()
+      .openapi({
+        description:
+          'Indicates whether the coupon can be reused or not. If set to `true`, the coupon is reusable, meaning it can be applied multiple times to the same customer. If set to `false`, the coupon can only be used once and is not reusable. If not specified, this field is set to `true` by default.',
+        example: true,
+      }),
+    limited_plans: z
+      .boolean()
+      .openapi({
+        description:
+          'The coupon is limited to specific plans. The possible values can be `true` or `false`.',
+        example: true,
+      }),
+    plan_codes: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          "An array of plan codes to which the coupon is applicable. By specifying the plan codes in this field, you can restrict the coupon's usage to specific plans only.",
+        example: ['startup_plan'],
+      }),
+    limited_billable_metrics: z
+      .boolean()
+      .openapi({
+        description:
+          'The coupon is limited to specific billable metrics. The possible values can be `true` or `false`.',
+        example: false,
+      }),
+    billable_metric_codes: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          "An array of billable metric codes to which the coupon is applicable. By specifying the billable metric codes in this field, you can restrict the coupon's usage to specific metrics only.",
+        example: [],
+      }),
+    percentage_rate: z
+      .string()
+      .regex(/^[0-9]+.?[0-9]*$/)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The percentage rate of the coupon. This field is required only for coupons with a `percentage` coupon type.',
+        example: null,
+      }),
+    frequency: z
+      .enum(['once', 'recurring', 'forever'])
+      .openapi({
+        description:
+          'The type of frequency for the coupon. It can have three possible values: `once`, `recurring`, or `forever`.\n\n- If set to `once`, the coupon is applicable only for a single use.\n- If set to `recurring`, the coupon can be used multiple times for recurring billing periods.\n- If set to `forever`, the coupon has unlimited usage and can be applied indefinitely.',
+        example: 'recurring',
+      }),
+    frequency_duration: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Specifies the number of billing periods to which the coupon applies. This field is required only for coupons with a `recurring` frequency type.',
+        example: 6,
+      }),
+    expiration: z
+      .enum(['no_expiration', 'time_limit'])
+      .openapi({
+        description:
+          'Specifies the type of expiration for the coupon. It can have two possible values: `time_limit` or `no_expiration`.\n\n- If set to `time_limit`, the coupon has an expiration based on a specified time limit.\n- If set to `no_expiration`, the coupon does not have an expiration date and remains valid indefinitely.',
+        example: 'time_limit',
+      }),
+    expiration_at: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The expiration date and time of the coupon. This field is required only for coupons with `expiration` set to `time_limit`. The expiration date and time should be specified in UTC format according to the ISO 8601 datetime standard. It indicates the exact moment when the coupon will expire and is no longer valid.',
+        example: '2022-08-08T23:59:59Z',
+      }),
+    created_at: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description:
+          'The date and time when the coupon was created. It is expressed in UTC format according to the ISO 8601 datetime standard. This field provides the timestamp for the exact moment when the coupon was initially created.',
+        example: '2022-04-29T08:59:51Z',
+      }),
+    terminated_at: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          "This field indicates if the coupon has been terminated and is no longer usable. If it's not null, it won't be removed for existing customers using it, but it prevents the coupon from being applied in the future.",
+        example: '2022-08-08T23:59:59Z',
+      }),
+  })
+  .openapi({
+    required: [
+      'lago_id',
+      'name',
+      'code',
+      'expiration',
+      'coupon_type',
+      'frequency',
+      'created_at',
+      'reusable',
+      'limited_plans',
+      'limited_billable_metrics',
+    ],
+  })
+  .openapi('CouponObject')
+
+const CouponsPaginatedSchema = z
+  .object({ coupons: z.array(CouponObjectSchema), meta: PaginationMetaSchema })
+  .openapi({ required: ['coupons', 'meta'] })
+  .openapi('CouponsPaginated')
+
+const CouponBaseInputSchema = z
+  .object({
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the coupon.', example: 'Startup Deal' }),
+    code: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Unique code used to identify the coupon.',
+        example: 'startup_deal',
+      }),
+    description: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Description of the coupon.', example: 'I am a coupon description' }),
+    coupon_type: z
+      .enum(['fixed_amount', 'percentage'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The type of the coupon. It can have two possible values: `fixed_amount` or `percentage`.\n\n- If set to `fixed_amount`, the coupon represents a fixed amount discount.\n- If set to `percentage`, the coupon represents a percentage-based discount.',
+        example: 'fixed_amount',
+      }),
+    amount_cents: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The amount of the coupon in cents. This field is required only for coupon with `fixed_amount` type.',
+        example: 5000,
+      }),
+    amount_currency: CurrencyOrNullSchema.exactOptional().openapi({
+      description:
+        'The currency of the coupon. This field is required only for coupon with `fixed_amount` type.',
+      example: 'USD',
+    }),
+    reusable: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates whether the coupon can be reused or not. If set to `true`, the coupon is reusable, meaning it can be applied multiple times to the same customer. If set to `false`, the coupon can only be used once and is not reusable. If not specified, this field is set to `true` by default.',
+        example: false,
+      }),
+    percentage_rate: z
+      .union([z.string().regex(/^[0-9]+.?[0-9]*$/), z.number()])
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The percentage rate of the coupon. Accepts a number or a decimal string. This field is required only for coupons with a `percentage` coupon type.',
+        example: null,
+      }),
+    frequency: z
+      .enum(['once', 'recurring', 'forever'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The type of frequency for the coupon. It can have three possible values: `once`, `recurring` or `forever`.\n\n- If set to `once`, the coupon is applicable only for a single use.\n- If set to `recurring`, the coupon can be used multiple times for recurring billing periods.\n- If set to `forever`, the coupon has unlimited usage and can be applied indefinitely.',
+        example: 'recurring',
+      }),
+    frequency_duration: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Specifies the number of billing periods to which the coupon applies. This field is required only for coupons with a `recurring` frequency type.',
+        example: 6,
+      }),
+    expiration: z
+      .enum(['no_expiration', 'time_limit'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Specifies the type of expiration for the coupon. It can have two possible values: `time_limit` or `no_expiration`.\n\n- If set to `time_limit`, the coupon has an expiration based on a specified time limit.\n- If set to `no_expiration`, the coupon does not have an expiration date and remains valid indefinitely.',
+        example: 'time_limit',
+      }),
+    expiration_at: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The expiration date and time of the coupon. This field is required only for coupons with `expiration` set to `time_limit`. The expiration date and time should be specified in UTC format according to the ISO 8601 datetime standard. It indicates the exact moment when the coupon will expire and is no longer valid.',
+        example: '2022-08-08T23:59:59Z',
+      }),
+    applies_to: z
+      .object({
+        plan_codes: z
+          .array(z.string())
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              "An array of plan codes to which the coupon is applicable. By specifying the plan codes in this field, you can restrict the coupon's usage to specific plans only.",
+            example: ['startup_plan'],
+          }),
+        billable_metric_codes: z
+          .array(z.string())
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              "An array of billable metric codes to which the coupon is applicable. By specifying the billable metric codes in this field, you can restrict the coupon's usage to specific metrics only.",
+            example: [],
+          }),
+      })
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Set coupon limitations to plans or specific metrics.',
+        required: [],
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('CouponBaseInput')
+
+const CouponCreateInputSchema = z
+  .object({
+    coupon: CouponBaseInputSchema.openapi({
+      required: ['name', 'code', 'coupon_type', 'frequency', 'expiration'],
+    }),
+  })
+  .openapi({ required: ['coupon'] })
+  .openapi('CouponCreateInput')
+
+const CouponSchema = z
+  .object({ coupon: CouponObjectSchema })
+  .openapi({ required: ['coupon'] })
+  .openapi('Coupon')
+
+const CouponUpdateInputSchema = z
+  .object({ coupon: CouponBaseInputSchema })
+  .openapi({ required: ['coupon'] })
+  .openapi('CouponUpdateInput')
+
+const CreditNotesPaginatedSchema: z.ZodType<CreditNotesPaginatedType> = z
+  .object({ credit_notes: z.array(CreditNoteObjectSchema), meta: PaginationMetaSchema })
+  .openapi({ required: ['credit_notes', 'meta'] })
+  .openapi('CreditNotesPaginated')
+
+const CreditNoteCreateInputSchema = z
+  .object({
+    credit_note: z
+      .object({
+        invoice_id: z
+          .uuid()
+          .openapi({
+            description: 'The invoice unique identifier, created by Lago.',
+            example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
+          }),
+        reason: z
+          .union([
+            z.literal('duplicated_charge'),
+            z.literal('product_unsatisfactory'),
+            z.literal('order_change'),
+            z.literal('order_cancellation'),
+            z.literal('fraudulent_charge'),
+            z.literal('other'),
+            z.literal(null),
+          ])
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'The reason of the credit note creation.\nPossible values are `duplicated_charge`, `product_unsatisfactory`, `order_change`, `order_cancellation`, `fraudulent_charge` or `other`.',
+            example: 'duplicated_charge',
+          }),
+        description: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'The description of the credit note.', example: 'description' }),
+        credit_amount_cents: z
+          .int()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              "The total amount to be credited to the customer balance for discounts on future invoices. For a total or partial refund, credit or offset, the amount in cents must include both the item amount and the applicable tax. The refunded, credited and offsetted amounts should always balance. The total, including taxes, cannot exceed the invoice's total fees.",
+            example: 100,
+          }),
+        refund_amount_cents: z
+          .int()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              "The total amount to be refunded immediately to the payment method used by the customer. For a total or partial refund, credit or offset, the amount in cents must include both the item amount and the applicable tax. The refunded, credited and offsetted amounts should always balance. The total, including taxes, cannot exceed the invoice's total fees.",
+            example: 500,
+          }),
+        offset_amount_cents: z
+          .int()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              "The total amount to be immediately deducted from the invoice balance. For a total or partial refund, credit or offset, the amount in cents must include both the item amount and the applicable tax. The refunded, credited and offsetted amounts should always balance. The total, including taxes, cannot exceed the invoice's total fees.",
+            example: 200,
+          }),
+        items: z
+          .array(
+            z
+              .object({
+                fee_id: z
+                  .uuid()
+                  .openapi({
+                    description: 'The fee unique identifier, created by Lago.',
+                    example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
+                  }),
+                amount_cents: z
+                  .int()
+                  .openapi({
+                    description:
+                      'This is the amount of the credit note item excluding taxes, expressed in cents.',
+                    example: 100,
+                  }),
+              })
+              .openapi({ required: ['fee_id', 'amount_cents'] }),
+          )
+          .openapi({
+            description: "The list of credit note's items.",
+            example: [
+              { fee_id: '1a901a90-1a90-1a90-1a90-1a901a901a90', amount_cents: 100 },
+              { fee_id: '1a901a90-1a90-1a90-1a90-1a901a901a91', amount_cents: 500 },
+              { fee_id: '1a901a90-1a90-1a90-1a90-1a901a901a92', amount_cents: 200 },
+            ],
+          }),
+        metadata: MetadataInputSchema.exactOptional(),
+      })
+      .openapi({ required: ['invoice_id', 'items'] }),
+  })
+  .openapi({ required: ['credit_note'] })
+  .openapi('CreditNoteCreateInput')
+
+const CreditNoteExtendedSchema: z.ZodType<CreditNoteExtendedType> = z
+  .object({ credit_note: CreditNoteExtendedObjectSchema })
+  .openapi({ required: ['credit_note'] })
+  .openapi('CreditNoteExtended')
+
+const CreditNoteUpdateInputSchema = z
+  .object({
+    credit_note: z
+      .object({
+        refund_status: z
+          .enum(['pending', 'succeeded', 'failed'])
+          .exactOptional()
+          .openapi({
+            description:
+              'The status of the refund portion of the credit note. It indicates the current state or condition of the refund associated with the credit note. The possible values for this field are:\n\n- `pending`: this status indicates that the refund is pending execution. The refund request has been initiated but has not been processed or completed yet.\n- `succeeded`: this status indicates that the refund has been successfully executed. The refund amount has been processed and returned to the customer or the designated recipient.\n- `failed`: this status indicates that the refund failed to execute. The refund request encountered an error or unsuccessful processing, and the refund amount could not be returned.',
+            example: 'succeeded',
+          }),
+        metadata: MetadataInputSchema.exactOptional(),
+      })
+      .openapi({ required: [] }),
+  })
+  .openapi({ required: ['credit_note'] })
+  .openapi('CreditNoteUpdateInput')
+
+const CreditNoteSchema: z.ZodType<CreditNoteType> = z
+  .object({ credit_note: CreditNoteObjectSchema })
+  .openapi({ required: ['credit_note'] })
+  .openapi('CreditNote')
+
+const CreditNoteEstimateInputSchema = z
+  .object({
+    credit_note: z
+      .object({
+        invoice_id: z
+          .uuid()
+          .openapi({
+            description: 'The invoice unique identifier, created by Lago.',
+            example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
+          }),
+        items: z
+          .array(
+            z
+              .object({
+                fee_id: z
+                  .uuid()
+                  .openapi({
+                    description: 'The fee unique identifier, created by Lago.',
+                    example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
+                  }),
+                amount_cents: z
+                  .int()
+                  .openapi({
+                    description: 'The amount of the credit note item, expressed in cents.',
+                    example: 10,
+                  }),
+              })
+              .openapi({ required: ['fee_id', 'amount_cents'] }),
+          )
+          .openapi({
+            description: "The list of credit note's items.",
+            example: [
+              { fee_id: '1a901a90-1a90-1a90-1a90-1a901a901a90', amount_cents: 10 },
+              { fee_id: '1a901a90-1a90-1a90-1a90-1a901a901a91', amount_cents: 5 },
+            ],
+          }),
+      })
+      .openapi({ required: ['invoice_id', 'items'] }),
+  })
+  .openapi({ required: ['credit_note'] })
+  .openapi('CreditNoteEstimateInput')
+
+const CreditNoteEstimatedSchema = z
+  .object({
+    estimated_credit_note: z
+      .object({
+        lago_invoice_id: z
+          .uuid()
+          .openapi({
+            description:
+              'Unique identifier assigned to the invoice that the credit note belongs to',
+            example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
+          }),
+        invoice_number: z
+          .string()
+          .openapi({
+            description: 'The invoice unique number, related to the credit note.',
+            example: 'LAG-1234',
+          }),
+        currency: CurrencySchema.openapi({
+          description: 'The currency of the credit note.',
+          example: 'EUR',
+        }),
+        taxes_amount_cents: z
+          .int()
+          .openapi({
+            description: 'The tax amount of the credit note, expressed in cents.',
+            example: 20,
+          }),
+        precise_taxes_amount_cents: z
+          .string()
+          .openapi({
+            description:
+              'The precise tax amount of the credit note, expressed in cents with decimal precision.',
+            example: '20.1',
+          }),
+        taxes_rate: z
+          .number()
+          .openapi({
+            description: 'The tax rate associated with this specific credit note.',
+            example: 20,
+          }),
+        sub_total_excluding_taxes_amount_cents: z
+          .int()
+          .openapi({
+            description:
+              'The subtotal of the credit note excluding any applicable taxes, expressed in cents.',
+            example: 100,
+          }),
+        max_creditable_amount_cents: z
+          .int()
+          .openapi({
+            description:
+              'The maximum amount that can be credited to the customer balance for the requested items, taxes included, expressed in cents.',
+            example: 100,
+          }),
+        max_refundable_amount_cents: z
+          .int()
+          .openapi({
+            description:
+              'The maximum amount that can be refunded for the requested items, expressed in cents. It is capped by the amount the customer already paid on the invoice, so it is lower than `max_creditable_amount_cents` on an unpaid invoice.',
+            example: 0,
+          }),
+        max_offsettable_amount_cents: z
+          .int()
+          .openapi({
+            description:
+              'The maximum amount that can be deducted from the invoice balance for the requested items, expressed in cents.',
+            example: 0,
+          }),
+        coupons_adjustment_amount_cents: z
+          .int()
+          .openapi({
+            description: 'The pro-rated amount of the coupons applied to the source invoice.',
+            example: 20,
+          }),
+        precise_coupons_adjustment_amount_cents: z
+          .string()
+          .openapi({
+            description:
+              'The precise pro-rated amount with decimal precision of the coupons applied to the source invoice.',
+            example: '20.1',
+          }),
+        items: z
+          .array(
+            z
+              .object({
+                amount_cents: z
+                  .int()
+                  .openapi({
+                    description: "The credit note's item amount, expressed in cents.",
+                    example: 100,
+                  }),
+                lago_fee_id: z
+                  .uuid()
+                  .nullable()
+                  .openapi({
+                    description:
+                      "Unique identifier assigned to the fee within the Lago application. This ID is exclusively created by Lago and serves as a unique identifier for the fee's record within the Lago system.",
+                    example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
+                  }),
+              })
+              .openapi({ required: ['amount_cents', 'lago_fee_id'] }),
+          )
+          .openapi({ description: "Array of credit note's items." }),
+        applied_taxes: z
+          .array(
+            z
+              .object({
+                lago_tax_id: z
+                  .uuid()
+                  .exactOptional()
+                  .openapi({
+                    description: 'Unique identifier of the tax, created by Lago.',
+                    example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
+                  }),
+                tax_name: z
+                  .string()
+                  .exactOptional()
+                  .openapi({ description: 'Name of the tax.', example: 'TVA' }),
+                tax_code: z
+                  .string()
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      'Unique code used to identify the tax associated with the API request.',
+                    example: 'french_standard_vat',
+                  }),
+                tax_rate: z
+                  .number()
+                  .exactOptional()
+                  .openapi({ description: 'The percentage rate of the tax', example: 20 }),
+                tax_description: z
+                  .string()
+                  .exactOptional()
+                  .openapi({
+                    description: 'Internal description of the tax',
+                    example: 'French standard VAT',
+                  }),
+                base_amount_cents: z.int().exactOptional().openapi({ example: 100 }),
+                amount_cents: z
+                  .int()
+                  .exactOptional()
+                  .openapi({ description: 'Amount of the tax', example: 2000 }),
+                amount_currency: CurrencySchema.exactOptional().openapi({
+                  description: 'Currency of the tax',
+                  example: 'USD',
+                }),
+              })
+              .openapi({ required: [] }),
+          )
+          .exactOptional(),
+      })
+      .openapi({
+        required: [
+          'lago_invoice_id',
+          'invoice_number',
+          'currency',
+          'taxes_amount_cents',
+          'precise_taxes_amount_cents',
+          'sub_total_excluding_taxes_amount_cents',
+          'max_creditable_amount_cents',
+          'max_refundable_amount_cents',
+          'max_offsettable_amount_cents',
+          'coupons_adjustment_amount_cents',
+          'precise_coupons_adjustment_amount_cents',
+          'taxes_rate',
+          'items',
+        ],
+      }),
+  })
+  .openapi({ required: ['estimated_credit_note'] })
+  .openapi('CreditNoteEstimated')
+
+const CreditNoteMetadataResponseSchema = z
+  .object({ metadata: MetadataObjectSchema })
+  .openapi({ required: ['metadata'] })
+  .openapi('CreditNoteMetadataResponse')
+
+const ErrorDetailObjectSchema = z
+  .object({
+    lago_id: z
+      .uuid()
+      .nullable()
+      .openapi({
+        description:
+          "Unique identifier assigned to the error_detail within the Lago application. This ID is exclusively created by Lago and serves as a unique identifier for the error's record within the Lago system.",
+        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
+      }),
+    error_code: z
+      .string()
+      .openapi({
+        description:
+          'Code that specifies part of the application / connection, where the error originally happened',
+        example: 'tax_error',
+      }),
+    details: z
+      .record(z.string(), z.string())
+      .openapi({
+        description:
+          'Key value list of more elaborated error detail, where by the key of error_code an external service error details are stored',
+        example: { tax_error: 'taxDateTooFarInFuture' },
+      }),
+  })
+  .openapi({ required: ['lago_id', 'error_code', 'details'] })
+  .openapi('ErrorDetailObject')
+
+const CustomerObjectExtendedSchema = CustomerObjectSchema.and(
+  z
+    .object({
+      metadata: z.array(CustomerMetadataSchema).exactOptional(),
+      taxes: z
+        .array(TaxObjectSchema)
+        .exactOptional()
+        .openapi({ description: 'List of customer taxes' }),
+      applicable_invoice_custom_sections: z
+        .array(InvoiceCustomSectionObjectSchema)
+        .exactOptional()
+        .openapi({
+          description: "The customer's invoice custom sections used for generating invoices.",
+        }),
+      error_details: z
+        .array(ErrorDetailObjectSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'List of errors with details that might have been raised while processing background actions for the customer',
+        }),
+    })
+    .openapi({ required: [] }),
+).openapi('CustomerObjectExtended')
+
+const CustomersPaginatedSchema = z
+  .object({ customers: z.array(CustomerObjectExtendedSchema), meta: PaginationMetaSchema })
+  .openapi({ required: ['customers', 'meta'] })
+  .openapi('CustomersPaginated')
+
+const CustomerCreateInputSchema = z
+  .object({
+    customer: z
+      .object({
+        external_id: z
+          .string()
+          .openapi({
+            example: '5eb02857-a71e-4ea2-bcf9-57d3a41bc6ba',
+            description:
+              'The customer external unique identifier (provided by your own application)',
+          }),
+        billing_entity_code: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            example: 'acme_corp',
+            description:
+              'The unique code of the billing entity to associate with the customer. If not provided, the default billing entity will be used.',
+          }),
+        address_line1: z
+          .string()
+          .max(500)
+          .nullable()
+          .exactOptional()
+          .openapi({
+            example: '5230 Penfield Ave',
+            description: 'The first line of the billing address (500 characters max).',
+          }),
+        address_line2: z
+          .string()
+          .max(500)
+          .nullable()
+          .exactOptional()
+          .openapi({
+            example: '',
+            description: 'The second line of the billing address (500 characters max).',
+          }),
+        city: z
+          .string()
+          .max(255)
+          .nullable()
+          .exactOptional()
+          .openapi({
+            example: 'Woodland Hills',
+            description: "The city of the customer's billing address (255 characters max).",
+          }),
+        country: CountryOrNullSchema.exactOptional().openapi({
+          description:
+            "Country code of the customer's billing address. Format must be ISO 3166 (alpha-2)",
+          example: 'US',
+        }),
+        currency: CurrencyOrNullSchema.exactOptional().openapi({
+          description: 'Currency of the customer. Format must be ISO 4217',
+        }),
+        email: z
+          .email()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            example: 'dinesh@piedpiper.example',
+            description: 'The email of the customer',
+          }),
+        legal_name: z
+          .string()
+          .max(255)
+          .nullable()
+          .exactOptional()
+          .openapi({
+            example: 'Coleman-Blair',
+            description: 'The legal company name of the customer (255 characters max).',
+          }),
+        legal_number: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            example: '49-008-2965',
+            description: 'The legal company number of the customer',
+          }),
+        logo_url: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            example: 'http://hooli.com/logo.png',
+            description: 'The logo URL of the customer',
+          }),
+        name: z
+          .string()
+          .max(255)
+          .nullable()
+          .exactOptional()
+          .openapi({
+            example: 'Gavin Belson',
+            description: 'The full name of the customer (255 characters max).',
+          }),
+        firstname: z
+          .string()
+          .max(255)
+          .nullable()
+          .exactOptional()
+          .openapi({
+            example: 'Gavin',
+            description: 'First name of the customer (255 characters max).',
+          }),
+        lastname: z
+          .string()
+          .max(255)
+          .nullable()
+          .exactOptional()
+          .openapi({
+            example: 'Belson',
+            description: 'Last name of the customer (255 characters max).',
+          }),
+        account_type: z
+          .enum(['customer', 'partner'])
+          .exactOptional()
+          .openapi({
+            example: 'customer',
+            description:
+              'The type of the account. It can have one of the following values:\n- `customer`: the account is a customer, default value.\n- `partner`: the account is a partner.\n\nThis field is only applied when revenue share is enabled on your organization and the customer has no subscription, invoice, add-on, fixed-amount coupon or wallet yet; otherwise it is ignored.',
+          }),
+        customer_type: z
+          .union([z.literal('company'), z.literal('individual'), z.literal(null)])
+          .nullable()
+          .exactOptional()
+          .openapi({
+            example: 'company',
+            description:
+              'The type of the customer. It can have one of the following values:\n- `company`: the customer is a company.\n- `individual`: the customer is an individual.',
+          }),
+        phone: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            example: '1-171-883-3711 x245',
+            description: 'The phone number of the customer',
+          }),
+        state: z
+          .string()
+          .max(255)
+          .nullable()
+          .exactOptional()
+          .openapi({
+            example: 'CA',
+            description: "The state of the customer's billing address (255 characters max).",
+          }),
+        tax_codes: TaxCodesSchema.exactOptional(),
+        tax_identification_number: z
+          .string()
+          .max(255)
+          .nullable()
+          .exactOptional()
+          .openapi({
+            example: 'EU123456789',
+            description: 'The tax identification number of the customer (255 characters max).',
+          }),
+        timezone: TimezoneOrNullSchema.exactOptional().openapi({
+          description:
+            "The customer's timezone, used for billing purposes in their local time. Overrides the organization's timezone. This is a premium feature, the value is ignored without a premium license.",
+        }),
+        url: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            example: 'http://hooli.com',
+            description: 'The custom website URL of the customer',
+          }),
+        zipcode: z
+          .string()
+          .max(255)
+          .nullable()
+          .exactOptional()
+          .openapi({
+            example: '91364',
+            description: "The zipcode of the customer's billing address (255 characters max).",
+          }),
+        payment_term: z
+          .xor([PaymentTermObjectSchema, z.null().nullable()])
+          .exactOptional()
+          .openapi({
+            description:
+              "The structured payment term of the customer. Send `null` to remove the customer's own term, so the term of the billing entity applies.\n\nIt supersedes the legacy `net_payment_term`, which is kept in sync as an alias. Whenever `payment_term` is sent, it wins and `net_payment_term` is ignored, even when `payment_term` is `null`, which clears both.\n\nWhen only `net_payment_term` is sent, the term becomes a `net` term of that many days, and `null` clears both.\n",
+          }),
+        net_payment_term: z
+          .int()
+          .min(0)
+          .max(365)
+          .nullable()
+          .exactOptional()
+          .openapi({
+            deprecated: true,
+            example: 30,
+            description:
+              "**Deprecated.** Use `payment_term` instead. The net payment term, expressed in days, specifies the duration within which a customer is expected to remit payment after the invoice is finalized. When `payment_term` is sent in the same request, even as `null`, `payment_term` wins and this field is ignored; see `payment_term` for the full rules. It must be between 0 and 365 days. Send `null` to remove the customer's own term, so the term of the billing entity applies.",
+          }),
+        external_salesforce_id: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            example: '0015p00001JQx1QAAT',
+            description: 'The customer ID within the Salesforce system',
+          }),
+        finalize_zero_amount_invoice: z
+          .enum(['inherit', 'skip', 'finalize'])
+          .exactOptional()
+          .openapi({
+            example: 'inherit',
+            description:
+              'Specifies how invoices with a zero total amount should be handled:\n- `inherit`: (Default) Follows the organization-level configuration.\n- `finalize`: Invoices are issued and finalized even if the total amount is zero.\n- `skip`: Invoices with a total amount of zero are not finalized.',
+          }),
+        billing_configuration: CustomerBillingConfigurationSchema.exactOptional(),
+        shipping_address: AddressSchema.and(
+          z
+            .object({
+              address_line1: z
+                .unknown()
+                .superRefine((val, ctx) => {
+                  if (typeof val === 'string') {
+                    if ([...val].length > 500) {
+                      ctx.addIssue({ code: 'custom' })
+                    }
+                  }
+                })
+                .exactOptional(),
+              address_line2: z
+                .unknown()
+                .superRefine((val, ctx) => {
+                  if (typeof val === 'string') {
+                    if ([...val].length > 500) {
+                      ctx.addIssue({ code: 'custom' })
+                    }
+                  }
+                })
+                .exactOptional(),
+              city: z
+                .unknown()
+                .superRefine((val, ctx) => {
+                  if (typeof val === 'string') {
+                    if ([...val].length > 255) {
+                      ctx.addIssue({ code: 'custom' })
+                    }
+                  }
+                })
+                .exactOptional(),
+              state: z
+                .unknown()
+                .superRefine((val, ctx) => {
+                  if (typeof val === 'string') {
+                    if ([...val].length > 255) {
+                      ctx.addIssue({ code: 'custom' })
+                    }
+                  }
+                })
+                .exactOptional(),
+              zipcode: z
+                .unknown()
+                .superRefine((val, ctx) => {
+                  if (typeof val === 'string') {
+                    if ([...val].length > 255) {
+                      ctx.addIssue({ code: 'custom' })
+                    }
+                  }
+                })
+                .exactOptional(),
+            })
+            .openapi({ required: [] }),
+        )
+          .exactOptional()
+          .openapi({
+            description:
+              'The shipping address of the customer. The address lines accept up to 500 characters, the city, state and zipcode up to 255.',
+          }),
+        integration_customers: z
+          .array(
+            z
+              .object({
+                id: z
+                  .uuid()
+                  .exactOptional()
+                  .openapi({
+                    example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
+                    description:
+                      'A unique identifier for the integration customer object in the Lago application.',
+                  }),
+                integration_type: z
+                  .enum(['netsuite', 'anrok', 'avalara', 'xero', 'hubspot', 'salesforce'])
+                  .exactOptional()
+                  .openapi({
+                    example: 'netsuite',
+                    description:
+                      'The integration type used for accounting, tax and CRM syncs.\nAccepted values: `netsuite`, `anrok`, `avalara`, `xero`, `hubspot`, `salesforce`.',
+                  }),
+                integration_code: z
+                  .string()
+                  .exactOptional()
+                  .openapi({
+                    example: 'netsuite-eu-1',
+                    description: 'Unique code used to identify an integration connection.',
+                  }),
+                code: z
+                  .string()
+                  .exactOptional()
+                  .openapi({
+                    example: 'netsuite-eu-1',
+                    description:
+                      'Unique code identifying this integration customer. If it is not provided, the code of the integration connection is used.',
+                  }),
+                external_customer_id: z
+                  .string()
+                  .exactOptional()
+                  .openapi({
+                    example: 'cus_12345',
+                    description:
+                      "The customer ID within the integration's system. If this field is not provided, Lago has the option to create a new customer record within the integration's system on behalf of the customer.",
+                  }),
+                sync_with_provider: z
+                  .boolean()
+                  .exactOptional()
+                  .openapi({
+                    example: true,
+                    description:
+                      "Set this field to `true` if you want to create a customer record in the integration's system. This option is applicable only when the `external_customer_id` is null and the `sync_with_provider` field is set to `true`. By default, the value is set to `false`",
+                  }),
+                subsidiary_id: z
+                  .string()
+                  .exactOptional()
+                  .openapi({
+                    example: '2',
+                    description:
+                      'This optional field is needed only when working with `netsuite` connection.',
+                  }),
+                targeted_object: z
+                  .string()
+                  .nullable()
+                  .exactOptional()
+                  .openapi({
+                    example: 'contacts',
+                    description:
+                      'This optional field is needed only when working with `hubspot` connection.',
+                  }),
+              })
+              .openapi({ required: [] }),
+          )
+          .exactOptional()
+          .openapi({
+            description:
+              'The integration customers to create or update for this customer. Only one entry per `integration_type` is accepted; sending two entries with the same type returns a `422` error with `invalid_count_per_integration_type` on `integration_customers`.',
+          }),
+        metadata: z
+          .array(
+            z
+              .object({
+                id: z
+                  .uuid()
+                  .exactOptional()
+                  .openapi({
+                    example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
+                    description:
+                      'Identifier for the metadata object, only required when updating a key-value pair',
+                  }),
+                key: z
+                  .string()
+                  .max(20)
+                  .openapi({
+                    example: 'Purchase Order',
+                    description:
+                      'The metadata object key (20 characters max). It must be unique for the customer.',
+                  }),
+                value: z
+                  .string()
+                  .max(100)
+                  .openapi({
+                    example: '123456789',
+                    description: 'The metadata object value (100 characters max).',
+                  }),
+                display_in_invoice: z
+                  .boolean()
+                  .exactOptional()
+                  .openapi({
+                    example: true,
+                    description:
+                      'Determines whether the item or information should be displayed in the invoice. If set to true, the item or information will be included and visible in the generated invoice. If set to false, the item or information will be excluded and not displayed in the invoice.',
+                  }),
+              })
+              .openapi({ required: ['key', 'value'] }),
+          )
+          .max(5)
+          .exactOptional()
+          .openapi({
+            description:
+              'Set of key-value pairs that you can attach to a customer. This can be useful for storing additional information about the customer in a structured format. A customer can hold up to 5 key-value pairs.',
+          }),
+        skip_invoice_custom_sections: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            example: false,
+            description:
+              'Set to `true` to exclude all invoice custom sections from PDF generation for this customer only. False by default',
+          }),
+        invoice_custom_section_codes: z
+          .array(z.string())
+          .exactOptional()
+          .openapi({
+            description: 'List of unique codes identifying the invoice custom sections.',
+            example: ['eu_bank_details'],
+          }),
+      })
+      .openapi({ required: ['external_id'] }),
+  })
+  .openapi({ required: ['customer'] })
+  .openapi('CustomerCreateInput')
+
+const CustomerSchema = z
+  .object({ customer: CustomerObjectExtendedSchema })
+  .openapi({ required: ['customer'] })
+  .openapi('Customer')
+
+const InvoiceBaseObjectSchema = z
+  .object({
+    lago_id: z
+      .uuid()
+      .openapi({
+        description:
+          "Unique identifier assigned to the invoice within the Lago application. This ID is exclusively created by Lago and serves as a unique identifier for the invoice's record within the Lago system.",
+        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
+      }),
+    billing_entity_code: z
+      .string()
+      .openapi({
+        example: 'acme_corp',
+        description: 'The unique code of the billing entity the invoice was issued from.',
+      }),
+    sequential_id: z
+      .int()
+      .nullable()
+      .openapi({
+        description:
+          "This ID helps in uniquely identifying and organizing the invoices associated with a specific customer. It provides a sequential numbering system specific to the customer, allowing for easy tracking and management of invoices within the customer's context. It is assigned when the invoice is finalized, so it is `null` on draft invoices.",
+        example: 2,
+      }),
+    number: z
+      .string()
+      .openapi({
+        description:
+          'The unique number assigned to the invoice. This number serves as a distinct identifier for the invoice and helps in differentiating it from other invoices in the system.',
+        example: 'LAG-1234-001-002',
+      }),
+    purchase_order_number: z
+      .string()
+      .nullable()
+      .openapi({
+        example: 'PO-123',
+        description:
+          'The purchase order number associated with the invoice. It is inherited from the subscription, wallet or wallet transaction the invoice was generated for.',
+      }),
+    issuing_date: z.iso
+      .date()
+      .openapi({
+        description:
+          'The date when the invoice was issued. It is provided in the ISO 8601 date format.',
+        example: '2022-04-30',
+      }),
+    payment_dispute_lost_at: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .openapi({
+        description:
+          'The date when the payment dispute was lost. It is expressed in Coordinated Universal Time (UTC). It is `null` until a dispute is lost on the invoice.',
+        example: '2022-09-14T16:35:31Z',
+      }),
+    payment_due_date: z.iso
+      .date()
+      .nullable()
+      .openapi({
+        description: 'The payment due date for the invoice, specified in the ISO 8601 date format.',
+        example: '2022-04-30',
+      }),
+    payment_overdue: z
+      .boolean()
+      .openapi({
+        description: 'Specifies if the payment is considered as overdue.',
+        example: true,
+      }),
+    payment_term: z
+      .xor([PaymentTermObjectSchema, z.null().nullable()])
+      .openapi({
+        description:
+          'The payment term applied to the invoice, snapshotted when the invoice was created. It is resolved from the subscription, then the customer, then the billing entity, and defaults to `due_on_receipt`. Invoices created before structured payment terms existed report a `net` term derived from their `net_payment_term`.',
+      }),
+    net_payment_term: z
+      .int()
+      .nullable()
+      .openapi({
+        deprecated: true,
+        example: 30,
+        description:
+          '**Deprecated.** Use `payment_term` instead. Legacy alias of `payment_term`, expressed in days. It is the `days` of a `net` term, `0` for a `due_on_receipt` term, and `null` for every other term type.',
+      }),
+    invoice_type: z
+      .enum([
+        'subscription',
+        'add_on',
+        'credit',
+        'one_off',
+        'advance_charges',
+        'progressive_billing',
+      ])
+      .openapi({
+        description:
+          'The type of invoice issued. Possible values are `subscription`, `add_on`, `credit`, `one_off`, `advance_charges` or `progressive_billing`.',
+        example: 'subscription',
+      }),
+    status: z
+      .enum(['draft', 'finalized', 'voided', 'failed', 'pending', 'deleted'])
+      .openapi({
+        description:
+          "The status of the invoice. It indicates the current state of the invoice and can have following values:\n- `draft`: the invoice is in the draft state, waiting for the end of the grace period to be finalized. During this period, events can still be ingested and added to the invoice.\n- `finalized`: the invoice has been issued and finalized. In this state, events cannot be ingested or added to the invoice anymore.\n- `voided`: the invoice has been issued and subsequently voided. In this state, events cannot be ingested or added to the invoice anymore.\n- `pending`: the invoice remains pending until the taxes are fetched from the external provider.\n- `failed`: during an attempt of finalization of the invoice, an error happened. This invoice will have an array of error_details, explaining, in which part of the system an error happened and how it's possible to fix it. This invoice can't be edited or updated, only retried. This action will discard current error_details and will create new ones if the finalization failed again.\n- `deleted`: the draft invoice has been permanently deleted. This status is only returned by the delete endpoint and its webhook; a deleted invoice is no longer retrievable afterwards.",
+        example: 'finalized',
+      }),
+    payment_status: z
+      .enum(['pending', 'succeeded', 'failed'])
+      .openapi({
+        description:
+          'The status of the payment associated with the invoice. It can have one of the following values:\n- `pending`: the payment is pending, waiting for processing by the payment provider, or the invoice has been issued and its payment status has not been updated through the update endpoint.\n- `succeeded`: the payment of the invoice has been successfully processed.\n- `failed`: the payment of the invoice has failed or encountered an error during processing.',
+        example: 'succeeded',
+      }),
+    currency: CurrencySchema.openapi({
+      description: 'The currency of the invoice issued.',
+      example: 'EUR',
+    }),
+    fees_amount_cents: z
+      .int()
+      .openapi({
+        description:
+          'The total sum of fees amount in cents. It calculates the cumulative amount of all the fees associated with the invoice, providing a consolidated value.',
+        example: 100,
+      }),
+    coupons_amount_cents: z
+      .int()
+      .openapi({
+        description:
+          'The total sum of all coupons discounted on the invoice. It calculates the cumulative discount amount applied by coupons, expressed in cents.',
+        example: 10,
+      }),
+    credit_notes_amount_cents: z
+      .int()
+      .openapi({
+        description:
+          'The total sum of all credit notes discounted on the invoice. It calculates the cumulative discount amount applied by credit notes, expressed in cents.',
+        example: 10,
+      }),
+    sub_total_excluding_taxes_amount_cents: z
+      .int()
+      .openapi({
+        description:
+          'Subtotal amount, excluding taxes, expressed in cents.\nThis field depends on the version number. Here are the definitions based on the version:\n- Version 1: is equal to the sum of `fees_amount_cents`, minus `coupons_amount_cents`, and minus `prepaid_credit_amount_cents`.\n- Version 2: is equal to the `fees_amount_cents`.\n- Version 3 & 4: is equal to the `fees_amount_cents`, minus `coupons_amount_cents`.',
+        example: 100,
+      }),
+    taxes_amount_cents: z
+      .int()
+      .openapi({
+        description: 'The sum of tax amount associated with the invoice, expressed in cents.',
+        example: 20,
+      }),
+    sub_total_including_taxes_amount_cents: z
+      .int()
+      .openapi({
+        description:
+          'Subtotal amount, including taxes, expressed in cents.\nThis field depends on the version number. Here are the definitions based on the version:\n- Version 1: is equal to the `total_amount_cents`.\n- Version 2: is equal to the sum of `fees_amount_cents` and `taxes_amount_cents`.\n- Version 3 & 4: is equal to the sum of `sub_total_excluding_taxes_amount_cents` and `taxes_amount_cents`.',
+        example: 120,
+      }),
+    prepaid_credit_amount_cents: z
+      .int()
+      .openapi({
+        description:
+          'The total sum of all prepaid credits discounted on the invoice. It calculates the cumulative discount amount applied by prepaid credits, expressed in cents.',
+        example: 0,
+      }),
+    prepaid_granted_credit_amount_cents: z
+      .int()
+      .nullable()
+      .openapi({
+        description:
+          'The portion of prepaid credits discounted on the invoice that originated from granted (free) credits, expressed in cents. Only populated for invoices associated with traceable wallets.',
+        example: 0,
+      }),
+    prepaid_purchased_credit_amount_cents: z
+      .int()
+      .nullable()
+      .openapi({
+        description:
+          'The portion of prepaid credits discounted on the invoice that originated from purchased (paid) credits, expressed in cents. Only populated for invoices associated with traceable wallets.',
+        example: 0,
+      }),
+    progressive_billing_credit_amount_cents: z
+      .int()
+      .openapi({
+        description:
+          'The usage already billed in previous invoices. Only apply to `progressive_billing` and `subscription` invoices.',
+        example: 0,
+      }),
+    total_amount_cents: z
+      .int()
+      .openapi({
+        description:
+          'The sum of the amount and taxes amount on the invoice, expressed in cents. It calculates the total financial value of the invoice, including both the original amount and any applicable taxes.',
+        example: 100,
+      }),
+    total_paid_amount_cents: z
+      .int()
+      .openapi({
+        description: 'The amount already paid on the invoice, expressed in cents.',
+        example: 40,
+      }),
+    total_offsetted_credit_note_amount_cents: z
+      .int()
+      .openapi({
+        description:
+          'The amount of the invoice settled by finalized credit notes, expressed in cents.',
+        example: 10,
+      }),
+    total_due_amount_cents: z
+      .int()
+      .openapi({
+        description:
+          'The amount still due on the invoice, expressed in cents. It is equal to `total_amount_cents` minus `total_paid_amount_cents` and `total_offsetted_credit_note_amount_cents`, and is `0` for voided invoices.',
+        example: 50,
+      }),
+    version_number: z
+      .int()
+      .openapi({
+        example: 3,
+        description:
+          'The version of the invoice calculation rules applied to this invoice. It determines how the subtotals are computed.',
+      }),
+    self_billed: z
+      .boolean()
+      .openapi({
+        example: false,
+        description:
+          'Indicates if the invoice is self-billed. Self-billing is a process where an organization creates the invoice on behalf of the partner. This field specifies whether the invoice is self-billed or not.',
+      }),
+    file_url: z
+      .url()
+      .nullable()
+      .openapi({
+        description:
+          'Contains the URL that provides direct access to the invoice PDF file. You can use this URL to download or view the PDF document of the invoice. It is `null` while no PDF has been generated, which is the case for draft invoices.',
+        example: 'https://getlago.com/invoice/file',
+      }),
+    xml_url: z
+      .url()
+      .nullable()
+      .openapi({
+        description:
+          'Contains the URL that provides direct access to the e-invoicing XML file. It is `null` while no XML file has been generated for the invoice.',
+        example: 'https://getlago.com/invoice/xml',
+      }),
+    web_url: z
+      .url()
+      .nullable()
+      .openapi({
+        description:
+          'Contains the URL to the invoice page in the Lago dashboard. It is `null` for invoices that are not visible in the dashboard (for example while still generating). Use it to link users directly to the invoice overview page.',
+        example:
+          'https://app.getlago.com/acme/customer/1a901a90-1a90-1a90-1a90-1a901a901a90/invoice/2b012b01-2b01-2b01-2b01-2b012b012b01/overview',
+      }),
+    created_at: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        example: '2022-04-29T08:59:51Z',
+        description:
+          'The date of the invoice creation, represented in ISO 8601 datetime format and expressed in Coordinated Universal Time (UTC). It provides a standardized and internationally recognized timestamp for when the invoice object was created.',
+      }),
+    updated_at: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        example: '2022-04-29T08:59:51Z',
+        description:
+          'The date of the invoice update, represented in ISO 8601 datetime format and expressed in Coordinated Universal Time (UTC). It provides a standardized and internationally recognized timestamp for when the invoice object was last updated.',
+      }),
+    voided_at: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .openapi({
+        example: '2022-04-29T08:59:51Z',
+        description:
+          'The date when the invoice was voided, represented in ISO 8601 datetime format and expressed in Coordinated Universal Time (UTC). It is `null` for invoices that have not been voided.',
+      }),
+  })
+  .openapi({
+    required: [
+      'lago_id',
+      'billing_entity_code',
+      'sequential_id',
+      'number',
+      'purchase_order_number',
+      'issuing_date',
+      'payment_dispute_lost_at',
+      'payment_due_date',
+      'payment_overdue',
+      'net_payment_term',
+      'payment_term',
+      'invoice_type',
+      'status',
+      'payment_status',
+      'currency',
+      'fees_amount_cents',
+      'coupons_amount_cents',
+      'credit_notes_amount_cents',
+      'sub_total_excluding_taxes_amount_cents',
+      'taxes_amount_cents',
+      'sub_total_including_taxes_amount_cents',
+      'prepaid_credit_amount_cents',
+      'prepaid_granted_credit_amount_cents',
+      'prepaid_purchased_credit_amount_cents',
+      'progressive_billing_credit_amount_cents',
+      'total_amount_cents',
+      'total_paid_amount_cents',
+      'total_offsetted_credit_note_amount_cents',
+      'total_due_amount_cents',
+      'version_number',
+      'self_billed',
+      'file_url',
+      'xml_url',
+      'web_url',
+      'created_at',
+      'updated_at',
+      'voided_at',
+    ],
+  })
+  .openapi('InvoiceBaseObject')
+
+const InvoiceMetadataObjectSchema = z
+  .object({
+    lago_id: z
+      .uuid()
+      .exactOptional()
+      .openapi({
+        description:
+          'Unique identifier assigned to the invoice metadata within the Lago application.',
+        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
+      }),
+    key: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: "Represents the key of the metadata's key-value pair.",
+        example: 'digital_ref_id',
+      }),
+    value: z
+      .string()
+      .max(140)
+      .exactOptional()
+      .openapi({
+        description: "Represents the value of the metadata's key-value pair (140 characters max).",
+        example: 'INV-0123456-98765',
+      }),
+    created_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'The date and time when the metadata object was created. It follows the ISO 8601 datetime format and is expressed in Coordinated Universal Time (UTC).',
+        example: '2022-04-29T08:59:51Z',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('InvoiceMetadataObject')
+
+const InvoiceAppliedTaxObjectSchema = BaseAppliedTaxSchema.and(
+  z
+    .object({
+      lago_invoice_id: z
+        .uuid()
+        .exactOptional()
+        .openapi({
+          description: 'Unique identifier of the invoice, created by Lago.',
+          example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
+        }),
+      fees_amount_cents: z
+        .int()
+        .exactOptional()
+        .openapi({ description: 'Fees total amount on which the tax is applied', example: 20000 }),
+    })
+    .openapi({ required: [] }),
+).openapi('InvoiceAppliedTaxObject')
+
+const InvoiceAppliedInvoiceCustomSectionObjectSchema = z
+  .object({
+    lago_id: z
+      .uuid()
+      .openapi({
+        description:
+          'Unique identifier of the applied invoice custom section in the Lago application.',
+        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
+      }),
+    lago_invoice_id: z
+      .uuid()
+      .openapi({
+        description: 'Unique identifier of the invoice this custom section is applied to.',
+        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
+      }),
+    code: z
+      .string()
+      .openapi({
+        description: 'Unique code identifying the invoice custom section.',
+        example: 'eu_bank_details',
+      }),
+    details: z
+      .string()
+      .openapi({
+        description: 'The value shown on the invoice PDF.',
+        example: 'Bank Name: Lago Bank, IBAN: FR7630004000031234567890143',
+      }),
+    display_name: z
+      .string()
+      .openapi({
+        description: 'The name of the invoice custom section displayed on the invoice.',
+        example: 'Bank Details:',
+      }),
+    created_at: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description:
+          'The date of the applied invoice custom section creation, represented in ISO 8601 datetime format and expressed in Coordinated Universal Time (UTC).',
+        example: '2023-07-06T14:35:58Z',
+      }),
+  })
+  .openapi({
+    required: ['lago_id', 'lago_invoice_id', 'code', 'details', 'display_name', 'created_at'],
+  })
+  .openapi('InvoiceAppliedInvoiceCustomSectionObject')
+
+const AppliedUsageThresholdObjectSchema = z
+  .object({
+    lifetime_usage_amount_cents: z
+      .int()
+      .openapi({
+        description:
+          'The amount of usage in cents that has been accumulated over the lifetime of the subscription.',
+        example: 2000,
+      }),
+    created_at: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description:
+          'The date and time when the lifetime usage was computed. It is expressed in UTC format according to the ISO 8601 datetime standard.',
+        example: '2025-03-31T12:31:44Z',
+      }),
+    usage_threshold: UsageThresholdObjectSchema,
+  })
+  .openapi({ required: ['lifetime_usage_amount_cents', 'created_at', 'usage_threshold'] })
+  .openapi('AppliedUsageThresholdObject')
+
+const InvoiceObjectSchema = InvoiceBaseObjectSchema.and(
+  z
+    .object({
+      customer: CustomerObjectSchema.exactOptional().openapi({
+        description:
+          'The customer on which the invoice applies. It refers to the customer account or entity associated with the invoice.',
+      }),
+      metadata: z.array(InvoiceMetadataObjectSchema).exactOptional(),
+      applied_taxes: z.array(InvoiceAppliedTaxObjectSchema).exactOptional(),
+      applied_invoice_custom_sections: z
+        .array(InvoiceAppliedInvoiceCustomSectionObjectSchema)
+        .exactOptional()
+        .openapi({
+          description: 'The invoice custom sections applied to this invoice for PDF generation.',
+        }),
+      applied_usage_thresholds: z.array(AppliedUsageThresholdObjectSchema).exactOptional(),
+    })
+    .openapi({ required: [] }),
+).openapi('InvoiceObject')
+
+const InvoicesPaginatedSchema = z
+  .object({ invoices: z.array(InvoiceObjectSchema), meta: PaginationMetaSchema })
+  .openapi({ required: ['invoices', 'meta'] })
+  .openapi('InvoicesPaginated')
+
+const PaymentMethodObjectSchema = z
+  .object({
+    lago_id: z
+      .uuid()
+      .openapi({
+        description: 'The unique identifier of the payment method, created by Lago.',
+        example: '4cf085a7-c196-4f07-a543-97c50ec6e8b2',
+      }),
+    is_default: z
+      .boolean()
+      .openapi({
+        description: 'Indicates whether this payment method is the default one for the customer.',
+        example: true,
+      }),
+    payment_provider_code: z
+      .string()
+      .nullable()
+      .openapi({
+        description: 'Code of the payment provider associated with this payment method.',
+        example: 'stripe_prod',
+      }),
+    payment_provider_name: z
+      .string()
+      .nullable()
+      .openapi({ description: 'Human-readable name of the payment provider.', example: 'Stripe' }),
+    payment_provider_type: z
+      .union([
+        z.literal(null),
+        z.literal('adyen'),
+        z.literal('cashfree'),
+        z.literal('gocardless'),
+        z.literal('stripe'),
+        z.literal('flutterwave'),
+        z.literal('moneyhash'),
+      ])
+      .nullable()
+      .openapi({
+        description:
+          'The type of the payment provider. It is `null` when the payment method is no longer attached to a payment provider.',
+        example: 'stripe',
+      }),
+    provider_method_id: z
+      .string()
+      .openapi({
+        description: 'Unique identifier of the payment method within the payment provider.',
+        example: 'pm_1N8ZQX2eZvKYlo2CkL9Y8XYZ',
+      }),
+    created_at: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: "Timestamp when the payment method was created in Lago's database.",
+        example: '2025-01-21T00:10:29Z',
+      }),
+  })
+  .openapi({
+    required: [
+      'lago_id',
+      'is_default',
+      'payment_provider_code',
+      'payment_provider_name',
+      'payment_provider_type',
+      'provider_method_id',
+      'created_at',
+    ],
+  })
+  .openapi('PaymentMethodObject')
+
+const PaymentObjectSchema = z
+  .object({
+    lago_id: z
+      .uuid()
+      .openapi({
+        description: 'The unique identifier of the payment, created by Lago.',
+        example: '4cf085a7-c196-4f07-a543-97c50ec6e8b2',
+      }),
+    lago_customer_id: z
+      .uuid()
+      .openapi({
+        description: 'Unique identifier of the customer, created by Lago.',
+        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
+      }),
+    external_customer_id: z
+      .string()
+      .openapi({
+        example: '5eb02857-a71e-4ea2-bcf9-57d3a41bc6ba',
+        description: 'The customer external unique identifier (provided by your own application).',
+      }),
+    invoice_ids: z
+      .array(z.uuid().openapi({ example: '486b147a-02a1-4ccf-8603-f3541fc25e7a' }))
+      .openapi({ description: 'List of invoice IDs associated with the payment.' }),
+    invoice_numbers: z
+      .array(z.string().openapi({ example: 'HOO-202D-005-001' }))
+      .openapi({ description: 'List of invoice numbers associated with the payment.' }),
+    lago_payable_id: z
+      .uuid()
+      .openapi({
+        description: 'The unique identifier of the paid resource, created by Lago.',
+        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
+      }),
+    payable_type: z
+      .enum(['Invoice', 'PaymentRequest'])
+      .openapi({
+        description: 'The type of the paid resource, associated with the `lago_payable_id`.',
+        example: 'Invoice',
+      }),
+    amount_cents: z
+      .int()
+      .openapi({ description: 'The amount of the payment in cents.', example: 1099 }),
+    amount_currency: CurrencySchema.openapi({
+      description: 'The currency of the payment amount.',
+      example: 'USD',
+    }),
+    status: z
+      .string()
+      .openapi({
+        description:
+          'The status of the payment within the payment provider. It differs from one payment provider to another. It is always `succeeded` for a manual payment.',
+        example: 'Completed',
+      }),
+    payment_status: z
+      .union([
+        z.literal(null),
+        z.literal('succeeded'),
+        z.literal('failed'),
+        z.literal('pending'),
+        z.literal('processing'),
+      ])
+      .nullable()
+      .openapi({
+        description:
+          'The payment status, normalized by Lago so that it is the same for every payment provider. It is `null` when Lago has not recorded a normalized status for the payment.',
+        example: 'succeeded',
+      }),
+    type: z
+      .enum(['manual', 'provider'])
+      .openapi({ description: 'The type of payment.', example: 'manual' }),
+    reference: z
+      .string()
+      .nullable()
+      .openapi({
+        description:
+          'Reference for the payment. Set on manual payments only; it is always `null` for payments collected through a payment provider.',
+        example: 'ref1',
+      }),
+    payment_provider_code: z
+      .string()
+      .nullable()
+      .openapi({
+        description:
+          'Code of the payment provider. It is `null` for manual payments, which are not attached to a payment provider.',
+        example: 'stripe_prod',
+      }),
+    payment_provider_type: z
+      .union([
+        z.literal(null),
+        z.literal('adyen'),
+        z.literal('cashfree'),
+        z.literal('gocardless'),
+        z.literal('stripe'),
+        z.literal('flutterwave'),
+        z.literal('moneyhash'),
+      ])
+      .nullable()
+      .openapi({
+        description:
+          'The type of payment provider. It is `null` for manual payments, which are not attached to a payment provider.',
+        example: 'stripe',
+      }),
+    external_payment_id: z
+      .string()
+      .nullable()
+      .openapi({
+        deprecated: true,
+        description: '**Deprecated.** Use `provider_payment_id` instead. It holds the same value.',
+        example: 'pi_5eb0285741bc6ba',
+      }),
+    provider_payment_id: z
+      .string()
+      .nullable()
+      .openapi({
+        description:
+          'Unique identifier of the payment within the payment provider (if applicable).',
+        example: 'pi_5eb0285741bc6ba',
+      }),
+    provider_customer_id: z
+      .string()
+      .nullable()
+      .openapi({
+        description:
+          'Unique identifier of the customer within the payment provider. It is `null` for manual payments.',
+        example: 'cus_5eb0285bcf941bc6ba',
+      }),
+    next_action: z
+      .looseObject({})
+      .openapi({
+        description:
+          'The next action to be taken by the customer to complete the payment. Should usually be empty, except when receiving the `payment.requires_action` webhook.',
+        example: {
+          type: 'redirect_to_url',
+          redirect_to_url: {
+            url: 'https://hooks.stripe.com/3d_secure_2/hosted?merchant=acct_AAA&payment_intent=pi_BBB&payment_intent_client_secret=pi_BBB&publishable_key=pk_test_CCC',
+            return_url: 'https://app.example.com',
+          },
+        },
+      }),
+    created_at: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description:
+          "Timestamp of the payment in Lago's database, not on the payment provider. On a manual payment recorded with `paid_at`, it holds the `paid_at` value instead of the time the payment was recorded.",
+        example: '2025-01-21T00:10:29Z',
+      }),
+    payment_method: PaymentMethodObjectSchema.exactOptional().openapi({
+      description:
+        'The payment method used for the payment. It is only sent on the `payment.succeeded` webhook, and only when a payment method is attached to the payment.',
+    }),
+  })
+  .openapi({
+    required: [
+      'lago_id',
+      'lago_customer_id',
+      'external_customer_id',
+      'invoice_ids',
+      'invoice_numbers',
+      'lago_payable_id',
+      'payable_type',
+      'amount_cents',
+      'amount_currency',
+      'status',
+      'payment_status',
+      'type',
+      'reference',
+      'payment_provider_code',
+      'payment_provider_type',
+      'external_payment_id',
+      'provider_payment_id',
+      'provider_customer_id',
+      'next_action',
+      'created_at',
+    ],
+  })
+  .openapi('PaymentObject')
+
+const PaymentsPaginatedSchema = z
+  .object({ payments: z.array(PaymentObjectSchema), meta: PaginationMetaSchema })
+  .openapi({ required: ['payments', 'meta'] })
+  .openapi('PaymentsPaginated')
+
+const PaymentRequestObjectSchema = z
+  .object({
+    lago_id: z
+      .uuid()
+      .openapi({
+        description: 'Unique identifier of the payment request, created by Lago.',
+        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
+      }),
+    email: z
+      .email()
+      .nullable()
+      .openapi({
+        example: 'dinesh@piedpiper.example',
+        description:
+          "The email address used for sending dunning notifications. It defaults to the customer's own email address, and is `null` when the customer has none.",
+      }),
+    amount_cents: z
+      .int()
+      .openapi({
+        description:
+          'The amount the payment request collects, expressed in cents. It is the sum of the amounts still due on the invoices it covers, minus the credit notes offset against those invoices.',
+        example: 100,
+      }),
+    amount_currency: CurrencySchema.openapi({
+      description: 'The currency of the payment request.',
+      example: 'EUR',
+    }),
+    payment_status: z
+      .enum(['pending', 'succeeded', 'failed'])
+      .openapi({
+        description:
+          'The status of the payment associated with the payment request. It can have one of the following values:\n- `pending`: the payment has not been processed yet. A payment request starts with this status.\n- `succeeded`: the payment of the payment request has been successfully processed.\n- `failed`: the payment of the payment request has failed or encountered an error during processing.',
+        example: 'succeeded',
+      }),
+    created_at: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description:
+          'The date and time when the payment request was created. It is expressed in UTC format according to the ISO 8601 datetime standard. This field provides the timestamp for the exact moment when the payment request was initially created.',
+        example: '2022-04-29T08:59:51Z',
+      }),
+    customer: CustomerBaseObjectSchema.openapi({
+      description:
+        'The customer on which the payment request applies. It refers to the customer account or entity associated with the payment request.',
+    }),
+    invoices: z
+      .array(InvoiceBaseObjectSchema)
+      .openapi({
+        description: 'The overdue invoices the payment request collects the payment for.',
+      }),
+  })
+  .openapi({
+    required: [
+      'lago_id',
+      'email',
+      'amount_cents',
+      'amount_currency',
+      'payment_status',
+      'created_at',
+      'customer',
+      'invoices',
+    ],
+  })
+  .openapi('PaymentRequestObject')
+
+const PaymentRequestsPaginatedSchema = z
+  .object({ payment_requests: z.array(PaymentRequestObjectSchema), meta: PaginationMetaSchema })
+  .openapi({ required: ['payment_requests', 'meta'] })
+  .openapi('PaymentRequestsPaginated')
+
+const SubscriptionsPaginatedSchema = z
+  .object({ subscriptions: z.array(SubscriptionObjectSchema), meta: PaginationMetaSchema })
+  .openapi({ required: ['subscriptions', 'meta'] })
+  .openapi('SubscriptionsPaginated')
+
+const WalletsPaginatedSchema: z.ZodType<WalletsPaginatedType> = z
+  .object({ wallets: z.array(WalletObjectSchema), meta: PaginationMetaSchema })
+  .openapi({ required: ['wallets', 'meta'] })
+  .openapi('WalletsPaginated')
+
+const WalletCreateInputSchema = z
+  .object({
+    wallet: z
+      .object({
+        name: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'The name of the wallet.', example: 'Prepaid' }),
+        code: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'The code of the wallet.', example: 'prepaid' }),
+        priority: z
+          .int()
+          .min(1)
+          .max(50)
+          .exactOptional()
+          .openapi({
+            description:
+              'Wallet priority for ordering when a customer has multiple wallets. Allowed values: 1-50, where 1 is highest priority and 50 is lowest. Defaults to 50. Wallets with the same priority are applied by expiration date, soonest first, with wallets without an expiration date last, then by creation date, oldest first.',
+            example: 50,
+          }),
+        rate_amount: z
+          .string()
+          .regex(/^[0-9]+.?[0-9]*$/)
+          .openapi({
+            description:
+              'The rate of conversion between credits and the amount in the specified currency. It indicates the ratio or factor used to convert credits into the corresponding monetary value in the currency of the transaction.',
+            example: '1.5',
+          }),
+        currency: CurrencySchema.exactOptional().openapi({
+          description:
+            "The currency of the wallet. Required when the customer has no currency yet. When omitted, the wallet uses the customer's currency. When provided on a customer without a currency, it also sets the customer's currency.",
+          example: 'USD',
+        }),
+        paid_credits: z
+          .string()
+          .regex(/^[0-9]+.?[0-9]*$/)
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'The number of paid credits. Required only if there is no granted credits.',
+            example: '20.0',
+          }),
+        granted_credits: z
+          .string()
+          .regex(/^[0-9]+.?[0-9]*$/)
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'The number of free granted credits. Required only if there is no paid credits.',
+            example: '10.0',
+          }),
+        external_customer_id: z
+          .string()
+          .openapi({
+            description:
+              'The customer external unique identifier (provided by your own application)',
+            example: 'hooli_1234',
+          }),
+        billing_entity_code: z
+          .string()
+          .exactOptional()
+          .openapi({
+            example: 'default',
+            description:
+              "The code of the billing entity associated with the wallet. If not provided, the customer's billing entity is used.",
+          }),
+        expiration_at: z.iso
+          .datetime({ offset: true })
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'The date and time that determines when the wallet will expire. It follows the ISO 8601 datetime format and is expressed in Coordinated Universal Time (UTC).',
+            example: '2022-07-07T23:59:59Z',
+          }),
+        invoice_requires_successful_payment: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description:
+              'A boolean setting that, when set to true, delays issuing an invoice for a wallet top-up until a successful payment is made; if false, the invoice is issued immediately upon wallet top-up, regardless of the payment status. Default value of false.',
+            example: false,
+          }),
+        transaction_metadata: z
+          .array(
+            z
+              .object({
+                key: z
+                  .string()
+                  .exactOptional()
+                  .openapi({ description: 'The unique identifier for the attribute.' }),
+                value: z
+                  .string()
+                  .exactOptional()
+                  .openapi({ description: 'The corresponding value for the key.' }),
+              })
+              .openapi({ required: [] }),
+          )
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'This optional field allows you to store a list of key-value pairs that provide additional information or custom attributes. These key-value pairs will be included in the metadata of wallet transactions generated during the wallet creation process.',
+            example: [
+              { key: 'example_key', value: 'example_value' },
+              { key: 'another_key', value: 'another_value' },
+            ],
+          }),
+        transaction_name: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'The name of the wallet transactions triggered when creating the wallet. It will appear on the invoice as the label for the fee. If not set, the label on the invoice will fallback to either `Prepaid credits - {{wallet_name}}` if the wallet name is set, or `Prepaid credits`.',
+            example: "Tokens for models 'high-fidelity-boost'",
+          }),
+        transaction_priority: z
+          .int()
+          .min(1)
+          .max(50)
+          .exactOptional()
+          .openapi({
+            description:
+              'The priority of the wallet transactions triggered when creating the wallet. It drives the order in which credits are consumed. Allowed values: 1-50, where 1 is highest priority and 50 is lowest. Defaults to 50.',
+            example: 50,
+          }),
+        purchase_order_number: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            example: 'PO-123',
+            description:
+              'The purchase order number associated with the wallet. It will be added to invoices generated for wallet top-ups, unless a more specific purchase order number is set on the wallet transaction or recurring transaction rule that triggered the top-up.',
+          }),
+        payment_term: z
+          .xor([PaymentTermObjectSchema, z.null().nullable()])
+          .exactOptional()
+          .openapi({
+            description:
+              'The structured payment term applied to the invoices generated for wallet top-ups. When not sent or `null`, the term of the customer, then of the billing entity, applies.',
+          }),
+        applies_to: z
+          .object({
+            fee_types: z
+              .array(WalletFeeTypeEnumSchema)
+              .nullable()
+              .exactOptional()
+              .openapi({
+                description:
+                  "An array of fee types to which the wallet is applicable. By specifying the fee types in this field, you can restrict the wallet's usage to specific fee types only.",
+                example: ['charge'],
+              }),
+            billable_metric_codes: z
+              .array(z.string())
+              .nullable()
+              .exactOptional()
+              .openapi({
+                description:
+                  "An array of billable metric codes to which the wallet is applicable. By specifying the billable metric codes in this field, you can restrict the wallet's usage to specific metrics only.",
+                example: [],
+              }),
+          })
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'Limitations that restrict where the wallet credits apply. They can be set on fee types, on billable metrics, or on both.',
+            required: [],
+          }),
+        paid_top_up_min_amount_cents: z
+          .int()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: 'The minimum amount, in cents, of a single paid top-up transaction.',
+            example: 100,
+          }),
+        paid_top_up_max_amount_cents: z
+          .int()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: 'The maximum amount, in cents, of a single paid top-up transaction.',
+            example: 1000,
+          }),
+        ignore_paid_top_up_limits_on_creation: z
+          .boolean()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: 'If set to true, the wallet will ignore paid top-up limits on creation.',
+            example: false,
+          }),
+        invoice_custom_section: InvoiceCustomSectionInputSchema.exactOptional(),
+        recurring_transaction_rules: z
+          .array(
+            z
+              .object({
+                paid_credits: z
+                  .string()
+                  .regex(/^[0-9]+.?[0-9]*$/)
+                  .nullable()
+                  .exactOptional()
+                  .openapi({
+                    description: 'The number of paid credits used for recurring top-up.',
+                    example: '20.0',
+                  }),
+                granted_credits: z
+                  .string()
+                  .regex(/^[0-9]+.?[0-9]*$/)
+                  .nullable()
+                  .exactOptional()
+                  .openapi({
+                    description: 'The number of free granted credits used for recurring top-up.',
+                    example: '10.0',
+                  }),
+                grants_target_top_up: z
+                  .boolean()
+                  .nullable()
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      'Applies only to `target` rules. When `true`, the recurring top-up grants free credits to reach the target ongoing balance instead of creating a paid top-up (and bypasses the paid top-up minimum). When `false`, the gap is filled with a paid top-up. `null` for `fixed` rules. Defaults to `false` for target rules when omitted.',
+                    example: false,
+                  }),
+                method: z
+                  .enum(['fixed', 'target'])
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      'The method used for recurring top-up. Possible values are `fixed` or `target`.',
+                    example: 'target',
+                  }),
+                trigger: z
+                  .enum(['interval', 'threshold'])
+                  .openapi({
+                    description: 'The trigger. Possible values are `interval` or `threshold`.',
+                    example: 'interval',
+                  }),
+                interval: z
+                  .enum(['weekly', 'monthly', 'quarterly', 'semiannual', 'yearly'])
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      'The interval used for recurring top-up. It represents the frequency at which automatic top-up occurs. The interval can be one of the following values: `weekly`, `monthly`, `quarterly`, `semiannual` or `yearly`. Required only when trigger is `interval`.',
+                    example: 'monthly',
+                  }),
+                started_at: z.iso
+                  .datetime({ offset: true })
+                  .nullable()
+                  .exactOptional()
+                  .openapi({
+                    example: '2022-08-08T00:00:00Z',
+                    description:
+                      'The effective start date for recurring top-ups. This date should be provided in ISO 8601 datetime format and expressed in Coordinated Universal Time (UTC).',
+                  }),
+                expiration_at: z.iso
+                  .datetime({ offset: true })
+                  .nullable()
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      'The expiration date and time for this specific recurring transaction rule. It follows the ISO 8601 datetime format and is expressed in Coordinated Universal Time (UTC).',
+                    example: '2023-09-30T23:59:59Z',
+                  }),
+                threshold_credits: z
+                  .string()
+                  .regex(/^[0-9]+.?[0-9]*$/)
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      'The threshold for recurring top-ups is the value at which an automatic top-up is triggered. For example, if this threshold is set at 10 credits, an automatic top-up will occur whenever the wallet balance falls to or below 10 credits. Required only when trigger is set to `threshold`.',
+                    example: '20.0',
+                  }),
+                target_ongoing_balance: z
+                  .string()
+                  .regex(/^[0-9]+.?[0-9]*$/)
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      'The target ongoing balance is the value set for the ongoing balance to be reached by the automatic top-up. Required only when trigger is set to `target`.',
+                    example: '200.0',
+                  }),
+                invoice_requires_successful_payment: z
+                  .boolean()
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      'A boolean setting that, when set to true, delays issuing an invoice for a wallet top-up until a successful payment is made; if false, the invoice is issued immediately upon wallet top-up, regardless of the payment status. Default value of false.',
+                    example: false,
+                  }),
+                transaction_metadata: z
+                  .array(
+                    z
+                      .object({
+                        key: z
+                          .string()
+                          .exactOptional()
+                          .openapi({ description: 'The unique identifier for the attribute.' }),
+                        value: z
+                          .string()
+                          .exactOptional()
+                          .openapi({ description: 'The value associated with the key.' }),
+                      })
+                      .openapi({ required: [] }),
+                  )
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      'This optional field allows you to store a list of key-value pairs containing additional information or custom attributes. These key-value pairs will populate the metadata of the wallet transactions triggered by this rule.',
+                    example: [
+                      { key: 'example_key', value: 'example_value' },
+                      { key: 'another_key', value: 'another_value' },
+                    ],
+                  }),
+                transaction_name: z
+                  .string()
+                  .nullable()
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      'The name of the wallet transactions triggered by this rule. It will appear on the invoice as the label for the fee. If not set, the label on the invoice will fallback to either `Prepaid credits - {{wallet_name}}` if the wallet name is set, or `Prepaid credits`.',
+                    example: "Tokens for models 'high-fidelity-boost'",
+                  }),
+                purchase_order_number: z
+                  .string()
+                  .nullable()
+                  .exactOptional()
+                  .openapi({
+                    example: 'PO-123',
+                    description:
+                      "The purchase order number associated with this recurring transaction rule. It will be added to invoices generated for the resulting wallet top-ups. If not set, falls back to the wallet's `purchase_order_number`.",
+                  }),
+                ignore_paid_top_up_limits: z
+                  .boolean()
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      'When true, this rule can top up the wallet with transactions that exceed the paid top-up limits. Defaults to false.',
+                    example: false,
+                  }),
+                invoice_custom_section: InvoiceCustomSectionInputSchema.exactOptional(),
+                payment_method: PaymentMethodReferenceSchema.exactOptional().openapi({
+                  description:
+                    'Optional payment method to use for processing recurring top-up payments.',
+                }),
+              })
+              .openapi({
+                description: 'Object that represents rule for wallet recurring transactions.',
+                required: ['trigger'],
+              }),
+          )
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'List of recurring transaction rules. Only one recurring rule is allowed per wallet. This is a premium feature, the rules are ignored without a premium license.',
+          }),
+        payment_method: PaymentMethodReferenceSchema.exactOptional().openapi({
+          description: 'Optional payment method to use for processing wallet top-up payments.',
+        }),
+        metadata: MetadataInputSchema.exactOptional(),
+      })
+      .openapi({ required: ['rate_amount', 'external_customer_id'] }),
+  })
+  .openapi({ required: ['wallet'] })
+  .openapi('WalletCreateInput')
+
+const WalletSchema = z
+  .object({ wallet: WalletObjectSchema })
+  .openapi({ required: ['wallet'] })
+  .openapi('Wallet')
+
+const WalletUpdateInputSchema = z
+  .object({
+    wallet: z
+      .object({
+        name: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'The name of the wallet.', example: 'new_name' }),
+        code: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'The code of the wallet.', example: 'prepaid' }),
+        priority: z
+          .int()
+          .min(1)
+          .max(50)
+          .exactOptional()
+          .openapi({
+            description:
+              'Wallet priority for ordering when a customer has multiple wallets. Allowed values: 1-50, where 1 is highest priority and 50 is lowest. Defaults to 50. Wallets with the same priority are applied by expiration date, soonest first, with wallets without an expiration date last, then by creation date, oldest first.',
+            example: 50,
+          }),
+        expiration_at: z.iso
+          .datetime({ offset: true })
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'The date and time that determines when the wallet will expire. It follows the ISO 8601 datetime format and is expressed in Coordinated Universal Time (UTC).',
+            example: '2022-07-07T23:59:59Z',
+          }),
+        invoice_requires_successful_payment: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description:
+              'A boolean setting that, when set to true, delays issuing an invoice for a wallet top-up until a successful payment is made; if false, the invoice is issued immediately upon wallet top-up, regardless of the payment status. Default value of false.',
+            example: false,
+          }),
+        paid_top_up_min_amount_cents: z
+          .int()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: 'The minimum amount, in cents, of a single paid top-up transaction.',
+            example: 100,
+          }),
+        paid_top_up_max_amount_cents: z
+          .int()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: 'The maximum amount, in cents, of a single paid top-up transaction.',
+            example: 1000,
+          }),
+        billing_entity_code: z
+          .string()
+          .exactOptional()
+          .openapi({
+            example: 'default',
+            description: 'The code of the billing entity associated with the wallet.',
+          }),
+        purchase_order_number: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            example: 'PO-123',
+            description:
+              'The purchase order number associated with the wallet. It will be added to invoices generated for wallet top-ups, unless a more specific purchase order number is set on the wallet transaction or recurring transaction rule that triggered the top-up.',
+          }),
+        payment_term: z
+          .xor([PaymentTermObjectSchema, z.null().nullable()])
+          .exactOptional()
+          .openapi({
+            description:
+              'The structured payment term applied to the invoices generated for wallet top-ups. Send `null` to remove it, so the term of the customer, then of the billing entity, applies.',
+          }),
+        invoice_custom_section: InvoiceCustomSectionInputSchema.exactOptional(),
+        recurring_transaction_rules: z
+          .array(
+            z
+              .object({
+                lago_id: z
+                  .uuid()
+                  .exactOptional()
+                  .openapi({
+                    example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
+                    description:
+                      'A unique identifier for the recurring transaction rule in the Lago application. Can be used to update a recurring transaction rule.',
+                  }),
+                trigger: z
+                  .enum(['interval', 'threshold'])
+                  .openapi({
+                    description: 'The trigger. Possible values are `interval` or `threshold`.',
+                    example: 'interval',
+                  }),
+                method: z
+                  .enum(['fixed', 'target'])
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      'The method used for recurring top-up. Possible values are `fixed` or `target`.',
+                    example: 'target',
+                  }),
+                interval: z
+                  .enum(['weekly', 'monthly', 'quarterly', 'semiannual', 'yearly'])
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      'The interval used for recurring top-up. It represents the frequency at which automatic top-up occurs. The interval can be one of the following values: `weekly`, `monthly`, `quarterly`, `semiannual` or `yearly`. Required only when trigger is set to `interval`.',
+                    example: 'monthly',
+                  }),
+                threshold_credits: z
+                  .string()
+                  .regex(/^[0-9]+.?[0-9]*$/)
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      'The threshold for recurring top-ups is the value at which an automatic top-up is triggered. For example, if this threshold is set at 10 credits, an automatic top-up will occur whenever the wallet balance falls to or below 10 credits. Required only when trigger is set to `threshold`.',
+                    example: '20.0',
+                  }),
+                paid_credits: z
+                  .string()
+                  .regex(/^[0-9]+.?[0-9]*$/)
+                  .nullable()
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      'The number of paid credits. Required only if there is no granted credits.',
+                    example: '20.0',
+                  }),
+                granted_credits: z
+                  .string()
+                  .regex(/^[0-9]+.?[0-9]*$/)
+                  .nullable()
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      'The number of free granted credits. Required only if there is no paid credits.',
+                    example: '10.0',
+                  }),
+                grants_target_top_up: z
+                  .boolean()
+                  .nullable()
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      'Applies only to `target` rules. When `true`, the recurring top-up grants free credits to reach the target ongoing balance instead of creating a paid top-up (and bypasses the paid top-up minimum). When `false`, the gap is filled with a paid top-up. `null` for `fixed` rules. Defaults to `false` for target rules when omitted.',
+                    example: false,
+                  }),
+                started_at: z.iso
+                  .datetime({ offset: true })
+                  .nullable()
+                  .exactOptional()
+                  .openapi({
+                    example: '2022-08-08T00:00:00Z',
+                    description:
+                      'The effective start date for recurring top-ups. This date should be provided in ISO 8601 datetime format and expressed in Coordinated Universal Time (UTC).',
+                  }),
+                expiration_at: z.iso
+                  .datetime({ offset: true })
+                  .nullable()
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      'The expiration date and time for this specific recurring transaction rule. It follows the ISO 8601 datetime format and is expressed in Coordinated Universal Time (UTC).',
+                    example: '2023-09-30T23:59:59Z',
+                  }),
+                target_ongoing_balance: z
+                  .string()
+                  .regex(/^[0-9]+.?[0-9]*$/)
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      'The target ongoing balance is the value set for the ongoing balance to be reached by the automatic top-up. Required only when trigger is set to `target`.',
+                    example: '200.0',
+                  }),
+                invoice_requires_successful_payment: z
+                  .boolean()
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      'A boolean setting that, when set to true, delays issuing an invoice for a wallet top-up until a successful payment is made; if false, the invoice is issued immediately upon wallet top-up, regardless of the payment status. Default value of false.',
+                    example: false,
+                  }),
+                transaction_metadata: z
+                  .array(
+                    z
+                      .object({
+                        key: z
+                          .string()
+                          .exactOptional()
+                          .openapi({ description: 'The unique identifier for the attribute.' }),
+                        value: z
+                          .string()
+                          .exactOptional()
+                          .openapi({ description: 'The value associated with the key.' }),
+                      })
+                      .openapi({ required: [] }),
+                  )
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      'This optional field allows you to store a list of key-value pairs containing additional information or custom attributes. These key-value pairs will populate the metadata of the wallet transactions triggered by this rule.',
+                    example: [
+                      { key: 'example_key', value: 'example_value' },
+                      { key: 'another_key', value: 'another_value' },
+                    ],
+                  }),
+                transaction_name: z
+                  .string()
+                  .nullable()
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      'The name of the wallet transactions triggered by this rule. It will appear on the invoice as the label for the fee. If not set, the label on the invoice will fallback to either `Prepaid credits - {{wallet_name}}` if the wallet name is set, or `Prepaid credits`.',
+                    example: "Tokens for models 'high-fidelity-boost'",
+                  }),
+                purchase_order_number: z
+                  .string()
+                  .nullable()
+                  .exactOptional()
+                  .openapi({
+                    example: 'PO-123',
+                    description:
+                      "The purchase order number associated with this recurring transaction rule. It will be added to invoices generated for the resulting wallet top-ups. If not set, falls back to the wallet's `purchase_order_number`.",
+                  }),
+                ignore_paid_top_up_limits: z
+                  .boolean()
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      'When true, this rule can top up the wallet with transactions that exceed the paid top-up limits. Defaults to false.',
+                    example: false,
+                  }),
+                invoice_custom_section: InvoiceCustomSectionInputSchema.exactOptional(),
+                payment_method: PaymentMethodReferenceSchema.exactOptional().openapi({
+                  description:
+                    'Optional payment method to use for processing recurring top-up payments.',
+                }),
+              })
+              .openapi({
+                description: 'Object that represents rule for wallet recurring transactions.',
+                required: ['trigger'],
+              }),
+          )
+          .exactOptional()
+          .openapi({
+            description:
+              'List of recurring transaction rules. Only one recurring rule is allowed per wallet. This is a premium feature, the rules are ignored without a premium license.',
+          }),
+        payment_method: PaymentMethodReferenceSchema.exactOptional().openapi({
+          description: 'Optional payment method to use for processing wallet top-up payments.',
+        }),
+        applies_to: z
+          .object({
+            fee_types: z
+              .array(WalletFeeTypeEnumSchema)
+              .nullable()
+              .exactOptional()
+              .openapi({
+                description:
+                  "An array of fee types to which the wallet is applicable. By specifying the fee types in this field, you can restrict the wallet's usage to specific fee types only.",
+                example: ['charge'],
+              }),
+            billable_metric_codes: z
+              .array(z.string())
+              .nullable()
+              .exactOptional()
+              .openapi({
+                description:
+                  "An array of billable metric codes to which the wallet is applicable. By specifying the billable metric codes in this field, you can restrict the wallet's usage to specific metrics only.",
+                example: [],
+              }),
+          })
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'Limitations that restrict where the wallet credits apply. They can be set on fee types, on billable metrics, or on both.',
+            required: [],
+          }),
+        metadata: MetadataInputSchema.exactOptional(),
+      })
+      .openapi({ required: [] }),
+  })
+  .openapi({ required: ['wallet'] })
+  .openapi('WalletUpdateInput')
+
+const WalletMetadataResponseSchema = z
+  .object({ metadata: MetadataObjectSchema })
+  .openapi({ required: ['metadata'] })
+  .openapi('WalletMetadataResponse')
+
+const AlertThresholdBaseObjectSchema = z
+  .object({
+    code: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Code identifying the threshold inside the alert. You set it when you create or update the alert.',
+        example: 'warn',
+      }),
+    notify_on: z
+      .array(z.enum(['triggered', 'resolved']))
+      .default(['triggered'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The transitions this threshold notifies on. `triggered` is always included. Opting in to `resolved` additionally sends an `alert.resolved` webhook when the value returns past the threshold, and requires the threshold to carry a code that is unique within the alert. Not available on recurring thresholds.',
+        example: ['triggered', 'resolved'],
+      }),
+    recurring: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description:
+          'This field when set to `true` indicates that the alert will be retriggered when this threshold is reached after the last non-recurring threshold. Only one recurring threshold per alert allowed.',
+        example: false,
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('AlertThresholdBaseObject')
+
+const AlertThresholdObjectSchema = AlertThresholdBaseObjectSchema.and(
+  z
+    .object({
+      value: z
+        .string()
+        .regex(/^-?[0-9]+(\.[0-9]+)?$/)
+        .openapi({
+          description:
+            'A value that should trigger this alert, formatted as a BigDecimal.\n\nThe unit depends on the alert type: `billable_metric_current_usage_units` and `billable_metric_lifetime_usage_units` are expressed in units, `wallet_credits_balance` and `wallet_credits_ongoing_balance` in credits, and all other types in cents.',
+          example: '99.0',
+        }),
+    })
+    .openapi({ required: ['code', 'value', 'recurring', 'notify_on'] }),
+).openapi('AlertThresholdObject')
+
+const WalletAlertObjectSchema = z
+  .object({
+    lago_id: z
+      .uuid()
+      .openapi({
+        description: 'Unique identifier of the alert, created by Lago.',
+        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
+      }),
+    lago_organization_id: z
+      .uuid()
+      .openapi({
+        description: 'Unique identifier of the organization, created by Lago.',
+        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
+      }),
+    external_subscription_id: z
+      .null()
+      .nullable()
+      .openapi({
+        description:
+          'Always null. An alert returned by the wallet endpoints is never attached to a subscription.',
+      }),
+    lago_wallet_id: z
+      .string()
+      .openapi({
+        description: 'Unique identifier of the wallet, created by Lago.',
+        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
+      }),
+    wallet_code: z
+      .string()
+      .openapi({
+        description: 'The wallet external unique identifier (provided by your own application).',
+        example: 'wallet_code',
+      }),
+    billable_metric: z
+      .null()
+      .nullable()
+      .openapi({ description: 'Always null. A wallet alert is never based on a billable metric.' }),
+    alert_type: z
+      .enum([
+        'wallet_balance_amount',
+        'wallet_credits_balance',
+        'wallet_ongoing_balance_amount',
+        'wallet_credits_ongoing_balance',
+      ])
+      .openapi({ description: 'The type of alert.', example: 'wallet_balance_amount' }),
+    code: z
+      .string()
+      .openapi({
+        description: 'Unique code used to identify the alert.',
+        example: 'wallet_balance_alert',
+      }),
+    name: z
+      .string()
+      .nullable()
+      .openapi({ description: 'The name of the alert.', example: 'Wallet Balance Alert' }),
+    direction: z
+      .enum(['increasing', 'decreasing'])
+      .openapi({
+        description:
+          'Indicates whether the alert is triggered when the monitored metric goes above or below the threshold. Lago sets it from the alert type and you cannot change it. A wallet alert is always `decreasing`.',
+        example: 'decreasing',
+      }),
+    previous_value: z
+      .string()
+      .openapi({
+        description:
+          'When the system checked if this alert should be triggered, this value was retrieved and checked against the thresholds. Returned as a string formatted as a BigDecimal.',
+        example: '1000.0',
+      }),
+    last_processed_at: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .openapi({
+        description:
+          "The date and time in UTC (ISO 8601) when the system checked if this alert should be triggered. Null until it's processed for the first time.",
+        example: '2025-05-19T10:04:21Z',
+      }),
+    thresholds: z
+      .array(AlertThresholdObjectSchema)
+      .openapi({ description: 'Array of thresholds associated with the alert.' }),
+    created_at: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'The date and time in UTC (ISO 8601) when the alert was created.',
+        example: '2025-03-20T10:00:00Z',
+      }),
+  })
+  .openapi({
+    required: [
+      'lago_id',
+      'lago_organization_id',
+      'external_subscription_id',
+      'lago_wallet_id',
+      'wallet_code',
+      'billable_metric',
+      'alert_type',
+      'code',
+      'name',
+      'direction',
+      'previous_value',
+      'last_processed_at',
+      'thresholds',
+      'created_at',
+    ],
+  })
+  .openapi('WalletAlertObject')
+
+const WalletAlertsSchema = z
+  .object({ alerts: z.array(WalletAlertObjectSchema), meta: PaginationMetaSchema.exactOptional() })
+  .openapi({ required: ['alerts'] })
+  .openapi('WalletAlerts')
+
+const AlertThresholdInputSchema = AlertThresholdBaseObjectSchema.and(
+  z
+    .object({
+      value: z
+        .xor([z.number(), z.string()])
+        .openapi({
+          description:
+            'A value that should trigger this alert. This can be a number or a string formatted as a BigDecimal.\n\nThe unit depends on the alert type: `billable_metric_current_usage_units` and `billable_metric_lifetime_usage_units` are expressed in units, `wallet_credits_balance` and `wallet_credits_ongoing_balance` in credits, and all other types in cents.',
+          example: 99,
+        }),
+    })
+    .openapi({ required: ['value'] }),
+).openapi('AlertThresholdInput')
+
+const AlertBaseInputSchema = z
+  .object({
+    code: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Unique code used to identify the alert.',
+        example: 'storage_threshold_alert',
+      }),
+    name: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The name of the alert.', example: 'Storage Usage Alert' }),
+    thresholds: z
+      .array(AlertThresholdInputSchema)
+      .max(20)
+      .exactOptional()
+      .openapi({
+        description:
+          'Array of thresholds associated with the alert. An alert accepts at most 20 thresholds, and a larger array returns a `422` error with `too_many_thresholds` on `thresholds`. Two thresholds cannot share the same value and the same `recurring` flag. The value of a recurring threshold must be positive.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('AlertBaseInput')
+
+const WalletAlertCreateInputSchema = z
+  .object({
+    alert: AlertBaseInputSchema.and(
+      z
+        .object({
+          alert_type: z
+            .enum([
+              'wallet_balance_amount',
+              'wallet_credits_balance',
+              'wallet_ongoing_balance_amount',
+              'wallet_credits_ongoing_balance',
+            ])
+            .openapi({ description: 'The type of alert.', example: 'wallet_balance_amount' }),
+          code: z
+            .string()
+            .openapi({
+              description: 'Unique code used to identify the alert.',
+              example: 'wallet_balance_alert',
+            }),
+          name: z
+            .string()
+            .nullable()
+            .exactOptional()
+            .openapi({ description: 'The name of the alert.', example: 'Wallet Balance Alert' }),
+        })
+        .openapi({ required: ['alert_type', 'code', 'thresholds'] }),
+    ),
+  })
+  .openapi({ required: ['alert'] })
+  .openapi('WalletAlertCreateInput')
+
+const WalletAlertBatchCreateInputSchema = z
+  .object({
+    alerts: z
+      .array(
+        AlertBaseInputSchema.and(
+          z
+            .object({
+              alert_type: z
+                .enum([
+                  'wallet_balance_amount',
+                  'wallet_credits_balance',
+                  'wallet_ongoing_balance_amount',
+                  'wallet_credits_ongoing_balance',
+                ])
+                .openapi({ description: 'The type of alert.', example: 'wallet_balance_amount' }),
+              code: z
+                .string()
+                .openapi({
+                  description: 'Unique code used to identify the alert.',
+                  example: 'wallet_balance_alert',
+                }),
+              name: z
+                .string()
+                .nullable()
+                .exactOptional()
+                .openapi({
+                  description: 'The name of the alert.',
+                  example: 'Wallet Balance Alert',
+                }),
+            })
+            .openapi({ required: ['alert_type', 'code', 'thresholds'] }),
+        ),
+      )
+      .openapi({
+        description:
+          'Array of alerts to create. All alerts are created atomically - if any fail validation, none are created.',
+      }),
+  })
+  .openapi({ required: ['alerts'] })
+  .openapi('WalletAlertBatchCreateInput')
+
+const WalletAlertSchema = z
+  .object({ alert: WalletAlertObjectSchema })
+  .openapi({ required: ['alert'] })
+  .openapi('WalletAlert')
+
+const WalletAlertUpdateInputSchema = z
+  .object({
+    alert: AlertBaseInputSchema.and(
+      z
+        .object({
+          code: z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Unique code used to identify the alert.',
+              example: 'wallet_balance_alert',
+            }),
+          name: z
+            .string()
+            .nullable()
+            .exactOptional()
+            .openapi({ description: 'The name of the alert.', example: 'Wallet Balance Alert' }),
+        })
+        .openapi({ required: [] }),
+    ),
+  })
+  .openapi({ required: ['alert'] })
+  .openapi('WalletAlertUpdateInput')
+
+const CustomerUsageSchema: z.ZodType<CustomerUsageType> = z
+  .object({ customer_usage: CustomerUsageObjectSchema })
+  .openapi({ required: ['customer_usage'] })
+  .openapi('CustomerUsage')
+
+const CustomerProjectedUsageSchema: z.ZodType<CustomerProjectedUsageType> = z
+  .object({ customer_projected_usage: CustomerProjectedUsageObjectSchema })
+  .openapi({ required: ['customer_projected_usage'] })
+  .openapi('CustomerProjectedUsage')
+
+const CustomerPastUsageSchema: z.ZodType<CustomerPastUsageType> = z
+  .object({ usage_periods: z.array(CustomerUsageObjectSchema), meta: PaginationMetaSchema })
+  .openapi({ required: ['usage_periods', 'meta'] })
+  .openapi('CustomerPastUsage')
+
+const AttributedUsageSchema: z.ZodType<AttributedUsageType> = z
+  .object({ attributed_usage: AttributedUsageObjectSchema, meta: PaginationMetaSchema })
+  .openapi({ required: ['attributed_usage', 'meta'] })
+  .openapi('AttributedUsage')
+
+const ApiErrorAttributedUsageQueryLimitSchema = z
+  .object({
+    status: z.int32().openapi({ example: 422 }),
+    error: z.string().openapi({ example: 'Unprocessable Entity' }),
+    code: z
+      .enum(['too_many_groups', 'query_timeout', 'memory_limit_exceeded'])
+      .openapi({
+        description:
+          'Reason why the query exceeded its limits. Narrow the period or add filters, then retry.',
+        example: 'too_many_groups',
+      }),
+  })
+  .openapi({ required: ['status', 'error', 'code'] })
+  .openapi('ApiErrorAttributedUsageQueryLimit')
+
+const CustomerCheckoutUrlSchema = z
+  .object({
+    lago_customer_id: z
+      .string()
+      .openapi({
+        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
+        description:
+          "Unique identifier assigned to the customer within the Lago application. This ID is exclusively created by Lago and serves as a unique identifier for the customer's record within the Lago system",
+      }),
+    external_customer_id: z
+      .string()
+      .openapi({
+        example: '5eb02857-a71e-4ea2-bcf9-57d3a41bc6ba',
+        description: 'The customer external unique identifier (provided by your own application)',
+      }),
+    payment_provider: z
+      .string()
+      .openapi({
+        example: 'stripe',
+        description: 'The Payment Provider name linked to the Customer.',
+      }),
+    payment_provider_code: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Code of the payment provider', example: 'Stripe Prod' }),
+    checkout_url: z
+      .string()
+      .exactOptional()
+      .openapi({
+        example: 'https://foo.bar',
+        description: 'The new generated Payment Provider Checkout URL for the Customer.',
+      }),
+  })
+  .openapi({ required: ['lago_customer_id', 'external_customer_id', 'payment_provider'] })
+  .openapi('CustomerCheckoutUrl')
+
+const PaymentMethodsPaginatedSchema = z
+  .object({ payment_methods: z.array(PaymentMethodObjectSchema), meta: PaginationMetaSchema })
+  .openapi({ required: ['payment_methods', 'meta'] })
+  .openapi('PaymentMethodsPaginated')
+
+const PaymentMethodSchema = z
+  .object({ payment_method: PaymentMethodObjectSchema })
+  .openapi({ required: ['payment_method'] })
+  .openapi('PaymentMethod')
+
+const EventObjectSchema = z
+  .object({
+    lago_id: z
+      .string()
+      .nullable()
+      .openapi({
+        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
+        description:
+          "Unique identifier assigned to the event within the Lago application. This ID is exclusively created by Lago and serves as a unique identifier for the event's record within the Lago system. It is an opaque identifier and is not guaranteed to be a UUID; on organizations using the ClickHouse events store it is a composite string.",
+      }),
+    transaction_id: z
+      .string()
+      .openapi({
+        example: 'transaction_1234567890',
+        description:
+          'This field represents a unique identifier for the event. It is crucial for ensuring idempotency, meaning that each event can be uniquely identified and processed without causing any unintended side effects.',
+      }),
+    lago_customer_id: z
+      .uuid()
+      .nullable()
+      .openapi({
+        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
+        description:
+          "Unique identifier assigned to the customer within the Lago application. This ID is exclusively created by Lago and serves as a unique identifier for the customer's record within the Lago system",
+      }),
+    code: z
+      .string()
+      .openapi({
+        example: 'storage',
+        description:
+          'The code that identifies a targeted billable metric. It is essential that this code matches the `code` property of one of your active billable metrics. If the provided code does not correspond to any active billable metric, it will be ignored during the process.',
+      }),
+    timestamp: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        example: '2022-04-29T08:59:51.123Z',
+        description:
+          'The date and time at which the event occurred, in ISO 8601 format with millisecond precision and expressed in Coordinated Universal Time (UTC). When no timestamp is sent on the event, it is set to the time of event reception.',
+      }),
+    precise_total_amount_cents: z
+      .string()
+      .nullable()
+      .openapi({
+        example: '1234.56',
+        description:
+          'The precise total amount that was sent in the event payload. This field is used by the `dynamic` pricing model.',
+      }),
+    properties: z
+      .object({
+        operation_type: z
+          .enum(['add', 'remove'])
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'The `operation_type` field is only necessary when adding or removing a specific unit when the targeted billable metric adopts a `unique_count_agg` aggregation method. In other cases, the `operation_type` field is not required. The valid values for the `operation_type` field are `add` or `remove`, which indicate whether the unit is being added or removed from the unique count aggregation, respectively.',
+          }),
+      })
+      .catchall(z.xor([z.string(), z.int(), z.number()]))
+      .openapi({
+        description:
+          'This field represents additional properties associated with the event, which are utilized in the calculation of the final fee. This object becomes mandatory when the targeted billable metric employs a `sum_agg`, `max_agg`, or `unique_count_agg` aggregation method. However, when using a simple `count_agg`, this object is not required.',
+        example: { gb: 10 },
+        required: [],
+      }),
+    lago_subscription_id: z
+      .uuid()
+      .nullable()
+      .openapi({
+        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
+        description:
+          "Unique identifier assigned to the subscription within the Lago application. This ID is exclusively created by Lago and serves as a unique identifier for the subscription's record within the Lago system",
+      }),
+    external_subscription_id: z
+      .string()
+      .openapi({
+        example: 'sub_1234567890',
+        description:
+          'The unique identifier of the subscription within your application, as sent on the event. It is the value Lago uses to attach the event to a subscription.',
+      }),
+    created_at: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .openapi({
+        example: '2022-04-29T08:59:51Z',
+        description:
+          "The creation date of the event's record in the Lago application, presented in the ISO 8601 datetime format, specifically in Coordinated Universal Time (UTC). It provides the precise timestamp of when the event's record was created within the Lago application",
+      }),
+  })
+  .openapi({
+    required: [
+      'lago_id',
+      'transaction_id',
+      'lago_customer_id',
+      'code',
+      'timestamp',
+      'precise_total_amount_cents',
+      'properties',
+      'lago_subscription_id',
+      'external_subscription_id',
+      'created_at',
+    ],
+  })
+  .openapi('EventObject')
+
+const EventsPaginatedSchema = z
+  .object({ events: z.array(EventObjectSchema), meta: PaginationMetaSchema })
+  .openapi({ required: ['events', 'meta'] })
+  .openapi('EventsPaginated')
+
+const EventInputObjectSchema = z
+  .object({
+    transaction_id: z
+      .string()
+      .openapi({
+        example: 'transaction_1234567890',
+        description:
+          'This field represents a unique identifier for the event.\nIt is crucial for ensuring idempotency, meaning that each event can be uniquely identified and processed without causing any unintended side effects.\n\nWARNING: If the Lago organization is configured to use the new ClickHouse-based event pipeline (designed for high-volume processing), the idempotency logic is handled differently.\nEvent uniqueness is maintained with both `transaction_id` and `timestamp` fields.\nIf a new event arrives with identical values for these two fields as an existing event, the new one will overwrite the previous event rather than being rejected.\n',
+      }),
+    external_subscription_id: z
+      .string()
+      .openapi({
+        example: 'sub_1234567890',
+        description:
+          'The unique identifier of the subscription in your application. This field is mandatory in order to link events to the correct customer subscription.',
+      }),
+    code: z
+      .string()
+      .openapi({
+        example: 'storage',
+        description:
+          'The code that identifies a targeted billable metric. It is essential that this code matches the `code` property of one of your active billable metrics. If the provided code does not correspond to any active billable metric, it will be ignored during the process.',
+      }),
+    timestamp: z
+      .xor([z.int(), z.string()])
+      .exactOptional()
+      .openapi({
+        example: '1651240791.123',
+        description:
+          'This field captures the Unix timestamp in seconds indicating the occurrence of the event in Coordinated Universal Time (UTC).\nIf this timestamp is not provided, the API will automatically set it to the time of event reception.\nYou can also provide milliseconds precision by appending decimals to the timestamp.\n',
+      }),
+    precise_total_amount_cents: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        example: '1234.56',
+        description:
+          'The precise total amount in cents with precision used by the `dynamic` pricing model to compute the usage amount.',
+      }),
+    properties: z
+      .object({
+        operation_type: z
+          .enum(['add', 'remove'])
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'The `operation_type` field is only necessary when adding or removing a specific unit when the targeted billable metric adopts a `unique_count_agg` aggregation method. In other cases, the `operation_type` field is not required. The valid values for the `operation_type` field are `add` or `remove`, which indicate whether the unit is being added or removed from the unique count aggregation, respectively. It defaults to `add` when omitted.',
+          }),
+        target_wallet_code: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            example: 'main_wallet',
+            description:
+              'The code of the wallet targeted by this event for prepaid credits deduction.\nWhen provided, credits are drawn from this specific wallet instead of following the standard wallet selection logic.\nIf the code does not match an existing wallet, no credits will be applied for the event.\nThis field is only taken into account when the targeted charge has `accepts_target_wallet` set to `true`.\nThis field requires a premium integration.',
+          }),
+      })
+      .catchall(z.xor([z.string(), z.int(), z.number()]))
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'This field represents additional properties associated with the event, which are utilized in the calculation of the final fee. This object becomes mandatory when the targeted billable metric employs a `sum_agg`, `max_agg`, or `unique_count_agg` aggregation method. However, when using a simple `count_agg`, this object is not required.',
+        example: { gb: 10 },
+        required: [],
+      }),
+  })
+  .openapi({ required: ['transaction_id', 'external_subscription_id', 'code'] })
+  .openapi('EventInputObject')
+
+const EventInputSchema = z
+  .object({ event: EventInputObjectSchema })
+  .openapi({ required: ['event'] })
+  .openapi('EventInput')
+
+const EventCreatedSchema = z
+  .object({
+    event: EventObjectSchema.and(
+      z
+        .object({
+          lago_customer_id: z
+            .null()
+            .nullable()
+            .exactOptional()
+            .openapi({
+              description:
+                'The value will always be null in this response as the event processing is done asynchronously',
+              example: null,
+            }),
+          lago_subscription_id: z
+            .null()
+            .nullable()
+            .exactOptional()
+            .openapi({
+              description:
+                'The value will always be null in this response as the event processing is done asynchronously',
+              example: null,
+            }),
+        })
+        .openapi({ required: [] }),
+    ),
+  })
+  .openapi({ required: ['event'] })
+  .openapi('EventCreated')
+
+const EventBatchInputSchema = z
+  .object({
+    events: z
+      .array(EventInputObjectSchema)
+      .min(1)
+      .max(100)
+      .openapi({
+        description:
+          'The usage events to ingest. An empty list returns a `422` error with `no_events`, and more than 100 events returns a `422` error with `too_many_events`.',
+      }),
+  })
+  .openapi({ required: ['events'] })
+  .openapi('EventBatchInput')
+
+const EventsCreatedSchema = z
+  .object({
+    events: z.array(
+      EventObjectSchema.and(
+        z
+          .object({
+            lago_customer_id: z
+              .null()
+              .nullable()
+              .exactOptional()
+              .openapi({
+                description:
+                  'The value will always be null in this response as the event processing is done asynchronously',
+                example: null,
+              }),
+            lago_subscription_id: z
+              .null()
+              .nullable()
+              .exactOptional()
+              .openapi({
+                description:
+                  'The value will always be null in this response as the event processing is done asynchronously',
+                example: null,
+              }),
+          })
+          .openapi({ required: [] }),
+      ),
+    ),
+  })
+  .openapi({ required: ['events'] })
+  .openapi('EventsCreated')
+
+const EventEstimateFeesInputSchema = z
+  .object({
+    event: z
+      .object({
+        code: z
+          .string()
+          .openapi({
+            example: 'storage',
+            description:
+              'The code that identifies a targeted billable metric. It is essential that this code matches the `code` property of one of your active billable metrics. If the provided code does not correspond to any active billable metric, it will be ignored during the process.',
+          }),
+        external_subscription_id: z
+          .string()
+          .openapi({
+            example: 'sub_1234567890',
+            description: 'The unique identifier of the subscription within your application.',
+          }),
+        precise_total_amount_cents: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            example: '1234.56',
+            description:
+              'The precise total amount in cents with precision used by the `dynamic` pricing model to compute the estimated usage amount. Defaults to `0` when omitted.',
+          }),
+        properties: z
+          .looseObject({
+            target_wallet_code: z
+              .string()
+              .nullable()
+              .exactOptional()
+              .openapi({
+                example: 'main_wallet',
+                description:
+                  'The code of the wallet targeted by this event for prepaid credits deduction.\nWhen provided, credits are drawn from this specific wallet instead of following the standard wallet selection logic.\nIf the code does not match an existing wallet, no credits will be applied for the event.\nThis field is only taken into account when the targeted charge has `accepts_target_wallet` set to `true`.\nThis field requires a premium integration.',
+              }),
+          })
+          .exactOptional()
+          .openapi({
+            description:
+              'This field represents additional properties associated with the event, which are utilized in the calculation of the final fee. This object becomes mandatory when the targeted billable metric employs a `sum_agg`, `max_agg`, or `unique_count_agg` aggregation method. However, when using a simple `count_agg`, this object is not required. Any property of the targeted billable metric can be sent here, in addition to the documented fields below.',
+            required: [],
+          }),
+      })
+      .openapi({ required: ['code', 'external_subscription_id'] }),
+  })
+  .openapi({ required: ['event'] })
+  .openapi('EventEstimateFeesInput')
+
+const FeesSchema = z
+  .object({ fees: z.array(FeeObjectSchema) })
+  .openapi({ required: ['fees'] })
+  .openapi('Fees')
+
+const EventEstimateInstantFeesInputObjectSchema = z
+  .object({
+    code: z
+      .string()
+      .openapi({
+        example: 'storage',
+        description:
+          'The code that identifies a targeted billable metric. It is essential that this code matches the `code` property of one of your active billable metrics. If the provided code does not correspond to any active billable metric, it will be ignored during the process.',
+      }),
+    external_subscription_id: z
+      .string()
+      .openapi({
+        example: 'sub_1234567890',
+        description: 'The unique identifier of the subscription within your application.',
+      }),
+    properties: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({
+        description:
+          'This field represents additional properties associated with the event, which are utilized in the calculation of the final fee. This object becomes mandatory when the targeted billable metric employs a `sum_agg`, `max_agg`, or `unique_count_agg` aggregation method. However, when using a simple `count_agg`, this object is not required.',
+      }),
+    transaction_id: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        example: 'transaction_1234567890',
+        description: 'This field represents a unique identifier for the event.',
+      }),
+  })
+  .openapi({ required: ['code', 'external_subscription_id'] })
+  .openapi('EventEstimateInstantFeesInputObject')
+
+const EventEstimateInstantFeesInputSchema = z
+  .object({ event: EventEstimateInstantFeesInputObjectSchema })
+  .openapi({ required: ['event'] })
+  .openapi('EventEstimateInstantFeesInput')
+
+const FeeEstimateObjectSchema = z
+  .object({
+    lago_id: z.null().nullable().exactOptional(),
+    lago_charge_id: z
+      .uuid()
+      .exactOptional()
+      .openapi({
+        description: 'Unique identifier assigned to the charge that the fee belongs to',
+        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
+      }),
+    lago_charge_filter_id: z
+      .uuid()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Unique identifier assigned to the charge filter that the fee belongs to',
+        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
+      }),
+    lago_invoice_id: z.null().nullable().exactOptional(),
+    lago_true_up_fee_id: z.null().nullable().exactOptional(),
+    lago_true_up_parent_fee_id: z.null().nullable().exactOptional(),
+    lago_subscription_id: z
+      .uuid()
+      .exactOptional()
+      .openapi({
+        description:
+          'Unique identifier assigned to the subscription, created by Lago. This field is specifically displayed when the fee type is charge or subscription.',
+        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
+      }),
+    lago_customer_id: z
+      .uuid()
+      .exactOptional()
+      .openapi({
+        description:
+          'Unique identifier assigned to the customer, created by Lago. This field is specifically displayed when the fee type is charge or subscription.',
+        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
+      }),
+    external_customer_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Unique identifier assigned to the customer in your application. This field is specifically displayed when the fee type is charge or subscription.',
+        example: 'external_id',
+      }),
+    external_subscription_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Unique identifier assigned to the subscription in your application. This field is specifically displayed when the fee type is charge or subscription.',
+        example: 'external_id',
+      }),
+    amount_cents: z
+      .string()
+      .openapi({
+        description:
+          'The cost of this specific fee, excluding any applicable taxes. On this endpoint the value is a decimal string, not an integer.',
+        example: '40.0',
+      }),
+    precise_amount: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The cost of this specific fee, in the currency unit and excluding any applicable taxes, with precision.',
+        example: '0.4',
+      }),
+    precise_total_amount: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The cost of this specific fee, in the currency unit and including any applicable taxes, with precision. Taxes are not estimated on this endpoint, so it has the same value as `precise_amount`.',
+        example: '0.4',
+      }),
+    amount_currency: CurrencySchema.openapi({
+      description:
+        "The currency of this specific fee. It indicates the monetary unit in which the fee's cost is expressed.",
+      example: 'EUR',
+    }),
+    taxes_amount_cents: z
+      .int()
+      .openapi({
+        description:
+          'The cost of the tax associated with this specific fee. Taxes are not estimated on this endpoint, so the value is always `0`.',
+        example: 0,
+      }),
+    taxes_precise_amount: z
+      .number()
+      .exactOptional()
+      .openapi({
+        description:
+          'The cost of the tax associated with this specific fee, with precision. Taxes are not estimated on this endpoint, so the value is always `0`.',
+        example: 0,
+      }),
+    taxes_rate: z
+      .number()
+      .openapi({
+        description:
+          'The tax rate associated with this specific fee. Taxes are not estimated on this endpoint, so the value is always `0`.',
+        example: 0,
+      }),
+    units: z
+      .string()
+      .openapi({
+        description:
+          'The number of units used to charge the customer. This field indicates the quantity or count of units consumed or utilized in the context of the charge. It helps in determining the basis for calculating the fee or cost associated with the usage of the service or product provided to the customer.',
+        example: '0.32',
+      }),
+    description: z.null().nullable().exactOptional(),
+    precise_unit_amount: z
+      .string()
+      .openapi({
+        description: 'The cost of one unit of this specific fee, in cents and with precision.',
+        example: '0.1',
+      }),
+    precise_coupons_amount_cents: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The coupon amount applied to the estimated instant fee. It is always `0.0`.',
+        example: '0.0',
+      }),
+    total_amount_cents: z
+      .string()
+      .openapi({
+        description:
+          'The cost of this specific fee, including any applicable taxes. On this endpoint the value is a decimal string, not an integer, and taxes are not estimated, so it has the same value as `amount_cents`.',
+        example: '40.0',
+      }),
+    total_amount_currency: CurrencySchema.openapi({
+      description: 'The currency of this specific fee, including any applicable taxes.',
+      example: 'EUR',
+    }),
+    events_count: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          'The number of events that have been sent and used to charge the customer. This field indicates the count or quantity of events that have been processed and considered in the charging process.',
+        example: 1,
+      }),
+    pay_in_advance: z
+      .boolean()
+      .openapi({
+        description:
+          'Flag that indicates whether the fee was paid in advance. It serves as a boolean value, where `true` represents that the fee was paid in advance (straightaway), and `false` indicates that the fee was not paid in arrears (at the end of the period).',
+        example: true,
+      }),
+    invoiceable: z
+      .boolean()
+      .openapi({
+        description:
+          'Flag that indicates whether the fee was included on the invoice. It serves as a boolean value, where `true` represents that the fee was included on the invoice, and `false` indicates that the fee was not included on the invoice.',
+        example: true,
+      }),
+    payment_status: z
+      .literal('pending')
+      .openapi({
+        description:
+          'Indicates the payment status of the fee. It represents the current status of the payment associated with the fee. The value is always `pending`.',
+        example: 'pending',
+      }),
+    created_at: z.null().nullable().exactOptional(),
+    succeeded_at: z.null().nullable().exactOptional(),
+    failed_at: z.null().nullable().exactOptional(),
+    refunded_at: z.null().nullable().exactOptional(),
+    event_transaction_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Unique identifier assigned to the transaction. This field is specifically displayed when the fee type is `charge` and the payment for the fee is made in advance (`pay_in_advance` is set to `true`).',
+        example: 'transaction_1234567890',
+      }),
+    amount_details: z.null().nullable().exactOptional(),
+    item: z
+      .object({
+        type: z
+          .literal('charge')
+          .openapi({ description: 'The fee type. The value will be `charge`.', example: 'charge' }),
+        code: z
+          .string()
+          .openapi({
+            description: 'The code of the fee item. It will be the code of the `billable_metric`.',
+            example: 'startup',
+          }),
+        name: z
+          .string()
+          .openapi({
+            description: 'The name of the fee item. It will be the name of the `billable_metric`.',
+            example: 'Startup',
+          }),
+        description: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'The description of the fee item. It will be the description of the `billable_metric`.',
+            example: 'Startup description',
+          }),
+        invoice_display_name: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Specifies the name that will be displayed on an invoice. If no value is set for this field, the name of the actual charge will be used as the default display name.',
+            example: 'Setup Fee (SF1)',
+          }),
+        filter_invoice_display_name: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'Specifies the name that will be displayed on an invoice. If no value is set for this field, the actual charge filter values will be used as the default display name.',
+            example: 'AWS eu-east-1',
+          }),
+        filters: z
+          .record(z.string(), z.array(z.string()))
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Key value list of event properties' }),
+        lago_item_id: z
+          .uuid()
+          .openapi({
+            example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
+            description:
+              'Unique identifier of the fee item, created by Lago. It will be the identifier of the `billable_metric`.',
+          }),
+        item_type: z
+          .literal('BillableMetric')
+          .openapi({
+            description: 'The type of the fee item. The value is `BillableMetric`.',
+            example: 'BillableMetric',
+          }),
+        grouped_by: z
+          .record(z.string(), z.string())
+          .exactOptional()
+          .openapi({
+            description: 'Key value list of event properties aggregated by the charge model',
+          }),
+      })
+      .openapi({
+        description: 'Item attached to the fee',
+        required: ['type', 'code', 'name', 'lago_item_id', 'item_type'],
+      }),
+  })
+  .openapi({
+    required: [
+      'item',
+      'amount_cents',
+      'amount_currency',
+      'taxes_amount_cents',
+      'taxes_rate',
+      'total_amount_cents',
+      'total_amount_currency',
+      'pay_in_advance',
+      'invoiceable',
+      'units',
+      'precise_unit_amount',
+      'payment_status',
+    ],
+  })
+  .openapi('FeeEstimateObject')
+
+const FeesEstimateSchema = z
+  .object({ fees: z.array(FeeEstimateObjectSchema) })
+  .openapi({ required: ['fees'] })
+  .openapi('FeesEstimate')
+
+const EventBatchEstimateInstantFeesInputSchema = z
+  .object({ events: z.array(EventEstimateInstantFeesInputObjectSchema) })
+  .openapi({ required: ['events'] })
+  .openapi('EventBatchEstimateInstantFeesInput')
+
+const EventSchema = z
+  .object({ event: EventObjectSchema })
+  .openapi({ required: ['event'] })
+  .openapi('Event')
+
+const FeesPaginatedSchema = z
+  .object({ fees: z.array(FeeObjectSchema), meta: PaginationMetaSchema })
+  .openapi({ required: ['fees', 'meta'] })
+  .openapi('FeesPaginated')
+
+const FeeSchema = z
+  .object({ fee: FeeObjectSchema })
+  .openapi({ required: ['fee'] })
+  .openapi('Fee')
+
+const FeeUpdateInputSchema = z
+  .object({
+    fee: z
+      .object({
+        payment_status: z
+          .enum(['pending', 'succeeded', 'failed', 'refunded'])
+          .openapi({
+            description:
+              'The payment status of the fee. Possible values are `pending`, `succeeded`, `failed` or `refunded`.',
+            example: 'succeeded',
+          }),
+      })
+      .openapi({ required: ['payment_status'] }),
+  })
+  .openapi({ required: ['fee'] })
+  .openapi('FeeUpdateInput')
+
+const InvoiceOneOffCreateInputSchema = z
+  .object({
+    invoice: z
+      .object({
+        external_customer_id: z
+          .string()
+          .openapi({
+            description: 'Unique identifier assigned to the customer in your application.',
+            example: 'hooli_1234',
+          }),
+        billing_entity_code: z
+          .string()
+          .exactOptional()
+          .openapi({
+            example: 'default',
+            description:
+              "The code of the billing entity to issue the invoice from. If not provided, the customer's billing entity is used.",
+          }),
+        currency: CurrencySchema.exactOptional().openapi({
+          description: 'The currency of the invoice.',
+          example: 'EUR',
+        }),
+        skip_psp: z
+          .boolean()
+          .nullable()
+          .default(false)
+          .exactOptional()
+          .openapi({
+            description:
+              'If true, the invoice will be created but not sent to the payment provider.',
+            example: true,
+          }),
+        purchase_order_number: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            example: 'PO-123',
+            description: 'The purchase order number to associate with the invoice.',
+          }),
+        payment_term: z
+          .xor([PaymentTermObjectSchema, z.null().nullable()])
+          .exactOptional()
+          .openapi({
+            description:
+              'The structured payment term of the invoice, used to compute its payment due date. When not sent or `null`, the term of the customer, then of the billing entity, applies.',
+          }),
+        fees: z.array(
+          z
+            .object({
+              add_on_code: z
+                .string()
+                .openapi({
+                  description: 'The code of the add-on used as invoice item.',
+                  example: 'setup_fee',
+                }),
+              invoice_display_name: z
+                .string()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'Specifies the name that will be displayed on an invoice. If no value is set for this field, the name of the actual charge will be used as the default display name.',
+                  example: 'Setup Fee (SF1)',
+                }),
+              unit_amount_cents: z
+                .int()
+                .nullable()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'The amount of the fee per unit, expressed in cents. By default, the amount of the add-on is used.',
+                  example: 12000,
+                }),
+              units: z
+                .union([z.string().regex(/^[0-9]+.?[0-9]*$/), z.number()])
+                .nullable()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'The quantity of units associated with the fee. Accepts a number or a decimal string. By default, only 1 unit is added to the invoice.',
+                  example: '2.5',
+                }),
+              description: z
+                .string()
+                .nullable()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'The description of the fee line item in the invoice. By default, the description of the add-on is used.',
+                  example: 'Onboarding session, June 2024',
+                }),
+              from_datetime: z.iso
+                .datetime({ offset: true })
+                .exactOptional()
+                .openapi({
+                  description:
+                    'The lower boundary of the invoice billing interval. The `from_datetime` should be provided in ISO 8601 datetime format and expressed in Coordinated Universal Time (UTC).',
+                  example: '2022-08-08T00:00:00Z',
+                }),
+              to_datetime: z.iso
+                .datetime({ offset: true })
+                .exactOptional()
+                .openapi({
+                  description:
+                    'The upper boundary of the invoice billing interval. The `to_datetime` should be provided in ISO 8601 datetime format and expressed in Coordinated Universal Time (UTC).',
+                  example: '2022-08-08T00:00:00Z',
+                }),
+              tax_codes: TaxCodesSchema.exactOptional(),
+            })
+            .openapi({ required: ['add_on_code'] }),
+        ),
+        invoice_custom_section: InvoiceCustomSectionInputSchema.exactOptional(),
+        payment_method: PaymentMethodReferenceSchema.exactOptional().openapi({
+          description: 'Optional payment method to use for processing the invoice payment.',
+        }),
+      })
+      .openapi({ required: ['external_customer_id', 'fees'] }),
+  })
+  .openapi({ required: ['invoice'] })
+  .openapi('InvoiceOneOffCreateInput')
+
+const BillingPeriodObjectSchema = z
+  .object({
+    lago_subscription_id: z
+      .uuid()
+      .openapi({
+        description: 'Unique identifier assigned to the subscription, created by Lago.',
+        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
+      }),
+    external_subscription_id: z
+      .string()
+      .openapi({
+        description: 'Unique identifier assigned to the subscription in your application.',
+        example: 'external_id',
+      }),
+    lago_plan_id: z
+      .uuid()
+      .openapi({
+        description: 'Unique identifier assigned to the plan, created by Lago.',
+        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
+      }),
+    subscription_from_datetime: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description:
+          'The beginning date of the subscription billing period. This field indicates the start date of the billing period associated with the subscription fee.',
+        example: '2022-04-29T08:59:51Z',
+      }),
+    subscription_to_datetime: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description:
+          'The ending date of the subscription billing period. This field indicates the end date of the billing period associated with the subscription fee.',
+        example: '2022-05-29T08:59:51Z',
+      }),
+    charges_from_datetime: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description:
+          'The beginning date of the period that covers the charge fees. It is applicable only to the `charge` fees attached to the subscription. This field indicates the start date of the billing period or subscription period associated with the fees.',
+        example: '2022-04-29T08:59:51Z',
+      }),
+    charges_to_datetime: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description:
+          'The ending date of the period that covers the charge fees. It is applicable only to the `charge` fees attached to the subscription. This field indicates the end date of the billing period or subscription period associated with the fees.',
+        example: '2022-05-29T08:59:51Z',
+      }),
+    fixed_charges_from_datetime: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The beginning date of the period that covers the fixed charge fees. It is `null` when the billing period carries no fixed charge, for example on an `advance_charges` invoice.',
+        example: '2022-04-29T08:59:51Z',
+      }),
+    fixed_charges_to_datetime: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The ending date of the period that covers the fixed charge fees. It is `null` when the billing period carries no fixed charge, for example on an `advance_charges` invoice.',
+        example: '2022-05-29T08:59:51Z',
+      }),
+    invoicing_reason: z
+      .enum([
+        'subscription_starting',
+        'subscription_periodic',
+        'subscription_terminating',
+        'in_advance_charge',
+        'in_advance_charge_periodic',
+        'progressive_billing',
+      ])
+      .openapi({
+        description: 'The reason explaining why this subscription appears on the invoice.',
+        example: 'subscription_starting',
+      }),
+  })
+  .openapi({
+    required: [
+      'lago_subscription_id',
+      'external_subscription_id',
+      'lago_plan_id',
+      'subscription_from_datetime',
+      'subscription_to_datetime',
+      'charges_from_datetime',
+      'charges_to_datetime',
+      'invoicing_reason',
+    ],
+  })
+  .openapi('BillingPeriodObject')
+
+const InvoiceObjectExtendedSchema = InvoiceObjectSchema.and(
+  z
+    .object({
+      billing_periods: z.array(BillingPeriodObjectSchema).exactOptional(),
+      credits: z.array(CreditObjectSchema).exactOptional(),
+      fees: z.array(FeeObjectSchema).exactOptional(),
+      subscriptions: z.array(SubscriptionObjectSchema).exactOptional(),
+      error_details: z.array(ErrorDetailObjectSchema).exactOptional(),
+    })
+    .openapi({ required: [] }),
+).openapi('InvoiceObjectExtended')
+
+const InvoiceSchema = z
+  .object({ invoice: InvoiceObjectExtendedSchema })
+  .openapi({ required: ['invoice'] })
+  .openapi('Invoice')
+
+const InvoiceUpdateInputSchema = z
+  .object({
+    invoice: z
+      .object({
+        payment_status: z
+          .enum(['pending', 'succeeded', 'failed'])
+          .exactOptional()
+          .openapi({
+            description:
+              'The payment status of the invoice. Possible values are `pending`, `failed` or `succeeded`.',
+            example: 'succeeded',
+          }),
+        metadata: z
+          .array(
+            z
+              .object({
+                id: z
+                  .uuid()
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      'The metadata object identifier. Only required when updating existing metadata.',
+                    example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
+                  }),
+                key: z
+                  .string()
+                  .exactOptional()
+                  .openapi({
+                    description: 'The key in the key-value pair of the metadata.',
+                    example: 'digital_ref_id',
+                  }),
+                value: z
+                  .string()
+                  .max(140)
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      'The value in the key-value pair of the metadata (140 characters max).',
+                    example: 'INV-0123456-98765',
+                  }),
+              })
+              .openapi({ required: [] }),
+          )
+          .exactOptional(),
+      })
+      .openapi({ required: [] }),
+  })
+  .openapi({ required: ['invoice'] })
+  .openapi('InvoiceUpdateInput')
+
+const InvoicePaymentUrlSchema = z
+  .object({
+    invoice_payment_details: z
+      .object({
+        lago_customer_id: z
+          .string()
+          .exactOptional()
+          .openapi({
+            example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
+            description:
+              "Unique identifier assigned to the customer within the Lago application. This ID is exclusively created by Lago and serves as a unique identifier for the customer's record within the Lago system",
+          }),
+        lago_invoice_id: z
+          .string()
+          .exactOptional()
+          .openapi({
+            example: '1e501a90-1a90-1a90-1a90-1a901a901a80',
+            description:
+              "Unique identifier assigned to the invoice within the Lago application. This ID is exclusively created by Lago and serves as a unique identifier for the invoice's record within the Lago system",
+          }),
+        external_customer_id: z
+          .string()
+          .exactOptional()
+          .openapi({
+            example: '5eb02857-a71e-4ea2-bcf9-57d3a41bc6ba',
+            description:
+              'The customer external unique identifier (provided by your own application)',
+          }),
+        payment_provider: z
+          .string()
+          .exactOptional()
+          .openapi({
+            example: 'stripe',
+            description: 'The Payment Provider name linked to the Customer.',
+          }),
+        payment_url: z
+          .string()
+          .exactOptional()
+          .openapi({
+            example: 'https://foo.bar',
+            description: 'The generated Payment URL for the Invoice.',
+          }),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+  })
+  .openapi({
+    description:
+      'The checkout link generated for an invoice, with the customer and invoice it belongs to.',
+    required: [],
+  })
+  .openapi('InvoicePaymentUrl')
+
+const InvoicePreviewInputSchema = z
+  .object({
+    customer: z
+      .object({
+        address_line1: z
+          .string()
+          .exactOptional()
+          .openapi({
+            example: '5230 Penfield Ave',
+            description: 'The first line of the billing address',
+          }),
+        address_line2: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ example: null, description: 'The second line of the billing address' }),
+        city: z
+          .string()
+          .exactOptional()
+          .openapi({
+            example: 'Woodland Hills',
+            description: "The city of the customer's billing address",
+          }),
+        country: CountrySchema.exactOptional().openapi({
+          description:
+            "Country code of the customer's billing address. Format must be ISO 3166 (alpha-2)",
+          example: 'US',
+        }),
+        external_id: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Unique identifier assigned to the customer in your application.',
+            example: 'hooli_1234',
+          }),
+        integration_customers: z
+          .array(
+            z
+              .object({
+                integration_type: z
+                  .enum(['anrok', 'avalara', 'xero', 'hubspot', 'salesforce'])
+                  .openapi({
+                    example: 'anrok',
+                    description:
+                      'The integration type used for accounting, tax and CRM syncs.\nAccepted values: `anrok`, `avalara`, `xero`, `hubspot`, `salesforce`.',
+                  }),
+                integration_code: z
+                  .string()
+                  .openapi({
+                    example: 'anrok1',
+                    description: 'Unique code used to identify an integration connection.',
+                  }),
+              })
+              .openapi({ required: ['integration_type', 'integration_code'] }),
+          )
+          .exactOptional(),
+        name: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'The full name of the customer', example: 'Gavin Belson' }),
+        currency: CurrencySchema.exactOptional().openapi({
+          description: 'The currency of the invoice.',
+          example: 'EUR',
+        }),
+        shipping_address: AddressSchema.exactOptional(),
+        state: z
+          .string()
+          .exactOptional()
+          .openapi({ example: 'CA', description: "The state of the customer's billing address" }),
+        zipcode: z
+          .string()
+          .exactOptional()
+          .openapi({
+            example: '91364',
+            description: "The zipcode of the customer's billing address.",
+          }),
+        tax_identification_number: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'The tax identification number of the customer',
+            example: 'EU123456789',
+          }),
+        timezone: TimezoneSchema.exactOptional().openapi({
+          description:
+            "The customer's timezone, used for billing purposes in their local time. Overrides the organization's timezone",
+        }),
+      })
+      .openapi({ required: [] }),
+    plan_code: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The code of the plan. It serves as a unique identifier associated with a particular plan. The code is typically used for internal or system-level identification purposes, like assigning a subscription, for instance.',
+        example: 'startup',
+      }),
+    subscription_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'The anniversary date and time of the initial subscription. This date serves as the basis for billing subscriptions with `anniversary` billing time. The `anniversary_date` should be provided in ISO 8601 datetime format and expressed in Coordinated Universal Time (UTC).',
+        example: '2022-08-08T00:00:00Z',
+      }),
+    billing_time: z
+      .enum(['calendar', 'anniversary'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The billing time for the subscription, which can be set as either `anniversary` or `calendar`. If not explicitly provided, it will default to `calendar`. The billing time determines the timing of recurring billing cycles for the subscription. By specifying `anniversary`, the billing cycle will be based on the specific date the subscription started (billed fully), while `calendar` sets the billing cycle at the first day of the week/month/year (billed with proration).',
+        example: 'anniversary',
+      }),
+    coupons: z
+      .array(
+        z
+          .object({
+            name: z
+              .string()
+              .exactOptional()
+              .openapi({ description: 'The name of the coupon.', example: 'Startup Deal' }),
+            code: z
+              .string()
+              .openapi({
+                description: 'Unique code used to identify the coupon.',
+                example: 'startup_deal',
+              }),
+            coupon_type: z
+              .enum(['fixed_amount', 'percentage'])
+              .exactOptional()
+              .openapi({
+                description:
+                  'The type of the coupon. It can have two possible values: `fixed_amount` or `percentage`.\n\n- If set to `fixed_amount`, the coupon represents a fixed amount discount.\n- If set to `percentage`, the coupon represents a percentage-based discount.',
+                example: 'fixed_amount',
+              }),
+            amount_cents: z
+              .int()
+              .nullable()
+              .exactOptional()
+              .openapi({
+                description:
+                  'The amount of the coupon in cents. This field is required only for coupon with `fixed_amount` type.',
+                example: 5000,
+              }),
+            amount_currency: CurrencyOrNullSchema.exactOptional().openapi({
+              description:
+                'The currency of the coupon. This field is required only for coupon with `fixed_amount` type.',
+              example: 'USD',
+            }),
+            percentage_rate: z
+              .string()
+              .regex(/^[0-9]+.?[0-9]*$/)
+              .nullable()
+              .exactOptional()
+              .openapi({
+                description:
+                  'The percentage rate of the coupon. This field is required only for coupons with a `percentage` coupon type.',
+              }),
+            frequency: z
+              .enum(['once', 'recurring', 'forever'])
+              .exactOptional()
+              .openapi({
+                description:
+                  'The frequency of the coupon. It can have three possible values: `once`, `recurring` or `forever`.\n\n- If set to `once`, the coupon applies to a single invoice.\n- If set to `recurring`, the coupon applies to the number of billing periods set in `frequency_duration`.\n- If set to `forever`, the coupon applies to every invoice of the subscription.',
+                example: 'once',
+              }),
+            frequency_duration: z
+              .int()
+              .nullable()
+              .exactOptional()
+              .openapi({
+                description:
+                  'Specifies the number of billing periods to which the coupon applies. This field is required only for coupons with a `recurring` frequency type',
+                example: 6,
+              }),
+          })
+          .openapi({ required: ['code'] }),
+      )
+      .exactOptional(),
+    subscriptions: z
+      .object({
+        external_ids: z.array(
+          z
+            .string()
+            .openapi({
+              description: "External identifiers of the customer's subscription.",
+              example: '441edbe3-9136-4688-a763-e57b6f1dca82',
+            }),
+        ),
+        plan_code: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The code of the plan. It serves as a unique identifier associated with the new plan to which the customer is upgrading or downgrading.',
+            example: 'new_code',
+          }),
+        terminated_at: z.iso
+          .datetime({ offset: true })
+          .exactOptional()
+          .openapi({
+            description:
+              'The date and time when the subscription is terminated. It should defined in the future.',
+            example: '2022-08-08T00:00:00Z',
+          }),
+      })
+      .exactOptional()
+      .openapi({ required: ['external_ids'] }),
+    billing_entity_code: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The code of the billing entity to which will be associated a customer if the external_id is not provided. If billing_entity_code is not provided, default billing_entity of organization will be used.',
+        example: 'acme_corp',
+      }),
+    payment_term: z
+      .xor([PaymentTermObjectSchema, z.null().nullable()])
+      .exactOptional()
+      .openapi({
+        description:
+          "The structured payment term of the previewed subscription. When previewing a new subscription (`plan_code` at the top level), it is the term the subscription would have. When previewing a plan change (`subscriptions.plan_code`), it replaces the term of the current subscription, and `null` removes it; when not sent, the current subscription's term is carried over. The term is ignored when previewing an existing subscription or its termination.",
+      }),
+  })
+  .openapi({ required: ['customer'] })
+  .openapi('InvoicePreviewInput')
+
+const InvoiceVoidInputSchema = z
+  .object({
+    generate_credit_note: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Set to `true` to force voiding the invoice and generate a credit note.',
+        example: true,
+      }),
+    refund_amount: z
+      .int()
+      .min(0)
+      .exactOptional()
+      .openapi({
+        description:
+          'Portion of the invoice amount (in cents) to be refunded to the customer in the generated credit note.',
+        example: 2000,
+      }),
+    credit_amount: z
+      .int()
+      .min(0)
+      .exactOptional()
+      .openapi({
+        description:
+          "Portion of the invoice amount (in cents) to be credited to the customer's balance in the generated credit note.",
+        example: 1150,
+      }),
+  })
+  .openapi({
+    required: [],
+    description:
+      'Parameters available when voiding an invoice that optionally generate credit notes.',
+  })
+  .openapi('InvoiceVoidInput')
+
+const OrderFormStatusEnumSchema = z
+  .enum(['generated', 'signed', 'expired', 'voided'])
+  .openapi({
+    description:
+      "The status of the order form. It can be any of the following values:\n  - `generated`: the order form is waiting for the customer's signature.\n  - `signed`: the customer has signed, and an order has been created from the order form.\n  - `expired`: the order form reached its `expires_at` without being signed.\n  - `voided`: the order form has been voided before being signed.\n\nOnly a `generated` order form is actionable. Reaching `expired` or `voided` also voids the quote version the order form was generated from; signing does not, since the deal it quotes goes on to be executed.\n",
+    example: 'generated',
+  })
+  .openapi('OrderFormStatusEnum')
+
+const OrderFormVoidReasonEnumSchema = z
+  .union([z.literal(null), z.literal('manual'), z.literal('expired'), z.literal('invalid')])
+  .nullable()
+  .openapi({
+    description:
+      'The reason why the order form is no longer actionable. It is `null` unless the `status` is `voided` or `expired`. It can be any of the following values:\n  - `manual`: the order form has been voided explicitly, through the API or the Lago user interface.\n  - `expired`: the order form reached its `expires_at` without being signed.\n  - `invalid`: reserved for an order form Lago voids because it can no longer be executed. No flow writes it yet.\n',
+    example: 'manual',
+  })
+  .openapi('OrderFormVoidReasonEnum')
+
+const OrderFormObjectSchema = z
+  .object({
+    lago_id: z
+      .uuid()
+      .openapi({
+        description: 'Unique identifier of the order form, created by Lago.',
+        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
+      }),
+    number: z
+      .string()
+      .openapi({
+        description: 'The unique number assigned to the order form by Lago.',
+        example: 'OF-2026-0001',
+      }),
+    status: OrderFormStatusEnumSchema,
+    void_reason: OrderFormVoidReasonEnumSchema,
+    expires_at: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .openapi({
+        description:
+          'The date and time in UTC (ISO 8601) after which the order form is meant to expire. It is `null` when the order form never expires. It is validated when the quote is approved, where a value on or after the day the quoted deal stops being executable is rejected rather than clamped. Expiry is then swept hourly and compared by calendar date, so signing keeps succeeding until the sweep moves the order form to `expired`.',
+        example: '2026-06-30T23:59:59Z',
+      }),
+    signed_at: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .openapi({
+        description:
+          'The date and time in UTC (ISO 8601) when the order form was marked as signed. It is `null` unless the `status` is `signed`.',
+        example: '2026-04-29T08:59:51Z',
+      }),
+    voided_at: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .openapi({
+        description:
+          'The date and time in UTC (ISO 8601) when the order form stopped being actionable. It is set both when the order form is voided and when it expires, and is `null` otherwise.',
+        example: '2026-04-29T08:59:51Z',
+      }),
+    signed_document_url: z
+      .url()
+      .nullable()
+      .openapi({
+        description:
+          'The URL of the signed document attached to the order form. It is `null` when no document was uploaded.',
+        example:
+          'https://api.getlago.com/rails/active_storage/blobs/redirect/eyJfcmFpbHMi/OF-2026-0001',
+      }),
+    lago_organization_id: z
+      .uuid()
+      .openapi({
+        description: 'Unique identifier of the organization, created by Lago.',
+        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
+      }),
+    lago_customer_id: z
+      .uuid()
+      .openapi({
+        description:
+          'Unique identifier of the customer the order form is addressed to, created by Lago.',
+        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
+      }),
+    lago_quote_id: z
+      .uuid()
+      .openapi({
+        description: 'Unique identifier of the quote the order form comes from, created by Lago.',
+        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
+      }),
+    lago_quote_version_id: z
+      .uuid()
+      .openapi({
+        description:
+          'Unique identifier of the approved quote version the order form was generated from, created by Lago. A quote version carries at most one order form.',
+        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
+      }),
+    created_at: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'The date and time in UTC (ISO 8601) when the order form was created.',
+        example: '2026-04-29T08:59:51Z',
+      }),
+    updated_at: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'The date and time in UTC (ISO 8601) when the order form was last updated.',
+        example: '2026-04-29T08:59:51Z',
+      }),
+  })
+  .openapi({
+    required: [
+      'lago_id',
+      'number',
+      'status',
+      'void_reason',
+      'expires_at',
+      'signed_at',
+      'voided_at',
+      'signed_document_url',
+      'lago_organization_id',
+      'lago_customer_id',
+      'lago_quote_id',
+      'lago_quote_version_id',
+      'created_at',
+      'updated_at',
+    ],
+  })
+  .openapi('OrderFormObject')
+
+const OrderFormsPaginatedSchema = z
+  .object({ order_forms: z.array(OrderFormObjectSchema), meta: PaginationMetaSchema })
+  .openapi({ required: ['order_forms', 'meta'] })
+  .openapi('OrderFormsPaginated')
+
+const OrderFormSchema = z
+  .object({ order_form: OrderFormObjectSchema })
+  .openapi({ required: ['order_form'] })
+  .openapi('OrderForm')
+
+const OrderExecutionModeEnumSchema = z
+  .enum(['execute_in_lago', 'order_only'])
+  .openapi({
+    description:
+      'How the order created from the order form is carried out. It can be any of the following values:\n  - `execute_in_lago`: Lago applies the quoted deal itself, creating the subscriptions, coupons, wallets or one-off invoice it describes.\n  - `order_only`: Lago records the order without applying it, leaving the execution to your own systems.\n',
+    example: 'execute_in_lago',
+  })
+  .openapi('OrderExecutionModeEnum')
+
+const OrderFormMarkAsSignedInputSchema = z
+  .object({
+    order_form: z
+      .object({
+        signed_document: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The document signed by the customer, as a base64 data URI (`data:<content_type>;base64,<data>`). Accepted content types are `application/pdf`, `image/jpeg` and `image/png`, for a maximum of 10 MB. Once attached, it is exposed as `signed_document_url` on the order form.',
+            example: 'data:application/pdf;base64,JVBERi0xLjQKJcfs...',
+          }),
+        execution_mode: OrderExecutionModeEnumSchema.exactOptional().openapi({
+          description:
+            'How the order created from the order form is carried out. It becomes mandatory as soon as `execute_at` is provided.',
+        }),
+        execute_at: z.iso
+          .datetime({ offset: true })
+          .exactOptional()
+          .openapi({
+            description:
+              'The date and time in UTC (ISO 8601) when Lago executes the order created from the order form. It must be in the future, requires `execution_mode` to be set, and must fall strictly before the day the quoted deal stops being executable, otherwise signing is rejected with a `422`. When it is omitted, the order is created but not scheduled, and waits to be executed on demand.',
+            example: '2026-07-01T00:00:00Z',
+          }),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+  })
+  .openapi({
+    description:
+      'Parameters available when marking an order form as signed. Every parameter is optional, so an empty body records the signature without attaching a document, and creates an order that is not scheduled for execution.',
+    required: [],
+  })
+  .openapi('OrderFormMarkAsSignedInput')
+
+const OrdersPaginatedSchema: z.ZodType<OrdersPaginatedType> = z
+  .object({ orders: z.array(OrderObjectExtendedSchema), meta: PaginationMetaSchema })
+  .openapi({ required: ['orders', 'meta'] })
+  .openapi('OrdersPaginated')
+
+const OrderSchema: z.ZodType<OrderType> = z
+  .object({ order: OrderObjectExtendedSchema })
+  .openapi({ required: ['order'] })
+  .openapi('Order')
+
+const OrderExecuteInputSchema = z
+  .object({
+    order: z
+      .object({
+        execution_mode: OrderExecutionModeEnumSchema.exactOptional().openapi({
+          description:
+            'How the order is carried out. It is only persisted when it differs from the mode already stored on the order, so restating the current mode never fails. Changing the mode of an order that has already been executed is rejected.',
+        }),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+  })
+  .openapi({
+    description:
+      'Parameters available when executing an order. The body is optional, as the execution mode is normally chosen when the order form is signed.',
+    required: [],
+  })
+  .openapi('OrderExecuteInput')
+
+const OrganizationBillingConfigurationSchema = z
+  .object({
+    invoice_footer: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        example: 'This is my customer footer',
+        description:
+          'The customer invoice message that appears at the bottom of each billing documents. It accepts up to 600 characters.',
+      }),
+    invoice_grace_period: z
+      .int()
+      .exactOptional()
+      .openapi({
+        example: 3,
+        description:
+          "The grace period, expressed in days, for finalizing the invoice. This period refers to the additional time granted to your customers beyond the invoice due date to adjust usage and line items. Can be overwritten by the customer's grace period. This is a premium feature, the value is ignored without a premium license.",
+      }),
+    document_locale: z
+      .string()
+      .exactOptional()
+      .openapi({
+        example: 'en',
+        description:
+          'The locale of the billing documents, expressed in the ISO 639-1 format. This field indicates the language or regional variant used for the documents content issued or the embeddable customer portal.',
+      }),
+  })
+  .openapi({ description: 'The custom billing settings for your organization.', required: [] })
+  .openapi('OrganizationBillingConfiguration')
+
+const OrganizationObjectSchema = z
+  .object({
+    lago_id: z
+      .uuid()
+      .openapi({
+        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
+        description:
+          "Unique identifier assigned to the organization within the Lago application. This ID is exclusively created by Lago and serves as a unique identifier for the organization's record within the Lago system",
+      }),
+    name: z.string().openapi({ example: 'Name1', description: 'The name of your organization.' }),
+    slug: z
+      .string()
+      .openapi({
+        example: 'name1',
+        description:
+          'A concise and unique identifier for your organization, derived from its `name`. It contains between 3 and 40 characters, limited to lowercase letters, digits and hyphens, and it starts and ends with a letter or a digit.',
+      }),
+    created_at: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        example: '2022-05-02T13:04:09Z',
+        description:
+          'The date of creation of your organization, represented in ISO 8601 datetime format and expressed in Coordinated Universal Time (UTC).',
+      }),
+    webhook_url: z
+      .string()
+      .openapi({
+        example: 'https://webhook.brex.com',
+        description:
+          'The URL of the first webhook endpoint of your organization. This URL allows your organization to receive important messages, notifications, or data from the Lago system. It is an empty string when your organization has no webhook endpoint yet.',
+      }),
+    webhook_urls: z
+      .array(z.string())
+      .openapi({
+        example: ['https://webhook.brex.com', 'https://webhook2.brex.com'],
+        description: 'The array containing your webhooks URLs.',
+      }),
+    country: CountryOrNullSchema.openapi({
+      description: 'The country of your organization.',
+      example: 'US',
+    }),
+    default_currency: CurrencySchema.openapi({
+      description: 'The default currency of an organization.',
+      example: 'USD',
+    }),
+    address_line1: z
+      .string()
+      .nullable()
+      .openapi({
+        example: '100 Brex Street',
+        description: "The first line of your organization's billing address.",
+      }),
+    address_line2: z
+      .string()
+      .nullable()
+      .openapi({
+        example: null,
+        description: "The second line of your organization's billing address.",
+      }),
+    state: z
+      .string()
+      .nullable()
+      .openapi({
+        example: 'NYC',
+        description: "The state of your organization's billing address.",
+      }),
+    zipcode: z
+      .string()
+      .nullable()
+      .openapi({
+        example: '10000',
+        description: "The zipcode of your organization's billing address.",
+      }),
+    email: z
+      .email()
+      .nullable()
+      .openapi({
+        example: 'brex@brex.com',
+        description: 'The email address of your organization used to bill your customers.',
+      }),
+    city: z
+      .string()
+      .nullable()
+      .openapi({
+        example: 'New York',
+        description: "The city of your organization's billing address.",
+      }),
+    legal_name: z
+      .string()
+      .nullable()
+      .openapi({ example: null, description: 'The legal name of your organization.' }),
+    legal_number: z
+      .string()
+      .nullable()
+      .openapi({ example: null, description: 'The legal number of your organization.' }),
+    document_numbering: z
+      .enum(['per_customer', 'per_organization'])
+      .openapi({
+        example: 'per_customer',
+        description:
+          "This parameter configures the method of incrementing invoice numbers for your customers.\n\n- `per_customer`: Invoice numbers are incremented individually for each customer. This means every customer will have their own unique sequence of invoice numbers, separate from other customers. It ensures that each customer's invoice numbers follow a distinct and isolated numbering pattern.\n- `per_organization`: Invoice number incrementation is made across your entire organization. Rather than individual sequences for each customer, all invoices within the organization follow a single, unified numbering system. This creates a continuous and organization-wide sequence for all invoice numbers. Invoices are incremented per month (dynamic value used is YYYYMM), and invoice numbers are reset at the end of each month.\n\nThe default value for `document_numbering` is set to `per_customer`, meaning that, unless changed, invoice numbers will increment uniquely for each customer.",
+      }),
+    document_number_prefix: z
+      .string()
+      .openapi({
+        example: 'ORG-1234',
+        description:
+          'Sets the prefix for invoices and credit notes. Default is the first three letters of your organization name plus the last four characters of your organization ID. Customizable within 1-10 characters, and automatically capitalized by Lago.',
+      }),
+    payment_term: z
+      .xor([PaymentTermObjectSchema, z.null().nullable()])
+      .openapi({
+        description:
+          "The structured payment term of the organization's default billing entity. It can only be changed through the billing entity endpoints.",
+      }),
+    net_payment_term: z
+      .int()
+      .nullable()
+      .openapi({
+        deprecated: true,
+        example: 30,
+        description:
+          "**Deprecated.** Use `payment_term` instead. Legacy alias of `payment_term`, expressed in days, read from the organization's default billing entity. It is the `days` of a `net` term, `0` for a `due_on_receipt` term, and `null` for every other term type.",
+      }),
+    tax_identification_number: z
+      .string()
+      .nullable()
+      .openapi({
+        example: 'US123456789',
+        description: 'The tax identification number of your organization.',
+      }),
+    timezone: TimezoneSchema.openapi({
+      description:
+        "Your organization's timezone, used for billing purposes in your own local time. Can be overwritten by the customer's timezone.",
+      example: 'America/New_York',
+    }),
+    email_settings: z
+      .array(z.enum(['invoice.finalized', 'credit_note.created', 'payment_receipt.created']))
+      .openapi({
+        description:
+          'Represents the email settings of the organization. It allows you to define which documents are sent by email. The field value determines the types of documents that trigger email notifications. Possible values are `invoice.finalized`, `credit_note.created` and `payment_receipt.created`.',
+        example: ['invoice.finalized', 'credit_note.created'],
+      }),
+    customer_portal_locked_fields: z
+      .array(
+        z.enum([
+          'customer_type',
+          'document_locale',
+          'email',
+          'firstname',
+          'lastname',
+          'legal_name',
+          'name',
+          'tax_identification_number',
+          'address_line1',
+          'address_line2',
+          'city',
+          'country',
+          'state',
+          'zipcode',
+          'shipping_address',
+        ]),
+      )
+      .openapi({
+        description:
+          'The customer fields that your customers cannot edit from the customer portal. Every other field of the list below stays editable. By default `country`, `zipcode` and `tax_identification_number` are locked, because they drive the EU tax rate applied to the customer.',
+        example: ['country', 'zipcode', 'tax_identification_number'],
+      }),
+    billing_configuration: OrganizationBillingConfigurationSchema,
+    taxes: z
+      .array(TaxObjectSchema)
+      .exactOptional()
+      .openapi({ description: 'List of default organization taxes' }),
+    finalize_zero_amount_invoice: z
+      .boolean()
+      .openapi({
+        example: false,
+        description:
+          'Indicates whether invoices with a zero total amount should be finalized. If set to true, zero amount invoices will be finalized. If set to false, zero amount invoices will not be finalized.',
+      }),
+    document_url_expiration_days: z
+      .int()
+      .min(30)
+      .max(120)
+      .default(30)
+      .openapi({
+        example: 30,
+        description:
+          'The number of days a document download URL stays valid, counted from the date the document is anchored to. It applies to invoices, credit notes and payment receipts. An expired URL answers `410`.',
+      }),
+    events_store: z
+      .enum(['clickhouse', 'postgres'])
+      .openapi({
+        example: 'clickhouse',
+        description:
+          'The store that holds the events of your organization. It is `clickhouse` when the ClickHouse event store is enabled for your organization, and `postgres` otherwise.',
+      }),
+  })
+  .openapi({
+    required: [
+      'lago_id',
+      'name',
+      'slug',
+      'created_at',
+      'webhook_url',
+      'webhook_urls',
+      'country',
+      'default_currency',
+      'address_line1',
+      'address_line2',
+      'state',
+      'zipcode',
+      'email',
+      'city',
+      'legal_name',
+      'legal_number',
+      'document_numbering',
+      'document_number_prefix',
+      'net_payment_term',
+      'payment_term',
+      'tax_identification_number',
+      'timezone',
+      'email_settings',
+      'customer_portal_locked_fields',
+      'billing_configuration',
+      'finalize_zero_amount_invoice',
+      'document_url_expiration_days',
+      'events_store',
+    ],
+  })
+  .openapi('OrganizationObject')
+
+const OrganizationSchema = z
+  .object({ organization: OrganizationObjectSchema })
+  .openapi({ required: ['organization'] })
+  .openapi('Organization')
+
+const OrganizationUpdateInputSchema = z
+  .object({
+    organization: z
+      .object({
+        webhook_url: z
+          .string()
+          .exactOptional()
+          .openapi({
+            example: 'https://webhook.brex.com',
+            description:
+              'Sets the URL of the first webhook endpoint of your organization. This URL allows your organization to receive important messages, notifications, or data from the Lago system. When your organization has no webhook endpoint yet, this creates one.',
+          }),
+        country: CountryOrNullSchema.exactOptional().openapi({
+          description: 'The country of your organization.',
+          example: 'US',
+        }),
+        default_currency: CurrencySchema.exactOptional().openapi({
+          description: 'The default currency of an organization.',
+          example: 'USD',
+        }),
+        address_line1: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            example: '100 Brex Street',
+            description: "The first line of your organization's billing address.",
+          }),
+        address_line2: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            example: null,
+            description: "The second line of your organization's billing address.",
+          }),
+        state: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            example: 'NYC',
+            description: "The state of your organization's billing address.",
+          }),
+        zipcode: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            example: '10000',
+            description: "The zipcode of your organization's billing address.",
+          }),
+        email: z
+          .email()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            example: 'brex@brex.com',
+            description: 'The email address of your organization used to bill your customers.',
+          }),
+        city: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            example: 'New York',
+            description: "The city of your organization's billing address.",
+          }),
+        legal_name: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ example: null, description: 'The legal name of your organization.' }),
+        legal_number: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ example: null, description: 'The legal number of your organization.' }),
+        document_numbering: z
+          .enum(['per_customer', 'per_organization'])
+          .exactOptional()
+          .openapi({
+            example: 'per_customer',
+            description:
+              "This parameter configures the method of incrementing invoice numbers for your customers.\n\n- `per_customer`: Invoice numbers are incremented individually for each customer. This means every customer will have their own unique sequence of invoice numbers, separate from other customers. It ensures that each customer's invoice numbers follow a distinct and isolated numbering pattern.\n- `per_organization`: Invoice number incrementation is made across your entire organization. Rather than individual sequences for each customer, all invoices within the organization follow a single, unified numbering system. This creates a continuous and organization-wide sequence for all invoice numbers. Invoices are incremented per month (dynamic value used is YYYYMM), and invoice numbers are reset at the end of each month.\n\nThe default value for `document_numbering` is set to `per_customer`, meaning that, unless changed, invoice numbers will increment uniquely for each customer.",
+          }),
+        document_number_prefix: z
+          .string()
+          .exactOptional()
+          .openapi({
+            example: 'ORG-1234',
+            description:
+              'Sets the prefix for invoices and credit notes. Default is the first three letters of your organization name plus the last four characters of your organization ID. Customizable within 1-10 characters, and automatically capitalized by Lago.',
+          }),
+        net_payment_term: z
+          .int()
+          .min(0)
+          .max(365)
+          .exactOptional()
+          .openapi({
+            deprecated: true,
+            example: 30,
+            description:
+              "**Deprecated.** Use `payment_term` on the billing entity endpoints instead. The net payment term, expressed in days, applied to the organization's default billing entity. It sets the billing entity's `payment_term` to a `net` term of that many days.",
+          }),
+        tax_identification_number: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            example: 'US123456789',
+            description: 'The tax identification number of your organization.',
+          }),
+        timezone: TimezoneSchema.exactOptional().openapi({
+          description:
+            "Your organization's timezone, used for billing purposes in your own local time. Can be overwritten by the customer's timezone. This is a premium feature, the value is ignored without a premium license.",
+          example: 'America/New_York',
+        }),
+        email_settings: z
+          .array(z.enum(['invoice.finalized', 'credit_note.created', 'payment_receipt.created']))
+          .exactOptional()
+          .openapi({
+            description:
+              'Represents the email settings of the organization. It allows you to define which documents are sent by email. The field value determines the types of documents that trigger email notifications. Possible values are `invoice.finalized`, `credit_note.created` and `payment_receipt.created`. This is a premium feature, the value is ignored without a premium license.',
+            example: ['invoice.finalized', 'credit_note.created'],
+          }),
+        customer_portal_locked_fields: z
+          .array(
+            z.enum([
+              'customer_type',
+              'document_locale',
+              'email',
+              'firstname',
+              'lastname',
+              'legal_name',
+              'name',
+              'tax_identification_number',
+              'address_line1',
+              'address_line2',
+              'city',
+              'country',
+              'state',
+              'zipcode',
+              'shipping_address',
+            ]),
+          )
+          .exactOptional()
+          .openapi({
+            description:
+              'Sets the customer fields that your customers cannot edit from the customer portal. Every other field of the list below stays editable. Sending this array replaces the current one, so send the full list. Duplicates are removed. By default `country`, `zipcode` and `tax_identification_number` are locked, because they drive the EU tax rate applied to the customer.',
+            example: ['country', 'zipcode', 'tax_identification_number'],
+          }),
+        billing_configuration: OrganizationBillingConfigurationSchema.exactOptional(),
+        finalize_zero_amount_invoice: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            example: false,
+            description:
+              'Determines whether invoices with a zero total amount should be finalized. If set to true, zero amount invoices will be finalized. If set to false, zero amount invoices will not be finalized.',
+          }),
+        document_url_expiration_days: z
+          .int()
+          .min(30)
+          .max(120)
+          .default(30)
+          .exactOptional()
+          .openapi({
+            example: 30,
+            description:
+              'Sets the number of days a document download URL stays valid, counted from the date the document is anchored to. It applies to invoices, credit notes and payment receipts. It must be between 30 and 120 days.',
+          }),
+        slug: z
+          .string()
+          .exactOptional()
+          .openapi({
+            example: 'name1',
+            description:
+              'A concise and unique identifier for your organization. It must contain between 3 and 40 characters, limited to lowercase letters, digits and hyphens, and it must start and end with a letter or a digit. Lago trims it and converts it to lowercase before saving it. A value already taken by another organization, or one of the names Lago reserves for its own routes, is rejected.',
+          }),
+      })
+      .openapi({ required: [] }),
+  })
+  .openapi({ required: ['organization'] })
+  .openapi('OrganizationUpdateInput')
+
+const PaymentReceiptObjectSchema = z
+  .object({
+    lago_id: z
+      .uuid()
+      .openapi({
+        description: 'Unique identifier of the payment receipt, created by Lago.',
+        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
+      }),
+    created_at: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description:
+          'The date and time when the payment receipt was created. It is expressed in UTC format according to the ISO 8601 datetime standard. This field provides the timestamp for the exact moment when the payment receipt was initially created.',
+        example: '2022-04-29T08:59:51Z',
+      }),
+    number: z
+      .string()
+      .openapi({
+        description: 'The unique number assigned to the payment receipt.',
+        example: 'LAG-1234-001-002',
+      }),
+    file_url: z
+      .string()
+      .nullable()
+      .openapi({
+        description:
+          'The PDF file of the payment receipt. It is `null` while no PDF has been generated.',
+        example: 'https://getlago.com/payment_receipt/file',
+      }),
+    xml_url: z
+      .string()
+      .nullable()
+      .openapi({
+        description:
+          'The e-invoicing XML file of the payment receipt. It is `null` while no XML file has been generated.',
+        example: 'https://getlago.com/payment_receipt/xml',
+      }),
+    payment: PaymentObjectSchema,
+  })
+  .openapi({ required: ['lago_id', 'created_at', 'number', 'file_url', 'xml_url', 'payment'] })
+  .openapi('PaymentReceiptObject')
+
+const PaymentReceiptsPaginatedSchema = z
+  .object({ payment_receipts: z.array(PaymentReceiptObjectSchema), meta: PaginationMetaSchema })
+  .openapi({ required: ['payment_receipts', 'meta'] })
+  .openapi('PaymentReceiptsPaginated')
+
+const PaymentReceiptSchema = z
+  .object({ payment_receipt: PaymentReceiptObjectSchema })
+  .openapi({ required: ['payment_receipt'] })
+  .openapi('PaymentReceipt')
+
+const PaymentRequestCreateInputSchema = z
+  .object({
+    payment_request: z
+      .object({
+        external_customer_id: z
+          .string()
+          .openapi({
+            example: '5eb02857-a71e-4ea2-bcf9-57d3a41bc6ba',
+            description:
+              'The customer external unique identifier (provided by your own application).',
+          }),
+        email: z
+          .email()
+          .exactOptional()
+          .openapi({
+            example: 'dinesh@piedpiper.example',
+            description:
+              "The email address used for sending dunning notifications. When omitted, the customer's own email address is used.",
+          }),
+        lago_invoice_ids: z
+          .array(
+            z
+              .uuid()
+              .openapi({
+                example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
+                description:
+                  "Unique identifier assigned to the invoice within the Lago application. This ID is exclusively created by Lago and serves as a unique identifier for the invoice's record within the Lago system.",
+              }),
+          )
+          .openapi({
+            description:
+              "A list of Lago IDs for the customer's overdue invoices to start the dunning process.",
+          }),
+        payment_method: PaymentMethodReferenceSchema.exactOptional().openapi({
+          description: 'Optional payment method to use for processing the payment request.',
+        }),
+      })
+      .openapi({ required: ['external_customer_id', 'lago_invoice_ids'] }),
+  })
+  .openapi({ required: ['payment_request'] })
+  .openapi('PaymentRequestCreateInput')
+
+const PaymentRequestSchema = z
+  .object({ payment_request: PaymentRequestObjectSchema })
+  .openapi({ required: ['payment_request'] })
+  .openapi('PaymentRequest')
+
+const PaymentCreateInputSchema = z
+  .object({
+    payment: z
+      .object({
+        invoice_id: z
+          .uuid()
+          .openapi({
+            example: '486b147a-02a1-4ccf-8603-f3541fc25e7a',
+            description:
+              'Unique identifier of the invoice the payment is recorded on, created by Lago.',
+          }),
+        amount_cents: z
+          .int()
+          .min(1)
+          .openapi({
+            example: 100,
+            description: 'The payment amount in cents. It must be greater than zero.',
+          }),
+        reference: z
+          .string()
+          .max(40)
+          .openapi({
+            example: 'ref1',
+            description: 'Reference for the payment, such as the bank transfer or cheque number.',
+          }),
+        paid_at: z.iso
+          .date()
+          .exactOptional()
+          .openapi({
+            example: '2025-02-20',
+            description:
+              "The date the payment was made. It is returned as the payment's `created_at`. When omitted, the date and time of the request is used.",
+          }),
+      })
+      .openapi({ required: ['invoice_id', 'amount_cents', 'reference'] }),
+  })
+  .openapi({ required: ['payment'] })
+  .openapi('PaymentCreateInput')
+
+const PaymentSchema = z
+  .object({ payment: PaymentObjectSchema })
+  .openapi({ required: ['payment'] })
+  .openapi('Payment')
+
+const PlansPaginatedSchema: z.ZodType<PlansPaginatedType> = z
+  .object({ plans: z.array(PlanObjectSchema), meta: PaginationMetaSchema })
+  .openapi({ required: ['plans', 'meta'] })
+  .openapi('PlansPaginated')
+
+const PlanCreateInputSchema: z.ZodType<PlanCreateInputType> = z
   .object({
     plan: z
       .object({
@@ -14243,12 +15723,12 @@ const PlanCreateInputSchema = z
   .openapi({ required: ['plan'] })
   .openapi('PlanCreateInput')
 
-const PlanSchema = z
+const PlanSchema: z.ZodType<PlanType> = z
   .object({ plan: PlanObjectSchema })
   .openapi({ required: ['plan'] })
   .openapi('Plan')
 
-const PlanUpdateInputSchema = z
+const PlanUpdateInputSchema: z.ZodType<PlanUpdateInputType> = z
   .object({
     plan: z
       .object({
@@ -14726,7 +16206,7 @@ const PlanMetadataResponseSchema = z
   .openapi({ required: ['metadata'] })
   .openapi('PlanMetadataResponse')
 
-const ChargesPaginatedSchema = z
+const ChargesPaginatedSchema: z.ZodType<ChargesPaginatedType> = z
   .object({ charges: z.array(ChargeObjectSchema), meta: PaginationMetaSchema })
   .openapi({ required: ['charges', 'meta'] })
   .openapi('ChargesPaginated')
@@ -14994,7 +16474,7 @@ const ChargeFilterCreateInputSchema = z
               'Specifies the name that will be displayed on an invoice. If no value is set for this field, the values of the filter will be used as the default display name.',
             example: 'AWS',
           }),
-        properties: ChargePropertiesSchema.openapi({
+        properties: ChargePropertiesSchema.exactOptional().openapi({
           description: 'List of all thresholds utilized for calculating the charge.',
         }),
         values: z
@@ -15005,7 +16485,7 @@ const ChargeFilterCreateInputSchema = z
             example: { region: ['us-east-1'] },
           }),
       })
-      .openapi({ required: ['properties', 'values'] }),
+      .openapi({ required: ['values'] }),
   })
   .openapi({ required: ['filter'] })
   .openapi('ChargeFilterCreateInput')
@@ -15305,118 +16785,6 @@ const QuoteBaseObjectSchema = z
   })
   .openapi('QuoteBaseObject')
 
-const QuoteVersionStatusEnumSchema = z
-  .enum(['draft', 'approved', 'voided'])
-  .openapi({
-    description:
-      'The status of the quote version. It can be any of the following values:\n  - `draft`: the version is still editable.\n  - `approved`: the version has been approved and an order form has been generated from it.\n  - `voided`: the version is no longer actionable.\n\nA quote has at most one version in `draft` or `approved` status at any time; all the other versions are `voided`.\n',
-    example: 'draft',
-  })
-  .openapi('QuoteVersionStatusEnum')
-
-const QuoteVersionVoidReasonEnumSchema = z
-  .union([
-    z.literal(null),
-    z.literal('manual'),
-    z.literal('superseded'),
-    z.literal('cascade_of_expired'),
-    z.literal('cascade_of_voided'),
-  ])
-  .nullable()
-  .openapi({
-    description:
-      'The reason why the quote version was voided. It is `null` unless the `status` is `voided`. It can be any of the following values:\n  - `manual`: voided explicitly, through the API or the Lago user interface.\n  - `superseded`: voided because the version was cloned into a new draft.\n  - `cascade_of_expired`: voided because the order form generated from the version expired.\n  - `cascade_of_voided`: voided because the order form generated from the version was voided.\n',
-    example: 'manual',
-  })
-  .openapi('QuoteVersionVoidReasonEnum')
-
-const QuoteVersionObjectSchema = z
-  .object({
-    lago_id: z
-      .uuid()
-      .openapi({
-        description: 'Unique identifier of the quote version, created by Lago.',
-        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
-      }),
-    lago_quote_id: z
-      .uuid()
-      .openapi({
-        description: 'Unique identifier of the quote the version belongs to, created by Lago.',
-        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
-      }),
-    lago_organization_id: z
-      .uuid()
-      .openapi({
-        description: 'Unique identifier of the organization, created by Lago.',
-        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
-      }),
-    version: z
-      .int()
-      .openapi({
-        description:
-          'The number of the version within the quote. It starts at 1 and increases by 1 for every new version created by cloning.',
-        example: 1,
-      }),
-    status: QuoteVersionStatusEnumSchema,
-    currency: CurrencyOrNullSchema.openapi({
-      description: 'The currency the version is quoted in.',
-    }),
-    billing_entity_code: z
-      .string()
-      .nullable()
-      .openapi({
-        description:
-          "Unique code identifying the billing entity that issues the deal. It is resolved rather than stored: the version's own entity when it names one, then the entity of the subscription being amended for a `subscription_amendment` quote, then the customer's own. It is `null` when none of them resolves. An amendment cannot name an entity itself, since the subscription it restates is already bound to one, and naming one on an amendment is rejected.",
-        example: 'acme_corp',
-      }),
-    void_reason: QuoteVersionVoidReasonEnumSchema,
-    approved_at: z.iso
-      .datetime({ offset: true })
-      .nullable()
-      .openapi({
-        description:
-          'The date and time in UTC (ISO 8601) when the version was approved. It is `null` unless the `status` is `approved`.',
-        example: '2026-04-29T08:59:51Z',
-      }),
-    voided_at: z.iso
-      .datetime({ offset: true })
-      .nullable()
-      .openapi({
-        description:
-          'The date and time in UTC (ISO 8601) when the version was voided. It is `null` unless the `status` is `voided`.',
-        example: '2026-04-29T08:59:51Z',
-      }),
-    created_at: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'The date and time in UTC (ISO 8601) when the version was created.',
-        example: '2026-04-29T08:59:51Z',
-      }),
-    updated_at: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'The date and time in UTC (ISO 8601) when the version was last updated.',
-        example: '2026-04-29T08:59:51Z',
-      }),
-  })
-  .openapi({
-    required: [
-      'lago_id',
-      'lago_quote_id',
-      'lago_organization_id',
-      'version',
-      'status',
-      'currency',
-      'billing_entity_code',
-      'void_reason',
-      'approved_at',
-      'voided_at',
-      'created_at',
-      'updated_at',
-    ],
-  })
-  .openapi('QuoteVersionObject')
-
 const QuoteObjectSchema = QuoteBaseObjectSchema.and(
   z
     .object({
@@ -15474,23 +16842,7 @@ const QuoteVersionsPaginatedSchema = z
   .openapi({ required: ['quote_versions', 'meta'] })
   .openapi('QuoteVersionsPaginated')
 
-const QuoteVersionObjectExtendedSchema = QuoteVersionObjectSchema.and(
-  z
-    .object({
-      content: z
-        .string()
-        .nullable()
-        .openapi({
-          description:
-            'The HTML body of the quote document, as authored in the Lago user interface. It may reference the entries of `billing_items` through their `localId`.',
-          example: '<h1>Quote QT-2026-0001</h1><p>Prepared for Acme Corp.</p>',
-        }),
-      billing_items: QuoteBillingItemsSchema,
-    })
-    .openapi({ required: ['content', 'billing_items'] }),
-).openapi('QuoteVersionObjectExtended')
-
-const QuoteVersionSchema = z
+const QuoteVersionSchema: z.ZodType<QuoteVersionType> = z
   .object({ quote_version: QuoteVersionObjectExtendedSchema })
   .openapi({ required: ['quote_version'] })
   .openapi('QuoteVersion')
@@ -15509,213 +16861,7 @@ const QuoteVersionApproveInputSchema = z
   .openapi({ description: 'Parameters available when approving a quote version.', required: [] })
   .openapi('QuoteVersionApproveInput')
 
-const PlanOverridesObjectSchema = z
-  .object({
-    amount_cents: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description:
-          'The base cost of the plan, excluding any applicable taxes, that is billed on a recurring basis. This value is defined at 0 if your plan is a pay-as-you-go plan.',
-        example: 10000,
-      }),
-    amount_currency: CurrencySchema.exactOptional().openapi({
-      description:
-        "The currency of the plan. It indicates the monetary unit in which the plan's cost, including taxes and usage-based charges, is expressed.",
-      example: 'USD',
-    }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The description on the plan.',
-        example: 'Plan for early stage startups.',
-      }),
-    invoice_display_name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        example: 'Startup plan',
-        description:
-          'Specifies the name that will be displayed on an invoice. If no value is set for this field, the name of the plan will be used as the default display name.',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ example: 'Startup', description: 'The name of the plan.' }),
-    tax_codes: TaxCodesSchema.exactOptional(),
-    trial_period: z
-      .number()
-      .exactOptional()
-      .openapi({
-        description:
-          'The duration in days during which the base cost of the plan is offered for free.',
-        example: 5,
-      }),
-    minimum_commitment: MinimumCommitmentInputSchema.exactOptional(),
-    charges: z
-      .array(
-        z
-          .object({
-            id: z
-              .uuid()
-              .exactOptional()
-              .openapi({
-                description: 'Unique identifier of the charge created by Lago.',
-                example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
-              }),
-            billable_metric_id: z
-              .uuid()
-              .exactOptional()
-              .openapi({
-                description: 'Unique identifier of the billable metric created by Lago.',
-                example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
-              }),
-            code: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Unique code identifying the charge within the plan.',
-                example: 'api_requests_charge',
-              }),
-            charge_model: ChargeModelEnumSchema.exactOptional(),
-            invoice_display_name: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description:
-                  'Specifies the name that will be displayed on an invoice. If no value is set for this field, the name of the actual charge will be used as the default display name.',
-                example: 'Setup',
-              }),
-            min_amount_cents: z
-              .int()
-              .exactOptional()
-              .openapi({
-                description:
-                  'The minimum spending amount required for the charge, measured in cents and excluding any applicable taxes. It indicates the minimum amount that needs to be charged for each billing period.',
-                example: 0,
-              }),
-            properties: ChargeObjectPropertiesSchema.exactOptional().openapi({
-              description: 'List of all thresholds utilized for calculating the charge.',
-            }),
-            filters: z
-              .array(ChargeFilterInputSchema)
-              .exactOptional()
-              .openapi({
-                description:
-                  'List of filters used to apply differentiated pricing based on additional event properties.',
-              }),
-            tax_codes: TaxCodesSchema.exactOptional(),
-            applied_pricing_unit: z
-              .object({
-                code: z
-                  .string()
-                  .exactOptional()
-                  .openapi({ description: 'The code of the pricing unit.', example: 'credits' }),
-                conversion_rate: z
-                  .string()
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      "The conversion rate from pricing units to the plan's currency.\nThis rate determines how many currency units (in the plan's base currency) equal one pricing unit.\nFor example, if the plan uses USD and the conversion rate is 0.5, then 1 pricing unit = $0.50 USD.",
-                    example: '0.5',
-                  }),
-              })
-              .exactOptional()
-              .openapi({
-                description:
-                  'Updates the pricing unit conversion rate for this charge. Only applies if the charge has applied pricing unit.',
-                required: [],
-              }),
-          })
-          .openapi({ required: [] }),
-      )
-      .exactOptional()
-      .openapi({ description: 'Additional usage-based charges for this plan.' }),
-    fixed_charges: z
-      .array(
-        z
-          .object({
-            id: z
-              .uuid()
-              .openapi({
-                description: 'Unique identifier of the fixed charge created by Lago.',
-                example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
-              }),
-            invoice_display_name: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description:
-                  'Specifies the name that will be displayed on an invoice. If no value is set for this field, the name of the actual charge will be used as the default display name.',
-                example: 'Setup fee',
-              }),
-            units: z
-              .number()
-              .default(0)
-              .exactOptional()
-              .openapi({
-                description:
-                  'The number of units for the fixed charge. Defaults to 0 if not provided.',
-                example: 1,
-              }),
-            apply_units_immediately: z
-              .boolean()
-              .exactOptional()
-              .openapi({
-                description:
-                  'Determines if the units should be applied immediately upon assignment or deferred to the next billing cycle.',
-                example: true,
-              }),
-            properties: FixedChargePropertiesSchema.exactOptional().openapi({
-              description: 'List of all thresholds utilized for calculating the fixed charge.',
-            }),
-            tax_codes: TaxCodesSchema.exactOptional().openapi({
-              description: 'List of taxes applied to the fixed charge.',
-            }),
-          })
-          .openapi({ required: ['id'] }),
-      )
-      .exactOptional()
-      .openapi({
-        description:
-          'Fixed charge overrides for the subscription. When `plan_overrides` contains only `fixed_charges` and every entry contains only `id`, `units`, and optionally `apply_units_immediately`, the units are recorded as a per-subscription override without creating a plan override, and subscription-scoped reads return these units. If any entry carries other fields, or `plan_overrides` contains any other key, the request is applied as a full plan override for the subscription instead.',
-      }),
-    usage_thresholds: z
-      .array(UsageThresholdInputSchema)
-      .exactOptional()
-      .openapi({
-        deprecated: true,
-        description:
-          '**Deprecated.** Managing usage thresholds through `plan_overrides` is deprecated and its behavior is inconsistent: an empty array does not reliably clear thresholds (it is ignored the first time a subscription is overridden), and it never affects thresholds inherited from a parent plan. Use the top-level `usage_thresholds` array on the subscription instead, or `progressive_billing_disabled` to switch progressive billing off.\n',
-      }),
-    metadata: MetadataInputSchema.exactOptional(),
-  })
-  .openapi({ description: 'Based plan overrides.', required: [] })
-  .openapi('PlanOverridesObject')
-
-const SubscriptionActivationRuleInputSchema = z
-  .object({
-    type: z
-      .literal('payment')
-      .openapi({
-        description:
-          'The type of the activation rule. Only `payment` is currently supported. A `payment` rule gates the subscription activation on a successful payment of the first invoice.',
-        example: 'payment',
-      }),
-    timeout_hours: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description:
-          'The number of hours the subscription stays in the `incomplete` state waiting for the payment to succeed before it is automatically canceled. Must be a positive integer or zero.',
-        example: 48,
-      }),
-  })
-  .openapi({ required: ['type'] })
-  .openapi('SubscriptionActivationRuleInput')
-
-const SubscriptionCreateInputSchema = z
+const SubscriptionCreateInputSchema: z.ZodType<SubscriptionCreateInputType> = z
   .object({
     authorization: z
       .object({
@@ -15821,6 +16967,13 @@ const SubscriptionCreateInputSchema = z
             description:
               'The purchase order number associated with the subscription. It will be added to invoices generated for this subscription.',
           }),
+        payment_term: z
+          .xor([PaymentTermObjectSchema, z.null().nullable()])
+          .exactOptional()
+          .openapi({
+            description:
+              "The structured payment term of the subscription. It takes precedence over the customer's and the billing entity's terms for the invoices of this subscription. Subscriptions of a customer whose terms give different due dates are billed on separate invoices. When upgrading or downgrading, the term is carried over to the new subscription unless this field is sent.",
+          }),
         progressive_billing_disabled: z
           .boolean()
           .default(false)
@@ -15850,146 +17003,7 @@ const SubscriptionCreateInputSchema = z
   .openapi({ required: ['subscription'] })
   .openapi('SubscriptionCreateInput')
 
-const SubscriptionEntitlementPrivilegeObjectSchema = FeaturePrivilegeObjectSchema.and(
-  z
-    .object({
-      value: z
-        .xor([
-          z.int().openapi({ description: 'Value for integer type privileges' }),
-          z.boolean().openapi({ description: 'Value for boolean type privileges' }),
-          z.string().openapi({ description: 'Value for string or select type privileges' }),
-        ])
-        .openapi({
-          example: 10,
-          description:
-            "Applicable value for this subscription (override_value if set, plan_value otherwise). Type depends on the privilege's value_type.",
-        }),
-      plan_value: z
-        .xor([
-          z.int().openapi({ description: 'Value for integer type privileges' }),
-          z.boolean().openapi({ description: 'Value for boolean type privileges' }),
-          z.string().openapi({ description: 'Value for string or select type privileges' }),
-          z.null().nullable().openapi({ description: 'No plan value set' }),
-        ])
-        .openapi({
-          example: 10,
-          description:
-            "Value assigned to this privilege in the plan. Type depends on the privilege's value_type. Null when the privilege only exists as a subscription override.",
-        }),
-      override_value: z
-        .xor([
-          z.int().openapi({ description: 'Value for integer type privileges' }),
-          z.boolean().openapi({ description: 'Value for boolean type privileges' }),
-          z.string().openapi({ description: 'Value for string or select type privileges' }),
-          z.null().nullable().openapi({ description: 'No override value set' }),
-        ])
-        .openapi({
-          example: 10,
-          description:
-            "Value assigned to this subscription specifically. Type depends on the privilege's value_type. Null if no override is set.",
-        }),
-    })
-    .openapi({ required: ['value', 'plan_value', 'override_value'] }),
-).openapi('SubscriptionEntitlementPrivilegeObject')
-
-const SubscriptionEntitlementObjectSchema = z
-  .object({
-    code: z
-      .string()
-      .openapi({
-        example: 'seats',
-        description: 'Unique code used to identify the feature. Max 255 characters.',
-      }),
-    name: z
-      .string()
-      .nullable()
-      .openapi({
-        example: 'Number of seats',
-        description: 'Name of the feature. Max 255 characters.',
-      }),
-    description: z
-      .string()
-      .nullable()
-      .openapi({
-        example: 'Number of users of the account',
-        description: 'Description of the feature. Max 600 characters.',
-      }),
-    privileges: z.array(SubscriptionEntitlementPrivilegeObjectSchema).openapi({
-      example: [
-        {
-          code: 'max',
-          name: 'Maximum',
-          value_type: 'integer',
-          config: {},
-          value: 15,
-          plan_value: 10,
-          override_value: 15,
-        },
-        {
-          code: 'max_admins',
-          name: 'Max Admins',
-          value_type: 'integer',
-          config: {},
-          value: 5,
-          plan_value: 5,
-          override_value: null,
-        },
-        {
-          code: 'root',
-          name: 'Allow root user',
-          value_type: 'boolean',
-          config: {},
-          value: true,
-          plan_value: true,
-          override_value: null,
-        },
-        {
-          code: 'provider',
-          name: 'SSO Provider',
-          value_type: 'select',
-          value: 'okta',
-          plan_value: 'google',
-          override_value: 'okta',
-          config: { select_options: ['google', 'okta'] },
-        },
-      ],
-      description:
-        'Privileges associated with this feature. Each privilege shows the plan value and any subscription override.',
-    }),
-    overrides: z
-      .looseObject({})
-      .openapi({
-        example: { max: 15, provider: 'okta' },
-        description:
-          'Privilege values set on this subscription only. Each key is a privilege code and each value is the subscription override. Privileges that use the plan value are not listed.',
-      }),
-  })
-  .openapi({ required: ['code', 'name', 'description', 'privileges', 'overrides'] })
-  .openapi('SubscriptionEntitlementObject')
-
-const SubscriptionObjectExtendedSchema = SubscriptionObjectSchema.and(
-  z
-    .object({
-      plan: PlanObjectSchema.exactOptional(),
-      applicable_usage_thresholds: z
-        .array(ApplicableUsageThresholdSchema)
-        .exactOptional()
-        .openapi({
-          description:
-            'List of usage thresholds applicable to this subscription. Not returned when terminating a subscription.',
-        }),
-      entitlements: z
-        .array(SubscriptionEntitlementObjectSchema)
-        .exactOptional()
-        .openapi({
-          description:
-            'The feature entitlements of the subscription. Only returned when creating or retrieving a subscription.',
-        }),
-    })
-    .openapi({ required: [] }),
-).openapi('SubscriptionObjectExtended')
-
-const SubscriptionExtendedSchema = z
+const SubscriptionExtendedSchema: z.ZodType<SubscriptionExtendedType> = z
   .object({
     subscription: SubscriptionObjectExtendedSchema,
     authorization: z
@@ -16031,7 +17045,7 @@ const SubscriptionExtendedSchema = z
   .openapi({ required: ['subscription'] })
   .openapi('SubscriptionExtended')
 
-const SubscriptionUpdateInputSchema = z
+const SubscriptionUpdateInputSchema: z.ZodType<SubscriptionUpdateInputType> = z
   .object({
     status: z
       .enum(['active', 'pending'])
@@ -16117,6 +17131,13 @@ const SubscriptionUpdateInputSchema = z
             example: 'PO-123',
             description:
               'The purchase order number associated with the subscription. It will be added to invoices generated for this subscription.',
+          }),
+        payment_term: z
+          .xor([PaymentTermObjectSchema, z.null().nullable()])
+          .exactOptional()
+          .openapi({
+            description:
+              "The structured payment term of the subscription. It takes precedence over the customer's and the billing entity's terms for the invoices of this subscription. Send `null` to remove it. A pending downgrade of this subscription that shared the previous term gets the new one too.",
           }),
         progressive_billing_disabled: z
           .boolean()
@@ -16548,7 +17569,7 @@ const TaxBaseInputSchema = z
       .openapi({
         deprecated: true,
         description:
-          "**Deprecated.** This field will be removed in a future version. When set to true, it applies the tax to the organization's default billing entity. To apply or remove a tax from any billing entity (including the default one), please use the `PUT /billing_entities/:code` endpoint instead.",
+          "**Deprecated.** This field will be removed in a future version. When set to true, it applies the tax to the organization's default billing entity. When set to false on an update, it removes the tax from the organization's default billing entity. To apply or remove a tax from any billing entity (including the default one), please use the `PUT /billing_entities/:code` endpoint instead.",
         example: true,
       }),
   })
@@ -16569,6 +17590,180 @@ const TaxUpdateInputSchema = z
   .object({ tax: TaxBaseInputSchema })
   .openapi({ required: ['tax'] })
   .openapi('TaxUpdateInput')
+
+const UsageAttributionTypeRoleEnumSchema = z
+  .enum(['hierarchical', 'flat'])
+  .openapi({
+    description:
+      'Role of the usage attribution type:\n- `hierarchical`: the type can have a parent and children, and forms a level of the account tree.\n- `flat`: the type stands on its own. It cannot have a parent or children.',
+    example: 'hierarchical',
+  })
+  .openapi('UsageAttributionTypeRoleEnum')
+
+const UsageAttributionTypeObjectSchema = z
+  .object({
+    lago_id: z
+      .uuid()
+      .openapi({
+        description: 'Unique identifier of the usage attribution type, created by Lago.',
+        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
+      }),
+    lago_organization_id: z
+      .uuid()
+      .openapi({
+        description: 'Unique identifier of the organization, created by Lago.',
+        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
+      }),
+    code: z
+      .string()
+      .openapi({
+        description:
+          'Unique code used to identify the usage attribution type within the organization.',
+        example: 'team',
+      }),
+    name: z
+      .string()
+      .nullable()
+      .openapi({ description: 'Name of the usage attribution type.', example: 'Team' }),
+    description: z
+      .string()
+      .nullable()
+      .openapi({
+        description: 'Description of the usage attribution type.',
+        example: 'Team that consumed the usage.',
+      }),
+    attribution_keys: z
+      .array(z.string())
+      .openapi({
+        description:
+          'Keys of the event properties that attribute usage to this type. A key belongs to a single usage attribution type of the organization.',
+        example: ['team', 'team_id'],
+      }),
+    role: UsageAttributionTypeRoleEnumSchema,
+    lago_parent_id: z
+      .uuid()
+      .nullable()
+      .openapi({
+        description:
+          'Unique identifier of the parent usage attribution type, created by Lago. It is `null` when the type has no parent.',
+        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
+      }),
+    parent_code: z
+      .string()
+      .nullable()
+      .openapi({
+        description:
+          'Code of the parent usage attribution type. It is `null` when the type has no parent.',
+        example: 'department',
+      }),
+    created_at: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'Creation date of the usage attribution type, in UTC.',
+        example: '2022-04-29T08:59:51Z',
+      }),
+    updated_at: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'Date of the last update of the usage attribution type, in UTC.',
+        example: '2022-04-29T08:59:51Z',
+      }),
+  })
+  .openapi({
+    required: [
+      'lago_id',
+      'lago_organization_id',
+      'code',
+      'name',
+      'description',
+      'attribution_keys',
+      'role',
+      'lago_parent_id',
+      'parent_code',
+      'created_at',
+      'updated_at',
+    ],
+  })
+  .openapi('UsageAttributionTypeObject')
+
+const UsageAttributionTypesPaginatedSchema = z
+  .object({
+    usage_attribution_types: z.array(UsageAttributionTypeObjectSchema),
+    meta: PaginationMetaSchema,
+  })
+  .openapi({ required: ['usage_attribution_types', 'meta'] })
+  .openapi('UsageAttributionTypesPaginated')
+
+const UsageAttributionTypeBaseInputSchema = z
+  .object({
+    code: z
+      .string()
+      .max(255)
+      .exactOptional()
+      .openapi({
+        description:
+          'Unique code used to identify the usage attribution type within the organization. Once usage is attributed to the type, the code cannot be changed.',
+        example: 'team',
+      }),
+    name: z
+      .string()
+      .max(255)
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Name of the usage attribution type.', example: 'Team' }),
+    description: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Description of the usage attribution type.',
+        example: 'Team that consumed the usage.',
+      }),
+    attribution_keys: z
+      .array(z.string().max(255))
+      .min(1)
+      .max(4)
+      .exactOptional()
+      .openapi({
+        description:
+          'Keys of the event properties that attribute usage to this type, up to 4. Blank and duplicate keys are removed. A key already used by another usage attribution type of the organization is rejected.',
+        example: ['team', 'team_id'],
+      }),
+    role: UsageAttributionTypeRoleEnumSchema.exactOptional().openapi({
+      description:
+        'Role of the usage attribution type. A `flat` type cannot have a parent, and a type with children cannot become `flat`. Once usage is attributed to the type, the role cannot be changed.',
+    }),
+    parent_code: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Code of the parent usage attribution type, which must be `hierarchical`. Send `null` or an empty string to remove the parent. Once usage is attributed to the type, the parent cannot be changed.',
+        example: 'department',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('UsageAttributionTypeBaseInput')
+
+const UsageAttributionTypeCreateInputSchema = z
+  .object({
+    usage_attribution_type: UsageAttributionTypeBaseInputSchema.openapi({
+      required: ['code', 'attribution_keys', 'role'],
+    }),
+  })
+  .openapi({ required: ['usage_attribution_type'] })
+  .openapi('UsageAttributionTypeCreateInput')
+
+const UsageAttributionTypeSchema = z
+  .object({ usage_attribution_type: UsageAttributionTypeObjectSchema })
+  .openapi({ required: ['usage_attribution_type'] })
+  .openapi('UsageAttributionType')
+
+const UsageAttributionTypeUpdateInputSchema = z
+  .object({ usage_attribution_type: UsageAttributionTypeBaseInputSchema })
+  .openapi({ required: ['usage_attribution_type'] })
+  .openapi('UsageAttributionTypeUpdateInput')
 
 const WalletTransactionCreateInputSchema = z
   .object({
@@ -17089,6 +18284,33 @@ const WebhookPublicKeySchema = z
   .openapi({ required: ['webhook'] })
   .openapi('WebhookPublicKey')
 
+const WebhookEndpointSigningKeyObjectSchema = z
+  .object({
+    lago_id: z
+      .uuid()
+      .openapi({
+        description: 'Unique identifier of the signing key, created by Lago.',
+        example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
+      }),
+    secret_key: z
+      .string()
+      .regex(/^whsec_/)
+      .openapi({
+        description:
+          'The secret key to set up a Standard Webhooks library with, prefixed with `whsec_`.',
+        example: 'whsec_ZmFrZS1zZWNyZXQtZm9yLWRvY3VtZW50YXRpb24tb25seQ==',
+      }),
+    created_at: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description:
+          'The date of the signing key creation, represented in ISO 8601 datetime format and expressed in Coordinated Universal Time (UTC).',
+        example: '2022-04-29T08:59:51Z',
+      }),
+  })
+  .openapi({ required: ['lago_id', 'secret_key', 'created_at'] })
+  .openapi('WebhookEndpointSigningKeyObject')
+
 const WebhookEndpointObjectSchema = z
   .object({
     lago_id: z
@@ -17109,7 +18331,7 @@ const WebhookEndpointObjectSchema = z
       .string()
       .openapi({ description: 'The URL of the webhook endpoint.', example: 'https://foo.bar' }),
     signature_algo: z
-      .enum(['jwt', 'hmac'])
+      .enum(['jwt', 'hmac', 'standard_webhooks'])
       .openapi({ description: 'The algorithm used to sign the webhook payload.', example: 'hmac' }),
     name: z
       .string()
@@ -17129,6 +18351,13 @@ const WebhookEndpointObjectSchema = z
         description:
           'The date of the webhook endpoint creation, represented in ISO 8601 datetime format and expressed in Coordinated Universal Time (UTC).',
         example: '2022-04-29T08:59:51Z',
+      }),
+    signing_keys: z
+      .array(WebhookEndpointSigningKeyObjectSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The signing keys of the endpoint, oldest first, used to verify the `webhook-signature` header of `standard_webhooks` deliveries.\nThe list is empty when the endpoint uses the `jwt` or `hmac` signature algorithm.\nReturned only by the create, update and retrieve endpoints, and only to an API key with write access to webhook endpoints.',
       }),
   })
   .openapi({
@@ -17155,15 +18384,24 @@ const WebhookEndpointCreateInputSchema = z
       .object({
         webhook_url: z
           .string()
-          .openapi({ description: 'The URL of the webhook endpoint.', example: 'https://foo.bar' }),
+          .openapi({
+            description:
+              'The URL of the webhook endpoint. It must be an HTTP or HTTPS URL with a host, and it must be unique within the organization.',
+            example: 'https://foo.bar',
+          }),
         signature_algo: z
-          .union([z.literal('jwt'), z.literal('hmac'), z.literal(null)])
+          .union([
+            z.literal('jwt'),
+            z.literal('hmac'),
+            z.literal('standard_webhooks'),
+            z.literal(null),
+          ])
           .nullable()
           .default('jwt')
           .exactOptional()
           .openapi({
             description:
-              'The algorithm used to sign the webhook payload. Defaults to `jwt` when no value is passed.',
+              'The algorithm used to sign the webhook payload. Defaults to `jwt` when no value is passed.\n`standard_webhooks` is available to every organization. An unknown value returns a `422` error with `value_is_invalid` on `signature_algo`.\nCreating a `standard_webhooks` endpoint creates its signing key, returned in `signing_keys`.',
             example: 'hmac',
           }),
         name: z
@@ -17177,7 +18415,7 @@ const WebhookEndpointCreateInputSchema = z
           .exactOptional()
           .openapi({
             description:
-              'The list of event types sent to this webhook endpoint. Pass `null` or `["*"]` to receive every event type. An empty array stops every delivery.',
+              'The list of event types sent to this webhook endpoint. Pass `null` or `["*"]` to receive every event type. An empty array stops every delivery. Values are trimmed, lowercased and deduplicated, and an unsupported event type is rejected.',
             example: ['invoice.voided', 'customer.created'],
           }),
       })
@@ -17198,14 +18436,17 @@ const WebhookEndpointUpdateInputSchema = z
         webhook_url: z
           .string()
           .exactOptional()
-          .openapi({ description: 'The URL of the webhook endpoint.', example: 'https://foo.bar' }),
+          .openapi({
+            description:
+              'The URL of the webhook endpoint. It must be an HTTP or HTTPS URL with a host, and it must be unique within the organization.',
+            example: 'https://foo.bar',
+          }),
         signature_algo: z
-          .union([z.literal('jwt'), z.literal('hmac'), z.literal(null)])
-          .nullable()
+          .enum(['jwt', 'hmac', 'standard_webhooks'])
           .exactOptional()
           .openapi({
             description:
-              'The algorithm used to sign the webhook payload. When the field is omitted, the current value is kept.',
+              "The algorithm used to sign the webhook payload. When the field is omitted, the current value is kept. `null` is refused.\n`standard_webhooks` is available to every organization. An unknown value returns a `422` error with `value_is_invalid` on `signature_algo`.\nSwitching to `standard_webhooks` creates the endpoint's signing key, or reuses the key it kept from an earlier switch.",
             example: 'hmac',
           }),
         name: z
@@ -17219,7 +18460,7 @@ const WebhookEndpointUpdateInputSchema = z
           .exactOptional()
           .openapi({
             description:
-              'The list of event types sent to this webhook endpoint. Pass `null` or `["*"]` to receive every event type. An empty array stops every delivery.',
+              'The list of event types sent to this webhook endpoint. Pass `null` or `["*"]` to receive every event type. An empty array stops every delivery. Values are trimmed, lowercased and deduplicated, and an unsupported event type is rejected.',
             example: ['invoice.voided', 'customer.created'],
           }),
       })
@@ -18162,34 +19403,38 @@ const QuoteWithVersionObjectSchema = QuoteBaseObjectSchema.and(
     .openapi({ required: ['version'] }),
 ).openapi('QuoteWithVersionObject')
 
-const SubscriptionWithCustomerObjectSchema = SubscriptionObjectSchema.and(
-  z
-    .object({
-      plan: PlanObjectSchema,
-      customer: CustomerObjectSchema,
-      entitlements: z
-        .array(SubscriptionEntitlementObjectSchema)
-        .exactOptional()
-        .openapi({
-          description:
-            'The feature entitlements of the subscription. Only sent with the `subscription.started` and `subscription.updated` webhooks.',
-        }),
-    })
-    .openapi({ required: ['plan', 'customer'] }),
-).openapi('SubscriptionWithCustomerObject')
+const SubscriptionWithCustomerObjectSchema: z.ZodType<SubscriptionWithCustomerObjectType> =
+  SubscriptionObjectSchema.and(
+    z
+      .object({
+        plan: PlanObjectSchema,
+        customer: CustomerObjectSchema,
+        entitlements: z
+          .array(SubscriptionEntitlementObjectSchema)
+          .exactOptional()
+          .openapi({
+            description:
+              'The feature entitlements of the subscription. Only sent with the `subscription.started` and `subscription.updated` webhooks.',
+          }),
+      })
+      .openapi({ required: ['plan', 'customer'] }),
+  ).openapi('SubscriptionWithCustomerObject')
 
-const SubscriptionWithThresholdObjectSchema = SubscriptionObjectSchema.and(
-  z
-    .object({
-      plan: PlanObjectSchema,
-      customer: CustomerObjectSchema,
-      usage_threshold: UsageThresholdObjectSchema,
-      applicable_usage_thresholds: z
-        .array(ApplicableUsageThresholdSchema)
-        .openapi({ description: 'List of usage thresholds applicable to this subscription.' }),
-    })
-    .openapi({ required: ['plan', 'customer', 'usage_threshold', 'applicable_usage_thresholds'] }),
-).openapi('SubscriptionWithThresholdObject')
+const SubscriptionWithThresholdObjectSchema: z.ZodType<SubscriptionWithThresholdObjectType> =
+  SubscriptionObjectSchema.and(
+    z
+      .object({
+        plan: PlanObjectSchema,
+        customer: CustomerObjectSchema,
+        usage_threshold: UsageThresholdObjectSchema,
+        applicable_usage_thresholds: z
+          .array(ApplicableUsageThresholdSchema)
+          .openapi({ description: 'List of usage thresholds applicable to this subscription.' }),
+      })
+      .openapi({
+        required: ['plan', 'customer', 'usage_threshold', 'applicable_usage_thresholds'],
+      }),
+  ).openapi('SubscriptionWithThresholdObject')
 
 const WalletTransactionObjectExtendedSchema = WalletTransactionObjectSchema.and(
   z.object({ wallet: WalletObjectSchema }).openapi({ required: ['wallet'] }),
@@ -18258,14 +19503,14 @@ const UnauthorizedResponse = {
   content: { 'application/json': { schema: ApiErrorUnauthorizedSchema } },
 }
 
-const BadRequestResponse = {
-  description: 'Bad Request error',
-  content: { 'application/json': { schema: ApiErrorBadRequestSchema } },
-}
-
 const ForbiddenResponse = {
   description: 'Forbidden',
   content: { 'application/json': { schema: ApiErrorForbiddenSchema } },
+}
+
+const BadRequestResponse = {
+  description: 'Bad Request error',
+  content: { 'application/json': { schema: ApiErrorBadRequestSchema } },
 }
 
 const UnprocessableEntityResponse = {
@@ -18392,7 +19637,8 @@ const MonthsParamsSchema = z
     param: {
       name: 'months',
       in: 'query',
-      description: 'Show data only for given number of months.',
+      description:
+        'Limit the result to this number of months, counting back from the current month, which is included. When it is not set, the result covers every month since the organization was created.',
       required: false,
       explode: true,
       schema: { type: 'integer', example: 12 },
@@ -18632,13 +19878,14 @@ const SubscriptionExternalIdPathParamsSchema = z
 
 const WebhookSignatureParamsSchema = z
   .string()
+  .exactOptional()
   .openapi({
     param: {
       name: 'X-Lago-Signature',
       in: 'header',
       description:
-        'Signature of the webhook payload. The format depends on `X-Lago-Signature-Algorithm`:\n`hmac` is the Base64 encoding of an HMAC-SHA256 digest of the payload,\n`jwt` is an RS256 JSON Web Token (a string starting with `eyJ`).',
-      required: true,
+        'Signature of the webhook payload, sent only to endpoints that use the `jwt` or `hmac` signature algorithm.\nThe format depends on `X-Lago-Signature-Algorithm`:\n`hmac` is the Base64 encoding of an HMAC-SHA256 digest of the payload,\n`jwt` is an RS256 JSON Web Token (a string starting with `eyJ`).',
+      required: false,
       schema: { type: 'string', example: 'AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8=' },
     },
     example: 'AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8=',
@@ -18646,12 +19893,14 @@ const WebhookSignatureParamsSchema = z
 
 const WebhookSignatureAlgorithmParamsSchema = z
   .enum(['jwt', 'hmac'])
+  .exactOptional()
   .openapi({
     param: {
       name: 'X-Lago-Signature-Algorithm',
       in: 'header',
-      description: 'Algorithm used to generate the signature',
-      required: true,
+      description:
+        'Algorithm used to generate the `X-Lago-Signature` header, sent only to endpoints that use the `jwt` or `hmac` signature algorithm.',
+      required: false,
       schema: { type: 'string', enum: ['jwt', 'hmac'], example: 'hmac' },
     },
     example: 'hmac',
@@ -18659,15 +19908,68 @@ const WebhookSignatureAlgorithmParamsSchema = z
 
 const WebhookUniqueKeyParamsSchema = z
   .uuid()
+  .exactOptional()
   .openapi({
     param: {
       name: 'X-Lago-Unique-Key',
       in: 'header',
-      description: 'Unique id of the webhook. It can be used for idempotency',
-      required: true,
+      description:
+        'Unique identifier of the webhook, which can be used for idempotency. Sent only to endpoints that use the `jwt` or `hmac` signature algorithm.',
+      required: false,
       schema: { type: 'string', format: 'uuid', example: '1a901a90-1a90-1a90-1a90-1a901a901a90' },
     },
     example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
+  })
+
+const StandardWebhooksIdParamsSchema = z
+  .uuid()
+  .exactOptional()
+  .openapi({
+    param: {
+      name: 'webhook-id',
+      in: 'header',
+      description:
+        'Unique identifier of the webhook, which can be used for idempotency. A retry of the webhook keeps the same value. Sent only to endpoints that use the `standard_webhooks` signature algorithm.',
+      required: false,
+      schema: { type: 'string', format: 'uuid', example: '1a901a90-1a90-1a90-1a90-1a901a901a90' },
+    },
+    example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
+  })
+
+const StandardWebhooksTimestampParamsSchema = z
+  .string()
+  .regex(/^[0-9]+$/)
+  .exactOptional()
+  .openapi({
+    param: {
+      name: 'webhook-timestamp',
+      in: 'header',
+      description:
+        'Time the webhook was sent, in seconds since the Unix epoch. Each retry carries its own send time. Sent only to endpoints that use the `standard_webhooks` signature algorithm.',
+      required: false,
+      schema: { type: 'string', pattern: '^[0-9]+$', example: '1651222791' },
+    },
+    example: '1651222791',
+  })
+
+const StandardWebhooksSignatureParamsSchema = z
+  .string()
+  .regex(/^v1,/)
+  .exactOptional()
+  .openapi({
+    param: {
+      name: 'webhook-signature',
+      in: 'header',
+      description:
+        "Standard Webhooks signature of the webhook, sent only to endpoints that use the `standard_webhooks` signature algorithm.\nThe value is `v1,` followed by the Base64 encoding of the HMAC-SHA256 digest of `{webhook-id}.{webhook-timestamp}.{body}`,\nkeyed with the endpoint's signing key (the Base64 part of its `whsec_` secret key, decoded).\nAny Standard Webhooks library verifies it with the endpoint's `whsec_` secret key.",
+      required: false,
+      schema: {
+        type: 'string',
+        pattern: '^v1,',
+        example: 'v1,AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8=',
+      },
+    },
+    example: 'v1,AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8=',
   })
 
 const BearerAuthSecurityScheme = { type: 'http', scheme: 'bearer' }
@@ -18691,6 +19993,7 @@ export const getBillingEntitiesRoute = createRoute({
       },
     },
     401: UnauthorizedResponse,
+    403: ForbiddenResponse,
   },
 })
 
@@ -18761,6 +20064,7 @@ export const getBillingEntitiesCodeRoute = createRoute({
       },
     },
     401: UnauthorizedResponse,
+    403: ForbiddenResponse,
     404: NotFoundResponse,
   },
 })
@@ -18806,6 +20110,7 @@ export const putBillingEntitiesCodeRoute = createRoute({
     },
     400: BadRequestResponse,
     401: UnauthorizedResponse,
+    403: ForbiddenResponse,
     404: NotFoundResponse,
     422: UnprocessableEntityResponse,
   },
@@ -18817,7 +20122,7 @@ export const getActivityLogsRoute = createRoute({
   tags: ['activity_logs'],
   summary: 'List all activity logs',
   description:
-    'This endpoint retrieves all existing activity logs that represent actions performed on application resources.',
+    'This endpoint retrieves all existing activity logs that represent actions performed on application resources. Logs are returned from the most recent to the oldest.',
   operationId: 'findAllActivityLogs',
   request: {
     query: z.object({
@@ -19056,6 +20361,7 @@ export const postAddOnsRoute = createRoute({
     400: BadRequestResponse,
     401: UnauthorizedResponse,
     403: ForbiddenResponse,
+    404: NotFoundResponse,
     422: UnprocessableEntityResponse,
   },
 })
@@ -19173,7 +20479,7 @@ export const getApiLogsRoute = createRoute({
   tags: ['api_logs'],
   summary: 'List all API logs',
   description:
-    "This endpoint retrieves all existing API logs, which represent the requests made to Lago's API. Logs older than the retention period of your organization are left out. The retention period is 30 days unless another one was set for your organization.",
+    "This endpoint retrieves all existing API logs, which represent the requests made to Lago's API. Logs are returned from the most recent to the oldest. Logs older than the retention period of your organization are left out. The retention period is 30 days unless another one was set for your organization.",
   operationId: 'findAllApiLogs',
   request: {
     query: z.object({
@@ -19374,22 +20680,20 @@ export const getAnalyticsGrossRevenueRoute = createRoute({
   tags: ['analytics'],
   summary: 'List gross revenue',
   description:
-    'Gross revenue is the monthly sum of the totals of `finalized` invoices and of the amounts of the fees paid in advance that are not attached to an invoice. Invoice totals include taxes, are net of coupons, and are reduced by the amounts refunded through credit notes. Self-billed invoices and invoices with a lost payment dispute are excluded.',
+    'Gross revenue is the monthly sum of the totals of `finalized` invoices and of the amounts of the fees paid in advance that are not attached to an invoice. Invoice totals include taxes, are net of coupons, and are reduced by the amounts refunded through credit notes. Self-billed invoices and invoices with a lost payment dispute are excluded. Only months with revenue are returned, from the oldest to the most recent.',
   operationId: 'findAllGrossRevenues',
   request: {
     query: z.object({
-      currency: CurrencySchema.and(z.any().openapi({ example: 'USD' }))
-        .exactOptional()
-        .openapi({
-          param: {
-            name: 'currency',
-            in: 'query',
-            description: 'Currency of revenue analytics. Format must be ISO 4217.',
-            required: false,
-            explode: true,
-            schema: { allOf: [{ $ref: '#/components/schemas/Currency' }, { example: 'USD' }] },
-          },
-        }),
+      currency: CurrencySchema.openapi({
+        param: {
+          name: 'currency',
+          in: 'query',
+          description: 'Currency of revenue analytics. Format must be ISO 4217.',
+          required: false,
+          explode: true,
+          schema: { allOf: [{ $ref: '#/components/schemas/Currency' }, { example: 'USD' }] },
+        },
+      }).exactOptional(),
       external_customer_id: z
         .string()
         .exactOptional()
@@ -19425,22 +20729,20 @@ export const getAnalyticsInvoiceCollectionRoute = createRoute({
   tags: ['analytics'],
   summary: 'List of finalized invoices',
   description:
-    'Represents a monthly aggregation, detailing both the total count and the cumulative amount of invoices that have been marked as `finalized`. This report sorts invoices categorically based on their `payment_status`. Self-billed invoices and invoices with a lost payment dispute are excluded.\nThis is a premium feature.',
+    'Represents a monthly aggregation, detailing both the total count and the cumulative amount of invoices that have been marked as `finalized`. This report sorts invoices categorically based on their `payment_status`. Self-billed invoices and invoices with a lost payment dispute are excluded. Every month is returned, including the months without a finalized invoice, from the oldest to the most recent, and within a month by payment status and currency.\nThis is a premium feature.',
   operationId: 'findAllInvoiceCollections',
   request: {
     query: z.object({
-      currency: CurrencySchema.and(z.any().openapi({ example: 'USD' }))
-        .exactOptional()
-        .openapi({
-          param: {
-            name: 'currency',
-            in: 'query',
-            description: 'The currency of revenue analytics. Format must be ISO 4217.',
-            required: false,
-            explode: true,
-            schema: { allOf: [{ $ref: '#/components/schemas/Currency' }, { example: 'USD' }] },
-          },
-        }),
+      currency: CurrencySchema.openapi({
+        param: {
+          name: 'currency',
+          in: 'query',
+          description: 'The currency of revenue analytics. Format must be ISO 4217.',
+          required: false,
+          explode: true,
+          schema: { allOf: [{ $ref: '#/components/schemas/Currency' }, { example: 'USD' }] },
+        },
+      }).exactOptional(),
       billing_entity_code: BillingEntityCodeParamsSchema,
       months: MonthsParamsSchema,
     }),
@@ -19461,22 +20763,20 @@ export const getAnalyticsInvoicedUsageRoute = createRoute({
   tags: ['analytics'],
   summary: 'List usage revenue',
   description:
-    'Reports the monthly revenue generated by usage-based fees, broken down by billable metric. It only counts usage that has already been invoiced, so the usage of the current billing period is not included. Amounts exclude taxes and are net of coupons. Fees on self-billed invoices and on invoices with a lost payment dispute are left out.',
+    'Reports the monthly revenue generated by usage-based fees, broken down by billable metric. It only counts usage that has already been invoiced, so the usage of the current billing period is not included. Amounts exclude taxes and are net of coupons. Fees on self-billed invoices and on invoices with a lost payment dispute are left out. Only months with invoiced usage are returned, from the most recent to the oldest, and within a month by decreasing amount. This is a premium feature.',
   operationId: 'findAllInvoicedUsages',
   request: {
     query: z.object({
-      currency: CurrencySchema.and(z.any().openapi({ example: 'USD' }))
-        .exactOptional()
-        .openapi({
-          param: {
-            name: 'currency',
-            in: 'query',
-            description: 'The currency of invoiced usage analytics. Format must be ISO 4217.',
-            required: false,
-            explode: true,
-            schema: { allOf: [{ $ref: '#/components/schemas/Currency' }, { example: 'USD' }] },
-          },
-        }),
+      currency: CurrencySchema.openapi({
+        param: {
+          name: 'currency',
+          in: 'query',
+          description: 'The currency of invoiced usage analytics. Format must be ISO 4217.',
+          required: false,
+          explode: true,
+          schema: { allOf: [{ $ref: '#/components/schemas/Currency' }, { example: 'USD' }] },
+        },
+      }).exactOptional(),
       billing_entity_code: BillingEntityCodeParamsSchema,
       months: MonthsParamsSchema,
     }),
@@ -19497,22 +20797,20 @@ export const getAnalyticsMrrRoute = createRoute({
   tags: ['analytics'],
   summary: 'List MRR',
   description:
-    'Quantifies the revenue generated from `subscription` fees on a monthly basis. This figure is calculated post-application of applicable taxes and deduction of any applicable discounts. The method of calculation varies based on the subscription billing cycle:\n\n- Revenue from `monthly` subscription invoices is included in the MRR for the month in which the invoice is issued.\n- Revenue from `quarterly` subscription invoices is distributed evenly over three months. This distribution applies to fees paid in advance (allocated to the next remaining months depending on calendar or anniversary billing) as well as to fees paid in arrears (allocated to the preceding months depending on calendar or anniversary billing).\n- Revenue from `yearly` subscription invoices is distributed evenly over twelve months. This allocation is applicable for fees paid in advance (spread over the next remaining months depending on calendar or anniversary billing) and for fees paid in arrears (spread over the previous months depending on calendar or anniversary billing).\n- Revenue from `semiannual` subscription invoices is distributed evenly over six months. This allocation is applicable for fees paid in advance (spread over the next remaining months depending on calendar or anniversary billing) and for fees paid in arrears (spread over the previous months depending on calendar or anniversary billing).\n- Revenue from `weekly` subscription invoices, the total revenue from all invoices issued within a month is summed up. This total is then divided by the number of invoices issued during that month, and the result is multiplied by 4.33, representing the average number of weeks in a month.',
+    'Quantifies the revenue generated from `subscription` fees on a monthly basis. This figure is calculated post-application of applicable taxes and deduction of any applicable discounts. The method of calculation varies based on the subscription billing cycle:\n\n- Revenue from `monthly` subscription invoices is included in the MRR for the month in which the invoice is issued.\n- Revenue from `quarterly` subscription invoices is distributed evenly over three months. This distribution applies to fees paid in advance (allocated to the next remaining months depending on calendar or anniversary billing) as well as to fees paid in arrears (allocated to the preceding months depending on calendar or anniversary billing).\n- Revenue from `yearly` subscription invoices is distributed evenly over twelve months. This allocation is applicable for fees paid in advance (spread over the next remaining months depending on calendar or anniversary billing) and for fees paid in arrears (spread over the previous months depending on calendar or anniversary billing).\n- Revenue from `semiannual` subscription invoices is distributed evenly over six months. This allocation is applicable for fees paid in advance (spread over the next remaining months depending on calendar or anniversary billing) and for fees paid in arrears (spread over the previous months depending on calendar or anniversary billing).\n- Revenue from `weekly` subscription invoices, the total revenue from all invoices issued within a month is summed up. This total is then divided by the number of invoices issued during that month, and the result is multiplied by 4.33, representing the average number of weeks in a month.\n\nEvery month is returned, including the months without a subscription fee, from the oldest to the most recent. This is a premium feature.',
   operationId: 'findAllMrrs',
   request: {
     query: z.object({
-      currency: CurrencySchema.and(z.any().openapi({ example: 'USD' }))
-        .exactOptional()
-        .openapi({
-          param: {
-            name: 'currency',
-            in: 'query',
-            description: 'The currency of MRR analytics. Format must be ISO 4217.',
-            required: false,
-            explode: true,
-            schema: { allOf: [{ $ref: '#/components/schemas/Currency' }, { example: 'USD' }] },
-          },
-        }),
+      currency: CurrencySchema.openapi({
+        param: {
+          name: 'currency',
+          in: 'query',
+          description: 'The currency of MRR analytics. Format must be ISO 4217.',
+          required: false,
+          explode: true,
+          schema: { allOf: [{ $ref: '#/components/schemas/Currency' }, { example: 'USD' }] },
+        },
+      }).exactOptional(),
       billing_entity_code: BillingEntityCodeParamsSchema,
       months: MonthsParamsSchema,
     }),
@@ -19530,23 +20828,21 @@ export const getAnalyticsOverdueBalanceRoute = createRoute({
   tags: ['analytics'],
   summary: 'List overdue balance',
   description:
-    'Overdue balance is the amount still due on invoices that are past their payment due date. Each entry covers one month of payment due dates and sums the invoice totals minus the amounts already paid and minus the credits applied by finalized credit notes. Self-billed invoices are excluded.',
+    'Overdue balance is the amount still due on invoices that are past their payment due date. Each entry covers one month of payment due dates and sums the invoice totals minus the amounts already paid and minus the credits applied by finalized credit notes. Self-billed invoices are excluded. Only months with an overdue amount are returned, from the oldest to the most recent.',
   operationId: 'findAllOverdueBalances',
   request: {
     query: z.object({
-      currency: CurrencySchema.and(z.any().openapi({ example: 'USD' }))
-        .exactOptional()
-        .openapi({
-          param: {
-            name: 'currency',
-            in: 'query',
-            description:
-              'Filter the overdue balances by the currency of the invoices. Format must be ISO 4217.',
-            required: false,
-            explode: true,
-            schema: { allOf: [{ $ref: '#/components/schemas/Currency' }, { example: 'USD' }] },
-          },
-        }),
+      currency: CurrencySchema.openapi({
+        param: {
+          name: 'currency',
+          in: 'query',
+          description:
+            'Filter the overdue balances by the currency of the invoices. Format must be ISO 4217.',
+          required: false,
+          explode: true,
+          schema: { allOf: [{ $ref: '#/components/schemas/Currency' }, { example: 'USD' }] },
+        },
+      }).exactOptional(),
       external_customer_id: z
         .string()
         .exactOptional()
@@ -19606,17 +20902,15 @@ export const getAnalyticsUsageRoute = createRoute({
           },
           example: 'monthly',
         }),
-      currency: CurrencySchema.and(z.any().openapi({ example: 'USD' }))
-        .exactOptional()
-        .openapi({
-          param: {
-            name: 'currency',
-            in: 'query',
-            description: 'The currency of usage analytics. Format must be ISO 4217.',
-            required: false,
-            schema: { allOf: [{ $ref: '#/components/schemas/Currency' }, { example: 'USD' }] },
-          },
-        }),
+      currency: CurrencySchema.openapi({
+        param: {
+          name: 'currency',
+          in: 'query',
+          description: 'The currency of usage analytics. Format must be ISO 4217.',
+          required: false,
+          schema: { allOf: [{ $ref: '#/components/schemas/Currency' }, { example: 'USD' }] },
+        },
+      }).exactOptional(),
       from_date: z.iso
         .date()
         .exactOptional()
@@ -19672,17 +20966,15 @@ export const getAnalyticsUsageRoute = createRoute({
           },
           example: 'ext-customer-123',
         }),
-      customer_country: CountrySchema.and(z.any().openapi({ example: 'US' }))
-        .exactOptional()
-        .openapi({
-          param: {
-            name: 'customer_country',
-            in: 'query',
-            description: 'The country of the customer for which the usage analytics is calculated.',
-            required: false,
-            schema: { allOf: [{ $ref: '#/components/schemas/Country' }, { example: 'US' }] },
-          },
-        }),
+      customer_country: CountrySchema.openapi({
+        param: {
+          name: 'customer_country',
+          in: 'query',
+          description: 'The country of the customer for which the usage analytics is calculated.',
+          required: false,
+          schema: { allOf: [{ $ref: '#/components/schemas/Country' }, { example: 'US' }] },
+        },
+      }).exactOptional(),
       external_subscription_id: z
         .string()
         .exactOptional()
@@ -19743,6 +21035,7 @@ export const getAnalyticsUsageRoute = createRoute({
   responses: {
     200: { description: 'Usage', content: { 'application/json': { schema: UsagesSchema } } },
     401: UnauthorizedResponse,
+    403: ForbiddenResponse,
   },
 })
 
@@ -19843,6 +21136,7 @@ export const postAppliedCouponsRoute = createRoute({
     400: BadRequestResponse,
     401: UnauthorizedResponse,
     404: NotFoundResponse,
+    405: NotAllowedResponse,
     422: UnprocessableEntityResponse,
   },
 })
@@ -19862,6 +21156,7 @@ export const getBillableMetricsRoute = createRoute({
       content: { 'application/json': { schema: BillableMetricsPaginatedSchema } },
     },
     401: UnauthorizedResponse,
+    403: ForbiddenResponse,
   },
 })
 
@@ -19887,6 +21182,7 @@ export const postBillableMetricsRoute = createRoute({
     },
     400: BadRequestResponse,
     401: UnauthorizedResponse,
+    403: ForbiddenResponse,
     422: UnprocessableEntityResponse,
   },
 })
@@ -19897,7 +21193,7 @@ export const postBillableMetricsEvaluateExpressionRoute = createRoute({
   tags: ['billable_metrics'],
   summary: 'Evaluate an expression for a billable metric',
   description:
-    'Evaluate an expression for a billable metric creation by providing the expression and test data',
+    'This endpoint evaluates an expression against a test event. Use it to check an expression before you set it on a billable metric.',
   operationId: 'evaluateBillableMetricExpression',
   request: {
     body: {
@@ -19913,6 +21209,7 @@ export const postBillableMetricsEvaluateExpressionRoute = createRoute({
     },
     400: BadRequestResponse,
     401: UnauthorizedResponse,
+    403: ForbiddenResponse,
     422: UnprocessableEntityResponse,
   },
 })
@@ -19947,6 +21244,7 @@ export const getBillableMetricsCodeRoute = createRoute({
       content: { 'application/json': { schema: BillableMetricSchema } },
     },
     401: UnauthorizedResponse,
+    403: ForbiddenResponse,
     404: NotFoundResponse,
   },
 })
@@ -19987,6 +21285,7 @@ export const putBillableMetricsCodeRoute = createRoute({
     },
     400: BadRequestResponse,
     401: UnauthorizedResponse,
+    403: ForbiddenResponse,
     404: NotFoundResponse,
     422: UnprocessableEntityResponse,
   },
@@ -20022,6 +21321,7 @@ export const deleteBillableMetricsCodeRoute = createRoute({
       content: { 'application/json': { schema: BillableMetricSchema } },
     },
     401: UnauthorizedResponse,
+    403: ForbiddenResponse,
     404: NotFoundResponse,
   },
 })
@@ -20061,6 +21361,7 @@ export const getFeaturesRoute = createRoute({
       content: { 'application/json': { schema: FeaturesPaginatedSchema } },
     },
     401: UnauthorizedResponse,
+    403: ForbiddenResponse,
   },
 })
 
@@ -20086,6 +21387,7 @@ export const postFeaturesRoute = createRoute({
     },
     400: BadRequestResponse,
     401: UnauthorizedResponse,
+    403: ForbiddenResponse,
     422: UnprocessableEntityResponse,
   },
 })
@@ -20117,6 +21419,7 @@ export const getFeaturesCodeRoute = createRoute({
   responses: {
     200: { description: 'Feature', content: { 'application/json': { schema: FeatureSchema } } },
     401: UnauthorizedResponse,
+    403: ForbiddenResponse,
     404: NotFoundResponse,
   },
 })
@@ -20193,6 +21496,7 @@ export const deleteFeaturesCodeRoute = createRoute({
       content: { 'application/json': { schema: FeatureSchema } },
     },
     401: UnauthorizedResponse,
+    403: ForbiddenResponse,
     404: NotFoundResponse,
   },
 })
@@ -20235,10 +21539,11 @@ export const deleteFeaturesCodePrivilegesPrivilegeCodeRoute = createRoute({
   },
   responses: {
     200: {
-      description: 'Feature with deleted privilege.',
+      description: 'The feature without the deleted privilege.',
       content: { 'application/json': { schema: FeatureSchema } },
     },
     401: UnauthorizedResponse,
+    403: ForbiddenResponse,
     404: NotFoundResponse,
   },
 })
@@ -20793,6 +22098,44 @@ export const postCreditNotesLagoIdDownloadRoute = createRoute({
   },
 })
 
+export const postCreditNotesLagoIdDownloadXmlRoute = createRoute({
+  method: 'post',
+  path: '/credit_notes/{lago_id}/download_xml',
+  tags: ['credit_notes'],
+  summary: 'Download a credit note XML',
+  description:
+    'This endpoint downloads the e-invoicing XML document of an existing credit note. Only `finalized` credit notes can be downloaded; any other credit note returns a `404` error.\nWhen the XML has already been generated, the credit note object is returned and its `xml_url` points to the document. When it has not been generated yet, the response is a `200` with an empty body and the generation starts in the background. Call the endpoint again to get the credit note object with its `xml_url`.',
+  operationId: 'downloadCreditNoteXml',
+  request: {
+    params: z.object({
+      lago_id: z
+        .uuid()
+        .openapi({
+          param: {
+            name: 'lago_id',
+            in: 'path',
+            description: 'The credit note unique identifier, created by Lago.',
+            required: true,
+            schema: {
+              type: 'string',
+              format: 'uuid',
+              example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
+            },
+          },
+          example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Credit note XML',
+      content: { 'application/json': { schema: CreditNoteSchema } },
+    },
+    401: UnauthorizedResponse,
+    404: NotFoundResponse,
+  },
+})
+
 export const postCreditNotesEstimateRoute = createRoute({
   method: 'post',
   path: '/credit_notes/estimate',
@@ -21252,6 +22595,7 @@ export const getCustomersRoute = createRoute({
       content: { 'application/json': { schema: CustomersPaginatedSchema } },
     },
     401: UnauthorizedResponse,
+    403: ForbiddenResponse,
     404: NotFoundResponse,
   },
 })
@@ -21278,6 +22622,7 @@ export const postCustomersRoute = createRoute({
     },
     400: BadRequestResponse,
     401: UnauthorizedResponse,
+    403: ForbiddenResponse,
     404: NotFoundResponse,
     422: UnprocessableEntityResponse,
   },
@@ -21310,6 +22655,7 @@ export const getCustomersExternalCustomerIdRoute = createRoute({
   responses: {
     200: { description: 'Customer', content: { 'application/json': { schema: CustomerSchema } } },
     401: UnauthorizedResponse,
+    403: ForbiddenResponse,
     404: NotFoundResponse,
   },
 })
@@ -21344,6 +22690,7 @@ export const deleteCustomersExternalCustomerIdRoute = createRoute({
       content: { 'application/json': { schema: CustomerSchema } },
     },
     401: UnauthorizedResponse,
+    403: ForbiddenResponse,
     404: NotFoundResponse,
   },
 })
@@ -22634,6 +23981,7 @@ export const getCustomersExternalCustomerIdWalletsWalletCodeAlertsRoute = create
       content: { 'application/json': { schema: WalletAlertsSchema } },
     },
     401: UnauthorizedResponse,
+    403: ForbiddenResponse,
     404: NotFoundResponse,
   },
 })
@@ -22668,6 +24016,7 @@ export const postCustomersExternalCustomerIdWalletsWalletCodeAlertsRoute = creat
     },
     400: BadRequestResponse,
     401: UnauthorizedResponse,
+    403: ForbiddenResponse,
     404: NotFoundResponse,
     422: UnprocessableEntityResponse,
   },
@@ -22689,6 +24038,7 @@ export const deleteCustomersExternalCustomerIdWalletsWalletCodeAlertsRoute = cre
   responses: {
     200: { description: 'All wallet alerts deleted' },
     401: UnauthorizedResponse,
+    403: ForbiddenResponse,
     404: NotFoundResponse,
   },
 })
@@ -22724,6 +24074,7 @@ export const getCustomersExternalCustomerIdWalletsWalletCodeAlertsCodeRoute = cr
       content: { 'application/json': { schema: WalletAlertSchema } },
     },
     401: UnauthorizedResponse,
+    403: ForbiddenResponse,
     404: NotFoundResponse,
   },
 })
@@ -22766,6 +24117,7 @@ export const putCustomersExternalCustomerIdWalletsWalletCodeAlertsCodeRoute = cr
     },
     400: BadRequestResponse,
     401: UnauthorizedResponse,
+    403: ForbiddenResponse,
     404: NotFoundResponse,
     422: UnprocessableEntityResponse,
   },
@@ -22802,6 +24154,7 @@ export const deleteCustomersExternalCustomerIdWalletsWalletCodeAlertsCodeRoute =
       content: { 'application/json': { schema: WalletAlertSchema } },
     },
     401: UnauthorizedResponse,
+    403: ForbiddenResponse,
     404: NotFoundResponse,
   },
 })
@@ -23436,7 +24789,7 @@ export const getCustomersExternalCustomerIdPastUsageRoute = createRoute({
           param: {
             name: 'periods_count',
             in: 'query',
-            description: 'Number of past billing period to returns in the result',
+            description: 'Number of past billing periods to return in the result.',
             required: false,
             explode: true,
             schema: { type: 'integer', example: 5 },
@@ -23468,6 +24821,357 @@ export const getCustomersExternalCustomerIdPastUsageRoute = createRoute({
     401: UnauthorizedResponse,
     404: NotFoundResponse,
     422: UnprocessableEntityResponse,
+  },
+})
+
+export const getCustomersExternalCustomerIdAttributedUsageRoute = createRoute({
+  method: 'get',
+  path: '/customers/{external_customer_id}/attributed_usage',
+  tags: ['customers'],
+  summary: 'Retrieve customer attributed usage',
+  description:
+    'This endpoint retrieves the usage of an active subscription broken down by the values of a usage attribution type, one level of the account tree at a time. Only charges whose billable metric uses the `count_agg` or `sum_agg` aggregation and is not recurring are included. By default, the usage covers the current billing period, narrowed to its last 31 days when the period is longer.',
+  operationId: 'findCustomerAttributedUsage',
+  request: {
+    params: z.object({ external_customer_id: ExternalCustomerIdPathParamsSchema }),
+    query: z
+      .looseObject({})
+      .transform((val) => {
+        const rest: [string, unknown][] = []
+        const groups = new Map<string, Record<string, unknown>>()
+        const group = (name: string) => {
+          const found = groups.get(name)
+          if (found !== undefined) return found
+          const made: Record<string, unknown> = Object.create(null)
+          groups.set(name, made)
+          return made
+        }
+        const isGroup = (item: unknown): item is Record<string, unknown> =>
+          typeof item === 'object' && item !== null && !Array.isArray(item)
+        const lists = new WeakSet<object>()
+        const isIndex = (part: string | undefined) => part !== undefined && /^\d*$/.test(part)
+        const child = (target: Record<string, unknown>, key: string, asList: boolean) => {
+          const held = target[key]
+          if (isGroup(held)) return held
+          const made: Record<string, unknown> = Object.create(null)
+          if (asList) lists.add(made)
+          target[key] = made
+          return made
+        }
+        const set = (
+          root: Record<string, unknown>,
+          path: readonly string[],
+          item: unknown,
+        ): void => {
+          const work: [Record<string, unknown>, number, unknown, boolean][] = [
+            [root, 0, item, false],
+          ]
+          for (let job = work.pop(); job !== undefined; job = work.pop()) {
+            const [target, at, value, split] = job
+            const head = path[at]
+            if (head === undefined) continue
+            const next = path[at + 1]
+            if (head === '') {
+              if (!split && Array.isArray(value)) {
+                for (let i = value.length - 1; i >= 0; i -= 1)
+                  work.push([target, at, value[i], true])
+                continue
+              }
+              const size = Object.keys(target).length
+              if (next === undefined) {
+                target[String(size)] = value
+                continue
+              }
+              const free =
+                next === ''
+                  ? -1
+                  : Object.values(target).findIndex((held) => isGroup(held) && !(next in held))
+              work.push([
+                child(target, String(free < 0 ? size : free), isIndex(next)),
+                at + 1,
+                value,
+                false,
+              ])
+              continue
+            }
+            if (next === undefined) {
+              target[head] = value
+              continue
+            }
+            work.push([child(target, head, isIndex(next)), at + 1, value, false])
+          }
+        }
+        const settle = (root: unknown): unknown => {
+          if (!isGroup(root)) return root
+          const found: [Record<string, unknown>, string, Record<string, unknown>][] = []
+          const queue: Record<string, unknown>[] = [root]
+          for (const node of queue) {
+            for (const [key, inner] of Object.entries(node)) {
+              if (isGroup(inner)) {
+                found.push([node, key, inner])
+                queue.push(inner)
+              }
+            }
+          }
+          const finish = (group: Record<string, unknown>): unknown =>
+            lists.has(group)
+              ? Object.entries(group)
+                  .sort((a, b) => Number(a[0]) - Number(b[0]))
+                  .map(([, inner]) => inner)
+              : Object.assign(Object.create(null), group)
+          for (const [parent, key, group] of found.reverse()) {
+            parent[key] = finish(group)
+          }
+          return finish(root)
+        }
+        const deep: string[] = ['filters']
+        for (const [key, item] of Object.entries(val)) {
+          const match = /^([^\[\]]+)((?:\[[^\[\]]*\])+)$/.exec(key)
+          const name = match?.[1]
+          const path = match?.[2]
+          if (name !== undefined && path !== undefined && deep.includes(name)) {
+            const parts = path.slice(1, -1).split('][')
+            set(group(name), parts, item)
+            continue
+          }
+          rest.push([key, item])
+        }
+        return Object.fromEntries([
+          ...rest,
+          ...[...groups].map(([name, held]) => [name, settle(held)] as const),
+        ])
+      })
+      .pipe(
+        z.object({
+          external_subscription_id: z
+            .string()
+            .openapi({
+              param: {
+                name: 'external_subscription_id',
+                in: 'query',
+                description:
+                  'The unique identifier of the subscription within your application. The subscription must be active.',
+                required: true,
+                explode: true,
+                schema: { type: 'string', example: 'sub_1234567890' },
+              },
+              example: 'sub_1234567890',
+            }),
+          group_by: z
+            .string()
+            .openapi({
+              param: {
+                name: 'group_by',
+                in: 'query',
+                description:
+                  'Code of the usage attribution type to group the usage by. When the type has a parent, `filters` must include a value of the parent type, so the tree is read one level at a time. Lago tracks up to 100,000 values per type for each customer. Once the type reaches this limit, grouping by it returns a `too_many_values` validation error, unless `filters` includes a value of its parent type.',
+                required: true,
+                explode: true,
+                schema: { type: 'string', example: 'team' },
+              },
+              example: 'team',
+            }),
+          filters: z
+            .record(
+              z.string(),
+              z.xor([
+                z.string(),
+                z.preprocess(
+                  (val) => (val === undefined || Array.isArray(val) ? val : [val]),
+                  z.array(z.string()),
+                ),
+              ]),
+            )
+            .exactOptional()
+            .openapi({
+              param: {
+                name: 'filters',
+                in: 'query',
+                description:
+                  'Values of usage attribution types to filter the usage by, keyed by type code, e.g. `filters[department]=rnd&filters[model][]=opus&filters[model][]=haiku`. Each type accepts up to 20 values, and up to 3 `flat` types can be filtered on. More than 20 values for a type returns a `too_many_values` validation error.',
+                required: false,
+                style: 'deepObject',
+                explode: true,
+                schema: {
+                  type: 'object',
+                  additionalProperties: {
+                    oneOf: [{ type: 'string' }, { type: 'array', items: { type: 'string' } }],
+                  },
+                  example: { department: 'rnd' },
+                },
+              },
+              example: { department: 'rnd' },
+            }),
+          from_datetime: z.iso
+            .datetime({ offset: true })
+            .exactOptional()
+            .openapi({
+              param: {
+                name: 'from_datetime',
+                in: 'query',
+                description:
+                  'Start of the period, in ISO 8601 format. It must be sent together with `to_datetime`, and the period cannot be longer than 31 days. It is moved to the start of the subscription when earlier.',
+                required: false,
+                explode: true,
+                schema: { type: 'string', format: 'date-time', example: '2022-04-01T00:00:00Z' },
+              },
+              example: '2022-04-01T00:00:00Z',
+            }),
+          to_datetime: z.iso
+            .datetime({ offset: true })
+            .exactOptional()
+            .openapi({
+              param: {
+                name: 'to_datetime',
+                in: 'query',
+                description:
+                  'End of the period, in ISO 8601 format. It must be sent together with `from_datetime`.',
+                required: false,
+                explode: true,
+                schema: { type: 'string', format: 'date-time', example: '2022-04-30T23:59:59Z' },
+              },
+              example: '2022-04-30T23:59:59Z',
+            }),
+          'charge_codes[]': z
+            .preprocess(
+              (val) => (val === undefined || Array.isArray(val) ? val : [val]),
+              z.array(z.string()),
+            )
+            .exactOptional()
+            .openapi({
+              param: {
+                name: 'charge_codes[]',
+                in: 'query',
+                description:
+                  'Codes of the charges of the plan to include. All the supported charges are included when it is not sent.',
+                required: false,
+                explode: true,
+                schema: { type: 'array', items: { type: 'string' }, example: ['tokens'] },
+              },
+              example: ['tokens'],
+            }),
+          split_charge_code: z
+            .string()
+            .exactOptional()
+            .openapi({
+              param: {
+                name: 'split_charge_code',
+                in: 'query',
+                description:
+                  'Code of a charge of the plan to split by charge filter, with one entry per filter in `charges_usage`. The filters are returned 10 at a time, in the order of the charge, starting at `split_filters_offset`. The charge must have at least 1 filter, and must be part of `charge_codes[]` when it is sent. A `too_many_filters` validation error is returned when the filter values of the charge are too many to match events.',
+                required: false,
+                explode: true,
+                schema: { type: 'string', example: 'tokens' },
+              },
+              example: 'tokens',
+            }),
+          split_filters_offset: z
+            .preprocess(
+              (val) =>
+                typeof val === 'string' &&
+                /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+                (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+                  ? Number(val)
+                  : val,
+              z.int().min(0).max(20000),
+            )
+            .default(0)
+            .exactOptional()
+            .openapi({
+              param: {
+                name: 'split_filters_offset',
+                in: 'query',
+                description:
+                  'Index of the first filter of the split charge to return, starting at 0. Use it with `split_filters_count` to page through the filters 10 at a time. It is ignored when `split_charge_code` is not sent.',
+                required: false,
+                explode: true,
+                schema: { type: 'integer', minimum: 0, maximum: 20000, default: 0, example: 10 },
+              },
+              example: 10,
+            }),
+          search_term: z
+            .string()
+            .max(100)
+            .exactOptional()
+            .openapi({
+              param: {
+                name: 'search_term',
+                in: 'query',
+                description:
+                  'Filter the attribution values by search term, up to 100 characters. The totals are not affected by the search.',
+                required: false,
+                explode: true,
+                schema: { type: 'string', maxLength: 100, example: 'eng' },
+              },
+              example: 'eng',
+            }),
+          basis: z
+            .enum(['units', 'amount'])
+            .default('units')
+            .exactOptional()
+            .openapi({
+              param: {
+                name: 'basis',
+                in: 'query',
+                description:
+                  'Basis of the breakdown. With `units`, no amount is computed and values are ranked by units, summed across the selected charges. With `amount`, amounts are computed and values are ranked by amount.',
+                required: false,
+                explode: true,
+                schema: {
+                  type: 'string',
+                  enum: ['units', 'amount'],
+                  default: 'units',
+                  example: 'amount',
+                },
+              },
+              example: 'amount',
+            }),
+          page: PageParamsSchema,
+          per_page: z
+            .preprocess(
+              (val) =>
+                typeof val === 'string' &&
+                /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+                (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+                  ? Number(val)
+                  : val,
+              z.int().min(1).max(100),
+            )
+            .default(50)
+            .exactOptional()
+            .openapi({
+              param: {
+                name: 'per_page',
+                in: 'query',
+                description: 'Number of attribution values per page, between 1 and 100.',
+                required: false,
+                explode: true,
+                schema: { type: 'integer', minimum: 1, maximum: 100, default: 50, example: 20 },
+              },
+              example: 20,
+            }),
+        }),
+      ),
+  },
+  responses: {
+    200: {
+      description: 'Customer attributed usage',
+      content: { 'application/json': { schema: AttributedUsageSchema } },
+    },
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    404: NotFoundResponse,
+    422: {
+      description: 'Unprocessable entity error',
+      content: {
+        'application/json': {
+          schema: z.xor([
+            ApiErrorUnprocessableEntitySchema,
+            ApiErrorAttributedUsageQueryLimitSchema,
+          ]),
+        },
+      },
+    },
   },
 })
 
@@ -23507,6 +25211,7 @@ export const postCustomersExternalCustomerIdCheckoutUrlRoute = createRoute({
       },
     },
     401: UnauthorizedResponse,
+    403: ForbiddenResponse,
     404: NotFoundResponse,
     422: UnprocessableEntityResponse,
   },
@@ -23723,7 +25428,7 @@ export const postEventsBatchRoute = createRoute({
   tags: ['events'],
   summary: 'Batch multiple events',
   description:
-    'This endpoint can be used to send a batch of usage records. Each request may include up to 100 events.',
+    'This endpoint can be used to send a batch of usage records. Each request must include at least one event and may include up to 100 events.',
   operationId: 'createBatchEvents',
   request: {
     body: {
@@ -23831,7 +25536,7 @@ export const getEventsTransactionIdRoute = createRoute({
   tags: ['events'],
   summary: 'Retrieve a specific event',
   description:
-    'This endpoint is used for retrieving a specific usage measurement event that has been sent to a subscription.\n\nNote that transaction_id is unique per external_subscription_id so multiple subscriptions can share the same transaction_id. This endpoint will only return the first event found with the given transaction_id.\n\nWARNING: If your Lago organization is configured to use the Clickhouse-based event pipeline, multiple events can share the same `transaction_id` (with different timestamps). This endpoint will only return the first event found.\n',
+    'This endpoint is used for retrieving a specific usage measurement event that has been sent to a subscription.\n\nNote that transaction_id is unique per external_subscription_id so multiple subscriptions can share the same transaction_id. This endpoint will only return the first event found with the given transaction_id.\n\nWARNING: If your Lago organization is configured to use the ClickHouse-based event pipeline, multiple events can share the same `transaction_id` (with different timestamps). This endpoint will only return the first event found.\n',
   operationId: 'findEvent',
   request: {
     params: z.object({
@@ -23885,18 +25590,16 @@ export const getFeesRoute = createRoute({
           },
           example: 'et_12345678',
         }),
-      currency: CurrencySchema.and(z.any().openapi({ example: 'USD' }))
-        .exactOptional()
-        .openapi({
-          param: {
-            name: 'currency',
-            in: 'query',
-            description: "Filter results by the fee's currency.",
-            required: false,
-            explode: true,
-            schema: { allOf: [{ $ref: '#/components/schemas/Currency' }, { example: 'USD' }] },
-          },
-        }),
+      currency: CurrencySchema.openapi({
+        param: {
+          name: 'currency',
+          in: 'query',
+          description: "Filter results by the fee's currency.",
+          required: false,
+          explode: true,
+          schema: { allOf: [{ $ref: '#/components/schemas/Currency' }, { example: 'USD' }] },
+        },
+      }).exactOptional(),
       fee_type: z
         .enum(['charge', 'fixed_charge', 'add_on', 'subscription', 'credit', 'commitment'])
         .exactOptional()
@@ -24646,6 +26349,22 @@ export const postInvoicesLagoIdDownloadRoute = createRoute({
   },
 })
 
+export const postInvoicesLagoIdDownloadXmlRoute = createRoute({
+  method: 'post',
+  path: '/invoices/{lago_id}/download_xml',
+  tags: ['invoices'],
+  summary: 'Download an invoice XML',
+  description:
+    'This endpoint is used for downloading the e-invoicing XML document of a specific invoice. Only `finalized` invoices can be downloaded; any other invoice returns a `404` error.\nWhen the XML has already been generated, the invoice object is returned and its `xml_url` points to the document. When it has not been generated yet, the response is a `200` with an empty body and the generation starts in the background. Call the endpoint again to get the invoice object with its `xml_url`.',
+  operationId: 'downloadInvoiceXml',
+  request: { params: z.object({ lago_id: LagoInvoiceIdParamsSchema }) },
+  responses: {
+    200: { description: 'Invoice XML', content: { 'application/json': { schema: InvoiceSchema } } },
+    401: UnauthorizedResponse,
+    404: NotFoundResponse,
+  },
+})
+
 export const putInvoicesLagoIdFinalizeRoute = createRoute({
   method: 'put',
   path: '/invoices/{lago_id}/finalize',
@@ -24746,7 +26465,8 @@ export const postInvoicesPreviewRoute = createRoute({
   path: '/invoices/preview',
   tags: ['invoices'],
   summary: 'Create an invoice preview',
-  description: 'This endpoint is used for generating invoice preview.',
+  description:
+    "This endpoint is used for generating invoice preview.\n\nThe payment due date of the preview follows the resolved payment term: the subscription's, then the customer's, then the billing entity's, defaulting to `due_on_receipt`. When several subscriptions are previewed, they must resolve to terms giving the same due date, as subscriptions with different terms are billed on separate invoices; otherwise the request fails with a `422` and the error code `subscription_payment_terms_do_not_match`.\n",
   operationId: 'invoicePreview',
   request: {
     body: {
@@ -25410,7 +27130,8 @@ export const getPaymentReceiptsRoute = createRoute({
   path: '/payment_receipts',
   tags: ['payment_receipts'],
   summary: 'List all payment receipts',
-  description: 'This endpoint is used to list all existing payment receipts.',
+  description:
+    'This endpoint is used to list all existing payment receipts. Payment receipts are ordered by creation date, from the most recent to the oldest.',
   operationId: 'findAllPaymentReceipts',
   request: {
     query: z.object({
@@ -25443,6 +27164,7 @@ export const getPaymentReceiptsRoute = createRoute({
       content: { 'application/json': { schema: PaymentReceiptsPaginatedSchema } },
     },
     401: UnauthorizedResponse,
+    403: ForbiddenResponse,
     422: UnprocessableEntityResponse,
   },
 })
@@ -25480,6 +27202,7 @@ export const getPaymentReceiptsLagoIdRoute = createRoute({
       content: { 'application/json': { schema: PaymentReceiptSchema } },
     },
     401: UnauthorizedResponse,
+    403: ForbiddenResponse,
     404: NotFoundResponse,
   },
 })
@@ -27394,6 +29117,7 @@ export const getSubscriptionsExternalIdAlertsRoute = createRoute({
       content: { 'application/json': { schema: AlertsSchema } },
     },
     401: UnauthorizedResponse,
+    403: ForbiddenResponse,
     404: NotFoundResponse,
   },
 })
@@ -27439,6 +29163,7 @@ export const postSubscriptionsExternalIdAlertsRoute = createRoute({
     },
     400: BadRequestResponse,
     401: UnauthorizedResponse,
+    403: ForbiddenResponse,
     404: NotFoundResponse,
     422: UnprocessableEntityResponse,
   },
@@ -27471,6 +29196,7 @@ export const deleteSubscriptionsExternalIdAlertsRoute = createRoute({
   responses: {
     200: { description: 'All subscription alerts deleted' },
     401: UnauthorizedResponse,
+    403: ForbiddenResponse,
     404: NotFoundResponse,
   },
 })
@@ -27517,6 +29243,7 @@ export const getSubscriptionsExternalIdAlertsCodeRoute = createRoute({
       content: { 'application/json': { schema: AlertSchema } },
     },
     401: UnauthorizedResponse,
+    403: ForbiddenResponse,
     404: NotFoundResponse,
   },
 })
@@ -27570,6 +29297,7 @@ export const putSubscriptionsExternalIdAlertsCodeRoute = createRoute({
     },
     400: BadRequestResponse,
     401: UnauthorizedResponse,
+    403: ForbiddenResponse,
     404: NotFoundResponse,
     422: UnprocessableEntityResponse,
   },
@@ -27617,6 +29345,7 @@ export const deleteSubscriptionsExternalIdAlertsCodeRoute = createRoute({
       content: { 'application/json': { schema: AlertSchema } },
     },
     401: UnauthorizedResponse,
+    403: ForbiddenResponse,
     404: NotFoundResponse,
   },
 })
@@ -27947,7 +29676,8 @@ export const postSubscriptionsExternalIdChargesChargeCodeFiltersRoute = createRo
   path: '/subscriptions/{external_id}/charges/{charge_code}/filters',
   tags: ['subscriptions'],
   summary: 'Create a charge filter',
-  description: 'This endpoint creates a new filter for a specific charge on a subscription.',
+  description:
+    'This endpoint creates a new filter for a specific charge on a subscription.\nThis is a premium feature.',
   operationId: 'createSubscriptionChargeFilter',
   request: {
     params: z.object({
@@ -27968,6 +29698,7 @@ export const postSubscriptionsExternalIdChargesChargeCodeFiltersRoute = createRo
     },
     400: BadRequestResponse,
     401: UnauthorizedResponse,
+    403: ForbiddenResponse,
     404: NotFoundResponse,
     422: UnprocessableEntityResponse,
   },
@@ -28003,7 +29734,8 @@ export const putSubscriptionsExternalIdChargesChargeCodeFiltersFilterIdRoute = c
   path: '/subscriptions/{external_id}/charges/{charge_code}/filters/{filter_id}',
   tags: ['subscriptions'],
   summary: 'Update a charge filter',
-  description: 'This endpoint updates a specific filter for a charge on a subscription.',
+  description:
+    'This endpoint updates a specific filter for a charge on a subscription.\nThis is a premium feature.',
   operationId: 'updateSubscriptionChargeFilter',
   request: {
     params: z.object({
@@ -28025,6 +29757,7 @@ export const putSubscriptionsExternalIdChargesChargeCodeFiltersFilterIdRoute = c
     },
     400: BadRequestResponse,
     401: UnauthorizedResponse,
+    403: ForbiddenResponse,
     404: NotFoundResponse,
     422: UnprocessableEntityResponse,
   },
@@ -28035,7 +29768,8 @@ export const deleteSubscriptionsExternalIdChargesChargeCodeFiltersFilterIdRoute 
   path: '/subscriptions/{external_id}/charges/{charge_code}/filters/{filter_id}',
   tags: ['subscriptions'],
   summary: 'Delete a charge filter',
-  description: 'This endpoint deletes a specific filter from a charge on a subscription.',
+  description:
+    'This endpoint deletes a specific filter from a charge on a subscription.\nThis is a premium feature.',
   operationId: 'destroySubscriptionChargeFilter',
   request: {
     params: z.object({
@@ -28051,6 +29785,7 @@ export const deleteSubscriptionsExternalIdChargesChargeCodeFiltersFilterIdRoute 
       content: { 'application/json': { schema: ChargeFilterResponseSchema } },
     },
     401: UnauthorizedResponse,
+    403: ForbiddenResponse,
     404: NotFoundResponse,
   },
 })
@@ -28287,6 +30022,194 @@ export const deleteTaxesCodeRoute = createRoute({
   responses: {
     200: { description: 'Tax deleted', content: { 'application/json': { schema: TaxSchema } } },
     401: UnauthorizedResponse,
+    404: NotFoundResponse,
+  },
+})
+
+export const getUsageAttributionTypesRoute = createRoute({
+  method: 'get',
+  path: '/usage_attribution_types',
+  tags: ['usage_attribution_types'],
+  summary: 'List all usage attribution types',
+  description: 'This endpoint retrieves all the usage attribution types of the organization.',
+  operationId: 'findAllUsageAttributionTypes',
+  request: {
+    query: z.object({
+      page: PageParamsSchema,
+      per_page: PerPageParamsSchema,
+      role: UsageAttributionTypeRoleEnumSchema.openapi({
+        param: {
+          name: 'role',
+          in: 'query',
+          description: 'Filter usage attribution types by role.',
+          required: false,
+          explode: true,
+          schema: { $ref: '#/components/schemas/UsageAttributionTypeRoleEnum' },
+        },
+      }).exactOptional(),
+      search_term: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'search_term',
+            in: 'query',
+            description:
+              'Filter usage attribution types by search term. The term is matched against the code and the name of the type.',
+            required: false,
+            explode: true,
+            schema: { type: 'string', example: 'team' },
+          },
+          example: 'team',
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'List of usage attribution types',
+      content: { 'application/json': { schema: UsageAttributionTypesPaginatedSchema } },
+    },
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    422: UnprocessableEntityResponse,
+  },
+})
+
+export const postUsageAttributionTypesRoute = createRoute({
+  method: 'post',
+  path: '/usage_attribution_types',
+  tags: ['usage_attribution_types'],
+  summary: 'Create a usage attribution type',
+  description:
+    'This endpoint creates a usage attribution type. A usage attribution type is a level of the account tree that usage can be attributed to, based on the keys of the event properties.',
+  operationId: 'createUsageAttributionType',
+  request: {
+    body: {
+      description: 'Usage attribution type payload',
+      content: { 'application/json': { schema: UsageAttributionTypeCreateInputSchema } },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'Usage attribution type created',
+      content: { 'application/json': { schema: UsageAttributionTypeSchema } },
+    },
+    400: BadRequestResponse,
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    404: NotFoundResponse,
+    422: UnprocessableEntityResponse,
+  },
+})
+
+export const getUsageAttributionTypesCodeRoute = createRoute({
+  method: 'get',
+  path: '/usage_attribution_types/{code}',
+  tags: ['usage_attribution_types'],
+  summary: 'Retrieve a usage attribution type',
+  description: 'This endpoint retrieves an existing usage attribution type by its code.',
+  operationId: 'findUsageAttributionType',
+  request: {
+    params: z.object({
+      code: z
+        .string()
+        .openapi({
+          param: {
+            name: 'code',
+            in: 'path',
+            description: 'Code of the existing usage attribution type.',
+            required: true,
+            schema: { type: 'string', example: 'team' },
+          },
+          example: 'team',
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Usage attribution type',
+      content: { 'application/json': { schema: UsageAttributionTypeSchema } },
+    },
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    404: NotFoundResponse,
+  },
+})
+
+export const putUsageAttributionTypesCodeRoute = createRoute({
+  method: 'put',
+  path: '/usage_attribution_types/{code}',
+  tags: ['usage_attribution_types'],
+  summary: 'Update a usage attribution type',
+  description:
+    'This endpoint updates an existing usage attribution type. Only the fields present in the payload are updated. Once usage is attributed to the type, only its `name`, `description` and `attribution_keys` can be changed.',
+  operationId: 'updateUsageAttributionType',
+  request: {
+    params: z.object({
+      code: z
+        .string()
+        .openapi({
+          param: {
+            name: 'code',
+            in: 'path',
+            description: 'Code of the existing usage attribution type.',
+            required: true,
+            schema: { type: 'string', example: 'team' },
+          },
+          example: 'team',
+        }),
+    }),
+    body: {
+      description: 'Usage attribution type payload',
+      content: { 'application/json': { schema: UsageAttributionTypeUpdateInputSchema } },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'Usage attribution type updated',
+      content: { 'application/json': { schema: UsageAttributionTypeSchema } },
+    },
+    400: BadRequestResponse,
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    404: NotFoundResponse,
+    422: UnprocessableEntityResponse,
+  },
+})
+
+export const deleteUsageAttributionTypesCodeRoute = createRoute({
+  method: 'delete',
+  path: '/usage_attribution_types/{code}',
+  tags: ['usage_attribution_types'],
+  summary: 'Delete a usage attribution type',
+  description:
+    'This endpoint deletes an existing usage attribution type, along with the attribution values recorded for it. Its children are kept.',
+  operationId: 'destroyUsageAttributionType',
+  request: {
+    params: z.object({
+      code: z
+        .string()
+        .openapi({
+          param: {
+            name: 'code',
+            in: 'path',
+            description: 'Code of the existing usage attribution type.',
+            required: true,
+            schema: { type: 'string', example: 'team' },
+          },
+          example: 'team',
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Usage attribution type deleted',
+      content: { 'application/json': { schema: UsageAttributionTypeSchema } },
+    },
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
     404: NotFoundResponse,
   },
 })
@@ -29016,7 +30939,8 @@ export const getWebhookEndpointsRoute = createRoute({
   path: '/webhook_endpoints',
   tags: ['webhook_endpoints'],
   summary: 'List all webhook endpoints',
-  description: 'This endpoint is used to list all webhook endpoints.',
+  description:
+    'This endpoint is used to list all webhook endpoints. The listed endpoints do not include their `signing_keys`.',
   operationId: 'findAllWebhookEndpoints',
   request: { query: z.object({ page: PageParamsSchema, per_page: PerPageParamsSchema }) },
   responses: {
@@ -29025,6 +30949,7 @@ export const getWebhookEndpointsRoute = createRoute({
       content: { 'application/json': { schema: WebhookEndpointsPaginatedSchema } },
     },
     401: UnauthorizedResponse,
+    403: ForbiddenResponse,
   },
 })
 
@@ -29033,7 +30958,8 @@ export const postWebhookEndpointsRoute = createRoute({
   path: '/webhook_endpoints',
   tags: ['webhook_endpoints'],
   summary: 'Create a webhook endpoint',
-  description: 'This endpoint is used to create a webhook endpoint.',
+  description:
+    "This endpoint is used to create a webhook endpoint. An organization can have at most 10 webhook endpoints. The response includes the endpoint's `signing_keys` when the API key has write access to webhook endpoints.",
   operationId: 'createWebhookEndpoint',
   request: {
     body: {
@@ -29049,6 +30975,7 @@ export const postWebhookEndpointsRoute = createRoute({
     },
     400: BadRequestResponse,
     401: UnauthorizedResponse,
+    403: ForbiddenResponse,
     422: UnprocessableEntityResponse,
   },
 })
@@ -29058,7 +30985,8 @@ export const getWebhookEndpointsLagoIdRoute = createRoute({
   path: '/webhook_endpoints/{lago_id}',
   tags: ['webhook_endpoints'],
   summary: 'Retrieve a webhook endpoint',
-  description: 'This endpoint is used to retrieve an existing webhook endpoint.',
+  description:
+    "This endpoint is used to retrieve an existing webhook endpoint. The response includes the endpoint's `signing_keys` when the API key has write access to webhook endpoints.",
   operationId: 'findWebhookEndpoint',
   request: {
     params: z.object({
@@ -29087,6 +31015,7 @@ export const getWebhookEndpointsLagoIdRoute = createRoute({
       content: { 'application/json': { schema: WebhookEndpointSchema } },
     },
     401: UnauthorizedResponse,
+    403: ForbiddenResponse,
     404: NotFoundResponse,
   },
 })
@@ -29096,7 +31025,8 @@ export const putWebhookEndpointsLagoIdRoute = createRoute({
   path: '/webhook_endpoints/{lago_id}',
   tags: ['webhook_endpoints'],
   summary: 'Update a webhook endpoint',
-  description: 'This endpoint is used to update an existing webhook endpoint.',
+  description:
+    "This endpoint is used to update an existing webhook endpoint. The response includes the endpoint's `signing_keys` when the API key has write access to webhook endpoints.",
   operationId: 'updateWebhookEndpoint',
   request: {
     params: z.object({
@@ -29131,6 +31061,7 @@ export const putWebhookEndpointsLagoIdRoute = createRoute({
     },
     400: BadRequestResponse,
     401: UnauthorizedResponse,
+    403: ForbiddenResponse,
     404: NotFoundResponse,
     422: UnprocessableEntityResponse,
   },
@@ -29141,7 +31072,8 @@ export const deleteWebhookEndpointsLagoIdRoute = createRoute({
   path: '/webhook_endpoints/{lago_id}',
   tags: ['webhook_endpoints'],
   summary: 'Delete a webhook endpoint',
-  description: 'This endpoint is used to delete an existing webhook endpoint.',
+  description:
+    'This endpoint is used to delete an existing webhook endpoint. The deleted endpoint does not include its `signing_keys`.',
   operationId: 'destroyWebhookEndpoint',
   request: {
     params: z.object({
@@ -29170,6 +31102,7 @@ export const deleteWebhookEndpointsLagoIdRoute = createRoute({
       content: { 'application/json': { schema: WebhookEndpointSchema } },
     },
     401: UnauthorizedResponse,
+    403: ForbiddenResponse,
     404: NotFoundResponse,
   },
 })
@@ -29185,6 +31118,9 @@ export const addOnCreatedPostWebhook = {
       'X-Lago-Signature': WebhookSignatureParamsSchema,
       'X-Lago-Signature-Algorithm': WebhookSignatureAlgorithmParamsSchema,
       'X-Lago-Unique-Key': WebhookUniqueKeyParamsSchema,
+      'webhook-id': StandardWebhooksIdParamsSchema,
+      'webhook-timestamp': StandardWebhooksTimestampParamsSchema,
+      'webhook-signature': StandardWebhooksSignatureParamsSchema,
     }),
     body: {
       description: 'Details of the new add-on',
@@ -29223,6 +31159,9 @@ export const addOnUpdatedPostWebhook = {
       'X-Lago-Signature': WebhookSignatureParamsSchema,
       'X-Lago-Signature-Algorithm': WebhookSignatureAlgorithmParamsSchema,
       'X-Lago-Unique-Key': WebhookUniqueKeyParamsSchema,
+      'webhook-id': StandardWebhooksIdParamsSchema,
+      'webhook-timestamp': StandardWebhooksTimestampParamsSchema,
+      'webhook-signature': StandardWebhooksSignatureParamsSchema,
     }),
     body: {
       description: 'Details of the updated add-on',
@@ -29261,6 +31200,9 @@ export const addOnDeletedPostWebhook = {
       'X-Lago-Signature': WebhookSignatureParamsSchema,
       'X-Lago-Signature-Algorithm': WebhookSignatureAlgorithmParamsSchema,
       'X-Lago-Unique-Key': WebhookUniqueKeyParamsSchema,
+      'webhook-id': StandardWebhooksIdParamsSchema,
+      'webhook-timestamp': StandardWebhooksTimestampParamsSchema,
+      'webhook-signature': StandardWebhooksSignatureParamsSchema,
     }),
     body: {
       description: 'Details of the add-on',
@@ -29300,6 +31242,9 @@ export const alertResolvedPostWebhook = {
       'X-Lago-Signature': WebhookSignatureParamsSchema,
       'X-Lago-Signature-Algorithm': WebhookSignatureAlgorithmParamsSchema,
       'X-Lago-Unique-Key': WebhookUniqueKeyParamsSchema,
+      'webhook-id': StandardWebhooksIdParamsSchema,
+      'webhook-timestamp': StandardWebhooksTimestampParamsSchema,
+      'webhook-signature': StandardWebhooksSignatureParamsSchema,
     }),
     body: {
       description: 'Details of the resolved alert',
@@ -29340,6 +31285,9 @@ export const alertTriggeredPostWebhook = {
       'X-Lago-Signature': WebhookSignatureParamsSchema,
       'X-Lago-Signature-Algorithm': WebhookSignatureAlgorithmParamsSchema,
       'X-Lago-Unique-Key': WebhookUniqueKeyParamsSchema,
+      'webhook-id': StandardWebhooksIdParamsSchema,
+      'webhook-timestamp': StandardWebhooksTimestampParamsSchema,
+      'webhook-signature': StandardWebhooksSignatureParamsSchema,
     }),
     body: {
       description: 'Details of the triggered alert',
@@ -29380,6 +31328,9 @@ export const billableMetricCreatedPostWebhook = {
       'X-Lago-Signature': WebhookSignatureParamsSchema,
       'X-Lago-Signature-Algorithm': WebhookSignatureAlgorithmParamsSchema,
       'X-Lago-Unique-Key': WebhookUniqueKeyParamsSchema,
+      'webhook-id': StandardWebhooksIdParamsSchema,
+      'webhook-timestamp': StandardWebhooksTimestampParamsSchema,
+      'webhook-signature': StandardWebhooksSignatureParamsSchema,
     }),
     body: {
       description: 'Details of the new billable metric',
@@ -29420,6 +31371,9 @@ export const billableMetricUpdatedPostWebhook = {
       'X-Lago-Signature': WebhookSignatureParamsSchema,
       'X-Lago-Signature-Algorithm': WebhookSignatureAlgorithmParamsSchema,
       'X-Lago-Unique-Key': WebhookUniqueKeyParamsSchema,
+      'webhook-id': StandardWebhooksIdParamsSchema,
+      'webhook-timestamp': StandardWebhooksTimestampParamsSchema,
+      'webhook-signature': StandardWebhooksSignatureParamsSchema,
     }),
     body: {
       description: 'Details of the billable metric',
@@ -29460,6 +31414,9 @@ export const billableMetricDeletedPostWebhook = {
       'X-Lago-Signature': WebhookSignatureParamsSchema,
       'X-Lago-Signature-Algorithm': WebhookSignatureAlgorithmParamsSchema,
       'X-Lago-Unique-Key': WebhookUniqueKeyParamsSchema,
+      'webhook-id': StandardWebhooksIdParamsSchema,
+      'webhook-timestamp': StandardWebhooksTimestampParamsSchema,
+      'webhook-signature': StandardWebhooksSignatureParamsSchema,
     }),
     body: {
       description: 'Details of the billable metric',
@@ -29500,6 +31457,9 @@ export const customerCreatedPostWebhook = {
       'X-Lago-Signature': WebhookSignatureParamsSchema,
       'X-Lago-Signature-Algorithm': WebhookSignatureAlgorithmParamsSchema,
       'X-Lago-Unique-Key': WebhookUniqueKeyParamsSchema,
+      'webhook-id': StandardWebhooksIdParamsSchema,
+      'webhook-timestamp': StandardWebhooksTimestampParamsSchema,
+      'webhook-signature': StandardWebhooksSignatureParamsSchema,
     }),
     body: {
       description: 'Details of the new customer',
@@ -29538,6 +31498,9 @@ export const customerUpdatedPostWebhook = {
       'X-Lago-Signature': WebhookSignatureParamsSchema,
       'X-Lago-Signature-Algorithm': WebhookSignatureAlgorithmParamsSchema,
       'X-Lago-Unique-Key': WebhookUniqueKeyParamsSchema,
+      'webhook-id': StandardWebhooksIdParamsSchema,
+      'webhook-timestamp': StandardWebhooksTimestampParamsSchema,
+      'webhook-signature': StandardWebhooksSignatureParamsSchema,
     }),
     body: {
       description: 'Details of the customer',
@@ -29576,6 +31539,9 @@ export const customerAccountingProviderCreatedPostWebhook = {
       'X-Lago-Signature': WebhookSignatureParamsSchema,
       'X-Lago-Signature-Algorithm': WebhookSignatureAlgorithmParamsSchema,
       'X-Lago-Unique-Key': WebhookUniqueKeyParamsSchema,
+      'webhook-id': StandardWebhooksIdParamsSchema,
+      'webhook-timestamp': StandardWebhooksTimestampParamsSchema,
+      'webhook-signature': StandardWebhooksSignatureParamsSchema,
     }),
     body: {
       description: 'Details of the customer',
@@ -29614,6 +31580,9 @@ export const customerAccountingProviderErrorPostWebhook = {
       'X-Lago-Signature': WebhookSignatureParamsSchema,
       'X-Lago-Signature-Algorithm': WebhookSignatureAlgorithmParamsSchema,
       'X-Lago-Unique-Key': WebhookUniqueKeyParamsSchema,
+      'webhook-id': StandardWebhooksIdParamsSchema,
+      'webhook-timestamp': StandardWebhooksTimestampParamsSchema,
+      'webhook-signature': StandardWebhooksSignatureParamsSchema,
     }),
     body: {
       description: 'Details of the customer and of the provider error',
@@ -29659,6 +31628,9 @@ export const customerCrmProviderCreatedPostWebhook = {
       'X-Lago-Signature': WebhookSignatureParamsSchema,
       'X-Lago-Signature-Algorithm': WebhookSignatureAlgorithmParamsSchema,
       'X-Lago-Unique-Key': WebhookUniqueKeyParamsSchema,
+      'webhook-id': StandardWebhooksIdParamsSchema,
+      'webhook-timestamp': StandardWebhooksTimestampParamsSchema,
+      'webhook-signature': StandardWebhooksSignatureParamsSchema,
     }),
     body: {
       description: 'Details of the customer',
@@ -29697,6 +31669,9 @@ export const customerCrmProviderErrorPostWebhook = {
       'X-Lago-Signature': WebhookSignatureParamsSchema,
       'X-Lago-Signature-Algorithm': WebhookSignatureAlgorithmParamsSchema,
       'X-Lago-Unique-Key': WebhookUniqueKeyParamsSchema,
+      'webhook-id': StandardWebhooksIdParamsSchema,
+      'webhook-timestamp': StandardWebhooksTimestampParamsSchema,
+      'webhook-signature': StandardWebhooksSignatureParamsSchema,
     }),
     body: {
       description: 'Details of the customer and of the CRM provider error',
@@ -29742,6 +31717,9 @@ export const customerPaymentProviderCreatedPostWebhook = {
       'X-Lago-Signature': WebhookSignatureParamsSchema,
       'X-Lago-Signature-Algorithm': WebhookSignatureAlgorithmParamsSchema,
       'X-Lago-Unique-Key': WebhookUniqueKeyParamsSchema,
+      'webhook-id': StandardWebhooksIdParamsSchema,
+      'webhook-timestamp': StandardWebhooksTimestampParamsSchema,
+      'webhook-signature': StandardWebhooksSignatureParamsSchema,
     }),
     body: {
       description: 'Details of the customer',
@@ -29780,6 +31758,9 @@ export const customerPaymentProviderErrorPostWebhook = {
       'X-Lago-Signature': WebhookSignatureParamsSchema,
       'X-Lago-Signature-Algorithm': WebhookSignatureAlgorithmParamsSchema,
       'X-Lago-Unique-Key': WebhookUniqueKeyParamsSchema,
+      'webhook-id': StandardWebhooksIdParamsSchema,
+      'webhook-timestamp': StandardWebhooksTimestampParamsSchema,
+      'webhook-signature': StandardWebhooksSignatureParamsSchema,
     }),
     body: {
       description: 'Details of the customer and of the payment provider error',
@@ -29825,6 +31806,9 @@ export const customerCheckoutUrlGeneratedPostWebhook = {
       'X-Lago-Signature': WebhookSignatureParamsSchema,
       'X-Lago-Signature-Algorithm': WebhookSignatureAlgorithmParamsSchema,
       'X-Lago-Unique-Key': WebhookUniqueKeyParamsSchema,
+      'webhook-id': StandardWebhooksIdParamsSchema,
+      'webhook-timestamp': StandardWebhooksTimestampParamsSchema,
+      'webhook-signature': StandardWebhooksSignatureParamsSchema,
     }),
     body: {
       description: 'Details of the customer with the generated checkout URL',
@@ -29870,6 +31854,9 @@ export const customerTaxProviderErrorPostWebhook = {
       'X-Lago-Signature': WebhookSignatureParamsSchema,
       'X-Lago-Signature-Algorithm': WebhookSignatureAlgorithmParamsSchema,
       'X-Lago-Unique-Key': WebhookUniqueKeyParamsSchema,
+      'webhook-id': StandardWebhooksIdParamsSchema,
+      'webhook-timestamp': StandardWebhooksTimestampParamsSchema,
+      'webhook-signature': StandardWebhooksSignatureParamsSchema,
     }),
     body: {
       description: 'Details of the customer and of the tax provider error',
@@ -29915,6 +31902,9 @@ export const customerViesCheckPostWebhook = {
       'X-Lago-Signature': WebhookSignatureParamsSchema,
       'X-Lago-Signature-Algorithm': WebhookSignatureAlgorithmParamsSchema,
       'X-Lago-Unique-Key': WebhookUniqueKeyParamsSchema,
+      'webhook-id': StandardWebhooksIdParamsSchema,
+      'webhook-timestamp': StandardWebhooksTimestampParamsSchema,
+      'webhook-signature': StandardWebhooksSignatureParamsSchema,
     }),
     body: {
       description: 'Details of the customer with the VIES VAT check status',
@@ -29953,6 +31943,9 @@ export const creditNoteCreatedPostWebhook = {
       'X-Lago-Signature': WebhookSignatureParamsSchema,
       'X-Lago-Signature-Algorithm': WebhookSignatureAlgorithmParamsSchema,
       'X-Lago-Unique-Key': WebhookUniqueKeyParamsSchema,
+      'webhook-id': StandardWebhooksIdParamsSchema,
+      'webhook-timestamp': StandardWebhooksTimestampParamsSchema,
+      'webhook-signature': StandardWebhooksSignatureParamsSchema,
     }),
     body: {
       description: 'Details of the new credit note',
@@ -29993,6 +31986,9 @@ export const creditNoteGeneratedPostWebhook = {
       'X-Lago-Signature': WebhookSignatureParamsSchema,
       'X-Lago-Signature-Algorithm': WebhookSignatureAlgorithmParamsSchema,
       'X-Lago-Unique-Key': WebhookUniqueKeyParamsSchema,
+      'webhook-id': StandardWebhooksIdParamsSchema,
+      'webhook-timestamp': StandardWebhooksTimestampParamsSchema,
+      'webhook-signature': StandardWebhooksSignatureParamsSchema,
     }),
     body: {
       description: 'Details of the credit note',
@@ -30033,6 +32029,9 @@ export const creditNoteProviderRefundFailurePostWebhook = {
       'X-Lago-Signature': WebhookSignatureParamsSchema,
       'X-Lago-Signature-Algorithm': WebhookSignatureAlgorithmParamsSchema,
       'X-Lago-Unique-Key': WebhookUniqueKeyParamsSchema,
+      'webhook-id': StandardWebhooksIdParamsSchema,
+      'webhook-timestamp': StandardWebhooksTimestampParamsSchema,
+      'webhook-signature': StandardWebhooksSignatureParamsSchema,
     }),
     body: {
       description: 'Details of the credit note and of the provider error',
@@ -30078,6 +32077,9 @@ export const couponCreatedPostWebhook = {
       'X-Lago-Signature': WebhookSignatureParamsSchema,
       'X-Lago-Signature-Algorithm': WebhookSignatureAlgorithmParamsSchema,
       'X-Lago-Unique-Key': WebhookUniqueKeyParamsSchema,
+      'webhook-id': StandardWebhooksIdParamsSchema,
+      'webhook-timestamp': StandardWebhooksTimestampParamsSchema,
+      'webhook-signature': StandardWebhooksSignatureParamsSchema,
     }),
     body: {
       description: 'Details of the new coupon',
@@ -30116,6 +32118,9 @@ export const couponUpdatedPostWebhook = {
       'X-Lago-Signature': WebhookSignatureParamsSchema,
       'X-Lago-Signature-Algorithm': WebhookSignatureAlgorithmParamsSchema,
       'X-Lago-Unique-Key': WebhookUniqueKeyParamsSchema,
+      'webhook-id': StandardWebhooksIdParamsSchema,
+      'webhook-timestamp': StandardWebhooksTimestampParamsSchema,
+      'webhook-signature': StandardWebhooksSignatureParamsSchema,
     }),
     body: {
       description: 'Details of the updated coupon',
@@ -30154,6 +32159,9 @@ export const couponDeletedPostWebhook = {
       'X-Lago-Signature': WebhookSignatureParamsSchema,
       'X-Lago-Signature-Algorithm': WebhookSignatureAlgorithmParamsSchema,
       'X-Lago-Unique-Key': WebhookUniqueKeyParamsSchema,
+      'webhook-id': StandardWebhooksIdParamsSchema,
+      'webhook-timestamp': StandardWebhooksTimestampParamsSchema,
+      'webhook-signature': StandardWebhooksSignatureParamsSchema,
     }),
     body: {
       description: 'Details of the coupon',
@@ -30192,6 +32200,9 @@ export const couponTerminatedPostWebhook = {
       'X-Lago-Signature': WebhookSignatureParamsSchema,
       'X-Lago-Signature-Algorithm': WebhookSignatureAlgorithmParamsSchema,
       'X-Lago-Unique-Key': WebhookUniqueKeyParamsSchema,
+      'webhook-id': StandardWebhooksIdParamsSchema,
+      'webhook-timestamp': StandardWebhooksTimestampParamsSchema,
+      'webhook-signature': StandardWebhooksSignatureParamsSchema,
     }),
     body: {
       description: 'Details of the terminated coupon',
@@ -30230,6 +32241,9 @@ export const dunningCampaignFinishedPostWebhook = {
       'X-Lago-Signature': WebhookSignatureParamsSchema,
       'X-Lago-Signature-Algorithm': WebhookSignatureAlgorithmParamsSchema,
       'X-Lago-Unique-Key': WebhookUniqueKeyParamsSchema,
+      'webhook-id': StandardWebhooksIdParamsSchema,
+      'webhook-timestamp': StandardWebhooksTimestampParamsSchema,
+      'webhook-signature': StandardWebhooksSignatureParamsSchema,
     }),
     body: {
       description: 'Details of the finished dunning campaign and the overdue balance',
@@ -30270,6 +32284,9 @@ export const eventErrorPostWebhook = {
       'X-Lago-Signature': WebhookSignatureParamsSchema,
       'X-Lago-Signature-Algorithm': WebhookSignatureAlgorithmParamsSchema,
       'X-Lago-Unique-Key': WebhookUniqueKeyParamsSchema,
+      'webhook-id': StandardWebhooksIdParamsSchema,
+      'webhook-timestamp': StandardWebhooksTimestampParamsSchema,
+      'webhook-signature': StandardWebhooksSignatureParamsSchema,
     }),
     body: {
       description: 'Details of the event and of the error',
@@ -30311,6 +32328,9 @@ export const eventsErrorsPostWebhook = {
       'X-Lago-Signature': WebhookSignatureParamsSchema,
       'X-Lago-Signature-Algorithm': WebhookSignatureAlgorithmParamsSchema,
       'X-Lago-Unique-Key': WebhookUniqueKeyParamsSchema,
+      'webhook-id': StandardWebhooksIdParamsSchema,
+      'webhook-timestamp': StandardWebhooksTimestampParamsSchema,
+      'webhook-signature': StandardWebhooksSignatureParamsSchema,
     }),
     body: {
       description: 'Details of the events errors',
@@ -30351,6 +32371,9 @@ export const featureCreatedPostWebhook = {
       'X-Lago-Signature': WebhookSignatureParamsSchema,
       'X-Lago-Signature-Algorithm': WebhookSignatureAlgorithmParamsSchema,
       'X-Lago-Unique-Key': WebhookUniqueKeyParamsSchema,
+      'webhook-id': StandardWebhooksIdParamsSchema,
+      'webhook-timestamp': StandardWebhooksTimestampParamsSchema,
+      'webhook-signature': StandardWebhooksSignatureParamsSchema,
     }),
     body: {
       description: 'Details of the new feature',
@@ -30389,6 +32412,9 @@ export const featureUpdatedPostWebhook = {
       'X-Lago-Signature': WebhookSignatureParamsSchema,
       'X-Lago-Signature-Algorithm': WebhookSignatureAlgorithmParamsSchema,
       'X-Lago-Unique-Key': WebhookUniqueKeyParamsSchema,
+      'webhook-id': StandardWebhooksIdParamsSchema,
+      'webhook-timestamp': StandardWebhooksTimestampParamsSchema,
+      'webhook-signature': StandardWebhooksSignatureParamsSchema,
     }),
     body: {
       description: 'Details of the feature',
@@ -30427,6 +32453,9 @@ export const featureDeletedPostWebhook = {
       'X-Lago-Signature': WebhookSignatureParamsSchema,
       'X-Lago-Signature-Algorithm': WebhookSignatureAlgorithmParamsSchema,
       'X-Lago-Unique-Key': WebhookUniqueKeyParamsSchema,
+      'webhook-id': StandardWebhooksIdParamsSchema,
+      'webhook-timestamp': StandardWebhooksTimestampParamsSchema,
+      'webhook-signature': StandardWebhooksSignatureParamsSchema,
     }),
     body: {
       description: 'Details of the feature',
@@ -30465,6 +32494,9 @@ export const feeCreatedPostWebhook = {
       'X-Lago-Signature': WebhookSignatureParamsSchema,
       'X-Lago-Signature-Algorithm': WebhookSignatureAlgorithmParamsSchema,
       'X-Lago-Unique-Key': WebhookUniqueKeyParamsSchema,
+      'webhook-id': StandardWebhooksIdParamsSchema,
+      'webhook-timestamp': StandardWebhooksTimestampParamsSchema,
+      'webhook-signature': StandardWebhooksSignatureParamsSchema,
     }),
     body: {
       description: 'Details of the new fee',
@@ -30503,6 +32535,9 @@ export const feeTaxProviderErrorPostWebhook = {
       'X-Lago-Signature': WebhookSignatureParamsSchema,
       'X-Lago-Signature-Algorithm': WebhookSignatureAlgorithmParamsSchema,
       'X-Lago-Unique-Key': WebhookUniqueKeyParamsSchema,
+      'webhook-id': StandardWebhooksIdParamsSchema,
+      'webhook-timestamp': StandardWebhooksTimestampParamsSchema,
+      'webhook-signature': StandardWebhooksSignatureParamsSchema,
     }),
     body: {
       description: 'Details of the fee and of the tax provider error',
@@ -30548,6 +32583,9 @@ export const invoiceCreatedPostWebhook = {
       'X-Lago-Signature': WebhookSignatureParamsSchema,
       'X-Lago-Signature-Algorithm': WebhookSignatureAlgorithmParamsSchema,
       'X-Lago-Unique-Key': WebhookUniqueKeyParamsSchema,
+      'webhook-id': StandardWebhooksIdParamsSchema,
+      'webhook-timestamp': StandardWebhooksTimestampParamsSchema,
+      'webhook-signature': StandardWebhooksSignatureParamsSchema,
     }),
     body: {
       description: 'Details of the new invoice',
@@ -30586,6 +32624,9 @@ export const invoiceOneOffCreatedPostWebhook = {
       'X-Lago-Signature': WebhookSignatureParamsSchema,
       'X-Lago-Signature-Algorithm': WebhookSignatureAlgorithmParamsSchema,
       'X-Lago-Unique-Key': WebhookUniqueKeyParamsSchema,
+      'webhook-id': StandardWebhooksIdParamsSchema,
+      'webhook-timestamp': StandardWebhooksTimestampParamsSchema,
+      'webhook-signature': StandardWebhooksSignatureParamsSchema,
     }),
     body: {
       description: 'Details of the new invoice',
@@ -30613,46 +32654,6 @@ export const invoiceOneOffCreatedPostWebhook = {
   },
 }
 
-export const invoiceAddOnAddedPostWebhook = {
-  method: 'post',
-  path: '/invoice_add_on_added',
-  summary: 'A new add on invoice has been emitted',
-  description:
-    '**Deprecated.** This webhook is no longer emitted by Lago. Use `invoice.one_off_created` for invoices created from add-ons.',
-  operationId: 'invoiceAddOnAdded',
-  request: {
-    headers: z.object({
-      'X-Lago-Signature': WebhookSignatureParamsSchema,
-      'X-Lago-Signature-Algorithm': WebhookSignatureAlgorithmParamsSchema,
-      'X-Lago-Unique-Key': WebhookUniqueKeyParamsSchema,
-    }),
-    body: {
-      description: 'Details of the new invoice',
-      content: {
-        'application/json': {
-          schema: z
-            .object({
-              webhook_type: z.literal('invoice.add_on_added'),
-              object_type: z.literal('invoice'),
-              organization_id: z
-                .uuid()
-                .openapi({
-                  description: 'Unique identifier of the organization, created by Lago.',
-                  example: '1a901a90-1a90-1a90-1a90-1a901a901a90',
-                }),
-              invoice: InvoiceObjectExtendedSchema,
-            })
-            .openapi({ required: ['webhook_type', 'object_type', 'organization_id', 'invoice'] }),
-        },
-      },
-    },
-  },
-  responses: {
-    200: { description: 'Return a 200 status to indicate that the data was received successfully' },
-  },
-  deprecated: true,
-}
-
 export const invoicePaidCreditAddedPostWebhook = {
   method: 'post',
   path: '/invoice_paid_credit_added',
@@ -30664,6 +32665,9 @@ export const invoicePaidCreditAddedPostWebhook = {
       'X-Lago-Signature': WebhookSignatureParamsSchema,
       'X-Lago-Signature-Algorithm': WebhookSignatureAlgorithmParamsSchema,
       'X-Lago-Unique-Key': WebhookUniqueKeyParamsSchema,
+      'webhook-id': StandardWebhooksIdParamsSchema,
+      'webhook-timestamp': StandardWebhooksTimestampParamsSchema,
+      'webhook-signature': StandardWebhooksSignatureParamsSchema,
     }),
     body: {
       description: 'Details of the new invoice',
@@ -30702,6 +32706,9 @@ export const invoiceGeneratedPostWebhook = {
       'X-Lago-Signature': WebhookSignatureParamsSchema,
       'X-Lago-Signature-Algorithm': WebhookSignatureAlgorithmParamsSchema,
       'X-Lago-Unique-Key': WebhookUniqueKeyParamsSchema,
+      'webhook-id': StandardWebhooksIdParamsSchema,
+      'webhook-timestamp': StandardWebhooksTimestampParamsSchema,
+      'webhook-signature': StandardWebhooksSignatureParamsSchema,
     }),
     body: {
       description: 'Details of the invoice',
@@ -30740,6 +32747,9 @@ export const invoiceDraftedPostWebhook = {
       'X-Lago-Signature': WebhookSignatureParamsSchema,
       'X-Lago-Signature-Algorithm': WebhookSignatureAlgorithmParamsSchema,
       'X-Lago-Unique-Key': WebhookUniqueKeyParamsSchema,
+      'webhook-id': StandardWebhooksIdParamsSchema,
+      'webhook-timestamp': StandardWebhooksTimestampParamsSchema,
+      'webhook-signature': StandardWebhooksSignatureParamsSchema,
     }),
     body: {
       description: 'Details of the new invoice',
@@ -30779,6 +32789,9 @@ export const invoiceReadyToFinalizePostWebhook = {
       'X-Lago-Signature': WebhookSignatureParamsSchema,
       'X-Lago-Signature-Algorithm': WebhookSignatureAlgorithmParamsSchema,
       'X-Lago-Unique-Key': WebhookUniqueKeyParamsSchema,
+      'webhook-id': StandardWebhooksIdParamsSchema,
+      'webhook-timestamp': StandardWebhooksTimestampParamsSchema,
+      'webhook-signature': StandardWebhooksSignatureParamsSchema,
     }),
     body: {
       description: 'Details of the draft invoice ready to be finalized',
@@ -30817,6 +32830,9 @@ export const invoiceVoidedPostWebhook = {
       'X-Lago-Signature': WebhookSignatureParamsSchema,
       'X-Lago-Signature-Algorithm': WebhookSignatureAlgorithmParamsSchema,
       'X-Lago-Unique-Key': WebhookUniqueKeyParamsSchema,
+      'webhook-id': StandardWebhooksIdParamsSchema,
+      'webhook-timestamp': StandardWebhooksTimestampParamsSchema,
+      'webhook-signature': StandardWebhooksSignatureParamsSchema,
     }),
     body: {
       description: 'Details of the invoice',
@@ -30855,6 +32871,9 @@ export const invoiceDeletedPostWebhook = {
       'X-Lago-Signature': WebhookSignatureParamsSchema,
       'X-Lago-Signature-Algorithm': WebhookSignatureAlgorithmParamsSchema,
       'X-Lago-Unique-Key': WebhookUniqueKeyParamsSchema,
+      'webhook-id': StandardWebhooksIdParamsSchema,
+      'webhook-timestamp': StandardWebhooksTimestampParamsSchema,
+      'webhook-signature': StandardWebhooksSignatureParamsSchema,
     }),
     body: {
       description: 'Details of the invoice',
@@ -30893,6 +32912,9 @@ export const invoicePaymentDisputeLostPostWebhook = {
       'X-Lago-Signature': WebhookSignatureParamsSchema,
       'X-Lago-Signature-Algorithm': WebhookSignatureAlgorithmParamsSchema,
       'X-Lago-Unique-Key': WebhookUniqueKeyParamsSchema,
+      'webhook-id': StandardWebhooksIdParamsSchema,
+      'webhook-timestamp': StandardWebhooksTimestampParamsSchema,
+      'webhook-signature': StandardWebhooksSignatureParamsSchema,
     }),
     body: {
       description: 'Details of the invoice and of the payment dispute',
@@ -30933,6 +32955,9 @@ export const invoicePaymentStatusUpdatedPostWebhook = {
       'X-Lago-Signature': WebhookSignatureParamsSchema,
       'X-Lago-Signature-Algorithm': WebhookSignatureAlgorithmParamsSchema,
       'X-Lago-Unique-Key': WebhookUniqueKeyParamsSchema,
+      'webhook-id': StandardWebhooksIdParamsSchema,
+      'webhook-timestamp': StandardWebhooksTimestampParamsSchema,
+      'webhook-signature': StandardWebhooksSignatureParamsSchema,
     }),
     body: {
       description: 'Details of the invoice',
@@ -30971,6 +32996,9 @@ export const invoicePaymentOverduePostWebhook = {
       'X-Lago-Signature': WebhookSignatureParamsSchema,
       'X-Lago-Signature-Algorithm': WebhookSignatureAlgorithmParamsSchema,
       'X-Lago-Unique-Key': WebhookUniqueKeyParamsSchema,
+      'webhook-id': StandardWebhooksIdParamsSchema,
+      'webhook-timestamp': StandardWebhooksTimestampParamsSchema,
+      'webhook-signature': StandardWebhooksSignatureParamsSchema,
     }),
     body: {
       description: 'Details of the invoice',
@@ -31009,6 +33037,9 @@ export const invoicePaymentFailurePostWebhook = {
       'X-Lago-Signature': WebhookSignatureParamsSchema,
       'X-Lago-Signature-Algorithm': WebhookSignatureAlgorithmParamsSchema,
       'X-Lago-Unique-Key': WebhookUniqueKeyParamsSchema,
+      'webhook-id': StandardWebhooksIdParamsSchema,
+      'webhook-timestamp': StandardWebhooksTimestampParamsSchema,
+      'webhook-signature': StandardWebhooksSignatureParamsSchema,
     }),
     body: {
       description: 'Details of the invoice and of the payment provider error',
@@ -31054,6 +33085,9 @@ export const invoiceResyncedPostWebhook = {
       'X-Lago-Signature': WebhookSignatureParamsSchema,
       'X-Lago-Signature-Algorithm': WebhookSignatureAlgorithmParamsSchema,
       'X-Lago-Unique-Key': WebhookUniqueKeyParamsSchema,
+      'webhook-id': StandardWebhooksIdParamsSchema,
+      'webhook-timestamp': StandardWebhooksTimestampParamsSchema,
+      'webhook-signature': StandardWebhooksSignatureParamsSchema,
     }),
     body: {
       description: 'Details of the invoice',
@@ -31092,6 +33126,9 @@ export const integrationProviderErrorPostWebhook = {
       'X-Lago-Signature': WebhookSignatureParamsSchema,
       'X-Lago-Signature-Algorithm': WebhookSignatureAlgorithmParamsSchema,
       'X-Lago-Unique-Key': WebhookUniqueKeyParamsSchema,
+      'webhook-id': StandardWebhooksIdParamsSchema,
+      'webhook-timestamp': StandardWebhooksTimestampParamsSchema,
+      'webhook-signature': StandardWebhooksSignatureParamsSchema,
     }),
     body: {
       description: 'Details of the integration and of the integration error',
@@ -31133,6 +33170,9 @@ export const orderCreatedPostWebhook = {
       'X-Lago-Signature': WebhookSignatureParamsSchema,
       'X-Lago-Signature-Algorithm': WebhookSignatureAlgorithmParamsSchema,
       'X-Lago-Unique-Key': WebhookUniqueKeyParamsSchema,
+      'webhook-id': StandardWebhooksIdParamsSchema,
+      'webhook-timestamp': StandardWebhooksTimestampParamsSchema,
+      'webhook-signature': StandardWebhooksSignatureParamsSchema,
     }),
     body: {
       description: 'Details of the new order',
@@ -31172,6 +33212,9 @@ export const orderExecutedPostWebhook = {
       'X-Lago-Signature': WebhookSignatureParamsSchema,
       'X-Lago-Signature-Algorithm': WebhookSignatureAlgorithmParamsSchema,
       'X-Lago-Unique-Key': WebhookUniqueKeyParamsSchema,
+      'webhook-id': StandardWebhooksIdParamsSchema,
+      'webhook-timestamp': StandardWebhooksTimestampParamsSchema,
+      'webhook-signature': StandardWebhooksSignatureParamsSchema,
     }),
     body: {
       description: 'Details of the executed order',
@@ -31211,6 +33254,9 @@ export const orderFormCreatedPostWebhook = {
       'X-Lago-Signature': WebhookSignatureParamsSchema,
       'X-Lago-Signature-Algorithm': WebhookSignatureAlgorithmParamsSchema,
       'X-Lago-Unique-Key': WebhookUniqueKeyParamsSchema,
+      'webhook-id': StandardWebhooksIdParamsSchema,
+      'webhook-timestamp': StandardWebhooksTimestampParamsSchema,
+      'webhook-signature': StandardWebhooksSignatureParamsSchema,
     }),
     body: {
       description: 'Details of the new order form',
@@ -31252,6 +33298,9 @@ export const orderFormSignedPostWebhook = {
       'X-Lago-Signature': WebhookSignatureParamsSchema,
       'X-Lago-Signature-Algorithm': WebhookSignatureAlgorithmParamsSchema,
       'X-Lago-Unique-Key': WebhookUniqueKeyParamsSchema,
+      'webhook-id': StandardWebhooksIdParamsSchema,
+      'webhook-timestamp': StandardWebhooksTimestampParamsSchema,
+      'webhook-signature': StandardWebhooksSignatureParamsSchema,
     }),
     body: {
       description: 'Details of the signed order form',
@@ -31293,6 +33342,9 @@ export const orderFormExpiredPostWebhook = {
       'X-Lago-Signature': WebhookSignatureParamsSchema,
       'X-Lago-Signature-Algorithm': WebhookSignatureAlgorithmParamsSchema,
       'X-Lago-Unique-Key': WebhookUniqueKeyParamsSchema,
+      'webhook-id': StandardWebhooksIdParamsSchema,
+      'webhook-timestamp': StandardWebhooksTimestampParamsSchema,
+      'webhook-signature': StandardWebhooksSignatureParamsSchema,
     }),
     body: {
       description: 'Details of the expired order form',
@@ -31334,6 +33386,9 @@ export const orderFormVoidedPostWebhook = {
       'X-Lago-Signature': WebhookSignatureParamsSchema,
       'X-Lago-Signature-Algorithm': WebhookSignatureAlgorithmParamsSchema,
       'X-Lago-Unique-Key': WebhookUniqueKeyParamsSchema,
+      'webhook-id': StandardWebhooksIdParamsSchema,
+      'webhook-timestamp': StandardWebhooksTimestampParamsSchema,
+      'webhook-signature': StandardWebhooksSignatureParamsSchema,
     }),
     body: {
       description: 'Details of the voided order form',
@@ -31374,6 +33429,9 @@ export const paymentRequiresActionPostWebhook = {
       'X-Lago-Signature': WebhookSignatureParamsSchema,
       'X-Lago-Signature-Algorithm': WebhookSignatureAlgorithmParamsSchema,
       'X-Lago-Unique-Key': WebhookUniqueKeyParamsSchema,
+      'webhook-id': StandardWebhooksIdParamsSchema,
+      'webhook-timestamp': StandardWebhooksTimestampParamsSchema,
+      'webhook-signature': StandardWebhooksSignatureParamsSchema,
     }),
     body: {
       description: 'Details of the payment and of the required action',
@@ -31412,6 +33470,9 @@ export const paymentSucceededPostWebhook = {
       'X-Lago-Signature': WebhookSignatureParamsSchema,
       'X-Lago-Signature-Algorithm': WebhookSignatureAlgorithmParamsSchema,
       'X-Lago-Unique-Key': WebhookUniqueKeyParamsSchema,
+      'webhook-id': StandardWebhooksIdParamsSchema,
+      'webhook-timestamp': StandardWebhooksTimestampParamsSchema,
+      'webhook-signature': StandardWebhooksSignatureParamsSchema,
     }),
     body: {
       description: 'Details of the successfully processed payment',
@@ -31450,6 +33511,9 @@ export const paymentProviderErrorPostWebhook = {
       'X-Lago-Signature': WebhookSignatureParamsSchema,
       'X-Lago-Signature-Algorithm': WebhookSignatureAlgorithmParamsSchema,
       'X-Lago-Unique-Key': WebhookUniqueKeyParamsSchema,
+      'webhook-id': StandardWebhooksIdParamsSchema,
+      'webhook-timestamp': StandardWebhooksTimestampParamsSchema,
+      'webhook-signature': StandardWebhooksSignatureParamsSchema,
     }),
     body: {
       description: 'Details of the payment provider and of the error',
@@ -31495,6 +33559,9 @@ export const paymentReceiptCreatedPostWebhook = {
       'X-Lago-Signature': WebhookSignatureParamsSchema,
       'X-Lago-Signature-Algorithm': WebhookSignatureAlgorithmParamsSchema,
       'X-Lago-Unique-Key': WebhookUniqueKeyParamsSchema,
+      'webhook-id': StandardWebhooksIdParamsSchema,
+      'webhook-timestamp': StandardWebhooksTimestampParamsSchema,
+      'webhook-signature': StandardWebhooksSignatureParamsSchema,
     }),
     body: {
       description: 'Details of the new payment receipt',
@@ -31535,6 +33602,9 @@ export const paymentReceiptGeneratedPostWebhook = {
       'X-Lago-Signature': WebhookSignatureParamsSchema,
       'X-Lago-Signature-Algorithm': WebhookSignatureAlgorithmParamsSchema,
       'X-Lago-Unique-Key': WebhookUniqueKeyParamsSchema,
+      'webhook-id': StandardWebhooksIdParamsSchema,
+      'webhook-timestamp': StandardWebhooksTimestampParamsSchema,
+      'webhook-signature': StandardWebhooksSignatureParamsSchema,
     }),
     body: {
       description: 'Details of the payment receipt whose PDF has been generated',
@@ -31575,6 +33645,9 @@ export const paymentRequestCreatedPostWebhook = {
       'X-Lago-Signature': WebhookSignatureParamsSchema,
       'X-Lago-Signature-Algorithm': WebhookSignatureAlgorithmParamsSchema,
       'X-Lago-Unique-Key': WebhookUniqueKeyParamsSchema,
+      'webhook-id': StandardWebhooksIdParamsSchema,
+      'webhook-timestamp': StandardWebhooksTimestampParamsSchema,
+      'webhook-signature': StandardWebhooksSignatureParamsSchema,
     }),
     body: {
       description: 'Details of the new payment request',
@@ -31615,6 +33688,9 @@ export const paymentRequestPaymentFailurePostWebhook = {
       'X-Lago-Signature': WebhookSignatureParamsSchema,
       'X-Lago-Signature-Algorithm': WebhookSignatureAlgorithmParamsSchema,
       'X-Lago-Unique-Key': WebhookUniqueKeyParamsSchema,
+      'webhook-id': StandardWebhooksIdParamsSchema,
+      'webhook-timestamp': StandardWebhooksTimestampParamsSchema,
+      'webhook-signature': StandardWebhooksSignatureParamsSchema,
     }),
     body: {
       description: 'Details of the payment request and of the provider error',
@@ -31661,6 +33737,9 @@ export const paymentRequestPaymentStatusUpdatedPostWebhook = {
       'X-Lago-Signature': WebhookSignatureParamsSchema,
       'X-Lago-Signature-Algorithm': WebhookSignatureAlgorithmParamsSchema,
       'X-Lago-Unique-Key': WebhookUniqueKeyParamsSchema,
+      'webhook-id': StandardWebhooksIdParamsSchema,
+      'webhook-timestamp': StandardWebhooksTimestampParamsSchema,
+      'webhook-signature': StandardWebhooksSignatureParamsSchema,
     }),
     body: {
       description: 'Details of the payment request',
@@ -31701,6 +33780,9 @@ export const planCreatedPostWebhook = {
       'X-Lago-Signature': WebhookSignatureParamsSchema,
       'X-Lago-Signature-Algorithm': WebhookSignatureAlgorithmParamsSchema,
       'X-Lago-Unique-Key': WebhookUniqueKeyParamsSchema,
+      'webhook-id': StandardWebhooksIdParamsSchema,
+      'webhook-timestamp': StandardWebhooksTimestampParamsSchema,
+      'webhook-signature': StandardWebhooksSignatureParamsSchema,
     }),
     body: {
       description: 'Details of the new plan',
@@ -31739,6 +33821,9 @@ export const planUpdatedPostWebhook = {
       'X-Lago-Signature': WebhookSignatureParamsSchema,
       'X-Lago-Signature-Algorithm': WebhookSignatureAlgorithmParamsSchema,
       'X-Lago-Unique-Key': WebhookUniqueKeyParamsSchema,
+      'webhook-id': StandardWebhooksIdParamsSchema,
+      'webhook-timestamp': StandardWebhooksTimestampParamsSchema,
+      'webhook-signature': StandardWebhooksSignatureParamsSchema,
     }),
     body: {
       description: 'Details of the plan',
@@ -31777,6 +33862,9 @@ export const planDeletedPostWebhook = {
       'X-Lago-Signature': WebhookSignatureParamsSchema,
       'X-Lago-Signature-Algorithm': WebhookSignatureAlgorithmParamsSchema,
       'X-Lago-Unique-Key': WebhookUniqueKeyParamsSchema,
+      'webhook-id': StandardWebhooksIdParamsSchema,
+      'webhook-timestamp': StandardWebhooksTimestampParamsSchema,
+      'webhook-signature': StandardWebhooksSignatureParamsSchema,
     }),
     body: {
       description: 'Details of the plan',
@@ -31816,6 +33904,9 @@ export const quoteCreatedPostWebhook = {
       'X-Lago-Signature': WebhookSignatureParamsSchema,
       'X-Lago-Signature-Algorithm': WebhookSignatureAlgorithmParamsSchema,
       'X-Lago-Unique-Key': WebhookUniqueKeyParamsSchema,
+      'webhook-id': StandardWebhooksIdParamsSchema,
+      'webhook-timestamp': StandardWebhooksTimestampParamsSchema,
+      'webhook-signature': StandardWebhooksSignatureParamsSchema,
     }),
     body: {
       description: 'Details of the new quote',
@@ -31855,6 +33946,9 @@ export const quoteApprovedPostWebhook = {
       'X-Lago-Signature': WebhookSignatureParamsSchema,
       'X-Lago-Signature-Algorithm': WebhookSignatureAlgorithmParamsSchema,
       'X-Lago-Unique-Key': WebhookUniqueKeyParamsSchema,
+      'webhook-id': StandardWebhooksIdParamsSchema,
+      'webhook-timestamp': StandardWebhooksTimestampParamsSchema,
+      'webhook-signature': StandardWebhooksSignatureParamsSchema,
     }),
     body: {
       description: 'Details of the approved quote',
@@ -31894,6 +33988,9 @@ export const quoteVoidedPostWebhook = {
       'X-Lago-Signature': WebhookSignatureParamsSchema,
       'X-Lago-Signature-Algorithm': WebhookSignatureAlgorithmParamsSchema,
       'X-Lago-Unique-Key': WebhookUniqueKeyParamsSchema,
+      'webhook-id': StandardWebhooksIdParamsSchema,
+      'webhook-timestamp': StandardWebhooksTimestampParamsSchema,
+      'webhook-signature': StandardWebhooksSignatureParamsSchema,
     }),
     body: {
       description: 'Details of the voided quote',
@@ -31932,6 +34029,9 @@ export const subscriptionTerminatedPostWebhook = {
       'X-Lago-Signature': WebhookSignatureParamsSchema,
       'X-Lago-Signature-Algorithm': WebhookSignatureAlgorithmParamsSchema,
       'X-Lago-Unique-Key': WebhookUniqueKeyParamsSchema,
+      'webhook-id': StandardWebhooksIdParamsSchema,
+      'webhook-timestamp': StandardWebhooksTimestampParamsSchema,
+      'webhook-signature': StandardWebhooksSignatureParamsSchema,
     }),
     body: {
       description: 'Details of the subscription',
@@ -31973,6 +34073,9 @@ export const subscriptionIncompletePostWebhook = {
       'X-Lago-Signature': WebhookSignatureParamsSchema,
       'X-Lago-Signature-Algorithm': WebhookSignatureAlgorithmParamsSchema,
       'X-Lago-Unique-Key': WebhookUniqueKeyParamsSchema,
+      'webhook-id': StandardWebhooksIdParamsSchema,
+      'webhook-timestamp': StandardWebhooksTimestampParamsSchema,
+      'webhook-signature': StandardWebhooksSignatureParamsSchema,
     }),
     body: {
       description: 'Details of the subscription',
@@ -32014,6 +34117,9 @@ export const subscriptionCanceledPostWebhook = {
       'X-Lago-Signature': WebhookSignatureParamsSchema,
       'X-Lago-Signature-Algorithm': WebhookSignatureAlgorithmParamsSchema,
       'X-Lago-Unique-Key': WebhookUniqueKeyParamsSchema,
+      'webhook-id': StandardWebhooksIdParamsSchema,
+      'webhook-timestamp': StandardWebhooksTimestampParamsSchema,
+      'webhook-signature': StandardWebhooksSignatureParamsSchema,
     }),
     body: {
       description: 'Details of the subscription',
@@ -32054,6 +34160,9 @@ export const subscriptionStartedPostWebhook = {
       'X-Lago-Signature': WebhookSignatureParamsSchema,
       'X-Lago-Signature-Algorithm': WebhookSignatureAlgorithmParamsSchema,
       'X-Lago-Unique-Key': WebhookUniqueKeyParamsSchema,
+      'webhook-id': StandardWebhooksIdParamsSchema,
+      'webhook-timestamp': StandardWebhooksTimestampParamsSchema,
+      'webhook-signature': StandardWebhooksSignatureParamsSchema,
     }),
     body: {
       description: 'Details of the subscription',
@@ -32094,6 +34203,9 @@ export const subscriptionUpdatedPostWebhook = {
       'X-Lago-Signature': WebhookSignatureParamsSchema,
       'X-Lago-Signature-Algorithm': WebhookSignatureAlgorithmParamsSchema,
       'X-Lago-Unique-Key': WebhookUniqueKeyParamsSchema,
+      'webhook-id': StandardWebhooksIdParamsSchema,
+      'webhook-timestamp': StandardWebhooksTimestampParamsSchema,
+      'webhook-signature': StandardWebhooksSignatureParamsSchema,
     }),
     body: {
       description: 'Details of the subscription',
@@ -32134,6 +34246,9 @@ export const subscriptionTerminationAlertPostWebhook = {
       'X-Lago-Signature': WebhookSignatureParamsSchema,
       'X-Lago-Signature-Algorithm': WebhookSignatureAlgorithmParamsSchema,
       'X-Lago-Unique-Key': WebhookUniqueKeyParamsSchema,
+      'webhook-id': StandardWebhooksIdParamsSchema,
+      'webhook-timestamp': StandardWebhooksTimestampParamsSchema,
+      'webhook-signature': StandardWebhooksSignatureParamsSchema,
     }),
     body: {
       description: 'Details of the subscription',
@@ -32174,6 +34289,9 @@ export const subscriptionTrialEndedPostWebhook = {
       'X-Lago-Signature': WebhookSignatureParamsSchema,
       'X-Lago-Signature-Algorithm': WebhookSignatureAlgorithmParamsSchema,
       'X-Lago-Unique-Key': WebhookUniqueKeyParamsSchema,
+      'webhook-id': StandardWebhooksIdParamsSchema,
+      'webhook-timestamp': StandardWebhooksTimestampParamsSchema,
+      'webhook-signature': StandardWebhooksSignatureParamsSchema,
     }),
     body: {
       description: 'Details of the subscription',
@@ -32214,6 +34332,9 @@ export const subscriptionUsageThresholdReachedPostWebhook = {
       'X-Lago-Signature': WebhookSignatureParamsSchema,
       'X-Lago-Signature-Algorithm': WebhookSignatureAlgorithmParamsSchema,
       'X-Lago-Unique-Key': WebhookUniqueKeyParamsSchema,
+      'webhook-id': StandardWebhooksIdParamsSchema,
+      'webhook-timestamp': StandardWebhooksTimestampParamsSchema,
+      'webhook-signature': StandardWebhooksSignatureParamsSchema,
     }),
     body: {
       description: 'Details of the subscription and of the reached threshold',
@@ -32254,6 +34375,9 @@ export const walletCreatedPostWebhook = {
       'X-Lago-Signature': WebhookSignatureParamsSchema,
       'X-Lago-Signature-Algorithm': WebhookSignatureAlgorithmParamsSchema,
       'X-Lago-Unique-Key': WebhookUniqueKeyParamsSchema,
+      'webhook-id': StandardWebhooksIdParamsSchema,
+      'webhook-timestamp': StandardWebhooksTimestampParamsSchema,
+      'webhook-signature': StandardWebhooksSignatureParamsSchema,
     }),
     body: {
       description: 'Details of the new wallet',
@@ -32292,6 +34416,9 @@ export const walletUpdatedPostWebhook = {
       'X-Lago-Signature': WebhookSignatureParamsSchema,
       'X-Lago-Signature-Algorithm': WebhookSignatureAlgorithmParamsSchema,
       'X-Lago-Unique-Key': WebhookUniqueKeyParamsSchema,
+      'webhook-id': StandardWebhooksIdParamsSchema,
+      'webhook-timestamp': StandardWebhooksTimestampParamsSchema,
+      'webhook-signature': StandardWebhooksSignatureParamsSchema,
     }),
     body: {
       description: 'Details of the updated wallet',
@@ -32330,6 +34457,9 @@ export const walletTerminatedPostWebhook = {
       'X-Lago-Signature': WebhookSignatureParamsSchema,
       'X-Lago-Signature-Algorithm': WebhookSignatureAlgorithmParamsSchema,
       'X-Lago-Unique-Key': WebhookUniqueKeyParamsSchema,
+      'webhook-id': StandardWebhooksIdParamsSchema,
+      'webhook-timestamp': StandardWebhooksTimestampParamsSchema,
+      'webhook-signature': StandardWebhooksSignatureParamsSchema,
     }),
     body: {
       description: 'Details of the terminated wallet',
@@ -32368,6 +34498,9 @@ export const walletDepletedOngoingBalancePostWebhook = {
       'X-Lago-Signature': WebhookSignatureParamsSchema,
       'X-Lago-Signature-Algorithm': WebhookSignatureAlgorithmParamsSchema,
       'X-Lago-Unique-Key': WebhookUniqueKeyParamsSchema,
+      'webhook-id': StandardWebhooksIdParamsSchema,
+      'webhook-timestamp': StandardWebhooksTimestampParamsSchema,
+      'webhook-signature': StandardWebhooksSignatureParamsSchema,
     }),
     body: {
       description: 'Details of the wallet',
@@ -32406,6 +34539,9 @@ export const walletTransactionCreatedPostWebhook = {
       'X-Lago-Signature': WebhookSignatureParamsSchema,
       'X-Lago-Signature-Algorithm': WebhookSignatureAlgorithmParamsSchema,
       'X-Lago-Unique-Key': WebhookUniqueKeyParamsSchema,
+      'webhook-id': StandardWebhooksIdParamsSchema,
+      'webhook-timestamp': StandardWebhooksTimestampParamsSchema,
+      'webhook-signature': StandardWebhooksSignatureParamsSchema,
     }),
     body: {
       description: 'Details of the wallet transaction',
@@ -32446,6 +34582,9 @@ export const walletTransactionUpdatedPostWebhook = {
       'X-Lago-Signature': WebhookSignatureParamsSchema,
       'X-Lago-Signature-Algorithm': WebhookSignatureAlgorithmParamsSchema,
       'X-Lago-Unique-Key': WebhookUniqueKeyParamsSchema,
+      'webhook-id': StandardWebhooksIdParamsSchema,
+      'webhook-timestamp': StandardWebhooksTimestampParamsSchema,
+      'webhook-signature': StandardWebhooksSignatureParamsSchema,
     }),
     body: {
       description: 'Details of the wallet transaction',
@@ -32486,6 +34625,9 @@ export const walletTransactionPaymentFailurePostWebhook = {
       'X-Lago-Signature': WebhookSignatureParamsSchema,
       'X-Lago-Signature-Algorithm': WebhookSignatureAlgorithmParamsSchema,
       'X-Lago-Unique-Key': WebhookUniqueKeyParamsSchema,
+      'webhook-id': StandardWebhooksIdParamsSchema,
+      'webhook-timestamp': StandardWebhooksTimestampParamsSchema,
+      'webhook-signature': StandardWebhooksSignatureParamsSchema,
     }),
     body: {
       description: 'Details of the wallet transaction and of the provider error',

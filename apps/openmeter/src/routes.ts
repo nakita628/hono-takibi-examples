@@ -10,6 +10,1127 @@ const MetadataSchema = z
   })
   .openapi('Metadata')
 
+const AnnotationsSchema = z
+  .record(z.string(), z.any())
+  .openapi({
+    description: 'Set of key-value pairs managed by the system. Cannot be modified by user.',
+    example: { externalId: '019142cc-a016-796a-8113-1a942fecd26d' },
+  })
+  .openapi('Annotations')
+
+const AddonInstanceTypeSchema = z
+  .enum(['single', 'multiple'])
+  .openapi({
+    description:
+      'The instanceType of the add-on.\nSingle instance add-ons can be added to subscription only once while add-ons with multiple type can be added more then once.',
+  })
+  .openapi('AddonInstanceType')
+
+const CurrencyCodeSchema = z
+  .string()
+  .regex(/^[A-Z]{3}$/)
+  .length(3)
+  .openapi({
+    description:
+      'Three-letter [ISO4217](https://www.iso.org/iso-4217-currency-codes.html) currency code.\nCustom three-letter currency codes are also supported for convenience.',
+    example: 'USD',
+  })
+  .openapi('CurrencyCode')
+
+const AddonStatusSchema = z
+  .enum(['draft', 'active', 'archived'])
+  .openapi({
+    description:
+      'The status of the add-on defined by the effectiveFrom and effectiveTo properties.',
+  })
+  .openapi('AddonStatus')
+
+const RateCardMeteredEntitlementSchema = z
+  .object({
+    metadata: MetadataSchema.exactOptional().openapi({
+      description: 'Additional metadata for the feature.',
+    }),
+    type: z.literal('metered'),
+    isSoftLimit: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description:
+          'If softLimit=true the subject can use the feature even if the entitlement is exhausted, hasAccess will always be true.',
+        title: 'Soft limit',
+      }),
+    issueAfterReset: z
+      .float64()
+      .min(0)
+      .exactOptional()
+      .openapi({
+        description:
+          'You can grant usage automatically alongside the entitlement, the example scenario would be creating a starting balance.\nIf an amount is specified here, a grant will be created alongside the entitlement with the specified amount.\nThat grant will have it\'s rollover settings configured in a way that after each reset operation, the balance will return the original amount specified here.\nManually creating such a grant would mean having the "amount", "minRolloverAmount", and "maxRolloverAmount" fields all be the same.',
+        title: 'Initial grant amount',
+      }),
+    issueAfterResetPriority: z
+      .int()
+      .min(1)
+      .max(255)
+      .default(1)
+      .exactOptional()
+      .openapi({
+        description: 'Defines the grant priority for the default grant.',
+        title: 'Issue grant after reset priority',
+      }),
+    preserveOverageAtReset: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description:
+          'If true, the overage is preserved at reset. If false, the usage is reset to 0.',
+        title: 'Preserve overage at reset',
+      }),
+    usagePeriod: z.iso
+      .duration()
+      .exactOptional()
+      .openapi({
+        description:
+          'The interval of the metered entitlement.\nDefaults to the billing cadence of the rate card.',
+        title: 'Usage Period',
+      }),
+  })
+  .openapi({
+    required: ['type'],
+    description: 'The entitlement template with a metered entitlement.',
+  })
+  .openapi('RateCardMeteredEntitlement')
+
+const RateCardStaticEntitlementSchema = z
+  .object({
+    metadata: MetadataSchema.exactOptional().openapi({
+      description: 'Additional metadata for the feature.',
+    }),
+    type: z.literal('static'),
+    config: z
+      .string()
+      .openapi({
+        description:
+          'The JSON parsable config of the entitlement. This value is also returned when checking entitlement access and it is useful for configuring fine-grained access settings to the feature, implemented in your own system. Has to be an object.',
+        example: '{ "integrations": ["github"] }',
+      }),
+  })
+  .openapi({
+    required: ['type', 'config'],
+    description: 'Entitlement template of a static entitlement.',
+  })
+  .openapi('RateCardStaticEntitlement')
+
+const RateCardBooleanEntitlementSchema = z
+  .object({
+    metadata: MetadataSchema.exactOptional().openapi({
+      description: 'Additional metadata for the feature.',
+    }),
+    type: z.literal('boolean'),
+  })
+  .openapi({ required: ['type'], description: 'Entitlement template of a boolean entitlement.' })
+  .openapi('RateCardBooleanEntitlement')
+
+const RateCardEntitlementSchema = z
+  .discriminatedUnion('type', [
+    RateCardMeteredEntitlementSchema,
+    RateCardStaticEntitlementSchema,
+    RateCardBooleanEntitlementSchema,
+  ])
+  .openapi({
+    discriminator: {
+      propertyName: 'type',
+      mapping: {
+        metered: '#/components/schemas/RateCardMeteredEntitlement',
+        static: '#/components/schemas/RateCardStaticEntitlement',
+        boolean: '#/components/schemas/RateCardBooleanEntitlement',
+      },
+    },
+    description:
+      'Entitlement templates are used to define the entitlements of a plan.\nFeatures are omitted from the entitlement template, as they are defined in the rate card.',
+  })
+  .openapi('RateCardEntitlement')
+
+const TaxBehaviorSchema = z
+  .enum(['inclusive', 'exclusive'])
+  .openapi({
+    description:
+      'Tax behavior.\n\nThis enum is used to specify whether tax is included in the price or excluded from the price.',
+  })
+  .openapi('TaxBehavior')
+
+const StripeTaxConfigSchema = z
+  .object({
+    code: z
+      .string()
+      .regex(/^txcd_\d{8}$/)
+      .openapi({
+        description: 'Product tax code.\n\nSee: https://docs.stripe.com/tax/tax-codes',
+        title: 'Tax code',
+        example: 'txcd_10000000',
+      }),
+  })
+  .openapi({ required: ['code'], description: 'The tax config for Stripe.' })
+  .openapi('StripeTaxConfig')
+
+const CustomInvoicingTaxConfigSchema = z
+  .object({
+    code: z
+      .string()
+      .openapi({
+        description:
+          'Tax code.\n\nThe tax code should be interpreted by the custom invoicing provider.',
+        title: 'Tax code',
+      }),
+  })
+  .openapi({ required: ['code'], description: 'Custom invoicing tax config.' })
+  .openapi('CustomInvoicingTaxConfig')
+
+const TaxConfigSchema = z
+  .object({
+    behavior: TaxBehaviorSchema.exactOptional().openapi({
+      description:
+        "Tax behavior.\n\nIf not specified the billing profile is used to determine the tax behavior.\nIf not specified in the billing profile, the provider's default behavior is used.",
+      title: 'Tax behavior',
+    }),
+    stripe: StripeTaxConfigSchema.exactOptional().openapi({
+      description: 'Stripe tax config.',
+      title: 'Stripe tax config',
+      deprecated: true,
+    }),
+    customInvoicing: CustomInvoicingTaxConfigSchema.exactOptional().openapi({
+      description: 'Custom invoicing tax config.',
+      title: 'Custom invoicing tax config',
+      deprecated: true,
+    }),
+    taxCodeId: z
+      .string()
+      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
+      .exactOptional()
+      .openapi({
+        description:
+          'Tax code reference.\n\nWhen both `taxCodeId` and `stripe.code` are provided, `taxCodeId` takes precedence:\nthe referenced tax code entity is used and `stripe.code` is ignored.',
+        example: '01G65Z755AFWAKHE12NY0CQ9FH',
+        title: 'Tax code ID',
+      }),
+  })
+  .openapi({ description: 'Set of provider specific tax configs.', required: [] })
+  .openapi('TaxConfig')
+
+const NumericSchema = z
+  .string()
+  .regex(/^\-?[0-9]+(\.[0-9]+)?$/)
+  .openapi({ description: 'Numeric represents an arbitrary precision number.' })
+  .openapi('Numeric')
+
+const PricePaymentTermSchema = z
+  .enum(['in_advance', 'in_arrears'])
+  .openapi({ description: 'The payment term of a flat price.\nOne of: in_advance or in_arrears.' })
+  .openapi('PricePaymentTerm')
+
+const FlatPriceWithPaymentTermSchema = z
+  .object({
+    type: z.literal('flat').openapi({ description: 'The type of the price.' }),
+    amount: NumericSchema.openapi({ description: 'The amount of the flat price.' }),
+    paymentTerm: PricePaymentTermSchema.default('in_advance')
+      .exactOptional()
+      .openapi({ description: 'The payment term of the flat price.\nDefaults to in advance.' }),
+  })
+  .openapi({ required: ['type', 'amount'], description: 'Flat price with payment term.' })
+  .openapi('FlatPriceWithPaymentTerm')
+
+const PercentageSchema = z
+  .float64()
+  .openapi({
+    description: 'Numeric representation of a percentage\n\n50% is represented as 50',
+    example: 50,
+    'x-go-package': 'github.com/openmeterio/openmeter/pkg/models',
+    'x-go-type': 'models.Percentage',
+  })
+  .openapi('Percentage')
+
+const DiscountPercentageSchema = z
+  .object({
+    percentage: PercentageSchema.openapi({
+      description: 'The percentage of the discount.',
+      title: 'Percentage',
+    }),
+  })
+  .openapi({ required: ['percentage'], description: 'Percentage discount.' })
+  .openapi('DiscountPercentage')
+
+const DiscountUsageSchema = z
+  .object({
+    quantity: NumericSchema.openapi({
+      description: 'The quantity of the usage discount.\n\nMust be positive.',
+      title: 'Usage',
+    }),
+  })
+  .openapi({
+    required: ['quantity'],
+    description:
+      'Usage discount.\n\nUsage discount means that the first N items are free. From billing perspective\nthis means that any usage on a specific feature is considered 0 until this discount\nis exhausted.',
+  })
+  .openapi('DiscountUsage')
+
+const DiscountsSchema = z
+  .object({
+    percentage: DiscountPercentageSchema.exactOptional().openapi({
+      description: 'The percentage discount.',
+    }),
+    usage: DiscountUsageSchema.exactOptional().openapi({ description: 'The usage discount.' }),
+  })
+  .openapi({ description: 'Discount by type on a price', required: [] })
+  .openapi('Discounts')
+
+const RateCardFlatFeeSchema = z
+  .object({
+    type: z
+      .literal('flat_fee')
+      .openapi({ description: 'The type of the RateCard.', title: 'RateCard type' }),
+    key: z
+      .string()
+      .regex(/^[a-z0-9]+(?:_[a-z0-9]+)*$/)
+      .min(1)
+      .max(64)
+      .openapi({ description: 'A semi-unique identifier for the resource.', title: 'Key' }),
+    name: z
+      .string()
+      .min(1)
+      .max(256)
+      .openapi({
+        description: 'Human-readable name for the resource. Between 1 and 256 characters.',
+        title: 'Display name',
+      }),
+    description: z
+      .string()
+      .max(1024)
+      .exactOptional()
+      .openapi({
+        description: 'Optional description of the resource. Maximum 1024 characters.',
+        title: 'Description',
+      }),
+    metadata: MetadataSchema.nullable()
+      .exactOptional()
+      .openapi({ description: 'Additional metadata for the resource.', title: 'Metadata' }),
+    featureKey: z
+      .string()
+      .regex(/^[a-z0-9]+(?:_[a-z0-9]+)*$/)
+      .min(1)
+      .max(64)
+      .exactOptional()
+      .openapi({
+        description: 'The feature the customer is entitled to use.',
+        title: 'Feature key',
+      }),
+    entitlementTemplate: RateCardEntitlementSchema.exactOptional().openapi({
+      description: 'The entitlement of the rate card.\nOnly available when featureKey is set.',
+    }),
+    taxConfig: TaxConfigSchema.exactOptional().openapi({
+      description:
+        'The tax config of the rate card.\nWhen undefined, the tax config of the feature or the default tax config of the plan is used.',
+      title: 'Tax config',
+    }),
+    billingCadence: z.iso
+      .duration()
+      .nullable()
+      .openapi({
+        description:
+          'The billing cadence of the rate card.\nWhen null it means it is a one time fee.',
+        title: 'Billing cadence',
+      }),
+    price: FlatPriceWithPaymentTermSchema.nullable().openapi({
+      description: 'The price of the rate card.\nWhen null, the feature or service is free.',
+      title: 'Price',
+      example: { type: 'flat', amount: '100', paymentTerm: 'in_arrears' },
+    }),
+    discounts: DiscountsSchema.exactOptional().openapi({
+      description:
+        'The discount of the rate card. For flat fee rate cards only percentage discounts are supported.\nOnly available when price is set.',
+      title: 'Discounts',
+    }),
+  })
+  .openapi({
+    required: ['type', 'key', 'name', 'billingCadence', 'price'],
+    description: 'A flat fee rate card defines a one-time purchase or a recurring fee.',
+  })
+  .openapi('RateCardFlatFee')
+
+const UnitPriceWithCommitmentsSchema = z
+  .object({
+    type: z.literal('unit').openapi({ description: 'The type of the price.' }),
+    amount: NumericSchema.openapi({ description: 'The amount of the unit price.' }),
+    minimumAmount: NumericSchema.exactOptional().openapi({
+      description: 'The customer is committed to spend at least the amount.',
+      title: 'Minimum amount',
+    }),
+    maximumAmount: NumericSchema.exactOptional().openapi({
+      description: 'The customer is limited to spend at most the amount.',
+      title: 'Maximum amount',
+    }),
+  })
+  .openapi({ required: ['type', 'amount'], description: 'Unit price with spend commitments.' })
+  .openapi('UnitPriceWithCommitments')
+
+const TieredPriceModeSchema = z
+  .enum(['volume', 'graduated'])
+  .openapi({ description: 'The mode of the tiered price.' })
+  .openapi('TieredPriceMode')
+
+const FlatPriceSchema = z
+  .object({
+    type: z.literal('flat').openapi({ description: 'The type of the price.' }),
+    amount: NumericSchema.openapi({ description: 'The amount of the flat price.' }),
+  })
+  .openapi({ required: ['type', 'amount'], description: 'Flat price.' })
+  .openapi('FlatPrice')
+
+const UnitPriceSchema = z
+  .object({
+    type: z.literal('unit').openapi({ description: 'The type of the price.' }),
+    amount: NumericSchema.openapi({ description: 'The amount of the unit price.' }),
+  })
+  .openapi({ required: ['type', 'amount'], description: 'Unit price.' })
+  .openapi('UnitPrice')
+
+const PriceTierSchema = z
+  .object({
+    upToAmount: NumericSchema.exactOptional().openapi({
+      description:
+        'Up to and including to this quantity will be contained in the tier.\nIf null, the tier is open-ended.',
+      title: 'Up to quantity',
+    }),
+    flatPrice: FlatPriceSchema.nullable().openapi({
+      description: 'The flat price component of the tier.',
+      title: 'Flat price component',
+    }),
+    unitPrice: UnitPriceSchema.nullable().openapi({
+      description: 'The unit price component of the tier.',
+      title: 'Unit price component',
+    }),
+  })
+  .openapi({
+    required: ['flatPrice', 'unitPrice'],
+    description: 'A price tier.\nAt least one price component is required in each tier.',
+  })
+  .openapi('PriceTier')
+
+const TieredPriceWithCommitmentsSchema = z
+  .object({
+    type: z
+      .literal('tiered')
+      .openapi({ description: 'The type of the price.\n\nOne of: flat, unit, or tiered.' }),
+    mode: TieredPriceModeSchema.openapi({
+      description:
+        'Defines if the tiering mode is volume-based or graduated:\n- In `volume`-based tiering, the maximum quantity within a period determines the per unit price.\n- In `graduated` tiering, pricing can change as the quantity grows.',
+      title: 'Mode',
+    }),
+    tiers: z
+      .array(PriceTierSchema)
+      .min(1)
+      .openapi({
+        description:
+          'The tiers of the tiered price.\nAt least one price component is required in each tier.',
+        title: 'Tiers',
+      }),
+    minimumAmount: NumericSchema.exactOptional().openapi({
+      description: 'The customer is committed to spend at least the amount.',
+      title: 'Minimum amount',
+    }),
+    maximumAmount: NumericSchema.exactOptional().openapi({
+      description: 'The customer is limited to spend at most the amount.',
+      title: 'Maximum amount',
+    }),
+  })
+  .openapi({
+    required: ['type', 'mode', 'tiers'],
+    description: 'Tiered price with spend commitments.',
+  })
+  .openapi('TieredPriceWithCommitments')
+
+const DynamicPriceWithCommitmentsSchema = z
+  .object({
+    type: z.literal('dynamic').openapi({ description: 'The type of the price.' }),
+    multiplier: NumericSchema.default('1')
+      .exactOptional()
+      .openapi({
+        description:
+          'The multiplier to apply to the base price to get the dynamic price.\n\nExamples:\n- 0.0: the price is zero\n- 0.5: the price is 50% of the base price\n- 1.0: the price is the same as the base price\n- 1.5: the price is 150% of the base price',
+        title: 'The multiplier to apply to the base price to get the dynamic price',
+      }),
+    minimumAmount: NumericSchema.exactOptional().openapi({
+      description: 'The customer is committed to spend at least the amount.',
+      title: 'Minimum amount',
+    }),
+    maximumAmount: NumericSchema.exactOptional().openapi({
+      description: 'The customer is limited to spend at most the amount.',
+      title: 'Maximum amount',
+    }),
+  })
+  .openapi({ required: ['type'], description: 'Dynamic price with spend commitments.' })
+  .openapi('DynamicPriceWithCommitments')
+
+const PackagePriceWithCommitmentsSchema = z
+  .object({
+    type: z.literal('package').openapi({ description: 'The type of the price.' }),
+    amount: NumericSchema.openapi({ description: 'The price of one package.', title: 'Amount' }),
+    quantityPerPackage: NumericSchema.openapi({
+      description: 'The quantity per package.',
+      title: 'Quantity per package',
+    }),
+    minimumAmount: NumericSchema.exactOptional().openapi({
+      description: 'The customer is committed to spend at least the amount.',
+      title: 'Minimum amount',
+    }),
+    maximumAmount: NumericSchema.exactOptional().openapi({
+      description: 'The customer is limited to spend at most the amount.',
+      title: 'Maximum amount',
+    }),
+  })
+  .openapi({
+    required: ['type', 'amount', 'quantityPerPackage'],
+    description: 'Package price with spend commitments.',
+  })
+  .openapi('PackagePriceWithCommitments')
+
+const RateCardUsageBasedPriceSchema = z
+  .discriminatedUnion('type', [
+    FlatPriceWithPaymentTermSchema,
+    UnitPriceWithCommitmentsSchema,
+    TieredPriceWithCommitmentsSchema,
+    DynamicPriceWithCommitmentsSchema,
+    PackagePriceWithCommitmentsSchema,
+  ])
+  .openapi({
+    discriminator: {
+      propertyName: 'type',
+      mapping: {
+        flat: '#/components/schemas/FlatPriceWithPaymentTerm',
+        unit: '#/components/schemas/UnitPriceWithCommitments',
+        tiered: '#/components/schemas/TieredPriceWithCommitments',
+        dynamic: '#/components/schemas/DynamicPriceWithCommitments',
+        package: '#/components/schemas/PackagePriceWithCommitments',
+      },
+    },
+    description: 'The price of the usage based rate card.',
+  })
+  .openapi('RateCardUsageBasedPrice')
+
+const RateCardUsageBasedSchema = z
+  .object({
+    type: z
+      .literal('usage_based')
+      .openapi({ description: 'The type of the RateCard.', title: 'RateCard type' }),
+    key: z
+      .string()
+      .regex(/^[a-z0-9]+(?:_[a-z0-9]+)*$/)
+      .min(1)
+      .max(64)
+      .openapi({ description: 'A semi-unique identifier for the resource.', title: 'Key' }),
+    name: z
+      .string()
+      .min(1)
+      .max(256)
+      .openapi({
+        description: 'Human-readable name for the resource. Between 1 and 256 characters.',
+        title: 'Display name',
+      }),
+    description: z
+      .string()
+      .max(1024)
+      .exactOptional()
+      .openapi({
+        description: 'Optional description of the resource. Maximum 1024 characters.',
+        title: 'Description',
+      }),
+    metadata: MetadataSchema.nullable()
+      .exactOptional()
+      .openapi({ description: 'Additional metadata for the resource.', title: 'Metadata' }),
+    featureKey: z
+      .string()
+      .regex(/^[a-z0-9]+(?:_[a-z0-9]+)*$/)
+      .min(1)
+      .max(64)
+      .exactOptional()
+      .openapi({
+        description: 'The feature the customer is entitled to use.',
+        title: 'Feature key',
+      }),
+    entitlementTemplate: RateCardEntitlementSchema.exactOptional().openapi({
+      description: 'The entitlement of the rate card.\nOnly available when featureKey is set.',
+    }),
+    taxConfig: TaxConfigSchema.exactOptional().openapi({
+      description:
+        'The tax config of the rate card.\nWhen undefined, the tax config of the feature or the default tax config of the plan is used.',
+      title: 'Tax config',
+    }),
+    billingCadence: z.iso
+      .duration()
+      .openapi({ description: 'The billing cadence of the rate card.', title: 'Billing cadence' }),
+    price: RateCardUsageBasedPriceSchema.nullable().openapi({
+      description: 'The price of the rate card.\nWhen null, the feature or service is free.',
+    }),
+    discounts: DiscountsSchema.exactOptional().openapi({
+      description:
+        'The discounts of the rate card.\n\nFlat fee rate cards only support percentage discounts.',
+      title: 'Discounts',
+    }),
+  })
+  .openapi({
+    required: ['type', 'key', 'name', 'billingCadence', 'price'],
+    description: 'A usage-based rate card defines a price based on usage.',
+  })
+  .openapi('RateCardUsageBased')
+
+const RateCardSchema = z
+  .discriminatedUnion('type', [RateCardFlatFeeSchema, RateCardUsageBasedSchema])
+  .openapi({
+    discriminator: {
+      propertyName: 'type',
+      mapping: {
+        flat_fee: '#/components/schemas/RateCardFlatFee',
+        usage_based: '#/components/schemas/RateCardUsageBased',
+      },
+    },
+    description: 'A rate card defines the pricing and entitlement of a feature or service.',
+  })
+  .openapi('RateCard')
+
+const ValidationErrorSchema = z
+  .object({
+    field: z
+      .string()
+      .openapi({
+        description: 'The path to the field.',
+        example: 'addons/pro/ratecards/token/featureKey',
+        readOnly: true,
+      }),
+    code: z
+      .string()
+      .openapi({
+        description: 'The machine readable description of the error.',
+        example: 'invalid_feature_key',
+        readOnly: true,
+      }),
+    message: z
+      .string()
+      .openapi({
+        description: 'The human readable description of the error.',
+        example: 'not found feature by key',
+        readOnly: true,
+      }),
+    attributes: AnnotationsSchema.exactOptional().openapi({
+      description: 'Additional attributes.',
+      readOnly: true,
+    }),
+  })
+  .openapi({
+    required: ['field', 'code', 'message'],
+    description: 'Validation errors providing detailed description of the issue.',
+  })
+  .openapi('ValidationError')
+
+const AddonSchema = z
+  .object({
+    id: z
+      .string()
+      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
+      .openapi({
+        description: 'A unique identifier for the resource.',
+        example: '01G65Z755AFWAKHE12NY0CQ9FH',
+        title: 'ID',
+        readOnly: true,
+      }),
+    name: z
+      .string()
+      .min(1)
+      .max(256)
+      .openapi({
+        description: 'Human-readable name for the resource. Between 1 and 256 characters.',
+        title: 'Display name',
+      }),
+    description: z
+      .string()
+      .max(1024)
+      .exactOptional()
+      .openapi({
+        description: 'Optional description of the resource. Maximum 1024 characters.',
+        title: 'Description',
+      }),
+    metadata: MetadataSchema.nullable()
+      .exactOptional()
+      .openapi({ description: 'Additional metadata for the resource.', title: 'Metadata' }),
+    createdAt: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'Timestamp of when the resource was created.',
+        example: '2024-01-01T01:01:01.001Z',
+        title: 'Creation Time',
+        readOnly: true,
+      }),
+    updatedAt: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'Timestamp of when the resource was last updated.',
+        example: '2024-01-01T01:01:01.001Z',
+        title: 'Last Update Time',
+        readOnly: true,
+      }),
+    deletedAt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'Timestamp of when the resource was permanently deleted.',
+        example: '2024-01-01T01:01:01.001Z',
+        title: 'Deletion Time',
+        readOnly: true,
+      }),
+    key: z
+      .string()
+      .regex(/^[a-z0-9]+(?:_[a-z0-9]+)*$/)
+      .min(1)
+      .max(64)
+      .openapi({ description: 'A semi-unique identifier for the resource.', title: 'Key' }),
+    annotations: AnnotationsSchema.exactOptional().openapi({
+      description: 'Set of key-value pairs managed by the system. Cannot be modified by user.',
+      title: 'Annotations',
+      readOnly: true,
+    }),
+    version: z
+      .int()
+      .min(1)
+      .default(1)
+      .openapi({
+        description: 'Version of the add-on. Incremented when the add-on is updated.',
+        title: 'Version',
+        readOnly: true,
+      }),
+    instanceType: AddonInstanceTypeSchema.openapi({
+      description: 'The instanceType of the add-ons. Can be "single" or "multiple".',
+      title: 'InstanceType',
+    }),
+    currency: CurrencyCodeSchema.default('USD').openapi({
+      description: 'The currency code of the add-on.',
+      title: 'Currency',
+    }),
+    effectiveFrom: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'The date and time when the add-on becomes effective. When not specified, the add-on is a draft.',
+        example: '2023-01-01T01:01:01.001Z',
+        title: 'Effective start date',
+        readOnly: true,
+      }),
+    effectiveTo: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'The date and time when the add-on is no longer effective. When not specified, the add-on is effective indefinitely.',
+        example: '2023-01-01T01:01:01.001Z',
+        title: 'Effective end date',
+        readOnly: true,
+      }),
+    status: AddonStatusSchema.openapi({
+      description:
+        'The status of the add-on.\nComputed based on the effective start and end dates:\n- draft = no effectiveFrom\n- active = effectiveFrom <= now < effectiveTo\n- archived  = effectiveTo <= now',
+      title: 'Status',
+      readOnly: true,
+    }),
+    rateCards: z
+      .array(RateCardSchema)
+      .openapi({ description: 'The rate cards of the add-on.', title: 'Rate cards' }),
+    validationErrors: z
+      .array(ValidationErrorSchema)
+      .nullable()
+      .openapi({
+        description: 'List of validation errors.',
+        title: 'Validation errors',
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    required: [
+      'id',
+      'name',
+      'createdAt',
+      'updatedAt',
+      'key',
+      'version',
+      'instanceType',
+      'currency',
+      'status',
+      'rateCards',
+      'validationErrors',
+    ],
+    description:
+      'Add-on allows extending subscriptions with compatible plans with additional ratecards.',
+  })
+  .openapi('Addon')
+
+type AddonPaginatedResponseType = {
+  totalCount: number
+  page: number
+  pageSize: number
+  items: z.infer<typeof AddonSchema>[]
+}
+
+const BillingProfileCustomerOverrideSchema = z
+  .object({
+    createdAt: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'Timestamp of when the resource was created.',
+        example: '2024-01-01T01:01:01.001Z',
+        title: 'Creation Time',
+        readOnly: true,
+      }),
+    updatedAt: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'Timestamp of when the resource was last updated.',
+        example: '2024-01-01T01:01:01.001Z',
+        title: 'Last Update Time',
+        readOnly: true,
+      }),
+    billingProfileId: z
+      .string()
+      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
+      .exactOptional()
+      .openapi({
+        description:
+          'The billing profile this override is associated with.\n\nIf empty the default profile is looked up dynamically.',
+        example: '01G65Z755AFWAKHE12NY0CQ9FH',
+      }),
+    customerId: z
+      .string()
+      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
+      .openapi({
+        description: 'The customer id this override is associated with.',
+        example: '01G65Z755AFWAKHE12NY0CQ9FH',
+      }),
+  })
+  .openapi({
+    required: ['createdAt', 'updatedAt', 'customerId'],
+    description: 'Customer override values.',
+  })
+  .openapi('BillingProfileCustomerOverride')
+
+const BillingTaxIdentificationCodeSchema = z
+  .string()
+  .min(1)
+  .max(32)
+  .openapi({
+    description:
+      'TaxIdentificationCode is a normalized tax code shown on the original identity document.',
+  })
+  .openapi('BillingTaxIdentificationCode')
+
+const BillingPartyTaxIdentitySchema = z
+  .object({
+    code: BillingTaxIdentificationCodeSchema.exactOptional().openapi({
+      description: 'Normalized tax code shown on the original identity document.',
+    }),
+  })
+  .openapi({
+    description:
+      'Identity stores the details required to identify an entity for tax purposes in a specific country.',
+    required: [],
+  })
+  .openapi('BillingPartyTaxIdentity')
+
+const CountryCodeSchema = z
+  .string()
+  .regex(/^[A-Z]{2}$/)
+  .length(2)
+  .openapi({
+    description:
+      '[ISO 3166-1](https://www.iso.org/iso-3166-country-codes.html) alpha-2 country code.\nCustom two-letter country codes are also supported for convenience.',
+    example: 'US',
+  })
+  .openapi('CountryCode')
+
+const AddressSchema = z
+  .object({
+    country: CountryCodeSchema.exactOptional().openapi({
+      description:
+        'Country code in [ISO 3166-1](https://www.iso.org/iso-3166-country-codes.html) alpha-2 format.',
+    }),
+    postalCode: z.string().exactOptional().openapi({ description: 'Postal code.' }),
+    state: z.string().exactOptional().openapi({ description: 'State or province.' }),
+    city: z.string().exactOptional().openapi({ description: 'City.' }),
+    line1: z.string().exactOptional().openapi({ description: 'First line of the address.' }),
+    line2: z.string().exactOptional().openapi({ description: 'Second line of the address.' }),
+    phoneNumber: z.string().exactOptional().openapi({ description: 'Phone number.' }),
+  })
+  .openapi({ description: 'Address', required: [] })
+  .openapi('Address')
+
+const BillingPartySchema = z
+  .object({
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Unique identifier for the party (if available)', readOnly: true }),
+    key: z
+      .string()
+      .min(1)
+      .max(256)
+      .exactOptional()
+      .openapi({ description: 'An optional unique key of the party (if available)', title: 'Key' }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Legal name or representation of the organization.' }),
+    taxId: BillingPartyTaxIdentitySchema.exactOptional().openapi({
+      description:
+        "The entity's legal ID code used for tax purposes. They may have\nother numbers, but we're only interested in those valid for tax purposes.",
+    }),
+    addresses: z
+      .array(AddressSchema)
+      .max(1)
+      .exactOptional()
+      .openapi({
+        description: 'Regular post addresses for where information should be sent if needed.',
+      }),
+  })
+  .openapi({ description: 'Party represents a person or business entity.', required: [] })
+  .openapi('BillingParty')
+
+const BillingWorkflowCollectionAlignmentSubscriptionSchema = z
+  .object({ type: z.literal('subscription').openapi({ description: 'The type of alignment.' }) })
+  .openapi({
+    required: ['type'],
+    description:
+      'BillingWorkflowCollectionAlignmentSubscription specifies the alignment for collecting the pending line items\ninto an invoice.',
+  })
+  .openapi('BillingWorkflowCollectionAlignmentSubscription')
+
+const RecurringPeriodIntervalEnumSchema = z
+  .enum(['DAY', 'WEEK', 'MONTH', 'YEAR'])
+  .openapi({
+    description: 'The unit of time for the interval.\nOne of: `day`, `week`, `month`, or `year`.',
+  })
+  .openapi('RecurringPeriodIntervalEnum')
+
+const RecurringPeriodIntervalSchema = z
+  .union([
+    z
+      .string()
+      .regex(
+        /^P(?:\d+(?:\.\d+)?Y)?(?:\d+(?:\.\d+)?M)?(?:\d+(?:\.\d+)?W)?(?:\d+(?:\.\d+)?D)?(?:T(?:\d+(?:\.\d+)?H)?(?:\d+(?:\.\d+)?M)?(?:\d+(?:\.\d+)?S)?)?$/,
+      ),
+    RecurringPeriodIntervalEnumSchema,
+  ])
+  .openapi({ description: 'Period duration for the recurrence' })
+  .openapi('RecurringPeriodInterval')
+
+const RecurringPeriodV2Schema = z
+  .object({
+    interval: RecurringPeriodIntervalSchema.openapi({
+      description:
+        'The unit of time for the interval. Heuristically maps ISO duraitons to enum values or returns the ISO duration.',
+      title: 'Interval',
+    }),
+    anchor: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'A date-time anchor to base the recurring period on.',
+        example: '2023-01-01T01:01:01.001Z',
+        title: 'Anchor time',
+      }),
+  })
+  .openapi({
+    required: ['interval', 'anchor'],
+    description: 'Recurring period with an interval and an anchor.',
+  })
+  .openapi('RecurringPeriodV2')
+
+const BillingWorkflowCollectionAlignmentAnchoredSchema = z
+  .object({
+    type: z.literal('anchored').openapi({ description: 'The type of alignment.' }),
+    recurringPeriod: RecurringPeriodV2Schema.openapi({
+      description: 'The recurring period for the alignment.',
+    }),
+  })
+  .openapi({
+    required: ['type', 'recurringPeriod'],
+    description:
+      'BillingWorkflowCollectionAlignmentAnchored specifies the alignment for collecting the pending line items\ninto an invoice.',
+  })
+  .openapi('BillingWorkflowCollectionAlignmentAnchored')
+
+const BillingWorkflowCollectionAlignmentSchema = z
+  .discriminatedUnion('type', [
+    BillingWorkflowCollectionAlignmentSubscriptionSchema,
+    BillingWorkflowCollectionAlignmentAnchoredSchema,
+  ])
+  .openapi({
+    discriminator: {
+      propertyName: 'type',
+      mapping: {
+        subscription: '#/components/schemas/BillingWorkflowCollectionAlignmentSubscription',
+        anchored: '#/components/schemas/BillingWorkflowCollectionAlignmentAnchored',
+      },
+    },
+    description:
+      'The alignment for collecting the pending line items into an invoice.\n\nDefaults to subscription, which means that we are to create a new invoice every time the\na subscription period starts (for in advance items) or ends (for in arrears items).',
+  })
+  .openapi('BillingWorkflowCollectionAlignment')
+
+const BillingWorkflowCollectionSettingsSchema = z
+  .object({
+    alignment: BillingWorkflowCollectionAlignmentSchema.default({ type: 'subscription' })
+      .exactOptional()
+      .openapi({
+        description: 'The alignment for collecting the pending line items into an invoice.',
+      }),
+    interval: z
+      .string()
+      .default('PT1H')
+      .exactOptional()
+      .openapi({
+        description:
+          'This grace period can be used to delay the collection of the pending line items specified in\nalignment.\n\nThis is useful, in case of multiple subscriptions having slightly different billing periods.',
+        example: 'P1D',
+      }),
+  })
+  .openapi({
+    description:
+      'Workflow collection specifies how to collect the pending line items for an invoice',
+    required: [],
+  })
+  .openapi('BillingWorkflowCollectionSettings')
+
+const BillingWorkflowInvoicingSubscriptionEndProrationModeSchema = z
+  .enum(['bill_full_period', 'bill_actual_period'])
+  .openapi({ description: 'Billing workflow subscription end proration mode.' })
+  .openapi('BillingWorkflowInvoicingSubscriptionEndProrationMode')
+
+const BillingWorkflowInvoicingSettingsSchema = z
+  .object({
+    autoAdvance: z
+      .boolean()
+      .default(true)
+      .exactOptional()
+      .openapi({
+        description: 'Whether to automatically issue the invoice after the draftPeriod has passed.',
+      }),
+    draftPeriod: z
+      .string()
+      .default('P0D')
+      .exactOptional()
+      .openapi({
+        description: 'The period for the invoice to be kept in draft status for manual reviews.',
+        example: 'P1D',
+      }),
+    dueAfter: z
+      .string()
+      .default('P30D')
+      .exactOptional()
+      .openapi({
+        description:
+          "The period after which the invoice is due.\nWith some payment solutions it's only applicable for manual collection method.",
+        example: 'P30D',
+      }),
+    progressiveBilling: z
+      .boolean()
+      .default(true)
+      .exactOptional()
+      .openapi({ description: 'Should progressive billing be allowed for this workflow?' }),
+    subscriptionEndProrationMode:
+      BillingWorkflowInvoicingSubscriptionEndProrationModeSchema.default('bill_actual_period')
+        .exactOptional()
+        .openapi({
+          description: 'Controls how subscription-ending shortened service periods are billed.',
+        }),
+    defaultTaxConfig: TaxConfigSchema.exactOptional().openapi({
+      description:
+        "Default tax configuration to apply to the invoices.\n\nSetting a tax code (`stripe.code` / `taxCodeId`) on a profile's default tax config is\ndeprecated and can no longer be added or changed: the organization default tax code is\nused instead. Existing tax-code values may still be removed, and `behavior` remains\nfully supported.",
+    }),
+  })
+  .openapi({
+    description:
+      'BillingWorkflowInvoicingSettings represents the invoice settings for a billing workflow',
+    title: 'Workflow invoice settings',
+    required: [],
+  })
+  .openapi('BillingWorkflowInvoicingSettings')
+
+const CollectionMethodSchema = z
+  .enum(['charge_automatically', 'send_invoice'])
+  .openapi({
+    description:
+      'CollectionMethod specifies how the invoice should be collected (automatic vs manual)',
+    title: 'Collection method',
+  })
+  .openapi('CollectionMethod')
+
+const BillingWorkflowPaymentSettingsSchema = z
+  .object({
+    collectionMethod: CollectionMethodSchema.default('charge_automatically')
+      .exactOptional()
+      .openapi({ description: 'The payment method for the invoice.' }),
+  })
+  .openapi({
+    description:
+      'BillingWorkflowPaymentSettings represents the payment settings for a billing workflow',
+    title: 'Workflow payment settings',
+    required: [],
+  })
+  .openapi('BillingWorkflowPaymentSettings')
+
+const BillingWorkflowTaxSettingsSchema = z
+  .object({
+    enabled: z
+      .boolean()
+      .default(true)
+      .exactOptional()
+      .openapi({
+        description:
+          'Enable automatic tax calculation when tax is supported by the app.\nFor example, with Stripe Invoicing when enabled, tax is calculated via Stripe Tax.',
+      }),
+    enforced: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description:
+          'Enforce tax calculation when tax is supported by the app.\nWhen enabled, OpenMeter will not allow to create an invoice without tax calculation.\nEnforcement is different per apps, for example, Stripe app requires customer\nto have a tax location when starting a paid subscription.',
+      }),
+  })
+  .openapi({
+    description: 'BillingWorkflowTaxSettings represents the tax settings for a billing workflow',
+    title: 'Workflow tax settings',
+    required: [],
+  })
+  .openapi('BillingWorkflowTaxSettings')
+
+const BillingWorkflowSchema = z
+  .object({
+    collection: BillingWorkflowCollectionSettingsSchema.exactOptional().openapi({
+      description: 'The collection settings for this workflow',
+    }),
+    invoicing: BillingWorkflowInvoicingSettingsSchema.exactOptional().openapi({
+      description: 'The invoicing settings for this workflow',
+    }),
+    payment: BillingWorkflowPaymentSettingsSchema.exactOptional().openapi({
+      description: 'The payment settings for this workflow',
+    }),
+    tax: BillingWorkflowTaxSettingsSchema.exactOptional().openapi({
+      description: 'The tax settings for this workflow',
+    }),
+  })
+  .openapi({
+    description: 'BillingWorkflow represents the settings for a billing workflow.',
+    required: [],
+  })
+  .openapi('BillingWorkflow')
+
 const AppTypeSchema = z
   .enum(['stripe', 'sandbox', 'custom_invoicing'])
   .openapi({ description: 'Type of the app.' })
@@ -398,2338 +1519,20 @@ const CustomInvoicingAppSchema = z
   })
   .openapi('CustomInvoicingApp')
 
-type AppType =
-  | z.infer<typeof StripeAppSchema>
-  | z.infer<typeof SandboxAppSchema>
-  | z.infer<typeof CustomInvoicingAppSchema>
-
-const StripeAppReadOrCreateOrUpdateOrDeleteOrQuerySchema = z
-  .object({
-    id: z
-      .string()
-      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
-      .openapi({
-        description: 'A unique identifier for the resource.',
-        example: '01G65Z755AFWAKHE12NY0CQ9FH',
-        title: 'ID',
-        readOnly: true,
-      }),
-    name: z
-      .string()
-      .min(1)
-      .max(256)
-      .openapi({
-        description: 'Human-readable name for the resource. Between 1 and 256 characters.',
-        title: 'Display name',
-      }),
-    description: z
-      .string()
-      .max(1024)
-      .exactOptional()
-      .openapi({
-        description: 'Optional description of the resource. Maximum 1024 characters.',
-        title: 'Description',
-      }),
-    metadata: MetadataSchema.nullable()
-      .exactOptional()
-      .openapi({ description: 'Additional metadata for the resource.', title: 'Metadata' }),
-    createdAt: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'Timestamp of when the resource was created.',
-        example: '2024-01-01T01:01:01.001Z',
-        title: 'Creation Time',
-        readOnly: true,
-      }),
-    updatedAt: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'Timestamp of when the resource was last updated.',
-        example: '2024-01-01T01:01:01.001Z',
-        title: 'Last Update Time',
-        readOnly: true,
-      }),
-    deletedAt: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'Timestamp of when the resource was permanently deleted.',
-        example: '2024-01-01T01:01:01.001Z',
-        title: 'Deletion Time',
-        readOnly: true,
-      }),
-    listing: MarketplaceListingSchema.openapi({
-      description: 'The marketplace listing that this installed app is based on.',
-      readOnly: true,
-    }),
-    status: AppStatusSchema.openapi({
-      description: 'Status of the app connection.',
-      readOnly: true,
-    }),
-    type: z.literal('stripe').openapi({ description: "The app's type is Stripe." }),
-    stripeAccountId: z.string().openapi({ description: 'The Stripe account ID.', readOnly: true }),
-    livemode: z
-      .boolean()
-      .openapi({ description: 'Livemode, true if the app is in production mode.', readOnly: true }),
-    maskedAPIKey: z
-      .string()
-      .openapi({
-        description: 'The masked API key.\nOnly shows the first 8 and last 3 characters.',
-        readOnly: true,
-      }),
-    secretAPIKey: z.string().exactOptional().openapi({ description: 'The Stripe API key.' }),
-  })
-  .openapi({
-    required: [
-      'id',
-      'name',
-      'createdAt',
-      'updatedAt',
-      'listing',
-      'status',
-      'type',
-      'stripeAccountId',
-      'livemode',
-      'maskedAPIKey',
-    ],
-    description: 'A installed Stripe app object.',
-    example: {
-      id: '01G65Z755AFWAKHE12NY0CQ9FH',
-      type: 'stripe',
-      name: 'Stripe',
-      status: 'ready',
-      listing: {
-        type: 'stripe',
-        name: 'Stripe',
-        description: 'Stripe integration allows you to collect payments with Stripe.',
-        capabilities: [
-          {
-            type: 'calculateTax',
-            key: 'stripe_calculate_tax',
-            name: 'Calculate Tax',
-            description: 'Stripe Tax calculates tax portion of the invoices.',
-          },
-          {
-            type: 'invoiceCustomers',
-            key: 'stripe_invoice_customers',
-            name: 'Invoice Customers',
-            description: 'Stripe invoices customers with due amount.',
-          },
-          {
-            type: 'collectPayments',
-            key: 'stripe_collect_payments',
-            name: 'Collect Payments',
-            description:
-              "Stripe payments collects outstanding revenue with Stripe customer's default payment method.",
-          },
-        ],
-        installMethods: ['with_oauth2', 'with_api_key'],
-      },
-      createdAt: '2024-01-01T01:01:01.001Z',
-      updatedAt: '2024-01-01T01:01:01.001Z',
-      stripeAccountId: 'acct_123456789',
-      livemode: true,
-      maskedAPIKey: 'sk_live_************abc',
-    },
-  })
-  .openapi('StripeAppReadOrCreateOrUpdateOrDeleteOrQuery')
-
-type AppReadOrCreateOrUpdateOrDeleteOrQueryType =
-  | z.infer<typeof StripeAppReadOrCreateOrUpdateOrDeleteOrQuerySchema>
-  | z.infer<typeof SandboxAppSchema>
-  | z.infer<typeof CustomInvoicingAppSchema>
-
-const StripeAppReplaceUpdateSchema = z
-  .object({
-    name: z
-      .string()
-      .min(1)
-      .max(256)
-      .openapi({
-        description: 'Human-readable name for the resource. Between 1 and 256 characters.',
-        title: 'Display name',
-      }),
-    description: z
-      .string()
-      .max(1024)
-      .exactOptional()
-      .openapi({
-        description: 'Optional description of the resource. Maximum 1024 characters.',
-        title: 'Description',
-      }),
-    metadata: MetadataSchema.nullable()
-      .exactOptional()
-      .openapi({ description: 'Additional metadata for the resource.', title: 'Metadata' }),
-    type: z.literal('stripe').openapi({ description: "The app's type is Stripe." }),
-    secretAPIKey: z.string().exactOptional().openapi({ description: 'The Stripe API key.' }),
-  })
-  .openapi({ required: ['name', 'type'], description: 'Resource update operation model.' })
-  .openapi('StripeAppReplaceUpdate')
-
-const SandboxAppReplaceUpdateSchema = z
-  .object({
-    name: z
-      .string()
-      .min(1)
-      .max(256)
-      .openapi({
-        description: 'Human-readable name for the resource. Between 1 and 256 characters.',
-        title: 'Display name',
-      }),
-    description: z
-      .string()
-      .max(1024)
-      .exactOptional()
-      .openapi({
-        description: 'Optional description of the resource. Maximum 1024 characters.',
-        title: 'Description',
-      }),
-    metadata: MetadataSchema.nullable()
-      .exactOptional()
-      .openapi({ description: 'Additional metadata for the resource.', title: 'Metadata' }),
-    type: z.literal('sandbox').openapi({ description: "The app's type is Sandbox." }),
-  })
-  .openapi({ required: ['name', 'type'], description: 'Resource update operation model.' })
-  .openapi('SandboxAppReplaceUpdate')
-
-const CustomInvoicingAppReplaceUpdateSchema = z
-  .object({
-    name: z
-      .string()
-      .min(1)
-      .max(256)
-      .openapi({
-        description: 'Human-readable name for the resource. Between 1 and 256 characters.',
-        title: 'Display name',
-      }),
-    description: z
-      .string()
-      .max(1024)
-      .exactOptional()
-      .openapi({
-        description: 'Optional description of the resource. Maximum 1024 characters.',
-        title: 'Description',
-      }),
-    metadata: MetadataSchema.nullable()
-      .exactOptional()
-      .openapi({ description: 'Additional metadata for the resource.', title: 'Metadata' }),
-    type: z
-      .literal('custom_invoicing')
-      .openapi({ description: "The app's type is CustomInvoicing." }),
-    enableDraftSyncHook: z
-      .boolean()
-      .openapi({
-        description:
-          'Enable draft.sync hook.\n\nIf the hook is not enabled, the invoice will be progressed to the next state automatically.',
-      }),
-    enableIssuingSyncHook: z
-      .boolean()
-      .openapi({
-        description:
-          'Enable issuing.sync hook.\n\nIf the hook is not enabled, the invoice will be progressed to the next state automatically.',
-      }),
-  })
-  .openapi({
-    required: ['name', 'type', 'enableDraftSyncHook', 'enableIssuingSyncHook'],
-    description: 'Resource update operation model.',
-  })
-  .openapi('CustomInvoicingAppReplaceUpdate')
-
-type AppReplaceUpdateType =
-  | z.infer<typeof StripeAppReplaceUpdateSchema>
-  | z.infer<typeof SandboxAppReplaceUpdateSchema>
-  | z.infer<typeof CustomInvoicingAppReplaceUpdateSchema>
-
-const StripeCustomerAppDataSchema = z
-  .object({
-    id: z
-      .string()
-      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
-      .exactOptional()
-      .openapi({
-        description:
-          'The app ID.\nIf not provided, it will use the global default for the app type.',
-        example: '01G65Z755AFWAKHE12NY0CQ9FH',
-        title: 'App ID',
-      }),
-    type: z.literal('stripe').openapi({ description: 'The app name.', title: 'App Type' }),
-    stripeCustomerId: z.string().openapi({ description: 'The Stripe customer ID.' }),
-    stripeDefaultPaymentMethodId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The Stripe default payment method ID.' }),
-    app: StripeAppSchema.exactOptional().openapi({
-      description: 'The installed stripe app this data belongs to.',
-      readOnly: true,
-    }),
-  })
-  .openapi({
-    required: ['type', 'stripeCustomerId'],
-    description: 'Stripe Customer App Data.',
-    example: { type: 'stripe', stripeCustomerId: 'cus_xxxxxxxxxxxxxx' },
-  })
-  .openapi('StripeCustomerAppData')
-
-const SandboxCustomerAppDataSchema = z
-  .object({
-    app: SandboxAppSchema.exactOptional().openapi({
-      description: 'The installed sandbox app this data belongs to.',
-      readOnly: true,
-    }),
-    id: z
-      .string()
-      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
-      .exactOptional()
-      .openapi({
-        description:
-          'The app ID.\nIf not provided, it will use the global default for the app type.',
-        example: '01G65Z755AFWAKHE12NY0CQ9FH',
-        title: 'App ID',
-      }),
-    type: z.literal('sandbox').openapi({ description: 'The app name.', title: 'App Type' }),
-  })
-  .openapi({ required: ['type'], description: 'Sandbox Customer App Data.' })
-  .openapi('SandboxCustomerAppData')
-
-const CustomInvoicingCustomerAppDataSchema = z
-  .object({
-    app: CustomInvoicingAppSchema.exactOptional().openapi({
-      description: 'The installed custom invoicing app this data belongs to.',
-      readOnly: true,
-    }),
-    id: z
-      .string()
-      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
-      .exactOptional()
-      .openapi({
-        description:
-          'The app ID.\nIf not provided, it will use the global default for the app type.',
-        example: '01G65Z755AFWAKHE12NY0CQ9FH',
-        title: 'App ID',
-      }),
-    type: z
-      .literal('custom_invoicing')
-      .openapi({ description: 'The app name.', title: 'App Type' }),
-    metadata: MetadataSchema.exactOptional().openapi({
-      description: 'Metadata to be used by the custom invoicing provider.',
-    }),
-  })
-  .openapi({ required: ['type'], description: 'Custom Invoicing Customer App Data.' })
-  .openapi('CustomInvoicingCustomerAppData')
-
-type CustomerAppDataType =
-  | z.infer<typeof StripeCustomerAppDataSchema>
-  | z.infer<typeof SandboxCustomerAppDataSchema>
-  | z.infer<typeof CustomInvoicingCustomerAppDataSchema>
-
-const StripeCustomerAppDataCreateOrUpdateItemSchema = z
-  .object({
-    id: z
-      .string()
-      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
-      .exactOptional()
-      .openapi({
-        description:
-          'The app ID.\nIf not provided, it will use the global default for the app type.',
-        example: '01G65Z755AFWAKHE12NY0CQ9FH',
-        title: 'App ID',
-      }),
-    type: z.literal('stripe').openapi({ description: 'The app name.', title: 'App Type' }),
-    stripeCustomerId: z.string().openapi({ description: 'The Stripe customer ID.' }),
-    stripeDefaultPaymentMethodId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The Stripe default payment method ID.' }),
-  })
-  .openapi({
-    required: ['type', 'stripeCustomerId'],
-    description: 'Stripe Customer App Data.',
-    example: { type: 'stripe', stripeCustomerId: 'cus_xxxxxxxxxxxxxx' },
-  })
-  .openapi('StripeCustomerAppDataCreateOrUpdateItem')
-
-type CustomerAppDataCreateOrUpdateItemType =
-  | z.infer<typeof StripeCustomerAppDataCreateOrUpdateItemSchema>
-  | z.infer<typeof SandboxCustomerAppDataSchema>
-  | z.infer<typeof CustomInvoicingCustomerAppDataSchema>
-
-type FilterFloatType = {
-  $eq?: number | null
-  $ne?: number | null
-  $gt?: number | null
-  $gte?: number | null
-  $lt?: number | null
-  $lte?: number | null
-  $and?: FilterFloatType[] | null
-  $or?: FilterFloatType[] | null
-}
-
-type FilterIntegerType = {
-  $eq?: number | null
-  $ne?: number | null
-  $gt?: number | null
-  $gte?: number | null
-  $lt?: number | null
-  $lte?: number | null
-  $and?: FilterIntegerType[] | null
-  $or?: FilterIntegerType[] | null
-}
-
-type FilterStringType = {
-  $eq?: string | null
-  $ne?: string | null
-  $in?: string[] | null
-  $nin?: string[] | null
-  $like?: string | null
-  $nlike?: string | null
-  $ilike?: string | null
-  $nilike?: string | null
-  $gt?: string | null
-  $gte?: string | null
-  $lt?: string | null
-  $lte?: string | null
-  $and?: FilterStringType[] | null
-  $or?: FilterStringType[] | null
-}
-
-type FilterTimeType = {
-  $gt?: string | null
-  $gte?: string | null
-  $lt?: string | null
-  $lte?: string | null
-  $and?: FilterTimeType[] | null
-  $or?: FilterTimeType[] | null
-}
-
-const NumericSchema = z
-  .string()
-  .regex(/^\-?[0-9]+(\.[0-9]+)?$/)
-  .openapi({ description: 'Numeric represents an arbitrary precision number.' })
-  .openapi('Numeric')
-
-const FlatPriceSchema = z
-  .object({
-    type: z.literal('flat').openapi({ description: 'The type of the price.' }),
-    amount: NumericSchema.openapi({ description: 'The amount of the flat price.' }),
-  })
-  .openapi({ required: ['type', 'amount'], description: 'Flat price.' })
-  .openapi('FlatPrice')
-
-const UnitPriceSchema = z
-  .object({
-    type: z.literal('unit').openapi({ description: 'The type of the price.' }),
-    amount: NumericSchema.openapi({ description: 'The amount of the unit price.' }),
-  })
-  .openapi({ required: ['type', 'amount'], description: 'Unit price.' })
-  .openapi('UnitPrice')
-
-const TieredPriceModeSchema = z
-  .enum(['volume', 'graduated'])
-  .openapi({ description: 'The mode of the tiered price.' })
-  .openapi('TieredPriceMode')
-
-const PriceTierSchema = z
-  .object({
-    upToAmount: NumericSchema.exactOptional().openapi({
-      description:
-        'Up to and including to this quantity will be contained in the tier.\nIf null, the tier is open-ended.',
-      title: 'Up to quantity',
-    }),
-    flatPrice: FlatPriceSchema.nullable().openapi({
-      description: 'The flat price component of the tier.',
-      title: 'Flat price component',
-    }),
-    unitPrice: UnitPriceSchema.nullable().openapi({
-      description: 'The unit price component of the tier.',
-      title: 'Unit price component',
-    }),
-  })
-  .openapi({
-    required: ['flatPrice', 'unitPrice'],
-    description: 'A price tier.\nAt least one price component is required in each tier.',
-  })
-  .openapi('PriceTier')
-
-const TieredPriceSchema = z
-  .object({
-    type: z
-      .literal('tiered')
-      .openapi({ description: 'The type of the price.\n\nOne of: flat, unit, or tiered.' }),
-    mode: TieredPriceModeSchema.openapi({
-      description:
-        'Defines if the tiering mode is volume-based or graduated:\n- In `volume`-based tiering, the maximum quantity within a period determines the per unit price.\n- In `graduated` tiering, pricing can change as the quantity grows.',
-      title: 'Mode',
-    }),
-    tiers: z
-      .array(PriceTierSchema)
-      .min(1)
-      .openapi({
-        description:
-          'The tiers of the tiered price.\nAt least one price component is required in each tier.',
-        title: 'Tiers',
-      }),
-  })
-  .openapi({ required: ['type', 'mode', 'tiers'], description: 'Tiered price.' })
-  .openapi('TieredPrice')
-
-const DynamicPriceSchema = z
-  .object({
-    type: z.literal('dynamic').openapi({ description: 'The type of the price.' }),
-    multiplier: NumericSchema.default('1')
-      .exactOptional()
-      .openapi({
-        description:
-          'The multiplier to apply to the base price to get the dynamic price.\n\nExamples:\n- 0.0: the price is zero\n- 0.5: the price is 50% of the base price\n- 1.0: the price is the same as the base price\n- 1.5: the price is 150% of the base price',
-        title: 'The multiplier to apply to the base price to get the dynamic price',
-      }),
-  })
-  .openapi({
-    required: ['type'],
-    description:
-      "Dynamic price.\n\nThe underlying meter's value is considered the base price in the\ncustomer's currency.\n\nThe rate specifies the markup over the price.",
-  })
-  .openapi('DynamicPrice')
-
-const PackagePriceSchema = z
-  .object({
-    type: z.literal('package').openapi({ description: 'The type of the price.' }),
-    amount: NumericSchema.openapi({ description: 'The price of one package.', title: 'Amount' }),
-    quantityPerPackage: NumericSchema.openapi({
-      description: 'The quantity per package.',
-      title: 'Quantity per package',
-    }),
-  })
-  .openapi({
-    required: ['type', 'amount', 'quantityPerPackage'],
-    description:
-      'Package price.\n\nThe item is sold in packages. Each package contains quantityPerPackage items, the price of the\npackage is set in amount.\n\nThe total price of the usage will be enough packages that can accomodate all the usage.\n\nExamples (given a package size of 20, and an amount of $10):\n- if the quantity is 98, the price will be 5*$10=$50.\n- if the quantity is zero, the price will be 0*$10=$0, as even the first package is not purchased.\n- if the quantity is 20, the price will be 1*$10=$10, as the usage fits into the first package.\n- if the quantity is 20.1, the price will be 2*$10=$20, as the additional 0.1 usage (compared to the\nprevious example) requires a new package.',
-  })
-  .openapi('PackagePrice')
-
-type PriceType =
-  | z.infer<typeof FlatPriceSchema>
-  | z.infer<typeof UnitPriceSchema>
-  | z.infer<typeof TieredPriceSchema>
-  | z.infer<typeof DynamicPriceSchema>
-  | z.infer<typeof PackagePriceSchema>
-
-const SubscriptionTimingEnumSchema = z
-  .enum(['immediate', 'next_billing_cycle'])
-  .openapi({
-    description:
-      'Subscription edit timing.\nWhen immediate, the requested changes take effect immediately.\nWhen nextBillingCycle, the requested changes take effect at the next billing cycle.',
-  })
-  .openapi('SubscriptionTimingEnum')
-
-const SubscriptionTimingSchema = z
-  .xor([
-    SubscriptionTimingEnumSchema,
-    z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description:
-          '[RFC3339](https://tools.ietf.org/html/rfc3339) formatted date-time string in UTC.',
-        example: '2023-01-01T01:01:01.001Z',
-      }),
-  ])
-  .openapi({
-    description:
-      'Subscription edit timing defined when the changes should take effect.\nIf the provided configuration is not supported by the subscription, an error will be returned.',
-  })
-  .openapi('SubscriptionTiming')
-
-const AlignmentSchema = z
-  .object({
-    billablesMustAlign: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          "Whether all Billable items and RateCards must align.\nAlignment means the Price's BillingCadence must align for both duration and anchor time.",
-        deprecated: true,
-      }),
-  })
-  .openapi({
-    description: 'Alignment configuration for a plan or subscription.',
-    deprecated: true,
-    required: [],
-  })
-  .openapi('Alignment')
-
-const PlanReferenceInputSchema = z
-  .object({
-    key: z
-      .string()
-      .regex(/^[a-z0-9]+(?:_[a-z0-9]+)*$/)
-      .min(1)
-      .max(64)
-      .openapi({ description: 'The plan key.' }),
-    version: z.int().exactOptional().openapi({ description: 'The plan version.' }),
-  })
-  .openapi({
-    required: ['key'],
-    description: 'References an exact plan defaulting to the current active version.',
-  })
-  .openapi('PlanReferenceInput')
-
-const BillingSettlementModeSchema = z
-  .enum(['credit_then_invoice', 'credit_only'])
-  .openapi({
-    description:
-      'The settlement mode of a plan.\nIt determines how the billing system generates invoices and credits for the subscriptions using this plan.\n- credit_then_invoice: credits from the previous billing period are applied first, then the remaining balance is invoiced. This is the default and most common settlement mode.\n- credit_only: only credits from the previous billing period are generated and applied. No invoices are generated for the subscription.',
-  })
-  .openapi('BillingSettlementMode')
-
-const SubscriptionCostBasisModeSchema = z
-  .enum(['dynamic', 'pinned'])
-  .openapi({
-    description: 'Controls how custom-currency cost bases are selected for the subscription.',
-  })
-  .openapi('SubscriptionCostBasisMode')
-
-const PlanSubscriptionChangeSchema = z
-  .object({
-    timing: SubscriptionTimingSchema.openapi({
-      description:
-        'Timing configuration for the change, when the change should take effect.\nFor changing a subscription, the accepted values depend on the subscription configuration.',
-    }),
-    alignment: AlignmentSchema.exactOptional().openapi({
-      description: 'What alignment settings the subscription should have.',
-    }),
-    metadata: MetadataSchema.exactOptional().openapi({
-      description: 'Arbitrary metadata associated with the subscription.',
-    }),
-    plan: PlanReferenceInputSchema.openapi({ description: 'The plan reference to change to.' }),
-    startingPhase: z
-      .string()
-      .min(1)
-      .exactOptional()
-      .openapi({
-        description:
-          'The key of the phase to start the subscription in.\nIf not provided, the subscription will start in the first phase of the plan.',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The name of the Subscription. If not provided the plan name is used.',
-      }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Description for the Subscription.' }),
-    billingAnchor: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description:
-          'The billing anchor of the subscription. The provided date will be normalized according to the billing cadence to the nearest recurrence before start time. If not provided, the previous subscription billing anchor will be used.',
-        example: '2023-01-01T01:01:01.001Z',
-      }),
-    settlementMode: BillingSettlementModeSchema.exactOptional().openapi({
-      description: 'The settlement mode of the subscription.',
-    }),
-    costBasisMode: SubscriptionCostBasisModeSchema.default('dynamic')
-      .exactOptional()
-      .openapi({
-        description:
-          'Controls how custom-currency cost bases are selected for the new subscription.',
-      }),
-  })
-  .openapi({ required: ['timing', 'plan'], description: 'Change subscription based on plan.' })
-  .openapi('PlanSubscriptionChange')
-
-const CurrencyCodeSchema = z
-  .string()
-  .regex(/^[A-Z]{3}$/)
-  .length(3)
-  .openapi({
-    description:
-      'Three-letter [ISO4217](https://www.iso.org/iso-4217-currency-codes.html) currency code.\nCustom three-letter currency codes are also supported for convenience.',
-    example: 'USD',
-  })
-  .openapi('CurrencyCode')
-
-const ProRatingModeSchema = z
-  .literal('prorate_prices')
-  .openapi({ description: 'Pro-rating mode options for handling billing period changes.' })
-  .openapi('ProRatingMode')
-
-const ProRatingConfigSchema = z
-  .object({
-    enabled: z
-      .boolean()
-      .default(true)
-      .openapi({
-        description: 'Whether pro-rating is enabled for this plan.',
-        title: 'Enable pro-rating',
-      }),
-    mode: ProRatingModeSchema.default('prorate_prices').openapi({
-      description: 'How to handle pro-rating for billing period changes.',
-      title: 'Pro-rating mode',
-    }),
-  })
-  .openapi({ required: ['enabled', 'mode'], description: 'Configuration for pro-rating behavior.' })
-  .openapi('ProRatingConfig')
-
-const RateCardMeteredEntitlementSchema = z
-  .object({
-    metadata: MetadataSchema.exactOptional().openapi({
-      description: 'Additional metadata for the feature.',
-    }),
-    type: z.literal('metered'),
-    isSoftLimit: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({
-        description:
-          'If softLimit=true the subject can use the feature even if the entitlement is exhausted, hasAccess will always be true.',
-        title: 'Soft limit',
-      }),
-    issueAfterReset: z
-      .float64()
-      .min(0)
-      .exactOptional()
-      .openapi({
-        description:
-          'You can grant usage automatically alongside the entitlement, the example scenario would be creating a starting balance.\nIf an amount is specified here, a grant will be created alongside the entitlement with the specified amount.\nThat grant will have it\'s rollover settings configured in a way that after each reset operation, the balance will return the original amount specified here.\nManually creating such a grant would mean having the "amount", "minRolloverAmount", and "maxRolloverAmount" fields all be the same.',
-        title: 'Initial grant amount',
-      }),
-    issueAfterResetPriority: z
-      .int()
-      .min(1)
-      .max(255)
-      .default(1)
-      .exactOptional()
-      .openapi({
-        description: 'Defines the grant priority for the default grant.',
-        title: 'Issue grant after reset priority',
-      }),
-    preserveOverageAtReset: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({
-        description:
-          'If true, the overage is preserved at reset. If false, the usage is reset to 0.',
-        title: 'Preserve overage at reset',
-      }),
-    usagePeriod: z.iso
-      .duration()
-      .exactOptional()
-      .openapi({
-        description:
-          'The interval of the metered entitlement.\nDefaults to the billing cadence of the rate card.',
-        title: 'Usage Period',
-      }),
-  })
-  .openapi({
-    required: ['type'],
-    description: 'The entitlement template with a metered entitlement.',
-  })
-  .openapi('RateCardMeteredEntitlement')
-
-const RateCardStaticEntitlementSchema = z
-  .object({
-    metadata: MetadataSchema.exactOptional().openapi({
-      description: 'Additional metadata for the feature.',
-    }),
-    type: z.literal('static'),
-    config: z
-      .string()
-      .openapi({
-        description:
-          'The JSON parsable config of the entitlement. This value is also returned when checking entitlement access and it is useful for configuring fine-grained access settings to the feature, implemented in your own system. Has to be an object.',
-        example: '{ "integrations": ["github"] }',
-      }),
-  })
-  .openapi({
-    required: ['type', 'config'],
-    description: 'Entitlement template of a static entitlement.',
-  })
-  .openapi('RateCardStaticEntitlement')
-
-const RateCardBooleanEntitlementSchema = z
-  .object({
-    metadata: MetadataSchema.exactOptional().openapi({
-      description: 'Additional metadata for the feature.',
-    }),
-    type: z.literal('boolean'),
-  })
-  .openapi({ required: ['type'], description: 'Entitlement template of a boolean entitlement.' })
-  .openapi('RateCardBooleanEntitlement')
-
-const RateCardEntitlementSchema = z
-  .discriminatedUnion('type', [
-    RateCardMeteredEntitlementSchema,
-    RateCardStaticEntitlementSchema,
-    RateCardBooleanEntitlementSchema,
-  ])
+const AppSchema = z
+  .discriminatedUnion('type', [StripeAppSchema, SandboxAppSchema, CustomInvoicingAppSchema])
   .openapi({
     discriminator: {
       propertyName: 'type',
       mapping: {
-        metered: '#/components/schemas/RateCardMeteredEntitlement',
-        static: '#/components/schemas/RateCardStaticEntitlement',
-        boolean: '#/components/schemas/RateCardBooleanEntitlement',
+        stripe: '#/components/schemas/StripeApp',
+        sandbox: '#/components/schemas/SandboxApp',
+        custom_invoicing: '#/components/schemas/CustomInvoicingApp',
       },
     },
-    description:
-      'Entitlement templates are used to define the entitlements of a plan.\nFeatures are omitted from the entitlement template, as they are defined in the rate card.',
+    description: 'App.\nOne of: stripe',
   })
-  .openapi('RateCardEntitlement')
-
-const TaxConfigSchema: z.ZodType<TaxConfigType> = z
-  .lazy(() =>
-    z
-      .object({
-        behavior: TaxBehaviorSchema.exactOptional().openapi({
-          description:
-            "Tax behavior.\n\nIf not specified the billing profile is used to determine the tax behavior.\nIf not specified in the billing profile, the provider's default behavior is used.",
-          title: 'Tax behavior',
-        }),
-        stripe: StripeTaxConfigSchema.exactOptional().openapi({
-          description: 'Stripe tax config.',
-          title: 'Stripe tax config',
-          deprecated: true,
-        }),
-        customInvoicing: CustomInvoicingTaxConfigSchema.exactOptional().openapi({
-          description: 'Custom invoicing tax config.',
-          title: 'Custom invoicing tax config',
-          deprecated: true,
-        }),
-        taxCodeId: z
-          .string()
-          .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
-          .exactOptional()
-          .openapi({
-            description:
-              'Tax code reference.\n\nWhen both `taxCodeId` and `stripe.code` are provided, `taxCodeId` takes precedence:\nthe referenced tax code entity is used and `stripe.code` is ignored.',
-            example: '01G65Z755AFWAKHE12NY0CQ9FH',
-            title: 'Tax code ID',
-          }),
-      })
-      .openapi({ description: 'Set of provider specific tax configs.', required: [] }),
-  )
-  .openapi('TaxConfig')
-
-const PricePaymentTermSchema = z
-  .enum(['in_advance', 'in_arrears'])
-  .openapi({ description: 'The payment term of a flat price.\nOne of: in_advance or in_arrears.' })
-  .openapi('PricePaymentTerm')
-
-const FlatPriceWithPaymentTermSchema = z
-  .object({
-    type: z.literal('flat').openapi({ description: 'The type of the price.' }),
-    amount: NumericSchema.openapi({ description: 'The amount of the flat price.' }),
-    paymentTerm: PricePaymentTermSchema.default('in_advance')
-      .exactOptional()
-      .openapi({ description: 'The payment term of the flat price.\nDefaults to in advance.' }),
-  })
-  .openapi({ required: ['type', 'amount'], description: 'Flat price with payment term.' })
-  .openapi('FlatPriceWithPaymentTerm')
-
-const PercentageSchema = z
-  .float64()
-  .openapi({
-    description: 'Numeric representation of a percentage\n\n50% is represented as 50',
-    example: 50,
-    'x-go-package': 'github.com/openmeterio/openmeter/pkg/models',
-    'x-go-type': 'models.Percentage',
-  })
-  .openapi('Percentage')
-
-const DiscountPercentageSchema = z
-  .object({
-    percentage: PercentageSchema.openapi({
-      description: 'The percentage of the discount.',
-      title: 'Percentage',
-    }),
-  })
-  .openapi({ required: ['percentage'], description: 'Percentage discount.' })
-  .openapi('DiscountPercentage')
-
-const DiscountUsageSchema = z
-  .object({
-    quantity: NumericSchema.openapi({
-      description: 'The quantity of the usage discount.\n\nMust be positive.',
-      title: 'Usage',
-    }),
-  })
-  .openapi({
-    required: ['quantity'],
-    description:
-      'Usage discount.\n\nUsage discount means that the first N items are free. From billing perspective\nthis means that any usage on a specific feature is considered 0 until this discount\nis exhausted.',
-  })
-  .openapi('DiscountUsage')
-
-const DiscountsSchema = z
-  .object({
-    percentage: DiscountPercentageSchema.exactOptional().openapi({
-      description: 'The percentage discount.',
-    }),
-    usage: DiscountUsageSchema.exactOptional().openapi({ description: 'The usage discount.' }),
-  })
-  .openapi({ description: 'Discount by type on a price', required: [] })
-  .openapi('Discounts')
-
-const RateCardFlatFeeSchema = z
-  .object({
-    type: z
-      .literal('flat_fee')
-      .openapi({ description: 'The type of the RateCard.', title: 'RateCard type' }),
-    key: z
-      .string()
-      .regex(/^[a-z0-9]+(?:_[a-z0-9]+)*$/)
-      .min(1)
-      .max(64)
-      .openapi({ description: 'A semi-unique identifier for the resource.', title: 'Key' }),
-    name: z
-      .string()
-      .min(1)
-      .max(256)
-      .openapi({
-        description: 'Human-readable name for the resource. Between 1 and 256 characters.',
-        title: 'Display name',
-      }),
-    description: z
-      .string()
-      .max(1024)
-      .exactOptional()
-      .openapi({
-        description: 'Optional description of the resource. Maximum 1024 characters.',
-        title: 'Description',
-      }),
-    metadata: MetadataSchema.nullable()
-      .exactOptional()
-      .openapi({ description: 'Additional metadata for the resource.', title: 'Metadata' }),
-    featureKey: z
-      .string()
-      .regex(/^[a-z0-9]+(?:_[a-z0-9]+)*$/)
-      .min(1)
-      .max(64)
-      .exactOptional()
-      .openapi({
-        description: 'The feature the customer is entitled to use.',
-        title: 'Feature key',
-      }),
-    entitlementTemplate: RateCardEntitlementSchema.exactOptional().openapi({
-      description: 'The entitlement of the rate card.\nOnly available when featureKey is set.',
-    }),
-    taxConfig: TaxConfigSchema.exactOptional().openapi({
-      description:
-        'The tax config of the rate card.\nWhen undefined, the tax config of the feature or the default tax config of the plan is used.',
-      title: 'Tax config',
-    }),
-    billingCadence: z.iso
-      .duration()
-      .nullable()
-      .openapi({
-        description:
-          'The billing cadence of the rate card.\nWhen null it means it is a one time fee.',
-        title: 'Billing cadence',
-      }),
-    price: FlatPriceWithPaymentTermSchema.nullable().openapi({
-      description: 'The price of the rate card.\nWhen null, the feature or service is free.',
-      title: 'Price',
-      example: { type: 'flat', amount: '100', paymentTerm: 'in_arrears' },
-    }),
-    discounts: DiscountsSchema.exactOptional().openapi({
-      description:
-        'The discount of the rate card. For flat fee rate cards only percentage discounts are supported.\nOnly available when price is set.',
-      title: 'Discounts',
-    }),
-  })
-  .openapi({
-    required: ['type', 'key', 'name', 'billingCadence', 'price'],
-    description: 'A flat fee rate card defines a one-time purchase or a recurring fee.',
-  })
-  .openapi('RateCardFlatFee')
-
-const UnitPriceWithCommitmentsSchema = z
-  .object({
-    type: z.literal('unit').openapi({ description: 'The type of the price.' }),
-    amount: NumericSchema.openapi({ description: 'The amount of the unit price.' }),
-    minimumAmount: NumericSchema.exactOptional().openapi({
-      description: 'The customer is committed to spend at least the amount.',
-      title: 'Minimum amount',
-    }),
-    maximumAmount: NumericSchema.exactOptional().openapi({
-      description: 'The customer is limited to spend at most the amount.',
-      title: 'Maximum amount',
-    }),
-  })
-  .openapi({ required: ['type', 'amount'], description: 'Unit price with spend commitments.' })
-  .openapi('UnitPriceWithCommitments')
-
-const TieredPriceWithCommitmentsSchema = z
-  .object({
-    type: z
-      .literal('tiered')
-      .openapi({ description: 'The type of the price.\n\nOne of: flat, unit, or tiered.' }),
-    mode: TieredPriceModeSchema.openapi({
-      description:
-        'Defines if the tiering mode is volume-based or graduated:\n- In `volume`-based tiering, the maximum quantity within a period determines the per unit price.\n- In `graduated` tiering, pricing can change as the quantity grows.',
-      title: 'Mode',
-    }),
-    tiers: z
-      .array(PriceTierSchema)
-      .min(1)
-      .openapi({
-        description:
-          'The tiers of the tiered price.\nAt least one price component is required in each tier.',
-        title: 'Tiers',
-      }),
-    minimumAmount: NumericSchema.exactOptional().openapi({
-      description: 'The customer is committed to spend at least the amount.',
-      title: 'Minimum amount',
-    }),
-    maximumAmount: NumericSchema.exactOptional().openapi({
-      description: 'The customer is limited to spend at most the amount.',
-      title: 'Maximum amount',
-    }),
-  })
-  .openapi({
-    required: ['type', 'mode', 'tiers'],
-    description: 'Tiered price with spend commitments.',
-  })
-  .openapi('TieredPriceWithCommitments')
-
-const DynamicPriceWithCommitmentsSchema = z
-  .object({
-    type: z.literal('dynamic').openapi({ description: 'The type of the price.' }),
-    multiplier: NumericSchema.default('1')
-      .exactOptional()
-      .openapi({
-        description:
-          'The multiplier to apply to the base price to get the dynamic price.\n\nExamples:\n- 0.0: the price is zero\n- 0.5: the price is 50% of the base price\n- 1.0: the price is the same as the base price\n- 1.5: the price is 150% of the base price',
-        title: 'The multiplier to apply to the base price to get the dynamic price',
-      }),
-    minimumAmount: NumericSchema.exactOptional().openapi({
-      description: 'The customer is committed to spend at least the amount.',
-      title: 'Minimum amount',
-    }),
-    maximumAmount: NumericSchema.exactOptional().openapi({
-      description: 'The customer is limited to spend at most the amount.',
-      title: 'Maximum amount',
-    }),
-  })
-  .openapi({ required: ['type'], description: 'Dynamic price with spend commitments.' })
-  .openapi('DynamicPriceWithCommitments')
-
-const PackagePriceWithCommitmentsSchema = z
-  .object({
-    type: z.literal('package').openapi({ description: 'The type of the price.' }),
-    amount: NumericSchema.openapi({ description: 'The price of one package.', title: 'Amount' }),
-    quantityPerPackage: NumericSchema.openapi({
-      description: 'The quantity per package.',
-      title: 'Quantity per package',
-    }),
-    minimumAmount: NumericSchema.exactOptional().openapi({
-      description: 'The customer is committed to spend at least the amount.',
-      title: 'Minimum amount',
-    }),
-    maximumAmount: NumericSchema.exactOptional().openapi({
-      description: 'The customer is limited to spend at most the amount.',
-      title: 'Maximum amount',
-    }),
-  })
-  .openapi({
-    required: ['type', 'amount', 'quantityPerPackage'],
-    description: 'Package price with spend commitments.',
-  })
-  .openapi('PackagePriceWithCommitments')
-
-const RateCardUsageBasedPriceSchema = z
-  .discriminatedUnion('type', [
-    FlatPriceWithPaymentTermSchema,
-    UnitPriceWithCommitmentsSchema,
-    TieredPriceWithCommitmentsSchema,
-    DynamicPriceWithCommitmentsSchema,
-    PackagePriceWithCommitmentsSchema,
-  ])
-  .openapi({
-    discriminator: {
-      propertyName: 'type',
-      mapping: {
-        flat: '#/components/schemas/FlatPriceWithPaymentTerm',
-        unit: '#/components/schemas/UnitPriceWithCommitments',
-        tiered: '#/components/schemas/TieredPriceWithCommitments',
-        dynamic: '#/components/schemas/DynamicPriceWithCommitments',
-        package: '#/components/schemas/PackagePriceWithCommitments',
-      },
-    },
-    description: 'The price of the usage based rate card.',
-  })
-  .openapi('RateCardUsageBasedPrice')
-
-const RateCardUsageBasedSchema = z
-  .object({
-    type: z
-      .literal('usage_based')
-      .openapi({ description: 'The type of the RateCard.', title: 'RateCard type' }),
-    key: z
-      .string()
-      .regex(/^[a-z0-9]+(?:_[a-z0-9]+)*$/)
-      .min(1)
-      .max(64)
-      .openapi({ description: 'A semi-unique identifier for the resource.', title: 'Key' }),
-    name: z
-      .string()
-      .min(1)
-      .max(256)
-      .openapi({
-        description: 'Human-readable name for the resource. Between 1 and 256 characters.',
-        title: 'Display name',
-      }),
-    description: z
-      .string()
-      .max(1024)
-      .exactOptional()
-      .openapi({
-        description: 'Optional description of the resource. Maximum 1024 characters.',
-        title: 'Description',
-      }),
-    metadata: MetadataSchema.nullable()
-      .exactOptional()
-      .openapi({ description: 'Additional metadata for the resource.', title: 'Metadata' }),
-    featureKey: z
-      .string()
-      .regex(/^[a-z0-9]+(?:_[a-z0-9]+)*$/)
-      .min(1)
-      .max(64)
-      .exactOptional()
-      .openapi({
-        description: 'The feature the customer is entitled to use.',
-        title: 'Feature key',
-      }),
-    entitlementTemplate: RateCardEntitlementSchema.exactOptional().openapi({
-      description: 'The entitlement of the rate card.\nOnly available when featureKey is set.',
-    }),
-    taxConfig: TaxConfigSchema.exactOptional().openapi({
-      description:
-        'The tax config of the rate card.\nWhen undefined, the tax config of the feature or the default tax config of the plan is used.',
-      title: 'Tax config',
-    }),
-    billingCadence: z.iso
-      .duration()
-      .openapi({ description: 'The billing cadence of the rate card.', title: 'Billing cadence' }),
-    price: RateCardUsageBasedPriceSchema.nullable().openapi({
-      description: 'The price of the rate card.\nWhen null, the feature or service is free.',
-    }),
-    discounts: DiscountsSchema.exactOptional().openapi({
-      description:
-        'The discounts of the rate card.\n\nFlat fee rate cards only support percentage discounts.',
-      title: 'Discounts',
-    }),
-  })
-  .openapi({
-    required: ['type', 'key', 'name', 'billingCadence', 'price'],
-    description: 'A usage-based rate card defines a price based on usage.',
-  })
-  .openapi('RateCardUsageBased')
-
-const RateCardSchema = z
-  .discriminatedUnion('type', [RateCardFlatFeeSchema, RateCardUsageBasedSchema])
-  .openapi({
-    discriminator: {
-      propertyName: 'type',
-      mapping: {
-        flat_fee: '#/components/schemas/RateCardFlatFee',
-        usage_based: '#/components/schemas/RateCardUsageBased',
-      },
-    },
-    description: 'A rate card defines the pricing and entitlement of a feature or service.',
-  })
-  .openapi('RateCard')
-
-const PlanPhaseSchema = z
-  .object({
-    key: z
-      .string()
-      .regex(/^[a-z0-9]+(?:_[a-z0-9]+)*$/)
-      .min(1)
-      .max(64)
-      .openapi({ description: 'A semi-unique identifier for the resource.', title: 'Key' }),
-    name: z
-      .string()
-      .min(1)
-      .max(256)
-      .openapi({
-        description: 'Human-readable name for the resource. Between 1 and 256 characters.',
-        title: 'Display name',
-      }),
-    description: z
-      .string()
-      .max(1024)
-      .exactOptional()
-      .openapi({
-        description: 'Optional description of the resource. Maximum 1024 characters.',
-        title: 'Description',
-      }),
-    metadata: MetadataSchema.nullable()
-      .exactOptional()
-      .openapi({ description: 'Additional metadata for the resource.', title: 'Metadata' }),
-    duration: z.iso
-      .duration()
-      .nullable()
-      .openapi({ description: 'The duration of the phase.', title: 'Duration', example: 'P1Y' }),
-    rateCards: z
-      .array(RateCardSchema)
-      .openapi({ description: 'The rate cards of the plan.', title: 'Rate cards' }),
-  })
-  .openapi({
-    required: ['key', 'name', 'duration', 'rateCards'],
-    description:
-      "The plan phase or pricing ramp allows changing a plan's rate cards over time as a subscription progresses.",
-  })
-  .openapi('PlanPhase')
-
-const CustomPlanInputSchema = z
-  .object({
-    name: z
-      .string()
-      .min(1)
-      .max(256)
-      .openapi({
-        description: 'Human-readable name for the resource. Between 1 and 256 characters.',
-        title: 'Display name',
-      }),
-    description: z
-      .string()
-      .max(1024)
-      .exactOptional()
-      .openapi({
-        description: 'Optional description of the resource. Maximum 1024 characters.',
-        title: 'Description',
-      }),
-    metadata: MetadataSchema.nullable()
-      .exactOptional()
-      .openapi({ description: 'Additional metadata for the resource.', title: 'Metadata' }),
-    alignment: AlignmentSchema.exactOptional().openapi({
-      description: 'Alignment configuration for the plan.',
-    }),
-    currency: CurrencyCodeSchema.default('USD').openapi({
-      description: 'The currency code of the plan.',
-      title: 'Currency',
-    }),
-    billingCadence: z.iso
-      .duration()
-      .openapi({
-        description:
-          'The default billing cadence for subscriptions using this plan.\nDefines how often customers are billed using ISO8601 duration format.\nExamples: "P1M" (monthly), "P3M" (quarterly), "P1Y" (annually).',
-        title: 'Billing cadence',
-        example: 'P1M',
-      }),
-    proRatingConfig: ProRatingConfigSchema.default({ enabled: true, mode: 'prorate_prices' })
-      .exactOptional()
-      .openapi({
-        description: 'Default pro-rating configuration for subscriptions using this plan.',
-        title: 'Pro-rating configuration',
-      }),
-    settlementMode: BillingSettlementModeSchema.default('credit_then_invoice')
-      .exactOptional()
-      .openapi({
-        description:
-          'The settlement mode of the plan.\nIt determines how the billing system generates invoices and credits for the subscriptions using this plan.\n- credit_then_invoice: credits from the previous billing period are applied first, then the remaining balance is invoiced.\n- credit_only: only credits from the previous billing period are generated and applied. No invoices are generated for the subscription.\nThis is the default and most common settlement mode.',
-        title: 'Settlement mode',
-      }),
-    phases: z
-      .array(PlanPhaseSchema)
-      .min(1)
-      .openapi({
-        description:
-          "The plan phase or pricing ramp allows changing a plan's rate cards over time as a subscription progresses.\nA phase switch occurs only at the end of a billing period, ensuring that a single subscription invoice will not include charges from different phase prices.",
-        title: 'Plan phases',
-      }),
-  })
-  .openapi({
-    required: ['name', 'currency', 'billingCadence', 'phases'],
-    description: 'The template for omitting properties.',
-  })
-  .openapi({
-    description: 'Plan input for custom subscription creation (without key and version).',
-  })
-  .openapi('CustomPlanInput')
-
-const CustomSubscriptionChangeSchema = z
-  .object({
-    timing: SubscriptionTimingSchema.openapi({
-      description:
-        'Timing configuration for the change, when the change should take effect.\nFor changing a subscription, the accepted values depend on the subscription configuration.',
-    }),
-    billingAnchor: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description:
-          'The billing anchor of the subscription. The provided date will be normalized according to the billing cadence to the nearest recurrence before start time. If not provided, the previous subscription billing anchor will be used.',
-        example: '2023-01-01T01:01:01.001Z',
-      }),
-    costBasisMode: SubscriptionCostBasisModeSchema.default('dynamic')
-      .exactOptional()
-      .openapi({
-        description:
-          'Controls how custom-currency cost bases are selected for the new subscription.',
-      }),
-    customPlan: CustomPlanInputSchema.openapi({
-      description: 'The custom plan description which defines the Subscription.',
-    }),
-  })
-  .openapi({ required: ['timing', 'customPlan'], description: 'Change a custom subscription.' })
-  .openapi('CustomSubscriptionChange')
-
-type SubscriptionChangeType =
-  | z.infer<typeof PlanSubscriptionChangeSchema>
-  | z.infer<typeof CustomSubscriptionChangeSchema>
-
-const PlanSubscriptionCreateSchema = z
-  .object({
-    alignment: AlignmentSchema.exactOptional().openapi({
-      description: 'What alignment settings the subscription should have.',
-    }),
-    metadata: MetadataSchema.exactOptional().openapi({
-      description: 'Arbitrary metadata associated with the subscription.',
-    }),
-    plan: PlanReferenceInputSchema.openapi({ description: 'The plan reference to change to.' }),
-    startingPhase: z
-      .string()
-      .min(1)
-      .exactOptional()
-      .openapi({
-        description:
-          'The key of the phase to start the subscription in.\nIf not provided, the subscription will start in the first phase of the plan.',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The name of the Subscription. If not provided the plan name is used.',
-      }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Description for the Subscription.' }),
-    settlementMode: BillingSettlementModeSchema.exactOptional().openapi({
-      description: 'The settlement mode of the subscription.',
-    }),
-    costBasisMode: SubscriptionCostBasisModeSchema.default('dynamic')
-      .exactOptional()
-      .openapi({
-        description:
-          'Controls how custom-currency cost bases are selected for the new subscription.',
-      }),
-    timing: SubscriptionTimingSchema.default('immediate')
-      .exactOptional()
-      .openapi({
-        description:
-          'Timing configuration for the change, when the change should take effect.\nThe default is immediate.',
-      }),
-    customerId: z
-      .string()
-      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
-      .exactOptional()
-      .openapi({
-        description:
-          'The ID of the customer. Provide either the key or ID. Has presedence over the key.',
-        example: '01G65Z755AFWAKHE12NY0CQ9FH',
-      }),
-    customerKey: z
-      .string()
-      .min(1)
-      .max(256)
-      .exactOptional()
-      .openapi({ description: 'The key of the customer. Provide either the key or ID.' }),
-    billingAnchor: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description:
-          'The billing anchor of the subscription. The provided date will be normalized according to the billing cadence to the nearest recurrence before start time. If not provided, the subscription start time will be used.',
-        example: '2023-01-01T01:01:01.001Z',
-      }),
-  })
-  .openapi({
-    required: ['plan'],
-    description: 'Create subscription based on plan.',
-    title: 'Create from plan',
-  })
-  .openapi('PlanSubscriptionCreate')
-
-const CustomSubscriptionCreateSchema = z
-  .object({
-    costBasisMode: SubscriptionCostBasisModeSchema.default('dynamic')
-      .exactOptional()
-      .openapi({
-        description:
-          'Controls how custom-currency cost bases are selected for the new subscription.',
-      }),
-    customPlan: CustomPlanInputSchema.openapi({
-      description: 'The custom plan description which defines the Subscription.',
-    }),
-    timing: SubscriptionTimingSchema.default('immediate')
-      .exactOptional()
-      .openapi({
-        description:
-          'Timing configuration for the change, when the change should take effect.\nThe default is immediate.',
-      }),
-    customerId: z
-      .string()
-      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
-      .exactOptional()
-      .openapi({
-        description:
-          'The ID of the customer. Provide either the key or ID. Has presedence over the key.',
-        example: '01G65Z755AFWAKHE12NY0CQ9FH',
-      }),
-    customerKey: z
-      .string()
-      .min(1)
-      .max(256)
-      .exactOptional()
-      .openapi({ description: 'The key of the customer. Provide either the key or ID.' }),
-    billingAnchor: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description:
-          'The billing anchor of the subscription. The provided date will be normalized according to the billing cadence to the nearest recurrence before start time. If not provided, the subscription start time will be used.',
-        example: '2023-01-01T01:01:01.001Z',
-      }),
-  })
-  .openapi({
-    required: ['customPlan'],
-    description: 'Create a custom subscription.',
-    title: 'Create custom',
-  })
-  .openapi('CustomSubscriptionCreate')
-
-type SubscriptionCreateType =
-  | z.infer<typeof PlanSubscriptionCreateSchema>
-  | z.infer<typeof CustomSubscriptionCreateSchema>
-
-const TaxBehaviorSchema = z
-  .enum(['inclusive', 'exclusive'])
-  .openapi({
-    description:
-      'Tax behavior.\n\nThis enum is used to specify whether tax is included in the price or excluded from the price.',
-  })
-  .openapi('TaxBehavior')
-
-const StripeTaxConfigSchema = z
-  .object({
-    code: z
-      .string()
-      .regex(/^txcd_\d{8}$/)
-      .openapi({
-        description: 'Product tax code.\n\nSee: https://docs.stripe.com/tax/tax-codes',
-        title: 'Tax code',
-        example: 'txcd_10000000',
-      }),
-  })
-  .openapi({ required: ['code'], description: 'The tax config for Stripe.' })
-  .openapi('StripeTaxConfig')
-
-const CustomInvoicingTaxConfigSchema = z
-  .object({
-    code: z
-      .string()
-      .openapi({
-        description:
-          'Tax code.\n\nThe tax code should be interpreted by the custom invoicing provider.',
-        title: 'Tax code',
-      }),
-  })
-  .openapi({ required: ['code'], description: 'Custom invoicing tax config.' })
-  .openapi('CustomInvoicingTaxConfig')
-
-type TaxConfigType = {
-  behavior?: z.infer<typeof TaxBehaviorSchema>
-  stripe?: z.infer<typeof StripeTaxConfigSchema>
-  customInvoicing?: z.infer<typeof CustomInvoicingTaxConfigSchema>
-  taxCodeId?: string
-}
-
-const AnnotationsSchema = z
-  .record(z.string(), z.any())
-  .openapi({
-    description: 'Set of key-value pairs managed by the system. Cannot be modified by user.',
-    example: { externalId: '019142cc-a016-796a-8113-1a942fecd26d' },
-  })
-  .openapi('Annotations')
-
-const AddonInstanceTypeSchema = z
-  .enum(['single', 'multiple'])
-  .openapi({
-    description:
-      'The instanceType of the add-on.\nSingle instance add-ons can be added to subscription only once while add-ons with multiple type can be added more then once.',
-  })
-  .openapi('AddonInstanceType')
-
-const AddonStatusSchema = z
-  .enum(['draft', 'active', 'archived'])
-  .openapi({
-    description:
-      'The status of the add-on defined by the effectiveFrom and effectiveTo properties.',
-  })
-  .openapi('AddonStatus')
-
-const ValidationErrorSchema = z
-  .object({
-    field: z
-      .string()
-      .openapi({
-        description: 'The path to the field.',
-        example: 'addons/pro/ratecards/token/featureKey',
-        readOnly: true,
-      }),
-    code: z
-      .string()
-      .openapi({
-        description: 'The machine readable description of the error.',
-        example: 'invalid_feature_key',
-        readOnly: true,
-      }),
-    message: z
-      .string()
-      .openapi({
-        description: 'The human readable description of the error.',
-        example: 'not found feature by key',
-        readOnly: true,
-      }),
-    attributes: AnnotationsSchema.exactOptional().openapi({
-      description: 'Additional attributes.',
-      readOnly: true,
-    }),
-  })
-  .openapi({
-    required: ['field', 'code', 'message'],
-    description: 'Validation errors providing detailed description of the issue.',
-  })
-  .openapi('ValidationError')
-
-const AddonSchema = z
-  .object({
-    id: z
-      .string()
-      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
-      .openapi({
-        description: 'A unique identifier for the resource.',
-        example: '01G65Z755AFWAKHE12NY0CQ9FH',
-        title: 'ID',
-        readOnly: true,
-      }),
-    name: z
-      .string()
-      .min(1)
-      .max(256)
-      .openapi({
-        description: 'Human-readable name for the resource. Between 1 and 256 characters.',
-        title: 'Display name',
-      }),
-    description: z
-      .string()
-      .max(1024)
-      .exactOptional()
-      .openapi({
-        description: 'Optional description of the resource. Maximum 1024 characters.',
-        title: 'Description',
-      }),
-    metadata: MetadataSchema.nullable()
-      .exactOptional()
-      .openapi({ description: 'Additional metadata for the resource.', title: 'Metadata' }),
-    createdAt: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'Timestamp of when the resource was created.',
-        example: '2024-01-01T01:01:01.001Z',
-        title: 'Creation Time',
-        readOnly: true,
-      }),
-    updatedAt: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'Timestamp of when the resource was last updated.',
-        example: '2024-01-01T01:01:01.001Z',
-        title: 'Last Update Time',
-        readOnly: true,
-      }),
-    deletedAt: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'Timestamp of when the resource was permanently deleted.',
-        example: '2024-01-01T01:01:01.001Z',
-        title: 'Deletion Time',
-        readOnly: true,
-      }),
-    key: z
-      .string()
-      .regex(/^[a-z0-9]+(?:_[a-z0-9]+)*$/)
-      .min(1)
-      .max(64)
-      .openapi({ description: 'A semi-unique identifier for the resource.', title: 'Key' }),
-    annotations: AnnotationsSchema.exactOptional().openapi({
-      description: 'Set of key-value pairs managed by the system. Cannot be modified by user.',
-      title: 'Annotations',
-      readOnly: true,
-    }),
-    version: z
-      .int()
-      .min(1)
-      .default(1)
-      .openapi({
-        description: 'Version of the add-on. Incremented when the add-on is updated.',
-        title: 'Version',
-        readOnly: true,
-      }),
-    instanceType: AddonInstanceTypeSchema.openapi({
-      description: 'The instanceType of the add-ons. Can be "single" or "multiple".',
-      title: 'InstanceType',
-    }),
-    currency: CurrencyCodeSchema.default('USD').openapi({
-      description: 'The currency code of the add-on.',
-      title: 'Currency',
-    }),
-    effectiveFrom: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description:
-          'The date and time when the add-on becomes effective. When not specified, the add-on is a draft.',
-        example: '2023-01-01T01:01:01.001Z',
-        title: 'Effective start date',
-        readOnly: true,
-      }),
-    effectiveTo: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description:
-          'The date and time when the add-on is no longer effective. When not specified, the add-on is effective indefinitely.',
-        example: '2023-01-01T01:01:01.001Z',
-        title: 'Effective end date',
-        readOnly: true,
-      }),
-    status: AddonStatusSchema.openapi({
-      description:
-        'The status of the add-on.\nComputed based on the effective start and end dates:\n- draft = no effectiveFrom\n- active = effectiveFrom <= now < effectiveTo\n- archived  = effectiveTo <= now',
-      title: 'Status',
-      readOnly: true,
-    }),
-    rateCards: z
-      .array(RateCardSchema)
-      .openapi({ description: 'The rate cards of the add-on.', title: 'Rate cards' }),
-    validationErrors: z
-      .array(ValidationErrorSchema)
-      .nullable()
-      .openapi({
-        description: 'List of validation errors.',
-        title: 'Validation errors',
-        readOnly: true,
-      }),
-  })
-  .openapi({
-    required: [
-      'id',
-      'name',
-      'createdAt',
-      'updatedAt',
-      'key',
-      'version',
-      'instanceType',
-      'currency',
-      'status',
-      'rateCards',
-      'validationErrors',
-    ],
-    description:
-      'Add-on allows extending subscriptions with compatible plans with additional ratecards.',
-  })
-  .openapi('Addon')
-
-const AddonCreateSchema = z
-  .object({
-    name: z
-      .string()
-      .min(1)
-      .max(256)
-      .openapi({
-        description: 'Human-readable name for the resource. Between 1 and 256 characters.',
-        title: 'Display name',
-      }),
-    description: z
-      .string()
-      .max(1024)
-      .exactOptional()
-      .openapi({
-        description: 'Optional description of the resource. Maximum 1024 characters.',
-        title: 'Description',
-      }),
-    metadata: MetadataSchema.nullable()
-      .exactOptional()
-      .openapi({ description: 'Additional metadata for the resource.', title: 'Metadata' }),
-    key: z
-      .string()
-      .regex(/^[a-z0-9]+(?:_[a-z0-9]+)*$/)
-      .min(1)
-      .max(64)
-      .openapi({ description: 'A semi-unique identifier for the resource.', title: 'Key' }),
-    instanceType: AddonInstanceTypeSchema.openapi({
-      description: 'The instanceType of the add-ons. Can be "single" or "multiple".',
-      title: 'InstanceType',
-    }),
-    currency: CurrencyCodeSchema.default('USD').openapi({
-      description: 'The currency code of the add-on.',
-      title: 'Currency',
-    }),
-    rateCards: z
-      .array(RateCardSchema)
-      .openapi({ description: 'The rate cards of the add-on.', title: 'Rate cards' }),
-  })
-  .openapi({
-    required: ['name', 'key', 'instanceType', 'currency', 'rateCards'],
-    description: 'Resource create operation model.',
-  })
-  .openapi('AddonCreate')
-
-const AddonOrderBySchema = z
-  .enum(['id', 'key', 'version', 'created_at', 'updated_at'])
-  .openapi({ description: 'Order by options for add-ons.' })
-  .openapi('AddonOrderBy')
-
-const AddonPaginatedResponseSchema = z
-  .object({
-    totalCount: z.int().openapi({ description: 'The total number of items.', example: 500 }),
-    page: z.int().openapi({ description: 'The page index.', example: 1 }),
-    pageSize: z
-      .int()
-      .openapi({ description: 'The maximum number of items per page.', example: 100 }),
-    items: z.array(AddonSchema).openapi({ description: 'The items in the current page.' }),
-  })
-  .openapi({
-    required: ['totalCount', 'page', 'pageSize', 'items'],
-    description: 'Paginated response',
-  })
-  .openapi('AddonPaginatedResponse')
-
-const AddonReplaceUpdateSchema = z
-  .object({
-    name: z
-      .string()
-      .min(1)
-      .max(256)
-      .openapi({
-        description: 'Human-readable name for the resource. Between 1 and 256 characters.',
-        title: 'Display name',
-      }),
-    description: z
-      .string()
-      .max(1024)
-      .exactOptional()
-      .openapi({
-        description: 'Optional description of the resource. Maximum 1024 characters.',
-        title: 'Description',
-      }),
-    metadata: MetadataSchema.nullable()
-      .exactOptional()
-      .openapi({ description: 'Additional metadata for the resource.', title: 'Metadata' }),
-    instanceType: AddonInstanceTypeSchema.openapi({
-      description: 'The instanceType of the add-ons. Can be "single" or "multiple".',
-      title: 'InstanceType',
-    }),
-    rateCards: z
-      .array(RateCardSchema)
-      .openapi({ description: 'The rate cards of the add-on.', title: 'Rate cards' }),
-  })
-  .openapi({
-    required: ['name', 'instanceType', 'rateCards'],
-    description: 'Resource update operation model.',
-  })
-  .openapi('AddonReplaceUpdate')
-
-const CountryCodeSchema = z
-  .string()
-  .regex(/^[A-Z]{2}$/)
-  .length(2)
-  .openapi({
-    description:
-      '[ISO 3166-1](https://www.iso.org/iso-3166-country-codes.html) alpha-2 country code.\nCustom two-letter country codes are also supported for convenience.',
-    example: 'US',
-  })
-  .openapi('CountryCode')
-
-const AddressSchema = z
-  .object({
-    country: CountryCodeSchema.exactOptional().openapi({
-      description:
-        'Country code in [ISO 3166-1](https://www.iso.org/iso-3166-country-codes.html) alpha-2 format.',
-    }),
-    postalCode: z.string().exactOptional().openapi({ description: 'Postal code.' }),
-    state: z.string().exactOptional().openapi({ description: 'State or province.' }),
-    city: z.string().exactOptional().openapi({ description: 'City.' }),
-    line1: z.string().exactOptional().openapi({ description: 'First line of the address.' }),
-    line2: z.string().exactOptional().openapi({ description: 'Second line of the address.' }),
-    phoneNumber: z.string().exactOptional().openapi({ description: 'Phone number.' }),
-  })
-  .openapi({ description: 'Address', required: [] })
-  .openapi('Address')
-
-const AppSchema: z.ZodType<AppType> = z
-  .lazy(() =>
-    z
-      .discriminatedUnion('type', [StripeAppSchema, SandboxAppSchema, CustomInvoicingAppSchema])
-      .openapi({
-        discriminator: {
-          propertyName: 'type',
-          mapping: {
-            stripe: '#/components/schemas/StripeApp',
-            sandbox: '#/components/schemas/SandboxApp',
-            custom_invoicing: '#/components/schemas/CustomInvoicingApp',
-          },
-        },
-        description: 'App.\nOne of: stripe',
-      }),
-  )
   .openapi('App')
-
-const AppBaseSchema = z
-  .object({
-    id: z
-      .string()
-      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
-      .openapi({
-        description: 'A unique identifier for the resource.',
-        example: '01G65Z755AFWAKHE12NY0CQ9FH',
-        title: 'ID',
-        readOnly: true,
-      }),
-    name: z
-      .string()
-      .min(1)
-      .max(256)
-      .openapi({
-        description: 'Human-readable name for the resource. Between 1 and 256 characters.',
-        title: 'Display name',
-      }),
-    description: z
-      .string()
-      .max(1024)
-      .exactOptional()
-      .openapi({
-        description: 'Optional description of the resource. Maximum 1024 characters.',
-        title: 'Description',
-      }),
-    metadata: MetadataSchema.nullable()
-      .exactOptional()
-      .openapi({ description: 'Additional metadata for the resource.', title: 'Metadata' }),
-    createdAt: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'Timestamp of when the resource was created.',
-        example: '2024-01-01T01:01:01.001Z',
-        title: 'Creation Time',
-        readOnly: true,
-      }),
-    updatedAt: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'Timestamp of when the resource was last updated.',
-        example: '2024-01-01T01:01:01.001Z',
-        title: 'Last Update Time',
-        readOnly: true,
-      }),
-    deletedAt: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'Timestamp of when the resource was permanently deleted.',
-        example: '2024-01-01T01:01:01.001Z',
-        title: 'Deletion Time',
-        readOnly: true,
-      }),
-    listing: MarketplaceListingSchema.openapi({
-      description: 'The marketplace listing that this installed app is based on.',
-      readOnly: true,
-    }),
-    status: AppStatusSchema.openapi({
-      description: 'Status of the app connection.',
-      readOnly: true,
-    }),
-  })
-  .openapi({
-    required: ['id', 'name', 'createdAt', 'updatedAt', 'listing', 'status'],
-    description:
-      'Abstract base model for installed apps.\n\nRepresent an app installed to the organization.\nThis is an actual instance, with its own configuration and credentials.',
-  })
-  .openapi('AppBase')
-
-const AppPaginatedResponseSchema = z
-  .object({
-    totalCount: z.int().openapi({ description: 'The total number of items.', example: 500 }),
-    page: z.int().openapi({ description: 'The page index.', example: 1 }),
-    pageSize: z
-      .int()
-      .openapi({ description: 'The maximum number of items per page.', example: 100 }),
-    items: z.array(AppSchema).openapi({ description: 'The items in the current page.' }),
-  })
-  .openapi({
-    required: ['totalCount', 'page', 'pageSize', 'items'],
-    description: 'Paginated response',
-  })
-  .openapi('AppPaginatedResponse')
-
-const AppReadOrCreateOrUpdateOrDeleteOrQuerySchema: z.ZodType<AppReadOrCreateOrUpdateOrDeleteOrQueryType> =
-  z
-    .lazy(() =>
-      z
-        .discriminatedUnion('type', [
-          StripeAppReadOrCreateOrUpdateOrDeleteOrQuerySchema,
-          SandboxAppSchema,
-          CustomInvoicingAppSchema,
-        ])
-        .openapi({
-          discriminator: {
-            propertyName: 'type',
-            mapping: {
-              stripe: '#/components/schemas/StripeAppReadOrCreateOrUpdateOrDeleteOrQuery',
-              sandbox: '#/components/schemas/SandboxApp',
-              custom_invoicing: '#/components/schemas/CustomInvoicingApp',
-            },
-          },
-          description: 'App.\nOne of: stripe',
-        }),
-    )
-    .openapi('AppReadOrCreateOrUpdateOrDeleteOrQuery')
-
-const AppReferenceSchema = z
-  .object({
-    id: z
-      .string()
-      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
-      .openapi({ description: 'The ID of the app.', example: '01G65Z755AFWAKHE12NY0CQ9FH' }),
-  })
-  .openapi({
-    required: ['id'],
-    description:
-      'App reference\n\nCan be used as a short reference to an app if the full app object is not needed.',
-  })
-  .openapi('AppReference')
-
-const AppReplaceUpdateSchema: z.ZodType<AppReplaceUpdateType> = z
-  .lazy(() =>
-    z
-      .discriminatedUnion('type', [
-        StripeAppReplaceUpdateSchema,
-        SandboxAppReplaceUpdateSchema,
-        CustomInvoicingAppReplaceUpdateSchema,
-      ])
-      .openapi({
-        discriminator: {
-          propertyName: 'type',
-          mapping: {
-            stripe: '#/components/schemas/StripeAppReplaceUpdate',
-            sandbox: '#/components/schemas/SandboxAppReplaceUpdate',
-            custom_invoicing: '#/components/schemas/CustomInvoicingAppReplaceUpdate',
-          },
-        },
-        description: 'App ReplaceUpdate Model',
-      }),
-  )
-  .openapi('AppReplaceUpdate')
-
-const UnexpectedProblemResponseSchema = z
-  .object({
-    type: z
-      .url()
-      .default('about:blank')
-      .openapi({
-        description: 'Type contains a URI that identifies the problem type.',
-        example: 'about:blank',
-      }),
-    title: z
-      .string()
-      .openapi({
-        description: 'A a short, human-readable summary of the problem type.',
-        example: 'Bad Request',
-      }),
-    status: z
-      .int()
-      .min(400)
-      .max(599)
-      .exactOptional()
-      .openapi({
-        description:
-          'The HTTP status code generated by the origin server for this occurrence of the problem.',
-        example: 400,
-      }),
-    detail: z
-      .string()
-      .openapi({
-        description: 'A human-readable explanation specific to this occurrence of the problem.',
-        example: 'The request body must be a JSON object.',
-      }),
-    instance: z
-      .url()
-      .openapi({
-        description: 'A URI reference that identifies the specific occurrence of the problem.',
-        example: 'urn:request:local/JMOlctsKV8-000001',
-      }),
-    extensions: z
-      .record(z.string(), z.any())
-      .exactOptional()
-      .openapi({
-        description: 'Additional properties specific to the problem type may be present.',
-        example: {
-          validationErrors: [{ code: 'validation_error', message: 'Validation error' }],
-          otherAttribute: 'otherValue',
-        },
-      }),
-  })
-  .catchall(z.any())
-  .openapi({
-    required: ['type', 'title', 'detail', 'instance'],
-    description:
-      'A Problem Details object (RFC 7807).\nAdditional properties specific to the problem type may be present.',
-    'x-go-type-import': { path: 'github.com/openmeterio/openmeter/pkg/models' },
-    'x-go-type': 'models.StatusProblem',
-  })
-  .openapi('UnexpectedProblemResponse')
-
-const BadRequestProblemResponseSchema = UnexpectedProblemResponseSchema.openapi({
-  description:
-    'The server cannot or will not process the request due to something that is perceived to be a client error (e.g., malformed request syntax, invalid request message framing, or deceptive request routing).',
-}).openapi('BadRequestProblemResponse')
-
-const PeriodSchema = z
-  .object({
-    from: z.iso
-      .datetime({ offset: true })
-      .openapi({ description: 'Period start time.', example: '2023-01-01T01:01:01.001Z' }),
-    to: z.iso
-      .datetime({ offset: true })
-      .openapi({ description: 'Period end time.', example: '2023-02-01T01:01:01.001Z' }),
-  })
-  .openapi({ required: ['from', 'to'], description: 'A period with a start and end time.' })
-  .openapi('Period')
-
-const BalanceHistoryWindowSchema = z
-  .object({
-    period: PeriodSchema,
-    usage: z
-      .float64()
-      .openapi({
-        description: 'The total usage of the feature in the period.',
-        example: 100,
-        readOnly: true,
-      }),
-    balanceAtStart: z
-      .float64()
-      .openapi({
-        description: 'The entitlement balance at the start of the period.',
-        example: 100,
-        readOnly: true,
-      }),
-  })
-  .openapi({
-    required: ['period', 'usage', 'balanceAtStart'],
-    description: 'The balance history window.',
-  })
-  .openapi('BalanceHistoryWindow')
-
-const BillingCollectionAlignmentSchema = z
-  .enum(['subscription', 'anchored'])
-  .openapi({
-    description:
-      'BillingCollectionAlignment specifies when the pending line items should be collected into\nan invoice.',
-    title: 'Collection alignment',
-  })
-  .openapi('BillingCollectionAlignment')
-
-const BillingTaxIdentificationCodeSchema = z
-  .string()
-  .min(1)
-  .max(32)
-  .openapi({
-    description:
-      'TaxIdentificationCode is a normalized tax code shown on the original identity document.',
-  })
-  .openapi('BillingTaxIdentificationCode')
-
-const BillingPartyTaxIdentitySchema = z
-  .object({
-    code: BillingTaxIdentificationCodeSchema.exactOptional().openapi({
-      description: 'Normalized tax code shown on the original identity document.',
-    }),
-  })
-  .openapi({
-    description:
-      'Identity stores the details required to identify an entity for tax purposes in a specific country.',
-    required: [],
-  })
-  .openapi('BillingPartyTaxIdentity')
-
-const BillingPartySchema = z
-  .object({
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Unique identifier for the party (if available)', readOnly: true }),
-    key: z
-      .string()
-      .min(1)
-      .max(256)
-      .exactOptional()
-      .openapi({ description: 'An optional unique key of the party (if available)', title: 'Key' }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Legal name or representation of the organization.' }),
-    taxId: BillingPartyTaxIdentitySchema.exactOptional().openapi({
-      description:
-        "The entity's legal ID code used for tax purposes. They may have\nother numbers, but we're only interested in those valid for tax purposes.",
-    }),
-    addresses: z
-      .array(AddressSchema)
-      .max(1)
-      .exactOptional()
-      .openapi({
-        description: 'Regular post addresses for where information should be sent if needed.',
-      }),
-  })
-  .openapi({ description: 'Party represents a person or business entity.', required: [] })
-  .openapi('BillingParty')
-
-const BillingWorkflowCollectionAlignmentSubscriptionSchema = z
-  .object({ type: z.literal('subscription').openapi({ description: 'The type of alignment.' }) })
-  .openapi({
-    required: ['type'],
-    description:
-      'BillingWorkflowCollectionAlignmentSubscription specifies the alignment for collecting the pending line items\ninto an invoice.',
-  })
-  .openapi('BillingWorkflowCollectionAlignmentSubscription')
-
-const RecurringPeriodIntervalEnumSchema = z
-  .enum(['DAY', 'WEEK', 'MONTH', 'YEAR'])
-  .openapi({
-    description: 'The unit of time for the interval.\nOne of: `day`, `week`, `month`, or `year`.',
-  })
-  .openapi('RecurringPeriodIntervalEnum')
-
-const RecurringPeriodIntervalSchema = z
-  .union([
-    z
-      .string()
-      .regex(
-        /^P(?:\d+(?:\.\d+)?Y)?(?:\d+(?:\.\d+)?M)?(?:\d+(?:\.\d+)?W)?(?:\d+(?:\.\d+)?D)?(?:T(?:\d+(?:\.\d+)?H)?(?:\d+(?:\.\d+)?M)?(?:\d+(?:\.\d+)?S)?)?$/,
-      ),
-    RecurringPeriodIntervalEnumSchema,
-  ])
-  .openapi({ description: 'Period duration for the recurrence' })
-  .openapi('RecurringPeriodInterval')
-
-const RecurringPeriodV2Schema = z
-  .object({
-    interval: RecurringPeriodIntervalSchema.openapi({
-      description:
-        'The unit of time for the interval. Heuristically maps ISO duraitons to enum values or returns the ISO duration.',
-      title: 'Interval',
-    }),
-    anchor: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'A date-time anchor to base the recurring period on.',
-        example: '2023-01-01T01:01:01.001Z',
-        title: 'Anchor time',
-      }),
-  })
-  .openapi({
-    required: ['interval', 'anchor'],
-    description: 'Recurring period with an interval and an anchor.',
-  })
-  .openapi('RecurringPeriodV2')
-
-const BillingWorkflowCollectionAlignmentAnchoredSchema = z
-  .object({
-    type: z.literal('anchored').openapi({ description: 'The type of alignment.' }),
-    recurringPeriod: RecurringPeriodV2Schema.openapi({
-      description: 'The recurring period for the alignment.',
-    }),
-  })
-  .openapi({
-    required: ['type', 'recurringPeriod'],
-    description:
-      'BillingWorkflowCollectionAlignmentAnchored specifies the alignment for collecting the pending line items\ninto an invoice.',
-  })
-  .openapi('BillingWorkflowCollectionAlignmentAnchored')
-
-const BillingWorkflowCollectionAlignmentSchema = z
-  .discriminatedUnion('type', [
-    BillingWorkflowCollectionAlignmentSubscriptionSchema,
-    BillingWorkflowCollectionAlignmentAnchoredSchema,
-  ])
-  .openapi({
-    discriminator: {
-      propertyName: 'type',
-      mapping: {
-        subscription: '#/components/schemas/BillingWorkflowCollectionAlignmentSubscription',
-        anchored: '#/components/schemas/BillingWorkflowCollectionAlignmentAnchored',
-      },
-    },
-    description:
-      'The alignment for collecting the pending line items into an invoice.\n\nDefaults to subscription, which means that we are to create a new invoice every time the\na subscription period starts (for in advance items) or ends (for in arrears items).',
-  })
-  .openapi('BillingWorkflowCollectionAlignment')
-
-const BillingWorkflowCollectionSettingsSchema = z
-  .object({
-    alignment: BillingWorkflowCollectionAlignmentSchema.default({ type: 'subscription' })
-      .exactOptional()
-      .openapi({
-        description: 'The alignment for collecting the pending line items into an invoice.',
-      }),
-    interval: z
-      .string()
-      .default('PT1H')
-      .exactOptional()
-      .openapi({
-        description:
-          'This grace period can be used to delay the collection of the pending line items specified in\nalignment.\n\nThis is useful, in case of multiple subscriptions having slightly different billing periods.',
-        example: 'P1D',
-      }),
-  })
-  .openapi({
-    description:
-      'Workflow collection specifies how to collect the pending line items for an invoice',
-    required: [],
-  })
-  .openapi('BillingWorkflowCollectionSettings')
-
-const BillingWorkflowInvoicingSubscriptionEndProrationModeSchema = z
-  .enum(['bill_full_period', 'bill_actual_period'])
-  .openapi({ description: 'Billing workflow subscription end proration mode.' })
-  .openapi('BillingWorkflowInvoicingSubscriptionEndProrationMode')
-
-const BillingWorkflowInvoicingSettingsSchema = z
-  .object({
-    autoAdvance: z
-      .boolean()
-      .default(true)
-      .exactOptional()
-      .openapi({
-        description: 'Whether to automatically issue the invoice after the draftPeriod has passed.',
-      }),
-    draftPeriod: z
-      .string()
-      .default('P0D')
-      .exactOptional()
-      .openapi({
-        description: 'The period for the invoice to be kept in draft status for manual reviews.',
-        example: 'P1D',
-      }),
-    dueAfter: z
-      .string()
-      .default('P30D')
-      .exactOptional()
-      .openapi({
-        description:
-          "The period after which the invoice is due.\nWith some payment solutions it's only applicable for manual collection method.",
-        example: 'P30D',
-      }),
-    progressiveBilling: z
-      .boolean()
-      .default(true)
-      .exactOptional()
-      .openapi({ description: 'Should progressive billing be allowed for this workflow?' }),
-    subscriptionEndProrationMode:
-      BillingWorkflowInvoicingSubscriptionEndProrationModeSchema.default('bill_actual_period')
-        .exactOptional()
-        .openapi({
-          description: 'Controls how subscription-ending shortened service periods are billed.',
-        }),
-    defaultTaxConfig: TaxConfigSchema.exactOptional().openapi({
-      description:
-        "Default tax configuration to apply to the invoices.\n\nSetting a tax code (`stripe.code` / `taxCodeId`) on a profile's default tax config is\ndeprecated and can no longer be added or changed: the organization default tax code is\nused instead. Existing tax-code values may still be removed, and `behavior` remains\nfully supported.",
-    }),
-  })
-  .openapi({
-    description:
-      'BillingWorkflowInvoicingSettings represents the invoice settings for a billing workflow',
-    title: 'Workflow invoice settings',
-    required: [],
-  })
-  .openapi('BillingWorkflowInvoicingSettings')
-
-const CollectionMethodSchema = z
-  .enum(['charge_automatically', 'send_invoice'])
-  .openapi({
-    description:
-      'CollectionMethod specifies how the invoice should be collected (automatic vs manual)',
-    title: 'Collection method',
-  })
-  .openapi('CollectionMethod')
-
-const BillingWorkflowPaymentSettingsSchema = z
-  .object({
-    collectionMethod: CollectionMethodSchema.default('charge_automatically')
-      .exactOptional()
-      .openapi({ description: 'The payment method for the invoice.' }),
-  })
-  .openapi({
-    description:
-      'BillingWorkflowPaymentSettings represents the payment settings for a billing workflow',
-    title: 'Workflow payment settings',
-    required: [],
-  })
-  .openapi('BillingWorkflowPaymentSettings')
-
-const BillingWorkflowTaxSettingsSchema = z
-  .object({
-    enabled: z
-      .boolean()
-      .default(true)
-      .exactOptional()
-      .openapi({
-        description:
-          'Enable automatic tax calculation when tax is supported by the app.\nFor example, with Stripe Invoicing when enabled, tax is calculated via Stripe Tax.',
-      }),
-    enforced: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({
-        description:
-          'Enforce tax calculation when tax is supported by the app.\nWhen enabled, OpenMeter will not allow to create an invoice without tax calculation.\nEnforcement is different per apps, for example, Stripe app requires customer\nto have a tax location when starting a paid subscription.',
-      }),
-  })
-  .openapi({
-    description: 'BillingWorkflowTaxSettings represents the tax settings for a billing workflow',
-    title: 'Workflow tax settings',
-    required: [],
-  })
-  .openapi('BillingWorkflowTaxSettings')
-
-const BillingWorkflowSchema = z
-  .object({
-    collection: BillingWorkflowCollectionSettingsSchema.exactOptional().openapi({
-      description: 'The collection settings for this workflow',
-    }),
-    invoicing: BillingWorkflowInvoicingSettingsSchema.exactOptional().openapi({
-      description: 'The invoicing settings for this workflow',
-    }),
-    payment: BillingWorkflowPaymentSettingsSchema.exactOptional().openapi({
-      description: 'The payment settings for this workflow',
-    }),
-    tax: BillingWorkflowTaxSettingsSchema.exactOptional().openapi({
-      description: 'The tax settings for this workflow',
-    }),
-  })
-  .openapi({
-    description: 'BillingWorkflow represents the settings for a billing workflow.',
-    required: [],
-  })
-  .openapi('BillingWorkflow')
 
 const BillingProfileAppsSchema = z
   .object({
@@ -2748,6 +1551,20 @@ const BillingProfileAppsSchema = z
     description: 'BillingProfileApps represents the applications used by a billing profile',
   })
   .openapi('BillingProfileApps')
+
+const AppReferenceSchema = z
+  .object({
+    id: z
+      .string()
+      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
+      .openapi({ description: 'The ID of the app.', example: '01G65Z755AFWAKHE12NY0CQ9FH' }),
+  })
+  .openapi({
+    required: ['id'],
+    description:
+      'App reference\n\nCan be used as a short reference to an app if the full app object is not needed.',
+  })
+  .openapi('AppReference')
 
 const BillingProfileAppReferencesSchema = z
   .object({
@@ -2803,141 +1620,6 @@ const BillingCustomerProfileSchema = z
   })
   .openapi('BillingCustomerProfile')
 
-const BillingDiscountMetadataSchema = z
-  .object({
-    correlationId: z
-      .string()
-      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
-      .exactOptional()
-      .openapi({
-        description:
-          'Correlation ID for the discount.\n\nThis is used to link discounts across different invoices (progressive billing use case).\n\nIf not provided, the invoicing engine will auto-generate one. When editing an invoice line,\nplease make sure to keep the same correlation ID of the discount or in progressive billing\nsetups the discount amounts might be incorrect.',
-        example: '01G65Z755AFWAKHE12NY0CQ9FH',
-      }),
-  })
-  .openapi({ description: 'Billing specific fields for product catalog discounts.', required: [] })
-  .openapi('BillingDiscountMetadata')
-
-const BillingDiscountPercentageSchema = z
-  .object({
-    percentage: PercentageSchema.openapi({
-      description: 'The percentage of the discount.',
-      title: 'Percentage',
-    }),
-    correlationId: z
-      .string()
-      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
-      .exactOptional()
-      .openapi({
-        description:
-          'Correlation ID for the discount.\n\nThis is used to link discounts across different invoices (progressive billing use case).\n\nIf not provided, the invoicing engine will auto-generate one. When editing an invoice line,\nplease make sure to keep the same correlation ID of the discount or in progressive billing\nsetups the discount amounts might be incorrect.',
-        example: '01G65Z755AFWAKHE12NY0CQ9FH',
-      }),
-  })
-  .openapi({ required: ['percentage'], description: 'A percentage discount.' })
-  .openapi('BillingDiscountPercentage')
-
-const DiscountReasonMaximumSpendSchema = z
-  .object({ type: z.literal('maximum_spend') })
-  .openapi({ required: ['type'], description: 'The reason for the discount is a maximum spend.' })
-  .openapi('DiscountReasonMaximumSpend')
-
-const DiscountReasonRatecardPercentageSchema = z
-  .object({
-    type: z.literal('ratecard_percentage'),
-    percentage: PercentageSchema.openapi({
-      description: 'The percentage of the discount.',
-      title: 'Percentage',
-    }),
-    correlationId: z
-      .string()
-      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
-      .exactOptional()
-      .openapi({
-        description:
-          'Correlation ID for the discount.\n\nThis is used to link discounts across different invoices (progressive billing use case).\n\nIf not provided, the invoicing engine will auto-generate one. When editing an invoice line,\nplease make sure to keep the same correlation ID of the discount or in progressive billing\nsetups the discount amounts might be incorrect.',
-        example: '01G65Z755AFWAKHE12NY0CQ9FH',
-      }),
-  })
-  .openapi({
-    required: ['type', 'percentage'],
-    description: 'The reason for the discount is a ratecard percentage.',
-  })
-  .openapi('DiscountReasonRatecardPercentage')
-
-const DiscountReasonRatecardUsageSchema = z
-  .object({
-    type: z.literal('ratecard_usage'),
-    quantity: NumericSchema.openapi({
-      description: 'The quantity of the usage discount.\n\nMust be positive.',
-      title: 'Usage',
-    }),
-    correlationId: z
-      .string()
-      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
-      .exactOptional()
-      .openapi({
-        description:
-          'Correlation ID for the discount.\n\nThis is used to link discounts across different invoices (progressive billing use case).\n\nIf not provided, the invoicing engine will auto-generate one. When editing an invoice line,\nplease make sure to keep the same correlation ID of the discount or in progressive billing\nsetups the discount amounts might be incorrect.',
-        example: '01G65Z755AFWAKHE12NY0CQ9FH',
-      }),
-  })
-  .openapi({
-    required: ['type', 'quantity'],
-    description: 'The reason for the discount is a ratecard usage.',
-  })
-  .openapi('DiscountReasonRatecardUsage')
-
-const BillingDiscountReasonSchema = z
-  .discriminatedUnion('type', [
-    DiscountReasonMaximumSpendSchema,
-    DiscountReasonRatecardPercentageSchema,
-    DiscountReasonRatecardUsageSchema,
-  ])
-  .openapi({
-    discriminator: {
-      propertyName: 'type',
-      mapping: {
-        maximum_spend: '#/components/schemas/DiscountReasonMaximumSpend',
-        ratecard_percentage: '#/components/schemas/DiscountReasonRatecardPercentage',
-        ratecard_usage: '#/components/schemas/DiscountReasonRatecardUsage',
-      },
-    },
-    description: 'The reason for the discount.',
-  })
-  .openapi('BillingDiscountReason')
-
-const BillingDiscountUsageSchema = z
-  .object({
-    quantity: NumericSchema.openapi({
-      description: 'The quantity of the usage discount.\n\nMust be positive.',
-      title: 'Usage',
-    }),
-    correlationId: z
-      .string()
-      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
-      .exactOptional()
-      .openapi({
-        description:
-          'Correlation ID for the discount.\n\nThis is used to link discounts across different invoices (progressive billing use case).\n\nIf not provided, the invoicing engine will auto-generate one. When editing an invoice line,\nplease make sure to keep the same correlation ID of the discount or in progressive billing\nsetups the discount amounts might be incorrect.',
-        example: '01G65Z755AFWAKHE12NY0CQ9FH',
-      }),
-  })
-  .openapi({ required: ['quantity'], description: 'A usage discount.' })
-  .openapi('BillingDiscountUsage')
-
-const BillingDiscountsSchema = z
-  .object({
-    percentage: BillingDiscountPercentageSchema.exactOptional().openapi({
-      description: 'The percentage discount.',
-    }),
-    usage: BillingDiscountUsageSchema.exactOptional().openapi({
-      description: 'The usage discount.',
-    }),
-  })
-  .openapi({ description: 'A discount by type.', required: [] })
-  .openapi('BillingDiscounts')
-
 const CustomerUsageAttributionSchema = z
   .object({
     subjectKeys: z
@@ -2961,307 +1643,23 @@ const CustomerUsageAttributionSchema = z
   })
   .openapi('CustomerUsageAttribution')
 
-const BillingInvoiceCustomerExtendedDetailsSchema = z
+const AlignmentSchema = z
   .object({
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Unique identifier for the party (if available)', readOnly: true }),
-    key: z
-      .string()
-      .min(1)
-      .max(256)
-      .exactOptional()
-      .openapi({ description: 'An optional unique key of the party (if available)', title: 'Key' }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Legal name or representation of the organization.' }),
-    taxId: BillingPartyTaxIdentitySchema.exactOptional().openapi({
-      description:
-        "The entity's legal ID code used for tax purposes. They may have\nother numbers, but we're only interested in those valid for tax purposes.",
-    }),
-    addresses: z
-      .array(AddressSchema)
-      .max(1)
-      .exactOptional()
-      .openapi({
-        description: 'Regular post addresses for where information should be sent if needed.',
-      }),
-    usageAttribution: CustomerUsageAttributionSchema.openapi({
-      description: 'Mapping to attribute metered usage to the customer',
-      title: 'Usage Attribution',
-    }),
-  })
-  .openapi({
-    required: ['usageAttribution'],
-    description:
-      'BillingInvoiceCustomerExtendedDetails is a collection of fields that are used to extend the billing party details for invoices.\n\nThese fields contain the OpenMeter specific details for the customer, that are not strictly required for the invoice itself.',
-  })
-  .openapi('BillingInvoiceCustomerExtendedDetails')
-
-const BillingPartyReplaceUpdateSchema = z
-  .object({
-    key: z
-      .string()
-      .min(1)
-      .max(256)
-      .exactOptional()
-      .openapi({ description: 'An optional unique key of the party (if available)', title: 'Key' }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Legal name or representation of the organization.' }),
-    taxId: BillingPartyTaxIdentitySchema.exactOptional().openapi({
-      description:
-        "The entity's legal ID code used for tax purposes. They may have\nother numbers, but we're only interested in those valid for tax purposes.",
-    }),
-    addresses: z
-      .array(AddressSchema)
-      .max(1)
-      .exactOptional()
-      .openapi({
-        description: 'Regular post addresses for where information should be sent if needed.',
-      }),
-  })
-  .openapi({ description: 'Resource update operation model.', required: [] })
-  .openapi('BillingPartyReplaceUpdate')
-
-const BillingProfileSchema = z
-  .object({
-    id: z
-      .string()
-      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
-      .openapi({
-        description: 'A unique identifier for the resource.',
-        example: '01G65Z755AFWAKHE12NY0CQ9FH',
-        title: 'ID',
-        readOnly: true,
-      }),
-    name: z
-      .string()
-      .min(1)
-      .max(256)
-      .openapi({
-        description: 'Human-readable name for the resource. Between 1 and 256 characters.',
-        title: 'Display name',
-      }),
-    description: z
-      .string()
-      .max(1024)
-      .exactOptional()
-      .openapi({
-        description: 'Optional description of the resource. Maximum 1024 characters.',
-        title: 'Description',
-      }),
-    metadata: MetadataSchema.nullable()
-      .exactOptional()
-      .openapi({ description: 'Additional metadata for the resource.', title: 'Metadata' }),
-    createdAt: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'Timestamp of when the resource was created.',
-        example: '2024-01-01T01:01:01.001Z',
-        title: 'Creation Time',
-        readOnly: true,
-      }),
-    updatedAt: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'Timestamp of when the resource was last updated.',
-        example: '2024-01-01T01:01:01.001Z',
-        title: 'Last Update Time',
-        readOnly: true,
-      }),
-    deletedAt: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'Timestamp of when the resource was permanently deleted.',
-        example: '2024-01-01T01:01:01.001Z',
-        title: 'Deletion Time',
-        readOnly: true,
-      }),
-    supplier: BillingPartySchema.openapi({
-      description:
-        'The name and contact information for the supplier this billing profile represents',
-    }),
-    workflow: BillingWorkflowSchema.openapi({
-      description: 'The billing workflow settings for this profile',
-      readOnly: true,
-    }),
-    apps: BillingProfileAppsOrReferenceSchema.openapi({
-      description:
-        'The applications used by this billing profile.\n\nExpand settings govern if this includes the whole app object or just the ID references.',
-      readOnly: true,
-    }),
-    default: z.boolean().openapi({ description: 'Is this the default profile?' }),
-  })
-  .openapi({
-    required: ['id', 'name', 'createdAt', 'updatedAt', 'supplier', 'workflow', 'apps', 'default'],
-    description: 'BillingProfile represents a billing profile',
-  })
-  .openapi('BillingProfile')
-
-const BillingProfileAppsCreateSchema = z
-  .object({
-    tax: z
-      .string()
-      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
-      .openapi({
-        description: 'The tax app used for this workflow',
-        example: '01G65Z755AFWAKHE12NY0CQ9FH',
-        'x-go-type': 'string',
-      }),
-    invoicing: z
-      .string()
-      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
-      .openapi({
-        description: 'The invoicing app used for this workflow',
-        example: '01G65Z755AFWAKHE12NY0CQ9FH',
-        'x-go-type': 'string',
-      }),
-    payment: z
-      .string()
-      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
-      .openapi({
-        description: 'The payment app used for this workflow',
-        example: '01G65Z755AFWAKHE12NY0CQ9FH',
-        'x-go-type': 'string',
-      }),
-  })
-  .openapi({
-    required: ['tax', 'invoicing', 'payment'],
-    description:
-      "BillingProfileAppsCreate represents the input for creating a billing profile's apps",
-  })
-  .openapi('BillingProfileAppsCreate')
-
-const BillingWorkflowCreateSchema = z
-  .object({
-    collection: BillingWorkflowCollectionSettingsSchema.exactOptional().openapi({
-      description: 'The collection settings for this workflow',
-    }),
-    invoicing: BillingWorkflowInvoicingSettingsSchema.exactOptional().openapi({
-      description: 'The invoicing settings for this workflow',
-    }),
-    payment: BillingWorkflowPaymentSettingsSchema.exactOptional().openapi({
-      description: 'The payment settings for this workflow',
-    }),
-    tax: BillingWorkflowTaxSettingsSchema.exactOptional().openapi({
-      description: 'The tax settings for this workflow',
-    }),
-  })
-  .openapi({ description: 'Resource create operation model.', required: [] })
-  .openapi('BillingWorkflowCreate')
-
-const BillingProfileCreateSchema = z
-  .object({
-    name: z
-      .string()
-      .min(1)
-      .max(256)
-      .openapi({
-        description: 'Human-readable name for the resource. Between 1 and 256 characters.',
-        title: 'Display name',
-      }),
-    description: z
-      .string()
-      .max(1024)
-      .exactOptional()
-      .openapi({
-        description: 'Optional description of the resource. Maximum 1024 characters.',
-        title: 'Description',
-      }),
-    metadata: MetadataSchema.nullable()
-      .exactOptional()
-      .openapi({ description: 'Additional metadata for the resource.', title: 'Metadata' }),
-    supplier: BillingPartySchema.openapi({
-      description:
-        'The name and contact information for the supplier this billing profile represents',
-    }),
-    default: z.boolean().openapi({ description: 'Is this the default profile?' }),
-    workflow: BillingWorkflowCreateSchema.openapi({
-      description: 'The billing workflow settings for this profile.',
-    }),
-    apps: BillingProfileAppsCreateSchema.openapi({
-      description: 'The apps used by this billing profile.',
-    }),
-  })
-  .openapi({
-    required: ['name', 'supplier', 'default', 'workflow', 'apps'],
-    description: 'BillingProfileCreate represents the input for creating a billing profile',
-  })
-  .openapi('BillingProfileCreate')
-
-const BillingProfileCustomerOverrideSchema = z
-  .object({
-    createdAt: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'Timestamp of when the resource was created.',
-        example: '2024-01-01T01:01:01.001Z',
-        title: 'Creation Time',
-        readOnly: true,
-      }),
-    updatedAt: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'Timestamp of when the resource was last updated.',
-        example: '2024-01-01T01:01:01.001Z',
-        title: 'Last Update Time',
-        readOnly: true,
-      }),
-    billingProfileId: z
-      .string()
-      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
+    billablesMustAlign: z
+      .boolean()
       .exactOptional()
       .openapi({
         description:
-          'The billing profile this override is associated with.\n\nIf empty the default profile is looked up dynamically.',
-        example: '01G65Z755AFWAKHE12NY0CQ9FH',
-      }),
-    customerId: z
-      .string()
-      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
-      .openapi({
-        description: 'The customer id this override is associated with.',
-        example: '01G65Z755AFWAKHE12NY0CQ9FH',
+          "Whether all Billable items and RateCards must align.\nAlignment means the Price's BillingCadence must align for both duration and anchor time.",
+        deprecated: true,
       }),
   })
   .openapi({
-    required: ['createdAt', 'updatedAt', 'customerId'],
-    description: 'Customer override values.',
-  })
-  .openapi('BillingProfileCustomerOverride')
-
-const BillingProfileCustomerOverrideCreateSchema = z
-  .object({
-    billingProfileId: z
-      .string()
-      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
-      .exactOptional()
-      .openapi({
-        description:
-          'The billing profile this override is associated with.\n\nIf not provided, the default billing profile is chosen if available.',
-        example: '01G65Z755AFWAKHE12NY0CQ9FH',
-      }),
-  })
-  .openapi({
-    description: 'Payload for creating a new or updating an existing customer override.',
+    description: 'Alignment configuration for a plan or subscription.',
+    deprecated: true,
     required: [],
   })
-  .openapi('BillingProfileCustomerOverrideCreate')
-
-const BillingProfileCustomerOverrideExpandSchema = z
-  .enum(['apps', 'customer'])
-  .openapi({ description: 'CustomerOverrideExpand specifies the parts of the profile to expand.' })
-  .openapi('BillingProfileCustomerOverrideExpand')
-
-const BillingProfileCustomerOverrideOrderBySchema = z
-  .enum(['customerId', 'customerName', 'customerKey', 'customerPrimaryEmail', 'customerCreatedAt'])
-  .openapi({ description: 'Order by options for customers.' })
-  .openapi('BillingProfileCustomerOverrideOrderBy')
+  .openapi('Alignment')
 
 const SubscriptionStatusSchema = z
   .enum(['active', 'inactive', 'canceled', 'scheduled'])
@@ -3284,6 +1682,13 @@ const PlanReferenceSchema = z
   })
   .openapi({ required: ['id', 'key', 'version'], description: 'References an exact plan.' })
   .openapi('PlanReference')
+
+const SubscriptionCostBasisModeSchema = z
+  .enum(['dynamic', 'pinned'])
+  .openapi({
+    description: 'Controls how custom-currency cost bases are selected for the subscription.',
+  })
+  .openapi('SubscriptionCostBasisMode')
 
 const SubscriptionCostBasisPinSchema = z
   .object({
@@ -3313,6 +1718,36 @@ const SubscriptionCostBasisPinSchema = z
     description: 'A cost basis pinned to a custom-currency pair for the subscription.',
   })
   .openapi('SubscriptionCostBasisPin')
+
+const ProRatingModeSchema = z
+  .literal('prorate_prices')
+  .openapi({ description: 'Pro-rating mode options for handling billing period changes.' })
+  .openapi('ProRatingMode')
+
+const ProRatingConfigSchema = z
+  .object({
+    enabled: z
+      .boolean()
+      .default(true)
+      .openapi({
+        description: 'Whether pro-rating is enabled for this plan.',
+        title: 'Enable pro-rating',
+      }),
+    mode: ProRatingModeSchema.default('prorate_prices').openapi({
+      description: 'How to handle pro-rating for billing period changes.',
+      title: 'Pro-rating mode',
+    }),
+  })
+  .openapi({ required: ['enabled', 'mode'], description: 'Configuration for pro-rating behavior.' })
+  .openapi('ProRatingConfig')
+
+const BillingSettlementModeSchema = z
+  .enum(['credit_then_invoice', 'credit_only'])
+  .openapi({
+    description:
+      'The settlement mode of a plan.\nIt determines how the billing system generates invoices and credits for the subscriptions using this plan.\n- credit_then_invoice: credits from the previous billing period are applied first, then the remaining balance is invoiced. This is the default and most common settlement mode.\n- credit_only: only credits from the previous billing period are generated and applied. No invoices are generated for the subscription.',
+  })
+  .openapi('BillingSettlementMode')
 
 const SubscriptionSchema = z
   .object({
@@ -3443,6 +1878,16 @@ const SubscriptionSchema = z
         description: 'The normalizedbilling anchor of the subscription.',
         example: '2023-01-01T01:01:01.001Z',
         title: 'Billing anchor',
+        readOnly: true,
+      }),
+    billingStartsAt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'When billing starts for the subscription. Nothing is billed for service before this time.\nIf not set, billing starts with the subscription.',
+        example: '2023-01-01T01:01:01.001Z',
+        title: 'Billing starts at',
         readOnly: true,
       }),
     settlementMode: BillingSettlementModeSchema.default('credit_then_invoice').openapi({
@@ -3622,22 +2067,5908 @@ const BillingProfileCustomerOverrideWithDetailsSchema = z
   })
   .openapi('BillingProfileCustomerOverrideWithDetails')
 
-const BillingProfileCustomerOverrideWithDetailsPaginatedResponseSchema = z
+type BillingProfileCustomerOverrideWithDetailsPaginatedResponseType = {
+  totalCount: number
+  page: number
+  pageSize: number
+  items: z.infer<typeof BillingProfileCustomerOverrideWithDetailsSchema>[]
+}
+
+const BillingProfileSchema = z
+  .object({
+    id: z
+      .string()
+      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
+      .openapi({
+        description: 'A unique identifier for the resource.',
+        example: '01G65Z755AFWAKHE12NY0CQ9FH',
+        title: 'ID',
+        readOnly: true,
+      }),
+    name: z
+      .string()
+      .min(1)
+      .max(256)
+      .openapi({
+        description: 'Human-readable name for the resource. Between 1 and 256 characters.',
+        title: 'Display name',
+      }),
+    description: z
+      .string()
+      .max(1024)
+      .exactOptional()
+      .openapi({
+        description: 'Optional description of the resource. Maximum 1024 characters.',
+        title: 'Description',
+      }),
+    metadata: MetadataSchema.nullable()
+      .exactOptional()
+      .openapi({ description: 'Additional metadata for the resource.', title: 'Metadata' }),
+    createdAt: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'Timestamp of when the resource was created.',
+        example: '2024-01-01T01:01:01.001Z',
+        title: 'Creation Time',
+        readOnly: true,
+      }),
+    updatedAt: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'Timestamp of when the resource was last updated.',
+        example: '2024-01-01T01:01:01.001Z',
+        title: 'Last Update Time',
+        readOnly: true,
+      }),
+    deletedAt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'Timestamp of when the resource was permanently deleted.',
+        example: '2024-01-01T01:01:01.001Z',
+        title: 'Deletion Time',
+        readOnly: true,
+      }),
+    supplier: BillingPartySchema.openapi({
+      description:
+        'The name and contact information for the supplier this billing profile represents',
+    }),
+    workflow: BillingWorkflowSchema.openapi({
+      description: 'The billing workflow settings for this profile',
+      readOnly: true,
+    }),
+    apps: BillingProfileAppsOrReferenceSchema.openapi({
+      description:
+        'The applications used by this billing profile.\n\nExpand settings govern if this includes the whole app object or just the ID references.',
+      readOnly: true,
+    }),
+    default: z.boolean().openapi({ description: 'Is this the default profile?' }),
+  })
+  .openapi({
+    required: ['id', 'name', 'createdAt', 'updatedAt', 'supplier', 'workflow', 'apps', 'default'],
+    description: 'BillingProfile represents a billing profile',
+  })
+  .openapi('BillingProfile')
+
+type BillingProfilePaginatedResponseType = {
+  totalCount: number
+  page: number
+  pageSize: number
+  items: z.infer<typeof BillingProfileSchema>[]
+}
+
+const PlanPhaseSchema = z
+  .object({
+    key: z
+      .string()
+      .regex(/^[a-z0-9]+(?:_[a-z0-9]+)*$/)
+      .min(1)
+      .max(64)
+      .openapi({ description: 'A semi-unique identifier for the resource.', title: 'Key' }),
+    name: z
+      .string()
+      .min(1)
+      .max(256)
+      .openapi({
+        description: 'Human-readable name for the resource. Between 1 and 256 characters.',
+        title: 'Display name',
+      }),
+    description: z
+      .string()
+      .max(1024)
+      .exactOptional()
+      .openapi({
+        description: 'Optional description of the resource. Maximum 1024 characters.',
+        title: 'Description',
+      }),
+    metadata: MetadataSchema.nullable()
+      .exactOptional()
+      .openapi({ description: 'Additional metadata for the resource.', title: 'Metadata' }),
+    duration: z.iso
+      .duration()
+      .nullable()
+      .openapi({ description: 'The duration of the phase.', title: 'Duration', example: 'P1Y' }),
+    rateCards: z
+      .array(RateCardSchema)
+      .openapi({ description: 'The rate cards of the plan.', title: 'Rate cards' }),
+  })
+  .openapi({
+    required: ['key', 'name', 'duration', 'rateCards'],
+    description:
+      "The plan phase or pricing ramp allows changing a plan's rate cards over time as a subscription progresses.",
+  })
+  .openapi('PlanPhase')
+
+type CustomPlanInputType = {
+  name: string
+  description?: string
+  metadata?: z.infer<typeof MetadataSchema> | null
+  alignment?: z.infer<typeof AlignmentSchema>
+  currency: z.infer<typeof CurrencyCodeSchema>
+  billingCadence: string
+  proRatingConfig?: z.infer<typeof ProRatingConfigSchema>
+  settlementMode?: z.infer<typeof BillingSettlementModeSchema>
+  phases: z.infer<typeof PlanPhaseSchema>[]
+}
+
+const SubscriptionTimingEnumSchema = z
+  .enum(['immediate', 'next_billing_cycle'])
+  .openapi({
+    description:
+      'Subscription edit timing.\nWhen immediate, the requested changes take effect immediately.\nWhen nextBillingCycle, the requested changes take effect at the next billing cycle.',
+  })
+  .openapi('SubscriptionTimingEnum')
+
+const SubscriptionTimingSchema = z
+  .xor([
+    SubscriptionTimingEnumSchema,
+    z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description:
+          '[RFC3339](https://tools.ietf.org/html/rfc3339) formatted date-time string in UTC.',
+        example: '2023-01-01T01:01:01.001Z',
+      }),
+  ])
+  .openapi({
+    description:
+      'Subscription edit timing defined when the changes should take effect.\nIf the provided configuration is not supported by the subscription, an error will be returned.',
+  })
+  .openapi('SubscriptionTiming')
+
+const CustomPlanInputSchema: z.ZodType<CustomPlanInputType> = z
+  .object({
+    name: z
+      .string()
+      .min(1)
+      .max(256)
+      .openapi({
+        description: 'Human-readable name for the resource. Between 1 and 256 characters.',
+        title: 'Display name',
+      }),
+    description: z
+      .string()
+      .max(1024)
+      .exactOptional()
+      .openapi({
+        description: 'Optional description of the resource. Maximum 1024 characters.',
+        title: 'Description',
+      }),
+    metadata: MetadataSchema.nullable()
+      .exactOptional()
+      .openapi({ description: 'Additional metadata for the resource.', title: 'Metadata' }),
+    alignment: AlignmentSchema.exactOptional().openapi({
+      description: 'Alignment configuration for the plan.',
+    }),
+    currency: CurrencyCodeSchema.default('USD').openapi({
+      description: 'The currency code of the plan.',
+      title: 'Currency',
+    }),
+    billingCadence: z.iso
+      .duration()
+      .openapi({
+        description:
+          'The default billing cadence for subscriptions using this plan.\nDefines how often customers are billed using ISO8601 duration format.\nExamples: "P1M" (monthly), "P3M" (quarterly), "P1Y" (annually).',
+        title: 'Billing cadence',
+        example: 'P1M',
+      }),
+    proRatingConfig: ProRatingConfigSchema.default({ enabled: true, mode: 'prorate_prices' })
+      .exactOptional()
+      .openapi({
+        description: 'Default pro-rating configuration for subscriptions using this plan.',
+        title: 'Pro-rating configuration',
+      }),
+    settlementMode: BillingSettlementModeSchema.default('credit_then_invoice')
+      .exactOptional()
+      .openapi({
+        description:
+          'The settlement mode of the plan.\nIt determines how the billing system generates invoices and credits for the subscriptions using this plan.\n- credit_then_invoice: credits from the previous billing period are applied first, then the remaining balance is invoiced.\n- credit_only: only credits from the previous billing period are generated and applied. No invoices are generated for the subscription.\nThis is the default and most common settlement mode.',
+        title: 'Settlement mode',
+      }),
+    phases: z
+      .array(PlanPhaseSchema)
+      .min(1)
+      .openapi({
+        description:
+          "The plan phase or pricing ramp allows changing a plan's rate cards over time as a subscription progresses.\nA phase switch occurs only at the end of a billing period, ensuring that a single subscription invoice will not include charges from different phase prices.",
+        title: 'Plan phases',
+      }),
+  })
+  .openapi({
+    required: ['name', 'currency', 'billingCadence', 'phases'],
+    description: 'The template for omitting properties.',
+  })
+  .openapi({
+    description: 'Plan input for custom subscription creation (without key and version).',
+  })
+  .openapi('CustomPlanInput')
+
+type CustomSubscriptionChangeType = {
+  timing: z.infer<typeof SubscriptionTimingSchema>
+  billingAnchor?: string
+  costBasisMode?: z.infer<typeof SubscriptionCostBasisModeSchema>
+  customPlan: z.infer<typeof CustomPlanInputSchema>
+}
+
+type CustomSubscriptionCreateType = {
+  costBasisMode?: z.infer<typeof SubscriptionCostBasisModeSchema>
+  customPlan: z.infer<typeof CustomPlanInputSchema>
+  timing?: z.infer<typeof SubscriptionTimingSchema>
+  customerId?: string
+  customerKey?: string
+  billingAnchor?: string
+  billingStartsAt?: string
+}
+
+type FilterFloatType = {
+  $eq?: number | null
+  $ne?: number | null
+  $gt?: number | null
+  $gte?: number | null
+  $lt?: number | null
+  $lte?: number | null
+  $and?: FilterFloatType[] | null
+  $or?: FilterFloatType[] | null
+}
+
+type FilterIntegerType = {
+  $eq?: number | null
+  $ne?: number | null
+  $gt?: number | null
+  $gte?: number | null
+  $lt?: number | null
+  $lte?: number | null
+  $and?: FilterIntegerType[] | null
+  $or?: FilterIntegerType[] | null
+}
+
+type FilterStringType = {
+  $eq?: string | null
+  $ne?: string | null
+  $in?: string[] | null
+  $nin?: string[] | null
+  $like?: string | null
+  $nlike?: string | null
+  $ilike?: string | null
+  $nilike?: string | null
+  $gt?: string | null
+  $gte?: string | null
+  $lt?: string | null
+  $lte?: string | null
+  $and?: FilterStringType[] | null
+  $or?: FilterStringType[] | null
+}
+
+type FilterTimeType = {
+  $gt?: string | null
+  $gte?: string | null
+  $lt?: string | null
+  $lte?: string | null
+  $and?: FilterTimeType[] | null
+  $or?: FilterTimeType[] | null
+}
+
+const InvoiceTypeSchema = z
+  .enum(['standard', 'credit_note'])
+  .openapi({
+    description:
+      'InvoiceType represents the type of invoice.\n\nThe type of invoice determines the purpose of the invoice and how it should be handled.',
+  })
+  .openapi('InvoiceType')
+
+const BillingInvoiceCustomerExtendedDetailsSchema = z
+  .object({
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Unique identifier for the party (if available)', readOnly: true }),
+    key: z
+      .string()
+      .min(1)
+      .max(256)
+      .exactOptional()
+      .openapi({ description: 'An optional unique key of the party (if available)', title: 'Key' }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Legal name or representation of the organization.' }),
+    taxId: BillingPartyTaxIdentitySchema.exactOptional().openapi({
+      description:
+        "The entity's legal ID code used for tax purposes. They may have\nother numbers, but we're only interested in those valid for tax purposes.",
+    }),
+    addresses: z
+      .array(AddressSchema)
+      .max(1)
+      .exactOptional()
+      .openapi({
+        description: 'Regular post addresses for where information should be sent if needed.',
+      }),
+    usageAttribution: CustomerUsageAttributionSchema.openapi({
+      description: 'Mapping to attribute metered usage to the customer',
+      title: 'Usage Attribution',
+    }),
+  })
+  .openapi({
+    required: ['usageAttribution'],
+    description:
+      'BillingInvoiceCustomerExtendedDetails is a collection of fields that are used to extend the billing party details for invoices.\n\nThese fields contain the OpenMeter specific details for the customer, that are not strictly required for the invoice itself.',
+  })
+  .openapi('BillingInvoiceCustomerExtendedDetails')
+
+const InvoiceNumberSchema = z
+  .string()
+  .min(1)
+  .max(256)
+  .openapi({
+    description:
+      'InvoiceNumber is a unique identifier for the invoice, generated by the\ninvoicing app.\n\nThe uniqueness depends on a lot of factors:\n- app setting (unique per app or unique per customer)\n- multiple app scenarios (multiple apps generating invoices with the same prefix)',
+    example: 'INV-2024-01-01-01',
+  })
+  .openapi('InvoiceNumber')
+
+const InvoiceDocumentRefTypeSchema = z
+  .literal('credit_note_original_invoice')
+  .openapi({
+    description: 'InvoiceDocumentRefType defines the type of document that is being referenced.',
+  })
+  .openapi('InvoiceDocumentRefType')
+
+const InvoiceGenericDocumentRefSchema = z
+  .object({
+    type: InvoiceDocumentRefTypeSchema.openapi({
+      description: 'Type of the document referenced.',
+      readOnly: true,
+    }),
+    reason: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Human readable description on why this reference is here or needs to be used.',
+        readOnly: true,
+      }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Additional details about the document.', readOnly: true }),
+  })
+  .openapi({
+    required: ['type'],
+    description:
+      'Omitted fields:\nperiod: Tax period in which the referred document had an effect required by some tax regimes and formats.\nstamps: Seals of approval from other organisations that may need to be listed.\next: \tExtensions for additional codes that may be required.',
+    title:
+      "InvoiceGenericDocumentRef is used to describe an existing document or a specific part of it's contents.",
+  })
+  .openapi('InvoiceGenericDocumentRef')
+
+const CreditNoteOriginalInvoiceRefSchema = InvoiceGenericDocumentRefSchema.and(
+  z
+    .object({
+      type: z
+        .literal('credit_note_original_invoice')
+        .openapi({ description: 'Type of the invoice.' }),
+      issuedAt: z.iso
+        .datetime({ offset: true })
+        .exactOptional()
+        .openapi({
+          description: 'IssueAt reflects the time the document was issued.',
+          example: '2023-01-01T01:01:01.001Z',
+          readOnly: true,
+        }),
+      number: InvoiceNumberSchema.exactOptional().openapi({
+        description: '(Serial) Number of the referenced document.',
+        readOnly: true,
+      }),
+      url: z.url().openapi({ description: 'Link to the source document.', readOnly: true }),
+    })
+    .openapi({ required: ['type', 'url'] }),
+)
+  .openapi({
+    required: ['type', 'url'],
+    description:
+      'CreditNoteOriginalInvoiceRef is used to reference the original invoice that a credit note is based on.',
+  })
+  .openapi('CreditNoteOriginalInvoiceRef')
+
+const InvoiceDocumentRefSchema = CreditNoteOriginalInvoiceRefSchema.openapi({
+  description:
+    'InvoiceDocumentRef is used to describe a reference to an existing document (invoice).',
+}).openapi('InvoiceDocumentRef')
+
+const InvoiceTotalsSchema = z
+  .object({
+    amount: NumericSchema.openapi({
+      description: 'The total value of the line before taxes, discounts and commitments.',
+      readOnly: true,
+    }),
+    chargesTotal: NumericSchema.openapi({
+      description: 'The amount of value of the line that are due to additional charges.',
+      readOnly: true,
+    }),
+    discountsTotal: NumericSchema.openapi({
+      description: 'The amount of value of the line that are due to discounts.',
+      readOnly: true,
+    }),
+    creditsTotal: NumericSchema.openapi({
+      description: 'The amount of value of the line that are due to credits.',
+      readOnly: true,
+    }),
+    taxesInclusiveTotal: NumericSchema.openapi({
+      description: 'The total amount of taxes that are included in the line.',
+      readOnly: true,
+    }),
+    taxesExclusiveTotal: NumericSchema.openapi({
+      description: 'The total amount of taxes that are added on top of amount from the line.',
+      readOnly: true,
+    }),
+    taxesTotal: NumericSchema.openapi({
+      description: 'The total amount of taxes for this line.',
+      readOnly: true,
+    }),
+    total: NumericSchema.openapi({
+      description: 'The total amount value of the line after taxes, discounts and commitments.',
+      readOnly: true,
+    }),
+  })
+  .openapi({
+    required: [
+      'amount',
+      'chargesTotal',
+      'discountsTotal',
+      'creditsTotal',
+      'taxesInclusiveTotal',
+      'taxesExclusiveTotal',
+      'taxesTotal',
+      'total',
+    ],
+    description: 'Totals contains the summaries of all calculations for the invoice.',
+  })
+  .openapi('InvoiceTotals')
+
+const InvoiceStatusSchema = z
+  .enum([
+    'gathering',
+    'draft',
+    'issuing',
+    'issued',
+    'payment_processing',
+    'overdue',
+    'paid',
+    'uncollectible',
+    'voided',
+  ])
+  .openapi({ description: 'InvoiceStatus describes the status of an invoice.' })
+  .openapi('InvoiceStatus')
+
+const InvoiceAvailableActionDetailsSchema = z
+  .object({
+    resultingState: z
+      .string()
+      .openapi({
+        description:
+          'The state the invoice will reach if the action is activated and\nall intermediate steps are successful.\n\nFor example advancing a draft_created invoice will result in a draft_manual_approval_needed invoice.',
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    required: ['resultingState'],
+    description:
+      'InvoiceAvailableActionInvoiceDetails represents the details of the invoice action for\nnon-gathering invoices.',
+  })
+  .openapi('InvoiceAvailableActionDetails')
+
+const InvoiceAvailableActionInvoiceDetailsSchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      'InvoiceAvailableActionInvoiceDetails represents the details of the invoice action for\ngathering invoices.',
+  })
+  .openapi('InvoiceAvailableActionInvoiceDetails')
+
+const InvoiceAvailableActionsSchema = z
+  .object({
+    advance: InvoiceAvailableActionDetailsSchema.exactOptional().openapi({
+      description: 'Advance the invoice to the next status.',
+      readOnly: true,
+    }),
+    approve: InvoiceAvailableActionDetailsSchema.exactOptional().openapi({
+      description: 'Approve an invoice that requires manual approval.',
+      readOnly: true,
+    }),
+    delete: InvoiceAvailableActionDetailsSchema.exactOptional().openapi({
+      description: 'Delete the invoice (only non-issued invoices can be deleted).',
+      readOnly: true,
+    }),
+    retry: InvoiceAvailableActionDetailsSchema.exactOptional().openapi({
+      description: 'Retry an invoice issuing step that failed.',
+      readOnly: true,
+    }),
+    snapshotQuantities: InvoiceAvailableActionDetailsSchema.exactOptional().openapi({
+      description: 'Snapshot quantities for usage based line items.',
+      readOnly: true,
+    }),
+    void: InvoiceAvailableActionDetailsSchema.exactOptional().openapi({
+      description: 'Void an already issued invoice.',
+      readOnly: true,
+    }),
+    invoice: InvoiceAvailableActionInvoiceDetailsSchema.exactOptional().openapi({
+      description: 'Invoice a gathering invoice',
+      readOnly: true,
+    }),
+  })
+  .openapi({
+    description:
+      'InvoiceAvailableActions represents the actions that can be performed on the invoice.',
+    required: [],
+  })
+  .openapi('InvoiceAvailableActions')
+
+const InvoiceStatusDetailsSchema = z
+  .object({
+    immutable: z.boolean().openapi({ description: 'Is the invoice editable?', readOnly: true }),
+    failed: z
+      .boolean()
+      .openapi({ description: 'Is the invoice in a failed state?', readOnly: true }),
+    extendedStatus: z
+      .string()
+      .openapi({ description: 'Extended status information for the invoice.', readOnly: true }),
+    availableActions: InvoiceAvailableActionsSchema.openapi({
+      description: 'The actions that can be performed on the invoice.',
+    }),
+  })
+  .openapi({
+    required: ['immutable', 'failed', 'extendedStatus', 'availableActions'],
+    description:
+      'InvoiceStatusDetails represents the details of the invoice status.\n\nAPI users are encouraged to rely on the immutable/failed/avaliableActions fields to determine\nthe next steps of the invoice instead of the extendedStatus field.',
+  })
+  .openapi('InvoiceStatusDetails')
+
+const PeriodSchema = z
+  .object({
+    from: z.iso
+      .datetime({ offset: true })
+      .openapi({ description: 'Period start time.', example: '2023-01-01T01:01:01.001Z' }),
+    to: z.iso
+      .datetime({ offset: true })
+      .openapi({ description: 'Period end time.', example: '2023-02-01T01:01:01.001Z' }),
+  })
+  .openapi({ required: ['from', 'to'], description: 'A period with a start and end time.' })
+  .openapi('Period')
+
+const InvoiceWorkflowSettingsSchema = z
+  .object({
+    apps: BillingProfileAppsOrReferenceSchema.exactOptional().openapi({
+      description: "The apps that will be used to orchestrate the invoice's workflow.",
+      readOnly: true,
+    }),
+    sourceBillingProfileId: z
+      .string()
+      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
+      .openapi({
+        description:
+          'sourceBillingProfileID is the billing profile on which the workflow was based on.\n\nThe profile is snapshotted on invoice creation, after which it can be altered independently\nof the profile itself.',
+        example: '01G65Z755AFWAKHE12NY0CQ9FH',
+        readOnly: true,
+      }),
+    workflow: BillingWorkflowSchema.openapi({
+      description: 'The workflow details used by this invoice.',
+    }),
+  })
+  .openapi({
+    required: ['sourceBillingProfileId', 'workflow'],
+    description:
+      "InvoiceWorkflowSettings represents the workflow settings used by the invoice.\n\nThis is a clone of the billing profile's workflow settings at the time of invoice creation\nwith customer overrides considered.",
+  })
+  .openapi('InvoiceWorkflowSettings')
+
+const InvoiceLineManagedBySchema = z
+  .enum(['subscription', 'system', 'manual'])
+  .openapi({ description: 'InvoiceLineManagedBy specifies who manages the line.' })
+  .openapi('InvoiceLineManagedBy')
+
+const InvoiceLineStatusSchema = z
+  .enum(['valid', 'detailed', 'split'])
+  .openapi({ description: 'Line status specifies the status of the line.' })
+  .openapi('InvoiceLineStatus')
+
+const DiscountReasonMaximumSpendSchema = z
+  .object({ type: z.literal('maximum_spend') })
+  .openapi({ required: ['type'], description: 'The reason for the discount is a maximum spend.' })
+  .openapi('DiscountReasonMaximumSpend')
+
+const DiscountReasonRatecardPercentageSchema = z
+  .object({
+    type: z.literal('ratecard_percentage'),
+    percentage: PercentageSchema.openapi({
+      description: 'The percentage of the discount.',
+      title: 'Percentage',
+    }),
+    correlationId: z
+      .string()
+      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
+      .exactOptional()
+      .openapi({
+        description:
+          'Correlation ID for the discount.\n\nThis is used to link discounts across different invoices (progressive billing use case).\n\nIf not provided, the invoicing engine will auto-generate one. When editing an invoice line,\nplease make sure to keep the same correlation ID of the discount or in progressive billing\nsetups the discount amounts might be incorrect.',
+        example: '01G65Z755AFWAKHE12NY0CQ9FH',
+      }),
+  })
+  .openapi({
+    required: ['type', 'percentage'],
+    description: 'The reason for the discount is a ratecard percentage.',
+  })
+  .openapi('DiscountReasonRatecardPercentage')
+
+const DiscountReasonRatecardUsageSchema = z
+  .object({
+    type: z.literal('ratecard_usage'),
+    quantity: NumericSchema.openapi({
+      description: 'The quantity of the usage discount.\n\nMust be positive.',
+      title: 'Usage',
+    }),
+    correlationId: z
+      .string()
+      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
+      .exactOptional()
+      .openapi({
+        description:
+          'Correlation ID for the discount.\n\nThis is used to link discounts across different invoices (progressive billing use case).\n\nIf not provided, the invoicing engine will auto-generate one. When editing an invoice line,\nplease make sure to keep the same correlation ID of the discount or in progressive billing\nsetups the discount amounts might be incorrect.',
+        example: '01G65Z755AFWAKHE12NY0CQ9FH',
+      }),
+  })
+  .openapi({
+    required: ['type', 'quantity'],
+    description: 'The reason for the discount is a ratecard usage.',
+  })
+  .openapi('DiscountReasonRatecardUsage')
+
+const BillingDiscountReasonSchema = z
+  .discriminatedUnion('type', [
+    DiscountReasonMaximumSpendSchema,
+    DiscountReasonRatecardPercentageSchema,
+    DiscountReasonRatecardUsageSchema,
+  ])
+  .openapi({
+    discriminator: {
+      propertyName: 'type',
+      mapping: {
+        maximum_spend: '#/components/schemas/DiscountReasonMaximumSpend',
+        ratecard_percentage: '#/components/schemas/DiscountReasonRatecardPercentage',
+        ratecard_usage: '#/components/schemas/DiscountReasonRatecardUsage',
+      },
+    },
+    description: 'The reason for the discount.',
+  })
+  .openapi('BillingDiscountReason')
+
+const InvoiceLineAppExternalIdsSchema = z
+  .object({
+    invoicing: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The external ID of the invoice in the invoicing app if available.',
+        readOnly: true,
+      }),
+    tax: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The external ID of the invoice in the tax app if available.',
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    description:
+      'InvoiceLineAppExternalIds contains the external IDs of the invoice in other apps such as Stripe.',
+    required: [],
+  })
+  .openapi('InvoiceLineAppExternalIds')
+
+const InvoiceLineAmountDiscountSchema = z
+  .object({
+    createdAt: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'Timestamp of when the resource was created.',
+        example: '2024-01-01T01:01:01.001Z',
+        title: 'Creation Time',
+        readOnly: true,
+      }),
+    updatedAt: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'Timestamp of when the resource was last updated.',
+        example: '2024-01-01T01:01:01.001Z',
+        title: 'Last Update Time',
+        readOnly: true,
+      }),
+    deletedAt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'Timestamp of when the resource was permanently deleted.',
+        example: '2024-01-01T01:01:01.001Z',
+        title: 'Deletion Time',
+        readOnly: true,
+      }),
+    id: z
+      .string()
+      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
+      .openapi({
+        description: 'ID of the charge or discount.',
+        example: '01G65Z755AFWAKHE12NY0CQ9FH',
+        readOnly: true,
+      }),
+    reason: BillingDiscountReasonSchema.openapi({ description: 'Reason code.', readOnly: true }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Text description as to why the discount was applied.',
+        readOnly: true,
+      }),
+    externalIds: InvoiceLineAppExternalIdsSchema.exactOptional().openapi({
+      description: 'External IDs of the invoice in other apps such as Stripe.',
+      readOnly: true,
+    }),
+    amount: NumericSchema.openapi({
+      description: 'Fixed discount amount to apply (calculated if percent present).',
+      title: 'Amount in the currency of the invoice',
+      readOnly: true,
+    }),
+  })
+  .openapi({
+    required: ['createdAt', 'updatedAt', 'id', 'reason', 'amount'],
+    description:
+      'InvoiceLineAmountDiscount represents an amount deducted from the line, and will be applied before taxes.',
+  })
+  .openapi('InvoiceLineAmountDiscount')
+
+const InvoiceLineUsageDiscountSchema = z
+  .object({
+    createdAt: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'Timestamp of when the resource was created.',
+        example: '2024-01-01T01:01:01.001Z',
+        title: 'Creation Time',
+        readOnly: true,
+      }),
+    updatedAt: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'Timestamp of when the resource was last updated.',
+        example: '2024-01-01T01:01:01.001Z',
+        title: 'Last Update Time',
+        readOnly: true,
+      }),
+    deletedAt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'Timestamp of when the resource was permanently deleted.',
+        example: '2024-01-01T01:01:01.001Z',
+        title: 'Deletion Time',
+        readOnly: true,
+      }),
+    id: z
+      .string()
+      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
+      .openapi({
+        description: 'ID of the charge or discount.',
+        example: '01G65Z755AFWAKHE12NY0CQ9FH',
+        readOnly: true,
+      }),
+    reason: BillingDiscountReasonSchema.openapi({ description: 'Reason code.', readOnly: true }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Text description as to why the discount was applied.',
+        readOnly: true,
+      }),
+    externalIds: InvoiceLineAppExternalIdsSchema.exactOptional().openapi({
+      description: 'External IDs of the invoice in other apps such as Stripe.',
+      readOnly: true,
+    }),
+    quantity: NumericSchema.openapi({
+      description: 'The usage to apply.',
+      title: 'Usage quantity in the unit of the underlying meter',
+      readOnly: true,
+    }),
+    preLinePeriodQuantity: NumericSchema.exactOptional().openapi({
+      description:
+        'The usage discount already applied to the previous split lines.\n\nOnly set if progressive billing is enabled and the line is a split line.',
+      title: 'Usage quantity in the unit of the underlying meter',
+      readOnly: true,
+    }),
+  })
+  .openapi({
+    required: ['createdAt', 'updatedAt', 'id', 'reason', 'quantity'],
+    description:
+      'InvoiceLineUsageDiscount represents an usage-based discount applied to the line.\n\nThe deduction is done before the pricing algorithm is applied.',
+  })
+  .openapi('InvoiceLineUsageDiscount')
+
+const InvoiceLineDiscountsSchema = z
+  .object({
+    amount: z
+      .array(InvoiceLineAmountDiscountSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Amount based discounts applied to the line.\n\nAmount based discounts are deduced from the total price of the line.',
+      }),
+    usage: z
+      .array(InvoiceLineUsageDiscountSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Usage based discounts applied to the line.\n\nUsage based discounts are deduced from the usage of the line before price calculations are applied.',
+      }),
+  })
+  .openapi({
+    description:
+      'InvoiceLineDiscounts represents the discounts applied to the invoice line by type.',
+    required: [],
+  })
+  .openapi('InvoiceLineDiscounts')
+
+const InvoiceLineCreditAllocationSchema = z
+  .object({
+    amount: NumericSchema.openapi({
+      description: 'Amount allocated from credits.',
+      title: 'Amount in the currency of the invoice',
+      readOnly: true,
+    }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Text description as to why the credit was allocated.',
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    required: ['amount'],
+    description:
+      'InvoiceLineCreditAllocation represents a credit amount allocated to the line before taxes are applied.',
+  })
+  .openapi('InvoiceLineCreditAllocation')
+
+const InvoiceReferenceSchema = z
+  .object({
+    id: z
+      .string()
+      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
+      .openapi({
+        description: 'The ID of the invoice.',
+        example: '01G65Z755AFWAKHE12NY0CQ9FH',
+        readOnly: true,
+      }),
+    number: InvoiceNumberSchema.exactOptional().openapi({
+      description: 'The number of the invoice.',
+      readOnly: true,
+    }),
+  })
+  .openapi({ required: ['id'], description: 'Reference to an invoice.' })
+  .openapi('InvoiceReference')
+
+const InvoiceLineTaxBehaviorSchema = z
+  .enum(['inclusive', 'exclusive'])
+  .openapi({
+    description:
+      'InvoiceLineTaxBehavior details how the tax item is applied to the base amount.\n\nInclusive means the tax is included in the base amount.\nExclusive means the tax is added to the base amount.',
+  })
+  .openapi('InvoiceLineTaxBehavior')
+
+const InvoiceLineTaxItemSchema = z
+  .object({
+    config: TaxConfigSchema.exactOptional().openapi({
+      description: 'Tax provider configuration.',
+      readOnly: true,
+    }),
+    percent: PercentageSchema.exactOptional().openapi({
+      description:
+        'Percent defines the percentage set manually or determined from\nthe rate key (calculated if rate present). A nil percent implies that\nthis tax combo is **exempt** from tax.")',
+      readOnly: true,
+    }),
+    surcharge: NumericSchema.exactOptional().openapi({
+      description: 'Some countries require an additional surcharge (calculated if rate present).',
+      readOnly: true,
+    }),
+    behavior: InvoiceLineTaxBehaviorSchema.exactOptional().openapi({
+      description: 'Is the tax item inclusive or exclusive of the base amount.',
+      readOnly: true,
+    }),
+  })
+  .openapi({
+    description: 'TaxConfig stores the configuration for a tax line relative to an invoice line.',
+    required: [],
+  })
+  .openapi('InvoiceLineTaxItem')
+
+const IDResourceSchema = z
+  .object({
+    id: z
+      .string()
+      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
+      .openapi({
+        description: 'A unique identifier for the resource.',
+        example: '01G65Z755AFWAKHE12NY0CQ9FH',
+        title: 'ID',
+        readOnly: true,
+      }),
+  })
+  .openapi({ required: ['id'], description: 'IDResource is a resouce with an ID.' })
+  .openapi('IDResource')
+
+const InvoiceLineSubscriptionReferenceSchema = z
+  .object({
+    subscription: IDResourceSchema.openapi({ description: 'The subscription.', readOnly: true }),
+    phase: IDResourceSchema.openapi({
+      description: 'The phase of the subscription.',
+      readOnly: true,
+    }),
+    item: IDResourceSchema.openapi({
+      description: 'The item this line is related to.',
+      readOnly: true,
+    }),
+    billingPeriod: PeriodSchema.openapi({
+      description:
+        "The billing period of the subscription. In case the subscription item's billing period is different\nfrom the subscription's billing period, this field will contain the billing period of the subscription itself.\n\nFor example, in case of:\n- A monthly billed subscription anchored to 2025-01-01\n- A subscription item billed daily\n\nAn example line would have the period of 2025-01-02 to 2025-01-03 as the item is billed daily, but the subscription's billing period\nwill be 2025-01-01 to 2025-01-31.",
+      readOnly: true,
+    }),
+  })
+  .openapi({
+    required: ['subscription', 'phase', 'item', 'billingPeriod'],
+    description:
+      'InvoiceLineSubscriptionReference contains the references to the subscription that this line is related to.',
+  })
+  .openapi('InvoiceLineSubscriptionReference')
+
+const BillingDiscountPercentageSchema = z
+  .object({
+    percentage: PercentageSchema.openapi({
+      description: 'The percentage of the discount.',
+      title: 'Percentage',
+    }),
+    correlationId: z
+      .string()
+      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
+      .exactOptional()
+      .openapi({
+        description:
+          'Correlation ID for the discount.\n\nThis is used to link discounts across different invoices (progressive billing use case).\n\nIf not provided, the invoicing engine will auto-generate one. When editing an invoice line,\nplease make sure to keep the same correlation ID of the discount or in progressive billing\nsetups the discount amounts might be incorrect.',
+        example: '01G65Z755AFWAKHE12NY0CQ9FH',
+      }),
+  })
+  .openapi({ required: ['percentage'], description: 'A percentage discount.' })
+  .openapi('BillingDiscountPercentage')
+
+const BillingDiscountUsageSchema = z
+  .object({
+    quantity: NumericSchema.openapi({
+      description: 'The quantity of the usage discount.\n\nMust be positive.',
+      title: 'Usage',
+    }),
+    correlationId: z
+      .string()
+      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
+      .exactOptional()
+      .openapi({
+        description:
+          'Correlation ID for the discount.\n\nThis is used to link discounts across different invoices (progressive billing use case).\n\nIf not provided, the invoicing engine will auto-generate one. When editing an invoice line,\nplease make sure to keep the same correlation ID of the discount or in progressive billing\nsetups the discount amounts might be incorrect.',
+        example: '01G65Z755AFWAKHE12NY0CQ9FH',
+      }),
+  })
+  .openapi({ required: ['quantity'], description: 'A usage discount.' })
+  .openapi('BillingDiscountUsage')
+
+const BillingDiscountsSchema = z
+  .object({
+    percentage: BillingDiscountPercentageSchema.exactOptional().openapi({
+      description: 'The percentage discount.',
+    }),
+    usage: BillingDiscountUsageSchema.exactOptional().openapi({
+      description: 'The usage discount.',
+    }),
+  })
+  .openapi({ description: 'A discount by type.', required: [] })
+  .openapi('BillingDiscounts')
+
+const InvoiceDetailedLineRateCardSchema = z
+  .object({
+    taxConfig: TaxConfigSchema.exactOptional().openapi({
+      description:
+        'The tax config of the rate card.\nWhen undefined, the tax config of the feature or the default tax config of the plan is used.',
+      title: 'Tax config',
+    }),
+    price: FlatPriceWithPaymentTermSchema.nullable().openapi({
+      description: 'The price of the rate card.\nWhen null, the feature or service is free.',
+      title: 'Price',
+      example: { type: 'flat', amount: '100', paymentTerm: 'in_arrears' },
+    }),
+    quantity: NumericSchema.exactOptional().openapi({
+      description: 'Quantity of the item being sold.\n\nDefault: 1',
+    }),
+    discounts: BillingDiscountsSchema.exactOptional().openapi({
+      description: 'The discounts that are applied to the line.',
+    }),
+  })
+  .openapi({
+    required: ['price'],
+    description:
+      'InvoiceDetailedLineRateCard represents the rate card (intent) for a flat fee line.',
+  })
+  .openapi('InvoiceDetailedLineRateCard')
+
+const InvoiceDetailedLineCostCategorySchema = z
+  .enum(['regular', 'commitment'])
+  .openapi({
+    description:
+      'InvoiceDetailedLineCostCategory determines if the flat fee is a regular fee due to use due to a\ncommitment.',
+  })
+  .openapi('InvoiceDetailedLineCostCategory')
+
+const InvoiceDetailedLineSchema = z
+  .object({
+    name: z
+      .string()
+      .min(1)
+      .max(256)
+      .openapi({
+        description: 'Human-readable name for the resource. Between 1 and 256 characters.',
+        title: 'Display name',
+      }),
+    description: z
+      .string()
+      .max(1024)
+      .exactOptional()
+      .openapi({
+        description: 'Optional description of the resource. Maximum 1024 characters.',
+        title: 'Description',
+      }),
+    metadata: MetadataSchema.nullable()
+      .exactOptional()
+      .openapi({ description: 'Additional metadata for the resource.', title: 'Metadata' }),
+    createdAt: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'Timestamp of when the resource was created.',
+        example: '2024-01-01T01:01:01.001Z',
+        title: 'Creation Time',
+        readOnly: true,
+      }),
+    updatedAt: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'Timestamp of when the resource was last updated.',
+        example: '2024-01-01T01:01:01.001Z',
+        title: 'Last Update Time',
+        readOnly: true,
+      }),
+    deletedAt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'Timestamp of when the resource was permanently deleted.',
+        example: '2024-01-01T01:01:01.001Z',
+        title: 'Deletion Time',
+        readOnly: true,
+      }),
+    id: z
+      .string()
+      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
+      .openapi({ description: 'ID of the line.', example: '01G65Z755AFWAKHE12NY0CQ9FH' }),
+    managedBy: InvoiceLineManagedBySchema.openapi({
+      description:
+        'managedBy specifies if the line is manually added via the api or managed by OpenMeter.',
+      readOnly: true,
+    }),
+    status: InvoiceLineStatusSchema.openapi({
+      description:
+        'Status of the line.\n\nExternal calls always create valid lines, other line types are managed by the\nbilling engine of OpenMeter.',
+      readOnly: true,
+    }),
+    discounts: InvoiceLineDiscountsSchema.exactOptional().openapi({
+      description:
+        "Discounts detailes applied to this line.\n\nNew discounts can be added via the invoice's discounts API, to facilitate\ndiscounts that are affecting multiple lines.",
+      readOnly: true,
+    }),
+    creditAllocations: z
+      .array(InvoiceLineCreditAllocationSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Credit allocations applied to this line.\n\nCredits are deducted from the line total before taxes are applied.',
+        readOnly: true,
+      }),
+    invoice: InvoiceReferenceSchema.exactOptional().openapi({
+      description: 'The invoice this item belongs to.',
+    }),
+    currency: CurrencyCodeSchema.openapi({ description: 'The currency of this line.' }),
+    taxes: z
+      .array(InvoiceLineTaxItemSchema)
+      .exactOptional()
+      .openapi({ description: 'Taxes applied to the invoice totals.', readOnly: true }),
+    taxConfig: TaxConfigSchema.exactOptional().openapi({
+      description: 'Tax config specify the tax configuration for this line.',
+      deprecated: true,
+    }),
+    totals: InvoiceTotalsSchema.openapi({ description: 'Totals for this line.', readOnly: true }),
+    period: PeriodSchema.openapi({
+      description:
+        'Period of the line item applies to for revenue recognition pruposes.\n\nBilling always treats periods as start being inclusive and end being exclusive.',
+    }),
+    externalIds: InvoiceLineAppExternalIdsSchema.exactOptional().openapi({
+      description: 'External IDs of the invoice in other apps such as Stripe.',
+      readOnly: true,
+    }),
+    subscription: InvoiceLineSubscriptionReferenceSchema.exactOptional().openapi({
+      description:
+        'Subscription are the references to the subscritpions that this line is related to.',
+      readOnly: true,
+    }),
+    invoiceAt: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'The time this line item should be invoiced.',
+        example: '2023-01-01T01:01:01.001Z',
+        deprecated: true,
+      }),
+    type: z
+      .literal('flat_fee')
+      .openapi({ description: 'Type of the line.', deprecated: true, readOnly: true }),
+    perUnitAmount: NumericSchema.exactOptional().openapi({
+      description: 'Price of the item being sold.',
+      deprecated: true,
+    }),
+    paymentTerm: PricePaymentTermSchema.default('in_advance')
+      .exactOptional()
+      .openapi({ description: 'Payment term of the line.', deprecated: true }),
+    quantity: NumericSchema.exactOptional().openapi({
+      description: 'Quantity of the item being sold.',
+      deprecated: true,
+    }),
+    rateCard: InvoiceDetailedLineRateCardSchema.exactOptional().openapi({
+      description: 'The rate card that is used for this line.',
+    }),
+    category: InvoiceDetailedLineCostCategorySchema.default('regular')
+      .exactOptional()
+      .openapi({ description: 'Category of the flat fee.', readOnly: true }),
+  })
+  .openapi({
+    required: [
+      'name',
+      'createdAt',
+      'updatedAt',
+      'id',
+      'managedBy',
+      'status',
+      'currency',
+      'totals',
+      'period',
+      'invoiceAt',
+      'type',
+    ],
+    description:
+      'InvoiceDetailedLine represents a line item that is sold to the customer as a manually added fee.',
+  })
+  .openapi('InvoiceDetailedLine')
+
+const InvoiceUsageBasedRateCardSchema = z
+  .object({
+    featureKey: z
+      .string()
+      .regex(/^[a-z0-9]+(?:_[a-z0-9]+)*$/)
+      .min(1)
+      .max(64)
+      .exactOptional()
+      .openapi({
+        description: 'The feature the customer is entitled to use.',
+        title: 'Feature key',
+      }),
+    taxConfig: TaxConfigSchema.exactOptional().openapi({
+      description:
+        'The tax config of the rate card.\nWhen undefined, the tax config of the feature or the default tax config of the plan is used.',
+      title: 'Tax config',
+    }),
+    price: RateCardUsageBasedPriceSchema.nullable().openapi({
+      description: 'The price of the rate card.\nWhen null, the feature or service is free.',
+    }),
+    discounts: BillingDiscountsSchema.exactOptional().openapi({
+      description: 'The discounts that are applied to the line.',
+      deprecated: true,
+    }),
+  })
+  .openapi({
+    required: ['price'],
+    description:
+      'InvoiceUsageBasedRateCard represents the rate card (intent) for an usage-based line.',
+  })
+  .openapi('InvoiceUsageBasedRateCard')
+
+const InvoiceLineSchema = z
+  .object({
+    name: z
+      .string()
+      .min(1)
+      .max(256)
+      .openapi({
+        description: 'Human-readable name for the resource. Between 1 and 256 characters.',
+        title: 'Display name',
+      }),
+    description: z
+      .string()
+      .max(1024)
+      .exactOptional()
+      .openapi({
+        description: 'Optional description of the resource. Maximum 1024 characters.',
+        title: 'Description',
+      }),
+    metadata: MetadataSchema.nullable()
+      .exactOptional()
+      .openapi({ description: 'Additional metadata for the resource.', title: 'Metadata' }),
+    createdAt: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'Timestamp of when the resource was created.',
+        example: '2024-01-01T01:01:01.001Z',
+        title: 'Creation Time',
+        readOnly: true,
+      }),
+    updatedAt: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'Timestamp of when the resource was last updated.',
+        example: '2024-01-01T01:01:01.001Z',
+        title: 'Last Update Time',
+        readOnly: true,
+      }),
+    deletedAt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'Timestamp of when the resource was permanently deleted.',
+        example: '2024-01-01T01:01:01.001Z',
+        title: 'Deletion Time',
+        readOnly: true,
+      }),
+    id: z
+      .string()
+      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
+      .openapi({ description: 'ID of the line.', example: '01G65Z755AFWAKHE12NY0CQ9FH' }),
+    managedBy: InvoiceLineManagedBySchema.openapi({
+      description:
+        'managedBy specifies if the line is manually added via the api or managed by OpenMeter.',
+      readOnly: true,
+    }),
+    status: InvoiceLineStatusSchema.openapi({
+      description:
+        'Status of the line.\n\nExternal calls always create valid lines, other line types are managed by the\nbilling engine of OpenMeter.',
+      readOnly: true,
+    }),
+    discounts: InvoiceLineDiscountsSchema.exactOptional().openapi({
+      description:
+        "Discounts detailes applied to this line.\n\nNew discounts can be added via the invoice's discounts API, to facilitate\ndiscounts that are affecting multiple lines.",
+      readOnly: true,
+    }),
+    creditAllocations: z
+      .array(InvoiceLineCreditAllocationSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Credit allocations applied to this line.\n\nCredits are deducted from the line total before taxes are applied.',
+        readOnly: true,
+      }),
+    invoice: InvoiceReferenceSchema.exactOptional().openapi({
+      description: 'The invoice this item belongs to.',
+    }),
+    currency: CurrencyCodeSchema.openapi({ description: 'The currency of this line.' }),
+    taxes: z
+      .array(InvoiceLineTaxItemSchema)
+      .exactOptional()
+      .openapi({ description: 'Taxes applied to the invoice totals.', readOnly: true }),
+    taxConfig: TaxConfigSchema.exactOptional().openapi({
+      description: 'Tax config specify the tax configuration for this line.',
+      deprecated: true,
+    }),
+    totals: InvoiceTotalsSchema.openapi({ description: 'Totals for this line.', readOnly: true }),
+    period: PeriodSchema.openapi({
+      description:
+        'Period of the line item applies to for revenue recognition pruposes.\n\nBilling always treats periods as start being inclusive and end being exclusive.',
+    }),
+    invoiceAt: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'The time this line item should be invoiced.',
+        example: '2023-01-01T01:01:01.001Z',
+      }),
+    externalIds: InvoiceLineAppExternalIdsSchema.exactOptional().openapi({
+      description: 'External IDs of the invoice in other apps such as Stripe.',
+      readOnly: true,
+    }),
+    subscription: InvoiceLineSubscriptionReferenceSchema.exactOptional().openapi({
+      description:
+        'Subscription are the references to the subscritpions that this line is related to.',
+      readOnly: true,
+    }),
+    type: z
+      .literal('usage_based')
+      .openapi({ description: 'Type of the line.', deprecated: true, readOnly: true }),
+    price: RateCardUsageBasedPriceSchema.exactOptional().openapi({
+      description: 'Price of the usage-based item being sold.',
+      deprecated: true,
+    }),
+    featureKey: z
+      .string()
+      .regex(/^[a-z0-9]+(?:_[a-z0-9]+)*$/)
+      .min(1)
+      .max(64)
+      .exactOptional()
+      .openapi({ description: 'The feature that the usage is based on.', deprecated: true }),
+    children: z
+      .array(InvoiceDetailedLineSchema)
+      .exactOptional()
+      .openapi({ description: 'The lines detailing the item or service sold.', readOnly: true }),
+    rateCard: InvoiceUsageBasedRateCardSchema.exactOptional().openapi({
+      description:
+        'The rate card that is used for this line.\n\nThe rate card captures the intent of the price and discounts for the usage-based item.',
+    }),
+    quantity: NumericSchema.exactOptional().openapi({
+      description:
+        'The quantity of the item being sold.\n\nAny usage discounts applied previously are deducted from this quantity.',
+      readOnly: true,
+    }),
+    meteredQuantity: NumericSchema.exactOptional().openapi({
+      description:
+        'The quantity of the item that has been metered for the period before any discounts were applied.',
+      readOnly: true,
+    }),
+    preLinePeriodQuantity: NumericSchema.exactOptional().openapi({
+      description:
+        "The quantity of the item used before this line's period.\n\nIt is non-zero in case of progressive billing, when this shows how much of the usage was already billed.\n\nAny usage discounts applied previously are deducted from this quantity.",
+      readOnly: true,
+    }),
+    meteredPreLinePeriodQuantity: NumericSchema.exactOptional().openapi({
+      description:
+        "The metered quantity of the item used in before this line's period without any discounts applied.\n\nIt is non-zero in case of progressive billing, when this shows how much of the usage was already billed.",
+      readOnly: true,
+    }),
+  })
+  .openapi({
+    required: [
+      'name',
+      'createdAt',
+      'updatedAt',
+      'id',
+      'managedBy',
+      'status',
+      'currency',
+      'totals',
+      'period',
+      'invoiceAt',
+      'type',
+    ],
+    description:
+      'InvoiceUsageBasedLine represents a line item that is sold to the customer based on usage.',
+  })
+  .openapi('InvoiceLine')
+
+const PaymentTermInstantSchema = z
+  .object({
+    type: z.literal('instant').openapi({ description: 'Type of terms to be applied.' }),
+    detail: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Text detail of the chosen payment terms.', readOnly: true }),
+    notes: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Description of the conditions for payment.', readOnly: true }),
+  })
+  .openapi({
+    required: ['type'],
+    description: 'PaymentTermInstant defines the terms for payment on receipt of invoice.',
+  })
+  .openapi('PaymentTermInstant')
+
+const PaymentDueDateSchema = z
+  .object({
+    dueAt: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'When the payment is due.',
+        example: '2023-01-01T01:01:01.001Z',
+        readOnly: true,
+      }),
+    notes: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Other details to take into account for the due date.',
+        readOnly: true,
+      }),
+    amount: NumericSchema.openapi({
+      description: 'How much needs to be paid by the date.',
+      readOnly: true,
+    }),
+    percent: PercentageSchema.exactOptional().openapi({
+      description: 'Percentage of the total that should be paid by the date.',
+      readOnly: true,
+    }),
+    currency: CurrencyCodeSchema.exactOptional().openapi({
+      description: "If different from the parent document's base currency.",
+      readOnly: true,
+    }),
+  })
+  .openapi({
+    required: ['dueAt', 'amount'],
+    description: 'PaymentDueDate contains an amount that should be paid by the given date.',
+  })
+  .openapi('PaymentDueDate')
+
+const PaymentTermDueDateSchema = z
+  .object({
+    type: z.literal('due_date').openapi({ description: 'Type of terms to be applied.' }),
+    detail: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Text detail of the chosen payment terms.', readOnly: true }),
+    notes: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Description of the conditions for payment.', readOnly: true }),
+    dueAt: z
+      .array(PaymentDueDateSchema)
+      .min(1)
+      .openapi({ description: 'When the payment is due.', readOnly: true }),
+  })
+  .openapi({
+    required: ['type', 'dueAt'],
+    description: 'PaymentTermDueDate defines the terms for payment on a specific date.',
+  })
+  .openapi('PaymentTermDueDate')
+
+const PaymentTermsSchema = z
+  .union([PaymentTermInstantSchema, PaymentTermDueDateSchema])
+  .openapi({ description: 'PaymentTerms defines the terms for payment.' })
+  .openapi('PaymentTerms')
+
+const InvoicePaymentTermsSchema = z
+  .object({
+    terms: PaymentTermsSchema.exactOptional().openapi({
+      description: 'The terms of payment for the invoice.',
+    }),
+  })
+  .openapi({
+    description: 'Payment contains details as to how the invoice should be paid.',
+    required: [],
+  })
+  .openapi('InvoicePaymentTerms')
+
+const ValidationIssueSeveritySchema = z
+  .enum(['critical', 'warning'])
+  .openapi({
+    description:
+      'ValidationIssueSeverity describes the severity of a validation issue.\n\nIssues with severity "critical" will prevent the invoice from being issued.',
+  })
+  .openapi('ValidationIssueSeverity')
+
+const ValidationIssueSchema = z
+  .object({
+    createdAt: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'Timestamp of when the resource was created.',
+        example: '2024-01-01T01:01:01.001Z',
+        title: 'Creation Time',
+        readOnly: true,
+      }),
+    updatedAt: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'Timestamp of when the resource was last updated.',
+        example: '2024-01-01T01:01:01.001Z',
+        title: 'Last Update Time',
+        readOnly: true,
+      }),
+    deletedAt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'Timestamp of when the resource was permanently deleted.',
+        example: '2024-01-01T01:01:01.001Z',
+        title: 'Deletion Time',
+        readOnly: true,
+      }),
+    id: z
+      .string()
+      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
+      .openapi({
+        description: 'ID of the charge or discount.',
+        example: '01G65Z755AFWAKHE12NY0CQ9FH',
+        readOnly: true,
+      }),
+    severity: ValidationIssueSeveritySchema.openapi({
+      description: 'The severity of the issue.',
+      readOnly: true,
+    }),
+    field: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The field that the issue is related to, if available in JSON path format.',
+        readOnly: true,
+      }),
+    code: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Machine indentifiable code for the issue, if available.',
+        readOnly: true,
+      }),
+    component: z
+      .string()
+      .openapi({ description: 'Component reporting the issue.', readOnly: true }),
+    message: z
+      .string()
+      .openapi({ description: 'A human-readable description of the issue.', readOnly: true }),
+    metadata: MetadataSchema.exactOptional().openapi({
+      description: 'Additional context for the issue.',
+      readOnly: true,
+    }),
+  })
+  .openapi({
+    required: ['createdAt', 'updatedAt', 'id', 'severity', 'component', 'message'],
+    description:
+      'ValidationIssue captures any validation issues related to the invoice.\n\nIssues with severity "critical" will prevent the invoice from being issued.',
+  })
+  .openapi('ValidationIssue')
+
+const InvoiceAppExternalIdsSchema = z
+  .object({
+    invoicing: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The external ID of the invoice in the invoicing app if available.',
+        readOnly: true,
+      }),
+    tax: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The external ID of the invoice in the tax app if available.',
+        readOnly: true,
+      }),
+    payment: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The external ID of the invoice in the payment app if available.',
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    description:
+      'InvoiceAppExternalIds contains the external IDs of the invoice in other apps such as Stripe.',
+    required: [],
+  })
+  .openapi('InvoiceAppExternalIds')
+
+type InvoiceType = {
+  id: string
+  description?: string
+  metadata?: z.infer<typeof MetadataSchema> | null
+  createdAt: string
+  updatedAt: string
+  deletedAt?: string
+  type: z.infer<typeof InvoiceTypeSchema>
+  supplier: z.infer<typeof BillingPartySchema>
+  customer: z.infer<typeof BillingInvoiceCustomerExtendedDetailsSchema>
+  number: z.infer<typeof InvoiceNumberSchema>
+  currency: z.infer<typeof CurrencyCodeSchema>
+  preceding?: z.infer<typeof InvoiceDocumentRefSchema>[]
+  totals: z.infer<typeof InvoiceTotalsSchema>
+  status: z.infer<typeof InvoiceStatusSchema>
+  statusDetails: z.infer<typeof InvoiceStatusDetailsSchema>
+  issuedAt?: string
+  draftUntil?: string
+  quantitySnapshotedAt?: string
+  collectionAt?: string
+  dueAt?: string
+  period?: z.infer<typeof PeriodSchema>
+  voidedAt?: string
+  sentToCustomerAt?: string
+  workflow: z.infer<typeof InvoiceWorkflowSettingsSchema>
+  lines?: z.infer<typeof InvoiceLineSchema>[]
+  payment?: z.infer<typeof InvoicePaymentTermsSchema>
+  validationIssues?: z.infer<typeof ValidationIssueSchema>[]
+  externalIds?: z.infer<typeof InvoiceAppExternalIdsSchema>
+}
+
+const InvoiceSchema: z.ZodType<InvoiceType> = z
+  .object({
+    id: z
+      .string()
+      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
+      .openapi({
+        description: 'A unique identifier for the resource.',
+        example: '01G65Z755AFWAKHE12NY0CQ9FH',
+        title: 'ID',
+        readOnly: true,
+      }),
+    description: z
+      .string()
+      .max(1024)
+      .exactOptional()
+      .openapi({
+        description: 'Optional description of the resource. Maximum 1024 characters.',
+        title: 'Description',
+      }),
+    metadata: MetadataSchema.nullable()
+      .exactOptional()
+      .openapi({ description: 'Additional metadata for the resource.', title: 'Metadata' }),
+    createdAt: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'Timestamp of when the resource was created.',
+        example: '2024-01-01T01:01:01.001Z',
+        title: 'Creation Time',
+        readOnly: true,
+      }),
+    updatedAt: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'Timestamp of when the resource was last updated.',
+        example: '2024-01-01T01:01:01.001Z',
+        title: 'Last Update Time',
+        readOnly: true,
+      }),
+    deletedAt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'Timestamp of when the resource was permanently deleted.',
+        example: '2024-01-01T01:01:01.001Z',
+        title: 'Deletion Time',
+        readOnly: true,
+      }),
+    type: InvoiceTypeSchema.openapi({
+      description:
+        'Type of the invoice.\n\nThe type of invoice determines the purpose of the invoice and how it should be handled.\n\nSupported types:\n- standard: A regular commercial invoice document between a supplier and customer.\n- credit_note: Reflects a refund either partial or complete of the preceding document. A credit note effectively *extends* the previous document.',
+      readOnly: true,
+    }),
+    supplier: BillingPartySchema.openapi({
+      description: 'The taxable entity supplying the goods or services.',
+    }),
+    customer: BillingInvoiceCustomerExtendedDetailsSchema.openapi({
+      description: 'Legal entity receiving the goods or services.',
+    }),
+    number: InvoiceNumberSchema.openapi({
+      description:
+        "Number specifies the human readable key used to reference this Invoice.\n\nThe invoice number can change in the draft phases, as we are allocating temporary draft\ninvoice numbers, but it's final as soon as the invoice gets finalized (issued state).\n\nPlease note that the number is (depending on the upstream settings) either unique for the\nwhole organization or unique for the customer, or in multi (stripe) account setups unique for the\naccount.",
+      readOnly: true,
+    }),
+    currency: CurrencyCodeSchema.openapi({
+      description:
+        'Currency for all invoice line items.\n\nMulti currency invoices are not supported yet.',
+    }),
+    preceding: z
+      .array(InvoiceDocumentRefSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Key information regarding previous invoices and potentially details as to why they were corrected.',
+        readOnly: true,
+      }),
+    totals: InvoiceTotalsSchema.openapi({
+      description: 'Summary of all the invoice totals, including taxes (calculated).',
+      readOnly: true,
+    }),
+    status: InvoiceStatusSchema.openapi({
+      description:
+        'The status of the invoice.\n\nThis field only conatins a simplified status, for more detailed information use the statusDetails field.',
+      readOnly: true,
+    }),
+    statusDetails: InvoiceStatusDetailsSchema.openapi({
+      description: 'The details of the current invoice status.',
+      readOnly: true,
+    }),
+    issuedAt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'The time the invoice was issued.\n\nDepending on the status of the invoice this can mean multiple things:\n- draft, gathering: The time the invoice will be issued based on the workflow settings.\n- issued: The time the invoice was issued.',
+        example: '2023-01-01T01:01:01.001Z',
+        readOnly: true,
+      }),
+    draftUntil: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'The time until the invoice is in draft status.\n\nOn draft invoice creation it is calculated from the workflow settings.\n\nIf manual approval is required, the draftUntil time is set.',
+        example: '2023-01-01T01:01:01.001Z',
+      }),
+    quantitySnapshotedAt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'The time when the quantity snapshots on the invoice lines were taken.',
+        example: '2023-01-01T01:01:01.001Z',
+        readOnly: true,
+      }),
+    collectionAt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'The time when the invoice will be/has been collected.',
+        example: '2023-01-01T01:01:01.001Z',
+        readOnly: true,
+      }),
+    dueAt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'Due time of the fulfillment of the invoice (if available).',
+        example: '2023-01-01T01:01:01.001Z',
+        readOnly: true,
+      }),
+    period: PeriodSchema.exactOptional().openapi({
+      description: "The period the invoice covers. If the invoice has no line items, it's not set.",
+    }),
+    voidedAt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'The time the invoice was voided.\n\nIf the invoice was voided, this field will be set to the time the invoice was voided.',
+        example: '2023-01-01T01:01:01.001Z',
+        readOnly: true,
+      }),
+    sentToCustomerAt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'The time the invoice was sent to customer.',
+        example: '2023-01-01T01:01:01.001Z',
+        readOnly: true,
+      }),
+    workflow: InvoiceWorkflowSettingsSchema.openapi({
+      description:
+        'The workflow associated with the invoice.\n\nIt is always a snapshot of the workflow settings at the time of invoice creation. The\nfield is optional as it should be explicitly requested with expand options.',
+    }),
+    lines: z
+      .array(InvoiceLineSchema)
+      .exactOptional()
+      .openapi({
+        description: 'List of invoice lines representing each of the items sold to the customer.',
+      }),
+    payment: InvoicePaymentTermsSchema.exactOptional().openapi({
+      description: 'Information on when, how, and to whom the invoice should be paid.',
+      readOnly: true,
+    }),
+    validationIssues: z
+      .array(ValidationIssueSchema)
+      .exactOptional()
+      .openapi({
+        description: 'Validation issues reported by the invoice workflow.',
+        readOnly: true,
+      }),
+    externalIds: InvoiceAppExternalIdsSchema.exactOptional().openapi({
+      description: 'External IDs of the invoice in other apps such as Stripe.',
+      readOnly: true,
+    }),
+  })
+  .openapi({
+    required: [
+      'id',
+      'createdAt',
+      'updatedAt',
+      'type',
+      'supplier',
+      'customer',
+      'number',
+      'currency',
+      'totals',
+      'status',
+      'statusDetails',
+      'workflow',
+    ],
+    description: 'Invoice represents an invoice in the system.',
+  })
+  .openapi('Invoice')
+
+type InvoicePaginatedResponseType = {
+  totalCount: number
+  page: number
+  pageSize: number
+  items: z.infer<typeof InvoiceSchema>[]
+}
+
+const InvoicePendingLineCreateSchema = z
+  .object({
+    name: z
+      .string()
+      .min(1)
+      .max(256)
+      .openapi({
+        description: 'Human-readable name for the resource. Between 1 and 256 characters.',
+        title: 'Display name',
+      }),
+    description: z
+      .string()
+      .max(1024)
+      .exactOptional()
+      .openapi({
+        description: 'Optional description of the resource. Maximum 1024 characters.',
+        title: 'Description',
+      }),
+    metadata: MetadataSchema.nullable()
+      .exactOptional()
+      .openapi({ description: 'Additional metadata for the resource.', title: 'Metadata' }),
+    taxConfig: TaxConfigSchema.exactOptional().openapi({
+      description: 'Tax config specify the tax configuration for this line.',
+      deprecated: true,
+    }),
+    period: PeriodSchema.openapi({
+      description:
+        'Period of the line item applies to for revenue recognition pruposes.\n\nBilling always treats periods as start being inclusive and end being exclusive.',
+    }),
+    invoiceAt: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'The time this line item should be invoiced.',
+        example: '2023-01-01T01:01:01.001Z',
+      }),
+    price: RateCardUsageBasedPriceSchema.exactOptional().openapi({
+      description: 'Price of the usage-based item being sold.',
+      deprecated: true,
+    }),
+    featureKey: z
+      .string()
+      .regex(/^[a-z0-9]+(?:_[a-z0-9]+)*$/)
+      .min(1)
+      .max(64)
+      .exactOptional()
+      .openapi({ description: 'The feature that the usage is based on.', deprecated: true }),
+    rateCard: InvoiceUsageBasedRateCardSchema.exactOptional().openapi({
+      description:
+        'The rate card that is used for this line.\n\nThe rate card captures the intent of the price and discounts for the usage-based item.',
+    }),
+  })
+  .openapi({
+    required: ['name', 'period', 'invoiceAt'],
+    description:
+      'InvoicePendingLineCreate represents the create model for an invoice line that is sold to the customer based on usage.',
+  })
+  .openapi('InvoicePendingLineCreate')
+
+type InvoicePendingLineCreateInputType = {
+  currency: z.infer<typeof CurrencyCodeSchema>
+  lines: z.infer<typeof InvoicePendingLineCreateSchema>[]
+}
+
+type InvoicePendingLineCreateResponseType = {
+  lines: z.infer<typeof InvoiceLineSchema>[]
+  invoice: z.infer<typeof InvoiceSchema>
+  isInvoiceNew: boolean
+}
+
+const BillingPartyReplaceUpdateSchema = z
+  .object({
+    key: z
+      .string()
+      .min(1)
+      .max(256)
+      .exactOptional()
+      .openapi({ description: 'An optional unique key of the party (if available)', title: 'Key' }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Legal name or representation of the organization.' }),
+    taxId: BillingPartyTaxIdentitySchema.exactOptional().openapi({
+      description:
+        "The entity's legal ID code used for tax purposes. They may have\nother numbers, but we're only interested in those valid for tax purposes.",
+    }),
+    addresses: z
+      .array(AddressSchema)
+      .max(1)
+      .exactOptional()
+      .openapi({
+        description: 'Regular post addresses for where information should be sent if needed.',
+      }),
+  })
+  .openapi({ description: 'Resource update operation model.', required: [] })
+  .openapi('BillingPartyReplaceUpdate')
+
+const InvoiceLineReplaceUpdateSchema = z
+  .object({
+    name: z
+      .string()
+      .min(1)
+      .max(256)
+      .openapi({
+        description: 'Human-readable name for the resource. Between 1 and 256 characters.',
+        title: 'Display name',
+      }),
+    description: z
+      .string()
+      .max(1024)
+      .exactOptional()
+      .openapi({
+        description: 'Optional description of the resource. Maximum 1024 characters.',
+        title: 'Description',
+      }),
+    metadata: MetadataSchema.nullable()
+      .exactOptional()
+      .openapi({ description: 'Additional metadata for the resource.', title: 'Metadata' }),
+    taxConfig: TaxConfigSchema.exactOptional().openapi({
+      description: 'Tax config specify the tax configuration for this line.',
+      deprecated: true,
+    }),
+    period: PeriodSchema.openapi({
+      description:
+        'Period of the line item applies to for revenue recognition pruposes.\n\nBilling always treats periods as start being inclusive and end being exclusive.',
+    }),
+    invoiceAt: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'The time this line item should be invoiced.',
+        example: '2023-01-01T01:01:01.001Z',
+      }),
+    price: RateCardUsageBasedPriceSchema.exactOptional().openapi({
+      description: 'Price of the usage-based item being sold.',
+      deprecated: true,
+    }),
+    featureKey: z
+      .string()
+      .regex(/^[a-z0-9]+(?:_[a-z0-9]+)*$/)
+      .min(1)
+      .max(64)
+      .exactOptional()
+      .openapi({ description: 'The feature that the usage is based on.', deprecated: true }),
+    rateCard: InvoiceUsageBasedRateCardSchema.exactOptional().openapi({
+      description:
+        'The rate card that is used for this line.\n\nThe rate card captures the intent of the price and discounts for the usage-based item.',
+    }),
+    id: z
+      .string()
+      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
+      .exactOptional()
+      .openapi({ description: 'The ID of the line.', example: '01G65Z755AFWAKHE12NY0CQ9FH' }),
+  })
+  .openapi({
+    required: ['name', 'period', 'invoiceAt'],
+    description:
+      'InvoiceLineReplaceUpdate represents the update model for an UBP invoice line.\n\nThis type makes ID optional to allow for creating new lines as part of the update.',
+  })
+  .openapi('InvoiceLineReplaceUpdate')
+
+const InvoiceWorkflowInvoicingSettingsReplaceUpdateSchema = z
+  .object({
+    autoAdvance: z
+      .boolean()
+      .default(true)
+      .exactOptional()
+      .openapi({
+        description: 'Whether to automatically issue the invoice after the draftPeriod has passed.',
+      }),
+    draftPeriod: z
+      .string()
+      .default('P0D')
+      .exactOptional()
+      .openapi({
+        description: 'The period for the invoice to be kept in draft status for manual reviews.',
+        example: 'P1D',
+      }),
+    dueAfter: z
+      .string()
+      .default('P30D')
+      .exactOptional()
+      .openapi({
+        description:
+          "The period after which the invoice is due.\nWith some payment solutions it's only applicable for manual collection method.",
+        example: 'P30D',
+      }),
+    subscriptionEndProrationMode:
+      BillingWorkflowInvoicingSubscriptionEndProrationModeSchema.default('bill_actual_period')
+        .exactOptional()
+        .openapi({
+          description: 'Controls how subscription-ending shortened service periods are billed.',
+        }),
+    defaultTaxConfig: TaxConfigSchema.exactOptional().openapi({
+      description:
+        "Default tax configuration to apply to the invoices.\n\nSetting a tax code (`stripe.code` / `taxCodeId`) on a profile's default tax config is\ndeprecated and can no longer be added or changed: the organization default tax code is\nused instead. Existing tax-code values may still be removed, and `behavior` remains\nfully supported.",
+    }),
+  })
+  .openapi({
+    description:
+      'InvoiceWorkflowInvoicingSettingsReplaceUpdate represents the update model for the invoicing settings of an invoice workflow.',
+    required: [],
+  })
+  .openapi('InvoiceWorkflowInvoicingSettingsReplaceUpdate')
+
+const InvoiceWorkflowSettingsReplaceUpdateSchema = z
+  .object({
+    invoicing: InvoiceWorkflowInvoicingSettingsReplaceUpdateSchema.openapi({
+      description: 'The invoicing settings for this workflow',
+    }),
+    payment: BillingWorkflowPaymentSettingsSchema.openapi({
+      description: 'The payment settings for this workflow',
+    }),
+  })
+  .openapi({
+    required: ['invoicing', 'payment'],
+    description:
+      "Mutable workflow settings for an invoice.\n\nOther fields on the invoice's workflow are not mutable, they serve as a history of the invoice's workflow\nat creation time.",
+  })
+  .openapi('InvoiceWorkflowSettingsReplaceUpdate')
+
+const InvoiceWorkflowReplaceUpdateSchema = z
+  .object({
+    workflow: InvoiceWorkflowSettingsReplaceUpdateSchema.openapi({
+      description: 'The workflow used for this invoice.',
+    }),
+  })
+  .openapi({
+    required: ['workflow'],
+    description:
+      'InvoiceWorkflowReplaceUpdate represents the update model for an invoice workflow.\n\nFields that are immutable a re removed from the model. This is based on InvoiceWorkflowSettings.',
+  })
+  .openapi('InvoiceWorkflowReplaceUpdate')
+
+type InvoiceReplaceUpdateType = {
+  description?: string
+  metadata?: z.infer<typeof MetadataSchema> | null
+  supplier: z.infer<typeof BillingPartyReplaceUpdateSchema>
+  customer: z.infer<typeof BillingPartyReplaceUpdateSchema>
+  lines: z.infer<typeof InvoiceLineReplaceUpdateSchema>[]
+  workflow: z.infer<typeof InvoiceWorkflowReplaceUpdateSchema>
+}
+
+const InvoiceSimulationLineSchema = z
+  .object({
+    name: z
+      .string()
+      .min(1)
+      .max(256)
+      .openapi({
+        description: 'Human-readable name for the resource. Between 1 and 256 characters.',
+        title: 'Display name',
+      }),
+    description: z
+      .string()
+      .max(1024)
+      .exactOptional()
+      .openapi({
+        description: 'Optional description of the resource. Maximum 1024 characters.',
+        title: 'Description',
+      }),
+    metadata: MetadataSchema.nullable()
+      .exactOptional()
+      .openapi({ description: 'Additional metadata for the resource.', title: 'Metadata' }),
+    taxConfig: TaxConfigSchema.exactOptional().openapi({
+      description: 'Tax config specify the tax configuration for this line.',
+      deprecated: true,
+    }),
+    period: PeriodSchema.openapi({
+      description:
+        'Period of the line item applies to for revenue recognition pruposes.\n\nBilling always treats periods as start being inclusive and end being exclusive.',
+    }),
+    invoiceAt: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'The time this line item should be invoiced.',
+        example: '2023-01-01T01:01:01.001Z',
+      }),
+    price: RateCardUsageBasedPriceSchema.exactOptional().openapi({
+      description: 'Price of the usage-based item being sold.',
+      deprecated: true,
+    }),
+    featureKey: z
+      .string()
+      .regex(/^[a-z0-9]+(?:_[a-z0-9]+)*$/)
+      .min(1)
+      .max(64)
+      .exactOptional()
+      .openapi({ description: 'The feature that the usage is based on.', deprecated: true }),
+    rateCard: InvoiceUsageBasedRateCardSchema.exactOptional().openapi({
+      description:
+        'The rate card that is used for this line.\n\nThe rate card captures the intent of the price and discounts for the usage-based item.',
+    }),
+    quantity: NumericSchema.openapi({ description: 'The quantity of the item being sold.' }),
+    preLinePeriodQuantity: NumericSchema.exactOptional().openapi({
+      description:
+        "The quantity of the item used before this line's period, if the line is billed progressively.",
+    }),
+    id: z
+      .string()
+      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
+      .exactOptional()
+      .openapi({
+        description:
+          'ID of the line. If not specified it will be auto-generated.\n\nWhen discounts are specified, this must be provided, so that the discount can reference it.',
+        example: '01G65Z755AFWAKHE12NY0CQ9FH',
+      }),
+  })
+  .openapi({
+    required: ['name', 'period', 'invoiceAt', 'quantity'],
+    description:
+      'InvoiceSimulationLine represents a usage-based line item that can be input to the simulation endpoint.',
+  })
+  .openapi('InvoiceSimulationLine')
+
+type InvoiceSimulationInputType = {
+  number?: z.infer<typeof InvoiceNumberSchema>
+  currency: z.infer<typeof CurrencyCodeSchema>
+  lines: z.infer<typeof InvoiceSimulationLineSchema>[]
+}
+
+const NotificationEventTypeSchema = z
+  .enum([
+    'entitlements.balance.threshold',
+    'entitlements.reset',
+    'invoice.created',
+    'invoice.updated',
+  ])
+  .openapi({ description: 'Type of the notification event.' })
+  .openapi('NotificationEventType')
+
+const NotificationChannelTypeSchema = z
+  .literal('WEBHOOK')
+  .openapi({ description: 'Type of the notification channel.', 'x-enum-varnames': ['Webhook'] })
+  .openapi('NotificationChannelType')
+
+const NotificationChannelMetaSchema = z
+  .object({
+    id: z
+      .string()
+      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
+      .openapi({
+        description: 'Identifies the notification channel.',
+        example: '01ARZ3NDEKTSV4RRFFQ69G5FAV',
+        title: 'Channel Unique Identifier',
+        readOnly: true,
+      }),
+    type: NotificationChannelTypeSchema.openapi({
+      description: 'Notification channel type.',
+      title: 'Channel Type',
+    }),
+  })
+  .openapi({
+    required: ['id', 'type'],
+    description: 'Metadata only fields of a notification channel.',
+  })
+  .openapi('NotificationChannelMeta')
+
+const NotificationRuleBalanceThresholdValueTypeSchema = z
+  .enum(['PERCENT', 'NUMBER', 'balance_value', 'usage_percentage', 'usage_value'])
+  .openapi({
+    description:
+      'Type of the rule in the balance threshold specification:\n* `balance_value`: threshold defined by the remaining balance value based on usage and the total of grants in the current usage period\n* `usage_percentage`: threshold defined by the usage percentage compared to the total of grants in the current usage period\n* `usage_value`: threshold defined by the usage value in the current usage period\n* `NUMBER` (**deprecated**): see `usage_value`\n* `PERCENT` (**deprecated**): see `usage_percentage`',
+    title: 'Notification balance threshold type',
+    'x-enum-varnames': ['Percent', 'Number', 'BalanceValue', 'UsagePercentage', 'UsageValue'],
+  })
+  .openapi('NotificationRuleBalanceThresholdValueType')
+
+const NotificationRuleBalanceThresholdValueSchema = z
+  .object({
+    value: z
+      .float64()
+      .openapi({ description: 'Value of the threshold.', title: 'Threshold Value', example: 100 }),
+    type: NotificationRuleBalanceThresholdValueTypeSchema.openapi({
+      description: 'Type of the threshold.',
+      example: 'usage_value',
+    }),
+  })
+  .openapi({
+    required: ['value', 'type'],
+    description: 'Threshold value with multiple supported types.',
+  })
+  .openapi('NotificationRuleBalanceThresholdValue')
+
+const FeatureMetaSchema = z
+  .object({
+    id: z
+      .string()
+      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
+      .openapi({
+        description: 'Unique identifier of a feature.',
+        example: '01ARZ3NDEKTSV4RRFFQ69G5FAV',
+        title: 'Feature Unique Identifier',
+      }),
+    key: z
+      .string()
+      .openapi({
+        description:
+          "The key is an immutable unique identifier of the feature used throughout the API,\nfor example when interacting with a subject's entitlements.",
+        title: 'Feature Key',
+        example: 'gpt4_tokens',
+      }),
+  })
+  .openapi({
+    required: ['id', 'key'],
+    description:
+      'Limited representation of a feature resource which includes only its unique identifiers (id, key).',
+  })
+  .openapi('FeatureMeta')
+
+const NotificationRuleBalanceThresholdSchema = z
+  .object({
+    createdAt: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'Timestamp of when the resource was created.',
+        example: '2024-01-01T01:01:01.001Z',
+        title: 'Creation Time',
+        readOnly: true,
+      }),
+    updatedAt: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'Timestamp of when the resource was last updated.',
+        example: '2024-01-01T01:01:01.001Z',
+        title: 'Last Update Time',
+        readOnly: true,
+      }),
+    deletedAt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'Timestamp of when the resource was permanently deleted.',
+        example: '2024-01-01T01:01:01.001Z',
+        title: 'Deletion Time',
+        readOnly: true,
+      }),
+    id: z
+      .string()
+      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
+      .openapi({
+        description: 'Identifies the notification rule.',
+        example: '01ARZ3NDEKTSV4RRFFQ69G5FAV',
+        title: 'Rule Unique Identifier',
+        readOnly: true,
+      }),
+    type: z
+      .literal('entitlements.balance.threshold')
+      .openapi({ description: 'Notification rule type.', title: 'Rule Type' }),
+    name: z
+      .string()
+      .min(1)
+      .max(256)
+      .openapi({
+        description: 'The user friendly name of the notification rule.',
+        title: 'Rule Name',
+        example: 'Balance threshold reached',
+      }),
+    disabled: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description: 'Whether the rule is disabled or not.',
+        title: 'Rule Disabled',
+        example: true,
+      }),
+    channels: z
+      .array(NotificationChannelMetaSchema)
+      .openapi({
+        description: 'List of notification channels the rule applies to.',
+        title: 'Channels assigned to Rule',
+      }),
+    annotations: AnnotationsSchema.exactOptional().openapi({
+      description: 'Set of key-value pairs managed by the system. Cannot be modified by user.',
+      title: 'Annotations',
+      readOnly: true,
+    }),
+    metadata: MetadataSchema.nullable()
+      .exactOptional()
+      .openapi({ description: 'Additional metadata for the resource.', title: 'Metadata' }),
+    thresholds: z
+      .array(NotificationRuleBalanceThresholdValueSchema)
+      .min(1)
+      .max(10)
+      .openapi({
+        description: 'List of thresholds the rule suppose to be triggered.',
+        title: 'Entitlement Balance Thresholds',
+      }),
+    features: z
+      .array(FeatureMetaSchema)
+      .min(1)
+      .exactOptional()
+      .openapi({
+        description: 'Optional field containing list of features the rule applies to.',
+        title: 'Features',
+      }),
+  })
+  .openapi({
+    required: ['createdAt', 'updatedAt', 'id', 'type', 'name', 'channels', 'thresholds'],
+    description: 'Notification rule with entitlements.balance.threshold type.',
+  })
+  .openapi('NotificationRuleBalanceThreshold')
+
+const NotificationRuleEntitlementResetSchema = z
+  .object({
+    createdAt: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'Timestamp of when the resource was created.',
+        example: '2024-01-01T01:01:01.001Z',
+        title: 'Creation Time',
+        readOnly: true,
+      }),
+    updatedAt: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'Timestamp of when the resource was last updated.',
+        example: '2024-01-01T01:01:01.001Z',
+        title: 'Last Update Time',
+        readOnly: true,
+      }),
+    deletedAt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'Timestamp of when the resource was permanently deleted.',
+        example: '2024-01-01T01:01:01.001Z',
+        title: 'Deletion Time',
+        readOnly: true,
+      }),
+    id: z
+      .string()
+      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
+      .openapi({
+        description: 'Identifies the notification rule.',
+        example: '01ARZ3NDEKTSV4RRFFQ69G5FAV',
+        title: 'Rule Unique Identifier',
+        readOnly: true,
+      }),
+    type: z
+      .literal('entitlements.reset')
+      .openapi({ description: 'Notification rule type.', title: 'Rule Type' }),
+    name: z
+      .string()
+      .min(1)
+      .max(256)
+      .openapi({
+        description: 'The user friendly name of the notification rule.',
+        title: 'Rule Name',
+        example: 'Balance threshold reached',
+      }),
+    disabled: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description: 'Whether the rule is disabled or not.',
+        title: 'Rule Disabled',
+        example: true,
+      }),
+    channels: z
+      .array(NotificationChannelMetaSchema)
+      .openapi({
+        description: 'List of notification channels the rule applies to.',
+        title: 'Channels assigned to Rule',
+      }),
+    annotations: AnnotationsSchema.exactOptional().openapi({
+      description: 'Set of key-value pairs managed by the system. Cannot be modified by user.',
+      title: 'Annotations',
+      readOnly: true,
+    }),
+    metadata: MetadataSchema.nullable()
+      .exactOptional()
+      .openapi({ description: 'Additional metadata for the resource.', title: 'Metadata' }),
+    features: z
+      .array(FeatureMetaSchema)
+      .min(1)
+      .exactOptional()
+      .openapi({
+        description: 'Optional field containing list of features the rule applies to.',
+        title: 'Features',
+      }),
+  })
+  .openapi({
+    required: ['createdAt', 'updatedAt', 'id', 'type', 'name', 'channels'],
+    description: 'Notification rule with entitlements.reset type.',
+  })
+  .openapi('NotificationRuleEntitlementReset')
+
+const NotificationRuleInvoiceCreatedSchema = z
+  .object({
+    createdAt: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'Timestamp of when the resource was created.',
+        example: '2024-01-01T01:01:01.001Z',
+        title: 'Creation Time',
+        readOnly: true,
+      }),
+    updatedAt: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'Timestamp of when the resource was last updated.',
+        example: '2024-01-01T01:01:01.001Z',
+        title: 'Last Update Time',
+        readOnly: true,
+      }),
+    deletedAt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'Timestamp of when the resource was permanently deleted.',
+        example: '2024-01-01T01:01:01.001Z',
+        title: 'Deletion Time',
+        readOnly: true,
+      }),
+    id: z
+      .string()
+      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
+      .openapi({
+        description: 'Identifies the notification rule.',
+        example: '01ARZ3NDEKTSV4RRFFQ69G5FAV',
+        title: 'Rule Unique Identifier',
+        readOnly: true,
+      }),
+    type: z
+      .literal('invoice.created')
+      .openapi({ description: 'Notification rule type.', title: 'Rule Type' }),
+    name: z
+      .string()
+      .min(1)
+      .max(256)
+      .openapi({
+        description: 'The user friendly name of the notification rule.',
+        title: 'Rule Name',
+        example: 'Balance threshold reached',
+      }),
+    disabled: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description: 'Whether the rule is disabled or not.',
+        title: 'Rule Disabled',
+        example: true,
+      }),
+    channels: z
+      .array(NotificationChannelMetaSchema)
+      .openapi({
+        description: 'List of notification channels the rule applies to.',
+        title: 'Channels assigned to Rule',
+      }),
+    annotations: AnnotationsSchema.exactOptional().openapi({
+      description: 'Set of key-value pairs managed by the system. Cannot be modified by user.',
+      title: 'Annotations',
+      readOnly: true,
+    }),
+    metadata: MetadataSchema.nullable()
+      .exactOptional()
+      .openapi({ description: 'Additional metadata for the resource.', title: 'Metadata' }),
+  })
+  .openapi({
+    required: ['createdAt', 'updatedAt', 'id', 'type', 'name', 'channels'],
+    description: 'Notification rule with invoice.created type.',
+  })
+  .openapi('NotificationRuleInvoiceCreated')
+
+const NotificationRuleInvoiceUpdatedSchema = z
+  .object({
+    createdAt: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'Timestamp of when the resource was created.',
+        example: '2024-01-01T01:01:01.001Z',
+        title: 'Creation Time',
+        readOnly: true,
+      }),
+    updatedAt: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'Timestamp of when the resource was last updated.',
+        example: '2024-01-01T01:01:01.001Z',
+        title: 'Last Update Time',
+        readOnly: true,
+      }),
+    deletedAt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'Timestamp of when the resource was permanently deleted.',
+        example: '2024-01-01T01:01:01.001Z',
+        title: 'Deletion Time',
+        readOnly: true,
+      }),
+    id: z
+      .string()
+      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
+      .openapi({
+        description: 'Identifies the notification rule.',
+        example: '01ARZ3NDEKTSV4RRFFQ69G5FAV',
+        title: 'Rule Unique Identifier',
+        readOnly: true,
+      }),
+    type: z
+      .literal('invoice.updated')
+      .openapi({ description: 'Notification rule type.', title: 'Rule Type' }),
+    name: z
+      .string()
+      .min(1)
+      .max(256)
+      .openapi({
+        description: 'The user friendly name of the notification rule.',
+        title: 'Rule Name',
+        example: 'Balance threshold reached',
+      }),
+    disabled: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description: 'Whether the rule is disabled or not.',
+        title: 'Rule Disabled',
+        example: true,
+      }),
+    channels: z
+      .array(NotificationChannelMetaSchema)
+      .openapi({
+        description: 'List of notification channels the rule applies to.',
+        title: 'Channels assigned to Rule',
+      }),
+    annotations: AnnotationsSchema.exactOptional().openapi({
+      description: 'Set of key-value pairs managed by the system. Cannot be modified by user.',
+      title: 'Annotations',
+      readOnly: true,
+    }),
+    metadata: MetadataSchema.nullable()
+      .exactOptional()
+      .openapi({ description: 'Additional metadata for the resource.', title: 'Metadata' }),
+  })
+  .openapi({
+    required: ['createdAt', 'updatedAt', 'id', 'type', 'name', 'channels'],
+    description: 'Notification rule with invoice.updated type.',
+  })
+  .openapi('NotificationRuleInvoiceUpdated')
+
+const NotificationRuleSchema = z
+  .discriminatedUnion('type', [
+    NotificationRuleBalanceThresholdSchema,
+    NotificationRuleEntitlementResetSchema,
+    NotificationRuleInvoiceCreatedSchema,
+    NotificationRuleInvoiceUpdatedSchema,
+  ])
+  .openapi({
+    discriminator: {
+      propertyName: 'type',
+      mapping: {
+        'entitlements.balance.threshold': '#/components/schemas/NotificationRuleBalanceThreshold',
+        'entitlements.reset': '#/components/schemas/NotificationRuleEntitlementReset',
+        'invoice.created': '#/components/schemas/NotificationRuleInvoiceCreated',
+        'invoice.updated': '#/components/schemas/NotificationRuleInvoiceUpdated',
+      },
+    },
+    description: 'Notification Rule.',
+  })
+  .openapi('NotificationRule')
+
+const NotificationEventDeliveryStatusStateSchema = z
+  .enum(['SUCCESS', 'FAILED', 'SENDING', 'PENDING', 'RESENDING'])
+  .openapi({
+    description: 'The delivery state of the notification event to the channel.',
+    title: 'Delivery State',
+    'x-enum-varnames': ['Success', 'Failed', 'Sending', 'Pending', 'Resending'],
+  })
+  .openapi('NotificationEventDeliveryStatusState')
+
+const EventDeliveryAttemptResponseSchema = z
+  .object({
+    statusCode: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'Status code of the response if available.',
+        title: 'Status Code',
+        readOnly: true,
+      }),
+    body: z
+      .string()
+      .openapi({
+        description: 'The body of the response.',
+        title: 'Response Body',
+        readOnly: true,
+      }),
+    durationMs: z
+      .int()
+      .openapi({
+        description: 'The duration of the response in milliseconds.',
+        title: 'Response Duration',
+        readOnly: true,
+      }),
+    url: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'URL where the event was sent in case of notification channel with webhook type.',
+        title: 'URL',
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    required: ['body', 'durationMs'],
+    description: 'The response of the event delivery attempt.',
+  })
+  .openapi('EventDeliveryAttemptResponse')
+
+const NotificationEventDeliveryAttemptSchema = z
+  .object({
+    state: NotificationEventDeliveryStatusStateSchema.openapi({
+      description: 'State of teh delivery attempt.',
+      title: 'State of teh delivery attempt',
+      example: 'SUCCESS',
+      readOnly: true,
+    }),
+    response: EventDeliveryAttemptResponseSchema.openapi({
+      description: 'Response returned by the notification event recipient.',
+      title: 'Response returned by the notification event recipient',
+      readOnly: true,
+    }),
+    timestamp: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'Timestamp of the delivery attempt.',
+        example: '2023-01-01T01:01:01.001Z',
+        title: 'Timestamp of the delivery attempt',
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    required: ['state', 'response', 'timestamp'],
+    description: 'The delivery attempt of the notification event.',
+  })
+  .openapi('NotificationEventDeliveryAttempt')
+
+const NotificationEventDeliveryStatusSchema = z
+  .object({
+    state: NotificationEventDeliveryStatusStateSchema.openapi({
+      description: 'Delivery state of the notification event to the channel.',
+      example: 'SUCCESS',
+      readOnly: true,
+    }),
+    reason: z
+      .string()
+      .openapi({
+        description: 'The reason of the last deliverry state update.',
+        title: 'State Reason',
+        example: 'Failed to dispatch event due to provider error.',
+        readOnly: true,
+      }),
+    updatedAt: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'Timestamp of when the status was last updated in RFC 3339 format.',
+        example: '2023-01-01T01:01:01.001Z',
+        title: 'Last Update Time',
+        readOnly: true,
+      }),
+    channel: NotificationChannelMetaSchema.openapi({
+      description: 'Notification channel the delivery status associated with.',
+      title: 'Notification Channel',
+      readOnly: true,
+    }),
+    annotations: AnnotationsSchema.exactOptional().openapi({
+      description: 'Set of key-value pairs managed by the system. Cannot be modified by user.',
+      title: 'Annotations',
+      readOnly: true,
+    }),
+    nextAttempt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'Timestamp of the next delivery attempt. If null it means there will be no more delivery attempts.',
+        example: '2023-01-01T01:01:01.001Z',
+        title: 'Timestamp of the next delivery attempt',
+        readOnly: true,
+      }),
+    attempts: z
+      .array(NotificationEventDeliveryAttemptSchema)
+      .openapi({
+        description: 'List of delivery attempts.',
+        title: 'Delivery Attempts',
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    required: ['state', 'reason', 'updatedAt', 'channel', 'attempts'],
+    description: 'The delivery status of the notification event.',
+  })
+  .openapi('NotificationEventDeliveryStatus')
+
+const RecurringPeriodSchema = z
+  .object({
+    interval: RecurringPeriodIntervalSchema.openapi({
+      description:
+        'The unit of time for the interval. Heuristically maps ISO duraitons to enum values or returns the ISO duration.',
+      title: 'Interval',
+    }),
+    anchor: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'A date-time anchor to base the recurring period on.',
+        example: '2023-01-01T01:01:01.001Z',
+        title: 'Anchor time',
+      }),
+    intervalISO: z.iso
+      .duration()
+      .openapi({ description: 'The unit of time for the interval in ISO8601 format.' }),
+  })
+  .openapi({
+    required: ['interval', 'anchor', 'intervalISO'],
+    description: 'Recurring period with an interval and an anchor.',
+    deprecated: true,
+    example: { interval: 'DAY', intervalISO: 'P1D', anchor: '2023-01-01T01:01:01.001Z' },
+  })
+  .openapi('RecurringPeriod')
+
+const EntitlementMeteredSchema = z
+  .object({
+    type: z.literal('metered'),
+    isSoftLimit: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description:
+          'If softLimit=true the subject can use the feature even if the entitlement is exhausted, hasAccess will always be true.',
+        title: 'Soft limit',
+      }),
+    isUnlimited: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description:
+          'Deprecated, ignored by the backend. Please use isSoftLimit instead; this field will be removed in the future.',
+        deprecated: true,
+      }),
+    issueAfterReset: z
+      .float64()
+      .min(0)
+      .exactOptional()
+      .openapi({
+        description:
+          'You can grant usage automatically alongside the entitlement, the example scenario would be creating a starting balance.\nIf an amount is specified here, a grant will be created alongside the entitlement with the specified amount.\nThat grant will have it\'s rollover settings configured in a way that after each reset operation, the balance will return the original amount specified here.\nManually creating such a grant would mean having the "amount", "minRolloverAmount", and "maxRolloverAmount" fields all be the same.',
+        title: 'Initial grant amount',
+      }),
+    issueAfterResetPriority: z
+      .int()
+      .min(1)
+      .max(255)
+      .default(1)
+      .exactOptional()
+      .openapi({
+        description: 'Defines the grant priority for the default grant.',
+        title: 'Issue grant after reset priority',
+      }),
+    preserveOverageAtReset: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description:
+          'If true, the overage is preserved at reset. If false, the usage is reset to 0.',
+        title: 'Preserve overage at reset',
+      }),
+    createdAt: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'Timestamp of when the resource was created.',
+        example: '2024-01-01T01:01:01.001Z',
+        title: 'Creation Time',
+        readOnly: true,
+      }),
+    updatedAt: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'Timestamp of when the resource was last updated.',
+        example: '2024-01-01T01:01:01.001Z',
+        title: 'Last Update Time',
+        readOnly: true,
+      }),
+    deletedAt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'Timestamp of when the resource was permanently deleted.',
+        example: '2024-01-01T01:01:01.001Z',
+        title: 'Deletion Time',
+        readOnly: true,
+      }),
+    metadata: MetadataSchema.exactOptional().openapi({
+      description: 'Additional metadata for the feature.',
+    }),
+    activeFrom: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'The cadence start of the resource.',
+        example: '2023-01-01T01:01:01.001Z',
+      }),
+    activeTo: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'The cadence end of the resource.',
+        example: '2023-01-01T01:01:01.001Z',
+      }),
+    annotations: AnnotationsSchema.exactOptional().openapi({
+      description: 'The annotations of the entitlement.',
+      example: { 'subscription.id': 'sub_123' },
+      readOnly: true,
+    }),
+    id: z
+      .string()
+      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
+      .openapi({
+        description: 'Readonly unique ULID identifier.',
+        example: '01ARZ3NDEKTSV4RRFFQ69G5FAV',
+        readOnly: true,
+      }),
+    subjectKey: z
+      .string()
+      .regex(/^[a-z0-9]+(?:_[a-z0-9]+)*$/)
+      .min(1)
+      .max(64)
+      .openapi({
+        description:
+          'The identifier key unique to the subject.\nNOTE: Subjects are being deprecated, please use the new customer APIs.',
+        example: 'customer-1',
+      }),
+    featureKey: z
+      .string()
+      .regex(/^[a-z0-9]+(?:_[a-z0-9]+)*$/)
+      .min(1)
+      .max(64)
+      .openapi({
+        description: 'The feature the subject is entitled to use.',
+        example: 'example-feature-key',
+      }),
+    featureId: z
+      .string()
+      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
+      .openapi({
+        description: 'The feature the subject is entitled to use.',
+        example: '01ARZ3NDEKTSV4RRFFQ69G5FAV',
+      }),
+    lastReset: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'The time the last reset happened.',
+        example: '2023-01-01T01:01:01.001Z',
+        readOnly: true,
+      }),
+    currentUsagePeriod: PeriodSchema.openapi({
+      description: 'The current usage period.',
+      readOnly: true,
+    }),
+    measureUsageFrom: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description:
+          'The time from which usage is measured. If not specified on creation, defaults to entitlement creation time.',
+        example: '2023-01-01T01:01:01.001Z',
+        readOnly: true,
+      }),
+    usagePeriod: RecurringPeriodSchema.openapi({
+      description: 'THe usage period of the entitlement.',
+      readOnly: true,
+    }),
+  })
+  .openapi({
+    required: [
+      'type',
+      'createdAt',
+      'updatedAt',
+      'activeFrom',
+      'id',
+      'subjectKey',
+      'featureKey',
+      'featureId',
+      'lastReset',
+      'currentUsagePeriod',
+      'measureUsageFrom',
+      'usagePeriod',
+    ],
+    description:
+      'Metered entitlements are useful for many different use cases, from setting up usage based access to implementing complex credit systems.\nAccess is determined based on feature usage using a balance calculation (the "usage allowance" provided by the issued grants is "burnt down" by the usage).',
+    deprecated: true,
+  })
+  .openapi('EntitlementMetered')
+
+const FilterStringSchema: z.ZodType<FilterStringType> = z
+  .lazy(() =>
+    z
+      .object({
+        $eq: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: 'The field must be equal to the provided value.',
+            'x-omitempty': true,
+          }),
+        $ne: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: 'The field must not be equal to the provided value.',
+            'x-omitempty': true,
+          }),
+        $in: z
+          .array(z.string())
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: 'The field must be in the provided list of values.',
+            'x-omitempty': true,
+          }),
+        $nin: z
+          .array(z.string())
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: 'The field must not be in the provided list of values.',
+            'x-omitempty': true,
+          }),
+        $like: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: 'The field must match the provided value.',
+            'x-omitempty': true,
+          }),
+        $nlike: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: 'The field must not match the provided value.',
+            'x-omitempty': true,
+          }),
+        $ilike: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: 'The field must match the provided value, ignoring case.',
+            'x-omitempty': true,
+          }),
+        $nilike: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: 'The field must not match the provided value, ignoring case.',
+            'x-omitempty': true,
+          }),
+        $gt: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: 'The field must be greater than the provided value.',
+            'x-omitempty': true,
+          }),
+        $gte: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: 'The field must be greater than or equal to the provided value.',
+            'x-omitempty': true,
+          }),
+        $lt: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: 'The field must be less than the provided value.',
+            'x-omitempty': true,
+          }),
+        $lte: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: 'The field must be less than or equal to the provided value.',
+            'x-omitempty': true,
+          }),
+        $and: z
+          .array(FilterStringSchema)
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: 'Provide a list of filters to be combined with a logical AND.',
+            'x-omitempty': true,
+          }),
+        $or: z
+          .array(FilterStringSchema)
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: 'Provide a list of filters to be combined with a logical OR.',
+            'x-omitempty': true,
+          }),
+      })
+      .openapi({ description: 'A filter for a string field.', required: [] }),
+  )
+  .openapi('FilterString')
+
+const FeatureManualUnitCostSchema = z
+  .object({
+    type: z.literal('manual'),
+    amount: NumericSchema.openapi({ description: 'Fixed per-unit cost amount in USD.' }),
+  })
+  .openapi({ required: ['type', 'amount'], description: 'A fixed per-unit cost amount.' })
+  .openapi('FeatureManualUnitCost')
+
+const FeatureLLMUnitCostPricingSchema = z
+  .object({
+    inputPerToken: NumericSchema.openapi({
+      description: 'Cost per input token in USD.',
+      title: 'Input per token',
+    }),
+    outputPerToken: NumericSchema.openapi({
+      description: 'Cost per output token in USD.',
+      title: 'Output per token',
+    }),
+    cacheReadPerToken: NumericSchema.exactOptional().openapi({
+      description: 'Cost per cache read token in USD.',
+      title: 'Cache read per token',
+    }),
+    reasoningPerToken: NumericSchema.exactOptional().openapi({
+      description: 'Cost per reasoning token in USD.',
+      title: 'Reasoning per token',
+    }),
+    cacheWritePerToken: NumericSchema.exactOptional().openapi({
+      description: 'Cost per cache write token in USD.',
+      title: 'Cache write per token',
+    }),
+  })
+  .openapi({
+    required: ['inputPerToken', 'outputPerToken'],
+    description: 'Resolved per-token pricing from the LLM cost database.',
+  })
+  .openapi('FeatureLLMUnitCostPricing')
+
+const FeatureLLMUnitCostSchema = z
+  .object({
+    type: z.literal('llm'),
+    providerProperty: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Meter group-by property that holds the LLM provider.\nUse this when the meter has a group-by dimension for provider.\nMutually exclusive with `provider`.',
+        title: 'Provider property',
+      }),
+    provider: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Static LLM provider value (e.g., "openai", "anthropic").\nUse this when the feature tracks a single provider.\nMutually exclusive with `providerProperty`.',
+        title: 'Provider',
+      }),
+    modelProperty: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Meter group-by property that holds the model ID.\nUse this when the meter has a group-by dimension for model.\nMutually exclusive with `model`.',
+        title: 'Model property',
+      }),
+    model: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Static model ID value (e.g., "gpt-4", "claude-3-5-sonnet").\nUse this when the feature tracks a single model.\nMutually exclusive with `modelProperty`.',
+        title: 'Model',
+      }),
+    tokenTypeProperty: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Meter group-by property that holds the token type.\nUse this when the meter has a group-by dimension for token type.\nMutually exclusive with `tokenType`.',
+        title: 'Token type property',
+      }),
+    tokenType: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Static token type value.\nUse this when the feature tracks a single token type (e.g., only input tokens).\nExpected values: input, output, cache_read, reasoning, cache_write, request, response.\n`request` is an alias for `input`, `response` is an alias for `output`.\nMutually exclusive with `tokenTypeProperty`.',
+        title: 'Token type',
+      }),
+    pricing: FeatureLLMUnitCostPricingSchema.exactOptional().openapi({
+      description:
+        "Resolved per-token pricing from the LLM cost database.\nOnly populated in responses when the feature's meter group-by filters\nspecify exact provider and model values.",
+      title: 'Resolved pricing',
+      readOnly: true,
+    }),
+  })
+  .openapi({
+    required: ['type'],
+    description:
+      'LLM cost lookup configuration.\nMaps meter group-by dimensions to LLM cost database fields.',
+  })
+  .openapi('FeatureLLMUnitCost')
+
+const FeatureUnitCostSchema = z
+  .discriminatedUnion('type', [FeatureManualUnitCostSchema, FeatureLLMUnitCostSchema])
+  .openapi({
+    discriminator: {
+      propertyName: 'type',
+      mapping: {
+        manual: '#/components/schemas/FeatureManualUnitCost',
+        llm: '#/components/schemas/FeatureLLMUnitCost',
+      },
+    },
+    description:
+      'Per-unit cost configuration for a feature.\nEither a fixed manual amount or a dynamic LLM cost lookup.',
+  })
+  .openapi('FeatureUnitCost')
+
+const FeatureSchema = z
+  .object({
+    createdAt: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'Timestamp of when the resource was created.',
+        example: '2024-01-01T01:01:01.001Z',
+        title: 'Creation Time',
+        readOnly: true,
+      }),
+    updatedAt: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'Timestamp of when the resource was last updated.',
+        example: '2024-01-01T01:01:01.001Z',
+        title: 'Last Update Time',
+        readOnly: true,
+      }),
+    deletedAt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'Timestamp of when the resource was permanently deleted.',
+        example: '2024-01-01T01:01:01.001Z',
+        title: 'Deletion Time',
+        readOnly: true,
+      }),
+    archivedAt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'Timestamp of when the resource was archived.',
+        example: '2023-01-01T01:01:01.001Z',
+        title: 'Archival Time',
+        readOnly: true,
+      }),
+    key: z
+      .string()
+      .regex(/^[a-z0-9]+(?:_[a-z0-9]+)*$/)
+      .min(1)
+      .max(64)
+      .openapi({
+        description: 'A key is a unique string that is used to identify a resource.',
+        title: 'The unique key of the feature',
+      }),
+    name: z.string().openapi({ title: 'The human-readable name of the feature' }),
+    metadata: MetadataSchema.exactOptional().openapi({
+      title: 'Optional metadata',
+      example: { key: 'value' },
+    }),
+    meterSlug: z
+      .string()
+      .regex(/^[a-z0-9]+(?:_[a-z0-9]+)*$/)
+      .min(1)
+      .max(64)
+      .exactOptional()
+      .openapi({
+        description: 'A key is a unique string that is used to identify a resource.',
+        title: 'Meter slug',
+        example: 'tokens_total',
+      }),
+    meterGroupByFilters: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional meter group by filters.\nUseful if the meter scope is broader than what feature tracks.\nExample scenario would be a meter tracking all token use with groupBy fields for the model,\nthen the feature could filter for model=gpt-4.\n\n⚠️ __Deprecated__: Use advancedMeterGroupByFilters instead',
+        title: 'Meter group by filters',
+        deprecated: true,
+        example: { model: 'gpt-4', type: 'input' },
+      }),
+    advancedMeterGroupByFilters: z
+      .record(z.string(), FilterStringSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional advanced meter group by filters.\nYou can use this to filter for values of the meter groupBy fields.',
+        title: 'Advanced meter group by filters',
+        example: { model: { $in: ['gpt-4', 'gpt-4o'] }, type: { $eq: 'input' } },
+      }),
+    unitCost: FeatureUnitCostSchema.exactOptional().openapi({
+      description:
+        'Optional per-unit cost configuration.\nUse "manual" for a fixed per-unit cost, or "llm" to look up cost\nfrom the LLM cost database based on meter group-by properties.',
+      title: 'Unit cost',
+    }),
+    id: z
+      .string()
+      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
+      .openapi({
+        description: 'Readonly unique ULID identifier.',
+        example: '01ARZ3NDEKTSV4RRFFQ69G5FAV',
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    required: ['createdAt', 'updatedAt', 'key', 'name', 'id'],
+    description:
+      'Represents a feature that can be enabled or disabled for a plan.\nUsed both for product catalog and entitlements.',
+  })
+  .openapi('Feature')
+
+const SubjectSchema = z
+  .object({
+    createdAt: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'Timestamp of when the resource was created.',
+        example: '2024-01-01T01:01:01.001Z',
+        title: 'Creation Time',
+        readOnly: true,
+      }),
+    updatedAt: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'Timestamp of when the resource was last updated.',
+        example: '2024-01-01T01:01:01.001Z',
+        title: 'Last Update Time',
+        readOnly: true,
+      }),
+    deletedAt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'Timestamp of when the resource was permanently deleted.',
+        example: '2024-01-01T01:01:01.001Z',
+        title: 'Deletion Time',
+        readOnly: true,
+      }),
+    id: z
+      .string()
+      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
+      .openapi({
+        description: 'A unique identifier for the subject.',
+        example: '01G65Z755AFWAKHE12NY0CQ9FH',
+        readOnly: true,
+      }),
+    key: z
+      .string()
+      .openapi({
+        description:
+          'A unique, human-readable identifier for the subject.\nThis is typically a database ID or a customer key.',
+        example: 'customer-db-id-123',
+      }),
+    displayName: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'A human-readable display name for the subject.',
+        example: 'Customer Name',
+      }),
+    metadata: z
+      .record(z.string(), z.any())
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Metadata for the subject.', example: { hubspotId: '123456' } }),
+    currentPeriodStart: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'The start of the current period for the subject.',
+        example: '2023-01-01T00:00:00Z',
+        deprecated: true,
+      }),
+    currentPeriodEnd: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'The end of the current period for the subject.',
+        example: '2023-02-01T00:00:00Z',
+        deprecated: true,
+      }),
+    stripeCustomerId: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'The Stripe customer ID for the subject.',
+        deprecated: true,
+        example: 'cus_JMOlctsKV8',
+      }),
+  })
+  .openapi({
+    required: ['createdAt', 'updatedAt', 'id', 'key'],
+    description:
+      'A subject is a unique identifier for a usage attribution by its key.\nSubjects only exist in the concept of metering.\nSubjects are optional to create and work as an enrichment for the subject key like displayName, metadata, etc.\nSubjects are useful when you are reporting usage events with your own database ID but want to enrich the subject with a human-readable name or metadata.\nFor most use cases, a subject is equivalent to a customer.\n\n⚠️ __Deprecated__: Subjects as managable entities are being depracated, use customers with subject key usage attribution instead.',
+    deprecated: true,
+    example: {
+      createdAt: '2025-01-01T01:01:01.001Z',
+      updatedAt: '2025-02-01T01:01:01.001Z',
+      deletedAt: '2025-03-01T01:01:01.001Z',
+      id: '01G65Z755AFWAKHE12NY0CQ9FH',
+      key: 'customer-id',
+      displayName: 'Customer Name',
+      metadata: { hubspotId: '123456' },
+      stripeCustomerId: 'cus_JMOlctsKV8',
+    },
+  })
+  .openapi('Subject')
+
+const EntitlementValueSchema = z
+  .object({
+    hasAccess: z
+      .boolean()
+      .openapi({
+        description:
+          'Whether the subject has access to the feature. Shared accross all entitlement types.',
+        example: true,
+        readOnly: true,
+      }),
+    balance: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description:
+          "Only available for metered entitlements. Metered entitlements are built around a balance calculation where feature usage is deducted from the issued grants. Balance represents the remaining balance of the entitlement, it's value never turns negative.",
+        example: 100,
+        readOnly: true,
+      }),
+    usage: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description:
+          'Only available for metered entitlements. Returns the total feature usage in the current period.',
+        example: 50,
+        readOnly: true,
+      }),
+    overage: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description:
+          "Only available for metered entitlements. Overage represents the usage that wasn't covered by grants, e.g. if the subject had a total feature usage of 100 in the period but they were only granted 80, there would be 20 overage.",
+        example: 0,
+        readOnly: true,
+      }),
+    totalAvailableGrantAmount: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description:
+          'Only available for metered entitlements. The summed amount of all grant active at query time PLUS the used amount of since inactive grants.',
+        example: 100,
+        readOnly: true,
+      }),
+    config: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Only available for static entitlements. The JSON parsable config of the entitlement.',
+        example: '{ key: "value" }',
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    required: ['hasAccess'],
+    description:
+      'Entitlements are the core of OpenMeter access management. They define access to features for subjects. Entitlements can be metered, boolean, or static.',
+  })
+  .openapi('EntitlementValue')
+
+const NotificationEventEntitlementValuePayloadBaseSchema = z
+  .object({
+    entitlement: EntitlementMeteredSchema.openapi({ title: 'Entitlement', readOnly: true }),
+    feature: FeatureSchema.openapi({ title: 'Feature', readOnly: true }),
+    subject: SubjectSchema.openapi({ title: 'Subject', readOnly: true }),
+    value: EntitlementValueSchema.openapi({ title: 'Entitlement Value', readOnly: true }),
+    customer: CustomerSchema.exactOptional().openapi({ title: 'Customer', readOnly: true }),
+  })
+  .openapi({
+    required: ['entitlement', 'feature', 'subject', 'value'],
+    description: 'Base data for any payload with entitlement entitlement value.',
+  })
+  .openapi('NotificationEventEntitlementValuePayloadBase')
+
+const NotificationEventResetPayloadSchema = z
+  .object({
+    id: z
+      .string()
+      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
+      .openapi({
+        description: 'A unique identifier for the notification event the payload belongs to.',
+        example: '01J2KNP1YTXQRXHTDJ4KPR7PZ0',
+        title: 'Notification Event Identifier',
+        readOnly: true,
+      }),
+    type: z
+      .literal('entitlements.reset')
+      .openapi({
+        description: 'Type of the notification event.',
+        title: 'Notification Event Type',
+        readOnly: true,
+      }),
+    timestamp: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'Timestamp when the notification event was created in RFC 3339 format.',
+        example: '2023-01-01T01:01:01.001Z',
+        title: 'Creation Time',
+        readOnly: true,
+      }),
+    data: NotificationEventEntitlementValuePayloadBaseSchema.openapi({
+      description: 'The data of the payload.',
+      title: 'Payload Data',
+      readOnly: true,
+    }),
+  })
+  .openapi({
+    required: ['id', 'type', 'timestamp', 'data'],
+    description: 'Payload for notification event with `entitlements.reset` type.',
+  })
+  .openapi('NotificationEventResetPayload')
+
+const NotificationEventBalanceThresholdPayloadDataSchema = z
+  .object({
+    entitlement: EntitlementMeteredSchema.openapi({ title: 'Entitlement', readOnly: true }),
+    feature: FeatureSchema.openapi({ title: 'Feature', readOnly: true }),
+    subject: SubjectSchema.openapi({ title: 'Subject', readOnly: true }),
+    value: EntitlementValueSchema.openapi({ title: 'Entitlement Value', readOnly: true }),
+    customer: CustomerSchema.exactOptional().openapi({ title: 'Customer', readOnly: true }),
+    threshold: NotificationRuleBalanceThresholdValueSchema.openapi({
+      title: 'Threshold',
+      readOnly: true,
+    }),
+  })
+  .openapi({
+    required: ['entitlement', 'feature', 'subject', 'value', 'threshold'],
+    description:
+      'Data of the payload for notification event with `entitlements.balance.threshold` type.',
+  })
+  .openapi('NotificationEventBalanceThresholdPayloadData')
+
+const NotificationEventBalanceThresholdPayloadSchema = z
+  .object({
+    id: z
+      .string()
+      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
+      .openapi({
+        description: 'A unique identifier for the notification event the payload belongs to.',
+        example: '01J2KNP1YTXQRXHTDJ4KPR7PZ0',
+        title: 'Notification Event Identifier',
+        readOnly: true,
+      }),
+    type: z
+      .literal('entitlements.balance.threshold')
+      .openapi({
+        description: 'Type of the notification event.',
+        title: 'Notification Event Type',
+        readOnly: true,
+      }),
+    timestamp: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'Timestamp when the notification event was created in RFC 3339 format.',
+        example: '2023-01-01T01:01:01.001Z',
+        title: 'Creation Time',
+        readOnly: true,
+      }),
+    data: NotificationEventBalanceThresholdPayloadDataSchema.openapi({
+      description: 'The data of the payload.',
+      title: 'Payload Data',
+      readOnly: true,
+    }),
+  })
+  .openapi({
+    required: ['id', 'type', 'timestamp', 'data'],
+    description: 'Payload for notification event with `entitlements.balance.threshold` type.',
+  })
+  .openapi('NotificationEventBalanceThresholdPayload')
+
+type NotificationEventInvoiceCreatedPayloadType = {
+  id: string
+  type: 'invoice.created'
+  timestamp: string
+  data: z.infer<typeof InvoiceSchema>
+}
+
+const NotificationEventInvoiceCreatedPayloadSchema: z.ZodType<NotificationEventInvoiceCreatedPayloadType> &
+  z.core.$ZodTypeDiscriminable = z
+  .object({
+    id: z
+      .string()
+      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
+      .openapi({
+        description: 'A unique identifier for the notification event the payload belongs to.',
+        example: '01J2KNP1YTXQRXHTDJ4KPR7PZ0',
+        title: 'Notification Event Identifier',
+        readOnly: true,
+      }),
+    type: z
+      .literal('invoice.created')
+      .openapi({
+        description: 'Type of the notification event.',
+        title: 'Notification Event Type',
+        readOnly: true,
+      }),
+    timestamp: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'Timestamp when the notification event was created in RFC 3339 format.',
+        example: '2023-01-01T01:01:01.001Z',
+        title: 'Creation Time',
+        readOnly: true,
+      }),
+    data: InvoiceSchema.openapi({
+      description: 'The data of the payload.',
+      title: 'Payload Data',
+      readOnly: true,
+    }),
+  })
+  .openapi({
+    required: ['id', 'type', 'timestamp', 'data'],
+    description: 'Payload for notification event with `invoice.created` type.',
+  })
+  .openapi('NotificationEventInvoiceCreatedPayload')
+
+type NotificationEventInvoiceUpdatedPayloadType = {
+  id: string
+  type: 'invoice.updated'
+  timestamp: string
+  data: z.infer<typeof InvoiceSchema>
+}
+
+const NotificationEventInvoiceUpdatedPayloadSchema: z.ZodType<NotificationEventInvoiceUpdatedPayloadType> &
+  z.core.$ZodTypeDiscriminable = z
+  .object({
+    id: z
+      .string()
+      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
+      .openapi({
+        description: 'A unique identifier for the notification event the payload belongs to.',
+        example: '01J2KNP1YTXQRXHTDJ4KPR7PZ0',
+        title: 'Notification Event Identifier',
+        readOnly: true,
+      }),
+    type: z
+      .literal('invoice.updated')
+      .openapi({
+        description: 'Type of the notification event.',
+        title: 'Notification Event Type',
+        readOnly: true,
+      }),
+    timestamp: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'Timestamp when the notification event was created in RFC 3339 format.',
+        example: '2023-01-01T01:01:01.001Z',
+        title: 'Creation Time',
+        readOnly: true,
+      }),
+    data: InvoiceSchema.openapi({
+      description: 'The data of the payload.',
+      title: 'Payload Data',
+      readOnly: true,
+    }),
+  })
+  .openapi({
+    required: ['id', 'type', 'timestamp', 'data'],
+    description: 'Payload for notification event with `invoice.updated` type.',
+  })
+  .openapi('NotificationEventInvoiceUpdatedPayload')
+
+type NotificationEventPayloadType =
+  | z.infer<typeof NotificationEventResetPayloadSchema>
+  | z.infer<typeof NotificationEventBalanceThresholdPayloadSchema>
+  | z.infer<typeof NotificationEventInvoiceCreatedPayloadSchema>
+  | z.infer<typeof NotificationEventInvoiceUpdatedPayloadSchema>
+
+const NotificationEventPayloadSchema: z.ZodType<NotificationEventPayloadType> = z
+  .discriminatedUnion('type', [
+    NotificationEventResetPayloadSchema,
+    NotificationEventBalanceThresholdPayloadSchema,
+    NotificationEventInvoiceCreatedPayloadSchema,
+    NotificationEventInvoiceUpdatedPayloadSchema,
+  ])
+  .openapi({
+    discriminator: {
+      propertyName: 'type',
+      mapping: {
+        'entitlements.reset': '#/components/schemas/NotificationEventResetPayload',
+        'entitlements.balance.threshold':
+          '#/components/schemas/NotificationEventBalanceThresholdPayload',
+        'invoice.created': '#/components/schemas/NotificationEventInvoiceCreatedPayload',
+        'invoice.updated': '#/components/schemas/NotificationEventInvoiceUpdatedPayload',
+      },
+    },
+    description: 'The delivery status of the notification event.',
+  })
+  .openapi('NotificationEventPayload')
+
+type NotificationEventType = {
+  id: string
+  type: z.infer<typeof NotificationEventTypeSchema>
+  createdAt: string
+  rule: z.infer<typeof NotificationRuleSchema>
+  deliveryStatus: z.infer<typeof NotificationEventDeliveryStatusSchema>[]
+  payload: z.infer<typeof NotificationEventPayloadSchema>
+  annotations?: z.infer<typeof AnnotationsSchema>
+}
+
+const NotificationEventSchema: z.ZodType<NotificationEventType> = z
+  .object({
+    id: z
+      .string()
+      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
+      .openapi({
+        description: 'A unique identifier of the notification event.',
+        example: '01J2KNP1YTXQRXHTDJ4KPR7PZ0',
+        title: 'Event Identifier',
+        readOnly: true,
+      }),
+    type: NotificationEventTypeSchema.openapi({
+      description: 'Type of the notification event.',
+      title: 'Event Type',
+      readOnly: true,
+    }),
+    createdAt: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'Timestamp when the notification event was created in RFC 3339 format.',
+        example: '2023-01-01T01:01:01.001Z',
+        title: 'Creation Time',
+        readOnly: true,
+      }),
+    rule: NotificationRuleSchema.openapi({
+      description: 'The nnotification rule which generated this event.',
+      readOnly: true,
+    }),
+    deliveryStatus: z
+      .array(NotificationEventDeliveryStatusSchema)
+      .openapi({
+        description: 'The delivery status of the notification event.',
+        title: 'Delivery Status',
+        readOnly: true,
+      }),
+    payload: NotificationEventPayloadSchema.openapi({
+      description: 'Timestamp when the notification event was created in RFC 3339 format.',
+      readOnly: true,
+    }),
+    annotations: AnnotationsSchema.exactOptional().openapi({
+      description: 'Set of key-value pairs managed by the system. Cannot be modified by user.',
+      title: 'Annotations',
+      readOnly: true,
+    }),
+  })
+  .openapi({
+    required: ['id', 'type', 'createdAt', 'rule', 'deliveryStatus', 'payload'],
+    description: 'Type of the notification event.',
+  })
+  .openapi('NotificationEvent')
+
+type NotificationEventPaginatedResponseType = {
+  totalCount: number
+  page: number
+  pageSize: number
+  items: z.infer<typeof NotificationEventSchema>[]
+}
+
+const PlanStatusSchema = z
+  .enum(['draft', 'active', 'archived', 'scheduled'])
+  .openapi({ description: 'The status of a plan.' })
+  .openapi('PlanStatus')
+
+type PlanType = {
+  id: string
+  name: string
+  description?: string
+  metadata?: z.infer<typeof MetadataSchema> | null
+  createdAt: string
+  updatedAt: string
+  deletedAt?: string
+  key: string
+  alignment?: z.infer<typeof AlignmentSchema>
+  version: number
+  currency: z.infer<typeof CurrencyCodeSchema>
+  billingCadence: string
+  proRatingConfig?: z.infer<typeof ProRatingConfigSchema>
+  effectiveFrom?: string
+  effectiveTo?: string
+  status: z.infer<typeof PlanStatusSchema>
+  settlementMode?: z.infer<typeof BillingSettlementModeSchema>
+  phases: z.infer<typeof PlanPhaseSchema>[]
+  validationErrors: z.infer<typeof ValidationErrorSchema>[] | null
+}
+
+type PlanAddonType = {
+  createdAt: string
+  updatedAt: string
+  deletedAt?: string
+  annotations?: z.infer<typeof AnnotationsSchema>
+  metadata?: z.infer<typeof MetadataSchema>
+  addon: z.infer<typeof AddonSchema>
+  fromPlanPhase: string
+  maxQuantity?: number
+  validationErrors: z.infer<typeof ValidationErrorSchema>[] | null
+}
+
+const PlanAddonSchema: z.ZodType<PlanAddonType> = z
+  .object({
+    createdAt: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'Timestamp of when the resource was created.',
+        example: '2024-01-01T01:01:01.001Z',
+        title: 'Creation Time',
+        readOnly: true,
+      }),
+    updatedAt: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'Timestamp of when the resource was last updated.',
+        example: '2024-01-01T01:01:01.001Z',
+        title: 'Last Update Time',
+        readOnly: true,
+      }),
+    deletedAt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'Timestamp of when the resource was permanently deleted.',
+        example: '2024-01-01T01:01:01.001Z',
+        title: 'Deletion Time',
+        readOnly: true,
+      }),
+    annotations: AnnotationsSchema.exactOptional().openapi({
+      description: 'Set of key-value pairs managed by the system. Cannot be modified by user.',
+      title: 'Annotations',
+      readOnly: true,
+    }),
+    metadata: MetadataSchema.exactOptional().openapi({
+      description: 'Additional metadata for the resource.',
+      title: 'Metadata',
+    }),
+    addon: AddonSchema.openapi({ description: 'Add-on object.', title: 'Addon', readOnly: true }),
+    fromPlanPhase: z
+      .string()
+      .openapi({
+        description: 'The key of the plan phase from the add-on becomes available for purchase.',
+        title: 'The plan phase from the add-on becomes purchasable',
+      }),
+    maxQuantity: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          'The maximum number of times the add-on can be purchased for the plan.\nIt is not applicable for add-ons with single instance type.',
+        title: 'Max quantity of the add-on',
+      }),
+    validationErrors: z
+      .array(ValidationErrorSchema)
+      .nullable()
+      .openapi({
+        description: 'List of validation errors.',
+        title: 'Validation errors',
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    required: ['createdAt', 'updatedAt', 'addon', 'fromPlanPhase', 'validationErrors'],
+    description: 'The PlanAddon describes the association between a plan and add-on.',
+  })
+  .openapi('PlanAddon')
+
+type PlanAddonPaginatedResponseType = {
+  totalCount: number
+  page: number
+  pageSize: number
+  items: z.infer<typeof PlanAddonSchema>[]
+}
+
+type PlanCreateType = {
+  name: string
+  description?: string
+  metadata?: z.infer<typeof MetadataSchema> | null
+  key: string
+  alignment?: z.infer<typeof AlignmentSchema>
+  currency: z.infer<typeof CurrencyCodeSchema>
+  billingCadence: string
+  proRatingConfig?: z.infer<typeof ProRatingConfigSchema>
+  settlementMode?: z.infer<typeof BillingSettlementModeSchema>
+  phases: z.infer<typeof PlanPhaseSchema>[]
+}
+
+const PlanSchema: z.ZodType<PlanType> = z
+  .object({
+    id: z
+      .string()
+      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
+      .openapi({
+        description: 'A unique identifier for the resource.',
+        example: '01G65Z755AFWAKHE12NY0CQ9FH',
+        title: 'ID',
+        readOnly: true,
+      }),
+    name: z
+      .string()
+      .min(1)
+      .max(256)
+      .openapi({
+        description: 'Human-readable name for the resource. Between 1 and 256 characters.',
+        title: 'Display name',
+      }),
+    description: z
+      .string()
+      .max(1024)
+      .exactOptional()
+      .openapi({
+        description: 'Optional description of the resource. Maximum 1024 characters.',
+        title: 'Description',
+      }),
+    metadata: MetadataSchema.nullable()
+      .exactOptional()
+      .openapi({ description: 'Additional metadata for the resource.', title: 'Metadata' }),
+    createdAt: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'Timestamp of when the resource was created.',
+        example: '2024-01-01T01:01:01.001Z',
+        title: 'Creation Time',
+        readOnly: true,
+      }),
+    updatedAt: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'Timestamp of when the resource was last updated.',
+        example: '2024-01-01T01:01:01.001Z',
+        title: 'Last Update Time',
+        readOnly: true,
+      }),
+    deletedAt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'Timestamp of when the resource was permanently deleted.',
+        example: '2024-01-01T01:01:01.001Z',
+        title: 'Deletion Time',
+        readOnly: true,
+      }),
+    key: z
+      .string()
+      .regex(/^[a-z0-9]+(?:_[a-z0-9]+)*$/)
+      .min(1)
+      .max(64)
+      .openapi({ description: 'A semi-unique identifier for the resource.', title: 'Key' }),
+    alignment: AlignmentSchema.exactOptional().openapi({
+      description: 'Alignment configuration for the plan.',
+    }),
+    version: z
+      .int()
+      .min(1)
+      .default(1)
+      .openapi({
+        description: 'Version of the plan. Incremented when the plan is updated.',
+        title: 'Version',
+        readOnly: true,
+      }),
+    currency: CurrencyCodeSchema.default('USD').openapi({
+      description: 'The currency code of the plan.',
+      title: 'Currency',
+    }),
+    billingCadence: z.iso
+      .duration()
+      .openapi({
+        description:
+          'The default billing cadence for subscriptions using this plan.\nDefines how often customers are billed using ISO8601 duration format.\nExamples: "P1M" (monthly), "P3M" (quarterly), "P1Y" (annually).',
+        title: 'Billing cadence',
+        example: 'P1M',
+      }),
+    proRatingConfig: ProRatingConfigSchema.default({ enabled: true, mode: 'prorate_prices' })
+      .exactOptional()
+      .openapi({
+        description: 'Default pro-rating configuration for subscriptions using this plan.',
+        title: 'Pro-rating configuration',
+      }),
+    effectiveFrom: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'The date and time when the plan becomes effective. When not specified, the plan is a draft.',
+        example: '2023-01-01T01:01:01.001Z',
+        title: 'Effective start date',
+        readOnly: true,
+      }),
+    effectiveTo: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'The date and time when the plan is no longer effective. When not specified, the plan is effective indefinitely.',
+        example: '2023-01-01T01:01:01.001Z',
+        title: 'Effective end date',
+        readOnly: true,
+      }),
+    status: PlanStatusSchema.openapi({
+      description:
+        'The status of the plan.\nComputed based on the effective start and end dates:\n- draft = no effectiveFrom\n- active = effectiveFrom <= now < effectiveTo\n- archived / inactive = effectiveTo <= now\n- scheduled = now < effectiveFrom < effectiveTo',
+      title: 'Status',
+      readOnly: true,
+    }),
+    settlementMode: BillingSettlementModeSchema.default('credit_then_invoice')
+      .exactOptional()
+      .openapi({
+        description:
+          'The settlement mode of the plan.\nIt determines how the billing system generates invoices and credits for the subscriptions using this plan.\n- credit_then_invoice: credits from the previous billing period are applied first, then the remaining balance is invoiced.\n- credit_only: only credits from the previous billing period are generated and applied. No invoices are generated for the subscription.\nThis is the default and most common settlement mode.',
+        title: 'Settlement mode',
+      }),
+    phases: z
+      .array(PlanPhaseSchema)
+      .min(1)
+      .openapi({
+        description:
+          "The plan phase or pricing ramp allows changing a plan's rate cards over time as a subscription progresses.\nA phase switch occurs only at the end of a billing period, ensuring that a single subscription invoice will not include charges from different phase prices.",
+        title: 'Plan phases',
+      }),
+    validationErrors: z
+      .array(ValidationErrorSchema)
+      .nullable()
+      .openapi({
+        description: 'List of validation errors.',
+        title: 'Validation errors',
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    required: [
+      'id',
+      'name',
+      'createdAt',
+      'updatedAt',
+      'key',
+      'version',
+      'currency',
+      'billingCadence',
+      'status',
+      'phases',
+      'validationErrors',
+    ],
+    description: 'Plans provide a template for subscriptions.',
+  })
+  .openapi('Plan')
+
+type PlanPaginatedResponseType = {
+  totalCount: number
+  page: number
+  pageSize: number
+  items: z.infer<typeof PlanSchema>[]
+}
+
+type PlanReplaceUpdateType = {
+  name: string
+  description?: string
+  metadata?: z.infer<typeof MetadataSchema> | null
+  alignment?: z.infer<typeof AlignmentSchema>
+  billingCadence: string
+  proRatingConfig?: z.infer<typeof ProRatingConfigSchema>
+  settlementMode?: z.infer<typeof BillingSettlementModeSchema>
+  phases: z.infer<typeof PlanPhaseSchema>[]
+}
+
+const SubscriptionAddonTimelineSegmentSchema = z
+  .object({
+    activeFrom: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'The cadence start of the resource.',
+        example: '2023-01-01T01:01:01.001Z',
+      }),
+    activeTo: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'The cadence end of the resource.',
+        example: '2023-01-01T01:01:01.001Z',
+      }),
+    quantity: z
+      .int()
+      .min(0)
+      .openapi({
+        description: 'The quantity of the add-on for the given period.',
+        title: 'Quantity',
+        example: 1,
+        readOnly: true,
+      }),
+  })
+  .openapi({ required: ['activeFrom', 'quantity'], description: 'A subscription add-on event.' })
+  .openapi('SubscriptionAddonTimelineSegment')
+
+const SubscriptionAddonRateCardSchema = z
+  .object({
+    rateCard: RateCardSchema.openapi({ description: 'The rate card.', title: 'Rate card' }),
+    affectedSubscriptionItemIds: z
+      .array(
+        z
+          .string()
+          .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
+          .openapi({
+            description: 'ULID (Universally Unique Lexicographically Sortable Identifier).',
+            example: '01G65Z755AFWAKHE12NY0CQ9FH',
+          }),
+      )
+      .openapi({
+        description: 'The IDs of the subscription items that this rate card belongs to.',
+        title: 'Affected subscription item IDs',
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    required: ['rateCard', 'affectedSubscriptionItemIds'],
+    description: 'A rate card for a subscription add-on.',
+  })
+  .openapi('SubscriptionAddonRateCard')
+
+type SubscriptionAddonType = {
+  id: string
+  name: string
+  description?: string
+  metadata?: z.infer<typeof MetadataSchema> | null
+  createdAt: string
+  updatedAt: string
+  deletedAt?: string
+  activeFrom: string
+  activeTo?: string
+  addon: {
+    id: string
+    key: string
+    version: number
+    instanceType: z.infer<typeof AddonInstanceTypeSchema>
+  }
+  quantityAt: string
+  quantity: number
+  timeline: z.infer<typeof SubscriptionAddonTimelineSegmentSchema>[]
+  subscriptionId: string
+  rateCards: z.infer<typeof SubscriptionAddonRateCardSchema>[]
+}
+
+const PlanReferenceInputSchema = z
+  .object({
+    key: z
+      .string()
+      .regex(/^[a-z0-9]+(?:_[a-z0-9]+)*$/)
+      .min(1)
+      .max(64)
+      .openapi({ description: 'The plan key.' }),
+    version: z.int().exactOptional().openapi({ description: 'The plan version.' }),
+  })
+  .openapi({
+    required: ['key'],
+    description: 'References an exact plan defaulting to the current active version.',
+  })
+  .openapi('PlanReferenceInput')
+
+const PlanSubscriptionChangeSchema = z
+  .object({
+    timing: SubscriptionTimingSchema.openapi({
+      description:
+        'Timing configuration for the change, when the change should take effect.\nFor changing a subscription, the accepted values depend on the subscription configuration.',
+    }),
+    alignment: AlignmentSchema.exactOptional().openapi({
+      description: 'What alignment settings the subscription should have.',
+    }),
+    metadata: MetadataSchema.exactOptional().openapi({
+      description: 'Arbitrary metadata associated with the subscription.',
+    }),
+    plan: PlanReferenceInputSchema.openapi({ description: 'The plan reference to change to.' }),
+    startingPhase: z
+      .string()
+      .min(1)
+      .exactOptional()
+      .openapi({
+        description:
+          'The key of the phase to start the subscription in.\nIf not provided, the subscription will start in the first phase of the plan.',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The name of the Subscription. If not provided the plan name is used.',
+      }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Description for the Subscription.' }),
+    billingAnchor: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'The billing anchor of the subscription. The provided date will be normalized according to the billing cadence to the nearest recurrence before start time. If not provided, the previous subscription billing anchor will be used.',
+        example: '2023-01-01T01:01:01.001Z',
+      }),
+    settlementMode: BillingSettlementModeSchema.exactOptional().openapi({
+      description: 'The settlement mode of the subscription.',
+    }),
+    costBasisMode: SubscriptionCostBasisModeSchema.default('dynamic')
+      .exactOptional()
+      .openapi({
+        description:
+          'Controls how custom-currency cost bases are selected for the new subscription.',
+      }),
+  })
+  .openapi({ required: ['timing', 'plan'], description: 'Change subscription based on plan.' })
+  .openapi('PlanSubscriptionChange')
+
+const CustomSubscriptionChangeSchema: z.ZodType<CustomSubscriptionChangeType> = z
+  .object({
+    timing: SubscriptionTimingSchema.openapi({
+      description:
+        'Timing configuration for the change, when the change should take effect.\nFor changing a subscription, the accepted values depend on the subscription configuration.',
+    }),
+    billingAnchor: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'The billing anchor of the subscription. The provided date will be normalized according to the billing cadence to the nearest recurrence before start time. If not provided, the previous subscription billing anchor will be used.',
+        example: '2023-01-01T01:01:01.001Z',
+      }),
+    costBasisMode: SubscriptionCostBasisModeSchema.default('dynamic')
+      .exactOptional()
+      .openapi({
+        description:
+          'Controls how custom-currency cost bases are selected for the new subscription.',
+      }),
+    customPlan: CustomPlanInputSchema.openapi({
+      description: 'The custom plan description which defines the Subscription.',
+    }),
+  })
+  .openapi({ required: ['timing', 'customPlan'], description: 'Change a custom subscription.' })
+  .openapi('CustomSubscriptionChange')
+
+type SubscriptionChangeType =
+  | z.infer<typeof PlanSubscriptionChangeSchema>
+  | z.infer<typeof CustomSubscriptionChangeSchema>
+
+const SubscriptionAlignmentSchema = z
+  .object({
+    billablesMustAlign: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          "Whether all Billable items and RateCards must align.\nAlignment means the Price's BillingCadence must align for both duration and anchor time.",
+        deprecated: true,
+      }),
+    currentAlignedBillingPeriod: PeriodSchema.exactOptional().openapi({
+      description:
+        'The current billing period. Only has value if the subscription is aligned and active.',
+    }),
+  })
+  .openapi({
+    description: 'Alignment details enriched with the current billing period.',
+    required: [],
+  })
+  .openapi('SubscriptionAlignment')
+
+const CurrencyCodeOrCustomSchema = z
+  .string()
+  .min(3)
+  .max(24)
+  .openapi({ description: 'Fiat or managed custom currency code.' })
+  .openapi('CurrencyCodeOrCustom')
+
+const EntitlementStaticSchema = z
+  .object({
+    type: z.literal('static'),
+    config: z
+      .string()
+      .openapi({
+        description:
+          'The JSON parsable config of the entitlement. This value is also returned when checking entitlement access and it is useful for configuring fine-grained access settings to the feature, implemented in your own system. Has to be an object.',
+        example: '{ "integrations": ["github"] }',
+      }),
+    createdAt: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'Timestamp of when the resource was created.',
+        example: '2024-01-01T01:01:01.001Z',
+        title: 'Creation Time',
+        readOnly: true,
+      }),
+    updatedAt: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'Timestamp of when the resource was last updated.',
+        example: '2024-01-01T01:01:01.001Z',
+        title: 'Last Update Time',
+        readOnly: true,
+      }),
+    deletedAt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'Timestamp of when the resource was permanently deleted.',
+        example: '2024-01-01T01:01:01.001Z',
+        title: 'Deletion Time',
+        readOnly: true,
+      }),
+    metadata: MetadataSchema.exactOptional().openapi({
+      description: 'Additional metadata for the feature.',
+    }),
+    activeFrom: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'The cadence start of the resource.',
+        example: '2023-01-01T01:01:01.001Z',
+      }),
+    activeTo: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'The cadence end of the resource.',
+        example: '2023-01-01T01:01:01.001Z',
+      }),
+    annotations: AnnotationsSchema.exactOptional().openapi({
+      description: 'The annotations of the entitlement.',
+      example: { 'subscription.id': 'sub_123' },
+      readOnly: true,
+    }),
+    id: z
+      .string()
+      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
+      .openapi({
+        description: 'Readonly unique ULID identifier.',
+        example: '01ARZ3NDEKTSV4RRFFQ69G5FAV',
+        readOnly: true,
+      }),
+    subjectKey: z
+      .string()
+      .regex(/^[a-z0-9]+(?:_[a-z0-9]+)*$/)
+      .min(1)
+      .max(64)
+      .openapi({
+        description:
+          'The identifier key unique to the subject.\nNOTE: Subjects are being deprecated, please use the new customer APIs.',
+        example: 'customer-1',
+      }),
+    featureKey: z
+      .string()
+      .regex(/^[a-z0-9]+(?:_[a-z0-9]+)*$/)
+      .min(1)
+      .max(64)
+      .openapi({
+        description: 'The feature the subject is entitled to use.',
+        example: 'example-feature-key',
+      }),
+    featureId: z
+      .string()
+      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
+      .openapi({
+        description: 'The feature the subject is entitled to use.',
+        example: '01ARZ3NDEKTSV4RRFFQ69G5FAV',
+      }),
+    currentUsagePeriod: PeriodSchema.exactOptional().openapi({
+      description: 'The current usage period.',
+    }),
+    usagePeriod: RecurringPeriodSchema.exactOptional().openapi({
+      description: 'The defined usage period of the entitlement',
+    }),
+  })
+  .openapi({
+    required: [
+      'type',
+      'config',
+      'createdAt',
+      'updatedAt',
+      'activeFrom',
+      'id',
+      'subjectKey',
+      'featureKey',
+      'featureId',
+    ],
+    description: 'A static entitlement.',
+    deprecated: true,
+  })
+  .openapi('EntitlementStatic')
+
+const EntitlementBooleanSchema = z
+  .object({
+    type: z.literal('boolean'),
+    createdAt: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'Timestamp of when the resource was created.',
+        example: '2024-01-01T01:01:01.001Z',
+        title: 'Creation Time',
+        readOnly: true,
+      }),
+    updatedAt: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'Timestamp of when the resource was last updated.',
+        example: '2024-01-01T01:01:01.001Z',
+        title: 'Last Update Time',
+        readOnly: true,
+      }),
+    deletedAt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'Timestamp of when the resource was permanently deleted.',
+        example: '2024-01-01T01:01:01.001Z',
+        title: 'Deletion Time',
+        readOnly: true,
+      }),
+    metadata: MetadataSchema.exactOptional().openapi({
+      description: 'Additional metadata for the feature.',
+    }),
+    activeFrom: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'The cadence start of the resource.',
+        example: '2023-01-01T01:01:01.001Z',
+      }),
+    activeTo: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'The cadence end of the resource.',
+        example: '2023-01-01T01:01:01.001Z',
+      }),
+    annotations: AnnotationsSchema.exactOptional().openapi({
+      description: 'The annotations of the entitlement.',
+      example: { 'subscription.id': 'sub_123' },
+      readOnly: true,
+    }),
+    id: z
+      .string()
+      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
+      .openapi({
+        description: 'Readonly unique ULID identifier.',
+        example: '01ARZ3NDEKTSV4RRFFQ69G5FAV',
+        readOnly: true,
+      }),
+    subjectKey: z
+      .string()
+      .regex(/^[a-z0-9]+(?:_[a-z0-9]+)*$/)
+      .min(1)
+      .max(64)
+      .openapi({
+        description:
+          'The identifier key unique to the subject.\nNOTE: Subjects are being deprecated, please use the new customer APIs.',
+        example: 'customer-1',
+      }),
+    featureKey: z
+      .string()
+      .regex(/^[a-z0-9]+(?:_[a-z0-9]+)*$/)
+      .min(1)
+      .max(64)
+      .openapi({
+        description: 'The feature the subject is entitled to use.',
+        example: 'example-feature-key',
+      }),
+    featureId: z
+      .string()
+      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
+      .openapi({
+        description: 'The feature the subject is entitled to use.',
+        example: '01ARZ3NDEKTSV4RRFFQ69G5FAV',
+      }),
+    currentUsagePeriod: PeriodSchema.exactOptional().openapi({
+      description: 'The current usage period.',
+    }),
+    usagePeriod: RecurringPeriodSchema.exactOptional().openapi({
+      description: 'The defined usage period of the entitlement',
+    }),
+  })
+  .openapi({
+    required: [
+      'type',
+      'createdAt',
+      'updatedAt',
+      'activeFrom',
+      'id',
+      'subjectKey',
+      'featureKey',
+      'featureId',
+    ],
+    description: 'Entitlement template of a boolean entitlement.',
+    deprecated: true,
+  })
+  .openapi('EntitlementBoolean')
+
+const EntitlementSchema = z
+  .discriminatedUnion('type', [
+    EntitlementMeteredSchema,
+    EntitlementStaticSchema,
+    EntitlementBooleanSchema,
+  ])
+  .openapi({
+    discriminator: {
+      propertyName: 'type',
+      mapping: {
+        metered: '#/components/schemas/EntitlementMetered',
+        static: '#/components/schemas/EntitlementStatic',
+        boolean: '#/components/schemas/EntitlementBoolean',
+      },
+    },
+    description:
+      'Entitlement templates are used to define the entitlements of a plan.\nFeatures are omitted from the entitlement template, as they are defined in the rate card.',
+    deprecated: true,
+  })
+  .openapi('Entitlement')
+
+const SubscriptionItemIncludedSchema = z
+  .object({
+    feature: FeatureSchema.openapi({ description: 'The feature the customer is entitled to use.' }),
+    entitlement: EntitlementSchema.exactOptional().openapi({
+      description: 'The entitlement of the Subscription Item.',
+    }),
+  })
+  .openapi({
+    required: ['feature'],
+    description: 'Included contents like Entitlement, or the Feature.',
+  })
+  .openapi('SubscriptionItemIncluded')
+
+const SubscriptionItemSchema = z
+  .object({
+    id: z
+      .string()
+      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
+      .openapi({
+        description: 'A unique identifier for the resource.',
+        example: '01G65Z755AFWAKHE12NY0CQ9FH',
+        title: 'ID',
+        readOnly: true,
+      }),
+    name: z
+      .string()
+      .min(1)
+      .max(256)
+      .openapi({
+        description: 'Human-readable name for the resource. Between 1 and 256 characters.',
+        title: 'Display name',
+      }),
+    description: z
+      .string()
+      .max(1024)
+      .exactOptional()
+      .openapi({
+        description: 'Optional description of the resource. Maximum 1024 characters.',
+        title: 'Description',
+      }),
+    metadata: MetadataSchema.nullable()
+      .exactOptional()
+      .openapi({ description: 'Additional metadata for the resource.', title: 'Metadata' }),
+    createdAt: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'Timestamp of when the resource was created.',
+        example: '2024-01-01T01:01:01.001Z',
+        title: 'Creation Time',
+        readOnly: true,
+      }),
+    updatedAt: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'Timestamp of when the resource was last updated.',
+        example: '2024-01-01T01:01:01.001Z',
+        title: 'Last Update Time',
+        readOnly: true,
+      }),
+    deletedAt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'Timestamp of when the resource was permanently deleted.',
+        example: '2024-01-01T01:01:01.001Z',
+        title: 'Deletion Time',
+        readOnly: true,
+      }),
+    activeFrom: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'The cadence start of the resource.',
+        example: '2023-01-01T01:01:01.001Z',
+      }),
+    activeTo: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'The cadence end of the resource.',
+        example: '2023-01-01T01:01:01.001Z',
+      }),
+    key: z
+      .string()
+      .regex(/^[a-z0-9]+(?:_[a-z0-9]+)*$/)
+      .min(1)
+      .max(64)
+      .openapi({
+        description:
+          'The identifier of the RateCard.\nSubscriptionItem/RateCard can be identified, it has a reference:\n\n1. If a Feature is associated with the SubscriptionItem, it is identified by the Feature\n1.1 It can be an ID reference, for an exact version of the Feature (Features can change across versions)\n1.2 It can be a Key reference, which always refers to the latest (active or inactive) version of a Feature\n\n2. If a Feature is not associated with the SubscriptionItem, it is referenced by the Price\n\nWe say "referenced by the Price" regardless of how a price itself is referenced, it colloquially makes sense to say "paying the same price for the same thing". In practice this should be derived from what\'s printed on the invoice line-item.',
+      }),
+    currency: CurrencyCodeOrCustomSchema.exactOptional().openapi({
+      description: "The materialized currency of the item's rate card. Present for priced items.",
+      title: 'Currency',
+      readOnly: true,
+    }),
+    featureKey: z
+      .string()
+      .regex(/^[a-z0-9]+(?:_[a-z0-9]+)*$/)
+      .min(1)
+      .max(64)
+      .exactOptional()
+      .openapi({ description: "The feature's key (if present)." }),
+    billingCadence: z.iso
+      .duration()
+      .nullable()
+      .openapi({
+        description:
+          'The billing cadence of the rate card.\nWhen null, the rate card is a one-time purchase.',
+        title: 'Billing cadence',
+      }),
+    price: RateCardUsageBasedPriceSchema.nullable().openapi({
+      description: 'The price of the rate card.\nWhen null, the feature or service is free.',
+      title: 'Price',
+      example: { type: 'flat', amount: '100', paymentTerm: 'in_arrears' },
+    }),
+    discounts: DiscountsSchema.exactOptional().openapi({
+      description: 'The discounts applied to the rate card.',
+      title: 'Discounts',
+    }),
+    included: SubscriptionItemIncludedSchema.exactOptional().openapi({
+      description: 'Describes what access is gained via the SubscriptionItem',
+    }),
+    taxConfig: TaxConfigSchema.exactOptional().openapi({
+      description:
+        'The tax config of the Subscription Item.\nWhen undefined, the tax config of the feature or the default tax config of the plan is used.',
+      title: 'Tax config',
+    }),
+  })
+  .openapi({
+    required: [
+      'id',
+      'name',
+      'createdAt',
+      'updatedAt',
+      'activeFrom',
+      'key',
+      'billingCadence',
+      'price',
+    ],
+    description:
+      'The actual contents of the Subscription, what the user gets, what they pay, etc...',
+  })
+  .openapi('SubscriptionItem')
+
+type SubscriptionPhaseExpandedType = {
+  id: string
+  name: string
+  description?: string
+  metadata?: z.infer<typeof MetadataSchema> | null
+  createdAt: string
+  updatedAt: string
+  deletedAt?: string
+  key: string
+  discounts?: z.infer<typeof DiscountsSchema>
+  activeFrom: string
+  activeTo?: string
+  items: z.infer<typeof SubscriptionItemSchema>[]
+  itemTimelines: { [key: string]: z.infer<typeof SubscriptionItemSchema>[] }
+}
+
+const SubscriptionPhaseExpandedSchema: z.ZodType<SubscriptionPhaseExpandedType> = z
+  .object({
+    id: z
+      .string()
+      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
+      .openapi({
+        description: 'A unique identifier for the resource.',
+        example: '01G65Z755AFWAKHE12NY0CQ9FH',
+        title: 'ID',
+        readOnly: true,
+      }),
+    name: z
+      .string()
+      .min(1)
+      .max(256)
+      .openapi({
+        description: 'Human-readable name for the resource. Between 1 and 256 characters.',
+        title: 'Display name',
+      }),
+    description: z
+      .string()
+      .max(1024)
+      .exactOptional()
+      .openapi({
+        description: 'Optional description of the resource. Maximum 1024 characters.',
+        title: 'Description',
+      }),
+    metadata: MetadataSchema.nullable()
+      .exactOptional()
+      .openapi({ description: 'Additional metadata for the resource.', title: 'Metadata' }),
+    createdAt: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'Timestamp of when the resource was created.',
+        example: '2024-01-01T01:01:01.001Z',
+        title: 'Creation Time',
+        readOnly: true,
+      }),
+    updatedAt: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'Timestamp of when the resource was last updated.',
+        example: '2024-01-01T01:01:01.001Z',
+        title: 'Last Update Time',
+        readOnly: true,
+      }),
+    deletedAt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'Timestamp of when the resource was permanently deleted.',
+        example: '2024-01-01T01:01:01.001Z',
+        title: 'Deletion Time',
+        readOnly: true,
+      }),
+    key: z
+      .string()
+      .regex(/^[a-z0-9]+(?:_[a-z0-9]+)*$/)
+      .min(1)
+      .max(64)
+      .openapi({ description: 'A locally unique identifier for the resource.' }),
+    discounts: DiscountsSchema.exactOptional().openapi({
+      description: 'The discounts on the plan.',
+      title: 'Discounts',
+    }),
+    activeFrom: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'The time from which the phase is active.',
+        example: '2023-01-01T01:01:01.001Z',
+      }),
+    activeTo: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'The until which the Phase is active.',
+        example: '2023-01-01T01:01:01.001Z',
+      }),
+    items: z
+      .array(SubscriptionItemSchema)
+      .openapi({
+        description:
+          'The items of the phase. The structure is flattened to better conform to the Plan API.\nThe timelines are flattened according to the following rules:\n- for the current phase, the `items` contains only the active item for each key\n- for past phases, the `items` contains only the last item for each key\n- for future phases, the `items` contains only the first version of the item for each key',
+      }),
+    itemTimelines: z
+      .record(z.string(), z.array(SubscriptionItemSchema))
+      .openapi({
+        description:
+          'Includes all versions of the items on each key, including all edits, scheduled changes, etc...',
+      }),
+  })
+  .openapi({
+    required: [
+      'id',
+      'name',
+      'createdAt',
+      'updatedAt',
+      'key',
+      'activeFrom',
+      'items',
+      'itemTimelines',
+    ],
+    description: 'Expanded subscription phase',
+  })
+  .openapi('SubscriptionPhaseExpanded')
+
+type SubscriptionExpandedType = {
+  id: string
+  name: string
+  description?: string
+  metadata?: z.infer<typeof MetadataSchema> | null
+  createdAt: string
+  updatedAt: string
+  deletedAt?: string
+  activeFrom: string
+  activeTo?: string
+  annotations?: z.infer<typeof AnnotationsSchema>
+  status: z.infer<typeof SubscriptionStatusSchema>
+  customerId: string
+  plan?: z.infer<typeof PlanReferenceSchema>
+  currency: z.infer<typeof CurrencyCodeSchema>
+  costBasisMode: z.infer<typeof SubscriptionCostBasisModeSchema>
+  costBasisPins: z.infer<typeof SubscriptionCostBasisPinSchema>[]
+  billingCadence: string
+  proRatingConfig?: z.infer<typeof ProRatingConfigSchema>
+  billingAnchor: string
+  billingStartsAt?: string
+  settlementMode: z.infer<typeof BillingSettlementModeSchema>
+  alignment?: z.infer<typeof SubscriptionAlignmentSchema>
+  phases: z.infer<typeof SubscriptionPhaseExpandedSchema>[]
+}
+
+const SubscriptionExpandedSchema: z.ZodType<SubscriptionExpandedType> = z
+  .object({
+    id: z
+      .string()
+      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
+      .openapi({
+        description: 'A unique identifier for the resource.',
+        example: '01G65Z755AFWAKHE12NY0CQ9FH',
+        title: 'ID',
+        readOnly: true,
+      }),
+    name: z
+      .string()
+      .min(1)
+      .max(256)
+      .openapi({
+        description: 'Human-readable name for the resource. Between 1 and 256 characters.',
+        title: 'Display name',
+      }),
+    description: z
+      .string()
+      .max(1024)
+      .exactOptional()
+      .openapi({
+        description: 'Optional description of the resource. Maximum 1024 characters.',
+        title: 'Description',
+      }),
+    metadata: MetadataSchema.nullable()
+      .exactOptional()
+      .openapi({ description: 'Additional metadata for the resource.', title: 'Metadata' }),
+    createdAt: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'Timestamp of when the resource was created.',
+        example: '2024-01-01T01:01:01.001Z',
+        title: 'Creation Time',
+        readOnly: true,
+      }),
+    updatedAt: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'Timestamp of when the resource was last updated.',
+        example: '2024-01-01T01:01:01.001Z',
+        title: 'Last Update Time',
+        readOnly: true,
+      }),
+    deletedAt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'Timestamp of when the resource was permanently deleted.',
+        example: '2024-01-01T01:01:01.001Z',
+        title: 'Deletion Time',
+        readOnly: true,
+      }),
+    activeFrom: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'The cadence start of the resource.',
+        example: '2023-01-01T01:01:01.001Z',
+      }),
+    activeTo: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'The cadence end of the resource.',
+        example: '2023-01-01T01:01:01.001Z',
+      }),
+    annotations: AnnotationsSchema.exactOptional().openapi({
+      description: 'Set of key-value pairs managed by the system. Cannot be modified by user.',
+      title: 'Annotations',
+      readOnly: true,
+    }),
+    status: SubscriptionStatusSchema.openapi({
+      description: 'The status of the subscription.',
+      readOnly: true,
+    }),
+    customerId: z
+      .string()
+      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
+      .openapi({
+        description: 'The customer ID of the subscription.',
+        example: '01G65Z755AFWAKHE12NY0CQ9FH',
+      }),
+    plan: PlanReferenceSchema.exactOptional().openapi({
+      description: 'The plan of the subscription.',
+    }),
+    currency: CurrencyCodeSchema.default('USD').openapi({
+      description: 'The fiat currency in which the subscription is invoiced.',
+      title: 'Currency',
+    }),
+    costBasisMode: SubscriptionCostBasisModeSchema.default('dynamic').openapi({
+      description:
+        'Controls whether custom-currency cost bases are resolved dynamically or pinned\nwhen their currency pair is introduced to the subscription.',
+      title: 'Cost basis mode',
+      readOnly: true,
+    }),
+    costBasisPins: z
+      .array(SubscriptionCostBasisPinSchema)
+      .openapi({
+        description: 'Cost bases pinned to custom-currency pairs for this subscription.',
+        title: 'Pinned cost bases',
+        readOnly: true,
+      }),
+    billingCadence: z.iso
+      .duration()
+      .openapi({
+        description:
+          'The billing cadence for the subscriptions.\nDefines how often customers are billed using ISO8601 duration format.\nExamples: "P1M" (monthly), "P3M" (quarterly), "P1Y" (annually).',
+        title: 'Billing cadence',
+        example: 'P1M',
+        readOnly: true,
+      }),
+    proRatingConfig: ProRatingConfigSchema.default({ enabled: true, mode: 'prorate_prices' })
+      .exactOptional()
+      .openapi({
+        description: 'The pro-rating configuration for the subscriptions.',
+        title: 'Pro-rating configuration',
+        readOnly: true,
+      }),
+    billingAnchor: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'The normalizedbilling anchor of the subscription.',
+        example: '2023-01-01T01:01:01.001Z',
+        title: 'Billing anchor',
+        readOnly: true,
+      }),
+    billingStartsAt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'When billing starts for the subscription. Nothing is billed for service before this time.\nIf not set, billing starts with the subscription.',
+        example: '2023-01-01T01:01:01.001Z',
+        title: 'Billing starts at',
+        readOnly: true,
+      }),
+    settlementMode: BillingSettlementModeSchema.default('credit_then_invoice').openapi({
+      description:
+        'The settlement mode of the subscription.\n- credit_then_invoice: credits from the previous billing period are applied first, then the remaining balance is invoiced.\n- credit_only: only credits from the previous billing period are generated and applied. No invoices are generated for the subscription.\nThis is the default and most common settlement mode.',
+      title: 'Settlement mode',
+      readOnly: true,
+    }),
+    alignment: SubscriptionAlignmentSchema.exactOptional().openapi({
+      description: 'Alignment details enriched with the current billing period.',
+    }),
+    phases: z
+      .array(SubscriptionPhaseExpandedSchema)
+      .openapi({ description: 'The phases of the subscription.' }),
+  })
+  .openapi({
+    required: [
+      'id',
+      'name',
+      'createdAt',
+      'updatedAt',
+      'activeFrom',
+      'status',
+      'customerId',
+      'currency',
+      'costBasisMode',
+      'costBasisPins',
+      'billingCadence',
+      'billingAnchor',
+      'settlementMode',
+      'phases',
+    ],
+    description: 'Expanded subscription',
+  })
+  .openapi('SubscriptionExpanded')
+
+type SubscriptionChangeResponseBodyType = {
+  current: z.infer<typeof SubscriptionSchema>
+  next: z.infer<typeof SubscriptionExpandedSchema>
+}
+
+const PlanSubscriptionCreateSchema = z
+  .object({
+    alignment: AlignmentSchema.exactOptional().openapi({
+      description: 'What alignment settings the subscription should have.',
+    }),
+    metadata: MetadataSchema.exactOptional().openapi({
+      description: 'Arbitrary metadata associated with the subscription.',
+    }),
+    plan: PlanReferenceInputSchema.openapi({ description: 'The plan reference to change to.' }),
+    startingPhase: z
+      .string()
+      .min(1)
+      .exactOptional()
+      .openapi({
+        description:
+          'The key of the phase to start the subscription in.\nIf not provided, the subscription will start in the first phase of the plan.',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The name of the Subscription. If not provided the plan name is used.',
+      }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Description for the Subscription.' }),
+    settlementMode: BillingSettlementModeSchema.exactOptional().openapi({
+      description: 'The settlement mode of the subscription.',
+    }),
+    costBasisMode: SubscriptionCostBasisModeSchema.default('dynamic')
+      .exactOptional()
+      .openapi({
+        description:
+          'Controls how custom-currency cost bases are selected for the new subscription.',
+      }),
+    timing: SubscriptionTimingSchema.default('immediate')
+      .exactOptional()
+      .openapi({
+        description:
+          'Timing configuration for the change, when the change should take effect.\nThe default is immediate.',
+      }),
+    customerId: z
+      .string()
+      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
+      .exactOptional()
+      .openapi({
+        description:
+          'The ID of the customer. Provide either the key or ID. Has presedence over the key.',
+        example: '01G65Z755AFWAKHE12NY0CQ9FH',
+      }),
+    customerKey: z
+      .string()
+      .min(1)
+      .max(256)
+      .exactOptional()
+      .openapi({ description: 'The key of the customer. Provide either the key or ID.' }),
+    billingAnchor: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'The billing anchor of the subscription. The provided date will be normalized according to the billing cadence to the nearest recurrence before start time. If not provided, the subscription start time will be used.',
+        example: '2023-01-01T01:01:01.001Z',
+      }),
+    billingStartsAt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          "When billing starts for the subscription. Nothing is billed for service before this time, while access,\nentitlements and metering start with the subscription. Use it when the time before was already billed elsewhere,\nfor example when importing a subscription from another billing system.\n\nIt cannot be before the start of the subscription and cannot be changed later. On subscriptions billed through\ninvoice lines it must be the start of a billing period. If not provided, billing starts with the subscription.\n\nWhen billing starts inside a billing period, we recommend enabling price pro-rating (`prorate_prices`) on the\nplan. Without it that billing period's flat fees are billed in full.",
+        example: '2023-01-01T01:01:01.001Z',
+      }),
+  })
+  .openapi({
+    required: ['plan'],
+    description: 'Create subscription based on plan.',
+    title: 'Create from plan',
+  })
+  .openapi('PlanSubscriptionCreate')
+
+const CustomSubscriptionCreateSchema: z.ZodType<CustomSubscriptionCreateType> = z
+  .object({
+    costBasisMode: SubscriptionCostBasisModeSchema.default('dynamic')
+      .exactOptional()
+      .openapi({
+        description:
+          'Controls how custom-currency cost bases are selected for the new subscription.',
+      }),
+    customPlan: CustomPlanInputSchema.openapi({
+      description: 'The custom plan description which defines the Subscription.',
+    }),
+    timing: SubscriptionTimingSchema.default('immediate')
+      .exactOptional()
+      .openapi({
+        description:
+          'Timing configuration for the change, when the change should take effect.\nThe default is immediate.',
+      }),
+    customerId: z
+      .string()
+      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
+      .exactOptional()
+      .openapi({
+        description:
+          'The ID of the customer. Provide either the key or ID. Has presedence over the key.',
+        example: '01G65Z755AFWAKHE12NY0CQ9FH',
+      }),
+    customerKey: z
+      .string()
+      .min(1)
+      .max(256)
+      .exactOptional()
+      .openapi({ description: 'The key of the customer. Provide either the key or ID.' }),
+    billingAnchor: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'The billing anchor of the subscription. The provided date will be normalized according to the billing cadence to the nearest recurrence before start time. If not provided, the subscription start time will be used.',
+        example: '2023-01-01T01:01:01.001Z',
+      }),
+    billingStartsAt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          "When billing starts for the subscription. Nothing is billed for service before this time, while access,\nentitlements and metering start with the subscription. Use it when the time before was already billed elsewhere,\nfor example when importing a subscription from another billing system.\n\nIt cannot be before the start of the subscription and cannot be changed later. On subscriptions billed through\ninvoice lines it must be the start of a billing period. If not provided, billing starts with the subscription.\n\nWhen billing starts inside a billing period, we recommend enabling price pro-rating (`prorate_prices`) on the\nplan. Without it that billing period's flat fees are billed in full.",
+        example: '2023-01-01T01:01:01.001Z',
+      }),
+  })
+  .openapi({
+    required: ['customPlan'],
+    description: 'Create a custom subscription.',
+    title: 'Create custom',
+  })
+  .openapi('CustomSubscriptionCreate')
+
+type SubscriptionCreateType =
+  | z.infer<typeof PlanSubscriptionCreateSchema>
+  | z.infer<typeof CustomSubscriptionCreateSchema>
+
+const EditSubscriptionAddItemSchema = z
+  .object({ op: z.literal('add_item'), phaseKey: z.string(), rateCard: RateCardSchema })
+  .openapi({ required: ['op', 'phaseKey', 'rateCard'], description: 'Add a new item to a phase.' })
+  .openapi('EditSubscriptionAddItem')
+
+const EditSubscriptionRemoveItemSchema = z
+  .object({ op: z.literal('remove_item'), phaseKey: z.string(), itemKey: z.string() })
+  .openapi({ required: ['op', 'phaseKey', 'itemKey'], description: 'Remove an item from a phase.' })
+  .openapi('EditSubscriptionRemoveItem')
+
+const SubscriptionPhaseCreateSchema = z
+  .object({
+    startAfter: z.iso
+      .duration()
+      .nullable()
+      .openapi({
+        description:
+          'Interval after the subscription starts to transition to the phase.\nWhen null, the phase starts immediately after the subscription starts.',
+        title: 'Start after',
+        example: 'P1Y',
+      }),
+    duration: z.iso
+      .duration()
+      .exactOptional()
+      .openapi({
+        description:
+          'The intended duration of the new phase.\nDuration is required when the phase will not be the last phase.',
+        title: 'Duration',
+        example: 'P1M',
+      }),
+    discounts: DiscountsSchema.exactOptional().openapi({
+      description: 'The discounts on the plan.',
+      title: 'Discounts',
+    }),
+    key: z
+      .string()
+      .regex(/^[a-z0-9]+(?:_[a-z0-9]+)*$/)
+      .min(1)
+      .max(64)
+      .openapi({ description: 'A locally unique identifier for the phase.' }),
+    name: z.string().openapi({ description: 'The name of the phase.' }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The description of the phase.' }),
+  })
+  .openapi({
+    required: ['startAfter', 'key', 'name'],
+    description: 'Subscription phase create input.',
+  })
+  .openapi('SubscriptionPhaseCreate')
+
+const EditSubscriptionAddPhaseSchema = z
+  .object({ op: z.literal('add_phase'), phase: SubscriptionPhaseCreateSchema })
+  .openapi({ required: ['op', 'phase'], description: 'Add a new phase' })
+  .openapi('EditSubscriptionAddPhase')
+
+const RemovePhaseShiftingSchema = z
+  .enum(['next', 'prev'])
+  .openapi({ description: 'The direction of the phase shift when a phase is removed.' })
+  .openapi('RemovePhaseShifting')
+
+const EditSubscriptionRemovePhaseSchema = z
+  .object({ op: z.literal('remove_phase'), phaseKey: z.string(), shift: RemovePhaseShiftingSchema })
+  .openapi({ required: ['op', 'phaseKey', 'shift'], description: 'Remove a phase' })
+  .openapi('EditSubscriptionRemovePhase')
+
+const EditSubscriptionStretchPhaseSchema = z
+  .object({ op: z.literal('stretch_phase'), phaseKey: z.string(), extendBy: z.iso.duration() })
+  .openapi({ required: ['op', 'phaseKey', 'extendBy'], description: 'Stretch a phase' })
+  .openapi('EditSubscriptionStretchPhase')
+
+const EditSubscriptionUnscheduleEditSchema = z
+  .object({ op: z.literal('unschedule_edit') })
+  .openapi({ required: ['op'], description: 'Unschedules any edits from the current phase.' })
+  .openapi('EditSubscriptionUnscheduleEdit')
+
+const SubscriptionEditOperationSchema = z
+  .discriminatedUnion('op', [
+    EditSubscriptionAddItemSchema,
+    EditSubscriptionRemoveItemSchema,
+    EditSubscriptionAddPhaseSchema,
+    EditSubscriptionRemovePhaseSchema,
+    EditSubscriptionStretchPhaseSchema,
+    EditSubscriptionUnscheduleEditSchema,
+  ])
+  .openapi({
+    discriminator: {
+      propertyName: 'op',
+      mapping: {
+        add_item: '#/components/schemas/EditSubscriptionAddItem',
+        remove_item: '#/components/schemas/EditSubscriptionRemoveItem',
+        add_phase: '#/components/schemas/EditSubscriptionAddPhase',
+        remove_phase: '#/components/schemas/EditSubscriptionRemovePhase',
+        stretch_phase: '#/components/schemas/EditSubscriptionStretchPhase',
+        unschedule_edit: '#/components/schemas/EditSubscriptionUnscheduleEdit',
+      },
+    },
+    description: 'The operation to be performed on the subscription.',
+  })
+  .openapi('SubscriptionEditOperation')
+
+type SubscriptionEditType = {
+  customizations: z.infer<typeof SubscriptionEditOperationSchema>[]
+  timing?: z.infer<typeof SubscriptionTimingSchema>
+}
+
+const AddonCreateSchema = z
+  .object({
+    name: z
+      .string()
+      .min(1)
+      .max(256)
+      .openapi({
+        description: 'Human-readable name for the resource. Between 1 and 256 characters.',
+        title: 'Display name',
+      }),
+    description: z
+      .string()
+      .max(1024)
+      .exactOptional()
+      .openapi({
+        description: 'Optional description of the resource. Maximum 1024 characters.',
+        title: 'Description',
+      }),
+    metadata: MetadataSchema.nullable()
+      .exactOptional()
+      .openapi({ description: 'Additional metadata for the resource.', title: 'Metadata' }),
+    key: z
+      .string()
+      .regex(/^[a-z0-9]+(?:_[a-z0-9]+)*$/)
+      .min(1)
+      .max(64)
+      .openapi({ description: 'A semi-unique identifier for the resource.', title: 'Key' }),
+    instanceType: AddonInstanceTypeSchema.openapi({
+      description: 'The instanceType of the add-ons. Can be "single" or "multiple".',
+      title: 'InstanceType',
+    }),
+    currency: CurrencyCodeSchema.default('USD').openapi({
+      description: 'The currency code of the add-on.',
+      title: 'Currency',
+    }),
+    rateCards: z
+      .array(RateCardSchema)
+      .openapi({ description: 'The rate cards of the add-on.', title: 'Rate cards' }),
+  })
+  .openapi({
+    required: ['name', 'key', 'instanceType', 'currency', 'rateCards'],
+    description: 'Resource create operation model.',
+  })
+  .openapi('AddonCreate')
+
+const AddonOrderBySchema = z
+  .enum(['id', 'key', 'version', 'created_at', 'updated_at'])
+  .openapi({ description: 'Order by options for add-ons.' })
+  .openapi('AddonOrderBy')
+
+const AddonPaginatedResponseSchema: z.ZodType<AddonPaginatedResponseType> = z
   .object({
     totalCount: z.int().openapi({ description: 'The total number of items.', example: 500 }),
     page: z.int().openapi({ description: 'The page index.', example: 1 }),
     pageSize: z
       .int()
       .openapi({ description: 'The maximum number of items per page.', example: 100 }),
-    items: z
-      .array(BillingProfileCustomerOverrideWithDetailsSchema)
-      .openapi({ description: 'The items in the current page.' }),
+    items: z.array(AddonSchema).openapi({ description: 'The items in the current page.' }),
   })
   .openapi({
     required: ['totalCount', 'page', 'pageSize', 'items'],
     description: 'Paginated response',
   })
-  .openapi('BillingProfileCustomerOverrideWithDetailsPaginatedResponse')
+  .openapi('AddonPaginatedResponse')
+
+const AddonReplaceUpdateSchema = z
+  .object({
+    name: z
+      .string()
+      .min(1)
+      .max(256)
+      .openapi({
+        description: 'Human-readable name for the resource. Between 1 and 256 characters.',
+        title: 'Display name',
+      }),
+    description: z
+      .string()
+      .max(1024)
+      .exactOptional()
+      .openapi({
+        description: 'Optional description of the resource. Maximum 1024 characters.',
+        title: 'Description',
+      }),
+    metadata: MetadataSchema.nullable()
+      .exactOptional()
+      .openapi({ description: 'Additional metadata for the resource.', title: 'Metadata' }),
+    instanceType: AddonInstanceTypeSchema.openapi({
+      description: 'The instanceType of the add-ons. Can be "single" or "multiple".',
+      title: 'InstanceType',
+    }),
+    rateCards: z
+      .array(RateCardSchema)
+      .openapi({ description: 'The rate cards of the add-on.', title: 'Rate cards' }),
+  })
+  .openapi({
+    required: ['name', 'instanceType', 'rateCards'],
+    description: 'Resource update operation model.',
+  })
+  .openapi('AddonReplaceUpdate')
+
+const AppBaseSchema = z
+  .object({
+    id: z
+      .string()
+      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
+      .openapi({
+        description: 'A unique identifier for the resource.',
+        example: '01G65Z755AFWAKHE12NY0CQ9FH',
+        title: 'ID',
+        readOnly: true,
+      }),
+    name: z
+      .string()
+      .min(1)
+      .max(256)
+      .openapi({
+        description: 'Human-readable name for the resource. Between 1 and 256 characters.',
+        title: 'Display name',
+      }),
+    description: z
+      .string()
+      .max(1024)
+      .exactOptional()
+      .openapi({
+        description: 'Optional description of the resource. Maximum 1024 characters.',
+        title: 'Description',
+      }),
+    metadata: MetadataSchema.nullable()
+      .exactOptional()
+      .openapi({ description: 'Additional metadata for the resource.', title: 'Metadata' }),
+    createdAt: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'Timestamp of when the resource was created.',
+        example: '2024-01-01T01:01:01.001Z',
+        title: 'Creation Time',
+        readOnly: true,
+      }),
+    updatedAt: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'Timestamp of when the resource was last updated.',
+        example: '2024-01-01T01:01:01.001Z',
+        title: 'Last Update Time',
+        readOnly: true,
+      }),
+    deletedAt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'Timestamp of when the resource was permanently deleted.',
+        example: '2024-01-01T01:01:01.001Z',
+        title: 'Deletion Time',
+        readOnly: true,
+      }),
+    listing: MarketplaceListingSchema.openapi({
+      description: 'The marketplace listing that this installed app is based on.',
+      readOnly: true,
+    }),
+    status: AppStatusSchema.openapi({
+      description: 'Status of the app connection.',
+      readOnly: true,
+    }),
+  })
+  .openapi({
+    required: ['id', 'name', 'createdAt', 'updatedAt', 'listing', 'status'],
+    description:
+      'Abstract base model for installed apps.\n\nRepresent an app installed to the organization.\nThis is an actual instance, with its own configuration and credentials.',
+  })
+  .openapi('AppBase')
+
+const AppPaginatedResponseSchema = z
+  .object({
+    totalCount: z.int().openapi({ description: 'The total number of items.', example: 500 }),
+    page: z.int().openapi({ description: 'The page index.', example: 1 }),
+    pageSize: z
+      .int()
+      .openapi({ description: 'The maximum number of items per page.', example: 100 }),
+    items: z.array(AppSchema).openapi({ description: 'The items in the current page.' }),
+  })
+  .openapi({
+    required: ['totalCount', 'page', 'pageSize', 'items'],
+    description: 'Paginated response',
+  })
+  .openapi('AppPaginatedResponse')
+
+const StripeAppReadOrCreateOrUpdateOrDeleteOrQuerySchema = z
+  .object({
+    id: z
+      .string()
+      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
+      .openapi({
+        description: 'A unique identifier for the resource.',
+        example: '01G65Z755AFWAKHE12NY0CQ9FH',
+        title: 'ID',
+        readOnly: true,
+      }),
+    name: z
+      .string()
+      .min(1)
+      .max(256)
+      .openapi({
+        description: 'Human-readable name for the resource. Between 1 and 256 characters.',
+        title: 'Display name',
+      }),
+    description: z
+      .string()
+      .max(1024)
+      .exactOptional()
+      .openapi({
+        description: 'Optional description of the resource. Maximum 1024 characters.',
+        title: 'Description',
+      }),
+    metadata: MetadataSchema.nullable()
+      .exactOptional()
+      .openapi({ description: 'Additional metadata for the resource.', title: 'Metadata' }),
+    createdAt: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'Timestamp of when the resource was created.',
+        example: '2024-01-01T01:01:01.001Z',
+        title: 'Creation Time',
+        readOnly: true,
+      }),
+    updatedAt: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'Timestamp of when the resource was last updated.',
+        example: '2024-01-01T01:01:01.001Z',
+        title: 'Last Update Time',
+        readOnly: true,
+      }),
+    deletedAt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'Timestamp of when the resource was permanently deleted.',
+        example: '2024-01-01T01:01:01.001Z',
+        title: 'Deletion Time',
+        readOnly: true,
+      }),
+    listing: MarketplaceListingSchema.openapi({
+      description: 'The marketplace listing that this installed app is based on.',
+      readOnly: true,
+    }),
+    status: AppStatusSchema.openapi({
+      description: 'Status of the app connection.',
+      readOnly: true,
+    }),
+    type: z.literal('stripe').openapi({ description: "The app's type is Stripe." }),
+    stripeAccountId: z.string().openapi({ description: 'The Stripe account ID.', readOnly: true }),
+    livemode: z
+      .boolean()
+      .openapi({ description: 'Livemode, true if the app is in production mode.', readOnly: true }),
+    maskedAPIKey: z
+      .string()
+      .openapi({
+        description: 'The masked API key.\nOnly shows the first 8 and last 3 characters.',
+        readOnly: true,
+      }),
+    secretAPIKey: z.string().exactOptional().openapi({ description: 'The Stripe API key.' }),
+  })
+  .openapi({
+    required: [
+      'id',
+      'name',
+      'createdAt',
+      'updatedAt',
+      'listing',
+      'status',
+      'type',
+      'stripeAccountId',
+      'livemode',
+      'maskedAPIKey',
+    ],
+    description: 'A installed Stripe app object.',
+    example: {
+      id: '01G65Z755AFWAKHE12NY0CQ9FH',
+      type: 'stripe',
+      name: 'Stripe',
+      status: 'ready',
+      listing: {
+        type: 'stripe',
+        name: 'Stripe',
+        description: 'Stripe integration allows you to collect payments with Stripe.',
+        capabilities: [
+          {
+            type: 'calculateTax',
+            key: 'stripe_calculate_tax',
+            name: 'Calculate Tax',
+            description: 'Stripe Tax calculates tax portion of the invoices.',
+          },
+          {
+            type: 'invoiceCustomers',
+            key: 'stripe_invoice_customers',
+            name: 'Invoice Customers',
+            description: 'Stripe invoices customers with due amount.',
+          },
+          {
+            type: 'collectPayments',
+            key: 'stripe_collect_payments',
+            name: 'Collect Payments',
+            description:
+              "Stripe payments collects outstanding revenue with Stripe customer's default payment method.",
+          },
+        ],
+        installMethods: ['with_oauth2', 'with_api_key'],
+      },
+      createdAt: '2024-01-01T01:01:01.001Z',
+      updatedAt: '2024-01-01T01:01:01.001Z',
+      stripeAccountId: 'acct_123456789',
+      livemode: true,
+      maskedAPIKey: 'sk_live_************abc',
+    },
+  })
+  .openapi('StripeAppReadOrCreateOrUpdateOrDeleteOrQuery')
+
+const AppReadOrCreateOrUpdateOrDeleteOrQuerySchema = z
+  .discriminatedUnion('type', [
+    StripeAppReadOrCreateOrUpdateOrDeleteOrQuerySchema,
+    SandboxAppSchema,
+    CustomInvoicingAppSchema,
+  ])
+  .openapi({
+    discriminator: {
+      propertyName: 'type',
+      mapping: {
+        stripe: '#/components/schemas/StripeAppReadOrCreateOrUpdateOrDeleteOrQuery',
+        sandbox: '#/components/schemas/SandboxApp',
+        custom_invoicing: '#/components/schemas/CustomInvoicingApp',
+      },
+    },
+    description: 'App.\nOne of: stripe',
+  })
+  .openapi('AppReadOrCreateOrUpdateOrDeleteOrQuery')
+
+const StripeAppReplaceUpdateSchema = z
+  .object({
+    name: z
+      .string()
+      .min(1)
+      .max(256)
+      .openapi({
+        description: 'Human-readable name for the resource. Between 1 and 256 characters.',
+        title: 'Display name',
+      }),
+    description: z
+      .string()
+      .max(1024)
+      .exactOptional()
+      .openapi({
+        description: 'Optional description of the resource. Maximum 1024 characters.',
+        title: 'Description',
+      }),
+    metadata: MetadataSchema.nullable()
+      .exactOptional()
+      .openapi({ description: 'Additional metadata for the resource.', title: 'Metadata' }),
+    type: z.literal('stripe').openapi({ description: "The app's type is Stripe." }),
+    secretAPIKey: z.string().exactOptional().openapi({ description: 'The Stripe API key.' }),
+  })
+  .openapi({ required: ['name', 'type'], description: 'Resource update operation model.' })
+  .openapi('StripeAppReplaceUpdate')
+
+const SandboxAppReplaceUpdateSchema = z
+  .object({
+    name: z
+      .string()
+      .min(1)
+      .max(256)
+      .openapi({
+        description: 'Human-readable name for the resource. Between 1 and 256 characters.',
+        title: 'Display name',
+      }),
+    description: z
+      .string()
+      .max(1024)
+      .exactOptional()
+      .openapi({
+        description: 'Optional description of the resource. Maximum 1024 characters.',
+        title: 'Description',
+      }),
+    metadata: MetadataSchema.nullable()
+      .exactOptional()
+      .openapi({ description: 'Additional metadata for the resource.', title: 'Metadata' }),
+    type: z.literal('sandbox').openapi({ description: "The app's type is Sandbox." }),
+  })
+  .openapi({ required: ['name', 'type'], description: 'Resource update operation model.' })
+  .openapi('SandboxAppReplaceUpdate')
+
+const CustomInvoicingAppReplaceUpdateSchema = z
+  .object({
+    name: z
+      .string()
+      .min(1)
+      .max(256)
+      .openapi({
+        description: 'Human-readable name for the resource. Between 1 and 256 characters.',
+        title: 'Display name',
+      }),
+    description: z
+      .string()
+      .max(1024)
+      .exactOptional()
+      .openapi({
+        description: 'Optional description of the resource. Maximum 1024 characters.',
+        title: 'Description',
+      }),
+    metadata: MetadataSchema.nullable()
+      .exactOptional()
+      .openapi({ description: 'Additional metadata for the resource.', title: 'Metadata' }),
+    type: z
+      .literal('custom_invoicing')
+      .openapi({ description: "The app's type is CustomInvoicing." }),
+    enableDraftSyncHook: z
+      .boolean()
+      .openapi({
+        description:
+          'Enable draft.sync hook.\n\nIf the hook is not enabled, the invoice will be progressed to the next state automatically.',
+      }),
+    enableIssuingSyncHook: z
+      .boolean()
+      .openapi({
+        description:
+          'Enable issuing.sync hook.\n\nIf the hook is not enabled, the invoice will be progressed to the next state automatically.',
+      }),
+  })
+  .openapi({
+    required: ['name', 'type', 'enableDraftSyncHook', 'enableIssuingSyncHook'],
+    description: 'Resource update operation model.',
+  })
+  .openapi('CustomInvoicingAppReplaceUpdate')
+
+const AppReplaceUpdateSchema = z
+  .discriminatedUnion('type', [
+    StripeAppReplaceUpdateSchema,
+    SandboxAppReplaceUpdateSchema,
+    CustomInvoicingAppReplaceUpdateSchema,
+  ])
+  .openapi({
+    discriminator: {
+      propertyName: 'type',
+      mapping: {
+        stripe: '#/components/schemas/StripeAppReplaceUpdate',
+        sandbox: '#/components/schemas/SandboxAppReplaceUpdate',
+        custom_invoicing: '#/components/schemas/CustomInvoicingAppReplaceUpdate',
+      },
+    },
+    description: 'App ReplaceUpdate Model',
+  })
+  .openapi('AppReplaceUpdate')
+
+const UnexpectedProblemResponseSchema = z
+  .object({
+    type: z
+      .url()
+      .default('about:blank')
+      .openapi({
+        description: 'Type contains a URI that identifies the problem type.',
+        example: 'about:blank',
+      }),
+    title: z
+      .string()
+      .openapi({
+        description: 'A a short, human-readable summary of the problem type.',
+        example: 'Bad Request',
+      }),
+    status: z
+      .int()
+      .min(400)
+      .max(599)
+      .exactOptional()
+      .openapi({
+        description:
+          'The HTTP status code generated by the origin server for this occurrence of the problem.',
+        example: 400,
+      }),
+    detail: z
+      .string()
+      .openapi({
+        description: 'A human-readable explanation specific to this occurrence of the problem.',
+        example: 'The request body must be a JSON object.',
+      }),
+    instance: z
+      .url()
+      .openapi({
+        description: 'A URI reference that identifies the specific occurrence of the problem.',
+        example: 'urn:request:local/JMOlctsKV8-000001',
+      }),
+    extensions: z
+      .record(z.string(), z.any())
+      .exactOptional()
+      .openapi({
+        description: 'Additional properties specific to the problem type may be present.',
+        example: {
+          validationErrors: [{ code: 'validation_error', message: 'Validation error' }],
+          otherAttribute: 'otherValue',
+        },
+      }),
+  })
+  .catchall(z.any())
+  .openapi({
+    required: ['type', 'title', 'detail', 'instance'],
+    description:
+      'A Problem Details object (RFC 7807).\nAdditional properties specific to the problem type may be present.',
+    'x-go-type-import': { path: 'github.com/openmeterio/openmeter/pkg/models' },
+    'x-go-type': 'models.StatusProblem',
+  })
+  .openapi('UnexpectedProblemResponse')
+
+const BadRequestProblemResponseSchema = UnexpectedProblemResponseSchema.openapi({
+  description:
+    'The server cannot or will not process the request due to something that is perceived to be a client error (e.g., malformed request syntax, invalid request message framing, or deceptive request routing).',
+}).openapi('BadRequestProblemResponse')
+
+const BalanceHistoryWindowSchema = z
+  .object({
+    period: PeriodSchema,
+    usage: z
+      .float64()
+      .openapi({
+        description: 'The total usage of the feature in the period.',
+        example: 100,
+        readOnly: true,
+      }),
+    balanceAtStart: z
+      .float64()
+      .openapi({
+        description: 'The entitlement balance at the start of the period.',
+        example: 100,
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    required: ['period', 'usage', 'balanceAtStart'],
+    description: 'The balance history window.',
+  })
+  .openapi('BalanceHistoryWindow')
+
+const BillingCollectionAlignmentSchema = z
+  .enum(['subscription', 'anchored'])
+  .openapi({
+    description:
+      'BillingCollectionAlignment specifies when the pending line items should be collected into\nan invoice.',
+    title: 'Collection alignment',
+  })
+  .openapi('BillingCollectionAlignment')
+
+const BillingDiscountMetadataSchema = z
+  .object({
+    correlationId: z
+      .string()
+      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
+      .exactOptional()
+      .openapi({
+        description:
+          'Correlation ID for the discount.\n\nThis is used to link discounts across different invoices (progressive billing use case).\n\nIf not provided, the invoicing engine will auto-generate one. When editing an invoice line,\nplease make sure to keep the same correlation ID of the discount or in progressive billing\nsetups the discount amounts might be incorrect.',
+        example: '01G65Z755AFWAKHE12NY0CQ9FH',
+      }),
+  })
+  .openapi({ description: 'Billing specific fields for product catalog discounts.', required: [] })
+  .openapi('BillingDiscountMetadata')
+
+const BillingProfileAppsCreateSchema = z
+  .object({
+    tax: z
+      .string()
+      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
+      .openapi({
+        description: 'The tax app used for this workflow',
+        example: '01G65Z755AFWAKHE12NY0CQ9FH',
+        'x-go-type': 'string',
+      }),
+    invoicing: z
+      .string()
+      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
+      .openapi({
+        description: 'The invoicing app used for this workflow',
+        example: '01G65Z755AFWAKHE12NY0CQ9FH',
+        'x-go-type': 'string',
+      }),
+    payment: z
+      .string()
+      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
+      .openapi({
+        description: 'The payment app used for this workflow',
+        example: '01G65Z755AFWAKHE12NY0CQ9FH',
+        'x-go-type': 'string',
+      }),
+  })
+  .openapi({
+    required: ['tax', 'invoicing', 'payment'],
+    description:
+      "BillingProfileAppsCreate represents the input for creating a billing profile's apps",
+  })
+  .openapi('BillingProfileAppsCreate')
+
+const BillingWorkflowCreateSchema = z
+  .object({
+    collection: BillingWorkflowCollectionSettingsSchema.exactOptional().openapi({
+      description: 'The collection settings for this workflow',
+    }),
+    invoicing: BillingWorkflowInvoicingSettingsSchema.exactOptional().openapi({
+      description: 'The invoicing settings for this workflow',
+    }),
+    payment: BillingWorkflowPaymentSettingsSchema.exactOptional().openapi({
+      description: 'The payment settings for this workflow',
+    }),
+    tax: BillingWorkflowTaxSettingsSchema.exactOptional().openapi({
+      description: 'The tax settings for this workflow',
+    }),
+  })
+  .openapi({ description: 'Resource create operation model.', required: [] })
+  .openapi('BillingWorkflowCreate')
+
+const BillingProfileCreateSchema = z
+  .object({
+    name: z
+      .string()
+      .min(1)
+      .max(256)
+      .openapi({
+        description: 'Human-readable name for the resource. Between 1 and 256 characters.',
+        title: 'Display name',
+      }),
+    description: z
+      .string()
+      .max(1024)
+      .exactOptional()
+      .openapi({
+        description: 'Optional description of the resource. Maximum 1024 characters.',
+        title: 'Description',
+      }),
+    metadata: MetadataSchema.nullable()
+      .exactOptional()
+      .openapi({ description: 'Additional metadata for the resource.', title: 'Metadata' }),
+    supplier: BillingPartySchema.openapi({
+      description:
+        'The name and contact information for the supplier this billing profile represents',
+    }),
+    default: z.boolean().openapi({ description: 'Is this the default profile?' }),
+    workflow: BillingWorkflowCreateSchema.openapi({
+      description: 'The billing workflow settings for this profile.',
+    }),
+    apps: BillingProfileAppsCreateSchema.openapi({
+      description: 'The apps used by this billing profile.',
+    }),
+  })
+  .openapi({
+    required: ['name', 'supplier', 'default', 'workflow', 'apps'],
+    description: 'BillingProfileCreate represents the input for creating a billing profile',
+  })
+  .openapi('BillingProfileCreate')
+
+const BillingProfileCustomerOverrideCreateSchema = z
+  .object({
+    billingProfileId: z
+      .string()
+      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
+      .exactOptional()
+      .openapi({
+        description:
+          'The billing profile this override is associated with.\n\nIf not provided, the default billing profile is chosen if available.',
+        example: '01G65Z755AFWAKHE12NY0CQ9FH',
+      }),
+  })
+  .openapi({
+    description: 'Payload for creating a new or updating an existing customer override.',
+    required: [],
+  })
+  .openapi('BillingProfileCustomerOverrideCreate')
+
+const BillingProfileCustomerOverrideExpandSchema = z
+  .enum(['apps', 'customer'])
+  .openapi({ description: 'CustomerOverrideExpand specifies the parts of the profile to expand.' })
+  .openapi('BillingProfileCustomerOverrideExpand')
+
+const BillingProfileCustomerOverrideOrderBySchema = z
+  .enum(['customerId', 'customerName', 'customerKey', 'customerPrimaryEmail', 'customerCreatedAt'])
+  .openapi({ description: 'Order by options for customers.' })
+  .openapi('BillingProfileCustomerOverrideOrderBy')
+
+const BillingProfileCustomerOverrideWithDetailsPaginatedResponseSchema: z.ZodType<BillingProfileCustomerOverrideWithDetailsPaginatedResponseType> =
+  z
+    .object({
+      totalCount: z.int().openapi({ description: 'The total number of items.', example: 500 }),
+      page: z.int().openapi({ description: 'The page index.', example: 1 }),
+      pageSize: z
+        .int()
+        .openapi({ description: 'The maximum number of items per page.', example: 100 }),
+      items: z
+        .array(BillingProfileCustomerOverrideWithDetailsSchema)
+        .openapi({ description: 'The items in the current page.' }),
+    })
+    .openapi({
+      required: ['totalCount', 'page', 'pageSize', 'items'],
+      description: 'Paginated response',
+    })
+    .openapi('BillingProfileCustomerOverrideWithDetailsPaginatedResponse')
 
 const BillingProfileCustomerWorkflowOverrideSchema = z
   .object({
@@ -3682,7 +8013,7 @@ const BillingProfileOrderBySchema = z
   .openapi({ description: 'BillingProfileOrderBy specifies the ordering options for profiles' })
   .openapi('BillingProfileOrderBy')
 
-const BillingProfilePaginatedResponseSchema = z
+const BillingProfilePaginatedResponseSchema: z.ZodType<BillingProfilePaginatedResponseType> = z
   .object({
     totalCount: z.int().openapi({ description: 'The total number of items.', example: 500 }),
     page: z.int().openapi({ description: 'The page index.', example: 1 }),
@@ -4239,81 +8570,6 @@ const CreateStripeCustomerPortalSessionParamsSchema = z
   .openapi({ description: 'Stripe customer portal request params.', required: [] })
   .openapi('CreateStripeCustomerPortalSessionParams')
 
-const InvoiceDocumentRefTypeSchema = z
-  .literal('credit_note_original_invoice')
-  .openapi({
-    description: 'InvoiceDocumentRefType defines the type of document that is being referenced.',
-  })
-  .openapi('InvoiceDocumentRefType')
-
-const InvoiceGenericDocumentRefSchema = z
-  .object({
-    type: InvoiceDocumentRefTypeSchema.openapi({
-      description: 'Type of the document referenced.',
-      readOnly: true,
-    }),
-    reason: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Human readable description on why this reference is here or needs to be used.',
-        readOnly: true,
-      }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Additional details about the document.', readOnly: true }),
-  })
-  .openapi({
-    required: ['type'],
-    description:
-      'Omitted fields:\nperiod: Tax period in which the referred document had an effect required by some tax regimes and formats.\nstamps: Seals of approval from other organisations that may need to be listed.\next: \tExtensions for additional codes that may be required.',
-    title:
-      "InvoiceGenericDocumentRef is used to describe an existing document or a specific part of it's contents.",
-  })
-  .openapi('InvoiceGenericDocumentRef')
-
-const InvoiceNumberSchema = z
-  .string()
-  .min(1)
-  .max(256)
-  .openapi({
-    description:
-      'InvoiceNumber is a unique identifier for the invoice, generated by the\ninvoicing app.\n\nThe uniqueness depends on a lot of factors:\n- app setting (unique per app or unique per customer)\n- multiple app scenarios (multiple apps generating invoices with the same prefix)',
-    example: 'INV-2024-01-01-01',
-  })
-  .openapi('InvoiceNumber')
-
-const CreditNoteOriginalInvoiceRefSchema = InvoiceGenericDocumentRefSchema.and(
-  z
-    .object({
-      type: z
-        .literal('credit_note_original_invoice')
-        .openapi({ description: 'Type of the invoice.' }),
-      issuedAt: z.iso
-        .datetime({ offset: true })
-        .exactOptional()
-        .openapi({
-          description: 'IssueAt reflects the time the document was issued.',
-          example: '2023-01-01T01:01:01.001Z',
-          readOnly: true,
-        }),
-      number: InvoiceNumberSchema.exactOptional().openapi({
-        description: '(Serial) Number of the referenced document.',
-        readOnly: true,
-      }),
-      url: z.url().openapi({ description: 'Link to the source document.', readOnly: true }),
-    })
-    .openapi({ required: ['type', 'url'] }),
-)
-  .openapi({
-    required: ['type', 'url'],
-    description:
-      'CreditNoteOriginalInvoiceRef is used to reference the original invoice that a credit note is based on.',
-  })
-  .openapi('CreditNoteOriginalInvoiceRef')
-
 const CurrencySchema = z
   .object({
     code: CurrencyCodeSchema.openapi({ description: 'The currency ISO code.' }),
@@ -4327,12 +8583,31 @@ const CurrencySchema = z
   })
   .openapi('Currency')
 
-const CurrencyCodeOrCustomSchema = z
-  .string()
-  .min(3)
-  .max(24)
-  .openapi({ description: 'Fiat or managed custom currency code.' })
-  .openapi('CurrencyCodeOrCustom')
+const CustomInvoicingCustomerAppDataSchema = z
+  .object({
+    app: CustomInvoicingAppSchema.exactOptional().openapi({
+      description: 'The installed custom invoicing app this data belongs to.',
+      readOnly: true,
+    }),
+    id: z
+      .string()
+      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
+      .exactOptional()
+      .openapi({
+        description:
+          'The app ID.\nIf not provided, it will use the global default for the app type.',
+        example: '01G65Z755AFWAKHE12NY0CQ9FH',
+        title: 'App ID',
+      }),
+    type: z
+      .literal('custom_invoicing')
+      .openapi({ description: 'The app name.', title: 'App Type' }),
+    metadata: MetadataSchema.exactOptional().openapi({
+      description: 'Metadata to be used by the custom invoicing provider.',
+    }),
+  })
+  .openapi({ required: ['type'], description: 'Custom Invoicing Customer App Data.' })
+  .openapi('CustomInvoicingCustomerAppData')
 
 const CustomInvoicingLineExternalIdMappingSchema = z
   .object({
@@ -4486,69 +8761,6 @@ const CustomInvoicingUpdatePaymentStatusRequestSchema = z
   })
   .openapi('CustomInvoicingUpdatePaymentStatusRequest')
 
-const EntitlementValueSchema = z
-  .object({
-    hasAccess: z
-      .boolean()
-      .openapi({
-        description:
-          'Whether the subject has access to the feature. Shared accross all entitlement types.',
-        example: true,
-        readOnly: true,
-      }),
-    balance: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description:
-          "Only available for metered entitlements. Metered entitlements are built around a balance calculation where feature usage is deducted from the issued grants. Balance represents the remaining balance of the entitlement, it's value never turns negative.",
-        example: 100,
-        readOnly: true,
-      }),
-    usage: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description:
-          'Only available for metered entitlements. Returns the total feature usage in the current period.',
-        example: 50,
-        readOnly: true,
-      }),
-    overage: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description:
-          "Only available for metered entitlements. Overage represents the usage that wasn't covered by grants, e.g. if the subject had a total feature usage of 100 in the period but they were only granted 80, there would be 20 overage.",
-        example: 0,
-        readOnly: true,
-      }),
-    totalAvailableGrantAmount: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description:
-          'Only available for metered entitlements. The summed amount of all grant active at query time PLUS the used amount of since inactive grants.',
-        example: 100,
-        readOnly: true,
-      }),
-    config: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Only available for static entitlements. The JSON parsable config of the entitlement.',
-        example: '{ key: "value" }',
-        readOnly: true,
-      }),
-  })
-  .openapi({
-    required: ['hasAccess'],
-    description:
-      'Entitlements are the core of OpenMeter access management. They define access to features for subjects. Entitlements can be metered, boolean, or static.',
-  })
-  .openapi('EntitlementValue')
-
 const CustomerAccessSchema = z
   .object({
     entitlements: z
@@ -4565,50 +8777,121 @@ const CustomerAccessSchema = z
   })
   .openapi('CustomerAccess')
 
-const CustomerAppDataSchema: z.ZodType<CustomerAppDataType> = z
-  .lazy(() =>
-    z
-      .discriminatedUnion('type', [
-        StripeCustomerAppDataSchema,
-        SandboxCustomerAppDataSchema,
-        CustomInvoicingCustomerAppDataSchema,
-      ])
+const StripeCustomerAppDataSchema = z
+  .object({
+    id: z
+      .string()
+      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
+      .exactOptional()
       .openapi({
-        discriminator: {
-          propertyName: 'type',
-          mapping: {
-            stripe: '#/components/schemas/StripeCustomerAppData',
-            sandbox: '#/components/schemas/SandboxCustomerAppData',
-            custom_invoicing: '#/components/schemas/CustomInvoicingCustomerAppData',
-          },
-        },
         description:
-          'CustomerAppData\nStores the app specific data for the customer.\nOne of: stripe, sandbox, custom_invoicing',
+          'The app ID.\nIf not provided, it will use the global default for the app type.',
+        example: '01G65Z755AFWAKHE12NY0CQ9FH',
+        title: 'App ID',
       }),
-  )
+    type: z.literal('stripe').openapi({ description: 'The app name.', title: 'App Type' }),
+    stripeCustomerId: z.string().openapi({ description: 'The Stripe customer ID.' }),
+    stripeDefaultPaymentMethodId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The Stripe default payment method ID.' }),
+    app: StripeAppSchema.exactOptional().openapi({
+      description: 'The installed stripe app this data belongs to.',
+      readOnly: true,
+    }),
+  })
+  .openapi({
+    required: ['type', 'stripeCustomerId'],
+    description: 'Stripe Customer App Data.',
+    example: { type: 'stripe', stripeCustomerId: 'cus_xxxxxxxxxxxxxx' },
+  })
+  .openapi('StripeCustomerAppData')
+
+const SandboxCustomerAppDataSchema = z
+  .object({
+    app: SandboxAppSchema.exactOptional().openapi({
+      description: 'The installed sandbox app this data belongs to.',
+      readOnly: true,
+    }),
+    id: z
+      .string()
+      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
+      .exactOptional()
+      .openapi({
+        description:
+          'The app ID.\nIf not provided, it will use the global default for the app type.',
+        example: '01G65Z755AFWAKHE12NY0CQ9FH',
+        title: 'App ID',
+      }),
+    type: z.literal('sandbox').openapi({ description: 'The app name.', title: 'App Type' }),
+  })
+  .openapi({ required: ['type'], description: 'Sandbox Customer App Data.' })
+  .openapi('SandboxCustomerAppData')
+
+const CustomerAppDataSchema = z
+  .discriminatedUnion('type', [
+    StripeCustomerAppDataSchema,
+    SandboxCustomerAppDataSchema,
+    CustomInvoicingCustomerAppDataSchema,
+  ])
+  .openapi({
+    discriminator: {
+      propertyName: 'type',
+      mapping: {
+        stripe: '#/components/schemas/StripeCustomerAppData',
+        sandbox: '#/components/schemas/SandboxCustomerAppData',
+        custom_invoicing: '#/components/schemas/CustomInvoicingCustomerAppData',
+      },
+    },
+    description:
+      'CustomerAppData\nStores the app specific data for the customer.\nOne of: stripe, sandbox, custom_invoicing',
+  })
   .openapi('CustomerAppData')
 
-const CustomerAppDataCreateOrUpdateItemSchema: z.ZodType<CustomerAppDataCreateOrUpdateItemType> = z
-  .lazy(() =>
-    z
-      .discriminatedUnion('type', [
-        StripeCustomerAppDataCreateOrUpdateItemSchema,
-        SandboxCustomerAppDataSchema,
-        CustomInvoicingCustomerAppDataSchema,
-      ])
+const StripeCustomerAppDataCreateOrUpdateItemSchema = z
+  .object({
+    id: z
+      .string()
+      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
+      .exactOptional()
       .openapi({
-        discriminator: {
-          propertyName: 'type',
-          mapping: {
-            stripe: '#/components/schemas/StripeCustomerAppDataCreateOrUpdateItem',
-            sandbox: '#/components/schemas/SandboxCustomerAppData',
-            custom_invoicing: '#/components/schemas/CustomInvoicingCustomerAppData',
-          },
-        },
         description:
-          'CustomerAppData\nStores the app specific data for the customer.\nOne of: stripe, sandbox, custom_invoicing',
+          'The app ID.\nIf not provided, it will use the global default for the app type.',
+        example: '01G65Z755AFWAKHE12NY0CQ9FH',
+        title: 'App ID',
       }),
-  )
+    type: z.literal('stripe').openapi({ description: 'The app name.', title: 'App Type' }),
+    stripeCustomerId: z.string().openapi({ description: 'The Stripe customer ID.' }),
+    stripeDefaultPaymentMethodId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The Stripe default payment method ID.' }),
+  })
+  .openapi({
+    required: ['type', 'stripeCustomerId'],
+    description: 'Stripe Customer App Data.',
+    example: { type: 'stripe', stripeCustomerId: 'cus_xxxxxxxxxxxxxx' },
+  })
+  .openapi('StripeCustomerAppDataCreateOrUpdateItem')
+
+const CustomerAppDataCreateOrUpdateItemSchema = z
+  .discriminatedUnion('type', [
+    StripeCustomerAppDataCreateOrUpdateItemSchema,
+    SandboxCustomerAppDataSchema,
+    CustomInvoicingCustomerAppDataSchema,
+  ])
+  .openapi({
+    discriminator: {
+      propertyName: 'type',
+      mapping: {
+        stripe: '#/components/schemas/StripeCustomerAppDataCreateOrUpdateItem',
+        sandbox: '#/components/schemas/SandboxCustomerAppData',
+        custom_invoicing: '#/components/schemas/CustomInvoicingCustomerAppData',
+      },
+    },
+    description:
+      'CustomerAppData\nStores the app specific data for the customer.\nOne of: stripe, sandbox, custom_invoicing',
+  })
   .openapi('CustomerAppDataCreateOrUpdateItem')
 
 const CustomerAppDataPaginatedResponseSchema = z
@@ -4720,6 +9003,24 @@ const DiscountReasonTypeSchema = z
   .openapi({ description: 'The type of the discount reason.' })
   .openapi('DiscountReasonType')
 
+const DynamicPriceSchema = z
+  .object({
+    type: z.literal('dynamic').openapi({ description: 'The type of the price.' }),
+    multiplier: NumericSchema.default('1')
+      .exactOptional()
+      .openapi({
+        description:
+          'The multiplier to apply to the base price to get the dynamic price.\n\nExamples:\n- 0.0: the price is zero\n- 0.5: the price is 50% of the base price\n- 1.0: the price is the same as the base price\n- 1.5: the price is 150% of the base price',
+        title: 'The multiplier to apply to the base price to get the dynamic price',
+      }),
+  })
+  .openapi({
+    required: ['type'],
+    description:
+      "Dynamic price.\n\nThe underlying meter's value is considered the base price in the\ncustomer's currency.\n\nThe rate specifies the markup over the price.",
+  })
+  .openapi('DynamicPrice')
+
 const EditOpSchema = z
   .enum([
     'add_item',
@@ -4731,524 +9032,6 @@ const EditOpSchema = z
   ])
   .openapi({ description: 'Enum listing the different operation types.' })
   .openapi('EditOp')
-
-const EditSubscriptionAddItemSchema = z
-  .object({ op: z.literal('add_item'), phaseKey: z.string(), rateCard: RateCardSchema })
-  .openapi({ required: ['op', 'phaseKey', 'rateCard'], description: 'Add a new item to a phase.' })
-  .openapi('EditSubscriptionAddItem')
-
-const SubscriptionPhaseCreateSchema = z
-  .object({
-    startAfter: z.iso
-      .duration()
-      .nullable()
-      .openapi({
-        description:
-          'Interval after the subscription starts to transition to the phase.\nWhen null, the phase starts immediately after the subscription starts.',
-        title: 'Start after',
-        example: 'P1Y',
-      }),
-    duration: z.iso
-      .duration()
-      .exactOptional()
-      .openapi({
-        description:
-          'The intended duration of the new phase.\nDuration is required when the phase will not be the last phase.',
-        title: 'Duration',
-        example: 'P1M',
-      }),
-    discounts: DiscountsSchema.exactOptional().openapi({
-      description: 'The discounts on the plan.',
-      title: 'Discounts',
-    }),
-    key: z
-      .string()
-      .regex(/^[a-z0-9]+(?:_[a-z0-9]+)*$/)
-      .min(1)
-      .max(64)
-      .openapi({ description: 'A locally unique identifier for the phase.' }),
-    name: z.string().openapi({ description: 'The name of the phase.' }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The description of the phase.' }),
-  })
-  .openapi({
-    required: ['startAfter', 'key', 'name'],
-    description: 'Subscription phase create input.',
-  })
-  .openapi('SubscriptionPhaseCreate')
-
-const EditSubscriptionAddPhaseSchema = z
-  .object({ op: z.literal('add_phase'), phase: SubscriptionPhaseCreateSchema })
-  .openapi({ required: ['op', 'phase'], description: 'Add a new phase' })
-  .openapi('EditSubscriptionAddPhase')
-
-const EditSubscriptionRemoveItemSchema = z
-  .object({ op: z.literal('remove_item'), phaseKey: z.string(), itemKey: z.string() })
-  .openapi({ required: ['op', 'phaseKey', 'itemKey'], description: 'Remove an item from a phase.' })
-  .openapi('EditSubscriptionRemoveItem')
-
-const RemovePhaseShiftingSchema = z
-  .enum(['next', 'prev'])
-  .openapi({ description: 'The direction of the phase shift when a phase is removed.' })
-  .openapi('RemovePhaseShifting')
-
-const EditSubscriptionRemovePhaseSchema = z
-  .object({ op: z.literal('remove_phase'), phaseKey: z.string(), shift: RemovePhaseShiftingSchema })
-  .openapi({ required: ['op', 'phaseKey', 'shift'], description: 'Remove a phase' })
-  .openapi('EditSubscriptionRemovePhase')
-
-const EditSubscriptionStretchPhaseSchema = z
-  .object({ op: z.literal('stretch_phase'), phaseKey: z.string(), extendBy: z.iso.duration() })
-  .openapi({ required: ['op', 'phaseKey', 'extendBy'], description: 'Stretch a phase' })
-  .openapi('EditSubscriptionStretchPhase')
-
-const EditSubscriptionUnscheduleEditSchema = z
-  .object({ op: z.literal('unschedule_edit') })
-  .openapi({ required: ['op'], description: 'Unschedules any edits from the current phase.' })
-  .openapi('EditSubscriptionUnscheduleEdit')
-
-const RecurringPeriodSchema = z
-  .object({
-    interval: RecurringPeriodIntervalSchema.openapi({
-      description:
-        'The unit of time for the interval. Heuristically maps ISO duraitons to enum values or returns the ISO duration.',
-      title: 'Interval',
-    }),
-    anchor: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'A date-time anchor to base the recurring period on.',
-        example: '2023-01-01T01:01:01.001Z',
-        title: 'Anchor time',
-      }),
-    intervalISO: z.iso
-      .duration()
-      .openapi({ description: 'The unit of time for the interval in ISO8601 format.' }),
-  })
-  .openapi({
-    required: ['interval', 'anchor', 'intervalISO'],
-    description: 'Recurring period with an interval and an anchor.',
-    deprecated: true,
-    example: { interval: 'DAY', intervalISO: 'P1D', anchor: '2023-01-01T01:01:01.001Z' },
-  })
-  .openapi('RecurringPeriod')
-
-const EntitlementMeteredSchema = z
-  .object({
-    type: z.literal('metered'),
-    isSoftLimit: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({
-        description:
-          'If softLimit=true the subject can use the feature even if the entitlement is exhausted, hasAccess will always be true.',
-        title: 'Soft limit',
-      }),
-    isUnlimited: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({
-        description:
-          'Deprecated, ignored by the backend. Please use isSoftLimit instead; this field will be removed in the future.',
-        deprecated: true,
-      }),
-    issueAfterReset: z
-      .float64()
-      .min(0)
-      .exactOptional()
-      .openapi({
-        description:
-          'You can grant usage automatically alongside the entitlement, the example scenario would be creating a starting balance.\nIf an amount is specified here, a grant will be created alongside the entitlement with the specified amount.\nThat grant will have it\'s rollover settings configured in a way that after each reset operation, the balance will return the original amount specified here.\nManually creating such a grant would mean having the "amount", "minRolloverAmount", and "maxRolloverAmount" fields all be the same.',
-        title: 'Initial grant amount',
-      }),
-    issueAfterResetPriority: z
-      .int()
-      .min(1)
-      .max(255)
-      .default(1)
-      .exactOptional()
-      .openapi({
-        description: 'Defines the grant priority for the default grant.',
-        title: 'Issue grant after reset priority',
-      }),
-    preserveOverageAtReset: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({
-        description:
-          'If true, the overage is preserved at reset. If false, the usage is reset to 0.',
-        title: 'Preserve overage at reset',
-      }),
-    createdAt: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'Timestamp of when the resource was created.',
-        example: '2024-01-01T01:01:01.001Z',
-        title: 'Creation Time',
-        readOnly: true,
-      }),
-    updatedAt: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'Timestamp of when the resource was last updated.',
-        example: '2024-01-01T01:01:01.001Z',
-        title: 'Last Update Time',
-        readOnly: true,
-      }),
-    deletedAt: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'Timestamp of when the resource was permanently deleted.',
-        example: '2024-01-01T01:01:01.001Z',
-        title: 'Deletion Time',
-        readOnly: true,
-      }),
-    metadata: MetadataSchema.exactOptional().openapi({
-      description: 'Additional metadata for the feature.',
-    }),
-    activeFrom: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'The cadence start of the resource.',
-        example: '2023-01-01T01:01:01.001Z',
-      }),
-    activeTo: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'The cadence end of the resource.',
-        example: '2023-01-01T01:01:01.001Z',
-      }),
-    annotations: AnnotationsSchema.exactOptional().openapi({
-      description: 'The annotations of the entitlement.',
-      example: { 'subscription.id': 'sub_123' },
-      readOnly: true,
-    }),
-    id: z
-      .string()
-      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
-      .openapi({
-        description: 'Readonly unique ULID identifier.',
-        example: '01ARZ3NDEKTSV4RRFFQ69G5FAV',
-        readOnly: true,
-      }),
-    subjectKey: z
-      .string()
-      .regex(/^[a-z0-9]+(?:_[a-z0-9]+)*$/)
-      .min(1)
-      .max(64)
-      .openapi({
-        description:
-          'The identifier key unique to the subject.\nNOTE: Subjects are being deprecated, please use the new customer APIs.',
-        example: 'customer-1',
-      }),
-    featureKey: z
-      .string()
-      .regex(/^[a-z0-9]+(?:_[a-z0-9]+)*$/)
-      .min(1)
-      .max(64)
-      .openapi({
-        description: 'The feature the subject is entitled to use.',
-        example: 'example-feature-key',
-      }),
-    featureId: z
-      .string()
-      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
-      .openapi({
-        description: 'The feature the subject is entitled to use.',
-        example: '01ARZ3NDEKTSV4RRFFQ69G5FAV',
-      }),
-    lastReset: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'The time the last reset happened.',
-        example: '2023-01-01T01:01:01.001Z',
-        readOnly: true,
-      }),
-    currentUsagePeriod: PeriodSchema.openapi({
-      description: 'The current usage period.',
-      readOnly: true,
-    }),
-    measureUsageFrom: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description:
-          'The time from which usage is measured. If not specified on creation, defaults to entitlement creation time.',
-        example: '2023-01-01T01:01:01.001Z',
-        readOnly: true,
-      }),
-    usagePeriod: RecurringPeriodSchema.openapi({
-      description: 'THe usage period of the entitlement.',
-      readOnly: true,
-    }),
-  })
-  .openapi({
-    required: [
-      'type',
-      'createdAt',
-      'updatedAt',
-      'activeFrom',
-      'id',
-      'subjectKey',
-      'featureKey',
-      'featureId',
-      'lastReset',
-      'currentUsagePeriod',
-      'measureUsageFrom',
-      'usagePeriod',
-    ],
-    description:
-      'Metered entitlements are useful for many different use cases, from setting up usage based access to implementing complex credit systems.\nAccess is determined based on feature usage using a balance calculation (the "usage allowance" provided by the issued grants is "burnt down" by the usage).',
-    deprecated: true,
-  })
-  .openapi('EntitlementMetered')
-
-const EntitlementStaticSchema = z
-  .object({
-    type: z.literal('static'),
-    config: z
-      .string()
-      .openapi({
-        description:
-          'The JSON parsable config of the entitlement. This value is also returned when checking entitlement access and it is useful for configuring fine-grained access settings to the feature, implemented in your own system. Has to be an object.',
-        example: '{ "integrations": ["github"] }',
-      }),
-    createdAt: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'Timestamp of when the resource was created.',
-        example: '2024-01-01T01:01:01.001Z',
-        title: 'Creation Time',
-        readOnly: true,
-      }),
-    updatedAt: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'Timestamp of when the resource was last updated.',
-        example: '2024-01-01T01:01:01.001Z',
-        title: 'Last Update Time',
-        readOnly: true,
-      }),
-    deletedAt: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'Timestamp of when the resource was permanently deleted.',
-        example: '2024-01-01T01:01:01.001Z',
-        title: 'Deletion Time',
-        readOnly: true,
-      }),
-    metadata: MetadataSchema.exactOptional().openapi({
-      description: 'Additional metadata for the feature.',
-    }),
-    activeFrom: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'The cadence start of the resource.',
-        example: '2023-01-01T01:01:01.001Z',
-      }),
-    activeTo: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'The cadence end of the resource.',
-        example: '2023-01-01T01:01:01.001Z',
-      }),
-    annotations: AnnotationsSchema.exactOptional().openapi({
-      description: 'The annotations of the entitlement.',
-      example: { 'subscription.id': 'sub_123' },
-      readOnly: true,
-    }),
-    id: z
-      .string()
-      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
-      .openapi({
-        description: 'Readonly unique ULID identifier.',
-        example: '01ARZ3NDEKTSV4RRFFQ69G5FAV',
-        readOnly: true,
-      }),
-    subjectKey: z
-      .string()
-      .regex(/^[a-z0-9]+(?:_[a-z0-9]+)*$/)
-      .min(1)
-      .max(64)
-      .openapi({
-        description:
-          'The identifier key unique to the subject.\nNOTE: Subjects are being deprecated, please use the new customer APIs.',
-        example: 'customer-1',
-      }),
-    featureKey: z
-      .string()
-      .regex(/^[a-z0-9]+(?:_[a-z0-9]+)*$/)
-      .min(1)
-      .max(64)
-      .openapi({
-        description: 'The feature the subject is entitled to use.',
-        example: 'example-feature-key',
-      }),
-    featureId: z
-      .string()
-      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
-      .openapi({
-        description: 'The feature the subject is entitled to use.',
-        example: '01ARZ3NDEKTSV4RRFFQ69G5FAV',
-      }),
-    currentUsagePeriod: PeriodSchema.exactOptional().openapi({
-      description: 'The current usage period.',
-    }),
-    usagePeriod: RecurringPeriodSchema.exactOptional().openapi({
-      description: 'The defined usage period of the entitlement',
-    }),
-  })
-  .openapi({
-    required: [
-      'type',
-      'config',
-      'createdAt',
-      'updatedAt',
-      'activeFrom',
-      'id',
-      'subjectKey',
-      'featureKey',
-      'featureId',
-    ],
-    description: 'A static entitlement.',
-    deprecated: true,
-  })
-  .openapi('EntitlementStatic')
-
-const EntitlementBooleanSchema = z
-  .object({
-    type: z.literal('boolean'),
-    createdAt: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'Timestamp of when the resource was created.',
-        example: '2024-01-01T01:01:01.001Z',
-        title: 'Creation Time',
-        readOnly: true,
-      }),
-    updatedAt: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'Timestamp of when the resource was last updated.',
-        example: '2024-01-01T01:01:01.001Z',
-        title: 'Last Update Time',
-        readOnly: true,
-      }),
-    deletedAt: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'Timestamp of when the resource was permanently deleted.',
-        example: '2024-01-01T01:01:01.001Z',
-        title: 'Deletion Time',
-        readOnly: true,
-      }),
-    metadata: MetadataSchema.exactOptional().openapi({
-      description: 'Additional metadata for the feature.',
-    }),
-    activeFrom: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'The cadence start of the resource.',
-        example: '2023-01-01T01:01:01.001Z',
-      }),
-    activeTo: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'The cadence end of the resource.',
-        example: '2023-01-01T01:01:01.001Z',
-      }),
-    annotations: AnnotationsSchema.exactOptional().openapi({
-      description: 'The annotations of the entitlement.',
-      example: { 'subscription.id': 'sub_123' },
-      readOnly: true,
-    }),
-    id: z
-      .string()
-      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
-      .openapi({
-        description: 'Readonly unique ULID identifier.',
-        example: '01ARZ3NDEKTSV4RRFFQ69G5FAV',
-        readOnly: true,
-      }),
-    subjectKey: z
-      .string()
-      .regex(/^[a-z0-9]+(?:_[a-z0-9]+)*$/)
-      .min(1)
-      .max(64)
-      .openapi({
-        description:
-          'The identifier key unique to the subject.\nNOTE: Subjects are being deprecated, please use the new customer APIs.',
-        example: 'customer-1',
-      }),
-    featureKey: z
-      .string()
-      .regex(/^[a-z0-9]+(?:_[a-z0-9]+)*$/)
-      .min(1)
-      .max(64)
-      .openapi({
-        description: 'The feature the subject is entitled to use.',
-        example: 'example-feature-key',
-      }),
-    featureId: z
-      .string()
-      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
-      .openapi({
-        description: 'The feature the subject is entitled to use.',
-        example: '01ARZ3NDEKTSV4RRFFQ69G5FAV',
-      }),
-    currentUsagePeriod: PeriodSchema.exactOptional().openapi({
-      description: 'The current usage period.',
-    }),
-    usagePeriod: RecurringPeriodSchema.exactOptional().openapi({
-      description: 'The defined usage period of the entitlement',
-    }),
-  })
-  .openapi({
-    required: [
-      'type',
-      'createdAt',
-      'updatedAt',
-      'activeFrom',
-      'id',
-      'subjectKey',
-      'featureKey',
-      'featureId',
-    ],
-    description: 'Entitlement template of a boolean entitlement.',
-    deprecated: true,
-  })
-  .openapi('EntitlementBoolean')
-
-const EntitlementSchema = z
-  .discriminatedUnion('type', [
-    EntitlementMeteredSchema,
-    EntitlementStaticSchema,
-    EntitlementBooleanSchema,
-  ])
-  .openapi({
-    discriminator: {
-      propertyName: 'type',
-      mapping: {
-        metered: '#/components/schemas/EntitlementMetered',
-        static: '#/components/schemas/EntitlementStatic',
-        boolean: '#/components/schemas/EntitlementBoolean',
-      },
-    },
-    description:
-      'Entitlement templates are used to define the entitlements of a plan.\nFeatures are omitted from the entitlement template, as they are defined in the rate card.',
-    deprecated: true,
-  })
-  .openapi('Entitlement')
 
 const EntitlementTypeSchema = z
   .enum(['metered', 'boolean', 'static'])
@@ -6827,385 +10610,6 @@ const EventSchema = z
   })
   .openapi('Event')
 
-const EventDeliveryAttemptResponseSchema = z
-  .object({
-    statusCode: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'Status code of the response if available.',
-        title: 'Status Code',
-        readOnly: true,
-      }),
-    body: z
-      .string()
-      .openapi({
-        description: 'The body of the response.',
-        title: 'Response Body',
-        readOnly: true,
-      }),
-    durationMs: z
-      .int()
-      .openapi({
-        description: 'The duration of the response in milliseconds.',
-        title: 'Response Duration',
-        readOnly: true,
-      }),
-    url: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'URL where the event was sent in case of notification channel with webhook type.',
-        title: 'URL',
-        readOnly: true,
-      }),
-  })
-  .openapi({
-    required: ['body', 'durationMs'],
-    description: 'The response of the event delivery attempt.',
-  })
-  .openapi('EventDeliveryAttemptResponse')
-
-const FilterStringSchema: z.ZodType<FilterStringType> = z
-  .lazy(() =>
-    z
-      .object({
-        $eq: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description: 'The field must be equal to the provided value.',
-            'x-omitempty': true,
-          }),
-        $ne: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description: 'The field must not be equal to the provided value.',
-            'x-omitempty': true,
-          }),
-        $in: z
-          .array(z.string())
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description: 'The field must be in the provided list of values.',
-            'x-omitempty': true,
-          }),
-        $nin: z
-          .array(z.string())
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description: 'The field must not be in the provided list of values.',
-            'x-omitempty': true,
-          }),
-        $like: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description: 'The field must match the provided value.',
-            'x-omitempty': true,
-          }),
-        $nlike: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description: 'The field must not match the provided value.',
-            'x-omitempty': true,
-          }),
-        $ilike: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description: 'The field must match the provided value, ignoring case.',
-            'x-omitempty': true,
-          }),
-        $nilike: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description: 'The field must not match the provided value, ignoring case.',
-            'x-omitempty': true,
-          }),
-        $gt: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description: 'The field must be greater than the provided value.',
-            'x-omitempty': true,
-          }),
-        $gte: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description: 'The field must be greater than or equal to the provided value.',
-            'x-omitempty': true,
-          }),
-        $lt: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description: 'The field must be less than the provided value.',
-            'x-omitempty': true,
-          }),
-        $lte: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description: 'The field must be less than or equal to the provided value.',
-            'x-omitempty': true,
-          }),
-        $and: z
-          .array(FilterStringSchema)
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description: 'Provide a list of filters to be combined with a logical AND.',
-            'x-omitempty': true,
-          }),
-        $or: z
-          .array(FilterStringSchema)
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description: 'Provide a list of filters to be combined with a logical OR.',
-            'x-omitempty': true,
-          }),
-      })
-      .openapi({ description: 'A filter for a string field.', required: [] }),
-  )
-  .openapi('FilterString')
-
-const FeatureManualUnitCostSchema = z
-  .object({
-    type: z.literal('manual'),
-    amount: NumericSchema.openapi({ description: 'Fixed per-unit cost amount in USD.' }),
-  })
-  .openapi({ required: ['type', 'amount'], description: 'A fixed per-unit cost amount.' })
-  .openapi('FeatureManualUnitCost')
-
-const FeatureLLMUnitCostPricingSchema = z
-  .object({
-    inputPerToken: NumericSchema.openapi({
-      description: 'Cost per input token in USD.',
-      title: 'Input per token',
-    }),
-    outputPerToken: NumericSchema.openapi({
-      description: 'Cost per output token in USD.',
-      title: 'Output per token',
-    }),
-    cacheReadPerToken: NumericSchema.exactOptional().openapi({
-      description: 'Cost per cache read token in USD.',
-      title: 'Cache read per token',
-    }),
-    reasoningPerToken: NumericSchema.exactOptional().openapi({
-      description: 'Cost per reasoning token in USD.',
-      title: 'Reasoning per token',
-    }),
-    cacheWritePerToken: NumericSchema.exactOptional().openapi({
-      description: 'Cost per cache write token in USD.',
-      title: 'Cache write per token',
-    }),
-  })
-  .openapi({
-    required: ['inputPerToken', 'outputPerToken'],
-    description: 'Resolved per-token pricing from the LLM cost database.',
-  })
-  .openapi('FeatureLLMUnitCostPricing')
-
-const FeatureLLMUnitCostSchema = z
-  .object({
-    type: z.literal('llm'),
-    providerProperty: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Meter group-by property that holds the LLM provider.\nUse this when the meter has a group-by dimension for provider.\nMutually exclusive with `provider`.',
-        title: 'Provider property',
-      }),
-    provider: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Static LLM provider value (e.g., "openai", "anthropic").\nUse this when the feature tracks a single provider.\nMutually exclusive with `providerProperty`.',
-        title: 'Provider',
-      }),
-    modelProperty: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Meter group-by property that holds the model ID.\nUse this when the meter has a group-by dimension for model.\nMutually exclusive with `model`.',
-        title: 'Model property',
-      }),
-    model: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Static model ID value (e.g., "gpt-4", "claude-3-5-sonnet").\nUse this when the feature tracks a single model.\nMutually exclusive with `modelProperty`.',
-        title: 'Model',
-      }),
-    tokenTypeProperty: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Meter group-by property that holds the token type.\nUse this when the meter has a group-by dimension for token type.\nMutually exclusive with `tokenType`.',
-        title: 'Token type property',
-      }),
-    tokenType: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Static token type value.\nUse this when the feature tracks a single token type (e.g., only input tokens).\nExpected values: input, output, cache_read, reasoning, cache_write, request, response.\n`request` is an alias for `input`, `response` is an alias for `output`.\nMutually exclusive with `tokenTypeProperty`.',
-        title: 'Token type',
-      }),
-    pricing: FeatureLLMUnitCostPricingSchema.exactOptional().openapi({
-      description:
-        "Resolved per-token pricing from the LLM cost database.\nOnly populated in responses when the feature's meter group-by filters\nspecify exact provider and model values.",
-      title: 'Resolved pricing',
-      readOnly: true,
-    }),
-  })
-  .openapi({
-    required: ['type'],
-    description:
-      'LLM cost lookup configuration.\nMaps meter group-by dimensions to LLM cost database fields.',
-  })
-  .openapi('FeatureLLMUnitCost')
-
-const FeatureUnitCostSchema = z
-  .discriminatedUnion('type', [FeatureManualUnitCostSchema, FeatureLLMUnitCostSchema])
-  .openapi({
-    discriminator: {
-      propertyName: 'type',
-      mapping: {
-        manual: '#/components/schemas/FeatureManualUnitCost',
-        llm: '#/components/schemas/FeatureLLMUnitCost',
-      },
-    },
-    description:
-      'Per-unit cost configuration for a feature.\nEither a fixed manual amount or a dynamic LLM cost lookup.',
-  })
-  .openapi('FeatureUnitCost')
-
-const FeatureSchema = z
-  .object({
-    createdAt: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'Timestamp of when the resource was created.',
-        example: '2024-01-01T01:01:01.001Z',
-        title: 'Creation Time',
-        readOnly: true,
-      }),
-    updatedAt: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'Timestamp of when the resource was last updated.',
-        example: '2024-01-01T01:01:01.001Z',
-        title: 'Last Update Time',
-        readOnly: true,
-      }),
-    deletedAt: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'Timestamp of when the resource was permanently deleted.',
-        example: '2024-01-01T01:01:01.001Z',
-        title: 'Deletion Time',
-        readOnly: true,
-      }),
-    archivedAt: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'Timestamp of when the resource was archived.',
-        example: '2023-01-01T01:01:01.001Z',
-        title: 'Archival Time',
-        readOnly: true,
-      }),
-    key: z
-      .string()
-      .regex(/^[a-z0-9]+(?:_[a-z0-9]+)*$/)
-      .min(1)
-      .max(64)
-      .openapi({
-        description: 'A key is a unique string that is used to identify a resource.',
-        title: 'The unique key of the feature',
-      }),
-    name: z.string().openapi({ title: 'The human-readable name of the feature' }),
-    metadata: MetadataSchema.exactOptional().openapi({
-      title: 'Optional metadata',
-      example: { key: 'value' },
-    }),
-    meterSlug: z
-      .string()
-      .regex(/^[a-z0-9]+(?:_[a-z0-9]+)*$/)
-      .min(1)
-      .max(64)
-      .exactOptional()
-      .openapi({
-        description: 'A key is a unique string that is used to identify a resource.',
-        title: 'Meter slug',
-        example: 'tokens_total',
-      }),
-    meterGroupByFilters: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional meter group by filters.\nUseful if the meter scope is broader than what feature tracks.\nExample scenario would be a meter tracking all token use with groupBy fields for the model,\nthen the feature could filter for model=gpt-4.\n\n⚠️ __Deprecated__: Use advancedMeterGroupByFilters instead',
-        title: 'Meter group by filters',
-        deprecated: true,
-        example: { model: 'gpt-4', type: 'input' },
-      }),
-    advancedMeterGroupByFilters: z
-      .record(z.string(), FilterStringSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional advanced meter group by filters.\nYou can use this to filter for values of the meter groupBy fields.',
-        title: 'Advanced meter group by filters',
-        example: { model: { $in: ['gpt-4', 'gpt-4o'] }, type: { $eq: 'input' } },
-      }),
-    unitCost: FeatureUnitCostSchema.exactOptional().openapi({
-      description:
-        'Optional per-unit cost configuration.\nUse "manual" for a fixed per-unit cost, or "llm" to look up cost\nfrom the LLM cost database based on meter group-by properties.',
-      title: 'Unit cost',
-    }),
-    id: z
-      .string()
-      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
-      .openapi({
-        description: 'Readonly unique ULID identifier.',
-        example: '01ARZ3NDEKTSV4RRFFQ69G5FAV',
-        readOnly: true,
-      }),
-  })
-  .openapi({
-    required: ['createdAt', 'updatedAt', 'key', 'name', 'id'],
-    description:
-      'Represents a feature that can be enabled or disabled for a plan.\nUsed both for product catalog and entitlements.',
-  })
-  .openapi('Feature')
-
 const FeatureCreateInputsSchema = z
   .object({
     key: z
@@ -7264,32 +10668,6 @@ const FeatureCreateInputsSchema = z
       'Represents a feature that can be enabled or disabled for a plan.\nUsed both for product catalog and entitlements.',
   })
   .openapi('FeatureCreateInputs')
-
-const FeatureMetaSchema = z
-  .object({
-    id: z
-      .string()
-      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
-      .openapi({
-        description: 'Unique identifier of a feature.',
-        example: '01ARZ3NDEKTSV4RRFFQ69G5FAV',
-        title: 'Feature Unique Identifier',
-      }),
-    key: z
-      .string()
-      .openapi({
-        description:
-          "The key is an immutable unique identifier of the feature used throughout the API,\nfor example when interacting with a subject's entitlements.",
-        title: 'Feature Key',
-        example: 'gpt4_tokens',
-      }),
-  })
-  .openapi({
-    required: ['id', 'key'],
-    description:
-      'Limited representation of a feature resource which includes only its unique identifiers (id, key).',
-  })
-  .openapi('FeatureMeta')
 
 const FeatureOrderBySchema = z
   .enum(['id', 'key', 'name', 'createdAt', 'updatedAt'])
@@ -7687,21 +11065,6 @@ const GrantV2PaginatedResponseSchema = z
   })
   .openapi('GrantV2PaginatedResponse')
 
-const IDResourceSchema = z
-  .object({
-    id: z
-      .string()
-      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
-      .openapi({
-        description: 'A unique identifier for the resource.',
-        example: '01G65Z755AFWAKHE12NY0CQ9FH',
-        title: 'ID',
-        readOnly: true,
-      }),
-  })
-  .openapi({ required: ['id'], description: 'IDResource is a resouce with an ID.' })
-  .openapi('IDResource')
-
 const IngestEventsBodySchema = z
   .union([EventSchema, z.array(EventSchema)])
   .openapi({
@@ -7773,1250 +11136,6 @@ const InternalServerErrorProblemResponseSchema = UnexpectedProblemResponseSchema
   description:
     'The server encountered an unexpected condition that prevented it from fulfilling the request.',
 }).openapi('InternalServerErrorProblemResponse')
-
-const InvoiceTypeSchema = z
-  .enum(['standard', 'credit_note'])
-  .openapi({
-    description:
-      'InvoiceType represents the type of invoice.\n\nThe type of invoice determines the purpose of the invoice and how it should be handled.',
-  })
-  .openapi('InvoiceType')
-
-const InvoiceDocumentRefSchema = CreditNoteOriginalInvoiceRefSchema.openapi({
-  description:
-    'InvoiceDocumentRef is used to describe a reference to an existing document (invoice).',
-}).openapi('InvoiceDocumentRef')
-
-const InvoiceTotalsSchema = z
-  .object({
-    amount: NumericSchema.openapi({
-      description: 'The total value of the line before taxes, discounts and commitments.',
-      readOnly: true,
-    }),
-    chargesTotal: NumericSchema.openapi({
-      description: 'The amount of value of the line that are due to additional charges.',
-      readOnly: true,
-    }),
-    discountsTotal: NumericSchema.openapi({
-      description: 'The amount of value of the line that are due to discounts.',
-      readOnly: true,
-    }),
-    creditsTotal: NumericSchema.openapi({
-      description: 'The amount of value of the line that are due to credits.',
-      readOnly: true,
-    }),
-    taxesInclusiveTotal: NumericSchema.openapi({
-      description: 'The total amount of taxes that are included in the line.',
-      readOnly: true,
-    }),
-    taxesExclusiveTotal: NumericSchema.openapi({
-      description: 'The total amount of taxes that are added on top of amount from the line.',
-      readOnly: true,
-    }),
-    taxesTotal: NumericSchema.openapi({
-      description: 'The total amount of taxes for this line.',
-      readOnly: true,
-    }),
-    total: NumericSchema.openapi({
-      description: 'The total amount value of the line after taxes, discounts and commitments.',
-      readOnly: true,
-    }),
-  })
-  .openapi({
-    required: [
-      'amount',
-      'chargesTotal',
-      'discountsTotal',
-      'creditsTotal',
-      'taxesInclusiveTotal',
-      'taxesExclusiveTotal',
-      'taxesTotal',
-      'total',
-    ],
-    description: 'Totals contains the summaries of all calculations for the invoice.',
-  })
-  .openapi('InvoiceTotals')
-
-const InvoiceStatusSchema = z
-  .enum([
-    'gathering',
-    'draft',
-    'issuing',
-    'issued',
-    'payment_processing',
-    'overdue',
-    'paid',
-    'uncollectible',
-    'voided',
-  ])
-  .openapi({ description: 'InvoiceStatus describes the status of an invoice.' })
-  .openapi('InvoiceStatus')
-
-const InvoiceAvailableActionDetailsSchema = z
-  .object({
-    resultingState: z
-      .string()
-      .openapi({
-        description:
-          'The state the invoice will reach if the action is activated and\nall intermediate steps are successful.\n\nFor example advancing a draft_created invoice will result in a draft_manual_approval_needed invoice.',
-        readOnly: true,
-      }),
-  })
-  .openapi({
-    required: ['resultingState'],
-    description:
-      'InvoiceAvailableActionInvoiceDetails represents the details of the invoice action for\nnon-gathering invoices.',
-  })
-  .openapi('InvoiceAvailableActionDetails')
-
-const InvoiceAvailableActionInvoiceDetailsSchema = z
-  .object({})
-  .openapi({
-    description:
-      'InvoiceAvailableActionInvoiceDetails represents the details of the invoice action for\ngathering invoices.',
-  })
-  .openapi('InvoiceAvailableActionInvoiceDetails')
-
-const InvoiceAvailableActionsSchema = z
-  .object({
-    advance: InvoiceAvailableActionDetailsSchema.exactOptional().openapi({
-      description: 'Advance the invoice to the next status.',
-      readOnly: true,
-    }),
-    approve: InvoiceAvailableActionDetailsSchema.exactOptional().openapi({
-      description: 'Approve an invoice that requires manual approval.',
-      readOnly: true,
-    }),
-    delete: InvoiceAvailableActionDetailsSchema.exactOptional().openapi({
-      description: 'Delete the invoice (only non-issued invoices can be deleted).',
-      readOnly: true,
-    }),
-    retry: InvoiceAvailableActionDetailsSchema.exactOptional().openapi({
-      description: 'Retry an invoice issuing step that failed.',
-      readOnly: true,
-    }),
-    snapshotQuantities: InvoiceAvailableActionDetailsSchema.exactOptional().openapi({
-      description: 'Snapshot quantities for usage based line items.',
-      readOnly: true,
-    }),
-    void: InvoiceAvailableActionDetailsSchema.exactOptional().openapi({
-      description: 'Void an already issued invoice.',
-      readOnly: true,
-    }),
-    invoice: InvoiceAvailableActionInvoiceDetailsSchema.exactOptional().openapi({
-      description: 'Invoice a gathering invoice',
-      readOnly: true,
-    }),
-  })
-  .openapi({
-    description:
-      'InvoiceAvailableActions represents the actions that can be performed on the invoice.',
-    required: [],
-  })
-  .openapi('InvoiceAvailableActions')
-
-const InvoiceStatusDetailsSchema = z
-  .object({
-    immutable: z.boolean().openapi({ description: 'Is the invoice editable?', readOnly: true }),
-    failed: z
-      .boolean()
-      .openapi({ description: 'Is the invoice in a failed state?', readOnly: true }),
-    extendedStatus: z
-      .string()
-      .openapi({ description: 'Extended status information for the invoice.', readOnly: true }),
-    availableActions: InvoiceAvailableActionsSchema.openapi({
-      description: 'The actions that can be performed on the invoice.',
-    }),
-  })
-  .openapi({
-    required: ['immutable', 'failed', 'extendedStatus', 'availableActions'],
-    description:
-      'InvoiceStatusDetails represents the details of the invoice status.\n\nAPI users are encouraged to rely on the immutable/failed/avaliableActions fields to determine\nthe next steps of the invoice instead of the extendedStatus field.',
-  })
-  .openapi('InvoiceStatusDetails')
-
-const InvoiceWorkflowSettingsSchema = z
-  .object({
-    apps: BillingProfileAppsOrReferenceSchema.exactOptional().openapi({
-      description: "The apps that will be used to orchestrate the invoice's workflow.",
-      readOnly: true,
-    }),
-    sourceBillingProfileId: z
-      .string()
-      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
-      .openapi({
-        description:
-          'sourceBillingProfileID is the billing profile on which the workflow was based on.\n\nThe profile is snapshotted on invoice creation, after which it can be altered independently\nof the profile itself.',
-        example: '01G65Z755AFWAKHE12NY0CQ9FH',
-        readOnly: true,
-      }),
-    workflow: BillingWorkflowSchema.openapi({
-      description: 'The workflow details used by this invoice.',
-    }),
-  })
-  .openapi({
-    required: ['sourceBillingProfileId', 'workflow'],
-    description:
-      "InvoiceWorkflowSettings represents the workflow settings used by the invoice.\n\nThis is a clone of the billing profile's workflow settings at the time of invoice creation\nwith customer overrides considered.",
-  })
-  .openapi('InvoiceWorkflowSettings')
-
-const InvoiceLineManagedBySchema = z
-  .enum(['subscription', 'system', 'manual'])
-  .openapi({ description: 'InvoiceLineManagedBy specifies who manages the line.' })
-  .openapi('InvoiceLineManagedBy')
-
-const InvoiceLineStatusSchema = z
-  .enum(['valid', 'detailed', 'split'])
-  .openapi({ description: 'Line status specifies the status of the line.' })
-  .openapi('InvoiceLineStatus')
-
-const InvoiceLineAppExternalIdsSchema = z
-  .object({
-    invoicing: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The external ID of the invoice in the invoicing app if available.',
-        readOnly: true,
-      }),
-    tax: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The external ID of the invoice in the tax app if available.',
-        readOnly: true,
-      }),
-  })
-  .openapi({
-    description:
-      'InvoiceLineAppExternalIds contains the external IDs of the invoice in other apps such as Stripe.',
-    required: [],
-  })
-  .openapi('InvoiceLineAppExternalIds')
-
-const InvoiceLineAmountDiscountSchema = z
-  .object({
-    createdAt: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'Timestamp of when the resource was created.',
-        example: '2024-01-01T01:01:01.001Z',
-        title: 'Creation Time',
-        readOnly: true,
-      }),
-    updatedAt: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'Timestamp of when the resource was last updated.',
-        example: '2024-01-01T01:01:01.001Z',
-        title: 'Last Update Time',
-        readOnly: true,
-      }),
-    deletedAt: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'Timestamp of when the resource was permanently deleted.',
-        example: '2024-01-01T01:01:01.001Z',
-        title: 'Deletion Time',
-        readOnly: true,
-      }),
-    id: z
-      .string()
-      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
-      .openapi({
-        description: 'ID of the charge or discount.',
-        example: '01G65Z755AFWAKHE12NY0CQ9FH',
-        readOnly: true,
-      }),
-    reason: BillingDiscountReasonSchema.openapi({ description: 'Reason code.', readOnly: true }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Text description as to why the discount was applied.',
-        readOnly: true,
-      }),
-    externalIds: InvoiceLineAppExternalIdsSchema.exactOptional().openapi({
-      description: 'External IDs of the invoice in other apps such as Stripe.',
-      readOnly: true,
-    }),
-    amount: NumericSchema.openapi({
-      description: 'Fixed discount amount to apply (calculated if percent present).',
-      title: 'Amount in the currency of the invoice',
-      readOnly: true,
-    }),
-  })
-  .openapi({
-    required: ['createdAt', 'updatedAt', 'id', 'reason', 'amount'],
-    description:
-      'InvoiceLineAmountDiscount represents an amount deducted from the line, and will be applied before taxes.',
-  })
-  .openapi('InvoiceLineAmountDiscount')
-
-const InvoiceLineUsageDiscountSchema = z
-  .object({
-    createdAt: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'Timestamp of when the resource was created.',
-        example: '2024-01-01T01:01:01.001Z',
-        title: 'Creation Time',
-        readOnly: true,
-      }),
-    updatedAt: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'Timestamp of when the resource was last updated.',
-        example: '2024-01-01T01:01:01.001Z',
-        title: 'Last Update Time',
-        readOnly: true,
-      }),
-    deletedAt: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'Timestamp of when the resource was permanently deleted.',
-        example: '2024-01-01T01:01:01.001Z',
-        title: 'Deletion Time',
-        readOnly: true,
-      }),
-    id: z
-      .string()
-      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
-      .openapi({
-        description: 'ID of the charge or discount.',
-        example: '01G65Z755AFWAKHE12NY0CQ9FH',
-        readOnly: true,
-      }),
-    reason: BillingDiscountReasonSchema.openapi({ description: 'Reason code.', readOnly: true }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Text description as to why the discount was applied.',
-        readOnly: true,
-      }),
-    externalIds: InvoiceLineAppExternalIdsSchema.exactOptional().openapi({
-      description: 'External IDs of the invoice in other apps such as Stripe.',
-      readOnly: true,
-    }),
-    quantity: NumericSchema.openapi({
-      description: 'The usage to apply.',
-      title: 'Usage quantity in the unit of the underlying meter',
-      readOnly: true,
-    }),
-    preLinePeriodQuantity: NumericSchema.exactOptional().openapi({
-      description:
-        'The usage discount already applied to the previous split lines.\n\nOnly set if progressive billing is enabled and the line is a split line.',
-      title: 'Usage quantity in the unit of the underlying meter',
-      readOnly: true,
-    }),
-  })
-  .openapi({
-    required: ['createdAt', 'updatedAt', 'id', 'reason', 'quantity'],
-    description:
-      'InvoiceLineUsageDiscount represents an usage-based discount applied to the line.\n\nThe deduction is done before the pricing algorithm is applied.',
-  })
-  .openapi('InvoiceLineUsageDiscount')
-
-const InvoiceLineDiscountsSchema = z
-  .object({
-    amount: z
-      .array(InvoiceLineAmountDiscountSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Amount based discounts applied to the line.\n\nAmount based discounts are deduced from the total price of the line.',
-      }),
-    usage: z
-      .array(InvoiceLineUsageDiscountSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Usage based discounts applied to the line.\n\nUsage based discounts are deduced from the usage of the line before price calculations are applied.',
-      }),
-  })
-  .openapi({
-    description:
-      'InvoiceLineDiscounts represents the discounts applied to the invoice line by type.',
-    required: [],
-  })
-  .openapi('InvoiceLineDiscounts')
-
-const InvoiceLineCreditAllocationSchema = z
-  .object({
-    amount: NumericSchema.openapi({
-      description: 'Amount allocated from credits.',
-      title: 'Amount in the currency of the invoice',
-      readOnly: true,
-    }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Text description as to why the credit was allocated.',
-        readOnly: true,
-      }),
-  })
-  .openapi({
-    required: ['amount'],
-    description:
-      'InvoiceLineCreditAllocation represents a credit amount allocated to the line before taxes are applied.',
-  })
-  .openapi('InvoiceLineCreditAllocation')
-
-const InvoiceReferenceSchema = z
-  .object({
-    id: z
-      .string()
-      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
-      .openapi({
-        description: 'The ID of the invoice.',
-        example: '01G65Z755AFWAKHE12NY0CQ9FH',
-        readOnly: true,
-      }),
-    number: InvoiceNumberSchema.exactOptional().openapi({
-      description: 'The number of the invoice.',
-      readOnly: true,
-    }),
-  })
-  .openapi({ required: ['id'], description: 'Reference to an invoice.' })
-  .openapi('InvoiceReference')
-
-const InvoiceLineTaxBehaviorSchema = z
-  .enum(['inclusive', 'exclusive'])
-  .openapi({
-    description:
-      'InvoiceLineTaxBehavior details how the tax item is applied to the base amount.\n\nInclusive means the tax is included in the base amount.\nExclusive means the tax is added to the base amount.',
-  })
-  .openapi('InvoiceLineTaxBehavior')
-
-const InvoiceLineTaxItemSchema = z
-  .object({
-    config: TaxConfigSchema.exactOptional().openapi({
-      description: 'Tax provider configuration.',
-      readOnly: true,
-    }),
-    percent: PercentageSchema.exactOptional().openapi({
-      description:
-        'Percent defines the percentage set manually or determined from\nthe rate key (calculated if rate present). A nil percent implies that\nthis tax combo is **exempt** from tax.")',
-      readOnly: true,
-    }),
-    surcharge: NumericSchema.exactOptional().openapi({
-      description: 'Some countries require an additional surcharge (calculated if rate present).',
-      readOnly: true,
-    }),
-    behavior: InvoiceLineTaxBehaviorSchema.exactOptional().openapi({
-      description: 'Is the tax item inclusive or exclusive of the base amount.',
-      readOnly: true,
-    }),
-  })
-  .openapi({
-    description: 'TaxConfig stores the configuration for a tax line relative to an invoice line.',
-    required: [],
-  })
-  .openapi('InvoiceLineTaxItem')
-
-const InvoiceLineSubscriptionReferenceSchema = z
-  .object({
-    subscription: IDResourceSchema.openapi({ description: 'The subscription.', readOnly: true }),
-    phase: IDResourceSchema.openapi({
-      description: 'The phase of the subscription.',
-      readOnly: true,
-    }),
-    item: IDResourceSchema.openapi({
-      description: 'The item this line is related to.',
-      readOnly: true,
-    }),
-    billingPeriod: PeriodSchema.openapi({
-      description:
-        "The billing period of the subscription. In case the subscription item's billing period is different\nfrom the subscription's billing period, this field will contain the billing period of the subscription itself.\n\nFor example, in case of:\n- A monthly billed subscription anchored to 2025-01-01\n- A subscription item billed daily\n\nAn example line would have the period of 2025-01-02 to 2025-01-03 as the item is billed daily, but the subscription's billing period\nwill be 2025-01-01 to 2025-01-31.",
-      readOnly: true,
-    }),
-  })
-  .openapi({
-    required: ['subscription', 'phase', 'item', 'billingPeriod'],
-    description:
-      'InvoiceLineSubscriptionReference contains the references to the subscription that this line is related to.',
-  })
-  .openapi('InvoiceLineSubscriptionReference')
-
-const InvoiceDetailedLineRateCardSchema = z
-  .object({
-    taxConfig: TaxConfigSchema.exactOptional().openapi({
-      description:
-        'The tax config of the rate card.\nWhen undefined, the tax config of the feature or the default tax config of the plan is used.',
-      title: 'Tax config',
-    }),
-    price: FlatPriceWithPaymentTermSchema.nullable().openapi({
-      description: 'The price of the rate card.\nWhen null, the feature or service is free.',
-      title: 'Price',
-      example: { type: 'flat', amount: '100', paymentTerm: 'in_arrears' },
-    }),
-    quantity: NumericSchema.exactOptional().openapi({
-      description: 'Quantity of the item being sold.\n\nDefault: 1',
-    }),
-    discounts: BillingDiscountsSchema.exactOptional().openapi({
-      description: 'The discounts that are applied to the line.',
-    }),
-  })
-  .openapi({
-    required: ['price'],
-    description:
-      'InvoiceDetailedLineRateCard represents the rate card (intent) for a flat fee line.',
-  })
-  .openapi('InvoiceDetailedLineRateCard')
-
-const InvoiceDetailedLineCostCategorySchema = z
-  .enum(['regular', 'commitment'])
-  .openapi({
-    description:
-      'InvoiceDetailedLineCostCategory determines if the flat fee is a regular fee due to use due to a\ncommitment.',
-  })
-  .openapi('InvoiceDetailedLineCostCategory')
-
-const InvoiceDetailedLineSchema = z
-  .object({
-    name: z
-      .string()
-      .min(1)
-      .max(256)
-      .openapi({
-        description: 'Human-readable name for the resource. Between 1 and 256 characters.',
-        title: 'Display name',
-      }),
-    description: z
-      .string()
-      .max(1024)
-      .exactOptional()
-      .openapi({
-        description: 'Optional description of the resource. Maximum 1024 characters.',
-        title: 'Description',
-      }),
-    metadata: MetadataSchema.nullable()
-      .exactOptional()
-      .openapi({ description: 'Additional metadata for the resource.', title: 'Metadata' }),
-    createdAt: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'Timestamp of when the resource was created.',
-        example: '2024-01-01T01:01:01.001Z',
-        title: 'Creation Time',
-        readOnly: true,
-      }),
-    updatedAt: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'Timestamp of when the resource was last updated.',
-        example: '2024-01-01T01:01:01.001Z',
-        title: 'Last Update Time',
-        readOnly: true,
-      }),
-    deletedAt: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'Timestamp of when the resource was permanently deleted.',
-        example: '2024-01-01T01:01:01.001Z',
-        title: 'Deletion Time',
-        readOnly: true,
-      }),
-    id: z
-      .string()
-      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
-      .openapi({ description: 'ID of the line.', example: '01G65Z755AFWAKHE12NY0CQ9FH' }),
-    managedBy: InvoiceLineManagedBySchema.openapi({
-      description:
-        'managedBy specifies if the line is manually added via the api or managed by OpenMeter.',
-      readOnly: true,
-    }),
-    status: InvoiceLineStatusSchema.openapi({
-      description:
-        'Status of the line.\n\nExternal calls always create valid lines, other line types are managed by the\nbilling engine of OpenMeter.',
-      readOnly: true,
-    }),
-    discounts: InvoiceLineDiscountsSchema.exactOptional().openapi({
-      description:
-        "Discounts detailes applied to this line.\n\nNew discounts can be added via the invoice's discounts API, to facilitate\ndiscounts that are affecting multiple lines.",
-      readOnly: true,
-    }),
-    creditAllocations: z
-      .array(InvoiceLineCreditAllocationSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Credit allocations applied to this line.\n\nCredits are deducted from the line total before taxes are applied.',
-        readOnly: true,
-      }),
-    invoice: InvoiceReferenceSchema.exactOptional().openapi({
-      description: 'The invoice this item belongs to.',
-    }),
-    currency: CurrencyCodeSchema.openapi({ description: 'The currency of this line.' }),
-    taxes: z
-      .array(InvoiceLineTaxItemSchema)
-      .exactOptional()
-      .openapi({ description: 'Taxes applied to the invoice totals.', readOnly: true }),
-    taxConfig: TaxConfigSchema.exactOptional().openapi({
-      description: 'Tax config specify the tax configuration for this line.',
-      deprecated: true,
-    }),
-    totals: InvoiceTotalsSchema.openapi({ description: 'Totals for this line.', readOnly: true }),
-    period: PeriodSchema.openapi({
-      description:
-        'Period of the line item applies to for revenue recognition pruposes.\n\nBilling always treats periods as start being inclusive and end being exclusive.',
-    }),
-    externalIds: InvoiceLineAppExternalIdsSchema.exactOptional().openapi({
-      description: 'External IDs of the invoice in other apps such as Stripe.',
-      readOnly: true,
-    }),
-    subscription: InvoiceLineSubscriptionReferenceSchema.exactOptional().openapi({
-      description:
-        'Subscription are the references to the subscritpions that this line is related to.',
-      readOnly: true,
-    }),
-    invoiceAt: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'The time this line item should be invoiced.',
-        example: '2023-01-01T01:01:01.001Z',
-        deprecated: true,
-      }),
-    type: z
-      .literal('flat_fee')
-      .openapi({ description: 'Type of the line.', deprecated: true, readOnly: true }),
-    perUnitAmount: NumericSchema.exactOptional().openapi({
-      description: 'Price of the item being sold.',
-      deprecated: true,
-    }),
-    paymentTerm: PricePaymentTermSchema.default('in_advance')
-      .exactOptional()
-      .openapi({ description: 'Payment term of the line.', deprecated: true }),
-    quantity: NumericSchema.exactOptional().openapi({
-      description: 'Quantity of the item being sold.',
-      deprecated: true,
-    }),
-    rateCard: InvoiceDetailedLineRateCardSchema.exactOptional().openapi({
-      description: 'The rate card that is used for this line.',
-    }),
-    category: InvoiceDetailedLineCostCategorySchema.default('regular')
-      .exactOptional()
-      .openapi({ description: 'Category of the flat fee.', readOnly: true }),
-  })
-  .openapi({
-    required: [
-      'name',
-      'createdAt',
-      'updatedAt',
-      'id',
-      'managedBy',
-      'status',
-      'currency',
-      'totals',
-      'period',
-      'invoiceAt',
-      'type',
-    ],
-    description:
-      'InvoiceDetailedLine represents a line item that is sold to the customer as a manually added fee.',
-  })
-  .openapi('InvoiceDetailedLine')
-
-const InvoiceUsageBasedRateCardSchema = z
-  .object({
-    featureKey: z
-      .string()
-      .regex(/^[a-z0-9]+(?:_[a-z0-9]+)*$/)
-      .min(1)
-      .max(64)
-      .exactOptional()
-      .openapi({
-        description: 'The feature the customer is entitled to use.',
-        title: 'Feature key',
-      }),
-    taxConfig: TaxConfigSchema.exactOptional().openapi({
-      description:
-        'The tax config of the rate card.\nWhen undefined, the tax config of the feature or the default tax config of the plan is used.',
-      title: 'Tax config',
-    }),
-    price: RateCardUsageBasedPriceSchema.nullable().openapi({
-      description: 'The price of the rate card.\nWhen null, the feature or service is free.',
-    }),
-    discounts: BillingDiscountsSchema.exactOptional().openapi({
-      description: 'The discounts that are applied to the line.',
-      deprecated: true,
-    }),
-  })
-  .openapi({
-    required: ['price'],
-    description:
-      'InvoiceUsageBasedRateCard represents the rate card (intent) for an usage-based line.',
-  })
-  .openapi('InvoiceUsageBasedRateCard')
-
-const InvoiceLineSchema = z
-  .object({
-    name: z
-      .string()
-      .min(1)
-      .max(256)
-      .openapi({
-        description: 'Human-readable name for the resource. Between 1 and 256 characters.',
-        title: 'Display name',
-      }),
-    description: z
-      .string()
-      .max(1024)
-      .exactOptional()
-      .openapi({
-        description: 'Optional description of the resource. Maximum 1024 characters.',
-        title: 'Description',
-      }),
-    metadata: MetadataSchema.nullable()
-      .exactOptional()
-      .openapi({ description: 'Additional metadata for the resource.', title: 'Metadata' }),
-    createdAt: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'Timestamp of when the resource was created.',
-        example: '2024-01-01T01:01:01.001Z',
-        title: 'Creation Time',
-        readOnly: true,
-      }),
-    updatedAt: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'Timestamp of when the resource was last updated.',
-        example: '2024-01-01T01:01:01.001Z',
-        title: 'Last Update Time',
-        readOnly: true,
-      }),
-    deletedAt: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'Timestamp of when the resource was permanently deleted.',
-        example: '2024-01-01T01:01:01.001Z',
-        title: 'Deletion Time',
-        readOnly: true,
-      }),
-    id: z
-      .string()
-      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
-      .openapi({ description: 'ID of the line.', example: '01G65Z755AFWAKHE12NY0CQ9FH' }),
-    managedBy: InvoiceLineManagedBySchema.openapi({
-      description:
-        'managedBy specifies if the line is manually added via the api or managed by OpenMeter.',
-      readOnly: true,
-    }),
-    status: InvoiceLineStatusSchema.openapi({
-      description:
-        'Status of the line.\n\nExternal calls always create valid lines, other line types are managed by the\nbilling engine of OpenMeter.',
-      readOnly: true,
-    }),
-    discounts: InvoiceLineDiscountsSchema.exactOptional().openapi({
-      description:
-        "Discounts detailes applied to this line.\n\nNew discounts can be added via the invoice's discounts API, to facilitate\ndiscounts that are affecting multiple lines.",
-      readOnly: true,
-    }),
-    creditAllocations: z
-      .array(InvoiceLineCreditAllocationSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Credit allocations applied to this line.\n\nCredits are deducted from the line total before taxes are applied.',
-        readOnly: true,
-      }),
-    invoice: InvoiceReferenceSchema.exactOptional().openapi({
-      description: 'The invoice this item belongs to.',
-    }),
-    currency: CurrencyCodeSchema.openapi({ description: 'The currency of this line.' }),
-    taxes: z
-      .array(InvoiceLineTaxItemSchema)
-      .exactOptional()
-      .openapi({ description: 'Taxes applied to the invoice totals.', readOnly: true }),
-    taxConfig: TaxConfigSchema.exactOptional().openapi({
-      description: 'Tax config specify the tax configuration for this line.',
-      deprecated: true,
-    }),
-    totals: InvoiceTotalsSchema.openapi({ description: 'Totals for this line.', readOnly: true }),
-    period: PeriodSchema.openapi({
-      description:
-        'Period of the line item applies to for revenue recognition pruposes.\n\nBilling always treats periods as start being inclusive and end being exclusive.',
-    }),
-    invoiceAt: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'The time this line item should be invoiced.',
-        example: '2023-01-01T01:01:01.001Z',
-      }),
-    externalIds: InvoiceLineAppExternalIdsSchema.exactOptional().openapi({
-      description: 'External IDs of the invoice in other apps such as Stripe.',
-      readOnly: true,
-    }),
-    subscription: InvoiceLineSubscriptionReferenceSchema.exactOptional().openapi({
-      description:
-        'Subscription are the references to the subscritpions that this line is related to.',
-      readOnly: true,
-    }),
-    type: z
-      .literal('usage_based')
-      .openapi({ description: 'Type of the line.', deprecated: true, readOnly: true }),
-    price: RateCardUsageBasedPriceSchema.exactOptional().openapi({
-      description: 'Price of the usage-based item being sold.',
-      deprecated: true,
-    }),
-    featureKey: z
-      .string()
-      .regex(/^[a-z0-9]+(?:_[a-z0-9]+)*$/)
-      .min(1)
-      .max(64)
-      .exactOptional()
-      .openapi({ description: 'The feature that the usage is based on.', deprecated: true }),
-    children: z
-      .array(InvoiceDetailedLineSchema)
-      .exactOptional()
-      .openapi({ description: 'The lines detailing the item or service sold.', readOnly: true }),
-    rateCard: InvoiceUsageBasedRateCardSchema.exactOptional().openapi({
-      description:
-        'The rate card that is used for this line.\n\nThe rate card captures the intent of the price and discounts for the usage-based item.',
-    }),
-    quantity: NumericSchema.exactOptional().openapi({
-      description:
-        'The quantity of the item being sold.\n\nAny usage discounts applied previously are deducted from this quantity.',
-      readOnly: true,
-    }),
-    meteredQuantity: NumericSchema.exactOptional().openapi({
-      description:
-        'The quantity of the item that has been metered for the period before any discounts were applied.',
-      readOnly: true,
-    }),
-    preLinePeriodQuantity: NumericSchema.exactOptional().openapi({
-      description:
-        "The quantity of the item used before this line's period.\n\nIt is non-zero in case of progressive billing, when this shows how much of the usage was already billed.\n\nAny usage discounts applied previously are deducted from this quantity.",
-      readOnly: true,
-    }),
-    meteredPreLinePeriodQuantity: NumericSchema.exactOptional().openapi({
-      description:
-        "The metered quantity of the item used in before this line's period without any discounts applied.\n\nIt is non-zero in case of progressive billing, when this shows how much of the usage was already billed.",
-      readOnly: true,
-    }),
-  })
-  .openapi({
-    required: [
-      'name',
-      'createdAt',
-      'updatedAt',
-      'id',
-      'managedBy',
-      'status',
-      'currency',
-      'totals',
-      'period',
-      'invoiceAt',
-      'type',
-    ],
-    description:
-      'InvoiceUsageBasedLine represents a line item that is sold to the customer based on usage.',
-  })
-  .openapi('InvoiceLine')
-
-const PaymentTermInstantSchema = z
-  .object({
-    type: z.literal('instant').openapi({ description: 'Type of terms to be applied.' }),
-    detail: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Text detail of the chosen payment terms.', readOnly: true }),
-    notes: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Description of the conditions for payment.', readOnly: true }),
-  })
-  .openapi({
-    required: ['type'],
-    description: 'PaymentTermInstant defines the terms for payment on receipt of invoice.',
-  })
-  .openapi('PaymentTermInstant')
-
-const PaymentDueDateSchema = z
-  .object({
-    dueAt: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'When the payment is due.',
-        example: '2023-01-01T01:01:01.001Z',
-        readOnly: true,
-      }),
-    notes: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Other details to take into account for the due date.',
-        readOnly: true,
-      }),
-    amount: NumericSchema.openapi({
-      description: 'How much needs to be paid by the date.',
-      readOnly: true,
-    }),
-    percent: PercentageSchema.exactOptional().openapi({
-      description: 'Percentage of the total that should be paid by the date.',
-      readOnly: true,
-    }),
-    currency: CurrencyCodeSchema.exactOptional().openapi({
-      description: "If different from the parent document's base currency.",
-      readOnly: true,
-    }),
-  })
-  .openapi({
-    required: ['dueAt', 'amount'],
-    description: 'PaymentDueDate contains an amount that should be paid by the given date.',
-  })
-  .openapi('PaymentDueDate')
-
-const PaymentTermDueDateSchema = z
-  .object({
-    type: z.literal('due_date').openapi({ description: 'Type of terms to be applied.' }),
-    detail: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Text detail of the chosen payment terms.', readOnly: true }),
-    notes: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Description of the conditions for payment.', readOnly: true }),
-    dueAt: z
-      .array(PaymentDueDateSchema)
-      .min(1)
-      .openapi({ description: 'When the payment is due.', readOnly: true }),
-  })
-  .openapi({
-    required: ['type', 'dueAt'],
-    description: 'PaymentTermDueDate defines the terms for payment on a specific date.',
-  })
-  .openapi('PaymentTermDueDate')
-
-const PaymentTermsSchema = z
-  .union([PaymentTermInstantSchema, PaymentTermDueDateSchema])
-  .openapi({ description: 'PaymentTerms defines the terms for payment.' })
-  .openapi('PaymentTerms')
-
-const InvoicePaymentTermsSchema = z
-  .object({
-    terms: PaymentTermsSchema.exactOptional().openapi({
-      description: 'The terms of payment for the invoice.',
-    }),
-  })
-  .openapi({
-    description: 'Payment contains details as to how the invoice should be paid.',
-    required: [],
-  })
-  .openapi('InvoicePaymentTerms')
-
-const ValidationIssueSeveritySchema = z
-  .enum(['critical', 'warning'])
-  .openapi({
-    description:
-      'ValidationIssueSeverity describes the severity of a validation issue.\n\nIssues with severity "critical" will prevent the invoice from being issued.',
-  })
-  .openapi('ValidationIssueSeverity')
-
-const ValidationIssueSchema = z
-  .object({
-    createdAt: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'Timestamp of when the resource was created.',
-        example: '2024-01-01T01:01:01.001Z',
-        title: 'Creation Time',
-        readOnly: true,
-      }),
-    updatedAt: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'Timestamp of when the resource was last updated.',
-        example: '2024-01-01T01:01:01.001Z',
-        title: 'Last Update Time',
-        readOnly: true,
-      }),
-    deletedAt: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'Timestamp of when the resource was permanently deleted.',
-        example: '2024-01-01T01:01:01.001Z',
-        title: 'Deletion Time',
-        readOnly: true,
-      }),
-    id: z
-      .string()
-      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
-      .openapi({
-        description: 'ID of the charge or discount.',
-        example: '01G65Z755AFWAKHE12NY0CQ9FH',
-        readOnly: true,
-      }),
-    severity: ValidationIssueSeveritySchema.openapi({
-      description: 'The severity of the issue.',
-      readOnly: true,
-    }),
-    field: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The field that the issue is related to, if available in JSON path format.',
-        readOnly: true,
-      }),
-    code: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Machine indentifiable code for the issue, if available.',
-        readOnly: true,
-      }),
-    component: z
-      .string()
-      .openapi({ description: 'Component reporting the issue.', readOnly: true }),
-    message: z
-      .string()
-      .openapi({ description: 'A human-readable description of the issue.', readOnly: true }),
-    metadata: MetadataSchema.exactOptional().openapi({
-      description: 'Additional context for the issue.',
-      readOnly: true,
-    }),
-  })
-  .openapi({
-    required: ['createdAt', 'updatedAt', 'id', 'severity', 'component', 'message'],
-    description:
-      'ValidationIssue captures any validation issues related to the invoice.\n\nIssues with severity "critical" will prevent the invoice from being issued.',
-  })
-  .openapi('ValidationIssue')
-
-const InvoiceAppExternalIdsSchema = z
-  .object({
-    invoicing: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The external ID of the invoice in the invoicing app if available.',
-        readOnly: true,
-      }),
-    tax: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The external ID of the invoice in the tax app if available.',
-        readOnly: true,
-      }),
-    payment: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The external ID of the invoice in the payment app if available.',
-        readOnly: true,
-      }),
-  })
-  .openapi({
-    description:
-      'InvoiceAppExternalIds contains the external IDs of the invoice in other apps such as Stripe.',
-    required: [],
-  })
-  .openapi('InvoiceAppExternalIds')
-
-const InvoiceSchema = z
-  .object({
-    id: z
-      .string()
-      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
-      .openapi({
-        description: 'A unique identifier for the resource.',
-        example: '01G65Z755AFWAKHE12NY0CQ9FH',
-        title: 'ID',
-        readOnly: true,
-      }),
-    description: z
-      .string()
-      .max(1024)
-      .exactOptional()
-      .openapi({
-        description: 'Optional description of the resource. Maximum 1024 characters.',
-        title: 'Description',
-      }),
-    metadata: MetadataSchema.nullable()
-      .exactOptional()
-      .openapi({ description: 'Additional metadata for the resource.', title: 'Metadata' }),
-    createdAt: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'Timestamp of when the resource was created.',
-        example: '2024-01-01T01:01:01.001Z',
-        title: 'Creation Time',
-        readOnly: true,
-      }),
-    updatedAt: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'Timestamp of when the resource was last updated.',
-        example: '2024-01-01T01:01:01.001Z',
-        title: 'Last Update Time',
-        readOnly: true,
-      }),
-    deletedAt: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'Timestamp of when the resource was permanently deleted.',
-        example: '2024-01-01T01:01:01.001Z',
-        title: 'Deletion Time',
-        readOnly: true,
-      }),
-    type: InvoiceTypeSchema.openapi({
-      description:
-        'Type of the invoice.\n\nThe type of invoice determines the purpose of the invoice and how it should be handled.\n\nSupported types:\n- standard: A regular commercial invoice document between a supplier and customer.\n- credit_note: Reflects a refund either partial or complete of the preceding document. A credit note effectively *extends* the previous document.',
-      readOnly: true,
-    }),
-    supplier: BillingPartySchema.openapi({
-      description: 'The taxable entity supplying the goods or services.',
-    }),
-    customer: BillingInvoiceCustomerExtendedDetailsSchema.openapi({
-      description: 'Legal entity receiving the goods or services.',
-    }),
-    number: InvoiceNumberSchema.openapi({
-      description:
-        "Number specifies the human readable key used to reference this Invoice.\n\nThe invoice number can change in the draft phases, as we are allocating temporary draft\ninvoice numbers, but it's final as soon as the invoice gets finalized (issued state).\n\nPlease note that the number is (depending on the upstream settings) either unique for the\nwhole organization or unique for the customer, or in multi (stripe) account setups unique for the\naccount.",
-      readOnly: true,
-    }),
-    currency: CurrencyCodeSchema.openapi({
-      description:
-        'Currency for all invoice line items.\n\nMulti currency invoices are not supported yet.',
-    }),
-    preceding: z
-      .array(InvoiceDocumentRefSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Key information regarding previous invoices and potentially details as to why they were corrected.',
-        readOnly: true,
-      }),
-    totals: InvoiceTotalsSchema.openapi({
-      description: 'Summary of all the invoice totals, including taxes (calculated).',
-      readOnly: true,
-    }),
-    status: InvoiceStatusSchema.openapi({
-      description:
-        'The status of the invoice.\n\nThis field only conatins a simplified status, for more detailed information use the statusDetails field.',
-      readOnly: true,
-    }),
-    statusDetails: InvoiceStatusDetailsSchema.openapi({
-      description: 'The details of the current invoice status.',
-      readOnly: true,
-    }),
-    issuedAt: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description:
-          'The time the invoice was issued.\n\nDepending on the status of the invoice this can mean multiple things:\n- draft, gathering: The time the invoice will be issued based on the workflow settings.\n- issued: The time the invoice was issued.',
-        example: '2023-01-01T01:01:01.001Z',
-        readOnly: true,
-      }),
-    draftUntil: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description:
-          'The time until the invoice is in draft status.\n\nOn draft invoice creation it is calculated from the workflow settings.\n\nIf manual approval is required, the draftUntil time is set.',
-        example: '2023-01-01T01:01:01.001Z',
-      }),
-    quantitySnapshotedAt: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'The time when the quantity snapshots on the invoice lines were taken.',
-        example: '2023-01-01T01:01:01.001Z',
-        readOnly: true,
-      }),
-    collectionAt: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'The time when the invoice will be/has been collected.',
-        example: '2023-01-01T01:01:01.001Z',
-        readOnly: true,
-      }),
-    dueAt: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'Due time of the fulfillment of the invoice (if available).',
-        example: '2023-01-01T01:01:01.001Z',
-        readOnly: true,
-      }),
-    period: PeriodSchema.exactOptional().openapi({
-      description: "The period the invoice covers. If the invoice has no line items, it's not set.",
-    }),
-    voidedAt: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description:
-          'The time the invoice was voided.\n\nIf the invoice was voided, this field will be set to the time the invoice was voided.',
-        example: '2023-01-01T01:01:01.001Z',
-        readOnly: true,
-      }),
-    sentToCustomerAt: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'The time the invoice was sent to customer.',
-        example: '2023-01-01T01:01:01.001Z',
-        readOnly: true,
-      }),
-    workflow: InvoiceWorkflowSettingsSchema.openapi({
-      description:
-        'The workflow associated with the invoice.\n\nIt is always a snapshot of the workflow settings at the time of invoice creation. The\nfield is optional as it should be explicitly requested with expand options.',
-    }),
-    lines: z
-      .array(InvoiceLineSchema)
-      .exactOptional()
-      .openapi({
-        description: 'List of invoice lines representing each of the items sold to the customer.',
-      }),
-    payment: InvoicePaymentTermsSchema.exactOptional().openapi({
-      description: 'Information on when, how, and to whom the invoice should be paid.',
-      readOnly: true,
-    }),
-    validationIssues: z
-      .array(ValidationIssueSchema)
-      .exactOptional()
-      .openapi({
-        description: 'Validation issues reported by the invoice workflow.',
-        readOnly: true,
-      }),
-    externalIds: InvoiceAppExternalIdsSchema.exactOptional().openapi({
-      description: 'External IDs of the invoice in other apps such as Stripe.',
-      readOnly: true,
-    }),
-  })
-  .openapi({
-    required: [
-      'id',
-      'createdAt',
-      'updatedAt',
-      'type',
-      'supplier',
-      'customer',
-      'number',
-      'currency',
-      'totals',
-      'status',
-      'statusDetails',
-      'workflow',
-    ],
-    description: 'Invoice represents an invoice in the system.',
-  })
-  .openapi('Invoice')
 
 const InvoiceDiscountBaseSchema = z
   .object({
@@ -9219,75 +11338,12 @@ const InvoiceLineBaseSchema = z
   })
   .openapi('InvoiceLineBase')
 
-const InvoiceLineReplaceUpdateSchema = z
-  .object({
-    name: z
-      .string()
-      .min(1)
-      .max(256)
-      .openapi({
-        description: 'Human-readable name for the resource. Between 1 and 256 characters.',
-        title: 'Display name',
-      }),
-    description: z
-      .string()
-      .max(1024)
-      .exactOptional()
-      .openapi({
-        description: 'Optional description of the resource. Maximum 1024 characters.',
-        title: 'Description',
-      }),
-    metadata: MetadataSchema.nullable()
-      .exactOptional()
-      .openapi({ description: 'Additional metadata for the resource.', title: 'Metadata' }),
-    taxConfig: TaxConfigSchema.exactOptional().openapi({
-      description: 'Tax config specify the tax configuration for this line.',
-      deprecated: true,
-    }),
-    period: PeriodSchema.openapi({
-      description:
-        'Period of the line item applies to for revenue recognition pruposes.\n\nBilling always treats periods as start being inclusive and end being exclusive.',
-    }),
-    invoiceAt: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'The time this line item should be invoiced.',
-        example: '2023-01-01T01:01:01.001Z',
-      }),
-    price: RateCardUsageBasedPriceSchema.exactOptional().openapi({
-      description: 'Price of the usage-based item being sold.',
-      deprecated: true,
-    }),
-    featureKey: z
-      .string()
-      .regex(/^[a-z0-9]+(?:_[a-z0-9]+)*$/)
-      .min(1)
-      .max(64)
-      .exactOptional()
-      .openapi({ description: 'The feature that the usage is based on.', deprecated: true }),
-    rateCard: InvoiceUsageBasedRateCardSchema.exactOptional().openapi({
-      description:
-        'The rate card that is used for this line.\n\nThe rate card captures the intent of the price and discounts for the usage-based item.',
-    }),
-    id: z
-      .string()
-      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
-      .exactOptional()
-      .openapi({ description: 'The ID of the line.', example: '01G65Z755AFWAKHE12NY0CQ9FH' }),
-  })
-  .openapi({
-    required: ['name', 'period', 'invoiceAt'],
-    description:
-      'InvoiceLineReplaceUpdate represents the update model for an UBP invoice line.\n\nThis type makes ID optional to allow for creating new lines as part of the update.',
-  })
-  .openapi('InvoiceLineReplaceUpdate')
-
 const InvoiceOrderBySchema = z
   .enum(['customer.name', 'issuedAt', 'status', 'createdAt', 'updatedAt', 'periodStart'])
   .openapi({ description: 'InvoiceOrderBy specifies the ordering options for invoice listing.' })
   .openapi('InvoiceOrderBy')
 
-const InvoicePaginatedResponseSchema = z
+const InvoicePaginatedResponseSchema: z.ZodType<InvoicePaginatedResponseType> = z
   .object({
     totalCount: z.int().openapi({ description: 'The total number of items.', example: 500 }),
     page: z.int().openapi({ description: 'The page index.', example: 1 }),
@@ -9302,65 +11358,7 @@ const InvoicePaginatedResponseSchema = z
   })
   .openapi('InvoicePaginatedResponse')
 
-const InvoicePendingLineCreateSchema = z
-  .object({
-    name: z
-      .string()
-      .min(1)
-      .max(256)
-      .openapi({
-        description: 'Human-readable name for the resource. Between 1 and 256 characters.',
-        title: 'Display name',
-      }),
-    description: z
-      .string()
-      .max(1024)
-      .exactOptional()
-      .openapi({
-        description: 'Optional description of the resource. Maximum 1024 characters.',
-        title: 'Description',
-      }),
-    metadata: MetadataSchema.nullable()
-      .exactOptional()
-      .openapi({ description: 'Additional metadata for the resource.', title: 'Metadata' }),
-    taxConfig: TaxConfigSchema.exactOptional().openapi({
-      description: 'Tax config specify the tax configuration for this line.',
-      deprecated: true,
-    }),
-    period: PeriodSchema.openapi({
-      description:
-        'Period of the line item applies to for revenue recognition pruposes.\n\nBilling always treats periods as start being inclusive and end being exclusive.',
-    }),
-    invoiceAt: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'The time this line item should be invoiced.',
-        example: '2023-01-01T01:01:01.001Z',
-      }),
-    price: RateCardUsageBasedPriceSchema.exactOptional().openapi({
-      description: 'Price of the usage-based item being sold.',
-      deprecated: true,
-    }),
-    featureKey: z
-      .string()
-      .regex(/^[a-z0-9]+(?:_[a-z0-9]+)*$/)
-      .min(1)
-      .max(64)
-      .exactOptional()
-      .openapi({ description: 'The feature that the usage is based on.', deprecated: true }),
-    rateCard: InvoiceUsageBasedRateCardSchema.exactOptional().openapi({
-      description:
-        'The rate card that is used for this line.\n\nThe rate card captures the intent of the price and discounts for the usage-based item.',
-    }),
-  })
-  .openapi({
-    required: ['name', 'period', 'invoiceAt'],
-    description:
-      'InvoicePendingLineCreate represents the create model for an invoice line that is sold to the customer based on usage.',
-  })
-  .openapi('InvoicePendingLineCreate')
-
-const InvoicePendingLineCreateInputSchema = z
+const InvoicePendingLineCreateInputSchema: z.ZodType<InvoicePendingLineCreateInputType> = z
   .object({
     currency: CurrencyCodeSchema.openapi({
       description: 'The currency of the lines to be created.',
@@ -9376,7 +11374,7 @@ const InvoicePendingLineCreateInputSchema = z
   })
   .openapi('InvoicePendingLineCreateInput')
 
-const InvoicePendingLineCreateResponseSchema = z
+const InvoicePendingLineCreateResponseSchema: z.ZodType<InvoicePendingLineCreateResponseType> = z
   .object({
     lines: z
       .array(InvoiceLineSchema)
@@ -9456,80 +11454,7 @@ const InvoicePendingLinesActionInputSchema = z
   })
   .openapi('InvoicePendingLinesActionInput')
 
-const InvoiceWorkflowInvoicingSettingsReplaceUpdateSchema = z
-  .object({
-    autoAdvance: z
-      .boolean()
-      .default(true)
-      .exactOptional()
-      .openapi({
-        description: 'Whether to automatically issue the invoice after the draftPeriod has passed.',
-      }),
-    draftPeriod: z
-      .string()
-      .default('P0D')
-      .exactOptional()
-      .openapi({
-        description: 'The period for the invoice to be kept in draft status for manual reviews.',
-        example: 'P1D',
-      }),
-    dueAfter: z
-      .string()
-      .default('P30D')
-      .exactOptional()
-      .openapi({
-        description:
-          "The period after which the invoice is due.\nWith some payment solutions it's only applicable for manual collection method.",
-        example: 'P30D',
-      }),
-    subscriptionEndProrationMode:
-      BillingWorkflowInvoicingSubscriptionEndProrationModeSchema.default('bill_actual_period')
-        .exactOptional()
-        .openapi({
-          description: 'Controls how subscription-ending shortened service periods are billed.',
-        }),
-    defaultTaxConfig: TaxConfigSchema.exactOptional().openapi({
-      description:
-        "Default tax configuration to apply to the invoices.\n\nSetting a tax code (`stripe.code` / `taxCodeId`) on a profile's default tax config is\ndeprecated and can no longer be added or changed: the organization default tax code is\nused instead. Existing tax-code values may still be removed, and `behavior` remains\nfully supported.",
-    }),
-  })
-  .openapi({
-    description:
-      'InvoiceWorkflowInvoicingSettingsReplaceUpdate represents the update model for the invoicing settings of an invoice workflow.',
-    required: [],
-  })
-  .openapi('InvoiceWorkflowInvoicingSettingsReplaceUpdate')
-
-const InvoiceWorkflowSettingsReplaceUpdateSchema = z
-  .object({
-    invoicing: InvoiceWorkflowInvoicingSettingsReplaceUpdateSchema.openapi({
-      description: 'The invoicing settings for this workflow',
-    }),
-    payment: BillingWorkflowPaymentSettingsSchema.openapi({
-      description: 'The payment settings for this workflow',
-    }),
-  })
-  .openapi({
-    required: ['invoicing', 'payment'],
-    description:
-      "Mutable workflow settings for an invoice.\n\nOther fields on the invoice's workflow are not mutable, they serve as a history of the invoice's workflow\nat creation time.",
-  })
-  .openapi('InvoiceWorkflowSettingsReplaceUpdate')
-
-const InvoiceWorkflowReplaceUpdateSchema = z
-  .object({
-    workflow: InvoiceWorkflowSettingsReplaceUpdateSchema.openapi({
-      description: 'The workflow used for this invoice.',
-    }),
-  })
-  .openapi({
-    required: ['workflow'],
-    description:
-      'InvoiceWorkflowReplaceUpdate represents the update model for an invoice workflow.\n\nFields that are immutable a re removed from the model. This is based on InvoiceWorkflowSettings.',
-  })
-  .openapi('InvoiceWorkflowReplaceUpdate')
-
-const InvoiceReplaceUpdateSchema = z
+const InvoiceReplaceUpdateSchema: z.ZodType<InvoiceReplaceUpdateType> = z
   .object({
     description: z
       .string()
@@ -9561,79 +11486,7 @@ const InvoiceReplaceUpdateSchema = z
   })
   .openapi('InvoiceReplaceUpdate')
 
-const InvoiceSimulationLineSchema = z
-  .object({
-    name: z
-      .string()
-      .min(1)
-      .max(256)
-      .openapi({
-        description: 'Human-readable name for the resource. Between 1 and 256 characters.',
-        title: 'Display name',
-      }),
-    description: z
-      .string()
-      .max(1024)
-      .exactOptional()
-      .openapi({
-        description: 'Optional description of the resource. Maximum 1024 characters.',
-        title: 'Description',
-      }),
-    metadata: MetadataSchema.nullable()
-      .exactOptional()
-      .openapi({ description: 'Additional metadata for the resource.', title: 'Metadata' }),
-    taxConfig: TaxConfigSchema.exactOptional().openapi({
-      description: 'Tax config specify the tax configuration for this line.',
-      deprecated: true,
-    }),
-    period: PeriodSchema.openapi({
-      description:
-        'Period of the line item applies to for revenue recognition pruposes.\n\nBilling always treats periods as start being inclusive and end being exclusive.',
-    }),
-    invoiceAt: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'The time this line item should be invoiced.',
-        example: '2023-01-01T01:01:01.001Z',
-      }),
-    price: RateCardUsageBasedPriceSchema.exactOptional().openapi({
-      description: 'Price of the usage-based item being sold.',
-      deprecated: true,
-    }),
-    featureKey: z
-      .string()
-      .regex(/^[a-z0-9]+(?:_[a-z0-9]+)*$/)
-      .min(1)
-      .max(64)
-      .exactOptional()
-      .openapi({ description: 'The feature that the usage is based on.', deprecated: true }),
-    rateCard: InvoiceUsageBasedRateCardSchema.exactOptional().openapi({
-      description:
-        'The rate card that is used for this line.\n\nThe rate card captures the intent of the price and discounts for the usage-based item.',
-    }),
-    quantity: NumericSchema.openapi({ description: 'The quantity of the item being sold.' }),
-    preLinePeriodQuantity: NumericSchema.exactOptional().openapi({
-      description:
-        "The quantity of the item used before this line's period, if the line is billed progressively.",
-    }),
-    id: z
-      .string()
-      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
-      .exactOptional()
-      .openapi({
-        description:
-          'ID of the line. If not specified it will be auto-generated.\n\nWhen discounts are specified, this must be provided, so that the discount can reference it.',
-        example: '01G65Z755AFWAKHE12NY0CQ9FH',
-      }),
-  })
-  .openapi({
-    required: ['name', 'period', 'invoiceAt', 'quantity'],
-    description:
-      'InvoiceSimulationLine represents a usage-based line item that can be input to the simulation endpoint.',
-  })
-  .openapi('InvoiceSimulationLine')
-
-const InvoiceSimulationInputSchema = z
+const InvoiceSimulationInputSchema: z.ZodType<InvoiceSimulationInputType> = z
   .object({
     number: InvoiceNumberSchema.exactOptional().openapi({
       description: 'The number of the invoice.',
@@ -10351,33 +12204,6 @@ const NotificationChannelCreateRequestSchema =
     description: 'Union type for requests creating new notification channel with certain type.',
   }).openapi('NotificationChannelCreateRequest')
 
-const NotificationChannelTypeSchema = z
-  .literal('WEBHOOK')
-  .openapi({ description: 'Type of the notification channel.', 'x-enum-varnames': ['Webhook'] })
-  .openapi('NotificationChannelType')
-
-const NotificationChannelMetaSchema = z
-  .object({
-    id: z
-      .string()
-      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
-      .openapi({
-        description: 'Identifies the notification channel.',
-        example: '01ARZ3NDEKTSV4RRFFQ69G5FAV',
-        title: 'Channel Unique Identifier',
-        readOnly: true,
-      }),
-    type: NotificationChannelTypeSchema.openapi({
-      description: 'Notification channel type.',
-      title: 'Channel Type',
-    }),
-  })
-  .openapi({
-    required: ['id', 'type'],
-    description: 'Metadata only fields of a notification channel.',
-  })
-  .openapi('NotificationChannelMeta')
-
 const NotificationChannelOrderBySchema = z
   .enum(['id', 'type', 'createdAt', 'updatedAt'])
   .openapi({ description: 'Order by options for notification channels.' })
@@ -10400,871 +12226,28 @@ const NotificationChannelPaginatedResponseSchema = z
   })
   .openapi('NotificationChannelPaginatedResponse')
 
-const NotificationEventTypeSchema = z
-  .enum([
-    'entitlements.balance.threshold',
-    'entitlements.reset',
-    'invoice.created',
-    'invoice.updated',
-  ])
-  .openapi({ description: 'Type of the notification event.' })
-  .openapi('NotificationEventType')
-
-const NotificationRuleBalanceThresholdValueTypeSchema = z
-  .enum(['PERCENT', 'NUMBER', 'balance_value', 'usage_percentage', 'usage_value'])
-  .openapi({
-    description:
-      'Type of the rule in the balance threshold specification:\n* `balance_value`: threshold defined by the remaining balance value based on usage and the total of grants in the current usage period\n* `usage_percentage`: threshold defined by the usage percentage compared to the total of grants in the current usage period\n* `usage_value`: threshold defined by the usage value in the current usage period\n* `NUMBER` (**deprecated**): see `usage_value`\n* `PERCENT` (**deprecated**): see `usage_percentage`',
-    title: 'Notification balance threshold type',
-    'x-enum-varnames': ['Percent', 'Number', 'BalanceValue', 'UsagePercentage', 'UsageValue'],
-  })
-  .openapi('NotificationRuleBalanceThresholdValueType')
-
-const NotificationRuleBalanceThresholdValueSchema = z
-  .object({
-    value: z
-      .float64()
-      .openapi({ description: 'Value of the threshold.', title: 'Threshold Value', example: 100 }),
-    type: NotificationRuleBalanceThresholdValueTypeSchema.openapi({
-      description: 'Type of the threshold.',
-      example: 'usage_value',
-    }),
-  })
-  .openapi({
-    required: ['value', 'type'],
-    description: 'Threshold value with multiple supported types.',
-  })
-  .openapi('NotificationRuleBalanceThresholdValue')
-
-const NotificationRuleBalanceThresholdSchema = z
-  .object({
-    createdAt: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'Timestamp of when the resource was created.',
-        example: '2024-01-01T01:01:01.001Z',
-        title: 'Creation Time',
-        readOnly: true,
-      }),
-    updatedAt: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'Timestamp of when the resource was last updated.',
-        example: '2024-01-01T01:01:01.001Z',
-        title: 'Last Update Time',
-        readOnly: true,
-      }),
-    deletedAt: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'Timestamp of when the resource was permanently deleted.',
-        example: '2024-01-01T01:01:01.001Z',
-        title: 'Deletion Time',
-        readOnly: true,
-      }),
-    id: z
-      .string()
-      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
-      .openapi({
-        description: 'Identifies the notification rule.',
-        example: '01ARZ3NDEKTSV4RRFFQ69G5FAV',
-        title: 'Rule Unique Identifier',
-        readOnly: true,
-      }),
-    type: z
-      .literal('entitlements.balance.threshold')
-      .openapi({ description: 'Notification rule type.', title: 'Rule Type' }),
-    name: z
-      .string()
-      .min(1)
-      .max(256)
-      .openapi({
-        description: 'The user friendly name of the notification rule.',
-        title: 'Rule Name',
-        example: 'Balance threshold reached',
-      }),
-    disabled: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({
-        description: 'Whether the rule is disabled or not.',
-        title: 'Rule Disabled',
-        example: true,
-      }),
-    channels: z
-      .array(NotificationChannelMetaSchema)
-      .openapi({
-        description: 'List of notification channels the rule applies to.',
-        title: 'Channels assigned to Rule',
-      }),
-    annotations: AnnotationsSchema.exactOptional().openapi({
-      description: 'Set of key-value pairs managed by the system. Cannot be modified by user.',
-      title: 'Annotations',
-      readOnly: true,
-    }),
-    metadata: MetadataSchema.nullable()
-      .exactOptional()
-      .openapi({ description: 'Additional metadata for the resource.', title: 'Metadata' }),
-    thresholds: z
-      .array(NotificationRuleBalanceThresholdValueSchema)
-      .min(1)
-      .max(10)
-      .openapi({
-        description: 'List of thresholds the rule suppose to be triggered.',
-        title: 'Entitlement Balance Thresholds',
-      }),
-    features: z
-      .array(FeatureMetaSchema)
-      .min(1)
-      .exactOptional()
-      .openapi({
-        description: 'Optional field containing list of features the rule applies to.',
-        title: 'Features',
-      }),
-  })
-  .openapi({
-    required: ['createdAt', 'updatedAt', 'id', 'type', 'name', 'channels', 'thresholds'],
-    description: 'Notification rule with entitlements.balance.threshold type.',
-  })
-  .openapi('NotificationRuleBalanceThreshold')
-
-const NotificationRuleEntitlementResetSchema = z
-  .object({
-    createdAt: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'Timestamp of when the resource was created.',
-        example: '2024-01-01T01:01:01.001Z',
-        title: 'Creation Time',
-        readOnly: true,
-      }),
-    updatedAt: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'Timestamp of when the resource was last updated.',
-        example: '2024-01-01T01:01:01.001Z',
-        title: 'Last Update Time',
-        readOnly: true,
-      }),
-    deletedAt: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'Timestamp of when the resource was permanently deleted.',
-        example: '2024-01-01T01:01:01.001Z',
-        title: 'Deletion Time',
-        readOnly: true,
-      }),
-    id: z
-      .string()
-      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
-      .openapi({
-        description: 'Identifies the notification rule.',
-        example: '01ARZ3NDEKTSV4RRFFQ69G5FAV',
-        title: 'Rule Unique Identifier',
-        readOnly: true,
-      }),
-    type: z
-      .literal('entitlements.reset')
-      .openapi({ description: 'Notification rule type.', title: 'Rule Type' }),
-    name: z
-      .string()
-      .min(1)
-      .max(256)
-      .openapi({
-        description: 'The user friendly name of the notification rule.',
-        title: 'Rule Name',
-        example: 'Balance threshold reached',
-      }),
-    disabled: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({
-        description: 'Whether the rule is disabled or not.',
-        title: 'Rule Disabled',
-        example: true,
-      }),
-    channels: z
-      .array(NotificationChannelMetaSchema)
-      .openapi({
-        description: 'List of notification channels the rule applies to.',
-        title: 'Channels assigned to Rule',
-      }),
-    annotations: AnnotationsSchema.exactOptional().openapi({
-      description: 'Set of key-value pairs managed by the system. Cannot be modified by user.',
-      title: 'Annotations',
-      readOnly: true,
-    }),
-    metadata: MetadataSchema.nullable()
-      .exactOptional()
-      .openapi({ description: 'Additional metadata for the resource.', title: 'Metadata' }),
-    features: z
-      .array(FeatureMetaSchema)
-      .min(1)
-      .exactOptional()
-      .openapi({
-        description: 'Optional field containing list of features the rule applies to.',
-        title: 'Features',
-      }),
-  })
-  .openapi({
-    required: ['createdAt', 'updatedAt', 'id', 'type', 'name', 'channels'],
-    description: 'Notification rule with entitlements.reset type.',
-  })
-  .openapi('NotificationRuleEntitlementReset')
-
-const NotificationRuleInvoiceCreatedSchema = z
-  .object({
-    createdAt: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'Timestamp of when the resource was created.',
-        example: '2024-01-01T01:01:01.001Z',
-        title: 'Creation Time',
-        readOnly: true,
-      }),
-    updatedAt: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'Timestamp of when the resource was last updated.',
-        example: '2024-01-01T01:01:01.001Z',
-        title: 'Last Update Time',
-        readOnly: true,
-      }),
-    deletedAt: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'Timestamp of when the resource was permanently deleted.',
-        example: '2024-01-01T01:01:01.001Z',
-        title: 'Deletion Time',
-        readOnly: true,
-      }),
-    id: z
-      .string()
-      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
-      .openapi({
-        description: 'Identifies the notification rule.',
-        example: '01ARZ3NDEKTSV4RRFFQ69G5FAV',
-        title: 'Rule Unique Identifier',
-        readOnly: true,
-      }),
-    type: z
-      .literal('invoice.created')
-      .openapi({ description: 'Notification rule type.', title: 'Rule Type' }),
-    name: z
-      .string()
-      .min(1)
-      .max(256)
-      .openapi({
-        description: 'The user friendly name of the notification rule.',
-        title: 'Rule Name',
-        example: 'Balance threshold reached',
-      }),
-    disabled: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({
-        description: 'Whether the rule is disabled or not.',
-        title: 'Rule Disabled',
-        example: true,
-      }),
-    channels: z
-      .array(NotificationChannelMetaSchema)
-      .openapi({
-        description: 'List of notification channels the rule applies to.',
-        title: 'Channels assigned to Rule',
-      }),
-    annotations: AnnotationsSchema.exactOptional().openapi({
-      description: 'Set of key-value pairs managed by the system. Cannot be modified by user.',
-      title: 'Annotations',
-      readOnly: true,
-    }),
-    metadata: MetadataSchema.nullable()
-      .exactOptional()
-      .openapi({ description: 'Additional metadata for the resource.', title: 'Metadata' }),
-  })
-  .openapi({
-    required: ['createdAt', 'updatedAt', 'id', 'type', 'name', 'channels'],
-    description: 'Notification rule with invoice.created type.',
-  })
-  .openapi('NotificationRuleInvoiceCreated')
-
-const NotificationRuleInvoiceUpdatedSchema = z
-  .object({
-    createdAt: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'Timestamp of when the resource was created.',
-        example: '2024-01-01T01:01:01.001Z',
-        title: 'Creation Time',
-        readOnly: true,
-      }),
-    updatedAt: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'Timestamp of when the resource was last updated.',
-        example: '2024-01-01T01:01:01.001Z',
-        title: 'Last Update Time',
-        readOnly: true,
-      }),
-    deletedAt: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'Timestamp of when the resource was permanently deleted.',
-        example: '2024-01-01T01:01:01.001Z',
-        title: 'Deletion Time',
-        readOnly: true,
-      }),
-    id: z
-      .string()
-      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
-      .openapi({
-        description: 'Identifies the notification rule.',
-        example: '01ARZ3NDEKTSV4RRFFQ69G5FAV',
-        title: 'Rule Unique Identifier',
-        readOnly: true,
-      }),
-    type: z
-      .literal('invoice.updated')
-      .openapi({ description: 'Notification rule type.', title: 'Rule Type' }),
-    name: z
-      .string()
-      .min(1)
-      .max(256)
-      .openapi({
-        description: 'The user friendly name of the notification rule.',
-        title: 'Rule Name',
-        example: 'Balance threshold reached',
-      }),
-    disabled: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({
-        description: 'Whether the rule is disabled or not.',
-        title: 'Rule Disabled',
-        example: true,
-      }),
-    channels: z
-      .array(NotificationChannelMetaSchema)
-      .openapi({
-        description: 'List of notification channels the rule applies to.',
-        title: 'Channels assigned to Rule',
-      }),
-    annotations: AnnotationsSchema.exactOptional().openapi({
-      description: 'Set of key-value pairs managed by the system. Cannot be modified by user.',
-      title: 'Annotations',
-      readOnly: true,
-    }),
-    metadata: MetadataSchema.nullable()
-      .exactOptional()
-      .openapi({ description: 'Additional metadata for the resource.', title: 'Metadata' }),
-  })
-  .openapi({
-    required: ['createdAt', 'updatedAt', 'id', 'type', 'name', 'channels'],
-    description: 'Notification rule with invoice.updated type.',
-  })
-  .openapi('NotificationRuleInvoiceUpdated')
-
-const NotificationRuleSchema = z
-  .discriminatedUnion('type', [
-    NotificationRuleBalanceThresholdSchema,
-    NotificationRuleEntitlementResetSchema,
-    NotificationRuleInvoiceCreatedSchema,
-    NotificationRuleInvoiceUpdatedSchema,
-  ])
-  .openapi({
-    discriminator: {
-      propertyName: 'type',
-      mapping: {
-        'entitlements.balance.threshold': '#/components/schemas/NotificationRuleBalanceThreshold',
-        'entitlements.reset': '#/components/schemas/NotificationRuleEntitlementReset',
-        'invoice.created': '#/components/schemas/NotificationRuleInvoiceCreated',
-        'invoice.updated': '#/components/schemas/NotificationRuleInvoiceUpdated',
-      },
-    },
-    description: 'Notification Rule.',
-  })
-  .openapi('NotificationRule')
-
-const NotificationEventDeliveryStatusStateSchema = z
-  .enum(['SUCCESS', 'FAILED', 'SENDING', 'PENDING', 'RESENDING'])
-  .openapi({
-    description: 'The delivery state of the notification event to the channel.',
-    title: 'Delivery State',
-    'x-enum-varnames': ['Success', 'Failed', 'Sending', 'Pending', 'Resending'],
-  })
-  .openapi('NotificationEventDeliveryStatusState')
-
-const NotificationEventDeliveryAttemptSchema = z
-  .object({
-    state: NotificationEventDeliveryStatusStateSchema.openapi({
-      description: 'State of teh delivery attempt.',
-      title: 'State of teh delivery attempt',
-      example: 'SUCCESS',
-      readOnly: true,
-    }),
-    response: EventDeliveryAttemptResponseSchema.openapi({
-      description: 'Response returned by the notification event recipient.',
-      title: 'Response returned by the notification event recipient',
-      readOnly: true,
-    }),
-    timestamp: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'Timestamp of the delivery attempt.',
-        example: '2023-01-01T01:01:01.001Z',
-        title: 'Timestamp of the delivery attempt',
-        readOnly: true,
-      }),
-  })
-  .openapi({
-    required: ['state', 'response', 'timestamp'],
-    description: 'The delivery attempt of the notification event.',
-  })
-  .openapi('NotificationEventDeliveryAttempt')
-
-const NotificationEventDeliveryStatusSchema = z
-  .object({
-    state: NotificationEventDeliveryStatusStateSchema.openapi({
-      description: 'Delivery state of the notification event to the channel.',
-      example: 'SUCCESS',
-      readOnly: true,
-    }),
-    reason: z
-      .string()
-      .openapi({
-        description: 'The reason of the last deliverry state update.',
-        title: 'State Reason',
-        example: 'Failed to dispatch event due to provider error.',
-        readOnly: true,
-      }),
-    updatedAt: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'Timestamp of when the status was last updated in RFC 3339 format.',
-        example: '2023-01-01T01:01:01.001Z',
-        title: 'Last Update Time',
-        readOnly: true,
-      }),
-    channel: NotificationChannelMetaSchema.openapi({
-      description: 'Notification channel the delivery status associated with.',
-      title: 'Notification Channel',
-      readOnly: true,
-    }),
-    annotations: AnnotationsSchema.exactOptional().openapi({
-      description: 'Set of key-value pairs managed by the system. Cannot be modified by user.',
-      title: 'Annotations',
-      readOnly: true,
-    }),
-    nextAttempt: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description:
-          'Timestamp of the next delivery attempt. If null it means there will be no more delivery attempts.',
-        example: '2023-01-01T01:01:01.001Z',
-        title: 'Timestamp of the next delivery attempt',
-        readOnly: true,
-      }),
-    attempts: z
-      .array(NotificationEventDeliveryAttemptSchema)
-      .openapi({
-        description: 'List of delivery attempts.',
-        title: 'Delivery Attempts',
-        readOnly: true,
-      }),
-  })
-  .openapi({
-    required: ['state', 'reason', 'updatedAt', 'channel', 'attempts'],
-    description: 'The delivery status of the notification event.',
-  })
-  .openapi('NotificationEventDeliveryStatus')
-
-const SubjectSchema = z
-  .object({
-    createdAt: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'Timestamp of when the resource was created.',
-        example: '2024-01-01T01:01:01.001Z',
-        title: 'Creation Time',
-        readOnly: true,
-      }),
-    updatedAt: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'Timestamp of when the resource was last updated.',
-        example: '2024-01-01T01:01:01.001Z',
-        title: 'Last Update Time',
-        readOnly: true,
-      }),
-    deletedAt: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'Timestamp of when the resource was permanently deleted.',
-        example: '2024-01-01T01:01:01.001Z',
-        title: 'Deletion Time',
-        readOnly: true,
-      }),
-    id: z
-      .string()
-      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
-      .openapi({
-        description: 'A unique identifier for the subject.',
-        example: '01G65Z755AFWAKHE12NY0CQ9FH',
-        readOnly: true,
-      }),
-    key: z
-      .string()
-      .openapi({
-        description:
-          'A unique, human-readable identifier for the subject.\nThis is typically a database ID or a customer key.',
-        example: 'customer-db-id-123',
-      }),
-    displayName: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'A human-readable display name for the subject.',
-        example: 'Customer Name',
-      }),
-    metadata: z
-      .record(z.string(), z.any())
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Metadata for the subject.', example: { hubspotId: '123456' } }),
-    currentPeriodStart: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'The start of the current period for the subject.',
-        example: '2023-01-01T00:00:00Z',
-        deprecated: true,
-      }),
-    currentPeriodEnd: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'The end of the current period for the subject.',
-        example: '2023-02-01T00:00:00Z',
-        deprecated: true,
-      }),
-    stripeCustomerId: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'The Stripe customer ID for the subject.',
-        deprecated: true,
-        example: 'cus_JMOlctsKV8',
-      }),
-  })
-  .openapi({
-    required: ['createdAt', 'updatedAt', 'id', 'key'],
-    description:
-      'A subject is a unique identifier for a usage attribution by its key.\nSubjects only exist in the concept of metering.\nSubjects are optional to create and work as an enrichment for the subject key like displayName, metadata, etc.\nSubjects are useful when you are reporting usage events with your own database ID but want to enrich the subject with a human-readable name or metadata.\nFor most use cases, a subject is equivalent to a customer.\n\n⚠️ __Deprecated__: Subjects as managable entities are being depracated, use customers with subject key usage attribution instead.',
-    deprecated: true,
-    example: {
-      createdAt: '2025-01-01T01:01:01.001Z',
-      updatedAt: '2025-02-01T01:01:01.001Z',
-      deletedAt: '2025-03-01T01:01:01.001Z',
-      id: '01G65Z755AFWAKHE12NY0CQ9FH',
-      key: 'customer-id',
-      displayName: 'Customer Name',
-      metadata: { hubspotId: '123456' },
-      stripeCustomerId: 'cus_JMOlctsKV8',
-    },
-  })
-  .openapi('Subject')
-
-const NotificationEventEntitlementValuePayloadBaseSchema = z
-  .object({
-    entitlement: EntitlementMeteredSchema.openapi({ title: 'Entitlement', readOnly: true }),
-    feature: FeatureSchema.openapi({ title: 'Feature', readOnly: true }),
-    subject: SubjectSchema.openapi({ title: 'Subject', readOnly: true }),
-    value: EntitlementValueSchema.openapi({ title: 'Entitlement Value', readOnly: true }),
-    customer: CustomerSchema.exactOptional().openapi({ title: 'Customer', readOnly: true }),
-  })
-  .openapi({
-    required: ['entitlement', 'feature', 'subject', 'value'],
-    description: 'Base data for any payload with entitlement entitlement value.',
-  })
-  .openapi('NotificationEventEntitlementValuePayloadBase')
-
-const NotificationEventResetPayloadSchema = z
-  .object({
-    id: z
-      .string()
-      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
-      .openapi({
-        description: 'A unique identifier for the notification event the payload belongs to.',
-        example: '01J2KNP1YTXQRXHTDJ4KPR7PZ0',
-        title: 'Notification Event Identifier',
-        readOnly: true,
-      }),
-    type: z
-      .literal('entitlements.reset')
-      .openapi({
-        description: 'Type of the notification event.',
-        title: 'Notification Event Type',
-        readOnly: true,
-      }),
-    timestamp: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'Timestamp when the notification event was created in RFC 3339 format.',
-        example: '2023-01-01T01:01:01.001Z',
-        title: 'Creation Time',
-        readOnly: true,
-      }),
-    data: NotificationEventEntitlementValuePayloadBaseSchema.openapi({
-      description: 'The data of the payload.',
-      title: 'Payload Data',
-      readOnly: true,
-    }),
-  })
-  .openapi({
-    required: ['id', 'type', 'timestamp', 'data'],
-    description: 'Payload for notification event with `entitlements.reset` type.',
-  })
-  .openapi('NotificationEventResetPayload')
-
-const NotificationEventBalanceThresholdPayloadDataSchema = z
-  .object({
-    entitlement: EntitlementMeteredSchema.openapi({ title: 'Entitlement', readOnly: true }),
-    feature: FeatureSchema.openapi({ title: 'Feature', readOnly: true }),
-    subject: SubjectSchema.openapi({ title: 'Subject', readOnly: true }),
-    value: EntitlementValueSchema.openapi({ title: 'Entitlement Value', readOnly: true }),
-    customer: CustomerSchema.exactOptional().openapi({ title: 'Customer', readOnly: true }),
-    threshold: NotificationRuleBalanceThresholdValueSchema.openapi({
-      title: 'Threshold',
-      readOnly: true,
-    }),
-  })
-  .openapi({
-    required: ['entitlement', 'feature', 'subject', 'value', 'threshold'],
-    description:
-      'Data of the payload for notification event with `entitlements.balance.threshold` type.',
-  })
-  .openapi('NotificationEventBalanceThresholdPayloadData')
-
-const NotificationEventBalanceThresholdPayloadSchema = z
-  .object({
-    id: z
-      .string()
-      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
-      .openapi({
-        description: 'A unique identifier for the notification event the payload belongs to.',
-        example: '01J2KNP1YTXQRXHTDJ4KPR7PZ0',
-        title: 'Notification Event Identifier',
-        readOnly: true,
-      }),
-    type: z
-      .literal('entitlements.balance.threshold')
-      .openapi({
-        description: 'Type of the notification event.',
-        title: 'Notification Event Type',
-        readOnly: true,
-      }),
-    timestamp: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'Timestamp when the notification event was created in RFC 3339 format.',
-        example: '2023-01-01T01:01:01.001Z',
-        title: 'Creation Time',
-        readOnly: true,
-      }),
-    data: NotificationEventBalanceThresholdPayloadDataSchema.openapi({
-      description: 'The data of the payload.',
-      title: 'Payload Data',
-      readOnly: true,
-    }),
-  })
-  .openapi({
-    required: ['id', 'type', 'timestamp', 'data'],
-    description: 'Payload for notification event with `entitlements.balance.threshold` type.',
-  })
-  .openapi('NotificationEventBalanceThresholdPayload')
-
-const NotificationEventInvoiceCreatedPayloadSchema = z
-  .object({
-    id: z
-      .string()
-      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
-      .openapi({
-        description: 'A unique identifier for the notification event the payload belongs to.',
-        example: '01J2KNP1YTXQRXHTDJ4KPR7PZ0',
-        title: 'Notification Event Identifier',
-        readOnly: true,
-      }),
-    type: z
-      .literal('invoice.created')
-      .openapi({
-        description: 'Type of the notification event.',
-        title: 'Notification Event Type',
-        readOnly: true,
-      }),
-    timestamp: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'Timestamp when the notification event was created in RFC 3339 format.',
-        example: '2023-01-01T01:01:01.001Z',
-        title: 'Creation Time',
-        readOnly: true,
-      }),
-    data: InvoiceSchema.openapi({
-      description: 'The data of the payload.',
-      title: 'Payload Data',
-      readOnly: true,
-    }),
-  })
-  .openapi({
-    required: ['id', 'type', 'timestamp', 'data'],
-    description: 'Payload for notification event with `invoice.created` type.',
-  })
-  .openapi('NotificationEventInvoiceCreatedPayload')
-
-const NotificationEventInvoiceUpdatedPayloadSchema = z
-  .object({
-    id: z
-      .string()
-      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
-      .openapi({
-        description: 'A unique identifier for the notification event the payload belongs to.',
-        example: '01J2KNP1YTXQRXHTDJ4KPR7PZ0',
-        title: 'Notification Event Identifier',
-        readOnly: true,
-      }),
-    type: z
-      .literal('invoice.updated')
-      .openapi({
-        description: 'Type of the notification event.',
-        title: 'Notification Event Type',
-        readOnly: true,
-      }),
-    timestamp: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'Timestamp when the notification event was created in RFC 3339 format.',
-        example: '2023-01-01T01:01:01.001Z',
-        title: 'Creation Time',
-        readOnly: true,
-      }),
-    data: InvoiceSchema.openapi({
-      description: 'The data of the payload.',
-      title: 'Payload Data',
-      readOnly: true,
-    }),
-  })
-  .openapi({
-    required: ['id', 'type', 'timestamp', 'data'],
-    description: 'Payload for notification event with `invoice.updated` type.',
-  })
-  .openapi('NotificationEventInvoiceUpdatedPayload')
-
-const NotificationEventPayloadSchema = z
-  .discriminatedUnion('type', [
-    NotificationEventResetPayloadSchema,
-    NotificationEventBalanceThresholdPayloadSchema,
-    NotificationEventInvoiceCreatedPayloadSchema,
-    NotificationEventInvoiceUpdatedPayloadSchema,
-  ])
-  .openapi({
-    discriminator: {
-      propertyName: 'type',
-      mapping: {
-        'entitlements.reset': '#/components/schemas/NotificationEventResetPayload',
-        'entitlements.balance.threshold':
-          '#/components/schemas/NotificationEventBalanceThresholdPayload',
-        'invoice.created': '#/components/schemas/NotificationEventInvoiceCreatedPayload',
-        'invoice.updated': '#/components/schemas/NotificationEventInvoiceUpdatedPayload',
-      },
-    },
-    description: 'The delivery status of the notification event.',
-  })
-  .openapi('NotificationEventPayload')
-
-const NotificationEventSchema = z
-  .object({
-    id: z
-      .string()
-      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
-      .openapi({
-        description: 'A unique identifier of the notification event.',
-        example: '01J2KNP1YTXQRXHTDJ4KPR7PZ0',
-        title: 'Event Identifier',
-        readOnly: true,
-      }),
-    type: NotificationEventTypeSchema.openapi({
-      description: 'Type of the notification event.',
-      title: 'Event Type',
-      readOnly: true,
-    }),
-    createdAt: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'Timestamp when the notification event was created in RFC 3339 format.',
-        example: '2023-01-01T01:01:01.001Z',
-        title: 'Creation Time',
-        readOnly: true,
-      }),
-    rule: NotificationRuleSchema.openapi({
-      description: 'The nnotification rule which generated this event.',
-      readOnly: true,
-    }),
-    deliveryStatus: z
-      .array(NotificationEventDeliveryStatusSchema)
-      .openapi({
-        description: 'The delivery status of the notification event.',
-        title: 'Delivery Status',
-        readOnly: true,
-      }),
-    payload: NotificationEventPayloadSchema.openapi({
-      description: 'Timestamp when the notification event was created in RFC 3339 format.',
-      readOnly: true,
-    }),
-    annotations: AnnotationsSchema.exactOptional().openapi({
-      description: 'Set of key-value pairs managed by the system. Cannot be modified by user.',
-      title: 'Annotations',
-      readOnly: true,
-    }),
-  })
-  .openapi({
-    required: ['id', 'type', 'createdAt', 'rule', 'deliveryStatus', 'payload'],
-    description: 'Type of the notification event.',
-  })
-  .openapi('NotificationEvent')
-
 const NotificationEventOrderBySchema = z
   .enum(['id', 'createdAt'])
   .openapi({ description: 'Order by options for notification channels.' })
   .openapi('NotificationEventOrderBy')
 
-const NotificationEventPaginatedResponseSchema = z
-  .object({
-    totalCount: z.int().openapi({ description: 'The total number of items.', example: 500 }),
-    page: z.int().openapi({ description: 'The page index.', example: 1 }),
-    pageSize: z
-      .int()
-      .openapi({ description: 'The maximum number of items per page.', example: 100 }),
-    items: z
-      .array(NotificationEventSchema)
-      .openapi({ description: 'The items in the current page.' }),
-  })
-  .openapi({
-    required: ['totalCount', 'page', 'pageSize', 'items'],
-    description: 'Paginated response',
-  })
-  .openapi('NotificationEventPaginatedResponse')
+const NotificationEventPaginatedResponseSchema: z.ZodType<NotificationEventPaginatedResponseType> =
+  z
+    .object({
+      totalCount: z.int().openapi({ description: 'The total number of items.', example: 500 }),
+      page: z.int().openapi({ description: 'The page index.', example: 1 }),
+      pageSize: z
+        .int()
+        .openapi({ description: 'The maximum number of items per page.', example: 100 }),
+      items: z
+        .array(NotificationEventSchema)
+        .openapi({ description: 'The items in the current page.' }),
+    })
+    .openapi({
+      required: ['totalCount', 'page', 'pageSize', 'items'],
+      description: 'Paginated response',
+    })
+    .openapi('NotificationEventPaginatedResponse')
 
 const NotificationEventResendRequestSchema = z
   .object({
@@ -11609,240 +12592,26 @@ const OAuth2AuthorizationCodeGrantErrorTypeSchema = z
   .openapi({ description: 'OAuth2 authorization code grant error types.' })
   .openapi('OAuth2AuthorizationCodeGrantErrorType')
 
+const PackagePriceSchema = z
+  .object({
+    type: z.literal('package').openapi({ description: 'The type of the price.' }),
+    amount: NumericSchema.openapi({ description: 'The price of one package.', title: 'Amount' }),
+    quantityPerPackage: NumericSchema.openapi({
+      description: 'The quantity per package.',
+      title: 'Quantity per package',
+    }),
+  })
+  .openapi({
+    required: ['type', 'amount', 'quantityPerPackage'],
+    description:
+      'Package price.\n\nThe item is sold in packages. Each package contains quantityPerPackage items, the price of the\npackage is set in amount.\n\nThe total price of the usage will be enough packages that can accomodate all the usage.\n\nExamples (given a package size of 20, and an amount of $10):\n- if the quantity is 98, the price will be 5*$10=$50.\n- if the quantity is zero, the price will be 0*$10=$0, as even the first package is not purchased.\n- if the quantity is 20, the price will be 1*$10=$10, as the usage fits into the first package.\n- if the quantity is 20.1, the price will be 2*$10=$20, as the additional 0.1 usage (compared to the\nprevious example) requires a new package.',
+  })
+  .openapi('PackagePrice')
+
 const PaymentTermTypeSchema = z
   .enum(['due_date', 'instant'])
   .openapi({ description: 'PaymentTermType defines the type of terms to be applied.' })
   .openapi('PaymentTermType')
-
-const PlanStatusSchema = z
-  .enum(['draft', 'active', 'archived', 'scheduled'])
-  .openapi({ description: 'The status of a plan.' })
-  .openapi('PlanStatus')
-
-const PlanSchema = z
-  .object({
-    id: z
-      .string()
-      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
-      .openapi({
-        description: 'A unique identifier for the resource.',
-        example: '01G65Z755AFWAKHE12NY0CQ9FH',
-        title: 'ID',
-        readOnly: true,
-      }),
-    name: z
-      .string()
-      .min(1)
-      .max(256)
-      .openapi({
-        description: 'Human-readable name for the resource. Between 1 and 256 characters.',
-        title: 'Display name',
-      }),
-    description: z
-      .string()
-      .max(1024)
-      .exactOptional()
-      .openapi({
-        description: 'Optional description of the resource. Maximum 1024 characters.',
-        title: 'Description',
-      }),
-    metadata: MetadataSchema.nullable()
-      .exactOptional()
-      .openapi({ description: 'Additional metadata for the resource.', title: 'Metadata' }),
-    createdAt: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'Timestamp of when the resource was created.',
-        example: '2024-01-01T01:01:01.001Z',
-        title: 'Creation Time',
-        readOnly: true,
-      }),
-    updatedAt: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'Timestamp of when the resource was last updated.',
-        example: '2024-01-01T01:01:01.001Z',
-        title: 'Last Update Time',
-        readOnly: true,
-      }),
-    deletedAt: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'Timestamp of when the resource was permanently deleted.',
-        example: '2024-01-01T01:01:01.001Z',
-        title: 'Deletion Time',
-        readOnly: true,
-      }),
-    key: z
-      .string()
-      .regex(/^[a-z0-9]+(?:_[a-z0-9]+)*$/)
-      .min(1)
-      .max(64)
-      .openapi({ description: 'A semi-unique identifier for the resource.', title: 'Key' }),
-    alignment: AlignmentSchema.exactOptional().openapi({
-      description: 'Alignment configuration for the plan.',
-    }),
-    version: z
-      .int()
-      .min(1)
-      .default(1)
-      .openapi({
-        description: 'Version of the plan. Incremented when the plan is updated.',
-        title: 'Version',
-        readOnly: true,
-      }),
-    currency: CurrencyCodeSchema.default('USD').openapi({
-      description: 'The currency code of the plan.',
-      title: 'Currency',
-    }),
-    billingCadence: z.iso
-      .duration()
-      .openapi({
-        description:
-          'The default billing cadence for subscriptions using this plan.\nDefines how often customers are billed using ISO8601 duration format.\nExamples: "P1M" (monthly), "P3M" (quarterly), "P1Y" (annually).',
-        title: 'Billing cadence',
-        example: 'P1M',
-      }),
-    proRatingConfig: ProRatingConfigSchema.default({ enabled: true, mode: 'prorate_prices' })
-      .exactOptional()
-      .openapi({
-        description: 'Default pro-rating configuration for subscriptions using this plan.',
-        title: 'Pro-rating configuration',
-      }),
-    effectiveFrom: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description:
-          'The date and time when the plan becomes effective. When not specified, the plan is a draft.',
-        example: '2023-01-01T01:01:01.001Z',
-        title: 'Effective start date',
-        readOnly: true,
-      }),
-    effectiveTo: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description:
-          'The date and time when the plan is no longer effective. When not specified, the plan is effective indefinitely.',
-        example: '2023-01-01T01:01:01.001Z',
-        title: 'Effective end date',
-        readOnly: true,
-      }),
-    status: PlanStatusSchema.openapi({
-      description:
-        'The status of the plan.\nComputed based on the effective start and end dates:\n- draft = no effectiveFrom\n- active = effectiveFrom <= now < effectiveTo\n- archived / inactive = effectiveTo <= now\n- scheduled = now < effectiveFrom < effectiveTo',
-      title: 'Status',
-      readOnly: true,
-    }),
-    settlementMode: BillingSettlementModeSchema.default('credit_then_invoice')
-      .exactOptional()
-      .openapi({
-        description:
-          'The settlement mode of the plan.\nIt determines how the billing system generates invoices and credits for the subscriptions using this plan.\n- credit_then_invoice: credits from the previous billing period are applied first, then the remaining balance is invoiced.\n- credit_only: only credits from the previous billing period are generated and applied. No invoices are generated for the subscription.\nThis is the default and most common settlement mode.',
-        title: 'Settlement mode',
-      }),
-    phases: z
-      .array(PlanPhaseSchema)
-      .min(1)
-      .openapi({
-        description:
-          "The plan phase or pricing ramp allows changing a plan's rate cards over time as a subscription progresses.\nA phase switch occurs only at the end of a billing period, ensuring that a single subscription invoice will not include charges from different phase prices.",
-        title: 'Plan phases',
-      }),
-    validationErrors: z
-      .array(ValidationErrorSchema)
-      .nullable()
-      .openapi({
-        description: 'List of validation errors.',
-        title: 'Validation errors',
-        readOnly: true,
-      }),
-  })
-  .openapi({
-    required: [
-      'id',
-      'name',
-      'createdAt',
-      'updatedAt',
-      'key',
-      'version',
-      'currency',
-      'billingCadence',
-      'status',
-      'phases',
-      'validationErrors',
-    ],
-    description: 'Plans provide a template for subscriptions.',
-  })
-  .openapi('Plan')
-
-const PlanAddonSchema = z
-  .object({
-    createdAt: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'Timestamp of when the resource was created.',
-        example: '2024-01-01T01:01:01.001Z',
-        title: 'Creation Time',
-        readOnly: true,
-      }),
-    updatedAt: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'Timestamp of when the resource was last updated.',
-        example: '2024-01-01T01:01:01.001Z',
-        title: 'Last Update Time',
-        readOnly: true,
-      }),
-    deletedAt: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'Timestamp of when the resource was permanently deleted.',
-        example: '2024-01-01T01:01:01.001Z',
-        title: 'Deletion Time',
-        readOnly: true,
-      }),
-    annotations: AnnotationsSchema.exactOptional().openapi({
-      description: 'Set of key-value pairs managed by the system. Cannot be modified by user.',
-      title: 'Annotations',
-      readOnly: true,
-    }),
-    metadata: MetadataSchema.exactOptional().openapi({
-      description: 'Additional metadata for the resource.',
-      title: 'Metadata',
-    }),
-    addon: AddonSchema.openapi({ description: 'Add-on object.', title: 'Addon', readOnly: true }),
-    fromPlanPhase: z
-      .string()
-      .openapi({
-        description: 'The key of the plan phase from the add-on becomes available for purchase.',
-        title: 'The plan phase from the add-on becomes purchasable',
-      }),
-    maxQuantity: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description:
-          'The maximum number of times the add-on can be purchased for the plan.\nIt is not applicable for add-ons with single instance type.',
-        title: 'Max quantity of the add-on',
-      }),
-    validationErrors: z
-      .array(ValidationErrorSchema)
-      .nullable()
-      .openapi({
-        description: 'List of validation errors.',
-        title: 'Validation errors',
-        readOnly: true,
-      }),
-  })
-  .openapi({
-    required: ['createdAt', 'updatedAt', 'addon', 'fromPlanPhase', 'validationErrors'],
-    description: 'The PlanAddon describes the association between a plan and add-on.',
-  })
-  .openapi('PlanAddon')
 
 const PlanAddonCreateSchema = z
   .object({
@@ -11884,7 +12653,7 @@ const PlanAddonOrderBySchema = z
   .openapi({ description: 'Order by options for plan add-on assignments.' })
   .openapi('PlanAddonOrderBy')
 
-const PlanAddonPaginatedResponseSchema = z
+const PlanAddonPaginatedResponseSchema: z.ZodType<PlanAddonPaginatedResponseType> = z
   .object({
     totalCount: z.int().openapi({ description: 'The total number of items.', example: 500 }),
     page: z.int().openapi({ description: 'The page index.', example: 1 }),
@@ -11923,7 +12692,7 @@ const PlanAddonReplaceUpdateSchema = z
   .openapi({ required: ['fromPlanPhase'], description: 'Resource update operation model.' })
   .openapi('PlanAddonReplaceUpdate')
 
-const PlanCreateSchema = z
+const PlanCreateSchema: z.ZodType<PlanCreateType> = z
   .object({
     name: z
       .string()
@@ -11998,7 +12767,7 @@ const PlanOrderBySchema = z
   .openapi({ description: 'Order by options for plans.' })
   .openapi('PlanOrderBy')
 
-const PlanPaginatedResponseSchema = z
+const PlanPaginatedResponseSchema: z.ZodType<PlanPaginatedResponseType> = z
   .object({
     totalCount: z.int().openapi({ description: 'The total number of items.', example: 500 }),
     page: z.int().openapi({ description: 'The page index.', example: 1 }),
@@ -12013,7 +12782,7 @@ const PlanPaginatedResponseSchema = z
   })
   .openapi('PlanPaginatedResponse')
 
-const PlanReplaceUpdateSchema = z
+const PlanReplaceUpdateSchema: z.ZodType<PlanReplaceUpdateType> = z
   .object({
     name: z
       .string()
@@ -12133,30 +12902,49 @@ const PreconditionFailedProblemResponseSchema = UnexpectedProblemResponseSchema.
     'One or more conditions given in the request header fields evaluated to false when tested on the server.',
 }).openapi('PreconditionFailedProblemResponse')
 
-const PriceSchema: z.ZodType<PriceType> = z
-  .lazy(() =>
-    z
-      .discriminatedUnion('type', [
-        FlatPriceSchema,
-        UnitPriceSchema,
-        TieredPriceSchema,
-        DynamicPriceSchema,
-        PackagePriceSchema,
-      ])
+const TieredPriceSchema = z
+  .object({
+    type: z
+      .literal('tiered')
+      .openapi({ description: 'The type of the price.\n\nOne of: flat, unit, or tiered.' }),
+    mode: TieredPriceModeSchema.openapi({
+      description:
+        'Defines if the tiering mode is volume-based or graduated:\n- In `volume`-based tiering, the maximum quantity within a period determines the per unit price.\n- In `graduated` tiering, pricing can change as the quantity grows.',
+      title: 'Mode',
+    }),
+    tiers: z
+      .array(PriceTierSchema)
+      .min(1)
       .openapi({
-        discriminator: {
-          propertyName: 'type',
-          mapping: {
-            flat: '#/components/schemas/FlatPrice',
-            unit: '#/components/schemas/UnitPrice',
-            tiered: '#/components/schemas/TieredPrice',
-            dynamic: '#/components/schemas/DynamicPrice',
-            package: '#/components/schemas/PackagePrice',
-          },
-        },
-        description: 'Price.\nOne of: flat, unit, or tiered.',
+        description:
+          'The tiers of the tiered price.\nAt least one price component is required in each tier.',
+        title: 'Tiers',
       }),
-  )
+  })
+  .openapi({ required: ['type', 'mode', 'tiers'], description: 'Tiered price.' })
+  .openapi('TieredPrice')
+
+const PriceSchema = z
+  .discriminatedUnion('type', [
+    FlatPriceSchema,
+    UnitPriceSchema,
+    TieredPriceSchema,
+    DynamicPriceSchema,
+    PackagePriceSchema,
+  ])
+  .openapi({
+    discriminator: {
+      propertyName: 'type',
+      mapping: {
+        flat: '#/components/schemas/FlatPrice',
+        unit: '#/components/schemas/UnitPrice',
+        tiered: '#/components/schemas/TieredPrice',
+        dynamic: '#/components/schemas/DynamicPrice',
+        package: '#/components/schemas/PackagePrice',
+      },
+    },
+    description: 'Price.\nOne of: flat, unit, or tiered.',
+  })
   .openapi('Price')
 
 const PriceTypeSchema = z
@@ -12474,60 +13262,7 @@ const SubjectUpsertSchema = z
   })
   .openapi('SubjectUpsert')
 
-const SubscriptionAddonTimelineSegmentSchema = z
-  .object({
-    activeFrom: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'The cadence start of the resource.',
-        example: '2023-01-01T01:01:01.001Z',
-      }),
-    activeTo: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'The cadence end of the resource.',
-        example: '2023-01-01T01:01:01.001Z',
-      }),
-    quantity: z
-      .int()
-      .min(0)
-      .openapi({
-        description: 'The quantity of the add-on for the given period.',
-        title: 'Quantity',
-        example: 1,
-        readOnly: true,
-      }),
-  })
-  .openapi({ required: ['activeFrom', 'quantity'], description: 'A subscription add-on event.' })
-  .openapi('SubscriptionAddonTimelineSegment')
-
-const SubscriptionAddonRateCardSchema = z
-  .object({
-    rateCard: RateCardSchema.openapi({ description: 'The rate card.', title: 'Rate card' }),
-    affectedSubscriptionItemIds: z
-      .array(
-        z
-          .string()
-          .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
-          .openapi({
-            description: 'ULID (Universally Unique Lexicographically Sortable Identifier).',
-            example: '01G65Z755AFWAKHE12NY0CQ9FH',
-          }),
-      )
-      .openapi({
-        description: 'The IDs of the subscription items that this rate card belongs to.',
-        title: 'Affected subscription item IDs',
-        readOnly: true,
-      }),
-  })
-  .openapi({
-    required: ['rateCard', 'affectedSubscriptionItemIds'],
-    description: 'A rate card for a subscription add-on.',
-  })
-  .openapi('SubscriptionAddonRateCard')
-
-const SubscriptionAddonSchema = z
+const SubscriptionAddonSchema: z.ZodType<SubscriptionAddonType> = z
   .object({
     id: z
       .string()
@@ -12788,27 +13523,6 @@ const SubscriptionAddonUpdateSchema = z
   .openapi({ description: 'Resource create or update operation model.', required: [] })
   .openapi('SubscriptionAddonUpdate')
 
-const SubscriptionAlignmentSchema = z
-  .object({
-    billablesMustAlign: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          "Whether all Billable items and RateCards must align.\nAlignment means the Price's BillingCadence must align for both duration and anchor time.",
-        deprecated: true,
-      }),
-    currentAlignedBillingPeriod: PeriodSchema.exactOptional().openapi({
-      description:
-        'The current billing period. Only has value if the subscription is aligned and active.',
-    }),
-  })
-  .openapi({
-    description: 'Alignment details enriched with the current billing period.',
-    required: [],
-  })
-  .openapi('SubscriptionAlignment')
-
 const SubscriptionErrorExtensionsSchema = z
   .object({ validationErrors: z.array(ErrorExtensionSchema) })
   .openapi({
@@ -12866,426 +13580,11 @@ const SubscriptionBadRequestErrorResponseSchema = z
   .openapi('SubscriptionBadRequestErrorResponse')
 
 const SubscriptionChangeSchema: z.ZodType<SubscriptionChangeType> = z
-  .lazy(() =>
-    z
-      .xor([PlanSubscriptionChangeSchema, CustomSubscriptionChangeSchema])
-      .openapi({ description: 'Change a subscription.' }),
-  )
+  .xor([PlanSubscriptionChangeSchema, CustomSubscriptionChangeSchema])
+  .openapi({ description: 'Change a subscription.' })
   .openapi('SubscriptionChange')
 
-const SubscriptionItemIncludedSchema = z
-  .object({
-    feature: FeatureSchema.openapi({ description: 'The feature the customer is entitled to use.' }),
-    entitlement: EntitlementSchema.exactOptional().openapi({
-      description: 'The entitlement of the Subscription Item.',
-    }),
-  })
-  .openapi({
-    required: ['feature'],
-    description: 'Included contents like Entitlement, or the Feature.',
-  })
-  .openapi('SubscriptionItemIncluded')
-
-const SubscriptionItemSchema = z
-  .object({
-    id: z
-      .string()
-      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
-      .openapi({
-        description: 'A unique identifier for the resource.',
-        example: '01G65Z755AFWAKHE12NY0CQ9FH',
-        title: 'ID',
-        readOnly: true,
-      }),
-    name: z
-      .string()
-      .min(1)
-      .max(256)
-      .openapi({
-        description: 'Human-readable name for the resource. Between 1 and 256 characters.',
-        title: 'Display name',
-      }),
-    description: z
-      .string()
-      .max(1024)
-      .exactOptional()
-      .openapi({
-        description: 'Optional description of the resource. Maximum 1024 characters.',
-        title: 'Description',
-      }),
-    metadata: MetadataSchema.nullable()
-      .exactOptional()
-      .openapi({ description: 'Additional metadata for the resource.', title: 'Metadata' }),
-    createdAt: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'Timestamp of when the resource was created.',
-        example: '2024-01-01T01:01:01.001Z',
-        title: 'Creation Time',
-        readOnly: true,
-      }),
-    updatedAt: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'Timestamp of when the resource was last updated.',
-        example: '2024-01-01T01:01:01.001Z',
-        title: 'Last Update Time',
-        readOnly: true,
-      }),
-    deletedAt: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'Timestamp of when the resource was permanently deleted.',
-        example: '2024-01-01T01:01:01.001Z',
-        title: 'Deletion Time',
-        readOnly: true,
-      }),
-    activeFrom: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'The cadence start of the resource.',
-        example: '2023-01-01T01:01:01.001Z',
-      }),
-    activeTo: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'The cadence end of the resource.',
-        example: '2023-01-01T01:01:01.001Z',
-      }),
-    key: z
-      .string()
-      .regex(/^[a-z0-9]+(?:_[a-z0-9]+)*$/)
-      .min(1)
-      .max(64)
-      .openapi({
-        description:
-          'The identifier of the RateCard.\nSubscriptionItem/RateCard can be identified, it has a reference:\n\n1. If a Feature is associated with the SubscriptionItem, it is identified by the Feature\n1.1 It can be an ID reference, for an exact version of the Feature (Features can change across versions)\n1.2 It can be a Key reference, which always refers to the latest (active or inactive) version of a Feature\n\n2. If a Feature is not associated with the SubscriptionItem, it is referenced by the Price\n\nWe say "referenced by the Price" regardless of how a price itself is referenced, it colloquially makes sense to say "paying the same price for the same thing". In practice this should be derived from what\'s printed on the invoice line-item.',
-      }),
-    currency: CurrencyCodeOrCustomSchema.exactOptional().openapi({
-      description: "The materialized currency of the item's rate card. Present for priced items.",
-      title: 'Currency',
-      readOnly: true,
-    }),
-    featureKey: z
-      .string()
-      .regex(/^[a-z0-9]+(?:_[a-z0-9]+)*$/)
-      .min(1)
-      .max(64)
-      .exactOptional()
-      .openapi({ description: "The feature's key (if present)." }),
-    billingCadence: z.iso
-      .duration()
-      .nullable()
-      .openapi({
-        description:
-          'The billing cadence of the rate card.\nWhen null, the rate card is a one-time purchase.',
-        title: 'Billing cadence',
-      }),
-    price: RateCardUsageBasedPriceSchema.nullable().openapi({
-      description: 'The price of the rate card.\nWhen null, the feature or service is free.',
-      title: 'Price',
-      example: { type: 'flat', amount: '100', paymentTerm: 'in_arrears' },
-    }),
-    discounts: DiscountsSchema.exactOptional().openapi({
-      description: 'The discounts applied to the rate card.',
-      title: 'Discounts',
-    }),
-    included: SubscriptionItemIncludedSchema.exactOptional().openapi({
-      description: 'Describes what access is gained via the SubscriptionItem',
-    }),
-    taxConfig: TaxConfigSchema.exactOptional().openapi({
-      description:
-        'The tax config of the Subscription Item.\nWhen undefined, the tax config of the feature or the default tax config of the plan is used.',
-      title: 'Tax config',
-    }),
-  })
-  .openapi({
-    required: [
-      'id',
-      'name',
-      'createdAt',
-      'updatedAt',
-      'activeFrom',
-      'key',
-      'billingCadence',
-      'price',
-    ],
-    description:
-      'The actual contents of the Subscription, what the user gets, what they pay, etc...',
-  })
-  .openapi('SubscriptionItem')
-
-const SubscriptionPhaseExpandedSchema = z
-  .object({
-    id: z
-      .string()
-      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
-      .openapi({
-        description: 'A unique identifier for the resource.',
-        example: '01G65Z755AFWAKHE12NY0CQ9FH',
-        title: 'ID',
-        readOnly: true,
-      }),
-    name: z
-      .string()
-      .min(1)
-      .max(256)
-      .openapi({
-        description: 'Human-readable name for the resource. Between 1 and 256 characters.',
-        title: 'Display name',
-      }),
-    description: z
-      .string()
-      .max(1024)
-      .exactOptional()
-      .openapi({
-        description: 'Optional description of the resource. Maximum 1024 characters.',
-        title: 'Description',
-      }),
-    metadata: MetadataSchema.nullable()
-      .exactOptional()
-      .openapi({ description: 'Additional metadata for the resource.', title: 'Metadata' }),
-    createdAt: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'Timestamp of when the resource was created.',
-        example: '2024-01-01T01:01:01.001Z',
-        title: 'Creation Time',
-        readOnly: true,
-      }),
-    updatedAt: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'Timestamp of when the resource was last updated.',
-        example: '2024-01-01T01:01:01.001Z',
-        title: 'Last Update Time',
-        readOnly: true,
-      }),
-    deletedAt: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'Timestamp of when the resource was permanently deleted.',
-        example: '2024-01-01T01:01:01.001Z',
-        title: 'Deletion Time',
-        readOnly: true,
-      }),
-    key: z
-      .string()
-      .regex(/^[a-z0-9]+(?:_[a-z0-9]+)*$/)
-      .min(1)
-      .max(64)
-      .openapi({ description: 'A locally unique identifier for the resource.' }),
-    discounts: DiscountsSchema.exactOptional().openapi({
-      description: 'The discounts on the plan.',
-      title: 'Discounts',
-    }),
-    activeFrom: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'The time from which the phase is active.',
-        example: '2023-01-01T01:01:01.001Z',
-      }),
-    activeTo: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'The until which the Phase is active.',
-        example: '2023-01-01T01:01:01.001Z',
-      }),
-    items: z
-      .array(SubscriptionItemSchema)
-      .openapi({
-        description:
-          'The items of the phase. The structure is flattened to better conform to the Plan API.\nThe timelines are flattened according to the following rules:\n- for the current phase, the `items` contains only the active item for each key\n- for past phases, the `items` contains only the last item for each key\n- for future phases, the `items` contains only the first version of the item for each key',
-      }),
-    itemTimelines: z
-      .record(z.string(), z.array(SubscriptionItemSchema))
-      .openapi({
-        description:
-          'Includes all versions of the items on each key, including all edits, scheduled changes, etc...',
-      }),
-  })
-  .openapi({
-    required: [
-      'id',
-      'name',
-      'createdAt',
-      'updatedAt',
-      'key',
-      'activeFrom',
-      'items',
-      'itemTimelines',
-    ],
-    description: 'Expanded subscription phase',
-  })
-  .openapi('SubscriptionPhaseExpanded')
-
-const SubscriptionExpandedSchema = z
-  .object({
-    id: z
-      .string()
-      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
-      .openapi({
-        description: 'A unique identifier for the resource.',
-        example: '01G65Z755AFWAKHE12NY0CQ9FH',
-        title: 'ID',
-        readOnly: true,
-      }),
-    name: z
-      .string()
-      .min(1)
-      .max(256)
-      .openapi({
-        description: 'Human-readable name for the resource. Between 1 and 256 characters.',
-        title: 'Display name',
-      }),
-    description: z
-      .string()
-      .max(1024)
-      .exactOptional()
-      .openapi({
-        description: 'Optional description of the resource. Maximum 1024 characters.',
-        title: 'Description',
-      }),
-    metadata: MetadataSchema.nullable()
-      .exactOptional()
-      .openapi({ description: 'Additional metadata for the resource.', title: 'Metadata' }),
-    createdAt: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'Timestamp of when the resource was created.',
-        example: '2024-01-01T01:01:01.001Z',
-        title: 'Creation Time',
-        readOnly: true,
-      }),
-    updatedAt: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'Timestamp of when the resource was last updated.',
-        example: '2024-01-01T01:01:01.001Z',
-        title: 'Last Update Time',
-        readOnly: true,
-      }),
-    deletedAt: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'Timestamp of when the resource was permanently deleted.',
-        example: '2024-01-01T01:01:01.001Z',
-        title: 'Deletion Time',
-        readOnly: true,
-      }),
-    activeFrom: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'The cadence start of the resource.',
-        example: '2023-01-01T01:01:01.001Z',
-      }),
-    activeTo: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'The cadence end of the resource.',
-        example: '2023-01-01T01:01:01.001Z',
-      }),
-    annotations: AnnotationsSchema.exactOptional().openapi({
-      description: 'Set of key-value pairs managed by the system. Cannot be modified by user.',
-      title: 'Annotations',
-      readOnly: true,
-    }),
-    status: SubscriptionStatusSchema.openapi({
-      description: 'The status of the subscription.',
-      readOnly: true,
-    }),
-    customerId: z
-      .string()
-      .regex(/^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/)
-      .openapi({
-        description: 'The customer ID of the subscription.',
-        example: '01G65Z755AFWAKHE12NY0CQ9FH',
-      }),
-    plan: PlanReferenceSchema.exactOptional().openapi({
-      description: 'The plan of the subscription.',
-    }),
-    currency: CurrencyCodeSchema.default('USD').openapi({
-      description: 'The fiat currency in which the subscription is invoiced.',
-      title: 'Currency',
-    }),
-    costBasisMode: SubscriptionCostBasisModeSchema.default('dynamic').openapi({
-      description:
-        'Controls whether custom-currency cost bases are resolved dynamically or pinned\nwhen their currency pair is introduced to the subscription.',
-      title: 'Cost basis mode',
-      readOnly: true,
-    }),
-    costBasisPins: z
-      .array(SubscriptionCostBasisPinSchema)
-      .openapi({
-        description: 'Cost bases pinned to custom-currency pairs for this subscription.',
-        title: 'Pinned cost bases',
-        readOnly: true,
-      }),
-    billingCadence: z.iso
-      .duration()
-      .openapi({
-        description:
-          'The billing cadence for the subscriptions.\nDefines how often customers are billed using ISO8601 duration format.\nExamples: "P1M" (monthly), "P3M" (quarterly), "P1Y" (annually).',
-        title: 'Billing cadence',
-        example: 'P1M',
-        readOnly: true,
-      }),
-    proRatingConfig: ProRatingConfigSchema.default({ enabled: true, mode: 'prorate_prices' })
-      .exactOptional()
-      .openapi({
-        description: 'The pro-rating configuration for the subscriptions.',
-        title: 'Pro-rating configuration',
-        readOnly: true,
-      }),
-    billingAnchor: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'The normalizedbilling anchor of the subscription.',
-        example: '2023-01-01T01:01:01.001Z',
-        title: 'Billing anchor',
-        readOnly: true,
-      }),
-    settlementMode: BillingSettlementModeSchema.default('credit_then_invoice').openapi({
-      description:
-        'The settlement mode of the subscription.\n- credit_then_invoice: credits from the previous billing period are applied first, then the remaining balance is invoiced.\n- credit_only: only credits from the previous billing period are generated and applied. No invoices are generated for the subscription.\nThis is the default and most common settlement mode.',
-      title: 'Settlement mode',
-      readOnly: true,
-    }),
-    alignment: SubscriptionAlignmentSchema.exactOptional().openapi({
-      description: 'Alignment details enriched with the current billing period.',
-    }),
-    phases: z
-      .array(SubscriptionPhaseExpandedSchema)
-      .openapi({ description: 'The phases of the subscription.' }),
-  })
-  .openapi({
-    required: [
-      'id',
-      'name',
-      'createdAt',
-      'updatedAt',
-      'activeFrom',
-      'status',
-      'customerId',
-      'currency',
-      'costBasisMode',
-      'costBasisPins',
-      'billingCadence',
-      'billingAnchor',
-      'settlementMode',
-      'phases',
-    ],
-    description: 'Expanded subscription',
-  })
-  .openapi('SubscriptionExpanded')
-
-const SubscriptionChangeResponseBodySchema = z
+const SubscriptionChangeResponseBodySchema: z.ZodType<SubscriptionChangeResponseBodyType> = z
   .object({
     current: SubscriptionSchema.openapi({
       description: 'The current subscription before the change.',
@@ -13348,39 +13647,11 @@ const SubscriptionConflictErrorResponseSchema = z
   .openapi('SubscriptionConflictErrorResponse')
 
 const SubscriptionCreateSchema: z.ZodType<SubscriptionCreateType> = z
-  .lazy(() =>
-    z
-      .xor([PlanSubscriptionCreateSchema, CustomSubscriptionCreateSchema])
-      .openapi({ description: 'Create a subscription.' }),
-  )
+  .xor([PlanSubscriptionCreateSchema, CustomSubscriptionCreateSchema])
+  .openapi({ description: 'Create a subscription.' })
   .openapi('SubscriptionCreate')
 
-const SubscriptionEditOperationSchema = z
-  .discriminatedUnion('op', [
-    EditSubscriptionAddItemSchema,
-    EditSubscriptionRemoveItemSchema,
-    EditSubscriptionAddPhaseSchema,
-    EditSubscriptionRemovePhaseSchema,
-    EditSubscriptionStretchPhaseSchema,
-    EditSubscriptionUnscheduleEditSchema,
-  ])
-  .openapi({
-    discriminator: {
-      propertyName: 'op',
-      mapping: {
-        add_item: '#/components/schemas/EditSubscriptionAddItem',
-        remove_item: '#/components/schemas/EditSubscriptionRemoveItem',
-        add_phase: '#/components/schemas/EditSubscriptionAddPhase',
-        remove_phase: '#/components/schemas/EditSubscriptionRemovePhase',
-        stretch_phase: '#/components/schemas/EditSubscriptionStretchPhase',
-        unschedule_edit: '#/components/schemas/EditSubscriptionUnscheduleEdit',
-      },
-    },
-    description: 'The operation to be performed on the subscription.',
-  })
-  .openapi('SubscriptionEditOperation')
-
-const SubscriptionEditSchema = z
+const SubscriptionEditSchema: z.ZodType<SubscriptionEditType> = z
   .object({
     customizations: z
       .array(SubscriptionEditOperationSchema)

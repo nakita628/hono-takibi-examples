@@ -73,6 +73,8 @@ const CreativeTypeSchema = z
     'MAX_WIDTH_REGULAR_COLLECTION',
     'MAX_WIDTH_VIDEO_COLLECTION',
     'APP',
+    'CTV_VIDEO',
+    'SEARCH_TEXT_AD',
   ])
   .openapi({
     description:
@@ -114,6 +116,14 @@ const CustomizableCTATypeSchema = z
     z.literal('PLAY_GAME'),
     z.literal('TRY_IT'),
     z.literal('TAKE_A_PEEK'),
+    z.literal('INSTALL_APP'),
+    z.literal('SHOP_NEARBY_TODAY'),
+    z.literal('FIND_IT_NEAR_YOU'),
+    z.literal('VISIT_SHOWROOM'),
+    z.literal('TEST_DRIVE_NEAR_YOU'),
+    z.literal('REQUEST_A_QUOTE'),
+    z.literal('RESERVE_TABLE'),
+    z.literal('SEE_IN_STORE_OFFERS'),
     z.literal(null),
   ])
   .nullable()
@@ -397,6 +407,15 @@ const AdSchema = z
       .nullable()
       .exactOptional()
       .openapi({ description: 'Deep link URL for Android devices.' }),
+    base_ad_id: z
+      .string()
+      .regex(/^\d+$/)
+      .exactOptional()
+      .openapi({
+        description:
+          'The ID of the Performance+ base ad that this ad was duplicated from in its managed set. Read-only output; set by Pinterest when a Performance+ managed set is created. Setting this field on a request has no effect.',
+        readOnly: true,
+      }),
     campaign_id: z
       .string()
       .regex(/^\d+$/)
@@ -444,6 +463,10 @@ const AdSchema = z
       .exactOptional()
       .openapi({ description: 'Pin creation time. Unix timestamp in seconds.', readOnly: true }),
     creative_type: CreativeTypeSchema,
+    cta_types: z
+      .array(CustomizableCTATypeSchema)
+      .exactOptional()
+      .openapi({ description: 'List of CTA types.' }),
     customizable_cta_type: CustomizableCTATypeSchema.exactOptional(),
     destination_url: z
       .string()
@@ -477,6 +500,10 @@ const AdSchema = z
       .boolean()
       .exactOptional()
       .openapi({ description: 'Whether the collage ad has a single destination url override.' }),
+    is_dynamic_cta: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether the ad uses dynamic CTA selection.', example: false }),
     is_pin_deleted: z
       .boolean()
       .exactOptional()
@@ -572,6 +599,30 @@ const AdBatchItemSchema = z
 
 type AdBatchWriteResponseModelType = { items: z.infer<typeof AdBatchItemSchema>[] }
 
+const BidStrategyTypeSchema = z
+  .union([
+    z.literal('AUTOMATIC_BID'),
+    z.literal('MAX_BID'),
+    z.literal('TARGET_AVG'),
+    z.literal(null),
+  ])
+  .nullable()
+  .openapi({
+    description:
+      'Bid strategy type. For Campaigns with Video Completion objectives, the only supported bid strategy type is AUTOMATIC_BID, also known as "Pinterest Performance+ bidding".',
+    title: 'BidStrategyType',
+  })
+  .openapi('BidStrategyType')
+
+const BudgetTypeSchema = z
+  .enum(['DAILY', 'LIFETIME', 'CBO_ADGROUP'])
+  .openapi({
+    description:
+      'Budget type. If DAILY, an ad group\'s daily spend will not exceed the budget parameter value. If LIFETIME, the end_time parameter is **REQUIRED**, and the ad group spend is spread evenly between the ad group `start_time` and `end_time` range. A CBO campaign automatically generates ad group budgets from its campaign budget to maximize campaign outcome. For CBO campaigns, only "CBO_ADGROUP" is allowed. For WEB_SESSIONS campaigns, only "LIFETIME" is allowed. For update, only draft ad groups may update budget type.',
+    example: 'DAILY',
+  })
+  .openapi('BudgetType')
+
 const AdGroupAudienceSizingCreativeTypesSchema = z
   .enum([
     'REGULAR',
@@ -582,6 +633,8 @@ const AdGroupAudienceSizingCreativeTypesSchema = z
     'SHOP_THE_PIN',
     'COLLECTION',
     'IDEA',
+    'MAX_WIDTH_REGULAR_COLLECTION',
+    'MAX_WIDTH_VIDEO_COLLECTION',
   ])
   .openapi('AdGroupAudienceSizingCreativeTypes')
 
@@ -592,6 +645,7 @@ const NullalbleMatchTypeSchema = z
     z.literal('EXACT'),
     z.literal('EXACT_NEGATIVE'),
     z.literal('PHRASE_NEGATIVE'),
+    z.literal('BROAD_NEGATIVE'),
     z.literal(null),
   ])
   .nullable()
@@ -599,7 +653,7 @@ const NullalbleMatchTypeSchema = z
   .openapi('NullalbleMatchType')
 
 const AdGroupDeliveryEstimatesKeywordsItemsSchema = z
-  .object({
+  .strictObject({
     match_type: NullalbleMatchTypeSchema.nullable(),
     value: z.string().openapi({ description: 'Keyword value (120 chars max).' }),
   })
@@ -610,6 +664,13 @@ const AttributionWindowsSchema = z
   .object({
     click_window_days: z.int().exactOptional(),
     engagement_window_days: z.int().exactOptional(),
+    install_window_days: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          'The number of days to use as the conversion attribution window for an install action. If not specified, defaults to 7 days. Values: 0,1,7,14,30,60.',
+      }),
     view_window_days: z.int().exactOptional(),
   })
   .openapi({ required: [] })
@@ -617,16 +678,13 @@ const AttributionWindowsSchema = z
 
 const ConversionEventSchema = z
   .enum([
-    'PAGE_VISIT',
-    'SIGNUP',
-    'CHECKOUT',
-    'CUSTOM',
-    'VIEW_CATEGORY',
-    'SEARCH',
-    'ADD_TO_CART',
-    'WATCH_VIDEO',
-    'LEAD',
     'APP_INSTALL',
+    'ADD_TO_CART',
+    'CHECKOUT',
+    'LEAD',
+    'SIGNUP',
+    'APP_INSTALL_CHECKOUT',
+    'APP_INSTALL_ADD_TO_CART',
   ])
   .openapi('ConversionEvent')
 
@@ -688,6 +746,15 @@ const OptimizationTypeSchema = z
       'Optimization type for ad group delivery estimates. Supported types vary by objective.',
   })
   .openapi('OptimizationType')
+
+const PacingDeliveryTypeSchema = z
+  .enum(['STANDARD', 'ACCELERATED'])
+  .openapi({
+    description:
+      'Ad group pacing delivery type. With ACCELERATED, an ad group budget is spent as fast as possible. With STANDARD, an ad group budget is spent smoothly over a day. When using CBO, only the STANDARD pacing delivery type is allowed.',
+    example: 'STANDARD',
+  })
+  .openapi('PacingDeliveryType')
 
 const PlacementGroupTypeSchema = z
   .enum(['ALL', 'SEARCH', 'BROWSE', 'OTHER'])
@@ -754,6 +821,269 @@ const TargetingStrategySchema = z
   .enum(['CHOOSE_YOUR_OWN', 'FIND_NEW_CUSTOMERS', 'RECONNECT_WITH_USERS'])
   .openapi('TargetingStrategy')
 
+const PlanningTargetingSpecSchema = z
+  .strictObject({
+    AGE_BUCKET: z
+      .array(TargetingSpecAgeBucketSchema)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          '**Legacy field.** Predefined age ranges. We recommend using MINIMUM_AGE and MAXIMUM_AGE instead for more flexible targeting. Cannot be combined with MINIMUM_AGE/MAXIMUM_AGE. If neither AGE_BUCKET nor MINIMUM_AGE/MAXIMUM_AGE are specified, all ages will be targeted.',
+      }),
+    APPTYPE: z
+      .array(TargetingSpecAppTypeSchema)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Allowed devices. If the APPTYPE field is missing, the default behavior in terms of ad delivery is that **All devices/apptypes** will be targeted.',
+      }),
+    AUDIENCE_EXCLUDE: z
+      .array(PinterestLibIntegerFormatTypeSchema)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Excluded customer list IDs. Used to drive new customer acquisition goals. For example: ["2542620905475"]. Audience lists need to have at least 100 people with Pinterest accounts in them. If the AUDIENCE_EXCLUDE field is missing, the default behavior in terms of ad delivery is that **No users will be excluded**.',
+      }),
+    AUDIENCE_INCLUDE: z
+      .array(PinterestLibIntegerFormatTypeSchema)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Targeted customer list IDs. For example: ["2542620905473"]. Audience lists need to have at least 100 people with Pinterest accounts in them Audience lists need to have at least 100 people with Pinterest accounts in them. If the AUDIENCE_INCLUDE field is missing, the default behavior in terms of ad delivery is that **All users will be included**.',
+      }),
+    GENDER: z
+      .array(TargetingSpecGenderSchema)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Targeted genders. Values: ["unknown","male","female"]. If the GENDER field is missing, the default behavior in terms of ad delivery is that **All genders will be targeted**.',
+      }),
+    GEO: z
+      .array(z.string())
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Region codes or postal codes to include for targeting.\n\nRegion codes represent broader geographical areas. Example: `US-CA` is the region code for California in the United States.\n\nPostal codes represent more granular, specific areas. Postal codes must be prefixed with the ISO-Alpha-2, two-letter country code and a colon. Example: `US:94103` is the postal code for a specific area in San Francisco, California, U.S.A.\n\nFor each ad group, use only one of these methods, depending on which fits your targeting needs. Do not use both. For example, either specify a broader region code like `US-CA` or a more granular postal code within that region, such as `US:94103`.\n\nYou can specify multiple region codes or postal codes in an array, depending on which method you choose. Examples:\n\n```\n"GEO": ["US-CA", "US-NY"]\n```\n\n```\n"GEO": ["US:94103", "US:10001"]\n```\n\nFor each ad group, specify at least one `GEO` or `LOCATION`.\n\nIf you do not specify a `GEO` code, only `LOCATION` values will be targeted (See `LOCATION` parameter in this targeting spec.).\n\nLearn how to [get a current, complete list of codes](/docs/analytics-and-reports/ads-reporting/#get-all-available-codes-and-zones).',
+      }),
+    GEO_EXCLUDE: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Region codes or postal codes to exclude from the targeting inclusion area.\n\nSee `GEO` parameter in this targeting spec for rules, syntax, and other information.',
+      }),
+    INTEREST: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Array of interest object IDs. If the INTEREST field is missing, the default behavior in terms of ad delivery is that **All interests will be targeted**.',
+      }),
+    LOCALE: z
+      .array(z.string())
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          '24 ISO 639-1 two-letter language codes. If the LOCALE field is not included in the request, all languages are targeted.',
+      }),
+    LOCATION: z
+      .array(z.string())
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Metropolitan codes and/or ISO-Alpha-2, two-letter country codes to include for targeting.\n\nPrecede country code values with the `country_codes` key and metro code values with `metro_codes` key. Example:\n\n```\n"location": {\n  "country_codes": ["US", "CA"],\n  "metro_codes": ["501", "602"]\n}\n```\n\nFor each ad group, specify at least one `GEO` or `LOCATION` code.\n\nIf you do not specify a `LOCATION` code, only `GEO` values will be targeted (See `GEO` parameter in this targeting spec.).\n\nLearn how to [get a current, complete list of codes](/docs/analytics-and-reports/ads-reporting/#get-all-available-codes-and-zones).',
+      }),
+    LOCATION_EXCLUDE: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Metropolitan codes and/or ISO-Alpha-2, two-letter country codes to exclude from targeting.\n\nSee `LOCATION` parameter in this targeting spec for rules, syntax, and other information.',
+      }),
+    MAXIMUM_AGE: z
+      .string()
+      .regex(/^\d+\+?$/)
+      .exactOptional()
+      .openapi({
+        description:
+          'Maximum age to target (inclusive). Values: "18", "19", ..., "65", "65+". Must be used together with `MINIMUM_AGE`. Cannot be combined with `AGE_BUCKET`. If neither `MINIMUM_AGE`/`MAXIMUM_AGE` nor `AGE_BUCKET` are specified, all ages will be targeted.',
+      }),
+    MINIMUM_AGE: z
+      .string()
+      .regex(/^\d+$/)
+      .exactOptional()
+      .openapi({
+        description:
+          'Minimum age to target (inclusive). Values: "18", "19", ..., "65". Note: 65+ is not allowed for minimum age. Must be used together with `MAXIMUM_AGE`. Cannot be combined with `AGE_BUCKET`. If neither `MINIMUM_AGE`/`MAXIMUM_AGE` nor `AGE_BUCKET` are specified, all ages will be targeted.',
+      }),
+    SHOPPING_RETARGETING: z
+      .array(TargetingSpecShoppingRetargetingSchema)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Array of object: lookback_window [Integer]: Number of days ago to start lookback timeframe for dynamic retargeting tag_types [Array of integer]: Event types to target for dynamic retargeting exclusion_window [Integer]: Number of days ago to stop lookback timeframe for dynamic retargeting',
+      }),
+    TARGETING_STRATEGY: z.array(TargetingStrategySchema).nullable().exactOptional(),
+  })
+  .openapi({
+    description: 'Targeting spec for delivery estimates and audience sizing.',
+    required: [],
+  })
+  .openapi('PlanningTargetingSpec')
+
+const AdGroupDeliveryEstimatesSchema = z
+  .strictObject({
+    auto_targeting_enabled: z.boolean().exactOptional(),
+    bid_strategy_type: BidStrategyTypeSchema.exactOptional(),
+    budget_type: BudgetTypeSchema.exactOptional(),
+    creative_types: z
+      .array(AdGroupAudienceSizingCreativeTypesSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Pin creative types filter. **Note:** SHOP_THE_PIN has been deprecated. Please use COLLECTION instead.',
+      }),
+    keywords: z
+      .array(AdGroupDeliveryEstimatesKeywordsItemsSchema)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Array of keyword objects. If the keywords field is missing, all keywords will be targeted.',
+      }),
+    monthly_frequency_cap: z
+      .int()
+      .min(0)
+      .exactOptional()
+      .openapi({
+        description:
+          'Set a limit to the number of times a promoted pin from this campaign can be impressed by a pinner within the past rolling 30 days. Only available for CPM (cost per mille (1000 impressions))  ad groups.',
+      }),
+    optimization_goal_metadata: OptimizationGoalMetadataSchema.exactOptional(),
+    optimization_type: OptimizationTypeSchema.exactOptional().openapi({
+      description:
+        'Optimization type for ad group delivery. For AWARENESS, IMPRESSION is always used; WEB_CONVERSION, CLICKTHROUGH, and OUTBOUND_CLICK are accepted for compatibility and discarded. ROAS is not supported. Defaults to WEB_CONVERSION for WEB_CONVERSION/SALES/LEADS objectives, and for catalog campaigns when optimization_goal_metadata is set; CLICKTHROUGH otherwise.',
+    }),
+    pacing_delivery_type: PacingDeliveryTypeSchema.exactOptional(),
+    placement_group: PlacementGroupTypeSchema.exactOptional(),
+    product_group_ids: z
+      .array(DeliveryEstimatesProductGroupIdSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          '[Targeted product group IDs](/docs/redoc/#section/AdGroup-Audience-Sizing) **Note:** This can only be combined with shopping/catalog sales campaigns.',
+      }),
+    targeting_spec: PlanningTargetingSpecSchema.exactOptional(),
+  })
+  .openapi({ description: 'Ad group configuration for delivery estimates.', required: [] })
+  .openapi('AdGroupDeliveryEstimates')
+
+const BudgetDurationTypeSchema = z
+  .enum(['FIXED_DAILY', 'FLEXIBLE_DAILY', 'LIFETIME'])
+  .openapi({ description: 'Budget duration type for delivery estimates.' })
+  .openapi('BudgetDurationType')
+
+const IntendedPromotionTypeSchema = z
+  .enum(['LEGACY', 'STANDARD_AD', 'CATALOG'])
+  .openapi({
+    description:
+      'Specifies the intended promotion type for the campaign.\n\nNote: This field is immutable unless the campaign is in draft status.\n\n**STANDARD_AD**\n- For ads derived from Pins.\n- Supported for all objective types except for current CATALOG\\_SALES and WEB\\_CONVERSION, which are being deprecated.\n- For simplified objective types.\n\n**CATALOG**\n- For creating product group promotions.\n- Supported for CONSIDERATION and SALES objective types.\n- For simplified objective types.\n\n**LEGACY**\n- Intended only for maintaining backward compatibility.\n- Must be used for CATALOG\\_SALES and WEB\\_CONVERSION.\n- Supported for CATALOG\\_SALES and WEB\\_CONVERSION objective types.\n\n**If you do not provide this parameter, the default is:**\n- LEGACY for CATALOG\\_SALES and WEB\\_CONVERSION\n- STANDARD_AD for other objective types',
+  })
+  .openapi('IntendedPromotionType')
+
+const DeliveryEstimateObjectiveTypeSchema = z
+  .enum(['AWARENESS', 'CONSIDERATION', 'CATALOG_SALES', 'WEB_CONVERSION', 'SALES', 'LEADS'])
+  .openapi({ description: 'Objective type for delivery estimates.' })
+  .openapi('DeliveryEstimateObjectiveType')
+
+const CampaignDeliveryEstimatesCampaignSchema = z
+  .strictObject({
+    ad_groups: z.array(AdGroupDeliveryEstimatesSchema).min(1).max(10),
+    budget_duration_type: BudgetDurationTypeSchema.openapi({
+      description: 'Duration type of the budget',
+      example: 'FIXED_DAILY',
+    }),
+    campaign_id: z
+      .string()
+      .regex(/^\d+$/)
+      .exactOptional()
+      .openapi({
+        description:
+          "Optional id of an existing campaign in this ad account. A published (ACTIVE or PAUSED) campaign's id is forwarded to the estimate; any other status is estimated as a new campaign. An id that is not a campaign in this ad account is rejected with a 400.",
+        example: '549755885175',
+      }),
+    daily_spend_cap: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          'Campaign daily spend cap. When the budget_duration_type is FIXED_DAILY or FLEXIBLE_DAILY, this field is required.',
+        example: 50000000,
+      }),
+    end_date: z
+      .string()
+      .regex(/^\d{4}-\d{2}-\d{2}$/)
+      .exactOptional()
+      .openapi({
+        description:
+          'End date of the date range for an ad campaign, pattern YYYY-MM-DD. Required when budget_duration_type is LIFETIME.',
+      }),
+    intended_promotion_type: IntendedPromotionTypeSchema.exactOptional().openapi({
+      description:
+        'The creative source for ads in this campaign. Required when objective_type is SALES or CONSIDERATION.',
+    }),
+    lifetime_spend_cap: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          'Campaign total spending cap. When the budget_duration_type is LIFETIME, this field is required. The end date field is also required for lifetime spending.',
+        example: 500000000,
+      }),
+    objective_type: DeliveryEstimateObjectiveTypeSchema,
+    start_date: z
+      .string()
+      .regex(/^\d{4}-\d{2}-\d{2}$/)
+      .openapi({
+        description: 'Start date of the date range for an ad campaign, pattern YYYY-MM-DD.',
+      }),
+  })
+  .openapi({
+    description: 'Campaign configuration for delivery estimates.',
+    required: ['ad_groups', 'budget_duration_type', 'objective_type', 'start_date'],
+  })
+  .openapi('CampaignDeliveryEstimatesCampaign')
+
+type BulkCampaignDeliveryEstimatesRequestType = z.infer<
+  typeof CampaignDeliveryEstimatesCampaignSchema
+>[]
+
+const AutoTargetingEnabledSchema = z
+  .boolean()
+  .openapi({
+    description:
+      'Enable auto-targeting for ad group. Default value is True. Also known as ["Pinterest Performance+ targeting"](https://help.pinterest.com/en/business/article/performance-plus-targeting).',
+  })
+  .openapi('AutoTargetingEnabled')
+
+const ActionTypeSchema = z
+  .enum(['CLICKTHROUGH', 'IMPRESSION', 'VIDEO_V_50_MRC'])
+  .openapi({
+    description:
+      'Ad group billable event type. For update, only draft ad groups may update billable event.',
+    example: 'CLICKTHROUGH',
+  })
+  .openapi('ActionType')
+
 const TargetingSpecOptimalSchema = z
   .object({
     AGE_BUCKET: z
@@ -802,14 +1132,14 @@ const TargetingSpecOptimalSchema = z
       .exactOptional()
       .openapi({
         description:
-          'Region codes or postal codes to include for targeting.\n\nRegion codes represent broader geographical areas. Example: `US-CA` is the region code for California in the United States.\n\nPostal codes represent more granular, specific areas. Example: `94103` is a postal code for a specifc area in San Francisco, California, U.S.A.\n\nFor each ad group, use only one of these methods, depending on which fits your targeting needs. Do not use both. For example, either specify a broader region code like `US-CA` or a more granular postal code within that regon, such as `94103`.\n\nYou can specify multiple region codes or postal codes in an array, depending on which method you choose.\n\nPrecede a region code array with the `region_codes` key and a postal code value with the `postal_codes` key. Examples:\n\n```\n"geo": {\n  "region_codes": ["US-CA"]\n}\n```\n\n```\n"geo": {\n  "postal_codes": ["94103"]\n}\n```\n\nFor each ad group, specify at least one `GEO` or `LOCATION`.\n\nIf you do not specifiy a `GEO` code, only `LOCATION` values will be targeted (See `LOCATION` parameter in this targeting spec.).\n\nLearn how to [get a current, complete list of codes](/docs/analytics-and-reports/ads-reporting/#get-all-available-codes-and-zones).',
+          'Region codes or postal codes to include for targeting.\n\nRegion codes represent broader geographical areas. Example: `US-CA` is the region code for California in the United States.\n\nPostal codes represent more granular, specific areas. Postal codes must be prefixed with the ISO-Alpha-2, two-letter country code and a colon. Example: `US:94103` is the postal code for a specific area in San Francisco, California, U.S.A.\n\nFor each ad group, use only one of these methods, depending on which fits your targeting needs. Do not use both. For example, either specify a broader region code like `US-CA` or a more granular postal code within that region, such as `US:94103`.\n\nYou can specify multiple region codes or postal codes in an array, depending on which method you choose. Examples:\n\n```\n"GEO": ["US-CA", "US-NY"]\n```\n\n```\n"GEO": ["US:94103", "US:10001"]\n```\n\nFor each ad group, specify at least one `GEO` or `LOCATION`.\n\nIf you do not specify a `GEO` code, only `LOCATION` values will be targeted (See `LOCATION` parameter in this targeting spec.).\n\nLearn how to [get a current, complete list of codes](/docs/analytics-and-reports/ads-reporting/#get-all-available-codes-and-zones).',
       }),
     GEO_EXCLUDE: z
       .array(z.string())
       .exactOptional()
       .openapi({
         description:
-          '[Closed beta](/docs/getting-started/using-beta-and-restricted-features/)\n\nRegion codes or postal codes to exclude from the targeting inclusion area.\n\nSee `GEO` parameter in this targeting spec for rules, syntax, and other information.',
+          'Region codes or postal codes to exclude from the targeting inclusion area.\n\nSee `GEO` parameter in this targeting spec for rules, syntax, and other information.',
       }),
     INTEREST: z
       .array(z.string())
@@ -839,7 +1169,7 @@ const TargetingSpecOptimalSchema = z
       .exactOptional()
       .openapi({
         description:
-          '[Closed beta](/docs/getting-started/using-beta-and-restricted-features/)\n\nMetropolitan codes and/or ISO-Alpha-2, two-letter country codes to exclude from targeting.\n\nSee `LOCATION` parameter in this targeting spec for rules, syntax, and other information.',
+          'Metropolitan codes and/or ISO-Alpha-2, two-letter country codes to exclude from targeting.\n\nSee `LOCATION` parameter in this targeting spec for rules, syntax, and other information.',
       }),
     MAXIMUM_AGE: z
       .string()
@@ -870,286 +1200,6 @@ const TargetingSpecOptimalSchema = z
   .openapi({ required: [] })
   .openapi('TargetingSpecOptimal')
 
-const AdGroupDeliveryEstimatesSchema = z
-  .object({
-    auto_targeting_enabled: z.boolean().exactOptional(),
-    creative_types: z
-      .array(AdGroupAudienceSizingCreativeTypesSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Pin creative types filter. **Note:** SHOP_THE_PIN has been deprecated. Please use COLLECTION instead.',
-      }),
-    keywords: z
-      .array(AdGroupDeliveryEstimatesKeywordsItemsSchema)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Array of keyword objects. If the keywords field is missing, all keywords will be targeted.',
-      }),
-    monthly_frequency_cap: z
-      .int()
-      .min(0)
-      .exactOptional()
-      .openapi({
-        description:
-          'Set a limit to the number of times a promoted pin from this campaign can be impressed by a pinner within the past rolling 30 days. Only available for CPM (cost per mille (1000 impressions))  ad groups.',
-      }),
-    optimization_goal_metadata: OptimizationGoalMetadataSchema.exactOptional(),
-    optimization_type: OptimizationTypeSchema.exactOptional().openapi({
-      description:
-        'Optimization type for ad group delivery. Defaults to WEB_CONVERSION for WEB_CONVERSION/AWARENESS objectives, CLICKTHROUGH otherwise.',
-    }),
-    placement_group: PlacementGroupTypeSchema.exactOptional(),
-    product_group_ids: z
-      .array(DeliveryEstimatesProductGroupIdSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          '[Targeted product group IDs](/docs/redoc/#section/AdGroup-Audience-Sizing) **Note:** This can only be combined with shopping/catalog sales campaigns.',
-      }),
-    targeting_spec: TargetingSpecOptimalSchema.exactOptional(),
-  })
-  .openapi({ description: 'Ad group configuration for delivery estimates.', required: [] })
-  .openapi('AdGroupDeliveryEstimates')
-
-const BudgetDurationTypeSchema = z
-  .enum(['FIXED_DAILY', 'FLEXIBLE_DAILY', 'LIFETIME'])
-  .openapi({ description: 'Budget duration type for delivery estimates.' })
-  .openapi('BudgetDurationType')
-
-const DeliveryEstimateObjectiveTypeSchema = z
-  .enum(['AWARENESS', 'CONSIDERATION', 'CATALOG_SALES', 'WEB_CONVERSION'])
-  .openapi({ description: 'Objective type for delivery estimates.' })
-  .openapi('DeliveryEstimateObjectiveType')
-
-const CampaignDeliveryEstimatesCampaignSchema = z
-  .object({
-    ad_groups: z.array(AdGroupDeliveryEstimatesSchema).min(1).max(10),
-    budget_duration_type: BudgetDurationTypeSchema.openapi({
-      description: 'Duration type of the budget',
-      example: 'FIXED_DAILY',
-    }),
-    daily_spend_cap: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description:
-          'Campaign daily spend cap. When the budget_duration_type is FIXED_DAILY or FLEXIBLE_DAILY, this field is required.',
-        example: 50000000,
-      }),
-    end_date: z
-      .string()
-      .regex(/^\d{4}-\d{2}-\d{2}$/)
-      .exactOptional()
-      .openapi({
-        description:
-          'End date of the date range for an ad campaign, pattern YYYY-MM-DD. Required when budget_duration_type is LIFETIME.',
-      }),
-    lifetime_spend_cap: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description:
-          'Campaign total spending cap. When the budget_duration_type is LIFETIME, this field is required. The end date field is also required for lifetime spending.',
-        example: 500000000,
-      }),
-    objective_type: DeliveryEstimateObjectiveTypeSchema,
-    start_date: z
-      .string()
-      .regex(/^\d{4}-\d{2}-\d{2}$/)
-      .openapi({
-        description: 'Start date of the date range for an ad campaign, pattern YYYY-MM-DD.',
-      }),
-  })
-  .openapi({
-    description: 'Campaign configuration for delivery estimates.',
-    required: ['ad_groups', 'budget_duration_type', 'objective_type', 'start_date'],
-  })
-  .openapi('CampaignDeliveryEstimatesCampaign')
-
-type BulkCampaignDeliveryEstimatesRequestType = z.infer<
-  typeof CampaignDeliveryEstimatesCampaignSchema
->[]
-
-const AutoTargetingEnabledSchema = z
-  .boolean()
-  .openapi({
-    description:
-      'Enable auto-targeting for ad group. Default value is True. Also known as <a href="https://help.pinterest.com/en/business/article/performance-plus-targeting" target="_blank">"Pinterest Performance+ targeting"</a>.',
-  })
-  .openapi('AutoTargetingEnabled')
-
-const BudgetTypeSchema = z
-  .enum(['DAILY', 'LIFETIME', 'CBO_ADGROUP'])
-  .openapi({
-    description:
-      'Budget type. If DAILY, an ad group\'s daily spend will not exceed the budget parameter value. If LIFETIME, the end_time parameter is **REQUIRED**, and the ad group spend is spread evenly between the ad group `start_time` and `end_time` range. A CBO campaign automatically generates ad group budgets from its campaign budget to maximize campaign outcome. For CBO campaigns, only "CBO_ADGROUP" is allowed. For WEB_SESSIONS campaigns, only "LIFETIME" is allowed. For update, only draft ad groups may update budget type.',
-    example: 'DAILY',
-  })
-  .openapi('BudgetType')
-
-const PacingDeliveryTypeSchema = z
-  .enum(['STANDARD', 'ACCELERATED'])
-  .openapi({
-    description:
-      'Ad group pacing delivery type. With ACCELERATED, an ad group budget is spent as fast as possible. With STANDARD, an ad group budget is spent smoothly over a day. When using CBO, only the STANDARD pacing delivery type is allowed.',
-    example: 'STANDARD',
-  })
-  .openapi('PacingDeliveryType')
-
-const BidStrategyTypeSchema = z
-  .union([
-    z.literal('AUTOMATIC_BID'),
-    z.literal('MAX_BID'),
-    z.literal('TARGET_AVG'),
-    z.literal(null),
-  ])
-  .nullable()
-  .openapi({
-    description:
-      'Bid strategy type. For Campaigns with Video Completion objectives, the only supported bid strategy type is AUTOMATIC_BID, also known as "Pinterest Performance+ bidding".',
-    title: 'BidStrategyType',
-  })
-  .openapi('BidStrategyType')
-
-const ActionTypeSchema = z
-  .enum(['CLICKTHROUGH', 'IMPRESSION', 'VIDEO_V_50_MRC'])
-  .openapi({
-    description:
-      'Ad group billable event type. For update, only draft ad groups may update billable event.',
-    example: 'CLICKTHROUGH',
-  })
-  .openapi('ActionType')
-
-const TargetingSpecSchema = z
-  .object({
-    AGE_BUCKET: z
-      .array(TargetingSpecAgeBucketSchema)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          '**Legacy field.** Predefined age ranges. We recommend using MINIMUM_AGE and MAXIMUM_AGE instead for more flexible targeting. Cannot be combined with MINIMUM_AGE/MAXIMUM_AGE. If neither AGE_BUCKET nor MINIMUM_AGE/MAXIMUM_AGE are specified, all ages will be targeted.',
-        example: ['35-44', '50-54'],
-      }),
-    APPTYPE: z
-      .array(TargetingSpecAppTypeSchema)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Allowed devices. If the APPTYPE field is missing, the default behavior in terms of ad delivery is that **All devices/apptypes** will be targeted.',
-        example: ['ipad', 'iphone'],
-      }),
-    AUDIENCE_EXCLUDE: z
-      .array(z.string().regex(/^\d+$/))
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Excluded customer list IDs. Used to drive new customer acquisition goals. For example: ["2542620905475"]. Audience lists need to have at least 100 people with Pinterest accounts in them. If the AUDIENCE_EXCLUDE field is missing, the default behavior in terms of ad delivery is that **No users will be excluded**.',
-      }),
-    AUDIENCE_INCLUDE: z
-      .array(z.string().regex(/^\d+$/))
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Targeted customer list IDs. For example: ["2542620905473"]. Audience lists need to have at least 100 people with Pinterest accounts in them Audience lists need to have at least 100 people with Pinterest accounts in them. If the AUDIENCE_INCLUDE field is missing, the default behavior in terms of ad delivery is that **All users will be included**.',
-      }),
-    GENDER: z
-      .array(TargetingSpecGenderSchema)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Targeted genders. Values: ["unknown","male","female"]. If the GENDER field is missing, the default behavior in terms of ad delivery is that **All genders will be targeted**.',
-      }),
-    GEO: z
-      .array(z.string())
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Region codes or postal codes to include for targeting.<br /><br /> Region codes represent broader geographical areas. Example: <code>US-CA</code> is the region code for California in the United States.<br /><br /> Postal codes represent more granular, specific areas. Example: <code>94103</code> is a postal code for a specifc area in San Francisco, California, U.S.A.<br /><br /> For each ad group, use only one of these methods, depending on which fits your targeting needs. Do not use both. For example, either specify a broader region code like <code>US-CA</code> or a more granular postal code within that regon, such as <code>94103</code>.<br /><br /> You can specify multiple region codes or postal codes in an array, depending on which method you choose.<br /><br /> Precede a region code array with the <code>region_codes</code> key and a postal code value with the <code>postal_codes</code> key. Examples:<br /><br />\n<code>"geo": {</code><br /> <code>"region_codes": ["US-CA"]</code><br /> <code>}</code><br /><br />\n<code>"geo": {</code><br /> <code>"postal_codes": ["94103"]</code><br /> <code>}</code><br /><br />\nFor each ad group, specify at least one <code>GEO</code> or <code>LOCATION</code>. <br /><br /> If you do not specifiy a <code>GEO</code> code, only <code>LOCATION</code> values will be targeted (See <code>LOCATION</code> parameter in this targeting spec.).<br /><br /> Learn how to <a href="/docs/analytics-and-reports/ads-reporting/#get-all-available-codes-and-zones" target="_blank">get a current, complete list of codes</a>.',
-      }),
-    GEO_EXCLUDE: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Region codes or postal codes to exclude from the targeting inclusion area.<br /><br /> See <code>GEO</code> parameter in this targeting spec for rules, syntax, and other information.<br />',
-      }),
-    INTEREST: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Array of interest object IDs. If the INTEREST field is missing, the default behavior in terms of ad delivery is that **All interests will be targeted**.',
-      }),
-    LOCALE: z
-      .array(z.string())
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          '24 ISO 639-1 two-letter language codes. If the LOCALE field is not included in the request, all languages are targeted.',
-      }),
-    LOCATION: z
-      .array(z.string())
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Metropolitan codes and/or ISO-Alpha-2, two-letter country codes to include for targeting.<br /><br /> Precede country code values with the <code>country_codes</code> key and metro code values with <code>metro_codes</code> key. Example:<br /><br /> <code>"location": {</code><br /> <code>"country_codes": ["US", "CA"],</code><br /> <code>"metro_codes": ["501", "602"]</code><br /> <code>}</code><br /><br /> For each ad group, specify at least one <code>GEO</code> or <code>LOCATION</code> code. <br /><br /> If you do not specify a <code>LOCATION</code> code, only <code>GEO</code> values will be targeted (See <code>GEO</code> parameter in this targeting spec.).<br /><br /> Learn how to <a href="/docs/analytics-and-reports/ads-reporting/#get-all-available-codes-and-zones" target="_blank">get a current, complete list of codes</a>.',
-      }),
-    LOCATION_EXCLUDE: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Metropolitan codes and/or ISO-Alpha-2, two-letter country codes to exclude from targeting.<br /><br /> See <code>LOCATION</code> parameter in this targeting spec for rules, syntax, and other information.',
-      }),
-    MAXIMUM_AGE: z
-      .string()
-      .regex(/^\d+\+?$/)
-      .exactOptional()
-      .openapi({
-        description:
-          'Maximum age to target (inclusive). Values: "18", "19", ..., "65", "65+". Must be used together with `MINIMUM_AGE`. Cannot be combined with `AGE_BUCKET`. If neither `MINIMUM_AGE`/`MAXIMUM_AGE` nor `AGE_BUCKET` are specified, all ages will be targeted.',
-        example: '65+',
-      }),
-    MINIMUM_AGE: z
-      .string()
-      .regex(/^\d+$/)
-      .exactOptional()
-      .openapi({
-        description:
-          'Minimum age to target (inclusive). Values: "18", "19", ..., "65". Note: 65+ is not allowed for minimum age. Must be used together with `MAXIMUM_AGE`. Cannot be combined with `AGE_BUCKET`. If neither `MINIMUM_AGE`/`MAXIMUM_AGE` nor `AGE_BUCKET` are specified, all ages will be targeted.',
-        example: '18',
-      }),
-    SHOPPING_RETARGETING: z
-      .array(TargetingSpecShoppingRetargetingSchema)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Array of object: lookback_window\t[Integer]: Number of days ago to start lookback timeframe for dynamic retargeting tag_types [Array of integer]: Event types to target for dynamic retargeting exclusion_window [Integer]: Number of days ago to stop lookback timeframe for dynamic retargeting',
-      }),
-    TARGETING_STRATEGY: z
-      .array(z.enum(['CHOOSE_YOUR_OWN', 'FIND_NEW_CUSTOMERS', 'RECONNECT_WITH_USERS']))
-      .nullable()
-      .exactOptional(),
-  })
-  .openapi({
-    description:
-      'Ad group targeting specification defining the ad group target audience. For example, `{"APPTYPE":["iphone"], "GENDER":["male"], "LOCALE":["en-US"], "LOCATION":["501"], "MINIMUM_AGE":"18", "MAXIMUM_AGE":"65+"}`',
-    required: [],
-  })
-  .openapi('TargetingSpec')
-
 const AdGroupCreateRequestSchema = z
   .object({
     auto_targeting_enabled: AutoTargetingEnabledSchema.exactOptional(),
@@ -1160,7 +1210,7 @@ const AdGroupCreateRequestSchema = z
       .exactOptional()
       .openapi({
         description:
-          '<a href="/docs/getting-started/using-beta-and-restricted-features/" target="blank>Open beta</a>\nBid multiplier for ad group. This value is a double between 0.1\nand 10.0. Enter 0 to remove the bid multiplier.\n- Make sure the `bid_strategy` type for your ad group is set to `AUTOMATIC_BID`.\n- Not currently supported for <a href="/docs/api-features/pinterest-performance-plus-setup/" target="blank">Pinterest Performance+ campaigns</a>.',
+          '[Open beta](/docs/getting-started/using-beta-and-restricted-features/)\nBid multiplier for ad group. This value is a double between 0.1\nand 10.0. Enter 0 to remove the bid multiplier.\n- Make sure the `bid_strategy` type for your ad group is set to `AUTOMATIC_BID`.\n- Not currently supported for [Pinterest Performance+ campaigns](/docs/api-features/pinterest-performance-plus-setup/).',
       }),
     budget_type: BudgetTypeSchema.default('DAILY').exactOptional(),
     pacing_delivery_type: PacingDeliveryTypeSchema.default('STANDARD').exactOptional(),
@@ -1195,13 +1245,20 @@ const AdGroupCreateRequestSchema = z
           .regex(/^[C]?\d+$/)
           .exactOptional()
           .openapi({ description: 'Campaign ID of the ad group.', example: '626736533506' }),
+        enable_offsite_placement: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description:
+              'Whether offsite ad delivery (audience extension) is enabled for this ad group.',
+          }),
         end_time: z
           .int()
           .nullable()
           .exactOptional()
           .openapi({
             description:
-              'Timestamp in Unix format for scheduling when ads in the ad group stop appearing. If not specified, ads run indefinitely unless you update the ad group by changing their status to `paused`. Cannot occur after `end_time` for parent campaign (if specified). Learn about <a href="/docs/api-features/managing-ads/#step-2-create-an-ad-group" target="blank">scheduling ads</a>.\nFor certain organizations (<a href="/docs/getting-started/using-beta-and-restricted-features/" target="blank" target="blank">Closed beta</a>): Supported for campaigns with Campaign Budget Optimization (CBO).\nFor all organizations: Supported for campaigns without CBO.',
+              'Timestamp in Unix format for scheduling when ads in the ad group stop appearing. If not specified, ads run indefinitely unless you update the ad group by changing their status to `paused`. Cannot occur after `end_time` for parent campaign (if specified). Learn about [scheduling ads](/docs/api-features/managing-ads/#step-2-create-an-ad-group).\nFor certain organizations ([Closed beta](/docs/getting-started/using-beta-and-restricted-features/)): Supported for campaigns with Campaign Budget Optimization (CBO).\nFor all organizations: Supported for campaigns without CBO.',
             example: 5705424000,
           }),
         is_creative_optimization: z
@@ -1213,12 +1270,20 @@ const AdGroupCreateRequestSchema = z
               'Enable creative optimization for the ad group, default value is FALSE. When enabled, you allow Pinterest to automatically turn your product Pins into ads in different formats (collections and shopping) and deliver those ads to users at scale.',
             example: true,
           }),
+        is_shopping_annotation_opt_in: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description:
+              'Whether shopping annotation badges are enabled on promoted Pins in this ad group.',
+            example: true,
+          }),
         lifetime_frequency_cap: z
           .int()
           .exactOptional()
           .openapi({
             description:
-              'Set a limit to the number of times a promoted pin from this campaign can be impressed by a pinner within the past rolling 30 days. Only available for CPM (cost per mille (1000 impressions))  ad groups. A CPM ad group has an IMPRESSION <a href="/docs/redoc/#section/Billable-event">billable_event</a> value. This field **REQUIRES** the `end_time` field.',
+              'Set a limit to the number of times a promoted pin from this campaign can be impressed by a pinner within the past rolling 30 days. Only available for CPM (cost per mille (1000 impressions))  ad groups. A CPM ad group has an IMPRESSION [billable_event](/docs/redoc/#section/Billable-event) value. This field **REQUIRES** the `end_time` field.',
             example: 100,
           }),
         name: z
@@ -1233,7 +1298,7 @@ const AdGroupCreateRequestSchema = z
           }),
         pacing_delivery_type: PacingDeliveryTypeSchema.exactOptional(),
         placement_group: PlacementGroupTypeSchema.exactOptional().openapi({
-          description: '<a href="/docs/redoc/#section/Placement-group">Placement group</a>.',
+          description: '[Placement group](/docs/redoc/#section/Placement-group).',
         }),
         promotion_application_level: z
           .union([z.literal('NONE'), z.literal('ITEM'), z.literal('AD_GROUP'), z.literal(null)])
@@ -1266,13 +1331,13 @@ const AdGroupCreateRequestSchema = z
           .exactOptional()
           .openapi({
             description:
-              'Timestamp in Unix format for scheduling when ads in the ad group start to appear. If not specified, ads appear during parent campaign\'s `start_time`. Cannot precede `start_time` for parent campaign (if specified). Learn about <a href="/docs/api-features/managing-ads/#step-2-create-an-ad-group" target="blank">scheduling ads</a>.\nFor certain organizations (<a href="/docs/getting-started/using-beta-and-restricted-features/" target="blank" target="blank">Closed beta</a>): Supported for campaigns with Campaign Budget Optimization (CBO).\nFor all organizations: Supported for campaigns without CBO.',
+              "Timestamp in Unix format for scheduling when ads in the ad group start to appear. If not specified, ads appear during parent campaign's `start_time`. Cannot precede `start_time` for parent campaign (if specified). Learn about [scheduling ads](/docs/api-features/managing-ads/#step-2-create-an-ad-group).\nFor certain organizations ([Closed beta](/docs/getting-started/using-beta-and-restricted-features/)): Supported for campaigns with Campaign Budget Optimization (CBO).\nFor all organizations: Supported for campaigns without CBO.",
             example: 5686848000,
           }),
         status: EntityStatusSchema.exactOptional().openapi({
           description: 'Ad group/entity status.',
         }),
-        targeting_spec: TargetingSpecSchema.exactOptional(),
+        targeting_spec: TargetingSpecOptimalSchema.exactOptional(),
         targeting_template_ids: z
           .array(z.string().regex(/^\d+$/).openapi({ description: 'Targeting template ID.' }))
           .max(1)
@@ -1286,7 +1351,7 @@ const AdGroupCreateRequestSchema = z
           .exactOptional()
           .openapi({
             description:
-              'Third-party tracking URLs.<br> JSON object with the format: {"<a href="/docs/redoc/#section/Tracking-URL-event">Tracking event enum</a>":[URL string array],...}<br> For example: {"impression": ["URL1", "URL2"], "click": ["URL1", "URL2", "URL3"]}.<br>Up to three tracking URLs are supported for each event type. Tracking URLs set at the ad group or ad level can override those set at the campaign level. May be null. Pass in an empty object - EmptyObject - to remove tracking URLs.<br><br> For more information, see <a href="https://help.pinterest.com/en/business/article/third-party-and-dynamic-tracking" target="_blank">Third-party and dynamic tracking</a>.',
+              'Third-party tracking URLs.\n\nJSON object with the format: {"[Tracking event enum](/docs/redoc/#section/Tracking-URL-event)": [URL string array], ...}\nFor example: {"impression": ["URL1", "URL2"], "click": ["URL1", "URL2", "URL3"]}.\nUp to three tracking URLs are supported for each event type. Tracking URLs set at the ad group or ad level can override those set at the campaign level. May be null. Pass in an empty object - EmptyObject - to remove tracking URLs.\n\nFor more information, see [Third-party and dynamic tracking](https://help.pinterest.com/en/business/article/third-party-and-dynamic-tracking).',
           }),
       })
       .openapi({ required: [] }),
@@ -1380,11 +1445,7 @@ const AdCreateRequestSchema = z
           .nullable()
           .exactOptional()
           .openapi({ description: 'Name of the ad - 255 chars max.' }),
-        pin_id: z
-          .string()
-          .regex(/^\d+$/)
-          .exactOptional()
-          .openapi({ description: 'Pin ID.', example: '394205773611545468' }),
+        pin_id: z.string().regex(/^\d+$/).exactOptional(),
         quiz_pin_data: QuizPinDataSchema.nullable()
           .exactOptional()
           .openapi({
@@ -1421,6 +1482,7 @@ const AgeBucketMultipliersSchema = z
     description:
       'This represents a mapping from age bucket to a bid price adjustment.\n\nMultiplier values must be between 0 and 10. A value of 10 represents a 900% increase in bid price (from $1 to $10 for example). A value of 0 will stop distribution for this item on the specified age bucket in `MAX_BID` ad groups in `CATALOG_SALES` campaigns. All age bucket multipliers must be set at the same time. If a multiplier is not provided it is assumed to be 1 (no bid adjustment).',
     example: { '18-24': 0.9, '25-34': 1.1, '35-44': 1.2 },
+    required: [],
   })
   .openapi('AgeBucketMultipliers')
 
@@ -1443,6 +1505,7 @@ const AppTypeMultipliersSchema = z
       web: 0.9,
       web_mobile: 0.8,
     },
+    required: [],
   })
   .openapi('AppTypeMultipliers')
 
@@ -1468,6 +1531,7 @@ const CampaignAudienceMultipliersSchema = z
     description:
       'This represents a mapping from Audience ID to a bid price adjustment.\n\nMultiplier values must be between 0 and 10. A value of 10 represents a 900% increase in bid price (from $1 to $10 for example). A value of 0 will stop distribution for this item on the specified audience in `MAX_BID` ad groups in `CATALOG_SALES` campaigns. All audience multipliers must be set at the same time. If a multiplier is not provided it is assumed to be 1 (no bid adjustment).',
     example: { '123': 1.1, '456': 1.2 },
+    required: [],
   })
   .openapi('CampaignAudienceMultipliers')
 
@@ -1490,6 +1554,7 @@ const FrequencyMultipliersSchema = z
     description:
       'This represents a mapping from impression count to a bid price adjustment for frequency-based bidding.\n\nKeys are impression counts (0-10) representing how many times a user has seen the ad.\nMultiplier values must be between 0 and 10. A value of 10 represents a 900% increase in bid price.\nA value of 0 will stop distribution for this impression count.\nIf a multiplier is not provided it is assumed to be 1 (no bid adjustment).',
     example: { '0': 1.5, '1': 1.3, '2': 0.8 },
+    required: [],
   })
   .openapi('FrequencyMultipliers')
 
@@ -1510,6 +1575,7 @@ const GenderMultipliersSchema = z
     description:
       'This represents a mapping from gender targeting criteria to a bid price adjustment.\n\nMultiplier values must be between 0 and 10. A value of 10 represents a 900% increase in bid price (from $1 to $10 for example). A value of 0 will stop distribution for this item on the specified gender in `MAX_BID` ad groups in `CATALOG_SALES` campaigns. All gender multipliers must be set at the same time. If a multiplier is not provided it is assumed to be 1 (no bid adjustment).',
     example: { female: 2.1, male: 0.8 },
+    required: [],
   })
   .openapi('GenderMultipliers')
 
@@ -1530,6 +1596,7 @@ const PlacementMultipliersSchema = z
     description:
       'This represents a mapping from placement to a bid price adjustment.\n\nMultiplier values must be between 0 and 10. A value of 10 represents a 900% increase in bid price (from $1 to $10 for example). A value of 0 will stop distribution for this item on the specified placement in `MAX_BID` ad groups in `CATALOG_SALES` campaigns. All placement multipliers must be set at the same time. If a multiplier is not provided it is assumed to be 1 (no bid adjustment).',
     example: { browse: 0.9, search: 1.2, related_pins: 1.1 },
+    required: [],
   })
   .openapi('PlacementMultipliers')
 
@@ -1564,20 +1631,12 @@ const CampaignBidOptionsCreateSchema = z
   })
   .openapi('CampaignBidOptionsCreate')
 
-const IntendedPromotionTypeSchema = z
-  .enum(['LEGACY', 'STANDARD_AD', 'CATALOG'])
-  .openapi({
-    description:
-      'Specifies the intended promotion type for the campaign.\n\nNote: This field is immutable unless the campaign is in draft status.\n\n**STANDARD_AD**\n- For ads derived from Pins.\n- Supported for all objective types except for current CATALOG\\_SALES and WEB\\_CONVERSION, which are being deprecated.\n- For simplified objective types.\n\n**CATALOG**\n- For creating product group promotions.\n- Supported for CONSIDERATION and SALES objective types.\n- For simplified objective types.\n\n**LEGACY**\n- Intended only for maintaining backward compatibility.\n- Must be used for CATALOG\\_SALES and WEB\\_CONVERSION.\n- Supported for CATALOG\\_SALES and WEB\\_CONVERSION objective types.\n\n**If you do not provide this parameter, the default is:**\n- LEGACY for CATALOG\\_SALES and WEB\\_CONVERSION\n- STANDARD_AD for other objective types',
-  })
-  .openapi('IntendedPromotionType')
-
 const CampaignIsAutomatedCampaignSchema = z
   .boolean()
   .nullable()
   .openapi({
     description:
-      'Note: This field is immutable unless the campaign is in draft status.\nSpecifies whether the campaign was created in the automated campaign flow.\nWhen using Automated Campaigns, a daily spend cap must be set, and Pinterest Performance+ may not be used.\nThe following objective types are supported:\n- CONSIDERATION\n- WEB\\_CONVERSION\n- SALES\n- CATALOG\\_SALES',
+      'Note: This field is immutable unless the campaign is in draft status.\nSpecifies whether the campaign was created in the automated campaign flow.\nWhen using Automated Campaigns, a daily spend cap must be set, and Pinterest Performance+ may not be used.\nThe following objective types are supported:\n- CONSIDERATION\n- WEB_CONVERSION\n- SALES\n- CATALOG_SALES',
   })
   .openapi('CampaignIsAutomatedCampaign')
 
@@ -1607,6 +1666,7 @@ const ObjectiveTypeSchema = z
     'CATALOG_SALES',
     'VIDEO_COMPLETION',
     'SALES',
+    'LEADS',
     'APP_INSTALL',
     'CTV_CONSIDERATION',
   ])
@@ -1637,7 +1697,7 @@ const CampaignCreateRequestSchema = z
       .exactOptional()
       .openapi({
         description:
-          'Enable Pinterest Performance+ for your campaign. To learn more, see <a href="https://developers.pinterest.com/docs/api-features/pinterest-performance-plus-setup/">Pinterest Performance+ Setup</a>.',
+          'Enable Pinterest Performance+ for your campaign. To learn more, see [Pinterest Performance+ Setup](https://developers.pinterest.com/docs/api-features/pinterest-performance-plus-setup/).',
       }),
     is_top_of_search: z
       .boolean()
@@ -1645,7 +1705,7 @@ const CampaignCreateRequestSchema = z
       .exactOptional()
       .openapi({
         description:
-          '<a href="/docs/getting-started/using-beta-and-restricted-features/" target="blank" target="blank">Restricted</a>\n\nHave your ads and content appear at the top of search result lists in Pinterest.\n\nYou can only use this feature with the following objectives:\n`CONSIDERATION`\n`WEB_CONVERSION`\n`CATALOG_SALES`\n\nYou cannot use this feature with Pinterest Performance+ or Premiere Spotlight enabled.\n\nYou cannot change your `true` or `false` selection of this campaign if you <a href="https://developer.pinterest.com/docs/api/v5/campaigns-update" target="blank">update it</a>.',
+          '[Restricted](/docs/getting-started/using-beta-and-restricted-features/)\n\nHave your ads and content appear at the top of search result lists in Pinterest.\n\nYou can only use this feature with the following objectives:\n`CONSIDERATION`\n`WEB_CONVERSION`\n`CATALOG_SALES`\n\nYou cannot use this feature with Pinterest Performance+ or Premiere Spotlight enabled.\n\nYou cannot change your `true` or `false` selection of this campaign if you [update it](https://developer.pinterest.com/docs/api/v5/campaigns-update).',
       }),
     objective_type: ObjectiveTypeSchema,
     status: EntityStatusSchema.default('ACTIVE').exactOptional(),
@@ -1686,7 +1746,7 @@ const CampaignCreateRequestSchema = z
           .exactOptional()
           .openapi({
             description:
-              'Timestamp in Unix format for scheduling when ads in the campaign stop appearing. Must occur after any end times for child ad groups. If `end_time` is not specified for the campaign, ads run indefinitely unless you update the campaign, changing their status to `paused`. Learn about <a href="/docs/api-features/managing-campaigns/#campaign-scheduling" target="blank">scheduling campaigns</a>.\nDifferent end times can be set for the campaign\'s child ad groups, but they cannot occur after an `end_time` specified for the campaign.\n- If your campaign has a child ad group with an end time specified, and if you update that campaign with an `end_time` that is earlier than that of the ad group, the campaign `end_time` will supersede the ad group `end_time`, and the request will not return an error.\n- In this scenario, if you call <a href="/docs/api/v5/campaigns-list" target="blank">List campaigns</a> or <a href="/docs/api/v5/ad_groups-list" target="blank">List ad groups</a>, the returned campaigns or ad groups are listed with the start and end times that you assigned them, regardless of supersedence.',
+              "Timestamp in Unix format for scheduling when ads in the campaign stop appearing. Must occur after any end times for child ad groups. If `end_time` is not specified for the campaign, ads run indefinitely unless you update the campaign, changing their status to `paused`. Learn about [scheduling campaigns](/docs/api-features/managing-campaigns/#campaign-scheduling).\nDifferent end times can be set for the campaign's child ad groups, but they cannot occur after an `end_time` specified for the campaign.\n- If your campaign has a child ad group with an end time specified, and if you update that campaign with an `end_time` that is earlier than that of the ad group, the campaign `end_time` will supersede the ad group `end_time`, and the request will not return an error.\n- In this scenario, if you call [List campaigns](/docs/api/v5/campaigns-list) or [List ad groups](/docs/api/v5/ad_groups-list), the returned campaigns or ad groups are listed with the start and end times that you assigned them, regardless of supersedence.",
             example: 1644023526,
           }),
         is_automated_campaign: CampaignIsAutomatedCampaignSchema.exactOptional(),
@@ -1720,7 +1780,7 @@ const CampaignCreateRequestSchema = z
           .exactOptional()
           .openapi({
             description:
-              'Timestamp in Unix format for scheduling when ads in the campaign start to appear. Must precede any start times set for child ad groups. Defaults to current time if no time is specified. Learn about <a href="/docs/api-features/managing-campaigns/#campaign-scheduling" target="blank">scheduling campaigns</a>.\nDifferent start times can be set for the campaign\'s child ad groups, but they cannot occur before a `start_time` specified for the campaign.\n- If your campaign has a child ad group with a start time specified, and if you update that campaign with a `start_time` that is later than that of the ad group, the campaign `start_time` will supersede the ad group `start_time`, and the request will not return an error.\n- In this scenario, if you call <a href="/docs/api/v5/campaigns-list" target="blank">List campaigns</a> or <a href="/docs/api/v5/ad_groups-list" target="blank">List ad groups</a>, the returned campaigns or ad groups are listed with the start and end times that you assigned them, regardless of supersedence.',
+              "Timestamp in Unix format for scheduling when ads in the campaign start to appear. Must precede any start times set for child ad groups. Defaults to current time if no time is specified. Learn about [scheduling campaigns](/docs/api-features/managing-campaigns/#campaign-scheduling).\nDifferent start times can be set for the campaign's child ad groups, but they cannot occur before a `start_time` specified for the campaign.\n- If your campaign has a child ad group with a start time specified, and if you update that campaign with a `start_time` that is later than that of the ad group, the campaign `start_time` will supersede the ad group `start_time`, and the request will not return an error.\n- In this scenario, if you call [List campaigns](/docs/api/v5/campaigns-list) or [List ad groups](/docs/api/v5/ad_groups-list), the returned campaigns or ad groups are listed with the start and end times that you assigned them, regardless of supersedence.",
             example: 1580865126,
           }),
         status: EntityStatusSchema.exactOptional(),
@@ -2549,6 +2609,32 @@ const PinterestProductCategoriesFilterSchema = z
   .openapi({ required: ['PINTEREST_PRODUCT_CATEGORIES'], title: 'PINTEREST_PRODUCT_CATEGORIES' })
   .openapi('PinterestProductCategoriesFilter')
 
+const SupplementalItemSegmentTypeSchema = z
+  .literal('LOCAL_INVENTORY')
+  .openapi({
+    description:
+      'Supplemental item segment categories. Today only LOCAL_INVENTORY is in use; corresponds to the "Location data" filter in the catalogs UI.',
+  })
+  .openapi('SupplementalItemSegmentType')
+
+const CatalogsProductGroupMultipleSupplementalItemSegmentsCriteriaSchema = z
+  .strictObject({
+    negated: z.boolean().exactOptional(),
+    values: z.array(SupplementalItemSegmentTypeSchema),
+  })
+  .openapi({
+    required: ['values'],
+    title: 'catalogs_product_group_multiple_supplemental_item_segments_criteria',
+  })
+  .openapi('CatalogsProductGroupMultipleSupplementalItemSegmentsCriteria')
+
+const SupplementalItemSegmentsFilterSchema = z
+  .strictObject({
+    SUPPLEMENTAL_ITEM_SEGMENTS: CatalogsProductGroupMultipleSupplementalItemSegmentsCriteriaSchema,
+  })
+  .openapi({ required: ['SUPPLEMENTAL_ITEM_SEGMENTS'], title: 'SUPPLEMENTAL_ITEM_SEGMENTS' })
+  .openapi('SupplementalItemSegmentsFilter')
+
 const CatalogsBaseFilterKeysSchema = z
   .union([
     MinPriceFilterSchema,
@@ -2585,6 +2671,7 @@ const CatalogsBaseFilterKeysSchema = z
     CustomNumber4FilterSchema,
     TitleKeywordsFilterSchema,
     PinterestProductCategoriesFilterSchema,
+    SupplementalItemSegmentsFilterSchema,
   ])
   .openapi({
     description: 'Base filter keys shared across catalog filtering',
@@ -3168,6 +3255,7 @@ const MatchTypeResponseSchema = z
     z.literal('EXACT'),
     z.literal('EXACT_NEGATIVE'),
     z.literal('PHRASE_NEGATIVE'),
+    z.literal('BROAD_NEGATIVE'),
     z.literal(null),
   ])
   .nullable()
@@ -3182,11 +3270,16 @@ const KeywordsCommonSchema = z
       .exactOptional()
       .openapi({
         description:
-          '</p><strong>Note:</strong> bid field has been deprecated. Input will not be set and field will return null. Keyword custom bid in microcurrency - null if inherited from parent ad group.',
+          '**Note:** bid field has been deprecated. Input will not be set and field will return null. Keyword custom bid in microcurrency - null if inherited from parent ad group.',
         example: null,
       }),
     match_type: MatchTypeResponseSchema,
-    value: z.string().openapi({ description: 'Keyword value (120 chars max).' }),
+    value: z
+      .string()
+      .openapi({
+        description:
+          'Keyword value (120 characters maximum). Set the match type to choose the match behavior. Omit Ads Manager\'s leading hyphen (-), double quotes (" "), and square brackets ([ ]) from the value. Broad negative keywords support up to 10 tokens. Each sequence of ASCII letters or digits counts as one token. Spaces and special characters separate tokens. For example, "summer\'s t-shirts" counts as 4 tokens.',
+      }),
   })
   .openapi({ required: ['match_type', 'value'] })
   .openapi('KeywordsCommon')
@@ -3296,6 +3389,23 @@ const ProductGroupPromotionCustomizableCTATypeSchema = z
   })
   .openapi('ProductGroupPromotionCustomizableCTAType')
 
+const DynamicTitlesApprovalTypeSchema = z
+  .enum(['MANUAL', 'AUTOMATIC'])
+  .openapi({
+    description: 'A field to determine the approval type for dynamic titles',
+    example: 'MANUAL',
+  })
+  .openapi('DynamicTitlesApprovalType')
+
+const GeneratedBackgroundStyleSchema = z
+  .enum(['BASIC', 'LIFESTYLE'])
+  .openapi({
+    description:
+      "A generated background style that may be applied to a product group promotion's images.",
+    example: 'BASIC',
+  })
+  .openapi('GeneratedBackgroundStyle')
+
 const PreferredMediaTypeSchema = z
   .union([z.literal('VIDEO'), z.literal('IMAGE'), z.literal(null)])
   .nullable()
@@ -3315,6 +3425,15 @@ const ProductGroupPromotionSchema = z
         description: 'ID of the ad group the product group belongs to.',
         example: '2680059592705',
         title: 'ad_group_id',
+      }),
+    base_product_group_promotion_id: z
+      .string()
+      .regex(/^\d+$/)
+      .exactOptional()
+      .openapi({
+        description:
+          'The ID of the Performance+ base product group promotion that this product group promotion was duplicated from in its managed set. Read-only output; set by Pinterest when a Performance+ managed set is created. Setting this field on a request has no effect.',
+        readOnly: true,
       }),
     bid_in_micro_currency: z
       .int()
@@ -3363,6 +3482,10 @@ const ProductGroupPromotionSchema = z
         title: 'collections_hero_pin_id',
       }),
     creative_type: CreativeTypeSchema.exactOptional(),
+    cta_types: z
+      .array(ProductGroupPromotionCustomizableCTATypeSchema)
+      .exactOptional()
+      .openapi({ description: 'List of CTA types.' }),
     customizable_cta_type: ProductGroupPromotionCustomizableCTATypeSchema.exactOptional(),
     definition: z
       .string()
@@ -3371,6 +3494,14 @@ const ProductGroupPromotionSchema = z
         description: 'The full product group definition path',
         example: "*/product_type_0='kitchen'/product_type_1='beverage appliances'",
         title: 'definition',
+      }),
+    dynamic_titles_approval_type: DynamicTitlesApprovalTypeSchema.exactOptional(),
+    generated_background_styles: z
+      .array(GeneratedBackgroundStyleSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The generated background styles allowed for this product group promotion when `is_generate_background` is enabled. `BASIC` = solid/gradient backgrounds; `LIFESTYLE` = agentic lifestyle scene backgrounds. `LIFESTYLE` requires `BASIC`: valid values are `["BASIC"]` or `["BASIC", "LIFESTYLE"]`; `["LIFESTYLE"]` alone is rejected.',
       }),
     grid_click_type: GridClickTypeSchema.exactOptional(),
     id: z
@@ -3390,6 +3521,18 @@ const ProductGroupPromotionSchema = z
           'True if the group is BIDDABLE, false if it should be EXCLUDED from serving ads.',
         example: true,
         title: 'included',
+      }),
+    is_dynamic_cta: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether the ad uses dynamic CTA selection.', example: false }),
+    is_dynamic_titles: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Set to `TRUE` to enable dynamic title optimization for this product group. When enabled, Pinterest will generate alternative titles for your shopping catalog ads.',
+        example: true,
       }),
     is_generate_background: z
       .boolean()
@@ -3541,41 +3684,43 @@ const ScheduleAgeBucketMultipliersSchema = z
   .openapi({
     description:
       'This represents a mapping from age bucket to a bid price change value.\nValues represent the change in bid price and can be positive or negative. For percentage changes, a value of 500.0 means a 5% change. For value changes, the amount represents the direct bid adjustment. All age bucket multipliers must be set at the same time. If a multiplier is not provided it is assumed to be 0 (no bid adjustment). The change must still remain between the range of 0 and 10.',
+    required: [],
   })
   .openapi('ScheduleAgeBucketMultipliers')
 
+const ScheduleAppTypeMultiplierAppTypeSchema = z
+  .enum(['android_mobile', 'android_tablet', 'ipad', 'iphone', 'web', 'web_mobile'])
+  .openapi('ScheduleAppTypeMultiplierAppType')
+
 const ScheduleAppTypeMultipliersSchema = z
-  .object({ APP_TYPE: TargetingSpecAppTypeSchema.exactOptional() })
+  .object({ APP_TYPE: ScheduleAppTypeMultiplierAppTypeSchema.exactOptional() })
   .catchall(z.float64())
   .nullable()
   .openapi({
     description:
       'This represents a mapping from app type targeting criteria to a bid price change value.\nValues represent the change in bid price and can be positive or negative. For percentage changes, a value of 500.0 means a 5% change. For value changes, the amount represents the direct bid adjustment. All app type multipliers must be set at the same time. If a multiplier is not provided it is assumed to be 0 (no bid adjustment). The change must still remain between the range of 0 and 10.',
+    required: [],
   })
   .openapi('ScheduleAppTypeMultipliers')
 
-const ScheduleAudienceMultipliersSchema = z
-  .object({ AUDIENCE_ID: z.string().regex(/^\d+$/).exactOptional() })
-  .catchall(z.float64())
-  .openapi({
-    description:
-      'This represents a mapping from Audience ID to a bid price change value. This is paired with the bid_multipliers schedule type.\nValues represent the change in bid price and can be positive or negative. For percentage changes, a value of 500.0 means a 5% change. For value changes, the amount represents the direct bid adjustment. All audience multipliers must be set at the same time. If a multiplier is not provided it is assumed to be 0 (no bid adjustment). The change must still remain between the range of 0 and 10.',
-  })
-  .openapi('ScheduleAudienceMultipliers')
+const ScheduleGenderMultiplierGenderSchema = z
+  .enum(['unknown', 'male', 'female'])
+  .openapi('ScheduleGenderMultiplierGender')
 
 const ScheduleBidOptionsSchema = z
   .object({
     age_bucket_multipliers: ScheduleAgeBucketMultipliersSchema.exactOptional(),
     app_type_multipliers: ScheduleAppTypeMultipliersSchema.exactOptional(),
-    audience_multipliers: ScheduleAudienceMultipliersSchema.exactOptional(),
+    audience_multipliers: CampaignAudienceMultipliersSchema.exactOptional(),
     gender_multipliers: z
-      .object({ GENDER: TargetingSpecGenderSchema.exactOptional() })
+      .object({ GENDER: ScheduleGenderMultiplierGenderSchema.exactOptional() })
       .catchall(z.float64())
       .nullable()
       .exactOptional()
       .openapi({
         description:
           'This represents a mapping from gender targeting criteria to a bid price change value.\nValues represent the change in bid price and can be positive or negative. For percentage changes, a value of 500.0 means a 5% change. For value changes, the amount represents the direct bid adjustment. All gender multipliers must be set at the same time. If a multiplier is not provided it is assumed to be 0 (no bid adjustment). The change must still remain between the range of 0 and 10.',
+        required: [],
       }),
     placement_multipliers: z
       .object({
@@ -3675,26 +3820,6 @@ type BulkUpsertRequestCreateType = {
   product_groups?: z.infer<typeof ProductGroupPromotionCreateRequestSchema>[]
   schedules?: z.infer<typeof ScheduleCreateRequestSchema>[]
 }
-
-const BulkUpsertRequestCreateSchema: z.ZodType<BulkUpsertRequestCreateType> = z
-  .object({
-    ad_groups: z.array(AdGroupCreateRequestSchema).exactOptional(),
-    ads: z.array(AdCreateRequestSchema).exactOptional(),
-    campaigns: z.array(CampaignCreateRequestSchema).exactOptional(),
-    catalog_product_groups: z
-      .array(BulkUpsertRequestCreateCatalogProductGroupsItemsSchema)
-      .exactOptional(),
-    keywords: z.array(KeywordsRequestSchema).exactOptional(),
-    labels: z.array(LabelBulkCreateRequestSchema).exactOptional(),
-    product_groups: z.array(ProductGroupPromotionCreateRequestSchema).exactOptional(),
-    schedules: z.array(ScheduleCreateRequestSchema).exactOptional(),
-  })
-  .openapi({
-    description: 'Request for creation of entities in bulk.',
-    title: 'BulkUpsertRequestCreate',
-    required: [],
-  })
-  .openapi('BulkUpsertRequestCreate')
 
 const TargetingSpecListOperationSchema = z
   .enum(['SET', 'ADD', 'REMOVE'])
@@ -3881,7 +4006,7 @@ const AdGroupUpdateRequestSchema = z
       .exactOptional()
       .openapi({
         description:
-          '<a href="/docs/getting-started/using-beta-and-restricted-features/" target="blank>Open beta</a>\nBid multiplier for ad group. This value is a double between 0.1\nand 10.0. Enter 0 to remove the bid multiplier.\n- Make sure the `bid_strategy` type for your ad group is set to `AUTOMATIC_BID`.\n- Not currently supported for <a href="/docs/api-features/pinterest-performance-plus-setup/" target="blank">Pinterest Performance+ campaigns</a>.',
+          '[Open beta](/docs/getting-started/using-beta-and-restricted-features/)\nBid multiplier for ad group. This value is a double between 0.1\nand 10.0. Enter 0 to remove the bid multiplier.\n- Make sure the `bid_strategy` type for your ad group is set to `AUTOMATIC_BID`.\n- Not currently supported for [Pinterest Performance+ campaigns](/docs/api-features/pinterest-performance-plus-setup/).',
       }),
     id: z.string().regex(/^\d+$/).openapi({ description: 'Ad group ID.' }),
     targeting_spec_operations: z
@@ -3889,7 +4014,7 @@ const AdGroupUpdateRequestSchema = z
       .exactOptional()
       .openapi({
         description:
-          '<div>Targeting spec operations define modifications to apply to the targeting spec.</div>\n<br />\n<div><strong>NOTE:</strong> The <code>targeting_spec</code> and <code>targeting_spec_operations</code> cannot be sent at the same time.</div>\n<br />\n<div>The supported operations are:</div>\n<ul>\n<li><code>SET</code>: sets the field with the given values. If value is set to <code>null</code>, the field will be removed.</li>\n<li><code>ADD</code>: adds the given values to the field.</li>\n<li><code>REMOVE</code>: removes the given values from the field.</li>\n</ul>\n<div>Note the following:</div>\n<ul>\n<li>Same items are not added and removed at the same time.</li>\n<li>For a given field, only <code>ADD</code>/<code>REMOVE</code> or <code>SET</code> operations are allowed, not a mix of them.</li>\n<li>Only one SET operation is allowed for a given field.</li>\n<li>The <code>AGE_BUCKET</code>, <code>MAXIMUM_AGE</code>, <code>MINIMUM_AGE</code> and <code>SHOPPING_RETARGETING</code> fields only support the <code>SET</code> operation.</li>\n</ul>',
+          'Targeting spec operations define modifications to apply to the targeting spec.\n\n**NOTE:** The `targeting_spec` and `targeting_spec_operations` cannot be sent at the same time.\n\nThe supported operations are:\n- `SET`: sets the field with the given values. If value is set to `null`, the field will be removed.\n- `ADD`: adds the given values to the field.\n- `REMOVE`: removes the given values from the field.\n\nNote the following:\n- Same items are not added and removed at the same time.\n- For a given field, only `ADD`/`REMOVE` or `SET` operations are allowed, not a mix of them.\n- Only one SET operation is allowed for a given field.\n- The `AGE_BUCKET`, `MAXIMUM_AGE`, `MINIMUM_AGE` and `SHOPPING_RETARGETING` fields only support the `SET` operation.',
       }),
   })
   .openapi({ required: ['id'] })
@@ -3902,7 +4027,7 @@ const AdGroupUpdateRequestSchema = z
           .exactOptional()
           .openapi({
             description:
-              'Enable auto-targeting for ad group. Default value is True. Also known as <a href="https://help.pinterest.com/en/business/article/performance-plus-targeting" target="_blank">"Pinterest Performance+ targeting"</a>.',
+              'Enable auto-targeting for ad group. Default value is True. Also known as ["Pinterest Performance+ targeting"](https://help.pinterest.com/en/business/article/performance-plus-targeting).',
             example: true,
           }),
         bid_in_micro_currency: z
@@ -3931,13 +4056,20 @@ const AdGroupUpdateRequestSchema = z
           .regex(/^[C]?\d+$/)
           .exactOptional()
           .openapi({ description: 'Campaign ID of the ad group.', example: '626736533506' }),
+        enable_offsite_placement: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description:
+              'Whether offsite ad delivery (audience extension) is enabled for this ad group.',
+          }),
         end_time: z
           .int()
           .nullable()
           .exactOptional()
           .openapi({
             description:
-              'Timestamp in Unix format for scheduling when ads in the ad group stop appearing. If not specified, ads run indefinitely unless you update the ad group by changing their status to `paused`. Cannot occur after `end_time` for parent campaign (if specified). Learn about <a href="/docs/api-features/managing-ads/#step-2-create-an-ad-group" target="blank">scheduling ads</a>.\nFor certain organizations (<a href="/docs/getting-started/using-beta-and-restricted-features/" target="blank" target="blank">Closed beta</a>): Supported for campaigns with Campaign Budget Optimization (CBO).\nFor all organizations: Supported for campaigns without CBO.',
+              'Timestamp in Unix format for scheduling when ads in the ad group stop appearing. If not specified, ads run indefinitely unless you update the ad group by changing their status to `paused`. Cannot occur after `end_time` for parent campaign (if specified). Learn about [scheduling ads](/docs/api-features/managing-ads/#step-2-create-an-ad-group).\nFor certain organizations ([Closed beta](/docs/getting-started/using-beta-and-restricted-features/)): Supported for campaigns with Campaign Budget Optimization (CBO).\nFor all organizations: Supported for campaigns without CBO.',
             example: 5705424000,
           }),
         is_creative_optimization: z
@@ -3949,12 +4081,20 @@ const AdGroupUpdateRequestSchema = z
               'Enable creative optimization for the ad group, default value is FALSE. When enabled, you allow Pinterest to automatically turn your product Pins into ads in different formats (collections and shopping) and deliver those ads to users at scale.',
             example: true,
           }),
+        is_shopping_annotation_opt_in: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description:
+              'Whether shopping annotation badges are enabled on promoted Pins in this ad group.',
+            example: true,
+          }),
         lifetime_frequency_cap: z
           .int()
           .exactOptional()
           .openapi({
             description:
-              'Set a limit to the number of times a promoted pin from this campaign can be impressed by a pinner within the past rolling 30 days. Only available for CPM (cost per mille (1000 impressions))  ad groups. A CPM ad group has an IMPRESSION <a href="/docs/redoc/#section/Billable-event">billable_event</a> value. This field **REQUIRES** the `end_time` field.',
+              'Set a limit to the number of times a promoted pin from this campaign can be impressed by a pinner within the past rolling 30 days. Only available for CPM (cost per mille (1000 impressions))  ad groups. A CPM ad group has an IMPRESSION [billable_event](/docs/redoc/#section/Billable-event) value. This field **REQUIRES** the `end_time` field.',
             example: 100,
           }),
         name: z
@@ -3969,7 +4109,7 @@ const AdGroupUpdateRequestSchema = z
           }),
         pacing_delivery_type: PacingDeliveryTypeSchema.exactOptional(),
         placement_group: PlacementGroupTypeSchema.exactOptional().openapi({
-          description: '<a href="/docs/redoc/#section/Placement-group">Placement group</a>.',
+          description: '[Placement group](/docs/redoc/#section/Placement-group).',
         }),
         promotion_application_level: z
           .union([z.literal('NONE'), z.literal('ITEM'), z.literal('AD_GROUP'), z.literal(null)])
@@ -4002,13 +4142,13 @@ const AdGroupUpdateRequestSchema = z
           .exactOptional()
           .openapi({
             description:
-              'Timestamp in Unix format for scheduling when ads in the ad group start to appear. If not specified, ads appear during parent campaign\'s `start_time`. Cannot precede `start_time` for parent campaign (if specified). Learn about <a href="/docs/api-features/managing-ads/#step-2-create-an-ad-group" target="blank">scheduling ads</a>.\nFor certain organizations (<a href="/docs/getting-started/using-beta-and-restricted-features/" target="blank" target="blank">Closed beta</a>): Supported for campaigns with Campaign Budget Optimization (CBO).\nFor all organizations: Supported for campaigns without CBO.',
+              "Timestamp in Unix format for scheduling when ads in the ad group start to appear. If not specified, ads appear during parent campaign's `start_time`. Cannot precede `start_time` for parent campaign (if specified). Learn about [scheduling ads](/docs/api-features/managing-ads/#step-2-create-an-ad-group).\nFor certain organizations ([Closed beta](/docs/getting-started/using-beta-and-restricted-features/)): Supported for campaigns with Campaign Budget Optimization (CBO).\nFor all organizations: Supported for campaigns without CBO.",
             example: 5686848000,
           }),
         status: EntityStatusSchema.exactOptional().openapi({
           description: 'Ad group/entity status.',
         }),
-        targeting_spec: TargetingSpecSchema.exactOptional(),
+        targeting_spec: TargetingSpecOptimalSchema.exactOptional(),
         targeting_template_ids: z
           .array(z.string().regex(/^\d+$/).openapi({ description: 'Targeting template ID.' }))
           .max(1)
@@ -4022,7 +4162,7 @@ const AdGroupUpdateRequestSchema = z
           .exactOptional()
           .openapi({
             description:
-              'Third-party tracking URLs.<br> JSON object with the format: {"<a href="/docs/redoc/#section/Tracking-URL-event">Tracking event enum</a>":[URL string array],...}<br> For example: {"impression": ["URL1", "URL2"], "click": ["URL1", "URL2", "URL3"]}.<br>Up to three tracking URLs are supported for each event type. Tracking URLs set at the ad group or ad level can override those set at the campaign level. May be null. Pass in an empty object - EmptyObject - to remove tracking URLs.<br><br> For more information, see <a href="https://help.pinterest.com/en/business/article/third-party-and-dynamic-tracking" target="_blank">Third-party and dynamic tracking</a>.',
+              'Third-party tracking URLs.\n\nJSON object with the format: {"[Tracking event enum](/docs/redoc/#section/Tracking-URL-event)": [URL string array], ...}\nFor example: {"impression": ["URL1", "URL2"], "click": ["URL1", "URL2", "URL3"]}.\nUp to three tracking URLs are supported for each event type. Tracking URLs set at the ad group or ad level can override those set at the campaign level. May be null. Pass in an empty object - EmptyObject - to remove tracking URLs.\n\nFor more information, see [Third-party and dynamic tracking](https://help.pinterest.com/en/business/article/third-party-and-dynamic-tracking).',
           }),
       })
       .openapi({ required: [] }),
@@ -4197,7 +4337,7 @@ const CampaignUpdateRequestSchema = z
       .exactOptional()
       .openapi({
         description:
-          'Enable Pinterest Performance+ for your campaign. To learn more, see <a href="https://developers.pinterest.com/docs/api-features/pinterest-performance-plus-setup/">Pinterest Performance+ Setup</a>. This field is immutable, except only for campaigns in draft status which may update this field.',
+          'Enable Pinterest Performance+ for your campaign. To learn more, see [Pinterest Performance+ Setup](https://developers.pinterest.com/docs/api-features/pinterest-performance-plus-setup/). This field is immutable, except only for campaigns in draft status which may update this field.',
       }),
     is_top_of_search: z
       .boolean()
@@ -4244,7 +4384,7 @@ const CampaignUpdateRequestSchema = z
           .exactOptional()
           .openapi({
             description:
-              'Timestamp in Unix format for scheduling when ads in the campaign stop appearing. Must occur after any end times for child ad groups. If `end_time` is not specified for the campaign, ads run indefinitely unless you update the campaign, changing their status to `paused`. Learn about <a href="/docs/api-features/managing-campaigns/#campaign-scheduling" target="blank">scheduling campaigns</a>.\nDifferent end times can be set for the campaign\'s child ad groups, but they cannot occur after an `end_time` specified for the campaign.\n- If your campaign has a child ad group with an end time specified, and if you update that campaign with an `end_time` that is earlier than that of the ad group, the campaign `end_time` will supersede the ad group `end_time`, and the request will not return an error.\n- In this scenario, if you call <a href="/docs/api/v5/campaigns-list" target="blank">List campaigns</a> or <a href="/docs/api/v5/ad_groups-list" target="blank">List ad groups</a>, the returned campaigns or ad groups are listed with the start and end times that you assigned them, regardless of supersedence.',
+              "Timestamp in Unix format for scheduling when ads in the campaign stop appearing. Must occur after any end times for child ad groups. If `end_time` is not specified for the campaign, ads run indefinitely unless you update the campaign, changing their status to `paused`. Learn about [scheduling campaigns](/docs/api-features/managing-campaigns/#campaign-scheduling).\nDifferent end times can be set for the campaign's child ad groups, but they cannot occur after an `end_time` specified for the campaign.\n- If your campaign has a child ad group with an end time specified, and if you update that campaign with an `end_time` that is earlier than that of the ad group, the campaign `end_time` will supersede the ad group `end_time`, and the request will not return an error.\n- In this scenario, if you call [List campaigns](/docs/api/v5/campaigns-list) or [List ad groups](/docs/api/v5/ad_groups-list), the returned campaigns or ad groups are listed with the start and end times that you assigned them, regardless of supersedence.",
             example: 1644023526,
           }),
         id: z
@@ -4283,7 +4423,7 @@ const CampaignUpdateRequestSchema = z
           .exactOptional()
           .openapi({
             description:
-              'Timestamp in Unix format for scheduling when ads in the campaign start to appear. Must precede any start times set for child ad groups. Defaults to current time if no time is specified. Learn about <a href="/docs/api-features/managing-campaigns/#campaign-scheduling" target="blank">scheduling campaigns</a>.\nDifferent start times can be set for the campaign\'s child ad groups, but they cannot occur before a `start_time` specified for the campaign.\n- If your campaign has a child ad group with a start time specified, and if you update that campaign with a `start_time` that is later than that of the ad group, the campaign `start_time` will supersede the ad group `start_time`, and the request will not return an error.\n- In this scenario, if you call <a href="/docs/api/v5/campaigns-list" target="blank">List campaigns</a> or <a href="/docs/api/v5/ad_groups-list" target="blank">List ad groups</a>, the returned campaigns or ad groups are listed with the start and end times that you assigned them, regardless of supersedence.',
+              "Timestamp in Unix format for scheduling when ads in the campaign start to appear. Must precede any start times set for child ad groups. Defaults to current time if no time is specified. Learn about [scheduling campaigns](/docs/api-features/managing-campaigns/#campaign-scheduling).\nDifferent start times can be set for the campaign's child ad groups, but they cannot occur before a `start_time` specified for the campaign.\n- If your campaign has a child ad group with a start time specified, and if you update that campaign with a `start_time` that is later than that of the ad group, the campaign `start_time` will supersede the ad group `start_time`, and the request will not return an error.\n- In this scenario, if you call [List campaigns](/docs/api/v5/campaigns-list) or [List ad groups](/docs/api/v5/ad_groups-list), the returned campaigns or ad groups are listed with the start and end times that you assigned them, regardless of supersedence.",
             example: 1580865126,
           }),
         status: EntityStatusSchema.exactOptional(),
@@ -4314,6 +4454,314 @@ const CatalogsProductGroupUpdateRequestSchema = z
   })
   .openapi('CatalogsProductGroupUpdateRequest')
 
+const NullableCountrySchema = z
+  .union([
+    z.literal('AD'),
+    z.literal('AE'),
+    z.literal('AF'),
+    z.literal('AG'),
+    z.literal('AI'),
+    z.literal('AL'),
+    z.literal('AM'),
+    z.literal('AO'),
+    z.literal('AQ'),
+    z.literal('AR'),
+    z.literal('AS'),
+    z.literal('AT'),
+    z.literal('AU'),
+    z.literal('AW'),
+    z.literal('AX'),
+    z.literal('AZ'),
+    z.literal('BA'),
+    z.literal('BB'),
+    z.literal('BD'),
+    z.literal('BE'),
+    z.literal('BF'),
+    z.literal('BG'),
+    z.literal('BH'),
+    z.literal('BI'),
+    z.literal('BJ'),
+    z.literal('BL'),
+    z.literal('BM'),
+    z.literal('BN'),
+    z.literal('BO'),
+    z.literal('BQ'),
+    z.literal('BR'),
+    z.literal('BS'),
+    z.literal('BT'),
+    z.literal('BV'),
+    z.literal('BW'),
+    z.literal('BY'),
+    z.literal('BZ'),
+    z.literal('CA'),
+    z.literal('CC'),
+    z.literal('CD'),
+    z.literal('CF'),
+    z.literal('CG'),
+    z.literal('CH'),
+    z.literal('CI'),
+    z.literal('CK'),
+    z.literal('CL'),
+    z.literal('CM'),
+    z.literal('CN'),
+    z.literal('CO'),
+    z.literal('CR'),
+    z.literal('CU'),
+    z.literal('CV'),
+    z.literal('CW'),
+    z.literal('CX'),
+    z.literal('CY'),
+    z.literal('CZ'),
+    z.literal('DE'),
+    z.literal('DJ'),
+    z.literal('DK'),
+    z.literal('DM'),
+    z.literal('DO'),
+    z.literal('DZ'),
+    z.literal('EC'),
+    z.literal('EE'),
+    z.literal('EG'),
+    z.literal('EH'),
+    z.literal('ER'),
+    z.literal('ES'),
+    z.literal('ET'),
+    z.literal('FI'),
+    z.literal('FJ'),
+    z.literal('FK'),
+    z.literal('FM'),
+    z.literal('FO'),
+    z.literal('FR'),
+    z.literal('GA'),
+    z.literal('GB'),
+    z.literal('GD'),
+    z.literal('GE'),
+    z.literal('GF'),
+    z.literal('GG'),
+    z.literal('GH'),
+    z.literal('GI'),
+    z.literal('GL'),
+    z.literal('GM'),
+    z.literal('GN'),
+    z.literal('GP'),
+    z.literal('GQ'),
+    z.literal('GR'),
+    z.literal('GS'),
+    z.literal('GT'),
+    z.literal('GU'),
+    z.literal('GW'),
+    z.literal('GY'),
+    z.literal('HK'),
+    z.literal('HM'),
+    z.literal('HN'),
+    z.literal('HR'),
+    z.literal('HT'),
+    z.literal('HU'),
+    z.literal('ID'),
+    z.literal('IE'),
+    z.literal('IL'),
+    z.literal('IM'),
+    z.literal('IN'),
+    z.literal('IO'),
+    z.literal('IQ'),
+    z.literal('IR'),
+    z.literal('IS'),
+    z.literal('IT'),
+    z.literal('JE'),
+    z.literal('JM'),
+    z.literal('JO'),
+    z.literal('JP'),
+    z.literal('KE'),
+    z.literal('KG'),
+    z.literal('KH'),
+    z.literal('KI'),
+    z.literal('KM'),
+    z.literal('KN'),
+    z.literal('KR'),
+    z.literal('KW'),
+    z.literal('KY'),
+    z.literal('KZ'),
+    z.literal('LA'),
+    z.literal('LB'),
+    z.literal('LC'),
+    z.literal('LI'),
+    z.literal('LK'),
+    z.literal('LR'),
+    z.literal('LS'),
+    z.literal('LT'),
+    z.literal('LU'),
+    z.literal('LV'),
+    z.literal('LY'),
+    z.literal('MA'),
+    z.literal('MC'),
+    z.literal('MD'),
+    z.literal('ME'),
+    z.literal('MF'),
+    z.literal('MG'),
+    z.literal('MH'),
+    z.literal('MK'),
+    z.literal('ML'),
+    z.literal('MM'),
+    z.literal('MN'),
+    z.literal('MO'),
+    z.literal('MP'),
+    z.literal('MQ'),
+    z.literal('MR'),
+    z.literal('MS'),
+    z.literal('MT'),
+    z.literal('MU'),
+    z.literal('MV'),
+    z.literal('MW'),
+    z.literal('MX'),
+    z.literal('MY'),
+    z.literal('MZ'),
+    z.literal('NA'),
+    z.literal('NC'),
+    z.literal('NE'),
+    z.literal('NF'),
+    z.literal('NG'),
+    z.literal('NI'),
+    z.literal('NL'),
+    z.literal('NO'),
+    z.literal('NP'),
+    z.literal('NR'),
+    z.literal('NU'),
+    z.literal('NZ'),
+    z.literal('OM'),
+    z.literal('PA'),
+    z.literal('PE'),
+    z.literal('PF'),
+    z.literal('PG'),
+    z.literal('PH'),
+    z.literal('PK'),
+    z.literal('PL'),
+    z.literal('PM'),
+    z.literal('PN'),
+    z.literal('PR'),
+    z.literal('PS'),
+    z.literal('PT'),
+    z.literal('PW'),
+    z.literal('PY'),
+    z.literal('QA'),
+    z.literal('RE'),
+    z.literal('RO'),
+    z.literal('RS'),
+    z.literal('RU'),
+    z.literal('RW'),
+    z.literal('SA'),
+    z.literal('SB'),
+    z.literal('SC'),
+    z.literal('SD'),
+    z.literal('SE'),
+    z.literal('SG'),
+    z.literal('SH'),
+    z.literal('SI'),
+    z.literal('SJ'),
+    z.literal('SK'),
+    z.literal('SL'),
+    z.literal('SM'),
+    z.literal('SN'),
+    z.literal('SO'),
+    z.literal('SR'),
+    z.literal('SS'),
+    z.literal('ST'),
+    z.literal('SV'),
+    z.literal('SX'),
+    z.literal('SY'),
+    z.literal('SZ'),
+    z.literal('TC'),
+    z.literal('TD'),
+    z.literal('TF'),
+    z.literal('TG'),
+    z.literal('TH'),
+    z.literal('TJ'),
+    z.literal('TK'),
+    z.literal('TL'),
+    z.literal('TM'),
+    z.literal('TN'),
+    z.literal('TO'),
+    z.literal('TR'),
+    z.literal('TT'),
+    z.literal('TV'),
+    z.literal('TW'),
+    z.literal('TZ'),
+    z.literal('UA'),
+    z.literal('UG'),
+    z.literal('UM'),
+    z.literal('US'),
+    z.literal('UY'),
+    z.literal('UZ'),
+    z.literal('VA'),
+    z.literal('VC'),
+    z.literal('VE'),
+    z.literal('VG'),
+    z.literal('VI'),
+    z.literal('VN'),
+    z.literal('VU'),
+    z.literal('WF'),
+    z.literal('WS'),
+    z.literal('YE'),
+    z.literal('YT'),
+    z.literal('ZA'),
+    z.literal('ZM'),
+    z.literal('ZW'),
+    z.literal(null),
+  ])
+  .nullable()
+  .openapi('NullableCountry')
+
+const NullableCatalogsLocaleSchema = z
+  .union([
+    z.literal('af-ZA'),
+    z.literal('ar-SA'),
+    z.literal('bg-BG'),
+    z.literal('bn-IN'),
+    z.literal('cs-CZ'),
+    z.literal('da-DK'),
+    z.literal('de'),
+    z.literal('el-GR'),
+    z.literal('en-AU'),
+    z.literal('en-CA'),
+    z.literal('en-GB'),
+    z.literal('en-IN'),
+    z.literal('en-US'),
+    z.literal('es-419'),
+    z.literal('es-AR'),
+    z.literal('es-ES'),
+    z.literal('es-MX'),
+    z.literal('fi-FI'),
+    z.literal('fr'),
+    z.literal('fr-CA'),
+    z.literal('he-IL'),
+    z.literal('hi-IN'),
+    z.literal('hr-HR'),
+    z.literal('hu-HU'),
+    z.literal('id-ID'),
+    z.literal('it'),
+    z.literal('ja'),
+    z.literal('ko-KR'),
+    z.literal('ms-MY'),
+    z.literal('nb-NO'),
+    z.literal('nl'),
+    z.literal('pl-PL'),
+    z.literal('pt-BR'),
+    z.literal('pt-PT'),
+    z.literal('ro-RO'),
+    z.literal('ru-RU'),
+    z.literal('sk-SK'),
+    z.literal('sv-SE'),
+    z.literal('te-IN'),
+    z.literal('th-TH'),
+    z.literal('tl-PH'),
+    z.literal('tr'),
+    z.literal('uk-UA'),
+    z.literal('vi-VN'),
+    z.literal('zh-CN'),
+    z.literal('zh-TW'),
+    z.literal(null),
+  ])
+  .nullable()
+  .openapi('NullableCatalogsLocale')
+
 const CatalogsRetailProductGroupUpdateRequestSchema = z
   .strictObject({
     catalog_type: z
@@ -4323,10 +4771,10 @@ const CatalogsRetailProductGroupUpdateRequestSchema = z
         description:
           'Retail catalog based product group is available only for selected partners at the moment.\nIf you are not eligible, please use feed based one.',
       }),
-    country: CountrySchema.exactOptional(),
+    country: NullableCountrySchema.nullable().exactOptional(),
     description: z.string().nullable().exactOptional(),
     filters: CatalogsProductGroupFiltersRequestSchema.exactOptional(),
-    locale: CatalogsLocaleSchema.exactOptional(),
+    locale: NullableCatalogsLocaleSchema.nullable().exactOptional(),
     name: z
       .string()
       .exactOptional()
@@ -4409,10 +4857,10 @@ const KeywordUpdateGeneratedSchema = z
       .exactOptional()
       .openapi({
         description:
-          '</p><strong>Note:</strong> bid field has been deprecated. Input will not be set and field will return null. Keyword custom bid in microcurrency - null if inherited from parent ad group.',
+          '**Note:** bid field has been deprecated. Input will not be set and field will return null. Keyword custom bid in microcurrency - null if inherited from parent ad group.',
         title: 'bid',
       }),
-    id: z.string().regex(/^\d+$/).openapi({ description: 'Keyword ID.', title: 'id' }),
+    id: PinterestLibIntegerFormatTypeSchema.openapi({ description: 'Keyword ID.', title: 'id' }),
   })
   .openapi({ required: ['id'], title: 'KeywordUpdateGenerated' })
   .openapi('KeywordUpdateGenerated')
@@ -4528,6 +4976,26 @@ type BulkUpsertRequestUpdateType = {
   schedules?: z.infer<typeof ScheduleUpdateRequestSchema>[]
 }
 
+const BulkUpsertRequestCreateSchema: z.ZodType<BulkUpsertRequestCreateType> = z
+  .object({
+    ad_groups: z.array(AdGroupCreateRequestSchema).exactOptional(),
+    ads: z.array(AdCreateRequestSchema).exactOptional(),
+    campaigns: z.array(CampaignCreateRequestSchema).exactOptional(),
+    catalog_product_groups: z
+      .array(BulkUpsertRequestCreateCatalogProductGroupsItemsSchema)
+      .exactOptional(),
+    keywords: z.array(KeywordsRequestSchema).exactOptional(),
+    labels: z.array(LabelBulkCreateRequestSchema).exactOptional(),
+    product_groups: z.array(ProductGroupPromotionCreateRequestSchema).exactOptional(),
+    schedules: z.array(ScheduleCreateRequestSchema).exactOptional(),
+  })
+  .openapi({
+    description: 'Request for creation of entities in bulk.',
+    title: 'BulkUpsertRequestCreate',
+    required: [],
+  })
+  .openapi('BulkUpsertRequestCreate')
+
 const BulkUpsertRequestUpdateSchema: z.ZodType<BulkUpsertRequestUpdateType> = z
   .object({
     ad_groups: z.array(AdGroupUpdateRequestSchema).exactOptional(),
@@ -4542,13 +5010,13 @@ const BulkUpsertRequestUpdateSchema: z.ZodType<BulkUpsertRequestUpdateType> = z
     schedules: z.array(ScheduleUpdateRequestSchema).exactOptional(),
   })
   .openapi({
-    description: 'Request for creation of entities in bulk.',
+    description: 'Request for updating entities in bulk.',
     title: 'BulkUpsertRequestUpdate',
     required: [],
   })
   .openapi('BulkUpsertRequestUpdate')
 
-type BulkUpsertRequestType = {
+type BulkWriteJobCreateType = {
   create?: z.infer<typeof BulkUpsertRequestCreateSchema>
   update?: z.infer<typeof BulkUpsertRequestUpdateSchema>
 }
@@ -5002,6 +5470,14 @@ const PinBaseSchema = z
       .boolean()
       .exactOptional()
       .openapi({ description: 'Whether the Pin is a product Pin.', readOnly: true }),
+    is_removable: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'If you set it to `true`, the Pin becomes ad-only and is automatically added to an "Ad-only Pins" board; so, you do not have to specify a `board_id`.\n**Note:** Ad-only pins cannot be repinned.',
+      }),
     is_standard: z
       .boolean()
       .exactOptional()
@@ -5927,6 +6403,15 @@ const UpdatableItemAttributesSchema = z
         description: '<= 10000 characters. The description of the product.',
         example: 'Casual fit denim shirt made with the finest quality Japanese denim.',
       }),
+    excluded_destination: z
+      .array(z.string())
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          "The destinations where this item should NOT appear. Each value must be one of the following (upper or lowercase): 'shopping_ads', 'local_inventory_ads', 'free_listings', 'free_local_listings'. Invalid values are dropped during ingestion. Currently only 'shopping_ads' and 'free_listings' take effect; other values are accepted but have no effect. This feature is only available for allowlisted merchants. Please contact your account manager to enable this feature.",
+        example: ['SHOPPING_ADS', 'FREE_LISTINGS'],
+      }),
     free_shipping_label: z
       .boolean()
       .nullable()
@@ -6060,6 +6545,15 @@ const UpdatableItemAttributesSchema = z
       .nullable()
       .exactOptional()
       .openapi({ description: 'The number of reviews available for the item.', example: 10 }),
+    overlay_id: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Pinterest creative overlay ID to attach to this catalog item. At most one overlay per item.',
+        example: '1234567890123',
+      }),
     pattern: z
       .string()
       .nullable()
@@ -6227,6 +6721,13 @@ const UpdatableItemAttributesSchema = z
   .openapi({ required: [] })
   .openapi('UpdatableItemAttributes')
 
+const CatalogsTitleAndDescriptionEnhancementStatusSchema = z
+  .enum(['GENERATING', 'READY_FOR_REVIEW', 'PUBLISHED', 'ARCHIVED'])
+  .openapi({
+    description: "Shared lifecycle status of a catalog item's enhanced title and description.",
+  })
+  .openapi('CatalogsTitleAndDescriptionEnhancementStatus')
+
 const ItemAttributesSchema = UpdatableItemAttributesSchema.and(
   z
     .object({
@@ -6251,6 +6752,28 @@ const ItemAttributesSchema = UpdatableItemAttributesSchema.and(
           example: [
             { url: 'https://scene.example.com/image/image_v3.jpg', disclosure: ['ai_modified'] },
           ],
+        }),
+      enhanced_description: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'The enhanced description generated for this product. Present only for eligible merchants and supported enhancement statuses.',
+          example: 'A classic denim shirt made from premium Japanese denim.',
+        }),
+      enhanced_title: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'The enhanced title generated for this product. Present only for eligible merchants and supported enhancement statuses.',
+          example: "Women's classic denim shirt",
+        }),
+      enhanced_title_desc_status:
+        CatalogsTitleAndDescriptionEnhancementStatusSchema.exactOptional().openapi({
+          description:
+            'The shared lifecycle status of the enhanced title and description. Omitted when their underlying statuses differ.',
+          example: 'READY_FOR_REVIEW',
         }),
       image_link: z
         .array(z.string())
@@ -6494,6 +7017,174 @@ type ItemResponseType =
   | z.infer<typeof CatalogsHotelItemErrorResponseSchema>
   | z.infer<typeof CatalogsCreativeAssetsItemErrorResponseSchema>
 
+const ABTestPurposeSchema = z
+  .enum(['EXTERNAL', 'INTERNAL', 'INTERNAL_TEST'])
+  .openapi({ description: 'The purpose of the AB test' })
+  .openapi('ABTestPurpose')
+
+const AbTestVersionCampaignSchema = z
+  .object({
+    id: z.int().openapi({ description: 'Campaign ID.', readOnly: true }),
+    name: z.string().openapi({ description: 'Campaign name.', readOnly: true }),
+    status: EntityStatusSchema.openapi({ readOnly: true }),
+  })
+  .openapi({ required: ['id', 'name', 'status'] })
+  .openapi('AbTestVersionCampaign')
+
+const AbTestVersionSchema = z
+  .object({
+    campaign_ids: z.array(z.string()).min(1).max(10).exactOptional(),
+    campaigns: z.array(AbTestVersionCampaignSchema).exactOptional().openapi({ readOnly: true }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The description of the version group' }),
+    id: z.string().exactOptional().openapi({ description: 'Version group ID.', readOnly: true }),
+    name: z.string().exactOptional().openapi({ description: 'The name of the version group' }),
+  })
+  .openapi({ required: [] })
+  .openapi('AbTestVersion')
+
+const AbTestSchema = z
+  .object({
+    ad_account_id: z
+      .string()
+      .regex(/^\d+$/)
+      .openapi({ description: 'Ad Account ID of the AB test.', readOnly: true }),
+    cancel_date: z
+      .string()
+      .regex(/^\d{4}-\d{2}-\d{2}$/)
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Test cancel date. Format is YYYY-MM-DD.', readOnly: true }),
+    created_by: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Identifier of whoever created this AB test.', readOnly: true }),
+    created_time: z
+      .int()
+      .openapi({ description: 'AB test created time. Unix timestamp in seconds.', readOnly: true }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The description of the AB test.' }),
+    end_date: z
+      .string()
+      .regex(/^\d{4}-\d{2}-\d{2}$/)
+      .exactOptional()
+      .openapi({
+        description: 'End date must be equal or greater than start date. Format is YYYY-MM-DD.',
+      }),
+    id: z
+      .string()
+      .regex(/^\d+$/)
+      .openapi({ description: 'Test id of the AB test.', example: '626736533506', readOnly: true }),
+    name: z.string().openapi({ description: 'AB test name.' }),
+    primary_metrics: z
+      .array(z.any())
+      .max(1)
+      .exactOptional()
+      .openapi({ description: 'Primary metric value for AB tests' }),
+    secondary_metrics: z
+      .array(z.any())
+      .max(1)
+      .exactOptional()
+      .openapi({ description: 'Secondary metric value for AB tests' }),
+    start_date: z
+      .string()
+      .regex(/^\d{4}-\d{2}-\d{2}$/)
+      .exactOptional()
+      .openapi({
+        description: 'Start date must be equal or greater than today. Format is YYYY-MM-DD.',
+      }),
+    updated_time: z
+      .int()
+      .openapi({ description: 'AB test updated time. Unix timestamp in seconds.', readOnly: true }),
+    version_count: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'Number of version groups in this AB test.', readOnly: true }),
+    versions: z.array(AbTestVersionSchema).exactOptional(),
+  })
+  .openapi({ required: ['name', 'ad_account_id', 'created_time', 'id', 'updated_time'] })
+  .openapi('AbTest')
+
+const AbTestBatchUpdateSchema = z
+  .object({
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The description of the AB test.' }),
+    end_date: z
+      .string()
+      .regex(/^\d{4}-\d{2}-\d{2}$/)
+      .exactOptional()
+      .openapi({
+        description: 'End date must be equal or greater than start date. Format is YYYY-MM-DD.',
+      }),
+    id: z
+      .string()
+      .regex(/^\d+$/)
+      .openapi({ description: 'Test id of the AB test.', example: '626736533506' }),
+    name: z.string().exactOptional().openapi({ description: 'AB test name.' }),
+    primary_metrics: z
+      .array(z.any())
+      .max(1)
+      .exactOptional()
+      .openapi({ description: 'Primary metric value for AB tests' }),
+    secondary_metrics: z
+      .array(z.any())
+      .max(1)
+      .exactOptional()
+      .openapi({ description: 'Secondary metric value for AB tests' }),
+    start_date: z
+      .string()
+      .regex(/^\d{4}-\d{2}-\d{2}$/)
+      .exactOptional()
+      .openapi({
+        description: 'Start date must be equal or greater than today. Format is YYYY-MM-DD.',
+      }),
+    versions: z.array(AbTestVersionSchema).exactOptional(),
+  })
+  .openapi({ required: ['id'] })
+  .openapi('AbTestBatchUpdate')
+
+const AbTestCreateSchema = z
+  .object({
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The description of the AB test.' }),
+    end_date: z
+      .string()
+      .regex(/^\d{4}-\d{2}-\d{2}$/)
+      .exactOptional()
+      .openapi({
+        description: 'End date must be equal or greater than start date. Format is YYYY-MM-DD.',
+      }),
+    name: z.string().openapi({ description: 'AB test name.' }),
+    primary_metrics: z
+      .array(z.any())
+      .max(1)
+      .exactOptional()
+      .openapi({ description: 'Primary metric value for AB tests' }),
+    secondary_metrics: z
+      .array(z.any())
+      .max(1)
+      .exactOptional()
+      .openapi({ description: 'Secondary metric value for AB tests' }),
+    start_date: z
+      .string()
+      .regex(/^\d{4}-\d{2}-\d{2}$/)
+      .exactOptional()
+      .openapi({
+        description: 'Start date must be equal or greater than today. Format is YYYY-MM-DD.',
+      }),
+    versions: z.array(AbTestVersionSchema).exactOptional(),
+  })
+  .openapi({ description: 'Resource create operation model.', required: ['name'] })
+  .openapi('AbTestCreate')
+
 const UserAccountTypeSchema = z
   .enum(['PINNER', 'BUSINESS'])
   .openapi({ title: 'Account type' })
@@ -6647,6 +7338,7 @@ const ReportingColumnSchema = z
     'CAMPAIGN_ENTITY_STATUS',
     'CAMPAIGN_MANAGED_STATUS',
     'CAMPAIGN_OBJECTIVE_TYPE',
+    'CAMPAIGN_IS_MIXED_OPTIMIZATION',
     'CPM_IN_MICRO_DOLLAR',
     'CPM_IN_DOLLAR',
     'BUDGET_TYPE',
@@ -9500,6 +10192,8 @@ const ReportingColumnSchema = z
     'TOTAL_OFFLINE_APP_OPEN_CONVERSION_PRODUCT_VALUE_IN_MICRO_UNITS',
     'TOTAL_OFFLINE_APP_OPEN_CONVERSION_PRODUCT_VALUE_IN_USD',
     'TOTAL_OFFLINE_APP_OPEN_CONVERSION_PRODUCT_VALUE_IN_MICRO_USD',
+    'CAMPAIGN_BUDGET_TYPE',
+    'CAMPAIGN_BUDGET_IN_LOCAL_CURRENCY',
   ])
   .openapi({ description: 'Reporting Columns', example: 'TOTAL_CONVERSIONS' })
   .openapi('ReportingColumn')
@@ -9783,6 +10477,11 @@ const AdAccountSchema = z
       .array(BusinessAccessRoleSchema)
       .exactOptional()
       .openapi({ readOnly: true, title: 'permissions' }),
+    targeting_rmn_business_id: z
+      .string()
+      .regex(/^\d+$/)
+      .exactOptional()
+      .openapi({ description: 'RMN business ID for the ad account.', readOnly: true }),
     time_zone: z
       .string()
       .exactOptional()
@@ -9835,6 +10534,17 @@ const AdAccountEntityTypeSchema = z
   })
   .openapi('AdAccountEntityType')
 
+const AdAccountInfoSchema = z
+  .object({
+    targeting_rmn_business_id: z
+      .string()
+      .regex(/^\d+$/)
+      .exactOptional()
+      .openapi({ description: 'RMN business ID for the ad account.' }),
+  })
+  .openapi({ description: 'Information about an ad account asset.', required: [] })
+  .openapi('AdAccountInfo')
+
 const RoleSchema = z
   .enum([
     'UNKNOWN',
@@ -9855,6 +10565,8 @@ const RoleSchema = z
     'RESOURCE_PINNER_LIST_OWNER',
     'RESOURCE_PINNER_LIST_READER',
     'BIZ_PINNER_LIST_SHARER',
+    'BIZ_CONVERSION_SEGMENT_SHARER',
+    'BIZ_CONVERSION_SEGMENT_RESTRICTED_SHARER',
     'RESOURCE_CONVERSION_TAGS_READER',
   ])
   .openapi({
@@ -9971,6 +10683,16 @@ const AudienceTypeSchema = z
   .enum(['CUSTOMER_LIST', 'VISITOR', 'ENGAGEMENT', 'ACTALIKE', 'PERSONA'])
   .openapi({ description: 'Audience type', example: 'ACTALIKE' })
   .openapi('AudienceType')
+
+const PinnerListDataSourceSchema = z
+  .literal('UNSPECIFIED')
+  .openapi({ description: 'Audience data source.' })
+  .openapi('PinnerListDataSource')
+
+const PinnerListRefreshCadenceSchema = z
+  .literal('UNSPECIFIED')
+  .openapi({ description: 'Audience refresh cadence.' })
+  .openapi('PinnerListRefreshCadence')
 
 const LineItemSchema = z
   .object({
@@ -10277,6 +10999,11 @@ const AudienceStatusSchema = z
   .openapi({ description: 'Audience processing status' })
   .openapi('AudienceStatus')
 
+const PinnerListVerticalSchema = z
+  .literal('UNSPECIFIED')
+  .openapi({ description: 'Audience vertical.' })
+  .openapi('PinnerListVertical')
+
 const AdAccountsAudienceSchema = z
   .object({
     ad_account_id: z
@@ -10288,6 +11015,7 @@ const AdAccountsAudienceSchema = z
       description:
         '[Audience types](/docs/reference/glossary/#Audience Types): ACTALIKE, ENGAGEMENT, CUSTOMER_LIST and VISITOR',
     }),
+    category: z.string().exactOptional().openapi({ description: 'Audience category.' }),
     created_by_company_name: z
       .string()
       .nullable()
@@ -10298,11 +11026,18 @@ const AdAccountsAudienceSchema = z
       .nullable()
       .exactOptional()
       .openapi({ description: 'Creation time. Unix timestamp in seconds.', readOnly: true }),
+    data_source: PinnerListDataSourceSchema.exactOptional().openapi({
+      description: 'Audience data source.',
+    }),
     description: z
       .string()
       .nullable()
       .exactOptional()
       .openapi({ description: 'Audience description.' }),
+    geography: z
+      .array(CountrySchema)
+      .exactOptional()
+      .openapi({ description: 'Audience geography as ISO 3166-1 alpha-2 country codes.' }),
     id: z.string().regex(/^\d+$/).openapi({ description: 'Audience ID.' }),
     is_nca: z
       .boolean()
@@ -10313,6 +11048,9 @@ const AdAccountsAudienceSchema = z
         readOnly: true,
       }),
     name: z.string().exactOptional().openapi({ description: 'Audience name.' }),
+    refresh_cadence: PinnerListRefreshCadenceSchema.exactOptional().openapi({
+      description: 'Audience refresh cadence.',
+    }),
     rule: AdAccountsAudienceRuleSchema.exactOptional(),
     size: z
       .int()
@@ -10330,6 +11068,9 @@ const AdAccountsAudienceSchema = z
       .nullable()
       .exactOptional()
       .openapi({ description: 'Last update time. Unix timestamp in seconds.', readOnly: true }),
+    vertical: PinnerListVerticalSchema.exactOptional().openapi({
+      description: 'Audience vertical.',
+    }),
   })
   .openapi({ required: ['id'] })
   .openapi('AdAccountsAudience')
@@ -10372,16 +11113,30 @@ const AdAccountsAudienceUpdateSchema = z
       description:
         '[Audience types](/docs/reference/glossary/#Audience Types): ACTALIKE, ENGAGEMENT, CUSTOMER_LIST and VISITOR',
     }),
+    category: z.string().exactOptional().openapi({ description: 'Audience category.' }),
+    data_source: PinnerListDataSourceSchema.exactOptional().openapi({
+      description: 'Audience data source.',
+    }),
     description: z
       .string()
       .nullable()
       .exactOptional()
       .openapi({ description: 'Audience description.' }),
+    geography: z
+      .array(CountrySchema)
+      .exactOptional()
+      .openapi({ description: 'Audience geography as ISO 3166-1 alpha-2 country codes.' }),
     name: z.string().exactOptional().openapi({ description: 'Audience name.' }),
     operation_type: AudienceUpdateOperationTypeSchema.exactOptional().openapi({
       description: 'Audience operation type (update or remove). Only valid in update request body.',
     }),
+    refresh_cadence: PinnerListRefreshCadenceSchema.exactOptional().openapi({
+      description: 'Audience refresh cadence.',
+    }),
     rule: AdAccountsAudienceRuleSchema.exactOptional(),
+    vertical: PinnerListVerticalSchema.exactOptional().openapi({
+      description: 'Audience vertical.',
+    }),
   })
   .openapi({ description: 'Resource create or update operation model.', required: [] })
   .openapi('AdAccountsAudienceUpdate')
@@ -10461,6 +11216,10 @@ const AdCreateSchema = z
       }),
     collections_header_type: AdCollectionsHeaderTypeSchema.nullable().exactOptional(),
     creative_type: CreativeTypeSchema,
+    cta_types: z
+      .array(CustomizableCTATypeSchema)
+      .exactOptional()
+      .openapi({ description: 'List of CTA types.' }),
     customizable_cta_type: CustomizableCTATypeSchema.exactOptional(),
     destination_url: z
       .string()
@@ -10493,6 +11252,10 @@ const AdCreateSchema = z
       .boolean()
       .exactOptional()
       .openapi({ description: 'Whether the collage ad has a single destination url override.' }),
+    is_dynamic_cta: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether the ad uses dynamic CTA selection.', example: false }),
     is_pin_deleted: z
       .boolean()
       .exactOptional()
@@ -10582,6 +11345,10 @@ const AdBatchUpdateSchema = z
       }),
     collections_header_type: AdCollectionsHeaderTypeSchema.nullable().exactOptional(),
     creative_type: CreativeTypeSchema.exactOptional(),
+    cta_types: z
+      .array(CustomizableCTATypeSchema)
+      .exactOptional()
+      .openapi({ description: 'List of CTA types.' }),
     customizable_cta_type: CustomizableCTATypeSchema.exactOptional(),
     destination_url: z
       .string()
@@ -10615,6 +11382,10 @@ const AdBatchUpdateSchema = z
       .boolean()
       .exactOptional()
       .openapi({ description: 'Whether the collage ad has a single destination url override.' }),
+    is_dynamic_cta: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether the ad uses dynamic CTA selection.', example: false }),
     is_pin_deleted: z
       .boolean()
       .exactOptional()
@@ -10676,7 +11447,7 @@ const ConversionLearningModeTypeSchema = z
   .openapi('ConversionLearningModeType')
 
 const AdgroupTrackingFeatureTypeSchema = z
-  .enum(['TRENDS', 'CLONE_META', 'BULK_EDITOR', 'AD_ROTATION'])
+  .enum(['TRENDS', 'CLONE_META', 'BULK_EDITOR', 'AD_ROTATION', 'MEDIA_PLANNER'])
   .openapi('AdgroupTrackingFeatureType')
 
 const AdgroupTrackingFeaturesSchema = z
@@ -10700,20 +11471,62 @@ const NullableOptimizationGoalMetadataSchema = z
   .openapi({ required: [] })
   .openapi('NullableOptimizationGoalMetadata')
 
+const OverlayApplicationLevelSchema = z
+  .enum(['NONE', 'ITEM', 'AD_GROUP'])
+  .openapi({
+    description:
+      "How creative overlays apply to an ad group's products: `NONE` (no overlays), `AD_GROUP` (the ad group's overlay applies to every eligible product based on aspect ratio), or `ITEM` (the overlay comes from overlay assignment rules or the product feed overlay).",
+    example: 'ITEM',
+  })
+  .openapi('OverlayApplicationLevel')
+
+const OverlaySmartAdjustSettingsSchema = z
+  .object({
+    smart_layout_enabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether smart layout is enabled.' }),
+    smart_resize_enabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether smart resize is enabled.' }),
+  })
+  .nullable()
+  .openapi({
+    description:
+      'Smart adjust settings for creative overlay. Currently, `smart_resize_enabled` and `smart_layout_enabled` must be both on or both off. If not set, smart adjust is off.',
+    required: [],
+  })
+  .openapi('OverlaySmartAdjustSettings')
+
 const PerformancePlusCampaignSettingsSchema = z
   .object({
     boost_prospecting_ad_group_bid: z
       .boolean()
       .exactOptional()
-      .openapi({ description: 'Whether to boost prospecting ad group bid.' }),
+      .openapi({
+        description: 'Whether to boost prospecting ad group bid. This field is deprecated.',
+        deprecated: true,
+      }),
     pinner_list_exclusions: z
       .array(z.string())
       .exactOptional()
-      .openapi({ description: 'List of campaign-level exclusion pinner list IDs.' }),
+      .openapi({
+        description: 'List of campaign-level exclusion pinner list IDs. This field is deprecated.',
+        deprecated: true,
+      }),
   })
   .nullable()
   .openapi({ description: 'Pinterest Performance+ campaign settings.', required: [] })
   .openapi('PerformancePlusCampaignSettings')
+
+const PerformancePlusValueStrategySchema = z
+  .enum(['NEW_CUSTOMER_ACQUISITION', 'PRIORITY_PRODUCTS'])
+  .openapi({
+    description: 'Performance+ value strategy applied to an ad group.',
+    example: 'NEW_CUSTOMER_ACQUISITION',
+  })
+  .openapi('PerformancePlusValueStrategy')
 
 const PlacementTrafficTypeSchema = z
   .union([
@@ -10779,6 +11592,15 @@ const AdGroupBaseSchema = z
       .regex(/^\d+$/)
       .exactOptional()
       .openapi({ description: 'Advertiser ID.', readOnly: true }),
+    base_ad_group_id: z
+      .string()
+      .regex(/^\d+$/)
+      .exactOptional()
+      .openapi({
+        description:
+          'The ad group ID of the Performance+ base ad group that this ad group belongs to. Read-only output; set by Pinterest when a Performance+ managed set is created. Setting this field on a request has no effect.',
+        readOnly: true,
+      }),
     bid_in_micro_currency: z
       .int()
       .nullable()
@@ -10823,6 +11645,13 @@ const AdGroupBaseSchema = z
           '[DCA] The Dynamic creative assets to use for DCA. Dynamic Creative Assembly (DCA) accepts basic creative assets of an ad (image, video, title, call to action, logo etc). Then it automatically generates optimized ad combinations based on these assets.',
         readOnly: true,
       }),
+    enable_offsite_placement: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether offsite ad delivery (audience extension) is enabled for this ad group.',
+      }),
     end_time: z
       .int()
       .nullable()
@@ -10856,10 +11685,21 @@ const AdGroupBaseSchema = z
         description:
           'Set a limit to the number of times a promoted pin from this campaign can be impressed by a pinner within the past rolling 30 days. Only available for CPM (cost per mille (1000 impressions))  ad groups. A CPM ad group has an IMPRESSION [billable_event](https://help.pinterest.com/en/business/article/billable-events) value. This field **REQUIRES** the `end_time` field.',
       }),
+    local_ad_radius_in_miles: z
+      .number()
+      .exactOptional()
+      .openapi({
+        description:
+          'The targeting radius of local ads in miles. Preferred over local_inventory_radius_in_miles.',
+      }),
     local_inventory_radius_in_miles: z
       .number()
       .exactOptional()
-      .openapi({ description: 'The targeting radius of the local inventory ads in miles.' }),
+      .openapi({
+        description:
+          'Deprecated: use `local_ad_radius_in_miles` instead.\nLegacy alias kept for compatibility. Same Pepsi field as `local_ad_radius_in_miles`.',
+        deprecated: true,
+      }),
     name: z.string().openapi({ description: 'Ad group name.' }),
     optimization_goal_metadata: NullableOptimizationGoalMetadataSchema.nullable()
       .exactOptional()
@@ -10867,9 +11707,38 @@ const AdGroupBaseSchema = z
         description:
           'Optimization goals for objective-based performance campaigns. **REQUIRED** when campaign\'s `objective_type` is set to `"WEB_CONVERSION"`.',
       }),
+    overlay_application_level: OverlayApplicationLevelSchema.exactOptional().openapi({
+      description:
+        "How creative overlays apply to the ad group's products:\n\n- `NONE`, or not set: no overlays.\n- `AD_GROUP`: the ad group's overlay applies to every eligible product based on aspect ratio.\n- `ITEM`: the overlay comes from the product's matching overlay assignment rule with an active overlay or, if no rule matches, from the `overlay_id` attribute of its catalog item. `overlay_ids` must be empty for item level overlays.\n\nIf you omit this field when updating an ad group, the current value is kept.\n\nCreative overlays are supported only in catalog campaigns, and appear only on standard shopping ads and Performance+ creative optimization collections.",
+      example: 'AD_GROUP',
+    }),
+    overlay_ids: z
+      .array(PinterestLibIntegerFormatTypeSchema)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'IDs of the creative overlays applied at the ad group level. For ad group level overlays, an ad group can have at most one overlay, and `overlay_application_level` must be `AD_GROUP`.\nThe overlay needs to belong to the ad account owner.\n\nTo remove the overlay from an existing ad group, send an empty list and set `overlay_application_level` to `NONE`. If you omit this field, the current overlay is kept.',
+        example: ['123456'],
+      }),
+    overlay_smart_adjust_settings: OverlaySmartAdjustSettingsSchema.nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Smart adjust settings for creative overlay. Currently, `smart_resize_enabled` and `smart_layout_enabled` must be both on or both off. If not set, smart adjust is off. If you omit this field when updating an ad group, the current settings are kept.',
+        example: { smart_resize_enabled: true, smart_layout_enabled: true },
+      }),
     performance_plus_campaign_settings: PerformancePlusCampaignSettingsSchema.nullable()
       .exactOptional()
       .openapi({ description: 'Pinterest Performance+ campaign settings.' }),
+    performance_plus_value_strategies: z
+      .array(PerformancePlusValueStrategySchema)
+      .max(1)
+      .exactOptional()
+      .openapi({
+        description:
+          'Performance+ value strategies to apply to this ad group. Currently only a single value strategy is supported at a time.',
+      }),
     placement_group: PlacementGroupTypeSchema.exactOptional().openapi({
       description:
         '[Placement group](https://help.pinterest.com/en/business/article/placement-groups).',
@@ -10929,6 +11798,13 @@ const AdGroupBaseSchema = z
       .openapi({
         description: 'Ad group last update time. Unix timestamp in seconds.',
         readOnly: true,
+      }),
+    use_performance_plus_dynamic_retargeting: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether this Performance+ ad group uses Performance+ dynamic retargeting. Defaults to true; set to false to opt out of dynamic retargeting duplication.',
       }),
   })
   .openapi({
@@ -10996,12 +11872,12 @@ const AdGroupAudienceSizingSchema = z
   .openapi('AdGroupAudienceSizing')
 
 const MatchTypeSchema = z
-  .enum(['BROAD', 'PHRASE', 'EXACT', 'EXACT_NEGATIVE', 'PHRASE_NEGATIVE'])
+  .enum(['BROAD', 'PHRASE', 'EXACT', 'EXACT_NEGATIVE', 'PHRASE_NEGATIVE', 'BROAD_NEGATIVE'])
   .openapi({ description: 'Keyword match type', example: 'BROAD' })
   .openapi('MatchType')
 
 const AdGroupAudienceSizingKeywordSchema = z
-  .object({
+  .strictObject({
     match_type: MatchTypeSchema,
     value: z.string().openapi({ description: 'Keyword value (120 chars max).' }),
   })
@@ -11036,6 +11912,10 @@ const AdGroupAudienceSizingCreateSchema = z
         description:
           'Pin creative types filter. **Note:** SHOP_THE_PIN has been deprecated. Please use COLLECTION instead.',
       }),
+    intended_promotion_type: IntendedPromotionTypeSchema.exactOptional().openapi({
+      description:
+        'The creative source for ads. Required when objective_type is SALES or CONSIDERATION.',
+    }),
     keywords: z
       .array(AdGroupAudienceSizingKeywordSchema)
       .nullable()
@@ -11044,6 +11924,9 @@ const AdGroupAudienceSizingCreateSchema = z
         description:
           'Array of keyword objects. If the keywords field is missing, all keywords will be targeted.',
       }),
+    objective_type: DeliveryEstimateObjectiveTypeSchema.exactOptional().openapi({
+      description: 'Campaign objective type. Affects how audience size is calculated.',
+    }),
     placement_group: AdgroupPlacementGroupTypeSchema.default('ALL')
       .exactOptional()
       .openapi({ description: '[Placement group](/docs/redoc/#section/Placement-group).' }),
@@ -11055,10 +11938,46 @@ const AdGroupAudienceSizingCreateSchema = z
         description:
           'Targeted product group IDs. **Note:** This can only be combined with shopping/catalog sales campaigns. For more information, [click here](https://help.pinterest.com/en/business/article/shopping-ads#section-14571). SHOPPING_RETARGETING must be included in targeting_spec object or this field will be ignored.',
       }),
-    targeting_spec: TargetingSpecOptimalSchema.exactOptional(),
+    targeting_spec: PlanningTargetingSpecSchema.exactOptional(),
   })
   .openapi({ description: 'Resource create operation model.', required: [] })
   .openapi('AdGroupAudienceSizingCreate')
+
+const ConversionTagTypeSchema = z
+  .enum([
+    'PAGE_LOAD',
+    'UNKNOWN',
+    'INITIALIZED',
+    'PAGE_VISIT',
+    'SIGNUP',
+    'CHECKOUT',
+    'CUSTOM',
+    'VIEW_CATEGORY',
+    'SEARCH',
+    'ADD_TO_CART',
+    'WATCH_VIDEO',
+    'LEAD',
+    'APP_INSTALL',
+    'WEB_SESSION',
+    'EXTERNAL_MEASUREMENT',
+    'ADD_PAYMENT_INFO',
+    'ADD_TO_WISHLIST',
+    'INITIATE_CHECKOUT',
+    'SUBSCRIBE',
+    'VIEW_CONTENT',
+    'ADVERTISER_DEFINED_EVENT',
+    'APP_OPEN',
+    'CONTACT',
+    'SCHEDULE',
+    'FIND_LOCATION',
+    'CUSTOMIZE_PRODUCT',
+    'SUBMIT_APPLICATION',
+    'START_TRIAL',
+    'APP_INSTALL_CHECKOUT',
+    'APP_INSTALL_ADD_TO_CART',
+  ])
+  .openapi({ description: 'conversion tag type', example: 'PAGE_LOAD', title: 'ConversionTagType' })
+  .openapi('ConversionTagType')
 
 const AdGroupCreateCreateSchema = z
   .object({
@@ -11101,10 +12020,22 @@ const AdGroupCreateCreateSchema = z
       .string()
       .regex(/^[C]?\d+$/)
       .openapi({ description: 'Campaign ID of the ad group.' }),
+    ctv_conversion_event: ConversionTagTypeSchema.exactOptional().openapi({
+      description:
+        "The conversion event a CTV ad group optimizes toward. Required when the parent campaign's `ctv_goal_type` is `CONVERSIONS` or `ROAS`.",
+      example: 'CHECKOUT',
+    }),
     customer_segment_id: PinterestLibIntegerFormatTypeSchema.exactOptional().openapi({
       description:
         "Customer segment ID applied to the ad group. We currently only support 1 customer segment per ad group. To use customer segments, do not set the `targeting_template_ids` field as well as the `AUDIENCE_INCLUDE` field of the `targeting_spec`. To clear the customer segment ID, set this field to '0'.",
     }),
+    enable_offsite_placement: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether offsite ad delivery (audience extension) is enabled for this ad group.',
+      }),
     end_time: z
       .int()
       .nullable()
@@ -11137,10 +12068,21 @@ const AdGroupCreateCreateSchema = z
         description:
           'Set a limit to the number of times a promoted pin from this campaign can be impressed by a pinner within the past rolling 30 days. Only available for CPM (cost per mille (1000 impressions))  ad groups. A CPM ad group has an IMPRESSION [billable_event](https://help.pinterest.com/en/business/article/billable-events) value. This field **REQUIRES** the `end_time` field.',
       }),
+    local_ad_radius_in_miles: z
+      .number()
+      .exactOptional()
+      .openapi({
+        description:
+          'The targeting radius of local ads in miles. Preferred over local_inventory_radius_in_miles.',
+      }),
     local_inventory_radius_in_miles: z
       .number()
       .exactOptional()
-      .openapi({ description: 'The targeting radius of the local inventory ads in miles.' }),
+      .openapi({
+        description:
+          'Deprecated: use `local_ad_radius_in_miles` instead.\nLegacy alias kept for compatibility. Same Pepsi field as `local_ad_radius_in_miles`.',
+        deprecated: true,
+      }),
     name: z.string().openapi({ description: 'Ad group name.' }),
     optimization_goal_metadata: NullableOptimizationGoalMetadataSchema.nullable()
       .exactOptional()
@@ -11148,10 +12090,39 @@ const AdGroupCreateCreateSchema = z
         description:
           'Optimization goals for objective-based performance campaigns. **REQUIRED** when campaign\'s `objective_type` is set to `"WEB_CONVERSION"`.',
       }),
+    overlay_application_level: OverlayApplicationLevelSchema.exactOptional().openapi({
+      description:
+        "How creative overlays apply to the ad group's products:\n\n- `NONE`, or not set: no overlays.\n- `AD_GROUP`: the ad group's overlay applies to every eligible product based on aspect ratio.\n- `ITEM`: the overlay comes from the product's matching overlay assignment rule with an active overlay or, if no rule matches, from the `overlay_id` attribute of its catalog item. `overlay_ids` must be empty for item level overlays.\n\nIf you omit this field when updating an ad group, the current value is kept.\n\nCreative overlays are supported only in catalog campaigns, and appear only on standard shopping ads and Performance+ creative optimization collections.",
+      example: 'AD_GROUP',
+    }),
+    overlay_ids: z
+      .array(PinterestLibIntegerFormatTypeSchema)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'IDs of the creative overlays applied at the ad group level. For ad group level overlays, an ad group can have at most one overlay, and `overlay_application_level` must be `AD_GROUP`.\nThe overlay needs to belong to the ad account owner.\n\nTo remove the overlay from an existing ad group, send an empty list and set `overlay_application_level` to `NONE`. If you omit this field, the current overlay is kept.',
+        example: ['123456'],
+      }),
+    overlay_smart_adjust_settings: OverlaySmartAdjustSettingsSchema.nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Smart adjust settings for creative overlay. Currently, `smart_resize_enabled` and `smart_layout_enabled` must be both on or both off. If not set, smart adjust is off. If you omit this field when updating an ad group, the current settings are kept.',
+        example: { smart_resize_enabled: true, smart_layout_enabled: true },
+      }),
     pacing_delivery_type: PacingDeliveryTypeSchema.default('STANDARD').exactOptional(),
     performance_plus_campaign_settings: PerformancePlusCampaignSettingsSchema.nullable()
       .exactOptional()
       .openapi({ description: 'Pinterest Performance+ campaign settings.' }),
+    performance_plus_value_strategies: z
+      .array(PerformancePlusValueStrategySchema)
+      .max(1)
+      .exactOptional()
+      .openapi({
+        description:
+          'Performance+ value strategies to apply to this ad group. Currently only a single value strategy is supported at a time.',
+      }),
     placement_group: PlacementGroupTypeSchema.exactOptional().openapi({
       description:
         '[Placement group](https://help.pinterest.com/en/business/article/placement-groups).',
@@ -11201,6 +12172,13 @@ const AdGroupCreateCreateSchema = z
           "Targeting template IDs applied to the ad group. We currently only support 1 targeting template per ad group. To use targeting templates, do not set any other targeting fields: targeting_spec, tracking_urls, auto_targeting_enabled, placement_group. To clear all targeting template IDs, set this field to ['0'].",
       }),
     tracking_urls: AdGroupTrackingURLsSchema.exactOptional(),
+    use_performance_plus_dynamic_retargeting: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether this Performance+ ad group uses Performance+ dynamic retargeting. Defaults to true; set to false to opt out of dynamic retargeting duplication.',
+      }),
   })
   .openapi({
     description: 'Resource create operation model.',
@@ -11213,6 +12191,271 @@ const AdGroupBatchCreateRequestSchema = z
   .min(1)
   .max(30)
   .openapi('AdGroupBatchCreateRequest')
+
+const AdGroupBatchResponseDataSchema = z
+  .object({
+    ad_account_id: z
+      .string()
+      .regex(/^\d+$/)
+      .exactOptional()
+      .openapi({ description: 'Advertiser ID.', readOnly: true }),
+    auto_targeting_enabled: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Enable auto-targeting for ad group. Default value is True. Also known as ["Performance+ targeting"](https://help.pinterest.com/en/business/article/performance-plus-targeting).',
+      }),
+    base_ad_group_id: z
+      .string()
+      .regex(/^\d+$/)
+      .exactOptional()
+      .openapi({
+        description:
+          'The ad group ID of the Performance+ base ad group that this ad group belongs to. Read-only output; set by Pinterest when a Performance+ managed set is created. Setting this field on a request has no effect.',
+        readOnly: true,
+      }),
+    bid_in_micro_currency: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Bid price in micro currency. This field is **REQUIRED** for the following campaign objective_type/billable_event combinations: AWARENESS/IMPRESSION, CONSIDERATION/CLICKTHROUGH, CATALOG_SALES/CLICKTHROUGH, VIDEO_VIEW/VIDEO_V_50_MRC.',
+      }),
+    bid_multiplier: z
+      .number()
+      .min(0)
+      .max(10)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          '[Open beta](https://help.pinterest.com/en/business/article/beta-features) Bid multiplier for ad group. This value is a double between 0.1 and 10.0. Enter 0 to remove the bid multiplier. - Not currently supported for [Performance+ campaigns](https://help.pinterest.com/en/business/article/performance-plus-campaigns).',
+      }),
+    bid_strategy_type: BidStrategyTypeSchema.exactOptional(),
+    billable_event: ActionTypeSchema,
+    budget_in_micro_currency: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Budget in micro currency. This field is **REQUIRED** for non-CBO (campaign budget optimization) campaigns.  A CBO campaign automatically generates ad group budgets from its campaign budget to maximize campaign outcome. A CBO campaign is limited to 70 or less ad groups.',
+      }),
+    budget_type: BudgetTypeSchema.exactOptional(),
+    campaign_id: z
+      .string()
+      .regex(/^[C]?\d+$/)
+      .openapi({ description: 'Campaign ID of the ad group.' }),
+    conversion_learning_mode_type: ConversionLearningModeTypeSchema.openapi({
+      description: 'oCPM learn mode',
+      readOnly: true,
+    }),
+    created_time: z
+      .int()
+      .openapi({
+        description: 'Ad group creation time. Unix timestamp in seconds.',
+        readOnly: true,
+      }),
+    customer_segment_id: PinterestLibIntegerFormatTypeSchema.exactOptional().openapi({
+      description:
+        "Customer segment ID applied to the ad group. We currently only support 1 customer segment per ad group. To use customer segments, do not set the `targeting_template_ids` field as well as the `AUDIENCE_INCLUDE` field of the `targeting_spec`. To clear the customer segment ID, set this field to '0'.",
+    }),
+    dca_assets: z
+      .any()
+      .exactOptional()
+      .openapi({
+        description:
+          '[DCA] The Dynamic creative assets to use for DCA. Dynamic Creative Assembly (DCA) accepts basic creative assets of an ad (image, video, title, call to action, logo etc). Then it automatically generates optimized ad combinations based on these assets.',
+        readOnly: true,
+      }),
+    enable_offsite_placement: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether offsite ad delivery (audience extension) is enabled for this ad group.',
+      }),
+    end_time: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Timestamp in Unix format for scheduling when ads in the ad group stop appearing. If not specified, ads run indefinitely unless you update the ad group by changing their status to `paused`. Cannot occur after `end_time` for parent campaign (if specified). Learn about [scheduling ads](https://help.pinterest.com/en/business/article/ads-manager-schedule-ads). \nFor certain organizations ([Closed beta](https://help.pinterest.com/en/business/article/beta-features)): Supported for campaigns with Campaign Budget Optimization (CBO). \nFor all organizations: Supported for campaigns without CBO.',
+      }),
+    ext_features: AdgroupTrackingFeaturesSchema.exactOptional(),
+    feed_profile_id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Feed Profile ID associated to the adgroup.' }),
+    id: z
+      .string()
+      .regex(/^-?\d+$/)
+      .max(20)
+      .openapi({
+        description:
+          'Ad group ID. A request made with `validate_only` returns a non-positive\nplaceholder ID instead, since no ad group is persisted.',
+      }),
+    is_creative_optimization: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Enable creative optimization for the ad group, default value is FALSE. When enabled, you allow Pinterest to automatically turn your product Pins into ads in different formats (collections and shopping) and deliver those ads to users at scale.',
+      }),
+    is_local_inventory: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates whether the ad group should use the local inventory.' }),
+    lifetime_frequency_cap: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          'Set a limit to the number of times a promoted pin from this campaign can be impressed by a pinner within the past rolling 30 days. Only available for CPM (cost per mille (1000 impressions))  ad groups. A CPM ad group has an IMPRESSION [billable_event](https://help.pinterest.com/en/business/article/billable-events) value. This field **REQUIRES** the `end_time` field.',
+      }),
+    local_ad_radius_in_miles: z
+      .number()
+      .exactOptional()
+      .openapi({
+        description:
+          'The targeting radius of local ads in miles. Preferred over local_inventory_radius_in_miles.',
+      }),
+    local_inventory_radius_in_miles: z
+      .number()
+      .exactOptional()
+      .openapi({
+        description:
+          'Deprecated: use `local_ad_radius_in_miles` instead.\nLegacy alias kept for compatibility. Same Pepsi field as `local_ad_radius_in_miles`.',
+        deprecated: true,
+      }),
+    name: z.string().openapi({ description: 'Ad group name.' }),
+    optimization_goal_metadata: NullableOptimizationGoalMetadataSchema.nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optimization goals for objective-based performance campaigns. **REQUIRED** when campaign\'s `objective_type` is set to `"WEB_CONVERSION"`.',
+      }),
+    overlay_application_level: OverlayApplicationLevelSchema.exactOptional().openapi({
+      description:
+        "How creative overlays apply to the ad group's products:\n\n- `NONE`, or not set: no overlays.\n- `AD_GROUP`: the ad group's overlay applies to every eligible product based on aspect ratio.\n- `ITEM`: the overlay comes from the product's matching overlay assignment rule with an active overlay or, if no rule matches, from the `overlay_id` attribute of its catalog item. `overlay_ids` must be empty for item level overlays.\n\nIf you omit this field when updating an ad group, the current value is kept.\n\nCreative overlays are supported only in catalog campaigns, and appear only on standard shopping ads and Performance+ creative optimization collections.",
+      example: 'AD_GROUP',
+    }),
+    overlay_ids: z
+      .array(PinterestLibIntegerFormatTypeSchema)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'IDs of the creative overlays applied at the ad group level. For ad group level overlays, an ad group can have at most one overlay, and `overlay_application_level` must be `AD_GROUP`.\nThe overlay needs to belong to the ad account owner.\n\nTo remove the overlay from an existing ad group, send an empty list and set `overlay_application_level` to `NONE`. If you omit this field, the current overlay is kept.',
+        example: ['123456'],
+      }),
+    overlay_smart_adjust_settings: OverlaySmartAdjustSettingsSchema.nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Smart adjust settings for creative overlay. Currently, `smart_resize_enabled` and `smart_layout_enabled` must be both on or both off. If not set, smart adjust is off. If you omit this field when updating an ad group, the current settings are kept.',
+        example: { smart_resize_enabled: true, smart_layout_enabled: true },
+      }),
+    pacing_delivery_type: PacingDeliveryTypeSchema.exactOptional(),
+    performance_plus_campaign_settings: PerformancePlusCampaignSettingsSchema.nullable()
+      .exactOptional()
+      .openapi({ description: 'Pinterest Performance+ campaign settings.' }),
+    performance_plus_value_strategies: z
+      .array(PerformancePlusValueStrategySchema)
+      .max(1)
+      .exactOptional()
+      .openapi({
+        description:
+          'Performance+ value strategies to apply to this ad group. Currently only a single value strategy is supported at a time.',
+      }),
+    placement_group: PlacementGroupTypeSchema.exactOptional().openapi({
+      description:
+        '[Placement group](https://help.pinterest.com/en/business/article/placement-groups).',
+    }),
+    placement_traffic_type: PlacementTrafficTypeSchema.nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'A targeting option that enables advertisers to choose whether to run ads in fullscreen feed, two column feed, or both',
+      }),
+    promotion_application_level: PromotionApplicationLevelSchema.nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Specify if the promotion is applied at ad group or item level',
+        example: 'ITEM',
+      }),
+    promotion_id: z
+      .string()
+      .regex(/^\d+$/)
+      .nullable()
+      .default('0')
+      .exactOptional()
+      .openapi({ description: 'Promotion ID. To clear this field, set to null.' }),
+    promotion_ids: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description: 'Promotion IDs list. To clear this field, set to an empty array [].',
+      }),
+    start_time: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          "Timestamp in Unix format for scheduling when ads in the ad group start to appear. If not specified, ads appear during parent campaign's `start_time`. Cannot precede `start_time` for parent campaign (if specified). Learn about [scheduling ads](/docs/api-features/managing-ads/#step-2-create-an-ad-group). For certain organizations ([Closed beta](/docs/getting-started/using-beta-and-restricted-features/)): Supported for campaigns with Campaign Budget Optimization (CBO). For all organizations: Supported for campaigns without CBO.",
+      }),
+    status: EntityStatusSchema.exactOptional().openapi({ description: 'Ad group/entity status.' }),
+    summary_status: SummaryStatusSchema.openapi({ readOnly: true }),
+    targeting_spec: TargetingSpecOptimalSchema.exactOptional(),
+    targeting_template_ids: z
+      .array(PinterestLibIntegerFormatTypeSchema)
+      .max(1)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          "Targeting template IDs applied to the ad group. We currently only support 1 targeting template per ad group. To use targeting templates, do not set any other targeting fields: targeting_spec, tracking_urls, auto_targeting_enabled, placement_group. To clear all targeting template IDs, set this field to ['0'].",
+      }),
+    tracking_urls: AdGroupTrackingURLsSchema.exactOptional(),
+    type: z
+      .string()
+      .default('adgroup')
+      .openapi({ description: 'Always "adgroup".', readOnly: true }),
+    updated_time: z
+      .int()
+      .openapi({
+        description: 'Ad group last update time. Unix timestamp in seconds.',
+        readOnly: true,
+      }),
+    use_performance_plus_dynamic_retargeting: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether this Performance+ ad group uses Performance+ dynamic retargeting. Defaults to true; set to false to opt out of dynamic retargeting duplication.',
+      }),
+  })
+  .openapi({
+    description: 'Ad group data in a batch write response.',
+    required: [
+      'name',
+      'campaign_id',
+      'billable_event',
+      'created_time',
+      'updated_time',
+      'type',
+      'conversion_learning_mode_type',
+      'summary_status',
+      'id',
+    ],
+  })
+  .openapi('AdGroupBatchResponseData')
 
 const AdGroupUpdateBatchUpdateSchema = z
   .object({
@@ -11257,10 +12500,22 @@ const AdGroupUpdateBatchUpdateSchema = z
       .regex(/^[C]?\d+$/)
       .exactOptional()
       .openapi({ description: 'Campaign ID of the ad group.' }),
+    ctv_conversion_event: ConversionTagTypeSchema.exactOptional().openapi({
+      description:
+        "The conversion event a CTV ad group optimizes toward. Required when the parent campaign's `ctv_goal_type` is `CONVERSIONS` or `ROAS`.",
+      example: 'CHECKOUT',
+    }),
     customer_segment_id: PinterestLibIntegerFormatTypeSchema.exactOptional().openapi({
       description:
         "Customer segment ID applied to the ad group. We currently only support 1 customer segment per ad group. To use customer segments, do not set the `targeting_template_ids` field as well as the `AUDIENCE_INCLUDE` field of the `targeting_spec`. To clear the customer segment ID, set this field to '0'.",
     }),
+    enable_offsite_placement: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether offsite ad delivery (audience extension) is enabled for this ad group.',
+      }),
     end_time: z
       .int()
       .nullable()
@@ -11294,10 +12549,21 @@ const AdGroupUpdateBatchUpdateSchema = z
         description:
           'Set a limit to the number of times a promoted pin from this campaign can be impressed by a pinner within the past rolling 30 days. Only available for CPM (cost per mille (1000 impressions))  ad groups. A CPM ad group has an IMPRESSION [billable_event](https://help.pinterest.com/en/business/article/billable-events) value. This field **REQUIRES** the `end_time` field.',
       }),
+    local_ad_radius_in_miles: z
+      .number()
+      .exactOptional()
+      .openapi({
+        description:
+          'The targeting radius of local ads in miles. Preferred over local_inventory_radius_in_miles.',
+      }),
     local_inventory_radius_in_miles: z
       .number()
       .exactOptional()
-      .openapi({ description: 'The targeting radius of the local inventory ads in miles.' }),
+      .openapi({
+        description:
+          'Deprecated: use `local_ad_radius_in_miles` instead.\nLegacy alias kept for compatibility. Same Pepsi field as `local_ad_radius_in_miles`.',
+        deprecated: true,
+      }),
     name: z.string().exactOptional().openapi({ description: 'Ad group name.' }),
     optimization_goal_metadata: NullableOptimizationGoalMetadataSchema.nullable()
       .exactOptional()
@@ -11305,10 +12571,39 @@ const AdGroupUpdateBatchUpdateSchema = z
         description:
           'Optimization goals for objective-based performance campaigns. **REQUIRED** when campaign\'s `objective_type` is set to `"WEB_CONVERSION"`.',
       }),
+    overlay_application_level: OverlayApplicationLevelSchema.exactOptional().openapi({
+      description:
+        "How creative overlays apply to the ad group's products:\n\n- `NONE`, or not set: no overlays.\n- `AD_GROUP`: the ad group's overlay applies to every eligible product based on aspect ratio.\n- `ITEM`: the overlay comes from the product's matching overlay assignment rule with an active overlay or, if no rule matches, from the `overlay_id` attribute of its catalog item. `overlay_ids` must be empty for item level overlays.\n\nIf you omit this field when updating an ad group, the current value is kept.\n\nCreative overlays are supported only in catalog campaigns, and appear only on standard shopping ads and Performance+ creative optimization collections.",
+      example: 'AD_GROUP',
+    }),
+    overlay_ids: z
+      .array(PinterestLibIntegerFormatTypeSchema)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'IDs of the creative overlays applied at the ad group level. For ad group level overlays, an ad group can have at most one overlay, and `overlay_application_level` must be `AD_GROUP`.\nThe overlay needs to belong to the ad account owner.\n\nTo remove the overlay from an existing ad group, send an empty list and set `overlay_application_level` to `NONE`. If you omit this field, the current overlay is kept.',
+        example: ['123456'],
+      }),
+    overlay_smart_adjust_settings: OverlaySmartAdjustSettingsSchema.nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Smart adjust settings for creative overlay. Currently, `smart_resize_enabled` and `smart_layout_enabled` must be both on or both off. If not set, smart adjust is off. If you omit this field when updating an ad group, the current settings are kept.',
+        example: { smart_resize_enabled: true, smart_layout_enabled: true },
+      }),
     pacing_delivery_type: PacingDeliveryTypeSchema.exactOptional(),
     performance_plus_campaign_settings: PerformancePlusCampaignSettingsSchema.nullable()
       .exactOptional()
       .openapi({ description: 'Pinterest Performance+ campaign settings.' }),
+    performance_plus_value_strategies: z
+      .array(PerformancePlusValueStrategySchema)
+      .max(1)
+      .exactOptional()
+      .openapi({
+        description:
+          'Performance+ value strategies to apply to this ad group. Currently only a single value strategy is supported at a time.',
+      }),
     placement_group: PlacementGroupTypeSchema.exactOptional().openapi({
       description:
         '[Placement group](https://help.pinterest.com/en/business/article/placement-groups).',
@@ -11359,6 +12654,13 @@ const AdGroupUpdateBatchUpdateSchema = z
           "Targeting template IDs applied to the ad group. We currently only support 1 targeting template per ad group. To use targeting templates, do not set any other targeting fields: targeting_spec, tracking_urls, auto_targeting_enabled, placement_group. To clear all targeting template IDs, set this field to ['0'].",
       }),
     tracking_urls: AdGroupTrackingURLsSchema.exactOptional(),
+    use_performance_plus_dynamic_retargeting: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether this Performance+ ad group uses Performance+ dynamic retargeting. Defaults to true; set to false to opt out of dynamic retargeting duplication.',
+      }),
   })
   .openapi({ required: ['id'] })
   .openapi('AdGroupUpdateBatchUpdate')
@@ -11410,7 +12712,7 @@ const AdGroupCreateRequestAllOf1Schema = z
       .exactOptional()
       .openapi({
         description:
-          '<a href="/docs/getting-started/using-beta-and-restricted-features/" target="blank>Open beta</a>\nBid multiplier for ad group. This value is a double between 0.1\nand 10.0. Enter 0 to remove the bid multiplier.\n- Make sure the `bid_strategy` type for your ad group is set to `AUTOMATIC_BID`.\n- Not currently supported for <a href="/docs/api-features/pinterest-performance-plus-setup/" target="blank">Pinterest Performance+ campaigns</a>.',
+          '[Open beta](/docs/getting-started/using-beta-and-restricted-features/)\nBid multiplier for ad group. This value is a double between 0.1\nand 10.0. Enter 0 to remove the bid multiplier.\n- Make sure the `bid_strategy` type for your ad group is set to `AUTOMATIC_BID`.\n- Not currently supported for [Pinterest Performance+ campaigns](/docs/api-features/pinterest-performance-plus-setup/).',
       }),
     budget_type: BudgetTypeSchema.default('DAILY').exactOptional(),
     pacing_delivery_type: PacingDeliveryTypeSchema.default('STANDARD').exactOptional(),
@@ -11419,6 +12721,21 @@ const AdGroupCreateRequestAllOf1Schema = z
   .openapi('AdGroupCreateRequestAllOf1')
 
 const AdGroupIdTypeSchema = z.string().regex(/^\d+$/).max(18).openapi('AdGroupIdType')
+
+const AdGroupPublisherBlocklistUpdateSchema = z
+  .object({
+    excluded_app_bundles: z
+      .array(z.string())
+      .max(1000)
+      .exactOptional()
+      .openapi({
+        description:
+          'Mobile app bundle IDs excluded from offsite ad delivery. Omit this field to leave the blocklist unchanged, or send an empty array to clear it.',
+        example: ['com.example.app', 'com.news.app'],
+      }),
+  })
+  .openapi({ description: 'Resource create or update operation model.', required: [] })
+  .openapi('AdGroupPublisherBlocklistUpdate')
 
 const AdGroupSummaryStatusSchema = z
   .enum([
@@ -11469,7 +12786,7 @@ const AdGroupUpdateRequestAllOf1Schema = z
       .exactOptional()
       .openapi({
         description:
-          '<a href="/docs/getting-started/using-beta-and-restricted-features/" target="blank>Open beta</a>\nBid multiplier for ad group. This value is a double between 0.1\nand 10.0. Enter 0 to remove the bid multiplier.\n- Make sure the `bid_strategy` type for your ad group is set to `AUTOMATIC_BID`.\n- Not currently supported for <a href="/docs/api-features/pinterest-performance-plus-setup/" target="blank">Pinterest Performance+ campaigns</a>.',
+          '[Open beta](/docs/getting-started/using-beta-and-restricted-features/)\nBid multiplier for ad group. This value is a double between 0.1\nand 10.0. Enter 0 to remove the bid multiplier.\n- Make sure the `bid_strategy` type for your ad group is set to `AUTOMATIC_BID`.\n- Not currently supported for [Pinterest Performance+ campaigns](/docs/api-features/pinterest-performance-plus-setup/).',
       }),
     id: z.string().regex(/^\d+$/).openapi({ description: 'Ad group ID.' }),
     targeting_spec_operations: z
@@ -11477,7 +12794,7 @@ const AdGroupUpdateRequestAllOf1Schema = z
       .exactOptional()
       .openapi({
         description:
-          '<div>Targeting spec operations define modifications to apply to the targeting spec.</div>\n<br />\n<div><strong>NOTE:</strong> The <code>targeting_spec</code> and <code>targeting_spec_operations</code> cannot be sent at the same time.</div>\n<br />\n<div>The supported operations are:</div>\n<ul>\n<li><code>SET</code>: sets the field with the given values. If value is set to <code>null</code>, the field will be removed.</li>\n<li><code>ADD</code>: adds the given values to the field.</li>\n<li><code>REMOVE</code>: removes the given values from the field.</li>\n</ul>\n<div>Note the following:</div>\n<ul>\n<li>Same items are not added and removed at the same time.</li>\n<li>For a given field, only <code>ADD</code>/<code>REMOVE</code> or <code>SET</code> operations are allowed, not a mix of them.</li>\n<li>Only one SET operation is allowed for a given field.</li>\n<li>The <code>AGE_BUCKET</code>, <code>MAXIMUM_AGE</code>, <code>MINIMUM_AGE</code> and <code>SHOPPING_RETARGETING</code> fields only support the <code>SET</code> operation.</li>\n</ul>',
+          'Targeting spec operations define modifications to apply to the targeting spec.\n\n**NOTE:** The `targeting_spec` and `targeting_spec_operations` cannot be sent at the same time.\n\nThe supported operations are:\n- `SET`: sets the field with the given values. If value is set to `null`, the field will be removed.\n- `ADD`: adds the given values to the field.\n- `REMOVE`: removes the given values from the field.\n\nNote the following:\n- Same items are not added and removed at the same time.\n- For a given field, only `ADD`/`REMOVE` or `SET` operations are allowed, not a mix of them.\n- Only one SET operation is allowed for a given field.\n- The `AGE_BUCKET`, `MAXIMUM_AGE`, `MINIMUM_AGE` and `SHOPPING_RETARGETING` fields only support the `SET` operation.',
       }),
   })
   .openapi({ required: ['id'] })
@@ -11536,6 +12853,7 @@ const AdPinPreviewCreativeTypeSchema = z
     'MAX_VIDEO',
     'MAX_WIDTH_VIDEO_COLLECTION',
     'MAX_WIDTH_REGULAR_COLLECTION',
+    'CTV_VIDEO',
   ])
   .openapi('AdPinPreviewCreativeType')
 
@@ -11884,6 +13202,26 @@ const ConversionReportAttributionTypeSchema = z
   })
   .openapi('ConversionReportAttributionType')
 
+const CampaignObjectiveTypeSchema = z
+  .enum([
+    'AWARENESS',
+    'CONSIDERATION',
+    'VIDEO_VIEW',
+    'WEB_CONVERSION',
+    'CATALOG_SALES',
+    'WEB_SESSIONS',
+    'VIDEO_COMPLETION',
+    'APP_INSTALL',
+    'SALES',
+    'LEADS',
+    'CTV_CONSIDERATION',
+  ])
+  .openapi({
+    description:
+      'Campaign objective type. If set as one of ["AWARENESS", "CONSIDERATION", "WEB_CONVERSION", "CATALOG_SALES", "VIDEO_COMPLETION", "CTV_CONSIDERATION"] the campaign is considered as a Campaign Budget Optimization (CBO) campaign, meaning budget needs to be set at the campaign level rather than at the ad group level. ["WEB_SESSIONS"] is DEPRECATED. `VIDEO_VIEW` is deprecated; use `VIDEO_COMPLETION` instead. `CTV_CONSIDERATION` is in BETA. For update, only draft campaigns may update objective type.',
+  })
+  .openapi('CampaignObjectiveType')
+
 const CampaignSummaryStatusSchema = z
   .enum([
     'RUNNING',
@@ -11986,15 +13324,29 @@ const ReportingColumnAsyncSchema = z
     'TOTAL_CLICKTHROUGH',
     'TOTAL_IMPRESSION',
     'TOTAL_IMPRESSION_USER',
+    'TOTAL_IMPRESSION_HOUSEHOLD_USER',
     'TOTAL_IMPRESSION_FREQUENCY',
+    'TOTAL_IMPRESSION_HOUSEHOLD_FREQUENCY',
     'COST_PER_OUTBOUND_CLICK_IN_DOLLAR',
     'COST_PER_OUTBOUND_CLICK_IN_DOLLAR_1',
     'TOTAL_ENGAGEMENT_PAGE_VISIT',
     'TOTAL_ENGAGEMENT_SIGNUP',
     'TOTAL_ENGAGEMENT_CHECKOUT',
+    'TOTAL_ENGAGEMENT_ADD_PAYMENT_INFO',
+    'TOTAL_ENGAGEMENT_ADD_TO_WISHLIST',
+    'TOTAL_ENGAGEMENT_INITIATE_CHECKOUT',
+    'TOTAL_ENGAGEMENT_SUBSCRIBE',
+    'TOTAL_ENGAGEMENT_VIEW_CONTENT',
     'TOTAL_ENGAGEMENT_CUSTOM',
     'TOTAL_ENGAGEMENT_ADD_TO_CART',
     'TOTAL_ENGAGEMENT_LEAD',
+    'TOTAL_ENGAGEMENT_CONTACT',
+    'TOTAL_ENGAGEMENT_SCHEDULE',
+    'TOTAL_ENGAGEMENT_FIND_LOCATION',
+    'TOTAL_ENGAGEMENT_CUSTOMIZE_PRODUCT',
+    'TOTAL_ENGAGEMENT_SUBMIT_APPLICATION',
+    'TOTAL_ENGAGEMENT_START_TRIAL',
+    'TOTAL_ENGAGEMENT_APP_OPEN',
     'TOTAL_ENGAGEMENT_SEARCH',
     'TOTAL_ENGAGEMENT_WATCH_VIDEO',
     'TOTAL_ENGAGEMENT_VIEW_CATEGORY',
@@ -12003,9 +13355,21 @@ const ReportingColumnAsyncSchema = z
     'TOTAL_CLICK_PAGE_VISIT',
     'TOTAL_CLICK_SIGNUP',
     'TOTAL_CLICK_CHECKOUT',
+    'TOTAL_CLICK_ADD_PAYMENT_INFO',
+    'TOTAL_CLICK_ADD_TO_WISHLIST',
+    'TOTAL_CLICK_INITIATE_CHECKOUT',
+    'TOTAL_CLICK_SUBSCRIBE',
+    'TOTAL_CLICK_VIEW_CONTENT',
     'TOTAL_CLICK_CUSTOM',
     'TOTAL_CLICK_ADD_TO_CART',
     'TOTAL_CLICK_LEAD',
+    'TOTAL_CLICK_CONTACT',
+    'TOTAL_CLICK_SCHEDULE',
+    'TOTAL_CLICK_FIND_LOCATION',
+    'TOTAL_CLICK_CUSTOMIZE_PRODUCT',
+    'TOTAL_CLICK_SUBMIT_APPLICATION',
+    'TOTAL_CLICK_START_TRIAL',
+    'TOTAL_CLICK_APP_OPEN',
     'TOTAL_CLICK_SEARCH',
     'TOTAL_CLICK_WATCH_VIDEO',
     'TOTAL_CLICK_VIEW_CATEGORY',
@@ -12014,21 +13378,46 @@ const ReportingColumnAsyncSchema = z
     'TOTAL_VIEW_PAGE_VISIT',
     'TOTAL_VIEW_SIGNUP',
     'TOTAL_VIEW_CHECKOUT',
+    'TOTAL_VIEW_ADD_PAYMENT_INFO',
+    'TOTAL_VIEW_ADD_TO_WISHLIST',
+    'TOTAL_VIEW_INITIATE_CHECKOUT',
+    'TOTAL_VIEW_SUBSCRIBE',
+    'TOTAL_VIEW_VIEW_CONTENT',
     'TOTAL_VIEW_CUSTOM',
     'TOTAL_VIEW_ADD_TO_CART',
     'TOTAL_VIEW_LEAD',
+    'TOTAL_VIEW_CONTACT',
+    'TOTAL_VIEW_SCHEDULE',
+    'TOTAL_VIEW_FIND_LOCATION',
+    'TOTAL_VIEW_CUSTOMIZE_PRODUCT',
+    'TOTAL_VIEW_SUBMIT_APPLICATION',
+    'TOTAL_VIEW_START_TRIAL',
+    'TOTAL_VIEW_APP_OPEN',
     'TOTAL_VIEW_SEARCH',
     'TOTAL_VIEW_WATCH_VIDEO',
     'TOTAL_VIEW_VIEW_CATEGORY',
     'TOTAL_VIEW_APP_INSTALL',
     'TOTAL_VIEW_UNKNOWN',
     'TOTAL_CONVERSIONS',
+    'COST_PER_CONVERSION_IN_DOLLAR',
     'TOTAL_ENGAGEMENT_PAGE_VISIT_VALUE_IN_MICRO_DOLLAR',
     'TOTAL_ENGAGEMENT_SIGNUP_VALUE_IN_MICRO_DOLLAR',
     'TOTAL_ENGAGEMENT_CHECKOUT_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_ENGAGEMENT_ADD_PAYMENT_INFO_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_ENGAGEMENT_ADD_TO_WISHLIST_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_ENGAGEMENT_INITIATE_CHECKOUT_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_ENGAGEMENT_SUBSCRIBE_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_ENGAGEMENT_VIEW_CONTENT_VALUE_IN_MICRO_DOLLAR',
     'TOTAL_ENGAGEMENT_CUSTOM_VALUE_IN_MICRO_DOLLAR',
     'TOTAL_ENGAGEMENT_ADD_TO_CART_VALUE_IN_MICRO_DOLLAR',
     'TOTAL_ENGAGEMENT_LEAD_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_ENGAGEMENT_CONTACT_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_ENGAGEMENT_SCHEDULE_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_ENGAGEMENT_FIND_LOCATION_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_ENGAGEMENT_CUSTOMIZE_PRODUCT_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_ENGAGEMENT_SUBMIT_APPLICATION_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_ENGAGEMENT_START_TRIAL_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_ENGAGEMENT_APP_OPEN_VALUE_IN_MICRO_DOLLAR',
     'TOTAL_ENGAGEMENT_SEARCH_VALUE_IN_MICRO_DOLLAR',
     'TOTAL_ENGAGEMENT_WATCH_VIDEO_VALUE_IN_MICRO_DOLLAR',
     'TOTAL_ENGAGEMENT_VIEW_CATEGORY_VALUE_IN_MICRO_DOLLAR',
@@ -12037,9 +13426,21 @@ const ReportingColumnAsyncSchema = z
     'TOTAL_CLICK_PAGE_VISIT_VALUE_IN_MICRO_DOLLAR',
     'TOTAL_CLICK_SIGNUP_VALUE_IN_MICRO_DOLLAR',
     'TOTAL_CLICK_CHECKOUT_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_CLICK_ADD_PAYMENT_INFO_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_CLICK_ADD_TO_WISHLIST_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_CLICK_INITIATE_CHECKOUT_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_CLICK_SUBSCRIBE_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_CLICK_VIEW_CONTENT_VALUE_IN_MICRO_DOLLAR',
     'TOTAL_CLICK_CUSTOM_VALUE_IN_MICRO_DOLLAR',
     'TOTAL_CLICK_ADD_TO_CART_VALUE_IN_MICRO_DOLLAR',
     'TOTAL_CLICK_LEAD_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_CLICK_CONTACT_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_CLICK_SCHEDULE_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_CLICK_FIND_LOCATION_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_CLICK_CUSTOMIZE_PRODUCT_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_CLICK_SUBMIT_APPLICATION_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_CLICK_START_TRIAL_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_CLICK_APP_OPEN_VALUE_IN_MICRO_DOLLAR',
     'TOTAL_CLICK_SEARCH_VALUE_IN_MICRO_DOLLAR',
     'TOTAL_CLICK_WATCH_VIDEO_VALUE_IN_MICRO_DOLLAR',
     'TOTAL_CLICK_VIEW_CATEGORY_VALUE_IN_MICRO_DOLLAR',
@@ -12048,9 +13449,21 @@ const ReportingColumnAsyncSchema = z
     'TOTAL_VIEW_PAGE_VISIT_VALUE_IN_MICRO_DOLLAR',
     'TOTAL_VIEW_SIGNUP_VALUE_IN_MICRO_DOLLAR',
     'TOTAL_VIEW_CHECKOUT_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_VIEW_ADD_PAYMENT_INFO_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_VIEW_ADD_TO_WISHLIST_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_VIEW_INITIATE_CHECKOUT_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_VIEW_SUBSCRIBE_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_VIEW_VIEW_CONTENT_VALUE_IN_MICRO_DOLLAR',
     'TOTAL_VIEW_CUSTOM_VALUE_IN_MICRO_DOLLAR',
     'TOTAL_VIEW_ADD_TO_CART_VALUE_IN_MICRO_DOLLAR',
     'TOTAL_VIEW_LEAD_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_VIEW_CONTACT_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_VIEW_SCHEDULE_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_VIEW_FIND_LOCATION_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_VIEW_CUSTOMIZE_PRODUCT_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_VIEW_SUBMIT_APPLICATION_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_VIEW_START_TRIAL_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_VIEW_APP_OPEN_VALUE_IN_MICRO_DOLLAR',
     'TOTAL_VIEW_SEARCH_VALUE_IN_MICRO_DOLLAR',
     'TOTAL_VIEW_WATCH_VIDEO_VALUE_IN_MICRO_DOLLAR',
     'TOTAL_VIEW_VIEW_CATEGORY_VALUE_IN_MICRO_DOLLAR',
@@ -12060,9 +13473,21 @@ const ReportingColumnAsyncSchema = z
     'TOTAL_ENGAGEMENT_PAGE_VISIT_QUANTITY',
     'TOTAL_ENGAGEMENT_SIGNUP_QUANTITY',
     'TOTAL_ENGAGEMENT_CHECKOUT_QUANTITY',
+    'TOTAL_ENGAGEMENT_ADD_PAYMENT_INFO_QUANTITY',
+    'TOTAL_ENGAGEMENT_ADD_TO_WISHLIST_QUANTITY',
+    'TOTAL_ENGAGEMENT_INITIATE_CHECKOUT_QUANTITY',
+    'TOTAL_ENGAGEMENT_SUBSCRIBE_QUANTITY',
+    'TOTAL_ENGAGEMENT_VIEW_CONTENT_QUANTITY',
     'TOTAL_ENGAGEMENT_CUSTOM_QUANTITY',
     'TOTAL_ENGAGEMENT_ADD_TO_CART_QUANTITY',
     'TOTAL_ENGAGEMENT_LEAD_QUANTITY',
+    'TOTAL_ENGAGEMENT_CONTACT_QUANTITY',
+    'TOTAL_ENGAGEMENT_SCHEDULE_QUANTITY',
+    'TOTAL_ENGAGEMENT_FIND_LOCATION_QUANTITY',
+    'TOTAL_ENGAGEMENT_CUSTOMIZE_PRODUCT_QUANTITY',
+    'TOTAL_ENGAGEMENT_SUBMIT_APPLICATION_QUANTITY',
+    'TOTAL_ENGAGEMENT_START_TRIAL_QUANTITY',
+    'TOTAL_ENGAGEMENT_APP_OPEN_QUANTITY',
     'TOTAL_ENGAGEMENT_SEARCH_QUANTITY',
     'TOTAL_ENGAGEMENT_WATCH_VIDEO_QUANTITY',
     'TOTAL_ENGAGEMENT_VIEW_CATEGORY_QUANTITY',
@@ -12070,9 +13495,21 @@ const ReportingColumnAsyncSchema = z
     'TOTAL_CLICK_PAGE_VISIT_QUANTITY',
     'TOTAL_CLICK_SIGNUP_QUANTITY',
     'TOTAL_CLICK_CHECKOUT_QUANTITY',
+    'TOTAL_CLICK_ADD_PAYMENT_INFO_QUANTITY',
+    'TOTAL_CLICK_ADD_TO_WISHLIST_QUANTITY',
+    'TOTAL_CLICK_INITIATE_CHECKOUT_QUANTITY',
+    'TOTAL_CLICK_SUBSCRIBE_QUANTITY',
+    'TOTAL_CLICK_VIEW_CONTENT_QUANTITY',
     'TOTAL_CLICK_CUSTOM_QUANTITY',
     'TOTAL_CLICK_ADD_TO_CART_QUANTITY',
     'TOTAL_CLICK_LEAD_QUANTITY',
+    'TOTAL_CLICK_CONTACT_QUANTITY',
+    'TOTAL_CLICK_SCHEDULE_QUANTITY',
+    'TOTAL_CLICK_FIND_LOCATION_QUANTITY',
+    'TOTAL_CLICK_CUSTOMIZE_PRODUCT_QUANTITY',
+    'TOTAL_CLICK_SUBMIT_APPLICATION_QUANTITY',
+    'TOTAL_CLICK_START_TRIAL_QUANTITY',
+    'TOTAL_CLICK_APP_OPEN_QUANTITY',
     'TOTAL_CLICK_SEARCH_QUANTITY',
     'TOTAL_CLICK_WATCH_VIDEO_QUANTITY',
     'TOTAL_CLICK_VIEW_CATEGORY_QUANTITY',
@@ -12080,9 +13517,21 @@ const ReportingColumnAsyncSchema = z
     'TOTAL_VIEW_PAGE_VISIT_QUANTITY',
     'TOTAL_VIEW_SIGNUP_QUANTITY',
     'TOTAL_VIEW_CHECKOUT_QUANTITY',
+    'TOTAL_VIEW_ADD_PAYMENT_INFO_QUANTITY',
+    'TOTAL_VIEW_ADD_TO_WISHLIST_QUANTITY',
+    'TOTAL_VIEW_INITIATE_CHECKOUT_QUANTITY',
+    'TOTAL_VIEW_SUBSCRIBE_QUANTITY',
+    'TOTAL_VIEW_VIEW_CONTENT_QUANTITY',
     'TOTAL_VIEW_CUSTOM_QUANTITY',
     'TOTAL_VIEW_ADD_TO_CART_QUANTITY',
     'TOTAL_VIEW_LEAD_QUANTITY',
+    'TOTAL_VIEW_CONTACT_QUANTITY',
+    'TOTAL_VIEW_SCHEDULE_QUANTITY',
+    'TOTAL_VIEW_FIND_LOCATION_QUANTITY',
+    'TOTAL_VIEW_CUSTOMIZE_PRODUCT_QUANTITY',
+    'TOTAL_VIEW_SUBMIT_APPLICATION_QUANTITY',
+    'TOTAL_VIEW_START_TRIAL_QUANTITY',
+    'TOTAL_VIEW_APP_OPEN_QUANTITY',
     'TOTAL_VIEW_SEARCH_QUANTITY',
     'TOTAL_VIEW_WATCH_VIDEO_QUANTITY',
     'TOTAL_VIEW_VIEW_CATEGORY_QUANTITY',
@@ -12094,10 +13543,10 @@ const ReportingColumnAsyncSchema = z
     'ONSITE_CHECKOUTS_1',
     'PIN_PROMOTION_NAME',
     'AD_NAME',
-    'CAMPAIGN_LIFETIME_SPEND_CAP',
     'AD_GROUP_OPTIMIZATION',
-    'CAMPAIGN_DAILY_SPEND_CAP',
     'CAMPAIGN_BUDGET_OPTIMIZATION',
+    'CAMPAIGN_BUDGET_TYPE',
+    'CAMPAIGN_BUDGET_IN_LOCAL_CURRENCY',
     'IS_CATALOG_CREATIVE_CAMPAIGN',
     'IS_PREMIERE_CAMPAIGN',
     'TOTAL_PAGE_VISIT_DESKTOP_ACTION_TO_DESKTOP_CONVERSION',
@@ -12202,9 +13651,19 @@ const ReportingColumnAsyncSchema = z
     'TOTAL_PAGE_VISIT',
     'TOTAL_SIGNUP',
     'TOTAL_CHECKOUT',
+    'TOTAL_ADD_PAYMENT_INFO',
+    'TOTAL_INITIATE_CHECKOUT',
+    'TOTAL_VIEW_CONTENT',
     'TOTAL_CUSTOM',
     'TOTAL_ADD_TO_CART',
     'TOTAL_LEAD',
+    'TOTAL_CONTACT',
+    'TOTAL_SCHEDULE',
+    'TOTAL_FIND_LOCATION',
+    'TOTAL_CUSTOMIZE_PRODUCT',
+    'TOTAL_SUBMIT_APPLICATION',
+    'TOTAL_START_TRIAL',
+    'TOTAL_APP_OPEN',
     'TOTAL_SEARCH',
     'TOTAL_WATCH_VIDEO',
     'TOTAL_VIEW_CATEGORY',
@@ -12213,18 +13672,40 @@ const ReportingColumnAsyncSchema = z
     'TOTAL_SUBSCRIBE',
     'TOTAL_SIGNUP_VALUE_IN_MICRO_DOLLAR',
     'TOTAL_CHECKOUT_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_ADD_PAYMENT_INFO_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_ADD_TO_WISHLIST_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_INITIATE_CHECKOUT_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_SUBSCRIBE_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_VIEW_CONTENT_VALUE_IN_MICRO_DOLLAR',
     'TOTAL_CUSTOM_VALUE_IN_MICRO_DOLLAR',
     'TOTAL_ADD_TO_CART_VALUE_IN_MICRO_DOLLAR',
     'TOTAL_LEAD_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_CONTACT_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_SCHEDULE_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_FIND_LOCATION_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_CUSTOMIZE_PRODUCT_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_SUBMIT_APPLICATION_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_START_TRIAL_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_APP_OPEN_VALUE_IN_MICRO_DOLLAR',
     'TOTAL_SEARCH_VALUE_IN_MICRO_DOLLAR',
     'TOTAL_WATCH_VIDEO_VALUE_IN_MICRO_DOLLAR',
     'TOTAL_VIEW_CATEGORY_VALUE_IN_MICRO_DOLLAR',
     'TOTAL_APP_INSTALL_VALUE_IN_MICRO_DOLLAR',
     'TOTAL_CHECKOUT_QUANTITY',
+    'TOTAL_ADD_PAYMENT_INFO_QUANTITY',
+    'TOTAL_ADD_TO_WISHLIST_QUANTITY',
+    'TOTAL_INITIATE_CHECKOUT_QUANTITY',
+    'TOTAL_SUBSCRIBE_QUANTITY',
+    'TOTAL_VIEW_CONTENT_QUANTITY',
     'PAGE_VISIT_COST_PER_ACTION',
     'APP_INSTALL_COST_PER_ACTION',
     'PAGE_VISIT_ROAS',
     'CHECKOUT_ROAS',
+    'ADD_PAYMENT_INFO_ROAS',
+    'ADD_TO_WISHLIST_ROAS',
+    'INITIATE_CHECKOUT_ROAS',
+    'SUBSCRIBE_ROAS',
+    'VIEW_CONTENT_ROAS',
     'CUSTOM_ROAS',
     'PRODUCT_GROUP_AD_IMAGE_TAG',
     'PRODUCT_GROUP_AD_VIDEO_TAG',
@@ -12270,35 +13751,185 @@ const ReportingColumnAsyncSchema = z
     'TOTAL_DESTINATION_VIEWS',
     'TOTAL_REPIN_RATE',
     'WEB_CHECKOUT_COST_PER_ACTION',
+    'WEB_ADD_PAYMENT_INFO_COST_PER_ACTION',
+    'WEB_ADD_TO_WISHLIST_COST_PER_ACTION',
+    'WEB_INITIATE_CHECKOUT_COST_PER_ACTION',
+    'WEB_SUBSCRIBE_COST_PER_ACTION',
+    'WEB_VIEW_CONTENT_COST_PER_ACTION',
     'WEB_CHECKOUT_ROAS',
+    'WEB_ADD_PAYMENT_INFO_ROAS',
+    'WEB_ADD_TO_WISHLIST_ROAS',
+    'WEB_INITIATE_CHECKOUT_ROAS',
+    'WEB_SUBSCRIBE_ROAS',
+    'WEB_VIEW_CONTENT_ROAS',
     'TOTAL_WEB_CHECKOUT',
+    'TOTAL_WEB_ADD_PAYMENT_INFO',
+    'TOTAL_WEB_ADD_TO_WISHLIST',
+    'TOTAL_WEB_INITIATE_CHECKOUT',
+    'TOTAL_WEB_SUBSCRIBE',
+    'TOTAL_WEB_VIEW_CONTENT',
     'TOTAL_WEB_CHECKOUT_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_ADD_PAYMENT_INFO_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_ADD_TO_WISHLIST_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_INITIATE_CHECKOUT_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_SUBSCRIBE_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_VIEW_CONTENT_VALUE_IN_MICRO_DOLLAR',
     'TOTAL_WEB_CLICK_CHECKOUT',
+    'TOTAL_WEB_CLICK_ADD_PAYMENT_INFO',
+    'TOTAL_WEB_CLICK_ADD_TO_WISHLIST',
+    'TOTAL_WEB_CLICK_INITIATE_CHECKOUT',
+    'TOTAL_WEB_CLICK_SUBSCRIBE',
+    'TOTAL_WEB_CLICK_VIEW_CONTENT',
     'TOTAL_WEB_CLICK_CHECKOUT_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_CLICK_ADD_PAYMENT_INFO_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_CLICK_ADD_TO_WISHLIST_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_CLICK_INITIATE_CHECKOUT_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_CLICK_SUBSCRIBE_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_CLICK_VIEW_CONTENT_VALUE_IN_MICRO_DOLLAR',
     'TOTAL_WEB_ENGAGEMENT_CHECKOUT',
+    'TOTAL_WEB_ENGAGEMENT_ADD_PAYMENT_INFO',
+    'TOTAL_WEB_ENGAGEMENT_ADD_TO_WISHLIST',
+    'TOTAL_WEB_ENGAGEMENT_INITIATE_CHECKOUT',
+    'TOTAL_WEB_ENGAGEMENT_SUBSCRIBE',
+    'TOTAL_WEB_ENGAGEMENT_VIEW_CONTENT',
     'TOTAL_WEB_ENGAGEMENT_CHECKOUT_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_ENGAGEMENT_ADD_PAYMENT_INFO_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_ENGAGEMENT_ADD_TO_WISHLIST_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_ENGAGEMENT_INITIATE_CHECKOUT_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_ENGAGEMENT_SUBSCRIBE_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_ENGAGEMENT_VIEW_CONTENT_VALUE_IN_MICRO_DOLLAR',
     'TOTAL_WEB_VIEW_CHECKOUT',
+    'TOTAL_WEB_VIEW_ADD_PAYMENT_INFO',
+    'TOTAL_WEB_VIEW_ADD_TO_WISHLIST',
+    'TOTAL_WEB_VIEW_INITIATE_CHECKOUT',
+    'TOTAL_WEB_VIEW_SUBSCRIBE',
+    'TOTAL_WEB_VIEW_VIEW_CONTENT',
     'TOTAL_WEB_VIEW_CHECKOUT_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_VIEW_ADD_PAYMENT_INFO_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_VIEW_ADD_TO_WISHLIST_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_VIEW_INITIATE_CHECKOUT_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_VIEW_SUBSCRIBE_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_VIEW_VIEW_CONTENT_VALUE_IN_MICRO_DOLLAR',
     'INAPP_CHECKOUT_COST_PER_ACTION',
+    'INAPP_ADD_PAYMENT_INFO_COST_PER_ACTION',
+    'INAPP_ADD_TO_WISHLIST_COST_PER_ACTION',
+    'INAPP_INITIATE_CHECKOUT_COST_PER_ACTION',
+    'INAPP_SUBSCRIBE_COST_PER_ACTION',
+    'INAPP_VIEW_CONTENT_COST_PER_ACTION',
     'INAPP_CHECKOUT_ROAS',
+    'INAPP_ADD_PAYMENT_INFO_ROAS',
+    'INAPP_ADD_TO_WISHLIST_ROAS',
+    'INAPP_INITIATE_CHECKOUT_ROAS',
+    'INAPP_SUBSCRIBE_ROAS',
+    'INAPP_VIEW_CONTENT_ROAS',
     'TOTAL_INAPP_CHECKOUT',
+    'TOTAL_INAPP_ADD_PAYMENT_INFO',
+    'TOTAL_INAPP_ADD_TO_WISHLIST',
+    'TOTAL_INAPP_INITIATE_CHECKOUT',
+    'TOTAL_INAPP_SUBSCRIBE',
+    'TOTAL_INAPP_VIEW_CONTENT',
     'TOTAL_INAPP_CHECKOUT_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_INAPP_ADD_PAYMENT_INFO_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_INAPP_ADD_TO_WISHLIST_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_INAPP_INITIATE_CHECKOUT_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_INAPP_SUBSCRIBE_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_INAPP_VIEW_CONTENT_VALUE_IN_MICRO_DOLLAR',
     'TOTAL_INAPP_CLICK_CHECKOUT',
+    'TOTAL_INAPP_CLICK_ADD_PAYMENT_INFO',
+    'TOTAL_INAPP_CLICK_ADD_TO_WISHLIST',
+    'TOTAL_INAPP_CLICK_INITIATE_CHECKOUT',
+    'TOTAL_INAPP_CLICK_SUBSCRIBE',
+    'TOTAL_INAPP_CLICK_VIEW_CONTENT',
     'TOTAL_INAPP_CLICK_CHECKOUT_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_INAPP_CLICK_ADD_PAYMENT_INFO_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_INAPP_CLICK_ADD_TO_WISHLIST_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_INAPP_CLICK_INITIATE_CHECKOUT_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_INAPP_CLICK_SUBSCRIBE_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_INAPP_CLICK_VIEW_CONTENT_VALUE_IN_MICRO_DOLLAR',
     'TOTAL_INAPP_ENGAGEMENT_CHECKOUT',
+    'TOTAL_INAPP_ENGAGEMENT_ADD_PAYMENT_INFO',
+    'TOTAL_INAPP_ENGAGEMENT_ADD_TO_WISHLIST',
+    'TOTAL_INAPP_ENGAGEMENT_INITIATE_CHECKOUT',
+    'TOTAL_INAPP_ENGAGEMENT_SUBSCRIBE',
+    'TOTAL_INAPP_ENGAGEMENT_VIEW_CONTENT',
     'TOTAL_INAPP_ENGAGEMENT_CHECKOUT_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_INAPP_ENGAGEMENT_ADD_PAYMENT_INFO_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_INAPP_ENGAGEMENT_ADD_TO_WISHLIST_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_INAPP_ENGAGEMENT_INITIATE_CHECKOUT_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_INAPP_ENGAGEMENT_SUBSCRIBE_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_INAPP_ENGAGEMENT_VIEW_CONTENT_VALUE_IN_MICRO_DOLLAR',
     'TOTAL_INAPP_VIEW_CHECKOUT',
+    'TOTAL_INAPP_VIEW_ADD_PAYMENT_INFO',
+    'TOTAL_INAPP_VIEW_ADD_TO_WISHLIST',
+    'TOTAL_INAPP_VIEW_INITIATE_CHECKOUT',
+    'TOTAL_INAPP_VIEW_SUBSCRIBE',
+    'TOTAL_INAPP_VIEW_VIEW_CONTENT',
     'TOTAL_INAPP_VIEW_CHECKOUT_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_INAPP_VIEW_ADD_PAYMENT_INFO_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_INAPP_VIEW_ADD_TO_WISHLIST_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_INAPP_VIEW_INITIATE_CHECKOUT_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_INAPP_VIEW_SUBSCRIBE_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_INAPP_VIEW_VIEW_CONTENT_VALUE_IN_MICRO_DOLLAR',
     'OFFLINE_CHECKOUT_COST_PER_ACTION',
+    'OFFLINE_ADD_PAYMENT_INFO_COST_PER_ACTION',
+    'OFFLINE_ADD_TO_WISHLIST_COST_PER_ACTION',
+    'OFFLINE_INITIATE_CHECKOUT_COST_PER_ACTION',
+    'OFFLINE_SUBSCRIBE_COST_PER_ACTION',
+    'OFFLINE_VIEW_CONTENT_COST_PER_ACTION',
     'OFFLINE_CHECKOUT_ROAS',
+    'OFFLINE_ADD_PAYMENT_INFO_ROAS',
+    'OFFLINE_ADD_TO_WISHLIST_ROAS',
+    'OFFLINE_INITIATE_CHECKOUT_ROAS',
+    'OFFLINE_SUBSCRIBE_ROAS',
+    'OFFLINE_VIEW_CONTENT_ROAS',
     'TOTAL_OFFLINE_CHECKOUT',
+    'TOTAL_OFFLINE_ADD_PAYMENT_INFO',
+    'TOTAL_OFFLINE_ADD_TO_WISHLIST',
+    'TOTAL_OFFLINE_INITIATE_CHECKOUT',
+    'TOTAL_OFFLINE_SUBSCRIBE',
+    'TOTAL_OFFLINE_VIEW_CONTENT',
     'TOTAL_OFFLINE_CHECKOUT_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_OFFLINE_ADD_PAYMENT_INFO_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_OFFLINE_ADD_TO_WISHLIST_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_OFFLINE_INITIATE_CHECKOUT_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_OFFLINE_SUBSCRIBE_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_OFFLINE_VIEW_CONTENT_VALUE_IN_MICRO_DOLLAR',
     'TOTAL_OFFLINE_CLICK_CHECKOUT',
+    'TOTAL_OFFLINE_CLICK_ADD_PAYMENT_INFO',
+    'TOTAL_OFFLINE_CLICK_ADD_TO_WISHLIST',
+    'TOTAL_OFFLINE_CLICK_INITIATE_CHECKOUT',
+    'TOTAL_OFFLINE_CLICK_SUBSCRIBE',
+    'TOTAL_OFFLINE_CLICK_VIEW_CONTENT',
     'TOTAL_OFFLINE_CLICK_CHECKOUT_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_OFFLINE_CLICK_ADD_PAYMENT_INFO_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_OFFLINE_CLICK_ADD_TO_WISHLIST_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_OFFLINE_CLICK_INITIATE_CHECKOUT_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_OFFLINE_CLICK_SUBSCRIBE_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_OFFLINE_CLICK_VIEW_CONTENT_VALUE_IN_MICRO_DOLLAR',
     'TOTAL_OFFLINE_ENGAGEMENT_CHECKOUT',
+    'TOTAL_OFFLINE_ENGAGEMENT_ADD_PAYMENT_INFO',
+    'TOTAL_OFFLINE_ENGAGEMENT_ADD_TO_WISHLIST',
+    'TOTAL_OFFLINE_ENGAGEMENT_INITIATE_CHECKOUT',
+    'TOTAL_OFFLINE_ENGAGEMENT_SUBSCRIBE',
+    'TOTAL_OFFLINE_ENGAGEMENT_VIEW_CONTENT',
     'TOTAL_OFFLINE_ENGAGEMENT_CHECKOUT_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_OFFLINE_ENGAGEMENT_ADD_PAYMENT_INFO_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_OFFLINE_ENGAGEMENT_ADD_TO_WISHLIST_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_OFFLINE_ENGAGEMENT_INITIATE_CHECKOUT_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_OFFLINE_ENGAGEMENT_SUBSCRIBE_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_OFFLINE_ENGAGEMENT_VIEW_CONTENT_VALUE_IN_MICRO_DOLLAR',
     'TOTAL_OFFLINE_VIEW_CHECKOUT',
+    'TOTAL_OFFLINE_VIEW_ADD_PAYMENT_INFO',
+    'TOTAL_OFFLINE_VIEW_ADD_TO_WISHLIST',
+    'TOTAL_OFFLINE_VIEW_INITIATE_CHECKOUT',
+    'TOTAL_OFFLINE_VIEW_SUBSCRIBE',
+    'TOTAL_OFFLINE_VIEW_VIEW_CONTENT',
     'TOTAL_OFFLINE_VIEW_CHECKOUT_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_OFFLINE_VIEW_ADD_PAYMENT_INFO_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_OFFLINE_VIEW_ADD_TO_WISHLIST_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_OFFLINE_VIEW_INITIATE_CHECKOUT_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_OFFLINE_VIEW_SUBSCRIBE_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_OFFLINE_VIEW_VIEW_CONTENT_VALUE_IN_MICRO_DOLLAR',
     'PINTEREST_CHECKOUT_COST_PER_ACTION',
     'PINTEREST_CHECKOUT_ROAS',
     'TOTAL_PINTEREST_CHECKOUT',
@@ -12374,25 +14005,165 @@ const ReportingColumnAsyncSchema = z
     'TOTAL_WEB_VIEW_WATCH_VIDEO',
     'TOTAL_WEB_VIEW_WATCH_VIDEO_VALUE_IN_MICRO_DOLLAR',
     'WEB_LEAD_COST_PER_ACTION',
+    'WEB_CONTACT_COST_PER_ACTION',
+    'WEB_SCHEDULE_COST_PER_ACTION',
+    'WEB_FIND_LOCATION_COST_PER_ACTION',
+    'WEB_CUSTOMIZE_PRODUCT_COST_PER_ACTION',
+    'WEB_SUBMIT_APPLICATION_COST_PER_ACTION',
+    'WEB_START_TRIAL_COST_PER_ACTION',
+    'WEB_APP_OPEN_COST_PER_ACTION',
     'WEB_LEAD_ROAS',
+    'WEB_CONTACT_ROAS',
+    'WEB_SCHEDULE_ROAS',
+    'WEB_FIND_LOCATION_ROAS',
+    'WEB_CUSTOMIZE_PRODUCT_ROAS',
+    'WEB_SUBMIT_APPLICATION_ROAS',
+    'WEB_START_TRIAL_ROAS',
+    'WEB_APP_OPEN_ROAS',
     'TOTAL_WEB_LEAD',
+    'TOTAL_WEB_CONTACT',
+    'TOTAL_WEB_SCHEDULE',
+    'TOTAL_WEB_FIND_LOCATION',
+    'TOTAL_WEB_CUSTOMIZE_PRODUCT',
+    'TOTAL_WEB_SUBMIT_APPLICATION',
+    'TOTAL_WEB_START_TRIAL',
+    'TOTAL_WEB_APP_OPEN',
     'TOTAL_WEB_LEAD_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_CONTACT_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_SCHEDULE_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_FIND_LOCATION_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_CUSTOMIZE_PRODUCT_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_SUBMIT_APPLICATION_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_START_TRIAL_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_APP_OPEN_VALUE_IN_MICRO_DOLLAR',
     'TOTAL_WEB_CLICK_LEAD',
+    'TOTAL_WEB_CLICK_CONTACT',
+    'TOTAL_WEB_CLICK_SCHEDULE',
+    'TOTAL_WEB_CLICK_FIND_LOCATION',
+    'TOTAL_WEB_CLICK_CUSTOMIZE_PRODUCT',
+    'TOTAL_WEB_CLICK_SUBMIT_APPLICATION',
+    'TOTAL_WEB_CLICK_START_TRIAL',
+    'TOTAL_WEB_CLICK_APP_OPEN',
     'TOTAL_WEB_CLICK_LEAD_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_CLICK_CONTACT_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_CLICK_SCHEDULE_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_CLICK_FIND_LOCATION_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_CLICK_CUSTOMIZE_PRODUCT_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_CLICK_SUBMIT_APPLICATION_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_CLICK_START_TRIAL_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_CLICK_APP_OPEN_VALUE_IN_MICRO_DOLLAR',
     'TOTAL_WEB_ENGAGEMENT_LEAD',
+    'TOTAL_WEB_ENGAGEMENT_CONTACT',
+    'TOTAL_WEB_ENGAGEMENT_SCHEDULE',
+    'TOTAL_WEB_ENGAGEMENT_FIND_LOCATION',
+    'TOTAL_WEB_ENGAGEMENT_CUSTOMIZE_PRODUCT',
+    'TOTAL_WEB_ENGAGEMENT_SUBMIT_APPLICATION',
+    'TOTAL_WEB_ENGAGEMENT_START_TRIAL',
+    'TOTAL_WEB_ENGAGEMENT_APP_OPEN',
     'TOTAL_WEB_ENGAGEMENT_LEAD_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_ENGAGEMENT_CONTACT_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_ENGAGEMENT_SCHEDULE_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_ENGAGEMENT_FIND_LOCATION_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_ENGAGEMENT_CUSTOMIZE_PRODUCT_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_ENGAGEMENT_SUBMIT_APPLICATION_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_ENGAGEMENT_START_TRIAL_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_ENGAGEMENT_APP_OPEN_VALUE_IN_MICRO_DOLLAR',
     'TOTAL_WEB_VIEW_LEAD',
+    'TOTAL_WEB_VIEW_CONTACT',
+    'TOTAL_WEB_VIEW_SCHEDULE',
+    'TOTAL_WEB_VIEW_FIND_LOCATION',
+    'TOTAL_WEB_VIEW_CUSTOMIZE_PRODUCT',
+    'TOTAL_WEB_VIEW_SUBMIT_APPLICATION',
+    'TOTAL_WEB_VIEW_START_TRIAL',
+    'TOTAL_WEB_VIEW_APP_OPEN',
     'TOTAL_WEB_VIEW_LEAD_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_VIEW_CONTACT_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_VIEW_SCHEDULE_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_VIEW_FIND_LOCATION_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_VIEW_CUSTOMIZE_PRODUCT_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_VIEW_SUBMIT_APPLICATION_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_VIEW_START_TRIAL_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_VIEW_APP_OPEN_VALUE_IN_MICRO_DOLLAR',
     'OFFLINE_LEAD_COST_PER_ACTION',
+    'OFFLINE_CONTACT_COST_PER_ACTION',
+    'OFFLINE_SCHEDULE_COST_PER_ACTION',
+    'OFFLINE_FIND_LOCATION_COST_PER_ACTION',
+    'OFFLINE_CUSTOMIZE_PRODUCT_COST_PER_ACTION',
+    'OFFLINE_SUBMIT_APPLICATION_COST_PER_ACTION',
+    'OFFLINE_START_TRIAL_COST_PER_ACTION',
+    'OFFLINE_APP_OPEN_COST_PER_ACTION',
     'OFFLINE_LEAD_ROAS',
+    'OFFLINE_CONTACT_ROAS',
+    'OFFLINE_SCHEDULE_ROAS',
+    'OFFLINE_FIND_LOCATION_ROAS',
+    'OFFLINE_CUSTOMIZE_PRODUCT_ROAS',
+    'OFFLINE_SUBMIT_APPLICATION_ROAS',
+    'OFFLINE_START_TRIAL_ROAS',
+    'OFFLINE_APP_OPEN_ROAS',
     'TOTAL_OFFLINE_LEAD',
+    'TOTAL_OFFLINE_CONTACT',
+    'TOTAL_OFFLINE_SCHEDULE',
+    'TOTAL_OFFLINE_FIND_LOCATION',
+    'TOTAL_OFFLINE_CUSTOMIZE_PRODUCT',
+    'TOTAL_OFFLINE_SUBMIT_APPLICATION',
+    'TOTAL_OFFLINE_START_TRIAL',
+    'TOTAL_OFFLINE_APP_OPEN',
     'TOTAL_OFFLINE_LEAD_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_OFFLINE_CONTACT_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_OFFLINE_SCHEDULE_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_OFFLINE_FIND_LOCATION_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_OFFLINE_CUSTOMIZE_PRODUCT_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_OFFLINE_SUBMIT_APPLICATION_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_OFFLINE_START_TRIAL_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_OFFLINE_APP_OPEN_VALUE_IN_MICRO_DOLLAR',
     'TOTAL_OFFLINE_CLICK_LEAD',
+    'TOTAL_OFFLINE_CLICK_CONTACT',
+    'TOTAL_OFFLINE_CLICK_SCHEDULE',
+    'TOTAL_OFFLINE_CLICK_FIND_LOCATION',
+    'TOTAL_OFFLINE_CLICK_CUSTOMIZE_PRODUCT',
+    'TOTAL_OFFLINE_CLICK_SUBMIT_APPLICATION',
+    'TOTAL_OFFLINE_CLICK_START_TRIAL',
+    'TOTAL_OFFLINE_CLICK_APP_OPEN',
     'TOTAL_OFFLINE_CLICK_LEAD_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_OFFLINE_CLICK_CONTACT_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_OFFLINE_CLICK_SCHEDULE_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_OFFLINE_CLICK_FIND_LOCATION_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_OFFLINE_CLICK_CUSTOMIZE_PRODUCT_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_OFFLINE_CLICK_SUBMIT_APPLICATION_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_OFFLINE_CLICK_START_TRIAL_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_OFFLINE_CLICK_APP_OPEN_VALUE_IN_MICRO_DOLLAR',
     'TOTAL_OFFLINE_ENGAGEMENT_LEAD',
+    'TOTAL_OFFLINE_ENGAGEMENT_CONTACT',
+    'TOTAL_OFFLINE_ENGAGEMENT_SCHEDULE',
+    'TOTAL_OFFLINE_ENGAGEMENT_FIND_LOCATION',
+    'TOTAL_OFFLINE_ENGAGEMENT_CUSTOMIZE_PRODUCT',
+    'TOTAL_OFFLINE_ENGAGEMENT_SUBMIT_APPLICATION',
+    'TOTAL_OFFLINE_ENGAGEMENT_START_TRIAL',
+    'TOTAL_OFFLINE_ENGAGEMENT_APP_OPEN',
     'TOTAL_OFFLINE_ENGAGEMENT_LEAD_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_OFFLINE_ENGAGEMENT_CONTACT_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_OFFLINE_ENGAGEMENT_SCHEDULE_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_OFFLINE_ENGAGEMENT_FIND_LOCATION_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_OFFLINE_ENGAGEMENT_CUSTOMIZE_PRODUCT_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_OFFLINE_ENGAGEMENT_SUBMIT_APPLICATION_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_OFFLINE_ENGAGEMENT_START_TRIAL_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_OFFLINE_ENGAGEMENT_APP_OPEN_VALUE_IN_MICRO_DOLLAR',
     'TOTAL_OFFLINE_VIEW_LEAD',
+    'TOTAL_OFFLINE_VIEW_CONTACT',
+    'TOTAL_OFFLINE_VIEW_SCHEDULE',
+    'TOTAL_OFFLINE_VIEW_FIND_LOCATION',
+    'TOTAL_OFFLINE_VIEW_CUSTOMIZE_PRODUCT',
+    'TOTAL_OFFLINE_VIEW_SUBMIT_APPLICATION',
+    'TOTAL_OFFLINE_VIEW_START_TRIAL',
+    'TOTAL_OFFLINE_VIEW_APP_OPEN',
     'TOTAL_OFFLINE_VIEW_LEAD_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_OFFLINE_VIEW_CONTACT_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_OFFLINE_VIEW_SCHEDULE_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_OFFLINE_VIEW_FIND_LOCATION_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_OFFLINE_VIEW_CUSTOMIZE_PRODUCT_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_OFFLINE_VIEW_SUBMIT_APPLICATION_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_OFFLINE_VIEW_START_TRIAL_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_OFFLINE_VIEW_APP_OPEN_VALUE_IN_MICRO_DOLLAR',
     'WEB_SEARCH_COST_PER_ACTION',
     'WEB_SEARCH_ROAS',
     'TOTAL_WEB_SEARCH',
@@ -12514,11 +14285,23 @@ const ReportingColumnAsyncSchema = z
     'SHOWCASE_CARD_THUMBNAIL_SWIPE_BACKWARD',
     'SHOWCASE_AVERAGE_SUBPAGE_CLOSEUP_PER_SESSION',
     'TOTAL_CHECKOUT_CONVERSION_RATE',
+    'TOTAL_ADD_PAYMENT_INFO_CONVERSION_RATE',
+    'TOTAL_ADD_TO_WISHLIST_CONVERSION_RATE',
+    'TOTAL_INITIATE_CHECKOUT_CONVERSION_RATE',
+    'TOTAL_SUBSCRIBE_CONVERSION_RATE',
+    'TOTAL_VIEW_CONTENT_CONVERSION_RATE',
     'TOTAL_VIEW_CATEGORY_CONVERSION_RATE',
     'TOTAL_ADD_TO_CART_CONVERSION_RATE',
     'TOTAL_SIGNUP_CONVERSION_RATE',
     'TOTAL_PAGE_VISIT_CONVERSION_RATE',
     'TOTAL_LEAD_CONVERSION_RATE',
+    'TOTAL_CONTACT_CONVERSION_RATE',
+    'TOTAL_SCHEDULE_CONVERSION_RATE',
+    'TOTAL_FIND_LOCATION_CONVERSION_RATE',
+    'TOTAL_CUSTOMIZE_PRODUCT_CONVERSION_RATE',
+    'TOTAL_SUBMIT_APPLICATION_CONVERSION_RATE',
+    'TOTAL_START_TRIAL_CONVERSION_RATE',
+    'TOTAL_APP_OPEN_CONVERSION_RATE',
     'TOTAL_SEARCH_CONVERSION_RATE',
     'TOTAL_WATCH_VIDEO_CONVERSION_RATE',
     'TOTAL_UNKNOWN_CONVERSION_RATE',
@@ -12626,11 +14409,14 @@ const AdsAnalyticsCreateAsyncRequestSchema = z
       .exactOptional()
       .openapi({ description: 'List of campaign ids' }),
     campaign_objective_types: z
-      .array(z.any())
+      .array(CampaignObjectiveTypeSchema)
       .min(1)
       .max(7)
       .exactOptional()
-      .openapi({ description: 'List of values for filtering. ["WEB_SESSIONS"] is in BETA.' }),
+      .openapi({
+        description:
+          'List of values for filtering. ["WEB_SESSIONS"] and ["VIDEO_VIEW"] are DEPRECATED.',
+      }),
     campaign_statuses: z
       .array(CampaignSummaryStatusSchema)
       .min(1)
@@ -12645,7 +14431,6 @@ const AdsAnalyticsCreateAsyncRequestSchema = z
       }),
     columns: z
       .array(ReportingColumnAsyncSchema)
-      .exactOptional()
       .openapi({
         description:
           'Metric and entity columns. Pin promotion and ad related columns are not supported for Product Item level reports.',
@@ -12691,9 +14476,7 @@ const AdsAnalyticsCreateAsyncRequestSchema = z
       description:
         '  TOTAL - metrics are aggregated over the specified date range.\n  DAY - metrics are broken down daily.\n  HOUR - metrics are broken down hourly.\n  WEEKLY - metrics are broken down weekly.\n  MONTHLY - metrics are broken down monthly.',
     }),
-    level: MetricsReportingLevelSchema.exactOptional().openapi({
-      description: 'Level of the report',
-    }),
+    level: MetricsReportingLevelSchema.openapi({ description: 'Level of the report' }),
     metrics_filters: z
       .array(AdsAnalyticsMetricsFilterSchema)
       .min(1)
@@ -12720,7 +14503,8 @@ const AdsAnalyticsCreateAsyncRequestSchema = z
       .openapi({ description: 'List of product item ids' }),
     report_format: DataOutputFormatSchema.default('JSON').exactOptional(),
     reporting_timezone: ReportingTimeZoneSchema.exactOptional().openapi({
-      description: 'Specify the timezone to be applied for the reporting.',
+      description:
+        'Specify the timezone to be applied for the reporting. Defaults to PINTEREST_TIME_ZONE (UTC). AD_ACCOUNT_TIME_ZONE requires the ad account to have a time_zone configured; otherwise the request fails with a 400.',
     }),
     start_date: z
       .string()
@@ -12751,7 +14535,7 @@ const AdsAnalyticsCreateAsyncRequestSchema = z
           'Number of days to use as the conversion attribution window for a view action.',
       }),
   })
-  .openapi({ required: ['end_date', 'granularity', 'start_date'] })
+  .openapi({ required: ['columns', 'level', 'end_date', 'granularity', 'start_date'] })
   .openapi('AdsAnalyticsCreateAsyncRequest')
 
 const BulkReportingJobStatusSchema = z
@@ -13378,6 +15162,183 @@ const AgeTrendsBucketSchema = z
   .enum(['18-24', '25-34', '35-44', '45-49', '50-54', '55-64', '65+'])
   .openapi('AgeTrendsBucket')
 
+const AgencyOwnedAdAccountPermissionSchema = z
+  .enum([
+    'ADMIN',
+    'ANALYST',
+    'AUDIENCE_MANAGER',
+    'FINANCE_MANAGER',
+    'FINANCE_EDIT',
+    'FINANCE_VIEW',
+    'CAMPAIGN_MANAGER',
+    'CATALOGS_MANAGER',
+    'CATALOGS_VIEWER',
+    'PROFILE_PUBLISHER',
+    'CONSUMER_USER',
+    'BIZ_PINNER_LIST_SHARER',
+    'BIZ_CONVERSION_SEGMENT_SHARER',
+    'BIZ_CONVERSION_SEGMENT_RESTRICTED_SHARER',
+  ])
+  .openapi({ description: 'Safe role values allowed for AOAA request permissions.' })
+  .openapi('AgencyOwnedAdAccountPermission')
+
+const AgencyOwnedAdAccountRequestBusinessSummarySchema = z
+  .object({
+    full_name: z
+      .string()
+      .openapi({ description: 'Business display name.', example: 'Carp Media Agency' }),
+    id: PinterestLibIntegerFormatTypeSchema.openapi({
+      description: 'Unique identifier of the business.',
+      example: '742249715544708748',
+    }),
+    image_medium_url: z
+      .string()
+      .openapi({
+        description: 'URL of the medium image profile.',
+        example: 'https://s.pinimg.com/images/user/image.png',
+      }),
+    image_small_url: z
+      .string()
+      .openapi({
+        description: 'URL of the small image profile.',
+        example: 'https://s.pinimg.com/images/user/image.png',
+      }),
+    username: z.string().openapi({ description: 'Business username.', example: 'carpmedia' }),
+  })
+  .openapi({
+    description: 'Business profile information included in AOAA requests.',
+    required: ['id', 'full_name', 'username', 'image_medium_url', 'image_small_url'],
+  })
+  .openapi('AgencyOwnedAdAccountRequestBusinessSummary')
+
+const AgencyOwnedAdAccountRequestStatusSchema = z
+  .enum(['PENDING', 'ACCEPTED', 'DECLINED', 'CANCELED', 'EXPIRED'])
+  .openapi({ description: 'AOAA request status.', example: 'PENDING' })
+  .openapi('AgencyOwnedAdAccountRequestStatus')
+
+const AgencyOwnedAdAccountRequestSchema = z
+  .object({
+    client_business: AgencyOwnedAdAccountRequestBusinessSummarySchema.openapi({
+      description: 'Request partner (recipient).',
+    }),
+    country: z.string().openapi({ description: 'Ad account country.', example: 'US' }),
+    currency: CurrencySchema.exactOptional().openapi({
+      description: 'Requested ad account currency. Omitted when the request did not specify one.',
+    }),
+    name: z
+      .string()
+      .openapi({ description: 'Requested ad account name.', example: 'Ad Account 1' }),
+    owner_business: AgencyOwnedAdAccountRequestBusinessSummarySchema.openapi({
+      description: 'Request owner (sender).',
+    }),
+    permissions: z
+      .array(z.record(z.string(), z.array(z.string())))
+      .exactOptional()
+      .openapi({ description: 'Permissions grouped by business user id.' }),
+    request_id: PinterestLibIntegerFormatTypeSchema.openapi({
+      description: 'ID of the agency owned ad account request.',
+      example: '9367193228913481',
+    }),
+    status: AgencyOwnedAdAccountRequestStatusSchema.openapi({
+      description: 'Current request status.',
+    }),
+  })
+  .openapi({
+    description: 'Agency Owned Ad Account request.',
+    required: ['request_id', 'name', 'country', 'status', 'owner_business', 'client_business'],
+  })
+  .openapi('AgencyOwnedAdAccountRequest')
+
+const AgencyOwnedAdAccountRequestAcceptanceCreateSchema = z
+  .object({
+    request_ids: z
+      .array(PinterestLibIntegerFormatTypeSchema)
+      .min(1)
+      .openapi({
+        description: 'A list of agency owned ad account request ids to accept.',
+        example: ['9367193228913481', '9367193228913482'],
+      }),
+  })
+  .openapi({ description: 'Resource create operation model.', required: ['request_ids'] })
+  .openapi('AgencyOwnedAdAccountRequestAcceptanceCreate')
+
+const AgencyOwnedAdAccountRequestChangesUpdateSchema = z
+  .object({
+    business_id_to_permissions: z
+      .record(z.string(), z.array(AgencyOwnedAdAccountPermissionSchema))
+      .exactOptional()
+      .openapi({
+        description: 'Business id to permissions mapping.',
+        example: { business_1: ['ANALYST'], business_2: ['FINANCE_MANAGER', 'ANALYST'] },
+      }),
+    business_request_status: AgencyOwnedAdAccountRequestStatusSchema.exactOptional().openapi({
+      description: 'New status for the request. If set to PENDING, the invite will be resent.',
+      example: 'PENDING',
+    }),
+  })
+  .openapi({ description: 'Resource create or update operation model.', required: [] })
+  .openapi('AgencyOwnedAdAccountRequestChangesUpdate')
+
+const AgencyOwnedAdAccountRequestDirectionSchema = z
+  .enum(['SENT', 'RECEIVED', 'ALL'])
+  .openapi({ description: 'AOAA request direction.', example: 'ALL' })
+  .openapi('AgencyOwnedAdAccountRequestDirection')
+
+const AgencyOwnedAdAccountRequestRejectionCreateSchema = z
+  .object({
+    request_ids: z
+      .array(PinterestLibIntegerFormatTypeSchema)
+      .min(1)
+      .openapi({
+        description: 'A list of agency owned ad account request ids to reject.',
+        example: ['9367193228913481', '9367193228913482'],
+      }),
+  })
+  .openapi({ description: 'Resource create operation model.', required: ['request_ids'] })
+  .openapi('AgencyOwnedAdAccountRequestRejectionCreate')
+
+const AgencyOwnedPartnerAdAccountRequestSchema = z
+  .object({
+    business_id: PinterestLibIntegerFormatTypeSchema.openapi({
+      description: 'Business id where request was created.',
+      example: '689613899099765649',
+      readOnly: true,
+    }),
+    data: z
+      .record(z.string(), PinterestLibIntegerFormatTypeSchema)
+      .openapi({
+        description: 'Partner id to created request id mapping.',
+        example: { partner_1: '9367193228913481' },
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    description: 'AOAA request create payload and response data.',
+    required: ['business_id', 'data'],
+  })
+  .openapi('AgencyOwnedPartnerAdAccountRequest')
+
+const AgencyOwnedPartnerAdAccountRequestCreateSchema = z
+  .object({
+    business_id_to_permissions: z
+      .record(z.string(), z.array(AgencyOwnedAdAccountPermissionSchema))
+      .openapi({
+        description: 'Business id to permissions mapping.',
+        example: { business_1: ['ANALYST'], business_2: ['FINANCE_MANAGER', 'ANALYST'] },
+      }),
+    country: z.string().openapi({ description: 'Ad account country.', example: 'US' }),
+    currency: CurrencySchema.exactOptional().openapi({
+      description:
+        'Ad account currency. Defaults to the default currency of the ad account country when omitted.',
+    }),
+    name: z.string().openapi({ description: 'Ad account name.', example: 'Ad account 1' }),
+  })
+  .openapi({
+    description: 'Resource create operation model.',
+    required: ['name', 'country', 'business_id_to_permissions'],
+  })
+  .openapi('AgencyOwnedPartnerAdAccountRequestCreate')
+
 const AggregatedPinCommentSchema = z
   .object({
     ai_disclosures: AiDisclosuresSchema.exactOptional().openapi({
@@ -13420,6 +15381,14 @@ const AggregatedPinCommentSchema = z
       .boolean()
       .exactOptional()
       .openapi({ description: 'Whether the Pin is a product Pin.', readOnly: true }),
+    is_removable: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'If you set it to `true`, the Pin becomes ad-only and is automatically added to an "Ad-only Pins" board; so, you do not have to specify a `board_id`.\n**Note:** Ad-only pins cannot be repinned.',
+      }),
     is_standard: z
       .boolean()
       .exactOptional()
@@ -13478,6 +15447,18 @@ const AiDisclosuresUpdateSchema = z
   })
   .openapi('AiDisclosuresUpdate')
 
+const AllowedDomainsSchema = z
+  .object({
+    domains: z
+      .array(z.string())
+      .openapi({
+        description: 'List of RMN allowed domains for the advertiser',
+        example: ['pinterest.com', 'pinterest.co.uk'],
+      }),
+  })
+  .openapi({ required: ['domains'] })
+  .openapi('AllowedDomains')
+
 const AmazonConnectRequestSchema = z
   .object({
     amazon_storefront_id: z
@@ -13512,13 +15493,6 @@ const AmazonConnectRequestSchema = z
     title: 'AmazonConnectRequest',
   })
   .openapi('AmazonConnectRequest')
-
-const AmazonConnectResponseSchema = z
-  .object({
-    message: z.string().exactOptional().openapi({ description: 'Amazon connect response message' }),
-  })
-  .openapi({ required: [] })
-  .openapi('AmazonConnectResponse')
 
 const DataStatusSchema = z
   .enum([
@@ -14022,6 +15996,8 @@ const PermissionsSchema = z
     'PROFILE_PUBLISHER',
     'CONSUMER_USER',
     'BIZ_PINNER_LIST_SHARER',
+    'BIZ_CONVERSION_SEGMENT_SHARER',
+    'BIZ_CONVERSION_SEGMENT_RESTRICTED_SHARER',
   ])
   .openapi({ description: 'Permission levels available on a business asset.' })
   .openapi('Permissions')
@@ -14083,6 +16059,14 @@ const AssetSortBySchema = z
   .enum(['NAME', 'ID', 'PERMISSIONS'])
   .openapi({ description: 'The field to sort member assets by', example: 'NAME' })
   .openapi('AssetSortBy')
+
+const AssetSourceSchema = z
+  .enum(['PARTNER_SHARED', 'BUSINESS_OWNED'])
+  .openapi({
+    description: 'Specifies the ownership and sharing relationship of assets to include.',
+    example: 'PARTNER_SHARED',
+  })
+  .openapi('AssetSource')
 
 const AttributionActionTypeSchema = z
   .enum(['view', 'click'])
@@ -14297,6 +16281,7 @@ const AudienceSchema = z
         '[Audience types](/docs/reference/glossary/#Audience Types): ACTALIKE, ENGAGEMENT, CUSTOMER_LIST and VISITOR',
       title: 'audience_type',
     }),
+    category: z.string().exactOptional().openapi({ description: 'Audience category.' }),
     created_by_company_name: z
       .string()
       .nullable()
@@ -14315,6 +16300,9 @@ const AudienceSchema = z
         example: 1451431341,
         title: 'created_time',
       }),
+    data_source: PinnerListDataSourceSchema.exactOptional().openapi({
+      description: 'Audience data source.',
+    }),
     description: z
       .string()
       .nullable()
@@ -14324,6 +16312,10 @@ const AudienceSchema = z
         example: 'People who love making quilts.',
         title: 'description',
       }),
+    geography: z
+      .array(CountrySchema)
+      .exactOptional()
+      .openapi({ description: 'Audience geography as ISO 3166-1 alpha-2 country codes.' }),
     id: z
       .string()
       .regex(/^\d+$/)
@@ -14341,6 +16333,9 @@ const AudienceSchema = z
       .string()
       .exactOptional()
       .openapi({ description: 'Audience name.', example: 'ACME Tools', title: 'name' }),
+    refresh_cadence: PinnerListRefreshCadenceSchema.exactOptional().openapi({
+      description: 'Audience refresh cadence.',
+    }),
     rule: AudienceRuleSchema.exactOptional(),
     size: z
       .int()
@@ -14365,6 +16360,9 @@ const AudienceSchema = z
         example: 1451431341,
         title: 'updated_time',
       }),
+    vertical: PinnerListVerticalSchema.exactOptional().openapi({
+      description: 'Audience vertical.',
+    }),
   })
   .openapi({ title: 'Audience', required: [] })
   .openapi('Audience')
@@ -14934,6 +16932,16 @@ const BillingProfilePaymentMethodBrandSchema = z
     'DINERS_CLUB',
     'ELO',
     'CARTE_BANCAIRE',
+    'JCB',
+    'ACCEL',
+    'STAR',
+    'PULSE',
+    'NYCE',
+    'PIX',
+    'PAYBYBANK',
+    'MAESTRO',
+    'APPLE',
+    'PAYPAL',
   ])
   .openapi({ description: 'Brand of the payment method.' })
   .openapi('BillingProfilePaymentMethodBrand')
@@ -15199,9 +17207,127 @@ const BookClosedSchema = z
   })
   .openapi('BookClosed')
 
+const BrandAcceptanceDetailsCreateSchema = z
+  .object({
+    ad_account_name: z
+      .string()
+      .max(256)
+      .exactOptional()
+      .openapi({
+        description:
+          'Name of the Retail Media Network dedicated ad account to create. Required when the Brand accepts the invite.',
+        example: 'ACME Tools',
+      }),
+    agency_user_id: PinterestLibIntegerFormatTypeSchema.exactOptional().openapi({
+      description: 'User ID of the agency that manages the dedicated ad account. Optional.',
+      example: '837915789903426391',
+    }),
+    country: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Country for the dedicated ad account. Optional; the server applies its existing default when omitted.',
+        example: 'US',
+      }),
+    currency: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Currency for the dedicated ad account. Optional; the server applies its existing default when omitted.',
+        example: 'USD',
+      }),
+    rmn_contract_language: z
+      .string()
+      .regex(/^[a-zA-Z]{2}$/)
+      .exactOptional()
+      .openapi({
+        description:
+          "Language of the RMN contract the Brand accepts. Optional. When omitted, the server infers it from the Brand business's configured locale; if no locale is configured, accepting an invite with a contract fails.",
+        example: 'en',
+      }),
+    skip_reseller: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether to skip reseller assignment for the new dedicated ad account. Optional.',
+        example: false,
+      }),
+    time_zone: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'IANA time zone for the dedicated ad account. Optional.',
+        example: 'America/Los_Angeles',
+      }),
+  })
+  .openapi({
+    description:
+      "Details supplied by the Brand when accepting an RMN-sent relationship invite. This creates the Brand's Retail Media Network dedicated ad account.",
+    required: [],
+  })
+  .openapi('BrandAcceptanceDetailsCreate')
+
+const BrandAccountProfilePlaceSchema = z
+  .object({
+    country: CountrySchema.exactOptional().openapi({ description: 'Country of the address.' }),
+    extra_street: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Second line of the street address (apartment, suite, etc.).' }),
+    locality: z.string().exactOptional().openapi({ description: 'City / locality.' }),
+    postal_code: z.string().exactOptional().openapi({ description: 'Postal or ZIP code.' }),
+    region: z.string().exactOptional().openapi({ description: 'State, province, or region.' }),
+    street: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'First line of the street address.' }),
+  })
+  .openapi({
+    description:
+      'Brand Account retail-location address, shown on the public business profile when enable_profile_address is true.',
+    required: [],
+  })
+  .openapi('BrandAccountProfilePlace')
+
 const BrandAccountSchema = z
-  .object({ brand_account_id: z.string().openapi({ readOnly: true }) })
-  .openapi({ required: ['brand_account_id'] })
+  .object({
+    about: z.string().exactOptional().openapi({ description: 'Brand Account about information' }),
+    brand_account_id: z.string().openapi({ readOnly: true }),
+    contact_email: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Public contact email shown on the business profile.' }),
+    contact_phone: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Public contact phone number shown on the business profile.' }),
+    contact_phone_country: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'ISO country code (e.g. "US") of the public contact phone number.' }),
+    country: CountrySchema,
+    enable_profile_address: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Whether the retail-location address is shown on the public business profile.',
+      }),
+    impressum_url: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Impressum URL (legal ownership statement, required in DE/AT/CH).' }),
+    name: z.string().openapi({ description: 'Brand Account name' }),
+    profile_place: BrandAccountProfilePlaceSchema.exactOptional().openapi({
+      description:
+        'Retail-location address, shown on the public business profile when enable_profile_address is true.',
+    }),
+    username: z.string().openapi({ description: 'Brand Account username' }),
+    website: z.string().exactOptional().openapi({ description: 'Brand Account website' }),
+  })
+  .openapi({ required: ['brand_account_id', 'country', 'name', 'username'] })
   .openapi('BrandAccount')
 
 const BrandAccountProfileImageSchema = z
@@ -15249,14 +17375,54 @@ const BrandAccountProfileImageUpdateSchema = z
 const BrandAccountUpdateSchema = z
   .object({
     about: z.string().exactOptional().openapi({ description: 'Brand Account about information' }),
+    contact_email: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Public contact email shown on the business profile.' }),
+    contact_phone: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Public contact phone number shown on the business profile.' }),
+    contact_phone_country: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'ISO country code (e.g. "US") of the public contact phone number.' }),
     country: CountrySchema.exactOptional(),
+    enable_profile_address: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Whether the retail-location address is shown on the public business profile.',
+      }),
+    impressum_url: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Impressum URL (legal ownership statement, required in DE/AT/CH).' }),
     name: z.string().exactOptional().openapi({ description: 'Brand Account name' }),
     profile_image: BrandAccountProfileImageUpdateSchema.exactOptional(),
+    profile_place: BrandAccountProfilePlaceSchema.exactOptional().openapi({
+      description:
+        'Retail-location address, shown on the public business profile when enable_profile_address is true.',
+    }),
     username: z.string().exactOptional().openapi({ description: 'Brand Account username' }),
     website: z.string().exactOptional().openapi({ description: 'Brand Account website' }),
   })
   .openapi({ description: 'Resource create or update operation model.', required: [] })
   .openapi('BrandAccountUpdate')
+
+const BrandInviteDetailsCreateSchema = z
+  .object({
+    rmn_dedicated_ad_account_id: PinterestLibIntegerFormatTypeSchema.exactOptional().openapi({
+      description:
+        'The ID of the ad account created by the Brand business for the specific RMN business.\n\nRequired when the Brand sends an invite to an RMN and wants to use an existing RMN-dedicated ad account.',
+      example: '123456789012345678',
+    }),
+  })
+  .openapi({
+    description: 'Details supplied by the Brand when creating an invite to an RMN.',
+    required: [],
+  })
+  .openapi('BrandInviteDetailsCreate')
 
 const CampaignPlanningAdGroupAudienceSizeSchema = z
   .object({
@@ -15343,7 +17509,14 @@ const CampaignPlanningEstimationTypeSchema = z
 
 const CampaignPlanningPointEstimateSchema = z
   .object({
-    budget: z.int().openapi({ description: 'The budget value of the point.', example: 5000000 }),
+    budget: z
+      .int()
+      .nullable()
+      .openapi({
+        description:
+          'The budget value of the point. Null for budget-recommendation points, whose budget is on the parent recommendation.',
+        example: 5000000,
+      }),
     double_y: z
       .float64()
       .nullable()
@@ -15409,6 +17582,18 @@ const CampaignDeliveryEstimatesDerivedMetricsSchema = z
       .float32()
       .exactOptional()
       .openapi({ description: 'Upper estimate of cost per thousand impressions.', example: 12 }),
+    lifetime_click: z
+      .float32()
+      .exactOptional()
+      .openapi({ description: 'Estimated lifetime clicks.' }),
+    lifetime_click_lower: z
+      .float32()
+      .exactOptional()
+      .openapi({ description: 'Lower estimate of lifetime clicks.' }),
+    lifetime_click_upper: z
+      .float32()
+      .exactOptional()
+      .openapi({ description: 'Upper estimate of lifetime clicks.' }),
     lifetime_frequency: z
       .float32()
       .exactOptional()
@@ -15622,7 +17807,7 @@ const ConversionObjectiveTypeSchema = z
   ])
   .openapi({
     description:
-      'Intended result of the campaign.\nYou can only update objectives for draft campaigns.\n`WEB_SESSIONS` and `VIDEO_VIEW` objectives are deprecated. We recommend using `VIDEO_COMPLETION` as an alternative for the latter.',
+      'Intended result of the campaign.\nAs part of [objective simplification](/docs/work-with-ads/try-out-campaign-objective-type-simplification/), `WEB_CONVERSION` and `CATALOG_SALES` objectives are being deprecated and replaced by `SALES` and `LEADS`.\nAlso, `WEB_SESSIONS` and `VIDEO_VIEW` objectives are deprecated. We recommend using `VIDEO_COMPLETION` as an alternative for the latter.\nYou can only update objectives for draft campaigns.',
   })
   .openapi('ConversionObjectiveType')
 
@@ -15723,20 +17908,7 @@ const BulkJobDataSchema = z
   .openapi({ description: 'Bulk request result data.', required: ['status'] })
   .openapi('BulkJobData')
 
-const BulkUpsertRequestSchema: z.ZodType<BulkUpsertRequestType> = z
-  .object({
-    create: BulkUpsertRequestCreateSchema.exactOptional(),
-    update: BulkUpsertRequestUpdateSchema.exactOptional(),
-  })
-  .openapi({
-    description:
-      'Two set of objects to be managed asyncronusly by bulk. One for creations, one for modifications.',
-    title: 'BulkUpsertRequest',
-    required: [],
-  })
-  .openapi('BulkUpsertRequest')
-
-const BulkUpsertResponseSchema = z
+const BulkUpsertSchema = z
   .object({
     request_id: z
       .string()
@@ -15744,10 +17916,236 @@ const BulkUpsertResponseSchema = z
       .openapi({
         example:
           '549763856477-1660864560-1407e16a-c586-4add-94df-d0b160bec0ff, 549763856477-1660864560-d0b160bec0ff',
+        readOnly: true,
       }),
   })
-  .openapi({ description: 'ID of the bulk request.', title: 'BulkUpsertResponse', required: [] })
-  .openapi('BulkUpsertResponse')
+  .openapi({
+    description:
+      'Two set of objects to be managed asyncronusly by bulk. One for creations, one for modifications.',
+    title: 'BulkUpsert',
+    required: [],
+  })
+  .openapi('BulkUpsert')
+
+const BulkWriteJobCreateSchema: z.ZodType<BulkWriteJobCreateType> = z
+  .object({
+    create: BulkUpsertRequestCreateSchema.exactOptional(),
+    update: BulkUpsertRequestUpdateSchema.exactOptional(),
+  })
+  .openapi({ description: 'Resource create operation model.', required: [] })
+  .openapi('BulkWriteJobCreate')
+
+const BusinessAnalyticsGranularMetricDataPointSchema = z
+  .object({
+    date_time: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Time bucket for this metric value. The legacy business analytics API returns hour-qualified date strings such as `2024-12-01:00`.',
+        example: '2024-12-01:00',
+      }),
+    total: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Metric total for this time bucket.', example: 900.91 }),
+  })
+  .openapi({
+    description: 'A single data point in a granular business analytics metric series.',
+    required: [],
+  })
+  .openapi('BusinessAnalyticsGranularMetricDataPoint')
+
+const BusinessAnalyticsGranularMetricSchema = z
+  .object({
+    data: z
+      .array(BusinessAnalyticsGranularMetricDataPointSchema)
+      .exactOptional()
+      .openapi({ description: 'Data points for the metric series.' }),
+    metric: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The metric being reported.', example: 'SPEND_IN_US_DOLLAR' }),
+  })
+  .openapi({ description: 'A granular business analytics metric series.', required: [] })
+  .openapi('BusinessAnalyticsGranularMetric')
+
+const BusinessAnalyticsGranularDataSchema = z
+  .object({
+    metrics_data: z
+      .array(BusinessAnalyticsGranularMetricSchema)
+      .exactOptional()
+      .openapi({ description: 'Metric series returned for the requested timeline.' }),
+  })
+  .openapi({ description: 'Granular business analytics data.', required: [] })
+  .openapi('BusinessAnalyticsGranularData')
+
+const BusinessAnalyticsMetricSchema = z
+  .object({
+    metric: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The metric being reported.', example: 'SPEND_IN_US_DOLLAR' }),
+    percent_change: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'The percent change for the metric.', example: 0.12 }),
+    total: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'The total metric value.', example: 900.91 }),
+    total_change: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'The absolute change for the metric.', example: 10.5 }),
+  })
+  .openapi({ description: 'A single business analytics metric value.', required: [] })
+  .openapi('BusinessAnalyticsMetric')
+
+const BusinessAggregatedTimelineAnalyticsSchema = z
+  .object({
+    granular_data: BusinessAnalyticsGranularDataSchema.exactOptional().openapi({
+      description: 'Metrics grouped by the requested time granularity.',
+    }),
+    local_currency: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The local currency over all ad accounts.', example: 'USD' }),
+    total_active_campaigns: z
+      .number()
+      .exactOptional()
+      .openapi({
+        description:
+          'Total number of active campaigns across all ad accounts. Only returned when active-campaign counts are enabled.',
+      }),
+    total_active_campaigns_change: z
+      .number()
+      .exactOptional()
+      .openapi({
+        description:
+          'Change in number of active campaigns compared to the previous period. Only returned when active-campaign counts are enabled.',
+      }),
+    total_active_campaigns_percent_change: z
+      .number()
+      .exactOptional()
+      .openapi({
+        description:
+          'Percent change in number of active campaigns compared to the previous period. Only returned when active-campaign counts are enabled.',
+      }),
+    totals: z
+      .array(BusinessAnalyticsMetricSchema)
+      .exactOptional()
+      .openapi({ description: 'Metrics totals over all ad accounts.' }),
+  })
+  .openapi({ description: 'Business analytics metrics aggregated over a timeline.', required: [] })
+  .openapi('BusinessAggregatedTimelineAnalytics')
+
+const BusinessAnalyticsPinnerListTypeSchema = z
+  .enum(['CUSTOMER_LIST', 'VISITOR', 'ENGAGEMENT', 'LOOKALIKE', 'ACTALIKE', 'PERSONA'])
+  .openapi({ description: 'Audience type for business analytics rows.' })
+  .openapi('BusinessAnalyticsPinnerListType')
+
+const BusinessAnalyticsEntitySchema = z
+  .object({
+    active_campaigns: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Number of active campaigns associated with this row.' }),
+    ad_account_id: PinterestLibIntegerFormatTypeSchema.exactOptional().openapi({
+      description: 'Unique identifier of the ad account associated with this row.',
+      example: '549755885175',
+    }),
+    ad_account_name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Display name of the ad account associated with this row.' }),
+    ad_group_id: PinterestLibIntegerFormatTypeSchema.exactOptional().openapi({
+      description: 'Unique identifier of the ad group associated with this row.',
+      example: '2680067996745',
+    }),
+    ad_group_name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Display name of the ad group associated with this row.' }),
+    advertiser_currency: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Currency of the ad account associated with this row.',
+        example: 'USD',
+      }),
+    creative_type: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Creative type associated with this row.', example: 'REGULAR' }),
+    data: z
+      .array(BusinessAnalyticsMetricSchema)
+      .exactOptional()
+      .openapi({ description: 'Metric values for this entity.' }),
+    entity_id: PinterestLibIntegerFormatTypeSchema.exactOptional().openapi({
+      description: 'Unique identifier of the entity represented by this row.',
+      example: '549755885175',
+    }),
+    entity_name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Display name of the entity represented by this row.',
+        example: 'Spring campaign',
+      }),
+    objective: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Campaign objective associated with this row.',
+        example: 'AWARENESS',
+      }),
+    partner_id: PinterestLibIntegerFormatTypeSchema.exactOptional().openapi({
+      description: 'Unique identifier of the partner business associated with this row.',
+      example: '729090764583391194',
+    }),
+    partner_img_url: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Image URL for the partner business associated with this row.' }),
+    partner_name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Display name of the partner business associated with this row.',
+        example: 'Partner business',
+      }),
+    pin_id: PinterestLibIntegerFormatTypeSchema.exactOptional().openapi({
+      description: 'Unique identifier of the organic Pin associated with this row.',
+      example: '549755885175',
+    }),
+    pinner_list_type: BusinessAnalyticsPinnerListTypeSchema.exactOptional().openapi({
+      description: 'Audience type associated with this row.',
+    }),
+  })
+  .openapi({ description: 'Metrics for a single business analytics entity.', required: [] })
+  .openapi('BusinessAnalyticsEntity')
+
+const BusinessAnalyticsSchema = z
+  .object({
+    count: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Total number of entities in the result.', example: 2 }),
+    entity_data: z
+      .array(BusinessAnalyticsEntitySchema)
+      .exactOptional()
+      .openapi({ description: 'Metrics data for each returned entity.' }),
+    totals: z
+      .array(BusinessAnalyticsMetricSchema)
+      .exactOptional()
+      .openapi({ description: 'The total metrics data across all entities.' }),
+  })
+  .openapi({
+    description: 'Business analytics metrics broken down by the requested entity type.',
+    required: [],
+  })
+  .openapi('BusinessAnalytics')
 
 const CatalogBindingSchema = z
   .object({
@@ -15761,6 +18159,10 @@ const CatalogBindingSchema = z
 const BusinessAssetsSchema = BaseBusinessAssetsSchema.and(
   z
     .object({
+      ad_account_info: AdAccountInfoSchema.exactOptional().openapi({
+        description:
+          "An object containing all the information specific to the provided ad account. This field will be populated only if asset_type equals 'AD_ACCOUNT'.",
+      }),
       catalog_info: CatalogBindingSchema.exactOptional().openapi({
         description:
           "An object containing all the information specific to the provided catalog. This field will be populated only if asset_type equals 'CATALOG'.",
@@ -15770,6 +18172,34 @@ const BusinessAssetsSchema = BaseBusinessAssetsSchema.and(
 )
   .openapi({ description: 'An object containing the permissions a business has on the asset.' })
   .openapi('BusinessAssets')
+
+const BusinessAssetsGetResponseSchema = z
+  .object({ bookmark: z.string().nullable().exactOptional(), items: z.array(BusinessAssetsSchema) })
+  .openapi({
+    description: 'Paginated response for business assets with total count metadata.',
+    required: ['items'],
+  })
+  .openapi('BusinessAssetsGetResponse')
+
+const BusinessHierarchyInviteTypeSchema = z
+  .enum([
+    'BUSINESS_HIERARCHY_CHILD',
+    'BUSINESS_HIERARCHY_MEMBER',
+    'RMN_BRAND_BUSINESS_RELATIONSHIP',
+  ])
+  .openapi({
+    description: 'The type for the business relationship invite.',
+    example: 'BUSINESS_HIERARCHY_MEMBER',
+  })
+  .openapi('BusinessHierarchyInviteType')
+
+const BusinessInviteActionSchema = z
+  .enum(['CANCEL', 'RESEND', 'ACCEPT', 'REJECT'])
+  .openapi({
+    description: 'Processing action to take on a business relationship invite.',
+    example: 'RESEND',
+  })
+  .openapi('BusinessInviteAction')
 
 const BusinessInviteOrPartnerIdSchema = z
   .string()
@@ -15887,13 +18317,9 @@ const BusinessPartnerIdTypeSchema = z
   .max(22)
   .openapi('BusinessPartnerIdType')
 
-const BusinessRoleForInviteSchema = z
-  .enum(['EMPLOYEE', 'BIZ_ADMIN', 'PARTNER'])
-  .openapi({
-    description:
-      'The business access level to grant member/partner. Note, values are case-sensitive.\n- EMPLOYEE: Can only view and access assets you assign them to. They cannot see details about other employees, partners, or other assets.\n- BIZ_ADMIN: Have full control of roles and can add employees and partners as well as grant asset access.\n- PARTNER: Can only view and access assets you assign them to/or they assign to you.',
-  })
-  .openapi('BusinessRoleForInvite')
+const BusinessPartnerTypeSchema = z
+  .enum(['REGULAR', 'RMN', 'UNDEFINED'])
+  .openapi('BusinessPartnerType')
 
 const BusinessRoleResponseSchema = z
   .string()
@@ -15903,6 +18329,83 @@ const BusinessRoleResponseSchema = z
     example: 'BIZ_ADMIN',
   })
   .openapi('BusinessRoleResponse')
+
+const UserBusinessRoleBindingSchema = z
+  .object({
+    assets_summary: BusinessMemberAssetsSummarySchema.nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Ad accounts and profiles the business member/partner has access to.',
+      }),
+    business_partner_type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Business partner type. This can be REGULAR, RMN, or UNDEFINED.',
+        example: 'REGULAR',
+      }),
+    business_roles: z
+      .array(BusinessRoleResponseSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The access level a user has on the business. This can be EMPLOYEE, BIZ_ADMIN, or PARTNER.',
+        example: ['BIZ_ADMIN'],
+      }),
+    created_by_business: BusinessAccessUserSummarySchema.nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Metadata for the business that created the business relationship.',
+      }),
+    created_by_user: BusinessAccessUserSummarySchema.nullable()
+      .exactOptional()
+      .openapi({ description: 'Metadata for the user that created the business relationship.' }),
+    created_time: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'The time the business relationship was created. Returned in milliseconds.',
+        example: 1646767577816,
+      }),
+    id: z
+      .string()
+      .regex(/^\d+$/)
+      .exactOptional()
+      .openapi({
+        description: 'Unique identifier of the business member/business partner/employer.',
+        example: '549755885175',
+      }),
+    is_shared_partner: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'This field is only relevant when business_role="PARTNER".\nIf is_shared_partner=FALSE, the partner can access your business assets. If assets_summary is not empty, the assets listed are your business assets the partner has access to.\nIf is_shared_partner=TRUE, you can access the partner\'s business asset. If assets_summary is not empty, the assets listed are the partner\'s business assets you have access to.',
+        example: false,
+      }),
+    user: BusinessAccessUserSummarySchema.nullable()
+      .exactOptional()
+      .openapi({ description: 'Metadata for the business member/business partner/employer.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('UserBusinessRoleBinding')
+
+const BusinessPartnersGetResponseSchema = z
+  .object({
+    bookmark: z.string().nullable().exactOptional(),
+    items: z.array(UserBusinessRoleBindingSchema),
+  })
+  .openapi({ description: 'Paginated response for business partners.', required: ['items'] })
+  .openapi('BusinessPartnersGetResponse')
+
+const BusinessRoleForInviteSchema = z
+  .enum(['EMPLOYEE', 'BIZ_ADMIN', 'PARTNER'])
+  .openapi({
+    description:
+      'The business access level to grant member/partner. Note, values are case-sensitive.\n- EMPLOYEE: Can only view and access assets you assign them to. They cannot see details about other employees, partners, or other assets.\n- BIZ_ADMIN: Have full control of roles and can add employees and partners as well as grant asset access.\n- PARTNER: Can only view and access assets you assign them to/or they assign to you.',
+  })
+  .openapi('BusinessRoleForInvite')
 
 const BusinessSearchBySchema = z
   .enum(['FULL_NAME', 'USERNAME', 'BUSINESS_ID', 'EMAIL'])
@@ -16005,6 +18508,14 @@ const BusinessToBusinessSharedAudienceUpdateWithRequiredBodySchema = z
   })
   .openapi('BusinessToBusinessSharedAudienceUpdateWithRequiredBody')
 
+const MobileAppPlatformSchema = z
+  .enum(['IOS', 'ANDROID'])
+  .openapi({
+    description:
+      '[Closed beta](/docs/getting-started/using-beta-and-restricted-features/)\n\nPlatform of the mobile app for an `APP_INSTALL` campaign.',
+  })
+  .openapi('MobileAppPlatform')
+
 const CampaignBidOptionsSchema = z
   .object({
     age_bucket_multipliers: AgeBucketMultipliersSchema.exactOptional().openapi({
@@ -16033,7 +18544,12 @@ const CampaignBidOptionsSchema = z
   .openapi({ description: 'Object describing the campaign level bid multipliers.', required: [] })
   .openapi('CampaignBidOptions')
 
-const CampaignObjectiveTypeSchema = z
+const CtvGoalTypeSchema = z
+  .enum(['REACH_BLAST', 'EFFICIENT_ECPM', 'CONSIDERATION', 'CONVERSIONS', 'ROAS'])
+  .openapi({ description: 'Optimization goal for a CTV campaign.' })
+  .openapi('CtvGoalType')
+
+const CampaignObjectiveTypeReadSchema = z
   .enum([
     'AWARENESS',
     'CONSIDERATION',
@@ -16046,12 +18562,14 @@ const CampaignObjectiveTypeSchema = z
     'SALES',
     'LEADS',
     'CTV_CONSIDERATION',
+    'AWARENESS_RESERVED',
+    'ENGAGEMENT',
   ])
   .openapi({
     description:
-      'Campaign objective type. If set as one of ["AWARENESS", "CONSIDERATION", "WEB_CONVERSION", "CATALOG_SALES", "VIDEO_COMPLETION", "CTV_CONSIDERATION"] the campaign is considered as a Campaign Budget Optimization (CBO) campaign, meaning budget needs to be set at the campaign level rather than at the ad group level. ["WEB_SESSIONS"] is DEPRECATED. `VIDEO_VIEW` is deprecated; use `VIDEO_COMPLETION` instead. `CTV_CONSIDERATION` is in BETA. For update, only draft campaigns may update objective type.',
+      'Campaign objective type. If set as one of ["AWARENESS", "CONSIDERATION", "WEB_CONVERSION", "CATALOG_SALES", "VIDEO_COMPLETION", "CTV_CONSIDERATION"] the campaign is considered as a Campaign Budget Optimization (CBO) campaign, meaning budget needs to be set at the campaign level rather than at the ad group level. ["WEB_SESSIONS"] is DEPRECATED. `VIDEO_VIEW` is deprecated; use `VIDEO_COMPLETION` instead. `CTV_CONSIDERATION` is in BETA. `AWARENESS_RESERVED` and `ENGAGEMENT` are DEPRECATED and only returned for existing campaigns; they cannot be used to create or update a campaign. For update, only draft campaigns may update objective type.',
   })
-  .openapi('CampaignObjectiveType')
+  .openapi('CampaignObjectiveTypeRead')
 
 const CampaignSchema = z
   .object({
@@ -16060,6 +18578,28 @@ const CampaignSchema = z
       .regex(/^\d+$/)
       .exactOptional()
       .openapi({ description: "Campaign's Advertiser ID.", example: '549755885175' }),
+    app_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          '[Closed beta](/docs/getting-started/using-beta-and-restricted-features/)\n\nThe store ID of the mobile app for `APP_INSTALL` campaigns.',
+        example: '429047995',
+      }),
+    app_platform: MobileAppPlatformSchema.exactOptional().openapi({
+      description:
+        '[Closed beta](/docs/getting-started/using-beta-and-restricted-features/)\n\nPlatform of the mobile app for `APP_INSTALL` campaigns.',
+      example: 'IOS',
+    }),
+    app_skan_version: z
+      .number()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          '[Closed beta](/docs/getting-started/using-beta-and-restricted-features/)\n\nSkan version of the iOS mobile app for `APP_INSTALL` campaigns. Must be 3.0 or 4.0.',
+        example: 3,
+      }),
     bid_options: CampaignBidOptionsSchema.exactOptional().openapi({
       description:
         '[Restricted](/docs/getting-started/using-beta-and-restricted-features/)\n\nObject describing the campaign level bid multipliers.',
@@ -16072,6 +18612,11 @@ const CampaignSchema = z
         example: 1432744744,
         readOnly: true,
       }),
+    ctv_goal_type: CtvGoalTypeSchema.exactOptional().openapi({
+      description:
+        'The optimization goal for a `CTV_CONSIDERATION` campaign. Determines how the campaign bids and what it optimizes toward. `CONVERSIONS` and `ROAS` additionally require a `ctv_conversion_event` on the ad group.',
+      example: 'EFFICIENT_ECPM',
+    }),
     daily_spend_cap: z
       .int()
       .nullable()
@@ -16180,7 +18725,7 @@ const CampaignSchema = z
       .string()
       .exactOptional()
       .openapi({ description: 'Campaign name - 255 chars max.', example: 'ACME Tools' }),
-    objective_type: CampaignObjectiveTypeSchema,
+    objective_type: CampaignObjectiveTypeReadSchema,
     order_line_id: z
       .string()
       .regex(/^\d+$/)
@@ -16282,7 +18827,7 @@ const CampaignAdPreviewSchema = z
   })
   .openapi('CampaignAdPreview')
 
-const CampaignAdPreviewCreateSchema = z
+const CampaignAdPreviewCreateItemSchema = z
   .object({
     ad_group_id: z
       .string()
@@ -16292,17 +18837,17 @@ const CampaignAdPreviewCreateSchema = z
         description: 'Ad group ID to create a preview record for.',
         example: '1234567890',
       }),
+    expires_at: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          'Unix timestamp in milliseconds for preview expiration. Defaults to 30 days from creation when omitted.',
+        example: 1452208622000,
+      }),
   })
-  .openapi({ description: 'Resource create operation model.', required: ['ad_group_id'] })
-  .openapi('CampaignAdPreviewCreate')
-
-const MobileAppPlatformSchema = z
-  .enum(['IOS', 'ANDROID'])
-  .openapi({
-    description:
-      '[Closed beta](/docs/getting-started/using-beta-and-restricted-features/)\n\nPlatform of the mobile app for an `APP_INSTALL` campaign.',
-  })
-  .openapi('MobileAppPlatform')
+  .openapi({ description: 'Ad group preview to create.', required: ['ad_group_id'] })
+  .openapi('CampaignAdPreviewCreateItem')
 
 const CampaignCreateItemSchema = z
   .object({
@@ -16329,9 +18874,23 @@ const CampaignCreateItemSchema = z
         '[Closed beta](/docs/getting-started/using-beta-and-restricted-features/)\n\nPlatform of the mobile app for `APP_INSTALL` campaigns.',
       example: 'IOS',
     }),
+    app_skan_version: z
+      .number()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          '[Closed beta](/docs/getting-started/using-beta-and-restricted-features/)\n\nSkan version of the iOS mobile app for `APP_INSTALL` campaigns. Must be 3.0 or 4.0.',
+        example: 3,
+      }),
     bid_options: CampaignBidOptionsSchema.exactOptional().openapi({
       description:
         '[Restricted](/docs/getting-started/using-beta-and-restricted-features/)\n\nObject describing the campaign level bid multipliers.',
+    }),
+    ctv_goal_type: CtvGoalTypeSchema.exactOptional().openapi({
+      description:
+        'The optimization goal for a `CTV_CONSIDERATION` campaign. Determines how the campaign bids and what it optimizes toward. `CONVERSIONS` and `ROAS` additionally require a `ctv_conversion_event` on the ad group.',
+      example: 'EFFICIENT_ECPM',
     }),
     daily_spend_cap: z
       .int()
@@ -16481,6 +19040,28 @@ const CampaignBatchResponseDataSchema = z
       .regex(/^\d+$/)
       .exactOptional()
       .openapi({ description: "Campaign's Advertiser ID.", example: '549755885175' }),
+    app_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          '[Closed beta](/docs/getting-started/using-beta-and-restricted-features/)\n\nThe store ID of the mobile app for `APP_INSTALL` campaigns.',
+        example: '429047995',
+      }),
+    app_platform: MobileAppPlatformSchema.exactOptional().openapi({
+      description:
+        '[Closed beta](/docs/getting-started/using-beta-and-restricted-features/)\n\nPlatform of the mobile app for `APP_INSTALL` campaigns.',
+      example: 'IOS',
+    }),
+    app_skan_version: z
+      .number()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          '[Closed beta](/docs/getting-started/using-beta-and-restricted-features/)\n\nSkan version of the iOS mobile app for `APP_INSTALL` campaigns. Must be 3.0 or 4.0.',
+        example: 3,
+      }),
     bid_options: CampaignBidOptionsSchema.exactOptional().openapi({
       description:
         '[Restricted](/docs/getting-started/using-beta-and-restricted-features/)\n\nObject describing the campaign level bid multipliers.',
@@ -16493,6 +19074,11 @@ const CampaignBatchResponseDataSchema = z
         example: 1432744744,
         readOnly: true,
       }),
+    ctv_goal_type: CtvGoalTypeSchema.exactOptional().openapi({
+      description:
+        'The optimization goal for a `CTV_CONSIDERATION` campaign. Determines how the campaign bids and what it optimizes toward. `CONVERSIONS` and `ROAS` additionally require a `ctv_conversion_event` on the ad group.',
+      example: 'EFFICIENT_ECPM',
+    }),
     daily_spend_cap: z
       .int()
       .nullable()
@@ -16597,7 +19183,7 @@ const CampaignBatchResponseDataSchema = z
       .string()
       .exactOptional()
       .openapi({ description: 'Campaign name - 255 chars max.', example: 'ACME Tools' }),
-    objective_type: CampaignObjectiveTypeSchema.exactOptional(),
+    objective_type: CampaignObjectiveTypeReadSchema.exactOptional(),
     order_line_id: z
       .string()
       .regex(/^\d+$/)
@@ -16689,8 +19275,22 @@ const CampaignBatchUpdateItemSchema = z
         '[Closed beta](/docs/getting-started/using-beta-and-restricted-features/)\n\nPlatform of the mobile app for `APP_INSTALL` campaigns.',
       example: 'IOS',
     }),
+    app_skan_version: z
+      .number()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          '[Closed beta](/docs/getting-started/using-beta-and-restricted-features/)\n\nSkan version of the iOS mobile app for `APP_INSTALL` campaigns. Must be 3.0 or 4.0.',
+        example: 3,
+      }),
     bid_options: CampaignBidOptionsUpdateSchema.exactOptional().openapi({
       description: 'Object describing an update to the campaign level bid multipliers.',
+    }),
+    ctv_goal_type: CtvGoalTypeSchema.exactOptional().openapi({
+      description:
+        'The optimization goal for a `CTV_CONSIDERATION` campaign. Determines how the campaign bids and what it optimizes toward. `CONVERSIONS` and `ROAS` additionally require a `ctv_conversion_event` on the ad group.',
+      example: 'EFFICIENT_ECPM',
     }),
     daily_spend_cap: z
       .int()
@@ -16856,7 +19456,7 @@ const CampaignCreateRequestAllOf1Schema = z
       .exactOptional()
       .openapi({
         description:
-          'Enable Pinterest Performance+ for your campaign. To learn more, see <a href="https://developers.pinterest.com/docs/api-features/pinterest-performance-plus-setup/">Pinterest Performance+ Setup</a>.',
+          'Enable Pinterest Performance+ for your campaign. To learn more, see [Pinterest Performance+ Setup](https://developers.pinterest.com/docs/api-features/pinterest-performance-plus-setup/).',
       }),
     is_top_of_search: z
       .boolean()
@@ -16864,7 +19464,7 @@ const CampaignCreateRequestAllOf1Schema = z
       .exactOptional()
       .openapi({
         description:
-          '<a href="/docs/getting-started/using-beta-and-restricted-features/" target="blank" target="blank">Restricted</a>\n\nHave your ads and content appear at the top of search result lists in Pinterest.\n\nYou can only use this feature with the following objectives:\n`CONSIDERATION`\n`WEB_CONVERSION`\n`CATALOG_SALES`\n\nYou cannot use this feature with Pinterest Performance+ or Premiere Spotlight enabled.\n\nYou cannot change your `true` or `false` selection of this campaign if you <a href="https://developer.pinterest.com/docs/api/v5/campaigns-update" target="blank">update it</a>.',
+          '[Restricted](/docs/getting-started/using-beta-and-restricted-features/)\n\nHave your ads and content appear at the top of search result lists in Pinterest.\n\nYou can only use this feature with the following objectives:\n`CONSIDERATION`\n`WEB_CONVERSION`\n`CATALOG_SALES`\n\nYou cannot use this feature with Pinterest Performance+ or Premiere Spotlight enabled.\n\nYou cannot change your `true` or `false` selection of this campaign if you [update it](https://developer.pinterest.com/docs/api/v5/campaigns-update).',
       }),
     objective_type: ObjectiveTypeSchema,
     status: EntityStatusSchema.default('ACTIVE').exactOptional(),
@@ -16984,12 +19584,21 @@ const CampaignPlanningConfidenceLevelAlertReasonSchema = z
     'OTHER',
     'ADVERTISER_HAS_NO_RECENT_CAMPAIGNS',
     'ADVERTISER_HAS_NO_RECENT_CONVERSIONS',
+    'CONFIDENCE_MODEL',
   ])
   .openapi({ description: 'Reason for a confidence level alert on delivery estimates.' })
   .openapi('CampaignPlanningConfidenceLevelAlertReason')
 
 const CampaignPlanningConfidenceLevelAlertSeveritySchema = z
-  .enum(['UNKNOWN', 'LOW_MILD', 'LOW_MODERATE', 'LOW_SEVERE'])
+  .enum([
+    'UNKNOWN',
+    'LOW_MILD',
+    'LOW_MODERATE',
+    'LOW_SEVERE',
+    'HIGH_MILD',
+    'HIGH_MODERATE',
+    'HIGH_SEVERE',
+  ])
   .openapi({ description: 'Severity of a confidence level alert on delivery estimates.' })
   .openapi('CampaignPlanningConfidenceLevelAlertSeverity')
 
@@ -17030,7 +19639,7 @@ const CampaignUpdateRequestAllOf2Schema = z
       .exactOptional()
       .openapi({
         description:
-          'Enable Pinterest Performance+ for your campaign. To learn more, see <a href="https://developers.pinterest.com/docs/api-features/pinterest-performance-plus-setup/">Pinterest Performance+ Setup</a>. This field is immutable, except only for campaigns in draft status which may update this field.',
+          'Enable Pinterest Performance+ for your campaign. To learn more, see [Pinterest Performance+ Setup](https://developers.pinterest.com/docs/api-features/pinterest-performance-plus-setup/). This field is immutable, except only for campaigns in draft status which may update this field.',
       }),
     is_top_of_search: z
       .boolean()
@@ -17159,6 +19768,10 @@ const CatalogsTypeSchema = z
 const CatalogSchema = z
   .object({
     catalog_type: CatalogsTypeSchema,
+    country: CountrySchema.exactOptional().openapi({
+      description:
+        'Catalog-level default country (ISO 3166-1 alpha-2) for RETAIL international (INTL)\ncatalogs. Only set for `RETAIL` catalogs that opt into INTL behavior; required\ntogether with `locale` to enable INTL supplemental feeds.',
+    }),
     created_at: z.iso
       .datetime({ offset: true })
       .openapi({ example: '2022-03-14T15:15:22Z', readOnly: true }),
@@ -17166,6 +19779,10 @@ const CatalogSchema = z
       .string()
       .regex(/^\d+$/)
       .openapi({ description: 'ID of the catalog entity.', example: '864344156814050986' }),
+    locale: CatalogsLocaleSchema.exactOptional().openapi({
+      description:
+        'Catalog-level default locale (normalized BCP-47 tag) for RETAIL international (INTL)\ncatalogs. Only set for `RETAIL` catalogs that opt into INTL behavior; required\ntogether with `country` to enable INTL supplemental feeds.',
+    }),
     name: z
       .string()
       .openapi({ description: 'A human-friendly name associated to a catalog entity.' }),
@@ -17192,6 +19809,14 @@ const CatalogCreateSchema = z
 const CatalogUpdateSchema = z
   .object({
     catalog_type: CatalogsTypeSchema.exactOptional(),
+    country: CountrySchema.exactOptional().openapi({
+      description:
+        'Catalog-level default country (ISO 3166-1 alpha-2) for RETAIL international (INTL)\ncatalogs. Only set for `RETAIL` catalogs that opt into INTL behavior; required\ntogether with `locale` to enable INTL supplemental feeds.',
+    }),
+    locale: CatalogsLocaleSchema.exactOptional().openapi({
+      description:
+        'Catalog-level default locale (normalized BCP-47 tag) for RETAIL international (INTL)\ncatalogs. Only set for `RETAIL` catalogs that opt into INTL behavior; required\ntogether with `country` to enable INTL supplemental feeds.',
+    }),
     name: z
       .string()
       .exactOptional()
@@ -17199,6 +19824,221 @@ const CatalogUpdateSchema = z
   })
   .openapi({ description: 'Resource create or update operation model.', required: [] })
   .openapi('CatalogUpdate')
+
+const CatalogsAutoLocalizationActiveStatusSchema = z
+  .enum(['ACTIVE', 'DISABLED'])
+  .openapi({
+    description:
+      'Whether a localized locale (and its generated GBC feed) is active or soft-disabled.',
+  })
+  .openapi('CatalogsAutoLocalizationActiveStatus')
+
+const CatalogsAutoLocalizationApprovalStatusSchema = z
+  .enum(['PENDING_TRANSLATION', 'READY_FOR_REVIEW', 'APPROVED', 'REJECTED', 'PENDING_GENERATION'])
+  .openapi({
+    description:
+      'Derived review/lifecycle state of a localized locale within an\nauto-localization config. Computed from the underlying per-item translation\nstatuses; an `APPROVED` locale drives GBC feed generation.',
+  })
+  .openapi('CatalogsAutoLocalizationApprovalStatus')
+
+const CatalogsAutoLocalizationConfigLocaleSchema = z
+  .strictObject({
+    active_status: CatalogsAutoLocalizationActiveStatusSchema.openapi({
+      description: 'Whether this locale row is active or soft-disabled.',
+      example: 'ACTIVE',
+    }),
+    approval_status: CatalogsAutoLocalizationApprovalStatusSchema.openapi({
+      description: 'Derived review/lifecycle state for this locale.',
+      example: 'PENDING_TRANSLATION',
+    }),
+    gbc_feed_profile_id: z
+      .string()
+      .regex(/^\d+$/)
+      .openapi({
+        description: 'Identifier of the generated GBC feed profile that serves this locale.',
+        example: '777',
+      }),
+    id: z
+      .string()
+      .regex(/^\d+$/)
+      .openapi({
+        description: 'Pinterest-generated unique identifier of this locale row.',
+        example: '111',
+      }),
+    price_include_tax: z
+      .boolean()
+      .openapi({
+        description: 'Whether the source feed prices for this locale include tax.',
+        example: true,
+      }),
+    source_feed_profile_id: z
+      .string()
+      .regex(/^\d+$/)
+      .openapi({
+        description: 'Identifier of the source (PRIMARY) feed profile this row localizes from.',
+        example: '555',
+      }),
+    target_locale: CatalogsLocaleSchema.openapi({
+      description: 'Target locale produced by this row (e.g. `fr-CA`).',
+      example: 'fr-CA',
+    }),
+  })
+  .openapi({
+    description:
+      'A single materialized (source_feed x target_locale) row within an\nauto-localization config, including its generated GBC feed linkage and\nderived review/active state. Returned on reads.',
+    required: [
+      'id',
+      'source_feed_profile_id',
+      'target_locale',
+      'gbc_feed_profile_id',
+      'approval_status',
+      'price_include_tax',
+      'active_status',
+    ],
+  })
+  .openapi('CatalogsAutoLocalizationConfigLocale')
+
+const CatalogsAutoLocalizationRoundingRuleSchema = z
+  .enum(['NONE', 'ENDS_IN_99', 'ENDS_IN_95'])
+  .openapi({
+    description: 'Price rounding rule applied to converted prices in generated GBC feeds.',
+  })
+  .openapi('CatalogsAutoLocalizationRoundingRule')
+
+const CatalogsAutoLocalizationConfigSchema = z
+  .strictObject({
+    catalog_id: z
+      .string()
+      .regex(/^\d+$/)
+      .openapi({
+        description: 'Identifier of the catalog this config belongs to.',
+        example: '123456',
+      }),
+    id: z
+      .string()
+      .regex(/^\d+$/)
+      .openapi({
+        description: 'Pinterest-generated unique identifier of this auto-localization config.',
+        example: '33333',
+      }),
+    locales: z
+      .array(CatalogsAutoLocalizationConfigLocaleSchema)
+      .openapi({
+        description:
+          'Fully materialized source_feed x target_locale rows, each with its\ngenerated GBC feed and derived review/active state.',
+      }),
+    rounding_rule: CatalogsAutoLocalizationRoundingRuleSchema.openapi({
+      description: 'Price rounding rule applied to converted prices for this market.',
+      example: 'ENDS_IN_99',
+    }),
+    target_country: CountrySchema.openapi({
+      description:
+        'ISO 3166-1 alpha-2 target country this config localizes for. Together with\nthe catalog this forms the config identity and is immutable once created.',
+      example: 'CA',
+    }),
+  })
+  .openapi({
+    description:
+      'A fully materialized auto-localization config for a single (catalog,\ntarget_country) pair. Returned by the create, read, and update endpoints.',
+    required: ['id', 'catalog_id', 'target_country', 'rounding_rule', 'locales'],
+  })
+  .openapi('CatalogsAutoLocalizationConfig')
+
+const CatalogsAutoLocalizationSourceFeedSchema = z
+  .strictObject({
+    feed_profile_id: z
+      .string()
+      .regex(/^\d+$/)
+      .openapi({
+        description:
+          'Pinterest-generated unique identifier of the source (PRIMARY) feed profile to localize from.',
+        example: '555',
+      }),
+    price_include_tax: z
+      .boolean()
+      .openapi({
+        description:
+          'Whether prices in the source feed already include tax. Controls tax\nhandling when converting prices for the target market.',
+        example: true,
+      }),
+  })
+  .openapi({
+    description:
+      'A merchant source (PRIMARY) feed used as input for auto-localization, with\nper-feed pricing semantics. Supplied on writes; the server fans this out\nacross `target_locales` to materialize locale rows.',
+    required: ['feed_profile_id', 'price_include_tax'],
+  })
+  .openapi('CatalogsAutoLocalizationSourceFeed')
+
+const CatalogsAutoLocalizationConfigCreateRequestSchema = z
+  .strictObject({
+    rounding_rule: CatalogsAutoLocalizationRoundingRuleSchema.openapi({
+      description: 'Price rounding rule to apply to converted prices.',
+      example: 'ENDS_IN_99',
+    }),
+    source_feeds: z
+      .array(CatalogsAutoLocalizationSourceFeedSchema)
+      .min(1)
+      .openapi({
+        description:
+          'Source (PRIMARY) feeds to localize from. The server materializes the full\nsource_feed x target_locale cross-product into locale rows.',
+      }),
+    target_country: CountrySchema.openapi({
+      description:
+        'ISO 3166-1 alpha-2 target country to localize for. Together with the\ncatalog this forms the config identity.',
+      example: 'CA',
+    }),
+    target_locales: z
+      .array(CatalogsLocaleSchema)
+      .min(1)
+      .openapi({
+        description: 'Target locales to generate. Each must be allowed for `target_country`.',
+      }),
+  })
+  .openapi({
+    description:
+      'Request body for creating an auto-localization config. Only one config may\nexist per (catalog, target_country); creating a second for the same target\ncountry is rejected.',
+    required: ['target_country', 'rounding_rule', 'source_feeds', 'target_locales'],
+  })
+  .openapi('CatalogsAutoLocalizationConfigCreateRequest')
+
+const CatalogsAutoLocalizationConfigResponseSchema = z
+  .strictObject({
+    auto_localization_config: CatalogsAutoLocalizationConfigSchema.openapi({
+      description: 'The materialized auto-localization config.',
+    }),
+  })
+  .openapi({
+    description:
+      'Response wrapper for the auto-localization config create, read, and update endpoints.',
+    required: ['auto_localization_config'],
+  })
+  .openapi('CatalogsAutoLocalizationConfigResponse')
+
+const CatalogsAutoLocalizationConfigUpdateRequestUpdateSchema = z
+  .object({
+    rounding_rule: CatalogsAutoLocalizationRoundingRuleSchema.exactOptional().openapi({
+      description: 'Price rounding rule to apply to converted prices.',
+      example: 'ENDS_IN_99',
+    }),
+    source_feeds: z
+      .array(CatalogsAutoLocalizationSourceFeedSchema)
+      .min(1)
+      .exactOptional()
+      .openapi({
+        description:
+          'Desired full set of source (PRIMARY) feeds (see model description for upsert semantics).',
+      }),
+    target_locales: z
+      .array(CatalogsLocaleSchema)
+      .min(1)
+      .exactOptional()
+      .openapi({
+        description:
+          'Desired full set of target locales (see model description for upsert semantics).',
+      }),
+  })
+  .openapi({ description: 'Resource create or update operation model.', required: [] })
+  .openapi('CatalogsAutoLocalizationConfigUpdateRequestUpdate')
 
 const ProductAvailabilitySchema = z
   .enum(['IN_STOCK', 'OUT_OF_STOCK', 'PREORDER'])
@@ -17332,10 +20172,103 @@ const CatalogsBaseFiltersAllOfSchema = z
   .openapi({ required: ['all_of'], title: 'all_of' })
   .openapi('CatalogsBaseFiltersAllOf')
 
+const CatalogsBaseFiltersAllOfUpdateSchema = z
+  .strictObject({ all_of: z.array(CatalogsBaseFilterKeysSchema).min(1).exactOptional() })
+  .openapi({ title: 'all_of', required: [] })
+  .openapi('CatalogsBaseFiltersAllOfUpdate')
+
 const CatalogsBaseFiltersAnyOfSchema = z
   .strictObject({ any_of: z.array(CatalogsBaseFilterKeysSchema).min(1) })
   .openapi({ required: ['any_of'], title: 'any_of' })
   .openapi('CatalogsBaseFiltersAnyOf')
+
+const CatalogsBaseFiltersAnyOfUpdateSchema = z
+  .strictObject({ any_of: z.array(CatalogsBaseFilterKeysSchema).min(1).exactOptional() })
+  .openapi({ title: 'any_of', required: [] })
+  .openapi('CatalogsBaseFiltersAnyOfUpdate')
+
+const CatalogsCountryLocaleEntrySchema = z
+  .strictObject({
+    country: CountrySchema.openapi({
+      description: 'ISO 3166-1 alpha-2 country code.',
+      example: 'US',
+    }),
+    locales: z
+      .array(CatalogsLocaleSchema)
+      .min(1)
+      .max(5)
+      .openapi({
+        description: 'Allowed locales for the given country (max 5 unique entries).',
+        example: ['en-US', 'es-419'],
+      }),
+  })
+  .openapi({
+    description: "A single (country -> locales) entry inside a catalog's country/locale mapping.",
+    required: ['country', 'locales'],
+  })
+  .openapi('CatalogsCountryLocaleEntry')
+
+const CatalogsCountryLocaleMappingSchema = z
+  .strictObject({
+    catalog_id: z
+      .string()
+      .regex(/^\d+$/)
+      .exactOptional()
+      .openapi({
+        description: 'Identifier of the catalog this mapping belongs to.',
+        readOnly: true,
+      }),
+    country_to_locales: z
+      .array(CatalogsCountryLocaleEntrySchema)
+      .min(1)
+      .openapi({ description: 'Country -> locales entries supported by the catalog.' }),
+    created_at: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'Unix timestamp (seconds) when the mapping was first created.',
+        readOnly: true,
+      }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Pinterest-generated unique identifier for this country/locale mapping.',
+        readOnly: true,
+      }),
+    merchant_id: z
+      .string()
+      .regex(/^\d+$/)
+      .exactOptional()
+      .openapi({
+        description: 'Identifier of the merchant that owns the underlying catalog.',
+        readOnly: true,
+      }),
+    updated_at: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'Unix timestamp (seconds) when the mapping was last updated.',
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    description:
+      'Country/locale mapping for an international Pinterest product catalog. Each catalog\nhas at most one mapping that defines the supported (country, locale) pairs for its\nitems. Only `RETAIL` / `PRODUCT` catalogs that already have both a default `country`\nand `locale` set on the catalog itself are eligible.',
+    required: ['country_to_locales'],
+  })
+  .openapi('CatalogsCountryLocaleMapping')
+
+const CatalogsCountryLocaleMappingUpdateSchema = z
+  .object({
+    country_to_locales: z
+      .array(CatalogsCountryLocaleEntrySchema)
+      .min(1)
+      .exactOptional()
+      .openapi({ description: 'Country -> locales entries supported by the catalog.' }),
+  })
+  .openapi({ description: 'Resource create or update operation model.', required: [] })
+  .openapi('CatalogsCountryLocaleMappingUpdate')
 
 const CatalogsCreateCreativeAssetsItemSchema = z
   .object({
@@ -17398,7 +20331,7 @@ const ItemAttributesRequestImageLinkSchema = z
   .openapi('ItemAttributesRequestImageLink')
 
 const ItemAttributesRequestSchema = z
-  .object({
+  .strictObject({
     ad_image_0_link: z
       .string()
       .max(2000)
@@ -18057,6 +20990,15 @@ const ItemAttributesRequestSchema = z
         description: '<= 10000 characters. The description of the product.',
         example: 'Casual fit denim shirt made with the finest quality Japanese denim.',
       }),
+    excluded_destination: z
+      .array(z.string())
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          "The destinations where this item should NOT appear. Each value must be one of the following (upper or lowercase): 'shopping_ads', 'local_inventory_ads', 'free_listings', 'free_local_listings'. Invalid values are dropped during ingestion. Currently only 'shopping_ads' and 'free_listings' take effect; other values are accepted but have no effect. This feature is only available for allowlisted merchants. Please contact your account manager to enable this feature.",
+        example: ['SHOPPING_ADS', 'FREE_LISTINGS'],
+      }),
     free_shipping_label: z
       .boolean()
       .nullable()
@@ -18191,6 +21133,15 @@ const ItemAttributesRequestSchema = z
       .nullable()
       .exactOptional()
       .openapi({ description: 'The number of reviews available for the item.', example: 10 }),
+    overlay_id: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Pinterest creative overlay ID to attach to this catalog item. At most one overlay per item.',
+        example: '1234567890123',
+      }),
     pattern: z
       .string()
       .nullable()
@@ -23363,6 +26314,29 @@ const CatalogsItemsBatchSchema = z
   })
   .openapi('CatalogsItemsBatch')
 
+const CatalogsUpdatableTitleAndDescriptionEnhancementStatusSchema = z
+  .enum(['READY_FOR_REVIEW', 'PUBLISHED', 'ARCHIVED'])
+  .openapi({
+    description:
+      "Shared lifecycle status of a catalog item's enhanced title and description that a merchant can set.",
+  })
+  .openapi('CatalogsUpdatableTitleAndDescriptionEnhancementStatus')
+
+const ItemAttributesUpdateRequestSchema = UpdatableItemAttributesSchema.and(
+  z
+    .object({
+      enhanced_title_desc_status:
+        CatalogsUpdatableTitleAndDescriptionEnhancementStatusSchema.exactOptional().openapi({
+          description:
+            "Sets the shared lifecycle status of this item's enhanced title and description. Only available to merchants enabled for title and description enhancements, and only for items that already have enhanced values.",
+          example: 'PUBLISHED',
+        }),
+    })
+    .openapi({ required: [] }),
+)
+  .openapi({ description: 'The attributes of an item to be updated' })
+  .openapi('ItemAttributesUpdateRequest')
+
 const UpdateMaskFieldTypeSchema = z
   .enum([
     'ad_link',
@@ -23385,6 +26359,7 @@ const UpdateMaskFieldTypeSchema = z
     'custom_number_3',
     'custom_number_4',
     'description',
+    'excluded_destination',
     'free_shipping_label',
     'free_shipping_limit',
     'gender',
@@ -23414,13 +26389,14 @@ const UpdateMaskFieldTypeSchema = z
     'variant_names',
     'variant_values',
     'promotion_id',
+    'overlay_id',
   ])
   .openapi({ description: 'The field types supported by the update mask', example: 'availability' })
   .openapi('UpdateMaskFieldType')
 
 const CatalogsUpdateRetailItemSchema = z
   .object({
-    attributes: UpdatableItemAttributesSchema,
+    attributes: ItemAttributesUpdateRequestSchema,
     item_id: z
       .string()
       .openapi({
@@ -23479,6 +26455,7 @@ const CatalogsUpdateRetailItemSchema = z
           'title',
           'variant_names',
           'variant_values',
+          'overlay_id',
           'promotion_id',
         ],
       }),
@@ -23489,9 +26466,1010 @@ const CatalogsUpdateRetailItemSchema = z
   })
   .openapi('CatalogsUpdateRetailItem')
 
+const ItemAttributesUpsertRequestSchema = z
+  .strictObject({
+    ad_image_0_link: z
+      .string()
+      .max(2000)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Ad image link that supplements main image for shopping campaigns. Image format:- Pixel size at least 75 x 75 Link guidelines:- Include extension in file name - Do not include template or placeholder images in link - Make URL accessible to Pinterest user-agent - Must start with http:// or https://',
+        example: 'https://www.example.com/image/image_v2.jpg',
+      }),
+    ad_image_0_tag: z
+      .string()
+      .max(511)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Ad image tag. If you provide an ad_image_x_link, include the image tag with the corresponding ad_image_x_tag attribute.',
+        example: 'black friday',
+      }),
+    ad_image_10_link: z
+      .string()
+      .max(2000)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Ad image link that supplements main image for shopping campaigns. Image format:- Pixel size at least 75 x 75 Link guidelines:- Include extension in file name - Do not include template or placeholder images in link - Make URL accessible to Pinterest user-agent - Must start with http:// or https://',
+        example: 'https://www.example.com/image/image_v2.jpg',
+      }),
+    ad_image_10_tag: z
+      .string()
+      .max(511)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Ad image tag. If you provide an ad_image_x_link, include the image tag with the corresponding ad_image_x_tag attribute.',
+        example: 'black friday',
+      }),
+    ad_image_11_link: z
+      .string()
+      .max(2000)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Ad image link that supplements main image for shopping campaigns. Image format:- Pixel size at least 75 x 75 Link guidelines:- Include extension in file name - Do not include template or placeholder images in link - Make URL accessible to Pinterest user-agent - Must start with http:// or https://',
+        example: 'https://www.example.com/image/image_v2.jpg',
+      }),
+    ad_image_11_tag: z
+      .string()
+      .max(511)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Ad image tag. If you provide an ad_image_x_link, include the image tag with the corresponding ad_image_x_tag attribute.',
+        example: 'black friday',
+      }),
+    ad_image_12_link: z
+      .string()
+      .max(2000)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Ad image link that supplements main image for shopping campaigns. Image format:- Pixel size at least 75 x 75 Link guidelines:- Include extension in file name - Do not include template or placeholder images in link - Make URL accessible to Pinterest user-agent - Must start with http:// or https://',
+        example: 'https://www.example.com/image/image_v2.jpg',
+      }),
+    ad_image_12_tag: z
+      .string()
+      .max(511)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Ad image tag. If you provide an ad_image_x_link, include the image tag with the corresponding ad_image_x_tag attribute.',
+        example: 'black friday',
+      }),
+    ad_image_13_link: z
+      .string()
+      .max(2000)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Ad image link that supplements main image for shopping campaigns. Image format:- Pixel size at least 75 x 75 Link guidelines:- Include extension in file name - Do not include template or placeholder images in link - Make URL accessible to Pinterest user-agent - Must start with http:// or https://',
+        example: 'https://www.example.com/image/image_v2.jpg',
+      }),
+    ad_image_13_tag: z
+      .string()
+      .max(511)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Ad image tag. If you provide an ad_image_x_link, include the image tag with the corresponding ad_image_x_tag attribute.',
+        example: 'black friday',
+      }),
+    ad_image_14_link: z
+      .string()
+      .max(2000)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Ad image link that supplements main image for shopping campaigns. Image format:- Pixel size at least 75 x 75 Link guidelines:- Include extension in file name - Do not include template or placeholder images in link - Make URL accessible to Pinterest user-agent - Must start with http:// or https://',
+        example: 'https://www.example.com/image/image_v2.jpg',
+      }),
+    ad_image_14_tag: z
+      .string()
+      .max(511)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Ad image tag. If you provide an ad_image_x_link, include the image tag with the corresponding ad_image_x_tag attribute.',
+        example: 'black friday',
+      }),
+    ad_image_15_link: z
+      .string()
+      .max(2000)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Ad image link that supplements main image for shopping campaigns. Image format:- Pixel size at least 75 x 75 Link guidelines:- Include extension in file name - Do not include template or placeholder images in link - Make URL accessible to Pinterest user-agent - Must start with http:// or https://',
+        example: 'https://www.example.com/image/image_v2.jpg',
+      }),
+    ad_image_15_tag: z
+      .string()
+      .max(511)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Ad image tag. If you provide an ad_image_x_link, include the image tag with the corresponding ad_image_x_tag attribute.',
+        example: 'black friday',
+      }),
+    ad_image_16_link: z
+      .string()
+      .max(2000)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Ad image link that supplements main image for shopping campaigns. Image format:- Pixel size at least 75 x 75 Link guidelines:- Include extension in file name - Do not include template or placeholder images in link - Make URL accessible to Pinterest user-agent - Must start with http:// or https://',
+        example: 'https://www.example.com/image/image_v2.jpg',
+      }),
+    ad_image_16_tag: z
+      .string()
+      .max(511)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Ad image tag. If you provide an ad_image_x_link, include the image tag with the corresponding ad_image_x_tag attribute.',
+        example: 'black friday',
+      }),
+    ad_image_17_link: z
+      .string()
+      .max(2000)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Ad image link that supplements main image for shopping campaigns. Image format:- Pixel size at least 75 x 75 Link guidelines:- Include extension in file name - Do not include template or placeholder images in link - Make URL accessible to Pinterest user-agent - Must start with http:// or https://',
+        example: 'https://www.example.com/image/image_v2.jpg',
+      }),
+    ad_image_17_tag: z
+      .string()
+      .max(511)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Ad image tag. If you provide an ad_image_x_link, include the image tag with the corresponding ad_image_x_tag attribute.',
+        example: 'black friday',
+      }),
+    ad_image_18_link: z
+      .string()
+      .max(2000)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Ad image link that supplements main image for shopping campaigns. Image format:- Pixel size at least 75 x 75 Link guidelines:- Include extension in file name - Do not include template or placeholder images in link - Make URL accessible to Pinterest user-agent - Must start with http:// or https://',
+        example: 'https://www.example.com/image/image_v2.jpg',
+      }),
+    ad_image_18_tag: z
+      .string()
+      .max(511)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Ad image tag. If you provide an ad_image_x_link, include the image tag with the corresponding ad_image_x_tag attribute.',
+        example: 'black friday',
+      }),
+    ad_image_19_link: z
+      .string()
+      .max(2000)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Ad image link that supplements main image for shopping campaigns. Image format:- Pixel size at least 75 x 75 Link guidelines:- Include extension in file name - Do not include template or placeholder images in link - Make URL accessible to Pinterest user-agent - Must start with http:// or https://',
+        example: 'https://www.example.com/image/image_v2.jpg',
+      }),
+    ad_image_19_tag: z
+      .string()
+      .max(511)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Ad image tag. If you provide an ad_image_x_link, include the image tag with the corresponding ad_image_x_tag attribute.',
+        example: 'black friday',
+      }),
+    ad_image_1_link: z
+      .string()
+      .max(2000)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Ad image link that supplements main image for shopping campaigns. Image format:- Pixel size at least 75 x 75 Link guidelines:- Include extension in file name - Do not include template or placeholder images in link - Make URL accessible to Pinterest user-agent - Must start with http:// or https://',
+        example: 'https://www.example.com/image/image_v2.jpg',
+      }),
+    ad_image_1_tag: z
+      .string()
+      .max(511)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Ad image tag. If you provide an ad_image_x_link, include the image tag with the corresponding ad_image_x_tag attribute.',
+        example: 'black friday',
+      }),
+    ad_image_2_link: z
+      .string()
+      .max(2000)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Ad image link that supplements main image for shopping campaigns. Image format:- Pixel size at least 75 x 75 Link guidelines:- Include extension in file name - Do not include template or placeholder images in link - Make URL accessible to Pinterest user-agent - Must start with http:// or https://',
+        example: 'https://www.example.com/image/image_v2.jpg',
+      }),
+    ad_image_2_tag: z
+      .string()
+      .max(511)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Ad image tag. If you provide an ad_image_x_link, include the image tag with the corresponding ad_image_x_tag attribute.',
+        example: 'black friday',
+      }),
+    ad_image_3_link: z
+      .string()
+      .max(2000)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Ad image link that supplements main image for shopping campaigns. Image format:- Pixel size at least 75 x 75 Link guidelines:- Include extension in file name - Do not include template or placeholder images in link - Make URL accessible to Pinterest user-agent - Must start with http:// or https://',
+        example: 'https://www.example.com/image/image_v2.jpg',
+      }),
+    ad_image_3_tag: z
+      .string()
+      .max(511)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Ad image tag. If you provide an ad_image_x_link, include the image tag with the corresponding ad_image_x_tag attribute.',
+        example: 'black friday',
+      }),
+    ad_image_4_link: z
+      .string()
+      .max(2000)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Ad image link that supplements main image for shopping campaigns. Image format:- Pixel size at least 75 x 75 Link guidelines:- Include extension in file name - Do not include template or placeholder images in link - Make URL accessible to Pinterest user-agent - Must start with http:// or https://',
+        example: 'https://www.example.com/image/image_v2.jpg',
+      }),
+    ad_image_4_tag: z
+      .string()
+      .max(511)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Ad image tag. If you provide an ad_image_x_link, include the image tag with the corresponding ad_image_x_tag attribute.',
+        example: 'black friday',
+      }),
+    ad_image_5_link: z
+      .string()
+      .max(2000)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Ad image link that supplements main image for shopping campaigns. Image format:- Pixel size at least 75 x 75 Link guidelines:- Include extension in file name - Do not include template or placeholder images in link - Make URL accessible to Pinterest user-agent - Must start with http:// or https://',
+        example: 'https://www.example.com/image/image_v2.jpg',
+      }),
+    ad_image_5_tag: z
+      .string()
+      .max(511)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Ad image tag. If you provide an ad_image_x_link, include the image tag with the corresponding ad_image_x_tag attribute.',
+        example: 'black friday',
+      }),
+    ad_image_6_link: z
+      .string()
+      .max(2000)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Ad image link that supplements main image for shopping campaigns. Image format:- Pixel size at least 75 x 75 Link guidelines:- Include extension in file name - Do not include template or placeholder images in link - Make URL accessible to Pinterest user-agent - Must start with http:// or https://',
+        example: 'https://www.example.com/image/image_v2.jpg',
+      }),
+    ad_image_6_tag: z
+      .string()
+      .max(511)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Ad image tag. If you provide an ad_image_x_link, include the image tag with the corresponding ad_image_x_tag attribute.',
+        example: 'black friday',
+      }),
+    ad_image_7_link: z
+      .string()
+      .max(2000)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Ad image link that supplements main image for shopping campaigns. Image format:- Pixel size at least 75 x 75 Link guidelines:- Include extension in file name - Do not include template or placeholder images in link - Make URL accessible to Pinterest user-agent - Must start with http:// or https://',
+        example: 'https://www.example.com/image/image_v2.jpg',
+      }),
+    ad_image_7_tag: z
+      .string()
+      .max(511)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Ad image tag. If you provide an ad_image_x_link, include the image tag with the corresponding ad_image_x_tag attribute.',
+        example: 'black friday',
+      }),
+    ad_image_8_link: z
+      .string()
+      .max(2000)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Ad image link that supplements main image for shopping campaigns. Image format:- Pixel size at least 75 x 75 Link guidelines:- Include extension in file name - Do not include template or placeholder images in link - Make URL accessible to Pinterest user-agent - Must start with http:// or https://',
+        example: 'https://www.example.com/image/image_v2.jpg',
+      }),
+    ad_image_8_tag: z
+      .string()
+      .max(511)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Ad image tag. If you provide an ad_image_x_link, include the image tag with the corresponding ad_image_x_tag attribute.',
+        example: 'black friday',
+      }),
+    ad_image_9_link: z
+      .string()
+      .max(2000)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Ad image link that supplements main image for shopping campaigns. Image format:- Pixel size at least 75 x 75 Link guidelines:- Include extension in file name - Do not include template or placeholder images in link - Make URL accessible to Pinterest user-agent - Must start with http:// or https://',
+        example: 'https://www.example.com/image/image_v2.jpg',
+      }),
+    ad_image_9_tag: z
+      .string()
+      .max(511)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Ad image tag. If you provide an ad_image_x_link, include the image tag with the corresponding ad_image_x_tag attribute.',
+        example: 'black friday',
+      }),
+    ad_link: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Allows advertisers to specify a separate URL that can be used to track traffic coming from Pinterest shopping ads. Must send full URL including tracking. Must begin with http:// or https://.',
+        example: 'https://www.example.com/cat/denim-shirt/item012?utm_source=Pinterest',
+      }),
+    ad_video_0_link: z
+      .string()
+      .max(2000)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Restricted. Ad video link that supplements main video for shopping campaigns. Video format:- Pixel size between 75 x 75 and 9450 x 9450 - File size smaller than 2 GB - Time span between 4 seconds and 15 minutes - Accepted formats: .MP4, .MOV, .M4V Link guidelines:- Include extension in file name - Do not include template or placeholder videos in link - Make URL accessible to Pinterest user-agent - Must start with http:// or https://',
+        example: 'https://www.example.com/video/video_v2.mov',
+      }),
+    ad_video_0_tag: z
+      .string()
+      .max(511)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Restricted. Ad video tag. If you provide an ad_video_x_link, include the video tag with the corresponding ad_video_x_tag attribute.',
+        example: 'black friday',
+      }),
+    ad_video_1_link: z
+      .string()
+      .max(2000)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Restricted. Ad video link that supplements main video for shopping campaigns. Video format:- Pixel size between 75 x 75 and 9450 x 9450 - File size smaller than 2 GB - Time span between 4 seconds and 15 minutes - Accepted formats: .MP4, .MOV, .M4V Link guidelines:- Include extension in file name - Do not include template or placeholder videos in link - Make URL accessible to Pinterest user-agent - Must start with http:// or https://',
+        example: 'https://www.example.com/video/video_v2.mov',
+      }),
+    ad_video_1_tag: z
+      .string()
+      .max(511)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Restricted. Ad video tag. If you provide an ad_video_x_link, include the video tag with the corresponding ad_video_x_tag attribute.',
+        example: 'black friday',
+      }),
+    ad_video_2_link: z
+      .string()
+      .max(2000)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Restricted. Ad video link that supplements main video for shopping campaigns. Video format:- Pixel size between 75 x 75 and 9450 x 9450 - File size smaller than 2 GB - Time span between 4 seconds and 15 minutes - Accepted formats: .MP4, .MOV, .M4V Link guidelines:- Include extension in file name - Do not include template or placeholder videos in link - Make URL accessible to Pinterest user-agent - Must start with http:// or https://',
+        example: 'https://www.example.com/video/video_v2.mov',
+      }),
+    ad_video_2_tag: z
+      .string()
+      .max(511)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Restricted. Ad video tag. If you provide an ad_video_x_link, include the video tag with the corresponding ad_video_x_tag attribute.',
+        example: 'black friday',
+      }),
+    additional_image_link: z
+      .array(z.string())
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          '<= 2000 characters The links to additional images for your product. Up to ten additional images can be used to show a product from different angles or to show different stages. Must begin with http:// or https://.',
+      }),
+    adult: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Set this attribute to TRUE if you\'re submitting items that are considered "adult". These will not be shown on Pinterest.',
+        example: true,
+      }),
+    age_group: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          "The age group to apply a demographic range to the product. Must be one of the following values (upper or lowercased): 'newborn', 'infant', 'toddler', 'kids', or 'adult'.",
+        example: 'newborn',
+      }),
+    ai_disclosures: z
+      .array(CatalogsAiContentDisclosureSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'AI content disclosures for individual assets (image_link, additional_image_link, or video_link) on this item. Each entry declares which disclosure types apply to a single asset URL.',
+        example: [
+          { url: 'https://scene.example.com/image/image_v3.jpg', disclosure: ['ai_modified'] },
+        ],
+      }),
+    android_deep_link: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The deep link to the product on the Android app.',
+        example: 'pinterest://item/1234567890',
+      }),
+    availability: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The availability of the product. Must be one of the following values (upper or lowercased): 'in stock', 'out of stock', 'preorder'.",
+        example: 'in stock',
+      }),
+    average_review_rating: z
+      .number()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Average reviews for the item. Can be a number from 1-5.',
+        example: 5,
+      }),
+    brand: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The brand of the product.', example: "Josie's Denim" }),
+    checkout_enabled: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'This attribute is not supported anymore.',
+        example: false,
+        deprecated: true,
+      }),
+    color: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The primary color of the product.', example: 'blue' }),
+    condition: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          "The condition of the product. Must be one of the following values (upper or lowercased): 'new', 'used', or 'refurbished'.",
+        example: 'new',
+      }),
+    custom_label_0: z
+      .string()
+      .max(511)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          '<= 511 characters for retail and creative asset catalogs, <= 127 characters for hotel catalogs. Custom grouping of products.',
+        example: 'Best sellers',
+      }),
+    custom_label_1: z
+      .string()
+      .max(511)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          '<= 511 characters for retail and creative asset catalogs, <= 127 characters for hotel catalogs. Custom grouping of products.',
+        example: 'Summer promotion',
+      }),
+    custom_label_2: z
+      .string()
+      .max(511)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          '<= 511 characters for retail and creative asset catalogs, <= 127 characters for hotel catalogs. Custom grouping of products.',
+        example: 'Winter sales',
+      }),
+    custom_label_3: z
+      .string()
+      .max(511)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          '<= 511 characters for retail and creative asset catalogs, <= 127 characters for hotel catalogs. Custom grouping of products.',
+        example: 'Woman dress',
+      }),
+    custom_label_4: z
+      .string()
+      .max(511)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          '<= 511 characters for retail and creative asset catalogs, <= 127 characters for hotel catalogs. Custom grouping of products.',
+        example: 'Man hat',
+      }),
+    custom_number_0: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'An attribute for any integer information ranging from 0 to 4,294,967,295, which can be used to group items.',
+        example: 10,
+      }),
+    custom_number_1: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'An attribute for any integer information ranging from 0 to 4,294,967,295, which can be used to group items.',
+        example: 0,
+      }),
+    custom_number_2: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'An attribute for any integer information ranging from 0 to 4,294,967,295, which can be used to group items.',
+        example: 1520000000,
+      }),
+    custom_number_3: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'An attribute for any integer information ranging from 0 to 4,294,967,295, which can be used to group items.',
+        example: 4294967295,
+      }),
+    custom_number_4: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'An attribute for any integer information ranging from 0 to 4,294,967,295, which can be used to group items.',
+        example: 50,
+      }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: '<= 10000 characters. The description of the product.',
+        example: 'Casual fit denim shirt made with the finest quality Japanese denim.',
+      }),
+    enhanced_title_desc_status:
+      CatalogsUpdatableTitleAndDescriptionEnhancementStatusSchema.exactOptional().openapi({
+        description:
+          "Sets the shared lifecycle status of this item's enhanced title and description. Only available to merchants enabled for title and description enhancements, and only for items that already have enhanced values. The item must already exist with enhanced values; a brand-new insert carrying this field is rejected.",
+        example: 'PUBLISHED',
+      }),
+    excluded_destination: z
+      .array(z.string())
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          "The destinations where this item should NOT appear. Each value must be one of the following (upper or lowercase): 'shopping_ads', 'local_inventory_ads', 'free_listings', 'free_local_listings'. Invalid values are dropped during ingestion. Currently only 'shopping_ads' and 'free_listings' take effect; other values are accepted but have no effect. This feature is only available for allowlisted merchants. Please contact your account manager to enable this feature.",
+        example: ['SHOPPING_ADS', 'FREE_LISTINGS'],
+      }),
+    free_shipping_label: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The item is free to ship.', example: true }),
+    free_shipping_limit: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The minimum order purchase necessary for the customer to get free shipping. Only relevant if free shipping is offered.',
+        example: '35 USD',
+      }),
+    gender: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          "The gender associated with the product. Must be one of the following values (upper or lowercased): 'male', 'female', or 'unisex'.",
+        example: 'unisex',
+      }),
+    google_product_category: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The categorization of the product based on the standardized Google Product Taxonomy. This is a set taxonomy. Both the text values and numeric codes are accepted.',
+        example: 'Apparel & Accessories > Clothing > Shirts & Tops',
+      }),
+    gtin: UpdatableItemAttributesGtinSchema.exactOptional(),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          '<= 127 characters. The user-created unique ID that represents the product. Only Unicode characters are accepted.',
+        example: 'DS0294-L',
+        deprecated: true,
+      }),
+    image_link: ItemAttributesRequestImageLinkSchema.exactOptional(),
+    installment_price: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Installment price of the product. Expected format: <payment_count>:<payment_amount> <currency>',
+        example: '10:10.00 USD',
+      }),
+    ios_deep_link: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The deep link to the product on the iOS app.',
+        example: 'pinterest://item/1234567890',
+      }),
+    item_group_id: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: '<= 127 characters. The parent ID of the product.',
+        example: 'DS0294',
+      }),
+    last_updated_time: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description: 'The millisecond timestamp when the item was lastly modified by the merchant.',
+        example: 1641483432072,
+      }),
+    link: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: '<= 511 characters. The landing page for the product.',
+        example: 'https://www.example.com/cat/womens-clothing/denim-shirt-0294',
+      }),
+    material: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The material used to make the product.', example: 'cotton' }),
+    min_ad_price: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The minimum advertised price of the product. It supports the following formats: "19.99 USD", "19.99USD" and "19.99". If the currency is not included, we default to US dollars.',
+        example: '19.99 USD',
+      }),
+    mobile_link: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The mobile-optimized version of your landing page. Must begin with http:// or https://.',
+        example: 'https://m.example.com/cat/womens-clothing/denim-shirt-0294',
+      }),
+    mpn: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Manufacturer Part Number are alpha-numeric codes created by the manufacturer of a product to uniquely identify it among all products from the same manufacturer.',
+        example: 'PI12345NTEREST',
+      }),
+    number_of_ratings: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The number of ratings for the item.', example: 10 }),
+    number_of_reviews: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The number of reviews available for the item.', example: 10 }),
+    overlay_id: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Pinterest creative overlay ID to attach to this catalog item. At most one overlay per item.',
+        example: '1234567890123',
+      }),
+    pattern: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'The description of the pattern used for the product.',
+        example: 'plaid',
+      }),
+    price: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The price of the product. It supports the following formats: "24.99 USD", "24.99USD" and "24.99". If the currency is not included, we default to US dollars.',
+        example: '24.99 USD',
+      }),
+    product_type: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          '<= 1000 characters. The categorization of your product based on your custom product taxonomy. Subcategories must be sent separated by " > ".',
+        example: "Clothing > Women's > Shirts > Denim",
+      }),
+    promotion_id: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'A unique identifier referencing the promotion associated with this catalog item.',
+        example: 'promotion_1',
+      }),
+    sale_price: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The discounted price of the product. The sale_price must be lower than the price. It supports the following formats: "14.99 USD", "14.99USD" and "14.99".',
+        example: '14.99 USD',
+      }),
+    sale_price_effective_date: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Sale price effective date. Expected format: <start_date>/<end_date> (ISO 8601 format)',
+        example: '2025-01-01T00:00:00.000000Z/2025-01-07T00:00:00.000000Z',
+      }),
+    save_pin_disabled: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description:
+          'By default, product pins created from a catalog are able to be saved by Pinners. If you want to disable the save pin feature, set this attribute to true. This feature is only available for allowlisted merchants. Please contact your account manager to enable this feature.',
+      }),
+    shipping: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Shipping consists of one group of up to four elements, country, region, service (all optional) and price (required). All colons, even for blank values, are required.',
+        example: 'US:CA:Ground:0 USD',
+      }),
+    shipping_height: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The height of the package needed to ship the product. Ensure there is a space between the numeric string and the metric.',
+        example: '12 in',
+      }),
+    shipping_weight: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The weight of the product. Ensure there is a space between the numeric string and the metric.',
+        example: '3 kg',
+      }),
+    shipping_width: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The width of the package needed to ship the product. Ensure there is a space between the numeric string and the metric.',
+        example: '16 in',
+      }),
+    size: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The size of the product.', example: 'M' }),
+    size_system: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          "Indicates the country's sizing system in which you are submitting your product. Must be one of the following values (upper or lowercased): 'US', 'UK', 'EU', 'DE', 'FR', 'JP', 'CN', 'IT', 'BR', 'MEX', or 'AU'.",
+        example: 'US',
+      }),
+    size_type: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          "Additional description for the size. Must be one of the following values (upper or lowercased): 'regular', 'petite', 'plus', 'big_and_tall', or 'maternity'.",
+        example: 'regular',
+      }),
+    tax: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Tax consists of one group of up to four elements, country, region, rate (all required) and tax_ship (optional). All colons, even for blank values, are required.',
+        example: 'US:1025433:6.00:y',
+      }),
+    title: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: '<= 500 characters. The name of the product.',
+        example: "Women's denim shirt, large",
+      }),
+    unit_pricing_base_measure: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Unit pricing base measure of the product. Expected format: <base_measure> <unit_type>',
+        example: '10 ML',
+      }),
+    unit_pricing_measure: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Unit pricing total measure of the product. Expected format: <total_units> <unit_type>',
+        example: '10 ML',
+      }),
+    variant_names: z
+      .array(z.string())
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Options for this variant. People will see these options next to your Pin and can select the one they want. List them in the order you want them displayed.',
+        example: ['Color', 'Size'],
+      }),
+    variant_values: z
+      .array(z.string())
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Option values for this variant. People will see these options next to your Pin and can select the one they want. List them in the order you want them displayed. The order of the variant values must be consistent with the order of the variant names.',
+        example: ['Red', 'Small'],
+      }),
+    video_link: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          '<= 2,000 characters Hosted link to the product video. File types for linked videos must be .mp4, .mov or .m4v. File size cannot exceed 2GB.',
+      }),
+  })
+  .openapi({ description: 'The attributes of an item to be upserted', required: [] })
+  .openapi('ItemAttributesUpsertRequest')
+
 const CatalogsUpsertRetailItemSchema = z
   .object({
-    attributes: ItemAttributesRequestSchema,
+    attributes: ItemAttributesUpsertRequestSchema,
     item_id: z
       .string()
       .openapi({
@@ -23572,7 +27550,7 @@ const CatalogsVerticalBatchRequestSchema = z
 
 const ItemUpdateBatchRecordSchema = z
   .object({
-    attributes: UpdatableItemAttributesSchema.exactOptional(),
+    attributes: ItemAttributesUpdateRequestSchema.exactOptional(),
     item_id: z
       .string()
       .exactOptional()
@@ -23658,7 +27636,7 @@ const CatalogsItemsUpdateBatchRequestSchema = z
 
 const ItemUpsertBatchRecordSchema = z
   .object({
-    attributes: ItemAttributesRequestSchema.exactOptional(),
+    attributes: ItemAttributesUpsertRequestSchema.exactOptional(),
     item_id: z
       .string()
       .exactOptional()
@@ -24007,6 +27985,7 @@ const CatalogsProductSchema = z
 const CatalogsRetailProductGroupProductCountsSchema = z
   .object({
     catalog_type: z.literal('RETAIL'),
+    images: z.number().min(0),
     in_stock: z.number().min(0),
     out_of_stock: z.number().min(0),
     preorder: z.number().min(0),
@@ -24015,7 +27994,7 @@ const CatalogsRetailProductGroupProductCountsSchema = z
   })
   .openapi({
     description: 'Product counts for a Retail CatalogsProductGroup',
-    required: ['catalog_type', 'in_stock', 'out_of_stock', 'preorder', 'total'],
+    required: ['catalog_type', 'in_stock', 'out_of_stock', 'preorder', 'total', 'images'],
     title: 'catalogs_retail_product_group_product_counts',
   })
   .openapi('CatalogsRetailProductGroupProductCounts')
@@ -24064,16 +28043,29 @@ const CatalogsProductGroupTypeSchema = z
   })
   .openapi('CatalogsProductGroupType')
 
-const CatalogsProductGroupUpdateManyRequestItemsOneOfItems0Schema =
-  CatalogsProductGroupUpdateRequestSchema.and(
+const CatalogsProductGroupUpdateManyRequestItemsOneOfItems0Schema = (() => {
+  const Schema = CatalogsProductGroupUpdateRequestSchema.and(
     z
       .object({
         id: z.string().regex(/^\d+$/).openapi({ description: 'ID of the product group.' }),
       })
       .openapi({ required: ['id'] }),
   )
-    .openapi({ required: ['id'], title: 'retail feed based' })
-    .openapi('CatalogsProductGroupUpdateManyRequestItemsOneOfItems0')
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['description', 'filters', 'is_featured', 'name'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({ required: ['id'], title: 'retail feed based' })
+  .openapi('CatalogsProductGroupUpdateManyRequestItemsOneOfItems0')
 
 const CatalogsProductGroupUpdateManyRequestItemsSchema = z
   .xor([CatalogsProductGroupUpdateManyRequestItemsOneOfItems0Schema])
@@ -24382,6 +28374,435 @@ const CatalogsRetailProductGroupSchema = z
   })
   .openapi('CatalogsRetailProductGroup')
 
+const CatalogsSupplementalFeedStatusSchema = z
+  .enum(['ACTIVE', 'INACTIVE', 'DISABLED'])
+  .openapi({ description: 'Lifecycle status for a supplemental feed profile.' })
+  .openapi('CatalogsSupplementalFeedStatus')
+
+const CatalogsSupplementalFeedPayloadBaseSchema = z
+  .object({
+    catalog_id: z
+      .string()
+      .regex(/^\d+$/)
+      .openapi({ description: 'Catalog this supplemental feed belongs to.' }),
+    catalog_type: z
+      .literal('RETAIL')
+      .openapi({
+        description:
+          'Catalog type the supplemental feed is attached to. v1 supports `RETAIL` only.',
+      }),
+    format: CatalogsFormatSchema,
+    location: FeedLocationSchema.openapi({
+      description: 'Feed download location (URL or integration-specific reference).',
+    }),
+    name: FeedDisplayNameSchema,
+    status: CatalogsSupplementalFeedStatusSchema.exactOptional(),
+  })
+  .openapi({
+    description: 'Shared fields for all supplemental feed payload variants.',
+    required: ['catalog_id', 'catalog_type', 'name', 'location', 'format'],
+  })
+  .openapi('CatalogsSupplementalFeedPayloadBase')
+
+const CatalogsSupplementalFeedCountrySchema = CatalogsSupplementalFeedPayloadBaseSchema.and(
+  z
+    .object({ countries: z.array(CountrySchema), type: z.literal('COUNTRY') })
+    .openapi({ required: ['type', 'countries'] }),
+)
+  .openapi({ required: ['type', 'countries'] })
+  .openapi('CatalogsSupplementalFeedCountry')
+
+const CatalogsSupplementalFeedLocaleSchema = CatalogsSupplementalFeedPayloadBaseSchema.and(
+  z
+    .object({ locales: z.array(CatalogsLocaleSchema), type: z.literal('LOCALE') })
+    .openapi({ required: ['type', 'locales'] }),
+)
+  .openapi({ required: ['type', 'locales'] })
+  .openapi('CatalogsSupplementalFeedLocale')
+
+const CatalogsSupplementalFeedRegionalPricingSchema = CatalogsSupplementalFeedPayloadBaseSchema.and(
+  z.object({ type: z.literal('REGIONAL_PRICING') }).openapi({ required: ['type'] }),
+)
+  .openapi({ required: ['type'] })
+  .openapi('CatalogsSupplementalFeedRegionalPricing')
+
+const CatalogsSupplementalFeedPartialUpdateSchema = CatalogsSupplementalFeedPayloadBaseSchema.and(
+  z.object({ type: z.literal('PARTIAL_UPDATE') }).openapi({ required: ['type'] }),
+)
+  .openapi({ required: ['type'] })
+  .openapi('CatalogsSupplementalFeedPartialUpdate')
+
+const CatalogsSupplementalFeedLocalInventorySchema = CatalogsSupplementalFeedPayloadBaseSchema.and(
+  z.object({ type: z.literal('LOCAL_INVENTORY') }).openapi({ required: ['type'] }),
+)
+  .openapi({ required: ['type'] })
+  .openapi('CatalogsSupplementalFeedLocalInventory')
+
+const CatalogsSupplementalFeedVariantsSchema = z
+  .xor([
+    CatalogsSupplementalFeedCountrySchema,
+    CatalogsSupplementalFeedLocaleSchema,
+    CatalogsSupplementalFeedRegionalPricingSchema,
+    CatalogsSupplementalFeedPartialUpdateSchema,
+    CatalogsSupplementalFeedLocalInventorySchema,
+  ])
+  .openapi({
+    description: 'Supplemental feed payload, discriminated by `type`.',
+    discriminator: {
+      propertyName: 'type',
+      mapping: {
+        COUNTRY: '#/components/schemas/CatalogsSupplementalFeedCountry',
+        LOCALE: '#/components/schemas/CatalogsSupplementalFeedLocale',
+        REGIONAL_PRICING: '#/components/schemas/CatalogsSupplementalFeedRegionalPricing',
+        PARTIAL_UPDATE: '#/components/schemas/CatalogsSupplementalFeedPartialUpdate',
+        LOCAL_INVENTORY: '#/components/schemas/CatalogsSupplementalFeedLocalInventory',
+      },
+    },
+  })
+  .openapi('CatalogsSupplementalFeedVariants')
+
+const CatalogsSupplementalFeedSchema = z
+  .strictObject({
+    created_at: z.iso.datetime({ offset: true }).openapi({ readOnly: true }),
+    feed: CatalogsSupplementalFeedVariantsSchema.openapi({
+      description: 'Supplemental feed payload.',
+    }),
+    id: PinterestLibIntegerFormatTypeSchema.openapi({
+      description: 'Supplemental feed id generated by Pinterest.',
+      readOnly: true,
+    }),
+    updated_at: z.iso.datetime({ offset: true }).openapi({ readOnly: true }),
+  })
+  .openapi({
+    description:
+      'Supplemental feed profile attached to a RETAIL catalog.\n\nv1 of this resource is RETAIL-only — every payload variant carries\n`catalog_type: "RETAIL"`. Future catalog types (HOTEL, CREATIVE_ASSETS,\n...) will be added by introducing an outer `@discriminated` union on\n`catalog_type` whose RETAIL branch is the current\n`CatalogsSupplementalFeedVariants` union.',
+    required: ['id', 'feed', 'created_at', 'updated_at'],
+  })
+  .openapi('CatalogsSupplementalFeed')
+
+const CatalogsSupplementalFeedPayloadBaseUpdateSchema = z
+  .object({
+    format: CatalogsFormatSchema.exactOptional(),
+    location: FeedLocationSchema.exactOptional().openapi({
+      description: 'Feed download location (URL or integration-specific reference).',
+    }),
+    name: FeedDisplayNameSchema.exactOptional(),
+    status: CatalogsSupplementalFeedStatusSchema.exactOptional(),
+  })
+  .openapi({
+    description: 'Shared fields for all supplemental feed payload variants.',
+    required: [],
+  })
+  .openapi('CatalogsSupplementalFeedPayloadBaseUpdate')
+
+const CatalogsSupplementalFeedCountryUpdateSchema =
+  CatalogsSupplementalFeedPayloadBaseUpdateSchema.and(
+    z
+      .object({
+        countries: z.array(CountrySchema).exactOptional(),
+        type: z.literal('COUNTRY').exactOptional(),
+      })
+      .openapi({ required: [] }),
+  ).openapi('CatalogsSupplementalFeedCountryUpdate')
+
+const CatalogsSupplementalFeedCreateSchema = z
+  .object({
+    feed: CatalogsSupplementalFeedVariantsSchema.openapi({
+      description: 'Supplemental feed payload.',
+    }),
+  })
+  .openapi({ description: 'Resource create operation model.', required: ['feed'] })
+  .openapi('CatalogsSupplementalFeedCreate')
+
+const CatalogsSupplementalFeedLocalInventoryUpdateSchema =
+  CatalogsSupplementalFeedPayloadBaseUpdateSchema.and(
+    z.object({ type: z.literal('LOCAL_INVENTORY').exactOptional() }).openapi({ required: [] }),
+  ).openapi('CatalogsSupplementalFeedLocalInventoryUpdate')
+
+const CatalogsSupplementalFeedLocaleUpdateSchema =
+  CatalogsSupplementalFeedPayloadBaseUpdateSchema.and(
+    z
+      .object({
+        locales: z.array(CatalogsLocaleSchema).exactOptional(),
+        type: z.literal('LOCALE').exactOptional(),
+      })
+      .openapi({ required: [] }),
+  ).openapi('CatalogsSupplementalFeedLocaleUpdate')
+
+const CatalogsSupplementalFeedPartialUpdateUpdateSchema =
+  CatalogsSupplementalFeedPayloadBaseUpdateSchema.and(
+    z.object({ type: z.literal('PARTIAL_UPDATE').exactOptional() }).openapi({ required: [] }),
+  ).openapi('CatalogsSupplementalFeedPartialUpdateUpdate')
+
+const CatalogsSupplementalFeedRegionalPricingUpdateSchema =
+  CatalogsSupplementalFeedPayloadBaseUpdateSchema.and(
+    z.object({ type: z.literal('REGIONAL_PRICING').exactOptional() }).openapi({ required: [] }),
+  ).openapi('CatalogsSupplementalFeedRegionalPricingUpdate')
+
+const CatalogsSupplementalFeedTypeSchema = z
+  .enum(['COUNTRY', 'LOCALE', 'REGIONAL_PRICING', 'PARTIAL_UPDATE', 'LOCAL_INVENTORY'])
+  .openapi({ description: 'Supplemental feed type when filtering list results.' })
+  .openapi('CatalogsSupplementalFeedType')
+
+const CatalogsSupplementalFeedVariantsUpdateSchema = z
+  .xor([
+    CatalogsSupplementalFeedCountryUpdateSchema,
+    CatalogsSupplementalFeedLocaleUpdateSchema,
+    CatalogsSupplementalFeedRegionalPricingUpdateSchema,
+    CatalogsSupplementalFeedPartialUpdateUpdateSchema,
+    CatalogsSupplementalFeedLocalInventoryUpdateSchema,
+  ])
+  .openapi({
+    description: 'Supplemental feed payload, discriminated by `type`.',
+    discriminator: {
+      propertyName: 'type',
+      mapping: {
+        COUNTRY: '#/components/schemas/CatalogsSupplementalFeedCountryUpdate',
+        LOCALE: '#/components/schemas/CatalogsSupplementalFeedLocaleUpdate',
+        REGIONAL_PRICING: '#/components/schemas/CatalogsSupplementalFeedRegionalPricingUpdate',
+        PARTIAL_UPDATE: '#/components/schemas/CatalogsSupplementalFeedPartialUpdateUpdate',
+        LOCAL_INVENTORY: '#/components/schemas/CatalogsSupplementalFeedLocalInventoryUpdate',
+      },
+    },
+  })
+  .openapi('CatalogsSupplementalFeedVariantsUpdate')
+
+const CatalogsSupplementalFeedUpdateSchema = z
+  .object({
+    feed: CatalogsSupplementalFeedVariantsUpdateSchema.exactOptional().openapi({
+      description: 'Supplemental feed payload.',
+    }),
+  })
+  .openapi({ description: 'Resource create or update operation model.', required: [] })
+  .openapi('CatalogsSupplementalFeedUpdate')
+
+const CatalogsTranslationApprovalLocaleResultSchema = z
+  .strictObject({
+    approval_status: CatalogsAutoLocalizationApprovalStatusSchema.openapi({
+      description:
+        'Locale-level approval state for the locale. The review is applied\nasynchronously, so this is the intent/best-effort state: a locale being\napproved (and whose feed is regenerating) is reported as `PENDING_GENERATION`;\notherwise it is the current locale-level state at request time.',
+      example: 'PENDING_GENERATION',
+    }),
+    target_locale: CatalogsLocaleSchema.openapi({
+      description: 'Target locale (e.g. `fr-CA`).',
+      example: 'fr-CA',
+    }),
+  })
+  .openapi({
+    description: 'Locale-level approval state for a locale accepted by a review.',
+    required: ['target_locale', 'approval_status'],
+  })
+  .openapi('CatalogsTranslationApprovalLocaleResult')
+
+const CatalogsTranslationItemStatusSchema = z
+  .enum(['PENDING_REVIEW', 'APPROVED', 'REJECTED'])
+  .openapi({ description: 'Per-item review state of a single translated item within a locale.' })
+  .openapi('CatalogsTranslationItemStatus')
+
+const CatalogsTranslationApprovalScopeSchema = z
+  .strictObject({
+    current_status: CatalogsTranslationItemStatusSchema.exactOptional().openapi({
+      description: 'Only review translations currently in this state.',
+      example: 'PENDING_REVIEW',
+    }),
+    merchant_item_ids: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description: 'Optional subset of merchant item ids to narrow the review to.',
+        example: ['SKU-123', 'SKU-456'],
+      }),
+    target_locales: z
+      .array(CatalogsLocaleSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Target locales to apply the review to. Defaults to all locales in the config when omitted.',
+        example: ['fr-CA', 'en-CA'],
+      }),
+    translation_ids: z
+      .array(z.string())
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Reserved for a future per-translation review flow. Must be `null` today;\nselection is expressed via `target_locales`/`merchant_item_ids`/`current_status`.',
+      }),
+  })
+  .openapi({
+    description:
+      'Selects the set of translations a review applies to. An empty/omitted\n`target_locales` defaults to all locales in the config; `merchant_item_ids`\nnarrows to a subset; `current_status` restricts to translations currently in\nthat state.',
+    required: [],
+  })
+  .openapi('CatalogsTranslationApprovalScope')
+
+const CatalogsTranslationReviewStatusSchema = z
+  .enum(['APPROVED', 'REJECTED'])
+  .openapi({
+    description:
+      'Review decision a client may apply to translations via the review endpoint.\nRestricted to the terminal approve/reject states: `PENDING_REVIEW` is a\nsystem-assigned state and cannot be set by clients.',
+  })
+  .openapi('CatalogsTranslationReviewStatus')
+
+const CatalogsTranslationApprovalRequestSchema = z
+  .strictObject({
+    scope: CatalogsTranslationApprovalScopeSchema.openapi({
+      description: 'Selects which translations the review applies to.',
+    }),
+    target_status: CatalogsTranslationReviewStatusSchema.openapi({
+      description:
+        'Desired review decision to apply to the selected translations (approve or reject only).',
+      example: 'APPROVED',
+    }),
+  })
+  .openapi({
+    description:
+      'Request body for a bulk approve/reject of translations within an\nauto-localization config.',
+    required: ['scope', 'target_status'],
+  })
+  .openapi('CatalogsTranslationApprovalRequest')
+
+const CatalogsTranslationApprovalResponseSchema = z
+  .strictObject({
+    affected_locales: z
+      .array(CatalogsTranslationApprovalLocaleResultSchema)
+      .openapi({
+        description: 'Locales accepted for the review, each with its locale-level approval state.',
+      }),
+    feed_generation_triggered: z
+      .boolean()
+      .openapi({
+        description:
+          'Whether the review will trigger a downstream `gbc_feed_generation` run for\nany affected locale (an approve, or a reject that removes a previously\napproved/published set).',
+        example: true,
+      }),
+  })
+  .openapi({
+    description:
+      'Response for the translations review endpoint. The review is accepted and\napplied asynchronously (the per-item transition, locale-level latch, and feed\nregeneration are performed by a downstream job), so the response conveys\nacceptance and intent rather than a synchronous updated-item count.',
+    required: ['feed_generation_triggered', 'affected_locales'],
+  })
+  .openapi('CatalogsTranslationApprovalResponse')
+
+const CatalogsTranslationPriceSchema = z
+  .strictObject({
+    converted_amount_micros: z
+      .string()
+      .regex(/^\d+$/)
+      .openapi({
+        description:
+          'FX-converted price in micros (millionths of `converted_currency`), after applying the config rounding rule.',
+        example: '13490000',
+      }),
+    converted_currency: CurrencySchema.openapi({
+      description: 'ISO 4217 currency code of the converted price (the target market currency).',
+      example: 'CAD',
+    }),
+    source_amount_micros: z
+      .string()
+      .regex(/^\d+$/)
+      .openapi({
+        description: 'Source price in micros (millionths of `source_currency`).',
+        example: '9990000',
+      }),
+    source_currency: CurrencySchema.openapi({
+      description: 'ISO 4217 currency code of the source price.',
+      example: 'USD',
+    }),
+  })
+  .openapi({
+    description:
+      'Source and FX-converted price for a translated item. Amounts are expressed\nin micros (millionths of a currency unit) as integer strings, e.g.\n`"9990000"` represents 9.99 of the currency.',
+    required: [
+      'source_amount_micros',
+      'source_currency',
+      'converted_amount_micros',
+      'converted_currency',
+    ],
+  })
+  .openapi('CatalogsTranslationPrice')
+
+const CatalogsTranslationItemSchema = z
+  .strictObject({
+    last_updated_at: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'Timestamp of the most recent update to this translation.',
+        example: '2026-05-06T08:00:00Z',
+      }),
+    market_locale_id: z
+      .string()
+      .regex(/^\d+$/)
+      .openapi({
+        description:
+          "Identifier of the source-feed/target-locale row this translation belongs to.\nA market can target the same language from multiple source feeds, so\n`(target_locale, merchant_item_id)` is not unique; use `market_locale_id` to\ndistinguish those rows and to scope a review to one source feed's translation.",
+        example: '987654321',
+      }),
+    merchant_item_id: z
+      .string()
+      .openapi({
+        description:
+          'Merchant-provided item identifier (the `merchant_item_id`/SKU of the source item).',
+        example: 'SKU-123',
+      }),
+    price: CatalogsTranslationPriceSchema.openapi({
+      description: 'Source and FX-converted price for this item.',
+    }),
+    source_description: z
+      .string()
+      .openapi({ description: 'Source-language item description.', example: 'Summer red dress' }),
+    source_title: z
+      .string()
+      .openapi({ description: 'Source-language item title.', example: 'Red dress' }),
+    status: CatalogsTranslationItemStatusSchema.openapi({
+      description: 'Per-item review state.',
+      example: 'PENDING_REVIEW',
+    }),
+    target_country: CountrySchema.openapi({
+      description: 'ISO 3166-1 alpha-2 target country of the market this translation serves.',
+      example: 'CA',
+    }),
+    target_currency: CurrencySchema.openapi({
+      description: 'ISO 4217 currency code served in the target market.',
+      example: 'CAD',
+    }),
+    target_locale: CatalogsLocaleSchema.openapi({
+      description: 'Target locale this translation was produced for (e.g. `fr-CA`).',
+      example: 'fr-CA',
+    }),
+    translated_description: z
+      .string()
+      .openapi({
+        description: 'Translated item description in the target locale.',
+        example: "Robe rouge d'été",
+      }),
+    translated_title: z
+      .string()
+      .openapi({
+        description: 'Translated item title in the target locale.',
+        example: 'Robe rouge',
+      }),
+  })
+  .openapi({
+    description:
+      'A single translated item produced for one target locale of an\nauto-localization config, with its source content, translated content, and\nFX-converted price.',
+    required: [
+      'merchant_item_id',
+      'market_locale_id',
+      'source_title',
+      'source_description',
+      'translated_title',
+      'translated_description',
+      'target_locale',
+      'target_country',
+      'target_currency',
+      'price',
+      'status',
+      'last_updated_at',
+    ],
+  })
+  .openapi('CatalogsTranslationItem')
+
 const CatalogsVerticalProductGroupSchema = z
   .discriminatedUnion('catalog_type', [
     CatalogsRetailProductGroupSchema,
@@ -24416,9 +28837,295 @@ const ChangeHistoryDataTypeSchema = z
   ])
   .openapi('ChangeHistoryDataType')
 
+const ChangeHistoryEntityTypeSchema = z
+  .enum([
+    'ADVERTISER',
+    'CAMPAIGN',
+    'AD_GROUP',
+    'PIN_PROMOTION',
+    'PINNER_LIST',
+    'ORDER_LINE',
+    'BILL',
+    'PROMOTED_CATALOG_PRODUCT_GROUP',
+    'SPLIT_TEST',
+    'SCHEDULED_EVENT',
+    'LABEL',
+    'ENTITY_LABEL',
+  ])
+  .openapi('ChangeHistoryEntityType')
+
 const ChangeHistoryOperationTypeSchema = z
   .enum(['CREATE', 'UPDATE', 'DELETE'])
   .openapi('ChangeHistoryOperationType')
+
+const ChangeHistoryUserTypeSchema = z
+  .enum(['EXTERNAL', 'PINTEREST_INTERNAL', 'SYSTEM'])
+  .openapi({
+    description: 'Distinguishes an external advertiser user from an internal Pinterest actor',
+  })
+  .openapi('ChangeHistoryUserType')
+
+const ChangeHistoryUserSchema = z
+  .object({
+    business_name: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The business name of the user who initiated the change, when the account is a business account. Omitted for internal Pinterest actors.',
+      }),
+    full_name: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The full name of the user who initiated the change. Omitted for internal Pinterest actors.',
+      }),
+    id: z
+      .string()
+      .regex(/^\d+$/)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The id of the user who initiated the change. Omitted for internal Pinterest actors.',
+      }),
+    type: ChangeHistoryUserTypeSchema.exactOptional().openapi({
+      description: 'Distinguishes an external advertiser user from an internal Pinterest actor',
+    }),
+    username: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The username (@handle) of the user who initiated the change. Omitted for internal Pinterest actors.',
+      }),
+  })
+  .openapi({ description: 'The user who initiated a change to an entity', required: [] })
+  .openapi('ChangeHistoryUser')
+
+const CollaborativeCatalogSetOperatorSchema = z
+  .enum(['IS', 'IS_NOT'])
+  .openapi('CollaborativeCatalogSetOperator')
+
+const CollaborativeCatalogStringSetFilterSchema = z
+  .strictObject({
+    field: z
+      .enum(['ITEM_ID', 'ITEM_GROUP_ID', 'BRAND', 'TITLE_KEYWORDS'])
+      .openapi({ description: 'Product attribute to filter.' }),
+    operator: CollaborativeCatalogSetOperatorSchema.openapi({
+      description: 'IS includes matching values. IS_NOT excludes matching values.',
+    }),
+    values: z.array(z.string()).min(1),
+  })
+  .openapi({
+    description: 'Filter for free-form string product attributes.',
+    required: ['field', 'operator', 'values'],
+  })
+  .openapi('CollaborativeCatalogStringSetFilter')
+
+const CollaborativeCatalogAvailabilityFilterSchema = z
+  .strictObject({
+    field: z.literal('AVAILABILITY'),
+    operator: CollaborativeCatalogSetOperatorSchema,
+    values: z.array(ProductAvailabilitySchema).min(1),
+  })
+  .openapi({ required: ['field', 'operator', 'values'] })
+  .openapi('CollaborativeCatalogAvailabilityFilter')
+
+const CollaborativeCatalogConditionFilterSchema = z
+  .strictObject({
+    field: z.literal('CONDITION'),
+    operator: CollaborativeCatalogSetOperatorSchema,
+    values: z.array(ProductConditionSchema).min(1),
+  })
+  .openapi({ required: ['field', 'operator', 'values'] })
+  .openapi('CollaborativeCatalogConditionFilter')
+
+const CollaborativeCatalogGenderFilterSchema = z
+  .strictObject({
+    field: z.literal('GENDER'),
+    operator: CollaborativeCatalogSetOperatorSchema,
+    values: z.array(GenderSchema).min(1),
+  })
+  .openapi({ required: ['field', 'operator', 'values'] })
+  .openapi('CollaborativeCatalogGenderFilter')
+
+const CollaborativeCatalogMediaTypeFilterSchema = z
+  .strictObject({
+    field: z.literal('MEDIA_TYPE'),
+    operator: CollaborativeCatalogSetOperatorSchema,
+    values: z.array(MediaTypeSchema).min(1),
+  })
+  .openapi({ required: ['field', 'operator', 'values'] })
+  .openapi('CollaborativeCatalogMediaTypeFilter')
+
+const CollaborativeCatalogPinterestProductCategoryFilterSchema = z
+  .strictObject({
+    field: z.literal('PINTEREST_PRODUCT_CATEGORIES'),
+    operator: CollaborativeCatalogSetOperatorSchema,
+    values: z.array(ProductCategoryEnumSchema).min(1),
+  })
+  .openapi({ required: ['field', 'operator', 'values'] })
+  .openapi('CollaborativeCatalogPinterestProductCategoryFilter')
+
+const CollaborativeCatalogSupplementalItemSegmentFilterSchema = z
+  .strictObject({
+    field: z.literal('SUPPLEMENTAL_ITEM_SEGMENTS'),
+    operator: CollaborativeCatalogSetOperatorSchema,
+    values: z.array(SupplementalItemSegmentTypeSchema).min(1),
+  })
+  .openapi({ required: ['field', 'operator', 'values'] })
+  .openapi('CollaborativeCatalogSupplementalItemSegmentFilter')
+
+const CollaborativeCatalogHierarchyFilterSchema = z
+  .strictObject({
+    field: z.enum(['GOOGLE_PRODUCT_CATEGORY', 'PRODUCT_TYPE']),
+    operator: CollaborativeCatalogSetOperatorSchema,
+    values: z
+      .array(z.array(z.string()))
+      .min(1)
+      .openapi({ description: 'Selected hierarchy paths. Example: [["Furniture", "Chairs"]].' }),
+  })
+  .openapi({
+    description:
+      'Filter for hierarchical product attributes. Each value is one selected hierarchy path.',
+    required: ['field', 'operator', 'values'],
+  })
+  .openapi('CollaborativeCatalogHierarchyFilter')
+
+const CollaborativeCatalogPriceOperatorSchema = z
+  .enum(['LESS_THAN', 'LESS_THAN_OR_EQUALS', 'GREATER_THAN', 'GREATER_THAN_OR_EQUALS'])
+  .openapi('CollaborativeCatalogPriceOperator')
+
+const CollaborativeCatalogPriceFilterSchema = z
+  .strictObject({
+    currency: NonNullableCatalogsCurrencySchema,
+    field: z.literal('PRICE'),
+    operator: CollaborativeCatalogPriceOperatorSchema,
+    value: z.number().min(0),
+  })
+  .openapi({
+    description: 'Filter for product price.',
+    required: ['field', 'operator', 'value', 'currency'],
+  })
+  .openapi('CollaborativeCatalogPriceFilter')
+
+const CollaborativeCatalogFilterConditionSchema = z
+  .xor([
+    CollaborativeCatalogStringSetFilterSchema,
+    CollaborativeCatalogAvailabilityFilterSchema,
+    CollaborativeCatalogConditionFilterSchema,
+    CollaborativeCatalogGenderFilterSchema,
+    CollaborativeCatalogMediaTypeFilterSchema,
+    CollaborativeCatalogPinterestProductCategoryFilterSchema,
+    CollaborativeCatalogSupplementalItemSegmentFilterSchema,
+    CollaborativeCatalogHierarchyFilterSchema,
+    CollaborativeCatalogPriceFilterSchema,
+  ])
+  .openapi({ description: 'A single collaborative catalog filter condition.' })
+  .openapi('CollaborativeCatalogFilterCondition')
+
+const CollaborativeCatalogFiltersOperatorSchema = z
+  .enum(['ALL', 'ANY'])
+  .openapi('CollaborativeCatalogFiltersOperator')
+
+const CollaborativeCatalogFiltersSchema = z
+  .strictObject({
+    conditions: z
+      .array(CollaborativeCatalogFilterConditionSchema)
+      .min(1)
+      .openapi({ description: "Filter conditions applied to the parent catalog's products." }),
+    operator: CollaborativeCatalogFiltersOperatorSchema.openapi({
+      description:
+        'How conditions are combined. ALL means every condition must match. ANY means at least one condition must match.',
+    }),
+  })
+  .openapi({
+    description:
+      'Product filters used to define which items are included in a collaborative catalog.',
+    required: ['operator', 'conditions'],
+  })
+  .openapi('CollaborativeCatalogFilters')
+
+const CollaborativeCatalogSchema = z
+  .object({
+    country: CountrySchema.exactOptional().openapi({
+      description: "The collaborative catalog's country.",
+    }),
+    created_at: z.iso
+      .datetime({ offset: true })
+      .openapi({ example: '2022-03-14T15:15:22Z', readOnly: true }),
+    filters: CollaborativeCatalogFiltersSchema.openapi({
+      description: 'Product filters for the collaborative catalog.',
+    }),
+    id: z
+      .string()
+      .regex(/^\d+$/)
+      .openapi({
+        description: 'ID of the collaborative catalog entity.',
+        example: '864344156814050986',
+        readOnly: true,
+      }),
+    locale: CatalogsLocaleSchema.exactOptional().openapi({
+      description: "The collaborative catalog's locale.",
+    }),
+    name: z
+      .string()
+      .openapi({
+        description: 'A human-friendly name associated to the collaborative catalog.',
+        example: 'My RMN Catalog',
+      }),
+    parent_catalog_id: z
+      .string()
+      .regex(/^\d+$/)
+      .openapi({
+        description: 'Parent retail catalog ID. Must reference an existing retail catalog.',
+        example: '864344156814050111',
+      }),
+    updated_at: z.iso
+      .datetime({ offset: true })
+      .openapi({ example: '2022-03-14T15:16:34Z', readOnly: true }),
+  })
+  .openapi({
+    description: 'Collaborative (RMN) catalog entity',
+    required: ['id', 'name', 'parent_catalog_id', 'filters', 'created_at', 'updated_at'],
+  })
+  .openapi('CollaborativeCatalog')
+
+const CollaborativeCatalogCreateSchema = z
+  .object({
+    country: CountrySchema.exactOptional().openapi({
+      description: "The collaborative catalog's country.",
+    }),
+    filters: CollaborativeCatalogFiltersSchema.openapi({
+      description: 'Product filters for the collaborative catalog.',
+    }),
+    locale: CatalogsLocaleSchema.exactOptional().openapi({
+      description: "The collaborative catalog's locale.",
+    }),
+    name: z
+      .string()
+      .openapi({
+        description: 'A human-friendly name associated to the collaborative catalog.',
+        example: 'My RMN Catalog',
+      }),
+    parent_catalog_id: z
+      .string()
+      .regex(/^\d+$/)
+      .openapi({
+        description: 'Parent retail catalog ID. Must reference an existing retail catalog.',
+        example: '864344156814050111',
+      }),
+  })
+  .openapi({
+    description: 'Resource create operation model.',
+    required: ['name', 'parent_catalog_id', 'filters'],
+  })
+  .openapi('CollaborativeCatalogCreate')
 
 const ContentTypeSchema = z.enum(['image/jpeg', 'image/png']).openapi('ContentType')
 
@@ -24796,40 +29503,6 @@ const ConversionEventIngestionSourceSchema = z
   .openapi({ description: 'The source of conversion events ingestion', example: 'CONVERSIONS_API' })
   .openapi('ConversionEventIngestionSource')
 
-const ConversionTagTypeSchema = z
-  .enum([
-    'PAGE_LOAD',
-    'UNKNOWN',
-    'INITIALIZED',
-    'PAGE_VISIT',
-    'SIGNUP',
-    'CHECKOUT',
-    'CUSTOM',
-    'VIEW_CATEGORY',
-    'SEARCH',
-    'ADD_TO_CART',
-    'WATCH_VIDEO',
-    'LEAD',
-    'APP_INSTALL',
-    'WEB_SESSION',
-    'EXTERNAL_MEASUREMENT',
-    'ADD_PAYMENT_INFO',
-    'ADD_TO_WISHLIST',
-    'INITIATE_CHECKOUT',
-    'SUBSCRIBE',
-    'VIEW_CONTENT',
-    'ADVERTISER_DEFINED_EVENT',
-    'APP_OPEN',
-    'CONTACT',
-    'SCHEDULE',
-    'FIND_LOCATION',
-    'CUSTOMIZE_PRODUCT',
-    'SUBMIT_APPLICATION',
-    'START_TRIAL',
-  ])
-  .openapi({ description: 'conversion tag type', example: 'PAGE_LOAD', title: 'ConversionTagType' })
-  .openapi('ConversionTagType')
-
 const ConversionEventResponseSchema = z
   .object({
     ad_account_id: z
@@ -24989,6 +29662,14 @@ const ConversionEventsDataItemsCustomDataSchema = z
         description:
           "The ISO-4217 currency code. If not provided, we will default to the advertiser's currency set during account creation. Your campaign performance needs this field to report right ROAS/CPA.",
       }),
+    custom_fields: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'A field for arbitrarily structured data. Accepted as a JSON string or a URL-encoded JSON string. Recognized keys are remapped to their corresponding standard fields; unknown shapes are ignored.',
+      }),
     external_measurement_id: z
       .string()
       .nullable()
@@ -25065,6 +29746,11 @@ const ConversionEventsDataItemsCustomDataSchema = z
   .openapi({ description: 'Object containing other custom data.', required: [] })
   .openapi('ConversionEventsDataItemsCustomData')
 
+const CustomerTypeSchema = z
+  .enum(['new', 'returning'])
+  .openapi({ description: 'Customer type' })
+  .openapi('CustomerType')
+
 const ConversionEventsUserDataPropertiesSchema = z
   .object({
     click_id: z
@@ -25108,6 +29794,10 @@ const ConversionEventsUserDataPropertiesSchema = z
           "Sha256 hashes of user's city, in lowercase, and without spaces or punctuation. User residency city (mostly billing). The string should be in the UTF-8 format.",
         example: ['4ac01a129bfd10385c9278c2cf2c46fac5ab57350841234f587c8522a2e4ce36'],
       }),
+    customer_type: CustomerTypeSchema.exactOptional().openapi({
+      description: 'Indicates the type of user, e.g. new to the business or a returning customer.',
+      example: 'returning',
+    }),
     db: z
       .array(z.string())
       .exactOptional()
@@ -25362,6 +30052,7 @@ const ConversionEventsCreateSchema = z
                 'dj0yJnU9b2JDcFFHekV4SHJNcmVrbFBkUEdqakh0akdUT1VjVVUmcD0yJm49cnNBQ3F2Q2dOVDBXWWhkWklrUGxBUSZ0PUFBQUFBR1BaY3Bv',
               partner_id:
                 'BUJrTlRRzGJmWhRXFZdkioV6wKPBve7Lom__GU9J74hq2NIQj4O3nOZJrp3mcUr5MptkXsI14juMOIM9mNZnM4zEUFT2JLVaFhcOfuuWz3IWEDtBf6I0DPc',
+              customer_type: 'returning',
             },
             custom_data: {
               currency: 'USD',
@@ -25393,6 +30084,7 @@ const ConversionEventsCreateSchema = z
               search_string: 'sample string',
               opt_out_type: 'LDP',
               predicted_ltv: '2794.82',
+              custom_fields: '{"af_content": [{"id": "ID1", "price": "25"}]}',
             },
             app_id: '429047995',
             app_name: 'Pinterest',
@@ -25957,6 +30649,467 @@ const ConversionProductReportCreateSchema = z
   })
   .openapi('ConversionProductReportCreate')
 
+const ConversionSegmentConversionTypeSchema = z
+  .enum(['SIGNUP', 'LEAD', 'PAGE_VISIT', 'ADD_TO_CART', 'CHECKOUT'])
+  .openapi({ description: 'Conversion types supported by conversion segments.' })
+  .openapi('ConversionSegmentConversionType')
+
+const ConversionSegmentSetOperatorSchema = z
+  .enum(['IS', 'IS_NOT'])
+  .openapi({ description: 'Operator for set-based conversion segment filters.' })
+  .openapi('ConversionSegmentSetOperator')
+
+const ConversionSegmentItemIdFilterSchema = z
+  .strictObject({
+    field: z.literal('ITEM_ID').openapi({ description: 'Product attribute to filter.' }),
+    operator: ConversionSegmentSetOperatorSchema.openapi({
+      description: 'IS includes matching values. IS_NOT excludes matching values.',
+    }),
+    values: z.array(z.string()).min(1),
+  })
+  .openapi({
+    description: 'Filter for product item IDs.',
+    required: ['field', 'operator', 'values'],
+  })
+  .openapi('ConversionSegmentItemIdFilter')
+
+const ConversionSegmentItemGroupIdFilterSchema = z
+  .strictObject({
+    field: z.literal('ITEM_GROUP_ID').openapi({ description: 'Product attribute to filter.' }),
+    operator: ConversionSegmentSetOperatorSchema.openapi({
+      description: 'IS includes matching values. IS_NOT excludes matching values.',
+    }),
+    values: z.array(z.string()).min(1),
+  })
+  .openapi({
+    description: 'Filter for product item-group IDs.',
+    required: ['field', 'operator', 'values'],
+  })
+  .openapi('ConversionSegmentItemGroupIdFilter')
+
+const ConversionSegmentBrandFilterSchema = z
+  .strictObject({
+    field: z.literal('BRAND').openapi({ description: 'Product attribute to filter.' }),
+    operator: ConversionSegmentSetOperatorSchema.openapi({
+      description: 'IS includes matching values. IS_NOT excludes matching values.',
+    }),
+    values: z.array(z.string()).min(1),
+  })
+  .openapi({ description: 'Filter for product brands.', required: ['field', 'operator', 'values'] })
+  .openapi('ConversionSegmentBrandFilter')
+
+const ConversionSegmentTitleKeywordsFilterSchema = z
+  .strictObject({
+    field: z.literal('TITLE_KEYWORDS').openapi({ description: 'Product attribute to filter.' }),
+    operator: ConversionSegmentSetOperatorSchema.openapi({
+      description: 'IS includes matching values. IS_NOT excludes matching values.',
+    }),
+    values: z.array(z.string()).min(1),
+  })
+  .openapi({
+    description: 'Filter for keywords in product titles.',
+    required: ['field', 'operator', 'values'],
+  })
+  .openapi('ConversionSegmentTitleKeywordsFilter')
+
+const ConversionSegmentAvailabilityFilterSchema = z
+  .strictObject({
+    field: z.literal('AVAILABILITY').openapi({ description: 'Product attribute to filter.' }),
+    operator: ConversionSegmentSetOperatorSchema.openapi({
+      description: 'IS includes matching values. IS_NOT excludes matching values.',
+    }),
+    values: z.array(ProductAvailabilitySchema).min(1),
+  })
+  .openapi({
+    description: 'Filter for product availability.',
+    required: ['field', 'operator', 'values'],
+  })
+  .openapi('ConversionSegmentAvailabilityFilter')
+
+const ConversionSegmentConditionFilterSchema = z
+  .strictObject({
+    field: z.literal('CONDITION').openapi({ description: 'Product attribute to filter.' }),
+    operator: ConversionSegmentSetOperatorSchema.openapi({
+      description: 'IS includes matching values. IS_NOT excludes matching values.',
+    }),
+    values: z.array(ProductConditionSchema).min(1),
+  })
+  .openapi({
+    description: 'Filter for product condition.',
+    required: ['field', 'operator', 'values'],
+  })
+  .openapi('ConversionSegmentConditionFilter')
+
+const ConversionSegmentGenderFilterSchema = z
+  .strictObject({
+    field: z.literal('GENDER').openapi({ description: 'Product attribute to filter.' }),
+    operator: ConversionSegmentSetOperatorSchema.openapi({
+      description: 'IS includes matching values. IS_NOT excludes matching values.',
+    }),
+    values: z.array(GenderSchema).min(1),
+  })
+  .openapi({ description: 'Filter for product gender.', required: ['field', 'operator', 'values'] })
+  .openapi('ConversionSegmentGenderFilter')
+
+const ConversionSegmentMediaTypeFilterSchema = z
+  .strictObject({
+    field: z.literal('MEDIA_TYPE').openapi({ description: 'Product attribute to filter.' }),
+    operator: ConversionSegmentSetOperatorSchema.openapi({
+      description: 'IS includes matching values. IS_NOT excludes matching values.',
+    }),
+    values: z.array(MediaTypeSchema).min(1),
+  })
+  .openapi({
+    description: 'Filter for product media type.',
+    required: ['field', 'operator', 'values'],
+  })
+  .openapi('ConversionSegmentMediaTypeFilter')
+
+const ConversionSegmentPinterestProductCategoryFilterSchema = z
+  .strictObject({
+    field: z
+      .literal('PINTEREST_PRODUCT_CATEGORIES')
+      .openapi({ description: 'Product attribute to filter.' }),
+    operator: ConversionSegmentSetOperatorSchema.openapi({
+      description: 'IS includes matching values. IS_NOT excludes matching values.',
+    }),
+    values: z.array(ProductCategoryEnumSchema).min(1),
+  })
+  .openapi({
+    description: 'Filter for Pinterest product categories.',
+    required: ['field', 'operator', 'values'],
+  })
+  .openapi('ConversionSegmentPinterestProductCategoryFilter')
+
+const ConversionSegmentSupplementalItemSegmentFilterSchema = z
+  .strictObject({
+    field: z
+      .literal('SUPPLEMENTAL_ITEM_SEGMENTS')
+      .openapi({ description: 'Product attribute to filter.' }),
+    operator: ConversionSegmentSetOperatorSchema.openapi({
+      description: 'IS includes matching values. IS_NOT excludes matching values.',
+    }),
+    values: z.array(SupplementalItemSegmentTypeSchema).min(1),
+  })
+  .openapi({
+    description: 'Filter for supplemental item segments.',
+    required: ['field', 'operator', 'values'],
+  })
+  .openapi('ConversionSegmentSupplementalItemSegmentFilter')
+
+const ConversionSegmentGoogleProductCategoryFilterSchema = z
+  .strictObject({
+    field: z
+      .literal('GOOGLE_PRODUCT_CATEGORY')
+      .openapi({ description: 'Hierarchical product attribute to filter.' }),
+    operator: ConversionSegmentSetOperatorSchema.openapi({
+      description:
+        'IS includes matching hierarchy paths. IS_NOT excludes matching hierarchy paths.',
+    }),
+    values: z
+      .array(z.array(z.string()))
+      .min(1)
+      .max(7)
+      .openapi({
+        description:
+          'Selected hierarchy paths. Example: [["Furniture", "Chairs"]]. Supports at most seven levels.',
+      }),
+  })
+  .openapi({
+    description: 'Filter for Google product-category hierarchy paths.',
+    required: ['field', 'operator', 'values'],
+  })
+  .openapi('ConversionSegmentGoogleProductCategoryFilter')
+
+const ConversionSegmentProductTypeFilterSchema = z
+  .strictObject({
+    field: z
+      .literal('PRODUCT_TYPE')
+      .openapi({ description: 'Hierarchical product attribute to filter.' }),
+    operator: ConversionSegmentSetOperatorSchema.openapi({
+      description:
+        'IS includes matching hierarchy paths. IS_NOT excludes matching hierarchy paths.',
+    }),
+    values: z
+      .array(z.array(z.string()))
+      .min(1)
+      .max(5)
+      .openapi({
+        description:
+          'Selected hierarchy paths. Example: [["Furniture", "Chairs"]]. Supports at most five levels.',
+      }),
+  })
+  .openapi({
+    description: 'Filter for product-type hierarchy paths.',
+    required: ['field', 'operator', 'values'],
+  })
+  .openapi('ConversionSegmentProductTypeFilter')
+
+const ConversionSegmentPriceOperatorSchema = z
+  .enum(['LESS_THAN', 'LESS_THAN_OR_EQUALS', 'GREATER_THAN', 'GREATER_THAN_OR_EQUALS'])
+  .openapi({ description: 'Operator for conversion segment price filters.' })
+  .openapi('ConversionSegmentPriceOperator')
+
+const ConversionSegmentPriceFilterSchema = z
+  .strictObject({
+    currency: NonNullableCatalogsCurrencySchema.openapi({
+      description: 'Currency of the price value.',
+    }),
+    field: z
+      .literal('PRICE')
+      .openapi({ description: 'Product attribute to filter. Always PRICE.' }),
+    operator: ConversionSegmentPriceOperatorSchema.openapi({
+      description: 'Comparison applied to the product price.',
+    }),
+    value: z.number().min(0).openapi({ description: 'Price to compare against.' }),
+  })
+  .openapi({
+    description: 'Filter for product price.',
+    required: ['field', 'operator', 'value', 'currency'],
+  })
+  .openapi('ConversionSegmentPriceFilter')
+
+const ConversionSegmentFilterConditionSchema = z
+  .discriminatedUnion('field', [
+    ConversionSegmentItemIdFilterSchema,
+    ConversionSegmentItemGroupIdFilterSchema,
+    ConversionSegmentBrandFilterSchema,
+    ConversionSegmentTitleKeywordsFilterSchema,
+    ConversionSegmentAvailabilityFilterSchema,
+    ConversionSegmentConditionFilterSchema,
+    ConversionSegmentGenderFilterSchema,
+    ConversionSegmentMediaTypeFilterSchema,
+    ConversionSegmentPinterestProductCategoryFilterSchema,
+    ConversionSegmentSupplementalItemSegmentFilterSchema,
+    ConversionSegmentGoogleProductCategoryFilterSchema,
+    ConversionSegmentProductTypeFilterSchema,
+    ConversionSegmentPriceFilterSchema,
+  ])
+  .openapi({
+    description: 'A single conversion segment filter condition.',
+    discriminator: {
+      propertyName: 'field',
+      mapping: {
+        ITEM_ID: '#/components/schemas/ConversionSegmentItemIdFilter',
+        ITEM_GROUP_ID: '#/components/schemas/ConversionSegmentItemGroupIdFilter',
+        BRAND: '#/components/schemas/ConversionSegmentBrandFilter',
+        TITLE_KEYWORDS: '#/components/schemas/ConversionSegmentTitleKeywordsFilter',
+        AVAILABILITY: '#/components/schemas/ConversionSegmentAvailabilityFilter',
+        CONDITION: '#/components/schemas/ConversionSegmentConditionFilter',
+        GENDER: '#/components/schemas/ConversionSegmentGenderFilter',
+        MEDIA_TYPE: '#/components/schemas/ConversionSegmentMediaTypeFilter',
+        PINTEREST_PRODUCT_CATEGORIES:
+          '#/components/schemas/ConversionSegmentPinterestProductCategoryFilter',
+        SUPPLEMENTAL_ITEM_SEGMENTS:
+          '#/components/schemas/ConversionSegmentSupplementalItemSegmentFilter',
+        GOOGLE_PRODUCT_CATEGORY:
+          '#/components/schemas/ConversionSegmentGoogleProductCategoryFilter',
+        PRODUCT_TYPE: '#/components/schemas/ConversionSegmentProductTypeFilter',
+        PRICE: '#/components/schemas/ConversionSegmentPriceFilter',
+      },
+    },
+  })
+  .openapi('ConversionSegmentFilterCondition')
+
+const ConversionSegmentFiltersOperatorSchema = z
+  .enum(['ALL', 'ANY'])
+  .openapi({ description: 'How conversion segment filter conditions are combined.' })
+  .openapi('ConversionSegmentFiltersOperator')
+
+const ConversionSegmentFiltersSchema = z
+  .strictObject({
+    conditions: z
+      .array(ConversionSegmentFilterConditionSchema)
+      .min(1)
+      .openapi({ description: 'Filter conditions applied to products in the catalog.' }),
+    operator: ConversionSegmentFiltersOperatorSchema.openapi({
+      description:
+        'How conditions are combined. ALL means every condition must match. ANY means at least one condition must match.',
+    }),
+  })
+  .openapi({
+    description: 'Product filters used to define the items included in a conversion segment.',
+    required: ['operator', 'conditions'],
+  })
+  .openapi('ConversionSegmentFilters')
+
+const ConversionSegmentSchema = z
+  .object({
+    ad_account_id: z
+      .string()
+      .regex(/^\d+$/)
+      .openapi({ description: 'Ad account ID.', example: '549755885175', readOnly: true }),
+    catalog_id: z
+      .string()
+      .regex(/^\d+$/)
+      .exactOptional()
+      .openapi({
+        description:
+          'ID of the catalog. If provided, `filters` is required. At least one of `catalog_id` or `product_ids` must be provided.',
+        example: '4836859046874',
+      }),
+    conversion_types: z
+      .array(ConversionSegmentConversionTypeSchema)
+      .openapi({ description: 'Conversion segment types.', example: ['SIGNUP', 'PAGE_VISIT'] }),
+    created_time: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'Creation time. Unix timestamp in seconds.',
+        example: 1461087238,
+        readOnly: true,
+      }),
+    filters: ConversionSegmentFiltersSchema.exactOptional().openapi({
+      description: 'Product filters that select catalog items for this conversion segment.',
+      example: {
+        operator: 'ALL',
+        conditions: [{ field: 'BRAND', operator: 'IS', values: ['Nike'] }],
+      },
+    }),
+    id: z
+      .string()
+      .regex(/^\d+$/)
+      .openapi({ description: 'Conversion segment ID.', example: '549764405612', readOnly: true }),
+    name: z
+      .string()
+      .openapi({ description: 'Conversion segment name.', example: 'Holiday Campaign Signups' }),
+    owner_business_id: z
+      .string()
+      .regex(/^\d+$/)
+      .exactOptional()
+      .openapi({
+        description: 'Owner business ID.',
+        example: '1129277812721656240',
+        readOnly: true,
+      }),
+    owner_name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Owner business name.', example: 'Acme Corp', readOnly: true }),
+    product_ids: z
+      .array(PinterestLibIntegerFormatTypeSchema)
+      .min(1)
+      .max(200)
+      .exactOptional()
+      .openapi({
+        description:
+          'List of product IDs. At least one of `product_ids` or `catalog_id` must be provided.',
+        example: ['3486', '1580842'],
+      }),
+    updated_time: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'Last update time. Unix timestamp in seconds.',
+        example: 1461087238,
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    description: 'Conversion segment model.',
+    required: ['id', 'ad_account_id', 'name', 'conversion_types'],
+  })
+  .openapi('ConversionSegment')
+
+const ConversionSegmentCreateSchema = z
+  .object({
+    catalog_id: z
+      .string()
+      .regex(/^\d+$/)
+      .exactOptional()
+      .openapi({
+        description:
+          'ID of the catalog. If provided, `filters` is required. At least one of `catalog_id` or `product_ids` must be provided.',
+        example: '4836859046874',
+      }),
+    conversion_types: z
+      .array(ConversionSegmentConversionTypeSchema)
+      .openapi({ description: 'Conversion segment types.', example: ['SIGNUP', 'PAGE_VISIT'] }),
+    filters: ConversionSegmentFiltersSchema.exactOptional().openapi({
+      description: 'Product filters that select catalog items for this conversion segment.',
+      example: {
+        operator: 'ALL',
+        conditions: [{ field: 'BRAND', operator: 'IS', values: ['Nike'] }],
+      },
+    }),
+    name: z
+      .string()
+      .openapi({ description: 'Conversion segment name.', example: 'Holiday Campaign Signups' }),
+    product_ids: z
+      .array(PinterestLibIntegerFormatTypeSchema)
+      .min(1)
+      .max(200)
+      .exactOptional()
+      .openapi({
+        description:
+          'List of product IDs. At least one of `product_ids` or `catalog_id` must be provided.',
+        example: ['3486', '1580842'],
+      }),
+  })
+  .openapi({
+    description: 'Resource create operation model.',
+    required: ['name', 'conversion_types'],
+  })
+  .openapi('ConversionSegmentCreate')
+
+const ConversionSegmentFiltersUpdateSchema = z
+  .strictObject({
+    conditions: z
+      .array(ConversionSegmentFilterConditionSchema)
+      .min(1)
+      .exactOptional()
+      .openapi({ description: 'Filter conditions applied to products in the catalog.' }),
+    operator: ConversionSegmentFiltersOperatorSchema.exactOptional().openapi({
+      description:
+        'How conditions are combined. ALL means every condition must match. ANY means at least one condition must match.',
+    }),
+  })
+  .openapi({
+    description: 'Product filters used to define the items included in a conversion segment.',
+    required: [],
+  })
+  .openapi('ConversionSegmentFiltersUpdate')
+
+const ConversionSegmentUpdateSchema = z
+  .object({
+    catalog_id: z
+      .string()
+      .regex(/^\d+$/)
+      .exactOptional()
+      .openapi({
+        description:
+          'ID of the catalog. If provided, `filters` is required. At least one of `catalog_id` or `product_ids` must be provided.',
+        example: '4836859046874',
+      }),
+    conversion_types: z
+      .array(ConversionSegmentConversionTypeSchema)
+      .exactOptional()
+      .openapi({ description: 'Conversion segment types.', example: ['SIGNUP', 'PAGE_VISIT'] }),
+    filters: ConversionSegmentFiltersUpdateSchema.exactOptional().openapi({
+      description: 'Product filters that select catalog items for this conversion segment.',
+      example: {
+        operator: 'ALL',
+        conditions: [{ field: 'BRAND', operator: 'IS', values: ['Nike'] }],
+      },
+    }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Conversion segment name.', example: 'Holiday Campaign Signups' }),
+    product_ids: z
+      .array(PinterestLibIntegerFormatTypeSchema)
+      .min(1)
+      .max(200)
+      .exactOptional()
+      .openapi({
+        description:
+          'List of product IDs. At least one of `product_ids` or `catalog_id` must be provided.',
+        example: ['3486', '1580842'],
+      }),
+  })
+  .openapi({ description: 'Resource create or update operation model.', required: [] })
+  .openapi('ConversionSegmentUpdate')
+
 const ConversionTagConfigsSchema = z
   .object({
     aem_db_enabled: z
@@ -25984,7 +31137,7 @@ const ConversionTagConfigsSchema = z
       .exactOptional()
       .openapi({
         description:
-          'Whether Automatic Enhanced Match location is enabled. See [Enhanced match](https://help.pinterest.com/en/business/article/enhanced-match) for more information.',
+          'Whether Automatic Enhanced Match external ID is enabled. See [Enhanced match](https://help.pinterest.com/en/business/article/enhanced-match) for more information.',
       }),
     aem_fnln_enabled: z
       .boolean()
@@ -26021,6 +31174,15 @@ const ConversionTagConfigsSchema = z
       .openapi({
         description:
           'Whether Automatic Enhanced Match phone is enabled. See [Enhanced match](https://help.pinterest.com/en/business/article/enhanced-match) for more information.',
+      }),
+    aem_product_metadata_enabled: z
+      .boolean()
+      .nullable()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether Automatic Enhanced Match product metadata is enabled. Product metadata may include details such as product ID, product category, order value, and order ID. See [Enhanced match](https://help.pinterest.com/en/business/article/enhanced-match) for the current list and more information.',
       }),
     md_frequency: z
       .number()
@@ -26061,10 +31223,7 @@ const ConversionTagCommonSchema = z
         example: 'VALIDATION_COMPLETE',
         readOnly: true,
       }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Tag ID.', example: '2617998078212', readOnly: true }),
+    id: z.string().exactOptional().openapi({ description: 'Tag ID.', example: '2617998078212' }),
     last_fired_time_ms: z
       .number()
       .nullable()
@@ -26101,7 +31260,6 @@ const ConversionTagCreateSchema = z
     aem_db_enabled: z
       .boolean()
       .nullable()
-      .default(false)
       .exactOptional()
       .openapi({
         description:
@@ -26110,7 +31268,6 @@ const ConversionTagCreateSchema = z
     aem_enabled: z
       .boolean()
       .nullable()
-      .default(false)
       .exactOptional()
       .openapi({
         description:
@@ -26119,16 +31276,14 @@ const ConversionTagCreateSchema = z
     aem_external_id_enabled: z
       .boolean()
       .nullable()
-      .default(false)
       .exactOptional()
       .openapi({
         description:
-          'Whether Automatic Enhanced Match location is enabled. See [Enhanced match](https://help.pinterest.com/en/business/article/enhanced-match) for more information.',
+          'Whether Automatic Enhanced Match external ID is enabled. See [Enhanced match](https://help.pinterest.com/en/business/article/enhanced-match) for more information.',
       }),
     aem_fnln_enabled: z
       .boolean()
       .nullable()
-      .default(false)
       .exactOptional()
       .openapi({
         description:
@@ -26137,7 +31292,6 @@ const ConversionTagCreateSchema = z
     aem_ge_enabled: z
       .boolean()
       .nullable()
-      .default(false)
       .exactOptional()
       .openapi({
         description:
@@ -26146,7 +31300,6 @@ const ConversionTagCreateSchema = z
     aem_loc_enabled: z
       .boolean()
       .nullable()
-      .default(false)
       .exactOptional()
       .openapi({
         description:
@@ -26155,11 +31308,18 @@ const ConversionTagCreateSchema = z
     aem_ph_enabled: z
       .boolean()
       .nullable()
-      .default(false)
       .exactOptional()
       .openapi({
         description:
           'Whether Automatic Enhanced Match phone is enabled. See [Enhanced match](https://help.pinterest.com/en/business/article/enhanced-match) for more information.',
+      }),
+    aem_product_metadata_enabled: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether Automatic Enhanced Match product metadata is enabled. Product metadata may include details such as product ID, product category, order value, and order ID. See [Enhanced match](https://help.pinterest.com/en/business/article/enhanced-match) for the current list and more information.',
       }),
     md_frequency: z
       .number()
@@ -26257,7 +31417,7 @@ const InviteTypeSchema = z
 
 const CreateAssetInvitesRequestItemSchema = z
   .object({
-    asset_id_to_permissions: AssetIdToPermissionsSchema,
+    asset_id_to_permissions: AssetIdToPermissionsSchema.exactOptional(),
     invite_id: z
       .string()
       .regex(/^\d+$/)
@@ -26266,7 +31426,7 @@ const CreateAssetInvitesRequestItemSchema = z
   })
   .openapi({
     description: 'Object declaring an asset role update to an invite.',
-    required: ['asset_id_to_permissions', 'invite_id', 'invite_type'],
+    required: ['invite_id', 'invite_type'],
   })
   .openapi('CreateAssetInvitesRequestItem')
 
@@ -26388,6 +31548,44 @@ const CreateInvitesResultsResponseArraySchema = z
   .openapi({ required: [] })
   .openapi('CreateInvitesResultsResponseArray')
 
+const MediaLibraryAssetErrorCodeSchema = z
+  .enum([
+    'ASSET_NOT_FOUND',
+    'INTERNAL_ERROR',
+    'INVALID_ARGUMENT',
+    'MEDIA_NOT_FOUND',
+    'MEDIA_NOT_READY',
+    'MEDIA_UPLOAD_FAILED',
+  ])
+  .openapi({ description: 'Reason why a single media library asset operation failed.' })
+  .openapi('MediaLibraryAssetErrorCode')
+
+const MediaLibraryAssetOperationStatusSchema = z
+  .enum(['SUCCESS', 'ERROR'])
+  .openapi({ description: 'Asset operation status for a single item in a bulk operation.' })
+  .openapi('MediaLibraryAssetOperationStatus')
+
+const CreateMediaLibraryAssetResultSchema = z
+  .object({
+    asset_id: PinterestLibIntegerFormatTypeSchema.exactOptional().openapi({
+      description: 'Created asset ID when the status is `SUCCESS`. Omitted on failure.',
+      example: '549755885175',
+    }),
+    error_code: MediaLibraryAssetErrorCodeSchema.exactOptional().openapi({
+      description: 'Why the asset operation failed. Omitted when the status is `SUCCESS`.',
+      example: 'INTERNAL_ERROR',
+    }),
+    message: z
+      .string()
+      .openapi({ description: 'Result message for the asset operation.', example: '' }),
+    status: MediaLibraryAssetOperationStatusSchema,
+  })
+  .openapi({
+    description: 'Result for a single asset in a bulk create response.',
+    required: ['status', 'message'],
+  })
+  .openapi('CreateMediaLibraryAssetResult')
+
 const CreateMembershipOrPartnershipInvitesBodySchema = z
   .object({
     business_role: BusinessRoleForInviteSchema.openapi({ example: 'BIZ_ADMIN' }),
@@ -26418,6 +31616,62 @@ const CreateMembershipOrPartnershipInvitesBodySchema = z
     required: ['business_role', 'invite_type'],
   })
   .openapi('CreateMembershipOrPartnershipInvitesBody')
+
+const CtvCreativeSchema = z
+  .object({
+    name: z
+      .string()
+      .openapi({ description: 'Name of the CTV creative.', example: 'My CTV Creative' }),
+    tvsci_creative_id: z
+      .string()
+      .openapi({
+        description: 'Unique identifier of the CTV creative as assigned.',
+        example: '1234567',
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    description:
+      'A CTV (Connected TV) creative registered with tvScientific against a Pinterest Pin.',
+    required: ['tvsci_creative_id', 'name'],
+  })
+  .openapi('CtvCreative')
+
+const CtvCreativeMediaTypeSchema = z
+  .enum(['video/mp4', 'video/quicktime'])
+  .openapi({
+    description: 'Allowed MIME types for the CTV creative video asset.',
+    example: 'video/mp4',
+  })
+  .openapi('CtvCreativeMediaType')
+
+const CtvCreativeCreateSchema = z
+  .object({
+    media_id: z
+      .string()
+      .regex(/^\d+$/)
+      .openapi({
+        description:
+          'Media ID of the uploaded creative video asset, as returned by the media upload endpoint [`POST /media`](/docs/api/v5/#operation/media/create).',
+        example: '12345',
+      }),
+    media_type: CtvCreativeMediaTypeSchema.openapi({
+      description: 'MIME type of the underlying video asset.',
+      example: 'video/mp4',
+    }),
+    name: z
+      .string()
+      .openapi({ description: 'Name of the CTV creative.', example: 'My CTV Creative' }),
+    pin_id: PinterestLibIntegerFormatTypeSchema.openapi({
+      description: 'Pinterest Pin ID that this creative is associated with.',
+      example: '549755885175',
+    }),
+  })
+  .openapi({
+    description: 'Resource create operation model.',
+    required: ['name', 'pin_id', 'media_id', 'media_type'],
+  })
+  .openapi('CtvCreativeCreate')
 
 const CustomColumnIdSchema = z
   .string()
@@ -26584,7 +31838,7 @@ const CustomerListCreateSchema = z
       .exactOptional()
       .openapi({
         description:
-          'Records list. Can be any combination of emails, MAIDs, or IDFAs. Emails must be lowercase and can be plain text or hashed using SHA1, SHA256, or MD5. MAIDs and IDFAs must be hashed with SHA1, SHA256, or MD5.',
+          'Records list. Can be any combination of emails, MAIDs, or IDFAs. Emails must be lowercase and can be plain text or hashed using SHA1, SHA256, or MD5. MAIDs and IDFAs must be hashed with SHA1, SHA256, or MD5.\n\nProvide exactly one of `records` or `records_v2`.',
         example: 'email1@pinterest.com,email2@pinterest.com,..<more records>',
       }),
     records_v2: z
@@ -26592,7 +31846,7 @@ const CustomerListCreateSchema = z
       .exactOptional()
       .openapi({
         description:
-          'Multi-field record format. Array of objects with optional email, maid, ip_address, user_agent, external_id, hashed_pinner_id, hashed_phone_number, and liveramp_envelope per row. Provide exactly one of records or records_v2.',
+          '[**Restricted**](/docs/getting-started/using-beta-and-restricted-features/)\n \nMulti-field record format. Array of objects with optional `email`, `maid`, `ip_address`, `user_agent`, `external_id`, `hashed_pinner_id`, `hashed_phone_number`, and `liveramp_envelope` per row. \n\nProvide exactly one of `records` or `records_v2`. \n\nThis parameter is supported only if `is_nca` is set to `true`.',
       }),
   })
   .openapi({ description: 'Resource create operation model.', required: ['name'] })
@@ -26614,7 +31868,7 @@ const CustomerListUpdateWithRequiredBodySchema = z
       .exactOptional()
       .openapi({
         description:
-          'Records list. Can be any combination of emails, MAIDs, or IDFAs. Emails must be lowercase and can be plain text or hashed using SHA1, SHA256, or MD5. MAIDs and IDFAs must be hashed with SHA1, SHA256, or MD5.',
+          'Records list. Can be any combination of emails, MAIDs, or IDFAs. Emails must be lowercase and can be plain text or hashed using SHA1, SHA256, or MD5. MAIDs and IDFAs must be hashed with SHA1, SHA256, or MD5.\n\nProvide exactly one of `records` or `records_v2`.',
         example: 'email1@pinterest.com,email2@pinterest.com,..<more records>',
       }),
     records_v2: z
@@ -26622,7 +31876,7 @@ const CustomerListUpdateWithRequiredBodySchema = z
       .exactOptional()
       .openapi({
         description:
-          'Multi-field record format. Array of objects with optional email, maid, ip_address, user_agent, external_id, hashed_pinner_id, hashed_phone_number, and liveramp_envelope per row. Provide exactly one of records or records_v2.',
+          '[**Restricted**](/docs/getting-started/using-beta-and-restricted-features/)\n \nMulti-field record format. Array of objects with optional `email`, `maid`, `ip_address`, `user_agent`, `external_id`, `hashed_pinner_id`, `hashed_phone_number`, and `liveramp_envelope` per row. \n\nProvide exactly one of `records` or `records_v2`. \n\nThis parameter is supported only if `is_nca` is set to `true`.',
       }),
   })
   .openapi({
@@ -27155,6 +32409,11 @@ const DynamicTitlesUploadURLSchema = z
   .openapi({ required: ['upload_url', 'request_id'] })
   .openapi('DynamicTitlesUploadURL')
 
+const EmptyObjectUpdateSchema = z
+  .looseObject({})
+  .openapi({ description: 'Resource create or update operation model.' })
+  .openapi('EmptyObjectUpdate')
+
 const EntityDataChangeHistorySchema = z
   .object({
     changed_field_id: z
@@ -27203,8 +32462,15 @@ const EntityHistorySchema = z
       .openapi({ description: 'The id of the entity that was changed' }),
     entity_name: z
       .string()
+      .nullable()
       .exactOptional()
-      .openapi({ description: 'The name of the entity that was changed' }),
+      .openapi({
+        description:
+          "The name of the entity that was changed. May be null when the entity's name is not yet available downstream.",
+      }),
+    entity_type: ChangeHistoryEntityTypeSchema.exactOptional().openapi({
+      description: 'The type of the entity that was changed',
+    }),
     ldap: z
       .string()
       .exactOptional()
@@ -27215,11 +32481,19 @@ const EntityHistorySchema = z
     operation: ChangeHistoryOperationTypeSchema.exactOptional().openapi({
       description: 'The type of operation that caused the change',
     }),
+    user: ChangeHistoryUserSchema.exactOptional().openapi({
+      description:
+        'The user who initiated the change, including resolved name fields. For changes initiated by internal Pinterest users, `type` is `PINTEREST_INTERNAL` and the identifying fields are omitted. For automated, system-triggered changes with no acting user, `type` is `SYSTEM`.',
+    }),
     user_id: z
       .string()
       .regex(/^\d+$/)
+      .nullable()
       .exactOptional()
-      .openapi({ description: 'The id of the user who initiated the change' }),
+      .openapi({
+        description:
+          'The id of the user who initiated the change. May be null for system-triggered changes with no human actor.',
+      }),
   })
   .openapi({ required: [] })
   .openapi('EntityHistory')
@@ -27701,11 +32975,6 @@ const IntegrationLogsRequestCreateSchema = z
   .openapi({ description: 'Resource create operation model.', required: ['logs'] })
   .openapi('IntegrationLogsRequestCreate')
 
-const IntegrationLogsSuccessResponseSchema = z
-  .object({ message: z.string().exactOptional() })
-  .openapi({ description: 'Response when logs are successfully processed.', required: [] })
-  .openapi('IntegrationLogsSuccessResponse')
-
 const IntegrationMetadataSchema = z
   .object({
     additional_id_1: z.string().exactOptional(),
@@ -27845,7 +33114,7 @@ const InterestSchema = z
     key: z.string().exactOptional().openapi({ example: 'man cave' }),
     name: z.string().exactOptional().openapi({ example: 'Man cave' }),
   })
-  .openapi({ title: 'Interest', required: [] })
+  .openapi({ required: [] })
   .openapi('Interest')
 
 const InviteAssetsSummaryItemSchema = z
@@ -27869,6 +33138,25 @@ const InviteAssetsSummarySchema = z
         description:
           'List of ad account IDs and respective permission levels that will be assigned.',
       }),
+    audiences: z
+      .array(InviteAssetsSummaryItemSchema)
+      .exactOptional()
+      .openapi({
+        description: 'List of audience IDs and respective permission levels that will be assigned.',
+      }),
+    catalogs: z
+      .array(InviteAssetsSummaryItemSchema)
+      .exactOptional()
+      .openapi({
+        description: 'List of catalog IDs and respective permission levels that will be assigned.',
+      }),
+    conversion_segments: z
+      .array(InviteAssetsSummaryItemSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'List of conversion segment IDs and respective permission levels that will be assigned.',
+      }),
     profiles: z
       .array(InviteAssetsSummaryItemSchema)
       .exactOptional()
@@ -27878,8 +33166,7 @@ const InviteAssetsSummarySchema = z
   })
   .nullable()
   .openapi({
-    description:
-      'Ad accounts and profiles the member/partner will be granted access to with this invite/request.',
+    description: 'Assets the member/partner will be granted access to with this invite/request.',
     required: [],
   })
   .openapi('InviteAssetsSummary')
@@ -27889,15 +33176,47 @@ const InviteFilterStatusSchema = z
   .openapi({ description: 'Invite statuses used for filters.' })
   .openapi('InviteFilterStatus')
 
+const RmnInviteDataDetailSchema = z
+  .object({
+    dedicated_resource_id: z
+      .string()
+      .regex(/^\d+$/)
+      .max(20)
+      .exactOptional()
+      .openapi({
+        description: 'Dedicated resource ID associated with the RMN invite, if any.',
+        example: '123456789012345678',
+      }),
+    domain_restrictions: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description: 'Domain restrictions for the RMN invite, if any.',
+        example: ['example.com'],
+      }),
+    rmn_contract_id: z
+      .string()
+      .regex(/^\d+$/)
+      .max(20)
+      .exactOptional()
+      .openapi({ description: 'RMN contract identifier.', example: '2613499880051' }),
+  })
+  .openapi({ description: 'RMN-specific data associated with an invite.', required: [] })
+  .openapi('RmnInviteDataDetail')
+
 const InviteResponseSchema = z
   .object({
     assets_summary: InviteAssetsSummarySchema.exactOptional(),
+    business_partner_type: BusinessPartnerTypeSchema.exactOptional().openapi({
+      description: 'Business partner type for partner invites and requests.',
+      example: 'REGULAR',
+    }),
     business_roles: z
       .array(BusinessRoleResponseSchema)
       .exactOptional()
       .openapi({
         description:
-          'The access level a user would be granted on the business if the invite/request is accepted. This can be EMPLOYEE, BIZ_ADMIN, or PARTNER.',
+          'The access level a user would be granted on the business if the invite/request is accepted. This can be EMPLOYEE, BIZ_ADMIN, PARTNER, or RMN_PARTNER.',
         example: ['BIZ_ADMIN'],
       }),
     created_by_business: BusinessAccessUserSummarySchema.exactOptional().openapi({
@@ -27926,6 +33245,9 @@ const InviteResponseSchema = z
       .boolean()
       .exactOptional()
       .openapi({ description: 'Indicates whether the invite/request was received.' }),
+    rmn_invite_data: RmnInviteDataDetailSchema.exactOptional().openapi({
+      description: 'RMN-specific invite data.',
+    }),
     user: BusinessAccessUserSummarySchema.exactOptional().openapi({
       description: 'Metadata for the member/partner that was sent the invite/request.',
     }),
@@ -27951,9 +33273,11 @@ const ItemIdStoreCodePairSchema = z
   .object({
     item_id: z
       .string()
+      .min(1)
       .openapi({ description: 'Catalog item id in the merchant namespace', example: 'item_id_1' }),
     store_code: z
       .string()
+      .min(1)
       .openapi({ description: 'Store code for the local inventory item', example: 'store_1' }),
   })
   .openapi({
@@ -27991,6 +33315,15 @@ const ItemResponseSchema: z.ZodType<ItemResponseType> = z
 const KeywordSchema = z
   .object({
     archived: z.boolean().exactOptional().openapi({ example: false }),
+    base_keyword_id: z
+      .string()
+      .regex(/^\d+$/)
+      .exactOptional()
+      .openapi({
+        description:
+          'The ID of the Performance+ base keyword that this keyword was duplicated from in its managed set. Read-only output; set by Pinterest when a Performance+ managed set is created. Setting this field on a request has no effect.',
+        readOnly: true,
+      }),
     bid: z
       .int()
       .nullable()
@@ -28026,7 +33359,12 @@ const KeywordSchema = z
       .string()
       .exactOptional()
       .openapi({ description: 'Always keyword', example: 'keyword', readOnly: true }),
-    value: z.string().openapi({ description: 'Keyword value (120 chars max).' }),
+    value: z
+      .string()
+      .openapi({
+        description:
+          'Keyword value (120 characters maximum). Set the match type to choose the match behavior. Omit Ads Manager\'s leading hyphen (-), double quotes (" "), and square brackets ([ ]) from the value. Broad negative keywords support up to 10 tokens. Each sequence of ASCII letters or digits counts as one token. Spaces and special characters separate tokens. For example, "summer\'s t-shirts" counts as 4 tokens.',
+      }),
   })
   .openapi({ required: ['id', 'parent_id', 'match_type', 'value'] })
   .openapi('Keyword')
@@ -28044,7 +33382,12 @@ const KeywordCreateItemSchema = z
     match_type: MatchTypeSchema.nullable().openapi({
       description: 'Keyword [match type](/docs/api-features/targeting-overview/)',
     }),
-    value: z.string().openapi({ description: 'Keyword value (120 chars max).' }),
+    value: z
+      .string()
+      .openapi({
+        description:
+          'Keyword value (120 characters maximum). Set the match type to choose the match behavior. Omit Ads Manager\'s leading hyphen (-), double quotes (" "), and square brackets ([ ]) from the value. Broad negative keywords support up to 10 tokens. Each sequence of ASCII letters or digits counts as one token. Spaces and special characters separate tokens. For example, "summer\'s t-shirts" counts as 4 tokens.',
+      }),
   })
   .openapi({ required: ['match_type', 'value'] })
   .openapi('KeywordCreateItem')
@@ -28888,10 +34231,12 @@ const LocalInventoryCreateOperationSchema = z
     attributes: RetailLocalInventoryItemAttributesSchema,
     item_id: z
       .string()
+      .min(1)
       .openapi({ description: 'Catalog item id in the merchant namespace', example: 'item_id_1' }),
     operation: z.literal('CREATE'),
     store_code: z
       .string()
+      .min(1)
       .openapi({ description: 'Store code for the local inventory item', example: 'store_1' }),
   })
   .openapi({
@@ -28904,10 +34249,12 @@ const LocalInventoryDeleteOperationSchema = z
   .object({
     item_id: z
       .string()
+      .min(1)
       .openapi({ description: 'Catalog item id in the merchant namespace', example: 'item_id_1' }),
     operation: z.literal('DELETE'),
     store_code: z
       .string()
+      .min(1)
       .openapi({ description: 'Store code for the local inventory item', example: 'store_1' }),
   })
   .openapi({
@@ -29180,10 +34527,12 @@ const LocalInventoryUpdateOperationSchema = z
     attributes: RetailLocalInventoryItemAttributesOptionalSchema,
     item_id: z
       .string()
+      .min(1)
       .openapi({ description: 'Catalog item id in the merchant namespace', example: 'item_id_1' }),
     operation: z.literal('UPDATE'),
     store_code: z
       .string()
+      .min(1)
       .openapi({ description: 'Store code for the local inventory item', example: 'store_1' }),
   })
   .openapi({
@@ -29197,10 +34546,12 @@ const LocalInventoryUpsertOperationSchema = z
     attributes: RetailLocalInventoryItemAttributesSchema,
     item_id: z
       .string()
+      .min(1)
       .openapi({ description: 'Catalog item id in the merchant namespace', example: 'item_id_1' }),
     operation: z.literal('UPSERT'),
     store_code: z
       .string()
+      .min(1)
       .openapi({ description: 'Store code for the local inventory item', example: 'store_1' }),
   })
   .openapi({
@@ -29608,7 +34959,15 @@ const MMMReportCreateSchema = z
   .openapi('MMMReportCreate')
 
 const MediaUploadTypeSchema = z
-  .literal('video')
+  .enum([
+    'tvsci_ads_video',
+    'video',
+    'image_latent_disclosure',
+    'video_latent_disclosure',
+    'video_long_form',
+    'media_library_image',
+    'media_library_video',
+  ])
   .openapi({ title: 'Media upload type' })
   .openapi('MediaUploadType')
 
@@ -29628,11 +34987,517 @@ const MediaSchema = z
         example: '12345',
         readOnly: true,
       }),
-    media_type: MediaUploadTypeSchema.openapi({ example: 'video' }),
+    media_type: MediaUploadTypeSchema.openapi({ example: 'video', readOnly: true }),
     status: MediaUploadStatusSchema.exactOptional().openapi({ readOnly: true }),
   })
   .openapi({ required: ['media_id', 'media_type'], title: 'Media upload information.' })
   .openapi('Media')
+
+const MediaLibraryAssetFileExtensionSchema = z
+  .enum(['JPG', 'PNG', 'BMP', 'TIFF', 'WEBP', 'MOV', 'MP4', 'M4V', 'AVIF'])
+  .openapi({ description: 'File extension type of the uploaded media.' })
+  .openapi('MediaLibraryAssetFileExtension')
+
+const MediaLibraryImagePropertiesSchema = z
+  .object({
+    height: z.int32().exactOptional().openapi({ description: 'Height in pixels.', example: 1200 }),
+    url: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'URL of the image rendition.',
+        example: 'https://i.pinimg.com/originals/97/b2/b2/97b2b23da2f0c22ca5fbf577620f335a.jpg',
+      }),
+    width: z.int32().exactOptional().openapi({ description: 'Width in pixels.', example: 1200 }),
+  })
+  .openapi({ description: 'Dimensions and URL for a single image rendition.', required: [] })
+  .openapi('MediaLibraryImageProperties')
+
+const MediaLibraryImageSizesSchema = z
+  .object({
+    '236x': MediaLibraryImagePropertiesSchema.exactOptional(),
+    '345x': MediaLibraryImagePropertiesSchema.exactOptional(),
+    original: MediaLibraryImagePropertiesSchema.exactOptional(),
+  })
+  .openapi({
+    description:
+      'Image renditions by dimension. `original` is the source size; the rest are scaled thumbnails.',
+    required: [],
+  })
+  .openapi('MediaLibraryImageSizes')
+
+const MediaLibraryAssetImageDataSchema = z
+  .object({
+    sizes: MediaLibraryImageSizesSchema.exactOptional().openapi({
+      description: 'Renditions keyed by dimension label.',
+    }),
+  })
+  .openapi({
+    description: 'Image renditions for a media library asset, one per supported dimension.',
+    required: [],
+  })
+  .openapi('MediaLibraryAssetImageData')
+
+const MediaLibraryAssetImageSchema = z
+  .object({
+    asset_id: PinterestLibIntegerFormatTypeSchema.openapi({
+      description: 'Unique identifier of the asset.',
+      example: '93820395728',
+    }),
+    asset_type: z.literal('IMAGE'),
+    business_id: PinterestLibIntegerFormatTypeSchema.openapi({
+      description: 'Identifier of the business that owns the asset.',
+      example: '950259727533690363',
+    }),
+    created_at: z
+      .int()
+      .openapi({
+        description: 'Unix timestamp (milliseconds) when the asset was created.',
+        example: 1767225600000,
+      }),
+    file_extension: MediaLibraryAssetFileExtensionSchema,
+    has_been_promoted: z
+      .boolean()
+      .openapi({
+        description: 'Whether the asset has been used in a pin promotion.',
+        example: true,
+      }),
+    image: MediaLibraryAssetImageDataSchema.exactOptional().openapi({
+      description: 'Image renditions for the asset.',
+    }),
+    name: z.string().openapi({ description: 'Name of the asset.', example: 'Test-name' }),
+    tags: z
+      .array(z.string())
+      .openapi({
+        description: 'List of tags associated with the asset.',
+        example: ['tag1', 'tag2'],
+      }),
+    updated_at: z
+      .int()
+      .openapi({
+        description: 'Unix timestamp (milliseconds) when the asset was last updated.',
+        example: 1767225600000,
+      }),
+  })
+  .openapi({
+    description: 'An image media library asset.',
+    required: [
+      'asset_id',
+      'business_id',
+      'asset_type',
+      'name',
+      'has_been_promoted',
+      'file_extension',
+      'tags',
+      'created_at',
+      'updated_at',
+    ],
+  })
+  .openapi('MediaLibraryAssetImage')
+
+const MediaLibraryVideoFormatSchema = z
+  .object({
+    duration: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Duration in milliseconds.', example: 8650 }),
+    height: z.int32().exactOptional().openapi({ description: 'Height in pixels.', example: 2134 }),
+    url: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'URL of the video rendition.',
+        example:
+          'https://v1.pinimg.com/videos/iht/expMp4/d5/22/21/d52221bda196fd4e95a4ea3da0a71672_720w.mp4',
+      }),
+    width: z.int32().exactOptional().openapi({ description: 'Width in pixels.', example: 3428 }),
+  })
+  .openapi({ description: 'Details of a single video format rendition.', required: [] })
+  .openapi('MediaLibraryVideoFormat')
+
+const MediaLibraryAssetVideoDataSchema = z
+  .object({
+    v_720_p: MediaLibraryVideoFormatSchema.exactOptional(),
+    v_hlsv3_mobile: MediaLibraryVideoFormatSchema.exactOptional(),
+  })
+  .openapi({ description: 'Video format renditions for a media library asset.', required: [] })
+  .openapi('MediaLibraryAssetVideoData')
+
+const MediaLibraryAssetVideoSchema = z
+  .object({
+    asset_id: PinterestLibIntegerFormatTypeSchema.openapi({
+      description: 'Unique identifier of the asset.',
+      example: '93820395728',
+    }),
+    asset_type: z.literal('VIDEO'),
+    business_id: PinterestLibIntegerFormatTypeSchema.openapi({
+      description: 'Identifier of the business that owns the asset.',
+      example: '950259727533690363',
+    }),
+    created_at: z
+      .int()
+      .openapi({
+        description: 'Unix timestamp (milliseconds) when the asset was created.',
+        example: 1767225600000,
+      }),
+    file_extension: MediaLibraryAssetFileExtensionSchema,
+    has_been_promoted: z
+      .boolean()
+      .openapi({
+        description: 'Whether the asset has been used in a pin promotion.',
+        example: true,
+      }),
+    image: MediaLibraryAssetImageDataSchema.exactOptional().openapi({
+      description: 'Thumbnail image renditions for the video asset.',
+    }),
+    name: z.string().openapi({ description: 'Name of the asset.', example: 'Test-name' }),
+    tags: z
+      .array(z.string())
+      .openapi({
+        description: 'List of tags associated with the asset.',
+        example: ['tag1', 'tag2'],
+      }),
+    updated_at: z
+      .int()
+      .openapi({
+        description: 'Unix timestamp (milliseconds) when the asset was last updated.',
+        example: 1767225600000,
+      }),
+    video: MediaLibraryAssetVideoDataSchema.exactOptional().openapi({
+      description: 'Video format renditions for the asset.',
+    }),
+  })
+  .openapi({
+    description: 'A video media library asset.',
+    required: [
+      'asset_id',
+      'business_id',
+      'asset_type',
+      'name',
+      'has_been_promoted',
+      'file_extension',
+      'tags',
+      'created_at',
+      'updated_at',
+    ],
+  })
+  .openapi('MediaLibraryAssetVideo')
+
+const MediaLibraryAssetSchema = z
+  .discriminatedUnion('asset_type', [MediaLibraryAssetImageSchema, MediaLibraryAssetVideoSchema])
+  .openapi({
+    description: 'A media library asset. The concrete shape depends on `asset_type`.',
+    discriminator: {
+      propertyName: 'asset_type',
+      mapping: {
+        IMAGE: '#/components/schemas/MediaLibraryAssetImage',
+        VIDEO: '#/components/schemas/MediaLibraryAssetVideo',
+      },
+    },
+  })
+  .openapi('MediaLibraryAsset')
+
+const MediaLibraryAssetCreateEntrySchema = z
+  .object({
+    ad_account_id: PinterestLibIntegerFormatTypeSchema.exactOptional().openapi({
+      description: 'Ad account that created the asset',
+      example: '596736294873',
+    }),
+    media_id: z
+      .string()
+      .regex(/^\d+$/)
+      .exactOptional()
+      .openapi({
+        description:
+          'Unique identifier returned when you registered the media upload via POST /v5/media.',
+        example: '12345',
+      }),
+    name: z.string().openapi({ description: 'Name of the asset.', example: 'test name' }),
+    tags: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Words to categorize the assets so that you can filter on these categories later when fetching assets.',
+        example: ['lifestyle', 'fashion'],
+      }),
+  })
+  .openapi({ description: 'A single asset to create.', required: ['name'] })
+  .openapi('MediaLibraryAssetCreateEntry')
+
+const MediaLibraryAssetTypeSchema = z
+  .enum(['IMAGE', 'VIDEO'])
+  .openapi({ description: 'Type of media library asset.' })
+  .openapi('MediaLibraryAssetType')
+
+const MediaLibraryAssetUpdateEntrySchema = z
+  .object({
+    asset_id: PinterestLibIntegerFormatTypeSchema.openapi({
+      description: 'Unique identifier of the asset to update.',
+      example: '950259590150898564',
+    }),
+    name: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'New asset name. Omit or send `null` to leave it unchanged; the name cannot be cleared.',
+        example: 'Updated name',
+      }),
+    tags: z
+      .array(z.string())
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'New list of tags, replacing the current tags. Omit or send `null` to leave them unchanged; send an empty list to remove all tags.',
+        example: ['lifestyle', 'updated'],
+      }),
+  })
+  .openapi({
+    description:
+      'A single asset to update. Omitting a field, or sending it as null, leaves it unchanged. Send an empty tag list to remove all tags; the name cannot be cleared.',
+    required: ['asset_id'],
+  })
+  .openapi('MediaLibraryAssetUpdateEntry')
+
+const MediaLibraryAssetsCreateRequestSchema = z
+  .object({
+    assets: z
+      .array(MediaLibraryAssetCreateEntrySchema)
+      .min(1)
+      .max(100)
+      .openapi({ description: 'Assets to create' }),
+  })
+  .openapi({
+    description:
+      'Bulk create request: the assets to create. At most 100 assets may be created per request.',
+    required: ['assets'],
+  })
+  .openapi('MediaLibraryAssetsCreateRequest')
+
+const MediaLibraryBulkOperationStatusSchema = z
+  .enum(['SUCCESS', 'PARTIAL_SUCCESS', 'ERROR'])
+  .openapi({ description: 'Overall outcome of a bulk operation.' })
+  .openapi('MediaLibraryBulkOperationStatus')
+
+const MediaLibraryAssetsCreateResultSchema = z
+  .object({
+    bookmark: z.string().nullable().exactOptional(),
+    failure_count: z
+      .int32()
+      .min(0)
+      .openapi({ description: 'Number of assets that failed to create.', example: 1 }),
+    items: z.array(CreateMediaLibraryAssetResultSchema),
+    status: MediaLibraryBulkOperationStatusSchema,
+    success_count: z
+      .int32()
+      .min(0)
+      .openapi({ description: 'Number of successfully created assets.', example: 1 }),
+  })
+  .openapi({
+    description: 'Bulk create result: the overall outcome plus the per-asset results.',
+    required: ['items', 'status', 'success_count', 'failure_count'],
+  })
+  .openapi('MediaLibraryAssetsCreateResult')
+
+const MediaLibraryDeleteAssetFailureSchema = z
+  .object({
+    asset_id: PinterestLibIntegerFormatTypeSchema.openapi({
+      description: 'ID of the asset that could not be deleted.',
+      example: '2859857184972667704',
+    }),
+    error_code: MediaLibraryAssetErrorCodeSchema.openapi({
+      description: 'Why the asset failed to delete.',
+      example: 'ASSET_NOT_FOUND',
+    }),
+    message: z
+      .string()
+      .openapi({
+        description: 'Result message for the failed asset operation.',
+        example: 'The requested asset was not found.',
+      }),
+  })
+  .openapi({
+    description: 'Failure detail for a single asset in a bulk delete response.',
+    required: ['asset_id', 'error_code', 'message'],
+  })
+  .openapi('MediaLibraryDeleteAssetFailure')
+
+const MediaLibraryAssetsDeleteResultSchema = z
+  .object({
+    deleted_asset_ids: z
+      .array(PinterestLibIntegerFormatTypeSchema)
+      .openapi({
+        description: 'IDs of the assets that were deleted.',
+        example: ['1072720976992785066', '2859857184972667704'],
+      }),
+    deleted_count: z
+      .int32()
+      .min(0)
+      .openapi({
+        description:
+          'Number of assets that were successfully deleted. Already-deleted assets count as successes.',
+        example: 1,
+      }),
+    failed_count: z
+      .int32()
+      .min(0)
+      .openapi({ description: 'Number of assets that failed to delete.', example: 1 }),
+    failures: z
+      .array(MediaLibraryDeleteAssetFailureSchema)
+      .openapi({
+        description: 'Per-asset failures. Empty when every requested asset was deleted.',
+      }),
+    status: MediaLibraryBulkOperationStatusSchema.openapi({
+      description:
+        '`SUCCESS` when every requested asset was deleted, `PARTIAL_SUCCESS` when only some were,\n`ERROR` when none were.',
+    }),
+  })
+  .openapi({
+    description: 'The result of a bulk delete of media library assets.',
+    required: ['status', 'deleted_count', 'deleted_asset_ids', 'failed_count', 'failures'],
+  })
+  .openapi('MediaLibraryAssetsDeleteResult')
+
+const MediaLibraryAssetsListResponseSchema = z
+  .object({
+    assets: z
+      .array(MediaLibraryAssetSchema)
+      .openapi({ description: 'List of media library assets.' }),
+    pagination_token: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Pagination token for fetching the next page of results. Pass back unchanged as the\n`pagination_token` request parameter to fetch the next page. Omitted when there are no more results.',
+      }),
+  })
+  .openapi({
+    description: 'The response payload for a media library assets listing.',
+    required: ['assets'],
+  })
+  .openapi('MediaLibraryAssetsListResponse')
+
+const MediaLibraryAssetsUpdateRequestSchema = z
+  .object({
+    assets: z
+      .array(MediaLibraryAssetUpdateEntrySchema)
+      .min(1)
+      .max(100)
+      .openapi({ description: 'Assets to update. Each entry is identified by its `asset_id`.' }),
+  })
+  .openapi({
+    description:
+      'Bulk update request: the assets to update. At most 100 assets may be updated per request.',
+    required: ['assets'],
+  })
+  .openapi('MediaLibraryAssetsUpdateRequest')
+
+const MediaLibraryUpdateAssetSummarySchema = z
+  .object({
+    asset_id: PinterestLibIntegerFormatTypeSchema.openapi({
+      description: 'Unique identifier of the asset.',
+      example: '950259590150898564',
+    }),
+    asset_type: MediaLibraryAssetTypeSchema,
+    business_id: PinterestLibIntegerFormatTypeSchema.openapi({
+      description: 'Identifier of the business that owns the asset.',
+      example: '950259727533690363',
+    }),
+    created_at: z
+      .int()
+      .openapi({
+        description: 'Unix timestamp (milliseconds) when the asset was created.',
+        example: 1767225600000,
+      }),
+    file_extension: MediaLibraryAssetFileExtensionSchema,
+    has_been_promoted: z
+      .boolean()
+      .openapi({
+        description: 'Whether the asset has been used in a pin promotion.',
+        example: true,
+      }),
+    name: z.string().openapi({ description: 'Name of the asset.', example: 'Black fuzzy crocs' }),
+    tags: z
+      .array(z.string())
+      .openapi({
+        description: 'List of tags associated with the asset.',
+        example: ['tag1', 'tag2'],
+      }),
+    updated_at: z
+      .int()
+      .openapi({
+        description: 'Unix timestamp (milliseconds) when the asset was last updated.',
+        example: 1767225600000,
+      }),
+  })
+  .openapi({
+    description: 'Asset snapshot returned for a successful update result.',
+    required: [
+      'asset_id',
+      'business_id',
+      'asset_type',
+      'name',
+      'has_been_promoted',
+      'file_extension',
+      'tags',
+      'created_at',
+      'updated_at',
+    ],
+  })
+  .openapi('MediaLibraryUpdateAssetSummary')
+
+const MediaLibraryUpdateAssetResultSchema = z
+  .object({
+    asset: MediaLibraryUpdateAssetSummarySchema.exactOptional().openapi({
+      description:
+        'Snapshot of the updated asset. Present on success; omitted when the asset could not be updated.',
+    }),
+    error_code: MediaLibraryAssetErrorCodeSchema.exactOptional().openapi({
+      description: 'Why the asset operation failed. Omitted when the status is `SUCCESS`.',
+      example: 'ASSET_NOT_FOUND',
+    }),
+    message: z
+      .string()
+      .openapi({
+        description: 'Result message for the asset operation. Empty on success.',
+        example: '',
+      }),
+    status: MediaLibraryAssetOperationStatusSchema,
+  })
+  .openapi({
+    description: 'Result for a single asset in a bulk update response.',
+    required: ['status', 'message'],
+  })
+  .openapi('MediaLibraryUpdateAssetResult')
+
+const MediaLibraryAssetsUpdateResultSchema = z
+  .object({
+    failure_count: z
+      .int32()
+      .min(0)
+      .openapi({ description: 'Number of assets that failed to update.', example: 1 }),
+    results: z
+      .array(MediaLibraryUpdateAssetResultSchema)
+      .openapi({ description: 'Per-asset results, in the same order as the request `assets`.' }),
+    status: MediaLibraryBulkOperationStatusSchema,
+    success_count: z
+      .int32()
+      .min(0)
+      .openapi({ description: 'Number of successfully updated assets.', example: 1 }),
+  })
+  .openapi({
+    description: 'Bulk update result: the overall outcome plus the per-asset results.',
+    required: ['status', 'success_count', 'failure_count', 'results'],
+  })
+  .openapi('MediaLibraryAssetsUpdateResult')
+
+const MediaLibrarySortOrderSchema = z
+  .enum(['ASC', 'DESC'])
+  .openapi({ description: 'Sort order for results by creation date.' })
+  .openapi('MediaLibrarySortOrder')
 
 const MediaUploadParametersSchema = z
   .object({
@@ -29671,7 +35536,7 @@ const MediaUploadSchema = z
         example: '12345',
         readOnly: true,
       }),
-    media_type: MediaUploadTypeSchema.openapi({ example: 'video' }),
+    media_type: MediaUploadTypeSchema.openapi({ example: 'video', readOnly: true }),
     upload_parameters: MediaUploadParametersSchema.exactOptional().openapi({
       description:
         'The list of parameter key/value pairs you will need to send with your POST request to upload your media file.',
@@ -29693,10 +35558,15 @@ const MediaUploadSchema = z
   })
   .openapi('MediaUpload')
 
-const MediaUploadCreateSchema = z
-  .object({ media_type: MediaUploadTypeSchema.openapi({ example: 'video' }) })
-  .openapi({ description: 'Resource create operation model.', required: ['media_type'] })
-  .openapi('MediaUploadCreate')
+const MediaUploadCreateRequestSchema = z
+  .object({
+    media_type: MediaUploadTypeSchema.openapi({
+      description: 'High-level media type for the upload request.',
+      example: 'video',
+    }),
+  })
+  .openapi({ required: ['media_type'], title: 'Media upload information.' })
+  .openapi('MediaUploadCreateRequest')
 
 const MemberBusinessRoleSchema = z
   .enum(['EMPLOYEE', 'BIZ_ADMIN'])
@@ -29706,6 +35576,62 @@ const MemberBusinessRoleSchema = z
     example: 'BIZ_ADMIN',
   })
   .openapi('MemberBusinessRole')
+
+const MerchantApprovalStatusTypeSchema = z
+  .enum(['PENDING', 'APPROVED', 'DECLINED'])
+  .openapi({ description: "The merchant's high-level approval status." })
+  .openapi('MerchantApprovalStatusType')
+
+const MerchantPendingReasonSchema = z
+  .enum(['PENDING_APPEAL', 'PENDING_REVIEW', 'PENDING_ACTION_NEEDED'])
+  .openapi({ description: "The reason a merchant's status is pending." })
+  .openapi('MerchantPendingReason')
+
+const MerchantStatusResponseSchema = z
+  .object({
+    merchant_approval_status: MerchantApprovalStatusTypeSchema.openapi({
+      description: "The merchant's high-level approval status.",
+    }),
+    pending_reasons: MerchantPendingReasonSchema.exactOptional().openapi({
+      description: "The reason a merchant's status is pending.",
+    }),
+  })
+  .openapi({
+    description: 'Merchant approval status and pending reason details.',
+    required: ['merchant_approval_status'],
+  })
+  .openapi('MerchantStatusResponse')
+
+const MessageResponseSchema = z
+  .object({ message: z.string().exactOptional() })
+  .openapi({ description: 'A generic response carrying a human-readable message.', required: [] })
+  .openapi('MessageResponse')
+
+const MetricsCampaignSummaryStatusSchema = z
+  .enum(['RUNNING', 'PAUSED', 'NOT_STARTED', 'COMPLETED', 'ADVERTISER_DISABLED', 'ARCHIVED'])
+  .openapi({ description: 'Summary status for campaign' })
+  .openapi('MetricsCampaignSummaryStatus')
+
+const MetricsObjectiveTypeSchema = z
+  .enum([
+    'TRAFFIC',
+    'AWARENESS',
+    'CONSIDERATION',
+    'VIDEO_VIEW',
+    'WEB_CONVERSION',
+    'CATALOG_SALES',
+    'WEB_SESSIONS',
+    'VIDEO_COMPLETION',
+    'APP_INSTALL',
+    'SALES',
+    'CTV_CONSIDERATION',
+    'LEADS',
+  ])
+  .openapi({
+    description:
+      '  [Campaign objective type](/docs/redoc/#section/Campaign-objective) enum. ["VIDEO_COMPLETION"] in BETA. ["WEB_SESSIONS"] is DEPRECATED.',
+  })
+  .openapi('MetricsObjectiveType')
 
 const MetricsReportingTemplateTypeSchema = z
   .enum(['UNSPECIFIED', 'BULK', 'OVERVIEW', 'TABLE', 'MMM', 'BRAND_CATEGORY'])
@@ -29938,6 +35864,26 @@ const OauthAccessTokenCreateSchema = z
   .openapi({ description: 'Resource create operation model.', required: ['grant_type'] })
   .openapi('OauthAccessTokenCreate')
 
+const OffsiteAdsSettingsSchema = z
+  .object({
+    id: z
+      .string()
+      .regex(/^\d+$/)
+      .max(18)
+      .openapi({ description: 'Ad account ID.', readOnly: true }),
+  })
+  .openapi({
+    description:
+      'Advertiser metadata for offsite ads. Available to advertisers eligible for offsite placement or clients with CTV access.',
+    required: ['id'],
+  })
+  .openapi('OffsiteAdsSettings')
+
+const OffsiteAdsSettingsUpdateSchema = z
+  .looseObject({})
+  .openapi({ description: 'Resource create or update operation model.' })
+  .openapi('OffsiteAdsSettingsUpdate')
+
 const OrderSchema = z.enum(['ASCENDING', 'DESCENDING']).openapi('Order')
 
 const OrderLinePaidTypeSchema = z
@@ -30024,6 +35970,569 @@ const OrderLineMutationResponseSchema = z
   .object({ data: OrderLineMutationResultSchema.exactOptional() })
   .openapi({ title: 'OrderLineMutationResponse', required: [] })
   .openapi('OrderLineMutationResponse')
+
+const OverlayImageRatioSchema = z
+  .enum(['ONE_TO_ONE', 'TWO_TO_THREE', 'THREE_TO_FOUR', 'FOUR_TO_FIVE'])
+  .openapi({ description: 'Overlay image aspect ratio enum' })
+  .openapi('OverlayImageRatio')
+
+const OverlayImageSchema = z
+  .object({
+    height: z.int32().exactOptional().openapi({ description: 'Image height in pixels' }),
+    image_ratio: OverlayImageRatioSchema.openapi({ description: 'Image aspect ratio' }),
+    image_signature: z.string().openapi({ description: 'Image signature' }),
+    image_url: z.string().exactOptional().openapi({ description: 'Image URL' }),
+    width: z.int32().exactOptional().openapi({ description: 'Image width in pixels' }),
+  })
+  .openapi({
+    description: 'Overlay image with aspect ratio and signature for responses',
+    required: ['image_ratio', 'image_signature'],
+  })
+  .openapi('OverlayImage')
+
+const OverlaySchema = z
+  .object({
+    created_at: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Creation timestamp. Unix timestamp in milliseconds since epoch.',
+        example: 1619900000000,
+        readOnly: true,
+      }),
+    end_time: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'End time of the overlay as a Unix timestamp. In requests, use seconds since epoch. Responses return milliseconds since epoch. Must be greater than start_time when set.',
+        example: 1620086400,
+      }),
+    id: z
+      .string()
+      .regex(/^\d+$/)
+      .openapi({ description: 'The unique identifier of the overlay.', example: '123456' }),
+    images: z
+      .array(OverlayImageSchema)
+      .openapi({
+        description: 'Overlay images in responses with generated URLs and signatures.',
+        readOnly: true,
+      }),
+    merchant_id: z
+      .string()
+      .regex(/^\d+$/)
+      .openapi({
+        description: 'The ID of the merchant that the overlay is associated with.',
+        example: '549755885175',
+        readOnly: true,
+      }),
+    name: z
+      .string()
+      .max(100)
+      .openapi({
+        description: 'Name of the overlay. Max length 100 characters.',
+        example: 'Summer Sale 2026',
+      }),
+    start_time: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'Start time of the overlay as a Unix timestamp. In requests, use seconds since epoch. Responses return milliseconds since epoch.',
+        example: 1620000000,
+      }),
+    updated_at: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Last update timestamp. Unix timestamp in milliseconds since epoch.',
+        example: 1619900000000,
+        readOnly: true,
+      }),
+    user_id: z
+      .string()
+      .regex(/^\d+$/)
+      .openapi({
+        description: 'The ID of the user that the overlay is associated with.',
+        example: '549755885176',
+        readOnly: true,
+      }),
+    user_overlay_id: z
+      .string()
+      .max(50)
+      .exactOptional()
+      .openapi({
+        description:
+          'Merchant-provided overlay ID for external reference. Max length 50 characters when provided.',
+        example: 'summer-sale-01',
+      }),
+  })
+  .openapi({
+    description: 'Business user overlay for product catalog',
+    required: ['id', 'merchant_id', 'user_id', 'name', 'images', 'start_time', 'created_at'],
+  })
+  .openapi('Overlay')
+
+const OverlayAssignmentRuleFiltersSchema = z
+  .union([CatalogsBaseFiltersAnyOfSchema, CatalogsBaseFiltersAllOfSchema])
+  .openapi({
+    description: 'Object holding a group of filters for an overlay assignment rule',
+    title: 'overlay_assignment_rule_filters',
+  })
+  .openapi('OverlayAssignmentRuleFilters')
+
+const OverlayAssignmentRuleSchema = z
+  .object({
+    created_at: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Creation timestamp. Unix timestamp in milliseconds since epoch.',
+        example: 1619900000000,
+        readOnly: true,
+      }),
+    filters: OverlayAssignmentRuleFiltersSchema.openapi({
+      description: 'Filter criteria used to determine which products should receive the overlays.',
+      example: { any_of: [{ ITEM_ID: { values: ['SKU-1001', 'SKU-1002'] } }] },
+    }),
+    id: z
+      .string()
+      .regex(/^\d+$/)
+      .openapi({
+        description: 'The unique identifier of the overlay assignment rule.',
+        example: '123456',
+      }),
+    merchant_id: z
+      .string()
+      .regex(/^\d+$/)
+      .openapi({
+        description: 'The ID of the merchant that the overlay assignment rule is associated with.',
+        example: '549755885175',
+        readOnly: true,
+      }),
+    name: z
+      .string()
+      .max(100)
+      .openapi({
+        description: 'Name of the overlay assignment rule. Max length 100 characters.',
+        example: 'Summer Sale Rule',
+      }),
+    overlay_ids: z
+      .array(PinterestLibIntegerFormatTypeSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          "List of overlay IDs to apply to matching products.\nYou must provide either user_overlay_ids OR overlay_ids (or both).\nUse this to reference overlays by Pinterest's internal IDs.\nEach ID should be a string-formatted integer.\nReference one overlay per rule.",
+        example: ['123456'],
+      }),
+    updated_at: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Last update timestamp. Unix timestamp in milliseconds since epoch.',
+        example: 1619900000000,
+        readOnly: true,
+      }),
+    user_id: z
+      .string()
+      .regex(/^\d+$/)
+      .openapi({
+        description: 'The ID of the user that the overlay assignment rule is associated with.',
+        example: '549755885176',
+        readOnly: true,
+      }),
+    user_overlay_ids: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'List of merchant-provided overlay IDs to apply to matching products.\nYou must provide either user_overlay_ids OR overlay_ids (or both).\nUse this to reference overlays by your own custom IDs.\nReference one overlay per rule.',
+        example: ['summer-sale-01'],
+      }),
+  })
+  .openapi({
+    description:
+      'Overlay assignment rule for applying overlays to catalog products based on filters',
+    required: ['id', 'merchant_id', 'user_id', 'name', 'filters', 'created_at'],
+  })
+  .openapi('OverlayAssignmentRule')
+
+const OverlayAssignmentRuleCreateSchema = z
+  .object({
+    filters: OverlayAssignmentRuleFiltersSchema.openapi({
+      description: 'Filter criteria used to determine which products should receive the overlays.',
+      example: { any_of: [{ ITEM_ID: { values: ['SKU-1001', 'SKU-1002'] } }] },
+    }),
+    name: z
+      .string()
+      .max(100)
+      .openapi({
+        description: 'Name of the overlay assignment rule. Max length 100 characters.',
+        example: 'Summer Sale Rule',
+      }),
+    overlay_ids: z
+      .array(PinterestLibIntegerFormatTypeSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          "List of overlay IDs to apply to matching products.\nYou must provide either user_overlay_ids OR overlay_ids (or both).\nUse this to reference overlays by Pinterest's internal IDs.\nEach ID should be a string-formatted integer.\nReference one overlay per rule.",
+        example: ['123456'],
+      }),
+    user_overlay_ids: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'List of merchant-provided overlay IDs to apply to matching products.\nYou must provide either user_overlay_ids OR overlay_ids (or both).\nUse this to reference overlays by your own custom IDs.\nReference one overlay per rule.',
+        example: ['summer-sale-01'],
+      }),
+  })
+  .openapi({ description: 'Resource create operation model.', required: ['name', 'filters'] })
+  .openapi('OverlayAssignmentRuleCreate')
+
+const OverlayAssignmentRuleFiltersUpdateSchema = z
+  .union([CatalogsBaseFiltersAnyOfUpdateSchema, CatalogsBaseFiltersAllOfUpdateSchema])
+  .openapi({
+    description: 'Object holding a group of filters for an overlay assignment rule',
+    title: 'overlay_assignment_rule_filters',
+  })
+  .openapi('OverlayAssignmentRuleFiltersUpdate')
+
+const OverlayAssignmentRuleUpdateSchema = z
+  .object({
+    filters: OverlayAssignmentRuleFiltersUpdateSchema.exactOptional().openapi({
+      description: 'Filter criteria used to determine which products should receive the overlays.',
+      example: { any_of: [{ ITEM_ID: { values: ['SKU-1001', 'SKU-1002'] } }] },
+    }),
+    name: z
+      .string()
+      .max(100)
+      .exactOptional()
+      .openapi({
+        description: 'Name of the overlay assignment rule. Max length 100 characters.',
+        example: 'Summer Sale Rule',
+      }),
+    overlay_ids: z
+      .array(PinterestLibIntegerFormatTypeSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          "List of overlay IDs to apply to matching products.\nYou must provide either user_overlay_ids OR overlay_ids (or both).\nUse this to reference overlays by Pinterest's internal IDs.\nEach ID should be a string-formatted integer.\nReference one overlay per rule.",
+        example: ['123456'],
+      }),
+    user_overlay_ids: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'List of merchant-provided overlay IDs to apply to matching products.\nYou must provide either user_overlay_ids OR overlay_ids (or both).\nUse this to reference overlays by your own custom IDs.\nReference one overlay per rule.',
+        example: ['summer-sale-01'],
+      }),
+  })
+  .openapi({ description: 'Resource create or update operation model.', required: [] })
+  .openapi('OverlayAssignmentRuleUpdate')
+
+const OverlayImageItemBase64Schema = z
+  .object({
+    data: z.string().openapi({ description: 'Base64-encoded PNG image data' }),
+    ratio: OverlayImageRatioSchema.openapi({ description: 'Image aspect ratio' }),
+  })
+  .openapi({
+    description: 'Image item for create/update request with base64 data',
+    required: ['ratio', 'data'],
+  })
+  .openapi('OverlayImageItemBase64')
+
+const OverlayImagesBase64Schema = z
+  .object({
+    items: z
+      .array(OverlayImageItemBase64Schema)
+      .openapi({ description: 'Array of base64-encoded images with ratios' }),
+    source_type: z.literal('image_base64').openapi({ description: 'Source type discriminator' }),
+  })
+  .openapi({
+    description: 'Base64 image source with array of images',
+    required: ['source_type', 'items'],
+  })
+  .openapi('OverlayImagesBase64')
+
+const OverlayImageItemUrlSchema = z
+  .object({
+    ratio: OverlayImageRatioSchema.openapi({ description: 'Image aspect ratio' }),
+    url: z.string().openapi({ description: 'Image URL' }),
+  })
+  .openapi({
+    description: 'Image item for create/update request with URL',
+    required: ['ratio', 'url'],
+  })
+  .openapi('OverlayImageItemUrl')
+
+const OverlayImagesURLSchema = z
+  .object({
+    items: z
+      .array(OverlayImageItemUrlSchema)
+      .openapi({ description: 'Array of image URLs with ratios' }),
+    source_type: z.literal('image_url').openapi({ description: 'Source type discriminator' }),
+  })
+  .openapi({
+    description: 'URL image source with array of images',
+    required: ['source_type', 'items'],
+  })
+  .openapi('OverlayImagesURL')
+
+const OverlayImagesRequestSchema = z
+  .discriminatedUnion('source_type', [OverlayImagesBase64Schema, OverlayImagesURLSchema])
+  .openapi({
+    description: 'Discriminated union for overlay image sources',
+    discriminator: {
+      propertyName: 'source_type',
+      mapping: {
+        image_base64: '#/components/schemas/OverlayImagesBase64',
+        image_url: '#/components/schemas/OverlayImagesURL',
+      },
+    },
+  })
+  .openapi('OverlayImagesRequest')
+
+const OverlayCreateSchema = z
+  .object({
+    end_time: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'End time of the overlay as a Unix timestamp. In requests, use seconds since epoch. Responses return milliseconds since epoch. Must be greater than start_time when set.',
+        example: 1620086400,
+      }),
+    images_input: OverlayImagesRequestSchema.openapi({
+      description:
+        'Overlay images input for create/update requests. Accepts either base64-encoded image data or image URLs with aspect ratios.',
+      example: {
+        source_type: 'image_url',
+        items: [
+          { ratio: 'ONE_TO_ONE', url: 'https://example.com/overlays/summer-sale-1x1.png' },
+          { ratio: 'TWO_TO_THREE', url: 'https://example.com/overlays/summer-sale-2x3.png' },
+        ],
+      },
+    }),
+    name: z
+      .string()
+      .max(100)
+      .openapi({
+        description: 'Name of the overlay. Max length 100 characters.',
+        example: 'Summer Sale 2026',
+      }),
+    start_time: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'Start time of the overlay as a Unix timestamp. In requests, use seconds since epoch. Responses return milliseconds since epoch.',
+        example: 1620000000,
+      }),
+    user_overlay_id: z
+      .string()
+      .max(50)
+      .exactOptional()
+      .openapi({
+        description:
+          'Merchant-provided overlay ID for external reference. Max length 50 characters when provided.',
+        example: 'summer-sale-01',
+      }),
+  })
+  .openapi({
+    description: 'Resource create operation model.',
+    required: ['name', 'images_input', 'start_time'],
+  })
+  .openapi('OverlayCreate')
+
+const OverlayImagesBase64UpdateSchema = z
+  .object({
+    items: z
+      .array(OverlayImageItemBase64Schema)
+      .exactOptional()
+      .openapi({ description: 'Array of base64-encoded images with ratios' }),
+    source_type: z
+      .literal('image_base64')
+      .exactOptional()
+      .openapi({ description: 'Source type discriminator' }),
+  })
+  .openapi({ description: 'Base64 image source with array of images', required: [] })
+  .openapi('OverlayImagesBase64Update')
+
+const OverlayImagesURLUpdateSchema = z
+  .object({
+    items: z
+      .array(OverlayImageItemUrlSchema)
+      .exactOptional()
+      .openapi({ description: 'Array of image URLs with ratios' }),
+    source_type: z
+      .literal('image_url')
+      .exactOptional()
+      .openapi({ description: 'Source type discriminator' }),
+  })
+  .openapi({ description: 'URL image source with array of images', required: [] })
+  .openapi('OverlayImagesURLUpdate')
+
+const OverlayImagesRequestUpdateSchema = z
+  .xor([OverlayImagesBase64UpdateSchema, OverlayImagesURLUpdateSchema])
+  .openapi({
+    description: 'Discriminated union for overlay image sources',
+    discriminator: {
+      propertyName: 'source_type',
+      mapping: {
+        image_base64: '#/components/schemas/OverlayImagesBase64Update',
+        image_url: '#/components/schemas/OverlayImagesURLUpdate',
+      },
+    },
+  })
+  .openapi('OverlayImagesRequestUpdate')
+
+const OverlayUpdateSchema = z
+  .object({
+    end_time: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'End time of the overlay as a Unix timestamp. In requests, use seconds since epoch. Responses return milliseconds since epoch. Must be greater than start_time when set.',
+        example: 1620086400,
+      }),
+    images_input: OverlayImagesRequestUpdateSchema.exactOptional().openapi({
+      description:
+        'Overlay images input for create/update requests. Accepts either base64-encoded image data or image URLs with aspect ratios.',
+      example: {
+        source_type: 'image_url',
+        items: [
+          { ratio: 'ONE_TO_ONE', url: 'https://example.com/overlays/summer-sale-1x1.png' },
+          { ratio: 'TWO_TO_THREE', url: 'https://example.com/overlays/summer-sale-2x3.png' },
+        ],
+      },
+    }),
+    name: z
+      .string()
+      .max(100)
+      .exactOptional()
+      .openapi({
+        description: 'Name of the overlay. Max length 100 characters.',
+        example: 'Summer Sale 2026',
+      }),
+    start_time: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'Start time of the overlay as a Unix timestamp. In requests, use seconds since epoch. Responses return milliseconds since epoch.',
+        example: 1620000000,
+      }),
+    user_overlay_id: z
+      .string()
+      .max(50)
+      .exactOptional()
+      .openapi({
+        description:
+          'Merchant-provided overlay ID for external reference. Max length 50 characters when provided.',
+        example: 'summer-sale-01',
+      }),
+  })
+  .openapi({ description: 'Resource create or update operation model.', required: [] })
+  .openapi('OverlayUpdate')
 
 const PartnerTypeSchema = z
   .enum(['INTERNAL', 'EXTERNAL'])
@@ -30186,7 +36695,14 @@ const PinMediaSourceImagesBase64ItemSchema = z
 
 const PinMediaSourceImagesBase64Schema = z
   .object({
-    index: z.int().min(0).exactOptional(),
+    index: z
+      .int()
+      .min(0)
+      .exactOptional()
+      .openapi({
+        description:
+          'Zero-based index of the carousel card that should appear first when the Pin is shown.\nAllows advertisers to pick any card (1st, 2nd, 3rd, etc.) as the default start point.\nPrimary use case is starting on the middle card so Pinners can swipe either direction\nto explore a spectrum.',
+      }),
     items: z
       .array(PinMediaSourceImagesBase64ItemSchema)
       .min(2)
@@ -30215,7 +36731,14 @@ const PinMediaSourceImagesURLItemSchema = z
 
 const PinMediaSourceImagesURLSchema = z
   .object({
-    index: z.int().min(0).exactOptional(),
+    index: z
+      .int()
+      .min(0)
+      .exactOptional()
+      .openapi({
+        description:
+          'Zero-based index of the carousel card that should appear first when the Pin is shown.\nAllows advertisers to pick any card (1st, 2nd, 3rd, etc.) as the default start point.\nPrimary use case is starting on the middle card so Pinners can swipe either direction\nto explore a spectrum.',
+      }),
     items: z
       .array(PinMediaSourceImagesURLItemSchema)
       .min(2)
@@ -30301,6 +36824,14 @@ const PinCreateSchema = z
       .nullable()
       .exactOptional()
       .openapi({ description: 'Dominant pin color. Hex number, e.g. `#6E7874`.' }),
+    is_removable: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'If you set it to `true`, the Pin becomes ad-only and is automatically added to an "Ad-only Pins" board; so, you do not have to specify a `board_id`.\n**Note:** Ad-only pins cannot be repinned.',
+      }),
     link: z.string().max(2048).nullable().exactOptional(),
     media_source: PinMediaSourceSchema.exactOptional(),
     parent_pin_id: z
@@ -30428,7 +36959,7 @@ const PinterestLibStatus204Schema = z
 const PredictedTimeSeriesSchema = z
   .object({ date: z.iso.date().exactOptional() })
   .catchall(z.int())
-  .openapi({ title: 'PredictedTimeSeries' })
+  .openapi({ title: 'PredictedTimeSeries', required: [] })
   .openapi('PredictedTimeSeries')
 
 const ProductCategoriesDemographicSchema = z
@@ -30737,10 +37268,76 @@ const PromotionTypeSchema = z
   })
   .openapi('PromotionType')
 
+const PromotionCurrencySchema = z
+  .enum([
+    'UNK',
+    'AED',
+    'ARS',
+    'AUD',
+    'BGN',
+    'BHD',
+    'BOB',
+    'BRL',
+    'CAD',
+    'CHF',
+    'CLP',
+    'COP',
+    'CRC',
+    'CZK',
+    'DKK',
+    'DOP',
+    'DZD',
+    'EGP',
+    'EUR',
+    'GBP',
+    'GTQ',
+    'HKD',
+    'HUF',
+    'IDR',
+    'ILS',
+    'INR',
+    'IQD',
+    'JPY',
+    'KRW',
+    'KWD',
+    'KZT',
+    'MAD',
+    'MDL',
+    'MKD',
+    'MXN',
+    'MYR',
+    'NGN',
+    'NOK',
+    'NZD',
+    'OMR',
+    'PEN',
+    'PHP',
+    'PKR',
+    'PLN',
+    'QAR',
+    'RON',
+    'RSD',
+    'SAR',
+    'SEK',
+    'SGD',
+    'THB',
+    'TRY',
+    'TWD',
+    'USD',
+    'VED',
+    'VND',
+    'ZAR',
+  ])
+  .openapi({
+    description:
+      'Currency shown with a promotion amount. Matches the Ads Manager promotion currency list.',
+  })
+  .openapi('PromotionCurrency')
+
 const PromotionTemplateValueSchema = z
   .object({
     amount: z.number().exactOptional().openapi({ description: 'Numeric value.', example: 100 }),
-    currency_code: CurrencySchema.exactOptional(),
+    currency_code: PromotionCurrencySchema.exactOptional(),
     custom_text: z
       .string()
       .exactOptional()
@@ -30980,6 +37577,36 @@ const PublicTargetingTypeSchema = z
   .openapi({ description: 'Public ad targeting type with external names', example: 'APPTYPE' })
   .openapi('PublicTargetingType')
 
+const PublisherBlocklistFieldsSchema = z
+  .object({
+    excluded_app_bundles: z
+      .array(z.string())
+      .max(1000)
+      .exactOptional()
+      .openapi({
+        description:
+          'Mobile app bundle IDs excluded from offsite ad delivery. Omit this field to leave the blocklist unchanged, or send an empty array to clear it.',
+        example: ['com.example.app', 'com.news.app'],
+      }),
+  })
+  .openapi({ description: 'Publisher blocklist settings for offsite ad delivery.', required: [] })
+  .openapi('PublisherBlocklistFields')
+
+const PublisherBlocklistUpdateSchema = z
+  .object({
+    excluded_app_bundles: z
+      .array(z.string())
+      .max(1000)
+      .exactOptional()
+      .openapi({
+        description:
+          'Mobile app bundle IDs excluded from offsite ad delivery. Omit this field to leave the blocklist unchanged, or send an empty array to clear it.',
+        example: ['com.example.app', 'com.news.app'],
+      }),
+  })
+  .openapi({ description: 'Resource create or update operation model.', required: [] })
+  .openapi('PublisherBlocklistUpdate')
+
 const QueryLabelEntityStatusesItemsSchema = z
   .enum(['ACTIVE', 'ARCHIVED'])
   .openapi('QueryLabelEntityStatusesItems')
@@ -31144,49 +37771,169 @@ const ReportingColumnSyncSchema = z
     'TOTAL_CLICKTHROUGH',
     'TOTAL_IMPRESSION',
     'TOTAL_IMPRESSION_USER',
+    'TOTAL_IMPRESSION_HOUSEHOLD_USER',
     'TOTAL_IMPRESSION_FREQUENCY',
+    'TOTAL_IMPRESSION_HOUSEHOLD_FREQUENCY',
     'COST_PER_OUTBOUND_CLICK_IN_DOLLAR',
     'COST_PER_OUTBOUND_CLICK_IN_DOLLAR_1',
     'TOTAL_ENGAGEMENT_SIGNUP',
     'TOTAL_ENGAGEMENT_CHECKOUT',
+    'TOTAL_ENGAGEMENT_ADD_PAYMENT_INFO',
+    'TOTAL_ENGAGEMENT_ADD_TO_WISHLIST',
+    'TOTAL_ENGAGEMENT_INITIATE_CHECKOUT',
+    'TOTAL_ENGAGEMENT_SUBSCRIBE',
+    'TOTAL_ENGAGEMENT_VIEW_CONTENT',
     'TOTAL_ENGAGEMENT_LEAD',
+    'TOTAL_ENGAGEMENT_CONTACT',
+    'TOTAL_ENGAGEMENT_SCHEDULE',
+    'TOTAL_ENGAGEMENT_FIND_LOCATION',
+    'TOTAL_ENGAGEMENT_CUSTOMIZE_PRODUCT',
+    'TOTAL_ENGAGEMENT_SUBMIT_APPLICATION',
+    'TOTAL_ENGAGEMENT_START_TRIAL',
+    'TOTAL_ENGAGEMENT_APP_OPEN',
+    'TOTAL_ENGAGEMENT_ADD_TO_CART',
+    'TOTAL_ENGAGEMENT_APP_INSTALL',
+    'TOTAL_ENGAGEMENT_PAGE_VISIT',
+    'TOTAL_ENGAGEMENT_SEARCH',
+    'TOTAL_ENGAGEMENT_VIEW_CATEGORY',
+    'TOTAL_ENGAGEMENT_WATCH_VIDEO',
     'TOTAL_CLICK_SIGNUP',
     'TOTAL_CLICK_CHECKOUT',
+    'TOTAL_CLICK_ADD_PAYMENT_INFO',
+    'TOTAL_CLICK_ADD_TO_WISHLIST',
+    'TOTAL_CLICK_INITIATE_CHECKOUT',
+    'TOTAL_CLICK_SUBSCRIBE',
+    'TOTAL_CLICK_VIEW_CONTENT',
     'TOTAL_CLICK_ADD_TO_CART',
     'TOTAL_CLICK_LEAD',
+    'TOTAL_CLICK_CONTACT',
+    'TOTAL_CLICK_SCHEDULE',
+    'TOTAL_CLICK_FIND_LOCATION',
+    'TOTAL_CLICK_CUSTOMIZE_PRODUCT',
+    'TOTAL_CLICK_SUBMIT_APPLICATION',
+    'TOTAL_CLICK_START_TRIAL',
+    'TOTAL_CLICK_APP_OPEN',
+    'TOTAL_CLICK_APP_INSTALL',
+    'TOTAL_CLICK_PAGE_VISIT',
+    'TOTAL_CLICK_SEARCH',
+    'TOTAL_CLICK_VIEW_CATEGORY',
+    'TOTAL_CLICK_WATCH_VIDEO',
     'TOTAL_VIEW_SIGNUP',
     'TOTAL_VIEW_CHECKOUT',
+    'TOTAL_VIEW_ADD_PAYMENT_INFO',
+    'TOTAL_VIEW_ADD_TO_WISHLIST',
+    'TOTAL_VIEW_INITIATE_CHECKOUT',
+    'TOTAL_VIEW_SUBSCRIBE',
+    'TOTAL_VIEW_VIEW_CONTENT',
     'TOTAL_VIEW_ADD_TO_CART',
     'TOTAL_VIEW_LEAD',
+    'TOTAL_VIEW_CONTACT',
+    'TOTAL_VIEW_SCHEDULE',
+    'TOTAL_VIEW_FIND_LOCATION',
+    'TOTAL_VIEW_CUSTOMIZE_PRODUCT',
+    'TOTAL_VIEW_SUBMIT_APPLICATION',
+    'TOTAL_VIEW_START_TRIAL',
+    'TOTAL_VIEW_APP_OPEN',
+    'TOTAL_VIEW_APP_INSTALL',
+    'TOTAL_VIEW_PAGE_VISIT',
+    'TOTAL_VIEW_SEARCH',
+    'TOTAL_VIEW_VIEW_CATEGORY',
+    'TOTAL_VIEW_WATCH_VIDEO',
     'TOTAL_CONVERSIONS',
+    'COST_PER_CONVERSION_IN_DOLLAR',
     'TOTAL_ENGAGEMENT_SIGNUP_VALUE_IN_MICRO_DOLLAR',
     'TOTAL_ENGAGEMENT_CHECKOUT_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_ENGAGEMENT_ADD_PAYMENT_INFO_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_ENGAGEMENT_ADD_TO_WISHLIST_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_ENGAGEMENT_INITIATE_CHECKOUT_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_ENGAGEMENT_SUBSCRIBE_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_ENGAGEMENT_VIEW_CONTENT_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_ENGAGEMENT_ADD_TO_CART_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_ENGAGEMENT_APP_INSTALL_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_ENGAGEMENT_LEAD_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_ENGAGEMENT_PAGE_VISIT_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_ENGAGEMENT_SEARCH_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_ENGAGEMENT_VIEW_CATEGORY_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_ENGAGEMENT_WATCH_VIDEO_VALUE_IN_MICRO_DOLLAR',
     'TOTAL_CLICK_SIGNUP_VALUE_IN_MICRO_DOLLAR',
     'TOTAL_CLICK_CHECKOUT_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_CLICK_ADD_PAYMENT_INFO_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_CLICK_ADD_TO_WISHLIST_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_CLICK_INITIATE_CHECKOUT_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_CLICK_SUBSCRIBE_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_CLICK_VIEW_CONTENT_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_CLICK_ADD_TO_CART_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_CLICK_APP_INSTALL_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_CLICK_LEAD_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_CLICK_PAGE_VISIT_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_CLICK_SEARCH_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_CLICK_VIEW_CATEGORY_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_CLICK_WATCH_VIDEO_VALUE_IN_MICRO_DOLLAR',
     'TOTAL_VIEW_SIGNUP_VALUE_IN_MICRO_DOLLAR',
     'TOTAL_VIEW_CHECKOUT_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_VIEW_ADD_PAYMENT_INFO_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_VIEW_ADD_TO_WISHLIST_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_VIEW_INITIATE_CHECKOUT_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_VIEW_SUBSCRIBE_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_VIEW_VIEW_CONTENT_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_VIEW_ADD_TO_CART_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_VIEW_APP_INSTALL_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_VIEW_LEAD_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_VIEW_PAGE_VISIT_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_VIEW_SEARCH_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_VIEW_VIEW_CATEGORY_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_VIEW_WATCH_VIDEO_VALUE_IN_MICRO_DOLLAR',
     'TOTAL_WEB_SESSIONS',
     'WEB_SESSIONS_1',
     'WEB_SESSIONS_2',
     'AD_NAME',
-    'CAMPAIGN_LIFETIME_SPEND_CAP',
     'AD_GROUP_OPTIMIZATION',
-    'CAMPAIGN_DAILY_SPEND_CAP',
     'CAMPAIGN_BUDGET_OPTIMIZATION',
+    'CAMPAIGN_BUDGET_TYPE',
+    'CAMPAIGN_BUDGET_IN_LOCAL_CURRENCY',
     'IS_PREMIERE_CAMPAIGN',
     'TOTAL_PAGE_VISIT',
     'TOTAL_SIGNUP',
     'TOTAL_CHECKOUT',
+    'TOTAL_ADD_PAYMENT_INFO',
+    'TOTAL_INITIATE_CHECKOUT',
+    'TOTAL_VIEW_CONTENT',
     'TOTAL_CUSTOM',
     'TOTAL_LEAD',
+    'TOTAL_CONTACT',
+    'TOTAL_SCHEDULE',
+    'TOTAL_FIND_LOCATION',
+    'TOTAL_CUSTOMIZE_PRODUCT',
+    'TOTAL_SUBMIT_APPLICATION',
+    'TOTAL_START_TRIAL',
+    'TOTAL_APP_OPEN',
     'TOTAL_ADD_TO_WISHLIST',
     'TOTAL_SUBSCRIBE',
+    'TOTAL_VIEW_CATEGORY',
+    'TOTAL_ADD_TO_CART',
+    'TOTAL_SEARCH',
+    'TOTAL_WATCH_VIDEO',
     'TOTAL_SIGNUP_VALUE_IN_MICRO_DOLLAR',
     'TOTAL_CHECKOUT_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_ADD_PAYMENT_INFO_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_ADD_TO_WISHLIST_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_INITIATE_CHECKOUT_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_SUBSCRIBE_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_VIEW_CONTENT_VALUE_IN_MICRO_DOLLAR',
     'TOTAL_CUSTOM_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_VIEW_CATEGORY_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_ADD_TO_CART_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_LEAD_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_SEARCH_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WATCH_VIDEO_VALUE_IN_MICRO_DOLLAR',
     'PAGE_VISIT_COST_PER_ACTION',
     'PAGE_VISIT_ROAS',
     'CHECKOUT_ROAS',
+    'ADD_PAYMENT_INFO_ROAS',
+    'ADD_TO_WISHLIST_ROAS',
+    'INITIATE_CHECKOUT_ROAS',
+    'SUBSCRIBE_ROAS',
+    'VIEW_CONTENT_ROAS',
     'CUSTOM_ROAS',
     'PRODUCT_GROUP_AD_IMAGE_TAG',
     'PRODUCT_GROUP_AD_VIDEO_TAG',
@@ -31220,17 +37967,153 @@ const ReportingColumnSyncSchema = z
     'TOTAL_VIDEO_AVG_WATCHTIME_IN_SECOND',
     'TOTAL_REPIN_RATE',
     'WEB_CHECKOUT_COST_PER_ACTION',
+    'WEB_ADD_PAYMENT_INFO_COST_PER_ACTION',
+    'WEB_ADD_TO_WISHLIST_COST_PER_ACTION',
+    'WEB_INITIATE_CHECKOUT_COST_PER_ACTION',
+    'WEB_SUBSCRIBE_COST_PER_ACTION',
+    'WEB_VIEW_CONTENT_COST_PER_ACTION',
+    'WEB_ADD_TO_CART_COST_PER_ACTION',
+    'WEB_LEAD_COST_PER_ACTION',
+    'WEB_PAGE_VISIT_COST_PER_ACTION',
+    'WEB_SEARCH_COST_PER_ACTION',
+    'WEB_SIGNUP_COST_PER_ACTION',
+    'WEB_VIEW_CATEGORY_COST_PER_ACTION',
+    'WEB_WATCH_VIDEO_COST_PER_ACTION',
     'WEB_CHECKOUT_ROAS',
+    'WEB_ADD_PAYMENT_INFO_ROAS',
+    'WEB_ADD_TO_WISHLIST_ROAS',
+    'WEB_INITIATE_CHECKOUT_ROAS',
+    'WEB_SUBSCRIBE_ROAS',
+    'WEB_VIEW_CONTENT_ROAS',
+    'WEB_ADD_TO_CART_ROAS',
+    'WEB_LEAD_ROAS',
+    'WEB_PAGE_VISIT_ROAS',
+    'WEB_SEARCH_ROAS',
+    'WEB_SIGNUP_ROAS',
+    'WEB_VIEW_CATEGORY_ROAS',
+    'WEB_WATCH_VIDEO_ROAS',
     'TOTAL_WEB_CHECKOUT',
+    'TOTAL_WEB_ADD_PAYMENT_INFO',
+    'TOTAL_WEB_ADD_TO_WISHLIST',
+    'TOTAL_WEB_INITIATE_CHECKOUT',
+    'TOTAL_WEB_SUBSCRIBE',
+    'TOTAL_WEB_VIEW_CONTENT',
+    'TOTAL_WEB_ADD_TO_CART',
+    'TOTAL_WEB_LEAD',
+    'TOTAL_WEB_PAGE_VISIT',
+    'TOTAL_WEB_SEARCH',
+    'TOTAL_WEB_SIGNUP',
+    'TOTAL_WEB_VIEW_CATEGORY',
+    'TOTAL_WEB_WATCH_VIDEO',
     'TOTAL_WEB_CHECKOUT_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_ADD_PAYMENT_INFO_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_ADD_TO_WISHLIST_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_INITIATE_CHECKOUT_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_SUBSCRIBE_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_VIEW_CONTENT_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_ADD_TO_CART_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_LEAD_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_PAGE_VISIT_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_SEARCH_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_SIGNUP_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_VIEW_CATEGORY_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_WATCH_VIDEO_VALUE_IN_MICRO_DOLLAR',
     'TOTAL_WEB_CLICK_CHECKOUT',
+    'TOTAL_WEB_CLICK_ADD_PAYMENT_INFO',
+    'TOTAL_WEB_CLICK_ADD_TO_WISHLIST',
+    'TOTAL_WEB_CLICK_INITIATE_CHECKOUT',
+    'TOTAL_WEB_CLICK_SUBSCRIBE',
+    'TOTAL_WEB_CLICK_VIEW_CONTENT',
+    'TOTAL_WEB_CLICK_ADD_TO_CART',
+    'TOTAL_WEB_CLICK_LEAD',
+    'TOTAL_WEB_CLICK_PAGE_VISIT',
+    'TOTAL_WEB_CLICK_SEARCH',
+    'TOTAL_WEB_CLICK_SIGNUP',
+    'TOTAL_WEB_CLICK_VIEW_CATEGORY',
+    'TOTAL_WEB_CLICK_WATCH_VIDEO',
     'TOTAL_WEB_CLICK_CHECKOUT_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_CLICK_ADD_PAYMENT_INFO_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_CLICK_ADD_TO_WISHLIST_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_CLICK_INITIATE_CHECKOUT_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_CLICK_SUBSCRIBE_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_CLICK_VIEW_CONTENT_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_CLICK_ADD_TO_CART_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_CLICK_LEAD_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_CLICK_PAGE_VISIT_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_CLICK_SEARCH_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_CLICK_SIGNUP_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_CLICK_VIEW_CATEGORY_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_CLICK_WATCH_VIDEO_VALUE_IN_MICRO_DOLLAR',
     'TOTAL_WEB_ENGAGEMENT_CHECKOUT',
+    'TOTAL_WEB_ENGAGEMENT_ADD_PAYMENT_INFO',
+    'TOTAL_WEB_ENGAGEMENT_ADD_TO_WISHLIST',
+    'TOTAL_WEB_ENGAGEMENT_INITIATE_CHECKOUT',
+    'TOTAL_WEB_ENGAGEMENT_SUBSCRIBE',
+    'TOTAL_WEB_ENGAGEMENT_VIEW_CONTENT',
+    'TOTAL_WEB_ENGAGEMENT_ADD_TO_CART',
+    'TOTAL_WEB_ENGAGEMENT_LEAD',
+    'TOTAL_WEB_ENGAGEMENT_PAGE_VISIT',
+    'TOTAL_WEB_ENGAGEMENT_SEARCH',
+    'TOTAL_WEB_ENGAGEMENT_SIGNUP',
+    'TOTAL_WEB_ENGAGEMENT_VIEW_CATEGORY',
+    'TOTAL_WEB_ENGAGEMENT_WATCH_VIDEO',
     'TOTAL_WEB_ENGAGEMENT_CHECKOUT_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_ENGAGEMENT_ADD_PAYMENT_INFO_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_ENGAGEMENT_ADD_TO_WISHLIST_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_ENGAGEMENT_INITIATE_CHECKOUT_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_ENGAGEMENT_SUBSCRIBE_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_ENGAGEMENT_VIEW_CONTENT_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_ENGAGEMENT_ADD_TO_CART_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_ENGAGEMENT_LEAD_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_ENGAGEMENT_PAGE_VISIT_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_ENGAGEMENT_SEARCH_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_ENGAGEMENT_SIGNUP_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_ENGAGEMENT_VIEW_CATEGORY_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_ENGAGEMENT_WATCH_VIDEO_VALUE_IN_MICRO_DOLLAR',
     'TOTAL_WEB_VIEW_CHECKOUT',
+    'TOTAL_WEB_VIEW_ADD_PAYMENT_INFO',
+    'TOTAL_WEB_VIEW_ADD_TO_WISHLIST',
+    'TOTAL_WEB_VIEW_INITIATE_CHECKOUT',
+    'TOTAL_WEB_VIEW_SUBSCRIBE',
+    'TOTAL_WEB_VIEW_VIEW_CONTENT',
+    'TOTAL_WEB_VIEW_ADD_TO_CART',
+    'TOTAL_WEB_VIEW_LEAD',
+    'TOTAL_WEB_VIEW_PAGE_VISIT',
+    'TOTAL_WEB_VIEW_SEARCH',
+    'TOTAL_WEB_VIEW_SIGNUP',
+    'TOTAL_WEB_VIEW_VIEW_CATEGORY',
+    'TOTAL_WEB_VIEW_WATCH_VIDEO',
     'TOTAL_WEB_VIEW_CHECKOUT_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_VIEW_ADD_PAYMENT_INFO_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_VIEW_ADD_TO_WISHLIST_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_VIEW_INITIATE_CHECKOUT_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_VIEW_SUBSCRIBE_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_VIEW_VIEW_CONTENT_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_VIEW_ADD_TO_CART_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_VIEW_LEAD_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_VIEW_PAGE_VISIT_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_VIEW_SEARCH_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_VIEW_SIGNUP_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_VIEW_VIEW_CATEGORY_VALUE_IN_MICRO_DOLLAR',
+    'TOTAL_WEB_VIEW_WATCH_VIDEO_VALUE_IN_MICRO_DOLLAR',
     'INAPP_CHECKOUT_COST_PER_ACTION',
+    'INAPP_ADD_PAYMENT_INFO_COST_PER_ACTION',
+    'INAPP_ADD_TO_WISHLIST_COST_PER_ACTION',
+    'INAPP_INITIATE_CHECKOUT_COST_PER_ACTION',
+    'INAPP_SUBSCRIBE_COST_PER_ACTION',
+    'INAPP_VIEW_CONTENT_COST_PER_ACTION',
+    'INAPP_ADD_TO_CART_COST_PER_ACTION',
+    'INAPP_APP_INSTALL_COST_PER_ACTION',
+    'INAPP_SEARCH_COST_PER_ACTION',
+    'INAPP_SIGNUP_COST_PER_ACTION',
     'TOTAL_OFFLINE_CHECKOUT',
+    'TOTAL_OFFLINE_ADD_PAYMENT_INFO',
+    'TOTAL_OFFLINE_ADD_TO_WISHLIST',
+    'TOTAL_OFFLINE_INITIATE_CHECKOUT',
+    'TOTAL_OFFLINE_SUBSCRIBE',
+    'TOTAL_OFFLINE_VIEW_CONTENT',
+    'TOTAL_OFFLINE_LEAD',
+    'TOTAL_OFFLINE_SIGNUP',
     'TOTAL_APP_INSTALL_CONVERSION_RATE',
     'TOTAL_INAPP_APP_INSTALL_CONVERSION_RATE',
     'IDEA_PIN_PRODUCT_TAG_VISIT_1',
@@ -31257,11 +38140,23 @@ const ReportingColumnSyncSchema = z
     'SHOWCASE_CARD_THUMBNAIL_SWIPE_BACKWARD',
     'SHOWCASE_AVERAGE_SUBPAGE_CLOSEUP_PER_SESSION',
     'TOTAL_CHECKOUT_CONVERSION_RATE',
+    'TOTAL_ADD_PAYMENT_INFO_CONVERSION_RATE',
+    'TOTAL_ADD_TO_WISHLIST_CONVERSION_RATE',
+    'TOTAL_INITIATE_CHECKOUT_CONVERSION_RATE',
+    'TOTAL_SUBSCRIBE_CONVERSION_RATE',
+    'TOTAL_VIEW_CONTENT_CONVERSION_RATE',
     'TOTAL_VIEW_CATEGORY_CONVERSION_RATE',
     'TOTAL_ADD_TO_CART_CONVERSION_RATE',
     'TOTAL_SIGNUP_CONVERSION_RATE',
     'TOTAL_PAGE_VISIT_CONVERSION_RATE',
     'TOTAL_LEAD_CONVERSION_RATE',
+    'TOTAL_CONTACT_CONVERSION_RATE',
+    'TOTAL_SCHEDULE_CONVERSION_RATE',
+    'TOTAL_FIND_LOCATION_CONVERSION_RATE',
+    'TOTAL_CUSTOMIZE_PRODUCT_CONVERSION_RATE',
+    'TOTAL_SUBMIT_APPLICATION_CONVERSION_RATE',
+    'TOTAL_START_TRIAL_CONVERSION_RATE',
+    'TOTAL_APP_OPEN_CONVERSION_RATE',
     'TOTAL_SEARCH_CONVERSION_RATE',
     'TOTAL_WATCH_VIDEO_CONVERSION_RATE',
     'TOTAL_UNKNOWN_CONVERSION_RATE',
@@ -31297,6 +38192,382 @@ const RespondToInvitesResponseArraySchema = z
   })
   .openapi({ required: [] })
   .openapi('RespondToInvitesResponseArray')
+
+const RmnCatalogAssetIdToPermissionsSchema = z
+  .object({ asset_id: PinterestLibIntegerFormatTypeSchema, asset_type: z.literal('CATALOG') })
+  .openapi({
+    description:
+      'Catalog access to grant as part of an RMN invite. Catalogs always receive CATALOGS_MANAGER.',
+    required: ['asset_type', 'asset_id'],
+  })
+  .openapi('RmnCatalogAssetIdToPermissions')
+
+const RmnPinnerListAssetIdToPermissionsSchema = z
+  .object({ asset_id: PinterestLibIntegerFormatTypeSchema, asset_type: z.literal('PINNER_LIST') })
+  .openapi({
+    description:
+      'Pinner-list access to grant as part of an RMN invite. Pinner lists always receive BIZ_PINNER_LIST_SHARER.',
+    required: ['asset_type', 'asset_id'],
+  })
+  .openapi('RmnPinnerListAssetIdToPermissions')
+
+const RmnConversionSegmentPermissionSchema = z
+  .enum(['BIZ_CONVERSION_SEGMENT_SHARER', 'BIZ_CONVERSION_SEGMENT_RESTRICTED_SHARER'])
+  .openapi({
+    description: 'Permissions that can be granted for a conversion segment in an RMN invite.',
+  })
+  .openapi('RmnConversionSegmentPermission')
+
+const RmnConversionSegmentAssetIdToPermissionsSchema = z
+  .object({
+    asset_id: PinterestLibIntegerFormatTypeSchema,
+    asset_type: z.literal('CONVERSION_SEGMENT'),
+    permissions: z.array(RmnConversionSegmentPermissionSchema).min(1),
+  })
+  .openapi({
+    description: 'Conversion-segment access to grant as part of an RMN invite.',
+    required: ['asset_type', 'asset_id', 'permissions'],
+  })
+  .openapi('RmnConversionSegmentAssetIdToPermissions')
+
+const RmnAssetIdToPermissionsSchema = z
+  .discriminatedUnion('asset_type', [
+    RmnCatalogAssetIdToPermissionsSchema,
+    RmnPinnerListAssetIdToPermissionsSchema,
+    RmnConversionSegmentAssetIdToPermissionsSchema,
+  ])
+  .openapi({
+    description: 'Typed asset permissions for an RMN invite.',
+    discriminator: {
+      propertyName: 'asset_type',
+      mapping: {
+        CATALOG: '#/components/schemas/RmnCatalogAssetIdToPermissions',
+        PINNER_LIST: '#/components/schemas/RmnPinnerListAssetIdToPermissions',
+        CONVERSION_SEGMENT: '#/components/schemas/RmnConversionSegmentAssetIdToPermissions',
+      },
+    },
+  })
+  .openapi('RmnAssetIdToPermissions')
+
+const RmnAcceptanceDetailsCreateSchema = z
+  .object({
+    asset_id_to_permissions: z
+      .array(RmnAssetIdToPermissionsSchema)
+      .exactOptional()
+      .openapi({
+        description: 'Typed list of RMN asset permissions to grant to the Brand. Optional.',
+        example: [
+          { asset_type: 'PINNER_LIST', asset_id: '2542622182994' },
+          {
+            asset_type: 'CONVERSION_SEGMENT',
+            asset_id: '549755885175',
+            permissions: ['BIZ_CONVERSION_SEGMENT_SHARER'],
+          },
+          { asset_type: 'CATALOG', asset_id: '549755885176' },
+        ],
+      }),
+    domain_destinations: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description: 'Domain destinations the RMN applies to the relationship. Optional.',
+        example: ['pinterest.com', 'bizaccess.com'],
+      }),
+  })
+  .openapi({
+    description:
+      'Details supplied by the RMN when accepting a Brand-sent relationship invite. These details configure the RMN resources shared with the Brand.',
+    required: [],
+  })
+  .openapi('RmnAcceptanceDetailsCreate')
+
+const RmnContractAcceptanceTrackingMethodSchema = z
+  .enum(['SCROLL_TO_BOTTOM', 'CLICK', 'SKIP'])
+  .openapi({ description: 'The method used to track contract acceptance' })
+  .openapi('RmnContractAcceptanceTrackingMethod')
+
+const RmnBillingContractSchema = z
+  .object({
+    acceptance_tracking_method: RmnContractAcceptanceTrackingMethodSchema.exactOptional().openapi({
+      description: 'The method used to track contract acceptance',
+      example: 'SCROLL_TO_BOTTOM',
+    }),
+    contract_file_url: z
+      .string()
+      .openapi({
+        description: 'Signed URL to download the contract file',
+        example: 'https://s3.amazonaws.com/bucket/contract.pdf?signature=abc',
+      }),
+    contract_id: PinterestLibIntegerFormatTypeSchema.openapi({
+      description:
+        'The contract ID.\n\nNote: For RMNs with a contract available, this is retrieved via the Get Invite endpoint.',
+      example: '2613499880051',
+    }),
+    contract_language: z
+      .string()
+      .openapi({ description: 'Language of the contract', example: 'EN' }),
+  })
+  .openapi({
+    description: 'RMN billing contract file with download URL',
+    required: ['contract_id', 'contract_file_url', 'contract_language'],
+  })
+  .openapi('RmnBillingContract')
+
+const RmnBillingContractAcceptanceUpdateSchema = z
+  .object({
+    client_business_id: z
+      .string()
+      .regex(/^\d+$/)
+      .exactOptional()
+      .openapi({
+        description: 'Client business ID the user is acting on behalf of',
+        example: '5497558851751312312',
+      }),
+    language: z
+      .string()
+      .regex(/^[a-zA-Z]{2}$/)
+      .exactOptional()
+      .openapi({ description: 'The language of the RMN contract being accepted', example: 'EN' }),
+  })
+  .openapi({ description: 'Resource create or update operation model.', required: [] })
+  .openapi('RmnBillingContractAcceptanceUpdate')
+
+const RmnContractAcknowledgedBusinessSchema = z
+  .object({
+    business_name: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Name of the business that acknowledged the contract',
+        example: 'Sterling Cooper Agency',
+      }),
+    id: PinterestLibIntegerFormatTypeSchema.openapi({
+      description: 'Business ID of the business that acknowledged the contract',
+      example: '549755885176',
+    }),
+  })
+  .openapi({ description: 'Business that acknowledged an RMN billing contract', required: ['id'] })
+  .openapi('RmnContractAcknowledgedBusiness')
+
+const RmnContractAcknowledgedUserSchema = z
+  .object({
+    business_role: MemberBusinessRoleSchema.openapi({
+      description: 'Business role of the user who acknowledged the contract',
+      example: 'BIZ_ADMIN',
+    }),
+    full_name: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Full name of the user who acknowledged the contract',
+        example: 'Jane Smith',
+      }),
+    id: PinterestLibIntegerFormatTypeSchema.openapi({
+      description: 'User ID of the user who acknowledged the contract',
+      example: '729090764583391194',
+    }),
+  })
+  .openapi({
+    description: 'User who acknowledged an RMN billing contract',
+    required: ['id', 'business_role'],
+  })
+  .openapi('RmnContractAcknowledgedUser')
+
+const RmnBillingContractHistoryEntrySchema = z
+  .object({
+    accepted_contract_language: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Language of the accepted contract', example: 'EN' }),
+    acknowledged_business: RmnContractAcknowledgedBusinessSchema.exactOptional().openapi({
+      description: 'Business that acknowledged the contract',
+    }),
+    acknowledged_time: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Timestamp when the contract was acknowledged',
+        example: 1776294630000,
+      }),
+    acknowledged_user: RmnContractAcknowledgedUserSchema.exactOptional().openapi({
+      description: 'User who acknowledged the contract',
+    }),
+    contract_id: PinterestLibIntegerFormatTypeSchema.openapi({
+      description: 'The contract ID',
+      example: '7284264534069',
+    }),
+    created_time: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Timestamp when the contract was created',
+        example: 1776294630000,
+      }),
+    status: z
+      .string()
+      .openapi({
+        description: 'Current status of the contract. Possible values: PENDING, ACCEPTED, EXPIRED.',
+        example: 'PENDING',
+      }),
+  })
+  .openapi({
+    description: 'A single entry in the RMN billing contract history',
+    required: ['contract_id', 'status'],
+  })
+  .openapi('RmnBillingContractHistoryEntry')
+
+const RmnBusinessRelationshipInviteActionSchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      'Request body for processing an RMN business relationship invite action. The server determines whether the Brand or RMN is accepting from the stored invite; clients must not infer or declare that role.',
+  })
+  .openapi('RmnBusinessRelationshipInviteAction')
+
+const RmnBusinessRelationshipInviteActionCreateSchema = z
+  .object({
+    action: BusinessInviteActionSchema.openapi({
+      description: 'Processing action to take on the invite.',
+      example: 'ACCEPT',
+    }),
+    brand_acceptance_details: BrandAcceptanceDetailsCreateSchema.exactOptional().openapi({
+      description:
+        'Details supplied only when the Brand accepts an RMN-sent invite. Required for that accept flow and prohibited for RMN acceptance and for REJECT, CANCEL, or RESEND actions. `ad_account_name` is required within this object; all other fields are optional.',
+      example: {
+        ad_account_name: 'ACME Tools',
+        country: 'US',
+        currency: 'USD',
+        time_zone: 'America/Los_Angeles',
+        skip_reseller: false,
+        rmn_contract_language: 'en',
+      },
+    }),
+    business_entity_id: PinterestLibIntegerFormatTypeSchema.openapi({
+      description: 'Unique identifier of the business entity acting on the invite.',
+      example: '7009386627073',
+    }),
+    rmn_acceptance_details: RmnAcceptanceDetailsCreateSchema.exactOptional().openapi({
+      description:
+        'Details supplied only when the RMN accepts a Brand-sent invite. Optional because resource sharing is optional, and prohibited for Brand acceptance and for REJECT, CANCEL, or RESEND actions. All fields within this object are optional.',
+      example: {
+        asset_id_to_permissions: [{ asset_type: 'CATALOG', asset_id: '549755885176' }],
+        domain_destinations: ['pinterest.com'],
+      },
+    }),
+  })
+  .openapi({
+    description: 'Resource create operation model.',
+    required: ['action', 'business_entity_id'],
+  })
+  .openapi('RmnBusinessRelationshipInviteActionCreate')
+
+const RmnInviteDetailsCreateSchema = z
+  .object({
+    asset_id_to_permissions: z
+      .array(RmnAssetIdToPermissionsSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'A typed list of asset permissions to grant as part of the RMN partnership invite.',
+        example: [
+          { asset_type: 'PINNER_LIST', asset_id: '2542622182994' },
+          {
+            asset_type: 'CONVERSION_SEGMENT',
+            asset_id: '549755885175',
+            permissions: ['BIZ_CONVERSION_SEGMENT_SHARER'],
+          },
+          { asset_type: 'CATALOG', asset_id: '549755885176' },
+        ],
+      }),
+    domain_restrictions: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description: 'A list of domains restricted by RMN for the Brand business.',
+        example: ['example.com'],
+      }),
+  })
+  .openapi({
+    description: 'Details supplied by the RMN when creating an invite to a Brand.',
+    required: [],
+  })
+  .openapi('RmnInviteDetailsCreate')
+
+const RmnPartnershipInviteEntrySchema = z
+  .object({
+    invite_id: PinterestLibIntegerFormatTypeSchema.openapi({
+      description: 'ID of the RMN partnership invite created for the partner business',
+      example: '5229509131303440095',
+    }),
+    partner_id: PinterestLibIntegerFormatTypeSchema.openapi({
+      description: 'ID of the partner business that was invited',
+      example: '879750245867626567',
+    }),
+  })
+  .openapi({
+    description: 'An entry mapping a partner business to its created RMN partnership invite',
+    required: ['partner_id', 'invite_id'],
+  })
+  .openapi('RmnPartnershipInviteEntry')
+
+const RmnPartnershipInviteSchema = z
+  .object({
+    business_id: PinterestLibIntegerFormatTypeSchema.openapi({
+      description: 'ID of the business sending the invite.',
+      example: '729090764583391194',
+      readOnly: true,
+    }),
+    invite: RmnPartnershipInviteEntrySchema.openapi({
+      description: 'The RMN partnership invite created for the partner business.',
+      readOnly: true,
+    }),
+  })
+  .openapi({
+    description: 'RMN partnership invite create payload and response data.',
+    required: ['business_id', 'invite'],
+  })
+  .openapi('RmnPartnershipInvite')
+
+const RmnPartnershipInviteCreateSchema = z
+  .object({
+    brand_invite_details: BrandInviteDetailsCreateSchema.exactOptional().openapi({
+      description:
+        'Details supplied only when the Brand creates an invite to an RMN. Do not provide this object when the RMN creates an invite to a Brand.',
+      example: { rmn_dedicated_ad_account_id: '123456789012345678' },
+    }),
+    rmn_invite_details: RmnInviteDetailsCreateSchema.exactOptional().openapi({
+      description:
+        'Details supplied only when the RMN creates an invite to a Brand. Do not provide this object when the Brand creates an invite to an RMN.',
+      example: {
+        asset_id_to_permissions: [{ asset_type: 'CATALOG', asset_id: '549755885176' }],
+        domain_restrictions: ['example.com'],
+      },
+    }),
+  })
+  .openapi({ description: 'Resource create operation model.', required: [] })
+  .openapi('RmnPartnershipInviteCreate')
 
 const SSIOAccountAddressSchema = z
   .object({
@@ -31786,10 +39057,6 @@ const ScheduleAppTypeMultipliersAdditionalPropertiesSchema = z
   .float64()
   .openapi('ScheduleAppTypeMultipliersAdditionalProperties')
 
-const ScheduleAudienceMultipliersAdditionalPropertiesSchema = z
-  .float64()
-  .openapi('ScheduleAudienceMultipliersAdditionalProperties')
-
 const ScheduleBatchUpdateSchema = z
   .object({
     delta_value: z
@@ -31865,12 +39132,13 @@ const ScheduleCreateRequestAllOf1Schema = z
   .openapi('ScheduleCreateRequestAllOf1')
 
 const ScheduleGenderMultipliersSchema = z
-  .object({ GENDER: TargetingSpecGenderSchema.exactOptional() })
+  .object({ GENDER: ScheduleGenderMultiplierGenderSchema.exactOptional() })
   .catchall(z.float64())
   .nullable()
   .openapi({
     description:
       'This represents a mapping from gender targeting criteria to a bid price change value.\nValues represent the change in bid price and can be positive or negative. For percentage changes, a value of 500.0 means a 5% change. For value changes, the amount represents the direct bid adjustment. All gender multipliers must be set at the same time. If a multiplier is not provided it is assumed to be 0 (no bid adjustment). The change must still remain between the range of 0 and 10.',
+    required: [],
   })
   .openapi('ScheduleGenderMultipliers')
 
@@ -31998,20 +39266,6 @@ const SystemUserUpdateWithRequiredBodySchema = z
   .openapi('SystemUserUpdateWithRequiredBody')
 
 const TargetingOptionSchema = z.looseObject({}).openapi('TargetingOption')
-
-const TargetingSpecAudienceExcludeItemsSchema = z
-  .string()
-  .regex(/^\d+$/)
-  .openapi('TargetingSpecAudienceExcludeItems')
-
-const TargetingSpecAudienceIncludeItemsSchema = z
-  .string()
-  .regex(/^\d+$/)
-  .openapi('TargetingSpecAudienceIncludeItems')
-
-const TargetingSpecTargetingStrategyItemsSchema = z
-  .enum(['CHOOSE_YOUR_OWN', 'FIND_NEW_CUSTOMERS', 'RECONNECT_WITH_USERS'])
-  .openapi('TargetingSpecTargetingStrategyItems')
 
 const TargetingTemplateKeywordSchema = z
   .object({
@@ -32244,23 +39498,21 @@ const TermsSuggestedResponseSchema = z.array(z.string()).openapi('TermsSuggested
 const TimeSeriesSchema = z
   .object({ date: z.iso.date().exactOptional() })
   .catchall(z.int())
-  .openapi({ title: 'TimeSeries' })
+  .openapi({ title: 'TimeSeries', required: [] })
   .openapi('TimeSeries')
-
-const TokenTypeHintSchema = z
-  .enum(['access_token', 'refresh_token'])
-  .openapi({ description: 'The type of token to revoke.' })
-  .openapi('TokenTypeHint')
 
 const TokenRevocationRequestCreateSchema = z
   .object({
     token: z
       .string()
       .openapi({ description: 'The token to revoke.', example: 'pinr.eyJhbGciOiJS...' }),
-    token_type_hint: TokenTypeHintSchema.exactOptional().openapi({
-      description:
-        'The type of the token to revoke. Please refer to [our developer guide for more information](https://developers.pinterest.com/docs/getting-started/set-up-authentication-and-authorization/) for more information.',
-    }),
+    token_type_hint: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional hint about the token type. Accepted per RFC 7009 but ignored server-side; revocation proceeds based on the decoded token type.',
+      }),
   })
   .openapi({ description: 'Resource create operation model.', required: ['token'] })
   .openapi('TokenRevocationRequestCreate')
@@ -32361,6 +39613,7 @@ const TrendsAgeDistributionSchema = z
     description:
       'This represents a mapping from age bucket to distribution of search volume\nfor a keyword. The sum of all values in this object should approximately be 1.',
     title: 'TrendsAgeDistribution',
+    required: [],
   })
   .openapi('TrendsAgeDistribution')
 
@@ -32377,6 +39630,7 @@ const TrendsGenderDistributionSchema = z
     description:
       'This represents a mapping from gender to distribution of search volume\nfor a keyword. The sum of all values in this object should approximately be 1.',
     title: 'TrendsGenderDistribution',
+    required: [],
   })
   .openapi('TrendsGenderDistribution')
 
@@ -32561,6 +39815,16 @@ const TrendsSupportedRegionSchema = z
     'MX',
     'MX+AR+CO+CL',
     'AU+NZ',
+    'MY',
+    'PH',
+    'TH',
+    'EG',
+    'CR+DO+EC+GT+PE',
+    'CY+CZ+GR+HU+MT+PL+RO+SK',
+    'TR',
+    'KR',
+    'AE+KW+QA+OM+BH+EG+IQ+DZ',
+    'IL+NG+PK+ZA+TR+MA',
   ])
   .openapi({ example: 'GB+IE', title: 'Region' })
   .openapi('TrendsSupportedRegion')
@@ -32620,11 +39884,12 @@ const UpdateMemberAssetAccessBodySchema = z
       .array(UpdateMemberAssetAccessItemSchema)
       .min(1)
       .max(50)
+      .exactOptional()
       .openapi({ description: 'List of member asset accesses to assign or update.' }),
   })
   .openapi({
     description: 'An object with a list of all the new member asset accesses.',
-    required: ['accesses'],
+    required: [],
   })
   .openapi('UpdateMemberAssetAccessBody')
 
@@ -32683,6 +39948,14 @@ const UpdatePartnerAssetAccessItemSchema = z
       .openapi({
         description: 'Unique identifier of a business partner to update asset access to.',
       }),
+    partner_type: z
+      .enum(['INTERNAL', 'EXTERNAL'])
+      .default('INTERNAL')
+      .exactOptional()
+      .openapi({
+        description:
+          "If partner_type=INTERNAL, the assigned/updated asset access is for the access the partner has to your business asset.\nIf partner_type=EXTERNAL, the assigned/updated asset access is for the access you have to the partner's business asset.",
+      }),
     permissions: z
       .array(PermissionsSchema)
       .min(1)
@@ -32740,60 +40013,6 @@ const UpdatePartnerAssetsResultsResponseArraySchema = z
   .openapi({ required: [] })
   .openapi('UpdatePartnerAssetsResultsResponseArray')
 
-const UserBusinessRoleBindingSchema = z
-  .object({
-    assets_summary: BusinessMemberAssetsSummarySchema.nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Ad accounts and profiles the business member/partner has access to.',
-      }),
-    business_roles: z
-      .array(BusinessRoleResponseSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The access level a user has on the business. This can be EMPLOYEE, BIZ_ADMIN, or PARTNER.',
-        example: ['BIZ_ADMIN'],
-      }),
-    created_by_business: BusinessAccessUserSummarySchema.nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Metadata for the business that created the business relationship.',
-      }),
-    created_by_user: BusinessAccessUserSummarySchema.nullable()
-      .exactOptional()
-      .openapi({ description: 'Metadata for the user that created the business relationship.' }),
-    created_time: z
-      .int()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'The time the business relationship was created. Returned in milliseconds.',
-        example: 1646767577816,
-      }),
-    id: z
-      .string()
-      .regex(/^\d+$/)
-      .exactOptional()
-      .openapi({
-        description: 'Unique identifier of the business member/business partner/employer.',
-        example: '549755885175',
-      }),
-    is_shared_partner: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'This field is only relevant when business_role="PARTNER".\nIf is_shared_partner=FALSE, the partner can access your business assets. If assets_summary is not empty, the assets listed are your business assets the partner has access to.\nIf is_shared_partner=TRUE, you can access the partner\'s business asset. If assets_summary is not empty, the assets listed are the partner\'s business assets you have access to.',
-        example: false,
-      }),
-    user: BusinessAccessUserSummarySchema.nullable()
-      .exactOptional()
-      .openapi({ description: 'Metadata for the business member/business partner/employer.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('UserBusinessRoleBinding')
-
 const UserFollowingFeedTypeSchema = z
   .enum(['ALL', 'RANKED', 'CREATOR_ONLY', 'RANKED_CREATOR_ONLY'])
   .default('ALL')
@@ -32806,6 +40025,10 @@ const UserFollowingFeedTypeSchema = z
 
 const UserSingleAssetBindingSchema = z
   .object({
+    business_partner_type: BusinessPartnerTypeSchema.exactOptional().openapi({
+      description: 'Business partner type when available.',
+      example: 'REGULAR',
+    }),
     permissions: PermissionsResponseSchema.exactOptional(),
     user: BusinessAccessUserSummarySchema.exactOptional(),
   })
@@ -32907,6 +40130,59 @@ const VerticalProductCategorySchema = z
 
 const QueryRegionSchema = z.looseObject({}).openapi('QueryRegion')
 
+const AbTestKeyParamsSchema = z
+  .string()
+  .regex(/^\d+$/)
+  .openapi({
+    param: {
+      name: 'ab_test_id',
+      in: 'path',
+      required: true,
+      description: 'Test id of the AB test.',
+      schema: { type: 'string', pattern: '^\\d+$' },
+    },
+  })
+
+const AdAccountDiscountKeyParamsSchema = z
+  .preprocess(
+    (val) =>
+      typeof val === 'string' &&
+      /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+      (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+        ? Number(val)
+        : val,
+    z.int(),
+  )
+  .openapi({
+    param: {
+      name: 'id',
+      in: 'path',
+      required: true,
+      description: 'Discount ID',
+      schema: { type: 'integer' },
+    },
+  })
+
+const AdAccountDiscountWithEnumTypeKeyParamsSchema = z
+  .preprocess(
+    (val) =>
+      typeof val === 'string' &&
+      /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+      (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+        ? Number(val)
+        : val,
+    z.int(),
+  )
+  .openapi({
+    param: {
+      name: 'id',
+      in: 'path',
+      required: true,
+      description: 'Discount ID',
+      schema: { type: 'integer' },
+    },
+  })
+
 const AdAccountKeyParamsSchema = z
   .string()
   .regex(/^\d+$/)
@@ -32933,7 +40209,7 @@ const AdAccountsAudienceKeyParamsSchema = z
     },
   })
 
-const AdAccountsGetAdditionalParamsParamsSchema = z
+const AdAccountsGetAdditionalParamsIncludeSharedAccountsParamsSchema = z
   .stringbool()
   .default(true)
   .exactOptional()
@@ -32957,6 +40233,33 @@ const AdGroupKeyParamsSchema = z
       in: 'path',
       required: true,
       description: 'Ad group ID.',
+      schema: { type: 'string', maxLength: 18, pattern: '^\\d+$' },
+    },
+  })
+
+const AdGroupPublisherBlocklistKeyAdGroupIdParamsSchema = z
+  .string()
+  .regex(/^\d+$/)
+  .max(18)
+  .openapi({
+    param: {
+      name: 'ad_group_id',
+      in: 'path',
+      required: true,
+      description: 'Ad group ID.',
+      schema: { type: 'string', maxLength: 18, pattern: '^\\d+$' },
+    },
+  })
+
+const AdGroupPublisherBlocklistKeyIdParamsSchema = z
+  .string()
+  .regex(/^\d+$/)
+  .max(18)
+  .openapi({
+    param: {
+      name: 'ad_account_id',
+      in: 'path',
+      required: true,
       schema: { type: 'string', maxLength: 18, pattern: '^\\d+$' },
     },
   })
@@ -33126,6 +40429,17 @@ const CampaignKeyParamsSchema = z
     },
   })
 
+const CampaignOrderLineMigrationScheduleKeyParamsSchema =
+  PinterestLibIntegerFormatTypeSchema.openapi({
+    param: {
+      name: 'schedule_id',
+      in: 'path',
+      required: true,
+      description: 'Migration schedule ID',
+      schema: { $ref: '#/components/schemas/Pinterest.Lib.IntegerFormatType', maxLength: 18 },
+    },
+  })
+
 const CatalogIdParamsSchema = z
   .string()
   .regex(/^\d+$/)
@@ -33176,6 +40490,34 @@ const CatalogsSupplementalFeedKeyParamsSchema = PinterestLibIntegerFormatTypeSch
     schema: { $ref: '#/components/schemas/Pinterest.Lib.IntegerFormatType' },
   },
 })
+
+const ChangeHistoryParametersAdAccountIdParamsSchema = z
+  .string()
+  .regex(/^\d+$/)
+  .max(18)
+  .openapi({
+    param: {
+      name: 'ad_account_id',
+      in: 'query',
+      required: true,
+      description: 'Unique identifier of an ad account.',
+      schema: { type: 'string', maxLength: 18, pattern: '^\\d+$' },
+    },
+  })
+
+const ChangeHistoryParametersAdvertiserIdParamsSchema = z
+  .string()
+  .exactOptional()
+  .openapi({
+    param: {
+      name: 'advertiser_id',
+      in: 'query',
+      required: false,
+      description:
+        'Optional Advertiser ID. When provided, returns history for all entities belonging to this advertiser.',
+      schema: { type: 'string' },
+    },
+  })
 
 const ChangeHistoryParametersEndTimeParamsSchema = z
   .preprocess(
@@ -33236,6 +40578,17 @@ const ChangeHistoryParametersFieldFiltersParamsSchema = z
       schema: { type: 'array', items: { type: 'string' } },
     },
   })
+
+const ChangeHistoryParametersOrderParamsSchema = OrderSchema.openapi({
+  param: {
+    name: 'order',
+    in: 'query',
+    required: false,
+    description:
+      'Sorts change history results in ascending or descending order. Defaults to ascending (oldest-first) when unset.',
+    schema: { $ref: '#/components/schemas/Order' },
+  },
+}).exactOptional()
 
 const ChangeHistoryParametersStartTimeParamsSchema = z
   .preprocess(
@@ -33498,6 +40851,44 @@ const GoalUpsertKeyParamsSchema = z
     },
   })
 
+const GoogleAnalyticsLinkPropertyKeyIdParamsSchema = z
+  .string()
+  .regex(/^\d+$/)
+  .max(18)
+  .openapi({
+    param: {
+      name: 'ad_account_id',
+      in: 'path',
+      required: true,
+      schema: { type: 'string', maxLength: 18, pattern: '^\\d+$' },
+    },
+  })
+
+const GoogleAnalyticsLinkPropertyKeyLinkIdParamsSchema = z
+  .string()
+  .openapi({
+    param: {
+      name: 'link_id',
+      in: 'path',
+      required: true,
+      description: 'Unique identifier for this GA link.',
+      schema: { type: 'string' },
+    },
+  })
+
+const GoogleAnalyticsLinkPropertyParentKeyParamsSchema = z
+  .string()
+  .regex(/^\d+$/)
+  .max(18)
+  .openapi({
+    param: {
+      name: 'ad_account_id',
+      in: 'path',
+      required: true,
+      schema: { type: 'string', maxLength: 18, pattern: '^\\d+$' },
+    },
+  })
+
 const IntegrationRecordKeyParamsSchema = PinterestLibIntegerFormatTypeSchema.openapi({
   param: {
     name: 'id',
@@ -33598,6 +40989,19 @@ const LeadZapierWebhookKeyParamsSchema = z
     },
   })
 
+const MarketingOfferRedemptionKeyIdParamsSchema = z
+  .string()
+  .regex(/^\d+$/)
+  .max(18)
+  .openapi({
+    param: {
+      name: 'ad_account_id',
+      in: 'path',
+      required: true,
+      schema: { type: 'string', maxLength: 18, pattern: '^\\d+$' },
+    },
+  })
+
 const MediaKeyParamsSchema = z
   .string()
   .regex(/^\d+$/)
@@ -33608,6 +41012,18 @@ const MediaKeyParamsSchema = z
       required: true,
       description:
         'Unique identifier for this media upload. Used to track status\nand for attaching during Pin creation.',
+      schema: { type: 'string', pattern: '^\\d+$' },
+    },
+  })
+
+const MediaLatentDisclosurePathParamParamsSchema = z
+  .string()
+  .regex(/^\d+$/)
+  .openapi({
+    param: {
+      name: 'media_id',
+      in: 'path',
+      required: true,
       schema: { type: 'string', pattern: '^\\d+$' },
     },
   })
@@ -33625,6 +41041,30 @@ const MMMReportKeyParamsSchema = z
     },
   })
 
+const MobileAppKeyParamsSchema = PinterestLibIntegerFormatTypeSchema.openapi({
+  param: {
+    name: 'id',
+    in: 'path',
+    required: true,
+    description: 'The ID of this mobile app entity.',
+    schema: { $ref: '#/components/schemas/Pinterest.Lib.IntegerFormatType', maxLength: 18 },
+  },
+})
+
+const OffsiteAdsSettingsKeyParamsSchema = z
+  .string()
+  .regex(/^\d+$/)
+  .max(18)
+  .openapi({
+    param: {
+      name: 'ad_account_id',
+      in: 'path',
+      required: true,
+      description: 'Ad account ID.',
+      schema: { type: 'string', maxLength: 18, pattern: '^\\d+$' },
+    },
+  })
+
 const OrderLineKeyParamsSchema = z
   .string()
   .regex(/^\d+$/)
@@ -33634,6 +41074,32 @@ const OrderLineKeyParamsSchema = z
       in: 'path',
       required: true,
       description: 'Order line ID.',
+      schema: { type: 'string', pattern: '^\\d+$' },
+    },
+  })
+
+const OverlayAssignmentRuleKeyParamsSchema = z
+  .string()
+  .regex(/^\d+$/)
+  .openapi({
+    param: {
+      name: 'id',
+      in: 'path',
+      required: true,
+      description: 'The unique identifier of the overlay assignment rule.',
+      schema: { type: 'string', pattern: '^\\d+$' },
+    },
+  })
+
+const OverlayKeyParamsSchema = z
+  .string()
+  .regex(/^\d+$/)
+  .openapi({
+    param: {
+      name: 'id',
+      in: 'path',
+      required: true,
+      description: 'The unique identifier of the overlay.',
       schema: { type: 'string', pattern: '^\\d+$' },
     },
   })
@@ -33679,6 +41145,16 @@ const PathAggregatedPinDataParamsSchema = z
     },
   })
 
+const PathAoaaRequestIdParamsSchema = PinterestLibIntegerFormatTypeSchema.openapi({
+  param: {
+    name: 'agency_owned_ad_account_request_id',
+    in: 'path',
+    required: true,
+    description: 'Agency owned ad account request id.',
+    schema: { $ref: '#/components/schemas/Pinterest.Lib.IntegerFormatType', maxLength: 18 },
+  },
+})
+
 const PathAssetIdParamsSchema = z
   .string()
   .regex(/^\d+$/)
@@ -33691,6 +41167,26 @@ const PathAssetIdParamsSchema = z
       required: true,
       description: 'Unique identifier of a business asset.',
       schema: { type: 'string', maxLength: 20, minLength: 1, pattern: '^\\d+$' },
+    },
+  })
+
+const PathBillIdParamsSchema = z
+  .preprocess(
+    (val) =>
+      typeof val === 'string' &&
+      /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+      (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+        ? Number(val)
+        : val,
+    z.int(),
+  )
+  .openapi({
+    param: {
+      name: 'bill_id',
+      in: 'path',
+      required: true,
+      description: 'Unique identifier of the bill to refund.',
+      schema: { type: 'integer' },
     },
   })
 
@@ -33779,6 +41275,26 @@ const PathBusinessMemberUserParamsSchema = z
     },
   })
 
+const PathBusinessOwnerBusinessIdParamsSchema = PinterestLibIntegerFormatTypeSchema.openapi({
+  param: {
+    name: 'business_id',
+    in: 'path',
+    required: true,
+    description: 'Business ID.',
+    schema: { $ref: '#/components/schemas/Pinterest.Lib.IntegerFormatType', maxLength: 19 },
+  },
+})
+
+const PathBusinessRelationshipInviteIdParamsSchema = PinterestLibIntegerFormatTypeSchema.openapi({
+  param: {
+    name: 'business_relationship_invite_id',
+    in: 'path',
+    required: true,
+    description: 'Unique identifier of the business relationship invite.',
+    schema: { $ref: '#/components/schemas/Pinterest.Lib.IntegerFormatType', maxLength: 20 },
+  },
+})
+
 const PathBusinessUserParamsSchema = z
   .string()
   .regex(/^\d+$/)
@@ -33791,6 +41307,19 @@ const PathBusinessUserParamsSchema = z
       required: true,
       description: 'Unique identifier of the requesting business.',
       schema: { type: 'string', maxLength: 20, minLength: 1, pattern: '^\\d+$' },
+    },
+  })
+
+const PathCatalogsAutoLocalizationConfigIdParamsSchema = z
+  .string()
+  .regex(/^\d+$/)
+  .openapi({
+    param: {
+      name: 'auto_localization_config_id',
+      in: 'path',
+      required: true,
+      description: 'Unique identifier of an auto-localization config.',
+      schema: { type: 'string', pattern: '^\\d+$' },
     },
   })
 
@@ -33830,6 +41359,29 @@ const PathCatalogsProcessingResultIdParamsSchema = z
       schema: { type: 'string', pattern: '^\\d+$' },
     },
   })
+
+const PathContractIdParamsSchema = z
+  .string()
+  .regex(/^\d+$/)
+  .openapi({
+    param: {
+      name: 'contract_id',
+      in: 'path',
+      required: true,
+      description: 'RMN billing contract id',
+      schema: { type: 'string', pattern: '^\\d+$' },
+    },
+  })
+
+const PathConversionSegmentIdParamsSchema = PinterestLibIntegerFormatTypeSchema.openapi({
+  param: {
+    name: 'conversion_segment_id',
+    in: 'path',
+    required: true,
+    description: 'Id of the conversion segment.',
+    schema: { $ref: '#/components/schemas/Pinterest.Lib.IntegerFormatType' },
+  },
+})
 
 const PathConversionTagIdParamsSchema = z
   .string()
@@ -33884,6 +41436,49 @@ const PathLeadsExportIdParamsSchema = z
     },
   })
 
+const PathMediaLibraryAssetAssetIdParamsSchema = z
+  .string()
+  .regex(/^\d+$/)
+  .min(1)
+  .max(20)
+  .openapi({
+    param: {
+      name: 'asset_id',
+      in: 'path',
+      required: true,
+      description: 'Identifier of the asset to retrieve.',
+      schema: { type: 'string', maxLength: 20, minLength: 1, pattern: '^\\d+$' },
+    },
+  })
+
+const PathMediaLibraryBusinessIdParamsSchema = z
+  .string()
+  .regex(/^\d+$/)
+  .min(1)
+  .max(20)
+  .openapi({
+    param: {
+      name: 'business_id',
+      in: 'path',
+      required: true,
+      description: 'Identifier of the business that owns the media library.',
+      schema: { type: 'string', maxLength: 20, minLength: 1, pattern: '^\\d+$' },
+    },
+  })
+
+const PathMerchantIdParamsSchema = z
+  .string()
+  .regex(/^\d+$/)
+  .openapi({
+    param: {
+      name: 'merchant_id',
+      in: 'path',
+      required: true,
+      description: 'Unique identifier of a merchant.',
+      schema: { type: 'string', pattern: '^\\d+$' },
+    },
+  })
+
 const PathNonSystemBusinessUserParamsSchema = z
   .string()
   .regex(/^\d+$/)
@@ -33894,6 +41489,20 @@ const PathNonSystemBusinessUserParamsSchema = z
       in: 'path',
       required: true,
       description: 'Unique identifier of the requesting business.',
+      schema: { type: 'string', minLength: 1, pattern: '^\\d+$' },
+    },
+  })
+
+const PathNonSystemPartnerParamsSchema = z
+  .string()
+  .regex(/^\d+$/)
+  .min(1)
+  .openapi({
+    param: {
+      name: 'partner_id',
+      in: 'path',
+      required: true,
+      description: 'A user id that belongs to a potential partner that is not a system user.',
       schema: { type: 'string', minLength: 1, pattern: '^\\d+$' },
     },
   })
@@ -33995,7 +41604,7 @@ const PathTrendRegionParamsSchema = TrendsSupportedRegionSchema.openapi({
     in: 'path',
     required: true,
     description:
-      '  The geographic region of interest. Only top trends within the specified region will be returned.\n\n  The `region` parameter is formatted as ISO 3166-2 country codes delimited by `+`, corresponding to the following geographic areas:\n  - `US` - United States\n  - `CA` - Canada\n  - `DE` - Germany\n  - `FR` - France\n  - `ES` - Spain\n  - `IT` - Italy\n  - `DE+AT+CH` - Germanic countries\n  - `GB+IE` - Great Britain & Ireland\n  - `IT+ES+PT+GR+MT` - Southern Europe\n  - `PL+RO+HU+SK+CZ` - Eastern Europe\n  - `SE+DK+FI+NO` - Nordic countries\n  - `NL+BE+LU` - Benelux\n  - `AR` - Argentina\n  - `BR` - Brazil\n  - `CO` - Colombia\n  - `MX` - Mexico\n  - `MX+AR+CO+CL` - Hispanic LatAm\n  - `AU+NZ` - Australasia',
+      '  The geographic region of interest. Only top trends within the specified region will be returned.\n\n  The `region` parameter is formatted as ISO 3166-2 country codes delimited by `+`, corresponding to the following geographic areas:\n  - `US` - United States\n  - `CA` - Canada\n  - `DE` - Germany\n  - `FR` - France\n  - `ES` - Spain\n  - `IT` - Italy\n  - `DE+AT+CH` - Germanic countries\n  - `GB+IE` - Great Britain & Ireland\n  - `IT+ES+PT+GR+MT` - Southern Europe\n  - `PL+RO+HU+SK+CZ` - Eastern Europe\n  - `SE+DK+FI+NO` - Nordic countries\n  - `NL+BE+LU` - Benelux\n  - `AR` - Argentina\n  - `BR` - Brazil\n  - `CO` - Colombia\n  - `MX` - Mexico\n  - `MX+AR+CO+CL` - Hispanic LatAm\n  - `AU+NZ` - Australasia\n  - `MY` - Malaysia\n  - `PH` - Philippines\n  - `TH` - Thailand\n  - `EG` - Egypt\n  - `CR+DO+EC+GT+PE` - Latin America & Caribbean\n  - `CY+CZ+GR+HU+MT+PL+RO+SK` - Eastern Europe & Mediterranean\n  - `TR` - Turkey\n  - `KR` - South Korea\n  - `AE+KW+QA+OM+BH+EG+IQ+DZ` - Middle East & North Africa (limited availability)\n  - `IL+NG+PK+ZA+TR+MA` - Multi-Regional Markets (limited availability)\n\n  Regions marked limited availability are not yet open to all apps and may return an error.',
     schema: { $ref: '#/components/schemas/TrendsSupportedRegion' },
   },
 })
@@ -34204,6 +41813,20 @@ const PromotionKeyParamsSchema = z
     },
   })
 
+const PublisherBlocklistKeyParamsSchema = z
+  .string()
+  .regex(/^\d+$/)
+  .max(18)
+  .openapi({
+    param: {
+      name: 'ad_account_id',
+      in: 'path',
+      required: true,
+      description: 'Unique identifier of an ad account.',
+      schema: { type: 'string', maxLength: 18, pattern: '^\\d+$' },
+    },
+  })
+
 const QueryAccountTypeParamsSchema = z
   .enum(['AD_ACCOUNT', 'BUSINESS_ACCOUNT'])
   .default('AD_ACCOUNT')
@@ -34221,6 +41844,20 @@ const QueryAccountTypeParamsSchema = z
       },
     },
     description: 'Account type filter for audience sharing.',
+  })
+
+const QueryActingBusinessIdParamsSchema = z
+  .string()
+  .regex(/^\d+$/)
+  .exactOptional()
+  .openapi({
+    param: {
+      name: 'acting_business_id',
+      in: 'query',
+      required: false,
+      description: 'Acting business id',
+      schema: { type: 'string', pattern: '^\\d+$' },
+    },
   })
 
 const QueryActiveBookmarkParamsBookmarkParamsSchema = z
@@ -34503,6 +42140,25 @@ const QueryAgeTrendsBucketsParamsSchema = z
     },
   })
 
+const QueryAoaaRequestStatusesParamsSchema = z
+  .preprocess(
+    (val) => (val === undefined || Array.isArray(val) ? val : [val]),
+    z.array(AgencyOwnedAdAccountRequestStatusSchema),
+  )
+  .exactOptional()
+  .openapi({
+    param: {
+      name: 'statuses',
+      in: 'query',
+      required: false,
+      description: 'A list of agency owned ad account request statuses.',
+      schema: {
+        type: 'array',
+        items: { $ref: '#/components/schemas/AgencyOwnedAdAccountRequestStatus' },
+      },
+    },
+  })
+
 const QueryAppTypesParamsSchema = z
   .enum(['ALL', 'MOBILE', 'TABLET', 'WEB'])
   .default('ALL')
@@ -34751,6 +42407,337 @@ const QueryBusinessAccessStartIndexParamsSchema = z
       schema: { type: 'integer', default: 0, minimum: 0 },
     },
   })
+
+const QueryBusinessAnalyticsAdvertiserActiveFilterParamsSchema = z
+  .stringbool()
+  .exactOptional()
+  .openapi({
+    param: {
+      name: 'advertiser_active_filter',
+      in: 'query',
+      required: false,
+      description: 'Filter to include only active ad accounts when querying related metrics.',
+      schema: { type: 'boolean' },
+    },
+  })
+
+const QueryBusinessAnalyticsAdvertisersExcludeFilterParamsSchema = z
+  .preprocess(
+    (val) => (val === undefined || Array.isArray(val) ? val : [val]),
+    z.array(PinterestLibIntegerFormatTypeSchema),
+  )
+  .exactOptional()
+  .openapi({
+    param: {
+      name: 'advertisers_exclude_filter',
+      in: 'query',
+      required: false,
+      description: 'Ad accounts to exclude when querying related metrics.',
+      schema: {
+        type: 'array',
+        items: { $ref: '#/components/schemas/Pinterest.Lib.IntegerFormatType' },
+      },
+    },
+  })
+
+const QueryBusinessAnalyticsBreakDownTypeParamsSchema = z
+  .enum(['PARTNER', 'PINNER_LIST', 'AD_ACCOUNT', 'CAMPAIGN', 'PIN', 'AD_FORMAT'])
+  .default('AD_ACCOUNT')
+  .exactOptional()
+  .openapi({
+    param: {
+      name: 'break_down_type',
+      in: 'query',
+      required: false,
+      description: 'The breakdown requested when querying ad-account related metrics.',
+      schema: {
+        type: 'string',
+        default: 'AD_ACCOUNT',
+        enum: ['PARTNER', 'PINNER_LIST', 'AD_ACCOUNT', 'CAMPAIGN', 'PIN', 'AD_FORMAT'],
+      },
+    },
+  })
+
+const QueryBusinessAnalyticsCountriesFilterParamsSchema = z
+  .preprocess(
+    (val) => (val === undefined || Array.isArray(val) ? val : [val]),
+    z.array(CountrySchema),
+  )
+  .exactOptional()
+  .openapi({
+    param: {
+      name: 'countries_filter',
+      in: 'query',
+      required: false,
+      description: 'Countries to filter when querying related metrics.',
+      schema: { type: 'array', items: { $ref: '#/components/schemas/Country' } },
+    },
+  })
+
+const QueryBusinessAnalyticsMetricsParamsSchema = z
+  .preprocess(
+    (val) => (val === undefined || Array.isArray(val) ? val : [val]),
+    z.array(ReportingColumnSchema).min(1),
+  )
+  .openapi({
+    param: {
+      name: 'metrics',
+      in: 'query',
+      required: true,
+      description: 'Metrics to include.',
+      schema: {
+        type: 'array',
+        items: { $ref: '#/components/schemas/ReportingColumn' },
+        minItems: 1,
+      },
+    },
+  })
+
+const QueryBusinessAnalyticsPartnerIdsParamsSchema = z
+  .string()
+  .exactOptional()
+  .openapi({
+    param: {
+      name: 'partner_ids',
+      in: 'query',
+      required: false,
+      description: 'A list of business partner ids separated by commas.',
+      schema: { type: 'string' },
+    },
+  })
+
+const QueryBusinessAnalyticsSearchValueParamsSchema = z
+  .string()
+  .exactOptional()
+  .openapi({
+    param: {
+      name: 'search_value',
+      in: 'query',
+      required: false,
+      description: 'The value of the field to search.',
+      schema: { type: 'string' },
+    },
+  })
+
+const QueryBusinessAnalyticsAggregatedTimelineBreakDownTypeParamsSchema = z
+  .enum(['PARTNER', 'AD_ACCOUNT'])
+  .default('PARTNER')
+  .exactOptional()
+  .openapi({
+    param: {
+      name: 'break_down_type',
+      in: 'query',
+      required: false,
+      description:
+        'The breakdown requested when querying aggregated timeline metrics. Defaults to `PARTNER` for backward compatibility.',
+      schema: { type: 'string', default: 'PARTNER', enum: ['PARTNER', 'AD_ACCOUNT'] },
+    },
+  })
+
+const QueryBusinessAnalyticsAggregatedTimelineGranularityParamsSchema = GranularitySchema.openapi({
+  param: {
+    name: 'granularity',
+    in: 'query',
+    required: true,
+    description:
+      'TOTAL - metrics are aggregated over the specified date range.\n\nDAY - metrics are broken down daily.\n\nHOUR - metrics are broken down hourly.\n\nWEEK - metrics are broken down weekly.\n\nMONTH - metrics are broken down monthly.',
+    schema: { $ref: '#/components/schemas/Granularity' },
+  },
+})
+
+const QueryBusinessAnalyticsAggregatedTimelineMetricsParamsSchema = z
+  .preprocess(
+    (val) => (val === undefined || Array.isArray(val) ? val : [val]),
+    z.array(ReportingColumnSchema).min(1).max(2),
+  )
+  .openapi({
+    param: {
+      name: 'metrics',
+      in: 'query',
+      required: true,
+      description: 'Metrics to include.',
+      schema: {
+        type: 'array',
+        items: { $ref: '#/components/schemas/ReportingColumn' },
+        maxItems: 2,
+        minItems: 1,
+      },
+    },
+  })
+
+const QueryBusinessAnalyticsBaseCampaignSummaryStatusesParamsSchema = z
+  .preprocess(
+    (val) => (val === undefined || Array.isArray(val) ? val : [val]),
+    z.array(MetricsCampaignSummaryStatusSchema).min(1),
+  )
+  .exactOptional()
+  .openapi({
+    param: {
+      name: 'campaign_summary_statuses',
+      in: 'query',
+      required: false,
+      description: 'Summary statuses for campaign.',
+      schema: {
+        type: 'array',
+        items: { $ref: '#/components/schemas/MetricsCampaignSummaryStatus' },
+        minItems: 1,
+      },
+    },
+  })
+
+const QueryBusinessAnalyticsBaseClickWindowDaysParamsSchema = z
+  .enum(['DAYS_0', 'DAYS_1', 'DAYS_7', 'DAYS_30', 'DAYS_60'])
+  .default('DAYS_30')
+  .exactOptional()
+  .openapi({
+    param: {
+      name: 'click_window_days',
+      in: 'query',
+      required: false,
+      description:
+        'Number of days to use as the conversion attribution window for a pin click action. Applies to Pinterest Tag conversion metrics. Prior conversion tags use their defined attribution windows. If not specified, defaults to `30` days.',
+      schema: {
+        type: 'string',
+        default: 'DAYS_30',
+        enum: ['DAYS_0', 'DAYS_1', 'DAYS_7', 'DAYS_30', 'DAYS_60'],
+      },
+    },
+  })
+
+const QueryBusinessAnalyticsBaseConversionReportTimeParamsSchema = z
+  .enum(['TIME_OF_AD_ACTION', 'TIME_OF_CONVERSION'])
+  .default('TIME_OF_AD_ACTION')
+  .exactOptional()
+  .openapi({
+    param: {
+      name: 'conversion_report_time',
+      in: 'query',
+      required: false,
+      description:
+        'The date by which the conversion metrics returned from this endpoint will be reported. There are two dates associated with a conversion event: the date that the user interacted with the ad, and the date that the user completed a conversion event.',
+      schema: {
+        type: 'string',
+        default: 'TIME_OF_AD_ACTION',
+        enum: ['TIME_OF_AD_ACTION', 'TIME_OF_CONVERSION'],
+      },
+    },
+  })
+
+const QueryBusinessAnalyticsBaseEndDateParamsSchema = PinterestLibISO8601DateFormatSchema.openapi({
+  param: {
+    name: 'end_date',
+    in: 'query',
+    required: true,
+    description: 'Metric report end date (UTC). Format: YYYY-MM-DD.',
+    schema: { $ref: '#/components/schemas/Pinterest.Lib.ISO8601DateFormat' },
+  },
+})
+
+const QueryBusinessAnalyticsBaseEngagementWindowDaysParamsSchema = z
+  .enum(['DAYS_0', 'DAYS_1', 'DAYS_7', 'DAYS_30', 'DAYS_60'])
+  .default('DAYS_30')
+  .exactOptional()
+  .openapi({
+    param: {
+      name: 'engagement_window_days',
+      in: 'query',
+      required: false,
+      description:
+        'Number of days to use as the conversion attribution window for an engagement action. Engagements include saves, closeups, link clicks, and carousel card swipes. Applies to Pinterest Tag conversion metrics. Prior conversion tags use their defined attribution windows. If not specified, defaults to `30` days.',
+      schema: {
+        type: 'string',
+        default: 'DAYS_30',
+        enum: ['DAYS_0', 'DAYS_1', 'DAYS_7', 'DAYS_30', 'DAYS_60'],
+      },
+    },
+  })
+
+const QueryBusinessAnalyticsBaseMetricScopeParamsSchema = z
+  .enum(['RMN_DEDICATED', 'ALL_BUSINESS'])
+  .default('RMN_DEDICATED')
+  .exactOptional()
+  .openapi({
+    param: {
+      name: 'metric_scope',
+      in: 'query',
+      required: false,
+      description:
+        'Specifies whether to report on RMN-dedicated partnerships or all business ad accounts. Defaults to `RMN_DEDICATED` for backward compatibility.',
+      schema: { type: 'string', default: 'RMN_DEDICATED', enum: ['RMN_DEDICATED', 'ALL_BUSINESS'] },
+    },
+  })
+
+const QueryBusinessAnalyticsBaseObjectiveTypesParamsSchema = z
+  .preprocess(
+    (val) => (val === undefined || Array.isArray(val) ? val : [val]),
+    z.array(MetricsObjectiveTypeSchema).min(1),
+  )
+  .exactOptional()
+  .openapi({
+    param: {
+      name: 'objective_types',
+      in: 'query',
+      required: false,
+      description: 'Objective types for the campaign.',
+      schema: {
+        type: 'array',
+        items: { $ref: '#/components/schemas/MetricsObjectiveType' },
+        minItems: 1,
+      },
+    },
+  })
+
+const QueryBusinessAnalyticsBaseRmnAccountScopeParamsSchema = AssetSourceSchema.openapi({
+  param: {
+    name: 'rmn_account_scope',
+    in: 'query',
+    required: true,
+    description:
+      'Specifies which RMN ad accounts to include based on whether they are partner-shared or business-owned.',
+    schema: { $ref: '#/components/schemas/AssetSource' },
+  },
+})
+
+const QueryBusinessAnalyticsBaseStartDateParamsSchema = PinterestLibISO8601DateFormatSchema.openapi(
+  {
+    param: {
+      name: 'start_date',
+      in: 'query',
+      required: true,
+      description: 'Metric report start date (UTC). Format: YYYY-MM-DD.',
+      schema: { $ref: '#/components/schemas/Pinterest.Lib.ISO8601DateFormat' },
+    },
+  },
+)
+
+const QueryBusinessAnalyticsBaseViewWindowDaysParamsSchema = z
+  .enum(['DAYS_0', 'DAYS_1', 'DAYS_7', 'DAYS_30', 'DAYS_60'])
+  .default('DAYS_1')
+  .exactOptional()
+  .openapi({
+    param: {
+      name: 'view_window_days',
+      in: 'query',
+      required: false,
+      description:
+        'Number of days to use as the conversion attribution window for a view action. Applies to Pinterest Tag conversion metrics. Prior conversion tags use their defined attribution windows. If not specified, defaults to `1` day.',
+      schema: {
+        type: 'string',
+        default: 'DAYS_1',
+        enum: ['DAYS_0', 'DAYS_1', 'DAYS_7', 'DAYS_30', 'DAYS_60'],
+      },
+    },
+  })
+
+const QueryBusinessPartnerTypeParamsSchema = BusinessPartnerTypeSchema.openapi({
+  param: {
+    name: 'business_partner_type',
+    in: 'query',
+    required: false,
+    description: 'Specifies whether to fetch regular or RMN partners.',
+    schema: { $ref: '#/components/schemas/BusinessPartnerType' },
+  },
+}).exactOptional()
 
 const QueryBusinessPartnerTypeDefaultParamsSchema = z
   .enum(['INTERNAL', 'EXTERNAL'])
@@ -35043,6 +43030,58 @@ const QueryCatalogsReportStatsParametersParamsSchema = CatalogsReportStatsParame
   },
 })
 
+const QueryCatalogsSupplementalFeedTypeParamsSchema = CatalogsSupplementalFeedTypeSchema.openapi({
+  param: {
+    name: 'type',
+    in: 'query',
+    required: false,
+    description: 'Filter supplemental feeds by supplemental feed type.',
+    schema: { $ref: '#/components/schemas/CatalogsSupplementalFeedType' },
+  },
+}).exactOptional()
+
+const QueryCatalogsTranslationMerchantItemIdParamsSchema = z
+  .string()
+  .exactOptional()
+  .openapi({
+    param: {
+      name: 'merchant_item_id',
+      in: 'query',
+      required: false,
+      description:
+        'Filter translations by merchant item id. Matches either the exact id or an id prefix.',
+      schema: { type: 'string' },
+      explode: false,
+    },
+  })
+
+const QueryCatalogsTranslationStatusParamsSchema = CatalogsTranslationItemStatusSchema.openapi({
+  param: {
+    name: 'status',
+    in: 'query',
+    required: false,
+    description: 'Filter translations by per-item review state.',
+    schema: { $ref: '#/components/schemas/CatalogsTranslationItemStatus' },
+  },
+}).exactOptional()
+
+const QueryCatalogsTranslationTargetLocalesParamsSchema = z
+  .preprocess(
+    (val) => (val === undefined || Array.isArray(val) ? val : [val]),
+    z.array(CatalogsLocaleSchema),
+  )
+  .exactOptional()
+  .openapi({
+    param: {
+      name: 'target_locales',
+      in: 'query',
+      required: false,
+      description:
+        'Filter translations to these target locales. Defaults to all locales in the config when omitted.',
+      schema: { type: 'array', items: { $ref: '#/components/schemas/CatalogsLocale' } },
+    },
+  })
+
 const QueryChildAssetIdParamsSchema = z
   .string()
   .regex(/^\d+$/)
@@ -35057,6 +43096,21 @@ const QueryChildAssetIdParamsSchema = z
       description:
         'A child asset unique identifier. Used to fetch asset groups that contain the asset id as a child.',
       schema: { type: 'string', maxLength: 20, minLength: 1, pattern: '^\\d+$' },
+    },
+  })
+
+const QueryClientBusinessIdParamsSchema = z
+  .string()
+  .regex(/^\d+$/)
+  .min(1)
+  .exactOptional()
+  .openapi({
+    param: {
+      name: 'client_business_id',
+      in: 'query',
+      required: false,
+      description: 'Client business id (the business the acting business represents)',
+      schema: { type: 'string', minLength: 1, pattern: '^\\d+$' },
     },
   })
 
@@ -35354,7 +43408,8 @@ const QueryCountryCodeParamsSchema = z
       name: 'country_code',
       in: 'query',
       required: true,
-      description: 'Two letter country code (ISO 3166-1 alpha-2)',
+      description:
+        'Two letter ISO 3166-1 alpha-2 country code. Supported values: `AU`, `CA`, `GB`, `IE`, `NZ`, and `US`. Other codes are not currently supported.',
       schema: { type: 'string' },
     },
   })
@@ -35717,6 +43772,21 @@ const QueryInviteTypeParamsSchema = InviteTypeSchema.openapi({
   },
 }).exactOptional()
 
+const QueryInvitesAssetsSummaryParamsSchema = z
+  .stringbool()
+  .default(false)
+  .exactOptional()
+  .openapi({
+    param: {
+      name: 'assets_summary',
+      in: 'query',
+      required: false,
+      description:
+        '  Include assets summary in the response if this is true.\n\n  The assets summary returns a dictionary representing a summary of the assets\n  the member or partner will be granted access to.',
+      schema: { type: 'boolean', default: false },
+    },
+  })
+
 const QueryIsMemberParamsSchema = z
   .stringbool()
   .default(true)
@@ -35916,6 +43986,171 @@ const QueryMatchTypesParamsSchema = z
     },
   })
 
+const QueryMediaLibraryAssetsFiltersAssetIdsParamsSchema = z
+  .preprocess(
+    (val) => (val === undefined || Array.isArray(val) ? val : [val]),
+    z.array(PinterestLibIntegerFormatTypeSchema),
+  )
+  .exactOptional()
+  .openapi({
+    param: {
+      name: 'asset_ids',
+      in: 'query',
+      required: false,
+      description: 'List of asset IDs to filter the assets by.',
+      schema: {
+        type: 'array',
+        items: { $ref: '#/components/schemas/Pinterest.Lib.IntegerFormatType' },
+      },
+    },
+  })
+
+const QueryMediaLibraryAssetsFiltersAssetTypesParamsSchema = z
+  .preprocess(
+    (val) => (val === undefined || Array.isArray(val) ? val : [val]),
+    z.array(MediaLibraryAssetTypeSchema),
+  )
+  .exactOptional()
+  .openapi({
+    param: {
+      name: 'asset_types',
+      in: 'query',
+      required: false,
+      description: 'Filter by type of media library asset: `IMAGE` and/or `VIDEO`.',
+      schema: { type: 'array', items: { $ref: '#/components/schemas/MediaLibraryAssetType' } },
+    },
+  })
+
+const QueryMediaLibraryAssetsFiltersFromDateParamsSchema =
+  PinterestLibISO8601DateFormatSchema.openapi({
+    param: {
+      name: 'from_date',
+      in: 'query',
+      required: false,
+      description: 'Filter assets created on or after this date (inclusive). Format: `YYYY-MM-DD`.',
+      schema: { $ref: '#/components/schemas/Pinterest.Lib.ISO8601DateFormat' },
+    },
+  }).exactOptional()
+
+const QueryMediaLibraryAssetsFiltersHasBeenPromotedParamsSchema = z
+  .stringbool()
+  .exactOptional()
+  .openapi({
+    param: {
+      name: 'has_been_promoted',
+      in: 'query',
+      required: false,
+      description:
+        'Filter by whether an asset has been promoted. `true` returns only assets used in a Pin promotion; `false` returns only those that have not.',
+      schema: { type: 'boolean' },
+    },
+  })
+
+const QueryMediaLibraryAssetsFiltersNamesParamsSchema = z
+  .preprocess((val) => (val === undefined || Array.isArray(val) ? val : [val]), z.array(z.string()))
+  .exactOptional()
+  .openapi({
+    param: {
+      name: 'names',
+      in: 'query',
+      required: false,
+      description: 'List of asset names to filter the assets by.',
+      schema: { type: 'array', items: { type: 'string' } },
+    },
+  })
+
+const QueryMediaLibraryAssetsFiltersSortOrderParamsSchema = MediaLibrarySortOrderSchema.openapi({
+  param: {
+    name: 'sort_order',
+    in: 'query',
+    required: false,
+    description:
+      'Sort results by creation date. Pass `ASC` for ascending or `DESC` for descending.',
+    schema: { $ref: '#/components/schemas/MediaLibrarySortOrder' },
+  },
+}).exactOptional()
+
+const QueryMediaLibraryAssetsFiltersTagsParamsSchema = z
+  .preprocess((val) => (val === undefined || Array.isArray(val) ? val : [val]), z.array(z.string()))
+  .exactOptional()
+  .openapi({
+    param: {
+      name: 'tags',
+      in: 'query',
+      required: false,
+      description: 'List of tags to filter the assets by.',
+      schema: { type: 'array', items: { type: 'string' } },
+    },
+  })
+
+const QueryMediaLibraryAssetsFiltersToDateParamsSchema =
+  PinterestLibISO8601DateFormatSchema.openapi({
+    param: {
+      name: 'to_date',
+      in: 'query',
+      required: false,
+      description:
+        'Filter assets created on or before this date (inclusive, through the end of that day). Format: `YYYY-MM-DD`.',
+      schema: { $ref: '#/components/schemas/Pinterest.Lib.ISO8601DateFormat' },
+    },
+  }).exactOptional()
+
+const QueryMediaLibraryDeleteAssetIdsParamsSchema = z
+  .preprocess(
+    (val) => (val === undefined || Array.isArray(val) ? val : [val]),
+    z.array(PinterestLibIntegerFormatTypeSchema).min(1).max(100),
+  )
+  .openapi({
+    param: {
+      name: 'asset_ids',
+      in: 'query',
+      required: true,
+      description: 'IDs of the assets to delete. Between 1 and 100 ids may be deleted per request.',
+      schema: {
+        type: 'array',
+        items: { $ref: '#/components/schemas/Pinterest.Lib.IntegerFormatType' },
+        maxItems: 100,
+        minItems: 1,
+      },
+    },
+  })
+
+const QueryMediaLibraryPaginationPageSizeParamsSchema = z
+  .preprocess(
+    (val) =>
+      typeof val === 'string' &&
+      /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+      (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+        ? Number(val)
+        : val,
+    z.int().min(1).max(250),
+  )
+  .default(25)
+  .exactOptional()
+  .openapi({
+    param: {
+      name: 'page_size',
+      in: 'query',
+      required: false,
+      description:
+        'Maximum number of items to return in the response. Additional items are paginated.\nUse the `pagination_token` returned in the response to fetch the next page of results.',
+      schema: { type: 'integer', default: 25, maximum: 250, minimum: 1 },
+    },
+  })
+
+const QueryMediaLibraryPaginationPaginationTokenParamsSchema = z
+  .string()
+  .exactOptional()
+  .openapi({
+    param: {
+      name: 'pagination_token',
+      in: 'query',
+      required: false,
+      description: 'Pagination token for fetching the next page of results.',
+      schema: { type: 'string' },
+    },
+  })
+
 const QueryMemberBusinessRolesParamsSchema = z
   .preprocess(
     (val) => (val === undefined || Array.isArray(val) ? val : [val]),
@@ -36067,6 +44302,16 @@ const QueryOrderParamsSchema = OrderSchema.openapi({
   },
 }).exactOptional()
 
+const QueryPartnerIdParamsSchema = PinterestLibIntegerFormatTypeSchema.openapi({
+  param: {
+    name: 'partner_id',
+    in: 'query',
+    required: false,
+    description: 'Partner business id.',
+    schema: { $ref: '#/components/schemas/Pinterest.Lib.IntegerFormatType', maxLength: 19 },
+  },
+}).exactOptional()
+
 const QueryPartnerIdsParamsSchema = z
   .string()
   .max(500)
@@ -36092,6 +44337,16 @@ const QueryPartnerTypeParamsSchema = PartnerTypeSchema.openapi({
     schema: { $ref: '#/components/schemas/PartnerType' },
   },
 }).exactOptional()
+
+const QueryPartnerTypeRequiredParamsSchema = PartnerTypeSchema.openapi({
+  param: {
+    name: 'partner_type',
+    in: 'query',
+    required: true,
+    description: 'Specifies whether to fetch internal or external (shared) partners.',
+    schema: { $ref: '#/components/schemas/PartnerType' },
+  },
+})
 
 const QueryPermissionsWithOwnerParamsSchema = z
   .preprocess(
@@ -36349,10 +44604,51 @@ const QueryReportingTimezoneParamsSchema = ReportingTimeZoneSchema.openapi({
     in: 'query',
     required: false,
     description:
-      'Specify the timezone to be applied for the reporting. This feature is currently in BETA and is not available to all users.',
+      'Specify the timezone to be applied for the reporting. Defaults to PINTEREST_TIME_ZONE (UTC). AD_ACCOUNT_TIME_ZONE requires the ad account to have a time_zone configured; otherwise the request fails with a 400.',
     schema: { $ref: '#/components/schemas/ReportingTimeZone' },
   },
 }).exactOptional()
+
+const QueryRequestDirectionParamsSchema = z
+  .enum(['SENT', 'RECEIVED', 'ALL'])
+  .default('ALL')
+  .exactOptional()
+  .openapi({
+    param: {
+      name: 'request_direction',
+      in: 'query',
+      required: false,
+      description: 'The direction of the request.',
+      schema: {
+        description: 'AOAA request direction.',
+        type: 'string',
+        example: 'ALL',
+        enum: ['SENT', 'RECEIVED', 'ALL'],
+        default: 'ALL',
+      },
+    },
+    description: 'AOAA request direction.',
+    example: 'ALL',
+  })
+
+const QueryRequestIdsParamsSchema = z
+  .preprocess(
+    (val) => (val === undefined || Array.isArray(val) ? val : [val]),
+    z.array(PinterestLibIntegerFormatTypeSchema),
+  )
+  .exactOptional()
+  .openapi({
+    param: {
+      name: 'request_ids',
+      in: 'query',
+      required: false,
+      description: 'A list of agency owned ad account request ids.',
+      schema: {
+        type: 'array',
+        items: { $ref: '#/components/schemas/Pinterest.Lib.IntegerFormatType' },
+      },
+    },
+  })
 
 const QueryRequiredPinIdsParamsSchema = z
   .preprocess(
@@ -36383,25 +44679,6 @@ const QueryRequiredSearchQueryParamsSchema = z
       required: true,
       description: 'Search query. Can contain pin description keywords or comma-separated pin IDs.',
       schema: { type: 'string' },
-    },
-  })
-
-const QueryResourceTypeParamsSchema = z
-  .enum(['AD_ACCOUNT', 'PROFILE', 'ASSET_GROUP', 'CATALOG', 'CONSUMER'])
-  .default('AD_ACCOUNT')
-  .exactOptional()
-  .openapi({
-    param: {
-      name: 'asset_type',
-      in: 'query',
-      required: false,
-      description:
-        'A resource type to filter the assets by. Only assets of the specified type will be returned.',
-      schema: {
-        type: 'string',
-        default: 'AD_ACCOUNT',
-        enum: ['AD_ACCOUNT', 'PROFILE', 'ASSET_GROUP', 'CATALOG', 'CONSUMER'],
-      },
     },
   })
 
@@ -36804,8 +45081,9 @@ const RmnBillingContractKeyParamsSchema = PinterestLibIntegerFormatTypeSchema.op
     name: 'contract_id',
     in: 'path',
     required: true,
-    description: 'The contract ID',
-    schema: { $ref: '#/components/schemas/Pinterest.Lib.IntegerFormatType', maxLength: 18 },
+    description:
+      'The contract ID.\n\nNote: For RMNs with a contract available, this is retrieved via the Get Invite endpoint.',
+    schema: { $ref: '#/components/schemas/Pinterest.Lib.IntegerFormatType', maxLength: 19 },
   },
 })
 
@@ -37018,6 +45296,13 @@ const ClientCredentialsSecurityScheme = {
   },
 }
 
+const PinterestEmployeeSecurityScheme = {
+  type: 'http',
+  scheme: 'Bearer',
+  description:
+    'Internal-only security scheme for employee-authenticated endpoints used by Pinterest internal apps (Command Center, Pinnacle). Requires a valid employee JWT (auth.pinadmin.com) forwarded by the internal app; not available to external developers. Use together with internalAccessOnly.',
+}
+
 const ConversionTokenSecurityScheme = {
   type: 'http',
   scheme: 'Bearer',
@@ -37026,6 +45311,13 @@ const ConversionTokenSecurityScheme = {
 }
 
 const BasicSecurityScheme = { type: 'http', scheme: 'basic' }
+
+const PinterestNotificationAuthSecurityScheme = {
+  type: 'http',
+  scheme: 'Bearer',
+  description:
+    'Generic security scheme for vendor-signed webhook/notification requests (e.g. Apple App Store Server Notifications, Adyen webhooks). The concrete verification mechanism (JWS, HMAC, basic auth) is vendor-specific and selected per operation via the @pinterestNotificationAuth decorator; unrelated to OAuth scopes or Pinterest credentials. Use together with @pinterestNotificationAuth.',
+}
 
 export const getAdAccountsRoute = createRoute({
   method: 'get',
@@ -37037,7 +45329,7 @@ export const getAdAccountsRoute = createRoute({
   operationId: 'ad_accounts/list',
   request: {
     query: z.object({
-      include_shared_accounts: AdAccountsGetAdditionalParamsParamsSchema,
+      include_shared_accounts: AdAccountsGetAdditionalParamsIncludeSharedAccountsParamsSchema,
       bookmark: PinterestLibBookmarkParamsBookmarkParamsSchema,
       page_size: PinterestLibBookmarkParamsPageSizeParamsSchema,
     }),
@@ -37136,6 +45428,73 @@ export const postAdAccountsRoute = createRoute({
   security: [{ pinterest_oauth2: ['ads:write'] }],
 })
 
+export const getAdAccountsEntityHistoryRoute = createRoute({
+  method: 'get',
+  path: '/ad_accounts/entity_history',
+  tags: ['entity_history'],
+  summary: 'Get ad entities change history',
+  description:
+    '**[Closed beta](/docs/key-concepts/using-beta-and-restricted-features/)**\n\nGet ad entities change history',
+  operationId: 'entity_history/get',
+  request: {
+    query: z.object({
+      ad_account_id: ChangeHistoryParametersAdAccountIdParamsSchema,
+      entity_id: ChangeHistoryParametersEntityIdParamsSchema,
+      entity_ids: ChangeHistoryParametersEntityIdsParamsSchema,
+      start_time: ChangeHistoryParametersStartTimeParamsSchema,
+      end_time: ChangeHistoryParametersEndTimeParamsSchema,
+      user_id_filter: ChangeHistoryParametersUserIdFilterParamsSchema,
+      field_filters: ChangeHistoryParametersFieldFiltersParamsSchema,
+      advertiser_id: ChangeHistoryParametersAdvertiserIdParamsSchema,
+      order: ChangeHistoryParametersOrderParamsSchema,
+      bookmark: PinterestLibBookmarkParamsBookmarkParamsSchema,
+      page_size: PinterestLibBookmarkParamsPageSizeParamsSchema,
+    }),
+  },
+  responses: {
+    200: {
+      description: 'The request has succeeded.',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              bookmark: z.string().nullable().exactOptional(),
+              items: z.array(EntityHistorySchema),
+            })
+            .openapi({ required: ['items'] }),
+        },
+      },
+    },
+    400: {
+      description: 'The request could not be understood by the server due to unexpected data.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    401: {
+      description: 'Authentication is required and has either failed or not been provided.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    403: {
+      description:
+        'The request was valid, but the server is refusing action. The user might not have the necessary permissions for a resource.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    404: {
+      description: 'The requested resource could not be found on this server.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    429: {
+      description:
+        'The user has sent too many requests in a given amount of time and is being rate limited.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    default: {
+      description: 'An unexpected error response.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+  },
+  security: [{ pinterest_oauth2: ['ads:read'] }, { client_credentials: ['ads:read'] }],
+})
+
 export const getAdAccountsAdAccountIdRoute = createRoute({
   method: 'get',
   path: '/ad_accounts/{ad_account_id}',
@@ -37177,6 +45536,244 @@ export const getAdAccountsAdAccountIdRoute = createRoute({
     },
   },
   security: [{ pinterest_oauth2: ['ads:read'] }, { client_credentials: ['ads:read'] }],
+})
+
+export const getAdAccountsAdAccountIdAbTestsRoute = createRoute({
+  method: 'get',
+  path: '/ad_accounts/{ad_account_id}/ab_tests',
+  tags: ['ab_tests'],
+  summary: 'List AB tests for an ad account',
+  description:
+    'Get all AB tests for the given ad account ID.\n\nReused for external partner integrations too -- gatedFeature dropped at the operation\nlevel. The handler force-excludes draft rows for an external caller regardless of the\nrequested status filter.\n\n**Rate limit**: [READ](/docs/redoc/#tag/Rate-Limits).',
+  operationId: 'ab_tests/list',
+  request: {
+    params: z.object({ ad_account_id: PinterestLibAdAccountIdParamsSchema }),
+    query: z.object({
+      bookmark: PinterestLibBookmarkParamsBookmarkParamsSchema,
+      page_size: PinterestLibBookmarkParamsPageSizeParamsSchema,
+    }),
+  },
+  responses: {
+    200: {
+      description: 'The request has succeeded.',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              bookmark: z.string().nullable().exactOptional(),
+              items: z.array(AbTestSchema),
+            })
+            .openapi({ required: ['items'] }),
+        },
+      },
+    },
+    400: {
+      description: 'The request could not be understood by the server due to unexpected data.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    401: {
+      description: 'Authentication is required and has either failed or not been provided.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    403: {
+      description:
+        'The request was valid, but the server is refusing action. The user might not have the necessary permissions for a resource.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    404: {
+      description: 'The requested resource could not be found on this server.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    429: {
+      description:
+        'The user has sent too many requests in a given amount of time and is being rate limited.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    default: {
+      description: 'An unexpected error response.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+  },
+  security: [{ pinterest_oauth2: ['ads:read'] }],
+})
+
+export const postAdAccountsAdAccountIdAbTestsRoute = createRoute({
+  method: 'post',
+  path: '/ad_accounts/{ad_account_id}/ab_tests',
+  tags: ['ab_tests'],
+  summary: 'Create AB test and associate experiment campaigns',
+  description:
+    'Create a new ab test and an experiment according to the test version configuration.\nAssociate the given campaigns on version groups.\n\nAccepts an array and returns per-item `{ data, exceptions }` results, matching V4: a request\ncan partially succeed, and callers rely on the per-item `error_code` to distinguish blocking\nvalidation failures from non-blocking warnings.\n\nReused for external partner integrations too, keeping the batch\n`{items: [{data, exceptions}]}` envelope as-is for every caller.\n\n`validate_only=true` validates without persisting anything, returning the same envelope\nwith a placeholder item (`id`/`created_time`/`updated_time` are placeholders, not a real\nrecord) on success, or the normal `exceptions` on failure.\n\n**Rate limit**: [WRITE](/docs/redoc/#tag/Rate-Limits).',
+  operationId: 'ab_tests/create',
+  request: {
+    params: z.object({ ad_account_id: PinterestLibAdAccountIdParamsSchema }),
+    body: {
+      content: { 'application/json': { schema: z.array(AbTestCreateSchema) } },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'The request has succeeded.',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              items: z.array(
+                z
+                  .object({
+                    data: AbTestSchema.exactOptional(),
+                    exceptions: z.array(PinterestLibBatchItemExceptionSchema).exactOptional(),
+                  })
+                  .openapi({ required: [] }),
+              ),
+            })
+            .openapi({ required: ['items'] }),
+        },
+      },
+    },
+    400: {
+      description: 'The request could not be understood by the server due to unexpected data.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    401: {
+      description: 'Authentication is required and has either failed or not been provided.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    403: {
+      description:
+        'The request was valid, but the server is refusing action. The user might not have the necessary permissions for a resource.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    404: {
+      description: 'The requested resource could not be found on this server.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    429: {
+      description:
+        'The user has sent too many requests in a given amount of time and is being rate limited.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    default: {
+      description: 'An unexpected error response.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+  },
+  security: [{ pinterest_oauth2: ['ads:write'] }],
+})
+
+export const patchAdAccountsAdAccountIdAbTestsRoute = createRoute({
+  method: 'patch',
+  path: '/ad_accounts/{ad_account_id}/ab_tests',
+  tags: ['ab_tests'],
+  summary: 'Update AB test',
+  description:
+    "Update an existing ab test and, when versions change, its experiment cell / campaign associations.\nSetting the status to COMPLETED or CANCELLED schedules the associated experiment for deletion.\nSetting the status of a DRAFT test to ACTIVE publishes it: the experiment is provisioned and the\nfull create validation runs.\n\nAccepts an array and returns per-item `{ data, exceptions }` results, matching V4: a request\ncan partially succeed, and callers rely on the per-item `error_code` to distinguish blocking\nvalidation failures from non-blocking warnings.\n\nReused for external partner integrations too -- gatedFeature dropped at the operation\nlevel. Keeps the batch envelope as-is; not attempting to also replicate the TDD's\nsingle-object external design here (a shape change, not a field-visibility one).\n\n**Rate limit**: [WRITE](/docs/redoc/#tag/Rate-Limits).",
+  operationId: 'ab_tests/update',
+  request: {
+    params: z.object({ ad_account_id: PinterestLibAdAccountIdParamsSchema }),
+    body: {
+      content: { 'application/json': { schema: z.array(AbTestBatchUpdateSchema) } },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'The request has succeeded.',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              items: z.array(
+                z
+                  .object({
+                    data: AbTestSchema.exactOptional(),
+                    exceptions: z.array(PinterestLibBatchItemExceptionSchema).exactOptional(),
+                  })
+                  .openapi({ required: [] }),
+              ),
+            })
+            .openapi({ required: ['items'] }),
+        },
+      },
+    },
+    400: {
+      description: 'The request could not be understood by the server due to unexpected data.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    401: {
+      description: 'Authentication is required and has either failed or not been provided.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    403: {
+      description:
+        'The request was valid, but the server is refusing action. The user might not have the necessary permissions for a resource.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    404: {
+      description: 'The requested resource could not be found on this server.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    429: {
+      description:
+        'The user has sent too many requests in a given amount of time and is being rate limited.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    default: {
+      description: 'An unexpected error response.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+  },
+  security: [{ pinterest_oauth2: ['ads:write'] }],
+})
+
+export const getAdAccountsAdAccountIdAbTestsAbTestIdRoute = createRoute({
+  method: 'get',
+  path: '/ad_accounts/{ad_account_id}/ab_tests/{ab_test_id}',
+  tags: ['ab_tests'],
+  summary: 'Get AB test data and experiment campaign association data',
+  description:
+    "Get a specific ab test given the ab test ID.\n\nReused for external partner integrations too, rather than a dedicated endpoint --\ngatedFeature dropped at the operation level so a partner's OAuth token can reach it.\nThe handler still verifies ownership and filters drafts itself for an external caller.\n\n**Rate limit**: [READ](/docs/redoc/#tag/Rate-Limits).",
+  operationId: 'ab_tests/get',
+  request: {
+    params: z.object({
+      ab_test_id: AbTestKeyParamsSchema,
+      ad_account_id: PinterestLibAdAccountIdParamsSchema,
+    }),
+  },
+  responses: {
+    200: {
+      description: 'The request has succeeded.',
+      content: { 'application/json': { schema: AbTestSchema } },
+    },
+    400: {
+      description: 'The request could not be understood by the server due to unexpected data.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    401: {
+      description: 'Authentication is required and has either failed or not been provided.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    403: {
+      description:
+        'The request was valid, but the server is refusing action. The user might not have the necessary permissions for a resource.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    404: {
+      description: 'The requested resource could not be found on this server.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    429: {
+      description:
+        'The user has sent too many requests in a given amount of time and is being rate limited.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    default: {
+      description: 'An unexpected error response.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+  },
+  security: [{ pinterest_oauth2: ['ads:read'] }],
 })
 
 export const getAdAccountsAdAccountIdAdGroupsRoute = createRoute({
@@ -37268,7 +45865,7 @@ export const postAdAccountsAdAccountIdAdGroupsRoute = createRoute({
               items: z.array(
                 z
                   .object({
-                    data: AdGroupSchema.exactOptional(),
+                    data: AdGroupBatchResponseDataSchema.exactOptional(),
                     exceptions: z.array(PinterestLibBatchItemExceptionSchema).exactOptional(),
                   })
                   .openapi({ required: [] }),
@@ -37332,7 +45929,7 @@ export const patchAdAccountsAdAccountIdAdGroupsRoute = createRoute({
               items: z.array(
                 z
                   .object({
-                    data: AdGroupSchema.exactOptional(),
+                    data: AdGroupBatchResponseDataSchema.exactOptional(),
                     exceptions: z.array(PinterestLibBatchItemExceptionSchema).exactOptional(),
                   })
                   .openapi({ required: [] }),
@@ -37797,6 +46394,108 @@ export const getAdAccountsAdAccountIdAdGroupsAdGroupIdDynamicTitlesUploadsRoute 
     },
   },
   security: [{ pinterest_oauth2: ['ads:read'] }],
+})
+
+export const getAdAccountsAdAccountIdAdGroupsAdGroupIdPublisherBlocklistsRoute = createRoute({
+  method: 'get',
+  path: '/ad_accounts/{ad_account_id}/ad_groups/{ad_group_id}/publisher_blocklists',
+  tags: ['publisher_blocklists'],
+  summary: 'Get ad group publisher blocklist',
+  description:
+    'Get the publisher blocklist for an ad group whose owning ad account is included in the offsite placement advertiser allowlist.',
+  operationId: 'ad_group_publisher_blocklists/read',
+  request: {
+    params: z.object({
+      ad_account_id: AdGroupPublisherBlocklistKeyIdParamsSchema,
+      ad_group_id: AdGroupPublisherBlocklistKeyAdGroupIdParamsSchema,
+    }),
+  },
+  responses: {
+    200: {
+      description: 'The request has succeeded.',
+      content: { 'application/json': { schema: PublisherBlocklistFieldsSchema } },
+    },
+    400: {
+      description: 'The request could not be understood by the server due to unexpected data.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    401: {
+      description: 'Authentication is required and has either failed or not been provided.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    403: {
+      description:
+        'The request was valid, but the server is refusing action. The user might not have the necessary permissions for a resource.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    404: {
+      description: 'The requested resource could not be found on this server.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    429: {
+      description:
+        'The user has sent too many requests in a given amount of time and is being rate limited.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    default: {
+      description: 'An unexpected error response.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+  },
+  security: [{ pinterest_oauth2: ['ads:read'] }],
+})
+
+export const patchAdAccountsAdAccountIdAdGroupsAdGroupIdPublisherBlocklistsRoute = createRoute({
+  method: 'patch',
+  path: '/ad_accounts/{ad_account_id}/ad_groups/{ad_group_id}/publisher_blocklists',
+  tags: ['publisher_blocklists'],
+  summary: 'Update ad group publisher blocklist',
+  description:
+    'Replace the publisher blocklist for an ad group whose owning ad account is included in the offsite placement advertiser allowlist.',
+  operationId: 'ad_group_publisher_blocklists/update',
+  request: {
+    params: z.object({
+      ad_account_id: AdGroupPublisherBlocklistKeyIdParamsSchema,
+      ad_group_id: AdGroupPublisherBlocklistKeyAdGroupIdParamsSchema,
+    }),
+    body: {
+      content: { 'application/json': { schema: AdGroupPublisherBlocklistUpdateSchema } },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'The request has succeeded.',
+      content: { 'application/json': { schema: PublisherBlocklistFieldsSchema } },
+    },
+    400: {
+      description: 'The request could not be understood by the server due to unexpected data.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    401: {
+      description: 'Authentication is required and has either failed or not been provided.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    403: {
+      description:
+        'The request was valid, but the server is refusing action. The user might not have the necessary permissions for a resource.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    404: {
+      description: 'The requested resource could not be found on this server.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    429: {
+      description:
+        'The user has sent too many requests in a given amount of time and is being rate limited.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    default: {
+      description: 'An unexpected error response.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+  },
+  security: [{ pinterest_oauth2: ['ads:write'] }],
 })
 
 export const postAdAccountsAdAccountIdAdPreviewsRoute = createRoute({
@@ -38503,6 +47202,50 @@ export const patchAdAccountsAdAccountIdAdvertiserDefinedEventsRoute = createRout
     },
   },
   security: [{ pinterest_oauth2: ['ads:write'] }, { client_credentials: ['ads:write'] }],
+})
+
+export const getAdAccountsAdAccountIdAllowedDomainsRoute = createRoute({
+  method: 'get',
+  path: '/ad_accounts/{ad_account_id}/allowed_domains',
+  tags: ['business_access_misc'],
+  summary: 'Get RMN allowed url domains for advertiser',
+  description:
+    'Get a list of the RMN allowed url domains for ads created by the specified advertiser.',
+  operationId: 'allowed_domains/read',
+  request: { params: z.object({ ad_account_id: PinterestLibAdAccountIdParamsSchema }) },
+  responses: {
+    200: {
+      description: 'The request has succeeded.',
+      content: { 'application/json': { schema: AllowedDomainsSchema } },
+    },
+    400: {
+      description: 'The request could not be understood by the server due to unexpected data.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    401: {
+      description: 'Authentication is required and has either failed or not been provided.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    403: {
+      description:
+        'The request was valid, but the server is refusing action. The user might not have the necessary permissions for a resource.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    404: {
+      description: 'The requested resource could not be found on this server.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    429: {
+      description:
+        'The user has sent too many requests in a given amount of time and is being rate limited.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    default: {
+      description: 'An unexpected error response.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+  },
+  security: [{ pinterest_oauth2: ['ads:read'] }],
 })
 
 export const getAdAccountsAdAccountIdAnalyticsRoute = createRoute({
@@ -39221,7 +47964,7 @@ export const postAdAccountsAdAccountIdBulkDownloadRoute = createRoute({
   tags: ['bulk'],
   summary: 'Get advertiser entities in bulk',
   description:
-    'Create an asynchronous report that may include information on campaigns, ad groups, product groups, ads,\nkeywords, schedules,and/or labels; can filter by campaigns. Though the entities may be active, archived, or paused,\nonly active entities will return data.',
+    'Create an asynchronous report that may include information on campaigns, ad groups, product groups, ads,\nkeywords, schedules, labels, and/or entity change history; can filter by campaigns. Though the entities may be\nactive, archived, or paused, only active entities will return data. When `ENTITY_HISTORY` is requested, the report\nreturns audit-log change events for the ad account regardless of entity status.',
   operationId: 'bulk_download/create',
   request: {
     params: z.object({ ad_account_id: PinterestLibAdAccountIdParamsSchema }),
@@ -39272,23 +48015,45 @@ export const postAdAccountsAdAccountIdBulkUpsertRoute = createRoute({
   tags: ['bulk'],
   summary: 'Create/update ad entities in bulk',
   description:
-    'Either create or update any combination of campaigns, ad groups, product groups, ads, keywords, schedules, or labels.\nNote that this request will be processed asynchronously; the response will include a <code>request_id</code>\nthat can be used to obtain the status of the request.',
+    'Either create or update any combination of campaigns, ad groups, product groups, ads, keywords, schedules, or labels.\nNote that this request will be processed asynchronously; the response will include a `request_id`\nthat can be used to obtain the status of the request.',
   operationId: 'bulk_upsert/create',
   request: {
     params: z.object({ ad_account_id: PinterestLibAdAccountIdParamsSchema }),
-    body: {
-      description: 'Parameters to get create/update ad entities in bulk',
-      content: { 'application/json': { schema: BulkUpsertRequestSchema } },
-      required: true,
-    },
+    body: { content: { 'application/json': { schema: BulkWriteJobCreateSchema } }, required: true },
   },
   responses: {
     200: {
       description: 'The request has succeeded.',
-      content: { 'application/json': { schema: BulkUpsertResponseSchema } },
+      content: { 'application/json': { schema: BulkUpsertSchema } },
+    },
+    201: {
+      description: 'Resource create operation completed successfully.',
+      content: { 'application/json': { schema: BulkUpsertSchema } },
+    },
+    400: {
+      description: 'The request could not be understood by the server due to unexpected data.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    401: {
+      description: 'Authentication is required and has either failed or not been provided.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    403: {
+      description:
+        'The request was valid, but the server is refusing action. The user might not have the necessary permissions for a resource.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    404: {
+      description: 'The requested resource could not be found on this server.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    429: {
+      description:
+        'The user has sent too many requests in a given amount of time and is being rate limited.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
     },
     default: {
-      description: 'Unexpected error',
+      description: 'An unexpected error response.',
       content: { 'application/json': { schema: PinterestLibErrorSchema } },
     },
   },
@@ -39301,7 +48066,7 @@ export const getAdAccountsAdAccountIdBulkBulkRequestIdRoute = createRoute({
   tags: ['bulk'],
   summary: 'Download advertiser entities in bulk',
   description:
-    'Get the status of a bulk request by `request_id`, along with a download URL that will allow you to download the\nnew or updated entity data (campaigns, ad groups, product groups, ads, schedules, or keywords).',
+    'Get the status of a bulk request by `request_id`, along with a download URL that will allow you to download the\nnew or updated entity data (campaigns, ad groups, product groups, ads, schedules, keywords) or entity change history.',
   operationId: 'bulk_request/get',
   request: {
     params: z.object({
@@ -39403,7 +48168,7 @@ export const postAdAccountsAdAccountIdCampaignAdPreviewRoute = createRoute({
   request: {
     params: z.object({ ad_account_id: PinterestLibAdAccountIdParamsSchema }),
     body: {
-      content: { 'application/json': { schema: z.array(CampaignAdPreviewCreateSchema) } },
+      content: { 'application/json': { schema: z.array(CampaignAdPreviewCreateItemSchema) } },
       required: true,
     },
   },
@@ -39589,7 +48354,7 @@ export const postAdAccountsAdAccountIdCampaignsRoute = createRoute({
   tags: ['campaigns'],
   summary: 'Create campaigns',
   description:
-    "Create multiple new campaigns. Every campaign has its own campaign_id\nand houses one or more ad groups, which contain one or more ads.\n\nFor more, see [Set up your campaign](https://help.pinterest.com/en/business/article/set-up-your-campaign/).\n\n**Note:**\n- The values for `lifetime_spend_cap` and `daily_spend_cap` are microcurrency amounts based on the currency field set in the advertiser's profile (e.g. USD).\n\nMicrocurrency is used to track very small transactions, based on the currency set in the advertiser's profile.\n\nA microcurrency unit is 10^(-6) of the standard unit of currency selected in the advertiser's profile.\n\n**Equivalency equations**, using dollars as an example currency:\n\n- $1 = 1,000,000 microdollars\n- 1 microdollar = $0.000001\n\n**To convert between currency and microcurrency**, using dollars as an example currency:\n\n- To convert dollars to microdollars, multiply dollars by 1,000,000\n- To convert microdollars to dollars, divide microdollars by 1,000,000",
+    "\nCreate multiple new campaigns. Every campaign has its own campaign_id and houses one or more ad groups, which contain one or more ads.\n\nFor more, see [Set up your campaign](https://help.pinterest.com/en/business/article/set-up-your-campaign/).\n\n**Campaign objective types are changing!**\n\nAs part of objective simplification, `WEB_CONVERSION` and `CATALOG_SALES` objectives are being deprecated and replaced by `SALES` and `LEADS`. A new optional `intended_promotion_type` parameter is also being introduced, allowing you to create ads from either Pins or product catalog under the `SALES` and `CONSIDERATION` objectives. Legacy objectives remain available until **February 1, 2027**, after which you will need to migrate your campaigns to the new objectives. Get [full details and the migration timeline for objective simplification](/docs/work-with-ads/try-out-campaign-objective-type-simplification/).\n\n\n**Note:**\n- The values for `lifetime_spend_cap` and `daily_spend_cap` are microcurrency amounts based on the currency field set in the advertiser's profile (e.g. USD).\n\nMicrocurrency is used to track very small transactions, based on the currency set in the advertiser's profile.\n\nA microcurrency unit is 10^(-6) of the standard unit of currency selected in the advertiser's profile.\n\n**Equivalency equations**, using dollars as an example currency:\n\n- $1 = 1,000,000 microdollars\n- 1 microdollar = $0.000001\n\n**To convert between currency and microcurrency**, using dollars as an example currency:\n\n- To convert dollars to microdollars, multiply dollars by 1,000,000\n- To convert microdollars to dollars, divide microdollars by 1,000,000",
   operationId: 'campaigns/create',
   request: {
     params: z.object({ ad_account_id: PinterestLibAdAccountIdParamsSchema }),
@@ -39639,7 +48404,7 @@ export const patchAdAccountsAdAccountIdCampaignsRoute = createRoute({
   tags: ['campaigns'],
   summary: 'Update campaigns',
   description:
-    "Update multiple ad campaigns based on campaign_ids.\n\n**Note:**\n- The values for `lifetime_spend_cap` and `daily_spend_cap` are microcurrency amounts based on the currency field set in the advertiser's profile (e.g. USD).\n\nMicrocurrency is used to track very small transactions, based on the currency set in the advertiser's profile.\n\nA microcurrency unit is 10^(-6) of the standard unit of currency selected in the advertiser's profile.\n\n**Equivalency equations**, using dollars as an example currency:\n\n- $1 = 1,000,000 microdollars\n- 1 microdollar = $0.000001\n\n**To convert between currency and microcurrency**, using dollars as an example currency:\n\n- To convert dollars to microdollars, multiply dollars by 1,000,000\n- To convert microdollars to dollars, divide microdollars by 1,000,000",
+    "Update multiple ad campaigns based on campaign_ids.\n\n**Campaign objective types are changing!**\n\nAs part of objective simplification, `WEB_CONVERSION` and `CATALOG_SALES` objectives are being deprecated and replaced by `SALES` and `LEADS`. A new optional `intended_promotion_type` parameter is also being introduced, allowing you to create ads from either Pins or product catalog under the `SALES` and `CONSIDERATION` objectives. Legacy objectives remain available until **February 1, 2027**, after which you will need to migrate your campaigns to the new objectives. Get [full details and the migration timeline for objective simplification](/docs/work-with-ads/try-out-campaign-objective-type-simplification/).\n\n**Note:**\n- The values for `lifetime_spend_cap` and `daily_spend_cap` are microcurrency amounts based on the currency field set in the advertiser's profile (e.g. USD).\n\nMicrocurrency is used to track very small transactions, based on the currency set in the advertiser's profile.\n\nA microcurrency unit is 10^(-6) of the standard unit of currency selected in the advertiser's profile.\n\n**Equivalency equations**, using dollars as an example currency:\n\n- $1 = 1,000,000 microdollars\n- 1 microdollar = $0.000001\n\n**To convert between currency and microcurrency**, using dollars as an example currency:\n\n- To convert dollars to microdollars, multiply dollars by 1,000,000\n- To convert microdollars to dollars, divide microdollars by 1,000,000",
   operationId: 'campaigns/update',
   request: {
     params: z.object({ ad_account_id: PinterestLibAdAccountIdParamsSchema }),
@@ -40165,7 +48930,166 @@ export const getAdAccountsAdAccountIdConversionEqsRoute = createRoute({
       content: { 'application/json': { schema: PinterestLibErrorSchema } },
     },
   },
-  security: [{ pinterest_oauth2: ['ads:read'] }, { client_credentials: ['ads:read'] }],
+  security: [
+    { pinterest_oauth2: ['ads:read'] },
+    { client_credentials: ['ads:read'] },
+    { conversion_token: [] },
+  ],
+})
+
+export const postAdAccountsAdAccountIdConversionSegmentsRoute = createRoute({
+  method: 'post',
+  path: '/ad_accounts/{ad_account_id}/conversion_segments',
+  tags: ['conversion_segments'],
+  summary: 'Create conversion segment',
+  description:
+    '**This endpoint is currently in beta and not available to all apps. [Learn more](/docs/getting-started/using-beta-and-restricted-features/).**\n\nCreate a conversion segment.',
+  operationId: 'conversion_segments/create',
+  request: {
+    params: z.object({ ad_account_id: PinterestLibAdAccountIdParamsSchema }),
+    body: {
+      content: { 'application/json': { schema: ConversionSegmentCreateSchema } },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'The request has succeeded.',
+      content: { 'application/json': { schema: ConversionSegmentSchema } },
+    },
+    201: {
+      description: 'Resource create operation completed successfully.',
+      content: { 'application/json': { schema: ConversionSegmentSchema } },
+    },
+    400: {
+      description: 'The request could not be understood by the server due to unexpected data.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    401: {
+      description: 'Authentication is required and has either failed or not been provided.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    403: {
+      description:
+        'The request was valid, but the server is refusing action. The user might not have the necessary permissions for a resource.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    404: {
+      description: 'The requested resource could not be found on this server.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    429: {
+      description:
+        'The user has sent too many requests in a given amount of time and is being rate limited.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    default: {
+      description: 'An unexpected error response.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+  },
+  security: [{ pinterest_oauth2: ['ads:write'] }],
+})
+
+export const deleteAdAccountsAdAccountIdConversionSegmentsConversionSegmentIdRoute = createRoute({
+  method: 'delete',
+  path: '/ad_accounts/{ad_account_id}/conversion_segments/{conversion_segment_id}',
+  tags: ['conversion_segments'],
+  summary: 'Delete conversion segment',
+  description: 'Delete a conversion segment.',
+  operationId: 'conversion_segments/delete',
+  request: {
+    params: z.object({
+      ad_account_id: PinterestLibAdAccountIdParamsSchema,
+      conversion_segment_id: PathConversionSegmentIdParamsSchema,
+    }),
+  },
+  responses: {
+    200: {
+      description: 'The request has succeeded.',
+      content: { 'application/json': { schema: ConversionSegmentSchema } },
+    },
+    204: { description: 'Resource deleted successfully.' },
+    400: {
+      description: 'The request could not be understood by the server due to unexpected data.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    401: {
+      description: 'Authentication is required and has either failed or not been provided.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    403: {
+      description:
+        'The request was valid, but the server is refusing action. The user might not have the necessary permissions for a resource.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    404: {
+      description: 'The requested resource could not be found on this server.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    429: {
+      description:
+        'The user has sent too many requests in a given amount of time and is being rate limited.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    default: {
+      description: 'An unexpected error response.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+  },
+  security: [{ pinterest_oauth2: ['ads:write'] }],
+})
+
+export const patchAdAccountsAdAccountIdConversionSegmentsConversionSegmentIdRoute = createRoute({
+  method: 'patch',
+  path: '/ad_accounts/{ad_account_id}/conversion_segments/{conversion_segment_id}',
+  tags: ['conversion_segments'],
+  summary: 'Update conversion segment',
+  description: 'Update a conversion segment.',
+  operationId: 'conversion_segments/update',
+  request: {
+    params: z.object({
+      ad_account_id: PinterestLibAdAccountIdParamsSchema,
+      conversion_segment_id: PathConversionSegmentIdParamsSchema,
+    }),
+    body: {
+      content: { 'application/json': { schema: ConversionSegmentUpdateSchema } },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'The request has succeeded.',
+      content: { 'application/json': { schema: ConversionSegmentSchema } },
+    },
+    400: {
+      description: 'The request could not be understood by the server due to unexpected data.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    401: {
+      description: 'Authentication is required and has either failed or not been provided.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    403: {
+      description:
+        'The request was valid, but the server is refusing action. The user might not have the necessary permissions for a resource.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    404: {
+      description: 'The requested resource could not be found on this server.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    429: {
+      description:
+        'The user has sent too many requests in a given amount of time and is being rate limited.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    default: {
+      description: 'An unexpected error response.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+  },
+  security: [{ pinterest_oauth2: ['ads:write'] }],
 })
 
 export const getAdAccountsAdAccountIdConversionTagsRoute = createRoute({
@@ -43022,6 +51946,100 @@ export const deleteAdAccountsAdAccountIdPromotionsPromotionIdRoute = createRoute
   security: [{ pinterest_oauth2: ['ads:write'] }],
 })
 
+export const getAdAccountsAdAccountIdPublisherBlocklistsRoute = createRoute({
+  method: 'get',
+  path: '/ad_accounts/{ad_account_id}/publisher_blocklists',
+  tags: ['publisher_blocklists'],
+  summary: 'Get ad account publisher blocklist',
+  description:
+    'Get the publisher blocklist for an ad account included in the offsite placement advertiser allowlist.',
+  operationId: 'publisher_blocklists/read',
+  request: { params: z.object({ ad_account_id: PublisherBlocklistKeyParamsSchema }) },
+  responses: {
+    200: {
+      description: 'The request has succeeded.',
+      content: { 'application/json': { schema: PublisherBlocklistFieldsSchema } },
+    },
+    400: {
+      description: 'The request could not be understood by the server due to unexpected data.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    401: {
+      description: 'Authentication is required and has either failed or not been provided.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    403: {
+      description:
+        'The request was valid, but the server is refusing action. The user might not have the necessary permissions for a resource.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    404: {
+      description: 'The requested resource could not be found on this server.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    429: {
+      description:
+        'The user has sent too many requests in a given amount of time and is being rate limited.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    default: {
+      description: 'An unexpected error response.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+  },
+  security: [{ pinterest_oauth2: ['ads:read'] }],
+})
+
+export const patchAdAccountsAdAccountIdPublisherBlocklistsRoute = createRoute({
+  method: 'patch',
+  path: '/ad_accounts/{ad_account_id}/publisher_blocklists',
+  tags: ['publisher_blocklists'],
+  summary: 'Update ad account publisher blocklist',
+  description:
+    'Replace the publisher blocklist for an ad account included in the offsite placement advertiser allowlist.',
+  operationId: 'publisher_blocklists/update',
+  request: {
+    params: z.object({ ad_account_id: PublisherBlocklistKeyParamsSchema }),
+    body: {
+      content: { 'application/json': { schema: PublisherBlocklistUpdateSchema } },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'The request has succeeded.',
+      content: { 'application/json': { schema: PublisherBlocklistFieldsSchema } },
+    },
+    400: {
+      description: 'The request could not be understood by the server due to unexpected data.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    401: {
+      description: 'Authentication is required and has either failed or not been provided.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    403: {
+      description:
+        'The request was valid, but the server is refusing action. The user might not have the necessary permissions for a resource.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    404: {
+      description: 'The requested resource could not be found on this server.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    429: {
+      description:
+        'The user has sent too many requests in a given amount of time and is being rate limited.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    default: {
+      description: 'An unexpected error response.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+  },
+  security: [{ pinterest_oauth2: ['ads:write'] }],
+})
+
 export const getAdAccountsAdAccountIdReportsRoute = createRoute({
   method: 'get',
   path: '/ad_accounts/{ad_account_id}/reports',
@@ -45022,6 +54040,62 @@ export const patchBusinessAccessBusinessHierarchyBusinessHierarchyIdBrandAccount
     security: [{ pinterest_oauth2: ['biz_access:read', 'biz_access:write'] }],
   })
 
+export const postBusinessAccessBusinessRmnInvitesBusinessRelationshipInviteIdAuthProcessActionRoute =
+  createRoute({
+    method: 'post',
+    path: '/business_access/business_rmn_invites/{business_relationship_invite_id}/auth_process_action',
+    tags: ['business_access_invite'],
+    summary: 'Process RMN business relationship invite action',
+    description:
+      '**This endpoint is currently in beta and not available to all apps. [Learn more](/docs/getting-started/using-beta-and-restricted-features/).**\n\nProcess an RMN business relationship invite based on requested actions, such as accept, reject, resend, or cancel.',
+    operationId: 'rmn_business_relationship_invites/process_action',
+    request: {
+      params: z.object({
+        business_relationship_invite_id: PathBusinessRelationshipInviteIdParamsSchema,
+      }),
+      body: {
+        content: {
+          'application/json': { schema: RmnBusinessRelationshipInviteActionCreateSchema },
+        },
+        required: true,
+      },
+    },
+    responses: {
+      200: { description: 'The request has succeeded.' },
+      201: {
+        description: 'Resource create operation completed successfully.',
+        content: { 'application/json': { schema: RmnBusinessRelationshipInviteActionSchema } },
+      },
+      400: {
+        description: 'The request could not be understood by the server due to unexpected data.',
+        content: { 'application/json': { schema: PinterestLibErrorSchema } },
+      },
+      401: {
+        description: 'Authentication is required and has either failed or not been provided.',
+        content: { 'application/json': { schema: PinterestLibErrorSchema } },
+      },
+      403: {
+        description:
+          'The request was valid, but the server is refusing action. The user might not have the necessary permissions for a resource.',
+        content: { 'application/json': { schema: PinterestLibErrorSchema } },
+      },
+      404: {
+        description: 'The requested resource could not be found on this server.',
+        content: { 'application/json': { schema: PinterestLibErrorSchema } },
+      },
+      429: {
+        description:
+          'The user has sent too many requests in a given amount of time and is being rate limited.',
+        content: { 'application/json': { schema: PinterestLibErrorSchema } },
+      },
+      default: {
+        description: 'An unexpected error response.',
+        content: { 'application/json': { schema: PinterestLibErrorSchema } },
+      },
+    },
+    security: [{ pinterest_oauth2: ['biz_access:write'] }],
+  })
+
 export const getBusinessesEmployersRoute = createRoute({
   method: 'get',
   path: '/businesses/employers',
@@ -45126,6 +54200,279 @@ export const patchBusinessesInvitesRoute = createRoute({
     },
   },
   security: [{ pinterest_oauth2: ['biz_access:read', 'biz_access:write'] }],
+})
+
+export const getBusinessesBusinessIdAdAccountRequestsRoute = createRoute({
+  method: 'get',
+  path: '/businesses/{business_id}/ad_account_requests',
+  tags: ['business_access_invite'],
+  summary: 'Get AOAA requests',
+  description: 'Get Agency Owned Ad Account (AOAA) requests.',
+  operationId: 'agency_owned_ad_account_requests/list',
+  request: {
+    params: z.object({ business_id: PathBusinessUserParamsSchema }),
+    query: z.object({
+      partner_id: QueryPartnerIdParamsSchema,
+      request_ids: QueryRequestIdsParamsSchema,
+      statuses: QueryAoaaRequestStatusesParamsSchema,
+      request_direction: QueryRequestDirectionParamsSchema,
+    }),
+  },
+  responses: {
+    200: {
+      description: 'The request has succeeded.',
+      content: { 'application/json': { schema: z.array(AgencyOwnedAdAccountRequestSchema) } },
+    },
+    400: {
+      description: 'The request could not be understood by the server due to unexpected data.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    401: {
+      description: 'Authentication is required and has either failed or not been provided.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    403: {
+      description:
+        'The request was valid, but the server is refusing action. The user might not have the necessary permissions for a resource.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    404: {
+      description: 'The requested resource could not be found on this server.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    429: {
+      description:
+        'The user has sent too many requests in a given amount of time and is being rate limited.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    default: {
+      description: 'An unexpected error response.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+  },
+  security: [{ pinterest_oauth2: ['biz_access:read'] }],
+})
+
+export const postBusinessesBusinessIdAdAccountRequestsAcceptRoute = createRoute({
+  method: 'post',
+  path: '/businesses/{business_id}/ad_account_requests/accept',
+  tags: ['business_access_invite'],
+  summary: 'Accept AOAA requests',
+  description:
+    "Bulk accept agency owned ad account (AOAA) requests on behalf of the requesting business. Each accepted request transitions to ACCEPTED and the owning business's biz admins/owner are notified by email.",
+  operationId: 'agency_owned_ad_account_requests/accept',
+  request: {
+    params: z.object({ business_id: PathBusinessUserParamsSchema }),
+    body: {
+      content: {
+        'application/json': { schema: AgencyOwnedAdAccountRequestAcceptanceCreateSchema },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    200: { description: 'The request has succeeded.' },
+    400: {
+      description: 'The request could not be understood by the server due to unexpected data.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    401: {
+      description: 'Authentication is required and has either failed or not been provided.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    403: {
+      description:
+        'The request was valid, but the server is refusing action. The user might not have the necessary permissions for a resource.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    404: {
+      description: 'The requested resource could not be found on this server.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    429: {
+      description:
+        'The user has sent too many requests in a given amount of time and is being rate limited.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    default: {
+      description: 'An unexpected error response.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+  },
+  security: [{ pinterest_oauth2: ['biz_access:write'] }],
+})
+
+export const postBusinessesBusinessIdAdAccountRequestsRejectRoute = createRoute({
+  method: 'post',
+  path: '/businesses/{business_id}/ad_account_requests/reject',
+  tags: ['business_access_invite'],
+  summary: 'Reject AOAA requests',
+  description:
+    "Bulk reject agency owned ad account (AOAA) requests on behalf of the requesting business. Each rejected request transitions to DECLINED and the owning business's biz admins/owner are notified by email.",
+  operationId: 'agency_owned_ad_account_requests/reject',
+  request: {
+    params: z.object({ business_id: PathBusinessUserParamsSchema }),
+    body: {
+      content: { 'application/json': { schema: AgencyOwnedAdAccountRequestRejectionCreateSchema } },
+      required: true,
+    },
+  },
+  responses: {
+    200: { description: 'The request has succeeded.' },
+    400: {
+      description: 'The request could not be understood by the server due to unexpected data.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    401: {
+      description: 'Authentication is required and has either failed or not been provided.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    403: {
+      description:
+        'The request was valid, but the server is refusing action. The user might not have the necessary permissions for a resource.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    404: {
+      description: 'The requested resource could not be found on this server.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    429: {
+      description:
+        'The user has sent too many requests in a given amount of time and is being rate limited.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    default: {
+      description: 'An unexpected error response.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+  },
+  security: [{ pinterest_oauth2: ['biz_access:write'] }],
+})
+
+export const getBusinessesBusinessIdAnalyticsRoute = createRoute({
+  method: 'get',
+  path: '/businesses/{business_id}/analytics',
+  tags: ['business_access_analytics'],
+  summary: 'Get business analytics',
+  description:
+    '**This endpoint is currently in beta and not available to all apps. [Learn more](/docs/getting-started/using-beta-and-restricted-features/).**\n\nGet analytics broken down by the requested entity type per entity over the requested time window.',
+  operationId: 'business_analytics/read',
+  request: {
+    params: z.object({ business_id: PathBusinessOwnerBusinessIdParamsSchema }),
+    query: z.object({
+      rmn_account_scope: QueryBusinessAnalyticsBaseRmnAccountScopeParamsSchema,
+      metric_scope: QueryBusinessAnalyticsBaseMetricScopeParamsSchema,
+      start_date: QueryBusinessAnalyticsBaseStartDateParamsSchema,
+      end_date: QueryBusinessAnalyticsBaseEndDateParamsSchema,
+      objective_types: QueryBusinessAnalyticsBaseObjectiveTypesParamsSchema,
+      click_window_days: QueryBusinessAnalyticsBaseClickWindowDaysParamsSchema,
+      engagement_window_days: QueryBusinessAnalyticsBaseEngagementWindowDaysParamsSchema,
+      view_window_days: QueryBusinessAnalyticsBaseViewWindowDaysParamsSchema,
+      conversion_report_time: QueryBusinessAnalyticsBaseConversionReportTimeParamsSchema,
+      campaign_summary_statuses: QueryBusinessAnalyticsBaseCampaignSummaryStatusesParamsSchema,
+      metrics: QueryBusinessAnalyticsMetricsParamsSchema,
+      break_down_type: QueryBusinessAnalyticsBreakDownTypeParamsSchema,
+      search_value: QueryBusinessAnalyticsSearchValueParamsSchema,
+      countries_filter: QueryBusinessAnalyticsCountriesFilterParamsSchema,
+      advertisers_exclude_filter: QueryBusinessAnalyticsAdvertisersExcludeFilterParamsSchema,
+      advertiser_active_filter: QueryBusinessAnalyticsAdvertiserActiveFilterParamsSchema,
+      partner_ids: QueryBusinessAnalyticsPartnerIdsParamsSchema,
+    }),
+  },
+  responses: {
+    200: {
+      description: 'The request has succeeded.',
+      content: { 'application/json': { schema: BusinessAnalyticsSchema } },
+    },
+    400: {
+      description: 'The request could not be understood by the server due to unexpected data.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    401: {
+      description: 'Authentication is required and has either failed or not been provided.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    403: {
+      description:
+        'The request was valid, but the server is refusing action. The user might not have the necessary permissions for a resource.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    404: {
+      description: 'The requested resource could not be found on this server.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    429: {
+      description:
+        'The user has sent too many requests in a given amount of time and is being rate limited.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    default: {
+      description: 'An unexpected error response.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+  },
+  security: [{ pinterest_oauth2: ['ads:read'] }],
+})
+
+export const getBusinessesBusinessIdAnalyticsAggregatedTimelineRoute = createRoute({
+  method: 'get',
+  path: '/businesses/{business_id}/analytics/aggregated_timeline',
+  tags: ['business_access_analytics'],
+  summary: 'Get aggregated timeline business analytics',
+  description:
+    '**This endpoint is currently in beta and not available to all apps. [Learn more](/docs/getting-started/using-beta-and-restricted-features/).**\n\nGet aggregated analytics across business entities over a timeline.',
+  operationId: 'business_analytics_aggregated_timeline/read',
+  request: {
+    params: z.object({ business_id: PathBusinessOwnerBusinessIdParamsSchema }),
+    query: z.object({
+      rmn_account_scope: QueryBusinessAnalyticsBaseRmnAccountScopeParamsSchema,
+      metric_scope: QueryBusinessAnalyticsBaseMetricScopeParamsSchema,
+      start_date: QueryBusinessAnalyticsBaseStartDateParamsSchema,
+      end_date: QueryBusinessAnalyticsBaseEndDateParamsSchema,
+      objective_types: QueryBusinessAnalyticsBaseObjectiveTypesParamsSchema,
+      click_window_days: QueryBusinessAnalyticsBaseClickWindowDaysParamsSchema,
+      engagement_window_days: QueryBusinessAnalyticsBaseEngagementWindowDaysParamsSchema,
+      view_window_days: QueryBusinessAnalyticsBaseViewWindowDaysParamsSchema,
+      conversion_report_time: QueryBusinessAnalyticsBaseConversionReportTimeParamsSchema,
+      campaign_summary_statuses: QueryBusinessAnalyticsBaseCampaignSummaryStatusesParamsSchema,
+      break_down_type: QueryBusinessAnalyticsAggregatedTimelineBreakDownTypeParamsSchema,
+      metrics: QueryBusinessAnalyticsAggregatedTimelineMetricsParamsSchema,
+      granularity: QueryBusinessAnalyticsAggregatedTimelineGranularityParamsSchema,
+    }),
+  },
+  responses: {
+    200: {
+      description: 'The request has succeeded.',
+      content: { 'application/json': { schema: BusinessAggregatedTimelineAnalyticsSchema } },
+    },
+    400: {
+      description: 'The request could not be understood by the server due to unexpected data.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    401: {
+      description: 'Authentication is required and has either failed or not been provided.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    403: {
+      description:
+        'The request was valid, but the server is refusing action. The user might not have the necessary permissions for a resource.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    404: {
+      description: 'The requested resource could not be found on this server.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    429: {
+      description:
+        'The user has sent too many requests in a given amount of time and is being rate limited.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    default: {
+      description: 'An unexpected error response.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+  },
+  security: [{ pinterest_oauth2: ['ads:read'] }],
 })
 
 export const postBusinessesBusinessIdAssetGroupsRoute = createRoute({
@@ -45272,25 +54619,20 @@ export const getBusinessesBusinessIdAssetsRoute = createRoute({
       permissions: QueryPermissionsWithOwnerParamsSchema,
       child_asset_id: QueryChildAssetIdParamsSchema,
       asset_group_id: QueryAssetGroupIdParamsSchema,
-      asset_type: QueryResourceTypeParamsSchema,
+      asset_type: QueryResourceTypeInternalParamsSchema,
       start_index: QueryBusinessAccessStartIndexParamsSchema,
-      bookmark: PinterestLibBookmarkParamsBookmarkParamsSchema,
-      page_size: PinterestLibBookmarkParamsPageSizeParamsSchema,
+      sort_by: QueryAssetSortByParamsSchema,
+      sort_ascending: QueryAssetSortAscendingParamsSchema,
+      search_by: QueryAssetSearchByParamsSchema,
+      search_value: QueryAssetSearchValueParamsSchema,
+      bookmark: QueryActiveBookmarkParamsBookmarkParamsSchema,
+      page_size: QueryActiveBookmarkParamsPageSizeParamsSchema,
     }),
   },
   responses: {
     200: {
       description: 'The request has succeeded.',
-      content: {
-        'application/json': {
-          schema: z
-            .object({
-              bookmark: z.string().nullable().exactOptional(),
-              items: z.array(BusinessAssetsSchema),
-            })
-            .openapi({ required: ['items'] }),
-        },
-      },
+      content: { 'application/json': { schema: BusinessAssetsGetResponseSchema } },
     },
     400: {
       description: 'The request could not be understood by the server due to unexpected data.',
@@ -45687,6 +55029,7 @@ export const getBusinessesBusinessIdInvitesRoute = createRoute({
   request: {
     params: z.object({ business_id: PathNonSystemBusinessUserParamsSchema }),
     query: z.object({
+      assets_summary: QueryInvitesAssetsSummaryParamsSchema,
       is_member: QueryIsMemberParamsSchema,
       invite_status: QueryInviteStatusParamsSchema,
       invite_type: QueryInviteTypeParamsSchema,
@@ -46175,23 +55518,15 @@ export const getBusinessesBusinessIdPartnersRoute = createRoute({
       partner_ids: QueryPartnerIdsParamsSchema,
       start_index: QueryBusinessAccessStartIndexParamsSchema,
       sort_ascending: QuerySortAscendingParamsSchema,
-      bookmark: PinterestLibBookmarkParamsBookmarkParamsSchema,
-      page_size: PinterestLibBookmarkParamsPageSizeParamsSchema,
+      business_partner_type: QueryBusinessPartnerTypeParamsSchema,
+      bookmark: QueryActiveBookmarkParamsBookmarkParamsSchema,
+      page_size: QueryActiveBookmarkParamsPageSizeParamsSchema,
     }),
   },
   responses: {
     200: {
       description: 'The request has succeeded.',
-      content: {
-        'application/json': {
-          schema: z
-            .object({
-              bookmark: z.string().nullable().exactOptional(),
-              items: z.array(UserBusinessRoleBindingSchema),
-            })
-            .openapi({ required: ['items'] }),
-        },
-      },
+      content: { 'application/json': { schema: BusinessPartnersGetResponseSchema } },
     },
     400: {
       description: 'The request could not be understood by the server due to unexpected data.',
@@ -46335,6 +55670,162 @@ export const patchBusinessesBusinessIdPartnersAssetsRoute = createRoute({
   security: [{ pinterest_oauth2: ['biz_access:write'] }],
 })
 
+export const postBusinessesBusinessIdPartnersPartnerIdAdAccountRequestRoute = createRoute({
+  method: 'post',
+  path: '/businesses/{business_id}/partners/{partner_id}/ad_account_request',
+  tags: ['business_access_invite'],
+  summary: 'Create AOAA request',
+  description: 'Create a request for an Agency Owned Ad Account (AOAA).',
+  operationId: 'agency_owned_ad_account_requests/create',
+  request: {
+    params: z.object({
+      business_id: PathBusinessUserParamsSchema,
+      partner_id: PathPartnerParamsSchema,
+    }),
+    body: {
+      content: { 'application/json': { schema: AgencyOwnedPartnerAdAccountRequestCreateSchema } },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'The request has succeeded.',
+      content: { 'application/json': { schema: AgencyOwnedPartnerAdAccountRequestSchema } },
+    },
+    201: {
+      description: 'Resource create operation completed successfully.',
+      content: { 'application/json': { schema: AgencyOwnedPartnerAdAccountRequestSchema } },
+    },
+    400: {
+      description: 'The request could not be understood by the server due to unexpected data.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    401: {
+      description: 'Authentication is required and has either failed or not been provided.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    403: {
+      description:
+        'The request was valid, but the server is refusing action. The user might not have the necessary permissions for a resource.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    404: {
+      description: 'The requested resource could not be found on this server.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    429: {
+      description:
+        'The user has sent too many requests in a given amount of time and is being rate limited.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    default: {
+      description: 'An unexpected error response.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+  },
+  security: [{ pinterest_oauth2: ['biz_access:write'] }],
+})
+
+export const deleteBusinessesBusinessIdPartnersPartnerIdAdAccountRequestsAgencyOwnedAdAccountRequestIdRoute =
+  createRoute({
+    method: 'delete',
+    path: '/businesses/{business_id}/partners/{partner_id}/ad_account_requests/{agency_owned_ad_account_request_id}',
+    tags: ['business_access_invite'],
+    summary: 'Delete AOAA request',
+    description:
+      'Deletes the Agency Owned Ad Account (AOAA) request created by the business. The underlying request transitions to CANCELED rather than being hard-deleted, preserving history.',
+    operationId: 'agency_owned_ad_account_requests/delete',
+    request: {
+      params: z.object({
+        business_id: PathBusinessUserParamsSchema,
+        partner_id: PathPartnerParamsSchema,
+        agency_owned_ad_account_request_id: PathAoaaRequestIdParamsSchema,
+      }),
+    },
+    responses: {
+      204: { description: 'Resource deleted successfully.' },
+      400: {
+        description: 'The request could not be understood by the server due to unexpected data.',
+        content: { 'application/json': { schema: PinterestLibErrorSchema } },
+      },
+      401: {
+        description: 'Authentication is required and has either failed or not been provided.',
+        content: { 'application/json': { schema: PinterestLibErrorSchema } },
+      },
+      403: {
+        description:
+          'The request was valid, but the server is refusing action. The user might not have the necessary permissions for a resource.',
+        content: { 'application/json': { schema: PinterestLibErrorSchema } },
+      },
+      404: {
+        description: 'The requested resource could not be found on this server.',
+        content: { 'application/json': { schema: PinterestLibErrorSchema } },
+      },
+      429: {
+        description:
+          'The user has sent too many requests in a given amount of time and is being rate limited.',
+        content: { 'application/json': { schema: PinterestLibErrorSchema } },
+      },
+      default: {
+        description: 'An unexpected error response.',
+        content: { 'application/json': { schema: PinterestLibErrorSchema } },
+      },
+    },
+    security: [{ pinterest_oauth2: ['biz_access:write'] }],
+  })
+
+export const patchBusinessesBusinessIdPartnersPartnerIdAdAccountRequestsAgencyOwnedAdAccountRequestIdRoute =
+  createRoute({
+    method: 'patch',
+    path: '/businesses/{business_id}/partners/{partner_id}/ad_account_requests/{agency_owned_ad_account_request_id}',
+    tags: ['business_access_invite'],
+    summary: 'Update AOAA request',
+    description:
+      'Update a request for an Agency Owned Ad Account (AOAA). If status is updated to PENDING, the invite will be resent. Provide either business_request_status or business_id_to_permissions, but not both.',
+    operationId: 'agency_owned_ad_account_requests/update',
+    request: {
+      params: z.object({
+        business_id: PathBusinessUserParamsSchema,
+        partner_id: PathPartnerParamsSchema,
+        agency_owned_ad_account_request_id: PathAoaaRequestIdParamsSchema,
+      }),
+      body: {
+        content: { 'application/json': { schema: AgencyOwnedAdAccountRequestChangesUpdateSchema } },
+        required: true,
+      },
+    },
+    responses: {
+      200: { description: 'The request has succeeded.' },
+      400: {
+        description: 'The request could not be understood by the server due to unexpected data.',
+        content: { 'application/json': { schema: PinterestLibErrorSchema } },
+      },
+      401: {
+        description: 'Authentication is required and has either failed or not been provided.',
+        content: { 'application/json': { schema: PinterestLibErrorSchema } },
+      },
+      403: {
+        description:
+          'The request was valid, but the server is refusing action. The user might not have the necessary permissions for a resource.',
+        content: { 'application/json': { schema: PinterestLibErrorSchema } },
+      },
+      404: {
+        description: 'The requested resource could not be found on this server.',
+        content: { 'application/json': { schema: PinterestLibErrorSchema } },
+      },
+      429: {
+        description:
+          'The user has sent too many requests in a given amount of time and is being rate limited.',
+        content: { 'application/json': { schema: PinterestLibErrorSchema } },
+      },
+      default: {
+        description: 'An unexpected error response.',
+        content: { 'application/json': { schema: PinterestLibErrorSchema } },
+      },
+    },
+    security: [{ pinterest_oauth2: ['biz_access:write'] }],
+  })
+
 export const getBusinessesBusinessIdPartnersPartnerIdAssetsRoute = createRoute({
   method: 'get',
   path: '/businesses/{business_id}/partners/{partner_id}/assets',
@@ -46456,6 +55947,267 @@ export const postBusinessesBusinessIdRequestsAssetsAccessRoute = createRoute({
     },
   },
   security: [{ pinterest_oauth2: ['biz_access:read', 'biz_access:write'] }],
+})
+
+export const getBusinessesBusinessIdRmnContractsContractIdRoute = createRoute({
+  method: 'get',
+  path: '/businesses/{business_id}/rmn/contracts/{contract_id}',
+  tags: ['rmn_billing_contract'],
+  summary: 'Get RMN billing contract by ID',
+  description:
+    '**This endpoint is currently in beta and not available to all apps. [Learn more](/docs/getting-started/using-beta-and-restricted-features/).**\n\nGet a specific RMN billing contract by ID with a signed download URL.',
+  operationId: 'rmn_billing_contracts/get',
+  request: {
+    params: z.object({
+      contract_id: RmnBillingContractKeyParamsSchema,
+      business_id: PathBusinessUserParamsSchema,
+    }),
+    query: z.object({ client_business_id: QueryClientBusinessIdParamsSchema }),
+  },
+  responses: {
+    200: {
+      description: 'The request has succeeded.',
+      content: { 'application/json': { schema: RmnBillingContractSchema } },
+    },
+    400: {
+      description: 'The request could not be understood by the server due to unexpected data.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    401: {
+      description: 'Authentication is required and has either failed or not been provided.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    403: {
+      description:
+        'The request was valid, but the server is refusing action. The user might not have the necessary permissions for a resource.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    404: {
+      description: 'The requested resource could not be found on this server.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    429: {
+      description:
+        'The user has sent too many requests in a given amount of time and is being rate limited.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    default: {
+      description: 'An unexpected error response.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+  },
+  security: [{ pinterest_oauth2: ['biz_access:read'] }],
+})
+
+export const patchBusinessesBusinessIdRmnContractsContractIdProcessRoute = createRoute({
+  method: 'patch',
+  path: '/businesses/{business_id}/rmn/contracts/{contract_id}/process',
+  tags: ['rmn_billing_contract'],
+  summary: 'Accept RMN billing contract',
+  description: 'Accept an RMN billing contract',
+  operationId: 'rmn_billing_contract/process',
+  request: {
+    params: z.object({
+      business_id: PathBusinessUserParamsSchema,
+      contract_id: PathContractIdParamsSchema,
+    }),
+    body: {
+      content: { 'application/json': { schema: RmnBillingContractAcceptanceUpdateSchema } },
+      required: true,
+    },
+  },
+  responses: {
+    200: { description: 'The request has succeeded.' },
+    400: {
+      description: 'The request could not be understood by the server due to unexpected data.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    401: {
+      description: 'Authentication is required and has either failed or not been provided.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    403: {
+      description:
+        'The request was valid, but the server is refusing action. The user might not have the necessary permissions for a resource.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    404: {
+      description: 'The requested resource could not be found on this server.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    429: {
+      description:
+        'The user has sent too many requests in a given amount of time and is being rate limited.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    default: {
+      description: 'An unexpected error response.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+  },
+  security: [{ pinterest_oauth2: ['biz_access:write'] }],
+})
+
+export const getBusinessesBusinessIdRmnPartnersPartnerIdAllowedDomainsRoute = createRoute({
+  method: 'get',
+  path: '/businesses/{business_id}/rmn/partners/{partner_id}/allowed_domains',
+  tags: ['business_access_relationships'],
+  summary: 'Get allowed domains between RMN and Brand relationship',
+  description:
+    '**This endpoint is currently in beta and not available to all apps. [Learn more](/docs/getting-started/using-beta-and-restricted-features/).**\n\nGet all the allowed domains between RMN and Brand relationship',
+  operationId: 'rmn_allowed_domains/get',
+  request: {
+    params: z.object({
+      business_id: PathBusinessUserParamsSchema,
+      partner_id: PathPartnerParamsSchema,
+    }),
+    query: z.object({
+      partner_type: QueryPartnerTypeRequiredParamsSchema,
+      acting_business_id: QueryActingBusinessIdParamsSchema,
+    }),
+  },
+  responses: {
+    200: {
+      description: 'The request has succeeded.',
+      content: { 'application/json': { schema: AllowedDomainsSchema } },
+    },
+    400: {
+      description: 'The request could not be understood by the server due to unexpected data.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    401: {
+      description: 'Authentication is required and has either failed or not been provided.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    403: {
+      description:
+        'The request was valid, but the server is refusing action. The user might not have the necessary permissions for a resource.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    404: {
+      description: 'The requested resource could not be found on this server.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    429: {
+      description:
+        'The user has sent too many requests in a given amount of time and is being rate limited.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    default: {
+      description: 'An unexpected error response.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+  },
+  security: [{ pinterest_oauth2: ['biz_access:read'] }],
+})
+
+export const getBusinessesBusinessIdRmnPartnersPartnerIdContractsHistoryRoute = createRoute({
+  method: 'get',
+  path: '/businesses/{business_id}/rmn/partners/{partner_id}/contracts/history',
+  tags: ['rmn_billing_contract'],
+  summary: 'Get RMN billing contract history',
+  description: 'Get the history of RMN billing contracts between a business and the partner.',
+  operationId: 'rmn_billing_contract_history/list',
+  request: {
+    params: z.object({
+      business_id: PathBusinessUserParamsSchema,
+      partner_id: PathPartnerParamsSchema,
+    }),
+    query: z.object({
+      partner_type: QueryPartnerTypeParamsSchema,
+      client_business_id: QueryClientBusinessIdParamsSchema,
+    }),
+  },
+  responses: {
+    200: {
+      description: 'The request has succeeded.',
+      content: { 'application/json': { schema: z.array(RmnBillingContractHistoryEntrySchema) } },
+    },
+    400: {
+      description: 'The request could not be understood by the server due to unexpected data.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    401: {
+      description: 'Authentication is required and has either failed or not been provided.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    403: {
+      description:
+        'The request was valid, but the server is refusing action. The user might not have the necessary permissions for a resource.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    404: {
+      description: 'The requested resource could not be found on this server.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    429: {
+      description:
+        'The user has sent too many requests in a given amount of time and is being rate limited.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    default: {
+      description: 'An unexpected error response.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+  },
+  security: [{ pinterest_oauth2: ['biz_access:read'] }],
+})
+
+export const postBusinessesBusinessIdRmnPartnersPartnerIdInviteRoute = createRoute({
+  method: 'post',
+  path: '/businesses/{business_id}/rmn/partners/{partner_id}/invite',
+  tags: ['business_access_invite'],
+  summary: 'Create a RMN partnership invite',
+  description:
+    '**This endpoint is currently in beta and not available to all apps. [Learn more](/docs/getting-started/using-beta-and-restricted-features/).**\n\nCreates a RMN partnership invite from an RMN to a potential Brand. Currently, invites from Brands to RMNs are not supported.',
+  operationId: 'rmn_partnership_invite/create',
+  request: {
+    params: z.object({
+      business_id: PathNonSystemBusinessUserParamsSchema,
+      partner_id: PathNonSystemPartnerParamsSchema,
+    }),
+    body: {
+      content: { 'application/json': { schema: RmnPartnershipInviteCreateSchema } },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'The request has succeeded.',
+      content: { 'application/json': { schema: RmnPartnershipInviteSchema } },
+    },
+    201: {
+      description: 'Resource create operation completed successfully.',
+      content: { 'application/json': { schema: RmnPartnershipInviteSchema } },
+    },
+    400: {
+      description: 'The request could not be understood by the server due to unexpected data.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    401: {
+      description: 'Authentication is required and has either failed or not been provided.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    403: {
+      description:
+        'The request was valid, but the server is refusing action. The user might not have the necessary permissions for a resource.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    404: {
+      description: 'The requested resource could not be found on this server.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    429: {
+      description:
+        'The user has sent too many requests in a given amount of time and is being rate limited.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    default: {
+      description: 'An unexpected error response.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+  },
+  security: [{ pinterest_oauth2: ['biz_access:write'] }],
 })
 
 export const patchBusinessesBusinessIdSystemUsersSystemUserIdRoute = createRoute({
@@ -47105,7 +56857,7 @@ export const postCatalogsItemsBatchRoute = createRoute({
   tags: ['catalog_items'],
   summary: 'Operate on item batch',
   description:
-    'This endpoint supports multiple operations on a set of one or more catalog items owned by the "operation user_account". [See detailed documentation here.](/docs/work-with-catalogs/modify-items-in-batch/)\n- By default, the "operation user_account" is the token user_account.\n\nOptional: Business Access: Specify an `ad_account_id` (obtained via [List ad accounts](/docs/api/v5/#operation/ad_accounts/list)) to use the owner of that ad_account as the "operation user_account". In order to do this, the token user_account must have one of the following [Business Access](https://help.pinterest.com/en/business/article/share-and-manage-access-to-your-ad-accounts) roles on the ad_account: Owner, Admin, Catalogs Manager.\n\nNote:\n- Access to the Creative Assets catalog type is restricted to a specific group of users.\nIf you require access, please reach out to your partner manager.\n- The item UPSERT operation is restricted to users without a feed data source. If you plan to migrate item ingestion from feeds to the API, please reach out to your partner manager or via the Help Center to get assistance.',
+    'This endpoint supports multiple operations on a set of one or more catalog items owned by the "operation user_account". [See detailed documentation here.](/docs/work-with-catalogs/modify-items-in-batch/)\n- By default, the "operation user_account" is the token user_account.\n\nOptional: Business Access: Specify an `ad_account_id` (obtained via [List ad accounts](/docs/api/v5/#operation/ad_accounts/list)) to use the owner of that ad_account as the "operation user_account". In order to do this, the token user_account must have one of the following [Business Access](https://help.pinterest.com/en/business/article/share-and-manage-access-to-your-ad-accounts) roles on the ad_account: Owner, Admin, Catalogs Manager.\n\nNote:\n- Access to the Creative Assets catalog type is restricted to a specific group of users.\nIf you require access, please reach out to your partner manager.\n- The item UPSERT operation is restricted to users without a feed data source. If you plan to migrate item ingestion from feeds to the API, please reach out to your partner manager or via the Help Center to get assistance.\n- The `last_updated_time` attribute of an item can be used to determine the data written order. In other words, an item update with a larger `last_updated_time` will always override an item update with a smaller one.',
   operationId: 'items_batch/post',
   request: {
     query: z.object({ ad_account_id: QueryAdAccountIdParamsSchema }),
@@ -47963,6 +57715,770 @@ export const getCatalogsReportsStatsRoute = createRoute({
   security: [{ pinterest_oauth2: ['catalogs:read'] }],
 })
 
+export const getCatalogsSupplementalFeedsRoute = createRoute({
+  method: 'get',
+  path: '/catalogs/supplemental_feeds',
+  tags: ['catalog_feeds'],
+  summary: 'List supplemental feeds',
+  description:
+    'List supplemental feeds for a RETAIL catalog owned by the "operation user_account".\n- By default, the "operation user_account" is the token user_account.\n\nOptional: Business Access: Specify an `ad_account_id` (obtained via [List ad accounts](/docs/api/v5/#operation/ad_accounts/list)) to use the owner of that ad_account as the "operation user_account". In order to do this, the token user_account must have one of the following [Business Access](https://help.pinterest.com/en/business/article/share-and-manage-access-to-your-ad-accounts) roles on the ad_account: Owner, Admin, Catalogs Manager.\n\n[Learn more](/docs/api-features/shopping-overview/)',
+  operationId: 'supplemental_feeds/list',
+  request: {
+    query: z.object({
+      catalog_id: QueryCatalogsCatalogIdRequiredParamsSchema,
+      type: QueryCatalogsSupplementalFeedTypeParamsSchema,
+      ad_account_id: QueryAdAccountIdParamsSchema,
+    }),
+  },
+  responses: {
+    200: {
+      description: 'The request has succeeded.',
+      content: { 'application/json': { schema: z.array(CatalogsSupplementalFeedSchema) } },
+    },
+    400: {
+      description: 'The request could not be understood by the server due to unexpected data.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    401: {
+      description: 'Authentication is required and has either failed or not been provided.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    403: {
+      description:
+        'The request was valid, but the server is refusing action. The user might not have the necessary permissions for a resource.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    404: {
+      description: 'The requested resource could not be found on this server.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    429: {
+      description:
+        'The user has sent too many requests in a given amount of time and is being rate limited.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    default: {
+      description: 'An unexpected error response.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+  },
+  security: [{ pinterest_oauth2: ['catalogs:read'] }, { client_credentials: ['catalogs:read'] }],
+})
+
+export const postCatalogsSupplementalFeedsRoute = createRoute({
+  method: 'post',
+  path: '/catalogs/supplemental_feeds',
+  tags: ['catalog_feeds'],
+  summary: 'Create supplemental feed',
+  description:
+    'Create a supplemental feed for a RETAIL catalog owned by the "operation user_account".\n- By default, the "operation user_account" is the token user_account.\n\nOptional: Business Access: Specify an `ad_account_id` (obtained via [List ad accounts](/docs/api/v5/#operation/ad_accounts/list)) to use the owner of that ad_account as the "operation user_account". In order to do this, the token user_account must have one of the following [Business Access](https://help.pinterest.com/en/business/article/share-and-manage-access-to-your-ad-accounts) roles on the ad_account: Owner, Admin, Catalogs Manager.\n\n[Learn more](/docs/api-features/shopping-overview/)',
+  operationId: 'supplemental_feeds/create',
+  request: {
+    query: z.object({ ad_account_id: QueryAdAccountIdParamsSchema }),
+    body: {
+      content: { 'application/json': { schema: CatalogsSupplementalFeedCreateSchema } },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'The request has succeeded.',
+      content: { 'application/json': { schema: CatalogsSupplementalFeedSchema } },
+    },
+    201: {
+      description: 'Resource create operation completed successfully.',
+      content: { 'application/json': { schema: CatalogsSupplementalFeedSchema } },
+    },
+    400: {
+      description: 'The request could not be understood by the server due to unexpected data.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    401: {
+      description: 'Authentication is required and has either failed or not been provided.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    403: {
+      description:
+        'The request was valid, but the server is refusing action. The user might not have the necessary permissions for a resource.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    404: {
+      description: 'The requested resource could not be found on this server.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    429: {
+      description:
+        'The user has sent too many requests in a given amount of time and is being rate limited.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    default: {
+      description: 'An unexpected error response.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+  },
+  security: [
+    { pinterest_oauth2: ['catalogs:read', 'catalogs:write'] },
+    { client_credentials: ['catalogs:read', 'catalogs:write'] },
+  ],
+})
+
+export const getCatalogsSupplementalFeedsFeedIdRoute = createRoute({
+  method: 'get',
+  path: '/catalogs/supplemental_feeds/{feed_id}',
+  tags: ['catalog_feeds'],
+  summary: 'Get supplemental feed',
+  description:
+    'Get a single supplemental feed owned by the "operation user_account".\n- By default, the "operation user_account" is the token user_account.\n\nOptional: Business Access: Specify an `ad_account_id` (obtained via [List ad accounts](/docs/api/v5/#operation/ad_accounts/list)) to use the owner of that ad_account as the "operation user_account". In order to do this, the token user_account must have one of the following [Business Access](https://help.pinterest.com/en/business/article/share-and-manage-access-to-your-ad-accounts) roles on the ad_account: Owner, Admin, Catalogs Manager.',
+  operationId: 'supplemental_feeds/get',
+  request: {
+    params: z.object({ feed_id: CatalogsSupplementalFeedKeyParamsSchema }),
+    query: z.object({ ad_account_id: QueryAdAccountIdParamsSchema }),
+  },
+  responses: {
+    200: {
+      description: 'The request has succeeded.',
+      content: { 'application/json': { schema: CatalogsSupplementalFeedSchema } },
+    },
+    400: {
+      description: 'The request could not be understood by the server due to unexpected data.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    401: {
+      description: 'Authentication is required and has either failed or not been provided.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    403: {
+      description:
+        'The request was valid, but the server is refusing action. The user might not have the necessary permissions for a resource.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    404: {
+      description: 'The requested resource could not be found on this server.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    429: {
+      description:
+        'The user has sent too many requests in a given amount of time and is being rate limited.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    default: {
+      description: 'An unexpected error response.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+  },
+  security: [{ pinterest_oauth2: ['catalogs:read'] }, { client_credentials: ['catalogs:read'] }],
+})
+
+export const deleteCatalogsSupplementalFeedsFeedIdRoute = createRoute({
+  method: 'delete',
+  path: '/catalogs/supplemental_feeds/{feed_id}',
+  tags: ['catalog_feeds'],
+  summary: 'Delete supplemental feed',
+  description:
+    'Delete a supplemental feed owned by the "operation user_account".\n- By default, the "operation user_account" is the token user_account.\n\nOptional: Business Access: Specify an `ad_account_id` (obtained via [List ad accounts](/docs/api/v5/#operation/ad_accounts/list)) to use the owner of that ad_account as the "operation user_account". In order to do this, the token user_account must have one of the following [Business Access](https://help.pinterest.com/en/business/article/share-and-manage-access-to-your-ad-accounts) roles on the ad_account: Owner, Admin, Catalogs Manager.',
+  operationId: 'supplemental_feeds/delete',
+  request: {
+    params: z.object({ feed_id: CatalogsSupplementalFeedKeyParamsSchema }),
+    query: z.object({ ad_account_id: QueryAdAccountIdParamsSchema }),
+  },
+  responses: {
+    200: {
+      description: 'The request has succeeded.',
+      content: { 'application/json': { schema: CatalogsSupplementalFeedSchema } },
+    },
+    204: { description: 'Resource deleted successfully.' },
+    400: {
+      description: 'The request could not be understood by the server due to unexpected data.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    401: {
+      description: 'Authentication is required and has either failed or not been provided.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    403: {
+      description:
+        'The request was valid, but the server is refusing action. The user might not have the necessary permissions for a resource.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    404: {
+      description: 'The requested resource could not be found on this server.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    429: {
+      description:
+        'The user has sent too many requests in a given amount of time and is being rate limited.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    default: {
+      description: 'An unexpected error response.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+  },
+  security: [
+    { pinterest_oauth2: ['catalogs:read', 'catalogs:write'] },
+    { client_credentials: ['catalogs:read', 'catalogs:write'] },
+  ],
+})
+
+export const patchCatalogsSupplementalFeedsFeedIdRoute = createRoute({
+  method: 'patch',
+  path: '/catalogs/supplemental_feeds/{feed_id}',
+  tags: ['catalog_feeds'],
+  summary: 'Update supplemental feed',
+  description:
+    'Update a supplemental feed owned by the "operation user_account".\n- By default, the "operation user_account" is the token user_account.\n\nOptional: Business Access: Specify an `ad_account_id` (obtained via [List ad accounts](/docs/api/v5/#operation/ad_accounts/list)) to use the owner of that ad_account as the "operation user_account". In order to do this, the token user_account must have one of the following [Business Access](https://help.pinterest.com/en/business/article/share-and-manage-access-to-your-ad-accounts) roles on the ad_account: Owner, Admin, Catalogs Manager.',
+  operationId: 'supplemental_feeds/update',
+  request: {
+    params: z.object({ feed_id: CatalogsSupplementalFeedKeyParamsSchema }),
+    query: z.object({ ad_account_id: QueryAdAccountIdParamsSchema }),
+    body: {
+      content: { 'application/json': { schema: CatalogsSupplementalFeedUpdateSchema } },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'The request has succeeded.',
+      content: { 'application/json': { schema: CatalogsSupplementalFeedSchema } },
+    },
+    400: {
+      description: 'The request could not be understood by the server due to unexpected data.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    401: {
+      description: 'Authentication is required and has either failed or not been provided.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    403: {
+      description:
+        'The request was valid, but the server is refusing action. The user might not have the necessary permissions for a resource.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    404: {
+      description: 'The requested resource could not be found on this server.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    429: {
+      description:
+        'The user has sent too many requests in a given amount of time and is being rate limited.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    default: {
+      description: 'An unexpected error response.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+  },
+  security: [
+    { pinterest_oauth2: ['catalogs:read', 'catalogs:write'] },
+    { client_credentials: ['catalogs:read', 'catalogs:write'] },
+  ],
+})
+
+export const patchCatalogsCatalogIdRoute = createRoute({
+  method: 'patch',
+  path: '/catalogs/{catalog_id}',
+  tags: ['catalogs'],
+  summary: 'Update catalog default country and locale',
+  description:
+    'Update default country and locale on an existing RETAIL catalog owned by the\n"operation user_account" for international (INTL) supplemental feeds (M2.1).\n\nBoth `country` and `locale` must be sent together; partial updates with only\none field are not supported. `catalog_type` must match the existing catalog\n(currently only `RETAIL` is supported for INTL localization).\n\n- By default, the "operation user_account" is the token user_account.\n\nOptional: Business Access: Specify an `ad_account_id` (obtained via [List ad accounts](/docs/api/v5/#operation/ad_accounts/list)) to use the owner of that ad_account as the "operation user_account". In order to do this, the token user_account must have one of the following [Business Access](https://help.pinterest.com/en/business/article/share-and-manage-access-to-your-ad-accounts) roles on the ad_account: Owner, Admin, Catalogs Manager.\n\n[Learn more](/docs/api-features/shopping-overview/)',
+  operationId: 'catalogs/update',
+  request: {
+    params: z.object({ catalog_id: CatalogKeyParamsSchema }),
+    query: z.object({ ad_account_id: QueryAdAccountIdParamsSchema }),
+    body: { content: { 'application/json': { schema: CatalogUpdateSchema } }, required: true },
+  },
+  responses: {
+    200: {
+      description: 'The request has succeeded.',
+      content: { 'application/json': { schema: CatalogSchema } },
+    },
+    400: {
+      description: 'The request could not be understood by the server due to unexpected data.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    401: {
+      description: 'Authentication is required and has either failed or not been provided.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    403: {
+      description:
+        'The request was valid, but the server is refusing action. The user might not have the necessary permissions for a resource.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    404: {
+      description: 'The requested resource could not be found on this server.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    429: {
+      description:
+        'The user has sent too many requests in a given amount of time and is being rate limited.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    default: {
+      description: 'An unexpected error response.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+  },
+  security: [
+    { pinterest_oauth2: ['catalogs:read', 'catalogs:write'] },
+    { client_credentials: ['catalogs:read', 'catalogs:write'] },
+  ],
+})
+
+export const postCatalogsCatalogIdAutoLocalizationConfigsRoute = createRoute({
+  method: 'post',
+  path: '/catalogs/{catalog_id}/auto_localization_configs',
+  tags: ['catalogs'],
+  summary: 'Create auto-localization config',
+  description:
+    'Create an auto-localization config for a Pinterest international product\ncatalog owned by the "operation user_account".\n- By default, the "operation user_account" is the token user_account.\n\nOptional: Business Access: Specify an `ad_account_id` (obtained via [List ad accounts](/docs/api/v5/#operation/ad_accounts/list)) to use the owner of that ad_account as the "operation user_account". In order to do this, the token user_account must have one of the following [Business Access](https://help.pinterest.com/en/business/article/share-and-manage-access-to-your-ad-accounts) roles on the ad_account: Owner, Admin, Catalogs Manager.\n\nA config is scoped to a single `target_country`; only one config may\nexist per (catalog, target_country). The server materializes the full\n`source_feeds` x `target_locales` cross-product into locale rows and\nprovisions one generated GBC feed per row. The response returns the\nfully materialized config.',
+  operationId: 'catalogs_auto_localization_configs/create',
+  request: {
+    params: z.object({ catalog_id: CatalogIdParamsSchema }),
+    query: z.object({ ad_account_id: QueryAdAccountIdParamsSchema }),
+    body: {
+      content: {
+        'application/json': { schema: CatalogsAutoLocalizationConfigCreateRequestSchema },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'The request has succeeded.',
+      content: { 'application/json': { schema: CatalogsAutoLocalizationConfigResponseSchema } },
+    },
+    201: {
+      description: 'Resource create operation completed successfully.',
+      content: { 'application/json': { schema: CatalogsAutoLocalizationConfigResponseSchema } },
+    },
+    400: {
+      description: 'The request could not be understood by the server due to unexpected data.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    401: {
+      description: 'Authentication is required and has either failed or not been provided.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    403: {
+      description:
+        'The request was valid, but the server is refusing action. The user might not have the necessary permissions for a resource.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    404: {
+      description: 'The requested resource could not be found on this server.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    429: {
+      description:
+        'The user has sent too many requests in a given amount of time and is being rate limited.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    default: {
+      description: 'An unexpected error response.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+  },
+  security: [
+    { pinterest_oauth2: ['catalogs:read', 'catalogs:write'] },
+    { client_credentials: ['catalogs:read', 'catalogs:write'] },
+  ],
+})
+
+export const getCatalogsCatalogIdAutoLocalizationConfigsAutoLocalizationConfigIdRoute = createRoute(
+  {
+    method: 'get',
+    path: '/catalogs/{catalog_id}/auto_localization_configs/{auto_localization_config_id}',
+    tags: ['catalogs'],
+    summary: 'Get auto-localization config',
+    description:
+      'Get a single auto-localization config owned by the "operation\nuser_account".\n- By default, the "operation user_account" is the token user_account.\n\nOptional: Business Access: Specify an `ad_account_id` (obtained via [List ad accounts](/docs/api/v5/#operation/ad_accounts/list)) to use the owner of that ad_account as the "operation user_account". In order to do this, the token user_account must have one of the following [Business Access](https://help.pinterest.com/en/business/article/share-and-manage-access-to-your-ad-accounts) roles on the ad_account: Owner, Admin, Catalogs Manager.\n\nThe read shape is intentionally materialized and status-rich: it returns\nconfig metadata plus the fully materialized locale rows with their\ngenerated GBC feed linkage and derived review/active state. Returns 404\nwhen the config does not exist or does not belong to the catalog.',
+    operationId: 'catalogs_auto_localization_configs/get',
+    request: {
+      params: z.object({
+        catalog_id: CatalogIdParamsSchema,
+        auto_localization_config_id: PathCatalogsAutoLocalizationConfigIdParamsSchema,
+      }),
+      query: z.object({ ad_account_id: QueryAdAccountIdParamsSchema }),
+    },
+    responses: {
+      200: {
+        description: 'The request has succeeded.',
+        content: { 'application/json': { schema: CatalogsAutoLocalizationConfigResponseSchema } },
+      },
+      400: {
+        description: 'The request could not be understood by the server due to unexpected data.',
+        content: { 'application/json': { schema: PinterestLibErrorSchema } },
+      },
+      401: {
+        description: 'Authentication is required and has either failed or not been provided.',
+        content: { 'application/json': { schema: PinterestLibErrorSchema } },
+      },
+      403: {
+        description:
+          'The request was valid, but the server is refusing action. The user might not have the necessary permissions for a resource.',
+        content: { 'application/json': { schema: PinterestLibErrorSchema } },
+      },
+      404: {
+        description: 'The requested resource could not be found on this server.',
+        content: { 'application/json': { schema: PinterestLibErrorSchema } },
+      },
+      429: {
+        description:
+          'The user has sent too many requests in a given amount of time and is being rate limited.',
+        content: { 'application/json': { schema: PinterestLibErrorSchema } },
+      },
+      default: {
+        description: 'An unexpected error response.',
+        content: { 'application/json': { schema: PinterestLibErrorSchema } },
+      },
+    },
+    security: [{ pinterest_oauth2: ['catalogs:read'] }, { client_credentials: ['catalogs:read'] }],
+  },
+)
+
+export const putCatalogsCatalogIdAutoLocalizationConfigsAutoLocalizationConfigIdRoute = createRoute(
+  {
+    method: 'put',
+    path: '/catalogs/{catalog_id}/auto_localization_configs/{auto_localization_config_id}',
+    tags: ['catalogs'],
+    summary: 'Update auto-localization config',
+    description:
+      'Update an auto-localization config owned by the "operation\nuser_account". This is a full-state write (PUT semantics).\n- By default, the "operation user_account" is the token user_account.\n\nOptional: Business Access: Specify an `ad_account_id` (obtained via [List ad accounts](/docs/api/v5/#operation/ad_accounts/list)) to use the owner of that ad_account as the "operation user_account". In order to do this, the token user_account must have one of the following [Business Access](https://help.pinterest.com/en/business/article/share-and-manage-access-to-your-ad-accounts) roles on the ad_account: Owner, Admin, Catalogs Manager.\n\nLocales are upserted per (source_feed, locale): combinations newly\npresent create a locale row + generated GBC feed; combinations removed\nare soft-disabled (translations retained for cheap re-enable);\ncombinations unchanged are no-ops (reactivated if previously disabled).\n`target_country` is the config identity and cannot be changed here;\n`approval_status` is managed via the translations review endpoint.',
+    operationId: 'catalogs_auto_localization_configs/update',
+    request: {
+      params: z.object({
+        catalog_id: CatalogIdParamsSchema,
+        auto_localization_config_id: PathCatalogsAutoLocalizationConfigIdParamsSchema,
+      }),
+      query: z.object({ ad_account_id: QueryAdAccountIdParamsSchema }),
+      body: {
+        content: {
+          'application/json': { schema: CatalogsAutoLocalizationConfigUpdateRequestUpdateSchema },
+        },
+        required: true,
+      },
+    },
+    responses: {
+      200: {
+        description: 'The request has succeeded.',
+        content: { 'application/json': { schema: CatalogsAutoLocalizationConfigResponseSchema } },
+      },
+      201: {
+        description: 'Resource create operation completed successfully.',
+        content: { 'application/json': { schema: CatalogsAutoLocalizationConfigResponseSchema } },
+      },
+      400: {
+        description: 'The request could not be understood by the server due to unexpected data.',
+        content: { 'application/json': { schema: PinterestLibErrorSchema } },
+      },
+      401: {
+        description: 'Authentication is required and has either failed or not been provided.',
+        content: { 'application/json': { schema: PinterestLibErrorSchema } },
+      },
+      403: {
+        description:
+          'The request was valid, but the server is refusing action. The user might not have the necessary permissions for a resource.',
+        content: { 'application/json': { schema: PinterestLibErrorSchema } },
+      },
+      404: {
+        description: 'The requested resource could not be found on this server.',
+        content: { 'application/json': { schema: PinterestLibErrorSchema } },
+      },
+      429: {
+        description:
+          'The user has sent too many requests in a given amount of time and is being rate limited.',
+        content: { 'application/json': { schema: PinterestLibErrorSchema } },
+      },
+      default: {
+        description: 'An unexpected error response.',
+        content: { 'application/json': { schema: PinterestLibErrorSchema } },
+      },
+    },
+    security: [
+      { pinterest_oauth2: ['catalogs:read', 'catalogs:write'] },
+      { client_credentials: ['catalogs:read', 'catalogs:write'] },
+    ],
+  },
+)
+
+export const getCatalogsCatalogIdAutoLocalizationConfigsAutoLocalizationConfigIdTranslationsRoute =
+  createRoute({
+    method: 'get',
+    path: '/catalogs/{catalog_id}/auto_localization_configs/{auto_localization_config_id}/translations',
+    tags: ['catalogs'],
+    summary: 'List translations',
+    description:
+      'List translations produced for an auto-localization config owned by the\n"operation user_account".\n- By default, the "operation user_account" is the token user_account.\n\nOptional: Business Access: Specify an `ad_account_id` (obtained via [List ad accounts](/docs/api/v5/#operation/ad_accounts/list)) to use the owner of that ad_account as the "operation user_account". In order to do this, the token user_account must have one of the following [Business Access](https://help.pinterest.com/en/business/article/share-and-manage-access-to-your-ad-accounts) roles on the ad_account: Owner, Admin, Catalogs Manager.\n\nEach entry contains the source content, translated content, and the\nFX-converted price for one item in one target locale. Use\n`target_locales`, `status`, and `merchant_item_id` to scope a review to a\nsubset, and the `bookmark` cursor for pagination. Returns 404 when the\nconfig does not exist or does not belong to the catalog.',
+    operationId: 'catalogs_translations/list',
+    request: {
+      params: z.object({
+        catalog_id: CatalogIdParamsSchema,
+        auto_localization_config_id: PathCatalogsAutoLocalizationConfigIdParamsSchema,
+      }),
+      query: z.object({
+        ad_account_id: QueryAdAccountIdParamsSchema,
+        target_locales: QueryCatalogsTranslationTargetLocalesParamsSchema,
+        status: QueryCatalogsTranslationStatusParamsSchema,
+        merchant_item_id: QueryCatalogsTranslationMerchantItemIdParamsSchema,
+        bookmark: PinterestLibBookmarkParamsBookmarkParamsSchema,
+        page_size: PinterestLibBookmarkParamsPageSizeParamsSchema,
+      }),
+    },
+    responses: {
+      200: {
+        description: 'The request has succeeded.',
+        content: {
+          'application/json': {
+            schema: z
+              .object({
+                bookmark: z.string().nullable().exactOptional(),
+                items: z.array(CatalogsTranslationItemSchema),
+              })
+              .openapi({ required: ['items'] }),
+          },
+        },
+      },
+      400: {
+        description: 'The request could not be understood by the server due to unexpected data.',
+        content: { 'application/json': { schema: PinterestLibErrorSchema } },
+      },
+      401: {
+        description: 'Authentication is required and has either failed or not been provided.',
+        content: { 'application/json': { schema: PinterestLibErrorSchema } },
+      },
+      403: {
+        description:
+          'The request was valid, but the server is refusing action. The user might not have the necessary permissions for a resource.',
+        content: { 'application/json': { schema: PinterestLibErrorSchema } },
+      },
+      404: {
+        description: 'The requested resource could not be found on this server.',
+        content: { 'application/json': { schema: PinterestLibErrorSchema } },
+      },
+      429: {
+        description:
+          'The user has sent too many requests in a given amount of time and is being rate limited.',
+        content: { 'application/json': { schema: PinterestLibErrorSchema } },
+      },
+      default: {
+        description: 'An unexpected error response.',
+        content: { 'application/json': { schema: PinterestLibErrorSchema } },
+      },
+    },
+    security: [{ pinterest_oauth2: ['catalogs:read'] }, { client_credentials: ['catalogs:read'] }],
+  })
+
+export const postCatalogsCatalogIdAutoLocalizationConfigsAutoLocalizationConfigIdTranslationsReviewRoute =
+  createRoute({
+    method: 'post',
+    path: '/catalogs/{catalog_id}/auto_localization_configs/{auto_localization_config_id}/translations/review',
+    tags: ['catalogs'],
+    summary: 'Review translations',
+    description:
+      'Approve or reject translations for an auto-localization config owned by\nthe "operation user_account". This is a bulk operation scoped by target\nlocales, merchant item ids, and/or current status.\n- By default, the "operation user_account" is the token user_account.\n\nOptional: Business Access: Specify an `ad_account_id` (obtained via [List ad accounts](/docs/api/v5/#operation/ad_accounts/list)) to use the owner of that ad_account as the "operation user_account". In order to do this, the token user_account must have one of the following [Business Access](https://help.pinterest.com/en/business/article/share-and-manage-access-to-your-ad-accounts) roles on the ad_account: Owner, Admin, Catalogs Manager.\n\nApplies `target_status` to every translation matching `scope`. Approving a\nlocale recomputes its locale-level approval state and, when appropriate,\ntriggers the downstream GBC feed generation run. `scope.translation_ids`\nis reserved for a future per-translation flow and must be `null` today.\nThe config and requested locales must belong to the catalog, and the\nrequest is rejected if a translation job is in progress for an affected\nlocale.',
+    operationId: 'catalogs_translations/review',
+    request: {
+      params: z.object({
+        catalog_id: CatalogIdParamsSchema,
+        auto_localization_config_id: PathCatalogsAutoLocalizationConfigIdParamsSchema,
+      }),
+      query: z.object({ ad_account_id: QueryAdAccountIdParamsSchema }),
+      body: {
+        content: { 'application/json': { schema: CatalogsTranslationApprovalRequestSchema } },
+        required: true,
+      },
+    },
+    responses: {
+      200: {
+        description: 'The request has succeeded.',
+        content: { 'application/json': { schema: CatalogsTranslationApprovalResponseSchema } },
+      },
+      400: {
+        description: 'The request could not be understood by the server due to unexpected data.',
+        content: { 'application/json': { schema: PinterestLibErrorSchema } },
+      },
+      401: {
+        description: 'Authentication is required and has either failed or not been provided.',
+        content: { 'application/json': { schema: PinterestLibErrorSchema } },
+      },
+      403: {
+        description:
+          'The request was valid, but the server is refusing action. The user might not have the necessary permissions for a resource.',
+        content: { 'application/json': { schema: PinterestLibErrorSchema } },
+      },
+      404: {
+        description: 'The requested resource could not be found on this server.',
+        content: { 'application/json': { schema: PinterestLibErrorSchema } },
+      },
+      429: {
+        description:
+          'The user has sent too many requests in a given amount of time and is being rate limited.',
+        content: { 'application/json': { schema: PinterestLibErrorSchema } },
+      },
+      default: {
+        description: 'An unexpected error response.',
+        content: { 'application/json': { schema: PinterestLibErrorSchema } },
+      },
+    },
+    security: [
+      { pinterest_oauth2: ['catalogs:read', 'catalogs:write'] },
+      { client_credentials: ['catalogs:read', 'catalogs:write'] },
+    ],
+  })
+
+export const getCatalogsCatalogIdCountryLocaleMappingRoute = createRoute({
+  method: 'get',
+  path: '/catalogs/{catalog_id}/country_locale_mapping',
+  tags: ['catalogs'],
+  summary: 'Get country/locale mapping',
+  description:
+    'Get the country/locale mapping for a Pinterest international product catalog\nowned by the "operation user_account".\n- By default, the "operation user_account" is the token user_account.\n\nOptional: Business Access: Specify an `ad_account_id` (obtained via [List ad accounts](/docs/api/v5/#operation/ad_accounts/list)) to use the owner of that ad_account as the "operation user_account". In order to do this, the token user_account must have one of the following [Business Access](https://help.pinterest.com/en/business/article/share-and-manage-access-to-your-ad-accounts) roles on the ad_account: Owner, Admin, Catalogs Manager.\n\nReturns 404 when no mapping exists for the catalog.',
+  operationId: 'catalogs_country_locale_mapping/get',
+  request: {
+    params: z.object({ catalog_id: CatalogIdParamsSchema }),
+    query: z.object({ ad_account_id: QueryAdAccountIdParamsSchema }),
+  },
+  responses: {
+    200: {
+      description: 'The request has succeeded.',
+      content: { 'application/json': { schema: CatalogsCountryLocaleMappingSchema } },
+    },
+    400: {
+      description: 'The request could not be understood by the server due to unexpected data.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    401: {
+      description: 'Authentication is required and has either failed or not been provided.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    403: {
+      description:
+        'The request was valid, but the server is refusing action. The user might not have the necessary permissions for a resource.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    404: {
+      description: 'The requested resource could not be found on this server.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    429: {
+      description:
+        'The user has sent too many requests in a given amount of time and is being rate limited.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    default: {
+      description: 'An unexpected error response.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+  },
+  security: [{ pinterest_oauth2: ['catalogs:read'] }, { client_credentials: ['catalogs:read'] }],
+})
+
+export const putCatalogsCatalogIdCountryLocaleMappingRoute = createRoute({
+  method: 'put',
+  path: '/catalogs/{catalog_id}/country_locale_mapping',
+  tags: ['catalogs'],
+  summary: 'Replace country/locale mapping',
+  description:
+    'Replace the country/locale mapping for a Pinterest international product catalog\nowned by the "operation user_account". The supplied `country_to_locales` payload\nreplaces any existing mapping in full (PUT semantics).\n\n- By default, the "operation user_account" is the token user_account.\n\nOptional: Business Access: Specify an `ad_account_id` (obtained via [List ad accounts](/docs/api/v5/#operation/ad_accounts/list)) to use the owner of that ad_account as the "operation user_account". In order to do this, the token user_account must have one of the following [Business Access](https://help.pinterest.com/en/business/article/share-and-manage-access-to-your-ad-accounts) roles on the ad_account: Owner, Admin, Catalogs Manager.\n\nEligibility:\n- The catalog must be a `RETAIL` / `PRODUCT` catalog.\n- The catalog must already have both a default `country` and `locale` set.\n- At most 5 locales per country are accepted.',
+  operationId: 'catalogs_country_locale_mapping/replace',
+  request: {
+    params: z.object({ catalog_id: CatalogIdParamsSchema }),
+    query: z.object({ ad_account_id: QueryAdAccountIdParamsSchema }),
+    body: {
+      content: { 'application/json': { schema: CatalogsCountryLocaleMappingUpdateSchema } },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'The request has succeeded.',
+      content: { 'application/json': { schema: CatalogsCountryLocaleMappingSchema } },
+    },
+    201: {
+      description: 'Resource create operation completed successfully.',
+      content: { 'application/json': { schema: CatalogsCountryLocaleMappingSchema } },
+    },
+    400: {
+      description: 'The request could not be understood by the server due to unexpected data.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    401: {
+      description: 'Authentication is required and has either failed or not been provided.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    403: {
+      description:
+        'The request was valid, but the server is refusing action. The user might not have the necessary permissions for a resource.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    404: {
+      description: 'The requested resource could not be found on this server.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    429: {
+      description:
+        'The user has sent too many requests in a given amount of time and is being rate limited.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    default: {
+      description: 'An unexpected error response.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+  },
+  security: [
+    { pinterest_oauth2: ['catalogs:read', 'catalogs:write'] },
+    { client_credentials: ['catalogs:read', 'catalogs:write'] },
+  ],
+})
+
+export const deleteCatalogsCatalogIdCountryLocaleMappingRoute = createRoute({
+  method: 'delete',
+  path: '/catalogs/{catalog_id}/country_locale_mapping',
+  tags: ['catalogs'],
+  summary: 'Delete country/locale mapping',
+  description:
+    'Delete (soft-clear) the country/locale mapping for a Pinterest international product\ncatalog owned by the "operation user_account". The mapping is cleared in place; the\nunderlying catalog and items are preserved.\n\n- By default, the "operation user_account" is the token user_account.\n\nOptional: Business Access: Specify an `ad_account_id` (obtained via [List ad accounts](/docs/api/v5/#operation/ad_accounts/list)) to use the owner of that ad_account as the "operation user_account". In order to do this, the token user_account must have one of the following [Business Access](https://help.pinterest.com/en/business/article/share-and-manage-access-to-your-ad-accounts) roles on the ad_account: Owner, Admin, Catalogs Manager.',
+  operationId: 'catalogs_country_locale_mapping/delete',
+  request: {
+    params: z.object({ catalog_id: CatalogIdParamsSchema }),
+    query: z.object({ ad_account_id: QueryAdAccountIdParamsSchema }),
+  },
+  responses: {
+    204: { description: 'Resource deleted successfully.' },
+    400: {
+      description: 'The request could not be understood by the server due to unexpected data.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    401: {
+      description: 'Authentication is required and has either failed or not been provided.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    403: {
+      description:
+        'The request was valid, but the server is refusing action. The user might not have the necessary permissions for a resource.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    404: {
+      description: 'The requested resource could not be found on this server.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    429: {
+      description:
+        'The user has sent too many requests in a given amount of time and is being rate limited.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    default: {
+      description: 'An unexpected error response.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+  },
+  security: [
+    { pinterest_oauth2: ['catalogs:read', 'catalogs:write'] },
+    { client_credentials: ['catalogs:read', 'catalogs:write'] },
+  ],
+})
+
 export const postCatalogsCatalogIdLocalInventoryItemsBatchRoute = createRoute({
   method: 'post',
   path: '/catalogs/{catalog_id}/local_inventory_items/batch',
@@ -48408,6 +58924,60 @@ export const getCatalogsCatalogIdSupplementalItemsBatchBatchIdRoute = createRout
   security: [{ pinterest_oauth2: ['catalogs:read'] }],
 })
 
+export const postCollaborativeCatalogsRoute = createRoute({
+  method: 'post',
+  path: '/collaborative_catalogs',
+  tags: ['catalogs'],
+  summary: 'Create collaborative catalog',
+  description:
+    '**This endpoint is currently in beta and not available to all apps. [Learn more](/docs/getting-started/using-beta-and-restricted-features/).**\n\nCreate a new collaborative (RMN) catalog owned by the "operation user_account".\n- By default, the "operation user_account" is the token user_account.\n\nOptional: Business Access: Specify an ad_account_id (obtained via [List ad accounts](/docs/api/v5/#operation/ad_accounts/list)) to use the owner of that ad_account as the "operation user_account". In order to do this, the token user_account must have one of the following [Business Access](https://help.pinterest.com/en/business/article/share-and-manage-access-to-your-ad-accounts) roles on the ad_account: Owner, Admin, Catalogs Manager.\n\nA collaborative catalog requires a parent retail catalog and product filters.',
+  operationId: 'collaborative_catalogs/create',
+  request: {
+    query: z.object({ ad_account_id: QueryAdAccountIdParamsSchema }),
+    body: {
+      content: { 'application/json': { schema: CollaborativeCatalogCreateSchema } },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'The request has succeeded.',
+      content: { 'application/json': { schema: CollaborativeCatalogSchema } },
+    },
+    201: {
+      description: 'Resource create operation completed successfully.',
+      content: { 'application/json': { schema: CollaborativeCatalogSchema } },
+    },
+    400: {
+      description: 'The request could not be understood by the server due to unexpected data.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    401: {
+      description: 'Authentication is required and has either failed or not been provided.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    403: {
+      description:
+        'The request was valid, but the server is refusing action. The user might not have the necessary permissions for a resource.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    404: {
+      description: 'The requested resource could not be found on this server.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    429: {
+      description:
+        'The user has sent too many requests in a given amount of time and is being rate limited.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    default: {
+      description: 'An unexpected error response.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+  },
+  security: [{ pinterest_oauth2: ['catalogs:write'] }],
+})
+
 export const getIntegrationsRoute = createRoute({
   method: 'get',
   path: '/integrations',
@@ -48675,7 +59245,7 @@ export const postIntegrationsLogsRoute = createRoute({
   responses: {
     200: {
       description: 'The request has succeeded.',
-      content: { 'application/json': { schema: IntegrationLogsSuccessResponseSchema } },
+      content: { 'application/json': { schema: MessageResponseSchema } },
     },
     400: {
       description: 'The server could not understand the request due to invalid syntax.',
@@ -48818,7 +59388,10 @@ export const postMediaRoute = createRoute({
     "Register your intent to upload media.\n\nThe response includes all of the information needed to upload the media to Pinterest.\n\nTo upload the media, make an HTTP POST request (using `curl`, for example) to `upload_url` using the `Content-Type` header value. Send the media file's contents as the request's `file` parameter and also include all of the parameters from `upload_parameters`.\n\n**[Learn more](/docs/api-features/creating-boards-and-pins/#creating-video-pins)** about video Pin creation.",
   operationId: 'media/create',
   request: {
-    body: { content: { 'application/json': { schema: MediaUploadCreateSchema } }, required: true },
+    body: {
+      content: { 'application/json': { schema: MediaUploadCreateRequestSchema } },
+      required: true,
+    },
   },
   responses: {
     200: {
@@ -48901,6 +59474,304 @@ export const getMediaMediaIdRoute = createRoute({
     },
   },
   security: [{ pinterest_oauth2: ['pins:read'] }],
+})
+
+export const getMediaLibraryBusinessesBusinessIdAssetsRoute = createRoute({
+  method: 'get',
+  path: '/media_library/businesses/{business_id}/assets',
+  tags: ['media_library'],
+  summary: 'Get all assets',
+  description:
+    'Get media library assets for a business. Assets are reusable image or video\ncreatives at the business level, not Pins. Use this to browse, search, and\nfilter assets from **Media library**.\n\nResults are paginated. The default `page_size` is 25 and the maximum is 250.\nWhen more assets remain, the response includes a `pagination_token`; pass it\nback unchanged to fetch the next page. A request whose filters match nothing\nreturns HTTP 200 with an empty `assets` array, not a 404.\n\nAccess requires the token user to be the business owner or to have a\n[Business Access](https://help.pinterest.com/en/business/article/business-manager-overview)\nrole with media library read access: Admin, Campaign Manager, Analyst, Profile Publisher, or Restricted Owner.',
+  operationId: 'media_library_assets/list',
+  request: {
+    params: z.object({ business_id: PathMediaLibraryBusinessIdParamsSchema }),
+    query: z.object({
+      names: QueryMediaLibraryAssetsFiltersNamesParamsSchema,
+      asset_ids: QueryMediaLibraryAssetsFiltersAssetIdsParamsSchema,
+      asset_types: QueryMediaLibraryAssetsFiltersAssetTypesParamsSchema,
+      has_been_promoted: QueryMediaLibraryAssetsFiltersHasBeenPromotedParamsSchema,
+      from_date: QueryMediaLibraryAssetsFiltersFromDateParamsSchema,
+      to_date: QueryMediaLibraryAssetsFiltersToDateParamsSchema,
+      tags: QueryMediaLibraryAssetsFiltersTagsParamsSchema,
+      sort_order: QueryMediaLibraryAssetsFiltersSortOrderParamsSchema,
+      page_size: QueryMediaLibraryPaginationPageSizeParamsSchema,
+      pagination_token: QueryMediaLibraryPaginationPaginationTokenParamsSchema,
+    }),
+  },
+  responses: {
+    200: {
+      description: 'The request has succeeded.',
+      content: { 'application/json': { schema: MediaLibraryAssetsListResponseSchema } },
+    },
+    400: {
+      description: 'The request could not be understood by the server due to unexpected data.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    401: {
+      description: 'Authentication is required and has either failed or not been provided.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    403: {
+      description:
+        'The request was valid, but the server is refusing action. The user might not have the necessary permissions for a resource.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    404: {
+      description: 'The requested resource could not be found on this server.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    429: {
+      description:
+        'The user has sent too many requests in a given amount of time and is being rate limited.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    default: {
+      description: 'An unexpected error response.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+  },
+  security: [{ pinterest_oauth2: ['ads:read'] }],
+})
+
+export const postMediaLibraryBusinessesBusinessIdAssetsRoute = createRoute({
+  method: 'post',
+  path: '/media_library/businesses/{business_id}/assets',
+  tags: ['media_library'],
+  summary: 'Create asset(s)',
+  description:
+    'Create one or more media library assets for a business. Assets are reusable\nimage or video creatives at the business level, not Pins. Use them later in\nads without creating a Pin first.\n\nBefore creating a media library asset:\n- [Register the media upload](/docs/api/v5/media-create/).\n- Upload the asset file to the Pinterest Media AWS bucket using the URL and\n  metadata returned to you in the preceding step.\n- [Confirm the upload](/docs/api/v5/media-get/).\n\nGet [detailed steps for uploading assets](/docs/work-with-ads/manage-media-library-assets/).\n\nYou will use the `media_id` returned in the first step to create the media\nlibrary asset in this endpoint.\n\nA request with multiple assets succeeds if at least one asset is created,\neven if the others fail.',
+  operationId: 'media_library_assets/create',
+  request: {
+    params: z.object({ business_id: PathMediaLibraryBusinessIdParamsSchema }),
+    body: {
+      content: { 'application/json': { schema: MediaLibraryAssetsCreateRequestSchema } },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'The request has succeeded.',
+      content: { 'application/json': { schema: MediaLibraryAssetsCreateResultSchema } },
+    },
+    400: {
+      description: 'The request could not be understood by the server due to unexpected data.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    401: {
+      description: 'Authentication is required and has either failed or not been provided.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    403: {
+      description:
+        'The request was valid, but the server is refusing action. The user might not have the necessary permissions for a resource.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    404: {
+      description: 'The requested resource could not be found on this server.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    429: {
+      description:
+        'The user has sent too many requests in a given amount of time and is being rate limited.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    default: {
+      description: 'An unexpected error response.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+  },
+  security: [{ pinterest_oauth2: ['ads:write'] }],
+})
+
+export const deleteMediaLibraryBusinessesBusinessIdAssetsRoute = createRoute({
+  method: 'delete',
+  path: '/media_library/businesses/{business_id}/assets',
+  tags: ['media_library'],
+  summary: 'Remove asset(s)',
+  description:
+    'Delete one or more media library assets for a business. Assets are\nreusable image or video creatives at the business level, not Pins.\nAt most 100 assets per request. Duplicate IDs in the same request are\ncounted once, and an ID that is already deleted counts as a success.\nAfter a successful delete, GET for that `asset_id` returns 404.\n\nPer-asset outcomes are reported in the response body, not in the HTTP\nstatus: an authorized, well-formed request returns 200 even when some\nor all of the requested assets were not deleted. Read `status` for the\noverall outcome and `failures` for the reason each asset was not\ndeleted.\n\nAccess requires the token user to be the business owner or to have a\n[Business Access](https://help.pinterest.com/en/business/article/business-manager-overview)\nrole with media library edit access: Admin, Campaign Manager, or Profile Publisher.',
+  operationId: 'media_library_assets/delete',
+  request: {
+    params: z.object({ business_id: PathMediaLibraryBusinessIdParamsSchema }),
+    query: z.object({ asset_ids: QueryMediaLibraryDeleteAssetIdsParamsSchema }),
+  },
+  responses: {
+    200: {
+      description: 'The request has succeeded.',
+      content: { 'application/json': { schema: MediaLibraryAssetsDeleteResultSchema } },
+    },
+    204: { description: 'Resource deleted successfully.' },
+    400: {
+      description: 'The request could not be understood by the server due to unexpected data.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    401: {
+      description: 'Authentication is required and has either failed or not been provided.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    403: {
+      description:
+        'The request was valid, but the server is refusing action. The user might not have the necessary permissions for a resource.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    404: {
+      description: 'The requested resource could not be found on this server.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    429: {
+      description:
+        'The user has sent too many requests in a given amount of time and is being rate limited.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    default: {
+      description: 'An unexpected error response.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+  },
+  security: [{ pinterest_oauth2: ['ads:write'] }],
+})
+
+export const patchMediaLibraryBusinessesBusinessIdAssetsRoute = createRoute({
+  method: 'patch',
+  path: '/media_library/businesses/{business_id}/assets',
+  tags: ['media_library'],
+  summary: 'Edit asset(s)',
+  description:
+    'Edit one or more media library assets for a business. Assets are\nreusable image or video creatives at the business level, not Pins. Use\nthis to rename assets and update their tags in **Media library**.\nThis does not replace the image or video file.\n\nThe editable fields are `name` and `tags`. Omitting a field, or sending\nit as `null`, leaves it unchanged. To change tags, send the full\nreplacement list; send an empty list (`[]`) to remove all tags. The name\ncan be changed but not cleared. Each entry must set at least one of\n`name` or `tags`, and at most 100 assets may be edited per request.\n\nPer-asset outcomes are reported in the response body, not in the HTTP\nstatus: an authorized, well-formed request returns 200 even when some or\nall of the requested assets were not updated. Read `status` for the\noverall outcome and `results` for each asset. Entries in `results` are\nreturned in the same order as the request `assets`. A successful entry\ncarries `asset.asset_id`; on failure the `asset` snapshot is omitted, so\nmatch failures to the request by position.\n\nAccess requires the token user to be the business owner or to have a\n[Business Access](https://help.pinterest.com/en/business/article/business-manager-overview)\nrole with media library edit access: Admin, Campaign Manager, or Profile Publisher.',
+  operationId: 'media_library_assets/update',
+  request: {
+    params: z.object({ business_id: PathMediaLibraryBusinessIdParamsSchema }),
+    body: {
+      content: { 'application/json': { schema: MediaLibraryAssetsUpdateRequestSchema } },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'The request has succeeded.',
+      content: { 'application/json': { schema: MediaLibraryAssetsUpdateResultSchema } },
+    },
+    400: {
+      description: 'The request could not be understood by the server due to unexpected data.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    401: {
+      description: 'Authentication is required and has either failed or not been provided.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    403: {
+      description:
+        'The request was valid, but the server is refusing action. The user might not have the necessary permissions for a resource.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    404: {
+      description: 'The requested resource could not be found on this server.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    429: {
+      description:
+        'The user has sent too many requests in a given amount of time and is being rate limited.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    default: {
+      description: 'An unexpected error response.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+  },
+  security: [{ pinterest_oauth2: ['ads:write'] }],
+})
+
+export const getMediaLibraryBusinessesBusinessIdAssetsAssetIdRoute = createRoute({
+  method: 'get',
+  path: '/media_library/businesses/{business_id}/assets/{asset_id}',
+  tags: ['media_library'],
+  summary: 'Get an asset',
+  description:
+    'Get a single media library asset for a business. Assets are reusable image\nor video creatives at the business level, not Pins. Use this to retrieve\none asset from **Media library**.\n\nThe asset must belong to the owner business in the path. The response is\nan `IMAGE` or `VIDEO` asset.\n\nAccess requires the token user to be the business owner or to have a\n[Business Access](https://help.pinterest.com/en/business/article/business-manager-overview)\nrole with media library read access: Admin, Campaign Manager, Analyst, Profile Publisher, or Restricted Owner.',
+  operationId: 'media_library_assets/read',
+  request: {
+    params: z.object({
+      business_id: PathMediaLibraryBusinessIdParamsSchema,
+      asset_id: PathMediaLibraryAssetAssetIdParamsSchema,
+    }),
+  },
+  responses: {
+    200: {
+      description: 'The request has succeeded.',
+      content: { 'application/json': { schema: MediaLibraryAssetSchema } },
+    },
+    400: {
+      description: 'The request could not be understood by the server due to unexpected data.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    401: {
+      description: 'Authentication is required and has either failed or not been provided.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    403: {
+      description:
+        'The request was valid, but the server is refusing action. The user might not have the necessary permissions for a resource.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    404: {
+      description: 'The requested resource could not be found on this server.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    429: {
+      description:
+        'The user has sent too many requests in a given amount of time and is being rate limited.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    default: {
+      description: 'An unexpected error response.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+  },
+  security: [{ pinterest_oauth2: ['ads:read'] }],
+})
+
+export const getMerchantMerchantIdStatusRoute = createRoute({
+  method: 'get',
+  path: '/merchant/{merchant_id}/status',
+  tags: ['merchant_status'],
+  summary: 'Get merchant status',
+  description: 'Get the approval status of a merchant, including any pending reasons.',
+  operationId: 'merchant_status/get',
+  request: { params: z.object({ merchant_id: PathMerchantIdParamsSchema }) },
+  responses: {
+    200: {
+      description: 'The request has succeeded.',
+      content: { 'application/json': { schema: MerchantStatusResponseSchema } },
+    },
+    400: {
+      description: 'The request could not be understood by the server due to unexpected data.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    401: {
+      description: 'Authentication is required and has either failed or not been provided.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    403: {
+      description:
+        'The request was valid, but the server is refusing action. The user might not have the necessary permissions for a resource.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    404: {
+      description: 'The requested resource could not be found on this server.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    429: {
+      description:
+        'The user has sent too many requests in a given amount of time and is being rate limited.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    default: {
+      description: 'An unexpected error response.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+  },
+  security: [{ pinterest_oauth2: ['catalogs:read'] }],
 })
 
 export const postNotificationsRoute = createRoute({
@@ -49066,6 +59937,485 @@ export const postOauthTokenRevokeRoute = createRoute({
     },
   },
   security: [{ basic: [] }],
+})
+
+export const getOverlayAssignmentRulesRoute = createRoute({
+  method: 'get',
+  path: '/overlay_assignment_rules',
+  tags: ['overlay_assignment_rules'],
+  summary: 'Get overlay assignment rules',
+  description:
+    'Get a list of overlay assignment rules. Overlay assignment rules define which overlays should be applied to catalog products based on filter criteria.',
+  operationId: 'overlay_assignment_rules/list',
+  responses: {
+    200: {
+      description: 'The request has succeeded.',
+      content: { 'application/json': { schema: z.array(OverlayAssignmentRuleSchema) } },
+    },
+    400: {
+      description: 'The request could not be understood by the server due to unexpected data.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    401: {
+      description: 'Authentication is required and has either failed or not been provided.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    403: {
+      description:
+        'The request was valid, but the server is refusing action. The user might not have the necessary permissions for a resource.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    404: {
+      description: 'The requested resource could not be found on this server.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    429: {
+      description:
+        'The user has sent too many requests in a given amount of time and is being rate limited.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    default: {
+      description: 'An unexpected error response.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+  },
+  security: [{ pinterest_oauth2: ['ads:read'] }],
+})
+
+export const postOverlayAssignmentRulesRoute = createRoute({
+  method: 'post',
+  path: '/overlay_assignment_rules',
+  tags: ['overlay_assignment_rules'],
+  summary: 'Create overlay assignment rule',
+  description:
+    "Create an overlay assignment rule. Overlay assignment rules define which overlays should be applied to catalog products based on filter criteria. To apply a rule to an ad account's products, create it with the ad account owner's access token.\n\nThis endpoint allows you to:\n- Define filter criteria to match specific products in your catalog\n- Assign an overlay to be applied to those matching products\n- Reference overlays by either merchant-provided IDs or global overlay IDs\n",
+  operationId: 'overlay_assignment_rules/create',
+  request: {
+    body: {
+      content: { 'application/json': { schema: OverlayAssignmentRuleCreateSchema } },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'The request has succeeded.',
+      content: { 'application/json': { schema: OverlayAssignmentRuleSchema } },
+    },
+    201: {
+      description: 'Resource create operation completed successfully.',
+      content: { 'application/json': { schema: OverlayAssignmentRuleSchema } },
+    },
+    400: {
+      description: 'The request could not be understood by the server due to unexpected data.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    401: {
+      description: 'Authentication is required and has either failed or not been provided.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    403: {
+      description:
+        'The request was valid, but the server is refusing action. The user might not have the necessary permissions for a resource.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    404: {
+      description: 'The requested resource could not be found on this server.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    429: {
+      description:
+        'The user has sent too many requests in a given amount of time and is being rate limited.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    default: {
+      description: 'An unexpected error response.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+  },
+  security: [{ pinterest_oauth2: ['ads:write'] }],
+})
+
+export const getOverlayAssignmentRulesIdRoute = createRoute({
+  method: 'get',
+  path: '/overlay_assignment_rules/{id}',
+  tags: ['overlay_assignment_rules'],
+  summary: 'Get overlay assignment rule',
+  description:
+    'Get an overlay assignment rule by ID. Overlay assignment rules define which overlays should be applied to catalog products based on filter criteria.',
+  operationId: 'overlay_assignment_rules/read',
+  request: { params: z.object({ id: OverlayAssignmentRuleKeyParamsSchema }) },
+  responses: {
+    200: {
+      description: 'The request has succeeded.',
+      content: { 'application/json': { schema: OverlayAssignmentRuleSchema } },
+    },
+    400: {
+      description: 'The request could not be understood by the server due to unexpected data.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    401: {
+      description: 'Authentication is required and has either failed or not been provided.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    403: {
+      description:
+        'The request was valid, but the server is refusing action. The user might not have the necessary permissions for a resource.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    404: {
+      description: 'The requested resource could not be found on this server.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    429: {
+      description:
+        'The user has sent too many requests in a given amount of time and is being rate limited.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    default: {
+      description: 'An unexpected error response.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+  },
+  security: [{ pinterest_oauth2: ['ads:read'] }],
+})
+
+export const deleteOverlayAssignmentRulesIdRoute = createRoute({
+  method: 'delete',
+  path: '/overlay_assignment_rules/{id}',
+  tags: ['overlay_assignment_rules'],
+  summary: 'Delete overlay assignment rule',
+  description:
+    'Delete an overlay assignment rule by ID. This will stop applying the specified overlays to matching products.',
+  operationId: 'overlay_assignment_rules/delete',
+  request: { params: z.object({ id: OverlayAssignmentRuleKeyParamsSchema }) },
+  responses: {
+    200: {
+      description: 'The request has succeeded.',
+      content: { 'application/json': { schema: OverlayAssignmentRuleSchema } },
+    },
+    204: { description: 'Resource deleted successfully.' },
+    400: {
+      description: 'The request could not be understood by the server due to unexpected data.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    401: {
+      description: 'Authentication is required and has either failed or not been provided.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    403: {
+      description:
+        'The request was valid, but the server is refusing action. The user might not have the necessary permissions for a resource.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    404: {
+      description: 'The requested resource could not be found on this server.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    429: {
+      description:
+        'The user has sent too many requests in a given amount of time and is being rate limited.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    default: {
+      description: 'An unexpected error response.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+  },
+  security: [{ pinterest_oauth2: ['ads:write'] }],
+})
+
+export const patchOverlayAssignmentRulesIdRoute = createRoute({
+  method: 'patch',
+  path: '/overlay_assignment_rules/{id}',
+  tags: ['overlay_assignment_rules'],
+  summary: 'Update overlay assignment rule',
+  description:
+    'Update an overlay assignment rule by ID. You can update the name, overlay references, and filter criteria.',
+  operationId: 'overlay_assignment_rules/update',
+  request: {
+    params: z.object({ id: OverlayAssignmentRuleKeyParamsSchema }),
+    body: {
+      content: { 'application/json': { schema: OverlayAssignmentRuleUpdateSchema } },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'The request has succeeded.',
+      content: { 'application/json': { schema: OverlayAssignmentRuleSchema } },
+    },
+    400: {
+      description: 'The request could not be understood by the server due to unexpected data.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    401: {
+      description: 'Authentication is required and has either failed or not been provided.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    403: {
+      description:
+        'The request was valid, but the server is refusing action. The user might not have the necessary permissions for a resource.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    404: {
+      description: 'The requested resource could not be found on this server.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    429: {
+      description:
+        'The user has sent too many requests in a given amount of time and is being rate limited.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    default: {
+      description: 'An unexpected error response.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+  },
+  security: [{ pinterest_oauth2: ['ads:write'] }],
+})
+
+export const getOverlaysRoute = createRoute({
+  method: 'get',
+  path: '/overlays',
+  tags: ['overlays'],
+  summary: 'Get overlays',
+  description:
+    'Get a list of overlays. Overlays are transparent PNG images that Pinterest draws on product images in shopping ads during specific time periods.',
+  operationId: 'overlays/list',
+  request: {
+    query: z.object({
+      bookmark: PinterestLibBookmarkParamsBookmarkParamsSchema,
+      page_size: PinterestLibBookmarkParamsPageSizeParamsSchema,
+    }),
+  },
+  responses: {
+    200: {
+      description: 'The request has succeeded.',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              bookmark: z.string().nullable().exactOptional(),
+              items: z.array(OverlaySchema),
+            })
+            .openapi({ required: ['items'] }),
+        },
+      },
+    },
+    400: {
+      description: 'The request could not be understood by the server due to unexpected data.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    401: {
+      description: 'Authentication is required and has either failed or not been provided.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    403: {
+      description:
+        'The request was valid, but the server is refusing action. The user might not have the necessary permissions for a resource.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    404: {
+      description: 'The requested resource could not be found on this server.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    429: {
+      description:
+        'The user has sent too many requests in a given amount of time and is being rate limited.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    default: {
+      description: 'An unexpected error response.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+  },
+  security: [{ pinterest_oauth2: ['ads:read'] }],
+})
+
+export const postOverlaysRoute = createRoute({
+  method: 'post',
+  path: '/overlays',
+  tags: ['overlays'],
+  summary: 'Create overlay',
+  description:
+    "Create a new overlay. Overlays are transparent PNG images that Pinterest draws on product images in shopping ads during specific time periods. To use an overlay in an ad account's ad groups, create it with the ad account owner's access token.",
+  operationId: 'overlays/create',
+  request: {
+    body: { content: { 'application/json': { schema: OverlayCreateSchema } }, required: true },
+  },
+  responses: {
+    200: {
+      description: 'The request has succeeded.',
+      content: { 'application/json': { schema: OverlaySchema } },
+    },
+    201: {
+      description: 'Resource create operation completed successfully.',
+      content: { 'application/json': { schema: OverlaySchema } },
+    },
+    400: {
+      description: 'The request could not be understood by the server due to unexpected data.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    401: {
+      description: 'Authentication is required and has either failed or not been provided.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    403: {
+      description:
+        'The request was valid, but the server is refusing action. The user might not have the necessary permissions for a resource.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    404: {
+      description: 'The requested resource could not be found on this server.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    429: {
+      description:
+        'The user has sent too many requests in a given amount of time and is being rate limited.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    default: {
+      description: 'An unexpected error response.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+  },
+  security: [{ pinterest_oauth2: ['ads:write'] }],
+})
+
+export const getOverlaysIdRoute = createRoute({
+  method: 'get',
+  path: '/overlays/{id}',
+  tags: ['overlays'],
+  summary: 'Get overlay',
+  description:
+    'Get an overlay by ID. Overlays are transparent PNG images that Pinterest draws on product images in shopping ads during specific time periods.',
+  operationId: 'overlays/read',
+  request: { params: z.object({ id: OverlayKeyParamsSchema }) },
+  responses: {
+    200: {
+      description: 'The request has succeeded.',
+      content: { 'application/json': { schema: OverlaySchema } },
+    },
+    400: {
+      description: 'The request could not be understood by the server due to unexpected data.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    401: {
+      description: 'Authentication is required and has either failed or not been provided.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    403: {
+      description:
+        'The request was valid, but the server is refusing action. The user might not have the necessary permissions for a resource.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    404: {
+      description: 'The requested resource could not be found on this server.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    429: {
+      description:
+        'The user has sent too many requests in a given amount of time and is being rate limited.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    default: {
+      description: 'An unexpected error response.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+  },
+  security: [{ pinterest_oauth2: ['ads:read'] }],
+})
+
+export const deleteOverlaysIdRoute = createRoute({
+  method: 'delete',
+  path: '/overlays/{id}',
+  tags: ['overlays'],
+  summary: 'Delete overlay',
+  description:
+    'Delete an overlay by ID. Overlays are transparent PNG images that Pinterest draws on product images in shopping ads during specific time periods.',
+  operationId: 'overlays/delete',
+  request: { params: z.object({ id: OverlayKeyParamsSchema }) },
+  responses: {
+    200: {
+      description: 'The request has succeeded.',
+      content: { 'application/json': { schema: OverlaySchema } },
+    },
+    204: { description: 'Resource deleted successfully.' },
+    400: {
+      description: 'The request could not be understood by the server due to unexpected data.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    401: {
+      description: 'Authentication is required and has either failed or not been provided.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    403: {
+      description:
+        'The request was valid, but the server is refusing action. The user might not have the necessary permissions for a resource.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    404: {
+      description: 'The requested resource could not be found on this server.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    429: {
+      description:
+        'The user has sent too many requests in a given amount of time and is being rate limited.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    default: {
+      description: 'An unexpected error response.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+  },
+  security: [{ pinterest_oauth2: ['ads:write'] }],
+})
+
+export const patchOverlaysIdRoute = createRoute({
+  method: 'patch',
+  path: '/overlays/{id}',
+  tags: ['overlays'],
+  summary: 'Update overlay',
+  description:
+    'Update an overlay by ID. Overlays are transparent PNG images that Pinterest draws on product images in shopping ads during specific time periods.',
+  operationId: 'overlays/update',
+  request: {
+    params: z.object({ id: OverlayKeyParamsSchema }),
+    body: { content: { 'application/json': { schema: OverlayUpdateSchema } }, required: true },
+  },
+  responses: {
+    200: {
+      description: 'The request has succeeded.',
+      content: { 'application/json': { schema: OverlaySchema } },
+    },
+    400: {
+      description: 'The request could not be understood by the server due to unexpected data.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    401: {
+      description: 'Authentication is required and has either failed or not been provided.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    403: {
+      description:
+        'The request was valid, but the server is refusing action. The user might not have the necessary permissions for a resource.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    404: {
+      description: 'The requested resource could not be found on this server.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    429: {
+      description:
+        'The user has sent too many requests in a given amount of time and is being rate limited.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    default: {
+      description: 'An unexpected error response.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+  },
+  security: [{ pinterest_oauth2: ['ads:write'] }],
 })
 
 export const getPinsRoute = createRoute({
@@ -49465,7 +60815,10 @@ export const getPinsPinIdProductTagsRoute = createRoute({
   description:
     'Retrieve all product tags for a pin.\n- Returns an empty array if the pin has no product tags.',
   operationId: 'product_tags/list',
-  request: { params: z.object({ pin_id: ProductTagsHeroPinIdParamsSchema }) },
+  request: {
+    params: z.object({ pin_id: ProductTagsHeroPinIdParamsSchema }),
+    query: z.object({ ad_account_id: QueryAdAccountIdParamsSchema }),
+  },
   responses: {
     200: {
       description: 'The request has succeeded.',
@@ -49511,6 +60864,7 @@ export const postPinsPinIdProductTagsRoute = createRoute({
   operationId: 'product_tags/bulk_add',
   request: {
     params: z.object({ pin_id: ProductTagsHeroPinIdParamsSchema }),
+    query: z.object({ ad_account_id: QueryAdAccountIdParamsSchema }),
     body: {
       content: { 'application/json': { schema: ProductTagsBulkAddRequestSchema } },
       required: true,
@@ -49557,6 +60911,7 @@ export const postPinsPinIdProductTagsBulkDeleteRoute = createRoute({
   operationId: 'product_tags/bulk_delete',
   request: {
     params: z.object({ pin_id: ProductTagsHeroPinIdParamsSchema }),
+    query: z.object({ ad_account_id: QueryAdAccountIdParamsSchema }),
     body: {
       content: { 'application/json': { schema: ProductTagsBulkDeleteRequestSchema } },
       required: true,
@@ -50925,8 +62280,7 @@ export const postUserAccountFollowingUsernameRoute = createRoute({
   path: '/user_account/following/{username}',
   tags: ['user_account'],
   summary: 'Follow user',
-  description:
-    '**This endpoint is currently in beta and not available to all apps. [Learn more](/docs/getting-started/using-beta-and-restricted-features/).**\n\nUse this request, as a signed-in user, to follow another user.',
+  description: 'Use this request, as a signed-in user, to follow another user.',
   operationId: 'follow_user/update',
   request: {
     params: z.object({ username: PathUsernameParamsSchema }),
@@ -51197,19 +62551,29 @@ export const getUsersUsernameInterestsFollowRoute = createRoute({
       },
     },
     400: {
-      description: 'The server could not understand the request due to invalid syntax.',
+      description: 'The request could not be understood by the server due to unexpected data.',
       content: { 'application/json': { schema: PinterestLibErrorSchema } },
     },
     401: {
-      description: 'Access is unauthorized.',
+      description: 'Authentication is required and has either failed or not been provided.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    403: {
+      description:
+        'The request was valid, but the server is refusing action. The user might not have the necessary permissions for a resource.',
       content: { 'application/json': { schema: PinterestLibErrorSchema } },
     },
     404: {
-      description: 'The server cannot find the requested resource.',
+      description: 'The requested resource could not be found on this server.',
+      content: { 'application/json': { schema: PinterestLibErrorSchema } },
+    },
+    429: {
+      description:
+        'The user has sent too many requests in a given amount of time and is being rate limited.',
       content: { 'application/json': { schema: PinterestLibErrorSchema } },
     },
     default: {
-      description: 'Unexpected error',
+      description: 'An unexpected error response.',
       content: { 'application/json': { schema: PinterestLibErrorSchema } },
     },
   },

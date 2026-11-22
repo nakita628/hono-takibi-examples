@@ -203,22 +203,22 @@ const CreateProjectMetadataSchema = z
   .openapi('CreateProjectMetadata')
 
 const CreateTagBindingMetadataSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Runtime operation information for creating a TagValue.' })
   .openapi('CreateTagBindingMetadata')
 
 const CreateTagKeyMetadataSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Runtime operation information for creating a TagKey.' })
   .openapi('CreateTagKeyMetadata')
 
 const CreateTagValueMetadataSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Runtime operation information for creating a TagValue.' })
   .openapi('CreateTagValueMetadata')
 
 const DeleteFolderMetadataSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A status object which is used as the `metadata` field for the `Operation` returned by `DeleteFolder`.',
@@ -226,7 +226,7 @@ const DeleteFolderMetadataSchema = z
   .openapi('DeleteFolderMetadata')
 
 const DeleteOrganizationMetadataSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A status object which is used as the `metadata` field for the operation returned by DeleteOrganization.',
@@ -234,7 +234,7 @@ const DeleteOrganizationMetadataSchema = z
   .openapi('DeleteOrganizationMetadata')
 
 const DeleteProjectMetadataSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A status object which is used as the `metadata` field for the Operation returned by `DeleteProject`.',
@@ -242,17 +242,17 @@ const DeleteProjectMetadataSchema = z
   .openapi('DeleteProjectMetadata')
 
 const DeleteTagBindingMetadataSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Runtime operation information for deleting a TagBinding.' })
   .openapi('DeleteTagBindingMetadata')
 
 const DeleteTagKeyMetadataSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Runtime operation information for deleting a TagKey.' })
   .openapi('DeleteTagKeyMetadata')
 
 const DeleteTagValueMetadataSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Runtime operation information for deleting a TagValue.' })
   .openapi('DeleteTagValueMetadata')
 
@@ -305,7 +305,7 @@ const EffectiveTagSchema = z
   .openapi('EffectiveTag')
 
 const EmptySchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',
@@ -974,7 +974,7 @@ const MoveFolderRequestSchema = z
   .openapi('MoveFolderRequest')
 
 const MoveProjectMetadataSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A status object which is used as the `metadata` field for the Operation returned by MoveProject.',
@@ -1321,7 +1321,7 @@ const TestIamPermissionsResponseSchema = z
   .openapi('TestIamPermissionsResponse')
 
 const UndeleteFolderMetadataSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A status object which is used as the `metadata` field for the `Operation` returned by `UndeleteFolder`.',
@@ -1329,12 +1329,12 @@ const UndeleteFolderMetadataSchema = z
   .openapi('UndeleteFolderMetadata')
 
 const UndeleteFolderRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'The UndeleteFolder request message.' })
   .openapi('UndeleteFolderRequest')
 
 const UndeleteOrganizationMetadataSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A status object which is used as the `metadata` field for the Operation returned by UndeleteOrganization.',
@@ -1342,7 +1342,7 @@ const UndeleteOrganizationMetadataSchema = z
   .openapi('UndeleteOrganizationMetadata')
 
 const UndeleteProjectMetadataSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A status object which is used as the `metadata` field for the Operation returned by `UndeleteProject`.',
@@ -1350,12 +1350,12 @@ const UndeleteProjectMetadataSchema = z
   .openapi('UndeleteProjectMetadata')
 
 const UndeleteProjectRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'The request sent to the UndeleteProject method.' })
   .openapi('UndeleteProjectRequest')
 
 const UpdateFolderMetadataSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A status object which is used as the `metadata` field for the Operation returned by UpdateFolder.',
@@ -1363,7 +1363,7 @@ const UpdateFolderMetadataSchema = z
   .openapi('UpdateFolderMetadata')
 
 const UpdateProjectMetadataSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A status object which is used as the `metadata` field for the Operation returned by UpdateProject.',
@@ -1371,12 +1371,12 @@ const UpdateProjectMetadataSchema = z
   .openapi('UpdateProjectMetadata')
 
 const UpdateTagKeyMetadataSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Runtime operation information for updating a TagKey.' })
   .openapi('UpdateTagKeyMetadata')
 
 const UpdateTagValueMetadataSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Runtime operation information for updating a TagValue.' })
   .openapi('UpdateTagValueMetadata')
 

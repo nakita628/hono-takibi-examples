@@ -219,7 +219,7 @@ export const getDiscoursePostEventEventsJsonRoute = createRoute({
                       .regex(/^\d{2}:\d{2}:\d{2}$/)
                       .exactOptional(),
                     all_day: z.boolean().exactOptional(),
-                    custom_fields: z.object({}).nullable().exactOptional(),
+                    custom_fields: z.looseObject({}).nullable().exactOptional(),
                     post: z
                       .strictObject({
                         id: z.int(),
@@ -231,7 +231,7 @@ export const getDiscoursePostEventEventsJsonRoute = createRoute({
                             id: z.int(),
                             title: z.string(),
                             tags: z.array(z.string()),
-                            tags_descriptions: z.object({}),
+                            tags_descriptions: z.looseObject({}),
                             slug: z.string(),
                           })
                           .openapi({
@@ -293,26 +293,27 @@ export const getDiscoursePostEventEventsJsonRoute = createRoute({
                           .openapi({ required: ['value', 'unit', 'period', 'type'] }),
                       )
                       .exactOptional(),
-                    sample_invitees: z.array(z.object({})).exactOptional(),
+                    sample_invitees: z.array(z.looseObject({})).exactOptional(),
                     should_display_invitees: z.boolean(),
-                    stats: z.object({}).exactOptional(),
+                    stats: z.looseObject({}).exactOptional(),
                     status: z.enum(['public', 'private', 'standalone']),
                     url: z.string().exactOptional(),
                     description: z.string().nullable().exactOptional(),
                     description_html: z.string().nullable().exactOptional(),
                     location: z.string().nullable().exactOptional(),
                     url_restates_location: z.boolean().exactOptional(),
-                    watching_invitee: z.object({}).nullable().exactOptional(),
+                    watching_invitee: z.looseObject({}).nullable().exactOptional(),
                     chat_enabled: z.boolean().nullable().exactOptional(),
-                    channel: z.object({}).exactOptional(),
+                    channel: z.looseObject({}).exactOptional(),
                     livestream: z.boolean().exactOptional(),
+                    allow_anonymous_livestream: z.boolean(),
                     livestream_onebox: z.string().nullable().exactOptional(),
                     is_zoom_livestream: z.boolean().exactOptional(),
                     recording_url: z.string().exactOptional(),
                     recording_onebox: z.string().nullable().exactOptional(),
                     max_attendees: z.int().nullable().exactOptional(),
                     at_capacity: z.boolean(),
-                    image_upload: z.object({}).nullable().exactOptional(),
+                    image_upload: z.looseObject({}).nullable().exactOptional(),
                   })
                   .openapi({
                     required: [
@@ -332,6 +333,7 @@ export const getDiscoursePostEventEventsJsonRoute = createRoute({
                       'is_standalone',
                       'should_display_invitees',
                       'status',
+                      'allow_anonymous_livestream',
                       'at_capacity',
                       'post',
                       'occurrences',
@@ -1213,6 +1215,13 @@ export const postCategoriesJsonRoute = createRoute({
                     .openapi({ required: [] }),
                   category_localizations: z.array(z.any()).exactOptional(),
                   read_only_banner: z.string().nullable(),
+                  permission_groups: z
+                    .array(
+                      z
+                        .strictObject({ id: z.int(), name: z.string() })
+                        .openapi({ required: ['id', 'name'] }),
+                    )
+                    .exactOptional(),
                   available_groups: z.array(z.any()),
                   auto_close_hours: z.string().nullable(),
                   auto_close_based_on_last_post: z.boolean(),
@@ -1241,8 +1250,8 @@ export const postCategoriesJsonRoute = createRoute({
                   uploaded_logo_dark: z.string().nullable(),
                   uploaded_background: z.string().nullable(),
                   uploaded_background_dark: z.string().nullable(),
-                  category_types: z.object({}).exactOptional(),
-                  category_type_settings: z.object({}).exactOptional(),
+                  category_types: z.looseObject({}).exactOptional(),
+                  category_type_settings: z.looseObject({}).exactOptional(),
                   available_category_types: z
                     .array(
                       z
@@ -1252,9 +1261,10 @@ export const postCategoriesJsonRoute = createRoute({
                           title: z.string(),
                           description: z.string(),
                           icon: z.string(),
+                          svg_icon: z.string().nullable(),
                           available: z.boolean(),
                           visible: z.boolean(),
-                          configuration_schema: z.object({}),
+                          configuration_schema: z.looseObject({}),
                         })
                         .openapi({
                           required: [
@@ -1263,6 +1273,7 @@ export const postCategoriesJsonRoute = createRoute({
                             'title',
                             'description',
                             'icon',
+                            'svg_icon',
                             'available',
                             'visible',
                             'configuration_schema',
@@ -1492,6 +1503,13 @@ export const putCategoriesIdJsonRoute = createRoute({
                     .openapi({ required: [] }),
                   category_localizations: z.array(z.any()).exactOptional(),
                   read_only_banner: z.string().nullable(),
+                  permission_groups: z
+                    .array(
+                      z
+                        .strictObject({ id: z.int(), name: z.string() })
+                        .openapi({ required: ['id', 'name'] }),
+                    )
+                    .exactOptional(),
                   available_groups: z.array(z.any()),
                   auto_close_hours: z.string().nullable(),
                   auto_close_based_on_last_post: z.boolean(),
@@ -1520,8 +1538,8 @@ export const putCategoriesIdJsonRoute = createRoute({
                   uploaded_logo_dark: z.string().nullable(),
                   uploaded_background: z.string().nullable(),
                   uploaded_background_dark: z.string().nullable(),
-                  category_types: z.object({}).exactOptional(),
-                  category_type_settings: z.object({}).exactOptional(),
+                  category_types: z.looseObject({}).exactOptional(),
+                  category_type_settings: z.looseObject({}).exactOptional(),
                   available_category_types: z
                     .array(
                       z
@@ -1531,9 +1549,10 @@ export const putCategoriesIdJsonRoute = createRoute({
                           title: z.string(),
                           description: z.string(),
                           icon: z.string(),
+                          svg_icon: z.string().nullable(),
                           available: z.boolean(),
                           visible: z.boolean(),
-                          configuration_schema: z.object({}),
+                          configuration_schema: z.looseObject({}),
                         })
                         .openapi({
                           required: [
@@ -1542,6 +1561,7 @@ export const putCategoriesIdJsonRoute = createRoute({
                             'title',
                             'description',
                             'icon',
+                            'svg_icon',
                             'available',
                             'visible',
                             'configuration_schema',
@@ -1856,6 +1876,13 @@ export const getCIdShowJsonRoute = createRoute({
                     .openapi({ required: [] }),
                   category_localizations: z.array(z.any()).exactOptional(),
                   read_only_banner: z.string().nullable(),
+                  permission_groups: z
+                    .array(
+                      z
+                        .strictObject({ id: z.int(), name: z.string() })
+                        .openapi({ required: ['id', 'name'] }),
+                    )
+                    .exactOptional(),
                   available_groups: z.array(z.any()),
                   auto_close_hours: z.string().nullable(),
                   auto_close_based_on_last_post: z.boolean(),
@@ -1884,8 +1911,8 @@ export const getCIdShowJsonRoute = createRoute({
                   uploaded_logo_dark: z.string().nullable(),
                   uploaded_background: z.string().nullable(),
                   uploaded_background_dark: z.string().nullable(),
-                  category_types: z.object({}).exactOptional(),
-                  category_type_settings: z.object({}).exactOptional(),
+                  category_types: z.looseObject({}).exactOptional(),
+                  category_type_settings: z.looseObject({}).exactOptional(),
                   available_category_types: z
                     .array(
                       z
@@ -1895,9 +1922,10 @@ export const getCIdShowJsonRoute = createRoute({
                           title: z.string(),
                           description: z.string(),
                           icon: z.string(),
+                          svg_icon: z.string().nullable(),
                           available: z.boolean(),
                           visible: z.boolean(),
-                          configuration_schema: z.object({}),
+                          configuration_schema: z.looseObject({}),
                         })
                         .openapi({
                           required: [
@@ -1906,6 +1934,7 @@ export const getCIdShowJsonRoute = createRoute({
                             'title',
                             'description',
                             'icon',
+                            'svg_icon',
                             'available',
                             'visible',
                             'configuration_schema',
@@ -2211,7 +2240,7 @@ export const getGroupsNameJsonRoute = createRoute({
                   messageable: z.boolean(),
                   automatic_membership_email_domains: z.string().nullable(),
                   smtp_updated_at: z.string().nullable().exactOptional(),
-                  smtp_updated_by: z.object({}).nullable().exactOptional(),
+                  smtp_updated_by: z.looseObject({}).nullable().exactOptional(),
                   smtp_enabled: z.boolean().exactOptional(),
                   smtp_server: z.string().nullable(),
                   smtp_port: z.string().nullable(),
@@ -2434,7 +2463,7 @@ export const getGroupsByIdIdJsonRoute = createRoute({
                   messageable: z.boolean(),
                   automatic_membership_email_domains: z.string().nullable(),
                   smtp_updated_at: z.string().nullable().exactOptional(),
-                  smtp_updated_by: z.object({}).nullable().exactOptional(),
+                  smtp_updated_by: z.looseObject({}).nullable().exactOptional(),
                   smtp_enabled: z.boolean().exactOptional(),
                   smtp_server: z.string().nullable(),
                   smtp_port: z.string().nullable(),
@@ -2911,8 +2940,8 @@ export const postInvitesJsonRoute = createRoute({
               expired: z.boolean().openapi({ example: false }),
               grants_admin: z.boolean().openapi({ example: false }),
               grants_moderator: z.boolean().openapi({ example: false }),
-              topics: z.array(z.object({})).openapi({ example: [] }),
-              groups: z.array(z.object({})).openapi({ example: [] }),
+              topics: z.array(z.looseObject({})).openapi({ example: [] }),
+              groups: z.array(z.looseObject({})).openapi({ example: [] }),
             })
             .openapi({
               required: [
@@ -4968,15 +4997,15 @@ export const getSiteJsonRoute = createRoute({
                   })
                   .openapi({ required: ['id', 'name', 'is_dark', 'colors'] }),
               ),
-              default_light_color_scheme: z.object({}).nullable(),
-              default_dark_color_scheme: z.object({}).nullable(),
-              censored_regexp: z.array(z.object({})),
+              default_light_color_scheme: z.looseObject({}).nullable(),
+              default_dark_color_scheme: z.looseObject({}).nullable(),
+              censored_regexp: z.array(z.looseObject({})),
               custom_emoji_translation: z.strictObject({}),
               watched_words_replace: z.string().nullable(),
               watched_words_link: z.string().nullable(),
-              markdown_additional_options: z.object({}).exactOptional(),
-              hashtag_configurations: z.object({}).exactOptional(),
-              hashtag_icons: z.object({}).exactOptional(),
+              markdown_additional_options: z.looseObject({}).exactOptional(),
+              hashtag_configurations: z.looseObject({}).exactOptional(),
+              hashtag_icons: z.looseObject({}).exactOptional(),
               displayed_about_plugin_stat_groups: z.array(z.any()).exactOptional(),
               categories: z.array(
                 z
@@ -5095,6 +5124,7 @@ export const getSiteJsonRoute = createRoute({
                       title: z.string(),
                       description: z.string(),
                       icon: z.string(),
+                      svg_icon: z.string().nullable(),
                       available: z.boolean(),
                       visible: z.boolean(),
                       configuration_schema: z.looseObject({}),
@@ -5106,6 +5136,7 @@ export const getSiteJsonRoute = createRoute({
                         'title',
                         'description',
                         'icon',
+                        'svg_icon',
                         'available',
                         'visible',
                         'configuration_schema',
@@ -5291,7 +5322,7 @@ export const postTagGroupsJsonRoute = createRoute({
                       .openapi({ required: ['id', 'name', 'slug'] }),
                   ),
                   one_per_topic: z.boolean(),
-                  permissions: z.object({}),
+                  permissions: z.looseObject({}),
                 })
                 .openapi({
                   required: ['id', 'name', 'tags', 'parent_tag', 'one_per_topic', 'permissions'],
@@ -7103,7 +7134,7 @@ export const postUploadsGeneratePresignedPutJsonRoute = createRoute({
                     'https://file-uploads.s3.us-west-2.amazonaws.com/temp/site/uploads/default/123/456.jpg?x-amz-acl=private&x-amz-meta-sha1-checksum=sha1&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AAAAus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20211221T011246Z&X-Amz-Expires=600&X-Amz-SignedHeaders=host&X-Amz-Signature=12345678',
                 }),
               signed_headers: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description: 'A map of headers that must be sent with the PUT request.',
@@ -7334,7 +7365,7 @@ export const postUploadsBatchPresignMultipartPartsJsonRoute = createRoute({
   tags: ['Uploads'],
   summary: 'Generates batches of presigned URLs for multipart parts',
   description:
-    'Multipart uploads are uploaded in chunks or parts to individual presigned\nURLs, similar to the one generated by /generate-presigned-put. The part\nnumbers provided must be between 1 and 10000. The total number of parts\nwill depend on the chunk size in bytes that you intend to use to upload\neach chunk. For example a 12MB file may have 2 5MB chunks and a final\n2MB chunk, for part numbers 1, 2, and 3.\n\nThis endpoint will return a presigned URL for each part number provided,\nwhich you can then use to send PUT requests for the binary chunk corresponding\nto that part. When the part is uploaded, the provider should return an\nETag for the part, and this should be stored along with the part number,\nbecause this is needed to complete the multipart upload.\n\nYou must have the correct permissions and CORS settings configured in your\nexternal provider. We support AWS S3 as the default. See:\n\nhttps://meta.discourse.org/t/-/210469#s3-multipart-direct-uploads-4.\n\nAn external file store must be set up and `enable_direct_s3_uploads` must\nbe set to true for this endpoint to function.\n\n',
+    'Multipart uploads are uploaded in chunks or parts to individual presigned\nURLs, similar to the one generated by /generate-presigned-put. The part\nnumbers provided must be between 1 and 10000, and a request can have at\nmost 100 part numbers. The total number of parts\nwill depend on the chunk size in bytes that you intend to use to upload\neach chunk. For example a 12MB file may have 2 5MB chunks and a final\n2MB chunk, for part numbers 1, 2, and 3.\n\nThis endpoint will return a presigned URL for each part number provided,\nwhich you can then use to send PUT requests for the binary chunk corresponding\nto that part. When the part is uploaded, the provider should return an\nETag for the part, and this should be stored along with the part number,\nbecause this is needed to complete the multipart upload.\n\nYou must have the correct permissions and CORS settings configured in your\nexternal provider. We support AWS S3 as the default. See:\n\nhttps://meta.discourse.org/t/-/210469#s3-multipart-direct-uploads-4.\n\nAn external file store must be set up and `enable_direct_s3_uploads` must\nbe set to true for this endpoint to function.\n\n',
   operationId: 'batchPresignMultipartParts',
   request: {
     body: {
@@ -7344,9 +7375,10 @@ export const postUploadsBatchPresignMultipartPartsJsonRoute = createRoute({
             .strictObject({
               part_numbers: z
                 .array(z.any())
+                .max(100)
                 .openapi({
                   description:
-                    'The part numbers to generate the presigned URLs for,\nmust be between 1 and 10000.',
+                    'The part numbers to generate the presigned URLs for.\nEach part number must be between 1 and 10000. A request can have\nat most 100 part numbers.',
                   example: [1, 2, 3],
                 }),
               unique_identifier: z
@@ -7370,7 +7402,7 @@ export const postUploadsBatchPresignMultipartPartsJsonRoute = createRoute({
           schema: z
             .strictObject({
               presigned_urls: z
-                .object({})
+                .looseObject({})
                 .openapi({
                   description:
                     'The presigned URLs for each part number, which has\nthe part numbers as keys.',
@@ -7555,7 +7587,79 @@ export const postUserBadgesJsonRoute = createRoute({
                     }
                   }
                 })
-                .openapi({ required: ['badge_id'] }),
+                .openapi({ required: ['badge_id'] })
+                .superRefine((val, ctx) => {
+                  if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                    if (!Object.hasOwn(val, 'username')) {
+                      ctx.addIssue({ code: 'custom' })
+                    }
+                    if (Object.hasOwn(val, 'username')) {
+                      const Schema = z
+                        .string()
+                        .openapi({ description: 'The username of the user to grant the badge to.' })
+                      if (!Schema.safeParse(Reflect.get(val, 'username')).success) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
+                    }
+                    if (Object.hasOwn(val, 'badge_id')) {
+                      const Schema = z
+                        .int()
+                        .openapi({
+                          description:
+                            'The ID of the badge to grant. Either badge_id or badge_name\nis required.',
+                        })
+                      if (!Schema.safeParse(Reflect.get(val, 'badge_id')).success) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
+                    }
+                    if (Object.hasOwn(val, 'badge_name')) {
+                      const Schema = z
+                        .string()
+                        .openapi({
+                          description:
+                            'The name of the badge to grant. Either badge_id or\nbadge_name is required.',
+                        })
+                      if (!Schema.safeParse(Reflect.get(val, 'badge_name')).success) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
+                    }
+                    if (Object.hasOwn(val, 'reason')) {
+                      const Schema = z
+                        .string()
+                        .openapi({
+                          description:
+                            'Optional URL of a post or topic associated with the\ngrant. Cannot be used together with post_id.',
+                        })
+                      if (!Schema.safeParse(Reflect.get(val, 'reason')).success) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
+                    }
+                    if (Object.hasOwn(val, 'post_id')) {
+                      const Schema = z
+                        .int()
+                        .min(1)
+                        .openapi({
+                          description:
+                            'Optional ID of a visible, non-deleted post associated\nwith the grant. Cannot be used together with reason.',
+                        })
+                      if (!Schema.safeParse(Reflect.get(val, 'post_id')).success) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
+                    }
+                    if (Object.hasOwn(val, 'suppress_notification')) {
+                      const Schema = z
+                        .boolean()
+                        .default(false)
+                        .openapi({
+                          description:
+                            'Suppress the notification for this grant only. Omit\nor set to false to preserve normal notification behavior, including\nexisting suppression rules. The badge is still granted and grant\nevents still occur.',
+                        })
+                      if (!Schema.safeParse(Reflect.get(val, 'suppress_notification')).success) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
+                    }
+                  }
+                }),
               z
                 .unknown()
                 .superRefine((val, ctx) => {
@@ -7565,54 +7669,80 @@ export const postUserBadgesJsonRoute = createRoute({
                     }
                   }
                 })
-                .openapi({ required: ['badge_name'] }),
+                .openapi({ required: ['badge_name'] })
+                .superRefine((val, ctx) => {
+                  if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                    if (!Object.hasOwn(val, 'username')) {
+                      ctx.addIssue({ code: 'custom' })
+                    }
+                    if (Object.hasOwn(val, 'username')) {
+                      const Schema = z
+                        .string()
+                        .openapi({ description: 'The username of the user to grant the badge to.' })
+                      if (!Schema.safeParse(Reflect.get(val, 'username')).success) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
+                    }
+                    if (Object.hasOwn(val, 'badge_id')) {
+                      const Schema = z
+                        .int()
+                        .openapi({
+                          description:
+                            'The ID of the badge to grant. Either badge_id or badge_name\nis required.',
+                        })
+                      if (!Schema.safeParse(Reflect.get(val, 'badge_id')).success) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
+                    }
+                    if (Object.hasOwn(val, 'badge_name')) {
+                      const Schema = z
+                        .string()
+                        .openapi({
+                          description:
+                            'The name of the badge to grant. Either badge_id or\nbadge_name is required.',
+                        })
+                      if (!Schema.safeParse(Reflect.get(val, 'badge_name')).success) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
+                    }
+                    if (Object.hasOwn(val, 'reason')) {
+                      const Schema = z
+                        .string()
+                        .openapi({
+                          description:
+                            'Optional URL of a post or topic associated with the\ngrant. Cannot be used together with post_id.',
+                        })
+                      if (!Schema.safeParse(Reflect.get(val, 'reason')).success) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
+                    }
+                    if (Object.hasOwn(val, 'post_id')) {
+                      const Schema = z
+                        .int()
+                        .min(1)
+                        .openapi({
+                          description:
+                            'Optional ID of a visible, non-deleted post associated\nwith the grant. Cannot be used together with reason.',
+                        })
+                      if (!Schema.safeParse(Reflect.get(val, 'post_id')).success) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
+                    }
+                    if (Object.hasOwn(val, 'suppress_notification')) {
+                      const Schema = z
+                        .boolean()
+                        .default(false)
+                        .openapi({
+                          description:
+                            'Suppress the notification for this grant only. Omit\nor set to false to preserve normal notification behavior, including\nexisting suppression rules. The badge is still granted and grant\nevents still occur.',
+                        })
+                      if (!Schema.safeParse(Reflect.get(val, 'suppress_notification')).success) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
+                    }
+                  }
+                }),
             ])
-            .and(
-              z
-                .object({
-                  username: z
-                    .string()
-                    .openapi({ description: 'The username of the user to grant the badge to.' }),
-                  badge_id: z
-                    .int()
-                    .exactOptional()
-                    .openapi({
-                      description:
-                        'The ID of the badge to grant. Either badge_id or badge_name\nis required.',
-                    }),
-                  badge_name: z
-                    .string()
-                    .exactOptional()
-                    .openapi({
-                      description:
-                        'The name of the badge to grant. Either badge_id or\nbadge_name is required.',
-                    }),
-                  reason: z
-                    .string()
-                    .exactOptional()
-                    .openapi({
-                      description:
-                        'Optional URL of a post or topic associated with the\ngrant. Cannot be used together with post_id.',
-                    }),
-                  post_id: z
-                    .int()
-                    .min(1)
-                    .exactOptional()
-                    .openapi({
-                      description:
-                        'Optional ID of a visible, non-deleted post associated\nwith the grant. Cannot be used together with reason.',
-                    }),
-                  suppress_notification: z
-                    .boolean()
-                    .default(false)
-                    .exactOptional()
-                    .openapi({
-                      description:
-                        'Suppress the notification for this grant only. Omit\nor set to false to preserve normal notification behavior, including\nexisting suppression rules. The badge is still granted and grant\nevents still occur.',
-                    }),
-                })
-                .openapi({ required: ['username'] }),
-            )
             .openapi({ required: ['username'] }),
         },
       },
@@ -7789,7 +7919,7 @@ export const postUsersJsonRoute = createRoute({
                 .looseObject({ '1': z.boolean().exactOptional() })
                 .exactOptional()
                 .openapi({ required: [] }),
-              external_ids: z.object({}).exactOptional(),
+              external_ids: z.looseObject({}).exactOptional(),
             })
             .openapi({ required: ['name', 'email', 'password', 'username'] }),
         },
@@ -8326,7 +8456,7 @@ export const putUUsernameJsonRoute = createRoute({
           schema: z
             .strictObject({
               name: z.string().exactOptional(),
-              external_ids: z.object({}).exactOptional(),
+              external_ids: z.looseObject({}).exactOptional(),
             })
             .openapi({ required: [] }),
         },
@@ -8339,7 +8469,7 @@ export const putUUsernameJsonRoute = createRoute({
       content: {
         'application/json': {
           schema: z
-            .strictObject({ success: z.string(), user: z.object({}) })
+            .strictObject({ success: z.string(), user: z.looseObject({}) })
             .openapi({ required: ['success', 'user'] }),
         },
       },
@@ -9346,6 +9476,15 @@ export const putUUsernamePreferencesAvatarPickJsonRoute = createRoute({
                 .openapi({ required: ['associated_account_id'] }),
               z.object({ type: z.literal('system').exactOptional() }).openapi({ required: [] }),
             ])
+            .and(
+              z
+                .object({
+                  upload_id: z.int().exactOptional(),
+                  associated_account_id: z.int().exactOptional(),
+                  type: z.string(),
+                })
+                .openapi({ required: ['type'] }),
+            )
             .openapi({ required: ['type'] }),
         },
       },
@@ -9634,7 +9773,7 @@ export const getAdminUsersIdJsonRoute = createRoute({
               can_be_anonymized: z.boolean(),
               can_be_merged: z.boolean(),
               full_suspend_reason: z.string().nullable(),
-              latest_export: z.object({}).nullable().exactOptional(),
+              latest_export: z.looseObject({}).nullable().exactOptional(),
               full_silence_reason: z.string().nullable().exactOptional(),
               silence_reason: z.string().nullable().exactOptional(),
               post_edits_count: z.int().nullable().exactOptional(),
@@ -9803,7 +9942,7 @@ export const getAdminUsersIdJsonRoute = createRoute({
                     ],
                   }),
               ),
-              external_ids: z.object({}),
+              external_ids: z.looseObject({}),
               include_ip: z.boolean(),
               upcoming_changes_stats: z
                 .array(

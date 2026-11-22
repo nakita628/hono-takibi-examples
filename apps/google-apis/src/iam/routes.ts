@@ -177,7 +177,7 @@ const GoogleIamV1LoggingAuditDataSchema = z
   .openapi('GoogleIamV1LoggingAuditData')
 
 const GoogleIamV1betaWorkloadIdentityPoolOperationMetadataSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Metadata for long-running WorkloadIdentityPool operations.' })
   .openapi('GoogleIamV1betaWorkloadIdentityPoolOperationMetadata')
 

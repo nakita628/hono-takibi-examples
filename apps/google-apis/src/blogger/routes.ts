@@ -193,7 +193,23 @@ const PostSchema = z
   .openapi({ required: [] })
   .openapi('Post')
 
-const BlogSchema = z
+type BlogType = {
+  customMetaData?: string
+  description?: string
+  id?: string
+  kind?: string
+  locale?: { country?: string; language?: string; variant?: string }
+  name?: string
+  pages?: { selfLink?: string; totalItems?: number }
+  posts?: { items?: z.infer<typeof PostSchema>[]; selfLink?: string; totalItems?: number }
+  published?: string
+  selfLink?: string
+  status?: 'LIVE' | 'DELETED'
+  updated?: string
+  url?: string
+}
+
+const BlogSchema: z.ZodType<BlogType> = z
   .object({
     customMetaData: z
       .string()
@@ -312,7 +328,13 @@ const BlogPerUserInfoSchema = z
   .openapi({ required: [] })
   .openapi('BlogPerUserInfo')
 
-const BlogUserInfoSchema = z
+type BlogUserInfoType = {
+  blog?: z.infer<typeof BlogSchema>
+  blog_user_info?: z.infer<typeof BlogPerUserInfoSchema>
+  kind?: string
+}
+
+const BlogUserInfoSchema: z.ZodType<BlogUserInfoType> = z
   .object({
     blog: BlogSchema.exactOptional().openapi({ description: 'The Blog resource.' }),
     blog_user_info: BlogPerUserInfoSchema.exactOptional().openapi({
@@ -326,7 +348,61 @@ const BlogUserInfoSchema = z
   .openapi({ required: [] })
   .openapi('BlogUserInfo')
 
-const BlogListSchema = z
+type BlogListType = {
+  blogUserInfos?: z.infer<typeof BlogUserInfoSchema>[]
+  items?: z.infer<typeof BlogSchema>[]
+  kind?: string
+}
+
+type PostListType = {
+  etag?: string
+  items?: z.infer<typeof PostSchema>[]
+  kind?: string
+  nextPageToken?: string
+  prevPageToken?: string
+}
+
+const PostPerUserInfoSchema = z
+  .object({
+    blogId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'ID of the Blog that the post resource belongs to.' }),
+    hasEditAccess: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'True if the user has Author level access to the post.' }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The kind of this entity. Always blogger#postPerUserInfo.' }),
+    postId: z.string().exactOptional().openapi({ description: 'ID of the Post resource.' }),
+    userId: z.string().exactOptional().openapi({ description: 'ID of the User.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('PostPerUserInfo')
+
+const PostUserInfoSchema = z
+  .object({
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The kind of this entity. Always blogger#postUserInfo.' }),
+    post: PostSchema.exactOptional().openapi({ description: 'The Post resource.' }),
+    post_user_info: PostPerUserInfoSchema.exactOptional().openapi({
+      description: 'Information about a User for the Post.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('PostUserInfo')
+
+type PostUserInfosListType = {
+  items?: z.infer<typeof PostUserInfoSchema>[]
+  kind?: string
+  nextPageToken?: string
+}
+
+const BlogListSchema: z.ZodType<BlogListType> = z
   .object({
     blogUserInfos: z
       .array(BlogUserInfoSchema)
@@ -489,7 +565,7 @@ const PageviewsSchema = z
   .openapi({ required: [] })
   .openapi('Pageviews')
 
-const PostListSchema = z
+const PostListSchema: z.ZodType<PostListType> = z
   .object({
     etag: z.string().exactOptional().openapi({ description: 'Etag of the response.' }),
     items: z
@@ -512,41 +588,7 @@ const PostListSchema = z
   .openapi({ required: [] })
   .openapi('PostList')
 
-const PostPerUserInfoSchema = z
-  .object({
-    blogId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'ID of the Blog that the post resource belongs to.' }),
-    hasEditAccess: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'True if the user has Author level access to the post.' }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The kind of this entity. Always blogger#postPerUserInfo.' }),
-    postId: z.string().exactOptional().openapi({ description: 'ID of the Post resource.' }),
-    userId: z.string().exactOptional().openapi({ description: 'ID of the User.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('PostPerUserInfo')
-
-const PostUserInfoSchema = z
-  .object({
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The kind of this entity. Always blogger#postUserInfo.' }),
-    post: PostSchema.exactOptional().openapi({ description: 'The Post resource.' }),
-    post_user_info: PostPerUserInfoSchema.exactOptional().openapi({
-      description: 'Information about a User for the Post.',
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('PostUserInfo')
-
-const PostUserInfosListSchema = z
+const PostUserInfosListSchema: z.ZodType<PostUserInfosListType> = z
   .object({
     items: z
       .array(PostUserInfoSchema)

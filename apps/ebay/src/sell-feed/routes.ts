@@ -861,7 +861,7 @@ const ScheduleTemplateCollectionSchema = z
   .openapi('ScheduleTemplateCollection')
 
 const StreamingOutputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'File stream' })
   .openapi('StreamingOutput')
 
@@ -1789,17 +1789,15 @@ export const postScheduleRoute = createRoute({
   responses: {
     201: {
       description: 'Created',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
       headers: z.object({
-        Location: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              description: 'The URL of the schedule, which includes the id.',
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            description: 'The URL of the schedule, which includes the id.',
+          }),
       }),
     },
     400: { description: 'Bad Request' },
@@ -1993,15 +1991,13 @@ export const getScheduleScheduleIdDownloadResultFileRoute = createRoute({
       description: 'Success',
       content: { 'application/octet-stream': { schema: StreamingOutputSchema } },
       headers: z.object({
-        'content-disposition': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              description: 'It contains the file metadata like file name.',
-            }),
-        },
+        'content-disposition': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            description: 'It contains the file metadata like file name.',
+          }),
       }),
     },
     400: { description: 'Bad Request' },
@@ -2369,15 +2365,13 @@ export const getTaskTaskIdDownloadInputFileRoute = createRoute({
       description: 'Success',
       content: { 'application/octet-stream': { schema: StreamingOutputSchema } },
       headers: z.object({
-        'content-disposition': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              description: 'Returns metadata for the downloaded file.',
-            }),
-        },
+        'content-disposition': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            description: 'Returns metadata for the downloaded file.',
+          }),
       }),
     },
     400: { description: 'Bad Request' },
@@ -2426,15 +2420,13 @@ export const getTaskTaskIdDownloadResultFileRoute = createRoute({
       description: 'Success',
       content: { 'application/octet-stream': { schema: StreamingOutputSchema } },
       headers: z.object({
-        'content-disposition': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              description: 'Returns metadata for the downloaded file.',
-            }),
-        },
+        'content-disposition': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            description: 'Returns metadata for the downloaded file.',
+          }),
       }),
     },
     400: { description: 'Bad Request' },
@@ -2547,7 +2539,7 @@ export const postTaskTaskIdUploadFileRoute = createRoute({
     },
   },
   responses: {
-    200: { description: 'Success', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: 'Success', content: { 'application/json': { schema: z.looseObject({}) } } },
     400: { description: 'Bad Request' },
     403: { description: 'Forbidden' },
     404: { description: 'Not Found' },

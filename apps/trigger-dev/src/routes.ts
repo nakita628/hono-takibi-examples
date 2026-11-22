@@ -264,20 +264,14 @@ export const postApiV3BatchesRoute = createRoute({
       description: 'Batch successfully created',
       content: { 'application/json': { schema: CreateBatchResponseSchema } },
       headers: z.object({
-        'x-trigger-jwt-claims': {
-          description: 'JWT claims for the batch',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ description: 'JWT claims for the batch', param: { required: false } }),
-        },
-        'x-trigger-jwt': {
-          description: 'JWT token for browser clients',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ description: 'JWT token for browser clients', param: { required: false } }),
-        },
+        'x-trigger-jwt-claims': z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'JWT claims for the batch', param: { required: false } }),
+        'x-trigger-jwt': z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'JWT token for browser clients', param: { required: false } }),
       }),
     },
     400: {
@@ -293,43 +287,28 @@ export const postApiV3BatchesRoute = createRoute({
       description: 'Rate limit exceeded',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Maximum number of requests allowed',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Maximum number of requests allowed',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'Number of requests remaining',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Number of requests remaining', param: { required: false } }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Unix timestamp when the rate limit resets',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Unix timestamp when the rate limit resets',
-              param: { required: false },
-            }),
-        },
-        'Retry-After': {
-          description: 'Seconds to wait before retrying',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Seconds to wait before retrying',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Maximum number of requests allowed',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Number of requests remaining', param: { required: false } }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Unix timestamp when the rate limit resets',
+            param: { required: false },
+          }),
+        'Retry-After': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Seconds to wait before retrying', param: { required: false } }),
       }),
     },
     500: {

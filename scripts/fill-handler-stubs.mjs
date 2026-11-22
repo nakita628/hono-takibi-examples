@@ -25,9 +25,10 @@ for (const root of process.argv.slice(2)) {
     if (!file.endsWith('.ts') || path.basename(path.dirname(file)) !== 'handlers') continue
     const source = fs.readFileSync(file, 'utf8')
     let count = 0
-    const filled = source.replace(/\(c\) => \{\}\)/g, () => {
+    // `(c) => {}` in `app.openapi(route, (c) => {})`, and `async (c) => {}` with `template.routeHandler`.
+    const filled = source.replace(/(async )?\(c\) => \{\}/g, (_, isAsync) => {
       count++
-      return "(c) => {\n  throw new Error('Not implemented')\n})"
+      return `${isAsync ?? ''}(c) => {\n  throw new Error('Not implemented')\n}`
     })
     if (count > 0) {
       fs.writeFileSync(file, filled)

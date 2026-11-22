@@ -30282,7 +30282,7 @@ Switch the active account for how you request data. Only available for financial
 |200|OK|Validates the account swapped to.|[setAccountResponse](#schemasetaccountresponse)|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|Internal Server Error. Unable to process request if incoming values are not valid. For example accountId is not correct<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -30369,7 +30369,7 @@ Set the active dynamic account.
 |200|OK|An array of objects detailing contract information.|[setAccountResponse](#schemasetaccountresponse)|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -30458,9 +30458,9 @@ Receive a list of all applicant names on the account and for which account and e
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|An object containing valid accounts and the account properties regarding trading access. This endpoint is also used to confirm account validation.|[signatureAndOwners](#schemasignatureandowners)|
-|400|Bad Request|bad request; accountId is empty|[errorResponse](#schemaerrorresponse-1)|
+|400|Bad Request|bad request; accountId is empty|[errorResponse2](#schemaerrorresponse2)|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -30535,9 +30535,9 @@ Returns updated profit and loss values for the selected account. Initial request
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Refers to "updated PnL". Holds a json object of key-value paired pnl details.|[pnlPartitionedResponse](#schemapnlpartitionedresponse)|
-|400|Bad Request|bad request; passed input cannot pass initial validation and detected right away|[errorResponse](#schemaerrorresponse-1)|
+|400|Bad Request|bad request; passed input cannot pass initial validation and detected right away|[errorResponse2](#schemaerrorresponse2)|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -30608,7 +30608,7 @@ Returns a list of accounts matching a query pattern set in the request. Broker a
 |---|---|---|---|
 |200|OK|Returns all accounts that match the searchPattern string.|[dynAccountSearchResponse](#schemadynaccountsearchresponse)|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -30721,9 +30721,9 @@ Provides a general overview of the account details such as balance values.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Provides a general overview of the account details such as balance values.|[accountSummaryResponse](#schemaaccountsummaryresponse)|
-|400|Bad Request|bad request; passed input cannot pass initial validation and detected right away|[errorResponse](#schemaerrorresponse-1)|
+|400|Bad Request|bad request; passed input cannot pass initial validation and detected right away|[errorResponse2](#schemaerrorresponse2)|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -30836,9 +30836,9 @@ Provides a summary specific for avilable funds giving more depth than the standa
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Indicates a successful return of available funds.|[availableFundsResponse](#schemaavailablefundsresponse)|
-|400|Bad Request|bad request; passed input cannot pass initial validation and detected right away|[errorResponse](#schemaerrorresponse-1)|
+|400|Bad Request|bad request; passed input cannot pass initial validation and detected right away|[errorResponse2](#schemaerrorresponse2)|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -30943,9 +30943,9 @@ Returns a summary of an account's equity and cash balances, in total and by acco
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Indicates a successful return of available funds.|[summaryOfAccountBalancesResponse](#schemasummaryofaccountbalancesresponse)|
-|400|Bad Request|bad request; passed input cannot pass initial validation and detected right away|[errorResponse](#schemaerrorresponse-1)|
+|400|Bad Request|bad request; passed input cannot pass initial validation and detected right away|[errorResponse2](#schemaerrorresponse2)|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -31053,9 +31053,9 @@ Returns a summary of an account's margin, in total and by account segment.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Indicates a success request to receive margin balance values.|[summaryOfAccountMarginResponse](#schemasummaryofaccountmarginresponse)|
-|400|Bad Request|bad request; passed input cannot pass initial validation and detected right away|[errorResponse](#schemaerrorresponse-1)|
+|400|Bad Request|bad request; passed input cannot pass initial validation and detected right away|[errorResponse2](#schemaerrorresponse2)|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -31255,9 +31255,9 @@ Returns a summary of an account's market value, by currency and asset class.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Indicates a successful market value request.|[summaryMarketValueResponse](#schemasummarymarketvalueresponse)|
-|400|Bad Request|bad request; passed input cannot pass initial validation and detected right away|[errorResponse](#schemaerrorresponse-1)|
+|400|Bad Request|bad request; passed input cannot pass initial validation and detected right away|[errorResponse2](#schemaerrorresponse2)|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -31420,7 +31420,7 @@ Returns a list of accounts the user has trading access to, their respective alia
 |---|---|---|---|
 |200|OK|An object containing valid accounts and the account properties regarding trading access. This endpoint is also used to confirm account validation.|[userAccountsResponse](#schemauseraccountsresponse)|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -31608,10 +31608,10 @@ Endpoint used to create a new alert, or modify an existing alert.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|An object containing valid accounts and the account properties regarding trading access. This endpoint is also used to confirm account validation.|[alertCreationResponse](#schemaalertcreationresponse)|
-|400|Bad Request|bad request; body is empty|[errorResponse](#schemaerrorresponse-1)|
+|400|Bad Request|bad request; body is empty|[errorResponse2](#schemaerrorresponse2)|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|Internal Server Error. Unable to process request if incoming values are not valid. For example operator is "abc" Or if modification request contains unmodified fields<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -31825,10 +31825,10 @@ Request details of a specific alert by providing the assigned alertId Id.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|An object containing all unique details of the specified alert.|[alertDetails](#schemaalertdetails)|
-|400|Bad Request|bad request if orderId is empty or type is invalid|[errorResponse](#schemaerrorresponse-1)|
+|400|Bad Request|bad request if orderId is empty or type is invalid|[errorResponse2](#schemaerrorresponse2)|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
-|500|Internal Server Error|orderId is not parsable; unable to process request|[errorResponse](#schemaerrorresponse-1)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|500|Internal Server Error|orderId is not parsable; unable to process request|[errorResponse2](#schemaerrorresponse2)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -31965,7 +31965,7 @@ Retrieve a list of all alerts attached to the provided account.
 |---|---|---|---|
 |200|OK|An array of objects detailing contract information.|[alerts](#schemaalerts)|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -32239,7 +32239,7 @@ Returns trading related rules for a specific contract and side.
 |200|OK|An array of objects detailing contract information.|[contractRules](#schemacontractrules)|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -32423,7 +32423,7 @@ Returns a list of contracts based on the search symbol provided as a query param
 |400|Bad Request|Missing, empty, non-numeric, or out-of-range parameter. The `error` field is always prefixed with `Bad Request:`.|[ErrorResponse](#schemaerrorresponse)|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -32572,7 +32572,7 @@ Returns a list of contracts based on the search symbol provided as a query param
 |400|Bad Request|Missing, empty, non-numeric, or out-of-range parameter. The `error` field is always prefixed with `Bad Request:`.|[ErrorResponse](#schemaerrorresponse)|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -32731,7 +32731,7 @@ Returns the trading schedule for the 6 total days surrounding the current tradin
 |200|OK|Returns the liquid and extended trading hours of the coming and prior trading days.|[scheduleResponse](#schemascheduleresponse)|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -32858,7 +32858,7 @@ Returns supported IB Algos for an instrument. A pre-flight request must be submi
 |200|OK|Returns a list of available algos and a description of their behavior.|[algosResponse](#schemaalgosresponse)|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -32955,7 +32955,7 @@ Requests full contract details for the given conid.
 |200|OK|Returns detailed information for the passed contract.|[contractInfo](#schemacontractinfo)|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -33150,7 +33150,7 @@ Requests full contract details and trading rules for the given conid. A follow-u
 |200|OK|Returns all contract information and trading rules for the contract.|Inline|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <h3 id="instrument-info-and-market-rules-responseschema">Response Schema</h3>
 
@@ -33282,7 +33282,7 @@ Obtains available currency pairs corresponding to the given target currency.
 |400|Bad Request|Missing, empty, non-numeric, or out-of-range parameter. The `error` field is always prefixed with `Bad Request:`.|[ErrorResponse](#schemaerrorresponse)|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -33365,7 +33365,7 @@ Obtains the exchange rates of the currency pair.
 |400|Bad Request|Missing, empty, non-numeric, or out-of-range parameter. The `error` field is always prefixed with `Bad Request:`.|[ErrorResponse](#schemaerrorresponse)|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <h3 id="currency-exchange-rate-responseschema">Response Schema</h3>
 
@@ -33499,7 +33499,7 @@ Request a list of filters relating to a given Bond issuerID. The issuerId is ret
 |200|OK|Successful requests return the currency exchange rate of the target currency value divided by the source currency.|[bondFiltersResponse](#schemabondfiltersresponse)|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -33606,7 +33606,7 @@ Returns the attributes of the instrument.
 |400|Bad Request|Missing, empty, non-numeric, or out-of-range parameter. The `error` field is always prefixed with `Bad Request:`.|[ErrorResponse](#schemaerrorresponse)|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -33717,7 +33717,7 @@ Returns lists of valid strikes for options contracts on a given underlier, for a
 |400|Bad Request|Missing, empty, non-numeric, or out-of-range parameter. The `error` field is always prefixed with `Bad Request:`.|[ErrorResponse](#schemaerrorresponse)|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <h3 id="search-strikes-for-an-underlier-responseschema">Response Schema</h3>
 
@@ -33808,7 +33808,7 @@ Send out a request to retrieve all contracts made available on a requested excha
 |200|OK|Successful response containing a contract's security definition.|Inline|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <h3 id="list-all-stock-conids-by-exchange-responseschema">Response Schema</h3>
 
@@ -33911,7 +33911,7 @@ Returns a list of non-expired future contracts for given symbol(s)
 |200|OK|Successful response containing a contract's security definition.|[features](#schemafeatures)|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -34037,7 +34037,7 @@ Returns a list of security definitions for the given conids.
 |400|Bad Request|Missing, empty, non-numeric, or out-of-range parameter. The `error` field is always prefixed with `Bad Request:`.|[ErrorResponse](#schemaerrorresponse)|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -34245,7 +34245,7 @@ Returns the trading schedule up to a month for the requested contract.
 |400|Bad Request|Missing, empty, non-numeric, or out-of-range parameter. The `error` field is always prefixed with `Bad Request:`.|[ErrorResponse](#schemaerrorresponse)|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -34367,7 +34367,7 @@ Returns an object contains all stock contracts for given symbol(s)
 |400|Bad Request|Missing, empty, non-numeric, or out-of-range parameter. The `error` field is always prefixed with `Bad Request:`.|[ErrorResponse](#schemaerrorresponse)|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -34463,7 +34463,7 @@ Returns the category names, parent ids, and markets for Event Contracts.
 |200|OK|Returns a list of category identifiers and name to be used for more granular contract discovery.|[categoryTreeResponse](#schemacategorytreeresponse)|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -34549,7 +34549,7 @@ Provides instrument details for the specific forecast contract.
 |200|OK|Returns the expanded list of the event contract containing both Yes and No side identifier information.|[forecastDetailsResponse](#schemaforecastdetailsresponse)|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -34649,7 +34649,7 @@ Returns all high level contract details affiliated with the underlying market co
 |200|OK|Returns the liquid and extended trading hours of the coming and prior trading days.|[forecastMarketResponse](#schemaforecastmarketresponse)|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -34735,7 +34735,7 @@ Provides trading rules for specific event contracts.
 |200|OK|Returns the corresponding contracts rules.|[forecastRulesResponse](#schemaforecastrulesresponse)|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -34848,7 +34848,7 @@ Provides forecast trading schedules.
 |200|OK|Returns the liquid and extended trading hours of the coming and prior trading days.|[forecastSchedulesResponse](#schemaforecastschedulesresponse)|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -34928,7 +34928,7 @@ Retrieves a list of all of the advisor's allocation groups. This describes the n
 |200|OK|Returns the "data" array, which contains all allocation groups under the advisor account.|[allocationGroups](#schemaallocationgroups)|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -35055,7 +35055,7 @@ Modify an existing allocation group.
 |200|OK|Returns a confirmation that the modification was successful.|Inline|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <h3 id="modify-allocation-group-responseschema">Response Schema</h3>
 
@@ -35187,7 +35187,7 @@ Add a new allocation group. This group can be used to trade in place of the {acc
 |200|OK|Returns a confirmation that the modification was successful.|Inline|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <h3 id="add-allocation-group-responseschema">Response Schema</h3>
 
@@ -35282,7 +35282,7 @@ Deletes a previously created allocation group. This endpoint is only supported f
 |200|OK|Returns a confirmation that the modification was successful.|Inline|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <h3 id="delete-an-allocation-group-responseschema">Response Schema</h3>
 
@@ -35386,7 +35386,7 @@ Retrieves the configuration of a single account group.  This describes the name 
 |200|OK|Returns details of the allocation group.|[allocationGroup](#schemaallocationgroup)|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -35457,7 +35457,7 @@ Retrieve the preset behavior for allocation groups for specific events. This end
 |200|OK|Successfully retrieve preset details|[presets](#schemapresets)|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -35567,7 +35567,7 @@ Set the preset behavior for new allocation groups for specific events.
 |200|OK|Successfully retrieve preset details|Inline|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <h3 id="set-allocation-preset-responseschema">Response Schema</h3>
 
@@ -35669,7 +35669,7 @@ Retrieves a list of all sub-accounts and returns their net liquidity and availab
 |200|OK|Indicates data is being returned successfully.|[subAccounts](#schemasubaccounts)|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -35767,7 +35767,7 @@ Get the preset behavior for model rebalancing.
 |200|OK|Successfully retrieve preset details|[modelPresetsResponse](#schemamodelpresetsresponse)|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -35886,7 +35886,7 @@ Set the preset behavior for models.
 |200|OK|Successfully retrieve preset details|Inline|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <h3 id="set-model-preset-responseschema">Response Schema</h3>
 
@@ -35991,7 +35991,7 @@ NOTE - This endpoint does not accept a `model` parameter. Supplying one has been
 |400|Bad Request|Bad request. Observed when unsupported fields (for example `model`) are included in the request body.<br>|None|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <h3 id="is-full-master-account-responseschema">Response Schema</h3>
 
@@ -36133,7 +36133,7 @@ Request all accounts held within a model.
 |200|OK|Successfully retrieve account details of in a model.|Inline|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <h3 id="get-models-accounts-responseschema">Response Schema</h3>
 
@@ -36250,7 +36250,7 @@ Run the model cash analyzer to review pending cash transfers, FX conversion orde
 |200|OK|Successfully retrieved the cash analyzer summary.|[cashAnalyzerResponse](#schemacashanalyzerresponse)|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -36372,7 +36372,7 @@ Constraints and comparison to `/fa/model/tws-invest-divest`:
 |200|OK|Successfully submitted model investment.|Inline|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <h3 id="invest-account-into-model-responseschema">Response Schema</h3>
 
@@ -36503,7 +36503,7 @@ Request the list of all accounts already invested in the provided model and a su
 |200|OK|Successfully retrieve preset details|[getInvestedAccountsSummary](#schemagetinvestedaccountssummary)|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -36614,7 +36614,7 @@ Retrieve summaries for all models under the advisor account.
 |200|OK|Successfully retrieve the model list|[modelListResponse](#schemamodellistresponse)|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -36783,7 +36783,7 @@ Request all positions held within the model.
 |200|OK|Successfully retrieve position details|[modelPositionResponse](#schemamodelpositionresponse)|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -36878,7 +36878,7 @@ Rebalance the specified model back to its currently saved target allocations. Th
 |200|OK|Successfully submitted rebalance-to-existing-targets request.|[rebalanceSubscriptionResponse](#schemarebalancesubscriptionresponse)|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -37009,7 +37009,7 @@ Rebalance the specified model to a brand-new set of target position and cash all
 |200|OK|Successfully submitted rebalance-to-new-targets request.|[rebalanceSubscriptionResponse](#schemarebalancesubscriptionresponse)|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -37164,7 +37164,7 @@ Rebalance the specified model by overriding only the supplied position targets, 
 |200|OK|Successfully retrieved the rebalance allocation preview.|[rebalanceAllocationPreview](#schemarebalanceallocationpreview)|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -37290,7 +37290,7 @@ Create or Modify a model's target positions.
 |200|OK|Successfully saved a model|Inline|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <h3 id="set-model-allocations-responseschema">Response Schema</h3>
 
@@ -37389,7 +37389,7 @@ Submit all pending orders to the models. This is similar to the Model page's Sub
 |200|OK|Successfully transmit all orders.|Inline|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <h3 id="submit-transfers-responseschema">Response Schema</h3>
 
@@ -37496,7 +37496,7 @@ Request a summary for a single model.
 |200|OK|Successfully retrieve model summary.|[modelSummaryResponse](#schemamodelsummaryresponse)|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -37687,7 +37687,7 @@ Feature comparison vs. `/fa/model/invest-divest`:
 |200|OK|Successfully computed the invest/divest allocation plan.|[twsInvestDivestResponse](#schematwsinvestdivestresponse)|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -37895,7 +37895,7 @@ This endpoint returns either a list of successfully submitted order confirmation
 |400|Bad Request|Missing, empty, non-numeric, or out-of-range parameter. The `error` field is always prefixed with `Bad Request:`.|[ErrorResponse](#schemaerrorresponse)|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <h3 id="submit-new-model-portfolio-order-responseschema">Response Schema</h3>
 
@@ -37982,7 +37982,7 @@ Retrieve the list of allocation model portfolios available under the authenticat
 |200|OK|Successfully retrieve the list of allocation models.|Inline|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <h3 id="list-allocation-models-responseschema">Response Schema</h3>
 
@@ -38098,7 +38098,7 @@ Choose whether a particular device is enabled or disabled.
 |400|Bad Request|Missing, empty, non-numeric, or out-of-range parameter. The `error` field is always prefixed with `Bad Request:`.|[ErrorResponse](#schemaerrorresponse)|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -38214,7 +38214,7 @@ Enable or disable group of notifications by the specific typecode.
 |200|OK|Successfully retrieve preset details|[fyiVT](#schemafyivt)|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -38288,7 +38288,7 @@ Options for sending fyis to email and other devices.
 |200|OK|Successfully retrieve preset details|[deliveryOptions](#schemadeliveryoptions)|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -38389,7 +38389,7 @@ Receive additional disclaimers based on the specified typecode.
 |200|OK|Successfully disclaimer details|[disclaimerInfo](#schemadisclaimerinfo)|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -38501,7 +38501,7 @@ Mark a specific disclaimer message as read.
 |400|Bad Request|Missing, empty, non-numeric, or out-of-range parameter. The `error` field is always prefixed with `Bad Request:`.|[ErrorResponse](#schemaerrorresponse)|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -38612,7 +38612,7 @@ Get a list of available notifications.
 |400|Bad Request|Missing, empty, non-numeric, or out-of-range parameter. The `error` field is always prefixed with `Bad Request:`.|[ErrorResponse](#schemaerrorresponse)|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -38691,7 +38691,7 @@ Return the current choices of subscriptions for notifications.
 |200|OK|Indicates data is being returned successfully.|[fyiSettings](#schemafyisettings)|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -38766,7 +38766,7 @@ Returns the total number of unread notifications
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |423|Locked|Return if called too frequently. Should not be called more than 1 time in 5 minutes|Inline|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <h3 id="get-number-of-unread-notifications-responseschema">Response Schema</h3>
 
@@ -38854,7 +38854,7 @@ Enable or disable your account's primary email to receive notifications.
 |200|OK|Successfully enabled or disabled your email notifications.|[fyiVT](#schemafyivt)|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -38942,7 +38942,7 @@ Mark a particular notification message as read or unread.
 |400|Bad Request|Missing, empty, non-numeric, or out-of-range parameter. The `error` field is always prefixed with `Bad Request:`.|[ErrorResponse](#schemaerrorresponse)|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -39073,7 +39073,7 @@ Instruct IServer to close its backend stream for the instrument when real-time s
 |400|Bad Request|Missing, empty, non-numeric, or out-of-range parameter. The `error` field is always prefixed with `Bad Request:`.|[ErrorResponse](#schemaerrorresponse)|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <h3 id="close-a-backend-data-stream-responseschema">Response Schema</h3>
 
@@ -39231,7 +39231,7 @@ Request historical data for an instrument in the form of OHLC bars.
 |400|Bad Request|Missing, empty, non-numeric, or out-of-range parameter. The `error` field is always prefixed with `Bad Request:`.|[ErrorResponse](#schemaerrorresponse)|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <h3 id="historical-ohlc-bar-data-responseschema">Response Schema</h3>
 
@@ -39333,7 +39333,7 @@ Get Market Data for the given conid(s). A pre-flight request must be made prior 
 |400|Bad Request|Missing, empty, non-numeric, or out-of-range parameter. The `error` field is always prefixed with `Bad Request:`.|[ErrorResponse](#schemaerrorresponse)|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -39399,7 +39399,7 @@ Instruct IServer to close all of its open backend data streams for all instrumen
 |200|OK|Indicates a successful request to unsubscribe all streams.|Inline|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <h3 id="close-all-backend-data-streams-responseschema">Response Schema</h3>
 
@@ -39475,7 +39475,7 @@ Request an access token for the IB username that has granted authorization to th
 |---|---|---|---|
 |200|OK|Success response with permanent OAuth access token|Inline|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <h3 id="generate-an-access-token-responseschema">Response Schema</h3>
 
@@ -39551,7 +39551,7 @@ Generate a Live Session Token shared secret and gain access to Web API.
 |---|---|---|---|
 |200|OK|Success response with Diffie-Hellman challenge and Signature value|Inline|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <h3 id="generate-a-live-session-token-responseschema">Response Schema</h3>
 
@@ -39625,7 +39625,7 @@ Request a temporary token as a third party to begin the OAuth 1.0a authorization
 |---|---|---|---|
 |200|OK|Success response with temporary OAuth access token|Inline|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <h3 id="obtain-a-request-token-responseschema">Response Schema</h3>
 
@@ -39867,7 +39867,7 @@ Modify an existing, unfilled order.
 |400|Bad Request|Missing, empty, non-numeric, or out-of-range parameter. The `error` field is always prefixed with `Bad Request:`.|[ErrorResponse](#schemaerrorresponse)|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <h3 id="modify-open-order-responseschema">Response Schema</h3>
 
@@ -39968,7 +39968,7 @@ Cancel an existing, unfilled order.
 |400|Bad Request|Missing, empty, non-numeric, or out-of-range parameter. The `error` field is always prefixed with `Bad Request:`.|[ErrorResponse](#schemaerrorresponse)|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <h3 id="cancel-an-open-order-responseschema">Response Schema</h3>
 
@@ -40156,7 +40156,7 @@ Submit a new order(s) ticket, bracket, or OCA group.
 |200|OK|Order submission response (success, error, reply is required or order reject)|Inline|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <h3 id="submit-new-order-responseschema">Response Schema</h3>
 
@@ -40378,7 +40378,7 @@ Preview the projected effects of an order ticket or bracket of orders, including
 |400|Bad Request|Missing, empty, non-numeric, or out-of-range parameter. The `error` field is always prefixed with `Bad Request:`.|[ErrorResponse](#schemaerrorresponse)|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -40559,7 +40559,7 @@ Suppress the specified order reply messages for the duration of the brokerage se
 |200|OK|Request's status|Inline|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <h3 id="suppress-order-reply-messages-responseschema">Response Schema</h3>
 
@@ -40634,7 +40634,7 @@ Removes suppression of all order reply messages that were previously suppressed 
 |200|OK|Request's status|Inline|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <h3 id="reset-order-reply-message-suppression-responseschema">Response Schema</h3>
 
@@ -40733,7 +40733,7 @@ Confirm an order reply message and continue with submission of order ticket.
 |200|OK|Status of reply|Inline|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <h3 id="confirm-order-reply-message-responseschema">Response Schema</h3>
 
@@ -40869,7 +40869,7 @@ Retrieve the status of a single order. Only displays orders from the current bro
 |400|Bad Request|Missing, empty, non-numeric, or out-of-range parameter. The `error` field is always prefixed with `Bad Request:`.|[ErrorResponse](#schemaerrorresponse)|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <h3 id="status-of-a-single-order-responseschema">Response Schema</h3>
 
@@ -41001,7 +41001,7 @@ Returns open orders and filled or cancelled orders submitted during the current 
 |200|OK|Orders for a specific account|[liveOrdersResponse](#schemaliveordersresponse)|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -41102,7 +41102,7 @@ Retrieve a list of trades, up to a maximum of 7 days prior.
 |200|OK|trades|[tradesResponse](#schematradesresponse)|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -41187,7 +41187,7 @@ Instructs IB to discard cached portfolio positions for a given account, so that 
 |400|Bad Request|Missing, empty, non-numeric, or out-of-range parameter. The `error` field is always prefixed with `Bad Request:`.|[ErrorResponse](#schemaerrorresponse)|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <h3 id="refresh-position-cache-responseschema">Response Schema</h3>
 
@@ -41292,7 +41292,7 @@ return accounts
 |200|OK|returned array with user account|Inline|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <h3 id="list-all-accounts-responseschema">Response Schema</h3>
 
@@ -41464,7 +41464,7 @@ Get positions in accounts for a given instrument (no secDef await control)
 |400|Bad Request|Missing, empty, non-numeric, or out-of-range parameter. The `error` field is always prefixed with `Bad Request:`.|[ErrorResponse](#schemaerrorresponse)|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <h3 id="all-account-positions-in-an-instrument-responseschema">Response Schema</h3>
 
@@ -41569,7 +41569,7 @@ Retrieve attributes of the subaccounts in the account structure.
 |200|OK|Array of objects representing accounts in the structure.|Inline|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <h3 id="list-all-subaccounts-responseschema">Response Schema</h3>
 
@@ -41691,7 +41691,7 @@ Used in tiered account structures (such as Financial Advisor and IBroker Account
 |200|OK|response with subaccount definitions|[subaccounts2Response](#schemasubaccounts2response)|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -41824,7 +41824,7 @@ Get an account's allocations by asset class, sector group, and sector.
 |400|Bad Request|Missing, empty, non-numeric, or out-of-range parameter. The `error` field is always prefixed with `Bad Request:`.|[ErrorResponse](#schemaerrorresponse)|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -41955,7 +41955,7 @@ Provides all positions held in the account acquired as a combination, including 
 |200|OK|response with combo position definitions|[comboPositionResponse](#schemacombopositionresponse)|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -42124,7 +42124,7 @@ Get the given account's ledger data detailing its balances by currency.
 |200|OK|ledger|[ledger](#schemaledger)|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -42224,7 +42224,7 @@ Get a single account's attributes and capabilities.
 |200|OK|An account's attributes|[accountAttributes](#schemaaccountattributes)|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -42366,7 +42366,7 @@ Get position for a given instrument in a single account.
 |400|Bad Request|Missing, empty, non-numeric, or out-of-range parameter. The `error` field is always prefixed with `Bad Request:`.|[ErrorResponse](#schemaerrorresponse)|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -42622,7 +42622,7 @@ Get all positions in an account.
 |400|Bad Request|Missing, empty, non-numeric, or out-of-range parameter. The `error` field is always prefixed with `Bad Request:`.|[ErrorResponse](#schemaerrorresponse)|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <h3 id="account-positions-responseschema">Response Schema</h3>
 
@@ -43614,7 +43614,7 @@ Returns detailed summary of account values, by segment where appropriate.
 |200|OK|response with summary definitions|[portfolioSummary](#schemaportfoliosummary)|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -43714,7 +43714,7 @@ Returns a list of positions for the given account. /v1/api/portfolio/accounts or
 |200|OK|response with position details|[portfolio2Positions](#schemaportfolio2positions)|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -43884,7 +43884,7 @@ Returns consolidated portfolio allocation by Financial Instrument, Asset Class, 
 |400|Bad Request|Missing, empty, non-numeric, or out-of-range parameter. The `error` field is always prefixed with `Bad Request:`.|[ErrorResponse](#schemaerrorresponse)|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -45281,7 +45281,7 @@ Returns the performance (MTM) for the given accounts, if more than one account i
 |400|Bad Request|Missing, empty, non-numeric, or out-of-range parameter. The `error` field is always prefixed with `Bad Request:`.|[ErrorResponse](#schemaerrorresponse)|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -45484,7 +45484,7 @@ Returns the performance (MTM) for the given accounts, if more than one account i
 |400|Bad Request|Missing, empty, non-numeric, or out-of-range parameter. The `error` field is always prefixed with `Bad Request:`.|[ErrorResponse](#schemaerrorresponse)|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -45631,7 +45631,7 @@ Transaction history for a given number of conids and accounts. Types of transact
 |400|Bad Request|Missing, empty, non-numeric, or out-of-range parameter. The `error` field is always prefixed with `Bad Request:`.|[ErrorResponse](#schemaerrorresponse)|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -45781,7 +45781,7 @@ Searches for contracts according to the filters specified in /iserver/scanner/pa
 |400|Bad Request|Missing, empty, non-numeric, or out-of-range parameter. The `error` field is always prefixed with `Bad Request:`.|[ErrorResponse](#schemaerrorresponse)|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -45939,7 +45939,7 @@ Returns an xml file containing all available parameters to be sent for the Iserv
 |200|OK|An array of objects detailing contract information.|[iserverScannerParams](#schemaiserverscannerparams)|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -46043,7 +46043,7 @@ After retrieving the access token and subsequent Live Session Token, customers c
 |200|OK|An array of objects detailing contract information.|[brokerageSessionStatus](#schemabrokeragesessionstatus)|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -46414,7 +46414,7 @@ Retrieve details of a single watchlist stored in the username's settings.
 |400|Bad Request|Missing, empty, non-numeric, or out-of-range parameter. The `error` field is always prefixed with `Bad Request:`.|[ErrorResponse](#schemaerrorresponse)|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -46529,7 +46529,7 @@ Create a named watchlist by submitting a set of conids.
 |400|Bad Request|Missing, empty, non-numeric, or out-of-range parameter. The `error` field is always prefixed with `Bad Request:`.|[ErrorResponse](#schemaerrorresponse)|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <h3 id="create-a-watchlist-responseschema">Response Schema</h3>
 
@@ -46628,7 +46628,7 @@ Delete a specified watchlist from the username's settings.
 |400|Bad Request|Missing, empty, non-numeric, or out-of-range parameter. The `error` field is always prefixed with `Bad Request:`.|[ErrorResponse](#schemaerrorresponse)|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -46722,7 +46722,7 @@ Returns all saved watchlists stored on IB backend for the username in use in the
 |200|OK|Historical data query successfully returned data.|[watchlistsResponse](#schemawatchlistsresponse)|
 |401|Unauthorized|Missing, invalid, or unparseable Authorization token.|[ErrorResponse](#schemaerrorresponse)|
 |500|Internal Server Error|internal server error, returned when incoming request cannot be processed. It can sometimes include subset of bad requests.  For example, wrong accountId passed and it can only be detected later in handling request. Error contains reason of the problem.<br>|[errorOnlyResponse](#schemaerroronlyresponse)|
-|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse](#schemaerrorresponse-1)|
+|503|Service Unavailable|service is unavailable. For example if request takes more than 10s due to some internal service unavailability,  request aborted and this status returned<br>|[errorResponse2](#schemaerrorresponse2)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -128827,12 +128827,12 @@ detailed contract information
 |---|---|---|---|---|
 |error|string|false|none|error reason|
 
-<h2 id="tocS_errorResponse">errorResponse</h2>
+<h2 id="tocS_errorResponse2">errorResponse2</h2>
 <!-- backwards compatibility -->
-<a id="schemaerrorresponse-1"></a>
-<a id="schema_errorResponse"></a>
-<a id="tocSerrorresponse-1"></a>
-<a id="tocserrorresponse-1"></a>
+<a id="schemaerrorresponse2"></a>
+<a id="schema_errorResponse2"></a>
+<a id="tocSerrorresponse2"></a>
+<a id="tocserrorresponse2"></a>
 
 ```json
 {
@@ -132397,7 +132397,7 @@ Envelope returned by the polling-style rebalance endpoints (`/fa/model/rebalance
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |accountId|string|false|none|Account identifier|
-|users|[[user](#schemauser-1)]|false|none|none|
+|users|[[user2](#schemauser2)]|false|none|none|
 |applicant|object|false|none|none|
 
 <h2 id="tocS_singleHistoricalBarBidAsk">singleHistoricalBarBidAsk</h2>
@@ -133506,12 +133506,12 @@ Many FYI endpoints reference a "typecode" value. The table below lists the avail
   * `TI` - Trade Idea
   * `CT` - Cash Transfer
 
-<h2 id="tocS_user">user</h2>
+<h2 id="tocS_user2">user2</h2>
 <!-- backwards compatibility -->
-<a id="schemauser-1"></a>
-<a id="schema_user"></a>
-<a id="tocSuser-1"></a>
-<a id="tocsuser-1"></a>
+<a id="schemauser2"></a>
+<a id="schema_user2"></a>
+<a id="tocSuser2"></a>
+<a id="tocsuser2"></a>
 
 ```json
 {

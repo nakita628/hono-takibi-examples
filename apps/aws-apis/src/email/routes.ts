@@ -1,202 +1,7 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const EnabledSchema = z.boolean().openapi('Enabled')
-
-const VerificationStatusSchema = z
-  .enum(['Pending', 'Success', 'Failed', 'TemporaryFailure', 'NotStarted'])
-  .openapi('VerificationStatus')
-
-const VerificationTokenSchema = z.string().openapi('VerificationToken')
-
-const VerificationTokenListSchema = z
-  .array(VerificationTokenSchema)
-  .openapi('VerificationTokenList')
-
-const IdentityDkimAttributesSchema = z
-  .object({
-    DkimEnabled: EnabledSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Is true if DKIM signing is enabled for email sent from the identity. It's false otherwise. The default value is true.",
-        }),
-    ),
-    DkimVerificationStatus: VerificationStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Describes whether Amazon SES has successfully verified the DKIM DNS records (tokens) published in the domain name's DNS. (This only applies to domain identities, not email address identities.)",
-        }),
-    ),
-    DkimTokens: VerificationTokenListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A set of character strings that represent the domain\'s identity. Using these tokens, you need to create DNS CNAME records that point to DKIM public keys that are hosted by Amazon SES. Amazon Web Services eventually detects that you\'ve updated your DNS records. This detection process might take up to 72 hours. After successful detection, Amazon SES is able to DKIM-sign email originating from that domain. (This only applies to domain identities, not email address identities.)</p> <p>For more information about creating DNS records using DKIM tokens, see the <a href="https://docs.aws.amazon.com/ses/latest/DeveloperGuide/easy-dkim.html">Amazon SES Developer Guide</a>.</p>',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: ['DkimEnabled', 'DkimVerificationStatus'],
-    description: 'Represents the DKIM attributes of a verified email address or a domain.',
-  })
-  .openapi('IdentityDkimAttributes')
-
-type DkimAttributesType = { [key: string]: z.infer<typeof IdentityDkimAttributesSchema> }
-
-const MailFromDomainNameSchema = z.string().openapi('MailFromDomainName')
-
-const CustomMailFromStatusSchema = z
-  .enum(['Pending', 'Success', 'Failed', 'TemporaryFailure'])
-  .openapi('CustomMailFromStatus')
-
-const BehaviorOnMXFailureSchema = z
-  .enum(['UseDefaultValue', 'RejectMessage'])
-  .openapi('BehaviorOnMXFailure')
-
-const IdentityMailFromDomainAttributesSchema = z
-  .object({
-    MailFromDomain: MailFromDomainNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The custom MAIL FROM domain that the identity is configured to use.',
-        }),
-    ),
-    MailFromDomainStatus: CustomMailFromStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The state that indicates whether Amazon SES has successfully read the MX record required for custom MAIL FROM domain setup. If the state is <code>Success</code>, Amazon SES uses the specified custom MAIL FROM domain when the verified identity sends an email. All other states indicate that Amazon SES takes the action described by <code>BehaviorOnMXFailure</code>.',
-        }),
-    ),
-    BehaviorOnMXFailure: BehaviorOnMXFailureSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The action that Amazon SES takes if it cannot successfully read the required MX record when you send an email. A value of <code>UseDefaultValue</code> indicates that if Amazon SES cannot read the required MX record, it uses amazonses.com (or a subdomain of that) as the MAIL FROM domain. A value of <code>RejectMessage</code> indicates that if Amazon SES cannot read the required MX record, Amazon SES returns a <code>MailFromDomainNotVerified</code> error and does not send the email.</p> <p>The custom MAIL FROM setup states that result in this behavior are <code>Pending</code>, <code>Failed</code>, and <code>TemporaryFailure</code>.</p>',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['MailFromDomain', 'MailFromDomainStatus', 'BehaviorOnMXFailure'],
-    description:
-      'Represents the custom MAIL FROM domain attributes of a verified identity (email address or domain).',
-  })
-  .openapi('IdentityMailFromDomainAttributes')
-
-type MailFromDomainAttributesType = {
-  [key: string]: z.infer<typeof IdentityMailFromDomainAttributesSchema>
-}
-
-const NotificationTopicSchema = z.string().openapi('NotificationTopic')
-
-const IdentityNotificationAttributesSchema = z
-  .object({
-    BounceTopic: NotificationTopicSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the Amazon SNS topic where Amazon SES will publish bounce notifications.',
-        }),
-    ),
-    ComplaintTopic: NotificationTopicSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the Amazon SNS topic where Amazon SES will publish complaint notifications.',
-        }),
-    ),
-    DeliveryTopic: NotificationTopicSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the Amazon SNS topic where Amazon SES will publish delivery notifications.',
-        }),
-    ),
-    ForwardingEnabled: EnabledSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Describes whether Amazon SES will forward bounce and complaint notifications as email. <code>true</code> indicates that Amazon SES will forward bounce and complaint notifications as email, while <code>false</code> indicates that bounce and complaint notifications will be published only to the specified bounce and complaint Amazon SNS topics.',
-        }),
-    ),
-    HeadersInBounceNotificationsEnabled: EnabledSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Describes whether Amazon SES includes the original email headers in Amazon SNS notifications of type <code>Bounce</code>. A value of <code>true</code> specifies that Amazon SES will include headers in bounce notifications, and a value of <code>false</code> specifies that Amazon SES will not include headers in bounce notifications.',
-        }),
-    ).exactOptional(),
-    HeadersInComplaintNotificationsEnabled: EnabledSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Describes whether Amazon SES includes the original email headers in Amazon SNS notifications of type <code>Complaint</code>. A value of <code>true</code> specifies that Amazon SES will include headers in complaint notifications, and a value of <code>false</code> specifies that Amazon SES will not include headers in complaint notifications.',
-        }),
-    ).exactOptional(),
-    HeadersInDeliveryNotificationsEnabled: EnabledSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Describes whether Amazon SES includes the original email headers in Amazon SNS notifications of type <code>Delivery</code>. A value of <code>true</code> specifies that Amazon SES will include headers in delivery notifications, and a value of <code>false</code> specifies that Amazon SES will not include headers in delivery notifications.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: ['BounceTopic', 'ComplaintTopic', 'DeliveryTopic', 'ForwardingEnabled'],
-    description:
-      'Represents the notification attributes of an identity, including whether an identity has Amazon Simple Notification Service (Amazon SNS) topics set for bounce, complaint, and/or delivery notifications, and whether feedback forwarding is enabled for bounce and complaint notifications.',
-  })
-  .openapi('IdentityNotificationAttributes')
-
-type NotificationAttributesType = {
-  [key: string]: z.infer<typeof IdentityNotificationAttributesSchema>
-}
-
-const IdentityVerificationAttributesSchema = z
-  .object({
-    VerificationStatus: VerificationStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The verification status of the identity: "Pending", "Success", "Failed", or "TemporaryFailure".',
-        }),
-    ),
-    VerificationToken: VerificationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The verification token for a domain identity. Null for email address identities.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: ['VerificationStatus'],
-    description: 'Represents the verification attributes of a single identity.',
-  })
-  .openapi('IdentityVerificationAttributes')
-
-type VerificationAttributesType = {
-  [key: string]: z.infer<typeof IdentityVerificationAttributesSchema>
-}
-
 const CloneReceiptRuleSetResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'An empty element returned on a successful request.' })
   .openapi('CloneReceiptRuleSetResponse')
 
@@ -207,7 +12,7 @@ const AlreadyExistsExceptionSchema = z.any().openapi('AlreadyExistsException')
 const LimitExceededExceptionSchema = z.any().openapi('LimitExceededException')
 
 const CreateConfigurationSetResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'An empty element returned on a successful request.' })
   .openapi('CreateConfigurationSetResponse')
 
@@ -220,11 +25,13 @@ const ConfigurationSetAlreadyExistsExceptionSchema = z
 const InvalidConfigurationSetExceptionSchema = z.any().openapi('InvalidConfigurationSetException')
 
 const CreateConfigurationSetEventDestinationResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'An empty element returned on a successful request.' })
   .openapi('CreateConfigurationSetEventDestinationResponse')
 
 const EventDestinationNameSchema = z.string().openapi('EventDestinationName')
+
+const EnabledSchema = z.boolean().openapi('Enabled')
 
 const EventTypeSchema = z
   .enum(['send', 'reject', 'bounce', 'complaint', 'delivery', 'open', 'click', 'renderingFailure'])
@@ -236,22 +43,14 @@ const AmazonResourceNameSchema = z.string().openapi('AmazonResourceName')
 
 const KinesisFirehoseDestinationSchema = z
   .object({
-    IAMRoleARN: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the IAM role under which Amazon SES publishes email sending events to the Amazon Kinesis Firehose stream.',
-        }),
-    ),
-    DeliveryStreamARN: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the Amazon Kinesis Firehose stream that email sending events should be published to.',
-        }),
-    ),
+    IAMRoleARN: AmazonResourceNameSchema.openapi({
+      description:
+        'The ARN of the IAM role under which Amazon SES publishes email sending events to the Amazon Kinesis Firehose stream.',
+    }),
+    DeliveryStreamARN: AmazonResourceNameSchema.openapi({
+      description:
+        'The ARN of the Amazon Kinesis Firehose stream that email sending events should be published to.',
+    }),
   })
   .openapi({
     required: ['IAMRoleARN', 'DeliveryStreamARN'],
@@ -270,30 +69,18 @@ const DefaultDimensionValueSchema = z.string().openapi('DefaultDimensionValue')
 
 const CloudWatchDimensionConfigurationSchema = z
   .object({
-    DimensionName: DimensionNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of an Amazon CloudWatch dimension associated with an email sending metric. The name must:</p> <ul> <li> <p>This value can only contain ASCII letters (a-z, A-Z), numbers (0-9), underscores (_), or dashes (-).</p> </li> <li> <p>Contain less than 256 characters.</p> </li> </ul>',
-        }),
-    ),
-    DimensionValueSource: DimensionValueSourceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The place where Amazon SES finds the value of a dimension to publish to Amazon CloudWatch. If you want Amazon SES to use the message tags that you specify using an <code>X-SES-MESSAGE-TAGS</code> header or a parameter to the <code>SendEmail</code>/<code>SendRawEmail</code> API, choose <code>messageTag</code>. If you want Amazon SES to use your own email headers, choose <code>emailHeader</code>.',
-        }),
-    ),
-    DefaultDimensionValue: DefaultDimensionValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The default value of the dimension that is published to Amazon CloudWatch if you do not provide the value of the dimension when you send an email. The default value must:</p> <ul> <li> <p>This value can only contain ASCII letters (a-z, A-Z), numbers (0-9), underscores (_), or dashes (-).</p> </li> <li> <p>Contain less than 256 characters.</p> </li> </ul>',
-        }),
-    ),
+    DimensionName: DimensionNameSchema.openapi({
+      description:
+        '<p>The name of an Amazon CloudWatch dimension associated with an email sending metric. The name must:</p> <ul> <li> <p>This value can only contain ASCII letters (a-z, A-Z), numbers (0-9), underscores (_), or dashes (-).</p> </li> <li> <p>Contain less than 256 characters.</p> </li> </ul>',
+    }),
+    DimensionValueSource: DimensionValueSourceSchema.openapi({
+      description:
+        'The place where Amazon SES finds the value of a dimension to publish to Amazon CloudWatch. If you want Amazon SES to use the message tags that you specify using an <code>X-SES-MESSAGE-TAGS</code> header or a parameter to the <code>SendEmail</code>/<code>SendRawEmail</code> API, choose <code>messageTag</code>. If you want Amazon SES to use your own email headers, choose <code>emailHeader</code>.',
+    }),
+    DefaultDimensionValue: DefaultDimensionValueSchema.openapi({
+      description:
+        '<p>The default value of the dimension that is published to Amazon CloudWatch if you do not provide the value of the dimension when you send an email. The default value must:</p> <ul> <li> <p>This value can only contain ASCII letters (a-z, A-Z), numbers (0-9), underscores (_), or dashes (-).</p> </li> <li> <p>Contain less than 256 characters.</p> </li> </ul>',
+    }),
   })
   .openapi({
     required: ['DimensionName', 'DimensionValueSource', 'DefaultDimensionValue'],
@@ -308,14 +95,10 @@ const CloudWatchDimensionConfigurationsSchema = z
 
 const CloudWatchDestinationSchema = z
   .object({
-    DimensionConfigurations: CloudWatchDimensionConfigurationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of dimensions upon which to categorize your emails when you publish email sending events to Amazon CloudWatch.',
-        }),
-    ),
+    DimensionConfigurations: CloudWatchDimensionConfigurationsSchema.openapi({
+      description:
+        'A list of dimensions upon which to categorize your emails when you publish email sending events to Amazon CloudWatch.',
+    }),
   })
   .openapi({
     required: ['DimensionConfigurations'],
@@ -326,14 +109,10 @@ const CloudWatchDestinationSchema = z
 
 const SNSDestinationSchema = z
   .object({
-    TopicARN: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the Amazon SNS topic that email sending events will be published to. An example of an Amazon SNS topic ARN is <code>arn:aws:sns:us-west-2:123456789012:MyTopic</code>. For more information about Amazon SNS topics, see the <a href="https://docs.aws.amazon.com/sns/latest/dg/CreateTopic.html">Amazon SNS Developer Guide</a>.',
-        }),
-    ),
+    TopicARN: AmazonResourceNameSchema.openapi({
+      description:
+        'The ARN of the Amazon SNS topic that email sending events will be published to. An example of an Amazon SNS topic ARN is <code>arn:aws:sns:us-west-2:123456789012:MyTopic</code>. For more information about Amazon SNS topics, see the <a href="https://docs.aws.amazon.com/sns/latest/dg/CreateTopic.html">Amazon SNS Developer Guide</a>.',
+    }),
   })
   .openapi({
     required: ['TopicARN'],
@@ -361,7 +140,7 @@ const InvalidFirehoseDestinationExceptionSchema = z
 const InvalidSNSDestinationExceptionSchema = z.any().openapi('InvalidSNSDestinationException')
 
 const CreateConfigurationSetTrackingOptionsResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'An empty element returned on a successful request.' })
   .openapi('CreateConfigurationSetTrackingOptionsResponse')
 
@@ -386,7 +165,7 @@ const CustomVerificationEmailInvalidContentExceptionSchema = z
   .openapi('CustomVerificationEmailInvalidContentException')
 
 const CreateReceiptFilterResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'An empty element returned on a successful request.' })
   .openapi('CreateReceiptFilterResponse')
 
@@ -398,22 +177,14 @@ const CidrSchema = z.string().openapi('Cidr')
 
 const ReceiptIpFilterSchema = z
   .object({
-    Policy: ReceiptFilterPolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether to block or allow incoming mail from the specified IP addresses.',
-        }),
-    ),
-    Cidr: CidrSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A single IP address or a range of IP addresses that you want to block or allow, specified in Classless Inter-Domain Routing (CIDR) notation. An example of a single email address is 10.0.0.1. An example of a range of IP addresses is 10.0.0.1/24. For more information about CIDR notation, see <a href="https://tools.ietf.org/html/rfc2317">RFC 2317</a>.',
-        }),
-    ),
+    Policy: ReceiptFilterPolicySchema.openapi({
+      description:
+        'Indicates whether to block or allow incoming mail from the specified IP addresses.',
+    }),
+    Cidr: CidrSchema.openapi({
+      description:
+        'A single IP address or a range of IP addresses that you want to block or allow, specified in Classless Inter-Domain Routing (CIDR) notation. An example of a single email address is 10.0.0.1. An example of a range of IP addresses is 10.0.0.1/24. For more information about CIDR notation, see <a href="https://tools.ietf.org/html/rfc2317">RFC 2317</a>.',
+    }),
   })
   .openapi({
     required: ['Policy', 'Cidr'],
@@ -423,7 +194,7 @@ const ReceiptIpFilterSchema = z
   .openapi('ReceiptIpFilter')
 
 const CreateReceiptRuleResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'An empty element returned on a successful request.' })
   .openapi('CreateReceiptRuleResponse')
 
@@ -441,37 +212,21 @@ const S3KeyPrefixSchema = z.string().openapi('S3KeyPrefix')
 
 const S3ActionSchema = z
   .object({
-    TopicArn: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the Amazon SNS topic to notify when the message is saved to the Amazon S3 bucket. An example of an Amazon SNS topic ARN is <code>arn:aws:sns:us-west-2:123456789012:MyTopic</code>. For more information about Amazon SNS topics, see the <a href="https://docs.aws.amazon.com/sns/latest/dg/CreateTopic.html">Amazon SNS Developer Guide</a>.',
-        }),
-    ).exactOptional(),
-    BucketName: S3BucketNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the Amazon S3 bucket that incoming email will be saved to.',
-        }),
-    ),
-    ObjectKeyPrefix: S3KeyPrefixSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The key prefix of the Amazon S3 bucket. The key prefix is similar to a directory name that enables you to store similar data under the same directory in a bucket.',
-        }),
-    ).exactOptional(),
-    KmsKeyArn: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The customer master key that Amazon SES should use to encrypt your emails before saving them to the Amazon S3 bucket. You can use the default master key or a custom master key you created in AWS KMS as follows:</p> <ul> <li> <p>To use the default master key, provide an ARN in the form of <code>arn:aws:kms:REGION:ACCOUNT-ID-WITHOUT-HYPHENS:alias/aws/ses</code>. For example, if your AWS account ID is 123456789012 and you want to use the default master key in the US West (Oregon) region, the ARN of the default master key would be <code>arn:aws:kms:us-west-2:123456789012:alias/aws/ses</code>. If you use the default master key, you don\'t need to perform any extra steps to give Amazon SES permission to use the key.</p> </li> <li> <p>To use a custom master key you created in AWS KMS, provide the ARN of the master key and ensure that you add a statement to your key\'s policy to give Amazon SES permission to use it. For more information about giving permissions, see the <a href="https://docs.aws.amazon.com/ses/latest/DeveloperGuide/receiving-email-permissions.html">Amazon SES Developer Guide</a>.</p> </li> </ul> <p>For more information about key policies, see the <a href="https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html">AWS KMS Developer Guide</a>. If you do not specify a master key, Amazon SES will not encrypt your emails.</p> <important> <p>Your mail is encrypted by Amazon SES using the Amazon S3 encryption client before the mail is submitted to Amazon S3 for storage. It is not encrypted using Amazon S3 server-side encryption. This means that you must use the Amazon S3 encryption client to decrypt the email after retrieving it from Amazon S3, as the service has no access to use your AWS KMS keys for decryption. This encryption client is currently available with the <a href="http://aws.amazon.com/sdk-for-java/">AWS SDK for Java</a> and <a href="http://aws.amazon.com/sdk-for-ruby/">AWS SDK for Ruby</a> only. For more information about client-side encryption using AWS KMS master keys, see the <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingClientSideEncryption.html">Amazon S3 Developer Guide</a>.</p> </important>',
-        }),
-    ).exactOptional(),
+    TopicArn: AmazonResourceNameSchema.exactOptional().openapi({
+      description:
+        'The ARN of the Amazon SNS topic to notify when the message is saved to the Amazon S3 bucket. An example of an Amazon SNS topic ARN is <code>arn:aws:sns:us-west-2:123456789012:MyTopic</code>. For more information about Amazon SNS topics, see the <a href="https://docs.aws.amazon.com/sns/latest/dg/CreateTopic.html">Amazon SNS Developer Guide</a>.',
+    }),
+    BucketName: S3BucketNameSchema.openapi({
+      description: 'The name of the Amazon S3 bucket that incoming email will be saved to.',
+    }),
+    ObjectKeyPrefix: S3KeyPrefixSchema.exactOptional().openapi({
+      description:
+        'The key prefix of the Amazon S3 bucket. The key prefix is similar to a directory name that enables you to store similar data under the same directory in a bucket.',
+    }),
+    KmsKeyArn: AmazonResourceNameSchema.exactOptional().openapi({
+      description:
+        '<p>The customer master key that Amazon SES should use to encrypt your emails before saving them to the Amazon S3 bucket. You can use the default master key or a custom master key you created in AWS KMS as follows:</p> <ul> <li> <p>To use the default master key, provide an ARN in the form of <code>arn:aws:kms:REGION:ACCOUNT-ID-WITHOUT-HYPHENS:alias/aws/ses</code>. For example, if your AWS account ID is 123456789012 and you want to use the default master key in the US West (Oregon) region, the ARN of the default master key would be <code>arn:aws:kms:us-west-2:123456789012:alias/aws/ses</code>. If you use the default master key, you don\'t need to perform any extra steps to give Amazon SES permission to use the key.</p> </li> <li> <p>To use a custom master key you created in AWS KMS, provide the ARN of the master key and ensure that you add a statement to your key\'s policy to give Amazon SES permission to use it. For more information about giving permissions, see the <a href="https://docs.aws.amazon.com/ses/latest/DeveloperGuide/receiving-email-permissions.html">Amazon SES Developer Guide</a>.</p> </li> </ul> <p>For more information about key policies, see the <a href="https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html">AWS KMS Developer Guide</a>. If you do not specify a master key, Amazon SES will not encrypt your emails.</p> <important> <p>Your mail is encrypted by Amazon SES using the Amazon S3 encryption client before the mail is submitted to Amazon S3 for storage. It is not encrypted using Amazon S3 server-side encryption. This means that you must use the Amazon S3 encryption client to decrypt the email after retrieving it from Amazon S3, as the service has no access to use your AWS KMS keys for decryption. This encryption client is currently available with the <a href="http://aws.amazon.com/sdk-for-java/">AWS SDK for Java</a> and <a href="http://aws.amazon.com/sdk-for-ruby/">AWS SDK for Ruby</a> only. For more information about client-side encryption using AWS KMS master keys, see the <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingClientSideEncryption.html">Amazon S3 Developer Guide</a>.</p> </important>',
+    }),
   })
   .openapi({
     required: ['BucketName'],
@@ -490,41 +245,25 @@ const AddressSchema = z.string().openapi('Address')
 
 const BounceActionSchema = z
   .object({
-    TopicArn: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the Amazon SNS topic to notify when the bounce action is taken. An example of an Amazon SNS topic ARN is <code>arn:aws:sns:us-west-2:123456789012:MyTopic</code>. For more information about Amazon SNS topics, see the <a href="https://docs.aws.amazon.com/sns/latest/dg/CreateTopic.html">Amazon SNS Developer Guide</a>.',
-        }),
-    ).exactOptional(),
-    SmtpReplyCode: BounceSmtpReplyCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The SMTP reply code, as defined by <a href="https://tools.ietf.org/html/rfc5321">RFC 5321</a>.',
-        }),
-    ),
-    StatusCode: BounceStatusCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The SMTP enhanced status code, as defined by <a href="https://tools.ietf.org/html/rfc3463">RFC 3463</a>.',
-        }),
-    ).exactOptional(),
-    Message: BounceMessageSchema.and(
-      z.any().openapi({ description: 'Human-readable text to include in the bounce message.' }),
-    ),
-    Sender: AddressSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The email address of the sender of the bounced email. This is the address from which the bounce message will be sent.',
-        }),
-    ),
+    TopicArn: AmazonResourceNameSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the Amazon SNS topic to notify when the bounce action is taken. An example of an Amazon SNS topic ARN is <code>arn:aws:sns:us-west-2:123456789012:MyTopic</code>. For more information about Amazon SNS topics, see the <a href="https://docs.aws.amazon.com/sns/latest/dg/CreateTopic.html">Amazon SNS Developer Guide</a>.',
+    }),
+    SmtpReplyCode: BounceSmtpReplyCodeSchema.openapi({
+      description:
+        'The SMTP reply code, as defined by <a href="https://tools.ietf.org/html/rfc5321">RFC 5321</a>.',
+    }),
+    StatusCode: BounceStatusCodeSchema.exactOptional().openapi({
+      description:
+        'The SMTP enhanced status code, as defined by <a href="https://tools.ietf.org/html/rfc3463">RFC 3463</a>.',
+    }),
+    Message: BounceMessageSchema.openapi({
+      description: 'Human-readable text to include in the bounce message.',
+    }),
+    Sender: AddressSchema.openapi({
+      description:
+        'The email address of the sender of the bounced email. This is the address from which the bounce message will be sent.',
+    }),
   })
   .openapi({
     required: ['SmtpReplyCode', 'Message', 'Sender'],
@@ -535,22 +274,14 @@ const BounceActionSchema = z
 
 const WorkmailActionSchema = z
   .object({
-    TopicArn: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the Amazon SNS topic to notify when the WorkMail action is called. An example of an Amazon SNS topic ARN is <code>arn:aws:sns:us-west-2:123456789012:MyTopic</code>. For more information about Amazon SNS topics, see the <a href="https://docs.aws.amazon.com/sns/latest/dg/CreateTopic.html">Amazon SNS Developer Guide</a>.',
-        }),
-    ).exactOptional(),
-    OrganizationArn: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the Amazon WorkMail organization. An example of an Amazon WorkMail organization ARN is <code>arn:aws:workmail:us-west-2:123456789012:organization/m-68755160c4cb4e29a2b2f8fb58f359d7</code>. For information about Amazon WorkMail organizations, see the <a href="https://docs.aws.amazon.com/workmail/latest/adminguide/organizations_overview.html">Amazon WorkMail Administrator Guide</a>.',
-        }),
-    ),
+    TopicArn: AmazonResourceNameSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the Amazon SNS topic to notify when the WorkMail action is called. An example of an Amazon SNS topic ARN is <code>arn:aws:sns:us-west-2:123456789012:MyTopic</code>. For more information about Amazon SNS topics, see the <a href="https://docs.aws.amazon.com/sns/latest/dg/CreateTopic.html">Amazon SNS Developer Guide</a>.',
+    }),
+    OrganizationArn: AmazonResourceNameSchema.openapi({
+      description:
+        'The ARN of the Amazon WorkMail organization. An example of an Amazon WorkMail organization ARN is <code>arn:aws:workmail:us-west-2:123456789012:organization/m-68755160c4cb4e29a2b2f8fb58f359d7</code>. For information about Amazon WorkMail organizations, see the <a href="https://docs.aws.amazon.com/workmail/latest/adminguide/organizations_overview.html">Amazon WorkMail Administrator Guide</a>.',
+    }),
   })
   .openapi({
     required: ['OrganizationArn'],
@@ -563,30 +294,18 @@ const InvocationTypeSchema = z.enum(['Event', 'RequestResponse']).openapi('Invoc
 
 const LambdaActionSchema = z
   .object({
-    TopicArn: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the Amazon SNS topic to notify when the Lambda action is taken. An example of an Amazon SNS topic ARN is <code>arn:aws:sns:us-west-2:123456789012:MyTopic</code>. For more information about Amazon SNS topics, see the <a href="https://docs.aws.amazon.com/sns/latest/dg/CreateTopic.html">Amazon SNS Developer Guide</a>.',
-        }),
-    ).exactOptional(),
-    FunctionArn: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the AWS Lambda function. An example of an AWS Lambda function ARN is <code>arn:aws:lambda:us-west-2:account-id:function:MyFunction</code>. For more information about AWS Lambda, see the <a href="https://docs.aws.amazon.com/lambda/latest/dg/welcome.html">AWS Lambda Developer Guide</a>.',
-        }),
-    ),
-    InvocationType: InvocationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The invocation type of the AWS Lambda function. An invocation type of <code>RequestResponse</code> means that the execution of the function will immediately result in a response, and a value of <code>Event</code> means that the function will be invoked asynchronously. The default value is <code>Event</code>. For information about AWS Lambda invocation types, see the <a href="https://docs.aws.amazon.com/lambda/latest/dg/API_Invoke.html">AWS Lambda Developer Guide</a>.</p> <important> <p>There is a 30-second timeout on <code>RequestResponse</code> invocations. You should use <code>Event</code> invocation in most cases. Use <code>RequestResponse</code> only when you want to make a mail flow decision, such as whether to stop the receipt rule or the receipt rule set.</p> </important>',
-        }),
-    ).exactOptional(),
+    TopicArn: AmazonResourceNameSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the Amazon SNS topic to notify when the Lambda action is taken. An example of an Amazon SNS topic ARN is <code>arn:aws:sns:us-west-2:123456789012:MyTopic</code>. For more information about Amazon SNS topics, see the <a href="https://docs.aws.amazon.com/sns/latest/dg/CreateTopic.html">Amazon SNS Developer Guide</a>.',
+    }),
+    FunctionArn: AmazonResourceNameSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the AWS Lambda function. An example of an AWS Lambda function ARN is <code>arn:aws:lambda:us-west-2:account-id:function:MyFunction</code>. For more information about AWS Lambda, see the <a href="https://docs.aws.amazon.com/lambda/latest/dg/welcome.html">AWS Lambda Developer Guide</a>.',
+    }),
+    InvocationType: InvocationTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The invocation type of the AWS Lambda function. An invocation type of <code>RequestResponse</code> means that the execution of the function will immediately result in a response, and a value of <code>Event</code> means that the function will be invoked asynchronously. The default value is <code>Event</code>. For information about AWS Lambda invocation types, see the <a href="https://docs.aws.amazon.com/lambda/latest/dg/API_Invoke.html">AWS Lambda Developer Guide</a>.</p> <important> <p>There is a 30-second timeout on <code>RequestResponse</code> invocations. You should use <code>Event</code> invocation in most cases. Use <code>RequestResponse</code> only when you want to make a mail flow decision, such as whether to stop the receipt rule or the receipt rule set.</p> </important>',
+    }),
   })
   .openapi({
     required: ['FunctionArn'],
@@ -599,22 +318,14 @@ const StopScopeSchema = z.literal('RuleSet').openapi('StopScope')
 
 const StopActionSchema = z
   .object({
-    Scope: StopScopeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The scope of the StopAction. The only acceptable value is <code>RuleSet</code>.',
-        }),
-    ),
-    TopicArn: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the Amazon SNS topic to notify when the stop action is taken. An example of an Amazon SNS topic ARN is <code>arn:aws:sns:us-west-2:123456789012:MyTopic</code>. For more information about Amazon SNS topics, see the <a href="https://docs.aws.amazon.com/sns/latest/dg/CreateTopic.html">Amazon SNS Developer Guide</a>.',
-        }),
-    ).exactOptional(),
+    Scope: StopScopeSchema.openapi({
+      description:
+        'The scope of the StopAction. The only acceptable value is <code>RuleSet</code>.',
+    }),
+    TopicArn: AmazonResourceNameSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the Amazon SNS topic to notify when the stop action is taken. An example of an Amazon SNS topic ARN is <code>arn:aws:sns:us-west-2:123456789012:MyTopic</code>. For more information about Amazon SNS topics, see the <a href="https://docs.aws.amazon.com/sns/latest/dg/CreateTopic.html">Amazon SNS Developer Guide</a>.',
+    }),
   })
   .openapi({
     required: ['Scope'],
@@ -629,22 +340,14 @@ const HeaderValueSchema = z.string().openapi('HeaderValue')
 
 const AddHeaderActionSchema = z
   .object({
-    HeaderName: HeaderNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the header to add. Must be between 1 and 50 characters, inclusive, and consist of alphanumeric (a-z, A-Z, 0-9) characters and dashes only.',
-        }),
-    ),
-    HeaderValue: HeaderValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Must be less than 2048 characters, and must not contain newline characters ("\\r" or "\\n").',
-        }),
-    ),
+    HeaderName: HeaderNameSchema.openapi({
+      description:
+        'The name of the header to add. Must be between 1 and 50 characters, inclusive, and consist of alphanumeric (a-z, A-Z, 0-9) characters and dashes only.',
+    }),
+    HeaderValue: HeaderValueSchema.openapi({
+      description:
+        'Must be less than 2048 characters, and must not contain newline characters ("\\r" or "\\n").',
+    }),
   })
   .openapi({
     required: ['HeaderName', 'HeaderValue'],
@@ -657,22 +360,14 @@ const SNSActionEncodingSchema = z.enum(['UTF-8', 'Base64']).openapi('SNSActionEn
 
 const SNSActionSchema = z
   .object({
-    TopicArn: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the Amazon SNS topic to notify. An example of an Amazon SNS topic ARN is <code>arn:aws:sns:us-west-2:123456789012:MyTopic</code>. For more information about Amazon SNS topics, see the <a href="https://docs.aws.amazon.com/sns/latest/dg/CreateTopic.html">Amazon SNS Developer Guide</a>.',
-        }),
-    ),
-    Encoding: SNSActionEncodingSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The encoding to use for the email within the Amazon SNS notification. UTF-8 is easier to use, but may not preserve all special characters when a message was encoded with a different encoding format. Base64 preserves all special characters. The default value is UTF-8.',
-        }),
-    ).exactOptional(),
+    TopicArn: AmazonResourceNameSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the Amazon SNS topic to notify. An example of an Amazon SNS topic ARN is <code>arn:aws:sns:us-west-2:123456789012:MyTopic</code>. For more information about Amazon SNS topics, see the <a href="https://docs.aws.amazon.com/sns/latest/dg/CreateTopic.html">Amazon SNS Developer Guide</a>.',
+    }),
+    Encoding: SNSActionEncodingSchema.exactOptional().openapi({
+      description:
+        'The encoding to use for the email within the Amazon SNS notification. UTF-8 is easier to use, but may not preserve all special characters when a message was encoded with a different encoding format. Base64 preserves all special characters. The default value is UTF-8.',
+    }),
   })
   .openapi({
     required: ['TopicArn'],
@@ -683,56 +378,32 @@ const SNSActionSchema = z
 
 const ReceiptActionSchema = z
   .object({
-    S3Action: S3ActionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Saves the received message to an Amazon Simple Storage Service (Amazon S3) bucket and, optionally, publishes a notification to Amazon SNS.',
-        }),
-    ).exactOptional(),
-    BounceAction: BounceActionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Rejects the received email by returning a bounce response to the sender and, optionally, publishes a notification to Amazon Simple Notification Service (Amazon SNS).',
-        }),
-    ).exactOptional(),
-    WorkmailAction: WorkmailActionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Calls Amazon WorkMail and, optionally, publishes a notification to Amazon Amazon SNS.',
-        }),
-    ).exactOptional(),
-    LambdaAction: LambdaActionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Calls an AWS Lambda function, and optionally, publishes a notification to Amazon SNS.',
-        }),
-    ).exactOptional(),
-    StopAction: StopActionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Terminates the evaluation of the receipt rule set and optionally publishes a notification to Amazon SNS.',
-        }),
-    ).exactOptional(),
-    AddHeaderAction: AddHeaderActionSchema.and(
-      z.any().openapi({ description: 'Adds a header to the received email.' }),
-    ).exactOptional(),
-    SNSAction: SNSActionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Publishes the email content within a notification to Amazon SNS.',
-        }),
-    ).exactOptional(),
+    S3Action: S3ActionSchema.exactOptional().openapi({
+      description:
+        'Saves the received message to an Amazon Simple Storage Service (Amazon S3) bucket and, optionally, publishes a notification to Amazon SNS.',
+    }),
+    BounceAction: BounceActionSchema.exactOptional().openapi({
+      description:
+        'Rejects the received email by returning a bounce response to the sender and, optionally, publishes a notification to Amazon Simple Notification Service (Amazon SNS).',
+    }),
+    WorkmailAction: WorkmailActionSchema.exactOptional().openapi({
+      description:
+        'Calls Amazon WorkMail and, optionally, publishes a notification to Amazon Amazon SNS.',
+    }),
+    LambdaAction: LambdaActionSchema.exactOptional().openapi({
+      description:
+        'Calls an AWS Lambda function, and optionally, publishes a notification to Amazon SNS.',
+    }),
+    StopAction: StopActionSchema.exactOptional().openapi({
+      description:
+        'Terminates the evaluation of the receipt rule set and optionally publishes a notification to Amazon SNS.',
+    }),
+    AddHeaderAction: AddHeaderActionSchema.exactOptional().openapi({
+      description: 'Adds a header to the received email.',
+    }),
+    SNSAction: SNSActionSchema.exactOptional().openapi({
+      description: 'Publishes the email content within a notification to Amazon SNS.',
+    }),
   })
   .openapi({
     description:
@@ -752,11 +423,11 @@ const InvalidLambdaFunctionExceptionSchema = z.any().openapi('InvalidLambdaFunct
 const RuleDoesNotExistExceptionSchema = z.any().openapi('RuleDoesNotExistException')
 
 const CreateReceiptRuleSetResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'An empty element returned on a successful request.' })
   .openapi('CreateReceiptRuleSetResponse')
 
-const CreateTemplateResponseSchema = z.object({}).openapi('CreateTemplateResponse')
+const CreateTemplateResponseSchema = z.looseObject({}).openapi('CreateTemplateResponse')
 
 const TemplateNameSchema = z.string().openapi('TemplateName')
 
@@ -769,12 +440,12 @@ const HtmlPartSchema = z.string().openapi('HtmlPart')
 const InvalidTemplateExceptionSchema = z.any().openapi('InvalidTemplateException')
 
 const DeleteConfigurationSetResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'An empty element returned on a successful request.' })
   .openapi('DeleteConfigurationSetResponse')
 
 const DeleteConfigurationSetEventDestinationResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'An empty element returned on a successful request.' })
   .openapi('DeleteConfigurationSetEventDestinationResponse')
 
@@ -783,7 +454,7 @@ const EventDestinationDoesNotExistExceptionSchema = z
   .openapi('EventDestinationDoesNotExistException')
 
 const DeleteConfigurationSetTrackingOptionsResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'An empty element returned on a successful request.' })
   .openapi('DeleteConfigurationSetTrackingOptionsResponse')
 
@@ -792,33 +463,33 @@ const TrackingOptionsDoesNotExistExceptionSchema = z
   .openapi('TrackingOptionsDoesNotExistException')
 
 const DeleteIdentityResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'An empty element returned on a successful request.' })
   .openapi('DeleteIdentityResponse')
 
 const DeleteIdentityPolicyResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'An empty element returned on a successful request.' })
   .openapi('DeleteIdentityPolicyResponse')
 
 const DeleteReceiptFilterResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'An empty element returned on a successful request.' })
   .openapi('DeleteReceiptFilterResponse')
 
 const DeleteReceiptRuleResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'An empty element returned on a successful request.' })
   .openapi('DeleteReceiptRuleResponse')
 
 const DeleteReceiptRuleSetResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'An empty element returned on a successful request.' })
   .openapi('DeleteReceiptRuleSetResponse')
 
 const CannotDeleteExceptionSchema = z.any().openapi('CannotDeleteException')
 
-const DeleteTemplateResponseSchema = z.object({}).openapi('DeleteTemplateResponse')
+const DeleteTemplateResponseSchema = z.looseObject({}).openapi('DeleteTemplateResponse')
 
 const ReceiptRuleSetNameSchema = z.string().openapi('ReceiptRuleSetName')
 
@@ -826,17 +497,13 @@ const TimestampSchema = z.iso.datetime({ offset: true }).openapi('Timestamp')
 
 const ReceiptRuleSetMetadataSchema = z
   .object({
-    Name: ReceiptRuleSetNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the receipt rule set. The name must:</p> <ul> <li> <p>This value can only contain ASCII letters (a-z, A-Z), numbers (0-9), underscores (_), or dashes (-).</p> </li> <li> <p>Start and end with a letter or number.</p> </li> <li> <p>Contain less than 64 characters.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    CreatedTimestamp: TimestampSchema.and(
-      z.any().openapi({ description: 'The date and time the receipt rule set was created.' }),
-    ).exactOptional(),
+    Name: ReceiptRuleSetNameSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the receipt rule set. The name must:</p> <ul> <li> <p>This value can only contain ASCII letters (a-z, A-Z), numbers (0-9), underscores (_), or dashes (-).</p> </li> <li> <p>Start and end with a letter or number.</p> </li> <li> <p>Contain less than 64 characters.</p> </li> </ul>',
+    }),
+    CreatedTimestamp: TimestampSchema.exactOptional().openapi({
+      description: 'The date and time the receipt rule set was created.',
+    }),
   })
   .openapi({
     description:
@@ -847,54 +514,30 @@ const ReceiptRuleSetMetadataSchema = z
 
 const ReceiptRuleSchema = z
   .object({
-    Name: ReceiptRuleNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the receipt rule. The name must:</p> <ul> <li> <p>This value can only contain ASCII letters (a-z, A-Z), numbers (0-9), underscores (_), or dashes (-).</p> </li> <li> <p>Start and end with a letter or number.</p> </li> <li> <p>Contain less than 64 characters.</p> </li> </ul>',
-        }),
-    ),
-    Enabled: EnabledSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If <code>true</code>, the receipt rule is active. The default value is <code>false</code>.',
-        }),
-    ).exactOptional(),
-    TlsPolicy: TlsPolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether Amazon SES should require that incoming email is delivered over a connection encrypted with Transport Layer Security (TLS). If this parameter is set to <code>Require</code>, Amazon SES will bounce emails that are not received over TLS. The default is <code>Optional</code>.',
-        }),
-    ).exactOptional(),
-    Recipients: RecipientsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The recipient domains and email addresses that the receipt rule applies to. If this field is not specified, this rule will match all recipients under all verified domains.',
-        }),
-    ).exactOptional(),
-    Actions: ReceiptActionsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An ordered list of actions to perform on messages that match at least one of the recipient email addresses or domains specified in the receipt rule.',
-        }),
-    ).exactOptional(),
-    ScanEnabled: EnabledSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If <code>true</code>, then messages that this receipt rule applies to are scanned for spam and viruses. The default value is <code>false</code>.',
-        }),
-    ).exactOptional(),
+    Name: ReceiptRuleNameSchema.openapi({
+      description:
+        '<p>The name of the receipt rule. The name must:</p> <ul> <li> <p>This value can only contain ASCII letters (a-z, A-Z), numbers (0-9), underscores (_), or dashes (-).</p> </li> <li> <p>Start and end with a letter or number.</p> </li> <li> <p>Contain less than 64 characters.</p> </li> </ul>',
+    }),
+    Enabled: EnabledSchema.exactOptional().openapi({
+      description:
+        'If <code>true</code>, the receipt rule is active. The default value is <code>false</code>.',
+    }),
+    TlsPolicy: TlsPolicySchema.exactOptional().openapi({
+      description:
+        'Specifies whether Amazon SES should require that incoming email is delivered over a connection encrypted with Transport Layer Security (TLS). If this parameter is set to <code>Require</code>, Amazon SES will bounce emails that are not received over TLS. The default is <code>Optional</code>.',
+    }),
+    Recipients: RecipientsListSchema.exactOptional().openapi({
+      description:
+        'The recipient domains and email addresses that the receipt rule applies to. If this field is not specified, this rule will match all recipients under all verified domains.',
+    }),
+    Actions: ReceiptActionsListSchema.exactOptional().openapi({
+      description:
+        'An ordered list of actions to perform on messages that match at least one of the recipient email addresses or domains specified in the receipt rule.',
+    }),
+    ScanEnabled: EnabledSchema.exactOptional().openapi({
+      description:
+        'If <code>true</code>, then messages that this receipt rule applies to are scanned for spam and viruses. The default value is <code>false</code>.',
+    }),
   })
   .openapi({
     required: ['Name'],
@@ -907,17 +550,13 @@ const ReceiptRulesListSchema = z.array(ReceiptRuleSchema).openapi('ReceiptRulesL
 
 const DescribeActiveReceiptRuleSetResponseSchema = z
   .object({
-    Metadata: ReceiptRuleSetMetadataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The metadata for the currently active receipt rule set. The metadata consists of the rule set name and a timestamp of when the rule set was created.',
-        }),
-    ).exactOptional(),
-    Rules: ReceiptRulesListSchema.and(
-      z.any().openapi({ description: 'The receipt rules that belong to the active rule set.' }),
-    ).exactOptional(),
+    Metadata: ReceiptRuleSetMetadataSchema.exactOptional().openapi({
+      description:
+        'The metadata for the currently active receipt rule set. The metadata consists of the rule set name and a timestamp of when the rule set was created.',
+    }),
+    Rules: ReceiptRulesListSchema.exactOptional().openapi({
+      description: 'The receipt rules that belong to the active rule set.',
+    }),
   })
   .openapi({
     example: {
@@ -940,14 +579,10 @@ const DescribeActiveReceiptRuleSetResponseSchema = z
 
 const ConfigurationSetSchema = z
   .object({
-    Name: ConfigurationSetNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the configuration set. The name must meet the following requirements:</p> <ul> <li> <p>Contain only letters (a-z, A-Z), numbers (0-9), underscores (_), or dashes (-).</p> </li> <li> <p>Contain 64 characters or fewer.</p> </li> </ul>',
-        }),
-    ),
+    Name: ConfigurationSetNameSchema.openapi({
+      description:
+        '<p>The name of the configuration set. The name must meet the following requirements:</p> <ul> <li> <p>Contain only letters (a-z, A-Z), numbers (0-9), underscores (_), or dashes (-).</p> </li> <li> <p>Contain 64 characters or fewer.</p> </li> </ul>',
+    }),
   })
   .openapi({
     required: ['Name'],
@@ -958,53 +593,29 @@ const ConfigurationSetSchema = z
 
 const EventDestinationSchema = z
   .object({
-    Name: EventDestinationNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the event destination. The name must:</p> <ul> <li> <p>This value can only contain ASCII letters (a-z, A-Z), numbers (0-9), underscores (_), or dashes (-).</p> </li> <li> <p>Contain less than 64 characters.</p> </li> </ul>',
-        }),
-    ),
-    Enabled: EnabledSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Sets whether Amazon SES publishes events to this destination when you send an email with the associated configuration set. Set to <code>true</code> to enable publishing to this destination; set to <code>false</code> to prevent publishing to this destination. The default value is <code>false</code>.',
-        }),
-    ).exactOptional(),
-    MatchingEventTypes: EventTypesSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The type of email sending events to publish to the event destination.',
-        }),
-    ),
-    KinesisFirehoseDestination: KinesisFirehoseDestinationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that contains the delivery stream ARN and the IAM role ARN associated with an Amazon Kinesis Firehose event destination.',
-        }),
-    ).exactOptional(),
-    CloudWatchDestination: CloudWatchDestinationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that contains the names, default values, and sources of the dimensions associated with an Amazon CloudWatch event destination.',
-        }),
-    ).exactOptional(),
-    SNSDestination: SNSDestinationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that contains the topic ARN associated with an Amazon Simple Notification Service (Amazon SNS) event destination.',
-        }),
-    ).exactOptional(),
+    Name: EventDestinationNameSchema.openapi({
+      description:
+        '<p>The name of the event destination. The name must:</p> <ul> <li> <p>This value can only contain ASCII letters (a-z, A-Z), numbers (0-9), underscores (_), or dashes (-).</p> </li> <li> <p>Contain less than 64 characters.</p> </li> </ul>',
+    }),
+    Enabled: EnabledSchema.exactOptional().openapi({
+      description:
+        'Sets whether Amazon SES publishes events to this destination when you send an email with the associated configuration set. Set to <code>true</code> to enable publishing to this destination; set to <code>false</code> to prevent publishing to this destination. The default value is <code>false</code>.',
+    }),
+    MatchingEventTypes: EventTypesSchema.openapi({
+      description: 'The type of email sending events to publish to the event destination.',
+    }),
+    KinesisFirehoseDestination: KinesisFirehoseDestinationSchema.exactOptional().openapi({
+      description:
+        'An object that contains the delivery stream ARN and the IAM role ARN associated with an Amazon Kinesis Firehose event destination.',
+    }),
+    CloudWatchDestination: CloudWatchDestinationSchema.exactOptional().openapi({
+      description:
+        'An object that contains the names, default values, and sources of the dimensions associated with an Amazon CloudWatch event destination.',
+    }),
+    SNSDestination: SNSDestinationSchema.exactOptional().openapi({
+      description:
+        'An object that contains the topic ARN associated with an Amazon Simple Notification Service (Amazon SNS) event destination.',
+    }),
   })
   .openapi({
     required: ['Name', 'MatchingEventTypes'],
@@ -1017,14 +628,10 @@ const EventDestinationsSchema = z.array(EventDestinationSchema).openapi('EventDe
 
 const TrackingOptionsSchema = z
   .object({
-    CustomRedirectDomain: CustomRedirectDomainSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The custom subdomain that will be used to redirect email recipients to the Amazon SES event tracking domain.',
-        }),
-    ).exactOptional(),
+    CustomRedirectDomain: CustomRedirectDomainSchema.exactOptional().openapi({
+      description:
+        'The custom subdomain that will be used to redirect email recipients to the Amazon SES event tracking domain.',
+    }),
   })
   .openapi({
     description:
@@ -1035,14 +642,10 @@ const TrackingOptionsSchema = z
 
 const DeliveryOptionsSchema = z
   .object({
-    TlsPolicy: TlsPolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Specifies whether messages that use the configuration set are required to use Transport Layer Security (TLS). If the value is <code>Require</code>, messages are only delivered if a TLS connection can be established. If the value is <code>Optional</code>, messages can be delivered in plain text if a TLS connection can't be established.",
-        }),
-    ).exactOptional(),
+    TlsPolicy: TlsPolicySchema.exactOptional().openapi({
+      description:
+        "Specifies whether messages that use the configuration set are required to use Transport Layer Security (TLS). If the value is <code>Require</code>, messages are only delivered if a TLS connection can be established. If the value is <code>Optional</code>, messages can be delivered in plain text if a TLS connection can't be established.",
+    }),
   })
   .openapi({
     description:
@@ -1055,30 +658,18 @@ const LastFreshStartSchema = z.iso.datetime({ offset: true }).openapi('LastFresh
 
 const ReputationOptionsSchema = z
   .object({
-    SendingEnabled: EnabledSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Describes whether email sending is enabled or disabled for the configuration set. If the value is <code>true</code>, then Amazon SES will send emails that use the configuration set. If the value is <code>false</code>, Amazon SES will not send emails that use the configuration set. The default value is <code>true</code>. You can change this setting using <a>UpdateConfigurationSetSendingEnabled</a>.',
-        }),
-    ).exactOptional(),
-    ReputationMetricsEnabled: EnabledSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Describes whether or not Amazon SES publishes reputation metrics for the configuration set, such as bounce and complaint rates, to Amazon CloudWatch.</p> <p>If the value is <code>true</code>, reputation metrics are published. If the value is <code>false</code>, reputation metrics are not published. The default value is <code>false</code>.</p>',
-        }),
-    ).exactOptional(),
-    LastFreshStart: LastFreshStartSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The date and time at which the reputation metrics for the configuration set were last reset. Resetting these metrics is known as a <i>fresh start</i>.</p> <p>When you disable email sending for a configuration set using <a>UpdateConfigurationSetSendingEnabled</a> and later re-enable it, the reputation metrics for the configuration set (but not for the entire Amazon SES account) are reset.</p> <p>If email sending for the configuration set has never been disabled and later re-enabled, the value of this attribute is <code>null</code>.</p>',
-        }),
-    ).exactOptional(),
+    SendingEnabled: EnabledSchema.exactOptional().openapi({
+      description:
+        'Describes whether email sending is enabled or disabled for the configuration set. If the value is <code>true</code>, then Amazon SES will send emails that use the configuration set. If the value is <code>false</code>, Amazon SES will not send emails that use the configuration set. The default value is <code>true</code>. You can change this setting using <a>UpdateConfigurationSetSendingEnabled</a>.',
+    }),
+    ReputationMetricsEnabled: EnabledSchema.exactOptional().openapi({
+      description:
+        '<p>Describes whether or not Amazon SES publishes reputation metrics for the configuration set, such as bounce and complaint rates, to Amazon CloudWatch.</p> <p>If the value is <code>true</code>, reputation metrics are published. If the value is <code>false</code>, reputation metrics are not published. The default value is <code>false</code>.</p>',
+    }),
+    LastFreshStart: LastFreshStartSchema.exactOptional().openapi({
+      description:
+        '<p>The date and time at which the reputation metrics for the configuration set were last reset. Resetting these metrics is known as a <i>fresh start</i>.</p> <p>When you disable email sending for a configuration set using <a>UpdateConfigurationSetSendingEnabled</a> and later re-enable it, the reputation metrics for the configuration set (but not for the entire Amazon SES account) are reset.</p> <p>If email sending for the configuration set has never been disabled and later re-enabled, the value of this attribute is <code>null</code>.</p>',
+    }),
   })
   .openapi({
     description: 'Contains information about the reputation settings for a configuration set.',
@@ -1088,38 +679,20 @@ const ReputationOptionsSchema = z
 
 const DescribeConfigurationSetResponseSchema = z
   .object({
-    ConfigurationSet: ConfigurationSetSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The configuration set object associated with the specified configuration set.',
-        }),
-    ).exactOptional(),
-    EventDestinations: EventDestinationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of event destinations associated with the configuration set. ',
-        }),
-    ).exactOptional(),
-    TrackingOptions: TrackingOptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the custom open and click tracking domain associated with the configuration set.',
-        }),
-    ).exactOptional(),
+    ConfigurationSet: ConfigurationSetSchema.exactOptional().openapi({
+      description: 'The configuration set object associated with the specified configuration set.',
+    }),
+    EventDestinations: EventDestinationsSchema.exactOptional().openapi({
+      description: 'A list of event destinations associated with the configuration set. ',
+    }),
+    TrackingOptions: TrackingOptionsSchema.exactOptional().openapi({
+      description:
+        'The name of the custom open and click tracking domain associated with the configuration set.',
+    }),
     DeliveryOptions: DeliveryOptionsSchema.exactOptional(),
-    ReputationOptions: ReputationOptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that represents the reputation settings for the configuration set. ',
-        }),
-    ).exactOptional(),
+    ReputationOptions: ReputationOptionsSchema.exactOptional().openapi({
+      description: 'An object that represents the reputation settings for the configuration set. ',
+    }),
   })
   .openapi({
     description:
@@ -1134,14 +707,10 @@ const ConfigurationSetAttributeSchema = z
 
 const DescribeReceiptRuleResponseSchema = z
   .object({
-    Rule: ReceiptRuleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A data structure that contains the specified receipt rule's name, actions, recipients, domains, enabled status, scan status, and Transport Layer Security (TLS) policy.",
-        }),
-    ).exactOptional(),
+    Rule: ReceiptRuleSchema.exactOptional().openapi({
+      description:
+        "A data structure that contains the specified receipt rule's name, actions, recipients, domains, enabled status, scan status, and Transport Layer Security (TLS) policy.",
+    }),
   })
   .openapi({
     example: {
@@ -1160,21 +729,13 @@ const DescribeReceiptRuleResponseSchema = z
 
 const DescribeReceiptRuleSetResponseSchema = z
   .object({
-    Metadata: ReceiptRuleSetMetadataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The metadata for the receipt rule set, which consists of the rule set name and the timestamp of when the rule set was created.',
-        }),
-    ).exactOptional(),
-    Rules: ReceiptRulesListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of the receipt rules that belong to the specified receipt rule set.',
-        }),
-    ).exactOptional(),
+    Metadata: ReceiptRuleSetMetadataSchema.exactOptional().openapi({
+      description:
+        'The metadata for the receipt rule set, which consists of the rule set name and the timestamp of when the rule set was created.',
+    }),
+    Rules: ReceiptRulesListSchema.exactOptional().openapi({
+      description: 'A list of the receipt rules that belong to the specified receipt rule set.',
+    }),
   })
   .openapi({
     example: {
@@ -1196,14 +757,10 @@ const DescribeReceiptRuleSetResponseSchema = z
 
 const GetAccountSendingEnabledResponseSchema = z
   .object({
-    Enabled: EnabledSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Describes whether email sending is enabled or disabled for your Amazon SES account in the current AWS Region.',
-        }),
-    ).exactOptional(),
+    Enabled: EnabledSchema.exactOptional().openapi({
+      description:
+        'Describes whether email sending is enabled or disabled for your Amazon SES account in the current AWS Region.',
+    }),
   })
   .openapi({
     example: { Enabled: true },
@@ -1225,38 +782,26 @@ const FailureRedirectionURLSchema = z.string().openapi('FailureRedirectionURL')
 
 const GetCustomVerificationEmailTemplateResponseSchema = z
   .object({
-    TemplateName: TemplateNameSchema.and(
-      z.any().openapi({ description: 'The name of the custom verification email template.' }),
-    ).exactOptional(),
-    FromEmailAddress: FromAddressSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The email address that the custom verification email is sent from.',
-        }),
-    ).exactOptional(),
-    TemplateSubject: SubjectSchema.and(
-      z.any().openapi({ description: 'The subject line of the custom verification email.' }),
-    ).exactOptional(),
-    TemplateContent: TemplateContentSchema.and(
-      z.any().openapi({ description: 'The content of the custom verification email.' }),
-    ).exactOptional(),
-    SuccessRedirectionURL: SuccessRedirectionURLSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The URL that the recipient of the verification email is sent to if his or her address is successfully verified.',
-        }),
-    ).exactOptional(),
-    FailureRedirectionURL: FailureRedirectionURLSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The URL that the recipient of the verification email is sent to if his or her address is not successfully verified.',
-        }),
-    ).exactOptional(),
+    TemplateName: TemplateNameSchema.exactOptional().openapi({
+      description: 'The name of the custom verification email template.',
+    }),
+    FromEmailAddress: FromAddressSchema.exactOptional().openapi({
+      description: 'The email address that the custom verification email is sent from.',
+    }),
+    TemplateSubject: SubjectSchema.exactOptional().openapi({
+      description: 'The subject line of the custom verification email.',
+    }),
+    TemplateContent: TemplateContentSchema.exactOptional().openapi({
+      description: 'The content of the custom verification email.',
+    }),
+    SuccessRedirectionURL: SuccessRedirectionURLSchema.exactOptional().openapi({
+      description:
+        'The URL that the recipient of the verification email is sent to if his or her address is successfully verified.',
+    }),
+    FailureRedirectionURL: FailureRedirectionURLSchema.exactOptional().openapi({
+      description:
+        'The URL that the recipient of the verification email is sent to if his or her address is not successfully verified.',
+    }),
   })
   .openapi({ description: 'The content of the custom verification email template.', required: [] })
   .openapi('GetCustomVerificationEmailTemplateResponse')
@@ -1265,15 +810,46 @@ const CustomVerificationEmailTemplateDoesNotExistExceptionSchema = z
   .any()
   .openapi('CustomVerificationEmailTemplateDoesNotExistException')
 
-const DkimAttributesSchema: z.ZodType<DkimAttributesType> = z
-  .lazy(() => z.record(z.string(), IdentityDkimAttributesSchema))
+const VerificationStatusSchema = z
+  .enum(['Pending', 'Success', 'Failed', 'TemporaryFailure', 'NotStarted'])
+  .openapi('VerificationStatus')
+
+const VerificationTokenSchema = z.string().openapi('VerificationToken')
+
+const VerificationTokenListSchema = z
+  .array(VerificationTokenSchema)
+  .openapi('VerificationTokenList')
+
+const IdentityDkimAttributesSchema = z
+  .object({
+    DkimEnabled: EnabledSchema.openapi({
+      description:
+        "Is true if DKIM signing is enabled for email sent from the identity. It's false otherwise. The default value is true.",
+    }),
+    DkimVerificationStatus: VerificationStatusSchema.openapi({
+      description:
+        "Describes whether Amazon SES has successfully verified the DKIM DNS records (tokens) published in the domain name's DNS. (This only applies to domain identities, not email address identities.)",
+    }),
+    DkimTokens: VerificationTokenListSchema.exactOptional().openapi({
+      description:
+        '<p>A set of character strings that represent the domain\'s identity. Using these tokens, you need to create DNS CNAME records that point to DKIM public keys that are hosted by Amazon SES. Amazon Web Services eventually detects that you\'ve updated your DNS records. This detection process might take up to 72 hours. After successful detection, Amazon SES is able to DKIM-sign email originating from that domain. (This only applies to domain identities, not email address identities.)</p> <p>For more information about creating DNS records using DKIM tokens, see the <a href="https://docs.aws.amazon.com/ses/latest/DeveloperGuide/easy-dkim.html">Amazon SES Developer Guide</a>.</p>',
+    }),
+  })
+  .openapi({
+    required: ['DkimEnabled', 'DkimVerificationStatus'],
+    description: 'Represents the DKIM attributes of a verified email address or a domain.',
+  })
+  .openapi('IdentityDkimAttributes')
+
+const DkimAttributesSchema = z
+  .record(z.string(), IdentityDkimAttributesSchema)
   .openapi('DkimAttributes')
 
 const GetIdentityDkimAttributesResponseSchema = z
   .object({
-    DkimAttributes: DkimAttributesSchema.and(
-      z.any().openapi({ description: 'The DKIM attributes for an email address or a domain.' }),
-    ),
+    DkimAttributes: DkimAttributesSchema.openapi({
+      description: 'The DKIM attributes for an email address or a domain.',
+    }),
   })
   .openapi({
     required: ['DkimAttributes'],
@@ -1298,15 +874,46 @@ const GetIdentityDkimAttributesResponseSchema = z
 
 const IdentitySchema = z.string().openapi('Identity')
 
-const MailFromDomainAttributesSchema: z.ZodType<MailFromDomainAttributesType> = z
-  .lazy(() => z.record(z.string(), IdentityMailFromDomainAttributesSchema))
+const MailFromDomainNameSchema = z.string().openapi('MailFromDomainName')
+
+const CustomMailFromStatusSchema = z
+  .enum(['Pending', 'Success', 'Failed', 'TemporaryFailure'])
+  .openapi('CustomMailFromStatus')
+
+const BehaviorOnMXFailureSchema = z
+  .enum(['UseDefaultValue', 'RejectMessage'])
+  .openapi('BehaviorOnMXFailure')
+
+const IdentityMailFromDomainAttributesSchema = z
+  .object({
+    MailFromDomain: MailFromDomainNameSchema.openapi({
+      description: 'The custom MAIL FROM domain that the identity is configured to use.',
+    }),
+    MailFromDomainStatus: CustomMailFromStatusSchema.openapi({
+      description:
+        'The state that indicates whether Amazon SES has successfully read the MX record required for custom MAIL FROM domain setup. If the state is <code>Success</code>, Amazon SES uses the specified custom MAIL FROM domain when the verified identity sends an email. All other states indicate that Amazon SES takes the action described by <code>BehaviorOnMXFailure</code>.',
+    }),
+    BehaviorOnMXFailure: BehaviorOnMXFailureSchema.openapi({
+      description:
+        '<p>The action that Amazon SES takes if it cannot successfully read the required MX record when you send an email. A value of <code>UseDefaultValue</code> indicates that if Amazon SES cannot read the required MX record, it uses amazonses.com (or a subdomain of that) as the MAIL FROM domain. A value of <code>RejectMessage</code> indicates that if Amazon SES cannot read the required MX record, Amazon SES returns a <code>MailFromDomainNotVerified</code> error and does not send the email.</p> <p>The custom MAIL FROM setup states that result in this behavior are <code>Pending</code>, <code>Failed</code>, and <code>TemporaryFailure</code>.</p>',
+    }),
+  })
+  .openapi({
+    required: ['MailFromDomain', 'MailFromDomainStatus', 'BehaviorOnMXFailure'],
+    description:
+      'Represents the custom MAIL FROM domain attributes of a verified identity (email address or domain).',
+  })
+  .openapi('IdentityMailFromDomainAttributes')
+
+const MailFromDomainAttributesSchema = z
+  .record(z.string(), IdentityMailFromDomainAttributesSchema)
   .openapi('MailFromDomainAttributes')
 
 const GetIdentityMailFromDomainAttributesResponseSchema = z
   .object({
-    MailFromDomainAttributes: MailFromDomainAttributesSchema.and(
-      z.any().openapi({ description: 'A map of identities to custom MAIL FROM attributes.' }),
-    ),
+    MailFromDomainAttributes: MailFromDomainAttributesSchema.openapi({
+      description: 'A map of identities to custom MAIL FROM attributes.',
+    }),
   })
   .openapi({
     required: ['MailFromDomainAttributes'],
@@ -1323,15 +930,55 @@ const GetIdentityMailFromDomainAttributesResponseSchema = z
   })
   .openapi('GetIdentityMailFromDomainAttributesResponse')
 
-const NotificationAttributesSchema: z.ZodType<NotificationAttributesType> = z
-  .lazy(() => z.record(z.string(), IdentityNotificationAttributesSchema))
+const NotificationTopicSchema = z.string().openapi('NotificationTopic')
+
+const IdentityNotificationAttributesSchema = z
+  .object({
+    BounceTopic: NotificationTopicSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the Amazon SNS topic where Amazon SES will publish bounce notifications.',
+    }),
+    ComplaintTopic: NotificationTopicSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the Amazon SNS topic where Amazon SES will publish complaint notifications.',
+    }),
+    DeliveryTopic: NotificationTopicSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the Amazon SNS topic where Amazon SES will publish delivery notifications.',
+    }),
+    ForwardingEnabled: EnabledSchema.openapi({
+      description:
+        'Describes whether Amazon SES will forward bounce and complaint notifications as email. <code>true</code> indicates that Amazon SES will forward bounce and complaint notifications as email, while <code>false</code> indicates that bounce and complaint notifications will be published only to the specified bounce and complaint Amazon SNS topics.',
+    }),
+    HeadersInBounceNotificationsEnabled: EnabledSchema.exactOptional().openapi({
+      description:
+        'Describes whether Amazon SES includes the original email headers in Amazon SNS notifications of type <code>Bounce</code>. A value of <code>true</code> specifies that Amazon SES will include headers in bounce notifications, and a value of <code>false</code> specifies that Amazon SES will not include headers in bounce notifications.',
+    }),
+    HeadersInComplaintNotificationsEnabled: EnabledSchema.exactOptional().openapi({
+      description:
+        'Describes whether Amazon SES includes the original email headers in Amazon SNS notifications of type <code>Complaint</code>. A value of <code>true</code> specifies that Amazon SES will include headers in complaint notifications, and a value of <code>false</code> specifies that Amazon SES will not include headers in complaint notifications.',
+    }),
+    HeadersInDeliveryNotificationsEnabled: EnabledSchema.exactOptional().openapi({
+      description:
+        'Describes whether Amazon SES includes the original email headers in Amazon SNS notifications of type <code>Delivery</code>. A value of <code>true</code> specifies that Amazon SES will include headers in delivery notifications, and a value of <code>false</code> specifies that Amazon SES will not include headers in delivery notifications.',
+    }),
+  })
+  .openapi({
+    required: ['BounceTopic', 'ComplaintTopic', 'DeliveryTopic', 'ForwardingEnabled'],
+    description:
+      'Represents the notification attributes of an identity, including whether an identity has Amazon Simple Notification Service (Amazon SNS) topics set for bounce, complaint, and/or delivery notifications, and whether feedback forwarding is enabled for bounce and complaint notifications.',
+  })
+  .openapi('IdentityNotificationAttributes')
+
+const NotificationAttributesSchema = z
+  .record(z.string(), IdentityNotificationAttributesSchema)
   .openapi('NotificationAttributes')
 
 const GetIdentityNotificationAttributesResponseSchema = z
   .object({
-    NotificationAttributes: NotificationAttributesSchema.and(
-      z.any().openapi({ description: 'A map of Identity to IdentityNotificationAttributes.' }),
-    ),
+    NotificationAttributes: NotificationAttributesSchema.openapi({
+      description: 'A map of Identity to IdentityNotificationAttributes.',
+    }),
   })
   .openapi({
     required: ['NotificationAttributes'],
@@ -1358,9 +1005,7 @@ const PolicyMapSchema = z.record(z.string(), PolicySchema).openapi('PolicyMap')
 
 const GetIdentityPoliciesResponseSchema = z
   .object({
-    Policies: PolicyMapSchema.and(
-      z.any().openapi({ description: 'A map of policy names to policies.' }),
-    ),
+    Policies: PolicyMapSchema.openapi({ description: 'A map of policy names to policies.' }),
   })
   .openapi({
     required: ['Policies'],
@@ -1376,17 +1021,32 @@ const GetIdentityPoliciesResponseSchema = z
 
 const PolicyNameSchema = z.string().min(1).max(64).openapi('PolicyName')
 
-const VerificationAttributesSchema: z.ZodType<VerificationAttributesType> = z
-  .lazy(() => z.record(z.string(), IdentityVerificationAttributesSchema))
+const IdentityVerificationAttributesSchema = z
+  .object({
+    VerificationStatus: VerificationStatusSchema.openapi({
+      description:
+        'The verification status of the identity: "Pending", "Success", "Failed", or "TemporaryFailure".',
+    }),
+    VerificationToken: VerificationTokenSchema.exactOptional().openapi({
+      description:
+        'The verification token for a domain identity. Null for email address identities.',
+    }),
+  })
+  .openapi({
+    required: ['VerificationStatus'],
+    description: 'Represents the verification attributes of a single identity.',
+  })
+  .openapi('IdentityVerificationAttributes')
+
+const VerificationAttributesSchema = z
+  .record(z.string(), IdentityVerificationAttributesSchema)
   .openapi('VerificationAttributes')
 
 const GetIdentityVerificationAttributesResponseSchema = z
   .object({
-    VerificationAttributes: VerificationAttributesSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A map of Identities to IdentityVerificationAttributes objects.' }),
-    ),
+    VerificationAttributes: VerificationAttributesSchema.openapi({
+      description: 'A map of Identities to IdentityVerificationAttributes objects.',
+    }),
   })
   .openapi({
     required: ['VerificationAttributes'],
@@ -1411,25 +1071,17 @@ const SentLast24HoursSchema = z.float64().openapi('SentLast24Hours')
 
 const GetSendQuotaResponseSchema = z
   .object({
-    Max24HourSend: Max24HourSendSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of emails the user is allowed to send in a 24-hour interval. A value of -1 signifies an unlimited quota.',
-        }),
-    ).exactOptional(),
-    MaxSendRate: MaxSendRateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The maximum number of emails that Amazon SES can accept from the user's account per second.</p> <note> <p>The rate at which Amazon SES accepts the user's messages might be less than the maximum send rate.</p> </note>",
-        }),
-    ).exactOptional(),
-    SentLast24Hours: SentLast24HoursSchema.and(
-      z.any().openapi({ description: 'The number of emails sent during the previous 24 hours.' }),
-    ).exactOptional(),
+    Max24HourSend: Max24HourSendSchema.exactOptional().openapi({
+      description:
+        'The maximum number of emails the user is allowed to send in a 24-hour interval. A value of -1 signifies an unlimited quota.',
+    }),
+    MaxSendRate: MaxSendRateSchema.exactOptional().openapi({
+      description:
+        "<p>The maximum number of emails that Amazon SES can accept from the user's account per second.</p> <note> <p>The rate at which Amazon SES accepts the user's messages might be less than the maximum send rate.</p> </note>",
+    }),
+    SentLast24Hours: SentLast24HoursSchema.exactOptional().openapi({
+      description: 'The number of emails sent during the previous 24 hours.',
+    }),
   })
   .openapi({
     example: { Max24HourSend: 200, MaxSendRate: 1, SentLast24Hours: 1 },
@@ -1443,23 +1095,19 @@ const CounterSchema = z.int().openapi('Counter')
 
 const SendDataPointSchema = z
   .object({
-    Timestamp: TimestampSchema.and(
-      z.any().openapi({ description: 'Time of the data point.' }),
-    ).exactOptional(),
-    DeliveryAttempts: CounterSchema.and(
-      z.any().openapi({ description: 'Number of emails that have been sent.' }),
-    ).exactOptional(),
-    Bounces: CounterSchema.and(
-      z.any().openapi({ description: 'Number of emails that have bounced.' }),
-    ).exactOptional(),
-    Complaints: CounterSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Number of unwanted emails that were rejected by recipients.' }),
-    ).exactOptional(),
-    Rejects: CounterSchema.and(
-      z.any().openapi({ description: 'Number of emails rejected by Amazon SES.' }),
-    ).exactOptional(),
+    Timestamp: TimestampSchema.exactOptional().openapi({ description: 'Time of the data point.' }),
+    DeliveryAttempts: CounterSchema.exactOptional().openapi({
+      description: 'Number of emails that have been sent.',
+    }),
+    Bounces: CounterSchema.exactOptional().openapi({
+      description: 'Number of emails that have bounced.',
+    }),
+    Complaints: CounterSchema.exactOptional().openapi({
+      description: 'Number of unwanted emails that were rejected by recipients.',
+    }),
+    Rejects: CounterSchema.exactOptional().openapi({
+      description: 'Number of emails rejected by Amazon SES.',
+    }),
   })
   .openapi({
     description:
@@ -1472,13 +1120,9 @@ const SendDataPointListSchema = z.array(SendDataPointSchema).openapi('SendDataPo
 
 const GetSendStatisticsResponseSchema = z
   .object({
-    SendDataPoints: SendDataPointListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of data points, each of which represents 15 minutes of activity.',
-        }),
-    ).exactOptional(),
+    SendDataPoints: SendDataPointListSchema.exactOptional().openapi({
+      description: 'A list of data points, each of which represents 15 minutes of activity.',
+    }),
   })
   .openapi({
     example: {
@@ -1514,28 +1158,20 @@ const GetSendStatisticsResponseSchema = z
 
 const TemplateSchema = z
   .object({
-    TemplateName: TemplateNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the template. You will refer to this name when you send email using the <code>SendTemplatedEmail</code> or <code>SendBulkTemplatedEmail</code> operations.',
-        }),
-    ),
-    SubjectPart: SubjectPartSchema.and(
-      z.any().openapi({ description: 'The subject line of the email.' }),
-    ).exactOptional(),
-    TextPart: TextPartSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The email body that will be visible to recipients whose email clients do not display HTML.',
-        }),
-    ).exactOptional(),
-    HtmlPart: HtmlPartSchema.and(
-      z.any().openapi({ description: 'The HTML body of the email.' }),
-    ).exactOptional(),
+    TemplateName: TemplateNameSchema.openapi({
+      description:
+        'The name of the template. You will refer to this name when you send email using the <code>SendTemplatedEmail</code> or <code>SendBulkTemplatedEmail</code> operations.',
+    }),
+    SubjectPart: SubjectPartSchema.exactOptional().openapi({
+      description: 'The subject line of the email.',
+    }),
+    TextPart: TextPartSchema.exactOptional().openapi({
+      description:
+        'The email body that will be visible to recipients whose email clients do not display HTML.',
+    }),
+    HtmlPart: HtmlPartSchema.exactOptional().openapi({
+      description: 'The HTML body of the email.',
+    }),
   })
   .openapi({
     required: ['TemplateName'],
@@ -1557,17 +1193,13 @@ const NextTokenSchema = z.string().openapi('NextToken')
 
 const ListConfigurationSetsResponseSchema = z
   .object({
-    ConfigurationSets: ConfigurationSetsSchema.and(
-      z.any().openapi({ description: 'A list of configuration sets.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token indicating that there are additional configuration sets available to be listed. Pass this token to successive calls of <code>ListConfigurationSets</code>. ',
-        }),
-    ).exactOptional(),
+    ConfigurationSets: ConfigurationSetsSchema.exactOptional().openapi({
+      description: 'A list of configuration sets.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'A token indicating that there are additional configuration sets available to be listed. Pass this token to successive calls of <code>ListConfigurationSets</code>. ',
+    }),
   })
   .openapi({
     description:
@@ -1578,35 +1210,23 @@ const ListConfigurationSetsResponseSchema = z
 
 const CustomVerificationEmailTemplateSchema = z
   .object({
-    TemplateName: TemplateNameSchema.and(
-      z.any().openapi({ description: 'The name of the custom verification email template.' }),
-    ).exactOptional(),
-    FromEmailAddress: FromAddressSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The email address that the custom verification email is sent from.',
-        }),
-    ).exactOptional(),
-    TemplateSubject: SubjectSchema.and(
-      z.any().openapi({ description: 'The subject line of the custom verification email.' }),
-    ).exactOptional(),
-    SuccessRedirectionURL: SuccessRedirectionURLSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The URL that the recipient of the verification email is sent to if his or her address is successfully verified.',
-        }),
-    ).exactOptional(),
-    FailureRedirectionURL: FailureRedirectionURLSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The URL that the recipient of the verification email is sent to if his or her address is not successfully verified.',
-        }),
-    ).exactOptional(),
+    TemplateName: TemplateNameSchema.exactOptional().openapi({
+      description: 'The name of the custom verification email template.',
+    }),
+    FromEmailAddress: FromAddressSchema.exactOptional().openapi({
+      description: 'The email address that the custom verification email is sent from.',
+    }),
+    TemplateSubject: SubjectSchema.exactOptional().openapi({
+      description: 'The subject line of the custom verification email.',
+    }),
+    SuccessRedirectionURL: SuccessRedirectionURLSchema.exactOptional().openapi({
+      description:
+        'The URL that the recipient of the verification email is sent to if his or her address is successfully verified.',
+    }),
+    FailureRedirectionURL: FailureRedirectionURLSchema.exactOptional().openapi({
+      description:
+        'The URL that the recipient of the verification email is sent to if his or her address is not successfully verified.',
+    }),
   })
   .openapi({
     description: 'Contains information about a custom verification email template.',
@@ -1620,22 +1240,15 @@ const CustomVerificationEmailTemplatesSchema = z
 
 const ListCustomVerificationEmailTemplatesResponseSchema = z
   .object({
-    CustomVerificationEmailTemplates: CustomVerificationEmailTemplatesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of the custom verification email templates that exist in your account.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token indicating that there are additional custom verification email templates available to be listed. Pass this token to a subsequent call to <code>ListTemplates</code> to retrieve the next 50 custom verification email templates.',
-        }),
-    ).exactOptional(),
+    CustomVerificationEmailTemplates:
+      CustomVerificationEmailTemplatesSchema.exactOptional().openapi({
+        description:
+          'A list of the custom verification email templates that exist in your account.',
+      }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'A token indicating that there are additional custom verification email templates available to be listed. Pass this token to a subsequent call to <code>ListTemplates</code> to retrieve the next 50 custom verification email templates.',
+    }),
   })
   .openapi({
     description: 'A paginated list of custom verification email templates.',
@@ -1647,10 +1260,10 @@ const IdentityListSchema = z.array(IdentitySchema).openapi('IdentityList')
 
 const ListIdentitiesResponseSchema = z
   .object({
-    Identities: IdentityListSchema.and(z.any().openapi({ description: 'A list of identities.' })),
-    NextToken: NextTokenSchema.and(
-      z.any().openapi({ description: 'The token used for pagination.' }),
-    ).exactOptional(),
+    Identities: IdentityListSchema.openapi({ description: 'A list of identities.' }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token used for pagination.',
+    }),
   })
   .openapi({
     required: ['Identities'],
@@ -1664,13 +1277,9 @@ const PolicyNameListSchema = z.array(PolicyNameSchema).openapi('PolicyNameList')
 
 const ListIdentityPoliciesResponseSchema = z
   .object({
-    PolicyNames: PolicyNameListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of names of policies that apply to the specified identity.',
-        }),
-    ),
+    PolicyNames: PolicyNameListSchema.openapi({
+      description: 'A list of names of policies that apply to the specified identity.',
+    }),
   })
   .openapi({
     required: ['PolicyNames'],
@@ -1681,22 +1290,14 @@ const ListIdentityPoliciesResponseSchema = z
 
 const ReceiptFilterSchema = z
   .object({
-    Name: ReceiptFilterNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the IP address filter. The name must:</p> <ul> <li> <p>This value can only contain ASCII letters (a-z, A-Z), numbers (0-9), underscores (_), or dashes (-).</p> </li> <li> <p>Start and end with a letter or number.</p> </li> <li> <p>Contain less than 64 characters.</p> </li> </ul>',
-        }),
-    ),
-    IpFilter: ReceiptIpFilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A structure that provides the IP addresses to block or allow, and whether to block or allow incoming mail from them.',
-        }),
-    ),
+    Name: ReceiptFilterNameSchema.openapi({
+      description:
+        '<p>The name of the IP address filter. The name must:</p> <ul> <li> <p>This value can only contain ASCII letters (a-z, A-Z), numbers (0-9), underscores (_), or dashes (-).</p> </li> <li> <p>Start and end with a letter or number.</p> </li> <li> <p>Contain less than 64 characters.</p> </li> </ul>',
+    }),
+    IpFilter: ReceiptIpFilterSchema.openapi({
+      description:
+        'A structure that provides the IP addresses to block or allow, and whether to block or allow incoming mail from them.',
+    }),
   })
   .openapi({
     required: ['Name', 'IpFilter'],
@@ -1709,14 +1310,10 @@ const ReceiptFilterListSchema = z.array(ReceiptFilterSchema).openapi('ReceiptFil
 
 const ListReceiptFiltersResponseSchema = z
   .object({
-    Filters: ReceiptFilterListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of IP address filter data structures, which each consist of a name, an IP address range, and whether to allow or block mail from it.',
-        }),
-    ).exactOptional(),
+    Filters: ReceiptFilterListSchema.exactOptional().openapi({
+      description:
+        'A list of IP address filter data structures, which each consist of a name, an IP address range, and whether to allow or block mail from it.',
+    }),
   })
   .openapi({
     example: { Filters: [{ IpFilter: { Cidr: '1.2.3.4/24', Policy: 'Block' }, Name: 'MyFilter' }] },
@@ -1731,22 +1328,14 @@ const ReceiptRuleSetsListsSchema = z
 
 const ListReceiptRuleSetsResponseSchema = z
   .object({
-    RuleSets: ReceiptRuleSetsListsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The metadata for the currently active receipt rule set. The metadata consists of the rule set name and the timestamp of when the rule set was created.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token indicating that there are additional receipt rule sets available to be listed. Pass this token to successive calls of <code>ListReceiptRuleSets</code> to retrieve up to 100 receipt rule sets at a time.',
-        }),
-    ).exactOptional(),
+    RuleSets: ReceiptRuleSetsListsSchema.exactOptional().openapi({
+      description:
+        'The metadata for the currently active receipt rule set. The metadata consists of the rule set name and the timestamp of when the rule set was created.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'A token indicating that there are additional receipt rule sets available to be listed. Pass this token to successive calls of <code>ListReceiptRuleSets</code> to retrieve up to 100 receipt rule sets at a time.',
+    }),
   })
   .openapi({
     example: {
@@ -1760,12 +1349,10 @@ const ListReceiptRuleSetsResponseSchema = z
 
 const TemplateMetadataSchema = z
   .object({
-    Name: TemplateNameSchema.and(
-      z.any().openapi({ description: 'The name of the template.' }),
-    ).exactOptional(),
-    CreatedTimestamp: TimestampSchema.and(
-      z.any().openapi({ description: 'The time and date the template was created.' }),
-    ).exactOptional(),
+    Name: TemplateNameSchema.exactOptional().openapi({ description: 'The name of the template.' }),
+    CreatedTimestamp: TimestampSchema.exactOptional().openapi({
+      description: 'The time and date the template was created.',
+    }),
   })
   .openapi({ description: 'Contains information about an email template.', required: [] })
   .openapi('TemplateMetadata')
@@ -1774,22 +1361,14 @@ const TemplateMetadataListSchema = z.array(TemplateMetadataSchema).openapi('Temp
 
 const ListTemplatesResponseSchema = z
   .object({
-    TemplatesMetadata: TemplateMetadataListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array the contains the name and creation time stamp for each template in your Amazon SES account.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token indicating that there are additional email templates available to be listed. Pass this token to a subsequent call to <code>ListTemplates</code> to retrieve the next 50 email templates.',
-        }),
-    ).exactOptional(),
+    TemplatesMetadata: TemplateMetadataListSchema.exactOptional().openapi({
+      description:
+        'An array the contains the name and creation time stamp for each template in your Amazon SES account.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'A token indicating that there are additional email templates available to be listed. Pass this token to a subsequent call to <code>ListTemplates</code> to retrieve the next 50 email templates.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTemplatesResponse')
@@ -1798,9 +1377,9 @@ const AddressListSchema = z.array(AddressSchema).openapi('AddressList')
 
 const ListVerifiedEmailAddressesResponseSchema = z
   .object({
-    VerifiedEmailAddresses: AddressListSchema.and(
-      z.any().openapi({ description: 'A list of email addresses that have been verified.' }),
-    ).exactOptional(),
+    VerifiedEmailAddresses: AddressListSchema.exactOptional().openapi({
+      description: 'A list of email addresses that have been verified.',
+    }),
   })
   .openapi({
     example: { VerifiedEmailAddresses: ['user1@example.com', 'user2@example.com'] },
@@ -1811,7 +1390,7 @@ const ListVerifiedEmailAddressesResponseSchema = z
   .openapi('ListVerifiedEmailAddressesResponse')
 
 const PutConfigurationSetDeliveryOptionsResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'An HTTP 200 response if the request succeeds, or an error message if the request fails.',
@@ -1821,14 +1400,14 @@ const PutConfigurationSetDeliveryOptionsResponseSchema = z
 const InvalidDeliveryOptionsExceptionSchema = z.any().openapi('InvalidDeliveryOptionsException')
 
 const PutIdentityPolicyResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'An empty element returned on a successful request.' })
   .openapi('PutIdentityPolicyResponse')
 
 const InvalidPolicyExceptionSchema = z.any().openapi('InvalidPolicyException')
 
 const ReorderReceiptRuleSetResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'An empty element returned on a successful request.' })
   .openapi('ReorderReceiptRuleSetResponse')
 
@@ -1836,9 +1415,9 @@ const MessageIdSchema = z.string().openapi('MessageId')
 
 const SendBounceResponseSchema = z
   .object({
-    MessageId: MessageIdSchema.and(
-      z.any().openapi({ description: 'The message ID of the bounce message.' }),
-    ).exactOptional(),
+    MessageId: MessageIdSchema.exactOptional().openapi({
+      description: 'The message ID of the bounce message.',
+    }),
   })
   .openapi({ description: 'Represents a unique message ID.', required: [] })
   .openapi('SendBounceResponse')
@@ -1853,22 +1432,14 @@ const ExtensionFieldValueSchema = z.string().openapi('ExtensionFieldValue')
 
 const ExtensionFieldSchema = z
   .object({
-    Name: ExtensionFieldNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the header to add. Must be between 1 and 50 characters, inclusive, and consist of alphanumeric (a-z, A-Z, 0-9) characters and dashes only.',
-        }),
-    ),
-    Value: ExtensionFieldValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The value of the header to add. Must be less than 2048 characters, and must not contain newline characters ("\\r" or "\\n").',
-        }),
-    ),
+    Name: ExtensionFieldNameSchema.openapi({
+      description:
+        'The name of the header to add. Must be between 1 and 50 characters, inclusive, and consist of alphanumeric (a-z, A-Z, 0-9) characters and dashes only.',
+    }),
+    Value: ExtensionFieldValueSchema.openapi({
+      description:
+        'The value of the header to add. Must be less than 2048 characters, and must not contain newline characters ("\\r" or "\\n").',
+    }),
   })
   .openapi({
     required: ['Name', 'Value'],
@@ -1904,57 +1475,33 @@ const LastAttemptDateSchema = z.iso.datetime({ offset: true }).openapi('LastAtte
 
 const RecipientDsnFieldsSchema = z
   .object({
-    FinalRecipient: AddressSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The email address that the message was ultimately delivered to. This corresponds to the <code>Final-Recipient</code> in the DSN. If not specified, <code>FinalRecipient</code> will be set to the <code>Recipient</code> specified in the <code>BouncedRecipientInfo</code> structure. Either <code>FinalRecipient</code> or the recipient in <code>BouncedRecipientInfo</code> must be a recipient of the original bounced message.</p> <note> <p>Do not prepend the <code>FinalRecipient</code> email address with <code>rfc 822;</code>, as described in <a href="https://tools.ietf.org/html/rfc3798">RFC 3798</a>.</p> </note>',
-        }),
-    ).exactOptional(),
-    Action: DsnActionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The action performed by the reporting mail transfer agent (MTA) as a result of its attempt to deliver the message to the recipient address. This is required by <a href="https://tools.ietf.org/html/rfc3464">RFC 3464</a>.',
-        }),
-    ),
-    RemoteMta: RemoteMtaSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The MTA to which the remote MTA attempted to deliver the message, formatted as specified in <a href="https://tools.ietf.org/html/rfc3464">RFC 3464</a> (<code>mta-name-type; mta-name</code>). This parameter typically applies only to propagating synchronous bounces.',
-        }),
-    ).exactOptional(),
-    Status: DsnStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status code that indicates what went wrong. This is required by <a href="https://tools.ietf.org/html/rfc3464">RFC 3464</a>.',
-        }),
-    ),
-    DiagnosticCode: DiagnosticCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An extended explanation of what went wrong; this is usually an SMTP response. See <a href="https://tools.ietf.org/html/rfc3463">RFC 3463</a> for the correct formatting of this parameter.',
-        }),
-    ).exactOptional(),
-    LastAttemptDate: LastAttemptDateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time the final delivery attempt was made, in <a href="https://www.ietf.org/rfc/rfc0822.txt">RFC 822</a> date-time format.',
-        }),
-    ).exactOptional(),
-    ExtensionFields: ExtensionFieldListSchema.and(
-      z.any().openapi({ description: 'Additional X-headers to include in the DSN.' }),
-    ).exactOptional(),
+    FinalRecipient: AddressSchema.exactOptional().openapi({
+      description:
+        '<p>The email address that the message was ultimately delivered to. This corresponds to the <code>Final-Recipient</code> in the DSN. If not specified, <code>FinalRecipient</code> will be set to the <code>Recipient</code> specified in the <code>BouncedRecipientInfo</code> structure. Either <code>FinalRecipient</code> or the recipient in <code>BouncedRecipientInfo</code> must be a recipient of the original bounced message.</p> <note> <p>Do not prepend the <code>FinalRecipient</code> email address with <code>rfc 822;</code>, as described in <a href="https://tools.ietf.org/html/rfc3798">RFC 3798</a>.</p> </note>',
+    }),
+    Action: DsnActionSchema.openapi({
+      description:
+        'The action performed by the reporting mail transfer agent (MTA) as a result of its attempt to deliver the message to the recipient address. This is required by <a href="https://tools.ietf.org/html/rfc3464">RFC 3464</a>.',
+    }),
+    RemoteMta: RemoteMtaSchema.exactOptional().openapi({
+      description:
+        'The MTA to which the remote MTA attempted to deliver the message, formatted as specified in <a href="https://tools.ietf.org/html/rfc3464">RFC 3464</a> (<code>mta-name-type; mta-name</code>). This parameter typically applies only to propagating synchronous bounces.',
+    }),
+    Status: DsnStatusSchema.openapi({
+      description:
+        'The status code that indicates what went wrong. This is required by <a href="https://tools.ietf.org/html/rfc3464">RFC 3464</a>.',
+    }),
+    DiagnosticCode: DiagnosticCodeSchema.exactOptional().openapi({
+      description:
+        'An extended explanation of what went wrong; this is usually an SMTP response. See <a href="https://tools.ietf.org/html/rfc3463">RFC 3463</a> for the correct formatting of this parameter.',
+    }),
+    LastAttemptDate: LastAttemptDateSchema.exactOptional().openapi({
+      description:
+        'The time the final delivery attempt was made, in <a href="https://www.ietf.org/rfc/rfc0822.txt">RFC 822</a> date-time format.',
+    }),
+    ExtensionFields: ExtensionFieldListSchema.exactOptional().openapi({
+      description: 'Additional X-headers to include in the DSN.',
+    }),
   })
   .openapi({
     required: ['Action', 'Status'],
@@ -1965,33 +1512,21 @@ const RecipientDsnFieldsSchema = z
 
 const BouncedRecipientInfoSchema = z
   .object({
-    Recipient: AddressSchema.and(
-      z.any().openapi({ description: 'The email address of the recipient of the bounced email.' }),
-    ),
-    RecipientArn: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This parameter is used only for sending authorization. It is the ARN of the identity that is associated with the sending authorization policy that permits you to receive email for the recipient of the bounced email. For more information about sending authorization, see the <a href="https://docs.aws.amazon.com/ses/latest/DeveloperGuide/sending-authorization.html">Amazon SES Developer Guide</a>.',
-        }),
-    ).exactOptional(),
-    BounceType: BounceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The reason for the bounce. You must provide either this parameter or <code>RecipientDsnFields</code>.',
-        }),
-    ).exactOptional(),
-    RecipientDsnFields: RecipientDsnFieldsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Recipient-related DSN fields, most of which would normally be filled in automatically when provided with a <code>BounceType</code>. You must provide either this parameter or <code>BounceType</code>.',
-        }),
-    ).exactOptional(),
+    Recipient: AddressSchema.openapi({
+      description: 'The email address of the recipient of the bounced email.',
+    }),
+    RecipientArn: AmazonResourceNameSchema.exactOptional().openapi({
+      description:
+        'This parameter is used only for sending authorization. It is the ARN of the identity that is associated with the sending authorization policy that permits you to receive email for the recipient of the bounced email. For more information about sending authorization, see the <a href="https://docs.aws.amazon.com/ses/latest/DeveloperGuide/sending-authorization.html">Amazon SES Developer Guide</a>.',
+    }),
+    BounceType: BounceTypeSchema.exactOptional().openapi({
+      description:
+        'The reason for the bounce. You must provide either this parameter or <code>RecipientDsnFields</code>.',
+    }),
+    RecipientDsnFields: RecipientDsnFieldsSchema.exactOptional().openapi({
+      description:
+        'Recipient-related DSN fields, most of which would normally be filled in automatically when provided with a <code>BounceType</code>. You must provide either this parameter or <code>BounceType</code>.',
+    }),
   })
   .openapi({
     required: ['Recipient'],
@@ -2025,30 +1560,18 @@ const ErrorSchema = z.string().openapi('Error')
 
 const BulkEmailDestinationStatusSchema = z
   .object({
-    Status: BulkEmailStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The status of a message sent using the <code>SendBulkTemplatedEmail</code> operation.</p> <p>Possible values for this parameter include:</p> <ul> <li> <p> <code>Success</code>: Amazon SES accepted the message, and will attempt to deliver it to the recipients.</p> </li> <li> <p> <code>MessageRejected</code>: The message was rejected because it contained a virus.</p> </li> <li> <p> <code>MailFromDomainNotVerified</code>: The sender's email address or domain was not verified.</p> </li> <li> <p> <code>ConfigurationSetDoesNotExist</code>: The configuration set you specified does not exist.</p> </li> <li> <p> <code>TemplateDoesNotExist</code>: The template you specified does not exist.</p> </li> <li> <p> <code>AccountSuspended</code>: Your account has been shut down because of issues related to your email sending practices.</p> </li> <li> <p> <code>AccountThrottled</code>: The number of emails you can send has been reduced because your account has exceeded its allocated sending limit.</p> </li> <li> <p> <code>AccountDailyQuotaExceeded</code>: You have reached or exceeded the maximum number of emails you can send from your account in a 24-hour period.</p> </li> <li> <p> <code>InvalidSendingPoolName</code>: The configuration set you specified refers to an IP pool that does not exist.</p> </li> <li> <p> <code>AccountSendingPaused</code>: Email sending for the Amazon SES account was disabled using the <a>UpdateAccountSendingEnabled</a> operation.</p> </li> <li> <p> <code>ConfigurationSetSendingPaused</code>: Email sending for this configuration set was disabled using the <a>UpdateConfigurationSetSendingEnabled</a> operation.</p> </li> <li> <p> <code>InvalidParameterValue</code>: One or more of the parameters you specified when calling this operation was invalid. See the error message for additional information.</p> </li> <li> <p> <code>TransientFailure</code>: Amazon SES was unable to process your request because of a temporary issue.</p> </li> <li> <p> <code>Failed</code>: Amazon SES was unable to process your request. See the error message for additional information.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    Error: ErrorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A description of an error that prevented a message being sent using the <code>SendBulkTemplatedEmail</code> operation.',
-        }),
-    ).exactOptional(),
-    MessageId: MessageIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique message identifier returned from the <code>SendBulkTemplatedEmail</code> operation.',
-        }),
-    ).exactOptional(),
+    Status: BulkEmailStatusSchema.exactOptional().openapi({
+      description:
+        "<p>The status of a message sent using the <code>SendBulkTemplatedEmail</code> operation.</p> <p>Possible values for this parameter include:</p> <ul> <li> <p> <code>Success</code>: Amazon SES accepted the message, and will attempt to deliver it to the recipients.</p> </li> <li> <p> <code>MessageRejected</code>: The message was rejected because it contained a virus.</p> </li> <li> <p> <code>MailFromDomainNotVerified</code>: The sender's email address or domain was not verified.</p> </li> <li> <p> <code>ConfigurationSetDoesNotExist</code>: The configuration set you specified does not exist.</p> </li> <li> <p> <code>TemplateDoesNotExist</code>: The template you specified does not exist.</p> </li> <li> <p> <code>AccountSuspended</code>: Your account has been shut down because of issues related to your email sending practices.</p> </li> <li> <p> <code>AccountThrottled</code>: The number of emails you can send has been reduced because your account has exceeded its allocated sending limit.</p> </li> <li> <p> <code>AccountDailyQuotaExceeded</code>: You have reached or exceeded the maximum number of emails you can send from your account in a 24-hour period.</p> </li> <li> <p> <code>InvalidSendingPoolName</code>: The configuration set you specified refers to an IP pool that does not exist.</p> </li> <li> <p> <code>AccountSendingPaused</code>: Email sending for the Amazon SES account was disabled using the <a>UpdateAccountSendingEnabled</a> operation.</p> </li> <li> <p> <code>ConfigurationSetSendingPaused</code>: Email sending for this configuration set was disabled using the <a>UpdateConfigurationSetSendingEnabled</a> operation.</p> </li> <li> <p> <code>InvalidParameterValue</code>: One or more of the parameters you specified when calling this operation was invalid. See the error message for additional information.</p> </li> <li> <p> <code>TransientFailure</code>: Amazon SES was unable to process your request because of a temporary issue.</p> </li> <li> <p> <code>Failed</code>: Amazon SES was unable to process your request. See the error message for additional information.</p> </li> </ul>",
+    }),
+    Error: ErrorSchema.exactOptional().openapi({
+      description:
+        'A description of an error that prevented a message being sent using the <code>SendBulkTemplatedEmail</code> operation.',
+    }),
+    MessageId: MessageIdSchema.exactOptional().openapi({
+      description:
+        'The unique message identifier returned from the <code>SendBulkTemplatedEmail</code> operation.',
+    }),
   })
   .openapi({
     description:
@@ -2063,14 +1586,10 @@ const BulkEmailDestinationStatusListSchema = z
 
 const SendBulkTemplatedEmailResponseSchema = z
   .object({
-    Status: BulkEmailDestinationStatusListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique message identifier returned from the <code>SendBulkTemplatedEmail</code> action.',
-        }),
-    ),
+    Status: BulkEmailDestinationStatusListSchema.openapi({
+      description:
+        'The unique message identifier returned from the <code>SendBulkTemplatedEmail</code> action.',
+    }),
   })
   .openapi({ required: ['Status'] })
   .openapi('SendBulkTemplatedEmailResponse')
@@ -2081,22 +1600,14 @@ const MessageTagValueSchema = z.string().openapi('MessageTagValue')
 
 const MessageTagSchema = z
   .object({
-    Name: MessageTagNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the tag. The name must:</p> <ul> <li> <p>This value can only contain ASCII letters (a-z, A-Z), numbers (0-9), underscores (_), or dashes (-).</p> </li> <li> <p>Contain less than 256 characters.</p> </li> </ul>',
-        }),
-    ),
-    Value: MessageTagValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The value of the tag. The value must:</p> <ul> <li> <p>This value can only contain ASCII letters (a-z, A-Z), numbers (0-9), underscores (_), or dashes (-).</p> </li> <li> <p>Contain less than 256 characters.</p> </li> </ul>',
-        }),
-    ),
+    Name: MessageTagNameSchema.openapi({
+      description:
+        '<p>The name of the tag. The name must:</p> <ul> <li> <p>This value can only contain ASCII letters (a-z, A-Z), numbers (0-9), underscores (_), or dashes (-).</p> </li> <li> <p>Contain less than 256 characters.</p> </li> </ul>',
+    }),
+    Value: MessageTagValueSchema.openapi({
+      description:
+        '<p>The value of the tag. The value must:</p> <ul> <li> <p>This value can only contain ASCII letters (a-z, A-Z), numbers (0-9), underscores (_), or dashes (-).</p> </li> <li> <p>Contain less than 256 characters.</p> </li> </ul>',
+    }),
   })
   .openapi({
     required: ['Name', 'Value'],
@@ -2107,15 +1618,15 @@ const MessageTagSchema = z
 
 const DestinationSchema = z
   .object({
-    ToAddresses: AddressListSchema.and(
-      z.any().openapi({ description: 'The recipients to place on the To: line of the message.' }),
-    ).exactOptional(),
-    CcAddresses: AddressListSchema.and(
-      z.any().openapi({ description: 'The recipients to place on the CC: line of the message.' }),
-    ).exactOptional(),
-    BccAddresses: AddressListSchema.and(
-      z.any().openapi({ description: 'The recipients to place on the BCC: line of the message.' }),
-    ).exactOptional(),
+    ToAddresses: AddressListSchema.exactOptional().openapi({
+      description: 'The recipients to place on the To: line of the message.',
+    }),
+    CcAddresses: AddressListSchema.exactOptional().openapi({
+      description: 'The recipients to place on the CC: line of the message.',
+    }),
+    BccAddresses: AddressListSchema.exactOptional().openapi({
+      description: 'The recipients to place on the BCC: line of the message.',
+    }),
   })
   .openapi({
     description:
@@ -2131,22 +1642,14 @@ const TemplateDataSchema = z.string().max(262144).openapi('TemplateData')
 const BulkEmailDestinationSchema = z
   .object({
     Destination: DestinationSchema,
-    ReplacementTags: MessageTagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of tags, in the form of name/value pairs, to apply to an email that you send using <code>SendBulkTemplatedEmail</code>. Tags correspond to characteristics of the email that you define, so that you can publish email sending events.',
-        }),
-    ).exactOptional(),
-    ReplacementTemplateData: TemplateDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of replacement values to apply to the template. This parameter is a JSON object, typically consisting of key-value pairs in which the keys correspond to replacement tags in the email template.',
-        }),
-    ).exactOptional(),
+    ReplacementTags: MessageTagListSchema.exactOptional().openapi({
+      description:
+        'A list of tags, in the form of name/value pairs, to apply to an email that you send using <code>SendBulkTemplatedEmail</code>. Tags correspond to characteristics of the email that you define, so that you can publish email sending events.',
+    }),
+    ReplacementTemplateData: TemplateDataSchema.exactOptional().openapi({
+      description:
+        'A list of replacement values to apply to the template. This parameter is a JSON object, typically consisting of key-value pairs in which the keys correspond to replacement tags in the email template.',
+    }),
   })
   .openapi({
     required: ['Destination'],
@@ -2167,14 +1670,10 @@ const AccountSendingPausedExceptionSchema = z.any().openapi('AccountSendingPause
 
 const SendCustomVerificationEmailResponseSchema = z
   .object({
-    MessageId: MessageIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique message identifier returned from the <code>SendCustomVerificationEmail</code> operation.',
-        }),
-    ).exactOptional(),
+    MessageId: MessageIdSchema.exactOptional().openapi({
+      description:
+        'The unique message identifier returned from the <code>SendCustomVerificationEmail</code> operation.',
+    }),
   })
   .openapi({
     description: 'The response received when attempting to send the custom verification email.',
@@ -2188,14 +1687,10 @@ const ProductionAccessNotGrantedExceptionSchema = z
 
 const SendEmailResponseSchema = z
   .object({
-    MessageId: MessageIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique message identifier returned from the <code>SendEmail</code> action. ',
-        }),
-    ),
+    MessageId: MessageIdSchema.openapi({
+      description:
+        'The unique message identifier returned from the <code>SendEmail</code> action. ',
+    }),
   })
   .openapi({
     required: ['MessageId'],
@@ -2210,12 +1705,10 @@ const CharsetSchema = z.string().openapi('Charset')
 
 const ContentSchema = z
   .object({
-    Data: MessageDataSchema.and(
-      z.any().openapi({ description: 'The textual data of the content.' }),
-    ),
-    Charset: CharsetSchema.and(
-      z.any().openapi({ description: 'The character set of the content.' }),
-    ).exactOptional(),
+    Data: MessageDataSchema.openapi({ description: 'The textual data of the content.' }),
+    Charset: CharsetSchema.exactOptional().openapi({
+      description: 'The character set of the content.',
+    }),
   })
   .openapi({
     required: ['Data'],
@@ -2226,22 +1719,14 @@ const ContentSchema = z
 
 const BodySchema = z
   .object({
-    Text: ContentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The content of the message, in text format. Use this for text-based email clients, or clients on high-latency networks (such as mobile devices).',
-        }),
-    ).exactOptional(),
-    Html: ContentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The content of the message, in HTML format. Use this for email clients that can process HTML. You can include clickable links, formatted text, and much more in an HTML message.',
-        }),
-    ).exactOptional(),
+    Text: ContentSchema.exactOptional().openapi({
+      description:
+        'The content of the message, in text format. Use this for text-based email clients, or clients on high-latency networks (such as mobile devices).',
+    }),
+    Html: ContentSchema.exactOptional().openapi({
+      description:
+        'The content of the message, in HTML format. Use this for email clients that can process HTML. You can include clickable links, formatted text, and much more in an HTML message.',
+    }),
   })
   .openapi({
     description:
@@ -2252,14 +1737,10 @@ const BodySchema = z
 
 const SendRawEmailResponseSchema = z
   .object({
-    MessageId: MessageIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique message identifier returned from the <code>SendRawEmail</code> action. ',
-        }),
-    ),
+    MessageId: MessageIdSchema.openapi({
+      description:
+        'The unique message identifier returned from the <code>SendRawEmail</code> action. ',
+    }),
   })
   .openapi({
     required: ['MessageId'],
@@ -2272,50 +1753,46 @@ const RawMessageDataSchema = z.string().openapi('RawMessageData')
 
 const SendTemplatedEmailResponseSchema = z
   .object({
-    MessageId: MessageIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique message identifier returned from the <code>SendTemplatedEmail</code> action. ',
-        }),
-    ),
+    MessageId: MessageIdSchema.openapi({
+      description:
+        'The unique message identifier returned from the <code>SendTemplatedEmail</code> action. ',
+    }),
   })
   .openapi({ required: ['MessageId'] })
   .openapi('SendTemplatedEmailResponse')
 
 const SetActiveReceiptRuleSetResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'An empty element returned on a successful request.' })
   .openapi('SetActiveReceiptRuleSetResponse')
 
 const SetIdentityDkimEnabledResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'An empty element returned on a successful request.' })
   .openapi('SetIdentityDkimEnabledResponse')
 
 const SetIdentityFeedbackForwardingEnabledResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'An empty element returned on a successful request.' })
   .openapi('SetIdentityFeedbackForwardingEnabledResponse')
 
 const SetIdentityHeadersInNotificationsEnabledResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'An empty element returned on a successful request.' })
   .openapi('SetIdentityHeadersInNotificationsEnabledResponse')
 
 const SetIdentityMailFromDomainResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'An empty element returned on a successful request.' })
   .openapi('SetIdentityMailFromDomainResponse')
 
 const SetIdentityNotificationTopicResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'An empty element returned on a successful request.' })
   .openapi('SetIdentityNotificationTopicResponse')
 
 const SetReceiptRulePositionResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'An empty element returned on a successful request.' })
   .openapi('SetReceiptRulePositionResponse')
 
@@ -2323,14 +1800,10 @@ const RenderedTemplateSchema = z.string().openapi('RenderedTemplate')
 
 const TestRenderTemplateResponseSchema = z
   .object({
-    RenderedTemplate: RenderedTemplateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The complete MIME message rendered by applying the data in the TemplateData parameter to the template specified in the TemplateName parameter.',
-        }),
-    ).exactOptional(),
+    RenderedTemplate: RenderedTemplateSchema.exactOptional().openapi({
+      description:
+        'The complete MIME message rendered by applying the data in the TemplateData parameter to the template specified in the TemplateName parameter.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('TestRenderTemplateResponse')
@@ -2344,32 +1817,28 @@ const MissingRenderingAttributeExceptionSchema = z
   .openapi('MissingRenderingAttributeException')
 
 const UpdateConfigurationSetEventDestinationResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'An empty element returned on a successful request.' })
   .openapi('UpdateConfigurationSetEventDestinationResponse')
 
 const UpdateConfigurationSetTrackingOptionsResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'An empty element returned on a successful request.' })
   .openapi('UpdateConfigurationSetTrackingOptionsResponse')
 
 const UpdateReceiptRuleResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'An empty element returned on a successful request.' })
   .openapi('UpdateReceiptRuleResponse')
 
-const UpdateTemplateResponseSchema = z.object({}).openapi('UpdateTemplateResponse')
+const UpdateTemplateResponseSchema = z.looseObject({}).openapi('UpdateTemplateResponse')
 
 const VerifyDomainDkimResponseSchema = z
   .object({
-    DkimTokens: VerificationTokenListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A set of character strings that represent the domain\'s identity. If the identity is an email address, the tokens represent the domain of that address.</p> <p>Using these tokens, you need to create DNS CNAME records that point to DKIM public keys that are hosted by Amazon SES. Amazon Web Services eventually detects that you\'ve updated your DNS records. This detection process might take up to 72 hours. After successful detection, Amazon SES is able to DKIM-sign email originating from that domain. (This only applies to domain identities, not email address identities.)</p> <p>For more information about creating DNS records using DKIM tokens, see the <a href="https://docs.aws.amazon.com/ses/latest/DeveloperGuide/easy-dkim.html">Amazon SES Developer Guide</a>.</p>',
-        }),
-    ),
+    DkimTokens: VerificationTokenListSchema.openapi({
+      description:
+        '<p>A set of character strings that represent the domain\'s identity. If the identity is an email address, the tokens represent the domain of that address.</p> <p>Using these tokens, you need to create DNS CNAME records that point to DKIM public keys that are hosted by Amazon SES. Amazon Web Services eventually detects that you\'ve updated your DNS records. This detection process might take up to 72 hours. After successful detection, Amazon SES is able to DKIM-sign email originating from that domain. (This only applies to domain identities, not email address identities.)</p> <p>For more information about creating DNS records using DKIM tokens, see the <a href="https://docs.aws.amazon.com/ses/latest/DeveloperGuide/easy-dkim.html">Amazon SES Developer Guide</a>.</p>',
+    }),
   })
   .openapi({
     required: ['DkimTokens'],
@@ -2387,14 +1856,10 @@ const VerifyDomainDkimResponseSchema = z
 
 const VerifyDomainIdentityResponseSchema = z
   .object({
-    VerificationToken: VerificationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A TXT record that you must place in the DNS settings of the domain to complete domain verification with Amazon SES.</p> <p>As Amazon SES searches for the TXT record, the domain\'s verification status is "Pending". When Amazon SES detects the record, the domain\'s verification status changes to "Success". If Amazon SES is unable to detect the record within 72 hours, the domain\'s verification status changes to "Failed." In that case, if you still want to verify the domain, you must restart the verification process from the beginning.</p>',
-        }),
-    ),
+    VerificationToken: VerificationTokenSchema.openapi({
+      description:
+        '<p>A TXT record that you must place in the DNS settings of the domain to complete domain verification with Amazon SES.</p> <p>As Amazon SES searches for the TXT record, the domain\'s verification status is "Pending". When Amazon SES detects the record, the domain\'s verification status changes to "Success". If Amazon SES is unable to detect the record within 72 hours, the domain\'s verification status changes to "Failed." In that case, if you still want to verify the domain, you must restart the verification process from the beginning.</p>',
+    }),
   })
   .openapi({
     required: ['VerificationToken'],
@@ -2405,7 +1870,7 @@ const VerifyDomainIdentityResponseSchema = z
   .openapi('VerifyDomainIdentityResponse')
 
 const VerifyEmailIdentityResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'An empty element returned on a successful request.' })
   .openapi('VerifyEmailIdentityResponse')
 
@@ -2419,17 +1884,13 @@ const BulkEmailDestinationListSchema = z
 
 const CloneReceiptRuleSetRequestSchema = z
   .object({
-    RuleSetName: ReceiptRuleSetNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the rule set to create. The name must:</p> <ul> <li> <p>This value can only contain ASCII letters (a-z, A-Z), numbers (0-9), underscores (_), or dashes (-).</p> </li> <li> <p>Start and end with a letter or number.</p> </li> <li> <p>Contain less than 64 characters.</p> </li> </ul>',
-        }),
-    ),
-    OriginalRuleSetName: ReceiptRuleSetNameSchema.and(
-      z.any().openapi({ description: 'The name of the rule set to clone.' }),
-    ),
+    RuleSetName: ReceiptRuleSetNameSchema.openapi({
+      description:
+        '<p>The name of the rule set to create. The name must:</p> <ul> <li> <p>This value can only contain ASCII letters (a-z, A-Z), numbers (0-9), underscores (_), or dashes (-).</p> </li> <li> <p>Start and end with a letter or number.</p> </li> <li> <p>Contain less than 64 characters.</p> </li> </ul>',
+    }),
+    OriginalRuleSetName: ReceiptRuleSetNameSchema.openapi({
+      description: 'The name of the rule set to clone.',
+    }),
   })
   .openapi({
     required: ['RuleSetName', 'OriginalRuleSetName'],
@@ -2445,22 +1906,14 @@ const ConfigurationSetAttributeListSchema = z
 
 const CreateConfigurationSetEventDestinationRequestSchema = z
   .object({
-    ConfigurationSetName: ConfigurationSetNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the configuration set that the event destination should be associated with.',
-        }),
-    ),
-    EventDestination: EventDestinationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that describes the AWS service that email sending event information will be published to.',
-        }),
-    ),
+    ConfigurationSetName: ConfigurationSetNameSchema.openapi({
+      description:
+        'The name of the configuration set that the event destination should be associated with.',
+    }),
+    EventDestination: EventDestinationSchema.openapi({
+      description:
+        'An object that describes the AWS service that email sending event information will be published to.',
+    }),
   })
   .openapi({
     required: ['ConfigurationSetName', 'EventDestination'],
@@ -2472,13 +1925,9 @@ const CreateConfigurationSetEventDestinationRequestSchema = z
 
 const CreateConfigurationSetRequestSchema = z
   .object({
-    ConfigurationSet: ConfigurationSetSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A data structure that contains the name of the configuration set.',
-        }),
-    ),
+    ConfigurationSet: ConfigurationSetSchema.openapi({
+      description: 'A data structure that contains the name of the configuration set.',
+    }),
   })
   .openapi({
     required: ['ConfigurationSet'],
@@ -2490,14 +1939,10 @@ const CreateConfigurationSetRequestSchema = z
 
 const CreateConfigurationSetTrackingOptionsRequestSchema = z
   .object({
-    ConfigurationSetName: ConfigurationSetNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the configuration set that the tracking options should be associated with.',
-        }),
-    ),
+    ConfigurationSetName: ConfigurationSetNameSchema.openapi({
+      description:
+        'The name of the configuration set that the tracking options should be associated with.',
+    }),
     TrackingOptions: TrackingOptionsSchema,
   })
   .openapi({
@@ -2510,43 +1955,27 @@ const CreateConfigurationSetTrackingOptionsRequestSchema = z
 
 const CreateCustomVerificationEmailTemplateRequestSchema = z
   .object({
-    TemplateName: TemplateNameSchema.and(
-      z.any().openapi({ description: 'The name of the custom verification email template.' }),
-    ),
-    FromEmailAddress: FromAddressSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The email address that the custom verification email is sent from.',
-        }),
-    ),
-    TemplateSubject: SubjectSchema.and(
-      z.any().openapi({ description: 'The subject line of the custom verification email.' }),
-    ),
-    TemplateContent: TemplateContentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The content of the custom verification email. The total size of the email must be less than 10 MB. The message body may contain HTML, with some limitations. For more information, see <a href="https://docs.aws.amazon.com/ses/latest/DeveloperGuide/custom-verification-emails.html#custom-verification-emails-faq">Custom Verification Email Frequently Asked Questions</a> in the <i>Amazon SES Developer Guide</i>.',
-        }),
-    ),
-    SuccessRedirectionURL: SuccessRedirectionURLSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The URL that the recipient of the verification email is sent to if his or her address is successfully verified.',
-        }),
-    ),
-    FailureRedirectionURL: FailureRedirectionURLSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The URL that the recipient of the verification email is sent to if his or her address is not successfully verified.',
-        }),
-    ),
+    TemplateName: TemplateNameSchema.openapi({
+      description: 'The name of the custom verification email template.',
+    }),
+    FromEmailAddress: FromAddressSchema.openapi({
+      description: 'The email address that the custom verification email is sent from.',
+    }),
+    TemplateSubject: SubjectSchema.openapi({
+      description: 'The subject line of the custom verification email.',
+    }),
+    TemplateContent: TemplateContentSchema.openapi({
+      description:
+        'The content of the custom verification email. The total size of the email must be less than 10 MB. The message body may contain HTML, with some limitations. For more information, see <a href="https://docs.aws.amazon.com/ses/latest/DeveloperGuide/custom-verification-emails.html#custom-verification-emails-faq">Custom Verification Email Frequently Asked Questions</a> in the <i>Amazon SES Developer Guide</i>.',
+    }),
+    SuccessRedirectionURL: SuccessRedirectionURLSchema.openapi({
+      description:
+        'The URL that the recipient of the verification email is sent to if his or her address is successfully verified.',
+    }),
+    FailureRedirectionURL: FailureRedirectionURLSchema.openapi({
+      description:
+        'The URL that the recipient of the verification email is sent to if his or her address is not successfully verified.',
+    }),
   })
   .openapi({
     required: [
@@ -2564,14 +1993,10 @@ const CreateCustomVerificationEmailTemplateRequestSchema = z
 
 const CreateReceiptFilterRequestSchema = z
   .object({
-    Filter: ReceiptFilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A data structure that describes the IP address filter to create, which consists of a name, an IP address range, and whether to allow or block mail from it.',
-        }),
-    ),
+    Filter: ReceiptFilterSchema.openapi({
+      description:
+        'A data structure that describes the IP address filter to create, which consists of a name, an IP address range, and whether to allow or block mail from it.',
+    }),
   })
   .openapi({
     required: ['Filter'],
@@ -2583,29 +2008,17 @@ const CreateReceiptFilterRequestSchema = z
 
 const CreateReceiptRuleRequestSchema = z
   .object({
-    RuleSetName: ReceiptRuleSetNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the rule set that the receipt rule will be added to.',
-        }),
-    ),
-    After: ReceiptRuleNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of an existing rule after which the new rule will be placed. If this parameter is null, the new rule will be inserted at the beginning of the rule list.',
-        }),
-    ).exactOptional(),
-    Rule: ReceiptRuleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A data structure that contains the specified rule's name, actions, recipients, domains, enabled status, scan status, and TLS policy.",
-        }),
-    ),
+    RuleSetName: ReceiptRuleSetNameSchema.openapi({
+      description: 'The name of the rule set that the receipt rule will be added to.',
+    }),
+    After: ReceiptRuleNameSchema.exactOptional().openapi({
+      description:
+        'The name of an existing rule after which the new rule will be placed. If this parameter is null, the new rule will be inserted at the beginning of the rule list.',
+    }),
+    Rule: ReceiptRuleSchema.openapi({
+      description:
+        "A data structure that contains the specified rule's name, actions, recipients, domains, enabled status, scan status, and TLS policy.",
+    }),
   })
   .openapi({
     required: ['RuleSetName', 'Rule'],
@@ -2617,14 +2030,10 @@ const CreateReceiptRuleRequestSchema = z
 
 const CreateReceiptRuleSetRequestSchema = z
   .object({
-    RuleSetName: ReceiptRuleSetNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the rule set to create. The name must:</p> <ul> <li> <p>This value can only contain ASCII letters (a-z, A-Z), numbers (0-9), underscores (_), or dashes (-).</p> </li> <li> <p>Start and end with a letter or number.</p> </li> <li> <p>Contain less than 64 characters.</p> </li> </ul>',
-        }),
-    ),
+    RuleSetName: ReceiptRuleSetNameSchema.openapi({
+      description:
+        '<p>The name of the rule set to create. The name must:</p> <ul> <li> <p>This value can only contain ASCII letters (a-z, A-Z), numbers (0-9), underscores (_), or dashes (-).</p> </li> <li> <p>Start and end with a letter or number.</p> </li> <li> <p>Contain less than 64 characters.</p> </li> </ul>',
+    }),
   })
   .openapi({
     required: ['RuleSetName'],
@@ -2636,14 +2045,10 @@ const CreateReceiptRuleSetRequestSchema = z
 
 const CreateTemplateRequestSchema = z
   .object({
-    Template: TemplateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The content of the email, composed of a subject line, an HTML part, and a text-only part.',
-        }),
-    ),
+    Template: TemplateSchema.openapi({
+      description:
+        'The content of the email, composed of a subject line, an HTML part, and a text-only part.',
+    }),
   })
   .openapi({
     required: ['Template'],
@@ -2655,17 +2060,12 @@ const CreateTemplateRequestSchema = z
 
 const DeleteConfigurationSetEventDestinationRequestSchema = z
   .object({
-    ConfigurationSetName: ConfigurationSetNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the configuration set from which to delete the event destination.',
-        }),
-    ),
-    EventDestinationName: EventDestinationNameSchema.and(
-      z.any().openapi({ description: 'The name of the event destination to delete.' }),
-    ),
+    ConfigurationSetName: ConfigurationSetNameSchema.openapi({
+      description: 'The name of the configuration set from which to delete the event destination.',
+    }),
+    EventDestinationName: EventDestinationNameSchema.openapi({
+      description: 'The name of the event destination to delete.',
+    }),
   })
   .openapi({
     required: ['ConfigurationSetName', 'EventDestinationName'],
@@ -2677,9 +2077,9 @@ const DeleteConfigurationSetEventDestinationRequestSchema = z
 
 const DeleteConfigurationSetRequestSchema = z
   .object({
-    ConfigurationSetName: ConfigurationSetNameSchema.and(
-      z.any().openapi({ description: 'The name of the configuration set to delete.' }),
-    ),
+    ConfigurationSetName: ConfigurationSetNameSchema.openapi({
+      description: 'The name of the configuration set to delete.',
+    }),
   })
   .openapi({
     required: ['ConfigurationSetName'],
@@ -2691,14 +2091,10 @@ const DeleteConfigurationSetRequestSchema = z
 
 const DeleteConfigurationSetTrackingOptionsRequestSchema = z
   .object({
-    ConfigurationSetName: ConfigurationSetNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the configuration set from which you want to delete the tracking options.',
-        }),
-    ),
+    ConfigurationSetName: ConfigurationSetNameSchema.openapi({
+      description:
+        'The name of the configuration set from which you want to delete the tracking options.',
+    }),
   })
   .openapi({
     required: ['ConfigurationSetName'],
@@ -2710,14 +2106,9 @@ const DeleteConfigurationSetTrackingOptionsRequestSchema = z
 
 const DeleteCustomVerificationEmailTemplateRequestSchema = z
   .object({
-    TemplateName: TemplateNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the custom verification email template that you want to delete.',
-        }),
-    ),
+    TemplateName: TemplateNameSchema.openapi({
+      description: 'The name of the custom verification email template that you want to delete.',
+    }),
   })
   .openapi({
     required: ['TemplateName'],
@@ -2728,17 +2119,11 @@ const DeleteCustomVerificationEmailTemplateRequestSchema = z
 
 const DeleteIdentityPolicyRequestSchema = z
   .object({
-    Identity: IdentitySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The identity that is associated with the policy that you want to delete. You can specify the identity by using its name or by using its Amazon Resource Name (ARN). Examples: <code>user@example.com</code>, <code>example.com</code>, <code>arn:aws:ses:us-east-1:123456789012:identity/example.com</code>.</p> <p>To successfully call this API, you must own the identity.</p>',
-        }),
-    ),
-    PolicyName: PolicyNameSchema.and(
-      z.any().openapi({ description: 'The name of the policy to be deleted.' }),
-    ),
+    Identity: IdentitySchema.openapi({
+      description:
+        '<p>The identity that is associated with the policy that you want to delete. You can specify the identity by using its name or by using its Amazon Resource Name (ARN). Examples: <code>user@example.com</code>, <code>example.com</code>, <code>arn:aws:ses:us-east-1:123456789012:identity/example.com</code>.</p> <p>To successfully call this API, you must own the identity.</p>',
+    }),
+    PolicyName: PolicyNameSchema.openapi({ description: 'The name of the policy to be deleted.' }),
   })
   .openapi({
     required: ['Identity', 'PolicyName'],
@@ -2750,14 +2135,9 @@ const DeleteIdentityPolicyRequestSchema = z
 
 const DeleteIdentityRequestSchema = z
   .object({
-    Identity: IdentitySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identity to be removed from the list of identities for the AWS Account.',
-        }),
-    ),
+    Identity: IdentitySchema.openapi({
+      description: 'The identity to be removed from the list of identities for the AWS Account.',
+    }),
   })
   .openapi({
     required: ['Identity'],
@@ -2769,9 +2149,9 @@ const DeleteIdentityRequestSchema = z
 
 const DeleteReceiptFilterRequestSchema = z
   .object({
-    FilterName: ReceiptFilterNameSchema.and(
-      z.any().openapi({ description: 'The name of the IP address filter to delete.' }),
-    ),
+    FilterName: ReceiptFilterNameSchema.openapi({
+      description: 'The name of the IP address filter to delete.',
+    }),
   })
   .openapi({
     required: ['FilterName'],
@@ -2783,16 +2163,12 @@ const DeleteReceiptFilterRequestSchema = z
 
 const DeleteReceiptRuleRequestSchema = z
   .object({
-    RuleSetName: ReceiptRuleSetNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the receipt rule set that contains the receipt rule to delete.',
-        }),
-    ),
-    RuleName: ReceiptRuleNameSchema.and(
-      z.any().openapi({ description: 'The name of the receipt rule to delete.' }),
-    ),
+    RuleSetName: ReceiptRuleSetNameSchema.openapi({
+      description: 'The name of the receipt rule set that contains the receipt rule to delete.',
+    }),
+    RuleName: ReceiptRuleNameSchema.openapi({
+      description: 'The name of the receipt rule to delete.',
+    }),
   })
   .openapi({
     required: ['RuleSetName', 'RuleName'],
@@ -2804,9 +2180,9 @@ const DeleteReceiptRuleRequestSchema = z
 
 const DeleteReceiptRuleSetRequestSchema = z
   .object({
-    RuleSetName: ReceiptRuleSetNameSchema.and(
-      z.any().openapi({ description: 'The name of the receipt rule set to delete.' }),
-    ),
+    RuleSetName: ReceiptRuleSetNameSchema.openapi({
+      description: 'The name of the receipt rule set to delete.',
+    }),
   })
   .openapi({
     required: ['RuleSetName'],
@@ -2818,9 +2194,9 @@ const DeleteReceiptRuleSetRequestSchema = z
 
 const DeleteTemplateRequestSchema = z
   .object({
-    TemplateName: TemplateNameSchema.and(
-      z.any().openapi({ description: 'The name of the template to be deleted.' }),
-    ),
+    TemplateName: TemplateNameSchema.openapi({
+      description: 'The name of the template to be deleted.',
+    }),
   })
   .openapi({
     required: ['TemplateName'],
@@ -2832,13 +2208,9 @@ const DeleteTemplateRequestSchema = z
 
 const DeleteVerifiedEmailAddressRequestSchema = z
   .object({
-    EmailAddress: AddressSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An email address to be removed from the list of verified addresses.',
-        }),
-    ),
+    EmailAddress: AddressSchema.openapi({
+      description: 'An email address to be removed from the list of verified addresses.',
+    }),
   })
   .openapi({
     required: ['EmailAddress'],
@@ -2849,7 +2221,7 @@ const DeleteVerifiedEmailAddressRequestSchema = z
   .openapi('DeleteVerifiedEmailAddressRequest')
 
 const DescribeActiveReceiptRuleSetRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'DescribeActiveReceiptRuleSetRequest',
     description:
@@ -2859,12 +2231,12 @@ const DescribeActiveReceiptRuleSetRequestSchema = z
 
 const DescribeConfigurationSetRequestSchema = z
   .object({
-    ConfigurationSetName: ConfigurationSetNameSchema.and(
-      z.any().openapi({ description: 'The name of the configuration set to describe.' }),
-    ),
-    ConfigurationSetAttributeNames: ConfigurationSetAttributeListSchema.and(
-      z.any().openapi({ description: 'A list of configuration set attributes to return.' }),
-    ).exactOptional(),
+    ConfigurationSetName: ConfigurationSetNameSchema.openapi({
+      description: 'The name of the configuration set to describe.',
+    }),
+    ConfigurationSetAttributeNames: ConfigurationSetAttributeListSchema.exactOptional().openapi({
+      description: 'A list of configuration set attributes to return.',
+    }),
   })
   .openapi({
     required: ['ConfigurationSetName'],
@@ -2876,16 +2248,10 @@ const DescribeConfigurationSetRequestSchema = z
 
 const DescribeReceiptRuleRequestSchema = z
   .object({
-    RuleSetName: ReceiptRuleSetNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the receipt rule set that the receipt rule belongs to.',
-        }),
-    ),
-    RuleName: ReceiptRuleNameSchema.and(
-      z.any().openapi({ description: 'The name of the receipt rule.' }),
-    ),
+    RuleSetName: ReceiptRuleSetNameSchema.openapi({
+      description: 'The name of the receipt rule set that the receipt rule belongs to.',
+    }),
+    RuleName: ReceiptRuleNameSchema.openapi({ description: 'The name of the receipt rule.' }),
   })
   .openapi({
     required: ['RuleSetName', 'RuleName'],
@@ -2897,9 +2263,9 @@ const DescribeReceiptRuleRequestSchema = z
 
 const DescribeReceiptRuleSetRequestSchema = z
   .object({
-    RuleSetName: ReceiptRuleSetNameSchema.and(
-      z.any().openapi({ description: 'The name of the receipt rule set to describe.' }),
-    ),
+    RuleSetName: ReceiptRuleSetNameSchema.openapi({
+      description: 'The name of the receipt rule set to describe.',
+    }),
   })
   .openapi({
     required: ['RuleSetName'],
@@ -2915,14 +2281,9 @@ const ExplanationSchema = z.string().openapi('Explanation')
 
 const GetCustomVerificationEmailTemplateRequestSchema = z
   .object({
-    TemplateName: TemplateNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the custom verification email template that you want to retrieve.',
-        }),
-    ),
+    TemplateName: TemplateNameSchema.openapi({
+      description: 'The name of the custom verification email template that you want to retrieve.',
+    }),
   })
   .openapi({
     required: ['TemplateName'],
@@ -2933,14 +2294,9 @@ const GetCustomVerificationEmailTemplateRequestSchema = z
 
 const GetIdentityDkimAttributesRequestSchema = z
   .object({
-    Identities: IdentityListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of one or more verified identities - email addresses, domains, or both.',
-        }),
-    ),
+    Identities: IdentityListSchema.openapi({
+      description: 'A list of one or more verified identities - email addresses, domains, or both.',
+    }),
   })
   .openapi({
     required: ['Identities'],
@@ -2952,9 +2308,7 @@ const GetIdentityDkimAttributesRequestSchema = z
 
 const GetIdentityMailFromDomainAttributesRequestSchema = z
   .object({
-    Identities: IdentityListSchema.and(
-      z.any().openapi({ description: 'A list of one or more identities.' }),
-    ),
+    Identities: IdentityListSchema.openapi({ description: 'A list of one or more identities.' }),
   })
   .openapi({
     required: ['Identities'],
@@ -2966,14 +2320,10 @@ const GetIdentityMailFromDomainAttributesRequestSchema = z
 
 const GetIdentityNotificationAttributesRequestSchema = z
   .object({
-    Identities: IdentityListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of one or more identities. You can specify an identity by using its name or by using its Amazon Resource Name (ARN). Examples: <code>user@example.com</code>, <code>example.com</code>, <code>arn:aws:ses:us-east-1:123456789012:identity/example.com</code>.',
-        }),
-    ),
+    Identities: IdentityListSchema.openapi({
+      description:
+        'A list of one or more identities. You can specify an identity by using its name or by using its Amazon Resource Name (ARN). Examples: <code>user@example.com</code>, <code>example.com</code>, <code>arn:aws:ses:us-east-1:123456789012:identity/example.com</code>.',
+    }),
   })
   .openapi({
     required: ['Identities'],
@@ -2985,22 +2335,14 @@ const GetIdentityNotificationAttributesRequestSchema = z
 
 const GetIdentityPoliciesRequestSchema = z
   .object({
-    Identity: IdentitySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The identity for which the policies will be retrieved. You can specify an identity by using its name or by using its Amazon Resource Name (ARN). Examples: <code>user@example.com</code>, <code>example.com</code>, <code>arn:aws:ses:us-east-1:123456789012:identity/example.com</code>.</p> <p>To successfully call this API, you must own the identity.</p>',
-        }),
-    ),
-    PolicyNames: PolicyNameListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of the names of policies to be retrieved. You can retrieve a maximum of 20 policies at a time. If you do not know the names of the policies that are attached to the identity, you can use <code>ListIdentityPolicies</code>.',
-        }),
-    ),
+    Identity: IdentitySchema.openapi({
+      description:
+        '<p>The identity for which the policies will be retrieved. You can specify an identity by using its name or by using its Amazon Resource Name (ARN). Examples: <code>user@example.com</code>, <code>example.com</code>, <code>arn:aws:ses:us-east-1:123456789012:identity/example.com</code>.</p> <p>To successfully call this API, you must own the identity.</p>',
+    }),
+    PolicyNames: PolicyNameListSchema.openapi({
+      description:
+        'A list of the names of policies to be retrieved. You can retrieve a maximum of 20 policies at a time. If you do not know the names of the policies that are attached to the identity, you can use <code>ListIdentityPolicies</code>.',
+    }),
   })
   .openapi({
     required: ['Identity', 'PolicyNames'],
@@ -3011,9 +2353,7 @@ const GetIdentityPoliciesRequestSchema = z
   .openapi('GetIdentityPoliciesRequest')
 
 const GetIdentityVerificationAttributesRequestSchema = z
-  .object({
-    Identities: IdentityListSchema.and(z.any().openapi({ description: 'A list of identities.' })),
-  })
+  .object({ Identities: IdentityListSchema.openapi({ description: 'A list of identities.' }) })
   .openapi({
     required: ['Identities'],
     title: 'GetIdentityVerificationAttributesRequest',
@@ -3024,9 +2364,9 @@ const GetIdentityVerificationAttributesRequestSchema = z
 
 const GetTemplateRequestSchema = z
   .object({
-    TemplateName: TemplateNameSchema.and(
-      z.any().openapi({ description: 'The name of the template you want to retrieve.' }),
-    ),
+    TemplateName: TemplateNameSchema.openapi({
+      description: 'The name of the template you want to retrieve.',
+    }),
   })
   .openapi({ required: ['TemplateName'], title: 'GetTemplateRequest' })
   .openapi('GetTemplateRequest')
@@ -3037,17 +2377,13 @@ const MaxItemsSchema = z.int().openapi('MaxItems')
 
 const ListConfigurationSetsRequestSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token returned from a previous call to <code>ListConfigurationSets</code> to indicate the position of the configuration set in the configuration set list.',
-        }),
-    ).exactOptional(),
-    MaxItems: MaxItemsSchema.and(
-      z.any().openapi({ description: 'The number of configuration sets to return.' }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'A token returned from a previous call to <code>ListConfigurationSets</code> to indicate the position of the configuration set in the configuration set list.',
+    }),
+    MaxItems: MaxItemsSchema.exactOptional().openapi({
+      description: 'The number of configuration sets to return.',
+    }),
   })
   .openapi({
     title: 'ListConfigurationSetsRequest',
@@ -3061,22 +2397,14 @@ const MaxResultsSchema = z.int().min(1).max(50).openapi('MaxResults')
 
 const ListCustomVerificationEmailTemplatesRequestSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array the contains the name and creation time stamp for each template in your Amazon SES account.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of custom verification email templates to return. This value must be at least 1 and less than or equal to 50. If you do not specify a value, or if you specify a value less than 1 or greater than 50, the operation will return up to 50 results.',
-        }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'An array the contains the name and creation time stamp for each template in your Amazon SES account.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'The maximum number of custom verification email templates to return. This value must be at least 1 and less than or equal to 50. If you do not specify a value, or if you specify a value less than 1 or greater than 50, the operation will return up to 50 results.',
+    }),
   })
   .openapi({
     title: 'ListCustomVerificationEmailTemplatesRequest',
@@ -3088,25 +2416,17 @@ const ListCustomVerificationEmailTemplatesRequestSchema = z
 
 const ListIdentitiesRequestSchema = z
   .object({
-    IdentityType: IdentityTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of the identities to list. Possible values are "EmailAddress" and "Domain". If this parameter is omitted, then all identities will be listed.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z.any().openapi({ description: 'The token to use for pagination.' }),
-    ).exactOptional(),
-    MaxItems: MaxItemsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of identities per page. Possible values are 1-1000 inclusive.',
-        }),
-    ).exactOptional(),
+    IdentityType: IdentityTypeSchema.exactOptional().openapi({
+      description:
+        'The type of the identities to list. Possible values are "EmailAddress" and "Domain". If this parameter is omitted, then all identities will be listed.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token to use for pagination.',
+    }),
+    MaxItems: MaxItemsSchema.exactOptional().openapi({
+      description:
+        'The maximum number of identities per page. Possible values are 1-1000 inclusive.',
+    }),
   })
   .openapi({
     title: 'ListIdentitiesRequest',
@@ -3118,14 +2438,10 @@ const ListIdentitiesRequestSchema = z
 
 const ListIdentityPoliciesRequestSchema = z
   .object({
-    Identity: IdentitySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The identity that is associated with the policy for which the policies will be listed. You can specify an identity by using its name or by using its Amazon Resource Name (ARN). Examples: <code>user@example.com</code>, <code>example.com</code>, <code>arn:aws:ses:us-east-1:123456789012:identity/example.com</code>.</p> <p>To successfully call this API, you must own the identity.</p>',
-        }),
-    ),
+    Identity: IdentitySchema.openapi({
+      description:
+        '<p>The identity that is associated with the policy for which the policies will be listed. You can specify an identity by using its name or by using its Amazon Resource Name (ARN). Examples: <code>user@example.com</code>, <code>example.com</code>, <code>arn:aws:ses:us-east-1:123456789012:identity/example.com</code>.</p> <p>To successfully call this API, you must own the identity.</p>',
+    }),
   })
   .openapi({
     required: ['Identity'],
@@ -3136,7 +2452,7 @@ const ListIdentityPoliciesRequestSchema = z
   .openapi('ListIdentityPoliciesRequest')
 
 const ListReceiptFiltersRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'ListReceiptFiltersRequest',
     description:
@@ -3146,14 +2462,10 @@ const ListReceiptFiltersRequestSchema = z
 
 const ListReceiptRuleSetsRequestSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token returned from a previous call to <code>ListReceiptRuleSets</code> to indicate the position in the receipt rule set list.',
-        }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'A token returned from a previous call to <code>ListReceiptRuleSets</code> to indicate the position in the receipt rule set list.',
+    }),
   })
   .openapi({
     title: 'ListReceiptRuleSetsRequest',
@@ -3165,37 +2477,25 @@ const ListReceiptRuleSetsRequestSchema = z
 
 const ListTemplatesRequestSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token returned from a previous call to <code>ListTemplates</code> to indicate the position in the list of email templates.',
-        }),
-    ).exactOptional(),
-    MaxItems: MaxItemsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of templates to return. This value must be at least 1 and less than or equal to 10. If you do not specify a value, or if you specify a value less than 1 or greater than 10, the operation will return up to 10 results.',
-        }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'A token returned from a previous call to <code>ListTemplates</code> to indicate the position in the list of email templates.',
+    }),
+    MaxItems: MaxItemsSchema.exactOptional().openapi({
+      description:
+        'The maximum number of templates to return. This value must be at least 1 and less than or equal to 10. If you do not specify a value, or if you specify a value less than 1 or greater than 10, the operation will return up to 10 results.',
+    }),
   })
   .openapi({ title: 'ListTemplatesRequest', required: [] })
   .openapi('ListTemplatesRequest')
 
 const MessageSchema = z
   .object({
-    Subject: ContentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The subject of the message: A short summary of the content, which will appear in the recipient's inbox.",
-        }),
-    ),
-    Body: BodySchema.and(z.any().openapi({ description: 'The message body.' })),
+    Subject: ContentSchema.openapi({
+      description:
+        "The subject of the message: A short summary of the content, which will appear in the recipient's inbox.",
+    }),
+    Body: BodySchema.openapi({ description: 'The message body.' }),
   })
   .openapi({
     required: ['Subject', 'Body'],
@@ -3205,25 +2505,17 @@ const MessageSchema = z
 
 const MessageDsnSchema = z
   .object({
-    ReportingMta: ReportingMtaSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The reporting MTA that attempted to deliver the message, formatted as specified in <a href="https://tools.ietf.org/html/rfc3464">RFC 3464</a> (<code>mta-name-type; mta-name</code>). The default value is <code>dns; inbound-smtp.[region].amazonaws.com</code>.',
-        }),
-    ),
-    ArrivalDate: ArrivalDateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When the message was received by the reporting mail transfer agent (MTA), in <a href="https://www.ietf.org/rfc/rfc0822.txt">RFC 822</a> date-time format.',
-        }),
-    ).exactOptional(),
-    ExtensionFields: ExtensionFieldListSchema.and(
-      z.any().openapi({ description: 'Additional X-headers to include in the DSN.' }),
-    ).exactOptional(),
+    ReportingMta: ReportingMtaSchema.openapi({
+      description:
+        'The reporting MTA that attempted to deliver the message, formatted as specified in <a href="https://tools.ietf.org/html/rfc3464">RFC 3464</a> (<code>mta-name-type; mta-name</code>). The default value is <code>dns; inbound-smtp.[region].amazonaws.com</code>.',
+    }),
+    ArrivalDate: ArrivalDateSchema.exactOptional().openapi({
+      description:
+        'When the message was received by the reporting mail transfer agent (MTA), in <a href="https://www.ietf.org/rfc/rfc0822.txt">RFC 822</a> date-time format.',
+    }),
+    ExtensionFields: ExtensionFieldListSchema.exactOptional().openapi({
+      description: 'Additional X-headers to include in the DSN.',
+    }),
   })
   .openapi({
     required: ['ReportingMta'],
@@ -3238,22 +2530,14 @@ const NotificationTypeSchema = z
 
 const PutConfigurationSetDeliveryOptionsRequestSchema = z
   .object({
-    ConfigurationSetName: ConfigurationSetNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the configuration set that you want to specify the delivery options for.',
-        }),
-    ),
-    DeliveryOptions: DeliveryOptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether messages that use the configuration set are required to use Transport Layer Security (TLS).',
-        }),
-    ).exactOptional(),
+    ConfigurationSetName: ConfigurationSetNameSchema.openapi({
+      description:
+        'The name of the configuration set that you want to specify the delivery options for.',
+    }),
+    DeliveryOptions: DeliveryOptionsSchema.exactOptional().openapi({
+      description:
+        'Specifies whether messages that use the configuration set are required to use Transport Layer Security (TLS).',
+    }),
   })
   .openapi({
     required: ['ConfigurationSetName'],
@@ -3264,30 +2548,18 @@ const PutConfigurationSetDeliveryOptionsRequestSchema = z
 
 const PutIdentityPolicyRequestSchema = z
   .object({
-    Identity: IdentitySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The identity that the policy will apply to. You can specify an identity by using its name or by using its Amazon Resource Name (ARN). Examples: <code>user@example.com</code>, <code>example.com</code>, <code>arn:aws:ses:us-east-1:123456789012:identity/example.com</code>.</p> <p>To successfully call this API, you must own the identity.</p>',
-        }),
-    ),
-    PolicyName: PolicyNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the policy.</p> <p>The policy name cannot exceed 64 characters and can only include alphanumeric characters, dashes, and underscores.</p>',
-        }),
-    ),
-    Policy: PolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The text of the policy in JSON format. The policy cannot exceed 4 KB.</p> <p>For information about the syntax of sending authorization policies, see the <a href="https://docs.aws.amazon.com/ses/latest/DeveloperGuide/sending-authorization-policies.html">Amazon SES Developer Guide</a>. </p>',
-        }),
-    ),
+    Identity: IdentitySchema.openapi({
+      description:
+        '<p>The identity that the policy will apply to. You can specify an identity by using its name or by using its Amazon Resource Name (ARN). Examples: <code>user@example.com</code>, <code>example.com</code>, <code>arn:aws:ses:us-east-1:123456789012:identity/example.com</code>.</p> <p>To successfully call this API, you must own the identity.</p>',
+    }),
+    PolicyName: PolicyNameSchema.openapi({
+      description:
+        '<p>The name of the policy.</p> <p>The policy name cannot exceed 64 characters and can only include alphanumeric characters, dashes, and underscores.</p>',
+    }),
+    Policy: PolicySchema.openapi({
+      description:
+        '<p>The text of the policy in JSON format. The policy cannot exceed 4 KB.</p> <p>For information about the syntax of sending authorization policies, see the <a href="https://docs.aws.amazon.com/ses/latest/DeveloperGuide/sending-authorization-policies.html">Amazon SES Developer Guide</a>. </p>',
+    }),
   })
   .openapi({
     required: ['Identity', 'PolicyName', 'Policy'],
@@ -3299,14 +2571,10 @@ const PutIdentityPolicyRequestSchema = z
 
 const RawMessageSchema = z
   .object({
-    Data: RawMessageDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The raw data of the message. This data needs to base64-encoded if you are accessing Amazon SES directly through the HTTPS interface. If you are accessing Amazon SES using an AWS SDK, the SDK takes care of the base 64-encoding for you. In all cases, the client must ensure that the message format complies with Internet email standards regarding email header fields, MIME types, and MIME encoding.</p> <p>The To:, CC:, and BCC: headers in the raw message can contain a group list.</p> <p>If you are using <code>SendRawEmail</code> with sending authorization, you can include X-headers in the raw message to specify the "Source," "From," and "Return-Path" addresses. For more information, see the documentation for <code>SendRawEmail</code>. </p> <important> <p>Do not include these X-headers in the DKIM signature, because they are removed by Amazon SES before sending the email.</p> </important> <p>For more information, go to the <a href="https://docs.aws.amazon.com/ses/latest/DeveloperGuide/send-email-raw.html">Amazon SES Developer Guide</a>.</p>',
-        }),
-    ),
+    Data: RawMessageDataSchema.openapi({
+      description:
+        '<p>The raw data of the message. This data needs to base64-encoded if you are accessing Amazon SES directly through the HTTPS interface. If you are accessing Amazon SES using an AWS SDK, the SDK takes care of the base 64-encoding for you. In all cases, the client must ensure that the message format complies with Internet email standards regarding email header fields, MIME types, and MIME encoding.</p> <p>The To:, CC:, and BCC: headers in the raw message can contain a group list.</p> <p>If you are using <code>SendRawEmail</code> with sending authorization, you can include X-headers in the raw message to specify the "Source," "From," and "Return-Path" addresses. For more information, see the documentation for <code>SendRawEmail</code>. </p> <important> <p>Do not include these X-headers in the DKIM signature, because they are removed by Amazon SES before sending the email.</p> </important> <p>For more information, go to the <a href="https://docs.aws.amazon.com/ses/latest/DeveloperGuide/send-email-raw.html">Amazon SES Developer Guide</a>.</p>',
+    }),
   })
   .openapi({ required: ['Data'], description: 'Represents the raw data of the message.' })
   .openapi('RawMessage')
@@ -3315,17 +2583,13 @@ const ReceiptRuleNamesListSchema = z.array(ReceiptRuleNameSchema).openapi('Recei
 
 const ReorderReceiptRuleSetRequestSchema = z
   .object({
-    RuleSetName: ReceiptRuleSetNameSchema.and(
-      z.any().openapi({ description: 'The name of the receipt rule set to reorder.' }),
-    ),
-    RuleNames: ReceiptRuleNamesListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A list of the specified receipt rule set's receipt rules in the order that you want to put them.",
-        }),
-    ),
+    RuleSetName: ReceiptRuleSetNameSchema.openapi({
+      description: 'The name of the receipt rule set to reorder.',
+    }),
+    RuleNames: ReceiptRuleNamesListSchema.openapi({
+      description:
+        "A list of the specified receipt rule set's receipt rules in the order that you want to put them.",
+    }),
   })
   .openapi({
     required: ['RuleSetName', 'RuleNames'],
@@ -3337,49 +2601,29 @@ const ReorderReceiptRuleSetRequestSchema = z
 
 const SendBounceRequestSchema = z
   .object({
-    OriginalMessageId: MessageIdSchema.and(
-      z.any().openapi({ description: 'The message ID of the message to be bounced.' }),
-    ),
-    BounceSender: AddressSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The address to use in the "From" header of the bounce message. This must be an identity that you have verified with Amazon SES.',
-        }),
-    ),
-    Explanation: ExplanationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Human-readable text for the bounce message to explain the failure. If not specified, the text will be auto-generated based on the bounced recipient information.',
-        }),
-    ).exactOptional(),
-    MessageDsn: MessageDsnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Message-related DSN fields. If not specified, Amazon SES will choose the values.',
-        }),
-    ).exactOptional(),
-    BouncedRecipientInfoList: BouncedRecipientInfoListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of recipients of the bounced message, including the information required to create the Delivery Status Notifications (DSNs) for the recipients. You must specify at least one <code>BouncedRecipientInfo</code> in the list.',
-        }),
-    ),
-    BounceSenderArn: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This parameter is used only for sending authorization. It is the ARN of the identity that is associated with the sending authorization policy that permits you to use the address in the "From" header of the bounce. For more information about sending authorization, see the <a href="https://docs.aws.amazon.com/ses/latest/DeveloperGuide/sending-authorization.html">Amazon SES Developer Guide</a>.',
-        }),
-    ).exactOptional(),
+    OriginalMessageId: MessageIdSchema.openapi({
+      description: 'The message ID of the message to be bounced.',
+    }),
+    BounceSender: AddressSchema.openapi({
+      description:
+        'The address to use in the "From" header of the bounce message. This must be an identity that you have verified with Amazon SES.',
+    }),
+    Explanation: ExplanationSchema.exactOptional().openapi({
+      description:
+        'Human-readable text for the bounce message to explain the failure. If not specified, the text will be auto-generated based on the bounced recipient information.',
+    }),
+    MessageDsn: MessageDsnSchema.exactOptional().openapi({
+      description:
+        'Message-related DSN fields. If not specified, Amazon SES will choose the values.',
+    }),
+    BouncedRecipientInfoList: BouncedRecipientInfoListSchema.openapi({
+      description:
+        'A list of recipients of the bounced message, including the information required to create the Delivery Status Notifications (DSNs) for the recipients. You must specify at least one <code>BouncedRecipientInfo</code> in the list.',
+    }),
+    BounceSenderArn: AmazonResourceNameSchema.exactOptional().openapi({
+      description:
+        'This parameter is used only for sending authorization. It is the ARN of the identity that is associated with the sending authorization policy that permits you to use the address in the "From" header of the bounce. For more information about sending authorization, see the <a href="https://docs.aws.amazon.com/ses/latest/DeveloperGuide/sending-authorization.html">Amazon SES Developer Guide</a>.',
+    }),
   })
   .openapi({
     required: ['OriginalMessageId', 'BounceSender', 'BouncedRecipientInfoList'],
@@ -3391,84 +2635,48 @@ const SendBounceRequestSchema = z
 
 const SendBulkTemplatedEmailRequestSchema = z
   .object({
-    Source: AddressSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The email address that is sending the email. This email address must be either individually verified with Amazon SES, or from a domain that has been verified with Amazon SES. For information about verifying identities, see the <a href="https://docs.aws.amazon.com/ses/latest/DeveloperGuide/verify-addresses-and-domains.html">Amazon SES Developer Guide</a>.</p> <p>If you are sending on behalf of another user and have been permitted to do so by a sending authorization policy, then you must also specify the <code>SourceArn</code> parameter. For more information about sending authorization, see the <a href="https://docs.aws.amazon.com/ses/latest/DeveloperGuide/sending-authorization.html">Amazon SES Developer Guide</a>.</p> <note> <p>Amazon SES does not support the SMTPUTF8 extension, as described in <a href="https://tools.ietf.org/html/rfc6531">RFC6531</a>. For this reason, the <i>local part</i> of a source email address (the part of the email address that precedes the @ sign) may only contain <a href="https://en.wikipedia.org/wiki/Email_address#Local-part">7-bit ASCII characters</a>. If the <i>domain part</i> of an address (the part after the @ sign) contains non-ASCII characters, they must be encoded using Punycode, as described in <a href="https://tools.ietf.org/html/rfc3492.html">RFC3492</a>. The sender name (also known as the <i>friendly name</i>) may contain non-ASCII characters. These characters must be encoded using MIME encoded-word syntax, as described in <a href="https://tools.ietf.org/html/rfc2047">RFC 2047</a>. MIME encoded-word syntax uses the following form: <code>=?charset?encoding?encoded-text?=</code>.</p> </note>',
-        }),
-    ),
-    SourceArn: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>This parameter is used only for sending authorization. It is the ARN of the identity that is associated with the sending authorization policy that permits you to send for the email address specified in the <code>Source</code> parameter.</p> <p>For example, if the owner of <code>example.com</code> (which has ARN <code>arn:aws:ses:us-east-1:123456789012:identity/example.com</code>) attaches a policy to it that authorizes you to send from <code>user@example.com</code>, then you would specify the <code>SourceArn</code> to be <code>arn:aws:ses:us-east-1:123456789012:identity/example.com</code>, and the <code>Source</code> to be <code>user@example.com</code>.</p> <p>For more information about sending authorization, see the <a href="https://docs.aws.amazon.com/ses/latest/DeveloperGuide/sending-authorization.html">Amazon SES Developer Guide</a>.</p>',
-        }),
-    ).exactOptional(),
-    ReplyToAddresses: AddressListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The reply-to email address(es) for the message. If the recipient replies to the message, each reply-to address will receive the reply.',
-        }),
-    ).exactOptional(),
-    ReturnPath: AddressSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The email address that bounces and complaints will be forwarded to when feedback forwarding is enabled. If the message cannot be delivered to the recipient, then an error message will be returned from the recipient's ISP; this message will then be forwarded to the email address specified by the <code>ReturnPath</code> parameter. The <code>ReturnPath</code> parameter is never overwritten. This email address must be either individually verified with Amazon SES, or from a domain that has been verified with Amazon SES. ",
-        }),
-    ).exactOptional(),
-    ReturnPathArn: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>This parameter is used only for sending authorization. It is the ARN of the identity that is associated with the sending authorization policy that permits you to use the email address specified in the <code>ReturnPath</code> parameter.</p> <p>For example, if the owner of <code>example.com</code> (which has ARN <code>arn:aws:ses:us-east-1:123456789012:identity/example.com</code>) attaches a policy to it that authorizes you to use <code>feedback@example.com</code>, then you would specify the <code>ReturnPathArn</code> to be <code>arn:aws:ses:us-east-1:123456789012:identity/example.com</code>, and the <code>ReturnPath</code> to be <code>feedback@example.com</code>.</p> <p>For more information about sending authorization, see the <a href="https://docs.aws.amazon.com/ses/latest/DeveloperGuide/sending-authorization.html">Amazon SES Developer Guide</a>.</p>',
-        }),
-    ).exactOptional(),
-    ConfigurationSetName: ConfigurationSetNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the configuration set to use when you send an email using <code>SendBulkTemplatedEmail</code>.',
-        }),
-    ).exactOptional(),
-    DefaultTags: MessageTagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of tags, in the form of name/value pairs, to apply to an email that you send to a destination using <code>SendBulkTemplatedEmail</code>.',
-        }),
-    ).exactOptional(),
-    Template: TemplateNameSchema.and(
-      z.any().openapi({ description: 'The template to use when sending this email.' }),
-    ),
-    TemplateArn: AmazonResourceNameSchema.and(
-      z.any().openapi({ description: 'The ARN of the template to use when sending this email.' }),
-    ).exactOptional(),
-    DefaultTemplateData: TemplateDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of replacement values to apply to the template when replacement data is not specified in a Destination object. These values act as a default or fallback option when no other data is available.</p> <p>The template data is a JSON object, typically consisting of key-value pairs in which the keys correspond to replacement tags in the email template.</p>',
-        }),
-    ).exactOptional(),
-    Destinations: BulkEmailDestinationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'One or more <code>Destination</code> objects. All of the recipients in a <code>Destination</code> will receive the same version of the email. You can specify up to 50 <code>Destination</code> objects within a <code>Destinations</code> array.',
-        }),
-    ),
+    Source: AddressSchema.openapi({
+      description:
+        '<p>The email address that is sending the email. This email address must be either individually verified with Amazon SES, or from a domain that has been verified with Amazon SES. For information about verifying identities, see the <a href="https://docs.aws.amazon.com/ses/latest/DeveloperGuide/verify-addresses-and-domains.html">Amazon SES Developer Guide</a>.</p> <p>If you are sending on behalf of another user and have been permitted to do so by a sending authorization policy, then you must also specify the <code>SourceArn</code> parameter. For more information about sending authorization, see the <a href="https://docs.aws.amazon.com/ses/latest/DeveloperGuide/sending-authorization.html">Amazon SES Developer Guide</a>.</p> <note> <p>Amazon SES does not support the SMTPUTF8 extension, as described in <a href="https://tools.ietf.org/html/rfc6531">RFC6531</a>. For this reason, the <i>local part</i> of a source email address (the part of the email address that precedes the @ sign) may only contain <a href="https://en.wikipedia.org/wiki/Email_address#Local-part">7-bit ASCII characters</a>. If the <i>domain part</i> of an address (the part after the @ sign) contains non-ASCII characters, they must be encoded using Punycode, as described in <a href="https://tools.ietf.org/html/rfc3492.html">RFC3492</a>. The sender name (also known as the <i>friendly name</i>) may contain non-ASCII characters. These characters must be encoded using MIME encoded-word syntax, as described in <a href="https://tools.ietf.org/html/rfc2047">RFC 2047</a>. MIME encoded-word syntax uses the following form: <code>=?charset?encoding?encoded-text?=</code>.</p> </note>',
+    }),
+    SourceArn: AmazonResourceNameSchema.exactOptional().openapi({
+      description:
+        '<p>This parameter is used only for sending authorization. It is the ARN of the identity that is associated with the sending authorization policy that permits you to send for the email address specified in the <code>Source</code> parameter.</p> <p>For example, if the owner of <code>example.com</code> (which has ARN <code>arn:aws:ses:us-east-1:123456789012:identity/example.com</code>) attaches a policy to it that authorizes you to send from <code>user@example.com</code>, then you would specify the <code>SourceArn</code> to be <code>arn:aws:ses:us-east-1:123456789012:identity/example.com</code>, and the <code>Source</code> to be <code>user@example.com</code>.</p> <p>For more information about sending authorization, see the <a href="https://docs.aws.amazon.com/ses/latest/DeveloperGuide/sending-authorization.html">Amazon SES Developer Guide</a>.</p>',
+    }),
+    ReplyToAddresses: AddressListSchema.exactOptional().openapi({
+      description:
+        'The reply-to email address(es) for the message. If the recipient replies to the message, each reply-to address will receive the reply.',
+    }),
+    ReturnPath: AddressSchema.exactOptional().openapi({
+      description:
+        "The email address that bounces and complaints will be forwarded to when feedback forwarding is enabled. If the message cannot be delivered to the recipient, then an error message will be returned from the recipient's ISP; this message will then be forwarded to the email address specified by the <code>ReturnPath</code> parameter. The <code>ReturnPath</code> parameter is never overwritten. This email address must be either individually verified with Amazon SES, or from a domain that has been verified with Amazon SES. ",
+    }),
+    ReturnPathArn: AmazonResourceNameSchema.exactOptional().openapi({
+      description:
+        '<p>This parameter is used only for sending authorization. It is the ARN of the identity that is associated with the sending authorization policy that permits you to use the email address specified in the <code>ReturnPath</code> parameter.</p> <p>For example, if the owner of <code>example.com</code> (which has ARN <code>arn:aws:ses:us-east-1:123456789012:identity/example.com</code>) attaches a policy to it that authorizes you to use <code>feedback@example.com</code>, then you would specify the <code>ReturnPathArn</code> to be <code>arn:aws:ses:us-east-1:123456789012:identity/example.com</code>, and the <code>ReturnPath</code> to be <code>feedback@example.com</code>.</p> <p>For more information about sending authorization, see the <a href="https://docs.aws.amazon.com/ses/latest/DeveloperGuide/sending-authorization.html">Amazon SES Developer Guide</a>.</p>',
+    }),
+    ConfigurationSetName: ConfigurationSetNameSchema.exactOptional().openapi({
+      description:
+        'The name of the configuration set to use when you send an email using <code>SendBulkTemplatedEmail</code>.',
+    }),
+    DefaultTags: MessageTagListSchema.exactOptional().openapi({
+      description:
+        'A list of tags, in the form of name/value pairs, to apply to an email that you send to a destination using <code>SendBulkTemplatedEmail</code>.',
+    }),
+    Template: TemplateNameSchema.openapi({
+      description: 'The template to use when sending this email.',
+    }),
+    TemplateArn: AmazonResourceNameSchema.exactOptional().openapi({
+      description: 'The ARN of the template to use when sending this email.',
+    }),
+    DefaultTemplateData: TemplateDataSchema.exactOptional().openapi({
+      description:
+        '<p>A list of replacement values to apply to the template when replacement data is not specified in a Destination object. These values act as a default or fallback option when no other data is available.</p> <p>The template data is a JSON object, typically consisting of key-value pairs in which the keys correspond to replacement tags in the email template.</p>',
+    }),
+    Destinations: BulkEmailDestinationListSchema.openapi({
+      description:
+        'One or more <code>Destination</code> objects. All of the recipients in a <code>Destination</code> will receive the same version of the email. You can specify up to 50 <code>Destination</code> objects within a <code>Destinations</code> array.',
+    }),
   })
   .openapi({
     required: ['Source', 'Template', 'Destinations'],
@@ -3480,24 +2688,14 @@ const SendBulkTemplatedEmailRequestSchema = z
 
 const SendCustomVerificationEmailRequestSchema = z
   .object({
-    EmailAddress: AddressSchema.and(
-      z.any().openapi({ description: 'The email address to verify.' }),
-    ),
-    TemplateName: TemplateNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the custom verification email template to use when sending the verification email.',
-        }),
-    ),
-    ConfigurationSetName: ConfigurationSetNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Name of a configuration set to use when sending the verification email.',
-        }),
-    ).exactOptional(),
+    EmailAddress: AddressSchema.openapi({ description: 'The email address to verify.' }),
+    TemplateName: TemplateNameSchema.openapi({
+      description:
+        'The name of the custom verification email template to use when sending the verification email.',
+    }),
+    ConfigurationSetName: ConfigurationSetNameSchema.exactOptional().openapi({
+      description: 'Name of a configuration set to use when sending the verification email.',
+    }),
   })
   .openapi({
     required: ['EmailAddress', 'TemplateName'],
@@ -3509,70 +2707,38 @@ const SendCustomVerificationEmailRequestSchema = z
 
 const SendEmailRequestSchema = z
   .object({
-    Source: AddressSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The email address that is sending the email. This email address must be either individually verified with Amazon SES, or from a domain that has been verified with Amazon SES. For information about verifying identities, see the <a href="https://docs.aws.amazon.com/ses/latest/DeveloperGuide/verify-addresses-and-domains.html">Amazon SES Developer Guide</a>.</p> <p>If you are sending on behalf of another user and have been permitted to do so by a sending authorization policy, then you must also specify the <code>SourceArn</code> parameter. For more information about sending authorization, see the <a href="https://docs.aws.amazon.com/ses/latest/DeveloperGuide/sending-authorization.html">Amazon SES Developer Guide</a>.</p> <note> <p>Amazon SES does not support the SMTPUTF8 extension, as described in <a href="https://tools.ietf.org/html/rfc6531">RFC6531</a>. For this reason, the <i>local part</i> of a source email address (the part of the email address that precedes the @ sign) may only contain <a href="https://en.wikipedia.org/wiki/Email_address#Local-part">7-bit ASCII characters</a>. If the <i>domain part</i> of an address (the part after the @ sign) contains non-ASCII characters, they must be encoded using Punycode, as described in <a href="https://tools.ietf.org/html/rfc3492.html">RFC3492</a>. The sender name (also known as the <i>friendly name</i>) may contain non-ASCII characters. These characters must be encoded using MIME encoded-word syntax, as described in <a href="https://tools.ietf.org/html/rfc2047">RFC 2047</a>. MIME encoded-word syntax uses the following form: <code>=?charset?encoding?encoded-text?=</code>.</p> </note>',
-        }),
-    ),
-    Destination: DestinationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The destination for this email, composed of To:, CC:, and BCC: fields.',
-        }),
-    ),
-    Message: MessageSchema.and(z.any().openapi({ description: 'The message to be sent.' })),
-    ReplyToAddresses: AddressListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The reply-to email address(es) for the message. If the recipient replies to the message, each reply-to address will receive the reply.',
-        }),
-    ).exactOptional(),
-    ReturnPath: AddressSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The email address that bounces and complaints will be forwarded to when feedback forwarding is enabled. If the message cannot be delivered to the recipient, then an error message will be returned from the recipient's ISP; this message will then be forwarded to the email address specified by the <code>ReturnPath</code> parameter. The <code>ReturnPath</code> parameter is never overwritten. This email address must be either individually verified with Amazon SES, or from a domain that has been verified with Amazon SES. ",
-        }),
-    ).exactOptional(),
-    SourceArn: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>This parameter is used only for sending authorization. It is the ARN of the identity that is associated with the sending authorization policy that permits you to send for the email address specified in the <code>Source</code> parameter.</p> <p>For example, if the owner of <code>example.com</code> (which has ARN <code>arn:aws:ses:us-east-1:123456789012:identity/example.com</code>) attaches a policy to it that authorizes you to send from <code>user@example.com</code>, then you would specify the <code>SourceArn</code> to be <code>arn:aws:ses:us-east-1:123456789012:identity/example.com</code>, and the <code>Source</code> to be <code>user@example.com</code>.</p> <p>For more information about sending authorization, see the <a href="https://docs.aws.amazon.com/ses/latest/DeveloperGuide/sending-authorization.html">Amazon SES Developer Guide</a>.</p>',
-        }),
-    ).exactOptional(),
-    ReturnPathArn: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>This parameter is used only for sending authorization. It is the ARN of the identity that is associated with the sending authorization policy that permits you to use the email address specified in the <code>ReturnPath</code> parameter.</p> <p>For example, if the owner of <code>example.com</code> (which has ARN <code>arn:aws:ses:us-east-1:123456789012:identity/example.com</code>) attaches a policy to it that authorizes you to use <code>feedback@example.com</code>, then you would specify the <code>ReturnPathArn</code> to be <code>arn:aws:ses:us-east-1:123456789012:identity/example.com</code>, and the <code>ReturnPath</code> to be <code>feedback@example.com</code>.</p> <p>For more information about sending authorization, see the <a href="https://docs.aws.amazon.com/ses/latest/DeveloperGuide/sending-authorization.html">Amazon SES Developer Guide</a>.</p>',
-        }),
-    ).exactOptional(),
-    Tags: MessageTagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of tags, in the form of name/value pairs, to apply to an email that you send using <code>SendEmail</code>. Tags correspond to characteristics of the email that you define, so that you can publish email sending events.',
-        }),
-    ).exactOptional(),
-    ConfigurationSetName: ConfigurationSetNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the configuration set to use when you send an email using <code>SendEmail</code>.',
-        }),
-    ).exactOptional(),
+    Source: AddressSchema.openapi({
+      description:
+        '<p>The email address that is sending the email. This email address must be either individually verified with Amazon SES, or from a domain that has been verified with Amazon SES. For information about verifying identities, see the <a href="https://docs.aws.amazon.com/ses/latest/DeveloperGuide/verify-addresses-and-domains.html">Amazon SES Developer Guide</a>.</p> <p>If you are sending on behalf of another user and have been permitted to do so by a sending authorization policy, then you must also specify the <code>SourceArn</code> parameter. For more information about sending authorization, see the <a href="https://docs.aws.amazon.com/ses/latest/DeveloperGuide/sending-authorization.html">Amazon SES Developer Guide</a>.</p> <note> <p>Amazon SES does not support the SMTPUTF8 extension, as described in <a href="https://tools.ietf.org/html/rfc6531">RFC6531</a>. For this reason, the <i>local part</i> of a source email address (the part of the email address that precedes the @ sign) may only contain <a href="https://en.wikipedia.org/wiki/Email_address#Local-part">7-bit ASCII characters</a>. If the <i>domain part</i> of an address (the part after the @ sign) contains non-ASCII characters, they must be encoded using Punycode, as described in <a href="https://tools.ietf.org/html/rfc3492.html">RFC3492</a>. The sender name (also known as the <i>friendly name</i>) may contain non-ASCII characters. These characters must be encoded using MIME encoded-word syntax, as described in <a href="https://tools.ietf.org/html/rfc2047">RFC 2047</a>. MIME encoded-word syntax uses the following form: <code>=?charset?encoding?encoded-text?=</code>.</p> </note>',
+    }),
+    Destination: DestinationSchema.openapi({
+      description: 'The destination for this email, composed of To:, CC:, and BCC: fields.',
+    }),
+    Message: MessageSchema.openapi({ description: 'The message to be sent.' }),
+    ReplyToAddresses: AddressListSchema.exactOptional().openapi({
+      description:
+        'The reply-to email address(es) for the message. If the recipient replies to the message, each reply-to address will receive the reply.',
+    }),
+    ReturnPath: AddressSchema.exactOptional().openapi({
+      description:
+        "The email address that bounces and complaints will be forwarded to when feedback forwarding is enabled. If the message cannot be delivered to the recipient, then an error message will be returned from the recipient's ISP; this message will then be forwarded to the email address specified by the <code>ReturnPath</code> parameter. The <code>ReturnPath</code> parameter is never overwritten. This email address must be either individually verified with Amazon SES, or from a domain that has been verified with Amazon SES. ",
+    }),
+    SourceArn: AmazonResourceNameSchema.exactOptional().openapi({
+      description:
+        '<p>This parameter is used only for sending authorization. It is the ARN of the identity that is associated with the sending authorization policy that permits you to send for the email address specified in the <code>Source</code> parameter.</p> <p>For example, if the owner of <code>example.com</code> (which has ARN <code>arn:aws:ses:us-east-1:123456789012:identity/example.com</code>) attaches a policy to it that authorizes you to send from <code>user@example.com</code>, then you would specify the <code>SourceArn</code> to be <code>arn:aws:ses:us-east-1:123456789012:identity/example.com</code>, and the <code>Source</code> to be <code>user@example.com</code>.</p> <p>For more information about sending authorization, see the <a href="https://docs.aws.amazon.com/ses/latest/DeveloperGuide/sending-authorization.html">Amazon SES Developer Guide</a>.</p>',
+    }),
+    ReturnPathArn: AmazonResourceNameSchema.exactOptional().openapi({
+      description:
+        '<p>This parameter is used only for sending authorization. It is the ARN of the identity that is associated with the sending authorization policy that permits you to use the email address specified in the <code>ReturnPath</code> parameter.</p> <p>For example, if the owner of <code>example.com</code> (which has ARN <code>arn:aws:ses:us-east-1:123456789012:identity/example.com</code>) attaches a policy to it that authorizes you to use <code>feedback@example.com</code>, then you would specify the <code>ReturnPathArn</code> to be <code>arn:aws:ses:us-east-1:123456789012:identity/example.com</code>, and the <code>ReturnPath</code> to be <code>feedback@example.com</code>.</p> <p>For more information about sending authorization, see the <a href="https://docs.aws.amazon.com/ses/latest/DeveloperGuide/sending-authorization.html">Amazon SES Developer Guide</a>.</p>',
+    }),
+    Tags: MessageTagListSchema.exactOptional().openapi({
+      description:
+        'A list of tags, in the form of name/value pairs, to apply to an email that you send using <code>SendEmail</code>. Tags correspond to characteristics of the email that you define, so that you can publish email sending events.',
+    }),
+    ConfigurationSetName: ConfigurationSetNameSchema.exactOptional().openapi({
+      description:
+        'The name of the configuration set to use when you send an email using <code>SendEmail</code>.',
+    }),
   })
   .openapi({
     required: ['Source', 'Destination', 'Message'],
@@ -3584,70 +2750,38 @@ const SendEmailRequestSchema = z
 
 const SendRawEmailRequestSchema = z
   .object({
-    Source: AddressSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The identity\'s email address. If you do not provide a value for this parameter, you must specify a "From" address in the raw text of the message. (You can also specify both.)</p> <note> <p>Amazon SES does not support the SMTPUTF8 extension, as described in<a href="https://tools.ietf.org/html/rfc6531">RFC6531</a>. For this reason, the <i>local part</i> of a source email address (the part of the email address that precedes the @ sign) may only contain <a href="https://en.wikipedia.org/wiki/Email_address#Local-part">7-bit ASCII characters</a>. If the <i>domain part</i> of an address (the part after the @ sign) contains non-ASCII characters, they must be encoded using Punycode, as described in <a href="https://tools.ietf.org/html/rfc3492.html">RFC3492</a>. The sender name (also known as the <i>friendly name</i>) may contain non-ASCII characters. These characters must be encoded using MIME encoded-word syntax, as described in <a href="https://tools.ietf.org/html/rfc2047">RFC 2047</a>. MIME encoded-word syntax uses the following form: <code>=?charset?encoding?encoded-text?=</code>.</p> </note> <p>If you specify the <code>Source</code> parameter and have feedback forwarding enabled, then bounces and complaints will be sent to this email address. This takes precedence over any Return-Path header that you might include in the raw text of the message.</p>',
-        }),
-    ).exactOptional(),
-    Destinations: AddressListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of destinations for the message, consisting of To:, CC:, and BCC: addresses.',
-        }),
-    ).exactOptional(),
-    RawMessage: RawMessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The raw email message itself. The message has to meet the following criteria:</p> <ul> <li> <p>The message has to contain a header and a body, separated by a blank line.</p> </li> <li> <p>All of the required header fields must be present in the message.</p> </li> <li> <p>Each part of a multipart MIME message must be formatted properly.</p> </li> <li> <p>Attachments must be of a content type that Amazon SES supports. For a list on unsupported content types, see <a href="https://docs.aws.amazon.com/ses/latest/DeveloperGuide/mime-types.html">Unsupported Attachment Types</a> in the <i>Amazon SES Developer Guide</i>.</p> </li> <li> <p>The entire message must be base64-encoded.</p> </li> <li> <p>If any of the MIME parts in your message contain content that is outside of the 7-bit ASCII character range, we highly recommend that you encode that content. For more information, see <a href="https://docs.aws.amazon.com/ses/latest/DeveloperGuide/send-email-raw.html">Sending Raw Email</a> in the <i>Amazon SES Developer Guide</i>.</p> </li> <li> <p>Per <a href="https://tools.ietf.org/html/rfc5321#section-4.5.3.1.6">RFC 5321</a>, the maximum length of each line of text, including the &lt;CRLF&gt;, must not exceed 1,000 characters.</p> </li> </ul>',
-        }),
-    ),
-    FromArn: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>This parameter is used only for sending authorization. It is the ARN of the identity that is associated with the sending authorization policy that permits you to specify a particular "From" address in the header of the raw email.</p> <p>Instead of using this parameter, you can use the X-header <code>X-SES-FROM-ARN</code> in the raw message of the email. If you use both the <code>FromArn</code> parameter and the corresponding X-header, Amazon SES uses the value of the <code>FromArn</code> parameter.</p> <note> <p>For information about when to use this parameter, see the description of <code>SendRawEmail</code> in this guide, or see the <a href="https://docs.aws.amazon.com/ses/latest/DeveloperGuide/sending-authorization-delegate-sender-tasks-email.html">Amazon SES Developer Guide</a>.</p> </note>',
-        }),
-    ).exactOptional(),
-    SourceArn: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>This parameter is used only for sending authorization. It is the ARN of the identity that is associated with the sending authorization policy that permits you to send for the email address specified in the <code>Source</code> parameter.</p> <p>For example, if the owner of <code>example.com</code> (which has ARN <code>arn:aws:ses:us-east-1:123456789012:identity/example.com</code>) attaches a policy to it that authorizes you to send from <code>user@example.com</code>, then you would specify the <code>SourceArn</code> to be <code>arn:aws:ses:us-east-1:123456789012:identity/example.com</code>, and the <code>Source</code> to be <code>user@example.com</code>.</p> <p>Instead of using this parameter, you can use the X-header <code>X-SES-SOURCE-ARN</code> in the raw message of the email. If you use both the <code>SourceArn</code> parameter and the corresponding X-header, Amazon SES uses the value of the <code>SourceArn</code> parameter.</p> <note> <p>For information about when to use this parameter, see the description of <code>SendRawEmail</code> in this guide, or see the <a href="https://docs.aws.amazon.com/ses/latest/DeveloperGuide/sending-authorization-delegate-sender-tasks-email.html">Amazon SES Developer Guide</a>.</p> </note>',
-        }),
-    ).exactOptional(),
-    ReturnPathArn: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>This parameter is used only for sending authorization. It is the ARN of the identity that is associated with the sending authorization policy that permits you to use the email address specified in the <code>ReturnPath</code> parameter.</p> <p>For example, if the owner of <code>example.com</code> (which has ARN <code>arn:aws:ses:us-east-1:123456789012:identity/example.com</code>) attaches a policy to it that authorizes you to use <code>feedback@example.com</code>, then you would specify the <code>ReturnPathArn</code> to be <code>arn:aws:ses:us-east-1:123456789012:identity/example.com</code>, and the <code>ReturnPath</code> to be <code>feedback@example.com</code>.</p> <p>Instead of using this parameter, you can use the X-header <code>X-SES-RETURN-PATH-ARN</code> in the raw message of the email. If you use both the <code>ReturnPathArn</code> parameter and the corresponding X-header, Amazon SES uses the value of the <code>ReturnPathArn</code> parameter.</p> <note> <p>For information about when to use this parameter, see the description of <code>SendRawEmail</code> in this guide, or see the <a href="https://docs.aws.amazon.com/ses/latest/DeveloperGuide/sending-authorization-delegate-sender-tasks-email.html">Amazon SES Developer Guide</a>.</p> </note>',
-        }),
-    ).exactOptional(),
-    Tags: MessageTagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of tags, in the form of name/value pairs, to apply to an email that you send using <code>SendRawEmail</code>. Tags correspond to characteristics of the email that you define, so that you can publish email sending events.',
-        }),
-    ).exactOptional(),
-    ConfigurationSetName: ConfigurationSetNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the configuration set to use when you send an email using <code>SendRawEmail</code>.',
-        }),
-    ).exactOptional(),
+    Source: AddressSchema.exactOptional().openapi({
+      description:
+        '<p>The identity\'s email address. If you do not provide a value for this parameter, you must specify a "From" address in the raw text of the message. (You can also specify both.)</p> <note> <p>Amazon SES does not support the SMTPUTF8 extension, as described in<a href="https://tools.ietf.org/html/rfc6531">RFC6531</a>. For this reason, the <i>local part</i> of a source email address (the part of the email address that precedes the @ sign) may only contain <a href="https://en.wikipedia.org/wiki/Email_address#Local-part">7-bit ASCII characters</a>. If the <i>domain part</i> of an address (the part after the @ sign) contains non-ASCII characters, they must be encoded using Punycode, as described in <a href="https://tools.ietf.org/html/rfc3492.html">RFC3492</a>. The sender name (also known as the <i>friendly name</i>) may contain non-ASCII characters. These characters must be encoded using MIME encoded-word syntax, as described in <a href="https://tools.ietf.org/html/rfc2047">RFC 2047</a>. MIME encoded-word syntax uses the following form: <code>=?charset?encoding?encoded-text?=</code>.</p> </note> <p>If you specify the <code>Source</code> parameter and have feedback forwarding enabled, then bounces and complaints will be sent to this email address. This takes precedence over any Return-Path header that you might include in the raw text of the message.</p>',
+    }),
+    Destinations: AddressListSchema.exactOptional().openapi({
+      description:
+        'A list of destinations for the message, consisting of To:, CC:, and BCC: addresses.',
+    }),
+    RawMessage: RawMessageSchema.openapi({
+      description:
+        '<p>The raw email message itself. The message has to meet the following criteria:</p> <ul> <li> <p>The message has to contain a header and a body, separated by a blank line.</p> </li> <li> <p>All of the required header fields must be present in the message.</p> </li> <li> <p>Each part of a multipart MIME message must be formatted properly.</p> </li> <li> <p>Attachments must be of a content type that Amazon SES supports. For a list on unsupported content types, see <a href="https://docs.aws.amazon.com/ses/latest/DeveloperGuide/mime-types.html">Unsupported Attachment Types</a> in the <i>Amazon SES Developer Guide</i>.</p> </li> <li> <p>The entire message must be base64-encoded.</p> </li> <li> <p>If any of the MIME parts in your message contain content that is outside of the 7-bit ASCII character range, we highly recommend that you encode that content. For more information, see <a href="https://docs.aws.amazon.com/ses/latest/DeveloperGuide/send-email-raw.html">Sending Raw Email</a> in the <i>Amazon SES Developer Guide</i>.</p> </li> <li> <p>Per <a href="https://tools.ietf.org/html/rfc5321#section-4.5.3.1.6">RFC 5321</a>, the maximum length of each line of text, including the &lt;CRLF&gt;, must not exceed 1,000 characters.</p> </li> </ul>',
+    }),
+    FromArn: AmazonResourceNameSchema.exactOptional().openapi({
+      description:
+        '<p>This parameter is used only for sending authorization. It is the ARN of the identity that is associated with the sending authorization policy that permits you to specify a particular "From" address in the header of the raw email.</p> <p>Instead of using this parameter, you can use the X-header <code>X-SES-FROM-ARN</code> in the raw message of the email. If you use both the <code>FromArn</code> parameter and the corresponding X-header, Amazon SES uses the value of the <code>FromArn</code> parameter.</p> <note> <p>For information about when to use this parameter, see the description of <code>SendRawEmail</code> in this guide, or see the <a href="https://docs.aws.amazon.com/ses/latest/DeveloperGuide/sending-authorization-delegate-sender-tasks-email.html">Amazon SES Developer Guide</a>.</p> </note>',
+    }),
+    SourceArn: AmazonResourceNameSchema.exactOptional().openapi({
+      description:
+        '<p>This parameter is used only for sending authorization. It is the ARN of the identity that is associated with the sending authorization policy that permits you to send for the email address specified in the <code>Source</code> parameter.</p> <p>For example, if the owner of <code>example.com</code> (which has ARN <code>arn:aws:ses:us-east-1:123456789012:identity/example.com</code>) attaches a policy to it that authorizes you to send from <code>user@example.com</code>, then you would specify the <code>SourceArn</code> to be <code>arn:aws:ses:us-east-1:123456789012:identity/example.com</code>, and the <code>Source</code> to be <code>user@example.com</code>.</p> <p>Instead of using this parameter, you can use the X-header <code>X-SES-SOURCE-ARN</code> in the raw message of the email. If you use both the <code>SourceArn</code> parameter and the corresponding X-header, Amazon SES uses the value of the <code>SourceArn</code> parameter.</p> <note> <p>For information about when to use this parameter, see the description of <code>SendRawEmail</code> in this guide, or see the <a href="https://docs.aws.amazon.com/ses/latest/DeveloperGuide/sending-authorization-delegate-sender-tasks-email.html">Amazon SES Developer Guide</a>.</p> </note>',
+    }),
+    ReturnPathArn: AmazonResourceNameSchema.exactOptional().openapi({
+      description:
+        '<p>This parameter is used only for sending authorization. It is the ARN of the identity that is associated with the sending authorization policy that permits you to use the email address specified in the <code>ReturnPath</code> parameter.</p> <p>For example, if the owner of <code>example.com</code> (which has ARN <code>arn:aws:ses:us-east-1:123456789012:identity/example.com</code>) attaches a policy to it that authorizes you to use <code>feedback@example.com</code>, then you would specify the <code>ReturnPathArn</code> to be <code>arn:aws:ses:us-east-1:123456789012:identity/example.com</code>, and the <code>ReturnPath</code> to be <code>feedback@example.com</code>.</p> <p>Instead of using this parameter, you can use the X-header <code>X-SES-RETURN-PATH-ARN</code> in the raw message of the email. If you use both the <code>ReturnPathArn</code> parameter and the corresponding X-header, Amazon SES uses the value of the <code>ReturnPathArn</code> parameter.</p> <note> <p>For information about when to use this parameter, see the description of <code>SendRawEmail</code> in this guide, or see the <a href="https://docs.aws.amazon.com/ses/latest/DeveloperGuide/sending-authorization-delegate-sender-tasks-email.html">Amazon SES Developer Guide</a>.</p> </note>',
+    }),
+    Tags: MessageTagListSchema.exactOptional().openapi({
+      description:
+        'A list of tags, in the form of name/value pairs, to apply to an email that you send using <code>SendRawEmail</code>. Tags correspond to characteristics of the email that you define, so that you can publish email sending events.',
+    }),
+    ConfigurationSetName: ConfigurationSetNameSchema.exactOptional().openapi({
+      description:
+        'The name of the configuration set to use when you send an email using <code>SendRawEmail</code>.',
+    }),
   })
   .openapi({
     required: ['RawMessage'],
@@ -3659,84 +2793,48 @@ const SendRawEmailRequestSchema = z
 
 const SendTemplatedEmailRequestSchema = z
   .object({
-    Source: AddressSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The email address that is sending the email. This email address must be either individually verified with Amazon SES, or from a domain that has been verified with Amazon SES. For information about verifying identities, see the <a href="https://docs.aws.amazon.com/ses/latest/DeveloperGuide/verify-addresses-and-domains.html">Amazon SES Developer Guide</a>.</p> <p>If you are sending on behalf of another user and have been permitted to do so by a sending authorization policy, then you must also specify the <code>SourceArn</code> parameter. For more information about sending authorization, see the <a href="https://docs.aws.amazon.com/ses/latest/DeveloperGuide/sending-authorization.html">Amazon SES Developer Guide</a>.</p> <note> <p>Amazon SES does not support the SMTPUTF8 extension, as described in <a href="https://tools.ietf.org/html/rfc6531">RFC6531</a>. For this reason, the <i>local part</i> of a source email address (the part of the email address that precedes the @ sign) may only contain <a href="https://en.wikipedia.org/wiki/Email_address#Local-part">7-bit ASCII characters</a>. If the <i>domain part</i> of an address (the part after the @ sign) contains non-ASCII characters, they must be encoded using Punycode, as described in <a href="https://tools.ietf.org/html/rfc3492.html">RFC3492</a>. The sender name (also known as the <i>friendly name</i>) may contain non-ASCII characters. These characters must be encoded using MIME encoded-word syntax, as described in<a href="https://tools.ietf.org/html/rfc2047">RFC 2047</a>. MIME encoded-word syntax uses the following form: <code>=?charset?encoding?encoded-text?=</code>.</p> </note>',
-        }),
-    ),
-    Destination: DestinationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The destination for this email, composed of To:, CC:, and BCC: fields. A Destination can include up to 50 recipients across these three fields.',
-        }),
-    ),
-    ReplyToAddresses: AddressListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The reply-to email address(es) for the message. If the recipient replies to the message, each reply-to address will receive the reply.',
-        }),
-    ).exactOptional(),
-    ReturnPath: AddressSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The email address that bounces and complaints will be forwarded to when feedback forwarding is enabled. If the message cannot be delivered to the recipient, then an error message will be returned from the recipient's ISP; this message will then be forwarded to the email address specified by the <code>ReturnPath</code> parameter. The <code>ReturnPath</code> parameter is never overwritten. This email address must be either individually verified with Amazon SES, or from a domain that has been verified with Amazon SES. ",
-        }),
-    ).exactOptional(),
-    SourceArn: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>This parameter is used only for sending authorization. It is the ARN of the identity that is associated with the sending authorization policy that permits you to send for the email address specified in the <code>Source</code> parameter.</p> <p>For example, if the owner of <code>example.com</code> (which has ARN <code>arn:aws:ses:us-east-1:123456789012:identity/example.com</code>) attaches a policy to it that authorizes you to send from <code>user@example.com</code>, then you would specify the <code>SourceArn</code> to be <code>arn:aws:ses:us-east-1:123456789012:identity/example.com</code>, and the <code>Source</code> to be <code>user@example.com</code>.</p> <p>For more information about sending authorization, see the <a href="https://docs.aws.amazon.com/ses/latest/DeveloperGuide/sending-authorization.html">Amazon SES Developer Guide</a>.</p>',
-        }),
-    ).exactOptional(),
-    ReturnPathArn: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>This parameter is used only for sending authorization. It is the ARN of the identity that is associated with the sending authorization policy that permits you to use the email address specified in the <code>ReturnPath</code> parameter.</p> <p>For example, if the owner of <code>example.com</code> (which has ARN <code>arn:aws:ses:us-east-1:123456789012:identity/example.com</code>) attaches a policy to it that authorizes you to use <code>feedback@example.com</code>, then you would specify the <code>ReturnPathArn</code> to be <code>arn:aws:ses:us-east-1:123456789012:identity/example.com</code>, and the <code>ReturnPath</code> to be <code>feedback@example.com</code>.</p> <p>For more information about sending authorization, see the <a href="https://docs.aws.amazon.com/ses/latest/DeveloperGuide/sending-authorization.html">Amazon SES Developer Guide</a>.</p>',
-        }),
-    ).exactOptional(),
-    Tags: MessageTagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of tags, in the form of name/value pairs, to apply to an email that you send using <code>SendTemplatedEmail</code>. Tags correspond to characteristics of the email that you define, so that you can publish email sending events.',
-        }),
-    ).exactOptional(),
-    ConfigurationSetName: ConfigurationSetNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the configuration set to use when you send an email using <code>SendTemplatedEmail</code>.',
-        }),
-    ).exactOptional(),
-    Template: TemplateNameSchema.and(
-      z.any().openapi({ description: 'The template to use when sending this email.' }),
-    ),
-    TemplateArn: AmazonResourceNameSchema.and(
-      z.any().openapi({ description: 'The ARN of the template to use when sending this email.' }),
-    ).exactOptional(),
-    TemplateData: TemplateDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of replacement values to apply to the template. This parameter is a JSON object, typically consisting of key-value pairs in which the keys correspond to replacement tags in the email template.',
-        }),
-    ),
+    Source: AddressSchema.openapi({
+      description:
+        '<p>The email address that is sending the email. This email address must be either individually verified with Amazon SES, or from a domain that has been verified with Amazon SES. For information about verifying identities, see the <a href="https://docs.aws.amazon.com/ses/latest/DeveloperGuide/verify-addresses-and-domains.html">Amazon SES Developer Guide</a>.</p> <p>If you are sending on behalf of another user and have been permitted to do so by a sending authorization policy, then you must also specify the <code>SourceArn</code> parameter. For more information about sending authorization, see the <a href="https://docs.aws.amazon.com/ses/latest/DeveloperGuide/sending-authorization.html">Amazon SES Developer Guide</a>.</p> <note> <p>Amazon SES does not support the SMTPUTF8 extension, as described in <a href="https://tools.ietf.org/html/rfc6531">RFC6531</a>. For this reason, the <i>local part</i> of a source email address (the part of the email address that precedes the @ sign) may only contain <a href="https://en.wikipedia.org/wiki/Email_address#Local-part">7-bit ASCII characters</a>. If the <i>domain part</i> of an address (the part after the @ sign) contains non-ASCII characters, they must be encoded using Punycode, as described in <a href="https://tools.ietf.org/html/rfc3492.html">RFC3492</a>. The sender name (also known as the <i>friendly name</i>) may contain non-ASCII characters. These characters must be encoded using MIME encoded-word syntax, as described in<a href="https://tools.ietf.org/html/rfc2047">RFC 2047</a>. MIME encoded-word syntax uses the following form: <code>=?charset?encoding?encoded-text?=</code>.</p> </note>',
+    }),
+    Destination: DestinationSchema.openapi({
+      description:
+        'The destination for this email, composed of To:, CC:, and BCC: fields. A Destination can include up to 50 recipients across these three fields.',
+    }),
+    ReplyToAddresses: AddressListSchema.exactOptional().openapi({
+      description:
+        'The reply-to email address(es) for the message. If the recipient replies to the message, each reply-to address will receive the reply.',
+    }),
+    ReturnPath: AddressSchema.exactOptional().openapi({
+      description:
+        "The email address that bounces and complaints will be forwarded to when feedback forwarding is enabled. If the message cannot be delivered to the recipient, then an error message will be returned from the recipient's ISP; this message will then be forwarded to the email address specified by the <code>ReturnPath</code> parameter. The <code>ReturnPath</code> parameter is never overwritten. This email address must be either individually verified with Amazon SES, or from a domain that has been verified with Amazon SES. ",
+    }),
+    SourceArn: AmazonResourceNameSchema.exactOptional().openapi({
+      description:
+        '<p>This parameter is used only for sending authorization. It is the ARN of the identity that is associated with the sending authorization policy that permits you to send for the email address specified in the <code>Source</code> parameter.</p> <p>For example, if the owner of <code>example.com</code> (which has ARN <code>arn:aws:ses:us-east-1:123456789012:identity/example.com</code>) attaches a policy to it that authorizes you to send from <code>user@example.com</code>, then you would specify the <code>SourceArn</code> to be <code>arn:aws:ses:us-east-1:123456789012:identity/example.com</code>, and the <code>Source</code> to be <code>user@example.com</code>.</p> <p>For more information about sending authorization, see the <a href="https://docs.aws.amazon.com/ses/latest/DeveloperGuide/sending-authorization.html">Amazon SES Developer Guide</a>.</p>',
+    }),
+    ReturnPathArn: AmazonResourceNameSchema.exactOptional().openapi({
+      description:
+        '<p>This parameter is used only for sending authorization. It is the ARN of the identity that is associated with the sending authorization policy that permits you to use the email address specified in the <code>ReturnPath</code> parameter.</p> <p>For example, if the owner of <code>example.com</code> (which has ARN <code>arn:aws:ses:us-east-1:123456789012:identity/example.com</code>) attaches a policy to it that authorizes you to use <code>feedback@example.com</code>, then you would specify the <code>ReturnPathArn</code> to be <code>arn:aws:ses:us-east-1:123456789012:identity/example.com</code>, and the <code>ReturnPath</code> to be <code>feedback@example.com</code>.</p> <p>For more information about sending authorization, see the <a href="https://docs.aws.amazon.com/ses/latest/DeveloperGuide/sending-authorization.html">Amazon SES Developer Guide</a>.</p>',
+    }),
+    Tags: MessageTagListSchema.exactOptional().openapi({
+      description:
+        'A list of tags, in the form of name/value pairs, to apply to an email that you send using <code>SendTemplatedEmail</code>. Tags correspond to characteristics of the email that you define, so that you can publish email sending events.',
+    }),
+    ConfigurationSetName: ConfigurationSetNameSchema.exactOptional().openapi({
+      description:
+        'The name of the configuration set to use when you send an email using <code>SendTemplatedEmail</code>.',
+    }),
+    Template: TemplateNameSchema.openapi({
+      description: 'The template to use when sending this email.',
+    }),
+    TemplateArn: AmazonResourceNameSchema.exactOptional().openapi({
+      description: 'The ARN of the template to use when sending this email.',
+    }),
+    TemplateData: TemplateDataSchema.openapi({
+      description:
+        'A list of replacement values to apply to the template. This parameter is a JSON object, typically consisting of key-value pairs in which the keys correspond to replacement tags in the email template.',
+    }),
   })
   .openapi({
     required: ['Source', 'Destination', 'Template', 'TemplateData'],
@@ -3748,14 +2846,10 @@ const SendTemplatedEmailRequestSchema = z
 
 const SetActiveReceiptRuleSetRequestSchema = z
   .object({
-    RuleSetName: ReceiptRuleSetNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the receipt rule set to make active. Setting this value to null disables all email receiving.',
-        }),
-    ).exactOptional(),
+    RuleSetName: ReceiptRuleSetNameSchema.exactOptional().openapi({
+      description:
+        'The name of the receipt rule set to make active. Setting this value to null disables all email receiving.',
+    }),
   })
   .openapi({
     title: 'SetActiveReceiptRuleSetRequest',
@@ -3767,21 +2861,13 @@ const SetActiveReceiptRuleSetRequestSchema = z
 
 const SetIdentityDkimEnabledRequestSchema = z
   .object({
-    Identity: IdentitySchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identity for which DKIM signing should be enabled or disabled.',
-        }),
-    ),
-    DkimEnabled: EnabledSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Sets whether DKIM signing is enabled for an identity. Set to <code>true</code> to enable DKIM signing for this identity; <code>false</code> to disable it. ',
-        }),
-    ),
+    Identity: IdentitySchema.openapi({
+      description: 'The identity for which DKIM signing should be enabled or disabled.',
+    }),
+    DkimEnabled: EnabledSchema.openapi({
+      description:
+        'Sets whether DKIM signing is enabled for an identity. Set to <code>true</code> to enable DKIM signing for this identity; <code>false</code> to disable it. ',
+    }),
   })
   .openapi({
     required: ['Identity', 'DkimEnabled'],
@@ -3793,22 +2879,14 @@ const SetIdentityDkimEnabledRequestSchema = z
 
 const SetIdentityFeedbackForwardingEnabledRequestSchema = z
   .object({
-    Identity: IdentitySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identity for which to set bounce and complaint notification forwarding. Examples: <code>user@example.com</code>, <code>example.com</code>.',
-        }),
-    ),
-    ForwardingEnabled: EnabledSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Sets whether Amazon SES will forward bounce and complaint notifications as email. <code>true</code> specifies that Amazon SES will forward bounce and complaint notifications as email, in addition to any Amazon SNS topic publishing otherwise specified. <code>false</code> specifies that Amazon SES will publish bounce and complaint notifications only through Amazon SNS. This value can only be set to <code>false</code> when Amazon SNS topics are set for both <code>Bounce</code> and <code>Complaint</code> notification types.',
-        }),
-    ),
+    Identity: IdentitySchema.openapi({
+      description:
+        'The identity for which to set bounce and complaint notification forwarding. Examples: <code>user@example.com</code>, <code>example.com</code>.',
+    }),
+    ForwardingEnabled: EnabledSchema.openapi({
+      description:
+        'Sets whether Amazon SES will forward bounce and complaint notifications as email. <code>true</code> specifies that Amazon SES will forward bounce and complaint notifications as email, in addition to any Amazon SNS topic publishing otherwise specified. <code>false</code> specifies that Amazon SES will publish bounce and complaint notifications only through Amazon SNS. This value can only be set to <code>false</code> when Amazon SNS topics are set for both <code>Bounce</code> and <code>Complaint</code> notification types.',
+    }),
   })
   .openapi({
     required: ['Identity', 'ForwardingEnabled'],
@@ -3820,30 +2898,18 @@ const SetIdentityFeedbackForwardingEnabledRequestSchema = z
 
 const SetIdentityHeadersInNotificationsEnabledRequestSchema = z
   .object({
-    Identity: IdentitySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identity for which to enable or disable headers in notifications. Examples: <code>user@example.com</code>, <code>example.com</code>.',
-        }),
-    ),
-    NotificationType: NotificationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The notification type for which to enable or disable headers in notifications. ',
-        }),
-    ),
-    Enabled: EnabledSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Sets whether Amazon SES includes the original email headers in Amazon SNS notifications of the specified notification type. A value of <code>true</code> specifies that Amazon SES will include headers in notifications, and a value of <code>false</code> specifies that Amazon SES will not include headers in notifications.</p> <p>This value can only be set when <code>NotificationType</code> is already set to use a particular Amazon SNS topic.</p>',
-        }),
-    ),
+    Identity: IdentitySchema.openapi({
+      description:
+        'The identity for which to enable or disable headers in notifications. Examples: <code>user@example.com</code>, <code>example.com</code>.',
+    }),
+    NotificationType: NotificationTypeSchema.openapi({
+      description:
+        'The notification type for which to enable or disable headers in notifications. ',
+    }),
+    Enabled: EnabledSchema.openapi({
+      description:
+        '<p>Sets whether Amazon SES includes the original email headers in Amazon SNS notifications of the specified notification type. A value of <code>true</code> specifies that Amazon SES will include headers in notifications, and a value of <code>false</code> specifies that Amazon SES will not include headers in notifications.</p> <p>This value can only be set when <code>NotificationType</code> is already set to use a particular Amazon SNS topic.</p>',
+    }),
   })
   .openapi({
     required: ['Identity', 'NotificationType', 'Enabled'],
@@ -3855,30 +2921,18 @@ const SetIdentityHeadersInNotificationsEnabledRequestSchema = z
 
 const SetIdentityMailFromDomainRequestSchema = z
   .object({
-    Identity: IdentitySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The verified identity for which you want to enable or disable the specified custom MAIL FROM domain.',
-        }),
-    ),
-    MailFromDomain: MailFromDomainNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The custom MAIL FROM domain that you want the verified identity to use. The MAIL FROM domain must 1) be a subdomain of the verified identity, 2) not be used in a "From" address if the MAIL FROM domain is the destination of email feedback forwarding (for more information, see the <a href="https://docs.aws.amazon.com/ses/latest/DeveloperGuide/mail-from.html">Amazon SES Developer Guide</a>), and 3) not be used to receive emails. A value of <code>null</code> disables the custom MAIL FROM setting for the identity.',
-        }),
-    ).exactOptional(),
-    BehaviorOnMXFailure: BehaviorOnMXFailureSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The action that you want Amazon SES to take if it cannot successfully read the required MX record when you send an email. If you choose <code>UseDefaultValue</code>, Amazon SES will use amazonses.com (or a subdomain of that) as the MAIL FROM domain. If you choose <code>RejectMessage</code>, Amazon SES will return a <code>MailFromDomainNotVerified</code> error and not send the email.</p> <p>The action specified in <code>BehaviorOnMXFailure</code> is taken when the custom MAIL FROM domain setup is in the <code>Pending</code>, <code>Failed</code>, and <code>TemporaryFailure</code> states.</p>',
-        }),
-    ).exactOptional(),
+    Identity: IdentitySchema.openapi({
+      description:
+        'The verified identity for which you want to enable or disable the specified custom MAIL FROM domain.',
+    }),
+    MailFromDomain: MailFromDomainNameSchema.exactOptional().openapi({
+      description:
+        'The custom MAIL FROM domain that you want the verified identity to use. The MAIL FROM domain must 1) be a subdomain of the verified identity, 2) not be used in a "From" address if the MAIL FROM domain is the destination of email feedback forwarding (for more information, see the <a href="https://docs.aws.amazon.com/ses/latest/DeveloperGuide/mail-from.html">Amazon SES Developer Guide</a>), and 3) not be used to receive emails. A value of <code>null</code> disables the custom MAIL FROM setting for the identity.',
+    }),
+    BehaviorOnMXFailure: BehaviorOnMXFailureSchema.exactOptional().openapi({
+      description:
+        '<p>The action that you want Amazon SES to take if it cannot successfully read the required MX record when you send an email. If you choose <code>UseDefaultValue</code>, Amazon SES will use amazonses.com (or a subdomain of that) as the MAIL FROM domain. If you choose <code>RejectMessage</code>, Amazon SES will return a <code>MailFromDomainNotVerified</code> error and not send the email.</p> <p>The action specified in <code>BehaviorOnMXFailure</code> is taken when the custom MAIL FROM domain setup is in the <code>Pending</code>, <code>Failed</code>, and <code>TemporaryFailure</code> states.</p>',
+    }),
   })
   .openapi({
     required: ['Identity'],
@@ -3890,30 +2944,18 @@ const SetIdentityMailFromDomainRequestSchema = z
 
 const SetIdentityNotificationTopicRequestSchema = z
   .object({
-    Identity: IdentitySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The identity (email address or domain) that you want to set the Amazon SNS topic for.</p> <important> <p>You can only specify a verified identity for this parameter.</p> </important> <p>You can specify an identity by using its name or by using its Amazon Resource Name (ARN). The following examples are all valid identities: <code>sender@example.com</code>, <code>example.com</code>, <code>arn:aws:ses:us-east-1:123456789012:identity/example.com</code>.</p>',
-        }),
-    ),
-    NotificationType: NotificationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of notifications that will be published to the specified Amazon SNS topic.',
-        }),
-    ),
-    SnsTopic: NotificationTopicSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the Amazon SNS topic. If the parameter is omitted from the request or a null value is passed, <code>SnsTopic</code> is cleared and publishing is disabled.',
-        }),
-    ).exactOptional(),
+    Identity: IdentitySchema.openapi({
+      description:
+        '<p>The identity (email address or domain) that you want to set the Amazon SNS topic for.</p> <important> <p>You can only specify a verified identity for this parameter.</p> </important> <p>You can specify an identity by using its name or by using its Amazon Resource Name (ARN). The following examples are all valid identities: <code>sender@example.com</code>, <code>example.com</code>, <code>arn:aws:ses:us-east-1:123456789012:identity/example.com</code>.</p>',
+    }),
+    NotificationType: NotificationTypeSchema.openapi({
+      description:
+        'The type of notifications that will be published to the specified Amazon SNS topic.',
+    }),
+    SnsTopic: NotificationTopicSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the Amazon SNS topic. If the parameter is omitted from the request or a null value is passed, <code>SnsTopic</code> is cleared and publishing is disabled.',
+    }),
   })
   .openapi({
     required: ['Identity', 'NotificationType'],
@@ -3925,25 +2967,15 @@ const SetIdentityNotificationTopicRequestSchema = z
 
 const SetReceiptRulePositionRequestSchema = z
   .object({
-    RuleSetName: ReceiptRuleSetNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the receipt rule set that contains the receipt rule to reposition.',
-        }),
-    ),
-    RuleName: ReceiptRuleNameSchema.and(
-      z.any().openapi({ description: 'The name of the receipt rule to reposition.' }),
-    ),
-    After: ReceiptRuleNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the receipt rule after which to place the specified receipt rule.',
-        }),
-    ).exactOptional(),
+    RuleSetName: ReceiptRuleSetNameSchema.openapi({
+      description: 'The name of the receipt rule set that contains the receipt rule to reposition.',
+    }),
+    RuleName: ReceiptRuleNameSchema.openapi({
+      description: 'The name of the receipt rule to reposition.',
+    }),
+    After: ReceiptRuleNameSchema.exactOptional().openapi({
+      description: 'The name of the receipt rule after which to place the specified receipt rule.',
+    }),
   })
   .openapi({
     required: ['RuleSetName', 'RuleName'],
@@ -3955,31 +2987,23 @@ const SetReceiptRulePositionRequestSchema = z
 
 const TestRenderTemplateRequestSchema = z
   .object({
-    TemplateName: TemplateNameSchema.and(
-      z.any().openapi({ description: 'The name of the template that you want to render.' }),
-    ),
-    TemplateData: TemplateDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of replacement values to apply to the template. This parameter is a JSON object, typically consisting of key-value pairs in which the keys correspond to replacement tags in the email template.',
-        }),
-    ),
+    TemplateName: TemplateNameSchema.openapi({
+      description: 'The name of the template that you want to render.',
+    }),
+    TemplateData: TemplateDataSchema.openapi({
+      description:
+        'A list of replacement values to apply to the template. This parameter is a JSON object, typically consisting of key-value pairs in which the keys correspond to replacement tags in the email template.',
+    }),
   })
   .openapi({ required: ['TemplateName', 'TemplateData'], title: 'TestRenderTemplateRequest' })
   .openapi('TestRenderTemplateRequest')
 
 const UpdateAccountSendingEnabledRequestSchema = z
   .object({
-    Enabled: EnabledSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Describes whether email sending is enabled or disabled for your Amazon SES account in the current AWS Region.',
-        }),
-    ).exactOptional(),
+    Enabled: EnabledSchema.exactOptional().openapi({
+      description:
+        'Describes whether email sending is enabled or disabled for your Amazon SES account in the current AWS Region.',
+    }),
   })
   .openapi({
     title: 'UpdateAccountSendingEnabledRequest',
@@ -3991,22 +3015,14 @@ const UpdateAccountSendingEnabledRequestSchema = z
 
 const UpdateConfigurationSetEventDestinationRequestSchema = z
   .object({
-    ConfigurationSetName: ConfigurationSetNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the configuration set that contains the event destination that you want to update.',
-        }),
-    ),
-    EventDestination: EventDestinationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The event destination object that you want to apply to the specified configuration set.',
-        }),
-    ),
+    ConfigurationSetName: ConfigurationSetNameSchema.openapi({
+      description:
+        'The name of the configuration set that contains the event destination that you want to update.',
+    }),
+    EventDestination: EventDestinationSchema.openapi({
+      description:
+        'The event destination object that you want to apply to the specified configuration set.',
+    }),
   })
   .openapi({
     required: ['ConfigurationSetName', 'EventDestination'],
@@ -4018,19 +3034,13 @@ const UpdateConfigurationSetEventDestinationRequestSchema = z
 
 const UpdateConfigurationSetReputationMetricsEnabledRequestSchema = z
   .object({
-    ConfigurationSetName: ConfigurationSetNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the configuration set that you want to update.' }),
-    ),
-    Enabled: EnabledSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Describes whether or not Amazon SES will publish reputation metrics for the configuration set, such as bounce and complaint rates, to Amazon CloudWatch.',
-        }),
-    ),
+    ConfigurationSetName: ConfigurationSetNameSchema.openapi({
+      description: 'The name of the configuration set that you want to update.',
+    }),
+    Enabled: EnabledSchema.openapi({
+      description:
+        'Describes whether or not Amazon SES will publish reputation metrics for the configuration set, such as bounce and complaint rates, to Amazon CloudWatch.',
+    }),
   })
   .openapi({
     required: ['ConfigurationSetName', 'Enabled'],
@@ -4042,19 +3052,13 @@ const UpdateConfigurationSetReputationMetricsEnabledRequestSchema = z
 
 const UpdateConfigurationSetSendingEnabledRequestSchema = z
   .object({
-    ConfigurationSetName: ConfigurationSetNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the configuration set that you want to update.' }),
-    ),
-    Enabled: EnabledSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Describes whether email sending is enabled or disabled for the configuration set. ',
-        }),
-    ),
+    ConfigurationSetName: ConfigurationSetNameSchema.openapi({
+      description: 'The name of the configuration set that you want to update.',
+    }),
+    Enabled: EnabledSchema.openapi({
+      description:
+        'Describes whether email sending is enabled or disabled for the configuration set. ',
+    }),
   })
   .openapi({
     required: ['ConfigurationSetName', 'Enabled'],
@@ -4066,14 +3070,10 @@ const UpdateConfigurationSetSendingEnabledRequestSchema = z
 
 const UpdateConfigurationSetTrackingOptionsRequestSchema = z
   .object({
-    ConfigurationSetName: ConfigurationSetNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the configuration set for which you want to update the custom tracking domain.',
-        }),
-    ),
+    ConfigurationSetName: ConfigurationSetNameSchema.openapi({
+      description:
+        'The name of the configuration set for which you want to update the custom tracking domain.',
+    }),
     TrackingOptions: TrackingOptionsSchema,
   })
   .openapi({
@@ -4085,48 +3085,27 @@ const UpdateConfigurationSetTrackingOptionsRequestSchema = z
 
 const UpdateCustomVerificationEmailTemplateRequestSchema = z
   .object({
-    TemplateName: TemplateNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the custom verification email template that you want to update.',
-        }),
-    ),
-    FromEmailAddress: FromAddressSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The email address that the custom verification email is sent from.',
-        }),
-    ).exactOptional(),
-    TemplateSubject: SubjectSchema.and(
-      z.any().openapi({ description: 'The subject line of the custom verification email.' }),
-    ).exactOptional(),
-    TemplateContent: TemplateContentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The content of the custom verification email. The total size of the email must be less than 10 MB. The message body may contain HTML, with some limitations. For more information, see <a href="https://docs.aws.amazon.com/ses/latest/DeveloperGuide/custom-verification-emails.html#custom-verification-emails-faq">Custom Verification Email Frequently Asked Questions</a> in the <i>Amazon SES Developer Guide</i>.',
-        }),
-    ).exactOptional(),
-    SuccessRedirectionURL: SuccessRedirectionURLSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The URL that the recipient of the verification email is sent to if his or her address is successfully verified.',
-        }),
-    ).exactOptional(),
-    FailureRedirectionURL: FailureRedirectionURLSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The URL that the recipient of the verification email is sent to if his or her address is not successfully verified.',
-        }),
-    ).exactOptional(),
+    TemplateName: TemplateNameSchema.openapi({
+      description: 'The name of the custom verification email template that you want to update.',
+    }),
+    FromEmailAddress: FromAddressSchema.exactOptional().openapi({
+      description: 'The email address that the custom verification email is sent from.',
+    }),
+    TemplateSubject: SubjectSchema.exactOptional().openapi({
+      description: 'The subject line of the custom verification email.',
+    }),
+    TemplateContent: TemplateContentSchema.exactOptional().openapi({
+      description:
+        'The content of the custom verification email. The total size of the email must be less than 10 MB. The message body may contain HTML, with some limitations. For more information, see <a href="https://docs.aws.amazon.com/ses/latest/DeveloperGuide/custom-verification-emails.html#custom-verification-emails-faq">Custom Verification Email Frequently Asked Questions</a> in the <i>Amazon SES Developer Guide</i>.',
+    }),
+    SuccessRedirectionURL: SuccessRedirectionURLSchema.exactOptional().openapi({
+      description:
+        'The URL that the recipient of the verification email is sent to if his or her address is successfully verified.',
+    }),
+    FailureRedirectionURL: FailureRedirectionURLSchema.exactOptional().openapi({
+      description:
+        'The URL that the recipient of the verification email is sent to if his or her address is not successfully verified.',
+    }),
   })
   .openapi({
     required: ['TemplateName'],
@@ -4137,20 +3116,12 @@ const UpdateCustomVerificationEmailTemplateRequestSchema = z
 
 const UpdateReceiptRuleRequestSchema = z
   .object({
-    RuleSetName: ReceiptRuleSetNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the receipt rule set that the receipt rule belongs to.',
-        }),
-    ),
-    Rule: ReceiptRuleSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A data structure that contains the updated receipt rule information.',
-        }),
-    ),
+    RuleSetName: ReceiptRuleSetNameSchema.openapi({
+      description: 'The name of the receipt rule set that the receipt rule belongs to.',
+    }),
+    Rule: ReceiptRuleSchema.openapi({
+      description: 'A data structure that contains the updated receipt rule information.',
+    }),
   })
   .openapi({
     required: ['RuleSetName', 'Rule'],
@@ -4167,11 +3138,9 @@ const UpdateTemplateRequestSchema = z
 
 const VerifyDomainDkimRequestSchema = z
   .object({
-    Domain: DomainSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the domain to be verified for Easy DKIM signing.' }),
-    ),
+    Domain: DomainSchema.openapi({
+      description: 'The name of the domain to be verified for Easy DKIM signing.',
+    }),
   })
   .openapi({
     required: ['Domain'],
@@ -4182,9 +3151,7 @@ const VerifyDomainDkimRequestSchema = z
   .openapi('VerifyDomainDkimRequest')
 
 const VerifyDomainIdentityRequestSchema = z
-  .object({
-    Domain: DomainSchema.and(z.any().openapi({ description: 'The domain to be verified.' })),
-  })
+  .object({ Domain: DomainSchema.openapi({ description: 'The domain to be verified.' }) })
   .openapi({
     required: ['Domain'],
     title: 'VerifyDomainIdentityRequest',
@@ -4195,9 +3162,7 @@ const VerifyDomainIdentityRequestSchema = z
 
 const VerifyEmailAddressRequestSchema = z
   .object({
-    EmailAddress: AddressSchema.and(
-      z.any().openapi({ description: 'The email address to be verified.' }),
-    ),
+    EmailAddress: AddressSchema.openapi({ description: 'The email address to be verified.' }),
   })
   .openapi({
     required: ['EmailAddress'],
@@ -4209,9 +3174,7 @@ const VerifyEmailAddressRequestSchema = z
 
 const VerifyEmailIdentityRequestSchema = z
   .object({
-    EmailAddress: AddressSchema.and(
-      z.any().openapi({ description: 'The email address to be verified.' }),
-    ),
+    EmailAddress: AddressSchema.openapi({ description: 'The email address to be verified.' }),
   })
   .openapi({
     required: ['EmailAddress'],
@@ -4480,14 +3443,10 @@ export const getActionCreateConfigurationSetRoute = createRoute({
         z.object({
           ConfigurationSet: z
             .object({
-              Name: ConfigurationSetNameSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      '<p>The name of the configuration set. The name must meet the following requirements:</p> <ul> <li> <p>Contain only letters (a-z, A-Z), numbers (0-9), underscores (_), or dashes (-).</p> </li> <li> <p>Contain 64 characters or fewer.</p> </li> </ul>',
-                  }),
-              ),
+              Name: ConfigurationSetNameSchema.openapi({
+                description:
+                  '<p>The name of the configuration set. The name must meet the following requirements:</p> <ul> <li> <p>Contain only letters (a-z, A-Z), numbers (0-9), underscores (_), or dashes (-).</p> </li> <li> <p>Contain 64 characters or fewer.</p> </li> </ul>',
+              }),
             })
             .openapi({
               param: {
@@ -4684,14 +3643,10 @@ export const getActionCreateConfigurationSetEventDestinationRoute = createRoute(
             }),
           EventDestination: z
             .object({
-              Name: EventDestinationNameSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      '<p>The name of the event destination. The name must:</p> <ul> <li> <p>This value can only contain ASCII letters (a-z, A-Z), numbers (0-9), underscores (_), or dashes (-).</p> </li> <li> <p>Contain less than 64 characters.</p> </li> </ul>',
-                  }),
-              ),
+              Name: EventDestinationNameSchema.openapi({
+                description:
+                  '<p>The name of the event destination. The name must:</p> <ul> <li> <p>This value can only contain ASCII letters (a-z, A-Z), numbers (0-9), underscores (_), or dashes (-).</p> </li> <li> <p>Contain less than 64 characters.</p> </li> </ul>',
+              }),
               Enabled: z
                 .preprocess(
                   ((read) => (val: unknown) => {
@@ -4700,47 +3655,27 @@ export const getActionCreateConfigurationSetEventDestinationRoute = createRoute(
                   })(z.stringbool()),
                   EnabledSchema,
                 )
-                .and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        'Sets whether Amazon SES publishes events to this destination when you send an email with the associated configuration set. Set to <code>true</code> to enable publishing to this destination; set to <code>false</code> to prevent publishing to this destination. The default value is <code>false</code>.',
-                    }),
-                )
-                .exactOptional(),
-              MatchingEventTypes: EventTypesSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      'The type of email sending events to publish to the event destination.',
-                  }),
-              ),
-              KinesisFirehoseDestination: KinesisFirehoseDestinationSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      'An object that contains the delivery stream ARN and the IAM role ARN associated with an Amazon Kinesis Firehose event destination.',
-                  }),
-              ).exactOptional(),
-              CloudWatchDestination: CloudWatchDestinationSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      'An object that contains the names, default values, and sources of the dimensions associated with an Amazon CloudWatch event destination.',
-                  }),
-              ).exactOptional(),
-              SNSDestination: SNSDestinationSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      'An object that contains the topic ARN associated with an Amazon Simple Notification Service (Amazon SNS) event destination.',
-                  }),
-              ).exactOptional(),
+                .exactOptional()
+                .openapi({
+                  description:
+                    'Sets whether Amazon SES publishes events to this destination when you send an email with the associated configuration set. Set to <code>true</code> to enable publishing to this destination; set to <code>false</code> to prevent publishing to this destination. The default value is <code>false</code>.',
+                }),
+              MatchingEventTypes: EventTypesSchema.openapi({
+                description:
+                  'The type of email sending events to publish to the event destination.',
+              }),
+              KinesisFirehoseDestination: KinesisFirehoseDestinationSchema.exactOptional().openapi({
+                description:
+                  'An object that contains the delivery stream ARN and the IAM role ARN associated with an Amazon Kinesis Firehose event destination.',
+              }),
+              CloudWatchDestination: CloudWatchDestinationSchema.exactOptional().openapi({
+                description:
+                  'An object that contains the names, default values, and sources of the dimensions associated with an Amazon CloudWatch event destination.',
+              }),
+              SNSDestination: SNSDestinationSchema.exactOptional().openapi({
+                description:
+                  'An object that contains the topic ARN associated with an Amazon Simple Notification Service (Amazon SNS) event destination.',
+              }),
             })
             .openapi({
               param: {
@@ -5002,14 +3937,10 @@ export const getActionCreateConfigurationSetTrackingOptionsRoute = createRoute({
             }),
           TrackingOptions: z
             .object({
-              CustomRedirectDomain: CustomRedirectDomainSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      'The custom subdomain that will be used to redirect email recipients to the Amazon SES event tracking domain.',
-                  }),
-              ).exactOptional(),
+              CustomRedirectDomain: CustomRedirectDomainSchema.exactOptional().openapi({
+                description:
+                  'The custom subdomain that will be used to redirect email recipients to the Amazon SES event tracking domain.',
+              }),
             })
             .openapi({
               param: {
@@ -5387,22 +4318,14 @@ export const getActionCreateReceiptFilterRoute = createRoute({
         z.object({
           Filter: z
             .object({
-              Name: ReceiptFilterNameSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      '<p>The name of the IP address filter. The name must:</p> <ul> <li> <p>This value can only contain ASCII letters (a-z, A-Z), numbers (0-9), underscores (_), or dashes (-).</p> </li> <li> <p>Start and end with a letter or number.</p> </li> <li> <p>Contain less than 64 characters.</p> </li> </ul>',
-                  }),
-              ),
-              IpFilter: ReceiptIpFilterSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      'A structure that provides the IP addresses to block or allow, and whether to block or allow incoming mail from them.',
-                  }),
-              ),
+              Name: ReceiptFilterNameSchema.openapi({
+                description:
+                  '<p>The name of the IP address filter. The name must:</p> <ul> <li> <p>This value can only contain ASCII letters (a-z, A-Z), numbers (0-9), underscores (_), or dashes (-).</p> </li> <li> <p>Start and end with a letter or number.</p> </li> <li> <p>Contain less than 64 characters.</p> </li> </ul>',
+              }),
+              IpFilter: ReceiptIpFilterSchema.openapi({
+                description:
+                  'A structure that provides the IP addresses to block or allow, and whether to block or allow incoming mail from them.',
+              }),
             })
             .openapi({
               param: {
@@ -5613,14 +4536,10 @@ export const getActionCreateReceiptRuleRoute = createRoute({
             }),
           Rule: z
             .object({
-              Name: ReceiptRuleNameSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      '<p>The name of the receipt rule. The name must:</p> <ul> <li> <p>This value can only contain ASCII letters (a-z, A-Z), numbers (0-9), underscores (_), or dashes (-).</p> </li> <li> <p>Start and end with a letter or number.</p> </li> <li> <p>Contain less than 64 characters.</p> </li> </ul>',
-                  }),
-              ),
+              Name: ReceiptRuleNameSchema.openapi({
+                description:
+                  '<p>The name of the receipt rule. The name must:</p> <ul> <li> <p>This value can only contain ASCII letters (a-z, A-Z), numbers (0-9), underscores (_), or dashes (-).</p> </li> <li> <p>Start and end with a letter or number.</p> </li> <li> <p>Contain less than 64 characters.</p> </li> </ul>',
+              }),
               Enabled: z
                 .preprocess(
                   ((read) => (val: unknown) => {
@@ -5629,39 +4548,23 @@ export const getActionCreateReceiptRuleRoute = createRoute({
                   })(z.stringbool()),
                   EnabledSchema,
                 )
-                .and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        'If <code>true</code>, the receipt rule is active. The default value is <code>false</code>.',
-                    }),
-                )
-                .exactOptional(),
-              TlsPolicy: TlsPolicySchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      'Specifies whether Amazon SES should require that incoming email is delivered over a connection encrypted with Transport Layer Security (TLS). If this parameter is set to <code>Require</code>, Amazon SES will bounce emails that are not received over TLS. The default is <code>Optional</code>.',
-                  }),
-              ).exactOptional(),
-              Recipients: RecipientsListSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      'The recipient domains and email addresses that the receipt rule applies to. If this field is not specified, this rule will match all recipients under all verified domains.',
-                  }),
-              ).exactOptional(),
-              Actions: ReceiptActionsListSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      'An ordered list of actions to perform on messages that match at least one of the recipient email addresses or domains specified in the receipt rule.',
-                  }),
-              ).exactOptional(),
+                .exactOptional()
+                .openapi({
+                  description:
+                    'If <code>true</code>, the receipt rule is active. The default value is <code>false</code>.',
+                }),
+              TlsPolicy: TlsPolicySchema.exactOptional().openapi({
+                description:
+                  'Specifies whether Amazon SES should require that incoming email is delivered over a connection encrypted with Transport Layer Security (TLS). If this parameter is set to <code>Require</code>, Amazon SES will bounce emails that are not received over TLS. The default is <code>Optional</code>.',
+              }),
+              Recipients: RecipientsListSchema.exactOptional().openapi({
+                description:
+                  'The recipient domains and email addresses that the receipt rule applies to. If this field is not specified, this rule will match all recipients under all verified domains.',
+              }),
+              Actions: ReceiptActionsListSchema.exactOptional().openapi({
+                description:
+                  'An ordered list of actions to perform on messages that match at least one of the recipient email addresses or domains specified in the receipt rule.',
+              }),
               ScanEnabled: z
                 .preprocess(
                   ((read) => (val: unknown) => {
@@ -5670,15 +4573,11 @@ export const getActionCreateReceiptRuleRoute = createRoute({
                   })(z.stringbool()),
                   EnabledSchema,
                 )
-                .and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        'If <code>true</code>, then messages that this receipt rule applies to are scanned for spam and viruses. The default value is <code>false</code>.',
-                    }),
-                )
-                .exactOptional(),
+                .exactOptional()
+                .openapi({
+                  description:
+                    'If <code>true</code>, then messages that this receipt rule applies to are scanned for spam and viruses. The default value is <code>false</code>.',
+                }),
             })
             .openapi({
               param: {
@@ -6062,28 +4961,20 @@ export const getActionCreateTemplateRoute = createRoute({
         z.object({
           Template: z
             .object({
-              TemplateName: TemplateNameSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      'The name of the template. You will refer to this name when you send email using the <code>SendTemplatedEmail</code> or <code>SendBulkTemplatedEmail</code> operations.',
-                  }),
-              ),
-              SubjectPart: SubjectPartSchema.and(
-                z.any().openapi({ description: 'The subject line of the email.' }),
-              ).exactOptional(),
-              TextPart: TextPartSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      'The email body that will be visible to recipients whose email clients do not display HTML.',
-                  }),
-              ).exactOptional(),
-              HtmlPart: HtmlPartSchema.and(
-                z.any().openapi({ description: 'The HTML body of the email.' }),
-              ).exactOptional(),
+              TemplateName: TemplateNameSchema.openapi({
+                description:
+                  'The name of the template. You will refer to this name when you send email using the <code>SendTemplatedEmail</code> or <code>SendBulkTemplatedEmail</code> operations.',
+              }),
+              SubjectPart: SubjectPartSchema.exactOptional().openapi({
+                description: 'The subject line of the email.',
+              }),
+              TextPart: TextPartSchema.exactOptional().openapi({
+                description:
+                  'The email body that will be visible to recipients whose email clients do not display HTML.',
+              }),
+              HtmlPart: HtmlPartSchema.exactOptional().openapi({
+                description: 'The HTML body of the email.',
+              }),
             })
             .openapi({
               param: {
@@ -10067,14 +8958,10 @@ export const getActionPutConfigurationSetDeliveryOptionsRoute = createRoute({
             }),
           DeliveryOptions: z
             .object({
-              TlsPolicy: TlsPolicySchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      "Specifies whether messages that use the configuration set are required to use Transport Layer Security (TLS). If the value is <code>Require</code>, messages are only delivered if a TLS connection can be established. If the value is <code>Optional</code>, messages can be delivered in plain text if a TLS connection can't be established.",
-                  }),
-              ).exactOptional(),
+              TlsPolicy: TlsPolicySchema.exactOptional().openapi({
+                description:
+                  "Specifies whether messages that use the configuration set are required to use Transport Layer Security (TLS). If the value is <code>Require</code>, messages are only delivered if a TLS connection can be established. If the value is <code>Optional</code>, messages can be delivered in plain text if a TLS connection can't be established.",
+              }),
             })
             .exactOptional()
             .openapi({
@@ -10563,25 +9450,17 @@ export const getActionSendBounceRoute = createRoute({
             }),
           MessageDsn: z
             .object({
-              ReportingMta: ReportingMtaSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      'The reporting MTA that attempted to deliver the message, formatted as specified in <a href="https://tools.ietf.org/html/rfc3464">RFC 3464</a> (<code>mta-name-type; mta-name</code>). The default value is <code>dns; inbound-smtp.[region].amazonaws.com</code>.',
-                  }),
-              ),
-              ArrivalDate: ArrivalDateSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      'When the message was received by the reporting mail transfer agent (MTA), in <a href="https://www.ietf.org/rfc/rfc0822.txt">RFC 822</a> date-time format.',
-                  }),
-              ).exactOptional(),
-              ExtensionFields: ExtensionFieldListSchema.and(
-                z.any().openapi({ description: 'Additional X-headers to include in the DSN.' }),
-              ).exactOptional(),
+              ReportingMta: ReportingMtaSchema.openapi({
+                description:
+                  'The reporting MTA that attempted to deliver the message, formatted as specified in <a href="https://tools.ietf.org/html/rfc3464">RFC 3464</a> (<code>mta-name-type; mta-name</code>). The default value is <code>dns; inbound-smtp.[region].amazonaws.com</code>.',
+              }),
+              ArrivalDate: ArrivalDateSchema.exactOptional().openapi({
+                description:
+                  'When the message was received by the reporting mail transfer agent (MTA), in <a href="https://www.ietf.org/rfc/rfc0822.txt">RFC 822</a> date-time format.',
+              }),
+              ExtensionFields: ExtensionFieldListSchema.exactOptional().openapi({
+                description: 'Additional X-headers to include in the DSN.',
+              }),
             })
             .exactOptional()
             .openapi({
@@ -11268,27 +10147,15 @@ export const getActionSendEmailRoute = createRoute({
             }),
           Destination: z
             .object({
-              ToAddresses: AddressListSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description: 'The recipients to place on the To: line of the message.',
-                  }),
-              ).exactOptional(),
-              CcAddresses: AddressListSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description: 'The recipients to place on the CC: line of the message.',
-                  }),
-              ).exactOptional(),
-              BccAddresses: AddressListSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description: 'The recipients to place on the BCC: line of the message.',
-                  }),
-              ).exactOptional(),
+              ToAddresses: AddressListSchema.exactOptional().openapi({
+                description: 'The recipients to place on the To: line of the message.',
+              }),
+              CcAddresses: AddressListSchema.exactOptional().openapi({
+                description: 'The recipients to place on the CC: line of the message.',
+              }),
+              BccAddresses: AddressListSchema.exactOptional().openapi({
+                description: 'The recipients to place on the BCC: line of the message.',
+              }),
             })
             .openapi({
               param: {
@@ -11329,15 +10196,11 @@ export const getActionSendEmailRoute = createRoute({
             }),
           Message: z
             .object({
-              Subject: ContentSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      "The subject of the message: A short summary of the content, which will appear in the recipient's inbox.",
-                  }),
-              ),
-              Body: BodySchema.and(z.any().openapi({ description: 'The message body.' })),
+              Subject: ContentSchema.openapi({
+                description:
+                  "The subject of the message: A short summary of the content, which will appear in the recipient's inbox.",
+              }),
+              Body: BodySchema.openapi({ description: 'The message body.' }),
             })
             .openapi({
               param: {
@@ -11643,14 +10506,10 @@ export const getActionSendRawEmailRoute = createRoute({
             }),
           RawMessage: z
             .object({
-              Data: RawMessageDataSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      '<p>The raw data of the message. This data needs to base64-encoded if you are accessing Amazon SES directly through the HTTPS interface. If you are accessing Amazon SES using an AWS SDK, the SDK takes care of the base 64-encoding for you. In all cases, the client must ensure that the message format complies with Internet email standards regarding email header fields, MIME types, and MIME encoding.</p> <p>The To:, CC:, and BCC: headers in the raw message can contain a group list.</p> <p>If you are using <code>SendRawEmail</code> with sending authorization, you can include X-headers in the raw message to specify the "Source," "From," and "Return-Path" addresses. For more information, see the documentation for <code>SendRawEmail</code>. </p> <important> <p>Do not include these X-headers in the DKIM signature, because they are removed by Amazon SES before sending the email.</p> </important> <p>For more information, go to the <a href="https://docs.aws.amazon.com/ses/latest/DeveloperGuide/send-email-raw.html">Amazon SES Developer Guide</a>.</p>',
-                  }),
-              ),
+              Data: RawMessageDataSchema.openapi({
+                description:
+                  '<p>The raw data of the message. This data needs to base64-encoded if you are accessing Amazon SES directly through the HTTPS interface. If you are accessing Amazon SES using an AWS SDK, the SDK takes care of the base 64-encoding for you. In all cases, the client must ensure that the message format complies with Internet email standards regarding email header fields, MIME types, and MIME encoding.</p> <p>The To:, CC:, and BCC: headers in the raw message can contain a group list.</p> <p>If you are using <code>SendRawEmail</code> with sending authorization, you can include X-headers in the raw message to specify the "Source," "From," and "Return-Path" addresses. For more information, see the documentation for <code>SendRawEmail</code>. </p> <important> <p>Do not include these X-headers in the DKIM signature, because they are removed by Amazon SES before sending the email.</p> </important> <p>For more information, go to the <a href="https://docs.aws.amazon.com/ses/latest/DeveloperGuide/send-email-raw.html">Amazon SES Developer Guide</a>.</p>',
+              }),
             })
             .openapi({
               param: {
@@ -11927,27 +10786,15 @@ export const getActionSendTemplatedEmailRoute = createRoute({
             }),
           Destination: z
             .object({
-              ToAddresses: AddressListSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description: 'The recipients to place on the To: line of the message.',
-                  }),
-              ).exactOptional(),
-              CcAddresses: AddressListSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description: 'The recipients to place on the CC: line of the message.',
-                  }),
-              ).exactOptional(),
-              BccAddresses: AddressListSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description: 'The recipients to place on the BCC: line of the message.',
-                  }),
-              ).exactOptional(),
+              ToAddresses: AddressListSchema.exactOptional().openapi({
+                description: 'The recipients to place on the To: line of the message.',
+              }),
+              CcAddresses: AddressListSchema.exactOptional().openapi({
+                description: 'The recipients to place on the CC: line of the message.',
+              }),
+              BccAddresses: AddressListSchema.exactOptional().openapi({
+                description: 'The recipients to place on the BCC: line of the message.',
+              }),
             })
             .openapi({
               param: {
@@ -13438,14 +12285,10 @@ export const getActionUpdateConfigurationSetEventDestinationRoute = createRoute(
             }),
           EventDestination: z
             .object({
-              Name: EventDestinationNameSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      '<p>The name of the event destination. The name must:</p> <ul> <li> <p>This value can only contain ASCII letters (a-z, A-Z), numbers (0-9), underscores (_), or dashes (-).</p> </li> <li> <p>Contain less than 64 characters.</p> </li> </ul>',
-                  }),
-              ),
+              Name: EventDestinationNameSchema.openapi({
+                description:
+                  '<p>The name of the event destination. The name must:</p> <ul> <li> <p>This value can only contain ASCII letters (a-z, A-Z), numbers (0-9), underscores (_), or dashes (-).</p> </li> <li> <p>Contain less than 64 characters.</p> </li> </ul>',
+              }),
               Enabled: z
                 .preprocess(
                   ((read) => (val: unknown) => {
@@ -13454,47 +12297,27 @@ export const getActionUpdateConfigurationSetEventDestinationRoute = createRoute(
                   })(z.stringbool()),
                   EnabledSchema,
                 )
-                .and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        'Sets whether Amazon SES publishes events to this destination when you send an email with the associated configuration set. Set to <code>true</code> to enable publishing to this destination; set to <code>false</code> to prevent publishing to this destination. The default value is <code>false</code>.',
-                    }),
-                )
-                .exactOptional(),
-              MatchingEventTypes: EventTypesSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      'The type of email sending events to publish to the event destination.',
-                  }),
-              ),
-              KinesisFirehoseDestination: KinesisFirehoseDestinationSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      'An object that contains the delivery stream ARN and the IAM role ARN associated with an Amazon Kinesis Firehose event destination.',
-                  }),
-              ).exactOptional(),
-              CloudWatchDestination: CloudWatchDestinationSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      'An object that contains the names, default values, and sources of the dimensions associated with an Amazon CloudWatch event destination.',
-                  }),
-              ).exactOptional(),
-              SNSDestination: SNSDestinationSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      'An object that contains the topic ARN associated with an Amazon Simple Notification Service (Amazon SNS) event destination.',
-                  }),
-              ).exactOptional(),
+                .exactOptional()
+                .openapi({
+                  description:
+                    'Sets whether Amazon SES publishes events to this destination when you send an email with the associated configuration set. Set to <code>true</code> to enable publishing to this destination; set to <code>false</code> to prevent publishing to this destination. The default value is <code>false</code>.',
+                }),
+              MatchingEventTypes: EventTypesSchema.openapi({
+                description:
+                  'The type of email sending events to publish to the event destination.',
+              }),
+              KinesisFirehoseDestination: KinesisFirehoseDestinationSchema.exactOptional().openapi({
+                description:
+                  'An object that contains the delivery stream ARN and the IAM role ARN associated with an Amazon Kinesis Firehose event destination.',
+              }),
+              CloudWatchDestination: CloudWatchDestinationSchema.exactOptional().openapi({
+                description:
+                  'An object that contains the names, default values, and sources of the dimensions associated with an Amazon CloudWatch event destination.',
+              }),
+              SNSDestination: SNSDestinationSchema.exactOptional().openapi({
+                description:
+                  'An object that contains the topic ARN associated with an Amazon Simple Notification Service (Amazon SNS) event destination.',
+              }),
             })
             .openapi({
               param: {
@@ -13994,14 +12817,10 @@ export const getActionUpdateConfigurationSetTrackingOptionsRoute = createRoute({
             }),
           TrackingOptions: z
             .object({
-              CustomRedirectDomain: CustomRedirectDomainSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      'The custom subdomain that will be used to redirect email recipients to the Amazon SES event tracking domain.',
-                  }),
-              ).exactOptional(),
+              CustomRedirectDomain: CustomRedirectDomainSchema.exactOptional().openapi({
+                description:
+                  'The custom subdomain that will be used to redirect email recipients to the Amazon SES event tracking domain.',
+              }),
             })
             .openapi({
               param: {
@@ -14392,14 +13211,10 @@ export const getActionUpdateReceiptRuleRoute = createRoute({
             }),
           Rule: z
             .object({
-              Name: ReceiptRuleNameSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      '<p>The name of the receipt rule. The name must:</p> <ul> <li> <p>This value can only contain ASCII letters (a-z, A-Z), numbers (0-9), underscores (_), or dashes (-).</p> </li> <li> <p>Start and end with a letter or number.</p> </li> <li> <p>Contain less than 64 characters.</p> </li> </ul>',
-                  }),
-              ),
+              Name: ReceiptRuleNameSchema.openapi({
+                description:
+                  '<p>The name of the receipt rule. The name must:</p> <ul> <li> <p>This value can only contain ASCII letters (a-z, A-Z), numbers (0-9), underscores (_), or dashes (-).</p> </li> <li> <p>Start and end with a letter or number.</p> </li> <li> <p>Contain less than 64 characters.</p> </li> </ul>',
+              }),
               Enabled: z
                 .preprocess(
                   ((read) => (val: unknown) => {
@@ -14408,39 +13223,23 @@ export const getActionUpdateReceiptRuleRoute = createRoute({
                   })(z.stringbool()),
                   EnabledSchema,
                 )
-                .and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        'If <code>true</code>, the receipt rule is active. The default value is <code>false</code>.',
-                    }),
-                )
-                .exactOptional(),
-              TlsPolicy: TlsPolicySchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      'Specifies whether Amazon SES should require that incoming email is delivered over a connection encrypted with Transport Layer Security (TLS). If this parameter is set to <code>Require</code>, Amazon SES will bounce emails that are not received over TLS. The default is <code>Optional</code>.',
-                  }),
-              ).exactOptional(),
-              Recipients: RecipientsListSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      'The recipient domains and email addresses that the receipt rule applies to. If this field is not specified, this rule will match all recipients under all verified domains.',
-                  }),
-              ).exactOptional(),
-              Actions: ReceiptActionsListSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      'An ordered list of actions to perform on messages that match at least one of the recipient email addresses or domains specified in the receipt rule.',
-                  }),
-              ).exactOptional(),
+                .exactOptional()
+                .openapi({
+                  description:
+                    'If <code>true</code>, the receipt rule is active. The default value is <code>false</code>.',
+                }),
+              TlsPolicy: TlsPolicySchema.exactOptional().openapi({
+                description:
+                  'Specifies whether Amazon SES should require that incoming email is delivered over a connection encrypted with Transport Layer Security (TLS). If this parameter is set to <code>Require</code>, Amazon SES will bounce emails that are not received over TLS. The default is <code>Optional</code>.',
+              }),
+              Recipients: RecipientsListSchema.exactOptional().openapi({
+                description:
+                  'The recipient domains and email addresses that the receipt rule applies to. If this field is not specified, this rule will match all recipients under all verified domains.',
+              }),
+              Actions: ReceiptActionsListSchema.exactOptional().openapi({
+                description:
+                  'An ordered list of actions to perform on messages that match at least one of the recipient email addresses or domains specified in the receipt rule.',
+              }),
               ScanEnabled: z
                 .preprocess(
                   ((read) => (val: unknown) => {
@@ -14449,15 +13248,11 @@ export const getActionUpdateReceiptRuleRoute = createRoute({
                   })(z.stringbool()),
                   EnabledSchema,
                 )
-                .and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        'If <code>true</code>, then messages that this receipt rule applies to are scanned for spam and viruses. The default value is <code>false</code>.',
-                    }),
-                )
-                .exactOptional(),
+                .exactOptional()
+                .openapi({
+                  description:
+                    'If <code>true</code>, then messages that this receipt rule applies to are scanned for spam and viruses. The default value is <code>false</code>.',
+                }),
             })
             .openapi({
               param: {
@@ -14709,28 +13504,20 @@ export const getActionUpdateTemplateRoute = createRoute({
         z.object({
           Template: z
             .object({
-              TemplateName: TemplateNameSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      'The name of the template. You will refer to this name when you send email using the <code>SendTemplatedEmail</code> or <code>SendBulkTemplatedEmail</code> operations.',
-                  }),
-              ),
-              SubjectPart: SubjectPartSchema.and(
-                z.any().openapi({ description: 'The subject line of the email.' }),
-              ).exactOptional(),
-              TextPart: TextPartSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      'The email body that will be visible to recipients whose email clients do not display HTML.',
-                  }),
-              ).exactOptional(),
-              HtmlPart: HtmlPartSchema.and(
-                z.any().openapi({ description: 'The HTML body of the email.' }),
-              ).exactOptional(),
+              TemplateName: TemplateNameSchema.openapi({
+                description:
+                  'The name of the template. You will refer to this name when you send email using the <code>SendTemplatedEmail</code> or <code>SendBulkTemplatedEmail</code> operations.',
+              }),
+              SubjectPart: SubjectPartSchema.exactOptional().openapi({
+                description: 'The subject line of the email.',
+              }),
+              TextPart: TextPartSchema.exactOptional().openapi({
+                description:
+                  'The email body that will be visible to recipients whose email clients do not display HTML.',
+              }),
+              HtmlPart: HtmlPartSchema.exactOptional().openapi({
+                description: 'The HTML body of the email.',
+              }),
             })
             .openapi({
               param: {

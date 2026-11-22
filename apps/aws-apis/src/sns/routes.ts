@@ -16,14 +16,10 @@ const BooleanSchema = z.boolean().openapi('Boolean')
 
 const CheckIfPhoneNumberIsOptedOutResponseSchema = z
   .object({
-    isOptedOut: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Indicates whether the phone number is opted out:</p> <ul> <li> <p> <code>true</code> – The phone number is opted out, meaning you cannot publish SMS messages to it.</p> </li> <li> <p> <code>false</code> – The phone number is opted in, meaning you can publish SMS messages to it.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    isOptedOut: BooleanSchema.exactOptional().openapi({
+      description:
+        '<p>Indicates whether the phone number is opted out:</p> <ul> <li> <p> <code>true</code> – The phone number is opted out, meaning you cannot publish SMS messages to it.</p> </li> <li> <p> <code>false</code> – The phone number is opted in, meaning you can publish SMS messages to it.</p> </li> </ul>',
+    }),
   })
   .openapi({
     description: 'The response from the <code>CheckIfPhoneNumberIsOptedOut</code> action.',
@@ -37,9 +33,9 @@ const SubscriptionARNSchema = z.string().openapi('SubscriptionARN')
 
 const ConfirmSubscriptionResponseSchema = z
   .object({
-    SubscriptionArn: SubscriptionARNSchema.and(
-      z.any().openapi({ description: 'The ARN of the created subscription.' }),
-    ).exactOptional(),
+    SubscriptionArn: SubscriptionARNSchema.exactOptional().openapi({
+      description: 'The ARN of the created subscription.',
+    }),
   })
   .openapi({ description: 'Response for ConfirmSubscriptions action.', required: [] })
   .openapi('ConfirmSubscriptionResponse')
@@ -56,24 +52,24 @@ const StringSchema = z.string().openapi('String')
 
 const CreatePlatformApplicationResponseSchema = z
   .object({
-    PlatformApplicationArn: StringSchema.and(
-      z.any().openapi({ description: 'PlatformApplicationArn is returned.' }),
-    ).exactOptional(),
+    PlatformApplicationArn: StringSchema.exactOptional().openapi({
+      description: 'PlatformApplicationArn is returned.',
+    }),
   })
   .openapi({ description: 'Response from CreatePlatformApplication action.', required: [] })
   .openapi('CreatePlatformApplicationResponse')
 
 const CreateEndpointResponseSchema = z
   .object({
-    EndpointArn: StringSchema.and(
-      z.any().openapi({ description: 'EndpointArn returned from CreateEndpoint action.' }),
-    ).exactOptional(),
+    EndpointArn: StringSchema.exactOptional().openapi({
+      description: 'EndpointArn returned from CreateEndpoint action.',
+    }),
   })
   .openapi({ description: 'Response from CreateEndpoint action.', required: [] })
   .openapi('CreateEndpointResponse')
 
 const CreateSMSSandboxPhoneNumberResultSchema = z
-  .object({})
+  .looseObject({})
   .openapi('CreateSMSSandboxPhoneNumberResult')
 
 const OptedOutExceptionSchema = z.any().openapi('OptedOutException')
@@ -84,11 +80,9 @@ const TopicARNSchema = z.string().openapi('TopicARN')
 
 const CreateTopicResponseSchema = z
   .object({
-    TopicArn: TopicARNSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) assigned to the created topic.' }),
-    ).exactOptional(),
+    TopicArn: TopicARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) assigned to the created topic.',
+    }),
   })
   .openapi({ description: 'Response from CreateTopic action.', required: [] })
   .openapi('CreateTopicResponse')
@@ -101,10 +95,8 @@ const TagValueSchema = z.string().min(0).max(256).openapi('TagValue')
 
 const TagSchema = z
   .object({
-    Key: TagKeySchema.and(z.any().openapi({ description: 'The required key portion of the tag.' })),
-    Value: TagValueSchema.and(
-      z.any().openapi({ description: 'The optional value portion of the tag.' }),
-    ),
+    Key: TagKeySchema.openapi({ description: 'The required key portion of the tag.' }),
+    Value: TagValueSchema.openapi({ description: 'The optional value portion of the tag.' }),
   })
   .openapi({
     required: ['Key', 'Value'],
@@ -125,20 +117,16 @@ const TagPolicyExceptionSchema = z.any().openapi('TagPolicyException')
 const ConcurrentAccessExceptionSchema = z.any().openapi('ConcurrentAccessException')
 
 const DeleteSMSSandboxPhoneNumberResultSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DeleteSMSSandboxPhoneNumberResult')
 
 const ResourceNotFoundExceptionSchema = z.any().openapi('ResourceNotFoundException')
 
 const GetDataProtectionPolicyResponseSchema = z
   .object({
-    DataProtectionPolicy: AttributeValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Retrieves the <code>DataProtectionPolicy</code> in JSON string format.',
-        }),
-    ).exactOptional(),
+    DataProtectionPolicy: AttributeValueSchema.exactOptional().openapi({
+      description: 'Retrieves the <code>DataProtectionPolicy</code> in JSON string format.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetDataProtectionPolicyResponse')
@@ -147,37 +135,29 @@ const MapStringToStringSchema = z.record(z.string(), StringSchema).openapi('MapS
 
 const GetEndpointAttributesResponseSchema = z
   .object({
-    Attributes: MapStringToStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Attributes include the following:</p> <ul> <li> <p> <code>CustomUserData</code> – arbitrary user data to associate with the endpoint. Amazon SNS does not use this data. The data must be in UTF-8 format and less than 2KB.</p> </li> <li> <p> <code>Enabled</code> – flag that enables/disables delivery to the endpoint. Amazon SNS will set this to false when a notification service indicates to Amazon SNS that the endpoint is invalid. Users can set it back to true, typically after updating Token.</p> </li> <li> <p> <code>Token</code> – device token, also referred to as a registration id, for an app and mobile device. This is returned from the notification service when an app and mobile device are registered with the notification service.</p> <note> <p>The device token for the iOS platform is returned in lowercase.</p> </note> </li> </ul>',
-        }),
-    ).exactOptional(),
+    Attributes: MapStringToStringSchema.exactOptional().openapi({
+      description:
+        '<p>Attributes include the following:</p> <ul> <li> <p> <code>CustomUserData</code> – arbitrary user data to associate with the endpoint. Amazon SNS does not use this data. The data must be in UTF-8 format and less than 2KB.</p> </li> <li> <p> <code>Enabled</code> – flag that enables/disables delivery to the endpoint. Amazon SNS will set this to false when a notification service indicates to Amazon SNS that the endpoint is invalid. Users can set it back to true, typically after updating Token.</p> </li> <li> <p> <code>Token</code> – device token, also referred to as a registration id, for an app and mobile device. This is returned from the notification service when an app and mobile device are registered with the notification service.</p> <note> <p>The device token for the iOS platform is returned in lowercase.</p> </note> </li> </ul>',
+    }),
   })
   .openapi({ description: 'Response from GetEndpointAttributes of the EndpointArn.', required: [] })
   .openapi('GetEndpointAttributesResponse')
 
 const GetPlatformApplicationAttributesResponseSchema = z
   .object({
-    Attributes: MapStringToStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Attributes include the following:</p> <ul> <li> <p> <code>AppleCertificateExpiryDate</code> – The expiry date of the SSL certificate used to configure certificate-based authentication.</p> </li> <li> <p> <code>ApplePlatformTeamID</code> – The Apple developer account ID used to configure token-based authentication.</p> </li> <li> <p> <code>ApplePlatformBundleID</code> – The app identifier used to configure token-based authentication.</p> </li> <li> <p> <code>EventEndpointCreated</code> – Topic ARN to which EndpointCreated event notifications should be sent.</p> </li> <li> <p> <code>EventEndpointDeleted</code> – Topic ARN to which EndpointDeleted event notifications should be sent.</p> </li> <li> <p> <code>EventEndpointUpdated</code> – Topic ARN to which EndpointUpdate event notifications should be sent.</p> </li> <li> <p> <code>EventDeliveryFailure</code> – Topic ARN to which DeliveryFailure event notifications should be sent upon Direct Publish delivery failure (permanent) to one of the application's endpoints.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
+    Attributes: MapStringToStringSchema.exactOptional().openapi({
+      description:
+        "<p>Attributes include the following:</p> <ul> <li> <p> <code>AppleCertificateExpiryDate</code> – The expiry date of the SSL certificate used to configure certificate-based authentication.</p> </li> <li> <p> <code>ApplePlatformTeamID</code> – The Apple developer account ID used to configure token-based authentication.</p> </li> <li> <p> <code>ApplePlatformBundleID</code> – The app identifier used to configure token-based authentication.</p> </li> <li> <p> <code>EventEndpointCreated</code> – Topic ARN to which EndpointCreated event notifications should be sent.</p> </li> <li> <p> <code>EventEndpointDeleted</code> – Topic ARN to which EndpointDeleted event notifications should be sent.</p> </li> <li> <p> <code>EventEndpointUpdated</code> – Topic ARN to which EndpointUpdate event notifications should be sent.</p> </li> <li> <p> <code>EventDeliveryFailure</code> – Topic ARN to which DeliveryFailure event notifications should be sent upon Direct Publish delivery failure (permanent) to one of the application's endpoints.</p> </li> </ul>",
+    }),
   })
   .openapi({ description: 'Response for GetPlatformApplicationAttributes action.', required: [] })
   .openapi('GetPlatformApplicationAttributesResponse')
 
 const GetSMSAttributesResponseSchema = z
   .object({
-    attributes: MapStringToStringSchema.and(
-      z.any().openapi({ description: 'The SMS attribute names and their values.' }),
-    ).exactOptional(),
+    attributes: MapStringToStringSchema.exactOptional().openapi({
+      description: 'The SMS attribute names and their values.',
+    }),
   })
   .openapi({
     description: 'The response from the <code>GetSMSAttributes</code> request.',
@@ -187,14 +167,10 @@ const GetSMSAttributesResponseSchema = z
 
 const GetSMSSandboxAccountStatusResultSchema = z
   .object({
-    IsInSandbox: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether the calling Amazon Web Services account is in the SMS sandbox.',
-        }),
-    ),
+    IsInSandbox: BooleanSchema.openapi({
+      description:
+        'Indicates whether the calling Amazon Web Services account is in the SMS sandbox.',
+    }),
   })
   .openapi({ required: ['IsInSandbox'] })
   .openapi('GetSMSSandboxAccountStatusResult')
@@ -205,14 +181,10 @@ const SubscriptionAttributesMapSchema = z
 
 const GetSubscriptionAttributesResponseSchema = z
   .object({
-    Attributes: SubscriptionAttributesMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A map of the subscription's attributes. Attributes in this map include the following:</p> <ul> <li> <p> <code>ConfirmationWasAuthenticated</code> – <code>true</code> if the subscription confirmation request was authenticated.</p> </li> <li> <p> <code>DeliveryPolicy</code> – The JSON serialization of the subscription's delivery policy.</p> </li> <li> <p> <code>EffectiveDeliveryPolicy</code> – The JSON serialization of the effective delivery policy that takes into account the topic delivery policy and account system defaults.</p> </li> <li> <p> <code>FilterPolicy</code> – The filter policy JSON that is assigned to the subscription. For more information, see <a href=\"https://docs.aws.amazon.com/sns/latest/dg/sns-message-filtering.html\">Amazon SNS Message Filtering</a> in the <i>Amazon SNS Developer Guide</i>.</p> </li> <li> <p> <code>FilterPolicyScope</code> – This attribute lets you choose the filtering scope by using one of the following string value types:</p> <ul> <li> <p> <code>MessageAttributes</code> (default) – The filter is applied on the message attributes.</p> </li> <li> <p> <code>MessageBody</code> – The filter is applied on the message body.</p> </li> </ul> </li> <li> <p> <code>Owner</code> – The Amazon Web Services account ID of the subscription's owner.</p> </li> <li> <p> <code>PendingConfirmation</code> – <code>true</code> if the subscription hasn't been confirmed. To confirm a pending subscription, call the <code>ConfirmSubscription</code> action with a confirmation token.</p> </li> <li> <p> <code>RawMessageDelivery</code> – <code>true</code> if raw message delivery is enabled for the subscription. Raw messages are free of JSON formatting and can be sent to HTTP/S and Amazon SQS endpoints.</p> </li> <li> <p> <code>RedrivePolicy</code> – When specified, sends undeliverable messages to the specified Amazon SQS dead-letter queue. Messages that can't be delivered due to client errors (for example, when the subscribed endpoint is unreachable) or server errors (for example, when the service that powers the subscribed endpoint becomes unavailable) are held in the dead-letter queue for further analysis or reprocessing.</p> </li> <li> <p> <code>SubscriptionArn</code> – The subscription's ARN.</p> </li> <li> <p> <code>TopicArn</code> – The topic ARN that the subscription is associated with.</p> </li> </ul> <p>The following attribute applies only to Amazon Kinesis Data Firehose delivery stream subscriptions:</p> <ul> <li> <p> <code>SubscriptionRoleArn</code> – The ARN of the IAM role that has the following:</p> <ul> <li> <p>Permission to write to the Kinesis Data Firehose delivery stream</p> </li> <li> <p>Amazon SNS listed as a trusted entity</p> </li> </ul> <p>Specifying a valid ARN for this attribute is required for Kinesis Data Firehose delivery stream subscriptions. For more information, see <a href=\"https://docs.aws.amazon.com/sns/latest/dg/sns-firehose-as-subscriber.html\">Fanout to Kinesis Data Firehose delivery streams</a> in the <i>Amazon SNS Developer Guide</i>.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
+    Attributes: SubscriptionAttributesMapSchema.exactOptional().openapi({
+      description:
+        "<p>A map of the subscription's attributes. Attributes in this map include the following:</p> <ul> <li> <p> <code>ConfirmationWasAuthenticated</code> – <code>true</code> if the subscription confirmation request was authenticated.</p> </li> <li> <p> <code>DeliveryPolicy</code> – The JSON serialization of the subscription's delivery policy.</p> </li> <li> <p> <code>EffectiveDeliveryPolicy</code> – The JSON serialization of the effective delivery policy that takes into account the topic delivery policy and account system defaults.</p> </li> <li> <p> <code>FilterPolicy</code> – The filter policy JSON that is assigned to the subscription. For more information, see <a href=\"https://docs.aws.amazon.com/sns/latest/dg/sns-message-filtering.html\">Amazon SNS Message Filtering</a> in the <i>Amazon SNS Developer Guide</i>.</p> </li> <li> <p> <code>FilterPolicyScope</code> – This attribute lets you choose the filtering scope by using one of the following string value types:</p> <ul> <li> <p> <code>MessageAttributes</code> (default) – The filter is applied on the message attributes.</p> </li> <li> <p> <code>MessageBody</code> – The filter is applied on the message body.</p> </li> </ul> </li> <li> <p> <code>Owner</code> – The Amazon Web Services account ID of the subscription's owner.</p> </li> <li> <p> <code>PendingConfirmation</code> – <code>true</code> if the subscription hasn't been confirmed. To confirm a pending subscription, call the <code>ConfirmSubscription</code> action with a confirmation token.</p> </li> <li> <p> <code>RawMessageDelivery</code> – <code>true</code> if raw message delivery is enabled for the subscription. Raw messages are free of JSON formatting and can be sent to HTTP/S and Amazon SQS endpoints.</p> </li> <li> <p> <code>RedrivePolicy</code> – When specified, sends undeliverable messages to the specified Amazon SQS dead-letter queue. Messages that can't be delivered due to client errors (for example, when the subscribed endpoint is unreachable) or server errors (for example, when the service that powers the subscribed endpoint becomes unavailable) are held in the dead-letter queue for further analysis or reprocessing.</p> </li> <li> <p> <code>SubscriptionArn</code> – The subscription's ARN.</p> </li> <li> <p> <code>TopicArn</code> – The topic ARN that the subscription is associated with.</p> </li> </ul> <p>The following attribute applies only to Amazon Kinesis Data Firehose delivery stream subscriptions:</p> <ul> <li> <p> <code>SubscriptionRoleArn</code> – The ARN of the IAM role that has the following:</p> <ul> <li> <p>Permission to write to the Kinesis Data Firehose delivery stream</p> </li> <li> <p>Amazon SNS listed as a trusted entity</p> </li> </ul> <p>Specifying a valid ARN for this attribute is required for Kinesis Data Firehose delivery stream subscriptions. For more information, see <a href=\"https://docs.aws.amazon.com/sns/latest/dg/sns-firehose-as-subscriber.html\">Fanout to Kinesis Data Firehose delivery streams</a> in the <i>Amazon SNS Developer Guide</i>.</p> </li> </ul>",
+    }),
   })
   .openapi({ description: 'Response for GetSubscriptionAttributes action.', required: [] })
   .openapi('GetSubscriptionAttributesResponse')
@@ -223,26 +195,22 @@ const TopicAttributesMapSchema = z
 
 const GetTopicAttributesResponseSchema = z
   .object({
-    Attributes: TopicAttributesMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A map of the topic\'s attributes. Attributes in this map include the following:</p> <ul> <li> <p> <code>DeliveryPolicy</code> – The JSON serialization of the topic\'s delivery policy.</p> </li> <li> <p> <code>DisplayName</code> – The human-readable name used in the <code>From</code> field for notifications to <code>email</code> and <code>email-json</code> endpoints.</p> </li> <li> <p> <code>EffectiveDeliveryPolicy</code> – The JSON serialization of the effective delivery policy, taking system defaults into account.</p> </li> <li> <p> <code>Owner</code> – The Amazon Web Services account ID of the topic\'s owner.</p> </li> <li> <p> <code>Policy</code> – The JSON serialization of the topic\'s access control policy.</p> </li> <li> <p> <code>SignatureVersion</code> – The signature version corresponds to the hashing algorithm used while creating the signature of the notifications, subscription confirmations, or unsubscribe confirmation messages sent by Amazon SNS.</p> <ul> <li> <p>By default, <code>SignatureVersion</code> is set to <b>1</b>. The signature is a Base64-encoded <b>SHA1withRSA</b> signature.</p> </li> <li> <p>When you set <code>SignatureVersion</code> to <b>2</b>. Amazon SNS uses a Base64-encoded <b>SHA256withRSA</b> signature. </p> <note> <p>If the API response does not include the <code>SignatureVersion</code> attribute, it means that the <code>SignatureVersion</code> for the topic has value <b>1</b>.</p> </note> </li> </ul> </li> <li> <p> <code>SubscriptionsConfirmed</code> – The number of confirmed subscriptions for the topic.</p> </li> <li> <p> <code>SubscriptionsDeleted</code> – The number of deleted subscriptions for the topic.</p> </li> <li> <p> <code>SubscriptionsPending</code> – The number of subscriptions pending confirmation for the topic.</p> </li> <li> <p> <code>TopicArn</code> – The topic\'s ARN.</p> </li> <li> <p> <code>TracingConfig</code> – Tracing mode of an Amazon SNS topic. By default <code>TracingConfig</code> is set to <code>PassThrough</code>, and the topic passes through the tracing header it receives from an Amazon SNS publisher to its subscriptions. If set to <code>Active</code>, Amazon SNS will vend X-Ray segment data to topic owner account if the sampled flag in the tracing header is true. This is only supported on standard topics.</p> </li> </ul> <p>The following attribute applies only to <a href="https://docs.aws.amazon.com/sns/latest/dg/sns-server-side-encryption.html">server-side-encryption</a>:</p> <ul> <li> <p> <code>KmsMasterKeyId</code> - The ID of an Amazon Web Services managed customer master key (CMK) for Amazon SNS or a custom CMK. For more information, see <a href="https://docs.aws.amazon.com/sns/latest/dg/sns-server-side-encryption.html#sse-key-terms">Key Terms</a>. For more examples, see <a href="https://docs.aws.amazon.com/kms/latest/APIReference/API_DescribeKey.html#API_DescribeKey_RequestParameters">KeyId</a> in the <i>Key Management Service API Reference</i>.</p> </li> </ul> <p>The following attributes apply only to <a href="https://docs.aws.amazon.com/sns/latest/dg/sns-fifo-topics.html">FIFO topics</a>:</p> <ul> <li> <p> <code>FifoTopic</code> – When this is set to <code>true</code>, a FIFO topic is created.</p> </li> <li> <p> <code>ContentBasedDeduplication</code> – Enables content-based deduplication for FIFO topics.</p> <ul> <li> <p>By default, <code>ContentBasedDeduplication</code> is set to <code>false</code>. If you create a FIFO topic and this attribute is <code>false</code>, you must specify a value for the <code>MessageDeduplicationId</code> parameter for the <a href="https://docs.aws.amazon.com/sns/latest/api/API_Publish.html">Publish</a> action. </p> </li> <li> <p>When you set <code>ContentBasedDeduplication</code> to <code>true</code>, Amazon SNS uses a SHA-256 hash to generate the <code>MessageDeduplicationId</code> using the body of the message (but not the attributes of the message).</p> <p>(Optional) To override the generated value, you can specify a value for the <code>MessageDeduplicationId</code> parameter for the <code>Publish</code> action.</p> </li> </ul> </li> </ul>',
-        }),
-    ).exactOptional(),
+    Attributes: TopicAttributesMapSchema.exactOptional().openapi({
+      description:
+        '<p>A map of the topic\'s attributes. Attributes in this map include the following:</p> <ul> <li> <p> <code>DeliveryPolicy</code> – The JSON serialization of the topic\'s delivery policy.</p> </li> <li> <p> <code>DisplayName</code> – The human-readable name used in the <code>From</code> field for notifications to <code>email</code> and <code>email-json</code> endpoints.</p> </li> <li> <p> <code>EffectiveDeliveryPolicy</code> – The JSON serialization of the effective delivery policy, taking system defaults into account.</p> </li> <li> <p> <code>Owner</code> – The Amazon Web Services account ID of the topic\'s owner.</p> </li> <li> <p> <code>Policy</code> – The JSON serialization of the topic\'s access control policy.</p> </li> <li> <p> <code>SignatureVersion</code> – The signature version corresponds to the hashing algorithm used while creating the signature of the notifications, subscription confirmations, or unsubscribe confirmation messages sent by Amazon SNS.</p> <ul> <li> <p>By default, <code>SignatureVersion</code> is set to <b>1</b>. The signature is a Base64-encoded <b>SHA1withRSA</b> signature.</p> </li> <li> <p>When you set <code>SignatureVersion</code> to <b>2</b>. Amazon SNS uses a Base64-encoded <b>SHA256withRSA</b> signature. </p> <note> <p>If the API response does not include the <code>SignatureVersion</code> attribute, it means that the <code>SignatureVersion</code> for the topic has value <b>1</b>.</p> </note> </li> </ul> </li> <li> <p> <code>SubscriptionsConfirmed</code> – The number of confirmed subscriptions for the topic.</p> </li> <li> <p> <code>SubscriptionsDeleted</code> – The number of deleted subscriptions for the topic.</p> </li> <li> <p> <code>SubscriptionsPending</code> – The number of subscriptions pending confirmation for the topic.</p> </li> <li> <p> <code>TopicArn</code> – The topic\'s ARN.</p> </li> <li> <p> <code>TracingConfig</code> – Tracing mode of an Amazon SNS topic. By default <code>TracingConfig</code> is set to <code>PassThrough</code>, and the topic passes through the tracing header it receives from an Amazon SNS publisher to its subscriptions. If set to <code>Active</code>, Amazon SNS will vend X-Ray segment data to topic owner account if the sampled flag in the tracing header is true. This is only supported on standard topics.</p> </li> </ul> <p>The following attribute applies only to <a href="https://docs.aws.amazon.com/sns/latest/dg/sns-server-side-encryption.html">server-side-encryption</a>:</p> <ul> <li> <p> <code>KmsMasterKeyId</code> - The ID of an Amazon Web Services managed customer master key (CMK) for Amazon SNS or a custom CMK. For more information, see <a href="https://docs.aws.amazon.com/sns/latest/dg/sns-server-side-encryption.html#sse-key-terms">Key Terms</a>. For more examples, see <a href="https://docs.aws.amazon.com/kms/latest/APIReference/API_DescribeKey.html#API_DescribeKey_RequestParameters">KeyId</a> in the <i>Key Management Service API Reference</i>.</p> </li> </ul> <p>The following attributes apply only to <a href="https://docs.aws.amazon.com/sns/latest/dg/sns-fifo-topics.html">FIFO topics</a>:</p> <ul> <li> <p> <code>FifoTopic</code> – When this is set to <code>true</code>, a FIFO topic is created.</p> </li> <li> <p> <code>ContentBasedDeduplication</code> – Enables content-based deduplication for FIFO topics.</p> <ul> <li> <p>By default, <code>ContentBasedDeduplication</code> is set to <code>false</code>. If you create a FIFO topic and this attribute is <code>false</code>, you must specify a value for the <code>MessageDeduplicationId</code> parameter for the <a href="https://docs.aws.amazon.com/sns/latest/api/API_Publish.html">Publish</a> action. </p> </li> <li> <p>When you set <code>ContentBasedDeduplication</code> to <code>true</code>, Amazon SNS uses a SHA-256 hash to generate the <code>MessageDeduplicationId</code> using the body of the message (but not the attributes of the message).</p> <p>(Optional) To override the generated value, you can specify a value for the <code>MessageDeduplicationId</code> parameter for the <code>Publish</code> action.</p> </li> </ul> </li> </ul>',
+    }),
   })
   .openapi({ description: 'Response for GetTopicAttributes action.', required: [] })
   .openapi('GetTopicAttributesResponse')
 
 const EndpointSchema = z
   .object({
-    EndpointArn: StringSchema.and(
-      z.any().openapi({ description: 'The <code>EndpointArn</code> for mobile app and device.' }),
-    ).exactOptional(),
-    Attributes: MapStringToStringSchema.and(
-      z.any().openapi({ description: 'Attributes for endpoint.' }),
-    ).exactOptional(),
+    EndpointArn: StringSchema.exactOptional().openapi({
+      description: 'The <code>EndpointArn</code> for mobile app and device.',
+    }),
+    Attributes: MapStringToStringSchema.exactOptional().openapi({
+      description: 'Attributes for endpoint.',
+    }),
   })
   .openapi({ description: 'The endpoint for mobile app and device.', required: [] })
   .openapi('Endpoint')
@@ -251,21 +219,13 @@ const ListOfEndpointsSchema = z.array(EndpointSchema).openapi('ListOfEndpoints')
 
 const ListEndpointsByPlatformApplicationResponseSchema = z
   .object({
-    Endpoints: ListOfEndpointsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Endpoints returned for ListEndpointsByPlatformApplication action.',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'NextToken string is returned when calling ListEndpointsByPlatformApplication action if additional records are available after the first page results.',
-        }),
-    ).exactOptional(),
+    Endpoints: ListOfEndpointsSchema.exactOptional().openapi({
+      description: 'Endpoints returned for ListEndpointsByPlatformApplication action.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'NextToken string is returned when calling ListEndpointsByPlatformApplication action if additional records are available after the first page results.',
+    }),
   })
   .openapi({ description: 'Response for ListEndpointsByPlatformApplication action.', required: [] })
   .openapi('ListEndpointsByPlatformApplicationResponse')
@@ -304,29 +264,23 @@ const NumberCapabilityListSchema = z
 
 const PhoneNumberInformationSchema = z
   .object({
-    CreatedAt: TimestampSchema.and(
-      z.any().openapi({ description: 'The date and time when the phone number was created.' }),
-    ).exactOptional(),
-    PhoneNumber: StringSchema.and(
-      z.any().openapi({ description: 'The phone number.' }),
-    ).exactOptional(),
-    Status: StringSchema.and(
-      z.any().openapi({ description: 'The status of the phone number.' }),
-    ).exactOptional(),
-    Iso2CountryCode: Iso2CountryCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The two-character code for the country or region, in ISO 3166-1 alpha-2 format.',
-        }),
-    ).exactOptional(),
-    RouteType: RouteTypeSchema.and(
-      z.any().openapi({ description: 'The list of supported routes.' }),
-    ).exactOptional(),
-    NumberCapabilities: NumberCapabilityListSchema.and(
-      z.any().openapi({ description: 'The capabilities of each phone number.' }),
-    ).exactOptional(),
+    CreatedAt: TimestampSchema.exactOptional().openapi({
+      description: 'The date and time when the phone number was created.',
+    }),
+    PhoneNumber: StringSchema.exactOptional().openapi({ description: 'The phone number.' }),
+    Status: StringSchema.exactOptional().openapi({
+      description: 'The status of the phone number.',
+    }),
+    Iso2CountryCode: Iso2CountryCodeSchema.exactOptional().openapi({
+      description:
+        'The two-character code for the country or region, in ISO 3166-1 alpha-2 format.',
+    }),
+    RouteType: RouteTypeSchema.exactOptional().openapi({
+      description: 'The list of supported routes.',
+    }),
+    NumberCapabilities: NumberCapabilityListSchema.exactOptional().openapi({
+      description: 'The capabilities of each phone number.',
+    }),
   })
   .openapi({ description: 'A list of phone numbers and their metadata.', required: [] })
   .openapi('PhoneNumberInformation')
@@ -338,21 +292,13 @@ const PhoneNumberInformationListSchema = z
 
 const ListOriginationNumbersResultSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A <code>NextToken</code> string is returned when you call the <code>ListOriginationNumbers</code> operation if additional pages of records are available.',
-        }),
-    ).exactOptional(),
-    PhoneNumbers: PhoneNumberInformationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "A list of the calling account's verified and pending origination numbers.",
-        }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'A <code>NextToken</code> string is returned when you call the <code>ListOriginationNumbers</code> operation if additional pages of records are available.',
+    }),
+    PhoneNumbers: PhoneNumberInformationListSchema.exactOptional().openapi({
+      description: "A list of the calling account's verified and pending origination numbers.",
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListOriginationNumbersResult')
@@ -367,22 +313,14 @@ const String2Schema = z.string().openapi('String2')
 
 const ListPhoneNumbersOptedOutResponseSchema = z
   .object({
-    phoneNumbers: PhoneNumberListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of phone numbers that are opted out of receiving SMS messages. The list is paginated, and each page can contain up to 100 phone numbers.',
-        }),
-    ).exactOptional(),
-    nextToken: String2Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A <code>NextToken</code> string is returned when you call the <code>ListPhoneNumbersOptedOut</code> action if additional records are available after the first page of results.',
-        }),
-    ).exactOptional(),
+    phoneNumbers: PhoneNumberListSchema.exactOptional().openapi({
+      description:
+        'A list of phone numbers that are opted out of receiving SMS messages. The list is paginated, and each page can contain up to 100 phone numbers.',
+    }),
+    nextToken: String2Schema.exactOptional().openapi({
+      description:
+        'A <code>NextToken</code> string is returned when you call the <code>ListPhoneNumbersOptedOut</code> action if additional records are available after the first page of results.',
+    }),
   })
   .openapi({
     description: 'The response from the <code>ListPhoneNumbersOptedOut</code> action.',
@@ -392,12 +330,12 @@ const ListPhoneNumbersOptedOutResponseSchema = z
 
 const PlatformApplicationSchema = z
   .object({
-    PlatformApplicationArn: StringSchema.and(
-      z.any().openapi({ description: 'PlatformApplicationArn for platform application object.' }),
-    ).exactOptional(),
-    Attributes: MapStringToStringSchema.and(
-      z.any().openapi({ description: 'Attributes for platform application object.' }),
-    ).exactOptional(),
+    PlatformApplicationArn: StringSchema.exactOptional().openapi({
+      description: 'PlatformApplicationArn for platform application object.',
+    }),
+    Attributes: MapStringToStringSchema.exactOptional().openapi({
+      description: 'Attributes for platform application object.',
+    }),
   })
   .openapi({ description: 'Platform application object.', required: [] })
   .openapi('PlatformApplication')
@@ -408,22 +346,13 @@ const ListOfPlatformApplicationsSchema = z
 
 const ListPlatformApplicationsResponseSchema = z
   .object({
-    PlatformApplications: ListOfPlatformApplicationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Platform applications returned when calling ListPlatformApplications action.',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'NextToken string is returned when calling ListPlatformApplications action if additional records are available after the first page results.',
-        }),
-    ).exactOptional(),
+    PlatformApplications: ListOfPlatformApplicationsSchema.exactOptional().openapi({
+      description: 'Platform applications returned when calling ListPlatformApplications action.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'NextToken string is returned when calling ListPlatformApplications action if additional records are available after the first page results.',
+    }),
   })
   .openapi({ description: 'Response for ListPlatformApplications action.', required: [] })
   .openapi('ListPlatformApplicationsResponse')
@@ -444,12 +373,12 @@ const SMSSandboxPhoneNumberVerificationStatusSchema = z
 
 const SMSSandboxPhoneNumberSchema = z
   .object({
-    PhoneNumber: PhoneNumberStringSchema.and(
-      z.any().openapi({ description: 'The destination phone number.' }),
-    ).exactOptional(),
-    Status: SMSSandboxPhoneNumberVerificationStatusSchema.and(
-      z.any().openapi({ description: "The destination phone number's verification status." }),
-    ).exactOptional(),
+    PhoneNumber: PhoneNumberStringSchema.exactOptional().openapi({
+      description: 'The destination phone number.',
+    }),
+    Status: SMSSandboxPhoneNumberVerificationStatusSchema.exactOptional().openapi({
+      description: "The destination phone number's verification status.",
+    }),
   })
   .openapi({
     description:
@@ -464,21 +393,13 @@ const SMSSandboxPhoneNumberListSchema = z
 
 const ListSMSSandboxPhoneNumbersResultSchema = z
   .object({
-    PhoneNumbers: SMSSandboxPhoneNumberListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "A list of the calling account's pending and verified phone numbers.",
-        }),
-    ),
-    NextToken: String2Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A <code>NextToken</code> string is returned when you call the <code>ListSMSSandboxPhoneNumbersInput</code> operation if additional pages of records are available.',
-        }),
-    ).exactOptional(),
+    PhoneNumbers: SMSSandboxPhoneNumberListSchema.openapi({
+      description: "A list of the calling account's pending and verified phone numbers.",
+    }),
+    NextToken: String2Schema.exactOptional().openapi({
+      description:
+        'A <code>NextToken</code> string is returned when you call the <code>ListSMSSandboxPhoneNumbersInput</code> operation if additional pages of records are available.',
+    }),
   })
   .openapi({ required: ['PhoneNumbers'] })
   .openapi('ListSMSSandboxPhoneNumbersResult')
@@ -491,23 +412,19 @@ const Endpoint2Schema = z.string().openapi('Endpoint2')
 
 const SubscriptionSchema = z
   .object({
-    SubscriptionArn: SubscriptionARNSchema.and(
-      z.any().openapi({ description: "The subscription's ARN." }),
-    ).exactOptional(),
-    Owner: AccountSchema.and(
-      z.any().openapi({ description: "The subscription's owner." }),
-    ).exactOptional(),
-    Protocol: ProtocolSchema.and(
-      z.any().openapi({ description: "The subscription's protocol." }),
-    ).exactOptional(),
-    Endpoint: Endpoint2Schema.and(
-      z
-        .any()
-        .openapi({ description: "The subscription's endpoint (format depends on the protocol)." }),
-    ).exactOptional(),
-    TopicArn: TopicARNSchema.and(
-      z.any().openapi({ description: "The ARN of the subscription's topic." }),
-    ).exactOptional(),
+    SubscriptionArn: SubscriptionARNSchema.exactOptional().openapi({
+      description: "The subscription's ARN.",
+    }),
+    Owner: AccountSchema.exactOptional().openapi({ description: "The subscription's owner." }),
+    Protocol: ProtocolSchema.exactOptional().openapi({
+      description: "The subscription's protocol.",
+    }),
+    Endpoint: Endpoint2Schema.exactOptional().openapi({
+      description: "The subscription's endpoint (format depends on the protocol).",
+    }),
+    TopicArn: TopicARNSchema.exactOptional().openapi({
+      description: "The ARN of the subscription's topic.",
+    }),
   })
   .openapi({
     description: 'A wrapper type for the attributes of an Amazon SNS subscription.',
@@ -519,34 +436,26 @@ const SubscriptionsListSchema = z.array(SubscriptionSchema).openapi('Subscriptio
 
 const ListSubscriptionsResponseSchema = z
   .object({
-    Subscriptions: SubscriptionsListSchema.and(
-      z.any().openapi({ description: 'A list of subscriptions.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Token to pass along to the next <code>ListSubscriptions</code> request. This element is returned if there are more subscriptions to retrieve.',
-        }),
-    ).exactOptional(),
+    Subscriptions: SubscriptionsListSchema.exactOptional().openapi({
+      description: 'A list of subscriptions.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'Token to pass along to the next <code>ListSubscriptions</code> request. This element is returned if there are more subscriptions to retrieve.',
+    }),
   })
   .openapi({ description: 'Response for ListSubscriptions action', required: [] })
   .openapi('ListSubscriptionsResponse')
 
 const ListSubscriptionsByTopicResponseSchema = z
   .object({
-    Subscriptions: SubscriptionsListSchema.and(
-      z.any().openapi({ description: 'A list of subscriptions.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Token to pass along to the next <code>ListSubscriptionsByTopic</code> request. This element is returned if there are more subscriptions to retrieve.',
-        }),
-    ).exactOptional(),
+    Subscriptions: SubscriptionsListSchema.exactOptional().openapi({
+      description: 'A list of subscriptions.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'Token to pass along to the next <code>ListSubscriptionsByTopic</code> request. This element is returned if there are more subscriptions to retrieve.',
+    }),
   })
   .openapi({ description: 'Response for ListSubscriptionsByTopic action.', required: [] })
   .openapi('ListSubscriptionsByTopicResponse')
@@ -555,19 +464,15 @@ const TagListSchema = z.array(TagSchema).openapi('TagList')
 
 const ListTagsForResourceResponseSchema = z
   .object({
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'The tags associated with the specified topic.' }),
-    ).exactOptional(),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'The tags associated with the specified topic.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTagsForResourceResponse')
 
 const TopicSchema = z
-  .object({
-    TopicArn: TopicARNSchema.and(
-      z.any().openapi({ description: "The topic's ARN." }),
-    ).exactOptional(),
-  })
+  .object({ TopicArn: TopicARNSchema.exactOptional().openapi({ description: "The topic's ARN." }) })
   .openapi({
     description:
       "A wrapper type for the topic's Amazon Resource Name (ARN). To retrieve a topic's attributes, use <code>GetTopicAttributes</code>.",
@@ -579,23 +484,17 @@ const TopicsListSchema = z.array(TopicSchema).openapi('TopicsList')
 
 const ListTopicsResponseSchema = z
   .object({
-    Topics: TopicsListSchema.and(
-      z.any().openapi({ description: 'A list of topic ARNs.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Token to pass along to the next <code>ListTopics</code> request. This element is returned if there are additional topics to retrieve.',
-        }),
-    ).exactOptional(),
+    Topics: TopicsListSchema.exactOptional().openapi({ description: 'A list of topic ARNs.' }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'Token to pass along to the next <code>ListTopics</code> request. This element is returned if there are additional topics to retrieve.',
+    }),
   })
   .openapi({ description: 'Response for ListTopics action.', required: [] })
   .openapi('ListTopicsResponse')
 
 const OptInPhoneNumberResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'The response for the OptInPhoneNumber action.' })
   .openapi('OptInPhoneNumberResponse')
 
@@ -603,22 +502,14 @@ const MessageIdSchema = z.string().openapi('MessageId')
 
 const PublishResponseSchema = z
   .object({
-    MessageId: MessageIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Unique identifier assigned to the published message.</p> <p>Length Constraint: Maximum 100 characters</p>',
-        }),
-    ).exactOptional(),
-    SequenceNumber: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>This response element applies only to FIFO (first-in-first-out) topics. </p> <p>The sequence number is a large, non-consecutive number that Amazon SNS assigns to each message. The length of <code>SequenceNumber</code> is 128 bits. <code>SequenceNumber</code> continues to increase for each <code>MessageGroupId</code>.</p>',
-        }),
-    ).exactOptional(),
+    MessageId: MessageIdSchema.exactOptional().openapi({
+      description:
+        '<p>Unique identifier assigned to the published message.</p> <p>Length Constraint: Maximum 100 characters</p>',
+    }),
+    SequenceNumber: StringSchema.exactOptional().openapi({
+      description:
+        '<p>This response element applies only to FIFO (first-in-first-out) topics. </p> <p>The sequence number is a large, non-consecutive number that Amazon SNS assigns to each message. The length of <code>SequenceNumber</code> is 128 bits. <code>SequenceNumber</code> continues to increase for each <code>MessageGroupId</code>.</p>',
+    }),
   })
   .openapi({ description: 'Response for Publish action.', required: [] })
   .openapi('PublishResponse')
@@ -627,30 +518,18 @@ const BinarySchema = z.string().openapi('Binary')
 
 const MessageAttributeValueSchema = z
   .object({
-    DataType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Amazon SNS supports the following logical data types: String, String.Array, Number, and Binary. For more information, see <a href="https://docs.aws.amazon.com/sns/latest/dg/SNSMessageAttributes.html#SNSMessageAttributes.DataTypes">Message Attribute Data Types</a>.',
-        }),
-    ),
-    StringValue: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Strings are Unicode with UTF8 binary encoding. For a list of code values, see <a href="https://en.wikipedia.org/wiki/ASCII#ASCII_printable_characters">ASCII Printable Characters</a>.',
-        }),
-    ).exactOptional(),
-    BinaryValue: BinarySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Binary type attributes can store any binary data, for example, compressed data, encrypted data, or images.',
-        }),
-    ).exactOptional(),
+    DataType: StringSchema.openapi({
+      description:
+        'Amazon SNS supports the following logical data types: String, String.Array, Number, and Binary. For more information, see <a href="https://docs.aws.amazon.com/sns/latest/dg/SNSMessageAttributes.html#SNSMessageAttributes.DataTypes">Message Attribute Data Types</a>.',
+    }),
+    StringValue: StringSchema.exactOptional().openapi({
+      description:
+        'Strings are Unicode with UTF8 binary encoding. For a list of code values, see <a href="https://en.wikipedia.org/wiki/ASCII#ASCII_printable_characters">ASCII Printable Characters</a>.',
+    }),
+    BinaryValue: BinarySchema.exactOptional().openapi({
+      description:
+        'Binary type attributes can store any binary data, for example, compressed data, encrypted data, or images.',
+    }),
   })
   .openapi({
     required: ['DataType'],
@@ -681,20 +560,16 @@ const KMSAccessDeniedExceptionSchema = z.any().openapi('KMSAccessDeniedException
 
 const PublishBatchResultEntrySchema = z
   .object({
-    Id: StringSchema.and(
-      z.any().openapi({ description: 'The <code>Id</code> of an entry in a batch request.' }),
-    ).exactOptional(),
-    MessageId: MessageIdSchema.and(
-      z.any().openapi({ description: 'An identifier for the message.' }),
-    ).exactOptional(),
-    SequenceNumber: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>This parameter applies only to FIFO (first-in-first-out) topics.</p> <p>The large, non-consecutive number that Amazon SNS assigns to each message.</p> <p>The length of <code>SequenceNumber</code> is 128 bits. <code>SequenceNumber</code> continues to increase for a particular <code>MessageGroupId</code>.</p>',
-        }),
-    ).exactOptional(),
+    Id: StringSchema.exactOptional().openapi({
+      description: 'The <code>Id</code> of an entry in a batch request.',
+    }),
+    MessageId: MessageIdSchema.exactOptional().openapi({
+      description: 'An identifier for the message.',
+    }),
+    SequenceNumber: StringSchema.exactOptional().openapi({
+      description:
+        '<p>This parameter applies only to FIFO (first-in-first-out) topics.</p> <p>The large, non-consecutive number that Amazon SNS assigns to each message.</p> <p>The length of <code>SequenceNumber</code> is 128 bits. <code>SequenceNumber</code> continues to increase for a particular <code>MessageGroupId</code>.</p>',
+    }),
   })
   .openapi({
     description: 'Encloses data related to a successful message in a batch request for topic.',
@@ -708,27 +583,17 @@ const PublishBatchResultEntryListSchema = z
 
 const BatchResultErrorEntrySchema = z
   .object({
-    Id: StringSchema.and(
-      z.any().openapi({ description: 'The <code>Id</code> of an entry in a batch request' }),
-    ),
-    Code: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An error code representing why the action failed on this entry.',
-        }),
-    ),
-    Message: StringSchema.and(
-      z.any().openapi({ description: 'A message explaining why the action failed on this entry.' }),
-    ).exactOptional(),
-    SenderFault: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether the error happened due to the caller of the batch API action.',
-        }),
-    ),
+    Id: StringSchema.openapi({ description: 'The <code>Id</code> of an entry in a batch request' }),
+    Code: StringSchema.openapi({
+      description: 'An error code representing why the action failed on this entry.',
+    }),
+    Message: StringSchema.exactOptional().openapi({
+      description: 'A message explaining why the action failed on this entry.',
+    }),
+    SenderFault: BooleanSchema.openapi({
+      description:
+        'Specifies whether the error happened due to the caller of the batch API action.',
+    }),
   })
   .openapi({
     required: ['Id', 'Code', 'SenderFault'],
@@ -742,12 +607,12 @@ const BatchResultErrorEntryListSchema = z
 
 const PublishBatchResponseSchema = z
   .object({
-    Successful: PublishBatchResultEntryListSchema.and(
-      z.any().openapi({ description: 'A list of successful <code>PublishBatch</code> responses.' }),
-    ).exactOptional(),
-    Failed: BatchResultErrorEntryListSchema.and(
-      z.any().openapi({ description: 'A list of failed <code>PublishBatch</code> responses. ' }),
-    ).exactOptional(),
+    Successful: PublishBatchResultEntryListSchema.exactOptional().openapi({
+      description: 'A list of successful <code>PublishBatch</code> responses.',
+    }),
+    Failed: BatchResultErrorEntryListSchema.exactOptional().openapi({
+      description: 'A list of failed <code>PublishBatch</code> responses. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('PublishBatchResponse')
@@ -764,50 +629,30 @@ const MessageAttributeMapSchema = z
 
 const PublishBatchRequestEntrySchema = z
   .object({
-    Id: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An identifier for the message in this batch.</p> <note> <p>The <code>Ids</code> of a batch request must be unique within a request. </p> <p>This identifier can have up to 80 characters. The following characters are accepted: alphanumeric characters, hyphens(-), and underscores (_). </p> </note>',
-        }),
-    ),
-    Message: MessageSchema.and(z.any().openapi({ description: 'The body of the message.' })),
-    Subject: SubjectSchema.and(
-      z.any().openapi({ description: 'The subject of the batch message.' }),
-    ).exactOptional(),
-    MessageStructure: MessageStructureSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Set <code>MessageStructure</code> to <code>json</code> if you want to send a different message for each protocol. For example, using one publish action, you can send a short message to your SMS subscribers and a longer message to your email subscribers. If you set <code>MessageStructure</code> to <code>json</code>, the value of the <code>Message</code> parameter must: </p> <ul> <li> <p>be a syntactically valid JSON object; and</p> </li> <li> <p>contain at least a top-level JSON key of "default" with a value that is a string.</p> </li> </ul> <p>You can define other top-level keys that define the message you want to send to a specific transport protocol (e.g. http). </p>',
-        }),
-    ).exactOptional(),
-    MessageAttributes: MessageAttributeMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Each message attribute consists of a <code>Name</code>, <code>Type</code>, and <code>Value</code>. For more information, see <a href="https://docs.aws.amazon.com/sns/latest/dg/sns-message-attributes.html">Amazon SNS message attributes</a> in the Amazon SNS Developer Guide.',
-        }),
-    ).exactOptional(),
-    MessageDeduplicationId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>This parameter applies only to FIFO (first-in-first-out) topics.</p> <p>The token used for deduplication of messages within a 5-minute minimum deduplication interval. If a message with a particular <code>MessageDeduplicationId</code> is sent successfully, subsequent messages with the same <code>MessageDeduplicationId</code> are accepted successfully but aren't delivered.</p> <ul> <li> <p>Every message must have a unique <code>MessageDeduplicationId</code>.</p> <ul> <li> <p>You may provide a <code>MessageDeduplicationId</code> explicitly.</p> </li> <li> <p>If you aren't able to provide a <code>MessageDeduplicationId</code> and you enable <code>ContentBasedDeduplication</code> for your topic, Amazon SNS uses a SHA-256 hash to generate the <code>MessageDeduplicationId</code> using the body of the message (but not the attributes of the message).</p> </li> <li> <p>If you don't provide a <code>MessageDeduplicationId</code> and the topic doesn't have <code>ContentBasedDeduplication</code> set, the action fails with an error.</p> </li> <li> <p>If the topic has a <code>ContentBasedDeduplication</code> set, your <code>MessageDeduplicationId</code> overrides the generated one. </p> </li> </ul> </li> <li> <p>When <code>ContentBasedDeduplication</code> is in effect, messages with identical content sent within the deduplication interval are treated as duplicates and only one copy of the message is delivered.</p> </li> <li> <p>If you send one message with <code>ContentBasedDeduplication</code> enabled, and then another message with a <code>MessageDeduplicationId</code> that is the same as the one generated for the first <code>MessageDeduplicationId</code>, the two messages are treated as duplicates and only one copy of the message is delivered. </p> </li> </ul> <note> <p>The <code>MessageDeduplicationId</code> is available to the consumer of the message (this can be useful for troubleshooting delivery issues).</p> <p>If a message is sent successfully but the acknowledgement is lost and the message is resent with the same <code>MessageDeduplicationId</code> after the deduplication interval, Amazon SNS can't detect duplicate messages. </p> <p>Amazon SNS continues to keep track of the message deduplication ID even after the message is received and deleted. </p> </note> <p>The length of <code>MessageDeduplicationId</code> is 128 characters.</p> <p> <code>MessageDeduplicationId</code> can contain alphanumeric characters <code>(a-z, A-Z, 0-9)</code> and punctuation <code>(!\"#$%&amp;'()*+,-./:;&lt;=&gt;?@[\\]^_`{|}~)</code>.</p>",
-        }),
-    ).exactOptional(),
-    MessageGroupId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>This parameter applies only to FIFO (first-in-first-out) topics.</p> <p>The tag that specifies that a message belongs to a specific message group. Messages that belong to the same message group are processed in a FIFO manner (however, messages in different message groups might be processed out of order). To interleave multiple ordered streams within a single topic, use <code>MessageGroupId</code> values (for example, session data for multiple users). In this scenario, multiple consumers can process the topic, but the session data of each user is processed in a FIFO fashion. </p> <p>You must associate a non-empty <code>MessageGroupId</code> with a message. If you don't provide a <code>MessageGroupId</code>, the action fails. </p> <p>The length of <code>MessageGroupId</code> is 128 characters.</p> <p> <code>MessageGroupId</code> can contain alphanumeric characters <code>(a-z, A-Z, 0-9)</code> and punctuation <code>(!\"#$%&amp;'()*+,-./:;&lt;=&gt;?@[\\]^_`{|}~)</code>.</p> <important> <p> <code>MessageGroupId</code> is required for FIFO topics. You can't use it for standard topics. </p> </important>",
-        }),
-    ).exactOptional(),
+    Id: StringSchema.openapi({
+      description:
+        '<p>An identifier for the message in this batch.</p> <note> <p>The <code>Ids</code> of a batch request must be unique within a request. </p> <p>This identifier can have up to 80 characters. The following characters are accepted: alphanumeric characters, hyphens(-), and underscores (_). </p> </note>',
+    }),
+    Message: MessageSchema.openapi({ description: 'The body of the message.' }),
+    Subject: SubjectSchema.exactOptional().openapi({
+      description: 'The subject of the batch message.',
+    }),
+    MessageStructure: MessageStructureSchema.exactOptional().openapi({
+      description:
+        '<p>Set <code>MessageStructure</code> to <code>json</code> if you want to send a different message for each protocol. For example, using one publish action, you can send a short message to your SMS subscribers and a longer message to your email subscribers. If you set <code>MessageStructure</code> to <code>json</code>, the value of the <code>Message</code> parameter must: </p> <ul> <li> <p>be a syntactically valid JSON object; and</p> </li> <li> <p>contain at least a top-level JSON key of "default" with a value that is a string.</p> </li> </ul> <p>You can define other top-level keys that define the message you want to send to a specific transport protocol (e.g. http). </p>',
+    }),
+    MessageAttributes: MessageAttributeMapSchema.exactOptional().openapi({
+      description:
+        'Each message attribute consists of a <code>Name</code>, <code>Type</code>, and <code>Value</code>. For more information, see <a href="https://docs.aws.amazon.com/sns/latest/dg/sns-message-attributes.html">Amazon SNS message attributes</a> in the Amazon SNS Developer Guide.',
+    }),
+    MessageDeduplicationId: StringSchema.exactOptional().openapi({
+      description:
+        "<p>This parameter applies only to FIFO (first-in-first-out) topics.</p> <p>The token used for deduplication of messages within a 5-minute minimum deduplication interval. If a message with a particular <code>MessageDeduplicationId</code> is sent successfully, subsequent messages with the same <code>MessageDeduplicationId</code> are accepted successfully but aren't delivered.</p> <ul> <li> <p>Every message must have a unique <code>MessageDeduplicationId</code>.</p> <ul> <li> <p>You may provide a <code>MessageDeduplicationId</code> explicitly.</p> </li> <li> <p>If you aren't able to provide a <code>MessageDeduplicationId</code> and you enable <code>ContentBasedDeduplication</code> for your topic, Amazon SNS uses a SHA-256 hash to generate the <code>MessageDeduplicationId</code> using the body of the message (but not the attributes of the message).</p> </li> <li> <p>If you don't provide a <code>MessageDeduplicationId</code> and the topic doesn't have <code>ContentBasedDeduplication</code> set, the action fails with an error.</p> </li> <li> <p>If the topic has a <code>ContentBasedDeduplication</code> set, your <code>MessageDeduplicationId</code> overrides the generated one. </p> </li> </ul> </li> <li> <p>When <code>ContentBasedDeduplication</code> is in effect, messages with identical content sent within the deduplication interval are treated as duplicates and only one copy of the message is delivered.</p> </li> <li> <p>If you send one message with <code>ContentBasedDeduplication</code> enabled, and then another message with a <code>MessageDeduplicationId</code> that is the same as the one generated for the first <code>MessageDeduplicationId</code>, the two messages are treated as duplicates and only one copy of the message is delivered. </p> </li> </ul> <note> <p>The <code>MessageDeduplicationId</code> is available to the consumer of the message (this can be useful for troubleshooting delivery issues).</p> <p>If a message is sent successfully but the acknowledgement is lost and the message is resent with the same <code>MessageDeduplicationId</code> after the deduplication interval, Amazon SNS can't detect duplicate messages. </p> <p>Amazon SNS continues to keep track of the message deduplication ID even after the message is received and deleted. </p> </note> <p>The length of <code>MessageDeduplicationId</code> is 128 characters.</p> <p> <code>MessageDeduplicationId</code> can contain alphanumeric characters <code>(a-z, A-Z, 0-9)</code> and punctuation <code>(!\"#$%&amp;'()*+,-./:;&lt;=&gt;?@[\\]^_`{|}~)</code>.</p>",
+    }),
+    MessageGroupId: StringSchema.exactOptional().openapi({
+      description:
+        "<p>This parameter applies only to FIFO (first-in-first-out) topics.</p> <p>The tag that specifies that a message belongs to a specific message group. Messages that belong to the same message group are processed in a FIFO manner (however, messages in different message groups might be processed out of order). To interleave multiple ordered streams within a single topic, use <code>MessageGroupId</code> values (for example, session data for multiple users). In this scenario, multiple consumers can process the topic, but the session data of each user is processed in a FIFO fashion. </p> <p>You must associate a non-empty <code>MessageGroupId</code> with a message. If you don't provide a <code>MessageGroupId</code>, the action fails. </p> <p>The length of <code>MessageGroupId</code> is 128 characters.</p> <p> <code>MessageGroupId</code> can contain alphanumeric characters <code>(a-z, A-Z, 0-9)</code> and punctuation <code>(!\"#$%&amp;'()*+,-./:;&lt;=&gt;?@[\\]^_`{|}~)</code>.</p> <important> <p> <code>MessageGroupId</code> is required for FIFO topics. You can't use it for standard topics. </p> </important>",
+    }),
   })
   .openapi({
     required: ['Id', 'Message'],
@@ -829,30 +674,26 @@ const TooManyEntriesInBatchRequestExceptionSchema = z
   .openapi('TooManyEntriesInBatchRequestException')
 
 const SetSMSAttributesResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'The response for the SetSMSAttributes action.' })
   .openapi('SetSMSAttributesResponse')
 
 const SubscribeResponseSchema = z
   .object({
-    SubscriptionArn: SubscriptionARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the subscription if it is confirmed, or the string "pending confirmation" if the subscription requires confirmation. However, if the API request parameter <code>ReturnSubscriptionArn</code> is true, then the value is always the subscription ARN, even if the subscription requires confirmation.',
-        }),
-    ).exactOptional(),
+    SubscriptionArn: SubscriptionARNSchema.exactOptional().openapi({
+      description:
+        'The ARN of the subscription if it is confirmed, or the string "pending confirmation" if the subscription requires confirmation. However, if the API request parameter <code>ReturnSubscriptionArn</code> is true, then the value is always the subscription ARN, even if the subscription requires confirmation.',
+    }),
   })
   .openapi({ description: 'Response for Subscribe action.', required: [] })
   .openapi('SubscribeResponse')
 
-const TagResourceResponseSchema = z.object({}).openapi('TagResourceResponse')
+const TagResourceResponseSchema = z.looseObject({}).openapi('TagResourceResponse')
 
-const UntagResourceResponseSchema = z.object({}).openapi('UntagResourceResponse')
+const UntagResourceResponseSchema = z.looseObject({}).openapi('UntagResourceResponse')
 
 const VerifySMSSandboxPhoneNumberResultSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: "The destination phone number's verification status." })
   .openapi('VerifySMSSandboxPhoneNumberResult')
 
@@ -866,32 +707,20 @@ const DelegatesListSchema = z.array(DelegateSchema).openapi('DelegatesList')
 
 const AddPermissionInputSchema = z
   .object({
-    TopicArn: TopicARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ARN of the topic whose access control policy you wish to modify.',
-        }),
-    ),
-    Label: LabelSchema.and(
-      z.any().openapi({ description: 'A unique identifier for the new policy statement.' }),
-    ),
-    AWSAccountId: DelegatesListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services account IDs of the users (principals) who will be given access to the specified actions. The users must have Amazon Web Services account, but do not need to be signed up for this service.',
-        }),
-    ),
-    ActionName: ActionsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The action you want to allow for the specified principal(s).</p> <p>Valid values: Any Amazon SNS action name, for example <code>Publish</code>.</p>',
-        }),
-    ),
+    TopicArn: TopicARNSchema.openapi({
+      description: 'The ARN of the topic whose access control policy you wish to modify.',
+    }),
+    Label: LabelSchema.openapi({
+      description: 'A unique identifier for the new policy statement.',
+    }),
+    AWSAccountId: DelegatesListSchema.openapi({
+      description:
+        'The Amazon Web Services account IDs of the users (principals) who will be given access to the specified actions. The users must have Amazon Web Services account, but do not need to be signed up for this service.',
+    }),
+    ActionName: ActionsListSchema.openapi({
+      description:
+        '<p>The action you want to allow for the specified principal(s).</p> <p>Valid values: Any Amazon SNS action name, for example <code>Publish</code>.</p>',
+    }),
   })
   .openapi({
     required: ['TopicArn', 'Label', 'AWSAccountId', 'ActionName'],
@@ -903,13 +732,9 @@ const AmazonResourceNameSchema = z.string().min(1).max(1011).openapi('AmazonReso
 
 const CheckIfPhoneNumberIsOptedOutInputSchema = z
   .object({
-    phoneNumber: PhoneNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The phone number for which you want to check the opt out status.',
-        }),
-    ),
+    phoneNumber: PhoneNumberSchema.openapi({
+      description: 'The phone number for which you want to check the opt out status.',
+    }),
   })
   .openapi({
     required: ['phoneNumber'],
@@ -924,29 +749,17 @@ const AuthenticateOnUnsubscribeSchema = z.string().openapi('AuthenticateOnUnsubs
 
 const ConfirmSubscriptionInputSchema = z
   .object({
-    TopicArn: TopicARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ARN of the topic for which you wish to confirm a subscription.',
-        }),
-    ),
-    Token: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Short-lived token sent to an endpoint during the <code>Subscribe</code> action.',
-        }),
-    ),
-    AuthenticateOnUnsubscribe: AuthenticateOnUnsubscribeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Disallows unauthenticated unsubscribes of the subscription. If the value of this parameter is <code>true</code> and the request has an Amazon Web Services signature, then only the topic owner and the subscription owner can unsubscribe the endpoint. The unsubscribe action requires Amazon Web Services authentication. ',
-        }),
-    ).exactOptional(),
+    TopicArn: TopicARNSchema.openapi({
+      description: 'The ARN of the topic for which you wish to confirm a subscription.',
+    }),
+    Token: TokenSchema.openapi({
+      description:
+        'Short-lived token sent to an endpoint during the <code>Subscribe</code> action.',
+    }),
+    AuthenticateOnUnsubscribe: AuthenticateOnUnsubscribeSchema.exactOptional().openapi({
+      description:
+        'Disallows unauthenticated unsubscribes of the subscription. If the value of this parameter is <code>true</code> and the request has an Amazon Web Services signature, then only the topic owner and the subscription owner can unsubscribe the endpoint. The unsubscribe action requires Amazon Web Services authentication. ',
+    }),
   })
   .openapi({
     required: ['TopicArn', 'Token'],
@@ -957,30 +770,18 @@ const ConfirmSubscriptionInputSchema = z
 
 const CreatePlatformApplicationInputSchema = z
   .object({
-    Name: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Application names must be made up of only uppercase and lowercase ASCII letters, numbers, underscores, hyphens, and periods, and must be between 1 and 256 characters long.',
-        }),
-    ),
-    Platform: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The following platforms are supported: ADM (Amazon Device Messaging), APNS (Apple Push Notification Service), APNS_SANDBOX, and GCM (Firebase Cloud Messaging).',
-        }),
-    ),
-    Attributes: MapStringToStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'For a list of attributes, see <a href="https://docs.aws.amazon.com/sns/latest/api/API_SetPlatformApplicationAttributes.html">SetPlatformApplicationAttributes</a>.',
-        }),
-    ),
+    Name: StringSchema.openapi({
+      description:
+        'Application names must be made up of only uppercase and lowercase ASCII letters, numbers, underscores, hyphens, and periods, and must be between 1 and 256 characters long.',
+    }),
+    Platform: StringSchema.openapi({
+      description:
+        'The following platforms are supported: ADM (Amazon Device Messaging), APNS (Apple Push Notification Service), APNS_SANDBOX, and GCM (Firebase Cloud Messaging).',
+    }),
+    Attributes: MapStringToStringSchema.openapi({
+      description:
+        'For a list of attributes, see <a href="https://docs.aws.amazon.com/sns/latest/api/API_SetPlatformApplicationAttributes.html">SetPlatformApplicationAttributes</a>.',
+    }),
   })
   .openapi({
     required: ['Name', 'Platform', 'Attributes'],
@@ -991,38 +792,22 @@ const CreatePlatformApplicationInputSchema = z
 
 const CreatePlatformEndpointInputSchema = z
   .object({
-    PlatformApplicationArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'PlatformApplicationArn returned from CreatePlatformApplication is used to create a an endpoint.',
-        }),
-    ),
-    Token: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Unique identifier created by the notification service for an app on a device. The specific name for Token will vary, depending on which notification service is being used. For example, when using APNS as the notification service, you need the device token. Alternatively, when using GCM (Firebase Cloud Messaging) or ADM, the device token equivalent is called the registration ID.',
-        }),
-    ),
-    CustomUserData: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Arbitrary user data to associate with the endpoint. Amazon SNS does not use this data. The data must be in UTF-8 format and less than 2KB.',
-        }),
-    ).exactOptional(),
-    Attributes: MapStringToStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'For a list of attributes, see <a href="https://docs.aws.amazon.com/sns/latest/api/API_SetEndpointAttributes.html">SetEndpointAttributes</a>.',
-        }),
-    ).exactOptional(),
+    PlatformApplicationArn: StringSchema.openapi({
+      description:
+        'PlatformApplicationArn returned from CreatePlatformApplication is used to create a an endpoint.',
+    }),
+    Token: StringSchema.openapi({
+      description:
+        'Unique identifier created by the notification service for an app on a device. The specific name for Token will vary, depending on which notification service is being used. For example, when using APNS as the notification service, you need the device token. Alternatively, when using GCM (Firebase Cloud Messaging) or ADM, the device token equivalent is called the registration ID.',
+    }),
+    CustomUserData: StringSchema.exactOptional().openapi({
+      description:
+        'Arbitrary user data to associate with the endpoint. Amazon SNS does not use this data. The data must be in UTF-8 format and less than 2KB.',
+    }),
+    Attributes: MapStringToStringSchema.exactOptional().openapi({
+      description:
+        'For a list of attributes, see <a href="https://docs.aws.amazon.com/sns/latest/api/API_SetEndpointAttributes.html">SetEndpointAttributes</a>.',
+    }),
   })
   .openapi({
     required: ['PlatformApplicationArn', 'Token'],
@@ -1052,22 +837,14 @@ const LanguageCodeStringSchema = z
 
 const CreateSMSSandboxPhoneNumberInputSchema = z
   .object({
-    PhoneNumber: PhoneNumberStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The destination phone number to verify. On verification, Amazon SNS adds this phone number to the list of verified phone numbers that you can send SMS messages to.',
-        }),
-    ),
-    LanguageCode: LanguageCodeStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The language to use for sending the OTP. The default value is <code>en-US</code>.',
-        }),
-    ).exactOptional(),
+    PhoneNumber: PhoneNumberStringSchema.openapi({
+      description:
+        'The destination phone number to verify. On verification, Amazon SNS adds this phone number to the list of verified phone numbers that you can send SMS messages to.',
+    }),
+    LanguageCode: LanguageCodeStringSchema.exactOptional().openapi({
+      description:
+        'The language to use for sending the OTP. The default value is <code>en-US</code>.',
+    }),
   })
   .openapi({ required: ['PhoneNumber'], title: 'CreateSMSSandboxPhoneNumberInput' })
   .openapi('CreateSMSSandboxPhoneNumberInput')
@@ -1076,38 +853,22 @@ const TopicNameSchema = z.string().openapi('TopicName')
 
 const CreateTopicInputSchema = z
   .object({
-    Name: TopicNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the topic you want to create.</p> <p>Constraints: Topic names must be made up of only uppercase and lowercase ASCII letters, numbers, underscores, and hyphens, and must be between 1 and 256 characters long.</p> <p>For a FIFO (first-in-first-out) topic, the name must end with the <code>.fifo</code> suffix. </p>',
-        }),
-    ),
-    Attributes: TopicAttributesMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A map of attributes with their corresponding values.</p> <p>The following lists the names, descriptions, and values of the special request parameters that the <code>CreateTopic</code> action uses:</p> <ul> <li> <p> <code>DeliveryPolicy</code> – The policy that defines how Amazon SNS retries failed deliveries to HTTP/S endpoints.</p> </li> <li> <p> <code>DisplayName</code> – The display name to use for a topic with SMS subscriptions.</p> </li> <li> <p> <code>FifoTopic</code> – Set to true to create a FIFO topic.</p> </li> <li> <p> <code>Policy</code> – The policy that defines who can access your topic. By default, only the topic owner can publish or subscribe to the topic.</p> </li> <li> <p> <code>SignatureVersion</code> – The signature version corresponds to the hashing algorithm used while creating the signature of the notifications, subscription confirmations, or unsubscribe confirmation messages sent by Amazon SNS. By default, <code>SignatureVersion</code> is set to <code>1</code>.</p> </li> <li> <p> <code>TracingConfig</code> – Tracing mode of an Amazon SNS topic. By default <code>TracingConfig</code> is set to <code>PassThrough</code>, and the topic passes through the tracing header it receives from an Amazon SNS publisher to its subscriptions. If set to <code>Active</code>, Amazon SNS will vend X-Ray segment data to topic owner account if the sampled flag in the tracing header is true. This is only supported on standard topics.</p> </li> </ul> <p>The following attribute applies only to <a href="https://docs.aws.amazon.com/sns/latest/dg/sns-server-side-encryption.html">server-side encryption</a>:</p> <ul> <li> <p> <code>KmsMasterKeyId</code> – The ID of an Amazon Web Services managed customer master key (CMK) for Amazon SNS or a custom CMK. For more information, see <a href="https://docs.aws.amazon.com/sns/latest/dg/sns-server-side-encryption.html#sse-key-terms">Key Terms</a>. For more examples, see <a href="https://docs.aws.amazon.com/kms/latest/APIReference/API_DescribeKey.html#API_DescribeKey_RequestParameters">KeyId</a> in the <i>Key Management Service API Reference</i>. </p> </li> </ul> <p>The following attributes apply only to <a href="https://docs.aws.amazon.com/sns/latest/dg/sns-fifo-topics.html">FIFO topics</a>:</p> <ul> <li> <p> <code>FifoTopic</code> – When this is set to <code>true</code>, a FIFO topic is created.</p> </li> <li> <p> <code>ContentBasedDeduplication</code> – Enables content-based deduplication for FIFO topics.</p> <ul> <li> <p>By default, <code>ContentBasedDeduplication</code> is set to <code>false</code>. If you create a FIFO topic and this attribute is <code>false</code>, you must specify a value for the <code>MessageDeduplicationId</code> parameter for the <a href="https://docs.aws.amazon.com/sns/latest/api/API_Publish.html">Publish</a> action. </p> </li> <li> <p>When you set <code>ContentBasedDeduplication</code> to <code>true</code>, Amazon SNS uses a SHA-256 hash to generate the <code>MessageDeduplicationId</code> using the body of the message (but not the attributes of the message).</p> <p>(Optional) To override the generated value, you can specify a value for the <code>MessageDeduplicationId</code> parameter for the <code>Publish</code> action.</p> </li> </ul> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The list of tags to add to a new topic.</p> <note> <p>To be able to tag a topic on creation, you must have the <code>sns:CreateTopic</code> and <code>sns:TagResource</code> permissions.</p> </note>',
-        }),
-    ).exactOptional(),
-    DataProtectionPolicy: AttributeValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The body of the policy document you want to use for this topic.</p> <p>You can only add one policy per topic.</p> <p>The policy must be in JSON string format.</p> <p>Length Constraints: Maximum length of 30,720.</p>',
-        }),
-    ).exactOptional(),
+    Name: TopicNameSchema.openapi({
+      description:
+        '<p>The name of the topic you want to create.</p> <p>Constraints: Topic names must be made up of only uppercase and lowercase ASCII letters, numbers, underscores, and hyphens, and must be between 1 and 256 characters long.</p> <p>For a FIFO (first-in-first-out) topic, the name must end with the <code>.fifo</code> suffix. </p>',
+    }),
+    Attributes: TopicAttributesMapSchema.exactOptional().openapi({
+      description:
+        '<p>A map of attributes with their corresponding values.</p> <p>The following lists the names, descriptions, and values of the special request parameters that the <code>CreateTopic</code> action uses:</p> <ul> <li> <p> <code>DeliveryPolicy</code> – The policy that defines how Amazon SNS retries failed deliveries to HTTP/S endpoints.</p> </li> <li> <p> <code>DisplayName</code> – The display name to use for a topic with SMS subscriptions.</p> </li> <li> <p> <code>FifoTopic</code> – Set to true to create a FIFO topic.</p> </li> <li> <p> <code>Policy</code> – The policy that defines who can access your topic. By default, only the topic owner can publish or subscribe to the topic.</p> </li> <li> <p> <code>SignatureVersion</code> – The signature version corresponds to the hashing algorithm used while creating the signature of the notifications, subscription confirmations, or unsubscribe confirmation messages sent by Amazon SNS. By default, <code>SignatureVersion</code> is set to <code>1</code>.</p> </li> <li> <p> <code>TracingConfig</code> – Tracing mode of an Amazon SNS topic. By default <code>TracingConfig</code> is set to <code>PassThrough</code>, and the topic passes through the tracing header it receives from an Amazon SNS publisher to its subscriptions. If set to <code>Active</code>, Amazon SNS will vend X-Ray segment data to topic owner account if the sampled flag in the tracing header is true. This is only supported on standard topics.</p> </li> </ul> <p>The following attribute applies only to <a href="https://docs.aws.amazon.com/sns/latest/dg/sns-server-side-encryption.html">server-side encryption</a>:</p> <ul> <li> <p> <code>KmsMasterKeyId</code> – The ID of an Amazon Web Services managed customer master key (CMK) for Amazon SNS or a custom CMK. For more information, see <a href="https://docs.aws.amazon.com/sns/latest/dg/sns-server-side-encryption.html#sse-key-terms">Key Terms</a>. For more examples, see <a href="https://docs.aws.amazon.com/kms/latest/APIReference/API_DescribeKey.html#API_DescribeKey_RequestParameters">KeyId</a> in the <i>Key Management Service API Reference</i>. </p> </li> </ul> <p>The following attributes apply only to <a href="https://docs.aws.amazon.com/sns/latest/dg/sns-fifo-topics.html">FIFO topics</a>:</p> <ul> <li> <p> <code>FifoTopic</code> – When this is set to <code>true</code>, a FIFO topic is created.</p> </li> <li> <p> <code>ContentBasedDeduplication</code> – Enables content-based deduplication for FIFO topics.</p> <ul> <li> <p>By default, <code>ContentBasedDeduplication</code> is set to <code>false</code>. If you create a FIFO topic and this attribute is <code>false</code>, you must specify a value for the <code>MessageDeduplicationId</code> parameter for the <a href="https://docs.aws.amazon.com/sns/latest/api/API_Publish.html">Publish</a> action. </p> </li> <li> <p>When you set <code>ContentBasedDeduplication</code> to <code>true</code>, Amazon SNS uses a SHA-256 hash to generate the <code>MessageDeduplicationId</code> using the body of the message (but not the attributes of the message).</p> <p>(Optional) To override the generated value, you can specify a value for the <code>MessageDeduplicationId</code> parameter for the <code>Publish</code> action.</p> </li> </ul> </li> </ul>',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        '<p>The list of tags to add to a new topic.</p> <note> <p>To be able to tag a topic on creation, you must have the <code>sns:CreateTopic</code> and <code>sns:TagResource</code> permissions.</p> </note>',
+    }),
+    DataProtectionPolicy: AttributeValueSchema.exactOptional().openapi({
+      description:
+        '<p>The body of the policy document you want to use for this topic.</p> <p>You can only add one policy per topic.</p> <p>The policy must be in JSON string format.</p> <p>Length Constraints: Maximum length of 30,720.</p>',
+    }),
   })
   .openapi({
     required: ['Name'],
@@ -1118,9 +879,7 @@ const CreateTopicInputSchema = z
 
 const DeleteEndpointInputSchema = z
   .object({
-    EndpointArn: StringSchema.and(
-      z.any().openapi({ description: 'EndpointArn of endpoint to delete.' }),
-    ),
+    EndpointArn: StringSchema.openapi({ description: 'EndpointArn of endpoint to delete.' }),
   })
   .openapi({
     required: ['EndpointArn'],
@@ -1131,13 +890,9 @@ const DeleteEndpointInputSchema = z
 
 const DeletePlatformApplicationInputSchema = z
   .object({
-    PlatformApplicationArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'PlatformApplicationArn of platform application object to delete.',
-        }),
-    ),
+    PlatformApplicationArn: StringSchema.openapi({
+      description: 'PlatformApplicationArn of platform application object to delete.',
+    }),
   })
   .openapi({
     required: ['PlatformApplicationArn'],
@@ -1148,41 +903,35 @@ const DeletePlatformApplicationInputSchema = z
 
 const DeleteSMSSandboxPhoneNumberInputSchema = z
   .object({
-    PhoneNumber: PhoneNumberStringSchema.and(
-      z.any().openapi({ description: 'The destination phone number to delete.' }),
-    ),
+    PhoneNumber: PhoneNumberStringSchema.openapi({
+      description: 'The destination phone number to delete.',
+    }),
   })
   .openapi({ required: ['PhoneNumber'], title: 'DeleteSMSSandboxPhoneNumberInput' })
   .openapi('DeleteSMSSandboxPhoneNumberInput')
 
 const DeleteTopicInputSchema = z
   .object({
-    TopicArn: TopicARNSchema.and(
-      z.any().openapi({ description: 'The ARN of the topic you want to delete.' }),
-    ),
+    TopicArn: TopicARNSchema.openapi({ description: 'The ARN of the topic you want to delete.' }),
   })
   .openapi({ required: ['TopicArn'], title: 'DeleteTopicInput' })
   .openapi('DeleteTopicInput')
 
 const GetDataProtectionPolicyInputSchema = z
   .object({
-    ResourceArn: TopicARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ARN of the topic whose <code>DataProtectionPolicy</code> you want to get.</p> <p>For more information about ARNs, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs)</a> in the Amazon Web Services General Reference.</p>',
-        }),
-    ),
+    ResourceArn: TopicARNSchema.openapi({
+      description:
+        '<p>The ARN of the topic whose <code>DataProtectionPolicy</code> you want to get.</p> <p>For more information about ARNs, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs)</a> in the Amazon Web Services General Reference.</p>',
+    }),
   })
   .openapi({ required: ['ResourceArn'], title: 'GetDataProtectionPolicyInput' })
   .openapi('GetDataProtectionPolicyInput')
 
 const GetEndpointAttributesInputSchema = z
   .object({
-    EndpointArn: StringSchema.and(
-      z.any().openapi({ description: 'EndpointArn for GetEndpointAttributes input.' }),
-    ),
+    EndpointArn: StringSchema.openapi({
+      description: 'EndpointArn for GetEndpointAttributes input.',
+    }),
   })
   .openapi({
     required: ['EndpointArn'],
@@ -1193,13 +942,9 @@ const GetEndpointAttributesInputSchema = z
 
 const GetPlatformApplicationAttributesInputSchema = z
   .object({
-    PlatformApplicationArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'PlatformApplicationArn for GetPlatformApplicationAttributesInput.',
-        }),
-    ),
+    PlatformApplicationArn: StringSchema.openapi({
+      description: 'PlatformApplicationArn for GetPlatformApplicationAttributesInput.',
+    }),
   })
   .openapi({
     required: ['PlatformApplicationArn'],
@@ -1212,14 +957,10 @@ const ListStringSchema = z.array(StringSchema).openapi('ListString')
 
 const GetSMSAttributesInputSchema = z
   .object({
-    attributes: ListStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of the individual attribute names, such as <code>MonthlySpendLimit</code>, for which you want values.</p> <p>For all attribute names, see <a href="https://docs.aws.amazon.com/sns/latest/api/API_SetSMSAttributes.html">SetSMSAttributes</a>.</p> <p>If you don\'t use this parameter, Amazon SNS returns all SMS attributes.</p>',
-        }),
-    ).exactOptional(),
+    attributes: ListStringSchema.exactOptional().openapi({
+      description:
+        '<p>A list of the individual attribute names, such as <code>MonthlySpendLimit</code>, for which you want values.</p> <p>For all attribute names, see <a href="https://docs.aws.amazon.com/sns/latest/api/API_SetSMSAttributes.html">SetSMSAttributes</a>.</p> <p>If you don\'t use this parameter, Amazon SNS returns all SMS attributes.</p>',
+    }),
   })
   .openapi({
     title: 'GetSMSAttributesInput',
@@ -1229,17 +970,15 @@ const GetSMSAttributesInputSchema = z
   .openapi('GetSMSAttributesInput')
 
 const GetSMSSandboxAccountStatusInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetSMSSandboxAccountStatusInput' })
   .openapi('GetSMSSandboxAccountStatusInput')
 
 const GetSubscriptionAttributesInputSchema = z
   .object({
-    SubscriptionArn: SubscriptionARNSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ARN of the subscription whose properties you want to get.' }),
-    ),
+    SubscriptionArn: SubscriptionARNSchema.openapi({
+      description: 'The ARN of the subscription whose properties you want to get.',
+    }),
   })
   .openapi({
     required: ['SubscriptionArn'],
@@ -1250,9 +989,9 @@ const GetSubscriptionAttributesInputSchema = z
 
 const GetTopicAttributesInputSchema = z
   .object({
-    TopicArn: TopicARNSchema.and(
-      z.any().openapi({ description: 'The ARN of the topic whose properties you want to get.' }),
-    ),
+    TopicArn: TopicARNSchema.openapi({
+      description: 'The ARN of the topic whose properties you want to get.',
+    }),
   })
   .openapi({
     required: ['TopicArn'],
@@ -1263,21 +1002,13 @@ const GetTopicAttributesInputSchema = z
 
 const ListEndpointsByPlatformApplicationInputSchema = z
   .object({
-    PlatformApplicationArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'PlatformApplicationArn for ListEndpointsByPlatformApplicationInput action.',
-        }),
-    ),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'NextToken string is used when calling ListEndpointsByPlatformApplication action to retrieve additional records that are available after the first page results.',
-        }),
-    ).exactOptional(),
+    PlatformApplicationArn: StringSchema.openapi({
+      description: 'PlatformApplicationArn for ListEndpointsByPlatformApplicationInput action.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'NextToken string is used when calling ListEndpointsByPlatformApplication action to retrieve additional records that are available after the first page results.',
+    }),
   })
   .openapi({
     required: ['PlatformApplicationArn'],
@@ -1294,31 +1025,22 @@ const MaxItemsListOriginationNumbersSchema = z
 
 const ListOriginationNumbersRequestSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Token that the previous <code>ListOriginationNumbers</code> request returns.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxItemsListOriginationNumbersSchema.and(
-      z.any().openapi({ description: 'The maximum number of origination numbers to return.' }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'Token that the previous <code>ListOriginationNumbers</code> request returns.',
+    }),
+    MaxResults: MaxItemsListOriginationNumbersSchema.exactOptional().openapi({
+      description: 'The maximum number of origination numbers to return.',
+    }),
   })
   .openapi({ title: 'ListOriginationNumbersRequest', required: [] })
   .openapi('ListOriginationNumbersRequest')
 
 const ListPhoneNumbersOptedOutInputSchema = z
   .object({
-    nextToken: String2Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A <code>NextToken</code> string is used when you call the <code>ListPhoneNumbersOptedOut</code> action to retrieve additional records that are available after the first page of results.',
-        }),
-    ).exactOptional(),
+    nextToken: String2Schema.exactOptional().openapi({
+      description:
+        'A <code>NextToken</code> string is used when you call the <code>ListPhoneNumbersOptedOut</code> action to retrieve additional records that are available after the first page of results.',
+    }),
   })
   .openapi({
     title: 'ListPhoneNumbersOptedOutInput',
@@ -1329,14 +1051,10 @@ const ListPhoneNumbersOptedOutInputSchema = z
 
 const ListPlatformApplicationsInputSchema = z
   .object({
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'NextToken string is used when calling ListPlatformApplications action to retrieve additional records that are available after the first page results.',
-        }),
-    ).exactOptional(),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'NextToken string is used when calling ListPlatformApplications action to retrieve additional records that are available after the first page results.',
+    }),
   })
   .openapi({
     title: 'ListPlatformApplicationsInput',
@@ -1349,36 +1067,25 @@ const MaxItemsSchema = z.int().min(1).max(100).openapi('MaxItems')
 
 const ListSMSSandboxPhoneNumbersInputSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Token that the previous <code>ListSMSSandboxPhoneNumbersInput</code> request returns.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxItemsSchema.and(
-      z.any().openapi({ description: 'The maximum number of phone numbers to return.' }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'Token that the previous <code>ListSMSSandboxPhoneNumbersInput</code> request returns.',
+    }),
+    MaxResults: MaxItemsSchema.exactOptional().openapi({
+      description: 'The maximum number of phone numbers to return.',
+    }),
   })
   .openapi({ title: 'ListSMSSandboxPhoneNumbersInput', required: [] })
   .openapi('ListSMSSandboxPhoneNumbersInput')
 
 const ListSubscriptionsByTopicInputSchema = z
   .object({
-    TopicArn: TopicARNSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ARN of the topic for which you wish to find subscriptions.' }),
-    ),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Token returned by the previous <code>ListSubscriptionsByTopic</code> request.',
-        }),
-    ).exactOptional(),
+    TopicArn: TopicARNSchema.openapi({
+      description: 'The ARN of the topic for which you wish to find subscriptions.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'Token returned by the previous <code>ListSubscriptionsByTopic</code> request.',
+    }),
   })
   .openapi({
     required: ['TopicArn'],
@@ -1389,13 +1096,9 @@ const ListSubscriptionsByTopicInputSchema = z
 
 const ListSubscriptionsInputSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Token returned by the previous <code>ListSubscriptions</code> request.',
-        }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'Token returned by the previous <code>ListSubscriptions</code> request.',
+    }),
   })
   .openapi({
     title: 'ListSubscriptionsInput',
@@ -1406,22 +1109,18 @@ const ListSubscriptionsInputSchema = z
 
 const ListTagsForResourceRequestSchema = z
   .object({
-    ResourceArn: AmazonResourceNameSchema.and(
-      z.any().openapi({ description: 'The ARN of the topic for which to list tags.' }),
-    ),
+    ResourceArn: AmazonResourceNameSchema.openapi({
+      description: 'The ARN of the topic for which to list tags.',
+    }),
   })
   .openapi({ required: ['ResourceArn'], title: 'ListTagsForResourceRequest' })
   .openapi('ListTagsForResourceRequest')
 
 const ListTopicsInputSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Token returned by the previous <code>ListTopics</code> request.',
-        }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'Token returned by the previous <code>ListTopics</code> request.',
+    }),
   })
   .openapi({ title: 'ListTopicsInput', required: [] })
   .openapi('ListTopicsInput')
@@ -1439,9 +1138,9 @@ const OTPCodeSchema = z
 
 const OptInPhoneNumberInputSchema = z
   .object({
-    phoneNumber: PhoneNumberSchema.and(
-      z.any().openapi({ description: 'The phone number to opt in. Use E.164 format.' }),
-    ),
+    phoneNumber: PhoneNumberSchema.openapi({
+      description: 'The phone number to opt in. Use E.164 format.',
+    }),
   })
   .openapi({
     required: ['phoneNumber'],
@@ -1456,94 +1155,54 @@ const PublishBatchRequestEntryListSchema = z
 
 const PublishBatchInputSchema = z
   .object({
-    TopicArn: TopicARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon resource name (ARN) of the topic you want to batch publish to.',
-        }),
-    ),
-    PublishBatchRequestEntries: PublishBatchRequestEntryListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of <code>PublishBatch</code> request entries to be sent to the SNS topic.',
-        }),
-    ),
+    TopicArn: TopicARNSchema.openapi({
+      description: 'The Amazon resource name (ARN) of the topic you want to batch publish to.',
+    }),
+    PublishBatchRequestEntries: PublishBatchRequestEntryListSchema.openapi({
+      description:
+        'A list of <code>PublishBatch</code> request entries to be sent to the SNS topic.',
+    }),
   })
   .openapi({ required: ['TopicArn', 'PublishBatchRequestEntries'], title: 'PublishBatchInput' })
   .openapi('PublishBatchInput')
 
 const PublishInputSchema = z
   .object({
-    TopicArn: TopicARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The topic you want to publish to.</p> <p>If you don't specify a value for the <code>TopicArn</code> parameter, you must specify a value for the <code>PhoneNumber</code> or <code>TargetArn</code> parameters.</p>",
-        }),
-    ).exactOptional(),
-    TargetArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "If you don't specify a value for the <code>TargetArn</code> parameter, you must specify a value for the <code>PhoneNumber</code> or <code>TopicArn</code> parameters.",
-        }),
-    ).exactOptional(),
-    PhoneNumber: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The phone number to which you want to deliver an SMS message. Use E.164 format.</p> <p>If you don't specify a value for the <code>PhoneNumber</code> parameter, you must specify a value for the <code>TargetArn</code> or <code>TopicArn</code> parameters.</p>",
-        }),
-    ).exactOptional(),
-    Message: MessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The message you want to send.</p> <p>If you are publishing to a topic and you want to send the same message to all transport protocols, include the text of the message as a String value. If you want to send different messages for each transport protocol, set the value of the <code>MessageStructure</code> parameter to <code>json</code> and use a JSON object for the <code>Message</code> parameter. </p> <p/> <p>Constraints:</p> <ul> <li> <p>With the exception of SMS, messages must be UTF-8 encoded strings and at most 256 KB in size (262,144 bytes, not 262,144 characters).</p> </li> <li> <p>For SMS, each message can contain up to 140 characters. This character limit depends on the encoding schema. For example, an SMS message can contain 160 GSM characters, 140 ASCII characters, or 70 UCS-2 characters.</p> <p>If you publish a message that exceeds this size limit, Amazon SNS sends the message as multiple messages, each fitting within the size limit. Messages aren\'t truncated mid-word but are cut off at whole-word boundaries.</p> <p>The total size limit for a single SMS <code>Publish</code> action is 1,600 characters.</p> </li> </ul> <p>JSON-specific constraints:</p> <ul> <li> <p>Keys in the JSON object that correspond to supported transport protocols must have simple JSON string values.</p> </li> <li> <p>The values will be parsed (unescaped) before they are used in outgoing messages.</p> </li> <li> <p>Outbound notifications are JSON encoded (meaning that the characters will be reescaped for sending).</p> </li> <li> <p>Values have a minimum length of 0 (the empty string, "", is allowed).</p> </li> <li> <p>Values have a maximum length bounded by the overall message size (so, including multiple protocols may limit message sizes).</p> </li> <li> <p>Non-string values will cause the key to be ignored.</p> </li> <li> <p>Keys that do not correspond to supported transport protocols are ignored.</p> </li> <li> <p>Duplicate keys are not allowed.</p> </li> <li> <p>Failure to parse or validate any key or value in the message will cause the <code>Publish</code> call to return an error (no partial delivery).</p> </li> </ul>',
-        }),
-    ),
-    Subject: SubjectSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Optional parameter to be used as the "Subject" line when the message is delivered to email endpoints. This field will also be included, if present, in the standard JSON messages delivered to other endpoints.</p> <p>Constraints: Subjects must be ASCII text that begins with a letter, number, or punctuation mark; must not include line breaks or control characters; and must be less than 100 characters long.</p>',
-        }),
-    ).exactOptional(),
-    MessageStructure: MessageStructureSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Set <code>MessageStructure</code> to <code>json</code> if you want to send a different message for each protocol. For example, using one publish action, you can send a short message to your SMS subscribers and a longer message to your email subscribers. If you set <code>MessageStructure</code> to <code>json</code>, the value of the <code>Message</code> parameter must: </p> <ul> <li> <p>be a syntactically valid JSON object; and</p> </li> <li> <p>contain at least a top-level JSON key of "default" with a value that is a string.</p> </li> </ul> <p>You can define other top-level keys that define the message you want to send to a specific transport protocol (e.g., "http").</p> <p>Valid value: <code>json</code> </p>',
-        }),
-    ).exactOptional(),
-    MessageAttributes: MessageAttributeMapSchema.and(
-      z.any().openapi({ description: 'Message attributes for Publish action.' }),
-    ).exactOptional(),
-    MessageDeduplicationId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>This parameter applies only to FIFO (first-in-first-out) topics. The <code>MessageDeduplicationId</code> can contain up to 128 alphanumeric characters <code>(a-z, A-Z, 0-9)</code> and punctuation <code>(!"#$%&amp;\'()*+,-./:;&lt;=&gt;?@[\\]^_`{|}~)</code>.</p> <p>Every message must have a unique <code>MessageDeduplicationId</code>, which is a token used for deduplication of sent messages. If a message with a particular <code>MessageDeduplicationId</code> is sent successfully, any message sent with the same <code>MessageDeduplicationId</code> during the 5-minute deduplication interval is treated as a duplicate. </p> <p>If the topic has <code>ContentBasedDeduplication</code> set, the system generates a <code>MessageDeduplicationId</code> based on the contents of the message. Your <code>MessageDeduplicationId</code> overrides the generated one.</p>',
-        }),
-    ).exactOptional(),
-    MessageGroupId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>This parameter applies only to FIFO (first-in-first-out) topics. The <code>MessageGroupId</code> can contain up to 128 alphanumeric characters <code>(a-z, A-Z, 0-9)</code> and punctuation <code>(!"#$%&amp;\'()*+,-./:;&lt;=&gt;?@[\\]^_`{|}~)</code>.</p> <p>The <code>MessageGroupId</code> is a tag that specifies that a message belongs to a specific message group. Messages that belong to the same message group are processed in a FIFO manner (however, messages in different message groups might be processed out of order). Every message must include a <code>MessageGroupId</code>.</p>',
-        }),
-    ).exactOptional(),
+    TopicArn: TopicARNSchema.exactOptional().openapi({
+      description:
+        "<p>The topic you want to publish to.</p> <p>If you don't specify a value for the <code>TopicArn</code> parameter, you must specify a value for the <code>PhoneNumber</code> or <code>TargetArn</code> parameters.</p>",
+    }),
+    TargetArn: StringSchema.exactOptional().openapi({
+      description:
+        "If you don't specify a value for the <code>TargetArn</code> parameter, you must specify a value for the <code>PhoneNumber</code> or <code>TopicArn</code> parameters.",
+    }),
+    PhoneNumber: StringSchema.exactOptional().openapi({
+      description:
+        "<p>The phone number to which you want to deliver an SMS message. Use E.164 format.</p> <p>If you don't specify a value for the <code>PhoneNumber</code> parameter, you must specify a value for the <code>TargetArn</code> or <code>TopicArn</code> parameters.</p>",
+    }),
+    Message: MessageSchema.openapi({
+      description:
+        '<p>The message you want to send.</p> <p>If you are publishing to a topic and you want to send the same message to all transport protocols, include the text of the message as a String value. If you want to send different messages for each transport protocol, set the value of the <code>MessageStructure</code> parameter to <code>json</code> and use a JSON object for the <code>Message</code> parameter. </p> <p/> <p>Constraints:</p> <ul> <li> <p>With the exception of SMS, messages must be UTF-8 encoded strings and at most 256 KB in size (262,144 bytes, not 262,144 characters).</p> </li> <li> <p>For SMS, each message can contain up to 140 characters. This character limit depends on the encoding schema. For example, an SMS message can contain 160 GSM characters, 140 ASCII characters, or 70 UCS-2 characters.</p> <p>If you publish a message that exceeds this size limit, Amazon SNS sends the message as multiple messages, each fitting within the size limit. Messages aren\'t truncated mid-word but are cut off at whole-word boundaries.</p> <p>The total size limit for a single SMS <code>Publish</code> action is 1,600 characters.</p> </li> </ul> <p>JSON-specific constraints:</p> <ul> <li> <p>Keys in the JSON object that correspond to supported transport protocols must have simple JSON string values.</p> </li> <li> <p>The values will be parsed (unescaped) before they are used in outgoing messages.</p> </li> <li> <p>Outbound notifications are JSON encoded (meaning that the characters will be reescaped for sending).</p> </li> <li> <p>Values have a minimum length of 0 (the empty string, "", is allowed).</p> </li> <li> <p>Values have a maximum length bounded by the overall message size (so, including multiple protocols may limit message sizes).</p> </li> <li> <p>Non-string values will cause the key to be ignored.</p> </li> <li> <p>Keys that do not correspond to supported transport protocols are ignored.</p> </li> <li> <p>Duplicate keys are not allowed.</p> </li> <li> <p>Failure to parse or validate any key or value in the message will cause the <code>Publish</code> call to return an error (no partial delivery).</p> </li> </ul>',
+    }),
+    Subject: SubjectSchema.exactOptional().openapi({
+      description:
+        '<p>Optional parameter to be used as the "Subject" line when the message is delivered to email endpoints. This field will also be included, if present, in the standard JSON messages delivered to other endpoints.</p> <p>Constraints: Subjects must be ASCII text that begins with a letter, number, or punctuation mark; must not include line breaks or control characters; and must be less than 100 characters long.</p>',
+    }),
+    MessageStructure: MessageStructureSchema.exactOptional().openapi({
+      description:
+        '<p>Set <code>MessageStructure</code> to <code>json</code> if you want to send a different message for each protocol. For example, using one publish action, you can send a short message to your SMS subscribers and a longer message to your email subscribers. If you set <code>MessageStructure</code> to <code>json</code>, the value of the <code>Message</code> parameter must: </p> <ul> <li> <p>be a syntactically valid JSON object; and</p> </li> <li> <p>contain at least a top-level JSON key of "default" with a value that is a string.</p> </li> </ul> <p>You can define other top-level keys that define the message you want to send to a specific transport protocol (e.g., "http").</p> <p>Valid value: <code>json</code> </p>',
+    }),
+    MessageAttributes: MessageAttributeMapSchema.exactOptional().openapi({
+      description: 'Message attributes for Publish action.',
+    }),
+    MessageDeduplicationId: StringSchema.exactOptional().openapi({
+      description:
+        '<p>This parameter applies only to FIFO (first-in-first-out) topics. The <code>MessageDeduplicationId</code> can contain up to 128 alphanumeric characters <code>(a-z, A-Z, 0-9)</code> and punctuation <code>(!"#$%&amp;\'()*+,-./:;&lt;=&gt;?@[\\]^_`{|}~)</code>.</p> <p>Every message must have a unique <code>MessageDeduplicationId</code>, which is a token used for deduplication of sent messages. If a message with a particular <code>MessageDeduplicationId</code> is sent successfully, any message sent with the same <code>MessageDeduplicationId</code> during the 5-minute deduplication interval is treated as a duplicate. </p> <p>If the topic has <code>ContentBasedDeduplication</code> set, the system generates a <code>MessageDeduplicationId</code> based on the contents of the message. Your <code>MessageDeduplicationId</code> overrides the generated one.</p>',
+    }),
+    MessageGroupId: StringSchema.exactOptional().openapi({
+      description:
+        '<p>This parameter applies only to FIFO (first-in-first-out) topics. The <code>MessageGroupId</code> can contain up to 128 alphanumeric characters <code>(a-z, A-Z, 0-9)</code> and punctuation <code>(!"#$%&amp;\'()*+,-./:;&lt;=&gt;?@[\\]^_`{|}~)</code>.</p> <p>The <code>MessageGroupId</code> is a tag that specifies that a message belongs to a specific message group. Messages that belong to the same message group are processed in a FIFO manner (however, messages in different message groups might be processed out of order). Every message must include a <code>MessageGroupId</code>.</p>',
+    }),
   })
   .openapi({
     required: ['Message'],
@@ -1554,22 +1213,14 @@ const PublishInputSchema = z
 
 const PutDataProtectionPolicyInputSchema = z
   .object({
-    ResourceArn: TopicARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ARN of the topic whose <code>DataProtectionPolicy</code> you want to add or update.</p> <p>For more information about ARNs, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs)</a> in the Amazon Web Services General Reference.</p>',
-        }),
-    ),
-    DataProtectionPolicy: AttributeValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The JSON serialization of the topic's <code>DataProtectionPolicy</code>.</p> <p>The <code>DataProtectionPolicy</code> must be in JSON string format.</p> <p>Length Constraints: Maximum length of 30,720.</p>",
-        }),
-    ),
+    ResourceArn: TopicARNSchema.openapi({
+      description:
+        '<p>The ARN of the topic whose <code>DataProtectionPolicy</code> you want to add or update.</p> <p>For more information about ARNs, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs)</a> in the Amazon Web Services General Reference.</p>',
+    }),
+    DataProtectionPolicy: AttributeValueSchema.openapi({
+      description:
+        "<p>The JSON serialization of the topic's <code>DataProtectionPolicy</code>.</p> <p>The <code>DataProtectionPolicy</code> must be in JSON string format.</p> <p>Length Constraints: Maximum length of 30,720.</p>",
+    }),
   })
   .openapi({
     required: ['ResourceArn', 'DataProtectionPolicy'],
@@ -1579,16 +1230,12 @@ const PutDataProtectionPolicyInputSchema = z
 
 const RemovePermissionInputSchema = z
   .object({
-    TopicArn: TopicARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ARN of the topic whose access control policy you wish to modify.',
-        }),
-    ),
-    Label: LabelSchema.and(
-      z.any().openapi({ description: 'The unique label of the statement you want to remove.' }),
-    ),
+    TopicArn: TopicARNSchema.openapi({
+      description: 'The ARN of the topic whose access control policy you wish to modify.',
+    }),
+    Label: LabelSchema.openapi({
+      description: 'The unique label of the statement you want to remove.',
+    }),
   })
   .openapi({
     required: ['TopicArn', 'Label'],
@@ -1599,17 +1246,13 @@ const RemovePermissionInputSchema = z
 
 const SetEndpointAttributesInputSchema = z
   .object({
-    EndpointArn: StringSchema.and(
-      z.any().openapi({ description: 'EndpointArn used for SetEndpointAttributes action.' }),
-    ),
-    Attributes: MapStringToStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A map of the endpoint attributes. Attributes in this map include the following:</p> <ul> <li> <p> <code>CustomUserData</code> – arbitrary user data to associate with the endpoint. Amazon SNS does not use this data. The data must be in UTF-8 format and less than 2KB.</p> </li> <li> <p> <code>Enabled</code> – flag that enables/disables delivery to the endpoint. Amazon SNS will set this to false when a notification service indicates to Amazon SNS that the endpoint is invalid. Users can set it back to true, typically after updating Token.</p> </li> <li> <p> <code>Token</code> – device token, also referred to as a registration id, for an app and mobile device. This is returned from the notification service when an app and mobile device are registered with the notification service.</p> </li> </ul>',
-        }),
-    ),
+    EndpointArn: StringSchema.openapi({
+      description: 'EndpointArn used for SetEndpointAttributes action.',
+    }),
+    Attributes: MapStringToStringSchema.openapi({
+      description:
+        '<p>A map of the endpoint attributes. Attributes in this map include the following:</p> <ul> <li> <p> <code>CustomUserData</code> – arbitrary user data to associate with the endpoint. Amazon SNS does not use this data. The data must be in UTF-8 format and less than 2KB.</p> </li> <li> <p> <code>Enabled</code> – flag that enables/disables delivery to the endpoint. Amazon SNS will set this to false when a notification service indicates to Amazon SNS that the endpoint is invalid. Users can set it back to true, typically after updating Token.</p> </li> <li> <p> <code>Token</code> – device token, also referred to as a registration id, for an app and mobile device. This is returned from the notification service when an app and mobile device are registered with the notification service.</p> </li> </ul>',
+    }),
   })
   .openapi({
     required: ['EndpointArn', 'Attributes'],
@@ -1620,21 +1263,13 @@ const SetEndpointAttributesInputSchema = z
 
 const SetPlatformApplicationAttributesInputSchema = z
   .object({
-    PlatformApplicationArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'PlatformApplicationArn for SetPlatformApplicationAttributes action.',
-        }),
-    ),
-    Attributes: MapStringToStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A map of the platform application attributes. Attributes in this map include the following:</p> <ul> <li> <p> <code>PlatformCredential</code> – The credential received from the notification service.</p> <ul> <li> <p>For ADM, <code>PlatformCredential</code>is client secret.</p> </li> <li> <p>For Apple Services using certificate credentials, <code>PlatformCredential</code> is private key.</p> </li> <li> <p>For Apple Services using token credentials, <code>PlatformCredential</code> is signing key.</p> </li> <li> <p>For GCM (Firebase Cloud Messaging), <code>PlatformCredential</code> is API key. </p> </li> </ul> </li> </ul> <ul> <li> <p> <code>PlatformPrincipal</code> – The principal received from the notification service.</p> <ul> <li> <p>For ADM, <code>PlatformPrincipal</code>is client id.</p> </li> <li> <p>For Apple Services using certificate credentials, <code>PlatformPrincipal</code> is SSL certificate.</p> </li> <li> <p>For Apple Services using token credentials, <code>PlatformPrincipal</code> is signing key ID.</p> </li> <li> <p>For GCM (Firebase Cloud Messaging), there is no <code>PlatformPrincipal</code>. </p> </li> </ul> </li> </ul> <ul> <li> <p> <code>EventEndpointCreated</code> – Topic ARN to which <code>EndpointCreated</code> event notifications are sent.</p> </li> <li> <p> <code>EventEndpointDeleted</code> – Topic ARN to which <code>EndpointDeleted</code> event notifications are sent.</p> </li> <li> <p> <code>EventEndpointUpdated</code> – Topic ARN to which <code>EndpointUpdate</code> event notifications are sent.</p> </li> <li> <p> <code>EventDeliveryFailure</code> – Topic ARN to which <code>DeliveryFailure</code> event notifications are sent upon Direct Publish delivery failure (permanent) to one of the application's endpoints.</p> </li> <li> <p> <code>SuccessFeedbackRoleArn</code> – IAM role ARN used to give Amazon SNS write access to use CloudWatch Logs on your behalf.</p> </li> <li> <p> <code>FailureFeedbackRoleArn</code> – IAM role ARN used to give Amazon SNS write access to use CloudWatch Logs on your behalf.</p> </li> <li> <p> <code>SuccessFeedbackSampleRate</code> – Sample rate percentage (0-100) of successfully delivered messages.</p> </li> </ul> <p>The following attributes only apply to <code>APNs</code> token-based authentication:</p> <ul> <li> <p> <code>ApplePlatformTeamID</code> – The identifier that's assigned to your Apple developer account team.</p> </li> <li> <p> <code>ApplePlatformBundleID</code> – The bundle identifier that's assigned to your iOS app.</p> </li> </ul>",
-        }),
-    ),
+    PlatformApplicationArn: StringSchema.openapi({
+      description: 'PlatformApplicationArn for SetPlatformApplicationAttributes action.',
+    }),
+    Attributes: MapStringToStringSchema.openapi({
+      description:
+        "<p>A map of the platform application attributes. Attributes in this map include the following:</p> <ul> <li> <p> <code>PlatformCredential</code> – The credential received from the notification service.</p> <ul> <li> <p>For ADM, <code>PlatformCredential</code>is client secret.</p> </li> <li> <p>For Apple Services using certificate credentials, <code>PlatformCredential</code> is private key.</p> </li> <li> <p>For Apple Services using token credentials, <code>PlatformCredential</code> is signing key.</p> </li> <li> <p>For GCM (Firebase Cloud Messaging), <code>PlatformCredential</code> is API key. </p> </li> </ul> </li> </ul> <ul> <li> <p> <code>PlatformPrincipal</code> – The principal received from the notification service.</p> <ul> <li> <p>For ADM, <code>PlatformPrincipal</code>is client id.</p> </li> <li> <p>For Apple Services using certificate credentials, <code>PlatformPrincipal</code> is SSL certificate.</p> </li> <li> <p>For Apple Services using token credentials, <code>PlatformPrincipal</code> is signing key ID.</p> </li> <li> <p>For GCM (Firebase Cloud Messaging), there is no <code>PlatformPrincipal</code>. </p> </li> </ul> </li> </ul> <ul> <li> <p> <code>EventEndpointCreated</code> – Topic ARN to which <code>EndpointCreated</code> event notifications are sent.</p> </li> <li> <p> <code>EventEndpointDeleted</code> – Topic ARN to which <code>EndpointDeleted</code> event notifications are sent.</p> </li> <li> <p> <code>EventEndpointUpdated</code> – Topic ARN to which <code>EndpointUpdate</code> event notifications are sent.</p> </li> <li> <p> <code>EventDeliveryFailure</code> – Topic ARN to which <code>DeliveryFailure</code> event notifications are sent upon Direct Publish delivery failure (permanent) to one of the application's endpoints.</p> </li> <li> <p> <code>SuccessFeedbackRoleArn</code> – IAM role ARN used to give Amazon SNS write access to use CloudWatch Logs on your behalf.</p> </li> <li> <p> <code>FailureFeedbackRoleArn</code> – IAM role ARN used to give Amazon SNS write access to use CloudWatch Logs on your behalf.</p> </li> <li> <p> <code>SuccessFeedbackSampleRate</code> – Sample rate percentage (0-100) of successfully delivered messages.</p> </li> </ul> <p>The following attributes only apply to <code>APNs</code> token-based authentication:</p> <ul> <li> <p> <code>ApplePlatformTeamID</code> – The identifier that's assigned to your Apple developer account team.</p> </li> <li> <p> <code>ApplePlatformBundleID</code> – The bundle identifier that's assigned to your iOS app.</p> </li> </ul>",
+    }),
   })
   .openapi({
     required: ['PlatformApplicationArn', 'Attributes'],
@@ -1645,14 +1280,10 @@ const SetPlatformApplicationAttributesInputSchema = z
 
 const SetSMSAttributesInputSchema = z
   .object({
-    attributes: MapStringToStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The default settings for sending SMS messages from your Amazon Web Services account. You can set values for the following attribute names:</p> <p> <code>MonthlySpendLimit</code> – The maximum amount in USD that you are willing to spend each month to send SMS messages. When Amazon SNS determines that sending an SMS message would incur a cost that exceeds this limit, it stops sending SMS messages within minutes.</p> <important> <p>Amazon SNS stops sending SMS messages within minutes of the limit being crossed. During that interval, if you continue to send SMS messages, you will incur costs that exceed your limit.</p> </important> <p>By default, the spend limit is set to the maximum allowed by Amazon SNS. If you want to raise the limit, submit an <a href="https://console.aws.amazon.com/support/home#/case/create?issueType=service-limit-increase&amp;limitType=service-code-sns">SNS Limit Increase case</a>. For <b>New limit value</b>, enter your desired monthly spend limit. In the <b>Use Case Description</b> field, explain that you are requesting an SMS monthly spend limit increase.</p> <p> <code>DeliveryStatusIAMRole</code> – The ARN of the IAM role that allows Amazon SNS to write logs about SMS deliveries in CloudWatch Logs. For each SMS message that you send, Amazon SNS writes a log that includes the message price, the success or failure status, the reason for failure (if the message failed), the message dwell time, and other information.</p> <p> <code>DeliveryStatusSuccessSamplingRate</code> – The percentage of successful SMS deliveries for which Amazon SNS will write logs in CloudWatch Logs. The value can be an integer from 0 - 100. For example, to write logs only for failed deliveries, set this value to <code>0</code>. To write logs for 10% of your successful deliveries, set it to <code>10</code>.</p> <p> <code>DefaultSenderID</code> – A string, such as your business brand, that is displayed as the sender on the receiving device. Support for sender IDs varies by country. The sender ID can be 1 - 11 alphanumeric characters, and it must contain at least one letter.</p> <p> <code>DefaultSMSType</code> – The type of SMS message that you will send by default. You can assign the following values:</p> <ul> <li> <p> <code>Promotional</code> – (Default) Noncritical messages, such as marketing messages. Amazon SNS optimizes the message delivery to incur the lowest cost.</p> </li> <li> <p> <code>Transactional</code> – Critical messages that support customer transactions, such as one-time passcodes for multi-factor authentication. Amazon SNS optimizes the message delivery to achieve the highest reliability.</p> </li> </ul> <p> <code>UsageReportS3Bucket</code> – The name of the Amazon S3 bucket to receive daily SMS usage reports from Amazon SNS. Each day, Amazon SNS will deliver a usage report as a CSV file to the bucket. The report includes the following information for each SMS message that was successfully delivered by your Amazon Web Services account:</p> <ul> <li> <p>Time that the message was published (in UTC)</p> </li> <li> <p>Message ID</p> </li> <li> <p>Destination phone number</p> </li> <li> <p>Message type</p> </li> <li> <p>Delivery status</p> </li> <li> <p>Message price (in USD)</p> </li> <li> <p>Part number (a message is split into multiple parts if it is too long for a single message)</p> </li> <li> <p>Total number of parts</p> </li> </ul> <p>To receive the report, the bucket must have a policy that allows the Amazon SNS service principal to perform the <code>s3:PutObject</code> and <code>s3:GetBucketLocation</code> actions.</p> <p>For an example bucket policy and usage report, see <a href="https://docs.aws.amazon.com/sns/latest/dg/sms_stats.html">Monitoring SMS Activity</a> in the <i>Amazon SNS Developer Guide</i>.</p>',
-        }),
-    ),
+    attributes: MapStringToStringSchema.openapi({
+      description:
+        '<p>The default settings for sending SMS messages from your Amazon Web Services account. You can set values for the following attribute names:</p> <p> <code>MonthlySpendLimit</code> – The maximum amount in USD that you are willing to spend each month to send SMS messages. When Amazon SNS determines that sending an SMS message would incur a cost that exceeds this limit, it stops sending SMS messages within minutes.</p> <important> <p>Amazon SNS stops sending SMS messages within minutes of the limit being crossed. During that interval, if you continue to send SMS messages, you will incur costs that exceed your limit.</p> </important> <p>By default, the spend limit is set to the maximum allowed by Amazon SNS. If you want to raise the limit, submit an <a href="https://console.aws.amazon.com/support/home#/case/create?issueType=service-limit-increase&amp;limitType=service-code-sns">SNS Limit Increase case</a>. For <b>New limit value</b>, enter your desired monthly spend limit. In the <b>Use Case Description</b> field, explain that you are requesting an SMS monthly spend limit increase.</p> <p> <code>DeliveryStatusIAMRole</code> – The ARN of the IAM role that allows Amazon SNS to write logs about SMS deliveries in CloudWatch Logs. For each SMS message that you send, Amazon SNS writes a log that includes the message price, the success or failure status, the reason for failure (if the message failed), the message dwell time, and other information.</p> <p> <code>DeliveryStatusSuccessSamplingRate</code> – The percentage of successful SMS deliveries for which Amazon SNS will write logs in CloudWatch Logs. The value can be an integer from 0 - 100. For example, to write logs only for failed deliveries, set this value to <code>0</code>. To write logs for 10% of your successful deliveries, set it to <code>10</code>.</p> <p> <code>DefaultSenderID</code> – A string, such as your business brand, that is displayed as the sender on the receiving device. Support for sender IDs varies by country. The sender ID can be 1 - 11 alphanumeric characters, and it must contain at least one letter.</p> <p> <code>DefaultSMSType</code> – The type of SMS message that you will send by default. You can assign the following values:</p> <ul> <li> <p> <code>Promotional</code> – (Default) Noncritical messages, such as marketing messages. Amazon SNS optimizes the message delivery to incur the lowest cost.</p> </li> <li> <p> <code>Transactional</code> – Critical messages that support customer transactions, such as one-time passcodes for multi-factor authentication. Amazon SNS optimizes the message delivery to achieve the highest reliability.</p> </li> </ul> <p> <code>UsageReportS3Bucket</code> – The name of the Amazon S3 bucket to receive daily SMS usage reports from Amazon SNS. Each day, Amazon SNS will deliver a usage report as a CSV file to the bucket. The report includes the following information for each SMS message that was successfully delivered by your Amazon Web Services account:</p> <ul> <li> <p>Time that the message was published (in UTC)</p> </li> <li> <p>Message ID</p> </li> <li> <p>Destination phone number</p> </li> <li> <p>Message type</p> </li> <li> <p>Delivery status</p> </li> <li> <p>Message price (in USD)</p> </li> <li> <p>Part number (a message is split into multiple parts if it is too long for a single message)</p> </li> <li> <p>Total number of parts</p> </li> </ul> <p>To receive the report, the bucket must have a policy that allows the Amazon SNS service principal to perform the <code>s3:PutObject</code> and <code>s3:GetBucketLocation</code> actions.</p> <p>For an example bucket policy and usage report, see <a href="https://docs.aws.amazon.com/sns/latest/dg/sms_stats.html">Monitoring SMS Activity</a> in the <i>Amazon SNS Developer Guide</i>.</p>',
+    }),
   })
   .openapi({
     required: ['attributes'],
@@ -1665,20 +1296,16 @@ const AttributeNameSchema = z.string().openapi('AttributeName')
 
 const SetSubscriptionAttributesInputSchema = z
   .object({
-    SubscriptionArn: SubscriptionARNSchema.and(
-      z.any().openapi({ description: 'The ARN of the subscription to modify.' }),
-    ),
-    AttributeName: AttributeNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A map of attributes with their corresponding values.</p> <p>The following lists the names, descriptions, and values of the special request parameters that this action uses:</p> <ul> <li> <p> <code>DeliveryPolicy</code> – The policy that defines how Amazon SNS retries failed deliveries to HTTP/S endpoints.</p> </li> <li> <p> <code>FilterPolicy</code> – The simple JSON object that lets your subscriber receive only a subset of messages, rather than receiving every message published to the topic.</p> </li> <li> <p> <code>FilterPolicyScope</code> – This attribute lets you choose the filtering scope by using one of the following string value types:</p> <ul> <li> <p> <code>MessageAttributes</code> (default) – The filter is applied on the message attributes.</p> </li> <li> <p> <code>MessageBody</code> – The filter is applied on the message body.</p> </li> </ul> </li> <li> <p> <code>RawMessageDelivery</code> – When set to <code>true</code>, enables raw message delivery to Amazon SQS or HTTP/S endpoints. This eliminates the need for the endpoints to process JSON formatting, which is otherwise created for Amazon SNS metadata.</p> </li> <li> <p> <code>RedrivePolicy</code> – When specified, sends undeliverable messages to the specified Amazon SQS dead-letter queue. Messages that can\'t be delivered due to client errors (for example, when the subscribed endpoint is unreachable) or server errors (for example, when the service that powers the subscribed endpoint becomes unavailable) are held in the dead-letter queue for further analysis or reprocessing.</p> </li> </ul> <p>The following attribute applies only to Amazon Kinesis Data Firehose delivery stream subscriptions:</p> <ul> <li> <p> <code>SubscriptionRoleArn</code> – The ARN of the IAM role that has the following:</p> <ul> <li> <p>Permission to write to the Kinesis Data Firehose delivery stream</p> </li> <li> <p>Amazon SNS listed as a trusted entity</p> </li> </ul> <p>Specifying a valid ARN for this attribute is required for Kinesis Data Firehose delivery stream subscriptions. For more information, see <a href="https://docs.aws.amazon.com/sns/latest/dg/sns-firehose-as-subscriber.html">Fanout to Kinesis Data Firehose delivery streams</a> in the <i>Amazon SNS Developer Guide</i>.</p> </li> </ul>',
-        }),
-    ),
-    AttributeValue: AttributeValueSchema.and(
-      z.any().openapi({ description: 'The new value for the attribute in JSON format.' }),
-    ).exactOptional(),
+    SubscriptionArn: SubscriptionARNSchema.openapi({
+      description: 'The ARN of the subscription to modify.',
+    }),
+    AttributeName: AttributeNameSchema.openapi({
+      description:
+        '<p>A map of attributes with their corresponding values.</p> <p>The following lists the names, descriptions, and values of the special request parameters that this action uses:</p> <ul> <li> <p> <code>DeliveryPolicy</code> – The policy that defines how Amazon SNS retries failed deliveries to HTTP/S endpoints.</p> </li> <li> <p> <code>FilterPolicy</code> – The simple JSON object that lets your subscriber receive only a subset of messages, rather than receiving every message published to the topic.</p> </li> <li> <p> <code>FilterPolicyScope</code> – This attribute lets you choose the filtering scope by using one of the following string value types:</p> <ul> <li> <p> <code>MessageAttributes</code> (default) – The filter is applied on the message attributes.</p> </li> <li> <p> <code>MessageBody</code> – The filter is applied on the message body.</p> </li> </ul> </li> <li> <p> <code>RawMessageDelivery</code> – When set to <code>true</code>, enables raw message delivery to Amazon SQS or HTTP/S endpoints. This eliminates the need for the endpoints to process JSON formatting, which is otherwise created for Amazon SNS metadata.</p> </li> <li> <p> <code>RedrivePolicy</code> – When specified, sends undeliverable messages to the specified Amazon SQS dead-letter queue. Messages that can\'t be delivered due to client errors (for example, when the subscribed endpoint is unreachable) or server errors (for example, when the service that powers the subscribed endpoint becomes unavailable) are held in the dead-letter queue for further analysis or reprocessing.</p> </li> </ul> <p>The following attribute applies only to Amazon Kinesis Data Firehose delivery stream subscriptions:</p> <ul> <li> <p> <code>SubscriptionRoleArn</code> – The ARN of the IAM role that has the following:</p> <ul> <li> <p>Permission to write to the Kinesis Data Firehose delivery stream</p> </li> <li> <p>Amazon SNS listed as a trusted entity</p> </li> </ul> <p>Specifying a valid ARN for this attribute is required for Kinesis Data Firehose delivery stream subscriptions. For more information, see <a href="https://docs.aws.amazon.com/sns/latest/dg/sns-firehose-as-subscriber.html">Fanout to Kinesis Data Firehose delivery streams</a> in the <i>Amazon SNS Developer Guide</i>.</p> </li> </ul>',
+    }),
+    AttributeValue: AttributeValueSchema.exactOptional().openapi({
+      description: 'The new value for the attribute in JSON format.',
+    }),
   })
   .openapi({
     required: ['SubscriptionArn', 'AttributeName'],
@@ -1689,20 +1316,14 @@ const SetSubscriptionAttributesInputSchema = z
 
 const SetTopicAttributesInputSchema = z
   .object({
-    TopicArn: TopicARNSchema.and(
-      z.any().openapi({ description: 'The ARN of the topic to modify.' }),
-    ),
-    AttributeName: AttributeNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A map of attributes with their corresponding values.</p> <p>The following lists the names, descriptions, and values of the special request parameters that the <code>SetTopicAttributes</code> action uses:</p> <ul> <li> <p> <code>ApplicationSuccessFeedbackRoleArn</code> – Indicates failed message delivery status for an Amazon SNS topic that is subscribed to a platform application endpoint.</p> </li> <li> <p> <code>DeliveryPolicy</code> – The policy that defines how Amazon SNS retries failed deliveries to HTTP/S endpoints.</p> </li> <li> <p> <code>DisplayName</code> – The display name to use for a topic with SMS subscriptions.</p> </li> <li> <p> <code>Policy</code> – The policy that defines who can access your topic. By default, only the topic owner can publish or subscribe to the topic.</p> </li> <li> <p> <code>TracingConfig</code> – Tracing mode of an Amazon SNS topic. By default <code>TracingConfig</code> is set to <code>PassThrough</code>, and the topic passes through the tracing header it receives from an Amazon SNS publisher to its subscriptions. If set to <code>Active</code>, Amazon SNS will vend X-Ray segment data to topic owner account if the sampled flag in the tracing header is true. This is only supported on standard topics.</p> </li> <li> <p>HTTP</p> <ul> <li> <p> <code>HTTPSuccessFeedbackRoleArn</code> – Indicates successful message delivery status for an Amazon SNS topic that is subscribed to an HTTP endpoint. </p> </li> <li> <p> <code>HTTPSuccessFeedbackSampleRate</code> – Indicates percentage of successful messages to sample for an Amazon SNS topic that is subscribed to an HTTP endpoint.</p> </li> <li> <p> <code>HTTPFailureFeedbackRoleArn</code> – Indicates failed message delivery status for an Amazon SNS topic that is subscribed to an HTTP endpoint.</p> </li> </ul> </li> <li> <p>Amazon Kinesis Data Firehose</p> <ul> <li> <p> <code>FirehoseSuccessFeedbackRoleArn</code> – Indicates successful message delivery status for an Amazon SNS topic that is subscribed to an Amazon Kinesis Data Firehose endpoint.</p> </li> <li> <p> <code>FirehoseSuccessFeedbackSampleRate</code> – Indicates percentage of successful messages to sample for an Amazon SNS topic that is subscribed to an Amazon Kinesis Data Firehose endpoint.</p> </li> <li> <p> <code>FirehoseFailureFeedbackRoleArn</code> – Indicates failed message delivery status for an Amazon SNS topic that is subscribed to an Amazon Kinesis Data Firehose endpoint. </p> </li> </ul> </li> <li> <p>Lambda</p> <ul> <li> <p> <code>LambdaSuccessFeedbackRoleArn</code> – Indicates successful message delivery status for an Amazon SNS topic that is subscribed to an Lambda endpoint.</p> </li> <li> <p> <code>LambdaSuccessFeedbackSampleRate</code> – Indicates percentage of successful messages to sample for an Amazon SNS topic that is subscribed to an Lambda endpoint.</p> </li> <li> <p> <code>LambdaFailureFeedbackRoleArn</code> – Indicates failed message delivery status for an Amazon SNS topic that is subscribed to an Lambda endpoint. </p> </li> </ul> </li> <li> <p>Platform application endpoint</p> <ul> <li> <p> <code>ApplicationSuccessFeedbackRoleArn</code> – Indicates successful message delivery status for an Amazon SNS topic that is subscribed to an Amazon Web Services application endpoint.</p> </li> <li> <p> <code>ApplicationSuccessFeedbackSampleRate</code> – Indicates percentage of successful messages to sample for an Amazon SNS topic that is subscribed to an Amazon Web Services application endpoint.</p> </li> <li> <p> <code>ApplicationFailureFeedbackRoleArn</code> – Indicates failed message delivery status for an Amazon SNS topic that is subscribed to an Amazon Web Services application endpoint.</p> </li> </ul> <note> <p>In addition to being able to configure topic attributes for message delivery status of notification messages sent to Amazon SNS application endpoints, you can also configure application attributes for the delivery status of push notification messages sent to push notification services.</p> <p>For example, For more information, see <a href="https://docs.aws.amazon.com/sns/latest/dg/sns-msg-status.html">Using Amazon SNS Application Attributes for Message Delivery Status</a>. </p> </note> </li> <li> <p>Amazon SQS</p> <ul> <li> <p> <code>SQSSuccessFeedbackRoleArn</code> – Indicates successful message delivery status for an Amazon SNS topic that is subscribed to an Amazon SQS endpoint. </p> </li> <li> <p> <code>SQSSuccessFeedbackSampleRate</code> – Indicates percentage of successful messages to sample for an Amazon SNS topic that is subscribed to an Amazon SQS endpoint. </p> </li> <li> <p> <code>SQSFailureFeedbackRoleArn</code> – Indicates failed message delivery status for an Amazon SNS topic that is subscribed to an Amazon SQS endpoint. </p> </li> </ul> </li> </ul> <note> <p>The &lt;ENDPOINT&gt;SuccessFeedbackRoleArn and &lt;ENDPOINT&gt;FailureFeedbackRoleArn attributes are used to give Amazon SNS write access to use CloudWatch Logs on your behalf. The &lt;ENDPOINT&gt;SuccessFeedbackSampleRate attribute is for specifying the sample rate percentage (0-100) of successfully delivered messages. After you configure the &lt;ENDPOINT&gt;FailureFeedbackRoleArn attribute, then all failed message deliveries generate CloudWatch Logs. </p> </note> <p>The following attribute applies only to <a href="https://docs.aws.amazon.com/sns/latest/dg/sns-server-side-encryption.html">server-side-encryption</a>:</p> <ul> <li> <p> <code>KmsMasterKeyId</code> – The ID of an Amazon Web Services managed customer master key (CMK) for Amazon SNS or a custom CMK. For more information, see <a href="https://docs.aws.amazon.com/sns/latest/dg/sns-server-side-encryption.html#sse-key-terms">Key Terms</a>. For more examples, see <a href="https://docs.aws.amazon.com/kms/latest/APIReference/API_DescribeKey.html#API_DescribeKey_RequestParameters">KeyId</a> in the <i>Key Management Service API Reference</i>. </p> </li> <li> <p> <code>SignatureVersion</code> – The signature version corresponds to the hashing algorithm used while creating the signature of the notifications, subscription confirmations, or unsubscribe confirmation messages sent by Amazon SNS. By default, <code>SignatureVersion</code> is set to <code>1</code>.</p> </li> </ul> <p>The following attribute applies only to <a href="https://docs.aws.amazon.com/sns/latest/dg/sns-fifo-topics.html">FIFO topics</a>:</p> <ul> <li> <p> <code>ContentBasedDeduplication</code> – Enables content-based deduplication for FIFO topics.</p> <ul> <li> <p>By default, <code>ContentBasedDeduplication</code> is set to <code>false</code>. If you create a FIFO topic and this attribute is <code>false</code>, you must specify a value for the <code>MessageDeduplicationId</code> parameter for the <a href="https://docs.aws.amazon.com/sns/latest/api/API_Publish.html">Publish</a> action. </p> </li> <li> <p>When you set <code>ContentBasedDeduplication</code> to <code>true</code>, Amazon SNS uses a SHA-256 hash to generate the <code>MessageDeduplicationId</code> using the body of the message (but not the attributes of the message).</p> <p>(Optional) To override the generated value, you can specify a value for the <code>MessageDeduplicationId</code> parameter for the <code>Publish</code> action.</p> </li> </ul> </li> </ul>',
-        }),
-    ),
-    AttributeValue: AttributeValueSchema.and(
-      z.any().openapi({ description: 'The new value for the attribute.' }),
-    ).exactOptional(),
+    TopicArn: TopicARNSchema.openapi({ description: 'The ARN of the topic to modify.' }),
+    AttributeName: AttributeNameSchema.openapi({
+      description:
+        '<p>A map of attributes with their corresponding values.</p> <p>The following lists the names, descriptions, and values of the special request parameters that the <code>SetTopicAttributes</code> action uses:</p> <ul> <li> <p> <code>ApplicationSuccessFeedbackRoleArn</code> – Indicates failed message delivery status for an Amazon SNS topic that is subscribed to a platform application endpoint.</p> </li> <li> <p> <code>DeliveryPolicy</code> – The policy that defines how Amazon SNS retries failed deliveries to HTTP/S endpoints.</p> </li> <li> <p> <code>DisplayName</code> – The display name to use for a topic with SMS subscriptions.</p> </li> <li> <p> <code>Policy</code> – The policy that defines who can access your topic. By default, only the topic owner can publish or subscribe to the topic.</p> </li> <li> <p> <code>TracingConfig</code> – Tracing mode of an Amazon SNS topic. By default <code>TracingConfig</code> is set to <code>PassThrough</code>, and the topic passes through the tracing header it receives from an Amazon SNS publisher to its subscriptions. If set to <code>Active</code>, Amazon SNS will vend X-Ray segment data to topic owner account if the sampled flag in the tracing header is true. This is only supported on standard topics.</p> </li> <li> <p>HTTP</p> <ul> <li> <p> <code>HTTPSuccessFeedbackRoleArn</code> – Indicates successful message delivery status for an Amazon SNS topic that is subscribed to an HTTP endpoint. </p> </li> <li> <p> <code>HTTPSuccessFeedbackSampleRate</code> – Indicates percentage of successful messages to sample for an Amazon SNS topic that is subscribed to an HTTP endpoint.</p> </li> <li> <p> <code>HTTPFailureFeedbackRoleArn</code> – Indicates failed message delivery status for an Amazon SNS topic that is subscribed to an HTTP endpoint.</p> </li> </ul> </li> <li> <p>Amazon Kinesis Data Firehose</p> <ul> <li> <p> <code>FirehoseSuccessFeedbackRoleArn</code> – Indicates successful message delivery status for an Amazon SNS topic that is subscribed to an Amazon Kinesis Data Firehose endpoint.</p> </li> <li> <p> <code>FirehoseSuccessFeedbackSampleRate</code> – Indicates percentage of successful messages to sample for an Amazon SNS topic that is subscribed to an Amazon Kinesis Data Firehose endpoint.</p> </li> <li> <p> <code>FirehoseFailureFeedbackRoleArn</code> – Indicates failed message delivery status for an Amazon SNS topic that is subscribed to an Amazon Kinesis Data Firehose endpoint. </p> </li> </ul> </li> <li> <p>Lambda</p> <ul> <li> <p> <code>LambdaSuccessFeedbackRoleArn</code> – Indicates successful message delivery status for an Amazon SNS topic that is subscribed to an Lambda endpoint.</p> </li> <li> <p> <code>LambdaSuccessFeedbackSampleRate</code> – Indicates percentage of successful messages to sample for an Amazon SNS topic that is subscribed to an Lambda endpoint.</p> </li> <li> <p> <code>LambdaFailureFeedbackRoleArn</code> – Indicates failed message delivery status for an Amazon SNS topic that is subscribed to an Lambda endpoint. </p> </li> </ul> </li> <li> <p>Platform application endpoint</p> <ul> <li> <p> <code>ApplicationSuccessFeedbackRoleArn</code> – Indicates successful message delivery status for an Amazon SNS topic that is subscribed to an Amazon Web Services application endpoint.</p> </li> <li> <p> <code>ApplicationSuccessFeedbackSampleRate</code> – Indicates percentage of successful messages to sample for an Amazon SNS topic that is subscribed to an Amazon Web Services application endpoint.</p> </li> <li> <p> <code>ApplicationFailureFeedbackRoleArn</code> – Indicates failed message delivery status for an Amazon SNS topic that is subscribed to an Amazon Web Services application endpoint.</p> </li> </ul> <note> <p>In addition to being able to configure topic attributes for message delivery status of notification messages sent to Amazon SNS application endpoints, you can also configure application attributes for the delivery status of push notification messages sent to push notification services.</p> <p>For example, For more information, see <a href="https://docs.aws.amazon.com/sns/latest/dg/sns-msg-status.html">Using Amazon SNS Application Attributes for Message Delivery Status</a>. </p> </note> </li> <li> <p>Amazon SQS</p> <ul> <li> <p> <code>SQSSuccessFeedbackRoleArn</code> – Indicates successful message delivery status for an Amazon SNS topic that is subscribed to an Amazon SQS endpoint. </p> </li> <li> <p> <code>SQSSuccessFeedbackSampleRate</code> – Indicates percentage of successful messages to sample for an Amazon SNS topic that is subscribed to an Amazon SQS endpoint. </p> </li> <li> <p> <code>SQSFailureFeedbackRoleArn</code> – Indicates failed message delivery status for an Amazon SNS topic that is subscribed to an Amazon SQS endpoint. </p> </li> </ul> </li> </ul> <note> <p>The &lt;ENDPOINT&gt;SuccessFeedbackRoleArn and &lt;ENDPOINT&gt;FailureFeedbackRoleArn attributes are used to give Amazon SNS write access to use CloudWatch Logs on your behalf. The &lt;ENDPOINT&gt;SuccessFeedbackSampleRate attribute is for specifying the sample rate percentage (0-100) of successfully delivered messages. After you configure the &lt;ENDPOINT&gt;FailureFeedbackRoleArn attribute, then all failed message deliveries generate CloudWatch Logs. </p> </note> <p>The following attribute applies only to <a href="https://docs.aws.amazon.com/sns/latest/dg/sns-server-side-encryption.html">server-side-encryption</a>:</p> <ul> <li> <p> <code>KmsMasterKeyId</code> – The ID of an Amazon Web Services managed customer master key (CMK) for Amazon SNS or a custom CMK. For more information, see <a href="https://docs.aws.amazon.com/sns/latest/dg/sns-server-side-encryption.html#sse-key-terms">Key Terms</a>. For more examples, see <a href="https://docs.aws.amazon.com/kms/latest/APIReference/API_DescribeKey.html#API_DescribeKey_RequestParameters">KeyId</a> in the <i>Key Management Service API Reference</i>. </p> </li> <li> <p> <code>SignatureVersion</code> – The signature version corresponds to the hashing algorithm used while creating the signature of the notifications, subscription confirmations, or unsubscribe confirmation messages sent by Amazon SNS. By default, <code>SignatureVersion</code> is set to <code>1</code>.</p> </li> </ul> <p>The following attribute applies only to <a href="https://docs.aws.amazon.com/sns/latest/dg/sns-fifo-topics.html">FIFO topics</a>:</p> <ul> <li> <p> <code>ContentBasedDeduplication</code> – Enables content-based deduplication for FIFO topics.</p> <ul> <li> <p>By default, <code>ContentBasedDeduplication</code> is set to <code>false</code>. If you create a FIFO topic and this attribute is <code>false</code>, you must specify a value for the <code>MessageDeduplicationId</code> parameter for the <a href="https://docs.aws.amazon.com/sns/latest/api/API_Publish.html">Publish</a> action. </p> </li> <li> <p>When you set <code>ContentBasedDeduplication</code> to <code>true</code>, Amazon SNS uses a SHA-256 hash to generate the <code>MessageDeduplicationId</code> using the body of the message (but not the attributes of the message).</p> <p>(Optional) To override the generated value, you can specify a value for the <code>MessageDeduplicationId</code> parameter for the <code>Publish</code> action.</p> </li> </ul> </li> </ul>',
+    }),
+    AttributeValue: AttributeValueSchema.exactOptional().openapi({
+      description: 'The new value for the attribute.',
+    }),
   })
   .openapi({
     required: ['TopicArn', 'AttributeName'],
@@ -1713,41 +1334,25 @@ const SetTopicAttributesInputSchema = z
 
 const SubscribeInputSchema = z
   .object({
-    TopicArn: TopicARNSchema.and(
-      z.any().openapi({ description: 'The ARN of the topic you want to subscribe to.' }),
-    ),
-    Protocol: ProtocolSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The protocol that you want to use. Supported protocols include:</p> <ul> <li> <p> <code>http</code> – delivery of JSON-encoded message via HTTP POST</p> </li> <li> <p> <code>https</code> – delivery of JSON-encoded message via HTTPS POST</p> </li> <li> <p> <code>email</code> – delivery of message via SMTP</p> </li> <li> <p> <code>email-json</code> – delivery of JSON-encoded message via SMTP</p> </li> <li> <p> <code>sms</code> – delivery of message via SMS</p> </li> <li> <p> <code>sqs</code> – delivery of JSON-encoded message to an Amazon SQS queue</p> </li> <li> <p> <code>application</code> – delivery of JSON-encoded message to an EndpointArn for a mobile app and device</p> </li> <li> <p> <code>lambda</code> – delivery of JSON-encoded message to an Lambda function</p> </li> <li> <p> <code>firehose</code> – delivery of JSON-encoded message to an Amazon Kinesis Data Firehose delivery stream.</p> </li> </ul>',
-        }),
-    ),
-    Endpoint: Endpoint2Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The endpoint that you want to receive notifications. Endpoints vary by protocol:</p> <ul> <li> <p>For the <code>http</code> protocol, the (public) endpoint is a URL beginning with <code>http://</code>.</p> </li> <li> <p>For the <code>https</code> protocol, the (public) endpoint is a URL beginning with <code>https://</code>.</p> </li> <li> <p>For the <code>email</code> protocol, the endpoint is an email address.</p> </li> <li> <p>For the <code>email-json</code> protocol, the endpoint is an email address.</p> </li> <li> <p>For the <code>sms</code> protocol, the endpoint is a phone number of an SMS-enabled device.</p> </li> <li> <p>For the <code>sqs</code> protocol, the endpoint is the ARN of an Amazon SQS queue.</p> </li> <li> <p>For the <code>application</code> protocol, the endpoint is the EndpointArn of a mobile app and device.</p> </li> <li> <p>For the <code>lambda</code> protocol, the endpoint is the ARN of an Lambda function.</p> </li> <li> <p>For the <code>firehose</code> protocol, the endpoint is the ARN of an Amazon Kinesis Data Firehose delivery stream.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Attributes: SubscriptionAttributesMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A map of attributes with their corresponding values.</p> <p>The following lists the names, descriptions, and values of the special request parameters that the <code>Subscribe</code> action uses:</p> <ul> <li> <p> <code>DeliveryPolicy</code> – The policy that defines how Amazon SNS retries failed deliveries to HTTP/S endpoints.</p> </li> <li> <p> <code>FilterPolicy</code> – The simple JSON object that lets your subscriber receive only a subset of messages, rather than receiving every message published to the topic.</p> </li> <li> <p> <code>FilterPolicyScope</code> – This attribute lets you choose the filtering scope by using one of the following string value types:</p> <ul> <li> <p> <code>MessageAttributes</code> (default) – The filter is applied on the message attributes.</p> </li> <li> <p> <code>MessageBody</code> – The filter is applied on the message body.</p> </li> </ul> </li> <li> <p> <code>RawMessageDelivery</code> – When set to <code>true</code>, enables raw message delivery to Amazon SQS or HTTP/S endpoints. This eliminates the need for the endpoints to process JSON formatting, which is otherwise created for Amazon SNS metadata.</p> </li> <li> <p> <code>RedrivePolicy</code> – When specified, sends undeliverable messages to the specified Amazon SQS dead-letter queue. Messages that can\'t be delivered due to client errors (for example, when the subscribed endpoint is unreachable) or server errors (for example, when the service that powers the subscribed endpoint becomes unavailable) are held in the dead-letter queue for further analysis or reprocessing.</p> </li> </ul> <p>The following attribute applies only to Amazon Kinesis Data Firehose delivery stream subscriptions:</p> <ul> <li> <p> <code>SubscriptionRoleArn</code> – The ARN of the IAM role that has the following:</p> <ul> <li> <p>Permission to write to the Kinesis Data Firehose delivery stream</p> </li> <li> <p>Amazon SNS listed as a trusted entity</p> </li> </ul> <p>Specifying a valid ARN for this attribute is required for Kinesis Data Firehose delivery stream subscriptions. For more information, see <a href="https://docs.aws.amazon.com/sns/latest/dg/sns-firehose-as-subscriber.html">Fanout to Kinesis Data Firehose delivery streams</a> in the <i>Amazon SNS Developer Guide</i>.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    ReturnSubscriptionArn: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Sets whether the response from the <code>Subscribe</code> request includes the subscription ARN, even if the subscription is not yet confirmed.</p> <p>If you set this parameter to <code>true</code>, the response includes the ARN in all cases, even if the subscription is not yet confirmed. In addition to the ARN for confirmed subscriptions, the response also includes the <code>pending subscription</code> ARN value for subscriptions that aren't yet confirmed. A subscription becomes confirmed when the subscriber calls the <code>ConfirmSubscription</code> action with a confirmation token.</p> <p/> <p>The default value is <code>false</code>.</p>",
-        }),
-    ).exactOptional(),
+    TopicArn: TopicARNSchema.openapi({
+      description: 'The ARN of the topic you want to subscribe to.',
+    }),
+    Protocol: ProtocolSchema.openapi({
+      description:
+        '<p>The protocol that you want to use. Supported protocols include:</p> <ul> <li> <p> <code>http</code> – delivery of JSON-encoded message via HTTP POST</p> </li> <li> <p> <code>https</code> – delivery of JSON-encoded message via HTTPS POST</p> </li> <li> <p> <code>email</code> – delivery of message via SMTP</p> </li> <li> <p> <code>email-json</code> – delivery of JSON-encoded message via SMTP</p> </li> <li> <p> <code>sms</code> – delivery of message via SMS</p> </li> <li> <p> <code>sqs</code> – delivery of JSON-encoded message to an Amazon SQS queue</p> </li> <li> <p> <code>application</code> – delivery of JSON-encoded message to an EndpointArn for a mobile app and device</p> </li> <li> <p> <code>lambda</code> – delivery of JSON-encoded message to an Lambda function</p> </li> <li> <p> <code>firehose</code> – delivery of JSON-encoded message to an Amazon Kinesis Data Firehose delivery stream.</p> </li> </ul>',
+    }),
+    Endpoint: Endpoint2Schema.exactOptional().openapi({
+      description:
+        '<p>The endpoint that you want to receive notifications. Endpoints vary by protocol:</p> <ul> <li> <p>For the <code>http</code> protocol, the (public) endpoint is a URL beginning with <code>http://</code>.</p> </li> <li> <p>For the <code>https</code> protocol, the (public) endpoint is a URL beginning with <code>https://</code>.</p> </li> <li> <p>For the <code>email</code> protocol, the endpoint is an email address.</p> </li> <li> <p>For the <code>email-json</code> protocol, the endpoint is an email address.</p> </li> <li> <p>For the <code>sms</code> protocol, the endpoint is a phone number of an SMS-enabled device.</p> </li> <li> <p>For the <code>sqs</code> protocol, the endpoint is the ARN of an Amazon SQS queue.</p> </li> <li> <p>For the <code>application</code> protocol, the endpoint is the EndpointArn of a mobile app and device.</p> </li> <li> <p>For the <code>lambda</code> protocol, the endpoint is the ARN of an Lambda function.</p> </li> <li> <p>For the <code>firehose</code> protocol, the endpoint is the ARN of an Amazon Kinesis Data Firehose delivery stream.</p> </li> </ul>',
+    }),
+    Attributes: SubscriptionAttributesMapSchema.exactOptional().openapi({
+      description:
+        '<p>A map of attributes with their corresponding values.</p> <p>The following lists the names, descriptions, and values of the special request parameters that the <code>Subscribe</code> action uses:</p> <ul> <li> <p> <code>DeliveryPolicy</code> – The policy that defines how Amazon SNS retries failed deliveries to HTTP/S endpoints.</p> </li> <li> <p> <code>FilterPolicy</code> – The simple JSON object that lets your subscriber receive only a subset of messages, rather than receiving every message published to the topic.</p> </li> <li> <p> <code>FilterPolicyScope</code> – This attribute lets you choose the filtering scope by using one of the following string value types:</p> <ul> <li> <p> <code>MessageAttributes</code> (default) – The filter is applied on the message attributes.</p> </li> <li> <p> <code>MessageBody</code> – The filter is applied on the message body.</p> </li> </ul> </li> <li> <p> <code>RawMessageDelivery</code> – When set to <code>true</code>, enables raw message delivery to Amazon SQS or HTTP/S endpoints. This eliminates the need for the endpoints to process JSON formatting, which is otherwise created for Amazon SNS metadata.</p> </li> <li> <p> <code>RedrivePolicy</code> – When specified, sends undeliverable messages to the specified Amazon SQS dead-letter queue. Messages that can\'t be delivered due to client errors (for example, when the subscribed endpoint is unreachable) or server errors (for example, when the service that powers the subscribed endpoint becomes unavailable) are held in the dead-letter queue for further analysis or reprocessing.</p> </li> </ul> <p>The following attribute applies only to Amazon Kinesis Data Firehose delivery stream subscriptions:</p> <ul> <li> <p> <code>SubscriptionRoleArn</code> – The ARN of the IAM role that has the following:</p> <ul> <li> <p>Permission to write to the Kinesis Data Firehose delivery stream</p> </li> <li> <p>Amazon SNS listed as a trusted entity</p> </li> </ul> <p>Specifying a valid ARN for this attribute is required for Kinesis Data Firehose delivery stream subscriptions. For more information, see <a href="https://docs.aws.amazon.com/sns/latest/dg/sns-firehose-as-subscriber.html">Fanout to Kinesis Data Firehose delivery streams</a> in the <i>Amazon SNS Developer Guide</i>.</p> </li> </ul>',
+    }),
+    ReturnSubscriptionArn: BooleanSchema.exactOptional().openapi({
+      description:
+        "<p>Sets whether the response from the <code>Subscribe</code> request includes the subscription ARN, even if the subscription is not yet confirmed.</p> <p>If you set this parameter to <code>true</code>, the response includes the ARN in all cases, even if the subscription is not yet confirmed. In addition to the ARN for confirmed subscriptions, the response also includes the <code>pending subscription</code> ARN value for subscriptions that aren't yet confirmed. A subscription becomes confirmed when the subscriber calls the <code>ConfirmSubscription</code> action with a confirmation token.</p> <p/> <p>The default value is <code>false</code>.</p>",
+    }),
   })
   .openapi({
     required: ['TopicArn', 'Protocol'],
@@ -1760,26 +1365,22 @@ const TagKeyListSchema = z.array(TagKeySchema).openapi('TagKeyList')
 
 const TagResourceRequestSchema = z
   .object({
-    ResourceArn: AmazonResourceNameSchema.and(
-      z.any().openapi({ description: 'The ARN of the topic to which to add tags.' }),
-    ),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tags to be added to the specified topic. A tag consists of a required key and an optional value.',
-        }),
-    ),
+    ResourceArn: AmazonResourceNameSchema.openapi({
+      description: 'The ARN of the topic to which to add tags.',
+    }),
+    Tags: TagListSchema.openapi({
+      description:
+        'The tags to be added to the specified topic. A tag consists of a required key and an optional value.',
+    }),
   })
   .openapi({ required: ['ResourceArn', 'Tags'], title: 'TagResourceRequest' })
   .openapi('TagResourceRequest')
 
 const UnsubscribeInputSchema = z
   .object({
-    SubscriptionArn: SubscriptionARNSchema.and(
-      z.any().openapi({ description: 'The ARN of the subscription to be deleted.' }),
-    ),
+    SubscriptionArn: SubscriptionARNSchema.openapi({
+      description: 'The ARN of the subscription to be deleted.',
+    }),
   })
   .openapi({
     required: ['SubscriptionArn'],
@@ -1790,29 +1391,25 @@ const UnsubscribeInputSchema = z
 
 const UntagResourceRequestSchema = z
   .object({
-    ResourceArn: AmazonResourceNameSchema.and(
-      z.any().openapi({ description: 'The ARN of the topic from which to remove tags.' }),
-    ),
-    TagKeys: TagKeyListSchema.and(
-      z.any().openapi({ description: 'The list of tag keys to remove from the specified topic.' }),
-    ),
+    ResourceArn: AmazonResourceNameSchema.openapi({
+      description: 'The ARN of the topic from which to remove tags.',
+    }),
+    TagKeys: TagKeyListSchema.openapi({
+      description: 'The list of tag keys to remove from the specified topic.',
+    }),
   })
   .openapi({ required: ['ResourceArn', 'TagKeys'], title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')
 
 const VerifySMSSandboxPhoneNumberInputSchema = z
   .object({
-    PhoneNumber: PhoneNumberStringSchema.and(
-      z.any().openapi({ description: 'The destination phone number to verify.' }),
-    ),
-    OneTimePassword: OTPCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The OTP sent to the destination number from the <code>CreateSMSSandBoxPhoneNumber</code> call.',
-        }),
-    ),
+    PhoneNumber: PhoneNumberStringSchema.openapi({
+      description: 'The destination phone number to verify.',
+    }),
+    OneTimePassword: OTPCodeSchema.openapi({
+      description:
+        'The OTP sent to the destination number from the <code>CreateSMSSandBoxPhoneNumber</code> call.',
+    }),
   })
   .openapi({
     required: ['PhoneNumber', 'OneTimePassword'],

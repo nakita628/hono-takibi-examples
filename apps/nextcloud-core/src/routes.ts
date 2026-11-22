@@ -116,7 +116,7 @@ const OpenGraphObjectSchema = z
 const ResourceSchema = z
   .object({
     richObjectType: z.string(),
-    richObject: z.record(z.string(), z.object({}).nullable()),
+    richObject: z.record(z.string(), z.looseObject({}).nullable()),
     openGraphObject: OpenGraphObjectSchema,
     accessible: z.boolean(),
   })
@@ -322,7 +322,7 @@ const PublicCapabilitiesSchema = z
 const ReferenceSchema = z
   .object({
     richObjectType: z.string(),
-    richObject: z.record(z.string(), z.object({}).nullable()),
+    richObject: z.record(z.string(), z.looseObject({}).nullable()),
     openGraphObject: OpenGraphObjectSchema,
     accessible: z.boolean(),
   })
@@ -1362,12 +1362,10 @@ export const getOcsV2PhpCoreAutocompleteGetRoute = createRoute({
         },
       },
       headers: z.object({
-        Link: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        Link: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     401: {
@@ -2465,7 +2463,7 @@ export const getOcsV2PhpCloudCapabilitiesRoute = createRoute({
                             'extendedSupport',
                           ],
                         }),
-                      capabilities: z.record(z.string(), z.object({})),
+                      capabilities: z.record(z.string(), z.looseObject({})),
                     })
                     .openapi({ required: ['version', 'capabilities'] }),
                 })
@@ -3428,7 +3426,7 @@ export const postOcsV2PhpTaskprocessingScheduleRoute = createRoute({
           schema: z
             .object({
               input: z
-                .record(z.string(), z.object({}))
+                .record(z.string(), z.looseObject({}))
                 .openapi({ description: "Task's input parameters" }),
               type: z.string().openapi({ description: 'Type of the task' }),
               appId: z
@@ -6202,40 +6200,36 @@ export const getIndexPhpAvatarUserIdSizeDarkRoute = createRoute({
       description: 'Avatar returned',
       content: { '*/*': { schema: z.file().openapi({ type: 'string', format: 'binary' }) } },
       headers: z.object({
-        'X-NC-IsCustomAvatar': {
-          schema: z
-            .preprocess(
-              (val) =>
-                typeof val === 'number' && Number.isSafeInteger(val)
+        'X-NC-IsCustomAvatar': z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
                   ? BigInt(val)
-                  : typeof val === 'string' && /^-?\d+$/.test(val)
-                    ? BigInt(val)
-                    : val,
-              z.int64(),
-            )
-            .exactOptional()
-            .openapi({ param: { required: false }, type: 'integer', format: 'int64' }),
-        },
+                  : val,
+            z.int64(),
+          )
+          .exactOptional()
+          .openapi({ param: { required: false }, type: 'integer', format: 'int64' }),
       }),
     },
     201: {
       description: 'Avatar returned',
       content: { '*/*': { schema: z.file().openapi({ type: 'string', format: 'binary' }) } },
       headers: z.object({
-        'X-NC-IsCustomAvatar': {
-          schema: z
-            .preprocess(
-              (val) =>
-                typeof val === 'number' && Number.isSafeInteger(val)
+        'X-NC-IsCustomAvatar': z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
                   ? BigInt(val)
-                  : typeof val === 'string' && /^-?\d+$/.test(val)
-                    ? BigInt(val)
-                    : val,
-              z.int64(),
-            )
-            .exactOptional()
-            .openapi({ param: { required: false }, type: 'integer', format: 'int64' }),
-        },
+                  : val,
+            z.int64(),
+          )
+          .exactOptional()
+          .openapi({ param: { required: false }, type: 'integer', format: 'int64' }),
       }),
     },
     404: { description: 'Avatar not found', content: { 'application/json': { schema: z.any() } } },
@@ -6320,40 +6314,36 @@ export const getIndexPhpAvatarUserIdSizeRoute = createRoute({
       description: 'Avatar returned',
       content: { '*/*': { schema: z.file().openapi({ type: 'string', format: 'binary' }) } },
       headers: z.object({
-        'X-NC-IsCustomAvatar': {
-          schema: z
-            .preprocess(
-              (val) =>
-                typeof val === 'number' && Number.isSafeInteger(val)
+        'X-NC-IsCustomAvatar': z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
                   ? BigInt(val)
-                  : typeof val === 'string' && /^-?\d+$/.test(val)
-                    ? BigInt(val)
-                    : val,
-              z.int64(),
-            )
-            .exactOptional()
-            .openapi({ param: { required: false }, type: 'integer', format: 'int64' }),
-        },
+                  : val,
+            z.int64(),
+          )
+          .exactOptional()
+          .openapi({ param: { required: false }, type: 'integer', format: 'int64' }),
       }),
     },
     201: {
       description: 'Avatar returned',
       content: { '*/*': { schema: z.file().openapi({ type: 'string', format: 'binary' }) } },
       headers: z.object({
-        'X-NC-IsCustomAvatar': {
-          schema: z
-            .preprocess(
-              (val) =>
-                typeof val === 'number' && Number.isSafeInteger(val)
+        'X-NC-IsCustomAvatar': z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
                   ? BigInt(val)
-                  : typeof val === 'string' && /^-?\d+$/.test(val)
-                    ? BigInt(val)
-                    : val,
-              z.int64(),
-            )
-            .exactOptional()
-            .openapi({ param: { required: false }, type: 'integer', format: 'int64' }),
-        },
+                  : val,
+            z.int64(),
+          )
+          .exactOptional()
+          .openapi({ param: { required: false }, type: 'integer', format: 'int64' }),
       }),
     },
     404: { description: 'Avatar not found', content: { 'application/json': { schema: z.any() } } },
@@ -6502,40 +6492,36 @@ export const getIndexPhpAvatarGuestGuestNameSizeRoute = createRoute({
       description: 'Custom avatar returned',
       content: { '*/*': { schema: z.file().openapi({ type: 'string', format: 'binary' }) } },
       headers: z.object({
-        'X-NC-IsCustomAvatar': {
-          schema: z
-            .preprocess(
-              (val) =>
-                typeof val === 'number' && Number.isSafeInteger(val)
+        'X-NC-IsCustomAvatar': z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
                   ? BigInt(val)
-                  : typeof val === 'string' && /^-?\d+$/.test(val)
-                    ? BigInt(val)
-                    : val,
-              z.int64(),
-            )
-            .exactOptional()
-            .openapi({ param: { required: false }, type: 'integer', format: 'int64' }),
-        },
+                  : val,
+            z.int64(),
+          )
+          .exactOptional()
+          .openapi({ param: { required: false }, type: 'integer', format: 'int64' }),
       }),
     },
     201: {
       description: 'Avatar returned',
       content: { '*/*': { schema: z.file().openapi({ type: 'string', format: 'binary' }) } },
       headers: z.object({
-        'X-NC-IsCustomAvatar': {
-          schema: z
-            .preprocess(
-              (val) =>
-                typeof val === 'number' && Number.isSafeInteger(val)
+        'X-NC-IsCustomAvatar': z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
                   ? BigInt(val)
-                  : typeof val === 'string' && /^-?\d+$/.test(val)
-                    ? BigInt(val)
-                    : val,
-              z.int64(),
-            )
-            .exactOptional()
-            .openapi({ param: { required: false }, type: 'integer', format: 'int64' }),
-        },
+                  : val,
+            z.int64(),
+          )
+          .exactOptional()
+          .openapi({ param: { required: false }, type: 'integer', format: 'int64' }),
       }),
     },
     500: { description: '' },
@@ -6589,40 +6575,36 @@ export const getIndexPhpAvatarGuestGuestNameSizeDarkRoute = createRoute({
       description: 'Custom avatar returned',
       content: { '*/*': { schema: z.file().openapi({ type: 'string', format: 'binary' }) } },
       headers: z.object({
-        'X-NC-IsCustomAvatar': {
-          schema: z
-            .preprocess(
-              (val) =>
-                typeof val === 'number' && Number.isSafeInteger(val)
+        'X-NC-IsCustomAvatar': z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
                   ? BigInt(val)
-                  : typeof val === 'string' && /^-?\d+$/.test(val)
-                    ? BigInt(val)
-                    : val,
-              z.int64(),
-            )
-            .exactOptional()
-            .openapi({ param: { required: false }, type: 'integer', format: 'int64' }),
-        },
+                  : val,
+            z.int64(),
+          )
+          .exactOptional()
+          .openapi({ param: { required: false }, type: 'integer', format: 'int64' }),
       }),
     },
     201: {
       description: 'Avatar returned',
       content: { '*/*': { schema: z.file().openapi({ type: 'string', format: 'binary' }) } },
       headers: z.object({
-        'X-NC-IsCustomAvatar': {
-          schema: z
-            .preprocess(
-              (val) =>
-                typeof val === 'number' && Number.isSafeInteger(val)
+        'X-NC-IsCustomAvatar': z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
                   ? BigInt(val)
-                  : typeof val === 'string' && /^-?\d+$/.test(val)
-                    ? BigInt(val)
-                    : val,
-              z.int64(),
-            )
-            .exactOptional()
-            .openapi({ param: { required: false }, type: 'integer', format: 'int64' }),
-        },
+                  : val,
+            z.int64(),
+          )
+          .exactOptional()
+          .openapi({ param: { required: false }, type: 'integer', format: 'int64' }),
       }),
     },
     500: { description: '' },
@@ -6718,12 +6700,10 @@ export const getIndexPhpOcmProviderRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-NEXTCLOUD-OCM-PROVIDERS': {
-          schema: z
-            .literal(true)
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-NEXTCLOUD-OCM-PROVIDERS': z
+          .literal(true)
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     500: {
@@ -6860,12 +6840,10 @@ export const getIndexPhpCorePreviewPngRoute = createRoute({
     303: {
       description: 'Redirect to the mime icon url if mimeFallback is true',
       headers: z.object({
-        Location: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
@@ -7015,12 +6993,10 @@ export const getIndexPhpCorePreviewRoute = createRoute({
     303: {
       description: 'Redirect to the mime icon url if mimeFallback is true',
       headers: z.object({
-        Location: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
@@ -7071,12 +7047,10 @@ export const getIndexPhpCoreMimeiconRoute = createRoute({
     303: {
       description: 'The mime icon url',
       headers: z.object({
-        Location: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -7299,7 +7273,7 @@ export const postOcsV2PhpTaskprocessingTasksConsumerScheduleRoute = createRoute(
           schema: z
             .object({
               input: z
-                .record(z.string(), z.object({}))
+                .record(z.string(), z.looseObject({}))
                 .openapi({ description: "Task's input parameters" }),
               type: z.string().openapi({ description: 'Type of the task' }),
               appId: z
@@ -8169,7 +8143,7 @@ export const postOcsV2PhpTaskprocessingTasksProviderTaskIdResultRoute = createRo
           schema: z
             .object({
               output: z
-                .record(z.string(), z.object({}))
+                .record(z.string(), z.looseObject({}))
                 .nullable()
                 .default(null)
                 .exactOptional()
@@ -8327,7 +8301,7 @@ export const postOcsV2PhpTaskprocessingTasksProviderTaskIdStreamResultRoute = cr
           schema: z
             .object({
               output: z
-                .record(z.string(), z.object({}))
+                .record(z.string(), z.looseObject({}))
                 .openapi({
                   description: 'The intermediate task output, files are represented by their IDs',
                 }),

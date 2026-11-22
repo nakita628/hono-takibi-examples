@@ -5748,7 +5748,7 @@ curl 'https://api.freee.co.jp/api/1/deals?company_id=1' \
 <li>bank_account : 銀行口座</li>
 <li>credit_card : クレジットカード</li>
 <li>wallet : 現金</li>
-<li>private_account_item : プライベート資金（法人の場合は役員借入金もしくは役員借入金、個人の場合は事業主貸もしくは事業主借）</li>
+<li>private_account_item : プライベート資金（法人の場合は役員貸付金もしくは役員借入金、個人の場合は事業主貸もしくは事業主借）</li>
 </ul>
 </li>
 </ul>
@@ -6148,7 +6148,7 @@ curl https://api.freee.co.jp/api/1/deals \
 <li>bank_account : 銀行口座</li>
 <li>credit_card : クレジットカード</li>
 <li>wallet : 現金</li>
-<li>private_account_item : プライベート資金（法人の場合は役員借入金もしくは役員借入金、個人の場合は事業主貸もしくは事業主借）</li>
+<li>private_account_item : プライベート資金（法人の場合は役員貸付金もしくは役員借入金、個人の場合は事業主貸もしくは事業主借）</li>
 </ul>
 </li>
 </ul>
@@ -6519,7 +6519,7 @@ curl 'https://api.freee.co.jp/api/1/deals/1?company_id=1' \
 <li>bank_account : 銀行口座</li>
 <li>credit_card : クレジットカード</li>
 <li>wallet : 現金</li>
-<li>private_account_item : プライベート資金（法人の場合は役員借入金もしくは役員借入金、個人の場合は事業主貸もしくは事業主借）</li>
+<li>private_account_item : プライベート資金（法人の場合は役員貸付金もしくは役員借入金、個人の場合は事業主貸もしくは事業主借）</li>
 </ul>
 </li>
 </ul>
@@ -6868,7 +6868,7 @@ curl https://api.freee.co.jp/api/1/deals/1 \
 <li>bank_account : 銀行口座</li>
 <li>credit_card : クレジットカード</li>
 <li>wallet : 現金</li>
-<li>private_account_item : プライベート資金（法人の場合は役員借入金もしくは役員借入金、個人の場合は事業主貸もしくは事業主借）</li>
+<li>private_account_item : プライベート資金（法人の場合は役員貸付金もしくは役員借入金、個人の場合は事業主貸もしくは事業主借）</li>
 </ul>
 </li>
 <li>
@@ -7371,7 +7371,7 @@ curl https://api.freee.co.jp/api/1/deals/1/payments \
 <li>bank_account : 銀行口座</li>
 <li>credit_card : クレジットカード</li>
 <li>wallet : 現金</li>
-<li>private_account_item : プライベート資金（法人の場合は役員借入金もしくは役員借入金、個人の場合は事業主貸もしくは事業主借）</li>
+<li>private_account_item : プライベート資金（法人の場合は役員貸付金もしくは役員借入金、個人の場合は事業主貸もしくは事業主借）</li>
 </ul>
 </li>
 </ul>
@@ -7710,7 +7710,7 @@ curl https://api.freee.co.jp/api/1/deals/1/payments/1 \
 <li>bank_account : 銀行口座</li>
 <li>credit_card : クレジットカード</li>
 <li>wallet : 現金</li>
-<li>private_account_item : プライベート資金（法人の場合は役員借入金もしくは役員借入金、個人の場合は事業主貸もしくは事業主借）</li>
+<li>private_account_item : プライベート資金（法人の場合は役員貸付金もしくは役員借入金、個人の場合は事業主貸もしくは事業主借）</li>
 </ul>
 </li>
 </ul>
@@ -8188,7 +8188,7 @@ curl https://api.freee.co.jp/api/1/deals/0/renews \
 <ul> <li>bank_account : 銀行口座</li>
 <li>credit_card : クレジットカード</li>
 <li>wallet : 現金</li>
-<li>private_account_item : プライベート資金（法人の場合は役員借入金もしくは役員借入金、個人の場合は事業主貸もしくは事業主借）</li>
+<li>private_account_item : プライベート資金（法人の場合は役員貸付金もしくは役員借入金、個人の場合は事業主貸もしくは事業主借）</li>
 </ul> </li> </ul>
 <h2 id="_3">注意点</h2>
 <ul> <li>本APIではdetails(取引の明細行)、accruals(債権債務行)、renewsのdetails(+更新の明細行)のみ操作可能です。</li>
@@ -8546,7 +8546,7 @@ curl https://api.freee.co.jp/api/1/deals/1/renews/1 \
 <ul> <li>bank_account : 銀行口座</li>
 <li>credit_card : クレジットカード</li>
 <li>wallet : 現金</li>
-<li>private_account_item : プライベート資金（法人の場合は役員借入金もしくは役員借入金、個人の場合は事業主貸もしくは事業主借）</li>
+<li>private_account_item : プライベート資金（法人の場合は役員貸付金もしくは役員借入金、個人の場合は事業主貸もしくは事業主借）</li>
 </ul> </li> </ul>
 <h2 id="_3">注意点</h2>
 <ul> <li>本APIでは+更新の更新のみ可能です。取引や支払行に対する更新はできません。</li> <li>renew_idにはrenewsのid(+更新ID)を指定してください。renewsのdetailsのid(+更新の明細行ID)を指定できません。</li> <li>月締めされている仕訳に紐づく＋更新行の編集・削除はできません。</li> <li>承認済み仕訳に紐づく＋更新行の編集・削除は管理者権限のユーザーのみ可能です。</li>
@@ -10727,9 +10727,6 @@ curl 'https://api.freee.co.jp/api/1/users/capabilities?company_id=1' \
     "destroy": true,
     "allowed_target": "self_only"
   },
-  "doc_postings": {
-    "create": true
-  },
   "receipts": {
     "read": true,
     "create": true,
@@ -11169,7 +11166,7 @@ curl 'https://api.freee.co.jp/api/1/users/capabilities?company_id=1' \
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|OK|<p>レスポンスの各キーは以下の項目と対応しています。</p><br><p>詳細は <a href="https://support.freee.co.jp/hc/ja/articles/210265673">https://support.freee.co.jp/hc/ja/articles/210265673</a> を参照してください。</p><br><table><br>  <thead><br>    <tr><br>      <th style="padding: 5px">キー</th><br>      <th style="padding: 5px">対応する項目</th><br>    </tr><br>  </thead><br>  <tbody><br>    <tr><br>      <td style="padding: 5px">wallet_txns</td><br>      <td style="padding: 5px">自動で経理 / 取得した明細</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">deals</td><br>      <td style="padding: 5px">取引</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">deal_linkage</td><br>      <td style="padding: 5px">取引連携（freee請求書など、freee会計以外から連携させる取引）</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">transfers</td><br>      <td style="padding: 5px">口座振替</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">docs</td><br>      <td style="padding: 5px">見積書・納品書・請求書・領収書・発注書</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">doc_postings</td><br>      <td style="padding: 5px">(請求書の)郵送</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">receipts</td><br>      <td style="padding: 5px">ファイルボックス</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">receipt_stream_editor</td><br>      <td style="padding: 5px">連続取引登録</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">spreadsheets</td><br>      <td style="padding: 5px">エクセルインポート</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">expense_applications</td><br>      <td style="padding: 5px">経費精算</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">expense_application_sync_payroll</td><br>      <td style="padding: 5px">経費精算の給与連携</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">manage_bulk_expense_application_approvals</td><br>      <td style="padding: 5px">経費精算の一括承認</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">payment_requests</td><br>      <td style="padding: 5px">支払依頼</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">payment_request_templates</td><br>      <td style="padding: 5px">支払テンプレート</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">approval_requests</td><br>      <td style="padding: 5px">各種申請</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">purchase_requests</td><br>      <td style="padding: 5px">購買申請</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">suspense_payments</td><br>      <td style="padding: 5px">仮払金</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">reports</td><br>      <td style="padding: 5px">収益 / 費用レポート</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">reports_income_expense</td><br>      <td style="padding: 5px">損益レポート</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">reports_receivables</td><br>      <td style="padding: 5px">入金管理レポート</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">reports_payables</td><br>      <td style="padding: 5px">支払管理レポート(一括振込ファイルを含む)</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">reports_purchase_budgets</td><br>      <td style="padding: 5px">購買進捗モニター</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">reports_cash_balance</td><br>      <td style="padding: 5px">現預金レポート/資金繰りレポート</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">reports_managements_planning</td><br>      <td style="padding: 5px">経営プランニング</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">reports_managements_navigation</td><br>      <td style="padding: 5px">経営ナビゲーション</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">reports_managements_introduction</td><br>      <td style="padding: 5px">経営プランニング・経営ナビゲーションの紹介ページ</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">reports_custom_reports_aggregate</td><br>      <td style="padding: 5px">カスタムレポート</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">reports_pl</td><br>      <td style="padding: 5px">損益計算書(月次推移/試算表)</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">reports_bs</td><br>      <td style="padding: 5px">貸借対照表(月次推移/試算表)</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">reports_general_ledgers</td><br>      <td style="padding: 5px">総勘定元帳</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">reports_journals</td><br>      <td style="padding: 5px">仕訳帳</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">manual_journals</td><br>      <td style="padding: 5px">振替伝票</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">fixed_assets</td><br>      <td style="padding: 5px">固定資産台帳</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">inventory_refreshes</td><br>      <td style="padding: 5px">在庫棚卸</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">biz_allocations</td><br>      <td style="padding: 5px">家事按分</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">payment_records</td><br>      <td style="padding: 5px">支払調書</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">annual_reports</td><br>      <td style="padding: 5px">決算書、確定申告書類</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">consolidation</td><br>      <td style="padding: 5px">連結会計</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">tax_reports</td><br>      <td style="padding: 5px">消費税区分別表・消費税集計表</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">consumption_entries</td><br>      <td style="padding: 5px">消費税申告書</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">tax_return</td><br>      <td style="padding: 5px">連携用データ</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">account_item_statements</td><br>      <td style="padding: 5px">勘定科目内訳明細書</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">month_end</td><br>      <td style="padding: 5px">月締め</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">year_end</td><br>      <td style="padding: 5px">年度締め</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">walletables</td><br>      <td style="padding: 5px">口座 / 口座の同期</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">companies</td><br>      <td style="padding: 5px">事業所の設定</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">invitations</td><br>      <td style="padding: 5px">メンバー招待</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">access_controls</td><br>      <td style="padding: 5px">権限管理</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">sign_in_logs</td><br>      <td style="padding: 5px">ログイン履歴</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">user_attribute_logs</td><br>      <td style="padding: 5px">ユーザー更新履歴</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">app_role_logs</td><br>      <td style="padding: 5px">権限変更履歴</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">txn_relationship_logs</td><br>      <td style="padding: 5px">仕訳関連履歴</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">backups</td><br>      <td style="padding: 5px">バックアップ</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">opening_balances</td><br>      <td style="padding: 5px">開始残高の設定</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">system_conversion</td><br>      <td style="padding: 5px">乗り換え設定</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">resets</td><br>      <td style="padding: 5px">リセット</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">partners</td><br>      <td style="padding: 5px">取引先</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">items</td><br>      <td style="padding: 5px">品目</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">sections</td><br>      <td style="padding: 5px">部門</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">tags</td><br>      <td style="padding: 5px">メモタグ</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">account_items</td><br>      <td style="padding: 5px">勘定科目</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">taxes</td><br>      <td style="padding: 5px">税区分</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">payroll_item_sets</td><br>      <td style="padding: 5px">給与連携の設定</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">user_matchers</td><br>      <td style="padding: 5px">自動登録ルール</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">deal_templates</td><br>      <td style="padding: 5px">取引テンプレート</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">manual_journal_templates</td><br>      <td style="padding: 5px">振替伝票テンプレート</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">cost_allocations</td><br>      <td style="padding: 5px">部門配賦</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">approval_flow_routes</td><br>      <td style="padding: 5px">承認経路</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">expense_application_templates</td><br>      <td style="padding: 5px">経費科目</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">request_forms</td><br>      <td style="padding: 5px">申請フォーム</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">system_messages_for_admin</td><br>      <td style="padding: 5px">管理者向けお知らせ</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">company_internal_announcements</td><br>      <td style="padding: 5px"><a href="https://support.freee.co.jp/hc/ja/articles/900002322383#:~:text=%E7%A4%BE%E5%86%85%E5%90%91%E3%81%91%E3%81%AE%E3%82%A2%E3%83%8A%E3%82%A6%E3%83%B3%E3%82%B9%E3%82%92%E6%8E%B2%E7%A4%BA%E3%81%A7%E3%81%8D%E3%82%8B%E6%A9%9F%E8%83%BD%E3%81%A7%E3%81%99%E3%80%82" target="_blank">アナウンス</a></td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">doc_change_logs</td><br>      <td style="padding: 5px">受発注書類変更履歴</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">entries_reviews</td><br>      <td style="padding: 5px">記帳レビュー</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">freee_cards_stream</td><br>      <td style="padding: 5px">freeeカードで経理</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">proxy_application_settings</td><br>      <td style="padding: 5px">代理申請の設定</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">workflows</td><br>      <td style="padding: 5px">仕訳承認</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">oauth_applications</td><br>      <td style="padding: 5px">アプリ利用</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">oauth_authorizations</td><br>      <td style="padding: 5px">アプリ認可</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">division_tag_1</td><br>      <td style="padding: 5px">セグメント1</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">division_tag_2</td><br>      <td style="padding: 5px">セグメント2</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">division_tag_3</td><br>      <td style="padding: 5px">セグメント3</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">currencies</td><br>      <td style="padding: 5px">外貨（通貨の設定）</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">bank_accountant_staff_users</td><br>      <td style="padding: 5px">アドバイザー事業所内でのメンバー管理</td><br>    </tr><br>  </tbody><br></table><br>|Inline|
+|200|OK|<p>レスポンスの各キーは以下の項目と対応しています。</p><br><p>詳細は <a href="https://support.freee.co.jp/hc/ja/articles/210265673">https://support.freee.co.jp/hc/ja/articles/210265673</a> を参照してください。</p><br><table><br>  <thead><br>    <tr><br>      <th style="padding: 5px">キー</th><br>      <th style="padding: 5px">対応する項目</th><br>    </tr><br>  </thead><br>  <tbody><br>    <tr><br>      <td style="padding: 5px">wallet_txns</td><br>      <td style="padding: 5px">自動で経理 / 取得した明細</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">deals</td><br>      <td style="padding: 5px">取引</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">deal_linkage</td><br>      <td style="padding: 5px">取引連携（freee請求書など、freee会計以外から連携させる取引）</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">transfers</td><br>      <td style="padding: 5px">口座振替</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">docs</td><br>      <td style="padding: 5px">見積書・納品書・請求書・領収書・発注書</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">receipts</td><br>      <td style="padding: 5px">ファイルボックス</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">receipt_stream_editor</td><br>      <td style="padding: 5px">連続取引登録</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">spreadsheets</td><br>      <td style="padding: 5px">エクセルインポート</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">expense_applications</td><br>      <td style="padding: 5px">経費精算</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">expense_application_sync_payroll</td><br>      <td style="padding: 5px">経費精算の給与連携</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">manage_bulk_expense_application_approvals</td><br>      <td style="padding: 5px">経費精算の一括承認</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">payment_requests</td><br>      <td style="padding: 5px">支払依頼</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">payment_request_templates</td><br>      <td style="padding: 5px">支払テンプレート</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">approval_requests</td><br>      <td style="padding: 5px">各種申請</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">purchase_requests</td><br>      <td style="padding: 5px">購買申請</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">suspense_payments</td><br>      <td style="padding: 5px">仮払金</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">reports</td><br>      <td style="padding: 5px">収益 / 費用レポート</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">reports_income_expense</td><br>      <td style="padding: 5px">損益レポート</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">reports_receivables</td><br>      <td style="padding: 5px">入金管理レポート</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">reports_payables</td><br>      <td style="padding: 5px">支払管理レポート(一括振込ファイルを含む)</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">reports_purchase_budgets</td><br>      <td style="padding: 5px">購買進捗モニター</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">reports_cash_balance</td><br>      <td style="padding: 5px">現預金レポート/資金繰りレポート</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">reports_managements_planning</td><br>      <td style="padding: 5px">経営プランニング</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">reports_managements_navigation</td><br>      <td style="padding: 5px">経営ナビゲーション</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">reports_managements_introduction</td><br>      <td style="padding: 5px">経営プランニング・経営ナビゲーションの紹介ページ</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">reports_custom_reports_aggregate</td><br>      <td style="padding: 5px">カスタムレポート</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">reports_pl</td><br>      <td style="padding: 5px">損益計算書(月次推移/試算表)</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">reports_bs</td><br>      <td style="padding: 5px">貸借対照表(月次推移/試算表)</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">reports_general_ledgers</td><br>      <td style="padding: 5px">総勘定元帳</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">reports_journals</td><br>      <td style="padding: 5px">仕訳帳</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">manual_journals</td><br>      <td style="padding: 5px">振替伝票</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">fixed_assets</td><br>      <td style="padding: 5px">固定資産台帳</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">inventory_refreshes</td><br>      <td style="padding: 5px">在庫棚卸</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">biz_allocations</td><br>      <td style="padding: 5px">家事按分</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">payment_records</td><br>      <td style="padding: 5px">支払調書</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">annual_reports</td><br>      <td style="padding: 5px">決算書、確定申告書類</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">consolidation</td><br>      <td style="padding: 5px">連結会計</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">tax_reports</td><br>      <td style="padding: 5px">消費税区分別表・消費税集計表</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">consumption_entries</td><br>      <td style="padding: 5px">消費税申告書</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">tax_return</td><br>      <td style="padding: 5px">連携用データ</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">account_item_statements</td><br>      <td style="padding: 5px">勘定科目内訳明細書</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">month_end</td><br>      <td style="padding: 5px">月締め</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">year_end</td><br>      <td style="padding: 5px">年度締め</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">walletables</td><br>      <td style="padding: 5px">口座 / 口座の同期</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">companies</td><br>      <td style="padding: 5px">事業所の設定</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">invitations</td><br>      <td style="padding: 5px">メンバー招待</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">access_controls</td><br>      <td style="padding: 5px">権限管理</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">sign_in_logs</td><br>      <td style="padding: 5px">ログイン履歴</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">user_attribute_logs</td><br>      <td style="padding: 5px">ユーザー更新履歴</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">app_role_logs</td><br>      <td style="padding: 5px">権限変更履歴</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">txn_relationship_logs</td><br>      <td style="padding: 5px">仕訳関連履歴</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">backups</td><br>      <td style="padding: 5px">バックアップ</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">opening_balances</td><br>      <td style="padding: 5px">開始残高の設定</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">system_conversion</td><br>      <td style="padding: 5px">乗り換え設定</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">resets</td><br>      <td style="padding: 5px">リセット</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">partners</td><br>      <td style="padding: 5px">取引先</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">items</td><br>      <td style="padding: 5px">品目</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">sections</td><br>      <td style="padding: 5px">部門</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">tags</td><br>      <td style="padding: 5px">メモタグ</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">account_items</td><br>      <td style="padding: 5px">勘定科目</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">taxes</td><br>      <td style="padding: 5px">税区分</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">payroll_item_sets</td><br>      <td style="padding: 5px">給与連携の設定</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">user_matchers</td><br>      <td style="padding: 5px">自動登録ルール</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">deal_templates</td><br>      <td style="padding: 5px">取引テンプレート</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">manual_journal_templates</td><br>      <td style="padding: 5px">振替伝票テンプレート</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">cost_allocations</td><br>      <td style="padding: 5px">部門配賦</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">approval_flow_routes</td><br>      <td style="padding: 5px">承認経路</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">expense_application_templates</td><br>      <td style="padding: 5px">経費科目</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">request_forms</td><br>      <td style="padding: 5px">申請フォーム</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">system_messages_for_admin</td><br>      <td style="padding: 5px">管理者向けお知らせ</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">company_internal_announcements</td><br>      <td style="padding: 5px"><a href="https://support.freee.co.jp/hc/ja/articles/900002322383#:~:text=%E7%A4%BE%E5%86%85%E5%90%91%E3%81%91%E3%81%AE%E3%82%A2%E3%83%8A%E3%82%A6%E3%83%B3%E3%82%B9%E3%82%92%E6%8E%B2%E7%A4%BA%E3%81%A7%E3%81%8D%E3%82%8B%E6%A9%9F%E8%83%BD%E3%81%A7%E3%81%99%E3%80%82" target="_blank">アナウンス</a></td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">doc_change_logs</td><br>      <td style="padding: 5px">受発注書類変更履歴</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">entries_reviews</td><br>      <td style="padding: 5px">記帳レビュー</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">freee_cards_stream</td><br>      <td style="padding: 5px">freeeカードで経理</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">proxy_application_settings</td><br>      <td style="padding: 5px">代理申請の設定</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">workflows</td><br>      <td style="padding: 5px">仕訳承認</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">oauth_applications</td><br>      <td style="padding: 5px">アプリ利用</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">oauth_authorizations</td><br>      <td style="padding: 5px">アプリ認可</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">division_tag_1</td><br>      <td style="padding: 5px">セグメント1</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">division_tag_2</td><br>      <td style="padding: 5px">セグメント2</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">division_tag_3</td><br>      <td style="padding: 5px">セグメント3</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">currencies</td><br>      <td style="padding: 5px">外貨（通貨の設定）</td><br>    </tr><br>    <tr><br>      <td style="padding: 5px">bank_accountant_staff_users</td><br>      <td style="padding: 5px">アドバイザー事業所内でのメンバー管理</td><br>    </tr><br>  </tbody><br></table><br>|Inline|
 |400|Bad Request||[badRequestError](#schemabadrequesterror)|
 |401|Unauthorized||[unauthorizedError](#schemaunauthorizederror)|
 |403|Forbidden||[forbiddenError](#schemaforbiddenerror)|
@@ -11187,7 +11184,6 @@ Status Code **200**
 |deal_linkage|[userCapability](#schemausercapability)|true|none|none|
 |transfers|[userCapabilityWithSelfOnly](#schemausercapabilitywithselfonly)|true|none|none|
 |docs|[userCapabilityWithSelfOnly](#schemausercapabilitywithselfonly)|true|none|none|
-|doc_postings|[userCapabilityJustCreate](#schemausercapabilityjustcreate)|true|none|none|
 |receipts|[userCapabilityWithSelfOnly](#schemausercapabilitywithselfonly)|true|none|none|
 |receipt_folders|[userCapabilityJustReadWrite](#schemausercapabilityjustreadwrite)|true|none|none|
 |receipt_stream_editor|[userCapabilityJustRead](#schemausercapabilityjustread)|true|none|none|
@@ -17198,6 +17194,358 @@ curl 'https://api.freee.co.jp/api/1/journals/reports/1/download?company_id=1' \
 |403|Forbidden||[forbiddenError](#schemaforbiddenerror)|
 |404|Not Found||[badRequestNotFoundError](#schemabadrequestnotfounderror)|
 |500|Internal Server Error||[internalServerError](#schemainternalservererror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+oauth2 ( Scopes: write read )
+</aside>
+
+## 仕訳帳の仕訳一覧の取得
+
+<a id="opIdsearch_report_journals"></a>
+
+> Code samples
+
+```bash
+curl https://api.freee.co.jp/api/1/journals/search \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "company_id": 1,
+    "start_issue_date": "1970-01-01",
+    "end_issue_date": "1970-01-01",
+    "deal_ids": [
+      0
+    ],
+    "start_created_date": "1970-01-01",
+    "end_created_date": "1970-01-01",
+    "account_item_id": 0,
+    "partner_id": 0,
+    "item_id": 0,
+    "section_id": 0,
+    "memo_tag_id": 0,
+    "segment_tag_1_id": 0,
+    "segment_tag_2_id": 0,
+    "segment_tag_3_id": 0,
+    "tax_code": 0,
+    "detail_amount_min": 0,
+    "detail_amount_max": 0,
+    "detail_amount_basis": {},
+    "adjustment": {},
+    "approval_status": {},
+    "receipts": {},
+    "cost_allocation": {},
+    "reverse_journal": {},
+    "create_user_id": 0,
+    "current_approver_user_id": 0,
+    "last_approver_user_id": 0,
+    "comment_status": {},
+    "comment_important": true,
+    "comment_details": "string",
+    "comment_poster_user_id": 0,
+    "comment_recipient_user_id": 0,
+    "receipt_partner_name": "string",
+    "ref_number": "string",
+    "txn_number": "string",
+    "description": "string",
+    "wallet_txn_description": "string",
+    "order_by": {},
+    "direction": {},
+    "page_size": 1,
+    "page_token": "string"
+  }'
+```
+
+`POST /api/1/journals/search`
+
+## 概要
+
+指定した事業所の仕訳を、仕訳帳と同じ検索条件で絞り込んで取得します。検索条件はリクエストボディで指定します。
+
+## 定義
+
+- `debit` / `credit`: 仕訳の借方行・貸方行。配列の順が表示順です。
+- 消費税行 (`line_type: tax`): 税抜経理の期間に、仮払消費税等・仮受消費税等を取引先・税区分・貸借ごと (部門必須設定が「全科目」の事業所ではさらに部門ごと) にまとめた行です。`debit` / `credit` の末尾に付きます。明細としては存在しないため、`id` など一部の項目は `null` になります。
+
+## 検索条件の判定
+
+複数の条件を指定したときは、次の単位で判定します。
+
+- 仕訳単位: `start_issue_date` / `end_issue_date` / `deal_ids` / `start_created_date` / `end_created_date` / `adjustment` / `approval_status` / `current_approver_user_id` / `last_approver_user_id` / `create_user_id` / `receipts` / `receipt_partner_name` / `ref_number` / `txn_number` / `cost_allocation` / `reverse_journal` / `description` / `wallet_txn_description`。仕訳がそれぞれの条件を満たせばヒットします。
+- 明細行単位: `account_item_id` / `tax_code` / `partner_id` / `item_id` / `section_id` / `memo_tag_id` / `segment_tag_1_id` / `segment_tag_2_id` / `segment_tag_3_id` / `detail_amount_min` / `detail_amount_max`。同じ 1 つの明細行がすべての条件を満たす必要があります。
+- コメント単位: `comment_status` / `comment_important` / `comment_details` / `comment_poster_user_id` / `comment_recipient_user_id`。同じ 1 つのコメントがすべての条件を満たす必要があります。
+
+`account_item_id` に次の勘定科目を指定した場合は例外です。
+
+- 口座に紐づく勘定科目 (現金・普通預金など)、事業主借・事業主貸・役員借入金・役員貸付金: 勘定科目とそれ以外の明細行条件を別々に判定します。それぞれを満たす行が同じ仕訳の中にあればヒットします。
+- 仮払消費税等・仮受消費税等: 税抜経理の期間は、消費税行の元になる明細行 (税額があるもの) も検索対象に含めます。
+
+## 注意点
+
+- `start_issue_date` / `end_issue_date` と `deal_ids` のどちらも指定しない場合は 400 を返します。
+- 経理方式 (税込 / 税抜) は、仕訳の発生日が属する会計年度の設定で決まります。検索期間が複数の会計年度にまたがる場合は、仕訳ごとに経理方式が異なることがあります。
+- レスポンスにマスタの名称 (勘定科目名・部門名・取引先名など) は含まれません。名称は各マスタ API (`/api/1/account_items`、`/api/1/sections`、`/api/1/partners` など) で取得してください。
+- 存在しないマスタ ID (他の事業所のものを含む) を指定した場合は 400 を返します。ユーザー ID は事業所への所属を検証しないため、所属していないユーザーの ID を指定しても 0 件を返します。
+- `next_page_token` が `null` のレスポンスが最終ページです。トークンの中身には依存しないでください。ページを取得する間に仕訳が登録・更新・削除されると、重複や欠落が起きることがあります。
+- 検索結果への反映は非同期のため、登録・更新した直後の仕訳は含まれないことがあります。
+
+> Body parameter
+
+```json
+{
+  "company_id": 1,
+  "start_issue_date": "1970-01-01",
+  "end_issue_date": "1970-01-01",
+  "deal_ids": [
+    0
+  ],
+  "start_created_date": "1970-01-01",
+  "end_created_date": "1970-01-01",
+  "account_item_id": 0,
+  "partner_id": 0,
+  "item_id": 0,
+  "section_id": 0,
+  "memo_tag_id": 0,
+  "segment_tag_1_id": 0,
+  "segment_tag_2_id": 0,
+  "segment_tag_3_id": 0,
+  "tax_code": 0,
+  "detail_amount_min": 0,
+  "detail_amount_max": 0,
+  "detail_amount_basis": {},
+  "adjustment": {},
+  "approval_status": {},
+  "receipts": {},
+  "cost_allocation": {},
+  "reverse_journal": {},
+  "create_user_id": 0,
+  "current_approver_user_id": 0,
+  "last_approver_user_id": 0,
+  "comment_status": {},
+  "comment_important": true,
+  "comment_details": "string",
+  "comment_poster_user_id": 0,
+  "comment_recipient_user_id": 0,
+  "receipt_partner_name": "string",
+  "ref_number": "string",
+  "txn_number": "string",
+  "description": "string",
+  "wallet_txn_description": "string",
+  "order_by": {},
+  "direction": {},
+  "page_size": 1,
+  "page_token": "string"
+}
+```
+
+<h3 id="仕訳帳の仕訳一覧の取得-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|body|body|object|true|none|
+|» company_id|body|integer(int64)|true|事業所ID|
+|» start_issue_date|body|string(date)|false|発生日 開始 (YYYY-MM-DD、両端含む)。deal_ids が指定されていない場合は必須。|
+|» end_issue_date|body|string(date)|false|発生日 終了 (YYYY-MM-DD、両端含む)。deal_ids が指定されていない場合は必須。|
+|» deal_ids|body|[integer(int64)]|false|取引ID配列。最大 500 件で、超えた場合は 400。複数指定は OR。指定時は発生日範囲を省略可能。両方指定した場合は取引の仕訳のうち発生日範囲内のものだけが返る。|
+|» start_created_date|body|string(date)|false|作成日 開始 (YYYY-MM-DD、両端含む)。仕訳の作成日時 (created_at) を日付単位で絞り込む。|
+|» end_created_date|body|string(date)|false|作成日 終了 (YYYY-MM-DD、両端含む)。仕訳の作成日時 (created_at) を日付単位で絞り込む。|
+|» account_item_id|body|integer(int64)|false|勘定科目ID (単数)。仕訳帳画面と同様に単数指定のみ。指定した勘定科目が仮払消費税等 / 仮受消費税等の場合、税抜経理の期間は消費税行の元になる明細行 (税額があるもの) も検索対象に含まれます。|
+|» partner_id|body|integer(int64)|false|取引先ID (単数)。|
+|» item_id|body|integer(int64)|false|品目ID (単数)。|
+|» section_id|body|integer(int64)|false|部門ID (単数)。指定した部門が事業所に存在しない場合は 400。閲覧不可な部門を指定した場合は 0 件を返す。|
+|» memo_tag_id|body|integer(int64)|false|メモタグID (単数)。|
+|» segment_tag_1_id|body|integer(int64)|false|セグメント1タグID (単数)。事業所で当該セグメントが未契約の場合に指定すると 400。|
+|» segment_tag_2_id|body|integer(int64)|false|セグメント2タグID (単数)。事業所で当該セグメントが未契約の場合に指定すると 400。|
+|» segment_tag_3_id|body|integer(int64)|false|セグメント3タグID (単数)。事業所で当該セグメントが未契約の場合に指定すると 400。|
+|» tax_code|body|integer(int32)|false|税区分コード。仕訳内のいずれかの明細行がこの税区分に一致する仕訳を返す。|
+|» detail_amount_min|body|integer(int64)|false|明細金額の下限。基準は detail_amount_basis で指定。|
+|» detail_amount_max|body|integer(int64)|false|明細金額の上限。基準は detail_amount_basis で指定。|
+|» detail_amount_basis|body|object|false|明細金額絞り込みの基準。既定 auto。|
+|» adjustment|body|object|false|決算整理仕訳による絞り込み。|
+|» approval_status|body|object|false|承認ステータスによる絞り込み。|
+|» receipts|body|object|false|証憑 (レシート) 添付有無による絞り込み。|
+|» cost_allocation|body|object|false|配賦仕訳による絞り込み。|
+|» reverse_journal|body|object|false|逆仕訳・元仕訳による絞り込み。|
+|» create_user_id|body|integer(int64)|false|作成者ユーザーID。|
+|» current_approver_user_id|body|integer(int64)|false|現在の承認待ちユーザーID (承認申請中のものが対象)。|
+|» last_approver_user_id|body|integer(int64)|false|最終承認者ユーザーID (承認済みのものが対象)。|
+|» comment_status|body|object|false|コメントステータスによる絞り込み。|
+|» comment_important|body|boolean|false|重要コメントで絞り込む。true のときのみ意味を持つ。false は指定なしと同義。|
+|» comment_details|body|string|false|コメント本文の部分一致検索。|
+|» comment_poster_user_id|body|integer(int64)|false|コメント投稿者ユーザーID。|
+|» comment_recipient_user_id|body|integer(int64)|false|コメント宛先ユーザーID。|
+|» receipt_partner_name|body|string|false|証憑の発行元名で検索 (部分一致)。|
+|» ref_number|body|string|false|管理番号 (ref_number) による前方一致検索。|
+|» txn_number|body|string|false|仕訳番号 (txn_number) による完全一致検索。|
+|» description|body|string|false|明細行の備考による部分一致検索。行単位ではなく仕訳単位で返る。|
+|» wallet_txn_description|body|string|false|口座明細の取引内容による部分一致検索。口座明細から作られた仕訳のみが対象。|
+|» order_by|body|object|false|並び順のキー。既定は txn_date。|
+|» direction|body|object|false|並び順の方向。既定は asc。|
+|» page_size|body|integer(int32)|false|最大取得件数。既定 100、範囲 1〜1000。|
+|» page_token|body|string|false|ページネーションのトークン。前レスポンスの next_page_token をそのまま渡す。不透明文字列。|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "data": [
+    {
+      "id": 0,
+      "deal_id": 0,
+      "txn_date": "1970-01-01",
+      "txn_number": "string",
+      "adjustment": true,
+      "approval_status": {},
+      "create_user_id": 0,
+      "last_approver_user_id": 0,
+      "current_approver_user_ids": [
+        0
+      ],
+      "ref_number": "string",
+      "deal_origin_name": "string",
+      "created_at": "1970-01-01T00:00:00Z",
+      "updated_at": "1970-01-01T00:00:00Z",
+      "receipt_ids": [
+        0
+      ],
+      "debit": [
+        {
+          "id": 0,
+          "line_type": {},
+          "account_item_id": 0,
+          "amount": 0,
+          "net_amount": 0,
+          "vat": 0,
+          "tax_code": 0,
+          "partner_id": 0,
+          "item_id": 0,
+          "section_id": 0,
+          "segment_tag_1_id": 0,
+          "segment_tag_2_id": 0,
+          "segment_tag_3_id": 0,
+          "memo_tag_ids": [
+            0
+          ],
+          "description": "string"
+        }
+      ],
+      "credit": [
+        {
+          "id": 0,
+          "line_type": {},
+          "account_item_id": 0,
+          "amount": 0,
+          "net_amount": 0,
+          "vat": 0,
+          "tax_code": 0,
+          "partner_id": 0,
+          "item_id": 0,
+          "section_id": 0,
+          "segment_tag_1_id": 0,
+          "segment_tag_2_id": 0,
+          "segment_tag_3_id": 0,
+          "memo_tag_ids": [
+            0
+          ],
+          "description": "string"
+        }
+      ]
+    }
+  ],
+  "next_page_token": "string"
+}
+```
+
+> 400 Response
+
+```json
+{
+  "status_code": 400,
+  "errors": [
+    {
+      "messages": [
+        "不正なリクエストです。"
+      ],
+      "type": "validation"
+    }
+  ]
+}
+```
+
+> 401 Response
+
+```json
+{
+  "message": "string",
+  "messages": "string",
+  "code": "not_available_plan_limited_app"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "message": "string",
+  "messages": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "status_code": 404,
+  "errors": [
+    {
+      "messages": [
+        "リソースが見つかりません。"
+      ],
+      "type": "validation"
+    }
+  ]
+}
+```
+
+> 500 Response
+
+```json
+{
+  "status_code": 500,
+  "errors": [
+    {
+      "messages": [
+        "エラーが発生しました。"
+      ],
+      "type": "status"
+    }
+  ]
+}
+```
+
+<h3 id="仕訳帳の仕訳一覧の取得-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|仕訳帳の仕訳一覧取得レスポンス|Inline|
+|400|Bad Request|クライアントエラー|[badRequestError](#schemabadrequesterror)|
+|401|Unauthorized|未認証|[unauthorizedError](#schemaunauthorizederror)|
+|403|Forbidden|未認可|[forbiddenError](#schemaforbiddenerror)|
+|404|Not Found|リソースが存在しない|[badRequestNotFoundError](#schemabadrequestnotfounderror)|
+|500|Internal Server Error|サーバーエラー|[internalServerError](#schemainternalservererror)|
+
+<h3 id="仕訳帳の仕訳一覧の取得-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|data|[[reportJournalsJournal](#schemareportjournalsjournal)]|true|none|仕訳のリスト。|
+|next_page_token|string \| null|true|none|次ページ取得のためのトークン。null の場合が最終ページ。|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -23367,7 +23715,15 @@ curl 'https://api.freee.co.jp/api/1/expense_applications?company_id=1' \
               "expense_application_line_currency_amount": {
                 "currency_amount": "100.0",
                 "system_calc_amount": 15025
-              }
+              },
+              "tag_assignment": "line",
+              "section_id": 101,
+              "tag_ids": [
+                202
+              ],
+              "segment_1_tag_id": 1,
+              "segment_2_tag_id": 2,
+              "segment_3_tag_id": 3
             }
           ]
         }
@@ -23501,7 +23857,15 @@ curl https://api.freee.co.jp/api/1/expense_applications \
                 "type": "number",
                 "value": 2
               }
-            ]
+            ],
+            "tag_assignment": "line",
+            "section_id": 101,
+            "tag_ids": [
+              202
+            ],
+            "segment_1_tag_id": 1,
+            "segment_2_tag_id": 2,
+            "segment_3_tag_id": 3
           }
         ]
       }
@@ -23564,6 +23928,10 @@ curl https://api.freee.co.jp/api/1/expense_applications \
   </li>
   <li>申請時には、申請タイトル(title)に加え、項目行については金額(amount)、日付(transaction_date)、内容(description)が必須項目となります。申請時の業務効率化のため、API入力をお勧めします。</li>
   <li>本APIは駅すぱあと連携 (出発駅と到着駅から金額を自動入力する機能)には非対応です。駅すぱあと連携を使用した経費申請は作成できません。</li>
+  <li>
+    明細行ごとに部門・メモタグ・セグメントを設定するには、明細行のtag_assignmentにline（明細に個別付与）を指定し、明細行のsection_id・tag_ids・segment_1〜3_tag_idを指定してください。
+    tag_assignmentを指定しない明細行には、申請全体のsection_id・tag_ids・segment_1〜3_tag_idが適用されます（application: 申請全体に付与）。
+  </li>
   <li>本APIは条件分岐を含む申請経路にも対応しています。</li>
 </ul>
 
@@ -23606,7 +23974,15 @@ curl https://api.freee.co.jp/api/1/expense_applications \
               "type": "number",
               "value": 2
             }
-          ]
+          ],
+          "tag_assignment": "line",
+          "section_id": 101,
+          "tag_ids": [
+            202
+          ],
+          "segment_1_tag_id": 1,
+          "segment_2_tag_id": 2,
+          "segment_3_tag_id": 3
         }
       ]
     }
@@ -23654,6 +24030,12 @@ curl https://api.freee.co.jp/api/1/expense_applications \
 |» » » » key|body|string|true|カスタム申請項目のキー。経費科目APIのカスタム申請項目が返すkeyを指定します。<br><br>明細行の経費科目に存在しないキーを指定した場合は400エラーになります。|
 |» » » » type|body|string|true|カスタム申請項目の入力形式<br><br>経費科目に登録されているカスタム申請項目の入力形式と一致しない場合は400エラーになります。|
 |» » » » value|body|object \| null|false|カスタム申請項目の値。typeによって指定できる形式が変わります。<br><br><ul><br>  <li>single_line_string: 文字列 (255文字以内)</li><br>  <li>multi_line_string: 文字列 (10000文字以内)</li><br>  <li>date: 文字列 (yyyy-mm-dd)</li><br>  <li>date_range: start_date（開始日 yyyy-mm-dd）とend_date（終了日 yyyy-mm-dd）を持つオブジェクト</li><br>  <li>datetime: 文字列 (yyyy-mm-dd hh:mm)</li><br>  <li>pulldown: 文字列。カスタム申請項目の選択肢のいずれか</li><br>  <li>radio_button: 文字列。カスタム申請項目の選択肢のいずれか</li><br>  <li>checkbox: 文字列の配列。カスタム申請項目の選択肢のうち選択されたもの</li><br>  <li>number: 数値 (10桁以内、小数3桁まで)</li><br></ul><br>nullまたは未指定の場合は未入力として扱います。入力設定が必須のカスタム申請項目を未入力で申請すると400エラーになります。|
+|» » » tag_assignment|body|string \| null|false|明細行の部門・メモタグ・セグメントの付与先<br><br><ul><br>  <li>application: 申請全体に付与（画面の「申請全体に合わせる」）。申請全体のsection_id・tag_ids・segment_1〜3_tag_idを明細行に適用します。明細行のsection_id・tag_ids・segment_1〜3_tag_idを指定しても無視します。</li><br>  <li>line: 明細に個別付与（画面の「個別付与」）。明細行のsection_id・tag_ids・segment_1〜3_tag_idを明細行に設定します。</li><br></ul><br>未指定またはnullの場合は申請全体に付与（application）として作成します。<br><br>明細行のsection_id・tag_ids・segment_1〜3_tag_idを指定する場合は、lineを指定してください。tag_assignmentを指定せずにこれらを指定すると400エラーになります。<br><br>上記以外の値を指定すると400エラーになります。|
+|» » » section_id|body|integer(int64) \| null|false|明細行の部門ID<br><br>tag_assignmentにlineを指定した場合のみ有効です。未指定またはnullの場合は部門なしになります。<br><br>存在しない部門や、申請者が利用できない部門を指定すると400エラーになります。|
+|» » » tag_ids|body|[integer(int64)]|false|明細行のメモタグID<br><br>tag_assignmentにlineを指定した場合のみ有効です。未指定の場合はメモタグなしになります。<br><br>存在しないメモタグを指定すると400エラーになります。|
+|» » » segment_1_tag_id|body|integer(int64) \| null|false|明細行のセグメント１タグID<br><br>tag_assignmentにlineを指定した場合のみ有効です。未指定またはnullの場合はセグメント１タグなしになります。<br><br>セグメントタグ一覧の取得APIを利用して取得してください。事業所でセグメント１が利用可能なプラン契約・設定になっている必要があります。<br><br><a href="https://support.freee.co.jp/hc/ja/articles/360020679611" target="_blank">セグメント（分析用タグ）の設定</a>|
+|» » » segment_2_tag_id|body|integer(int64) \| null|false|明細行のセグメント２タグID<br><br>tag_assignmentにlineを指定した場合のみ有効です。未指定またはnullの場合はセグメント２タグなしになります。<br><br>セグメントタグ一覧の取得APIを利用して取得してください。事業所でセグメント２が利用可能なプラン契約・設定になっている必要があります。<br><br><a href="https://support.freee.co.jp/hc/ja/articles/360020679611" target="_blank">セグメント（分析用タグ）の設定</a>|
+|» » » segment_3_tag_id|body|integer(int64) \| null|false|明細行のセグメント３タグID<br><br>tag_assignmentにlineを指定した場合のみ有効です。未指定またはnullの場合はセグメント３タグなしになります。<br><br>セグメントタグ一覧の取得APIを利用して取得してください。事業所でセグメント３が利用可能なプラン契約・設定になっている必要があります。<br><br><a href="https://support.freee.co.jp/hc/ja/articles/360020679611" target="_blank">セグメント（分析用タグ）の設定</a>|
 |» approval_flow_route_id|body|integer(int64)|false|申請経路ID<br><br><ul><br>    <li>経費申請のステータスを申請中として作成する場合は、必ず指定してください。</li><br>    <li>指定する申請経路IDは、申請経路APIを利用して取得してください。</li><br>    <li><br>        未指定の場合は、基本経路を設定している事業所では基本経路が、基本経路を設定していない事業所では利用可能な申請経路の中から最初の申請経路が自動的に使用されます。<br>        <ul><br>           <li>意図しない申請経路を持った経費申請の作成を防ぐために、使用する申請経路IDを指定することを推奨します。</li><br>        </ul><br>    </li><br>    <li><br>        法人スタータープラン、法人スタンダードプラン（および旧法人ベーシックプラン）の事業所では以下のデフォルトで用意された申請経路のみ指定できます<br>        <ul><br>        <li>指定なし</li><br>        <li>承認者を指定</li><br>        </ul><br>    </li><br></ul><br>|
 |» approver_id|body|integer(int64)|false|承認者のユーザーID<br><br>「承認者を指定」の経路を申請経路として使用する場合に指定してください。<br><br>指定する承認者のユーザーIDは、申請経路APIを利用して取得してください。<br>|
 |» applicant_group_id|body|integer(int64) \| null|false|申請者の所属部門ID<br><br>「部門役職」の承認ステップを含む申請経路で、申請者がどの所属部門として申請するかを指定します。<br><br><ul><br>  <li>申請者が複数の部門に所属している場合は必須です。省略すると400エラーになります。</li><br>  <li>申請者の所属部門が1つだけの場合は、省略するとその部門が採用されます。</li><br></ul><br>|
@@ -23745,7 +24127,15 @@ curl https://api.freee.co.jp/api/1/expense_applications \
                 "group_id": 10,
                 "position_id": 3
               }
-            }
+            },
+            "tag_assignment": "line",
+            "section_id": 101,
+            "tag_ids": [
+              202
+            ],
+            "segment_1_tag_id": 1,
+            "segment_2_tag_id": 2,
+            "segment_3_tag_id": 3
           }
         ]
       }
@@ -23950,7 +24340,15 @@ curl 'https://api.freee.co.jp/api/1/expense_applications/1?company_id=1' \
                 "group_id": 10,
                 "position_id": 3
               }
-            }
+            },
+            "tag_assignment": "line",
+            "section_id": 101,
+            "tag_ids": [
+              202
+            ],
+            "segment_1_tag_id": 1,
+            "segment_2_tag_id": 2,
+            "segment_3_tag_id": 3
           }
         ]
       }
@@ -24128,7 +24526,15 @@ curl https://api.freee.co.jp/api/1/expense_applications/1 \
                 "type": "number",
                 "value": 2
               }
-            ]
+            ],
+            "tag_assignment": "line",
+            "section_id": 101,
+            "tag_ids": [
+              202
+            ],
+            "segment_1_tag_id": 1,
+            "segment_2_tag_id": 2,
+            "segment_3_tag_id": 3
           }
         ]
       }
@@ -24193,7 +24599,15 @@ curl https://api.freee.co.jp/api/1/expense_applications/1 \
   </li>
   <li>申請時には、申請タイトル(title)に加え、項目行については金額(amount)、日付(transaction_date)、内容(description)が必須項目となります。申請時の業務効率化のため、API入力をお勧めします。</li>
   <li>本APIは駅すぱあと連携 (出発駅と到着駅から金額を自動入力する機能)には非対応です。駅すぱあと連携を使用した経費申請は更新できません。</li>
-  <li>申請全体のsection_id・tag_ids・segment_1〜3_tag_idは、指定した内容で置き換えられます。未指定の項目は削除されます。</li>
+  <li>
+    部門・メモタグ・セグメントの更新について
+    <ul>
+      <li>申請全体のsection_id・tag_ids・segment_1〜3_tag_idは、指定した内容で置き換えられます。未指定の項目は削除され、tag_assignmentがapplication（申請全体に付与）の明細行の値も空になります。</li>
+      <li>明細行の部門・メモタグ・セグメントは、明細行のtag_assignmentを指定した場合のみ更新されます。tag_assignmentを指定しない既存の明細行は、部門・メモタグ・セグメントと付与先が変更されません。</li>
+      <li>tag_assignmentにline（明細に個別付与）を指定すると、明細行のsection_id・tag_ids・segment_1〜3_tag_idの内容で置き換えられます。指定しなかった項目は空になります。</li>
+      <li>tag_assignmentにapplication（申請全体に付与）を指定すると、明細に個別付与した値を削除して申請全体の値を適用します。明細行のsection_id・tag_ids・segment_1〜3_tag_idは無視されるため、明細行ごとに値を変えたい場合はlineを指定してください。</li>
+    </ul>
+  </li>
   <li>本APIは条件分岐を含む申請経路にも対応しています。</li>
 </ul>
 
@@ -24238,7 +24652,15 @@ curl https://api.freee.co.jp/api/1/expense_applications/1 \
               "type": "number",
               "value": 2
             }
-          ]
+          ],
+          "tag_assignment": "line",
+          "section_id": 101,
+          "tag_ids": [
+            202
+          ],
+          "segment_1_tag_id": 1,
+          "segment_2_tag_id": 2,
+          "segment_3_tag_id": 3
         }
       ]
     }
@@ -24266,8 +24688,8 @@ curl https://api.freee.co.jp/api/1/expense_applications/1 \
 |» title|body|string|true|申請タイトル (250文字以内)|
 |» issue_date|body|string|false|申請日 (yyyy-mm-dd)<br><br>指定しない場合は当日の日付が登録されます。<br>|
 |» description|body|string|false|備考 (10000文字以内)|
-|» section_id|body|integer(int64)|false|部門ID<br><br>未指定の場合は部門なしで更新されます。|
-|» tag_ids|body|[integer(int64)]|false|メモタグID<br><br>未指定の場合はメモタグなしで更新されます。|
+|» section_id|body|integer(int64)|false|部門ID<br><br>未指定の場合は部門なしで更新されます。<br><br>明細行のtag_assignmentがapplication（申請全体に付与）の明細行にも同じ値が適用されます。|
+|» tag_ids|body|[integer(int64)]|false|メモタグID<br><br>未指定の場合はメモタグなしで更新されます。<br><br>明細行のtag_assignmentがapplication（申請全体に付与）の明細行にも同じ値が適用されます。|
 |» purchase_lines|body|[object]|false|経費申請の申請行一覧（配列）|
 |» » id|body|integer(int64)|false|経費申請の申請行ID: 既存申請行を更新する場合に指定します。IDを指定しない申請行は、新規行として扱われ追加されます。また、purchase_linesに含まれない既存の申請行は削除されます。更新後も残したい行は、必ず経費申請の申請行IDを指定してpurchase_linesに含めてください。|
 |» » transaction_date|body|string|true|発生日(yyyy-mm-dd)|
@@ -24289,6 +24711,12 @@ curl https://api.freee.co.jp/api/1/expense_applications/1 \
 |» » » » key|body|string|true|カスタム申請項目のキー。経費科目APIのカスタム申請項目が返すkeyを指定します。<br><br>明細行の経費科目に存在しないキーを指定した場合は400エラーになります。|
 |» » » » type|body|string|true|カスタム申請項目の入力形式<br><br>経費科目に登録されているカスタム申請項目の入力形式と一致しない場合は400エラーになります。|
 |» » » » value|body|object \| null|false|カスタム申請項目の値。typeによって指定できる形式が変わります。<br><br><ul><br>  <li>single_line_string: 文字列 (255文字以内)</li><br>  <li>multi_line_string: 文字列 (10000文字以内)</li><br>  <li>date: 文字列 (yyyy-mm-dd)</li><br>  <li>date_range: start_date（開始日 yyyy-mm-dd）とend_date（終了日 yyyy-mm-dd）を持つオブジェクト</li><br>  <li>datetime: 文字列 (yyyy-mm-dd hh:mm)</li><br>  <li>pulldown: 文字列。カスタム申請項目の選択肢のいずれか</li><br>  <li>radio_button: 文字列。カスタム申請項目の選択肢のいずれか</li><br>  <li>checkbox: 文字列の配列。カスタム申請項目の選択肢のうち選択されたもの</li><br>  <li>number: 数値 (10桁以内、小数3桁まで)</li><br></ul><br>nullまたは未指定の場合は未入力として扱います。入力設定が必須のカスタム申請項目を未入力で申請すると400エラーになります。|
+|» » » tag_assignment|body|string \| null|false|明細行の部門・メモタグ・セグメントの付与先<br><br><ul><br>  <li>application: 申請全体に付与（画面の「申請全体に合わせる」）。申請全体のsection_id・tag_ids・segment_1〜3_tag_idを明細行に適用します。明細に個別付与した部門・メモタグ・セグメントは削除されます。明細行のsection_id・tag_ids・segment_1〜3_tag_idを指定しても無視します。</li><br>  <li>line: 明細に個別付与（画面の「個別付与」）。明細行の部門・メモタグ・セグメントを、明細行のsection_id・tag_ids・segment_1〜3_tag_idの内容で置き換えます。指定しなかった項目は空になるため、更新後も残したい値は必ず指定してください。</li><br></ul><br>未指定またはnullの場合、既存の明細行の部門・メモタグ・セグメントと付与先は変更しません（申請全体のsection_id・tag_ids・segment_1〜3_tag_idと異なり、省略しても削除されません）。新規に追加する明細行は申請全体に付与（application）として作成します。<br><br>ただし未指定またはnullの場合、経費科目の利用可否は明細行の部門ではなく申請全体のsection_idで判定します。個別付与した明細行で部門の利用制限がある経費科目を使っている場合に申請中（draft: false）にするときは、lineを指定し、明細行のsection_id・tag_ids・segment_1〜3_tag_idも指定してください。<br><br>個別付与した明細行を申請全体に合わせるには、applicationを指定してください。<br><br>明細行のsection_id・tag_ids・segment_1〜3_tag_idを指定する場合は、lineを指定してください。tag_assignmentを指定せずにこれらを指定すると400エラーになります。<br><br>上記以外の値を指定すると400エラーになります。|
+|» » » section_id|body|integer(int64) \| null|false|明細行の部門ID<br><br>tag_assignmentにlineを指定した場合のみ有効です。未指定またはnullの場合は部門なしになります。<br><br>存在しない部門や、申請者が利用できない部門を指定すると400エラーになります。|
+|» » » tag_ids|body|[integer(int64)]|false|明細行のメモタグID<br><br>tag_assignmentにlineを指定した場合のみ有効です。未指定の場合はメモタグなしになります。<br><br>存在しないメモタグを指定すると400エラーになります。|
+|» » » segment_1_tag_id|body|integer(int64) \| null|false|明細行のセグメント１タグID<br><br>tag_assignmentにlineを指定した場合のみ有効です。未指定またはnullの場合はセグメント１タグなしになります。<br><br>セグメントタグ一覧の取得APIを利用して取得してください。事業所でセグメント１が利用可能なプラン契約・設定になっている必要があります。<br><br><a href="https://support.freee.co.jp/hc/ja/articles/360020679611" target="_blank">セグメント（分析用タグ）の設定</a>|
+|» » » segment_2_tag_id|body|integer(int64) \| null|false|明細行のセグメント２タグID<br><br>tag_assignmentにlineを指定した場合のみ有効です。未指定またはnullの場合はセグメント２タグなしになります。<br><br>セグメントタグ一覧の取得APIを利用して取得してください。事業所でセグメント２が利用可能なプラン契約・設定になっている必要があります。<br><br><a href="https://support.freee.co.jp/hc/ja/articles/360020679611" target="_blank">セグメント（分析用タグ）の設定</a>|
+|» » » segment_3_tag_id|body|integer(int64) \| null|false|明細行のセグメント３タグID<br><br>tag_assignmentにlineを指定した場合のみ有効です。未指定またはnullの場合はセグメント３タグなしになります。<br><br>セグメントタグ一覧の取得APIを利用して取得してください。事業所でセグメント３が利用可能なプラン契約・設定になっている必要があります。<br><br><a href="https://support.freee.co.jp/hc/ja/articles/360020679611" target="_blank">セグメント（分析用タグ）の設定</a>|
 |» approval_flow_route_id|body|integer(int64)|false|申請経路ID<br><br><ul><br>    <li>経費申請のステータスを申請中として作成する場合は、必ず指定してください。</li><br>    <li>指定する申請経路IDは、申請経路APIを利用して取得してください。</li><br>    <li><br>        未指定の場合は、基本経路を設定している事業所では基本経路が、基本経路を設定していない事業所では利用可能な申請経路の中から最初の申請経路が自動的に使用されます。<br>        <ul><br>          <li>意図しない申請経路を持った経費申請の作成を防ぐために、使用する申請経路IDを指定することを推奨します。</li><br>        </ul><br>    </li><br>    <li><br>        法人スタータープラン、法人スタンダードプラン（および旧法人ベーシックプラン）の事業所では以下のデフォルトで用意された申請経路のみ指定できます<br>        <ul><br>        <li>指定なし</li><br>        <li>承認者を指定</li><br>        </ul><br>    </li><br></ul><br>|
 |» approver_id|body|integer(int64)|false|承認者のユーザーID<br><br>指定する承認者のユーザーIDは、申請経路APIを利用して取得してください。<br>|
 |» applicant_group_id|body|integer(int64) \| null|false|申請者の所属部門ID<br><br>「部門役職」の承認ステップを含む申請経路で、申請者がどの所属部門として申請するかを指定します。<br><br><ul><br>  <li>申請者が複数の部門に所属している場合は必須です。省略すると400エラーになります。</li><br>  <li>申請者の所属部門が1つだけの場合は、省略するとその部門が採用されます。</li><br></ul><br>|
@@ -24296,9 +24724,9 @@ curl https://api.freee.co.jp/api/1/expense_applications/1 \
 |» draft|body|boolean|false|経費申請のステータス<br><br>falseを指定した時は申請中（in_progress）で経費申請を更新します。<br><br>trueを指定した時は下書き（draft）で経費申請を更新します。<br><br>未指定の時は下書きとみなして経費申請を更新します。<br>|
 |» parent_id|body|integer(int64) \| null|false|親申請ID(法人アドバンスプラン（および旧法人プロフェッショナルプラン）, 法人エンタープライズプラン)<br><br><ul><br>  <li>承認済みの既存各種申請IDのみ指定可能です。</li><br>  <li>各種申請一覧APIを利用して取得してください。</li><br>  <li>親申請の種別を購買申請にする場合は parent_type に PurchaseRequest を指定してください。</li><br>  <li>null を指定すると、現在設定されている親申請との関連付けを解除します。</li><br>  <li>キーを指定しない場合、親申請は更新されません（他のフィールドと同じキー未指定=更新なしの挙動）。</li><br></ul><br>|
 |» parent_type|body|string|false|親申請の種別 (parent_id を指定した場合のみ有効)<br><br><ul><br>  <li>ApprovalRequest: 各種申請 (parent_type 未指定時のデフォルト)</li><br>  <li>PurchaseRequest: 購買申請</li><br></ul><br>上記以外の値を指定するとバリデーションエラーになります。<br>|
-|» segment_1_tag_id|body|integer(int64)|false|セグメント１タグID<br><br>未指定の場合はセグメント１タグなしで更新されます。<br><br>セグメントタグ一覧の取得APIを利用して取得してください。<br><br><a href="https://support.freee.co.jp/hc/ja/articles/360020679611" target="_blank">セグメント（分析用タグ）の設定</a><br><br>|
-|» segment_2_tag_id|body|integer(int64)|false|セグメント２タグID<br><br>未指定の場合はセグメント２タグなしで更新されます。<br><br>セグメントタグ一覧の取得APIを利用して取得してください。<br><br><a href="https://support.freee.co.jp/hc/ja/articles/360020679611" target="_blank">セグメント（分析用タグ）の設定</a><br><br>|
-|» segment_3_tag_id|body|integer(int64)|false|セグメント３タグID<br><br>未指定の場合はセグメント３タグなしで更新されます。<br><br>セグメントタグ一覧の取得APIを利用して取得してください。<br><br><a href="https://support.freee.co.jp/hc/ja/articles/360020679611" target="_blank">セグメント（分析用タグ）の設定</a><br><br>|
+|» segment_1_tag_id|body|integer(int64)|false|セグメント１タグID<br><br>未指定の場合はセグメント１タグなしで更新されます。<br><br>明細行のtag_assignmentがapplication（申請全体に付与）の明細行にも同じ値が適用されます。<br><br>セグメントタグ一覧の取得APIを利用して取得してください。<br><br><a href="https://support.freee.co.jp/hc/ja/articles/360020679611" target="_blank">セグメント（分析用タグ）の設定</a><br><br>|
+|» segment_2_tag_id|body|integer(int64)|false|セグメント２タグID<br><br>未指定の場合はセグメント２タグなしで更新されます。<br><br>明細行のtag_assignmentがapplication（申請全体に付与）の明細行にも同じ値が適用されます。<br><br>セグメントタグ一覧の取得APIを利用して取得してください。<br><br><a href="https://support.freee.co.jp/hc/ja/articles/360020679611" target="_blank">セグメント（分析用タグ）の設定</a><br><br>|
+|» segment_3_tag_id|body|integer(int64)|false|セグメント３タグID<br><br>未指定の場合はセグメント３タグなしで更新されます。<br><br>明細行のtag_assignmentがapplication（申請全体に付与）の明細行にも同じ値が適用されます。<br><br>セグメントタグ一覧の取得APIを利用して取得してください。<br><br><a href="https://support.freee.co.jp/hc/ja/articles/360020679611" target="_blank">セグメント（分析用タグ）の設定</a><br><br>|
 
 #### Enumerated Values
 
@@ -24380,7 +24808,15 @@ curl https://api.freee.co.jp/api/1/expense_applications/1 \
                 "group_id": 10,
                 "position_id": 3
               }
-            }
+            },
+            "tag_assignment": "line",
+            "section_id": 101,
+            "tag_ids": [
+              202
+            ],
+            "segment_1_tag_id": 1,
+            "segment_2_tag_id": 2,
+            "segment_3_tag_id": 3
           }
         ]
       }
@@ -24824,7 +25260,15 @@ curl https://api.freee.co.jp/api/1/expense_applications/1/actions \
                 "group_id": 10,
                 "position_id": 3
               }
-            }
+            },
+            "tag_assignment": "line",
+            "section_id": 101,
+            "tag_ids": [
+              202
+            ],
+            "segment_1_tag_id": 1,
+            "segment_2_tag_id": 2,
+            "segment_3_tag_id": 3
           }
         ]
       }
@@ -25086,7 +25530,15 @@ curl https://api.freee.co.jp/api/1/expense_applications/1/parent_approvable_requ
                 "group_id": 10,
                 "position_id": 3
               }
-            }
+            },
+            "tag_assignment": "line",
+            "section_id": 101,
+            "tag_ids": [
+              202
+            ],
+            "segment_1_tag_id": 1,
+            "segment_2_tag_id": 2,
+            "segment_3_tag_id": 3
           }
         ]
       }
@@ -27120,6 +27572,15 @@ curl 'https://api.freee.co.jp/api/1/payment_requests?company_id=1' \
 <h2 id="_2">注意点</h2>
 <ul>
   <li>本APIでは、支払依頼の一覧を取得することができます。</li>
+  <li>パラメータ status を指定しない場合、ステータスでは絞り込まず、すべてのステータスの支払依頼を返します。</li>
+  <li>
+    パラメータ status には申請ステータスと取引ステータスのどちらかを指定します。レスポンスでは申請ステータスを status、取引ステータスを deal_status として返します。
+    <ul>
+      <li>パラメータ status に <code>approved</code> を指定した場合は、取引が登録されていない承認済の支払依頼のみを返します。取引が登録された承認済の支払依頼は、<code>unsettled</code> または <code>settled</code> を指定すると取得できます。レスポンスの status は取引の有無に関わらず <code>approved</code> です。</li>
+      <li>例: パラメータ status に <code>settled</code> を指定した場合、レスポンスの status が <code>approved</code>、deal_status が <code>settled</code> の支払依頼を返します。</li>
+    </ul>
+  </li>
+  <li>後続の支払依頼が存在する場合でも、取得件数が limit より少なくなることがあります。</li>
 </ul>
 
 <h3 id="支払依頼一覧の取得-parameters">Parameters</h3>
@@ -27130,6 +27591,8 @@ curl 'https://api.freee.co.jp/api/1/payment_requests?company_id=1' \
 |status|query|string|false|申請ステータス、または取引ステータス<br>申請ステータス:<br>* `draft` - 下書き<br>* `in_progress` - 申請中<br>* `approved` - 承認済<br>* `rejected` - 却下<br>* `feedback` - 差戻し<br><br>取引ステータス (status が `approved` の支払依頼に対して):<br>* `unsettled` - 支払待ち<br>* `settled` - 支払済み<br><br>approver_id を指定した場合は無効です。|
 |start_application_date|query|string|false|申請日で絞込：開始日(yyyy-mm-dd)|
 |end_application_date|query|string|false|申請日で絞込：終了日(yyyy-mm-dd)|
+|start_last_approval_date|query|string|false|最新の承認日で絞込：開始日(yyyy-mm-dd)<br>最新の承認日は、支払依頼に対して行われた承認（特権承認を含む）のうち最も新しい承認の日付で、申請が承認済になった日とは限りません。そのため、承認済以外の支払依頼も対象になります。<br>* 承認経路の途中のステップのみ承認された支払依頼は、そのステップの承認日<br>* 承認後に差戻し・却下された支払依頼は、差戻し・却下前の承認日<br>* 差戻し後に再度承認された支払依頼は、再承認日<br>* 一度も承認されていない支払依頼は対象外<br><br>2026年10月20日以降に承認または更新された支払依頼のみが対象です。|
+|end_last_approval_date|query|string|false|最新の承認日で絞込：終了日(yyyy-mm-dd)<br>最新の承認日は、支払依頼に対して行われた承認（特権承認を含む）のうち最も新しい承認の日付で、申請が承認済になった日とは限りません。そのため、承認済以外の支払依頼も対象になります。<br>* 承認経路の途中のステップのみ承認された支払依頼は、そのステップの承認日<br>* 承認後に差戻し・却下された支払依頼は、差戻し・却下前の承認日<br>* 差戻し後に再度承認された支払依頼は、再承認日<br>* 一度も承認されていない支払依頼は対象外<br><br>2026年10月20日以降に承認または更新された支払依頼のみが対象です。|
 |start_issue_date|query|string|false|発生日で絞込：開始日(yyyy-mm-dd)|
 |end_issue_date|query|string|false|発生日で絞込：終了日(yyyy-mm-dd)|
 |application_number|query|integer(int64)|false|申請No.|
@@ -32293,6 +32756,180 @@ To perform this operation, you must be authenticated by means of one of the foll
 oauth2 ( Scopes: write read )
 </aside>
 
+## 購買申請の購買予算と予算消化の取得
+
+<a id="opIdget_purchase_request_purchase_budget"></a>
+
+> Code samples
+
+```bash
+curl 'https://api.freee.co.jp/api/1/purchase_requests/1/purchase_budget?company_id=1' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /api/1/purchase_requests/{purchase_request_id}/purchase_budget`
+
+<h2 id="_1">概要</h2>
+
+<p>指定した購買申請に対する購買予算額と予算消化を取得します。</p>
+
+<h2 id="_2">金額</h2>
+
+<ul>
+  <li>金額の単位は円です。</li>
+  <li>consumed_amount は購買予算全体の税込消化額です。</li>
+  <li>budget_consumptions は予算を消化した全明細です。</li>
+</ul>
+
+<h2 id="_3">予算追跡状態</h2>
+
+<ul>
+  <li>in_progress と approved は購買予算の状態です。</li>
+  <li>下書き・差戻し・却下などの予算追跡対象外の場合は not_tracked です。</li>
+</ul>
+
+<h2 id="_4">権限</h2>
+
+<ul>
+  <li>対象購買申請の閲覧権限が必要です。</li>
+  <li>閲覧できない購買申請は存在しないものとして 404 を返します。</li>
+</ul>
+
+<h3 id="購買申請の購買予算と予算消化の取得-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|purchase_request_id|path|integer(int64)|true|購買申請ID|
+|company_id|query|integer(int64)|true|事業所ID|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "tracking_status": "approved",
+  "purchase_request_id": 2001,
+  "purchase_budget_id": 1001,
+  "budget_amount": 100000,
+  "consumed_amount": 65000,
+  "consumed_tax_excluded_amount": 59091,
+  "consumed_tax_amount": 5909,
+  "budget_consumptions": [
+    {
+      "amount": 40000,
+      "source": {
+        "type": "expense_application",
+        "id": "3001",
+        "display_name": "備品購入の立替精算",
+        "workflow_status": "approved"
+      }
+    }
+  ]
+}
+```
+
+> 400 Response
+
+```json
+{
+  "status_code": 400,
+  "errors": [
+    {
+      "messages": [
+        "不正なリクエストです。"
+      ],
+      "type": "validation"
+    }
+  ]
+}
+```
+
+> 401 Response
+
+```json
+{
+  "message": "string",
+  "messages": "string",
+  "code": "not_available_plan_limited_app"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "message": "string",
+  "messages": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "status_code": 404,
+  "errors": [
+    {
+      "messages": [
+        "リソースが見つかりません。"
+      ],
+      "type": "validation"
+    }
+  ]
+}
+```
+
+> 500 Response
+
+```json
+{
+  "status_code": 500,
+  "errors": [
+    {
+      "messages": [
+        "エラーが発生しました。"
+      ],
+      "type": "status"
+    }
+  ]
+}
+```
+
+> 503 Response
+
+```json
+{
+  "status_code": 503,
+  "errors": [
+    {
+      "messages": [
+        "このAPIは現在ご利用いただけません。"
+      ],
+      "type": "error"
+    }
+  ]
+}
+```
+
+<h3 id="購買申請の購買予算と予算消化の取得-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK||[purchaseRequestPurchaseBudgetResponse](#schemapurchaserequestpurchasebudgetresponse)|
+|400|Bad Request||[badRequestError](#schemabadrequesterror)|
+|401|Unauthorized||[unauthorizedError](#schemaunauthorizederror)|
+|403|Forbidden||[forbiddenError](#schemaforbiddenerror)|
+|404|Not Found||[badRequestNotFoundError](#schemabadrequestnotfounderror)|
+|500|Internal Server Error||[internalServerError](#schemainternalservererror)|
+|503|Service Unavailable||[serviceUnavailableError](#schemaserviceunavailableerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+oauth2 ( Scopes: write read )
+</aside>
+
 <h1 id="freee会計-api-approval-flow-routes">Approval flow routes</h1>
 
 <p>申請経路</p>
@@ -34553,7 +35190,7 @@ Status Code **200**
 |data|[object]|true|none|none|
 |» id|integer(int64)|true|none|自動登録ルールID|
 |» entry_side_str|string|true|none|入金/出金<br>* income: 入金<br>* expense: 出金<br>|
-|» description|string|true|none|説明文。明細の取引内容とのマッチングに使用される文字列です。condition=4(指定なし)の場合は空文字列が返ります。|
+|» description|string \| null|true|none|説明文。明細の取引内容とのマッチングに使用される文字列です。condition=4(指定なし)の場合は空文字列が返ります。|
 |» condition|integer|true|none|マッチ条件<br>* 0: 部分一致(partial)<br>* 1: 前方一致(forward)<br>* 2: 後方一致(backward)<br>* 3: 完全一致(exact)<br>* 4: 指定なし(wildcard)<br>|
 |» priority|integer|true|none|優先度|
 |» act|integer|true|none|登録タイプ<br>* 0: 取引を推測する(manual_standard)<br>* 1: 取引を登録する(auto_standard)<br>* 2: 振替を推測する(manual_transfer)<br>* 3: 振替を登録する(auto_transfer)<br>* 4: 無視する取引を登録する(auto_ignore)<br>* 5: 取引テンプレートを推測する(manual_template)<br>* 6: 未決済取引の消込を推測する(manual_scrub)<br>* 7: 未決済取引の消込を登録する(auto_scrub)<br>* 8: 一括振込ファイル消込を推測する(manual_output_zengin_scrub)<br>* 9: 一括振込ファイル消込を登録する(auto_output_zengin_scrub)<br>* 10: 無視する取引を推測する(manual_ignore)<br>* 11: プライベート取引を推測する(manual_private)<br>* 12: プライベート取引を登録する(auto_private)<br><br>actの種類により、返されるフィールド（tax_name、account_item_name、deal_description等）が異なります。<br>|
@@ -34894,7 +35531,7 @@ Status Code **201**
 |---|---|---|---|---|
 |id|integer(int64)|true|none|自動登録ルールID|
 |entry_side_str|string|true|none|入金/出金<br>* income: 入金<br>* expense: 出金<br>|
-|description|string|true|none|説明文。明細の取引内容とのマッチングに使用される文字列です。condition=4(指定なし)の場合は空文字列が返ります。|
+|description|string \| null|true|none|説明文。明細の取引内容とのマッチングに使用される文字列です。condition=4(指定なし)の場合は空文字列が返ります。|
 |condition|integer|true|none|マッチ条件<br>* 0: 部分一致(partial)<br>* 1: 前方一致(forward)<br>* 2: 後方一致(backward)<br>* 3: 完全一致(exact)<br>* 4: 指定なし(wildcard)<br>|
 |priority|integer|true|none|優先度|
 |act|integer|true|none|登録タイプ<br>* 0: 取引を推測する(manual_standard)<br>* 1: 取引を登録する(auto_standard)<br>* 2: 振替を推測する(manual_transfer)<br>* 3: 振替を登録する(auto_transfer)<br>* 4: 無視する取引を登録する(auto_ignore)<br>* 10: 無視する取引を推測する(manual_ignore)<br>* 11: プライベート取引を推測する(manual_private)<br>* 12: プライベート取引を登録する(auto_private)<br><br>このAPIでは以下のactは非対応です(show時は400エラー、create/update時は指定不可):<br>5(manual_template), 6(manual_scrub), 7(auto_scrub), 8(manual_output_zengin_scrub), 9(auto_output_zengin_scrub)<br><br>actの種類により、返されるフィールド（tax_name、account_item_name、deal_description等）が異なります。<br>|
@@ -34908,7 +35545,7 @@ Status Code **201**
 |transfer_walletable|string \| null|false|none|振替先口座名<br>act=2,3(振替を推測/登録)の場合のみ値が返ります。<br>|
 |origin_deal_id|integer(int64) \| null|false|none|元取引ID。このルールの作成元となった取引のIDです。freeeが自動作成したルールの場合のみ値が返ります。|
 |origin_deal_code|integer \| null|false|none|元取引コード|
-|last_updated_user_id|integer|true|none|最終更新ユーザーID<br>* 0: freeeシステムによる更新<br>|
+|last_updated_user_id|integer \| null|true|none|最終更新ユーザーID<br>* 0: freeeシステムによる更新<br>|
 |user_name|string|true|none|最終更新ユーザー名。表示名が未設定の場合はメールアドレスが返ります。freeeシステムによる更新の場合は「freee」、ユーザー情報を取得できない場合は「-」が返ります。|
 |updated_at|string \| null|false|none|更新日 (yyyy-mm-dd)|
 |corrected_wallet_txn_count|integer \| null|false|none|適用明細数(正答件数)。統計情報が存在しない場合はnullが返ります。|
@@ -35137,7 +35774,7 @@ Status Code **200**
 |---|---|---|---|---|
 |id|integer(int64)|true|none|自動登録ルールID|
 |entry_side_str|string|true|none|入金/出金<br>* income: 入金<br>* expense: 出金<br>|
-|description|string|true|none|説明文。明細の取引内容とのマッチングに使用される文字列です。condition=4(指定なし)の場合は空文字列が返ります。|
+|description|string \| null|true|none|説明文。明細の取引内容とのマッチングに使用される文字列です。condition=4(指定なし)の場合は空文字列が返ります。|
 |condition|integer|true|none|マッチ条件<br>* 0: 部分一致(partial)<br>* 1: 前方一致(forward)<br>* 2: 後方一致(backward)<br>* 3: 完全一致(exact)<br>* 4: 指定なし(wildcard)<br>|
 |priority|integer|true|none|優先度|
 |act|integer|true|none|登録タイプ<br>* 0: 取引を推測する(manual_standard)<br>* 1: 取引を登録する(auto_standard)<br>* 2: 振替を推測する(manual_transfer)<br>* 3: 振替を登録する(auto_transfer)<br>* 4: 無視する取引を登録する(auto_ignore)<br>* 10: 無視する取引を推測する(manual_ignore)<br>* 11: プライベート取引を推測する(manual_private)<br>* 12: プライベート取引を登録する(auto_private)<br><br>このAPIでは以下のactは非対応です(show時は400エラー、create/update時は指定不可):<br>5(manual_template), 6(manual_scrub), 7(auto_scrub), 8(manual_output_zengin_scrub), 9(auto_output_zengin_scrub)<br><br>actの種類により、返されるフィールド（tax_name、account_item_name、deal_description等）が異なります。<br>|
@@ -35151,7 +35788,7 @@ Status Code **200**
 |transfer_walletable|string \| null|false|none|振替先口座名<br>act=2,3(振替を推測/登録)の場合のみ値が返ります。<br>|
 |origin_deal_id|integer(int64) \| null|false|none|元取引ID。このルールの作成元となった取引のIDです。freeeが自動作成したルールの場合のみ値が返ります。|
 |origin_deal_code|integer \| null|false|none|元取引コード|
-|last_updated_user_id|integer|true|none|最終更新ユーザーID<br>* 0: freeeシステムによる更新<br>|
+|last_updated_user_id|integer \| null|true|none|最終更新ユーザーID<br>* 0: freeeシステムによる更新<br>|
 |user_name|string|true|none|最終更新ユーザー名。表示名が未設定の場合はメールアドレスが返ります。freeeシステムによる更新の場合は「freee」、ユーザー情報を取得できない場合は「-」が返ります。|
 |updated_at|string \| null|false|none|更新日 (yyyy-mm-dd)|
 |corrected_wallet_txn_count|integer \| null|false|none|適用明細数(正答件数)。統計情報が存在しない場合はnullが返ります。|
@@ -35496,7 +36133,7 @@ Status Code **200**
 |---|---|---|---|---|
 |id|integer(int64)|true|none|自動登録ルールID|
 |entry_side_str|string|true|none|入金/出金<br>* income: 入金<br>* expense: 出金<br>|
-|description|string|true|none|説明文。明細の取引内容とのマッチングに使用される文字列です。condition=4(指定なし)の場合は空文字列が返ります。|
+|description|string \| null|true|none|説明文。明細の取引内容とのマッチングに使用される文字列です。condition=4(指定なし)の場合は空文字列が返ります。|
 |condition|integer|true|none|マッチ条件<br>* 0: 部分一致(partial)<br>* 1: 前方一致(forward)<br>* 2: 後方一致(backward)<br>* 3: 完全一致(exact)<br>* 4: 指定なし(wildcard)<br>|
 |priority|integer|true|none|優先度|
 |act|integer|true|none|登録タイプ<br>* 0: 取引を推測する(manual_standard)<br>* 1: 取引を登録する(auto_standard)<br>* 2: 振替を推測する(manual_transfer)<br>* 3: 振替を登録する(auto_transfer)<br>* 4: 無視する取引を登録する(auto_ignore)<br>* 10: 無視する取引を推測する(manual_ignore)<br>* 11: プライベート取引を推測する(manual_private)<br>* 12: プライベート取引を登録する(auto_private)<br><br>このAPIでは以下のactは非対応です(show時は400エラー、create/update時は指定不可):<br>5(manual_template), 6(manual_scrub), 7(auto_scrub), 8(manual_output_zengin_scrub), 9(auto_output_zengin_scrub)<br><br>actの種類により、返されるフィールド（tax_name、account_item_name、deal_description等）が異なります。<br>|
@@ -35510,7 +36147,7 @@ Status Code **200**
 |transfer_walletable|string \| null|false|none|振替先口座名<br>act=2,3(振替を推測/登録)の場合のみ値が返ります。<br>|
 |origin_deal_id|integer(int64) \| null|false|none|元取引ID。このルールの作成元となった取引のIDです。freeeが自動作成したルールの場合のみ値が返ります。|
 |origin_deal_code|integer \| null|false|none|元取引コード|
-|last_updated_user_id|integer|true|none|最終更新ユーザーID<br>* 0: freeeシステムによる更新<br>|
+|last_updated_user_id|integer \| null|true|none|最終更新ユーザーID<br>* 0: freeeシステムによる更新<br>|
 |user_name|string|true|none|最終更新ユーザー名。表示名が未設定の場合はメールアドレスが返ります。freeeシステムによる更新の場合は「freee」、ユーザー情報を取得できない場合は「-」が返ります。|
 |updated_at|string \| null|false|none|更新日 (yyyy-mm-dd)|
 |corrected_wallet_txn_count|integer \| null|false|none|適用明細数(正答件数)。統計情報が存在しない場合はnullが返ります。|
@@ -35854,6 +36491,7 @@ curl 'https://api.freee.co.jp/api/1/expense_applications/form?company_id=1' \
   "description_setting": "optional",
   "commuter_pass_deduction": "disable",
   "default_flow_route_src_id": 101,
+  "traffic_line_template_src_id": 1,
   "observer_addition": "disable",
   "receipt_partner_name_setting": "disable",
   "default_title": "交通費精算",
@@ -35956,6 +36594,7 @@ curl https://api.freee.co.jp/api/1/expense_applications/form \
     "description_setting": "optional",
     "commuter_pass_deduction": "disable",
     "default_flow_route_src_id": 101,
+    "traffic_line_template_src_id": 1,
     "observer_addition": "disable",
     "receipt_partner_name_setting": "disable",
     "default_title": "交通費精算",
@@ -35990,6 +36629,7 @@ curl https://api.freee.co.jp/api/1/expense_applications/form \
   "description_setting": "optional",
   "commuter_pass_deduction": "disable",
   "default_flow_route_src_id": 101,
+  "traffic_line_template_src_id": 1,
   "observer_addition": "disable",
   "receipt_partner_name_setting": "disable",
   "default_title": "交通費精算",
@@ -36018,6 +36658,7 @@ curl https://api.freee.co.jp/api/1/expense_applications/form \
 |» description_setting|body|string|true|備考の入力設定 (optional: 任意入力, required: 必須入力)|
 |» commuter_pass_deduction|body|string|true|定期券区間控除の利用設定 (disable: 利用しない, enable: 利用する)|
 |» default_flow_route_src_id|body|integer(int64) \| null|true|デフォルトで選択する申請経路のID (未設定の場合は null)。申請経路一覧の取得API (`/api/1/approval_flow_routes`) のレスポンス id と同じ値です。|
+|» traffic_line_template_src_id|body|integer(int64) \| null|false|交通経路・交通系ICカードから作成した明細にデフォルトで選択する経費科目の source_line_template_id (未設定の場合は null)。経費科目一覧の取得API (`/api/1/expense_application_line_templates`) のレスポンス source_line_template_id と同じ値です。削除済みの経費科目を指していることがあります。更新では null と 0 のどちらも未設定に戻す指示になります。更新で省略した場合は現在の設定を変更しません。ただし更新で line_template_setting に disable を指定した場合は、省略しても未設定に戻します。|
 |» observer_addition|body|string|true|承認者以外の閲覧者追加の利用設定 (disable: 利用しない, enable: 利用する)|
 |» receipt_partner_name_setting|body|string|true|支払先の入力設定 (optional: 任意入力, required: 必須入力, disable: 非表示)|
 |» default_title|body|string|true|申請タイトルの初期値 (255文字以内)|
@@ -36078,6 +36719,7 @@ curl https://api.freee.co.jp/api/1/expense_applications/form \
   "description_setting": "optional",
   "commuter_pass_deduction": "disable",
   "default_flow_route_src_id": 101,
+  "traffic_line_template_src_id": 1,
   "observer_addition": "disable",
   "receipt_partner_name_setting": "disable",
   "default_title": "交通費精算",
@@ -37072,7 +37714,15 @@ oauth2 ( Scopes: write read )
               "type": "number",
               "value": 2
             }
-          ]
+          ],
+          "tag_assignment": "line",
+          "section_id": 101,
+          "tag_ids": [
+            202
+          ],
+          "segment_1_tag_id": 1,
+          "segment_2_tag_id": 2,
+          "segment_3_tag_id": 3
         }
       ]
     }
@@ -37158,7 +37808,15 @@ oauth2 ( Scopes: write read )
               "type": "number",
               "value": 2
             }
-          ]
+          ],
+          "tag_assignment": "line",
+          "section_id": 101,
+          "tag_ids": [
+            202
+          ],
+          "segment_1_tag_id": 1,
+          "segment_2_tag_id": 2,
+          "segment_3_tag_id": 3
         }
       ]
     }
@@ -37184,8 +37842,8 @@ oauth2 ( Scopes: write read )
 |title|string|true|none|申請タイトル (250文字以内)|
 |issue_date|string|false|none|申請日 (yyyy-mm-dd)<br><br>指定しない場合は当日の日付が登録されます。<br>|
 |description|string|false|none|備考 (10000文字以内)|
-|section_id|integer(int64)|false|none|部門ID<br><br>未指定の場合は部門なしで更新されます。|
-|tag_ids|[integer(int64)]|false|none|メモタグID<br><br>未指定の場合はメモタグなしで更新されます。|
+|section_id|integer(int64)|false|none|部門ID<br><br>未指定の場合は部門なしで更新されます。<br><br>明細行のtag_assignmentがapplication（申請全体に付与）の明細行にも同じ値が適用されます。|
+|tag_ids|[integer(int64)]|false|none|メモタグID<br><br>未指定の場合はメモタグなしで更新されます。<br><br>明細行のtag_assignmentがapplication（申請全体に付与）の明細行にも同じ値が適用されます。|
 |purchase_lines|[object]|false|none|経費申請の申請行一覧（配列）|
 |approval_flow_route_id|integer(int64)|false|none|申請経路ID<br><br><ul><br>    <li>経費申請のステータスを申請中として作成する場合は、必ず指定してください。</li><br>    <li>指定する申請経路IDは、申請経路APIを利用して取得してください。</li><br>    <li><br>        未指定の場合は、基本経路を設定している事業所では基本経路が、基本経路を設定していない事業所では利用可能な申請経路の中から最初の申請経路が自動的に使用されます。<br>        <ul><br>          <li>意図しない申請経路を持った経費申請の作成を防ぐために、使用する申請経路IDを指定することを推奨します。</li><br>        </ul><br>    </li><br>    <li><br>        法人スタータープラン、法人スタンダードプラン（および旧法人ベーシックプラン）の事業所では以下のデフォルトで用意された申請経路のみ指定できます<br>        <ul><br>        <li>指定なし</li><br>        <li>承認者を指定</li><br>        </ul><br>    </li><br></ul><br>|
 |approver_id|integer(int64)|false|none|承認者のユーザーID<br><br>指定する承認者のユーザーIDは、申請経路APIを利用して取得してください。<br>|
@@ -37194,9 +37852,9 @@ oauth2 ( Scopes: write read )
 |draft|boolean|false|none|経費申請のステータス<br><br>falseを指定した時は申請中（in_progress）で経費申請を更新します。<br><br>trueを指定した時は下書き（draft）で経費申請を更新します。<br><br>未指定の時は下書きとみなして経費申請を更新します。<br>|
 |parent_id|integer(int64) \| null|false|none|親申請ID(法人アドバンスプラン（および旧法人プロフェッショナルプラン）, 法人エンタープライズプラン)<br><br><ul><br>  <li>承認済みの既存各種申請IDのみ指定可能です。</li><br>  <li>各種申請一覧APIを利用して取得してください。</li><br>  <li>親申請の種別を購買申請にする場合は parent_type に PurchaseRequest を指定してください。</li><br>  <li>null を指定すると、現在設定されている親申請との関連付けを解除します。</li><br>  <li>キーを指定しない場合、親申請は更新されません（他のフィールドと同じキー未指定=更新なしの挙動）。</li><br></ul><br>|
 |parent_type|string|false|none|親申請の種別 (parent_id を指定した場合のみ有効)<br><br><ul><br>  <li>ApprovalRequest: 各種申請 (parent_type 未指定時のデフォルト)</li><br>  <li>PurchaseRequest: 購買申請</li><br></ul><br>上記以外の値を指定するとバリデーションエラーになります。<br>|
-|segment_1_tag_id|integer(int64)|false|none|セグメント１タグID<br><br>未指定の場合はセグメント１タグなしで更新されます。<br><br>セグメントタグ一覧の取得APIを利用して取得してください。<br><br><a href="https://support.freee.co.jp/hc/ja/articles/360020679611" target="_blank">セグメント（分析用タグ）の設定</a><br><br>|
-|segment_2_tag_id|integer(int64)|false|none|セグメント２タグID<br><br>未指定の場合はセグメント２タグなしで更新されます。<br><br>セグメントタグ一覧の取得APIを利用して取得してください。<br><br><a href="https://support.freee.co.jp/hc/ja/articles/360020679611" target="_blank">セグメント（分析用タグ）の設定</a><br><br>|
-|segment_3_tag_id|integer(int64)|false|none|セグメント３タグID<br><br>未指定の場合はセグメント３タグなしで更新されます。<br><br>セグメントタグ一覧の取得APIを利用して取得してください。<br><br><a href="https://support.freee.co.jp/hc/ja/articles/360020679611" target="_blank">セグメント（分析用タグ）の設定</a><br><br>|
+|segment_1_tag_id|integer(int64)|false|none|セグメント１タグID<br><br>未指定の場合はセグメント１タグなしで更新されます。<br><br>明細行のtag_assignmentがapplication（申請全体に付与）の明細行にも同じ値が適用されます。<br><br>セグメントタグ一覧の取得APIを利用して取得してください。<br><br><a href="https://support.freee.co.jp/hc/ja/articles/360020679611" target="_blank">セグメント（分析用タグ）の設定</a><br><br>|
+|segment_2_tag_id|integer(int64)|false|none|セグメント２タグID<br><br>未指定の場合はセグメント２タグなしで更新されます。<br><br>明細行のtag_assignmentがapplication（申請全体に付与）の明細行にも同じ値が適用されます。<br><br>セグメントタグ一覧の取得APIを利用して取得してください。<br><br><a href="https://support.freee.co.jp/hc/ja/articles/360020679611" target="_blank">セグメント（分析用タグ）の設定</a><br><br>|
+|segment_3_tag_id|integer(int64)|false|none|セグメント３タグID<br><br>未指定の場合はセグメント３タグなしで更新されます。<br><br>明細行のtag_assignmentがapplication（申請全体に付与）の明細行にも同じ値が適用されます。<br><br>セグメントタグ一覧の取得APIを利用して取得してください。<br><br><a href="https://support.freee.co.jp/hc/ja/articles/360020679611" target="_blank">セグメント（分析用タグ）の設定</a><br><br>|
 
 <h2 id="tocS_expenseApplicationActionCreateParams">expenseApplicationActionCreateParams</h2>
 <!-- backwards compatibility -->
@@ -38062,6 +38720,282 @@ oauth2 ( Scopes: write read )
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |journals|object|true|none|none|
+
+<h2 id="tocS_reportJournalsJournal">reportJournalsJournal</h2>
+<!-- backwards compatibility -->
+<a id="schemareportjournalsjournal"></a>
+<a id="schema_reportJournalsJournal"></a>
+<a id="tocSreportjournalsjournal"></a>
+<a id="tocsreportjournalsjournal"></a>
+
+```json
+{
+  "id": 0,
+  "deal_id": 0,
+  "txn_date": "1970-01-01",
+  "txn_number": "string",
+  "adjustment": true,
+  "approval_status": {},
+  "create_user_id": 0,
+  "last_approver_user_id": 0,
+  "current_approver_user_ids": [
+    0
+  ],
+  "ref_number": "string",
+  "deal_origin_name": "string",
+  "created_at": "1970-01-01T00:00:00Z",
+  "updated_at": "1970-01-01T00:00:00Z",
+  "receipt_ids": [
+    0
+  ],
+  "debit": [
+    {
+      "id": 0,
+      "line_type": {},
+      "account_item_id": 0,
+      "amount": 0,
+      "net_amount": 0,
+      "vat": 0,
+      "tax_code": 0,
+      "partner_id": 0,
+      "item_id": 0,
+      "section_id": 0,
+      "segment_tag_1_id": 0,
+      "segment_tag_2_id": 0,
+      "segment_tag_3_id": 0,
+      "memo_tag_ids": [
+        0
+      ],
+      "description": "string"
+    }
+  ],
+  "credit": [
+    {
+      "id": 0,
+      "line_type": {},
+      "account_item_id": 0,
+      "amount": 0,
+      "net_amount": 0,
+      "vat": 0,
+      "tax_code": 0,
+      "partner_id": 0,
+      "item_id": 0,
+      "section_id": 0,
+      "segment_tag_1_id": 0,
+      "segment_tag_2_id": 0,
+      "segment_tag_3_id": 0,
+      "memo_tag_ids": [
+        0
+      ],
+      "description": "string"
+    }
+  ]
+}
+```
+
+仕訳 (Transaction) 単位のレスポンス。
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|integer(int64)|true|none|仕訳ID。|
+|deal_id|integer(int64) \| null|true|none|取引ID。取引に紐づかない仕訳 (振替伝票のみ等) では null。|
+|txn_date|string(date)|true|none|発生日 (YYYY-MM-DD)。|
+|txn_number|string \| null|true|none|仕訳番号。仕訳番号を使用しない設定の事業所では常に null。英数字形式があるため文字列。|
+|adjustment|boolean|true|none|決算整理仕訳フラグ。|
+|approval_status|object|true|none|承認ステータス。|
+|create_user_id|integer(int64)|true|none|作成者ユーザーID。|
+|last_approver_user_id|integer(int64) \| null|true|none|最終承認者ユーザーID。未承認は null。|
+|current_approver_user_ids|[integer(int64)]|true|none|現在の承認待ちユーザーIDのリスト。承認済み・フローなしは空配列。会計のロールを持たないユーザーは含まない。|
+|ref_number|string \| null|true|none|管理番号 (ref_number)。|
+|deal_origin_name|string \| null|true|none|取引の登録元表示ラベル (「手動」「自動で経理」「freee請求書」など)。|
+|created_at|string(date-time)|true|none|仕訳の作成日時。|
+|updated_at|string(date-time)|true|none|仕訳の最終更新日時。|
+|receipt_ids|[integer(int64)]|true|none|紐づく証憑IDのリスト。閲覧権限がない場合は空配列。|
+|debit|[object]|true|none|借方行のリスト。配列順が表示順。税抜経理事業所では消費税行 (line_type: tax) が末尾に付与されることがある。|
+|credit|[object]|true|none|貸方行のリスト。配列順が表示順。税抜経理事業所では消費税行 (line_type: tax) が末尾に付与されることがある。|
+
+<h2 id="tocS_reportJournalsJournalLine">reportJournalsJournalLine</h2>
+<!-- backwards compatibility -->
+<a id="schemareportjournalsjournalline"></a>
+<a id="schema_reportJournalsJournalLine"></a>
+<a id="tocSreportjournalsjournalline"></a>
+<a id="tocsreportjournalsjournalline"></a>
+
+```json
+{
+  "id": 0,
+  "line_type": {},
+  "account_item_id": 0,
+  "amount": 0,
+  "net_amount": 0,
+  "vat": 0,
+  "tax_code": 0,
+  "partner_id": 0,
+  "item_id": 0,
+  "section_id": 0,
+  "segment_tag_1_id": 0,
+  "segment_tag_2_id": 0,
+  "segment_tag_3_id": 0,
+  "memo_tag_ids": [
+    0
+  ],
+  "description": "string"
+}
+```
+
+仕訳の借方または貸方の 1 行。通常明細 (detail) と消費税行 (tax) が同じスキーマで返る。
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|integer(int64) \| null|true|none|明細行ID。消費税行では null。|
+|line_type|object|true|none|行種別。detail は通常明細、tax は税抜経理事業所の消費税行。|
+|account_item_id|integer(int64)|true|none|勘定科目ID。消費税行では仮払/仮受消費税勘定を指す。|
+|amount|integer(int64)|true|none|表示金額。税込経理では税込金額、税抜経理では税抜金額。消費税行では集約された税額そのものが入る。|
+|net_amount|integer(int64) \| null|true|none|税抜金額。経理方式によらず、その明細の税込金額から消費税額を引いた値。消費税行では null。|
+|vat|integer(int64) \| null|true|none|消費税額。通常明細ではその明細の税額、消費税行では null。|
+|tax_code|integer(int32) \| null|true|none|税区分コード。|
+|partner_id|integer(int64) \| null|true|none|取引先ID。|
+|item_id|integer(int64) \| null|true|none|品目ID。消費税行では null。|
+|section_id|integer(int64) \| null|true|none|部門ID。消費税行では、部門必須設定が「全科目」の事業所のときのみ集約キーとして設定される。|
+|segment_tag_1_id|integer(int64) \| null|true|none|セグメント1タグID。消費税行では null。|
+|segment_tag_2_id|integer(int64) \| null|true|none|セグメント2タグID。消費税行では null。|
+|segment_tag_3_id|integer(int64) \| null|true|none|セグメント3タグID。消費税行では null。|
+|memo_tag_ids|[integer(int64)]|true|none|メモタグIDのリスト。常に配列を返し、null は返さない。消費税行では空配列。|
+|description|string \| null|true|none|行の備考。逆仕訳の確認等で利用可能。消費税行では null。|
+
+<h2 id="tocS_reportJournalsLineType">reportJournalsLineType</h2>
+<!-- backwards compatibility -->
+<a id="schemareportjournalslinetype"></a>
+<a id="schema_reportJournalsLineType"></a>
+<a id="tocSreportjournalslinetype"></a>
+<a id="tocsreportjournalslinetype"></a>
+
+```json
+"detail"
+```
+
+仕訳明細行の種別。detail は通常明細、tax は税抜経理事業所の消費税行。
+
+<h2 id="tocS_reportJournalsApprovalStatus">reportJournalsApprovalStatus</h2>
+<!-- backwards compatibility -->
+<a id="schemareportjournalsapprovalstatus"></a>
+<a id="schema_reportJournalsApprovalStatus"></a>
+<a id="tocSreportjournalsapprovalstatus"></a>
+<a id="tocsreportjournalsapprovalstatus"></a>
+
+```json
+"none"
+```
+
+仕訳の承認ステータス
+
+<h2 id="tocS_reportJournalsDetailAmountBasis">reportJournalsDetailAmountBasis</h2>
+<!-- backwards compatibility -->
+<a id="schemareportjournalsdetailamountbasis"></a>
+<a id="schema_reportJournalsDetailAmountBasis"></a>
+<a id="tocSreportjournalsdetailamountbasis"></a>
+<a id="tocsreportjournalsdetailamountbasis"></a>
+
+```json
+"auto"
+```
+
+明細金額絞り込みの基準。auto は検索期間に重なる全会計年度が税込経理のときのみ税込基準、それ以外は税抜基準。
+
+<h2 id="tocS_reportJournalsAdjustmentOption">reportJournalsAdjustmentOption</h2>
+<!-- backwards compatibility -->
+<a id="schemareportjournalsadjustmentoption"></a>
+<a id="schema_reportJournalsAdjustmentOption"></a>
+<a id="tocSreportjournalsadjustmentoption"></a>
+<a id="tocsreportjournalsadjustmentoption"></a>
+
+```json
+"only"
+```
+
+決算整理仕訳による絞り込み
+
+<h2 id="tocS_reportJournalsReceiptsOption">reportJournalsReceiptsOption</h2>
+<!-- backwards compatibility -->
+<a id="schemareportjournalsreceiptsoption"></a>
+<a id="schema_reportJournalsReceiptsOption"></a>
+<a id="tocSreportjournalsreceiptsoption"></a>
+<a id="tocsreportjournalsreceiptsoption"></a>
+
+```json
+"only"
+```
+
+証憑 (レシート) 添付有無による絞り込み
+
+<h2 id="tocS_reportJournalsCostAllocationOption">reportJournalsCostAllocationOption</h2>
+<!-- backwards compatibility -->
+<a id="schemareportjournalscostallocationoption"></a>
+<a id="schema_reportJournalsCostAllocationOption"></a>
+<a id="tocSreportjournalscostallocationoption"></a>
+<a id="tocsreportjournalscostallocationoption"></a>
+
+```json
+"only"
+```
+
+配賦仕訳による絞り込み。事業所で配賦機能が無効な場合に指定すると 400。
+
+<h2 id="tocS_reportJournalsReverseJournalOption">reportJournalsReverseJournalOption</h2>
+<!-- backwards compatibility -->
+<a id="schemareportjournalsreversejournaloption"></a>
+<a id="schema_reportJournalsReverseJournalOption"></a>
+<a id="tocSreportjournalsreversejournaloption"></a>
+<a id="tocsreportjournalsreversejournaloption"></a>
+
+```json
+"reverse"
+```
+
+逆仕訳・元仕訳による絞り込み。事業所で逆仕訳機能が無効な場合に指定すると 400。
+
+<h2 id="tocS_reportJournalsCommentStatusOption">reportJournalsCommentStatusOption</h2>
+<!-- backwards compatibility -->
+<a id="schemareportjournalscommentstatusoption"></a>
+<a id="schema_reportJournalsCommentStatusOption"></a>
+<a id="tocSreportjournalscommentstatusoption"></a>
+<a id="tocsreportjournalscommentstatusoption"></a>
+
+```json
+"posted"
+```
+
+コメントステータスによる絞り込み
+
+<h2 id="tocS_reportJournalsOrderByOption">reportJournalsOrderByOption</h2>
+<!-- backwards compatibility -->
+<a id="schemareportjournalsorderbyoption"></a>
+<a id="schema_reportJournalsOrderByOption"></a>
+<a id="tocSreportjournalsorderbyoption"></a>
+<a id="tocsreportjournalsorderbyoption"></a>
+
+```json
+"txn_date"
+```
+
+並び順のキー。値はレスポンスのフィールド名と揃えている。
+
+<h2 id="tocS_reportJournalsDirectionOption">reportJournalsDirectionOption</h2>
+<!-- backwards compatibility -->
+<a id="schemareportjournalsdirectionoption"></a>
+<a id="schema_reportJournalsDirectionOption"></a>
+<a id="tocSreportjournalsdirectionoption"></a>
+<a id="tocsreportjournalsdirectionoption"></a>
+
+```json
+"asc"
+```
+
+並び順の方向
 
 <h2 id="tocS_journalStatusResponse">journalStatusResponse</h2>
 <!-- backwards compatibility -->
@@ -42311,7 +43245,7 @@ oauth2 ( Scopes: write read )
 |mime_type|string|true|none|ファイルのMIMEタイプ（例：image/png, image/jpeg, application/pdf）。ダウンロードAPIのレスポンスのContent-Typeもこの値になります。|
 |origin|string|true|none|アップロード元種別|
 |created_at|string|true|none|アップロード日時（ISO8601形式）|
-|user|object|true|none|ファイルをアップロードしたユーザー|
+|user|object \| null|true|none|ファイルをアップロードしたユーザー|
 |receipt_metadatum|object \| null|false|none|電子帳簿保存法の検索要件に対応するメタデータ（発行元・発行日・金額）|
 |qualified_invoice|string \| null|false|none|適格請求書等（qualified: 該当する、not_qualified: 該当しない、unselected: 未選択、null: OCR解析結果が保存されておらず、ユーザーによる手動保存もされていない場合）|
 |invoice_registration_number|string \| null|false|none|インボイス制度適格請求書発行事業者登録番号（null: OCR解析結果が保存されておらず、ユーザーによる手動保存もされていない場合）<br>- 先頭T数字13桁の固定14桁の文字列<br><a target="_blank" href="https://www.invoice-kohyo.nta.go.jp/index.html">国税庁インボイス制度適格請求書発行事業者公表サイト</a><br>|
@@ -42470,7 +43404,15 @@ oauth2 ( Scopes: write read )
               "expense_application_line_currency_amount": {
                 "currency_amount": "100.0",
                 "system_calc_amount": 15025
-              }
+              },
+              "tag_assignment": "line",
+              "section_id": 101,
+              "tag_ids": [
+                202
+              ],
+              "segment_1_tag_id": 1,
+              "segment_2_tag_id": 2,
+              "segment_3_tag_id": 3
             }
           ]
         }
@@ -42565,7 +43507,15 @@ oauth2 ( Scopes: write read )
                 "group_id": 10,
                 "position_id": 3
               }
-            }
+            },
+            "tag_assignment": "line",
+            "section_id": 101,
+            "tag_ids": [
+              202
+            ],
+            "segment_1_tag_id": 1,
+            "segment_2_tag_id": 2,
+            "segment_3_tag_id": 3
           }
         ]
       }
@@ -43668,6 +44618,7 @@ oauth2 ( Scopes: write read )
   "description_setting": "optional",
   "commuter_pass_deduction": "disable",
   "default_flow_route_src_id": 101,
+  "traffic_line_template_src_id": 1,
   "observer_addition": "disable",
   "receipt_partner_name_setting": "disable",
   "default_title": "交通費精算",
@@ -43694,6 +44645,7 @@ oauth2 ( Scopes: write read )
 |description_setting|string|true|none|備考の入力設定 (optional: 任意入力, required: 必須入力)|
 |commuter_pass_deduction|string|true|none|定期券区間控除の利用設定 (disable: 利用しない, enable: 利用する)|
 |default_flow_route_src_id|integer(int64) \| null|true|none|デフォルトで選択する申請経路のID (未設定の場合は null)。申請経路一覧の取得API (`/api/1/approval_flow_routes`) のレスポンス id と同じ値です。|
+|traffic_line_template_src_id|integer(int64) \| null|false|none|交通経路・交通系ICカードから作成した明細にデフォルトで選択する経費科目の source_line_template_id (未設定の場合は null)。経費科目一覧の取得API (`/api/1/expense_application_line_templates`) のレスポンス source_line_template_id と同じ値です。削除済みの経費科目を指していることがあります。更新では null と 0 のどちらも未設定に戻す指示になります。更新で省略した場合は現在の設定を変更しません。ただし更新で line_template_setting に disable を指定した場合は、省略しても未設定に戻します。|
 |observer_addition|string|true|none|承認者以外の閲覧者追加の利用設定 (disable: 利用しない, enable: 利用する)|
 |receipt_partner_name_setting|string|true|none|支払先の入力設定 (optional: 任意入力, required: 必須入力, disable: 非表示)|
 |default_title|string|true|none|申請タイトルの初期値 (255文字以内)|
@@ -43758,6 +44710,7 @@ oauth2 ( Scopes: write read )
   "description_setting": "optional",
   "commuter_pass_deduction": "disable",
   "default_flow_route_src_id": 101,
+  "traffic_line_template_src_id": 1,
   "observer_addition": "disable",
   "receipt_partner_name_setting": "disable",
   "default_title": "交通費精算",
@@ -43785,6 +44738,7 @@ oauth2 ( Scopes: write read )
 |description_setting|string|true|none|備考の入力設定 (optional: 任意入力, required: 必須入力)|
 |commuter_pass_deduction|string|true|none|定期券区間控除の利用設定 (disable: 利用しない, enable: 利用する)|
 |default_flow_route_src_id|integer(int64) \| null|true|none|デフォルトで選択する申請経路のID (未設定の場合は null)。申請経路一覧の取得API (`/api/1/approval_flow_routes`) のレスポンス id と同じ値です。|
+|traffic_line_template_src_id|integer(int64) \| null|false|none|交通経路・交通系ICカードから作成した明細にデフォルトで選択する経費科目の source_line_template_id (未設定の場合は null)。経費科目一覧の取得API (`/api/1/expense_application_line_templates`) のレスポンス source_line_template_id と同じ値です。削除済みの経費科目を指していることがあります。更新では null と 0 のどちらも未設定に戻す指示になります。更新で省略した場合は現在の設定を変更しません。ただし更新で line_template_setting に disable を指定した場合は、省略しても未設定に戻します。|
 |observer_addition|string|true|none|承認者以外の閲覧者追加の利用設定 (disable: 利用しない, enable: 利用する)|
 |receipt_partner_name_setting|string|true|none|支払先の入力設定 (optional: 任意入力, required: 必須入力, disable: 非表示)|
 |default_title|string|true|none|申請タイトルの初期値 (255文字以内)|
@@ -45031,6 +45985,59 @@ oauth2 ( Scopes: write read )
 |---|---|
 |status|draft|
 |status|in_progress|
+
+<h2 id="tocS_purchaseRequestPurchaseBudgetResponse">purchaseRequestPurchaseBudgetResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemapurchaserequestpurchasebudgetresponse"></a>
+<a id="schema_purchaseRequestPurchaseBudgetResponse"></a>
+<a id="tocSpurchaserequestpurchasebudgetresponse"></a>
+<a id="tocspurchaserequestpurchasebudgetresponse"></a>
+
+```json
+{
+  "tracking_status": "approved",
+  "purchase_request_id": 2001,
+  "purchase_budget_id": 1001,
+  "budget_amount": 100000,
+  "consumed_amount": 65000,
+  "consumed_tax_excluded_amount": 59091,
+  "consumed_tax_amount": 5909,
+  "budget_consumptions": [
+    {
+      "amount": 40000,
+      "source": {
+        "type": "expense_application",
+        "id": "3001",
+        "display_name": "備品購入の立替精算",
+        "workflow_status": "approved"
+      }
+    }
+  ]
+}
+```
+
+購買申請に対する購買予算、および予算消化
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|tracking_status|string|true|none|予算追跡状態 (in_progress: 申請中, approved: 承認済み, not_tracked: 追跡対象外)|
+|purchase_request_id|integer(int64)|true|none|対象の購買申請ID|
+|purchase_budget_id|integer(int64) \| null|true|none|購買予算ID。tracking_status が not_tracked の場合は null です|
+|budget_amount|integer(int64) \| null|true|none|購買予算額（円）。tracking_status が not_tracked の場合は null です|
+|consumed_amount|integer(int64) \| null|true|none|購買予算全体の税込消化額（円）。tracking_status が not_tracked の場合は null です|
+|consumed_tax_excluded_amount|integer(int64) \| null|true|none|購買予算全体の税抜消化額（円）。tracking_status が not_tracked の場合は null です|
+|consumed_tax_amount|integer(int64) \| null|true|none|購買予算全体の消費税額（円）。tracking_status が not_tracked の場合は null です|
+|budget_consumptions|[object]|true|none|予算消化。tracking_status が not_tracked の場合は空配列です|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|tracking_status|in_progress|
+|tracking_status|approved|
+|tracking_status|not_tracked|
 
 <h2 id="tocS_approvalFlowRoutesIndexResponse">approvalFlowRoutesIndexResponse</h2>
 <!-- backwards compatibility -->

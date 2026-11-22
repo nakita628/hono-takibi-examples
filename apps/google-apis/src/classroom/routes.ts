@@ -1,22 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const IndividualStudentsOptionsSchema = z
-  .object({
-    studentIds: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Identifiers for the students that have access to the coursework/announcement.',
-      }),
-  })
-  .openapi({
-    description:
-      'Assignee details about a coursework/announcement. This field is set if and only if `assigneeMode` is `INDIVIDUAL_STUDENTS`.',
-    required: [],
-  })
-  .openapi('IndividualStudentsOptions')
-
 const DriveFileSchema = z
   .object({
     alternateLink: z
@@ -35,17 +18,6 @@ const DriveFileSchema = z
   })
   .openapi({ description: 'Representation of a Google Drive file.', required: [] })
   .openapi('DriveFile')
-
-const SharedDriveFileSchema = z
-  .object({
-    driveFile: DriveFileSchema.exactOptional().openapi({ description: 'Drive file details.' }),
-    shareMode: z
-      .enum(['UNKNOWN_SHARE_MODE', 'VIEW', 'EDIT', 'STUDENT_COPY'])
-      .exactOptional()
-      .openapi({ description: 'Mechanism by which students access the Drive item.' }),
-  })
-  .openapi({ description: 'Drive file that is used as material for course work.', required: [] })
-  .openapi('SharedDriveFile')
 
 const FormSchema = z
   .object({
@@ -105,180 +77,6 @@ const YouTubeVideoSchema = z
   })
   .openapi({ description: 'YouTube video item.', required: [] })
   .openapi('YouTubeVideo')
-
-const MaterialSchema = z
-  .object({
-    driveFile: SharedDriveFileSchema.exactOptional().openapi({
-      description: 'Google Drive file material.',
-    }),
-    form: FormSchema.exactOptional().openapi({ description: 'Google Forms material.' }),
-    link: LinkSchema.exactOptional().openapi({
-      description:
-        'Link material. On creation, this is upgraded to a more appropriate type if possible, and this is reflected in the response.',
-    }),
-    youtubeVideo: YouTubeVideoSchema.exactOptional().openapi({
-      description: 'YouTube video material.',
-    }),
-  })
-  .openapi({
-    description:
-      'Material attached to course work. When creating attachments, setting the `form` field is not supported.',
-    required: [],
-  })
-  .openapi('Material')
-
-const AnnouncementSchema = z
-  .object({
-    alternateLink: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Absolute link to this announcement in the Classroom web UI. This is only populated if `state` is `PUBLISHED`. Read-only.',
-      }),
-    assigneeMode: z
-      .enum(['ASSIGNEE_MODE_UNSPECIFIED', 'ALL_STUDENTS', 'INDIVIDUAL_STUDENTS'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Assignee mode of the announcement. If unspecified, the default value is `ALL_STUDENTS`.',
-      }),
-    courseId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Identifier of the course. Read-only.' }),
-    creationTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Timestamp when this announcement was created. Read-only.' }),
-    creatorUserId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Identifier for the user that created the announcement. Read-only.',
-      }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Classroom-assigned identifier of this announcement, unique per course. Read-only.',
-      }),
-    individualStudentsOptions: IndividualStudentsOptionsSchema.exactOptional().openapi({
-      description:
-        'Identifiers of students with access to the announcement. This field is set only if `assigneeMode` is `INDIVIDUAL_STUDENTS`. If the `assigneeMode` is `INDIVIDUAL_STUDENTS`, then only students specified in this field can see the announcement.',
-    }),
-    materials: z
-      .array(MaterialSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Additional materials. Announcements must have no more than 20 material items.',
-      }),
-    scheduledTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Optional timestamp when this announcement is scheduled to be published.',
-      }),
-    state: z
-      .enum(['ANNOUNCEMENT_STATE_UNSPECIFIED', 'PUBLISHED', 'DRAFT', 'DELETED'])
-      .exactOptional()
-      .openapi({
-        description: 'Status of this announcement. If unspecified, the default state is `DRAFT`.',
-      }),
-    text: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Description of this announcement. The text must be a valid UTF-8 string containing no more than 30,000 characters.',
-      }),
-    updateTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Timestamp of the most recent change to this announcement. Read-only.',
-      }),
-  })
-  .openapi({
-    description: 'Announcement created by a teacher for students of the course',
-    required: [],
-  })
-  .openapi('Announcement')
-
-const DriveFolderSchema = z
-  .object({
-    alternateLink: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'URL that can be used to access the Drive folder. Read-only.' }),
-    id: z.string().exactOptional().openapi({ description: 'Drive API resource ID.' }),
-    title: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Title of the Drive folder. Read-only.' }),
-  })
-  .openapi({ description: 'Representation of a Google Drive folder.', required: [] })
-  .openapi('DriveFolder')
-
-const AssignmentSchema = z
-  .object({
-    studentWorkFolder: DriveFolderSchema.exactOptional().openapi({
-      description:
-        'Drive folder where attachments from student submissions are placed. This is only populated for course teachers and administrators.',
-    }),
-  })
-  .openapi({ description: 'Additional details for assignments.', required: [] })
-  .openapi('Assignment')
-
-const AttachmentSchema = z
-  .object({
-    driveFile: DriveFileSchema.exactOptional().openapi({
-      description: 'Google Drive file attachment.',
-    }),
-    form: FormSchema.exactOptional().openapi({ description: 'Google Forms attachment.' }),
-    link: LinkSchema.exactOptional().openapi({ description: 'Link attachment.' }),
-    youTubeVideo: YouTubeVideoSchema.exactOptional().openapi({
-      description: 'Youtube video attachment.',
-    }),
-  })
-  .openapi({
-    description:
-      'Attachment added to student assignment work. When creating attachments, setting the `form` field is not supported.',
-    required: [],
-  })
-  .openapi('Attachment')
-
-const AssignmentSubmissionSchema = z
-  .object({
-    attachments: z
-      .array(AttachmentSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Attachments added by the student. Drive files that correspond to materials with a share mode of STUDENT_COPY may not exist yet if the student has not accessed the assignment in Classroom. Some attachment metadata is only populated if the requesting user has permission to access it. Identifier and alternate_link fields are always available, but others (for example, title) may not be.',
-      }),
-  })
-  .openapi({ description: 'Student work for an assignment.', required: [] })
-  .openapi('AssignmentSubmission')
-
-const CloudPubsubTopicSchema = z
-  .object({
-    topicName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The `name` field of a Cloud Pub/Sub [Topic](https://cloud.google.com/pubsub/docs/reference/rest/v1/projects.topics#Topic).',
-      }),
-  })
-  .openapi({
-    description:
-      'A reference to a Cloud Pub/Sub topic. To register for notifications, the owner of the topic must grant `classroom-notifications@system.gserviceaccount.com` the `projects.topics.publish` permission.',
-    required: [],
-  })
-  .openapi('CloudPubsubTopic')
 
 const CourseMaterialSchema = z
   .object({
@@ -366,6 +164,21 @@ const GradebookSettingsSchema = z
     required: [],
   })
   .openapi('GradebookSettings')
+
+const DriveFolderSchema = z
+  .object({
+    alternateLink: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'URL that can be used to access the Drive folder. Read-only.' }),
+    id: z.string().exactOptional().openapi({ description: 'Drive API resource ID.' }),
+    title: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Title of the Drive folder. Read-only.' }),
+  })
+  .openapi({ description: 'Representation of a Google Drive folder.', required: [] })
+  .openapi('DriveFolder')
 
 const CourseSchema = z
   .object({
@@ -502,6 +315,195 @@ const CourseSchema = z
   })
   .openapi({ description: 'A Course in Classroom.', required: [] })
   .openapi('Course')
+
+type ListCoursesResponseType = { courses?: z.infer<typeof CourseSchema>[]; nextPageToken?: string }
+
+const IndividualStudentsOptionsSchema = z
+  .object({
+    studentIds: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Identifiers for the students that have access to the coursework/announcement.',
+      }),
+  })
+  .openapi({
+    description:
+      'Assignee details about a coursework/announcement. This field is set if and only if `assigneeMode` is `INDIVIDUAL_STUDENTS`.',
+    required: [],
+  })
+  .openapi('IndividualStudentsOptions')
+
+const SharedDriveFileSchema = z
+  .object({
+    driveFile: DriveFileSchema.exactOptional().openapi({ description: 'Drive file details.' }),
+    shareMode: z
+      .enum(['UNKNOWN_SHARE_MODE', 'VIEW', 'EDIT', 'STUDENT_COPY'])
+      .exactOptional()
+      .openapi({ description: 'Mechanism by which students access the Drive item.' }),
+  })
+  .openapi({ description: 'Drive file that is used as material for course work.', required: [] })
+  .openapi('SharedDriveFile')
+
+const MaterialSchema = z
+  .object({
+    driveFile: SharedDriveFileSchema.exactOptional().openapi({
+      description: 'Google Drive file material.',
+    }),
+    form: FormSchema.exactOptional().openapi({ description: 'Google Forms material.' }),
+    link: LinkSchema.exactOptional().openapi({
+      description:
+        'Link material. On creation, this is upgraded to a more appropriate type if possible, and this is reflected in the response.',
+    }),
+    youtubeVideo: YouTubeVideoSchema.exactOptional().openapi({
+      description: 'YouTube video material.',
+    }),
+  })
+  .openapi({
+    description:
+      'Material attached to course work. When creating attachments, setting the `form` field is not supported.',
+    required: [],
+  })
+  .openapi('Material')
+
+const AnnouncementSchema = z
+  .object({
+    alternateLink: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Absolute link to this announcement in the Classroom web UI. This is only populated if `state` is `PUBLISHED`. Read-only.',
+      }),
+    assigneeMode: z
+      .enum(['ASSIGNEE_MODE_UNSPECIFIED', 'ALL_STUDENTS', 'INDIVIDUAL_STUDENTS'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Assignee mode of the announcement. If unspecified, the default value is `ALL_STUDENTS`.',
+      }),
+    courseId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Identifier of the course. Read-only.' }),
+    creationTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Timestamp when this announcement was created. Read-only.' }),
+    creatorUserId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Identifier for the user that created the announcement. Read-only.',
+      }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Classroom-assigned identifier of this announcement, unique per course. Read-only.',
+      }),
+    individualStudentsOptions: IndividualStudentsOptionsSchema.exactOptional().openapi({
+      description:
+        'Identifiers of students with access to the announcement. This field is set only if `assigneeMode` is `INDIVIDUAL_STUDENTS`. If the `assigneeMode` is `INDIVIDUAL_STUDENTS`, then only students specified in this field can see the announcement.',
+    }),
+    materials: z
+      .array(MaterialSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Additional materials. Announcements must have no more than 20 material items.',
+      }),
+    scheduledTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Optional timestamp when this announcement is scheduled to be published.',
+      }),
+    state: z
+      .enum(['ANNOUNCEMENT_STATE_UNSPECIFIED', 'PUBLISHED', 'DRAFT', 'DELETED'])
+      .exactOptional()
+      .openapi({
+        description: 'Status of this announcement. If unspecified, the default state is `DRAFT`.',
+      }),
+    text: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Description of this announcement. The text must be a valid UTF-8 string containing no more than 30,000 characters.',
+      }),
+    updateTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Timestamp of the most recent change to this announcement. Read-only.',
+      }),
+  })
+  .openapi({
+    description: 'Announcement created by a teacher for students of the course',
+    required: [],
+  })
+  .openapi('Announcement')
+
+const AssignmentSchema = z
+  .object({
+    studentWorkFolder: DriveFolderSchema.exactOptional().openapi({
+      description:
+        'Drive folder where attachments from student submissions are placed. This is only populated for course teachers and administrators.',
+    }),
+  })
+  .openapi({ description: 'Additional details for assignments.', required: [] })
+  .openapi('Assignment')
+
+const AttachmentSchema = z
+  .object({
+    driveFile: DriveFileSchema.exactOptional().openapi({
+      description: 'Google Drive file attachment.',
+    }),
+    form: FormSchema.exactOptional().openapi({ description: 'Google Forms attachment.' }),
+    link: LinkSchema.exactOptional().openapi({ description: 'Link attachment.' }),
+    youTubeVideo: YouTubeVideoSchema.exactOptional().openapi({
+      description: 'Youtube video attachment.',
+    }),
+  })
+  .openapi({
+    description:
+      'Attachment added to student assignment work. When creating attachments, setting the `form` field is not supported.',
+    required: [],
+  })
+  .openapi('Attachment')
+
+const AssignmentSubmissionSchema = z
+  .object({
+    attachments: z
+      .array(AttachmentSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Attachments added by the student. Drive files that correspond to materials with a share mode of STUDENT_COPY may not exist yet if the student has not accessed the assignment in Classroom. Some attachment metadata is only populated if the requesting user has permission to access it. Identifier and alternate_link fields are always available, but others (for example, title) may not be.',
+      }),
+  })
+  .openapi({ description: 'Student work for an assignment.', required: [] })
+  .openapi('AssignmentSubmission')
+
+const CloudPubsubTopicSchema = z
+  .object({
+    topicName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The `name` field of a Cloud Pub/Sub [Topic](https://cloud.google.com/pubsub/docs/reference/rest/v1/projects.topics#Topic).',
+      }),
+  })
+  .openapi({
+    description:
+      'A reference to a Cloud Pub/Sub topic. To register for notifications, the owner of the topic must grant `classroom-notifications@system.gserviceaccount.com` the `projects.topics.publish` permission.',
+    required: [],
+  })
+  .openapi('CloudPubsubTopic')
 
 const CourseAliasSchema = z
   .object({
@@ -865,7 +867,7 @@ const CourseWorkMaterialSchema = z
   .openapi('CourseWorkMaterial')
 
 const EmptySchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',
@@ -1155,7 +1157,7 @@ const ListCourseWorkResponseSchema = z
   .openapi({ description: 'Response when listing course work.', required: [] })
   .openapi('ListCourseWorkResponse')
 
-const ListCoursesResponseSchema = z
+const ListCoursesResponseSchema: z.ZodType<ListCoursesResponseType> = z
   .object({
     courses: z
       .array(CourseSchema)
@@ -1613,7 +1615,7 @@ const ModifyCourseWorkAssigneesRequestSchema = z
   .openapi('ModifyCourseWorkAssigneesRequest')
 
 const ReclaimStudentSubmissionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Request to reclaim a student submission.' })
   .openapi('ReclaimStudentSubmissionRequest')
 
@@ -1648,12 +1650,12 @@ const RegistrationSchema = z
   .openapi('Registration')
 
 const ReturnStudentSubmissionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Request to return a student submission.' })
   .openapi('ReturnStudentSubmissionRequest')
 
 const TurnInStudentSubmissionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Request to turn in a student submission.' })
   .openapi('TurnInStudentSubmissionRequest')
 

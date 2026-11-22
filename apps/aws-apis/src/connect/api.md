@@ -24340,12 +24340,12 @@ Information about the <a href="https://docs.aws.amazon.com/connect/latest/APIRef
 "string"
 ```
 
-<h2 id="tocS_timestamp">timestamp</h2>
+<h2 id="tocS_timestamp2">timestamp2</h2>
 <!-- backwards compatibility -->
-<a id="schematimestamp-1"></a>
-<a id="schema_timestamp"></a>
-<a id="tocStimestamp-1"></a>
-<a id="tocstimestamp-1"></a>
+<a id="schematimestamp2"></a>
+<a id="schema_timestamp2"></a>
+<a id="tocStimestamp2"></a>
+<a id="tocstimestamp2"></a>
 
 ```json
 "1970-01-01T00:00:00Z"

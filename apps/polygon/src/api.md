@@ -633,6 +633,7 @@ SEC Form 13F filings data showing institutional investment manager holdings. For
       "cusip": "023135106",
       "file_number": "028-04545",
       "filer_cik": "0001067983",
+      "filer_name": "Berkshire Hathaway Inc",
       "filing_date": "2024-11-14",
       "filing_url": "https://www.sec.gov/Archives/edgar/data/1067983/0000950123-24-011775.txt",
       "film_number": "241461756",
@@ -657,6 +658,7 @@ SEC Form 13F filings data showing institutional investment manager holdings. For
       "cusip": "025816109",
       "file_number": "028-04545",
       "filer_cik": "0001067983",
+      "filer_name": "Berkshire Hathaway Inc",
       "filing_date": "2024-11-14",
       "filing_url": "https://www.sec.gov/Archives/edgar/data/1067983/0000950123-24-011775.txt",
       "film_number": "241461756",
@@ -711,6 +713,7 @@ Status Code **200**
 |» cusip|string|false|none|The CUSIP identifier for the held security.|
 |» file_number|string|false|none|The 13F-specific file number assigned to the filer.|
 |» filer_cik|string|false|none|SEC Central Index Key (10 digits, zero-padded) of the filing entity.|
+|» filer_name|string|false|none|Name of the institutional investment manager filing the report, as reported on the filing's cover page. Null for older text-format filings (before mid-2013), which do not report it in a structured field.|
 |» filing_date|string(date)|false|none|Date when the filing was submitted to the SEC (formatted as YYYY-MM-DD).|
 |» filing_url|string|false|none|Direct URL to the filing on the SEC EDGAR website.|
 |» film_number|string|false|none|SEC EDGAR film number for the filing.|
@@ -7553,6 +7556,7 @@ OPRA administrative messages: the free-text channel of the OPRA feed, carrying F
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
+|timestamp|query|string|false|The SIP timestamp in Unix nanoseconds. Value must be an integer timestamp in nanoseconds, formatted 'yyyy-mm-dd', or ISO 8601/RFC 3339 (e.g. '2024-05-28T20:27:41Z').|
 |timestamp.gt|query|string|false|Filter greater than the value. Value must be an integer timestamp in nanoseconds, formatted 'yyyy-mm-dd', or ISO 8601/RFC 3339 (e.g. '2024-05-28T20:27:41Z').|
 |timestamp.gte|query|string|false|Filter greater than or equal to the value. Value must be an integer timestamp in nanoseconds, formatted 'yyyy-mm-dd', or ISO 8601/RFC 3339 (e.g. '2024-05-28T20:27:41Z').|
 |timestamp.lt|query|string|false|Filter less than the value. Value must be an integer timestamp in nanoseconds, formatted 'yyyy-mm-dd', or ISO 8601/RFC 3339 (e.g. '2024-05-28T20:27:41Z').|
@@ -7783,6 +7787,444 @@ Status Code **200**
 |» underlying_timestamp|integer(int64)|false|none|Nanosecond timestamp of the underlying price used|
 |» vega|number(double)|false|none|Change in option price per 1 point move in implied volatility|
 |» volume|integer(int64)|true|none|Contracts traded on date|
+|status|string|true|none|The status of this request's response.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|status|OK|
+
+Status Code **400**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|error|string|true|none|A message describing the source of the error.|
+|request_id|string|true|none|A request id assigned by the server.|
+|status|string|true|none|The status of this request's response.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|status|ERROR|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+apiKey
+</aside>
+
+## get_options_v1_analytics_expiration
+
+<a id="opIdget_options_v1_analytics_expiration"></a>
+
+> Code samples
+
+```bash
+curl "https://api.polygon.io/options/v1/analytics/expiration?apiKey=${API_KEY}" \
+  -H 'Accept: application/json'
+```
+
+`GET /options/v1/analytics/expiration`
+
+Daily options analytics per underlying asset and expiration date: open interest, max pain, gamma exposure and delta exposure. Only standard contracts that deliver 100 shares count.
+
+<h3 id="getoptionsv1analyticsexpiration-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|underlying_ticker|query|string|false|The ticker of the underlying asset (e.g., AAPL). The values cover every root on the underlying asset.|
+|underlying_ticker.any_of|query|string|false|Filter equal to any of the values. Multiple values can be specified by using a comma separated list.|
+|expiration_date|query|string|false|The expiration date of the contracts (formatted as YYYY-MM-DD). Value must be formatted 'yyyy-mm-dd'.|
+|expiration_date.gt|query|string|false|Filter greater than the value. Value must be formatted 'yyyy-mm-dd'.|
+|expiration_date.gte|query|string|false|Filter greater than or equal to the value. Value must be formatted 'yyyy-mm-dd'.|
+|expiration_date.lt|query|string|false|Filter less than the value. Value must be formatted 'yyyy-mm-dd'.|
+|expiration_date.lte|query|string|false|Filter less than or equal to the value. Value must be formatted 'yyyy-mm-dd'.|
+|date|query|string|false|The trading date the values apply to (formatted as YYYY-MM-DD). Open interest is as published the morning of date, for the prior trading day's close. Greeks are from 15 minutes before the close on date. Value must be formatted 'yyyy-mm-dd'.|
+|date.gt|query|string|false|Filter greater than the value. Value must be formatted 'yyyy-mm-dd'.|
+|date.gte|query|string|false|Filter greater than or equal to the value. Value must be formatted 'yyyy-mm-dd'.|
+|date.lt|query|string|false|Filter less than the value. Value must be formatted 'yyyy-mm-dd'.|
+|date.lte|query|string|false|Filter less than or equal to the value. Value must be formatted 'yyyy-mm-dd'.|
+|limit|query|integer|false|Limit the maximum number of results returned. Defaults to '100' if not specified. The maximum allowed limit is '50000'.|
+|sort|query|string|false|A comma separated list of sort columns. For each column, append '.asc' or '.desc' to specify the sort direction. The sort column defaults to 'date' if not specified. The sort order defaults to 'desc' if not specified.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "next_url": "https://api.massive.com/options/v1/analytics/expiration?cursor=YXA9ZGF0ZT0yMDI2LTEwLTI5JnVuZGVybHlpbmdfdGlja2VyPUFBUEwmZXhwaXJhdGlvbl9kYXRlPTIwMjYtMTEtMDQmbGltaXQ9MiZzb3J0PWRhdGUuZGVzYw",
+  "request_id": "2a6d9f1c4e7b4a3d8f5c0e2b6d9a1f4c",
+  "results": [
+    {
+      "date": "2026-10-29",
+      "delta_exposure": 1489882581.1,
+      "excluded_open_interest": 0,
+      "expiration_date": "2026-10-30",
+      "gamma_exposure": 474342855.02,
+      "gamma_exposure_calls": 683276314.77,
+      "gamma_exposure_puts": -208933459.75,
+      "max_pain": 342.5,
+      "open_interest": 323918,
+      "open_interest_calls": 152319,
+      "open_interest_puts": 171599,
+      "open_interest_with_greeks": 230928,
+      "underlying_price": 349.5103,
+      "underlying_ticker": "AAPL"
+    },
+    {
+      "date": "2026-10-29",
+      "delta_exposure": 278960473.2,
+      "excluded_open_interest": 0,
+      "expiration_date": "2026-11-04",
+      "gamma_exposure": 57835242.23,
+      "gamma_exposure_calls": 76884104.38,
+      "gamma_exposure_puts": -19048862.14,
+      "max_pain": 345,
+      "open_interest": 43909,
+      "open_interest_calls": 31819,
+      "open_interest_puts": 12090,
+      "open_interest_with_greeks": 43325,
+      "underlying_price": 349.5103,
+      "underlying_ticker": "AAPL"
+    }
+  ],
+  "status": "OK"
+}
+```
+
+> 400 Response
+
+```json
+{
+  "error": "string",
+  "request_id": "string",
+  "status": "ERROR"
+}
+```
+
+<h3 id="getoptionsv1analyticsexpiration-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|A list of results.|Inline|
+|400|Bad Request|An error message.|Inline|
+
+<h3 id="getoptionsv1analyticsexpiration-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|next_url|string|false|none|If present, this value can be used to fetch the next page.|
+|request_id|string|true|none|A request id assigned by the server.|
+|results|[object]|true|none|The results for this request.|
+|» date|string(date)|true|none|The trading date the values apply to (formatted as YYYY-MM-DD). Open interest is as published the morning of date, for the prior trading day's close. Greeks are from 15 minutes before the close on date.|
+|» delta_exposure|number(double)|false|none|Delta exposure in dollars: the sum of open interest x 100 x delta x underlying_price. Put deltas are negative. Null if no contract has Greeks.|
+|» excluded_open_interest|integer(int64)|false|none|Open interest of binary options and of the contracts that do not have a standard deliverable of 100 shares, for example contracts adjusted after a corporate action. These contracts are not in any other field.|
+|» expiration_date|string(date)|false|none|The expiration date of the contracts (formatted as YYYY-MM-DD).|
+|» gamma_exposure|number(double)|false|none|Net gamma exposure in dollars per 1% move of the underlying price: the sum of open interest x 100 x gamma x underlying_price² x 0.01, with calls positive and puts negative. Null if no contract has Greeks.|
+|» gamma_exposure_calls|number(double)|false|none|Gamma exposure of the call contracts (positive). Null if no call contract has Greeks.|
+|» gamma_exposure_puts|number(double)|false|none|Gamma exposure of the put contracts (negative). Null if no put contract has Greeks.|
+|» max_pain|number(double)|false|none|The strike price at which the open contracts of this expiration date have the smallest total value if the underlying asset settles there. Every strike price of the expiration date is a candidate. If strike prices tie, the lower one. Null if the expiration date has no open interest.|
+|» open_interest|integer(int64)|false|none|Total open interest of the standard (not binary) contracts with a standard deliverable of 100 shares.|
+|» open_interest_calls|integer(int64)|false|none|Total open interest of the standard (not binary) call contracts with a standard deliverable of 100 shares.|
+|» open_interest_puts|integer(int64)|false|none|Total open interest of the standard (not binary) put contracts with a standard deliverable of 100 shares.|
+|» open_interest_with_greeks|integer(int64)|false|none|Open interest of the contracts that count in the exposure values: contracts with open interest above 0 and a gamma and a delta.|
+|» underlying_price|number(double)|false|none|The underlying price used for the Greeks: the last SIP trade, or the last published index value, at or before 15 minutes before the close. Null if no contract of the expiration date has Greeks.|
+|» underlying_ticker|string|false|none|The ticker of the underlying asset (e.g., AAPL). The values cover every root on the underlying asset.|
+|status|string|true|none|The status of this request's response.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|status|OK|
+
+Status Code **400**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|error|string|true|none|A message describing the source of the error.|
+|request_id|string|true|none|A request id assigned by the server.|
+|status|string|true|none|The status of this request's response.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|status|ERROR|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+apiKey
+</aside>
+
+## get_options_v1_analytics_strike
+
+<a id="opIdget_options_v1_analytics_strike"></a>
+
+> Code samples
+
+```bash
+curl "https://api.polygon.io/options/v1/analytics/strike?apiKey=${API_KEY}" \
+  -H 'Accept: application/json'
+```
+
+`GET /options/v1/analytics/strike`
+
+Daily options analytics per underlying asset and strike price, summed over all expiration dates: open interest, gamma exposure and delta exposure. Only standard contracts that deliver 100 shares count.
+
+<h3 id="getoptionsv1analyticsstrike-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|underlying_ticker|query|string|false|The ticker of the underlying asset (e.g., AAPL). The values cover every root on the underlying asset.|
+|underlying_ticker.any_of|query|string|false|Filter equal to any of the values. Multiple values can be specified by using a comma separated list.|
+|strike_price|query|number(double)|false|The strike price. The values sum the contracts of all expiration dates at this strike price. Value must be a floating point number.|
+|strike_price.gt|query|number(double)|false|Filter greater than the value. Value must be a floating point number.|
+|strike_price.gte|query|number(double)|false|Filter greater than or equal to the value. Value must be a floating point number.|
+|strike_price.lt|query|number(double)|false|Filter less than the value. Value must be a floating point number.|
+|strike_price.lte|query|number(double)|false|Filter less than or equal to the value. Value must be a floating point number.|
+|date|query|string|false|The trading date the values apply to (formatted as YYYY-MM-DD). Open interest is as published the morning of date, for the prior trading day's close. Greeks are from 15 minutes before the close on date. Value must be formatted 'yyyy-mm-dd'.|
+|date.gt|query|string|false|Filter greater than the value. Value must be formatted 'yyyy-mm-dd'.|
+|date.gte|query|string|false|Filter greater than or equal to the value. Value must be formatted 'yyyy-mm-dd'.|
+|date.lt|query|string|false|Filter less than the value. Value must be formatted 'yyyy-mm-dd'.|
+|date.lte|query|string|false|Filter less than or equal to the value. Value must be formatted 'yyyy-mm-dd'.|
+|limit|query|integer|false|Limit the maximum number of results returned. Defaults to '1000' if not specified. The maximum allowed limit is '50000'.|
+|sort|query|string|false|A comma separated list of sort columns. For each column, append '.asc' or '.desc' to specify the sort direction. The sort column defaults to 'date' if not specified. The sort order defaults to 'desc' if not specified.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "next_url": "https://api.massive.com/options/v1/analytics/strike?cursor=YXA9ZGF0ZT0yMDI2LTEwLTI5JnVuZGVybHlpbmdfdGlja2VyPUFBUEwmc3RyaWtlX3ByaWNlPTI3NSZsaW1pdD0yJnNvcnQ9ZGF0ZS5kZXNj",
+  "request_id": "8c1f4a7e2d9b4c6a8e0f3b5d7a9c2e4f",
+  "results": [
+    {
+      "date": "2026-10-29",
+      "delta_exposure": 1210104246.61,
+      "excluded_open_interest": 0,
+      "gamma_exposure": -6163058.32,
+      "gamma_exposure_calls": 8429392.85,
+      "gamma_exposure_puts": -14592451.17,
+      "open_interest": 121620,
+      "open_interest_calls": 42255,
+      "open_interest_puts": 79365,
+      "open_interest_with_greeks": 120246,
+      "strike_price": 270,
+      "underlying_price": 349.5103,
+      "underlying_ticker": "AAPL"
+    },
+    {
+      "date": "2026-10-29",
+      "delta_exposure": 327167756.5,
+      "excluded_open_interest": 0,
+      "gamma_exposure": -3144262.25,
+      "gamma_exposure_calls": 2151783.38,
+      "gamma_exposure_puts": -5296045.63,
+      "open_interest": 41946,
+      "open_interest_calls": 11138,
+      "open_interest_puts": 30808,
+      "open_interest_with_greeks": 41279,
+      "strike_price": 275,
+      "underlying_price": 349.5103,
+      "underlying_ticker": "AAPL"
+    }
+  ],
+  "status": "OK"
+}
+```
+
+> 400 Response
+
+```json
+{
+  "error": "string",
+  "request_id": "string",
+  "status": "ERROR"
+}
+```
+
+<h3 id="getoptionsv1analyticsstrike-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|A list of results.|Inline|
+|400|Bad Request|An error message.|Inline|
+
+<h3 id="getoptionsv1analyticsstrike-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|next_url|string|false|none|If present, this value can be used to fetch the next page.|
+|request_id|string|true|none|A request id assigned by the server.|
+|results|[object]|true|none|The results for this request.|
+|» date|string(date)|true|none|The trading date the values apply to (formatted as YYYY-MM-DD). Open interest is as published the morning of date, for the prior trading day's close. Greeks are from 15 minutes before the close on date.|
+|» delta_exposure|number(double)|false|none|Delta exposure in dollars: the sum of open interest x 100 x delta x underlying_price. Put deltas are negative. Null if no contract has Greeks.|
+|» excluded_open_interest|integer(int64)|false|none|Open interest of binary options and of the contracts that do not have a standard deliverable of 100 shares, for example contracts adjusted after a corporate action. These contracts are not in any other field.|
+|» gamma_exposure|number(double)|false|none|Net gamma exposure in dollars per 1% move of the underlying price: the sum of open interest x 100 x gamma x underlying_price² x 0.01, with calls positive and puts negative. Null if no contract has Greeks.|
+|» gamma_exposure_calls|number(double)|false|none|Gamma exposure of the call contracts (positive). Null if no call contract has Greeks.|
+|» gamma_exposure_puts|number(double)|false|none|Gamma exposure of the put contracts (negative). Null if no put contract has Greeks.|
+|» open_interest|integer(int64)|false|none|Total open interest of the standard (not binary) contracts with a standard deliverable of 100 shares.|
+|» open_interest_calls|integer(int64)|false|none|Total open interest of the standard (not binary) call contracts with a standard deliverable of 100 shares.|
+|» open_interest_puts|integer(int64)|false|none|Total open interest of the standard (not binary) put contracts with a standard deliverable of 100 shares.|
+|» open_interest_with_greeks|integer(int64)|false|none|Open interest of the contracts that count in the exposure values: contracts with open interest above 0 and a gamma and a delta.|
+|» strike_price|number(double)|false|none|The strike price. The values sum the contracts of all expiration dates at this strike price.|
+|» underlying_price|number(double)|false|none|The underlying price used for the Greeks: the last SIP trade, or the last published index value, at or before 15 minutes before the close. Null if no contract at this strike price has Greeks.|
+|» underlying_ticker|string|false|none|The ticker of the underlying asset (e.g., AAPL). The values cover every root on the underlying asset.|
+|status|string|true|none|The status of this request's response.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|status|OK|
+
+Status Code **400**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|error|string|true|none|A message describing the source of the error.|
+|request_id|string|true|none|A request id assigned by the server.|
+|status|string|true|none|The status of this request's response.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|status|ERROR|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+apiKey
+</aside>
+
+## get_options_v1_analytics_underlying
+
+<a id="opIdget_options_v1_analytics_underlying"></a>
+
+> Code samples
+
+```bash
+curl "https://api.polygon.io/options/v1/analytics/underlying?apiKey=${API_KEY}" \
+  -H 'Accept: application/json'
+```
+
+`GET /options/v1/analytics/underlying`
+
+Daily options analytics per underlying asset: open interest, put/call ratio, gamma exposure, delta exposure, the call and put walls, and the gamma flip. Only standard contracts that deliver 100 shares count.
+
+<h3 id="getoptionsv1analyticsunderlying-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|underlying_ticker|query|string|false|The ticker of the underlying asset (e.g., AAPL). The values cover every root on the underlying asset.|
+|underlying_ticker.any_of|query|string|false|Filter equal to any of the values. Multiple values can be specified by using a comma separated list.|
+|date|query|string|false|The trading date the values apply to (formatted as YYYY-MM-DD). Open interest is as published the morning of date, for the prior trading day's close. Greeks are from 15 minutes before the close on date. Value must be formatted 'yyyy-mm-dd'.|
+|date.gt|query|string|false|Filter greater than the value. Value must be formatted 'yyyy-mm-dd'.|
+|date.gte|query|string|false|Filter greater than or equal to the value. Value must be formatted 'yyyy-mm-dd'.|
+|date.lt|query|string|false|Filter less than the value. Value must be formatted 'yyyy-mm-dd'.|
+|date.lte|query|string|false|Filter less than or equal to the value. Value must be formatted 'yyyy-mm-dd'.|
+|limit|query|integer|false|Limit the maximum number of results returned. Defaults to '100' if not specified. The maximum allowed limit is '50000'.|
+|sort|query|string|false|A comma separated list of sort columns. For each column, append '.asc' or '.desc' to specify the sort direction. The sort column defaults to 'date' if not specified. The sort order defaults to 'desc' if not specified.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "request_id": "5e2b7c9d1a4f4e8b9c3d6a0f2b8e1d7c",
+  "results": [
+    {
+      "call_wall": 350,
+      "date": "2026-10-29",
+      "delta_exposure": 42543166702.46,
+      "excluded_open_interest": 0,
+      "gamma_exposure": 1447588925.97,
+      "gamma_exposure_calls": 2437000732.98,
+      "gamma_exposure_puts": -989411807.01,
+      "gamma_flip": 348.11,
+      "open_interest": 4888327,
+      "open_interest_calls": 2667328,
+      "open_interest_puts": 2220999,
+      "open_interest_with_greeks": 4604696,
+      "put_call_ratio": 0.8327,
+      "put_wall": 345,
+      "underlying_price": 349.5103,
+      "underlying_ticker": "AAPL"
+    },
+    {
+      "call_wall": 600,
+      "date": "2026-10-29",
+      "delta_exposure": 41932960361.16,
+      "excluded_open_interest": 0,
+      "gamma_exposure": 463709891.37,
+      "gamma_exposure_calls": 786519563.56,
+      "gamma_exposure_puts": -322809672.19,
+      "gamma_flip": 548.65,
+      "open_interest": 2598431,
+      "open_interest_calls": 1592013,
+      "open_interest_puts": 1006418,
+      "open_interest_with_greeks": 2502487,
+      "put_call_ratio": 0.6322,
+      "put_wall": 500,
+      "underlying_price": 563.56,
+      "underlying_ticker": "AMD"
+    }
+  ],
+  "status": "OK"
+}
+```
+
+> 400 Response
+
+```json
+{
+  "error": "string",
+  "request_id": "string",
+  "status": "ERROR"
+}
+```
+
+<h3 id="getoptionsv1analyticsunderlying-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|A list of results.|Inline|
+|400|Bad Request|An error message.|Inline|
+
+<h3 id="getoptionsv1analyticsunderlying-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|next_url|string|false|none|If present, this value can be used to fetch the next page.|
+|request_id|string|true|none|A request id assigned by the server.|
+|results|[object]|true|none|The results for this request.|
+|» call_wall|number(double)|false|none|The strike price at or above underlying_price with the largest call gamma exposure, summed over all expiration dates. If strike prices tie, the one nearest underlying_price. Null if no call contract at or above underlying_price has gamma exposure.|
+|» date|string(date)|true|none|The trading date the values apply to (formatted as YYYY-MM-DD). Open interest is as published the morning of date, for the prior trading day's close. Greeks are from 15 minutes before the close on date.|
+|» delta_exposure|number(double)|false|none|Delta exposure in dollars: the sum of open interest x 100 x delta x underlying_price. Put deltas are negative. Null if no contract has Greeks.|
+|» excluded_open_interest|integer(int64)|false|none|Open interest of binary options and of the contracts that do not have a standard deliverable of 100 shares, for example contracts adjusted after a corporate action. These contracts are not in any other field.|
+|» gamma_exposure|number(double)|false|none|Net gamma exposure in dollars per 1% move of the underlying price: the sum of open interest x 100 x gamma x underlying_price² x 0.01, with calls positive and puts negative. Null if no contract has Greeks.|
+|» gamma_exposure_calls|number(double)|false|none|Gamma exposure of the call contracts (positive). Null if no call contract has Greeks.|
+|» gamma_exposure_puts|number(double)|false|none|Gamma exposure of the put contracts (negative). Null if no put contract has Greeks.|
+|» gamma_flip|number(double)|false|none|The price where the running sum of net gamma exposure changes sign. The sum runs over the strike prices from the lowest up, and the price is interpolated linearly between the two adjacent strike prices. If the sum changes sign more than once, the crossing nearest underlying_price. Strike prices without gamma exposure are skipped. Null if the sum does not change sign.|
+|» open_interest|integer(int64)|false|none|Total open interest of the standard (not binary) contracts with a standard deliverable of 100 shares.|
+|» open_interest_calls|integer(int64)|false|none|Total open interest of the standard (not binary) call contracts with a standard deliverable of 100 shares.|
+|» open_interest_puts|integer(int64)|false|none|Total open interest of the standard (not binary) put contracts with a standard deliverable of 100 shares.|
+|» open_interest_with_greeks|integer(int64)|false|none|Open interest of the contracts that count in the exposure values: contracts with open interest above 0 and a gamma and a delta.|
+|» put_call_ratio|number(double)|false|none|open_interest_puts divided by open_interest_calls. Null if there is no call open interest.|
+|» put_wall|number(double)|false|none|The strike price at or below underlying_price with the most negative put gamma exposure, summed over all expiration dates. If strike prices tie, the one nearest underlying_price. Null if no put contract at or below underlying_price has gamma exposure.|
+|» underlying_price|number(double)|false|none|The underlying price used for the Greeks: the last SIP trade, or the last published index value, at or before 15 minutes before the close. Null if no contract has Greeks.|
+|» underlying_ticker|string|false|none|The ticker of the underlying asset (e.g., AAPL). The values cover every root on the underlying asset.|
 |status|string|true|none|The status of this request's response.|
 
 #### Enumerated Values
@@ -8051,6 +8493,125 @@ Status Code **200**
 |» strike_price|number(double)|false|none|The strike price of the contract.|
 |» ticker|string|true|none|The options ticker symbol (e.g., O:SPY260123C00687000).|
 |» underlying_ticker|string|false|none|The ticker of the contract's underlying (e.g., SPX). Weekly and adjusted roots are folded in, so SPXW contracts report SPX and AMCR1 contracts report AMCR; see root to tell them apart.|
+|status|string|true|none|The status of this request's response.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|status|OK|
+
+Status Code **400**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|error|string|true|none|A message describing the source of the error.|
+|request_id|string|true|none|A request id assigned by the server.|
+|status|string|true|none|The status of this request's response.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|status|ERROR|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+apiKey
+</aside>
+
+## get_options_v1_open-interest_underlying
+
+<a id="opIdget_options_v1_open-interest_underlying"></a>
+
+> Code samples
+
+```bash
+curl "https://api.polygon.io/options/v1/open-interest/underlying?apiKey=${API_KEY}" \
+  -H 'Accept: application/json'
+```
+
+`GET /options/v1/open-interest/underlying`
+
+Daily open interest for US options rolled up across each underlying's whole chain, as reported by OPRA, with the call and put split.
+
+<h3 id="getoptionsv1open-interestunderlying-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|underlying_ticker|query|string|false|The ticker of the underlying (e.g., SPX). Totals cover every root on the underlying, so weekly roots (SPXW) and roots adjusted after a corporate action (AMCR1) are included.|
+|underlying_ticker.any_of|query|string|false|Filter equal to any of the values. Multiple values can be specified by using a comma separated list.|
+|underlying_ticker.gt|query|string|false|Filter greater than the value.|
+|underlying_ticker.gte|query|string|false|Filter greater than or equal to the value.|
+|underlying_ticker.lt|query|string|false|Filter less than the value.|
+|underlying_ticker.lte|query|string|false|Filter less than or equal to the value.|
+|date|query|string|false|The trading date the open interest applies to (formatted as YYYY-MM-DD). Value must be formatted 'yyyy-mm-dd'.|
+|date.gt|query|string|false|Filter greater than the value. Value must be formatted 'yyyy-mm-dd'.|
+|date.gte|query|string|false|Filter greater than or equal to the value. Value must be formatted 'yyyy-mm-dd'.|
+|date.lt|query|string|false|Filter less than the value. Value must be formatted 'yyyy-mm-dd'.|
+|date.lte|query|string|false|Filter less than or equal to the value. Value must be formatted 'yyyy-mm-dd'.|
+|limit|query|integer|false|Limit the maximum number of results returned. Defaults to '100' if not specified. The maximum allowed limit is '50000'.|
+|sort|query|string|false|A comma separated list of sort columns. For each column, append '.asc' or '.desc' to specify the sort direction. The sort column defaults to 'date' if not specified. The sort order defaults to 'desc' if not specified.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "next_url": "https://api.massive.com/options/v1/open-interest/underlying?cursor=YXA9ZGF0ZT0yMDI2LTAxLTIyJnVuZGVybHlpbmdfdGlja2VyPVFRUSZsaW1pdD0yJnNvcnQ9ZGF0ZS5kZXNj",
+  "request_id": "0a9b8c7d6e5f4a3b2c1d0e9f8a7b6c5d",
+  "results": [
+    {
+      "date": "2026-01-23",
+      "open_interest": 20987654,
+      "open_interest_calls": 8765432,
+      "open_interest_puts": 12222222,
+      "underlying_ticker": "SPY"
+    },
+    {
+      "date": "2026-01-23",
+      "open_interest": 9876543,
+      "open_interest_calls": 4321098,
+      "open_interest_puts": 5555445,
+      "underlying_ticker": "QQQ"
+    }
+  ],
+  "status": "OK"
+}
+```
+
+> 400 Response
+
+```json
+{
+  "error": "string",
+  "request_id": "string",
+  "status": "ERROR"
+}
+```
+
+<h3 id="getoptionsv1open-interestunderlying-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|A list of results.|Inline|
+|400|Bad Request|An error message.|Inline|
+
+<h3 id="getoptionsv1open-interestunderlying-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|next_url|string|false|none|If present, this value can be used to fetch the next page.|
+|request_id|string|true|none|A request id assigned by the server.|
+|results|[object]|true|none|The results for this request.|
+|» date|string(date)|true|none|The trading date the open interest applies to (formatted as YYYY-MM-DD).|
+|» open_interest|integer(int64)|false|none|Total open interest across every contract on the underlying.|
+|» open_interest_calls|integer(int64)|true|none|Total open interest across the underlying's call contracts.|
+|» open_interest_puts|integer(int64)|true|none|Total open interest across the underlying's put contracts.|
+|» underlying_ticker|string|false|none|The ticker of the underlying (e.g., SPX). Totals cover every root on the underlying, so weekly roots (SPXW) and roots adjusted after a corporate action (AMCR1) are included.|
 |status|string|true|none|The status of this request's response.|
 
 #### Enumerated Values
@@ -8425,142 +8986,6 @@ Status Code **200**
 |» sip_timestamp|integer(int64)|false|none|The nanosecond accuracy SIP Unix Timestamp. This is the timestamp of when the SIP received this trade from the exchange which produced it.|
 |» size|integer(int64)|true|none|The size of a trade (also known as volume).|
 |» ticker|string|true|none|The options ticker symbol (e.g., O:SPY260123C00687000).|
-|status|string|true|none|The status of this request's response.|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|status|OK|
-
-Status Code **400**
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|error|string|true|none|A message describing the source of the error.|
-|request_id|string|true|none|A request id assigned by the server.|
-|status|string|true|none|The status of this request's response.|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|status|ERROR|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-apiKey
-</aside>
-
-## get_options_vX_open-interest_underlying
-
-<a id="opIdget_options_vX_open-interest_underlying"></a>
-
-> Code samples
-
-```bash
-curl "https://api.polygon.io/options/vX/open-interest/underlying?apiKey=${API_KEY}" \
-  -H 'Accept: application/json'
-```
-
-`GET /options/vX/open-interest/underlying`
-
-Daily open interest for US options rolled up across each underlying's whole chain, as reported by OPRA, with the call and put split.
-
-<h3 id="getoptionsvxopen-interestunderlying-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|underlying_ticker|query|string|false|The ticker of the underlying (e.g., SPX). Totals cover every root on the underlying, so weekly roots (SPXW) and roots adjusted after a corporate action (AMCR1) are included.|
-|underlying_ticker.any_of|query|string|false|Filter equal to any of the values. Multiple values can be specified by using a comma separated list.|
-|underlying_ticker.gt|query|string|false|Filter greater than the value.|
-|underlying_ticker.gte|query|string|false|Filter greater than or equal to the value.|
-|underlying_ticker.lt|query|string|false|Filter less than the value.|
-|underlying_ticker.lte|query|string|false|Filter less than or equal to the value.|
-|date|query|string|false|The trading date the open interest applies to (formatted as YYYY-MM-DD). Value must be formatted 'yyyy-mm-dd'.|
-|date.gt|query|string|false|Filter greater than the value. Value must be formatted 'yyyy-mm-dd'.|
-|date.gte|query|string|false|Filter greater than or equal to the value. Value must be formatted 'yyyy-mm-dd'.|
-|date.lt|query|string|false|Filter less than the value. Value must be formatted 'yyyy-mm-dd'.|
-|date.lte|query|string|false|Filter less than or equal to the value. Value must be formatted 'yyyy-mm-dd'.|
-|open_interest|query|integer(int64)|false|Total open interest across every contract on the underlying. Value must be an integer.|
-|open_interest.gt|query|integer(int64)|false|Filter greater than the value. Value must be an integer.|
-|open_interest.gte|query|integer(int64)|false|Filter greater than or equal to the value. Value must be an integer.|
-|open_interest.lt|query|integer(int64)|false|Filter less than the value. Value must be an integer.|
-|open_interest.lte|query|integer(int64)|false|Filter less than or equal to the value. Value must be an integer.|
-|limit|query|integer|false|Limit the maximum number of results returned. Defaults to '100' if not specified. The maximum allowed limit is '50000'.|
-|sort|query|string|false|A comma separated list of sort columns. For each column, append '.asc' or '.desc' to specify the sort direction. The sort column defaults to 'date' if not specified. The sort order defaults to 'desc' if not specified.|
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "next_url": "https://api.massive.com/options/vX/open-interest/underlying?cursor=YXA9ZGF0ZT0yMDI2LTAxLTIyJnVuZGVybHlpbmdfdGlja2VyPVFRUSZsaW1pdD0yJnNvcnQ9ZGF0ZS5kZXNj",
-  "request_id": "0a9b8c7d6e5f4a3b2c1d0e9f8a7b6c5d",
-  "results": [
-    {
-      "date": "2026-01-23",
-      "open_interest": 20987654,
-      "open_interest_calls": 8765432,
-      "open_interest_change": 530865,
-      "open_interest_change_calls": 210432,
-      "open_interest_change_puts": 320433,
-      "open_interest_puts": 12222222,
-      "previous_open_interest": 20456789,
-      "underlying_ticker": "SPY"
-    },
-    {
-      "date": "2026-01-23",
-      "open_interest": 9876543,
-      "open_interest_calls": 4321098,
-      "open_interest_change": -35802,
-      "open_interest_change_calls": 12345,
-      "open_interest_change_puts": -48147,
-      "open_interest_puts": 5555445,
-      "previous_open_interest": 9912345,
-      "underlying_ticker": "QQQ"
-    }
-  ],
-  "status": "OK"
-}
-```
-
-> 400 Response
-
-```json
-{
-  "error": "string",
-  "request_id": "string",
-  "status": "ERROR"
-}
-```
-
-<h3 id="getoptionsvxopen-interestunderlying-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK|A list of results.|Inline|
-|400|Bad Request|An error message.|Inline|
-
-<h3 id="getoptionsvxopen-interestunderlying-responseschema">Response Schema</h3>
-
-Status Code **200**
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|next_url|string|false|none|If present, this value can be used to fetch the next page.|
-|request_id|string|true|none|A request id assigned by the server.|
-|results|[object]|true|none|The results for this request.|
-|» date|string(date)|true|none|The trading date the open interest applies to (formatted as YYYY-MM-DD).|
-|» open_interest|integer(int64)|false|none|Total open interest across every contract on the underlying.|
-|» open_interest_calls|integer(int64)|true|none|Total open interest across the underlying's call contracts.|
-|» open_interest_change|integer(int64)|false|none|The change in total open interest from the previous trading day (open_interest - previous_open_interest). Null when previous_open_interest is null.|
-|» open_interest_change_calls|integer(int64)|false|none|The change in call open interest from the previous trading day, including call contracts that have since expired. Null when previous_open_interest is null.|
-|» open_interest_change_puts|integer(int64)|false|none|The change in put open interest from the previous trading day, including put contracts that have since expired. Null when previous_open_interest is null.|
-|» open_interest_puts|integer(int64)|true|none|Total open interest across the underlying's put contracts.|
-|» previous_open_interest|integer(int64)|false|none|Total open interest on the underlying on the previous trading day, including contracts that have since expired. Null if the underlying had no open interest reported that day.|
-|» underlying_ticker|string|false|none|The ticker of the underlying (e.g., SPX). Totals cover every root on the underlying, so weekly roots (SPXW) and roots adjusted after a corporate action (AMCR1) are included.|
 |status|string|true|none|The status of this request's response.|
 
 #### Enumerated Values
@@ -19784,17 +20209,19 @@ Status Code **200**
 |» » change_percent|number(double)|false|none|The percent of the price change for the asset from the previous trading day.|
 |» » close|number(double)|false|none|The closing price of the asset for the day.|
 |» » decimal_volume|string|false|none|The trading volume for the asset for the day with decimal precision. This field provides support for fractional shares, representing volume as a decimal string. This field is only returned for stocks snapshots.|
-|» » early_trading_change|number(double)|false|none|Today's early trading change amount, difference between price and previous close if in early trading hours, otherwise difference between last price during early trading and previous close. For options, this is the price of the contract's last early trading trade today (7:30 to 9:30 AM ET, with the EXHT condition) minus `previous_close`.|
+|» » early_trading_change|number(double)|false|none|Today's early trading change amount. The difference between the price and previous close if in early trading hours, otherwise the difference between the last price during early trading and previous close. For options, this is the price of the contract's last early trading trade today (7:30 to 9:30 AM ET, with the EXHT condition) minus `previous_close`.|
 |» » early_trading_change_percent|number(double)|false|none|Today's early trading change as a percentage of `previous_close`.|
 |» » high|number(double)|false|none|The highest price of the asset for the day.|
 |» » last_updated|integer(int64)|false|none|The nanosecond timestamp of the last update to the session data. For stocks, it's set when the session resets at the start of each trading session and then advances with each trade; quotes don't update it. Returned for stocks, crypto, and forex snapshots, though it may be absent for inactive tickers.|
-|» » late_trading_change|number(double)|false|none|Today's late trading change amount, difference between price and today's close if in late trading hours, otherwise difference between last price during late trading and today's close. For options, this is the price of the contract's last late trading trade today (after the regular session and before 5:00 PM ET, with the EXHT condition) minus today's `close`.|
+|» » late_trading_change|number(double)|false|none|Today's late trading change amount. The difference between the price and today's close if in late trading hours, otherwise the difference between the last price during late trading and today's close. For options, this is the price of the contract's last late trading trade today (after the regular session and before 5:00 PM ET, with the EXHT condition) minus today's `close`.|
 |» » late_trading_change_percent|number(double)|false|none|Today's late trading change as a percentage of today's `close`.|
 |» » low|number(double)|false|none|The lowest price of the asset for the day.|
 |» » open|number(double)|false|none|The open price of the asset for the day.|
+|» » overnight_trading_change|number(double)|false|none|Today's overnight trading change amount. The difference between the last overnight trade price and `previous_close`. Only present for stocks. The overnight session runs from 9:00 PM ET on the prior calendar day to 4:00 AM ET on the trade date, starting 2026-12-07 with SIP 23/5 extended hours.|
+|» » overnight_trading_change_percent|number(double)|false|none|Today's overnight trading change as a percentage of `previous_close`.|
 |» » previous_close|number(double)|false|none|The closing price of the asset for the previous trading day. This is the correct field for the prior session's reference price, and it is retained across the daily session rollover. It is absent only for an asset with no completed prior session, such as a newly listed ticker or option contract.|
 |» » price|number(double)|false|none|The price of the most recent trade or bid price for this asset.|
-|» » regular_trading_change|number(double)|false|none|Today's change in regular trading hours, difference between current price and previous trading day's close, otherwise difference between today's close and previous day's close. For options, while `market_status` is `open` this is the price of the contract's last regular session trade today minus `previous_close`. During late trading and after the close, it is today's `close` minus `previous_close`. It is omitted during early trading.|
+|» » regular_trading_change|number(double)|false|none|Today's change in regular trading hours. The difference between current price and the previous trading day's close, otherwise the difference between today's close and the previous day's close. For options, while `market_status` is `open` this is the price of the contract's last regular session trade today minus `previous_close`. During late trading and after the close, it is today's `close` minus `previous_close`. It is omitted during early trading.|
 |» » regular_trading_change_percent|number(double)|false|none|Today's regular trading change as a percentage of `previous_close`.|
 |» » volume|number(double)|false|none|The trading volume for the asset for the day. A value of 0 means no trades have occurred yet in the current session.|
 |» » vwap|number(double)|false|none|The volume weighted average price of the asset for the day. Only returned for stocks, crypto, and forex snapshots, and omitted when there's no day bar yet, such as for stocks before the regular market open or for tickers that haven't traded today.|

@@ -66,12 +66,10 @@ export const getIndexPhpAppsOauth2AuthorizeRoute = createRoute({
     303: {
       description: 'Redirect to the login URL',
       headers: z.object({
-        Location: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },

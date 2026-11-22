@@ -1,362 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const AcceptClaimTypeSchema = z
-  .enum(['REFUND', 'REFUND_WITH_RETURN', 'PARTIAL_REFUND', 'REFUND_WITH_RETURN_SHIPMENT_LABEL'])
-  .openapi({
-    title: 'Accept Claim Type',
-    description: 'The refund type proposed by the merchant for the dispute.',
-    'x-enumDescriptions': [
-      {
-        value: 'REFUND',
-        description:
-          'The merchant must refund the customer without any item replacement or return. This type is applicable when a merchant is willing to refund the entire dispute amount without any further action from customer. Omit the <code>refund_amount</code> and <code>return_shipping_address</code> parameters from the <a href="/docs/api/customer-disputes/v1/#disputes-actions_accept-claim">accept claim</a> call.',
-      },
-      {
-        value: 'REFUND_WITH_RETURN',
-        description:
-          'The customer must return the item to the merchant and then merchant will refund the money. This type is applicable when a merchant is willing to refund the dispute amount and requires the customer to return the item. Include the <code>return_shipping_address</code> parameter in but omit the <code>refund_amount</code> parameter from the <a href="/docs/api/customer-disputes/v1/#disputes-actions_accept-claim">accept claim</a> call.',
-      },
-      {
-        value: 'PARTIAL_REFUND',
-        description:
-          'The merchant proposes a partial refund for the dispute.This type is applicable when a merchant is willing to refund an amount lesser than dispute amount. Include the <code>refund_amount</code> parameter.',
-      },
-      {
-        value: 'REFUND_WITH_RETURN_SHIPMENT_LABEL',
-        description:
-          'The customer must return the item to the merchant and then merchant will refund the money. This type is applicable when a merchant is willing to refund the dispute amount and requires the customer to return the item using the shipment label provided by the merchant. Include the <code>return_shipment_info</code> and <code>return_shipping_address</code> parameter in but omit the <code>refund_amount</code> parameter from the <a href="/docs/api/customer-disputes/v1/#disputes-actions_accept-claim">accept claim</a> call.',
-      },
-    ],
-  })
-  .openapi('AcceptClaimType')
-
-const AcceptClaimTypeListSchema = z
-  .array(AcceptClaimTypeSchema)
-  .min(1)
-  .max(10)
-  .openapi({ description: 'The types of refund the merchant can provide the customer.' })
-  .openapi('AcceptClaimTypeList')
-
-const AcceptClaimResponseOptionsSchema = z
-  .object({ accept_claim_types: AcceptClaimTypeListSchema.exactOptional() })
-  .openapi({
-    title: 'Accept Claim Response Options',
-    description: 'The allowed response options when the merchant is accepting the claim.',
-    required: [],
-  })
-  .openapi('AcceptClaimResponseOptions')
-
-const AcceptOfferSchema = z
-  .object({
-    note: z
-      .string()
-      .regex(/^(.|\r?\n)*$/)
-      .min(1)
-      .max(2000)
-      .exactOptional()
-      .openapi({
-        description:
-          'The customer notes about accepting of offer. PayPal can but the merchant cannot view these notes.',
-      }),
-  })
-  .openapi({
-    title: 'Accept Offer Request',
-    description: 'A customer request to accept the offer made by the merchant.',
-    required: [],
-  })
-  .openapi('AcceptOffer')
-
-const AcknowledgementTypeSchema = z
-  .enum([
-    'ITEM_RECEIVED',
-    'ITEM_NOT_RECEIVED',
-    'DAMAGED',
-    'EMPTY_PACKAGE_OR_DIFFERENT',
-    'MISSING_ITEMS',
-  ])
-  .openapi({
-    title: 'Allowed Acknowledgement Type',
-    description:
-      'The type of acknowledgement allowed for the merchant after the customer has returned the item. The merchant can update whether the item was received and is as expected or if the item was not received.',
-    readOnly: true,
-    'x-enumDescriptions': [
-      {
-        value: 'ITEM_RECEIVED',
-        description: 'The merchant has received the item returned by the customer.',
-      },
-      { value: 'ITEM_NOT_RECEIVED', description: 'The merchant has not received the item.' },
-      { value: 'DAMAGED', description: 'The items returned by the customer were damaged.' },
-      {
-        value: 'EMPTY_PACKAGE_OR_DIFFERENT',
-        description: 'The package was empty or the goods were different from what was expected.',
-      },
-      {
-        value: 'MISSING_ITEMS',
-        description: 'The package did not have all the items that were expected.',
-      },
-    ],
-  })
-  .openapi('AcknowledgementType')
-
-const AcknowledgementTypeListSchema = z
-  .array(AcknowledgementTypeSchema)
-  .min(1)
-  .max(10)
-  .openapi({ description: 'The types of response when the merchant acknowledges a returned item.' })
-  .openapi('AcknowledgementTypeList')
-
-const AcknowledgeReturnItemResponseOptionsSchema = z
-  .object({ acknowledgement_types: AcknowledgementTypeListSchema.exactOptional() })
-  .openapi({
-    title: 'Acknowledge Return Item Response Options',
-    description:
-      'The allowed response options when the seller acknowledges that the buyer has returned an item for the dispute.',
-    required: [],
-  })
-  .openapi('AcknowledgeReturnItemResponseOptions')
-
-const ActionInfoSchema = z
-  .object({
-    action: z
-      .enum([
-        'ACKNOWLEDGE_RETURN_ITEM',
-        'ACCEPT_CLAIM',
-        'PROVIDE_EVIDENCE',
-        'APPEAL',
-        'CANCEL',
-        'CHANGE_REASON',
-        'ESCALATE',
-      ])
-      .exactOptional()
-      .openapi({
-        description: 'The action for which the evidence was requested or submitted.',
-        'x-enumDescriptions': [
-          {
-            value: 'ACKNOWLEDGE_RETURN_ITEM',
-            description: 'The evidence corresponds to action `acknowledge_return_item`.',
-          },
-          {
-            value: 'ACCEPT_CLAIM',
-            description: 'The evidence corresponds to action `accept_claim`.',
-          },
-          {
-            value: 'PROVIDE_EVIDENCE',
-            description: 'The evidence corresponds to action `provide_evidence`.',
-          },
-          { value: 'APPEAL', description: 'The evidence corresponds to action `appeal`.' },
-          { value: 'CANCEL', description: 'The evidence corresponds to action `cancel`.' },
-          {
-            value: 'CHANGE_REASON',
-            description: 'The evidence corresponds to action `change_reason`.',
-          },
-          { value: 'ESCALATE', description: 'The evidence corresponds to action `escalate`.' },
-        ],
-      }),
-    response_option: z
-      .string()
-      .regex(/^[A-Z_]+$/)
-      .min(1)
-      .max(255)
-      .exactOptional()
-      .openapi({
-        description:
-          'The response option for the corresponding action. Possible values:<ul><li><a href="/docs/api/customer-disputes/v1/#definition-acknowledgement_type">Acknowledgement Types</a></li><li><a href="/docs/api/customer-disputes/v1/#definition-response-accept_claim_type">Accept Claim types</a></li></ul>.',
-      }),
-    mandatory: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates whether the evidence is mandatory for the corresponding action and response option.',
-      }),
-  })
-  .openapi({
-    title: 'Evidence Extensions',
-    description:
-      'The extended properties for a evidence. Includes additional information such as the action for which the evidence was requested/submitted, and whether the evidence is mandatory.',
-    required: [],
-  })
-  .openapi('ActionInfo')
-
-const AddressDetailsSchema = z
-  .object({
-    street_number: z
-      .string()
-      .max(100)
-      .exactOptional()
-      .openapi({ description: 'The street number.' }),
-    street_name: z
-      .string()
-      .max(100)
-      .exactOptional()
-      .openapi({ description: 'The street name. Just `Drury` in `Drury Lane`.' }),
-    street_type: z
-      .string()
-      .max(100)
-      .exactOptional()
-      .openapi({
-        description: 'The street type. For example, avenue, boulevard, road, or expressway.',
-      }),
-    delivery_service: z
-      .string()
-      .max(100)
-      .exactOptional()
-      .openapi({
-        description: 'The delivery service. Post office box, bag number, or post office name.',
-      }),
-    building_name: z
-      .string()
-      .max(100)
-      .exactOptional()
-      .openapi({
-        description:
-          'A named locations that represents the premise. Usually a building name or number or collection of buildings with a common name or number. For example, <code>Craven House</code>.',
-      }),
-    sub_building: z
-      .string()
-      .max(100)
-      .exactOptional()
-      .openapi({
-        description:
-          'The first-order entity below a named building or location that represents the sub-premises. Usually a single building within a collection of buildings with a common name. Can be a flat, story, floor, room, or apartment.',
-      }),
-  })
-  .openapi({
-    title: 'Address Details',
-    description:
-      'The non-portable additional address details that are sometimes needed for compliance, risk, or other scenarios where fine-grain address information might be needed. Not portable with common third party and open source. Redundant with core fields.<br/>For example, `address_portable.address_line_1` is usually a combination of `address_details.street_number`, `street_name`, and `street_type`.',
-    required: [],
-  })
-  .openapi('AddressDetails')
-
-const CountryCodeSchema = z
-  .string()
-  .regex(/^([A-Z]{2}|C2)$/)
-  .length(2)
-  .openapi({
-    description:
-      'The [two-character ISO 3166-1 code](/api/rest/reference/country-codes/) that identifies the country or region.<blockquote><strong>Note:</strong> The country code for Great Britain is <code>GB</code> and not <code>UK</code> as used in the top-level domain names for that country. Use the `C2` country code for China worldwide for comparable uncontrolled price (CUP) method, bank card, and cross-border transactions.</blockquote>',
-  })
-  .openapi('CountryCode')
-
-const AddressPortableSchema = z
-  .object({
-    address_line_1: z
-      .string()
-      .max(300)
-      .exactOptional()
-      .openapi({
-        description:
-          'The first line of the address. For example, number or street. For example, `173 Drury Lane`. Required for data entry and compliance and risk checks. Must contain the full address.',
-      }),
-    address_line_2: z
-      .string()
-      .max(300)
-      .exactOptional()
-      .openapi({
-        description: 'The second line of the address. For example, suite or apartment number.',
-      }),
-    address_line_3: z
-      .string()
-      .max(100)
-      .exactOptional()
-      .openapi({
-        description:
-          'The third line of the address, if needed. For example, a street complement for Brazil, direction text, such as `next to Walmart`, or a landmark in an Indian address.',
-      }),
-    admin_area_4: z
-      .string()
-      .max(100)
-      .exactOptional()
-      .openapi({
-        description:
-          'The neighborhood, ward, or district. Smaller than `admin_area_level_3` or `sub_locality`. Value is:<ul><li>The postal sorting code for Guernsey and many French territories, such as French Guiana.</li><li>The fine-grained administrative levels in China.</li></ul>',
-      }),
-    admin_area_3: z
-      .string()
-      .max(100)
-      .exactOptional()
-      .openapi({
-        description:
-          'A sub-locality, suburb, neighborhood, or district. Smaller than `admin_area_level_2`. Value is:<ul><li>Brazil. Suburb, bairro, or neighborhood.</li><li>India. Sub-locality or district. Street name information is not always available but a sub-locality or district can be a very small area.</li></ul>',
-      }),
-    admin_area_2: z
-      .string()
-      .max(120)
-      .exactOptional()
-      .openapi({ description: 'A city, town, or village. Smaller than `admin_area_level_1`.' }),
-    admin_area_1: z
-      .string()
-      .max(300)
-      .exactOptional()
-      .openapi({
-        description:
-          'The highest level sub-division in a country, which is usually a province, state, or ISO-3166-2 subdivision. Format for postal delivery. For example, `CA` and not `California`. Value, by country, is:<ul><li>UK. A county.</li><li>US. A state.</li><li>Canada. A province.</li><li>Japan. A prefecture.</li><li>Switzerland. A kanton.</li></ul>',
-      }),
-    postal_code: z
-      .string()
-      .max(60)
-      .exactOptional()
-      .openapi({
-        description:
-          'The postal code, which is the zip code or equivalent. Typically required for countries with a postal code or an equivalent. See [postal code](https://en.wikipedia.org/wiki/Postal_code).',
-      }),
-    country_code: CountryCodeSchema,
-    address_details: AddressDetailsSchema.exactOptional(),
-  })
-  .openapi({
-    title: 'Portable Postal Address (Medium-Grained)',
-    description:
-      'The portable international postal address. Maps to [AddressValidationMetadata](https://github.com/googlei18n/libaddressinput/wiki/AddressValidationMetadata) and HTML 5.1 [Autofilling form controls: the autocomplete attribute](https://www.w3.org/TR/html51/sec-forms.html#autofilling-form-controls-the-autocomplete-attribute).',
-    required: ['country_code'],
-  })
-  .openapi('AddressPortable')
-
-const AdjudicateSchema = z
-  .object({
-    adjudication_outcome: z.enum(['BUYER_FAVOR', 'SELLER_FAVOR']).openapi({
-      description: 'The outcome of the adjudication.',
-      'x-enumDescriptions': [
-        {
-          value: 'BUYER_FAVOR',
-          description:
-            "Resolves the case in the customer's favor. Outcome is set to <code>RESOLVED_BUYER_FAVOR</code>.",
-        },
-        {
-          value: 'SELLER_FAVOR',
-          description:
-            "Resolves the case in the merchant's favor. Outcome is set to <code>RESOLVED_SELLER_FAVOR</code>.",
-        },
-      ],
-    }),
-  })
-  .openapi({
-    title: 'Settle Request',
-    description: "A request to settle a dispute in either the customer's or merchant's favor.",
-    required: ['adjudication_outcome'],
-  })
-  .openapi('Adjudicate')
-
-const AdjudicationTypeSchema = z
-  .enum(['DENY_BUYER', 'PAYOUT_TO_BUYER', 'PAYOUT_TO_SELLER', 'RECOVER_FROM_SELLER'])
-  .openapi({
-    description: 'The type of adjudication.',
-    'x-enumDescriptions': [
-      { value: 'DENY_BUYER', description: 'The decision is to deny the buyer for the dispute.' },
-      { value: 'PAYOUT_TO_BUYER', description: 'The decision is to payout to the buyer.' },
-      {
-        value: 'PAYOUT_TO_SELLER',
-        description: 'The decision is to payout to the seller if the seller was debited earlier.',
-      },
-      {
-        value: 'RECOVER_FROM_SELLER',
-        description:
-          'The decision is to charge the seller for the dispute if the seller was not debited already.',
-      },
-    ],
-  })
-  .openapi('AdjudicationType')
-
 const DateTimeSchema = z
   .string()
   .regex(
@@ -369,6 +12,501 @@ const DateTimeSchema = z
       'The date and time, in [Internet date and time format](https://tools.ietf.org/html/rfc3339#section-5.6). Seconds are required while fractional seconds are optional.<blockquote><strong>Note:</strong> The regular expression provides guidance but does not reject all invalid dates.</blockquote>',
   })
   .openapi('DateTime')
+
+const CurrencyCodeSchema = z
+  .string()
+  .length(3)
+  .openapi({
+    description:
+      'The [three-character ISO-4217 currency code](/api/rest/reference/currency-codes/) that identifies the currency.',
+  })
+  .openapi('CurrencyCode')
+
+const MoneySchema = z
+  .object({
+    currency_code: CurrencyCodeSchema,
+    value: z
+      .string()
+      .regex(/^((-?[0-9]+)|(-?([0-9]+)?[.][0-9]+))$/)
+      .max(32)
+      .openapi({
+        description:
+          'The value, which might be:<ul><li>An integer for currencies like `JPY` that are not typically fractional.</li><li>A decimal fraction for currencies like `TND` that are subdivided into thousandths.</li></ul>For the required number of decimal places for a currency code, see [Currency Codes](/api/rest/reference/currency-codes/).',
+      }),
+  })
+  .openapi({
+    title: 'Money',
+    description:
+      'The currency and amount for a financial transaction, such as a balance or payment due.',
+    required: ['currency_code', 'value'],
+  })
+  .openapi('Money')
+
+const CryptocurrencySymbolSchema = z
+  .enum(['BTC', 'ETH', 'BCH', 'LTC', 'PYUSD', 'LINK', 'SOL', 'MATIC'])
+  .openapi({
+    description:
+      'The cryptocurrency symbol or code ticker options. Assigned by liquidity providers and exchanges.',
+    'x-enum-skip-validation': true,
+    'x-enumDescriptions': [
+      {
+        value: 'BTC',
+        description: 'The ticker symbol for <b>Bitcoin</b>. https://en.wikipedia.org/wiki/Bitcoin.',
+      },
+      {
+        value: 'ETH',
+        description:
+          'The ticker symbol for <b>Ethereum</b>. https://en.wikipedia.org/wiki/Ethereum.',
+      },
+      {
+        value: 'BCH',
+        description:
+          'The ticker symbol for <b>Bitcoin Cash</b>. https://en.wikipedia.org/wiki/Bitcoin_Cash.',
+      },
+      {
+        value: 'LTC',
+        description:
+          'The ticker symbol for <b>Litecoin</b>. https://en.wikipedia.org/wiki/Litecoin.',
+      },
+      {
+        value: 'PYUSD',
+        description:
+          'The ticker symbol for <b>PayPal Coin</b>. https://engineering.paypalcorp.com/confluence/display/BCDC/PayPal+Digital+Coin+%28PPDC%29+-+USDP+-+Top+Down+View+of+Requirements.',
+      },
+      {
+        value: 'LINK',
+        description:
+          'The ticker symbol for <b>Chainlink</b>. https://en.wikipedia.org/wiki/Chainlink_(blockchain).',
+      },
+      {
+        value: 'SOL',
+        description:
+          'The ticker symbol for <b>Solana</b>. https://en.wikipedia.org/wiki/Solana_(blockchain_platform).',
+      },
+      { value: 'MATIC', description: 'The ticker symbol for Polygon.' },
+    ],
+  })
+  .openapi('CryptocurrencySymbol')
+
+const CryptocurrencyQuantitySchema = z
+  .string()
+  .regex(/^((-?[0-9]+)|(-?([0-9]+)?[.][0-9]+))$/)
+  .min(1)
+  .max(40)
+  .openapi({
+    description:
+      'The quantity of a cryptocurrency asset. This is a decimal number with a scale defined for each cryptocurrency by its founders. For example, Bitcoin (BTC) has 8 as its scale, Ethereum (ETH) has 18 as its scale. The PayPal Cryptocurrency platform handles the scale to 8 digits for Bitcoin. including its forks or offshoots, as well as Ethereum.',
+  })
+  .openapi('CryptocurrencyQuantity')
+
+const CryptocurrencySubunitsQuantitySchema = z
+  .string()
+  .regex(/^-?[0-9]+$/)
+  .min(1)
+  .max(81)
+  .openapi({
+    title: 'Cryptocurrency Quantity Subunits',
+    description:
+      "The quantity of a cryptocurrency asset in the currency's sub units.<br/>Amount is an integer in a string format.<br/>Floating point should be avoided to avoid precision errors. For example: <li>Bitcoin(BTC) has 8 decimals,</li> so 1 BTC will be represented as 100000000 (1 followed by 8 zeroes). <li>Ethereum(ETH) has 18 decimals,</li> so 1 ETH will be represented as 1000000000000000000 (1 followed by 18 zeroes).",
+  })
+  .openapi('CryptocurrencySubunitsQuantity')
+
+const CryptocurrencyDecimalsSchema = z
+  .int()
+  .min(0)
+  .max(40)
+  .openapi({
+    description:
+      "The number of decimal digits supported by this cryptocurrency. For example, for Bitcoin this value is 8 because there are 10^8 satoshis in one Bitcoin and for Ethereum it's 18 since there are 10^18 wei in one Ether.",
+    title: 'Decimals',
+  })
+  .openapi('CryptocurrencyDecimals')
+
+const CryptocurrencySchema = z
+  .object({
+    asset_symbol: CryptocurrencySymbolSchema,
+    quantity: CryptocurrencyQuantitySchema,
+    quantity_in_subunits: CryptocurrencySubunitsQuantitySchema.exactOptional(),
+    decimals: CryptocurrencyDecimalsSchema.exactOptional(),
+  })
+  .openapi({
+    title: 'Cryptocurrency',
+    description:
+      'The details needed to represent a specific cryptocurrency balance, such as its symbol and quantity.',
+    required: ['asset_symbol', 'quantity'],
+  })
+  .openapi('Cryptocurrency')
+
+const BuyerSchema = z
+  .object({
+    name: z
+      .string()
+      .regex(/^[^~!@#$%^*()_{}:|\t\n\/]+$/)
+      .min(1)
+      .max(2000)
+      .exactOptional()
+      .openapi({ description: "The customer's name." }),
+  })
+  .openapi({
+    title: 'Customer',
+    description:
+      "The details for the customer who funds the payment. For example, the customer's first name, last name, and email address.",
+    required: [],
+  })
+  .openapi('Buyer')
+
+const EmailAddressSchema = z
+  .string()
+  .regex(
+    /^(?:[A-Za-z0-9!#$%&'*+\/=?^_`{|}~-]+(?:\.[A-Za-z0-9!#$%&'*+\/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?\.)+[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[A-Za-z0-9-]*[A-Za-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])$/,
+  )
+  .min(3)
+  .max(254)
+  .openapi({
+    description:
+      'The internationalized email address.<blockquote><strong>Note:</strong> Up to 64 characters are allowed before and 255 characters are allowed after the <code>@</code> sign. However, the generally accepted maximum length for an email address is 254 characters. The pattern verifies that an unquoted <code>@</code> sign exists.</blockquote>',
+  })
+  .openapi('EmailAddress')
+
+const SellerSchema = z
+  .object({
+    email: EmailAddressSchema.exactOptional().openapi({
+      description: "The email address for the merchant's PayPal account.",
+    }),
+    merchant_id: z
+      .string()
+      .regex(/^[0-9A-Za-z]+$/)
+      .min(1)
+      .max(255)
+      .exactOptional()
+      .openapi({ description: 'The PayPal account ID for the merchant.' }),
+    name: z
+      .string()
+      .regex(/^[^~!@#$%^*()_{}:|\t\n\/]+$/)
+      .min(1)
+      .max(2000)
+      .exactOptional()
+      .openapi({ description: 'The name of the merchant.' }),
+  })
+  .openapi({
+    title: 'Merchant',
+    description:
+      'The details for the merchant who receives the funds and fulfills the order. For example, merchant ID, and contact email address.',
+    required: [],
+  })
+  .openapi('Seller')
+
+const DisputeReasonSchema = z
+  .enum([
+    'MERCHANDISE_OR_SERVICE_NOT_RECEIVED',
+    'MERCHANDISE_OR_SERVICE_NOT_AS_DESCRIBED',
+    'UNAUTHORISED',
+    'CREDIT_NOT_PROCESSED',
+    'DUPLICATE_TRANSACTION',
+    'INCORRECT_AMOUNT',
+    'PAYMENT_BY_OTHER_MEANS',
+    'CANCELED_RECURRING_BILLING',
+    'PROBLEM_WITH_REMITTANCE',
+    'OTHER',
+  ])
+  .openapi({
+    title: 'Dispute Reason',
+    description:
+      'The reason for the item-level dispute. For information about the required information for each dispute reason and associated evidence type, see <a href="/docs/integration/direct/customer-disputes/integration-guide/#dispute-reasons">dispute reasons</a>.',
+    'x-enumDescriptions': [
+      {
+        value: 'MERCHANDISE_OR_SERVICE_NOT_RECEIVED',
+        description: 'The customer did not receive the merchandise or service.',
+      },
+      {
+        value: 'MERCHANDISE_OR_SERVICE_NOT_AS_DESCRIBED',
+        description: 'The customer reports that the merchandise or service is not as described.',
+      },
+      {
+        value: 'UNAUTHORISED',
+        description: 'The customer did not authorize purchase of the merchandise or service.',
+      },
+      {
+        value: 'CREDIT_NOT_PROCESSED',
+        description: 'The refund or credit was not processed for the customer.',
+      },
+      { value: 'DUPLICATE_TRANSACTION', description: 'The transaction was a duplicate.' },
+      { value: 'INCORRECT_AMOUNT', description: 'The customer was charged an incorrect amount.' },
+      {
+        value: 'PAYMENT_BY_OTHER_MEANS',
+        description: 'The customer paid for the transaction through other means.',
+      },
+      {
+        value: 'CANCELED_RECURRING_BILLING',
+        description:
+          'The customer was being charged for a subscription or a recurring transaction that was canceled.',
+      },
+      { value: 'PROBLEM_WITH_REMITTANCE', description: 'A problem occurred with the remittance.' },
+      { value: 'OTHER', description: 'Other.' },
+    ],
+  })
+  .openapi('DisputeReason')
+
+const ItemTypeSchema = z
+  .enum(['PRODUCT', 'SERVICE', 'BOOKING', 'DIGITAL_DOWNLOAD'])
+  .openapi({
+    title: 'Item Type',
+    description: 'The type of the item which has the issue.',
+    'x-enumDescriptions': [
+      { value: 'PRODUCT', description: 'The product has an issue.' },
+      { value: 'SERVICE', description: 'The service has an issue.' },
+      { value: 'BOOKING', description: 'The booking has an issue.' },
+      { value: 'DIGITAL_DOWNLOAD', description: 'The digital download has an issue.' },
+    ],
+  })
+  .openapi('ItemType')
+
+const ItemProductDetailsSchema = z.any().openapi('ItemProductDetails')
+
+const ItemServiceDetailsSchema = z.any().openapi('ItemServiceDetails')
+
+const ItemBookingDetailsSchema = z.any().openapi('ItemBookingDetails')
+
+const ItemDigitalDownloadDetailsSchema = z.any().openapi('ItemDigitalDownloadDetails')
+
+const ItemCancellationDetailsSchema = z.any().openapi('ItemCancellationDetails')
+
+const ItemAgreedRefundDetailsSchema = z.any().openapi('ItemAgreedRefundDetails')
+
+const ItemInfoSchema = z
+  .object({
+    item_id: z
+      .string()
+      .regex(/^.*$/)
+      .min(1)
+      .max(255)
+      .exactOptional()
+      .openapi({
+        description:
+          'The item ID. If the merchant provides multiple pieces of evidence and the transaction has multiple item IDs, the merchant can use this value to associate a piece of evidence with an item ID.',
+      }),
+    item_name: z
+      .string()
+      .regex(/^.*$/)
+      .min(1)
+      .max(2000)
+      .exactOptional()
+      .openapi({ description: 'The item name.' }),
+    item_description: z
+      .string()
+      .regex(/^(.|\r?\n)*$/)
+      .min(1)
+      .max(2000)
+      .exactOptional()
+      .openapi({ description: 'The item description.' }),
+    item_quantity: z
+      .string()
+      .regex(/^[1-9][0-9]{0,9}$/)
+      .min(1)
+      .max(10)
+      .exactOptional()
+      .openapi({ description: 'The count of the item in the dispute. Must be a whole number.' }),
+    partner_transaction_id: z
+      .string()
+      .regex(/^[A-Za-z0-9]+$/)
+      .min(1)
+      .max(255)
+      .exactOptional()
+      .openapi({
+        description:
+          'The ID of the transaction in the partner system. The partner transaction ID is returned at an item level because the partner might show different transactions for different items in the cart.',
+      }),
+    reason: DisputeReasonSchema.exactOptional(),
+    dispute_amount: MoneySchema.exactOptional().openapi({
+      description: 'The amount of the item in the dispute.',
+      readOnly: true,
+    }),
+    notes: z
+      .string()
+      .regex(/^(.|\r?\n)*$/)
+      .min(1)
+      .max(2000)
+      .exactOptional()
+      .openapi({ description: 'Any notes provided with the item.' }),
+    item_type: ItemTypeSchema.exactOptional(),
+    product_details: ItemProductDetailsSchema.exactOptional(),
+    service_details: ItemServiceDetailsSchema.exactOptional(),
+    booking_details: ItemBookingDetailsSchema.exactOptional(),
+    digital_download_details: ItemDigitalDownloadDetailsSchema.exactOptional(),
+    cancellation_details: ItemCancellationDetailsSchema.exactOptional(),
+    agreed_refund_details: ItemAgreedRefundDetailsSchema.exactOptional(),
+  })
+  .openapi({
+    title: 'Item Information',
+    description: 'The information for a purchased item in a disputed transaction.',
+    required: [],
+  })
+  .openapi('ItemInfo')
+
+const ItemInfoListSchema = z
+  .array(ItemInfoSchema)
+  .min(1)
+  .max(100)
+  .openapi({
+    readOnly: true,
+    description: 'An array of items that were purchased as part of the transaction.',
+  })
+  .openapi('ItemInfoList')
+
+const PaymentProcessorSchema = z.any().openapi('PaymentProcessor')
+
+const TransactionInfoSchema = z
+  .object({
+    buyer_transaction_id: z
+      .string()
+      .regex(/^[A-Za-z0-9-]+$/)
+      .min(1)
+      .max(255)
+      .exactOptional()
+      .openapi({ description: 'The ID, as seen by the customer, for this transaction.' }),
+    seller_transaction_id: z
+      .string()
+      .regex(/^[A-Za-z0-9-]+$/)
+      .min(1)
+      .max(255)
+      .exactOptional()
+      .openapi({ description: 'The ID, as seen by the merchant, for this transaction.' }),
+    reference_id: z
+      .string()
+      .regex(/^.*$/)
+      .min(1)
+      .max(255)
+      .exactOptional()
+      .openapi({ description: 'The ID, as seen by the partner, for this transaction.' }),
+    create_time: DateTimeSchema.exactOptional().openapi({
+      description:
+        'The date and time when the transaction was created, in [Internet date and time format](https://tools.ietf.org/html/rfc3339#section-5.6). For example, *`yyyy`*-*`MM`*-*`dd`*`T`*`HH`*:*`mm`*:*`ss`*.*`SSS`*`Z`.',
+    }),
+    transaction_status: z
+      .enum([
+        'COMPLETED',
+        'UNCLAIMED',
+        'DENIED',
+        'FAILED',
+        'HELD',
+        'PENDING',
+        'PARTIALLY_REFUNDED',
+        'REFUNDED',
+        'REVERSED',
+        'CANCELLED',
+      ])
+      .exactOptional()
+      .openapi({
+        description: 'The transaction status.',
+        'x-enumDescriptions': [
+          { value: 'COMPLETED', description: 'The transaction processing completed.' },
+          {
+            value: 'UNCLAIMED',
+            description:
+              'The items in the transaction are unclaimed. If they are not claimed within 30 days, the funds are returned to the sender.',
+          },
+          { value: 'DENIED', description: 'The transaction was denied.' },
+          { value: 'FAILED', description: 'The transaction failed.' },
+          { value: 'HELD', description: 'The transaction is on hold.' },
+          { value: 'PENDING', description: 'The transaction is waiting to be processed.' },
+          {
+            value: 'PARTIALLY_REFUNDED',
+            description: 'The payment for the transaction was partially refunded.',
+          },
+          {
+            value: 'REFUNDED',
+            description: 'The payment for the transaction was successfully refunded.',
+          },
+          {
+            value: 'REVERSED',
+            description:
+              'The payment for the transaction was reversed due to a chargeback or other reversal type.',
+          },
+          { value: 'CANCELLED', description: 'The transaction is cancelled.' },
+        ],
+      }),
+    gross_amount: MoneySchema.exactOptional().openapi({
+      description: 'The gross amount of the transaction.',
+    }),
+    gross_asset: CryptocurrencySchema.exactOptional().openapi({
+      description: 'The gross asset of the transaction.',
+    }),
+    invoice_number: z
+      .string()
+      .regex(/^[A-Za-z0-9:\-|]+$/)
+      .min(1)
+      .max(127)
+      .exactOptional()
+      .openapi({ description: 'The ID of the invoice for the payment.' }),
+    custom: z
+      .string()
+      .regex(/^(.|\r?\n)*$/)
+      .min(1)
+      .max(2000)
+      .exactOptional()
+      .openapi({
+        description: 'A free-text field that is entered by the merchant during checkout.',
+      }),
+    buyer: BuyerSchema.exactOptional(),
+    seller: SellerSchema.exactOptional(),
+    items: ItemInfoListSchema.exactOptional(),
+    payment_processor: PaymentProcessorSchema.exactOptional(),
+  })
+  .openapi({
+    title: 'Transaction Information',
+    description: 'The information about the disputed transaction.',
+    required: [],
+  })
+  .openapi('TransactionInfo')
+
+const TransactionInfoListSchema = z
+  .array(TransactionInfoSchema)
+  .min(1)
+  .max(1000)
+  .openapi({ description: 'An array of transactions for which disputes were created.' })
+  .openapi('TransactionInfoList')
+
+const StatusSchema = z
+  .enum([
+    'OPEN',
+    'WAITING_FOR_BUYER_RESPONSE',
+    'WAITING_FOR_SELLER_RESPONSE',
+    'UNDER_REVIEW',
+    'RESOLVED',
+    'OTHER',
+  ])
+  .openapi({
+    readOnly: true,
+    description:
+      'The overall status of the dispute, constant for all the parties involved at anytime during the dispute lifecycle.',
+    'x-enumDescriptions': [
+      { value: 'OPEN', description: 'The dispute is open.' },
+      {
+        value: 'WAITING_FOR_BUYER_RESPONSE',
+        description: 'The dispute is waiting for a response from the customer.',
+      },
+      {
+        value: 'WAITING_FOR_SELLER_RESPONSE',
+        description: 'The dispute is waiting for a response from the merchant.',
+      },
+      { value: 'UNDER_REVIEW', description: 'The dispute is under review with PayPal.' },
+      { value: 'RESOLVED', description: 'The dispute is resolved.' },
+      {
+        value: 'OTHER',
+        description: 'The default status if the dispute does not have one of the other statuses.',
+      },
+    ],
+  })
+  .openapi('Status')
+
+const FeePolicySchema = z
+  .looseObject({})
+  .openapi({
+    title: 'Fee Policy',
+    description:
+      'Policy that determines whether the fee needs to be charged, retained or returned while moving the money as part of dispute process.',
+  })
+  .openapi('FeePolicy')
 
 const AdjudicationReasonSchema = z
   .enum([
@@ -905,6 +1043,86 @@ const AdjudicationReasonSchema = z
   })
   .openapi('AdjudicationReason')
 
+const DisputeOutcomeSchema = z
+  .object({
+    outcome_code: z
+      .enum([
+        'RESOLVED_BUYER_FAVOUR',
+        'RESOLVED_SELLER_FAVOUR',
+        'RESOLVED_WITH_PAYOUT',
+        'CANCELED_BY_BUYER',
+        'ACCEPTED',
+        'DENIED',
+        'NONE',
+      ])
+      .exactOptional()
+      .openapi({
+        description: 'The outcome of a resolved dispute.',
+        'x-enumDescriptions': [
+          {
+            value: 'RESOLVED_BUYER_FAVOUR',
+            description: "The dispute was resolved in the customer's favor.",
+          },
+          {
+            value: 'RESOLVED_SELLER_FAVOUR',
+            description: "The dispute was resolved in the merchant's favor.",
+          },
+          {
+            value: 'RESOLVED_WITH_PAYOUT',
+            description:
+              'PayPal provided the merchant or customer with protection and the case is resolved.',
+          },
+          { value: 'CANCELED_BY_BUYER', description: 'The customer canceled the dispute.' },
+          {
+            value: 'ACCEPTED',
+            description: 'DEPRECATED. PayPal accepted the dispute.',
+            deprecated: true,
+          },
+          {
+            value: 'DENIED',
+            description: 'DEPRECATED. PayPal denied the dispute.',
+            deprecated: true,
+          },
+          {
+            value: 'NONE',
+            description:
+              'A dispute was created for the same transaction ID, and the previous dispute was closed without any decision.',
+          },
+        ],
+      }),
+    outcome_reason: AdjudicationReasonSchema.exactOptional().openapi({
+      description: 'The justification for the adjudication outcome.',
+    }),
+    amount_refunded: MoneySchema.exactOptional().openapi({
+      description: 'The amount that either the merchant or PayPal refunds the customer.',
+    }),
+    asset_refunded: CryptocurrencySchema.exactOptional().openapi({
+      description: 'The asset that either the merchant or PayPal refunds the customer.',
+    }),
+  })
+  .openapi({ title: 'Dispute Outcome', description: 'The outcome of a dispute.', required: [] })
+  .openapi('DisputeOutcome')
+
+const AdjudicationTypeSchema = z
+  .enum(['DENY_BUYER', 'PAYOUT_TO_BUYER', 'PAYOUT_TO_SELLER', 'RECOVER_FROM_SELLER'])
+  .openapi({
+    description: 'The type of adjudication.',
+    'x-enumDescriptions': [
+      { value: 'DENY_BUYER', description: 'The decision is to deny the buyer for the dispute.' },
+      { value: 'PAYOUT_TO_BUYER', description: 'The decision is to payout to the buyer.' },
+      {
+        value: 'PAYOUT_TO_SELLER',
+        description: 'The decision is to payout to the seller if the seller was debited earlier.',
+      },
+      {
+        value: 'RECOVER_FROM_SELLER',
+        description:
+          'The decision is to charge the seller for the dispute if the seller was not debited already.',
+      },
+    ],
+  })
+  .openapi('AdjudicationType')
+
 const DisputeLifecycleStageSchema = z
   .enum(['INQUIRY', 'CHARGEBACK', 'PRE_ARBITRATION', 'ARBITRATION'])
   .openapi({
@@ -963,530 +1181,306 @@ const AdjudicationListSchema = z
   .openapi({ description: 'The Teammate Adjudication details for the dispute.' })
   .openapi('AdjudicationList')
 
-const AgreedRefundDetailsSchema = z
-  .object({
-    merchant_agreed_refund: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Indicates whether merchant has agreed to refund the buyer or not.',
-      }),
-    merchant_agreed_refund_time: DateTimeSchema.exactOptional().openapi({
-      description:
-        'The date and time proposed by merchant to provide the refund, in [Internet date and time format](https://tools.ietf.org/html/rfc3339#section-5.6).',
-    }),
-  })
+const MoneyMovementReasonSchema = z
+  .enum(['DISPUTE_SETTLEMENT_FEE', 'DISPUTE_SETTLEMENT', 'DISPUTE_FEE', 'CHARGEBACK_FEE'])
   .openapi({
-    title: 'Agreed Refund Details',
-    description: 'Details of Agreed Refund between customer and merchant.',
-    required: [],
-  })
-  .openapi('AgreedRefundDetails')
-
-const OfferTypeSchema = z
-  .enum(['REFUND', 'REFUND_WITH_RETURN', 'REFUND_WITH_REPLACEMENT', 'REPLACEMENT_WITHOUT_REFUND'])
-  .openapi({
-    title: 'Offer Type',
-    description: 'The merchant-proposed offer type for the dispute.',
+    description: 'The reason for the money movement.',
     'x-enumDescriptions': [
+      { value: 'DISPUTE_SETTLEMENT_FEE', description: 'The fee is for dispute settlement.' },
+      { value: 'DISPUTE_SETTLEMENT', description: 'The money movement is for dispute settlement.' },
       {
-        value: 'REFUND',
+        value: 'DISPUTE_FEE',
         description:
-          'The merchant must refund the customer without any item replacement or return. This offer type is valid in the inquiry phase and occurs when a merchant is willing to refund a specific amount. Buyer acceptance is needed for partial refund offers and dispute is auto closed for full refunds. Include the <code>offer_amount</code> but omit the <code>return_shipping_address</code> parameters from the make offer request.',
+          'The money movement is for dispute fee which PayPal charges to sellers for facilitating the online dispute resolution process for transactions that are processed either through a buyer’s PayPal account or through a PayPal guest checkout.',
       },
       {
-        value: 'REFUND_WITH_RETURN',
+        value: 'CHARGEBACK_FEE',
         description:
-          'The customer must return the item to the merchant and then merchant will refund the money. This offer type is valid in the inquiry phase and occurs when a merchant is willing to refund a specific amount and requires the customer to return the item. Include the <code>return_shipping_address</code> parameter and the <code>offer_amount</code> parameter in the make offer request.',
-      },
-      {
-        value: 'REFUND_WITH_REPLACEMENT',
-        description:
-          'The merchant must do a refund and then send a replacement item to the customer. This offer type is valid in the inquiry phase when a merchant is willing to refund a specific amount and send the replacement item. Include the <code>offer_amount</code> parameter in the make offer request.',
-      },
-      {
-        value: 'REPLACEMENT_WITHOUT_REFUND',
-        description:
-          'The merchant must send a replacement item to the customer with no additional refunds. This offer type is valid in the inquiry phase when a merchant is willing to replace the item without any refund. Omit the <code>offer_amount</code> parameter from the make offer request.',
+          'The money movement is for chargeback fee which PayPal charges to sellers for facilitating the chargeback process for transactions that are not processed either through a buyer’s PayPal account or through a guest checkout, and where the buyer pursues a chargeback for the transaction with their card issuer.',
       },
     ],
+    deprecated: true,
   })
-  .openapi('OfferType')
+  .openapi('MoneyMovementReason')
 
-const OfferTypeListSchema = z
-  .array(OfferTypeSchema)
-  .min(1)
-  .max(10)
-  .openapi({ description: 'The types of offer the merchant can offer the customer.' })
-  .openapi('OfferTypeList')
-
-const MakeOfferResponseOptionsSchema = z
-  .object({ offer_types: OfferTypeListSchema.exactOptional() })
-  .openapi({
-    title: 'Make Offer Response Options',
-    description: 'The allowed response options when the merchant makes offer to the customer.',
-    required: [],
-  })
-  .openapi('MakeOfferResponseOptions')
-
-const AllowedResponseOptionsSchema = z
+const MoneyMovementSchema = z
   .object({
-    acknowledge_return_item: AcknowledgeReturnItemResponseOptionsSchema.exactOptional(),
-    accept_claim: AcceptClaimResponseOptionsSchema.exactOptional(),
-    make_offer: MakeOfferResponseOptionsSchema.exactOptional(),
-  })
-  .openapi({
-    title: 'Allowed Response Options',
-    description: 'The allowed response options for the buyer/seller update actions.',
-    required: [],
-  })
-  .openapi('AllowedResponseOptions')
-
-const CurrencyCodeSchema = z
-  .string()
-  .length(3)
-  .openapi({
-    description:
-      'The [three-character ISO-4217 currency code](/api/rest/reference/currency-codes/) that identifies the currency.',
-  })
-  .openapi('CurrencyCode')
-
-const MoneySchema = z
-  .object({
-    currency_code: CurrencyCodeSchema,
-    value: z
-      .string()
-      .regex(/^((-?[0-9]+)|(-?([0-9]+)?[.][0-9]+))$/)
-      .max(32)
-      .openapi({
-        description:
-          'The value, which might be:<ul><li>An integer for currencies like `JPY` that are not typically fractional.</li><li>A decimal fraction for currencies like `TND` that are subdivided into thousandths.</li></ul>For the required number of decimal places for a currency code, see [Currency Codes](/api/rest/reference/currency-codes/).',
-      }),
-  })
-  .openapi({
-    title: 'Money',
-    description:
-      'The currency and amount for a financial transaction, such as a balance or payment due.',
-    required: ['currency_code', 'value'],
-  })
-  .openapi('Money')
-
-const CryptocurrencySymbolSchema = z
-  .enum(['BTC', 'ETH', 'BCH', 'LTC', 'PYUSD', 'LINK', 'SOL', 'MATIC'])
-  .openapi({
-    description:
-      'The cryptocurrency symbol or code ticker options. Assigned by liquidity providers and exchanges.',
-    'x-enum-skip-validation': true,
-    'x-enumDescriptions': [
-      {
-        value: 'BTC',
-        description: 'The ticker symbol for <b>Bitcoin</b>. https://en.wikipedia.org/wiki/Bitcoin.',
-      },
-      {
-        value: 'ETH',
-        description:
-          'The ticker symbol for <b>Ethereum</b>. https://en.wikipedia.org/wiki/Ethereum.',
-      },
-      {
-        value: 'BCH',
-        description:
-          'The ticker symbol for <b>Bitcoin Cash</b>. https://en.wikipedia.org/wiki/Bitcoin_Cash.',
-      },
-      {
-        value: 'LTC',
-        description:
-          'The ticker symbol for <b>Litecoin</b>. https://en.wikipedia.org/wiki/Litecoin.',
-      },
-      {
-        value: 'PYUSD',
-        description:
-          'The ticker symbol for <b>PayPal Coin</b>. https://engineering.paypalcorp.com/confluence/display/BCDC/PayPal+Digital+Coin+%28PPDC%29+-+USDP+-+Top+Down+View+of+Requirements.',
-      },
-      {
-        value: 'LINK',
-        description:
-          'The ticker symbol for <b>Chainlink</b>. https://en.wikipedia.org/wiki/Chainlink_(blockchain).',
-      },
-      {
-        value: 'SOL',
-        description:
-          'The ticker symbol for <b>Solana</b>. https://en.wikipedia.org/wiki/Solana_(blockchain_platform).',
-      },
-      { value: 'MATIC', description: 'The ticker symbol for Polygon.' },
-    ],
-  })
-  .openapi('CryptocurrencySymbol')
-
-const CryptocurrencyQuantitySchema = z
-  .string()
-  .regex(/^((-?[0-9]+)|(-?([0-9]+)?[.][0-9]+))$/)
-  .min(1)
-  .max(40)
-  .openapi({
-    description:
-      'The quantity of a cryptocurrency asset. This is a decimal number with a scale defined for each cryptocurrency by its founders. For example, Bitcoin (BTC) has 8 as its scale, Ethereum (ETH) has 18 as its scale. The PayPal Cryptocurrency platform handles the scale to 8 digits for Bitcoin. including its forks or offshoots, as well as Ethereum.',
-  })
-  .openapi('CryptocurrencyQuantity')
-
-const CryptocurrencySubunitsQuantitySchema = z
-  .string()
-  .regex(/^-?[0-9]+$/)
-  .min(1)
-  .max(81)
-  .openapi({
-    title: 'Cryptocurrency Quantity Subunits',
-    description:
-      "The quantity of a cryptocurrency asset in the currency's sub units.<br/>Amount is an integer in a string format.<br/>Floating point should be avoided to avoid precision errors. For example: <li>Bitcoin(BTC) has 8 decimals,</li> so 1 BTC will be represented as 100000000 (1 followed by 8 zeroes). <li>Ethereum(ETH) has 18 decimals,</li> so 1 ETH will be represented as 1000000000000000000 (1 followed by 18 zeroes).",
-  })
-  .openapi('CryptocurrencySubunitsQuantity')
-
-const CryptocurrencyDecimalsSchema = z
-  .int()
-  .min(0)
-  .max(40)
-  .openapi({
-    description:
-      "The number of decimal digits supported by this cryptocurrency. For example, for Bitcoin this value is 8 because there are 10^8 satoshis in one Bitcoin and for Ethereum it's 18 since there are 10^18 wei in one Ether.",
-    title: 'Decimals',
-  })
-  .openapi('CryptocurrencyDecimals')
-
-const CryptocurrencySchema = z
-  .object({
-    asset_symbol: CryptocurrencySymbolSchema,
-    quantity: CryptocurrencyQuantitySchema,
-    quantity_in_subunits: CryptocurrencySubunitsQuantitySchema.exactOptional(),
-    decimals: CryptocurrencyDecimalsSchema.exactOptional(),
-  })
-  .openapi({
-    title: 'Cryptocurrency',
-    description:
-      'The details needed to represent a specific cryptocurrency balance, such as its symbol and quantity.',
-    required: ['asset_symbol', 'quantity'],
-  })
-  .openapi('Cryptocurrency')
-
-const BuyerSchema = z
-  .object({
-    name: z
-      .string()
-      .regex(/^[^~!@#$%^*()_{}:|\t\n\/]+$/)
-      .min(1)
-      .max(2000)
-      .exactOptional()
-      .openapi({ description: "The customer's name." }),
-  })
-  .openapi({
-    title: 'Customer',
-    description:
-      "The details for the customer who funds the payment. For example, the customer's first name, last name, and email address.",
-    required: [],
-  })
-  .openapi('Buyer')
-
-const EmailAddressSchema = z
-  .string()
-  .regex(
-    /^(?:[A-Za-z0-9!#$%&'*+\/=?^_`{|}~-]+(?:\.[A-Za-z0-9!#$%&'*+\/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?\.)+[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[A-Za-z0-9-]*[A-Za-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])$/,
-  )
-  .min(3)
-  .max(254)
-  .openapi({
-    description:
-      'The internationalized email address.<blockquote><strong>Note:</strong> Up to 64 characters are allowed before and 255 characters are allowed after the <code>@</code> sign. However, the generally accepted maximum length for an email address is 254 characters. The pattern verifies that an unquoted <code>@</code> sign exists.</blockquote>',
-  })
-  .openapi('EmailAddress')
-
-const SellerSchema = z
-  .object({
-    email: EmailAddressSchema.exactOptional().openapi({
-      description: "The email address for the merchant's PayPal account.",
-    }),
-    merchant_id: z
-      .string()
-      .regex(/^[0-9A-Za-z]+$/)
-      .min(1)
-      .max(255)
-      .exactOptional()
-      .openapi({ description: 'The PayPal account ID for the merchant.' }),
-    name: z
-      .string()
-      .regex(/^[^~!@#$%^*()_{}:|\t\n\/]+$/)
-      .min(1)
-      .max(2000)
-      .exactOptional()
-      .openapi({ description: 'The name of the merchant.' }),
-  })
-  .openapi({
-    title: 'Merchant',
-    description:
-      'The details for the merchant who receives the funds and fulfills the order. For example, merchant ID, and contact email address.',
-    required: [],
-  })
-  .openapi('Seller')
-
-const DisputeReasonSchema = z
-  .enum([
-    'MERCHANDISE_OR_SERVICE_NOT_RECEIVED',
-    'MERCHANDISE_OR_SERVICE_NOT_AS_DESCRIBED',
-    'UNAUTHORISED',
-    'CREDIT_NOT_PROCESSED',
-    'DUPLICATE_TRANSACTION',
-    'INCORRECT_AMOUNT',
-    'PAYMENT_BY_OTHER_MEANS',
-    'CANCELED_RECURRING_BILLING',
-    'PROBLEM_WITH_REMITTANCE',
-    'OTHER',
-  ])
-  .openapi({
-    title: 'Dispute Reason',
-    description:
-      'The reason for the item-level dispute. For information about the required information for each dispute reason and associated evidence type, see <a href="/docs/integration/direct/customer-disputes/integration-guide/#dispute-reasons">dispute reasons</a>.',
-    'x-enumDescriptions': [
-      {
-        value: 'MERCHANDISE_OR_SERVICE_NOT_RECEIVED',
-        description: 'The customer did not receive the merchandise or service.',
-      },
-      {
-        value: 'MERCHANDISE_OR_SERVICE_NOT_AS_DESCRIBED',
-        description: 'The customer reports that the merchandise or service is not as described.',
-      },
-      {
-        value: 'UNAUTHORISED',
-        description: 'The customer did not authorize purchase of the merchandise or service.',
-      },
-      {
-        value: 'CREDIT_NOT_PROCESSED',
-        description: 'The refund or credit was not processed for the customer.',
-      },
-      { value: 'DUPLICATE_TRANSACTION', description: 'The transaction was a duplicate.' },
-      { value: 'INCORRECT_AMOUNT', description: 'The customer was charged an incorrect amount.' },
-      {
-        value: 'PAYMENT_BY_OTHER_MEANS',
-        description: 'The customer paid for the transaction through other means.',
-      },
-      {
-        value: 'CANCELED_RECURRING_BILLING',
-        description:
-          'The customer was being charged for a subscription or a recurring transaction that was canceled.',
-      },
-      { value: 'PROBLEM_WITH_REMITTANCE', description: 'A problem occurred with the remittance.' },
-      { value: 'OTHER', description: 'Other.' },
-    ],
-  })
-  .openapi('DisputeReason')
-
-const ItemTypeSchema = z
-  .enum(['PRODUCT', 'SERVICE', 'BOOKING', 'DIGITAL_DOWNLOAD'])
-  .openapi({
-    title: 'Item Type',
-    description: 'The type of the item which has the issue.',
-    'x-enumDescriptions': [
-      { value: 'PRODUCT', description: 'The product has an issue.' },
-      { value: 'SERVICE', description: 'The service has an issue.' },
-      { value: 'BOOKING', description: 'The booking has an issue.' },
-      { value: 'DIGITAL_DOWNLOAD', description: 'The digital download has an issue.' },
-    ],
-  })
-  .openapi('ItemType')
-
-const ItemProductDetailsSchema = z.any().openapi('ItemProductDetails')
-
-const ItemServiceDetailsSchema = z.any().openapi('ItemServiceDetails')
-
-const ItemBookingDetailsSchema = z.any().openapi('ItemBookingDetails')
-
-const ItemDigitalDownloadDetailsSchema = z.any().openapi('ItemDigitalDownloadDetails')
-
-const ItemCancellationDetailsSchema = z.any().openapi('ItemCancellationDetails')
-
-const ItemAgreedRefundDetailsSchema = z.any().openapi('ItemAgreedRefundDetails')
-
-const ItemInfoSchema = z
-  .object({
-    item_id: z
-      .string()
-      .regex(/^.*$/)
-      .min(1)
-      .max(255)
+    affected_party: z
+      .enum(['SELLER', 'BUYER', 'PAYMENT_PROCESSOR'])
       .exactOptional()
       .openapi({
-        description:
-          'The item ID. If the merchant provides multiple pieces of evidence and the transaction has multiple item IDs, the merchant can use this value to associate a piece of evidence with an item ID.',
-      }),
-    item_name: z
-      .string()
-      .regex(/^.*$/)
-      .min(1)
-      .max(2000)
-      .exactOptional()
-      .openapi({ description: 'The item name.' }),
-    item_description: z
-      .string()
-      .regex(/^(.|\r?\n)*$/)
-      .min(1)
-      .max(2000)
-      .exactOptional()
-      .openapi({ description: 'The item description.' }),
-    item_quantity: z
-      .string()
-      .regex(/^[1-9][0-9]{0,9}$/)
-      .min(1)
-      .max(10)
-      .exactOptional()
-      .openapi({ description: 'The count of the item in the dispute. Must be a whole number.' }),
-    partner_transaction_id: z
-      .string()
-      .regex(/^[A-Za-z0-9]+$/)
-      .min(1)
-      .max(255)
-      .exactOptional()
-      .openapi({
-        description:
-          'The ID of the transaction in the partner system. The partner transaction ID is returned at an item level because the partner might show different transactions for different items in the cart.',
-      }),
-    reason: DisputeReasonSchema.exactOptional(),
-    dispute_amount: MoneySchema.exactOptional().openapi({
-      description: 'The amount of the item in the dispute.',
-      readOnly: true,
-    }),
-    notes: z
-      .string()
-      .regex(/^(.|\r?\n)*$/)
-      .min(1)
-      .max(2000)
-      .exactOptional()
-      .openapi({ description: 'Any notes provided with the item.' }),
-    item_type: ItemTypeSchema.exactOptional(),
-    product_details: ItemProductDetailsSchema.exactOptional(),
-    service_details: ItemServiceDetailsSchema.exactOptional(),
-    booking_details: ItemBookingDetailsSchema.exactOptional(),
-    digital_download_details: ItemDigitalDownloadDetailsSchema.exactOptional(),
-    cancellation_details: ItemCancellationDetailsSchema.exactOptional(),
-    agreed_refund_details: ItemAgreedRefundDetailsSchema.exactOptional(),
-  })
-  .openapi({
-    title: 'Item Information',
-    description: 'The information for a purchased item in a disputed transaction.',
-    required: [],
-  })
-  .openapi('ItemInfo')
-
-const ItemInfoListSchema = z
-  .array(ItemInfoSchema)
-  .min(1)
-  .max(100)
-  .openapi({
-    readOnly: true,
-    description: 'An array of items that were purchased as part of the transaction.',
-  })
-  .openapi('ItemInfoList')
-
-const PaymentProcessorSchema = z.any().openapi('PaymentProcessor')
-
-const TransactionInfoSchema = z
-  .object({
-    buyer_transaction_id: z
-      .string()
-      .regex(/^[A-Za-z0-9-]+$/)
-      .min(1)
-      .max(255)
-      .exactOptional()
-      .openapi({ description: 'The ID, as seen by the customer, for this transaction.' }),
-    seller_transaction_id: z
-      .string()
-      .regex(/^[A-Za-z0-9-]+$/)
-      .min(1)
-      .max(255)
-      .exactOptional()
-      .openapi({ description: 'The ID, as seen by the merchant, for this transaction.' }),
-    reference_id: z
-      .string()
-      .regex(/^.*$/)
-      .min(1)
-      .max(255)
-      .exactOptional()
-      .openapi({ description: 'The ID, as seen by the partner, for this transaction.' }),
-    create_time: DateTimeSchema.exactOptional().openapi({
-      description:
-        'The date and time when the transaction was created, in [Internet date and time format](https://tools.ietf.org/html/rfc3339#section-5.6). For example, *`yyyy`*-*`MM`*-*`dd`*`T`*`HH`*:*`mm`*:*`ss`*.*`SSS`*`Z`.',
-    }),
-    transaction_status: z
-      .enum([
-        'COMPLETED',
-        'UNCLAIMED',
-        'DENIED',
-        'FAILED',
-        'HELD',
-        'PENDING',
-        'PARTIALLY_REFUNDED',
-        'REFUNDED',
-        'REVERSED',
-        'CANCELLED',
-      ])
-      .exactOptional()
-      .openapi({
-        description: 'The transaction status.',
+        description: 'The affected party in the money movement.',
         'x-enumDescriptions': [
-          { value: 'COMPLETED', description: 'The transaction processing completed.' },
+          { value: 'SELLER', description: 'The money movement is related to the seller.' },
+          { value: 'BUYER', description: 'The money movement is related to the buyer.' },
           {
-            value: 'UNCLAIMED',
+            value: 'PAYMENT_PROCESSOR',
             description:
-              'The items in the transaction are unclaimed. If they are not claimed within 30 days, the funds are returned to the sender.',
+              'The money movement is related to the payment processing tenants such as PayPal, Venmo, Braintree etc.',
           },
-          { value: 'DENIED', description: 'The transaction was denied.' },
-          { value: 'FAILED', description: 'The transaction failed.' },
-          { value: 'HELD', description: 'The transaction is on hold.' },
-          { value: 'PENDING', description: 'The transaction is waiting to be processed.' },
-          {
-            value: 'PARTIALLY_REFUNDED',
-            description: 'The payment for the transaction was partially refunded.',
-          },
-          {
-            value: 'REFUNDED',
-            description: 'The payment for the transaction was successfully refunded.',
-          },
-          {
-            value: 'REVERSED',
-            description:
-              'The payment for the transaction was reversed due to a chargeback or other reversal type.',
-          },
-          { value: 'CANCELLED', description: 'The transaction is cancelled.' },
         ],
       }),
-    gross_amount: MoneySchema.exactOptional().openapi({
-      description: 'The gross amount of the transaction.',
+    amount: MoneySchema.exactOptional().openapi({
+      description: 'The amount transferred as part of the money movement.',
     }),
-    gross_asset: CryptocurrencySchema.exactOptional().openapi({
-      description: 'The gross asset of the transaction.',
+    asset: CryptocurrencySchema.exactOptional().openapi({
+      description: 'The asset transferred as part of the money movement.',
     }),
-    invoice_number: z
-      .string()
-      .regex(/^[A-Za-z0-9:\-|]+$/)
-      .min(1)
-      .max(127)
+    initiated_time: DateTimeSchema.exactOptional().openapi({
+      description:
+        'The date and time when the money movement was initiated, in [Internet date and time format](https://tools.ietf.org/html/rfc3339#section-5.6).',
+    }),
+    type: z
+      .enum(['DEBIT', 'CREDIT'])
       .exactOptional()
-      .openapi({ description: 'The ID of the invoice for the payment.' }),
-    custom: z
+      .openapi({
+        description: 'The type of the money movement.',
+        'x-enumDescriptions': [
+          { value: 'DEBIT', description: 'The money movement is a debit transaction.' },
+          { value: 'CREDIT', description: 'The money movement is a credit transaction.' },
+        ],
+      }),
+    reason: MoneyMovementReasonSchema.exactOptional().openapi({
+      description: 'The reason for the money movement.',
+    }),
+  })
+  .openapi({
+    title: 'Money movement',
+    description: 'The Money movement details with party.',
+    deprecated: true,
+    required: [],
+  })
+  .openapi('MoneyMovement')
+
+const MoneyMovementListSchema = z
+  .array(MoneyMovementSchema)
+  .min(1)
+  .max(50)
+  .openapi({
+    description: 'DEPRECATED The Money movement details for the dispute.',
+    deprecated: true,
+  })
+  .openapi('MoneyMovementList')
+
+const FundMovementReasonSchema = z
+  .enum(['REVERSED_TRANSACTION_FEE', 'DISPUTE_SETTLEMENT', 'DISPUTE_FEE', 'CHARGEBACK_FEE'])
+  .openapi({
+    description: 'The reason for the fund movement.',
+    'x-enumDescriptions': [
+      {
+        value: 'REVERSED_TRANSACTION_FEE',
+        description:
+          'The fee amount reimbursed to the seller as part of the dispute resolution process.',
+      },
+      { value: 'DISPUTE_SETTLEMENT', description: 'The money movement is for dispute settlement.' },
+      {
+        value: 'DISPUTE_FEE',
+        description:
+          'The money movement is for dispute fee which PayPal charges to sellers for facilitating the online dispute resolution process for transactions that are processed either through a buyer’s PayPal account or through a PayPal guest checkout.',
+      },
+      {
+        value: 'CHARGEBACK_FEE',
+        description:
+          'The money movement is for chargeback fee which PayPal charges to sellers for facilitating the chargeback process for transactions that are not processed either through a buyer’s PayPal account or through a guest checkout, and where the buyer pursues a chargeback for the transaction with their card issuer.',
+      },
+    ],
+  })
+  .openapi('FundMovementReason')
+
+const FundMovementSchema = z
+  .object({
+    party: z
+      .enum(['SELLER', 'BUYER', 'PAYMENT_PROCESSOR'])
+      .exactOptional()
+      .openapi({
+        description: 'The affected party in the money movement.',
+        'x-enumDescriptions': [
+          { value: 'SELLER', description: 'The money movement is related to the seller.' },
+          { value: 'BUYER', description: 'The money movement is related to the buyer.' },
+          {
+            value: 'PAYMENT_PROCESSOR',
+            description:
+              'The money movement is related to the payment processing tenants such as PayPal, Venmo, Braintree etc.',
+          },
+        ],
+      }),
+    amount: MoneySchema.exactOptional().openapi({
+      description: 'The amount transferred as part of the money movement.',
+    }),
+    asset: CryptocurrencySchema.exactOptional().openapi({
+      description: 'The asset transferred as part of the money movement.',
+    }),
+    initiated_time: DateTimeSchema.exactOptional().openapi({
+      description:
+        'The date and time when the money movement was initiated, in [Internet date and time format](https://tools.ietf.org/html/rfc3339#section-5.6).',
+    }),
+    type: z
+      .enum(['DEBIT', 'CREDIT'])
+      .exactOptional()
+      .openapi({
+        description: 'The type of the money movement.',
+        'x-enumDescriptions': [
+          { value: 'DEBIT', description: 'The money movement is a debit transaction.' },
+          { value: 'CREDIT', description: 'The money movement is a credit transaction.' },
+        ],
+      }),
+    reason: FundMovementReasonSchema.exactOptional().openapi({
+      description: 'The reason for the fund movement.',
+    }),
+  })
+  .openapi({
+    title: 'Fund movement',
+    description:
+      'This section contains the details about the fund movement of the parties ,time , direction and the reason for it.',
+    required: [],
+  })
+  .openapi('FundMovement')
+
+const FundMovementListSchema = z
+  .array(FundMovementSchema)
+  .min(1)
+  .max(50)
+  .openapi({ description: 'The movements of fund due to the dispute.' })
+  .openapi('FundMovementList')
+
+const DisputeChannelSchema = z
+  .enum(['INTERNAL', 'EXTERNAL', 'ALERT'])
+  .openapi({
+    readOnly: true,
+    description: 'The channel where the customer created the dispute.',
+    'x-enumDescriptions': [
+      {
+        value: 'INTERNAL',
+        description: 'The customer contacts PayPal to file a dispute with the merchant.',
+      },
+      {
+        value: 'EXTERNAL',
+        description: 'The customer contacts their card issuer or bank to request a refund.',
+      },
+      {
+        value: 'ALERT',
+        description:
+          'Pre-chargeback alert when customer contacts their card issuer to request a refund.',
+      },
+    ],
+  })
+  .openapi('DisputeChannel')
+
+const DocumentSchema = z
+  .object({
+    name: z
       .string()
-      .regex(/^(.|\r?\n)*$/)
+      .regex(/^[A-Za-z0-9-_,\s]+[.]{1}[A-Za-z]+$/)
       .min(1)
       .max(2000)
       .exactOptional()
+      .openapi({ description: 'The document name.' }),
+    url: z
+      .url()
+      .exactOptional()
       .openapi({
-        description: 'A free-text field that is entered by the merchant during checkout.',
+        readOnly: true,
+        description:
+          'The downloadable URL for the document for which the client has access.<br/><br/><blockquote><strong>Note:</strong> Document download may require some configuration setup and available as a limited release at this time. For more information, reach out to your PayPal account manager.</blockquote>.',
       }),
-    buyer: BuyerSchema.exactOptional(),
-    seller: SellerSchema.exactOptional(),
-    items: ItemInfoListSchema.exactOptional(),
-    payment_processor: PaymentProcessorSchema.exactOptional(),
   })
   .openapi({
-    title: 'Transaction Information',
-    description: 'The information about the disputed transaction.',
+    title: 'Document',
+    description: 'An uploaded document as a binary object that supports a dispute.',
     required: [],
   })
-  .openapi('TransactionInfo')
+  .openapi('Document')
+
+const DocumentListSchema = z
+  .array(DocumentSchema)
+  .min(1)
+  .max(10)
+  .openapi({
+    readOnly: true,
+    description:
+      'An array of metadata for the documents which contains any additional info about the message posted.',
+  })
+  .openapi('DocumentList')
+
+const MessageSchema = z
+  .object({
+    posted_by: z
+      .enum(['BUYER', 'SELLER', 'ARBITER'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates whether the customer, merchant, or dispute arbiter posted the message.',
+        readOnly: true,
+        'x-enumDescriptions': [
+          { value: 'BUYER', description: 'The customer posted the message.' },
+          { value: 'SELLER', description: 'The merchant posted the message.' },
+          { value: 'ARBITER', description: 'The arbiter of the dispute posted the message.' },
+        ],
+      }),
+    time_posted: DateTimeSchema.exactOptional().openapi({
+      readOnly: true,
+      description:
+        'The date and time when the message was posted, in [Internet date and time format](https://tools.ietf.org/html/rfc3339#section-5.6).',
+    }),
+    content: z
+      .string()
+      .regex(/^(.|\r?\n)*$/)
+      .min(0)
+      .max(2000)
+      .exactOptional()
+      .openapi({ description: 'The message text.' }),
+    documents: DocumentListSchema.exactOptional(),
+  })
+  .openapi({
+    title: 'Message',
+    description: 'A customer- or merchant-posted message for the dispute.',
+    required: [],
+  })
+  .openapi('Message')
+
+const MessageListSchema = z
+  .array(MessageSchema)
+  .min(1)
+  .max(1000)
+  .openapi({ description: 'An array of customer- or merchant-posted messages for the dispute.' })
+  .openapi('MessageList')
+
+const MerchantContactedOutcomeSchema = z
+  .enum(['NO_RESPONSE', 'FIXED', 'NOT_FIXED'])
+  .openapi({
+    title: 'Merchant Contacted Outcome',
+    description: 'The outcome when the customer has contacted the merchant.',
+    'x-enumDescriptions': [
+      { value: 'NO_RESPONSE', description: 'The merchant did not respond to the customer.' },
+      {
+        value: 'FIXED',
+        description: 'The merchant agreed to fix the issue but did not fix it yet.',
+      },
+      { value: 'NOT_FIXED', description: 'The merchant could not fix the issue.' },
+    ],
+  })
+  .openapi('MerchantContactedOutcome')
+
+const MerchantContactedModeSchema = z
+  .enum(['WEBSITE', 'PHONE', 'EMAIL', 'WRITTEN', 'IN_PERSON'])
+  .openapi({
+    title: 'Merchant Contacted Method',
+    description: 'The method used to contact the merchant.',
+    'x-enumDescriptions': [
+      { value: 'WEBSITE', description: 'The merchant was contacted through his website.' },
+      { value: 'PHONE', description: 'The merchant was contacted through either phone or fax.' },
+      {
+        value: 'EMAIL',
+        description: 'The merchant was contacted through either email or text message.',
+      },
+      {
+        value: 'WRITTEN',
+        description: 'The merchant was contacted through a written communication.',
+      },
+      { value: 'IN_PERSON', description: 'The merchant was contacted in person.' },
+    ],
+  })
+  .openapi('MerchantContactedMode')
 
 const DuplicateTransactionSchema = z
   .object({
@@ -1785,6 +1779,26 @@ const ServiceDetailsSchema = z
   .openapi({ title: 'Service Details', description: 'The service details.', required: [] })
   .openapi('ServiceDetails')
 
+const AgreedRefundDetailsSchema = z
+  .object({
+    merchant_agreed_refund: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Indicates whether merchant has agreed to refund the buyer or not.',
+      }),
+    merchant_agreed_refund_time: DateTimeSchema.exactOptional().openapi({
+      description:
+        'The date and time proposed by merchant to provide the refund, in [Internet date and time format](https://tools.ietf.org/html/rfc3339#section-5.6).',
+    }),
+  })
+  .openapi({
+    title: 'Agreed Refund Details',
+    description: 'Details of Agreed Refund between customer and merchant.',
+    required: [],
+  })
+  .openapi('AgreedRefundDetails')
+
 const CreditNotProcessedSchema = z
   .object({
     issue_type: z
@@ -1837,511 +1851,139 @@ const BillingDisputesPropertiesSchema = z
   })
   .openapi('BillingDisputesProperties')
 
-const BuyerEscalationReasonSchema = z.any().openapi('BuyerEscalationReason')
+const CountryCodeSchema = z
+  .string()
+  .regex(/^([A-Z]{2}|C2)$/)
+  .length(2)
+  .openapi({
+    description:
+      'The [two-character ISO 3166-1 code](/api/rest/reference/country-codes/) that identifies the country or region.<blockquote><strong>Note:</strong> The country code for Great Britain is <code>GB</code> and not <code>UK</code> as used in the top-level domain names for that country. Use the `C2` country code for China worldwide for comparable uncontrolled price (CUP) method, bank card, and cross-border transactions.</blockquote>',
+  })
+  .openapi('CountryCode')
 
-const CommunicationDetailsSchema = z
+const AddressDetailsSchema = z
   .object({
-    email: EmailAddressSchema.exactOptional().openapi({
-      description:
-        'The email address that is provided by the merchant where the customer can share the evidences.',
-    }),
-    note: z
+    street_number: z
       .string()
-      .regex(/^(.|\r?\n)*$/)
-      .min(1)
-      .max(2000)
+      .max(100)
+      .exactOptional()
+      .openapi({ description: 'The street number.' }),
+    street_name: z
+      .string()
+      .max(100)
+      .exactOptional()
+      .openapi({ description: 'The street name. Just `Drury` in `Drury Lane`.' }),
+    street_type: z
+      .string()
+      .max(100)
+      .exactOptional()
+      .openapi({
+        description: 'The street type. For example, avenue, boulevard, road, or expressway.',
+      }),
+    delivery_service: z
+      .string()
+      .max(100)
+      .exactOptional()
+      .openapi({
+        description: 'The delivery service. Post office box, bag number, or post office name.',
+      }),
+    building_name: z
+      .string()
+      .max(100)
       .exactOptional()
       .openapi({
         description:
-          'The merchant provided notes that are visible to both the customer and PayPal.',
+          'A named locations that represents the premise. Usually a building name or number or collection of buildings with a common name or number. For example, <code>Craven House</code>.',
       }),
-    time_posted: DateTimeSchema.exactOptional().openapi({
-      description:
-        'The date and time when the contact details were posted, in [Internet date and time format](https://tools.ietf.org/html/rfc3339#section-5.6).',
-      readOnly: true,
-    }),
+    sub_building: z
+      .string()
+      .max(100)
+      .exactOptional()
+      .openapi({
+        description:
+          'The first-order entity below a named building or location that represents the sub-premises. Usually a single building within a collection of buildings with a common name. Can be a flat, story, floor, room, or apartment.',
+      }),
   })
   .openapi({
-    title: 'Contact Details',
+    title: 'Address Details',
     description:
-      'The contact details that a merchant provides to the customer to use to share their evidence documents.',
+      'The non-portable additional address details that are sometimes needed for compliance, risk, or other scenarios where fine-grain address information might be needed. Not portable with common third party and open source. Redundant with core fields.<br/>For example, `address_portable.address_line_1` is usually a combination of `address_details.street_number`, `street_name`, and `street_type`.',
     required: [],
   })
-  .openapi('CommunicationDetails')
+  .openapi('AddressDetails')
 
-const DocumentSchema = z
+const AddressPortableSchema = z
   .object({
-    name: z
+    address_line_1: z
       .string()
-      .regex(/^[A-Za-z0-9-_,\s]+[.]{1}[A-Za-z]+$/)
-      .min(1)
-      .max(2000)
-      .exactOptional()
-      .openapi({ description: 'The document name.' }),
-    url: z
-      .url()
+      .max(300)
       .exactOptional()
       .openapi({
-        readOnly: true,
         description:
-          'The downloadable URL for the document for which the client has access.<br/><br/><blockquote><strong>Note:</strong> Document download may require some configuration setup and available as a limited release at this time. For more information, reach out to your PayPal account manager.</blockquote>.',
+          'The first line of the address. For example, number or street. For example, `173 Drury Lane`. Required for data entry and compliance and risk checks. Must contain the full address.',
       }),
-  })
-  .openapi({
-    title: 'Document',
-    description: 'An uploaded document as a binary object that supports a dispute.',
-    required: [],
-  })
-  .openapi('Document')
-
-const DefinitionsDocumentListSchema = z
-  .array(DocumentSchema)
-  .min(1)
-  .max(100)
-  .openapi({ description: 'An array of evidence documents.' })
-  .openapi('DefinitionsDocumentList')
-
-const LinkDescriptionSchema = z
-  .object({
-    href: z
+    address_line_2: z
       .string()
+      .max(300)
+      .exactOptional()
       .openapi({
-        description:
-          'The complete target URL. To make the related call, combine the method with this [URI Template-formatted](https://tools.ietf.org/html/rfc6570) link. For pre-processing, include the `$`, `(`, and `)` characters. The `href` is the key HATEOAS component that links a completed call with a subsequent call.',
+        description: 'The second line of the address. For example, suite or apartment number.',
       }),
-    rel: z
+    address_line_3: z
       .string()
+      .max(100)
+      .exactOptional()
       .openapi({
         description:
-          'The [link relation type](https://tools.ietf.org/html/rfc5988#section-4), which serves as an ID for a link that unambiguously describes the semantics of the link. See [Link Relations](https://www.iana.org/assignments/link-relations/link-relations.xhtml).',
+          'The third line of the address, if needed. For example, a street complement for Brazil, direction text, such as `next to Walmart`, or a landmark in an Indian address.',
       }),
-    method: z
-      .enum(['GET', 'POST', 'PUT', 'DELETE', 'HEAD', 'CONNECT', 'OPTIONS', 'PATCH'])
-      .exactOptional()
-      .openapi({ description: 'The HTTP method required to make the related call.' }),
-  })
-  .openapi({
-    title: 'Link Description',
-    description:
-      'The request-related [HATEOAS link](/api/rest/responses/#hateoas-links) information.',
-    required: ['href', 'rel'],
-  })
-  .openapi('LinkDescription')
-
-const DefinitionsLinkDescriptionListSchema = z
-  .array(LinkDescriptionSchema)
-  .min(1)
-  .max(10)
-  .openapi({
-    description:
-      'An array of request-related [HATEOAS links](/docs/api/reference/api-responses/#hateoas-links/).',
-    readOnly: true,
-  })
-  .openapi('DefinitionsLinkDescriptionList')
-
-const DenyOfferSchema = z
-  .object({
-    note: z
+    admin_area_4: z
       .string()
-      .regex(/^(.|\r?\n)*$/)
-      .min(1)
-      .max(2000)
-      .openapi({
-        description:
-          'The customer notes about the denial of offer. PayPal can but the merchant cannot view these notes.',
-      }),
-  })
-  .openapi({
-    title: 'Deny Offer Request',
-    description: 'A customer request to deny the offer made by the merchant.',
-    required: ['note'],
-  })
-  .openapi('DenyOffer')
-
-const TransactionInfoListSchema = z
-  .array(TransactionInfoSchema)
-  .min(1)
-  .max(1000)
-  .openapi({ description: 'An array of transactions for which disputes were created.' })
-  .openapi('TransactionInfoList')
-
-const StatusSchema = z
-  .enum([
-    'OPEN',
-    'WAITING_FOR_BUYER_RESPONSE',
-    'WAITING_FOR_SELLER_RESPONSE',
-    'UNDER_REVIEW',
-    'RESOLVED',
-    'OTHER',
-  ])
-  .openapi({
-    readOnly: true,
-    description:
-      'The overall status of the dispute, constant for all the parties involved at anytime during the dispute lifecycle.',
-    'x-enumDescriptions': [
-      { value: 'OPEN', description: 'The dispute is open.' },
-      {
-        value: 'WAITING_FOR_BUYER_RESPONSE',
-        description: 'The dispute is waiting for a response from the customer.',
-      },
-      {
-        value: 'WAITING_FOR_SELLER_RESPONSE',
-        description: 'The dispute is waiting for a response from the merchant.',
-      },
-      { value: 'UNDER_REVIEW', description: 'The dispute is under review with PayPal.' },
-      { value: 'RESOLVED', description: 'The dispute is resolved.' },
-      {
-        value: 'OTHER',
-        description: 'The default status if the dispute does not have one of the other statuses.',
-      },
-    ],
-  })
-  .openapi('Status')
-
-const FeePolicySchema = z
-  .object({})
-  .openapi({
-    title: 'Fee Policy',
-    description:
-      'Policy that determines whether the fee needs to be charged, retained or returned while moving the money as part of dispute process.',
-  })
-  .openapi('FeePolicy')
-
-const DisputeOutcomeSchema = z
-  .object({
-    outcome_code: z
-      .enum([
-        'RESOLVED_BUYER_FAVOUR',
-        'RESOLVED_SELLER_FAVOUR',
-        'RESOLVED_WITH_PAYOUT',
-        'CANCELED_BY_BUYER',
-        'ACCEPTED',
-        'DENIED',
-        'NONE',
-      ])
-      .exactOptional()
-      .openapi({
-        description: 'The outcome of a resolved dispute.',
-        'x-enumDescriptions': [
-          {
-            value: 'RESOLVED_BUYER_FAVOUR',
-            description: "The dispute was resolved in the customer's favor.",
-          },
-          {
-            value: 'RESOLVED_SELLER_FAVOUR',
-            description: "The dispute was resolved in the merchant's favor.",
-          },
-          {
-            value: 'RESOLVED_WITH_PAYOUT',
-            description:
-              'PayPal provided the merchant or customer with protection and the case is resolved.',
-          },
-          { value: 'CANCELED_BY_BUYER', description: 'The customer canceled the dispute.' },
-          {
-            value: 'ACCEPTED',
-            description: 'DEPRECATED. PayPal accepted the dispute.',
-            deprecated: true,
-          },
-          {
-            value: 'DENIED',
-            description: 'DEPRECATED. PayPal denied the dispute.',
-            deprecated: true,
-          },
-          {
-            value: 'NONE',
-            description:
-              'A dispute was created for the same transaction ID, and the previous dispute was closed without any decision.',
-          },
-        ],
-      }),
-    outcome_reason: AdjudicationReasonSchema.exactOptional().openapi({
-      description: 'The justification for the adjudication outcome.',
-    }),
-    amount_refunded: MoneySchema.exactOptional().openapi({
-      description: 'The amount that either the merchant or PayPal refunds the customer.',
-    }),
-    asset_refunded: CryptocurrencySchema.exactOptional().openapi({
-      description: 'The asset that either the merchant or PayPal refunds the customer.',
-    }),
-  })
-  .openapi({ title: 'Dispute Outcome', description: 'The outcome of a dispute.', required: [] })
-  .openapi('DisputeOutcome')
-
-const MoneyMovementReasonSchema = z
-  .enum(['DISPUTE_SETTLEMENT_FEE', 'DISPUTE_SETTLEMENT', 'DISPUTE_FEE', 'CHARGEBACK_FEE'])
-  .openapi({
-    description: 'The reason for the money movement.',
-    'x-enumDescriptions': [
-      { value: 'DISPUTE_SETTLEMENT_FEE', description: 'The fee is for dispute settlement.' },
-      { value: 'DISPUTE_SETTLEMENT', description: 'The money movement is for dispute settlement.' },
-      {
-        value: 'DISPUTE_FEE',
-        description:
-          'The money movement is for dispute fee which PayPal charges to sellers for facilitating the online dispute resolution process for transactions that are processed either through a buyer’s PayPal account or through a PayPal guest checkout.',
-      },
-      {
-        value: 'CHARGEBACK_FEE',
-        description:
-          'The money movement is for chargeback fee which PayPal charges to sellers for facilitating the chargeback process for transactions that are not processed either through a buyer’s PayPal account or through a guest checkout, and where the buyer pursues a chargeback for the transaction with their card issuer.',
-      },
-    ],
-    deprecated: true,
-  })
-  .openapi('MoneyMovementReason')
-
-const MoneyMovementSchema = z
-  .object({
-    affected_party: z
-      .enum(['SELLER', 'BUYER', 'PAYMENT_PROCESSOR'])
-      .exactOptional()
-      .openapi({
-        description: 'The affected party in the money movement.',
-        'x-enumDescriptions': [
-          { value: 'SELLER', description: 'The money movement is related to the seller.' },
-          { value: 'BUYER', description: 'The money movement is related to the buyer.' },
-          {
-            value: 'PAYMENT_PROCESSOR',
-            description:
-              'The money movement is related to the payment processing tenants such as PayPal, Venmo, Braintree etc.',
-          },
-        ],
-      }),
-    amount: MoneySchema.exactOptional().openapi({
-      description: 'The amount transferred as part of the money movement.',
-    }),
-    asset: CryptocurrencySchema.exactOptional().openapi({
-      description: 'The asset transferred as part of the money movement.',
-    }),
-    initiated_time: DateTimeSchema.exactOptional().openapi({
-      description:
-        'The date and time when the money movement was initiated, in [Internet date and time format](https://tools.ietf.org/html/rfc3339#section-5.6).',
-    }),
-    type: z
-      .enum(['DEBIT', 'CREDIT'])
-      .exactOptional()
-      .openapi({
-        description: 'The type of the money movement.',
-        'x-enumDescriptions': [
-          { value: 'DEBIT', description: 'The money movement is a debit transaction.' },
-          { value: 'CREDIT', description: 'The money movement is a credit transaction.' },
-        ],
-      }),
-    reason: MoneyMovementReasonSchema.exactOptional().openapi({
-      description: 'The reason for the money movement.',
-    }),
-  })
-  .openapi({
-    title: 'Money movement',
-    description: 'The Money movement details with party.',
-    deprecated: true,
-    required: [],
-  })
-  .openapi('MoneyMovement')
-
-const MoneyMovementListSchema = z
-  .array(MoneyMovementSchema)
-  .min(1)
-  .max(50)
-  .openapi({
-    description: 'DEPRECATED The Money movement details for the dispute.',
-    deprecated: true,
-  })
-  .openapi('MoneyMovementList')
-
-const FundMovementReasonSchema = z
-  .enum(['REVERSED_TRANSACTION_FEE', 'DISPUTE_SETTLEMENT', 'DISPUTE_FEE', 'CHARGEBACK_FEE'])
-  .openapi({
-    description: 'The reason for the fund movement.',
-    'x-enumDescriptions': [
-      {
-        value: 'REVERSED_TRANSACTION_FEE',
-        description:
-          'The fee amount reimbursed to the seller as part of the dispute resolution process.',
-      },
-      { value: 'DISPUTE_SETTLEMENT', description: 'The money movement is for dispute settlement.' },
-      {
-        value: 'DISPUTE_FEE',
-        description:
-          'The money movement is for dispute fee which PayPal charges to sellers for facilitating the online dispute resolution process for transactions that are processed either through a buyer’s PayPal account or through a PayPal guest checkout.',
-      },
-      {
-        value: 'CHARGEBACK_FEE',
-        description:
-          'The money movement is for chargeback fee which PayPal charges to sellers for facilitating the chargeback process for transactions that are not processed either through a buyer’s PayPal account or through a guest checkout, and where the buyer pursues a chargeback for the transaction with their card issuer.',
-      },
-    ],
-  })
-  .openapi('FundMovementReason')
-
-const FundMovementSchema = z
-  .object({
-    party: z
-      .enum(['SELLER', 'BUYER', 'PAYMENT_PROCESSOR'])
-      .exactOptional()
-      .openapi({
-        description: 'The affected party in the money movement.',
-        'x-enumDescriptions': [
-          { value: 'SELLER', description: 'The money movement is related to the seller.' },
-          { value: 'BUYER', description: 'The money movement is related to the buyer.' },
-          {
-            value: 'PAYMENT_PROCESSOR',
-            description:
-              'The money movement is related to the payment processing tenants such as PayPal, Venmo, Braintree etc.',
-          },
-        ],
-      }),
-    amount: MoneySchema.exactOptional().openapi({
-      description: 'The amount transferred as part of the money movement.',
-    }),
-    asset: CryptocurrencySchema.exactOptional().openapi({
-      description: 'The asset transferred as part of the money movement.',
-    }),
-    initiated_time: DateTimeSchema.exactOptional().openapi({
-      description:
-        'The date and time when the money movement was initiated, in [Internet date and time format](https://tools.ietf.org/html/rfc3339#section-5.6).',
-    }),
-    type: z
-      .enum(['DEBIT', 'CREDIT'])
-      .exactOptional()
-      .openapi({
-        description: 'The type of the money movement.',
-        'x-enumDescriptions': [
-          { value: 'DEBIT', description: 'The money movement is a debit transaction.' },
-          { value: 'CREDIT', description: 'The money movement is a credit transaction.' },
-        ],
-      }),
-    reason: FundMovementReasonSchema.exactOptional().openapi({
-      description: 'The reason for the fund movement.',
-    }),
-  })
-  .openapi({
-    title: 'Fund movement',
-    description:
-      'This section contains the details about the fund movement of the parties ,time , direction and the reason for it.',
-    required: [],
-  })
-  .openapi('FundMovement')
-
-const FundMovementListSchema = z
-  .array(FundMovementSchema)
-  .min(1)
-  .max(50)
-  .openapi({ description: 'The movements of fund due to the dispute.' })
-  .openapi('FundMovementList')
-
-const DisputeChannelSchema = z
-  .enum(['INTERNAL', 'EXTERNAL', 'ALERT'])
-  .openapi({
-    readOnly: true,
-    description: 'The channel where the customer created the dispute.',
-    'x-enumDescriptions': [
-      {
-        value: 'INTERNAL',
-        description: 'The customer contacts PayPal to file a dispute with the merchant.',
-      },
-      {
-        value: 'EXTERNAL',
-        description: 'The customer contacts their card issuer or bank to request a refund.',
-      },
-      {
-        value: 'ALERT',
-        description:
-          'Pre-chargeback alert when customer contacts their card issuer to request a refund.',
-      },
-    ],
-  })
-  .openapi('DisputeChannel')
-
-const DocumentListSchema = z
-  .array(DocumentSchema)
-  .min(1)
-  .max(10)
-  .openapi({
-    readOnly: true,
-    description:
-      'An array of metadata for the documents which contains any additional info about the message posted.',
-  })
-  .openapi('DocumentList')
-
-const MessageSchema = z
-  .object({
-    posted_by: z
-      .enum(['BUYER', 'SELLER', 'ARBITER'])
+      .max(100)
       .exactOptional()
       .openapi({
         description:
-          'Indicates whether the customer, merchant, or dispute arbiter posted the message.',
-        readOnly: true,
-        'x-enumDescriptions': [
-          { value: 'BUYER', description: 'The customer posted the message.' },
-          { value: 'SELLER', description: 'The merchant posted the message.' },
-          { value: 'ARBITER', description: 'The arbiter of the dispute posted the message.' },
-        ],
+          'The neighborhood, ward, or district. Smaller than `admin_area_level_3` or `sub_locality`. Value is:<ul><li>The postal sorting code for Guernsey and many French territories, such as French Guiana.</li><li>The fine-grained administrative levels in China.</li></ul>',
       }),
-    time_posted: DateTimeSchema.exactOptional().openapi({
-      readOnly: true,
-      description:
-        'The date and time when the message was posted, in [Internet date and time format](https://tools.ietf.org/html/rfc3339#section-5.6).',
-    }),
-    content: z
+    admin_area_3: z
       .string()
-      .regex(/^(.|\r?\n)*$/)
-      .min(0)
-      .max(2000)
+      .max(100)
       .exactOptional()
-      .openapi({ description: 'The message text.' }),
-    documents: DocumentListSchema.exactOptional(),
+      .openapi({
+        description:
+          'A sub-locality, suburb, neighborhood, or district. Smaller than `admin_area_level_2`. Value is:<ul><li>Brazil. Suburb, bairro, or neighborhood.</li><li>India. Sub-locality or district. Street name information is not always available but a sub-locality or district can be a very small area.</li></ul>',
+      }),
+    admin_area_2: z
+      .string()
+      .max(120)
+      .exactOptional()
+      .openapi({ description: 'A city, town, or village. Smaller than `admin_area_level_1`.' }),
+    admin_area_1: z
+      .string()
+      .max(300)
+      .exactOptional()
+      .openapi({
+        description:
+          'The highest level sub-division in a country, which is usually a province, state, or ISO-3166-2 subdivision. Format for postal delivery. For example, `CA` and not `California`. Value, by country, is:<ul><li>UK. A county.</li><li>US. A state.</li><li>Canada. A province.</li><li>Japan. A prefecture.</li><li>Switzerland. A kanton.</li></ul>',
+      }),
+    postal_code: z
+      .string()
+      .max(60)
+      .exactOptional()
+      .openapi({
+        description:
+          'The postal code, which is the zip code or equivalent. Typically required for countries with a postal code or an equivalent. See [postal code](https://en.wikipedia.org/wiki/Postal_code).',
+      }),
+    country_code: CountryCodeSchema,
+    address_details: AddressDetailsSchema.exactOptional(),
   })
   .openapi({
-    title: 'Message',
-    description: 'A customer- or merchant-posted message for the dispute.',
-    required: [],
+    title: 'Portable Postal Address (Medium-Grained)',
+    description:
+      'The portable international postal address. Maps to [AddressValidationMetadata](https://github.com/googlei18n/libaddressinput/wiki/AddressValidationMetadata) and HTML 5.1 [Autofilling form controls: the autocomplete attribute](https://www.w3.org/TR/html51/sec-forms.html#autofilling-form-controls-the-autocomplete-attribute).',
+    required: ['country_code'],
   })
-  .openapi('Message')
-
-const MessageListSchema = z
-  .array(MessageSchema)
-  .min(1)
-  .max(1000)
-  .openapi({ description: 'An array of customer- or merchant-posted messages for the dispute.' })
-  .openapi('MessageList')
-
-const MerchantContactedOutcomeSchema = z
-  .enum(['NO_RESPONSE', 'FIXED', 'NOT_FIXED'])
-  .openapi({
-    title: 'Merchant Contacted Outcome',
-    description: 'The outcome when the customer has contacted the merchant.',
-    'x-enumDescriptions': [
-      { value: 'NO_RESPONSE', description: 'The merchant did not respond to the customer.' },
-      {
-        value: 'FIXED',
-        description: 'The merchant agreed to fix the issue but did not fix it yet.',
-      },
-      { value: 'NOT_FIXED', description: 'The merchant could not fix the issue.' },
-    ],
-  })
-  .openapi('MerchantContactedOutcome')
-
-const MerchantContactedModeSchema = z
-  .enum(['WEBSITE', 'PHONE', 'EMAIL', 'WRITTEN', 'IN_PERSON'])
-  .openapi({
-    title: 'Merchant Contacted Method',
-    description: 'The method used to contact the merchant.',
-    'x-enumDescriptions': [
-      { value: 'WEBSITE', description: 'The merchant was contacted through his website.' },
-      { value: 'PHONE', description: 'The merchant was contacted through either phone or fax.' },
-      {
-        value: 'EMAIL',
-        description: 'The merchant was contacted through either email or text message.',
-      },
-      {
-        value: 'WRITTEN',
-        description: 'The merchant was contacted through a written communication.',
-      },
-      { value: 'IN_PERSON', description: 'The merchant was contacted in person.' },
-    ],
-  })
-  .openapi('MerchantContactedMode')
+  .openapi('AddressPortable')
 
 const MerchandizeDisputePropertiesSchema = z
   .object({
@@ -5494,6 +5136,76 @@ const EvidenceInfoSchema = z
   })
   .openapi('EvidenceInfo')
 
+const DefinitionsDocumentListSchema = z
+  .array(DocumentSchema)
+  .min(1)
+  .max(100)
+  .openapi({ description: 'An array of evidence documents.' })
+  .openapi('DefinitionsDocumentList')
+
+const ActionInfoSchema = z
+  .object({
+    action: z
+      .enum([
+        'ACKNOWLEDGE_RETURN_ITEM',
+        'ACCEPT_CLAIM',
+        'PROVIDE_EVIDENCE',
+        'APPEAL',
+        'CANCEL',
+        'CHANGE_REASON',
+        'ESCALATE',
+      ])
+      .exactOptional()
+      .openapi({
+        description: 'The action for which the evidence was requested or submitted.',
+        'x-enumDescriptions': [
+          {
+            value: 'ACKNOWLEDGE_RETURN_ITEM',
+            description: 'The evidence corresponds to action `acknowledge_return_item`.',
+          },
+          {
+            value: 'ACCEPT_CLAIM',
+            description: 'The evidence corresponds to action `accept_claim`.',
+          },
+          {
+            value: 'PROVIDE_EVIDENCE',
+            description: 'The evidence corresponds to action `provide_evidence`.',
+          },
+          { value: 'APPEAL', description: 'The evidence corresponds to action `appeal`.' },
+          { value: 'CANCEL', description: 'The evidence corresponds to action `cancel`.' },
+          {
+            value: 'CHANGE_REASON',
+            description: 'The evidence corresponds to action `change_reason`.',
+          },
+          { value: 'ESCALATE', description: 'The evidence corresponds to action `escalate`.' },
+        ],
+      }),
+    response_option: z
+      .string()
+      .regex(/^[A-Z_]+$/)
+      .min(1)
+      .max(255)
+      .exactOptional()
+      .openapi({
+        description:
+          'The response option for the corresponding action. Possible values:<ul><li><a href="/docs/api/customer-disputes/v1/#definition-acknowledgement_type">Acknowledgement Types</a></li><li><a href="/docs/api/customer-disputes/v1/#definition-response-accept_claim_type">Accept Claim types</a></li></ul>.',
+      }),
+    mandatory: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates whether the evidence is mandatory for the corresponding action and response option.',
+      }),
+  })
+  .openapi({
+    title: 'Evidence Extensions',
+    description:
+      'The extended properties for a evidence. Includes additional information such as the action for which the evidence was requested/submitted, and whether the evidence is mandatory.',
+    required: [],
+  })
+  .openapi('ActionInfo')
+
 const EvidenceSchema = z
   .object({
     evidence_type: z
@@ -5955,6 +5667,36 @@ const EvidenceListSchema = z
   .openapi({ description: 'An array of evidence documents.' })
   .openapi('EvidenceList')
 
+const OfferTypeSchema = z
+  .enum(['REFUND', 'REFUND_WITH_RETURN', 'REFUND_WITH_REPLACEMENT', 'REPLACEMENT_WITHOUT_REFUND'])
+  .openapi({
+    title: 'Offer Type',
+    description: 'The merchant-proposed offer type for the dispute.',
+    'x-enumDescriptions': [
+      {
+        value: 'REFUND',
+        description:
+          'The merchant must refund the customer without any item replacement or return. This offer type is valid in the inquiry phase and occurs when a merchant is willing to refund a specific amount. Buyer acceptance is needed for partial refund offers and dispute is auto closed for full refunds. Include the <code>offer_amount</code> but omit the <code>return_shipping_address</code> parameters from the make offer request.',
+      },
+      {
+        value: 'REFUND_WITH_RETURN',
+        description:
+          'The customer must return the item to the merchant and then merchant will refund the money. This offer type is valid in the inquiry phase and occurs when a merchant is willing to refund a specific amount and requires the customer to return the item. Include the <code>return_shipping_address</code> parameter and the <code>offer_amount</code> parameter in the make offer request.',
+      },
+      {
+        value: 'REFUND_WITH_REPLACEMENT',
+        description:
+          'The merchant must do a refund and then send a replacement item to the customer. This offer type is valid in the inquiry phase when a merchant is willing to refund a specific amount and send the replacement item. Include the <code>offer_amount</code> parameter in the make offer request.',
+      },
+      {
+        value: 'REPLACEMENT_WITHOUT_REFUND',
+        description:
+          'The merchant must send a replacement item to the customer with no additional refunds. This offer type is valid in the inquiry phase when a merchant is willing to replace the item without any refund. Omit the <code>offer_amount</code> parameter from the make offer request.',
+      },
+    ],
+  })
+  .openapi('OfferType')
+
 const OfferHistorySchema = z
   .object({
     offer_time: DateTimeSchema.exactOptional().openapi({
@@ -6033,6 +5775,36 @@ const RefundDetailsSchema = z
   .openapi({ title: 'Refund Details', description: 'The refund details.', required: [] })
   .openapi('RefundDetails')
 
+const CommunicationDetailsSchema = z
+  .object({
+    email: EmailAddressSchema.exactOptional().openapi({
+      description:
+        'The email address that is provided by the merchant where the customer can share the evidences.',
+    }),
+    note: z
+      .string()
+      .regex(/^(.|\r?\n)*$/)
+      .min(1)
+      .max(2000)
+      .exactOptional()
+      .openapi({
+        description:
+          'The merchant provided notes that are visible to both the customer and PayPal.',
+      }),
+    time_posted: DateTimeSchema.exactOptional().openapi({
+      description:
+        'The date and time when the contact details were posted, in [Internet date and time format](https://tools.ietf.org/html/rfc3339#section-5.6).',
+      readOnly: true,
+    }),
+  })
+  .openapi({
+    title: 'Contact Details',
+    description:
+      'The contact details that a merchant provides to the customer to use to share their evidence documents.',
+    required: [],
+  })
+  .openapi('CommunicationDetails')
+
 const SupportingInfoDefinitionsDocumentListSchema = z
   .array(DocumentSchema)
   .min(1)
@@ -6102,7 +5874,265 @@ const SupportingInfoListSchema = z
   })
   .openapi('SupportingInfoList')
 
-const DisputeSchema = z
+const AcknowledgementTypeSchema = z
+  .enum([
+    'ITEM_RECEIVED',
+    'ITEM_NOT_RECEIVED',
+    'DAMAGED',
+    'EMPTY_PACKAGE_OR_DIFFERENT',
+    'MISSING_ITEMS',
+  ])
+  .openapi({
+    title: 'Allowed Acknowledgement Type',
+    description:
+      'The type of acknowledgement allowed for the merchant after the customer has returned the item. The merchant can update whether the item was received and is as expected or if the item was not received.',
+    readOnly: true,
+    'x-enumDescriptions': [
+      {
+        value: 'ITEM_RECEIVED',
+        description: 'The merchant has received the item returned by the customer.',
+      },
+      { value: 'ITEM_NOT_RECEIVED', description: 'The merchant has not received the item.' },
+      { value: 'DAMAGED', description: 'The items returned by the customer were damaged.' },
+      {
+        value: 'EMPTY_PACKAGE_OR_DIFFERENT',
+        description: 'The package was empty or the goods were different from what was expected.',
+      },
+      {
+        value: 'MISSING_ITEMS',
+        description: 'The package did not have all the items that were expected.',
+      },
+    ],
+  })
+  .openapi('AcknowledgementType')
+
+const AcknowledgementTypeListSchema = z
+  .array(AcknowledgementTypeSchema)
+  .min(1)
+  .max(10)
+  .openapi({ description: 'The types of response when the merchant acknowledges a returned item.' })
+  .openapi('AcknowledgementTypeList')
+
+const AcknowledgeReturnItemResponseOptionsSchema = z
+  .object({ acknowledgement_types: AcknowledgementTypeListSchema.exactOptional() })
+  .openapi({
+    title: 'Acknowledge Return Item Response Options',
+    description:
+      'The allowed response options when the seller acknowledges that the buyer has returned an item for the dispute.',
+    required: [],
+  })
+  .openapi('AcknowledgeReturnItemResponseOptions')
+
+const AcceptClaimTypeSchema = z
+  .enum(['REFUND', 'REFUND_WITH_RETURN', 'PARTIAL_REFUND', 'REFUND_WITH_RETURN_SHIPMENT_LABEL'])
+  .openapi({
+    title: 'Accept Claim Type',
+    description: 'The refund type proposed by the merchant for the dispute.',
+    'x-enumDescriptions': [
+      {
+        value: 'REFUND',
+        description:
+          'The merchant must refund the customer without any item replacement or return. This type is applicable when a merchant is willing to refund the entire dispute amount without any further action from customer. Omit the <code>refund_amount</code> and <code>return_shipping_address</code> parameters from the <a href="/docs/api/customer-disputes/v1/#disputes-actions_accept-claim">accept claim</a> call.',
+      },
+      {
+        value: 'REFUND_WITH_RETURN',
+        description:
+          'The customer must return the item to the merchant and then merchant will refund the money. This type is applicable when a merchant is willing to refund the dispute amount and requires the customer to return the item. Include the <code>return_shipping_address</code> parameter in but omit the <code>refund_amount</code> parameter from the <a href="/docs/api/customer-disputes/v1/#disputes-actions_accept-claim">accept claim</a> call.',
+      },
+      {
+        value: 'PARTIAL_REFUND',
+        description:
+          'The merchant proposes a partial refund for the dispute.This type is applicable when a merchant is willing to refund an amount lesser than dispute amount. Include the <code>refund_amount</code> parameter.',
+      },
+      {
+        value: 'REFUND_WITH_RETURN_SHIPMENT_LABEL',
+        description:
+          'The customer must return the item to the merchant and then merchant will refund the money. This type is applicable when a merchant is willing to refund the dispute amount and requires the customer to return the item using the shipment label provided by the merchant. Include the <code>return_shipment_info</code> and <code>return_shipping_address</code> parameter in but omit the <code>refund_amount</code> parameter from the <a href="/docs/api/customer-disputes/v1/#disputes-actions_accept-claim">accept claim</a> call.',
+      },
+    ],
+  })
+  .openapi('AcceptClaimType')
+
+const AcceptClaimTypeListSchema = z
+  .array(AcceptClaimTypeSchema)
+  .min(1)
+  .max(10)
+  .openapi({ description: 'The types of refund the merchant can provide the customer.' })
+  .openapi('AcceptClaimTypeList')
+
+const AcceptClaimResponseOptionsSchema = z
+  .object({ accept_claim_types: AcceptClaimTypeListSchema.exactOptional() })
+  .openapi({
+    title: 'Accept Claim Response Options',
+    description: 'The allowed response options when the merchant is accepting the claim.',
+    required: [],
+  })
+  .openapi('AcceptClaimResponseOptions')
+
+const OfferTypeListSchema = z
+  .array(OfferTypeSchema)
+  .min(1)
+  .max(10)
+  .openapi({ description: 'The types of offer the merchant can offer the customer.' })
+  .openapi('OfferTypeList')
+
+const MakeOfferResponseOptionsSchema = z
+  .object({ offer_types: OfferTypeListSchema.exactOptional() })
+  .openapi({
+    title: 'Make Offer Response Options',
+    description: 'The allowed response options when the merchant makes offer to the customer.',
+    required: [],
+  })
+  .openapi('MakeOfferResponseOptions')
+
+const AllowedResponseOptionsSchema = z
+  .object({
+    acknowledge_return_item: AcknowledgeReturnItemResponseOptionsSchema.exactOptional(),
+    accept_claim: AcceptClaimResponseOptionsSchema.exactOptional(),
+    make_offer: MakeOfferResponseOptionsSchema.exactOptional(),
+  })
+  .openapi({
+    title: 'Allowed Response Options',
+    description: 'The allowed response options for the buyer/seller update actions.',
+    required: [],
+  })
+  .openapi('AllowedResponseOptions')
+
+const LinkDescriptionSchema = z
+  .object({
+    href: z
+      .string()
+      .openapi({
+        description:
+          'The complete target URL. To make the related call, combine the method with this [URI Template-formatted](https://tools.ietf.org/html/rfc6570) link. For pre-processing, include the `$`, `(`, and `)` characters. The `href` is the key HATEOAS component that links a completed call with a subsequent call.',
+      }),
+    rel: z
+      .string()
+      .openapi({
+        description:
+          'The [link relation type](https://tools.ietf.org/html/rfc5988#section-4), which serves as an ID for a link that unambiguously describes the semantics of the link. See [Link Relations](https://www.iana.org/assignments/link-relations/link-relations.xhtml).',
+      }),
+    method: z
+      .enum(['GET', 'POST', 'PUT', 'DELETE', 'HEAD', 'CONNECT', 'OPTIONS', 'PATCH'])
+      .exactOptional()
+      .openapi({ description: 'The HTTP method required to make the related call.' }),
+  })
+  .openapi({
+    title: 'Link Description',
+    description:
+      'The request-related [HATEOAS link](/api/rest/responses/#hateoas-links) information.',
+    required: ['href', 'rel'],
+  })
+  .openapi('LinkDescription')
+
+const DefinitionsLinkDescriptionListSchema = z
+  .array(LinkDescriptionSchema)
+  .min(1)
+  .max(10)
+  .openapi({
+    description:
+      'An array of request-related [HATEOAS links](/docs/api/reference/api-responses/#hateoas-links/).',
+    readOnly: true,
+  })
+  .openapi('DefinitionsLinkDescriptionList')
+
+type DisputeType = {
+  dispute_id?: string
+  create_time?: z.infer<typeof DateTimeSchema>
+  update_time?: z.infer<typeof DateTimeSchema>
+  disputed_transactions?: z.infer<typeof TransactionInfoListSchema>
+  reason?: z.infer<typeof DisputeReasonSchema>
+  status?: z.infer<typeof StatusSchema>
+  dispute_amount?: z.infer<typeof MoneySchema>
+  dispute_asset?: z.infer<typeof CryptocurrencySchema>
+  fee_policy?: z.infer<typeof FeePolicySchema>
+  external_reason_code?: string
+  dispute_outcome?: z.infer<typeof DisputeOutcomeSchema>
+  adjudications?: z.infer<typeof AdjudicationListSchema>
+  money_movements?: z.infer<typeof MoneyMovementListSchema>
+  fund_movements?: z.infer<typeof FundMovementListSchema>
+  dispute_life_cycle_stage?: z.infer<typeof DisputeLifecycleStageSchema>
+  dispute_channel?: z.infer<typeof DisputeChannelSchema>
+  messages?: z.infer<typeof MessageListSchema>
+  extensions?: z.infer<typeof ExtensionsSchema>
+  evidences?: z.infer<typeof EvidenceListSchema>
+  buyer_response_due_date?: z.infer<typeof DateTimeSchema>
+  seller_response_due_date?: z.infer<typeof DateTimeSchema>
+  offer?: z.infer<typeof OfferSchema>
+  refund_details?: z.infer<typeof RefundDetailsSchema>
+  communication_details?: z.infer<typeof CommunicationDetailsSchema>
+  supporting_info?: z.infer<typeof SupportingInfoListSchema>
+  allowed_response_options?: z.infer<typeof AllowedResponseOptionsSchema>
+  links?: z.infer<typeof DefinitionsLinkDescriptionListSchema>
+}
+
+const AcceptOfferSchema = z
+  .object({
+    note: z
+      .string()
+      .regex(/^(.|\r?\n)*$/)
+      .min(1)
+      .max(2000)
+      .exactOptional()
+      .openapi({
+        description:
+          'The customer notes about accepting of offer. PayPal can but the merchant cannot view these notes.',
+      }),
+  })
+  .openapi({
+    title: 'Accept Offer Request',
+    description: 'A customer request to accept the offer made by the merchant.',
+    required: [],
+  })
+  .openapi('AcceptOffer')
+
+const AdjudicateSchema = z
+  .object({
+    adjudication_outcome: z.enum(['BUYER_FAVOR', 'SELLER_FAVOR']).openapi({
+      description: 'The outcome of the adjudication.',
+      'x-enumDescriptions': [
+        {
+          value: 'BUYER_FAVOR',
+          description:
+            "Resolves the case in the customer's favor. Outcome is set to <code>RESOLVED_BUYER_FAVOR</code>.",
+        },
+        {
+          value: 'SELLER_FAVOR',
+          description:
+            "Resolves the case in the merchant's favor. Outcome is set to <code>RESOLVED_SELLER_FAVOR</code>.",
+        },
+      ],
+    }),
+  })
+  .openapi({
+    title: 'Settle Request',
+    description: "A request to settle a dispute in either the customer's or merchant's favor.",
+    required: ['adjudication_outcome'],
+  })
+  .openapi('Adjudicate')
+
+const BuyerEscalationReasonSchema = z.any().openapi('BuyerEscalationReason')
+
+const DenyOfferSchema = z
+  .object({
+    note: z
+      .string()
+      .regex(/^(.|\r?\n)*$/)
+      .min(1)
+      .max(2000)
+      .openapi({
+        description:
+          'The customer notes about the denial of offer. PayPal can but the merchant cannot view these notes.',
+      }),
+  })
+  .openapi({
+    title: 'Deny Offer Request',
+    description: 'A customer request to deny the offer made by the merchant.',
+    required: ['note'],
+  })
+  .openapi('DenyOffer')
+
+const DisputeSchema: z.ZodType<DisputeType> = z
   .object({
     dispute_id: z
       .string()

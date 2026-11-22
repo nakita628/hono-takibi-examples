@@ -2068,7 +2068,7 @@ curl https://api.firezone.dev/clients \
 |page_cursor|query|string|false|Next/Prev page cursor|
 |name|query|string|false|Filter to Clients with this exact name|
 |firezone_id|query|string|false|Filter to the Client with this exact Firezone ID|
-|actor_id|query|string(uuid)|false|Filter to Clients owned by this Actor|
+|actor_id|query|string(uuid)|false|Filter to Clients this Actor has connected from. Use `00000000-0000-0000-0000-000000000000` for Clients with no Actors left.|
 |online|query|boolean|false|Filter to Clients that are connected (`true`) or not connected (`false`) right now|
 |last_seen_before|query|string(date-time)|false|Filter to Clients whose latest connection started before this RFC 3339 timestamp.<br>A Client with no recorded `last_seen_at` counts as last seen when it was created.<br>`last_seen_at` is set when a Client connects, so a Client that has stayed<br>connected since before this time also matches; add `online=false` to leave it out.<br>|
 |last_seen_after|query|string(date-time)|false|Filter to Clients whose latest connection started at or after this RFC 3339<br>timestamp. A Client with no recorded `last_seen_at` counts as last seen when it<br>was created.<br>|
@@ -4024,10 +4024,13 @@ false` can explicitly match an unenrolled device. `not` negates the
 result and can also match missing data; use a positive `enrolled is true`
 check when enrollment is required.
 
-Leaves that do not apply to the device's platform are removed before
-evaluation, including inside `or` and `not`. An expression with no
-applicable leaves passes. If the platform is unknown, no leaves are
-removed. Each field lists the platforms it applies to.
+The device's platform comes from its matched provider records, such as
+the operating system an MDM or EDR reports. Leaves that do not apply to
+that platform are removed before evaluation, including inside `or` and
+`not`. An expression with no applicable leaves passes. A provider with a
+matched record keeps its leaves, except leaves on fields narrower than
+the provider. If no record names a platform, no leaves are removed. Each
+field lists the platforms it applies to.
 Provider `os_up_to_date` fields are computed from known OS releases;
 they are not raw provider attributes.
 
@@ -7182,7 +7185,8 @@ Email comparison ignores case and surrounding whitespace, so changes like
 and will not unlink identities.
 
 **Setting `is_disabled` to `true` immediately revokes all of the Actor's
-active Client tokens and portal sessions.** An Actor cannot disable itself.
+authorizations, disconnects its Clients, and prevents it from
+authenticating.** An Actor cannot disable itself.
 
 Admins and API clients can only be changed in the portal, and users can only
 be promoted to admin there.
@@ -7493,7 +7497,8 @@ Email comparison ignores case and surrounding whitespace, so changes like
 and will not unlink identities.
 
 **Setting `is_disabled` to `true` immediately revokes all of the Actor's
-active Client tokens and portal sessions.** An Actor cannot disable itself.
+authorizations, disconnects its Clients, and prevents it from
+authenticating.** An Actor cannot disable itself.
 
 Admins and API clients can only be changed in the portal, and users can only
 be promoted to admin there.
@@ -12966,291 +12971,6 @@ To perform this operation, you must be authenticated by means of one of the foll
 authorization
 </aside>
 
-<h1 id="firezone-api-defender-devices">Defender Devices</h1>
-
-## Show a synced Defender device
-
-<a id="opIdPortalAPI.DefenderDeviceController.show"></a>
-
-> Code samples
-
-```bash
-curl https://api.firezone.dev/defender_devices/string \
-  -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`GET /defender_devices/{id}`
-
-<h3 id="show-a-synced-defender-device-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|id|path|string|true|Synced Defender device ID|
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "data": {
-    "last_seen_at": "1970-01-01T00:00:00Z",
-    "machine_tags": [
-      "string"
-    ],
-    "managed_by": "string",
-    "vm_resource_id": "string",
-    "updated_at": "1970-01-01T00:00:00Z",
-    "os_platform": "string",
-    "synced_at": "1970-01-01T00:00:00Z",
-    "last_ip_address": "string",
-    "device_value": "string",
-    "inserted_at": "1970-01-01T00:00:00Z",
-    "os_architecture": "string",
-    "rbac_group_name": "string",
-    "exposure_level": "string",
-    "defender_id": "string",
-    "entra_joined": true,
-    "exclusion_reason": "string",
-    "vm_id": "string",
-    "vm_cloud_provider": "string",
-    "os_processor": "string",
-    "account_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
-    "entra_device_id": "string",
-    "os_build": 0,
-    "managed_by_status": "string",
-    "is_excluded": true,
-    "vm_subscription_id": "string",
-    "last_external_ip_address": "string",
-    "health_status": "string",
-    "risk_score": "string",
-    "is_potential_duplication": true,
-    "agent_version": "string",
-    "rbac_group_id": 0,
-    "version": "string",
-    "ip_addresses": [
-      {}
-    ],
-    "onboarding_status": "string",
-    "computer_dns_name": "string",
-    "first_seen_at": "1970-01-01T00:00:00Z",
-    "posture_provider_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
-  }
-}
-```
-
-> 400 Response
-
-```json
-{
-  "detail": "The request could not be processed.",
-  "status": 400,
-  "title": "Bad Request",
-  "type": "about:blank"
-}
-```
-
-> 401 Response
-
-```json
-{
-  "detail": "Authentication credentials were missing or invalid.",
-  "status": 401,
-  "title": "Unauthorized",
-  "type": "about:blank"
-}
-```
-
-> 403 Response
-
-```json
-{
-  "detail": "You do not have permission to perform this action.",
-  "status": 403,
-  "title": "Forbidden",
-  "type": "about:blank"
-}
-```
-
-> 404 Response
-
-```json
-{
-  "detail": "The requested resource could not be found.",
-  "status": 404,
-  "title": "Not Found",
-  "type": "about:blank"
-}
-```
-
-> 429 Response
-
-```json
-{
-  "detail": "Rate limit exceeded. Retry after the time indicated in the Retry-After header.",
-  "status": 429,
-  "title": "Too Many Requests",
-  "type": "about:blank"
-}
-```
-
-<h3 id="show-a-synced-defender-device-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK|Defender device response|[DefenderDeviceResponse](#schemadefenderdeviceresponse)|
-|400|Bad Request|Bad Request|[ProblemDetails](#schemaproblemdetails)|
-|401|Unauthorized|Unauthorized|[ProblemDetails](#schemaproblemdetails)|
-|403|Forbidden|Forbidden|[ProblemDetails](#schemaproblemdetails)|
-|404|Not Found|Not Found|[ProblemDetails](#schemaproblemdetails)|
-|429|Too Many Requests|Too Many Requests|[ProblemDetails](#schemaproblemdetails)|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-authorization
-</aside>
-
-## List synced Defender devices
-
-<a id="opIdPortalAPI.DefenderDeviceController.index"></a>
-
-> Code samples
-
-```bash
-curl https://api.firezone.dev/defender_devices \
-  -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`GET /defender_devices`
-
-<h3 id="list-synced-defender-devices-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|limit|query|integer|false|Limit devices returned|
-|page_cursor|query|string|false|Next/previous page cursor|
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "data": [
-    {
-      "last_seen_at": "1970-01-01T00:00:00Z",
-      "machine_tags": [
-        "string"
-      ],
-      "managed_by": "string",
-      "vm_resource_id": "string",
-      "updated_at": "1970-01-01T00:00:00Z",
-      "os_platform": "string",
-      "synced_at": "1970-01-01T00:00:00Z",
-      "last_ip_address": "string",
-      "device_value": "string",
-      "inserted_at": "1970-01-01T00:00:00Z",
-      "os_architecture": "string",
-      "rbac_group_name": "string",
-      "exposure_level": "string",
-      "defender_id": "string",
-      "entra_joined": true,
-      "exclusion_reason": "string",
-      "vm_id": "string",
-      "vm_cloud_provider": "string",
-      "os_processor": "string",
-      "account_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
-      "entra_device_id": "string",
-      "os_build": 0,
-      "managed_by_status": "string",
-      "is_excluded": true,
-      "vm_subscription_id": "string",
-      "last_external_ip_address": "string",
-      "health_status": "string",
-      "risk_score": "string",
-      "is_potential_duplication": true,
-      "agent_version": "string",
-      "rbac_group_id": 0,
-      "version": "string",
-      "ip_addresses": [
-        {}
-      ],
-      "onboarding_status": "string",
-      "computer_dns_name": "string",
-      "first_seen_at": "1970-01-01T00:00:00Z",
-      "posture_provider_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
-    }
-  ],
-  "metadata": {
-    "count": 1,
-    "limit": 10,
-    "next_page": "string",
-    "prev_page": "string"
-  }
-}
-```
-
-> 400 Response
-
-```json
-{
-  "detail": "The request could not be processed.",
-  "status": 400,
-  "title": "Bad Request",
-  "type": "about:blank"
-}
-```
-
-> 401 Response
-
-```json
-{
-  "detail": "Authentication credentials were missing or invalid.",
-  "status": 401,
-  "title": "Unauthorized",
-  "type": "about:blank"
-}
-```
-
-> 403 Response
-
-```json
-{
-  "detail": "You do not have permission to perform this action.",
-  "status": 403,
-  "title": "Forbidden",
-  "type": "about:blank"
-}
-```
-
-> 429 Response
-
-```json
-{
-  "detail": "Rate limit exceeded. Retry after the time indicated in the Retry-After header.",
-  "status": 429,
-  "title": "Too Many Requests",
-  "type": "about:blank"
-}
-```
-
-<h3 id="list-synced-defender-devices-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK|Defender device response|[DefenderDeviceListResponse](#schemadefenderdevicelistresponse)|
-|400|Bad Request|Bad Request|[ProblemDetails](#schemaproblemdetails)|
-|401|Unauthorized|Unauthorized|[ProblemDetails](#schemaproblemdetails)|
-|403|Forbidden|Forbidden|[ProblemDetails](#schemaproblemdetails)|
-|429|Too Many Requests|Too Many Requests|[ProblemDetails](#schemaproblemdetails)|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-authorization
-</aside>
-
 <h1 id="firezone-api-intune-devices">Intune Devices</h1>
 
 ## Show a synced Intune device
@@ -18008,6 +17728,291 @@ To perform this operation, you must be authenticated by means of one of the foll
 authorization
 </aside>
 
+<h1 id="firezone-api-defender-devices">Defender Devices</h1>
+
+## List synced Defender devices
+
+<a id="opIdPortalAPI.DefenderDeviceController.index"></a>
+
+> Code samples
+
+```bash
+curl https://api.firezone.dev/defender_devices \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /defender_devices`
+
+<h3 id="list-synced-defender-devices-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|limit|query|integer|false|Limit devices returned|
+|page_cursor|query|string|false|Next/previous page cursor|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "data": [
+    {
+      "last_seen_at": "1970-01-01T00:00:00Z",
+      "machine_tags": [
+        "string"
+      ],
+      "managed_by": "string",
+      "vm_resource_id": "string",
+      "updated_at": "1970-01-01T00:00:00Z",
+      "os_platform": "string",
+      "synced_at": "1970-01-01T00:00:00Z",
+      "last_ip_address": "string",
+      "device_value": "string",
+      "inserted_at": "1970-01-01T00:00:00Z",
+      "os_architecture": "string",
+      "rbac_group_name": "string",
+      "exposure_level": "string",
+      "defender_id": "string",
+      "entra_joined": true,
+      "exclusion_reason": "string",
+      "vm_id": "string",
+      "vm_cloud_provider": "string",
+      "os_processor": "string",
+      "account_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "entra_device_id": "string",
+      "os_build": 0,
+      "managed_by_status": "string",
+      "is_excluded": true,
+      "vm_subscription_id": "string",
+      "last_external_ip_address": "string",
+      "health_status": "string",
+      "risk_score": "string",
+      "is_potential_duplication": true,
+      "agent_version": "string",
+      "rbac_group_id": 0,
+      "version": "string",
+      "ip_addresses": [
+        {}
+      ],
+      "onboarding_status": "string",
+      "computer_dns_name": "string",
+      "first_seen_at": "1970-01-01T00:00:00Z",
+      "posture_provider_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+    }
+  ],
+  "metadata": {
+    "count": 1,
+    "limit": 10,
+    "next_page": "string",
+    "prev_page": "string"
+  }
+}
+```
+
+> 400 Response
+
+```json
+{
+  "detail": "The request could not be processed.",
+  "status": 400,
+  "title": "Bad Request",
+  "type": "about:blank"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "detail": "Authentication credentials were missing or invalid.",
+  "status": 401,
+  "title": "Unauthorized",
+  "type": "about:blank"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "detail": "You do not have permission to perform this action.",
+  "status": 403,
+  "title": "Forbidden",
+  "type": "about:blank"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "detail": "Rate limit exceeded. Retry after the time indicated in the Retry-After header.",
+  "status": 429,
+  "title": "Too Many Requests",
+  "type": "about:blank"
+}
+```
+
+<h3 id="list-synced-defender-devices-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Defender device response|[DefenderDeviceListResponse](#schemadefenderdevicelistresponse)|
+|400|Bad Request|Bad Request|[ProblemDetails](#schemaproblemdetails)|
+|401|Unauthorized|Unauthorized|[ProblemDetails](#schemaproblemdetails)|
+|403|Forbidden|Forbidden|[ProblemDetails](#schemaproblemdetails)|
+|429|Too Many Requests|Too Many Requests|[ProblemDetails](#schemaproblemdetails)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+authorization
+</aside>
+
+## Show a synced Defender device
+
+<a id="opIdPortalAPI.DefenderDeviceController.show"></a>
+
+> Code samples
+
+```bash
+curl https://api.firezone.dev/defender_devices/string \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /defender_devices/{defender_device}`
+
+<h3 id="show-a-synced-defender-device-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|defender_device|path|string|true|Synced Defender machine ID|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "data": {
+    "last_seen_at": "1970-01-01T00:00:00Z",
+    "machine_tags": [
+      "string"
+    ],
+    "managed_by": "string",
+    "vm_resource_id": "string",
+    "updated_at": "1970-01-01T00:00:00Z",
+    "os_platform": "string",
+    "synced_at": "1970-01-01T00:00:00Z",
+    "last_ip_address": "string",
+    "device_value": "string",
+    "inserted_at": "1970-01-01T00:00:00Z",
+    "os_architecture": "string",
+    "rbac_group_name": "string",
+    "exposure_level": "string",
+    "defender_id": "string",
+    "entra_joined": true,
+    "exclusion_reason": "string",
+    "vm_id": "string",
+    "vm_cloud_provider": "string",
+    "os_processor": "string",
+    "account_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+    "entra_device_id": "string",
+    "os_build": 0,
+    "managed_by_status": "string",
+    "is_excluded": true,
+    "vm_subscription_id": "string",
+    "last_external_ip_address": "string",
+    "health_status": "string",
+    "risk_score": "string",
+    "is_potential_duplication": true,
+    "agent_version": "string",
+    "rbac_group_id": 0,
+    "version": "string",
+    "ip_addresses": [
+      {}
+    ],
+    "onboarding_status": "string",
+    "computer_dns_name": "string",
+    "first_seen_at": "1970-01-01T00:00:00Z",
+    "posture_provider_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+  }
+}
+```
+
+> 400 Response
+
+```json
+{
+  "detail": "The request could not be processed.",
+  "status": 400,
+  "title": "Bad Request",
+  "type": "about:blank"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "detail": "Authentication credentials were missing or invalid.",
+  "status": 401,
+  "title": "Unauthorized",
+  "type": "about:blank"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "detail": "You do not have permission to perform this action.",
+  "status": 403,
+  "title": "Forbidden",
+  "type": "about:blank"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "detail": "The requested resource could not be found.",
+  "status": 404,
+  "title": "Not Found",
+  "type": "about:blank"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "detail": "Rate limit exceeded. Retry after the time indicated in the Retry-After header.",
+  "status": 429,
+  "title": "Too Many Requests",
+  "type": "about:blank"
+}
+```
+
+<h3 id="show-a-synced-defender-device-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Defender device response|[DefenderDeviceResponse](#schemadefenderdeviceresponse)|
+|400|Bad Request|Bad Request|[ProblemDetails](#schemaproblemdetails)|
+|401|Unauthorized|Unauthorized|[ProblemDetails](#schemaproblemdetails)|
+|403|Forbidden|Forbidden|[ProblemDetails](#schemaproblemdetails)|
+|404|Not Found|Not Found|[ProblemDetails](#schemaproblemdetails)|
+|429|Too Many Requests|Too Many Requests|[ProblemDetails](#schemaproblemdetails)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+authorization
+</aside>
+
 # Schemas
 
 <h2 id="tocS_EntraDirectoryResponse">EntraDirectoryResponse</h2>
@@ -19837,7 +19842,7 @@ A field a Policy's `postures` expression can test
 |---|---|---|---|---|
 |field|string|true|none|Value for a leaf's `field`, as `<provider>.<attribute>`|
 |operators|[string]|true|none|Values for a leaf's `op` that this field accepts|
-|platforms|[string]|true|none|Platforms the field applies to. A leaf on this field is skipped for a device on any other platform.|
+|platforms|[string]|true|none|Platforms the field applies to. A leaf on this field is skipped when the device's provider records place it on any other platform.|
 |provider|string|true|none|Provider the field comes from|
 |rows_supported|boolean|true|none|Whether a leaf on this field accepts `rows`. False for `firezone` fields, which describe exactly one connecting device.|
 |type|string|true|none|Type of the field, which decides the operators and the value|
@@ -19846,12 +19851,6 @@ A field a Policy's `postures` expression can test
 
 |Property|Value|
 |---|---|
-|operators|eq|
-|operators|ne|
-|operators|gt|
-|operators|gte|
-|operators|lt|
-|operators|lte|
 |operators|is|
 |operators|is_not|
 |operators|is_in|
@@ -19862,16 +19861,22 @@ A field a Policy's `postures` expression can test
 |operators|ends_with|
 |operators|matches|
 |operators|does_not_match|
-|operators|is_in_cidr|
-|operators|is_not_in_cidr|
-|operators|is_empty|
-|operators|is_not_empty|
+|operators|eq|
+|operators|ne|
+|operators|gt|
+|operators|gte|
+|operators|lt|
+|operators|lte|
 |operators|before|
 |operators|after|
 |operators|within_last|
 |operators|not_within_last|
+|operators|is_in_cidr|
+|operators|is_not_in_cidr|
 |operators|contains_any_of|
 |operators|contains_all_of|
+|operators|is_empty|
+|operators|is_not_empty|
 |operators|exists|
 |operators|does_not_exist|
 |platforms|windows|
@@ -21918,7 +21923,7 @@ External Identity
 |middle_name|string \| null|true|none|Middle name|
 |name|string \| null|true|none|Full name|
 |nickname|string \| null|true|none|Nickname|
-|picture|string \| null|true|none|Profile picture URL|
+|picture|string \| null|true|none|Profile picture URL, from the identity provider at sign-in or else from directory sync|
 |preferred_username|string \| null|true|none|Preferred username|
 |profile|string \| null|true|none|Profile URL|
 |synced_at|string(date-time) \| null|true|none|Last sync timestamp|
@@ -23653,10 +23658,13 @@ false` can explicitly match an unenrolled device. `not` negates the
 result and can also match missing data; use a positive `enrolled is true`
 check when enrollment is required.
 
-Leaves that do not apply to the device's platform are removed before
-evaluation, including inside `or` and `not`. An expression with no
-applicable leaves passes. If the platform is unknown, no leaves are
-removed. Each field lists the platforms it applies to.
+The device's platform comes from its matched provider records, such as
+the operating system an MDM or EDR reports. Leaves that do not apply to
+that platform are removed before evaluation, including inside `or` and
+`not`. An expression with no applicable leaves passes. A provider with a
+matched record keeps its leaves, except leaves on fields narrower than
+the provider. If no record names a platform, no leaves are removed. Each
+field lists the platforms it applies to.
 Provider `os_up_to_date` fields are computed from known OS releases;
 they are not raw provider attributes.
 
@@ -25113,7 +25121,7 @@ Negates one applicable expression. Contains no other keys.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|not|[PolicyPostureNode](#schemapolicyposturenode)|true|none|One node of a Policy's device posture expression. A node has exactly one<br>of these shapes:<br><br>* `and`: a non-empty list of nodes that must all hold.<br>* `or`: a non-empty list of nodes of which at least one must hold.<br>* `not`: a node that must not hold.<br>* a leaf: a `field`, an `op`, and for most operators a `value`.<br><br>A leaf's `field` is `<provider>.<attribute>`, such as<br>`intune.compliance_state` or `firezone.last_seen_version`. The provider<br>is one of `firezone` (the connecting device's own record), `intune`,<br>`iru`, `defender`, `santa`, `sentinelone` or `sophos`. The attribute is<br>one of that provider's synced device attributes. Every synced provider also has a<br>boolean `enrolled` that is true when the provider knows the device.<br><br>The attribute's type decides which operators apply and what `value`<br>must be:<br><br>* strings: `is`, `is_not`, `is_in`, `is_not_in`, `contains`,<br>  `does_not_contain`, `starts_with`, `ends_with`, `matches`,<br>  `does_not_match`. Comparisons ignore case. `is_in` and `is_not_in`<br>  take a list of strings. `matches` and `does_not_match` take a regular<br>  expression.<br>* booleans: `is` with `true` or `false`.<br>* numbers: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`.<br>* versions: `is`, `is_not`, `gt`, `gte`, `lt`, `lte`, compared segment<br>  by segment, so `14.4` equals `14.4.0`.<br>* timestamps: `before` and `after` with an ISO 8601 datetime such as<br>  `2026-01-01T00:00:00Z`; `within_last` and `not_within_last` with an<br>  ISO 8601 duration such as `PT24H` or `P30D`. A date-only attribute<br>  counts as the start of that day in UTC.<br>* IP addresses: `is_in_cidr` and `is_not_in_cidr` with a list of CIDRs.<br>  `firezone.ipv4` takes IPv4 CIDRs only and `firezone.ipv6` IPv6 only.<br>* lists of strings: `contains`, `does_not_contain`, `contains_any_of`,<br>  `contains_all_of`, `is_empty`, `is_not_empty`.<br>* JSON attributes: `is_empty`, `is_not_empty`.<br><br>The value `@latest` on `firezone.last_seen_version` stands for the newest<br>Client release for the device's platform.<br><br>`enum_string` uses the string operators; `integer` and `float` use the<br>numeric operators. `string_array` values use a single string for `contains`<br>and `does_not_contain`, or a non-empty string list for `contains_any_of`<br>and `contains_all_of`.<br><br>Every attribute also accepts `exists` and `does_not_exist`. These and<br>`is_empty` / `is_not_empty` take no value: omit `value` or set it to null.<br>Missing attributes fail every operator except `does_not_exist`, including<br>negative operators such as `is_not`. A missing provider is evaluated as<br>one empty row. Its synthetic `enrolled` field is false, so `enrolled is<br>false` can explicitly match an unenrolled device. `not` negates the<br>result and can also match missing data; use a positive `enrolled is true`<br>check when enrollment is required.<br><br>Leaves that do not apply to the device's platform are removed before<br>evaluation, including inside `or` and `not`. An expression with no<br>applicable leaves passes. If the platform is unknown, no leaves are<br>removed. Each field lists the platforms it applies to.<br>Provider `os_up_to_date` fields are computed from known OS releases;<br>they are not raw provider attributes.<br><br>When a device matches more than one record of a provider, a leaf holds<br>when any record satisfies it. Set `rows` to `all` to require every<br>record. Different leaves may match different provider rows; `and` does<br>not require one row to satisfy all leaves. `rows` is not allowed for<br>`firezone`, which always describes exactly one connecting device.<br><br>Expressions allow at most 10 nested boolean levels and 100 leaves.<br>List values contain 1–100 items; strings are at most 1024 bytes and<br>regular expressions at most 256 bytes. Unknown fields, incompatible<br>operators, invalid values, and exceeded limits return HTTP 422 with<br>a path in `validation_errors.postures`.<br><br>`GET /posture_fields` lists the same fields as structured data.<br><br>Supported fields (generated from the same registry used for validation):<br><br>### defender fields<br><br>\| Field \| Type \| Platforms \|<br>\| --- \| --- \| --- \|<br>\| `defender.agent_version` \| version \| windows, macos, linux \|<br>\| `defender.computer_dns_name` \| string \| windows, macos, linux \|<br>\| `defender.defender_id` \| string \| windows, macos, linux \|<br>\| `defender.device_value` \| enum_string \| windows, macos, linux \|<br>\| `defender.enrolled` \| boolean \| windows, macos, linux \|<br>\| `defender.entra_device_id` \| string \| windows, macos, linux \|<br>\| `defender.entra_joined` \| boolean \| windows, macos, linux \|<br>\| `defender.exclusion_reason` \| enum_string \| windows, macos, linux \|<br>\| `defender.exposure_level` \| enum_string \| windows, macos, linux \|<br>\| `defender.first_seen_at` \| datetime \| windows, macos, linux \|<br>\| `defender.health_status` \| enum_string \| windows, macos, linux \|<br>\| `defender.ip_addresses` \| json \| windows, macos, linux \|<br>\| `defender.is_excluded` \| boolean \| windows, macos, linux \|<br>\| `defender.is_potential_duplication` \| boolean \| windows, macos, linux \|<br>\| `defender.last_external_ip_address` \| ip \| windows, macos, linux \|<br>\| `defender.last_ip_address` \| ip \| windows, macos, linux \|<br>\| `defender.last_seen_at` \| datetime \| windows, macos, linux \|<br>\| `defender.machine_tags` \| string_array \| windows, macos, linux \|<br>\| `defender.managed_by` \| enum_string \| windows, macos, linux \|<br>\| `defender.managed_by_status` \| enum_string \| windows, macos, linux \|<br>\| `defender.onboarding_status` \| enum_string \| windows, macos, linux \|<br>\| `defender.os_architecture` \| enum_string \| windows, macos, linux \|<br>\| `defender.os_build` \| integer \| windows, macos, linux \|<br>\| `defender.os_platform` \| enum_string \| windows, macos, linux \|<br>\| `defender.os_processor` \| string \| windows, macos, linux \|<br>\| `defender.os_up_to_date` \| boolean \| macos \|<br>\| `defender.rbac_group_id` \| integer \| windows, macos, linux \|<br>\| `defender.rbac_group_name` \| string \| windows, macos, linux \|<br>\| `defender.risk_score` \| enum_string \| windows, macos, linux \|<br>\| `defender.version` \| string \| windows, macos, linux \|<br>\| `defender.vm_cloud_provider` \| string \| windows, macos, linux \|<br>\| `defender.vm_id` \| string \| windows, macos, linux \|<br>\| `defender.vm_resource_id` \| string \| windows, macos, linux \|<br>\| `defender.vm_subscription_id` \| string \| windows, macos, linux \|<br><br>### firezone fields<br><br>\| Field \| Type \| Platforms \|<br>\| --- \| --- \| --- \|<br>\| `firezone.device_serial` \| string \| windows, macos, linux, ios, android \|<br>\| `firezone.device_uuid` \| string \| windows, macos, linux, ios, android \|<br>\| `firezone.hostname` \| string \| windows, macos, linux, ios, android \|<br>\| `firezone.identifier_for_vendor` \| string \| windows, macos, linux, ios, android \|<br>\| `firezone.ipv4` \| ipv4 \| windows, macos, linux, ios, android \|<br>\| `firezone.ipv6` \| ipv6 \| windows, macos, linux, ios, android \|<br>\| `firezone.last_attested_at` \| datetime \| windows, macos, linux, ios, android \|<br>\| `firezone.last_attested_cert_fingerprint` \| string \| windows, macos, linux, ios, android \|<br>\| `firezone.last_attested_cert_serial` \| string \| windows, macos, linux, ios, android \|<br>\| `firezone.last_attested_device_serial` \| string \| windows, macos, linux, ios, android \|<br>\| `firezone.last_attested_device_uuid` \| string \| windows, macos, linux, ios, android \|<br>\| `firezone.last_attested_mdm_device_id` \| string \| windows, macos, linux, ios, android \|<br>\| `firezone.last_seen_remote_ip_location_city` \| string \| windows, macos, linux, ios, android \|<br>\| `firezone.last_seen_user_agent` \| string \| windows, macos, linux, ios, android \|<br>\| `firezone.last_seen_version` \| version \| windows, macos, linux, ios, android \|<br>\| `firezone.name` \| string \| windows, macos, linux, ios, android \|<br><br>### intune fields<br><br>\| Field \| Type \| Platforms \|<br>\| --- \| --- \| --- \|<br>\| `intune.android_security_patch_level` \| datetime \| windows, macos, ios, android \|<br>\| `intune.attestation_bit_locker_enabled` \| boolean \| windows \|<br>\| `intune.attestation_boot_app_security_version` \| version \| windows \|<br>\| `intune.attestation_boot_debugging` \| boolean \| windows \|<br>\| `intune.attestation_boot_manager_security_version` \| version \| windows \|<br>\| `intune.attestation_boot_manager_version` \| version \| windows \|<br>\| `intune.attestation_boot_revision_list_info` \| string \| windows \|<br>\| `intune.attestation_code_integrity` \| boolean \| windows \|<br>\| `intune.attestation_code_integrity_check_version` \| version \| windows \|<br>\| `intune.attestation_code_integrity_policy` \| string \| windows \|<br>\| `intune.attestation_content_version` \| version \| windows \|<br>\| `intune.attestation_data_execution_policy_enabled` \| boolean \| windows \|<br>\| `intune.attestation_early_launch_anti_malware_driver_protection` \| boolean \| windows \|<br>\| `intune.attestation_health_status_mismatch_info` \| string \| windows \|<br>\| `intune.attestation_identity_key` \| string \| windows \|<br>\| `intune.attestation_issued_at` \| datetime \| windows \|<br>\| `intune.attestation_operating_system_kernel_debugging` \| boolean \| windows \|<br>\| `intune.attestation_operating_system_rev_list_info` \| string \| windows \|<br>\| `intune.attestation_pcr0` \| string \| windows \|<br>\| `intune.attestation_pcr_hash_algorithm` \| string \| windows \|<br>\| `intune.attestation_reset_count` \| integer \| windows \|<br>\| `intune.attestation_restart_count` \| integer \| windows \|<br>\| `intune.attestation_safe_mode` \| boolean \| windows \|<br>\| `intune.attestation_secure_boot` \| boolean \| windows \|<br>\| `intune.attestation_secure_boot_config_policy_fingerprint` \| string \| windows \|<br>\| `intune.attestation_status` \| enum_string \| windows \|<br>\| `intune.attestation_supported` \| boolean \| windows \|<br>\| `intune.attestation_test_signing` \| boolean \| windows \|<br>\| `intune.attestation_tpm_version` \| version \| windows \|<br>\| `intune.attestation_virtual_secure_mode` \| boolean \| windows \|<br>\| `intune.attestation_windows_pe` \| boolean \| windows \|<br>\| `intune.compliance_grace_period_expiration_at` \| datetime \| windows, macos, ios, android \|<br>\| `intune.compliance_state` \| enum_string \| windows, macos, ios, android \|<br>\| `intune.config_manager_compliance_policy` \| boolean \| windows, macos, ios, android \|<br>\| `intune.config_manager_device_configuration` \| boolean \| windows, macos, ios, android \|<br>\| `intune.config_manager_inventory` \| boolean \| windows, macos, ios, android \|<br>\| `intune.config_manager_modern_apps` \| boolean \| windows, macos, ios, android \|<br>\| `intune.config_manager_resource_access` \| boolean \| windows, macos, ios, android \|<br>\| `intune.config_manager_windows_update_for_business` \| boolean \| windows, macos, ios, android \|<br>\| `intune.device_category_display_name` \| string \| windows, macos, ios, android \|<br>\| `intune.device_enrollment_type` \| enum_string \| windows, macos, ios, android \|<br>\| `intune.device_name` \| string \| windows, macos, ios, android \|<br>\| `intune.device_registration_state` \| enum_string \| windows, macos, ios, android \|<br>\| `intune.eas_activated` \| boolean \| windows, macos, ios, android \|<br>\| `intune.eas_activated_at` \| datetime \| windows, macos, ios, android \|<br>\| `intune.eas_device_id` \| string \| windows, macos, ios, android \|<br>\| `intune.email_address` \| string \| windows, macos, ios, android \|<br>\| `intune.enrolled` \| boolean \| windows, macos, ios, android \|<br>\| `intune.enrolled_at` \| datetime \| windows, macos, ios, android \|<br>\| `intune.enrollment_profile_name` \| string \| windows, macos, ios, android \|<br>\| `intune.entra_device_id` \| string \| windows, macos, ios, android \|<br>\| `intune.entra_registered` \| boolean \| windows, macos, ios, android \|<br>\| `intune.ethernet_mac_address` \| string \| windows, macos, ios, android \|<br>\| `intune.exchange_access_state` \| enum_string \| windows, macos, ios, android \|<br>\| `intune.exchange_access_state_reason` \| enum_string \| windows, macos, ios, android \|<br>\| `intune.exchange_last_successful_sync_at` \| datetime \| windows, macos, ios, android \|<br>\| `intune.free_storage_space_bytes` \| integer \| windows, macos, ios, android \|<br>\| `intune.iccid` \| string \| windows, macos, ios, android \|<br>\| `intune.imei` \| string \| windows, macos, ios, android \|<br>\| `intune.intune_id` \| string \| windows, macos, ios, android \|<br>\| `intune.is_encrypted` \| boolean \| windows, macos, ios, android \|<br>\| `intune.is_supervised` \| boolean \| macos, ios \|<br>\| `intune.jail_broken` \| boolean \| ios, android \|<br>\| `intune.last_sync_at` \| datetime \| windows, macos, ios, android \|<br>\| `intune.managed_device_name` \| string \| windows, macos, ios, android \|<br>\| `intune.managed_device_owner_type` \| enum_string \| windows, macos, ios, android \|<br>\| `intune.management_agent` \| enum_string \| windows, macos, ios, android \|<br>\| `intune.management_certificate_expires_at` \| datetime \| windows, macos, ios, android \|<br>\| `intune.management_state` \| enum_string \| windows, macos, ios, android \|<br>\| `intune.manufacturer` \| string \| windows, macos, ios, android \|<br>\| `intune.meid` \| string \| windows, macos, ios, android \|<br>\| `intune.model` \| string \| windows, macos, ios, android \|<br>\| `intune.notes` \| string \| windows, macos, ios, android \|<br>\| `intune.operating_system` \| string \| windows, macos, ios, android \|<br>\| `intune.os_up_to_date` \| boolean \| windows, macos, ios, android \|<br>\| `intune.os_version` \| version \| windows, macos, ios, android \|<br>\| `intune.partner_reported_threat_state` \| enum_string \| windows, macos, ios, android \|<br>\| `intune.phone_number` \| string \| windows, macos, ios, android \|<br>\| `intune.physical_memory_bytes` \| integer \| windows, macos, ios, android \|<br>\| `intune.require_user_enrollment_approval` \| boolean \| windows, macos, ios, android \|<br>\| `intune.serial_number` \| string \| windows, macos, ios, android \|<br>\| `intune.subscriber_carrier` \| string \| windows, macos, ios, android \|<br>\| `intune.total_storage_space_bytes` \| integer \| windows, macos, ios, android \|<br>\| `intune.udid` \| string \| windows, macos, ios, android \|<br>\| `intune.user_display_name` \| string \| windows, macos, ios, android \|<br>\| `intune.user_id` \| string \| windows, macos, ios, android \|<br>\| `intune.user_principal_name` \| string \| windows, macos, ios, android \|<br>\| `intune.wifi_mac_address` \| string \| windows, macos, ios, android \|<br><br>### iru fields<br><br>\| Field \| Type \| Platforms \|<br>\| --- \| --- \| --- \|<br>\| `iru.activation_lock_allowed_while_supervised` \| boolean \| macos, ios \|<br>\| `iru.activation_lock_bypass_code_failed` \| boolean \| macos, ios \|<br>\| `iru.activation_lock_collected_at` \| datetime \| macos, ios \|<br>\| `iru.activation_lock_supported` \| boolean \| macos, ios \|<br>\| `iru.agent_installed` \| boolean \| macos, ios \|<br>\| `iru.agent_version` \| version \| macos, ios \|<br>\| `iru.any_signed_os` \| boolean \| macos, ios \|<br>\| `iru.apple_silicon` \| boolean \| macos, ios \|<br>\| `iru.asset_tag` \| string \| macos, ios \|<br>\| `iru.blueprint_id` \| string \| macos, ios \|<br>\| `iru.blueprint_name` \| string \| macos, ios \|<br>\| `iru.bootstrap_token_auth` \| boolean \| macos, ios \|<br>\| `iru.bootstrap_token_escrowed` \| boolean \| macos, ios \|<br>\| `iru.cellular_technology` \| enum_string \| macos, ios \|<br>\| `iru.data_roaming` \| boolean \| macos, ios \|<br>\| `iru.device_activation_lock_enabled` \| boolean \| macos, ios \|<br>\| `iru.device_capacity_gb` \| float \| macos, ios \|<br>\| `iru.device_family` \| enum_string \| macos, ios \|<br>\| `iru.device_name` \| string \| macos, ios \|<br>\| `iru.display_os_version` \| version \| macos, ios \|<br>\| `iru.enrolled` \| boolean \| macos, ios \|<br>\| `iru.external_boot_level` \| enum_string \| macos \|<br>\| `iru.filevault_collected_at` \| datetime \| macos, ios \|<br>\| `iru.filevault_enabled` \| boolean \| macos \|<br>\| `iru.filevault_key_escrowed` \| boolean \| macos, ios \|<br>\| `iru.filevault_key_rotation_scheduled_at` \| datetime \| macos, ios \|<br>\| `iru.filevault_key_type` \| enum_string \| macos \|<br>\| `iru.filevault_regeneration_needed` \| boolean \| macos, ios \|<br>\| `iru.firewall_allow_signed_applications` \| boolean \| macos, ios \|<br>\| `iru.firewall_block_all_incoming` \| boolean \| macos, ios \|<br>\| `iru.firewall_collected_at` \| datetime \| macos, ios \|<br>\| `iru.firewall_enabled` \| boolean \| macos \|<br>\| `iru.firewall_logging` \| boolean \| macos, ios \|<br>\| `iru.firewall_logging_option` \| enum_string \| macos \|<br>\| `iru.firewall_stealth_mode` \| boolean \| macos, ios \|<br>\| `iru.firewall_unloading` \| boolean \| macos, ios \|<br>\| `iru.firewall_version` \| version \| macos \|<br>\| `iru.first_enrolled_at` \| datetime \| macos, ios \|<br>\| `iru.gatekeeper_collected_at` \| datetime \| macos, ios \|<br>\| `iru.gatekeeper_enabled` \| boolean \| macos \|<br>\| `iru.gatekeeper_opaque_version` \| version \| macos \|<br>\| `iru.gatekeeper_trusted_developers` \| boolean \| macos, ios \|<br>\| `iru.gatekeeper_version` \| version \| macos \|<br>\| `iru.host_name` \| string \| macos, ios \|<br>\| `iru.hotspot` \| boolean \| macos, ios \|<br>\| `iru.inventory_collected_at` \| datetime \| macos, ios \|<br>\| `iru.iru_id` \| string \| macos, ios \|<br>\| `iru.is_missing` \| boolean \| macos, ios \|<br>\| `iru.is_removed` \| boolean \| macos, ios \|<br>\| `iru.kext_requires_bootstrap_token` \| boolean \| macos, ios \|<br>\| `iru.last_check_in_at` \| datetime \| macos, ios \|<br>\| `iru.last_enrolled_at` \| datetime \| macos, ios \|<br>\| `iru.local_hostname` \| string \| macos, ios \|<br>\| `iru.lost_mode_status` \| enum_string \| macos, ios \|<br>\| `iru.malware_removal_tool_version` \| version \| macos \|<br>\| `iru.mdm_enabled` \| boolean \| macos, ios \|<br>\| `iru.mdm_manages_kext` \| boolean \| macos, ios \|<br>\| `iru.model` \| string \| macos, ios \|<br>\| `iru.model_identifier` \| string \| macos, ios \|<br>\| `iru.model_name` \| string \| macos, ios \|<br>\| `iru.os_build` \| string \| macos, ios \|<br>\| `iru.os_name` \| string \| macos, ios \|<br>\| `iru.os_up_to_date` \| boolean \| macos, ios \|<br>\| `iru.os_version` \| version \| macos, ios \|<br>\| `iru.platform` \| enum_string \| macos, ios \|<br>\| `iru.secure_boot_level` \| enum_string \| macos \|<br>\| `iru.serial_number` \| string \| macos, ios \|<br>\| `iru.shared_ipad` \| boolean \| macos, ios \|<br>\| `iru.sip_enabled` \| boolean \| macos \|<br>\| `iru.software_update_requires_bootstrap_token` \| boolean \| macos, ios \|<br>\| `iru.ssv_enabled` \| boolean \| macos \|<br>\| `iru.startup_settings_collected_at` \| datetime \| macos, ios \|<br>\| `iru.supplemental_build_version` \| string \| macos, ios \|<br>\| `iru.supplemental_os_version_extra` \| version \| macos, ios \|<br>\| `iru.tags` \| string_array \| macos, ios \|<br>\| `iru.user_activation_lock_enabled` \| boolean \| macos, ios \|<br>\| `iru.user_email` \| string \| macos, ios \|<br>\| `iru.user_id` \| string \| macos, ios \|<br>\| `iru.user_is_archived` \| boolean \| macos, ios \|<br>\| `iru.user_manages_kext` \| boolean \| macos, ios \|<br>\| `iru.user_name` \| string \| macos, ios \|<br>\| `iru.xprotect_version` \| version \| macos \|<br><br>### santa fields<br><br>\| Field \| Type \| Platforms \|<br>\| --- \| --- \| --- \|<br>\| `santa.configured_client_mode` \| enum_string \| macos \|<br>\| `santa.enrolled` \| boolean \| macos \|<br>\| `santa.first_seen_at` \| datetime \| macos \|<br>\| `santa.hostname` \| string \| macos \|<br>\| `santa.last_preflight_at` \| datetime \| macos \|<br>\| `santa.last_preflight_ip` \| ip \| macos \|<br>\| `santa.last_seen_client_mode` \| enum_string \| macos \|<br>\| `santa.last_sync_at` \| datetime \| macos \|<br>\| `santa.machine_model` \| string \| macos \|<br>\| `santa.os_build` \| string \| macos \|<br>\| `santa.os_type` \| enum_string \| macos \|<br>\| `santa.os_up_to_date` \| boolean \| macos \|<br>\| `santa.os_version` \| version \| macos \|<br>\| `santa.primary_user` \| string \| macos \|<br>\| `santa.primary_user_groups` \| string_array \| macos \|<br>\| `santa.rule_sync_at` \| datetime \| macos \|<br>\| `santa.santa_id` \| string \| macos \|<br>\| `santa.santa_version` \| version \| macos \|<br>\| `santa.santanetd_version` \| version \| macos \|<br>\| `santa.serial_number` \| string \| macos \|<br>\| `santa.sip_status` \| integer \| macos \|<br>\| `santa.tags` \| string_array \| macos \|<br>\| `santa.temporary_admin_mode_ends_at` \| datetime \| macos \|<br>\| `santa.temporary_admin_mode_user` \| string \| macos \|<br>\| `santa.temporary_monitor_mode_ends_at` \| datetime \| macos \|<br><br>### sentinelone fields<br><br>\| Field \| Type \| Platforms \|<br>\| --- \| --- \| --- \|<br>\| `sentinelone.account_name` \| string \| windows, macos, linux \|<br>\| `sentinelone.active_protection` \| string_array \| windows, macos, linux \|<br>\| `sentinelone.active_threats` \| integer \| windows, macos, linux \|<br>\| `sentinelone.ad_computer_distinguished_name` \| string \| windows, macos, linux \|<br>\| `sentinelone.ad_computer_member_of` \| string_array \| windows, macos, linux \|<br>\| `sentinelone.ad_last_user_distinguished_name` \| string \| windows, macos, linux \|<br>\| `sentinelone.ad_last_user_member_of` \| string_array \| windows, macos, linux \|<br>\| `sentinelone.ad_mail` \| string \| windows, macos, linux \|<br>\| `sentinelone.ad_user_principal_name` \| string \| windows, macos, linux \|<br>\| `sentinelone.agent_version` \| version \| windows, macos, linux \|<br>\| `sentinelone.allow_remote_shell` \| boolean \| windows, macos, linux \|<br>\| `sentinelone.apps_vulnerability_status` \| enum_string \| windows, macos, linux \|<br>\| `sentinelone.cloud_providers` \| json \| windows, macos, linux \|<br>\| `sentinelone.computer_name` \| string \| windows, macos, linux \|<br>\| `sentinelone.console_migration_status` \| enum_string \| windows, macos, linux \|<br>\| `sentinelone.core_count` \| integer \| windows, macos, linux \|<br>\| `sentinelone.cpu_count` \| integer \| windows, macos, linux \|<br>\| `sentinelone.cpu_id` \| string \| windows, macos, linux \|<br>\| `sentinelone.detection_state` \| enum_string \| windows, macos, linux \|<br>\| `sentinelone.domain` \| string \| windows, macos, linux \|<br>\| `sentinelone.encrypted_applications` \| boolean \| windows, macos, linux \|<br>\| `sentinelone.enrolled` \| boolean \| windows, macos, linux \|<br>\| `sentinelone.external_id` \| string \| windows, macos, linux \|<br>\| `sentinelone.external_ip` \| ip \| windows, macos, linux \|<br>\| `sentinelone.firewall_enabled` \| boolean \| windows, macos, linux \|<br>\| `sentinelone.first_full_mode_at` \| datetime \| windows, macos, linux \|<br>\| `sentinelone.full_disk_scan_updated_at` \| datetime \| windows, macos, linux \|<br>\| `sentinelone.group_id` \| string \| windows, macos, linux \|<br>\| `sentinelone.group_ip` \| string \| windows, macos, linux \|<br>\| `sentinelone.group_name` \| string \| windows, macos, linux \|<br>\| `sentinelone.has_containerized_workload` \| boolean \| windows, macos, linux \|<br>\| `sentinelone.in_remote_shell_session` \| boolean \| windows, macos, linux \|<br>\| `sentinelone.infected` \| boolean \| windows, macos, linux \|<br>\| `sentinelone.installer_type` \| enum_string \| windows, macos, linux \|<br>\| `sentinelone.is_active` \| boolean \| windows, macos, linux \|<br>\| `sentinelone.is_ad_connector` \| boolean \| windows, macos, linux \|<br>\| `sentinelone.is_decommissioned` \| boolean \| windows, macos, linux \|<br>\| `sentinelone.is_hyper_automate` \| boolean \| windows, macos, linux \|<br>\| `sentinelone.is_pending_uninstall` \| boolean \| windows, macos, linux \|<br>\| `sentinelone.is_uninstalled` \| boolean \| windows, macos, linux \|<br>\| `sentinelone.is_up_to_date` \| boolean \| windows, macos, linux \|<br>\| `sentinelone.last_active_at` \| datetime \| windows, macos, linux \|<br>\| `sentinelone.last_ip_to_management` \| ip \| windows, macos, linux \|<br>\| `sentinelone.last_logged_in_user_name` \| string \| windows, macos, linux \|<br>\| `sentinelone.last_successful_scan_at` \| datetime \| windows, macos, linux \|<br>\| `sentinelone.location_enabled` \| boolean \| windows, macos, linux \|<br>\| `sentinelone.location_type` \| enum_string \| windows, macos, linux \|<br>\| `sentinelone.locations` \| json \| windows, macos, linux \|<br>\| `sentinelone.machine_sid` \| string \| windows, macos, linux \|<br>\| `sentinelone.machine_type` \| enum_string \| windows, macos, linux \|<br>\| `sentinelone.missing_permissions` \| string_array \| windows, macos, linux \|<br>\| `sentinelone.mitigation_mode` \| enum_string \| windows, macos, linux \|<br>\| `sentinelone.mitigation_mode_suspicious` \| enum_string \| windows, macos, linux \|<br>\| `sentinelone.model_name` \| string \| windows, macos, linux \|<br>\| `sentinelone.network_interfaces` \| json \| windows, macos, linux \|<br>\| `sentinelone.network_quarantine_enabled` \| boolean \| windows, macos, linux \|<br>\| `sentinelone.network_status` \| enum_string \| windows, macos, linux \|<br>\| `sentinelone.operational_state` \| enum_string \| windows, macos, linux \|<br>\| `sentinelone.operational_state_expires_at` \| datetime \| windows, macos, linux \|<br>\| `sentinelone.os_arch` \| enum_string \| windows, macos, linux \|<br>\| `sentinelone.os_name` \| string \| windows, macos, linux \|<br>\| `sentinelone.os_revision` \| version \| windows, macos, linux \|<br>\| `sentinelone.os_start_time` \| datetime \| windows, macos, linux \|<br>\| `sentinelone.os_type` \| enum_string \| windows, macos, linux \|<br>\| `sentinelone.os_up_to_date` \| boolean \| windows, macos \|<br>\| `sentinelone.os_username` \| string \| windows, macos, linux \|<br>\| `sentinelone.protected_containers_count` \| integer \| windows, macos, linux \|<br>\| `sentinelone.protected_pods_count` \| integer \| windows, macos, linux \|<br>\| `sentinelone.protected_tasks_count` \| integer \| windows, macos, linux \|<br>\| `sentinelone.proxy_console` \| boolean \| windows, macos, linux \|<br>\| `sentinelone.proxy_deep_visibility` \| boolean \| windows, macos, linux \|<br>\| `sentinelone.proxy_method` \| enum_string \| windows, macos, linux \|<br>\| `sentinelone.proxy_pac_file_usage` \| boolean \| windows, macos, linux \|<br>\| `sentinelone.ranger_status` \| enum_string \| windows, macos, linux \|<br>\| `sentinelone.ranger_version` \| version \| windows, macos, linux \|<br>\| `sentinelone.registered_at` \| datetime \| windows, macos, linux \|<br>\| `sentinelone.remote_profiling_state` \| enum_string \| windows, macos, linux \|<br>\| `sentinelone.remote_profiling_state_expires_at` \| datetime \| windows, macos, linux \|<br>\| `sentinelone.scan_aborted_at` \| datetime \| windows, macos, linux \|<br>\| `sentinelone.scan_finished_at` \| datetime \| windows, macos, linux \|<br>\| `sentinelone.scan_started_at` \| datetime \| windows, macos, linux \|<br>\| `sentinelone.scan_status` \| enum_string \| windows, macos, linux \|<br>\| `sentinelone.sentinelone_account_id` \| string \| windows, macos, linux \|<br>\| `sentinelone.sentinelone_id` \| string \| windows, macos, linux \|<br>\| `sentinelone.serial_number` \| string \| windows, macos, linux \|<br>\| `sentinelone.site_id` \| string \| windows, macos, linux \|<br>\| `sentinelone.site_name` \| string \| windows, macos, linux \|<br>\| `sentinelone.storage_name` \| string \| windows, macos, linux \|<br>\| `sentinelone.storage_type` \| string \| windows, macos, linux \|<br>\| `sentinelone.tags` \| json \| windows, macos, linux \|<br>\| `sentinelone.threat_reboot_required` \| boolean \| windows, macos, linux \|<br>\| `sentinelone.total_memory` \| integer \| windows, macos, linux \|<br>\| `sentinelone.user_actions_needed` \| string_array \| windows, macos, linux \|<br>\| `sentinelone.uuid` \| string \| windows, macos, linux \|<br><br>### sophos fields<br><br>\| Field \| Type \| Platforms \|<br>\| --- \| --- \| --- \|<br>\| `sophos.assigned_products` \| json \| windows, macos, linux \|<br>\| `sophos.associated_person_id` \| string \| windows, macos, linux \|<br>\| `sophos.associated_person_name` \| string \| windows, macos, linux \|<br>\| `sophos.associated_person_via_login` \| string \| windows, macos, linux \|<br>\| `sophos.cloned` \| boolean \| windows, macos, linux \|<br>\| `sophos.cloud_instance_id` \| string \| windows, macos, linux \|<br>\| `sophos.cloud_provider` \| enum_string \| windows, macos, linux \|<br>\| `sophos.device_software` \| json \| windows, macos, linux \|<br>\| `sophos.encryption_overall_status` \| enum_string \| windows, macos, linux \|<br>\| `sophos.encryption_volumes` \| json \| windows, macos, linux \|<br>\| `sophos.enrolled` \| boolean \| windows, macos, linux \|<br>\| `sophos.group_hierarchy` \| json \| windows, macos, linux \|<br>\| `sophos.group_id` \| string \| windows, macos, linux \|<br>\| `sophos.group_name` \| string \| windows, macos, linux \|<br>\| `sophos.health_overall` \| enum_string \| windows, macos, linux \|<br>\| `sophos.health_service_details` \| json \| windows, macos, linux \|<br>\| `sophos.health_services_status` \| enum_string \| windows, macos, linux \|<br>\| `sophos.health_threats_status` \| enum_string \| windows, macos, linux \|<br>\| `sophos.hostname` \| string \| windows, macos, linux \|<br>\| `sophos.ipv4_addresses` \| string_array \| windows, macos, linux \|<br>\| `sophos.ipv6_addresses` \| string_array \| windows, macos, linux \|<br>\| `sophos.isolation_admin_isolated` \| boolean \| windows, macos, linux \|<br>\| `sophos.isolation_self_isolated` \| boolean \| windows, macos, linux \|<br>\| `sophos.isolation_status` \| enum_string \| windows, macos, linux \|<br>\| `sophos.last_agent_update_at` \| datetime \| windows, macos, linux \|<br>\| `sophos.last_os_update_at` \| datetime \| windows, macos, linux \|<br>\| `sophos.last_seen_at` \| datetime \| windows, macos, linux \|<br>\| `sophos.lockdown_status` \| enum_string \| windows, macos, linux \|<br>\| `sophos.mac_addresses` \| string_array \| windows, macos, linux \|<br>\| `sophos.online` \| boolean \| windows, macos, linux \|<br>\| `sophos.os_build` \| integer \| windows, macos, linux \|<br>\| `sophos.os_is_server` \| boolean \| windows, macos, linux \|<br>\| `sophos.os_major_version` \| integer \| windows, macos, linux \|<br>\| `sophos.os_minor_version` \| integer \| windows, macos, linux \|<br>\| `sophos.os_name` \| string \| windows, macos, linux \|<br>\| `sophos.os_platform` \| enum_string \| windows, macos, linux \|<br>\| `sophos.os_up_to_date` \| boolean \| macos \|<br>\| `sophos.packages` \| json \| windows, macos, linux \|<br>\| `sophos.serial_number` \| string \| windows, macos, linux \|<br>\| `sophos.sophos_id` \| string \| windows, macos, linux \|<br>\| `sophos.tags` \| json \| windows, macos, linux \|<br>\| `sophos.tamper_protection_enabled` \| boolean \| windows, macos, linux \|<br>\| `sophos.tamper_protection_supported` \| boolean \| windows, macos, linux \|<br>\| `sophos.type` \| enum_string \| windows, macos, linux \||
+|not|[PolicyPostureNode](#schemapolicyposturenode)|true|none|One node of a Policy's device posture expression. A node has exactly one<br>of these shapes:<br><br>* `and`: a non-empty list of nodes that must all hold.<br>* `or`: a non-empty list of nodes of which at least one must hold.<br>* `not`: a node that must not hold.<br>* a leaf: a `field`, an `op`, and for most operators a `value`.<br><br>A leaf's `field` is `<provider>.<attribute>`, such as<br>`intune.compliance_state` or `firezone.last_seen_version`. The provider<br>is one of `firezone` (the connecting device's own record), `intune`,<br>`iru`, `defender`, `santa`, `sentinelone` or `sophos`. The attribute is<br>one of that provider's synced device attributes. Every synced provider also has a<br>boolean `enrolled` that is true when the provider knows the device.<br><br>The attribute's type decides which operators apply and what `value`<br>must be:<br><br>* strings: `is`, `is_not`, `is_in`, `is_not_in`, `contains`,<br>  `does_not_contain`, `starts_with`, `ends_with`, `matches`,<br>  `does_not_match`. Comparisons ignore case. `is_in` and `is_not_in`<br>  take a list of strings. `matches` and `does_not_match` take a regular<br>  expression.<br>* booleans: `is` with `true` or `false`.<br>* numbers: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`.<br>* versions: `is`, `is_not`, `gt`, `gte`, `lt`, `lte`, compared segment<br>  by segment, so `14.4` equals `14.4.0`.<br>* timestamps: `before` and `after` with an ISO 8601 datetime such as<br>  `2026-01-01T00:00:00Z`; `within_last` and `not_within_last` with an<br>  ISO 8601 duration such as `PT24H` or `P30D`. A date-only attribute<br>  counts as the start of that day in UTC.<br>* IP addresses: `is_in_cidr` and `is_not_in_cidr` with a list of CIDRs.<br>  `firezone.ipv4` takes IPv4 CIDRs only and `firezone.ipv6` IPv6 only.<br>* lists of strings: `contains`, `does_not_contain`, `contains_any_of`,<br>  `contains_all_of`, `is_empty`, `is_not_empty`.<br>* JSON attributes: `is_empty`, `is_not_empty`.<br><br>The value `@latest` on `firezone.last_seen_version` stands for the newest<br>Client release for the device's platform.<br><br>`enum_string` uses the string operators; `integer` and `float` use the<br>numeric operators. `string_array` values use a single string for `contains`<br>and `does_not_contain`, or a non-empty string list for `contains_any_of`<br>and `contains_all_of`.<br><br>Every attribute also accepts `exists` and `does_not_exist`. These and<br>`is_empty` / `is_not_empty` take no value: omit `value` or set it to null.<br>Missing attributes fail every operator except `does_not_exist`, including<br>negative operators such as `is_not`. A missing provider is evaluated as<br>one empty row. Its synthetic `enrolled` field is false, so `enrolled is<br>false` can explicitly match an unenrolled device. `not` negates the<br>result and can also match missing data; use a positive `enrolled is true`<br>check when enrollment is required.<br><br>The device's platform comes from its matched provider records, such as<br>the operating system an MDM or EDR reports. Leaves that do not apply to<br>that platform are removed before evaluation, including inside `or` and<br>`not`. An expression with no applicable leaves passes. A provider with a<br>matched record keeps its leaves, except leaves on fields narrower than<br>the provider. If no record names a platform, no leaves are removed. Each<br>field lists the platforms it applies to.<br>Provider `os_up_to_date` fields are computed from known OS releases;<br>they are not raw provider attributes.<br><br>When a device matches more than one record of a provider, a leaf holds<br>when any record satisfies it. Set `rows` to `all` to require every<br>record. Different leaves may match different provider rows; `and` does<br>not require one row to satisfy all leaves. `rows` is not allowed for<br>`firezone`, which always describes exactly one connecting device.<br><br>Expressions allow at most 10 nested boolean levels and 100 leaves.<br>List values contain 1–100 items; strings are at most 1024 bytes and<br>regular expressions at most 256 bytes. Unknown fields, incompatible<br>operators, invalid values, and exceeded limits return HTTP 422 with<br>a path in `validation_errors.postures`.<br><br>`GET /posture_fields` lists the same fields as structured data.<br><br>Supported fields (generated from the same registry used for validation):<br><br>### defender fields<br><br>\| Field \| Type \| Platforms \|<br>\| --- \| --- \| --- \|<br>\| `defender.agent_version` \| version \| windows, macos, linux \|<br>\| `defender.computer_dns_name` \| string \| windows, macos, linux \|<br>\| `defender.defender_id` \| string \| windows, macos, linux \|<br>\| `defender.device_value` \| enum_string \| windows, macos, linux \|<br>\| `defender.enrolled` \| boolean \| windows, macos, linux \|<br>\| `defender.entra_device_id` \| string \| windows, macos, linux \|<br>\| `defender.entra_joined` \| boolean \| windows, macos, linux \|<br>\| `defender.exclusion_reason` \| enum_string \| windows, macos, linux \|<br>\| `defender.exposure_level` \| enum_string \| windows, macos, linux \|<br>\| `defender.first_seen_at` \| datetime \| windows, macos, linux \|<br>\| `defender.health_status` \| enum_string \| windows, macos, linux \|<br>\| `defender.ip_addresses` \| json \| windows, macos, linux \|<br>\| `defender.is_excluded` \| boolean \| windows, macos, linux \|<br>\| `defender.is_potential_duplication` \| boolean \| windows, macos, linux \|<br>\| `defender.last_external_ip_address` \| ip \| windows, macos, linux \|<br>\| `defender.last_ip_address` \| ip \| windows, macos, linux \|<br>\| `defender.last_seen_at` \| datetime \| windows, macos, linux \|<br>\| `defender.machine_tags` \| string_array \| windows, macos, linux \|<br>\| `defender.managed_by` \| enum_string \| windows, macos, linux \|<br>\| `defender.managed_by_status` \| enum_string \| windows, macos, linux \|<br>\| `defender.onboarding_status` \| enum_string \| windows, macos, linux \|<br>\| `defender.os_architecture` \| enum_string \| windows, macos, linux \|<br>\| `defender.os_build` \| integer \| windows, macos, linux \|<br>\| `defender.os_platform` \| enum_string \| windows, macos, linux \|<br>\| `defender.os_processor` \| string \| windows, macos, linux \|<br>\| `defender.os_up_to_date` \| boolean \| macos \|<br>\| `defender.rbac_group_id` \| integer \| windows, macos, linux \|<br>\| `defender.rbac_group_name` \| string \| windows, macos, linux \|<br>\| `defender.risk_score` \| enum_string \| windows, macos, linux \|<br>\| `defender.version` \| string \| windows, macos, linux \|<br>\| `defender.vm_cloud_provider` \| string \| windows, macos, linux \|<br>\| `defender.vm_id` \| string \| windows, macos, linux \|<br>\| `defender.vm_resource_id` \| string \| windows, macos, linux \|<br>\| `defender.vm_subscription_id` \| string \| windows, macos, linux \|<br><br>### firezone fields<br><br>\| Field \| Type \| Platforms \|<br>\| --- \| --- \| --- \|<br>\| `firezone.device_serial` \| string \| windows, macos, linux, ios, android \|<br>\| `firezone.device_uuid` \| string \| windows, macos, linux, ios, android \|<br>\| `firezone.hostname` \| string \| windows, macos, linux, ios, android \|<br>\| `firezone.identifier_for_vendor` \| string \| windows, macos, linux, ios, android \|<br>\| `firezone.ipv4` \| ipv4 \| windows, macos, linux, ios, android \|<br>\| `firezone.ipv6` \| ipv6 \| windows, macos, linux, ios, android \|<br>\| `firezone.last_attested_at` \| datetime \| windows, macos, linux, ios, android \|<br>\| `firezone.last_attested_cert_fingerprint` \| string \| windows, macos, linux, ios, android \|<br>\| `firezone.last_attested_cert_serial` \| string \| windows, macos, linux, ios, android \|<br>\| `firezone.last_attested_device_serial` \| string \| windows, macos, linux, ios, android \|<br>\| `firezone.last_attested_device_uuid` \| string \| windows, macos, linux, ios, android \|<br>\| `firezone.last_attested_mdm_device_id` \| string \| windows, macos, linux, ios, android \|<br>\| `firezone.last_seen_remote_ip_location_city` \| string \| windows, macos, linux, ios, android \|<br>\| `firezone.last_seen_user_agent` \| string \| windows, macos, linux, ios, android \|<br>\| `firezone.last_seen_version` \| version \| windows, macos, linux, ios, android \|<br>\| `firezone.name` \| string \| windows, macos, linux, ios, android \|<br><br>### intune fields<br><br>\| Field \| Type \| Platforms \|<br>\| --- \| --- \| --- \|<br>\| `intune.android_security_patch_level` \| datetime \| windows, macos, ios, android \|<br>\| `intune.attestation_bit_locker_enabled` \| boolean \| windows \|<br>\| `intune.attestation_boot_app_security_version` \| version \| windows \|<br>\| `intune.attestation_boot_debugging` \| boolean \| windows \|<br>\| `intune.attestation_boot_manager_security_version` \| version \| windows \|<br>\| `intune.attestation_boot_manager_version` \| version \| windows \|<br>\| `intune.attestation_boot_revision_list_info` \| string \| windows \|<br>\| `intune.attestation_code_integrity` \| boolean \| windows \|<br>\| `intune.attestation_code_integrity_check_version` \| version \| windows \|<br>\| `intune.attestation_code_integrity_policy` \| string \| windows \|<br>\| `intune.attestation_content_version` \| version \| windows \|<br>\| `intune.attestation_data_execution_policy_enabled` \| boolean \| windows \|<br>\| `intune.attestation_early_launch_anti_malware_driver_protection` \| boolean \| windows \|<br>\| `intune.attestation_health_status_mismatch_info` \| string \| windows \|<br>\| `intune.attestation_identity_key` \| string \| windows \|<br>\| `intune.attestation_issued_at` \| datetime \| windows \|<br>\| `intune.attestation_operating_system_kernel_debugging` \| boolean \| windows \|<br>\| `intune.attestation_operating_system_rev_list_info` \| string \| windows \|<br>\| `intune.attestation_pcr0` \| string \| windows \|<br>\| `intune.attestation_pcr_hash_algorithm` \| string \| windows \|<br>\| `intune.attestation_reset_count` \| integer \| windows \|<br>\| `intune.attestation_restart_count` \| integer \| windows \|<br>\| `intune.attestation_safe_mode` \| boolean \| windows \|<br>\| `intune.attestation_secure_boot` \| boolean \| windows \|<br>\| `intune.attestation_secure_boot_config_policy_fingerprint` \| string \| windows \|<br>\| `intune.attestation_status` \| enum_string \| windows \|<br>\| `intune.attestation_supported` \| boolean \| windows \|<br>\| `intune.attestation_test_signing` \| boolean \| windows \|<br>\| `intune.attestation_tpm_version` \| version \| windows \|<br>\| `intune.attestation_virtual_secure_mode` \| boolean \| windows \|<br>\| `intune.attestation_windows_pe` \| boolean \| windows \|<br>\| `intune.compliance_grace_period_expiration_at` \| datetime \| windows, macos, ios, android \|<br>\| `intune.compliance_state` \| enum_string \| windows, macos, ios, android \|<br>\| `intune.config_manager_compliance_policy` \| boolean \| windows, macos, ios, android \|<br>\| `intune.config_manager_device_configuration` \| boolean \| windows, macos, ios, android \|<br>\| `intune.config_manager_inventory` \| boolean \| windows, macos, ios, android \|<br>\| `intune.config_manager_modern_apps` \| boolean \| windows, macos, ios, android \|<br>\| `intune.config_manager_resource_access` \| boolean \| windows, macos, ios, android \|<br>\| `intune.config_manager_windows_update_for_business` \| boolean \| windows, macos, ios, android \|<br>\| `intune.device_category_display_name` \| string \| windows, macos, ios, android \|<br>\| `intune.device_enrollment_type` \| enum_string \| windows, macos, ios, android \|<br>\| `intune.device_name` \| string \| windows, macos, ios, android \|<br>\| `intune.device_registration_state` \| enum_string \| windows, macos, ios, android \|<br>\| `intune.eas_activated` \| boolean \| windows, macos, ios, android \|<br>\| `intune.eas_activated_at` \| datetime \| windows, macos, ios, android \|<br>\| `intune.eas_device_id` \| string \| windows, macos, ios, android \|<br>\| `intune.email_address` \| string \| windows, macos, ios, android \|<br>\| `intune.enrolled` \| boolean \| windows, macos, ios, android \|<br>\| `intune.enrolled_at` \| datetime \| windows, macos, ios, android \|<br>\| `intune.enrollment_profile_name` \| string \| windows, macos, ios, android \|<br>\| `intune.entra_device_id` \| string \| windows, macos, ios, android \|<br>\| `intune.entra_registered` \| boolean \| windows, macos, ios, android \|<br>\| `intune.ethernet_mac_address` \| string \| windows, macos, ios, android \|<br>\| `intune.exchange_access_state` \| enum_string \| windows, macos, ios, android \|<br>\| `intune.exchange_access_state_reason` \| enum_string \| windows, macos, ios, android \|<br>\| `intune.exchange_last_successful_sync_at` \| datetime \| windows, macos, ios, android \|<br>\| `intune.free_storage_space_bytes` \| integer \| windows, macos, ios, android \|<br>\| `intune.iccid` \| string \| windows, macos, ios, android \|<br>\| `intune.imei` \| string \| windows, macos, ios, android \|<br>\| `intune.intune_id` \| string \| windows, macos, ios, android \|<br>\| `intune.is_encrypted` \| boolean \| windows, macos, ios, android \|<br>\| `intune.is_supervised` \| boolean \| macos, ios \|<br>\| `intune.jail_broken` \| boolean \| ios, android \|<br>\| `intune.last_sync_at` \| datetime \| windows, macos, ios, android \|<br>\| `intune.managed_device_name` \| string \| windows, macos, ios, android \|<br>\| `intune.managed_device_owner_type` \| enum_string \| windows, macos, ios, android \|<br>\| `intune.management_agent` \| enum_string \| windows, macos, ios, android \|<br>\| `intune.management_certificate_expires_at` \| datetime \| windows, macos, ios, android \|<br>\| `intune.management_state` \| enum_string \| windows, macos, ios, android \|<br>\| `intune.manufacturer` \| string \| windows, macos, ios, android \|<br>\| `intune.meid` \| string \| windows, macos, ios, android \|<br>\| `intune.model` \| string \| windows, macos, ios, android \|<br>\| `intune.notes` \| string \| windows, macos, ios, android \|<br>\| `intune.operating_system` \| string \| windows, macos, ios, android \|<br>\| `intune.os_up_to_date` \| boolean \| windows, macos, ios, android \|<br>\| `intune.os_version` \| version \| windows, macos, ios, android \|<br>\| `intune.partner_reported_threat_state` \| enum_string \| windows, macos, ios, android \|<br>\| `intune.phone_number` \| string \| windows, macos, ios, android \|<br>\| `intune.physical_memory_bytes` \| integer \| windows, macos, ios, android \|<br>\| `intune.require_user_enrollment_approval` \| boolean \| windows, macos, ios, android \|<br>\| `intune.serial_number` \| string \| windows, macos, ios, android \|<br>\| `intune.subscriber_carrier` \| string \| windows, macos, ios, android \|<br>\| `intune.total_storage_space_bytes` \| integer \| windows, macos, ios, android \|<br>\| `intune.udid` \| string \| windows, macos, ios, android \|<br>\| `intune.user_display_name` \| string \| windows, macos, ios, android \|<br>\| `intune.user_id` \| string \| windows, macos, ios, android \|<br>\| `intune.user_principal_name` \| string \| windows, macos, ios, android \|<br>\| `intune.wifi_mac_address` \| string \| windows, macos, ios, android \|<br><br>### iru fields<br><br>\| Field \| Type \| Platforms \|<br>\| --- \| --- \| --- \|<br>\| `iru.activation_lock_allowed_while_supervised` \| boolean \| macos, ios \|<br>\| `iru.activation_lock_bypass_code_failed` \| boolean \| macos, ios \|<br>\| `iru.activation_lock_collected_at` \| datetime \| macos, ios \|<br>\| `iru.activation_lock_supported` \| boolean \| macos, ios \|<br>\| `iru.agent_installed` \| boolean \| macos, ios \|<br>\| `iru.agent_version` \| version \| macos, ios \|<br>\| `iru.any_signed_os` \| boolean \| macos, ios \|<br>\| `iru.apple_silicon` \| boolean \| macos, ios \|<br>\| `iru.asset_tag` \| string \| macos, ios \|<br>\| `iru.blueprint_id` \| string \| macos, ios \|<br>\| `iru.blueprint_name` \| string \| macos, ios \|<br>\| `iru.bootstrap_token_auth` \| boolean \| macos, ios \|<br>\| `iru.bootstrap_token_escrowed` \| boolean \| macos, ios \|<br>\| `iru.cellular_technology` \| enum_string \| macos, ios \|<br>\| `iru.data_roaming` \| boolean \| macos, ios \|<br>\| `iru.device_activation_lock_enabled` \| boolean \| macos, ios \|<br>\| `iru.device_capacity_gb` \| float \| macos, ios \|<br>\| `iru.device_family` \| enum_string \| macos, ios \|<br>\| `iru.device_name` \| string \| macos, ios \|<br>\| `iru.display_os_version` \| version \| macos, ios \|<br>\| `iru.enrolled` \| boolean \| macos, ios \|<br>\| `iru.external_boot_level` \| enum_string \| macos \|<br>\| `iru.filevault_collected_at` \| datetime \| macos, ios \|<br>\| `iru.filevault_enabled` \| boolean \| macos \|<br>\| `iru.filevault_key_escrowed` \| boolean \| macos, ios \|<br>\| `iru.filevault_key_rotation_scheduled_at` \| datetime \| macos, ios \|<br>\| `iru.filevault_key_type` \| enum_string \| macos \|<br>\| `iru.filevault_regeneration_needed` \| boolean \| macos, ios \|<br>\| `iru.firewall_allow_signed_applications` \| boolean \| macos, ios \|<br>\| `iru.firewall_block_all_incoming` \| boolean \| macos, ios \|<br>\| `iru.firewall_collected_at` \| datetime \| macos, ios \|<br>\| `iru.firewall_enabled` \| boolean \| macos \|<br>\| `iru.firewall_logging` \| boolean \| macos, ios \|<br>\| `iru.firewall_logging_option` \| enum_string \| macos \|<br>\| `iru.firewall_stealth_mode` \| boolean \| macos, ios \|<br>\| `iru.firewall_unloading` \| boolean \| macos, ios \|<br>\| `iru.firewall_version` \| version \| macos \|<br>\| `iru.first_enrolled_at` \| datetime \| macos, ios \|<br>\| `iru.gatekeeper_collected_at` \| datetime \| macos, ios \|<br>\| `iru.gatekeeper_enabled` \| boolean \| macos \|<br>\| `iru.gatekeeper_opaque_version` \| version \| macos \|<br>\| `iru.gatekeeper_trusted_developers` \| boolean \| macos, ios \|<br>\| `iru.gatekeeper_version` \| version \| macos \|<br>\| `iru.host_name` \| string \| macos, ios \|<br>\| `iru.hotspot` \| boolean \| macos, ios \|<br>\| `iru.inventory_collected_at` \| datetime \| macos, ios \|<br>\| `iru.iru_id` \| string \| macos, ios \|<br>\| `iru.is_missing` \| boolean \| macos, ios \|<br>\| `iru.is_removed` \| boolean \| macos, ios \|<br>\| `iru.kext_requires_bootstrap_token` \| boolean \| macos, ios \|<br>\| `iru.last_check_in_at` \| datetime \| macos, ios \|<br>\| `iru.last_enrolled_at` \| datetime \| macos, ios \|<br>\| `iru.local_hostname` \| string \| macos, ios \|<br>\| `iru.lost_mode_status` \| enum_string \| macos, ios \|<br>\| `iru.malware_removal_tool_version` \| version \| macos \|<br>\| `iru.mdm_enabled` \| boolean \| macos, ios \|<br>\| `iru.mdm_manages_kext` \| boolean \| macos, ios \|<br>\| `iru.model` \| string \| macos, ios \|<br>\| `iru.model_identifier` \| string \| macos, ios \|<br>\| `iru.model_name` \| string \| macos, ios \|<br>\| `iru.os_build` \| string \| macos, ios \|<br>\| `iru.os_name` \| string \| macos, ios \|<br>\| `iru.os_up_to_date` \| boolean \| macos, ios \|<br>\| `iru.os_version` \| version \| macos, ios \|<br>\| `iru.platform` \| enum_string \| macos, ios \|<br>\| `iru.secure_boot_level` \| enum_string \| macos \|<br>\| `iru.serial_number` \| string \| macos, ios \|<br>\| `iru.shared_ipad` \| boolean \| macos, ios \|<br>\| `iru.sip_enabled` \| boolean \| macos \|<br>\| `iru.software_update_requires_bootstrap_token` \| boolean \| macos, ios \|<br>\| `iru.ssv_enabled` \| boolean \| macos \|<br>\| `iru.startup_settings_collected_at` \| datetime \| macos, ios \|<br>\| `iru.supplemental_build_version` \| string \| macos, ios \|<br>\| `iru.supplemental_os_version_extra` \| version \| macos, ios \|<br>\| `iru.tags` \| string_array \| macos, ios \|<br>\| `iru.user_activation_lock_enabled` \| boolean \| macos, ios \|<br>\| `iru.user_email` \| string \| macos, ios \|<br>\| `iru.user_id` \| string \| macos, ios \|<br>\| `iru.user_is_archived` \| boolean \| macos, ios \|<br>\| `iru.user_manages_kext` \| boolean \| macos, ios \|<br>\| `iru.user_name` \| string \| macos, ios \|<br>\| `iru.xprotect_version` \| version \| macos \|<br><br>### santa fields<br><br>\| Field \| Type \| Platforms \|<br>\| --- \| --- \| --- \|<br>\| `santa.configured_client_mode` \| enum_string \| macos \|<br>\| `santa.enrolled` \| boolean \| macos \|<br>\| `santa.first_seen_at` \| datetime \| macos \|<br>\| `santa.hostname` \| string \| macos \|<br>\| `santa.last_preflight_at` \| datetime \| macos \|<br>\| `santa.last_preflight_ip` \| ip \| macos \|<br>\| `santa.last_seen_client_mode` \| enum_string \| macos \|<br>\| `santa.last_sync_at` \| datetime \| macos \|<br>\| `santa.machine_model` \| string \| macos \|<br>\| `santa.os_build` \| string \| macos \|<br>\| `santa.os_type` \| enum_string \| macos \|<br>\| `santa.os_up_to_date` \| boolean \| macos \|<br>\| `santa.os_version` \| version \| macos \|<br>\| `santa.primary_user` \| string \| macos \|<br>\| `santa.primary_user_groups` \| string_array \| macos \|<br>\| `santa.rule_sync_at` \| datetime \| macos \|<br>\| `santa.santa_id` \| string \| macos \|<br>\| `santa.santa_version` \| version \| macos \|<br>\| `santa.santanetd_version` \| version \| macos \|<br>\| `santa.serial_number` \| string \| macos \|<br>\| `santa.sip_status` \| integer \| macos \|<br>\| `santa.tags` \| string_array \| macos \|<br>\| `santa.temporary_admin_mode_ends_at` \| datetime \| macos \|<br>\| `santa.temporary_admin_mode_user` \| string \| macos \|<br>\| `santa.temporary_monitor_mode_ends_at` \| datetime \| macos \|<br><br>### sentinelone fields<br><br>\| Field \| Type \| Platforms \|<br>\| --- \| --- \| --- \|<br>\| `sentinelone.account_name` \| string \| windows, macos, linux \|<br>\| `sentinelone.active_protection` \| string_array \| windows, macos, linux \|<br>\| `sentinelone.active_threats` \| integer \| windows, macos, linux \|<br>\| `sentinelone.ad_computer_distinguished_name` \| string \| windows, macos, linux \|<br>\| `sentinelone.ad_computer_member_of` \| string_array \| windows, macos, linux \|<br>\| `sentinelone.ad_last_user_distinguished_name` \| string \| windows, macos, linux \|<br>\| `sentinelone.ad_last_user_member_of` \| string_array \| windows, macos, linux \|<br>\| `sentinelone.ad_mail` \| string \| windows, macos, linux \|<br>\| `sentinelone.ad_user_principal_name` \| string \| windows, macos, linux \|<br>\| `sentinelone.agent_version` \| version \| windows, macos, linux \|<br>\| `sentinelone.allow_remote_shell` \| boolean \| windows, macos, linux \|<br>\| `sentinelone.apps_vulnerability_status` \| enum_string \| windows, macos, linux \|<br>\| `sentinelone.cloud_providers` \| json \| windows, macos, linux \|<br>\| `sentinelone.computer_name` \| string \| windows, macos, linux \|<br>\| `sentinelone.console_migration_status` \| enum_string \| windows, macos, linux \|<br>\| `sentinelone.core_count` \| integer \| windows, macos, linux \|<br>\| `sentinelone.cpu_count` \| integer \| windows, macos, linux \|<br>\| `sentinelone.cpu_id` \| string \| windows, macos, linux \|<br>\| `sentinelone.detection_state` \| enum_string \| windows, macos, linux \|<br>\| `sentinelone.domain` \| string \| windows, macos, linux \|<br>\| `sentinelone.encrypted_applications` \| boolean \| windows, macos, linux \|<br>\| `sentinelone.enrolled` \| boolean \| windows, macos, linux \|<br>\| `sentinelone.external_id` \| string \| windows, macos, linux \|<br>\| `sentinelone.external_ip` \| ip \| windows, macos, linux \|<br>\| `sentinelone.firewall_enabled` \| boolean \| windows, macos, linux \|<br>\| `sentinelone.first_full_mode_at` \| datetime \| windows, macos, linux \|<br>\| `sentinelone.full_disk_scan_updated_at` \| datetime \| windows, macos, linux \|<br>\| `sentinelone.group_id` \| string \| windows, macos, linux \|<br>\| `sentinelone.group_ip` \| string \| windows, macos, linux \|<br>\| `sentinelone.group_name` \| string \| windows, macos, linux \|<br>\| `sentinelone.has_containerized_workload` \| boolean \| windows, macos, linux \|<br>\| `sentinelone.in_remote_shell_session` \| boolean \| windows, macos, linux \|<br>\| `sentinelone.infected` \| boolean \| windows, macos, linux \|<br>\| `sentinelone.installer_type` \| enum_string \| windows, macos, linux \|<br>\| `sentinelone.is_active` \| boolean \| windows, macos, linux \|<br>\| `sentinelone.is_ad_connector` \| boolean \| windows, macos, linux \|<br>\| `sentinelone.is_decommissioned` \| boolean \| windows, macos, linux \|<br>\| `sentinelone.is_hyper_automate` \| boolean \| windows, macos, linux \|<br>\| `sentinelone.is_pending_uninstall` \| boolean \| windows, macos, linux \|<br>\| `sentinelone.is_uninstalled` \| boolean \| windows, macos, linux \|<br>\| `sentinelone.is_up_to_date` \| boolean \| windows, macos, linux \|<br>\| `sentinelone.last_active_at` \| datetime \| windows, macos, linux \|<br>\| `sentinelone.last_ip_to_management` \| ip \| windows, macos, linux \|<br>\| `sentinelone.last_logged_in_user_name` \| string \| windows, macos, linux \|<br>\| `sentinelone.last_successful_scan_at` \| datetime \| windows, macos, linux \|<br>\| `sentinelone.location_enabled` \| boolean \| windows, macos, linux \|<br>\| `sentinelone.location_type` \| enum_string \| windows, macos, linux \|<br>\| `sentinelone.locations` \| json \| windows, macos, linux \|<br>\| `sentinelone.machine_sid` \| string \| windows, macos, linux \|<br>\| `sentinelone.machine_type` \| enum_string \| windows, macos, linux \|<br>\| `sentinelone.missing_permissions` \| string_array \| windows, macos, linux \|<br>\| `sentinelone.mitigation_mode` \| enum_string \| windows, macos, linux \|<br>\| `sentinelone.mitigation_mode_suspicious` \| enum_string \| windows, macos, linux \|<br>\| `sentinelone.model_name` \| string \| windows, macos, linux \|<br>\| `sentinelone.network_interfaces` \| json \| windows, macos, linux \|<br>\| `sentinelone.network_quarantine_enabled` \| boolean \| windows, macos, linux \|<br>\| `sentinelone.network_status` \| enum_string \| windows, macos, linux \|<br>\| `sentinelone.operational_state` \| enum_string \| windows, macos, linux \|<br>\| `sentinelone.operational_state_expires_at` \| datetime \| windows, macos, linux \|<br>\| `sentinelone.os_arch` \| enum_string \| windows, macos, linux \|<br>\| `sentinelone.os_name` \| string \| windows, macos, linux \|<br>\| `sentinelone.os_revision` \| version \| windows, macos, linux \|<br>\| `sentinelone.os_start_time` \| datetime \| windows, macos, linux \|<br>\| `sentinelone.os_type` \| enum_string \| windows, macos, linux \|<br>\| `sentinelone.os_up_to_date` \| boolean \| windows, macos \|<br>\| `sentinelone.os_username` \| string \| windows, macos, linux \|<br>\| `sentinelone.protected_containers_count` \| integer \| windows, macos, linux \|<br>\| `sentinelone.protected_pods_count` \| integer \| windows, macos, linux \|<br>\| `sentinelone.protected_tasks_count` \| integer \| windows, macos, linux \|<br>\| `sentinelone.proxy_console` \| boolean \| windows, macos, linux \|<br>\| `sentinelone.proxy_deep_visibility` \| boolean \| windows, macos, linux \|<br>\| `sentinelone.proxy_method` \| enum_string \| windows, macos, linux \|<br>\| `sentinelone.proxy_pac_file_usage` \| boolean \| windows, macos, linux \|<br>\| `sentinelone.ranger_status` \| enum_string \| windows, macos, linux \|<br>\| `sentinelone.ranger_version` \| version \| windows, macos, linux \|<br>\| `sentinelone.registered_at` \| datetime \| windows, macos, linux \|<br>\| `sentinelone.remote_profiling_state` \| enum_string \| windows, macos, linux \|<br>\| `sentinelone.remote_profiling_state_expires_at` \| datetime \| windows, macos, linux \|<br>\| `sentinelone.scan_aborted_at` \| datetime \| windows, macos, linux \|<br>\| `sentinelone.scan_finished_at` \| datetime \| windows, macos, linux \|<br>\| `sentinelone.scan_started_at` \| datetime \| windows, macos, linux \|<br>\| `sentinelone.scan_status` \| enum_string \| windows, macos, linux \|<br>\| `sentinelone.sentinelone_account_id` \| string \| windows, macos, linux \|<br>\| `sentinelone.sentinelone_id` \| string \| windows, macos, linux \|<br>\| `sentinelone.serial_number` \| string \| windows, macos, linux \|<br>\| `sentinelone.site_id` \| string \| windows, macos, linux \|<br>\| `sentinelone.site_name` \| string \| windows, macos, linux \|<br>\| `sentinelone.storage_name` \| string \| windows, macos, linux \|<br>\| `sentinelone.storage_type` \| string \| windows, macos, linux \|<br>\| `sentinelone.tags` \| json \| windows, macos, linux \|<br>\| `sentinelone.threat_reboot_required` \| boolean \| windows, macos, linux \|<br>\| `sentinelone.total_memory` \| integer \| windows, macos, linux \|<br>\| `sentinelone.user_actions_needed` \| string_array \| windows, macos, linux \|<br>\| `sentinelone.uuid` \| string \| windows, macos, linux \|<br><br>### sophos fields<br><br>\| Field \| Type \| Platforms \|<br>\| --- \| --- \| --- \|<br>\| `sophos.assigned_products` \| json \| windows, macos, linux \|<br>\| `sophos.associated_person_id` \| string \| windows, macos, linux \|<br>\| `sophos.associated_person_name` \| string \| windows, macos, linux \|<br>\| `sophos.associated_person_via_login` \| string \| windows, macos, linux \|<br>\| `sophos.cloned` \| boolean \| windows, macos, linux \|<br>\| `sophos.cloud_instance_id` \| string \| windows, macos, linux \|<br>\| `sophos.cloud_provider` \| enum_string \| windows, macos, linux \|<br>\| `sophos.device_software` \| json \| windows, macos, linux \|<br>\| `sophos.encryption_overall_status` \| enum_string \| windows, macos, linux \|<br>\| `sophos.encryption_volumes` \| json \| windows, macos, linux \|<br>\| `sophos.enrolled` \| boolean \| windows, macos, linux \|<br>\| `sophos.group_hierarchy` \| json \| windows, macos, linux \|<br>\| `sophos.group_id` \| string \| windows, macos, linux \|<br>\| `sophos.group_name` \| string \| windows, macos, linux \|<br>\| `sophos.health_overall` \| enum_string \| windows, macos, linux \|<br>\| `sophos.health_service_details` \| json \| windows, macos, linux \|<br>\| `sophos.health_services_status` \| enum_string \| windows, macos, linux \|<br>\| `sophos.health_threats_status` \| enum_string \| windows, macos, linux \|<br>\| `sophos.hostname` \| string \| windows, macos, linux \|<br>\| `sophos.ipv4_addresses` \| string_array \| windows, macos, linux \|<br>\| `sophos.ipv6_addresses` \| string_array \| windows, macos, linux \|<br>\| `sophos.isolation_admin_isolated` \| boolean \| windows, macos, linux \|<br>\| `sophos.isolation_self_isolated` \| boolean \| windows, macos, linux \|<br>\| `sophos.isolation_status` \| enum_string \| windows, macos, linux \|<br>\| `sophos.last_agent_update_at` \| datetime \| windows, macos, linux \|<br>\| `sophos.last_os_update_at` \| datetime \| windows, macos, linux \|<br>\| `sophos.last_seen_at` \| datetime \| windows, macos, linux \|<br>\| `sophos.lockdown_status` \| enum_string \| windows, macos, linux \|<br>\| `sophos.mac_addresses` \| string_array \| windows, macos, linux \|<br>\| `sophos.online` \| boolean \| windows, macos, linux \|<br>\| `sophos.os_build` \| integer \| windows, macos, linux \|<br>\| `sophos.os_is_server` \| boolean \| windows, macos, linux \|<br>\| `sophos.os_major_version` \| integer \| windows, macos, linux \|<br>\| `sophos.os_minor_version` \| integer \| windows, macos, linux \|<br>\| `sophos.os_name` \| string \| windows, macos, linux \|<br>\| `sophos.os_platform` \| enum_string \| windows, macos, linux \|<br>\| `sophos.os_up_to_date` \| boolean \| macos \|<br>\| `sophos.packages` \| json \| windows, macos, linux \|<br>\| `sophos.serial_number` \| string \| windows, macos, linux \|<br>\| `sophos.sophos_id` \| string \| windows, macos, linux \|<br>\| `sophos.tags` \| json \| windows, macos, linux \|<br>\| `sophos.tamper_protection_enabled` \| boolean \| windows, macos, linux \|<br>\| `sophos.tamper_protection_supported` \| boolean \| windows, macos, linux \|<br>\| `sophos.type` \| enum_string \| windows, macos, linux \||
 
 <h2 id="tocS_PolicyPostureAnd">PolicyPostureAnd</h2>
 <!-- backwards compatibility -->
@@ -27062,7 +27070,7 @@ Client
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|actor_id|string(uuid)|true|none|Actor ID|
+|actor_id|string(uuid)|true|none|ID of the Actor who connected from this Client most recently. `00000000-0000-0000-0000-000000000000` when none of its Actors remain.|
 |created_at|string(date-time)|true|none|Client creation timestamp|
 |device_serial|string \| null|true|none|Device manufacturer serial number (unavailable for mobile devices)|
 |device_uuid|string \| null|true|none|Device manufacturer UUID (unavailable for mobile devices)|
@@ -28965,8 +28973,7 @@ depend on the `property`:
   `M T W R F S U` (Monday through Sunday), `TIME_RANGES` is a
   comma-separated list of `HH:MM-HH:MM` ranges, and `TIMEZONE` is an
   IANA timezone name, e.g. `"M/09:00-17:00/America/New_York"`.
-* `client_verified` with `is`: `values` is a single-element list
-  containing `"true"` or `"false"`.
+* `client_verified` with `is`: `values` must be `["true"]`.
 
 ### Properties
 

@@ -1,342 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const NestedClusterSchema = z
-  .object({
-    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
-    name: z.string().min(1).max(100).openapi({ title: 'Name' }),
-    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
-    virtualmachine_count: z
-      .int()
-      .exactOptional()
-      .openapi({ readOnly: true, title: 'Virtualmachine count' }),
-  })
-  .openapi({ required: ['name'], title: 'Cluster' })
-  .openapi('NestedCluster')
-
-const NestedDeviceRoleSchema = z
-  .object({
-    device_count: z.int().exactOptional().openapi({ readOnly: true, title: 'Device count' }),
-    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
-    name: z.string().min(1).max(50).openapi({ title: 'Name' }),
-    slug: z
-      .string()
-      .regex(/^[-a-zA-Z0-9_]+$/)
-      .min(1)
-      .max(50)
-      .openapi({ title: 'Slug' }),
-    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
-    virtualmachine_count: z
-      .int()
-      .exactOptional()
-      .openapi({ readOnly: true, title: 'Virtualmachine count' }),
-  })
-  .openapi({ required: ['name', 'slug'], title: 'Device role' })
-  .openapi('NestedDeviceRole')
-
-const NestedManufacturerSchema = z
-  .object({
-    devicetype_count: z
-      .int()
-      .exactOptional()
-      .openapi({ readOnly: true, title: 'Devicetype count' }),
-    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
-    name: z.string().min(1).max(50).openapi({ title: 'Name' }),
-    slug: z
-      .string()
-      .regex(/^[-a-zA-Z0-9_]+$/)
-      .min(1)
-      .max(50)
-      .openapi({ title: 'Slug' }),
-    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
-  })
-  .openapi({ required: ['name', 'slug'], title: 'Manufacturer' })
-  .openapi('NestedManufacturer')
-
-const NestedDeviceTypeSchema = z
-  .object({
-    device_count: z.int().exactOptional().openapi({ readOnly: true, title: 'Device count' }),
-    display_name: z.string().exactOptional().openapi({ readOnly: true, title: 'Display name' }),
-    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
-    manufacturer: NestedManufacturerSchema.exactOptional(),
-    model: z.string().min(1).max(50).openapi({ title: 'Model' }),
-    slug: z
-      .string()
-      .regex(/^[-a-zA-Z0-9_]+$/)
-      .min(1)
-      .max(50)
-      .openapi({ title: 'Slug' }),
-    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
-  })
-  .openapi({ required: ['model', 'slug'], title: 'Device type' })
-  .openapi('NestedDeviceType')
-
-const NestedDeviceSchema = z
-  .object({
-    display_name: z.string().exactOptional().openapi({ readOnly: true, title: 'Display name' }),
-    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
-    name: z.string().max(64).nullable().exactOptional().openapi({ title: 'Name' }),
-    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
-  })
-  .openapi({ title: 'Device', required: [] })
-  .openapi('NestedDevice')
-
-const NestedPlatformSchema = z
-  .object({
-    device_count: z.int().exactOptional().openapi({ readOnly: true, title: 'Device count' }),
-    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
-    name: z.string().min(1).max(100).openapi({ title: 'Name' }),
-    slug: z
-      .string()
-      .regex(/^[-a-zA-Z0-9_]+$/)
-      .min(1)
-      .max(100)
-      .openapi({ title: 'Slug' }),
-    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
-    virtualmachine_count: z
-      .int()
-      .exactOptional()
-      .openapi({ readOnly: true, title: 'Virtualmachine count' }),
-  })
-  .openapi({ required: ['name', 'slug'], title: 'Platform' })
-  .openapi('NestedPlatform')
-
-const NestedIPAddressSchema = z
-  .object({
-    address: z
-      .string()
-      .openapi({ description: 'IPv4 or IPv6 address (with mask)', title: 'Address' }),
-    family: z.string().exactOptional().openapi({ readOnly: true, title: 'Family' }),
-    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
-    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
-  })
-  .openapi({ required: ['address'], title: 'Primary ip' })
-  .openapi('NestedIPAddress')
-
-const NestedRackSchema = z
-  .object({
-    device_count: z.int().exactOptional().openapi({ readOnly: true, title: 'Device count' }),
-    display_name: z.string().exactOptional().openapi({ readOnly: true, title: 'Display name' }),
-    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
-    name: z.string().min(1).max(50).openapi({ title: 'Name' }),
-    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
-  })
-  .openapi({ required: ['name'], title: 'Rack' })
-  .openapi('NestedRack')
-
-const NestedSiteSchema = z
-  .object({
-    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
-    name: z.string().min(1).max(50).openapi({ title: 'Name' }),
-    slug: z
-      .string()
-      .regex(/^[-a-zA-Z0-9_]+$/)
-      .min(1)
-      .max(50)
-      .openapi({ title: 'Slug' }),
-    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
-  })
-  .openapi({ required: ['name', 'slug'], title: 'Site' })
-  .openapi('NestedSite')
-
-const NestedTenantSchema = z
-  .object({
-    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
-    name: z.string().min(1).max(30).openapi({ title: 'Name' }),
-    slug: z
-      .string()
-      .regex(/^[-a-zA-Z0-9_]+$/)
-      .min(1)
-      .max(50)
-      .openapi({ title: 'Slug' }),
-    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
-  })
-  .openapi({ required: ['name', 'slug'], title: 'Tenant' })
-  .openapi('NestedTenant')
-
-const NestedVirtualChassisSchema = z
-  .object({
-    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
-    master: NestedDeviceSchema,
-    member_count: z.int().exactOptional().openapi({ readOnly: true, title: 'Member count' }),
-    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
-  })
-  .openapi({ required: ['master'], title: 'Virtual chassis' })
-  .openapi('NestedVirtualChassis')
-
-type DeviceType = {
-  asset_tag?: string | null
-  cluster?: z.infer<typeof NestedClusterSchema>
-  comments?: string
-  created?: string
-  custom_fields?: { [key: string]: unknown }
-  device_role: z.infer<typeof NestedDeviceRoleSchema>
-  device_type: z.infer<typeof NestedDeviceTypeSchema>
-  display_name?: string
-  face?: { label: 'Front' | 'Rear'; value: 'front' | 'rear' }
-  id?: number
-  last_updated?: string
-  local_context_data?: string | null
-  name?: string | null
-  parent_device?: z.infer<typeof NestedDeviceSchema>
-  platform?: z.infer<typeof NestedPlatformSchema>
-  position?: number | null
-  primary_ip?: z.infer<typeof NestedIPAddressSchema>
-  primary_ip4?: z.infer<typeof NestedIPAddressSchema>
-  primary_ip6?: z.infer<typeof NestedIPAddressSchema>
-  rack?: z.infer<typeof NestedRackSchema>
-  serial?: string
-  site: z.infer<typeof NestedSiteSchema>
-  status?: {
-    label: 'Offline' | 'Active' | 'Planned' | 'Staged' | 'Failed' | 'Inventory' | 'Decommissioning'
-    value: 'offline' | 'active' | 'planned' | 'staged' | 'failed' | 'inventory' | 'decommissioning'
-  }
-  tags?: string[]
-  tenant?: z.infer<typeof NestedTenantSchema>
-  vc_position?: number | null
-  vc_priority?: number | null
-  virtual_chassis?: z.infer<typeof NestedVirtualChassisSchema>
-}
-
-const NestedVirtualMachineSchema = z
-  .object({
-    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
-    name: z.string().min(1).max(64).openapi({ title: 'Name' }),
-    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
-  })
-  .openapi({ required: ['name'], title: 'Virtual machine' })
-  .openapi('NestedVirtualMachine')
-
-const IPAddressInterfaceSchema = z
-  .object({
-    device: NestedDeviceSchema.exactOptional(),
-    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
-    name: z.string().min(1).max(64).openapi({ title: 'Name' }),
-    url: z.string().exactOptional().openapi({ readOnly: true, title: 'Url' }),
-    virtual_machine: NestedVirtualMachineSchema.exactOptional(),
-  })
-  .openapi({ required: ['name'], title: 'Interface' })
-  .openapi('IPAddressInterface')
-
-const NestedVRFSchema = z
-  .object({
-    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
-    name: z.string().min(1).max(50).openapi({ title: 'Name' }),
-    prefix_count: z.int().exactOptional().openapi({ readOnly: true, title: 'Prefix count' }),
-    rd: z
-      .string()
-      .max(21)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Unique route distinguisher (as defined in RFC 4364)',
-        title: 'Route distinguisher',
-      }),
-    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
-  })
-  .openapi({ required: ['name'], title: 'Vrf' })
-  .openapi('NestedVRF')
-
-type IPAddressType = {
-  address: string
-  created?: string
-  custom_fields?: { [key: string]: unknown }
-  description?: string
-  dns_name?: string
-  family?: { label: 'IPv4' | 'IPv6'; value: 4 | 6 }
-  id?: number
-  interface?: z.infer<typeof IPAddressInterfaceSchema>
-  last_updated?: string
-  nat_inside?: z.infer<typeof NestedIPAddressSchema>
-  nat_outside?: z.infer<typeof NestedIPAddressSchema>
-  role?: {
-    label: 'Loopback' | 'Secondary' | 'Anycast' | 'VIP' | 'VRRP' | 'HSRP' | 'GLBP' | 'CARP'
-    value: 'loopback' | 'secondary' | 'anycast' | 'vip' | 'vrrp' | 'hsrp' | 'glbp' | 'carp'
-  }
-  status?: {
-    label: 'Active' | 'Reserved' | 'Deprecated' | 'DHCP'
-    value: 'active' | 'reserved' | 'deprecated' | 'dhcp'
-  }
-  tags?: string[]
-  tenant?: z.infer<typeof NestedTenantSchema>
-  vrf?: z.infer<typeof NestedVRFSchema>
-}
-
-const NestedRackGroupSchema = z
-  .object({
-    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
-    name: z.string().min(1).max(50).openapi({ title: 'Name' }),
-    rack_count: z.int().exactOptional().openapi({ readOnly: true, title: 'Rack count' }),
-    slug: z
-      .string()
-      .regex(/^[-a-zA-Z0-9_]+$/)
-      .min(1)
-      .max(50)
-      .openapi({ title: 'Slug' }),
-    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
-  })
-  .openapi({ required: ['name', 'slug'], title: 'Rack group' })
-  .openapi('NestedRackGroup')
-
-type RackGroupType = {
-  description?: string
-  id?: number
-  name: string
-  parent?: z.infer<typeof NestedRackGroupSchema>
-  rack_count?: number
-  site: z.infer<typeof NestedSiteSchema>
-  slug: string
-}
-
-const NestedRegionSchema = z
-  .object({
-    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
-    name: z.string().min(1).max(50).openapi({ title: 'Name' }),
-    site_count: z.int().exactOptional().openapi({ readOnly: true, title: 'Site count' }),
-    slug: z
-      .string()
-      .regex(/^[-a-zA-Z0-9_]+$/)
-      .min(1)
-      .max(50)
-      .openapi({ title: 'Slug' }),
-    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
-  })
-  .openapi({ required: ['name', 'slug'], title: 'Parent' })
-  .openapi('NestedRegion')
-
-type RegionType = {
-  description?: string
-  id?: number
-  name: string
-  parent?: z.infer<typeof NestedRegionSchema>
-  site_count?: number
-  slug: string
-}
-
-const NestedTenantGroupSchema = z
-  .object({
-    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
-    name: z.string().min(1).max(50).openapi({ title: 'Name' }),
-    slug: z
-      .string()
-      .regex(/^[-a-zA-Z0-9_]+$/)
-      .min(1)
-      .max(50)
-      .openapi({ title: 'Slug' }),
-    tenant_count: z.int().exactOptional().openapi({ readOnly: true, title: 'Tenant count' }),
-    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
-  })
-  .openapi({ required: ['name', 'slug'] })
-  .openapi('NestedTenantGroup')
-
-type TenantGroupType = {
-  description?: string
-  id?: number
-  name: string
-  parent?: z.infer<typeof NestedTenantGroupSchema>
-  slug: string
-  tenant_count?: number
-}
-
 const NestedRIRSchema = z
   .object({
     aggregate_count: z.int().exactOptional().openapi({ readOnly: true, title: 'Aggregate count' }),
@@ -356,7 +19,11 @@ const NestedRIRSchema = z
 const AggregateSchema = z
   .object({
     created: z.iso.date().exactOptional().openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     date_added: z.iso.date().nullable().exactOptional().openapi({ title: 'Date added' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     family: z
@@ -374,6 +41,25 @@ const AggregateSchema = z
   })
   .openapi({ required: ['prefix', 'rir'] })
   .openapi('Aggregate')
+
+const NestedVRFSchema = z
+  .object({
+    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
+    name: z.string().min(1).max(50).openapi({ title: 'Name' }),
+    prefix_count: z.int().exactOptional().openapi({ readOnly: true, title: 'Prefix count' }),
+    rd: z
+      .string()
+      .max(21)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Unique route distinguisher (as defined in RFC 4364)',
+        title: 'Route distinguisher',
+      }),
+    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
+  })
+  .openapi({ required: ['name'], title: 'Vrf' })
+  .openapi('NestedVRF')
 
 const AvailableIPSchema = z
   .object({
@@ -477,6 +163,31 @@ const NestedProviderSchema = z
   .openapi({ required: ['name', 'slug'], title: 'Provider' })
   .openapi('NestedProvider')
 
+const NestedTenantSchema = z
+  .object({
+    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
+    name: z.string().min(1).max(30).openapi({ title: 'Name' }),
+    slug: z
+      .string()
+      .regex(/^[-a-zA-Z0-9_]+$/)
+      .min(1)
+      .max(50)
+      .openapi({ title: 'Slug' }),
+    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
+  })
+  .openapi({ required: ['name', 'slug'], title: 'Tenant' })
+  .openapi('NestedTenant')
+
+const NestedDeviceSchema = z
+  .object({
+    display_name: z.string().exactOptional().openapi({ readOnly: true, title: 'Display name' }),
+    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
+    name: z.string().max(64).nullable().exactOptional().openapi({ title: 'Name' }),
+    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
+  })
+  .openapi({ title: 'Device', required: [] })
+  .openapi('NestedDevice')
+
 const NestedInterfaceSchema = z
   .object({
     cable: z.int().nullable().exactOptional().openapi({ title: 'Cable' }),
@@ -494,6 +205,21 @@ const NestedInterfaceSchema = z
   })
   .openapi({ required: ['name'], title: 'Connected endpoint' })
   .openapi('NestedInterface')
+
+const NestedSiteSchema = z
+  .object({
+    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
+    name: z.string().min(1).max(50).openapi({ title: 'Name' }),
+    slug: z
+      .string()
+      .regex(/^[-a-zA-Z0-9_]+$/)
+      .min(1)
+      .max(50)
+      .openapi({ title: 'Slug' }),
+    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
+  })
+  .openapi({ required: ['name', 'slug'], title: 'Site' })
+  .openapi('NestedSite')
 
 const CircuitCircuitTerminationSchema = z
   .object({
@@ -545,7 +271,11 @@ const CircuitSchema = z
       .exactOptional()
       .openapi({ title: 'Commit rate (Kbps)' }),
     created: z.iso.date().exactOptional().openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
     install_date: z.iso.date().nullable().exactOptional().openapi({ title: 'Date installed' }),
@@ -698,7 +428,11 @@ const ClusterSchema = z
   .object({
     comments: z.string().exactOptional().openapi({ title: 'Comments' }),
     created: z.iso.date().exactOptional().openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     device_count: z.int().exactOptional().openapi({ readOnly: true, title: 'Device count' }),
     group: NestedClusterGroupSchema.exactOptional(),
     id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
@@ -750,6 +484,91 @@ const ClusterTypeSchema = z
   })
   .openapi({ required: ['name', 'slug'] })
   .openapi('ClusterType')
+
+const NestedClusterSchema = z
+  .object({
+    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
+    name: z.string().min(1).max(100).openapi({ title: 'Name' }),
+    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
+    virtualmachine_count: z
+      .int()
+      .exactOptional()
+      .openapi({ readOnly: true, title: 'Virtualmachine count' }),
+  })
+  .openapi({ required: ['name'], title: 'Cluster' })
+  .openapi('NestedCluster')
+
+const NestedPlatformSchema = z
+  .object({
+    device_count: z.int().exactOptional().openapi({ readOnly: true, title: 'Device count' }),
+    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
+    name: z.string().min(1).max(100).openapi({ title: 'Name' }),
+    slug: z
+      .string()
+      .regex(/^[-a-zA-Z0-9_]+$/)
+      .min(1)
+      .max(100)
+      .openapi({ title: 'Slug' }),
+    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
+    virtualmachine_count: z
+      .int()
+      .exactOptional()
+      .openapi({ readOnly: true, title: 'Virtualmachine count' }),
+  })
+  .openapi({ required: ['name', 'slug'], title: 'Platform' })
+  .openapi('NestedPlatform')
+
+const NestedRegionSchema = z
+  .object({
+    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
+    name: z.string().min(1).max(50).openapi({ title: 'Name' }),
+    site_count: z.int().exactOptional().openapi({ readOnly: true, title: 'Site count' }),
+    slug: z
+      .string()
+      .regex(/^[-a-zA-Z0-9_]+$/)
+      .min(1)
+      .max(50)
+      .openapi({ title: 'Slug' }),
+    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
+  })
+  .openapi({ required: ['name', 'slug'], title: 'Parent' })
+  .openapi('NestedRegion')
+
+const NestedDeviceRoleSchema = z
+  .object({
+    device_count: z.int().exactOptional().openapi({ readOnly: true, title: 'Device count' }),
+    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
+    name: z.string().min(1).max(50).openapi({ title: 'Name' }),
+    slug: z
+      .string()
+      .regex(/^[-a-zA-Z0-9_]+$/)
+      .min(1)
+      .max(50)
+      .openapi({ title: 'Slug' }),
+    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
+    virtualmachine_count: z
+      .int()
+      .exactOptional()
+      .openapi({ readOnly: true, title: 'Virtualmachine count' }),
+  })
+  .openapi({ required: ['name', 'slug'], title: 'Device role' })
+  .openapi('NestedDeviceRole')
+
+const NestedTenantGroupSchema = z
+  .object({
+    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
+    name: z.string().min(1).max(50).openapi({ title: 'Name' }),
+    slug: z
+      .string()
+      .regex(/^[-a-zA-Z0-9_]+$/)
+      .min(1)
+      .max(50)
+      .openapi({ title: 'Slug' }),
+    tenant_count: z.int().exactOptional().openapi({ readOnly: true, title: 'Tenant count' }),
+    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
+  })
+  .openapi({ required: ['name', 'slug'] })
+  .openapi('NestedTenantGroup')
 
 const ConfigContextSchema = z
   .object({
@@ -928,6 +747,43 @@ const ConsolePortSchema = z
   .openapi({ required: ['device', 'name'] })
   .openapi('ConsolePort')
 
+const NestedManufacturerSchema = z
+  .object({
+    devicetype_count: z
+      .int()
+      .exactOptional()
+      .openapi({ readOnly: true, title: 'Devicetype count' }),
+    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
+    name: z.string().min(1).max(50).openapi({ title: 'Name' }),
+    slug: z
+      .string()
+      .regex(/^[-a-zA-Z0-9_]+$/)
+      .min(1)
+      .max(50)
+      .openapi({ title: 'Slug' }),
+    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
+  })
+  .openapi({ required: ['name', 'slug'], title: 'Manufacturer' })
+  .openapi('NestedManufacturer')
+
+const NestedDeviceTypeSchema = z
+  .object({
+    device_count: z.int().exactOptional().openapi({ readOnly: true, title: 'Device count' }),
+    display_name: z.string().exactOptional().openapi({ readOnly: true, title: 'Display name' }),
+    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
+    manufacturer: NestedManufacturerSchema.exactOptional(),
+    model: z.string().min(1).max(50).openapi({ title: 'Model' }),
+    slug: z
+      .string()
+      .regex(/^[-a-zA-Z0-9_]+$/)
+      .min(1)
+      .max(50)
+      .openapi({ title: 'Slug' }),
+    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
+  })
+  .openapi({ required: ['model', 'slug'], title: 'Device type' })
+  .openapi('NestedDeviceType')
+
 const ConsolePortTemplateSchema = z
   .object({
     device_type: NestedDeviceTypeSchema,
@@ -1082,102 +938,133 @@ const ConsoleServerPortTemplateSchema = z
   .openapi({ required: ['device_type', 'name'] })
   .openapi('ConsoleServerPortTemplate')
 
-const DeviceSchema: z.ZodType<DeviceType> = z
-  .lazy(() =>
-    z
+const NestedIPAddressSchema = z
+  .object({
+    address: z
+      .string()
+      .openapi({ description: 'IPv4 or IPv6 address (with mask)', title: 'Address' }),
+    family: z.string().exactOptional().openapi({ readOnly: true, title: 'Family' }),
+    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
+    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
+  })
+  .openapi({ required: ['address'], title: 'Primary ip' })
+  .openapi('NestedIPAddress')
+
+const NestedRackSchema = z
+  .object({
+    device_count: z.int().exactOptional().openapi({ readOnly: true, title: 'Device count' }),
+    display_name: z.string().exactOptional().openapi({ readOnly: true, title: 'Display name' }),
+    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
+    name: z.string().min(1).max(50).openapi({ title: 'Name' }),
+    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
+  })
+  .openapi({ required: ['name'], title: 'Rack' })
+  .openapi('NestedRack')
+
+const NestedVirtualChassisSchema = z
+  .object({
+    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
+    master: NestedDeviceSchema,
+    member_count: z.int().exactOptional().openapi({ readOnly: true, title: 'Member count' }),
+    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
+  })
+  .openapi({ required: ['master'], title: 'Virtual chassis' })
+  .openapi('NestedVirtualChassis')
+
+const DeviceSchema = z
+  .object({
+    asset_tag: z
+      .string()
+      .max(50)
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'A unique tag used to identify this device', title: 'Asset tag' }),
+    cluster: NestedClusterSchema.exactOptional(),
+    comments: z.string().exactOptional().openapi({ title: 'Comments' }),
+    created: z.iso.date().exactOptional().openapi({ readOnly: true, title: 'Created' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
+    device_role: NestedDeviceRoleSchema,
+    device_type: NestedDeviceTypeSchema,
+    display_name: z.string().exactOptional().openapi({ readOnly: true, title: 'Display name' }),
+    face: z
+      .object({ label: z.enum(['Front', 'Rear']), value: z.enum(['front', 'rear']) })
+      .exactOptional()
+      .openapi({ required: ['label', 'value'], title: 'Face' }),
+    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
+    last_updated: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ readOnly: true, title: 'Last updated' }),
+    local_context_data: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ title: 'Local context data' }),
+    name: z.string().max(64).nullable().exactOptional().openapi({ title: 'Name' }),
+    parent_device: NestedDeviceSchema.exactOptional(),
+    platform: NestedPlatformSchema.exactOptional(),
+    position: z
+      .int()
+      .min(1)
+      .max(32767)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'The lowest-numbered unit occupied by the device',
+        title: 'Position (U)',
+      }),
+    primary_ip: NestedIPAddressSchema.exactOptional(),
+    primary_ip4: NestedIPAddressSchema.exactOptional(),
+    primary_ip6: NestedIPAddressSchema.exactOptional(),
+    rack: NestedRackSchema.exactOptional(),
+    serial: z.string().max(50).exactOptional().openapi({ title: 'Serial number' }),
+    site: NestedSiteSchema,
+    status: z
       .object({
-        asset_tag: z
-          .string()
-          .max(50)
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description: 'A unique tag used to identify this device',
-            title: 'Asset tag',
-          }),
-        cluster: NestedClusterSchema.exactOptional(),
-        comments: z.string().exactOptional().openapi({ title: 'Comments' }),
-        created: z.iso.date().exactOptional().openapi({ readOnly: true, title: 'Created' }),
-        custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
-        device_role: NestedDeviceRoleSchema,
-        device_type: NestedDeviceTypeSchema,
-        display_name: z.string().exactOptional().openapi({ readOnly: true, title: 'Display name' }),
-        face: z
-          .object({ label: z.enum(['Front', 'Rear']), value: z.enum(['front', 'rear']) })
-          .exactOptional()
-          .openapi({ required: ['label', 'value'], title: 'Face' }),
-        id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
-        last_updated: z.iso
-          .datetime({ offset: true })
-          .exactOptional()
-          .openapi({ readOnly: true, title: 'Last updated' }),
-        local_context_data: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ title: 'Local context data' }),
-        name: z.string().max(64).nullable().exactOptional().openapi({ title: 'Name' }),
-        parent_device: NestedDeviceSchema.exactOptional(),
-        platform: NestedPlatformSchema.exactOptional(),
-        position: z
-          .int()
-          .min(1)
-          .max(32767)
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description: 'The lowest-numbered unit occupied by the device',
-            title: 'Position (U)',
-          }),
-        primary_ip: NestedIPAddressSchema.exactOptional(),
-        primary_ip4: NestedIPAddressSchema.exactOptional(),
-        primary_ip6: NestedIPAddressSchema.exactOptional(),
-        rack: NestedRackSchema.exactOptional(),
-        serial: z.string().max(50).exactOptional().openapi({ title: 'Serial number' }),
-        site: NestedSiteSchema,
-        status: z
-          .object({
-            label: z.enum([
-              'Offline',
-              'Active',
-              'Planned',
-              'Staged',
-              'Failed',
-              'Inventory',
-              'Decommissioning',
-            ]),
-            value: z.enum([
-              'offline',
-              'active',
-              'planned',
-              'staged',
-              'failed',
-              'inventory',
-              'decommissioning',
-            ]),
-          })
-          .exactOptional()
-          .openapi({ required: ['label', 'value'], title: 'Status' }),
-        tags: z.array(z.string().min(1)).exactOptional(),
-        tenant: NestedTenantSchema.exactOptional(),
-        vc_position: z
-          .int()
-          .min(0)
-          .max(255)
-          .nullable()
-          .exactOptional()
-          .openapi({ title: 'Vc position' }),
-        vc_priority: z
-          .int()
-          .min(0)
-          .max(255)
-          .nullable()
-          .exactOptional()
-          .openapi({ title: 'Vc priority' }),
-        virtual_chassis: NestedVirtualChassisSchema.exactOptional(),
+        label: z.enum([
+          'Offline',
+          'Active',
+          'Planned',
+          'Staged',
+          'Failed',
+          'Inventory',
+          'Decommissioning',
+        ]),
+        value: z.enum([
+          'offline',
+          'active',
+          'planned',
+          'staged',
+          'failed',
+          'inventory',
+          'decommissioning',
+        ]),
       })
-      .openapi({ required: ['device_type', 'device_role', 'site'] }),
-  )
+      .exactOptional()
+      .openapi({ required: ['label', 'value'], title: 'Status' }),
+    tags: z.array(z.string().min(1)).exactOptional(),
+    tenant: NestedTenantSchema.exactOptional(),
+    vc_position: z
+      .int()
+      .min(0)
+      .max(255)
+      .nullable()
+      .exactOptional()
+      .openapi({ title: 'Vc position' }),
+    vc_priority: z
+      .int()
+      .min(0)
+      .max(255)
+      .nullable()
+      .exactOptional()
+      .openapi({ title: 'Vc priority' }),
+    virtual_chassis: NestedVirtualChassisSchema.exactOptional(),
+  })
+  .openapi({ required: ['device_type', 'device_role', 'site'] })
   .openapi('Device')
 
 const DeviceBaySchema = z
@@ -1469,7 +1356,11 @@ const DeviceTypeSchema = z
   .object({
     comments: z.string().exactOptional().openapi({ title: 'Comments' }),
     created: z.iso.date().exactOptional().openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     device_count: z.int().exactOptional().openapi({ readOnly: true, title: 'Device count' }),
     display_name: z.string().exactOptional().openapi({ readOnly: true, title: 'Display name' }),
     front_image: z.url().exactOptional().openapi({ readOnly: true, title: 'Front image' }),
@@ -1524,7 +1415,11 @@ const DeviceWithConfigContextSchema = z
       .exactOptional()
       .openapi({ readOnly: true, title: 'Config context' }),
     created: z.iso.date().exactOptional().openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     device_role: NestedDeviceRoleSchema,
     device_type: NestedDeviceTypeSchema,
     display_name: z.string().exactOptional().openapi({ readOnly: true, title: 'Display name' }),
@@ -1784,72 +1679,75 @@ const GraphSchema = z
   .openapi({ required: ['type', 'name', 'source'] })
   .openapi('Graph')
 
-const IPAddressSchema: z.ZodType<IPAddressType> = z
-  .lazy(() =>
-    z
+const NestedVirtualMachineSchema = z
+  .object({
+    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
+    name: z.string().min(1).max(64).openapi({ title: 'Name' }),
+    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
+  })
+  .openapi({ required: ['name'], title: 'Virtual machine' })
+  .openapi('NestedVirtualMachine')
+
+const IPAddressInterfaceSchema = z
+  .object({
+    device: NestedDeviceSchema.exactOptional(),
+    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
+    name: z.string().min(1).max(64).openapi({ title: 'Name' }),
+    url: z.string().exactOptional().openapi({ readOnly: true, title: 'Url' }),
+    virtual_machine: NestedVirtualMachineSchema.exactOptional(),
+  })
+  .openapi({ required: ['name'], title: 'Interface' })
+  .openapi('IPAddressInterface')
+
+const IPAddressSchema = z
+  .object({
+    address: z
+      .string()
+      .openapi({ description: 'IPv4 or IPv6 address (with mask)', title: 'Address' }),
+    created: z.iso.date().exactOptional().openapi({ readOnly: true, title: 'Created' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
+    description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
+    dns_name: z
+      .string()
+      .regex(/^[0-9A-Za-z._-]+$/)
+      .max(255)
+      .exactOptional()
+      .openapi({ description: 'Hostname or FQDN (not case-sensitive)', title: 'DNS Name' }),
+    family: z
+      .object({ label: z.enum(['IPv4', 'IPv6']), value: z.union([z.literal(4), z.literal(6)]) })
+      .exactOptional()
+      .openapi({ readOnly: true, required: ['label', 'value'], title: 'Family' }),
+    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
+    interface: IPAddressInterfaceSchema.exactOptional(),
+    last_updated: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ readOnly: true, title: 'Last updated' }),
+    nat_inside: NestedIPAddressSchema.exactOptional(),
+    nat_outside: NestedIPAddressSchema.exactOptional(),
+    role: z
       .object({
-        address: z
-          .string()
-          .openapi({ description: 'IPv4 or IPv6 address (with mask)', title: 'Address' }),
-        created: z.iso.date().exactOptional().openapi({ readOnly: true, title: 'Created' }),
-        custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
-        description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
-        dns_name: z
-          .string()
-          .regex(/^[0-9A-Za-z._-]+$/)
-          .max(255)
-          .exactOptional()
-          .openapi({ description: 'Hostname or FQDN (not case-sensitive)', title: 'DNS Name' }),
-        family: z
-          .object({ label: z.enum(['IPv4', 'IPv6']), value: z.union([z.literal(4), z.literal(6)]) })
-          .exactOptional()
-          .openapi({ readOnly: true, required: ['label', 'value'], title: 'Family' }),
-        id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
-        interface: IPAddressInterfaceSchema.exactOptional(),
-        last_updated: z.iso
-          .datetime({ offset: true })
-          .exactOptional()
-          .openapi({ readOnly: true, title: 'Last updated' }),
-        nat_inside: NestedIPAddressSchema.exactOptional(),
-        nat_outside: NestedIPAddressSchema.exactOptional(),
-        role: z
-          .object({
-            label: z.enum([
-              'Loopback',
-              'Secondary',
-              'Anycast',
-              'VIP',
-              'VRRP',
-              'HSRP',
-              'GLBP',
-              'CARP',
-            ]),
-            value: z.enum([
-              'loopback',
-              'secondary',
-              'anycast',
-              'vip',
-              'vrrp',
-              'hsrp',
-              'glbp',
-              'carp',
-            ]),
-          })
-          .exactOptional()
-          .openapi({ required: ['label', 'value'], title: 'Role' }),
-        status: z
-          .object({
-            label: z.enum(['Active', 'Reserved', 'Deprecated', 'DHCP']),
-            value: z.enum(['active', 'reserved', 'deprecated', 'dhcp']),
-          })
-          .exactOptional()
-          .openapi({ required: ['label', 'value'], title: 'Status' }),
-        tags: z.array(z.string().min(1)).exactOptional(),
-        tenant: NestedTenantSchema.exactOptional(),
-        vrf: NestedVRFSchema.exactOptional(),
+        label: z.enum(['Loopback', 'Secondary', 'Anycast', 'VIP', 'VRRP', 'HSRP', 'GLBP', 'CARP']),
+        value: z.enum(['loopback', 'secondary', 'anycast', 'vip', 'vrrp', 'hsrp', 'glbp', 'carp']),
       })
-      .openapi({ required: ['address'] }),
-  )
+      .exactOptional()
+      .openapi({ required: ['label', 'value'], title: 'Role' }),
+    status: z
+      .object({
+        label: z.enum(['Active', 'Reserved', 'Deprecated', 'DHCP']),
+        value: z.enum(['active', 'reserved', 'deprecated', 'dhcp']),
+      })
+      .exactOptional()
+      .openapi({ required: ['label', 'value'], title: 'Status' }),
+    tags: z.array(z.string().min(1)).exactOptional(),
+    tenant: NestedTenantSchema.exactOptional(),
+    vrf: NestedVRFSchema.exactOptional(),
+  })
+  .openapi({ required: ['address'] })
   .openapi('IPAddress')
 
 const ImageAttachmentSchema = z
@@ -2140,6 +2038,22 @@ const NestedPowerPortTemplateSchema = z
   .openapi({ required: ['name'], title: 'Power port' })
   .openapi('NestedPowerPortTemplate')
 
+const NestedRackGroupSchema = z
+  .object({
+    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
+    name: z.string().min(1).max(50).openapi({ title: 'Name' }),
+    rack_count: z.int().exactOptional().openapi({ readOnly: true, title: 'Rack count' }),
+    slug: z
+      .string()
+      .regex(/^[-a-zA-Z0-9_]+$/)
+      .min(1)
+      .max(50)
+      .openapi({ title: 'Slug' }),
+    url: z.url().exactOptional().openapi({ readOnly: true, title: 'Url' }),
+  })
+  .openapi({ required: ['name', 'slug'], title: 'Rack group' })
+  .openapi('NestedRackGroup')
+
 const NestedRackRoleSchema = z
   .object({
     id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
@@ -2298,7 +2212,11 @@ const PowerFeedSchema = z
     amperage: z.int().min(1).max(32767).exactOptional().openapi({ title: 'Amperage' }),
     comments: z.string().exactOptional().openapi({ title: 'Comments' }),
     created: z.iso.date().exactOptional().openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
     last_updated: z.iso
       .datetime({ offset: true })
@@ -3041,7 +2959,11 @@ const PowerPortTemplateSchema = z
 const PrefixSchema = z
   .object({
     created: z.iso.date().exactOptional().openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     family: z
       .object({ label: z.enum(['IPv4', 'IPv6']), value: z.union([z.literal(4), z.literal(6)]) })
@@ -3091,7 +3013,11 @@ const ProviderSchema = z
     circuit_count: z.int().exactOptional().openapi({ readOnly: true, title: 'Circuit count' }),
     comments: z.string().exactOptional().openapi({ title: 'Comments' }),
     created: z.iso.date().exactOptional().openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
     last_updated: z.iso
       .datetime({ offset: true })
@@ -3144,7 +3070,11 @@ const RackSchema = z
       .openapi({ description: 'A unique tag used to identify this rack', title: 'Asset tag' }),
     comments: z.string().exactOptional().openapi({ title: 'Comments' }),
     created: z.iso.date().exactOptional().openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     desc_units: z
       .boolean()
       .exactOptional()
@@ -3231,25 +3161,22 @@ const RackSchema = z
   .openapi({ required: ['name', 'site'] })
   .openapi('Rack')
 
-const RackGroupSchema: z.ZodType<RackGroupType> = z
-  .lazy(() =>
-    z
-      .object({
-        description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
-        id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
-        name: z.string().min(1).max(50).openapi({ title: 'Name' }),
-        parent: NestedRackGroupSchema.exactOptional(),
-        rack_count: z.int().exactOptional().openapi({ readOnly: true, title: 'Rack count' }),
-        site: NestedSiteSchema,
-        slug: z
-          .string()
-          .regex(/^[-a-zA-Z0-9_]+$/)
-          .min(1)
-          .max(50)
-          .openapi({ title: 'Slug' }),
-      })
-      .openapi({ required: ['name', 'slug', 'site'] }),
-  )
+const RackGroupSchema = z
+  .object({
+    description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
+    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
+    name: z.string().min(1).max(50).openapi({ title: 'Name' }),
+    parent: NestedRackGroupSchema.exactOptional(),
+    rack_count: z.int().exactOptional().openapi({ readOnly: true, title: 'Rack count' }),
+    site: NestedSiteSchema,
+    slug: z
+      .string()
+      .regex(/^[-a-zA-Z0-9_]+$/)
+      .min(1)
+      .max(50)
+      .openapi({ title: 'Slug' }),
+  })
+  .openapi({ required: ['name', 'slug', 'site'] })
   .openapi('RackGroup')
 
 const RackReservationSchema = z
@@ -3396,24 +3323,21 @@ const RearPortTemplateSchema = z
   .openapi({ required: ['device_type', 'name', 'type'] })
   .openapi('RearPortTemplate')
 
-const RegionSchema: z.ZodType<RegionType> = z
-  .lazy(() =>
-    z
-      .object({
-        description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
-        id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
-        name: z.string().min(1).max(50).openapi({ title: 'Name' }),
-        parent: NestedRegionSchema.exactOptional(),
-        site_count: z.int().exactOptional().openapi({ readOnly: true, title: 'Site count' }),
-        slug: z
-          .string()
-          .regex(/^[-a-zA-Z0-9_]+$/)
-          .min(1)
-          .max(50)
-          .openapi({ title: 'Slug' }),
-      })
-      .openapi({ required: ['name', 'slug'] }),
-  )
+const RegionSchema = z
+  .object({
+    description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
+    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
+    name: z.string().min(1).max(50).openapi({ title: 'Name' }),
+    parent: NestedRegionSchema.exactOptional(),
+    site_count: z.int().exactOptional().openapi({ readOnly: true, title: 'Site count' }),
+    slug: z
+      .string()
+      .regex(/^[-a-zA-Z0-9_]+$/)
+      .min(1)
+      .max(50)
+      .openapi({ title: 'Slug' }),
+  })
+  .openapi({ required: ['name', 'slug'] })
   .openapi('Region')
 
 const RoleSchema = z
@@ -3437,7 +3361,11 @@ const RoleSchema = z
 const SecretSchema = z
   .object({
     created: z.iso.date().exactOptional().openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     device: NestedDeviceSchema,
     hash: z.string().min(1).exactOptional().openapi({ readOnly: true, title: 'Hash' }),
     id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
@@ -3472,7 +3400,11 @@ const SecretRoleSchema = z
 const ServiceSchema = z
   .object({
     created: z.iso.date().exactOptional().openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     device: NestedDeviceSchema.exactOptional(),
     id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
@@ -3518,7 +3450,11 @@ const SiteSchema = z
     contact_name: z.string().max(50).exactOptional().openapi({ title: 'Contact name' }),
     contact_phone: z.string().max(20).exactOptional().openapi({ title: 'Contact phone' }),
     created: z.iso.date().exactOptional().openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     device_count: z.int().exactOptional().openapi({ readOnly: true, title: 'Device count' }),
     facility: z
@@ -3601,7 +3537,11 @@ const TenantSchema = z
     cluster_count: z.int().exactOptional().openapi({ readOnly: true, title: 'Cluster count' }),
     comments: z.string().exactOptional().openapi({ title: 'Comments' }),
     created: z.iso.date().exactOptional().openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     device_count: z.int().exactOptional().openapi({ readOnly: true, title: 'Device count' }),
     group: NestedTenantGroupSchema.exactOptional(),
@@ -3632,30 +3572,31 @@ const TenantSchema = z
   .openapi({ required: ['name', 'slug'] })
   .openapi('Tenant')
 
-const TenantGroupSchema: z.ZodType<TenantGroupType> = z
-  .lazy(() =>
-    z
-      .object({
-        description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
-        id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
-        name: z.string().min(1).max(50).openapi({ title: 'Name' }),
-        parent: NestedTenantGroupSchema.exactOptional(),
-        slug: z
-          .string()
-          .regex(/^[-a-zA-Z0-9_]+$/)
-          .min(1)
-          .max(50)
-          .openapi({ title: 'Slug' }),
-        tenant_count: z.int().exactOptional().openapi({ readOnly: true, title: 'Tenant count' }),
-      })
-      .openapi({ required: ['name', 'slug'] }),
-  )
+const TenantGroupSchema = z
+  .object({
+    description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
+    id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
+    name: z.string().min(1).max(50).openapi({ title: 'Name' }),
+    parent: NestedTenantGroupSchema.exactOptional(),
+    slug: z
+      .string()
+      .regex(/^[-a-zA-Z0-9_]+$/)
+      .min(1)
+      .max(50)
+      .openapi({ title: 'Slug' }),
+    tenant_count: z.int().exactOptional().openapi({ readOnly: true, title: 'Tenant count' }),
+  })
+  .openapi({ required: ['name', 'slug'] })
   .openapi('TenantGroup')
 
 const VLANSchema = z
   .object({
     created: z.iso.date().exactOptional().openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     display_name: z.string().exactOptional().openapi({ readOnly: true, title: 'Display name' }),
     group: NestedVLANGroupSchema.exactOptional(),
@@ -3702,7 +3643,11 @@ const VLANGroupSchema = z
 const VRFSchema = z
   .object({
     created: z.iso.date().exactOptional().openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     display_name: z.string().exactOptional().openapi({ readOnly: true, title: 'Display name' }),
     enforce_unique: z
@@ -3793,7 +3738,11 @@ const VirtualMachineWithConfigContextSchema = z
       .exactOptional()
       .openapi({ readOnly: true, title: 'Config context' }),
     created: z.iso.date().exactOptional().openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     disk: z.int().min(0).max(2147483647).nullable().exactOptional().openapi({ title: 'Disk (GB)' }),
     id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
     last_updated: z.iso
@@ -3836,7 +3785,11 @@ const VirtualMachineWithConfigContextSchema = z
 const WritableAggregateSchema = z
   .object({
     created: z.iso.date().exactOptional().openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     date_added: z.iso.date().nullable().exactOptional().openapi({ title: 'Date added' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     family: z.string().exactOptional().openapi({ readOnly: true, title: 'Family' }),
@@ -3931,7 +3884,11 @@ const WritableCircuitSchema = z
       .exactOptional()
       .openapi({ title: 'Commit rate (Kbps)' }),
     created: z.iso.date().exactOptional().openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
     install_date: z.iso.date().nullable().exactOptional().openapi({ title: 'Date installed' }),
@@ -3998,7 +3955,11 @@ const WritableClusterSchema = z
   .object({
     comments: z.string().exactOptional().openapi({ title: 'Comments' }),
     created: z.iso.date().exactOptional().openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     device_count: z.int().exactOptional().openapi({ readOnly: true, title: 'Device count' }),
     group: z.int().nullable().exactOptional().openapi({ title: 'Group' }),
     id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
@@ -4433,7 +4394,11 @@ const WritableDeviceTypeSchema = z
   .object({
     comments: z.string().exactOptional().openapi({ title: 'Comments' }),
     created: z.iso.date().exactOptional().openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     device_count: z.int().exactOptional().openapi({ readOnly: true, title: 'Device count' }),
     display_name: z.string().exactOptional().openapi({ readOnly: true, title: 'Display name' }),
     front_image: z.url().exactOptional().openapi({ readOnly: true, title: 'Front image' }),
@@ -4492,7 +4457,11 @@ const WritableDeviceWithConfigContextSchema = z
       .exactOptional()
       .openapi({ readOnly: true, title: 'Config context' }),
     created: z.iso.date().exactOptional().openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     device_role: z.int().openapi({ title: 'Device role' }),
     device_type: z.int().openapi({ title: 'Device type' }),
     display_name: z.string().exactOptional().openapi({ readOnly: true, title: 'Display name' }),
@@ -4665,7 +4634,11 @@ const WritableIPAddressSchema = z
       .string()
       .openapi({ description: 'IPv4 or IPv6 address (with mask)', title: 'Address' }),
     created: z.iso.date().exactOptional().openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     dns_name: z
       .string()
@@ -4868,7 +4841,11 @@ const WritablePowerFeedSchema = z
     amperage: z.int().min(1).max(32767).exactOptional().openapi({ title: 'Amperage' }),
     comments: z.string().exactOptional().openapi({ title: 'Comments' }),
     created: z.iso.date().exactOptional().openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
     last_updated: z.iso
       .datetime({ offset: true })
@@ -5306,7 +5283,11 @@ const WritablePowerPortTemplateSchema = z
 const WritablePrefixSchema = z
   .object({
     created: z.iso.date().exactOptional().openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     family: z.string().exactOptional().openapi({ readOnly: true, title: 'Family' }),
     id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
@@ -5350,7 +5331,11 @@ const WritableRackSchema = z
       .openapi({ description: 'A unique tag used to identify this rack', title: 'Asset tag' }),
     comments: z.string().exactOptional().openapi({ title: 'Comments' }),
     created: z.iso.date().exactOptional().openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     desc_units: z
       .boolean()
       .exactOptional()
@@ -5531,7 +5516,11 @@ const WritableRegionSchema = z
 const WritableSecretSchema = z
   .object({
     created: z.iso.date().exactOptional().openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     device: z.int().openapi({ title: 'Device' }),
     hash: z.string().min(1).exactOptional().openapi({ readOnly: true, title: 'Hash' }),
     id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
@@ -5550,7 +5539,11 @@ const WritableSecretSchema = z
 const WritableServiceSchema = z
   .object({
     created: z.iso.date().exactOptional().openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     device: z.int().nullable().exactOptional().openapi({ title: 'Device' }),
     id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
@@ -5593,7 +5586,11 @@ const WritableSiteSchema = z
     contact_name: z.string().max(50).exactOptional().openapi({ title: 'Contact name' }),
     contact_phone: z.string().max(20).exactOptional().openapi({ title: 'Contact phone' }),
     created: z.iso.date().exactOptional().openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     device_count: z.int().exactOptional().openapi({ readOnly: true, title: 'Device count' }),
     facility: z
@@ -5647,7 +5644,11 @@ const WritableTenantSchema = z
     cluster_count: z.int().exactOptional().openapi({ readOnly: true, title: 'Cluster count' }),
     comments: z.string().exactOptional().openapi({ title: 'Comments' }),
     created: z.iso.date().exactOptional().openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     device_count: z.int().exactOptional().openapi({ readOnly: true, title: 'Device count' }),
     group: z.int().nullable().exactOptional().openapi({ title: 'Group' }),
@@ -5698,7 +5699,11 @@ const WritableTenantGroupSchema = z
 const WritableVLANSchema = z
   .object({
     created: z.iso.date().exactOptional().openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     display_name: z.string().exactOptional().openapi({ readOnly: true, title: 'Display name' }),
     group: z.int().nullable().exactOptional().openapi({ title: 'Group' }),
@@ -5742,7 +5747,11 @@ const WritableVLANGroupSchema = z
 const WritableVRFSchema = z
   .object({
     created: z.iso.date().exactOptional().openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     description: z.string().max(200).exactOptional().openapi({ title: 'Description' }),
     display_name: z.string().exactOptional().openapi({ readOnly: true, title: 'Display name' }),
     enforce_unique: z
@@ -5898,7 +5907,11 @@ const WritableVirtualMachineWithConfigContextSchema = z
       .exactOptional()
       .openapi({ readOnly: true, title: 'Config context' }),
     created: z.iso.date().exactOptional().openapi({ readOnly: true, title: 'Created' }),
-    custom_fields: z.object({}).default({}).exactOptional().openapi({ title: 'Custom fields' }),
+    custom_fields: z
+      .looseObject({})
+      .default({})
+      .exactOptional()
+      .openapi({ title: 'Custom fields' }),
     disk: z.int().min(0).max(2147483647).nullable().exactOptional().openapi({ title: 'Disk (GB)' }),
     id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
     last_updated: z.iso

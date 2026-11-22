@@ -1,97 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const AnywhereCacheSchema = z
-  .object({
-    admissionPolicy: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The cache-level entry admission policy.' }),
-    anywhereCacheId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The ID of the Anywhere cache instance.' }),
-    bucket: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The name of the bucket containing this cache instance.' }),
-    createTime: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'The creation time of the cache instance in RFC 3339 format.' }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The ID of the resource, including the project number, bucket name and anywhere cache ID.',
-      }),
-    kind: z
-      .string()
-      .default('storage#anywhereCache')
-      .exactOptional()
-      .openapi({
-        description:
-          'The kind of item this is. For Anywhere Cache, this is always storage#anywhereCache.',
-      }),
-    pendingUpdate: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'True if the cache instance has an active Update long-running operation.',
-      }),
-    selfLink: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The link to this cache instance.' }),
-    state: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The current state of the cache instance.' }),
-    ttl: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The TTL of all cache entries in whole seconds. e.g., "7200s". ' }),
-    updateTime: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'The modification time of the cache instance metadata in RFC 3339 format.',
-      }),
-    zone: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The zone in which the cache instance is running. For example, us-central1-a.',
-      }),
-  })
-  .openapi({ description: 'An Anywhere Cache instance.', required: [] })
-  .openapi('AnywhereCache')
-
-const AnywhereCachesSchema = z
-  .object({
-    items: z
-      .array(AnywhereCacheSchema)
-      .exactOptional()
-      .openapi({ description: 'The list of items.' }),
-    kind: z
-      .string()
-      .default('storage#anywhereCaches')
-      .exactOptional()
-      .openapi({
-        description:
-          'The kind of item this is. For lists of Anywhere Caches, this is always storage#anywhereCaches.',
-      }),
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The continuation token, used to page through large result sets. Provide this value in a subsequent request to return the next page of results.',
-      }),
-  })
-  .openapi({ description: 'A list of Anywhere Caches.', required: [] })
-  .openapi('AnywhereCaches')
-
 const BucketAccessControlSchema = z
   .object({
     bucket: z.string().exactOptional().openapi({ description: 'The name of the bucket.' }),
@@ -721,6 +629,100 @@ const BucketSchema = z
   .openapi({ description: 'A bucket.', required: [] })
   .openapi('Bucket')
 
+type BucketsType = { items?: z.infer<typeof BucketSchema>[]; kind?: string; nextPageToken?: string }
+
+const AnywhereCacheSchema = z
+  .object({
+    admissionPolicy: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The cache-level entry admission policy.' }),
+    anywhereCacheId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The ID of the Anywhere cache instance.' }),
+    bucket: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the bucket containing this cache instance.' }),
+    createTime: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'The creation time of the cache instance in RFC 3339 format.' }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The ID of the resource, including the project number, bucket name and anywhere cache ID.',
+      }),
+    kind: z
+      .string()
+      .default('storage#anywhereCache')
+      .exactOptional()
+      .openapi({
+        description:
+          'The kind of item this is. For Anywhere Cache, this is always storage#anywhereCache.',
+      }),
+    pendingUpdate: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'True if the cache instance has an active Update long-running operation.',
+      }),
+    selfLink: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The link to this cache instance.' }),
+    state: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The current state of the cache instance.' }),
+    ttl: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The TTL of all cache entries in whole seconds. e.g., "7200s". ' }),
+    updateTime: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'The modification time of the cache instance metadata in RFC 3339 format.',
+      }),
+    zone: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The zone in which the cache instance is running. For example, us-central1-a.',
+      }),
+  })
+  .openapi({ description: 'An Anywhere Cache instance.', required: [] })
+  .openapi('AnywhereCache')
+
+const AnywhereCachesSchema = z
+  .object({
+    items: z
+      .array(AnywhereCacheSchema)
+      .exactOptional()
+      .openapi({ description: 'The list of items.' }),
+    kind: z
+      .string()
+      .default('storage#anywhereCaches')
+      .exactOptional()
+      .openapi({
+        description:
+          'The kind of item this is. For lists of Anywhere Caches, this is always storage#anywhereCaches.',
+      }),
+    nextPageToken: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The continuation token, used to page through large result sets. Provide this value in a subsequent request to return the next page of results.',
+      }),
+  })
+  .openapi({ description: 'A list of Anywhere Caches.', required: [] })
+  .openapi('AnywhereCaches')
+
 const BucketAccessControlsSchema = z
   .object({
     items: z
@@ -739,7 +741,7 @@ const BucketAccessControlsSchema = z
   .openapi({ description: 'An access-control list.', required: [] })
   .openapi('BucketAccessControls')
 
-const BucketsSchema = z
+const BucketsSchema: z.ZodType<BucketsType> = z
   .object({
     items: z.array(BucketSchema).exactOptional().openapi({ description: 'The list of items.' }),
     kind: z

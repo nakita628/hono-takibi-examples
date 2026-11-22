@@ -464,16 +464,32 @@ const StepTypeEnumSchema = z
 
 const ActivityNotificationSubscriberResponseDtoSchema = z
   .object({
-    firstName: z.string().exactOptional().openapi({ description: 'First name of the subscriber' }),
+    firstName: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'First name of the subscriber' }),
     subscriberId: z
       .string()
       .openapi({ description: 'External unique identifier of the subscriber' }),
     _id: z
       .string()
       .openapi({ description: 'Internal to Novu unique identifier of the subscriber' }),
-    lastName: z.string().exactOptional().openapi({ description: 'Last name of the subscriber' }),
-    email: z.string().exactOptional().openapi({ description: 'Email address of the subscriber' }),
-    phone: z.string().exactOptional().openapi({ description: 'Phone number of the subscriber' }),
+    lastName: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Last name of the subscriber' }),
+    email: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Email address of the subscriber' }),
+    phone: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Phone number of the subscriber' }),
   })
   .openapi({ required: ['subscriberId', '_id'] })
   .openapi('ActivityNotificationSubscriberResponseDto')
@@ -889,6 +905,7 @@ type ActivityNotificationResponseDtoType = {
   template?: z.infer<typeof ActivityNotificationTemplateResponseDtoSchema>
   jobs?: z.infer<typeof ActivityNotificationJobResponseDtoSchema>[]
   payload?: { [key: string]: unknown }
+  overrides?: { [key: string]: unknown }
   tags?: string[]
   controls?: { [key: string]: unknown }
   to?: { [key: string]: unknown }
@@ -942,6 +959,13 @@ const ActivityNotificationResponseDtoSchema: z.ZodType<ActivityNotificationRespo
       .looseObject({})
       .exactOptional()
       .openapi({ description: 'Payload of the notification' }),
+    overrides: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({
+        description:
+          'Trigger overrides of the notification, as passed to the original workflow trigger',
+      }),
     tags: z
       .array(z.string())
       .exactOptional()
@@ -3992,7 +4016,10 @@ const PersistedWorkflowWebhookDtoSchema = z
     _updatedBy: z
       .string()
       .exactOptional()
-      .openapi({ description: 'User who last updated the workflow' }),
+      .openapi({
+        description: 'User who last updated the workflow',
+        'x-speakeasy-name-override': 'updatedById',
+      }),
     updatedBy: UserResponseDtoSchema.exactOptional(),
     isBlueprint: z.boolean().openapi({ description: 'Whether the workflow is a blueprint' }),
     blueprintId: z.string().exactOptional().openapi({ description: 'Blueprint identifier' }),
@@ -4031,7 +4058,10 @@ const PersistedWorkflowWebhookDtoSchema = z
     _lastPublishedBy: z
       .string()
       .exactOptional()
-      .openapi({ description: 'User who last published the workflow' }),
+      .openapi({
+        description: 'User who last published the workflow',
+        'x-speakeasy-name-override': 'lastPublishedById',
+      }),
     lastPublishedBy: UserResponseDtoSchema.exactOptional(),
     userPreferences: WorkflowPreferencesDtoSchema.nullable()
       .exactOptional()
@@ -4605,7 +4635,7 @@ const CreateEnvironmentRequestDtoSchema = z
     color: z
       .string()
       .regex(/^#?([0-9A-F]{3}|[0-9A-F]{4}|[0-9A-F]{6}|[0-9A-F]{8})$/)
-      .openapi({ description: 'Hex color code for the environment', example: '#3498db' }),
+      .openapi({ description: 'Hex color code for the environment', example: '#3498DB' }),
   })
   .openapi({ required: ['name', 'color'] })
   .openapi('CreateEnvironmentRequestDto')
@@ -5104,6 +5134,10 @@ const GetWorkflowRunsDtoSchema = z
       .exactOptional()
       .openapi({ description: 'Context (single or multi) in which the workflow run was executed' }),
     topics: z.array(TopicResponseDtoSchema).exactOptional().openapi({ description: 'Topics' }),
+    digestedWorkflowRunId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Workflow run whose active digest this run was merged into' }),
     steps: z.array(WorkflowRunStepsDetailsDtoSchema).openapi({ description: 'Workflow run steps' }),
   })
   .openapi({
@@ -5251,6 +5285,10 @@ const GetWorkflowRunResponseDtoSchema = z
       .exactOptional()
       .openapi({ description: 'Context (single or multi) in which the workflow run was executed' }),
     topics: z.array(TopicResponseDtoSchema).exactOptional().openapi({ description: 'Topics' }),
+    digestedWorkflowRunId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Workflow run whose active digest this run was merged into' }),
     steps: z.array(StepRunDtoSchema).openapi({ description: 'Step runs' }),
     payload: z.looseObject({}).openapi({ description: 'Trigger payload' }),
     overrides: z
@@ -5296,20 +5334,28 @@ const AgentBehaviorDtoSchema = z
           'Acknowledge incoming messages. On platforms that support a native typing indicator (e.g. Slack, WhatsApp, Microsoft Teams, Telegram), shows a "Typing…" indicator while the agent processes the message. On platforms that do not (e.g. Email), reacts with an "eyes" emoji to the first inbound message in a thread. Default: true',
       }),
     reactionOnResolved: z
-      .looseObject({})
+      .string()
       .nullable()
+      .default('check')
       .exactOptional()
       .openapi({
         description:
           'Cross-platform emoji name for resolved conversations (e.g. "check", "star"). Set to null to disable. Default: "check"',
-        default: 'check',
       }),
     subscriberAccess: z
-      .enum(['open', 'restricted'])
+      .enum(['open', 'restricted', 'rule'])
       .exactOptional()
       .openapi({
         description:
-          'Controls whether the agent accepts inbound messages from senders not yet linked to a subscriber, across all channels. "open" on managed agents auto-creates a lightweight subscriber so the agent can reply; on custom-code / self-hosted agents, the turn is forwarded to the bridge with a null subscriber. "restricted" rejects unknown senders with a managed denial reply (any runtime). Optional on update (partial PATCH). Persisted agents always have a value — managed create defaults to "open"; self-hosted create defaults to "restricted".',
+          'Controls whether the agent accepts inbound messages from senders not yet linked to a subscriber, across all channels. "open" on managed agents auto-creates a lightweight subscriber so the agent can reply; on custom-code / self-hosted agents, the turn is forwarded to the bridge with a null subscriber. "restricted" rejects unknown senders with a managed denial reply (any runtime). "rule" requires a known subscriber and accessRule must evaluate truthy for every message, edit, delete, click and reaction; unknown senders, an invalid rule and an evaluation error are refused; a missing field evaluates as JSON Logic says. Optional on update (partial PATCH). Persisted agents always have a value — managed create defaults to "open"; self-hosted create defaults to "restricted".',
+      }),
+    accessRule: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({
+        description:
+          'JSON Logic rule evaluated over subscriber.* and context.* when subscriberAccess is "rule". Present only when subscriberAccess is "rule". A missing field evaluates as JSON Logic says, so `null` is less than any positive number. "==" and "!=" compare strictly, without type coercion. At most 16 KB, with objects and arrays nested at most 32 levels deep.',
+        example: { in: [{ var: 'context.tenant.data.plan' }, ['pro', 'enterprise']] },
       }),
     replyPolicy: z
       .enum(['mention_only', 'auto_reply', 'smart'])
@@ -5990,7 +6036,7 @@ const MetadataSetSignalDtoSchema = z
         example: 'crm:ticketId',
       }),
     value: z
-      .looseObject({})
+      .xor([z.string(), z.number(), z.boolean(), z.looseObject({}), z.array(z.any())])
       .openapi({ description: 'JSON-serializable value to store.', example: 'TCK-1001' }),
   })
   .openapi({ required: ['type', 'key', 'value'] })
@@ -6052,7 +6098,7 @@ const HumanSignalDtoSchema = z
         example: 'approve',
       }),
     card: z
-      .xor([
+      .union([
         z
           .looseObject({})
           .openapi({
@@ -6706,6 +6752,13 @@ const CredentialsDtoSchema = z
       .openapi({
         description:
           'Email webhook: how `secretKey` is interpreted when signing webhook calls. `text` signs with the raw UTF-8 bytes; `base64`/`hex` decode it to binary first (e.g. for AWS KMS).',
+      }),
+    authMethod: z
+      .literal('apiKey')
+      .exactOptional()
+      .openapi({
+        description:
+          'Twilio: `apiKey` authenticates with `apiKey` (API Key SID) and `secretKey` (API Key Secret) on behalf of `accountSid`. When omitted, `token` (Auth Token) is used.',
       }),
     domain: z.string().exactOptional(),
     password: z.string().exactOptional(),
@@ -8485,6 +8538,137 @@ const ListTopicSubscriptionsResponseDtoSchema = z
   })
   .openapi({ required: ['data', 'next', 'previous', 'totalCount', 'totalCountCapped'] })
   .openapi('ListTopicSubscriptionsResponseDto')
+
+const CreateSubscriberTokenResponseDtoSchema = z
+  .object({
+    token: z
+      .string()
+      .openapi({
+        description:
+          'Novu-signed login token for the subscriber. Exchange it in the browser for an Inbox session.',
+      }),
+    expiresAt: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'When the token expires, in ISO 8601.',
+        example: '2025-01-01T00:10:00.000Z',
+      }),
+  })
+  .openapi({ required: ['token', 'expiresAt'] })
+  .openapi('CreateSubscriberTokenResponseDto')
+
+const BaseSubscriberFieldsDtoSchema = z
+  .object({
+    firstName: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'First name of the subscriber', example: 'John' }),
+    lastName: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Last name of the subscriber', example: 'Doe' }),
+    email: z
+      .email()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Email address of the subscriber', example: 'john.doe@example.com' }),
+    phone: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Phone number of the subscriber', example: '+1234567890' }),
+    avatar: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Avatar URL or identifier',
+        example: 'https://example.com/avatar.jpg',
+      }),
+    locale: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Locale of the subscriber', example: 'en-US' }),
+    timezone: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Timezone of the subscriber', example: 'America/New_York' }),
+    data: z
+      .looseObject({})
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Additional custom data associated with the subscriber' }),
+  })
+  .openapi({ required: [] })
+  .openapi('BaseSubscriberFieldsDto')
+
+const SubscriberTokenScopeEnumSchema = z
+  .literal('channels:shared')
+  .openapi({
+    description:
+      'Extra permissions granted to the session the token is exchanged for. Defaults to none.',
+  })
+  .openapi('SubscriberTokenScopeEnum')
+
+const CreateSubscriberTokenRequestDtoSchema = z
+  .object({
+    context: z
+      .record(
+        z.string(),
+        z.xor([
+          z.string().openapi({ description: 'Simple context id', example: 'org-acme' }),
+          z
+            .object({
+              id: z.string().openapi({ example: 'org-acme' }),
+              data: z
+                .looseObject({})
+                .exactOptional()
+                .openapi({
+                  description: 'Optional additional context data',
+                  example: { name: 'Acme Corp', region: 'us-east-1' },
+                }),
+            })
+            .openapi({
+              description: 'Rich context object with id and optional data',
+              required: ['id'],
+            }),
+        ]),
+      )
+      .exactOptional(),
+    subscriber: BaseSubscriberFieldsDtoSchema.exactOptional().openapi({
+      description:
+        'Profile fields saved on the subscriber when the token is exchanged for an Inbox session. The subscriberId comes from the path.',
+    }),
+    scope: z
+      .array(SubscriberTokenScopeEnumSchema)
+      .superRefine((items, ctx) => {
+        const seen = new Map()
+        for (const [i, val] of items.entries()) {
+          const key = JSON.stringify(val)
+          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+          else seen.set(key, i)
+        }
+      })
+      .exactOptional()
+      .openapi({
+        description:
+          'Extra permissions granted to the session the token is exchanged for. Defaults to none.',
+        example: ['channels:shared'],
+      }),
+    expiresIn: z
+      .int()
+      .min(1)
+      .max(3600)
+      .default(3600)
+      .exactOptional()
+      .openapi({ description: 'Token lifetime in seconds, from 1 to 3600.', example: 600 }),
+  })
+  .openapi({ required: [] })
+  .openapi('CreateSubscriberTokenRequestDto')
 
 const InboxSubscriberResponseDtoSchema = z
   .object({
@@ -10608,6 +10792,11 @@ const UserInfoDtoSchema = z
     firstName: z.string().openapi({ description: 'User first name' }),
     lastName: z.string().nullable().exactOptional().openapi({ description: 'User last name' }),
     externalId: z.string().exactOptional().openapi({ description: 'User external ID' }),
+    email: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'User email, used when the user has no name' }),
   })
   .openapi({ required: ['_id', 'firstName'] })
   .openapi('UserInfoDto')
@@ -30154,6 +30343,226 @@ export const getV2SubscribersSubscriberIdSubscriptionsRoute = createRoute({
   security: [{ secretKey: [] }],
 })
 
+export const postV2SubscribersSubscriberIdTokensRoute = createRoute({
+  method: 'post',
+  path: '/v2/subscribers/{subscriberId}/tokens',
+  tags: ['Subscribers'],
+  summary: 'Create a subscriber login token',
+  description:
+    'Create a short-lived, Novu-signed login token for the subscriber identified by **subscriberId**.\n    Call it from your backend with your secret key, then pass the token to the browser, which exchanges it for an Inbox session.\n    Creating a token does not read or change the subscriber, so the subscriber does not need to exist yet.',
+  operationId: 'SubscribersController_createSubscriberToken',
+  request: {
+    params: z.object({
+      subscriberId: z
+        .string()
+        .openapi({
+          param: {
+            name: 'subscriberId',
+            required: true,
+            in: 'path',
+            description: 'The identifier of the subscriber',
+            schema: { type: 'string' },
+          },
+        }),
+    }),
+    body: {
+      content: { 'application/json': { schema: CreateSubscriberTokenRequestDtoSchema } },
+      required: true,
+    },
+  },
+  responses: {
+    201: {
+      description: 'Created',
+      content: {
+        'application/json': {
+          schema: z
+            .object({ data: CreateSubscriberTokenResponseDtoSchema.exactOptional() })
+            .openapi({ required: [] }),
+        },
+      },
+      headers: z.object({
+        'Content-Type': ContentTypeHeaderSchema,
+        'RateLimit-Limit': RateLimitLimitHeaderSchema,
+        'RateLimit-Remaining': RateLimitRemainingHeaderSchema,
+        'RateLimit-Reset': RateLimitResetHeaderSchema,
+        'RateLimit-Policy': RateLimitPolicyHeaderSchema,
+        'Idempotency-Key': IdempotencyKeyHeaderSchema,
+        'Idempotency-Replay': IdempotencyReplayHeaderSchema,
+      }),
+    },
+    400: {
+      description: 'Bad Request',
+      content: { 'application/json': { schema: ErrorDtoSchema } },
+      headers: z.object({
+        'Content-Type': ContentTypeHeaderSchema,
+        'RateLimit-Limit': RateLimitLimitHeaderSchema,
+        'RateLimit-Remaining': RateLimitRemainingHeaderSchema,
+        'RateLimit-Reset': RateLimitResetHeaderSchema,
+        'RateLimit-Policy': RateLimitPolicyHeaderSchema,
+        'Idempotency-Key': IdempotencyKeyHeaderSchema,
+        'Idempotency-Replay': IdempotencyReplayHeaderSchema,
+      }),
+    },
+    401: {
+      description: 'Unauthorized',
+      content: { 'application/json': { schema: ErrorDtoSchema } },
+      headers: z.object({
+        'Content-Type': ContentTypeHeaderSchema,
+        'RateLimit-Limit': RateLimitLimitHeaderSchema,
+        'RateLimit-Remaining': RateLimitRemainingHeaderSchema,
+        'RateLimit-Reset': RateLimitResetHeaderSchema,
+        'RateLimit-Policy': RateLimitPolicyHeaderSchema,
+        'Idempotency-Key': IdempotencyKeyHeaderSchema,
+        'Idempotency-Replay': IdempotencyReplayHeaderSchema,
+      }),
+    },
+    403: {
+      description: 'Forbidden',
+      content: { 'application/json': { schema: ErrorDtoSchema } },
+      headers: z.object({
+        'Content-Type': ContentTypeHeaderSchema,
+        'RateLimit-Limit': RateLimitLimitHeaderSchema,
+        'RateLimit-Remaining': RateLimitRemainingHeaderSchema,
+        'RateLimit-Reset': RateLimitResetHeaderSchema,
+        'RateLimit-Policy': RateLimitPolicyHeaderSchema,
+        'Idempotency-Key': IdempotencyKeyHeaderSchema,
+        'Idempotency-Replay': IdempotencyReplayHeaderSchema,
+      }),
+    },
+    404: {
+      description: 'Not Found',
+      content: { 'application/json': { schema: ErrorDtoSchema } },
+      headers: z.object({
+        'Content-Type': ContentTypeHeaderSchema,
+        'RateLimit-Limit': RateLimitLimitHeaderSchema,
+        'RateLimit-Remaining': RateLimitRemainingHeaderSchema,
+        'RateLimit-Reset': RateLimitResetHeaderSchema,
+        'RateLimit-Policy': RateLimitPolicyHeaderSchema,
+        'Idempotency-Key': IdempotencyKeyHeaderSchema,
+        'Idempotency-Replay': IdempotencyReplayHeaderSchema,
+      }),
+    },
+    405: {
+      description: 'Method Not Allowed',
+      content: { 'application/json': { schema: ErrorDtoSchema } },
+      headers: z.object({
+        'Content-Type': ContentTypeHeaderSchema,
+        'RateLimit-Limit': RateLimitLimitHeaderSchema,
+        'RateLimit-Remaining': RateLimitRemainingHeaderSchema,
+        'RateLimit-Reset': RateLimitResetHeaderSchema,
+        'RateLimit-Policy': RateLimitPolicyHeaderSchema,
+        'Idempotency-Key': IdempotencyKeyHeaderSchema,
+        'Idempotency-Replay': IdempotencyReplayHeaderSchema,
+      }),
+    },
+    409: {
+      description: 'Conflict',
+      content: { 'application/json': { schema: ErrorDtoSchema } },
+      headers: z.object({
+        'Content-Type': ContentTypeHeaderSchema,
+        'RateLimit-Limit': RateLimitLimitHeaderSchema,
+        'RateLimit-Remaining': RateLimitRemainingHeaderSchema,
+        'RateLimit-Reset': RateLimitResetHeaderSchema,
+        'RateLimit-Policy': RateLimitPolicyHeaderSchema,
+        'Idempotency-Key': IdempotencyKeyHeaderSchema,
+        'Idempotency-Replay': IdempotencyReplayHeaderSchema,
+      }),
+    },
+    413: {
+      description: 'Payload Too Large',
+      content: { 'application/json': { schema: ErrorDtoSchema } },
+      headers: z.object({
+        'Content-Type': ContentTypeHeaderSchema,
+        'RateLimit-Limit': RateLimitLimitHeaderSchema,
+        'RateLimit-Remaining': RateLimitRemainingHeaderSchema,
+        'RateLimit-Reset': RateLimitResetHeaderSchema,
+        'RateLimit-Policy': RateLimitPolicyHeaderSchema,
+        'Idempotency-Key': IdempotencyKeyHeaderSchema,
+        'Idempotency-Replay': IdempotencyReplayHeaderSchema,
+      }),
+    },
+    414: {
+      description: 'URI Too Long',
+      content: { 'application/json': { schema: ErrorDtoSchema } },
+    },
+    415: {
+      description: 'Unsupported Media Type',
+      content: { 'application/json': { schema: ErrorDtoSchema } },
+      headers: z.object({
+        'Content-Type': ContentTypeHeaderSchema,
+        'RateLimit-Limit': RateLimitLimitHeaderSchema,
+        'RateLimit-Remaining': RateLimitRemainingHeaderSchema,
+        'RateLimit-Reset': RateLimitResetHeaderSchema,
+        'RateLimit-Policy': RateLimitPolicyHeaderSchema,
+        'Idempotency-Key': IdempotencyKeyHeaderSchema,
+        'Idempotency-Replay': IdempotencyReplayHeaderSchema,
+      }),
+    },
+    422: {
+      description: 'Unprocessable Entity',
+      content: { 'application/json': { schema: ValidationErrorDtoSchema } },
+      headers: z.object({
+        'Content-Type': ContentTypeHeaderSchema,
+        'RateLimit-Limit': RateLimitLimitHeaderSchema,
+        'RateLimit-Remaining': RateLimitRemainingHeaderSchema,
+        'RateLimit-Reset': RateLimitResetHeaderSchema,
+        'RateLimit-Policy': RateLimitPolicyHeaderSchema,
+        'Idempotency-Key': IdempotencyKeyHeaderSchema,
+        'Idempotency-Replay': IdempotencyReplayHeaderSchema,
+      }),
+    },
+    429: {
+      description: 'The client has sent too many requests in a given amount of time. ',
+      content: {
+        'application/json': { schema: z.string().openapi({ example: 'API rate limit exceeded' }) },
+      },
+      headers: z.object({
+        'Content-Type': ContentTypeHeaderSchema,
+        'RateLimit-Limit': RateLimitLimitHeaderSchema,
+        'RateLimit-Remaining': RateLimitRemainingHeaderSchema,
+        'RateLimit-Reset': RateLimitResetHeaderSchema,
+        'RateLimit-Policy': RateLimitPolicyHeaderSchema,
+        'Idempotency-Key': IdempotencyKeyHeaderSchema,
+        'Idempotency-Replay': IdempotencyReplayHeaderSchema,
+        'Retry-After': RetryAfterHeaderSchema,
+      }),
+    },
+    500: {
+      description: 'Internal Server Error',
+      content: { 'application/json': { schema: ErrorDtoSchema } },
+      headers: z.object({
+        'Content-Type': ContentTypeHeaderSchema,
+        'RateLimit-Limit': RateLimitLimitHeaderSchema,
+        'RateLimit-Remaining': RateLimitRemainingHeaderSchema,
+        'RateLimit-Reset': RateLimitResetHeaderSchema,
+        'RateLimit-Policy': RateLimitPolicyHeaderSchema,
+        'Idempotency-Key': IdempotencyKeyHeaderSchema,
+        'Idempotency-Replay': IdempotencyReplayHeaderSchema,
+      }),
+    },
+    503: {
+      description:
+        'The server is currently unable to handle the request due to a temporary overload or scheduled maintenance, which will likely be alleviated after some delay.',
+      content: {
+        'application/json': {
+          schema: z.string().openapi({ example: 'Please wait some time, then try again.' }),
+        },
+      },
+      headers: z.object({
+        'Content-Type': ContentTypeHeaderSchema,
+        'RateLimit-Limit': RateLimitLimitHeaderSchema,
+        'RateLimit-Remaining': RateLimitRemainingHeaderSchema,
+        'RateLimit-Reset': RateLimitResetHeaderSchema,
+        'RateLimit-Policy': RateLimitPolicyHeaderSchema,
+        'Idempotency-Key': IdempotencyKeyHeaderSchema,
+        'Idempotency-Replay': IdempotencyReplayHeaderSchema,
+        'Retry-After': RetryAfterHeaderSchema,
+      }),
+    },
+  },
+  security: [{ secretKey: [] }],
+})
+
 export const getV2SubscribersSubscriberIdNotificationsRoute = createRoute({
   method: 'get',
   path: '/v2/subscribers/{subscriberId}/notifications',
@@ -34896,7 +35305,7 @@ export const deleteV2LayoutsLayoutIdRoute = createRoute({
   tags: ['Layouts'],
   summary: 'Delete a layout',
   description: 'Removes a specific layout by its unique identifier **layoutId**',
-  operationId: 'LayoutsController__delete',
+  operationId: 'LayoutsController_delete',
   request: {
     params: z.object({
       layoutId: z

@@ -1,105 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const SMTPSettingsSchema = z
-  .object({
-    uuid: z.string().exactOptional(),
-    enabled: z.boolean().exactOptional(),
-    host: z.string().exactOptional(),
-    hello_hostname: z.string().exactOptional(),
-    port: z.int().exactOptional(),
-    auth_protocol: z.string().exactOptional(),
-    username: z.string().exactOptional(),
-    email_headers: z.array(z.object({})).exactOptional(),
-    max_conns: z.int().exactOptional(),
-    max_msg_retries: z.int().exactOptional(),
-    idle_timeout: z.string().exactOptional(),
-    wait_timeout: z.string().exactOptional(),
-    tls_type: z.string().exactOptional(),
-    tls_skip_verify: z.boolean().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('SMTPSettings')
-
-const MailBoxBouncesSchema = z
-  .object({
-    uuid: z.string().exactOptional(),
-    enabled: z.boolean().exactOptional(),
-    type: z.string().exactOptional(),
-    host: z.string().exactOptional(),
-    port: z.int().exactOptional(),
-    auth_protocol: z.string().exactOptional(),
-    return_path: z.string().exactOptional(),
-    username: z.string().exactOptional(),
-    tls_enabled: z.boolean().exactOptional(),
-    tls_skip_verify: z.boolean().exactOptional(),
-    scan_interval: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('MailBoxBounces')
-
-type SettingsType = {
-  'app.site_name'?: string
-  'app.root_url'?: string
-  'app.logo_url'?: string
-  'app.favicon_url'?: string
-  'app.from_email'?: string[]
-  'app.notify_emails'?: string[]
-  'app.enable_public_subscription_page'?: boolean
-  'app.enable_public_archive'?: boolean
-  'app.send_optin_confirmation'?: boolean
-  'app.check_updates'?: boolean
-  'app.lang'?: string
-  'app.batch_size'?: number
-  'app.concurrency'?: number
-  'app.max_send_errors'?: number
-  'app.message_rate'?: number
-  'app.message_sliding_window'?: boolean
-  'app.message_sliding_window_duration'?: string
-  'app.message_sliding_window_rate'?: number
-  'privacy.individual_tracking'?: boolean
-  'privacy.unsubscribe_header'?: boolean
-  'privacy.allow_blocklist'?: boolean
-  'privacy.allow_preferences'?: boolean
-  'privacy.allow_export'?: boolean
-  'privacy.allow_wipe'?: boolean
-  'privacy.exportable'?: string[]
-  'privacy.domain_blocklist'?: { [key: string]: unknown }[]
-  'upload.provider'?: string
-  'upload.filesystem.upload_path'?: string
-  'upload.filesystem.upload_uri'?: string
-  'upload.s3.url'?: string
-  'upload.s3.public_url'?: string
-  'upload.s3.aws_access_key_id'?: string
-  'upload.s3.aws_default_region'?: string
-  'upload.s3.bucket'?: string
-  'upload.s3.bucket_domain'?: string
-  'upload.s3.bucket_path'?: string
-  'upload.s3.bucket_type'?: string
-  'upload.s3.expiry'?: string
-  smtp?: z.infer<typeof SMTPSettingsSchema>[]
-  messengers?: { [key: string]: unknown }[]
-  'bounce.enabled'?: boolean
-  'bounce.webhooks_enabled'?: boolean
-  'bounce.count'?: number
-  'bounce.action'?: string
-  'bounce.ses_enabled'?: boolean
-  'bounce.azure.enabled'?: boolean
-  'bounce.azure.shared_secret'?: string
-  'bounce.azure.shared_secret_header'?: string
-  'bounce.sendgrid_enabled'?: boolean
-  'bounce.sendgrid_key'?: string
-  'bounce.forwardemail_enabled'?: boolean
-  'bounce.forwardemail_key'?: string
-  'bounce.postmark_enabled'?: boolean
-  'bounce.postmark_username'?: string
-  'bounce.postmark_password'?: string
-  'bounce.mailboxes'?: z.infer<typeof MailBoxBouncesSchema>[]
-  'appearance.admin.custom_css'?: string
-  'appearance.admin.custom_js'?: string
-  'appearance.public.custom_css'?: string
-  'appearance.public.custom_js'?: string
-}
-
 const LanguagePackSchema = z
   .object({
     data: z
@@ -109,6 +9,7 @@ const LanguagePackSchema = z
       .openapi({
         description:
           'Translation keys and localized strings. See i18n/en.json for the current keys.',
+        required: [],
       }),
   })
   .openapi({ required: [] })
@@ -164,7 +65,7 @@ const DashboardCountSchema = z
         subscribers: z
           .object({
             total: z.int().exactOptional(),
-            blocklisted: z.object({}).exactOptional(),
+            blocklisted: z.looseObject({}).exactOptional(),
             orphans: z.int().exactOptional(),
           })
           .exactOptional()
@@ -197,6 +98,26 @@ const DashboardCountSchema = z
   .openapi({ required: [] })
   .openapi('DashboardCount')
 
+const SMTPSettingsSchema = z
+  .object({
+    uuid: z.string().exactOptional(),
+    enabled: z.boolean().exactOptional(),
+    host: z.string().exactOptional(),
+    hello_hostname: z.string().exactOptional(),
+    port: z.int().exactOptional(),
+    auth_protocol: z.string().exactOptional(),
+    username: z.string().exactOptional(),
+    email_headers: z.array(z.looseObject({})).exactOptional(),
+    max_conns: z.int().exactOptional(),
+    max_msg_retries: z.int().exactOptional(),
+    idle_timeout: z.string().exactOptional(),
+    wait_timeout: z.string().exactOptional(),
+    tls_type: z.string().exactOptional(),
+    tls_skip_verify: z.boolean().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('SMTPSettings')
+
 const SMTPTestSchema = z
   .object({
     uuid: z.string().exactOptional(),
@@ -206,7 +127,7 @@ const SMTPTestSchema = z
     port: z.int().exactOptional(),
     auth_protocol: z.string().exactOptional(),
     username: z.string().exactOptional(),
-    email_headers: z.array(z.object({})).exactOptional(),
+    email_headers: z.array(z.looseObject({})).exactOptional(),
     max_conns: z.int().exactOptional(),
     max_msg_retries: z.int().exactOptional(),
     idle_timeout: z.string().exactOptional(),
@@ -220,81 +141,119 @@ const SMTPTestSchema = z
   .openapi({ required: [] })
   .openapi('SMTPTest')
 
-const SettingsSchema: z.ZodType<SettingsType> = z
-  .lazy(() =>
-    z
+const MailBoxBouncesSchema = z
+  .object({
+    uuid: z.string().exactOptional(),
+    enabled: z.boolean().exactOptional(),
+    type: z.string().exactOptional(),
+    host: z.string().exactOptional(),
+    port: z.int().exactOptional(),
+    auth_protocol: z.string().exactOptional(),
+    return_path: z.string().exactOptional(),
+    username: z.string().exactOptional(),
+    tls_enabled: z.boolean().exactOptional(),
+    tls_skip_verify: z.boolean().exactOptional(),
+    scan_interval: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('MailBoxBounces')
+
+const SettingsSchema = z
+  .object({
+    'app.site_name': z.string().exactOptional(),
+    'app.root_url': z.string().exactOptional(),
+    'app.logo_url': z.string().exactOptional(),
+    'app.favicon_url': z.string().exactOptional(),
+    'app.from_email': z
+      .array(z.string().max(2000))
+      .min(1)
+      .max(100)
+      .exactOptional()
+      .openapi({
+        description:
+          'Sender addresses. The first must be a literal email address and is the default for campaigns and system emails.',
+      }),
+    'app.notify_emails': z.array(z.string()).exactOptional(),
+    'app.enable_public_subscription_page': z.boolean().exactOptional(),
+    'app.enable_public_archive': z.boolean().exactOptional(),
+    'app.send_optin_confirmation': z.boolean().exactOptional(),
+    'app.check_updates': z.boolean().exactOptional(),
+    'app.lang': z.string().exactOptional(),
+    'app.batch_size': z.int().exactOptional(),
+    'app.concurrency': z.int().exactOptional(),
+    'app.max_send_errors': z.int().exactOptional(),
+    'app.message_rate': z.int().exactOptional(),
+    'app.message_sliding_window': z.boolean().exactOptional(),
+    'app.message_sliding_window_duration': z.string().exactOptional(),
+    'app.message_sliding_window_rate': z.int().exactOptional(),
+    'privacy.individual_tracking': z.boolean().exactOptional(),
+    'privacy.unsubscribe_header': z.boolean().exactOptional(),
+    'privacy.allow_blocklist': z.boolean().exactOptional(),
+    'privacy.allow_preferences': z.boolean().exactOptional(),
+    'privacy.allow_export': z.boolean().exactOptional(),
+    'privacy.allow_wipe': z.boolean().exactOptional(),
+    'privacy.exportable': z.array(z.string()).exactOptional(),
+    'privacy.domain_blocklist': z.array(z.looseObject({})).exactOptional(),
+    'upload.provider': z.string().exactOptional(),
+    'upload.filesystem.upload_path': z.string().exactOptional(),
+    'upload.filesystem.upload_uri': z.string().exactOptional(),
+    'upload.s3.url': z.string().exactOptional(),
+    'upload.s3.public_url': z.string().exactOptional(),
+    'upload.s3.aws_access_key_id': z.string().exactOptional(),
+    'upload.s3.aws_default_region': z.string().exactOptional(),
+    'upload.s3.bucket': z.string().exactOptional(),
+    'upload.s3.bucket_domain': z.string().exactOptional(),
+    'upload.s3.bucket_path': z.string().exactOptional(),
+    'upload.s3.bucket_type': z.string().exactOptional(),
+    'upload.s3.expiry': z.string().exactOptional(),
+    smtp: z.array(SMTPSettingsSchema).exactOptional(),
+    messengers: z.array(z.looseObject({})).exactOptional(),
+    'bounce.enabled': z.boolean().exactOptional(),
+    'bounce.webhooks_enabled': z.boolean().exactOptional(),
+    'bounce.count': z.int().exactOptional(),
+    'bounce.action': z.string().exactOptional(),
+    'bounce.ses': z
       .object({
-        'app.site_name': z.string().exactOptional(),
-        'app.root_url': z.string().exactOptional(),
-        'app.logo_url': z.string().exactOptional(),
-        'app.favicon_url': z.string().exactOptional(),
-        'app.from_email': z
-          .array(z.string().max(2000))
-          .min(1)
-          .max(100)
-          .exactOptional()
-          .openapi({
-            description:
-              'Sender addresses. The first must be a literal email address and is the default for campaigns and system emails.',
-          }),
-        'app.notify_emails': z.array(z.string()).exactOptional(),
-        'app.enable_public_subscription_page': z.boolean().exactOptional(),
-        'app.enable_public_archive': z.boolean().exactOptional(),
-        'app.send_optin_confirmation': z.boolean().exactOptional(),
-        'app.check_updates': z.boolean().exactOptional(),
-        'app.lang': z.string().exactOptional(),
-        'app.batch_size': z.int().exactOptional(),
-        'app.concurrency': z.int().exactOptional(),
-        'app.max_send_errors': z.int().exactOptional(),
-        'app.message_rate': z.int().exactOptional(),
-        'app.message_sliding_window': z.boolean().exactOptional(),
-        'app.message_sliding_window_duration': z.string().exactOptional(),
-        'app.message_sliding_window_rate': z.int().exactOptional(),
-        'privacy.individual_tracking': z.boolean().exactOptional(),
-        'privacy.unsubscribe_header': z.boolean().exactOptional(),
-        'privacy.allow_blocklist': z.boolean().exactOptional(),
-        'privacy.allow_preferences': z.boolean().exactOptional(),
-        'privacy.allow_export': z.boolean().exactOptional(),
-        'privacy.allow_wipe': z.boolean().exactOptional(),
-        'privacy.exportable': z.array(z.string()).exactOptional(),
-        'privacy.domain_blocklist': z.array(z.object({})).exactOptional(),
-        'upload.provider': z.string().exactOptional(),
-        'upload.filesystem.upload_path': z.string().exactOptional(),
-        'upload.filesystem.upload_uri': z.string().exactOptional(),
-        'upload.s3.url': z.string().exactOptional(),
-        'upload.s3.public_url': z.string().exactOptional(),
-        'upload.s3.aws_access_key_id': z.string().exactOptional(),
-        'upload.s3.aws_default_region': z.string().exactOptional(),
-        'upload.s3.bucket': z.string().exactOptional(),
-        'upload.s3.bucket_domain': z.string().exactOptional(),
-        'upload.s3.bucket_path': z.string().exactOptional(),
-        'upload.s3.bucket_type': z.string().exactOptional(),
-        'upload.s3.expiry': z.string().exactOptional(),
-        smtp: z.array(SMTPSettingsSchema).exactOptional(),
-        messengers: z.array(z.object({})).exactOptional(),
-        'bounce.enabled': z.boolean().exactOptional(),
-        'bounce.webhooks_enabled': z.boolean().exactOptional(),
-        'bounce.count': z.int().exactOptional(),
-        'bounce.action': z.string().exactOptional(),
-        'bounce.ses_enabled': z.boolean().exactOptional(),
-        'bounce.azure.enabled': z.boolean().exactOptional(),
-        'bounce.azure.shared_secret': z.string().exactOptional(),
-        'bounce.azure.shared_secret_header': z.string().exactOptional(),
-        'bounce.sendgrid_enabled': z.boolean().exactOptional(),
-        'bounce.sendgrid_key': z.string().exactOptional(),
-        'bounce.forwardemail_enabled': z.boolean().exactOptional(),
-        'bounce.forwardemail_key': z.string().exactOptional(),
-        'bounce.postmark_enabled': z.boolean().exactOptional(),
-        'bounce.postmark_username': z.string().exactOptional(),
-        'bounce.postmark_password': z.string().exactOptional(),
-        'bounce.mailboxes': z.array(MailBoxBouncesSchema).exactOptional(),
-        'appearance.admin.custom_css': z.string().exactOptional(),
-        'appearance.admin.custom_js': z.string().exactOptional(),
-        'appearance.public.custom_css': z.string().exactOptional(),
-        'appearance.public.custom_js': z.string().exactOptional(),
+        enabled: z.boolean().exactOptional(),
+        topic_arns: z.array(z.string()).exactOptional(),
       })
+      .exactOptional()
       .openapi({ required: [] }),
-  )
+    'bounce.azure': z
+      .object({
+        enabled: z.boolean().exactOptional(),
+        shared_secret: z.string().exactOptional(),
+        shared_secret_header: z.string().exactOptional(),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+    'bounce.sendgrid': z
+      .object({ enabled: z.boolean().exactOptional(), key: z.string().exactOptional() })
+      .exactOptional()
+      .openapi({ required: [] }),
+    'bounce.forwardemail': z
+      .object({ enabled: z.boolean().exactOptional(), key: z.string().exactOptional() })
+      .exactOptional()
+      .openapi({ required: [] }),
+    'bounce.postmark': z
+      .object({
+        enabled: z.boolean().exactOptional(),
+        username: z.string().exactOptional(),
+        password: z.string().exactOptional(),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+    'bounce.lettermint': z
+      .object({ enabled: z.boolean().exactOptional(), key: z.string().exactOptional() })
+      .exactOptional()
+      .openapi({ required: [] }),
+    'bounce.mailboxes': z.array(MailBoxBouncesSchema).exactOptional(),
+    'appearance.admin.custom_css': z.string().exactOptional(),
+    'appearance.admin.custom_js': z.string().exactOptional(),
+    'appearance.public.custom_css': z.string().exactOptional(),
+    'appearance.public.custom_js': z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
   .openapi('Settings')
 
 const SubscriberProfileSchema = z
@@ -326,8 +285,8 @@ const SubscriberDataSchema = z
     email: z.string().exactOptional(),
     profile: z.array(SubscriberProfileSchema).exactOptional(),
     subscriptions: z.array(SubscriptionsSchema).exactOptional(),
-    campaign_views: z.array(z.object({})).exactOptional(),
-    link_clicks: z.array(z.object({})).exactOptional(),
+    campaign_views: z.array(z.looseObject({})).exactOptional(),
+    link_clicks: z.array(z.looseObject({})).exactOptional(),
   })
   .openapi({ required: [] })
   .openapi('SubscriberData')
@@ -420,7 +379,7 @@ const BounceSchema = z
             id: z.int().exactOptional(),
             type: z.string().exactOptional(),
             source: z.string().exactOptional(),
-            meta: z.object({}).exactOptional(),
+            meta: z.looseObject({}).exactOptional(),
             created_at: z.string().exactOptional(),
             email: z.string().exactOptional(),
             subscriber_uuid: z.string().exactOptional(),
@@ -564,7 +523,7 @@ const CampaignRequestSchema = z
     send_later: z.boolean().exactOptional(),
     send_at: z
       .object({
-        headers: z.array(z.object({})).exactOptional(),
+        headers: z.array(z.looseObject({})).exactOptional(),
         template_id: z.number().exactOptional(),
       })
       .exactOptional()
@@ -583,15 +542,15 @@ const CampaignUpdateSchema = z
     type: z.string().exactOptional(),
     tags: z.array(z.string()).exactOptional(),
     send_later: z.boolean().exactOptional(),
-    send_at: z.object({}).exactOptional(),
-    headers: z.array(z.object({})).exactOptional(),
+    send_at: z.looseObject({}).exactOptional(),
+    headers: z.array(z.looseObject({})).exactOptional(),
     template_id: z.int().exactOptional(),
     content_type: z.string().exactOptional(),
     body: z.string().exactOptional(),
     altbody: z.string().exactOptional(),
     archive: z.boolean().exactOptional(),
     archive_template_id: z.int().exactOptional(),
-    archive_meta: z.object({}).exactOptional(),
+    archive_meta: z.looseObject({}).exactOptional(),
   })
   .openapi({ required: [] })
   .openapi('CampaignUpdate')
@@ -629,7 +588,7 @@ const MediaFileObjectSchema = z
     thumb_url: z.string().exactOptional(),
     thumb_uri: z.string().exactOptional(),
     provider: z.string().exactOptional(),
-    meta: z.object({}).exactOptional(),
+    meta: z.looseObject({}).exactOptional(),
     url: z.string().exactOptional(),
     uri: z.string().exactOptional(),
   })
@@ -700,8 +659,8 @@ const TransactionalMessageSchema = z
     subscriber_id: z.int().exactOptional(),
     template_id: z.int().exactOptional(),
     from_email: z.string().exactOptional(),
-    data: z.object({}).exactOptional(),
-    headers: z.array(z.object({})).exactOptional(),
+    data: z.looseObject({}).exactOptional(),
+    headers: z.array(z.looseObject({})).exactOptional(),
     messenger: z.string().exactOptional(),
     content_type: z.string().exactOptional(),
   })
@@ -1441,18 +1400,14 @@ export const getSubscribersIdExportRoute = createRoute({
       description: 'subscriber data object',
       content: { 'application/json': { schema: SubscriberDataSchema } },
       headers: z.object({
-        'Cache-Control': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Content-Disposition': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'attachment; filename="data.json"' }),
-        },
+        'Cache-Control': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Content-Disposition': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'attachment; filename="data.json"' }),
       }),
     },
   },
@@ -3087,7 +3042,7 @@ export const putCampaignsIdArchiveRoute = createRoute({
             .object({
               archive: z.boolean().exactOptional(),
               archive_template_id: z.int().exactOptional(),
-              archive_meta: z.object({}).exactOptional(),
+              archive_meta: z.looseObject({}).exactOptional(),
             })
             .openapi({ required: [] }),
         },

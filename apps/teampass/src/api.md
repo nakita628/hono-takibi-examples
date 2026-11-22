@@ -3919,6 +3919,714 @@ To perform this operation, you must be authenticated by means of one of the foll
 bearerAuth
 </aside>
 
+## Secure Send policy for API clients
+
+<a id="opIdsecureSendPolicy"></a>
+
+> Code samples
+
+```bash
+curl http://localhost/api/v1/secureSend/policy \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /secureSend/policy`
+
+Instance limits and options a client needs to build its Secure Send form. Always 200: hide the item action when enabled or item_send_allowed is false, and the note action when note_send_allowed is false. Not counted as user activity.
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "enabled": true,
+  "item_send_allowed": true,
+  "note_send_allowed": true,
+  "require_passphrase": true,
+  "passphrase_max_bytes": 1024,
+  "note_max_bytes": 16000,
+  "days": {
+    "max": 1,
+    "default": 1
+  },
+  "views": {
+    "max": 1,
+    "default": 1
+  },
+  "public_address_available": true,
+  "totp_allowed": true,
+  "email": {
+    "allowed": true,
+    "configured": true
+  },
+  "sender_name_shown": true
+}
+```
+
+> 401 Response
+
+```json
+{
+  "type": "about:blank",
+  "title": "string",
+  "status": 0,
+  "detail": "string",
+  "error": "string"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "type": "about:blank",
+  "title": "string",
+  "status": 0,
+  "detail": "string",
+  "error": "string"
+}
+```
+
+> 405 Response
+
+```json
+{
+  "type": "about:blank",
+  "title": "string",
+  "status": 0,
+  "detail": "string",
+  "error": "string"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "type": "about:blank",
+  "title": "string",
+  "status": 0,
+  "detail": "string",
+  "error": "string"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "type": "about:blank",
+  "title": "string",
+  "status": 0,
+  "detail": "string",
+  "error": "string"
+}
+```
+
+> 503 Response
+
+```json
+{
+  "type": "about:blank",
+  "title": "string",
+  "status": 0,
+  "detail": "string",
+  "error": "string"
+}
+```
+
+<h3 id="secure-send-policy-for-api-clients-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Policy|[SecureSendPolicy](#schemasecuresendpolicy)|
+|401|Unauthorized|Missing, invalid or expired credentials/token|[Problem](#schemaproblem)|
+|403|Forbidden|Permission denied|[Problem](#schemaproblem)|
+|405|Method Not Allowed|HTTP method not supported for this endpoint (Allow header lists supported methods)|[Problem](#schemaproblem)|
+|429|Too Many Requests|Rate limit exceeded (api_rate_limit_per_minute, per user and per IP)|[Problem](#schemaproblem)|
+|500|Internal Server Error|Internal server error|[Problem](#schemaproblem)|
+|503|Service Unavailable|API disabled in TeamPass settings|[Problem](#schemaproblem)|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|405|Allow|string||none|
+|429|Retry-After|integer||Seconds to wait before retrying|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth
+</aside>
+
+## Create a Secure Send link for an item or a note
+
+<a id="opIdsecureSendCreate"></a>
+
+> Code samples
+
+```bash
+curl http://localhost/api/v1/secureSend/create \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "type": "item",
+    "item_id": 1,
+    "note": {
+      "title": "string",
+      "secret": "string",
+      "note": "string",
+      "login": "string",
+      "url": "string"
+    },
+    "days": 1,
+    "views": 1,
+    "passphrase": "string",
+    "include_totp": false,
+    "public_address": false,
+    "recipient_email": "user@example.com"
+  }'
+```
+
+`POST /secureSend/create`
+
+Creates a limited-view, expiring link to a snapshot of an item the caller can read (type item, the default) or to a note whose content the caller supplies (type note, requires the note sends setting), with the same policy, audit and email delivery as the web interface. Requires the read right, one-time view links and the secure_send_api_enabled setting. The returned url is a bearer secret: never log it, and send the passphrase through another channel. No Idempotency-Key support: a lost response leaves at most one unused link, which expires on its own. Error responses carry a machine-readable reason member.
+
+> Body parameter
+
+```json
+{
+  "type": "item",
+  "item_id": 1,
+  "note": {
+    "title": "string",
+    "secret": "string",
+    "note": "string",
+    "login": "string",
+    "url": "string"
+  },
+  "days": 1,
+  "views": 1,
+  "passphrase": "string",
+  "include_totp": false,
+  "public_address": false,
+  "recipient_email": "user@example.com"
+}
+```
+
+<h3 id="create-a-secure-send-link-for-an-item-or-a-note-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|body|body|[SecureSendCreateBody](#schemasecuresendcreatebody)|true|none|
+|» type|body|string|false|none|
+|» item_id|body|integer|false|Item to share (item sends only)|
+|» note|body|[SecureSendNote](#schemasecuresendnote)|false|Content of a note send. Every member is an optional string (null = omitted); secret or note must be non-blank (else 400 empty_note). Together at most note_max_bytes UTF-8 bytes. title, login and url are trimmed.|
+|» days|body|integer|false|Validity in days, capped by policy days.max (default: the maximum)|
+|» views|body|integer|false|Allowed views, capped by policy views.max (default 1)|
+|» passphrase|body|string|false|Optional recipient passphrase (at most 1024 bytes); required when policy require_passphrase is true|
+|» include_totp|body|boolean|false|Copy the item's enabled TOTP into the snapshot; ignored for read-only accounts (item sends only)|
+|» public_address|body|boolean|false|Build the link on the public Secure Send address|
+|» recipient_email|body|string(email)|false|Also send the link by email from the instance mailbox|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|» type|item|
+|» type|note|
+
+> Example responses
+
+> 201 Response
+
+```json
+{
+  "id": 0,
+  "type": "item",
+  "url": "http://example.com",
+  "item_id": 0,
+  "expires_at": 0,
+  "max_views": 0,
+  "has_passphrase": true,
+  "public_address": true,
+  "totp_included": true,
+  "description_truncated": true,
+  "email_queued": true
+}
+```
+
+> 400 Response
+
+```json
+{
+  "type": "about:blank",
+  "title": "string",
+  "status": 0,
+  "detail": "string",
+  "error": "string",
+  "reason": "secure_send_disabled"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "type": "about:blank",
+  "title": "string",
+  "status": 0,
+  "detail": "string",
+  "error": "string"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "type": "about:blank",
+  "title": "string",
+  "status": 0,
+  "detail": "string",
+  "error": "string",
+  "reason": "secure_send_disabled"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "type": "about:blank",
+  "title": "string",
+  "status": 0,
+  "detail": "string",
+  "error": "string",
+  "reason": "secure_send_disabled"
+}
+```
+
+> 405 Response
+
+```json
+{
+  "type": "about:blank",
+  "title": "string",
+  "status": 0,
+  "detail": "string",
+  "error": "string"
+}
+```
+
+> 422 Response
+
+```json
+{
+  "type": "about:blank",
+  "title": "string",
+  "status": 0,
+  "detail": "string",
+  "error": "string",
+  "reason": "secure_send_disabled"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "type": "about:blank",
+  "title": "string",
+  "status": 0,
+  "detail": "string",
+  "error": "string",
+  "reason": "secure_send_disabled"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "type": "about:blank",
+  "title": "string",
+  "status": 0,
+  "detail": "string",
+  "error": "string",
+  "reason": "secure_send_disabled"
+}
+```
+
+> 503 Response
+
+```json
+{
+  "type": "about:blank",
+  "title": "string",
+  "status": 0,
+  "detail": "string",
+  "error": "string",
+  "reason": "secure_send_disabled"
+}
+```
+
+<h3 id="create-a-secure-send-link-for-an-item-or-a-note-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|201|Created|Link created|[SecureSendCreated](#schemasecuresendcreated)|
+|400|Bad Request|Invalid request (reason invalid_payload: body, types, unknown member, member of the other send type, note above note_max_bytes, Idempotency-Key header or query-string parameters), recipient (reason invalid_email) or note without a secret nor a text (reason empty_note)|[SecureSendProblem](#schemasecuresendproblem)|
+|401|Unauthorized|Missing, invalid or expired credentials/token|[Problem](#schemaproblem)|
+|403|Forbidden|Item not readable by the caller or administrator account (reason not_allowed), note sends disabled (reason notes_not_allowed), email invitations disabled (reason email_not_allowed), or read right missing (no reason member)|[SecureSendProblem](#schemasecuresendproblem)|
+|404|Not Found|Item not found or deleted (reason not_found)|[SecureSendProblem](#schemasecuresendproblem)|
+|405|Method Not Allowed|HTTP method not supported for this endpoint (Allow header lists supported methods)|[Problem](#schemaproblem)|
+|422|Unprocessable Entity|Refused on substance: passphrase_required, cannot_decrypt (retry once the background task has distributed the item keys), totp_unusable, email_requires_https|[SecureSendProblem](#schemasecuresendproblem)|
+|429|Too Many Requests|Email invitation quota reached (reason email_rate_limited: 10 per sender per rolling hour), or API rate limit|[SecureSendProblem](#schemasecuresendproblem)|
+|500|Internal Server Error|Internal error (reason server_error); details are logged server-side only|[SecureSendProblem](#schemasecuresendproblem)|
+|503|Service Unavailable|Secure Send disabled for API clients (reason secure_send_disabled), email delivery not configured (email_not_configured), public address misconfigured (invalid_public_url), or API disabled (no reason member)|[SecureSendProblem](#schemasecuresendproblem)|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|201|Cache-Control|string||Always no-store|
+|405|Allow|string||none|
+|429|Retry-After|integer||Present only when the API rate limiter answered (no reason member)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth
+</aside>
+
+## List the caller's Secure Send links
+
+<a id="opIdsecureSendList"></a>
+
+> Code samples
+
+```bash
+curl http://localhost/api/v1/secureSend/list \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /secureSend/list`
+
+The caller's links, created through the web or the API, that can still be opened or are suspended by a policy, newest first. Expired, exhausted and blocked links, and item links whose item the caller can no longer read, are left out. Never returns a link URL, which the server does not keep. Requires the read right only; does not depend on secure_send_api_enabled, so a client can find links to revoke. Empty while one-time view links are off.
+
+<h3 id="list-the-callers-secure-send-links-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|limit|query|integer|false|none|
+|offset|query|integer|false|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+[
+  {
+    "id": 0,
+    "type": "item",
+    "item_id": 0,
+    "folder_id": 0,
+    "label": "string",
+    "has_passphrase": true,
+    "expires_at": 0,
+    "max_views": 0,
+    "remaining_views": 0,
+    "suspended": true,
+    "email_status": null
+  }
+]
+```
+
+> 400 Response
+
+```json
+{
+  "type": "about:blank",
+  "title": "string",
+  "status": 0,
+  "detail": "string",
+  "error": "string",
+  "reason": "secure_send_disabled"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "type": "about:blank",
+  "title": "string",
+  "status": 0,
+  "detail": "string",
+  "error": "string"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "type": "about:blank",
+  "title": "string",
+  "status": 0,
+  "detail": "string",
+  "error": "string"
+}
+```
+
+> 405 Response
+
+```json
+{
+  "type": "about:blank",
+  "title": "string",
+  "status": 0,
+  "detail": "string",
+  "error": "string"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "type": "about:blank",
+  "title": "string",
+  "status": 0,
+  "detail": "string",
+  "error": "string"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "type": "about:blank",
+  "title": "string",
+  "status": 0,
+  "detail": "string",
+  "error": "string",
+  "reason": "secure_send_disabled"
+}
+```
+
+> 503 Response
+
+```json
+{
+  "type": "about:blank",
+  "title": "string",
+  "status": 0,
+  "detail": "string",
+  "error": "string"
+}
+```
+
+<h3 id="list-the-callers-secure-send-links-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|The caller's links (empty array when none)|Inline|
+|400|Bad Request|Invalid limit or offset, or another query-string parameter (reason invalid_payload)|[SecureSendProblem](#schemasecuresendproblem)|
+|401|Unauthorized|Missing, invalid or expired credentials/token|[Problem](#schemaproblem)|
+|403|Forbidden|Permission denied|[Problem](#schemaproblem)|
+|405|Method Not Allowed|HTTP method not supported for this endpoint (Allow header lists supported methods)|[Problem](#schemaproblem)|
+|429|Too Many Requests|Rate limit exceeded (api_rate_limit_per_minute, per user and per IP)|[Problem](#schemaproblem)|
+|500|Internal Server Error|Internal error (reason server_error); details are logged server-side only|[SecureSendProblem](#schemasecuresendproblem)|
+|503|Service Unavailable|API disabled in TeamPass settings|[Problem](#schemaproblem)|
+
+<h3 id="list-the-callers-secure-send-links-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*anonymous*|[[SecureSendLink](#schemasecuresendlink)]|false|none|none|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|200|X-Total-Count|integer||Total number of matching entries before pagination|
+|200|Cache-Control|string||Always no-store|
+|405|Allow|string||none|
+|429|Retry-After|integer||Seconds to wait before retrying|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth
+</aside>
+
+## Revoke one of the caller's Secure Send links
+
+<a id="opIdsecureSendRevoke"></a>
+
+> Code samples
+
+```bash
+curl 'http://localhost/api/v1/secureSend/revoke?id=1' \
+  -X DELETE \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`DELETE /secureSend/revoke`
+
+Deletes a link the caller created, through the web or the API, and records a revoked event in the Secure Send audit journal. Requires the read right only, like create. Available whatever the Secure Send settings, like the web: removing a link only narrows exposure. A link that does not exist and a link of another user both answer 404 not_found, so a retry after a lost response also answers 404: treat it as revoked. No Idempotency-Key support.
+
+<h3 id="revoke-one-of-the-callers-secure-send-links-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|query|integer|true|Link identifier returned by create. No other parameter is accepted.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "id": 0
+}
+```
+
+> 400 Response
+
+```json
+{
+  "type": "about:blank",
+  "title": "string",
+  "status": 0,
+  "detail": "string",
+  "error": "string",
+  "reason": "secure_send_disabled"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "type": "about:blank",
+  "title": "string",
+  "status": 0,
+  "detail": "string",
+  "error": "string"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "type": "about:blank",
+  "title": "string",
+  "status": 0,
+  "detail": "string",
+  "error": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "type": "about:blank",
+  "title": "string",
+  "status": 0,
+  "detail": "string",
+  "error": "string",
+  "reason": "secure_send_disabled"
+}
+```
+
+> 405 Response
+
+```json
+{
+  "type": "about:blank",
+  "title": "string",
+  "status": 0,
+  "detail": "string",
+  "error": "string"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "type": "about:blank",
+  "title": "string",
+  "status": 0,
+  "detail": "string",
+  "error": "string"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "type": "about:blank",
+  "title": "string",
+  "status": 0,
+  "detail": "string",
+  "error": "string",
+  "reason": "secure_send_disabled"
+}
+```
+
+> 503 Response
+
+```json
+{
+  "type": "about:blank",
+  "title": "string",
+  "status": 0,
+  "detail": "string",
+  "error": "string"
+}
+```
+
+<h3 id="revoke-one-of-the-callers-secure-send-links-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Link revoked|[SecureSendRevoked](#schemasecuresendrevoked)|
+|400|Bad Request|Missing or invalid id, other query-string parameter, or Idempotency-Key header (reason invalid_payload)|[SecureSendProblem](#schemasecuresendproblem)|
+|401|Unauthorized|Missing, invalid or expired credentials/token|[Problem](#schemaproblem)|
+|403|Forbidden|Permission denied|[Problem](#schemaproblem)|
+|404|Not Found|No link with this id belongs to the caller (reason not_found)|[SecureSendProblem](#schemasecuresendproblem)|
+|405|Method Not Allowed|HTTP method not supported for this endpoint (Allow header lists supported methods)|[Problem](#schemaproblem)|
+|429|Too Many Requests|Rate limit exceeded (api_rate_limit_per_minute, per user and per IP)|[Problem](#schemaproblem)|
+|500|Internal Server Error|Internal error (reason server_error): the link is kept; details are logged server-side only|[SecureSendProblem](#schemasecuresendproblem)|
+|503|Service Unavailable|API disabled in TeamPass settings|[Problem](#schemaproblem)|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|405|Allow|string||none|
+|429|Retry-After|integer||Seconds to wait before retrying|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth
+</aside>
+
 ## This OpenAPI 3.1 contract
 
 <a id="opIdgetOpenApiSpec"></a>
@@ -5859,3 +6567,299 @@ Passkey metadata. Key material is never returned.
 |credential_lifetime_days|integer|false|none|none|
 |ttl|integer|true|none|none|
 |poll_interval|integer|true|none|none|
+
+<h2 id="tocS_SecureSendPolicy">SecureSendPolicy</h2>
+<!-- backwards compatibility -->
+<a id="schemasecuresendpolicy"></a>
+<a id="schema_SecureSendPolicy"></a>
+<a id="tocSsecuresendpolicy"></a>
+<a id="tocssecuresendpolicy"></a>
+
+```json
+{
+  "enabled": true,
+  "item_send_allowed": true,
+  "note_send_allowed": true,
+  "require_passphrase": true,
+  "passphrase_max_bytes": 1024,
+  "note_max_bytes": 16000,
+  "days": {
+    "max": 1,
+    "default": 1
+  },
+  "views": {
+    "max": 1,
+    "default": 1
+  },
+  "public_address_available": true,
+  "totp_allowed": true,
+  "email": {
+    "allowed": true,
+    "configured": true
+  },
+  "sender_name_shown": true
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|enabled|boolean|true|none|One-time view links and secure_send_api_enabled are both on|
+|item_send_allowed|boolean|true|none|enabled, and the caller is not an administrator (administrators have no item access)|
+|note_send_allowed|boolean|true|none|enabled, and note sends are allowed by the administrator (every account, administrators included)|
+|require_passphrase|boolean|true|none|none|
+|passphrase_max_bytes|integer|true|none|none|
+|note_max_bytes|integer|true|none|Maximum size of a note, in UTF-8 bytes of its five members together|
+|days|object|true|none|none|
+|views|object|true|none|none|
+|public_address_available|boolean|true|none|A valid public Secure Send address is configured (public_address can be requested)|
+|totp_allowed|boolean|true|none|false for read-only accounts: include_totp is then ignored|
+|email|object|true|none|none|
+|sender_name_shown|boolean|true|none|The recipient sees the sender's display name|
+
+<h2 id="tocS_SecureSendCreateBody">SecureSendCreateBody</h2>
+<!-- backwards compatibility -->
+<a id="schemasecuresendcreatebody"></a>
+<a id="schema_SecureSendCreateBody"></a>
+<a id="tocSsecuresendcreatebody"></a>
+<a id="tocssecuresendcreatebody"></a>
+
+```json
+{
+  "type": "item",
+  "item_id": 1,
+  "note": {
+    "title": "string",
+    "secret": "string",
+    "note": "string",
+    "login": "string",
+    "url": "string"
+  },
+  "days": 1,
+  "views": 1,
+  "passphrase": "string",
+  "include_totp": false,
+  "public_address": false,
+  "recipient_email": "user@example.com"
+}
+```
+
+Unknown members are refused (400). A null optional member counts as omitted. An item send needs item_id and refuses note; a note send needs note and refuses item_id and include_totp.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|type|string|false|none|none|
+|item_id|integer|false|none|Item to share (item sends only)|
+|note|[SecureSendNote](#schemasecuresendnote)|false|none|Content of a note send. Every member is an optional string (null = omitted); secret or note must be non-blank (else 400 empty_note). Together at most note_max_bytes UTF-8 bytes. title, login and url are trimmed.|
+|days|integer|false|none|Validity in days, capped by policy days.max (default: the maximum)|
+|views|integer|false|none|Allowed views, capped by policy views.max (default 1)|
+|passphrase|string|false|none|Optional recipient passphrase (at most 1024 bytes); required when policy require_passphrase is true|
+|include_totp|boolean|false|none|Copy the item's enabled TOTP into the snapshot; ignored for read-only accounts (item sends only)|
+|public_address|boolean|false|none|Build the link on the public Secure Send address|
+|recipient_email|string(email)|false|none|Also send the link by email from the instance mailbox|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|item|
+|type|note|
+
+<h2 id="tocS_SecureSendNote">SecureSendNote</h2>
+<!-- backwards compatibility -->
+<a id="schemasecuresendnote"></a>
+<a id="schema_SecureSendNote"></a>
+<a id="tocSsecuresendnote"></a>
+<a id="tocssecuresendnote"></a>
+
+```json
+{
+  "title": "string",
+  "secret": "string",
+  "note": "string",
+  "login": "string",
+  "url": "string"
+}
+```
+
+Content of a note send. Every member is an optional string (null = omitted); secret or note must be non-blank (else 400 empty_note). Together at most note_max_bytes UTF-8 bytes. title, login and url are trimmed.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|title|string|false|none|Shown as the label|
+|secret|string|false|none|Shown as the password|
+|note|string|false|none|Shown as the description, line breaks kept|
+|login|string|false|none|none|
+|url|string|false|none|none|
+
+<h2 id="tocS_SecureSendCreated">SecureSendCreated</h2>
+<!-- backwards compatibility -->
+<a id="schemasecuresendcreated"></a>
+<a id="schema_SecureSendCreated"></a>
+<a id="tocSsecuresendcreated"></a>
+<a id="tocssecuresendcreated"></a>
+
+```json
+{
+  "id": 0,
+  "type": "item",
+  "url": "http://example.com",
+  "item_id": 0,
+  "expires_at": 0,
+  "max_views": 0,
+  "has_passphrase": true,
+  "public_address": true,
+  "totp_included": true,
+  "description_truncated": true,
+  "email_queued": true
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|integer|true|none|Link identifier, the id of DELETE /secureSend/revoke|
+|type|string|true|none|none|
+|url|string(uri)|true|none|Bearer secret: anyone holding it (and the passphrase, if any) can open the link|
+|item_id|integer \| null|true|none|null for a note|
+|expires_at|integer|true|none|Unix timestamp|
+|max_views|integer|true|none|none|
+|has_passphrase|boolean|true|none|none|
+|public_address|boolean|true|none|none|
+|totp_included|boolean|true|none|Always false for a note|
+|description_truncated|boolean|true|none|The item description was shortened to fit the link storage (always false for a note)|
+|email_queued|boolean|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|item|
+|type|note|
+
+<h2 id="tocS_SecureSendLink">SecureSendLink</h2>
+<!-- backwards compatibility -->
+<a id="schemasecuresendlink"></a>
+<a id="schema_SecureSendLink"></a>
+<a id="tocSsecuresendlink"></a>
+<a id="tocssecuresendlink"></a>
+
+```json
+{
+  "id": 0,
+  "type": "item",
+  "item_id": 0,
+  "folder_id": 0,
+  "label": "string",
+  "has_passphrase": true,
+  "expires_at": 0,
+  "max_views": 0,
+  "remaining_views": 0,
+  "suspended": true,
+  "email_status": null
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|integer|true|none|Link identifier, the id of DELETE /secureSend/revoke|
+|type|string|true|none|none|
+|item_id|integer \| null|true|none|null for a note|
+|folder_id|integer \| null|true|none|Current folder of the item; null for a note|
+|label|string \| null|true|none|Current item label (HTML entities decoded: escape it when rendering); null for a note, whose title only exists inside the encrypted link|
+|has_passphrase|boolean|true|none|none|
+|expires_at|integer|true|none|Unix timestamp|
+|max_views|integer|true|none|none|
+|remaining_views|integer|true|none|none|
+|suspended|boolean|true|none|The link cannot be opened while a policy forbids it (note sends disabled, or a passphrase now required); it still counts and can be revoked|
+|email_status|string \| null|true|none|Email invitation outcome; null when the link was not emailed. accepted means accepted by the mail server, not delivered|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|item|
+|type|note|
+|email_status|null|
+|email_status|queued|
+|email_status|accepted|
+|email_status|failed|
+|email_status|not_sent|
+|email_status|unknown|
+
+<h2 id="tocS_SecureSendRevoked">SecureSendRevoked</h2>
+<!-- backwards compatibility -->
+<a id="schemasecuresendrevoked"></a>
+<a id="schema_SecureSendRevoked"></a>
+<a id="tocSsecuresendrevoked"></a>
+<a id="tocssecuresendrevoked"></a>
+
+```json
+{
+  "id": 0
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|integer|true|none|Identifier of the revoked link|
+
+<h2 id="tocS_SecureSendProblem">SecureSendProblem</h2>
+<!-- backwards compatibility -->
+<a id="schemasecuresendproblem"></a>
+<a id="schema_SecureSendProblem"></a>
+<a id="tocSsecuresendproblem"></a>
+<a id="tocssecuresendproblem"></a>
+
+```json
+{
+  "type": "about:blank",
+  "title": "string",
+  "status": 0,
+  "detail": "string",
+  "error": "string",
+  "reason": "secure_send_disabled"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|type|string|false|none|none|
+|title|string|false|none|none|
+|status|integer|false|none|none|
+|detail|string|false|none|none|
+|error|string|false|none|none|
+|reason|string|false|none|Stable machine-readable cause; map it, not the detail text|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|reason|secure_send_disabled|
+|reason|invalid_payload|
+|reason|invalid_email|
+|reason|empty_note|
+|reason|not_found|
+|reason|not_allowed|
+|reason|email_not_allowed|
+|reason|notes_not_allowed|
+|reason|passphrase_required|
+|reason|cannot_decrypt|
+|reason|totp_unusable|
+|reason|email_requires_https|
+|reason|email_rate_limited|
+|reason|email_not_configured|
+|reason|invalid_public_url|
+|reason|server_error|

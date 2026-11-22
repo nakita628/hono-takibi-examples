@@ -49,7 +49,7 @@ const AppEventOccurrenceSchema = z
         example: null,
       }),
     extraData: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'An object containing additional data related to the event occurrence.',
@@ -217,7 +217,7 @@ const StandardErrorSchema = z
       .string()
       .openapi({ description: 'The resulting status of the batch operation.', example: null }),
     subCategory: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Sub category of the error, if any.', example: null }),
   })
@@ -392,19 +392,71 @@ const Oauth2SecurityScheme = {
         'crm.objects.deals.write': '',
         'crm.objects.tickets.highly_sensitive.write': '',
         'crm.objects.tickets.sensitive.write': '',
+        'crm.objects.tickets.write': '',
         'crm.schemas.companies.write': '',
         'crm.schemas.contacts.write': '',
         'crm.schemas.deals.write': '',
+        'crm.schemas.tickets.write': '',
         'tickets.highly_sensitive.v2': '',
         'tickets.sensitive.v2': '',
+        'timeline.write': '',
       },
     },
   },
+  'x-hubspot-app-availability': {
+    'crm.objects.companies.highly_sensitive.write.v2': { portal: ['private'], developer: false },
+    'crm.objects.companies.sensitive.write.v2': { portal: ['private'], developer: false },
+    'crm.objects.companies.write': {
+      portal: ['public', 'private'],
+      user: ['public', 'private'],
+      developer: false,
+    },
+    'crm.objects.contacts.highly_sensitive.write.v2': { portal: ['private'], developer: false },
+    'crm.objects.contacts.sensitive.write.v2': { portal: ['private'], developer: false },
+    'crm.objects.contacts.write': {
+      portal: ['public', 'private'],
+      user: ['public', 'private'],
+      developer: false,
+    },
+    'crm.objects.deals.highly_sensitive.write.v2': { portal: ['private'], developer: false },
+    'crm.objects.deals.sensitive.write.v2': { portal: ['private'], developer: false },
+    'crm.objects.deals.write': {
+      portal: ['public', 'private'],
+      user: ['public', 'private'],
+      developer: false,
+    },
+    'crm.objects.tickets.highly_sensitive.write': { user: ['public', 'private'], developer: false },
+    'crm.objects.tickets.sensitive.write': { user: ['public', 'private'], developer: false },
+    'crm.objects.tickets.write': {
+      portal: ['public', 'private'],
+      user: ['public', 'private'],
+      developer: false,
+    },
+    'crm.schemas.companies.write': {
+      portal: ['public', 'private'],
+      user: ['public', 'private'],
+      developer: false,
+    },
+    'crm.schemas.contacts.write': {
+      portal: ['public', 'private'],
+      user: ['public', 'private'],
+      developer: false,
+    },
+    'crm.schemas.deals.write': {
+      portal: ['public', 'private'],
+      user: ['public', 'private'],
+      developer: false,
+    },
+    'crm.schemas.tickets.write': {
+      portal: ['public', 'private'],
+      user: ['public', 'private'],
+      developer: false,
+    },
+    'tickets.highly_sensitive.v2': { portal: ['private'], developer: false },
+    'tickets.sensitive.v2': { portal: ['private'], developer: false },
+    'timeline.write': { portal: ['public', 'private'], developer: false },
+  },
 }
-
-const PrivateAppsSecurityScheme = { type: 'apiKey', name: 'private-app', in: 'header' }
-
-const PrivateAppsLegacySecurityScheme = { type: 'apiKey', name: 'private-app-legacy', in: 'header' }
 
 export const postIntegratorsTimeline202609EventsRoute = createRoute({
   method: 'post',
@@ -429,18 +481,14 @@ export const postIntegratorsTimeline202609EventsRoute = createRoute({
       description: 'successful operation',
       content: { 'application/json': { schema: AppEventOccurrenceSchema, example: null } },
       headers: z.object({
-        Location: {
-          description: 'URL of the newly created resource',
-          style: 'simple',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'URL of the newly created resource',
-              param: { required: false },
-              example: null,
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'URL of the newly created resource',
+            param: { required: false },
+            example: null,
+          }),
       }),
     },
     400: {
@@ -468,10 +516,13 @@ export const postIntegratorsTimeline202609EventsRoute = createRoute({
     { oauth2: ['crm.objects.deals.write'] },
     { oauth2: ['crm.objects.deals.sensitive.write.v2'] },
     { oauth2: ['crm.objects.deals.highly_sensitive.write.v2'] },
+    { oauth2: ['crm.objects.tickets.write'] },
     { oauth2: ['tickets.sensitive.v2'] },
+    { oauth2: ['crm.schemas.tickets.write'] },
     { oauth2: ['tickets.highly_sensitive.v2'] },
     { oauth2: ['crm.objects.tickets.highly_sensitive.write'] },
     { oauth2: ['crm.objects.tickets.sensitive.write'] },
+    { oauth2: ['timeline.write'] },
   ],
 })
 
@@ -524,10 +575,13 @@ export const postIntegratorsTimeline202609EventsBatchRoute = createRoute({
     { oauth2: ['crm.objects.deals.write'] },
     { oauth2: ['crm.objects.deals.sensitive.write.v2'] },
     { oauth2: ['crm.objects.deals.highly_sensitive.write.v2'] },
+    { oauth2: ['crm.objects.tickets.write'] },
     { oauth2: ['tickets.sensitive.v2'] },
+    { oauth2: ['crm.schemas.tickets.write'] },
     { oauth2: ['tickets.highly_sensitive.v2'] },
     { oauth2: ['crm.objects.tickets.highly_sensitive.write'] },
     { oauth2: ['crm.objects.tickets.sensitive.write'] },
+    { oauth2: ['timeline.write'] },
   ],
 })
 

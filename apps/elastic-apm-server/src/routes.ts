@@ -169,7 +169,15 @@ const ErrorSchema = z
                     description: 'Body of the received message, similar to an HTTP request body',
                   }),
                 headers: z
-                  .strictObject({})
+                  .looseObject({})
+                  .superRefine((o, ctx) => {
+                    const keys = Object.keys(o).filter(
+                      (k) => !['[.*]*$'].some((p) => new RegExp(p).test(k)),
+                    )
+                    if (keys.length > 0) {
+                      ctx.addIssue({ code: 'unrecognized_keys', keys, input: o })
+                    }
+                  })
                   .superRefine((o, ctx) => {
                     const regex = new RegExp('[.*]*$')
                     const Schema = z.union([z.array(z.string()), z.string()]).nullable()
@@ -188,6 +196,12 @@ const ErrorSchema = z
                   .nullable()
                   .exactOptional()
                   .openapi({
+                    ...{
+                      patternProperties: {
+                        '[.*]*$': { type: ['null', 'array', 'string'], items: { type: 'string' } },
+                      },
+                    },
+                    additionalProperties: false,
                     description:
                       'Headers received with the message, similar to HTTP request headers.',
                   }),
@@ -275,7 +289,15 @@ const ErrorSchema = z
                       'Env holds environment variable information passed to the monitored service.',
                   }),
                 headers: z
-                  .strictObject({})
+                  .looseObject({})
+                  .superRefine((o, ctx) => {
+                    const keys = Object.keys(o).filter(
+                      (k) => !['[.*]*$'].some((p) => new RegExp(p).test(k)),
+                    )
+                    if (keys.length > 0) {
+                      ctx.addIssue({ code: 'unrecognized_keys', keys, input: o })
+                    }
+                  })
                   .superRefine((o, ctx) => {
                     const regex = new RegExp('[.*]*$')
                     const Schema = z.union([z.array(z.string()), z.string()]).nullable()
@@ -294,6 +316,12 @@ const ErrorSchema = z
                   .nullable()
                   .exactOptional()
                   .openapi({
+                    ...{
+                      patternProperties: {
+                        '[.*]*$': { type: ['null', 'array', 'string'], items: { type: 'string' } },
+                      },
+                    },
+                    additionalProperties: false,
                     description:
                       'Headers includes any HTTP headers sent by the requester. Cookies will be taken by headers if supplied.',
                   }),
@@ -443,7 +471,15 @@ const ErrorSchema = z
                     description: 'Finished indicates whether the response was finished or not.',
                   }),
                 headers: z
-                  .strictObject({})
+                  .looseObject({})
+                  .superRefine((o, ctx) => {
+                    const keys = Object.keys(o).filter(
+                      (k) => !['[.*]*$'].some((p) => new RegExp(p).test(k)),
+                    )
+                    if (keys.length > 0) {
+                      ctx.addIssue({ code: 'unrecognized_keys', keys, input: o })
+                    }
+                  })
                   .superRefine((o, ctx) => {
                     const regex = new RegExp('[.*]*$')
                     const Schema = z.union([z.array(z.string()), z.string()]).nullable()
@@ -462,6 +498,12 @@ const ErrorSchema = z
                   .nullable()
                   .exactOptional()
                   .openapi({
+                    ...{
+                      patternProperties: {
+                        '[.*]*$': { type: ['null', 'array', 'string'], items: { type: 'string' } },
+                      },
+                    },
+                    additionalProperties: false,
                     description: 'Headers holds the http headers sent in the http response.',
                   }),
                 headers_sent: z
@@ -1687,7 +1729,13 @@ const MetricsetSchema = z
         required: [],
       }),
     samples: z
-      .strictObject({})
+      .looseObject({})
+      .superRefine((o, ctx) => {
+        const keys = Object.keys(o).filter((k) => !['^[^*"]*$'].some((p) => new RegExp(p).test(k)))
+        if (keys.length > 0) {
+          ctx.addIssue({ code: 'unrecognized_keys', keys, input: o })
+        }
+      })
       .superRefine((o, ctx) => {
         const regex = new RegExp('^[^*"]*$')
         const Schema = z
@@ -1784,7 +1832,52 @@ const MetricsetSchema = z
           }
         }
       })
-      .openapi({ description: 'Samples hold application metrics collected from the agent.' }),
+      .openapi({
+        ...{
+          patternProperties: {
+            '^[^*"]*$': {
+              type: ['null', 'object'],
+              properties: {
+                counts: {
+                  description:
+                    'Counts holds the bucket counts for histogram metrics.  These numbers must be positive or zero.  If Counts is specified, then Values is expected to be specified with the same number of elements, and with the same order.',
+                  type: ['null', 'array'],
+                  items: { type: 'integer', minimum: 0 },
+                  minItems: 0,
+                },
+                type: {
+                  description:
+                    'Type holds an optional metric type: gauge, counter, or histogram.  If Type is unknown, it will be ignored.',
+                  type: ['null', 'string'],
+                },
+                unit: {
+                  description:
+                    'Unit holds an optional unit for the metric.  - "percent" (value is in the range [0,1]) - "byte" - a time unit: "nanos", "micros", "ms", "s", "m", "h", "d"  If Unit is unknown, it will be ignored.',
+                  type: ['null', 'string'],
+                },
+                value: {
+                  description: 'Value holds the value of a single metric sample.',
+                  type: ['null', 'number'],
+                },
+                values: {
+                  description:
+                    'Values holds the bucket values for histogram metrics.  Values must be provided in ascending order; failure to do so will result in the metric being discarded.',
+                  type: ['null', 'array'],
+                  items: { type: 'number' },
+                  minItems: 0,
+                },
+              },
+              allOf: [{}, {}],
+              anyOf: [
+                { properties: { value: { type: 'number' } }, required: ['value'] },
+                { properties: { values: { type: 'array' } }, required: ['values'] },
+              ],
+            },
+          },
+        },
+        additionalProperties: false,
+        description: 'Samples hold application metrics collected from the agent.',
+      }),
     service: z
       .object({
         name: z
@@ -2091,7 +2184,15 @@ const SpanSchema = z
                         description: 'EncodedBodySize holds the size of the encoded payload.',
                       }),
                     headers: z
-                      .strictObject({})
+                      .looseObject({})
+                      .superRefine((o, ctx) => {
+                        const keys = Object.keys(o).filter(
+                          (k) => !['[.*]*$'].some((p) => new RegExp(p).test(k)),
+                        )
+                        if (keys.length > 0) {
+                          ctx.addIssue({ code: 'unrecognized_keys', keys, input: o })
+                        }
+                      })
                       .superRefine((o, ctx) => {
                         const regex = new RegExp('[.*]*$')
                         const Schema = z.union([z.array(z.string()), z.string()]).nullable()
@@ -2110,6 +2211,15 @@ const SpanSchema = z
                       .nullable()
                       .exactOptional()
                       .openapi({
+                        ...{
+                          patternProperties: {
+                            '[.*]*$': {
+                              type: ['null', 'array', 'string'],
+                              items: { type: 'string' },
+                            },
+                          },
+                        },
+                        additionalProperties: false,
                         description: 'Headers holds the http headers sent in the http response.',
                       }),
                     status_code: z
@@ -2178,7 +2288,15 @@ const SpanSchema = z
                     description: 'Body of the received message, similar to an HTTP request body',
                   }),
                 headers: z
-                  .strictObject({})
+                  .looseObject({})
+                  .superRefine((o, ctx) => {
+                    const keys = Object.keys(o).filter(
+                      (k) => !['[.*]*$'].some((p) => new RegExp(p).test(k)),
+                    )
+                    if (keys.length > 0) {
+                      ctx.addIssue({ code: 'unrecognized_keys', keys, input: o })
+                    }
+                  })
                   .superRefine((o, ctx) => {
                     const regex = new RegExp('[.*]*$')
                     const Schema = z.union([z.array(z.string()), z.string()]).nullable()
@@ -2197,6 +2315,12 @@ const SpanSchema = z
                   .nullable()
                   .exactOptional()
                   .openapi({
+                    ...{
+                      patternProperties: {
+                        '[.*]*$': { type: ['null', 'array', 'string'], items: { type: 'string' } },
+                      },
+                    },
+                    additionalProperties: false,
                     description:
                       'Headers received with the message, similar to HTTP request headers.',
                   }),
@@ -2814,7 +2938,15 @@ const TransactionSchema = z
                 description: 'Body of the received message, similar to an HTTP request body',
               }),
             headers: z
-              .strictObject({})
+              .looseObject({})
+              .superRefine((o, ctx) => {
+                const keys = Object.keys(o).filter(
+                  (k) => !['[.*]*$'].some((p) => new RegExp(p).test(k)),
+                )
+                if (keys.length > 0) {
+                  ctx.addIssue({ code: 'unrecognized_keys', keys, input: o })
+                }
+              })
               .superRefine((o, ctx) => {
                 const regex = new RegExp('[.*]*$')
                 const Schema = z.union([z.array(z.string()), z.string()]).nullable()
@@ -2833,6 +2965,12 @@ const TransactionSchema = z
               .nullable()
               .exactOptional()
               .openapi({
+                ...{
+                  patternProperties: {
+                    '[.*]*$': { type: ['null', 'array', 'string'], items: { type: 'string' } },
+                  },
+                },
+                additionalProperties: false,
                 description: 'Headers received with the message, similar to HTTP request headers.',
               }),
             queue: z
@@ -2918,7 +3056,15 @@ const TransactionSchema = z
                   'Env holds environment variable information passed to the monitored service.',
               }),
             headers: z
-              .strictObject({})
+              .looseObject({})
+              .superRefine((o, ctx) => {
+                const keys = Object.keys(o).filter(
+                  (k) => !['[.*]*$'].some((p) => new RegExp(p).test(k)),
+                )
+                if (keys.length > 0) {
+                  ctx.addIssue({ code: 'unrecognized_keys', keys, input: o })
+                }
+              })
               .superRefine((o, ctx) => {
                 const regex = new RegExp('[.*]*$')
                 const Schema = z.union([z.array(z.string()), z.string()]).nullable()
@@ -2937,6 +3083,12 @@ const TransactionSchema = z
               .nullable()
               .exactOptional()
               .openapi({
+                ...{
+                  patternProperties: {
+                    '[.*]*$': { type: ['null', 'array', 'string'], items: { type: 'string' } },
+                  },
+                },
+                additionalProperties: false,
                 description:
                   'Headers includes any HTTP headers sent by the requester. Cookies will be taken by headers if supplied.',
               }),
@@ -3079,7 +3231,15 @@ const TransactionSchema = z
                 description: 'Finished indicates whether the response was finished or not.',
               }),
             headers: z
-              .strictObject({})
+              .looseObject({})
+              .superRefine((o, ctx) => {
+                const keys = Object.keys(o).filter(
+                  (k) => !['[.*]*$'].some((p) => new RegExp(p).test(k)),
+                )
+                if (keys.length > 0) {
+                  ctx.addIssue({ code: 'unrecognized_keys', keys, input: o })
+                }
+              })
               .superRefine((o, ctx) => {
                 const regex = new RegExp('[.*]*$')
                 const Schema = z.union([z.array(z.string()), z.string()]).nullable()
@@ -3098,6 +3258,12 @@ const TransactionSchema = z
               .nullable()
               .exactOptional()
               .openapi({
+                ...{
+                  patternProperties: {
+                    '[.*]*$': { type: ['null', 'array', 'string'], items: { type: 'string' } },
+                  },
+                },
+                additionalProperties: false,
                 description: 'Headers holds the http headers sent in the http response.',
               }),
             headers_sent: z
@@ -3871,7 +4037,15 @@ const Error_2Schema = z
                       'Env holds environment variable information passed to the monitored service.',
                   }),
                 he: z
-                  .strictObject({})
+                  .looseObject({})
+                  .superRefine((o, ctx) => {
+                    const keys = Object.keys(o).filter(
+                      (k) => !['[.*]*$'].some((p) => new RegExp(p).test(k)),
+                    )
+                    if (keys.length > 0) {
+                      ctx.addIssue({ code: 'unrecognized_keys', keys, input: o })
+                    }
+                  })
                   .superRefine((o, ctx) => {
                     const regex = new RegExp('[.*]*$')
                     const Schema = z.union([z.array(z.string()), z.string()]).nullable()
@@ -3890,6 +4064,12 @@ const Error_2Schema = z
                   .nullable()
                   .exactOptional()
                   .openapi({
+                    ...{
+                      patternProperties: {
+                        '[.*]*$': { type: ['null', 'array', 'string'], items: { type: 'string' } },
+                      },
+                    },
+                    additionalProperties: false,
                     description:
                       'Headers includes any HTTP headers sent by the requester. Cookies will be taken by headers if supplied.',
                   }),
@@ -3932,7 +4112,15 @@ const Error_2Schema = z
                     description: 'EncodedBodySize holds the size of the encoded payload.',
                   }),
                 he: z
-                  .strictObject({})
+                  .looseObject({})
+                  .superRefine((o, ctx) => {
+                    const keys = Object.keys(o).filter(
+                      (k) => !['[.*]*$'].some((p) => new RegExp(p).test(k)),
+                    )
+                    if (keys.length > 0) {
+                      ctx.addIssue({ code: 'unrecognized_keys', keys, input: o })
+                    }
+                  })
                   .superRefine((o, ctx) => {
                     const regex = new RegExp('[.*]*$')
                     const Schema = z.union([z.array(z.string()), z.string()]).nullable()
@@ -3951,6 +4139,12 @@ const Error_2Schema = z
                   .nullable()
                   .exactOptional()
                   .openapi({
+                    ...{
+                      patternProperties: {
+                        '[.*]*$': { type: ['null', 'array', 'string'], items: { type: 'string' } },
+                      },
+                    },
+                    additionalProperties: false,
                     description: 'Headers holds the http headers sent in the http response.',
                   }),
                 sc: z
@@ -5019,7 +5213,15 @@ const Transaction_2Schema = z
                   'Env holds environment variable information passed to the monitored service.',
               }),
             he: z
-              .strictObject({})
+              .looseObject({})
+              .superRefine((o, ctx) => {
+                const keys = Object.keys(o).filter(
+                  (k) => !['[.*]*$'].some((p) => new RegExp(p).test(k)),
+                )
+                if (keys.length > 0) {
+                  ctx.addIssue({ code: 'unrecognized_keys', keys, input: o })
+                }
+              })
               .superRefine((o, ctx) => {
                 const regex = new RegExp('[.*]*$')
                 const Schema = z.union([z.array(z.string()), z.string()]).nullable()
@@ -5038,6 +5240,12 @@ const Transaction_2Schema = z
               .nullable()
               .exactOptional()
               .openapi({
+                ...{
+                  patternProperties: {
+                    '[.*]*$': { type: ['null', 'array', 'string'], items: { type: 'string' } },
+                  },
+                },
+                additionalProperties: false,
                 description:
                   'Headers includes any HTTP headers sent by the requester. Cookies will be taken by headers if supplied.',
               }),
@@ -5076,7 +5284,15 @@ const Transaction_2Schema = z
               .exactOptional()
               .openapi({ description: 'EncodedBodySize holds the size of the encoded payload.' }),
             he: z
-              .strictObject({})
+              .looseObject({})
+              .superRefine((o, ctx) => {
+                const keys = Object.keys(o).filter(
+                  (k) => !['[.*]*$'].some((p) => new RegExp(p).test(k)),
+                )
+                if (keys.length > 0) {
+                  ctx.addIssue({ code: 'unrecognized_keys', keys, input: o })
+                }
+              })
               .superRefine((o, ctx) => {
                 const regex = new RegExp('[.*]*$')
                 const Schema = z.union([z.array(z.string()), z.string()]).nullable()
@@ -5095,6 +5311,12 @@ const Transaction_2Schema = z
               .nullable()
               .exactOptional()
               .openapi({
+                ...{
+                  patternProperties: {
+                    '[.*]*$': { type: ['null', 'array', 'string'], items: { type: 'string' } },
+                  },
+                },
+                additionalProperties: false,
                 description: 'Headers holds the http headers sent in the http response.',
               }),
             sc: z

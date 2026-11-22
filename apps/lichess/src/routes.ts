@@ -3763,7 +3763,11 @@ const OpeningExplorerOpeningSchema = z
   .openapi('OpeningExplorerOpening')
 
 const OpeningExplorerGamePlayerSchema = z
-  .object({ name: z.string(), rating: z.int() })
+  .object({
+    name: z.string(),
+    title: z.string().exactOptional().openapi({ description: 'Title of the player, if any' }),
+    rating: z.int(),
+  })
   .openapi({ required: ['name', 'rating'] })
   .openapi('OpeningExplorerGamePlayer')
 
@@ -3774,9 +3778,9 @@ const OpeningExplorerMastersGameSchema = z
     white: OpeningExplorerGamePlayerSchema,
     black: OpeningExplorerGamePlayerSchema,
     year: z.int(),
-    month: z.string().exactOptional(),
+    month: z.string().nullable().openapi({ description: 'Month of the game, if known' }),
   })
-  .openapi({ required: ['id', 'winner', 'white', 'black', 'year'] })
+  .openapi({ required: ['id', 'winner', 'white', 'black', 'year', 'month'] })
   .openapi('OpeningExplorerMastersGame')
 
 const OpeningExplorerMastersSchema = z
@@ -3816,12 +3820,13 @@ const OpeningExplorerLichessGameSchema = z
     id: z.string(),
     winner: z.xor([GameColorSchema, z.null().nullable()]),
     speed: SpeedSchema.exactOptional(),
+    mode: z.enum(['rated', 'casual']),
     white: OpeningExplorerGamePlayerSchema,
     black: OpeningExplorerGamePlayerSchema,
-    year: z.number(),
-    month: z.string().nullable(),
+    year: z.int(),
+    month: z.string(),
   })
-  .openapi({ required: ['id', 'winner', 'white', 'black', 'year', 'month'] })
+  .openapi({ required: ['id', 'winner', 'mode', 'white', 'black', 'year', 'month'] })
   .openapi('OpeningExplorerLichessGame')
 
 const OpeningExplorerLichessSchema = z
@@ -3852,23 +3857,22 @@ const OpeningExplorerLichessSchema = z
         .openapi({ required: ['uci'] })
         .and(OpeningExplorerLichessGameSchema),
     ),
-    recentGames: z
-      .array(
-        z
-          .object({ uci: z.string() })
-          .openapi({ required: ['uci'] })
-          .and(OpeningExplorerLichessGameSchema),
-      )
-      .exactOptional(),
+    recentGames: z.array(
+      z
+        .object({ uci: z.string() })
+        .openapi({ required: ['uci'] })
+        .and(OpeningExplorerLichessGameSchema),
+    ),
     history: z
       .array(
         z
           .object({ month: z.string(), white: z.int(), draws: z.int(), black: z.int() })
           .openapi({ required: ['month', 'white', 'draws', 'black'] }),
       )
-      .exactOptional(),
+      .exactOptional()
+      .openapi({ description: 'Only with `history=true`' }),
   })
-  .openapi({ required: ['opening', 'white', 'draws', 'black', 'moves', 'topGames'] })
+  .openapi({ required: ['opening', 'white', 'draws', 'black', 'moves', 'topGames', 'recentGames'] })
   .openapi('OpeningExplorerLichess')
 
 const OpeningExplorerPlayerGameSchema = z
@@ -5479,6 +5483,8 @@ const PuzzlesGetNewPuzzleJsonExample = {
         'deflection',
         'veryLong',
       ],
+      fen: 'r1bqr1k1/pp3ppp/2p2n2/3p2B1/8/2P1P3/PP1N1PPb/1BRQ1RK1 w - - 0 1',
+      lastMove: 'e5h2',
       initialPly: 74,
     },
   },
@@ -6372,7 +6378,7 @@ const AccountGetMyEmailAddressJsonExample = { value: { email: 'bobby@localhost' 
 const AccountGetMyPreferencesJsonExample = {
   value: {
     prefs: {
-      bgImg: 'https://lichess1.org/assets/lifat/background/gallery/bg27.webp',
+      bgImg: 'https://lichess.org/assets/lifat/background/gallery/bg27.webp',
       is3d: false,
       theme: 'brown',
       pieceSet: 'cburnett',
@@ -15493,7 +15499,7 @@ const BroadcastsGetBroadcastRoundWithCustomScoringJsonExample = {
       tier: 5,
       dates: [1748271600000, 1749229200000],
       image:
-        'https://image.lichess1.org/display?fmt=webp&h=400&op=thumbnail&path=relay:PcsMbQ9J:QeUfDaHh.webp&w=800&sig=4d7317641091543a721d77baafff804fb15bf107',
+        'https://image.lichess.org/display?fmt=webp&h=400&op=thumbnail&path=relay:PcsMbQ9J:QeUfDaHh.webp&w=800&sig=4d7317641091543a721d77baafff804fb15bf107',
       description:
         '**Points**\r\n\r\n- Win in the classical game: 3 points\r\n- Loss in the classical game: 0 points\r\n- Draw in the classical game & win Armageddon: 1½ points\r\n- Draw in the classical game & loss Armageddon: 1 point\r\n\r\n\r\n**Armageddon**\r\n\r\n- Time control: White has 10 minutes, Black has 7 minutes\r\n- Colors: The player with white will continue with white in Armageddon',
     },
@@ -15528,46 +15534,46 @@ const BroadcastsGetBroadcastRoundWithCustomScoringJsonExample = {
     photos: {
       '1503014': {
         small:
-          'https://image.lichess1.org/display?fmt=webp&h=100&op=thumbnail&path=v6JPXmWyYhTI.webp&w=100&sig=78e9187109f632629c22b5e5b6997976e06a1cf9',
+          'https://image.lichess.org/display?fmt=webp&h=100&op=thumbnail&path=v6JPXmWyYhTI.webp&w=100&sig=78e9187109f632629c22b5e5b6997976e06a1cf9',
         medium:
-          'https://image.lichess1.org/display?fmt=webp&h=500&op=thumbnail&path=v6JPXmWyYhTI.webp&w=500&sig=4b2b5199cfc1d9ff87810d7c10af8a74fe85256e',
+          'https://image.lichess.org/display?fmt=webp&h=500&op=thumbnail&path=v6JPXmWyYhTI.webp&w=500&sig=4b2b5199cfc1d9ff87810d7c10af8a74fe85256e',
         credit: 'Brigham Aldrich',
       },
       '2016192': {
         small:
-          'https://image.lichess1.org/display?fmt=webp&h=100&op=thumbnail&path=DKk7D4U9ivZb.webp&w=100&sig=44d30eb428b70d1058ceec0333fa227c1da60581',
+          'https://image.lichess.org/display?fmt=webp&h=100&op=thumbnail&path=DKk7D4U9ivZb.webp&w=100&sig=44d30eb428b70d1058ceec0333fa227c1da60581',
         medium:
-          'https://image.lichess1.org/display?fmt=webp&h=500&op=thumbnail&path=DKk7D4U9ivZb.webp&w=500&sig=5e2c2edb1347cfa053951ea481886c21e0c4f676',
+          'https://image.lichess.org/display?fmt=webp&h=500&op=thumbnail&path=DKk7D4U9ivZb.webp&w=500&sig=5e2c2edb1347cfa053951ea481886c21e0c4f676',
         credit:
           'Andreas Kontokanis, CC BY-SA 2.0 <https://creativecommons.org/licenses/by-sa/2.0>, via Wikimedia Commons',
       },
       '2020009': {
         small:
-          'https://image.lichess1.org/display?fmt=webp&h=100&op=thumbnail&path=Hif5ohoGiHPZ.webp&w=100&sig=13ea5db011e7e45a97ec1a4164a355ef6b1db8f9',
+          'https://image.lichess.org/display?fmt=webp&h=100&op=thumbnail&path=Hif5ohoGiHPZ.webp&w=100&sig=13ea5db011e7e45a97ec1a4164a355ef6b1db8f9',
         medium:
-          'https://image.lichess1.org/display?fmt=webp&h=500&op=thumbnail&path=Hif5ohoGiHPZ.webp&w=500&sig=fa71f0594833a61290626f11ab67459349a29f3c',
+          'https://image.lichess.org/display?fmt=webp&h=500&op=thumbnail&path=Hif5ohoGiHPZ.webp&w=500&sig=fa71f0594833a61290626f11ab67459349a29f3c',
         credit: 'Brigham Aldrich',
       },
       '8603405': {
         small:
-          'https://image.lichess1.org/display?fmt=webp&h=100&op=thumbnail&path=rDGOWW82iYK9.webp&w=100&sig=7c8ece3893b331835185347a890831ee07a1489e',
+          'https://image.lichess.org/display?fmt=webp&h=100&op=thumbnail&path=rDGOWW82iYK9.webp&w=100&sig=7c8ece3893b331835185347a890831ee07a1489e',
         medium:
-          'https://image.lichess1.org/display?fmt=webp&h=500&op=thumbnail&path=rDGOWW82iYK9.webp&w=500&sig=dbae7080a8bd3ce8b153a2c7a24429f107dabf1c',
+          'https://image.lichess.org/display?fmt=webp&h=500&op=thumbnail&path=rDGOWW82iYK9.webp&w=500&sig=dbae7080a8bd3ce8b153a2c7a24429f107dabf1c',
         credit:
           'Frans Peeters, CC BY-SA 2.0 <https://creativecommons.org/licenses/by-sa/2.0>, via Wikimedia Commons',
       },
       '35009192': {
         small:
-          'https://image.lichess1.org/display?fmt=webp&h=100&op=thumbnail&path=ZtNkAl1_0MHT.webp&w=100&sig=8a2122f91eab6c3f0528bce8ea5854fd561bbcde',
+          'https://image.lichess.org/display?fmt=webp&h=100&op=thumbnail&path=ZtNkAl1_0MHT.webp&w=100&sig=8a2122f91eab6c3f0528bce8ea5854fd561bbcde',
         medium:
-          'https://image.lichess1.org/display?fmt=webp&h=500&op=thumbnail&path=ZtNkAl1_0MHT.webp&w=500&sig=f2faf575e19147ee8b1d2b573f1fd2e18fab88e7',
+          'https://image.lichess.org/display?fmt=webp&h=500&op=thumbnail&path=ZtNkAl1_0MHT.webp&w=500&sig=f2faf575e19147ee8b1d2b573f1fd2e18fab88e7',
         credit: 'Brigham Aldrich',
       },
       '46616543': {
         small:
-          'https://image.lichess1.org/display?fmt=webp&h=100&op=thumbnail&path=BMgtsjYW0uMf.webp&w=100&sig=6a2bc6e5d516008d09ed443d9deefa6e476a92eb',
+          'https://image.lichess.org/display?fmt=webp&h=100&op=thumbnail&path=BMgtsjYW0uMf.webp&w=100&sig=6a2bc6e5d516008d09ed443d9deefa6e476a92eb',
         medium:
-          'https://image.lichess1.org/display?fmt=webp&h=500&op=thumbnail&path=BMgtsjYW0uMf.webp&w=500&sig=8551ae3db03884f408ba4c4067ffb74dc9825dcd',
+          'https://image.lichess.org/display?fmt=webp&h=500&op=thumbnail&path=BMgtsjYW0uMf.webp&w=500&sig=8551ae3db03884f408ba4c4067ffb74dc9825dcd',
         credit: 'Dominik Töpfer',
       },
     },
@@ -15716,9 +15722,9 @@ const FideGetFidePlayerJsonExample = {
     gender: 'M',
     photo: {
       small:
-        'https://image.lichess1.org/display?fmt=webp&h=100&op=thumbnail&path=ZtNkAl1_0MHT.webp&w=100&sig=8a2122f91eab6c3f0528bce8ea5854fd561bbcde',
+        'https://image.lichess.org/display?fmt=webp&h=100&op=thumbnail&path=ZtNkAl1_0MHT.webp&w=100&sig=8a2122f91eab6c3f0528bce8ea5854fd561bbcde',
       medium:
-        'https://image.lichess1.org/display?fmt=webp&h=500&op=thumbnail&path=ZtNkAl1_0MHT.webp&w=500&sig=f2faf575e19147ee8b1d2b573f1fd2e18fab88e7',
+        'https://image.lichess.org/display?fmt=webp&h=500&op=thumbnail&path=ZtNkAl1_0MHT.webp&w=500&sig=f2faf575e19147ee8b1d2b573f1fd2e18fab88e7',
       credit: 'Brigham Aldrich',
     },
   },
@@ -15750,9 +15756,9 @@ const FideSearchFidePlayersJsonExample = {
       gender: 'M',
       photo: {
         small:
-          'https://image.lichess1.org/display?fmt=webp&h=100&op=thumbnail&path=ZtNkAl1_0MHT.webp&w=100&sig=8a2122f91eab6c3f0528bce8ea5854fd561bbcde',
+          'https://image.lichess.org/display?fmt=webp&h=100&op=thumbnail&path=ZtNkAl1_0MHT.webp&w=100&sig=8a2122f91eab6c3f0528bce8ea5854fd561bbcde',
         medium:
-          'https://image.lichess1.org/display?fmt=webp&h=500&op=thumbnail&path=ZtNkAl1_0MHT.webp&w=500&sig=f2faf575e19147ee8b1d2b573f1fd2e18fab88e7',
+          'https://image.lichess.org/display?fmt=webp&h=500&op=thumbnail&path=ZtNkAl1_0MHT.webp&w=500&sig=f2faf575e19147ee8b1d2b573f1fd2e18fab88e7',
         credit: 'Brigham Aldrich',
       },
     },
@@ -16504,7 +16510,7 @@ const TeamsGetPopularTeamsJsonExample = {
         id: 'satranc-dunyam-youtube',
         name: 'Satranç Dünyam Youtube',
         description:
-          "![white_logo_color_background.jpg](https://image.lichess1.org/display?fmt=webp&h=0&op=resize&path=POtYP_HEYG5a.jpg&w=768&sig=5464e11dcabb5bfae558a535dbba798c7dd89f05)\r\n## **Türkiye'nin En Büyük Satranç Ailesine Hoş Geldiniz!**\r\n\r\n## **[Satranç Dünyam Youtube](https://www.youtube.com/c/satrancdunyam?sub_confirmation=1)**\r\n\r\n## **[satrancdunyam.com](https://satrancdunyam.com/)**",
+          "![white_logo_color_background.jpg](https://image.lichess.org/display?fmt=webp&h=0&op=resize&path=POtYP_HEYG5a.jpg&w=768&sig=5464e11dcabb5bfae558a535dbba798c7dd89f05)\r\n## **Türkiye'nin En Büyük Satranç Ailesine Hoş Geldiniz!**\r\n\r\n## **[Satranç Dünyam Youtube](https://www.youtube.com/c/satrancdunyam?sub_confirmation=1)**\r\n\r\n## **[satrancdunyam.com](https://satrancdunyam.com/)**",
         open: false,
         leader: {
           name: 'YasinEmrah',
@@ -17645,7 +17651,7 @@ const UsersGetLiveStreamersJsonExample = {
         headline: 'FM Lefong Hua. Professional chess coach from Montreal, Canada.',
         twitch: 'https://www.twitch.tv/lefonghua',
         image:
-          'https://image.lichess1.org/display?fmt=webp&h=350&op=thumbnail&path=lefonghua:streamer:lefonghua:Vr5ViPnv.jpg&w=350&sig=4dec7bb87631c83eb93b427fc24e4726582e6af0',
+          'https://image.lichess.org/display?fmt=webp&h=350&op=thumbnail&path=lefonghua:streamer:lefonghua:Vr5ViPnv.jpg&w=350&sig=4dec7bb87631c83eb93b427fc24e4726582e6af0',
       },
     },
     {
@@ -17661,7 +17667,7 @@ const UsersGetLiveStreamersJsonExample = {
         twitch: 'https://www.twitch.tv/stellarchess',
         youtube: 'https://www.youtube.com/channel/UChz11iN941Msw-txhbK28cQ/live',
         image:
-          'https://image.lichess1.org/display?fmt=webp&h=350&op=thumbnail&path=streamer:stellarchesss:S2yg03mE.webp&w=350&sig=a4f2b5b43151627f1d4b51d6fee34f96e7872716',
+          'https://image.lichess.org/display?fmt=webp&h=350&op=thumbnail&path=streamer:stellarchesss:S2yg03mE.webp&w=350&sig=a4f2b5b43151627f1d4b51d6fee34f96e7872716',
       },
     },
     {
@@ -17675,7 +17681,7 @@ const UsersGetLiveStreamersJsonExample = {
         twitch: 'https://www.twitch.tv/tkbtsxu',
         youtube: 'https://www.youtube.com/channel/UCE7Epvr89s6NU17U9OeuVPA/live',
         image:
-          'https://image.lichess1.org/display?fmt=webp&h=350&op=thumbnail&path=tkbtsxu:streamer:tkbtsxu:BGFreAgy.jpg&w=350&sig=8ec1b36898ce3ee0c978b3a74d6e4dd36268feb1',
+          'https://image.lichess.org/display?fmt=webp&h=350&op=thumbnail&path=tkbtsxu:streamer:tkbtsxu:BGFreAgy.jpg&w=350&sig=8ec1b36898ce3ee0c978b3a74d6e4dd36268feb1',
       },
     },
     {
@@ -17687,7 +17693,7 @@ const UsersGetLiveStreamersJsonExample = {
         headline: 'watch me ragebait you',
         twitch: 'https://www.twitch.tv/avocado_violet',
         image:
-          'https://image.lichess1.org/display?fmt=webp&h=350&op=thumbnail&path=fLtwU4bs-_cV.webp&w=350&sig=bf98fdf0cacd0fc5da93e05c253e6224210a2018',
+          'https://image.lichess.org/display?fmt=webp&h=350&op=thumbnail&path=fLtwU4bs-_cV.webp&w=350&sig=bf98fdf0cacd0fc5da93e05c253e6224210a2018',
       },
     },
   ],
@@ -20189,13 +20195,11 @@ export const getApiUsersStatusRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -20220,13 +20224,11 @@ export const getApiPlayerRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -20319,13 +20321,11 @@ export const getApiPlayerTopNbPerfTypeRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -20412,13 +20412,11 @@ export const getApiUserUsernameRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -20452,13 +20450,11 @@ export const getApiUserUsernameRatingHistoryRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -20500,13 +20496,11 @@ export const getApiUserUsernamePerfPerfRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -20539,13 +20533,11 @@ export const getApiUserUsernameActivityRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -20569,13 +20561,11 @@ export const getApiPuzzleDailyRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -20614,13 +20604,11 @@ export const getApiPuzzleIdRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -20687,13 +20675,11 @@ export const getApiPuzzleNextRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -20786,13 +20772,11 @@ export const getApiPuzzleBatchAngleRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -20863,13 +20847,11 @@ export const postApiPuzzleBatchAngleRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -20960,13 +20942,11 @@ export const getApiPuzzleActivityRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -21025,13 +21005,11 @@ export const getApiPuzzleReplayDaysThemeRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: {
@@ -21088,13 +21066,11 @@ export const getApiPuzzleDashboardDaysRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -21157,13 +21133,11 @@ export const getApiStormDashboardUsernameRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -21188,13 +21162,11 @@ export const postApiRacerRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -21234,13 +21206,11 @@ export const getApiRacerIdRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: {
@@ -21257,7 +21227,7 @@ export const postApiUsersRoute = createRoute({
   tags: ['Users'],
   summary: 'Get users by ID',
   description:
-    'Get up to 300 users by their IDs. Users are returned in the same order as the IDs.\nThe method is `POST` to allow a longer list of IDs to be sent in the request body.\nPlease do not try to download all the Lichess users with this endpoint, or any other endpoint.\nAn API is not a way to fully export a website. We do not provide a full download of the Lichess users.\nThis endpoint is limited to 8,000 users every 10 minutes, and 120,000 every day.\n',
+    'Get up to 300 users by their IDs. Users are returned in the same order as the IDs.\nThe method is `POST` to allow a longer list of IDs to be sent in the request body.\nPlease do not try to download all the Lichess users with this endpoint, or any other endpoint.\nAn API is not a way to fully export a website. We do not provide a full download of the Lichess users.\nThis endpoint is limited to 10,000 users every 10 minutes, and 150,000 every day, when the request is authenticated.\nFewer when the request is anonymous.\n',
   operationId: 'apiUsers',
   request: {
     query: z.object({
@@ -21304,17 +21274,15 @@ export const postApiUsersRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
-  security: [],
+  security: [{ OAuth2: [] }],
 })
 
 export const getApiAccountRoute = createRoute({
@@ -21334,13 +21302,11 @@ export const getApiAccountRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -21364,13 +21330,11 @@ export const getApiAccountEmailRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -21400,13 +21364,11 @@ export const getApiAccountPreferencesRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -21431,13 +21393,11 @@ export const getApiAccountKidRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -21478,13 +21438,11 @@ export const postApiAccountKidRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -21668,13 +21626,11 @@ export const getGameExportGameIdRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -21714,13 +21670,11 @@ export const getApiGameGameIdChatRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -21884,13 +21838,11 @@ export const getApiUserUsernameCurrentGameRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -22247,13 +22199,11 @@ export const getApiGamesUserUsernameRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -22414,13 +22364,11 @@ export const postApiGamesExportIdsRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -22467,13 +22415,11 @@ export const postApiStreamGamesByUsersRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -22525,13 +22471,11 @@ export const postApiStreamGamesStreamIdRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -22584,13 +22528,11 @@ export const postApiStreamGamesStreamIdAddRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -22715,13 +22657,11 @@ export const getApiAccountPlayingRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -22817,13 +22757,11 @@ export const postApiImportRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -22847,13 +22785,11 @@ export const getApiGamesExportImportsRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -23099,13 +23035,11 @@ export const getApiGamesExportBookmarksRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -23155,13 +23089,11 @@ export const postBookmarkGameIdRoute = createRoute({
     204: {
       description: 'The bookmark was successfully added or removed.',
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -23199,13 +23131,11 @@ export const getApiVersionRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -23268,13 +23198,11 @@ export const getApiTvChannelsRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -23496,13 +23424,11 @@ export const getApiTournamentRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -23902,13 +23828,11 @@ export const postApiTournamentRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
@@ -23976,13 +23900,11 @@ export const getApiTournamentIdRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -24380,13 +24302,11 @@ export const postApiTournamentIdRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
@@ -24466,13 +24386,11 @@ export const postApiTournamentIdJoinRoute = createRoute({
         'application/json': { schema: OkSchema, examples: { default: ArenasJoinArenaJsonExample } },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
@@ -24517,13 +24435,11 @@ export const postApiTournamentIdWithdrawRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
@@ -24567,13 +24483,11 @@ export const postApiTournamentIdTerminateRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
@@ -24641,13 +24555,11 @@ export const postApiTournamentTeamBattleIdRoute = createRoute({
       description: 'The team battle tournament was successfully updated.',
       content: { 'application/json': { schema: ArenaTournamentFullSchema } },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
@@ -24820,13 +24732,11 @@ export const getApiTournamentIdGamesRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -24915,13 +24825,11 @@ export const getApiTournamentIdResultsRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -24980,13 +24888,11 @@ export const getApiTournamentIdTeamsRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -25069,13 +24975,11 @@ export const getApiUserUsernameTournamentCreatedRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -25150,13 +25054,11 @@ export const getApiUserUsernameTournamentPlayedRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -25487,13 +25389,11 @@ export const postApiSwissNewTeamIdRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
@@ -25536,13 +25436,11 @@ export const getApiSwissIdRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -25874,13 +25772,11 @@ export const postApiSwissIdEditRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
@@ -25953,13 +25849,11 @@ export const postApiSwissIdScheduleNextRoundRoute = createRoute({
     204: {
       description: 'The Swiss tournament was successfully updated.',
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
@@ -26019,13 +25913,11 @@ export const postApiSwissIdJoinRoute = createRoute({
         'application/json': { schema: OkSchema, examples: { default: SwissJoinSwissJsonExample } },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
@@ -26070,13 +25962,11 @@ export const postApiSwissIdWithdrawRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -26116,13 +26006,11 @@ export const postApiSwissIdTerminateRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
@@ -26166,13 +26054,11 @@ export const getSwissIdTrfRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -26340,13 +26226,11 @@ export const getApiSwissIdGamesRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -26421,13 +26305,11 @@ export const getApiSwissIdResultsRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -26523,13 +26405,11 @@ export const getApiTeamTeamIdSwissRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -26736,19 +26616,15 @@ export const getApiStudyStudyIdPgnRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Last-Modified': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Last-Modified': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -26782,19 +26658,15 @@ export const headApiStudyStudyIdPgnRoute = createRoute({
     204: {
       description: 'The study headers.',
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Last-Modified': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Last-Modified': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -26879,13 +26751,11 @@ export const postApiStudyRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
@@ -26971,13 +26841,11 @@ export const postApiStudyStudyIdImportPgnRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
@@ -27046,13 +26914,11 @@ export const postApiStudyStudyIdChapterIdTagsRoute = createRoute({
       description:
         'Tags updated successfully, if the chapter exists and you are authorized the update the study.',
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
@@ -27119,13 +26985,11 @@ export const postApiStudyStudyIdChapterIdMovesRoute = createRoute({
     204: {
       description: 'Moves updated, as the chapter exists and you are allowed to edit it.',
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
@@ -27265,13 +27129,11 @@ export const getApiStudyByUsernameRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -27318,13 +27180,11 @@ export const deleteApiStudyStudyIdChapterIdRoute = createRoute({
     204: {
       description: 'Chapter successfully deleted',
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -27401,13 +27261,11 @@ export const getApiBroadcastRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -27470,13 +27328,11 @@ export const getApiBroadcastTopRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -27566,13 +27422,11 @@ export const getApiBroadcastByUsernameRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -27649,13 +27503,11 @@ export const getApiBroadcastSearchRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -27833,13 +27685,11 @@ export const postBroadcastNewRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
@@ -28201,13 +28051,11 @@ export const postBroadcastBroadcastTournamentIdEditRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
@@ -28527,13 +28375,11 @@ export const postBroadcastBroadcastTournamentIdNewRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
@@ -28919,13 +28765,11 @@ export const postBroadcastRoundBroadcastRoundIdEditRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
@@ -28969,13 +28813,11 @@ export const postApiBroadcastRoundBroadcastRoundIdResetRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -29020,13 +28862,11 @@ export const postApiBroadcastRoundBroadcastRoundIdPushRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
@@ -29037,13 +28877,11 @@ export const postApiBroadcastRoundBroadcastRoundIdPushRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -29115,13 +28953,11 @@ export const getApiStreamBroadcastRoundBroadcastRoundIdPgnRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -29194,13 +29030,11 @@ export const getApiStreamBroadcastTourBroadcastTourIdPgnRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -29273,13 +29107,11 @@ export const getApiStreamBroadcastGroupBroadcastGroupIdPgnRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -29350,13 +29182,11 @@ export const getApiBroadcastRoundBroadcastRoundIdPgnRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -29427,13 +29257,11 @@ export const getApiBroadcastBroadcastTournamentIdPgnRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -29611,13 +29439,11 @@ export const getApiFidePlayerRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -29649,13 +29475,11 @@ export const getApiSimulRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -29688,13 +29512,11 @@ export const getApiTeamTeamIdRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -29743,13 +29565,11 @@ export const getApiTeamAllRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -29789,13 +29609,11 @@ export const getApiTeamOfUsernameRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -29856,13 +29674,11 @@ export const getApiTeamSearchRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -29940,13 +29756,11 @@ export const getApiTeamTeamIdUsersRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -30042,13 +29856,11 @@ export const getApiTeamTeamIdArenaRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -30371,13 +30183,11 @@ export const getTeamUpdatesRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -30440,13 +30250,11 @@ export const getTeamUpdatesTeamIdRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -30501,13 +30309,11 @@ export const postTeamTeamIdPmAllRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
@@ -30565,13 +30371,11 @@ export const getApiStreamerLiveRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -30624,13 +30428,11 @@ export const getApiCrosstableUser1User2Route = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -30648,13 +30450,13 @@ export const getApiPlayerAutocompleteRoute = createRoute({
     query: z.object({
       term: z
         .string()
-        .min(3)
+        .min(4)
         .openapi({
           param: {
             in: 'query',
             name: 'term',
             description: 'The beginning of a username',
-            schema: { type: 'string', minLength: 3 },
+            schema: { type: 'string', minLength: 4 },
             required: true,
           },
         }),
@@ -30781,13 +30583,11 @@ export const getApiPlayerAutocompleteRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -30826,13 +30626,11 @@ export const getApiUserUsernameNoteRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -30902,13 +30700,11 @@ export const getApiRelFollowingRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -31091,13 +30887,11 @@ export const getApiStreamEventRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -31236,13 +31030,11 @@ export const postApiBoardSeekRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
@@ -31296,13 +31088,11 @@ export const getApiBoardGameStreamGameIdRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: {
@@ -31372,13 +31162,11 @@ export const postApiBoardGameGameIdMoveMoveRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
@@ -31422,13 +31210,11 @@ export const getApiBoardGameGameIdChatRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -31481,13 +31267,11 @@ export const postApiBoardGameGameIdChatRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
@@ -31527,13 +31311,11 @@ export const postApiBoardGameGameIdAbortRoute = createRoute({
         'application/json': { schema: OkSchema, examples: { default: BoardAbortGameJsonExample } },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
@@ -31573,13 +31355,11 @@ export const postApiBoardGameGameIdResignRoute = createRoute({
         'application/json': { schema: OkSchema, examples: { default: BoardResignGameJsonExample } },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
@@ -31645,13 +31425,11 @@ export const postApiBoardGameGameIdDrawAcceptRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
@@ -31717,13 +31495,11 @@ export const postApiBoardGameGameIdTakebackAcceptRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
@@ -31766,13 +31542,11 @@ export const postApiBoardGameGameIdClaimVictoryRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
@@ -31812,13 +31586,11 @@ export const postApiBoardGameGameIdClaimDrawRoute = createRoute({
         'application/json': { schema: OkSchema, examples: { default: BoardClaimDrawJsonExample } },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
@@ -31857,13 +31629,11 @@ export const postApiBoardGameGameIdBerserkRoute = createRoute({
       description: 'The player successfully went berserk.',
       content: { 'application/json': { schema: OkSchema } },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
@@ -31918,13 +31688,11 @@ export const getApiBotOnlineRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -31944,13 +31712,11 @@ export const postApiBotAccountUpgradeRoute = createRoute({
       description: 'The bot account was successfully upgraded.',
       content: { 'application/json': { schema: OkSchema } },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
@@ -32004,13 +31770,11 @@ export const getApiBotGameStreamGameIdRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: {
@@ -32077,13 +31841,11 @@ export const postApiBotGameGameIdMoveMoveRoute = createRoute({
         'application/json': { schema: OkSchema, examples: { default: BotMakeMoveJsonExample } },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
@@ -32126,13 +31888,11 @@ export const getApiBotGameGameIdChatRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -32182,13 +31942,11 @@ export const postApiBotGameGameIdChatRoute = createRoute({
         'application/json': { schema: OkSchema, examples: { default: BotWriteInChatJsonExample } },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
@@ -32228,13 +31986,11 @@ export const postApiBotGameGameIdAbortRoute = createRoute({
         'application/json': { schema: OkSchema, examples: { default: BotAbortGameJsonExample } },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
@@ -32274,13 +32030,11 @@ export const postApiBotGameGameIdResignRoute = createRoute({
         'application/json': { schema: OkSchema, examples: { default: BotResignGameJsonExample } },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
@@ -32346,13 +32100,11 @@ export const postApiBotGameGameIdDrawAcceptRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
@@ -32418,13 +32170,11 @@ export const postApiBotGameGameIdTakebackAcceptRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
@@ -32464,13 +32214,11 @@ export const postApiBotGameGameIdClaimVictoryRoute = createRoute({
         'application/json': { schema: OkSchema, examples: { default: BotClaimVictoryJsonExample } },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
@@ -32510,13 +32258,11 @@ export const postApiBotGameGameIdClaimDrawRoute = createRoute({
         'application/json': { schema: OkSchema, examples: { default: BotClaimDrawJsonExample } },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
@@ -32555,13 +32301,11 @@ export const getApiChallengeRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -32656,7 +32400,7 @@ export const postApiChallengeUsernameRoute = createRoute({
                     }),
                 })
                 .openapi({ title: 'correspondence', required: ['days'] }),
-              z.object({}).openapi({ title: 'unlimited' }),
+              z.looseObject({}).openapi({ title: 'unlimited' }),
             ])
             .and(
               z
@@ -32714,13 +32458,11 @@ export const postApiChallengeUsernameRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
@@ -32764,13 +32506,11 @@ export const getApiChallengeChallengeIdShowRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -32825,13 +32565,11 @@ export const postApiChallengeChallengeIdAcceptRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: {
@@ -32904,13 +32642,11 @@ export const postApiChallengeChallengeIdDeclineRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: {
@@ -32969,13 +32705,11 @@ export const postApiChallengeChallengeIdCancelRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: {
@@ -33115,13 +32849,11 @@ export const postApiChallengeAiRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
@@ -33267,13 +32999,11 @@ export const postApiChallengeOpenRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
@@ -33343,13 +33073,11 @@ export const postApiChallengeGameIdStartClocksRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -33373,13 +33101,11 @@ export const getApiBulkPairingRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -33533,13 +33259,11 @@ export const postApiBulkPairingRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
@@ -33588,13 +33312,11 @@ export const postApiBulkPairingIdStartClocksRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: {
@@ -33642,13 +33364,11 @@ export const getApiBulkPairingIdRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: {
@@ -33697,13 +33417,11 @@ export const deleteApiBulkPairingIdRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: {
@@ -33882,13 +33600,11 @@ export const getApiBulkPairingIdGamesRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -33946,13 +33662,11 @@ export const postApiRoundGameIdAddTimeSecondsRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -34002,13 +33716,11 @@ export const postApiTokenAdminChallengeRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
@@ -34133,13 +33845,11 @@ export const getApiCloudEvalRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: {
@@ -34172,13 +33882,11 @@ export const getApiExternalEngineRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -34210,13 +33918,11 @@ export const postApiExternalEngineRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -34256,13 +33962,11 @@ export const getApiExternalEngineIdRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -34307,13 +34011,11 @@ export const putApiExternalEngineIdRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -34444,13 +34146,11 @@ export const postApiExternalEngineIdAnalyseRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -34500,25 +34200,21 @@ export const postApiExternalEngineWorkRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     204: {
       description: 'No pending analysis',
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -34567,13 +34263,11 @@ export const postApiExternalEngineWorkIdRoute = createRoute({
     200: {
       description: 'Thanks',
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -34761,26 +34455,22 @@ export const postApiTokenRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
       description: 'Failed to obtain access token.',
       content: { 'application/json': { schema: OAuthErrorSchema } },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -34798,13 +34488,11 @@ export const deleteApiTokenRoute = createRoute({
     204: {
       description: 'Access token revoked.',
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -34911,43 +34599,30 @@ export const getMastersRoute = createRoute({
           },
         }),
       since: z
-        .preprocess(
-          (val) =>
-            typeof val === 'string' &&
-            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
-            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
-              ? Number(val)
-              : val,
-          z.int(),
-        )
-        .default(1952)
+        .string()
+        .default('1952-01')
         .exactOptional()
         .openapi({
           param: {
             in: 'query',
             name: 'since',
-            description: 'Include only games from this year or later',
-            schema: { type: 'integer', default: 1952 },
+            description:
+              'Include only games from this month or later: `YYYY-MM`, or `YYYY`\nfor January of that year\n',
+            schema: { type: 'string', default: '1952-01' },
             required: false,
           },
         }),
       until: z
-        .preprocess(
-          (val) =>
-            typeof val === 'string' &&
-            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
-            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
-              ? Number(val)
-              : val,
-          z.int(),
-        )
+        .string()
+        .default('3000-12')
         .exactOptional()
         .openapi({
           param: {
             in: 'query',
             name: 'until',
-            description: 'Include only games from this year or earlier',
-            schema: { type: 'integer' },
+            description:
+              'Include only games from this month or earlier: `YYYY-MM`, or `YYYY`\nfor December of that year\n',
+            schema: { type: 'string', default: '3000-12' },
             required: false,
           },
         }),
@@ -35005,14 +34680,21 @@ export const getMastersRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
+    },
+    400: {
+      description: 'Invalid parameters, position or moves.',
+      content: {
+        'text/plain': {
+          schema: z.string(),
+          example: 'bad request: illegal move e2e5: illegal uci move',
+        },
+      },
     },
   },
   security: [{ OAuth2: [] }],
@@ -35161,7 +34843,8 @@ export const getLichessRoute = createRoute({
           param: {
             in: 'query',
             name: 'since',
-            description: 'Include only games from this month or later',
+            description:
+              'Include only games from this month or later: `YYYY-MM`, or `YYYY`\nfor January of that year\n',
             schema: { type: 'string', default: '1952-01' },
             required: false,
           },
@@ -35174,7 +34857,8 @@ export const getLichessRoute = createRoute({
           param: {
             in: 'query',
             name: 'until',
-            description: 'Include only games from this month or earlier',
+            description:
+              'Include only games from this month or earlier: `YYYY-MM`, or `YYYY`\nfor December of that year\n',
             schema: { type: 'string', default: '3000-12' },
             required: false,
           },
@@ -35269,14 +34953,21 @@ export const getLichessRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
+    },
+    400: {
+      description: 'Invalid parameters, position or moves.',
+      content: {
+        'text/plain': {
+          schema: z.string(),
+          example: 'bad request: illegal move e2e5: illegal uci move',
+        },
+      },
     },
   },
   security: [{ OAuth2: [] }],
@@ -35425,7 +35116,8 @@ export const getPlayerRoute = createRoute({
           param: {
             in: 'query',
             name: 'since',
-            description: 'Include only games from this month or later',
+            description:
+              'Include only games from this month or later: `YYYY-MM`, or `YYYY`\nfor January of that year\n',
             schema: { type: 'string', default: '1952-01' },
             required: false,
           },
@@ -35438,7 +35130,8 @@ export const getPlayerRoute = createRoute({
           param: {
             in: 'query',
             name: 'until',
-            description: 'Include only games from this month or earlier',
+            description:
+              'Include only games from this month or earlier: `YYYY-MM`, or `YYYY`\nfor December of that year\n',
             schema: { type: 'string', default: '3000-12' },
             required: false,
           },
@@ -35496,14 +35189,25 @@ export const getPlayerRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
+    },
+    400: {
+      description: 'Invalid parameters, position or moves.',
+      content: {
+        'text/plain': {
+          schema: z.string(),
+          example: 'bad request: illegal move e2e5: illegal uci move',
+        },
+      },
+    },
+    503: {
+      description: 'The indexing queue is full. Try again later.',
+      content: { 'text/plain': { schema: z.string() } },
     },
   },
   security: [{ OAuth2: [] }],
@@ -35540,14 +35244,16 @@ export const getMastersPgnGameIdRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
+    },
+    404: {
+      description: 'There is no game with this id.',
+      content: { 'text/plain': { schema: z.string() } },
     },
   },
   security: [{ OAuth2: [] }],
@@ -35603,13 +35309,11 @@ export const getStandardRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -35652,13 +35356,11 @@ export const getAtomicRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -35701,13 +35403,11 @@ export const getAntichessRoute = createRoute({
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .default("'*'")
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .default("'*'")
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },

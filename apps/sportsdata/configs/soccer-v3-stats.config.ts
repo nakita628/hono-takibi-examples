@@ -3,6 +3,17 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/sportsdata.io/soccer-v3-stats/1.0/openapi.yaml',
   output: './src/soccer-v3-stats/routes.ts',
+  template: {},
+  type: { output: './src/soccer-v3-stats/types.ts' },
+  client: { output: './src/soccer-v3-stats/client.ts', baseUrl: '/' },
+  rpc: { output: './src/soccer-v3-stats/rpc.ts', parseResponse: true },
+  swr: { output: './src/soccer-v3-stats/hooks/swr.ts' },
+  'tanstack-query': { output: './src/soccer-v3-stats/hooks/tanstack-query.ts' },
+  'preact-query': { output: './src/soccer-v3-stats/hooks/preact-query.ts' },
+  'solid-query': { output: './src/soccer-v3-stats/hooks/solid-query.ts' },
+  'vue-query': { output: './src/soccer-v3-stats/hooks/vue-query.ts' },
+  'svelte-query': { output: './src/soccer-v3-stats/hooks/svelte-query.ts' },
+  'angular-query': { output: './src/soccer-v3-stats/hooks/angular-query.ts' },
   docs: {
     output: './src/soccer-v3-stats/api.md',
     curl: true,

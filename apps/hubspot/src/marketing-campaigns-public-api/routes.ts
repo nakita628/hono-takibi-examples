@@ -1,5 +1,303 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const NextPageSchema = z
+  .object({
+    after: z
+      .string()
+      .openapi({
+        description:
+          'A string token that serves as the paging cursor, indicating the position after the last successfully read resource.',
+        example: null,
+      }),
+    link: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'A string URL that provides a link to the next page of results.',
+        example: null,
+      }),
+  })
+  .openapi({
+    required: ['after'],
+    description:
+      'Specifies the paging information needed to retrieve the next set of results in a paginated API response',
+    example: null,
+  })
+  .openapi('NextPage')
+
+const PreviousPageSchema = z
+  .object({
+    before: z
+      .string()
+      .openapi({
+        description:
+          'A string token used to identify the position before the current page in the paginated results.',
+        example: null,
+      }),
+    link: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'A URL string that provides a link to the previous page of results.',
+        example: null,
+      }),
+  })
+  .openapi({
+    required: ['before'],
+    description:
+      'specifies the paging information needed to retrieve the previous set of results in a paginated API response',
+    example: null,
+  })
+  .openapi('PreviousPage')
+
+const PagingSchema = z
+  .object({ next: NextPageSchema.exactOptional(), prev: PreviousPageSchema.exactOptional() })
+  .openapi({
+    description:
+      'Represents the pagination information for navigating through a list of results in the API. It provides details on how to access the previous or next set of results.',
+    example: null,
+    required: [],
+  })
+  .openapi('Paging')
+
+const PublicCampaignAssetSchema = z
+  .object({
+    id: z
+      .string()
+      .openapi({
+        description: 'The unique identifier for the campaign asset, represented as a string.',
+        example: null,
+      }),
+    metrics: z
+      .record(z.string(), z.number().openapi({ example: null }))
+      .exactOptional()
+      .openapi({
+        description:
+          'A collection of performance metrics for the campaign asset, represented as a map where each key is a metric name and each value is a number.',
+        example: null,
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The name of the campaign asset, represented as a string.',
+        example: null,
+      }),
+  })
+  .openapi({ required: ['id'], example: null })
+  .openapi('PublicCampaignAsset')
+
+const CollectionResponsePublicCampaignAssetSchema = z
+  .object({
+    paging: PagingSchema.exactOptional(),
+    results: z
+      .array(PublicCampaignAssetSchema)
+      .openapi({
+        description:
+          'An array of PublicCampaignAsset objects, each representing an individual campaign asset.',
+        example: null,
+      }),
+  })
+  .openapi({ required: ['results'], example: null })
+  .openapi('CollectionResponsePublicCampaignAsset')
+
+const PublicBusinessUnitSchema = z
+  .object({
+    id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'The unique identifier for the business unit, represented as a 64-bit integer.',
+        example: null,
+      }),
+  })
+  .openapi({ required: ['id'], example: null })
+  .openapi('PublicBusinessUnit')
+
+const PublicCampaignWithAssetsSchema = z
+  .object({
+    assets: z
+      .record(z.string(), CollectionResponsePublicCampaignAssetSchema)
+      .openapi({
+        description:
+          'A map of asset types to their respective collections of campaign assets, represented by CollectionResponsePublicCampaignAsset objects.',
+        example: null,
+      }),
+    businessUnits: z
+      .array(PublicBusinessUnitSchema)
+      .openapi({
+        description:
+          'An array of business units associated with the campaign, each represented by a PublicBusinessUnit object.',
+        example: null,
+      }),
+    createdAt: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'The date and time when the campaign was created, in ISO 8601 format.',
+        example: null,
+      }),
+    id: z
+      .string()
+      .openapi({
+        description: 'The unique identifier for the campaign, represented as a string.',
+        example: null,
+      }),
+    properties: z
+      .record(z.string(), z.string().openapi({ example: null }))
+      .openapi({
+        description:
+          'A map of custom property names to their values, where each value is a string.',
+        example: null,
+      }),
+    updatedAt: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'The date and time when the campaign was last updated, in ISO 8601 format.',
+        example: null,
+      }),
+  })
+  .openapi({
+    required: ['assets', 'businessUnits', 'createdAt', 'id', 'properties', 'updatedAt'],
+    example: null,
+  })
+  .openapi('PublicCampaignWithAssets')
+
+type BatchResponsePublicCampaignWithAssetsType = {
+  completedAt: string
+  links?: { [key: string]: string }
+  requestedAt?: string
+  results: z.infer<typeof PublicCampaignWithAssetsSchema>[]
+  startedAt: string
+  status: 'CANCELED' | 'COMPLETE' | 'PENDING' | 'PROCESSING'
+}
+
+const ErrorDetailSchema = z
+  .object({
+    code: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The status code associated with the error detail. This is a string.',
+        example: null,
+      }),
+    context: z
+      .record(z.string(), z.array(z.string().openapi({ example: null })).openapi({ example: null }))
+      .exactOptional()
+      .openapi({
+        description:
+          'Context about the error condition, provided as an object where each key is a context name and the value is an array of strings providing additional information.',
+        example: '{missingScopes=[scope1, scope2]}',
+      }),
+    in: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The name of the field or parameter in which the error was found. This is a string.',
+        example: null,
+      }),
+    message: z
+      .string()
+      .openapi({
+        description:
+          'A human readable message describing the error along with remediation steps where appropriate. This is a string.',
+        example: null,
+      }),
+    subCategory: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A specific category that contains more specific detail about the error. This is a string.',
+        example: null,
+      }),
+  })
+  .openapi({
+    required: ['message'],
+    description:
+      'Represents detailed information about an error that occurred in the API. This component is used to provide additional context and specifics about errors, typically as part of an error response.',
+    example: null,
+  })
+  .openapi('ErrorDetail')
+
+const StandardErrorSchema = z
+  .object({
+    category: z
+      .string()
+      .openapi({ description: 'A string categorizing the type of error.', example: null }),
+    context: z
+      .record(z.string(), z.array(z.string().openapi({ example: null })).openapi({ example: null }))
+      .openapi({
+        description:
+          'An object containing additional context about the error, with keys as context names and values as arrays of strings.',
+        example: null,
+      }),
+    errors: z
+      .array(ErrorDetailSchema)
+      .openapi({
+        description:
+          'An array of ErrorDetail objects providing further information about the error.',
+        example: null,
+      }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'A string representing a unique identifier for the error.',
+        example: null,
+      }),
+    links: z
+      .record(z.string(), z.string().openapi({ example: null }))
+      .openapi({
+        description:
+          'An object mapping link names to associated URIs that contain documentation or remediation steps related to the error.',
+        example: null,
+      }),
+    message: z
+      .string()
+      .openapi({
+        description: 'A string containing a human-readable message describing the error.',
+        example: null,
+      }),
+    status: z
+      .string()
+      .openapi({ description: 'A string indicating the status of the error.', example: null }),
+    subCategory: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({
+        description: 'An object providing more specific categorization of the error.',
+        example: null,
+      }),
+  })
+  .openapi({
+    required: ['category', 'context', 'errors', 'links', 'message', 'status'],
+    description: 'Ye olde error',
+    example: null,
+  })
+  .openapi('StandardError')
+
+type BatchResponsePublicCampaignWithAssetsWithErrorsType = {
+  completedAt: string
+  errors?: z.infer<typeof StandardErrorSchema>[]
+  links?: { [key: string]: string }
+  numErrors?: number
+  requestedAt?: string
+  results: z.infer<typeof PublicCampaignWithAssetsSchema>[]
+  startedAt: string
+  status: 'CANCELED' | 'COMPLETE' | 'PENDING' | 'PROCESSING'
+}
+
 const PublicCampaignBatchUpdateItemSchema = z
   .object({
     id: z
@@ -109,29 +407,6 @@ const BatchInputPublicCampaignReadInputSchema = z
   .openapi({ required: ['inputs'], example: null })
   .openapi('BatchInputPublicCampaignReadInput')
 
-const PublicBusinessUnitSchema = z
-  .object({
-    id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'The unique identifier for the business unit, represented as a 64-bit integer.',
-        example: null,
-      }),
-  })
-  .openapi({ required: ['id'], example: null })
-  .openapi('PublicBusinessUnit')
-
 const PublicCampaignSchema = z
   .object({
     businessUnits: z
@@ -219,373 +494,120 @@ const BatchResponsePublicCampaignSchema = z
   .openapi({ required: ['completedAt', 'results', 'startedAt', 'status'], example: null })
   .openapi('BatchResponsePublicCampaign')
 
-const NextPageSchema = z
-  .object({
-    after: z
-      .string()
-      .openapi({
-        description:
-          'A string token that serves as the paging cursor, indicating the position after the last successfully read resource.',
-        example: null,
-      }),
-    link: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'A string URL that provides a link to the next page of results.',
-        example: null,
-      }),
-  })
-  .openapi({
-    required: ['after'],
-    description:
-      'Specifies the paging information needed to retrieve the next set of results in a paginated API response',
-    example: null,
-  })
-  .openapi('NextPage')
+const BatchResponsePublicCampaignWithAssetsSchema: z.ZodType<BatchResponsePublicCampaignWithAssetsType> =
+  z
+    .object({
+      completedAt: z.iso
+        .datetime({ offset: true })
+        .openapi({
+          description:
+            'The date and time when the batch operation was completed, in ISO 8601 format.',
+          example: null,
+        }),
+      links: z
+        .record(z.string(), z.string().openapi({ example: null }))
+        .exactOptional()
+        .openapi({
+          description:
+            'A map of link names to associated URIs, providing additional resources or documentation related to the batch operation.',
+          example: null,
+        }),
+      requestedAt: z.iso
+        .datetime({ offset: true })
+        .exactOptional()
+        .openapi({
+          description:
+            'The date and time when the batch operation was requested, in ISO 8601 format.',
+          example: null,
+        }),
+      results: z
+        .array(PublicCampaignWithAssetsSchema)
+        .openapi({
+          description:
+            'An array of PublicCampaignWithAssets objects, representing the campaigns involved in the batch operation.',
+          example: null,
+        }),
+      startedAt: z.iso
+        .datetime({ offset: true })
+        .openapi({
+          description: 'The date and time when the batch operation started, in ISO 8601 format.',
+          example: null,
+        }),
+      status: z
+        .enum(['CANCELED', 'COMPLETE', 'PENDING', 'PROCESSING'])
+        .openapi({
+          description:
+            "The current status of the batch operation. Valid values include 'PENDING', 'PROCESSING', 'CANCELED', and 'COMPLETE'.",
+          example: null,
+        }),
+    })
+    .openapi({ required: ['completedAt', 'results', 'startedAt', 'status'], example: null })
+    .openapi('BatchResponsePublicCampaignWithAssets')
 
-const PreviousPageSchema = z
-  .object({
-    before: z
-      .string()
-      .openapi({
-        description:
-          'A string token used to identify the position before the current page in the paginated results.',
-        example: null,
-      }),
-    link: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'A URL string that provides a link to the previous page of results.',
-        example: null,
-      }),
-  })
-  .openapi({
-    required: ['before'],
-    description:
-      'specifies the paging information needed to retrieve the previous set of results in a paginated API response',
-    example: null,
-  })
-  .openapi('PreviousPage')
-
-const PagingSchema = z
-  .object({ next: NextPageSchema.exactOptional(), prev: PreviousPageSchema.exactOptional() })
-  .openapi({
-    description:
-      'Represents the pagination information for navigating through a list of results in the API. It provides details on how to access the previous or next set of results.',
-    example: null,
-    required: [],
-  })
-  .openapi('Paging')
-
-const PublicCampaignAssetSchema = z
-  .object({
-    id: z
-      .string()
-      .openapi({
-        description: 'The unique identifier for the campaign asset, represented as a string.',
-        example: null,
-      }),
-    metrics: z
-      .record(z.string(), z.number().openapi({ example: null }))
-      .exactOptional()
-      .openapi({
-        description:
-          'A collection of performance metrics for the campaign asset, represented as a map where each key is a metric name and each value is a number.',
-        example: null,
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The name of the campaign asset, represented as a string.',
-        example: null,
-      }),
-  })
-  .openapi({ required: ['id'], example: null })
-  .openapi('PublicCampaignAsset')
-
-const CollectionResponsePublicCampaignAssetSchema = z
-  .object({
-    paging: PagingSchema.exactOptional(),
-    results: z
-      .array(PublicCampaignAssetSchema)
-      .openapi({
-        description:
-          'An array of PublicCampaignAsset objects, each representing an individual campaign asset.',
-        example: null,
-      }),
-  })
-  .openapi({ required: ['results'], example: null })
-  .openapi('CollectionResponsePublicCampaignAsset')
-
-const PublicCampaignWithAssetsSchema = z
-  .object({
-    assets: z
-      .record(z.string(), CollectionResponsePublicCampaignAssetSchema)
-      .openapi({
-        description:
-          'A map of asset types to their respective collections of campaign assets, represented by CollectionResponsePublicCampaignAsset objects.',
-        example: null,
-      }),
-    businessUnits: z
-      .array(PublicBusinessUnitSchema)
-      .openapi({
-        description:
-          'An array of business units associated with the campaign, each represented by a PublicBusinessUnit object.',
-        example: null,
-      }),
-    createdAt: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'The date and time when the campaign was created, in ISO 8601 format.',
-        example: null,
-      }),
-    id: z
-      .string()
-      .openapi({
-        description: 'The unique identifier for the campaign, represented as a string.',
-        example: null,
-      }),
-    properties: z
-      .record(z.string(), z.string().openapi({ example: null }))
-      .openapi({
-        description:
-          'A map of custom property names to their values, where each value is a string.',
-        example: null,
-      }),
-    updatedAt: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'The date and time when the campaign was last updated, in ISO 8601 format.',
-        example: null,
-      }),
-  })
-  .openapi({
-    required: ['assets', 'businessUnits', 'createdAt', 'id', 'properties', 'updatedAt'],
-    example: null,
-  })
-  .openapi('PublicCampaignWithAssets')
-
-const BatchResponsePublicCampaignWithAssetsSchema = z
-  .object({
-    completedAt: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description:
-          'The date and time when the batch operation was completed, in ISO 8601 format.',
-        example: null,
-      }),
-    links: z
-      .record(z.string(), z.string().openapi({ example: null }))
-      .exactOptional()
-      .openapi({
-        description:
-          'A map of link names to associated URIs, providing additional resources or documentation related to the batch operation.',
-        example: null,
-      }),
-    requestedAt: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description:
-          'The date and time when the batch operation was requested, in ISO 8601 format.',
-        example: null,
-      }),
-    results: z
-      .array(PublicCampaignWithAssetsSchema)
-      .openapi({
-        description:
-          'An array of PublicCampaignWithAssets objects, representing the campaigns involved in the batch operation.',
-        example: null,
-      }),
-    startedAt: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'The date and time when the batch operation started, in ISO 8601 format.',
-        example: null,
-      }),
-    status: z
-      .enum(['CANCELED', 'COMPLETE', 'PENDING', 'PROCESSING'])
-      .openapi({
-        description:
-          "The current status of the batch operation. Valid values include 'PENDING', 'PROCESSING', 'CANCELED', and 'COMPLETE'.",
-        example: null,
-      }),
-  })
-  .openapi({ required: ['completedAt', 'results', 'startedAt', 'status'], example: null })
-  .openapi('BatchResponsePublicCampaignWithAssets')
-
-const ErrorDetailSchema = z
-  .object({
-    code: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The status code associated with the error detail. This is a string.',
-        example: null,
-      }),
-    context: z
-      .record(z.string(), z.array(z.string().openapi({ example: null })).openapi({ example: null }))
-      .exactOptional()
-      .openapi({
-        description:
-          'Context about the error condition, provided as an object where each key is a context name and the value is an array of strings providing additional information.',
-        example: '{missingScopes=[scope1, scope2]}',
-      }),
-    in: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The name of the field or parameter in which the error was found. This is a string.',
-        example: null,
-      }),
-    message: z
-      .string()
-      .openapi({
-        description:
-          'A human readable message describing the error along with remediation steps where appropriate. This is a string.',
-        example: null,
-      }),
-    subCategory: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A specific category that contains more specific detail about the error. This is a string.',
-        example: null,
-      }),
-  })
-  .openapi({
-    required: ['message'],
-    description:
-      'Represents detailed information about an error that occurred in the API. This component is used to provide additional context and specifics about errors, typically as part of an error response.',
-    example: null,
-  })
-  .openapi('ErrorDetail')
-
-const StandardErrorSchema = z
-  .object({
-    category: z
-      .string()
-      .openapi({ description: 'A string categorizing the type of error.', example: null }),
-    context: z
-      .record(z.string(), z.array(z.string().openapi({ example: null })).openapi({ example: null }))
-      .openapi({
-        description:
-          'An object containing additional context about the error, with keys as context names and values as arrays of strings.',
-        example: null,
-      }),
-    errors: z
-      .array(ErrorDetailSchema)
-      .openapi({
-        description:
-          'An array of ErrorDetail objects providing further information about the error.',
-        example: null,
-      }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'A string representing a unique identifier for the error.',
-        example: null,
-      }),
-    links: z
-      .record(z.string(), z.string().openapi({ example: null }))
-      .openapi({
-        description:
-          'An object mapping link names to associated URIs that contain documentation or remediation steps related to the error.',
-        example: null,
-      }),
-    message: z
-      .string()
-      .openapi({
-        description: 'A string containing a human-readable message describing the error.',
-        example: null,
-      }),
-    status: z
-      .string()
-      .openapi({ description: 'A string indicating the status of the error.', example: null }),
-    subCategory: z
-      .object({})
-      .exactOptional()
-      .openapi({
-        description: 'An object providing more specific categorization of the error.',
-        example: null,
-      }),
-  })
-  .openapi({
-    required: ['category', 'context', 'errors', 'links', 'message', 'status'],
-    description: 'Ye olde error',
-    example: null,
-  })
-  .openapi('StandardError')
-
-const BatchResponsePublicCampaignWithAssetsWithErrorsSchema = z
-  .object({
-    completedAt: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description:
-          'The date and time when the batch operation was completed, in ISO 8601 format.',
-        example: null,
-      }),
-    errors: z
-      .array(StandardErrorSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'An array of errors that occurred during the batch operation, each described by a standard error object.',
-        example: null,
-      }),
-    links: z
-      .record(z.string(), z.string().openapi({ example: null }))
-      .exactOptional()
-      .openapi({
-        description:
-          'A map of link names to associated URIs that provide additional information about the batch operation.',
-        example: null,
-      }),
-    numErrors: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'The number of errors that occurred during the batch operation.',
-        example: null,
-      }),
-    requestedAt: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description:
-          'The date and time when the batch operation was requested, in ISO 8601 format.',
-        example: null,
-      }),
-    results: z
-      .array(PublicCampaignWithAssetsSchema)
-      .openapi({
-        description:
-          'An array of campaigns with their associated assets that were processed in the batch operation.',
-        example: null,
-      }),
-    startedAt: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'The date and time when the batch operation started, in ISO 8601 format.',
-        example: null,
-      }),
-    status: z
-      .enum(['CANCELED', 'COMPLETE', 'PENDING', 'PROCESSING'])
-      .openapi({
-        description:
-          "The current status of the batch operation. Valid values include 'PENDING', 'PROCESSING', 'CANCELED', and 'COMPLETE'.",
-        example: null,
-      }),
-  })
-  .openapi({ required: ['completedAt', 'results', 'startedAt', 'status'], example: null })
-  .openapi('BatchResponsePublicCampaignWithAssetsWithErrors')
+const BatchResponsePublicCampaignWithAssetsWithErrorsSchema: z.ZodType<BatchResponsePublicCampaignWithAssetsWithErrorsType> =
+  z
+    .object({
+      completedAt: z.iso
+        .datetime({ offset: true })
+        .openapi({
+          description:
+            'The date and time when the batch operation was completed, in ISO 8601 format.',
+          example: null,
+        }),
+      errors: z
+        .array(StandardErrorSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'An array of errors that occurred during the batch operation, each described by a standard error object.',
+          example: null,
+        }),
+      links: z
+        .record(z.string(), z.string().openapi({ example: null }))
+        .exactOptional()
+        .openapi({
+          description:
+            'A map of link names to associated URIs that provide additional information about the batch operation.',
+          example: null,
+        }),
+      numErrors: z
+        .int32()
+        .exactOptional()
+        .openapi({
+          description: 'The number of errors that occurred during the batch operation.',
+          example: null,
+        }),
+      requestedAt: z.iso
+        .datetime({ offset: true })
+        .exactOptional()
+        .openapi({
+          description:
+            'The date and time when the batch operation was requested, in ISO 8601 format.',
+          example: null,
+        }),
+      results: z
+        .array(PublicCampaignWithAssetsSchema)
+        .openapi({
+          description:
+            'An array of campaigns with their associated assets that were processed in the batch operation.',
+          example: null,
+        }),
+      startedAt: z.iso
+        .datetime({ offset: true })
+        .openapi({
+          description: 'The date and time when the batch operation started, in ISO 8601 format.',
+          example: null,
+        }),
+      status: z
+        .enum(['CANCELED', 'COMPLETE', 'PENDING', 'PROCESSING'])
+        .openapi({
+          description:
+            "The current status of the batch operation. Valid values include 'PENDING', 'PROCESSING', 'CANCELED', and 'COMPLETE'.",
+          example: null,
+        }),
+    })
+    .openapi({ required: ['completedAt', 'results', 'startedAt', 'status'], example: null })
+    .openapi('BatchResponsePublicCampaignWithAssetsWithErrors')
 
 const BatchResponsePublicCampaignWithErrorsSchema = z
   .object({
@@ -1640,11 +1662,22 @@ const Oauth2SecurityScheme = {
       },
     },
   },
+  'x-hubspot-app-availability': {
+    'marketing.campaigns.read': {
+      portal: ['public', 'private'],
+      user: ['public', 'private'],
+      developer: false,
+    },
+    'marketing.campaigns.revenue.full.read': { user: ['public', 'private'], developer: false },
+    'marketing.campaigns.revenue.lite.read': { user: ['public', 'private'], developer: false },
+    'marketing.campaigns.revenue.read': { portal: ['public', 'private'], developer: false },
+    'marketing.campaigns.write': {
+      portal: ['public', 'private'],
+      user: ['public', 'private'],
+      developer: false,
+    },
+  },
 }
-
-const PrivateAppsSecurityScheme = { type: 'apiKey', name: 'private-app', in: 'header' }
-
-const PrivateAppsLegacySecurityScheme = { type: 'apiKey', name: 'private-app-legacy', in: 'header' }
 
 export const getMarketingCampaigns202609Route = createRoute({
   method: 'get',
@@ -1779,18 +1812,14 @@ export const postMarketingCampaigns202609Route = createRoute({
       description: 'successful operation',
       content: { 'application/json': { schema: PublicCampaignSchema, example: null } },
       headers: z.object({
-        Location: {
-          description: 'URL of the newly created resource',
-          style: 'simple',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'URL of the newly created resource',
-              param: { required: false },
-              example: null,
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'URL of the newly created resource',
+            param: { required: false },
+            example: null,
+          }),
       }),
     },
     default: ErrorResponse,
@@ -2011,18 +2040,14 @@ export const postMarketingCampaigns202609CloneRoute = createRoute({
       description: 'successful operation',
       content: { 'application/json': { schema: PublicCampaignCloneResponseSchema, example: null } },
       headers: z.object({
-        Location: {
-          description: 'URL of the newly created resource',
-          style: 'simple',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'URL of the newly created resource',
-              param: { required: false },
-              example: null,
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'URL of the newly created resource',
+            param: { required: false },
+            example: null,
+          }),
       }),
     },
     default: ErrorResponse,
@@ -2517,18 +2542,14 @@ export const postMarketingCampaigns202609CampaignGuidBudgetRoute = createRoute({
       description: 'successful operation',
       content: { 'application/json': { schema: PublicBudgetItemSchema, example: null } },
       headers: z.object({
-        Location: {
-          description: 'URL of the newly created resource',
-          style: 'simple',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'URL of the newly created resource',
-              param: { required: false },
-              example: null,
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'URL of the newly created resource',
+            param: { required: false },
+            example: null,
+          }),
       }),
     },
     default: ErrorResponse,
@@ -3058,18 +3079,14 @@ export const postMarketingCampaigns202609CampaignGuidSpendRoute = createRoute({
       description: 'successful operation',
       content: { 'application/json': { schema: PublicSpendItemSchema, example: null } },
       headers: z.object({
-        Location: {
-          description: 'URL of the newly created resource',
-          style: 'simple',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'URL of the newly created resource',
-              param: { required: false },
-              example: null,
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'URL of the newly created resource',
+            param: { required: false },
+            example: null,
+          }),
       }),
     },
     default: ErrorResponse,

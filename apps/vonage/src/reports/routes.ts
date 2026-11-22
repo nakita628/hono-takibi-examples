@@ -1165,7 +1165,7 @@ const JsonSmsInboundSchema = z
     country_name: CountryNameSchema.exactOptional(),
     currency: CurrencySchema.exactOptional(),
     date_received: DateSchema.exactOptional(),
-    direction: DirectionSchema.and(z.any().openapi({ example: 'inbound' })).exactOptional(),
+    direction: DirectionSchema.exactOptional().openapi({ example: 'inbound' }),
     from: FromSchema.exactOptional(),
     message_id: MessageIdSchema.exactOptional(),
     network: NetworkSchema.exactOptional(),

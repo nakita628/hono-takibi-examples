@@ -33,6 +33,18 @@ Asana supports the Authorization Code Grant flow.
 |attachments:read|View access to attachments|
 |attachments:write|Create and modify access to attachments|
 |attachments:delete|Delete access to attachments|
+|command_coding_agent_sessions:read|View access to Command coding agent sessions|
+|command_coding_agent_sessions:write|Start Command coding agent sessions|
+|command_coding_agents:read|View access to Command coding agents|
+|command_releases:read|View access to Command releases|
+|command_releases:write|Create and modify access to Command releases|
+|command_releases:delete|Delete access to Command releases|
+|command_teamspaces:read|View access to Command teamspaces|
+|command_teamspaces:write|Create and modify access to Command teamspaces|
+|command_teamspaces:delete|Delete access to Command teamspaces|
+|command_tickets:read|View access to Command tickets and their to-dos|
+|command_tickets:write|Create and modify access to Command tickets and their to-dos|
+|command_tickets:delete|Delete access to Command tickets and their to-dos|
 |custom_fields:read|View access to custom fields|
 |custom_fields:write|Create and modify access to custom fields|
 |custom_types:read|View access to custom types|
@@ -5769,7 +5781,7 @@ Integrations using custom fields need to be aware of the seven basic types that 
 * `multi_enum` - a selection of one or more options from a defined list of options (i.e., mutually inclusive selections)
 * `date` - a reference date with an optional time value
 * `people` - a list of active contributors (i.e., where their relationship to the work is defined in the custom field title)
-* `reference` - a reference to another Asana object (task, project, portfolio, goal, etc.)
+* `reference` - a reference to another Asana object (task, project, portfolio, goal, team, record)
 #### Example use case
 
 Consider an organization that has defined a custom field for "Priority". This field is of `enum` type and can have user-defined values of `Low`, `Medium`, or `High`. This is the field metadata, and it is visible within, and shared across, the entire organization.
@@ -5801,7 +5813,7 @@ On the task's custom field value, the enum will have an `enum_value` property wh
 
 A `reference` custom field stores a list of references to other Asana objects.
 
-The `input_restrictions` field on the custom field definition specifies which object types are allowed as values. Possible values include: `task`, `project`, `portfolio`, and `goal`. `input_restrictions` cannot be an empty array, it must have at least one object type.
+The `input_restrictions` field on the custom field definition specifies which object types are allowed as values. Possible values include: `task`, `project`, `portfolio`, `goal`, `team`, and `record`. `input_restrictions` cannot be an empty array, it must have at least one object type.
 
 #### Querying an organization for its custom fields
 
@@ -34292,6 +34304,7 @@ Returns the compact records for all records in the given table.
 |opt_fields|custom_fields.resource_subtype|
 |opt_fields|custom_fields.text_value|
 |opt_fields|custom_fields.type|
+|opt_fields|default_access_level|
 |opt_fields|deleted_at|
 |opt_fields|is_in_archived_table|
 |opt_fields|modified_at|
@@ -34539,6 +34552,7 @@ Changes in Asana are forwarded to our search infrastructure to be indexed, which
 |opt_fields|custom_fields.resource_subtype|
 |opt_fields|custom_fields.text_value|
 |opt_fields|custom_fields.type|
+|opt_fields|default_access_level|
 |opt_fields|deleted_at|
 |opt_fields|is_in_archived_table|
 |opt_fields|modified_at|
@@ -34696,7 +34710,8 @@ curl https://app.asana.com/api/1.0/records \
         "5678904321": "On Hold",
         "4578152156": "Not Started"
       },
-      "unique_fingerprint": "sfdc-opportunity-0061"
+      "unique_fingerprint": "sfdc-opportunity-0061",
+      "default_access_level": "viewer"
     }
   }'
 ```
@@ -34720,7 +34735,8 @@ Returns the full record of the newly created record.
       "5678904321": "On Hold",
       "4578152156": "Not Started"
     },
-    "unique_fingerprint": "sfdc-opportunity-0061"
+    "unique_fingerprint": "sfdc-opportunity-0061",
+    "default_access_level": "viewer"
   }
 }
 ```
@@ -34789,6 +34805,7 @@ Returns the full record of the newly created record.
 |opt_fields|custom_fields.resource_subtype|
 |opt_fields|custom_fields.text_value|
 |opt_fields|custom_fields.type|
+|opt_fields|default_access_level|
 |opt_fields|deleted_at|
 |opt_fields|is_in_archived_table|
 |opt_fields|modified_at|
@@ -34910,7 +34927,8 @@ Returns the full record of the newly created record.
     },
     "permalink_url": "https://app.asana.com/0/resource/123",
     "comment_count": 3,
-    "is_in_archived_table": false
+    "is_in_archived_table": false,
+    "default_access_level": "viewer"
   }
 }
 ```
@@ -35120,6 +35138,7 @@ Returns the complete record for a single record.
 |opt_fields|custom_fields.resource_subtype|
 |opt_fields|custom_fields.text_value|
 |opt_fields|custom_fields.type|
+|opt_fields|default_access_level|
 |opt_fields|deleted_at|
 |opt_fields|is_in_archived_table|
 |opt_fields|modified_at|
@@ -35241,7 +35260,8 @@ Returns the complete record for a single record.
     },
     "permalink_url": "https://app.asana.com/0/resource/123",
     "comment_count": 3,
-    "is_in_archived_table": false
+    "is_in_archived_table": false,
+    "default_access_level": "viewer"
   }
 }
 ```
@@ -35370,6 +35390,7 @@ curl https://app.asana.com/api/1.0/records/7331 \
   -d '{
     "data": {
       "name": "Q3 renewal",
+      "default_access_level": "viewer",
       "custom_fields": {
         "property1": "string",
         "property2": "string"
@@ -35394,6 +35415,7 @@ Returns the complete updated record.
 {
   "data": {
     "name": "Q3 renewal",
+    "default_access_level": "viewer",
     "custom_fields": {
       "property1": "string",
       "property2": "string"
@@ -35467,6 +35489,7 @@ Returns the complete updated record.
 |opt_fields|custom_fields.resource_subtype|
 |opt_fields|custom_fields.text_value|
 |opt_fields|custom_fields.type|
+|opt_fields|default_access_level|
 |opt_fields|deleted_at|
 |opt_fields|is_in_archived_table|
 |opt_fields|modified_at|
@@ -35588,7 +35611,8 @@ Returns the complete updated record.
     },
     "permalink_url": "https://app.asana.com/0/resource/123",
     "comment_count": 3,
-    "is_in_archived_table": false
+    "is_in_archived_table": false,
+    "default_access_level": "viewer"
   }
 }
 ```
@@ -37188,6 +37212,8 @@ curl https://app.asana.com/api/1.0/sections/321654 \
 
 `GET /sections/{section_gid}`
 
+<b>Required scope: </b><code>projects:read</code>
+
 Returns the complete record for a single section.
 
 <h3 id="get-a-section-parameters">Parameters</h3>
@@ -37331,7 +37357,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-personalAccessToken, oauth2
+personalAccessToken, oauth2 ( Scopes: projects:read )
 </aside>
 
 ## Update a section
@@ -37356,6 +37382,8 @@ curl https://app.asana.com/api/1.0/sections/321654 \
 ```
 
 `PUT /sections/{section_gid}`
+
+<b>Required scope: </b><code>projects:write</code>
 
 A specific, existing section can be updated by making a PUT request on
 the URL for that project. Only the fields provided in the `data` block
@@ -37523,7 +37551,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-personalAccessToken, oauth2
+personalAccessToken, oauth2 ( Scopes: projects:write )
 </aside>
 
 ## Delete a section
@@ -37540,6 +37568,8 @@ curl https://app.asana.com/api/1.0/sections/321654 \
 ```
 
 `DELETE /sections/{section_gid}`
+
+<b>Required scope: </b><code>projects:write</code>
 
 A specific, existing section can be deleted by making a DELETE request on
 the URL for that section.
@@ -37658,7 +37688,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-personalAccessToken, oauth2
+personalAccessToken, oauth2 ( Scopes: projects:write )
 </aside>
 
 ## Get sections in a project
@@ -37674,6 +37704,8 @@ curl https://app.asana.com/api/1.0/projects/1331/sections \
 ```
 
 `GET /projects/{project_gid}/sections`
+
+<b>Required scope: </b><code>projects:read</code>
 
 Returns the compact records for all sections in the specified project.
 
@@ -37816,7 +37848,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-personalAccessToken, oauth2
+personalAccessToken, oauth2 ( Scopes: projects:read )
 </aside>
 
 ## Create a section in a project
@@ -37841,6 +37873,8 @@ curl https://app.asana.com/api/1.0/projects/1331/sections \
 ```
 
 `POST /projects/{project_gid}/sections`
+
+<b>Required scope: </b><code>projects:write</code>
 
 Creates a new section in a project.
 Returns the full record of the newly created section.
@@ -38000,7 +38034,7 @@ Status Code **201**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-personalAccessToken, oauth2
+personalAccessToken, oauth2 ( Scopes: projects:write )
 </aside>
 
 ## Add task to section
@@ -38182,6 +38216,8 @@ curl https://app.asana.com/api/1.0/projects/1331/sections/insert \
 
 `POST /projects/{project_gid}/sections/insert`
 
+<b>Required scope: </b><code>projects:write</code>
+
 Move sections relative to each other. One of
 `before_section` or `after_section` is required.
 
@@ -38311,7 +38347,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-personalAccessToken, oauth2
+personalAccessToken, oauth2 ( Scopes: projects:write )
 </aside>
 
 <h1 id="asana-status-updates">Status updates</h1>
@@ -43183,6 +43219,7 @@ Returns the compact table records for all tables in the given workspace.
 |opt_fields|custom_field_settings.custom_field.text_value|
 |opt_fields|custom_field_settings.custom_field.type|
 |opt_fields|custom_field_settings.is_important|
+|opt_fields|default_access_level|
 |opt_fields|modified_at|
 |opt_fields|name|
 |opt_fields|offset|
@@ -43404,6 +43441,7 @@ Returns the full record of the newly created table.
 |opt_fields|custom_field_settings.custom_field.text_value|
 |opt_fields|custom_field_settings.custom_field.type|
 |opt_fields|custom_field_settings.is_important|
+|opt_fields|default_access_level|
 |opt_fields|modified_at|
 |opt_fields|name|
 |opt_fields|workspace|
@@ -43478,7 +43516,8 @@ Returns the full record of the newly created table.
         },
         "is_important": true
       }
-    ]
+    ],
+    "default_access_level": "viewer"
   }
 }
 ```
@@ -43652,6 +43691,7 @@ Returns the complete table record for a single table.
 |opt_fields|custom_field_settings.custom_field.text_value|
 |opt_fields|custom_field_settings.custom_field.type|
 |opt_fields|custom_field_settings.is_important|
+|opt_fields|default_access_level|
 |opt_fields|modified_at|
 |opt_fields|name|
 |opt_fields|workspace|
@@ -43726,7 +43766,8 @@ Returns the complete table record for a single table.
         },
         "is_important": true
       }
-    ]
+    ],
+    "default_access_level": "viewer"
   }
 }
 ```
@@ -43854,7 +43895,8 @@ curl https://app.asana.com/api/1.0/tables/1337 \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "data": {
-      "name": "Vendor contracts"
+      "name": "Vendor contracts",
+      "default_access_level": "viewer"
     }
   }'
 ```
@@ -43874,7 +43916,8 @@ Returns the complete updated table record.
 ```json
 {
   "data": {
-    "name": "Vendor contracts"
+    "name": "Vendor contracts",
+    "default_access_level": "viewer"
   }
 }
 ```
@@ -43923,6 +43966,7 @@ Returns the complete updated table record.
 |opt_fields|custom_field_settings.custom_field.text_value|
 |opt_fields|custom_field_settings.custom_field.type|
 |opt_fields|custom_field_settings.is_important|
+|opt_fields|default_access_level|
 |opt_fields|modified_at|
 |opt_fields|name|
 |opt_fields|workspace|
@@ -43997,7 +44041,8 @@ Returns the complete updated table record.
         },
         "is_important": true
       }
-    ]
+    ],
+    "default_access_level": "viewer"
   }
 }
 ```
@@ -67885,6 +67930,8 @@ Defines how the total portion of a budget is configured. The total represents a 
 |input_restrictions|project|
 |input_restrictions|portfolio|
 |input_restrictions|goal|
+|input_restrictions|team|
+|input_restrictions|record|
 |format|currency|
 |format|identifier|
 |format|percentage|
@@ -68138,6 +68185,8 @@ Users in Asana can [lock custom fields](https://asana.com/guide/help/premium/cus
 |input_restrictions|project|
 |input_restrictions|portfolio|
 |input_restrictions|goal|
+|input_restrictions|team|
+|input_restrictions|record|
 
 <h2 id="tocS_CustomFieldRequest">CustomFieldRequest</h2>
 <!-- backwards compatibility -->
@@ -68272,6 +68321,8 @@ Users in Asana can [lock custom fields](https://asana.com/guide/help/premium/cus
 |input_restrictions|project|
 |input_restrictions|portfolio|
 |input_restrictions|goal|
+|input_restrictions|team|
+|input_restrictions|record|
 |format|currency|
 |format|identifier|
 |format|percentage|
@@ -68554,6 +68605,8 @@ Users in Asana can [lock custom fields](https://asana.com/guide/help/premium/cus
 |input_restrictions|project|
 |input_restrictions|portfolio|
 |input_restrictions|goal|
+|input_restrictions|team|
+|input_restrictions|record|
 |format|currency|
 |format|identifier|
 |format|percentage|
@@ -68866,6 +68919,8 @@ Users in Asana can [lock custom fields](https://asana.com/guide/help/premium/cus
 |input_restrictions|project|
 |input_restrictions|portfolio|
 |input_restrictions|goal|
+|input_restrictions|team|
+|input_restrictions|record|
 |format|currency|
 |format|identifier|
 |format|percentage|
@@ -69025,6 +69080,8 @@ Users in Asana can [lock custom fields](https://asana.com/guide/help/premium/cus
 |input_restrictions|project|
 |input_restrictions|portfolio|
 |input_restrictions|goal|
+|input_restrictions|team|
+|input_restrictions|record|
 |privacy_setting|public_with_guests|
 |privacy_setting|public|
 |privacy_setting|private|
@@ -77064,7 +77121,8 @@ A *record* is a single row in a table. Fields on a record are backed by the tabl
     "5678904321": "On Hold",
     "4578152156": "Not Started"
   },
-  "unique_fingerprint": "sfdc-opportunity-0061"
+  "unique_fingerprint": "sfdc-opportunity-0061",
+  "default_access_level": "viewer"
 }
 ```
 
@@ -77078,6 +77136,16 @@ A *record* is a single row in a table. Fields on a record are backed by the tabl
 |table|string|true|none|The table in which this record will be created.|
 |custom_fields|object|false|none|An object where each key is the GID of a custom field and its corresponding value is either an enum GID, string, number, or object (depending on the custom field type). See the [custom fields guide](/docs/custom-fields-guide) for details on creating and updating custom field values. Only fields already associated with the record's table (i.e. already present in the table's custom field settings) can be written this way; unlike tasks and projects, records do not support force-writing a value for a custom field that is not yet on the table.|
 |unique_fingerprint|string|false|none|An optional client-provided identifier used to deduplicate record creation within a table. If a record already exists in the table with the same `unique_fingerprint`, the request fails with a `409 Conflict` error rather than creating a duplicate.|
+|default_access_level|string|false|none|The default access level for users who join or are added as members of the record. This isn't applied when the record is private.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|default_access_level|admin|
+|default_access_level|editor|
+|default_access_level|commenter|
+|default_access_level|viewer|
 
 <h2 id="tocS_RecordItemUpdateRequest">RecordItemUpdateRequest</h2>
 <!-- backwards compatibility -->
@@ -77089,6 +77157,7 @@ A *record* is a single row in a table. Fields on a record are backed by the tabl
 ```json
 {
   "name": "Q3 renewal",
+  "default_access_level": "viewer",
   "custom_fields": {
     "property1": "string",
     "property2": "string"
@@ -77101,7 +77170,17 @@ A *record* is a single row in a table. Fields on a record are backed by the tabl
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |name|string|false|none|The name of the record.|
+|default_access_level|string|false|none|The default access level for users who join or are added as members of the record. This isn't applied when the record is private.|
 |custom_fields|object|false|none|An object where each key is the GID of a custom field and its corresponding value is either an enum GID, string, number, or object (depending on the custom field type). See the [custom fields guide](/docs/custom-fields-guide) for details on creating and updating custom field values. Only fields already associated with the record's table (i.e. already present in the table's custom field settings) can be written this way; unlike tasks and projects, records do not support force-writing a value for a custom field that is not yet on the table.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|default_access_level|admin|
+|default_access_level|editor|
+|default_access_level|commenter|
+|default_access_level|viewer|
 
 <h2 id="tocS_RecordItemResponse">RecordItemResponse</h2>
 <!-- backwards compatibility -->
@@ -77216,7 +77295,8 @@ A *record* is a single row in a table. Fields on a record are backed by the tabl
   },
   "permalink_url": "https://app.asana.com/0/resource/123",
   "comment_count": 3,
-  "is_in_archived_table": false
+  "is_in_archived_table": false,
+  "default_access_level": "viewer"
 }
 ```
 
@@ -77237,6 +77317,16 @@ A *record* is a single row in a table. Fields on a record are backed by the tabl
 |permalink_url|string|false|read-only|A url that points directly to the object within Asana.|
 |comment_count|integer|false|read-only|The number of comments on the record.|
 |is_in_archived_table|boolean|false|read-only|True if the record's table is archived, false if not.|
+|default_access_level|string|false|none|The default access level for users who join or are added as members of the record. This isn't applied when the record is private.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|default_access_level|admin|
+|default_access_level|editor|
+|default_access_level|commenter|
+|default_access_level|viewer|
 
 <h2 id="tocS_TableBase">TableBase</h2>
 <!-- backwards compatibility -->
@@ -77322,7 +77412,8 @@ A *table* is a container for structured records (rows), with columns defined by 
 
 ```json
 {
-  "name": "Vendor contracts"
+  "name": "Vendor contracts",
+  "default_access_level": "viewer"
 }
 ```
 
@@ -77331,6 +77422,16 @@ A *table* is a container for structured records (rows), with columns defined by 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |name|string|false|none|The name of the table.|
+|default_access_level|string|false|none|The default access level for users who join or are added as members of the table.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|default_access_level|admin|
+|default_access_level|editor|
+|default_access_level|commenter|
+|default_access_level|viewer|
 
 <h2 id="tocS_CustomFieldTableSettingBase">CustomFieldTableSettingBase</h2>
 <!-- backwards compatibility -->
@@ -77519,7 +77620,8 @@ A *custom field table setting* represents the many-to-many join of a custom fiel
       },
       "is_important": true
     }
-  ]
+  ],
+  "default_access_level": "viewer"
 }
 ```
 
@@ -77534,6 +77636,16 @@ A *custom field table setting* represents the many-to-many join of a custom fiel
 |created_at|string(date-time)|false|read-only|The time at which this resource was created.|
 |workspace|object|false|none|none|
 |custom_field_settings|[[CustomFieldTableSettingResponse](#schemacustomfieldtablesettingresponse)]|false|read-only|Array of custom field definitions that are enabled for the table. These represent which custom fields are available to records in the table, but do not include any values.|
+|default_access_level|string|false|none|The default access level for users who join or are added as members of the table.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|default_access_level|admin|
+|default_access_level|editor|
+|default_access_level|commenter|
+|default_access_level|viewer|
 
 <h2 id="tocS_TagBase">TagBase</h2>
 <!-- backwards compatibility -->
@@ -82325,6 +82437,7 @@ A *role* represents a group of permissions that can be assigned to a user or tea
 |base_role_type|member|
 |base_role_type|admin|
 |base_role_type|super_admin|
+|base_role_type|csm|
 
 <h2 id="tocS_RbacRoleResponse">RbacRoleResponse</h2>
 <!-- backwards compatibility -->
@@ -82403,6 +82516,7 @@ A *role* represents a group of permissions that can be assigned to a user or tea
 |base_role_type|member|
 |base_role_type|admin|
 |base_role_type|super_admin|
+|base_role_type|csm|
 
 <h2 id="tocS_RbacRoleRequest">RbacRoleRequest</h2>
 <!-- backwards compatibility -->
@@ -82478,6 +82592,7 @@ A *role* represents a group of permissions that can be assigned to a user or tea
 |base_role_type|member|
 |base_role_type|admin|
 |base_role_type|super_admin|
+|base_role_type|csm|
 |base_role_type|guest|
 |base_role_type|member|
 |base_role_type|admin|
@@ -82553,6 +82668,7 @@ A *role* represents a group of permissions that can be assigned to a user or tea
 |base_role_type|member|
 |base_role_type|admin|
 |base_role_type|super_admin|
+|base_role_type|csm|
 
 <h2 id="tocS_AiStudioRunCompact">AiStudioRunCompact</h2>
 <!-- backwards compatibility -->

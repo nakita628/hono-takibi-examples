@@ -24,12 +24,6 @@ Base URLs:
 |origins.ip_ranges.webhook.read||
 |origins.ip_ranges.webhook.write||
 
-* API Key (private_apps)
-    - Parameter Name: **private-app**, in: header.
-
-* API Key (private_apps_legacy)
-    - Parameter Name: **private-app-legacy**, in: header.
-
 <h1 id="meta-origins-advanced">Advanced</h1>
 
 ## Test webhook subscription

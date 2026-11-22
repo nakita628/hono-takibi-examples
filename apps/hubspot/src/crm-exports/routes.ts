@@ -86,7 +86,7 @@ const StandardErrorSchema = z
       .string()
       .openapi({ description: 'A string representing the status of the error.', example: null }),
     subCategory: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'A specific category that contains more specific detail about the error',
@@ -721,11 +721,10 @@ const Oauth2SecurityScheme = {
       scopes: { 'crm.export': '' },
     },
   },
+  'x-hubspot-app-availability': {
+    'crm.export': { portal: ['public', 'private'], developer: false },
+  },
 }
-
-const PrivateAppsSecurityScheme = { type: 'apiKey', name: 'private-app', in: 'header' }
-
-const PrivateAppsLegacySecurityScheme = { type: 'apiKey', name: 'private-app-legacy', in: 'header' }
 
 export const postCrmExports202609ExportAsyncRoute = createRoute({
   method: 'post',

@@ -19381,6 +19381,7 @@ Quick search for models, datasets, spaces, orgs, users, papers, collections, and
 |» » *anyOf*|chatterbox|
 |» » *anyOf*|chaossim|
 |» » *anyOf*|chat_tts|
+|» » *anyOf*|chessqueries|
 |» » *anyOf*|chexmix|
 |» » *anyOf*|chronos-forecasting|
 |» » *anyOf*|circuit-tracer|
@@ -19389,6 +19390,7 @@ Quick search for models, datasets, spaces, orgs, users, papers, collections, and
 |» » *anyOf*|cloud-agents|
 |» » *anyOf*|collectorvision|
 |» » *anyOf*|colipri|
+|» » *anyOf*|cooperscene|
 |» » *anyOf*|cosyvoice|
 |» » *anyOf*|cotracker|
 |» » *anyOf*|colpali|
@@ -19520,6 +19522,7 @@ Quick search for models, datasets, spaces, orgs, users, papers, collections, and
 |» » *anyOf*|ninfer|
 |» » *anyOf*|nobg|
 |» » *anyOf*|nv-medtech|
+|» » *anyOf*|onnxruntime-genai|
 |» » *anyOf*|open-oasis|
 |» » *anyOf*|open_clip|
 |» » *anyOf*|openasr|
@@ -19588,6 +19591,7 @@ Quick search for models, datasets, spaces, orgs, users, papers, collections, and
 |» » *anyOf*|songbloom|
 |» » *anyOf*|stable-baselines3|
 |» » *anyOf*|stanza|
+|» » *anyOf*|strands-decider|
 |» » *anyOf*|supertonic|
 |» » *anyOf*|svdtrunc|
 |» » *anyOf*|swarmformer|
@@ -19613,11 +19617,13 @@ Quick search for models, datasets, spaces, orgs, users, papers, collections, and
 |» » *anyOf*|trellis2|
 |» » *anyOf*|tunejury|
 |» » *anyOf*|ultralytics|
+|» » *anyOf*|unitree-rl|
 |» » *anyOf*|univa|
 |» » *anyOf*|uni-3dar|
 |» » *anyOf*|unity-sentis|
 |» » *anyOf*|sana|
 |» » *anyOf*|videoprism|
+|» » *anyOf*|verto-asr|
 |» » *anyOf*|vfi-mamba|
 |» » *anyOf*|vismatch|
 |» » *anyOf*|lvface|
@@ -19628,11 +19634,13 @@ Quick search for models, datasets, spaces, orgs, users, papers, collections, and
 |» » *anyOf*|vibevoice|
 |» » *anyOf*|videox_fun|
 |» » *anyOf*|wan2.2|
+|» » *anyOf*|wavegen|
 |» » *anyOf*|wham|
 |» » *anyOf*|whisperkit|
 |» » *anyOf*|wilddet3d|
 |» » *anyOf*|yolov10|
 |» » *anyOf*|yolov26|
+|» » *anyOf*|zao-lib|
 |» » *anyOf*|zipsplat|
 |» » *anyOf*|zonos|
 |» » *anyOf*|3dtopia-xl|
@@ -20109,6 +20117,7 @@ Status Code **200**
 |» » » userRole|read|
 |» » » userRole|no_access|
 |» capabilities|inference-api|
+|» capabilities|request-gated-repos|
 |» permissions|repo.content.read|
 |» permissions|repo.content.write|
 
@@ -20326,6 +20335,7 @@ Status Code **200**
 |» » userRole|read|
 |» » userRole|no_access|
 |capabilities|inference-api|
+|capabilities|request-gated-repos|
 |permissions|repo.content.read|
 |permissions|repo.content.write|
 
@@ -21424,6 +21434,137 @@ Status Code **200**
 |» visibility|public|
 |» visibility|private|
 |» visibility|protected|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth
+</aside>
+
+## Get credits
+
+> Code samples
+
+```bash
+curl https://huggingface.co/api/settings/billing/credits \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /api/settings/billing/credits`
+
+Get the user's credits balance, with each purchased, granted and monthly included balance and its expiry date
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "balanceUsd": 0,
+  "billingMode": "postpaid",
+  "balances": [
+    {
+      "name": "string",
+      "type": "included",
+      "balanceUsd": 0,
+      "expiresAt": "1970-01-01T00:00:00Z"
+    }
+  ]
+}
+```
+
+<h3 id="get-credits-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Credits balance|Inline|
+
+<h3 id="get-credits-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|balanceUsd|number|true|none|Total credits balance, in USD|
+|billingMode|string|true|none|`prepaid` accounts can only use their credits, `postpaid` ones are billed for usage beyond them|
+|balances|[object]|true|none|none|
+|» name|string|false|none|none|
+|» type|string|true|none|none|
+|» balanceUsd|number|true|none|none|
+|» expiresAt|string(date-time)|false|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|billingMode|postpaid|
+|billingMode|prepaid|
+|» type|included|
+|» type|purchased|
+|» type|granted|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth
+</aside>
+
+## Credits purchase link
+
+> Code samples
+
+```bash
+curl https://huggingface.co/api/settings/billing/prepaid-credits/purchase-link \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "amountUsd": 5
+  }'
+```
+
+`POST /api/settings/billing/prepaid-credits/purchase-link`
+
+Get a link to the billing page with a credits purchase prefilled, also sent to the user by email. Nothing is charged until the user confirms the purchase on that page.
+
+> Body parameter
+
+```json
+{
+  "amountUsd": 5
+}
+```
+
+<h3 id="credits-purchase-link-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|body|body|object|false|none|
+|» amountUsd|body|integer|true|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "url": "http://example.com"
+}
+```
+
+<h3 id="credits-purchase-link-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Credits purchase link|Inline|
+
+<h3 id="credits-purchase-link-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|url|string(uri)|true|none|Billing page link that opens the prefilled purchase, to share with the user|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -22884,6 +23025,7 @@ Status Code **200**
 |» type|billing.gcp_remove|
 |» type|billing.marketplace_approve|
 |» type|billing.cancel_subscription|
+|» type|billing.end_subscription|
 |» type|billing.renew_subscription|
 |» type|billing.start_subscription|
 |» type|billing.un_cancel_subscription|
@@ -22944,6 +23086,7 @@ Status Code **200**
 |» type|org.token_approval.authorization_request.denied|
 |» type|org.audit_log.export|
 |» type|org.repo_analytics.export|
+|» type|org.blog_analytics.export|
 |» type|repo.add_secrets|
 |» type|repo.remove_secrets|
 |» type|repo.add_secret|
@@ -23000,6 +23143,8 @@ Status Code **200**
 |» type|org.service_account.token.update|
 |» type|org.service_account.token.s3_credential.create|
 |» type|org.service_account.token.s3_credential.delete|
+|» type|org.service_account.trusted_publisher.create|
+|» type|org.service_account.trusted_publisher.delete|
 |» type|oauth.token|
 |» type|oauth.app.create|
 |» type|oauth.app.update|
@@ -23910,6 +24055,144 @@ To perform this operation, you must be authenticated by means of one of the foll
 bearerAuth
 </aside>
 
+## Get org credits
+
+> Code samples
+
+```bash
+curl https://huggingface.co/api/organizations/string/billing/credits \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /api/organizations/{name}/billing/credits`
+
+Get the org's credits balance, with each purchased, granted and monthly included balance and its expiry date
+
+<h3 id="get-org-credits-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|name|path|string|true|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "balanceUsd": 0,
+  "billingMode": "postpaid",
+  "balances": [
+    {
+      "name": "string",
+      "type": "included",
+      "balanceUsd": 0,
+      "expiresAt": "1970-01-01T00:00:00Z"
+    }
+  ]
+}
+```
+
+<h3 id="get-org-credits-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Credits balance|Inline|
+
+<h3 id="get-org-credits-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|balanceUsd|number|true|none|Total credits balance, in USD|
+|billingMode|string|true|none|`prepaid` accounts can only use their credits, `postpaid` ones are billed for usage beyond them|
+|balances|[object]|true|none|none|
+|» name|string|false|none|none|
+|» type|string|true|none|none|
+|» balanceUsd|number|true|none|none|
+|» expiresAt|string(date-time)|false|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|billingMode|postpaid|
+|billingMode|prepaid|
+|» type|included|
+|» type|purchased|
+|» type|granted|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth
+</aside>
+
+## Credits purchase link
+
+> Code samples
+
+```bash
+curl https://huggingface.co/api/organizations/string/billing/prepaid-credits/purchase-link \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "amountUsd": 5
+  }'
+```
+
+`POST /api/organizations/{name}/billing/prepaid-credits/purchase-link`
+
+Get a link to the org billing page with a credits purchase prefilled, also sent to the requesting user by email. Nothing is charged until they confirm the purchase on that page.
+
+> Body parameter
+
+```json
+{
+  "amountUsd": 5
+}
+```
+
+<h3 id="credits-purchase-link-1-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|name|path|string|true|none|
+|body|body|object|false|none|
+|» amountUsd|body|integer|true|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "url": "http://example.com"
+}
+```
+
+<h3 id="credits-purchase-link-1-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Credits purchase link|Inline|
+
+<h3 id="credits-purchase-link-1-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|url|string(uri)|true|none|Billing page link that opens the prefilled purchase, to share with the user|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth
+</aside>
+
 ## Get social handles
 
 > Code samples
@@ -24161,6 +24444,12 @@ Retrieve a single service account and its access token metadata. Token secrets a
       "repoPermissions": [
         "repo.content.read"
       ],
+      "resourceGroupIds": [
+        "stringstringstringstring"
+      ],
+      "resourceGroupPermissions": [
+        "repo.content.read"
+      ],
       "userPermissions": [
         "user.gated-repos-requests.write"
       ],
@@ -24204,6 +24493,8 @@ Status Code **200**
 |» permissions|[string]|true|none|none|
 |» repoIds|[string]|true|none|none|
 |» repoPermissions|[string]|true|none|none|
+|» resourceGroupIds|[string]|true|none|none|
+|» resourceGroupPermissions|[string]|true|none|none|
 |» userPermissions|[string]|true|none|none|
 |» endpointPatterns|[string]|true|none|none|
 |» last4|string|false|none|none|
@@ -24235,6 +24526,8 @@ Status Code **200**
 |» permissions|org.auditLog.write|
 |» repoPermissions|repo.content.read|
 |» repoPermissions|repo.write|
+|» resourceGroupPermissions|repo.content.read|
+|» resourceGroupPermissions|repo.write|
 |» userPermissions|user.gated-repos-requests.write|
 
 <aside class="warning">
@@ -24300,6 +24593,10 @@ curl https://huggingface.co/api/organizations/string/service-accounts/string/tok
       "stringstringstringstring"
     ],
     "repoPermissions": [],
+    "resourceGroupIds": [
+      "stringstringstringstring"
+    ],
+    "resourceGroupPermissions": [],
     "userPermissions": [],
     "endpointPatterns": [],
     "skipNetworkSecurity": false,
@@ -24321,6 +24618,10 @@ Create a new access token for a service account. Store the token securely - it c
     "stringstringstringstring"
   ],
   "repoPermissions": [],
+  "resourceGroupIds": [
+    "stringstringstringstring"
+  ],
+  "resourceGroupPermissions": [],
   "userPermissions": [],
   "endpointPatterns": [],
   "skipNetworkSecurity": false,
@@ -24337,8 +24638,10 @@ Create a new access token for a service account. Store the token securely - it c
 |body|body|object|false|none|
 |» displayName|body|string|false|Display name for the token|
 |» permissions|body|[string]|false|Org-wide permissions for this token|
-|» repoIds|body|[string]|false|Repositories to grant `repoPermissions` on. Can be repositories owned by the organization or any public repository. These override the org-wide permissions.|
+|» repoIds|body|[string]|false|Repositories to grant `repoPermissions` on. Can be repositories owned by the organization or any public repository. These override the org-wide and resource-group permissions.|
 |» repoPermissions|body|[string]|false|Permissions granted on the selected `repoIds`.|
+|» resourceGroupIds|body|[string]|false|Resource groups of the organization to grant `resourceGroupPermissions` on. Applies to every repository currently or later in those resource groups, and overrides the org-wide permissions.|
+|» resourceGroupPermissions|body|[string]|false|Permissions granted on the repositories of the selected `resourceGroupIds`.|
 |» userPermissions|body|[string]|false|Permissions on the service account itself.|
 |» endpointPatterns|body|[string]|false|Inference endpoint name patterns (wildcards allowed, e.g. `gpt2-*`) restricting the token's org-wide Inference Endpoint permissions to matching endpoints. Empty means all endpoints.|
 |» skipNetworkSecurity|body|boolean|false|Exempt this token from the org's Network Security enforcement (IP allowlist and content access policy). Enterprise Plus only, and requires the `org.networkSecurity.write` permission.|
@@ -24365,6 +24668,8 @@ Create a new access token for a service account. Store the token securely - it c
 |» permissions|org.auditLog.write|
 |» repoPermissions|repo.content.read|
 |» repoPermissions|repo.write|
+|» resourceGroupPermissions|repo.content.read|
+|» resourceGroupPermissions|repo.write|
 |» userPermissions|user.gated-repos-requests.write|
 
 > Example responses
@@ -24385,6 +24690,12 @@ Create a new access token for a service account. Store the token securely - it c
       "string"
     ],
     "repoPermissions": [
+      "string"
+    ],
+    "resourceGroupIds": [
+      "string"
+    ],
+    "resourceGroupPermissions": [
       "string"
     ],
     "userPermissions": [
@@ -24419,6 +24730,8 @@ Status Code **201**
 |» permissions|[string]|false|none|none|
 |» repoIds|[string]|true|none|none|
 |» repoPermissions|[string]|true|none|none|
+|» resourceGroupIds|[string]|true|none|none|
+|» resourceGroupPermissions|[string]|true|none|none|
 |» userPermissions|[string]|true|none|none|
 |» endpointPatterns|[string]|true|none|none|
 |» skipNetworkSecurity|boolean|true|none|none|
@@ -24492,6 +24805,12 @@ curl https://huggingface.co/api/organizations/string/service-accounts/string/tok
     "repoPermissions": [
       "repo.content.read"
     ],
+    "resourceGroupIds": [
+      "stringstringstringstring"
+    ],
+    "resourceGroupPermissions": [
+      "repo.content.read"
+    ],
     "userPermissions": [
       "user.gated-repos-requests.write"
     ],
@@ -24521,6 +24840,12 @@ Update the name and/or permissions of an existing service account token.
   "repoPermissions": [
     "repo.content.read"
   ],
+  "resourceGroupIds": [
+    "stringstringstringstring"
+  ],
+  "resourceGroupPermissions": [
+    "repo.content.read"
+  ],
   "userPermissions": [
     "user.gated-repos-requests.write"
   ],
@@ -24542,8 +24867,10 @@ Update the name and/or permissions of an existing service account token.
 |body|body|object|false|none|
 |» displayName|body|string|false|New display name for the token|
 |» permissions|body|[string]|false|Org-wide permissions for this token|
-|» repoIds|body|[string]|false|Repositories to grant `repoPermissions` on. Can be repositories owned by the organization or any public repository. These override the org-wide permissions.|
+|» repoIds|body|[string]|false|Repositories to grant `repoPermissions` on. Can be repositories owned by the organization or any public repository. These override the org-wide and resource-group permissions.|
 |» repoPermissions|body|[string]|false|Permissions granted on the selected `repoIds`.|
+|» resourceGroupIds|body|[string]|false|Resource groups of the organization to grant `resourceGroupPermissions` on. Applies to every repository currently or later in those resource groups, and overrides the org-wide permissions.|
+|» resourceGroupPermissions|body|[string]|false|Permissions granted on the repositories of the selected `resourceGroupIds`.|
 |» userPermissions|body|[string]|false|Permissions on the service account itself.|
 |» endpointPatterns|body|[string]|false|Inference endpoint name patterns (wildcards allowed, e.g. `gpt2-*`) restricting the token's org-wide Inference Endpoint permissions to matching endpoints. Empty means all endpoints.|
 |» skipNetworkSecurity|body|boolean|false|Exempt this token from the org's Network Security enforcement (IP allowlist and content access policy). Enterprise Plus only, and requires the `org.networkSecurity.write` permission.|
@@ -24570,6 +24897,8 @@ Update the name and/or permissions of an existing service account token.
 |» permissions|org.auditLog.write|
 |» repoPermissions|repo.content.read|
 |» repoPermissions|repo.write|
+|» resourceGroupPermissions|repo.content.read|
+|» resourceGroupPermissions|repo.write|
 |» userPermissions|user.gated-repos-requests.write|
 
 > Example responses
@@ -24587,6 +24916,12 @@ Update the name and/or permissions of an existing service account token.
     "string"
   ],
   "repoPermissions": [
+    "string"
+  ],
+  "resourceGroupIds": [
+    "string"
+  ],
+  "resourceGroupPermissions": [
     "string"
   ],
   "userPermissions": [
@@ -24617,6 +24952,8 @@ Status Code **200**
 |permissions|[string]|true|none|none|
 |repoIds|[string]|true|none|none|
 |repoPermissions|[string]|true|none|none|
+|resourceGroupIds|[string]|true|none|none|
+|resourceGroupPermissions|[string]|true|none|none|
 |userPermissions|[string]|true|none|none|
 |endpointPatterns|[string]|true|none|none|
 |skipNetworkSecurity|boolean|true|none|none|
@@ -24684,6 +25021,399 @@ Status Code **200**
 |» displayName|string|true|none|none|
 |» createdAt|string|true|none|none|
 |» last4|string|false|none|none|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth
+</aside>
+
+## Trusted publishers
+
+> Code samples
+
+```bash
+curl https://huggingface.co/api/organizations/string/service-accounts/string/trusted-publishers \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /api/organizations/{name}/service-accounts/{serviceAccountId}/trusted-publishers`
+
+List the [trusted publishers](https://huggingface.co/docs/hub/trusted-publishers) of a service account.
+
+<h3 id="trusted-publishers-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|name|path|string|true|none|
+|serviceAccountId|path|string|true|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+[
+  {
+    "_id": "stringstringstringstring",
+    "issuerUrl": "string",
+    "claims": {
+      "property1": {
+        "kind": "eq",
+        "value": "string"
+      },
+      "property2": {
+        "kind": "eq",
+        "value": "string"
+      }
+    },
+    "configuredBy": {
+      "_id": "stringstringstringstring",
+      "avatarUrl": "string",
+      "fullname": "string",
+      "name": "string",
+      "isHf": true,
+      "isHfAdmin": true,
+      "isMod": true,
+      "followerCount": 0,
+      "type": "org",
+      "plan": "team",
+      "isUserFollowing": true
+    },
+    "createdAt": "1970-01-01T00:00:00Z",
+    "lastUsedAt": "1970-01-01T00:00:00Z",
+    "capabilities": [
+      "inference-api"
+    ],
+    "permissions": [
+      "repo.content.read"
+    ]
+  }
+]
+```
+
+<h3 id="trusted-publishers-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Trusted publishers|Inline|
+
+<h3 id="trusted-publishers-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*anonymous*|[object]|false|none|none|
+|» _id|string|true|none|A hex string of 24 characters representing an ObjectId.|
+|» issuerUrl|string|true|none|none|
+|» claims|object|true|none|none|
+|» » **additionalProperties**|object|false|none|The claim must equal `value` (`eq`) or start with it (`prefix`).|
+|» » » *anyOf*|object|false|none|none|
+|» » » kind|string|true|none|none|
+|» » » value|string|true|none|none|
+|» » » *anyOf*|object|false|none|none|
+|» » » kind|string|true|none|none|
+|» » » value|string|true|none|none|
+|» configuredBy|object|false|none|none|
+|» » *oneOf*|object|false|none|none|
+|» » _id|string|true|none|A hex string of 24 characters representing an ObjectId.|
+|» » avatarUrl|string|true|none|none|
+|» » fullname|string|true|none|none|
+|» » name|string|true|none|none|
+|» » isHf|boolean|true|none|none|
+|» » isHfAdmin|boolean|true|none|none|
+|» » isMod|boolean|true|none|none|
+|» » followerCount|number|false|none|none|
+|» » type|string|true|none|none|
+|» » plan|string|false|none|none|
+|» » isUserFollowing|boolean|false|none|none|
+|» » *oneOf*|object|false|none|none|
+|» » _id|string|true|none|A hex string of 24 characters representing an ObjectId.|
+|» » avatarUrl|string|true|none|none|
+|» » fullname|string|true|none|none|
+|» » name|string|true|none|none|
+|» » isHf|boolean|true|none|none|
+|» » isHfAdmin|boolean|true|none|none|
+|» » isMod|boolean|true|none|none|
+|» » followerCount|number|false|none|none|
+|» » type|string|true|none|none|
+|» » isPro|boolean|true|none|none|
+|» » isUserFollowing|boolean|false|none|none|
+|» » primaryOrg|object|false|none|none|
+|» » » avatarUrl|string|true|none|none|
+|» » » fullname|string|true|none|none|
+|» » » name|string|true|none|none|
+|» » » type|string|true|none|none|
+|» » » isHf|boolean|true|none|none|
+|» » » isFollowing|boolean|false|none|none|
+|» » » plan|string|false|none|none|
+|» » » details|string|false|none|none|
+|» » » hasPrivateMembersList|boolean|false|none|none|
+|» » » userRole|string|false|none|none|
+|» » » numUsers|number|false|none|none|
+|» createdAt|string(date-time)|true|none|none|
+|» lastUsedAt|string(date-time)|false|none|none|
+|» capabilities|[string]|false|none|none|
+|» permissions|[string]|false|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|» » plan|team|
+|» » plan|enterprise|
+|» » plan|plus|
+|» » plan|academia|
+|» » » plan|team|
+|» » » plan|enterprise|
+|» » » plan|plus|
+|» » » plan|academia|
+|» » » userRole|admin|
+|» » » userRole|write|
+|» » » userRole|contributor|
+|» » » userRole|read|
+|» » » userRole|no_access|
+|» capabilities|inference-api|
+|» capabilities|request-gated-repos|
+|» permissions|repo.content.read|
+|» permissions|repo.content.write|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth
+</aside>
+
+## Trusted publisher
+
+> Code samples
+
+```bash
+curl https://huggingface.co/api/organizations/string/service-accounts/string/trusted-publishers \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "issuerUrl": "http://example.com",
+    "claims": {
+      "property1": {
+        "kind": "eq",
+        "value": "string"
+      },
+      "property2": {
+        "kind": "eq",
+        "value": "string"
+      }
+    },
+    "capabilities": [
+      "inference-api"
+    ]
+  }'
+```
+
+`POST /api/organizations/{name}/service-accounts/{serviceAccountId}/trusted-publishers`
+
+Let OIDC tokens matching the issuer and claims exchange for a short-lived token of the service account, with `resource` set to the service account name.
+
+> Body parameter
+
+```json
+{
+  "issuerUrl": "http://example.com",
+  "claims": {
+    "property1": {
+      "kind": "eq",
+      "value": "string"
+    },
+    "property2": {
+      "kind": "eq",
+      "value": "string"
+    }
+  },
+  "capabilities": [
+    "inference-api"
+  ]
+}
+```
+
+<h3 id="trusted-publisher-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|name|path|string|true|none|
+|serviceAccountId|path|string|true|none|
+|body|body|object|false|none|
+|» issuerUrl|body|string(uri)|true|URL of the OIDC issuer, e.g. `https://token.actions.githubusercontent.com`.|
+|» claims|body|object|true|Claims the OIDC token must match, by claim name. At least one is required.|
+|» » **additionalProperties**|body|object|false|The claim must equal `value` (`eq`) or start with it (`prefix`).|
+|» » » *anyOf*|body|object|false|none|
+|» » » kind|body|string|true|none|
+|» » » value|body|string|true|none|
+|» » » *anyOf*|body|object|false|none|
+|» » » kind|body|string|true|none|
+|» » » value|body|string|true|none|
+|» capabilities|body|[string]|false|Scopes granted to matching tokens on top of `gated-repos` (read the gated repos the account has access to).|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|» capabilities|inference-api|
+|» capabilities|request-gated-repos|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "_id": "stringstringstringstring",
+  "issuerUrl": "string",
+  "claims": {
+    "property1": {
+      "kind": "eq",
+      "value": "string"
+    },
+    "property2": {
+      "kind": "eq",
+      "value": "string"
+    }
+  },
+  "configuredBy": {
+    "_id": "stringstringstringstring",
+    "avatarUrl": "string",
+    "fullname": "string",
+    "name": "string",
+    "isHf": true,
+    "isHfAdmin": true,
+    "isMod": true,
+    "followerCount": 0,
+    "type": "org",
+    "plan": "team",
+    "isUserFollowing": true
+  },
+  "createdAt": "1970-01-01T00:00:00Z",
+  "lastUsedAt": "1970-01-01T00:00:00Z",
+  "capabilities": [
+    "inference-api"
+  ],
+  "permissions": [
+    "repo.content.read"
+  ]
+}
+```
+
+<h3 id="trusted-publisher-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Trusted publisher|Inline|
+
+<h3 id="trusted-publisher-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|_id|string|true|none|A hex string of 24 characters representing an ObjectId.|
+|issuerUrl|string|true|none|none|
+|claims|object|true|none|none|
+|» **additionalProperties**|object|false|none|The claim must equal `value` (`eq`) or start with it (`prefix`).|
+|» » *anyOf*|object|false|none|none|
+|» » kind|string|true|none|none|
+|» » value|string|true|none|none|
+|» » *anyOf*|object|false|none|none|
+|» » kind|string|true|none|none|
+|» » value|string|true|none|none|
+|configuredBy|object|false|none|none|
+|» *oneOf*|object|false|none|none|
+|» _id|string|true|none|A hex string of 24 characters representing an ObjectId.|
+|» avatarUrl|string|true|none|none|
+|» fullname|string|true|none|none|
+|» name|string|true|none|none|
+|» isHf|boolean|true|none|none|
+|» isHfAdmin|boolean|true|none|none|
+|» isMod|boolean|true|none|none|
+|» followerCount|number|false|none|none|
+|» type|string|true|none|none|
+|» plan|string|false|none|none|
+|» isUserFollowing|boolean|false|none|none|
+|» *oneOf*|object|false|none|none|
+|» _id|string|true|none|A hex string of 24 characters representing an ObjectId.|
+|» avatarUrl|string|true|none|none|
+|» fullname|string|true|none|none|
+|» name|string|true|none|none|
+|» isHf|boolean|true|none|none|
+|» isHfAdmin|boolean|true|none|none|
+|» isMod|boolean|true|none|none|
+|» followerCount|number|false|none|none|
+|» type|string|true|none|none|
+|» isPro|boolean|true|none|none|
+|» isUserFollowing|boolean|false|none|none|
+|» primaryOrg|object|false|none|none|
+|» » avatarUrl|string|true|none|none|
+|» » fullname|string|true|none|none|
+|» » name|string|true|none|none|
+|» » type|string|true|none|none|
+|» » isHf|boolean|true|none|none|
+|» » isFollowing|boolean|false|none|none|
+|» » plan|string|false|none|none|
+|» » details|string|false|none|none|
+|» » hasPrivateMembersList|boolean|false|none|none|
+|» » userRole|string|false|none|none|
+|» » numUsers|number|false|none|none|
+|createdAt|string(date-time)|true|none|none|
+|lastUsedAt|string(date-time)|false|none|none|
+|capabilities|[string]|false|none|none|
+|permissions|[string]|false|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|» plan|team|
+|» plan|enterprise|
+|» plan|plus|
+|» plan|academia|
+|» » plan|team|
+|» » plan|enterprise|
+|» » plan|plus|
+|» » plan|academia|
+|» » userRole|admin|
+|» » userRole|write|
+|» » userRole|contributor|
+|» » userRole|read|
+|» » userRole|no_access|
+|capabilities|inference-api|
+|capabilities|request-gated-repos|
+|permissions|repo.content.read|
+|permissions|repo.content.write|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth
+</aside>
+
+## Trusted publisher
+
+> Code samples
+
+```bash
+curl https://huggingface.co/api/organizations/string/service-accounts/string/trusted-publishers/string \
+  -X DELETE \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`DELETE /api/organizations/{name}/service-accounts/{serviceAccountId}/trusted-publishers/{publisherId}`
+
+<h3 id="trusted-publisher-1-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|name|path|string|true|none|
+|serviceAccountId|path|string|true|none|
+|publisherId|path|string|true|none|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -43900,7 +44630,7 @@ curl https://huggingface.co/api/settings/inference-providers/api-key \
   -H 'Content-Type: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
-    "provider": "baseten",
+    "provider": "fal-ai",
     "apiKey": "string"
   }'
 ```
@@ -43911,7 +44641,7 @@ curl https://huggingface.co/api/settings/inference-providers/api-key \
 
 ```json
 {
-  "provider": "baseten",
+  "provider": "fal-ai",
   "apiKey": "string"
 }
 ```
@@ -43928,24 +44658,9 @@ curl https://huggingface.co/api/settings/inference-providers/api-key \
 
 |Parameter|Value|
 |---|---|
-|» provider|baseten|
-|» provider|cohere|
-|» provider|cerebras|
-|» provider|deepinfra|
 |» provider|fal-ai|
-|» provider|featherless-ai|
-|» provider|fireworks-ai|
-|» provider|groq|
-|» provider|novita|
-|» provider|nscale|
-|» provider|openrouter|
-|» provider|ovhcloud|
-|» provider|publicai|
 |» provider|replicate|
-|» provider|scaleway|
-|» provider|together|
 |» provider|wavespeed|
-|» provider|zai-org|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:

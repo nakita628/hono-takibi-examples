@@ -2374,7 +2374,7 @@ curl https://api.vapi.ai/assistant \
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |body|body|[CreateAssistantDTO](#schemacreateassistantdto)|true|none|
-|» transcriber|body|[AssemblyAITranscriber](#schemaassemblyaitranscriber) \| [AzureSpeechTranscriber](#schemaazurespeechtranscriber) \| [CustomTranscriber](#schemacustomtranscriber) \| [DeepgramTranscriber](#schemadeepgramtranscriber) \| [ElevenLabsTranscriber](#schemaelevenlabstranscriber) \| [GladiaTranscriber](#schemagladiatranscriber) \| [GoogleTranscriber](#schemagoogletranscriber) \| [SpeechmaticsTranscriber](#schemaspeechmaticstranscriber) \| [TalkscriberTranscriber](#schematalkscribertranscriber) \| [OpenAITranscriber](#schemaopenaitranscriber) \| [CartesiaTranscriber](#schemacartesiatranscriber) \| [SonioxTranscriber](#schemasonioxtranscriber) \| [XaiTranscriber](#schemaxaitranscriber) \| [VapiTranscriber](#schemavapitranscriber)|false|These are the options for the assistant's transcriber.|
+|» transcriber|body|[AssemblyAITranscriber](#schemaassemblyaitranscriber) \| [AzureSpeechTranscriber](#schemaazurespeechtranscriber) \| [CustomTranscriber](#schemacustomtranscriber) \| [DeepgramTranscriber](#schemadeepgramtranscriber) \| [ElevenLabsTranscriber](#schemaelevenlabstranscriber) \| [GladiaTranscriber](#schemagladiatranscriber) \| [GoogleTranscriber](#schemagoogletranscriber) \| [SpeechmaticsTranscriber](#schemaspeechmaticstranscriber) \| [TalkscriberTranscriber](#schematalkscribertranscriber) \| [OpenAITranscriber](#schemaopenaitranscriber) \| [CartesiaTranscriber](#schemacartesiatranscriber) \| [SonioxTranscriber](#schemasonioxtranscriber) \| [XaiTranscriber](#schemaxaitranscriber) \| [Reson8Transcriber](#schemareson8transcriber) \| [VapiTranscriber](#schemavapitranscriber)|false|These are the options for the assistant's transcriber.|
 |» » *oneOf*|body|[AssemblyAITranscriber](#schemaassemblyaitranscriber)|false|none|
 |» » *oneOf*|body|[AzureSpeechTranscriber](#schemaazurespeechtranscriber)|false|none|
 |» » *oneOf*|body|[CustomTranscriber](#schemacustomtranscriber)|false|none|
@@ -2388,6 +2388,7 @@ curl https://api.vapi.ai/assistant \
 |» » *oneOf*|body|[CartesiaTranscriber](#schemacartesiatranscriber)|false|none|
 |» » *oneOf*|body|[SonioxTranscriber](#schemasonioxtranscriber)|false|none|
 |» » *oneOf*|body|[XaiTranscriber](#schemaxaitranscriber)|false|none|
+|» » *oneOf*|body|[Reson8Transcriber](#schemareson8transcriber)|false|none|
 |» » *oneOf*|body|[VapiTranscriber](#schemavapitranscriber)|false|none|
 |» model|body|[AnthropicModel](#schemaanthropicmodel) \| [AnthropicBedrockModel](#schemaanthropicbedrockmodel) \| [AnyscaleModel](#schemaanyscalemodel) \| [CerebrasModel](#schemacerebrasmodel) \| [CustomLLMModel](#schemacustomllmmodel) \| [DeepInfraModel](#schemadeepinframodel) \| [DeepSeekModel](#schemadeepseekmodel) \| [GoogleModel](#schemagooglemodel) \| [GroqModel](#schemagroqmodel) \| [InflectionAIModel](#schemainflectionaimodel) \| [MinimaxLLMModel](#schemaminimaxllmmodel) \| [OpenAIModel](#schemaopenaimodel) \| [OpenRouterModel](#schemaopenroutermodel) \| [PerplexityAIModel](#schemaperplexityaimodel) \| [TogetherAIModel](#schematogetheraimodel) \| [XaiModel](#schemaxaimodel) \| [VapiModel](#schemavapimodel)|false|These are the options for the assistant's LLM.|
 |» » *oneOf*|body|[AnthropicModel](#schemaanthropicmodel)|false|none|
@@ -2439,7 +2440,7 @@ curl https://api.vapi.ai/assistant \
 |» clientMessages|body|[string]|false|These are the messages that will be sent to your Client SDKs. Default is conversation-update,function-call,hang,model-output,speech-update,status-update,transfer-update,transcript,tool-calls,user-interrupted,voice-input,workflow.node.started,assistant.started. You can check the shape of the messages in ClientMessage schema.|
 |» serverMessages|body|[string]|false|These are the messages that will be sent to your Server URL. Default is conversation-update,end-of-call-report,function-call,hang,speech-update,status-update,tool-calls,transfer-destination-request,handoff-destination-request,user-interrupted,assistant.started. You can check the shape of the messages in ServerMessage schema.|
 |» maxDurationSeconds|body|number|false|This is the maximum number of seconds that the call will last. When the call reaches this duration, it will be ended.<br><br>@default 600 (10 minutes)|
-|» backgroundSound|body|string \| string(uri)|false|This is the background sound in the call. Default for phone calls is 'office' and default for web calls is 'off'.<br>You can also provide a custom sound by providing a URL to an audio file.|
+|» backgroundSound|body|string \| string(uri)|false|This is the background sound in the call. Default for phone calls is 'office' and default for web calls is 'off'.<br>Bundled sounds: 'office', 'white-noise', 'city', 'crowd' and 'farm'. GPT Live assistants don't play 'office'.<br>You can also provide a custom sound by providing a URL to an audio file.|
 |» » *oneOf*|body|string|false|none|
 |» » *oneOf*|body|string(uri)|false|none|
 |» modelOutputInMessagesEnabled|body|boolean|false|This determines whether the model's output is used in conversation history rather than the transcription of assistant's speech.<br><br>@default false|
@@ -2453,7 +2454,7 @@ curl https://api.vapi.ai/assistant \
 |» » tags|body|[string]|true|This is an array of tags to be added to the Langfuse trace. Tags allow you to categorize and filter traces. https://langfuse.com/docs/tracing-features/tags|
 |» » metadata|body|object|false|This is a JSON object that will be added to the Langfuse trace. Traces can be enriched with metadata to better understand your users, application, and experiments. https://langfuse.com/docs/tracing-features/metadata<br>By default it includes the call metadata, assistant metadata, and assistant overrides.|
 |» » *oneOf*|body|[LangfuseObservabilityPlan](#schemalangfuseobservabilityplan)|false|none|
-|» credentials|body|[[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto) \| [CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto) \| [CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto) \| [CreateAssemblyAICredentialDTO](#schemacreateassemblyaicredentialdto) \| [CreateAzureCredentialDTO](#schemacreateazurecredentialdto) \| [CreateAzureOpenAICredentialDTO](#schemacreateazureopenaicredentialdto) \| [CreateByoSipTrunkCredentialDTO](#schemacreatebyosiptrunkcredentialdto) \| [CreateCartesiaCredentialDTO](#schemacreatecartesiacredentialdto) \| [CreateCerebrasCredentialDTO](#schemacreatecerebrascredentialdto) \| [CreateCloudflareCredentialDTO](#schemacreatecloudflarecredentialdto) \| [CreateCustomLLMCredentialDTO](#schemacreatecustomllmcredentialdto) \| [CreateDeepgramCredentialDTO](#schemacreatedeepgramcredentialdto) \| [CreateDeepInfraCredentialDTO](#schemacreatedeepinfracredentialdto) \| [CreateDeepSeekCredentialDTO](#schemacreatedeepseekcredentialdto) \| [CreateElevenLabsCredentialDTO](#schemacreateelevenlabscredentialdto) \| [CreateGcpCredentialDTO](#schemacreategcpcredentialdto) \| [CreateGladiaCredentialDTO](#schemacreategladiacredentialdto) \| [CreateGoHighLevelCredentialDTO](#schemacreategohighlevelcredentialdto) \| [CreateGoogleCredentialDTO](#schemacreategooglecredentialdto) \| [CreateGroqCredentialDTO](#schemacreategroqcredentialdto) \| [CreateHumeCredentialDTO](#schemacreatehumecredentialdto) \| [CreateInflectionAICredentialDTO](#schemacreateinflectionaicredentialdto) \| [CreateLangfuseCredentialDTO](#schemacreatelangfusecredentialdto) \| [CreateLmntCredentialDTO](#schemacreatelmntcredentialdto) \| [CreateMakeCredentialDTO](#schemacreatemakecredentialdto) \| [CreateMistralCredentialDTO](#schemacreatemistralcredentialdto) \| [CreateNeuphonicCredentialDTO](#schemacreateneuphoniccredentialdto) \| [CreateOpenAICredentialDTO](#schemacreateopenaicredentialdto) \| [CreateOpenRouterCredentialDTO](#schemacreateopenroutercredentialdto) \| [CreatePerplexityAICredentialDTO](#schemacreateperplexityaicredentialdto) \| [CreatePlayHTCredentialDTO](#schemacreateplayhtcredentialdto) \| [CreateRimeAICredentialDTO](#schemacreaterimeaicredentialdto) \| [CreateRunpodCredentialDTO](#schemacreaterunpodcredentialdto) \| [CreateS3CredentialDTO](#schemacreates3credentialdto) \| [CreateS3CompatibleCredentialDTO](#schemacreates3compatiblecredentialdto) \| [CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto) \| [CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto) \| [CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto) \| [CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto) \| [CreateTavusCredentialDTO](#schemacreatetavuscredentialdto) \| [CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto) \| [CreateTwilioCredentialDTO](#schemacreatetwiliocredentialdto) \| [CreateVonageCredentialDTO](#schemacreatevonagecredentialdto) \| [CreateWebhookCredentialDTO](#schemacreatewebhookcredentialdto) \| [CreateCustomCredentialDTO](#schemacreatecustomcredentialdto) \| [CreateXAiCredentialDTO](#schemacreatexaicredentialdto) \| [CreateMicrosoftCredentialDTO](#schemacreatemicrosoftcredentialdto) \| [CreateGoogleCalendarOAuth2ClientCredentialDTO](#schemacreategooglecalendaroauth2clientcredentialdto) \| [CreateGoogleCalendarOAuth2AuthorizationCredentialDTO](#schemacreategooglecalendaroauth2authorizationcredentialdto) \| [CreateGoogleSheetsOAuth2AuthorizationCredentialDTO](#schemacreategooglesheetsoauth2authorizationcredentialdto) \| [CreateSlackOAuth2AuthorizationCredentialDTO](#schemacreateslackoauth2authorizationcredentialdto) \| [CreateGoHighLevelMCPCredentialDTO](#schemacreategohighlevelmcpcredentialdto) \| [CreateInworldCredentialDTO](#schemacreateinworldcredentialdto) \| [CreateMinimaxCredentialDTO](#schemacreateminimaxcredentialdto) \| [CreateWellSaidCredentialDTO](#schemacreatewellsaidcredentialdto) \| [CreateEmailCredentialDTO](#schemacreateemailcredentialdto) \| [CreateSlackWebhookCredentialDTO](#schemacreateslackwebhookcredentialdto)]|false|These are dynamic credentials that will be used for the assistant calls. By default, all the credentials are available for use in the call but you can supplement an additional credentials using this. Dynamic credentials override existing credentials.|
+|» credentials|body|[[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto) \| [CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto) \| [CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto) \| [CreateAssemblyAICredentialDTO](#schemacreateassemblyaicredentialdto) \| [CreateAzureCredentialDTO](#schemacreateazurecredentialdto) \| [CreateAzureOpenAICredentialDTO](#schemacreateazureopenaicredentialdto) \| [CreateByoSipTrunkCredentialDTO](#schemacreatebyosiptrunkcredentialdto) \| [CreateCartesiaCredentialDTO](#schemacreatecartesiacredentialdto) \| [CreateCerebrasCredentialDTO](#schemacreatecerebrascredentialdto) \| [CreateCloudflareCredentialDTO](#schemacreatecloudflarecredentialdto) \| [CreateCustomLLMCredentialDTO](#schemacreatecustomllmcredentialdto) \| [CreateDeepgramCredentialDTO](#schemacreatedeepgramcredentialdto) \| [CreateDeepInfraCredentialDTO](#schemacreatedeepinfracredentialdto) \| [CreateDeepSeekCredentialDTO](#schemacreatedeepseekcredentialdto) \| [CreateElevenLabsCredentialDTO](#schemacreateelevenlabscredentialdto) \| [CreateGcpCredentialDTO](#schemacreategcpcredentialdto) \| [CreateGladiaCredentialDTO](#schemacreategladiacredentialdto) \| [CreateGoHighLevelCredentialDTO](#schemacreategohighlevelcredentialdto) \| [CreateGoogleCredentialDTO](#schemacreategooglecredentialdto) \| [CreateGroqCredentialDTO](#schemacreategroqcredentialdto) \| [CreateHumeCredentialDTO](#schemacreatehumecredentialdto) \| [CreateInflectionAICredentialDTO](#schemacreateinflectionaicredentialdto) \| [CreateLangfuseCredentialDTO](#schemacreatelangfusecredentialdto) \| [CreateLmntCredentialDTO](#schemacreatelmntcredentialdto) \| [CreateMakeCredentialDTO](#schemacreatemakecredentialdto) \| [CreateMistralCredentialDTO](#schemacreatemistralcredentialdto) \| [CreateNeuphonicCredentialDTO](#schemacreateneuphoniccredentialdto) \| [CreateOpenAICredentialDTO](#schemacreateopenaicredentialdto) \| [CreateOpenRouterCredentialDTO](#schemacreateopenroutercredentialdto) \| [CreatePerplexityAICredentialDTO](#schemacreateperplexityaicredentialdto) \| [CreatePlayHTCredentialDTO](#schemacreateplayhtcredentialdto) \| [CreateRimeAICredentialDTO](#schemacreaterimeaicredentialdto) \| [CreateRunpodCredentialDTO](#schemacreaterunpodcredentialdto) \| [CreateS3CredentialDTO](#schemacreates3credentialdto) \| [CreateS3CompatibleCredentialDTO](#schemacreates3compatiblecredentialdto) \| [CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto) \| [CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto) \| [CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto) \| [CreateReson8CredentialDTO](#schemacreatereson8credentialdto) \| [CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto) \| [CreateTavusCredentialDTO](#schemacreatetavuscredentialdto) \| [CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto) \| [CreateTwilioCredentialDTO](#schemacreatetwiliocredentialdto) \| [CreateVonageCredentialDTO](#schemacreatevonagecredentialdto) \| [CreateWebhookCredentialDTO](#schemacreatewebhookcredentialdto) \| [CreateCustomCredentialDTO](#schemacreatecustomcredentialdto) \| [CreateXAiCredentialDTO](#schemacreatexaicredentialdto) \| [CreateMicrosoftCredentialDTO](#schemacreatemicrosoftcredentialdto) \| [CreateGoogleCalendarOAuth2ClientCredentialDTO](#schemacreategooglecalendaroauth2clientcredentialdto) \| [CreateGoogleCalendarOAuth2AuthorizationCredentialDTO](#schemacreategooglecalendaroauth2authorizationcredentialdto) \| [CreateGoogleSheetsOAuth2AuthorizationCredentialDTO](#schemacreategooglesheetsoauth2authorizationcredentialdto) \| [CreateSlackOAuth2AuthorizationCredentialDTO](#schemacreateslackoauth2authorizationcredentialdto) \| [CreateGoHighLevelMCPCredentialDTO](#schemacreategohighlevelmcpcredentialdto) \| [CreateInworldCredentialDTO](#schemacreateinworldcredentialdto) \| [CreateMinimaxCredentialDTO](#schemacreateminimaxcredentialdto) \| [CreateWellSaidCredentialDTO](#schemacreatewellsaidcredentialdto) \| [CreateEmailCredentialDTO](#schemacreateemailcredentialdto) \| [CreateSlackWebhookCredentialDTO](#schemacreateslackwebhookcredentialdto)]|false|These are dynamic credentials that will be used for the assistant calls. By default, all the credentials are available for use in the call but you can supplement an additional credentials using this. Dynamic credentials override existing credentials.|
 |» » *oneOf*|body|[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto)|false|none|
 |» » *oneOf*|body|[CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto)|false|none|
 |» » *oneOf*|body|[CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto)|false|none|
@@ -2492,6 +2493,7 @@ curl https://api.vapi.ai/assistant \
 |» » *oneOf*|body|[CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto)|false|none|
 |» » *oneOf*|body|[CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto)|false|none|
 |» » *oneOf*|body|[CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto)|false|none|
+|» » *oneOf*|body|[CreateReson8CredentialDTO](#schemacreatereson8credentialdto)|false|none|
 |» » *oneOf*|body|[CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto)|false|none|
 |» » *oneOf*|body|[CreateTavusCredentialDTO](#schemacreatetavuscredentialdto)|false|none|
 |» » *oneOf*|body|[CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto)|false|none|
@@ -2683,6 +2685,10 @@ curl https://api.vapi.ai/assistant \
 |» serverMessages|call.artifact.upload|
 |» » *oneOf*|off|
 |» » *oneOf*|office|
+|» » *oneOf*|white-noise|
+|» » *oneOf*|city|
+|» » *oneOf*|crowd|
+|» » *oneOf*|farm|
 |» » provider|langfuse|
 |» » » » type|string|
 |» » » » type|number|
@@ -6672,7 +6678,7 @@ curl https://api.vapi.ai/assistant/497f6eca-6276-4993-bfeb-53cbbbba6f08 \
 |---|---|---|---|---|
 |id|path|string(uuid)|true|The unique identifier for the resource.|
 |body|body|[UpdateAssistantDTO](#schemaupdateassistantdto)|true|none|
-|» transcriber|body|[AssemblyAITranscriber](#schemaassemblyaitranscriber) \| [AzureSpeechTranscriber](#schemaazurespeechtranscriber) \| [CustomTranscriber](#schemacustomtranscriber) \| [DeepgramTranscriber](#schemadeepgramtranscriber) \| [ElevenLabsTranscriber](#schemaelevenlabstranscriber) \| [GladiaTranscriber](#schemagladiatranscriber) \| [GoogleTranscriber](#schemagoogletranscriber) \| [SpeechmaticsTranscriber](#schemaspeechmaticstranscriber) \| [TalkscriberTranscriber](#schematalkscribertranscriber) \| [OpenAITranscriber](#schemaopenaitranscriber) \| [CartesiaTranscriber](#schemacartesiatranscriber) \| [SonioxTranscriber](#schemasonioxtranscriber) \| [XaiTranscriber](#schemaxaitranscriber) \| [VapiTranscriber](#schemavapitranscriber)|false|These are the options for the assistant's transcriber.|
+|» transcriber|body|[AssemblyAITranscriber](#schemaassemblyaitranscriber) \| [AzureSpeechTranscriber](#schemaazurespeechtranscriber) \| [CustomTranscriber](#schemacustomtranscriber) \| [DeepgramTranscriber](#schemadeepgramtranscriber) \| [ElevenLabsTranscriber](#schemaelevenlabstranscriber) \| [GladiaTranscriber](#schemagladiatranscriber) \| [GoogleTranscriber](#schemagoogletranscriber) \| [SpeechmaticsTranscriber](#schemaspeechmaticstranscriber) \| [TalkscriberTranscriber](#schematalkscribertranscriber) \| [OpenAITranscriber](#schemaopenaitranscriber) \| [CartesiaTranscriber](#schemacartesiatranscriber) \| [SonioxTranscriber](#schemasonioxtranscriber) \| [XaiTranscriber](#schemaxaitranscriber) \| [Reson8Transcriber](#schemareson8transcriber) \| [VapiTranscriber](#schemavapitranscriber)|false|These are the options for the assistant's transcriber.|
 |» » *oneOf*|body|[AssemblyAITranscriber](#schemaassemblyaitranscriber)|false|none|
 |» » *oneOf*|body|[AzureSpeechTranscriber](#schemaazurespeechtranscriber)|false|none|
 |» » *oneOf*|body|[CustomTranscriber](#schemacustomtranscriber)|false|none|
@@ -6686,6 +6692,7 @@ curl https://api.vapi.ai/assistant/497f6eca-6276-4993-bfeb-53cbbbba6f08 \
 |» » *oneOf*|body|[CartesiaTranscriber](#schemacartesiatranscriber)|false|none|
 |» » *oneOf*|body|[SonioxTranscriber](#schemasonioxtranscriber)|false|none|
 |» » *oneOf*|body|[XaiTranscriber](#schemaxaitranscriber)|false|none|
+|» » *oneOf*|body|[Reson8Transcriber](#schemareson8transcriber)|false|none|
 |» » *oneOf*|body|[VapiTranscriber](#schemavapitranscriber)|false|none|
 |» model|body|[AnthropicModel](#schemaanthropicmodel) \| [AnthropicBedrockModel](#schemaanthropicbedrockmodel) \| [AnyscaleModel](#schemaanyscalemodel) \| [CerebrasModel](#schemacerebrasmodel) \| [CustomLLMModel](#schemacustomllmmodel) \| [DeepInfraModel](#schemadeepinframodel) \| [DeepSeekModel](#schemadeepseekmodel) \| [GoogleModel](#schemagooglemodel) \| [GroqModel](#schemagroqmodel) \| [InflectionAIModel](#schemainflectionaimodel) \| [MinimaxLLMModel](#schemaminimaxllmmodel) \| [OpenAIModel](#schemaopenaimodel) \| [OpenRouterModel](#schemaopenroutermodel) \| [PerplexityAIModel](#schemaperplexityaimodel) \| [TogetherAIModel](#schematogetheraimodel) \| [XaiModel](#schemaxaimodel) \| [VapiModel](#schemavapimodel)|false|These are the options for the assistant's LLM.|
 |» » *oneOf*|body|[AnthropicModel](#schemaanthropicmodel)|false|none|
@@ -6737,7 +6744,7 @@ curl https://api.vapi.ai/assistant/497f6eca-6276-4993-bfeb-53cbbbba6f08 \
 |» clientMessages|body|[string]|false|These are the messages that will be sent to your Client SDKs. Default is conversation-update,function-call,hang,model-output,speech-update,status-update,transfer-update,transcript,tool-calls,user-interrupted,voice-input,workflow.node.started,assistant.started. You can check the shape of the messages in ClientMessage schema.|
 |» serverMessages|body|[string]|false|These are the messages that will be sent to your Server URL. Default is conversation-update,end-of-call-report,function-call,hang,speech-update,status-update,tool-calls,transfer-destination-request,handoff-destination-request,user-interrupted,assistant.started. You can check the shape of the messages in ServerMessage schema.|
 |» maxDurationSeconds|body|number|false|This is the maximum number of seconds that the call will last. When the call reaches this duration, it will be ended.<br><br>@default 600 (10 minutes)|
-|» backgroundSound|body|string \| string(uri)|false|This is the background sound in the call. Default for phone calls is 'office' and default for web calls is 'off'.<br>You can also provide a custom sound by providing a URL to an audio file.|
+|» backgroundSound|body|string \| string(uri)|false|This is the background sound in the call. Default for phone calls is 'office' and default for web calls is 'off'.<br>Bundled sounds: 'office', 'white-noise', 'city', 'crowd' and 'farm'. GPT Live assistants don't play 'office'.<br>You can also provide a custom sound by providing a URL to an audio file.|
 |» » *oneOf*|body|string|false|none|
 |» » *oneOf*|body|string(uri)|false|none|
 |» modelOutputInMessagesEnabled|body|boolean|false|This determines whether the model's output is used in conversation history rather than the transcription of assistant's speech.<br><br>@default false|
@@ -6751,7 +6758,7 @@ curl https://api.vapi.ai/assistant/497f6eca-6276-4993-bfeb-53cbbbba6f08 \
 |» » tags|body|[string]|true|This is an array of tags to be added to the Langfuse trace. Tags allow you to categorize and filter traces. https://langfuse.com/docs/tracing-features/tags|
 |» » metadata|body|object|false|This is a JSON object that will be added to the Langfuse trace. Traces can be enriched with metadata to better understand your users, application, and experiments. https://langfuse.com/docs/tracing-features/metadata<br>By default it includes the call metadata, assistant metadata, and assistant overrides.|
 |» » *oneOf*|body|[LangfuseObservabilityPlan](#schemalangfuseobservabilityplan)|false|none|
-|» credentials|body|[[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto) \| [CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto) \| [CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto) \| [CreateAssemblyAICredentialDTO](#schemacreateassemblyaicredentialdto) \| [CreateAzureCredentialDTO](#schemacreateazurecredentialdto) \| [CreateAzureOpenAICredentialDTO](#schemacreateazureopenaicredentialdto) \| [CreateByoSipTrunkCredentialDTO](#schemacreatebyosiptrunkcredentialdto) \| [CreateCartesiaCredentialDTO](#schemacreatecartesiacredentialdto) \| [CreateCerebrasCredentialDTO](#schemacreatecerebrascredentialdto) \| [CreateCloudflareCredentialDTO](#schemacreatecloudflarecredentialdto) \| [CreateCustomLLMCredentialDTO](#schemacreatecustomllmcredentialdto) \| [CreateDeepgramCredentialDTO](#schemacreatedeepgramcredentialdto) \| [CreateDeepInfraCredentialDTO](#schemacreatedeepinfracredentialdto) \| [CreateDeepSeekCredentialDTO](#schemacreatedeepseekcredentialdto) \| [CreateElevenLabsCredentialDTO](#schemacreateelevenlabscredentialdto) \| [CreateGcpCredentialDTO](#schemacreategcpcredentialdto) \| [CreateGladiaCredentialDTO](#schemacreategladiacredentialdto) \| [CreateGoHighLevelCredentialDTO](#schemacreategohighlevelcredentialdto) \| [CreateGoogleCredentialDTO](#schemacreategooglecredentialdto) \| [CreateGroqCredentialDTO](#schemacreategroqcredentialdto) \| [CreateHumeCredentialDTO](#schemacreatehumecredentialdto) \| [CreateInflectionAICredentialDTO](#schemacreateinflectionaicredentialdto) \| [CreateLangfuseCredentialDTO](#schemacreatelangfusecredentialdto) \| [CreateLmntCredentialDTO](#schemacreatelmntcredentialdto) \| [CreateMakeCredentialDTO](#schemacreatemakecredentialdto) \| [CreateMistralCredentialDTO](#schemacreatemistralcredentialdto) \| [CreateNeuphonicCredentialDTO](#schemacreateneuphoniccredentialdto) \| [CreateOpenAICredentialDTO](#schemacreateopenaicredentialdto) \| [CreateOpenRouterCredentialDTO](#schemacreateopenroutercredentialdto) \| [CreatePerplexityAICredentialDTO](#schemacreateperplexityaicredentialdto) \| [CreatePlayHTCredentialDTO](#schemacreateplayhtcredentialdto) \| [CreateRimeAICredentialDTO](#schemacreaterimeaicredentialdto) \| [CreateRunpodCredentialDTO](#schemacreaterunpodcredentialdto) \| [CreateS3CredentialDTO](#schemacreates3credentialdto) \| [CreateS3CompatibleCredentialDTO](#schemacreates3compatiblecredentialdto) \| [CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto) \| [CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto) \| [CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto) \| [CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto) \| [CreateTavusCredentialDTO](#schemacreatetavuscredentialdto) \| [CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto) \| [CreateTwilioCredentialDTO](#schemacreatetwiliocredentialdto) \| [CreateVonageCredentialDTO](#schemacreatevonagecredentialdto) \| [CreateWebhookCredentialDTO](#schemacreatewebhookcredentialdto) \| [CreateCustomCredentialDTO](#schemacreatecustomcredentialdto) \| [CreateXAiCredentialDTO](#schemacreatexaicredentialdto) \| [CreateMicrosoftCredentialDTO](#schemacreatemicrosoftcredentialdto) \| [CreateGoogleCalendarOAuth2ClientCredentialDTO](#schemacreategooglecalendaroauth2clientcredentialdto) \| [CreateGoogleCalendarOAuth2AuthorizationCredentialDTO](#schemacreategooglecalendaroauth2authorizationcredentialdto) \| [CreateGoogleSheetsOAuth2AuthorizationCredentialDTO](#schemacreategooglesheetsoauth2authorizationcredentialdto) \| [CreateSlackOAuth2AuthorizationCredentialDTO](#schemacreateslackoauth2authorizationcredentialdto) \| [CreateGoHighLevelMCPCredentialDTO](#schemacreategohighlevelmcpcredentialdto) \| [CreateInworldCredentialDTO](#schemacreateinworldcredentialdto) \| [CreateMinimaxCredentialDTO](#schemacreateminimaxcredentialdto) \| [CreateWellSaidCredentialDTO](#schemacreatewellsaidcredentialdto) \| [CreateEmailCredentialDTO](#schemacreateemailcredentialdto) \| [CreateSlackWebhookCredentialDTO](#schemacreateslackwebhookcredentialdto)]|false|These are dynamic credentials that will be used for the assistant calls. By default, all the credentials are available for use in the call but you can supplement an additional credentials using this. Dynamic credentials override existing credentials.|
+|» credentials|body|[[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto) \| [CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto) \| [CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto) \| [CreateAssemblyAICredentialDTO](#schemacreateassemblyaicredentialdto) \| [CreateAzureCredentialDTO](#schemacreateazurecredentialdto) \| [CreateAzureOpenAICredentialDTO](#schemacreateazureopenaicredentialdto) \| [CreateByoSipTrunkCredentialDTO](#schemacreatebyosiptrunkcredentialdto) \| [CreateCartesiaCredentialDTO](#schemacreatecartesiacredentialdto) \| [CreateCerebrasCredentialDTO](#schemacreatecerebrascredentialdto) \| [CreateCloudflareCredentialDTO](#schemacreatecloudflarecredentialdto) \| [CreateCustomLLMCredentialDTO](#schemacreatecustomllmcredentialdto) \| [CreateDeepgramCredentialDTO](#schemacreatedeepgramcredentialdto) \| [CreateDeepInfraCredentialDTO](#schemacreatedeepinfracredentialdto) \| [CreateDeepSeekCredentialDTO](#schemacreatedeepseekcredentialdto) \| [CreateElevenLabsCredentialDTO](#schemacreateelevenlabscredentialdto) \| [CreateGcpCredentialDTO](#schemacreategcpcredentialdto) \| [CreateGladiaCredentialDTO](#schemacreategladiacredentialdto) \| [CreateGoHighLevelCredentialDTO](#schemacreategohighlevelcredentialdto) \| [CreateGoogleCredentialDTO](#schemacreategooglecredentialdto) \| [CreateGroqCredentialDTO](#schemacreategroqcredentialdto) \| [CreateHumeCredentialDTO](#schemacreatehumecredentialdto) \| [CreateInflectionAICredentialDTO](#schemacreateinflectionaicredentialdto) \| [CreateLangfuseCredentialDTO](#schemacreatelangfusecredentialdto) \| [CreateLmntCredentialDTO](#schemacreatelmntcredentialdto) \| [CreateMakeCredentialDTO](#schemacreatemakecredentialdto) \| [CreateMistralCredentialDTO](#schemacreatemistralcredentialdto) \| [CreateNeuphonicCredentialDTO](#schemacreateneuphoniccredentialdto) \| [CreateOpenAICredentialDTO](#schemacreateopenaicredentialdto) \| [CreateOpenRouterCredentialDTO](#schemacreateopenroutercredentialdto) \| [CreatePerplexityAICredentialDTO](#schemacreateperplexityaicredentialdto) \| [CreatePlayHTCredentialDTO](#schemacreateplayhtcredentialdto) \| [CreateRimeAICredentialDTO](#schemacreaterimeaicredentialdto) \| [CreateRunpodCredentialDTO](#schemacreaterunpodcredentialdto) \| [CreateS3CredentialDTO](#schemacreates3credentialdto) \| [CreateS3CompatibleCredentialDTO](#schemacreates3compatiblecredentialdto) \| [CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto) \| [CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto) \| [CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto) \| [CreateReson8CredentialDTO](#schemacreatereson8credentialdto) \| [CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto) \| [CreateTavusCredentialDTO](#schemacreatetavuscredentialdto) \| [CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto) \| [CreateTwilioCredentialDTO](#schemacreatetwiliocredentialdto) \| [CreateVonageCredentialDTO](#schemacreatevonagecredentialdto) \| [CreateWebhookCredentialDTO](#schemacreatewebhookcredentialdto) \| [CreateCustomCredentialDTO](#schemacreatecustomcredentialdto) \| [CreateXAiCredentialDTO](#schemacreatexaicredentialdto) \| [CreateMicrosoftCredentialDTO](#schemacreatemicrosoftcredentialdto) \| [CreateGoogleCalendarOAuth2ClientCredentialDTO](#schemacreategooglecalendaroauth2clientcredentialdto) \| [CreateGoogleCalendarOAuth2AuthorizationCredentialDTO](#schemacreategooglecalendaroauth2authorizationcredentialdto) \| [CreateGoogleSheetsOAuth2AuthorizationCredentialDTO](#schemacreategooglesheetsoauth2authorizationcredentialdto) \| [CreateSlackOAuth2AuthorizationCredentialDTO](#schemacreateslackoauth2authorizationcredentialdto) \| [CreateGoHighLevelMCPCredentialDTO](#schemacreategohighlevelmcpcredentialdto) \| [CreateInworldCredentialDTO](#schemacreateinworldcredentialdto) \| [CreateMinimaxCredentialDTO](#schemacreateminimaxcredentialdto) \| [CreateWellSaidCredentialDTO](#schemacreatewellsaidcredentialdto) \| [CreateEmailCredentialDTO](#schemacreateemailcredentialdto) \| [CreateSlackWebhookCredentialDTO](#schemacreateslackwebhookcredentialdto)]|false|These are dynamic credentials that will be used for the assistant calls. By default, all the credentials are available for use in the call but you can supplement an additional credentials using this. Dynamic credentials override existing credentials.|
 |» » *oneOf*|body|[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto)|false|none|
 |» » *oneOf*|body|[CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto)|false|none|
 |» » *oneOf*|body|[CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto)|false|none|
@@ -6790,6 +6797,7 @@ curl https://api.vapi.ai/assistant/497f6eca-6276-4993-bfeb-53cbbbba6f08 \
 |» » *oneOf*|body|[CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto)|false|none|
 |» » *oneOf*|body|[CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto)|false|none|
 |» » *oneOf*|body|[CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto)|false|none|
+|» » *oneOf*|body|[CreateReson8CredentialDTO](#schemacreatereson8credentialdto)|false|none|
 |» » *oneOf*|body|[CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto)|false|none|
 |» » *oneOf*|body|[CreateTavusCredentialDTO](#schemacreatetavuscredentialdto)|false|none|
 |» » *oneOf*|body|[CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto)|false|none|
@@ -6981,6 +6989,10 @@ curl https://api.vapi.ai/assistant/497f6eca-6276-4993-bfeb-53cbbbba6f08 \
 |» serverMessages|call.artifact.upload|
 |» » *oneOf*|off|
 |» » *oneOf*|office|
+|» » *oneOf*|white-noise|
+|» » *oneOf*|city|
+|» » *oneOf*|crowd|
+|» » *oneOf*|farm|
 |» » provider|langfuse|
 |» » » » type|string|
 |» » » » type|number|
@@ -12066,7 +12078,7 @@ curl https://api.vapi.ai/squad/497f6eca-6276-4993-bfeb-53cbbbba6f08 \
 |» name|body|string|false|This is the name of the squad.|
 |» members|body|[[SquadMemberDTO](#schemasquadmemberdto)]|true|This is the list of assistants that make up the squad.<br><br>The call will start with the first assistant in the list.|
 |» membersOverrides|body|object|false|This can be used to override all the assistants' settings and provide values for their template variables.<br><br>Both `membersOverrides` and `members[n].assistantOverrides` can be used together. First, `members[n].assistantOverrides` is applied. Then, `membersOverrides` is applied as a global override.|
-|» » transcriber|body|[AssemblyAITranscriber](#schemaassemblyaitranscriber) \| [AzureSpeechTranscriber](#schemaazurespeechtranscriber) \| [CustomTranscriber](#schemacustomtranscriber) \| [DeepgramTranscriber](#schemadeepgramtranscriber) \| [ElevenLabsTranscriber](#schemaelevenlabstranscriber) \| [GladiaTranscriber](#schemagladiatranscriber) \| [GoogleTranscriber](#schemagoogletranscriber) \| [SpeechmaticsTranscriber](#schemaspeechmaticstranscriber) \| [TalkscriberTranscriber](#schematalkscribertranscriber) \| [OpenAITranscriber](#schemaopenaitranscriber) \| [CartesiaTranscriber](#schemacartesiatranscriber) \| [SonioxTranscriber](#schemasonioxtranscriber) \| [XaiTranscriber](#schemaxaitranscriber) \| [VapiTranscriber](#schemavapitranscriber)|false|These are the options for the assistant's transcriber.|
+|» » transcriber|body|[AssemblyAITranscriber](#schemaassemblyaitranscriber) \| [AzureSpeechTranscriber](#schemaazurespeechtranscriber) \| [CustomTranscriber](#schemacustomtranscriber) \| [DeepgramTranscriber](#schemadeepgramtranscriber) \| [ElevenLabsTranscriber](#schemaelevenlabstranscriber) \| [GladiaTranscriber](#schemagladiatranscriber) \| [GoogleTranscriber](#schemagoogletranscriber) \| [SpeechmaticsTranscriber](#schemaspeechmaticstranscriber) \| [TalkscriberTranscriber](#schematalkscribertranscriber) \| [OpenAITranscriber](#schemaopenaitranscriber) \| [CartesiaTranscriber](#schemacartesiatranscriber) \| [SonioxTranscriber](#schemasonioxtranscriber) \| [XaiTranscriber](#schemaxaitranscriber) \| [Reson8Transcriber](#schemareson8transcriber) \| [VapiTranscriber](#schemavapitranscriber)|false|These are the options for the assistant's transcriber.|
 |» » » *oneOf*|body|[AssemblyAITranscriber](#schemaassemblyaitranscriber)|false|none|
 |» » » *oneOf*|body|[AzureSpeechTranscriber](#schemaazurespeechtranscriber)|false|none|
 |» » » *oneOf*|body|[CustomTranscriber](#schemacustomtranscriber)|false|none|
@@ -12080,6 +12092,7 @@ curl https://api.vapi.ai/squad/497f6eca-6276-4993-bfeb-53cbbbba6f08 \
 |» » » *oneOf*|body|[CartesiaTranscriber](#schemacartesiatranscriber)|false|none|
 |» » » *oneOf*|body|[SonioxTranscriber](#schemasonioxtranscriber)|false|none|
 |» » » *oneOf*|body|[XaiTranscriber](#schemaxaitranscriber)|false|none|
+|» » » *oneOf*|body|[Reson8Transcriber](#schemareson8transcriber)|false|none|
 |» » » *oneOf*|body|[VapiTranscriber](#schemavapitranscriber)|false|none|
 |» » model|body|[AnthropicModel](#schemaanthropicmodel) \| [AnthropicBedrockModel](#schemaanthropicbedrockmodel) \| [AnyscaleModel](#schemaanyscalemodel) \| [CerebrasModel](#schemacerebrasmodel) \| [CustomLLMModel](#schemacustomllmmodel) \| [DeepInfraModel](#schemadeepinframodel) \| [DeepSeekModel](#schemadeepseekmodel) \| [GoogleModel](#schemagooglemodel) \| [GroqModel](#schemagroqmodel) \| [InflectionAIModel](#schemainflectionaimodel) \| [MinimaxLLMModel](#schemaminimaxllmmodel) \| [OpenAIModel](#schemaopenaimodel) \| [OpenRouterModel](#schemaopenroutermodel) \| [PerplexityAIModel](#schemaperplexityaimodel) \| [TogetherAIModel](#schematogetheraimodel) \| [XaiModel](#schemaxaimodel) \| [VapiModel](#schemavapimodel)|false|These are the options for the assistant's LLM.|
 |» » » *oneOf*|body|[AnthropicModel](#schemaanthropicmodel)|false|none|
@@ -12131,7 +12144,7 @@ curl https://api.vapi.ai/squad/497f6eca-6276-4993-bfeb-53cbbbba6f08 \
 |» » clientMessages|body|[string]|false|These are the messages that will be sent to your Client SDKs. Default is conversation-update,function-call,hang,model-output,speech-update,status-update,transfer-update,transcript,tool-calls,user-interrupted,voice-input,workflow.node.started,assistant.started. You can check the shape of the messages in ClientMessage schema.|
 |» » serverMessages|body|[string]|false|These are the messages that will be sent to your Server URL. Default is conversation-update,end-of-call-report,function-call,hang,speech-update,status-update,tool-calls,transfer-destination-request,handoff-destination-request,user-interrupted,assistant.started. You can check the shape of the messages in ServerMessage schema.|
 |» » maxDurationSeconds|body|number|false|This is the maximum number of seconds that the call will last. When the call reaches this duration, it will be ended.<br><br>@default 600 (10 minutes)|
-|» » backgroundSound|body|string \| string(uri)|false|This is the background sound in the call. Default for phone calls is 'office' and default for web calls is 'off'.<br>You can also provide a custom sound by providing a URL to an audio file.|
+|» » backgroundSound|body|string \| string(uri)|false|This is the background sound in the call. Default for phone calls is 'office' and default for web calls is 'off'.<br>Bundled sounds: 'office', 'white-noise', 'city', 'crowd' and 'farm'. GPT Live assistants don't play 'office'.<br>You can also provide a custom sound by providing a URL to an audio file.|
 |» » » *oneOf*|body|string|false|none|
 |» » » *oneOf*|body|string(uri)|false|none|
 |» » modelOutputInMessagesEnabled|body|boolean|false|This determines whether the model's output is used in conversation history rather than the transcription of assistant's speech.<br><br>@default false|
@@ -12145,7 +12158,7 @@ curl https://api.vapi.ai/squad/497f6eca-6276-4993-bfeb-53cbbbba6f08 \
 |» » » tags|body|[string]|true|This is an array of tags to be added to the Langfuse trace. Tags allow you to categorize and filter traces. https://langfuse.com/docs/tracing-features/tags|
 |» » » metadata|body|object|false|This is a JSON object that will be added to the Langfuse trace. Traces can be enriched with metadata to better understand your users, application, and experiments. https://langfuse.com/docs/tracing-features/metadata<br>By default it includes the call metadata, assistant metadata, and assistant overrides.|
 |» » » *oneOf*|body|[LangfuseObservabilityPlan](#schemalangfuseobservabilityplan)|false|none|
-|» » credentials|body|[[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto) \| [CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto) \| [CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto) \| [CreateAssemblyAICredentialDTO](#schemacreateassemblyaicredentialdto) \| [CreateAzureCredentialDTO](#schemacreateazurecredentialdto) \| [CreateAzureOpenAICredentialDTO](#schemacreateazureopenaicredentialdto) \| [CreateByoSipTrunkCredentialDTO](#schemacreatebyosiptrunkcredentialdto) \| [CreateCartesiaCredentialDTO](#schemacreatecartesiacredentialdto) \| [CreateCerebrasCredentialDTO](#schemacreatecerebrascredentialdto) \| [CreateCloudflareCredentialDTO](#schemacreatecloudflarecredentialdto) \| [CreateCustomLLMCredentialDTO](#schemacreatecustomllmcredentialdto) \| [CreateDeepgramCredentialDTO](#schemacreatedeepgramcredentialdto) \| [CreateDeepInfraCredentialDTO](#schemacreatedeepinfracredentialdto) \| [CreateDeepSeekCredentialDTO](#schemacreatedeepseekcredentialdto) \| [CreateElevenLabsCredentialDTO](#schemacreateelevenlabscredentialdto) \| [CreateGcpCredentialDTO](#schemacreategcpcredentialdto) \| [CreateGladiaCredentialDTO](#schemacreategladiacredentialdto) \| [CreateGoHighLevelCredentialDTO](#schemacreategohighlevelcredentialdto) \| [CreateGoogleCredentialDTO](#schemacreategooglecredentialdto) \| [CreateGroqCredentialDTO](#schemacreategroqcredentialdto) \| [CreateHumeCredentialDTO](#schemacreatehumecredentialdto) \| [CreateInflectionAICredentialDTO](#schemacreateinflectionaicredentialdto) \| [CreateLangfuseCredentialDTO](#schemacreatelangfusecredentialdto) \| [CreateLmntCredentialDTO](#schemacreatelmntcredentialdto) \| [CreateMakeCredentialDTO](#schemacreatemakecredentialdto) \| [CreateMistralCredentialDTO](#schemacreatemistralcredentialdto) \| [CreateNeuphonicCredentialDTO](#schemacreateneuphoniccredentialdto) \| [CreateOpenAICredentialDTO](#schemacreateopenaicredentialdto) \| [CreateOpenRouterCredentialDTO](#schemacreateopenroutercredentialdto) \| [CreatePerplexityAICredentialDTO](#schemacreateperplexityaicredentialdto) \| [CreatePlayHTCredentialDTO](#schemacreateplayhtcredentialdto) \| [CreateRimeAICredentialDTO](#schemacreaterimeaicredentialdto) \| [CreateRunpodCredentialDTO](#schemacreaterunpodcredentialdto) \| [CreateS3CredentialDTO](#schemacreates3credentialdto) \| [CreateS3CompatibleCredentialDTO](#schemacreates3compatiblecredentialdto) \| [CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto) \| [CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto) \| [CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto) \| [CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto) \| [CreateTavusCredentialDTO](#schemacreatetavuscredentialdto) \| [CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto) \| [CreateTwilioCredentialDTO](#schemacreatetwiliocredentialdto) \| [CreateVonageCredentialDTO](#schemacreatevonagecredentialdto) \| [CreateWebhookCredentialDTO](#schemacreatewebhookcredentialdto) \| [CreateCustomCredentialDTO](#schemacreatecustomcredentialdto) \| [CreateXAiCredentialDTO](#schemacreatexaicredentialdto) \| [CreateMicrosoftCredentialDTO](#schemacreatemicrosoftcredentialdto) \| [CreateGoogleCalendarOAuth2ClientCredentialDTO](#schemacreategooglecalendaroauth2clientcredentialdto) \| [CreateGoogleCalendarOAuth2AuthorizationCredentialDTO](#schemacreategooglecalendaroauth2authorizationcredentialdto) \| [CreateGoogleSheetsOAuth2AuthorizationCredentialDTO](#schemacreategooglesheetsoauth2authorizationcredentialdto) \| [CreateSlackOAuth2AuthorizationCredentialDTO](#schemacreateslackoauth2authorizationcredentialdto) \| [CreateGoHighLevelMCPCredentialDTO](#schemacreategohighlevelmcpcredentialdto) \| [CreateInworldCredentialDTO](#schemacreateinworldcredentialdto) \| [CreateMinimaxCredentialDTO](#schemacreateminimaxcredentialdto) \| [CreateWellSaidCredentialDTO](#schemacreatewellsaidcredentialdto) \| [CreateEmailCredentialDTO](#schemacreateemailcredentialdto) \| [CreateSlackWebhookCredentialDTO](#schemacreateslackwebhookcredentialdto)]|false|These are dynamic credentials that will be used for the assistant calls. By default, all the credentials are available for use in the call but you can supplement an additional credentials using this. Dynamic credentials override existing credentials.|
+|» » credentials|body|[[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto) \| [CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto) \| [CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto) \| [CreateAssemblyAICredentialDTO](#schemacreateassemblyaicredentialdto) \| [CreateAzureCredentialDTO](#schemacreateazurecredentialdto) \| [CreateAzureOpenAICredentialDTO](#schemacreateazureopenaicredentialdto) \| [CreateByoSipTrunkCredentialDTO](#schemacreatebyosiptrunkcredentialdto) \| [CreateCartesiaCredentialDTO](#schemacreatecartesiacredentialdto) \| [CreateCerebrasCredentialDTO](#schemacreatecerebrascredentialdto) \| [CreateCloudflareCredentialDTO](#schemacreatecloudflarecredentialdto) \| [CreateCustomLLMCredentialDTO](#schemacreatecustomllmcredentialdto) \| [CreateDeepgramCredentialDTO](#schemacreatedeepgramcredentialdto) \| [CreateDeepInfraCredentialDTO](#schemacreatedeepinfracredentialdto) \| [CreateDeepSeekCredentialDTO](#schemacreatedeepseekcredentialdto) \| [CreateElevenLabsCredentialDTO](#schemacreateelevenlabscredentialdto) \| [CreateGcpCredentialDTO](#schemacreategcpcredentialdto) \| [CreateGladiaCredentialDTO](#schemacreategladiacredentialdto) \| [CreateGoHighLevelCredentialDTO](#schemacreategohighlevelcredentialdto) \| [CreateGoogleCredentialDTO](#schemacreategooglecredentialdto) \| [CreateGroqCredentialDTO](#schemacreategroqcredentialdto) \| [CreateHumeCredentialDTO](#schemacreatehumecredentialdto) \| [CreateInflectionAICredentialDTO](#schemacreateinflectionaicredentialdto) \| [CreateLangfuseCredentialDTO](#schemacreatelangfusecredentialdto) \| [CreateLmntCredentialDTO](#schemacreatelmntcredentialdto) \| [CreateMakeCredentialDTO](#schemacreatemakecredentialdto) \| [CreateMistralCredentialDTO](#schemacreatemistralcredentialdto) \| [CreateNeuphonicCredentialDTO](#schemacreateneuphoniccredentialdto) \| [CreateOpenAICredentialDTO](#schemacreateopenaicredentialdto) \| [CreateOpenRouterCredentialDTO](#schemacreateopenroutercredentialdto) \| [CreatePerplexityAICredentialDTO](#schemacreateperplexityaicredentialdto) \| [CreatePlayHTCredentialDTO](#schemacreateplayhtcredentialdto) \| [CreateRimeAICredentialDTO](#schemacreaterimeaicredentialdto) \| [CreateRunpodCredentialDTO](#schemacreaterunpodcredentialdto) \| [CreateS3CredentialDTO](#schemacreates3credentialdto) \| [CreateS3CompatibleCredentialDTO](#schemacreates3compatiblecredentialdto) \| [CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto) \| [CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto) \| [CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto) \| [CreateReson8CredentialDTO](#schemacreatereson8credentialdto) \| [CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto) \| [CreateTavusCredentialDTO](#schemacreatetavuscredentialdto) \| [CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto) \| [CreateTwilioCredentialDTO](#schemacreatetwiliocredentialdto) \| [CreateVonageCredentialDTO](#schemacreatevonagecredentialdto) \| [CreateWebhookCredentialDTO](#schemacreatewebhookcredentialdto) \| [CreateCustomCredentialDTO](#schemacreatecustomcredentialdto) \| [CreateXAiCredentialDTO](#schemacreatexaicredentialdto) \| [CreateMicrosoftCredentialDTO](#schemacreatemicrosoftcredentialdto) \| [CreateGoogleCalendarOAuth2ClientCredentialDTO](#schemacreategooglecalendaroauth2clientcredentialdto) \| [CreateGoogleCalendarOAuth2AuthorizationCredentialDTO](#schemacreategooglecalendaroauth2authorizationcredentialdto) \| [CreateGoogleSheetsOAuth2AuthorizationCredentialDTO](#schemacreategooglesheetsoauth2authorizationcredentialdto) \| [CreateSlackOAuth2AuthorizationCredentialDTO](#schemacreateslackoauth2authorizationcredentialdto) \| [CreateGoHighLevelMCPCredentialDTO](#schemacreategohighlevelmcpcredentialdto) \| [CreateInworldCredentialDTO](#schemacreateinworldcredentialdto) \| [CreateMinimaxCredentialDTO](#schemacreateminimaxcredentialdto) \| [CreateWellSaidCredentialDTO](#schemacreatewellsaidcredentialdto) \| [CreateEmailCredentialDTO](#schemacreateemailcredentialdto) \| [CreateSlackWebhookCredentialDTO](#schemacreateslackwebhookcredentialdto)]|false|These are dynamic credentials that will be used for the assistant calls. By default, all the credentials are available for use in the call but you can supplement an additional credentials using this. Dynamic credentials override existing credentials.|
 |» » » *oneOf*|body|[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto)|false|none|
@@ -12184,6 +12197,7 @@ curl https://api.vapi.ai/squad/497f6eca-6276-4993-bfeb-53cbbbba6f08 \
 |» » » *oneOf*|body|[CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto)|false|none|
+|» » » *oneOf*|body|[CreateReson8CredentialDTO](#schemacreatereson8credentialdto)|false|none|
 |» » » *oneOf*|body|[CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateTavusCredentialDTO](#schemacreatetavuscredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto)|false|none|
@@ -12390,6 +12404,10 @@ curl https://api.vapi.ai/squad/497f6eca-6276-4993-bfeb-53cbbbba6f08 \
 |» » serverMessages|call.artifact.upload|
 |» » » *oneOf*|off|
 |» » » *oneOf*|office|
+|» » » *oneOf*|white-noise|
+|» » » *oneOf*|city|
+|» » » *oneOf*|crowd|
+|» » » *oneOf*|farm|
 |» » » provider|langfuse|
 |» » » » rubric|NumericScale|
 |» » » » rubric|DescriptiveScale|
@@ -13717,6 +13735,7 @@ curl https://api.vapi.ai/call \
       "performanceMetrics": {
         "turnLatencies": [
           {
+            "unmeasured": "transcriber",
             "modelLatency": 0,
             "voiceLatency": 0,
             "transcriberLatency": 0,
@@ -13732,7 +13751,8 @@ curl https://api.vapi.ai/call \
         "fromTransportLatencyAverage": 0,
         "toTransportLatencyAverage": 0,
         "numUserInterrupted": 0,
-        "numAssistantInterrupted": 0
+        "numAssistantInterrupted": 0,
+        "turnLatencyUnmeasuredTracked": true
       },
       "structuredOutputs": {},
       "scorecards": {},
@@ -28732,7 +28752,7 @@ curl https://api.vapi.ai/call \
 |» » latestAt|body|string(date-time)|false|This is the ISO 8601 date-time string of the latest time the call can be scheduled.|
 |» assistantId|body|string|false|This is the assistant ID that will be used for the call. To use a transient assistant, use `assistant` instead.<br><br>To start a call with:<br>- Assistant, use `assistantId` or `assistant`<br>- Squad, use `squadId` or `squad`<br>- Workflow, use `workflowId` or `workflow`|
 |» assistant|body|object|false|This is the assistant that will be used for the call. To use an existing assistant, use `assistantId` instead.<br><br>To start a call with:<br>- Assistant, use `assistant`<br>- Squad, use `squad`<br>- Workflow, use `workflow`|
-|» » transcriber|body|[AssemblyAITranscriber](#schemaassemblyaitranscriber) \| [AzureSpeechTranscriber](#schemaazurespeechtranscriber) \| [CustomTranscriber](#schemacustomtranscriber) \| [DeepgramTranscriber](#schemadeepgramtranscriber) \| [ElevenLabsTranscriber](#schemaelevenlabstranscriber) \| [GladiaTranscriber](#schemagladiatranscriber) \| [GoogleTranscriber](#schemagoogletranscriber) \| [SpeechmaticsTranscriber](#schemaspeechmaticstranscriber) \| [TalkscriberTranscriber](#schematalkscribertranscriber) \| [OpenAITranscriber](#schemaopenaitranscriber) \| [CartesiaTranscriber](#schemacartesiatranscriber) \| [SonioxTranscriber](#schemasonioxtranscriber) \| [XaiTranscriber](#schemaxaitranscriber) \| [VapiTranscriber](#schemavapitranscriber)|false|These are the options for the assistant's transcriber.|
+|» » transcriber|body|[AssemblyAITranscriber](#schemaassemblyaitranscriber) \| [AzureSpeechTranscriber](#schemaazurespeechtranscriber) \| [CustomTranscriber](#schemacustomtranscriber) \| [DeepgramTranscriber](#schemadeepgramtranscriber) \| [ElevenLabsTranscriber](#schemaelevenlabstranscriber) \| [GladiaTranscriber](#schemagladiatranscriber) \| [GoogleTranscriber](#schemagoogletranscriber) \| [SpeechmaticsTranscriber](#schemaspeechmaticstranscriber) \| [TalkscriberTranscriber](#schematalkscribertranscriber) \| [OpenAITranscriber](#schemaopenaitranscriber) \| [CartesiaTranscriber](#schemacartesiatranscriber) \| [SonioxTranscriber](#schemasonioxtranscriber) \| [XaiTranscriber](#schemaxaitranscriber) \| [Reson8Transcriber](#schemareson8transcriber) \| [VapiTranscriber](#schemavapitranscriber)|false|These are the options for the assistant's transcriber.|
 |» » » *oneOf*|body|[AssemblyAITranscriber](#schemaassemblyaitranscriber)|false|none|
 |» » » *oneOf*|body|[AzureSpeechTranscriber](#schemaazurespeechtranscriber)|false|none|
 |» » » *oneOf*|body|[CustomTranscriber](#schemacustomtranscriber)|false|none|
@@ -28746,6 +28766,7 @@ curl https://api.vapi.ai/call \
 |» » » *oneOf*|body|[CartesiaTranscriber](#schemacartesiatranscriber)|false|none|
 |» » » *oneOf*|body|[SonioxTranscriber](#schemasonioxtranscriber)|false|none|
 |» » » *oneOf*|body|[XaiTranscriber](#schemaxaitranscriber)|false|none|
+|» » » *oneOf*|body|[Reson8Transcriber](#schemareson8transcriber)|false|none|
 |» » » *oneOf*|body|[VapiTranscriber](#schemavapitranscriber)|false|none|
 |» » model|body|[AnthropicModel](#schemaanthropicmodel) \| [AnthropicBedrockModel](#schemaanthropicbedrockmodel) \| [AnyscaleModel](#schemaanyscalemodel) \| [CerebrasModel](#schemacerebrasmodel) \| [CustomLLMModel](#schemacustomllmmodel) \| [DeepInfraModel](#schemadeepinframodel) \| [DeepSeekModel](#schemadeepseekmodel) \| [GoogleModel](#schemagooglemodel) \| [GroqModel](#schemagroqmodel) \| [InflectionAIModel](#schemainflectionaimodel) \| [MinimaxLLMModel](#schemaminimaxllmmodel) \| [OpenAIModel](#schemaopenaimodel) \| [OpenRouterModel](#schemaopenroutermodel) \| [PerplexityAIModel](#schemaperplexityaimodel) \| [TogetherAIModel](#schematogetheraimodel) \| [XaiModel](#schemaxaimodel) \| [VapiModel](#schemavapimodel)|false|These are the options for the assistant's LLM.|
 |» » » *oneOf*|body|[AnthropicModel](#schemaanthropicmodel)|false|none|
@@ -28797,7 +28818,7 @@ curl https://api.vapi.ai/call \
 |» » clientMessages|body|[string]|false|These are the messages that will be sent to your Client SDKs. Default is conversation-update,function-call,hang,model-output,speech-update,status-update,transfer-update,transcript,tool-calls,user-interrupted,voice-input,workflow.node.started,assistant.started. You can check the shape of the messages in ClientMessage schema.|
 |» » serverMessages|body|[string]|false|These are the messages that will be sent to your Server URL. Default is conversation-update,end-of-call-report,function-call,hang,speech-update,status-update,tool-calls,transfer-destination-request,handoff-destination-request,user-interrupted,assistant.started. You can check the shape of the messages in ServerMessage schema.|
 |» » maxDurationSeconds|body|number|false|This is the maximum number of seconds that the call will last. When the call reaches this duration, it will be ended.<br><br>@default 600 (10 minutes)|
-|» » backgroundSound|body|string \| string(uri)|false|This is the background sound in the call. Default for phone calls is 'office' and default for web calls is 'off'.<br>You can also provide a custom sound by providing a URL to an audio file.|
+|» » backgroundSound|body|string \| string(uri)|false|This is the background sound in the call. Default for phone calls is 'office' and default for web calls is 'off'.<br>Bundled sounds: 'office', 'white-noise', 'city', 'crowd' and 'farm'. GPT Live assistants don't play 'office'.<br>You can also provide a custom sound by providing a URL to an audio file.|
 |» » » *oneOf*|body|string|false|none|
 |» » » *oneOf*|body|string(uri)|false|none|
 |» » modelOutputInMessagesEnabled|body|boolean|false|This determines whether the model's output is used in conversation history rather than the transcription of assistant's speech.<br><br>@default false|
@@ -28811,7 +28832,7 @@ curl https://api.vapi.ai/call \
 |» » » tags|body|[string]|true|This is an array of tags to be added to the Langfuse trace. Tags allow you to categorize and filter traces. https://langfuse.com/docs/tracing-features/tags|
 |» » » metadata|body|object|false|This is a JSON object that will be added to the Langfuse trace. Traces can be enriched with metadata to better understand your users, application, and experiments. https://langfuse.com/docs/tracing-features/metadata<br>By default it includes the call metadata, assistant metadata, and assistant overrides.|
 |» » » *oneOf*|body|[LangfuseObservabilityPlan](#schemalangfuseobservabilityplan)|false|none|
-|» » credentials|body|[[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto) \| [CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto) \| [CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto) \| [CreateAssemblyAICredentialDTO](#schemacreateassemblyaicredentialdto) \| [CreateAzureCredentialDTO](#schemacreateazurecredentialdto) \| [CreateAzureOpenAICredentialDTO](#schemacreateazureopenaicredentialdto) \| [CreateByoSipTrunkCredentialDTO](#schemacreatebyosiptrunkcredentialdto) \| [CreateCartesiaCredentialDTO](#schemacreatecartesiacredentialdto) \| [CreateCerebrasCredentialDTO](#schemacreatecerebrascredentialdto) \| [CreateCloudflareCredentialDTO](#schemacreatecloudflarecredentialdto) \| [CreateCustomLLMCredentialDTO](#schemacreatecustomllmcredentialdto) \| [CreateDeepgramCredentialDTO](#schemacreatedeepgramcredentialdto) \| [CreateDeepInfraCredentialDTO](#schemacreatedeepinfracredentialdto) \| [CreateDeepSeekCredentialDTO](#schemacreatedeepseekcredentialdto) \| [CreateElevenLabsCredentialDTO](#schemacreateelevenlabscredentialdto) \| [CreateGcpCredentialDTO](#schemacreategcpcredentialdto) \| [CreateGladiaCredentialDTO](#schemacreategladiacredentialdto) \| [CreateGoHighLevelCredentialDTO](#schemacreategohighlevelcredentialdto) \| [CreateGoogleCredentialDTO](#schemacreategooglecredentialdto) \| [CreateGroqCredentialDTO](#schemacreategroqcredentialdto) \| [CreateHumeCredentialDTO](#schemacreatehumecredentialdto) \| [CreateInflectionAICredentialDTO](#schemacreateinflectionaicredentialdto) \| [CreateLangfuseCredentialDTO](#schemacreatelangfusecredentialdto) \| [CreateLmntCredentialDTO](#schemacreatelmntcredentialdto) \| [CreateMakeCredentialDTO](#schemacreatemakecredentialdto) \| [CreateMistralCredentialDTO](#schemacreatemistralcredentialdto) \| [CreateNeuphonicCredentialDTO](#schemacreateneuphoniccredentialdto) \| [CreateOpenAICredentialDTO](#schemacreateopenaicredentialdto) \| [CreateOpenRouterCredentialDTO](#schemacreateopenroutercredentialdto) \| [CreatePerplexityAICredentialDTO](#schemacreateperplexityaicredentialdto) \| [CreatePlayHTCredentialDTO](#schemacreateplayhtcredentialdto) \| [CreateRimeAICredentialDTO](#schemacreaterimeaicredentialdto) \| [CreateRunpodCredentialDTO](#schemacreaterunpodcredentialdto) \| [CreateS3CredentialDTO](#schemacreates3credentialdto) \| [CreateS3CompatibleCredentialDTO](#schemacreates3compatiblecredentialdto) \| [CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto) \| [CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto) \| [CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto) \| [CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto) \| [CreateTavusCredentialDTO](#schemacreatetavuscredentialdto) \| [CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto) \| [CreateTwilioCredentialDTO](#schemacreatetwiliocredentialdto) \| [CreateVonageCredentialDTO](#schemacreatevonagecredentialdto) \| [CreateWebhookCredentialDTO](#schemacreatewebhookcredentialdto) \| [CreateCustomCredentialDTO](#schemacreatecustomcredentialdto) \| [CreateXAiCredentialDTO](#schemacreatexaicredentialdto) \| [CreateMicrosoftCredentialDTO](#schemacreatemicrosoftcredentialdto) \| [CreateGoogleCalendarOAuth2ClientCredentialDTO](#schemacreategooglecalendaroauth2clientcredentialdto) \| [CreateGoogleCalendarOAuth2AuthorizationCredentialDTO](#schemacreategooglecalendaroauth2authorizationcredentialdto) \| [CreateGoogleSheetsOAuth2AuthorizationCredentialDTO](#schemacreategooglesheetsoauth2authorizationcredentialdto) \| [CreateSlackOAuth2AuthorizationCredentialDTO](#schemacreateslackoauth2authorizationcredentialdto) \| [CreateGoHighLevelMCPCredentialDTO](#schemacreategohighlevelmcpcredentialdto) \| [CreateInworldCredentialDTO](#schemacreateinworldcredentialdto) \| [CreateMinimaxCredentialDTO](#schemacreateminimaxcredentialdto) \| [CreateWellSaidCredentialDTO](#schemacreatewellsaidcredentialdto) \| [CreateEmailCredentialDTO](#schemacreateemailcredentialdto) \| [CreateSlackWebhookCredentialDTO](#schemacreateslackwebhookcredentialdto)]|false|These are dynamic credentials that will be used for the assistant calls. By default, all the credentials are available for use in the call but you can supplement an additional credentials using this. Dynamic credentials override existing credentials.|
+|» » credentials|body|[[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto) \| [CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto) \| [CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto) \| [CreateAssemblyAICredentialDTO](#schemacreateassemblyaicredentialdto) \| [CreateAzureCredentialDTO](#schemacreateazurecredentialdto) \| [CreateAzureOpenAICredentialDTO](#schemacreateazureopenaicredentialdto) \| [CreateByoSipTrunkCredentialDTO](#schemacreatebyosiptrunkcredentialdto) \| [CreateCartesiaCredentialDTO](#schemacreatecartesiacredentialdto) \| [CreateCerebrasCredentialDTO](#schemacreatecerebrascredentialdto) \| [CreateCloudflareCredentialDTO](#schemacreatecloudflarecredentialdto) \| [CreateCustomLLMCredentialDTO](#schemacreatecustomllmcredentialdto) \| [CreateDeepgramCredentialDTO](#schemacreatedeepgramcredentialdto) \| [CreateDeepInfraCredentialDTO](#schemacreatedeepinfracredentialdto) \| [CreateDeepSeekCredentialDTO](#schemacreatedeepseekcredentialdto) \| [CreateElevenLabsCredentialDTO](#schemacreateelevenlabscredentialdto) \| [CreateGcpCredentialDTO](#schemacreategcpcredentialdto) \| [CreateGladiaCredentialDTO](#schemacreategladiacredentialdto) \| [CreateGoHighLevelCredentialDTO](#schemacreategohighlevelcredentialdto) \| [CreateGoogleCredentialDTO](#schemacreategooglecredentialdto) \| [CreateGroqCredentialDTO](#schemacreategroqcredentialdto) \| [CreateHumeCredentialDTO](#schemacreatehumecredentialdto) \| [CreateInflectionAICredentialDTO](#schemacreateinflectionaicredentialdto) \| [CreateLangfuseCredentialDTO](#schemacreatelangfusecredentialdto) \| [CreateLmntCredentialDTO](#schemacreatelmntcredentialdto) \| [CreateMakeCredentialDTO](#schemacreatemakecredentialdto) \| [CreateMistralCredentialDTO](#schemacreatemistralcredentialdto) \| [CreateNeuphonicCredentialDTO](#schemacreateneuphoniccredentialdto) \| [CreateOpenAICredentialDTO](#schemacreateopenaicredentialdto) \| [CreateOpenRouterCredentialDTO](#schemacreateopenroutercredentialdto) \| [CreatePerplexityAICredentialDTO](#schemacreateperplexityaicredentialdto) \| [CreatePlayHTCredentialDTO](#schemacreateplayhtcredentialdto) \| [CreateRimeAICredentialDTO](#schemacreaterimeaicredentialdto) \| [CreateRunpodCredentialDTO](#schemacreaterunpodcredentialdto) \| [CreateS3CredentialDTO](#schemacreates3credentialdto) \| [CreateS3CompatibleCredentialDTO](#schemacreates3compatiblecredentialdto) \| [CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto) \| [CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto) \| [CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto) \| [CreateReson8CredentialDTO](#schemacreatereson8credentialdto) \| [CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto) \| [CreateTavusCredentialDTO](#schemacreatetavuscredentialdto) \| [CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto) \| [CreateTwilioCredentialDTO](#schemacreatetwiliocredentialdto) \| [CreateVonageCredentialDTO](#schemacreatevonagecredentialdto) \| [CreateWebhookCredentialDTO](#schemacreatewebhookcredentialdto) \| [CreateCustomCredentialDTO](#schemacreatecustomcredentialdto) \| [CreateXAiCredentialDTO](#schemacreatexaicredentialdto) \| [CreateMicrosoftCredentialDTO](#schemacreatemicrosoftcredentialdto) \| [CreateGoogleCalendarOAuth2ClientCredentialDTO](#schemacreategooglecalendaroauth2clientcredentialdto) \| [CreateGoogleCalendarOAuth2AuthorizationCredentialDTO](#schemacreategooglecalendaroauth2authorizationcredentialdto) \| [CreateGoogleSheetsOAuth2AuthorizationCredentialDTO](#schemacreategooglesheetsoauth2authorizationcredentialdto) \| [CreateSlackOAuth2AuthorizationCredentialDTO](#schemacreateslackoauth2authorizationcredentialdto) \| [CreateGoHighLevelMCPCredentialDTO](#schemacreategohighlevelmcpcredentialdto) \| [CreateInworldCredentialDTO](#schemacreateinworldcredentialdto) \| [CreateMinimaxCredentialDTO](#schemacreateminimaxcredentialdto) \| [CreateWellSaidCredentialDTO](#schemacreatewellsaidcredentialdto) \| [CreateEmailCredentialDTO](#schemacreateemailcredentialdto) \| [CreateSlackWebhookCredentialDTO](#schemacreateslackwebhookcredentialdto)]|false|These are dynamic credentials that will be used for the assistant calls. By default, all the credentials are available for use in the call but you can supplement an additional credentials using this. Dynamic credentials override existing credentials.|
 |» » » *oneOf*|body|[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto)|false|none|
@@ -28850,6 +28871,7 @@ curl https://api.vapi.ai/call \
 |» » » *oneOf*|body|[CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto)|false|none|
+|» » » *oneOf*|body|[CreateReson8CredentialDTO](#schemacreatereson8credentialdto)|false|none|
 |» » » *oneOf*|body|[CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateTavusCredentialDTO](#schemacreatetavuscredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto)|false|none|
@@ -28974,7 +28996,7 @@ curl https://api.vapi.ai/call \
 |» » » » excludedStatusCodes|body|[object]|false|This is the excluded status codes. If the response status code is in this list, the request will not be retried.<br>By default, the request will be retried for any non-2xx status code.|
 |» » keypadInputPlan|body|[KeypadInputPlan](#schemakeypadinputplan)|false|none|
 |» assistantOverrides|body|object|false|These are the overrides for the `assistant` or `assistantId`'s settings and template variables.|
-|» » transcriber|body|[AssemblyAITranscriber](#schemaassemblyaitranscriber) \| [AzureSpeechTranscriber](#schemaazurespeechtranscriber) \| [CustomTranscriber](#schemacustomtranscriber) \| [DeepgramTranscriber](#schemadeepgramtranscriber) \| [ElevenLabsTranscriber](#schemaelevenlabstranscriber) \| [GladiaTranscriber](#schemagladiatranscriber) \| [GoogleTranscriber](#schemagoogletranscriber) \| [SpeechmaticsTranscriber](#schemaspeechmaticstranscriber) \| [TalkscriberTranscriber](#schematalkscribertranscriber) \| [OpenAITranscriber](#schemaopenaitranscriber) \| [CartesiaTranscriber](#schemacartesiatranscriber) \| [SonioxTranscriber](#schemasonioxtranscriber) \| [XaiTranscriber](#schemaxaitranscriber) \| [VapiTranscriber](#schemavapitranscriber)|false|These are the options for the assistant's transcriber.|
+|» » transcriber|body|[AssemblyAITranscriber](#schemaassemblyaitranscriber) \| [AzureSpeechTranscriber](#schemaazurespeechtranscriber) \| [CustomTranscriber](#schemacustomtranscriber) \| [DeepgramTranscriber](#schemadeepgramtranscriber) \| [ElevenLabsTranscriber](#schemaelevenlabstranscriber) \| [GladiaTranscriber](#schemagladiatranscriber) \| [GoogleTranscriber](#schemagoogletranscriber) \| [SpeechmaticsTranscriber](#schemaspeechmaticstranscriber) \| [TalkscriberTranscriber](#schematalkscribertranscriber) \| [OpenAITranscriber](#schemaopenaitranscriber) \| [CartesiaTranscriber](#schemacartesiatranscriber) \| [SonioxTranscriber](#schemasonioxtranscriber) \| [XaiTranscriber](#schemaxaitranscriber) \| [Reson8Transcriber](#schemareson8transcriber) \| [VapiTranscriber](#schemavapitranscriber)|false|These are the options for the assistant's transcriber.|
 |» » » *oneOf*|body|[AssemblyAITranscriber](#schemaassemblyaitranscriber)|false|none|
 |» » » *oneOf*|body|[AzureSpeechTranscriber](#schemaazurespeechtranscriber)|false|none|
 |» » » *oneOf*|body|[CustomTranscriber](#schemacustomtranscriber)|false|none|
@@ -28988,6 +29010,7 @@ curl https://api.vapi.ai/call \
 |» » » *oneOf*|body|[CartesiaTranscriber](#schemacartesiatranscriber)|false|none|
 |» » » *oneOf*|body|[SonioxTranscriber](#schemasonioxtranscriber)|false|none|
 |» » » *oneOf*|body|[XaiTranscriber](#schemaxaitranscriber)|false|none|
+|» » » *oneOf*|body|[Reson8Transcriber](#schemareson8transcriber)|false|none|
 |» » » *oneOf*|body|[VapiTranscriber](#schemavapitranscriber)|false|none|
 |» » model|body|[AnthropicModel](#schemaanthropicmodel) \| [AnthropicBedrockModel](#schemaanthropicbedrockmodel) \| [AnyscaleModel](#schemaanyscalemodel) \| [CerebrasModel](#schemacerebrasmodel) \| [CustomLLMModel](#schemacustomllmmodel) \| [DeepInfraModel](#schemadeepinframodel) \| [DeepSeekModel](#schemadeepseekmodel) \| [GoogleModel](#schemagooglemodel) \| [GroqModel](#schemagroqmodel) \| [InflectionAIModel](#schemainflectionaimodel) \| [MinimaxLLMModel](#schemaminimaxllmmodel) \| [OpenAIModel](#schemaopenaimodel) \| [OpenRouterModel](#schemaopenroutermodel) \| [PerplexityAIModel](#schemaperplexityaimodel) \| [TogetherAIModel](#schematogetheraimodel) \| [XaiModel](#schemaxaimodel) \| [VapiModel](#schemavapimodel)|false|These are the options for the assistant's LLM.|
 |» » » *oneOf*|body|[AnthropicModel](#schemaanthropicmodel)|false|none|
@@ -29039,7 +29062,7 @@ curl https://api.vapi.ai/call \
 |» » clientMessages|body|[string]|false|These are the messages that will be sent to your Client SDKs. Default is conversation-update,function-call,hang,model-output,speech-update,status-update,transfer-update,transcript,tool-calls,user-interrupted,voice-input,workflow.node.started,assistant.started. You can check the shape of the messages in ClientMessage schema.|
 |» » serverMessages|body|[string]|false|These are the messages that will be sent to your Server URL. Default is conversation-update,end-of-call-report,function-call,hang,speech-update,status-update,tool-calls,transfer-destination-request,handoff-destination-request,user-interrupted,assistant.started. You can check the shape of the messages in ServerMessage schema.|
 |» » maxDurationSeconds|body|number|false|This is the maximum number of seconds that the call will last. When the call reaches this duration, it will be ended.<br><br>@default 600 (10 minutes)|
-|» » backgroundSound|body|string \| string(uri)|false|This is the background sound in the call. Default for phone calls is 'office' and default for web calls is 'off'.<br>You can also provide a custom sound by providing a URL to an audio file.|
+|» » backgroundSound|body|string \| string(uri)|false|This is the background sound in the call. Default for phone calls is 'office' and default for web calls is 'off'.<br>Bundled sounds: 'office', 'white-noise', 'city', 'crowd' and 'farm'. GPT Live assistants don't play 'office'.<br>You can also provide a custom sound by providing a URL to an audio file.|
 |» » » *oneOf*|body|string|false|none|
 |» » » *oneOf*|body|string(uri)|false|none|
 |» » modelOutputInMessagesEnabled|body|boolean|false|This determines whether the model's output is used in conversation history rather than the transcription of assistant's speech.<br><br>@default false|
@@ -29053,7 +29076,7 @@ curl https://api.vapi.ai/call \
 |» » » tags|body|[string]|true|This is an array of tags to be added to the Langfuse trace. Tags allow you to categorize and filter traces. https://langfuse.com/docs/tracing-features/tags|
 |» » » metadata|body|object|false|This is a JSON object that will be added to the Langfuse trace. Traces can be enriched with metadata to better understand your users, application, and experiments. https://langfuse.com/docs/tracing-features/metadata<br>By default it includes the call metadata, assistant metadata, and assistant overrides.|
 |» » » *oneOf*|body|[LangfuseObservabilityPlan](#schemalangfuseobservabilityplan)|false|none|
-|» » credentials|body|[[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto) \| [CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto) \| [CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto) \| [CreateAssemblyAICredentialDTO](#schemacreateassemblyaicredentialdto) \| [CreateAzureCredentialDTO](#schemacreateazurecredentialdto) \| [CreateAzureOpenAICredentialDTO](#schemacreateazureopenaicredentialdto) \| [CreateByoSipTrunkCredentialDTO](#schemacreatebyosiptrunkcredentialdto) \| [CreateCartesiaCredentialDTO](#schemacreatecartesiacredentialdto) \| [CreateCerebrasCredentialDTO](#schemacreatecerebrascredentialdto) \| [CreateCloudflareCredentialDTO](#schemacreatecloudflarecredentialdto) \| [CreateCustomLLMCredentialDTO](#schemacreatecustomllmcredentialdto) \| [CreateDeepgramCredentialDTO](#schemacreatedeepgramcredentialdto) \| [CreateDeepInfraCredentialDTO](#schemacreatedeepinfracredentialdto) \| [CreateDeepSeekCredentialDTO](#schemacreatedeepseekcredentialdto) \| [CreateElevenLabsCredentialDTO](#schemacreateelevenlabscredentialdto) \| [CreateGcpCredentialDTO](#schemacreategcpcredentialdto) \| [CreateGladiaCredentialDTO](#schemacreategladiacredentialdto) \| [CreateGoHighLevelCredentialDTO](#schemacreategohighlevelcredentialdto) \| [CreateGoogleCredentialDTO](#schemacreategooglecredentialdto) \| [CreateGroqCredentialDTO](#schemacreategroqcredentialdto) \| [CreateHumeCredentialDTO](#schemacreatehumecredentialdto) \| [CreateInflectionAICredentialDTO](#schemacreateinflectionaicredentialdto) \| [CreateLangfuseCredentialDTO](#schemacreatelangfusecredentialdto) \| [CreateLmntCredentialDTO](#schemacreatelmntcredentialdto) \| [CreateMakeCredentialDTO](#schemacreatemakecredentialdto) \| [CreateMistralCredentialDTO](#schemacreatemistralcredentialdto) \| [CreateNeuphonicCredentialDTO](#schemacreateneuphoniccredentialdto) \| [CreateOpenAICredentialDTO](#schemacreateopenaicredentialdto) \| [CreateOpenRouterCredentialDTO](#schemacreateopenroutercredentialdto) \| [CreatePerplexityAICredentialDTO](#schemacreateperplexityaicredentialdto) \| [CreatePlayHTCredentialDTO](#schemacreateplayhtcredentialdto) \| [CreateRimeAICredentialDTO](#schemacreaterimeaicredentialdto) \| [CreateRunpodCredentialDTO](#schemacreaterunpodcredentialdto) \| [CreateS3CredentialDTO](#schemacreates3credentialdto) \| [CreateS3CompatibleCredentialDTO](#schemacreates3compatiblecredentialdto) \| [CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto) \| [CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto) \| [CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto) \| [CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto) \| [CreateTavusCredentialDTO](#schemacreatetavuscredentialdto) \| [CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto) \| [CreateTwilioCredentialDTO](#schemacreatetwiliocredentialdto) \| [CreateVonageCredentialDTO](#schemacreatevonagecredentialdto) \| [CreateWebhookCredentialDTO](#schemacreatewebhookcredentialdto) \| [CreateCustomCredentialDTO](#schemacreatecustomcredentialdto) \| [CreateXAiCredentialDTO](#schemacreatexaicredentialdto) \| [CreateMicrosoftCredentialDTO](#schemacreatemicrosoftcredentialdto) \| [CreateGoogleCalendarOAuth2ClientCredentialDTO](#schemacreategooglecalendaroauth2clientcredentialdto) \| [CreateGoogleCalendarOAuth2AuthorizationCredentialDTO](#schemacreategooglecalendaroauth2authorizationcredentialdto) \| [CreateGoogleSheetsOAuth2AuthorizationCredentialDTO](#schemacreategooglesheetsoauth2authorizationcredentialdto) \| [CreateSlackOAuth2AuthorizationCredentialDTO](#schemacreateslackoauth2authorizationcredentialdto) \| [CreateGoHighLevelMCPCredentialDTO](#schemacreategohighlevelmcpcredentialdto) \| [CreateInworldCredentialDTO](#schemacreateinworldcredentialdto) \| [CreateMinimaxCredentialDTO](#schemacreateminimaxcredentialdto) \| [CreateWellSaidCredentialDTO](#schemacreatewellsaidcredentialdto) \| [CreateEmailCredentialDTO](#schemacreateemailcredentialdto) \| [CreateSlackWebhookCredentialDTO](#schemacreateslackwebhookcredentialdto)]|false|These are dynamic credentials that will be used for the assistant calls. By default, all the credentials are available for use in the call but you can supplement an additional credentials using this. Dynamic credentials override existing credentials.|
+|» » credentials|body|[[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto) \| [CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto) \| [CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto) \| [CreateAssemblyAICredentialDTO](#schemacreateassemblyaicredentialdto) \| [CreateAzureCredentialDTO](#schemacreateazurecredentialdto) \| [CreateAzureOpenAICredentialDTO](#schemacreateazureopenaicredentialdto) \| [CreateByoSipTrunkCredentialDTO](#schemacreatebyosiptrunkcredentialdto) \| [CreateCartesiaCredentialDTO](#schemacreatecartesiacredentialdto) \| [CreateCerebrasCredentialDTO](#schemacreatecerebrascredentialdto) \| [CreateCloudflareCredentialDTO](#schemacreatecloudflarecredentialdto) \| [CreateCustomLLMCredentialDTO](#schemacreatecustomllmcredentialdto) \| [CreateDeepgramCredentialDTO](#schemacreatedeepgramcredentialdto) \| [CreateDeepInfraCredentialDTO](#schemacreatedeepinfracredentialdto) \| [CreateDeepSeekCredentialDTO](#schemacreatedeepseekcredentialdto) \| [CreateElevenLabsCredentialDTO](#schemacreateelevenlabscredentialdto) \| [CreateGcpCredentialDTO](#schemacreategcpcredentialdto) \| [CreateGladiaCredentialDTO](#schemacreategladiacredentialdto) \| [CreateGoHighLevelCredentialDTO](#schemacreategohighlevelcredentialdto) \| [CreateGoogleCredentialDTO](#schemacreategooglecredentialdto) \| [CreateGroqCredentialDTO](#schemacreategroqcredentialdto) \| [CreateHumeCredentialDTO](#schemacreatehumecredentialdto) \| [CreateInflectionAICredentialDTO](#schemacreateinflectionaicredentialdto) \| [CreateLangfuseCredentialDTO](#schemacreatelangfusecredentialdto) \| [CreateLmntCredentialDTO](#schemacreatelmntcredentialdto) \| [CreateMakeCredentialDTO](#schemacreatemakecredentialdto) \| [CreateMistralCredentialDTO](#schemacreatemistralcredentialdto) \| [CreateNeuphonicCredentialDTO](#schemacreateneuphoniccredentialdto) \| [CreateOpenAICredentialDTO](#schemacreateopenaicredentialdto) \| [CreateOpenRouterCredentialDTO](#schemacreateopenroutercredentialdto) \| [CreatePerplexityAICredentialDTO](#schemacreateperplexityaicredentialdto) \| [CreatePlayHTCredentialDTO](#schemacreateplayhtcredentialdto) \| [CreateRimeAICredentialDTO](#schemacreaterimeaicredentialdto) \| [CreateRunpodCredentialDTO](#schemacreaterunpodcredentialdto) \| [CreateS3CredentialDTO](#schemacreates3credentialdto) \| [CreateS3CompatibleCredentialDTO](#schemacreates3compatiblecredentialdto) \| [CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto) \| [CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto) \| [CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto) \| [CreateReson8CredentialDTO](#schemacreatereson8credentialdto) \| [CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto) \| [CreateTavusCredentialDTO](#schemacreatetavuscredentialdto) \| [CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto) \| [CreateTwilioCredentialDTO](#schemacreatetwiliocredentialdto) \| [CreateVonageCredentialDTO](#schemacreatevonagecredentialdto) \| [CreateWebhookCredentialDTO](#schemacreatewebhookcredentialdto) \| [CreateCustomCredentialDTO](#schemacreatecustomcredentialdto) \| [CreateXAiCredentialDTO](#schemacreatexaicredentialdto) \| [CreateMicrosoftCredentialDTO](#schemacreatemicrosoftcredentialdto) \| [CreateGoogleCalendarOAuth2ClientCredentialDTO](#schemacreategooglecalendaroauth2clientcredentialdto) \| [CreateGoogleCalendarOAuth2AuthorizationCredentialDTO](#schemacreategooglecalendaroauth2authorizationcredentialdto) \| [CreateGoogleSheetsOAuth2AuthorizationCredentialDTO](#schemacreategooglesheetsoauth2authorizationcredentialdto) \| [CreateSlackOAuth2AuthorizationCredentialDTO](#schemacreateslackoauth2authorizationcredentialdto) \| [CreateGoHighLevelMCPCredentialDTO](#schemacreategohighlevelmcpcredentialdto) \| [CreateInworldCredentialDTO](#schemacreateinworldcredentialdto) \| [CreateMinimaxCredentialDTO](#schemacreateminimaxcredentialdto) \| [CreateWellSaidCredentialDTO](#schemacreatewellsaidcredentialdto) \| [CreateEmailCredentialDTO](#schemacreateemailcredentialdto) \| [CreateSlackWebhookCredentialDTO](#schemacreateslackwebhookcredentialdto)]|false|These are dynamic credentials that will be used for the assistant calls. By default, all the credentials are available for use in the call but you can supplement an additional credentials using this. Dynamic credentials override existing credentials.|
 |» » » *oneOf*|body|[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto)|false|none|
@@ -29092,6 +29115,7 @@ curl https://api.vapi.ai/call \
 |» » » *oneOf*|body|[CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto)|false|none|
+|» » » *oneOf*|body|[CreateReson8CredentialDTO](#schemacreatereson8credentialdto)|false|none|
 |» » » *oneOf*|body|[CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateTavusCredentialDTO](#schemacreatetavuscredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto)|false|none|
@@ -29246,7 +29270,7 @@ curl https://api.vapi.ai/call \
 |» » members|body|[[SquadMemberDTO](#schemasquadmemberdto)]|true|This is the list of assistants that make up the squad.<br><br>The call will start with the first assistant in the list.|
 |» » membersOverrides|body|object|false|This can be used to override all the assistants' settings and provide values for their template variables.<br><br>Both `membersOverrides` and `members[n].assistantOverrides` can be used together. First, `members[n].assistantOverrides` is applied. Then, `membersOverrides` is applied as a global override.|
 |» squadOverrides|body|object|false|These are the overrides for the `squad` or `squadId`'s member settings and template variables.<br>This will apply to all members of the squad.|
-|» » transcriber|body|[AssemblyAITranscriber](#schemaassemblyaitranscriber) \| [AzureSpeechTranscriber](#schemaazurespeechtranscriber) \| [CustomTranscriber](#schemacustomtranscriber) \| [DeepgramTranscriber](#schemadeepgramtranscriber) \| [ElevenLabsTranscriber](#schemaelevenlabstranscriber) \| [GladiaTranscriber](#schemagladiatranscriber) \| [GoogleTranscriber](#schemagoogletranscriber) \| [SpeechmaticsTranscriber](#schemaspeechmaticstranscriber) \| [TalkscriberTranscriber](#schematalkscribertranscriber) \| [OpenAITranscriber](#schemaopenaitranscriber) \| [CartesiaTranscriber](#schemacartesiatranscriber) \| [SonioxTranscriber](#schemasonioxtranscriber) \| [XaiTranscriber](#schemaxaitranscriber) \| [VapiTranscriber](#schemavapitranscriber)|false|These are the options for the assistant's transcriber.|
+|» » transcriber|body|[AssemblyAITranscriber](#schemaassemblyaitranscriber) \| [AzureSpeechTranscriber](#schemaazurespeechtranscriber) \| [CustomTranscriber](#schemacustomtranscriber) \| [DeepgramTranscriber](#schemadeepgramtranscriber) \| [ElevenLabsTranscriber](#schemaelevenlabstranscriber) \| [GladiaTranscriber](#schemagladiatranscriber) \| [GoogleTranscriber](#schemagoogletranscriber) \| [SpeechmaticsTranscriber](#schemaspeechmaticstranscriber) \| [TalkscriberTranscriber](#schematalkscribertranscriber) \| [OpenAITranscriber](#schemaopenaitranscriber) \| [CartesiaTranscriber](#schemacartesiatranscriber) \| [SonioxTranscriber](#schemasonioxtranscriber) \| [XaiTranscriber](#schemaxaitranscriber) \| [Reson8Transcriber](#schemareson8transcriber) \| [VapiTranscriber](#schemavapitranscriber)|false|These are the options for the assistant's transcriber.|
 |» » » *oneOf*|body|[AssemblyAITranscriber](#schemaassemblyaitranscriber)|false|none|
 |» » » *oneOf*|body|[AzureSpeechTranscriber](#schemaazurespeechtranscriber)|false|none|
 |» » » *oneOf*|body|[CustomTranscriber](#schemacustomtranscriber)|false|none|
@@ -29260,6 +29284,7 @@ curl https://api.vapi.ai/call \
 |» » » *oneOf*|body|[CartesiaTranscriber](#schemacartesiatranscriber)|false|none|
 |» » » *oneOf*|body|[SonioxTranscriber](#schemasonioxtranscriber)|false|none|
 |» » » *oneOf*|body|[XaiTranscriber](#schemaxaitranscriber)|false|none|
+|» » » *oneOf*|body|[Reson8Transcriber](#schemareson8transcriber)|false|none|
 |» » » *oneOf*|body|[VapiTranscriber](#schemavapitranscriber)|false|none|
 |» » model|body|[AnthropicModel](#schemaanthropicmodel) \| [AnthropicBedrockModel](#schemaanthropicbedrockmodel) \| [AnyscaleModel](#schemaanyscalemodel) \| [CerebrasModel](#schemacerebrasmodel) \| [CustomLLMModel](#schemacustomllmmodel) \| [DeepInfraModel](#schemadeepinframodel) \| [DeepSeekModel](#schemadeepseekmodel) \| [GoogleModel](#schemagooglemodel) \| [GroqModel](#schemagroqmodel) \| [InflectionAIModel](#schemainflectionaimodel) \| [MinimaxLLMModel](#schemaminimaxllmmodel) \| [OpenAIModel](#schemaopenaimodel) \| [OpenRouterModel](#schemaopenroutermodel) \| [PerplexityAIModel](#schemaperplexityaimodel) \| [TogetherAIModel](#schematogetheraimodel) \| [XaiModel](#schemaxaimodel) \| [VapiModel](#schemavapimodel)|false|These are the options for the assistant's LLM.|
 |» » » *oneOf*|body|[AnthropicModel](#schemaanthropicmodel)|false|none|
@@ -29311,7 +29336,7 @@ curl https://api.vapi.ai/call \
 |» » clientMessages|body|[string]|false|These are the messages that will be sent to your Client SDKs. Default is conversation-update,function-call,hang,model-output,speech-update,status-update,transfer-update,transcript,tool-calls,user-interrupted,voice-input,workflow.node.started,assistant.started. You can check the shape of the messages in ClientMessage schema.|
 |» » serverMessages|body|[string]|false|These are the messages that will be sent to your Server URL. Default is conversation-update,end-of-call-report,function-call,hang,speech-update,status-update,tool-calls,transfer-destination-request,handoff-destination-request,user-interrupted,assistant.started. You can check the shape of the messages in ServerMessage schema.|
 |» » maxDurationSeconds|body|number|false|This is the maximum number of seconds that the call will last. When the call reaches this duration, it will be ended.<br><br>@default 600 (10 minutes)|
-|» » backgroundSound|body|string \| string(uri)|false|This is the background sound in the call. Default for phone calls is 'office' and default for web calls is 'off'.<br>You can also provide a custom sound by providing a URL to an audio file.|
+|» » backgroundSound|body|string \| string(uri)|false|This is the background sound in the call. Default for phone calls is 'office' and default for web calls is 'off'.<br>Bundled sounds: 'office', 'white-noise', 'city', 'crowd' and 'farm'. GPT Live assistants don't play 'office'.<br>You can also provide a custom sound by providing a URL to an audio file.|
 |» » » *oneOf*|body|string|false|none|
 |» » » *oneOf*|body|string(uri)|false|none|
 |» » modelOutputInMessagesEnabled|body|boolean|false|This determines whether the model's output is used in conversation history rather than the transcription of assistant's speech.<br><br>@default false|
@@ -29325,7 +29350,7 @@ curl https://api.vapi.ai/call \
 |» » » tags|body|[string]|true|This is an array of tags to be added to the Langfuse trace. Tags allow you to categorize and filter traces. https://langfuse.com/docs/tracing-features/tags|
 |» » » metadata|body|object|false|This is a JSON object that will be added to the Langfuse trace. Traces can be enriched with metadata to better understand your users, application, and experiments. https://langfuse.com/docs/tracing-features/metadata<br>By default it includes the call metadata, assistant metadata, and assistant overrides.|
 |» » » *oneOf*|body|[LangfuseObservabilityPlan](#schemalangfuseobservabilityplan)|false|none|
-|» » credentials|body|[[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto) \| [CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto) \| [CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto) \| [CreateAssemblyAICredentialDTO](#schemacreateassemblyaicredentialdto) \| [CreateAzureCredentialDTO](#schemacreateazurecredentialdto) \| [CreateAzureOpenAICredentialDTO](#schemacreateazureopenaicredentialdto) \| [CreateByoSipTrunkCredentialDTO](#schemacreatebyosiptrunkcredentialdto) \| [CreateCartesiaCredentialDTO](#schemacreatecartesiacredentialdto) \| [CreateCerebrasCredentialDTO](#schemacreatecerebrascredentialdto) \| [CreateCloudflareCredentialDTO](#schemacreatecloudflarecredentialdto) \| [CreateCustomLLMCredentialDTO](#schemacreatecustomllmcredentialdto) \| [CreateDeepgramCredentialDTO](#schemacreatedeepgramcredentialdto) \| [CreateDeepInfraCredentialDTO](#schemacreatedeepinfracredentialdto) \| [CreateDeepSeekCredentialDTO](#schemacreatedeepseekcredentialdto) \| [CreateElevenLabsCredentialDTO](#schemacreateelevenlabscredentialdto) \| [CreateGcpCredentialDTO](#schemacreategcpcredentialdto) \| [CreateGladiaCredentialDTO](#schemacreategladiacredentialdto) \| [CreateGoHighLevelCredentialDTO](#schemacreategohighlevelcredentialdto) \| [CreateGoogleCredentialDTO](#schemacreategooglecredentialdto) \| [CreateGroqCredentialDTO](#schemacreategroqcredentialdto) \| [CreateHumeCredentialDTO](#schemacreatehumecredentialdto) \| [CreateInflectionAICredentialDTO](#schemacreateinflectionaicredentialdto) \| [CreateLangfuseCredentialDTO](#schemacreatelangfusecredentialdto) \| [CreateLmntCredentialDTO](#schemacreatelmntcredentialdto) \| [CreateMakeCredentialDTO](#schemacreatemakecredentialdto) \| [CreateMistralCredentialDTO](#schemacreatemistralcredentialdto) \| [CreateNeuphonicCredentialDTO](#schemacreateneuphoniccredentialdto) \| [CreateOpenAICredentialDTO](#schemacreateopenaicredentialdto) \| [CreateOpenRouterCredentialDTO](#schemacreateopenroutercredentialdto) \| [CreatePerplexityAICredentialDTO](#schemacreateperplexityaicredentialdto) \| [CreatePlayHTCredentialDTO](#schemacreateplayhtcredentialdto) \| [CreateRimeAICredentialDTO](#schemacreaterimeaicredentialdto) \| [CreateRunpodCredentialDTO](#schemacreaterunpodcredentialdto) \| [CreateS3CredentialDTO](#schemacreates3credentialdto) \| [CreateS3CompatibleCredentialDTO](#schemacreates3compatiblecredentialdto) \| [CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto) \| [CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto) \| [CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto) \| [CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto) \| [CreateTavusCredentialDTO](#schemacreatetavuscredentialdto) \| [CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto) \| [CreateTwilioCredentialDTO](#schemacreatetwiliocredentialdto) \| [CreateVonageCredentialDTO](#schemacreatevonagecredentialdto) \| [CreateWebhookCredentialDTO](#schemacreatewebhookcredentialdto) \| [CreateCustomCredentialDTO](#schemacreatecustomcredentialdto) \| [CreateXAiCredentialDTO](#schemacreatexaicredentialdto) \| [CreateMicrosoftCredentialDTO](#schemacreatemicrosoftcredentialdto) \| [CreateGoogleCalendarOAuth2ClientCredentialDTO](#schemacreategooglecalendaroauth2clientcredentialdto) \| [CreateGoogleCalendarOAuth2AuthorizationCredentialDTO](#schemacreategooglecalendaroauth2authorizationcredentialdto) \| [CreateGoogleSheetsOAuth2AuthorizationCredentialDTO](#schemacreategooglesheetsoauth2authorizationcredentialdto) \| [CreateSlackOAuth2AuthorizationCredentialDTO](#schemacreateslackoauth2authorizationcredentialdto) \| [CreateGoHighLevelMCPCredentialDTO](#schemacreategohighlevelmcpcredentialdto) \| [CreateInworldCredentialDTO](#schemacreateinworldcredentialdto) \| [CreateMinimaxCredentialDTO](#schemacreateminimaxcredentialdto) \| [CreateWellSaidCredentialDTO](#schemacreatewellsaidcredentialdto) \| [CreateEmailCredentialDTO](#schemacreateemailcredentialdto) \| [CreateSlackWebhookCredentialDTO](#schemacreateslackwebhookcredentialdto)]|false|These are dynamic credentials that will be used for the assistant calls. By default, all the credentials are available for use in the call but you can supplement an additional credentials using this. Dynamic credentials override existing credentials.|
+|» » credentials|body|[[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto) \| [CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto) \| [CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto) \| [CreateAssemblyAICredentialDTO](#schemacreateassemblyaicredentialdto) \| [CreateAzureCredentialDTO](#schemacreateazurecredentialdto) \| [CreateAzureOpenAICredentialDTO](#schemacreateazureopenaicredentialdto) \| [CreateByoSipTrunkCredentialDTO](#schemacreatebyosiptrunkcredentialdto) \| [CreateCartesiaCredentialDTO](#schemacreatecartesiacredentialdto) \| [CreateCerebrasCredentialDTO](#schemacreatecerebrascredentialdto) \| [CreateCloudflareCredentialDTO](#schemacreatecloudflarecredentialdto) \| [CreateCustomLLMCredentialDTO](#schemacreatecustomllmcredentialdto) \| [CreateDeepgramCredentialDTO](#schemacreatedeepgramcredentialdto) \| [CreateDeepInfraCredentialDTO](#schemacreatedeepinfracredentialdto) \| [CreateDeepSeekCredentialDTO](#schemacreatedeepseekcredentialdto) \| [CreateElevenLabsCredentialDTO](#schemacreateelevenlabscredentialdto) \| [CreateGcpCredentialDTO](#schemacreategcpcredentialdto) \| [CreateGladiaCredentialDTO](#schemacreategladiacredentialdto) \| [CreateGoHighLevelCredentialDTO](#schemacreategohighlevelcredentialdto) \| [CreateGoogleCredentialDTO](#schemacreategooglecredentialdto) \| [CreateGroqCredentialDTO](#schemacreategroqcredentialdto) \| [CreateHumeCredentialDTO](#schemacreatehumecredentialdto) \| [CreateInflectionAICredentialDTO](#schemacreateinflectionaicredentialdto) \| [CreateLangfuseCredentialDTO](#schemacreatelangfusecredentialdto) \| [CreateLmntCredentialDTO](#schemacreatelmntcredentialdto) \| [CreateMakeCredentialDTO](#schemacreatemakecredentialdto) \| [CreateMistralCredentialDTO](#schemacreatemistralcredentialdto) \| [CreateNeuphonicCredentialDTO](#schemacreateneuphoniccredentialdto) \| [CreateOpenAICredentialDTO](#schemacreateopenaicredentialdto) \| [CreateOpenRouterCredentialDTO](#schemacreateopenroutercredentialdto) \| [CreatePerplexityAICredentialDTO](#schemacreateperplexityaicredentialdto) \| [CreatePlayHTCredentialDTO](#schemacreateplayhtcredentialdto) \| [CreateRimeAICredentialDTO](#schemacreaterimeaicredentialdto) \| [CreateRunpodCredentialDTO](#schemacreaterunpodcredentialdto) \| [CreateS3CredentialDTO](#schemacreates3credentialdto) \| [CreateS3CompatibleCredentialDTO](#schemacreates3compatiblecredentialdto) \| [CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto) \| [CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto) \| [CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto) \| [CreateReson8CredentialDTO](#schemacreatereson8credentialdto) \| [CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto) \| [CreateTavusCredentialDTO](#schemacreatetavuscredentialdto) \| [CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto) \| [CreateTwilioCredentialDTO](#schemacreatetwiliocredentialdto) \| [CreateVonageCredentialDTO](#schemacreatevonagecredentialdto) \| [CreateWebhookCredentialDTO](#schemacreatewebhookcredentialdto) \| [CreateCustomCredentialDTO](#schemacreatecustomcredentialdto) \| [CreateXAiCredentialDTO](#schemacreatexaicredentialdto) \| [CreateMicrosoftCredentialDTO](#schemacreatemicrosoftcredentialdto) \| [CreateGoogleCalendarOAuth2ClientCredentialDTO](#schemacreategooglecalendaroauth2clientcredentialdto) \| [CreateGoogleCalendarOAuth2AuthorizationCredentialDTO](#schemacreategooglecalendaroauth2authorizationcredentialdto) \| [CreateGoogleSheetsOAuth2AuthorizationCredentialDTO](#schemacreategooglesheetsoauth2authorizationcredentialdto) \| [CreateSlackOAuth2AuthorizationCredentialDTO](#schemacreateslackoauth2authorizationcredentialdto) \| [CreateGoHighLevelMCPCredentialDTO](#schemacreategohighlevelmcpcredentialdto) \| [CreateInworldCredentialDTO](#schemacreateinworldcredentialdto) \| [CreateMinimaxCredentialDTO](#schemacreateminimaxcredentialdto) \| [CreateWellSaidCredentialDTO](#schemacreatewellsaidcredentialdto) \| [CreateEmailCredentialDTO](#schemacreateemailcredentialdto) \| [CreateSlackWebhookCredentialDTO](#schemacreateslackwebhookcredentialdto)]|false|These are dynamic credentials that will be used for the assistant calls. By default, all the credentials are available for use in the call but you can supplement an additional credentials using this. Dynamic credentials override existing credentials.|
 |» » » *oneOf*|body|[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto)|false|none|
@@ -29364,6 +29389,7 @@ curl https://api.vapi.ai/call \
 |» » » *oneOf*|body|[CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto)|false|none|
+|» » » *oneOf*|body|[CreateReson8CredentialDTO](#schemacreatereson8credentialdto)|false|none|
 |» » » *oneOf*|body|[CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateTavusCredentialDTO](#schemacreatetavuscredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto)|false|none|
@@ -29523,7 +29549,7 @@ curl https://api.vapi.ai/call \
 |» » » *oneOf*|body|[WorkflowAnthropicBedrockModel](#schemaworkflowanthropicbedrockmodel)|false|none|
 |» » » *oneOf*|body|[WorkflowGoogleModel](#schemaworkflowgooglemodel)|false|none|
 |» » » *oneOf*|body|[WorkflowCustomModel](#schemaworkflowcustommodel)|false|none|
-|» » transcriber|body|[AssemblyAITranscriber](#schemaassemblyaitranscriber) \| [AzureSpeechTranscriber](#schemaazurespeechtranscriber) \| [CustomTranscriber](#schemacustomtranscriber) \| [DeepgramTranscriber](#schemadeepgramtranscriber) \| [ElevenLabsTranscriber](#schemaelevenlabstranscriber) \| [GladiaTranscriber](#schemagladiatranscriber) \| [GoogleTranscriber](#schemagoogletranscriber) \| [SpeechmaticsTranscriber](#schemaspeechmaticstranscriber) \| [TalkscriberTranscriber](#schematalkscribertranscriber) \| [OpenAITranscriber](#schemaopenaitranscriber) \| [CartesiaTranscriber](#schemacartesiatranscriber) \| [SonioxTranscriber](#schemasonioxtranscriber) \| [XaiTranscriber](#schemaxaitranscriber) \| [VapiTranscriber](#schemavapitranscriber)|false|This is the transcriber for the workflow.<br><br>This can be overridden at node level using `nodes[n].transcriber`.|
+|» » transcriber|body|[AssemblyAITranscriber](#schemaassemblyaitranscriber) \| [AzureSpeechTranscriber](#schemaazurespeechtranscriber) \| [CustomTranscriber](#schemacustomtranscriber) \| [DeepgramTranscriber](#schemadeepgramtranscriber) \| [ElevenLabsTranscriber](#schemaelevenlabstranscriber) \| [GladiaTranscriber](#schemagladiatranscriber) \| [GoogleTranscriber](#schemagoogletranscriber) \| [SpeechmaticsTranscriber](#schemaspeechmaticstranscriber) \| [TalkscriberTranscriber](#schematalkscribertranscriber) \| [OpenAITranscriber](#schemaopenaitranscriber) \| [CartesiaTranscriber](#schemacartesiatranscriber) \| [SonioxTranscriber](#schemasonioxtranscriber) \| [XaiTranscriber](#schemaxaitranscriber) \| [Reson8Transcriber](#schemareson8transcriber) \| [VapiTranscriber](#schemavapitranscriber)|false|This is the transcriber for the workflow.<br><br>This can be overridden at node level using `nodes[n].transcriber`.|
 |» » » *oneOf*|body|[AssemblyAITranscriber](#schemaassemblyaitranscriber)|false|none|
 |» » » *oneOf*|body|[AzureSpeechTranscriber](#schemaazurespeechtranscriber)|false|none|
 |» » » *oneOf*|body|[CustomTranscriber](#schemacustomtranscriber)|false|none|
@@ -29537,6 +29563,7 @@ curl https://api.vapi.ai/call \
 |» » » *oneOf*|body|[CartesiaTranscriber](#schemacartesiatranscriber)|false|none|
 |» » » *oneOf*|body|[SonioxTranscriber](#schemasonioxtranscriber)|false|none|
 |» » » *oneOf*|body|[XaiTranscriber](#schemaxaitranscriber)|false|none|
+|» » » *oneOf*|body|[Reson8Transcriber](#schemareson8transcriber)|false|none|
 |» » » *oneOf*|body|[VapiTranscriber](#schemavapitranscriber)|false|none|
 |» » voice|body|[AzureVoice](#schemaazurevoice) \| [CartesiaVoice](#schemacartesiavoice) \| [CustomVoice](#schemacustomvoice) \| [DeepgramVoice](#schemadeepgramvoice) \| [ElevenLabsVoice](#schemaelevenlabsvoice) \| [HumeVoice](#schemahumevoice) \| [LMNTVoice](#schemalmntvoice) \| [NeuphonicVoice](#schemaneuphonicvoice) \| [OpenAIVoice](#schemaopenaivoice) \| [PlayHTVoice](#schemaplayhtvoice) \| [WellSaidVoice](#schemawellsaidvoice) \| [RimeAIVoice](#schemarimeaivoice) \| [SmallestAIVoice](#schemasmallestaivoice) \| [VapiVoice](#schemavapivoice) \| [SesameVoice](#schemasesamevoice) \| [InworldVoice](#schemainworldvoice) \| [MinimaxVoice](#schemaminimaxvoice) \| [XaiVoice](#schemaxaivoice) \| [MicrosoftVoice](#schemamicrosoftvoice)|false|This is the voice for the workflow.<br><br>This can be overridden at node level using `nodes[n].voice`.|
 |» » » *oneOf*|body|[AzureVoice](#schemaazurevoice)|false|none|
@@ -29566,7 +29593,7 @@ curl https://api.vapi.ai/call \
 |» » » tags|body|[string]|true|This is an array of tags to be added to the Langfuse trace. Tags allow you to categorize and filter traces. https://langfuse.com/docs/tracing-features/tags|
 |» » » metadata|body|object|false|This is a JSON object that will be added to the Langfuse trace. Traces can be enriched with metadata to better understand your users, application, and experiments. https://langfuse.com/docs/tracing-features/metadata<br>By default it includes the call metadata, assistant metadata, and assistant overrides.|
 |» » » *oneOf*|body|[LangfuseObservabilityPlan](#schemalangfuseobservabilityplan)|false|none|
-|» » backgroundSound|body|string \| string(uri)|false|This is the background sound in the call. Default for phone calls is 'office' and default for web calls is 'off'.<br>You can also provide a custom sound by providing a URL to an audio file.|
+|» » backgroundSound|body|string \| string(uri)|false|This is the background sound in the call. Default for phone calls is 'office' and default for web calls is 'off'.<br>Bundled sounds: 'office', 'white-noise', 'city', 'crowd' and 'farm'. GPT Live assistants don't play 'office'.<br>You can also provide a custom sound by providing a URL to an audio file.|
 |» » » *oneOf*|body|string|false|none|
 |» » » *oneOf*|body|string(uri)|false|none|
 |» » hooks|body|[[CallHookCallEnding](#schemacallhookcallending) \| [CallHookAssistantSpeechInterrupted](#schemacallhookassistantspeechinterrupted) \| [CallHookCustomerSpeechInterrupted](#schemacallhookcustomerspeechinterrupted) \| [CallHookCustomerSpeechTimeout](#schemacallhookcustomerspeechtimeout) \| [CallHookModelResponseTimeout](#schemacallhookmodelresponsetimeout)]|false|This is a set of actions that will be performed on certain events.|
@@ -29575,7 +29602,7 @@ curl https://api.vapi.ai/call \
 |» » » *oneOf*|body|[CallHookCustomerSpeechInterrupted](#schemacallhookcustomerspeechinterrupted)|false|none|
 |» » » *oneOf*|body|[CallHookCustomerSpeechTimeout](#schemacallhookcustomerspeechtimeout)|false|none|
 |» » » *oneOf*|body|[CallHookModelResponseTimeout](#schemacallhookmodelresponsetimeout)|false|none|
-|» » credentials|body|[[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto) \| [CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto) \| [CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto) \| [CreateAssemblyAICredentialDTO](#schemacreateassemblyaicredentialdto) \| [CreateAzureCredentialDTO](#schemacreateazurecredentialdto) \| [CreateAzureOpenAICredentialDTO](#schemacreateazureopenaicredentialdto) \| [CreateByoSipTrunkCredentialDTO](#schemacreatebyosiptrunkcredentialdto) \| [CreateCartesiaCredentialDTO](#schemacreatecartesiacredentialdto) \| [CreateCerebrasCredentialDTO](#schemacreatecerebrascredentialdto) \| [CreateCloudflareCredentialDTO](#schemacreatecloudflarecredentialdto) \| [CreateCustomLLMCredentialDTO](#schemacreatecustomllmcredentialdto) \| [CreateDeepgramCredentialDTO](#schemacreatedeepgramcredentialdto) \| [CreateDeepInfraCredentialDTO](#schemacreatedeepinfracredentialdto) \| [CreateDeepSeekCredentialDTO](#schemacreatedeepseekcredentialdto) \| [CreateElevenLabsCredentialDTO](#schemacreateelevenlabscredentialdto) \| [CreateGcpCredentialDTO](#schemacreategcpcredentialdto) \| [CreateGladiaCredentialDTO](#schemacreategladiacredentialdto) \| [CreateGoHighLevelCredentialDTO](#schemacreategohighlevelcredentialdto) \| [CreateGoogleCredentialDTO](#schemacreategooglecredentialdto) \| [CreateGroqCredentialDTO](#schemacreategroqcredentialdto) \| [CreateHumeCredentialDTO](#schemacreatehumecredentialdto) \| [CreateInflectionAICredentialDTO](#schemacreateinflectionaicredentialdto) \| [CreateLangfuseCredentialDTO](#schemacreatelangfusecredentialdto) \| [CreateLmntCredentialDTO](#schemacreatelmntcredentialdto) \| [CreateMakeCredentialDTO](#schemacreatemakecredentialdto) \| [CreateMistralCredentialDTO](#schemacreatemistralcredentialdto) \| [CreateNeuphonicCredentialDTO](#schemacreateneuphoniccredentialdto) \| [CreateOpenAICredentialDTO](#schemacreateopenaicredentialdto) \| [CreateOpenRouterCredentialDTO](#schemacreateopenroutercredentialdto) \| [CreatePerplexityAICredentialDTO](#schemacreateperplexityaicredentialdto) \| [CreatePlayHTCredentialDTO](#schemacreateplayhtcredentialdto) \| [CreateRimeAICredentialDTO](#schemacreaterimeaicredentialdto) \| [CreateRunpodCredentialDTO](#schemacreaterunpodcredentialdto) \| [CreateS3CredentialDTO](#schemacreates3credentialdto) \| [CreateS3CompatibleCredentialDTO](#schemacreates3compatiblecredentialdto) \| [CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto) \| [CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto) \| [CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto) \| [CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto) \| [CreateTavusCredentialDTO](#schemacreatetavuscredentialdto) \| [CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto) \| [CreateTwilioCredentialDTO](#schemacreatetwiliocredentialdto) \| [CreateVonageCredentialDTO](#schemacreatevonagecredentialdto) \| [CreateWebhookCredentialDTO](#schemacreatewebhookcredentialdto) \| [CreateCustomCredentialDTO](#schemacreatecustomcredentialdto) \| [CreateXAiCredentialDTO](#schemacreatexaicredentialdto) \| [CreateMicrosoftCredentialDTO](#schemacreatemicrosoftcredentialdto) \| [CreateGoogleCalendarOAuth2ClientCredentialDTO](#schemacreategooglecalendaroauth2clientcredentialdto) \| [CreateGoogleCalendarOAuth2AuthorizationCredentialDTO](#schemacreategooglecalendaroauth2authorizationcredentialdto) \| [CreateGoogleSheetsOAuth2AuthorizationCredentialDTO](#schemacreategooglesheetsoauth2authorizationcredentialdto) \| [CreateSlackOAuth2AuthorizationCredentialDTO](#schemacreateslackoauth2authorizationcredentialdto) \| [CreateGoHighLevelMCPCredentialDTO](#schemacreategohighlevelmcpcredentialdto) \| [CreateInworldCredentialDTO](#schemacreateinworldcredentialdto) \| [CreateMinimaxCredentialDTO](#schemacreateminimaxcredentialdto) \| [CreateWellSaidCredentialDTO](#schemacreatewellsaidcredentialdto) \| [CreateEmailCredentialDTO](#schemacreateemailcredentialdto) \| [CreateSlackWebhookCredentialDTO](#schemacreateslackwebhookcredentialdto)]|false|These are dynamic credentials that will be used for the workflow calls. By default, all the credentials are available for use in the call but you can supplement an additional credentials using this. Dynamic credentials override existing credentials.|
+|» » credentials|body|[[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto) \| [CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto) \| [CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto) \| [CreateAssemblyAICredentialDTO](#schemacreateassemblyaicredentialdto) \| [CreateAzureCredentialDTO](#schemacreateazurecredentialdto) \| [CreateAzureOpenAICredentialDTO](#schemacreateazureopenaicredentialdto) \| [CreateByoSipTrunkCredentialDTO](#schemacreatebyosiptrunkcredentialdto) \| [CreateCartesiaCredentialDTO](#schemacreatecartesiacredentialdto) \| [CreateCerebrasCredentialDTO](#schemacreatecerebrascredentialdto) \| [CreateCloudflareCredentialDTO](#schemacreatecloudflarecredentialdto) \| [CreateCustomLLMCredentialDTO](#schemacreatecustomllmcredentialdto) \| [CreateDeepgramCredentialDTO](#schemacreatedeepgramcredentialdto) \| [CreateDeepInfraCredentialDTO](#schemacreatedeepinfracredentialdto) \| [CreateDeepSeekCredentialDTO](#schemacreatedeepseekcredentialdto) \| [CreateElevenLabsCredentialDTO](#schemacreateelevenlabscredentialdto) \| [CreateGcpCredentialDTO](#schemacreategcpcredentialdto) \| [CreateGladiaCredentialDTO](#schemacreategladiacredentialdto) \| [CreateGoHighLevelCredentialDTO](#schemacreategohighlevelcredentialdto) \| [CreateGoogleCredentialDTO](#schemacreategooglecredentialdto) \| [CreateGroqCredentialDTO](#schemacreategroqcredentialdto) \| [CreateHumeCredentialDTO](#schemacreatehumecredentialdto) \| [CreateInflectionAICredentialDTO](#schemacreateinflectionaicredentialdto) \| [CreateLangfuseCredentialDTO](#schemacreatelangfusecredentialdto) \| [CreateLmntCredentialDTO](#schemacreatelmntcredentialdto) \| [CreateMakeCredentialDTO](#schemacreatemakecredentialdto) \| [CreateMistralCredentialDTO](#schemacreatemistralcredentialdto) \| [CreateNeuphonicCredentialDTO](#schemacreateneuphoniccredentialdto) \| [CreateOpenAICredentialDTO](#schemacreateopenaicredentialdto) \| [CreateOpenRouterCredentialDTO](#schemacreateopenroutercredentialdto) \| [CreatePerplexityAICredentialDTO](#schemacreateperplexityaicredentialdto) \| [CreatePlayHTCredentialDTO](#schemacreateplayhtcredentialdto) \| [CreateRimeAICredentialDTO](#schemacreaterimeaicredentialdto) \| [CreateRunpodCredentialDTO](#schemacreaterunpodcredentialdto) \| [CreateS3CredentialDTO](#schemacreates3credentialdto) \| [CreateS3CompatibleCredentialDTO](#schemacreates3compatiblecredentialdto) \| [CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto) \| [CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto) \| [CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto) \| [CreateReson8CredentialDTO](#schemacreatereson8credentialdto) \| [CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto) \| [CreateTavusCredentialDTO](#schemacreatetavuscredentialdto) \| [CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto) \| [CreateTwilioCredentialDTO](#schemacreatetwiliocredentialdto) \| [CreateVonageCredentialDTO](#schemacreatevonagecredentialdto) \| [CreateWebhookCredentialDTO](#schemacreatewebhookcredentialdto) \| [CreateCustomCredentialDTO](#schemacreatecustomcredentialdto) \| [CreateXAiCredentialDTO](#schemacreatexaicredentialdto) \| [CreateMicrosoftCredentialDTO](#schemacreatemicrosoftcredentialdto) \| [CreateGoogleCalendarOAuth2ClientCredentialDTO](#schemacreategooglecalendaroauth2clientcredentialdto) \| [CreateGoogleCalendarOAuth2AuthorizationCredentialDTO](#schemacreategooglecalendaroauth2authorizationcredentialdto) \| [CreateGoogleSheetsOAuth2AuthorizationCredentialDTO](#schemacreategooglesheetsoauth2authorizationcredentialdto) \| [CreateSlackOAuth2AuthorizationCredentialDTO](#schemacreateslackoauth2authorizationcredentialdto) \| [CreateGoHighLevelMCPCredentialDTO](#schemacreategohighlevelmcpcredentialdto) \| [CreateInworldCredentialDTO](#schemacreateinworldcredentialdto) \| [CreateMinimaxCredentialDTO](#schemacreateminimaxcredentialdto) \| [CreateWellSaidCredentialDTO](#schemacreatewellsaidcredentialdto) \| [CreateEmailCredentialDTO](#schemacreateemailcredentialdto) \| [CreateSlackWebhookCredentialDTO](#schemacreateslackwebhookcredentialdto)]|false|These are dynamic credentials that will be used for the workflow calls. By default, all the credentials are available for use in the call but you can supplement an additional credentials using this. Dynamic credentials override existing credentials.|
 |» » » *oneOf*|body|[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto)|false|none|
@@ -29614,6 +29641,7 @@ curl https://api.vapi.ai/call \
 |» » » *oneOf*|body|[CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto)|false|none|
+|» » » *oneOf*|body|[CreateReson8CredentialDTO](#schemacreatereson8credentialdto)|false|none|
 |» » » *oneOf*|body|[CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateTavusCredentialDTO](#schemacreatetavuscredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto)|false|none|
@@ -29797,7 +29825,7 @@ curl https://api.vapi.ai/call \
 |» » numberE164CheckEnabled|body|boolean|false|This is the flag to toggle the E164 check for the `number` field. This is an advanced property which should be used if you know your use case requires it.<br><br>Use cases:<br>- `false`: To allow non-E164 numbers like `+001234567890`, `1234`, or `abc`. This is useful for dialing out to non-E164 numbers on your SIP trunks.<br>- `true` (default): To allow only E164 numbers like `+14155551234`. This is standard for PSTN calls.<br><br>If `false`, the `number` is still required to only contain alphanumeric characters (regex: `/^\+?[a-zA-Z0-9]+$/`).<br><br>@default true (E164 check is enabled)|
 |» » extension|body|string|false|This is the extension that will be dialed after the call is answered.|
 |» » assistantOverrides|body|object|false|These are the overrides for the assistant's settings and template variables specific to this customer.<br>This allows customization of the assistant's behavior for individual customers in batch calls.|
-|» » » transcriber|body|[AssemblyAITranscriber](#schemaassemblyaitranscriber) \| [AzureSpeechTranscriber](#schemaazurespeechtranscriber) \| [CustomTranscriber](#schemacustomtranscriber) \| [DeepgramTranscriber](#schemadeepgramtranscriber) \| [ElevenLabsTranscriber](#schemaelevenlabstranscriber) \| [GladiaTranscriber](#schemagladiatranscriber) \| [GoogleTranscriber](#schemagoogletranscriber) \| [SpeechmaticsTranscriber](#schemaspeechmaticstranscriber) \| [TalkscriberTranscriber](#schematalkscribertranscriber) \| [OpenAITranscriber](#schemaopenaitranscriber) \| [CartesiaTranscriber](#schemacartesiatranscriber) \| [SonioxTranscriber](#schemasonioxtranscriber) \| [XaiTranscriber](#schemaxaitranscriber) \| [VapiTranscriber](#schemavapitranscriber)|false|These are the options for the assistant's transcriber.|
+|» » » transcriber|body|[AssemblyAITranscriber](#schemaassemblyaitranscriber) \| [AzureSpeechTranscriber](#schemaazurespeechtranscriber) \| [CustomTranscriber](#schemacustomtranscriber) \| [DeepgramTranscriber](#schemadeepgramtranscriber) \| [ElevenLabsTranscriber](#schemaelevenlabstranscriber) \| [GladiaTranscriber](#schemagladiatranscriber) \| [GoogleTranscriber](#schemagoogletranscriber) \| [SpeechmaticsTranscriber](#schemaspeechmaticstranscriber) \| [TalkscriberTranscriber](#schematalkscribertranscriber) \| [OpenAITranscriber](#schemaopenaitranscriber) \| [CartesiaTranscriber](#schemacartesiatranscriber) \| [SonioxTranscriber](#schemasonioxtranscriber) \| [XaiTranscriber](#schemaxaitranscriber) \| [Reson8Transcriber](#schemareson8transcriber) \| [VapiTranscriber](#schemavapitranscriber)|false|These are the options for the assistant's transcriber.|
 |» » » » *oneOf*|body|[AssemblyAITranscriber](#schemaassemblyaitranscriber)|false|none|
 |» » » » *oneOf*|body|[AzureSpeechTranscriber](#schemaazurespeechtranscriber)|false|none|
 |» » » » *oneOf*|body|[CustomTranscriber](#schemacustomtranscriber)|false|none|
@@ -29811,6 +29839,7 @@ curl https://api.vapi.ai/call \
 |» » » » *oneOf*|body|[CartesiaTranscriber](#schemacartesiatranscriber)|false|none|
 |» » » » *oneOf*|body|[SonioxTranscriber](#schemasonioxtranscriber)|false|none|
 |» » » » *oneOf*|body|[XaiTranscriber](#schemaxaitranscriber)|false|none|
+|» » » » *oneOf*|body|[Reson8Transcriber](#schemareson8transcriber)|false|none|
 |» » » » *oneOf*|body|[VapiTranscriber](#schemavapitranscriber)|false|none|
 |» » » model|body|[AnthropicModel](#schemaanthropicmodel) \| [AnthropicBedrockModel](#schemaanthropicbedrockmodel) \| [AnyscaleModel](#schemaanyscalemodel) \| [CerebrasModel](#schemacerebrasmodel) \| [CustomLLMModel](#schemacustomllmmodel) \| [DeepInfraModel](#schemadeepinframodel) \| [DeepSeekModel](#schemadeepseekmodel) \| [GoogleModel](#schemagooglemodel) \| [GroqModel](#schemagroqmodel) \| [InflectionAIModel](#schemainflectionaimodel) \| [MinimaxLLMModel](#schemaminimaxllmmodel) \| [OpenAIModel](#schemaopenaimodel) \| [OpenRouterModel](#schemaopenroutermodel) \| [PerplexityAIModel](#schemaperplexityaimodel) \| [TogetherAIModel](#schematogetheraimodel) \| [XaiModel](#schemaxaimodel) \| [VapiModel](#schemavapimodel)|false|These are the options for the assistant's LLM.|
 |» » » » *oneOf*|body|[AnthropicModel](#schemaanthropicmodel)|false|none|
@@ -29862,7 +29891,7 @@ curl https://api.vapi.ai/call \
 |» » » clientMessages|body|[string]|false|These are the messages that will be sent to your Client SDKs. Default is conversation-update,function-call,hang,model-output,speech-update,status-update,transfer-update,transcript,tool-calls,user-interrupted,voice-input,workflow.node.started,assistant.started. You can check the shape of the messages in ClientMessage schema.|
 |» » » serverMessages|body|[string]|false|These are the messages that will be sent to your Server URL. Default is conversation-update,end-of-call-report,function-call,hang,speech-update,status-update,tool-calls,transfer-destination-request,handoff-destination-request,user-interrupted,assistant.started. You can check the shape of the messages in ServerMessage schema.|
 |» » » maxDurationSeconds|body|number|false|This is the maximum number of seconds that the call will last. When the call reaches this duration, it will be ended.<br><br>@default 600 (10 minutes)|
-|» » » backgroundSound|body|string \| string(uri)|false|This is the background sound in the call. Default for phone calls is 'office' and default for web calls is 'off'.<br>You can also provide a custom sound by providing a URL to an audio file.|
+|» » » backgroundSound|body|string \| string(uri)|false|This is the background sound in the call. Default for phone calls is 'office' and default for web calls is 'off'.<br>Bundled sounds: 'office', 'white-noise', 'city', 'crowd' and 'farm'. GPT Live assistants don't play 'office'.<br>You can also provide a custom sound by providing a URL to an audio file.|
 |» » » » *oneOf*|body|string|false|none|
 |» » » » *oneOf*|body|string(uri)|false|none|
 |» » » modelOutputInMessagesEnabled|body|boolean|false|This determines whether the model's output is used in conversation history rather than the transcription of assistant's speech.<br><br>@default false|
@@ -29876,7 +29905,7 @@ curl https://api.vapi.ai/call \
 |» » » » tags|body|[string]|true|This is an array of tags to be added to the Langfuse trace. Tags allow you to categorize and filter traces. https://langfuse.com/docs/tracing-features/tags|
 |» » » » metadata|body|object|false|This is a JSON object that will be added to the Langfuse trace. Traces can be enriched with metadata to better understand your users, application, and experiments. https://langfuse.com/docs/tracing-features/metadata<br>By default it includes the call metadata, assistant metadata, and assistant overrides.|
 |» » » » *oneOf*|body|[LangfuseObservabilityPlan](#schemalangfuseobservabilityplan)|false|none|
-|» » » credentials|body|[[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto) \| [CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto) \| [CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto) \| [CreateAssemblyAICredentialDTO](#schemacreateassemblyaicredentialdto) \| [CreateAzureCredentialDTO](#schemacreateazurecredentialdto) \| [CreateAzureOpenAICredentialDTO](#schemacreateazureopenaicredentialdto) \| [CreateByoSipTrunkCredentialDTO](#schemacreatebyosiptrunkcredentialdto) \| [CreateCartesiaCredentialDTO](#schemacreatecartesiacredentialdto) \| [CreateCerebrasCredentialDTO](#schemacreatecerebrascredentialdto) \| [CreateCloudflareCredentialDTO](#schemacreatecloudflarecredentialdto) \| [CreateCustomLLMCredentialDTO](#schemacreatecustomllmcredentialdto) \| [CreateDeepgramCredentialDTO](#schemacreatedeepgramcredentialdto) \| [CreateDeepInfraCredentialDTO](#schemacreatedeepinfracredentialdto) \| [CreateDeepSeekCredentialDTO](#schemacreatedeepseekcredentialdto) \| [CreateElevenLabsCredentialDTO](#schemacreateelevenlabscredentialdto) \| [CreateGcpCredentialDTO](#schemacreategcpcredentialdto) \| [CreateGladiaCredentialDTO](#schemacreategladiacredentialdto) \| [CreateGoHighLevelCredentialDTO](#schemacreategohighlevelcredentialdto) \| [CreateGoogleCredentialDTO](#schemacreategooglecredentialdto) \| [CreateGroqCredentialDTO](#schemacreategroqcredentialdto) \| [CreateHumeCredentialDTO](#schemacreatehumecredentialdto) \| [CreateInflectionAICredentialDTO](#schemacreateinflectionaicredentialdto) \| [CreateLangfuseCredentialDTO](#schemacreatelangfusecredentialdto) \| [CreateLmntCredentialDTO](#schemacreatelmntcredentialdto) \| [CreateMakeCredentialDTO](#schemacreatemakecredentialdto) \| [CreateMistralCredentialDTO](#schemacreatemistralcredentialdto) \| [CreateNeuphonicCredentialDTO](#schemacreateneuphoniccredentialdto) \| [CreateOpenAICredentialDTO](#schemacreateopenaicredentialdto) \| [CreateOpenRouterCredentialDTO](#schemacreateopenroutercredentialdto) \| [CreatePerplexityAICredentialDTO](#schemacreateperplexityaicredentialdto) \| [CreatePlayHTCredentialDTO](#schemacreateplayhtcredentialdto) \| [CreateRimeAICredentialDTO](#schemacreaterimeaicredentialdto) \| [CreateRunpodCredentialDTO](#schemacreaterunpodcredentialdto) \| [CreateS3CredentialDTO](#schemacreates3credentialdto) \| [CreateS3CompatibleCredentialDTO](#schemacreates3compatiblecredentialdto) \| [CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto) \| [CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto) \| [CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto) \| [CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto) \| [CreateTavusCredentialDTO](#schemacreatetavuscredentialdto) \| [CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto) \| [CreateTwilioCredentialDTO](#schemacreatetwiliocredentialdto) \| [CreateVonageCredentialDTO](#schemacreatevonagecredentialdto) \| [CreateWebhookCredentialDTO](#schemacreatewebhookcredentialdto) \| [CreateCustomCredentialDTO](#schemacreatecustomcredentialdto) \| [CreateXAiCredentialDTO](#schemacreatexaicredentialdto) \| [CreateMicrosoftCredentialDTO](#schemacreatemicrosoftcredentialdto) \| [CreateGoogleCalendarOAuth2ClientCredentialDTO](#schemacreategooglecalendaroauth2clientcredentialdto) \| [CreateGoogleCalendarOAuth2AuthorizationCredentialDTO](#schemacreategooglecalendaroauth2authorizationcredentialdto) \| [CreateGoogleSheetsOAuth2AuthorizationCredentialDTO](#schemacreategooglesheetsoauth2authorizationcredentialdto) \| [CreateSlackOAuth2AuthorizationCredentialDTO](#schemacreateslackoauth2authorizationcredentialdto) \| [CreateGoHighLevelMCPCredentialDTO](#schemacreategohighlevelmcpcredentialdto) \| [CreateInworldCredentialDTO](#schemacreateinworldcredentialdto) \| [CreateMinimaxCredentialDTO](#schemacreateminimaxcredentialdto) \| [CreateWellSaidCredentialDTO](#schemacreatewellsaidcredentialdto) \| [CreateEmailCredentialDTO](#schemacreateemailcredentialdto) \| [CreateSlackWebhookCredentialDTO](#schemacreateslackwebhookcredentialdto)]|false|These are dynamic credentials that will be used for the assistant calls. By default, all the credentials are available for use in the call but you can supplement an additional credentials using this. Dynamic credentials override existing credentials.|
+|» » » credentials|body|[[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto) \| [CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto) \| [CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto) \| [CreateAssemblyAICredentialDTO](#schemacreateassemblyaicredentialdto) \| [CreateAzureCredentialDTO](#schemacreateazurecredentialdto) \| [CreateAzureOpenAICredentialDTO](#schemacreateazureopenaicredentialdto) \| [CreateByoSipTrunkCredentialDTO](#schemacreatebyosiptrunkcredentialdto) \| [CreateCartesiaCredentialDTO](#schemacreatecartesiacredentialdto) \| [CreateCerebrasCredentialDTO](#schemacreatecerebrascredentialdto) \| [CreateCloudflareCredentialDTO](#schemacreatecloudflarecredentialdto) \| [CreateCustomLLMCredentialDTO](#schemacreatecustomllmcredentialdto) \| [CreateDeepgramCredentialDTO](#schemacreatedeepgramcredentialdto) \| [CreateDeepInfraCredentialDTO](#schemacreatedeepinfracredentialdto) \| [CreateDeepSeekCredentialDTO](#schemacreatedeepseekcredentialdto) \| [CreateElevenLabsCredentialDTO](#schemacreateelevenlabscredentialdto) \| [CreateGcpCredentialDTO](#schemacreategcpcredentialdto) \| [CreateGladiaCredentialDTO](#schemacreategladiacredentialdto) \| [CreateGoHighLevelCredentialDTO](#schemacreategohighlevelcredentialdto) \| [CreateGoogleCredentialDTO](#schemacreategooglecredentialdto) \| [CreateGroqCredentialDTO](#schemacreategroqcredentialdto) \| [CreateHumeCredentialDTO](#schemacreatehumecredentialdto) \| [CreateInflectionAICredentialDTO](#schemacreateinflectionaicredentialdto) \| [CreateLangfuseCredentialDTO](#schemacreatelangfusecredentialdto) \| [CreateLmntCredentialDTO](#schemacreatelmntcredentialdto) \| [CreateMakeCredentialDTO](#schemacreatemakecredentialdto) \| [CreateMistralCredentialDTO](#schemacreatemistralcredentialdto) \| [CreateNeuphonicCredentialDTO](#schemacreateneuphoniccredentialdto) \| [CreateOpenAICredentialDTO](#schemacreateopenaicredentialdto) \| [CreateOpenRouterCredentialDTO](#schemacreateopenroutercredentialdto) \| [CreatePerplexityAICredentialDTO](#schemacreateperplexityaicredentialdto) \| [CreatePlayHTCredentialDTO](#schemacreateplayhtcredentialdto) \| [CreateRimeAICredentialDTO](#schemacreaterimeaicredentialdto) \| [CreateRunpodCredentialDTO](#schemacreaterunpodcredentialdto) \| [CreateS3CredentialDTO](#schemacreates3credentialdto) \| [CreateS3CompatibleCredentialDTO](#schemacreates3compatiblecredentialdto) \| [CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto) \| [CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto) \| [CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto) \| [CreateReson8CredentialDTO](#schemacreatereson8credentialdto) \| [CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto) \| [CreateTavusCredentialDTO](#schemacreatetavuscredentialdto) \| [CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto) \| [CreateTwilioCredentialDTO](#schemacreatetwiliocredentialdto) \| [CreateVonageCredentialDTO](#schemacreatevonagecredentialdto) \| [CreateWebhookCredentialDTO](#schemacreatewebhookcredentialdto) \| [CreateCustomCredentialDTO](#schemacreatecustomcredentialdto) \| [CreateXAiCredentialDTO](#schemacreatexaicredentialdto) \| [CreateMicrosoftCredentialDTO](#schemacreatemicrosoftcredentialdto) \| [CreateGoogleCalendarOAuth2ClientCredentialDTO](#schemacreategooglecalendaroauth2clientcredentialdto) \| [CreateGoogleCalendarOAuth2AuthorizationCredentialDTO](#schemacreategooglecalendaroauth2authorizationcredentialdto) \| [CreateGoogleSheetsOAuth2AuthorizationCredentialDTO](#schemacreategooglesheetsoauth2authorizationcredentialdto) \| [CreateSlackOAuth2AuthorizationCredentialDTO](#schemacreateslackoauth2authorizationcredentialdto) \| [CreateGoHighLevelMCPCredentialDTO](#schemacreategohighlevelmcpcredentialdto) \| [CreateInworldCredentialDTO](#schemacreateinworldcredentialdto) \| [CreateMinimaxCredentialDTO](#schemacreateminimaxcredentialdto) \| [CreateWellSaidCredentialDTO](#schemacreatewellsaidcredentialdto) \| [CreateEmailCredentialDTO](#schemacreateemailcredentialdto) \| [CreateSlackWebhookCredentialDTO](#schemacreateslackwebhookcredentialdto)]|false|These are dynamic credentials that will be used for the assistant calls. By default, all the credentials are available for use in the call but you can supplement an additional credentials using this. Dynamic credentials override existing credentials.|
 |» » » » *oneOf*|body|[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto)|false|none|
 |» » » » *oneOf*|body|[CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto)|false|none|
 |» » » » *oneOf*|body|[CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto)|false|none|
@@ -29915,6 +29944,7 @@ curl https://api.vapi.ai/call \
 |» » » » *oneOf*|body|[CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto)|false|none|
 |» » » » *oneOf*|body|[CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto)|false|none|
 |» » » » *oneOf*|body|[CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto)|false|none|
+|» » » » *oneOf*|body|[CreateReson8CredentialDTO](#schemacreatereson8credentialdto)|false|none|
 |» » » » *oneOf*|body|[CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto)|false|none|
 |» » » » *oneOf*|body|[CreateTavusCredentialDTO](#schemacreatetavuscredentialdto)|false|none|
 |» » » » *oneOf*|body|[CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto)|false|none|
@@ -30064,7 +30094,7 @@ curl https://api.vapi.ai/call \
 |» » » » » excludedStatusCodes|body|[object]|false|This is the excluded status codes. If the response status code is in this list, the request will not be retried.<br>By default, the request will be retried for any non-2xx status code.|
 |» » » keypadInputPlan|body|[KeypadInputPlan](#schemakeypadinputplan)|false|none|
 |» » squadOverrides|body|object|false|These are the overrides applied when the call targets a `squadId`. Mirrors<br>the call-level `squadOverrides` — use this instead of `assistantOverrides`<br>when the campaign or call is squad-based.|
-|» » » transcriber|body|[AssemblyAITranscriber](#schemaassemblyaitranscriber) \| [AzureSpeechTranscriber](#schemaazurespeechtranscriber) \| [CustomTranscriber](#schemacustomtranscriber) \| [DeepgramTranscriber](#schemadeepgramtranscriber) \| [ElevenLabsTranscriber](#schemaelevenlabstranscriber) \| [GladiaTranscriber](#schemagladiatranscriber) \| [GoogleTranscriber](#schemagoogletranscriber) \| [SpeechmaticsTranscriber](#schemaspeechmaticstranscriber) \| [TalkscriberTranscriber](#schematalkscribertranscriber) \| [OpenAITranscriber](#schemaopenaitranscriber) \| [CartesiaTranscriber](#schemacartesiatranscriber) \| [SonioxTranscriber](#schemasonioxtranscriber) \| [XaiTranscriber](#schemaxaitranscriber) \| [VapiTranscriber](#schemavapitranscriber)|false|These are the options for the assistant's transcriber.|
+|» » » transcriber|body|[AssemblyAITranscriber](#schemaassemblyaitranscriber) \| [AzureSpeechTranscriber](#schemaazurespeechtranscriber) \| [CustomTranscriber](#schemacustomtranscriber) \| [DeepgramTranscriber](#schemadeepgramtranscriber) \| [ElevenLabsTranscriber](#schemaelevenlabstranscriber) \| [GladiaTranscriber](#schemagladiatranscriber) \| [GoogleTranscriber](#schemagoogletranscriber) \| [SpeechmaticsTranscriber](#schemaspeechmaticstranscriber) \| [TalkscriberTranscriber](#schematalkscribertranscriber) \| [OpenAITranscriber](#schemaopenaitranscriber) \| [CartesiaTranscriber](#schemacartesiatranscriber) \| [SonioxTranscriber](#schemasonioxtranscriber) \| [XaiTranscriber](#schemaxaitranscriber) \| [Reson8Transcriber](#schemareson8transcriber) \| [VapiTranscriber](#schemavapitranscriber)|false|These are the options for the assistant's transcriber.|
 |» » » » *oneOf*|body|[AssemblyAITranscriber](#schemaassemblyaitranscriber)|false|none|
 |» » » » *oneOf*|body|[AzureSpeechTranscriber](#schemaazurespeechtranscriber)|false|none|
 |» » » » *oneOf*|body|[CustomTranscriber](#schemacustomtranscriber)|false|none|
@@ -30078,6 +30108,7 @@ curl https://api.vapi.ai/call \
 |» » » » *oneOf*|body|[CartesiaTranscriber](#schemacartesiatranscriber)|false|none|
 |» » » » *oneOf*|body|[SonioxTranscriber](#schemasonioxtranscriber)|false|none|
 |» » » » *oneOf*|body|[XaiTranscriber](#schemaxaitranscriber)|false|none|
+|» » » » *oneOf*|body|[Reson8Transcriber](#schemareson8transcriber)|false|none|
 |» » » » *oneOf*|body|[VapiTranscriber](#schemavapitranscriber)|false|none|
 |» » » model|body|[AnthropicModel](#schemaanthropicmodel) \| [AnthropicBedrockModel](#schemaanthropicbedrockmodel) \| [AnyscaleModel](#schemaanyscalemodel) \| [CerebrasModel](#schemacerebrasmodel) \| [CustomLLMModel](#schemacustomllmmodel) \| [DeepInfraModel](#schemadeepinframodel) \| [DeepSeekModel](#schemadeepseekmodel) \| [GoogleModel](#schemagooglemodel) \| [GroqModel](#schemagroqmodel) \| [InflectionAIModel](#schemainflectionaimodel) \| [MinimaxLLMModel](#schemaminimaxllmmodel) \| [OpenAIModel](#schemaopenaimodel) \| [OpenRouterModel](#schemaopenroutermodel) \| [PerplexityAIModel](#schemaperplexityaimodel) \| [TogetherAIModel](#schematogetheraimodel) \| [XaiModel](#schemaxaimodel) \| [VapiModel](#schemavapimodel)|false|These are the options for the assistant's LLM.|
 |» » » » *oneOf*|body|[AnthropicModel](#schemaanthropicmodel)|false|none|
@@ -30129,7 +30160,7 @@ curl https://api.vapi.ai/call \
 |» » » clientMessages|body|[string]|false|These are the messages that will be sent to your Client SDKs. Default is conversation-update,function-call,hang,model-output,speech-update,status-update,transfer-update,transcript,tool-calls,user-interrupted,voice-input,workflow.node.started,assistant.started. You can check the shape of the messages in ClientMessage schema.|
 |» » » serverMessages|body|[string]|false|These are the messages that will be sent to your Server URL. Default is conversation-update,end-of-call-report,function-call,hang,speech-update,status-update,tool-calls,transfer-destination-request,handoff-destination-request,user-interrupted,assistant.started. You can check the shape of the messages in ServerMessage schema.|
 |» » » maxDurationSeconds|body|number|false|This is the maximum number of seconds that the call will last. When the call reaches this duration, it will be ended.<br><br>@default 600 (10 minutes)|
-|» » » backgroundSound|body|string \| string(uri)|false|This is the background sound in the call. Default for phone calls is 'office' and default for web calls is 'off'.<br>You can also provide a custom sound by providing a URL to an audio file.|
+|» » » backgroundSound|body|string \| string(uri)|false|This is the background sound in the call. Default for phone calls is 'office' and default for web calls is 'off'.<br>Bundled sounds: 'office', 'white-noise', 'city', 'crowd' and 'farm'. GPT Live assistants don't play 'office'.<br>You can also provide a custom sound by providing a URL to an audio file.|
 |» » » » *oneOf*|body|string|false|none|
 |» » » » *oneOf*|body|string(uri)|false|none|
 |» » » modelOutputInMessagesEnabled|body|boolean|false|This determines whether the model's output is used in conversation history rather than the transcription of assistant's speech.<br><br>@default false|
@@ -30143,7 +30174,7 @@ curl https://api.vapi.ai/call \
 |» » » » tags|body|[string]|true|This is an array of tags to be added to the Langfuse trace. Tags allow you to categorize and filter traces. https://langfuse.com/docs/tracing-features/tags|
 |» » » » metadata|body|object|false|This is a JSON object that will be added to the Langfuse trace. Traces can be enriched with metadata to better understand your users, application, and experiments. https://langfuse.com/docs/tracing-features/metadata<br>By default it includes the call metadata, assistant metadata, and assistant overrides.|
 |» » » » *oneOf*|body|[LangfuseObservabilityPlan](#schemalangfuseobservabilityplan)|false|none|
-|» » » credentials|body|[[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto) \| [CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto) \| [CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto) \| [CreateAssemblyAICredentialDTO](#schemacreateassemblyaicredentialdto) \| [CreateAzureCredentialDTO](#schemacreateazurecredentialdto) \| [CreateAzureOpenAICredentialDTO](#schemacreateazureopenaicredentialdto) \| [CreateByoSipTrunkCredentialDTO](#schemacreatebyosiptrunkcredentialdto) \| [CreateCartesiaCredentialDTO](#schemacreatecartesiacredentialdto) \| [CreateCerebrasCredentialDTO](#schemacreatecerebrascredentialdto) \| [CreateCloudflareCredentialDTO](#schemacreatecloudflarecredentialdto) \| [CreateCustomLLMCredentialDTO](#schemacreatecustomllmcredentialdto) \| [CreateDeepgramCredentialDTO](#schemacreatedeepgramcredentialdto) \| [CreateDeepInfraCredentialDTO](#schemacreatedeepinfracredentialdto) \| [CreateDeepSeekCredentialDTO](#schemacreatedeepseekcredentialdto) \| [CreateElevenLabsCredentialDTO](#schemacreateelevenlabscredentialdto) \| [CreateGcpCredentialDTO](#schemacreategcpcredentialdto) \| [CreateGladiaCredentialDTO](#schemacreategladiacredentialdto) \| [CreateGoHighLevelCredentialDTO](#schemacreategohighlevelcredentialdto) \| [CreateGoogleCredentialDTO](#schemacreategooglecredentialdto) \| [CreateGroqCredentialDTO](#schemacreategroqcredentialdto) \| [CreateHumeCredentialDTO](#schemacreatehumecredentialdto) \| [CreateInflectionAICredentialDTO](#schemacreateinflectionaicredentialdto) \| [CreateLangfuseCredentialDTO](#schemacreatelangfusecredentialdto) \| [CreateLmntCredentialDTO](#schemacreatelmntcredentialdto) \| [CreateMakeCredentialDTO](#schemacreatemakecredentialdto) \| [CreateMistralCredentialDTO](#schemacreatemistralcredentialdto) \| [CreateNeuphonicCredentialDTO](#schemacreateneuphoniccredentialdto) \| [CreateOpenAICredentialDTO](#schemacreateopenaicredentialdto) \| [CreateOpenRouterCredentialDTO](#schemacreateopenroutercredentialdto) \| [CreatePerplexityAICredentialDTO](#schemacreateperplexityaicredentialdto) \| [CreatePlayHTCredentialDTO](#schemacreateplayhtcredentialdto) \| [CreateRimeAICredentialDTO](#schemacreaterimeaicredentialdto) \| [CreateRunpodCredentialDTO](#schemacreaterunpodcredentialdto) \| [CreateS3CredentialDTO](#schemacreates3credentialdto) \| [CreateS3CompatibleCredentialDTO](#schemacreates3compatiblecredentialdto) \| [CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto) \| [CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto) \| [CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto) \| [CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto) \| [CreateTavusCredentialDTO](#schemacreatetavuscredentialdto) \| [CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto) \| [CreateTwilioCredentialDTO](#schemacreatetwiliocredentialdto) \| [CreateVonageCredentialDTO](#schemacreatevonagecredentialdto) \| [CreateWebhookCredentialDTO](#schemacreatewebhookcredentialdto) \| [CreateCustomCredentialDTO](#schemacreatecustomcredentialdto) \| [CreateXAiCredentialDTO](#schemacreatexaicredentialdto) \| [CreateMicrosoftCredentialDTO](#schemacreatemicrosoftcredentialdto) \| [CreateGoogleCalendarOAuth2ClientCredentialDTO](#schemacreategooglecalendaroauth2clientcredentialdto) \| [CreateGoogleCalendarOAuth2AuthorizationCredentialDTO](#schemacreategooglecalendaroauth2authorizationcredentialdto) \| [CreateGoogleSheetsOAuth2AuthorizationCredentialDTO](#schemacreategooglesheetsoauth2authorizationcredentialdto) \| [CreateSlackOAuth2AuthorizationCredentialDTO](#schemacreateslackoauth2authorizationcredentialdto) \| [CreateGoHighLevelMCPCredentialDTO](#schemacreategohighlevelmcpcredentialdto) \| [CreateInworldCredentialDTO](#schemacreateinworldcredentialdto) \| [CreateMinimaxCredentialDTO](#schemacreateminimaxcredentialdto) \| [CreateWellSaidCredentialDTO](#schemacreatewellsaidcredentialdto) \| [CreateEmailCredentialDTO](#schemacreateemailcredentialdto) \| [CreateSlackWebhookCredentialDTO](#schemacreateslackwebhookcredentialdto)]|false|These are dynamic credentials that will be used for the assistant calls. By default, all the credentials are available for use in the call but you can supplement an additional credentials using this. Dynamic credentials override existing credentials.|
+|» » » credentials|body|[[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto) \| [CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto) \| [CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto) \| [CreateAssemblyAICredentialDTO](#schemacreateassemblyaicredentialdto) \| [CreateAzureCredentialDTO](#schemacreateazurecredentialdto) \| [CreateAzureOpenAICredentialDTO](#schemacreateazureopenaicredentialdto) \| [CreateByoSipTrunkCredentialDTO](#schemacreatebyosiptrunkcredentialdto) \| [CreateCartesiaCredentialDTO](#schemacreatecartesiacredentialdto) \| [CreateCerebrasCredentialDTO](#schemacreatecerebrascredentialdto) \| [CreateCloudflareCredentialDTO](#schemacreatecloudflarecredentialdto) \| [CreateCustomLLMCredentialDTO](#schemacreatecustomllmcredentialdto) \| [CreateDeepgramCredentialDTO](#schemacreatedeepgramcredentialdto) \| [CreateDeepInfraCredentialDTO](#schemacreatedeepinfracredentialdto) \| [CreateDeepSeekCredentialDTO](#schemacreatedeepseekcredentialdto) \| [CreateElevenLabsCredentialDTO](#schemacreateelevenlabscredentialdto) \| [CreateGcpCredentialDTO](#schemacreategcpcredentialdto) \| [CreateGladiaCredentialDTO](#schemacreategladiacredentialdto) \| [CreateGoHighLevelCredentialDTO](#schemacreategohighlevelcredentialdto) \| [CreateGoogleCredentialDTO](#schemacreategooglecredentialdto) \| [CreateGroqCredentialDTO](#schemacreategroqcredentialdto) \| [CreateHumeCredentialDTO](#schemacreatehumecredentialdto) \| [CreateInflectionAICredentialDTO](#schemacreateinflectionaicredentialdto) \| [CreateLangfuseCredentialDTO](#schemacreatelangfusecredentialdto) \| [CreateLmntCredentialDTO](#schemacreatelmntcredentialdto) \| [CreateMakeCredentialDTO](#schemacreatemakecredentialdto) \| [CreateMistralCredentialDTO](#schemacreatemistralcredentialdto) \| [CreateNeuphonicCredentialDTO](#schemacreateneuphoniccredentialdto) \| [CreateOpenAICredentialDTO](#schemacreateopenaicredentialdto) \| [CreateOpenRouterCredentialDTO](#schemacreateopenroutercredentialdto) \| [CreatePerplexityAICredentialDTO](#schemacreateperplexityaicredentialdto) \| [CreatePlayHTCredentialDTO](#schemacreateplayhtcredentialdto) \| [CreateRimeAICredentialDTO](#schemacreaterimeaicredentialdto) \| [CreateRunpodCredentialDTO](#schemacreaterunpodcredentialdto) \| [CreateS3CredentialDTO](#schemacreates3credentialdto) \| [CreateS3CompatibleCredentialDTO](#schemacreates3compatiblecredentialdto) \| [CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto) \| [CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto) \| [CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto) \| [CreateReson8CredentialDTO](#schemacreatereson8credentialdto) \| [CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto) \| [CreateTavusCredentialDTO](#schemacreatetavuscredentialdto) \| [CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto) \| [CreateTwilioCredentialDTO](#schemacreatetwiliocredentialdto) \| [CreateVonageCredentialDTO](#schemacreatevonagecredentialdto) \| [CreateWebhookCredentialDTO](#schemacreatewebhookcredentialdto) \| [CreateCustomCredentialDTO](#schemacreatecustomcredentialdto) \| [CreateXAiCredentialDTO](#schemacreatexaicredentialdto) \| [CreateMicrosoftCredentialDTO](#schemacreatemicrosoftcredentialdto) \| [CreateGoogleCalendarOAuth2ClientCredentialDTO](#schemacreategooglecalendaroauth2clientcredentialdto) \| [CreateGoogleCalendarOAuth2AuthorizationCredentialDTO](#schemacreategooglecalendaroauth2authorizationcredentialdto) \| [CreateGoogleSheetsOAuth2AuthorizationCredentialDTO](#schemacreategooglesheetsoauth2authorizationcredentialdto) \| [CreateSlackOAuth2AuthorizationCredentialDTO](#schemacreateslackoauth2authorizationcredentialdto) \| [CreateGoHighLevelMCPCredentialDTO](#schemacreategohighlevelmcpcredentialdto) \| [CreateInworldCredentialDTO](#schemacreateinworldcredentialdto) \| [CreateMinimaxCredentialDTO](#schemacreateminimaxcredentialdto) \| [CreateWellSaidCredentialDTO](#schemacreatewellsaidcredentialdto) \| [CreateEmailCredentialDTO](#schemacreateemailcredentialdto) \| [CreateSlackWebhookCredentialDTO](#schemacreateslackwebhookcredentialdto)]|false|These are dynamic credentials that will be used for the assistant calls. By default, all the credentials are available for use in the call but you can supplement an additional credentials using this. Dynamic credentials override existing credentials.|
 |» » » » *oneOf*|body|[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto)|false|none|
 |» » » » *oneOf*|body|[CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto)|false|none|
 |» » » » *oneOf*|body|[CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto)|false|none|
@@ -30182,6 +30213,7 @@ curl https://api.vapi.ai/call \
 |» » » » *oneOf*|body|[CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto)|false|none|
 |» » » » *oneOf*|body|[CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto)|false|none|
 |» » » » *oneOf*|body|[CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto)|false|none|
+|» » » » *oneOf*|body|[CreateReson8CredentialDTO](#schemacreatereson8credentialdto)|false|none|
 |» » » » *oneOf*|body|[CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto)|false|none|
 |» » » » *oneOf*|body|[CreateTavusCredentialDTO](#schemacreatetavuscredentialdto)|false|none|
 |» » » » *oneOf*|body|[CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto)|false|none|
@@ -30393,6 +30425,10 @@ curl https://api.vapi.ai/call \
 |» » serverMessages|call.artifact.upload|
 |» » » *oneOf*|off|
 |» » » *oneOf*|office|
+|» » » *oneOf*|white-noise|
+|» » » *oneOf*|city|
+|» » » *oneOf*|crowd|
+|» » » *oneOf*|farm|
 |» » » provider|langfuse|
 |» » » » rubric|NumericScale|
 |» » » » rubric|DescriptiveScale|
@@ -30460,6 +30496,10 @@ curl https://api.vapi.ai/call \
 |» » serverMessages|call.artifact.upload|
 |» » » *oneOf*|off|
 |» » » *oneOf*|office|
+|» » » *oneOf*|white-noise|
+|» » » *oneOf*|city|
+|» » » *oneOf*|crowd|
+|» » » *oneOf*|farm|
 |» » » provider|langfuse|
 |» » » » rubric|NumericScale|
 |» » » » rubric|DescriptiveScale|
@@ -30527,6 +30567,10 @@ curl https://api.vapi.ai/call \
 |» » serverMessages|call.artifact.upload|
 |» » » *oneOf*|off|
 |» » » *oneOf*|office|
+|» » » *oneOf*|white-noise|
+|» » » *oneOf*|city|
+|» » » *oneOf*|crowd|
+|» » » *oneOf*|farm|
 |» » » provider|langfuse|
 |» » » » rubric|NumericScale|
 |» » » » rubric|DescriptiveScale|
@@ -30544,6 +30588,10 @@ curl https://api.vapi.ai/call \
 |» » » provider|langfuse|
 |» » » *oneOf*|off|
 |» » » *oneOf*|office|
+|» » » *oneOf*|white-noise|
+|» » » *oneOf*|city|
+|» » » *oneOf*|crowd|
+|» » » *oneOf*|farm|
 |» » » *oneOf*|off|
 |» » » » type|fixed|
 |» » » » type|exponential|
@@ -30634,6 +30682,10 @@ curl https://api.vapi.ai/call \
 |» » » serverMessages|call.artifact.upload|
 |» » » » *oneOf*|off|
 |» » » » *oneOf*|office|
+|» » » » *oneOf*|white-noise|
+|» » » » *oneOf*|city|
+|» » » » *oneOf*|crowd|
+|» » » » *oneOf*|farm|
 |» » » » provider|langfuse|
 |» » » » » rubric|NumericScale|
 |» » » » » rubric|DescriptiveScale|
@@ -30701,6 +30753,10 @@ curl https://api.vapi.ai/call \
 |» » » serverMessages|call.artifact.upload|
 |» » » » *oneOf*|off|
 |» » » » *oneOf*|office|
+|» » » » *oneOf*|white-noise|
+|» » » » *oneOf*|city|
+|» » » » *oneOf*|crowd|
+|» » » » *oneOf*|farm|
 |» » » » provider|langfuse|
 |» » » » » rubric|NumericScale|
 |» » » » » rubric|DescriptiveScale|
@@ -31300,6 +31356,7 @@ curl https://api.vapi.ai/call \
     "performanceMetrics": {
       "turnLatencies": [
         {
+          "unmeasured": "transcriber",
           "modelLatency": 0,
           "voiceLatency": 0,
           "transcriberLatency": 0,
@@ -31315,7 +31372,8 @@ curl https://api.vapi.ai/call \
       "fromTransportLatencyAverage": 0,
       "toTransportLatencyAverage": 0,
       "numUserInterrupted": 0,
-      "numAssistantInterrupted": 0
+      "numAssistantInterrupted": 0,
+      "turnLatencyUnmeasuredTracked": true
     },
     "structuredOutputs": {},
     "scorecards": {},
@@ -35985,6 +36043,7 @@ curl https://api.vapi.ai/call/497f6eca-6276-4993-bfeb-53cbbbba6f08 \
     "performanceMetrics": {
       "turnLatencies": [
         {
+          "unmeasured": "transcriber",
           "modelLatency": 0,
           "voiceLatency": 0,
           "transcriberLatency": 0,
@@ -36000,7 +36059,8 @@ curl https://api.vapi.ai/call/497f6eca-6276-4993-bfeb-53cbbbba6f08 \
       "fromTransportLatencyAverage": 0,
       "toTransportLatencyAverage": 0,
       "numUserInterrupted": 0,
-      "numAssistantInterrupted": 0
+      "numAssistantInterrupted": 0,
+      "turnLatencyUnmeasuredTracked": true
     },
     "structuredOutputs": {},
     "scorecards": {},
@@ -40677,6 +40737,7 @@ curl 'https://api.vapi.ai/call/{id}' \
     "performanceMetrics": {
       "turnLatencies": [
         {
+          "unmeasured": "transcriber",
           "modelLatency": 0,
           "voiceLatency": 0,
           "transcriberLatency": 0,
@@ -40692,7 +40753,8 @@ curl 'https://api.vapi.ai/call/{id}' \
       "fromTransportLatencyAverage": 0,
       "toTransportLatencyAverage": 0,
       "numUserInterrupted": 0,
-      "numAssistantInterrupted": 0
+      "numAssistantInterrupted": 0,
+      "turnLatencyUnmeasuredTracked": true
     },
     "structuredOutputs": {},
     "scorecards": {},
@@ -45367,6 +45429,7 @@ curl https://api.vapi.ai/call/497f6eca-6276-4993-bfeb-53cbbbba6f08 \
     "performanceMetrics": {
       "turnLatencies": [
         {
+          "unmeasured": "transcriber",
           "modelLatency": 0,
           "voiceLatency": 0,
           "transcriberLatency": 0,
@@ -45382,7 +45445,8 @@ curl https://api.vapi.ai/call/497f6eca-6276-4993-bfeb-53cbbbba6f08 \
       "fromTransportLatencyAverage": 0,
       "toTransportLatencyAverage": 0,
       "numUserInterrupted": 0,
-      "numAssistantInterrupted": 0
+      "numAssistantInterrupted": 0,
+      "turnLatencyUnmeasuredTracked": true
     },
     "structuredOutputs": {},
     "scorecards": {},
@@ -56095,7 +56159,7 @@ Creates a new chat with optional SMS delivery via transport field. Requires at l
 |body|body|[CreateChatDTO](#schemacreatechatdto)|true|none|
 |» assistantId|body|string|false|This is the assistant that will be used for the chat. To use an existing assistant, use `assistantId` instead.|
 |» assistant|body|object|false|This is the assistant that will be used for the chat. To use an existing assistant, use `assistantId` instead.|
-|» » transcriber|body|[AssemblyAITranscriber](#schemaassemblyaitranscriber) \| [AzureSpeechTranscriber](#schemaazurespeechtranscriber) \| [CustomTranscriber](#schemacustomtranscriber) \| [DeepgramTranscriber](#schemadeepgramtranscriber) \| [ElevenLabsTranscriber](#schemaelevenlabstranscriber) \| [GladiaTranscriber](#schemagladiatranscriber) \| [GoogleTranscriber](#schemagoogletranscriber) \| [SpeechmaticsTranscriber](#schemaspeechmaticstranscriber) \| [TalkscriberTranscriber](#schematalkscribertranscriber) \| [OpenAITranscriber](#schemaopenaitranscriber) \| [CartesiaTranscriber](#schemacartesiatranscriber) \| [SonioxTranscriber](#schemasonioxtranscriber) \| [XaiTranscriber](#schemaxaitranscriber) \| [VapiTranscriber](#schemavapitranscriber)|false|These are the options for the assistant's transcriber.|
+|» » transcriber|body|[AssemblyAITranscriber](#schemaassemblyaitranscriber) \| [AzureSpeechTranscriber](#schemaazurespeechtranscriber) \| [CustomTranscriber](#schemacustomtranscriber) \| [DeepgramTranscriber](#schemadeepgramtranscriber) \| [ElevenLabsTranscriber](#schemaelevenlabstranscriber) \| [GladiaTranscriber](#schemagladiatranscriber) \| [GoogleTranscriber](#schemagoogletranscriber) \| [SpeechmaticsTranscriber](#schemaspeechmaticstranscriber) \| [TalkscriberTranscriber](#schematalkscribertranscriber) \| [OpenAITranscriber](#schemaopenaitranscriber) \| [CartesiaTranscriber](#schemacartesiatranscriber) \| [SonioxTranscriber](#schemasonioxtranscriber) \| [XaiTranscriber](#schemaxaitranscriber) \| [Reson8Transcriber](#schemareson8transcriber) \| [VapiTranscriber](#schemavapitranscriber)|false|These are the options for the assistant's transcriber.|
 |» » » *oneOf*|body|[AssemblyAITranscriber](#schemaassemblyaitranscriber)|false|none|
 |» » » *oneOf*|body|[AzureSpeechTranscriber](#schemaazurespeechtranscriber)|false|none|
 |» » » *oneOf*|body|[CustomTranscriber](#schemacustomtranscriber)|false|none|
@@ -56109,6 +56173,7 @@ Creates a new chat with optional SMS delivery via transport field. Requires at l
 |» » » *oneOf*|body|[CartesiaTranscriber](#schemacartesiatranscriber)|false|none|
 |» » » *oneOf*|body|[SonioxTranscriber](#schemasonioxtranscriber)|false|none|
 |» » » *oneOf*|body|[XaiTranscriber](#schemaxaitranscriber)|false|none|
+|» » » *oneOf*|body|[Reson8Transcriber](#schemareson8transcriber)|false|none|
 |» » » *oneOf*|body|[VapiTranscriber](#schemavapitranscriber)|false|none|
 |» » model|body|[AnthropicModel](#schemaanthropicmodel) \| [AnthropicBedrockModel](#schemaanthropicbedrockmodel) \| [AnyscaleModel](#schemaanyscalemodel) \| [CerebrasModel](#schemacerebrasmodel) \| [CustomLLMModel](#schemacustomllmmodel) \| [DeepInfraModel](#schemadeepinframodel) \| [DeepSeekModel](#schemadeepseekmodel) \| [GoogleModel](#schemagooglemodel) \| [GroqModel](#schemagroqmodel) \| [InflectionAIModel](#schemainflectionaimodel) \| [MinimaxLLMModel](#schemaminimaxllmmodel) \| [OpenAIModel](#schemaopenaimodel) \| [OpenRouterModel](#schemaopenroutermodel) \| [PerplexityAIModel](#schemaperplexityaimodel) \| [TogetherAIModel](#schematogetheraimodel) \| [XaiModel](#schemaxaimodel) \| [VapiModel](#schemavapimodel)|false|These are the options for the assistant's LLM.|
 |» » » *oneOf*|body|[AnthropicModel](#schemaanthropicmodel)|false|none|
@@ -56160,7 +56225,7 @@ Creates a new chat with optional SMS delivery via transport field. Requires at l
 |» » clientMessages|body|[string]|false|These are the messages that will be sent to your Client SDKs. Default is conversation-update,function-call,hang,model-output,speech-update,status-update,transfer-update,transcript,tool-calls,user-interrupted,voice-input,workflow.node.started,assistant.started. You can check the shape of the messages in ClientMessage schema.|
 |» » serverMessages|body|[string]|false|These are the messages that will be sent to your Server URL. Default is conversation-update,end-of-call-report,function-call,hang,speech-update,status-update,tool-calls,transfer-destination-request,handoff-destination-request,user-interrupted,assistant.started. You can check the shape of the messages in ServerMessage schema.|
 |» » maxDurationSeconds|body|number|false|This is the maximum number of seconds that the call will last. When the call reaches this duration, it will be ended.<br><br>@default 600 (10 minutes)|
-|» » backgroundSound|body|string \| string(uri)|false|This is the background sound in the call. Default for phone calls is 'office' and default for web calls is 'off'.<br>You can also provide a custom sound by providing a URL to an audio file.|
+|» » backgroundSound|body|string \| string(uri)|false|This is the background sound in the call. Default for phone calls is 'office' and default for web calls is 'off'.<br>Bundled sounds: 'office', 'white-noise', 'city', 'crowd' and 'farm'. GPT Live assistants don't play 'office'.<br>You can also provide a custom sound by providing a URL to an audio file.|
 |» » » *oneOf*|body|string|false|none|
 |» » » *oneOf*|body|string(uri)|false|none|
 |» » modelOutputInMessagesEnabled|body|boolean|false|This determines whether the model's output is used in conversation history rather than the transcription of assistant's speech.<br><br>@default false|
@@ -56174,7 +56239,7 @@ Creates a new chat with optional SMS delivery via transport field. Requires at l
 |» » » tags|body|[string]|true|This is an array of tags to be added to the Langfuse trace. Tags allow you to categorize and filter traces. https://langfuse.com/docs/tracing-features/tags|
 |» » » metadata|body|object|false|This is a JSON object that will be added to the Langfuse trace. Traces can be enriched with metadata to better understand your users, application, and experiments. https://langfuse.com/docs/tracing-features/metadata<br>By default it includes the call metadata, assistant metadata, and assistant overrides.|
 |» » » *oneOf*|body|[LangfuseObservabilityPlan](#schemalangfuseobservabilityplan)|false|none|
-|» » credentials|body|[[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto) \| [CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto) \| [CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto) \| [CreateAssemblyAICredentialDTO](#schemacreateassemblyaicredentialdto) \| [CreateAzureCredentialDTO](#schemacreateazurecredentialdto) \| [CreateAzureOpenAICredentialDTO](#schemacreateazureopenaicredentialdto) \| [CreateByoSipTrunkCredentialDTO](#schemacreatebyosiptrunkcredentialdto) \| [CreateCartesiaCredentialDTO](#schemacreatecartesiacredentialdto) \| [CreateCerebrasCredentialDTO](#schemacreatecerebrascredentialdto) \| [CreateCloudflareCredentialDTO](#schemacreatecloudflarecredentialdto) \| [CreateCustomLLMCredentialDTO](#schemacreatecustomllmcredentialdto) \| [CreateDeepgramCredentialDTO](#schemacreatedeepgramcredentialdto) \| [CreateDeepInfraCredentialDTO](#schemacreatedeepinfracredentialdto) \| [CreateDeepSeekCredentialDTO](#schemacreatedeepseekcredentialdto) \| [CreateElevenLabsCredentialDTO](#schemacreateelevenlabscredentialdto) \| [CreateGcpCredentialDTO](#schemacreategcpcredentialdto) \| [CreateGladiaCredentialDTO](#schemacreategladiacredentialdto) \| [CreateGoHighLevelCredentialDTO](#schemacreategohighlevelcredentialdto) \| [CreateGoogleCredentialDTO](#schemacreategooglecredentialdto) \| [CreateGroqCredentialDTO](#schemacreategroqcredentialdto) \| [CreateHumeCredentialDTO](#schemacreatehumecredentialdto) \| [CreateInflectionAICredentialDTO](#schemacreateinflectionaicredentialdto) \| [CreateLangfuseCredentialDTO](#schemacreatelangfusecredentialdto) \| [CreateLmntCredentialDTO](#schemacreatelmntcredentialdto) \| [CreateMakeCredentialDTO](#schemacreatemakecredentialdto) \| [CreateMistralCredentialDTO](#schemacreatemistralcredentialdto) \| [CreateNeuphonicCredentialDTO](#schemacreateneuphoniccredentialdto) \| [CreateOpenAICredentialDTO](#schemacreateopenaicredentialdto) \| [CreateOpenRouterCredentialDTO](#schemacreateopenroutercredentialdto) \| [CreatePerplexityAICredentialDTO](#schemacreateperplexityaicredentialdto) \| [CreatePlayHTCredentialDTO](#schemacreateplayhtcredentialdto) \| [CreateRimeAICredentialDTO](#schemacreaterimeaicredentialdto) \| [CreateRunpodCredentialDTO](#schemacreaterunpodcredentialdto) \| [CreateS3CredentialDTO](#schemacreates3credentialdto) \| [CreateS3CompatibleCredentialDTO](#schemacreates3compatiblecredentialdto) \| [CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto) \| [CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto) \| [CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto) \| [CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto) \| [CreateTavusCredentialDTO](#schemacreatetavuscredentialdto) \| [CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto) \| [CreateTwilioCredentialDTO](#schemacreatetwiliocredentialdto) \| [CreateVonageCredentialDTO](#schemacreatevonagecredentialdto) \| [CreateWebhookCredentialDTO](#schemacreatewebhookcredentialdto) \| [CreateCustomCredentialDTO](#schemacreatecustomcredentialdto) \| [CreateXAiCredentialDTO](#schemacreatexaicredentialdto) \| [CreateMicrosoftCredentialDTO](#schemacreatemicrosoftcredentialdto) \| [CreateGoogleCalendarOAuth2ClientCredentialDTO](#schemacreategooglecalendaroauth2clientcredentialdto) \| [CreateGoogleCalendarOAuth2AuthorizationCredentialDTO](#schemacreategooglecalendaroauth2authorizationcredentialdto) \| [CreateGoogleSheetsOAuth2AuthorizationCredentialDTO](#schemacreategooglesheetsoauth2authorizationcredentialdto) \| [CreateSlackOAuth2AuthorizationCredentialDTO](#schemacreateslackoauth2authorizationcredentialdto) \| [CreateGoHighLevelMCPCredentialDTO](#schemacreategohighlevelmcpcredentialdto) \| [CreateInworldCredentialDTO](#schemacreateinworldcredentialdto) \| [CreateMinimaxCredentialDTO](#schemacreateminimaxcredentialdto) \| [CreateWellSaidCredentialDTO](#schemacreatewellsaidcredentialdto) \| [CreateEmailCredentialDTO](#schemacreateemailcredentialdto) \| [CreateSlackWebhookCredentialDTO](#schemacreateslackwebhookcredentialdto)]|false|These are dynamic credentials that will be used for the assistant calls. By default, all the credentials are available for use in the call but you can supplement an additional credentials using this. Dynamic credentials override existing credentials.|
+|» » credentials|body|[[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto) \| [CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto) \| [CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto) \| [CreateAssemblyAICredentialDTO](#schemacreateassemblyaicredentialdto) \| [CreateAzureCredentialDTO](#schemacreateazurecredentialdto) \| [CreateAzureOpenAICredentialDTO](#schemacreateazureopenaicredentialdto) \| [CreateByoSipTrunkCredentialDTO](#schemacreatebyosiptrunkcredentialdto) \| [CreateCartesiaCredentialDTO](#schemacreatecartesiacredentialdto) \| [CreateCerebrasCredentialDTO](#schemacreatecerebrascredentialdto) \| [CreateCloudflareCredentialDTO](#schemacreatecloudflarecredentialdto) \| [CreateCustomLLMCredentialDTO](#schemacreatecustomllmcredentialdto) \| [CreateDeepgramCredentialDTO](#schemacreatedeepgramcredentialdto) \| [CreateDeepInfraCredentialDTO](#schemacreatedeepinfracredentialdto) \| [CreateDeepSeekCredentialDTO](#schemacreatedeepseekcredentialdto) \| [CreateElevenLabsCredentialDTO](#schemacreateelevenlabscredentialdto) \| [CreateGcpCredentialDTO](#schemacreategcpcredentialdto) \| [CreateGladiaCredentialDTO](#schemacreategladiacredentialdto) \| [CreateGoHighLevelCredentialDTO](#schemacreategohighlevelcredentialdto) \| [CreateGoogleCredentialDTO](#schemacreategooglecredentialdto) \| [CreateGroqCredentialDTO](#schemacreategroqcredentialdto) \| [CreateHumeCredentialDTO](#schemacreatehumecredentialdto) \| [CreateInflectionAICredentialDTO](#schemacreateinflectionaicredentialdto) \| [CreateLangfuseCredentialDTO](#schemacreatelangfusecredentialdto) \| [CreateLmntCredentialDTO](#schemacreatelmntcredentialdto) \| [CreateMakeCredentialDTO](#schemacreatemakecredentialdto) \| [CreateMistralCredentialDTO](#schemacreatemistralcredentialdto) \| [CreateNeuphonicCredentialDTO](#schemacreateneuphoniccredentialdto) \| [CreateOpenAICredentialDTO](#schemacreateopenaicredentialdto) \| [CreateOpenRouterCredentialDTO](#schemacreateopenroutercredentialdto) \| [CreatePerplexityAICredentialDTO](#schemacreateperplexityaicredentialdto) \| [CreatePlayHTCredentialDTO](#schemacreateplayhtcredentialdto) \| [CreateRimeAICredentialDTO](#schemacreaterimeaicredentialdto) \| [CreateRunpodCredentialDTO](#schemacreaterunpodcredentialdto) \| [CreateS3CredentialDTO](#schemacreates3credentialdto) \| [CreateS3CompatibleCredentialDTO](#schemacreates3compatiblecredentialdto) \| [CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto) \| [CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto) \| [CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto) \| [CreateReson8CredentialDTO](#schemacreatereson8credentialdto) \| [CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto) \| [CreateTavusCredentialDTO](#schemacreatetavuscredentialdto) \| [CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto) \| [CreateTwilioCredentialDTO](#schemacreatetwiliocredentialdto) \| [CreateVonageCredentialDTO](#schemacreatevonagecredentialdto) \| [CreateWebhookCredentialDTO](#schemacreatewebhookcredentialdto) \| [CreateCustomCredentialDTO](#schemacreatecustomcredentialdto) \| [CreateXAiCredentialDTO](#schemacreatexaicredentialdto) \| [CreateMicrosoftCredentialDTO](#schemacreatemicrosoftcredentialdto) \| [CreateGoogleCalendarOAuth2ClientCredentialDTO](#schemacreategooglecalendaroauth2clientcredentialdto) \| [CreateGoogleCalendarOAuth2AuthorizationCredentialDTO](#schemacreategooglecalendaroauth2authorizationcredentialdto) \| [CreateGoogleSheetsOAuth2AuthorizationCredentialDTO](#schemacreategooglesheetsoauth2authorizationcredentialdto) \| [CreateSlackOAuth2AuthorizationCredentialDTO](#schemacreateslackoauth2authorizationcredentialdto) \| [CreateGoHighLevelMCPCredentialDTO](#schemacreategohighlevelmcpcredentialdto) \| [CreateInworldCredentialDTO](#schemacreateinworldcredentialdto) \| [CreateMinimaxCredentialDTO](#schemacreateminimaxcredentialdto) \| [CreateWellSaidCredentialDTO](#schemacreatewellsaidcredentialdto) \| [CreateEmailCredentialDTO](#schemacreateemailcredentialdto) \| [CreateSlackWebhookCredentialDTO](#schemacreateslackwebhookcredentialdto)]|false|These are dynamic credentials that will be used for the assistant calls. By default, all the credentials are available for use in the call but you can supplement an additional credentials using this. Dynamic credentials override existing credentials.|
 |» » » *oneOf*|body|[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto)|false|none|
@@ -56213,6 +56278,7 @@ Creates a new chat with optional SMS delivery via transport field. Requires at l
 |» » » *oneOf*|body|[CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto)|false|none|
+|» » » *oneOf*|body|[CreateReson8CredentialDTO](#schemacreatereson8credentialdto)|false|none|
 |» » » *oneOf*|body|[CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateTavusCredentialDTO](#schemacreatetavuscredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto)|false|none|
@@ -56337,7 +56403,7 @@ Creates a new chat with optional SMS delivery via transport field. Requires at l
 |» » » » excludedStatusCodes|body|[object]|false|This is the excluded status codes. If the response status code is in this list, the request will not be retried.<br>By default, the request will be retried for any non-2xx status code.|
 |» » keypadInputPlan|body|[KeypadInputPlan](#schemakeypadinputplan)|false|none|
 |» assistantOverrides|body|object|false|These are the variable values that will be used to replace template variables in the assistant messages.<br>Only variable substitution is supported in chat contexts - other assistant properties cannot be overridden.|
-|» » transcriber|body|[AssemblyAITranscriber](#schemaassemblyaitranscriber) \| [AzureSpeechTranscriber](#schemaazurespeechtranscriber) \| [CustomTranscriber](#schemacustomtranscriber) \| [DeepgramTranscriber](#schemadeepgramtranscriber) \| [ElevenLabsTranscriber](#schemaelevenlabstranscriber) \| [GladiaTranscriber](#schemagladiatranscriber) \| [GoogleTranscriber](#schemagoogletranscriber) \| [SpeechmaticsTranscriber](#schemaspeechmaticstranscriber) \| [TalkscriberTranscriber](#schematalkscribertranscriber) \| [OpenAITranscriber](#schemaopenaitranscriber) \| [CartesiaTranscriber](#schemacartesiatranscriber) \| [SonioxTranscriber](#schemasonioxtranscriber) \| [XaiTranscriber](#schemaxaitranscriber) \| [VapiTranscriber](#schemavapitranscriber)|false|These are the options for the assistant's transcriber.|
+|» » transcriber|body|[AssemblyAITranscriber](#schemaassemblyaitranscriber) \| [AzureSpeechTranscriber](#schemaazurespeechtranscriber) \| [CustomTranscriber](#schemacustomtranscriber) \| [DeepgramTranscriber](#schemadeepgramtranscriber) \| [ElevenLabsTranscriber](#schemaelevenlabstranscriber) \| [GladiaTranscriber](#schemagladiatranscriber) \| [GoogleTranscriber](#schemagoogletranscriber) \| [SpeechmaticsTranscriber](#schemaspeechmaticstranscriber) \| [TalkscriberTranscriber](#schematalkscribertranscriber) \| [OpenAITranscriber](#schemaopenaitranscriber) \| [CartesiaTranscriber](#schemacartesiatranscriber) \| [SonioxTranscriber](#schemasonioxtranscriber) \| [XaiTranscriber](#schemaxaitranscriber) \| [Reson8Transcriber](#schemareson8transcriber) \| [VapiTranscriber](#schemavapitranscriber)|false|These are the options for the assistant's transcriber.|
 |» » » *oneOf*|body|[AssemblyAITranscriber](#schemaassemblyaitranscriber)|false|none|
 |» » » *oneOf*|body|[AzureSpeechTranscriber](#schemaazurespeechtranscriber)|false|none|
 |» » » *oneOf*|body|[CustomTranscriber](#schemacustomtranscriber)|false|none|
@@ -56351,6 +56417,7 @@ Creates a new chat with optional SMS delivery via transport field. Requires at l
 |» » » *oneOf*|body|[CartesiaTranscriber](#schemacartesiatranscriber)|false|none|
 |» » » *oneOf*|body|[SonioxTranscriber](#schemasonioxtranscriber)|false|none|
 |» » » *oneOf*|body|[XaiTranscriber](#schemaxaitranscriber)|false|none|
+|» » » *oneOf*|body|[Reson8Transcriber](#schemareson8transcriber)|false|none|
 |» » » *oneOf*|body|[VapiTranscriber](#schemavapitranscriber)|false|none|
 |» » model|body|[AnthropicModel](#schemaanthropicmodel) \| [AnthropicBedrockModel](#schemaanthropicbedrockmodel) \| [AnyscaleModel](#schemaanyscalemodel) \| [CerebrasModel](#schemacerebrasmodel) \| [CustomLLMModel](#schemacustomllmmodel) \| [DeepInfraModel](#schemadeepinframodel) \| [DeepSeekModel](#schemadeepseekmodel) \| [GoogleModel](#schemagooglemodel) \| [GroqModel](#schemagroqmodel) \| [InflectionAIModel](#schemainflectionaimodel) \| [MinimaxLLMModel](#schemaminimaxllmmodel) \| [OpenAIModel](#schemaopenaimodel) \| [OpenRouterModel](#schemaopenroutermodel) \| [PerplexityAIModel](#schemaperplexityaimodel) \| [TogetherAIModel](#schematogetheraimodel) \| [XaiModel](#schemaxaimodel) \| [VapiModel](#schemavapimodel)|false|These are the options for the assistant's LLM.|
 |» » » *oneOf*|body|[AnthropicModel](#schemaanthropicmodel)|false|none|
@@ -56402,7 +56469,7 @@ Creates a new chat with optional SMS delivery via transport field. Requires at l
 |» » clientMessages|body|[string]|false|These are the messages that will be sent to your Client SDKs. Default is conversation-update,function-call,hang,model-output,speech-update,status-update,transfer-update,transcript,tool-calls,user-interrupted,voice-input,workflow.node.started,assistant.started. You can check the shape of the messages in ClientMessage schema.|
 |» » serverMessages|body|[string]|false|These are the messages that will be sent to your Server URL. Default is conversation-update,end-of-call-report,function-call,hang,speech-update,status-update,tool-calls,transfer-destination-request,handoff-destination-request,user-interrupted,assistant.started. You can check the shape of the messages in ServerMessage schema.|
 |» » maxDurationSeconds|body|number|false|This is the maximum number of seconds that the call will last. When the call reaches this duration, it will be ended.<br><br>@default 600 (10 minutes)|
-|» » backgroundSound|body|string \| string(uri)|false|This is the background sound in the call. Default for phone calls is 'office' and default for web calls is 'off'.<br>You can also provide a custom sound by providing a URL to an audio file.|
+|» » backgroundSound|body|string \| string(uri)|false|This is the background sound in the call. Default for phone calls is 'office' and default for web calls is 'off'.<br>Bundled sounds: 'office', 'white-noise', 'city', 'crowd' and 'farm'. GPT Live assistants don't play 'office'.<br>You can also provide a custom sound by providing a URL to an audio file.|
 |» » » *oneOf*|body|string|false|none|
 |» » » *oneOf*|body|string(uri)|false|none|
 |» » modelOutputInMessagesEnabled|body|boolean|false|This determines whether the model's output is used in conversation history rather than the transcription of assistant's speech.<br><br>@default false|
@@ -56416,7 +56483,7 @@ Creates a new chat with optional SMS delivery via transport field. Requires at l
 |» » » tags|body|[string]|true|This is an array of tags to be added to the Langfuse trace. Tags allow you to categorize and filter traces. https://langfuse.com/docs/tracing-features/tags|
 |» » » metadata|body|object|false|This is a JSON object that will be added to the Langfuse trace. Traces can be enriched with metadata to better understand your users, application, and experiments. https://langfuse.com/docs/tracing-features/metadata<br>By default it includes the call metadata, assistant metadata, and assistant overrides.|
 |» » » *oneOf*|body|[LangfuseObservabilityPlan](#schemalangfuseobservabilityplan)|false|none|
-|» » credentials|body|[[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto) \| [CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto) \| [CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto) \| [CreateAssemblyAICredentialDTO](#schemacreateassemblyaicredentialdto) \| [CreateAzureCredentialDTO](#schemacreateazurecredentialdto) \| [CreateAzureOpenAICredentialDTO](#schemacreateazureopenaicredentialdto) \| [CreateByoSipTrunkCredentialDTO](#schemacreatebyosiptrunkcredentialdto) \| [CreateCartesiaCredentialDTO](#schemacreatecartesiacredentialdto) \| [CreateCerebrasCredentialDTO](#schemacreatecerebrascredentialdto) \| [CreateCloudflareCredentialDTO](#schemacreatecloudflarecredentialdto) \| [CreateCustomLLMCredentialDTO](#schemacreatecustomllmcredentialdto) \| [CreateDeepgramCredentialDTO](#schemacreatedeepgramcredentialdto) \| [CreateDeepInfraCredentialDTO](#schemacreatedeepinfracredentialdto) \| [CreateDeepSeekCredentialDTO](#schemacreatedeepseekcredentialdto) \| [CreateElevenLabsCredentialDTO](#schemacreateelevenlabscredentialdto) \| [CreateGcpCredentialDTO](#schemacreategcpcredentialdto) \| [CreateGladiaCredentialDTO](#schemacreategladiacredentialdto) \| [CreateGoHighLevelCredentialDTO](#schemacreategohighlevelcredentialdto) \| [CreateGoogleCredentialDTO](#schemacreategooglecredentialdto) \| [CreateGroqCredentialDTO](#schemacreategroqcredentialdto) \| [CreateHumeCredentialDTO](#schemacreatehumecredentialdto) \| [CreateInflectionAICredentialDTO](#schemacreateinflectionaicredentialdto) \| [CreateLangfuseCredentialDTO](#schemacreatelangfusecredentialdto) \| [CreateLmntCredentialDTO](#schemacreatelmntcredentialdto) \| [CreateMakeCredentialDTO](#schemacreatemakecredentialdto) \| [CreateMistralCredentialDTO](#schemacreatemistralcredentialdto) \| [CreateNeuphonicCredentialDTO](#schemacreateneuphoniccredentialdto) \| [CreateOpenAICredentialDTO](#schemacreateopenaicredentialdto) \| [CreateOpenRouterCredentialDTO](#schemacreateopenroutercredentialdto) \| [CreatePerplexityAICredentialDTO](#schemacreateperplexityaicredentialdto) \| [CreatePlayHTCredentialDTO](#schemacreateplayhtcredentialdto) \| [CreateRimeAICredentialDTO](#schemacreaterimeaicredentialdto) \| [CreateRunpodCredentialDTO](#schemacreaterunpodcredentialdto) \| [CreateS3CredentialDTO](#schemacreates3credentialdto) \| [CreateS3CompatibleCredentialDTO](#schemacreates3compatiblecredentialdto) \| [CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto) \| [CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto) \| [CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto) \| [CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto) \| [CreateTavusCredentialDTO](#schemacreatetavuscredentialdto) \| [CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto) \| [CreateTwilioCredentialDTO](#schemacreatetwiliocredentialdto) \| [CreateVonageCredentialDTO](#schemacreatevonagecredentialdto) \| [CreateWebhookCredentialDTO](#schemacreatewebhookcredentialdto) \| [CreateCustomCredentialDTO](#schemacreatecustomcredentialdto) \| [CreateXAiCredentialDTO](#schemacreatexaicredentialdto) \| [CreateMicrosoftCredentialDTO](#schemacreatemicrosoftcredentialdto) \| [CreateGoogleCalendarOAuth2ClientCredentialDTO](#schemacreategooglecalendaroauth2clientcredentialdto) \| [CreateGoogleCalendarOAuth2AuthorizationCredentialDTO](#schemacreategooglecalendaroauth2authorizationcredentialdto) \| [CreateGoogleSheetsOAuth2AuthorizationCredentialDTO](#schemacreategooglesheetsoauth2authorizationcredentialdto) \| [CreateSlackOAuth2AuthorizationCredentialDTO](#schemacreateslackoauth2authorizationcredentialdto) \| [CreateGoHighLevelMCPCredentialDTO](#schemacreategohighlevelmcpcredentialdto) \| [CreateInworldCredentialDTO](#schemacreateinworldcredentialdto) \| [CreateMinimaxCredentialDTO](#schemacreateminimaxcredentialdto) \| [CreateWellSaidCredentialDTO](#schemacreatewellsaidcredentialdto) \| [CreateEmailCredentialDTO](#schemacreateemailcredentialdto) \| [CreateSlackWebhookCredentialDTO](#schemacreateslackwebhookcredentialdto)]|false|These are dynamic credentials that will be used for the assistant calls. By default, all the credentials are available for use in the call but you can supplement an additional credentials using this. Dynamic credentials override existing credentials.|
+|» » credentials|body|[[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto) \| [CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto) \| [CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto) \| [CreateAssemblyAICredentialDTO](#schemacreateassemblyaicredentialdto) \| [CreateAzureCredentialDTO](#schemacreateazurecredentialdto) \| [CreateAzureOpenAICredentialDTO](#schemacreateazureopenaicredentialdto) \| [CreateByoSipTrunkCredentialDTO](#schemacreatebyosiptrunkcredentialdto) \| [CreateCartesiaCredentialDTO](#schemacreatecartesiacredentialdto) \| [CreateCerebrasCredentialDTO](#schemacreatecerebrascredentialdto) \| [CreateCloudflareCredentialDTO](#schemacreatecloudflarecredentialdto) \| [CreateCustomLLMCredentialDTO](#schemacreatecustomllmcredentialdto) \| [CreateDeepgramCredentialDTO](#schemacreatedeepgramcredentialdto) \| [CreateDeepInfraCredentialDTO](#schemacreatedeepinfracredentialdto) \| [CreateDeepSeekCredentialDTO](#schemacreatedeepseekcredentialdto) \| [CreateElevenLabsCredentialDTO](#schemacreateelevenlabscredentialdto) \| [CreateGcpCredentialDTO](#schemacreategcpcredentialdto) \| [CreateGladiaCredentialDTO](#schemacreategladiacredentialdto) \| [CreateGoHighLevelCredentialDTO](#schemacreategohighlevelcredentialdto) \| [CreateGoogleCredentialDTO](#schemacreategooglecredentialdto) \| [CreateGroqCredentialDTO](#schemacreategroqcredentialdto) \| [CreateHumeCredentialDTO](#schemacreatehumecredentialdto) \| [CreateInflectionAICredentialDTO](#schemacreateinflectionaicredentialdto) \| [CreateLangfuseCredentialDTO](#schemacreatelangfusecredentialdto) \| [CreateLmntCredentialDTO](#schemacreatelmntcredentialdto) \| [CreateMakeCredentialDTO](#schemacreatemakecredentialdto) \| [CreateMistralCredentialDTO](#schemacreatemistralcredentialdto) \| [CreateNeuphonicCredentialDTO](#schemacreateneuphoniccredentialdto) \| [CreateOpenAICredentialDTO](#schemacreateopenaicredentialdto) \| [CreateOpenRouterCredentialDTO](#schemacreateopenroutercredentialdto) \| [CreatePerplexityAICredentialDTO](#schemacreateperplexityaicredentialdto) \| [CreatePlayHTCredentialDTO](#schemacreateplayhtcredentialdto) \| [CreateRimeAICredentialDTO](#schemacreaterimeaicredentialdto) \| [CreateRunpodCredentialDTO](#schemacreaterunpodcredentialdto) \| [CreateS3CredentialDTO](#schemacreates3credentialdto) \| [CreateS3CompatibleCredentialDTO](#schemacreates3compatiblecredentialdto) \| [CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto) \| [CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto) \| [CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto) \| [CreateReson8CredentialDTO](#schemacreatereson8credentialdto) \| [CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto) \| [CreateTavusCredentialDTO](#schemacreatetavuscredentialdto) \| [CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto) \| [CreateTwilioCredentialDTO](#schemacreatetwiliocredentialdto) \| [CreateVonageCredentialDTO](#schemacreatevonagecredentialdto) \| [CreateWebhookCredentialDTO](#schemacreatewebhookcredentialdto) \| [CreateCustomCredentialDTO](#schemacreatecustomcredentialdto) \| [CreateXAiCredentialDTO](#schemacreatexaicredentialdto) \| [CreateMicrosoftCredentialDTO](#schemacreatemicrosoftcredentialdto) \| [CreateGoogleCalendarOAuth2ClientCredentialDTO](#schemacreategooglecalendaroauth2clientcredentialdto) \| [CreateGoogleCalendarOAuth2AuthorizationCredentialDTO](#schemacreategooglecalendaroauth2authorizationcredentialdto) \| [CreateGoogleSheetsOAuth2AuthorizationCredentialDTO](#schemacreategooglesheetsoauth2authorizationcredentialdto) \| [CreateSlackOAuth2AuthorizationCredentialDTO](#schemacreateslackoauth2authorizationcredentialdto) \| [CreateGoHighLevelMCPCredentialDTO](#schemacreategohighlevelmcpcredentialdto) \| [CreateInworldCredentialDTO](#schemacreateinworldcredentialdto) \| [CreateMinimaxCredentialDTO](#schemacreateminimaxcredentialdto) \| [CreateWellSaidCredentialDTO](#schemacreatewellsaidcredentialdto) \| [CreateEmailCredentialDTO](#schemacreateemailcredentialdto) \| [CreateSlackWebhookCredentialDTO](#schemacreateslackwebhookcredentialdto)]|false|These are dynamic credentials that will be used for the assistant calls. By default, all the credentials are available for use in the call but you can supplement an additional credentials using this. Dynamic credentials override existing credentials.|
 |» » » *oneOf*|body|[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto)|false|none|
@@ -56455,6 +56522,7 @@ Creates a new chat with optional SMS delivery via transport field. Requires at l
 |» » » *oneOf*|body|[CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto)|false|none|
+|» » » *oneOf*|body|[CreateReson8CredentialDTO](#schemacreatereson8credentialdto)|false|none|
 |» » » *oneOf*|body|[CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateTavusCredentialDTO](#schemacreatetavuscredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto)|false|none|
@@ -56627,7 +56695,7 @@ Creates a new chat with optional SMS delivery via transport field. Requires at l
 |» » » numberE164CheckEnabled|body|boolean|false|This is the flag to toggle the E164 check for the `number` field. This is an advanced property which should be used if you know your use case requires it.<br><br>Use cases:<br>- `false`: To allow non-E164 numbers like `+001234567890`, `1234`, or `abc`. This is useful for dialing out to non-E164 numbers on your SIP trunks.<br>- `true` (default): To allow only E164 numbers like `+14155551234`. This is standard for PSTN calls.<br><br>If `false`, the `number` is still required to only contain alphanumeric characters (regex: `/^\+?[a-zA-Z0-9]+$/`).<br><br>@default true (E164 check is enabled)|
 |» » » extension|body|string|false|This is the extension that will be dialed after the call is answered.|
 |» » » assistantOverrides|body|object|false|These are the overrides for the assistant's settings and template variables specific to this customer.<br>This allows customization of the assistant's behavior for individual customers in batch calls.|
-|» » » » transcriber|body|[AssemblyAITranscriber](#schemaassemblyaitranscriber) \| [AzureSpeechTranscriber](#schemaazurespeechtranscriber) \| [CustomTranscriber](#schemacustomtranscriber) \| [DeepgramTranscriber](#schemadeepgramtranscriber) \| [ElevenLabsTranscriber](#schemaelevenlabstranscriber) \| [GladiaTranscriber](#schemagladiatranscriber) \| [GoogleTranscriber](#schemagoogletranscriber) \| [SpeechmaticsTranscriber](#schemaspeechmaticstranscriber) \| [TalkscriberTranscriber](#schematalkscribertranscriber) \| [OpenAITranscriber](#schemaopenaitranscriber) \| [CartesiaTranscriber](#schemacartesiatranscriber) \| [SonioxTranscriber](#schemasonioxtranscriber) \| [XaiTranscriber](#schemaxaitranscriber) \| [VapiTranscriber](#schemavapitranscriber)|false|These are the options for the assistant's transcriber.|
+|» » » » transcriber|body|[AssemblyAITranscriber](#schemaassemblyaitranscriber) \| [AzureSpeechTranscriber](#schemaazurespeechtranscriber) \| [CustomTranscriber](#schemacustomtranscriber) \| [DeepgramTranscriber](#schemadeepgramtranscriber) \| [ElevenLabsTranscriber](#schemaelevenlabstranscriber) \| [GladiaTranscriber](#schemagladiatranscriber) \| [GoogleTranscriber](#schemagoogletranscriber) \| [SpeechmaticsTranscriber](#schemaspeechmaticstranscriber) \| [TalkscriberTranscriber](#schematalkscribertranscriber) \| [OpenAITranscriber](#schemaopenaitranscriber) \| [CartesiaTranscriber](#schemacartesiatranscriber) \| [SonioxTranscriber](#schemasonioxtranscriber) \| [XaiTranscriber](#schemaxaitranscriber) \| [Reson8Transcriber](#schemareson8transcriber) \| [VapiTranscriber](#schemavapitranscriber)|false|These are the options for the assistant's transcriber.|
 |» » » » » *oneOf*|body|[AssemblyAITranscriber](#schemaassemblyaitranscriber)|false|none|
 |» » » » » *oneOf*|body|[AzureSpeechTranscriber](#schemaazurespeechtranscriber)|false|none|
 |» » » » » *oneOf*|body|[CustomTranscriber](#schemacustomtranscriber)|false|none|
@@ -56641,6 +56709,7 @@ Creates a new chat with optional SMS delivery via transport field. Requires at l
 |» » » » » *oneOf*|body|[CartesiaTranscriber](#schemacartesiatranscriber)|false|none|
 |» » » » » *oneOf*|body|[SonioxTranscriber](#schemasonioxtranscriber)|false|none|
 |» » » » » *oneOf*|body|[XaiTranscriber](#schemaxaitranscriber)|false|none|
+|» » » » » *oneOf*|body|[Reson8Transcriber](#schemareson8transcriber)|false|none|
 |» » » » » *oneOf*|body|[VapiTranscriber](#schemavapitranscriber)|false|none|
 |» » » » model|body|[AnthropicModel](#schemaanthropicmodel) \| [AnthropicBedrockModel](#schemaanthropicbedrockmodel) \| [AnyscaleModel](#schemaanyscalemodel) \| [CerebrasModel](#schemacerebrasmodel) \| [CustomLLMModel](#schemacustomllmmodel) \| [DeepInfraModel](#schemadeepinframodel) \| [DeepSeekModel](#schemadeepseekmodel) \| [GoogleModel](#schemagooglemodel) \| [GroqModel](#schemagroqmodel) \| [InflectionAIModel](#schemainflectionaimodel) \| [MinimaxLLMModel](#schemaminimaxllmmodel) \| [OpenAIModel](#schemaopenaimodel) \| [OpenRouterModel](#schemaopenroutermodel) \| [PerplexityAIModel](#schemaperplexityaimodel) \| [TogetherAIModel](#schematogetheraimodel) \| [XaiModel](#schemaxaimodel) \| [VapiModel](#schemavapimodel)|false|These are the options for the assistant's LLM.|
 |» » » » » *oneOf*|body|[AnthropicModel](#schemaanthropicmodel)|false|none|
@@ -56692,7 +56761,7 @@ Creates a new chat with optional SMS delivery via transport field. Requires at l
 |» » » » clientMessages|body|[string]|false|These are the messages that will be sent to your Client SDKs. Default is conversation-update,function-call,hang,model-output,speech-update,status-update,transfer-update,transcript,tool-calls,user-interrupted,voice-input,workflow.node.started,assistant.started. You can check the shape of the messages in ClientMessage schema.|
 |» » » » serverMessages|body|[string]|false|These are the messages that will be sent to your Server URL. Default is conversation-update,end-of-call-report,function-call,hang,speech-update,status-update,tool-calls,transfer-destination-request,handoff-destination-request,user-interrupted,assistant.started. You can check the shape of the messages in ServerMessage schema.|
 |» » » » maxDurationSeconds|body|number|false|This is the maximum number of seconds that the call will last. When the call reaches this duration, it will be ended.<br><br>@default 600 (10 minutes)|
-|» » » » backgroundSound|body|string \| string(uri)|false|This is the background sound in the call. Default for phone calls is 'office' and default for web calls is 'off'.<br>You can also provide a custom sound by providing a URL to an audio file.|
+|» » » » backgroundSound|body|string \| string(uri)|false|This is the background sound in the call. Default for phone calls is 'office' and default for web calls is 'off'.<br>Bundled sounds: 'office', 'white-noise', 'city', 'crowd' and 'farm'. GPT Live assistants don't play 'office'.<br>You can also provide a custom sound by providing a URL to an audio file.|
 |» » » » » *oneOf*|body|string|false|none|
 |» » » » » *oneOf*|body|string(uri)|false|none|
 |» » » » modelOutputInMessagesEnabled|body|boolean|false|This determines whether the model's output is used in conversation history rather than the transcription of assistant's speech.<br><br>@default false|
@@ -56706,7 +56775,7 @@ Creates a new chat with optional SMS delivery via transport field. Requires at l
 |» » » » » tags|body|[string]|true|This is an array of tags to be added to the Langfuse trace. Tags allow you to categorize and filter traces. https://langfuse.com/docs/tracing-features/tags|
 |» » » » » metadata|body|object|false|This is a JSON object that will be added to the Langfuse trace. Traces can be enriched with metadata to better understand your users, application, and experiments. https://langfuse.com/docs/tracing-features/metadata<br>By default it includes the call metadata, assistant metadata, and assistant overrides.|
 |» » » » » *oneOf*|body|[LangfuseObservabilityPlan](#schemalangfuseobservabilityplan)|false|none|
-|» » » » credentials|body|[[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto) \| [CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto) \| [CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto) \| [CreateAssemblyAICredentialDTO](#schemacreateassemblyaicredentialdto) \| [CreateAzureCredentialDTO](#schemacreateazurecredentialdto) \| [CreateAzureOpenAICredentialDTO](#schemacreateazureopenaicredentialdto) \| [CreateByoSipTrunkCredentialDTO](#schemacreatebyosiptrunkcredentialdto) \| [CreateCartesiaCredentialDTO](#schemacreatecartesiacredentialdto) \| [CreateCerebrasCredentialDTO](#schemacreatecerebrascredentialdto) \| [CreateCloudflareCredentialDTO](#schemacreatecloudflarecredentialdto) \| [CreateCustomLLMCredentialDTO](#schemacreatecustomllmcredentialdto) \| [CreateDeepgramCredentialDTO](#schemacreatedeepgramcredentialdto) \| [CreateDeepInfraCredentialDTO](#schemacreatedeepinfracredentialdto) \| [CreateDeepSeekCredentialDTO](#schemacreatedeepseekcredentialdto) \| [CreateElevenLabsCredentialDTO](#schemacreateelevenlabscredentialdto) \| [CreateGcpCredentialDTO](#schemacreategcpcredentialdto) \| [CreateGladiaCredentialDTO](#schemacreategladiacredentialdto) \| [CreateGoHighLevelCredentialDTO](#schemacreategohighlevelcredentialdto) \| [CreateGoogleCredentialDTO](#schemacreategooglecredentialdto) \| [CreateGroqCredentialDTO](#schemacreategroqcredentialdto) \| [CreateHumeCredentialDTO](#schemacreatehumecredentialdto) \| [CreateInflectionAICredentialDTO](#schemacreateinflectionaicredentialdto) \| [CreateLangfuseCredentialDTO](#schemacreatelangfusecredentialdto) \| [CreateLmntCredentialDTO](#schemacreatelmntcredentialdto) \| [CreateMakeCredentialDTO](#schemacreatemakecredentialdto) \| [CreateMistralCredentialDTO](#schemacreatemistralcredentialdto) \| [CreateNeuphonicCredentialDTO](#schemacreateneuphoniccredentialdto) \| [CreateOpenAICredentialDTO](#schemacreateopenaicredentialdto) \| [CreateOpenRouterCredentialDTO](#schemacreateopenroutercredentialdto) \| [CreatePerplexityAICredentialDTO](#schemacreateperplexityaicredentialdto) \| [CreatePlayHTCredentialDTO](#schemacreateplayhtcredentialdto) \| [CreateRimeAICredentialDTO](#schemacreaterimeaicredentialdto) \| [CreateRunpodCredentialDTO](#schemacreaterunpodcredentialdto) \| [CreateS3CredentialDTO](#schemacreates3credentialdto) \| [CreateS3CompatibleCredentialDTO](#schemacreates3compatiblecredentialdto) \| [CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto) \| [CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto) \| [CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto) \| [CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto) \| [CreateTavusCredentialDTO](#schemacreatetavuscredentialdto) \| [CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto) \| [CreateTwilioCredentialDTO](#schemacreatetwiliocredentialdto) \| [CreateVonageCredentialDTO](#schemacreatevonagecredentialdto) \| [CreateWebhookCredentialDTO](#schemacreatewebhookcredentialdto) \| [CreateCustomCredentialDTO](#schemacreatecustomcredentialdto) \| [CreateXAiCredentialDTO](#schemacreatexaicredentialdto) \| [CreateMicrosoftCredentialDTO](#schemacreatemicrosoftcredentialdto) \| [CreateGoogleCalendarOAuth2ClientCredentialDTO](#schemacreategooglecalendaroauth2clientcredentialdto) \| [CreateGoogleCalendarOAuth2AuthorizationCredentialDTO](#schemacreategooglecalendaroauth2authorizationcredentialdto) \| [CreateGoogleSheetsOAuth2AuthorizationCredentialDTO](#schemacreategooglesheetsoauth2authorizationcredentialdto) \| [CreateSlackOAuth2AuthorizationCredentialDTO](#schemacreateslackoauth2authorizationcredentialdto) \| [CreateGoHighLevelMCPCredentialDTO](#schemacreategohighlevelmcpcredentialdto) \| [CreateInworldCredentialDTO](#schemacreateinworldcredentialdto) \| [CreateMinimaxCredentialDTO](#schemacreateminimaxcredentialdto) \| [CreateWellSaidCredentialDTO](#schemacreatewellsaidcredentialdto) \| [CreateEmailCredentialDTO](#schemacreateemailcredentialdto) \| [CreateSlackWebhookCredentialDTO](#schemacreateslackwebhookcredentialdto)]|false|These are dynamic credentials that will be used for the assistant calls. By default, all the credentials are available for use in the call but you can supplement an additional credentials using this. Dynamic credentials override existing credentials.|
+|» » » » credentials|body|[[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto) \| [CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto) \| [CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto) \| [CreateAssemblyAICredentialDTO](#schemacreateassemblyaicredentialdto) \| [CreateAzureCredentialDTO](#schemacreateazurecredentialdto) \| [CreateAzureOpenAICredentialDTO](#schemacreateazureopenaicredentialdto) \| [CreateByoSipTrunkCredentialDTO](#schemacreatebyosiptrunkcredentialdto) \| [CreateCartesiaCredentialDTO](#schemacreatecartesiacredentialdto) \| [CreateCerebrasCredentialDTO](#schemacreatecerebrascredentialdto) \| [CreateCloudflareCredentialDTO](#schemacreatecloudflarecredentialdto) \| [CreateCustomLLMCredentialDTO](#schemacreatecustomllmcredentialdto) \| [CreateDeepgramCredentialDTO](#schemacreatedeepgramcredentialdto) \| [CreateDeepInfraCredentialDTO](#schemacreatedeepinfracredentialdto) \| [CreateDeepSeekCredentialDTO](#schemacreatedeepseekcredentialdto) \| [CreateElevenLabsCredentialDTO](#schemacreateelevenlabscredentialdto) \| [CreateGcpCredentialDTO](#schemacreategcpcredentialdto) \| [CreateGladiaCredentialDTO](#schemacreategladiacredentialdto) \| [CreateGoHighLevelCredentialDTO](#schemacreategohighlevelcredentialdto) \| [CreateGoogleCredentialDTO](#schemacreategooglecredentialdto) \| [CreateGroqCredentialDTO](#schemacreategroqcredentialdto) \| [CreateHumeCredentialDTO](#schemacreatehumecredentialdto) \| [CreateInflectionAICredentialDTO](#schemacreateinflectionaicredentialdto) \| [CreateLangfuseCredentialDTO](#schemacreatelangfusecredentialdto) \| [CreateLmntCredentialDTO](#schemacreatelmntcredentialdto) \| [CreateMakeCredentialDTO](#schemacreatemakecredentialdto) \| [CreateMistralCredentialDTO](#schemacreatemistralcredentialdto) \| [CreateNeuphonicCredentialDTO](#schemacreateneuphoniccredentialdto) \| [CreateOpenAICredentialDTO](#schemacreateopenaicredentialdto) \| [CreateOpenRouterCredentialDTO](#schemacreateopenroutercredentialdto) \| [CreatePerplexityAICredentialDTO](#schemacreateperplexityaicredentialdto) \| [CreatePlayHTCredentialDTO](#schemacreateplayhtcredentialdto) \| [CreateRimeAICredentialDTO](#schemacreaterimeaicredentialdto) \| [CreateRunpodCredentialDTO](#schemacreaterunpodcredentialdto) \| [CreateS3CredentialDTO](#schemacreates3credentialdto) \| [CreateS3CompatibleCredentialDTO](#schemacreates3compatiblecredentialdto) \| [CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto) \| [CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto) \| [CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto) \| [CreateReson8CredentialDTO](#schemacreatereson8credentialdto) \| [CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto) \| [CreateTavusCredentialDTO](#schemacreatetavuscredentialdto) \| [CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto) \| [CreateTwilioCredentialDTO](#schemacreatetwiliocredentialdto) \| [CreateVonageCredentialDTO](#schemacreatevonagecredentialdto) \| [CreateWebhookCredentialDTO](#schemacreatewebhookcredentialdto) \| [CreateCustomCredentialDTO](#schemacreatecustomcredentialdto) \| [CreateXAiCredentialDTO](#schemacreatexaicredentialdto) \| [CreateMicrosoftCredentialDTO](#schemacreatemicrosoftcredentialdto) \| [CreateGoogleCalendarOAuth2ClientCredentialDTO](#schemacreategooglecalendaroauth2clientcredentialdto) \| [CreateGoogleCalendarOAuth2AuthorizationCredentialDTO](#schemacreategooglecalendaroauth2authorizationcredentialdto) \| [CreateGoogleSheetsOAuth2AuthorizationCredentialDTO](#schemacreategooglesheetsoauth2authorizationcredentialdto) \| [CreateSlackOAuth2AuthorizationCredentialDTO](#schemacreateslackoauth2authorizationcredentialdto) \| [CreateGoHighLevelMCPCredentialDTO](#schemacreategohighlevelmcpcredentialdto) \| [CreateInworldCredentialDTO](#schemacreateinworldcredentialdto) \| [CreateMinimaxCredentialDTO](#schemacreateminimaxcredentialdto) \| [CreateWellSaidCredentialDTO](#schemacreatewellsaidcredentialdto) \| [CreateEmailCredentialDTO](#schemacreateemailcredentialdto) \| [CreateSlackWebhookCredentialDTO](#schemacreateslackwebhookcredentialdto)]|false|These are dynamic credentials that will be used for the assistant calls. By default, all the credentials are available for use in the call but you can supplement an additional credentials using this. Dynamic credentials override existing credentials.|
 |» » » » » *oneOf*|body|[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto)|false|none|
 |» » » » » *oneOf*|body|[CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto)|false|none|
 |» » » » » *oneOf*|body|[CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto)|false|none|
@@ -56745,6 +56814,7 @@ Creates a new chat with optional SMS delivery via transport field. Requires at l
 |» » » » » *oneOf*|body|[CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto)|false|none|
 |» » » » » *oneOf*|body|[CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto)|false|none|
 |» » » » » *oneOf*|body|[CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto)|false|none|
+|» » » » » *oneOf*|body|[CreateReson8CredentialDTO](#schemacreatereson8credentialdto)|false|none|
 |» » » » » *oneOf*|body|[CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto)|false|none|
 |» » » » » *oneOf*|body|[CreateTavusCredentialDTO](#schemacreatetavuscredentialdto)|false|none|
 |» » » » » *oneOf*|body|[CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto)|false|none|
@@ -56894,7 +56964,7 @@ Creates a new chat with optional SMS delivery via transport field. Requires at l
 |» » » » » » excludedStatusCodes|body|[object]|false|This is the excluded status codes. If the response status code is in this list, the request will not be retried.<br>By default, the request will be retried for any non-2xx status code.|
 |» » » » keypadInputPlan|body|[KeypadInputPlan](#schemakeypadinputplan)|false|none|
 |» » » squadOverrides|body|object|false|These are the overrides applied when the call targets a `squadId`. Mirrors<br>the call-level `squadOverrides` — use this instead of `assistantOverrides`<br>when the campaign or call is squad-based.|
-|» » » » transcriber|body|[AssemblyAITranscriber](#schemaassemblyaitranscriber) \| [AzureSpeechTranscriber](#schemaazurespeechtranscriber) \| [CustomTranscriber](#schemacustomtranscriber) \| [DeepgramTranscriber](#schemadeepgramtranscriber) \| [ElevenLabsTranscriber](#schemaelevenlabstranscriber) \| [GladiaTranscriber](#schemagladiatranscriber) \| [GoogleTranscriber](#schemagoogletranscriber) \| [SpeechmaticsTranscriber](#schemaspeechmaticstranscriber) \| [TalkscriberTranscriber](#schematalkscribertranscriber) \| [OpenAITranscriber](#schemaopenaitranscriber) \| [CartesiaTranscriber](#schemacartesiatranscriber) \| [SonioxTranscriber](#schemasonioxtranscriber) \| [XaiTranscriber](#schemaxaitranscriber) \| [VapiTranscriber](#schemavapitranscriber)|false|These are the options for the assistant's transcriber.|
+|» » » » transcriber|body|[AssemblyAITranscriber](#schemaassemblyaitranscriber) \| [AzureSpeechTranscriber](#schemaazurespeechtranscriber) \| [CustomTranscriber](#schemacustomtranscriber) \| [DeepgramTranscriber](#schemadeepgramtranscriber) \| [ElevenLabsTranscriber](#schemaelevenlabstranscriber) \| [GladiaTranscriber](#schemagladiatranscriber) \| [GoogleTranscriber](#schemagoogletranscriber) \| [SpeechmaticsTranscriber](#schemaspeechmaticstranscriber) \| [TalkscriberTranscriber](#schematalkscribertranscriber) \| [OpenAITranscriber](#schemaopenaitranscriber) \| [CartesiaTranscriber](#schemacartesiatranscriber) \| [SonioxTranscriber](#schemasonioxtranscriber) \| [XaiTranscriber](#schemaxaitranscriber) \| [Reson8Transcriber](#schemareson8transcriber) \| [VapiTranscriber](#schemavapitranscriber)|false|These are the options for the assistant's transcriber.|
 |» » » » » *oneOf*|body|[AssemblyAITranscriber](#schemaassemblyaitranscriber)|false|none|
 |» » » » » *oneOf*|body|[AzureSpeechTranscriber](#schemaazurespeechtranscriber)|false|none|
 |» » » » » *oneOf*|body|[CustomTranscriber](#schemacustomtranscriber)|false|none|
@@ -56908,6 +56978,7 @@ Creates a new chat with optional SMS delivery via transport field. Requires at l
 |» » » » » *oneOf*|body|[CartesiaTranscriber](#schemacartesiatranscriber)|false|none|
 |» » » » » *oneOf*|body|[SonioxTranscriber](#schemasonioxtranscriber)|false|none|
 |» » » » » *oneOf*|body|[XaiTranscriber](#schemaxaitranscriber)|false|none|
+|» » » » » *oneOf*|body|[Reson8Transcriber](#schemareson8transcriber)|false|none|
 |» » » » » *oneOf*|body|[VapiTranscriber](#schemavapitranscriber)|false|none|
 |» » » » model|body|[AnthropicModel](#schemaanthropicmodel) \| [AnthropicBedrockModel](#schemaanthropicbedrockmodel) \| [AnyscaleModel](#schemaanyscalemodel) \| [CerebrasModel](#schemacerebrasmodel) \| [CustomLLMModel](#schemacustomllmmodel) \| [DeepInfraModel](#schemadeepinframodel) \| [DeepSeekModel](#schemadeepseekmodel) \| [GoogleModel](#schemagooglemodel) \| [GroqModel](#schemagroqmodel) \| [InflectionAIModel](#schemainflectionaimodel) \| [MinimaxLLMModel](#schemaminimaxllmmodel) \| [OpenAIModel](#schemaopenaimodel) \| [OpenRouterModel](#schemaopenroutermodel) \| [PerplexityAIModel](#schemaperplexityaimodel) \| [TogetherAIModel](#schematogetheraimodel) \| [XaiModel](#schemaxaimodel) \| [VapiModel](#schemavapimodel)|false|These are the options for the assistant's LLM.|
 |» » » » » *oneOf*|body|[AnthropicModel](#schemaanthropicmodel)|false|none|
@@ -56959,7 +57030,7 @@ Creates a new chat with optional SMS delivery via transport field. Requires at l
 |» » » » clientMessages|body|[string]|false|These are the messages that will be sent to your Client SDKs. Default is conversation-update,function-call,hang,model-output,speech-update,status-update,transfer-update,transcript,tool-calls,user-interrupted,voice-input,workflow.node.started,assistant.started. You can check the shape of the messages in ClientMessage schema.|
 |» » » » serverMessages|body|[string]|false|These are the messages that will be sent to your Server URL. Default is conversation-update,end-of-call-report,function-call,hang,speech-update,status-update,tool-calls,transfer-destination-request,handoff-destination-request,user-interrupted,assistant.started. You can check the shape of the messages in ServerMessage schema.|
 |» » » » maxDurationSeconds|body|number|false|This is the maximum number of seconds that the call will last. When the call reaches this duration, it will be ended.<br><br>@default 600 (10 minutes)|
-|» » » » backgroundSound|body|string \| string(uri)|false|This is the background sound in the call. Default for phone calls is 'office' and default for web calls is 'off'.<br>You can also provide a custom sound by providing a URL to an audio file.|
+|» » » » backgroundSound|body|string \| string(uri)|false|This is the background sound in the call. Default for phone calls is 'office' and default for web calls is 'off'.<br>Bundled sounds: 'office', 'white-noise', 'city', 'crowd' and 'farm'. GPT Live assistants don't play 'office'.<br>You can also provide a custom sound by providing a URL to an audio file.|
 |» » » » » *oneOf*|body|string|false|none|
 |» » » » » *oneOf*|body|string(uri)|false|none|
 |» » » » modelOutputInMessagesEnabled|body|boolean|false|This determines whether the model's output is used in conversation history rather than the transcription of assistant's speech.<br><br>@default false|
@@ -56973,7 +57044,7 @@ Creates a new chat with optional SMS delivery via transport field. Requires at l
 |» » » » » tags|body|[string]|true|This is an array of tags to be added to the Langfuse trace. Tags allow you to categorize and filter traces. https://langfuse.com/docs/tracing-features/tags|
 |» » » » » metadata|body|object|false|This is a JSON object that will be added to the Langfuse trace. Traces can be enriched with metadata to better understand your users, application, and experiments. https://langfuse.com/docs/tracing-features/metadata<br>By default it includes the call metadata, assistant metadata, and assistant overrides.|
 |» » » » » *oneOf*|body|[LangfuseObservabilityPlan](#schemalangfuseobservabilityplan)|false|none|
-|» » » » credentials|body|[[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto) \| [CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto) \| [CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto) \| [CreateAssemblyAICredentialDTO](#schemacreateassemblyaicredentialdto) \| [CreateAzureCredentialDTO](#schemacreateazurecredentialdto) \| [CreateAzureOpenAICredentialDTO](#schemacreateazureopenaicredentialdto) \| [CreateByoSipTrunkCredentialDTO](#schemacreatebyosiptrunkcredentialdto) \| [CreateCartesiaCredentialDTO](#schemacreatecartesiacredentialdto) \| [CreateCerebrasCredentialDTO](#schemacreatecerebrascredentialdto) \| [CreateCloudflareCredentialDTO](#schemacreatecloudflarecredentialdto) \| [CreateCustomLLMCredentialDTO](#schemacreatecustomllmcredentialdto) \| [CreateDeepgramCredentialDTO](#schemacreatedeepgramcredentialdto) \| [CreateDeepInfraCredentialDTO](#schemacreatedeepinfracredentialdto) \| [CreateDeepSeekCredentialDTO](#schemacreatedeepseekcredentialdto) \| [CreateElevenLabsCredentialDTO](#schemacreateelevenlabscredentialdto) \| [CreateGcpCredentialDTO](#schemacreategcpcredentialdto) \| [CreateGladiaCredentialDTO](#schemacreategladiacredentialdto) \| [CreateGoHighLevelCredentialDTO](#schemacreategohighlevelcredentialdto) \| [CreateGoogleCredentialDTO](#schemacreategooglecredentialdto) \| [CreateGroqCredentialDTO](#schemacreategroqcredentialdto) \| [CreateHumeCredentialDTO](#schemacreatehumecredentialdto) \| [CreateInflectionAICredentialDTO](#schemacreateinflectionaicredentialdto) \| [CreateLangfuseCredentialDTO](#schemacreatelangfusecredentialdto) \| [CreateLmntCredentialDTO](#schemacreatelmntcredentialdto) \| [CreateMakeCredentialDTO](#schemacreatemakecredentialdto) \| [CreateMistralCredentialDTO](#schemacreatemistralcredentialdto) \| [CreateNeuphonicCredentialDTO](#schemacreateneuphoniccredentialdto) \| [CreateOpenAICredentialDTO](#schemacreateopenaicredentialdto) \| [CreateOpenRouterCredentialDTO](#schemacreateopenroutercredentialdto) \| [CreatePerplexityAICredentialDTO](#schemacreateperplexityaicredentialdto) \| [CreatePlayHTCredentialDTO](#schemacreateplayhtcredentialdto) \| [CreateRimeAICredentialDTO](#schemacreaterimeaicredentialdto) \| [CreateRunpodCredentialDTO](#schemacreaterunpodcredentialdto) \| [CreateS3CredentialDTO](#schemacreates3credentialdto) \| [CreateS3CompatibleCredentialDTO](#schemacreates3compatiblecredentialdto) \| [CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto) \| [CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto) \| [CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto) \| [CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto) \| [CreateTavusCredentialDTO](#schemacreatetavuscredentialdto) \| [CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto) \| [CreateTwilioCredentialDTO](#schemacreatetwiliocredentialdto) \| [CreateVonageCredentialDTO](#schemacreatevonagecredentialdto) \| [CreateWebhookCredentialDTO](#schemacreatewebhookcredentialdto) \| [CreateCustomCredentialDTO](#schemacreatecustomcredentialdto) \| [CreateXAiCredentialDTO](#schemacreatexaicredentialdto) \| [CreateMicrosoftCredentialDTO](#schemacreatemicrosoftcredentialdto) \| [CreateGoogleCalendarOAuth2ClientCredentialDTO](#schemacreategooglecalendaroauth2clientcredentialdto) \| [CreateGoogleCalendarOAuth2AuthorizationCredentialDTO](#schemacreategooglecalendaroauth2authorizationcredentialdto) \| [CreateGoogleSheetsOAuth2AuthorizationCredentialDTO](#schemacreategooglesheetsoauth2authorizationcredentialdto) \| [CreateSlackOAuth2AuthorizationCredentialDTO](#schemacreateslackoauth2authorizationcredentialdto) \| [CreateGoHighLevelMCPCredentialDTO](#schemacreategohighlevelmcpcredentialdto) \| [CreateInworldCredentialDTO](#schemacreateinworldcredentialdto) \| [CreateMinimaxCredentialDTO](#schemacreateminimaxcredentialdto) \| [CreateWellSaidCredentialDTO](#schemacreatewellsaidcredentialdto) \| [CreateEmailCredentialDTO](#schemacreateemailcredentialdto) \| [CreateSlackWebhookCredentialDTO](#schemacreateslackwebhookcredentialdto)]|false|These are dynamic credentials that will be used for the assistant calls. By default, all the credentials are available for use in the call but you can supplement an additional credentials using this. Dynamic credentials override existing credentials.|
+|» » » » credentials|body|[[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto) \| [CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto) \| [CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto) \| [CreateAssemblyAICredentialDTO](#schemacreateassemblyaicredentialdto) \| [CreateAzureCredentialDTO](#schemacreateazurecredentialdto) \| [CreateAzureOpenAICredentialDTO](#schemacreateazureopenaicredentialdto) \| [CreateByoSipTrunkCredentialDTO](#schemacreatebyosiptrunkcredentialdto) \| [CreateCartesiaCredentialDTO](#schemacreatecartesiacredentialdto) \| [CreateCerebrasCredentialDTO](#schemacreatecerebrascredentialdto) \| [CreateCloudflareCredentialDTO](#schemacreatecloudflarecredentialdto) \| [CreateCustomLLMCredentialDTO](#schemacreatecustomllmcredentialdto) \| [CreateDeepgramCredentialDTO](#schemacreatedeepgramcredentialdto) \| [CreateDeepInfraCredentialDTO](#schemacreatedeepinfracredentialdto) \| [CreateDeepSeekCredentialDTO](#schemacreatedeepseekcredentialdto) \| [CreateElevenLabsCredentialDTO](#schemacreateelevenlabscredentialdto) \| [CreateGcpCredentialDTO](#schemacreategcpcredentialdto) \| [CreateGladiaCredentialDTO](#schemacreategladiacredentialdto) \| [CreateGoHighLevelCredentialDTO](#schemacreategohighlevelcredentialdto) \| [CreateGoogleCredentialDTO](#schemacreategooglecredentialdto) \| [CreateGroqCredentialDTO](#schemacreategroqcredentialdto) \| [CreateHumeCredentialDTO](#schemacreatehumecredentialdto) \| [CreateInflectionAICredentialDTO](#schemacreateinflectionaicredentialdto) \| [CreateLangfuseCredentialDTO](#schemacreatelangfusecredentialdto) \| [CreateLmntCredentialDTO](#schemacreatelmntcredentialdto) \| [CreateMakeCredentialDTO](#schemacreatemakecredentialdto) \| [CreateMistralCredentialDTO](#schemacreatemistralcredentialdto) \| [CreateNeuphonicCredentialDTO](#schemacreateneuphoniccredentialdto) \| [CreateOpenAICredentialDTO](#schemacreateopenaicredentialdto) \| [CreateOpenRouterCredentialDTO](#schemacreateopenroutercredentialdto) \| [CreatePerplexityAICredentialDTO](#schemacreateperplexityaicredentialdto) \| [CreatePlayHTCredentialDTO](#schemacreateplayhtcredentialdto) \| [CreateRimeAICredentialDTO](#schemacreaterimeaicredentialdto) \| [CreateRunpodCredentialDTO](#schemacreaterunpodcredentialdto) \| [CreateS3CredentialDTO](#schemacreates3credentialdto) \| [CreateS3CompatibleCredentialDTO](#schemacreates3compatiblecredentialdto) \| [CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto) \| [CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto) \| [CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto) \| [CreateReson8CredentialDTO](#schemacreatereson8credentialdto) \| [CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto) \| [CreateTavusCredentialDTO](#schemacreatetavuscredentialdto) \| [CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto) \| [CreateTwilioCredentialDTO](#schemacreatetwiliocredentialdto) \| [CreateVonageCredentialDTO](#schemacreatevonagecredentialdto) \| [CreateWebhookCredentialDTO](#schemacreatewebhookcredentialdto) \| [CreateCustomCredentialDTO](#schemacreatecustomcredentialdto) \| [CreateXAiCredentialDTO](#schemacreatexaicredentialdto) \| [CreateMicrosoftCredentialDTO](#schemacreatemicrosoftcredentialdto) \| [CreateGoogleCalendarOAuth2ClientCredentialDTO](#schemacreategooglecalendaroauth2clientcredentialdto) \| [CreateGoogleCalendarOAuth2AuthorizationCredentialDTO](#schemacreategooglecalendaroauth2authorizationcredentialdto) \| [CreateGoogleSheetsOAuth2AuthorizationCredentialDTO](#schemacreategooglesheetsoauth2authorizationcredentialdto) \| [CreateSlackOAuth2AuthorizationCredentialDTO](#schemacreateslackoauth2authorizationcredentialdto) \| [CreateGoHighLevelMCPCredentialDTO](#schemacreategohighlevelmcpcredentialdto) \| [CreateInworldCredentialDTO](#schemacreateinworldcredentialdto) \| [CreateMinimaxCredentialDTO](#schemacreateminimaxcredentialdto) \| [CreateWellSaidCredentialDTO](#schemacreatewellsaidcredentialdto) \| [CreateEmailCredentialDTO](#schemacreateemailcredentialdto) \| [CreateSlackWebhookCredentialDTO](#schemacreateslackwebhookcredentialdto)]|false|These are dynamic credentials that will be used for the assistant calls. By default, all the credentials are available for use in the call but you can supplement an additional credentials using this. Dynamic credentials override existing credentials.|
 |» » » » » *oneOf*|body|[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto)|false|none|
 |» » » » » *oneOf*|body|[CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto)|false|none|
 |» » » » » *oneOf*|body|[CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto)|false|none|
@@ -57012,6 +57083,7 @@ Creates a new chat with optional SMS delivery via transport field. Requires at l
 |» » » » » *oneOf*|body|[CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto)|false|none|
 |» » » » » *oneOf*|body|[CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto)|false|none|
 |» » » » » *oneOf*|body|[CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto)|false|none|
+|» » » » » *oneOf*|body|[CreateReson8CredentialDTO](#schemacreatereson8credentialdto)|false|none|
 |» » » » » *oneOf*|body|[CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto)|false|none|
 |» » » » » *oneOf*|body|[CreateTavusCredentialDTO](#schemacreatetavuscredentialdto)|false|none|
 |» » » » » *oneOf*|body|[CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto)|false|none|
@@ -57226,6 +57298,10 @@ Creates a new chat with optional SMS delivery via transport field. Requires at l
 |» » serverMessages|call.artifact.upload|
 |» » » *oneOf*|off|
 |» » » *oneOf*|office|
+|» » » *oneOf*|white-noise|
+|» » » *oneOf*|city|
+|» » » *oneOf*|crowd|
+|» » » *oneOf*|farm|
 |» » » provider|langfuse|
 |» » » » rubric|NumericScale|
 |» » » » rubric|DescriptiveScale|
@@ -57293,6 +57369,10 @@ Creates a new chat with optional SMS delivery via transport field. Requires at l
 |» » serverMessages|call.artifact.upload|
 |» » » *oneOf*|off|
 |» » » *oneOf*|office|
+|» » » *oneOf*|white-noise|
+|» » » *oneOf*|city|
+|» » » *oneOf*|crowd|
+|» » » *oneOf*|farm|
 |» » » provider|langfuse|
 |» » » » rubric|NumericScale|
 |» » » » rubric|DescriptiveScale|
@@ -57361,6 +57441,10 @@ Creates a new chat with optional SMS delivery via transport field. Requires at l
 |» » » » serverMessages|call.artifact.upload|
 |» » » » » *oneOf*|off|
 |» » » » » *oneOf*|office|
+|» » » » » *oneOf*|white-noise|
+|» » » » » *oneOf*|city|
+|» » » » » *oneOf*|crowd|
+|» » » » » *oneOf*|farm|
 |» » » » » provider|langfuse|
 |» » » » » » rubric|NumericScale|
 |» » » » » » rubric|DescriptiveScale|
@@ -57428,6 +57512,10 @@ Creates a new chat with optional SMS delivery via transport field. Requires at l
 |» » » » serverMessages|call.artifact.upload|
 |» » » » » *oneOf*|off|
 |» » » » » *oneOf*|office|
+|» » » » » *oneOf*|white-noise|
+|» » » » » *oneOf*|city|
+|» » » » » *oneOf*|crowd|
+|» » » » » *oneOf*|farm|
 |» » » » » provider|langfuse|
 |» » » » » » rubric|NumericScale|
 |» » » » » » rubric|DescriptiveScale|
@@ -66438,7 +66526,7 @@ curl https://api.vapi.ai/chat/responses \
 |body|body|[OpenAIResponsesRequest](#schemaopenairesponsesrequest)|true|none|
 |» assistantId|body|string|false|This is the assistant that will be used for the chat. To use an existing assistant, use `assistantId` instead.|
 |» assistant|body|object|false|This is the assistant that will be used for the chat. To use an existing assistant, use `assistantId` instead.|
-|» » transcriber|body|[AssemblyAITranscriber](#schemaassemblyaitranscriber) \| [AzureSpeechTranscriber](#schemaazurespeechtranscriber) \| [CustomTranscriber](#schemacustomtranscriber) \| [DeepgramTranscriber](#schemadeepgramtranscriber) \| [ElevenLabsTranscriber](#schemaelevenlabstranscriber) \| [GladiaTranscriber](#schemagladiatranscriber) \| [GoogleTranscriber](#schemagoogletranscriber) \| [SpeechmaticsTranscriber](#schemaspeechmaticstranscriber) \| [TalkscriberTranscriber](#schematalkscribertranscriber) \| [OpenAITranscriber](#schemaopenaitranscriber) \| [CartesiaTranscriber](#schemacartesiatranscriber) \| [SonioxTranscriber](#schemasonioxtranscriber) \| [XaiTranscriber](#schemaxaitranscriber) \| [VapiTranscriber](#schemavapitranscriber)|false|These are the options for the assistant's transcriber.|
+|» » transcriber|body|[AssemblyAITranscriber](#schemaassemblyaitranscriber) \| [AzureSpeechTranscriber](#schemaazurespeechtranscriber) \| [CustomTranscriber](#schemacustomtranscriber) \| [DeepgramTranscriber](#schemadeepgramtranscriber) \| [ElevenLabsTranscriber](#schemaelevenlabstranscriber) \| [GladiaTranscriber](#schemagladiatranscriber) \| [GoogleTranscriber](#schemagoogletranscriber) \| [SpeechmaticsTranscriber](#schemaspeechmaticstranscriber) \| [TalkscriberTranscriber](#schematalkscribertranscriber) \| [OpenAITranscriber](#schemaopenaitranscriber) \| [CartesiaTranscriber](#schemacartesiatranscriber) \| [SonioxTranscriber](#schemasonioxtranscriber) \| [XaiTranscriber](#schemaxaitranscriber) \| [Reson8Transcriber](#schemareson8transcriber) \| [VapiTranscriber](#schemavapitranscriber)|false|These are the options for the assistant's transcriber.|
 |» » » *oneOf*|body|[AssemblyAITranscriber](#schemaassemblyaitranscriber)|false|none|
 |» » » *oneOf*|body|[AzureSpeechTranscriber](#schemaazurespeechtranscriber)|false|none|
 |» » » *oneOf*|body|[CustomTranscriber](#schemacustomtranscriber)|false|none|
@@ -66452,6 +66540,7 @@ curl https://api.vapi.ai/chat/responses \
 |» » » *oneOf*|body|[CartesiaTranscriber](#schemacartesiatranscriber)|false|none|
 |» » » *oneOf*|body|[SonioxTranscriber](#schemasonioxtranscriber)|false|none|
 |» » » *oneOf*|body|[XaiTranscriber](#schemaxaitranscriber)|false|none|
+|» » » *oneOf*|body|[Reson8Transcriber](#schemareson8transcriber)|false|none|
 |» » » *oneOf*|body|[VapiTranscriber](#schemavapitranscriber)|false|none|
 |» » model|body|[AnthropicModel](#schemaanthropicmodel) \| [AnthropicBedrockModel](#schemaanthropicbedrockmodel) \| [AnyscaleModel](#schemaanyscalemodel) \| [CerebrasModel](#schemacerebrasmodel) \| [CustomLLMModel](#schemacustomllmmodel) \| [DeepInfraModel](#schemadeepinframodel) \| [DeepSeekModel](#schemadeepseekmodel) \| [GoogleModel](#schemagooglemodel) \| [GroqModel](#schemagroqmodel) \| [InflectionAIModel](#schemainflectionaimodel) \| [MinimaxLLMModel](#schemaminimaxllmmodel) \| [OpenAIModel](#schemaopenaimodel) \| [OpenRouterModel](#schemaopenroutermodel) \| [PerplexityAIModel](#schemaperplexityaimodel) \| [TogetherAIModel](#schematogetheraimodel) \| [XaiModel](#schemaxaimodel) \| [VapiModel](#schemavapimodel)|false|These are the options for the assistant's LLM.|
 |» » » *oneOf*|body|[AnthropicModel](#schemaanthropicmodel)|false|none|
@@ -66503,7 +66592,7 @@ curl https://api.vapi.ai/chat/responses \
 |» » clientMessages|body|[string]|false|These are the messages that will be sent to your Client SDKs. Default is conversation-update,function-call,hang,model-output,speech-update,status-update,transfer-update,transcript,tool-calls,user-interrupted,voice-input,workflow.node.started,assistant.started. You can check the shape of the messages in ClientMessage schema.|
 |» » serverMessages|body|[string]|false|These are the messages that will be sent to your Server URL. Default is conversation-update,end-of-call-report,function-call,hang,speech-update,status-update,tool-calls,transfer-destination-request,handoff-destination-request,user-interrupted,assistant.started. You can check the shape of the messages in ServerMessage schema.|
 |» » maxDurationSeconds|body|number|false|This is the maximum number of seconds that the call will last. When the call reaches this duration, it will be ended.<br><br>@default 600 (10 minutes)|
-|» » backgroundSound|body|string \| string(uri)|false|This is the background sound in the call. Default for phone calls is 'office' and default for web calls is 'off'.<br>You can also provide a custom sound by providing a URL to an audio file.|
+|» » backgroundSound|body|string \| string(uri)|false|This is the background sound in the call. Default for phone calls is 'office' and default for web calls is 'off'.<br>Bundled sounds: 'office', 'white-noise', 'city', 'crowd' and 'farm'. GPT Live assistants don't play 'office'.<br>You can also provide a custom sound by providing a URL to an audio file.|
 |» » » *oneOf*|body|string|false|none|
 |» » » *oneOf*|body|string(uri)|false|none|
 |» » modelOutputInMessagesEnabled|body|boolean|false|This determines whether the model's output is used in conversation history rather than the transcription of assistant's speech.<br><br>@default false|
@@ -66517,7 +66606,7 @@ curl https://api.vapi.ai/chat/responses \
 |» » » tags|body|[string]|true|This is an array of tags to be added to the Langfuse trace. Tags allow you to categorize and filter traces. https://langfuse.com/docs/tracing-features/tags|
 |» » » metadata|body|object|false|This is a JSON object that will be added to the Langfuse trace. Traces can be enriched with metadata to better understand your users, application, and experiments. https://langfuse.com/docs/tracing-features/metadata<br>By default it includes the call metadata, assistant metadata, and assistant overrides.|
 |» » » *oneOf*|body|[LangfuseObservabilityPlan](#schemalangfuseobservabilityplan)|false|none|
-|» » credentials|body|[[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto) \| [CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto) \| [CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto) \| [CreateAssemblyAICredentialDTO](#schemacreateassemblyaicredentialdto) \| [CreateAzureCredentialDTO](#schemacreateazurecredentialdto) \| [CreateAzureOpenAICredentialDTO](#schemacreateazureopenaicredentialdto) \| [CreateByoSipTrunkCredentialDTO](#schemacreatebyosiptrunkcredentialdto) \| [CreateCartesiaCredentialDTO](#schemacreatecartesiacredentialdto) \| [CreateCerebrasCredentialDTO](#schemacreatecerebrascredentialdto) \| [CreateCloudflareCredentialDTO](#schemacreatecloudflarecredentialdto) \| [CreateCustomLLMCredentialDTO](#schemacreatecustomllmcredentialdto) \| [CreateDeepgramCredentialDTO](#schemacreatedeepgramcredentialdto) \| [CreateDeepInfraCredentialDTO](#schemacreatedeepinfracredentialdto) \| [CreateDeepSeekCredentialDTO](#schemacreatedeepseekcredentialdto) \| [CreateElevenLabsCredentialDTO](#schemacreateelevenlabscredentialdto) \| [CreateGcpCredentialDTO](#schemacreategcpcredentialdto) \| [CreateGladiaCredentialDTO](#schemacreategladiacredentialdto) \| [CreateGoHighLevelCredentialDTO](#schemacreategohighlevelcredentialdto) \| [CreateGoogleCredentialDTO](#schemacreategooglecredentialdto) \| [CreateGroqCredentialDTO](#schemacreategroqcredentialdto) \| [CreateHumeCredentialDTO](#schemacreatehumecredentialdto) \| [CreateInflectionAICredentialDTO](#schemacreateinflectionaicredentialdto) \| [CreateLangfuseCredentialDTO](#schemacreatelangfusecredentialdto) \| [CreateLmntCredentialDTO](#schemacreatelmntcredentialdto) \| [CreateMakeCredentialDTO](#schemacreatemakecredentialdto) \| [CreateMistralCredentialDTO](#schemacreatemistralcredentialdto) \| [CreateNeuphonicCredentialDTO](#schemacreateneuphoniccredentialdto) \| [CreateOpenAICredentialDTO](#schemacreateopenaicredentialdto) \| [CreateOpenRouterCredentialDTO](#schemacreateopenroutercredentialdto) \| [CreatePerplexityAICredentialDTO](#schemacreateperplexityaicredentialdto) \| [CreatePlayHTCredentialDTO](#schemacreateplayhtcredentialdto) \| [CreateRimeAICredentialDTO](#schemacreaterimeaicredentialdto) \| [CreateRunpodCredentialDTO](#schemacreaterunpodcredentialdto) \| [CreateS3CredentialDTO](#schemacreates3credentialdto) \| [CreateS3CompatibleCredentialDTO](#schemacreates3compatiblecredentialdto) \| [CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto) \| [CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto) \| [CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto) \| [CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto) \| [CreateTavusCredentialDTO](#schemacreatetavuscredentialdto) \| [CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto) \| [CreateTwilioCredentialDTO](#schemacreatetwiliocredentialdto) \| [CreateVonageCredentialDTO](#schemacreatevonagecredentialdto) \| [CreateWebhookCredentialDTO](#schemacreatewebhookcredentialdto) \| [CreateCustomCredentialDTO](#schemacreatecustomcredentialdto) \| [CreateXAiCredentialDTO](#schemacreatexaicredentialdto) \| [CreateMicrosoftCredentialDTO](#schemacreatemicrosoftcredentialdto) \| [CreateGoogleCalendarOAuth2ClientCredentialDTO](#schemacreategooglecalendaroauth2clientcredentialdto) \| [CreateGoogleCalendarOAuth2AuthorizationCredentialDTO](#schemacreategooglecalendaroauth2authorizationcredentialdto) \| [CreateGoogleSheetsOAuth2AuthorizationCredentialDTO](#schemacreategooglesheetsoauth2authorizationcredentialdto) \| [CreateSlackOAuth2AuthorizationCredentialDTO](#schemacreateslackoauth2authorizationcredentialdto) \| [CreateGoHighLevelMCPCredentialDTO](#schemacreategohighlevelmcpcredentialdto) \| [CreateInworldCredentialDTO](#schemacreateinworldcredentialdto) \| [CreateMinimaxCredentialDTO](#schemacreateminimaxcredentialdto) \| [CreateWellSaidCredentialDTO](#schemacreatewellsaidcredentialdto) \| [CreateEmailCredentialDTO](#schemacreateemailcredentialdto) \| [CreateSlackWebhookCredentialDTO](#schemacreateslackwebhookcredentialdto)]|false|These are dynamic credentials that will be used for the assistant calls. By default, all the credentials are available for use in the call but you can supplement an additional credentials using this. Dynamic credentials override existing credentials.|
+|» » credentials|body|[[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto) \| [CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto) \| [CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto) \| [CreateAssemblyAICredentialDTO](#schemacreateassemblyaicredentialdto) \| [CreateAzureCredentialDTO](#schemacreateazurecredentialdto) \| [CreateAzureOpenAICredentialDTO](#schemacreateazureopenaicredentialdto) \| [CreateByoSipTrunkCredentialDTO](#schemacreatebyosiptrunkcredentialdto) \| [CreateCartesiaCredentialDTO](#schemacreatecartesiacredentialdto) \| [CreateCerebrasCredentialDTO](#schemacreatecerebrascredentialdto) \| [CreateCloudflareCredentialDTO](#schemacreatecloudflarecredentialdto) \| [CreateCustomLLMCredentialDTO](#schemacreatecustomllmcredentialdto) \| [CreateDeepgramCredentialDTO](#schemacreatedeepgramcredentialdto) \| [CreateDeepInfraCredentialDTO](#schemacreatedeepinfracredentialdto) \| [CreateDeepSeekCredentialDTO](#schemacreatedeepseekcredentialdto) \| [CreateElevenLabsCredentialDTO](#schemacreateelevenlabscredentialdto) \| [CreateGcpCredentialDTO](#schemacreategcpcredentialdto) \| [CreateGladiaCredentialDTO](#schemacreategladiacredentialdto) \| [CreateGoHighLevelCredentialDTO](#schemacreategohighlevelcredentialdto) \| [CreateGoogleCredentialDTO](#schemacreategooglecredentialdto) \| [CreateGroqCredentialDTO](#schemacreategroqcredentialdto) \| [CreateHumeCredentialDTO](#schemacreatehumecredentialdto) \| [CreateInflectionAICredentialDTO](#schemacreateinflectionaicredentialdto) \| [CreateLangfuseCredentialDTO](#schemacreatelangfusecredentialdto) \| [CreateLmntCredentialDTO](#schemacreatelmntcredentialdto) \| [CreateMakeCredentialDTO](#schemacreatemakecredentialdto) \| [CreateMistralCredentialDTO](#schemacreatemistralcredentialdto) \| [CreateNeuphonicCredentialDTO](#schemacreateneuphoniccredentialdto) \| [CreateOpenAICredentialDTO](#schemacreateopenaicredentialdto) \| [CreateOpenRouterCredentialDTO](#schemacreateopenroutercredentialdto) \| [CreatePerplexityAICredentialDTO](#schemacreateperplexityaicredentialdto) \| [CreatePlayHTCredentialDTO](#schemacreateplayhtcredentialdto) \| [CreateRimeAICredentialDTO](#schemacreaterimeaicredentialdto) \| [CreateRunpodCredentialDTO](#schemacreaterunpodcredentialdto) \| [CreateS3CredentialDTO](#schemacreates3credentialdto) \| [CreateS3CompatibleCredentialDTO](#schemacreates3compatiblecredentialdto) \| [CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto) \| [CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto) \| [CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto) \| [CreateReson8CredentialDTO](#schemacreatereson8credentialdto) \| [CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto) \| [CreateTavusCredentialDTO](#schemacreatetavuscredentialdto) \| [CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto) \| [CreateTwilioCredentialDTO](#schemacreatetwiliocredentialdto) \| [CreateVonageCredentialDTO](#schemacreatevonagecredentialdto) \| [CreateWebhookCredentialDTO](#schemacreatewebhookcredentialdto) \| [CreateCustomCredentialDTO](#schemacreatecustomcredentialdto) \| [CreateXAiCredentialDTO](#schemacreatexaicredentialdto) \| [CreateMicrosoftCredentialDTO](#schemacreatemicrosoftcredentialdto) \| [CreateGoogleCalendarOAuth2ClientCredentialDTO](#schemacreategooglecalendaroauth2clientcredentialdto) \| [CreateGoogleCalendarOAuth2AuthorizationCredentialDTO](#schemacreategooglecalendaroauth2authorizationcredentialdto) \| [CreateGoogleSheetsOAuth2AuthorizationCredentialDTO](#schemacreategooglesheetsoauth2authorizationcredentialdto) \| [CreateSlackOAuth2AuthorizationCredentialDTO](#schemacreateslackoauth2authorizationcredentialdto) \| [CreateGoHighLevelMCPCredentialDTO](#schemacreategohighlevelmcpcredentialdto) \| [CreateInworldCredentialDTO](#schemacreateinworldcredentialdto) \| [CreateMinimaxCredentialDTO](#schemacreateminimaxcredentialdto) \| [CreateWellSaidCredentialDTO](#schemacreatewellsaidcredentialdto) \| [CreateEmailCredentialDTO](#schemacreateemailcredentialdto) \| [CreateSlackWebhookCredentialDTO](#schemacreateslackwebhookcredentialdto)]|false|These are dynamic credentials that will be used for the assistant calls. By default, all the credentials are available for use in the call but you can supplement an additional credentials using this. Dynamic credentials override existing credentials.|
 |» » » *oneOf*|body|[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto)|false|none|
@@ -66556,6 +66645,7 @@ curl https://api.vapi.ai/chat/responses \
 |» » » *oneOf*|body|[CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto)|false|none|
+|» » » *oneOf*|body|[CreateReson8CredentialDTO](#schemacreatereson8credentialdto)|false|none|
 |» » » *oneOf*|body|[CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateTavusCredentialDTO](#schemacreatetavuscredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto)|false|none|
@@ -66680,7 +66770,7 @@ curl https://api.vapi.ai/chat/responses \
 |» » » » excludedStatusCodes|body|[object]|false|This is the excluded status codes. If the response status code is in this list, the request will not be retried.<br>By default, the request will be retried for any non-2xx status code.|
 |» » keypadInputPlan|body|[KeypadInputPlan](#schemakeypadinputplan)|false|none|
 |» assistantOverrides|body|object|false|These are the variable values that will be used to replace template variables in the assistant messages.<br>Only variable substitution is supported in chat contexts - other assistant properties cannot be overridden.|
-|» » transcriber|body|[AssemblyAITranscriber](#schemaassemblyaitranscriber) \| [AzureSpeechTranscriber](#schemaazurespeechtranscriber) \| [CustomTranscriber](#schemacustomtranscriber) \| [DeepgramTranscriber](#schemadeepgramtranscriber) \| [ElevenLabsTranscriber](#schemaelevenlabstranscriber) \| [GladiaTranscriber](#schemagladiatranscriber) \| [GoogleTranscriber](#schemagoogletranscriber) \| [SpeechmaticsTranscriber](#schemaspeechmaticstranscriber) \| [TalkscriberTranscriber](#schematalkscribertranscriber) \| [OpenAITranscriber](#schemaopenaitranscriber) \| [CartesiaTranscriber](#schemacartesiatranscriber) \| [SonioxTranscriber](#schemasonioxtranscriber) \| [XaiTranscriber](#schemaxaitranscriber) \| [VapiTranscriber](#schemavapitranscriber)|false|These are the options for the assistant's transcriber.|
+|» » transcriber|body|[AssemblyAITranscriber](#schemaassemblyaitranscriber) \| [AzureSpeechTranscriber](#schemaazurespeechtranscriber) \| [CustomTranscriber](#schemacustomtranscriber) \| [DeepgramTranscriber](#schemadeepgramtranscriber) \| [ElevenLabsTranscriber](#schemaelevenlabstranscriber) \| [GladiaTranscriber](#schemagladiatranscriber) \| [GoogleTranscriber](#schemagoogletranscriber) \| [SpeechmaticsTranscriber](#schemaspeechmaticstranscriber) \| [TalkscriberTranscriber](#schematalkscribertranscriber) \| [OpenAITranscriber](#schemaopenaitranscriber) \| [CartesiaTranscriber](#schemacartesiatranscriber) \| [SonioxTranscriber](#schemasonioxtranscriber) \| [XaiTranscriber](#schemaxaitranscriber) \| [Reson8Transcriber](#schemareson8transcriber) \| [VapiTranscriber](#schemavapitranscriber)|false|These are the options for the assistant's transcriber.|
 |» » » *oneOf*|body|[AssemblyAITranscriber](#schemaassemblyaitranscriber)|false|none|
 |» » » *oneOf*|body|[AzureSpeechTranscriber](#schemaazurespeechtranscriber)|false|none|
 |» » » *oneOf*|body|[CustomTranscriber](#schemacustomtranscriber)|false|none|
@@ -66694,6 +66784,7 @@ curl https://api.vapi.ai/chat/responses \
 |» » » *oneOf*|body|[CartesiaTranscriber](#schemacartesiatranscriber)|false|none|
 |» » » *oneOf*|body|[SonioxTranscriber](#schemasonioxtranscriber)|false|none|
 |» » » *oneOf*|body|[XaiTranscriber](#schemaxaitranscriber)|false|none|
+|» » » *oneOf*|body|[Reson8Transcriber](#schemareson8transcriber)|false|none|
 |» » » *oneOf*|body|[VapiTranscriber](#schemavapitranscriber)|false|none|
 |» » model|body|[AnthropicModel](#schemaanthropicmodel) \| [AnthropicBedrockModel](#schemaanthropicbedrockmodel) \| [AnyscaleModel](#schemaanyscalemodel) \| [CerebrasModel](#schemacerebrasmodel) \| [CustomLLMModel](#schemacustomllmmodel) \| [DeepInfraModel](#schemadeepinframodel) \| [DeepSeekModel](#schemadeepseekmodel) \| [GoogleModel](#schemagooglemodel) \| [GroqModel](#schemagroqmodel) \| [InflectionAIModel](#schemainflectionaimodel) \| [MinimaxLLMModel](#schemaminimaxllmmodel) \| [OpenAIModel](#schemaopenaimodel) \| [OpenRouterModel](#schemaopenroutermodel) \| [PerplexityAIModel](#schemaperplexityaimodel) \| [TogetherAIModel](#schematogetheraimodel) \| [XaiModel](#schemaxaimodel) \| [VapiModel](#schemavapimodel)|false|These are the options for the assistant's LLM.|
 |» » » *oneOf*|body|[AnthropicModel](#schemaanthropicmodel)|false|none|
@@ -66745,7 +66836,7 @@ curl https://api.vapi.ai/chat/responses \
 |» » clientMessages|body|[string]|false|These are the messages that will be sent to your Client SDKs. Default is conversation-update,function-call,hang,model-output,speech-update,status-update,transfer-update,transcript,tool-calls,user-interrupted,voice-input,workflow.node.started,assistant.started. You can check the shape of the messages in ClientMessage schema.|
 |» » serverMessages|body|[string]|false|These are the messages that will be sent to your Server URL. Default is conversation-update,end-of-call-report,function-call,hang,speech-update,status-update,tool-calls,transfer-destination-request,handoff-destination-request,user-interrupted,assistant.started. You can check the shape of the messages in ServerMessage schema.|
 |» » maxDurationSeconds|body|number|false|This is the maximum number of seconds that the call will last. When the call reaches this duration, it will be ended.<br><br>@default 600 (10 minutes)|
-|» » backgroundSound|body|string \| string(uri)|false|This is the background sound in the call. Default for phone calls is 'office' and default for web calls is 'off'.<br>You can also provide a custom sound by providing a URL to an audio file.|
+|» » backgroundSound|body|string \| string(uri)|false|This is the background sound in the call. Default for phone calls is 'office' and default for web calls is 'off'.<br>Bundled sounds: 'office', 'white-noise', 'city', 'crowd' and 'farm'. GPT Live assistants don't play 'office'.<br>You can also provide a custom sound by providing a URL to an audio file.|
 |» » » *oneOf*|body|string|false|none|
 |» » » *oneOf*|body|string(uri)|false|none|
 |» » modelOutputInMessagesEnabled|body|boolean|false|This determines whether the model's output is used in conversation history rather than the transcription of assistant's speech.<br><br>@default false|
@@ -66759,7 +66850,7 @@ curl https://api.vapi.ai/chat/responses \
 |» » » tags|body|[string]|true|This is an array of tags to be added to the Langfuse trace. Tags allow you to categorize and filter traces. https://langfuse.com/docs/tracing-features/tags|
 |» » » metadata|body|object|false|This is a JSON object that will be added to the Langfuse trace. Traces can be enriched with metadata to better understand your users, application, and experiments. https://langfuse.com/docs/tracing-features/metadata<br>By default it includes the call metadata, assistant metadata, and assistant overrides.|
 |» » » *oneOf*|body|[LangfuseObservabilityPlan](#schemalangfuseobservabilityplan)|false|none|
-|» » credentials|body|[[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto) \| [CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto) \| [CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto) \| [CreateAssemblyAICredentialDTO](#schemacreateassemblyaicredentialdto) \| [CreateAzureCredentialDTO](#schemacreateazurecredentialdto) \| [CreateAzureOpenAICredentialDTO](#schemacreateazureopenaicredentialdto) \| [CreateByoSipTrunkCredentialDTO](#schemacreatebyosiptrunkcredentialdto) \| [CreateCartesiaCredentialDTO](#schemacreatecartesiacredentialdto) \| [CreateCerebrasCredentialDTO](#schemacreatecerebrascredentialdto) \| [CreateCloudflareCredentialDTO](#schemacreatecloudflarecredentialdto) \| [CreateCustomLLMCredentialDTO](#schemacreatecustomllmcredentialdto) \| [CreateDeepgramCredentialDTO](#schemacreatedeepgramcredentialdto) \| [CreateDeepInfraCredentialDTO](#schemacreatedeepinfracredentialdto) \| [CreateDeepSeekCredentialDTO](#schemacreatedeepseekcredentialdto) \| [CreateElevenLabsCredentialDTO](#schemacreateelevenlabscredentialdto) \| [CreateGcpCredentialDTO](#schemacreategcpcredentialdto) \| [CreateGladiaCredentialDTO](#schemacreategladiacredentialdto) \| [CreateGoHighLevelCredentialDTO](#schemacreategohighlevelcredentialdto) \| [CreateGoogleCredentialDTO](#schemacreategooglecredentialdto) \| [CreateGroqCredentialDTO](#schemacreategroqcredentialdto) \| [CreateHumeCredentialDTO](#schemacreatehumecredentialdto) \| [CreateInflectionAICredentialDTO](#schemacreateinflectionaicredentialdto) \| [CreateLangfuseCredentialDTO](#schemacreatelangfusecredentialdto) \| [CreateLmntCredentialDTO](#schemacreatelmntcredentialdto) \| [CreateMakeCredentialDTO](#schemacreatemakecredentialdto) \| [CreateMistralCredentialDTO](#schemacreatemistralcredentialdto) \| [CreateNeuphonicCredentialDTO](#schemacreateneuphoniccredentialdto) \| [CreateOpenAICredentialDTO](#schemacreateopenaicredentialdto) \| [CreateOpenRouterCredentialDTO](#schemacreateopenroutercredentialdto) \| [CreatePerplexityAICredentialDTO](#schemacreateperplexityaicredentialdto) \| [CreatePlayHTCredentialDTO](#schemacreateplayhtcredentialdto) \| [CreateRimeAICredentialDTO](#schemacreaterimeaicredentialdto) \| [CreateRunpodCredentialDTO](#schemacreaterunpodcredentialdto) \| [CreateS3CredentialDTO](#schemacreates3credentialdto) \| [CreateS3CompatibleCredentialDTO](#schemacreates3compatiblecredentialdto) \| [CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto) \| [CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto) \| [CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto) \| [CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto) \| [CreateTavusCredentialDTO](#schemacreatetavuscredentialdto) \| [CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto) \| [CreateTwilioCredentialDTO](#schemacreatetwiliocredentialdto) \| [CreateVonageCredentialDTO](#schemacreatevonagecredentialdto) \| [CreateWebhookCredentialDTO](#schemacreatewebhookcredentialdto) \| [CreateCustomCredentialDTO](#schemacreatecustomcredentialdto) \| [CreateXAiCredentialDTO](#schemacreatexaicredentialdto) \| [CreateMicrosoftCredentialDTO](#schemacreatemicrosoftcredentialdto) \| [CreateGoogleCalendarOAuth2ClientCredentialDTO](#schemacreategooglecalendaroauth2clientcredentialdto) \| [CreateGoogleCalendarOAuth2AuthorizationCredentialDTO](#schemacreategooglecalendaroauth2authorizationcredentialdto) \| [CreateGoogleSheetsOAuth2AuthorizationCredentialDTO](#schemacreategooglesheetsoauth2authorizationcredentialdto) \| [CreateSlackOAuth2AuthorizationCredentialDTO](#schemacreateslackoauth2authorizationcredentialdto) \| [CreateGoHighLevelMCPCredentialDTO](#schemacreategohighlevelmcpcredentialdto) \| [CreateInworldCredentialDTO](#schemacreateinworldcredentialdto) \| [CreateMinimaxCredentialDTO](#schemacreateminimaxcredentialdto) \| [CreateWellSaidCredentialDTO](#schemacreatewellsaidcredentialdto) \| [CreateEmailCredentialDTO](#schemacreateemailcredentialdto) \| [CreateSlackWebhookCredentialDTO](#schemacreateslackwebhookcredentialdto)]|false|These are dynamic credentials that will be used for the assistant calls. By default, all the credentials are available for use in the call but you can supplement an additional credentials using this. Dynamic credentials override existing credentials.|
+|» » credentials|body|[[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto) \| [CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto) \| [CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto) \| [CreateAssemblyAICredentialDTO](#schemacreateassemblyaicredentialdto) \| [CreateAzureCredentialDTO](#schemacreateazurecredentialdto) \| [CreateAzureOpenAICredentialDTO](#schemacreateazureopenaicredentialdto) \| [CreateByoSipTrunkCredentialDTO](#schemacreatebyosiptrunkcredentialdto) \| [CreateCartesiaCredentialDTO](#schemacreatecartesiacredentialdto) \| [CreateCerebrasCredentialDTO](#schemacreatecerebrascredentialdto) \| [CreateCloudflareCredentialDTO](#schemacreatecloudflarecredentialdto) \| [CreateCustomLLMCredentialDTO](#schemacreatecustomllmcredentialdto) \| [CreateDeepgramCredentialDTO](#schemacreatedeepgramcredentialdto) \| [CreateDeepInfraCredentialDTO](#schemacreatedeepinfracredentialdto) \| [CreateDeepSeekCredentialDTO](#schemacreatedeepseekcredentialdto) \| [CreateElevenLabsCredentialDTO](#schemacreateelevenlabscredentialdto) \| [CreateGcpCredentialDTO](#schemacreategcpcredentialdto) \| [CreateGladiaCredentialDTO](#schemacreategladiacredentialdto) \| [CreateGoHighLevelCredentialDTO](#schemacreategohighlevelcredentialdto) \| [CreateGoogleCredentialDTO](#schemacreategooglecredentialdto) \| [CreateGroqCredentialDTO](#schemacreategroqcredentialdto) \| [CreateHumeCredentialDTO](#schemacreatehumecredentialdto) \| [CreateInflectionAICredentialDTO](#schemacreateinflectionaicredentialdto) \| [CreateLangfuseCredentialDTO](#schemacreatelangfusecredentialdto) \| [CreateLmntCredentialDTO](#schemacreatelmntcredentialdto) \| [CreateMakeCredentialDTO](#schemacreatemakecredentialdto) \| [CreateMistralCredentialDTO](#schemacreatemistralcredentialdto) \| [CreateNeuphonicCredentialDTO](#schemacreateneuphoniccredentialdto) \| [CreateOpenAICredentialDTO](#schemacreateopenaicredentialdto) \| [CreateOpenRouterCredentialDTO](#schemacreateopenroutercredentialdto) \| [CreatePerplexityAICredentialDTO](#schemacreateperplexityaicredentialdto) \| [CreatePlayHTCredentialDTO](#schemacreateplayhtcredentialdto) \| [CreateRimeAICredentialDTO](#schemacreaterimeaicredentialdto) \| [CreateRunpodCredentialDTO](#schemacreaterunpodcredentialdto) \| [CreateS3CredentialDTO](#schemacreates3credentialdto) \| [CreateS3CompatibleCredentialDTO](#schemacreates3compatiblecredentialdto) \| [CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto) \| [CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto) \| [CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto) \| [CreateReson8CredentialDTO](#schemacreatereson8credentialdto) \| [CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto) \| [CreateTavusCredentialDTO](#schemacreatetavuscredentialdto) \| [CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto) \| [CreateTwilioCredentialDTO](#schemacreatetwiliocredentialdto) \| [CreateVonageCredentialDTO](#schemacreatevonagecredentialdto) \| [CreateWebhookCredentialDTO](#schemacreatewebhookcredentialdto) \| [CreateCustomCredentialDTO](#schemacreatecustomcredentialdto) \| [CreateXAiCredentialDTO](#schemacreatexaicredentialdto) \| [CreateMicrosoftCredentialDTO](#schemacreatemicrosoftcredentialdto) \| [CreateGoogleCalendarOAuth2ClientCredentialDTO](#schemacreategooglecalendaroauth2clientcredentialdto) \| [CreateGoogleCalendarOAuth2AuthorizationCredentialDTO](#schemacreategooglecalendaroauth2authorizationcredentialdto) \| [CreateGoogleSheetsOAuth2AuthorizationCredentialDTO](#schemacreategooglesheetsoauth2authorizationcredentialdto) \| [CreateSlackOAuth2AuthorizationCredentialDTO](#schemacreateslackoauth2authorizationcredentialdto) \| [CreateGoHighLevelMCPCredentialDTO](#schemacreategohighlevelmcpcredentialdto) \| [CreateInworldCredentialDTO](#schemacreateinworldcredentialdto) \| [CreateMinimaxCredentialDTO](#schemacreateminimaxcredentialdto) \| [CreateWellSaidCredentialDTO](#schemacreatewellsaidcredentialdto) \| [CreateEmailCredentialDTO](#schemacreateemailcredentialdto) \| [CreateSlackWebhookCredentialDTO](#schemacreateslackwebhookcredentialdto)]|false|These are dynamic credentials that will be used for the assistant calls. By default, all the credentials are available for use in the call but you can supplement an additional credentials using this. Dynamic credentials override existing credentials.|
 |» » » *oneOf*|body|[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto)|false|none|
@@ -66798,6 +66889,7 @@ curl https://api.vapi.ai/chat/responses \
 |» » » *oneOf*|body|[CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto)|false|none|
+|» » » *oneOf*|body|[CreateReson8CredentialDTO](#schemacreatereson8credentialdto)|false|none|
 |» » » *oneOf*|body|[CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateTavusCredentialDTO](#schemacreatetavuscredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto)|false|none|
@@ -66970,7 +67062,7 @@ curl https://api.vapi.ai/chat/responses \
 |» » » numberE164CheckEnabled|body|boolean|false|This is the flag to toggle the E164 check for the `number` field. This is an advanced property which should be used if you know your use case requires it.<br><br>Use cases:<br>- `false`: To allow non-E164 numbers like `+001234567890`, `1234`, or `abc`. This is useful for dialing out to non-E164 numbers on your SIP trunks.<br>- `true` (default): To allow only E164 numbers like `+14155551234`. This is standard for PSTN calls.<br><br>If `false`, the `number` is still required to only contain alphanumeric characters (regex: `/^\+?[a-zA-Z0-9]+$/`).<br><br>@default true (E164 check is enabled)|
 |» » » extension|body|string|false|This is the extension that will be dialed after the call is answered.|
 |» » » assistantOverrides|body|object|false|These are the overrides for the assistant's settings and template variables specific to this customer.<br>This allows customization of the assistant's behavior for individual customers in batch calls.|
-|» » » » transcriber|body|[AssemblyAITranscriber](#schemaassemblyaitranscriber) \| [AzureSpeechTranscriber](#schemaazurespeechtranscriber) \| [CustomTranscriber](#schemacustomtranscriber) \| [DeepgramTranscriber](#schemadeepgramtranscriber) \| [ElevenLabsTranscriber](#schemaelevenlabstranscriber) \| [GladiaTranscriber](#schemagladiatranscriber) \| [GoogleTranscriber](#schemagoogletranscriber) \| [SpeechmaticsTranscriber](#schemaspeechmaticstranscriber) \| [TalkscriberTranscriber](#schematalkscribertranscriber) \| [OpenAITranscriber](#schemaopenaitranscriber) \| [CartesiaTranscriber](#schemacartesiatranscriber) \| [SonioxTranscriber](#schemasonioxtranscriber) \| [XaiTranscriber](#schemaxaitranscriber) \| [VapiTranscriber](#schemavapitranscriber)|false|These are the options for the assistant's transcriber.|
+|» » » » transcriber|body|[AssemblyAITranscriber](#schemaassemblyaitranscriber) \| [AzureSpeechTranscriber](#schemaazurespeechtranscriber) \| [CustomTranscriber](#schemacustomtranscriber) \| [DeepgramTranscriber](#schemadeepgramtranscriber) \| [ElevenLabsTranscriber](#schemaelevenlabstranscriber) \| [GladiaTranscriber](#schemagladiatranscriber) \| [GoogleTranscriber](#schemagoogletranscriber) \| [SpeechmaticsTranscriber](#schemaspeechmaticstranscriber) \| [TalkscriberTranscriber](#schematalkscribertranscriber) \| [OpenAITranscriber](#schemaopenaitranscriber) \| [CartesiaTranscriber](#schemacartesiatranscriber) \| [SonioxTranscriber](#schemasonioxtranscriber) \| [XaiTranscriber](#schemaxaitranscriber) \| [Reson8Transcriber](#schemareson8transcriber) \| [VapiTranscriber](#schemavapitranscriber)|false|These are the options for the assistant's transcriber.|
 |» » » » » *oneOf*|body|[AssemblyAITranscriber](#schemaassemblyaitranscriber)|false|none|
 |» » » » » *oneOf*|body|[AzureSpeechTranscriber](#schemaazurespeechtranscriber)|false|none|
 |» » » » » *oneOf*|body|[CustomTranscriber](#schemacustomtranscriber)|false|none|
@@ -66984,6 +67076,7 @@ curl https://api.vapi.ai/chat/responses \
 |» » » » » *oneOf*|body|[CartesiaTranscriber](#schemacartesiatranscriber)|false|none|
 |» » » » » *oneOf*|body|[SonioxTranscriber](#schemasonioxtranscriber)|false|none|
 |» » » » » *oneOf*|body|[XaiTranscriber](#schemaxaitranscriber)|false|none|
+|» » » » » *oneOf*|body|[Reson8Transcriber](#schemareson8transcriber)|false|none|
 |» » » » » *oneOf*|body|[VapiTranscriber](#schemavapitranscriber)|false|none|
 |» » » » model|body|[AnthropicModel](#schemaanthropicmodel) \| [AnthropicBedrockModel](#schemaanthropicbedrockmodel) \| [AnyscaleModel](#schemaanyscalemodel) \| [CerebrasModel](#schemacerebrasmodel) \| [CustomLLMModel](#schemacustomllmmodel) \| [DeepInfraModel](#schemadeepinframodel) \| [DeepSeekModel](#schemadeepseekmodel) \| [GoogleModel](#schemagooglemodel) \| [GroqModel](#schemagroqmodel) \| [InflectionAIModel](#schemainflectionaimodel) \| [MinimaxLLMModel](#schemaminimaxllmmodel) \| [OpenAIModel](#schemaopenaimodel) \| [OpenRouterModel](#schemaopenroutermodel) \| [PerplexityAIModel](#schemaperplexityaimodel) \| [TogetherAIModel](#schematogetheraimodel) \| [XaiModel](#schemaxaimodel) \| [VapiModel](#schemavapimodel)|false|These are the options for the assistant's LLM.|
 |» » » » » *oneOf*|body|[AnthropicModel](#schemaanthropicmodel)|false|none|
@@ -67035,7 +67128,7 @@ curl https://api.vapi.ai/chat/responses \
 |» » » » clientMessages|body|[string]|false|These are the messages that will be sent to your Client SDKs. Default is conversation-update,function-call,hang,model-output,speech-update,status-update,transfer-update,transcript,tool-calls,user-interrupted,voice-input,workflow.node.started,assistant.started. You can check the shape of the messages in ClientMessage schema.|
 |» » » » serverMessages|body|[string]|false|These are the messages that will be sent to your Server URL. Default is conversation-update,end-of-call-report,function-call,hang,speech-update,status-update,tool-calls,transfer-destination-request,handoff-destination-request,user-interrupted,assistant.started. You can check the shape of the messages in ServerMessage schema.|
 |» » » » maxDurationSeconds|body|number|false|This is the maximum number of seconds that the call will last. When the call reaches this duration, it will be ended.<br><br>@default 600 (10 minutes)|
-|» » » » backgroundSound|body|string \| string(uri)|false|This is the background sound in the call. Default for phone calls is 'office' and default for web calls is 'off'.<br>You can also provide a custom sound by providing a URL to an audio file.|
+|» » » » backgroundSound|body|string \| string(uri)|false|This is the background sound in the call. Default for phone calls is 'office' and default for web calls is 'off'.<br>Bundled sounds: 'office', 'white-noise', 'city', 'crowd' and 'farm'. GPT Live assistants don't play 'office'.<br>You can also provide a custom sound by providing a URL to an audio file.|
 |» » » » » *oneOf*|body|string|false|none|
 |» » » » » *oneOf*|body|string(uri)|false|none|
 |» » » » modelOutputInMessagesEnabled|body|boolean|false|This determines whether the model's output is used in conversation history rather than the transcription of assistant's speech.<br><br>@default false|
@@ -67049,7 +67142,7 @@ curl https://api.vapi.ai/chat/responses \
 |» » » » » tags|body|[string]|true|This is an array of tags to be added to the Langfuse trace. Tags allow you to categorize and filter traces. https://langfuse.com/docs/tracing-features/tags|
 |» » » » » metadata|body|object|false|This is a JSON object that will be added to the Langfuse trace. Traces can be enriched with metadata to better understand your users, application, and experiments. https://langfuse.com/docs/tracing-features/metadata<br>By default it includes the call metadata, assistant metadata, and assistant overrides.|
 |» » » » » *oneOf*|body|[LangfuseObservabilityPlan](#schemalangfuseobservabilityplan)|false|none|
-|» » » » credentials|body|[[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto) \| [CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto) \| [CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto) \| [CreateAssemblyAICredentialDTO](#schemacreateassemblyaicredentialdto) \| [CreateAzureCredentialDTO](#schemacreateazurecredentialdto) \| [CreateAzureOpenAICredentialDTO](#schemacreateazureopenaicredentialdto) \| [CreateByoSipTrunkCredentialDTO](#schemacreatebyosiptrunkcredentialdto) \| [CreateCartesiaCredentialDTO](#schemacreatecartesiacredentialdto) \| [CreateCerebrasCredentialDTO](#schemacreatecerebrascredentialdto) \| [CreateCloudflareCredentialDTO](#schemacreatecloudflarecredentialdto) \| [CreateCustomLLMCredentialDTO](#schemacreatecustomllmcredentialdto) \| [CreateDeepgramCredentialDTO](#schemacreatedeepgramcredentialdto) \| [CreateDeepInfraCredentialDTO](#schemacreatedeepinfracredentialdto) \| [CreateDeepSeekCredentialDTO](#schemacreatedeepseekcredentialdto) \| [CreateElevenLabsCredentialDTO](#schemacreateelevenlabscredentialdto) \| [CreateGcpCredentialDTO](#schemacreategcpcredentialdto) \| [CreateGladiaCredentialDTO](#schemacreategladiacredentialdto) \| [CreateGoHighLevelCredentialDTO](#schemacreategohighlevelcredentialdto) \| [CreateGoogleCredentialDTO](#schemacreategooglecredentialdto) \| [CreateGroqCredentialDTO](#schemacreategroqcredentialdto) \| [CreateHumeCredentialDTO](#schemacreatehumecredentialdto) \| [CreateInflectionAICredentialDTO](#schemacreateinflectionaicredentialdto) \| [CreateLangfuseCredentialDTO](#schemacreatelangfusecredentialdto) \| [CreateLmntCredentialDTO](#schemacreatelmntcredentialdto) \| [CreateMakeCredentialDTO](#schemacreatemakecredentialdto) \| [CreateMistralCredentialDTO](#schemacreatemistralcredentialdto) \| [CreateNeuphonicCredentialDTO](#schemacreateneuphoniccredentialdto) \| [CreateOpenAICredentialDTO](#schemacreateopenaicredentialdto) \| [CreateOpenRouterCredentialDTO](#schemacreateopenroutercredentialdto) \| [CreatePerplexityAICredentialDTO](#schemacreateperplexityaicredentialdto) \| [CreatePlayHTCredentialDTO](#schemacreateplayhtcredentialdto) \| [CreateRimeAICredentialDTO](#schemacreaterimeaicredentialdto) \| [CreateRunpodCredentialDTO](#schemacreaterunpodcredentialdto) \| [CreateS3CredentialDTO](#schemacreates3credentialdto) \| [CreateS3CompatibleCredentialDTO](#schemacreates3compatiblecredentialdto) \| [CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto) \| [CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto) \| [CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto) \| [CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto) \| [CreateTavusCredentialDTO](#schemacreatetavuscredentialdto) \| [CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto) \| [CreateTwilioCredentialDTO](#schemacreatetwiliocredentialdto) \| [CreateVonageCredentialDTO](#schemacreatevonagecredentialdto) \| [CreateWebhookCredentialDTO](#schemacreatewebhookcredentialdto) \| [CreateCustomCredentialDTO](#schemacreatecustomcredentialdto) \| [CreateXAiCredentialDTO](#schemacreatexaicredentialdto) \| [CreateMicrosoftCredentialDTO](#schemacreatemicrosoftcredentialdto) \| [CreateGoogleCalendarOAuth2ClientCredentialDTO](#schemacreategooglecalendaroauth2clientcredentialdto) \| [CreateGoogleCalendarOAuth2AuthorizationCredentialDTO](#schemacreategooglecalendaroauth2authorizationcredentialdto) \| [CreateGoogleSheetsOAuth2AuthorizationCredentialDTO](#schemacreategooglesheetsoauth2authorizationcredentialdto) \| [CreateSlackOAuth2AuthorizationCredentialDTO](#schemacreateslackoauth2authorizationcredentialdto) \| [CreateGoHighLevelMCPCredentialDTO](#schemacreategohighlevelmcpcredentialdto) \| [CreateInworldCredentialDTO](#schemacreateinworldcredentialdto) \| [CreateMinimaxCredentialDTO](#schemacreateminimaxcredentialdto) \| [CreateWellSaidCredentialDTO](#schemacreatewellsaidcredentialdto) \| [CreateEmailCredentialDTO](#schemacreateemailcredentialdto) \| [CreateSlackWebhookCredentialDTO](#schemacreateslackwebhookcredentialdto)]|false|These are dynamic credentials that will be used for the assistant calls. By default, all the credentials are available for use in the call but you can supplement an additional credentials using this. Dynamic credentials override existing credentials.|
+|» » » » credentials|body|[[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto) \| [CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto) \| [CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto) \| [CreateAssemblyAICredentialDTO](#schemacreateassemblyaicredentialdto) \| [CreateAzureCredentialDTO](#schemacreateazurecredentialdto) \| [CreateAzureOpenAICredentialDTO](#schemacreateazureopenaicredentialdto) \| [CreateByoSipTrunkCredentialDTO](#schemacreatebyosiptrunkcredentialdto) \| [CreateCartesiaCredentialDTO](#schemacreatecartesiacredentialdto) \| [CreateCerebrasCredentialDTO](#schemacreatecerebrascredentialdto) \| [CreateCloudflareCredentialDTO](#schemacreatecloudflarecredentialdto) \| [CreateCustomLLMCredentialDTO](#schemacreatecustomllmcredentialdto) \| [CreateDeepgramCredentialDTO](#schemacreatedeepgramcredentialdto) \| [CreateDeepInfraCredentialDTO](#schemacreatedeepinfracredentialdto) \| [CreateDeepSeekCredentialDTO](#schemacreatedeepseekcredentialdto) \| [CreateElevenLabsCredentialDTO](#schemacreateelevenlabscredentialdto) \| [CreateGcpCredentialDTO](#schemacreategcpcredentialdto) \| [CreateGladiaCredentialDTO](#schemacreategladiacredentialdto) \| [CreateGoHighLevelCredentialDTO](#schemacreategohighlevelcredentialdto) \| [CreateGoogleCredentialDTO](#schemacreategooglecredentialdto) \| [CreateGroqCredentialDTO](#schemacreategroqcredentialdto) \| [CreateHumeCredentialDTO](#schemacreatehumecredentialdto) \| [CreateInflectionAICredentialDTO](#schemacreateinflectionaicredentialdto) \| [CreateLangfuseCredentialDTO](#schemacreatelangfusecredentialdto) \| [CreateLmntCredentialDTO](#schemacreatelmntcredentialdto) \| [CreateMakeCredentialDTO](#schemacreatemakecredentialdto) \| [CreateMistralCredentialDTO](#schemacreatemistralcredentialdto) \| [CreateNeuphonicCredentialDTO](#schemacreateneuphoniccredentialdto) \| [CreateOpenAICredentialDTO](#schemacreateopenaicredentialdto) \| [CreateOpenRouterCredentialDTO](#schemacreateopenroutercredentialdto) \| [CreatePerplexityAICredentialDTO](#schemacreateperplexityaicredentialdto) \| [CreatePlayHTCredentialDTO](#schemacreateplayhtcredentialdto) \| [CreateRimeAICredentialDTO](#schemacreaterimeaicredentialdto) \| [CreateRunpodCredentialDTO](#schemacreaterunpodcredentialdto) \| [CreateS3CredentialDTO](#schemacreates3credentialdto) \| [CreateS3CompatibleCredentialDTO](#schemacreates3compatiblecredentialdto) \| [CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto) \| [CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto) \| [CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto) \| [CreateReson8CredentialDTO](#schemacreatereson8credentialdto) \| [CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto) \| [CreateTavusCredentialDTO](#schemacreatetavuscredentialdto) \| [CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto) \| [CreateTwilioCredentialDTO](#schemacreatetwiliocredentialdto) \| [CreateVonageCredentialDTO](#schemacreatevonagecredentialdto) \| [CreateWebhookCredentialDTO](#schemacreatewebhookcredentialdto) \| [CreateCustomCredentialDTO](#schemacreatecustomcredentialdto) \| [CreateXAiCredentialDTO](#schemacreatexaicredentialdto) \| [CreateMicrosoftCredentialDTO](#schemacreatemicrosoftcredentialdto) \| [CreateGoogleCalendarOAuth2ClientCredentialDTO](#schemacreategooglecalendaroauth2clientcredentialdto) \| [CreateGoogleCalendarOAuth2AuthorizationCredentialDTO](#schemacreategooglecalendaroauth2authorizationcredentialdto) \| [CreateGoogleSheetsOAuth2AuthorizationCredentialDTO](#schemacreategooglesheetsoauth2authorizationcredentialdto) \| [CreateSlackOAuth2AuthorizationCredentialDTO](#schemacreateslackoauth2authorizationcredentialdto) \| [CreateGoHighLevelMCPCredentialDTO](#schemacreategohighlevelmcpcredentialdto) \| [CreateInworldCredentialDTO](#schemacreateinworldcredentialdto) \| [CreateMinimaxCredentialDTO](#schemacreateminimaxcredentialdto) \| [CreateWellSaidCredentialDTO](#schemacreatewellsaidcredentialdto) \| [CreateEmailCredentialDTO](#schemacreateemailcredentialdto) \| [CreateSlackWebhookCredentialDTO](#schemacreateslackwebhookcredentialdto)]|false|These are dynamic credentials that will be used for the assistant calls. By default, all the credentials are available for use in the call but you can supplement an additional credentials using this. Dynamic credentials override existing credentials.|
 |» » » » » *oneOf*|body|[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto)|false|none|
 |» » » » » *oneOf*|body|[CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto)|false|none|
 |» » » » » *oneOf*|body|[CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto)|false|none|
@@ -67088,6 +67181,7 @@ curl https://api.vapi.ai/chat/responses \
 |» » » » » *oneOf*|body|[CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto)|false|none|
 |» » » » » *oneOf*|body|[CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto)|false|none|
 |» » » » » *oneOf*|body|[CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto)|false|none|
+|» » » » » *oneOf*|body|[CreateReson8CredentialDTO](#schemacreatereson8credentialdto)|false|none|
 |» » » » » *oneOf*|body|[CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto)|false|none|
 |» » » » » *oneOf*|body|[CreateTavusCredentialDTO](#schemacreatetavuscredentialdto)|false|none|
 |» » » » » *oneOf*|body|[CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto)|false|none|
@@ -67237,7 +67331,7 @@ curl https://api.vapi.ai/chat/responses \
 |» » » » » » excludedStatusCodes|body|[object]|false|This is the excluded status codes. If the response status code is in this list, the request will not be retried.<br>By default, the request will be retried for any non-2xx status code.|
 |» » » » keypadInputPlan|body|[KeypadInputPlan](#schemakeypadinputplan)|false|none|
 |» » » squadOverrides|body|object|false|These are the overrides applied when the call targets a `squadId`. Mirrors<br>the call-level `squadOverrides` — use this instead of `assistantOverrides`<br>when the campaign or call is squad-based.|
-|» » » » transcriber|body|[AssemblyAITranscriber](#schemaassemblyaitranscriber) \| [AzureSpeechTranscriber](#schemaazurespeechtranscriber) \| [CustomTranscriber](#schemacustomtranscriber) \| [DeepgramTranscriber](#schemadeepgramtranscriber) \| [ElevenLabsTranscriber](#schemaelevenlabstranscriber) \| [GladiaTranscriber](#schemagladiatranscriber) \| [GoogleTranscriber](#schemagoogletranscriber) \| [SpeechmaticsTranscriber](#schemaspeechmaticstranscriber) \| [TalkscriberTranscriber](#schematalkscribertranscriber) \| [OpenAITranscriber](#schemaopenaitranscriber) \| [CartesiaTranscriber](#schemacartesiatranscriber) \| [SonioxTranscriber](#schemasonioxtranscriber) \| [XaiTranscriber](#schemaxaitranscriber) \| [VapiTranscriber](#schemavapitranscriber)|false|These are the options for the assistant's transcriber.|
+|» » » » transcriber|body|[AssemblyAITranscriber](#schemaassemblyaitranscriber) \| [AzureSpeechTranscriber](#schemaazurespeechtranscriber) \| [CustomTranscriber](#schemacustomtranscriber) \| [DeepgramTranscriber](#schemadeepgramtranscriber) \| [ElevenLabsTranscriber](#schemaelevenlabstranscriber) \| [GladiaTranscriber](#schemagladiatranscriber) \| [GoogleTranscriber](#schemagoogletranscriber) \| [SpeechmaticsTranscriber](#schemaspeechmaticstranscriber) \| [TalkscriberTranscriber](#schematalkscribertranscriber) \| [OpenAITranscriber](#schemaopenaitranscriber) \| [CartesiaTranscriber](#schemacartesiatranscriber) \| [SonioxTranscriber](#schemasonioxtranscriber) \| [XaiTranscriber](#schemaxaitranscriber) \| [Reson8Transcriber](#schemareson8transcriber) \| [VapiTranscriber](#schemavapitranscriber)|false|These are the options for the assistant's transcriber.|
 |» » » » » *oneOf*|body|[AssemblyAITranscriber](#schemaassemblyaitranscriber)|false|none|
 |» » » » » *oneOf*|body|[AzureSpeechTranscriber](#schemaazurespeechtranscriber)|false|none|
 |» » » » » *oneOf*|body|[CustomTranscriber](#schemacustomtranscriber)|false|none|
@@ -67251,6 +67345,7 @@ curl https://api.vapi.ai/chat/responses \
 |» » » » » *oneOf*|body|[CartesiaTranscriber](#schemacartesiatranscriber)|false|none|
 |» » » » » *oneOf*|body|[SonioxTranscriber](#schemasonioxtranscriber)|false|none|
 |» » » » » *oneOf*|body|[XaiTranscriber](#schemaxaitranscriber)|false|none|
+|» » » » » *oneOf*|body|[Reson8Transcriber](#schemareson8transcriber)|false|none|
 |» » » » » *oneOf*|body|[VapiTranscriber](#schemavapitranscriber)|false|none|
 |» » » » model|body|[AnthropicModel](#schemaanthropicmodel) \| [AnthropicBedrockModel](#schemaanthropicbedrockmodel) \| [AnyscaleModel](#schemaanyscalemodel) \| [CerebrasModel](#schemacerebrasmodel) \| [CustomLLMModel](#schemacustomllmmodel) \| [DeepInfraModel](#schemadeepinframodel) \| [DeepSeekModel](#schemadeepseekmodel) \| [GoogleModel](#schemagooglemodel) \| [GroqModel](#schemagroqmodel) \| [InflectionAIModel](#schemainflectionaimodel) \| [MinimaxLLMModel](#schemaminimaxllmmodel) \| [OpenAIModel](#schemaopenaimodel) \| [OpenRouterModel](#schemaopenroutermodel) \| [PerplexityAIModel](#schemaperplexityaimodel) \| [TogetherAIModel](#schematogetheraimodel) \| [XaiModel](#schemaxaimodel) \| [VapiModel](#schemavapimodel)|false|These are the options for the assistant's LLM.|
 |» » » » » *oneOf*|body|[AnthropicModel](#schemaanthropicmodel)|false|none|
@@ -67302,7 +67397,7 @@ curl https://api.vapi.ai/chat/responses \
 |» » » » clientMessages|body|[string]|false|These are the messages that will be sent to your Client SDKs. Default is conversation-update,function-call,hang,model-output,speech-update,status-update,transfer-update,transcript,tool-calls,user-interrupted,voice-input,workflow.node.started,assistant.started. You can check the shape of the messages in ClientMessage schema.|
 |» » » » serverMessages|body|[string]|false|These are the messages that will be sent to your Server URL. Default is conversation-update,end-of-call-report,function-call,hang,speech-update,status-update,tool-calls,transfer-destination-request,handoff-destination-request,user-interrupted,assistant.started. You can check the shape of the messages in ServerMessage schema.|
 |» » » » maxDurationSeconds|body|number|false|This is the maximum number of seconds that the call will last. When the call reaches this duration, it will be ended.<br><br>@default 600 (10 minutes)|
-|» » » » backgroundSound|body|string \| string(uri)|false|This is the background sound in the call. Default for phone calls is 'office' and default for web calls is 'off'.<br>You can also provide a custom sound by providing a URL to an audio file.|
+|» » » » backgroundSound|body|string \| string(uri)|false|This is the background sound in the call. Default for phone calls is 'office' and default for web calls is 'off'.<br>Bundled sounds: 'office', 'white-noise', 'city', 'crowd' and 'farm'. GPT Live assistants don't play 'office'.<br>You can also provide a custom sound by providing a URL to an audio file.|
 |» » » » » *oneOf*|body|string|false|none|
 |» » » » » *oneOf*|body|string(uri)|false|none|
 |» » » » modelOutputInMessagesEnabled|body|boolean|false|This determines whether the model's output is used in conversation history rather than the transcription of assistant's speech.<br><br>@default false|
@@ -67316,7 +67411,7 @@ curl https://api.vapi.ai/chat/responses \
 |» » » » » tags|body|[string]|true|This is an array of tags to be added to the Langfuse trace. Tags allow you to categorize and filter traces. https://langfuse.com/docs/tracing-features/tags|
 |» » » » » metadata|body|object|false|This is a JSON object that will be added to the Langfuse trace. Traces can be enriched with metadata to better understand your users, application, and experiments. https://langfuse.com/docs/tracing-features/metadata<br>By default it includes the call metadata, assistant metadata, and assistant overrides.|
 |» » » » » *oneOf*|body|[LangfuseObservabilityPlan](#schemalangfuseobservabilityplan)|false|none|
-|» » » » credentials|body|[[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto) \| [CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto) \| [CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto) \| [CreateAssemblyAICredentialDTO](#schemacreateassemblyaicredentialdto) \| [CreateAzureCredentialDTO](#schemacreateazurecredentialdto) \| [CreateAzureOpenAICredentialDTO](#schemacreateazureopenaicredentialdto) \| [CreateByoSipTrunkCredentialDTO](#schemacreatebyosiptrunkcredentialdto) \| [CreateCartesiaCredentialDTO](#schemacreatecartesiacredentialdto) \| [CreateCerebrasCredentialDTO](#schemacreatecerebrascredentialdto) \| [CreateCloudflareCredentialDTO](#schemacreatecloudflarecredentialdto) \| [CreateCustomLLMCredentialDTO](#schemacreatecustomllmcredentialdto) \| [CreateDeepgramCredentialDTO](#schemacreatedeepgramcredentialdto) \| [CreateDeepInfraCredentialDTO](#schemacreatedeepinfracredentialdto) \| [CreateDeepSeekCredentialDTO](#schemacreatedeepseekcredentialdto) \| [CreateElevenLabsCredentialDTO](#schemacreateelevenlabscredentialdto) \| [CreateGcpCredentialDTO](#schemacreategcpcredentialdto) \| [CreateGladiaCredentialDTO](#schemacreategladiacredentialdto) \| [CreateGoHighLevelCredentialDTO](#schemacreategohighlevelcredentialdto) \| [CreateGoogleCredentialDTO](#schemacreategooglecredentialdto) \| [CreateGroqCredentialDTO](#schemacreategroqcredentialdto) \| [CreateHumeCredentialDTO](#schemacreatehumecredentialdto) \| [CreateInflectionAICredentialDTO](#schemacreateinflectionaicredentialdto) \| [CreateLangfuseCredentialDTO](#schemacreatelangfusecredentialdto) \| [CreateLmntCredentialDTO](#schemacreatelmntcredentialdto) \| [CreateMakeCredentialDTO](#schemacreatemakecredentialdto) \| [CreateMistralCredentialDTO](#schemacreatemistralcredentialdto) \| [CreateNeuphonicCredentialDTO](#schemacreateneuphoniccredentialdto) \| [CreateOpenAICredentialDTO](#schemacreateopenaicredentialdto) \| [CreateOpenRouterCredentialDTO](#schemacreateopenroutercredentialdto) \| [CreatePerplexityAICredentialDTO](#schemacreateperplexityaicredentialdto) \| [CreatePlayHTCredentialDTO](#schemacreateplayhtcredentialdto) \| [CreateRimeAICredentialDTO](#schemacreaterimeaicredentialdto) \| [CreateRunpodCredentialDTO](#schemacreaterunpodcredentialdto) \| [CreateS3CredentialDTO](#schemacreates3credentialdto) \| [CreateS3CompatibleCredentialDTO](#schemacreates3compatiblecredentialdto) \| [CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto) \| [CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto) \| [CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto) \| [CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto) \| [CreateTavusCredentialDTO](#schemacreatetavuscredentialdto) \| [CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto) \| [CreateTwilioCredentialDTO](#schemacreatetwiliocredentialdto) \| [CreateVonageCredentialDTO](#schemacreatevonagecredentialdto) \| [CreateWebhookCredentialDTO](#schemacreatewebhookcredentialdto) \| [CreateCustomCredentialDTO](#schemacreatecustomcredentialdto) \| [CreateXAiCredentialDTO](#schemacreatexaicredentialdto) \| [CreateMicrosoftCredentialDTO](#schemacreatemicrosoftcredentialdto) \| [CreateGoogleCalendarOAuth2ClientCredentialDTO](#schemacreategooglecalendaroauth2clientcredentialdto) \| [CreateGoogleCalendarOAuth2AuthorizationCredentialDTO](#schemacreategooglecalendaroauth2authorizationcredentialdto) \| [CreateGoogleSheetsOAuth2AuthorizationCredentialDTO](#schemacreategooglesheetsoauth2authorizationcredentialdto) \| [CreateSlackOAuth2AuthorizationCredentialDTO](#schemacreateslackoauth2authorizationcredentialdto) \| [CreateGoHighLevelMCPCredentialDTO](#schemacreategohighlevelmcpcredentialdto) \| [CreateInworldCredentialDTO](#schemacreateinworldcredentialdto) \| [CreateMinimaxCredentialDTO](#schemacreateminimaxcredentialdto) \| [CreateWellSaidCredentialDTO](#schemacreatewellsaidcredentialdto) \| [CreateEmailCredentialDTO](#schemacreateemailcredentialdto) \| [CreateSlackWebhookCredentialDTO](#schemacreateslackwebhookcredentialdto)]|false|These are dynamic credentials that will be used for the assistant calls. By default, all the credentials are available for use in the call but you can supplement an additional credentials using this. Dynamic credentials override existing credentials.|
+|» » » » credentials|body|[[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto) \| [CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto) \| [CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto) \| [CreateAssemblyAICredentialDTO](#schemacreateassemblyaicredentialdto) \| [CreateAzureCredentialDTO](#schemacreateazurecredentialdto) \| [CreateAzureOpenAICredentialDTO](#schemacreateazureopenaicredentialdto) \| [CreateByoSipTrunkCredentialDTO](#schemacreatebyosiptrunkcredentialdto) \| [CreateCartesiaCredentialDTO](#schemacreatecartesiacredentialdto) \| [CreateCerebrasCredentialDTO](#schemacreatecerebrascredentialdto) \| [CreateCloudflareCredentialDTO](#schemacreatecloudflarecredentialdto) \| [CreateCustomLLMCredentialDTO](#schemacreatecustomllmcredentialdto) \| [CreateDeepgramCredentialDTO](#schemacreatedeepgramcredentialdto) \| [CreateDeepInfraCredentialDTO](#schemacreatedeepinfracredentialdto) \| [CreateDeepSeekCredentialDTO](#schemacreatedeepseekcredentialdto) \| [CreateElevenLabsCredentialDTO](#schemacreateelevenlabscredentialdto) \| [CreateGcpCredentialDTO](#schemacreategcpcredentialdto) \| [CreateGladiaCredentialDTO](#schemacreategladiacredentialdto) \| [CreateGoHighLevelCredentialDTO](#schemacreategohighlevelcredentialdto) \| [CreateGoogleCredentialDTO](#schemacreategooglecredentialdto) \| [CreateGroqCredentialDTO](#schemacreategroqcredentialdto) \| [CreateHumeCredentialDTO](#schemacreatehumecredentialdto) \| [CreateInflectionAICredentialDTO](#schemacreateinflectionaicredentialdto) \| [CreateLangfuseCredentialDTO](#schemacreatelangfusecredentialdto) \| [CreateLmntCredentialDTO](#schemacreatelmntcredentialdto) \| [CreateMakeCredentialDTO](#schemacreatemakecredentialdto) \| [CreateMistralCredentialDTO](#schemacreatemistralcredentialdto) \| [CreateNeuphonicCredentialDTO](#schemacreateneuphoniccredentialdto) \| [CreateOpenAICredentialDTO](#schemacreateopenaicredentialdto) \| [CreateOpenRouterCredentialDTO](#schemacreateopenroutercredentialdto) \| [CreatePerplexityAICredentialDTO](#schemacreateperplexityaicredentialdto) \| [CreatePlayHTCredentialDTO](#schemacreateplayhtcredentialdto) \| [CreateRimeAICredentialDTO](#schemacreaterimeaicredentialdto) \| [CreateRunpodCredentialDTO](#schemacreaterunpodcredentialdto) \| [CreateS3CredentialDTO](#schemacreates3credentialdto) \| [CreateS3CompatibleCredentialDTO](#schemacreates3compatiblecredentialdto) \| [CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto) \| [CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto) \| [CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto) \| [CreateReson8CredentialDTO](#schemacreatereson8credentialdto) \| [CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto) \| [CreateTavusCredentialDTO](#schemacreatetavuscredentialdto) \| [CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto) \| [CreateTwilioCredentialDTO](#schemacreatetwiliocredentialdto) \| [CreateVonageCredentialDTO](#schemacreatevonagecredentialdto) \| [CreateWebhookCredentialDTO](#schemacreatewebhookcredentialdto) \| [CreateCustomCredentialDTO](#schemacreatecustomcredentialdto) \| [CreateXAiCredentialDTO](#schemacreatexaicredentialdto) \| [CreateMicrosoftCredentialDTO](#schemacreatemicrosoftcredentialdto) \| [CreateGoogleCalendarOAuth2ClientCredentialDTO](#schemacreategooglecalendaroauth2clientcredentialdto) \| [CreateGoogleCalendarOAuth2AuthorizationCredentialDTO](#schemacreategooglecalendaroauth2authorizationcredentialdto) \| [CreateGoogleSheetsOAuth2AuthorizationCredentialDTO](#schemacreategooglesheetsoauth2authorizationcredentialdto) \| [CreateSlackOAuth2AuthorizationCredentialDTO](#schemacreateslackoauth2authorizationcredentialdto) \| [CreateGoHighLevelMCPCredentialDTO](#schemacreategohighlevelmcpcredentialdto) \| [CreateInworldCredentialDTO](#schemacreateinworldcredentialdto) \| [CreateMinimaxCredentialDTO](#schemacreateminimaxcredentialdto) \| [CreateWellSaidCredentialDTO](#schemacreatewellsaidcredentialdto) \| [CreateEmailCredentialDTO](#schemacreateemailcredentialdto) \| [CreateSlackWebhookCredentialDTO](#schemacreateslackwebhookcredentialdto)]|false|These are dynamic credentials that will be used for the assistant calls. By default, all the credentials are available for use in the call but you can supplement an additional credentials using this. Dynamic credentials override existing credentials.|
 |» » » » » *oneOf*|body|[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto)|false|none|
 |» » » » » *oneOf*|body|[CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto)|false|none|
 |» » » » » *oneOf*|body|[CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto)|false|none|
@@ -67355,6 +67450,7 @@ curl https://api.vapi.ai/chat/responses \
 |» » » » » *oneOf*|body|[CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto)|false|none|
 |» » » » » *oneOf*|body|[CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto)|false|none|
 |» » » » » *oneOf*|body|[CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto)|false|none|
+|» » » » » *oneOf*|body|[CreateReson8CredentialDTO](#schemacreatereson8credentialdto)|false|none|
 |» » » » » *oneOf*|body|[CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto)|false|none|
 |» » » » » *oneOf*|body|[CreateTavusCredentialDTO](#schemacreatetavuscredentialdto)|false|none|
 |» » » » » *oneOf*|body|[CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto)|false|none|
@@ -67569,6 +67665,10 @@ curl https://api.vapi.ai/chat/responses \
 |» » serverMessages|call.artifact.upload|
 |» » » *oneOf*|off|
 |» » » *oneOf*|office|
+|» » » *oneOf*|white-noise|
+|» » » *oneOf*|city|
+|» » » *oneOf*|crowd|
+|» » » *oneOf*|farm|
 |» » » provider|langfuse|
 |» » » » rubric|NumericScale|
 |» » » » rubric|DescriptiveScale|
@@ -67636,6 +67736,10 @@ curl https://api.vapi.ai/chat/responses \
 |» » serverMessages|call.artifact.upload|
 |» » » *oneOf*|off|
 |» » » *oneOf*|office|
+|» » » *oneOf*|white-noise|
+|» » » *oneOf*|city|
+|» » » *oneOf*|crowd|
+|» » » *oneOf*|farm|
 |» » » provider|langfuse|
 |» » » » rubric|NumericScale|
 |» » » » rubric|DescriptiveScale|
@@ -67704,6 +67808,10 @@ curl https://api.vapi.ai/chat/responses \
 |» » » » serverMessages|call.artifact.upload|
 |» » » » » *oneOf*|off|
 |» » » » » *oneOf*|office|
+|» » » » » *oneOf*|white-noise|
+|» » » » » *oneOf*|city|
+|» » » » » *oneOf*|crowd|
+|» » » » » *oneOf*|farm|
 |» » » » » provider|langfuse|
 |» » » » » » rubric|NumericScale|
 |» » » » » » rubric|DescriptiveScale|
@@ -67771,6 +67879,10 @@ curl https://api.vapi.ai/chat/responses \
 |» » » » serverMessages|call.artifact.upload|
 |» » » » » *oneOf*|off|
 |» » » » » *oneOf*|office|
+|» » » » » *oneOf*|white-noise|
+|» » » » » *oneOf*|city|
+|» » » » » *oneOf*|crowd|
+|» » » » » *oneOf*|farm|
 |» » » » » provider|langfuse|
 |» » » » » » rubric|NumericScale|
 |» » » » » » rubric|DescriptiveScale|
@@ -79685,7 +79797,7 @@ curl https://api.vapi.ai/campaign \
 |» customers|body|[[CreateCustomerDTO](#schemacreatecustomerdto)]|false|These are the customers that will be called in the campaign. Required if dialPlan is not provided. Maximum of 10000 customers per campaign.|
 |» maxConcurrency|body|number|false|This is the maximum number of concurrent calls that will be made for the campaign. Defaults to 10. Maximum of 500, and may not exceed your organization's concurrency limit.|
 |» assistantOverrides|body|object|false|These are the overrides for the assistant's settings and template variables for the campaign. Use this when the campaign targets an `assistantId`.|
-|» » transcriber|body|[AssemblyAITranscriber](#schemaassemblyaitranscriber) \| [AzureSpeechTranscriber](#schemaazurespeechtranscriber) \| [CustomTranscriber](#schemacustomtranscriber) \| [DeepgramTranscriber](#schemadeepgramtranscriber) \| [ElevenLabsTranscriber](#schemaelevenlabstranscriber) \| [GladiaTranscriber](#schemagladiatranscriber) \| [GoogleTranscriber](#schemagoogletranscriber) \| [SpeechmaticsTranscriber](#schemaspeechmaticstranscriber) \| [TalkscriberTranscriber](#schematalkscribertranscriber) \| [OpenAITranscriber](#schemaopenaitranscriber) \| [CartesiaTranscriber](#schemacartesiatranscriber) \| [SonioxTranscriber](#schemasonioxtranscriber) \| [XaiTranscriber](#schemaxaitranscriber) \| [VapiTranscriber](#schemavapitranscriber)|false|These are the options for the assistant's transcriber.|
+|» » transcriber|body|[AssemblyAITranscriber](#schemaassemblyaitranscriber) \| [AzureSpeechTranscriber](#schemaazurespeechtranscriber) \| [CustomTranscriber](#schemacustomtranscriber) \| [DeepgramTranscriber](#schemadeepgramtranscriber) \| [ElevenLabsTranscriber](#schemaelevenlabstranscriber) \| [GladiaTranscriber](#schemagladiatranscriber) \| [GoogleTranscriber](#schemagoogletranscriber) \| [SpeechmaticsTranscriber](#schemaspeechmaticstranscriber) \| [TalkscriberTranscriber](#schematalkscribertranscriber) \| [OpenAITranscriber](#schemaopenaitranscriber) \| [CartesiaTranscriber](#schemacartesiatranscriber) \| [SonioxTranscriber](#schemasonioxtranscriber) \| [XaiTranscriber](#schemaxaitranscriber) \| [Reson8Transcriber](#schemareson8transcriber) \| [VapiTranscriber](#schemavapitranscriber)|false|These are the options for the assistant's transcriber.|
 |» » » *oneOf*|body|[AssemblyAITranscriber](#schemaassemblyaitranscriber)|false|none|
 |» » » *oneOf*|body|[AzureSpeechTranscriber](#schemaazurespeechtranscriber)|false|none|
 |» » » *oneOf*|body|[CustomTranscriber](#schemacustomtranscriber)|false|none|
@@ -79699,6 +79811,7 @@ curl https://api.vapi.ai/campaign \
 |» » » *oneOf*|body|[CartesiaTranscriber](#schemacartesiatranscriber)|false|none|
 |» » » *oneOf*|body|[SonioxTranscriber](#schemasonioxtranscriber)|false|none|
 |» » » *oneOf*|body|[XaiTranscriber](#schemaxaitranscriber)|false|none|
+|» » » *oneOf*|body|[Reson8Transcriber](#schemareson8transcriber)|false|none|
 |» » » *oneOf*|body|[VapiTranscriber](#schemavapitranscriber)|false|none|
 |» » model|body|[AnthropicModel](#schemaanthropicmodel) \| [AnthropicBedrockModel](#schemaanthropicbedrockmodel) \| [AnyscaleModel](#schemaanyscalemodel) \| [CerebrasModel](#schemacerebrasmodel) \| [CustomLLMModel](#schemacustomllmmodel) \| [DeepInfraModel](#schemadeepinframodel) \| [DeepSeekModel](#schemadeepseekmodel) \| [GoogleModel](#schemagooglemodel) \| [GroqModel](#schemagroqmodel) \| [InflectionAIModel](#schemainflectionaimodel) \| [MinimaxLLMModel](#schemaminimaxllmmodel) \| [OpenAIModel](#schemaopenaimodel) \| [OpenRouterModel](#schemaopenroutermodel) \| [PerplexityAIModel](#schemaperplexityaimodel) \| [TogetherAIModel](#schematogetheraimodel) \| [XaiModel](#schemaxaimodel) \| [VapiModel](#schemavapimodel)|false|These are the options for the assistant's LLM.|
 |» » » *oneOf*|body|[AnthropicModel](#schemaanthropicmodel)|false|none|
@@ -79750,7 +79863,7 @@ curl https://api.vapi.ai/campaign \
 |» » clientMessages|body|[string]|false|These are the messages that will be sent to your Client SDKs. Default is conversation-update,function-call,hang,model-output,speech-update,status-update,transfer-update,transcript,tool-calls,user-interrupted,voice-input,workflow.node.started,assistant.started. You can check the shape of the messages in ClientMessage schema.|
 |» » serverMessages|body|[string]|false|These are the messages that will be sent to your Server URL. Default is conversation-update,end-of-call-report,function-call,hang,speech-update,status-update,tool-calls,transfer-destination-request,handoff-destination-request,user-interrupted,assistant.started. You can check the shape of the messages in ServerMessage schema.|
 |» » maxDurationSeconds|body|number|false|This is the maximum number of seconds that the call will last. When the call reaches this duration, it will be ended.<br><br>@default 600 (10 minutes)|
-|» » backgroundSound|body|string \| string(uri)|false|This is the background sound in the call. Default for phone calls is 'office' and default for web calls is 'off'.<br>You can also provide a custom sound by providing a URL to an audio file.|
+|» » backgroundSound|body|string \| string(uri)|false|This is the background sound in the call. Default for phone calls is 'office' and default for web calls is 'off'.<br>Bundled sounds: 'office', 'white-noise', 'city', 'crowd' and 'farm'. GPT Live assistants don't play 'office'.<br>You can also provide a custom sound by providing a URL to an audio file.|
 |» » » *oneOf*|body|string|false|none|
 |» » » *oneOf*|body|string(uri)|false|none|
 |» » modelOutputInMessagesEnabled|body|boolean|false|This determines whether the model's output is used in conversation history rather than the transcription of assistant's speech.<br><br>@default false|
@@ -79764,7 +79877,7 @@ curl https://api.vapi.ai/campaign \
 |» » » tags|body|[string]|true|This is an array of tags to be added to the Langfuse trace. Tags allow you to categorize and filter traces. https://langfuse.com/docs/tracing-features/tags|
 |» » » metadata|body|object|false|This is a JSON object that will be added to the Langfuse trace. Traces can be enriched with metadata to better understand your users, application, and experiments. https://langfuse.com/docs/tracing-features/metadata<br>By default it includes the call metadata, assistant metadata, and assistant overrides.|
 |» » » *oneOf*|body|[LangfuseObservabilityPlan](#schemalangfuseobservabilityplan)|false|none|
-|» » credentials|body|[[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto) \| [CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto) \| [CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto) \| [CreateAssemblyAICredentialDTO](#schemacreateassemblyaicredentialdto) \| [CreateAzureCredentialDTO](#schemacreateazurecredentialdto) \| [CreateAzureOpenAICredentialDTO](#schemacreateazureopenaicredentialdto) \| [CreateByoSipTrunkCredentialDTO](#schemacreatebyosiptrunkcredentialdto) \| [CreateCartesiaCredentialDTO](#schemacreatecartesiacredentialdto) \| [CreateCerebrasCredentialDTO](#schemacreatecerebrascredentialdto) \| [CreateCloudflareCredentialDTO](#schemacreatecloudflarecredentialdto) \| [CreateCustomLLMCredentialDTO](#schemacreatecustomllmcredentialdto) \| [CreateDeepgramCredentialDTO](#schemacreatedeepgramcredentialdto) \| [CreateDeepInfraCredentialDTO](#schemacreatedeepinfracredentialdto) \| [CreateDeepSeekCredentialDTO](#schemacreatedeepseekcredentialdto) \| [CreateElevenLabsCredentialDTO](#schemacreateelevenlabscredentialdto) \| [CreateGcpCredentialDTO](#schemacreategcpcredentialdto) \| [CreateGladiaCredentialDTO](#schemacreategladiacredentialdto) \| [CreateGoHighLevelCredentialDTO](#schemacreategohighlevelcredentialdto) \| [CreateGoogleCredentialDTO](#schemacreategooglecredentialdto) \| [CreateGroqCredentialDTO](#schemacreategroqcredentialdto) \| [CreateHumeCredentialDTO](#schemacreatehumecredentialdto) \| [CreateInflectionAICredentialDTO](#schemacreateinflectionaicredentialdto) \| [CreateLangfuseCredentialDTO](#schemacreatelangfusecredentialdto) \| [CreateLmntCredentialDTO](#schemacreatelmntcredentialdto) \| [CreateMakeCredentialDTO](#schemacreatemakecredentialdto) \| [CreateMistralCredentialDTO](#schemacreatemistralcredentialdto) \| [CreateNeuphonicCredentialDTO](#schemacreateneuphoniccredentialdto) \| [CreateOpenAICredentialDTO](#schemacreateopenaicredentialdto) \| [CreateOpenRouterCredentialDTO](#schemacreateopenroutercredentialdto) \| [CreatePerplexityAICredentialDTO](#schemacreateperplexityaicredentialdto) \| [CreatePlayHTCredentialDTO](#schemacreateplayhtcredentialdto) \| [CreateRimeAICredentialDTO](#schemacreaterimeaicredentialdto) \| [CreateRunpodCredentialDTO](#schemacreaterunpodcredentialdto) \| [CreateS3CredentialDTO](#schemacreates3credentialdto) \| [CreateS3CompatibleCredentialDTO](#schemacreates3compatiblecredentialdto) \| [CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto) \| [CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto) \| [CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto) \| [CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto) \| [CreateTavusCredentialDTO](#schemacreatetavuscredentialdto) \| [CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto) \| [CreateTwilioCredentialDTO](#schemacreatetwiliocredentialdto) \| [CreateVonageCredentialDTO](#schemacreatevonagecredentialdto) \| [CreateWebhookCredentialDTO](#schemacreatewebhookcredentialdto) \| [CreateCustomCredentialDTO](#schemacreatecustomcredentialdto) \| [CreateXAiCredentialDTO](#schemacreatexaicredentialdto) \| [CreateMicrosoftCredentialDTO](#schemacreatemicrosoftcredentialdto) \| [CreateGoogleCalendarOAuth2ClientCredentialDTO](#schemacreategooglecalendaroauth2clientcredentialdto) \| [CreateGoogleCalendarOAuth2AuthorizationCredentialDTO](#schemacreategooglecalendaroauth2authorizationcredentialdto) \| [CreateGoogleSheetsOAuth2AuthorizationCredentialDTO](#schemacreategooglesheetsoauth2authorizationcredentialdto) \| [CreateSlackOAuth2AuthorizationCredentialDTO](#schemacreateslackoauth2authorizationcredentialdto) \| [CreateGoHighLevelMCPCredentialDTO](#schemacreategohighlevelmcpcredentialdto) \| [CreateInworldCredentialDTO](#schemacreateinworldcredentialdto) \| [CreateMinimaxCredentialDTO](#schemacreateminimaxcredentialdto) \| [CreateWellSaidCredentialDTO](#schemacreatewellsaidcredentialdto) \| [CreateEmailCredentialDTO](#schemacreateemailcredentialdto) \| [CreateSlackWebhookCredentialDTO](#schemacreateslackwebhookcredentialdto)]|false|These are dynamic credentials that will be used for the assistant calls. By default, all the credentials are available for use in the call but you can supplement an additional credentials using this. Dynamic credentials override existing credentials.|
+|» » credentials|body|[[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto) \| [CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto) \| [CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto) \| [CreateAssemblyAICredentialDTO](#schemacreateassemblyaicredentialdto) \| [CreateAzureCredentialDTO](#schemacreateazurecredentialdto) \| [CreateAzureOpenAICredentialDTO](#schemacreateazureopenaicredentialdto) \| [CreateByoSipTrunkCredentialDTO](#schemacreatebyosiptrunkcredentialdto) \| [CreateCartesiaCredentialDTO](#schemacreatecartesiacredentialdto) \| [CreateCerebrasCredentialDTO](#schemacreatecerebrascredentialdto) \| [CreateCloudflareCredentialDTO](#schemacreatecloudflarecredentialdto) \| [CreateCustomLLMCredentialDTO](#schemacreatecustomllmcredentialdto) \| [CreateDeepgramCredentialDTO](#schemacreatedeepgramcredentialdto) \| [CreateDeepInfraCredentialDTO](#schemacreatedeepinfracredentialdto) \| [CreateDeepSeekCredentialDTO](#schemacreatedeepseekcredentialdto) \| [CreateElevenLabsCredentialDTO](#schemacreateelevenlabscredentialdto) \| [CreateGcpCredentialDTO](#schemacreategcpcredentialdto) \| [CreateGladiaCredentialDTO](#schemacreategladiacredentialdto) \| [CreateGoHighLevelCredentialDTO](#schemacreategohighlevelcredentialdto) \| [CreateGoogleCredentialDTO](#schemacreategooglecredentialdto) \| [CreateGroqCredentialDTO](#schemacreategroqcredentialdto) \| [CreateHumeCredentialDTO](#schemacreatehumecredentialdto) \| [CreateInflectionAICredentialDTO](#schemacreateinflectionaicredentialdto) \| [CreateLangfuseCredentialDTO](#schemacreatelangfusecredentialdto) \| [CreateLmntCredentialDTO](#schemacreatelmntcredentialdto) \| [CreateMakeCredentialDTO](#schemacreatemakecredentialdto) \| [CreateMistralCredentialDTO](#schemacreatemistralcredentialdto) \| [CreateNeuphonicCredentialDTO](#schemacreateneuphoniccredentialdto) \| [CreateOpenAICredentialDTO](#schemacreateopenaicredentialdto) \| [CreateOpenRouterCredentialDTO](#schemacreateopenroutercredentialdto) \| [CreatePerplexityAICredentialDTO](#schemacreateperplexityaicredentialdto) \| [CreatePlayHTCredentialDTO](#schemacreateplayhtcredentialdto) \| [CreateRimeAICredentialDTO](#schemacreaterimeaicredentialdto) \| [CreateRunpodCredentialDTO](#schemacreaterunpodcredentialdto) \| [CreateS3CredentialDTO](#schemacreates3credentialdto) \| [CreateS3CompatibleCredentialDTO](#schemacreates3compatiblecredentialdto) \| [CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto) \| [CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto) \| [CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto) \| [CreateReson8CredentialDTO](#schemacreatereson8credentialdto) \| [CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto) \| [CreateTavusCredentialDTO](#schemacreatetavuscredentialdto) \| [CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto) \| [CreateTwilioCredentialDTO](#schemacreatetwiliocredentialdto) \| [CreateVonageCredentialDTO](#schemacreatevonagecredentialdto) \| [CreateWebhookCredentialDTO](#schemacreatewebhookcredentialdto) \| [CreateCustomCredentialDTO](#schemacreatecustomcredentialdto) \| [CreateXAiCredentialDTO](#schemacreatexaicredentialdto) \| [CreateMicrosoftCredentialDTO](#schemacreatemicrosoftcredentialdto) \| [CreateGoogleCalendarOAuth2ClientCredentialDTO](#schemacreategooglecalendaroauth2clientcredentialdto) \| [CreateGoogleCalendarOAuth2AuthorizationCredentialDTO](#schemacreategooglecalendaroauth2authorizationcredentialdto) \| [CreateGoogleSheetsOAuth2AuthorizationCredentialDTO](#schemacreategooglesheetsoauth2authorizationcredentialdto) \| [CreateSlackOAuth2AuthorizationCredentialDTO](#schemacreateslackoauth2authorizationcredentialdto) \| [CreateGoHighLevelMCPCredentialDTO](#schemacreategohighlevelmcpcredentialdto) \| [CreateInworldCredentialDTO](#schemacreateinworldcredentialdto) \| [CreateMinimaxCredentialDTO](#schemacreateminimaxcredentialdto) \| [CreateWellSaidCredentialDTO](#schemacreatewellsaidcredentialdto) \| [CreateEmailCredentialDTO](#schemacreateemailcredentialdto) \| [CreateSlackWebhookCredentialDTO](#schemacreateslackwebhookcredentialdto)]|false|These are dynamic credentials that will be used for the assistant calls. By default, all the credentials are available for use in the call but you can supplement an additional credentials using this. Dynamic credentials override existing credentials.|
 |» » » *oneOf*|body|[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto)|false|none|
@@ -79803,6 +79916,7 @@ curl https://api.vapi.ai/campaign \
 |» » » *oneOf*|body|[CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto)|false|none|
+|» » » *oneOf*|body|[CreateReson8CredentialDTO](#schemacreatereson8credentialdto)|false|none|
 |» » » *oneOf*|body|[CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateTavusCredentialDTO](#schemacreatetavuscredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto)|false|none|
@@ -79952,7 +80066,7 @@ curl https://api.vapi.ai/campaign \
 |» » » » excludedStatusCodes|body|[object]|false|This is the excluded status codes. If the response status code is in this list, the request will not be retried.<br>By default, the request will be retried for any non-2xx status code.|
 |» » keypadInputPlan|body|[KeypadInputPlan](#schemakeypadinputplan)|false|none|
 |» squadOverrides|body|object|false|These are the overrides for the squad and template variables for the campaign. Use this when the campaign targets a `squadId`. Per-contact `squadOverrides` are deep-merged on top of this at dispatch time.|
-|» » transcriber|body|[AssemblyAITranscriber](#schemaassemblyaitranscriber) \| [AzureSpeechTranscriber](#schemaazurespeechtranscriber) \| [CustomTranscriber](#schemacustomtranscriber) \| [DeepgramTranscriber](#schemadeepgramtranscriber) \| [ElevenLabsTranscriber](#schemaelevenlabstranscriber) \| [GladiaTranscriber](#schemagladiatranscriber) \| [GoogleTranscriber](#schemagoogletranscriber) \| [SpeechmaticsTranscriber](#schemaspeechmaticstranscriber) \| [TalkscriberTranscriber](#schematalkscribertranscriber) \| [OpenAITranscriber](#schemaopenaitranscriber) \| [CartesiaTranscriber](#schemacartesiatranscriber) \| [SonioxTranscriber](#schemasonioxtranscriber) \| [XaiTranscriber](#schemaxaitranscriber) \| [VapiTranscriber](#schemavapitranscriber)|false|These are the options for the assistant's transcriber.|
+|» » transcriber|body|[AssemblyAITranscriber](#schemaassemblyaitranscriber) \| [AzureSpeechTranscriber](#schemaazurespeechtranscriber) \| [CustomTranscriber](#schemacustomtranscriber) \| [DeepgramTranscriber](#schemadeepgramtranscriber) \| [ElevenLabsTranscriber](#schemaelevenlabstranscriber) \| [GladiaTranscriber](#schemagladiatranscriber) \| [GoogleTranscriber](#schemagoogletranscriber) \| [SpeechmaticsTranscriber](#schemaspeechmaticstranscriber) \| [TalkscriberTranscriber](#schematalkscribertranscriber) \| [OpenAITranscriber](#schemaopenaitranscriber) \| [CartesiaTranscriber](#schemacartesiatranscriber) \| [SonioxTranscriber](#schemasonioxtranscriber) \| [XaiTranscriber](#schemaxaitranscriber) \| [Reson8Transcriber](#schemareson8transcriber) \| [VapiTranscriber](#schemavapitranscriber)|false|These are the options for the assistant's transcriber.|
 |» » » *oneOf*|body|[AssemblyAITranscriber](#schemaassemblyaitranscriber)|false|none|
 |» » » *oneOf*|body|[AzureSpeechTranscriber](#schemaazurespeechtranscriber)|false|none|
 |» » » *oneOf*|body|[CustomTranscriber](#schemacustomtranscriber)|false|none|
@@ -79966,6 +80080,7 @@ curl https://api.vapi.ai/campaign \
 |» » » *oneOf*|body|[CartesiaTranscriber](#schemacartesiatranscriber)|false|none|
 |» » » *oneOf*|body|[SonioxTranscriber](#schemasonioxtranscriber)|false|none|
 |» » » *oneOf*|body|[XaiTranscriber](#schemaxaitranscriber)|false|none|
+|» » » *oneOf*|body|[Reson8Transcriber](#schemareson8transcriber)|false|none|
 |» » » *oneOf*|body|[VapiTranscriber](#schemavapitranscriber)|false|none|
 |» » model|body|[AnthropicModel](#schemaanthropicmodel) \| [AnthropicBedrockModel](#schemaanthropicbedrockmodel) \| [AnyscaleModel](#schemaanyscalemodel) \| [CerebrasModel](#schemacerebrasmodel) \| [CustomLLMModel](#schemacustomllmmodel) \| [DeepInfraModel](#schemadeepinframodel) \| [DeepSeekModel](#schemadeepseekmodel) \| [GoogleModel](#schemagooglemodel) \| [GroqModel](#schemagroqmodel) \| [InflectionAIModel](#schemainflectionaimodel) \| [MinimaxLLMModel](#schemaminimaxllmmodel) \| [OpenAIModel](#schemaopenaimodel) \| [OpenRouterModel](#schemaopenroutermodel) \| [PerplexityAIModel](#schemaperplexityaimodel) \| [TogetherAIModel](#schematogetheraimodel) \| [XaiModel](#schemaxaimodel) \| [VapiModel](#schemavapimodel)|false|These are the options for the assistant's LLM.|
 |» » » *oneOf*|body|[AnthropicModel](#schemaanthropicmodel)|false|none|
@@ -80017,7 +80132,7 @@ curl https://api.vapi.ai/campaign \
 |» » clientMessages|body|[string]|false|These are the messages that will be sent to your Client SDKs. Default is conversation-update,function-call,hang,model-output,speech-update,status-update,transfer-update,transcript,tool-calls,user-interrupted,voice-input,workflow.node.started,assistant.started. You can check the shape of the messages in ClientMessage schema.|
 |» » serverMessages|body|[string]|false|These are the messages that will be sent to your Server URL. Default is conversation-update,end-of-call-report,function-call,hang,speech-update,status-update,tool-calls,transfer-destination-request,handoff-destination-request,user-interrupted,assistant.started. You can check the shape of the messages in ServerMessage schema.|
 |» » maxDurationSeconds|body|number|false|This is the maximum number of seconds that the call will last. When the call reaches this duration, it will be ended.<br><br>@default 600 (10 minutes)|
-|» » backgroundSound|body|string \| string(uri)|false|This is the background sound in the call. Default for phone calls is 'office' and default for web calls is 'off'.<br>You can also provide a custom sound by providing a URL to an audio file.|
+|» » backgroundSound|body|string \| string(uri)|false|This is the background sound in the call. Default for phone calls is 'office' and default for web calls is 'off'.<br>Bundled sounds: 'office', 'white-noise', 'city', 'crowd' and 'farm'. GPT Live assistants don't play 'office'.<br>You can also provide a custom sound by providing a URL to an audio file.|
 |» » » *oneOf*|body|string|false|none|
 |» » » *oneOf*|body|string(uri)|false|none|
 |» » modelOutputInMessagesEnabled|body|boolean|false|This determines whether the model's output is used in conversation history rather than the transcription of assistant's speech.<br><br>@default false|
@@ -80031,7 +80146,7 @@ curl https://api.vapi.ai/campaign \
 |» » » tags|body|[string]|true|This is an array of tags to be added to the Langfuse trace. Tags allow you to categorize and filter traces. https://langfuse.com/docs/tracing-features/tags|
 |» » » metadata|body|object|false|This is a JSON object that will be added to the Langfuse trace. Traces can be enriched with metadata to better understand your users, application, and experiments. https://langfuse.com/docs/tracing-features/metadata<br>By default it includes the call metadata, assistant metadata, and assistant overrides.|
 |» » » *oneOf*|body|[LangfuseObservabilityPlan](#schemalangfuseobservabilityplan)|false|none|
-|» » credentials|body|[[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto) \| [CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto) \| [CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto) \| [CreateAssemblyAICredentialDTO](#schemacreateassemblyaicredentialdto) \| [CreateAzureCredentialDTO](#schemacreateazurecredentialdto) \| [CreateAzureOpenAICredentialDTO](#schemacreateazureopenaicredentialdto) \| [CreateByoSipTrunkCredentialDTO](#schemacreatebyosiptrunkcredentialdto) \| [CreateCartesiaCredentialDTO](#schemacreatecartesiacredentialdto) \| [CreateCerebrasCredentialDTO](#schemacreatecerebrascredentialdto) \| [CreateCloudflareCredentialDTO](#schemacreatecloudflarecredentialdto) \| [CreateCustomLLMCredentialDTO](#schemacreatecustomllmcredentialdto) \| [CreateDeepgramCredentialDTO](#schemacreatedeepgramcredentialdto) \| [CreateDeepInfraCredentialDTO](#schemacreatedeepinfracredentialdto) \| [CreateDeepSeekCredentialDTO](#schemacreatedeepseekcredentialdto) \| [CreateElevenLabsCredentialDTO](#schemacreateelevenlabscredentialdto) \| [CreateGcpCredentialDTO](#schemacreategcpcredentialdto) \| [CreateGladiaCredentialDTO](#schemacreategladiacredentialdto) \| [CreateGoHighLevelCredentialDTO](#schemacreategohighlevelcredentialdto) \| [CreateGoogleCredentialDTO](#schemacreategooglecredentialdto) \| [CreateGroqCredentialDTO](#schemacreategroqcredentialdto) \| [CreateHumeCredentialDTO](#schemacreatehumecredentialdto) \| [CreateInflectionAICredentialDTO](#schemacreateinflectionaicredentialdto) \| [CreateLangfuseCredentialDTO](#schemacreatelangfusecredentialdto) \| [CreateLmntCredentialDTO](#schemacreatelmntcredentialdto) \| [CreateMakeCredentialDTO](#schemacreatemakecredentialdto) \| [CreateMistralCredentialDTO](#schemacreatemistralcredentialdto) \| [CreateNeuphonicCredentialDTO](#schemacreateneuphoniccredentialdto) \| [CreateOpenAICredentialDTO](#schemacreateopenaicredentialdto) \| [CreateOpenRouterCredentialDTO](#schemacreateopenroutercredentialdto) \| [CreatePerplexityAICredentialDTO](#schemacreateperplexityaicredentialdto) \| [CreatePlayHTCredentialDTO](#schemacreateplayhtcredentialdto) \| [CreateRimeAICredentialDTO](#schemacreaterimeaicredentialdto) \| [CreateRunpodCredentialDTO](#schemacreaterunpodcredentialdto) \| [CreateS3CredentialDTO](#schemacreates3credentialdto) \| [CreateS3CompatibleCredentialDTO](#schemacreates3compatiblecredentialdto) \| [CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto) \| [CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto) \| [CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto) \| [CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto) \| [CreateTavusCredentialDTO](#schemacreatetavuscredentialdto) \| [CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto) \| [CreateTwilioCredentialDTO](#schemacreatetwiliocredentialdto) \| [CreateVonageCredentialDTO](#schemacreatevonagecredentialdto) \| [CreateWebhookCredentialDTO](#schemacreatewebhookcredentialdto) \| [CreateCustomCredentialDTO](#schemacreatecustomcredentialdto) \| [CreateXAiCredentialDTO](#schemacreatexaicredentialdto) \| [CreateMicrosoftCredentialDTO](#schemacreatemicrosoftcredentialdto) \| [CreateGoogleCalendarOAuth2ClientCredentialDTO](#schemacreategooglecalendaroauth2clientcredentialdto) \| [CreateGoogleCalendarOAuth2AuthorizationCredentialDTO](#schemacreategooglecalendaroauth2authorizationcredentialdto) \| [CreateGoogleSheetsOAuth2AuthorizationCredentialDTO](#schemacreategooglesheetsoauth2authorizationcredentialdto) \| [CreateSlackOAuth2AuthorizationCredentialDTO](#schemacreateslackoauth2authorizationcredentialdto) \| [CreateGoHighLevelMCPCredentialDTO](#schemacreategohighlevelmcpcredentialdto) \| [CreateInworldCredentialDTO](#schemacreateinworldcredentialdto) \| [CreateMinimaxCredentialDTO](#schemacreateminimaxcredentialdto) \| [CreateWellSaidCredentialDTO](#schemacreatewellsaidcredentialdto) \| [CreateEmailCredentialDTO](#schemacreateemailcredentialdto) \| [CreateSlackWebhookCredentialDTO](#schemacreateslackwebhookcredentialdto)]|false|These are dynamic credentials that will be used for the assistant calls. By default, all the credentials are available for use in the call but you can supplement an additional credentials using this. Dynamic credentials override existing credentials.|
+|» » credentials|body|[[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto) \| [CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto) \| [CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto) \| [CreateAssemblyAICredentialDTO](#schemacreateassemblyaicredentialdto) \| [CreateAzureCredentialDTO](#schemacreateazurecredentialdto) \| [CreateAzureOpenAICredentialDTO](#schemacreateazureopenaicredentialdto) \| [CreateByoSipTrunkCredentialDTO](#schemacreatebyosiptrunkcredentialdto) \| [CreateCartesiaCredentialDTO](#schemacreatecartesiacredentialdto) \| [CreateCerebrasCredentialDTO](#schemacreatecerebrascredentialdto) \| [CreateCloudflareCredentialDTO](#schemacreatecloudflarecredentialdto) \| [CreateCustomLLMCredentialDTO](#schemacreatecustomllmcredentialdto) \| [CreateDeepgramCredentialDTO](#schemacreatedeepgramcredentialdto) \| [CreateDeepInfraCredentialDTO](#schemacreatedeepinfracredentialdto) \| [CreateDeepSeekCredentialDTO](#schemacreatedeepseekcredentialdto) \| [CreateElevenLabsCredentialDTO](#schemacreateelevenlabscredentialdto) \| [CreateGcpCredentialDTO](#schemacreategcpcredentialdto) \| [CreateGladiaCredentialDTO](#schemacreategladiacredentialdto) \| [CreateGoHighLevelCredentialDTO](#schemacreategohighlevelcredentialdto) \| [CreateGoogleCredentialDTO](#schemacreategooglecredentialdto) \| [CreateGroqCredentialDTO](#schemacreategroqcredentialdto) \| [CreateHumeCredentialDTO](#schemacreatehumecredentialdto) \| [CreateInflectionAICredentialDTO](#schemacreateinflectionaicredentialdto) \| [CreateLangfuseCredentialDTO](#schemacreatelangfusecredentialdto) \| [CreateLmntCredentialDTO](#schemacreatelmntcredentialdto) \| [CreateMakeCredentialDTO](#schemacreatemakecredentialdto) \| [CreateMistralCredentialDTO](#schemacreatemistralcredentialdto) \| [CreateNeuphonicCredentialDTO](#schemacreateneuphoniccredentialdto) \| [CreateOpenAICredentialDTO](#schemacreateopenaicredentialdto) \| [CreateOpenRouterCredentialDTO](#schemacreateopenroutercredentialdto) \| [CreatePerplexityAICredentialDTO](#schemacreateperplexityaicredentialdto) \| [CreatePlayHTCredentialDTO](#schemacreateplayhtcredentialdto) \| [CreateRimeAICredentialDTO](#schemacreaterimeaicredentialdto) \| [CreateRunpodCredentialDTO](#schemacreaterunpodcredentialdto) \| [CreateS3CredentialDTO](#schemacreates3credentialdto) \| [CreateS3CompatibleCredentialDTO](#schemacreates3compatiblecredentialdto) \| [CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto) \| [CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto) \| [CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto) \| [CreateReson8CredentialDTO](#schemacreatereson8credentialdto) \| [CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto) \| [CreateTavusCredentialDTO](#schemacreatetavuscredentialdto) \| [CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto) \| [CreateTwilioCredentialDTO](#schemacreatetwiliocredentialdto) \| [CreateVonageCredentialDTO](#schemacreatevonagecredentialdto) \| [CreateWebhookCredentialDTO](#schemacreatewebhookcredentialdto) \| [CreateCustomCredentialDTO](#schemacreatecustomcredentialdto) \| [CreateXAiCredentialDTO](#schemacreatexaicredentialdto) \| [CreateMicrosoftCredentialDTO](#schemacreatemicrosoftcredentialdto) \| [CreateGoogleCalendarOAuth2ClientCredentialDTO](#schemacreategooglecalendaroauth2clientcredentialdto) \| [CreateGoogleCalendarOAuth2AuthorizationCredentialDTO](#schemacreategooglecalendaroauth2authorizationcredentialdto) \| [CreateGoogleSheetsOAuth2AuthorizationCredentialDTO](#schemacreategooglesheetsoauth2authorizationcredentialdto) \| [CreateSlackOAuth2AuthorizationCredentialDTO](#schemacreateslackoauth2authorizationcredentialdto) \| [CreateGoHighLevelMCPCredentialDTO](#schemacreategohighlevelmcpcredentialdto) \| [CreateInworldCredentialDTO](#schemacreateinworldcredentialdto) \| [CreateMinimaxCredentialDTO](#schemacreateminimaxcredentialdto) \| [CreateWellSaidCredentialDTO](#schemacreatewellsaidcredentialdto) \| [CreateEmailCredentialDTO](#schemacreateemailcredentialdto) \| [CreateSlackWebhookCredentialDTO](#schemacreateslackwebhookcredentialdto)]|false|These are dynamic credentials that will be used for the assistant calls. By default, all the credentials are available for use in the call but you can supplement an additional credentials using this. Dynamic credentials override existing credentials.|
 |» » » *oneOf*|body|[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto)|false|none|
@@ -80070,6 +80185,7 @@ curl https://api.vapi.ai/campaign \
 |» » » *oneOf*|body|[CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto)|false|none|
+|» » » *oneOf*|body|[CreateReson8CredentialDTO](#schemacreatereson8credentialdto)|false|none|
 |» » » *oneOf*|body|[CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateTavusCredentialDTO](#schemacreatetavuscredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto)|false|none|
@@ -80292,6 +80408,10 @@ curl https://api.vapi.ai/campaign \
 |» » serverMessages|call.artifact.upload|
 |» » » *oneOf*|off|
 |» » » *oneOf*|office|
+|» » » *oneOf*|white-noise|
+|» » » *oneOf*|city|
+|» » » *oneOf*|crowd|
+|» » » *oneOf*|farm|
 |» » » provider|langfuse|
 |» » » » rubric|NumericScale|
 |» » » » rubric|DescriptiveScale|
@@ -80359,6 +80479,10 @@ curl https://api.vapi.ai/campaign \
 |» » serverMessages|call.artifact.upload|
 |» » » *oneOf*|off|
 |» » » *oneOf*|office|
+|» » » *oneOf*|white-noise|
+|» » » *oneOf*|city|
+|» » » *oneOf*|crowd|
+|» » » *oneOf*|farm|
 |» » » provider|langfuse|
 |» » » » rubric|NumericScale|
 |» » » » rubric|DescriptiveScale|
@@ -93578,7 +93702,7 @@ curl https://api.vapi.ai/v2/campaign \
 |» customers|body|[[CreateCustomerDTO](#schemacreatecustomerdto)]|false|These are the customers that will be called in the campaign. Required if dialPlan is not provided. Maximum of 10000 customers per campaign.|
 |» maxConcurrency|body|number|false|This is the maximum number of concurrent calls that will be made for the campaign. Defaults to 10. Maximum of 500, and may not exceed your organization's concurrency limit.|
 |» assistantOverrides|body|object|false|These are the overrides for the assistant's settings and template variables for the campaign. Use this when the campaign targets an `assistantId`.|
-|» » transcriber|body|[AssemblyAITranscriber](#schemaassemblyaitranscriber) \| [AzureSpeechTranscriber](#schemaazurespeechtranscriber) \| [CustomTranscriber](#schemacustomtranscriber) \| [DeepgramTranscriber](#schemadeepgramtranscriber) \| [ElevenLabsTranscriber](#schemaelevenlabstranscriber) \| [GladiaTranscriber](#schemagladiatranscriber) \| [GoogleTranscriber](#schemagoogletranscriber) \| [SpeechmaticsTranscriber](#schemaspeechmaticstranscriber) \| [TalkscriberTranscriber](#schematalkscribertranscriber) \| [OpenAITranscriber](#schemaopenaitranscriber) \| [CartesiaTranscriber](#schemacartesiatranscriber) \| [SonioxTranscriber](#schemasonioxtranscriber) \| [XaiTranscriber](#schemaxaitranscriber) \| [VapiTranscriber](#schemavapitranscriber)|false|These are the options for the assistant's transcriber.|
+|» » transcriber|body|[AssemblyAITranscriber](#schemaassemblyaitranscriber) \| [AzureSpeechTranscriber](#schemaazurespeechtranscriber) \| [CustomTranscriber](#schemacustomtranscriber) \| [DeepgramTranscriber](#schemadeepgramtranscriber) \| [ElevenLabsTranscriber](#schemaelevenlabstranscriber) \| [GladiaTranscriber](#schemagladiatranscriber) \| [GoogleTranscriber](#schemagoogletranscriber) \| [SpeechmaticsTranscriber](#schemaspeechmaticstranscriber) \| [TalkscriberTranscriber](#schematalkscribertranscriber) \| [OpenAITranscriber](#schemaopenaitranscriber) \| [CartesiaTranscriber](#schemacartesiatranscriber) \| [SonioxTranscriber](#schemasonioxtranscriber) \| [XaiTranscriber](#schemaxaitranscriber) \| [Reson8Transcriber](#schemareson8transcriber) \| [VapiTranscriber](#schemavapitranscriber)|false|These are the options for the assistant's transcriber.|
 |» » » *oneOf*|body|[AssemblyAITranscriber](#schemaassemblyaitranscriber)|false|none|
 |» » » *oneOf*|body|[AzureSpeechTranscriber](#schemaazurespeechtranscriber)|false|none|
 |» » » *oneOf*|body|[CustomTranscriber](#schemacustomtranscriber)|false|none|
@@ -93592,6 +93716,7 @@ curl https://api.vapi.ai/v2/campaign \
 |» » » *oneOf*|body|[CartesiaTranscriber](#schemacartesiatranscriber)|false|none|
 |» » » *oneOf*|body|[SonioxTranscriber](#schemasonioxtranscriber)|false|none|
 |» » » *oneOf*|body|[XaiTranscriber](#schemaxaitranscriber)|false|none|
+|» » » *oneOf*|body|[Reson8Transcriber](#schemareson8transcriber)|false|none|
 |» » » *oneOf*|body|[VapiTranscriber](#schemavapitranscriber)|false|none|
 |» » model|body|[AnthropicModel](#schemaanthropicmodel) \| [AnthropicBedrockModel](#schemaanthropicbedrockmodel) \| [AnyscaleModel](#schemaanyscalemodel) \| [CerebrasModel](#schemacerebrasmodel) \| [CustomLLMModel](#schemacustomllmmodel) \| [DeepInfraModel](#schemadeepinframodel) \| [DeepSeekModel](#schemadeepseekmodel) \| [GoogleModel](#schemagooglemodel) \| [GroqModel](#schemagroqmodel) \| [InflectionAIModel](#schemainflectionaimodel) \| [MinimaxLLMModel](#schemaminimaxllmmodel) \| [OpenAIModel](#schemaopenaimodel) \| [OpenRouterModel](#schemaopenroutermodel) \| [PerplexityAIModel](#schemaperplexityaimodel) \| [TogetherAIModel](#schematogetheraimodel) \| [XaiModel](#schemaxaimodel) \| [VapiModel](#schemavapimodel)|false|These are the options for the assistant's LLM.|
 |» » » *oneOf*|body|[AnthropicModel](#schemaanthropicmodel)|false|none|
@@ -93643,7 +93768,7 @@ curl https://api.vapi.ai/v2/campaign \
 |» » clientMessages|body|[string]|false|These are the messages that will be sent to your Client SDKs. Default is conversation-update,function-call,hang,model-output,speech-update,status-update,transfer-update,transcript,tool-calls,user-interrupted,voice-input,workflow.node.started,assistant.started. You can check the shape of the messages in ClientMessage schema.|
 |» » serverMessages|body|[string]|false|These are the messages that will be sent to your Server URL. Default is conversation-update,end-of-call-report,function-call,hang,speech-update,status-update,tool-calls,transfer-destination-request,handoff-destination-request,user-interrupted,assistant.started. You can check the shape of the messages in ServerMessage schema.|
 |» » maxDurationSeconds|body|number|false|This is the maximum number of seconds that the call will last. When the call reaches this duration, it will be ended.<br><br>@default 600 (10 minutes)|
-|» » backgroundSound|body|string \| string(uri)|false|This is the background sound in the call. Default for phone calls is 'office' and default for web calls is 'off'.<br>You can also provide a custom sound by providing a URL to an audio file.|
+|» » backgroundSound|body|string \| string(uri)|false|This is the background sound in the call. Default for phone calls is 'office' and default for web calls is 'off'.<br>Bundled sounds: 'office', 'white-noise', 'city', 'crowd' and 'farm'. GPT Live assistants don't play 'office'.<br>You can also provide a custom sound by providing a URL to an audio file.|
 |» » » *oneOf*|body|string|false|none|
 |» » » *oneOf*|body|string(uri)|false|none|
 |» » modelOutputInMessagesEnabled|body|boolean|false|This determines whether the model's output is used in conversation history rather than the transcription of assistant's speech.<br><br>@default false|
@@ -93657,7 +93782,7 @@ curl https://api.vapi.ai/v2/campaign \
 |» » » tags|body|[string]|true|This is an array of tags to be added to the Langfuse trace. Tags allow you to categorize and filter traces. https://langfuse.com/docs/tracing-features/tags|
 |» » » metadata|body|object|false|This is a JSON object that will be added to the Langfuse trace. Traces can be enriched with metadata to better understand your users, application, and experiments. https://langfuse.com/docs/tracing-features/metadata<br>By default it includes the call metadata, assistant metadata, and assistant overrides.|
 |» » » *oneOf*|body|[LangfuseObservabilityPlan](#schemalangfuseobservabilityplan)|false|none|
-|» » credentials|body|[[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto) \| [CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto) \| [CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto) \| [CreateAssemblyAICredentialDTO](#schemacreateassemblyaicredentialdto) \| [CreateAzureCredentialDTO](#schemacreateazurecredentialdto) \| [CreateAzureOpenAICredentialDTO](#schemacreateazureopenaicredentialdto) \| [CreateByoSipTrunkCredentialDTO](#schemacreatebyosiptrunkcredentialdto) \| [CreateCartesiaCredentialDTO](#schemacreatecartesiacredentialdto) \| [CreateCerebrasCredentialDTO](#schemacreatecerebrascredentialdto) \| [CreateCloudflareCredentialDTO](#schemacreatecloudflarecredentialdto) \| [CreateCustomLLMCredentialDTO](#schemacreatecustomllmcredentialdto) \| [CreateDeepgramCredentialDTO](#schemacreatedeepgramcredentialdto) \| [CreateDeepInfraCredentialDTO](#schemacreatedeepinfracredentialdto) \| [CreateDeepSeekCredentialDTO](#schemacreatedeepseekcredentialdto) \| [CreateElevenLabsCredentialDTO](#schemacreateelevenlabscredentialdto) \| [CreateGcpCredentialDTO](#schemacreategcpcredentialdto) \| [CreateGladiaCredentialDTO](#schemacreategladiacredentialdto) \| [CreateGoHighLevelCredentialDTO](#schemacreategohighlevelcredentialdto) \| [CreateGoogleCredentialDTO](#schemacreategooglecredentialdto) \| [CreateGroqCredentialDTO](#schemacreategroqcredentialdto) \| [CreateHumeCredentialDTO](#schemacreatehumecredentialdto) \| [CreateInflectionAICredentialDTO](#schemacreateinflectionaicredentialdto) \| [CreateLangfuseCredentialDTO](#schemacreatelangfusecredentialdto) \| [CreateLmntCredentialDTO](#schemacreatelmntcredentialdto) \| [CreateMakeCredentialDTO](#schemacreatemakecredentialdto) \| [CreateMistralCredentialDTO](#schemacreatemistralcredentialdto) \| [CreateNeuphonicCredentialDTO](#schemacreateneuphoniccredentialdto) \| [CreateOpenAICredentialDTO](#schemacreateopenaicredentialdto) \| [CreateOpenRouterCredentialDTO](#schemacreateopenroutercredentialdto) \| [CreatePerplexityAICredentialDTO](#schemacreateperplexityaicredentialdto) \| [CreatePlayHTCredentialDTO](#schemacreateplayhtcredentialdto) \| [CreateRimeAICredentialDTO](#schemacreaterimeaicredentialdto) \| [CreateRunpodCredentialDTO](#schemacreaterunpodcredentialdto) \| [CreateS3CredentialDTO](#schemacreates3credentialdto) \| [CreateS3CompatibleCredentialDTO](#schemacreates3compatiblecredentialdto) \| [CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto) \| [CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto) \| [CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto) \| [CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto) \| [CreateTavusCredentialDTO](#schemacreatetavuscredentialdto) \| [CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto) \| [CreateTwilioCredentialDTO](#schemacreatetwiliocredentialdto) \| [CreateVonageCredentialDTO](#schemacreatevonagecredentialdto) \| [CreateWebhookCredentialDTO](#schemacreatewebhookcredentialdto) \| [CreateCustomCredentialDTO](#schemacreatecustomcredentialdto) \| [CreateXAiCredentialDTO](#schemacreatexaicredentialdto) \| [CreateMicrosoftCredentialDTO](#schemacreatemicrosoftcredentialdto) \| [CreateGoogleCalendarOAuth2ClientCredentialDTO](#schemacreategooglecalendaroauth2clientcredentialdto) \| [CreateGoogleCalendarOAuth2AuthorizationCredentialDTO](#schemacreategooglecalendaroauth2authorizationcredentialdto) \| [CreateGoogleSheetsOAuth2AuthorizationCredentialDTO](#schemacreategooglesheetsoauth2authorizationcredentialdto) \| [CreateSlackOAuth2AuthorizationCredentialDTO](#schemacreateslackoauth2authorizationcredentialdto) \| [CreateGoHighLevelMCPCredentialDTO](#schemacreategohighlevelmcpcredentialdto) \| [CreateInworldCredentialDTO](#schemacreateinworldcredentialdto) \| [CreateMinimaxCredentialDTO](#schemacreateminimaxcredentialdto) \| [CreateWellSaidCredentialDTO](#schemacreatewellsaidcredentialdto) \| [CreateEmailCredentialDTO](#schemacreateemailcredentialdto) \| [CreateSlackWebhookCredentialDTO](#schemacreateslackwebhookcredentialdto)]|false|These are dynamic credentials that will be used for the assistant calls. By default, all the credentials are available for use in the call but you can supplement an additional credentials using this. Dynamic credentials override existing credentials.|
+|» » credentials|body|[[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto) \| [CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto) \| [CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto) \| [CreateAssemblyAICredentialDTO](#schemacreateassemblyaicredentialdto) \| [CreateAzureCredentialDTO](#schemacreateazurecredentialdto) \| [CreateAzureOpenAICredentialDTO](#schemacreateazureopenaicredentialdto) \| [CreateByoSipTrunkCredentialDTO](#schemacreatebyosiptrunkcredentialdto) \| [CreateCartesiaCredentialDTO](#schemacreatecartesiacredentialdto) \| [CreateCerebrasCredentialDTO](#schemacreatecerebrascredentialdto) \| [CreateCloudflareCredentialDTO](#schemacreatecloudflarecredentialdto) \| [CreateCustomLLMCredentialDTO](#schemacreatecustomllmcredentialdto) \| [CreateDeepgramCredentialDTO](#schemacreatedeepgramcredentialdto) \| [CreateDeepInfraCredentialDTO](#schemacreatedeepinfracredentialdto) \| [CreateDeepSeekCredentialDTO](#schemacreatedeepseekcredentialdto) \| [CreateElevenLabsCredentialDTO](#schemacreateelevenlabscredentialdto) \| [CreateGcpCredentialDTO](#schemacreategcpcredentialdto) \| [CreateGladiaCredentialDTO](#schemacreategladiacredentialdto) \| [CreateGoHighLevelCredentialDTO](#schemacreategohighlevelcredentialdto) \| [CreateGoogleCredentialDTO](#schemacreategooglecredentialdto) \| [CreateGroqCredentialDTO](#schemacreategroqcredentialdto) \| [CreateHumeCredentialDTO](#schemacreatehumecredentialdto) \| [CreateInflectionAICredentialDTO](#schemacreateinflectionaicredentialdto) \| [CreateLangfuseCredentialDTO](#schemacreatelangfusecredentialdto) \| [CreateLmntCredentialDTO](#schemacreatelmntcredentialdto) \| [CreateMakeCredentialDTO](#schemacreatemakecredentialdto) \| [CreateMistralCredentialDTO](#schemacreatemistralcredentialdto) \| [CreateNeuphonicCredentialDTO](#schemacreateneuphoniccredentialdto) \| [CreateOpenAICredentialDTO](#schemacreateopenaicredentialdto) \| [CreateOpenRouterCredentialDTO](#schemacreateopenroutercredentialdto) \| [CreatePerplexityAICredentialDTO](#schemacreateperplexityaicredentialdto) \| [CreatePlayHTCredentialDTO](#schemacreateplayhtcredentialdto) \| [CreateRimeAICredentialDTO](#schemacreaterimeaicredentialdto) \| [CreateRunpodCredentialDTO](#schemacreaterunpodcredentialdto) \| [CreateS3CredentialDTO](#schemacreates3credentialdto) \| [CreateS3CompatibleCredentialDTO](#schemacreates3compatiblecredentialdto) \| [CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto) \| [CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto) \| [CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto) \| [CreateReson8CredentialDTO](#schemacreatereson8credentialdto) \| [CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto) \| [CreateTavusCredentialDTO](#schemacreatetavuscredentialdto) \| [CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto) \| [CreateTwilioCredentialDTO](#schemacreatetwiliocredentialdto) \| [CreateVonageCredentialDTO](#schemacreatevonagecredentialdto) \| [CreateWebhookCredentialDTO](#schemacreatewebhookcredentialdto) \| [CreateCustomCredentialDTO](#schemacreatecustomcredentialdto) \| [CreateXAiCredentialDTO](#schemacreatexaicredentialdto) \| [CreateMicrosoftCredentialDTO](#schemacreatemicrosoftcredentialdto) \| [CreateGoogleCalendarOAuth2ClientCredentialDTO](#schemacreategooglecalendaroauth2clientcredentialdto) \| [CreateGoogleCalendarOAuth2AuthorizationCredentialDTO](#schemacreategooglecalendaroauth2authorizationcredentialdto) \| [CreateGoogleSheetsOAuth2AuthorizationCredentialDTO](#schemacreategooglesheetsoauth2authorizationcredentialdto) \| [CreateSlackOAuth2AuthorizationCredentialDTO](#schemacreateslackoauth2authorizationcredentialdto) \| [CreateGoHighLevelMCPCredentialDTO](#schemacreategohighlevelmcpcredentialdto) \| [CreateInworldCredentialDTO](#schemacreateinworldcredentialdto) \| [CreateMinimaxCredentialDTO](#schemacreateminimaxcredentialdto) \| [CreateWellSaidCredentialDTO](#schemacreatewellsaidcredentialdto) \| [CreateEmailCredentialDTO](#schemacreateemailcredentialdto) \| [CreateSlackWebhookCredentialDTO](#schemacreateslackwebhookcredentialdto)]|false|These are dynamic credentials that will be used for the assistant calls. By default, all the credentials are available for use in the call but you can supplement an additional credentials using this. Dynamic credentials override existing credentials.|
 |» » » *oneOf*|body|[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto)|false|none|
@@ -93696,6 +93821,7 @@ curl https://api.vapi.ai/v2/campaign \
 |» » » *oneOf*|body|[CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto)|false|none|
+|» » » *oneOf*|body|[CreateReson8CredentialDTO](#schemacreatereson8credentialdto)|false|none|
 |» » » *oneOf*|body|[CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateTavusCredentialDTO](#schemacreatetavuscredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto)|false|none|
@@ -93845,7 +93971,7 @@ curl https://api.vapi.ai/v2/campaign \
 |» » » » excludedStatusCodes|body|[object]|false|This is the excluded status codes. If the response status code is in this list, the request will not be retried.<br>By default, the request will be retried for any non-2xx status code.|
 |» » keypadInputPlan|body|[KeypadInputPlan](#schemakeypadinputplan)|false|none|
 |» squadOverrides|body|object|false|These are the overrides for the squad and template variables for the campaign. Use this when the campaign targets a `squadId`. Per-contact `squadOverrides` are deep-merged on top of this at dispatch time.|
-|» » transcriber|body|[AssemblyAITranscriber](#schemaassemblyaitranscriber) \| [AzureSpeechTranscriber](#schemaazurespeechtranscriber) \| [CustomTranscriber](#schemacustomtranscriber) \| [DeepgramTranscriber](#schemadeepgramtranscriber) \| [ElevenLabsTranscriber](#schemaelevenlabstranscriber) \| [GladiaTranscriber](#schemagladiatranscriber) \| [GoogleTranscriber](#schemagoogletranscriber) \| [SpeechmaticsTranscriber](#schemaspeechmaticstranscriber) \| [TalkscriberTranscriber](#schematalkscribertranscriber) \| [OpenAITranscriber](#schemaopenaitranscriber) \| [CartesiaTranscriber](#schemacartesiatranscriber) \| [SonioxTranscriber](#schemasonioxtranscriber) \| [XaiTranscriber](#schemaxaitranscriber) \| [VapiTranscriber](#schemavapitranscriber)|false|These are the options for the assistant's transcriber.|
+|» » transcriber|body|[AssemblyAITranscriber](#schemaassemblyaitranscriber) \| [AzureSpeechTranscriber](#schemaazurespeechtranscriber) \| [CustomTranscriber](#schemacustomtranscriber) \| [DeepgramTranscriber](#schemadeepgramtranscriber) \| [ElevenLabsTranscriber](#schemaelevenlabstranscriber) \| [GladiaTranscriber](#schemagladiatranscriber) \| [GoogleTranscriber](#schemagoogletranscriber) \| [SpeechmaticsTranscriber](#schemaspeechmaticstranscriber) \| [TalkscriberTranscriber](#schematalkscribertranscriber) \| [OpenAITranscriber](#schemaopenaitranscriber) \| [CartesiaTranscriber](#schemacartesiatranscriber) \| [SonioxTranscriber](#schemasonioxtranscriber) \| [XaiTranscriber](#schemaxaitranscriber) \| [Reson8Transcriber](#schemareson8transcriber) \| [VapiTranscriber](#schemavapitranscriber)|false|These are the options for the assistant's transcriber.|
 |» » » *oneOf*|body|[AssemblyAITranscriber](#schemaassemblyaitranscriber)|false|none|
 |» » » *oneOf*|body|[AzureSpeechTranscriber](#schemaazurespeechtranscriber)|false|none|
 |» » » *oneOf*|body|[CustomTranscriber](#schemacustomtranscriber)|false|none|
@@ -93859,6 +93985,7 @@ curl https://api.vapi.ai/v2/campaign \
 |» » » *oneOf*|body|[CartesiaTranscriber](#schemacartesiatranscriber)|false|none|
 |» » » *oneOf*|body|[SonioxTranscriber](#schemasonioxtranscriber)|false|none|
 |» » » *oneOf*|body|[XaiTranscriber](#schemaxaitranscriber)|false|none|
+|» » » *oneOf*|body|[Reson8Transcriber](#schemareson8transcriber)|false|none|
 |» » » *oneOf*|body|[VapiTranscriber](#schemavapitranscriber)|false|none|
 |» » model|body|[AnthropicModel](#schemaanthropicmodel) \| [AnthropicBedrockModel](#schemaanthropicbedrockmodel) \| [AnyscaleModel](#schemaanyscalemodel) \| [CerebrasModel](#schemacerebrasmodel) \| [CustomLLMModel](#schemacustomllmmodel) \| [DeepInfraModel](#schemadeepinframodel) \| [DeepSeekModel](#schemadeepseekmodel) \| [GoogleModel](#schemagooglemodel) \| [GroqModel](#schemagroqmodel) \| [InflectionAIModel](#schemainflectionaimodel) \| [MinimaxLLMModel](#schemaminimaxllmmodel) \| [OpenAIModel](#schemaopenaimodel) \| [OpenRouterModel](#schemaopenroutermodel) \| [PerplexityAIModel](#schemaperplexityaimodel) \| [TogetherAIModel](#schematogetheraimodel) \| [XaiModel](#schemaxaimodel) \| [VapiModel](#schemavapimodel)|false|These are the options for the assistant's LLM.|
 |» » » *oneOf*|body|[AnthropicModel](#schemaanthropicmodel)|false|none|
@@ -93910,7 +94037,7 @@ curl https://api.vapi.ai/v2/campaign \
 |» » clientMessages|body|[string]|false|These are the messages that will be sent to your Client SDKs. Default is conversation-update,function-call,hang,model-output,speech-update,status-update,transfer-update,transcript,tool-calls,user-interrupted,voice-input,workflow.node.started,assistant.started. You can check the shape of the messages in ClientMessage schema.|
 |» » serverMessages|body|[string]|false|These are the messages that will be sent to your Server URL. Default is conversation-update,end-of-call-report,function-call,hang,speech-update,status-update,tool-calls,transfer-destination-request,handoff-destination-request,user-interrupted,assistant.started. You can check the shape of the messages in ServerMessage schema.|
 |» » maxDurationSeconds|body|number|false|This is the maximum number of seconds that the call will last. When the call reaches this duration, it will be ended.<br><br>@default 600 (10 minutes)|
-|» » backgroundSound|body|string \| string(uri)|false|This is the background sound in the call. Default for phone calls is 'office' and default for web calls is 'off'.<br>You can also provide a custom sound by providing a URL to an audio file.|
+|» » backgroundSound|body|string \| string(uri)|false|This is the background sound in the call. Default for phone calls is 'office' and default for web calls is 'off'.<br>Bundled sounds: 'office', 'white-noise', 'city', 'crowd' and 'farm'. GPT Live assistants don't play 'office'.<br>You can also provide a custom sound by providing a URL to an audio file.|
 |» » » *oneOf*|body|string|false|none|
 |» » » *oneOf*|body|string(uri)|false|none|
 |» » modelOutputInMessagesEnabled|body|boolean|false|This determines whether the model's output is used in conversation history rather than the transcription of assistant's speech.<br><br>@default false|
@@ -93924,7 +94051,7 @@ curl https://api.vapi.ai/v2/campaign \
 |» » » tags|body|[string]|true|This is an array of tags to be added to the Langfuse trace. Tags allow you to categorize and filter traces. https://langfuse.com/docs/tracing-features/tags|
 |» » » metadata|body|object|false|This is a JSON object that will be added to the Langfuse trace. Traces can be enriched with metadata to better understand your users, application, and experiments. https://langfuse.com/docs/tracing-features/metadata<br>By default it includes the call metadata, assistant metadata, and assistant overrides.|
 |» » » *oneOf*|body|[LangfuseObservabilityPlan](#schemalangfuseobservabilityplan)|false|none|
-|» » credentials|body|[[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto) \| [CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto) \| [CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto) \| [CreateAssemblyAICredentialDTO](#schemacreateassemblyaicredentialdto) \| [CreateAzureCredentialDTO](#schemacreateazurecredentialdto) \| [CreateAzureOpenAICredentialDTO](#schemacreateazureopenaicredentialdto) \| [CreateByoSipTrunkCredentialDTO](#schemacreatebyosiptrunkcredentialdto) \| [CreateCartesiaCredentialDTO](#schemacreatecartesiacredentialdto) \| [CreateCerebrasCredentialDTO](#schemacreatecerebrascredentialdto) \| [CreateCloudflareCredentialDTO](#schemacreatecloudflarecredentialdto) \| [CreateCustomLLMCredentialDTO](#schemacreatecustomllmcredentialdto) \| [CreateDeepgramCredentialDTO](#schemacreatedeepgramcredentialdto) \| [CreateDeepInfraCredentialDTO](#schemacreatedeepinfracredentialdto) \| [CreateDeepSeekCredentialDTO](#schemacreatedeepseekcredentialdto) \| [CreateElevenLabsCredentialDTO](#schemacreateelevenlabscredentialdto) \| [CreateGcpCredentialDTO](#schemacreategcpcredentialdto) \| [CreateGladiaCredentialDTO](#schemacreategladiacredentialdto) \| [CreateGoHighLevelCredentialDTO](#schemacreategohighlevelcredentialdto) \| [CreateGoogleCredentialDTO](#schemacreategooglecredentialdto) \| [CreateGroqCredentialDTO](#schemacreategroqcredentialdto) \| [CreateHumeCredentialDTO](#schemacreatehumecredentialdto) \| [CreateInflectionAICredentialDTO](#schemacreateinflectionaicredentialdto) \| [CreateLangfuseCredentialDTO](#schemacreatelangfusecredentialdto) \| [CreateLmntCredentialDTO](#schemacreatelmntcredentialdto) \| [CreateMakeCredentialDTO](#schemacreatemakecredentialdto) \| [CreateMistralCredentialDTO](#schemacreatemistralcredentialdto) \| [CreateNeuphonicCredentialDTO](#schemacreateneuphoniccredentialdto) \| [CreateOpenAICredentialDTO](#schemacreateopenaicredentialdto) \| [CreateOpenRouterCredentialDTO](#schemacreateopenroutercredentialdto) \| [CreatePerplexityAICredentialDTO](#schemacreateperplexityaicredentialdto) \| [CreatePlayHTCredentialDTO](#schemacreateplayhtcredentialdto) \| [CreateRimeAICredentialDTO](#schemacreaterimeaicredentialdto) \| [CreateRunpodCredentialDTO](#schemacreaterunpodcredentialdto) \| [CreateS3CredentialDTO](#schemacreates3credentialdto) \| [CreateS3CompatibleCredentialDTO](#schemacreates3compatiblecredentialdto) \| [CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto) \| [CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto) \| [CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto) \| [CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto) \| [CreateTavusCredentialDTO](#schemacreatetavuscredentialdto) \| [CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto) \| [CreateTwilioCredentialDTO](#schemacreatetwiliocredentialdto) \| [CreateVonageCredentialDTO](#schemacreatevonagecredentialdto) \| [CreateWebhookCredentialDTO](#schemacreatewebhookcredentialdto) \| [CreateCustomCredentialDTO](#schemacreatecustomcredentialdto) \| [CreateXAiCredentialDTO](#schemacreatexaicredentialdto) \| [CreateMicrosoftCredentialDTO](#schemacreatemicrosoftcredentialdto) \| [CreateGoogleCalendarOAuth2ClientCredentialDTO](#schemacreategooglecalendaroauth2clientcredentialdto) \| [CreateGoogleCalendarOAuth2AuthorizationCredentialDTO](#schemacreategooglecalendaroauth2authorizationcredentialdto) \| [CreateGoogleSheetsOAuth2AuthorizationCredentialDTO](#schemacreategooglesheetsoauth2authorizationcredentialdto) \| [CreateSlackOAuth2AuthorizationCredentialDTO](#schemacreateslackoauth2authorizationcredentialdto) \| [CreateGoHighLevelMCPCredentialDTO](#schemacreategohighlevelmcpcredentialdto) \| [CreateInworldCredentialDTO](#schemacreateinworldcredentialdto) \| [CreateMinimaxCredentialDTO](#schemacreateminimaxcredentialdto) \| [CreateWellSaidCredentialDTO](#schemacreatewellsaidcredentialdto) \| [CreateEmailCredentialDTO](#schemacreateemailcredentialdto) \| [CreateSlackWebhookCredentialDTO](#schemacreateslackwebhookcredentialdto)]|false|These are dynamic credentials that will be used for the assistant calls. By default, all the credentials are available for use in the call but you can supplement an additional credentials using this. Dynamic credentials override existing credentials.|
+|» » credentials|body|[[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto) \| [CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto) \| [CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto) \| [CreateAssemblyAICredentialDTO](#schemacreateassemblyaicredentialdto) \| [CreateAzureCredentialDTO](#schemacreateazurecredentialdto) \| [CreateAzureOpenAICredentialDTO](#schemacreateazureopenaicredentialdto) \| [CreateByoSipTrunkCredentialDTO](#schemacreatebyosiptrunkcredentialdto) \| [CreateCartesiaCredentialDTO](#schemacreatecartesiacredentialdto) \| [CreateCerebrasCredentialDTO](#schemacreatecerebrascredentialdto) \| [CreateCloudflareCredentialDTO](#schemacreatecloudflarecredentialdto) \| [CreateCustomLLMCredentialDTO](#schemacreatecustomllmcredentialdto) \| [CreateDeepgramCredentialDTO](#schemacreatedeepgramcredentialdto) \| [CreateDeepInfraCredentialDTO](#schemacreatedeepinfracredentialdto) \| [CreateDeepSeekCredentialDTO](#schemacreatedeepseekcredentialdto) \| [CreateElevenLabsCredentialDTO](#schemacreateelevenlabscredentialdto) \| [CreateGcpCredentialDTO](#schemacreategcpcredentialdto) \| [CreateGladiaCredentialDTO](#schemacreategladiacredentialdto) \| [CreateGoHighLevelCredentialDTO](#schemacreategohighlevelcredentialdto) \| [CreateGoogleCredentialDTO](#schemacreategooglecredentialdto) \| [CreateGroqCredentialDTO](#schemacreategroqcredentialdto) \| [CreateHumeCredentialDTO](#schemacreatehumecredentialdto) \| [CreateInflectionAICredentialDTO](#schemacreateinflectionaicredentialdto) \| [CreateLangfuseCredentialDTO](#schemacreatelangfusecredentialdto) \| [CreateLmntCredentialDTO](#schemacreatelmntcredentialdto) \| [CreateMakeCredentialDTO](#schemacreatemakecredentialdto) \| [CreateMistralCredentialDTO](#schemacreatemistralcredentialdto) \| [CreateNeuphonicCredentialDTO](#schemacreateneuphoniccredentialdto) \| [CreateOpenAICredentialDTO](#schemacreateopenaicredentialdto) \| [CreateOpenRouterCredentialDTO](#schemacreateopenroutercredentialdto) \| [CreatePerplexityAICredentialDTO](#schemacreateperplexityaicredentialdto) \| [CreatePlayHTCredentialDTO](#schemacreateplayhtcredentialdto) \| [CreateRimeAICredentialDTO](#schemacreaterimeaicredentialdto) \| [CreateRunpodCredentialDTO](#schemacreaterunpodcredentialdto) \| [CreateS3CredentialDTO](#schemacreates3credentialdto) \| [CreateS3CompatibleCredentialDTO](#schemacreates3compatiblecredentialdto) \| [CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto) \| [CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto) \| [CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto) \| [CreateReson8CredentialDTO](#schemacreatereson8credentialdto) \| [CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto) \| [CreateTavusCredentialDTO](#schemacreatetavuscredentialdto) \| [CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto) \| [CreateTwilioCredentialDTO](#schemacreatetwiliocredentialdto) \| [CreateVonageCredentialDTO](#schemacreatevonagecredentialdto) \| [CreateWebhookCredentialDTO](#schemacreatewebhookcredentialdto) \| [CreateCustomCredentialDTO](#schemacreatecustomcredentialdto) \| [CreateXAiCredentialDTO](#schemacreatexaicredentialdto) \| [CreateMicrosoftCredentialDTO](#schemacreatemicrosoftcredentialdto) \| [CreateGoogleCalendarOAuth2ClientCredentialDTO](#schemacreategooglecalendaroauth2clientcredentialdto) \| [CreateGoogleCalendarOAuth2AuthorizationCredentialDTO](#schemacreategooglecalendaroauth2authorizationcredentialdto) \| [CreateGoogleSheetsOAuth2AuthorizationCredentialDTO](#schemacreategooglesheetsoauth2authorizationcredentialdto) \| [CreateSlackOAuth2AuthorizationCredentialDTO](#schemacreateslackoauth2authorizationcredentialdto) \| [CreateGoHighLevelMCPCredentialDTO](#schemacreategohighlevelmcpcredentialdto) \| [CreateInworldCredentialDTO](#schemacreateinworldcredentialdto) \| [CreateMinimaxCredentialDTO](#schemacreateminimaxcredentialdto) \| [CreateWellSaidCredentialDTO](#schemacreatewellsaidcredentialdto) \| [CreateEmailCredentialDTO](#schemacreateemailcredentialdto) \| [CreateSlackWebhookCredentialDTO](#schemacreateslackwebhookcredentialdto)]|false|These are dynamic credentials that will be used for the assistant calls. By default, all the credentials are available for use in the call but you can supplement an additional credentials using this. Dynamic credentials override existing credentials.|
 |» » » *oneOf*|body|[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto)|false|none|
@@ -93963,6 +94090,7 @@ curl https://api.vapi.ai/v2/campaign \
 |» » » *oneOf*|body|[CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto)|false|none|
+|» » » *oneOf*|body|[CreateReson8CredentialDTO](#schemacreatereson8credentialdto)|false|none|
 |» » » *oneOf*|body|[CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateTavusCredentialDTO](#schemacreatetavuscredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto)|false|none|
@@ -94185,6 +94313,10 @@ curl https://api.vapi.ai/v2/campaign \
 |» » serverMessages|call.artifact.upload|
 |» » » *oneOf*|off|
 |» » » *oneOf*|office|
+|» » » *oneOf*|white-noise|
+|» » » *oneOf*|city|
+|» » » *oneOf*|crowd|
+|» » » *oneOf*|farm|
 |» » » provider|langfuse|
 |» » » » rubric|NumericScale|
 |» » » » rubric|DescriptiveScale|
@@ -94252,6 +94384,10 @@ curl https://api.vapi.ai/v2/campaign \
 |» » serverMessages|call.artifact.upload|
 |» » » *oneOf*|off|
 |» » » *oneOf*|office|
+|» » » *oneOf*|white-noise|
+|» » » *oneOf*|city|
+|» » » *oneOf*|crowd|
+|» » » *oneOf*|farm|
 |» » » provider|langfuse|
 |» » » » rubric|NumericScale|
 |» » » » rubric|DescriptiveScale|
@@ -127640,6 +127776,7 @@ curl https://api.vapi.ai/session \
         "performanceMetrics": {
           "turnLatencies": [
             {
+              "unmeasured": "transcriber",
               "modelLatency": 0,
               "voiceLatency": 0,
               "transcriberLatency": 0,
@@ -127655,7 +127792,8 @@ curl https://api.vapi.ai/session \
           "fromTransportLatencyAverage": 0,
           "toTransportLatencyAverage": 0,
           "numUserInterrupted": 0,
-          "numAssistantInterrupted": 0
+          "numAssistantInterrupted": 0,
+          "turnLatencyUnmeasuredTracked": true
         },
         "structuredOutputs": {},
         "scorecards": {},
@@ -133024,7 +133162,7 @@ curl https://api.vapi.ai/session \
 |» expirationSeconds|body|number|false|Session expiration time in seconds. Defaults to 24 hours (86400 seconds) if not set.|
 |» assistantId|body|string|false|This is the ID of the assistant associated with this session. Use this when referencing an existing assistant.|
 |» assistant|body|object|false|This is the assistant configuration for this session. Use this when creating a new assistant configuration.<br>If assistantId is provided, this will be ignored.|
-|» » transcriber|body|[AssemblyAITranscriber](#schemaassemblyaitranscriber) \| [AzureSpeechTranscriber](#schemaazurespeechtranscriber) \| [CustomTranscriber](#schemacustomtranscriber) \| [DeepgramTranscriber](#schemadeepgramtranscriber) \| [ElevenLabsTranscriber](#schemaelevenlabstranscriber) \| [GladiaTranscriber](#schemagladiatranscriber) \| [GoogleTranscriber](#schemagoogletranscriber) \| [SpeechmaticsTranscriber](#schemaspeechmaticstranscriber) \| [TalkscriberTranscriber](#schematalkscribertranscriber) \| [OpenAITranscriber](#schemaopenaitranscriber) \| [CartesiaTranscriber](#schemacartesiatranscriber) \| [SonioxTranscriber](#schemasonioxtranscriber) \| [XaiTranscriber](#schemaxaitranscriber) \| [VapiTranscriber](#schemavapitranscriber)|false|These are the options for the assistant's transcriber.|
+|» » transcriber|body|[AssemblyAITranscriber](#schemaassemblyaitranscriber) \| [AzureSpeechTranscriber](#schemaazurespeechtranscriber) \| [CustomTranscriber](#schemacustomtranscriber) \| [DeepgramTranscriber](#schemadeepgramtranscriber) \| [ElevenLabsTranscriber](#schemaelevenlabstranscriber) \| [GladiaTranscriber](#schemagladiatranscriber) \| [GoogleTranscriber](#schemagoogletranscriber) \| [SpeechmaticsTranscriber](#schemaspeechmaticstranscriber) \| [TalkscriberTranscriber](#schematalkscribertranscriber) \| [OpenAITranscriber](#schemaopenaitranscriber) \| [CartesiaTranscriber](#schemacartesiatranscriber) \| [SonioxTranscriber](#schemasonioxtranscriber) \| [XaiTranscriber](#schemaxaitranscriber) \| [Reson8Transcriber](#schemareson8transcriber) \| [VapiTranscriber](#schemavapitranscriber)|false|These are the options for the assistant's transcriber.|
 |» » » *oneOf*|body|[AssemblyAITranscriber](#schemaassemblyaitranscriber)|false|none|
 |» » » *oneOf*|body|[AzureSpeechTranscriber](#schemaazurespeechtranscriber)|false|none|
 |» » » *oneOf*|body|[CustomTranscriber](#schemacustomtranscriber)|false|none|
@@ -133038,6 +133176,7 @@ curl https://api.vapi.ai/session \
 |» » » *oneOf*|body|[CartesiaTranscriber](#schemacartesiatranscriber)|false|none|
 |» » » *oneOf*|body|[SonioxTranscriber](#schemasonioxtranscriber)|false|none|
 |» » » *oneOf*|body|[XaiTranscriber](#schemaxaitranscriber)|false|none|
+|» » » *oneOf*|body|[Reson8Transcriber](#schemareson8transcriber)|false|none|
 |» » » *oneOf*|body|[VapiTranscriber](#schemavapitranscriber)|false|none|
 |» » model|body|[AnthropicModel](#schemaanthropicmodel) \| [AnthropicBedrockModel](#schemaanthropicbedrockmodel) \| [AnyscaleModel](#schemaanyscalemodel) \| [CerebrasModel](#schemacerebrasmodel) \| [CustomLLMModel](#schemacustomllmmodel) \| [DeepInfraModel](#schemadeepinframodel) \| [DeepSeekModel](#schemadeepseekmodel) \| [GoogleModel](#schemagooglemodel) \| [GroqModel](#schemagroqmodel) \| [InflectionAIModel](#schemainflectionaimodel) \| [MinimaxLLMModel](#schemaminimaxllmmodel) \| [OpenAIModel](#schemaopenaimodel) \| [OpenRouterModel](#schemaopenroutermodel) \| [PerplexityAIModel](#schemaperplexityaimodel) \| [TogetherAIModel](#schematogetheraimodel) \| [XaiModel](#schemaxaimodel) \| [VapiModel](#schemavapimodel)|false|These are the options for the assistant's LLM.|
 |» » » *oneOf*|body|[AnthropicModel](#schemaanthropicmodel)|false|none|
@@ -133089,7 +133228,7 @@ curl https://api.vapi.ai/session \
 |» » clientMessages|body|[string]|false|These are the messages that will be sent to your Client SDKs. Default is conversation-update,function-call,hang,model-output,speech-update,status-update,transfer-update,transcript,tool-calls,user-interrupted,voice-input,workflow.node.started,assistant.started. You can check the shape of the messages in ClientMessage schema.|
 |» » serverMessages|body|[string]|false|These are the messages that will be sent to your Server URL. Default is conversation-update,end-of-call-report,function-call,hang,speech-update,status-update,tool-calls,transfer-destination-request,handoff-destination-request,user-interrupted,assistant.started. You can check the shape of the messages in ServerMessage schema.|
 |» » maxDurationSeconds|body|number|false|This is the maximum number of seconds that the call will last. When the call reaches this duration, it will be ended.<br><br>@default 600 (10 minutes)|
-|» » backgroundSound|body|string \| string(uri)|false|This is the background sound in the call. Default for phone calls is 'office' and default for web calls is 'off'.<br>You can also provide a custom sound by providing a URL to an audio file.|
+|» » backgroundSound|body|string \| string(uri)|false|This is the background sound in the call. Default for phone calls is 'office' and default for web calls is 'off'.<br>Bundled sounds: 'office', 'white-noise', 'city', 'crowd' and 'farm'. GPT Live assistants don't play 'office'.<br>You can also provide a custom sound by providing a URL to an audio file.|
 |» » » *oneOf*|body|string|false|none|
 |» » » *oneOf*|body|string(uri)|false|none|
 |» » modelOutputInMessagesEnabled|body|boolean|false|This determines whether the model's output is used in conversation history rather than the transcription of assistant's speech.<br><br>@default false|
@@ -133103,7 +133242,7 @@ curl https://api.vapi.ai/session \
 |» » » tags|body|[string]|true|This is an array of tags to be added to the Langfuse trace. Tags allow you to categorize and filter traces. https://langfuse.com/docs/tracing-features/tags|
 |» » » metadata|body|object|false|This is a JSON object that will be added to the Langfuse trace. Traces can be enriched with metadata to better understand your users, application, and experiments. https://langfuse.com/docs/tracing-features/metadata<br>By default it includes the call metadata, assistant metadata, and assistant overrides.|
 |» » » *oneOf*|body|[LangfuseObservabilityPlan](#schemalangfuseobservabilityplan)|false|none|
-|» » credentials|body|[[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto) \| [CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto) \| [CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto) \| [CreateAssemblyAICredentialDTO](#schemacreateassemblyaicredentialdto) \| [CreateAzureCredentialDTO](#schemacreateazurecredentialdto) \| [CreateAzureOpenAICredentialDTO](#schemacreateazureopenaicredentialdto) \| [CreateByoSipTrunkCredentialDTO](#schemacreatebyosiptrunkcredentialdto) \| [CreateCartesiaCredentialDTO](#schemacreatecartesiacredentialdto) \| [CreateCerebrasCredentialDTO](#schemacreatecerebrascredentialdto) \| [CreateCloudflareCredentialDTO](#schemacreatecloudflarecredentialdto) \| [CreateCustomLLMCredentialDTO](#schemacreatecustomllmcredentialdto) \| [CreateDeepgramCredentialDTO](#schemacreatedeepgramcredentialdto) \| [CreateDeepInfraCredentialDTO](#schemacreatedeepinfracredentialdto) \| [CreateDeepSeekCredentialDTO](#schemacreatedeepseekcredentialdto) \| [CreateElevenLabsCredentialDTO](#schemacreateelevenlabscredentialdto) \| [CreateGcpCredentialDTO](#schemacreategcpcredentialdto) \| [CreateGladiaCredentialDTO](#schemacreategladiacredentialdto) \| [CreateGoHighLevelCredentialDTO](#schemacreategohighlevelcredentialdto) \| [CreateGoogleCredentialDTO](#schemacreategooglecredentialdto) \| [CreateGroqCredentialDTO](#schemacreategroqcredentialdto) \| [CreateHumeCredentialDTO](#schemacreatehumecredentialdto) \| [CreateInflectionAICredentialDTO](#schemacreateinflectionaicredentialdto) \| [CreateLangfuseCredentialDTO](#schemacreatelangfusecredentialdto) \| [CreateLmntCredentialDTO](#schemacreatelmntcredentialdto) \| [CreateMakeCredentialDTO](#schemacreatemakecredentialdto) \| [CreateMistralCredentialDTO](#schemacreatemistralcredentialdto) \| [CreateNeuphonicCredentialDTO](#schemacreateneuphoniccredentialdto) \| [CreateOpenAICredentialDTO](#schemacreateopenaicredentialdto) \| [CreateOpenRouterCredentialDTO](#schemacreateopenroutercredentialdto) \| [CreatePerplexityAICredentialDTO](#schemacreateperplexityaicredentialdto) \| [CreatePlayHTCredentialDTO](#schemacreateplayhtcredentialdto) \| [CreateRimeAICredentialDTO](#schemacreaterimeaicredentialdto) \| [CreateRunpodCredentialDTO](#schemacreaterunpodcredentialdto) \| [CreateS3CredentialDTO](#schemacreates3credentialdto) \| [CreateS3CompatibleCredentialDTO](#schemacreates3compatiblecredentialdto) \| [CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto) \| [CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto) \| [CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto) \| [CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto) \| [CreateTavusCredentialDTO](#schemacreatetavuscredentialdto) \| [CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto) \| [CreateTwilioCredentialDTO](#schemacreatetwiliocredentialdto) \| [CreateVonageCredentialDTO](#schemacreatevonagecredentialdto) \| [CreateWebhookCredentialDTO](#schemacreatewebhookcredentialdto) \| [CreateCustomCredentialDTO](#schemacreatecustomcredentialdto) \| [CreateXAiCredentialDTO](#schemacreatexaicredentialdto) \| [CreateMicrosoftCredentialDTO](#schemacreatemicrosoftcredentialdto) \| [CreateGoogleCalendarOAuth2ClientCredentialDTO](#schemacreategooglecalendaroauth2clientcredentialdto) \| [CreateGoogleCalendarOAuth2AuthorizationCredentialDTO](#schemacreategooglecalendaroauth2authorizationcredentialdto) \| [CreateGoogleSheetsOAuth2AuthorizationCredentialDTO](#schemacreategooglesheetsoauth2authorizationcredentialdto) \| [CreateSlackOAuth2AuthorizationCredentialDTO](#schemacreateslackoauth2authorizationcredentialdto) \| [CreateGoHighLevelMCPCredentialDTO](#schemacreategohighlevelmcpcredentialdto) \| [CreateInworldCredentialDTO](#schemacreateinworldcredentialdto) \| [CreateMinimaxCredentialDTO](#schemacreateminimaxcredentialdto) \| [CreateWellSaidCredentialDTO](#schemacreatewellsaidcredentialdto) \| [CreateEmailCredentialDTO](#schemacreateemailcredentialdto) \| [CreateSlackWebhookCredentialDTO](#schemacreateslackwebhookcredentialdto)]|false|These are dynamic credentials that will be used for the assistant calls. By default, all the credentials are available for use in the call but you can supplement an additional credentials using this. Dynamic credentials override existing credentials.|
+|» » credentials|body|[[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto) \| [CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto) \| [CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto) \| [CreateAssemblyAICredentialDTO](#schemacreateassemblyaicredentialdto) \| [CreateAzureCredentialDTO](#schemacreateazurecredentialdto) \| [CreateAzureOpenAICredentialDTO](#schemacreateazureopenaicredentialdto) \| [CreateByoSipTrunkCredentialDTO](#schemacreatebyosiptrunkcredentialdto) \| [CreateCartesiaCredentialDTO](#schemacreatecartesiacredentialdto) \| [CreateCerebrasCredentialDTO](#schemacreatecerebrascredentialdto) \| [CreateCloudflareCredentialDTO](#schemacreatecloudflarecredentialdto) \| [CreateCustomLLMCredentialDTO](#schemacreatecustomllmcredentialdto) \| [CreateDeepgramCredentialDTO](#schemacreatedeepgramcredentialdto) \| [CreateDeepInfraCredentialDTO](#schemacreatedeepinfracredentialdto) \| [CreateDeepSeekCredentialDTO](#schemacreatedeepseekcredentialdto) \| [CreateElevenLabsCredentialDTO](#schemacreateelevenlabscredentialdto) \| [CreateGcpCredentialDTO](#schemacreategcpcredentialdto) \| [CreateGladiaCredentialDTO](#schemacreategladiacredentialdto) \| [CreateGoHighLevelCredentialDTO](#schemacreategohighlevelcredentialdto) \| [CreateGoogleCredentialDTO](#schemacreategooglecredentialdto) \| [CreateGroqCredentialDTO](#schemacreategroqcredentialdto) \| [CreateHumeCredentialDTO](#schemacreatehumecredentialdto) \| [CreateInflectionAICredentialDTO](#schemacreateinflectionaicredentialdto) \| [CreateLangfuseCredentialDTO](#schemacreatelangfusecredentialdto) \| [CreateLmntCredentialDTO](#schemacreatelmntcredentialdto) \| [CreateMakeCredentialDTO](#schemacreatemakecredentialdto) \| [CreateMistralCredentialDTO](#schemacreatemistralcredentialdto) \| [CreateNeuphonicCredentialDTO](#schemacreateneuphoniccredentialdto) \| [CreateOpenAICredentialDTO](#schemacreateopenaicredentialdto) \| [CreateOpenRouterCredentialDTO](#schemacreateopenroutercredentialdto) \| [CreatePerplexityAICredentialDTO](#schemacreateperplexityaicredentialdto) \| [CreatePlayHTCredentialDTO](#schemacreateplayhtcredentialdto) \| [CreateRimeAICredentialDTO](#schemacreaterimeaicredentialdto) \| [CreateRunpodCredentialDTO](#schemacreaterunpodcredentialdto) \| [CreateS3CredentialDTO](#schemacreates3credentialdto) \| [CreateS3CompatibleCredentialDTO](#schemacreates3compatiblecredentialdto) \| [CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto) \| [CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto) \| [CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto) \| [CreateReson8CredentialDTO](#schemacreatereson8credentialdto) \| [CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto) \| [CreateTavusCredentialDTO](#schemacreatetavuscredentialdto) \| [CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto) \| [CreateTwilioCredentialDTO](#schemacreatetwiliocredentialdto) \| [CreateVonageCredentialDTO](#schemacreatevonagecredentialdto) \| [CreateWebhookCredentialDTO](#schemacreatewebhookcredentialdto) \| [CreateCustomCredentialDTO](#schemacreatecustomcredentialdto) \| [CreateXAiCredentialDTO](#schemacreatexaicredentialdto) \| [CreateMicrosoftCredentialDTO](#schemacreatemicrosoftcredentialdto) \| [CreateGoogleCalendarOAuth2ClientCredentialDTO](#schemacreategooglecalendaroauth2clientcredentialdto) \| [CreateGoogleCalendarOAuth2AuthorizationCredentialDTO](#schemacreategooglecalendaroauth2authorizationcredentialdto) \| [CreateGoogleSheetsOAuth2AuthorizationCredentialDTO](#schemacreategooglesheetsoauth2authorizationcredentialdto) \| [CreateSlackOAuth2AuthorizationCredentialDTO](#schemacreateslackoauth2authorizationcredentialdto) \| [CreateGoHighLevelMCPCredentialDTO](#schemacreategohighlevelmcpcredentialdto) \| [CreateInworldCredentialDTO](#schemacreateinworldcredentialdto) \| [CreateMinimaxCredentialDTO](#schemacreateminimaxcredentialdto) \| [CreateWellSaidCredentialDTO](#schemacreatewellsaidcredentialdto) \| [CreateEmailCredentialDTO](#schemacreateemailcredentialdto) \| [CreateSlackWebhookCredentialDTO](#schemacreateslackwebhookcredentialdto)]|false|These are dynamic credentials that will be used for the assistant calls. By default, all the credentials are available for use in the call but you can supplement an additional credentials using this. Dynamic credentials override existing credentials.|
 |» » » *oneOf*|body|[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto)|false|none|
@@ -133142,6 +133281,7 @@ curl https://api.vapi.ai/session \
 |» » » *oneOf*|body|[CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto)|false|none|
+|» » » *oneOf*|body|[CreateReson8CredentialDTO](#schemacreatereson8credentialdto)|false|none|
 |» » » *oneOf*|body|[CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateTavusCredentialDTO](#schemacreatetavuscredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto)|false|none|
@@ -133266,7 +133406,7 @@ curl https://api.vapi.ai/session \
 |» » » » excludedStatusCodes|body|[object]|false|This is the excluded status codes. If the response status code is in this list, the request will not be retried.<br>By default, the request will be retried for any non-2xx status code.|
 |» » keypadInputPlan|body|[KeypadInputPlan](#schemakeypadinputplan)|false|none|
 |» assistantOverrides|body|object|false|These are the overrides for the assistant configuration.<br>Use this to provide variable values and other overrides when using assistantId.<br>Variable substitution will be applied to the assistant's messages and other text-based fields.|
-|» » transcriber|body|[AssemblyAITranscriber](#schemaassemblyaitranscriber) \| [AzureSpeechTranscriber](#schemaazurespeechtranscriber) \| [CustomTranscriber](#schemacustomtranscriber) \| [DeepgramTranscriber](#schemadeepgramtranscriber) \| [ElevenLabsTranscriber](#schemaelevenlabstranscriber) \| [GladiaTranscriber](#schemagladiatranscriber) \| [GoogleTranscriber](#schemagoogletranscriber) \| [SpeechmaticsTranscriber](#schemaspeechmaticstranscriber) \| [TalkscriberTranscriber](#schematalkscribertranscriber) \| [OpenAITranscriber](#schemaopenaitranscriber) \| [CartesiaTranscriber](#schemacartesiatranscriber) \| [SonioxTranscriber](#schemasonioxtranscriber) \| [XaiTranscriber](#schemaxaitranscriber) \| [VapiTranscriber](#schemavapitranscriber)|false|These are the options for the assistant's transcriber.|
+|» » transcriber|body|[AssemblyAITranscriber](#schemaassemblyaitranscriber) \| [AzureSpeechTranscriber](#schemaazurespeechtranscriber) \| [CustomTranscriber](#schemacustomtranscriber) \| [DeepgramTranscriber](#schemadeepgramtranscriber) \| [ElevenLabsTranscriber](#schemaelevenlabstranscriber) \| [GladiaTranscriber](#schemagladiatranscriber) \| [GoogleTranscriber](#schemagoogletranscriber) \| [SpeechmaticsTranscriber](#schemaspeechmaticstranscriber) \| [TalkscriberTranscriber](#schematalkscribertranscriber) \| [OpenAITranscriber](#schemaopenaitranscriber) \| [CartesiaTranscriber](#schemacartesiatranscriber) \| [SonioxTranscriber](#schemasonioxtranscriber) \| [XaiTranscriber](#schemaxaitranscriber) \| [Reson8Transcriber](#schemareson8transcriber) \| [VapiTranscriber](#schemavapitranscriber)|false|These are the options for the assistant's transcriber.|
 |» » » *oneOf*|body|[AssemblyAITranscriber](#schemaassemblyaitranscriber)|false|none|
 |» » » *oneOf*|body|[AzureSpeechTranscriber](#schemaazurespeechtranscriber)|false|none|
 |» » » *oneOf*|body|[CustomTranscriber](#schemacustomtranscriber)|false|none|
@@ -133280,6 +133420,7 @@ curl https://api.vapi.ai/session \
 |» » » *oneOf*|body|[CartesiaTranscriber](#schemacartesiatranscriber)|false|none|
 |» » » *oneOf*|body|[SonioxTranscriber](#schemasonioxtranscriber)|false|none|
 |» » » *oneOf*|body|[XaiTranscriber](#schemaxaitranscriber)|false|none|
+|» » » *oneOf*|body|[Reson8Transcriber](#schemareson8transcriber)|false|none|
 |» » » *oneOf*|body|[VapiTranscriber](#schemavapitranscriber)|false|none|
 |» » model|body|[AnthropicModel](#schemaanthropicmodel) \| [AnthropicBedrockModel](#schemaanthropicbedrockmodel) \| [AnyscaleModel](#schemaanyscalemodel) \| [CerebrasModel](#schemacerebrasmodel) \| [CustomLLMModel](#schemacustomllmmodel) \| [DeepInfraModel](#schemadeepinframodel) \| [DeepSeekModel](#schemadeepseekmodel) \| [GoogleModel](#schemagooglemodel) \| [GroqModel](#schemagroqmodel) \| [InflectionAIModel](#schemainflectionaimodel) \| [MinimaxLLMModel](#schemaminimaxllmmodel) \| [OpenAIModel](#schemaopenaimodel) \| [OpenRouterModel](#schemaopenroutermodel) \| [PerplexityAIModel](#schemaperplexityaimodel) \| [TogetherAIModel](#schematogetheraimodel) \| [XaiModel](#schemaxaimodel) \| [VapiModel](#schemavapimodel)|false|These are the options for the assistant's LLM.|
 |» » » *oneOf*|body|[AnthropicModel](#schemaanthropicmodel)|false|none|
@@ -133331,7 +133472,7 @@ curl https://api.vapi.ai/session \
 |» » clientMessages|body|[string]|false|These are the messages that will be sent to your Client SDKs. Default is conversation-update,function-call,hang,model-output,speech-update,status-update,transfer-update,transcript,tool-calls,user-interrupted,voice-input,workflow.node.started,assistant.started. You can check the shape of the messages in ClientMessage schema.|
 |» » serverMessages|body|[string]|false|These are the messages that will be sent to your Server URL. Default is conversation-update,end-of-call-report,function-call,hang,speech-update,status-update,tool-calls,transfer-destination-request,handoff-destination-request,user-interrupted,assistant.started. You can check the shape of the messages in ServerMessage schema.|
 |» » maxDurationSeconds|body|number|false|This is the maximum number of seconds that the call will last. When the call reaches this duration, it will be ended.<br><br>@default 600 (10 minutes)|
-|» » backgroundSound|body|string \| string(uri)|false|This is the background sound in the call. Default for phone calls is 'office' and default for web calls is 'off'.<br>You can also provide a custom sound by providing a URL to an audio file.|
+|» » backgroundSound|body|string \| string(uri)|false|This is the background sound in the call. Default for phone calls is 'office' and default for web calls is 'off'.<br>Bundled sounds: 'office', 'white-noise', 'city', 'crowd' and 'farm'. GPT Live assistants don't play 'office'.<br>You can also provide a custom sound by providing a URL to an audio file.|
 |» » » *oneOf*|body|string|false|none|
 |» » » *oneOf*|body|string(uri)|false|none|
 |» » modelOutputInMessagesEnabled|body|boolean|false|This determines whether the model's output is used in conversation history rather than the transcription of assistant's speech.<br><br>@default false|
@@ -133345,7 +133486,7 @@ curl https://api.vapi.ai/session \
 |» » » tags|body|[string]|true|This is an array of tags to be added to the Langfuse trace. Tags allow you to categorize and filter traces. https://langfuse.com/docs/tracing-features/tags|
 |» » » metadata|body|object|false|This is a JSON object that will be added to the Langfuse trace. Traces can be enriched with metadata to better understand your users, application, and experiments. https://langfuse.com/docs/tracing-features/metadata<br>By default it includes the call metadata, assistant metadata, and assistant overrides.|
 |» » » *oneOf*|body|[LangfuseObservabilityPlan](#schemalangfuseobservabilityplan)|false|none|
-|» » credentials|body|[[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto) \| [CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto) \| [CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto) \| [CreateAssemblyAICredentialDTO](#schemacreateassemblyaicredentialdto) \| [CreateAzureCredentialDTO](#schemacreateazurecredentialdto) \| [CreateAzureOpenAICredentialDTO](#schemacreateazureopenaicredentialdto) \| [CreateByoSipTrunkCredentialDTO](#schemacreatebyosiptrunkcredentialdto) \| [CreateCartesiaCredentialDTO](#schemacreatecartesiacredentialdto) \| [CreateCerebrasCredentialDTO](#schemacreatecerebrascredentialdto) \| [CreateCloudflareCredentialDTO](#schemacreatecloudflarecredentialdto) \| [CreateCustomLLMCredentialDTO](#schemacreatecustomllmcredentialdto) \| [CreateDeepgramCredentialDTO](#schemacreatedeepgramcredentialdto) \| [CreateDeepInfraCredentialDTO](#schemacreatedeepinfracredentialdto) \| [CreateDeepSeekCredentialDTO](#schemacreatedeepseekcredentialdto) \| [CreateElevenLabsCredentialDTO](#schemacreateelevenlabscredentialdto) \| [CreateGcpCredentialDTO](#schemacreategcpcredentialdto) \| [CreateGladiaCredentialDTO](#schemacreategladiacredentialdto) \| [CreateGoHighLevelCredentialDTO](#schemacreategohighlevelcredentialdto) \| [CreateGoogleCredentialDTO](#schemacreategooglecredentialdto) \| [CreateGroqCredentialDTO](#schemacreategroqcredentialdto) \| [CreateHumeCredentialDTO](#schemacreatehumecredentialdto) \| [CreateInflectionAICredentialDTO](#schemacreateinflectionaicredentialdto) \| [CreateLangfuseCredentialDTO](#schemacreatelangfusecredentialdto) \| [CreateLmntCredentialDTO](#schemacreatelmntcredentialdto) \| [CreateMakeCredentialDTO](#schemacreatemakecredentialdto) \| [CreateMistralCredentialDTO](#schemacreatemistralcredentialdto) \| [CreateNeuphonicCredentialDTO](#schemacreateneuphoniccredentialdto) \| [CreateOpenAICredentialDTO](#schemacreateopenaicredentialdto) \| [CreateOpenRouterCredentialDTO](#schemacreateopenroutercredentialdto) \| [CreatePerplexityAICredentialDTO](#schemacreateperplexityaicredentialdto) \| [CreatePlayHTCredentialDTO](#schemacreateplayhtcredentialdto) \| [CreateRimeAICredentialDTO](#schemacreaterimeaicredentialdto) \| [CreateRunpodCredentialDTO](#schemacreaterunpodcredentialdto) \| [CreateS3CredentialDTO](#schemacreates3credentialdto) \| [CreateS3CompatibleCredentialDTO](#schemacreates3compatiblecredentialdto) \| [CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto) \| [CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto) \| [CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto) \| [CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto) \| [CreateTavusCredentialDTO](#schemacreatetavuscredentialdto) \| [CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto) \| [CreateTwilioCredentialDTO](#schemacreatetwiliocredentialdto) \| [CreateVonageCredentialDTO](#schemacreatevonagecredentialdto) \| [CreateWebhookCredentialDTO](#schemacreatewebhookcredentialdto) \| [CreateCustomCredentialDTO](#schemacreatecustomcredentialdto) \| [CreateXAiCredentialDTO](#schemacreatexaicredentialdto) \| [CreateMicrosoftCredentialDTO](#schemacreatemicrosoftcredentialdto) \| [CreateGoogleCalendarOAuth2ClientCredentialDTO](#schemacreategooglecalendaroauth2clientcredentialdto) \| [CreateGoogleCalendarOAuth2AuthorizationCredentialDTO](#schemacreategooglecalendaroauth2authorizationcredentialdto) \| [CreateGoogleSheetsOAuth2AuthorizationCredentialDTO](#schemacreategooglesheetsoauth2authorizationcredentialdto) \| [CreateSlackOAuth2AuthorizationCredentialDTO](#schemacreateslackoauth2authorizationcredentialdto) \| [CreateGoHighLevelMCPCredentialDTO](#schemacreategohighlevelmcpcredentialdto) \| [CreateInworldCredentialDTO](#schemacreateinworldcredentialdto) \| [CreateMinimaxCredentialDTO](#schemacreateminimaxcredentialdto) \| [CreateWellSaidCredentialDTO](#schemacreatewellsaidcredentialdto) \| [CreateEmailCredentialDTO](#schemacreateemailcredentialdto) \| [CreateSlackWebhookCredentialDTO](#schemacreateslackwebhookcredentialdto)]|false|These are dynamic credentials that will be used for the assistant calls. By default, all the credentials are available for use in the call but you can supplement an additional credentials using this. Dynamic credentials override existing credentials.|
+|» » credentials|body|[[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto) \| [CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto) \| [CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto) \| [CreateAssemblyAICredentialDTO](#schemacreateassemblyaicredentialdto) \| [CreateAzureCredentialDTO](#schemacreateazurecredentialdto) \| [CreateAzureOpenAICredentialDTO](#schemacreateazureopenaicredentialdto) \| [CreateByoSipTrunkCredentialDTO](#schemacreatebyosiptrunkcredentialdto) \| [CreateCartesiaCredentialDTO](#schemacreatecartesiacredentialdto) \| [CreateCerebrasCredentialDTO](#schemacreatecerebrascredentialdto) \| [CreateCloudflareCredentialDTO](#schemacreatecloudflarecredentialdto) \| [CreateCustomLLMCredentialDTO](#schemacreatecustomllmcredentialdto) \| [CreateDeepgramCredentialDTO](#schemacreatedeepgramcredentialdto) \| [CreateDeepInfraCredentialDTO](#schemacreatedeepinfracredentialdto) \| [CreateDeepSeekCredentialDTO](#schemacreatedeepseekcredentialdto) \| [CreateElevenLabsCredentialDTO](#schemacreateelevenlabscredentialdto) \| [CreateGcpCredentialDTO](#schemacreategcpcredentialdto) \| [CreateGladiaCredentialDTO](#schemacreategladiacredentialdto) \| [CreateGoHighLevelCredentialDTO](#schemacreategohighlevelcredentialdto) \| [CreateGoogleCredentialDTO](#schemacreategooglecredentialdto) \| [CreateGroqCredentialDTO](#schemacreategroqcredentialdto) \| [CreateHumeCredentialDTO](#schemacreatehumecredentialdto) \| [CreateInflectionAICredentialDTO](#schemacreateinflectionaicredentialdto) \| [CreateLangfuseCredentialDTO](#schemacreatelangfusecredentialdto) \| [CreateLmntCredentialDTO](#schemacreatelmntcredentialdto) \| [CreateMakeCredentialDTO](#schemacreatemakecredentialdto) \| [CreateMistralCredentialDTO](#schemacreatemistralcredentialdto) \| [CreateNeuphonicCredentialDTO](#schemacreateneuphoniccredentialdto) \| [CreateOpenAICredentialDTO](#schemacreateopenaicredentialdto) \| [CreateOpenRouterCredentialDTO](#schemacreateopenroutercredentialdto) \| [CreatePerplexityAICredentialDTO](#schemacreateperplexityaicredentialdto) \| [CreatePlayHTCredentialDTO](#schemacreateplayhtcredentialdto) \| [CreateRimeAICredentialDTO](#schemacreaterimeaicredentialdto) \| [CreateRunpodCredentialDTO](#schemacreaterunpodcredentialdto) \| [CreateS3CredentialDTO](#schemacreates3credentialdto) \| [CreateS3CompatibleCredentialDTO](#schemacreates3compatiblecredentialdto) \| [CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto) \| [CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto) \| [CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto) \| [CreateReson8CredentialDTO](#schemacreatereson8credentialdto) \| [CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto) \| [CreateTavusCredentialDTO](#schemacreatetavuscredentialdto) \| [CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto) \| [CreateTwilioCredentialDTO](#schemacreatetwiliocredentialdto) \| [CreateVonageCredentialDTO](#schemacreatevonagecredentialdto) \| [CreateWebhookCredentialDTO](#schemacreatewebhookcredentialdto) \| [CreateCustomCredentialDTO](#schemacreatecustomcredentialdto) \| [CreateXAiCredentialDTO](#schemacreatexaicredentialdto) \| [CreateMicrosoftCredentialDTO](#schemacreatemicrosoftcredentialdto) \| [CreateGoogleCalendarOAuth2ClientCredentialDTO](#schemacreategooglecalendaroauth2clientcredentialdto) \| [CreateGoogleCalendarOAuth2AuthorizationCredentialDTO](#schemacreategooglecalendaroauth2authorizationcredentialdto) \| [CreateGoogleSheetsOAuth2AuthorizationCredentialDTO](#schemacreategooglesheetsoauth2authorizationcredentialdto) \| [CreateSlackOAuth2AuthorizationCredentialDTO](#schemacreateslackoauth2authorizationcredentialdto) \| [CreateGoHighLevelMCPCredentialDTO](#schemacreategohighlevelmcpcredentialdto) \| [CreateInworldCredentialDTO](#schemacreateinworldcredentialdto) \| [CreateMinimaxCredentialDTO](#schemacreateminimaxcredentialdto) \| [CreateWellSaidCredentialDTO](#schemacreatewellsaidcredentialdto) \| [CreateEmailCredentialDTO](#schemacreateemailcredentialdto) \| [CreateSlackWebhookCredentialDTO](#schemacreateslackwebhookcredentialdto)]|false|These are dynamic credentials that will be used for the assistant calls. By default, all the credentials are available for use in the call but you can supplement an additional credentials using this. Dynamic credentials override existing credentials.|
 |» » » *oneOf*|body|[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto)|false|none|
@@ -133384,6 +133525,7 @@ curl https://api.vapi.ai/session \
 |» » » *oneOf*|body|[CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto)|false|none|
+|» » » *oneOf*|body|[CreateReson8CredentialDTO](#schemacreatereson8credentialdto)|false|none|
 |» » » *oneOf*|body|[CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateTavusCredentialDTO](#schemacreatetavuscredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto)|false|none|
@@ -133547,7 +133689,7 @@ curl https://api.vapi.ai/session \
 |» » numberE164CheckEnabled|body|boolean|false|This is the flag to toggle the E164 check for the `number` field. This is an advanced property which should be used if you know your use case requires it.<br><br>Use cases:<br>- `false`: To allow non-E164 numbers like `+001234567890`, `1234`, or `abc`. This is useful for dialing out to non-E164 numbers on your SIP trunks.<br>- `true` (default): To allow only E164 numbers like `+14155551234`. This is standard for PSTN calls.<br><br>If `false`, the `number` is still required to only contain alphanumeric characters (regex: `/^\+?[a-zA-Z0-9]+$/`).<br><br>@default true (E164 check is enabled)|
 |» » extension|body|string|false|This is the extension that will be dialed after the call is answered.|
 |» » assistantOverrides|body|object|false|These are the overrides for the assistant's settings and template variables specific to this customer.<br>This allows customization of the assistant's behavior for individual customers in batch calls.|
-|» » » transcriber|body|[AssemblyAITranscriber](#schemaassemblyaitranscriber) \| [AzureSpeechTranscriber](#schemaazurespeechtranscriber) \| [CustomTranscriber](#schemacustomtranscriber) \| [DeepgramTranscriber](#schemadeepgramtranscriber) \| [ElevenLabsTranscriber](#schemaelevenlabstranscriber) \| [GladiaTranscriber](#schemagladiatranscriber) \| [GoogleTranscriber](#schemagoogletranscriber) \| [SpeechmaticsTranscriber](#schemaspeechmaticstranscriber) \| [TalkscriberTranscriber](#schematalkscribertranscriber) \| [OpenAITranscriber](#schemaopenaitranscriber) \| [CartesiaTranscriber](#schemacartesiatranscriber) \| [SonioxTranscriber](#schemasonioxtranscriber) \| [XaiTranscriber](#schemaxaitranscriber) \| [VapiTranscriber](#schemavapitranscriber)|false|These are the options for the assistant's transcriber.|
+|» » » transcriber|body|[AssemblyAITranscriber](#schemaassemblyaitranscriber) \| [AzureSpeechTranscriber](#schemaazurespeechtranscriber) \| [CustomTranscriber](#schemacustomtranscriber) \| [DeepgramTranscriber](#schemadeepgramtranscriber) \| [ElevenLabsTranscriber](#schemaelevenlabstranscriber) \| [GladiaTranscriber](#schemagladiatranscriber) \| [GoogleTranscriber](#schemagoogletranscriber) \| [SpeechmaticsTranscriber](#schemaspeechmaticstranscriber) \| [TalkscriberTranscriber](#schematalkscribertranscriber) \| [OpenAITranscriber](#schemaopenaitranscriber) \| [CartesiaTranscriber](#schemacartesiatranscriber) \| [SonioxTranscriber](#schemasonioxtranscriber) \| [XaiTranscriber](#schemaxaitranscriber) \| [Reson8Transcriber](#schemareson8transcriber) \| [VapiTranscriber](#schemavapitranscriber)|false|These are the options for the assistant's transcriber.|
 |» » » » *oneOf*|body|[AssemblyAITranscriber](#schemaassemblyaitranscriber)|false|none|
 |» » » » *oneOf*|body|[AzureSpeechTranscriber](#schemaazurespeechtranscriber)|false|none|
 |» » » » *oneOf*|body|[CustomTranscriber](#schemacustomtranscriber)|false|none|
@@ -133561,6 +133703,7 @@ curl https://api.vapi.ai/session \
 |» » » » *oneOf*|body|[CartesiaTranscriber](#schemacartesiatranscriber)|false|none|
 |» » » » *oneOf*|body|[SonioxTranscriber](#schemasonioxtranscriber)|false|none|
 |» » » » *oneOf*|body|[XaiTranscriber](#schemaxaitranscriber)|false|none|
+|» » » » *oneOf*|body|[Reson8Transcriber](#schemareson8transcriber)|false|none|
 |» » » » *oneOf*|body|[VapiTranscriber](#schemavapitranscriber)|false|none|
 |» » » model|body|[AnthropicModel](#schemaanthropicmodel) \| [AnthropicBedrockModel](#schemaanthropicbedrockmodel) \| [AnyscaleModel](#schemaanyscalemodel) \| [CerebrasModel](#schemacerebrasmodel) \| [CustomLLMModel](#schemacustomllmmodel) \| [DeepInfraModel](#schemadeepinframodel) \| [DeepSeekModel](#schemadeepseekmodel) \| [GoogleModel](#schemagooglemodel) \| [GroqModel](#schemagroqmodel) \| [InflectionAIModel](#schemainflectionaimodel) \| [MinimaxLLMModel](#schemaminimaxllmmodel) \| [OpenAIModel](#schemaopenaimodel) \| [OpenRouterModel](#schemaopenroutermodel) \| [PerplexityAIModel](#schemaperplexityaimodel) \| [TogetherAIModel](#schematogetheraimodel) \| [XaiModel](#schemaxaimodel) \| [VapiModel](#schemavapimodel)|false|These are the options for the assistant's LLM.|
 |» » » » *oneOf*|body|[AnthropicModel](#schemaanthropicmodel)|false|none|
@@ -133612,7 +133755,7 @@ curl https://api.vapi.ai/session \
 |» » » clientMessages|body|[string]|false|These are the messages that will be sent to your Client SDKs. Default is conversation-update,function-call,hang,model-output,speech-update,status-update,transfer-update,transcript,tool-calls,user-interrupted,voice-input,workflow.node.started,assistant.started. You can check the shape of the messages in ClientMessage schema.|
 |» » » serverMessages|body|[string]|false|These are the messages that will be sent to your Server URL. Default is conversation-update,end-of-call-report,function-call,hang,speech-update,status-update,tool-calls,transfer-destination-request,handoff-destination-request,user-interrupted,assistant.started. You can check the shape of the messages in ServerMessage schema.|
 |» » » maxDurationSeconds|body|number|false|This is the maximum number of seconds that the call will last. When the call reaches this duration, it will be ended.<br><br>@default 600 (10 minutes)|
-|» » » backgroundSound|body|string \| string(uri)|false|This is the background sound in the call. Default for phone calls is 'office' and default for web calls is 'off'.<br>You can also provide a custom sound by providing a URL to an audio file.|
+|» » » backgroundSound|body|string \| string(uri)|false|This is the background sound in the call. Default for phone calls is 'office' and default for web calls is 'off'.<br>Bundled sounds: 'office', 'white-noise', 'city', 'crowd' and 'farm'. GPT Live assistants don't play 'office'.<br>You can also provide a custom sound by providing a URL to an audio file.|
 |» » » » *oneOf*|body|string|false|none|
 |» » » » *oneOf*|body|string(uri)|false|none|
 |» » » modelOutputInMessagesEnabled|body|boolean|false|This determines whether the model's output is used in conversation history rather than the transcription of assistant's speech.<br><br>@default false|
@@ -133626,7 +133769,7 @@ curl https://api.vapi.ai/session \
 |» » » » tags|body|[string]|true|This is an array of tags to be added to the Langfuse trace. Tags allow you to categorize and filter traces. https://langfuse.com/docs/tracing-features/tags|
 |» » » » metadata|body|object|false|This is a JSON object that will be added to the Langfuse trace. Traces can be enriched with metadata to better understand your users, application, and experiments. https://langfuse.com/docs/tracing-features/metadata<br>By default it includes the call metadata, assistant metadata, and assistant overrides.|
 |» » » » *oneOf*|body|[LangfuseObservabilityPlan](#schemalangfuseobservabilityplan)|false|none|
-|» » » credentials|body|[[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto) \| [CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto) \| [CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto) \| [CreateAssemblyAICredentialDTO](#schemacreateassemblyaicredentialdto) \| [CreateAzureCredentialDTO](#schemacreateazurecredentialdto) \| [CreateAzureOpenAICredentialDTO](#schemacreateazureopenaicredentialdto) \| [CreateByoSipTrunkCredentialDTO](#schemacreatebyosiptrunkcredentialdto) \| [CreateCartesiaCredentialDTO](#schemacreatecartesiacredentialdto) \| [CreateCerebrasCredentialDTO](#schemacreatecerebrascredentialdto) \| [CreateCloudflareCredentialDTO](#schemacreatecloudflarecredentialdto) \| [CreateCustomLLMCredentialDTO](#schemacreatecustomllmcredentialdto) \| [CreateDeepgramCredentialDTO](#schemacreatedeepgramcredentialdto) \| [CreateDeepInfraCredentialDTO](#schemacreatedeepinfracredentialdto) \| [CreateDeepSeekCredentialDTO](#schemacreatedeepseekcredentialdto) \| [CreateElevenLabsCredentialDTO](#schemacreateelevenlabscredentialdto) \| [CreateGcpCredentialDTO](#schemacreategcpcredentialdto) \| [CreateGladiaCredentialDTO](#schemacreategladiacredentialdto) \| [CreateGoHighLevelCredentialDTO](#schemacreategohighlevelcredentialdto) \| [CreateGoogleCredentialDTO](#schemacreategooglecredentialdto) \| [CreateGroqCredentialDTO](#schemacreategroqcredentialdto) \| [CreateHumeCredentialDTO](#schemacreatehumecredentialdto) \| [CreateInflectionAICredentialDTO](#schemacreateinflectionaicredentialdto) \| [CreateLangfuseCredentialDTO](#schemacreatelangfusecredentialdto) \| [CreateLmntCredentialDTO](#schemacreatelmntcredentialdto) \| [CreateMakeCredentialDTO](#schemacreatemakecredentialdto) \| [CreateMistralCredentialDTO](#schemacreatemistralcredentialdto) \| [CreateNeuphonicCredentialDTO](#schemacreateneuphoniccredentialdto) \| [CreateOpenAICredentialDTO](#schemacreateopenaicredentialdto) \| [CreateOpenRouterCredentialDTO](#schemacreateopenroutercredentialdto) \| [CreatePerplexityAICredentialDTO](#schemacreateperplexityaicredentialdto) \| [CreatePlayHTCredentialDTO](#schemacreateplayhtcredentialdto) \| [CreateRimeAICredentialDTO](#schemacreaterimeaicredentialdto) \| [CreateRunpodCredentialDTO](#schemacreaterunpodcredentialdto) \| [CreateS3CredentialDTO](#schemacreates3credentialdto) \| [CreateS3CompatibleCredentialDTO](#schemacreates3compatiblecredentialdto) \| [CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto) \| [CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto) \| [CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto) \| [CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto) \| [CreateTavusCredentialDTO](#schemacreatetavuscredentialdto) \| [CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto) \| [CreateTwilioCredentialDTO](#schemacreatetwiliocredentialdto) \| [CreateVonageCredentialDTO](#schemacreatevonagecredentialdto) \| [CreateWebhookCredentialDTO](#schemacreatewebhookcredentialdto) \| [CreateCustomCredentialDTO](#schemacreatecustomcredentialdto) \| [CreateXAiCredentialDTO](#schemacreatexaicredentialdto) \| [CreateMicrosoftCredentialDTO](#schemacreatemicrosoftcredentialdto) \| [CreateGoogleCalendarOAuth2ClientCredentialDTO](#schemacreategooglecalendaroauth2clientcredentialdto) \| [CreateGoogleCalendarOAuth2AuthorizationCredentialDTO](#schemacreategooglecalendaroauth2authorizationcredentialdto) \| [CreateGoogleSheetsOAuth2AuthorizationCredentialDTO](#schemacreategooglesheetsoauth2authorizationcredentialdto) \| [CreateSlackOAuth2AuthorizationCredentialDTO](#schemacreateslackoauth2authorizationcredentialdto) \| [CreateGoHighLevelMCPCredentialDTO](#schemacreategohighlevelmcpcredentialdto) \| [CreateInworldCredentialDTO](#schemacreateinworldcredentialdto) \| [CreateMinimaxCredentialDTO](#schemacreateminimaxcredentialdto) \| [CreateWellSaidCredentialDTO](#schemacreatewellsaidcredentialdto) \| [CreateEmailCredentialDTO](#schemacreateemailcredentialdto) \| [CreateSlackWebhookCredentialDTO](#schemacreateslackwebhookcredentialdto)]|false|These are dynamic credentials that will be used for the assistant calls. By default, all the credentials are available for use in the call but you can supplement an additional credentials using this. Dynamic credentials override existing credentials.|
+|» » » credentials|body|[[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto) \| [CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto) \| [CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto) \| [CreateAssemblyAICredentialDTO](#schemacreateassemblyaicredentialdto) \| [CreateAzureCredentialDTO](#schemacreateazurecredentialdto) \| [CreateAzureOpenAICredentialDTO](#schemacreateazureopenaicredentialdto) \| [CreateByoSipTrunkCredentialDTO](#schemacreatebyosiptrunkcredentialdto) \| [CreateCartesiaCredentialDTO](#schemacreatecartesiacredentialdto) \| [CreateCerebrasCredentialDTO](#schemacreatecerebrascredentialdto) \| [CreateCloudflareCredentialDTO](#schemacreatecloudflarecredentialdto) \| [CreateCustomLLMCredentialDTO](#schemacreatecustomllmcredentialdto) \| [CreateDeepgramCredentialDTO](#schemacreatedeepgramcredentialdto) \| [CreateDeepInfraCredentialDTO](#schemacreatedeepinfracredentialdto) \| [CreateDeepSeekCredentialDTO](#schemacreatedeepseekcredentialdto) \| [CreateElevenLabsCredentialDTO](#schemacreateelevenlabscredentialdto) \| [CreateGcpCredentialDTO](#schemacreategcpcredentialdto) \| [CreateGladiaCredentialDTO](#schemacreategladiacredentialdto) \| [CreateGoHighLevelCredentialDTO](#schemacreategohighlevelcredentialdto) \| [CreateGoogleCredentialDTO](#schemacreategooglecredentialdto) \| [CreateGroqCredentialDTO](#schemacreategroqcredentialdto) \| [CreateHumeCredentialDTO](#schemacreatehumecredentialdto) \| [CreateInflectionAICredentialDTO](#schemacreateinflectionaicredentialdto) \| [CreateLangfuseCredentialDTO](#schemacreatelangfusecredentialdto) \| [CreateLmntCredentialDTO](#schemacreatelmntcredentialdto) \| [CreateMakeCredentialDTO](#schemacreatemakecredentialdto) \| [CreateMistralCredentialDTO](#schemacreatemistralcredentialdto) \| [CreateNeuphonicCredentialDTO](#schemacreateneuphoniccredentialdto) \| [CreateOpenAICredentialDTO](#schemacreateopenaicredentialdto) \| [CreateOpenRouterCredentialDTO](#schemacreateopenroutercredentialdto) \| [CreatePerplexityAICredentialDTO](#schemacreateperplexityaicredentialdto) \| [CreatePlayHTCredentialDTO](#schemacreateplayhtcredentialdto) \| [CreateRimeAICredentialDTO](#schemacreaterimeaicredentialdto) \| [CreateRunpodCredentialDTO](#schemacreaterunpodcredentialdto) \| [CreateS3CredentialDTO](#schemacreates3credentialdto) \| [CreateS3CompatibleCredentialDTO](#schemacreates3compatiblecredentialdto) \| [CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto) \| [CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto) \| [CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto) \| [CreateReson8CredentialDTO](#schemacreatereson8credentialdto) \| [CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto) \| [CreateTavusCredentialDTO](#schemacreatetavuscredentialdto) \| [CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto) \| [CreateTwilioCredentialDTO](#schemacreatetwiliocredentialdto) \| [CreateVonageCredentialDTO](#schemacreatevonagecredentialdto) \| [CreateWebhookCredentialDTO](#schemacreatewebhookcredentialdto) \| [CreateCustomCredentialDTO](#schemacreatecustomcredentialdto) \| [CreateXAiCredentialDTO](#schemacreatexaicredentialdto) \| [CreateMicrosoftCredentialDTO](#schemacreatemicrosoftcredentialdto) \| [CreateGoogleCalendarOAuth2ClientCredentialDTO](#schemacreategooglecalendaroauth2clientcredentialdto) \| [CreateGoogleCalendarOAuth2AuthorizationCredentialDTO](#schemacreategooglecalendaroauth2authorizationcredentialdto) \| [CreateGoogleSheetsOAuth2AuthorizationCredentialDTO](#schemacreategooglesheetsoauth2authorizationcredentialdto) \| [CreateSlackOAuth2AuthorizationCredentialDTO](#schemacreateslackoauth2authorizationcredentialdto) \| [CreateGoHighLevelMCPCredentialDTO](#schemacreategohighlevelmcpcredentialdto) \| [CreateInworldCredentialDTO](#schemacreateinworldcredentialdto) \| [CreateMinimaxCredentialDTO](#schemacreateminimaxcredentialdto) \| [CreateWellSaidCredentialDTO](#schemacreatewellsaidcredentialdto) \| [CreateEmailCredentialDTO](#schemacreateemailcredentialdto) \| [CreateSlackWebhookCredentialDTO](#schemacreateslackwebhookcredentialdto)]|false|These are dynamic credentials that will be used for the assistant calls. By default, all the credentials are available for use in the call but you can supplement an additional credentials using this. Dynamic credentials override existing credentials.|
 |» » » » *oneOf*|body|[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto)|false|none|
 |» » » » *oneOf*|body|[CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto)|false|none|
 |» » » » *oneOf*|body|[CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto)|false|none|
@@ -133665,6 +133808,7 @@ curl https://api.vapi.ai/session \
 |» » » » *oneOf*|body|[CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto)|false|none|
 |» » » » *oneOf*|body|[CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto)|false|none|
 |» » » » *oneOf*|body|[CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto)|false|none|
+|» » » » *oneOf*|body|[CreateReson8CredentialDTO](#schemacreatereson8credentialdto)|false|none|
 |» » » » *oneOf*|body|[CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto)|false|none|
 |» » » » *oneOf*|body|[CreateTavusCredentialDTO](#schemacreatetavuscredentialdto)|false|none|
 |» » » » *oneOf*|body|[CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto)|false|none|
@@ -133814,7 +133958,7 @@ curl https://api.vapi.ai/session \
 |» » » » » excludedStatusCodes|body|[object]|false|This is the excluded status codes. If the response status code is in this list, the request will not be retried.<br>By default, the request will be retried for any non-2xx status code.|
 |» » » keypadInputPlan|body|[KeypadInputPlan](#schemakeypadinputplan)|false|none|
 |» » squadOverrides|body|object|false|These are the overrides applied when the call targets a `squadId`. Mirrors<br>the call-level `squadOverrides` — use this instead of `assistantOverrides`<br>when the campaign or call is squad-based.|
-|» » » transcriber|body|[AssemblyAITranscriber](#schemaassemblyaitranscriber) \| [AzureSpeechTranscriber](#schemaazurespeechtranscriber) \| [CustomTranscriber](#schemacustomtranscriber) \| [DeepgramTranscriber](#schemadeepgramtranscriber) \| [ElevenLabsTranscriber](#schemaelevenlabstranscriber) \| [GladiaTranscriber](#schemagladiatranscriber) \| [GoogleTranscriber](#schemagoogletranscriber) \| [SpeechmaticsTranscriber](#schemaspeechmaticstranscriber) \| [TalkscriberTranscriber](#schematalkscribertranscriber) \| [OpenAITranscriber](#schemaopenaitranscriber) \| [CartesiaTranscriber](#schemacartesiatranscriber) \| [SonioxTranscriber](#schemasonioxtranscriber) \| [XaiTranscriber](#schemaxaitranscriber) \| [VapiTranscriber](#schemavapitranscriber)|false|These are the options for the assistant's transcriber.|
+|» » » transcriber|body|[AssemblyAITranscriber](#schemaassemblyaitranscriber) \| [AzureSpeechTranscriber](#schemaazurespeechtranscriber) \| [CustomTranscriber](#schemacustomtranscriber) \| [DeepgramTranscriber](#schemadeepgramtranscriber) \| [ElevenLabsTranscriber](#schemaelevenlabstranscriber) \| [GladiaTranscriber](#schemagladiatranscriber) \| [GoogleTranscriber](#schemagoogletranscriber) \| [SpeechmaticsTranscriber](#schemaspeechmaticstranscriber) \| [TalkscriberTranscriber](#schematalkscribertranscriber) \| [OpenAITranscriber](#schemaopenaitranscriber) \| [CartesiaTranscriber](#schemacartesiatranscriber) \| [SonioxTranscriber](#schemasonioxtranscriber) \| [XaiTranscriber](#schemaxaitranscriber) \| [Reson8Transcriber](#schemareson8transcriber) \| [VapiTranscriber](#schemavapitranscriber)|false|These are the options for the assistant's transcriber.|
 |» » » » *oneOf*|body|[AssemblyAITranscriber](#schemaassemblyaitranscriber)|false|none|
 |» » » » *oneOf*|body|[AzureSpeechTranscriber](#schemaazurespeechtranscriber)|false|none|
 |» » » » *oneOf*|body|[CustomTranscriber](#schemacustomtranscriber)|false|none|
@@ -133828,6 +133972,7 @@ curl https://api.vapi.ai/session \
 |» » » » *oneOf*|body|[CartesiaTranscriber](#schemacartesiatranscriber)|false|none|
 |» » » » *oneOf*|body|[SonioxTranscriber](#schemasonioxtranscriber)|false|none|
 |» » » » *oneOf*|body|[XaiTranscriber](#schemaxaitranscriber)|false|none|
+|» » » » *oneOf*|body|[Reson8Transcriber](#schemareson8transcriber)|false|none|
 |» » » » *oneOf*|body|[VapiTranscriber](#schemavapitranscriber)|false|none|
 |» » » model|body|[AnthropicModel](#schemaanthropicmodel) \| [AnthropicBedrockModel](#schemaanthropicbedrockmodel) \| [AnyscaleModel](#schemaanyscalemodel) \| [CerebrasModel](#schemacerebrasmodel) \| [CustomLLMModel](#schemacustomllmmodel) \| [DeepInfraModel](#schemadeepinframodel) \| [DeepSeekModel](#schemadeepseekmodel) \| [GoogleModel](#schemagooglemodel) \| [GroqModel](#schemagroqmodel) \| [InflectionAIModel](#schemainflectionaimodel) \| [MinimaxLLMModel](#schemaminimaxllmmodel) \| [OpenAIModel](#schemaopenaimodel) \| [OpenRouterModel](#schemaopenroutermodel) \| [PerplexityAIModel](#schemaperplexityaimodel) \| [TogetherAIModel](#schematogetheraimodel) \| [XaiModel](#schemaxaimodel) \| [VapiModel](#schemavapimodel)|false|These are the options for the assistant's LLM.|
 |» » » » *oneOf*|body|[AnthropicModel](#schemaanthropicmodel)|false|none|
@@ -133879,7 +134024,7 @@ curl https://api.vapi.ai/session \
 |» » » clientMessages|body|[string]|false|These are the messages that will be sent to your Client SDKs. Default is conversation-update,function-call,hang,model-output,speech-update,status-update,transfer-update,transcript,tool-calls,user-interrupted,voice-input,workflow.node.started,assistant.started. You can check the shape of the messages in ClientMessage schema.|
 |» » » serverMessages|body|[string]|false|These are the messages that will be sent to your Server URL. Default is conversation-update,end-of-call-report,function-call,hang,speech-update,status-update,tool-calls,transfer-destination-request,handoff-destination-request,user-interrupted,assistant.started. You can check the shape of the messages in ServerMessage schema.|
 |» » » maxDurationSeconds|body|number|false|This is the maximum number of seconds that the call will last. When the call reaches this duration, it will be ended.<br><br>@default 600 (10 minutes)|
-|» » » backgroundSound|body|string \| string(uri)|false|This is the background sound in the call. Default for phone calls is 'office' and default for web calls is 'off'.<br>You can also provide a custom sound by providing a URL to an audio file.|
+|» » » backgroundSound|body|string \| string(uri)|false|This is the background sound in the call. Default for phone calls is 'office' and default for web calls is 'off'.<br>Bundled sounds: 'office', 'white-noise', 'city', 'crowd' and 'farm'. GPT Live assistants don't play 'office'.<br>You can also provide a custom sound by providing a URL to an audio file.|
 |» » » » *oneOf*|body|string|false|none|
 |» » » » *oneOf*|body|string(uri)|false|none|
 |» » » modelOutputInMessagesEnabled|body|boolean|false|This determines whether the model's output is used in conversation history rather than the transcription of assistant's speech.<br><br>@default false|
@@ -133893,7 +134038,7 @@ curl https://api.vapi.ai/session \
 |» » » » tags|body|[string]|true|This is an array of tags to be added to the Langfuse trace. Tags allow you to categorize and filter traces. https://langfuse.com/docs/tracing-features/tags|
 |» » » » metadata|body|object|false|This is a JSON object that will be added to the Langfuse trace. Traces can be enriched with metadata to better understand your users, application, and experiments. https://langfuse.com/docs/tracing-features/metadata<br>By default it includes the call metadata, assistant metadata, and assistant overrides.|
 |» » » » *oneOf*|body|[LangfuseObservabilityPlan](#schemalangfuseobservabilityplan)|false|none|
-|» » » credentials|body|[[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto) \| [CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto) \| [CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto) \| [CreateAssemblyAICredentialDTO](#schemacreateassemblyaicredentialdto) \| [CreateAzureCredentialDTO](#schemacreateazurecredentialdto) \| [CreateAzureOpenAICredentialDTO](#schemacreateazureopenaicredentialdto) \| [CreateByoSipTrunkCredentialDTO](#schemacreatebyosiptrunkcredentialdto) \| [CreateCartesiaCredentialDTO](#schemacreatecartesiacredentialdto) \| [CreateCerebrasCredentialDTO](#schemacreatecerebrascredentialdto) \| [CreateCloudflareCredentialDTO](#schemacreatecloudflarecredentialdto) \| [CreateCustomLLMCredentialDTO](#schemacreatecustomllmcredentialdto) \| [CreateDeepgramCredentialDTO](#schemacreatedeepgramcredentialdto) \| [CreateDeepInfraCredentialDTO](#schemacreatedeepinfracredentialdto) \| [CreateDeepSeekCredentialDTO](#schemacreatedeepseekcredentialdto) \| [CreateElevenLabsCredentialDTO](#schemacreateelevenlabscredentialdto) \| [CreateGcpCredentialDTO](#schemacreategcpcredentialdto) \| [CreateGladiaCredentialDTO](#schemacreategladiacredentialdto) \| [CreateGoHighLevelCredentialDTO](#schemacreategohighlevelcredentialdto) \| [CreateGoogleCredentialDTO](#schemacreategooglecredentialdto) \| [CreateGroqCredentialDTO](#schemacreategroqcredentialdto) \| [CreateHumeCredentialDTO](#schemacreatehumecredentialdto) \| [CreateInflectionAICredentialDTO](#schemacreateinflectionaicredentialdto) \| [CreateLangfuseCredentialDTO](#schemacreatelangfusecredentialdto) \| [CreateLmntCredentialDTO](#schemacreatelmntcredentialdto) \| [CreateMakeCredentialDTO](#schemacreatemakecredentialdto) \| [CreateMistralCredentialDTO](#schemacreatemistralcredentialdto) \| [CreateNeuphonicCredentialDTO](#schemacreateneuphoniccredentialdto) \| [CreateOpenAICredentialDTO](#schemacreateopenaicredentialdto) \| [CreateOpenRouterCredentialDTO](#schemacreateopenroutercredentialdto) \| [CreatePerplexityAICredentialDTO](#schemacreateperplexityaicredentialdto) \| [CreatePlayHTCredentialDTO](#schemacreateplayhtcredentialdto) \| [CreateRimeAICredentialDTO](#schemacreaterimeaicredentialdto) \| [CreateRunpodCredentialDTO](#schemacreaterunpodcredentialdto) \| [CreateS3CredentialDTO](#schemacreates3credentialdto) \| [CreateS3CompatibleCredentialDTO](#schemacreates3compatiblecredentialdto) \| [CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto) \| [CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto) \| [CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto) \| [CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto) \| [CreateTavusCredentialDTO](#schemacreatetavuscredentialdto) \| [CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto) \| [CreateTwilioCredentialDTO](#schemacreatetwiliocredentialdto) \| [CreateVonageCredentialDTO](#schemacreatevonagecredentialdto) \| [CreateWebhookCredentialDTO](#schemacreatewebhookcredentialdto) \| [CreateCustomCredentialDTO](#schemacreatecustomcredentialdto) \| [CreateXAiCredentialDTO](#schemacreatexaicredentialdto) \| [CreateMicrosoftCredentialDTO](#schemacreatemicrosoftcredentialdto) \| [CreateGoogleCalendarOAuth2ClientCredentialDTO](#schemacreategooglecalendaroauth2clientcredentialdto) \| [CreateGoogleCalendarOAuth2AuthorizationCredentialDTO](#schemacreategooglecalendaroauth2authorizationcredentialdto) \| [CreateGoogleSheetsOAuth2AuthorizationCredentialDTO](#schemacreategooglesheetsoauth2authorizationcredentialdto) \| [CreateSlackOAuth2AuthorizationCredentialDTO](#schemacreateslackoauth2authorizationcredentialdto) \| [CreateGoHighLevelMCPCredentialDTO](#schemacreategohighlevelmcpcredentialdto) \| [CreateInworldCredentialDTO](#schemacreateinworldcredentialdto) \| [CreateMinimaxCredentialDTO](#schemacreateminimaxcredentialdto) \| [CreateWellSaidCredentialDTO](#schemacreatewellsaidcredentialdto) \| [CreateEmailCredentialDTO](#schemacreateemailcredentialdto) \| [CreateSlackWebhookCredentialDTO](#schemacreateslackwebhookcredentialdto)]|false|These are dynamic credentials that will be used for the assistant calls. By default, all the credentials are available for use in the call but you can supplement an additional credentials using this. Dynamic credentials override existing credentials.|
+|» » » credentials|body|[[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto) \| [CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto) \| [CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto) \| [CreateAssemblyAICredentialDTO](#schemacreateassemblyaicredentialdto) \| [CreateAzureCredentialDTO](#schemacreateazurecredentialdto) \| [CreateAzureOpenAICredentialDTO](#schemacreateazureopenaicredentialdto) \| [CreateByoSipTrunkCredentialDTO](#schemacreatebyosiptrunkcredentialdto) \| [CreateCartesiaCredentialDTO](#schemacreatecartesiacredentialdto) \| [CreateCerebrasCredentialDTO](#schemacreatecerebrascredentialdto) \| [CreateCloudflareCredentialDTO](#schemacreatecloudflarecredentialdto) \| [CreateCustomLLMCredentialDTO](#schemacreatecustomllmcredentialdto) \| [CreateDeepgramCredentialDTO](#schemacreatedeepgramcredentialdto) \| [CreateDeepInfraCredentialDTO](#schemacreatedeepinfracredentialdto) \| [CreateDeepSeekCredentialDTO](#schemacreatedeepseekcredentialdto) \| [CreateElevenLabsCredentialDTO](#schemacreateelevenlabscredentialdto) \| [CreateGcpCredentialDTO](#schemacreategcpcredentialdto) \| [CreateGladiaCredentialDTO](#schemacreategladiacredentialdto) \| [CreateGoHighLevelCredentialDTO](#schemacreategohighlevelcredentialdto) \| [CreateGoogleCredentialDTO](#schemacreategooglecredentialdto) \| [CreateGroqCredentialDTO](#schemacreategroqcredentialdto) \| [CreateHumeCredentialDTO](#schemacreatehumecredentialdto) \| [CreateInflectionAICredentialDTO](#schemacreateinflectionaicredentialdto) \| [CreateLangfuseCredentialDTO](#schemacreatelangfusecredentialdto) \| [CreateLmntCredentialDTO](#schemacreatelmntcredentialdto) \| [CreateMakeCredentialDTO](#schemacreatemakecredentialdto) \| [CreateMistralCredentialDTO](#schemacreatemistralcredentialdto) \| [CreateNeuphonicCredentialDTO](#schemacreateneuphoniccredentialdto) \| [CreateOpenAICredentialDTO](#schemacreateopenaicredentialdto) \| [CreateOpenRouterCredentialDTO](#schemacreateopenroutercredentialdto) \| [CreatePerplexityAICredentialDTO](#schemacreateperplexityaicredentialdto) \| [CreatePlayHTCredentialDTO](#schemacreateplayhtcredentialdto) \| [CreateRimeAICredentialDTO](#schemacreaterimeaicredentialdto) \| [CreateRunpodCredentialDTO](#schemacreaterunpodcredentialdto) \| [CreateS3CredentialDTO](#schemacreates3credentialdto) \| [CreateS3CompatibleCredentialDTO](#schemacreates3compatiblecredentialdto) \| [CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto) \| [CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto) \| [CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto) \| [CreateReson8CredentialDTO](#schemacreatereson8credentialdto) \| [CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto) \| [CreateTavusCredentialDTO](#schemacreatetavuscredentialdto) \| [CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto) \| [CreateTwilioCredentialDTO](#schemacreatetwiliocredentialdto) \| [CreateVonageCredentialDTO](#schemacreatevonagecredentialdto) \| [CreateWebhookCredentialDTO](#schemacreatewebhookcredentialdto) \| [CreateCustomCredentialDTO](#schemacreatecustomcredentialdto) \| [CreateXAiCredentialDTO](#schemacreatexaicredentialdto) \| [CreateMicrosoftCredentialDTO](#schemacreatemicrosoftcredentialdto) \| [CreateGoogleCalendarOAuth2ClientCredentialDTO](#schemacreategooglecalendaroauth2clientcredentialdto) \| [CreateGoogleCalendarOAuth2AuthorizationCredentialDTO](#schemacreategooglecalendaroauth2authorizationcredentialdto) \| [CreateGoogleSheetsOAuth2AuthorizationCredentialDTO](#schemacreategooglesheetsoauth2authorizationcredentialdto) \| [CreateSlackOAuth2AuthorizationCredentialDTO](#schemacreateslackoauth2authorizationcredentialdto) \| [CreateGoHighLevelMCPCredentialDTO](#schemacreategohighlevelmcpcredentialdto) \| [CreateInworldCredentialDTO](#schemacreateinworldcredentialdto) \| [CreateMinimaxCredentialDTO](#schemacreateminimaxcredentialdto) \| [CreateWellSaidCredentialDTO](#schemacreatewellsaidcredentialdto) \| [CreateEmailCredentialDTO](#schemacreateemailcredentialdto) \| [CreateSlackWebhookCredentialDTO](#schemacreateslackwebhookcredentialdto)]|false|These are dynamic credentials that will be used for the assistant calls. By default, all the credentials are available for use in the call but you can supplement an additional credentials using this. Dynamic credentials override existing credentials.|
 |» » » » *oneOf*|body|[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto)|false|none|
 |» » » » *oneOf*|body|[CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto)|false|none|
 |» » » » *oneOf*|body|[CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto)|false|none|
@@ -133932,6 +134077,7 @@ curl https://api.vapi.ai/session \
 |» » » » *oneOf*|body|[CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto)|false|none|
 |» » » » *oneOf*|body|[CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto)|false|none|
 |» » » » *oneOf*|body|[CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto)|false|none|
+|» » » » *oneOf*|body|[CreateReson8CredentialDTO](#schemacreatereson8credentialdto)|false|none|
 |» » » » *oneOf*|body|[CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto)|false|none|
 |» » » » *oneOf*|body|[CreateTavusCredentialDTO](#schemacreatetavuscredentialdto)|false|none|
 |» » » » *oneOf*|body|[CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto)|false|none|
@@ -134176,6 +134322,10 @@ curl https://api.vapi.ai/session \
 |» » serverMessages|call.artifact.upload|
 |» » » *oneOf*|off|
 |» » » *oneOf*|office|
+|» » » *oneOf*|white-noise|
+|» » » *oneOf*|city|
+|» » » *oneOf*|crowd|
+|» » » *oneOf*|farm|
 |» » » provider|langfuse|
 |» » » » rubric|NumericScale|
 |» » » » rubric|DescriptiveScale|
@@ -134243,6 +134393,10 @@ curl https://api.vapi.ai/session \
 |» » serverMessages|call.artifact.upload|
 |» » » *oneOf*|off|
 |» » » *oneOf*|office|
+|» » » *oneOf*|white-noise|
+|» » » *oneOf*|city|
+|» » » *oneOf*|crowd|
+|» » » *oneOf*|farm|
 |» » » provider|langfuse|
 |» » » » rubric|NumericScale|
 |» » » » rubric|DescriptiveScale|
@@ -134310,6 +134464,10 @@ curl https://api.vapi.ai/session \
 |» » » serverMessages|call.artifact.upload|
 |» » » » *oneOf*|off|
 |» » » » *oneOf*|office|
+|» » » » *oneOf*|white-noise|
+|» » » » *oneOf*|city|
+|» » » » *oneOf*|crowd|
+|» » » » *oneOf*|farm|
 |» » » » provider|langfuse|
 |» » » » » rubric|NumericScale|
 |» » » » » rubric|DescriptiveScale|
@@ -134377,6 +134535,10 @@ curl https://api.vapi.ai/session \
 |» » » serverMessages|call.artifact.upload|
 |» » » » *oneOf*|off|
 |» » » » *oneOf*|office|
+|» » » » *oneOf*|white-noise|
+|» » » » *oneOf*|city|
+|» » » » *oneOf*|crowd|
+|» » » » *oneOf*|farm|
 |» » » » provider|langfuse|
 |» » » » » rubric|NumericScale|
 |» » » » » rubric|DescriptiveScale|
@@ -137274,6 +137436,7 @@ curl https://api.vapi.ai/session \
     "performanceMetrics": {
       "turnLatencies": [
         {
+          "unmeasured": "transcriber",
           "modelLatency": 0,
           "voiceLatency": 0,
           "transcriberLatency": 0,
@@ -137289,7 +137452,8 @@ curl https://api.vapi.ai/session \
       "fromTransportLatencyAverage": 0,
       "toTransportLatencyAverage": 0,
       "numUserInterrupted": 0,
-      "numAssistantInterrupted": 0
+      "numAssistantInterrupted": 0,
+      "turnLatencyUnmeasuredTracked": true
     },
     "structuredOutputs": {},
     "scorecards": {},
@@ -140217,6 +140381,7 @@ curl https://api.vapi.ai/session/497f6eca-6276-4993-bfeb-53cbbbba6f08 \
     "performanceMetrics": {
       "turnLatencies": [
         {
+          "unmeasured": "transcriber",
           "modelLatency": 0,
           "voiceLatency": 0,
           "transcriberLatency": 0,
@@ -140232,7 +140397,8 @@ curl https://api.vapi.ai/session/497f6eca-6276-4993-bfeb-53cbbbba6f08 \
       "fromTransportLatencyAverage": 0,
       "toTransportLatencyAverage": 0,
       "numUserInterrupted": 0,
-      "numAssistantInterrupted": 0
+      "numAssistantInterrupted": 0,
+      "turnLatencyUnmeasuredTracked": true
     },
     "structuredOutputs": {},
     "scorecards": {},
@@ -143161,6 +143327,7 @@ curl https://api.vapi.ai/session/497f6eca-6276-4993-bfeb-53cbbbba6f08 \
     "performanceMetrics": {
       "turnLatencies": [
         {
+          "unmeasured": "transcriber",
           "modelLatency": 0,
           "voiceLatency": 0,
           "transcriberLatency": 0,
@@ -143176,7 +143343,8 @@ curl https://api.vapi.ai/session/497f6eca-6276-4993-bfeb-53cbbbba6f08 \
       "fromTransportLatencyAverage": 0,
       "toTransportLatencyAverage": 0,
       "numUserInterrupted": 0,
-      "numAssistantInterrupted": 0
+      "numAssistantInterrupted": 0,
+      "turnLatencyUnmeasuredTracked": true
     },
     "structuredOutputs": {},
     "scorecards": {},
@@ -146154,6 +146322,7 @@ curl https://api.vapi.ai/session/497f6eca-6276-4993-bfeb-53cbbbba6f08 \
     "performanceMetrics": {
       "turnLatencies": [
         {
+          "unmeasured": "transcriber",
           "modelLatency": 0,
           "voiceLatency": 0,
           "transcriberLatency": 0,
@@ -146169,7 +146338,8 @@ curl https://api.vapi.ai/session/497f6eca-6276-4993-bfeb-53cbbbba6f08 \
       "fromTransportLatencyAverage": 0,
       "toTransportLatencyAverage": 0,
       "numUserInterrupted": 0,
-      "numAssistantInterrupted": 0
+      "numAssistantInterrupted": 0,
+      "turnLatencyUnmeasuredTracked": true
     },
     "structuredOutputs": {},
     "scorecards": {},
@@ -153739,7 +153909,7 @@ curl https://api.vapi.ai/eval/simulation/personality \
 |body|body|[CreatePersonalityDTO](#schemacreatepersonalitydto)|true|none|
 |» name|body|string|true|This is the name of the personality (e.g., "Confused Carl", "Rude Rob").|
 |» assistant|body|object|true|This is the full assistant configuration for this personality.<br>It defines the tester's voice, model, behavior via system prompt, and other settings.|
-|» » transcriber|body|[AssemblyAITranscriber](#schemaassemblyaitranscriber) \| [AzureSpeechTranscriber](#schemaazurespeechtranscriber) \| [CustomTranscriber](#schemacustomtranscriber) \| [DeepgramTranscriber](#schemadeepgramtranscriber) \| [ElevenLabsTranscriber](#schemaelevenlabstranscriber) \| [GladiaTranscriber](#schemagladiatranscriber) \| [GoogleTranscriber](#schemagoogletranscriber) \| [SpeechmaticsTranscriber](#schemaspeechmaticstranscriber) \| [TalkscriberTranscriber](#schematalkscribertranscriber) \| [OpenAITranscriber](#schemaopenaitranscriber) \| [CartesiaTranscriber](#schemacartesiatranscriber) \| [SonioxTranscriber](#schemasonioxtranscriber) \| [XaiTranscriber](#schemaxaitranscriber) \| [VapiTranscriber](#schemavapitranscriber)|false|These are the options for the assistant's transcriber.|
+|» » transcriber|body|[AssemblyAITranscriber](#schemaassemblyaitranscriber) \| [AzureSpeechTranscriber](#schemaazurespeechtranscriber) \| [CustomTranscriber](#schemacustomtranscriber) \| [DeepgramTranscriber](#schemadeepgramtranscriber) \| [ElevenLabsTranscriber](#schemaelevenlabstranscriber) \| [GladiaTranscriber](#schemagladiatranscriber) \| [GoogleTranscriber](#schemagoogletranscriber) \| [SpeechmaticsTranscriber](#schemaspeechmaticstranscriber) \| [TalkscriberTranscriber](#schematalkscribertranscriber) \| [OpenAITranscriber](#schemaopenaitranscriber) \| [CartesiaTranscriber](#schemacartesiatranscriber) \| [SonioxTranscriber](#schemasonioxtranscriber) \| [XaiTranscriber](#schemaxaitranscriber) \| [Reson8Transcriber](#schemareson8transcriber) \| [VapiTranscriber](#schemavapitranscriber)|false|These are the options for the assistant's transcriber.|
 |» » » *oneOf*|body|[AssemblyAITranscriber](#schemaassemblyaitranscriber)|false|none|
 |» » » *oneOf*|body|[AzureSpeechTranscriber](#schemaazurespeechtranscriber)|false|none|
 |» » » *oneOf*|body|[CustomTranscriber](#schemacustomtranscriber)|false|none|
@@ -153753,6 +153923,7 @@ curl https://api.vapi.ai/eval/simulation/personality \
 |» » » *oneOf*|body|[CartesiaTranscriber](#schemacartesiatranscriber)|false|none|
 |» » » *oneOf*|body|[SonioxTranscriber](#schemasonioxtranscriber)|false|none|
 |» » » *oneOf*|body|[XaiTranscriber](#schemaxaitranscriber)|false|none|
+|» » » *oneOf*|body|[Reson8Transcriber](#schemareson8transcriber)|false|none|
 |» » » *oneOf*|body|[VapiTranscriber](#schemavapitranscriber)|false|none|
 |» » model|body|[AnthropicModel](#schemaanthropicmodel) \| [AnthropicBedrockModel](#schemaanthropicbedrockmodel) \| [AnyscaleModel](#schemaanyscalemodel) \| [CerebrasModel](#schemacerebrasmodel) \| [CustomLLMModel](#schemacustomllmmodel) \| [DeepInfraModel](#schemadeepinframodel) \| [DeepSeekModel](#schemadeepseekmodel) \| [GoogleModel](#schemagooglemodel) \| [GroqModel](#schemagroqmodel) \| [InflectionAIModel](#schemainflectionaimodel) \| [MinimaxLLMModel](#schemaminimaxllmmodel) \| [OpenAIModel](#schemaopenaimodel) \| [OpenRouterModel](#schemaopenroutermodel) \| [PerplexityAIModel](#schemaperplexityaimodel) \| [TogetherAIModel](#schematogetheraimodel) \| [XaiModel](#schemaxaimodel) \| [VapiModel](#schemavapimodel)|false|These are the options for the assistant's LLM.|
 |» » » *oneOf*|body|[AnthropicModel](#schemaanthropicmodel)|false|none|
@@ -153804,7 +153975,7 @@ curl https://api.vapi.ai/eval/simulation/personality \
 |» » clientMessages|body|[string]|false|These are the messages that will be sent to your Client SDKs. Default is conversation-update,function-call,hang,model-output,speech-update,status-update,transfer-update,transcript,tool-calls,user-interrupted,voice-input,workflow.node.started,assistant.started. You can check the shape of the messages in ClientMessage schema.|
 |» » serverMessages|body|[string]|false|These are the messages that will be sent to your Server URL. Default is conversation-update,end-of-call-report,function-call,hang,speech-update,status-update,tool-calls,transfer-destination-request,handoff-destination-request,user-interrupted,assistant.started. You can check the shape of the messages in ServerMessage schema.|
 |» » maxDurationSeconds|body|number|false|This is the maximum number of seconds that the call will last. When the call reaches this duration, it will be ended.<br><br>@default 600 (10 minutes)|
-|» » backgroundSound|body|string \| string(uri)|false|This is the background sound in the call. Default for phone calls is 'office' and default for web calls is 'off'.<br>You can also provide a custom sound by providing a URL to an audio file.|
+|» » backgroundSound|body|string \| string(uri)|false|This is the background sound in the call. Default for phone calls is 'office' and default for web calls is 'off'.<br>Bundled sounds: 'office', 'white-noise', 'city', 'crowd' and 'farm'. GPT Live assistants don't play 'office'.<br>You can also provide a custom sound by providing a URL to an audio file.|
 |» » » *oneOf*|body|string|false|none|
 |» » » *oneOf*|body|string(uri)|false|none|
 |» » modelOutputInMessagesEnabled|body|boolean|false|This determines whether the model's output is used in conversation history rather than the transcription of assistant's speech.<br><br>@default false|
@@ -153818,7 +153989,7 @@ curl https://api.vapi.ai/eval/simulation/personality \
 |» » » tags|body|[string]|true|This is an array of tags to be added to the Langfuse trace. Tags allow you to categorize and filter traces. https://langfuse.com/docs/tracing-features/tags|
 |» » » metadata|body|object|false|This is a JSON object that will be added to the Langfuse trace. Traces can be enriched with metadata to better understand your users, application, and experiments. https://langfuse.com/docs/tracing-features/metadata<br>By default it includes the call metadata, assistant metadata, and assistant overrides.|
 |» » » *oneOf*|body|[LangfuseObservabilityPlan](#schemalangfuseobservabilityplan)|false|none|
-|» » credentials|body|[[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto) \| [CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto) \| [CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto) \| [CreateAssemblyAICredentialDTO](#schemacreateassemblyaicredentialdto) \| [CreateAzureCredentialDTO](#schemacreateazurecredentialdto) \| [CreateAzureOpenAICredentialDTO](#schemacreateazureopenaicredentialdto) \| [CreateByoSipTrunkCredentialDTO](#schemacreatebyosiptrunkcredentialdto) \| [CreateCartesiaCredentialDTO](#schemacreatecartesiacredentialdto) \| [CreateCerebrasCredentialDTO](#schemacreatecerebrascredentialdto) \| [CreateCloudflareCredentialDTO](#schemacreatecloudflarecredentialdto) \| [CreateCustomLLMCredentialDTO](#schemacreatecustomllmcredentialdto) \| [CreateDeepgramCredentialDTO](#schemacreatedeepgramcredentialdto) \| [CreateDeepInfraCredentialDTO](#schemacreatedeepinfracredentialdto) \| [CreateDeepSeekCredentialDTO](#schemacreatedeepseekcredentialdto) \| [CreateElevenLabsCredentialDTO](#schemacreateelevenlabscredentialdto) \| [CreateGcpCredentialDTO](#schemacreategcpcredentialdto) \| [CreateGladiaCredentialDTO](#schemacreategladiacredentialdto) \| [CreateGoHighLevelCredentialDTO](#schemacreategohighlevelcredentialdto) \| [CreateGoogleCredentialDTO](#schemacreategooglecredentialdto) \| [CreateGroqCredentialDTO](#schemacreategroqcredentialdto) \| [CreateHumeCredentialDTO](#schemacreatehumecredentialdto) \| [CreateInflectionAICredentialDTO](#schemacreateinflectionaicredentialdto) \| [CreateLangfuseCredentialDTO](#schemacreatelangfusecredentialdto) \| [CreateLmntCredentialDTO](#schemacreatelmntcredentialdto) \| [CreateMakeCredentialDTO](#schemacreatemakecredentialdto) \| [CreateMistralCredentialDTO](#schemacreatemistralcredentialdto) \| [CreateNeuphonicCredentialDTO](#schemacreateneuphoniccredentialdto) \| [CreateOpenAICredentialDTO](#schemacreateopenaicredentialdto) \| [CreateOpenRouterCredentialDTO](#schemacreateopenroutercredentialdto) \| [CreatePerplexityAICredentialDTO](#schemacreateperplexityaicredentialdto) \| [CreatePlayHTCredentialDTO](#schemacreateplayhtcredentialdto) \| [CreateRimeAICredentialDTO](#schemacreaterimeaicredentialdto) \| [CreateRunpodCredentialDTO](#schemacreaterunpodcredentialdto) \| [CreateS3CredentialDTO](#schemacreates3credentialdto) \| [CreateS3CompatibleCredentialDTO](#schemacreates3compatiblecredentialdto) \| [CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto) \| [CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto) \| [CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto) \| [CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto) \| [CreateTavusCredentialDTO](#schemacreatetavuscredentialdto) \| [CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto) \| [CreateTwilioCredentialDTO](#schemacreatetwiliocredentialdto) \| [CreateVonageCredentialDTO](#schemacreatevonagecredentialdto) \| [CreateWebhookCredentialDTO](#schemacreatewebhookcredentialdto) \| [CreateCustomCredentialDTO](#schemacreatecustomcredentialdto) \| [CreateXAiCredentialDTO](#schemacreatexaicredentialdto) \| [CreateMicrosoftCredentialDTO](#schemacreatemicrosoftcredentialdto) \| [CreateGoogleCalendarOAuth2ClientCredentialDTO](#schemacreategooglecalendaroauth2clientcredentialdto) \| [CreateGoogleCalendarOAuth2AuthorizationCredentialDTO](#schemacreategooglecalendaroauth2authorizationcredentialdto) \| [CreateGoogleSheetsOAuth2AuthorizationCredentialDTO](#schemacreategooglesheetsoauth2authorizationcredentialdto) \| [CreateSlackOAuth2AuthorizationCredentialDTO](#schemacreateslackoauth2authorizationcredentialdto) \| [CreateGoHighLevelMCPCredentialDTO](#schemacreategohighlevelmcpcredentialdto) \| [CreateInworldCredentialDTO](#schemacreateinworldcredentialdto) \| [CreateMinimaxCredentialDTO](#schemacreateminimaxcredentialdto) \| [CreateWellSaidCredentialDTO](#schemacreatewellsaidcredentialdto) \| [CreateEmailCredentialDTO](#schemacreateemailcredentialdto) \| [CreateSlackWebhookCredentialDTO](#schemacreateslackwebhookcredentialdto)]|false|These are dynamic credentials that will be used for the assistant calls. By default, all the credentials are available for use in the call but you can supplement an additional credentials using this. Dynamic credentials override existing credentials.|
+|» » credentials|body|[[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto) \| [CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto) \| [CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto) \| [CreateAssemblyAICredentialDTO](#schemacreateassemblyaicredentialdto) \| [CreateAzureCredentialDTO](#schemacreateazurecredentialdto) \| [CreateAzureOpenAICredentialDTO](#schemacreateazureopenaicredentialdto) \| [CreateByoSipTrunkCredentialDTO](#schemacreatebyosiptrunkcredentialdto) \| [CreateCartesiaCredentialDTO](#schemacreatecartesiacredentialdto) \| [CreateCerebrasCredentialDTO](#schemacreatecerebrascredentialdto) \| [CreateCloudflareCredentialDTO](#schemacreatecloudflarecredentialdto) \| [CreateCustomLLMCredentialDTO](#schemacreatecustomllmcredentialdto) \| [CreateDeepgramCredentialDTO](#schemacreatedeepgramcredentialdto) \| [CreateDeepInfraCredentialDTO](#schemacreatedeepinfracredentialdto) \| [CreateDeepSeekCredentialDTO](#schemacreatedeepseekcredentialdto) \| [CreateElevenLabsCredentialDTO](#schemacreateelevenlabscredentialdto) \| [CreateGcpCredentialDTO](#schemacreategcpcredentialdto) \| [CreateGladiaCredentialDTO](#schemacreategladiacredentialdto) \| [CreateGoHighLevelCredentialDTO](#schemacreategohighlevelcredentialdto) \| [CreateGoogleCredentialDTO](#schemacreategooglecredentialdto) \| [CreateGroqCredentialDTO](#schemacreategroqcredentialdto) \| [CreateHumeCredentialDTO](#schemacreatehumecredentialdto) \| [CreateInflectionAICredentialDTO](#schemacreateinflectionaicredentialdto) \| [CreateLangfuseCredentialDTO](#schemacreatelangfusecredentialdto) \| [CreateLmntCredentialDTO](#schemacreatelmntcredentialdto) \| [CreateMakeCredentialDTO](#schemacreatemakecredentialdto) \| [CreateMistralCredentialDTO](#schemacreatemistralcredentialdto) \| [CreateNeuphonicCredentialDTO](#schemacreateneuphoniccredentialdto) \| [CreateOpenAICredentialDTO](#schemacreateopenaicredentialdto) \| [CreateOpenRouterCredentialDTO](#schemacreateopenroutercredentialdto) \| [CreatePerplexityAICredentialDTO](#schemacreateperplexityaicredentialdto) \| [CreatePlayHTCredentialDTO](#schemacreateplayhtcredentialdto) \| [CreateRimeAICredentialDTO](#schemacreaterimeaicredentialdto) \| [CreateRunpodCredentialDTO](#schemacreaterunpodcredentialdto) \| [CreateS3CredentialDTO](#schemacreates3credentialdto) \| [CreateS3CompatibleCredentialDTO](#schemacreates3compatiblecredentialdto) \| [CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto) \| [CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto) \| [CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto) \| [CreateReson8CredentialDTO](#schemacreatereson8credentialdto) \| [CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto) \| [CreateTavusCredentialDTO](#schemacreatetavuscredentialdto) \| [CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto) \| [CreateTwilioCredentialDTO](#schemacreatetwiliocredentialdto) \| [CreateVonageCredentialDTO](#schemacreatevonagecredentialdto) \| [CreateWebhookCredentialDTO](#schemacreatewebhookcredentialdto) \| [CreateCustomCredentialDTO](#schemacreatecustomcredentialdto) \| [CreateXAiCredentialDTO](#schemacreatexaicredentialdto) \| [CreateMicrosoftCredentialDTO](#schemacreatemicrosoftcredentialdto) \| [CreateGoogleCalendarOAuth2ClientCredentialDTO](#schemacreategooglecalendaroauth2clientcredentialdto) \| [CreateGoogleCalendarOAuth2AuthorizationCredentialDTO](#schemacreategooglecalendaroauth2authorizationcredentialdto) \| [CreateGoogleSheetsOAuth2AuthorizationCredentialDTO](#schemacreategooglesheetsoauth2authorizationcredentialdto) \| [CreateSlackOAuth2AuthorizationCredentialDTO](#schemacreateslackoauth2authorizationcredentialdto) \| [CreateGoHighLevelMCPCredentialDTO](#schemacreategohighlevelmcpcredentialdto) \| [CreateInworldCredentialDTO](#schemacreateinworldcredentialdto) \| [CreateMinimaxCredentialDTO](#schemacreateminimaxcredentialdto) \| [CreateWellSaidCredentialDTO](#schemacreatewellsaidcredentialdto) \| [CreateEmailCredentialDTO](#schemacreateemailcredentialdto) \| [CreateSlackWebhookCredentialDTO](#schemacreateslackwebhookcredentialdto)]|false|These are dynamic credentials that will be used for the assistant calls. By default, all the credentials are available for use in the call but you can supplement an additional credentials using this. Dynamic credentials override existing credentials.|
 |» » » *oneOf*|body|[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto)|false|none|
@@ -153857,6 +154028,7 @@ curl https://api.vapi.ai/eval/simulation/personality \
 |» » » *oneOf*|body|[CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto)|false|none|
+|» » » *oneOf*|body|[CreateReson8CredentialDTO](#schemacreatereson8credentialdto)|false|none|
 |» » » *oneOf*|body|[CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateTavusCredentialDTO](#schemacreatetavuscredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto)|false|none|
@@ -154039,6 +154211,10 @@ curl https://api.vapi.ai/eval/simulation/personality \
 |» » serverMessages|call.artifact.upload|
 |» » » *oneOf*|off|
 |» » » *oneOf*|office|
+|» » » *oneOf*|white-noise|
+|» » » *oneOf*|city|
+|» » » *oneOf*|crowd|
+|» » » *oneOf*|farm|
 |» » » provider|langfuse|
 |» » » » rubric|NumericScale|
 |» » » » rubric|DescriptiveScale|
@@ -157080,7 +157256,7 @@ curl https://api.vapi.ai/eval/simulation/personality/497f6eca-6276-4993-bfeb-53c
 |body|body|[UpdatePersonalityDTO](#schemaupdatepersonalitydto)|true|none|
 |» name|body|string|false|This is the name of the personality.|
 |» assistant|body|object|false|Complete assistant replacement. Omitted credentials and redacted server secrets are preserved when their endpoint URL is unchanged. Send credentials: [] to clear credentials; omit a server container to remove it.|
-|» » transcriber|body|[AssemblyAITranscriber](#schemaassemblyaitranscriber) \| [AzureSpeechTranscriber](#schemaazurespeechtranscriber) \| [CustomTranscriber](#schemacustomtranscriber) \| [DeepgramTranscriber](#schemadeepgramtranscriber) \| [ElevenLabsTranscriber](#schemaelevenlabstranscriber) \| [GladiaTranscriber](#schemagladiatranscriber) \| [GoogleTranscriber](#schemagoogletranscriber) \| [SpeechmaticsTranscriber](#schemaspeechmaticstranscriber) \| [TalkscriberTranscriber](#schematalkscribertranscriber) \| [OpenAITranscriber](#schemaopenaitranscriber) \| [CartesiaTranscriber](#schemacartesiatranscriber) \| [SonioxTranscriber](#schemasonioxtranscriber) \| [XaiTranscriber](#schemaxaitranscriber) \| [VapiTranscriber](#schemavapitranscriber)|false|These are the options for the assistant's transcriber.|
+|» » transcriber|body|[AssemblyAITranscriber](#schemaassemblyaitranscriber) \| [AzureSpeechTranscriber](#schemaazurespeechtranscriber) \| [CustomTranscriber](#schemacustomtranscriber) \| [DeepgramTranscriber](#schemadeepgramtranscriber) \| [ElevenLabsTranscriber](#schemaelevenlabstranscriber) \| [GladiaTranscriber](#schemagladiatranscriber) \| [GoogleTranscriber](#schemagoogletranscriber) \| [SpeechmaticsTranscriber](#schemaspeechmaticstranscriber) \| [TalkscriberTranscriber](#schematalkscribertranscriber) \| [OpenAITranscriber](#schemaopenaitranscriber) \| [CartesiaTranscriber](#schemacartesiatranscriber) \| [SonioxTranscriber](#schemasonioxtranscriber) \| [XaiTranscriber](#schemaxaitranscriber) \| [Reson8Transcriber](#schemareson8transcriber) \| [VapiTranscriber](#schemavapitranscriber)|false|These are the options for the assistant's transcriber.|
 |» » » *oneOf*|body|[AssemblyAITranscriber](#schemaassemblyaitranscriber)|false|none|
 |» » » *oneOf*|body|[AzureSpeechTranscriber](#schemaazurespeechtranscriber)|false|none|
 |» » » *oneOf*|body|[CustomTranscriber](#schemacustomtranscriber)|false|none|
@@ -157094,6 +157270,7 @@ curl https://api.vapi.ai/eval/simulation/personality/497f6eca-6276-4993-bfeb-53c
 |» » » *oneOf*|body|[CartesiaTranscriber](#schemacartesiatranscriber)|false|none|
 |» » » *oneOf*|body|[SonioxTranscriber](#schemasonioxtranscriber)|false|none|
 |» » » *oneOf*|body|[XaiTranscriber](#schemaxaitranscriber)|false|none|
+|» » » *oneOf*|body|[Reson8Transcriber](#schemareson8transcriber)|false|none|
 |» » » *oneOf*|body|[VapiTranscriber](#schemavapitranscriber)|false|none|
 |» » model|body|[AnthropicModel](#schemaanthropicmodel) \| [AnthropicBedrockModel](#schemaanthropicbedrockmodel) \| [AnyscaleModel](#schemaanyscalemodel) \| [CerebrasModel](#schemacerebrasmodel) \| [CustomLLMModel](#schemacustomllmmodel) \| [DeepInfraModel](#schemadeepinframodel) \| [DeepSeekModel](#schemadeepseekmodel) \| [GoogleModel](#schemagooglemodel) \| [GroqModel](#schemagroqmodel) \| [InflectionAIModel](#schemainflectionaimodel) \| [MinimaxLLMModel](#schemaminimaxllmmodel) \| [OpenAIModel](#schemaopenaimodel) \| [OpenRouterModel](#schemaopenroutermodel) \| [PerplexityAIModel](#schemaperplexityaimodel) \| [TogetherAIModel](#schematogetheraimodel) \| [XaiModel](#schemaxaimodel) \| [VapiModel](#schemavapimodel)|false|These are the options for the assistant's LLM.|
 |» » » *oneOf*|body|[AnthropicModel](#schemaanthropicmodel)|false|none|
@@ -157145,7 +157322,7 @@ curl https://api.vapi.ai/eval/simulation/personality/497f6eca-6276-4993-bfeb-53c
 |» » clientMessages|body|[string]|false|These are the messages that will be sent to your Client SDKs. Default is conversation-update,function-call,hang,model-output,speech-update,status-update,transfer-update,transcript,tool-calls,user-interrupted,voice-input,workflow.node.started,assistant.started. You can check the shape of the messages in ClientMessage schema.|
 |» » serverMessages|body|[string]|false|These are the messages that will be sent to your Server URL. Default is conversation-update,end-of-call-report,function-call,hang,speech-update,status-update,tool-calls,transfer-destination-request,handoff-destination-request,user-interrupted,assistant.started. You can check the shape of the messages in ServerMessage schema.|
 |» » maxDurationSeconds|body|number|false|This is the maximum number of seconds that the call will last. When the call reaches this duration, it will be ended.<br><br>@default 600 (10 minutes)|
-|» » backgroundSound|body|string \| string(uri)|false|This is the background sound in the call. Default for phone calls is 'office' and default for web calls is 'off'.<br>You can also provide a custom sound by providing a URL to an audio file.|
+|» » backgroundSound|body|string \| string(uri)|false|This is the background sound in the call. Default for phone calls is 'office' and default for web calls is 'off'.<br>Bundled sounds: 'office', 'white-noise', 'city', 'crowd' and 'farm'. GPT Live assistants don't play 'office'.<br>You can also provide a custom sound by providing a URL to an audio file.|
 |» » » *oneOf*|body|string|false|none|
 |» » » *oneOf*|body|string(uri)|false|none|
 |» » modelOutputInMessagesEnabled|body|boolean|false|This determines whether the model's output is used in conversation history rather than the transcription of assistant's speech.<br><br>@default false|
@@ -157159,7 +157336,7 @@ curl https://api.vapi.ai/eval/simulation/personality/497f6eca-6276-4993-bfeb-53c
 |» » » tags|body|[string]|true|This is an array of tags to be added to the Langfuse trace. Tags allow you to categorize and filter traces. https://langfuse.com/docs/tracing-features/tags|
 |» » » metadata|body|object|false|This is a JSON object that will be added to the Langfuse trace. Traces can be enriched with metadata to better understand your users, application, and experiments. https://langfuse.com/docs/tracing-features/metadata<br>By default it includes the call metadata, assistant metadata, and assistant overrides.|
 |» » » *oneOf*|body|[LangfuseObservabilityPlan](#schemalangfuseobservabilityplan)|false|none|
-|» » credentials|body|[[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto) \| [CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto) \| [CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto) \| [CreateAssemblyAICredentialDTO](#schemacreateassemblyaicredentialdto) \| [CreateAzureCredentialDTO](#schemacreateazurecredentialdto) \| [CreateAzureOpenAICredentialDTO](#schemacreateazureopenaicredentialdto) \| [CreateByoSipTrunkCredentialDTO](#schemacreatebyosiptrunkcredentialdto) \| [CreateCartesiaCredentialDTO](#schemacreatecartesiacredentialdto) \| [CreateCerebrasCredentialDTO](#schemacreatecerebrascredentialdto) \| [CreateCloudflareCredentialDTO](#schemacreatecloudflarecredentialdto) \| [CreateCustomLLMCredentialDTO](#schemacreatecustomllmcredentialdto) \| [CreateDeepgramCredentialDTO](#schemacreatedeepgramcredentialdto) \| [CreateDeepInfraCredentialDTO](#schemacreatedeepinfracredentialdto) \| [CreateDeepSeekCredentialDTO](#schemacreatedeepseekcredentialdto) \| [CreateElevenLabsCredentialDTO](#schemacreateelevenlabscredentialdto) \| [CreateGcpCredentialDTO](#schemacreategcpcredentialdto) \| [CreateGladiaCredentialDTO](#schemacreategladiacredentialdto) \| [CreateGoHighLevelCredentialDTO](#schemacreategohighlevelcredentialdto) \| [CreateGoogleCredentialDTO](#schemacreategooglecredentialdto) \| [CreateGroqCredentialDTO](#schemacreategroqcredentialdto) \| [CreateHumeCredentialDTO](#schemacreatehumecredentialdto) \| [CreateInflectionAICredentialDTO](#schemacreateinflectionaicredentialdto) \| [CreateLangfuseCredentialDTO](#schemacreatelangfusecredentialdto) \| [CreateLmntCredentialDTO](#schemacreatelmntcredentialdto) \| [CreateMakeCredentialDTO](#schemacreatemakecredentialdto) \| [CreateMistralCredentialDTO](#schemacreatemistralcredentialdto) \| [CreateNeuphonicCredentialDTO](#schemacreateneuphoniccredentialdto) \| [CreateOpenAICredentialDTO](#schemacreateopenaicredentialdto) \| [CreateOpenRouterCredentialDTO](#schemacreateopenroutercredentialdto) \| [CreatePerplexityAICredentialDTO](#schemacreateperplexityaicredentialdto) \| [CreatePlayHTCredentialDTO](#schemacreateplayhtcredentialdto) \| [CreateRimeAICredentialDTO](#schemacreaterimeaicredentialdto) \| [CreateRunpodCredentialDTO](#schemacreaterunpodcredentialdto) \| [CreateS3CredentialDTO](#schemacreates3credentialdto) \| [CreateS3CompatibleCredentialDTO](#schemacreates3compatiblecredentialdto) \| [CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto) \| [CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto) \| [CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto) \| [CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto) \| [CreateTavusCredentialDTO](#schemacreatetavuscredentialdto) \| [CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto) \| [CreateTwilioCredentialDTO](#schemacreatetwiliocredentialdto) \| [CreateVonageCredentialDTO](#schemacreatevonagecredentialdto) \| [CreateWebhookCredentialDTO](#schemacreatewebhookcredentialdto) \| [CreateCustomCredentialDTO](#schemacreatecustomcredentialdto) \| [CreateXAiCredentialDTO](#schemacreatexaicredentialdto) \| [CreateMicrosoftCredentialDTO](#schemacreatemicrosoftcredentialdto) \| [CreateGoogleCalendarOAuth2ClientCredentialDTO](#schemacreategooglecalendaroauth2clientcredentialdto) \| [CreateGoogleCalendarOAuth2AuthorizationCredentialDTO](#schemacreategooglecalendaroauth2authorizationcredentialdto) \| [CreateGoogleSheetsOAuth2AuthorizationCredentialDTO](#schemacreategooglesheetsoauth2authorizationcredentialdto) \| [CreateSlackOAuth2AuthorizationCredentialDTO](#schemacreateslackoauth2authorizationcredentialdto) \| [CreateGoHighLevelMCPCredentialDTO](#schemacreategohighlevelmcpcredentialdto) \| [CreateInworldCredentialDTO](#schemacreateinworldcredentialdto) \| [CreateMinimaxCredentialDTO](#schemacreateminimaxcredentialdto) \| [CreateWellSaidCredentialDTO](#schemacreatewellsaidcredentialdto) \| [CreateEmailCredentialDTO](#schemacreateemailcredentialdto) \| [CreateSlackWebhookCredentialDTO](#schemacreateslackwebhookcredentialdto)]|false|These are dynamic credentials that will be used for the assistant calls. By default, all the credentials are available for use in the call but you can supplement an additional credentials using this. Dynamic credentials override existing credentials.|
+|» » credentials|body|[[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto) \| [CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto) \| [CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto) \| [CreateAssemblyAICredentialDTO](#schemacreateassemblyaicredentialdto) \| [CreateAzureCredentialDTO](#schemacreateazurecredentialdto) \| [CreateAzureOpenAICredentialDTO](#schemacreateazureopenaicredentialdto) \| [CreateByoSipTrunkCredentialDTO](#schemacreatebyosiptrunkcredentialdto) \| [CreateCartesiaCredentialDTO](#schemacreatecartesiacredentialdto) \| [CreateCerebrasCredentialDTO](#schemacreatecerebrascredentialdto) \| [CreateCloudflareCredentialDTO](#schemacreatecloudflarecredentialdto) \| [CreateCustomLLMCredentialDTO](#schemacreatecustomllmcredentialdto) \| [CreateDeepgramCredentialDTO](#schemacreatedeepgramcredentialdto) \| [CreateDeepInfraCredentialDTO](#schemacreatedeepinfracredentialdto) \| [CreateDeepSeekCredentialDTO](#schemacreatedeepseekcredentialdto) \| [CreateElevenLabsCredentialDTO](#schemacreateelevenlabscredentialdto) \| [CreateGcpCredentialDTO](#schemacreategcpcredentialdto) \| [CreateGladiaCredentialDTO](#schemacreategladiacredentialdto) \| [CreateGoHighLevelCredentialDTO](#schemacreategohighlevelcredentialdto) \| [CreateGoogleCredentialDTO](#schemacreategooglecredentialdto) \| [CreateGroqCredentialDTO](#schemacreategroqcredentialdto) \| [CreateHumeCredentialDTO](#schemacreatehumecredentialdto) \| [CreateInflectionAICredentialDTO](#schemacreateinflectionaicredentialdto) \| [CreateLangfuseCredentialDTO](#schemacreatelangfusecredentialdto) \| [CreateLmntCredentialDTO](#schemacreatelmntcredentialdto) \| [CreateMakeCredentialDTO](#schemacreatemakecredentialdto) \| [CreateMistralCredentialDTO](#schemacreatemistralcredentialdto) \| [CreateNeuphonicCredentialDTO](#schemacreateneuphoniccredentialdto) \| [CreateOpenAICredentialDTO](#schemacreateopenaicredentialdto) \| [CreateOpenRouterCredentialDTO](#schemacreateopenroutercredentialdto) \| [CreatePerplexityAICredentialDTO](#schemacreateperplexityaicredentialdto) \| [CreatePlayHTCredentialDTO](#schemacreateplayhtcredentialdto) \| [CreateRimeAICredentialDTO](#schemacreaterimeaicredentialdto) \| [CreateRunpodCredentialDTO](#schemacreaterunpodcredentialdto) \| [CreateS3CredentialDTO](#schemacreates3credentialdto) \| [CreateS3CompatibleCredentialDTO](#schemacreates3compatiblecredentialdto) \| [CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto) \| [CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto) \| [CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto) \| [CreateReson8CredentialDTO](#schemacreatereson8credentialdto) \| [CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto) \| [CreateTavusCredentialDTO](#schemacreatetavuscredentialdto) \| [CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto) \| [CreateTwilioCredentialDTO](#schemacreatetwiliocredentialdto) \| [CreateVonageCredentialDTO](#schemacreatevonagecredentialdto) \| [CreateWebhookCredentialDTO](#schemacreatewebhookcredentialdto) \| [CreateCustomCredentialDTO](#schemacreatecustomcredentialdto) \| [CreateXAiCredentialDTO](#schemacreatexaicredentialdto) \| [CreateMicrosoftCredentialDTO](#schemacreatemicrosoftcredentialdto) \| [CreateGoogleCalendarOAuth2ClientCredentialDTO](#schemacreategooglecalendaroauth2clientcredentialdto) \| [CreateGoogleCalendarOAuth2AuthorizationCredentialDTO](#schemacreategooglecalendaroauth2authorizationcredentialdto) \| [CreateGoogleSheetsOAuth2AuthorizationCredentialDTO](#schemacreategooglesheetsoauth2authorizationcredentialdto) \| [CreateSlackOAuth2AuthorizationCredentialDTO](#schemacreateslackoauth2authorizationcredentialdto) \| [CreateGoHighLevelMCPCredentialDTO](#schemacreategohighlevelmcpcredentialdto) \| [CreateInworldCredentialDTO](#schemacreateinworldcredentialdto) \| [CreateMinimaxCredentialDTO](#schemacreateminimaxcredentialdto) \| [CreateWellSaidCredentialDTO](#schemacreatewellsaidcredentialdto) \| [CreateEmailCredentialDTO](#schemacreateemailcredentialdto) \| [CreateSlackWebhookCredentialDTO](#schemacreateslackwebhookcredentialdto)]|false|These are dynamic credentials that will be used for the assistant calls. By default, all the credentials are available for use in the call but you can supplement an additional credentials using this. Dynamic credentials override existing credentials.|
 |» » » *oneOf*|body|[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto)|false|none|
@@ -157198,6 +157375,7 @@ curl https://api.vapi.ai/eval/simulation/personality/497f6eca-6276-4993-bfeb-53c
 |» » » *oneOf*|body|[CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto)|false|none|
+|» » » *oneOf*|body|[CreateReson8CredentialDTO](#schemacreatereson8credentialdto)|false|none|
 |» » » *oneOf*|body|[CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateTavusCredentialDTO](#schemacreatetavuscredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto)|false|none|
@@ -157380,6 +157558,10 @@ curl https://api.vapi.ai/eval/simulation/personality/497f6eca-6276-4993-bfeb-53c
 |» » serverMessages|call.artifact.upload|
 |» » » *oneOf*|off|
 |» » » *oneOf*|office|
+|» » » *oneOf*|white-noise|
+|» » » *oneOf*|city|
+|» » » *oneOf*|crowd|
+|» » » *oneOf*|farm|
 |» » » provider|langfuse|
 |» » » » rubric|NumericScale|
 |» » » » rubric|DescriptiveScale|
@@ -158484,7 +158666,7 @@ curl https://api.vapi.ai/eval/simulation/scenario \
 |» » *oneOf*|body|[SimulationHookCallStarted](#schemasimulationhookcallstarted)|false|none|
 |» » *oneOf*|body|[SimulationHookCallEnded](#schemasimulationhookcallended)|false|none|
 |» targetOverrides|body|object|false|Overrides to inject into the simulated target assistant or squad|
-|» » transcriber|body|[AssemblyAITranscriber](#schemaassemblyaitranscriber) \| [AzureSpeechTranscriber](#schemaazurespeechtranscriber) \| [CustomTranscriber](#schemacustomtranscriber) \| [DeepgramTranscriber](#schemadeepgramtranscriber) \| [ElevenLabsTranscriber](#schemaelevenlabstranscriber) \| [GladiaTranscriber](#schemagladiatranscriber) \| [GoogleTranscriber](#schemagoogletranscriber) \| [SpeechmaticsTranscriber](#schemaspeechmaticstranscriber) \| [TalkscriberTranscriber](#schematalkscribertranscriber) \| [OpenAITranscriber](#schemaopenaitranscriber) \| [CartesiaTranscriber](#schemacartesiatranscriber) \| [SonioxTranscriber](#schemasonioxtranscriber) \| [XaiTranscriber](#schemaxaitranscriber) \| [VapiTranscriber](#schemavapitranscriber)|false|These are the options for the assistant's transcriber.|
+|» » transcriber|body|[AssemblyAITranscriber](#schemaassemblyaitranscriber) \| [AzureSpeechTranscriber](#schemaazurespeechtranscriber) \| [CustomTranscriber](#schemacustomtranscriber) \| [DeepgramTranscriber](#schemadeepgramtranscriber) \| [ElevenLabsTranscriber](#schemaelevenlabstranscriber) \| [GladiaTranscriber](#schemagladiatranscriber) \| [GoogleTranscriber](#schemagoogletranscriber) \| [SpeechmaticsTranscriber](#schemaspeechmaticstranscriber) \| [TalkscriberTranscriber](#schematalkscribertranscriber) \| [OpenAITranscriber](#schemaopenaitranscriber) \| [CartesiaTranscriber](#schemacartesiatranscriber) \| [SonioxTranscriber](#schemasonioxtranscriber) \| [XaiTranscriber](#schemaxaitranscriber) \| [Reson8Transcriber](#schemareson8transcriber) \| [VapiTranscriber](#schemavapitranscriber)|false|These are the options for the assistant's transcriber.|
 |» » » *oneOf*|body|[AssemblyAITranscriber](#schemaassemblyaitranscriber)|false|none|
 |» » » *oneOf*|body|[AzureSpeechTranscriber](#schemaazurespeechtranscriber)|false|none|
 |» » » *oneOf*|body|[CustomTranscriber](#schemacustomtranscriber)|false|none|
@@ -158498,6 +158680,7 @@ curl https://api.vapi.ai/eval/simulation/scenario \
 |» » » *oneOf*|body|[CartesiaTranscriber](#schemacartesiatranscriber)|false|none|
 |» » » *oneOf*|body|[SonioxTranscriber](#schemasonioxtranscriber)|false|none|
 |» » » *oneOf*|body|[XaiTranscriber](#schemaxaitranscriber)|false|none|
+|» » » *oneOf*|body|[Reson8Transcriber](#schemareson8transcriber)|false|none|
 |» » » *oneOf*|body|[VapiTranscriber](#schemavapitranscriber)|false|none|
 |» » model|body|[AnthropicModel](#schemaanthropicmodel) \| [AnthropicBedrockModel](#schemaanthropicbedrockmodel) \| [AnyscaleModel](#schemaanyscalemodel) \| [CerebrasModel](#schemacerebrasmodel) \| [CustomLLMModel](#schemacustomllmmodel) \| [DeepInfraModel](#schemadeepinframodel) \| [DeepSeekModel](#schemadeepseekmodel) \| [GoogleModel](#schemagooglemodel) \| [GroqModel](#schemagroqmodel) \| [InflectionAIModel](#schemainflectionaimodel) \| [MinimaxLLMModel](#schemaminimaxllmmodel) \| [OpenAIModel](#schemaopenaimodel) \| [OpenRouterModel](#schemaopenroutermodel) \| [PerplexityAIModel](#schemaperplexityaimodel) \| [TogetherAIModel](#schematogetheraimodel) \| [XaiModel](#schemaxaimodel) \| [VapiModel](#schemavapimodel)|false|These are the options for the assistant's LLM.|
 |» » » *oneOf*|body|[AnthropicModel](#schemaanthropicmodel)|false|none|
@@ -158549,7 +158732,7 @@ curl https://api.vapi.ai/eval/simulation/scenario \
 |» » clientMessages|body|[string]|false|These are the messages that will be sent to your Client SDKs. Default is conversation-update,function-call,hang,model-output,speech-update,status-update,transfer-update,transcript,tool-calls,user-interrupted,voice-input,workflow.node.started,assistant.started. You can check the shape of the messages in ClientMessage schema.|
 |» » serverMessages|body|[string]|false|These are the messages that will be sent to your Server URL. Default is conversation-update,end-of-call-report,function-call,hang,speech-update,status-update,tool-calls,transfer-destination-request,handoff-destination-request,user-interrupted,assistant.started. You can check the shape of the messages in ServerMessage schema.|
 |» » maxDurationSeconds|body|number|false|This is the maximum number of seconds that the call will last. When the call reaches this duration, it will be ended.<br><br>@default 600 (10 minutes)|
-|» » backgroundSound|body|string \| string(uri)|false|This is the background sound in the call. Default for phone calls is 'office' and default for web calls is 'off'.<br>You can also provide a custom sound by providing a URL to an audio file.|
+|» » backgroundSound|body|string \| string(uri)|false|This is the background sound in the call. Default for phone calls is 'office' and default for web calls is 'off'.<br>Bundled sounds: 'office', 'white-noise', 'city', 'crowd' and 'farm'. GPT Live assistants don't play 'office'.<br>You can also provide a custom sound by providing a URL to an audio file.|
 |» » » *oneOf*|body|string|false|none|
 |» » » *oneOf*|body|string(uri)|false|none|
 |» » modelOutputInMessagesEnabled|body|boolean|false|This determines whether the model's output is used in conversation history rather than the transcription of assistant's speech.<br><br>@default false|
@@ -158563,7 +158746,7 @@ curl https://api.vapi.ai/eval/simulation/scenario \
 |» » » tags|body|[string]|true|This is an array of tags to be added to the Langfuse trace. Tags allow you to categorize and filter traces. https://langfuse.com/docs/tracing-features/tags|
 |» » » metadata|body|object|false|This is a JSON object that will be added to the Langfuse trace. Traces can be enriched with metadata to better understand your users, application, and experiments. https://langfuse.com/docs/tracing-features/metadata<br>By default it includes the call metadata, assistant metadata, and assistant overrides.|
 |» » » *oneOf*|body|[LangfuseObservabilityPlan](#schemalangfuseobservabilityplan)|false|none|
-|» » credentials|body|[[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto) \| [CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto) \| [CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto) \| [CreateAssemblyAICredentialDTO](#schemacreateassemblyaicredentialdto) \| [CreateAzureCredentialDTO](#schemacreateazurecredentialdto) \| [CreateAzureOpenAICredentialDTO](#schemacreateazureopenaicredentialdto) \| [CreateByoSipTrunkCredentialDTO](#schemacreatebyosiptrunkcredentialdto) \| [CreateCartesiaCredentialDTO](#schemacreatecartesiacredentialdto) \| [CreateCerebrasCredentialDTO](#schemacreatecerebrascredentialdto) \| [CreateCloudflareCredentialDTO](#schemacreatecloudflarecredentialdto) \| [CreateCustomLLMCredentialDTO](#schemacreatecustomllmcredentialdto) \| [CreateDeepgramCredentialDTO](#schemacreatedeepgramcredentialdto) \| [CreateDeepInfraCredentialDTO](#schemacreatedeepinfracredentialdto) \| [CreateDeepSeekCredentialDTO](#schemacreatedeepseekcredentialdto) \| [CreateElevenLabsCredentialDTO](#schemacreateelevenlabscredentialdto) \| [CreateGcpCredentialDTO](#schemacreategcpcredentialdto) \| [CreateGladiaCredentialDTO](#schemacreategladiacredentialdto) \| [CreateGoHighLevelCredentialDTO](#schemacreategohighlevelcredentialdto) \| [CreateGoogleCredentialDTO](#schemacreategooglecredentialdto) \| [CreateGroqCredentialDTO](#schemacreategroqcredentialdto) \| [CreateHumeCredentialDTO](#schemacreatehumecredentialdto) \| [CreateInflectionAICredentialDTO](#schemacreateinflectionaicredentialdto) \| [CreateLangfuseCredentialDTO](#schemacreatelangfusecredentialdto) \| [CreateLmntCredentialDTO](#schemacreatelmntcredentialdto) \| [CreateMakeCredentialDTO](#schemacreatemakecredentialdto) \| [CreateMistralCredentialDTO](#schemacreatemistralcredentialdto) \| [CreateNeuphonicCredentialDTO](#schemacreateneuphoniccredentialdto) \| [CreateOpenAICredentialDTO](#schemacreateopenaicredentialdto) \| [CreateOpenRouterCredentialDTO](#schemacreateopenroutercredentialdto) \| [CreatePerplexityAICredentialDTO](#schemacreateperplexityaicredentialdto) \| [CreatePlayHTCredentialDTO](#schemacreateplayhtcredentialdto) \| [CreateRimeAICredentialDTO](#schemacreaterimeaicredentialdto) \| [CreateRunpodCredentialDTO](#schemacreaterunpodcredentialdto) \| [CreateS3CredentialDTO](#schemacreates3credentialdto) \| [CreateS3CompatibleCredentialDTO](#schemacreates3compatiblecredentialdto) \| [CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto) \| [CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto) \| [CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto) \| [CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto) \| [CreateTavusCredentialDTO](#schemacreatetavuscredentialdto) \| [CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto) \| [CreateTwilioCredentialDTO](#schemacreatetwiliocredentialdto) \| [CreateVonageCredentialDTO](#schemacreatevonagecredentialdto) \| [CreateWebhookCredentialDTO](#schemacreatewebhookcredentialdto) \| [CreateCustomCredentialDTO](#schemacreatecustomcredentialdto) \| [CreateXAiCredentialDTO](#schemacreatexaicredentialdto) \| [CreateMicrosoftCredentialDTO](#schemacreatemicrosoftcredentialdto) \| [CreateGoogleCalendarOAuth2ClientCredentialDTO](#schemacreategooglecalendaroauth2clientcredentialdto) \| [CreateGoogleCalendarOAuth2AuthorizationCredentialDTO](#schemacreategooglecalendaroauth2authorizationcredentialdto) \| [CreateGoogleSheetsOAuth2AuthorizationCredentialDTO](#schemacreategooglesheetsoauth2authorizationcredentialdto) \| [CreateSlackOAuth2AuthorizationCredentialDTO](#schemacreateslackoauth2authorizationcredentialdto) \| [CreateGoHighLevelMCPCredentialDTO](#schemacreategohighlevelmcpcredentialdto) \| [CreateInworldCredentialDTO](#schemacreateinworldcredentialdto) \| [CreateMinimaxCredentialDTO](#schemacreateminimaxcredentialdto) \| [CreateWellSaidCredentialDTO](#schemacreatewellsaidcredentialdto) \| [CreateEmailCredentialDTO](#schemacreateemailcredentialdto) \| [CreateSlackWebhookCredentialDTO](#schemacreateslackwebhookcredentialdto)]|false|These are dynamic credentials that will be used for the assistant calls. By default, all the credentials are available for use in the call but you can supplement an additional credentials using this. Dynamic credentials override existing credentials.|
+|» » credentials|body|[[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto) \| [CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto) \| [CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto) \| [CreateAssemblyAICredentialDTO](#schemacreateassemblyaicredentialdto) \| [CreateAzureCredentialDTO](#schemacreateazurecredentialdto) \| [CreateAzureOpenAICredentialDTO](#schemacreateazureopenaicredentialdto) \| [CreateByoSipTrunkCredentialDTO](#schemacreatebyosiptrunkcredentialdto) \| [CreateCartesiaCredentialDTO](#schemacreatecartesiacredentialdto) \| [CreateCerebrasCredentialDTO](#schemacreatecerebrascredentialdto) \| [CreateCloudflareCredentialDTO](#schemacreatecloudflarecredentialdto) \| [CreateCustomLLMCredentialDTO](#schemacreatecustomllmcredentialdto) \| [CreateDeepgramCredentialDTO](#schemacreatedeepgramcredentialdto) \| [CreateDeepInfraCredentialDTO](#schemacreatedeepinfracredentialdto) \| [CreateDeepSeekCredentialDTO](#schemacreatedeepseekcredentialdto) \| [CreateElevenLabsCredentialDTO](#schemacreateelevenlabscredentialdto) \| [CreateGcpCredentialDTO](#schemacreategcpcredentialdto) \| [CreateGladiaCredentialDTO](#schemacreategladiacredentialdto) \| [CreateGoHighLevelCredentialDTO](#schemacreategohighlevelcredentialdto) \| [CreateGoogleCredentialDTO](#schemacreategooglecredentialdto) \| [CreateGroqCredentialDTO](#schemacreategroqcredentialdto) \| [CreateHumeCredentialDTO](#schemacreatehumecredentialdto) \| [CreateInflectionAICredentialDTO](#schemacreateinflectionaicredentialdto) \| [CreateLangfuseCredentialDTO](#schemacreatelangfusecredentialdto) \| [CreateLmntCredentialDTO](#schemacreatelmntcredentialdto) \| [CreateMakeCredentialDTO](#schemacreatemakecredentialdto) \| [CreateMistralCredentialDTO](#schemacreatemistralcredentialdto) \| [CreateNeuphonicCredentialDTO](#schemacreateneuphoniccredentialdto) \| [CreateOpenAICredentialDTO](#schemacreateopenaicredentialdto) \| [CreateOpenRouterCredentialDTO](#schemacreateopenroutercredentialdto) \| [CreatePerplexityAICredentialDTO](#schemacreateperplexityaicredentialdto) \| [CreatePlayHTCredentialDTO](#schemacreateplayhtcredentialdto) \| [CreateRimeAICredentialDTO](#schemacreaterimeaicredentialdto) \| [CreateRunpodCredentialDTO](#schemacreaterunpodcredentialdto) \| [CreateS3CredentialDTO](#schemacreates3credentialdto) \| [CreateS3CompatibleCredentialDTO](#schemacreates3compatiblecredentialdto) \| [CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto) \| [CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto) \| [CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto) \| [CreateReson8CredentialDTO](#schemacreatereson8credentialdto) \| [CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto) \| [CreateTavusCredentialDTO](#schemacreatetavuscredentialdto) \| [CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto) \| [CreateTwilioCredentialDTO](#schemacreatetwiliocredentialdto) \| [CreateVonageCredentialDTO](#schemacreatevonagecredentialdto) \| [CreateWebhookCredentialDTO](#schemacreatewebhookcredentialdto) \| [CreateCustomCredentialDTO](#schemacreatecustomcredentialdto) \| [CreateXAiCredentialDTO](#schemacreatexaicredentialdto) \| [CreateMicrosoftCredentialDTO](#schemacreatemicrosoftcredentialdto) \| [CreateGoogleCalendarOAuth2ClientCredentialDTO](#schemacreategooglecalendaroauth2clientcredentialdto) \| [CreateGoogleCalendarOAuth2AuthorizationCredentialDTO](#schemacreategooglecalendaroauth2authorizationcredentialdto) \| [CreateGoogleSheetsOAuth2AuthorizationCredentialDTO](#schemacreategooglesheetsoauth2authorizationcredentialdto) \| [CreateSlackOAuth2AuthorizationCredentialDTO](#schemacreateslackoauth2authorizationcredentialdto) \| [CreateGoHighLevelMCPCredentialDTO](#schemacreategohighlevelmcpcredentialdto) \| [CreateInworldCredentialDTO](#schemacreateinworldcredentialdto) \| [CreateMinimaxCredentialDTO](#schemacreateminimaxcredentialdto) \| [CreateWellSaidCredentialDTO](#schemacreatewellsaidcredentialdto) \| [CreateEmailCredentialDTO](#schemacreateemailcredentialdto) \| [CreateSlackWebhookCredentialDTO](#schemacreateslackwebhookcredentialdto)]|false|These are dynamic credentials that will be used for the assistant calls. By default, all the credentials are available for use in the call but you can supplement an additional credentials using this. Dynamic credentials override existing credentials.|
 |» » » *oneOf*|body|[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto)|false|none|
@@ -158602,6 +158785,7 @@ curl https://api.vapi.ai/eval/simulation/scenario \
 |» » » *oneOf*|body|[CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto)|false|none|
+|» » » *oneOf*|body|[CreateReson8CredentialDTO](#schemacreatereson8credentialdto)|false|none|
 |» » » *oneOf*|body|[CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateTavusCredentialDTO](#schemacreatetavuscredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto)|false|none|
@@ -158811,6 +158995,10 @@ curl https://api.vapi.ai/eval/simulation/scenario \
 |» » serverMessages|call.artifact.upload|
 |» » » *oneOf*|off|
 |» » » *oneOf*|office|
+|» » » *oneOf*|white-noise|
+|» » » *oneOf*|city|
+|» » » *oneOf*|crowd|
+|» » » *oneOf*|farm|
 |» » » provider|langfuse|
 |» » » » rubric|NumericScale|
 |» » » » rubric|DescriptiveScale|
@@ -159612,7 +159800,7 @@ curl https://api.vapi.ai/eval/simulation/scenario/497f6eca-6276-4993-bfeb-53cbbb
 |» » *oneOf*|body|[SimulationHookCallStarted](#schemasimulationhookcallstarted)|false|none|
 |» » *oneOf*|body|[SimulationHookCallEnded](#schemasimulationhookcallended)|false|none|
 |» targetOverrides|body|object|false|Complete override replacement. Omitted credentials and redacted server secrets are preserved when their endpoint URL is unchanged. Send credentials: [] to clear credentials; omit a server container to remove it.|
-|» » transcriber|body|[AssemblyAITranscriber](#schemaassemblyaitranscriber) \| [AzureSpeechTranscriber](#schemaazurespeechtranscriber) \| [CustomTranscriber](#schemacustomtranscriber) \| [DeepgramTranscriber](#schemadeepgramtranscriber) \| [ElevenLabsTranscriber](#schemaelevenlabstranscriber) \| [GladiaTranscriber](#schemagladiatranscriber) \| [GoogleTranscriber](#schemagoogletranscriber) \| [SpeechmaticsTranscriber](#schemaspeechmaticstranscriber) \| [TalkscriberTranscriber](#schematalkscribertranscriber) \| [OpenAITranscriber](#schemaopenaitranscriber) \| [CartesiaTranscriber](#schemacartesiatranscriber) \| [SonioxTranscriber](#schemasonioxtranscriber) \| [XaiTranscriber](#schemaxaitranscriber) \| [VapiTranscriber](#schemavapitranscriber)|false|These are the options for the assistant's transcriber.|
+|» » transcriber|body|[AssemblyAITranscriber](#schemaassemblyaitranscriber) \| [AzureSpeechTranscriber](#schemaazurespeechtranscriber) \| [CustomTranscriber](#schemacustomtranscriber) \| [DeepgramTranscriber](#schemadeepgramtranscriber) \| [ElevenLabsTranscriber](#schemaelevenlabstranscriber) \| [GladiaTranscriber](#schemagladiatranscriber) \| [GoogleTranscriber](#schemagoogletranscriber) \| [SpeechmaticsTranscriber](#schemaspeechmaticstranscriber) \| [TalkscriberTranscriber](#schematalkscribertranscriber) \| [OpenAITranscriber](#schemaopenaitranscriber) \| [CartesiaTranscriber](#schemacartesiatranscriber) \| [SonioxTranscriber](#schemasonioxtranscriber) \| [XaiTranscriber](#schemaxaitranscriber) \| [Reson8Transcriber](#schemareson8transcriber) \| [VapiTranscriber](#schemavapitranscriber)|false|These are the options for the assistant's transcriber.|
 |» » » *oneOf*|body|[AssemblyAITranscriber](#schemaassemblyaitranscriber)|false|none|
 |» » » *oneOf*|body|[AzureSpeechTranscriber](#schemaazurespeechtranscriber)|false|none|
 |» » » *oneOf*|body|[CustomTranscriber](#schemacustomtranscriber)|false|none|
@@ -159626,6 +159814,7 @@ curl https://api.vapi.ai/eval/simulation/scenario/497f6eca-6276-4993-bfeb-53cbbb
 |» » » *oneOf*|body|[CartesiaTranscriber](#schemacartesiatranscriber)|false|none|
 |» » » *oneOf*|body|[SonioxTranscriber](#schemasonioxtranscriber)|false|none|
 |» » » *oneOf*|body|[XaiTranscriber](#schemaxaitranscriber)|false|none|
+|» » » *oneOf*|body|[Reson8Transcriber](#schemareson8transcriber)|false|none|
 |» » » *oneOf*|body|[VapiTranscriber](#schemavapitranscriber)|false|none|
 |» » model|body|[AnthropicModel](#schemaanthropicmodel) \| [AnthropicBedrockModel](#schemaanthropicbedrockmodel) \| [AnyscaleModel](#schemaanyscalemodel) \| [CerebrasModel](#schemacerebrasmodel) \| [CustomLLMModel](#schemacustomllmmodel) \| [DeepInfraModel](#schemadeepinframodel) \| [DeepSeekModel](#schemadeepseekmodel) \| [GoogleModel](#schemagooglemodel) \| [GroqModel](#schemagroqmodel) \| [InflectionAIModel](#schemainflectionaimodel) \| [MinimaxLLMModel](#schemaminimaxllmmodel) \| [OpenAIModel](#schemaopenaimodel) \| [OpenRouterModel](#schemaopenroutermodel) \| [PerplexityAIModel](#schemaperplexityaimodel) \| [TogetherAIModel](#schematogetheraimodel) \| [XaiModel](#schemaxaimodel) \| [VapiModel](#schemavapimodel)|false|These are the options for the assistant's LLM.|
 |» » » *oneOf*|body|[AnthropicModel](#schemaanthropicmodel)|false|none|
@@ -159677,7 +159866,7 @@ curl https://api.vapi.ai/eval/simulation/scenario/497f6eca-6276-4993-bfeb-53cbbb
 |» » clientMessages|body|[string]|false|These are the messages that will be sent to your Client SDKs. Default is conversation-update,function-call,hang,model-output,speech-update,status-update,transfer-update,transcript,tool-calls,user-interrupted,voice-input,workflow.node.started,assistant.started. You can check the shape of the messages in ClientMessage schema.|
 |» » serverMessages|body|[string]|false|These are the messages that will be sent to your Server URL. Default is conversation-update,end-of-call-report,function-call,hang,speech-update,status-update,tool-calls,transfer-destination-request,handoff-destination-request,user-interrupted,assistant.started. You can check the shape of the messages in ServerMessage schema.|
 |» » maxDurationSeconds|body|number|false|This is the maximum number of seconds that the call will last. When the call reaches this duration, it will be ended.<br><br>@default 600 (10 minutes)|
-|» » backgroundSound|body|string \| string(uri)|false|This is the background sound in the call. Default for phone calls is 'office' and default for web calls is 'off'.<br>You can also provide a custom sound by providing a URL to an audio file.|
+|» » backgroundSound|body|string \| string(uri)|false|This is the background sound in the call. Default for phone calls is 'office' and default for web calls is 'off'.<br>Bundled sounds: 'office', 'white-noise', 'city', 'crowd' and 'farm'. GPT Live assistants don't play 'office'.<br>You can also provide a custom sound by providing a URL to an audio file.|
 |» » » *oneOf*|body|string|false|none|
 |» » » *oneOf*|body|string(uri)|false|none|
 |» » modelOutputInMessagesEnabled|body|boolean|false|This determines whether the model's output is used in conversation history rather than the transcription of assistant's speech.<br><br>@default false|
@@ -159691,7 +159880,7 @@ curl https://api.vapi.ai/eval/simulation/scenario/497f6eca-6276-4993-bfeb-53cbbb
 |» » » tags|body|[string]|true|This is an array of tags to be added to the Langfuse trace. Tags allow you to categorize and filter traces. https://langfuse.com/docs/tracing-features/tags|
 |» » » metadata|body|object|false|This is a JSON object that will be added to the Langfuse trace. Traces can be enriched with metadata to better understand your users, application, and experiments. https://langfuse.com/docs/tracing-features/metadata<br>By default it includes the call metadata, assistant metadata, and assistant overrides.|
 |» » » *oneOf*|body|[LangfuseObservabilityPlan](#schemalangfuseobservabilityplan)|false|none|
-|» » credentials|body|[[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto) \| [CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto) \| [CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto) \| [CreateAssemblyAICredentialDTO](#schemacreateassemblyaicredentialdto) \| [CreateAzureCredentialDTO](#schemacreateazurecredentialdto) \| [CreateAzureOpenAICredentialDTO](#schemacreateazureopenaicredentialdto) \| [CreateByoSipTrunkCredentialDTO](#schemacreatebyosiptrunkcredentialdto) \| [CreateCartesiaCredentialDTO](#schemacreatecartesiacredentialdto) \| [CreateCerebrasCredentialDTO](#schemacreatecerebrascredentialdto) \| [CreateCloudflareCredentialDTO](#schemacreatecloudflarecredentialdto) \| [CreateCustomLLMCredentialDTO](#schemacreatecustomllmcredentialdto) \| [CreateDeepgramCredentialDTO](#schemacreatedeepgramcredentialdto) \| [CreateDeepInfraCredentialDTO](#schemacreatedeepinfracredentialdto) \| [CreateDeepSeekCredentialDTO](#schemacreatedeepseekcredentialdto) \| [CreateElevenLabsCredentialDTO](#schemacreateelevenlabscredentialdto) \| [CreateGcpCredentialDTO](#schemacreategcpcredentialdto) \| [CreateGladiaCredentialDTO](#schemacreategladiacredentialdto) \| [CreateGoHighLevelCredentialDTO](#schemacreategohighlevelcredentialdto) \| [CreateGoogleCredentialDTO](#schemacreategooglecredentialdto) \| [CreateGroqCredentialDTO](#schemacreategroqcredentialdto) \| [CreateHumeCredentialDTO](#schemacreatehumecredentialdto) \| [CreateInflectionAICredentialDTO](#schemacreateinflectionaicredentialdto) \| [CreateLangfuseCredentialDTO](#schemacreatelangfusecredentialdto) \| [CreateLmntCredentialDTO](#schemacreatelmntcredentialdto) \| [CreateMakeCredentialDTO](#schemacreatemakecredentialdto) \| [CreateMistralCredentialDTO](#schemacreatemistralcredentialdto) \| [CreateNeuphonicCredentialDTO](#schemacreateneuphoniccredentialdto) \| [CreateOpenAICredentialDTO](#schemacreateopenaicredentialdto) \| [CreateOpenRouterCredentialDTO](#schemacreateopenroutercredentialdto) \| [CreatePerplexityAICredentialDTO](#schemacreateperplexityaicredentialdto) \| [CreatePlayHTCredentialDTO](#schemacreateplayhtcredentialdto) \| [CreateRimeAICredentialDTO](#schemacreaterimeaicredentialdto) \| [CreateRunpodCredentialDTO](#schemacreaterunpodcredentialdto) \| [CreateS3CredentialDTO](#schemacreates3credentialdto) \| [CreateS3CompatibleCredentialDTO](#schemacreates3compatiblecredentialdto) \| [CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto) \| [CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto) \| [CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto) \| [CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto) \| [CreateTavusCredentialDTO](#schemacreatetavuscredentialdto) \| [CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto) \| [CreateTwilioCredentialDTO](#schemacreatetwiliocredentialdto) \| [CreateVonageCredentialDTO](#schemacreatevonagecredentialdto) \| [CreateWebhookCredentialDTO](#schemacreatewebhookcredentialdto) \| [CreateCustomCredentialDTO](#schemacreatecustomcredentialdto) \| [CreateXAiCredentialDTO](#schemacreatexaicredentialdto) \| [CreateMicrosoftCredentialDTO](#schemacreatemicrosoftcredentialdto) \| [CreateGoogleCalendarOAuth2ClientCredentialDTO](#schemacreategooglecalendaroauth2clientcredentialdto) \| [CreateGoogleCalendarOAuth2AuthorizationCredentialDTO](#schemacreategooglecalendaroauth2authorizationcredentialdto) \| [CreateGoogleSheetsOAuth2AuthorizationCredentialDTO](#schemacreategooglesheetsoauth2authorizationcredentialdto) \| [CreateSlackOAuth2AuthorizationCredentialDTO](#schemacreateslackoauth2authorizationcredentialdto) \| [CreateGoHighLevelMCPCredentialDTO](#schemacreategohighlevelmcpcredentialdto) \| [CreateInworldCredentialDTO](#schemacreateinworldcredentialdto) \| [CreateMinimaxCredentialDTO](#schemacreateminimaxcredentialdto) \| [CreateWellSaidCredentialDTO](#schemacreatewellsaidcredentialdto) \| [CreateEmailCredentialDTO](#schemacreateemailcredentialdto) \| [CreateSlackWebhookCredentialDTO](#schemacreateslackwebhookcredentialdto)]|false|These are dynamic credentials that will be used for the assistant calls. By default, all the credentials are available for use in the call but you can supplement an additional credentials using this. Dynamic credentials override existing credentials.|
+|» » credentials|body|[[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto) \| [CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto) \| [CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto) \| [CreateAssemblyAICredentialDTO](#schemacreateassemblyaicredentialdto) \| [CreateAzureCredentialDTO](#schemacreateazurecredentialdto) \| [CreateAzureOpenAICredentialDTO](#schemacreateazureopenaicredentialdto) \| [CreateByoSipTrunkCredentialDTO](#schemacreatebyosiptrunkcredentialdto) \| [CreateCartesiaCredentialDTO](#schemacreatecartesiacredentialdto) \| [CreateCerebrasCredentialDTO](#schemacreatecerebrascredentialdto) \| [CreateCloudflareCredentialDTO](#schemacreatecloudflarecredentialdto) \| [CreateCustomLLMCredentialDTO](#schemacreatecustomllmcredentialdto) \| [CreateDeepgramCredentialDTO](#schemacreatedeepgramcredentialdto) \| [CreateDeepInfraCredentialDTO](#schemacreatedeepinfracredentialdto) \| [CreateDeepSeekCredentialDTO](#schemacreatedeepseekcredentialdto) \| [CreateElevenLabsCredentialDTO](#schemacreateelevenlabscredentialdto) \| [CreateGcpCredentialDTO](#schemacreategcpcredentialdto) \| [CreateGladiaCredentialDTO](#schemacreategladiacredentialdto) \| [CreateGoHighLevelCredentialDTO](#schemacreategohighlevelcredentialdto) \| [CreateGoogleCredentialDTO](#schemacreategooglecredentialdto) \| [CreateGroqCredentialDTO](#schemacreategroqcredentialdto) \| [CreateHumeCredentialDTO](#schemacreatehumecredentialdto) \| [CreateInflectionAICredentialDTO](#schemacreateinflectionaicredentialdto) \| [CreateLangfuseCredentialDTO](#schemacreatelangfusecredentialdto) \| [CreateLmntCredentialDTO](#schemacreatelmntcredentialdto) \| [CreateMakeCredentialDTO](#schemacreatemakecredentialdto) \| [CreateMistralCredentialDTO](#schemacreatemistralcredentialdto) \| [CreateNeuphonicCredentialDTO](#schemacreateneuphoniccredentialdto) \| [CreateOpenAICredentialDTO](#schemacreateopenaicredentialdto) \| [CreateOpenRouterCredentialDTO](#schemacreateopenroutercredentialdto) \| [CreatePerplexityAICredentialDTO](#schemacreateperplexityaicredentialdto) \| [CreatePlayHTCredentialDTO](#schemacreateplayhtcredentialdto) \| [CreateRimeAICredentialDTO](#schemacreaterimeaicredentialdto) \| [CreateRunpodCredentialDTO](#schemacreaterunpodcredentialdto) \| [CreateS3CredentialDTO](#schemacreates3credentialdto) \| [CreateS3CompatibleCredentialDTO](#schemacreates3compatiblecredentialdto) \| [CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto) \| [CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto) \| [CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto) \| [CreateReson8CredentialDTO](#schemacreatereson8credentialdto) \| [CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto) \| [CreateTavusCredentialDTO](#schemacreatetavuscredentialdto) \| [CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto) \| [CreateTwilioCredentialDTO](#schemacreatetwiliocredentialdto) \| [CreateVonageCredentialDTO](#schemacreatevonagecredentialdto) \| [CreateWebhookCredentialDTO](#schemacreatewebhookcredentialdto) \| [CreateCustomCredentialDTO](#schemacreatecustomcredentialdto) \| [CreateXAiCredentialDTO](#schemacreatexaicredentialdto) \| [CreateMicrosoftCredentialDTO](#schemacreatemicrosoftcredentialdto) \| [CreateGoogleCalendarOAuth2ClientCredentialDTO](#schemacreategooglecalendaroauth2clientcredentialdto) \| [CreateGoogleCalendarOAuth2AuthorizationCredentialDTO](#schemacreategooglecalendaroauth2authorizationcredentialdto) \| [CreateGoogleSheetsOAuth2AuthorizationCredentialDTO](#schemacreategooglesheetsoauth2authorizationcredentialdto) \| [CreateSlackOAuth2AuthorizationCredentialDTO](#schemacreateslackoauth2authorizationcredentialdto) \| [CreateGoHighLevelMCPCredentialDTO](#schemacreategohighlevelmcpcredentialdto) \| [CreateInworldCredentialDTO](#schemacreateinworldcredentialdto) \| [CreateMinimaxCredentialDTO](#schemacreateminimaxcredentialdto) \| [CreateWellSaidCredentialDTO](#schemacreatewellsaidcredentialdto) \| [CreateEmailCredentialDTO](#schemacreateemailcredentialdto) \| [CreateSlackWebhookCredentialDTO](#schemacreateslackwebhookcredentialdto)]|false|These are dynamic credentials that will be used for the assistant calls. By default, all the credentials are available for use in the call but you can supplement an additional credentials using this. Dynamic credentials override existing credentials.|
 |» » » *oneOf*|body|[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto)|false|none|
@@ -159730,6 +159919,7 @@ curl https://api.vapi.ai/eval/simulation/scenario/497f6eca-6276-4993-bfeb-53cbbb
 |» » » *oneOf*|body|[CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto)|false|none|
+|» » » *oneOf*|body|[CreateReson8CredentialDTO](#schemacreatereson8credentialdto)|false|none|
 |» » » *oneOf*|body|[CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateTavusCredentialDTO](#schemacreatetavuscredentialdto)|false|none|
 |» » » *oneOf*|body|[CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto)|false|none|
@@ -159939,6 +160129,10 @@ curl https://api.vapi.ai/eval/simulation/scenario/497f6eca-6276-4993-bfeb-53cbbb
 |» » serverMessages|call.artifact.upload|
 |» » » *oneOf*|off|
 |» » » *oneOf*|office|
+|» » » *oneOf*|white-noise|
+|» » » *oneOf*|city|
+|» » » *oneOf*|crowd|
+|» » » *oneOf*|farm|
 |» » » provider|langfuse|
 |» » » » rubric|NumericScale|
 |» » » » rubric|DescriptiveScale|
@@ -176607,7 +176801,7 @@ bearer
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|transcribers|[[FallbackAssemblyAITranscriber](#schemafallbackassemblyaitranscriber) \| [FallbackAzureSpeechTranscriber](#schemafallbackazurespeechtranscriber) \| [FallbackCustomTranscriber](#schemafallbackcustomtranscriber) \| [FallbackDeepgramTranscriber](#schemafallbackdeepgramtranscriber) \| [FallbackElevenLabsTranscriber](#schemafallbackelevenlabstranscriber) \| [FallbackGladiaTranscriber](#schemafallbackgladiatranscriber) \| [FallbackGoogleTranscriber](#schemafallbackgoogletranscriber) \| [FallbackTalkscriberTranscriber](#schemafallbacktalkscribertranscriber) \| [FallbackSpeechmaticsTranscriber](#schemafallbackspeechmaticstranscriber) \| [FallbackOpenAITranscriber](#schemafallbackopenaitranscriber) \| [FallbackCartesiaTranscriber](#schemafallbackcartesiatranscriber) \| [FallbackSonioxTranscriber](#schemafallbacksonioxtranscriber) \| [FallbackXaiTranscriber](#schemafallbackxaitranscriber)]|false|none|none|
+|transcribers|[[FallbackAssemblyAITranscriber](#schemafallbackassemblyaitranscriber) \| [FallbackAzureSpeechTranscriber](#schemafallbackazurespeechtranscriber) \| [FallbackCustomTranscriber](#schemafallbackcustomtranscriber) \| [FallbackDeepgramTranscriber](#schemafallbackdeepgramtranscriber) \| [FallbackElevenLabsTranscriber](#schemafallbackelevenlabstranscriber) \| [FallbackGladiaTranscriber](#schemafallbackgladiatranscriber) \| [FallbackGoogleTranscriber](#schemafallbackgoogletranscriber) \| [FallbackTalkscriberTranscriber](#schemafallbacktalkscribertranscriber) \| [FallbackSpeechmaticsTranscriber](#schemafallbackspeechmaticstranscriber) \| [FallbackOpenAITranscriber](#schemafallbackopenaitranscriber) \| [FallbackCartesiaTranscriber](#schemafallbackcartesiatranscriber) \| [FallbackSonioxTranscriber](#schemafallbacksonioxtranscriber) \| [FallbackXaiTranscriber](#schemafallbackxaitranscriber) \| [FallbackReson8Transcriber](#schemafallbackreson8transcriber)]|false|none|none|
 
 <h2 id="tocS_AssemblyAITranscriber">AssemblyAITranscriber</h2>
 <!-- backwards compatibility -->
@@ -176685,7 +176879,7 @@ bearer
 |---|---|---|---|---|
 |provider|string|true|none|This is the transcription provider that will be used.|
 |language|string|false|none|This is the language that will be set for the transcription.|
-|confidenceThreshold|number|false|none|Transcripts below this confidence threshold will be discarded.<br><br>@default 0.4|
+|confidenceThreshold|number|false|none|Transcripts below this confidence threshold will be discarded.<br><br>Defaults to 0.4 for legacy streaming models. Universal Pro models do not<br>filter by confidence unless this field is explicitly set.|
 |formatTurns|boolean|false|none|This enables formatting of transcripts.<br><br>@default true|
 |endOfTurnConfidenceThreshold|number|false|none|This is the end of turn confidence threshold. The minimum confidence that the end of turn is detected.<br>Note: Only used if startSpeakingPlan.smartEndpointingPlan is not set.<br>@min 0<br>@max 1<br>@default 0.7|
 |minEndOfTurnSilenceWhenConfident|number|false|none|This is the minimum end of turn silence when confident in milliseconds.<br>Note: Only used if startSpeakingPlan.smartEndpointingPlan is not set.<br>@default 160|
@@ -177576,6 +177770,9 @@ bearer
   "provider": "11labs",
   "model": "scribe_v1",
   "language": "aa",
+  "keyterms": [
+    "string"
+  ],
   "silenceThresholdSeconds": 1.5,
   "confidenceThreshold": 0.4,
   "minSpeechDurationMs": 100,
@@ -177622,6 +177819,7 @@ bearer
 |provider|string|true|none|This is the transcription provider that will be used.|
 |model|string|false|none|This is the model that will be used for the transcription.|
 |language|string|false|none|This is the language that will be used for the transcription.|
+|keyterms|[string]|false|none|Words or phrases to bias the transcription towards, such as product names. Supported on scribe_v2 (up to 100 terms of 50 characters each) and scribe_v2_realtime (up to 50 terms of 20 characters each). Each term has at most 5 words and none of `< > { } [ ] \`. Adds ElevenLabs' keyterm prompting rate to the transcriber cost.|
 |silenceThresholdSeconds|number|false|none|This is the number of seconds of silence before VAD commits (0.3-3.0).|
 |confidenceThreshold|number|false|none|This is the VAD sensitivity (0.1-0.9, lower indicates more sensitive).|
 |minSpeechDurationMs|number|false|none|This is the minimum speech duration for VAD (50-2000ms).|
@@ -178167,6 +178365,7 @@ bearer
 {
   "provider": "soniox",
   "model": "stt-rt-v4",
+  "agentTextInputEnabled": true,
   "language": "aa",
   "languages": [
     "aa"
@@ -178230,12 +178429,13 @@ bearer
 |---|---|---|---|---|
 |provider|string|true|none|none|
 |model|string|false|none|The Soniox model to use for transcription.|
+|agentTextInputEnabled|boolean|false|none|Sends the assistant's speech to Soniox as context, which improves caller transcription and filters out echo. Only supported on stt-rt-v6. Defaults to on; set to false to disable.|
 |language|string|false|none|Single language for transcription as an ISO 639-1 code (e.g., `en`, `es`). For multi-language hints or to enable Soniox auto-detect, use `languages` instead — when `languages` is set (including to an empty array), this field is ignored when building the Soniox request. Defaults to `en` if neither this nor `languages` is set.|
 |languages|[string]|false|none|Language hints sent to Soniox as `language_hints`. Provide `[lang1, lang2, ...]` (ISO 639-1 codes) to bias recognition toward specific languages, or provide an explicit empty array `[]` to enable Soniox auto-detect across all 60+ supported languages. When set (including the empty array), this field takes precedence over the singular `language` field. When omitted, falls back to the singular `language` (which defaults to `en` if also unset). Best accuracy is achieved with a single language.|
 |languageHintsStrict|boolean|false|none|When `true`, Soniox strictly restricts transcription to the languages in `languages` (or the singular `language` if `languages` is unset). When `false`, Soniox biases toward those languages but still allows transcription in other languages. Has no effect when no language hints are sent (e.g., `languages: []` for auto-detect). Defaults to `true` (strict mode).|
 |maxEndpointDelayMs|number|false|none|Maximum delay in milliseconds between when the speaker stops and when the endpoint is detected. Lower values mean faster turn-taking but more false endpoints. Range: 500-3000. Default: 500.|
-|endpointSensitivity|number|false|none|How likely Soniox is to emit an endpoint (end the caller turn). Higher values make endpoints more likely for faster turn-taking; negative values make them less likely, which helps when callers pause mid-sentence (e.g. reading numbers group by group). Range: -1.0 to 1.0. Default: 0.3 (the platform low-latency voice profile; Soniox's own default is 0.0). Supported by stt-rt-v5; omitted from the Soniox request on explicit stt-rt-v4. Soniox recommends tuning endpointLatencyAdjustmentLevel first, and advises against negative sensitivity while the level is above 0 (the settings work against each other).|
-|endpointLatencyAdjustmentLevel|number|false|none|How aggressively Soniox reduces endpoint latency. 0 is Soniox's default semantic endpointing; 3 is the most aggressive. Higher levels return endpoints sooner but may split speech into more segments and slightly reduce accuracy. Integer. Range: 0-3. Default: 2 (the platform low-latency voice profile; Soniox's own default is 0). Supported by stt-rt-v5; omitted from the Soniox request on explicit stt-rt-v4.|
+|endpointSensitivity|number|false|none|How likely Soniox is to emit an endpoint (end the caller turn). Higher values make endpoints more likely for faster turn-taking; negative values make them less likely, which helps when callers pause mid-sentence (e.g. reading numbers group by group). Range: -1.0 to 1.0. Default: 0.3 (the platform low-latency voice profile; Soniox's own default is 0.0). Supported by stt-rt-v5 and stt-rt-v6; omitted from the Soniox request on explicit stt-rt-v4. Soniox recommends tuning endpointLatencyAdjustmentLevel first, and advises against negative sensitivity while the level is above 0 (the settings work against each other).|
+|endpointLatencyAdjustmentLevel|number|false|none|How aggressively Soniox reduces endpoint latency. 0 is Soniox's default semantic endpointing; 3 is the most aggressive. Higher levels return endpoints sooner but may split speech into more segments and slightly reduce accuracy. Integer. Range: 0-3. Default: 2 (the platform low-latency voice profile; Soniox's own default is 0). Supported by stt-rt-v5 and stt-rt-v6; omitted from the Soniox request on explicit stt-rt-v4.|
 |customVocabulary|[string]|false|none|Custom vocabulary terms to boost recognition accuracy. Useful for brand names, product names, and domain-specific terminology. Maps to Soniox context.terms.|
 |contextGeneral|[[SonioxContextGeneralItem](#schemasonioxcontextgeneralitem)]|false|none|General context key-value pairs that guide the AI model during transcription. Helps adapt vocabulary to the correct domain, improving accuracy. Recommended: 10 or fewer pairs. Maps to Soniox context.general.|
 |confidenceThreshold|number|false|none|Transcripts below this confidence are discarded. For a discarded final, an `assistant.transcriber.endpointedSpeechLowConfidence` hook whose range covers the confidence runs (by default `[threshold - 0.2, threshold)`); if none does, the assistant does not respond to that utterance. Confidence is the mean of the per-token scores, and a transcript with an unscored token counts as 1. When unset, nothing is discarded by this setting.|
@@ -178248,6 +178448,7 @@ bearer
 |provider|soniox|
 |model|stt-rt-v4|
 |model|stt-rt-v5|
+|model|stt-rt-v6|
 |language|aa|
 |language|ab|
 |language|ae|
@@ -179296,6 +179497,84 @@ bearer
 |language|tr|
 |language|vi|
 
+<h2 id="tocS_Reson8Transcriber">Reson8Transcriber</h2>
+<!-- backwards compatibility -->
+<a id="schemareson8transcriber"></a>
+<a id="schema_Reson8Transcriber"></a>
+<a id="tocSreson8transcriber"></a>
+<a id="tocsreson8transcriber"></a>
+
+```json
+{
+  "provider": "reson8",
+  "model": "turns",
+  "language": "string",
+  "keyterms": [
+    "string"
+  ],
+  "customModelId": "string",
+  "eagerTurnProbability": 0,
+  "finalTurnProbability": 0,
+  "fillerMode": "clean",
+  "fallbackPlan": {
+    "transcribers": [
+      {
+        "provider": "assembly-ai",
+        "language": "multi",
+        "confidenceThreshold": 0.4,
+        "formatTurns": true,
+        "endOfTurnConfidenceThreshold": 0.7,
+        "minEndOfTurnSilenceWhenConfident": 160,
+        "wordFinalizationMaxWaitTime": 160,
+        "maxTurnSilence": 400,
+        "vadAssistedEndpointingEnabled": true,
+        "mode": "max_accuracy",
+        "prompt": "string",
+        "agentContext": "string",
+        "agentContextAutoUpdateEnabled": false,
+        "languageCodes": [
+          "en"
+        ],
+        "speechModel": "universal-streaming-english",
+        "realtimeUrl": "string",
+        "wordBoost": [
+          "string"
+        ],
+        "keytermsPrompt": [
+          "string"
+        ],
+        "endUtteranceSilenceThreshold": 0,
+        "disablePartialTranscripts": true
+      }
+    ]
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|provider|string|true|none|none|
+|model|string|false|none|The Reson8 speech-to-text endpoint to use. `turns` is Reson8's turn-detection endpoint.|
+|language|string|false|none|Language for transcription (e.g. `nl`), or a comma-separated candidate list such as `nl,en` which constrains auto-detection. When omitted, Reson8 auto-detects the language per utterance. Supported: de, en, es, fr, fy, it, nl, pl, pt, sv.|
+|keyterms|[string]|false|none|Domain-specific terms to boost recognition (brand names, product codes, jargon). Sent to Reson8 as the `phrases` parameter. Max 250 phrases.|
+|customModelId|string|false|none|A stored Reson8 phrase collection (custom model) id, managed via the Reson8 API or console.|
+|eagerTurnProbability|number|false|none|Threshold (0-1) at which Reson8 emits an eager turn-end candidate. Provider default 0.5.|
+|finalTurnProbability|number|false|none|Threshold (0-1) at which Reson8 confirms the end of a turn. Provider default 0.92.|
+|fillerMode|string|false|none|How Reson8 renders filler words in transcripts. Provider default `natural`.|
+|fallbackPlan|object|false|none|This is the plan for transcriber provider fallbacks in the event that the primary transcriber provider fails.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|provider|reson8|
+|model|turns|
+|fillerMode|clean|
+|fillerMode|natural|
+|fillerMode|verbatim|
+
 <h2 id="tocS_VapiTranscriber">VapiTranscriber</h2>
 <!-- backwards compatibility -->
 <a id="schemavapitranscriber"></a>
@@ -179751,7 +180030,7 @@ bearer
 |---|---|---|---|---|
 |provider|string|true|none|This is the transcription provider that will be used.|
 |language|string|false|none|This is the language that will be set for the transcription.|
-|confidenceThreshold|number|false|none|Transcripts below this confidence threshold will be discarded.<br><br>@default 0.4|
+|confidenceThreshold|number|false|none|Transcripts below this confidence threshold will be discarded.<br><br>Defaults to 0.4 for legacy streaming models. Universal Pro models do not<br>filter by confidence unless this field is explicitly set.|
 |formatTurns|boolean|false|none|This enables formatting of transcripts.<br><br>@default true|
 |endOfTurnConfidenceThreshold|number|false|none|This is the end of turn confidence threshold. The minimum confidence that the end of turn is detected.<br>Note: Only used if startSpeakingPlan.smartEndpointingPlan is not set.<br>@min 0<br>@max 1<br>@default 0.7|
 |minEndOfTurnSilenceWhenConfident|number|false|none|This is the minimum end of turn silence when confident in milliseconds.<br>Note: Only used if startSpeakingPlan.smartEndpointingPlan is not set.<br>@default 160|
@@ -180429,6 +180708,9 @@ bearer
   "provider": "11labs",
   "model": "scribe_v1",
   "language": "aa",
+  "keyterms": [
+    "string"
+  ],
   "silenceThresholdSeconds": 1.5,
   "confidenceThreshold": 0.4,
   "minSpeechDurationMs": 100,
@@ -180443,6 +180725,7 @@ bearer
 |provider|string|true|none|This is the transcription provider that will be used.|
 |model|string|false|none|This is the model that will be used for the transcription.|
 |language|string|false|none|This is the language that will be used for the transcription.|
+|keyterms|[string]|false|none|Words or phrases to bias the transcription towards, such as product names. Supported on scribe_v2 (up to 100 terms of 50 characters each) and scribe_v2_realtime (up to 50 terms of 20 characters each). Each term has at most 5 words and none of `< > { } [ ] \`. Adds ElevenLabs' keyterm prompting rate to the transcriber cost.|
 |silenceThresholdSeconds|number|false|none|This is the number of seconds of silence before VAD commits (0.3-3.0).|
 |confidenceThreshold|number|false|none|This is the VAD sensitivity (0.1-0.9, lower indicates more sensitive).|
 |minSpeechDurationMs|number|false|none|This is the minimum speech duration for VAD (50-2000ms).|
@@ -180937,6 +181220,7 @@ bearer
 {
   "provider": "soniox",
   "model": "stt-rt-v4",
+  "agentTextInputEnabled": true,
   "language": "aa",
   "languages": [
     "aa"
@@ -180968,12 +181252,13 @@ bearer
 |---|---|---|---|---|
 |provider|string|true|none|none|
 |model|string|false|none|The Soniox model to use for transcription.|
+|agentTextInputEnabled|boolean|false|none|Sends the assistant's speech to Soniox as context, which improves caller transcription and filters out echo. Only supported on stt-rt-v6. Defaults to on; set to false to disable.|
 |language|string|false|none|Single language for transcription as an ISO 639-1 code (e.g., `en`, `es`). For multi-language hints or to enable Soniox auto-detect, use `languages` instead — when `languages` is set (including to an empty array), this field is ignored when building the Soniox request. Defaults to `en` if neither this nor `languages` is set.|
 |languages|[string]|false|none|Language hints sent to Soniox as `language_hints`. Provide `[lang1, lang2, ...]` (ISO 639-1 codes) to bias recognition toward specific languages, or provide an explicit empty array `[]` to enable Soniox auto-detect across all 60+ supported languages. When set (including the empty array), this field takes precedence over the singular `language` field. When omitted, falls back to the singular `language` (which defaults to `en` if also unset). Best accuracy is achieved with a single language.|
 |languageHintsStrict|boolean|false|none|When `true`, Soniox strictly restricts transcription to the languages in `languages` (or the singular `language` if `languages` is unset). When `false`, Soniox biases toward those languages but still allows transcription in other languages. Has no effect when no language hints are sent (e.g., `languages: []` for auto-detect). Defaults to `true` (strict mode).|
 |maxEndpointDelayMs|number|false|none|Maximum delay in milliseconds between when the speaker stops and when the endpoint is detected. Lower values mean faster turn-taking but more false endpoints. Range: 500-3000. Default: 500.|
-|endpointSensitivity|number|false|none|How likely Soniox is to emit an endpoint (end the caller turn). Higher values make endpoints more likely for faster turn-taking; negative values make them less likely, which helps when callers pause mid-sentence (e.g. reading numbers group by group). Range: -1.0 to 1.0. Default: 0.3 (the platform low-latency voice profile; Soniox's own default is 0.0). Supported by stt-rt-v5; omitted from the Soniox request on explicit stt-rt-v4. Soniox recommends tuning endpointLatencyAdjustmentLevel first, and advises against negative sensitivity while the level is above 0 (the settings work against each other).|
-|endpointLatencyAdjustmentLevel|number|false|none|How aggressively Soniox reduces endpoint latency. 0 is Soniox's default semantic endpointing; 3 is the most aggressive. Higher levels return endpoints sooner but may split speech into more segments and slightly reduce accuracy. Integer. Range: 0-3. Default: 2 (the platform low-latency voice profile; Soniox's own default is 0). Supported by stt-rt-v5; omitted from the Soniox request on explicit stt-rt-v4.|
+|endpointSensitivity|number|false|none|How likely Soniox is to emit an endpoint (end the caller turn). Higher values make endpoints more likely for faster turn-taking; negative values make them less likely, which helps when callers pause mid-sentence (e.g. reading numbers group by group). Range: -1.0 to 1.0. Default: 0.3 (the platform low-latency voice profile; Soniox's own default is 0.0). Supported by stt-rt-v5 and stt-rt-v6; omitted from the Soniox request on explicit stt-rt-v4. Soniox recommends tuning endpointLatencyAdjustmentLevel first, and advises against negative sensitivity while the level is above 0 (the settings work against each other).|
+|endpointLatencyAdjustmentLevel|number|false|none|How aggressively Soniox reduces endpoint latency. 0 is Soniox's default semantic endpointing; 3 is the most aggressive. Higher levels return endpoints sooner but may split speech into more segments and slightly reduce accuracy. Integer. Range: 0-3. Default: 2 (the platform low-latency voice profile; Soniox's own default is 0). Supported by stt-rt-v5 and stt-rt-v6; omitted from the Soniox request on explicit stt-rt-v4.|
 |customVocabulary|[string]|false|none|Custom vocabulary terms to boost recognition accuracy. Useful for brand names, product names, and domain-specific terminology. Maps to Soniox context.terms.|
 |contextGeneral|[[SonioxContextGeneralItem](#schemasonioxcontextgeneralitem)]|false|none|General context key-value pairs that guide the AI model during transcription. Helps adapt vocabulary to the correct domain, improving accuracy. Recommended: 10 or fewer pairs. Maps to Soniox context.general.|
 |confidenceThreshold|number|false|none|Transcripts below this confidence are discarded. For a discarded final, an `assistant.transcriber.endpointedSpeechLowConfidence` hook whose range covers the confidence runs (by default `[threshold - 0.2, threshold)`); if none does, the assistant does not respond to that utterance. Confidence is the mean of the per-token scores, and a transcript with an unscored token counts as 1. When unset, nothing is discarded by this setting.|
@@ -180985,6 +181270,7 @@ bearer
 |provider|soniox|
 |model|stt-rt-v4|
 |model|stt-rt-v5|
+|model|stt-rt-v6|
 |language|aa|
 |language|ab|
 |language|ae|
@@ -181844,6 +182130,51 @@ bearer
 |language|th|
 |language|tr|
 |language|vi|
+
+<h2 id="tocS_FallbackReson8Transcriber">FallbackReson8Transcriber</h2>
+<!-- backwards compatibility -->
+<a id="schemafallbackreson8transcriber"></a>
+<a id="schema_FallbackReson8Transcriber"></a>
+<a id="tocSfallbackreson8transcriber"></a>
+<a id="tocsfallbackreson8transcriber"></a>
+
+```json
+{
+  "provider": "reson8",
+  "model": "turns",
+  "language": "string",
+  "keyterms": [
+    "string"
+  ],
+  "customModelId": "string",
+  "eagerTurnProbability": 0,
+  "finalTurnProbability": 0,
+  "fillerMode": "clean"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|provider|string|true|none|none|
+|model|string|false|none|The Reson8 speech-to-text endpoint to use. `turns` is Reson8's turn-detection endpoint.|
+|language|string|false|none|Language for transcription (e.g. `nl`), or a comma-separated candidate list such as `nl,en` which constrains auto-detection. When omitted, Reson8 auto-detects the language per utterance. Supported: de, en, es, fr, fy, it, nl, pl, pt, sv.|
+|keyterms|[string]|false|none|Domain-specific terms to boost recognition (brand names, product codes, jargon). Sent to Reson8 as the `phrases` parameter. Max 250 phrases.|
+|customModelId|string|false|none|A stored Reson8 phrase collection (custom model) id, managed via the Reson8 API or console.|
+|eagerTurnProbability|number|false|none|Threshold (0-1) at which Reson8 emits an eager turn-end candidate. Provider default 0.5.|
+|finalTurnProbability|number|false|none|Threshold (0-1) at which Reson8 confirms the end of a turn. Provider default 0.92.|
+|fillerMode|string|false|none|How Reson8 renders filler words in transcripts. Provider default `natural`.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|provider|reson8|
+|model|turns|
+|fillerMode|clean|
+|fillerMode|natural|
+|fillerMode|verbatim|
 
 <h2 id="tocS_LangfuseObservabilityPlan">LangfuseObservabilityPlan</h2>
 <!-- backwards compatibility -->
@@ -184011,9 +184342,9 @@ bearer
 |name|string|false|none|Optional name for the transfer assistant|
 |model|object|true|none|Model configuration for the transfer assistant|
 |voice|[AzureVoice](#schemaazurevoice) \| [CartesiaVoice](#schemacartesiavoice) \| [CustomVoice](#schemacustomvoice) \| [DeepgramVoice](#schemadeepgramvoice) \| [ElevenLabsVoice](#schemaelevenlabsvoice) \| [HumeVoice](#schemahumevoice) \| [LMNTVoice](#schemalmntvoice) \| [NeuphonicVoice](#schemaneuphonicvoice) \| [OpenAIVoice](#schemaopenaivoice) \| [PlayHTVoice](#schemaplayhtvoice) \| [WellSaidVoice](#schemawellsaidvoice) \| [RimeAIVoice](#schemarimeaivoice) \| [SmallestAIVoice](#schemasmallestaivoice) \| [VapiVoice](#schemavapivoice) \| [SesameVoice](#schemasesamevoice) \| [InworldVoice](#schemainworldvoice) \| [MinimaxVoice](#schemaminimaxvoice) \| [XaiVoice](#schemaxaivoice) \| [MicrosoftVoice](#schemamicrosoftvoice)|false|none|These are the options for the transfer assistant's voice.|
-|transcriber|[AssemblyAITranscriber](#schemaassemblyaitranscriber) \| [AzureSpeechTranscriber](#schemaazurespeechtranscriber) \| [CustomTranscriber](#schemacustomtranscriber) \| [DeepgramTranscriber](#schemadeepgramtranscriber) \| [ElevenLabsTranscriber](#schemaelevenlabstranscriber) \| [GladiaTranscriber](#schemagladiatranscriber) \| [GoogleTranscriber](#schemagoogletranscriber) \| [SpeechmaticsTranscriber](#schemaspeechmaticstranscriber) \| [TalkscriberTranscriber](#schematalkscribertranscriber) \| [OpenAITranscriber](#schemaopenaitranscriber) \| [CartesiaTranscriber](#schemacartesiatranscriber) \| [SonioxTranscriber](#schemasonioxtranscriber) \| [XaiTranscriber](#schemaxaitranscriber) \| [VapiTranscriber](#schemavapitranscriber)|false|none|These are the options for the transfer assistant's transcriber.|
+|transcriber|[AssemblyAITranscriber](#schemaassemblyaitranscriber) \| [AzureSpeechTranscriber](#schemaazurespeechtranscriber) \| [CustomTranscriber](#schemacustomtranscriber) \| [DeepgramTranscriber](#schemadeepgramtranscriber) \| [ElevenLabsTranscriber](#schemaelevenlabstranscriber) \| [GladiaTranscriber](#schemagladiatranscriber) \| [GoogleTranscriber](#schemagoogletranscriber) \| [SpeechmaticsTranscriber](#schemaspeechmaticstranscriber) \| [TalkscriberTranscriber](#schematalkscribertranscriber) \| [OpenAITranscriber](#schemaopenaitranscriber) \| [CartesiaTranscriber](#schemacartesiatranscriber) \| [SonioxTranscriber](#schemasonioxtranscriber) \| [XaiTranscriber](#schemaxaitranscriber) \| [Reson8Transcriber](#schemareson8transcriber) \| [VapiTranscriber](#schemavapitranscriber)|false|none|These are the options for the transfer assistant's transcriber.|
 |firstMessage|string|false|none|This is the first message that the transfer assistant will say.<br>This can also be a URL to a custom audio file.<br><br>If unspecified, assistant will wait for user to speak and use the model to respond once they speak.|
-|backgroundSound|string \| string(uri)|false|none|This is the background sound in the transfer assistant call. Default for phone calls is 'office' and default for web calls is 'off'.<br>You can also provide a custom sound by providing a URL to an audio file.|
+|backgroundSound|string \| string(uri)|false|none|This is the background sound in the transfer assistant call. Default for phone calls is 'office' and default for web calls is 'off'.<br>Bundled sounds: 'office', 'white-noise', 'city', 'crowd' and 'farm'. GPT Live assistants don't play 'office'.<br>You can also provide a custom sound by providing a URL to an audio file.|
 |startSpeakingPlan|object|false|none|This is the plan for when the transfer assistant should start talking.<br><br>You should configure this if the transfer assistant needs different endpointing behavior than the base assistant.<br><br>If this is not set, the transfer assistant will inherit the start speaking plan from the base assistant.|
 |firstMessageMode|string|false|none|This is the mode for the first message. Default is 'assistant-speaks-first'.<br><br>Use:<br>- 'assistant-speaks-first' to have the assistant speak first.<br>- 'assistant-waits-for-user' to have the assistant wait for the user to speak first.<br>- 'assistant-speaks-first-with-model-generated-message' to have the assistant speak first with a message generated by the model based on the conversation state.<br><br>@default 'assistant-speaks-first'|
 |maxDurationSeconds|number|false|none|This is the maximum duration in seconds for the transfer assistant conversation.<br>After this time, the transfer will be cancelled automatically.<br>@default 120|
@@ -186564,7 +186895,7 @@ bearer
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|transcriber|[AssemblyAITranscriber](#schemaassemblyaitranscriber) \| [AzureSpeechTranscriber](#schemaazurespeechtranscriber) \| [CustomTranscriber](#schemacustomtranscriber) \| [DeepgramTranscriber](#schemadeepgramtranscriber) \| [ElevenLabsTranscriber](#schemaelevenlabstranscriber) \| [GladiaTranscriber](#schemagladiatranscriber) \| [GoogleTranscriber](#schemagoogletranscriber) \| [SpeechmaticsTranscriber](#schemaspeechmaticstranscriber) \| [TalkscriberTranscriber](#schematalkscribertranscriber) \| [OpenAITranscriber](#schemaopenaitranscriber) \| [CartesiaTranscriber](#schemacartesiatranscriber) \| [SonioxTranscriber](#schemasonioxtranscriber) \| [XaiTranscriber](#schemaxaitranscriber) \| [VapiTranscriber](#schemavapitranscriber)|false|none|These are the options for the assistant's transcriber.|
+|transcriber|[AssemblyAITranscriber](#schemaassemblyaitranscriber) \| [AzureSpeechTranscriber](#schemaazurespeechtranscriber) \| [CustomTranscriber](#schemacustomtranscriber) \| [DeepgramTranscriber](#schemadeepgramtranscriber) \| [ElevenLabsTranscriber](#schemaelevenlabstranscriber) \| [GladiaTranscriber](#schemagladiatranscriber) \| [GoogleTranscriber](#schemagoogletranscriber) \| [SpeechmaticsTranscriber](#schemaspeechmaticstranscriber) \| [TalkscriberTranscriber](#schematalkscribertranscriber) \| [OpenAITranscriber](#schemaopenaitranscriber) \| [CartesiaTranscriber](#schemacartesiatranscriber) \| [SonioxTranscriber](#schemasonioxtranscriber) \| [XaiTranscriber](#schemaxaitranscriber) \| [Reson8Transcriber](#schemareson8transcriber) \| [VapiTranscriber](#schemavapitranscriber)|false|none|These are the options for the assistant's transcriber.|
 |model|[AnthropicModel](#schemaanthropicmodel) \| [AnthropicBedrockModel](#schemaanthropicbedrockmodel) \| [AnyscaleModel](#schemaanyscalemodel) \| [CerebrasModel](#schemacerebrasmodel) \| [CustomLLMModel](#schemacustomllmmodel) \| [DeepInfraModel](#schemadeepinframodel) \| [DeepSeekModel](#schemadeepseekmodel) \| [GoogleModel](#schemagooglemodel) \| [GroqModel](#schemagroqmodel) \| [InflectionAIModel](#schemainflectionaimodel) \| [MinimaxLLMModel](#schemaminimaxllmmodel) \| [OpenAIModel](#schemaopenaimodel) \| [OpenRouterModel](#schemaopenroutermodel) \| [PerplexityAIModel](#schemaperplexityaimodel) \| [TogetherAIModel](#schematogetheraimodel) \| [XaiModel](#schemaxaimodel) \| [VapiModel](#schemavapimodel)|false|none|These are the options for the assistant's LLM.|
 |voice|[AzureVoice](#schemaazurevoice) \| [CartesiaVoice](#schemacartesiavoice) \| [CustomVoice](#schemacustomvoice) \| [DeepgramVoice](#schemadeepgramvoice) \| [ElevenLabsVoice](#schemaelevenlabsvoice) \| [HumeVoice](#schemahumevoice) \| [LMNTVoice](#schemalmntvoice) \| [NeuphonicVoice](#schemaneuphonicvoice) \| [OpenAIVoice](#schemaopenaivoice) \| [PlayHTVoice](#schemaplayhtvoice) \| [WellSaidVoice](#schemawellsaidvoice) \| [RimeAIVoice](#schemarimeaivoice) \| [SmallestAIVoice](#schemasmallestaivoice) \| [VapiVoice](#schemavapivoice) \| [SesameVoice](#schemasesamevoice) \| [InworldVoice](#schemainworldvoice) \| [MinimaxVoice](#schemaminimaxvoice) \| [XaiVoice](#schemaxaivoice) \| [MicrosoftVoice](#schemamicrosoftvoice)|false|none|These are the options for the assistant's voice.|
 |firstMessage|string|false|none|This is the first message that the assistant will say. This can also be a URL to a containerized audio file (mp3, wav, etc.).<br><br>If unspecified, assistant will wait for user to speak and use the model to respond once they speak.|
@@ -186574,11 +186905,11 @@ bearer
 |clientMessages|[string]|false|none|These are the messages that will be sent to your Client SDKs. Default is conversation-update,function-call,hang,model-output,speech-update,status-update,transfer-update,transcript,tool-calls,user-interrupted,voice-input,workflow.node.started,assistant.started. You can check the shape of the messages in ClientMessage schema.|
 |serverMessages|[string]|false|none|These are the messages that will be sent to your Server URL. Default is conversation-update,end-of-call-report,function-call,hang,speech-update,status-update,tool-calls,transfer-destination-request,handoff-destination-request,user-interrupted,assistant.started. You can check the shape of the messages in ServerMessage schema.|
 |maxDurationSeconds|number|false|none|This is the maximum number of seconds that the call will last. When the call reaches this duration, it will be ended.<br><br>@default 600 (10 minutes)|
-|backgroundSound|string \| string(uri)|false|none|This is the background sound in the call. Default for phone calls is 'office' and default for web calls is 'off'.<br>You can also provide a custom sound by providing a URL to an audio file.|
+|backgroundSound|string \| string(uri)|false|none|This is the background sound in the call. Default for phone calls is 'office' and default for web calls is 'off'.<br>Bundled sounds: 'office', 'white-noise', 'city', 'crowd' and 'farm'. GPT Live assistants don't play 'office'.<br>You can also provide a custom sound by providing a URL to an audio file.|
 |modelOutputInMessagesEnabled|boolean|false|none|This determines whether the model's output is used in conversation history rather than the transcription of assistant's speech.<br><br>@default false|
 |transportConfigurations|[[TransportConfigurationTwilio](#schematransportconfigurationtwilio)]|false|none|These are the configurations to be passed to the transport providers of assistant's calls, like Twilio. You can store multiple configurations for different transport providers. For a call, only the configuration matching the call transport provider is used.|
 |observabilityPlan|[LangfuseObservabilityPlan](#schemalangfuseobservabilityplan)|false|none|This is the plan for observability of assistant's calls.<br><br>Currently, only Langfuse is supported.|
-|credentials|[[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto) \| [CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto) \| [CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto) \| [CreateAssemblyAICredentialDTO](#schemacreateassemblyaicredentialdto) \| [CreateAzureCredentialDTO](#schemacreateazurecredentialdto) \| [CreateAzureOpenAICredentialDTO](#schemacreateazureopenaicredentialdto) \| [CreateByoSipTrunkCredentialDTO](#schemacreatebyosiptrunkcredentialdto) \| [CreateCartesiaCredentialDTO](#schemacreatecartesiacredentialdto) \| [CreateCerebrasCredentialDTO](#schemacreatecerebrascredentialdto) \| [CreateCloudflareCredentialDTO](#schemacreatecloudflarecredentialdto) \| [CreateCustomLLMCredentialDTO](#schemacreatecustomllmcredentialdto) \| [CreateDeepgramCredentialDTO](#schemacreatedeepgramcredentialdto) \| [CreateDeepInfraCredentialDTO](#schemacreatedeepinfracredentialdto) \| [CreateDeepSeekCredentialDTO](#schemacreatedeepseekcredentialdto) \| [CreateElevenLabsCredentialDTO](#schemacreateelevenlabscredentialdto) \| [CreateGcpCredentialDTO](#schemacreategcpcredentialdto) \| [CreateGladiaCredentialDTO](#schemacreategladiacredentialdto) \| [CreateGoHighLevelCredentialDTO](#schemacreategohighlevelcredentialdto) \| [CreateGoogleCredentialDTO](#schemacreategooglecredentialdto) \| [CreateGroqCredentialDTO](#schemacreategroqcredentialdto) \| [CreateHumeCredentialDTO](#schemacreatehumecredentialdto) \| [CreateInflectionAICredentialDTO](#schemacreateinflectionaicredentialdto) \| [CreateLangfuseCredentialDTO](#schemacreatelangfusecredentialdto) \| [CreateLmntCredentialDTO](#schemacreatelmntcredentialdto) \| [CreateMakeCredentialDTO](#schemacreatemakecredentialdto) \| [CreateMistralCredentialDTO](#schemacreatemistralcredentialdto) \| [CreateNeuphonicCredentialDTO](#schemacreateneuphoniccredentialdto) \| [CreateOpenAICredentialDTO](#schemacreateopenaicredentialdto) \| [CreateOpenRouterCredentialDTO](#schemacreateopenroutercredentialdto) \| [CreatePerplexityAICredentialDTO](#schemacreateperplexityaicredentialdto) \| [CreatePlayHTCredentialDTO](#schemacreateplayhtcredentialdto) \| [CreateRimeAICredentialDTO](#schemacreaterimeaicredentialdto) \| [CreateRunpodCredentialDTO](#schemacreaterunpodcredentialdto) \| [CreateS3CredentialDTO](#schemacreates3credentialdto) \| [CreateS3CompatibleCredentialDTO](#schemacreates3compatiblecredentialdto) \| [CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto) \| [CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto) \| [CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto) \| [CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto) \| [CreateTavusCredentialDTO](#schemacreatetavuscredentialdto) \| [CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto) \| [CreateTwilioCredentialDTO](#schemacreatetwiliocredentialdto) \| [CreateVonageCredentialDTO](#schemacreatevonagecredentialdto) \| [CreateWebhookCredentialDTO](#schemacreatewebhookcredentialdto) \| [CreateCustomCredentialDTO](#schemacreatecustomcredentialdto) \| [CreateXAiCredentialDTO](#schemacreatexaicredentialdto) \| [CreateMicrosoftCredentialDTO](#schemacreatemicrosoftcredentialdto) \| [CreateGoogleCalendarOAuth2ClientCredentialDTO](#schemacreategooglecalendaroauth2clientcredentialdto) \| [CreateGoogleCalendarOAuth2AuthorizationCredentialDTO](#schemacreategooglecalendaroauth2authorizationcredentialdto) \| [CreateGoogleSheetsOAuth2AuthorizationCredentialDTO](#schemacreategooglesheetsoauth2authorizationcredentialdto) \| [CreateSlackOAuth2AuthorizationCredentialDTO](#schemacreateslackoauth2authorizationcredentialdto) \| [CreateGoHighLevelMCPCredentialDTO](#schemacreategohighlevelmcpcredentialdto) \| [CreateInworldCredentialDTO](#schemacreateinworldcredentialdto) \| [CreateMinimaxCredentialDTO](#schemacreateminimaxcredentialdto) \| [CreateWellSaidCredentialDTO](#schemacreatewellsaidcredentialdto) \| [CreateEmailCredentialDTO](#schemacreateemailcredentialdto) \| [CreateSlackWebhookCredentialDTO](#schemacreateslackwebhookcredentialdto)]|false|none|These are dynamic credentials that will be used for the assistant calls. By default, all the credentials are available for use in the call but you can supplement an additional credentials using this. Dynamic credentials override existing credentials.|
+|credentials|[[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto) \| [CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto) \| [CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto) \| [CreateAssemblyAICredentialDTO](#schemacreateassemblyaicredentialdto) \| [CreateAzureCredentialDTO](#schemacreateazurecredentialdto) \| [CreateAzureOpenAICredentialDTO](#schemacreateazureopenaicredentialdto) \| [CreateByoSipTrunkCredentialDTO](#schemacreatebyosiptrunkcredentialdto) \| [CreateCartesiaCredentialDTO](#schemacreatecartesiacredentialdto) \| [CreateCerebrasCredentialDTO](#schemacreatecerebrascredentialdto) \| [CreateCloudflareCredentialDTO](#schemacreatecloudflarecredentialdto) \| [CreateCustomLLMCredentialDTO](#schemacreatecustomllmcredentialdto) \| [CreateDeepgramCredentialDTO](#schemacreatedeepgramcredentialdto) \| [CreateDeepInfraCredentialDTO](#schemacreatedeepinfracredentialdto) \| [CreateDeepSeekCredentialDTO](#schemacreatedeepseekcredentialdto) \| [CreateElevenLabsCredentialDTO](#schemacreateelevenlabscredentialdto) \| [CreateGcpCredentialDTO](#schemacreategcpcredentialdto) \| [CreateGladiaCredentialDTO](#schemacreategladiacredentialdto) \| [CreateGoHighLevelCredentialDTO](#schemacreategohighlevelcredentialdto) \| [CreateGoogleCredentialDTO](#schemacreategooglecredentialdto) \| [CreateGroqCredentialDTO](#schemacreategroqcredentialdto) \| [CreateHumeCredentialDTO](#schemacreatehumecredentialdto) \| [CreateInflectionAICredentialDTO](#schemacreateinflectionaicredentialdto) \| [CreateLangfuseCredentialDTO](#schemacreatelangfusecredentialdto) \| [CreateLmntCredentialDTO](#schemacreatelmntcredentialdto) \| [CreateMakeCredentialDTO](#schemacreatemakecredentialdto) \| [CreateMistralCredentialDTO](#schemacreatemistralcredentialdto) \| [CreateNeuphonicCredentialDTO](#schemacreateneuphoniccredentialdto) \| [CreateOpenAICredentialDTO](#schemacreateopenaicredentialdto) \| [CreateOpenRouterCredentialDTO](#schemacreateopenroutercredentialdto) \| [CreatePerplexityAICredentialDTO](#schemacreateperplexityaicredentialdto) \| [CreatePlayHTCredentialDTO](#schemacreateplayhtcredentialdto) \| [CreateRimeAICredentialDTO](#schemacreaterimeaicredentialdto) \| [CreateRunpodCredentialDTO](#schemacreaterunpodcredentialdto) \| [CreateS3CredentialDTO](#schemacreates3credentialdto) \| [CreateS3CompatibleCredentialDTO](#schemacreates3compatiblecredentialdto) \| [CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto) \| [CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto) \| [CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto) \| [CreateReson8CredentialDTO](#schemacreatereson8credentialdto) \| [CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto) \| [CreateTavusCredentialDTO](#schemacreatetavuscredentialdto) \| [CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto) \| [CreateTwilioCredentialDTO](#schemacreatetwiliocredentialdto) \| [CreateVonageCredentialDTO](#schemacreatevonagecredentialdto) \| [CreateWebhookCredentialDTO](#schemacreatewebhookcredentialdto) \| [CreateCustomCredentialDTO](#schemacreatecustomcredentialdto) \| [CreateXAiCredentialDTO](#schemacreatexaicredentialdto) \| [CreateMicrosoftCredentialDTO](#schemacreatemicrosoftcredentialdto) \| [CreateGoogleCalendarOAuth2ClientCredentialDTO](#schemacreategooglecalendaroauth2clientcredentialdto) \| [CreateGoogleCalendarOAuth2AuthorizationCredentialDTO](#schemacreategooglecalendaroauth2authorizationcredentialdto) \| [CreateGoogleSheetsOAuth2AuthorizationCredentialDTO](#schemacreategooglesheetsoauth2authorizationcredentialdto) \| [CreateSlackOAuth2AuthorizationCredentialDTO](#schemacreateslackoauth2authorizationcredentialdto) \| [CreateGoHighLevelMCPCredentialDTO](#schemacreategohighlevelmcpcredentialdto) \| [CreateInworldCredentialDTO](#schemacreateinworldcredentialdto) \| [CreateMinimaxCredentialDTO](#schemacreateminimaxcredentialdto) \| [CreateWellSaidCredentialDTO](#schemacreatewellsaidcredentialdto) \| [CreateEmailCredentialDTO](#schemacreateemailcredentialdto) \| [CreateSlackWebhookCredentialDTO](#schemacreateslackwebhookcredentialdto)]|false|none|These are dynamic credentials that will be used for the assistant calls. By default, all the credentials are available for use in the call but you can supplement an additional credentials using this. Dynamic credentials override existing credentials.|
 |hooks|[[CallHookCallEnding](#schemacallhookcallending) \| [CallHookAssistantSpeechInterrupted](#schemacallhookassistantspeechinterrupted) \| [CallHookCustomerSpeechInterrupted](#schemacallhookcustomerspeechinterrupted) \| [CallHookCustomerSpeechTimeout](#schemacallhookcustomerspeechtimeout) \| [SessionCreatedHook](#schemasessioncreatedhook)]|false|none|This is a set of actions that will be performed on certain events.|
 |name|string|false|none|This is the name of the assistant.<br><br>This is required when you want to transfer between assistants in a call.|
 |voicemailMessage|string|false|none|This is the message that the assistant will say if the call is forwarded to voicemail.<br><br>If unspecified, it will hang up.|
@@ -187537,7 +187868,7 @@ bearer
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|transcriber|[AssemblyAITranscriber](#schemaassemblyaitranscriber) \| [AzureSpeechTranscriber](#schemaazurespeechtranscriber) \| [CustomTranscriber](#schemacustomtranscriber) \| [DeepgramTranscriber](#schemadeepgramtranscriber) \| [ElevenLabsTranscriber](#schemaelevenlabstranscriber) \| [GladiaTranscriber](#schemagladiatranscriber) \| [GoogleTranscriber](#schemagoogletranscriber) \| [SpeechmaticsTranscriber](#schemaspeechmaticstranscriber) \| [TalkscriberTranscriber](#schematalkscribertranscriber) \| [OpenAITranscriber](#schemaopenaitranscriber) \| [CartesiaTranscriber](#schemacartesiatranscriber) \| [SonioxTranscriber](#schemasonioxtranscriber) \| [XaiTranscriber](#schemaxaitranscriber) \| [VapiTranscriber](#schemavapitranscriber)|false|none|These are the options for the assistant's transcriber.|
+|transcriber|[AssemblyAITranscriber](#schemaassemblyaitranscriber) \| [AzureSpeechTranscriber](#schemaazurespeechtranscriber) \| [CustomTranscriber](#schemacustomtranscriber) \| [DeepgramTranscriber](#schemadeepgramtranscriber) \| [ElevenLabsTranscriber](#schemaelevenlabstranscriber) \| [GladiaTranscriber](#schemagladiatranscriber) \| [GoogleTranscriber](#schemagoogletranscriber) \| [SpeechmaticsTranscriber](#schemaspeechmaticstranscriber) \| [TalkscriberTranscriber](#schematalkscribertranscriber) \| [OpenAITranscriber](#schemaopenaitranscriber) \| [CartesiaTranscriber](#schemacartesiatranscriber) \| [SonioxTranscriber](#schemasonioxtranscriber) \| [XaiTranscriber](#schemaxaitranscriber) \| [Reson8Transcriber](#schemareson8transcriber) \| [VapiTranscriber](#schemavapitranscriber)|false|none|These are the options for the assistant's transcriber.|
 |model|[AnthropicModel](#schemaanthropicmodel) \| [AnthropicBedrockModel](#schemaanthropicbedrockmodel) \| [AnyscaleModel](#schemaanyscalemodel) \| [CerebrasModel](#schemacerebrasmodel) \| [CustomLLMModel](#schemacustomllmmodel) \| [DeepInfraModel](#schemadeepinframodel) \| [DeepSeekModel](#schemadeepseekmodel) \| [GoogleModel](#schemagooglemodel) \| [GroqModel](#schemagroqmodel) \| [InflectionAIModel](#schemainflectionaimodel) \| [MinimaxLLMModel](#schemaminimaxllmmodel) \| [OpenAIModel](#schemaopenaimodel) \| [OpenRouterModel](#schemaopenroutermodel) \| [PerplexityAIModel](#schemaperplexityaimodel) \| [TogetherAIModel](#schematogetheraimodel) \| [XaiModel](#schemaxaimodel) \| [VapiModel](#schemavapimodel)|false|none|These are the options for the assistant's LLM.|
 |voice|[AzureVoice](#schemaazurevoice) \| [CartesiaVoice](#schemacartesiavoice) \| [CustomVoice](#schemacustomvoice) \| [DeepgramVoice](#schemadeepgramvoice) \| [ElevenLabsVoice](#schemaelevenlabsvoice) \| [HumeVoice](#schemahumevoice) \| [LMNTVoice](#schemalmntvoice) \| [NeuphonicVoice](#schemaneuphonicvoice) \| [OpenAIVoice](#schemaopenaivoice) \| [PlayHTVoice](#schemaplayhtvoice) \| [WellSaidVoice](#schemawellsaidvoice) \| [RimeAIVoice](#schemarimeaivoice) \| [SmallestAIVoice](#schemasmallestaivoice) \| [VapiVoice](#schemavapivoice) \| [SesameVoice](#schemasesamevoice) \| [InworldVoice](#schemainworldvoice) \| [MinimaxVoice](#schemaminimaxvoice) \| [XaiVoice](#schemaxaivoice) \| [MicrosoftVoice](#schemamicrosoftvoice)|false|none|These are the options for the assistant's voice.|
 |firstMessage|string|false|none|This is the first message that the assistant will say. This can also be a URL to a containerized audio file (mp3, wav, etc.).<br><br>If unspecified, assistant will wait for user to speak and use the model to respond once they speak.|
@@ -187547,11 +187878,11 @@ bearer
 |clientMessages|[string]|false|none|These are the messages that will be sent to your Client SDKs. Default is conversation-update,function-call,hang,model-output,speech-update,status-update,transfer-update,transcript,tool-calls,user-interrupted,voice-input,workflow.node.started,assistant.started. You can check the shape of the messages in ClientMessage schema.|
 |serverMessages|[string]|false|none|These are the messages that will be sent to your Server URL. Default is conversation-update,end-of-call-report,function-call,hang,speech-update,status-update,tool-calls,transfer-destination-request,handoff-destination-request,user-interrupted,assistant.started. You can check the shape of the messages in ServerMessage schema.|
 |maxDurationSeconds|number|false|none|This is the maximum number of seconds that the call will last. When the call reaches this duration, it will be ended.<br><br>@default 600 (10 minutes)|
-|backgroundSound|string \| string(uri)|false|none|This is the background sound in the call. Default for phone calls is 'office' and default for web calls is 'off'.<br>You can also provide a custom sound by providing a URL to an audio file.|
+|backgroundSound|string \| string(uri)|false|none|This is the background sound in the call. Default for phone calls is 'office' and default for web calls is 'off'.<br>Bundled sounds: 'office', 'white-noise', 'city', 'crowd' and 'farm'. GPT Live assistants don't play 'office'.<br>You can also provide a custom sound by providing a URL to an audio file.|
 |modelOutputInMessagesEnabled|boolean|false|none|This determines whether the model's output is used in conversation history rather than the transcription of assistant's speech.<br><br>@default false|
 |transportConfigurations|[[TransportConfigurationTwilio](#schematransportconfigurationtwilio)]|false|none|These are the configurations to be passed to the transport providers of assistant's calls, like Twilio. You can store multiple configurations for different transport providers. For a call, only the configuration matching the call transport provider is used.|
 |observabilityPlan|[LangfuseObservabilityPlan](#schemalangfuseobservabilityplan)|false|none|This is the plan for observability of assistant's calls.<br><br>Currently, only Langfuse is supported.|
-|credentials|[[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto) \| [CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto) \| [CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto) \| [CreateAssemblyAICredentialDTO](#schemacreateassemblyaicredentialdto) \| [CreateAzureCredentialDTO](#schemacreateazurecredentialdto) \| [CreateAzureOpenAICredentialDTO](#schemacreateazureopenaicredentialdto) \| [CreateByoSipTrunkCredentialDTO](#schemacreatebyosiptrunkcredentialdto) \| [CreateCartesiaCredentialDTO](#schemacreatecartesiacredentialdto) \| [CreateCerebrasCredentialDTO](#schemacreatecerebrascredentialdto) \| [CreateCloudflareCredentialDTO](#schemacreatecloudflarecredentialdto) \| [CreateCustomLLMCredentialDTO](#schemacreatecustomllmcredentialdto) \| [CreateDeepgramCredentialDTO](#schemacreatedeepgramcredentialdto) \| [CreateDeepInfraCredentialDTO](#schemacreatedeepinfracredentialdto) \| [CreateDeepSeekCredentialDTO](#schemacreatedeepseekcredentialdto) \| [CreateElevenLabsCredentialDTO](#schemacreateelevenlabscredentialdto) \| [CreateGcpCredentialDTO](#schemacreategcpcredentialdto) \| [CreateGladiaCredentialDTO](#schemacreategladiacredentialdto) \| [CreateGoHighLevelCredentialDTO](#schemacreategohighlevelcredentialdto) \| [CreateGoogleCredentialDTO](#schemacreategooglecredentialdto) \| [CreateGroqCredentialDTO](#schemacreategroqcredentialdto) \| [CreateHumeCredentialDTO](#schemacreatehumecredentialdto) \| [CreateInflectionAICredentialDTO](#schemacreateinflectionaicredentialdto) \| [CreateLangfuseCredentialDTO](#schemacreatelangfusecredentialdto) \| [CreateLmntCredentialDTO](#schemacreatelmntcredentialdto) \| [CreateMakeCredentialDTO](#schemacreatemakecredentialdto) \| [CreateMistralCredentialDTO](#schemacreatemistralcredentialdto) \| [CreateNeuphonicCredentialDTO](#schemacreateneuphoniccredentialdto) \| [CreateOpenAICredentialDTO](#schemacreateopenaicredentialdto) \| [CreateOpenRouterCredentialDTO](#schemacreateopenroutercredentialdto) \| [CreatePerplexityAICredentialDTO](#schemacreateperplexityaicredentialdto) \| [CreatePlayHTCredentialDTO](#schemacreateplayhtcredentialdto) \| [CreateRimeAICredentialDTO](#schemacreaterimeaicredentialdto) \| [CreateRunpodCredentialDTO](#schemacreaterunpodcredentialdto) \| [CreateS3CredentialDTO](#schemacreates3credentialdto) \| [CreateS3CompatibleCredentialDTO](#schemacreates3compatiblecredentialdto) \| [CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto) \| [CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto) \| [CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto) \| [CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto) \| [CreateTavusCredentialDTO](#schemacreatetavuscredentialdto) \| [CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto) \| [CreateTwilioCredentialDTO](#schemacreatetwiliocredentialdto) \| [CreateVonageCredentialDTO](#schemacreatevonagecredentialdto) \| [CreateWebhookCredentialDTO](#schemacreatewebhookcredentialdto) \| [CreateCustomCredentialDTO](#schemacreatecustomcredentialdto) \| [CreateXAiCredentialDTO](#schemacreatexaicredentialdto) \| [CreateMicrosoftCredentialDTO](#schemacreatemicrosoftcredentialdto) \| [CreateGoogleCalendarOAuth2ClientCredentialDTO](#schemacreategooglecalendaroauth2clientcredentialdto) \| [CreateGoogleCalendarOAuth2AuthorizationCredentialDTO](#schemacreategooglecalendaroauth2authorizationcredentialdto) \| [CreateGoogleSheetsOAuth2AuthorizationCredentialDTO](#schemacreategooglesheetsoauth2authorizationcredentialdto) \| [CreateSlackOAuth2AuthorizationCredentialDTO](#schemacreateslackoauth2authorizationcredentialdto) \| [CreateGoHighLevelMCPCredentialDTO](#schemacreategohighlevelmcpcredentialdto) \| [CreateInworldCredentialDTO](#schemacreateinworldcredentialdto) \| [CreateMinimaxCredentialDTO](#schemacreateminimaxcredentialdto) \| [CreateWellSaidCredentialDTO](#schemacreatewellsaidcredentialdto) \| [CreateEmailCredentialDTO](#schemacreateemailcredentialdto) \| [CreateSlackWebhookCredentialDTO](#schemacreateslackwebhookcredentialdto)]|false|none|These are dynamic credentials that will be used for the assistant calls. By default, all the credentials are available for use in the call but you can supplement an additional credentials using this. Dynamic credentials override existing credentials.|
+|credentials|[[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto) \| [CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto) \| [CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto) \| [CreateAssemblyAICredentialDTO](#schemacreateassemblyaicredentialdto) \| [CreateAzureCredentialDTO](#schemacreateazurecredentialdto) \| [CreateAzureOpenAICredentialDTO](#schemacreateazureopenaicredentialdto) \| [CreateByoSipTrunkCredentialDTO](#schemacreatebyosiptrunkcredentialdto) \| [CreateCartesiaCredentialDTO](#schemacreatecartesiacredentialdto) \| [CreateCerebrasCredentialDTO](#schemacreatecerebrascredentialdto) \| [CreateCloudflareCredentialDTO](#schemacreatecloudflarecredentialdto) \| [CreateCustomLLMCredentialDTO](#schemacreatecustomllmcredentialdto) \| [CreateDeepgramCredentialDTO](#schemacreatedeepgramcredentialdto) \| [CreateDeepInfraCredentialDTO](#schemacreatedeepinfracredentialdto) \| [CreateDeepSeekCredentialDTO](#schemacreatedeepseekcredentialdto) \| [CreateElevenLabsCredentialDTO](#schemacreateelevenlabscredentialdto) \| [CreateGcpCredentialDTO](#schemacreategcpcredentialdto) \| [CreateGladiaCredentialDTO](#schemacreategladiacredentialdto) \| [CreateGoHighLevelCredentialDTO](#schemacreategohighlevelcredentialdto) \| [CreateGoogleCredentialDTO](#schemacreategooglecredentialdto) \| [CreateGroqCredentialDTO](#schemacreategroqcredentialdto) \| [CreateHumeCredentialDTO](#schemacreatehumecredentialdto) \| [CreateInflectionAICredentialDTO](#schemacreateinflectionaicredentialdto) \| [CreateLangfuseCredentialDTO](#schemacreatelangfusecredentialdto) \| [CreateLmntCredentialDTO](#schemacreatelmntcredentialdto) \| [CreateMakeCredentialDTO](#schemacreatemakecredentialdto) \| [CreateMistralCredentialDTO](#schemacreatemistralcredentialdto) \| [CreateNeuphonicCredentialDTO](#schemacreateneuphoniccredentialdto) \| [CreateOpenAICredentialDTO](#schemacreateopenaicredentialdto) \| [CreateOpenRouterCredentialDTO](#schemacreateopenroutercredentialdto) \| [CreatePerplexityAICredentialDTO](#schemacreateperplexityaicredentialdto) \| [CreatePlayHTCredentialDTO](#schemacreateplayhtcredentialdto) \| [CreateRimeAICredentialDTO](#schemacreaterimeaicredentialdto) \| [CreateRunpodCredentialDTO](#schemacreaterunpodcredentialdto) \| [CreateS3CredentialDTO](#schemacreates3credentialdto) \| [CreateS3CompatibleCredentialDTO](#schemacreates3compatiblecredentialdto) \| [CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto) \| [CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto) \| [CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto) \| [CreateReson8CredentialDTO](#schemacreatereson8credentialdto) \| [CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto) \| [CreateTavusCredentialDTO](#schemacreatetavuscredentialdto) \| [CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto) \| [CreateTwilioCredentialDTO](#schemacreatetwiliocredentialdto) \| [CreateVonageCredentialDTO](#schemacreatevonagecredentialdto) \| [CreateWebhookCredentialDTO](#schemacreatewebhookcredentialdto) \| [CreateCustomCredentialDTO](#schemacreatecustomcredentialdto) \| [CreateXAiCredentialDTO](#schemacreatexaicredentialdto) \| [CreateMicrosoftCredentialDTO](#schemacreatemicrosoftcredentialdto) \| [CreateGoogleCalendarOAuth2ClientCredentialDTO](#schemacreategooglecalendaroauth2clientcredentialdto) \| [CreateGoogleCalendarOAuth2AuthorizationCredentialDTO](#schemacreategooglecalendaroauth2authorizationcredentialdto) \| [CreateGoogleSheetsOAuth2AuthorizationCredentialDTO](#schemacreategooglesheetsoauth2authorizationcredentialdto) \| [CreateSlackOAuth2AuthorizationCredentialDTO](#schemacreateslackoauth2authorizationcredentialdto) \| [CreateGoHighLevelMCPCredentialDTO](#schemacreategohighlevelmcpcredentialdto) \| [CreateInworldCredentialDTO](#schemacreateinworldcredentialdto) \| [CreateMinimaxCredentialDTO](#schemacreateminimaxcredentialdto) \| [CreateWellSaidCredentialDTO](#schemacreatewellsaidcredentialdto) \| [CreateEmailCredentialDTO](#schemacreateemailcredentialdto) \| [CreateSlackWebhookCredentialDTO](#schemacreateslackwebhookcredentialdto)]|false|none|These are dynamic credentials that will be used for the assistant calls. By default, all the credentials are available for use in the call but you can supplement an additional credentials using this. Dynamic credentials override existing credentials.|
 |hooks|[[CallHookCallEnding](#schemacallhookcallending) \| [CallHookAssistantSpeechInterrupted](#schemacallhookassistantspeechinterrupted) \| [CallHookCustomerSpeechInterrupted](#schemacallhookcustomerspeechinterrupted) \| [CallHookCustomerSpeechTimeout](#schemacallhookcustomerspeechtimeout) \| [SessionCreatedHook](#schemasessioncreatedhook)]|false|none|This is a set of actions that will be performed on certain events.|
 |tools:append|[[CreateApiRequestToolDTO](#schemacreateapirequesttooldto) \| [CreateBashToolDTO](#schemacreatebashtooldto) \| [CreateCodeToolDTO](#schemacreatecodetooldto) \| [CreateComputerToolDTO](#schemacreatecomputertooldto) \| [CreateDtmfToolDTO](#schemacreatedtmftooldto) \| [CreateEndCallToolDTO](#schemacreateendcalltooldto) \| [CreateFunctionToolDTO](#schemacreatefunctiontooldto) \| [CreateGoHighLevelCalendarAvailabilityToolDTO](#schemacreategohighlevelcalendaravailabilitytooldto) \| [CreateGoHighLevelCalendarEventCreateToolDTO](#schemacreategohighlevelcalendareventcreatetooldto) \| [CreateGoHighLevelContactCreateToolDTO](#schemacreategohighlevelcontactcreatetooldto) \| [CreateGoHighLevelContactGetToolDTO](#schemacreategohighlevelcontactgettooldto) \| [CreateGoogleCalendarCheckAvailabilityToolDTO](#schemacreategooglecalendarcheckavailabilitytooldto) \| [CreateGoogleCalendarCreateEventToolDTO](#schemacreategooglecalendarcreateeventtooldto) \| [CreateGoogleSheetsRowAppendToolDTO](#schemacreategooglesheetsrowappendtooldto) \| [CreateHandoffToolDTO](#schemacreatehandofftooldto) \| [CreateMcpToolDTO](#schemacreatemcptooldto) \| [CreateQueryToolDTO](#schemacreatequerytooldto) \| [CreateSlackSendMessageToolDTO](#schemacreateslacksendmessagetooldto) \| [CreateSmsToolDTO](#schemacreatesmstooldto) \| [CreateTextEditorToolDTO](#schemacreatetexteditortooldto) \| [CreateTransferCallToolDTO](#schemacreatetransfercalltooldto) \| [CreateSipRequestToolDTO](#schemacreatesiprequesttooldto) \| [CreateVoicemailToolDTO](#schemacreatevoicemailtooldto)]|false|none|none|
 |variableValues|object|false|none|These are values that will be used to replace the template variables in the assistant messages and other text-based fields.<br>This uses LiquidJS syntax. https://liquidjs.com/tutorials/intro-to-liquid.html<br><br>So for example, `{{ name }}` will be replaced with the value of `name` in `variableValues`.<br>`{{"now" \| date: "%b %d, %Y, %I:%M %p", "America/New_York"}}` will be replaced with the current date and time in New York.<br> Some VAPI reserved defaults:<br> - *customer* - the customer object|
@@ -192920,7 +193251,7 @@ bearer
 |model|string|true|none|The specific Anthropic/Claude model that will be used.|
 |reasoningEffort|string|false|none|Reasoning effort for claude-haiku-5-5. `none` turns thinking off. `low` to `max`<br>use adaptive thinking at that effort; higher effort can add latency before the<br>model speaks. Unset means `none`. Rejected for every other model.|
 |provider|string|true|none|The provider identifier for Anthropic.|
-|thinking|object|false|none|Optional configuration for Anthropic's thinking feature.<br>Only applicable for claude-3-7-sonnet-20250219 model.<br>If provided, maxTokens must be greater than thinking.budgetTokens.|
+|thinking|object|false|none|Optional configuration for Anthropic's thinking feature.<br>Only applicable for models that support a thinking budget.<br>Set maxTokens greater than thinking.budgetTokens; the default cap is too small.|
 |temperature|number|false|none|This is the temperature that will be used for calls. Default is 0.5.|
 |maxTokens|number|false|none|This is the max number of tokens that the assistant will be allowed to generate in each turn of the conversation. Default is 250. On gpt-6-luna and claude-haiku-5-5 no cap is applied unless you set one (claude-haiku-5-5 sends its 128,000-token maximum), because reasoning uses output tokens and a small cap can leave the reply empty.|
 |emotionRecognitionEnabled|boolean|false|none|This determines whether we detect user's emotion while they speak and send it as an additional info to model.<br><br>Default `false` because the model is usually are good at understanding the user's emotion from text.<br><br>@default false|
@@ -193149,7 +193480,7 @@ bearer
 |model|string|true|none|The specific Anthropic/Claude model that will be used via Bedrock.|
 |fallbackModels|[string]|false|none|At most one same-provider Bedrock fallback model, tried if the primary fails. Cannot be combined with thinking in this release. Resolution uses the call's Bedrock credential region (or ANTHROPIC_BEDROCK_AWS_REGION). Names with no inference profile in that region are skipped and warned, never remapped to US or global. On Vapi EU, fallback names without an EU inference profile are rejected at write time.|
 |reasoningEffort|string|false|none|Reasoning effort for claude-haiku-5-5. `none` turns thinking off. `low` to `max`<br>use adaptive thinking at that effort; higher effort can add latency before the<br>model speaks. Unset means `none`. Rejected for every other model.|
-|thinking|object|false|none|Optional configuration for Anthropic's thinking feature.<br>Only applicable for claude-3-7-sonnet-20250219 model.<br>If provided, maxTokens must be greater than thinking.budgetTokens.|
+|thinking|object|false|none|Optional configuration for Anthropic's thinking feature.<br>Only applicable for models that support a thinking budget.<br>Set maxTokens greater than thinking.budgetTokens; the default cap is too small.|
 |temperature|number|false|none|This is the temperature that will be used for calls. Default is 0.5.|
 |maxTokens|number|false|none|This is the max number of tokens that the assistant will be allowed to generate in each turn of the conversation. Default is 250. On gpt-6-luna and claude-haiku-5-5 no cap is applied unless you set one (claude-haiku-5-5 sends its 128,000-token maximum), because reasoning uses output tokens and a small cap can leave the reply empty.|
 |emotionRecognitionEnabled|boolean|false|none|This determines whether we detect user's emotion while they speak and send it as an additional info to model.<br><br>Default `false` because the model is usually are good at understanding the user's emotion from text.<br><br>@default false|
@@ -193175,6 +193506,7 @@ bearer
 |model|claude-sonnet-4-6|
 |model|claude-haiku-4-5-20251001|
 |model|claude-haiku-5-5|
+|model|global.anthropic.claude-sonnet-4-6|
 |model|global.anthropic.claude-haiku-4-5-20251001-v1:0|
 |fallbackModels|claude-3-opus-20240229|
 |fallbackModels|claude-3-sonnet-20240229|
@@ -193191,6 +193523,7 @@ bearer
 |fallbackModels|claude-sonnet-4-6|
 |fallbackModels|claude-haiku-4-5-20251001|
 |fallbackModels|claude-haiku-5-5|
+|fallbackModels|global.anthropic.claude-sonnet-4-6|
 |fallbackModels|global.anthropic.claude-haiku-4-5-20251001-v1:0|
 |reasoningEffort|none|
 |reasoningEffort|low|
@@ -196945,6 +197278,7 @@ bearer
 |model|claude-sonnet-4-6|
 |model|claude-haiku-4-5-20251001|
 |model|claude-haiku-5-5|
+|model|global.anthropic.claude-sonnet-4-6|
 |model|global.anthropic.claude-haiku-4-5-20251001-v1:0|
 
 <h2 id="tocS_WorkflowGoogleModel">WorkflowGoogleModel</h2>
@@ -197401,7 +197735,7 @@ bearer
 |---|---|---|---|---|
 |type|string|true|none|This is the Conversation node. This can be used to start a conversation with the customer.<br><br>The flow is:<br>- Workflow starts the conversation node<br>- Model is active with the `prompt` and global context.<br>- Model will call a tool to exit this node.<br>- Workflow will extract variables from the conversation.<br>- Workflow continues.|
 |model|[WorkflowOpenAIModel](#schemaworkflowopenaimodel) \| [WorkflowAnthropicModel](#schemaworkflowanthropicmodel) \| [WorkflowAnthropicBedrockModel](#schemaworkflowanthropicbedrockmodel) \| [WorkflowGoogleModel](#schemaworkflowgooglemodel) \| [WorkflowCustomModel](#schemaworkflowcustommodel)|false|none|This is the model for the node.<br><br>This overrides `workflow.model`.|
-|transcriber|[AssemblyAITranscriber](#schemaassemblyaitranscriber) \| [AzureSpeechTranscriber](#schemaazurespeechtranscriber) \| [CustomTranscriber](#schemacustomtranscriber) \| [DeepgramTranscriber](#schemadeepgramtranscriber) \| [ElevenLabsTranscriber](#schemaelevenlabstranscriber) \| [GladiaTranscriber](#schemagladiatranscriber) \| [GoogleTranscriber](#schemagoogletranscriber) \| [SpeechmaticsTranscriber](#schemaspeechmaticstranscriber) \| [TalkscriberTranscriber](#schematalkscribertranscriber) \| [OpenAITranscriber](#schemaopenaitranscriber) \| [CartesiaTranscriber](#schemacartesiatranscriber) \| [SonioxTranscriber](#schemasonioxtranscriber) \| [XaiTranscriber](#schemaxaitranscriber) \| [VapiTranscriber](#schemavapitranscriber)|false|none|This is the transcriber for the node.<br><br>This overrides `workflow.transcriber`.|
+|transcriber|[AssemblyAITranscriber](#schemaassemblyaitranscriber) \| [AzureSpeechTranscriber](#schemaazurespeechtranscriber) \| [CustomTranscriber](#schemacustomtranscriber) \| [DeepgramTranscriber](#schemadeepgramtranscriber) \| [ElevenLabsTranscriber](#schemaelevenlabstranscriber) \| [GladiaTranscriber](#schemagladiatranscriber) \| [GoogleTranscriber](#schemagoogletranscriber) \| [SpeechmaticsTranscriber](#schemaspeechmaticstranscriber) \| [TalkscriberTranscriber](#schematalkscribertranscriber) \| [OpenAITranscriber](#schemaopenaitranscriber) \| [CartesiaTranscriber](#schemacartesiatranscriber) \| [SonioxTranscriber](#schemasonioxtranscriber) \| [XaiTranscriber](#schemaxaitranscriber) \| [Reson8Transcriber](#schemareson8transcriber) \| [VapiTranscriber](#schemavapitranscriber)|false|none|This is the transcriber for the node.<br><br>This overrides `workflow.transcriber`.|
 |voice|[AzureVoice](#schemaazurevoice) \| [CartesiaVoice](#schemacartesiavoice) \| [CustomVoice](#schemacustomvoice) \| [DeepgramVoice](#schemadeepgramvoice) \| [ElevenLabsVoice](#schemaelevenlabsvoice) \| [HumeVoice](#schemahumevoice) \| [LMNTVoice](#schemalmntvoice) \| [NeuphonicVoice](#schemaneuphonicvoice) \| [OpenAIVoice](#schemaopenaivoice) \| [PlayHTVoice](#schemaplayhtvoice) \| [WellSaidVoice](#schemawellsaidvoice) \| [RimeAIVoice](#schemarimeaivoice) \| [SmallestAIVoice](#schemasmallestaivoice) \| [VapiVoice](#schemavapivoice) \| [SesameVoice](#schemasesamevoice) \| [InworldVoice](#schemainworldvoice) \| [MinimaxVoice](#schemaminimaxvoice) \| [XaiVoice](#schemaxaivoice) \| [MicrosoftVoice](#schemamicrosoftvoice)|false|none|This is the voice for the node.<br><br>This overrides `workflow.voice`.|
 |tools|[[CreateApiRequestToolDTO](#schemacreateapirequesttooldto) \| [CreateBashToolDTO](#schemacreatebashtooldto) \| [CreateCodeToolDTO](#schemacreatecodetooldto) \| [CreateComputerToolDTO](#schemacreatecomputertooldto) \| [CreateDtmfToolDTO](#schemacreatedtmftooldto) \| [CreateEndCallToolDTO](#schemacreateendcalltooldto) \| [CreateFunctionToolDTO](#schemacreatefunctiontooldto) \| [CreateGoHighLevelCalendarAvailabilityToolDTO](#schemacreategohighlevelcalendaravailabilitytooldto) \| [CreateGoHighLevelCalendarEventCreateToolDTO](#schemacreategohighlevelcalendareventcreatetooldto) \| [CreateGoHighLevelContactCreateToolDTO](#schemacreategohighlevelcontactcreatetooldto) \| [CreateGoHighLevelContactGetToolDTO](#schemacreategohighlevelcontactgettooldto) \| [CreateGoogleCalendarCheckAvailabilityToolDTO](#schemacreategooglecalendarcheckavailabilitytooldto) \| [CreateGoogleCalendarCreateEventToolDTO](#schemacreategooglecalendarcreateeventtooldto) \| [CreateGoogleSheetsRowAppendToolDTO](#schemacreategooglesheetsrowappendtooldto) \| [CreateHandoffToolDTO](#schemacreatehandofftooldto) \| [CreateMcpToolDTO](#schemacreatemcptooldto) \| [CreateQueryToolDTO](#schemacreatequerytooldto) \| [CreateSlackSendMessageToolDTO](#schemacreateslacksendmessagetooldto) \| [CreateSmsToolDTO](#schemacreatesmstooldto) \| [CreateTextEditorToolDTO](#schemacreatetexteditortooldto) \| [CreateTransferCallToolDTO](#schemacreatetransfercalltooldto) \| [CreateSipRequestToolDTO](#schemacreatesiprequesttooldto) \| [CreateVoicemailToolDTO](#schemacreatevoicemailtooldto)]|false|none|These are the tools that the conversation node can use during the call. To use existing tools, use `toolIds`.<br><br>Both `tools` and `toolIds` can be used together.|
 |toolIds|[string]|false|none|These are the tools that the conversation node can use during the call. To use transient tools, use `tools`.<br><br>Both `tools` and `toolIds` can be used together.|
@@ -199407,12 +199741,12 @@ bearer
 |---|---|---|---|---|
 |nodes|[[ConversationNode](#schemaconversationnode) \| [ToolNode](#schematoolnode)]|true|none|none|
 |model|[WorkflowOpenAIModel](#schemaworkflowopenaimodel) \| [WorkflowAnthropicModel](#schemaworkflowanthropicmodel) \| [WorkflowAnthropicBedrockModel](#schemaworkflowanthropicbedrockmodel) \| [WorkflowGoogleModel](#schemaworkflowgooglemodel) \| [WorkflowCustomModel](#schemaworkflowcustommodel)|false|none|This is the model for the workflow.<br><br>This can be overridden at node level using `nodes[n].model`.|
-|transcriber|[AssemblyAITranscriber](#schemaassemblyaitranscriber) \| [AzureSpeechTranscriber](#schemaazurespeechtranscriber) \| [CustomTranscriber](#schemacustomtranscriber) \| [DeepgramTranscriber](#schemadeepgramtranscriber) \| [ElevenLabsTranscriber](#schemaelevenlabstranscriber) \| [GladiaTranscriber](#schemagladiatranscriber) \| [GoogleTranscriber](#schemagoogletranscriber) \| [SpeechmaticsTranscriber](#schemaspeechmaticstranscriber) \| [TalkscriberTranscriber](#schematalkscribertranscriber) \| [OpenAITranscriber](#schemaopenaitranscriber) \| [CartesiaTranscriber](#schemacartesiatranscriber) \| [SonioxTranscriber](#schemasonioxtranscriber) \| [XaiTranscriber](#schemaxaitranscriber) \| [VapiTranscriber](#schemavapitranscriber)|false|none|This is the transcriber for the workflow.<br><br>This can be overridden at node level using `nodes[n].transcriber`.|
+|transcriber|[AssemblyAITranscriber](#schemaassemblyaitranscriber) \| [AzureSpeechTranscriber](#schemaazurespeechtranscriber) \| [CustomTranscriber](#schemacustomtranscriber) \| [DeepgramTranscriber](#schemadeepgramtranscriber) \| [ElevenLabsTranscriber](#schemaelevenlabstranscriber) \| [GladiaTranscriber](#schemagladiatranscriber) \| [GoogleTranscriber](#schemagoogletranscriber) \| [SpeechmaticsTranscriber](#schemaspeechmaticstranscriber) \| [TalkscriberTranscriber](#schematalkscribertranscriber) \| [OpenAITranscriber](#schemaopenaitranscriber) \| [CartesiaTranscriber](#schemacartesiatranscriber) \| [SonioxTranscriber](#schemasonioxtranscriber) \| [XaiTranscriber](#schemaxaitranscriber) \| [Reson8Transcriber](#schemareson8transcriber) \| [VapiTranscriber](#schemavapitranscriber)|false|none|This is the transcriber for the workflow.<br><br>This can be overridden at node level using `nodes[n].transcriber`.|
 |voice|[AzureVoice](#schemaazurevoice) \| [CartesiaVoice](#schemacartesiavoice) \| [CustomVoice](#schemacustomvoice) \| [DeepgramVoice](#schemadeepgramvoice) \| [ElevenLabsVoice](#schemaelevenlabsvoice) \| [HumeVoice](#schemahumevoice) \| [LMNTVoice](#schemalmntvoice) \| [NeuphonicVoice](#schemaneuphonicvoice) \| [OpenAIVoice](#schemaopenaivoice) \| [PlayHTVoice](#schemaplayhtvoice) \| [WellSaidVoice](#schemawellsaidvoice) \| [RimeAIVoice](#schemarimeaivoice) \| [SmallestAIVoice](#schemasmallestaivoice) \| [VapiVoice](#schemavapivoice) \| [SesameVoice](#schemasesamevoice) \| [InworldVoice](#schemainworldvoice) \| [MinimaxVoice](#schemaminimaxvoice) \| [XaiVoice](#schemaxaivoice) \| [MicrosoftVoice](#schemamicrosoftvoice)|false|none|This is the voice for the workflow.<br><br>This can be overridden at node level using `nodes[n].voice`.|
 |observabilityPlan|[LangfuseObservabilityPlan](#schemalangfuseobservabilityplan)|false|none|This is the plan for observability of workflow's calls.<br><br>Currently, only Langfuse is supported.|
-|backgroundSound|string \| string(uri)|false|none|This is the background sound in the call. Default for phone calls is 'office' and default for web calls is 'off'.<br>You can also provide a custom sound by providing a URL to an audio file.|
+|backgroundSound|string \| string(uri)|false|none|This is the background sound in the call. Default for phone calls is 'office' and default for web calls is 'off'.<br>Bundled sounds: 'office', 'white-noise', 'city', 'crowd' and 'farm'. GPT Live assistants don't play 'office'.<br>You can also provide a custom sound by providing a URL to an audio file.|
 |hooks|[[CallHookCallEnding](#schemacallhookcallending) \| [CallHookAssistantSpeechInterrupted](#schemacallhookassistantspeechinterrupted) \| [CallHookCustomerSpeechInterrupted](#schemacallhookcustomerspeechinterrupted) \| [CallHookCustomerSpeechTimeout](#schemacallhookcustomerspeechtimeout) \| [CallHookModelResponseTimeout](#schemacallhookmodelresponsetimeout)]|false|none|This is a set of actions that will be performed on certain events.|
-|credentials|[[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto) \| [CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto) \| [CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto) \| [CreateAssemblyAICredentialDTO](#schemacreateassemblyaicredentialdto) \| [CreateAzureCredentialDTO](#schemacreateazurecredentialdto) \| [CreateAzureOpenAICredentialDTO](#schemacreateazureopenaicredentialdto) \| [CreateByoSipTrunkCredentialDTO](#schemacreatebyosiptrunkcredentialdto) \| [CreateCartesiaCredentialDTO](#schemacreatecartesiacredentialdto) \| [CreateCerebrasCredentialDTO](#schemacreatecerebrascredentialdto) \| [CreateCloudflareCredentialDTO](#schemacreatecloudflarecredentialdto) \| [CreateCustomLLMCredentialDTO](#schemacreatecustomllmcredentialdto) \| [CreateDeepgramCredentialDTO](#schemacreatedeepgramcredentialdto) \| [CreateDeepInfraCredentialDTO](#schemacreatedeepinfracredentialdto) \| [CreateDeepSeekCredentialDTO](#schemacreatedeepseekcredentialdto) \| [CreateElevenLabsCredentialDTO](#schemacreateelevenlabscredentialdto) \| [CreateGcpCredentialDTO](#schemacreategcpcredentialdto) \| [CreateGladiaCredentialDTO](#schemacreategladiacredentialdto) \| [CreateGoHighLevelCredentialDTO](#schemacreategohighlevelcredentialdto) \| [CreateGoogleCredentialDTO](#schemacreategooglecredentialdto) \| [CreateGroqCredentialDTO](#schemacreategroqcredentialdto) \| [CreateHumeCredentialDTO](#schemacreatehumecredentialdto) \| [CreateInflectionAICredentialDTO](#schemacreateinflectionaicredentialdto) \| [CreateLangfuseCredentialDTO](#schemacreatelangfusecredentialdto) \| [CreateLmntCredentialDTO](#schemacreatelmntcredentialdto) \| [CreateMakeCredentialDTO](#schemacreatemakecredentialdto) \| [CreateMistralCredentialDTO](#schemacreatemistralcredentialdto) \| [CreateNeuphonicCredentialDTO](#schemacreateneuphoniccredentialdto) \| [CreateOpenAICredentialDTO](#schemacreateopenaicredentialdto) \| [CreateOpenRouterCredentialDTO](#schemacreateopenroutercredentialdto) \| [CreatePerplexityAICredentialDTO](#schemacreateperplexityaicredentialdto) \| [CreatePlayHTCredentialDTO](#schemacreateplayhtcredentialdto) \| [CreateRimeAICredentialDTO](#schemacreaterimeaicredentialdto) \| [CreateRunpodCredentialDTO](#schemacreaterunpodcredentialdto) \| [CreateS3CredentialDTO](#schemacreates3credentialdto) \| [CreateS3CompatibleCredentialDTO](#schemacreates3compatiblecredentialdto) \| [CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto) \| [CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto) \| [CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto) \| [CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto) \| [CreateTavusCredentialDTO](#schemacreatetavuscredentialdto) \| [CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto) \| [CreateTwilioCredentialDTO](#schemacreatetwiliocredentialdto) \| [CreateVonageCredentialDTO](#schemacreatevonagecredentialdto) \| [CreateWebhookCredentialDTO](#schemacreatewebhookcredentialdto) \| [CreateCustomCredentialDTO](#schemacreatecustomcredentialdto) \| [CreateXAiCredentialDTO](#schemacreatexaicredentialdto) \| [CreateMicrosoftCredentialDTO](#schemacreatemicrosoftcredentialdto) \| [CreateGoogleCalendarOAuth2ClientCredentialDTO](#schemacreategooglecalendaroauth2clientcredentialdto) \| [CreateGoogleCalendarOAuth2AuthorizationCredentialDTO](#schemacreategooglecalendaroauth2authorizationcredentialdto) \| [CreateGoogleSheetsOAuth2AuthorizationCredentialDTO](#schemacreategooglesheetsoauth2authorizationcredentialdto) \| [CreateSlackOAuth2AuthorizationCredentialDTO](#schemacreateslackoauth2authorizationcredentialdto) \| [CreateGoHighLevelMCPCredentialDTO](#schemacreategohighlevelmcpcredentialdto) \| [CreateInworldCredentialDTO](#schemacreateinworldcredentialdto) \| [CreateMinimaxCredentialDTO](#schemacreateminimaxcredentialdto) \| [CreateWellSaidCredentialDTO](#schemacreatewellsaidcredentialdto) \| [CreateEmailCredentialDTO](#schemacreateemailcredentialdto) \| [CreateSlackWebhookCredentialDTO](#schemacreateslackwebhookcredentialdto)]|false|none|These are dynamic credentials that will be used for the workflow calls. By default, all the credentials are available for use in the call but you can supplement an additional credentials using this. Dynamic credentials override existing credentials.|
+|credentials|[[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto) \| [CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto) \| [CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto) \| [CreateAssemblyAICredentialDTO](#schemacreateassemblyaicredentialdto) \| [CreateAzureCredentialDTO](#schemacreateazurecredentialdto) \| [CreateAzureOpenAICredentialDTO](#schemacreateazureopenaicredentialdto) \| [CreateByoSipTrunkCredentialDTO](#schemacreatebyosiptrunkcredentialdto) \| [CreateCartesiaCredentialDTO](#schemacreatecartesiacredentialdto) \| [CreateCerebrasCredentialDTO](#schemacreatecerebrascredentialdto) \| [CreateCloudflareCredentialDTO](#schemacreatecloudflarecredentialdto) \| [CreateCustomLLMCredentialDTO](#schemacreatecustomllmcredentialdto) \| [CreateDeepgramCredentialDTO](#schemacreatedeepgramcredentialdto) \| [CreateDeepInfraCredentialDTO](#schemacreatedeepinfracredentialdto) \| [CreateDeepSeekCredentialDTO](#schemacreatedeepseekcredentialdto) \| [CreateElevenLabsCredentialDTO](#schemacreateelevenlabscredentialdto) \| [CreateGcpCredentialDTO](#schemacreategcpcredentialdto) \| [CreateGladiaCredentialDTO](#schemacreategladiacredentialdto) \| [CreateGoHighLevelCredentialDTO](#schemacreategohighlevelcredentialdto) \| [CreateGoogleCredentialDTO](#schemacreategooglecredentialdto) \| [CreateGroqCredentialDTO](#schemacreategroqcredentialdto) \| [CreateHumeCredentialDTO](#schemacreatehumecredentialdto) \| [CreateInflectionAICredentialDTO](#schemacreateinflectionaicredentialdto) \| [CreateLangfuseCredentialDTO](#schemacreatelangfusecredentialdto) \| [CreateLmntCredentialDTO](#schemacreatelmntcredentialdto) \| [CreateMakeCredentialDTO](#schemacreatemakecredentialdto) \| [CreateMistralCredentialDTO](#schemacreatemistralcredentialdto) \| [CreateNeuphonicCredentialDTO](#schemacreateneuphoniccredentialdto) \| [CreateOpenAICredentialDTO](#schemacreateopenaicredentialdto) \| [CreateOpenRouterCredentialDTO](#schemacreateopenroutercredentialdto) \| [CreatePerplexityAICredentialDTO](#schemacreateperplexityaicredentialdto) \| [CreatePlayHTCredentialDTO](#schemacreateplayhtcredentialdto) \| [CreateRimeAICredentialDTO](#schemacreaterimeaicredentialdto) \| [CreateRunpodCredentialDTO](#schemacreaterunpodcredentialdto) \| [CreateS3CredentialDTO](#schemacreates3credentialdto) \| [CreateS3CompatibleCredentialDTO](#schemacreates3compatiblecredentialdto) \| [CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto) \| [CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto) \| [CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto) \| [CreateReson8CredentialDTO](#schemacreatereson8credentialdto) \| [CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto) \| [CreateTavusCredentialDTO](#schemacreatetavuscredentialdto) \| [CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto) \| [CreateTwilioCredentialDTO](#schemacreatetwiliocredentialdto) \| [CreateVonageCredentialDTO](#schemacreatevonagecredentialdto) \| [CreateWebhookCredentialDTO](#schemacreatewebhookcredentialdto) \| [CreateCustomCredentialDTO](#schemacreatecustomcredentialdto) \| [CreateXAiCredentialDTO](#schemacreatexaicredentialdto) \| [CreateMicrosoftCredentialDTO](#schemacreatemicrosoftcredentialdto) \| [CreateGoogleCalendarOAuth2ClientCredentialDTO](#schemacreategooglecalendaroauth2clientcredentialdto) \| [CreateGoogleCalendarOAuth2AuthorizationCredentialDTO](#schemacreategooglecalendaroauth2authorizationcredentialdto) \| [CreateGoogleSheetsOAuth2AuthorizationCredentialDTO](#schemacreategooglesheetsoauth2authorizationcredentialdto) \| [CreateSlackOAuth2AuthorizationCredentialDTO](#schemacreateslackoauth2authorizationcredentialdto) \| [CreateGoHighLevelMCPCredentialDTO](#schemacreategohighlevelmcpcredentialdto) \| [CreateInworldCredentialDTO](#schemacreateinworldcredentialdto) \| [CreateMinimaxCredentialDTO](#schemacreateminimaxcredentialdto) \| [CreateWellSaidCredentialDTO](#schemacreatewellsaidcredentialdto) \| [CreateEmailCredentialDTO](#schemacreateemailcredentialdto) \| [CreateSlackWebhookCredentialDTO](#schemacreateslackwebhookcredentialdto)]|false|none|These are dynamic credentials that will be used for the workflow calls. By default, all the credentials are available for use in the call but you can supplement an additional credentials using this. Dynamic credentials override existing credentials.|
 |voicemailDetection|string \| [GoogleVoicemailDetectionPlan](#schemagooglevoicemaildetectionplan) \| [OpenAIVoicemailDetectionPlan](#schemaopenaivoicemaildetectionplan) \| [TwilioVoicemailDetectionPlan](#schematwiliovoicemaildetectionplan) \| [VapiVoicemailDetectionPlan](#schemavapivoicemaildetectionplan)|false|none|This is the voicemail detection plan for the workflow.|
 |maxDurationSeconds|number|false|none|This is the maximum duration of the call in seconds.<br><br>After this duration, the call will automatically end.<br><br>Default is 1800 (30 minutes), max is 43200 (12 hours), and min is 10 seconds.|
 |name|string|true|none|none|
@@ -199596,7 +199930,6 @@ bearer
     }
   },
   "model": "string",
-  "version": "latest",
   "provider": "vapi",
   "workflowId": "string",
   "workflow": {
@@ -200168,8 +200501,7 @@ bearer
 |toolIds|[string]|false|none|These are the tools that the assistant can use during the call. To use transient tools, use `tools`.<br><br>Both `tools` and `toolIds` can be used together.|
 |toolRefs|[[ToolRef](#schematoolref)]|false|none|These are version-pinned references to tools. Each entry pins a specific<br>version of a tool by `(toolId, version)`. When the same `toolId` appears<br>in both `toolIds` and `toolRefs[]`, the `toolRefs` pin wins (the<br>`toolIds` entry is dropped at write time).|
 |knowledgeBase|[CreateCustomKnowledgeBaseDTO](#schemacreatecustomknowledgebasedto)|false|none|These are the options for the knowledge base.|
-|model|string|false|none|White-label Vapi models are selected by `version`, not a model name, so<br>`model` is optional here (the runtime already accepts a version-only Vapi<br>payload). Overriding the required `ModelBase.model`: the declared type stays<br>`string` to match the base (avoids TS2416) and the `= undefined!` initializer<br>satisfies TS2612 for the field override, while `@IsOptional` +<br>`@ApiPropertyOptional` make validation and the generated OpenAPI schema treat<br>it as optional (so `VapiModel.required` is `['provider']`).|
-|version|string|false|none|Vapi-managed model version (update channel). When set, this is a Vapi-managed<br>LLM routed by the registry; when absent, this is the legacy workflow form<br>below (`steps` / `workflow`).|
+|model|string|false|none|This is the Vapi model: `sapien` or `sapien-lite`.|
 |provider|string|true|none|none|
 |workflowId|string|false|none|This is the workflow that will be used for the call. To use a transient workflow, use `workflow` instead.|
 |workflow|object|false|none|This is the workflow that will be used for the call. To use an existing workflow, use `workflowId` instead.|
@@ -200181,8 +200513,6 @@ bearer
 
 |Property|Value|
 |---|---|
-|version|latest|
-|version|1|
 |provider|vapi|
 
 <h2 id="tocS_XaiModel">XaiModel</h2>
@@ -206264,12 +206594,12 @@ bearer
 ```json
 {
   "authPassword": "string",
-  "authUsername": "string",
   "sipRegisterPlan": {
     "domain": "string",
     "username": "string",
     "realm": "string"
-  }
+  },
+  "authUsername": "string"
 }
 ```
 
@@ -206278,8 +206608,8 @@ bearer
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |authPassword|string|false|none|This is not returned in the API.|
+|sipRegisterPlan|object \| null|false|none|This can be used to configure if SIP register is required by the SIP trunk. On creation, omission disables registration. On update, omission preserves it; null disables it.|
 |authUsername|string|false|none|none|
-|sipRegisterPlan|object|false|none|This can be used to configure if SIP register is required by the SIP trunk. If not provided, no SIP registration will be attempted.|
 
 <h2 id="tocS_CreateByoSipTrunkCredentialDTO">CreateByoSipTrunkCredentialDTO</h2>
 <!-- backwards compatibility -->
@@ -206304,12 +206634,12 @@ bearer
   ],
   "outboundAuthenticationPlan": {
     "authPassword": "string",
-    "authUsername": "string",
     "sipRegisterPlan": {
       "domain": "string",
       "username": "string",
       "realm": "string"
-    }
+    },
+    "authUsername": "string"
   },
   "outboundLeadingPlusEnabled": true,
   "techPrefix": "string",
@@ -206848,6 +207178,7 @@ bearer
   "publicKey": "string",
   "apiKey": "string",
   "apiUrl": "string",
+  "serverVersion": "string",
   "name": "string"
 }
 ```
@@ -206860,6 +207191,7 @@ bearer
 |publicKey|string|true|none|The public key for Langfuse project. Eg: pk-lf-...|
 |apiKey|string|true|none|The secret key for Langfuse project. Eg: sk-lf-... .This is not returned in the API.|
 |apiUrl|string|true|none|The host URL for Langfuse project. Eg: https://cloud.langfuse.com|
+|serverVersion|string|false|none|The semver version of your Langfuse server, e.g. 3.63.0. Detected from your server's /api/public/health endpoint at save time whenever possible, and a detected version always wins; supply it only when that endpoint is not reachable from Vapi.|
 |name|string|false|none|This is the name of credential. This is just for your reference.|
 
 #### Enumerated Values
@@ -208666,7 +208998,7 @@ bearer
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|transcriber|[AssemblyAITranscriber](#schemaassemblyaitranscriber) \| [AzureSpeechTranscriber](#schemaazurespeechtranscriber) \| [CustomTranscriber](#schemacustomtranscriber) \| [DeepgramTranscriber](#schemadeepgramtranscriber) \| [ElevenLabsTranscriber](#schemaelevenlabstranscriber) \| [GladiaTranscriber](#schemagladiatranscriber) \| [GoogleTranscriber](#schemagoogletranscriber) \| [SpeechmaticsTranscriber](#schemaspeechmaticstranscriber) \| [TalkscriberTranscriber](#schematalkscribertranscriber) \| [OpenAITranscriber](#schemaopenaitranscriber) \| [CartesiaTranscriber](#schemacartesiatranscriber) \| [SonioxTranscriber](#schemasonioxtranscriber) \| [XaiTranscriber](#schemaxaitranscriber) \| [VapiTranscriber](#schemavapitranscriber)|false|none|These are the options for the assistant's transcriber.|
+|transcriber|[AssemblyAITranscriber](#schemaassemblyaitranscriber) \| [AzureSpeechTranscriber](#schemaazurespeechtranscriber) \| [CustomTranscriber](#schemacustomtranscriber) \| [DeepgramTranscriber](#schemadeepgramtranscriber) \| [ElevenLabsTranscriber](#schemaelevenlabstranscriber) \| [GladiaTranscriber](#schemagladiatranscriber) \| [GoogleTranscriber](#schemagoogletranscriber) \| [SpeechmaticsTranscriber](#schemaspeechmaticstranscriber) \| [TalkscriberTranscriber](#schematalkscribertranscriber) \| [OpenAITranscriber](#schemaopenaitranscriber) \| [CartesiaTranscriber](#schemacartesiatranscriber) \| [SonioxTranscriber](#schemasonioxtranscriber) \| [XaiTranscriber](#schemaxaitranscriber) \| [Reson8Transcriber](#schemareson8transcriber) \| [VapiTranscriber](#schemavapitranscriber)|false|none|These are the options for the assistant's transcriber.|
 |model|[AnthropicModel](#schemaanthropicmodel) \| [AnthropicBedrockModel](#schemaanthropicbedrockmodel) \| [AnyscaleModel](#schemaanyscalemodel) \| [CerebrasModel](#schemacerebrasmodel) \| [CustomLLMModel](#schemacustomllmmodel) \| [DeepInfraModel](#schemadeepinframodel) \| [DeepSeekModel](#schemadeepseekmodel) \| [GoogleModel](#schemagooglemodel) \| [GroqModel](#schemagroqmodel) \| [InflectionAIModel](#schemainflectionaimodel) \| [MinimaxLLMModel](#schemaminimaxllmmodel) \| [OpenAIModel](#schemaopenaimodel) \| [OpenRouterModel](#schemaopenroutermodel) \| [PerplexityAIModel](#schemaperplexityaimodel) \| [TogetherAIModel](#schematogetheraimodel) \| [XaiModel](#schemaxaimodel) \| [VapiModel](#schemavapimodel)|false|none|These are the options for the assistant's LLM.|
 |voice|[AzureVoice](#schemaazurevoice) \| [CartesiaVoice](#schemacartesiavoice) \| [CustomVoice](#schemacustomvoice) \| [DeepgramVoice](#schemadeepgramvoice) \| [ElevenLabsVoice](#schemaelevenlabsvoice) \| [HumeVoice](#schemahumevoice) \| [LMNTVoice](#schemalmntvoice) \| [NeuphonicVoice](#schemaneuphonicvoice) \| [OpenAIVoice](#schemaopenaivoice) \| [PlayHTVoice](#schemaplayhtvoice) \| [WellSaidVoice](#schemawellsaidvoice) \| [RimeAIVoice](#schemarimeaivoice) \| [SmallestAIVoice](#schemasmallestaivoice) \| [VapiVoice](#schemavapivoice) \| [SesameVoice](#schemasesamevoice) \| [InworldVoice](#schemainworldvoice) \| [MinimaxVoice](#schemaminimaxvoice) \| [XaiVoice](#schemaxaivoice) \| [MicrosoftVoice](#schemamicrosoftvoice)|false|none|These are the options for the assistant's voice.|
 |firstMessage|string|false|none|This is the first message that the assistant will say. This can also be a URL to a containerized audio file (mp3, wav, etc.).<br><br>If unspecified, assistant will wait for user to speak and use the model to respond once they speak.|
@@ -208676,11 +209008,11 @@ bearer
 |clientMessages|[string]|false|none|These are the messages that will be sent to your Client SDKs. Default is conversation-update,function-call,hang,model-output,speech-update,status-update,transfer-update,transcript,tool-calls,user-interrupted,voice-input,workflow.node.started,assistant.started. You can check the shape of the messages in ClientMessage schema.|
 |serverMessages|[string]|false|none|These are the messages that will be sent to your Server URL. Default is conversation-update,end-of-call-report,function-call,hang,speech-update,status-update,tool-calls,transfer-destination-request,handoff-destination-request,user-interrupted,assistant.started. You can check the shape of the messages in ServerMessage schema.|
 |maxDurationSeconds|number|false|none|This is the maximum number of seconds that the call will last. When the call reaches this duration, it will be ended.<br><br>@default 600 (10 minutes)|
-|backgroundSound|string \| string(uri)|false|none|This is the background sound in the call. Default for phone calls is 'office' and default for web calls is 'off'.<br>You can also provide a custom sound by providing a URL to an audio file.|
+|backgroundSound|string \| string(uri)|false|none|This is the background sound in the call. Default for phone calls is 'office' and default for web calls is 'off'.<br>Bundled sounds: 'office', 'white-noise', 'city', 'crowd' and 'farm'. GPT Live assistants don't play 'office'.<br>You can also provide a custom sound by providing a URL to an audio file.|
 |modelOutputInMessagesEnabled|boolean|false|none|This determines whether the model's output is used in conversation history rather than the transcription of assistant's speech.<br><br>@default false|
 |transportConfigurations|[[TransportConfigurationTwilio](#schematransportconfigurationtwilio)]|false|none|These are the configurations to be passed to the transport providers of assistant's calls, like Twilio. You can store multiple configurations for different transport providers. For a call, only the configuration matching the call transport provider is used.|
 |observabilityPlan|[LangfuseObservabilityPlan](#schemalangfuseobservabilityplan)|false|none|This is the plan for observability of assistant's calls.<br><br>Currently, only Langfuse is supported.|
-|credentials|[[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto) \| [CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto) \| [CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto) \| [CreateAssemblyAICredentialDTO](#schemacreateassemblyaicredentialdto) \| [CreateAzureCredentialDTO](#schemacreateazurecredentialdto) \| [CreateAzureOpenAICredentialDTO](#schemacreateazureopenaicredentialdto) \| [CreateByoSipTrunkCredentialDTO](#schemacreatebyosiptrunkcredentialdto) \| [CreateCartesiaCredentialDTO](#schemacreatecartesiacredentialdto) \| [CreateCerebrasCredentialDTO](#schemacreatecerebrascredentialdto) \| [CreateCloudflareCredentialDTO](#schemacreatecloudflarecredentialdto) \| [CreateCustomLLMCredentialDTO](#schemacreatecustomllmcredentialdto) \| [CreateDeepgramCredentialDTO](#schemacreatedeepgramcredentialdto) \| [CreateDeepInfraCredentialDTO](#schemacreatedeepinfracredentialdto) \| [CreateDeepSeekCredentialDTO](#schemacreatedeepseekcredentialdto) \| [CreateElevenLabsCredentialDTO](#schemacreateelevenlabscredentialdto) \| [CreateGcpCredentialDTO](#schemacreategcpcredentialdto) \| [CreateGladiaCredentialDTO](#schemacreategladiacredentialdto) \| [CreateGoHighLevelCredentialDTO](#schemacreategohighlevelcredentialdto) \| [CreateGoogleCredentialDTO](#schemacreategooglecredentialdto) \| [CreateGroqCredentialDTO](#schemacreategroqcredentialdto) \| [CreateHumeCredentialDTO](#schemacreatehumecredentialdto) \| [CreateInflectionAICredentialDTO](#schemacreateinflectionaicredentialdto) \| [CreateLangfuseCredentialDTO](#schemacreatelangfusecredentialdto) \| [CreateLmntCredentialDTO](#schemacreatelmntcredentialdto) \| [CreateMakeCredentialDTO](#schemacreatemakecredentialdto) \| [CreateMistralCredentialDTO](#schemacreatemistralcredentialdto) \| [CreateNeuphonicCredentialDTO](#schemacreateneuphoniccredentialdto) \| [CreateOpenAICredentialDTO](#schemacreateopenaicredentialdto) \| [CreateOpenRouterCredentialDTO](#schemacreateopenroutercredentialdto) \| [CreatePerplexityAICredentialDTO](#schemacreateperplexityaicredentialdto) \| [CreatePlayHTCredentialDTO](#schemacreateplayhtcredentialdto) \| [CreateRimeAICredentialDTO](#schemacreaterimeaicredentialdto) \| [CreateRunpodCredentialDTO](#schemacreaterunpodcredentialdto) \| [CreateS3CredentialDTO](#schemacreates3credentialdto) \| [CreateS3CompatibleCredentialDTO](#schemacreates3compatiblecredentialdto) \| [CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto) \| [CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto) \| [CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto) \| [CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto) \| [CreateTavusCredentialDTO](#schemacreatetavuscredentialdto) \| [CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto) \| [CreateTwilioCredentialDTO](#schemacreatetwiliocredentialdto) \| [CreateVonageCredentialDTO](#schemacreatevonagecredentialdto) \| [CreateWebhookCredentialDTO](#schemacreatewebhookcredentialdto) \| [CreateCustomCredentialDTO](#schemacreatecustomcredentialdto) \| [CreateXAiCredentialDTO](#schemacreatexaicredentialdto) \| [CreateMicrosoftCredentialDTO](#schemacreatemicrosoftcredentialdto) \| [CreateGoogleCalendarOAuth2ClientCredentialDTO](#schemacreategooglecalendaroauth2clientcredentialdto) \| [CreateGoogleCalendarOAuth2AuthorizationCredentialDTO](#schemacreategooglecalendaroauth2authorizationcredentialdto) \| [CreateGoogleSheetsOAuth2AuthorizationCredentialDTO](#schemacreategooglesheetsoauth2authorizationcredentialdto) \| [CreateSlackOAuth2AuthorizationCredentialDTO](#schemacreateslackoauth2authorizationcredentialdto) \| [CreateGoHighLevelMCPCredentialDTO](#schemacreategohighlevelmcpcredentialdto) \| [CreateInworldCredentialDTO](#schemacreateinworldcredentialdto) \| [CreateMinimaxCredentialDTO](#schemacreateminimaxcredentialdto) \| [CreateWellSaidCredentialDTO](#schemacreatewellsaidcredentialdto) \| [CreateEmailCredentialDTO](#schemacreateemailcredentialdto) \| [CreateSlackWebhookCredentialDTO](#schemacreateslackwebhookcredentialdto)]|false|none|These are dynamic credentials that will be used for the assistant calls. By default, all the credentials are available for use in the call but you can supplement an additional credentials using this. Dynamic credentials override existing credentials.|
+|credentials|[[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto) \| [CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto) \| [CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto) \| [CreateAssemblyAICredentialDTO](#schemacreateassemblyaicredentialdto) \| [CreateAzureCredentialDTO](#schemacreateazurecredentialdto) \| [CreateAzureOpenAICredentialDTO](#schemacreateazureopenaicredentialdto) \| [CreateByoSipTrunkCredentialDTO](#schemacreatebyosiptrunkcredentialdto) \| [CreateCartesiaCredentialDTO](#schemacreatecartesiacredentialdto) \| [CreateCerebrasCredentialDTO](#schemacreatecerebrascredentialdto) \| [CreateCloudflareCredentialDTO](#schemacreatecloudflarecredentialdto) \| [CreateCustomLLMCredentialDTO](#schemacreatecustomllmcredentialdto) \| [CreateDeepgramCredentialDTO](#schemacreatedeepgramcredentialdto) \| [CreateDeepInfraCredentialDTO](#schemacreatedeepinfracredentialdto) \| [CreateDeepSeekCredentialDTO](#schemacreatedeepseekcredentialdto) \| [CreateElevenLabsCredentialDTO](#schemacreateelevenlabscredentialdto) \| [CreateGcpCredentialDTO](#schemacreategcpcredentialdto) \| [CreateGladiaCredentialDTO](#schemacreategladiacredentialdto) \| [CreateGoHighLevelCredentialDTO](#schemacreategohighlevelcredentialdto) \| [CreateGoogleCredentialDTO](#schemacreategooglecredentialdto) \| [CreateGroqCredentialDTO](#schemacreategroqcredentialdto) \| [CreateHumeCredentialDTO](#schemacreatehumecredentialdto) \| [CreateInflectionAICredentialDTO](#schemacreateinflectionaicredentialdto) \| [CreateLangfuseCredentialDTO](#schemacreatelangfusecredentialdto) \| [CreateLmntCredentialDTO](#schemacreatelmntcredentialdto) \| [CreateMakeCredentialDTO](#schemacreatemakecredentialdto) \| [CreateMistralCredentialDTO](#schemacreatemistralcredentialdto) \| [CreateNeuphonicCredentialDTO](#schemacreateneuphoniccredentialdto) \| [CreateOpenAICredentialDTO](#schemacreateopenaicredentialdto) \| [CreateOpenRouterCredentialDTO](#schemacreateopenroutercredentialdto) \| [CreatePerplexityAICredentialDTO](#schemacreateperplexityaicredentialdto) \| [CreatePlayHTCredentialDTO](#schemacreateplayhtcredentialdto) \| [CreateRimeAICredentialDTO](#schemacreaterimeaicredentialdto) \| [CreateRunpodCredentialDTO](#schemacreaterunpodcredentialdto) \| [CreateS3CredentialDTO](#schemacreates3credentialdto) \| [CreateS3CompatibleCredentialDTO](#schemacreates3compatiblecredentialdto) \| [CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto) \| [CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto) \| [CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto) \| [CreateReson8CredentialDTO](#schemacreatereson8credentialdto) \| [CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto) \| [CreateTavusCredentialDTO](#schemacreatetavuscredentialdto) \| [CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto) \| [CreateTwilioCredentialDTO](#schemacreatetwiliocredentialdto) \| [CreateVonageCredentialDTO](#schemacreatevonagecredentialdto) \| [CreateWebhookCredentialDTO](#schemacreatewebhookcredentialdto) \| [CreateCustomCredentialDTO](#schemacreatecustomcredentialdto) \| [CreateXAiCredentialDTO](#schemacreatexaicredentialdto) \| [CreateMicrosoftCredentialDTO](#schemacreatemicrosoftcredentialdto) \| [CreateGoogleCalendarOAuth2ClientCredentialDTO](#schemacreategooglecalendaroauth2clientcredentialdto) \| [CreateGoogleCalendarOAuth2AuthorizationCredentialDTO](#schemacreategooglecalendaroauth2authorizationcredentialdto) \| [CreateGoogleSheetsOAuth2AuthorizationCredentialDTO](#schemacreategooglesheetsoauth2authorizationcredentialdto) \| [CreateSlackOAuth2AuthorizationCredentialDTO](#schemacreateslackoauth2authorizationcredentialdto) \| [CreateGoHighLevelMCPCredentialDTO](#schemacreategohighlevelmcpcredentialdto) \| [CreateInworldCredentialDTO](#schemacreateinworldcredentialdto) \| [CreateMinimaxCredentialDTO](#schemacreateminimaxcredentialdto) \| [CreateWellSaidCredentialDTO](#schemacreatewellsaidcredentialdto) \| [CreateEmailCredentialDTO](#schemacreateemailcredentialdto) \| [CreateSlackWebhookCredentialDTO](#schemacreateslackwebhookcredentialdto)]|false|none|These are dynamic credentials that will be used for the assistant calls. By default, all the credentials are available for use in the call but you can supplement an additional credentials using this. Dynamic credentials override existing credentials.|
 |hooks|[[CallHookCallEnding](#schemacallhookcallending) \| [CallHookAssistantSpeechInterrupted](#schemacallhookassistantspeechinterrupted) \| [CallHookCustomerSpeechInterrupted](#schemacallhookcustomerspeechinterrupted) \| [CallHookCustomerSpeechTimeout](#schemacallhookcustomerspeechtimeout) \| [SessionCreatedHook](#schemasessioncreatedhook)]|false|none|This is a set of actions that will be performed on certain events.|
 |name|string|false|none|This is the name of the assistant.<br><br>This is required when you want to transfer between assistants in a call.|
 |voicemailMessage|string|false|none|This is the message that the assistant will say if the call is forwarded to voicemail.<br><br>If unspecified, it will hang up.|
@@ -208779,8 +209111,8 @@ bearer
 |slot|string|true|none|Path of the slot that carries the model, relative to the response root,<br>e.g. `model`, `model.fallbackModels[1]`, `transcriber`, `voice`, or<br>`members[2].assistantOverrides.model` on a squad.|
 |provider|string|true|none|Provider as stored on the slot.|
 |model|string|true|none|Model name as stored on the slot.|
-|deprecationDate|string|true|none|Day the model became deprecated, `YYYY-MM-DD` in UTC.|
-|retirementDate|string|true|none|Day the model is or was retired, `YYYY-MM-DD` in UTC. On and after this<br>day Vapi no longer runs the model as configured.|
+|deprecationDate|string|true|none|Registry effective deprecation day, `YYYY-MM-DD` in UTC.|
+|retirementDate|string|true|none|Registry effective retirement day, `YYYY-MM-DD` in UTC. An observation<br>may use an internal effective day; this field establishes neither an<br>announced vendor shutdown nor automatic replacement eligibility.|
 |replacementStatus|string|true|none|Whether a replacement can be recommended for this configuration.|
 |replacementModel|string|false|none|Recommended model when replacementStatus is available. Omitted when<br>eligibility cannot be established or no eligible replacement exists.<br>A recommendation reflects the response-time decision; it neither<br>confirms a completed swap nor authorizes a future execution.|
 
@@ -209575,7 +209907,7 @@ bearer
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|transcriber|[AssemblyAITranscriber](#schemaassemblyaitranscriber) \| [AzureSpeechTranscriber](#schemaazurespeechtranscriber) \| [CustomTranscriber](#schemacustomtranscriber) \| [DeepgramTranscriber](#schemadeepgramtranscriber) \| [ElevenLabsTranscriber](#schemaelevenlabstranscriber) \| [GladiaTranscriber](#schemagladiatranscriber) \| [GoogleTranscriber](#schemagoogletranscriber) \| [SpeechmaticsTranscriber](#schemaspeechmaticstranscriber) \| [TalkscriberTranscriber](#schematalkscribertranscriber) \| [OpenAITranscriber](#schemaopenaitranscriber) \| [CartesiaTranscriber](#schemacartesiatranscriber) \| [SonioxTranscriber](#schemasonioxtranscriber) \| [XaiTranscriber](#schemaxaitranscriber) \| [VapiTranscriber](#schemavapitranscriber)|false|none|These are the options for the assistant's transcriber.|
+|transcriber|[AssemblyAITranscriber](#schemaassemblyaitranscriber) \| [AzureSpeechTranscriber](#schemaazurespeechtranscriber) \| [CustomTranscriber](#schemacustomtranscriber) \| [DeepgramTranscriber](#schemadeepgramtranscriber) \| [ElevenLabsTranscriber](#schemaelevenlabstranscriber) \| [GladiaTranscriber](#schemagladiatranscriber) \| [GoogleTranscriber](#schemagoogletranscriber) \| [SpeechmaticsTranscriber](#schemaspeechmaticstranscriber) \| [TalkscriberTranscriber](#schematalkscribertranscriber) \| [OpenAITranscriber](#schemaopenaitranscriber) \| [CartesiaTranscriber](#schemacartesiatranscriber) \| [SonioxTranscriber](#schemasonioxtranscriber) \| [XaiTranscriber](#schemaxaitranscriber) \| [Reson8Transcriber](#schemareson8transcriber) \| [VapiTranscriber](#schemavapitranscriber)|false|none|These are the options for the assistant's transcriber.|
 |model|[AnthropicModel](#schemaanthropicmodel) \| [AnthropicBedrockModel](#schemaanthropicbedrockmodel) \| [AnyscaleModel](#schemaanyscalemodel) \| [CerebrasModel](#schemacerebrasmodel) \| [CustomLLMModel](#schemacustomllmmodel) \| [DeepInfraModel](#schemadeepinframodel) \| [DeepSeekModel](#schemadeepseekmodel) \| [GoogleModel](#schemagooglemodel) \| [GroqModel](#schemagroqmodel) \| [InflectionAIModel](#schemainflectionaimodel) \| [MinimaxLLMModel](#schemaminimaxllmmodel) \| [OpenAIModel](#schemaopenaimodel) \| [OpenRouterModel](#schemaopenroutermodel) \| [PerplexityAIModel](#schemaperplexityaimodel) \| [TogetherAIModel](#schematogetheraimodel) \| [XaiModel](#schemaxaimodel) \| [VapiModel](#schemavapimodel)|false|none|These are the options for the assistant's LLM.|
 |voice|[AzureVoice](#schemaazurevoice) \| [CartesiaVoice](#schemacartesiavoice) \| [CustomVoice](#schemacustomvoice) \| [DeepgramVoice](#schemadeepgramvoice) \| [ElevenLabsVoice](#schemaelevenlabsvoice) \| [HumeVoice](#schemahumevoice) \| [LMNTVoice](#schemalmntvoice) \| [NeuphonicVoice](#schemaneuphonicvoice) \| [OpenAIVoice](#schemaopenaivoice) \| [PlayHTVoice](#schemaplayhtvoice) \| [WellSaidVoice](#schemawellsaidvoice) \| [RimeAIVoice](#schemarimeaivoice) \| [SmallestAIVoice](#schemasmallestaivoice) \| [VapiVoice](#schemavapivoice) \| [SesameVoice](#schemasesamevoice) \| [InworldVoice](#schemainworldvoice) \| [MinimaxVoice](#schemaminimaxvoice) \| [XaiVoice](#schemaxaivoice) \| [MicrosoftVoice](#schemamicrosoftvoice)|false|none|These are the options for the assistant's voice.|
 |firstMessage|string|false|none|This is the first message that the assistant will say. This can also be a URL to a containerized audio file (mp3, wav, etc.).<br><br>If unspecified, assistant will wait for user to speak and use the model to respond once they speak.|
@@ -209585,11 +209917,11 @@ bearer
 |clientMessages|[string]|false|none|These are the messages that will be sent to your Client SDKs. Default is conversation-update,function-call,hang,model-output,speech-update,status-update,transfer-update,transcript,tool-calls,user-interrupted,voice-input,workflow.node.started,assistant.started. You can check the shape of the messages in ClientMessage schema.|
 |serverMessages|[string]|false|none|These are the messages that will be sent to your Server URL. Default is conversation-update,end-of-call-report,function-call,hang,speech-update,status-update,tool-calls,transfer-destination-request,handoff-destination-request,user-interrupted,assistant.started. You can check the shape of the messages in ServerMessage schema.|
 |maxDurationSeconds|number|false|none|This is the maximum number of seconds that the call will last. When the call reaches this duration, it will be ended.<br><br>@default 600 (10 minutes)|
-|backgroundSound|string \| string(uri)|false|none|This is the background sound in the call. Default for phone calls is 'office' and default for web calls is 'off'.<br>You can also provide a custom sound by providing a URL to an audio file.|
+|backgroundSound|string \| string(uri)|false|none|This is the background sound in the call. Default for phone calls is 'office' and default for web calls is 'off'.<br>Bundled sounds: 'office', 'white-noise', 'city', 'crowd' and 'farm'. GPT Live assistants don't play 'office'.<br>You can also provide a custom sound by providing a URL to an audio file.|
 |modelOutputInMessagesEnabled|boolean|false|none|This determines whether the model's output is used in conversation history rather than the transcription of assistant's speech.<br><br>@default false|
 |transportConfigurations|[[TransportConfigurationTwilio](#schematransportconfigurationtwilio)]|false|none|These are the configurations to be passed to the transport providers of assistant's calls, like Twilio. You can store multiple configurations for different transport providers. For a call, only the configuration matching the call transport provider is used.|
 |observabilityPlan|[LangfuseObservabilityPlan](#schemalangfuseobservabilityplan)|false|none|This is the plan for observability of assistant's calls.<br><br>Currently, only Langfuse is supported.|
-|credentials|[[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto) \| [CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto) \| [CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto) \| [CreateAssemblyAICredentialDTO](#schemacreateassemblyaicredentialdto) \| [CreateAzureCredentialDTO](#schemacreateazurecredentialdto) \| [CreateAzureOpenAICredentialDTO](#schemacreateazureopenaicredentialdto) \| [CreateByoSipTrunkCredentialDTO](#schemacreatebyosiptrunkcredentialdto) \| [CreateCartesiaCredentialDTO](#schemacreatecartesiacredentialdto) \| [CreateCerebrasCredentialDTO](#schemacreatecerebrascredentialdto) \| [CreateCloudflareCredentialDTO](#schemacreatecloudflarecredentialdto) \| [CreateCustomLLMCredentialDTO](#schemacreatecustomllmcredentialdto) \| [CreateDeepgramCredentialDTO](#schemacreatedeepgramcredentialdto) \| [CreateDeepInfraCredentialDTO](#schemacreatedeepinfracredentialdto) \| [CreateDeepSeekCredentialDTO](#schemacreatedeepseekcredentialdto) \| [CreateElevenLabsCredentialDTO](#schemacreateelevenlabscredentialdto) \| [CreateGcpCredentialDTO](#schemacreategcpcredentialdto) \| [CreateGladiaCredentialDTO](#schemacreategladiacredentialdto) \| [CreateGoHighLevelCredentialDTO](#schemacreategohighlevelcredentialdto) \| [CreateGoogleCredentialDTO](#schemacreategooglecredentialdto) \| [CreateGroqCredentialDTO](#schemacreategroqcredentialdto) \| [CreateHumeCredentialDTO](#schemacreatehumecredentialdto) \| [CreateInflectionAICredentialDTO](#schemacreateinflectionaicredentialdto) \| [CreateLangfuseCredentialDTO](#schemacreatelangfusecredentialdto) \| [CreateLmntCredentialDTO](#schemacreatelmntcredentialdto) \| [CreateMakeCredentialDTO](#schemacreatemakecredentialdto) \| [CreateMistralCredentialDTO](#schemacreatemistralcredentialdto) \| [CreateNeuphonicCredentialDTO](#schemacreateneuphoniccredentialdto) \| [CreateOpenAICredentialDTO](#schemacreateopenaicredentialdto) \| [CreateOpenRouterCredentialDTO](#schemacreateopenroutercredentialdto) \| [CreatePerplexityAICredentialDTO](#schemacreateperplexityaicredentialdto) \| [CreatePlayHTCredentialDTO](#schemacreateplayhtcredentialdto) \| [CreateRimeAICredentialDTO](#schemacreaterimeaicredentialdto) \| [CreateRunpodCredentialDTO](#schemacreaterunpodcredentialdto) \| [CreateS3CredentialDTO](#schemacreates3credentialdto) \| [CreateS3CompatibleCredentialDTO](#schemacreates3compatiblecredentialdto) \| [CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto) \| [CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto) \| [CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto) \| [CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto) \| [CreateTavusCredentialDTO](#schemacreatetavuscredentialdto) \| [CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto) \| [CreateTwilioCredentialDTO](#schemacreatetwiliocredentialdto) \| [CreateVonageCredentialDTO](#schemacreatevonagecredentialdto) \| [CreateWebhookCredentialDTO](#schemacreatewebhookcredentialdto) \| [CreateCustomCredentialDTO](#schemacreatecustomcredentialdto) \| [CreateXAiCredentialDTO](#schemacreatexaicredentialdto) \| [CreateMicrosoftCredentialDTO](#schemacreatemicrosoftcredentialdto) \| [CreateGoogleCalendarOAuth2ClientCredentialDTO](#schemacreategooglecalendaroauth2clientcredentialdto) \| [CreateGoogleCalendarOAuth2AuthorizationCredentialDTO](#schemacreategooglecalendaroauth2authorizationcredentialdto) \| [CreateGoogleSheetsOAuth2AuthorizationCredentialDTO](#schemacreategooglesheetsoauth2authorizationcredentialdto) \| [CreateSlackOAuth2AuthorizationCredentialDTO](#schemacreateslackoauth2authorizationcredentialdto) \| [CreateGoHighLevelMCPCredentialDTO](#schemacreategohighlevelmcpcredentialdto) \| [CreateInworldCredentialDTO](#schemacreateinworldcredentialdto) \| [CreateMinimaxCredentialDTO](#schemacreateminimaxcredentialdto) \| [CreateWellSaidCredentialDTO](#schemacreatewellsaidcredentialdto) \| [CreateEmailCredentialDTO](#schemacreateemailcredentialdto) \| [CreateSlackWebhookCredentialDTO](#schemacreateslackwebhookcredentialdto)]|false|none|These are dynamic credentials that will be used for the assistant calls. By default, all the credentials are available for use in the call but you can supplement an additional credentials using this. Dynamic credentials override existing credentials.|
+|credentials|[[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto) \| [CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto) \| [CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto) \| [CreateAssemblyAICredentialDTO](#schemacreateassemblyaicredentialdto) \| [CreateAzureCredentialDTO](#schemacreateazurecredentialdto) \| [CreateAzureOpenAICredentialDTO](#schemacreateazureopenaicredentialdto) \| [CreateByoSipTrunkCredentialDTO](#schemacreatebyosiptrunkcredentialdto) \| [CreateCartesiaCredentialDTO](#schemacreatecartesiacredentialdto) \| [CreateCerebrasCredentialDTO](#schemacreatecerebrascredentialdto) \| [CreateCloudflareCredentialDTO](#schemacreatecloudflarecredentialdto) \| [CreateCustomLLMCredentialDTO](#schemacreatecustomllmcredentialdto) \| [CreateDeepgramCredentialDTO](#schemacreatedeepgramcredentialdto) \| [CreateDeepInfraCredentialDTO](#schemacreatedeepinfracredentialdto) \| [CreateDeepSeekCredentialDTO](#schemacreatedeepseekcredentialdto) \| [CreateElevenLabsCredentialDTO](#schemacreateelevenlabscredentialdto) \| [CreateGcpCredentialDTO](#schemacreategcpcredentialdto) \| [CreateGladiaCredentialDTO](#schemacreategladiacredentialdto) \| [CreateGoHighLevelCredentialDTO](#schemacreategohighlevelcredentialdto) \| [CreateGoogleCredentialDTO](#schemacreategooglecredentialdto) \| [CreateGroqCredentialDTO](#schemacreategroqcredentialdto) \| [CreateHumeCredentialDTO](#schemacreatehumecredentialdto) \| [CreateInflectionAICredentialDTO](#schemacreateinflectionaicredentialdto) \| [CreateLangfuseCredentialDTO](#schemacreatelangfusecredentialdto) \| [CreateLmntCredentialDTO](#schemacreatelmntcredentialdto) \| [CreateMakeCredentialDTO](#schemacreatemakecredentialdto) \| [CreateMistralCredentialDTO](#schemacreatemistralcredentialdto) \| [CreateNeuphonicCredentialDTO](#schemacreateneuphoniccredentialdto) \| [CreateOpenAICredentialDTO](#schemacreateopenaicredentialdto) \| [CreateOpenRouterCredentialDTO](#schemacreateopenroutercredentialdto) \| [CreatePerplexityAICredentialDTO](#schemacreateperplexityaicredentialdto) \| [CreatePlayHTCredentialDTO](#schemacreateplayhtcredentialdto) \| [CreateRimeAICredentialDTO](#schemacreaterimeaicredentialdto) \| [CreateRunpodCredentialDTO](#schemacreaterunpodcredentialdto) \| [CreateS3CredentialDTO](#schemacreates3credentialdto) \| [CreateS3CompatibleCredentialDTO](#schemacreates3compatiblecredentialdto) \| [CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto) \| [CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto) \| [CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto) \| [CreateReson8CredentialDTO](#schemacreatereson8credentialdto) \| [CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto) \| [CreateTavusCredentialDTO](#schemacreatetavuscredentialdto) \| [CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto) \| [CreateTwilioCredentialDTO](#schemacreatetwiliocredentialdto) \| [CreateVonageCredentialDTO](#schemacreatevonagecredentialdto) \| [CreateWebhookCredentialDTO](#schemacreatewebhookcredentialdto) \| [CreateCustomCredentialDTO](#schemacreatecustomcredentialdto) \| [CreateXAiCredentialDTO](#schemacreatexaicredentialdto) \| [CreateMicrosoftCredentialDTO](#schemacreatemicrosoftcredentialdto) \| [CreateGoogleCalendarOAuth2ClientCredentialDTO](#schemacreategooglecalendaroauth2clientcredentialdto) \| [CreateGoogleCalendarOAuth2AuthorizationCredentialDTO](#schemacreategooglecalendaroauth2authorizationcredentialdto) \| [CreateGoogleSheetsOAuth2AuthorizationCredentialDTO](#schemacreategooglesheetsoauth2authorizationcredentialdto) \| [CreateSlackOAuth2AuthorizationCredentialDTO](#schemacreateslackoauth2authorizationcredentialdto) \| [CreateGoHighLevelMCPCredentialDTO](#schemacreategohighlevelmcpcredentialdto) \| [CreateInworldCredentialDTO](#schemacreateinworldcredentialdto) \| [CreateMinimaxCredentialDTO](#schemacreateminimaxcredentialdto) \| [CreateWellSaidCredentialDTO](#schemacreatewellsaidcredentialdto) \| [CreateEmailCredentialDTO](#schemacreateemailcredentialdto) \| [CreateSlackWebhookCredentialDTO](#schemacreateslackwebhookcredentialdto)]|false|none|These are dynamic credentials that will be used for the assistant calls. By default, all the credentials are available for use in the call but you can supplement an additional credentials using this. Dynamic credentials override existing credentials.|
 |hooks|[[CallHookCallEnding](#schemacallhookcallending) \| [CallHookAssistantSpeechInterrupted](#schemacallhookassistantspeechinterrupted) \| [CallHookCustomerSpeechInterrupted](#schemacallhookcustomerspeechinterrupted) \| [CallHookCustomerSpeechTimeout](#schemacallhookcustomerspeechtimeout) \| [SessionCreatedHook](#schemasessioncreatedhook)]|false|none|This is a set of actions that will be performed on certain events.|
 |latestVersion|string \| null|false|none|This is the latest version label (e.g. `v3`) of the assistant in the<br>version history. `null` while the org is not yet<br>onboarded to versioning, or for assistants that have not yet been<br>published under it.|
 |modelDeprecations|[[ModelDeprecationNotice](#schemamodeldeprecationnotice)]|false|none|Read-only. Present only when a model this configuration uses is deprecated or retired in Vapi's model deprecation registry, judged on the day of the response. Each entry names the slot (for example `model` or `model.fallbackModels[1]`), provider, stored model, and deprecation and retirement dates as `YYYY-MM-DD` in UTC. `replacementStatus` is `available` with a `replacementModel` when a replacement can be recommended, or `manual-action-required` with no replacement model when eligibility is unknown or no eligible replacement exists. `manual-action-required` can be transient when compliance context is unavailable; re-fetch before acting. HIPAA-required configurations, sparse drafts, and squads with unresolved assistant references currently require manual action. HIPAA requirements include the organization and assistant settings, including HIPAA with data retention. Recommendations reflect the response-time decision; they do not confirm a swap or authorize future execution. Examples: an available recommendation includes `{"replacementStatus":"available","replacementModel":"gpt-5"}`; a blocked recommendation includes `{"replacementStatus":"manual-action-required"}`. Ignored if sent back in a create or update request.|
@@ -211357,7 +211689,7 @@ bearer
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|transcriber|[AssemblyAITranscriber](#schemaassemblyaitranscriber) \| [AzureSpeechTranscriber](#schemaazurespeechtranscriber) \| [CustomTranscriber](#schemacustomtranscriber) \| [DeepgramTranscriber](#schemadeepgramtranscriber) \| [ElevenLabsTranscriber](#schemaelevenlabstranscriber) \| [GladiaTranscriber](#schemagladiatranscriber) \| [GoogleTranscriber](#schemagoogletranscriber) \| [SpeechmaticsTranscriber](#schemaspeechmaticstranscriber) \| [TalkscriberTranscriber](#schematalkscribertranscriber) \| [OpenAITranscriber](#schemaopenaitranscriber) \| [CartesiaTranscriber](#schemacartesiatranscriber) \| [SonioxTranscriber](#schemasonioxtranscriber) \| [XaiTranscriber](#schemaxaitranscriber) \| [VapiTranscriber](#schemavapitranscriber)|false|none|These are the options for the assistant's transcriber.|
+|transcriber|[AssemblyAITranscriber](#schemaassemblyaitranscriber) \| [AzureSpeechTranscriber](#schemaazurespeechtranscriber) \| [CustomTranscriber](#schemacustomtranscriber) \| [DeepgramTranscriber](#schemadeepgramtranscriber) \| [ElevenLabsTranscriber](#schemaelevenlabstranscriber) \| [GladiaTranscriber](#schemagladiatranscriber) \| [GoogleTranscriber](#schemagoogletranscriber) \| [SpeechmaticsTranscriber](#schemaspeechmaticstranscriber) \| [TalkscriberTranscriber](#schematalkscribertranscriber) \| [OpenAITranscriber](#schemaopenaitranscriber) \| [CartesiaTranscriber](#schemacartesiatranscriber) \| [SonioxTranscriber](#schemasonioxtranscriber) \| [XaiTranscriber](#schemaxaitranscriber) \| [Reson8Transcriber](#schemareson8transcriber) \| [VapiTranscriber](#schemavapitranscriber)|false|none|These are the options for the assistant's transcriber.|
 |model|[AnthropicModel](#schemaanthropicmodel) \| [AnthropicBedrockModel](#schemaanthropicbedrockmodel) \| [AnyscaleModel](#schemaanyscalemodel) \| [CerebrasModel](#schemacerebrasmodel) \| [CustomLLMModel](#schemacustomllmmodel) \| [DeepInfraModel](#schemadeepinframodel) \| [DeepSeekModel](#schemadeepseekmodel) \| [GoogleModel](#schemagooglemodel) \| [GroqModel](#schemagroqmodel) \| [InflectionAIModel](#schemainflectionaimodel) \| [MinimaxLLMModel](#schemaminimaxllmmodel) \| [OpenAIModel](#schemaopenaimodel) \| [OpenRouterModel](#schemaopenroutermodel) \| [PerplexityAIModel](#schemaperplexityaimodel) \| [TogetherAIModel](#schematogetheraimodel) \| [XaiModel](#schemaxaimodel) \| [VapiModel](#schemavapimodel)|false|none|These are the options for the assistant's LLM.|
 |voice|[AzureVoice](#schemaazurevoice) \| [CartesiaVoice](#schemacartesiavoice) \| [CustomVoice](#schemacustomvoice) \| [DeepgramVoice](#schemadeepgramvoice) \| [ElevenLabsVoice](#schemaelevenlabsvoice) \| [HumeVoice](#schemahumevoice) \| [LMNTVoice](#schemalmntvoice) \| [NeuphonicVoice](#schemaneuphonicvoice) \| [OpenAIVoice](#schemaopenaivoice) \| [PlayHTVoice](#schemaplayhtvoice) \| [WellSaidVoice](#schemawellsaidvoice) \| [RimeAIVoice](#schemarimeaivoice) \| [SmallestAIVoice](#schemasmallestaivoice) \| [VapiVoice](#schemavapivoice) \| [SesameVoice](#schemasesamevoice) \| [InworldVoice](#schemainworldvoice) \| [MinimaxVoice](#schemaminimaxvoice) \| [XaiVoice](#schemaxaivoice) \| [MicrosoftVoice](#schemamicrosoftvoice)|false|none|These are the options for the assistant's voice.|
 |firstMessage|string|false|none|This is the first message that the assistant will say. This can also be a URL to a containerized audio file (mp3, wav, etc.).<br><br>If unspecified, assistant will wait for user to speak and use the model to respond once they speak.|
@@ -211367,11 +211699,11 @@ bearer
 |clientMessages|[string]|false|none|These are the messages that will be sent to your Client SDKs. Default is conversation-update,function-call,hang,model-output,speech-update,status-update,transfer-update,transcript,tool-calls,user-interrupted,voice-input,workflow.node.started,assistant.started. You can check the shape of the messages in ClientMessage schema.|
 |serverMessages|[string]|false|none|These are the messages that will be sent to your Server URL. Default is conversation-update,end-of-call-report,function-call,hang,speech-update,status-update,tool-calls,transfer-destination-request,handoff-destination-request,user-interrupted,assistant.started. You can check the shape of the messages in ServerMessage schema.|
 |maxDurationSeconds|number|false|none|This is the maximum number of seconds that the call will last. When the call reaches this duration, it will be ended.<br><br>@default 600 (10 minutes)|
-|backgroundSound|string \| string(uri)|false|none|This is the background sound in the call. Default for phone calls is 'office' and default for web calls is 'off'.<br>You can also provide a custom sound by providing a URL to an audio file.|
+|backgroundSound|string \| string(uri)|false|none|This is the background sound in the call. Default for phone calls is 'office' and default for web calls is 'off'.<br>Bundled sounds: 'office', 'white-noise', 'city', 'crowd' and 'farm'. GPT Live assistants don't play 'office'.<br>You can also provide a custom sound by providing a URL to an audio file.|
 |modelOutputInMessagesEnabled|boolean|false|none|This determines whether the model's output is used in conversation history rather than the transcription of assistant's speech.<br><br>@default false|
 |transportConfigurations|[[TransportConfigurationTwilio](#schematransportconfigurationtwilio)]|false|none|These are the configurations to be passed to the transport providers of assistant's calls, like Twilio. You can store multiple configurations for different transport providers. For a call, only the configuration matching the call transport provider is used.|
 |observabilityPlan|[LangfuseObservabilityPlan](#schemalangfuseobservabilityplan)|false|none|This is the plan for observability of assistant's calls.<br><br>Currently, only Langfuse is supported.|
-|credentials|[[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto) \| [CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto) \| [CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto) \| [CreateAssemblyAICredentialDTO](#schemacreateassemblyaicredentialdto) \| [CreateAzureCredentialDTO](#schemacreateazurecredentialdto) \| [CreateAzureOpenAICredentialDTO](#schemacreateazureopenaicredentialdto) \| [CreateByoSipTrunkCredentialDTO](#schemacreatebyosiptrunkcredentialdto) \| [CreateCartesiaCredentialDTO](#schemacreatecartesiacredentialdto) \| [CreateCerebrasCredentialDTO](#schemacreatecerebrascredentialdto) \| [CreateCloudflareCredentialDTO](#schemacreatecloudflarecredentialdto) \| [CreateCustomLLMCredentialDTO](#schemacreatecustomllmcredentialdto) \| [CreateDeepgramCredentialDTO](#schemacreatedeepgramcredentialdto) \| [CreateDeepInfraCredentialDTO](#schemacreatedeepinfracredentialdto) \| [CreateDeepSeekCredentialDTO](#schemacreatedeepseekcredentialdto) \| [CreateElevenLabsCredentialDTO](#schemacreateelevenlabscredentialdto) \| [CreateGcpCredentialDTO](#schemacreategcpcredentialdto) \| [CreateGladiaCredentialDTO](#schemacreategladiacredentialdto) \| [CreateGoHighLevelCredentialDTO](#schemacreategohighlevelcredentialdto) \| [CreateGoogleCredentialDTO](#schemacreategooglecredentialdto) \| [CreateGroqCredentialDTO](#schemacreategroqcredentialdto) \| [CreateHumeCredentialDTO](#schemacreatehumecredentialdto) \| [CreateInflectionAICredentialDTO](#schemacreateinflectionaicredentialdto) \| [CreateLangfuseCredentialDTO](#schemacreatelangfusecredentialdto) \| [CreateLmntCredentialDTO](#schemacreatelmntcredentialdto) \| [CreateMakeCredentialDTO](#schemacreatemakecredentialdto) \| [CreateMistralCredentialDTO](#schemacreatemistralcredentialdto) \| [CreateNeuphonicCredentialDTO](#schemacreateneuphoniccredentialdto) \| [CreateOpenAICredentialDTO](#schemacreateopenaicredentialdto) \| [CreateOpenRouterCredentialDTO](#schemacreateopenroutercredentialdto) \| [CreatePerplexityAICredentialDTO](#schemacreateperplexityaicredentialdto) \| [CreatePlayHTCredentialDTO](#schemacreateplayhtcredentialdto) \| [CreateRimeAICredentialDTO](#schemacreaterimeaicredentialdto) \| [CreateRunpodCredentialDTO](#schemacreaterunpodcredentialdto) \| [CreateS3CredentialDTO](#schemacreates3credentialdto) \| [CreateS3CompatibleCredentialDTO](#schemacreates3compatiblecredentialdto) \| [CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto) \| [CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto) \| [CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto) \| [CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto) \| [CreateTavusCredentialDTO](#schemacreatetavuscredentialdto) \| [CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto) \| [CreateTwilioCredentialDTO](#schemacreatetwiliocredentialdto) \| [CreateVonageCredentialDTO](#schemacreatevonagecredentialdto) \| [CreateWebhookCredentialDTO](#schemacreatewebhookcredentialdto) \| [CreateCustomCredentialDTO](#schemacreatecustomcredentialdto) \| [CreateXAiCredentialDTO](#schemacreatexaicredentialdto) \| [CreateMicrosoftCredentialDTO](#schemacreatemicrosoftcredentialdto) \| [CreateGoogleCalendarOAuth2ClientCredentialDTO](#schemacreategooglecalendaroauth2clientcredentialdto) \| [CreateGoogleCalendarOAuth2AuthorizationCredentialDTO](#schemacreategooglecalendaroauth2authorizationcredentialdto) \| [CreateGoogleSheetsOAuth2AuthorizationCredentialDTO](#schemacreategooglesheetsoauth2authorizationcredentialdto) \| [CreateSlackOAuth2AuthorizationCredentialDTO](#schemacreateslackoauth2authorizationcredentialdto) \| [CreateGoHighLevelMCPCredentialDTO](#schemacreategohighlevelmcpcredentialdto) \| [CreateInworldCredentialDTO](#schemacreateinworldcredentialdto) \| [CreateMinimaxCredentialDTO](#schemacreateminimaxcredentialdto) \| [CreateWellSaidCredentialDTO](#schemacreatewellsaidcredentialdto) \| [CreateEmailCredentialDTO](#schemacreateemailcredentialdto) \| [CreateSlackWebhookCredentialDTO](#schemacreateslackwebhookcredentialdto)]|false|none|These are dynamic credentials that will be used for the assistant calls. By default, all the credentials are available for use in the call but you can supplement an additional credentials using this. Dynamic credentials override existing credentials.|
+|credentials|[[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto) \| [CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto) \| [CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto) \| [CreateAssemblyAICredentialDTO](#schemacreateassemblyaicredentialdto) \| [CreateAzureCredentialDTO](#schemacreateazurecredentialdto) \| [CreateAzureOpenAICredentialDTO](#schemacreateazureopenaicredentialdto) \| [CreateByoSipTrunkCredentialDTO](#schemacreatebyosiptrunkcredentialdto) \| [CreateCartesiaCredentialDTO](#schemacreatecartesiacredentialdto) \| [CreateCerebrasCredentialDTO](#schemacreatecerebrascredentialdto) \| [CreateCloudflareCredentialDTO](#schemacreatecloudflarecredentialdto) \| [CreateCustomLLMCredentialDTO](#schemacreatecustomllmcredentialdto) \| [CreateDeepgramCredentialDTO](#schemacreatedeepgramcredentialdto) \| [CreateDeepInfraCredentialDTO](#schemacreatedeepinfracredentialdto) \| [CreateDeepSeekCredentialDTO](#schemacreatedeepseekcredentialdto) \| [CreateElevenLabsCredentialDTO](#schemacreateelevenlabscredentialdto) \| [CreateGcpCredentialDTO](#schemacreategcpcredentialdto) \| [CreateGladiaCredentialDTO](#schemacreategladiacredentialdto) \| [CreateGoHighLevelCredentialDTO](#schemacreategohighlevelcredentialdto) \| [CreateGoogleCredentialDTO](#schemacreategooglecredentialdto) \| [CreateGroqCredentialDTO](#schemacreategroqcredentialdto) \| [CreateHumeCredentialDTO](#schemacreatehumecredentialdto) \| [CreateInflectionAICredentialDTO](#schemacreateinflectionaicredentialdto) \| [CreateLangfuseCredentialDTO](#schemacreatelangfusecredentialdto) \| [CreateLmntCredentialDTO](#schemacreatelmntcredentialdto) \| [CreateMakeCredentialDTO](#schemacreatemakecredentialdto) \| [CreateMistralCredentialDTO](#schemacreatemistralcredentialdto) \| [CreateNeuphonicCredentialDTO](#schemacreateneuphoniccredentialdto) \| [CreateOpenAICredentialDTO](#schemacreateopenaicredentialdto) \| [CreateOpenRouterCredentialDTO](#schemacreateopenroutercredentialdto) \| [CreatePerplexityAICredentialDTO](#schemacreateperplexityaicredentialdto) \| [CreatePlayHTCredentialDTO](#schemacreateplayhtcredentialdto) \| [CreateRimeAICredentialDTO](#schemacreaterimeaicredentialdto) \| [CreateRunpodCredentialDTO](#schemacreaterunpodcredentialdto) \| [CreateS3CredentialDTO](#schemacreates3credentialdto) \| [CreateS3CompatibleCredentialDTO](#schemacreates3compatiblecredentialdto) \| [CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto) \| [CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto) \| [CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto) \| [CreateReson8CredentialDTO](#schemacreatereson8credentialdto) \| [CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto) \| [CreateTavusCredentialDTO](#schemacreatetavuscredentialdto) \| [CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto) \| [CreateTwilioCredentialDTO](#schemacreatetwiliocredentialdto) \| [CreateVonageCredentialDTO](#schemacreatevonagecredentialdto) \| [CreateWebhookCredentialDTO](#schemacreatewebhookcredentialdto) \| [CreateCustomCredentialDTO](#schemacreatecustomcredentialdto) \| [CreateXAiCredentialDTO](#schemacreatexaicredentialdto) \| [CreateMicrosoftCredentialDTO](#schemacreatemicrosoftcredentialdto) \| [CreateGoogleCalendarOAuth2ClientCredentialDTO](#schemacreategooglecalendaroauth2clientcredentialdto) \| [CreateGoogleCalendarOAuth2AuthorizationCredentialDTO](#schemacreategooglecalendaroauth2authorizationcredentialdto) \| [CreateGoogleSheetsOAuth2AuthorizationCredentialDTO](#schemacreategooglesheetsoauth2authorizationcredentialdto) \| [CreateSlackOAuth2AuthorizationCredentialDTO](#schemacreateslackoauth2authorizationcredentialdto) \| [CreateGoHighLevelMCPCredentialDTO](#schemacreategohighlevelmcpcredentialdto) \| [CreateInworldCredentialDTO](#schemacreateinworldcredentialdto) \| [CreateMinimaxCredentialDTO](#schemacreateminimaxcredentialdto) \| [CreateWellSaidCredentialDTO](#schemacreatewellsaidcredentialdto) \| [CreateEmailCredentialDTO](#schemacreateemailcredentialdto) \| [CreateSlackWebhookCredentialDTO](#schemacreateslackwebhookcredentialdto)]|false|none|These are dynamic credentials that will be used for the assistant calls. By default, all the credentials are available for use in the call but you can supplement an additional credentials using this. Dynamic credentials override existing credentials.|
 |hooks|[[CallHookCallEnding](#schemacallhookcallending) \| [CallHookAssistantSpeechInterrupted](#schemacallhookassistantspeechinterrupted) \| [CallHookCustomerSpeechInterrupted](#schemacallhookcustomerspeechinterrupted) \| [CallHookCustomerSpeechTimeout](#schemacallhookcustomerspeechtimeout) \| [SessionCreatedHook](#schemasessioncreatedhook)]|false|none|This is a set of actions that will be performed on certain events.|
 |modelDeprecations|[[ModelDeprecationNotice](#schemamodeldeprecationnotice)]|false|none|Read-only. Present only when a model this configuration uses is deprecated or retired in Vapi's model deprecation registry, judged on the day of the response. Each entry names the slot (for example `model` or `model.fallbackModels[1]`), provider, stored model, and deprecation and retirement dates as `YYYY-MM-DD` in UTC. `replacementStatus` is `available` with a `replacementModel` when a replacement can be recommended, or `manual-action-required` with no replacement model when eligibility is unknown or no eligible replacement exists. `manual-action-required` can be transient when compliance context is unavailable; re-fetch before acting. HIPAA-required configurations, sparse drafts, and squads with unresolved assistant references currently require manual action. HIPAA requirements include the organization and assistant settings, including HIPAA with data retention. Recommendations reflect the response-time decision; they do not confirm a swap or authorize future execution. Examples: an available recommendation includes `{"replacementStatus":"available","replacementModel":"gpt-5"}`; a blocked recommendation includes `{"replacementStatus":"manual-action-required"}`. Ignored if sent back in a create or update request.|
 |name|string|false|none|This is the name of the assistant.<br><br>This is required when you want to transfer between assistants in a call.|
@@ -213133,7 +213465,7 @@ bearer
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|transcriber|[AssemblyAITranscriber](#schemaassemblyaitranscriber) \| [AzureSpeechTranscriber](#schemaazurespeechtranscriber) \| [CustomTranscriber](#schemacustomtranscriber) \| [DeepgramTranscriber](#schemadeepgramtranscriber) \| [ElevenLabsTranscriber](#schemaelevenlabstranscriber) \| [GladiaTranscriber](#schemagladiatranscriber) \| [GoogleTranscriber](#schemagoogletranscriber) \| [SpeechmaticsTranscriber](#schemaspeechmaticstranscriber) \| [TalkscriberTranscriber](#schematalkscribertranscriber) \| [OpenAITranscriber](#schemaopenaitranscriber) \| [CartesiaTranscriber](#schemacartesiatranscriber) \| [SonioxTranscriber](#schemasonioxtranscriber) \| [XaiTranscriber](#schemaxaitranscriber) \| [VapiTranscriber](#schemavapitranscriber)|false|none|These are the options for the assistant's transcriber.|
+|transcriber|[AssemblyAITranscriber](#schemaassemblyaitranscriber) \| [AzureSpeechTranscriber](#schemaazurespeechtranscriber) \| [CustomTranscriber](#schemacustomtranscriber) \| [DeepgramTranscriber](#schemadeepgramtranscriber) \| [ElevenLabsTranscriber](#schemaelevenlabstranscriber) \| [GladiaTranscriber](#schemagladiatranscriber) \| [GoogleTranscriber](#schemagoogletranscriber) \| [SpeechmaticsTranscriber](#schemaspeechmaticstranscriber) \| [TalkscriberTranscriber](#schematalkscribertranscriber) \| [OpenAITranscriber](#schemaopenaitranscriber) \| [CartesiaTranscriber](#schemacartesiatranscriber) \| [SonioxTranscriber](#schemasonioxtranscriber) \| [XaiTranscriber](#schemaxaitranscriber) \| [Reson8Transcriber](#schemareson8transcriber) \| [VapiTranscriber](#schemavapitranscriber)|false|none|These are the options for the assistant's transcriber.|
 |model|[AnthropicModel](#schemaanthropicmodel) \| [AnthropicBedrockModel](#schemaanthropicbedrockmodel) \| [AnyscaleModel](#schemaanyscalemodel) \| [CerebrasModel](#schemacerebrasmodel) \| [CustomLLMModel](#schemacustomllmmodel) \| [DeepInfraModel](#schemadeepinframodel) \| [DeepSeekModel](#schemadeepseekmodel) \| [GoogleModel](#schemagooglemodel) \| [GroqModel](#schemagroqmodel) \| [InflectionAIModel](#schemainflectionaimodel) \| [MinimaxLLMModel](#schemaminimaxllmmodel) \| [OpenAIModel](#schemaopenaimodel) \| [OpenRouterModel](#schemaopenroutermodel) \| [PerplexityAIModel](#schemaperplexityaimodel) \| [TogetherAIModel](#schematogetheraimodel) \| [XaiModel](#schemaxaimodel) \| [VapiModel](#schemavapimodel)|false|none|These are the options for the assistant's LLM.|
 |voice|[AzureVoice](#schemaazurevoice) \| [CartesiaVoice](#schemacartesiavoice) \| [CustomVoice](#schemacustomvoice) \| [DeepgramVoice](#schemadeepgramvoice) \| [ElevenLabsVoice](#schemaelevenlabsvoice) \| [HumeVoice](#schemahumevoice) \| [LMNTVoice](#schemalmntvoice) \| [NeuphonicVoice](#schemaneuphonicvoice) \| [OpenAIVoice](#schemaopenaivoice) \| [PlayHTVoice](#schemaplayhtvoice) \| [WellSaidVoice](#schemawellsaidvoice) \| [RimeAIVoice](#schemarimeaivoice) \| [SmallestAIVoice](#schemasmallestaivoice) \| [VapiVoice](#schemavapivoice) \| [SesameVoice](#schemasesamevoice) \| [InworldVoice](#schemainworldvoice) \| [MinimaxVoice](#schemaminimaxvoice) \| [XaiVoice](#schemaxaivoice) \| [MicrosoftVoice](#schemamicrosoftvoice)|false|none|These are the options for the assistant's voice.|
 |firstMessage|string|false|none|This is the first message that the assistant will say. This can also be a URL to a containerized audio file (mp3, wav, etc.).<br><br>If unspecified, assistant will wait for user to speak and use the model to respond once they speak.|
@@ -213143,11 +213475,11 @@ bearer
 |clientMessages|[string]|false|none|These are the messages that will be sent to your Client SDKs. Default is conversation-update,function-call,hang,model-output,speech-update,status-update,transfer-update,transcript,tool-calls,user-interrupted,voice-input,workflow.node.started,assistant.started. You can check the shape of the messages in ClientMessage schema.|
 |serverMessages|[string]|false|none|These are the messages that will be sent to your Server URL. Default is conversation-update,end-of-call-report,function-call,hang,speech-update,status-update,tool-calls,transfer-destination-request,handoff-destination-request,user-interrupted,assistant.started. You can check the shape of the messages in ServerMessage schema.|
 |maxDurationSeconds|number|false|none|This is the maximum number of seconds that the call will last. When the call reaches this duration, it will be ended.<br><br>@default 600 (10 minutes)|
-|backgroundSound|string \| string(uri)|false|none|This is the background sound in the call. Default for phone calls is 'office' and default for web calls is 'off'.<br>You can also provide a custom sound by providing a URL to an audio file.|
+|backgroundSound|string \| string(uri)|false|none|This is the background sound in the call. Default for phone calls is 'office' and default for web calls is 'off'.<br>Bundled sounds: 'office', 'white-noise', 'city', 'crowd' and 'farm'. GPT Live assistants don't play 'office'.<br>You can also provide a custom sound by providing a URL to an audio file.|
 |modelOutputInMessagesEnabled|boolean|false|none|This determines whether the model's output is used in conversation history rather than the transcription of assistant's speech.<br><br>@default false|
 |transportConfigurations|[[TransportConfigurationTwilio](#schematransportconfigurationtwilio)]|false|none|These are the configurations to be passed to the transport providers of assistant's calls, like Twilio. You can store multiple configurations for different transport providers. For a call, only the configuration matching the call transport provider is used.|
 |observabilityPlan|[LangfuseObservabilityPlan](#schemalangfuseobservabilityplan)|false|none|This is the plan for observability of assistant's calls.<br><br>Currently, only Langfuse is supported.|
-|credentials|[[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto) \| [CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto) \| [CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto) \| [CreateAssemblyAICredentialDTO](#schemacreateassemblyaicredentialdto) \| [CreateAzureCredentialDTO](#schemacreateazurecredentialdto) \| [CreateAzureOpenAICredentialDTO](#schemacreateazureopenaicredentialdto) \| [CreateByoSipTrunkCredentialDTO](#schemacreatebyosiptrunkcredentialdto) \| [CreateCartesiaCredentialDTO](#schemacreatecartesiacredentialdto) \| [CreateCerebrasCredentialDTO](#schemacreatecerebrascredentialdto) \| [CreateCloudflareCredentialDTO](#schemacreatecloudflarecredentialdto) \| [CreateCustomLLMCredentialDTO](#schemacreatecustomllmcredentialdto) \| [CreateDeepgramCredentialDTO](#schemacreatedeepgramcredentialdto) \| [CreateDeepInfraCredentialDTO](#schemacreatedeepinfracredentialdto) \| [CreateDeepSeekCredentialDTO](#schemacreatedeepseekcredentialdto) \| [CreateElevenLabsCredentialDTO](#schemacreateelevenlabscredentialdto) \| [CreateGcpCredentialDTO](#schemacreategcpcredentialdto) \| [CreateGladiaCredentialDTO](#schemacreategladiacredentialdto) \| [CreateGoHighLevelCredentialDTO](#schemacreategohighlevelcredentialdto) \| [CreateGoogleCredentialDTO](#schemacreategooglecredentialdto) \| [CreateGroqCredentialDTO](#schemacreategroqcredentialdto) \| [CreateHumeCredentialDTO](#schemacreatehumecredentialdto) \| [CreateInflectionAICredentialDTO](#schemacreateinflectionaicredentialdto) \| [CreateLangfuseCredentialDTO](#schemacreatelangfusecredentialdto) \| [CreateLmntCredentialDTO](#schemacreatelmntcredentialdto) \| [CreateMakeCredentialDTO](#schemacreatemakecredentialdto) \| [CreateMistralCredentialDTO](#schemacreatemistralcredentialdto) \| [CreateNeuphonicCredentialDTO](#schemacreateneuphoniccredentialdto) \| [CreateOpenAICredentialDTO](#schemacreateopenaicredentialdto) \| [CreateOpenRouterCredentialDTO](#schemacreateopenroutercredentialdto) \| [CreatePerplexityAICredentialDTO](#schemacreateperplexityaicredentialdto) \| [CreatePlayHTCredentialDTO](#schemacreateplayhtcredentialdto) \| [CreateRimeAICredentialDTO](#schemacreaterimeaicredentialdto) \| [CreateRunpodCredentialDTO](#schemacreaterunpodcredentialdto) \| [CreateS3CredentialDTO](#schemacreates3credentialdto) \| [CreateS3CompatibleCredentialDTO](#schemacreates3compatiblecredentialdto) \| [CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto) \| [CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto) \| [CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto) \| [CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto) \| [CreateTavusCredentialDTO](#schemacreatetavuscredentialdto) \| [CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto) \| [CreateTwilioCredentialDTO](#schemacreatetwiliocredentialdto) \| [CreateVonageCredentialDTO](#schemacreatevonagecredentialdto) \| [CreateWebhookCredentialDTO](#schemacreatewebhookcredentialdto) \| [CreateCustomCredentialDTO](#schemacreatecustomcredentialdto) \| [CreateXAiCredentialDTO](#schemacreatexaicredentialdto) \| [CreateMicrosoftCredentialDTO](#schemacreatemicrosoftcredentialdto) \| [CreateGoogleCalendarOAuth2ClientCredentialDTO](#schemacreategooglecalendaroauth2clientcredentialdto) \| [CreateGoogleCalendarOAuth2AuthorizationCredentialDTO](#schemacreategooglecalendaroauth2authorizationcredentialdto) \| [CreateGoogleSheetsOAuth2AuthorizationCredentialDTO](#schemacreategooglesheetsoauth2authorizationcredentialdto) \| [CreateSlackOAuth2AuthorizationCredentialDTO](#schemacreateslackoauth2authorizationcredentialdto) \| [CreateGoHighLevelMCPCredentialDTO](#schemacreategohighlevelmcpcredentialdto) \| [CreateInworldCredentialDTO](#schemacreateinworldcredentialdto) \| [CreateMinimaxCredentialDTO](#schemacreateminimaxcredentialdto) \| [CreateWellSaidCredentialDTO](#schemacreatewellsaidcredentialdto) \| [CreateEmailCredentialDTO](#schemacreateemailcredentialdto) \| [CreateSlackWebhookCredentialDTO](#schemacreateslackwebhookcredentialdto)]|false|none|These are dynamic credentials that will be used for the assistant calls. By default, all the credentials are available for use in the call but you can supplement an additional credentials using this. Dynamic credentials override existing credentials.|
+|credentials|[[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto) \| [CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto) \| [CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto) \| [CreateAssemblyAICredentialDTO](#schemacreateassemblyaicredentialdto) \| [CreateAzureCredentialDTO](#schemacreateazurecredentialdto) \| [CreateAzureOpenAICredentialDTO](#schemacreateazureopenaicredentialdto) \| [CreateByoSipTrunkCredentialDTO](#schemacreatebyosiptrunkcredentialdto) \| [CreateCartesiaCredentialDTO](#schemacreatecartesiacredentialdto) \| [CreateCerebrasCredentialDTO](#schemacreatecerebrascredentialdto) \| [CreateCloudflareCredentialDTO](#schemacreatecloudflarecredentialdto) \| [CreateCustomLLMCredentialDTO](#schemacreatecustomllmcredentialdto) \| [CreateDeepgramCredentialDTO](#schemacreatedeepgramcredentialdto) \| [CreateDeepInfraCredentialDTO](#schemacreatedeepinfracredentialdto) \| [CreateDeepSeekCredentialDTO](#schemacreatedeepseekcredentialdto) \| [CreateElevenLabsCredentialDTO](#schemacreateelevenlabscredentialdto) \| [CreateGcpCredentialDTO](#schemacreategcpcredentialdto) \| [CreateGladiaCredentialDTO](#schemacreategladiacredentialdto) \| [CreateGoHighLevelCredentialDTO](#schemacreategohighlevelcredentialdto) \| [CreateGoogleCredentialDTO](#schemacreategooglecredentialdto) \| [CreateGroqCredentialDTO](#schemacreategroqcredentialdto) \| [CreateHumeCredentialDTO](#schemacreatehumecredentialdto) \| [CreateInflectionAICredentialDTO](#schemacreateinflectionaicredentialdto) \| [CreateLangfuseCredentialDTO](#schemacreatelangfusecredentialdto) \| [CreateLmntCredentialDTO](#schemacreatelmntcredentialdto) \| [CreateMakeCredentialDTO](#schemacreatemakecredentialdto) \| [CreateMistralCredentialDTO](#schemacreatemistralcredentialdto) \| [CreateNeuphonicCredentialDTO](#schemacreateneuphoniccredentialdto) \| [CreateOpenAICredentialDTO](#schemacreateopenaicredentialdto) \| [CreateOpenRouterCredentialDTO](#schemacreateopenroutercredentialdto) \| [CreatePerplexityAICredentialDTO](#schemacreateperplexityaicredentialdto) \| [CreatePlayHTCredentialDTO](#schemacreateplayhtcredentialdto) \| [CreateRimeAICredentialDTO](#schemacreaterimeaicredentialdto) \| [CreateRunpodCredentialDTO](#schemacreaterunpodcredentialdto) \| [CreateS3CredentialDTO](#schemacreates3credentialdto) \| [CreateS3CompatibleCredentialDTO](#schemacreates3compatiblecredentialdto) \| [CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto) \| [CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto) \| [CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto) \| [CreateReson8CredentialDTO](#schemacreatereson8credentialdto) \| [CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto) \| [CreateTavusCredentialDTO](#schemacreatetavuscredentialdto) \| [CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto) \| [CreateTwilioCredentialDTO](#schemacreatetwiliocredentialdto) \| [CreateVonageCredentialDTO](#schemacreatevonagecredentialdto) \| [CreateWebhookCredentialDTO](#schemacreatewebhookcredentialdto) \| [CreateCustomCredentialDTO](#schemacreatecustomcredentialdto) \| [CreateXAiCredentialDTO](#schemacreatexaicredentialdto) \| [CreateMicrosoftCredentialDTO](#schemacreatemicrosoftcredentialdto) \| [CreateGoogleCalendarOAuth2ClientCredentialDTO](#schemacreategooglecalendaroauth2clientcredentialdto) \| [CreateGoogleCalendarOAuth2AuthorizationCredentialDTO](#schemacreategooglecalendaroauth2authorizationcredentialdto) \| [CreateGoogleSheetsOAuth2AuthorizationCredentialDTO](#schemacreategooglesheetsoauth2authorizationcredentialdto) \| [CreateSlackOAuth2AuthorizationCredentialDTO](#schemacreateslackoauth2authorizationcredentialdto) \| [CreateGoHighLevelMCPCredentialDTO](#schemacreategohighlevelmcpcredentialdto) \| [CreateInworldCredentialDTO](#schemacreateinworldcredentialdto) \| [CreateMinimaxCredentialDTO](#schemacreateminimaxcredentialdto) \| [CreateWellSaidCredentialDTO](#schemacreatewellsaidcredentialdto) \| [CreateEmailCredentialDTO](#schemacreateemailcredentialdto) \| [CreateSlackWebhookCredentialDTO](#schemacreateslackwebhookcredentialdto)]|false|none|These are dynamic credentials that will be used for the assistant calls. By default, all the credentials are available for use in the call but you can supplement an additional credentials using this. Dynamic credentials override existing credentials.|
 |hooks|[[CallHookCallEnding](#schemacallhookcallending) \| [CallHookAssistantSpeechInterrupted](#schemacallhookassistantspeechinterrupted) \| [CallHookCustomerSpeechInterrupted](#schemacallhookcustomerspeechinterrupted) \| [CallHookCustomerSpeechTimeout](#schemacallhookcustomerspeechtimeout) \| [SessionCreatedHook](#schemasessioncreatedhook)]|false|none|This is a set of actions that will be performed on certain events.|
 |versionName|string \| null|false|none|Optional human-readable label for this version. Pass `null` to clear.|
 |versionDescription|string \| null|false|none|Optional description for this version. Pass `null` to clear.|
@@ -214849,7 +215181,7 @@ bearer
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|transcriber|[AssemblyAITranscriber](#schemaassemblyaitranscriber) \| [AzureSpeechTranscriber](#schemaazurespeechtranscriber) \| [CustomTranscriber](#schemacustomtranscriber) \| [DeepgramTranscriber](#schemadeepgramtranscriber) \| [ElevenLabsTranscriber](#schemaelevenlabstranscriber) \| [GladiaTranscriber](#schemagladiatranscriber) \| [GoogleTranscriber](#schemagoogletranscriber) \| [SpeechmaticsTranscriber](#schemaspeechmaticstranscriber) \| [TalkscriberTranscriber](#schematalkscribertranscriber) \| [OpenAITranscriber](#schemaopenaitranscriber) \| [CartesiaTranscriber](#schemacartesiatranscriber) \| [SonioxTranscriber](#schemasonioxtranscriber) \| [XaiTranscriber](#schemaxaitranscriber) \| [VapiTranscriber](#schemavapitranscriber)|false|none|These are the options for the assistant's transcriber.|
+|transcriber|[AssemblyAITranscriber](#schemaassemblyaitranscriber) \| [AzureSpeechTranscriber](#schemaazurespeechtranscriber) \| [CustomTranscriber](#schemacustomtranscriber) \| [DeepgramTranscriber](#schemadeepgramtranscriber) \| [ElevenLabsTranscriber](#schemaelevenlabstranscriber) \| [GladiaTranscriber](#schemagladiatranscriber) \| [GoogleTranscriber](#schemagoogletranscriber) \| [SpeechmaticsTranscriber](#schemaspeechmaticstranscriber) \| [TalkscriberTranscriber](#schematalkscribertranscriber) \| [OpenAITranscriber](#schemaopenaitranscriber) \| [CartesiaTranscriber](#schemacartesiatranscriber) \| [SonioxTranscriber](#schemasonioxtranscriber) \| [XaiTranscriber](#schemaxaitranscriber) \| [Reson8Transcriber](#schemareson8transcriber) \| [VapiTranscriber](#schemavapitranscriber)|false|none|These are the options for the assistant's transcriber.|
 |model|[AnthropicModel](#schemaanthropicmodel) \| [AnthropicBedrockModel](#schemaanthropicbedrockmodel) \| [AnyscaleModel](#schemaanyscalemodel) \| [CerebrasModel](#schemacerebrasmodel) \| [CustomLLMModel](#schemacustomllmmodel) \| [DeepInfraModel](#schemadeepinframodel) \| [DeepSeekModel](#schemadeepseekmodel) \| [GoogleModel](#schemagooglemodel) \| [GroqModel](#schemagroqmodel) \| [InflectionAIModel](#schemainflectionaimodel) \| [MinimaxLLMModel](#schemaminimaxllmmodel) \| [OpenAIModel](#schemaopenaimodel) \| [OpenRouterModel](#schemaopenroutermodel) \| [PerplexityAIModel](#schemaperplexityaimodel) \| [TogetherAIModel](#schematogetheraimodel) \| [XaiModel](#schemaxaimodel) \| [VapiModel](#schemavapimodel)|false|none|These are the options for the assistant's LLM.|
 |voice|[AzureVoice](#schemaazurevoice) \| [CartesiaVoice](#schemacartesiavoice) \| [CustomVoice](#schemacustomvoice) \| [DeepgramVoice](#schemadeepgramvoice) \| [ElevenLabsVoice](#schemaelevenlabsvoice) \| [HumeVoice](#schemahumevoice) \| [LMNTVoice](#schemalmntvoice) \| [NeuphonicVoice](#schemaneuphonicvoice) \| [OpenAIVoice](#schemaopenaivoice) \| [PlayHTVoice](#schemaplayhtvoice) \| [WellSaidVoice](#schemawellsaidvoice) \| [RimeAIVoice](#schemarimeaivoice) \| [SmallestAIVoice](#schemasmallestaivoice) \| [VapiVoice](#schemavapivoice) \| [SesameVoice](#schemasesamevoice) \| [InworldVoice](#schemainworldvoice) \| [MinimaxVoice](#schemaminimaxvoice) \| [XaiVoice](#schemaxaivoice) \| [MicrosoftVoice](#schemamicrosoftvoice)|false|none|These are the options for the assistant's voice.|
 |firstMessage|string|false|none|This is the first message that the assistant will say. This can also be a URL to a containerized audio file (mp3, wav, etc.).<br><br>If unspecified, assistant will wait for user to speak and use the model to respond once they speak.|
@@ -214859,11 +215191,11 @@ bearer
 |clientMessages|[string]|false|none|These are the messages that will be sent to your Client SDKs. Default is conversation-update,function-call,hang,model-output,speech-update,status-update,transfer-update,transcript,tool-calls,user-interrupted,voice-input,workflow.node.started,assistant.started. You can check the shape of the messages in ClientMessage schema.|
 |serverMessages|[string]|false|none|These are the messages that will be sent to your Server URL. Default is conversation-update,end-of-call-report,function-call,hang,speech-update,status-update,tool-calls,transfer-destination-request,handoff-destination-request,user-interrupted,assistant.started. You can check the shape of the messages in ServerMessage schema.|
 |maxDurationSeconds|number|false|none|This is the maximum number of seconds that the call will last. When the call reaches this duration, it will be ended.<br><br>@default 600 (10 minutes)|
-|backgroundSound|string \| string(uri)|false|none|This is the background sound in the call. Default for phone calls is 'office' and default for web calls is 'off'.<br>You can also provide a custom sound by providing a URL to an audio file.|
+|backgroundSound|string \| string(uri)|false|none|This is the background sound in the call. Default for phone calls is 'office' and default for web calls is 'off'.<br>Bundled sounds: 'office', 'white-noise', 'city', 'crowd' and 'farm'. GPT Live assistants don't play 'office'.<br>You can also provide a custom sound by providing a URL to an audio file.|
 |modelOutputInMessagesEnabled|boolean|false|none|This determines whether the model's output is used in conversation history rather than the transcription of assistant's speech.<br><br>@default false|
 |transportConfigurations|[[TransportConfigurationTwilio](#schematransportconfigurationtwilio)]|false|none|These are the configurations to be passed to the transport providers of assistant's calls, like Twilio. You can store multiple configurations for different transport providers. For a call, only the configuration matching the call transport provider is used.|
 |observabilityPlan|[LangfuseObservabilityPlan](#schemalangfuseobservabilityplan)|false|none|This is the plan for observability of assistant's calls.<br><br>Currently, only Langfuse is supported.|
-|credentials|[[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto) \| [CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto) \| [CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto) \| [CreateAssemblyAICredentialDTO](#schemacreateassemblyaicredentialdto) \| [CreateAzureCredentialDTO](#schemacreateazurecredentialdto) \| [CreateAzureOpenAICredentialDTO](#schemacreateazureopenaicredentialdto) \| [CreateByoSipTrunkCredentialDTO](#schemacreatebyosiptrunkcredentialdto) \| [CreateCartesiaCredentialDTO](#schemacreatecartesiacredentialdto) \| [CreateCerebrasCredentialDTO](#schemacreatecerebrascredentialdto) \| [CreateCloudflareCredentialDTO](#schemacreatecloudflarecredentialdto) \| [CreateCustomLLMCredentialDTO](#schemacreatecustomllmcredentialdto) \| [CreateDeepgramCredentialDTO](#schemacreatedeepgramcredentialdto) \| [CreateDeepInfraCredentialDTO](#schemacreatedeepinfracredentialdto) \| [CreateDeepSeekCredentialDTO](#schemacreatedeepseekcredentialdto) \| [CreateElevenLabsCredentialDTO](#schemacreateelevenlabscredentialdto) \| [CreateGcpCredentialDTO](#schemacreategcpcredentialdto) \| [CreateGladiaCredentialDTO](#schemacreategladiacredentialdto) \| [CreateGoHighLevelCredentialDTO](#schemacreategohighlevelcredentialdto) \| [CreateGoogleCredentialDTO](#schemacreategooglecredentialdto) \| [CreateGroqCredentialDTO](#schemacreategroqcredentialdto) \| [CreateHumeCredentialDTO](#schemacreatehumecredentialdto) \| [CreateInflectionAICredentialDTO](#schemacreateinflectionaicredentialdto) \| [CreateLangfuseCredentialDTO](#schemacreatelangfusecredentialdto) \| [CreateLmntCredentialDTO](#schemacreatelmntcredentialdto) \| [CreateMakeCredentialDTO](#schemacreatemakecredentialdto) \| [CreateMistralCredentialDTO](#schemacreatemistralcredentialdto) \| [CreateNeuphonicCredentialDTO](#schemacreateneuphoniccredentialdto) \| [CreateOpenAICredentialDTO](#schemacreateopenaicredentialdto) \| [CreateOpenRouterCredentialDTO](#schemacreateopenroutercredentialdto) \| [CreatePerplexityAICredentialDTO](#schemacreateperplexityaicredentialdto) \| [CreatePlayHTCredentialDTO](#schemacreateplayhtcredentialdto) \| [CreateRimeAICredentialDTO](#schemacreaterimeaicredentialdto) \| [CreateRunpodCredentialDTO](#schemacreaterunpodcredentialdto) \| [CreateS3CredentialDTO](#schemacreates3credentialdto) \| [CreateS3CompatibleCredentialDTO](#schemacreates3compatiblecredentialdto) \| [CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto) \| [CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto) \| [CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto) \| [CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto) \| [CreateTavusCredentialDTO](#schemacreatetavuscredentialdto) \| [CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto) \| [CreateTwilioCredentialDTO](#schemacreatetwiliocredentialdto) \| [CreateVonageCredentialDTO](#schemacreatevonagecredentialdto) \| [CreateWebhookCredentialDTO](#schemacreatewebhookcredentialdto) \| [CreateCustomCredentialDTO](#schemacreatecustomcredentialdto) \| [CreateXAiCredentialDTO](#schemacreatexaicredentialdto) \| [CreateMicrosoftCredentialDTO](#schemacreatemicrosoftcredentialdto) \| [CreateGoogleCalendarOAuth2ClientCredentialDTO](#schemacreategooglecalendaroauth2clientcredentialdto) \| [CreateGoogleCalendarOAuth2AuthorizationCredentialDTO](#schemacreategooglecalendaroauth2authorizationcredentialdto) \| [CreateGoogleSheetsOAuth2AuthorizationCredentialDTO](#schemacreategooglesheetsoauth2authorizationcredentialdto) \| [CreateSlackOAuth2AuthorizationCredentialDTO](#schemacreateslackoauth2authorizationcredentialdto) \| [CreateGoHighLevelMCPCredentialDTO](#schemacreategohighlevelmcpcredentialdto) \| [CreateInworldCredentialDTO](#schemacreateinworldcredentialdto) \| [CreateMinimaxCredentialDTO](#schemacreateminimaxcredentialdto) \| [CreateWellSaidCredentialDTO](#schemacreatewellsaidcredentialdto) \| [CreateEmailCredentialDTO](#schemacreateemailcredentialdto) \| [CreateSlackWebhookCredentialDTO](#schemacreateslackwebhookcredentialdto)]|false|none|These are dynamic credentials that will be used for the assistant calls. By default, all the credentials are available for use in the call but you can supplement an additional credentials using this. Dynamic credentials override existing credentials.|
+|credentials|[[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto) \| [CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto) \| [CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto) \| [CreateAssemblyAICredentialDTO](#schemacreateassemblyaicredentialdto) \| [CreateAzureCredentialDTO](#schemacreateazurecredentialdto) \| [CreateAzureOpenAICredentialDTO](#schemacreateazureopenaicredentialdto) \| [CreateByoSipTrunkCredentialDTO](#schemacreatebyosiptrunkcredentialdto) \| [CreateCartesiaCredentialDTO](#schemacreatecartesiacredentialdto) \| [CreateCerebrasCredentialDTO](#schemacreatecerebrascredentialdto) \| [CreateCloudflareCredentialDTO](#schemacreatecloudflarecredentialdto) \| [CreateCustomLLMCredentialDTO](#schemacreatecustomllmcredentialdto) \| [CreateDeepgramCredentialDTO](#schemacreatedeepgramcredentialdto) \| [CreateDeepInfraCredentialDTO](#schemacreatedeepinfracredentialdto) \| [CreateDeepSeekCredentialDTO](#schemacreatedeepseekcredentialdto) \| [CreateElevenLabsCredentialDTO](#schemacreateelevenlabscredentialdto) \| [CreateGcpCredentialDTO](#schemacreategcpcredentialdto) \| [CreateGladiaCredentialDTO](#schemacreategladiacredentialdto) \| [CreateGoHighLevelCredentialDTO](#schemacreategohighlevelcredentialdto) \| [CreateGoogleCredentialDTO](#schemacreategooglecredentialdto) \| [CreateGroqCredentialDTO](#schemacreategroqcredentialdto) \| [CreateHumeCredentialDTO](#schemacreatehumecredentialdto) \| [CreateInflectionAICredentialDTO](#schemacreateinflectionaicredentialdto) \| [CreateLangfuseCredentialDTO](#schemacreatelangfusecredentialdto) \| [CreateLmntCredentialDTO](#schemacreatelmntcredentialdto) \| [CreateMakeCredentialDTO](#schemacreatemakecredentialdto) \| [CreateMistralCredentialDTO](#schemacreatemistralcredentialdto) \| [CreateNeuphonicCredentialDTO](#schemacreateneuphoniccredentialdto) \| [CreateOpenAICredentialDTO](#schemacreateopenaicredentialdto) \| [CreateOpenRouterCredentialDTO](#schemacreateopenroutercredentialdto) \| [CreatePerplexityAICredentialDTO](#schemacreateperplexityaicredentialdto) \| [CreatePlayHTCredentialDTO](#schemacreateplayhtcredentialdto) \| [CreateRimeAICredentialDTO](#schemacreaterimeaicredentialdto) \| [CreateRunpodCredentialDTO](#schemacreaterunpodcredentialdto) \| [CreateS3CredentialDTO](#schemacreates3credentialdto) \| [CreateS3CompatibleCredentialDTO](#schemacreates3compatiblecredentialdto) \| [CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto) \| [CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto) \| [CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto) \| [CreateReson8CredentialDTO](#schemacreatereson8credentialdto) \| [CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto) \| [CreateTavusCredentialDTO](#schemacreatetavuscredentialdto) \| [CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto) \| [CreateTwilioCredentialDTO](#schemacreatetwiliocredentialdto) \| [CreateVonageCredentialDTO](#schemacreatevonagecredentialdto) \| [CreateWebhookCredentialDTO](#schemacreatewebhookcredentialdto) \| [CreateCustomCredentialDTO](#schemacreatecustomcredentialdto) \| [CreateXAiCredentialDTO](#schemacreatexaicredentialdto) \| [CreateMicrosoftCredentialDTO](#schemacreatemicrosoftcredentialdto) \| [CreateGoogleCalendarOAuth2ClientCredentialDTO](#schemacreategooglecalendaroauth2clientcredentialdto) \| [CreateGoogleCalendarOAuth2AuthorizationCredentialDTO](#schemacreategooglecalendaroauth2authorizationcredentialdto) \| [CreateGoogleSheetsOAuth2AuthorizationCredentialDTO](#schemacreategooglesheetsoauth2authorizationcredentialdto) \| [CreateSlackOAuth2AuthorizationCredentialDTO](#schemacreateslackoauth2authorizationcredentialdto) \| [CreateGoHighLevelMCPCredentialDTO](#schemacreategohighlevelmcpcredentialdto) \| [CreateInworldCredentialDTO](#schemacreateinworldcredentialdto) \| [CreateMinimaxCredentialDTO](#schemacreateminimaxcredentialdto) \| [CreateWellSaidCredentialDTO](#schemacreatewellsaidcredentialdto) \| [CreateEmailCredentialDTO](#schemacreateemailcredentialdto) \| [CreateSlackWebhookCredentialDTO](#schemacreateslackwebhookcredentialdto)]|false|none|These are dynamic credentials that will be used for the assistant calls. By default, all the credentials are available for use in the call but you can supplement an additional credentials using this. Dynamic credentials override existing credentials.|
 |hooks|[[CallHookCallEnding](#schemacallhookcallending) \| [CallHookAssistantSpeechInterrupted](#schemacallhookassistantspeechinterrupted) \| [CallHookCustomerSpeechInterrupted](#schemacallhookcustomerspeechinterrupted) \| [CallHookCustomerSpeechTimeout](#schemacallhookcustomerspeechtimeout) \| [SessionCreatedHook](#schemasessioncreatedhook)]|false|none|This is a set of actions that will be performed on certain events.|
 |name|string|false|none|This is the name of the assistant.<br><br>This is required when you want to transfer between assistants in a call.|
 |voicemailMessage|string|false|none|This is the message that the assistant will say if the call is forwarded to voicemail.<br><br>If unspecified, it will hang up.|
@@ -215728,7 +216060,7 @@ bearer
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|transcriber|[AssemblyAITranscriber](#schemaassemblyaitranscriber) \| [AzureSpeechTranscriber](#schemaazurespeechtranscriber) \| [CustomTranscriber](#schemacustomtranscriber) \| [DeepgramTranscriber](#schemadeepgramtranscriber) \| [ElevenLabsTranscriber](#schemaelevenlabstranscriber) \| [GladiaTranscriber](#schemagladiatranscriber) \| [GoogleTranscriber](#schemagoogletranscriber) \| [SpeechmaticsTranscriber](#schemaspeechmaticstranscriber) \| [TalkscriberTranscriber](#schematalkscribertranscriber) \| [OpenAITranscriber](#schemaopenaitranscriber) \| [CartesiaTranscriber](#schemacartesiatranscriber) \| [SonioxTranscriber](#schemasonioxtranscriber) \| [XaiTranscriber](#schemaxaitranscriber) \| [VapiTranscriber](#schemavapitranscriber)|false|none|These are the options for the assistant's transcriber.|
+|transcriber|[AssemblyAITranscriber](#schemaassemblyaitranscriber) \| [AzureSpeechTranscriber](#schemaazurespeechtranscriber) \| [CustomTranscriber](#schemacustomtranscriber) \| [DeepgramTranscriber](#schemadeepgramtranscriber) \| [ElevenLabsTranscriber](#schemaelevenlabstranscriber) \| [GladiaTranscriber](#schemagladiatranscriber) \| [GoogleTranscriber](#schemagoogletranscriber) \| [SpeechmaticsTranscriber](#schemaspeechmaticstranscriber) \| [TalkscriberTranscriber](#schematalkscribertranscriber) \| [OpenAITranscriber](#schemaopenaitranscriber) \| [CartesiaTranscriber](#schemacartesiatranscriber) \| [SonioxTranscriber](#schemasonioxtranscriber) \| [XaiTranscriber](#schemaxaitranscriber) \| [Reson8Transcriber](#schemareson8transcriber) \| [VapiTranscriber](#schemavapitranscriber)|false|none|These are the options for the assistant's transcriber.|
 |model|[AnthropicModel](#schemaanthropicmodel) \| [AnthropicBedrockModel](#schemaanthropicbedrockmodel) \| [AnyscaleModel](#schemaanyscalemodel) \| [CerebrasModel](#schemacerebrasmodel) \| [CustomLLMModel](#schemacustomllmmodel) \| [DeepInfraModel](#schemadeepinframodel) \| [DeepSeekModel](#schemadeepseekmodel) \| [GoogleModel](#schemagooglemodel) \| [GroqModel](#schemagroqmodel) \| [InflectionAIModel](#schemainflectionaimodel) \| [MinimaxLLMModel](#schemaminimaxllmmodel) \| [OpenAIModel](#schemaopenaimodel) \| [OpenRouterModel](#schemaopenroutermodel) \| [PerplexityAIModel](#schemaperplexityaimodel) \| [TogetherAIModel](#schematogetheraimodel) \| [XaiModel](#schemaxaimodel) \| [VapiModel](#schemavapimodel)|false|none|These are the options for the assistant's LLM.|
 |voice|[AzureVoice](#schemaazurevoice) \| [CartesiaVoice](#schemacartesiavoice) \| [CustomVoice](#schemacustomvoice) \| [DeepgramVoice](#schemadeepgramvoice) \| [ElevenLabsVoice](#schemaelevenlabsvoice) \| [HumeVoice](#schemahumevoice) \| [LMNTVoice](#schemalmntvoice) \| [NeuphonicVoice](#schemaneuphonicvoice) \| [OpenAIVoice](#schemaopenaivoice) \| [PlayHTVoice](#schemaplayhtvoice) \| [WellSaidVoice](#schemawellsaidvoice) \| [RimeAIVoice](#schemarimeaivoice) \| [SmallestAIVoice](#schemasmallestaivoice) \| [VapiVoice](#schemavapivoice) \| [SesameVoice](#schemasesamevoice) \| [InworldVoice](#schemainworldvoice) \| [MinimaxVoice](#schemaminimaxvoice) \| [XaiVoice](#schemaxaivoice) \| [MicrosoftVoice](#schemamicrosoftvoice)|false|none|These are the options for the assistant's voice.|
 |firstMessage|string|false|none|This is the first message that the assistant will say. This can also be a URL to a containerized audio file (mp3, wav, etc.).<br><br>If unspecified, assistant will wait for user to speak and use the model to respond once they speak.|
@@ -215738,11 +216070,11 @@ bearer
 |clientMessages|[string]|false|none|These are the messages that will be sent to your Client SDKs. Default is conversation-update,function-call,hang,model-output,speech-update,status-update,transfer-update,transcript,tool-calls,user-interrupted,voice-input,workflow.node.started,assistant.started. You can check the shape of the messages in ClientMessage schema.|
 |serverMessages|[string]|false|none|These are the messages that will be sent to your Server URL. Default is conversation-update,end-of-call-report,function-call,hang,speech-update,status-update,tool-calls,transfer-destination-request,handoff-destination-request,user-interrupted,assistant.started. You can check the shape of the messages in ServerMessage schema.|
 |maxDurationSeconds|number|false|none|This is the maximum number of seconds that the call will last. When the call reaches this duration, it will be ended.<br><br>@default 600 (10 minutes)|
-|backgroundSound|string \| string(uri)|false|none|This is the background sound in the call. Default for phone calls is 'office' and default for web calls is 'off'.<br>You can also provide a custom sound by providing a URL to an audio file.|
+|backgroundSound|string \| string(uri)|false|none|This is the background sound in the call. Default for phone calls is 'office' and default for web calls is 'off'.<br>Bundled sounds: 'office', 'white-noise', 'city', 'crowd' and 'farm'. GPT Live assistants don't play 'office'.<br>You can also provide a custom sound by providing a URL to an audio file.|
 |modelOutputInMessagesEnabled|boolean|false|none|This determines whether the model's output is used in conversation history rather than the transcription of assistant's speech.<br><br>@default false|
 |transportConfigurations|[[TransportConfigurationTwilio](#schematransportconfigurationtwilio)]|false|none|These are the configurations to be passed to the transport providers of assistant's calls, like Twilio. You can store multiple configurations for different transport providers. For a call, only the configuration matching the call transport provider is used.|
 |observabilityPlan|[LangfuseObservabilityPlan](#schemalangfuseobservabilityplan)|false|none|This is the plan for observability of assistant's calls.<br><br>Currently, only Langfuse is supported.|
-|credentials|[[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto) \| [CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto) \| [CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto) \| [CreateAssemblyAICredentialDTO](#schemacreateassemblyaicredentialdto) \| [CreateAzureCredentialDTO](#schemacreateazurecredentialdto) \| [CreateAzureOpenAICredentialDTO](#schemacreateazureopenaicredentialdto) \| [CreateByoSipTrunkCredentialDTO](#schemacreatebyosiptrunkcredentialdto) \| [CreateCartesiaCredentialDTO](#schemacreatecartesiacredentialdto) \| [CreateCerebrasCredentialDTO](#schemacreatecerebrascredentialdto) \| [CreateCloudflareCredentialDTO](#schemacreatecloudflarecredentialdto) \| [CreateCustomLLMCredentialDTO](#schemacreatecustomllmcredentialdto) \| [CreateDeepgramCredentialDTO](#schemacreatedeepgramcredentialdto) \| [CreateDeepInfraCredentialDTO](#schemacreatedeepinfracredentialdto) \| [CreateDeepSeekCredentialDTO](#schemacreatedeepseekcredentialdto) \| [CreateElevenLabsCredentialDTO](#schemacreateelevenlabscredentialdto) \| [CreateGcpCredentialDTO](#schemacreategcpcredentialdto) \| [CreateGladiaCredentialDTO](#schemacreategladiacredentialdto) \| [CreateGoHighLevelCredentialDTO](#schemacreategohighlevelcredentialdto) \| [CreateGoogleCredentialDTO](#schemacreategooglecredentialdto) \| [CreateGroqCredentialDTO](#schemacreategroqcredentialdto) \| [CreateHumeCredentialDTO](#schemacreatehumecredentialdto) \| [CreateInflectionAICredentialDTO](#schemacreateinflectionaicredentialdto) \| [CreateLangfuseCredentialDTO](#schemacreatelangfusecredentialdto) \| [CreateLmntCredentialDTO](#schemacreatelmntcredentialdto) \| [CreateMakeCredentialDTO](#schemacreatemakecredentialdto) \| [CreateMistralCredentialDTO](#schemacreatemistralcredentialdto) \| [CreateNeuphonicCredentialDTO](#schemacreateneuphoniccredentialdto) \| [CreateOpenAICredentialDTO](#schemacreateopenaicredentialdto) \| [CreateOpenRouterCredentialDTO](#schemacreateopenroutercredentialdto) \| [CreatePerplexityAICredentialDTO](#schemacreateperplexityaicredentialdto) \| [CreatePlayHTCredentialDTO](#schemacreateplayhtcredentialdto) \| [CreateRimeAICredentialDTO](#schemacreaterimeaicredentialdto) \| [CreateRunpodCredentialDTO](#schemacreaterunpodcredentialdto) \| [CreateS3CredentialDTO](#schemacreates3credentialdto) \| [CreateS3CompatibleCredentialDTO](#schemacreates3compatiblecredentialdto) \| [CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto) \| [CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto) \| [CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto) \| [CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto) \| [CreateTavusCredentialDTO](#schemacreatetavuscredentialdto) \| [CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto) \| [CreateTwilioCredentialDTO](#schemacreatetwiliocredentialdto) \| [CreateVonageCredentialDTO](#schemacreatevonagecredentialdto) \| [CreateWebhookCredentialDTO](#schemacreatewebhookcredentialdto) \| [CreateCustomCredentialDTO](#schemacreatecustomcredentialdto) \| [CreateXAiCredentialDTO](#schemacreatexaicredentialdto) \| [CreateMicrosoftCredentialDTO](#schemacreatemicrosoftcredentialdto) \| [CreateGoogleCalendarOAuth2ClientCredentialDTO](#schemacreategooglecalendaroauth2clientcredentialdto) \| [CreateGoogleCalendarOAuth2AuthorizationCredentialDTO](#schemacreategooglecalendaroauth2authorizationcredentialdto) \| [CreateGoogleSheetsOAuth2AuthorizationCredentialDTO](#schemacreategooglesheetsoauth2authorizationcredentialdto) \| [CreateSlackOAuth2AuthorizationCredentialDTO](#schemacreateslackoauth2authorizationcredentialdto) \| [CreateGoHighLevelMCPCredentialDTO](#schemacreategohighlevelmcpcredentialdto) \| [CreateInworldCredentialDTO](#schemacreateinworldcredentialdto) \| [CreateMinimaxCredentialDTO](#schemacreateminimaxcredentialdto) \| [CreateWellSaidCredentialDTO](#schemacreatewellsaidcredentialdto) \| [CreateEmailCredentialDTO](#schemacreateemailcredentialdto) \| [CreateSlackWebhookCredentialDTO](#schemacreateslackwebhookcredentialdto)]|false|none|These are dynamic credentials that will be used for the assistant calls. By default, all the credentials are available for use in the call but you can supplement an additional credentials using this. Dynamic credentials override existing credentials.|
+|credentials|[[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto) \| [CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto) \| [CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto) \| [CreateAssemblyAICredentialDTO](#schemacreateassemblyaicredentialdto) \| [CreateAzureCredentialDTO](#schemacreateazurecredentialdto) \| [CreateAzureOpenAICredentialDTO](#schemacreateazureopenaicredentialdto) \| [CreateByoSipTrunkCredentialDTO](#schemacreatebyosiptrunkcredentialdto) \| [CreateCartesiaCredentialDTO](#schemacreatecartesiacredentialdto) \| [CreateCerebrasCredentialDTO](#schemacreatecerebrascredentialdto) \| [CreateCloudflareCredentialDTO](#schemacreatecloudflarecredentialdto) \| [CreateCustomLLMCredentialDTO](#schemacreatecustomllmcredentialdto) \| [CreateDeepgramCredentialDTO](#schemacreatedeepgramcredentialdto) \| [CreateDeepInfraCredentialDTO](#schemacreatedeepinfracredentialdto) \| [CreateDeepSeekCredentialDTO](#schemacreatedeepseekcredentialdto) \| [CreateElevenLabsCredentialDTO](#schemacreateelevenlabscredentialdto) \| [CreateGcpCredentialDTO](#schemacreategcpcredentialdto) \| [CreateGladiaCredentialDTO](#schemacreategladiacredentialdto) \| [CreateGoHighLevelCredentialDTO](#schemacreategohighlevelcredentialdto) \| [CreateGoogleCredentialDTO](#schemacreategooglecredentialdto) \| [CreateGroqCredentialDTO](#schemacreategroqcredentialdto) \| [CreateHumeCredentialDTO](#schemacreatehumecredentialdto) \| [CreateInflectionAICredentialDTO](#schemacreateinflectionaicredentialdto) \| [CreateLangfuseCredentialDTO](#schemacreatelangfusecredentialdto) \| [CreateLmntCredentialDTO](#schemacreatelmntcredentialdto) \| [CreateMakeCredentialDTO](#schemacreatemakecredentialdto) \| [CreateMistralCredentialDTO](#schemacreatemistralcredentialdto) \| [CreateNeuphonicCredentialDTO](#schemacreateneuphoniccredentialdto) \| [CreateOpenAICredentialDTO](#schemacreateopenaicredentialdto) \| [CreateOpenRouterCredentialDTO](#schemacreateopenroutercredentialdto) \| [CreatePerplexityAICredentialDTO](#schemacreateperplexityaicredentialdto) \| [CreatePlayHTCredentialDTO](#schemacreateplayhtcredentialdto) \| [CreateRimeAICredentialDTO](#schemacreaterimeaicredentialdto) \| [CreateRunpodCredentialDTO](#schemacreaterunpodcredentialdto) \| [CreateS3CredentialDTO](#schemacreates3credentialdto) \| [CreateS3CompatibleCredentialDTO](#schemacreates3compatiblecredentialdto) \| [CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto) \| [CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto) \| [CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto) \| [CreateReson8CredentialDTO](#schemacreatereson8credentialdto) \| [CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto) \| [CreateTavusCredentialDTO](#schemacreatetavuscredentialdto) \| [CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto) \| [CreateTwilioCredentialDTO](#schemacreatetwiliocredentialdto) \| [CreateVonageCredentialDTO](#schemacreatevonagecredentialdto) \| [CreateWebhookCredentialDTO](#schemacreatewebhookcredentialdto) \| [CreateCustomCredentialDTO](#schemacreatecustomcredentialdto) \| [CreateXAiCredentialDTO](#schemacreatexaicredentialdto) \| [CreateMicrosoftCredentialDTO](#schemacreatemicrosoftcredentialdto) \| [CreateGoogleCalendarOAuth2ClientCredentialDTO](#schemacreategooglecalendaroauth2clientcredentialdto) \| [CreateGoogleCalendarOAuth2AuthorizationCredentialDTO](#schemacreategooglecalendaroauth2authorizationcredentialdto) \| [CreateGoogleSheetsOAuth2AuthorizationCredentialDTO](#schemacreategooglesheetsoauth2authorizationcredentialdto) \| [CreateSlackOAuth2AuthorizationCredentialDTO](#schemacreateslackoauth2authorizationcredentialdto) \| [CreateGoHighLevelMCPCredentialDTO](#schemacreategohighlevelmcpcredentialdto) \| [CreateInworldCredentialDTO](#schemacreateinworldcredentialdto) \| [CreateMinimaxCredentialDTO](#schemacreateminimaxcredentialdto) \| [CreateWellSaidCredentialDTO](#schemacreatewellsaidcredentialdto) \| [CreateEmailCredentialDTO](#schemacreateemailcredentialdto) \| [CreateSlackWebhookCredentialDTO](#schemacreateslackwebhookcredentialdto)]|false|none|These are dynamic credentials that will be used for the assistant calls. By default, all the credentials are available for use in the call but you can supplement an additional credentials using this. Dynamic credentials override existing credentials.|
 |hooks|[[CallHookCallEnding](#schemacallhookcallending) \| [CallHookAssistantSpeechInterrupted](#schemacallhookassistantspeechinterrupted) \| [CallHookCustomerSpeechInterrupted](#schemacallhookcustomerspeechinterrupted) \| [CallHookCustomerSpeechTimeout](#schemacallhookcustomerspeechtimeout) \| [SessionCreatedHook](#schemasessioncreatedhook)]|false|none|This is a set of actions that will be performed on certain events.|
 |name|string|false|none|This is the name of the assistant.<br><br>This is required when you want to transfer between assistants in a call.|
 |voicemailMessage|string|false|none|This is the message that the assistant will say if the call is forwarded to voicemail.<br><br>If unspecified, it will hang up.|
@@ -216583,7 +216915,7 @@ bearer
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|transcriber|[AssemblyAITranscriber](#schemaassemblyaitranscriber) \| [AzureSpeechTranscriber](#schemaazurespeechtranscriber) \| [CustomTranscriber](#schemacustomtranscriber) \| [DeepgramTranscriber](#schemadeepgramtranscriber) \| [ElevenLabsTranscriber](#schemaelevenlabstranscriber) \| [GladiaTranscriber](#schemagladiatranscriber) \| [GoogleTranscriber](#schemagoogletranscriber) \| [SpeechmaticsTranscriber](#schemaspeechmaticstranscriber) \| [TalkscriberTranscriber](#schematalkscribertranscriber) \| [OpenAITranscriber](#schemaopenaitranscriber) \| [CartesiaTranscriber](#schemacartesiatranscriber) \| [SonioxTranscriber](#schemasonioxtranscriber) \| [XaiTranscriber](#schemaxaitranscriber) \| [VapiTranscriber](#schemavapitranscriber)|false|none|These are the options for the assistant's transcriber.|
+|transcriber|[AssemblyAITranscriber](#schemaassemblyaitranscriber) \| [AzureSpeechTranscriber](#schemaazurespeechtranscriber) \| [CustomTranscriber](#schemacustomtranscriber) \| [DeepgramTranscriber](#schemadeepgramtranscriber) \| [ElevenLabsTranscriber](#schemaelevenlabstranscriber) \| [GladiaTranscriber](#schemagladiatranscriber) \| [GoogleTranscriber](#schemagoogletranscriber) \| [SpeechmaticsTranscriber](#schemaspeechmaticstranscriber) \| [TalkscriberTranscriber](#schematalkscribertranscriber) \| [OpenAITranscriber](#schemaopenaitranscriber) \| [CartesiaTranscriber](#schemacartesiatranscriber) \| [SonioxTranscriber](#schemasonioxtranscriber) \| [XaiTranscriber](#schemaxaitranscriber) \| [Reson8Transcriber](#schemareson8transcriber) \| [VapiTranscriber](#schemavapitranscriber)|false|none|These are the options for the assistant's transcriber.|
 |model|[AnthropicModel](#schemaanthropicmodel) \| [AnthropicBedrockModel](#schemaanthropicbedrockmodel) \| [AnyscaleModel](#schemaanyscalemodel) \| [CerebrasModel](#schemacerebrasmodel) \| [CustomLLMModel](#schemacustomllmmodel) \| [DeepInfraModel](#schemadeepinframodel) \| [DeepSeekModel](#schemadeepseekmodel) \| [GoogleModel](#schemagooglemodel) \| [GroqModel](#schemagroqmodel) \| [InflectionAIModel](#schemainflectionaimodel) \| [MinimaxLLMModel](#schemaminimaxllmmodel) \| [OpenAIModel](#schemaopenaimodel) \| [OpenRouterModel](#schemaopenroutermodel) \| [PerplexityAIModel](#schemaperplexityaimodel) \| [TogetherAIModel](#schematogetheraimodel) \| [XaiModel](#schemaxaimodel) \| [VapiModel](#schemavapimodel)|false|none|These are the options for the assistant's LLM.|
 |voice|[AzureVoice](#schemaazurevoice) \| [CartesiaVoice](#schemacartesiavoice) \| [CustomVoice](#schemacustomvoice) \| [DeepgramVoice](#schemadeepgramvoice) \| [ElevenLabsVoice](#schemaelevenlabsvoice) \| [HumeVoice](#schemahumevoice) \| [LMNTVoice](#schemalmntvoice) \| [NeuphonicVoice](#schemaneuphonicvoice) \| [OpenAIVoice](#schemaopenaivoice) \| [PlayHTVoice](#schemaplayhtvoice) \| [WellSaidVoice](#schemawellsaidvoice) \| [RimeAIVoice](#schemarimeaivoice) \| [SmallestAIVoice](#schemasmallestaivoice) \| [VapiVoice](#schemavapivoice) \| [SesameVoice](#schemasesamevoice) \| [InworldVoice](#schemainworldvoice) \| [MinimaxVoice](#schemaminimaxvoice) \| [XaiVoice](#schemaxaivoice) \| [MicrosoftVoice](#schemamicrosoftvoice)|false|none|These are the options for the assistant's voice.|
 |firstMessage|string|false|none|This is the first message that the assistant will say. This can also be a URL to a containerized audio file (mp3, wav, etc.).<br><br>If unspecified, assistant will wait for user to speak and use the model to respond once they speak.|
@@ -216593,11 +216925,11 @@ bearer
 |clientMessages|[string]|false|none|These are the messages that will be sent to your Client SDKs. Default is conversation-update,function-call,hang,model-output,speech-update,status-update,transfer-update,transcript,tool-calls,user-interrupted,voice-input,workflow.node.started,assistant.started. You can check the shape of the messages in ClientMessage schema.|
 |serverMessages|[string]|false|none|These are the messages that will be sent to your Server URL. Default is conversation-update,end-of-call-report,function-call,hang,speech-update,status-update,tool-calls,transfer-destination-request,handoff-destination-request,user-interrupted,assistant.started. You can check the shape of the messages in ServerMessage schema.|
 |maxDurationSeconds|number|false|none|This is the maximum number of seconds that the call will last. When the call reaches this duration, it will be ended.<br><br>@default 600 (10 minutes)|
-|backgroundSound|string \| string(uri)|false|none|This is the background sound in the call. Default for phone calls is 'office' and default for web calls is 'off'.<br>You can also provide a custom sound by providing a URL to an audio file.|
+|backgroundSound|string \| string(uri)|false|none|This is the background sound in the call. Default for phone calls is 'office' and default for web calls is 'off'.<br>Bundled sounds: 'office', 'white-noise', 'city', 'crowd' and 'farm'. GPT Live assistants don't play 'office'.<br>You can also provide a custom sound by providing a URL to an audio file.|
 |modelOutputInMessagesEnabled|boolean|false|none|This determines whether the model's output is used in conversation history rather than the transcription of assistant's speech.<br><br>@default false|
 |transportConfigurations|[[TransportConfigurationTwilio](#schematransportconfigurationtwilio)]|false|none|These are the configurations to be passed to the transport providers of assistant's calls, like Twilio. You can store multiple configurations for different transport providers. For a call, only the configuration matching the call transport provider is used.|
 |observabilityPlan|[LangfuseObservabilityPlan](#schemalangfuseobservabilityplan)|false|none|This is the plan for observability of assistant's calls.<br><br>Currently, only Langfuse is supported.|
-|credentials|[[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto) \| [CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto) \| [CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto) \| [CreateAssemblyAICredentialDTO](#schemacreateassemblyaicredentialdto) \| [CreateAzureCredentialDTO](#schemacreateazurecredentialdto) \| [CreateAzureOpenAICredentialDTO](#schemacreateazureopenaicredentialdto) \| [CreateByoSipTrunkCredentialDTO](#schemacreatebyosiptrunkcredentialdto) \| [CreateCartesiaCredentialDTO](#schemacreatecartesiacredentialdto) \| [CreateCerebrasCredentialDTO](#schemacreatecerebrascredentialdto) \| [CreateCloudflareCredentialDTO](#schemacreatecloudflarecredentialdto) \| [CreateCustomLLMCredentialDTO](#schemacreatecustomllmcredentialdto) \| [CreateDeepgramCredentialDTO](#schemacreatedeepgramcredentialdto) \| [CreateDeepInfraCredentialDTO](#schemacreatedeepinfracredentialdto) \| [CreateDeepSeekCredentialDTO](#schemacreatedeepseekcredentialdto) \| [CreateElevenLabsCredentialDTO](#schemacreateelevenlabscredentialdto) \| [CreateGcpCredentialDTO](#schemacreategcpcredentialdto) \| [CreateGladiaCredentialDTO](#schemacreategladiacredentialdto) \| [CreateGoHighLevelCredentialDTO](#schemacreategohighlevelcredentialdto) \| [CreateGoogleCredentialDTO](#schemacreategooglecredentialdto) \| [CreateGroqCredentialDTO](#schemacreategroqcredentialdto) \| [CreateHumeCredentialDTO](#schemacreatehumecredentialdto) \| [CreateInflectionAICredentialDTO](#schemacreateinflectionaicredentialdto) \| [CreateLangfuseCredentialDTO](#schemacreatelangfusecredentialdto) \| [CreateLmntCredentialDTO](#schemacreatelmntcredentialdto) \| [CreateMakeCredentialDTO](#schemacreatemakecredentialdto) \| [CreateMistralCredentialDTO](#schemacreatemistralcredentialdto) \| [CreateNeuphonicCredentialDTO](#schemacreateneuphoniccredentialdto) \| [CreateOpenAICredentialDTO](#schemacreateopenaicredentialdto) \| [CreateOpenRouterCredentialDTO](#schemacreateopenroutercredentialdto) \| [CreatePerplexityAICredentialDTO](#schemacreateperplexityaicredentialdto) \| [CreatePlayHTCredentialDTO](#schemacreateplayhtcredentialdto) \| [CreateRimeAICredentialDTO](#schemacreaterimeaicredentialdto) \| [CreateRunpodCredentialDTO](#schemacreaterunpodcredentialdto) \| [CreateS3CredentialDTO](#schemacreates3credentialdto) \| [CreateS3CompatibleCredentialDTO](#schemacreates3compatiblecredentialdto) \| [CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto) \| [CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto) \| [CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto) \| [CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto) \| [CreateTavusCredentialDTO](#schemacreatetavuscredentialdto) \| [CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto) \| [CreateTwilioCredentialDTO](#schemacreatetwiliocredentialdto) \| [CreateVonageCredentialDTO](#schemacreatevonagecredentialdto) \| [CreateWebhookCredentialDTO](#schemacreatewebhookcredentialdto) \| [CreateCustomCredentialDTO](#schemacreatecustomcredentialdto) \| [CreateXAiCredentialDTO](#schemacreatexaicredentialdto) \| [CreateMicrosoftCredentialDTO](#schemacreatemicrosoftcredentialdto) \| [CreateGoogleCalendarOAuth2ClientCredentialDTO](#schemacreategooglecalendaroauth2clientcredentialdto) \| [CreateGoogleCalendarOAuth2AuthorizationCredentialDTO](#schemacreategooglecalendaroauth2authorizationcredentialdto) \| [CreateGoogleSheetsOAuth2AuthorizationCredentialDTO](#schemacreategooglesheetsoauth2authorizationcredentialdto) \| [CreateSlackOAuth2AuthorizationCredentialDTO](#schemacreateslackoauth2authorizationcredentialdto) \| [CreateGoHighLevelMCPCredentialDTO](#schemacreategohighlevelmcpcredentialdto) \| [CreateInworldCredentialDTO](#schemacreateinworldcredentialdto) \| [CreateMinimaxCredentialDTO](#schemacreateminimaxcredentialdto) \| [CreateWellSaidCredentialDTO](#schemacreatewellsaidcredentialdto) \| [CreateEmailCredentialDTO](#schemacreateemailcredentialdto) \| [CreateSlackWebhookCredentialDTO](#schemacreateslackwebhookcredentialdto)]|false|none|These are dynamic credentials that will be used for the assistant calls. By default, all the credentials are available for use in the call but you can supplement an additional credentials using this. Dynamic credentials override existing credentials.|
+|credentials|[[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto) \| [CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto) \| [CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto) \| [CreateAssemblyAICredentialDTO](#schemacreateassemblyaicredentialdto) \| [CreateAzureCredentialDTO](#schemacreateazurecredentialdto) \| [CreateAzureOpenAICredentialDTO](#schemacreateazureopenaicredentialdto) \| [CreateByoSipTrunkCredentialDTO](#schemacreatebyosiptrunkcredentialdto) \| [CreateCartesiaCredentialDTO](#schemacreatecartesiacredentialdto) \| [CreateCerebrasCredentialDTO](#schemacreatecerebrascredentialdto) \| [CreateCloudflareCredentialDTO](#schemacreatecloudflarecredentialdto) \| [CreateCustomLLMCredentialDTO](#schemacreatecustomllmcredentialdto) \| [CreateDeepgramCredentialDTO](#schemacreatedeepgramcredentialdto) \| [CreateDeepInfraCredentialDTO](#schemacreatedeepinfracredentialdto) \| [CreateDeepSeekCredentialDTO](#schemacreatedeepseekcredentialdto) \| [CreateElevenLabsCredentialDTO](#schemacreateelevenlabscredentialdto) \| [CreateGcpCredentialDTO](#schemacreategcpcredentialdto) \| [CreateGladiaCredentialDTO](#schemacreategladiacredentialdto) \| [CreateGoHighLevelCredentialDTO](#schemacreategohighlevelcredentialdto) \| [CreateGoogleCredentialDTO](#schemacreategooglecredentialdto) \| [CreateGroqCredentialDTO](#schemacreategroqcredentialdto) \| [CreateHumeCredentialDTO](#schemacreatehumecredentialdto) \| [CreateInflectionAICredentialDTO](#schemacreateinflectionaicredentialdto) \| [CreateLangfuseCredentialDTO](#schemacreatelangfusecredentialdto) \| [CreateLmntCredentialDTO](#schemacreatelmntcredentialdto) \| [CreateMakeCredentialDTO](#schemacreatemakecredentialdto) \| [CreateMistralCredentialDTO](#schemacreatemistralcredentialdto) \| [CreateNeuphonicCredentialDTO](#schemacreateneuphoniccredentialdto) \| [CreateOpenAICredentialDTO](#schemacreateopenaicredentialdto) \| [CreateOpenRouterCredentialDTO](#schemacreateopenroutercredentialdto) \| [CreatePerplexityAICredentialDTO](#schemacreateperplexityaicredentialdto) \| [CreatePlayHTCredentialDTO](#schemacreateplayhtcredentialdto) \| [CreateRimeAICredentialDTO](#schemacreaterimeaicredentialdto) \| [CreateRunpodCredentialDTO](#schemacreaterunpodcredentialdto) \| [CreateS3CredentialDTO](#schemacreates3credentialdto) \| [CreateS3CompatibleCredentialDTO](#schemacreates3compatiblecredentialdto) \| [CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto) \| [CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto) \| [CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto) \| [CreateReson8CredentialDTO](#schemacreatereson8credentialdto) \| [CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto) \| [CreateTavusCredentialDTO](#schemacreatetavuscredentialdto) \| [CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto) \| [CreateTwilioCredentialDTO](#schemacreatetwiliocredentialdto) \| [CreateVonageCredentialDTO](#schemacreatevonagecredentialdto) \| [CreateWebhookCredentialDTO](#schemacreatewebhookcredentialdto) \| [CreateCustomCredentialDTO](#schemacreatecustomcredentialdto) \| [CreateXAiCredentialDTO](#schemacreatexaicredentialdto) \| [CreateMicrosoftCredentialDTO](#schemacreatemicrosoftcredentialdto) \| [CreateGoogleCalendarOAuth2ClientCredentialDTO](#schemacreategooglecalendaroauth2clientcredentialdto) \| [CreateGoogleCalendarOAuth2AuthorizationCredentialDTO](#schemacreategooglecalendaroauth2authorizationcredentialdto) \| [CreateGoogleSheetsOAuth2AuthorizationCredentialDTO](#schemacreategooglesheetsoauth2authorizationcredentialdto) \| [CreateSlackOAuth2AuthorizationCredentialDTO](#schemacreateslackoauth2authorizationcredentialdto) \| [CreateGoHighLevelMCPCredentialDTO](#schemacreategohighlevelmcpcredentialdto) \| [CreateInworldCredentialDTO](#schemacreateinworldcredentialdto) \| [CreateMinimaxCredentialDTO](#schemacreateminimaxcredentialdto) \| [CreateWellSaidCredentialDTO](#schemacreatewellsaidcredentialdto) \| [CreateEmailCredentialDTO](#schemacreateemailcredentialdto) \| [CreateSlackWebhookCredentialDTO](#schemacreateslackwebhookcredentialdto)]|false|none|These are dynamic credentials that will be used for the assistant calls. By default, all the credentials are available for use in the call but you can supplement an additional credentials using this. Dynamic credentials override existing credentials.|
 |hooks|[[CallHookCallEnding](#schemacallhookcallending) \| [CallHookAssistantSpeechInterrupted](#schemacallhookassistantspeechinterrupted) \| [CallHookCustomerSpeechInterrupted](#schemacallhookcustomerspeechinterrupted) \| [CallHookCustomerSpeechTimeout](#schemacallhookcustomerspeechtimeout) \| [SessionCreatedHook](#schemasessioncreatedhook)]|false|none|This is a set of actions that will be performed on certain events.|
 |name|string|false|none|This is the name of the assistant.<br><br>This is required when you want to transfer between assistants in a call.|
 |voicemailMessage|string|false|none|This is the message that the assistant will say if the call is forwarded to voicemail.<br><br>If unspecified, it will hang up.|
@@ -216669,6 +217001,104 @@ bearer
 |serverMessages|call.deleted|
 |serverMessages|call.delete.failed|
 |serverMessages|call.artifact.upload|
+
+<h2 id="tocS_AssistantGoalErrorDTO">AssistantGoalErrorDTO</h2>
+<!-- backwards compatibility -->
+<a id="schemaassistantgoalerrordto"></a>
+<a id="schema_AssistantGoalErrorDTO"></a>
+<a id="tocSassistantgoalerrordto"></a>
+<a id="tocsassistantgoalerrordto"></a>
+
+```json
+{
+  "statusCode": 400,
+  "error": "string",
+  "message": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|statusCode|integer|true|none|none|
+|error|string|false|none|none|
+|message|string \| [string]|true|none|none|
+
+<h2 id="tocS_AssistantGoalCreateDTO">AssistantGoalCreateDTO</h2>
+<!-- backwards compatibility -->
+<a id="schemaassistantgoalcreatedto"></a>
+<a id="schema_AssistantGoalCreateDTO"></a>
+<a id="tocSassistantgoalcreatedto"></a>
+<a id="tocsassistantgoalcreatedto"></a>
+
+```json
+{
+  "succeedsWhen": "string",
+  "leaveOut": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|succeedsWhen|string|true|none|Success criteria. Trimmed before commit; blank or non-PostgreSQL-compatible text is rejected.|
+|leaveOut|string \| null|false|none|Optional trimmed exclusions. Omit or send null for no exclusions.|
+
+<h2 id="tocS_AssistantGoalDTO">AssistantGoalDTO</h2>
+<!-- backwards compatibility -->
+<a id="schemaassistantgoaldto"></a>
+<a id="schema_AssistantGoalDTO"></a>
+<a id="tocSassistantgoaldto"></a>
+<a id="tocsassistantgoaldto"></a>
+
+```json
+{
+  "orgId": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "assistantId": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "goalId": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "goalVersion": "string",
+  "succeedsWhen": "string",
+  "leaveOut": "string",
+  "createdAt": "1970-01-01T00:00:00Z"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|orgId|string(uuid)|true|none|none|
+|assistantId|string(uuid)|true|none|none|
+|goalId|string(uuid)|true|none|none|
+|goalVersion|string|true|none|Committed decimal bigint revision.|
+|succeedsWhen|string|true|none|none|
+|leaveOut|string|false|none|none|
+|createdAt|string(date-time)|true|none|Committed goal-change time anchoring its fixed backfill window.|
+
+<h2 id="tocS_AssistantGoalSetDTO">AssistantGoalSetDTO</h2>
+<!-- backwards compatibility -->
+<a id="schemaassistantgoalsetdto"></a>
+<a id="schema_AssistantGoalSetDTO"></a>
+<a id="tocSassistantgoalsetdto"></a>
+<a id="tocsassistantgoalsetdto"></a>
+
+```json
+{
+  "expectedGoalVersion": "string",
+  "succeedsWhen": "string",
+  "leaveOut": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|expectedGoalVersion|string|true|none|Observed current revision of this goal as a positive decimal bigint string.|
+|succeedsWhen|string|true|none|Success criteria. Trimmed before commit; blank or non-PostgreSQL-compatible text is rejected.|
+|leaveOut|string \| null|false|none|Optional trimmed exclusions. Omit or send null for no exclusions.|
 
 <h2 id="tocS_Squad">Squad</h2>
 <!-- backwards compatibility -->
@@ -220353,12 +220783,12 @@ bearer
 |---|---|---|---|---|
 |nodes|[[ConversationNode](#schemaconversationnode) \| [ToolNode](#schematoolnode)]|true|none|none|
 |model|[WorkflowOpenAIModel](#schemaworkflowopenaimodel) \| [WorkflowAnthropicModel](#schemaworkflowanthropicmodel) \| [WorkflowAnthropicBedrockModel](#schemaworkflowanthropicbedrockmodel) \| [WorkflowGoogleModel](#schemaworkflowgooglemodel) \| [WorkflowCustomModel](#schemaworkflowcustommodel)|false|none|This is the model for the workflow.<br><br>This can be overridden at node level using `nodes[n].model`.|
-|transcriber|[AssemblyAITranscriber](#schemaassemblyaitranscriber) \| [AzureSpeechTranscriber](#schemaazurespeechtranscriber) \| [CustomTranscriber](#schemacustomtranscriber) \| [DeepgramTranscriber](#schemadeepgramtranscriber) \| [ElevenLabsTranscriber](#schemaelevenlabstranscriber) \| [GladiaTranscriber](#schemagladiatranscriber) \| [GoogleTranscriber](#schemagoogletranscriber) \| [SpeechmaticsTranscriber](#schemaspeechmaticstranscriber) \| [TalkscriberTranscriber](#schematalkscribertranscriber) \| [OpenAITranscriber](#schemaopenaitranscriber) \| [CartesiaTranscriber](#schemacartesiatranscriber) \| [SonioxTranscriber](#schemasonioxtranscriber) \| [XaiTranscriber](#schemaxaitranscriber) \| [VapiTranscriber](#schemavapitranscriber)|false|none|This is the transcriber for the workflow.<br><br>This can be overridden at node level using `nodes[n].transcriber`.|
+|transcriber|[AssemblyAITranscriber](#schemaassemblyaitranscriber) \| [AzureSpeechTranscriber](#schemaazurespeechtranscriber) \| [CustomTranscriber](#schemacustomtranscriber) \| [DeepgramTranscriber](#schemadeepgramtranscriber) \| [ElevenLabsTranscriber](#schemaelevenlabstranscriber) \| [GladiaTranscriber](#schemagladiatranscriber) \| [GoogleTranscriber](#schemagoogletranscriber) \| [SpeechmaticsTranscriber](#schemaspeechmaticstranscriber) \| [TalkscriberTranscriber](#schematalkscribertranscriber) \| [OpenAITranscriber](#schemaopenaitranscriber) \| [CartesiaTranscriber](#schemacartesiatranscriber) \| [SonioxTranscriber](#schemasonioxtranscriber) \| [XaiTranscriber](#schemaxaitranscriber) \| [Reson8Transcriber](#schemareson8transcriber) \| [VapiTranscriber](#schemavapitranscriber)|false|none|This is the transcriber for the workflow.<br><br>This can be overridden at node level using `nodes[n].transcriber`.|
 |voice|[AzureVoice](#schemaazurevoice) \| [CartesiaVoice](#schemacartesiavoice) \| [CustomVoice](#schemacustomvoice) \| [DeepgramVoice](#schemadeepgramvoice) \| [ElevenLabsVoice](#schemaelevenlabsvoice) \| [HumeVoice](#schemahumevoice) \| [LMNTVoice](#schemalmntvoice) \| [NeuphonicVoice](#schemaneuphonicvoice) \| [OpenAIVoice](#schemaopenaivoice) \| [PlayHTVoice](#schemaplayhtvoice) \| [WellSaidVoice](#schemawellsaidvoice) \| [RimeAIVoice](#schemarimeaivoice) \| [SmallestAIVoice](#schemasmallestaivoice) \| [VapiVoice](#schemavapivoice) \| [SesameVoice](#schemasesamevoice) \| [InworldVoice](#schemainworldvoice) \| [MinimaxVoice](#schemaminimaxvoice) \| [XaiVoice](#schemaxaivoice) \| [MicrosoftVoice](#schemamicrosoftvoice)|false|none|This is the voice for the workflow.<br><br>This can be overridden at node level using `nodes[n].voice`.|
 |observabilityPlan|[LangfuseObservabilityPlan](#schemalangfuseobservabilityplan)|false|none|This is the plan for observability of workflow's calls.<br><br>Currently, only Langfuse is supported.|
-|backgroundSound|string \| string(uri)|false|none|This is the background sound in the call. Default for phone calls is 'office' and default for web calls is 'off'.<br>You can also provide a custom sound by providing a URL to an audio file.|
+|backgroundSound|string \| string(uri)|false|none|This is the background sound in the call. Default for phone calls is 'office' and default for web calls is 'off'.<br>Bundled sounds: 'office', 'white-noise', 'city', 'crowd' and 'farm'. GPT Live assistants don't play 'office'.<br>You can also provide a custom sound by providing a URL to an audio file.|
 |hooks|[[CallHookCallEnding](#schemacallhookcallending) \| [CallHookAssistantSpeechInterrupted](#schemacallhookassistantspeechinterrupted) \| [CallHookCustomerSpeechInterrupted](#schemacallhookcustomerspeechinterrupted) \| [CallHookCustomerSpeechTimeout](#schemacallhookcustomerspeechtimeout) \| [CallHookModelResponseTimeout](#schemacallhookmodelresponsetimeout)]|false|none|This is a set of actions that will be performed on certain events.|
-|credentials|[[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto) \| [CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto) \| [CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto) \| [CreateAssemblyAICredentialDTO](#schemacreateassemblyaicredentialdto) \| [CreateAzureCredentialDTO](#schemacreateazurecredentialdto) \| [CreateAzureOpenAICredentialDTO](#schemacreateazureopenaicredentialdto) \| [CreateByoSipTrunkCredentialDTO](#schemacreatebyosiptrunkcredentialdto) \| [CreateCartesiaCredentialDTO](#schemacreatecartesiacredentialdto) \| [CreateCerebrasCredentialDTO](#schemacreatecerebrascredentialdto) \| [CreateCloudflareCredentialDTO](#schemacreatecloudflarecredentialdto) \| [CreateCustomLLMCredentialDTO](#schemacreatecustomllmcredentialdto) \| [CreateDeepgramCredentialDTO](#schemacreatedeepgramcredentialdto) \| [CreateDeepInfraCredentialDTO](#schemacreatedeepinfracredentialdto) \| [CreateDeepSeekCredentialDTO](#schemacreatedeepseekcredentialdto) \| [CreateElevenLabsCredentialDTO](#schemacreateelevenlabscredentialdto) \| [CreateGcpCredentialDTO](#schemacreategcpcredentialdto) \| [CreateGladiaCredentialDTO](#schemacreategladiacredentialdto) \| [CreateGoHighLevelCredentialDTO](#schemacreategohighlevelcredentialdto) \| [CreateGoogleCredentialDTO](#schemacreategooglecredentialdto) \| [CreateGroqCredentialDTO](#schemacreategroqcredentialdto) \| [CreateHumeCredentialDTO](#schemacreatehumecredentialdto) \| [CreateInflectionAICredentialDTO](#schemacreateinflectionaicredentialdto) \| [CreateLangfuseCredentialDTO](#schemacreatelangfusecredentialdto) \| [CreateLmntCredentialDTO](#schemacreatelmntcredentialdto) \| [CreateMakeCredentialDTO](#schemacreatemakecredentialdto) \| [CreateMistralCredentialDTO](#schemacreatemistralcredentialdto) \| [CreateNeuphonicCredentialDTO](#schemacreateneuphoniccredentialdto) \| [CreateOpenAICredentialDTO](#schemacreateopenaicredentialdto) \| [CreateOpenRouterCredentialDTO](#schemacreateopenroutercredentialdto) \| [CreatePerplexityAICredentialDTO](#schemacreateperplexityaicredentialdto) \| [CreatePlayHTCredentialDTO](#schemacreateplayhtcredentialdto) \| [CreateRimeAICredentialDTO](#schemacreaterimeaicredentialdto) \| [CreateRunpodCredentialDTO](#schemacreaterunpodcredentialdto) \| [CreateS3CredentialDTO](#schemacreates3credentialdto) \| [CreateS3CompatibleCredentialDTO](#schemacreates3compatiblecredentialdto) \| [CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto) \| [CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto) \| [CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto) \| [CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto) \| [CreateTavusCredentialDTO](#schemacreatetavuscredentialdto) \| [CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto) \| [CreateTwilioCredentialDTO](#schemacreatetwiliocredentialdto) \| [CreateVonageCredentialDTO](#schemacreatevonagecredentialdto) \| [CreateWebhookCredentialDTO](#schemacreatewebhookcredentialdto) \| [CreateCustomCredentialDTO](#schemacreatecustomcredentialdto) \| [CreateXAiCredentialDTO](#schemacreatexaicredentialdto) \| [CreateMicrosoftCredentialDTO](#schemacreatemicrosoftcredentialdto) \| [CreateGoogleCalendarOAuth2ClientCredentialDTO](#schemacreategooglecalendaroauth2clientcredentialdto) \| [CreateGoogleCalendarOAuth2AuthorizationCredentialDTO](#schemacreategooglecalendaroauth2authorizationcredentialdto) \| [CreateGoogleSheetsOAuth2AuthorizationCredentialDTO](#schemacreategooglesheetsoauth2authorizationcredentialdto) \| [CreateSlackOAuth2AuthorizationCredentialDTO](#schemacreateslackoauth2authorizationcredentialdto) \| [CreateGoHighLevelMCPCredentialDTO](#schemacreategohighlevelmcpcredentialdto) \| [CreateInworldCredentialDTO](#schemacreateinworldcredentialdto) \| [CreateMinimaxCredentialDTO](#schemacreateminimaxcredentialdto) \| [CreateWellSaidCredentialDTO](#schemacreatewellsaidcredentialdto) \| [CreateEmailCredentialDTO](#schemacreateemailcredentialdto) \| [CreateSlackWebhookCredentialDTO](#schemacreateslackwebhookcredentialdto)]|false|none|These are dynamic credentials that will be used for the workflow calls. By default, all the credentials are available for use in the call but you can supplement an additional credentials using this. Dynamic credentials override existing credentials.|
+|credentials|[[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto) \| [CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto) \| [CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto) \| [CreateAssemblyAICredentialDTO](#schemacreateassemblyaicredentialdto) \| [CreateAzureCredentialDTO](#schemacreateazurecredentialdto) \| [CreateAzureOpenAICredentialDTO](#schemacreateazureopenaicredentialdto) \| [CreateByoSipTrunkCredentialDTO](#schemacreatebyosiptrunkcredentialdto) \| [CreateCartesiaCredentialDTO](#schemacreatecartesiacredentialdto) \| [CreateCerebrasCredentialDTO](#schemacreatecerebrascredentialdto) \| [CreateCloudflareCredentialDTO](#schemacreatecloudflarecredentialdto) \| [CreateCustomLLMCredentialDTO](#schemacreatecustomllmcredentialdto) \| [CreateDeepgramCredentialDTO](#schemacreatedeepgramcredentialdto) \| [CreateDeepInfraCredentialDTO](#schemacreatedeepinfracredentialdto) \| [CreateDeepSeekCredentialDTO](#schemacreatedeepseekcredentialdto) \| [CreateElevenLabsCredentialDTO](#schemacreateelevenlabscredentialdto) \| [CreateGcpCredentialDTO](#schemacreategcpcredentialdto) \| [CreateGladiaCredentialDTO](#schemacreategladiacredentialdto) \| [CreateGoHighLevelCredentialDTO](#schemacreategohighlevelcredentialdto) \| [CreateGoogleCredentialDTO](#schemacreategooglecredentialdto) \| [CreateGroqCredentialDTO](#schemacreategroqcredentialdto) \| [CreateHumeCredentialDTO](#schemacreatehumecredentialdto) \| [CreateInflectionAICredentialDTO](#schemacreateinflectionaicredentialdto) \| [CreateLangfuseCredentialDTO](#schemacreatelangfusecredentialdto) \| [CreateLmntCredentialDTO](#schemacreatelmntcredentialdto) \| [CreateMakeCredentialDTO](#schemacreatemakecredentialdto) \| [CreateMistralCredentialDTO](#schemacreatemistralcredentialdto) \| [CreateNeuphonicCredentialDTO](#schemacreateneuphoniccredentialdto) \| [CreateOpenAICredentialDTO](#schemacreateopenaicredentialdto) \| [CreateOpenRouterCredentialDTO](#schemacreateopenroutercredentialdto) \| [CreatePerplexityAICredentialDTO](#schemacreateperplexityaicredentialdto) \| [CreatePlayHTCredentialDTO](#schemacreateplayhtcredentialdto) \| [CreateRimeAICredentialDTO](#schemacreaterimeaicredentialdto) \| [CreateRunpodCredentialDTO](#schemacreaterunpodcredentialdto) \| [CreateS3CredentialDTO](#schemacreates3credentialdto) \| [CreateS3CompatibleCredentialDTO](#schemacreates3compatiblecredentialdto) \| [CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto) \| [CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto) \| [CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto) \| [CreateReson8CredentialDTO](#schemacreatereson8credentialdto) \| [CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto) \| [CreateTavusCredentialDTO](#schemacreatetavuscredentialdto) \| [CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto) \| [CreateTwilioCredentialDTO](#schemacreatetwiliocredentialdto) \| [CreateVonageCredentialDTO](#schemacreatevonagecredentialdto) \| [CreateWebhookCredentialDTO](#schemacreatewebhookcredentialdto) \| [CreateCustomCredentialDTO](#schemacreatecustomcredentialdto) \| [CreateXAiCredentialDTO](#schemacreatexaicredentialdto) \| [CreateMicrosoftCredentialDTO](#schemacreatemicrosoftcredentialdto) \| [CreateGoogleCalendarOAuth2ClientCredentialDTO](#schemacreategooglecalendaroauth2clientcredentialdto) \| [CreateGoogleCalendarOAuth2AuthorizationCredentialDTO](#schemacreategooglecalendaroauth2authorizationcredentialdto) \| [CreateGoogleSheetsOAuth2AuthorizationCredentialDTO](#schemacreategooglesheetsoauth2authorizationcredentialdto) \| [CreateSlackOAuth2AuthorizationCredentialDTO](#schemacreateslackoauth2authorizationcredentialdto) \| [CreateGoHighLevelMCPCredentialDTO](#schemacreategohighlevelmcpcredentialdto) \| [CreateInworldCredentialDTO](#schemacreateinworldcredentialdto) \| [CreateMinimaxCredentialDTO](#schemacreateminimaxcredentialdto) \| [CreateWellSaidCredentialDTO](#schemacreatewellsaidcredentialdto) \| [CreateEmailCredentialDTO](#schemacreateemailcredentialdto) \| [CreateSlackWebhookCredentialDTO](#schemacreateslackwebhookcredentialdto)]|false|none|These are dynamic credentials that will be used for the workflow calls. By default, all the credentials are available for use in the call but you can supplement an additional credentials using this. Dynamic credentials override existing credentials.|
 |voicemailDetection|string \| [GoogleVoicemailDetectionPlan](#schemagooglevoicemaildetectionplan) \| [OpenAIVoicemailDetectionPlan](#schemaopenaivoicemaildetectionplan) \| [TwilioVoicemailDetectionPlan](#schematwiliovoicemaildetectionplan) \| [VapiVoicemailDetectionPlan](#schemavapivoicemaildetectionplan)|false|none|This is the voicemail detection plan for the workflow.|
 |maxDurationSeconds|number|false|none|This is the maximum duration of the call in seconds.<br><br>After this duration, the call will automatically end.<br><br>Default is 1800 (30 minutes), max is 43200 (12 hours), and min is 10 seconds.|
 |id|string|true|none|none|
@@ -221258,12 +221688,12 @@ bearer
 |---|---|---|---|---|
 |nodes|[[ConversationNode](#schemaconversationnode) \| [ToolNode](#schematoolnode)]|true|none|none|
 |model|[WorkflowOpenAIModel](#schemaworkflowopenaimodel) \| [WorkflowAnthropicModel](#schemaworkflowanthropicmodel) \| [WorkflowAnthropicBedrockModel](#schemaworkflowanthropicbedrockmodel) \| [WorkflowGoogleModel](#schemaworkflowgooglemodel) \| [WorkflowCustomModel](#schemaworkflowcustommodel)|false|none|This is the model for the workflow.<br><br>This can be overridden at node level using `nodes[n].model`.|
-|transcriber|[AssemblyAITranscriber](#schemaassemblyaitranscriber) \| [AzureSpeechTranscriber](#schemaazurespeechtranscriber) \| [CustomTranscriber](#schemacustomtranscriber) \| [DeepgramTranscriber](#schemadeepgramtranscriber) \| [ElevenLabsTranscriber](#schemaelevenlabstranscriber) \| [GladiaTranscriber](#schemagladiatranscriber) \| [GoogleTranscriber](#schemagoogletranscriber) \| [SpeechmaticsTranscriber](#schemaspeechmaticstranscriber) \| [TalkscriberTranscriber](#schematalkscribertranscriber) \| [OpenAITranscriber](#schemaopenaitranscriber) \| [CartesiaTranscriber](#schemacartesiatranscriber) \| [SonioxTranscriber](#schemasonioxtranscriber) \| [XaiTranscriber](#schemaxaitranscriber) \| [VapiTranscriber](#schemavapitranscriber)|false|none|This is the transcriber for the workflow.<br><br>This can be overridden at node level using `nodes[n].transcriber`.|
+|transcriber|[AssemblyAITranscriber](#schemaassemblyaitranscriber) \| [AzureSpeechTranscriber](#schemaazurespeechtranscriber) \| [CustomTranscriber](#schemacustomtranscriber) \| [DeepgramTranscriber](#schemadeepgramtranscriber) \| [ElevenLabsTranscriber](#schemaelevenlabstranscriber) \| [GladiaTranscriber](#schemagladiatranscriber) \| [GoogleTranscriber](#schemagoogletranscriber) \| [SpeechmaticsTranscriber](#schemaspeechmaticstranscriber) \| [TalkscriberTranscriber](#schematalkscribertranscriber) \| [OpenAITranscriber](#schemaopenaitranscriber) \| [CartesiaTranscriber](#schemacartesiatranscriber) \| [SonioxTranscriber](#schemasonioxtranscriber) \| [XaiTranscriber](#schemaxaitranscriber) \| [Reson8Transcriber](#schemareson8transcriber) \| [VapiTranscriber](#schemavapitranscriber)|false|none|This is the transcriber for the workflow.<br><br>This can be overridden at node level using `nodes[n].transcriber`.|
 |voice|[AzureVoice](#schemaazurevoice) \| [CartesiaVoice](#schemacartesiavoice) \| [CustomVoice](#schemacustomvoice) \| [DeepgramVoice](#schemadeepgramvoice) \| [ElevenLabsVoice](#schemaelevenlabsvoice) \| [HumeVoice](#schemahumevoice) \| [LMNTVoice](#schemalmntvoice) \| [NeuphonicVoice](#schemaneuphonicvoice) \| [OpenAIVoice](#schemaopenaivoice) \| [PlayHTVoice](#schemaplayhtvoice) \| [WellSaidVoice](#schemawellsaidvoice) \| [RimeAIVoice](#schemarimeaivoice) \| [SmallestAIVoice](#schemasmallestaivoice) \| [VapiVoice](#schemavapivoice) \| [SesameVoice](#schemasesamevoice) \| [InworldVoice](#schemainworldvoice) \| [MinimaxVoice](#schemaminimaxvoice) \| [XaiVoice](#schemaxaivoice) \| [MicrosoftVoice](#schemamicrosoftvoice)|false|none|This is the voice for the workflow.<br><br>This can be overridden at node level using `nodes[n].voice`.|
 |observabilityPlan|[LangfuseObservabilityPlan](#schemalangfuseobservabilityplan)|false|none|This is the plan for observability of workflow's calls.<br><br>Currently, only Langfuse is supported.|
-|backgroundSound|string \| string(uri)|false|none|This is the background sound in the call. Default for phone calls is 'office' and default for web calls is 'off'.<br>You can also provide a custom sound by providing a URL to an audio file.|
+|backgroundSound|string \| string(uri)|false|none|This is the background sound in the call. Default for phone calls is 'office' and default for web calls is 'off'.<br>Bundled sounds: 'office', 'white-noise', 'city', 'crowd' and 'farm'. GPT Live assistants don't play 'office'.<br>You can also provide a custom sound by providing a URL to an audio file.|
 |hooks|[[CallHookCallEnding](#schemacallhookcallending) \| [CallHookAssistantSpeechInterrupted](#schemacallhookassistantspeechinterrupted) \| [CallHookCustomerSpeechInterrupted](#schemacallhookcustomerspeechinterrupted) \| [CallHookCustomerSpeechTimeout](#schemacallhookcustomerspeechtimeout) \| [CallHookModelResponseTimeout](#schemacallhookmodelresponsetimeout)]|false|none|This is a set of actions that will be performed on certain events.|
-|credentials|[[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto) \| [CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto) \| [CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto) \| [CreateAssemblyAICredentialDTO](#schemacreateassemblyaicredentialdto) \| [CreateAzureCredentialDTO](#schemacreateazurecredentialdto) \| [CreateAzureOpenAICredentialDTO](#schemacreateazureopenaicredentialdto) \| [CreateByoSipTrunkCredentialDTO](#schemacreatebyosiptrunkcredentialdto) \| [CreateCartesiaCredentialDTO](#schemacreatecartesiacredentialdto) \| [CreateCerebrasCredentialDTO](#schemacreatecerebrascredentialdto) \| [CreateCloudflareCredentialDTO](#schemacreatecloudflarecredentialdto) \| [CreateCustomLLMCredentialDTO](#schemacreatecustomllmcredentialdto) \| [CreateDeepgramCredentialDTO](#schemacreatedeepgramcredentialdto) \| [CreateDeepInfraCredentialDTO](#schemacreatedeepinfracredentialdto) \| [CreateDeepSeekCredentialDTO](#schemacreatedeepseekcredentialdto) \| [CreateElevenLabsCredentialDTO](#schemacreateelevenlabscredentialdto) \| [CreateGcpCredentialDTO](#schemacreategcpcredentialdto) \| [CreateGladiaCredentialDTO](#schemacreategladiacredentialdto) \| [CreateGoHighLevelCredentialDTO](#schemacreategohighlevelcredentialdto) \| [CreateGoogleCredentialDTO](#schemacreategooglecredentialdto) \| [CreateGroqCredentialDTO](#schemacreategroqcredentialdto) \| [CreateHumeCredentialDTO](#schemacreatehumecredentialdto) \| [CreateInflectionAICredentialDTO](#schemacreateinflectionaicredentialdto) \| [CreateLangfuseCredentialDTO](#schemacreatelangfusecredentialdto) \| [CreateLmntCredentialDTO](#schemacreatelmntcredentialdto) \| [CreateMakeCredentialDTO](#schemacreatemakecredentialdto) \| [CreateMistralCredentialDTO](#schemacreatemistralcredentialdto) \| [CreateNeuphonicCredentialDTO](#schemacreateneuphoniccredentialdto) \| [CreateOpenAICredentialDTO](#schemacreateopenaicredentialdto) \| [CreateOpenRouterCredentialDTO](#schemacreateopenroutercredentialdto) \| [CreatePerplexityAICredentialDTO](#schemacreateperplexityaicredentialdto) \| [CreatePlayHTCredentialDTO](#schemacreateplayhtcredentialdto) \| [CreateRimeAICredentialDTO](#schemacreaterimeaicredentialdto) \| [CreateRunpodCredentialDTO](#schemacreaterunpodcredentialdto) \| [CreateS3CredentialDTO](#schemacreates3credentialdto) \| [CreateS3CompatibleCredentialDTO](#schemacreates3compatiblecredentialdto) \| [CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto) \| [CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto) \| [CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto) \| [CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto) \| [CreateTavusCredentialDTO](#schemacreatetavuscredentialdto) \| [CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto) \| [CreateTwilioCredentialDTO](#schemacreatetwiliocredentialdto) \| [CreateVonageCredentialDTO](#schemacreatevonagecredentialdto) \| [CreateWebhookCredentialDTO](#schemacreatewebhookcredentialdto) \| [CreateCustomCredentialDTO](#schemacreatecustomcredentialdto) \| [CreateXAiCredentialDTO](#schemacreatexaicredentialdto) \| [CreateMicrosoftCredentialDTO](#schemacreatemicrosoftcredentialdto) \| [CreateGoogleCalendarOAuth2ClientCredentialDTO](#schemacreategooglecalendaroauth2clientcredentialdto) \| [CreateGoogleCalendarOAuth2AuthorizationCredentialDTO](#schemacreategooglecalendaroauth2authorizationcredentialdto) \| [CreateGoogleSheetsOAuth2AuthorizationCredentialDTO](#schemacreategooglesheetsoauth2authorizationcredentialdto) \| [CreateSlackOAuth2AuthorizationCredentialDTO](#schemacreateslackoauth2authorizationcredentialdto) \| [CreateGoHighLevelMCPCredentialDTO](#schemacreategohighlevelmcpcredentialdto) \| [CreateInworldCredentialDTO](#schemacreateinworldcredentialdto) \| [CreateMinimaxCredentialDTO](#schemacreateminimaxcredentialdto) \| [CreateWellSaidCredentialDTO](#schemacreatewellsaidcredentialdto) \| [CreateEmailCredentialDTO](#schemacreateemailcredentialdto) \| [CreateSlackWebhookCredentialDTO](#schemacreateslackwebhookcredentialdto)]|false|none|These are dynamic credentials that will be used for the workflow calls. By default, all the credentials are available for use in the call but you can supplement an additional credentials using this. Dynamic credentials override existing credentials.|
+|credentials|[[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto) \| [CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto) \| [CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto) \| [CreateAssemblyAICredentialDTO](#schemacreateassemblyaicredentialdto) \| [CreateAzureCredentialDTO](#schemacreateazurecredentialdto) \| [CreateAzureOpenAICredentialDTO](#schemacreateazureopenaicredentialdto) \| [CreateByoSipTrunkCredentialDTO](#schemacreatebyosiptrunkcredentialdto) \| [CreateCartesiaCredentialDTO](#schemacreatecartesiacredentialdto) \| [CreateCerebrasCredentialDTO](#schemacreatecerebrascredentialdto) \| [CreateCloudflareCredentialDTO](#schemacreatecloudflarecredentialdto) \| [CreateCustomLLMCredentialDTO](#schemacreatecustomllmcredentialdto) \| [CreateDeepgramCredentialDTO](#schemacreatedeepgramcredentialdto) \| [CreateDeepInfraCredentialDTO](#schemacreatedeepinfracredentialdto) \| [CreateDeepSeekCredentialDTO](#schemacreatedeepseekcredentialdto) \| [CreateElevenLabsCredentialDTO](#schemacreateelevenlabscredentialdto) \| [CreateGcpCredentialDTO](#schemacreategcpcredentialdto) \| [CreateGladiaCredentialDTO](#schemacreategladiacredentialdto) \| [CreateGoHighLevelCredentialDTO](#schemacreategohighlevelcredentialdto) \| [CreateGoogleCredentialDTO](#schemacreategooglecredentialdto) \| [CreateGroqCredentialDTO](#schemacreategroqcredentialdto) \| [CreateHumeCredentialDTO](#schemacreatehumecredentialdto) \| [CreateInflectionAICredentialDTO](#schemacreateinflectionaicredentialdto) \| [CreateLangfuseCredentialDTO](#schemacreatelangfusecredentialdto) \| [CreateLmntCredentialDTO](#schemacreatelmntcredentialdto) \| [CreateMakeCredentialDTO](#schemacreatemakecredentialdto) \| [CreateMistralCredentialDTO](#schemacreatemistralcredentialdto) \| [CreateNeuphonicCredentialDTO](#schemacreateneuphoniccredentialdto) \| [CreateOpenAICredentialDTO](#schemacreateopenaicredentialdto) \| [CreateOpenRouterCredentialDTO](#schemacreateopenroutercredentialdto) \| [CreatePerplexityAICredentialDTO](#schemacreateperplexityaicredentialdto) \| [CreatePlayHTCredentialDTO](#schemacreateplayhtcredentialdto) \| [CreateRimeAICredentialDTO](#schemacreaterimeaicredentialdto) \| [CreateRunpodCredentialDTO](#schemacreaterunpodcredentialdto) \| [CreateS3CredentialDTO](#schemacreates3credentialdto) \| [CreateS3CompatibleCredentialDTO](#schemacreates3compatiblecredentialdto) \| [CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto) \| [CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto) \| [CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto) \| [CreateReson8CredentialDTO](#schemacreatereson8credentialdto) \| [CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto) \| [CreateTavusCredentialDTO](#schemacreatetavuscredentialdto) \| [CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto) \| [CreateTwilioCredentialDTO](#schemacreatetwiliocredentialdto) \| [CreateVonageCredentialDTO](#schemacreatevonagecredentialdto) \| [CreateWebhookCredentialDTO](#schemacreatewebhookcredentialdto) \| [CreateCustomCredentialDTO](#schemacreatecustomcredentialdto) \| [CreateXAiCredentialDTO](#schemacreatexaicredentialdto) \| [CreateMicrosoftCredentialDTO](#schemacreatemicrosoftcredentialdto) \| [CreateGoogleCalendarOAuth2ClientCredentialDTO](#schemacreategooglecalendaroauth2clientcredentialdto) \| [CreateGoogleCalendarOAuth2AuthorizationCredentialDTO](#schemacreategooglecalendaroauth2authorizationcredentialdto) \| [CreateGoogleSheetsOAuth2AuthorizationCredentialDTO](#schemacreategooglesheetsoauth2authorizationcredentialdto) \| [CreateSlackOAuth2AuthorizationCredentialDTO](#schemacreateslackoauth2authorizationcredentialdto) \| [CreateGoHighLevelMCPCredentialDTO](#schemacreategohighlevelmcpcredentialdto) \| [CreateInworldCredentialDTO](#schemacreateinworldcredentialdto) \| [CreateMinimaxCredentialDTO](#schemacreateminimaxcredentialdto) \| [CreateWellSaidCredentialDTO](#schemacreatewellsaidcredentialdto) \| [CreateEmailCredentialDTO](#schemacreateemailcredentialdto) \| [CreateSlackWebhookCredentialDTO](#schemacreateslackwebhookcredentialdto)]|false|none|These are dynamic credentials that will be used for the workflow calls. By default, all the credentials are available for use in the call but you can supplement an additional credentials using this. Dynamic credentials override existing credentials.|
 |voicemailDetection|string \| [GoogleVoicemailDetectionPlan](#schemagooglevoicemaildetectionplan) \| [OpenAIVoicemailDetectionPlan](#schemaopenaivoicemaildetectionplan) \| [TwilioVoicemailDetectionPlan](#schematwiliovoicemaildetectionplan) \| [VapiVoicemailDetectionPlan](#schemavapivoicemaildetectionplan)|false|none|This is the voicemail detection plan for the workflow.|
 |maxDurationSeconds|number|false|none|This is the maximum duration of the call in seconds.<br><br>After this duration, the call will automatically end.<br><br>Default is 1800 (30 minutes), max is 43200 (12 hours), and min is 10 seconds.|
 |name|string|true|none|none|
@@ -222159,12 +222589,12 @@ bearer
 |---|---|---|---|---|
 |nodes|[[ConversationNode](#schemaconversationnode) \| [ToolNode](#schematoolnode)]|false|none|none|
 |model|[WorkflowOpenAIModel](#schemaworkflowopenaimodel) \| [WorkflowAnthropicModel](#schemaworkflowanthropicmodel) \| [WorkflowAnthropicBedrockModel](#schemaworkflowanthropicbedrockmodel) \| [WorkflowGoogleModel](#schemaworkflowgooglemodel) \| [WorkflowCustomModel](#schemaworkflowcustommodel)|false|none|This is the model for the workflow.<br><br>This can be overridden at node level using `nodes[n].model`.|
-|transcriber|[AssemblyAITranscriber](#schemaassemblyaitranscriber) \| [AzureSpeechTranscriber](#schemaazurespeechtranscriber) \| [CustomTranscriber](#schemacustomtranscriber) \| [DeepgramTranscriber](#schemadeepgramtranscriber) \| [ElevenLabsTranscriber](#schemaelevenlabstranscriber) \| [GladiaTranscriber](#schemagladiatranscriber) \| [GoogleTranscriber](#schemagoogletranscriber) \| [SpeechmaticsTranscriber](#schemaspeechmaticstranscriber) \| [TalkscriberTranscriber](#schematalkscribertranscriber) \| [OpenAITranscriber](#schemaopenaitranscriber) \| [CartesiaTranscriber](#schemacartesiatranscriber) \| [SonioxTranscriber](#schemasonioxtranscriber) \| [XaiTranscriber](#schemaxaitranscriber) \| [VapiTranscriber](#schemavapitranscriber)|false|none|This is the transcriber for the workflow.<br><br>This can be overridden at node level using `nodes[n].transcriber`.|
+|transcriber|[AssemblyAITranscriber](#schemaassemblyaitranscriber) \| [AzureSpeechTranscriber](#schemaazurespeechtranscriber) \| [CustomTranscriber](#schemacustomtranscriber) \| [DeepgramTranscriber](#schemadeepgramtranscriber) \| [ElevenLabsTranscriber](#schemaelevenlabstranscriber) \| [GladiaTranscriber](#schemagladiatranscriber) \| [GoogleTranscriber](#schemagoogletranscriber) \| [SpeechmaticsTranscriber](#schemaspeechmaticstranscriber) \| [TalkscriberTranscriber](#schematalkscribertranscriber) \| [OpenAITranscriber](#schemaopenaitranscriber) \| [CartesiaTranscriber](#schemacartesiatranscriber) \| [SonioxTranscriber](#schemasonioxtranscriber) \| [XaiTranscriber](#schemaxaitranscriber) \| [Reson8Transcriber](#schemareson8transcriber) \| [VapiTranscriber](#schemavapitranscriber)|false|none|This is the transcriber for the workflow.<br><br>This can be overridden at node level using `nodes[n].transcriber`.|
 |voice|[AzureVoice](#schemaazurevoice) \| [CartesiaVoice](#schemacartesiavoice) \| [CustomVoice](#schemacustomvoice) \| [DeepgramVoice](#schemadeepgramvoice) \| [ElevenLabsVoice](#schemaelevenlabsvoice) \| [HumeVoice](#schemahumevoice) \| [LMNTVoice](#schemalmntvoice) \| [NeuphonicVoice](#schemaneuphonicvoice) \| [OpenAIVoice](#schemaopenaivoice) \| [PlayHTVoice](#schemaplayhtvoice) \| [WellSaidVoice](#schemawellsaidvoice) \| [RimeAIVoice](#schemarimeaivoice) \| [SmallestAIVoice](#schemasmallestaivoice) \| [VapiVoice](#schemavapivoice) \| [SesameVoice](#schemasesamevoice) \| [InworldVoice](#schemainworldvoice) \| [MinimaxVoice](#schemaminimaxvoice) \| [XaiVoice](#schemaxaivoice) \| [MicrosoftVoice](#schemamicrosoftvoice)|false|none|This is the voice for the workflow.<br><br>This can be overridden at node level using `nodes[n].voice`.|
 |observabilityPlan|[LangfuseObservabilityPlan](#schemalangfuseobservabilityplan)|false|none|This is the plan for observability of workflow's calls.<br><br>Currently, only Langfuse is supported.|
-|backgroundSound|string \| string(uri)|false|none|This is the background sound in the call. Default for phone calls is 'office' and default for web calls is 'off'.<br>You can also provide a custom sound by providing a URL to an audio file.|
+|backgroundSound|string \| string(uri)|false|none|This is the background sound in the call. Default for phone calls is 'office' and default for web calls is 'off'.<br>Bundled sounds: 'office', 'white-noise', 'city', 'crowd' and 'farm'. GPT Live assistants don't play 'office'.<br>You can also provide a custom sound by providing a URL to an audio file.|
 |hooks|[[CallHookCallEnding](#schemacallhookcallending) \| [CallHookAssistantSpeechInterrupted](#schemacallhookassistantspeechinterrupted) \| [CallHookCustomerSpeechInterrupted](#schemacallhookcustomerspeechinterrupted) \| [CallHookCustomerSpeechTimeout](#schemacallhookcustomerspeechtimeout) \| [CallHookModelResponseTimeout](#schemacallhookmodelresponsetimeout)]|false|none|This is a set of actions that will be performed on certain events.|
-|credentials|[[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto) \| [CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto) \| [CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto) \| [CreateAssemblyAICredentialDTO](#schemacreateassemblyaicredentialdto) \| [CreateAzureCredentialDTO](#schemacreateazurecredentialdto) \| [CreateAzureOpenAICredentialDTO](#schemacreateazureopenaicredentialdto) \| [CreateByoSipTrunkCredentialDTO](#schemacreatebyosiptrunkcredentialdto) \| [CreateCartesiaCredentialDTO](#schemacreatecartesiacredentialdto) \| [CreateCerebrasCredentialDTO](#schemacreatecerebrascredentialdto) \| [CreateCloudflareCredentialDTO](#schemacreatecloudflarecredentialdto) \| [CreateCustomLLMCredentialDTO](#schemacreatecustomllmcredentialdto) \| [CreateDeepgramCredentialDTO](#schemacreatedeepgramcredentialdto) \| [CreateDeepInfraCredentialDTO](#schemacreatedeepinfracredentialdto) \| [CreateDeepSeekCredentialDTO](#schemacreatedeepseekcredentialdto) \| [CreateElevenLabsCredentialDTO](#schemacreateelevenlabscredentialdto) \| [CreateGcpCredentialDTO](#schemacreategcpcredentialdto) \| [CreateGladiaCredentialDTO](#schemacreategladiacredentialdto) \| [CreateGoHighLevelCredentialDTO](#schemacreategohighlevelcredentialdto) \| [CreateGoogleCredentialDTO](#schemacreategooglecredentialdto) \| [CreateGroqCredentialDTO](#schemacreategroqcredentialdto) \| [CreateHumeCredentialDTO](#schemacreatehumecredentialdto) \| [CreateInflectionAICredentialDTO](#schemacreateinflectionaicredentialdto) \| [CreateLangfuseCredentialDTO](#schemacreatelangfusecredentialdto) \| [CreateLmntCredentialDTO](#schemacreatelmntcredentialdto) \| [CreateMakeCredentialDTO](#schemacreatemakecredentialdto) \| [CreateMistralCredentialDTO](#schemacreatemistralcredentialdto) \| [CreateNeuphonicCredentialDTO](#schemacreateneuphoniccredentialdto) \| [CreateOpenAICredentialDTO](#schemacreateopenaicredentialdto) \| [CreateOpenRouterCredentialDTO](#schemacreateopenroutercredentialdto) \| [CreatePerplexityAICredentialDTO](#schemacreateperplexityaicredentialdto) \| [CreatePlayHTCredentialDTO](#schemacreateplayhtcredentialdto) \| [CreateRimeAICredentialDTO](#schemacreaterimeaicredentialdto) \| [CreateRunpodCredentialDTO](#schemacreaterunpodcredentialdto) \| [CreateS3CredentialDTO](#schemacreates3credentialdto) \| [CreateS3CompatibleCredentialDTO](#schemacreates3compatiblecredentialdto) \| [CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto) \| [CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto) \| [CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto) \| [CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto) \| [CreateTavusCredentialDTO](#schemacreatetavuscredentialdto) \| [CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto) \| [CreateTwilioCredentialDTO](#schemacreatetwiliocredentialdto) \| [CreateVonageCredentialDTO](#schemacreatevonagecredentialdto) \| [CreateWebhookCredentialDTO](#schemacreatewebhookcredentialdto) \| [CreateCustomCredentialDTO](#schemacreatecustomcredentialdto) \| [CreateXAiCredentialDTO](#schemacreatexaicredentialdto) \| [CreateMicrosoftCredentialDTO](#schemacreatemicrosoftcredentialdto) \| [CreateGoogleCalendarOAuth2ClientCredentialDTO](#schemacreategooglecalendaroauth2clientcredentialdto) \| [CreateGoogleCalendarOAuth2AuthorizationCredentialDTO](#schemacreategooglecalendaroauth2authorizationcredentialdto) \| [CreateGoogleSheetsOAuth2AuthorizationCredentialDTO](#schemacreategooglesheetsoauth2authorizationcredentialdto) \| [CreateSlackOAuth2AuthorizationCredentialDTO](#schemacreateslackoauth2authorizationcredentialdto) \| [CreateGoHighLevelMCPCredentialDTO](#schemacreategohighlevelmcpcredentialdto) \| [CreateInworldCredentialDTO](#schemacreateinworldcredentialdto) \| [CreateMinimaxCredentialDTO](#schemacreateminimaxcredentialdto) \| [CreateWellSaidCredentialDTO](#schemacreatewellsaidcredentialdto) \| [CreateEmailCredentialDTO](#schemacreateemailcredentialdto) \| [CreateSlackWebhookCredentialDTO](#schemacreateslackwebhookcredentialdto)]|false|none|These are dynamic credentials that will be used for the workflow calls. By default, all the credentials are available for use in the call but you can supplement an additional credentials using this. Dynamic credentials override existing credentials.|
+|credentials|[[CreateAnthropicCredentialDTO](#schemacreateanthropiccredentialdto) \| [CreateAnthropicBedrockCredentialDTO](#schemacreateanthropicbedrockcredentialdto) \| [CreateAnyscaleCredentialDTO](#schemacreateanyscalecredentialdto) \| [CreateAssemblyAICredentialDTO](#schemacreateassemblyaicredentialdto) \| [CreateAzureCredentialDTO](#schemacreateazurecredentialdto) \| [CreateAzureOpenAICredentialDTO](#schemacreateazureopenaicredentialdto) \| [CreateByoSipTrunkCredentialDTO](#schemacreatebyosiptrunkcredentialdto) \| [CreateCartesiaCredentialDTO](#schemacreatecartesiacredentialdto) \| [CreateCerebrasCredentialDTO](#schemacreatecerebrascredentialdto) \| [CreateCloudflareCredentialDTO](#schemacreatecloudflarecredentialdto) \| [CreateCustomLLMCredentialDTO](#schemacreatecustomllmcredentialdto) \| [CreateDeepgramCredentialDTO](#schemacreatedeepgramcredentialdto) \| [CreateDeepInfraCredentialDTO](#schemacreatedeepinfracredentialdto) \| [CreateDeepSeekCredentialDTO](#schemacreatedeepseekcredentialdto) \| [CreateElevenLabsCredentialDTO](#schemacreateelevenlabscredentialdto) \| [CreateGcpCredentialDTO](#schemacreategcpcredentialdto) \| [CreateGladiaCredentialDTO](#schemacreategladiacredentialdto) \| [CreateGoHighLevelCredentialDTO](#schemacreategohighlevelcredentialdto) \| [CreateGoogleCredentialDTO](#schemacreategooglecredentialdto) \| [CreateGroqCredentialDTO](#schemacreategroqcredentialdto) \| [CreateHumeCredentialDTO](#schemacreatehumecredentialdto) \| [CreateInflectionAICredentialDTO](#schemacreateinflectionaicredentialdto) \| [CreateLangfuseCredentialDTO](#schemacreatelangfusecredentialdto) \| [CreateLmntCredentialDTO](#schemacreatelmntcredentialdto) \| [CreateMakeCredentialDTO](#schemacreatemakecredentialdto) \| [CreateMistralCredentialDTO](#schemacreatemistralcredentialdto) \| [CreateNeuphonicCredentialDTO](#schemacreateneuphoniccredentialdto) \| [CreateOpenAICredentialDTO](#schemacreateopenaicredentialdto) \| [CreateOpenRouterCredentialDTO](#schemacreateopenroutercredentialdto) \| [CreatePerplexityAICredentialDTO](#schemacreateperplexityaicredentialdto) \| [CreatePlayHTCredentialDTO](#schemacreateplayhtcredentialdto) \| [CreateRimeAICredentialDTO](#schemacreaterimeaicredentialdto) \| [CreateRunpodCredentialDTO](#schemacreaterunpodcredentialdto) \| [CreateS3CredentialDTO](#schemacreates3credentialdto) \| [CreateS3CompatibleCredentialDTO](#schemacreates3compatiblecredentialdto) \| [CreateSmallestAICredentialDTO](#schemacreatesmallestaicredentialdto) \| [CreateSpeechmaticsCredentialDTO](#schemacreatespeechmaticscredentialdto) \| [CreateSonioxCredentialDTO](#schemacreatesonioxcredentialdto) \| [CreateReson8CredentialDTO](#schemacreatereson8credentialdto) \| [CreateSupabaseCredentialDTO](#schemacreatesupabasecredentialdto) \| [CreateTavusCredentialDTO](#schemacreatetavuscredentialdto) \| [CreateTogetherAICredentialDTO](#schemacreatetogetheraicredentialdto) \| [CreateTwilioCredentialDTO](#schemacreatetwiliocredentialdto) \| [CreateVonageCredentialDTO](#schemacreatevonagecredentialdto) \| [CreateWebhookCredentialDTO](#schemacreatewebhookcredentialdto) \| [CreateCustomCredentialDTO](#schemacreatecustomcredentialdto) \| [CreateXAiCredentialDTO](#schemacreatexaicredentialdto) \| [CreateMicrosoftCredentialDTO](#schemacreatemicrosoftcredentialdto) \| [CreateGoogleCalendarOAuth2ClientCredentialDTO](#schemacreategooglecalendaroauth2clientcredentialdto) \| [CreateGoogleCalendarOAuth2AuthorizationCredentialDTO](#schemacreategooglecalendaroauth2authorizationcredentialdto) \| [CreateGoogleSheetsOAuth2AuthorizationCredentialDTO](#schemacreategooglesheetsoauth2authorizationcredentialdto) \| [CreateSlackOAuth2AuthorizationCredentialDTO](#schemacreateslackoauth2authorizationcredentialdto) \| [CreateGoHighLevelMCPCredentialDTO](#schemacreategohighlevelmcpcredentialdto) \| [CreateInworldCredentialDTO](#schemacreateinworldcredentialdto) \| [CreateMinimaxCredentialDTO](#schemacreateminimaxcredentialdto) \| [CreateWellSaidCredentialDTO](#schemacreatewellsaidcredentialdto) \| [CreateEmailCredentialDTO](#schemacreateemailcredentialdto) \| [CreateSlackWebhookCredentialDTO](#schemacreateslackwebhookcredentialdto)]|false|none|These are dynamic credentials that will be used for the workflow calls. By default, all the credentials are available for use in the call but you can supplement an additional credentials using this. Dynamic credentials override existing credentials.|
 |voicemailDetection|string \| [GoogleVoicemailDetectionPlan](#schemagooglevoicemaildetectionplan) \| [OpenAIVoicemailDetectionPlan](#schemaopenaivoicemaildetectionplan) \| [TwilioVoicemailDetectionPlan](#schematwiliovoicemaildetectionplan) \| [VapiVoicemailDetectionPlan](#schemavapivoicemaildetectionplan)|false|none|This is the voicemail detection plan for the workflow.|
 |maxDurationSeconds|number|false|none|This is the maximum duration of the call in seconds.<br><br>After this duration, the call will automatically end.<br><br>Default is 1800 (30 minutes), max is 43200 (12 hours), and min is 10 seconds.|
 |name|string|false|none|none|
@@ -223708,6 +224138,7 @@ bearer
 
 ```json
 {
+  "unmeasured": "transcriber",
   "modelLatency": 0,
   "voiceLatency": 0,
   "transcriberLatency": 0,
@@ -223720,11 +224151,21 @@ bearer
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|modelLatency|number|false|none|This is the model latency for the first token.|
-|voiceLatency|number|false|none|This is the voice latency from the model output.|
-|transcriberLatency|number|false|none|This is the transcriber latency from the user speech.|
-|endpointingLatency|number|false|none|This is the endpointing latency.|
-|turnLatency|number|false|none|This is the latency for the whole turn.|
+|unmeasured|[string]|false|none|These are the latency components that were not measured on this turn. A listed component's latency field is not a real measurement: it usually reads 0, which here means "not measured", not 0ms, but a `transcriber` value measured from a speech start keeps its nonzero value. Drop listed components when aggregating. Omitted when every component was measured.<br><br>- `transcriber`: no VAD speech marker for the turn, the sample was dropped as stale, the VAD missed this utterance (its newest marker was already used by an earlier turn), the transcript's time predates this utterance, or the VAD had still not flagged the end of speech when the reply started, including when the user kept talking after a tentative stop (the value is then measured from a speech start, or from the stop the user talked through).<br>- `endpointing`: no user transcript was committed this turn (for example the first message, or a tool-result turn), or the transcript's time predates this utterance (carried over from an earlier one).<br>- `model`: the model sent no output token this turn (for example a static message).<br>- `voice`: no voice timing from model output this turn.|
+|modelLatency|number|false|none|This is the time in milliseconds from the start of the turn's model stage to the model's first output token.<br>It includes knowledge-base retrieval and request routing before the provider request. 0 when it was not measured on this turn.|
+|voiceLatency|number|false|none|This is the time in milliseconds from the model's first output token to the first reply audio reaching Vapi's turn-taking buffer.<br>It includes the wait to collect enough text for the first voice request (set by `voice.chunkPlan`), the voice provider's time to first audio, and any sample-rate conversion. 0 when it was not measured on this turn.|
+|transcriberLatency|number|false|none|This is the time in milliseconds from the user's last voice activity signal, normally the end of speech, to the transcriber returning the words of that speech.<br>0 both when it was not measured (listed in `unmeasured`) and when the words arrived before that signal.|
+|endpointingLatency|number|false|none|This is the time in milliseconds from the transcriber returning the words to Vapi deciding the turn is over and sending it to the model.<br>0 when the reply was not triggered by sending a user transcript to the model.|
+|turnLatency|number|false|none|This is the time in milliseconds from the user's last voice activity signal to Vapi starting to send the assistant's reply audio.<br>It is computed as `transcriberLatency` + `endpointingLatency` + the time from that decision to the reply starting, so it is not a real measurement either when `unmeasured` lists `transcriber`: the total then leaves that interval out (0) or counts it from a speech start. `modelLatency` and `voiceLatency` fall inside the last part, so the fields do not add up to this value.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|unmeasured|transcriber|
+|unmeasured|endpointing|
+|unmeasured|model|
+|unmeasured|voice|
 
 <h2 id="tocS_PerformanceMetrics">PerformanceMetrics</h2>
 <!-- backwards compatibility -->
@@ -223737,6 +224178,7 @@ bearer
 {
   "turnLatencies": [
     {
+      "unmeasured": "transcriber",
       "modelLatency": 0,
       "voiceLatency": 0,
       "transcriberLatency": 0,
@@ -223752,7 +224194,8 @@ bearer
   "fromTransportLatencyAverage": 0,
   "toTransportLatencyAverage": 0,
   "numUserInterrupted": 0,
-  "numAssistantInterrupted": 0
+  "numAssistantInterrupted": 0,
+  "turnLatencyUnmeasuredTracked": true
 }
 ```
 
@@ -223760,9 +224203,9 @@ bearer
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|turnLatencies|[[TurnLatency](#schematurnlatency)]|false|none|These are the individual latencies for each turn.|
-|modelLatencyAverage|number|false|none|This is the average latency for the model to output the first token.|
-|voiceLatencyAverage|number|false|none|This is the average latency for the text to speech.|
+|turnLatencies|[[TurnLatency](#schematurnlatency)]|false|none|These are the individual latencies for each turn, in milliseconds, measured on Vapi's servers without network or playback time.<br>A turn is recorded only when the assistant replies to the user. A first message the assistant speaks first is not recorded; with `assistant-waits-for-user` it is recorded, with `endpointingLatency` 0. A component that was not measured on a turn is 0.|
+|modelLatencyAverage|number|false|none|This is the average `modelLatency` across `turnLatencies`, in milliseconds.<br>Turns that recorded 0 because the model latency was not measured are included in the average.|
+|voiceLatencyAverage|number|false|none|This is the average `voiceLatency` across `turnLatencies`, in milliseconds.<br>Turns that recorded 0 because the voice latency was not measured are included in the average.|
 |transcriberLatencyAverage|number|false|none|This is the average latency for the transcriber.|
 |endpointingLatencyAverage|number|false|none|This is the average latency for the endpointing.|
 |turnLatencyAverage|number|false|none|This is the average latency for complete turns.|
@@ -223770,6 +224213,7 @@ bearer
 |toTransportLatencyAverage|number|false|none|This is the average latency for packets sent to the transport provider in milliseconds.|
 |numUserInterrupted|number|false|none|This is the number of times the user was interrupted by the assistant during the call.|
 |numAssistantInterrupted|number|false|none|This is the number of times the assistant was interrupted by the user during the call.|
+|turnLatencyUnmeasuredTracked|boolean|false|none|This is `true` when the call was recorded with `TurnLatency.unmeasured`, so a turn without that list had every component measured.<br>Absent on calls recorded before `unmeasured` existed, where a 0 latency may mean either 0ms or "not measured".|
 
 <h2 id="tocS_Artifact">Artifact</h2>
 <!-- backwards compatibility -->
@@ -223979,6 +224423,7 @@ bearer
   "performanceMetrics": {
     "turnLatencies": [
       {
+        "unmeasured": "transcriber",
         "modelLatency": 0,
         "voiceLatency": 0,
         "transcriberLatency": 0,
@@ -223994,7 +224439,8 @@ bearer
     "fromTransportLatencyAverage": 0,
     "toTransportLatencyAverage": 0,
     "numUserInterrupted": 0,
-    "numAssistantInterrupted": 0
+    "numAssistantInterrupted": 0,
+    "turnLatencyUnmeasuredTracked": true
   },
   "structuredOutputs": {},
   "scorecards": {},
@@ -226030,6 +226476,7 @@ bearer
     "performanceMetrics": {
       "turnLatencies": [
         {
+          "unmeasured": "transcriber",
           "modelLatency": 0,
           "voiceLatency": 0,
           "transcriberLatency": 0,
@@ -226045,7 +226492,8 @@ bearer
       "fromTransportLatencyAverage": 0,
       "toTransportLatencyAverage": 0,
       "numUserInterrupted": 0,
-      "numAssistantInterrupted": 0
+      "numAssistantInterrupted": 0,
+      "turnLatencyUnmeasuredTracked": true
     },
     "structuredOutputs": {},
     "scorecards": {},
@@ -230303,6 +230751,16 @@ bearer
 |endedReason|call.in-progress.error-vapifault-xai-transcriber-invalid-config|
 |endedReason|call.in-progress.error-vapifault-xai-transcriber-server-error|
 |endedReason|call.in-progress.error-vapifault-xai-transcriber-failed|
+|endedReason|pipeline-error-reson8-transcriber-auth-failed|
+|endedReason|pipeline-error-reson8-transcriber-rate-limited|
+|endedReason|pipeline-error-reson8-transcriber-invalid-config|
+|endedReason|pipeline-error-reson8-transcriber-closed|
+|endedReason|pipeline-error-reson8-transcriber-failed|
+|endedReason|call.in-progress.error-vapifault-reson8-transcriber-auth-failed|
+|endedReason|call.in-progress.error-vapifault-reson8-transcriber-rate-limited|
+|endedReason|call.in-progress.error-vapifault-reson8-transcriber-invalid-config|
+|endedReason|call.in-progress.error-vapifault-reson8-transcriber-closed|
+|endedReason|call.in-progress.error-vapifault-reson8-transcriber-failed|
 |endedReason|pipeline-error-cartesia-transcriber-failed|
 |endedReason|call.in-progress.error-vapifault-cartesia-transcriber-failed|
 |endedReason|call.in-progress.error-pipeline-no-available-llm-model|
@@ -230638,6 +231096,7 @@ bearer
 |endedReason|call.in-progress.error-vapifault-cartesia-socket-hang-up|
 |endedReason|call.in-progress.error-vapifault-cartesia-requested-payment|
 |endedReason|call.in-progress.error-providerfault-cartesia-500-server-error|
+|endedReason|call.in-progress.error-providerfault-cartesia-502-server-error|
 |endedReason|call.in-progress.error-providerfault-cartesia-503-server-error|
 |endedReason|call.in-progress.error-providerfault-cartesia-522-server-error|
 |endedReason|pipeline-error-eleven-labs-voice-not-found|
@@ -230758,6 +231217,16 @@ bearer
 |endedReason|call.in-progress.error-vapifault-xai-transcriber-invalid-config|
 |endedReason|call.in-progress.error-vapifault-xai-transcriber-server-error|
 |endedReason|call.in-progress.error-vapifault-xai-transcriber-failed|
+|endedReason|pipeline-error-reson8-transcriber-auth-failed|
+|endedReason|pipeline-error-reson8-transcriber-rate-limited|
+|endedReason|pipeline-error-reson8-transcriber-invalid-config|
+|endedReason|pipeline-error-reson8-transcriber-closed|
+|endedReason|pipeline-error-reson8-transcriber-failed|
+|endedReason|call.in-progress.error-vapifault-reson8-transcriber-auth-failed|
+|endedReason|call.in-progress.error-vapifault-reson8-transcriber-rate-limited|
+|endedReason|call.in-progress.error-vapifault-reson8-transcriber-invalid-config|
+|endedReason|call.in-progress.error-vapifault-reson8-transcriber-closed|
+|endedReason|call.in-progress.error-vapifault-reson8-transcriber-failed|
 |endedReason|pipeline-error-cartesia-transcriber-failed|
 |endedReason|call.in-progress.error-vapifault-cartesia-transcriber-failed|
 |endedReason|call.in-progress.error-warm-transfer-max-duration|
@@ -232707,6 +233176,7 @@ bearer
         "performanceMetrics": {
           "turnLatencies": [
             {
+              "unmeasured": "transcriber",
               "modelLatency": 0,
               "voiceLatency": 0,
               "transcriberLatency": 0,
@@ -232722,7 +233192,8 @@ bearer
           "fromTransportLatencyAverage": 0,
           "toTransportLatencyAverage": 0,
           "numUserInterrupted": 0,
-          "numAssistantInterrupted": 0
+          "numAssistantInterrupted": 0,
+          "turnLatencyUnmeasuredTracked": true
         },
         "structuredOutputs": {},
         "scorecards": {},
@@ -244737,6 +245208,7 @@ bearer
         "performanceMetrics": {
           "turnLatencies": [
             {
+              "unmeasured": "transcriber",
               "modelLatency": 0,
               "voiceLatency": 0,
               "transcriberLatency": 0,
@@ -244752,7 +245224,8 @@ bearer
           "fromTransportLatencyAverage": 0,
           "toTransportLatencyAverage": 0,
           "numUserInterrupted": 0,
-          "numAssistantInterrupted": 0
+          "numAssistantInterrupted": 0,
+          "turnLatencyUnmeasuredTracked": true
         },
         "structuredOutputs": {},
         "scorecards": {},
@@ -257103,6 +257576,929 @@ bearer
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |ids|[string]|false|none|These are the Call IDs to be bulk deleted.<br>If provided, the call ID if any in the request query will be ignored<br>When requesting a bulk delete, updates when a call is deleted will be sent as a webhook to the server URL configured in the Org settings.<br>It may take up to a few hours to complete the bulk delete, and will be asynchronous.|
+
+<h2 id="tocS_CallHealthDashboardApiErrorDTO">CallHealthDashboardApiErrorDTO</h2>
+<!-- backwards compatibility -->
+<a id="schemacallhealthdashboardapierrordto"></a>
+<a id="schema_CallHealthDashboardApiErrorDTO"></a>
+<a id="tocScallhealthdashboardapierrordto"></a>
+<a id="tocscallhealthdashboardapierrordto"></a>
+
+```json
+{
+  "code": "string",
+  "message": "string",
+  "requestId": "string",
+  "retryable": true
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|code|string|true|none|none|
+|message|string|true|none|none|
+|requestId|string|true|none|none|
+|retryable|boolean|true|none|none|
+
+<h2 id="tocS_CallHealthDashboardAssistantReferenceDTO">CallHealthDashboardAssistantReferenceDTO</h2>
+<!-- backwards compatibility -->
+<a id="schemacallhealthdashboardassistantreferencedto"></a>
+<a id="schema_CallHealthDashboardAssistantReferenceDTO"></a>
+<a id="tocScallhealthdashboardassistantreferencedto"></a>
+<a id="tocscallhealthdashboardassistantreferencedto"></a>
+
+```json
+{
+  "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "name": "string",
+  "latestVersion": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string(uuid)|true|none|none|
+|name|string|false|none|none|
+|latestVersion|string|false|none|Current assistant.latest_version label; omitted when unavailable, never a goal revision.|
+
+<h2 id="tocS_CallHealthDashboardGoalDefinitionDTO">CallHealthDashboardGoalDefinitionDTO</h2>
+<!-- backwards compatibility -->
+<a id="schemacallhealthdashboardgoaldefinitiondto"></a>
+<a id="schema_CallHealthDashboardGoalDefinitionDTO"></a>
+<a id="tocScallhealthdashboardgoaldefinitiondto"></a>
+<a id="tocscallhealthdashboardgoaldefinitiondto"></a>
+
+```json
+{
+  "goalId": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "succeedsWhen": "string",
+  "leaveOut": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|goalId|string(uuid)|true|none|Explicit selected goal identity, stable across its revisions.|
+|succeedsWhen|string|true|none|Current visible revision of the selected goal.|
+|leaveOut|string|false|none|Current optional semantic exclusions.|
+
+<h2 id="tocS_CallHealthDashboardGoalSummaryDTO">CallHealthDashboardGoalSummaryDTO</h2>
+<!-- backwards compatibility -->
+<a id="schemacallhealthdashboardgoalsummarydto"></a>
+<a id="schema_CallHealthDashboardGoalSummaryDTO"></a>
+<a id="tocScallhealthdashboardgoalsummarydto"></a>
+<a id="tocscallhealthdashboardgoalsummarydto"></a>
+
+```json
+{
+  "registeredCallCount": 0,
+  "eligibleCallCount": 0,
+  "ineligibleCallCount": 0,
+  "unassessedCallCount": 0,
+  "goalMetCount": 0,
+  "goalNotMetCount": 0,
+  "evaluatedCallCount": 0,
+  "analyzedCallCount": 0,
+  "goalMetRate": 0,
+  "goalNotMetRate": 0
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|registeredCallCount|integer|true|none|none|
+|eligibleCallCount|integer|true|none|Calls with an accepted semantic eligibility decision and binary goal outcome.|
+|ineligibleCallCount|integer|true|none|Accepted semantic exclusions; absent from the goal denominator.|
+|unassessedCallCount|integer|true|none|No accepted eligibility decision, including technical or privacy exclusions.|
+|goalMetCount|integer|true|none|none|
+|goalNotMetCount|integer|true|none|none|
+|evaluatedCallCount|integer|true|none|none|
+|analyzedCallCount|integer|true|none|Accepted current-goal results, including ineligible; independent of issue processing.|
+|goalMetRate|number|false|none|Goal-met / evaluatedCallCount; omitted when there are no binary outcomes.|
+|goalNotMetRate|number|false|none|none|
+
+<h2 id="tocS_CallHealthDashboardAssistantOverviewDTO">CallHealthDashboardAssistantOverviewDTO</h2>
+<!-- backwards compatibility -->
+<a id="schemacallhealthdashboardassistantoverviewdto"></a>
+<a id="schema_CallHealthDashboardAssistantOverviewDTO"></a>
+<a id="tocScallhealthdashboardassistantoverviewdto"></a>
+<a id="tocscallhealthdashboardassistantoverviewdto"></a>
+
+```json
+{
+  "assistant": {
+    "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+    "name": "string",
+    "latestVersion": "string"
+  },
+  "goalDefinition": {
+    "goalId": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+    "succeedsWhen": "string",
+    "leaveOut": "string"
+  },
+  "goal": {
+    "registeredCallCount": 0,
+    "eligibleCallCount": 0,
+    "ineligibleCallCount": 0,
+    "unassessedCallCount": 0,
+    "goalMetCount": 0,
+    "goalNotMetCount": 0,
+    "evaluatedCallCount": 0,
+    "analyzedCallCount": 0,
+    "goalMetRate": 0,
+    "goalNotMetRate": 0
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|assistant|object|true|none|Current permitted assistant metadata, fetched in a batch.|
+|goalDefinition|object|true|none|Every row represents an explicitly selected, tenant-owned assistant goal.|
+|goal|object|true|none|Window totals for the selected goal, including zero-result assistants.|
+
+<h2 id="tocS_CallHealthDashboardIntakeCoverageDTO">CallHealthDashboardIntakeCoverageDTO</h2>
+<!-- backwards compatibility -->
+<a id="schemacallhealthdashboardintakecoveragedto"></a>
+<a id="schema_CallHealthDashboardIntakeCoverageDTO"></a>
+<a id="tocScallhealthdashboardintakecoveragedto"></a>
+<a id="tocscallhealthdashboardintakecoveragedto"></a>
+
+```json
+{
+  "deliveryMode": "bestEffort",
+  "endToEndCoverage": "unknown"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|deliveryMode|string|true|none|none|
+|endToEndCoverage|string|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|deliveryMode|bestEffort|
+|endToEndCoverage|unknown|
+
+<h2 id="tocS_CallHealthDashboardGoalGapsDTO">CallHealthDashboardGoalGapsDTO</h2>
+<!-- backwards compatibility -->
+<a id="schemacallhealthdashboardgoalgapsdto"></a>
+<a id="schema_CallHealthDashboardGoalGapsDTO"></a>
+<a id="tocScallhealthdashboardgoalgapsdto"></a>
+<a id="tocscallhealthdashboardgoalgapsdto"></a>
+
+```json
+{
+  "pending": 0,
+  "unavailable": 0,
+  "skipped": 0,
+  "error": 0,
+  "excluded": 0
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|pending|integer|true|none|none|
+|unavailable|integer|true|none|none|
+|skipped|integer|true|none|none|
+|error|integer|true|none|none|
+|excluded|integer|true|none|none|
+
+<h2 id="tocS_CallHealthDashboardClassificationCoverageDTO">CallHealthDashboardClassificationCoverageDTO</h2>
+<!-- backwards compatibility -->
+<a id="schemacallhealthdashboardclassificationcoveragedto"></a>
+<a id="schema_CallHealthDashboardClassificationCoverageDTO"></a>
+<a id="tocScallhealthdashboardclassificationcoveragedto"></a>
+<a id="tocscallhealthdashboardclassificationcoveragedto"></a>
+
+```json
+{
+  "pending": 0,
+  "unavailable": 0,
+  "skipped": 0,
+  "error": 0,
+  "excluded": 0,
+  "complete": 0,
+  "partial": 0
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|pending|integer|true|none|none|
+|unavailable|integer|true|none|none|
+|skipped|integer|true|none|none|
+|error|integer|true|none|none|
+|excluded|integer|true|none|none|
+|complete|integer|true|none|none|
+|partial|integer|true|none|none|
+
+<h2 id="tocS_CallHealthDashboardAssignmentCoverageDTO">CallHealthDashboardAssignmentCoverageDTO</h2>
+<!-- backwards compatibility -->
+<a id="schemacallhealthdashboardassignmentcoveragedto"></a>
+<a id="schema_CallHealthDashboardAssignmentCoverageDTO"></a>
+<a id="tocScallhealthdashboardassignmentcoveragedto"></a>
+<a id="tocscallhealthdashboardassignmentcoveragedto"></a>
+
+```json
+{
+  "pending": 0,
+  "unmatched": 0,
+  "skipped": 0,
+  "unavailable": 0,
+  "error": 0,
+  "coverageGapCount": 0
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|pending|integer|true|none|none|
+|unmatched|integer|true|none|none|
+|skipped|integer|true|none|none|
+|unavailable|integer|true|none|none|
+|error|integer|true|none|none|
+|coverageGapCount|integer|true|none|none|
+
+<h2 id="tocS_CallHealthDashboardDiscoveryCoverageDTO">CallHealthDashboardDiscoveryCoverageDTO</h2>
+<!-- backwards compatibility -->
+<a id="schemacallhealthdashboarddiscoverycoveragedto"></a>
+<a id="schema_CallHealthDashboardDiscoveryCoverageDTO"></a>
+<a id="tocScallhealthdashboarddiscoverycoveragedto"></a>
+<a id="tocscallhealthdashboarddiscoverycoveragedto"></a>
+
+```json
+{
+  "pendingIssueCategoryCount": 0,
+  "blockedIssueCategoryCount": 0
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|pendingIssueCategoryCount|integer|true|none|none|
+|blockedIssueCategoryCount|integer|true|none|none|
+
+<h2 id="tocS_CallHealthDashboardSweepCoverageDTO">CallHealthDashboardSweepCoverageDTO</h2>
+<!-- backwards compatibility -->
+<a id="schemacallhealthdashboardsweepcoveragedto"></a>
+<a id="schema_CallHealthDashboardSweepCoverageDTO"></a>
+<a id="tocScallhealthdashboardsweepcoveragedto"></a>
+<a id="tocscallhealthdashboardsweepcoveragedto"></a>
+
+```json
+{
+  "state": "idle"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|state|string|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|state|idle|
+|state|enumerating|
+|state|processing|
+|state|deduplicating|
+|state|blocked|
+
+<h2 id="tocS_CallHealthDashboardCoverageDTO">CallHealthDashboardCoverageDTO</h2>
+<!-- backwards compatibility -->
+<a id="schemacallhealthdashboardcoveragedto"></a>
+<a id="schema_CallHealthDashboardCoverageDTO"></a>
+<a id="tocScallhealthdashboardcoveragedto"></a>
+<a id="tocscallhealthdashboardcoveragedto"></a>
+
+```json
+{
+  "asOf": "1970-01-01T00:00:00Z",
+  "intake": {
+    "deliveryMode": "bestEffort",
+    "endToEndCoverage": "unknown"
+  },
+  "goal": {
+    "pending": 0,
+    "unavailable": 0,
+    "skipped": 0,
+    "error": 0,
+    "excluded": 0
+  },
+  "classification": {
+    "pending": 0,
+    "unavailable": 0,
+    "skipped": 0,
+    "error": 0,
+    "excluded": 0,
+    "complete": 0,
+    "partial": 0
+  },
+  "assignment": {
+    "pending": 0,
+    "unmatched": 0,
+    "skipped": 0,
+    "unavailable": 0,
+    "error": 0,
+    "coverageGapCount": 0
+  },
+  "discovery": {
+    "pendingIssueCategoryCount": 0,
+    "blockedIssueCategoryCount": 0
+  },
+  "sweep": {
+    "state": "idle"
+  },
+  "countsComplete": true
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|asOf|string(date-time)|true|none|none|
+|intake|[CallHealthDashboardIntakeCoverageDTO](#schemacallhealthdashboardintakecoveragedto)|true|none|none|
+|goal|[CallHealthDashboardGoalGapsDTO](#schemacallhealthdashboardgoalgapsdto)|true|none|none|
+|classification|[CallHealthDashboardClassificationCoverageDTO](#schemacallhealthdashboardclassificationcoveragedto)|true|none|none|
+|assignment|[CallHealthDashboardAssignmentCoverageDTO](#schemacallhealthdashboardassignmentcoveragedto)|true|none|none|
+|discovery|[CallHealthDashboardDiscoveryCoverageDTO](#schemacallhealthdashboarddiscoverycoveragedto)|true|none|none|
+|sweep|[CallHealthDashboardSweepCoverageDTO](#schemacallhealthdashboardsweepcoveragedto)|true|none|none|
+|countsComplete|boolean|true|none|Completeness of received authorized work only; never source delivery coverage.|
+
+<h2 id="tocS_CallHealthDashboardAssistantListResponseDTO">CallHealthDashboardAssistantListResponseDTO</h2>
+<!-- backwards compatibility -->
+<a id="schemacallhealthdashboardassistantlistresponsedto"></a>
+<a id="schema_CallHealthDashboardAssistantListResponseDTO"></a>
+<a id="tocScallhealthdashboardassistantlistresponsedto"></a>
+<a id="tocscallhealthdashboardassistantlistresponsedto"></a>
+
+```json
+{
+  "results": [
+    {
+      "assistant": {
+        "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+        "name": "string",
+        "latestVersion": "string"
+      },
+      "goalDefinition": {
+        "goalId": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+        "succeedsWhen": "string",
+        "leaveOut": "string"
+      },
+      "goal": {
+        "registeredCallCount": 0,
+        "eligibleCallCount": 0,
+        "ineligibleCallCount": 0,
+        "unassessedCallCount": 0,
+        "goalMetCount": 0,
+        "goalNotMetCount": 0,
+        "evaluatedCallCount": 0,
+        "analyzedCallCount": 0,
+        "goalMetRate": 0,
+        "goalNotMetRate": 0
+      }
+    }
+  ],
+  "nextCursor": "string",
+  "coverage": {
+    "asOf": "1970-01-01T00:00:00Z",
+    "intake": {
+      "deliveryMode": "bestEffort",
+      "endToEndCoverage": "unknown"
+    },
+    "goal": {
+      "pending": 0,
+      "unavailable": 0,
+      "skipped": 0,
+      "error": 0,
+      "excluded": 0
+    },
+    "classification": {
+      "pending": 0,
+      "unavailable": 0,
+      "skipped": 0,
+      "error": 0,
+      "excluded": 0,
+      "complete": 0,
+      "partial": 0
+    },
+    "assignment": {
+      "pending": 0,
+      "unmatched": 0,
+      "skipped": 0,
+      "unavailable": 0,
+      "error": 0,
+      "coverageGapCount": 0
+    },
+    "discovery": {
+      "pendingIssueCategoryCount": 0,
+      "blockedIssueCategoryCount": 0
+    },
+    "sweep": {
+      "state": "idle"
+    },
+    "countsComplete": true
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|results|[[CallHealthDashboardAssistantOverviewDTO](#schemacallhealthdashboardassistantoverviewdto)]|true|none|Visible nondeleted assistants in ascending ID transport order; sort the exhausted result in the frontend.|
+|nextCursor|string|false|none|Opaque ID continuation bound to tenant, completion window and filters.|
+|coverage|object|true|none|Received-work processing coverage, separate from analyzed goal results.|
+
+<h2 id="tocS_CallHealthDashboardGoalOptionDTO">CallHealthDashboardGoalOptionDTO</h2>
+<!-- backwards compatibility -->
+<a id="schemacallhealthdashboardgoaloptiondto"></a>
+<a id="schema_CallHealthDashboardGoalOptionDTO"></a>
+<a id="tocScallhealthdashboardgoaloptiondto"></a>
+<a id="tocscallhealthdashboardgoaloptiondto"></a>
+
+```json
+{
+  "goalId": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "succeedsWhen": "string",
+  "leaveOut": "string",
+  "goalVersion": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|goalId|string(uuid)|true|none|Explicit selected goal identity, stable across its revisions.|
+|succeedsWhen|string|true|none|Current visible revision of the selected goal.|
+|leaveOut|string|false|none|Current optional semantic exclusions.|
+|goalVersion|string|true|none|Current revision for display; clients select by stable goalId, never by this version.|
+
+<h2 id="tocS_CallHealthDashboardAssistantGoalsDTO">CallHealthDashboardAssistantGoalsDTO</h2>
+<!-- backwards compatibility -->
+<a id="schemacallhealthdashboardassistantgoalsdto"></a>
+<a id="schema_CallHealthDashboardAssistantGoalsDTO"></a>
+<a id="tocScallhealthdashboardassistantgoalsdto"></a>
+<a id="tocscallhealthdashboardassistantgoalsdto"></a>
+
+```json
+{
+  "assistantId": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "latestVersion": "string",
+  "goals": [
+    {
+      "goalId": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "succeedsWhen": "string",
+      "leaveOut": "string",
+      "goalVersion": "string"
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|assistantId|string(uuid)|true|none|Requested assistant identity whose current published row remains visible.|
+|latestVersion|string|false|none|Current assistant.latest_version label; omitted when unavailable, never a goal revision.|
+|goals|[[CallHealthDashboardGoalOptionDTO](#schemacallhealthdashboardgoaloptiondto)]|true|none|Empty when this visible assistant has no goals; no goal is automatically selected.|
+
+<h2 id="tocS_CallHealthDashboardAssistantGoalsResponseDTO">CallHealthDashboardAssistantGoalsResponseDTO</h2>
+<!-- backwards compatibility -->
+<a id="schemacallhealthdashboardassistantgoalsresponsedto"></a>
+<a id="schema_CallHealthDashboardAssistantGoalsResponseDTO"></a>
+<a id="tocScallhealthdashboardassistantgoalsresponsedto"></a>
+<a id="tocscallhealthdashboardassistantgoalsresponsedto"></a>
+
+```json
+{
+  "results": [
+    {
+      "assistantId": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "latestVersion": "string",
+      "goals": [
+        {
+          "goalId": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+          "succeedsWhen": "string",
+          "leaveOut": "string",
+          "goalVersion": "string"
+        }
+      ]
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|results|[[CallHealthDashboardAssistantGoalsDTO](#schemacallhealthdashboardassistantgoalsdto)]|true|none|Complete requested visible assistant cohort, including assistants with no goal options.|
+
+<h2 id="tocS_CallHealthDashboardGoalDailyDTO">CallHealthDashboardGoalDailyDTO</h2>
+<!-- backwards compatibility -->
+<a id="schemacallhealthdashboardgoaldailydto"></a>
+<a id="schema_CallHealthDashboardGoalDailyDTO"></a>
+<a id="tocScallhealthdashboardgoaldailydto"></a>
+<a id="tocscallhealthdashboardgoaldailydto"></a>
+
+```json
+{
+  "registeredCallCount": 0,
+  "eligibleCallCount": 0,
+  "ineligibleCallCount": 0,
+  "unassessedCallCount": 0,
+  "goalMetCount": 0,
+  "goalNotMetCount": 0,
+  "evaluatedCallCount": 0,
+  "analyzedCallCount": 0,
+  "goalMetRate": 0,
+  "goalNotMetRate": 0,
+  "date": "1970-01-01"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|registeredCallCount|integer|true|none|none|
+|eligibleCallCount|integer|true|none|Calls with an accepted semantic eligibility decision and binary goal outcome.|
+|ineligibleCallCount|integer|true|none|Accepted semantic exclusions; absent from the goal denominator.|
+|unassessedCallCount|integer|true|none|No accepted eligibility decision, including technical or privacy exclusions.|
+|goalMetCount|integer|true|none|none|
+|goalNotMetCount|integer|true|none|none|
+|evaluatedCallCount|integer|true|none|none|
+|analyzedCallCount|integer|true|none|Accepted current-goal results, including ineligible; independent of issue processing.|
+|goalMetRate|number|false|none|Goal-met / evaluatedCallCount; omitted when there are no binary outcomes.|
+|goalNotMetRate|number|false|none|none|
+|date|string(date)|true|none|Calendar date in the requested time zone (UTC by default); the first and last buckets are clipped to the requested window.|
+
+<h2 id="tocS_CallHealthDashboardWindowDTO">CallHealthDashboardWindowDTO</h2>
+<!-- backwards compatibility -->
+<a id="schemacallhealthdashboardwindowdto"></a>
+<a id="schema_CallHealthDashboardWindowDTO"></a>
+<a id="tocScallhealthdashboardwindowdto"></a>
+<a id="tocscallhealthdashboardwindowdto"></a>
+
+```json
+{
+  "callTimeGte": "1970-01-01T00:00:00Z",
+  "callTimeLt": "1970-01-01T00:00:00Z"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|callTimeGte|string(date-time)|true|none|none|
+|callTimeLt|string(date-time)|true|none|none|
+
+<h2 id="tocS_CallHealthDashboardSeriesPageDTO">CallHealthDashboardSeriesPageDTO</h2>
+<!-- backwards compatibility -->
+<a id="schemacallhealthdashboardseriespagedto"></a>
+<a id="schema_CallHealthDashboardSeriesPageDTO"></a>
+<a id="tocScallhealthdashboardseriespagedto"></a>
+<a id="tocscallhealthdashboardseriespagedto"></a>
+
+```json
+{
+  "window": {
+    "callTimeGte": "1970-01-01T00:00:00Z",
+    "callTimeLt": "1970-01-01T00:00:00Z"
+  },
+  "pageWindow": {
+    "callTimeGte": "1970-01-01T00:00:00Z",
+    "callTimeLt": "1970-01-01T00:00:00Z"
+  },
+  "nextCursor": "string",
+  "timeZone": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|window|object|true|none|Full resolved completion window used by every total, rate and coverage count.|
+|pageWindow|object|true|none|Clipped completion window represented by this page's daily buckets.|
+|nextCursor|string|false|none|Continue chart dates only; independent of the issue-row nextCursor.|
+|timeZone|string|false|none|The requested time zone whose midnights bound this page and label its dates; absent for UTC.|
+
+<h2 id="tocS_CallHealthDashboardGoalVersionSummaryDTO">CallHealthDashboardGoalVersionSummaryDTO</h2>
+<!-- backwards compatibility -->
+<a id="schemacallhealthdashboardgoalversionsummarydto"></a>
+<a id="schema_CallHealthDashboardGoalVersionSummaryDTO"></a>
+<a id="tocScallhealthdashboardgoalversionsummarydto"></a>
+<a id="tocscallhealthdashboardgoalversionsummarydto"></a>
+
+```json
+{
+  "registeredCallCount": 0,
+  "eligibleCallCount": 0,
+  "ineligibleCallCount": 0,
+  "unassessedCallCount": 0,
+  "goalMetCount": 0,
+  "goalNotMetCount": 0,
+  "evaluatedCallCount": 0,
+  "analyzedCallCount": 0,
+  "goalMetRate": 0,
+  "goalNotMetRate": 0,
+  "assistantVersionId": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "assistantVersion": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|registeredCallCount|integer|true|none|none|
+|eligibleCallCount|integer|true|none|Calls with an accepted semantic eligibility decision and binary goal outcome.|
+|ineligibleCallCount|integer|true|none|Accepted semantic exclusions; absent from the goal denominator.|
+|unassessedCallCount|integer|true|none|No accepted eligibility decision, including technical or privacy exclusions.|
+|goalMetCount|integer|true|none|none|
+|goalNotMetCount|integer|true|none|none|
+|evaluatedCallCount|integer|true|none|none|
+|analyzedCallCount|integer|true|none|Accepted current-goal results, including ineligible; independent of issue processing.|
+|goalMetRate|number|false|none|Goal-met / evaluatedCallCount; omitted when there are no binary outcomes.|
+|goalNotMetRate|number|false|none|none|
+|assistantVersionId|string(uuid) \| null|true|none|The version the calls ran on; null groups the calls that ran on no version.|
+|assistantVersion|string|false|none|The version's label, such as v3; absent for calls on no version or whose label was unavailable at registration.|
+
+<h2 id="tocS_CallHealthDashboardAssistantSummaryResponseDTO">CallHealthDashboardAssistantSummaryResponseDTO</h2>
+<!-- backwards compatibility -->
+<a id="schemacallhealthdashboardassistantsummaryresponsedto"></a>
+<a id="schema_CallHealthDashboardAssistantSummaryResponseDTO"></a>
+<a id="tocScallhealthdashboardassistantsummaryresponsedto"></a>
+<a id="tocscallhealthdashboardassistantsummaryresponsedto"></a>
+
+```json
+{
+  "assistant": {
+    "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+    "name": "string",
+    "latestVersion": "string"
+  },
+  "goalDefinition": {
+    "goalId": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+    "succeedsWhen": "string",
+    "leaveOut": "string"
+  },
+  "goal": {
+    "registeredCallCount": 0,
+    "eligibleCallCount": 0,
+    "ineligibleCallCount": 0,
+    "unassessedCallCount": 0,
+    "goalMetCount": 0,
+    "goalNotMetCount": 0,
+    "evaluatedCallCount": 0,
+    "analyzedCallCount": 0,
+    "goalMetRate": 0,
+    "goalNotMetRate": 0
+  },
+  "results": [
+    {
+      "registeredCallCount": 0,
+      "eligibleCallCount": 0,
+      "ineligibleCallCount": 0,
+      "unassessedCallCount": 0,
+      "goalMetCount": 0,
+      "goalNotMetCount": 0,
+      "evaluatedCallCount": 0,
+      "analyzedCallCount": 0,
+      "goalMetRate": 0,
+      "goalNotMetRate": 0,
+      "date": "1970-01-01"
+    }
+  ],
+  "seriesPage": {
+    "window": {
+      "callTimeGte": "1970-01-01T00:00:00Z",
+      "callTimeLt": "1970-01-01T00:00:00Z"
+    },
+    "pageWindow": {
+      "callTimeGte": "1970-01-01T00:00:00Z",
+      "callTimeLt": "1970-01-01T00:00:00Z"
+    },
+    "nextCursor": "string",
+    "timeZone": "string"
+  },
+  "coverage": {
+    "asOf": "1970-01-01T00:00:00Z",
+    "intake": {
+      "deliveryMode": "bestEffort",
+      "endToEndCoverage": "unknown"
+    },
+    "goal": {
+      "pending": 0,
+      "unavailable": 0,
+      "skipped": 0,
+      "error": 0,
+      "excluded": 0
+    },
+    "classification": {
+      "pending": 0,
+      "unavailable": 0,
+      "skipped": 0,
+      "error": 0,
+      "excluded": 0,
+      "complete": 0,
+      "partial": 0
+    },
+    "assignment": {
+      "pending": 0,
+      "unmatched": 0,
+      "skipped": 0,
+      "unavailable": 0,
+      "error": 0,
+      "coverageGapCount": 0
+    },
+    "discovery": {
+      "pendingIssueCategoryCount": 0,
+      "blockedIssueCategoryCount": 0
+    },
+    "sweep": {
+      "state": "idle"
+    },
+    "countsComplete": true
+  },
+  "assistantVersions": [
+    {
+      "registeredCallCount": 0,
+      "eligibleCallCount": 0,
+      "ineligibleCallCount": 0,
+      "unassessedCallCount": 0,
+      "goalMetCount": 0,
+      "goalNotMetCount": 0,
+      "evaluatedCallCount": 0,
+      "analyzedCallCount": 0,
+      "goalMetRate": 0,
+      "goalNotMetRate": 0,
+      "assistantVersionId": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "assistantVersion": "string"
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|assistant|object|true|none|Current permitted assistant metadata, fetched in a batch.|
+|goalDefinition|object|true|none|Every row represents an explicitly selected, tenant-owned assistant goal.|
+|goal|object|true|none|Window totals for the selected goal, including zero-result assistants.|
+|results|[[CallHealthDashboardGoalDailyDTO](#schemacallhealthdashboardgoaldailydto)]|true|none|One ascending contiguous page of dates in the requested time zone, including empty buckets.|
+|seriesPage|[CallHealthDashboardSeriesPageDTO](#schemacallhealthdashboardseriespagedto)|true|none|none|
+|coverage|object|true|none|Received-work processing coverage, separate from success rates.|
+|assistantVersions|[[CallHealthDashboardGoalVersionSummaryDTO](#schemacallhealthdashboardgoalversionsummarydto)]|true|none|Full-window totals per assistant version the calls ran on, newest version first; they partition `goal`.|
+
+<h2 id="tocS_CallHealthDashboardGoalCallIssueDTO">CallHealthDashboardGoalCallIssueDTO</h2>
+<!-- backwards compatibility -->
+<a id="schemacallhealthdashboardgoalcallissuedto"></a>
+<a id="schema_CallHealthDashboardGoalCallIssueDTO"></a>
+<a id="tocScallhealthdashboardgoalcallissuedto"></a>
+<a id="tocscallhealthdashboardgoalcallissuedto"></a>
+
+```json
+{
+  "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "categoryKey": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string(uuid)|true|none|none|
+|categoryKey|string|true|none|The ranking category the issue belongs to.|
+
+<h2 id="tocS_CallHealthDashboardGoalCallDTO">CallHealthDashboardGoalCallDTO</h2>
+<!-- backwards compatibility -->
+<a id="schemacallhealthdashboardgoalcalldto"></a>
+<a id="schema_CallHealthDashboardGoalCallDTO"></a>
+<a id="tocScallhealthdashboardgoalcalldto"></a>
+<a id="tocscallhealthdashboardgoalcalldto"></a>
+
+```json
+{
+  "callId": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "callTime": "1970-01-01T00:00:00Z",
+  "goalVersion": "string",
+  "processingState": "pending",
+  "goalOutcome": "goal_met",
+  "assistantVersionId": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "assistantVersion": "string",
+  "primaryCategoryKey": "string",
+  "issues": [
+    {
+      "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "categoryKey": "string"
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|callId|string(uuid)|true|none|The call this row reports the goal result for.|
+|callTime|string(date-time)|true|none|Call completion time (endedAt), never startedAt.|
+|goalVersion|string|true|none|Current goal revision the result belongs to; the list returns no other revision.|
+|processingState|string|true|none|Where this call's evaluation under goalVersion stands.|
+|goalOutcome|string|false|none|Absent until a result is accepted; a processing failure is never goal_not_met.|
+|assistantVersionId|string(uuid)|false|none|The assistant version the call ran on; absent when it ran on none.|
+|assistantVersion|string|false|none|That version's label, such as v3; absent when the call ran on none or the label was unavailable at registration.|
+|primaryCategoryKey|string|false|none|The call's main failure category, the same as GET /call-health/call/{id} returns; absent when the call has no current classification or it selected none.|
+|issues|[[CallHealthDashboardGoalCallIssueDTO](#schemacallhealthdashboardgoalcallissuedto)]|true|none|Visible issues the call joined, in ascending ID order, the same as GET /call-health/call/{id} returns; empty when it joined none.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|processingState|pending|
+|processingState|running|
+|processingState|parked|
+|processingState|unavailable|
+|processingState|excluded|
+|processingState|completed|
+|goalOutcome|goal_met|
+|goalOutcome|goal_not_met|
+|goalOutcome|not_applicable|
+
+<h2 id="tocS_CallHealthDashboardGoalCallsResponseDTO">CallHealthDashboardGoalCallsResponseDTO</h2>
+<!-- backwards compatibility -->
+<a id="schemacallhealthdashboardgoalcallsresponsedto"></a>
+<a id="schema_CallHealthDashboardGoalCallsResponseDTO"></a>
+<a id="tocScallhealthdashboardgoalcallsresponsedto"></a>
+<a id="tocscallhealthdashboardgoalcallsresponsedto"></a>
+
+```json
+{
+  "results": [
+    {
+      "callId": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "callTime": "1970-01-01T00:00:00Z",
+      "goalVersion": "string",
+      "processingState": "pending",
+      "goalOutcome": "goal_met",
+      "assistantVersionId": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "assistantVersion": "string",
+      "primaryCategoryKey": "string",
+      "issues": [
+        {
+          "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+          "categoryKey": "string"
+        }
+      ]
+    }
+  ],
+  "nextCursor": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|results|[[CallHealthDashboardGoalCallDTO](#schemacallhealthdashboardgoalcalldto)]|true|none|Newest completion first, then call UUID descending.|
+|nextCursor|string|false|none|Continues the list after the last result; absent on the last page.|
 
 <h2 id="tocS_DeveloperMessage">DeveloperMessage</h2>
 <!-- backwards compatibility -->
@@ -288645,6 +290041,7 @@ bearer
     "performanceMetrics": {
       "turnLatencies": [
         {
+          "unmeasured": "transcriber",
           "modelLatency": 0,
           "voiceLatency": 0,
           "transcriberLatency": 0,
@@ -288660,7 +290057,8 @@ bearer
       "fromTransportLatencyAverage": 0,
       "toTransportLatencyAverage": 0,
       "numUserInterrupted": 0,
-      "numAssistantInterrupted": 0
+      "numAssistantInterrupted": 0,
+      "turnLatencyUnmeasuredTracked": true
     },
     "structuredOutputs": {},
     "scorecards": {},
@@ -295677,6 +297075,7 @@ bearer
         "performanceMetrics": {
           "turnLatencies": [
             {
+              "unmeasured": "transcriber",
               "modelLatency": 0,
               "voiceLatency": 0,
               "transcriberLatency": 0,
@@ -295692,7 +297091,8 @@ bearer
           "fromTransportLatencyAverage": 0,
           "toTransportLatencyAverage": 0,
           "numUserInterrupted": 0,
-          "numAssistantInterrupted": 0
+          "numAssistantInterrupted": 0,
+          "turnLatencyUnmeasuredTracked": true
         },
         "structuredOutputs": {},
         "scorecards": {},
@@ -308087,6 +309487,453 @@ bearer
 |files|[[KnowledgeBaseV2File](#schemaknowledgebasev2file)]|true|none|none|
 |toolId|string \| null|true|none|Id of the tool that searches this knowledge base (at most one per base; provisioned on creation). Attach it to an assistant via model.toolIds. Null when the base has no search tool yet.|
 
+<h2 id="tocS_CallHealthDashboardIssueDailyDTO">CallHealthDashboardIssueDailyDTO</h2>
+<!-- backwards compatibility -->
+<a id="schemacallhealthdashboardissuedailydto"></a>
+<a id="schema_CallHealthDashboardIssueDailyDTO"></a>
+<a id="tocScallhealthdashboardissuedailydto"></a>
+<a id="tocscallhealthdashboardissuedailydto"></a>
+
+```json
+{
+  "date": "1970-01-01",
+  "affectedCallCount": 0,
+  "analyzedCallCount": 0,
+  "affectedCallRate": 0
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|date|string(date)|true|none|Calendar date in the requested time zone (UTC by default), with boundary buckets clipped to the requested window.|
+|affectedCallCount|integer|true|none|Distinct visible calls matching this issue in the bucket.|
+|analyzedCallCount|integer|true|none|All accepted current-goal outcomes for the issue's assistant in the bucket.|
+|affectedCallRate|number|false|none|affectedCallCount / analyzedCallCount; omitted for a zero denominator.|
+
+<h2 id="tocS_CallHealthDashboardIssueVersionDTO">CallHealthDashboardIssueVersionDTO</h2>
+<!-- backwards compatibility -->
+<a id="schemacallhealthdashboardissueversiondto"></a>
+<a id="schema_CallHealthDashboardIssueVersionDTO"></a>
+<a id="tocScallhealthdashboardissueversiondto"></a>
+<a id="tocscallhealthdashboardissueversiondto"></a>
+
+```json
+{
+  "assistantVersionId": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "assistantVersion": "string",
+  "affectedCallCount": 0,
+  "analyzedCallCount": 0,
+  "affectedCallRate": 0
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|assistantVersionId|string(uuid) \| null|true|none|The version the calls ran on; null groups the calls that ran on no version.|
+|assistantVersion|string|false|none|The version's label, such as v3; absent for calls on no version or whose label was unavailable at registration.|
+|affectedCallCount|integer|true|none|Distinct visible calls on this version matching the issue in the window.|
+|analyzedCallCount|integer|true|none|Accepted current-goal outcomes on this version for the issue's assistant in the window.|
+|affectedCallRate|number|false|none|affectedCallCount / analyzedCallCount; omitted for a zero denominator.|
+
+<h2 id="tocS_CallHealthDashboardIssueCoverageDTO">CallHealthDashboardIssueCoverageDTO</h2>
+<!-- backwards compatibility -->
+<a id="schemacallhealthdashboardissuecoveragedto"></a>
+<a id="schema_CallHealthDashboardIssueCoverageDTO"></a>
+<a id="tocScallhealthdashboardissuecoveragedto"></a>
+<a id="tocscallhealthdashboardissuecoveragedto"></a>
+
+```json
+{
+  "state": "complete",
+  "asOf": "1970-01-01T00:00:00Z"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|state|string|true|none|none|
+|asOf|string(date-time)|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|state|complete|
+|state|partial|
+|state|sweeping|
+|state|blocked|
+
+<h2 id="tocS_CallHealthDashboardIssueSummaryDTO">CallHealthDashboardIssueSummaryDTO</h2>
+<!-- backwards compatibility -->
+<a id="schemacallhealthdashboardissuesummarydto"></a>
+<a id="schema_CallHealthDashboardIssueSummaryDTO"></a>
+<a id="tocScallhealthdashboardissuesummarydto"></a>
+<a id="tocscallhealthdashboardissuesummarydto"></a>
+
+```json
+{
+  "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "name": "string",
+  "status": "active",
+  "rowVersion": 0,
+  "goalId": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "categoryKey": "string",
+  "summary": "string",
+  "assistant": {
+    "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+    "name": "string",
+    "latestVersion": "string"
+  },
+  "affectedCallCount": 0,
+  "analyzedCallCount": 0,
+  "affectedCallRate": 0,
+  "dailySeries": [
+    {
+      "date": "1970-01-01",
+      "affectedCallCount": 0,
+      "analyzedCallCount": 0,
+      "affectedCallRate": 0
+    }
+  ],
+  "assistantVersions": [
+    {
+      "assistantVersionId": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "assistantVersion": "string",
+      "affectedCallCount": 0,
+      "analyzedCallCount": 0,
+      "affectedCallRate": 0
+    }
+  ],
+  "lastSeenAt": "1970-01-01T00:00:00Z",
+  "coverage": {
+    "state": "complete",
+    "asOf": "1970-01-01T00:00:00Z"
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string(uuid)|true|none|none|
+|name|string|true|none|none|
+|status|string|true|none|none|
+|rowVersion|integer|true|none|none|
+|goalId|string(uuid)|true|none|Owning goal identity; issue-ID routes derive this selection from the issue.|
+|categoryKey|string|true|none|The ranking category the issue belongs to, such as `step_skipped`.|
+|summary|string|true|none|none|
+|assistant|[CallHealthDashboardAssistantReferenceDTO](#schemacallhealthdashboardassistantreferencedto)|true|none|none|
+|affectedCallCount|integer|true|none|none|
+|analyzedCallCount|integer|true|none|Same assistant/current-goal/window denominator used by the goal reads.|
+|affectedCallRate|number|false|none|Distinct calls matching this issue / analyzedCallCount; absent at zero.|
+|dailySeries|[[CallHealthDashboardIssueDailyDTO](#schemacallhealthdashboardissuedailydto)]|true|none|One ascending contiguous page of daily buckets in the requested time zone; memberships across issues are not unique calls.|
+|assistantVersions|[[CallHealthDashboardIssueVersionDTO](#schemacallhealthdashboardissueversiondto)]|true|none|Full-window counts per assistant version the calls ran on, newest version first; they partition the totals.|
+|lastSeenAt|string(date-time)|false|none|none|
+|coverage|[CallHealthDashboardIssueCoverageDTO](#schemacallhealthdashboardissuecoveragedto)|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|status|active|
+|status|resolved|
+|status|dismissed|
+
+<h2 id="tocS_CallHealthDashboardFacetsDTO">CallHealthDashboardFacetsDTO</h2>
+<!-- backwards compatibility -->
+<a id="schemacallhealthdashboardfacetsdto"></a>
+<a id="schema_CallHealthDashboardFacetsDTO"></a>
+<a id="tocScallhealthdashboardfacetsdto"></a>
+<a id="tocscallhealthdashboardfacetsdto"></a>
+
+```json
+{
+  "statuses": [
+    "active"
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|statuses|[string]|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|statuses|active|
+|statuses|resolved|
+|statuses|dismissed|
+
+<h2 id="tocS_CallHealthDashboardIssueListResponseDTO">CallHealthDashboardIssueListResponseDTO</h2>
+<!-- backwards compatibility -->
+<a id="schemacallhealthdashboardissuelistresponsedto"></a>
+<a id="schema_CallHealthDashboardIssueListResponseDTO"></a>
+<a id="tocScallhealthdashboardissuelistresponsedto"></a>
+<a id="tocscallhealthdashboardissuelistresponsedto"></a>
+
+```json
+{
+  "results": [
+    {
+      "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "name": "string",
+      "status": "active",
+      "rowVersion": 0,
+      "goalId": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "categoryKey": "string",
+      "summary": "string",
+      "assistant": {
+        "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+        "name": "string",
+        "latestVersion": "string"
+      },
+      "affectedCallCount": 0,
+      "analyzedCallCount": 0,
+      "affectedCallRate": 0,
+      "dailySeries": [
+        {
+          "date": "1970-01-01",
+          "affectedCallCount": 0,
+          "analyzedCallCount": 0,
+          "affectedCallRate": 0
+        }
+      ],
+      "assistantVersions": [
+        {
+          "assistantVersionId": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+          "assistantVersion": "string",
+          "affectedCallCount": 0,
+          "analyzedCallCount": 0,
+          "affectedCallRate": 0
+        }
+      ],
+      "lastSeenAt": "1970-01-01T00:00:00Z",
+      "coverage": {
+        "state": "complete",
+        "asOf": "1970-01-01T00:00:00Z"
+      }
+    }
+  ],
+  "seriesPage": {
+    "window": {
+      "callTimeGte": "1970-01-01T00:00:00Z",
+      "callTimeLt": "1970-01-01T00:00:00Z"
+    },
+    "pageWindow": {
+      "callTimeGte": "1970-01-01T00:00:00Z",
+      "callTimeLt": "1970-01-01T00:00:00Z"
+    },
+    "nextCursor": "string",
+    "timeZone": "string"
+  },
+  "facets": {
+    "statuses": [
+      "active"
+    ]
+  },
+  "nextCursor": "string",
+  "coverage": {
+    "asOf": "1970-01-01T00:00:00Z",
+    "intake": {
+      "deliveryMode": "bestEffort",
+      "endToEndCoverage": "unknown"
+    },
+    "goal": {
+      "pending": 0,
+      "unavailable": 0,
+      "skipped": 0,
+      "error": 0,
+      "excluded": 0
+    },
+    "classification": {
+      "pending": 0,
+      "unavailable": 0,
+      "skipped": 0,
+      "error": 0,
+      "excluded": 0,
+      "complete": 0,
+      "partial": 0
+    },
+    "assignment": {
+      "pending": 0,
+      "unmatched": 0,
+      "skipped": 0,
+      "unavailable": 0,
+      "error": 0,
+      "coverageGapCount": 0
+    },
+    "discovery": {
+      "pendingIssueCategoryCount": 0,
+      "blockedIssueCategoryCount": 0
+    },
+    "sweep": {
+      "state": "idle"
+    },
+    "countsComplete": true
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|results|[[CallHealthDashboardIssueSummaryDTO](#schemacallhealthdashboardissuesummarydto)]|true|none|none|
+|seriesPage|object|true|none|Every row's dailySeries represents this same date page.|
+|facets|[CallHealthDashboardFacetsDTO](#schemacallhealthdashboardfacetsdto)|true|none|none|
+|nextCursor|string|false|none|none|
+|coverage|[CallHealthDashboardCoverageDTO](#schemacallhealthdashboardcoveragedto)|true|none|none|
+
+<h2 id="tocS_CallHealthDashboardIssueDefinitionDTO">CallHealthDashboardIssueDefinitionDTO</h2>
+<!-- backwards compatibility -->
+<a id="schemacallhealthdashboardissuedefinitiondto"></a>
+<a id="schema_CallHealthDashboardIssueDefinitionDTO"></a>
+<a id="tocScallhealthdashboardissuedefinitiondto"></a>
+<a id="tocscallhealthdashboardissuedefinitiondto"></a>
+
+```json
+{
+  "applicability": "string",
+  "problem": "string",
+  "createdTaxonomyVersion": 1
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|applicability|string \| null|true|none|none|
+|problem|string \| null|true|none|none|
+|createdTaxonomyVersion|integer \| null|true|none|none|
+
+<h2 id="tocS_CallHealthDashboardIssueDetailResponseDTO">CallHealthDashboardIssueDetailResponseDTO</h2>
+<!-- backwards compatibility -->
+<a id="schemacallhealthdashboardissuedetailresponsedto"></a>
+<a id="schema_CallHealthDashboardIssueDetailResponseDTO"></a>
+<a id="tocScallhealthdashboardissuedetailresponsedto"></a>
+<a id="tocscallhealthdashboardissuedetailresponsedto"></a>
+
+```json
+{
+  "issue": {
+    "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+    "name": "string",
+    "status": "active",
+    "rowVersion": 0,
+    "goalId": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+    "categoryKey": "string",
+    "summary": "string",
+    "assistant": {
+      "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "name": "string",
+      "latestVersion": "string"
+    },
+    "affectedCallCount": 0,
+    "analyzedCallCount": 0,
+    "affectedCallRate": 0,
+    "dailySeries": [
+      {
+        "date": "1970-01-01",
+        "affectedCallCount": 0,
+        "analyzedCallCount": 0,
+        "affectedCallRate": 0
+      }
+    ],
+    "assistantVersions": [
+      {
+        "assistantVersionId": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+        "assistantVersion": "string",
+        "affectedCallCount": 0,
+        "analyzedCallCount": 0,
+        "affectedCallRate": 0
+      }
+    ],
+    "lastSeenAt": "1970-01-01T00:00:00Z",
+    "coverage": {
+      "state": "complete",
+      "asOf": "1970-01-01T00:00:00Z"
+    }
+  },
+  "seriesPage": {
+    "window": {
+      "callTimeGte": "1970-01-01T00:00:00Z",
+      "callTimeLt": "1970-01-01T00:00:00Z"
+    },
+    "pageWindow": {
+      "callTimeGte": "1970-01-01T00:00:00Z",
+      "callTimeLt": "1970-01-01T00:00:00Z"
+    },
+    "nextCursor": "string",
+    "timeZone": "string"
+  },
+  "definition": {
+    "applicability": "string",
+    "problem": "string",
+    "createdTaxonomyVersion": 1
+  },
+  "coverage": {
+    "asOf": "1970-01-01T00:00:00Z",
+    "intake": {
+      "deliveryMode": "bestEffort",
+      "endToEndCoverage": "unknown"
+    },
+    "goal": {
+      "pending": 0,
+      "unavailable": 0,
+      "skipped": 0,
+      "error": 0,
+      "excluded": 0
+    },
+    "classification": {
+      "pending": 0,
+      "unavailable": 0,
+      "skipped": 0,
+      "error": 0,
+      "excluded": 0,
+      "complete": 0,
+      "partial": 0
+    },
+    "assignment": {
+      "pending": 0,
+      "unmatched": 0,
+      "skipped": 0,
+      "unavailable": 0,
+      "error": 0,
+      "coverageGapCount": 0
+    },
+    "discovery": {
+      "pendingIssueCategoryCount": 0,
+      "blockedIssueCategoryCount": 0
+    },
+    "sweep": {
+      "state": "idle"
+    },
+    "countsComplete": true
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|issue|[CallHealthDashboardIssueSummaryDTO](#schemacallhealthdashboardissuesummarydto)|true|none|none|
+|seriesPage|[CallHealthDashboardSeriesPageDTO](#schemacallhealthdashboardseriespagedto)|true|none|none|
+|definition|[CallHealthDashboardIssueDefinitionDTO](#schemacallhealthdashboardissuedefinitiondto)|true|none|none|
+|coverage|[CallHealthDashboardCoverageDTO](#schemacallhealthdashboardcoveragedto)|true|none|none|
+
 <h2 id="tocS_StructuredOutputRunResult">StructuredOutputRunResult</h2>
 <!-- backwards compatibility -->
 <a id="schemastructuredoutputrunresult"></a>
@@ -318580,6 +320427,7 @@ bearer
     "performanceMetrics": {
       "turnLatencies": [
         {
+          "unmeasured": "transcriber",
           "modelLatency": 0,
           "voiceLatency": 0,
           "transcriberLatency": 0,
@@ -318595,7 +320443,8 @@ bearer
       "fromTransportLatencyAverage": 0,
       "toTransportLatencyAverage": 0,
       "numUserInterrupted": 0,
-      "numAssistantInterrupted": 0
+      "numAssistantInterrupted": 0,
+      "turnLatencyUnmeasuredTracked": true
     },
     "structuredOutputs": {},
     "scorecards": {},
@@ -318855,6 +320704,7 @@ bearer
       "performanceMetrics": {
         "turnLatencies": [
           {
+            "unmeasured": "transcriber",
             "modelLatency": 0,
             "voiceLatency": 0,
             "transcriberLatency": 0,
@@ -318870,7 +320720,8 @@ bearer
         "fromTransportLatencyAverage": 0,
         "toTransportLatencyAverage": 0,
         "numUserInterrupted": 0,
-        "numAssistantInterrupted": 0
+        "numAssistantInterrupted": 0,
+        "turnLatencyUnmeasuredTracked": true
       },
       "structuredOutputs": {},
       "scorecards": {},
@@ -319138,6 +320989,7 @@ bearer
           "performanceMetrics": {
             "turnLatencies": [
               {
+                "unmeasured": "transcriber",
                 "modelLatency": 0,
                 "voiceLatency": 0,
                 "transcriberLatency": 0,
@@ -319153,7 +321005,8 @@ bearer
             "fromTransportLatencyAverage": 0,
             "toTransportLatencyAverage": 0,
             "numUserInterrupted": 0,
-            "numAssistantInterrupted": 0
+            "numAssistantInterrupted": 0,
+            "turnLatencyUnmeasuredTracked": true
           },
           "structuredOutputs": {},
           "scorecards": {},
@@ -319429,6 +321282,7 @@ bearer
               "performanceMetrics": {
                 "turnLatencies": [
                   {
+                    "unmeasured": "transcriber",
                     "modelLatency": 0,
                     "voiceLatency": 0,
                     "transcriberLatency": 0,
@@ -319444,7 +321298,8 @@ bearer
                 "fromTransportLatencyAverage": 0,
                 "toTransportLatencyAverage": 0,
                 "numUserInterrupted": 0,
-                "numAssistantInterrupted": 0
+                "numAssistantInterrupted": 0,
+                "turnLatencyUnmeasuredTracked": true
               },
               "structuredOutputs": {},
               "scorecards": {},
@@ -319740,6 +321595,7 @@ bearer
                   "performanceMetrics": {
                     "turnLatencies": [
                       {
+                        "unmeasured": "transcriber",
                         "modelLatency": 0,
                         "voiceLatency": 0,
                         "transcriberLatency": 0,
@@ -319755,7 +321611,8 @@ bearer
                     "fromTransportLatencyAverage": 0,
                     "toTransportLatencyAverage": 0,
                     "numUserInterrupted": 0,
-                    "numAssistantInterrupted": 0
+                    "numAssistantInterrupted": 0,
+                    "turnLatencyUnmeasuredTracked": true
                   },
                   "structuredOutputs": {},
                   "scorecards": {},
@@ -321986,7 +323843,7 @@ bearer
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|metric|string|true|none|This is the latency component to measure.<br>- turn: total time from the end of user speech to the start of assistant speech<br>- model: LLM time to first token<br>- voice: TTS time to first audio|
+|metric|string|true|none|This is the latency component to measure.<br>- turn: total time from the end of user speech to the start of assistant speech<br>- model: LLM time to first token<br>- voice: TTS time to first audio<br>- transcriber: time from the end of user speech to the transcript's words being known<br>- endpointing: time from the transcript's words being known to deciding the user finished their turn<br><br>Turns where a component was not measured are left out of that metric.|
 |aggregation|string|true|none|This is how the call's per-turn latencies are aggregated before comparing.<br>p95 uses the nearest-rank method, so on calls with fewer than 20 turns it<br>equals the max.|
 |thresholdMs|number|true|none|This is the ceiling in milliseconds. The expectation passes when the<br>aggregated latency is less than or equal to this value.|
 |required|boolean|false|none|This is whether this expectation must pass for the simulation to pass.<br>Defaults to true. If false, the result is informational only.<br>On a voice simulation, a metric that no turn measured fails the expectation.<br>GPT Live targets are skipped, because their latency is not measured yet.|
@@ -321998,6 +323855,8 @@ bearer
 |metric|turn|
 |metric|model|
 |metric|voice|
+|metric|transcriber|
+|metric|endpointing|
 |aggregation|mean|
 |aggregation|median|
 |aggregation|p95|
@@ -331040,6 +332899,8 @@ bearer
 |metric|turn|
 |metric|model|
 |metric|voice|
+|metric|transcriber|
+|metric|endpointing|
 |aggregation|mean|
 |aggregation|median|
 |aggregation|p95|
@@ -332828,7 +334689,7 @@ bearer
 |formulas|[[InsightFormula](#schemainsightformula)]|false|none|Formulas are mathematical expressions applied on the data returned by the queries to transform them before being used to create the insight.<br>The formulas needs to be a valid mathematical expression, supported by MathJS - https://mathjs.org/docs/expressions/syntax.html<br>A formula is created by using the query names as the variable.<br>The formulas must contain at least one query name in the LiquidJS format {{query_name}} or {{['query name']}} which will be substituted with the query result.<br>For example, if you have 2 queries, 'Was Booking Made' and 'Average Call Duration', you can create a formula like this:<br>```<br>{{['Query 1']}} / {{['Query 2']}} * 100<br>```<br><br>```<br>({{[Query 1]}} * 10) + {{[Query 2]}}<br>```<br>This will take the<br><br>You can also use the query names as the variable in the formula.|
 |timeRange|[InsightTimeRange](#schemainsighttimerange)|false|none|none|
 |groupBy|string|false|none|This is the group by column for the insight when table is `call`.<br>These are the columns to group the results by.<br>All results are grouped by the time range step by default.|
-|queries|[[JSONQueryOnCallTableWithStringTypeColumn](#schemajsonqueryoncalltablewithstringtypecolumn) \| [JSONQueryOnCallTableWithNumberTypeColumn](#schemajsonqueryoncalltablewithnumbertypecolumn) \| [JSONQueryOnCallTableWithStructuredOutputColumn](#schemajsonqueryoncalltablewithstructuredoutputcolumn)]|true|none|These are the queries to run to generate the insight.|
+|queries|[[JSONQueryOnCallTableWithStringTypeColumn](#schemajsonqueryoncalltablewithstringtypecolumn) \| [JSONQueryOnCallTableWithNumberTypeColumn](#schemajsonqueryoncalltablewithnumbertypecolumn) \| [JSONQueryOnCallTableWithStructuredOutputColumn](#schemajsonqueryoncalltablewithstructuredoutputcolumn) \| [JSONQueryOnEventsTable](#schemajsonqueryoneventstable)]|true|none|These are the queries to run to generate the insight.|
 |id|string|true|none|This is the unique identifier for the Insight.|
 |orgId|string|true|none|This is the unique identifier for the org that this Insight belongs to.|
 |createdAt|string(date-time)|true|none|This is the ISO 8601 date-time string of when the Insight was created.|
@@ -332944,7 +334805,7 @@ bearer
 |metadata|object|false|none|This is the metadata for the insight.|
 |timeRange|[InsightTimeRangeWithStep](#schemainsighttimerangewithstep)|false|none|none|
 |groupBy|string|false|none|This is the group by column for the insight when table is `call`.<br>These are the columns to group the results by.<br>All results are grouped by the time range step by default.|
-|queries|[[JSONQueryOnCallTableWithStringTypeColumn](#schemajsonqueryoncalltablewithstringtypecolumn) \| [JSONQueryOnCallTableWithNumberTypeColumn](#schemajsonqueryoncalltablewithnumbertypecolumn) \| [JSONQueryOnCallTableWithStructuredOutputColumn](#schemajsonqueryoncalltablewithstructuredoutputcolumn)]|true|none|These are the queries to run to generate the insight.|
+|queries|[[JSONQueryOnCallTableWithStringTypeColumn](#schemajsonqueryoncalltablewithstringtypecolumn) \| [JSONQueryOnCallTableWithNumberTypeColumn](#schemajsonqueryoncalltablewithnumbertypecolumn) \| [JSONQueryOnCallTableWithStructuredOutputColumn](#schemajsonqueryoncalltablewithstructuredoutputcolumn) \| [JSONQueryOnEventsTable](#schemajsonqueryoneventstable)]|true|none|These are the queries to run to generate the insight.|
 |id|string|true|none|This is the unique identifier for the Insight.|
 |orgId|string|true|none|This is the unique identifier for the org that this Insight belongs to.|
 |createdAt|string(date-time)|true|none|This is the ISO 8601 date-time string of when the Insight was created.|
@@ -333015,7 +334876,7 @@ bearer
 |type|string|true|none|This is the type of the Insight.<br>It is required to be `text` to create a text insight.|
 |formula|object|false|none|Formulas are mathematical expressions applied on the data returned by the queries to transform them before being used to create the insight.<br>The formulas needs to be a valid mathematical expression, supported by MathJS - https://mathjs.org/docs/expressions/syntax.html<br>A formula is created by using the query names as the variable.<br>The formulas must contain at least one query name in the LiquidJS format {{query_name}} or {{['query name']}} which will be substituted with the query result.<br>For example, if you have 2 queries, 'Was Booking Made' and 'Average Call Duration', you can create a formula like this:<br>```<br>{{['Query 1']}} / {{['Query 2']}} * 100<br>```<br><br>```<br>({{[Query 1]}} * 10) + {{[Query 2]}}<br>```<br>This will take the<br><br>You can also use the query names as the variable in the formula.|
 |timeRange|[InsightTimeRange](#schemainsighttimerange)|false|none|none|
-|queries|[[JSONQueryOnCallTableWithStringTypeColumn](#schemajsonqueryoncalltablewithstringtypecolumn) \| [JSONQueryOnCallTableWithNumberTypeColumn](#schemajsonqueryoncalltablewithnumbertypecolumn) \| [JSONQueryOnCallTableWithStructuredOutputColumn](#schemajsonqueryoncalltablewithstructuredoutputcolumn)]|true|none|These are the queries to run to generate the insight.<br>For Text Insights, we only allow a single query, or require a formula if multiple queries are provided|
+|queries|[[JSONQueryOnCallTableWithStringTypeColumn](#schemajsonqueryoncalltablewithstringtypecolumn) \| [JSONQueryOnCallTableWithNumberTypeColumn](#schemajsonqueryoncalltablewithnumbertypecolumn) \| [JSONQueryOnCallTableWithStructuredOutputColumn](#schemajsonqueryoncalltablewithstructuredoutputcolumn) \| [JSONQueryOnEventsTable](#schemajsonqueryoneventstable)]|true|none|These are the queries to run to generate the insight.<br>For Text Insights, we only allow a single query, or require a formula if multiple queries are provided|
 |id|string|true|none|This is the unique identifier for the Insight.|
 |orgId|string|true|none|This is the unique identifier for the org that this Insight belongs to.|
 |createdAt|string(date-time)|true|none|This is the ISO 8601 date-time string of when the Insight was created.|
@@ -333160,7 +335021,7 @@ bearer
 |formulas|[[InsightFormula](#schemainsightformula)]|false|none|Formulas are mathematical expressions applied on the data returned by the queries to transform them before being used to create the insight.<br>The formulas needs to be a valid mathematical expression, supported by MathJS - https://mathjs.org/docs/expressions/syntax.html<br>A formula is created by using the query names as the variable.<br>The formulas must contain at least one query name in the LiquidJS format {{query_name}} or {{['query name']}} which will be substituted with the query result.<br>For example, if you have 2 queries, 'Was Booking Made' and 'Average Call Duration', you can create a formula like this:<br>```<br>{{['Query 1']}} / {{['Query 2']}} * 100<br>```<br><br>```<br>({{[Query 1]}} * 10) + {{[Query 2]}}<br>```<br>This will take the<br><br>You can also use the query names as the variable in the formula.|
 |timeRange|[InsightTimeRange](#schemainsighttimerange)|false|none|none|
 |groupBy|string|false|none|This is the group by column for the insight when table is `call`.<br>These are the columns to group the results by.<br>All results are grouped by the time range step by default.|
-|queries|[[JSONQueryOnCallTableWithStringTypeColumn](#schemajsonqueryoncalltablewithstringtypecolumn) \| [JSONQueryOnCallTableWithNumberTypeColumn](#schemajsonqueryoncalltablewithnumbertypecolumn) \| [JSONQueryOnCallTableWithStructuredOutputColumn](#schemajsonqueryoncalltablewithstructuredoutputcolumn)]|false|none|These are the queries to run to generate the insight.|
+|queries|[[JSONQueryOnCallTableWithStringTypeColumn](#schemajsonqueryoncalltablewithstringtypecolumn) \| [JSONQueryOnCallTableWithNumberTypeColumn](#schemajsonqueryoncalltablewithnumbertypecolumn) \| [JSONQueryOnCallTableWithStructuredOutputColumn](#schemajsonqueryoncalltablewithstructuredoutputcolumn) \| [JSONQueryOnEventsTable](#schemajsonqueryoneventstable)]|false|none|These are the queries to run to generate the insight.|
 
 #### Enumerated Values
 
@@ -333239,7 +335100,7 @@ bearer
 |metadata|object|false|none|This is the metadata for the insight.|
 |timeRange|[InsightTimeRangeWithStep](#schemainsighttimerangewithstep)|false|none|none|
 |groupBy|string|false|none|This is the group by column for the insight when table is `call`.<br>These are the columns to group the results by.<br>All results are grouped by the time range step by default.|
-|queries|[[JSONQueryOnCallTableWithStringTypeColumn](#schemajsonqueryoncalltablewithstringtypecolumn) \| [JSONQueryOnCallTableWithNumberTypeColumn](#schemajsonqueryoncalltablewithnumbertypecolumn) \| [JSONQueryOnCallTableWithStructuredOutputColumn](#schemajsonqueryoncalltablewithstructuredoutputcolumn)]|false|none|These are the queries to run to generate the insight.|
+|queries|[[JSONQueryOnCallTableWithStringTypeColumn](#schemajsonqueryoncalltablewithstringtypecolumn) \| [JSONQueryOnCallTableWithNumberTypeColumn](#schemajsonqueryoncalltablewithnumbertypecolumn) \| [JSONQueryOnCallTableWithStructuredOutputColumn](#schemajsonqueryoncalltablewithstructuredoutputcolumn) \| [JSONQueryOnEventsTable](#schemajsonqueryoneventstable)]|false|none|These are the queries to run to generate the insight.|
 
 #### Enumerated Values
 
@@ -333300,7 +335161,7 @@ bearer
 |type|string|false|none|This is the type of the Insight.<br>It is required to be `text` to create a text insight.|
 |formula|object|false|none|Formulas are mathematical expressions applied on the data returned by the queries to transform them before being used to create the insight.<br>The formulas needs to be a valid mathematical expression, supported by MathJS - https://mathjs.org/docs/expressions/syntax.html<br>A formula is created by using the query names as the variable.<br>The formulas must contain at least one query name in the LiquidJS format {{query_name}} or {{['query name']}} which will be substituted with the query result.<br>For example, if you have 2 queries, 'Was Booking Made' and 'Average Call Duration', you can create a formula like this:<br>```<br>{{['Query 1']}} / {{['Query 2']}} * 100<br>```<br><br>```<br>({{[Query 1]}} * 10) + {{[Query 2]}}<br>```<br>This will take the<br><br>You can also use the query names as the variable in the formula.|
 |timeRange|[InsightTimeRange](#schemainsighttimerange)|false|none|none|
-|queries|[[JSONQueryOnCallTableWithStringTypeColumn](#schemajsonqueryoncalltablewithstringtypecolumn) \| [JSONQueryOnCallTableWithNumberTypeColumn](#schemajsonqueryoncalltablewithnumbertypecolumn) \| [JSONQueryOnCallTableWithStructuredOutputColumn](#schemajsonqueryoncalltablewithstructuredoutputcolumn)]|false|none|These are the queries to run to generate the insight.<br>For Text Insights, we only allow a single query, or require a formula if multiple queries are provided|
+|queries|[[JSONQueryOnCallTableWithStringTypeColumn](#schemajsonqueryoncalltablewithstringtypecolumn) \| [JSONQueryOnCallTableWithNumberTypeColumn](#schemajsonqueryoncalltablewithnumbertypecolumn) \| [JSONQueryOnCallTableWithStructuredOutputColumn](#schemajsonqueryoncalltablewithstructuredoutputcolumn) \| [JSONQueryOnEventsTable](#schemajsonqueryoneventstable)]|false|none|These are the queries to run to generate the insight.<br>For Text Insights, we only allow a single query, or require a formula if multiple queries are provided|
 
 #### Enumerated Values
 
@@ -333440,7 +335301,7 @@ bearer
 |formulas|[[InsightFormula](#schemainsightformula)]|false|none|Formulas are mathematical expressions applied on the data returned by the queries to transform them before being used to create the insight.<br>The formulas needs to be a valid mathematical expression, supported by MathJS - https://mathjs.org/docs/expressions/syntax.html<br>A formula is created by using the query names as the variable.<br>The formulas must contain at least one query name in the LiquidJS format {{query_name}} or {{['query name']}} which will be substituted with the query result.<br>For example, if you have 2 queries, 'Was Booking Made' and 'Average Call Duration', you can create a formula like this:<br>```<br>{{['Query 1']}} / {{['Query 2']}} * 100<br>```<br><br>```<br>({{[Query 1]}} * 10) + {{[Query 2]}}<br>```<br>This will take the<br><br>You can also use the query names as the variable in the formula.|
 |timeRange|[InsightTimeRange](#schemainsighttimerange)|false|none|none|
 |groupBy|string|false|none|This is the group by column for the insight when table is `call`.<br>These are the columns to group the results by.<br>All results are grouped by the time range step by default.|
-|queries|[[JSONQueryOnCallTableWithStringTypeColumn](#schemajsonqueryoncalltablewithstringtypecolumn) \| [JSONQueryOnCallTableWithNumberTypeColumn](#schemajsonqueryoncalltablewithnumbertypecolumn) \| [JSONQueryOnCallTableWithStructuredOutputColumn](#schemajsonqueryoncalltablewithstructuredoutputcolumn)]|true|none|These are the queries to run to generate the insight.|
+|queries|[[JSONQueryOnCallTableWithStringTypeColumn](#schemajsonqueryoncalltablewithstringtypecolumn) \| [JSONQueryOnCallTableWithNumberTypeColumn](#schemajsonqueryoncalltablewithnumbertypecolumn) \| [JSONQueryOnCallTableWithStructuredOutputColumn](#schemajsonqueryoncalltablewithstructuredoutputcolumn) \| [JSONQueryOnEventsTable](#schemajsonqueryoneventstable)]|true|none|These are the queries to run to generate the insight.|
 
 #### Enumerated Values
 
@@ -333519,7 +335380,7 @@ bearer
 |metadata|object|false|none|This is the metadata for the insight.|
 |timeRange|[InsightTimeRangeWithStep](#schemainsighttimerangewithstep)|false|none|none|
 |groupBy|string|false|none|This is the group by column for the insight when table is `call`.<br>These are the columns to group the results by.<br>All results are grouped by the time range step by default.|
-|queries|[[JSONQueryOnCallTableWithStringTypeColumn](#schemajsonqueryoncalltablewithstringtypecolumn) \| [JSONQueryOnCallTableWithNumberTypeColumn](#schemajsonqueryoncalltablewithnumbertypecolumn) \| [JSONQueryOnCallTableWithStructuredOutputColumn](#schemajsonqueryoncalltablewithstructuredoutputcolumn)]|true|none|These are the queries to run to generate the insight.|
+|queries|[[JSONQueryOnCallTableWithStringTypeColumn](#schemajsonqueryoncalltablewithstringtypecolumn) \| [JSONQueryOnCallTableWithNumberTypeColumn](#schemajsonqueryoncalltablewithnumbertypecolumn) \| [JSONQueryOnCallTableWithStructuredOutputColumn](#schemajsonqueryoncalltablewithstructuredoutputcolumn) \| [JSONQueryOnEventsTable](#schemajsonqueryoneventstable)]|true|none|These are the queries to run to generate the insight.|
 
 #### Enumerated Values
 
@@ -333580,7 +335441,7 @@ bearer
 |type|string|true|none|This is the type of the Insight.<br>It is required to be `text` to create a text insight.|
 |formula|object|false|none|Formulas are mathematical expressions applied on the data returned by the queries to transform them before being used to create the insight.<br>The formulas needs to be a valid mathematical expression, supported by MathJS - https://mathjs.org/docs/expressions/syntax.html<br>A formula is created by using the query names as the variable.<br>The formulas must contain at least one query name in the LiquidJS format {{query_name}} or {{['query name']}} which will be substituted with the query result.<br>For example, if you have 2 queries, 'Was Booking Made' and 'Average Call Duration', you can create a formula like this:<br>```<br>{{['Query 1']}} / {{['Query 2']}} * 100<br>```<br><br>```<br>({{[Query 1]}} * 10) + {{[Query 2]}}<br>```<br>This will take the<br><br>You can also use the query names as the variable in the formula.|
 |timeRange|[InsightTimeRange](#schemainsighttimerange)|false|none|none|
-|queries|[[JSONQueryOnCallTableWithStringTypeColumn](#schemajsonqueryoncalltablewithstringtypecolumn) \| [JSONQueryOnCallTableWithNumberTypeColumn](#schemajsonqueryoncalltablewithnumbertypecolumn) \| [JSONQueryOnCallTableWithStructuredOutputColumn](#schemajsonqueryoncalltablewithstructuredoutputcolumn)]|true|none|These are the queries to run to generate the insight.<br>For Text Insights, we only allow a single query, or require a formula if multiple queries are provided|
+|queries|[[JSONQueryOnCallTableWithStringTypeColumn](#schemajsonqueryoncalltablewithstringtypecolumn) \| [JSONQueryOnCallTableWithNumberTypeColumn](#schemajsonqueryoncalltablewithnumbertypecolumn) \| [JSONQueryOnCallTableWithStructuredOutputColumn](#schemajsonqueryoncalltablewithstructuredoutputcolumn) \| [JSONQueryOnEventsTable](#schemajsonqueryoneventstable)]|true|none|These are the queries to run to generate the insight.<br>For Text Insights, we only allow a single query, or require a formula if multiple queries are provided|
 
 #### Enumerated Values
 
@@ -333665,7 +335526,7 @@ bearer
 |table|string|true|none|This is the table that will be queried.|
 |filters|[[FilterStringTypeColumnOnCallTable](#schemafilterstringtypecolumnoncalltable) \| [FilterStringArrayTypeColumnOnCallTable](#schemafilterstringarraytypecolumnoncalltable) \| [FilterNumberTypeColumnOnCallTable](#schemafilternumbertypecolumnoncalltable) \| [FilterNumberArrayTypeColumnOnCallTable](#schemafilternumberarraytypecolumnoncalltable) \| [FilterDateTypeColumnOnCallTable](#schemafilterdatetypecolumnoncalltable) \| [FilterStructuredOutputColumnOnCallTable](#schemafilterstructuredoutputcolumnoncalltable)]|false|none|This is the filters to apply to the insight.<br>The discriminator automatically selects the correct filter type based on column and operator.|
 |column|string|true|none|This is the column that will be queried in the selected table.<br>Available columns depend on the selected table.<br>Number Type columns are columns where the rows store Number data|
-|operation|string|true|none|This is the aggregation operation to perform on the column.<br>When the column is a number type, the operation must be one of the following:<br>- average<br>- sum<br>- min<br>- max|
+|operation|string|true|none|This is the aggregation operation to perform on the column.<br>When the column is a number type, the operation must be one of the following:<br>- count<br>- average<br>- sum<br>- min<br>- max|
 |name|string|false|none|This is the name of the query.<br>It will be used to label the query in the insight board on the UI.|
 
 #### Enumerated Values
@@ -333682,6 +335543,7 @@ bearer
 |column|averageTurnLatency|
 |column|averageEndpointingLatency|
 |column|artifact.structuredOutputs[OutputID]|
+|operation|count|
 |operation|average|
 |operation|sum|
 |operation|min|
@@ -333747,6 +335609,7 @@ bearer
   "type": "vapiql-json",
   "table": "events",
   "on": "assistant.model.requestFailed",
+  "column": "artifact.structuredOutputs[1016c445-5a16-410d-a744-3bc07d8b1508]",
   "operation": "count",
   "filters": [
     {
@@ -333766,6 +335629,7 @@ bearer
 |type|string|true|none|This is the type of query. Only allowed type is "vapiql-json".|
 |table|string|true|none|This is the table that will be queried.<br>Must be "events" for event-based insights.|
 |on|string|true|none|The event type to query|
+|column|string|false|none|The structured output an evaluation monitor tracks, as artifact.structuredOutputs[OutputID]|
 |operation|string|true|none|This is the operation to perform on matching events.<br>- "count": Returns the raw count of matching events<br>- "percentage": Returns (count of matching events / total calls) * 100|
 |filters|[[EventsTableStringCondition](#schemaeventstablestringcondition) \| [EventsTableNumberCondition](#schemaeventstablenumbercondition) \| [EventsTableBooleanCondition](#schemaeventstablebooleancondition)]|false|none|These are the filters to apply to the events query.<br>Each filter filters on a field specific to the event type.|
 |name|string|false|none|This is the name of the query.<br>It will be used to label the query in the insight board on the UI.|
@@ -334354,7 +336218,7 @@ bearer
 |formulas|[[InsightFormula](#schemainsightformula)]|false|none|Formulas are mathematical expressions applied on the data returned by the queries to transform them before being used to create the insight.<br>The formulas needs to be a valid mathematical expression, supported by MathJS - https://mathjs.org/docs/expressions/syntax.html<br>A formula is created by using the query names as the variable.<br>The formulas must contain at least one query name in the LiquidJS format {{query_name}} or {{['query name']}} which will be substituted with the query result.<br>For example, if you have 2 queries, 'Was Booking Made' and 'Average Call Duration', you can create a formula like this:<br>```<br>{{['Query 1']}} / {{['Query 2']}} * 100<br>```<br><br>```<br>({{[Query 1]}} * 10) + {{[Query 2]}}<br>```<br>This will take the<br><br>You can also use the query names as the variable in the formula.|
 |timeRange|[InsightTimeRange](#schemainsighttimerange)|false|none|none|
 |groupBy|string|false|none|This is the group by column for the insight when table is `call`.<br>These are the columns to group the results by.<br>All results are grouped by the time range step by default.|
-|queries|[[JSONQueryOnCallTableWithStringTypeColumn](#schemajsonqueryoncalltablewithstringtypecolumn) \| [JSONQueryOnCallTableWithNumberTypeColumn](#schemajsonqueryoncalltablewithnumbertypecolumn) \| [JSONQueryOnCallTableWithStructuredOutputColumn](#schemajsonqueryoncalltablewithstructuredoutputcolumn)]|true|none|These are the queries to run to generate the insight.|
+|queries|[[JSONQueryOnCallTableWithStringTypeColumn](#schemajsonqueryoncalltablewithstringtypecolumn) \| [JSONQueryOnCallTableWithNumberTypeColumn](#schemajsonqueryoncalltablewithnumbertypecolumn) \| [JSONQueryOnCallTableWithStructuredOutputColumn](#schemajsonqueryoncalltablewithstructuredoutputcolumn) \| [JSONQueryOnEventsTable](#schemajsonqueryoneventstable)]|true|none|These are the queries to run to generate the insight.|
 
 #### Enumerated Values
 
@@ -334433,7 +336297,7 @@ bearer
 |metadata|object|false|none|This is the metadata for the insight.|
 |timeRange|[InsightTimeRangeWithStep](#schemainsighttimerangewithstep)|false|none|none|
 |groupBy|string|false|none|This is the group by column for the insight when table is `call`.<br>These are the columns to group the results by.<br>All results are grouped by the time range step by default.|
-|queries|[[JSONQueryOnCallTableWithStringTypeColumn](#schemajsonqueryoncalltablewithstringtypecolumn) \| [JSONQueryOnCallTableWithNumberTypeColumn](#schemajsonqueryoncalltablewithnumbertypecolumn) \| [JSONQueryOnCallTableWithStructuredOutputColumn](#schemajsonqueryoncalltablewithstructuredoutputcolumn)]|true|none|These are the queries to run to generate the insight.|
+|queries|[[JSONQueryOnCallTableWithStringTypeColumn](#schemajsonqueryoncalltablewithstringtypecolumn) \| [JSONQueryOnCallTableWithNumberTypeColumn](#schemajsonqueryoncalltablewithnumbertypecolumn) \| [JSONQueryOnCallTableWithStructuredOutputColumn](#schemajsonqueryoncalltablewithstructuredoutputcolumn) \| [JSONQueryOnEventsTable](#schemajsonqueryoneventstable)]|true|none|These are the queries to run to generate the insight.|
 
 #### Enumerated Values
 
@@ -334494,7 +336358,7 @@ bearer
 |type|string|true|none|This is the type of the Insight.<br>It is required to be `text` to create a text insight.|
 |formula|object|false|none|Formulas are mathematical expressions applied on the data returned by the queries to transform them before being used to create the insight.<br>The formulas needs to be a valid mathematical expression, supported by MathJS - https://mathjs.org/docs/expressions/syntax.html<br>A formula is created by using the query names as the variable.<br>The formulas must contain at least one query name in the LiquidJS format {{query_name}} or {{['query name']}} which will be substituted with the query result.<br>For example, if you have 2 queries, 'Was Booking Made' and 'Average Call Duration', you can create a formula like this:<br>```<br>{{['Query 1']}} / {{['Query 2']}} * 100<br>```<br><br>```<br>({{[Query 1]}} * 10) + {{[Query 2]}}<br>```<br>This will take the<br><br>You can also use the query names as the variable in the formula.|
 |timeRange|[InsightTimeRange](#schemainsighttimerange)|false|none|none|
-|queries|[[JSONQueryOnCallTableWithStringTypeColumn](#schemajsonqueryoncalltablewithstringtypecolumn) \| [JSONQueryOnCallTableWithNumberTypeColumn](#schemajsonqueryoncalltablewithnumbertypecolumn) \| [JSONQueryOnCallTableWithStructuredOutputColumn](#schemajsonqueryoncalltablewithstructuredoutputcolumn)]|true|none|These are the queries to run to generate the insight.<br>For Text Insights, we only allow a single query, or require a formula if multiple queries are provided|
+|queries|[[JSONQueryOnCallTableWithStringTypeColumn](#schemajsonqueryoncalltablewithstringtypecolumn) \| [JSONQueryOnCallTableWithNumberTypeColumn](#schemajsonqueryoncalltablewithnumbertypecolumn) \| [JSONQueryOnCallTableWithStructuredOutputColumn](#schemajsonqueryoncalltablewithstructuredoutputcolumn) \| [JSONQueryOnEventsTable](#schemajsonqueryoneventstable)]|true|none|These are the queries to run to generate the insight.<br>For Text Insights, we only allow a single query, or require a formula if multiple queries are provided|
 
 #### Enumerated Values
 
@@ -335553,6 +337417,7 @@ bearer
 {
   "provider": "anthropic",
   "model": "claude-3-opus-20240229",
+  "reasoningEffort": "none",
   "thinking": {
     "type": "enabled",
     "budgetTokens": 1024
@@ -335569,7 +337434,8 @@ bearer
 |---|---|---|---|---|
 |provider|string|true|none|This is the provider of the model (`anthropic`).|
 |model|string|true|none|This is the specific model that will be used.|
-|thinking|object|false|none|This is the optional configuration for Anthropic's thinking feature.<br><br>- If provided, `maxTokens` must be greater than `thinking.budgetTokens`.|
+|reasoningEffort|string|false|none|Reasoning effort for the judge on claude-haiku-5-5. `none` turns thinking<br>off. `low` to `max` let the judge think before it submits its verdict.<br>Unset means `none`. Rejected for every other model.|
+|thinking|object|false|none|This is the optional configuration for Anthropic's thinking feature.<br>claude-haiku-5-5 uses `reasoningEffort` instead.<br><br>- If provided, `maxTokens` must be greater than `thinking.budgetTokens`.|
 |temperature|number|false|none|This is the temperature of the model. For LLM-as-a-judge, it's recommended to set it between 0 - 0.3 to avoid hallucinations and ensure the model judges the output correctly based on the instructions.|
 |maxTokens|number|false|none|This is the max tokens of the model.<br>If your Judge instructions return `true` or `false` takes only 1 token (as per the OpenAI Tokenizer), and therefore is recommended to set it to a low number to force the model to return a short response.|
 |messages|[object]|true|none|These are the messages which will instruct the AI Judge on how to evaluate the assistant message.<br>The LLM-Judge must respond with "pass" or "fail" to indicate if the assistant message passes the eval.<br><br>To access the messages in the mock conversation, use the LiquidJS variable `{{messages}}`.<br>The assistant message to be evaluated will be passed as the last message in the `messages` array and can be accessed using `{{messages[-1]}}`.<br><br>It is recommended to use the system message to instruct the LLM how to evaluate the assistant message, and then use the first user message to pass the assistant message to be evaluated.|
@@ -335595,6 +337461,12 @@ bearer
 |model|claude-sonnet-5|
 |model|claude-haiku-4-5-20251001|
 |model|claude-haiku-5-5|
+|reasoningEffort|none|
+|reasoningEffort|low|
+|reasoningEffort|medium|
+|reasoningEffort|high|
+|reasoningEffort|xhigh|
+|reasoningEffort|max|
 
 <h2 id="tocS_EvalGoogleModel">EvalGoogleModel</h2>
 <!-- backwards compatibility -->
@@ -338773,7 +340645,9 @@ bearer
   "goalVersion": "string",
   "callEndedAt": "1970-01-01T00:00:00Z",
   "processingState": "pending",
-  "goalOutcome": "goal_met"
+  "goalOutcome": "goal_met",
+  "assistantVersionId": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "assistantVersion": "string"
 }
 ```
 
@@ -338787,6 +340661,8 @@ bearer
 |callEndedAt|string(date-time)|true|none|none|
 |processingState|string|true|none|none|
 |goalOutcome|string|false|none|Absent until a semantic result is accepted. Processing failures are never goal_not_met.|
+|assistantVersionId|string(uuid)|false|none|The assistant version the call ran on. Absent when the call ran on no version.|
+|assistantVersion|string|false|none|That version's label, such as v3. Absent when the call ran on no version or the label was not available when the call was registered.|
 
 #### Enumerated Values
 
@@ -338800,7 +340676,7 @@ bearer
 |processingState|completed|
 |goalOutcome|goal_met|
 |goalOutcome|goal_not_met|
-|goalOutcome|ineligible|
+|goalOutcome|not_applicable|
 
 <h2 id="tocS_GoalEvaluationCurrentCallResponseDTO">GoalEvaluationCurrentCallResponseDTO</h2>
 <!-- backwards compatibility -->
@@ -338820,7 +340696,9 @@ bearer
     "goalVersion": "string",
     "callEndedAt": "1970-01-01T00:00:00Z",
     "processingState": "pending",
-    "goalOutcome": "goal_met"
+    "goalOutcome": "goal_met",
+    "assistantVersionId": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+    "assistantVersion": "string"
   }
 }
 ```
@@ -338831,7 +340709,7 @@ bearer
 |---|---|---|---|---|
 |callId|string(uuid)|true|none|none|
 |goalId|string(uuid)|true|none|none|
-|currentGoalVersion|string|false|none|Current revision of the requested goal for a visible call. Absent when that goal does not belong to the source assistant or the source is hidden. An absent evaluation does not imply queued or pending work.|
+|currentGoalVersion|string|false|none|Current revision of the requested goal for a visible call with a registered evaluation. Absent when the call has no registered evaluation, when that goal does not belong to the source assistant, or when the source is hidden. An absent evaluation does not imply queued or pending work.|
 |currentEvaluation|[GoalEvaluationCurrentDTO](#schemagoalevaluationcurrentdto)|false|none|none|
 
 <h2 id="tocS_GoalEvaluationCurrentCallRequestDTO">GoalEvaluationCurrentCallRequestDTO</h2>
@@ -338899,7 +340777,9 @@ bearer
         "goalVersion": "string",
         "callEndedAt": "1970-01-01T00:00:00Z",
         "processingState": "pending",
-        "goalOutcome": "goal_met"
+        "goalOutcome": "goal_met",
+        "assistantVersionId": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+        "assistantVersion": "string"
       }
     }
   ]
@@ -338911,6 +340791,333 @@ bearer
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |results|[[GoalEvaluationCurrentCallResponseDTO](#schemagoalevaluationcurrentcallresponsedto)]|true|none|One entry per requested call/goal pair, in request order, including entries without a current evaluation.|
+
+<h2 id="tocS_CallHealthDashboardAffectedCallDTO">CallHealthDashboardAffectedCallDTO</h2>
+<!-- backwards compatibility -->
+<a id="schemacallhealthdashboardaffectedcalldto"></a>
+<a id="schema_CallHealthDashboardAffectedCallDTO"></a>
+<a id="tocScallhealthdashboardaffectedcalldto"></a>
+<a id="tocscallhealthdashboardaffectedcalldto"></a>
+
+```json
+{
+  "callId": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "assistantId": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "callTime": "1970-01-01T00:00:00Z",
+  "callAvailability": "available",
+  "assistantVersionId": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "assistantVersion": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|callId|string(uuid)|true|none|none|
+|assistantId|string(uuid)|true|none|none|
+|callTime|string(date-time)|true|none|Call completion time (endedAt), never startedAt.|
+|callAvailability|string|true|none|none|
+|assistantVersionId|string(uuid)|false|none|The assistant version the call ran on; absent when it ran on none.|
+|assistantVersion|string|false|none|That version's label, such as v3; absent when the call ran on none or the label was unavailable at registration.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|callAvailability|available|
+|callAvailability|unavailable|
+
+<h2 id="tocS_CallHealthDashboardAffectedCallsResponseDTO">CallHealthDashboardAffectedCallsResponseDTO</h2>
+<!-- backwards compatibility -->
+<a id="schemacallhealthdashboardaffectedcallsresponsedto"></a>
+<a id="schema_CallHealthDashboardAffectedCallsResponseDTO"></a>
+<a id="tocScallhealthdashboardaffectedcallsresponsedto"></a>
+<a id="tocscallhealthdashboardaffectedcallsresponsedto"></a>
+
+```json
+{
+  "results": [
+    {
+      "callId": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "assistantId": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "callTime": "1970-01-01T00:00:00Z",
+      "callAvailability": "available",
+      "assistantVersionId": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "assistantVersion": "string"
+    }
+  ],
+  "nextCursor": "string",
+  "coverage": {
+    "asOf": "1970-01-01T00:00:00Z",
+    "intake": {
+      "deliveryMode": "bestEffort",
+      "endToEndCoverage": "unknown"
+    },
+    "goal": {
+      "pending": 0,
+      "unavailable": 0,
+      "skipped": 0,
+      "error": 0,
+      "excluded": 0
+    },
+    "classification": {
+      "pending": 0,
+      "unavailable": 0,
+      "skipped": 0,
+      "error": 0,
+      "excluded": 0,
+      "complete": 0,
+      "partial": 0
+    },
+    "assignment": {
+      "pending": 0,
+      "unmatched": 0,
+      "skipped": 0,
+      "unavailable": 0,
+      "error": 0,
+      "coverageGapCount": 0
+    },
+    "discovery": {
+      "pendingIssueCategoryCount": 0,
+      "blockedIssueCategoryCount": 0
+    },
+    "sweep": {
+      "state": "idle"
+    },
+    "countsComplete": true
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|results|[[CallHealthDashboardAffectedCallDTO](#schemacallhealthdashboardaffectedcalldto)]|true|none|none|
+|nextCursor|string|false|none|none|
+|coverage|[CallHealthDashboardCoverageDTO](#schemacallhealthdashboardcoveragedto)|true|none|none|
+
+<h2 id="tocS_CallHealthDashboardCallIssueDTO">CallHealthDashboardCallIssueDTO</h2>
+<!-- backwards compatibility -->
+<a id="schemacallhealthdashboardcallissuedto"></a>
+<a id="schema_CallHealthDashboardCallIssueDTO"></a>
+<a id="tocScallhealthdashboardcallissuedto"></a>
+<a id="tocscallhealthdashboardcallissuedto"></a>
+
+```json
+{
+  "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "name": "string",
+  "status": "active",
+  "rowVersion": 0,
+  "categoryKey": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string(uuid)|true|none|none|
+|name|string|true|none|none|
+|status|string|true|none|none|
+|rowVersion|integer|true|none|none|
+|categoryKey|string|true|none|The ranking category the issue belongs to.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|status|active|
+|status|resolved|
+|status|dismissed|
+
+<h2 id="tocS_CallHealthDashboardCallResponseDTO">CallHealthDashboardCallResponseDTO</h2>
+<!-- backwards compatibility -->
+<a id="schemacallhealthdashboardcallresponsedto"></a>
+<a id="schema_CallHealthDashboardCallResponseDTO"></a>
+<a id="tocScallhealthdashboardcallresponsedto"></a>
+<a id="tocscallhealthdashboardcallresponsedto"></a>
+
+```json
+{
+  "callId": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "assistantId": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "goalId": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "assistantVersionId": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "assistantVersion": "string",
+  "assessmentState": "pending",
+  "primaryCategoryKey": "string",
+  "otherCategoryKeys": [
+    "string"
+  ],
+  "issues": [
+    {
+      "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "name": "string",
+      "status": "active",
+      "rowVersion": 0,
+      "categoryKey": "string"
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|callId|string(uuid)|true|none|none|
+|assistantId|string(uuid)|true|none|none|
+|goalId|string(uuid)|true|none|Selected goal identity.|
+|assistantVersionId|string(uuid)|false|none|The assistant version the call ran on; absent when it ran on none.|
+|assistantVersion|string|false|none|That version's label, such as v3; absent when the call ran on none or the label was unavailable at registration.|
+|assessmentState|string|true|none|Classification state, named as in the coverage `classification` counters.|
+|primaryCategoryKey|string|false|none|The call's main failure category; absent when classification selected none.|
+|otherCategoryKeys|[string]|true|none|The other selected categories, in ascending key order.|
+|issues|[[CallHealthDashboardCallIssueDTO](#schemacallhealthdashboardcallissuedto)]|true|none|Visible issues the call joined, in ascending ID order.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|assessmentState|pending|
+|assessmentState|unavailable|
+|assessmentState|skipped|
+|assessmentState|error|
+|assessmentState|excluded|
+|assessmentState|complete|
+|assessmentState|partial|
+
+<h2 id="tocS_CallHealthDashboardTriageRequestDTO">CallHealthDashboardTriageRequestDTO</h2>
+<!-- backwards compatibility -->
+<a id="schemacallhealthdashboardtriagerequestdto"></a>
+<a id="schema_CallHealthDashboardTriageRequestDTO"></a>
+<a id="tocScallhealthdashboardtriagerequestdto"></a>
+<a id="tocscallhealthdashboardtriagerequestdto"></a>
+
+```json
+{
+  "action": "resolve",
+  "expectedRowVersion": 0,
+  "comment": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|action|string|true|none|none|
+|expectedRowVersion|integer|true|none|none|
+|comment|string|false|none|Trimmed; at most 2,048 UTF-16 code units. Empty comments are omitted from activity.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|action|resolve|
+|action|dismiss|
+|action|restore|
+
+<h2 id="tocS_CallHealthDashboardIssueReferenceDTO">CallHealthDashboardIssueReferenceDTO</h2>
+<!-- backwards compatibility -->
+<a id="schemacallhealthdashboardissuereferencedto"></a>
+<a id="schema_CallHealthDashboardIssueReferenceDTO"></a>
+<a id="tocScallhealthdashboardissuereferencedto"></a>
+<a id="tocscallhealthdashboardissuereferencedto"></a>
+
+```json
+{
+  "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "name": "string",
+  "status": "active",
+  "rowVersion": 0
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string(uuid)|true|none|none|
+|name|string|true|none|none|
+|status|string|true|none|none|
+|rowVersion|integer|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|status|active|
+|status|resolved|
+|status|dismissed|
+
+<h2 id="tocS_CallHealthDashboardIssueActivityDTO">CallHealthDashboardIssueActivityDTO</h2>
+<!-- backwards compatibility -->
+<a id="schemacallhealthdashboardissueactivitydto"></a>
+<a id="schema_CallHealthDashboardIssueActivityDTO"></a>
+<a id="tocScallhealthdashboardissueactivitydto"></a>
+<a id="tocscallhealthdashboardissueactivitydto"></a>
+
+```json
+{
+  "rowVersion": 1,
+  "action": "resolve",
+  "actorUserId": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "comment": "string",
+  "createdAt": "1970-01-01T00:00:00Z"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|rowVersion|integer|true|none|Existing issue version after this transition; also the per-issue activity identity.|
+|action|string|true|none|User resolve, dismiss or restore, or the system reopen written when a new match reopens a resolved issue.|
+|actorUserId|string(uuid)|false|none|Omitted for private-key actors and system entries; names/emails are not copied.|
+|comment|string|false|none|Optional team-visible comment; omitted after privacy scrubbing.|
+|createdAt|string(date-time)|true|none|Database action time; ordering uses rowVersion rather than rounded timestamps.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|action|resolve|
+|action|dismiss|
+|action|restore|
+|action|reopen|
+
+<h2 id="tocS_CallHealthDashboardIssueActivityListResponseDTO">CallHealthDashboardIssueActivityListResponseDTO</h2>
+<!-- backwards compatibility -->
+<a id="schemacallhealthdashboardissueactivitylistresponsedto"></a>
+<a id="schema_CallHealthDashboardIssueActivityListResponseDTO"></a>
+<a id="tocScallhealthdashboardissueactivitylistresponsedto"></a>
+<a id="tocscallhealthdashboardissueactivitylistresponsedto"></a>
+
+```json
+{
+  "results": [
+    {
+      "rowVersion": 1,
+      "action": "resolve",
+      "actorUserId": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "comment": "string",
+      "createdAt": "1970-01-01T00:00:00Z"
+    }
+  ],
+  "nextCursor": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|results|[[CallHealthDashboardIssueActivityDTO](#schemacallhealthdashboardissueactivitydto)]|true|none|Newest issue versions first; this is shared team activity, not per-user feedback.|
+|nextCursor|string|false|none|Signed continuation bound to the authenticated organization, issue and activity contract.|
 
 <h2 id="tocS_CreateOrgDTO">CreateOrgDTO</h2>
 <!-- backwards compatibility -->
@@ -339183,7 +341390,9 @@ bearer
   "minutesIncludedResetFrequency": "monthly",
   "rbacEnabled": true,
   "platformFee": 0,
-  "billingCollectionMethod": "charge_automatically"
+  "billingCollectionMethod": "charge_automatically",
+  "demoStartedAt": "1970-01-01T00:00:00Z",
+  "demoEndedAt": "1970-01-01T00:00:00Z"
 }
 ```
 
@@ -339234,6 +341443,8 @@ bearer
 |rbacEnabled|boolean|false|none|This is the Role Based Access Control (RBAC) enabled flag for the subscription.|
 |platformFee|number|false|none|This is the platform fee for the subscription.|
 |billingCollectionMethod|string \| null|false|none|This is how payment is collected for the subscription: charged to the card<br>on file, or invoiced.|
+|demoStartedAt|string(date-time) \| null|false|none|This is when the current or most recent demo on this subscription started,<br>either when Vapi created the account as a demo or when Vapi made an<br>existing pay-as-you-go account one. Not set if it was never a demo.|
+|demoEndedAt|string(date-time) \| null|false|none|This is when that demo ended, by an upgrade or by Vapi. Not set while the<br>demo is active, and cleared when an ended demo starts again. A demo is<br>active while `demoStartedAt` is set, this is not, and the subscription is<br>pay-as-you-go.|
 
 #### Enumerated Values
 
@@ -339247,6 +341458,7 @@ bearer
 |type|scale|
 |status|active|
 |status|frozen|
+|status|blocked|
 |minutesIncludedResetFrequency|monthly|
 |minutesIncludedResetFrequency|annually|
 |billingCollectionMethod|charge_automatically|
@@ -339319,7 +341531,9 @@ bearer
     "minutesIncludedResetFrequency": "monthly",
     "rbacEnabled": true,
     "platformFee": 0,
-    "billingCollectionMethod": "charge_automatically"
+    "billingCollectionMethod": "charge_automatically",
+    "demoStartedAt": "1970-01-01T00:00:00Z",
+    "demoEndedAt": "1970-01-01T00:00:00Z"
   },
   "subscriptionId": "string",
   "id": "string",
@@ -340530,12 +342744,12 @@ bearer
   ],
   "outboundAuthenticationPlan": {
     "authPassword": "string",
-    "authUsername": "string",
     "sipRegisterPlan": {
       "domain": "string",
       "username": "string",
       "realm": "string"
-    }
+    },
+    "authUsername": "string"
   },
   "outboundLeadingPlusEnabled": true,
   "techPrefix": "string",
@@ -341216,6 +343430,7 @@ bearer
   "publicKey": "string",
   "apiKey": "string",
   "apiUrl": "string",
+  "serverVersion": "string",
   "id": "string",
   "orgId": "string",
   "createdAt": "1970-01-01T00:00:00Z",
@@ -341232,6 +343447,7 @@ bearer
 |publicKey|string|true|none|The public key for Langfuse project. Eg: pk-lf-...|
 |apiKey|string|true|none|The secret key for Langfuse project. Eg: sk-lf-... .This is not returned in the API.|
 |apiUrl|string|true|none|The host URL for Langfuse project. Eg: https://cloud.langfuse.com|
+|serverVersion|string|false|none|The semver version of your Langfuse server, e.g. 3.63.0. Detected from your server's /api/public/health endpoint at save time whenever possible, and a detected version always wins; supply it only when that endpoint is not reachable from Vapi.|
 |id|string|true|none|This is the unique identifier for the credential.|
 |orgId|string|true|none|This is the unique identifier for the org that this credential belongs to.|
 |createdAt|string(date-time)|true|none|This is the ISO 8601 date-time string of when the credential was created.|
@@ -341292,8 +343508,8 @@ bearer
 {
   "provider": "make",
   "teamId": "string",
-  "region": "string",
   "apiKey": "string",
+  "region": "string",
   "id": "string",
   "orgId": "string",
   "createdAt": "1970-01-01T00:00:00Z",
@@ -341308,8 +343524,8 @@ bearer
 |---|---|---|---|---|
 |provider|string|true|none|none|
 |teamId|string|true|none|Team ID|
-|region|string|true|none|Region of your application. For example: eu1, eu2, us1, us2|
 |apiKey|string|true|none|This is not returned in the API.|
+|region|string|true|none|Region of your application. For example: eu1, eu2, us1, us2|
 |id|string|true|none|This is the unique identifier for the credential.|
 |orgId|string|true|none|This is the unique identifier for the org that this credential belongs to.|
 |createdAt|string(date-time)|true|none|This is the ISO 8601 date-time string of when the credential was created.|
@@ -341854,6 +344070,43 @@ bearer
 |Property|Value|
 |---|---|
 |provider|smallest-ai|
+
+<h2 id="tocS_Reson8Credential">Reson8Credential</h2>
+<!-- backwards compatibility -->
+<a id="schemareson8credential"></a>
+<a id="schema_Reson8Credential"></a>
+<a id="tocSreson8credential"></a>
+<a id="tocsreson8credential"></a>
+
+```json
+{
+  "provider": "reson8",
+  "apiKey": "string",
+  "id": "string",
+  "orgId": "string",
+  "createdAt": "1970-01-01T00:00:00Z",
+  "updatedAt": "1970-01-01T00:00:00Z",
+  "name": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|provider|string|true|none|none|
+|apiKey|string|true|none|This is not returned in the API.|
+|id|string|true|none|This is the unique identifier for the credential.|
+|orgId|string|true|none|This is the unique identifier for the org that this credential belongs to.|
+|createdAt|string(date-time)|true|none|This is the ISO 8601 date-time string of when the credential was created.|
+|updatedAt|string(date-time)|true|none|This is the ISO 8601 date-time string of when the assistant was last updated.|
+|name|string|false|none|This is the name of credential. This is just for your reference.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|provider|reson8|
 
 <h2 id="tocS_SonioxCredential">SonioxCredential</h2>
 <!-- backwards compatibility -->
@@ -342915,6 +345168,35 @@ bearer
 |---|---|
 |provider|s3-compatible|
 
+<h2 id="tocS_CreateReson8CredentialDTO">CreateReson8CredentialDTO</h2>
+<!-- backwards compatibility -->
+<a id="schemacreatereson8credentialdto"></a>
+<a id="schema_CreateReson8CredentialDTO"></a>
+<a id="tocScreatereson8credentialdto"></a>
+<a id="tocscreatereson8credentialdto"></a>
+
+```json
+{
+  "provider": "reson8",
+  "apiKey": "string",
+  "name": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|provider|string|true|none|none|
+|apiKey|string|true|none|This is not returned in the API.|
+|name|string|false|none|This is the name of credential. This is just for your reference.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|provider|reson8|
+
 <h2 id="tocS_CreateSonioxCredentialDTO">CreateSonioxCredentialDTO</h2>
 <!-- backwards compatibility -->
 <a id="schemacreatesonioxcredentialdto"></a>
@@ -343455,12 +345737,12 @@ bearer
   ],
   "outboundAuthenticationPlan": {
     "authPassword": "string",
-    "authUsername": "string",
     "sipRegisterPlan": {
       "domain": "string",
       "username": "string",
       "realm": "string"
-    }
+    },
+    "authUsername": "string"
   },
   "outboundLeadingPlusEnabled": true,
   "techPrefix": "string",
@@ -343988,6 +346270,7 @@ bearer
   "publicKey": "string",
   "apiKey": "string",
   "apiUrl": "string",
+  "serverVersion": "string",
   "name": "string"
 }
 ```
@@ -344000,6 +346283,7 @@ bearer
 |publicKey|string|false|none|The public key for Langfuse project. Eg: pk-lf-...|
 |apiKey|string|false|none|The secret key for Langfuse project. Eg: sk-lf-... .This is not returned in the API.|
 |apiUrl|string|false|none|The host URL for Langfuse project. Eg: https://cloud.langfuse.com|
+|serverVersion|string|false|none|The semver version of your Langfuse server, e.g. 3.63.0. Detected from your server's /api/public/health endpoint at save time whenever possible, and a detected version always wins; supply it only when that endpoint is not reachable from Vapi.|
 |name|string|false|none|This is the name of credential. This is just for your reference.|
 
 #### Enumerated Values
@@ -344908,6 +347192,35 @@ bearer
 |---|---|
 |provider|slack-webhook|
 
+<h2 id="tocS_UpdateReson8CredentialDTO">UpdateReson8CredentialDTO</h2>
+<!-- backwards compatibility -->
+<a id="schemaupdatereson8credentialdto"></a>
+<a id="schema_UpdateReson8CredentialDTO"></a>
+<a id="tocSupdatereson8credentialdto"></a>
+<a id="tocsupdatereson8credentialdto"></a>
+
+```json
+{
+  "provider": "reson8",
+  "apiKey": "string",
+  "name": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|provider|string|false|none|none|
+|apiKey|string|false|none|This is not returned in the API.|
+|name|string|false|none|This is the name of credential. This is just for your reference.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|provider|reson8|
+
 <h2 id="tocS_UpdateSonioxCredentialDTO">UpdateSonioxCredentialDTO</h2>
 <!-- backwards compatibility -->
 <a id="schemaupdatesonioxcredentialdto"></a>
@@ -344980,7 +347293,7 @@ bearer
 |---|---|---|---|---|
 |endUserEmail|string \| null|false|none|none|
 |endUserId|string|true|none|none|
-|organizationId|string|true|none|none|
+|organizationId|string|false|none|none|
 |tags|object|false|none|none|
 
 <h2 id="tocS_CredentialSessionError">CredentialSessionError</h2>
@@ -345226,6 +347539,48 @@ bearer
 |Property|Value|
 |---|---|
 |type|aws-sts|
+
+<h2 id="tocS_LangfuseServerProbeDTO">LangfuseServerProbeDTO</h2>
+<!-- backwards compatibility -->
+<a id="schemalangfuseserverprobedto"></a>
+<a id="schema_LangfuseServerProbeDTO"></a>
+<a id="tocSlangfuseserverprobedto"></a>
+<a id="tocslangfuseserverprobedto"></a>
+
+```json
+{
+  "apiUrl": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|apiUrl|string|true|none|The Langfuse host URL to probe, e.g. https://cloud.langfuse.com. Only the unauthenticated health endpoint is read; no keys are involved.|
+
+<h2 id="tocS_LangfuseServerProbeResponse">LangfuseServerProbeResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemalangfuseserverproberesponse"></a>
+<a id="schema_LangfuseServerProbeResponse"></a>
+<a id="tocSlangfuseserverproberesponse"></a>
+<a id="tocslangfuseserverproberesponse"></a>
+
+```json
+{
+  "reachable": true,
+  "serverVersion": "string",
+  "blockedMessage": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|reachable|boolean|true|none|Whether {apiUrl}/api/public/health answered at all.|
+|serverVersion|string|false|none|The exact version the server reported, e.g. 3.63.0. Absent when the destination answered without one (proxies, adapters) or not at all.|
+|blockedMessage|string|false|none|Why the URL was refused without being contacted (a private address, plaintext http). Absent for a destination that was merely unreachable: supplying the version yourself applies there, but not here, because saving would refuse the URL with this same reason.|
 
 <h2 id="tocS_ToolTemplateSetup">ToolTemplateSetup</h2>
 <!-- backwards compatibility -->
@@ -346327,6 +348682,676 @@ bearer
 |---|---|---|---|---|
 |name|string|false|none|Updated display name for the voice.|
 |description|string|false|none|Updated description for the voice.|
+
+<h2 id="tocS_GuardrailFixedResponseAction">GuardrailFixedResponseAction</h2>
+<!-- backwards compatibility -->
+<a id="schemaguardrailfixedresponseaction"></a>
+<a id="schema_GuardrailFixedResponseAction"></a>
+<a id="tocSguardrailfixedresponseaction"></a>
+<a id="tocsguardrailfixedresponseaction"></a>
+
+```json
+{
+  "type": "auto-response",
+  "mode": "fixed",
+  "text": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|type|string|true|none|none|
+|mode|string|false|none|Omitted legacy modes normalize to fixed when transformed.|
+|text|string|true|none|Replacement speech; it must pass its own guardrail evaluation.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|auto-response|
+|mode|fixed|
+
+<h2 id="tocS_GuardrailRedirectAction">GuardrailRedirectAction</h2>
+<!-- backwards compatibility -->
+<a id="schemaguardrailredirectaction"></a>
+<a id="schema_GuardrailRedirectAction"></a>
+<a id="tocSguardrailredirectaction"></a>
+<a id="tocsguardrailredirectaction"></a>
+
+```json
+{
+  "type": "auto-response",
+  "mode": "redirect",
+  "instructions": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|type|string|true|none|none|
+|mode|string|true|none|none|
+|instructions|string|true|none|Steering instructions for generating a replacement candidate.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|auto-response|
+|mode|redirect|
+
+<h2 id="tocS_GuardrailEscalateAction">GuardrailEscalateAction</h2>
+<!-- backwards compatibility -->
+<a id="schemaguardrailescalateaction"></a>
+<a id="schema_GuardrailEscalateAction"></a>
+<a id="tocSguardrailescalateaction"></a>
+<a id="tocsguardrailescalateaction"></a>
+
+```json
+{
+  "type": "escalate",
+  "toolId": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "arguments": {}
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|type|string|true|none|none|
+|toolId|string(uuid)|true|none|Existing same-organization tool; attachment is checked at assignment. Tool edits/deletion can invalidate the action: activation must revalidate the current tool and arguments, and use failurePolicy on failure.|
+|arguments|object|true|none|Parameter names follow the normalized tool schema (SMS uses body/to).|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|escalate|
+
+<h2 id="tocS_GuardrailAuthoring">GuardrailAuthoring</h2>
+<!-- backwards compatibility -->
+<a id="schemaguardrailauthoring"></a>
+<a id="schema_GuardrailAuthoring"></a>
+<a id="tocSguardrailauthoring"></a>
+<a id="tocsguardrailauthoring"></a>
+
+```json
+{
+  "mode": "always",
+  "behavior": "string",
+  "condition": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|mode|string|true|none|none|
+|behavior|string|true|none|none|
+|condition|string|false|none|Natural-language condition evaluated using the candidate and call history.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|mode|always|
+|mode|never|
+
+<h2 id="tocS_CreateGuardrailRuleDTO">CreateGuardrailRuleDTO</h2>
+<!-- backwards compatibility -->
+<a id="schemacreateguardrailruledto"></a>
+<a id="schema_CreateGuardrailRuleDTO"></a>
+<a id="tocScreateguardrailruledto"></a>
+<a id="tocscreateguardrailruledto"></a>
+
+```json
+{
+  "name": "string",
+  "authoring": {
+    "mode": "always",
+    "behavior": "string",
+    "condition": "string"
+  },
+  "instructions": "string",
+  "sensitivity": "low",
+  "action": {
+    "type": "auto-response",
+    "mode": "fixed",
+    "text": "string"
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|name|string|true|none|none|
+|authoring|object \| null|false|none|Structured editor input. Supplied PATCH authoring replaces the complete object; advanced text writes clear it to null.|
+|instructions|string|false|none|Advanced text input. Do not supply it together with structured authoring.|
+|sensitivity|string|true|none|Evaluation sensitivity; numeric cutoffs are internal and provisional.|
+|action|[GuardrailFixedResponseAction](#schemaguardrailfixedresponseaction) \| [GuardrailRedirectAction](#schemaguardrailredirectaction) \| [GuardrailEscalateAction](#schemaguardrailescalateaction)|true|none|Supplied PATCH actions replace the complete variant.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|sensitivity|low|
+|sensitivity|medium|
+|sensitivity|aggressive|
+
+<h2 id="tocS_GuardrailRule">GuardrailRule</h2>
+<!-- backwards compatibility -->
+<a id="schemaguardrailrule"></a>
+<a id="schema_GuardrailRule"></a>
+<a id="tocSguardrailrule"></a>
+<a id="tocsguardrailrule"></a>
+
+```json
+{
+  "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "orgId": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "createdAt": "1970-01-01T00:00:00Z",
+  "updatedAt": "1970-01-01T00:00:00Z",
+  "name": "string",
+  "authoring": {
+    "mode": "always",
+    "behavior": "string",
+    "condition": "string"
+  },
+  "instructions": "string",
+  "sensitivity": "low",
+  "action": {
+    "type": "auto-response",
+    "mode": "fixed",
+    "text": "string"
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string(uuid)|true|none|none|
+|orgId|string(uuid)|true|none|none|
+|createdAt|string(date-time)|true|none|none|
+|updatedAt|string(date-time)|true|none|none|
+|name|string|true|none|none|
+|authoring|object \| null|false|none|Structured editor input. Supplied PATCH authoring replaces the complete object; advanced text writes clear it to null.|
+|instructions|string|true|none|Evaluated instructions, generated from authoring or supplied in advanced mode.|
+|sensitivity|string|true|none|Evaluation sensitivity; numeric cutoffs are internal and provisional.|
+|action|[GuardrailFixedResponseAction](#schemaguardrailfixedresponseaction) \| [GuardrailRedirectAction](#schemaguardrailredirectaction) \| [GuardrailEscalateAction](#schemaguardrailescalateaction)|true|none|Supplied PATCH actions replace the complete variant.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|sensitivity|low|
+|sensitivity|medium|
+|sensitivity|aggressive|
+
+<h2 id="tocS_GuardrailRuleUsage">GuardrailRuleUsage</h2>
+<!-- backwards compatibility -->
+<a id="schemaguardrailruleusage"></a>
+<a id="schema_GuardrailRuleUsage"></a>
+<a id="tocSguardrailruleusage"></a>
+<a id="tocsguardrailruleusage"></a>
+
+```json
+{
+  "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "name": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string(uuid)|true|none|Stable identity of an affected assistant or containing pack.|
+|name|string|true|none|Current display name, with an untitled fallback for assistants.|
+
+<h2 id="tocS_GuardrailRuleImpact">GuardrailRuleImpact</h2>
+<!-- backwards compatibility -->
+<a id="schemaguardrailruleimpact"></a>
+<a id="schema_GuardrailRuleImpact"></a>
+<a id="tocSguardrailruleimpact"></a>
+<a id="tocsguardrailruleimpact"></a>
+
+```json
+{
+  "assistantIds": [
+    "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+  ],
+  "packIds": [
+    "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+  ],
+  "assistants": [
+    {
+      "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "name": "string"
+    }
+  ],
+  "packs": [
+    {
+      "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "name": "string"
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|assistantIds|[string(uuid)]|true|none|Distinct assistants affected across direct, pack, draft, and version selections.|
+|packIds|[string(uuid)]|true|none|Packs currently containing the rule.|
+|assistants|[[GuardrailRuleUsage](#schemaguardrailruleusage)]|true|none|Names for the same distinct assistant identities.|
+|packs|[[GuardrailRuleUsage](#schemaguardrailruleusage)]|true|none|Names for the containing pack identities.|
+
+<h2 id="tocS_GuardrailRuleSnapshot">GuardrailRuleSnapshot</h2>
+<!-- backwards compatibility -->
+<a id="schemaguardrailrulesnapshot"></a>
+<a id="schema_GuardrailRuleSnapshot"></a>
+<a id="tocSguardrailrulesnapshot"></a>
+<a id="tocsguardrailrulesnapshot"></a>
+
+```json
+{
+  "updatedAt": "1970-01-01T00:00:00Z",
+  "name": "string",
+  "authoring": {
+    "mode": "always",
+    "behavior": "string",
+    "condition": "string"
+  },
+  "instructions": "string",
+  "sensitivity": "low",
+  "action": {
+    "type": "auto-response",
+    "mode": "fixed",
+    "text": "string"
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|updatedAt|string(date-time)|true|none|Millisecond timestamp from the last-read resource.|
+|name|string|true|none|none|
+|authoring|object \| null|false|none|Structured editor input. Supplied PATCH authoring replaces the complete object; advanced text writes clear it to null.|
+|instructions|string|true|none|Evaluated instructions, generated from authoring or supplied in advanced mode.|
+|sensitivity|string|true|none|Evaluation sensitivity; numeric cutoffs are internal and provisional.|
+|action|[GuardrailFixedResponseAction](#schemaguardrailfixedresponseaction) \| [GuardrailRedirectAction](#schemaguardrailredirectaction) \| [GuardrailEscalateAction](#schemaguardrailescalateaction)|true|none|Supplied PATCH actions replace the complete variant.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|sensitivity|low|
+|sensitivity|medium|
+|sensitivity|aggressive|
+
+<h2 id="tocS_SaveGuardrailRuleDTO">SaveGuardrailRuleDTO</h2>
+<!-- backwards compatibility -->
+<a id="schemasaveguardrailruledto"></a>
+<a id="schema_SaveGuardrailRuleDTO"></a>
+<a id="tocSsaveguardrailruledto"></a>
+<a id="tocssaveguardrailruledto"></a>
+
+```json
+{
+  "name": "string",
+  "authoring": {
+    "mode": "always",
+    "behavior": "string",
+    "condition": "string"
+  },
+  "instructions": "string",
+  "sensitivity": "low",
+  "action": {
+    "type": "auto-response",
+    "mode": "fixed",
+    "text": "string"
+  },
+  "expected": {
+    "updatedAt": "1970-01-01T00:00:00Z",
+    "name": "string",
+    "authoring": {
+      "mode": "always",
+      "behavior": "string",
+      "condition": "string"
+    },
+    "instructions": "string",
+    "sensitivity": "low",
+    "action": {
+      "type": "auto-response",
+      "mode": "fixed",
+      "text": "string"
+    }
+  },
+  "confirmedAssistantIds": [
+    "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|name|string|false|none|none|
+|authoring|object \| null|false|none|Structured editor input. Supplied PATCH authoring replaces the complete object; advanced text writes clear it to null.|
+|instructions|string|false|none|Advanced text input. Do not supply it together with structured authoring.|
+|sensitivity|string|false|none|Evaluation sensitivity; numeric cutoffs are internal and provisional.|
+|action|[GuardrailFixedResponseAction](#schemaguardrailfixedresponseaction) \| [GuardrailRedirectAction](#schemaguardrailredirectaction) \| [GuardrailEscalateAction](#schemaguardrailescalateaction)|false|none|Supplied PATCH actions replace the complete variant.|
+|expected|object|true|none|Last-read configuration; the complete snapshot prevents lost edits.|
+|confirmedAssistantIds|[string(uuid)]|false|none|Current deduplicated assistant impact acknowledged before a shared save.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|sensitivity|low|
+|sensitivity|medium|
+|sensitivity|aggressive|
+
+<h2 id="tocS_GuardrailRuleConflictResponseDTO">GuardrailRuleConflictResponseDTO</h2>
+<!-- backwards compatibility -->
+<a id="schemaguardrailruleconflictresponsedto"></a>
+<a id="schema_GuardrailRuleConflictResponseDTO"></a>
+<a id="tocSguardrailruleconflictresponsedto"></a>
+<a id="tocsguardrailruleconflictresponsedto"></a>
+
+```json
+{
+  "error": "rule_changed",
+  "message": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|error|string|true|none|Machine-readable cause; clients branch on this, never on `message`.|
+|message|string|true|none|Sentence-case copy safe to show the user.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|error|rule_changed|
+|error|impact_changed|
+|error|global_assignment|
+
+<h2 id="tocS_GuardrailRulesPage">GuardrailRulesPage</h2>
+<!-- backwards compatibility -->
+<a id="schemaguardrailrulespage"></a>
+<a id="schema_GuardrailRulesPage"></a>
+<a id="tocSguardrailrulespage"></a>
+<a id="tocsguardrailrulespage"></a>
+
+```json
+{
+  "results": [
+    {
+      "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "orgId": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "createdAt": "1970-01-01T00:00:00Z",
+      "updatedAt": "1970-01-01T00:00:00Z",
+      "name": "string",
+      "authoring": {
+        "mode": "always",
+        "behavior": "string",
+        "condition": "string"
+      },
+      "instructions": "string",
+      "sensitivity": "low",
+      "action": {
+        "type": "auto-response",
+        "mode": "fixed",
+        "text": "string"
+      }
+    }
+  ],
+  "metadata": {
+    "itemsPerPage": 0,
+    "totalItems": 0,
+    "currentPage": 0,
+    "totalPages": 0,
+    "hasNextPage": true,
+    "nextCursor": "string",
+    "sortOrder": "ASC",
+    "itemsBeyondRetention": true,
+    "createdAtLe": "1970-01-01T00:00:00Z",
+    "createdAtGe": "1970-01-01T00:00:00Z"
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|results|[[GuardrailRule](#schemaguardrailrule)]|true|none|none|
+|metadata|[PaginationMeta](#schemapaginationmeta)|true|none|none|
+
+<h2 id="tocS_CreateGuardrailPackDTO">CreateGuardrailPackDTO</h2>
+<!-- backwards compatibility -->
+<a id="schemacreateguardrailpackdto"></a>
+<a id="schema_CreateGuardrailPackDTO"></a>
+<a id="tocScreateguardrailpackdto"></a>
+<a id="tocscreateguardrailpackdto"></a>
+
+```json
+{
+  "name": "string",
+  "ruleIds": [
+    "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|name|string|true|none|none|
+|ruleIds|[string(uuid)]|true|none|Projected from membership rows; a supplied array replaces membership.|
+
+<h2 id="tocS_GuardrailPack">GuardrailPack</h2>
+<!-- backwards compatibility -->
+<a id="schemaguardrailpack"></a>
+<a id="schema_GuardrailPack"></a>
+<a id="tocSguardrailpack"></a>
+<a id="tocsguardrailpack"></a>
+
+```json
+{
+  "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "orgId": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "createdAt": "1970-01-01T00:00:00Z",
+  "updatedAt": "1970-01-01T00:00:00Z",
+  "name": "string",
+  "ruleIds": [
+    "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string(uuid)|true|none|none|
+|orgId|string(uuid)|true|none|none|
+|createdAt|string(date-time)|true|none|none|
+|updatedAt|string(date-time)|true|none|none|
+|name|string|true|none|none|
+|ruleIds|[string(uuid)]|true|none|Projected from membership rows; a supplied array replaces membership.|
+
+<h2 id="tocS_GuardrailPackImpact">GuardrailPackImpact</h2>
+<!-- backwards compatibility -->
+<a id="schemaguardrailpackimpact"></a>
+<a id="schema_GuardrailPackImpact"></a>
+<a id="tocSguardrailpackimpact"></a>
+<a id="tocsguardrailpackimpact"></a>
+
+```json
+{
+  "assistantIds": [
+    "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|assistantIds|[string(uuid)]|true|none|none|
+
+<h2 id="tocS_GuardrailPackSnapshot">GuardrailPackSnapshot</h2>
+<!-- backwards compatibility -->
+<a id="schemaguardrailpacksnapshot"></a>
+<a id="schema_GuardrailPackSnapshot"></a>
+<a id="tocSguardrailpacksnapshot"></a>
+<a id="tocsguardrailpacksnapshot"></a>
+
+```json
+{
+  "updatedAt": "1970-01-01T00:00:00Z",
+  "name": "string",
+  "ruleIds": [
+    "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|updatedAt|string(date-time)|true|none|none|
+|name|string|true|none|none|
+|ruleIds|[string(uuid)]|true|none|Projected from membership rows; a supplied array replaces membership.|
+
+<h2 id="tocS_SaveGuardrailPackDTO">SaveGuardrailPackDTO</h2>
+<!-- backwards compatibility -->
+<a id="schemasaveguardrailpackdto"></a>
+<a id="schema_SaveGuardrailPackDTO"></a>
+<a id="tocSsaveguardrailpackdto"></a>
+<a id="tocssaveguardrailpackdto"></a>
+
+```json
+{
+  "name": "string",
+  "ruleIds": [
+    "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+  ],
+  "expected": {
+    "updatedAt": "1970-01-01T00:00:00Z",
+    "name": "string",
+    "ruleIds": [
+      "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+    ]
+  },
+  "confirmedAssistantIds": [
+    "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|name|string|false|none|none|
+|ruleIds|[string(uuid)]|false|none|Projected from membership rows; a supplied array replaces membership.|
+|expected|object|true|none|The complete last-read snapshot prevents silently replacing another editor’s changes.|
+|confirmedAssistantIds|[string(uuid)]|false|none|Exact deduplicated impact acknowledged by the user; rechecked while the pack is locked.|
+
+<h2 id="tocS_GuardrailPackConflictResponseDTO">GuardrailPackConflictResponseDTO</h2>
+<!-- backwards compatibility -->
+<a id="schemaguardrailpackconflictresponsedto"></a>
+<a id="schema_GuardrailPackConflictResponseDTO"></a>
+<a id="tocSguardrailpackconflictresponsedto"></a>
+<a id="tocsguardrailpackconflictresponsedto"></a>
+
+```json
+{
+  "error": "pack_changed",
+  "message": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|error|string|true|none|Machine-readable cause; clients branch on this, never on `message`.|
+|message|string|true|none|Sentence-case copy safe to show the user.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|error|pack_changed|
+|error|impact_changed|
+|error|global_assignment|
+
+<h2 id="tocS_GuardrailPacksPage">GuardrailPacksPage</h2>
+<!-- backwards compatibility -->
+<a id="schemaguardrailpackspage"></a>
+<a id="schema_GuardrailPacksPage"></a>
+<a id="tocSguardrailpackspage"></a>
+<a id="tocsguardrailpackspage"></a>
+
+```json
+{
+  "results": [
+    {
+      "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "orgId": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "createdAt": "1970-01-01T00:00:00Z",
+      "updatedAt": "1970-01-01T00:00:00Z",
+      "name": "string",
+      "ruleIds": [
+        "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+      ]
+    }
+  ],
+  "metadata": {
+    "itemsPerPage": 0,
+    "totalItems": 0,
+    "currentPage": 0,
+    "totalPages": 0,
+    "hasNextPage": true,
+    "nextCursor": "string",
+    "sortOrder": "ASC",
+    "itemsBeyondRetention": true,
+    "createdAtLe": "1970-01-01T00:00:00Z",
+    "createdAtGe": "1970-01-01T00:00:00Z"
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|results|[[GuardrailPack](#schemaguardrailpack)]|true|none|none|
+|metadata|[PaginationMeta](#schemapaginationmeta)|true|none|none|
 
 <h2 id="tocS_CartesiaPronunciationDictItem">CartesiaPronunciationDictItem</h2>
 <!-- backwards compatibility -->
@@ -347568,6 +350593,7 @@ bearer
       "performanceMetrics": {
         "turnLatencies": [
           {
+            "unmeasured": "transcriber",
             "modelLatency": 0,
             "voiceLatency": 0,
             "transcriberLatency": 0,
@@ -347583,7 +350609,8 @@ bearer
         "fromTransportLatencyAverage": 0,
         "toTransportLatencyAverage": 0,
         "numUserInterrupted": 0,
-        "numAssistantInterrupted": 0
+        "numAssistantInterrupted": 0,
+        "turnLatencyUnmeasuredTracked": true
       },
       "structuredOutputs": {},
       "scorecards": {},
@@ -354404,6 +357431,7 @@ bearer
       "performanceMetrics": {
         "turnLatencies": [
           {
+            "unmeasured": "transcriber",
             "modelLatency": 0,
             "voiceLatency": 0,
             "transcriberLatency": 0,
@@ -354419,7 +357447,8 @@ bearer
         "fromTransportLatencyAverage": 0,
         "toTransportLatencyAverage": 0,
         "numUserInterrupted": 0,
-        "numAssistantInterrupted": 0
+        "numAssistantInterrupted": 0,
+        "turnLatencyUnmeasuredTracked": true
       },
       "structuredOutputs": {},
       "scorecards": {},
@@ -362032,6 +365061,7 @@ bearer
       "performanceMetrics": {
         "turnLatencies": [
           {
+            "unmeasured": "transcriber",
             "modelLatency": 0,
             "voiceLatency": 0,
             "transcriberLatency": 0,
@@ -362047,7 +365077,8 @@ bearer
         "fromTransportLatencyAverage": 0,
         "toTransportLatencyAverage": 0,
         "numUserInterrupted": 0,
-        "numAssistantInterrupted": 0
+        "numAssistantInterrupted": 0,
+        "turnLatencyUnmeasuredTracked": true
       },
       "structuredOutputs": {},
       "scorecards": {},
@@ -368868,6 +371899,7 @@ bearer
       "performanceMetrics": {
         "turnLatencies": [
           {
+            "unmeasured": "transcriber",
             "modelLatency": 0,
             "voiceLatency": 0,
             "transcriberLatency": 0,
@@ -368883,7 +371915,8 @@ bearer
         "fromTransportLatencyAverage": 0,
         "toTransportLatencyAverage": 0,
         "numUserInterrupted": 0,
-        "numAssistantInterrupted": 0
+        "numAssistantInterrupted": 0,
+        "turnLatencyUnmeasuredTracked": true
       },
       "structuredOutputs": {},
       "scorecards": {},
@@ -375702,6 +378735,7 @@ bearer
       "performanceMetrics": {
         "turnLatencies": [
           {
+            "unmeasured": "transcriber",
             "modelLatency": 0,
             "voiceLatency": 0,
             "transcriberLatency": 0,
@@ -375717,7 +378751,8 @@ bearer
         "fromTransportLatencyAverage": 0,
         "toTransportLatencyAverage": 0,
         "numUserInterrupted": 0,
-        "numAssistantInterrupted": 0
+        "numAssistantInterrupted": 0,
+        "turnLatencyUnmeasuredTracked": true
       },
       "structuredOutputs": {},
       "scorecards": {},
@@ -382539,6 +385574,7 @@ bearer
       "performanceMetrics": {
         "turnLatencies": [
           {
+            "unmeasured": "transcriber",
             "modelLatency": 0,
             "voiceLatency": 0,
             "transcriberLatency": 0,
@@ -382554,7 +385590,8 @@ bearer
         "fromTransportLatencyAverage": 0,
         "toTransportLatencyAverage": 0,
         "numUserInterrupted": 0,
-        "numAssistantInterrupted": 0
+        "numAssistantInterrupted": 0,
+        "turnLatencyUnmeasuredTracked": true
       },
       "structuredOutputs": {},
       "scorecards": {},
@@ -389379,6 +392416,7 @@ bearer
       "performanceMetrics": {
         "turnLatencies": [
           {
+            "unmeasured": "transcriber",
             "modelLatency": 0,
             "voiceLatency": 0,
             "transcriberLatency": 0,
@@ -389394,7 +392432,8 @@ bearer
         "fromTransportLatencyAverage": 0,
         "toTransportLatencyAverage": 0,
         "numUserInterrupted": 0,
-        "numAssistantInterrupted": 0
+        "numAssistantInterrupted": 0,
+        "turnLatencyUnmeasuredTracked": true
       },
       "structuredOutputs": {},
       "scorecards": {},
@@ -396220,6 +399259,7 @@ bearer
       "performanceMetrics": {
         "turnLatencies": [
           {
+            "unmeasured": "transcriber",
             "modelLatency": 0,
             "voiceLatency": 0,
             "transcriberLatency": 0,
@@ -396235,7 +399275,8 @@ bearer
         "fromTransportLatencyAverage": 0,
         "toTransportLatencyAverage": 0,
         "numUserInterrupted": 0,
-        "numAssistantInterrupted": 0
+        "numAssistantInterrupted": 0,
+        "turnLatencyUnmeasuredTracked": true
       },
       "structuredOutputs": {},
       "scorecards": {},
@@ -403223,6 +406264,7 @@ bearer
       "performanceMetrics": {
         "turnLatencies": [
           {
+            "unmeasured": "transcriber",
             "modelLatency": 0,
             "voiceLatency": 0,
             "transcriberLatency": 0,
@@ -403238,7 +406280,8 @@ bearer
         "fromTransportLatencyAverage": 0,
         "toTransportLatencyAverage": 0,
         "numUserInterrupted": 0,
-        "numAssistantInterrupted": 0
+        "numAssistantInterrupted": 0,
+        "turnLatencyUnmeasuredTracked": true
       },
       "structuredOutputs": {},
       "scorecards": {},
@@ -410069,6 +413112,7 @@ bearer
       "performanceMetrics": {
         "turnLatencies": [
           {
+            "unmeasured": "transcriber",
             "modelLatency": 0,
             "voiceLatency": 0,
             "transcriberLatency": 0,
@@ -410084,7 +413128,8 @@ bearer
         "fromTransportLatencyAverage": 0,
         "toTransportLatencyAverage": 0,
         "numUserInterrupted": 0,
-        "numAssistantInterrupted": 0
+        "numAssistantInterrupted": 0,
+        "turnLatencyUnmeasuredTracked": true
       },
       "structuredOutputs": {},
       "scorecards": {},
@@ -416913,6 +419958,7 @@ bearer
       "performanceMetrics": {
         "turnLatencies": [
           {
+            "unmeasured": "transcriber",
             "modelLatency": 0,
             "voiceLatency": 0,
             "transcriberLatency": 0,
@@ -416928,7 +419974,8 @@ bearer
         "fromTransportLatencyAverage": 0,
         "toTransportLatencyAverage": 0,
         "numUserInterrupted": 0,
-        "numAssistantInterrupted": 0
+        "numAssistantInterrupted": 0,
+        "turnLatencyUnmeasuredTracked": true
       },
       "structuredOutputs": {},
       "scorecards": {},
@@ -425263,6 +428310,7 @@ bearer
       "performanceMetrics": {
         "turnLatencies": [
           {
+            "unmeasured": "transcriber",
             "modelLatency": 0,
             "voiceLatency": 0,
             "transcriberLatency": 0,
@@ -425278,7 +428326,8 @@ bearer
         "fromTransportLatencyAverage": 0,
         "toTransportLatencyAverage": 0,
         "numUserInterrupted": 0,
-        "numAssistantInterrupted": 0
+        "numAssistantInterrupted": 0,
+        "turnLatencyUnmeasuredTracked": true
       },
       "structuredOutputs": {},
       "scorecards": {},
@@ -432098,6 +435147,7 @@ bearer
       "performanceMetrics": {
         "turnLatencies": [
           {
+            "unmeasured": "transcriber",
             "modelLatency": 0,
             "voiceLatency": 0,
             "transcriberLatency": 0,
@@ -432113,7 +435163,8 @@ bearer
         "fromTransportLatencyAverage": 0,
         "toTransportLatencyAverage": 0,
         "numUserInterrupted": 0,
-        "numAssistantInterrupted": 0
+        "numAssistantInterrupted": 0,
+        "turnLatencyUnmeasuredTracked": true
       },
       "structuredOutputs": {},
       "scorecards": {},
@@ -438934,6 +441985,7 @@ bearer
       "performanceMetrics": {
         "turnLatencies": [
           {
+            "unmeasured": "transcriber",
             "modelLatency": 0,
             "voiceLatency": 0,
             "transcriberLatency": 0,
@@ -438949,7 +442001,8 @@ bearer
         "fromTransportLatencyAverage": 0,
         "toTransportLatencyAverage": 0,
         "numUserInterrupted": 0,
-        "numAssistantInterrupted": 0
+        "numAssistantInterrupted": 0,
+        "turnLatencyUnmeasuredTracked": true
       },
       "structuredOutputs": {},
       "scorecards": {},
@@ -445785,6 +448838,7 @@ bearer
       "performanceMetrics": {
         "turnLatencies": [
           {
+            "unmeasured": "transcriber",
             "modelLatency": 0,
             "voiceLatency": 0,
             "transcriberLatency": 0,
@@ -445800,7 +448854,8 @@ bearer
         "fromTransportLatencyAverage": 0,
         "toTransportLatencyAverage": 0,
         "numUserInterrupted": 0,
-        "numAssistantInterrupted": 0
+        "numAssistantInterrupted": 0,
+        "turnLatencyUnmeasuredTracked": true
       },
       "structuredOutputs": {},
       "scorecards": {},
@@ -452626,6 +455681,7 @@ bearer
       "performanceMetrics": {
         "turnLatencies": [
           {
+            "unmeasured": "transcriber",
             "modelLatency": 0,
             "voiceLatency": 0,
             "transcriberLatency": 0,
@@ -452641,7 +455697,8 @@ bearer
         "fromTransportLatencyAverage": 0,
         "toTransportLatencyAverage": 0,
         "numUserInterrupted": 0,
-        "numAssistantInterrupted": 0
+        "numAssistantInterrupted": 0,
+        "turnLatencyUnmeasuredTracked": true
       },
       "structuredOutputs": {},
       "scorecards": {},
@@ -460732,6 +463789,7 @@ bearer
       "performanceMetrics": {
         "turnLatencies": [
           {
+            "unmeasured": "transcriber",
             "modelLatency": 0,
             "voiceLatency": 0,
             "transcriberLatency": 0,
@@ -460747,7 +463805,8 @@ bearer
         "fromTransportLatencyAverage": 0,
         "toTransportLatencyAverage": 0,
         "numUserInterrupted": 0,
-        "numAssistantInterrupted": 0
+        "numAssistantInterrupted": 0,
+        "turnLatencyUnmeasuredTracked": true
       },
       "structuredOutputs": {},
       "scorecards": {},
@@ -468838,6 +471897,7 @@ bearer
       "performanceMetrics": {
         "turnLatencies": [
           {
+            "unmeasured": "transcriber",
             "modelLatency": 0,
             "voiceLatency": 0,
             "transcriberLatency": 0,
@@ -468853,7 +471913,8 @@ bearer
         "fromTransportLatencyAverage": 0,
         "toTransportLatencyAverage": 0,
         "numUserInterrupted": 0,
-        "numAssistantInterrupted": 0
+        "numAssistantInterrupted": 0,
+        "turnLatencyUnmeasuredTracked": true
       },
       "structuredOutputs": {},
       "scorecards": {},
@@ -477811,6 +480872,7 @@ bearer
       "performanceMetrics": {
         "turnLatencies": [
           {
+            "unmeasured": "transcriber",
             "modelLatency": 0,
             "voiceLatency": 0,
             "transcriberLatency": 0,
@@ -477826,7 +480888,8 @@ bearer
         "fromTransportLatencyAverage": 0,
         "toTransportLatencyAverage": 0,
         "numUserInterrupted": 0,
-        "numAssistantInterrupted": 0
+        "numAssistantInterrupted": 0,
+        "turnLatencyUnmeasuredTracked": true
       },
       "structuredOutputs": {},
       "scorecards": {},
@@ -478578,6 +481641,7 @@ bearer
       "performanceMetrics": {
         "turnLatencies": [
           {
+            "unmeasured": "transcriber",
             "modelLatency": 0,
             "voiceLatency": 0,
             "transcriberLatency": 0,
@@ -478593,7 +481657,8 @@ bearer
         "fromTransportLatencyAverage": 0,
         "toTransportLatencyAverage": 0,
         "numUserInterrupted": 0,
-        "numAssistantInterrupted": 0
+        "numAssistantInterrupted": 0,
+        "turnLatencyUnmeasuredTracked": true
       },
       "structuredOutputs": {},
       "scorecards": {},
@@ -487551,6 +490616,7 @@ bearer
       "performanceMetrics": {
         "turnLatencies": [
           {
+            "unmeasured": "transcriber",
             "modelLatency": 0,
             "voiceLatency": 0,
             "transcriberLatency": 0,
@@ -487566,7 +490632,8 @@ bearer
         "fromTransportLatencyAverage": 0,
         "toTransportLatencyAverage": 0,
         "numUserInterrupted": 0,
-        "numAssistantInterrupted": 0
+        "numAssistantInterrupted": 0,
+        "turnLatencyUnmeasuredTracked": true
       },
       "structuredOutputs": {},
       "scorecards": {},
@@ -488318,6 +491385,7 @@ bearer
       "performanceMetrics": {
         "turnLatencies": [
           {
+            "unmeasured": "transcriber",
             "modelLatency": 0,
             "voiceLatency": 0,
             "transcriberLatency": 0,
@@ -488333,7 +491401,8 @@ bearer
         "fromTransportLatencyAverage": 0,
         "toTransportLatencyAverage": 0,
         "numUserInterrupted": 0,
-        "numAssistantInterrupted": 0
+        "numAssistantInterrupted": 0,
+        "turnLatencyUnmeasuredTracked": true
       },
       "structuredOutputs": {},
       "scorecards": {},
@@ -497291,6 +500360,7 @@ bearer
       "performanceMetrics": {
         "turnLatencies": [
           {
+            "unmeasured": "transcriber",
             "modelLatency": 0,
             "voiceLatency": 0,
             "transcriberLatency": 0,
@@ -497306,7 +500376,8 @@ bearer
         "fromTransportLatencyAverage": 0,
         "toTransportLatencyAverage": 0,
         "numUserInterrupted": 0,
-        "numAssistantInterrupted": 0
+        "numAssistantInterrupted": 0,
+        "turnLatencyUnmeasuredTracked": true
       },
       "structuredOutputs": {},
       "scorecards": {},
@@ -498058,6 +501129,7 @@ bearer
       "performanceMetrics": {
         "turnLatencies": [
           {
+            "unmeasured": "transcriber",
             "modelLatency": 0,
             "voiceLatency": 0,
             "transcriberLatency": 0,
@@ -498073,7 +501145,8 @@ bearer
         "fromTransportLatencyAverage": 0,
         "toTransportLatencyAverage": 0,
         "numUserInterrupted": 0,
-        "numAssistantInterrupted": 0
+        "numAssistantInterrupted": 0,
+        "turnLatencyUnmeasuredTracked": true
       },
       "structuredOutputs": {},
       "scorecards": {},
@@ -504892,6 +507965,7 @@ bearer
       "performanceMetrics": {
         "turnLatencies": [
           {
+            "unmeasured": "transcriber",
             "modelLatency": 0,
             "voiceLatency": 0,
             "transcriberLatency": 0,
@@ -504907,7 +507981,8 @@ bearer
         "fromTransportLatencyAverage": 0,
         "toTransportLatencyAverage": 0,
         "numUserInterrupted": 0,
-        "numAssistantInterrupted": 0
+        "numAssistantInterrupted": 0,
+        "turnLatencyUnmeasuredTracked": true
       },
       "structuredOutputs": {},
       "scorecards": {},
@@ -511727,6 +514802,7 @@ bearer
         "performanceMetrics": {
           "turnLatencies": [
             {
+              "unmeasured": "transcriber",
               "modelLatency": 0,
               "voiceLatency": 0,
               "transcriberLatency": 0,
@@ -511742,7 +514818,8 @@ bearer
           "fromTransportLatencyAverage": 0,
           "toTransportLatencyAverage": 0,
           "numUserInterrupted": 0,
-          "numAssistantInterrupted": 0
+          "numAssistantInterrupted": 0,
+          "turnLatencyUnmeasuredTracked": true
         },
         "structuredOutputs": {},
         "scorecards": {},
@@ -518172,6 +521249,7 @@ bearer
     "performanceMetrics": {
       "turnLatencies": [
         {
+          "unmeasured": "transcriber",
           "modelLatency": 0,
           "voiceLatency": 0,
           "transcriberLatency": 0,
@@ -518187,7 +521265,8 @@ bearer
       "fromTransportLatencyAverage": 0,
       "toTransportLatencyAverage": 0,
       "numUserInterrupted": 0,
-      "numAssistantInterrupted": 0
+      "numAssistantInterrupted": 0,
+      "turnLatencyUnmeasuredTracked": true
     },
     "structuredOutputs": {},
     "scorecards": {},
@@ -520821,6 +523900,7 @@ bearer
       "performanceMetrics": {
         "turnLatencies": [
           {
+            "unmeasured": "transcriber",
             "modelLatency": 0,
             "voiceLatency": 0,
             "transcriberLatency": 0,
@@ -520836,7 +523916,8 @@ bearer
         "fromTransportLatencyAverage": 0,
         "toTransportLatencyAverage": 0,
         "numUserInterrupted": 0,
-        "numAssistantInterrupted": 0
+        "numAssistantInterrupted": 0,
+        "turnLatencyUnmeasuredTracked": true
       },
       "structuredOutputs": {},
       "scorecards": {},
@@ -526547,6 +529628,7 @@ bearer
     "performanceMetrics": {
       "turnLatencies": [
         {
+          "unmeasured": "transcriber",
           "modelLatency": 0,
           "voiceLatency": 0,
           "transcriberLatency": 0,
@@ -526562,7 +529644,8 @@ bearer
       "fromTransportLatencyAverage": 0,
       "toTransportLatencyAverage": 0,
       "numUserInterrupted": 0,
-      "numAssistantInterrupted": 0
+      "numAssistantInterrupted": 0,
+      "turnLatencyUnmeasuredTracked": true
     },
     "structuredOutputs": {},
     "scorecards": {},
@@ -529196,6 +532279,7 @@ bearer
       "performanceMetrics": {
         "turnLatencies": [
           {
+            "unmeasured": "transcriber",
             "modelLatency": 0,
             "voiceLatency": 0,
             "transcriberLatency": 0,
@@ -529211,7 +532295,8 @@ bearer
         "fromTransportLatencyAverage": 0,
         "toTransportLatencyAverage": 0,
         "numUserInterrupted": 0,
-        "numAssistantInterrupted": 0
+        "numAssistantInterrupted": 0,
+        "turnLatencyUnmeasuredTracked": true
       },
       "structuredOutputs": {},
       "scorecards": {},
@@ -534931,6 +538016,7 @@ bearer
     "performanceMetrics": {
       "turnLatencies": [
         {
+          "unmeasured": "transcriber",
           "modelLatency": 0,
           "voiceLatency": 0,
           "transcriberLatency": 0,
@@ -534946,7 +538032,8 @@ bearer
       "fromTransportLatencyAverage": 0,
       "toTransportLatencyAverage": 0,
       "numUserInterrupted": 0,
-      "numAssistantInterrupted": 0
+      "numAssistantInterrupted": 0,
+      "turnLatencyUnmeasuredTracked": true
     },
     "structuredOutputs": {},
     "scorecards": {},
@@ -537580,6 +540667,7 @@ bearer
       "performanceMetrics": {
         "turnLatencies": [
           {
+            "unmeasured": "transcriber",
             "modelLatency": 0,
             "voiceLatency": 0,
             "transcriberLatency": 0,
@@ -537595,7 +540683,8 @@ bearer
         "fromTransportLatencyAverage": 0,
         "toTransportLatencyAverage": 0,
         "numUserInterrupted": 0,
-        "numAssistantInterrupted": 0
+        "numAssistantInterrupted": 0,
+        "turnLatencyUnmeasuredTracked": true
       },
       "structuredOutputs": {},
       "scorecards": {},
@@ -543099,6 +546188,16 @@ bearer
 |endedReason|call.in-progress.error-vapifault-xai-transcriber-invalid-config|
 |endedReason|call.in-progress.error-vapifault-xai-transcriber-server-error|
 |endedReason|call.in-progress.error-vapifault-xai-transcriber-failed|
+|endedReason|pipeline-error-reson8-transcriber-auth-failed|
+|endedReason|pipeline-error-reson8-transcriber-rate-limited|
+|endedReason|pipeline-error-reson8-transcriber-invalid-config|
+|endedReason|pipeline-error-reson8-transcriber-closed|
+|endedReason|pipeline-error-reson8-transcriber-failed|
+|endedReason|call.in-progress.error-vapifault-reson8-transcriber-auth-failed|
+|endedReason|call.in-progress.error-vapifault-reson8-transcriber-rate-limited|
+|endedReason|call.in-progress.error-vapifault-reson8-transcriber-invalid-config|
+|endedReason|call.in-progress.error-vapifault-reson8-transcriber-closed|
+|endedReason|call.in-progress.error-vapifault-reson8-transcriber-failed|
 |endedReason|pipeline-error-cartesia-transcriber-failed|
 |endedReason|call.in-progress.error-vapifault-cartesia-transcriber-failed|
 |endedReason|call.in-progress.error-pipeline-no-available-llm-model|
@@ -543434,6 +546533,7 @@ bearer
 |endedReason|call.in-progress.error-vapifault-cartesia-socket-hang-up|
 |endedReason|call.in-progress.error-vapifault-cartesia-requested-payment|
 |endedReason|call.in-progress.error-providerfault-cartesia-500-server-error|
+|endedReason|call.in-progress.error-providerfault-cartesia-502-server-error|
 |endedReason|call.in-progress.error-providerfault-cartesia-503-server-error|
 |endedReason|call.in-progress.error-providerfault-cartesia-522-server-error|
 |endedReason|pipeline-error-eleven-labs-voice-not-found|
@@ -543554,6 +546654,16 @@ bearer
 |endedReason|call.in-progress.error-vapifault-xai-transcriber-invalid-config|
 |endedReason|call.in-progress.error-vapifault-xai-transcriber-server-error|
 |endedReason|call.in-progress.error-vapifault-xai-transcriber-failed|
+|endedReason|pipeline-error-reson8-transcriber-auth-failed|
+|endedReason|pipeline-error-reson8-transcriber-rate-limited|
+|endedReason|pipeline-error-reson8-transcriber-invalid-config|
+|endedReason|pipeline-error-reson8-transcriber-closed|
+|endedReason|pipeline-error-reson8-transcriber-failed|
+|endedReason|call.in-progress.error-vapifault-reson8-transcriber-auth-failed|
+|endedReason|call.in-progress.error-vapifault-reson8-transcriber-rate-limited|
+|endedReason|call.in-progress.error-vapifault-reson8-transcriber-invalid-config|
+|endedReason|call.in-progress.error-vapifault-reson8-transcriber-closed|
+|endedReason|call.in-progress.error-vapifault-reson8-transcriber-failed|
 |endedReason|pipeline-error-cartesia-transcriber-failed|
 |endedReason|call.in-progress.error-vapifault-cartesia-transcriber-failed|
 |endedReason|call.in-progress.error-warm-transfer-max-duration|
@@ -543938,6 +547048,7 @@ bearer
     "performanceMetrics": {
       "turnLatencies": [
         {
+          "unmeasured": "transcriber",
           "modelLatency": 0,
           "voiceLatency": 0,
           "transcriberLatency": 0,
@@ -543953,7 +547064,8 @@ bearer
       "fromTransportLatencyAverage": 0,
       "toTransportLatencyAverage": 0,
       "numUserInterrupted": 0,
-      "numAssistantInterrupted": 0
+      "numAssistantInterrupted": 0,
+      "turnLatencyUnmeasuredTracked": true
     },
     "structuredOutputs": {},
     "scorecards": {},
@@ -546587,6 +549699,7 @@ bearer
       "performanceMetrics": {
         "turnLatencies": [
           {
+            "unmeasured": "transcriber",
             "modelLatency": 0,
             "voiceLatency": 0,
             "transcriberLatency": 0,
@@ -546602,7 +549715,8 @@ bearer
         "fromTransportLatencyAverage": 0,
         "toTransportLatencyAverage": 0,
         "numUserInterrupted": 0,
-        "numAssistantInterrupted": 0
+        "numAssistantInterrupted": 0,
+        "turnLatencyUnmeasuredTracked": true
       },
       "structuredOutputs": {},
       "scorecards": {},
@@ -552276,6 +555390,7 @@ bearer
     "performanceMetrics": {
       "turnLatencies": [
         {
+          "unmeasured": "transcriber",
           "modelLatency": 0,
           "voiceLatency": 0,
           "transcriberLatency": 0,
@@ -552291,7 +555406,8 @@ bearer
       "fromTransportLatencyAverage": 0,
       "toTransportLatencyAverage": 0,
       "numUserInterrupted": 0,
-      "numAssistantInterrupted": 0
+      "numAssistantInterrupted": 0,
+      "turnLatencyUnmeasuredTracked": true
     },
     "structuredOutputs": {},
     "scorecards": {},
@@ -554925,6 +558041,7 @@ bearer
       "performanceMetrics": {
         "turnLatencies": [
           {
+            "unmeasured": "transcriber",
             "modelLatency": 0,
             "voiceLatency": 0,
             "transcriberLatency": 0,
@@ -554940,7 +558057,8 @@ bearer
         "fromTransportLatencyAverage": 0,
         "toTransportLatencyAverage": 0,
         "numUserInterrupted": 0,
-        "numAssistantInterrupted": 0
+        "numAssistantInterrupted": 0,
+        "turnLatencyUnmeasuredTracked": true
       },
       "structuredOutputs": {},
       "scorecards": {},
@@ -560651,6 +563769,7 @@ bearer
     "performanceMetrics": {
       "turnLatencies": [
         {
+          "unmeasured": "transcriber",
           "modelLatency": 0,
           "voiceLatency": 0,
           "transcriberLatency": 0,
@@ -560666,7 +563785,8 @@ bearer
       "fromTransportLatencyAverage": 0,
       "toTransportLatencyAverage": 0,
       "numUserInterrupted": 0,
-      "numAssistantInterrupted": 0
+      "numAssistantInterrupted": 0,
+      "turnLatencyUnmeasuredTracked": true
     },
     "structuredOutputs": {},
     "scorecards": {},
@@ -563300,6 +566420,7 @@ bearer
       "performanceMetrics": {
         "turnLatencies": [
           {
+            "unmeasured": "transcriber",
             "modelLatency": 0,
             "voiceLatency": 0,
             "transcriberLatency": 0,
@@ -563315,7 +566436,8 @@ bearer
         "fromTransportLatencyAverage": 0,
         "toTransportLatencyAverage": 0,
         "numUserInterrupted": 0,
-        "numAssistantInterrupted": 0
+        "numAssistantInterrupted": 0,
+        "turnLatencyUnmeasuredTracked": true
       },
       "structuredOutputs": {},
       "scorecards": {},
@@ -568990,6 +572112,7 @@ bearer
     "performanceMetrics": {
       "turnLatencies": [
         {
+          "unmeasured": "transcriber",
           "modelLatency": 0,
           "voiceLatency": 0,
           "transcriberLatency": 0,
@@ -569005,7 +572128,8 @@ bearer
       "fromTransportLatencyAverage": 0,
       "toTransportLatencyAverage": 0,
       "numUserInterrupted": 0,
-      "numAssistantInterrupted": 0
+      "numAssistantInterrupted": 0,
+      "turnLatencyUnmeasuredTracked": true
     },
     "structuredOutputs": {},
     "scorecards": {},
@@ -571639,6 +574763,7 @@ bearer
       "performanceMetrics": {
         "turnLatencies": [
           {
+            "unmeasured": "transcriber",
             "modelLatency": 0,
             "voiceLatency": 0,
             "transcriberLatency": 0,
@@ -571654,7 +574779,8 @@ bearer
         "fromTransportLatencyAverage": 0,
         "toTransportLatencyAverage": 0,
         "numUserInterrupted": 0,
-        "numAssistantInterrupted": 0
+        "numAssistantInterrupted": 0,
+        "turnLatencyUnmeasuredTracked": true
       },
       "structuredOutputs": {},
       "scorecards": {},
@@ -577366,6 +580492,7 @@ bearer
     "performanceMetrics": {
       "turnLatencies": [
         {
+          "unmeasured": "transcriber",
           "modelLatency": 0,
           "voiceLatency": 0,
           "transcriberLatency": 0,
@@ -577381,7 +580508,8 @@ bearer
       "fromTransportLatencyAverage": 0,
       "toTransportLatencyAverage": 0,
       "numUserInterrupted": 0,
-      "numAssistantInterrupted": 0
+      "numAssistantInterrupted": 0,
+      "turnLatencyUnmeasuredTracked": true
     },
     "structuredOutputs": {},
     "scorecards": {},
@@ -580015,6 +583143,7 @@ bearer
       "performanceMetrics": {
         "turnLatencies": [
           {
+            "unmeasured": "transcriber",
             "modelLatency": 0,
             "voiceLatency": 0,
             "transcriberLatency": 0,
@@ -580030,7 +583159,8 @@ bearer
         "fromTransportLatencyAverage": 0,
         "toTransportLatencyAverage": 0,
         "numUserInterrupted": 0,
-        "numAssistantInterrupted": 0
+        "numAssistantInterrupted": 0,
+        "turnLatencyUnmeasuredTracked": true
       },
       "structuredOutputs": {},
       "scorecards": {},
@@ -585709,6 +588839,7 @@ bearer
     "performanceMetrics": {
       "turnLatencies": [
         {
+          "unmeasured": "transcriber",
           "modelLatency": 0,
           "voiceLatency": 0,
           "transcriberLatency": 0,
@@ -585724,7 +588855,8 @@ bearer
       "fromTransportLatencyAverage": 0,
       "toTransportLatencyAverage": 0,
       "numUserInterrupted": 0,
-      "numAssistantInterrupted": 0
+      "numAssistantInterrupted": 0,
+      "turnLatencyUnmeasuredTracked": true
     },
     "structuredOutputs": {},
     "scorecards": {},
@@ -588358,6 +591490,7 @@ bearer
       "performanceMetrics": {
         "turnLatencies": [
           {
+            "unmeasured": "transcriber",
             "modelLatency": 0,
             "voiceLatency": 0,
             "transcriberLatency": 0,
@@ -588373,7 +591506,8 @@ bearer
         "fromTransportLatencyAverage": 0,
         "toTransportLatencyAverage": 0,
         "numUserInterrupted": 0,
-        "numAssistantInterrupted": 0
+        "numAssistantInterrupted": 0,
+        "turnLatencyUnmeasuredTracked": true
       },
       "structuredOutputs": {},
       "scorecards": {},
@@ -594129,6 +597263,7 @@ bearer
     "performanceMetrics": {
       "turnLatencies": [
         {
+          "unmeasured": "transcriber",
           "modelLatency": 0,
           "voiceLatency": 0,
           "transcriberLatency": 0,
@@ -594144,7 +597279,8 @@ bearer
       "fromTransportLatencyAverage": 0,
       "toTransportLatencyAverage": 0,
       "numUserInterrupted": 0,
-      "numAssistantInterrupted": 0
+      "numAssistantInterrupted": 0,
+      "turnLatencyUnmeasuredTracked": true
     },
     "structuredOutputs": {},
     "scorecards": {},
@@ -596778,6 +599914,7 @@ bearer
       "performanceMetrics": {
         "turnLatencies": [
           {
+            "unmeasured": "transcriber",
             "modelLatency": 0,
             "voiceLatency": 0,
             "transcriberLatency": 0,
@@ -596793,7 +599930,8 @@ bearer
         "fromTransportLatencyAverage": 0,
         "toTransportLatencyAverage": 0,
         "numUserInterrupted": 0,
-        "numAssistantInterrupted": 0
+        "numAssistantInterrupted": 0,
+        "turnLatencyUnmeasuredTracked": true
       },
       "structuredOutputs": {},
       "scorecards": {},
@@ -602292,6 +605430,16 @@ bearer
 |endedReason|call.in-progress.error-vapifault-xai-transcriber-invalid-config|
 |endedReason|call.in-progress.error-vapifault-xai-transcriber-server-error|
 |endedReason|call.in-progress.error-vapifault-xai-transcriber-failed|
+|endedReason|pipeline-error-reson8-transcriber-auth-failed|
+|endedReason|pipeline-error-reson8-transcriber-rate-limited|
+|endedReason|pipeline-error-reson8-transcriber-invalid-config|
+|endedReason|pipeline-error-reson8-transcriber-closed|
+|endedReason|pipeline-error-reson8-transcriber-failed|
+|endedReason|call.in-progress.error-vapifault-reson8-transcriber-auth-failed|
+|endedReason|call.in-progress.error-vapifault-reson8-transcriber-rate-limited|
+|endedReason|call.in-progress.error-vapifault-reson8-transcriber-invalid-config|
+|endedReason|call.in-progress.error-vapifault-reson8-transcriber-closed|
+|endedReason|call.in-progress.error-vapifault-reson8-transcriber-failed|
 |endedReason|pipeline-error-cartesia-transcriber-failed|
 |endedReason|call.in-progress.error-vapifault-cartesia-transcriber-failed|
 |endedReason|call.in-progress.error-pipeline-no-available-llm-model|
@@ -602627,6 +605775,7 @@ bearer
 |endedReason|call.in-progress.error-vapifault-cartesia-socket-hang-up|
 |endedReason|call.in-progress.error-vapifault-cartesia-requested-payment|
 |endedReason|call.in-progress.error-providerfault-cartesia-500-server-error|
+|endedReason|call.in-progress.error-providerfault-cartesia-502-server-error|
 |endedReason|call.in-progress.error-providerfault-cartesia-503-server-error|
 |endedReason|call.in-progress.error-providerfault-cartesia-522-server-error|
 |endedReason|pipeline-error-eleven-labs-voice-not-found|
@@ -602747,6 +605896,16 @@ bearer
 |endedReason|call.in-progress.error-vapifault-xai-transcriber-invalid-config|
 |endedReason|call.in-progress.error-vapifault-xai-transcriber-server-error|
 |endedReason|call.in-progress.error-vapifault-xai-transcriber-failed|
+|endedReason|pipeline-error-reson8-transcriber-auth-failed|
+|endedReason|pipeline-error-reson8-transcriber-rate-limited|
+|endedReason|pipeline-error-reson8-transcriber-invalid-config|
+|endedReason|pipeline-error-reson8-transcriber-closed|
+|endedReason|pipeline-error-reson8-transcriber-failed|
+|endedReason|call.in-progress.error-vapifault-reson8-transcriber-auth-failed|
+|endedReason|call.in-progress.error-vapifault-reson8-transcriber-rate-limited|
+|endedReason|call.in-progress.error-vapifault-reson8-transcriber-invalid-config|
+|endedReason|call.in-progress.error-vapifault-reson8-transcriber-closed|
+|endedReason|call.in-progress.error-vapifault-reson8-transcriber-failed|
 |endedReason|pipeline-error-cartesia-transcriber-failed|
 |endedReason|call.in-progress.error-vapifault-cartesia-transcriber-failed|
 |endedReason|call.in-progress.error-warm-transfer-max-duration|
@@ -603271,6 +606430,7 @@ bearer
     "performanceMetrics": {
       "turnLatencies": [
         {
+          "unmeasured": "transcriber",
           "modelLatency": 0,
           "voiceLatency": 0,
           "transcriberLatency": 0,
@@ -603286,7 +606446,8 @@ bearer
       "fromTransportLatencyAverage": 0,
       "toTransportLatencyAverage": 0,
       "numUserInterrupted": 0,
-      "numAssistantInterrupted": 0
+      "numAssistantInterrupted": 0,
+      "turnLatencyUnmeasuredTracked": true
     },
     "structuredOutputs": {},
     "scorecards": {},
@@ -605920,6 +609081,7 @@ bearer
       "performanceMetrics": {
         "turnLatencies": [
           {
+            "unmeasured": "transcriber",
             "modelLatency": 0,
             "voiceLatency": 0,
             "transcriberLatency": 0,
@@ -605935,7 +609097,8 @@ bearer
         "fromTransportLatencyAverage": 0,
         "toTransportLatencyAverage": 0,
         "numUserInterrupted": 0,
-        "numAssistantInterrupted": 0
+        "numAssistantInterrupted": 0,
+        "turnLatencyUnmeasuredTracked": true
       },
       "structuredOutputs": {},
       "scorecards": {},
@@ -611619,6 +614782,7 @@ bearer
     "performanceMetrics": {
       "turnLatencies": [
         {
+          "unmeasured": "transcriber",
           "modelLatency": 0,
           "voiceLatency": 0,
           "transcriberLatency": 0,
@@ -611634,7 +614798,8 @@ bearer
       "fromTransportLatencyAverage": 0,
       "toTransportLatencyAverage": 0,
       "numUserInterrupted": 0,
-      "numAssistantInterrupted": 0
+      "numAssistantInterrupted": 0,
+      "turnLatencyUnmeasuredTracked": true
     },
     "structuredOutputs": {},
     "scorecards": {},
@@ -614268,6 +617433,7 @@ bearer
       "performanceMetrics": {
         "turnLatencies": [
           {
+            "unmeasured": "transcriber",
             "modelLatency": 0,
             "voiceLatency": 0,
             "transcriberLatency": 0,
@@ -614283,7 +617449,8 @@ bearer
         "fromTransportLatencyAverage": 0,
         "toTransportLatencyAverage": 0,
         "numUserInterrupted": 0,
-        "numAssistantInterrupted": 0
+        "numAssistantInterrupted": 0,
+        "turnLatencyUnmeasuredTracked": true
       },
       "structuredOutputs": {},
       "scorecards": {},
@@ -619963,6 +623130,7 @@ bearer
     "performanceMetrics": {
       "turnLatencies": [
         {
+          "unmeasured": "transcriber",
           "modelLatency": 0,
           "voiceLatency": 0,
           "transcriberLatency": 0,
@@ -619978,7 +623146,8 @@ bearer
       "fromTransportLatencyAverage": 0,
       "toTransportLatencyAverage": 0,
       "numUserInterrupted": 0,
-      "numAssistantInterrupted": 0
+      "numAssistantInterrupted": 0,
+      "turnLatencyUnmeasuredTracked": true
     },
     "structuredOutputs": {},
     "scorecards": {},
@@ -622612,6 +625781,7 @@ bearer
       "performanceMetrics": {
         "turnLatencies": [
           {
+            "unmeasured": "transcriber",
             "modelLatency": 0,
             "voiceLatency": 0,
             "transcriberLatency": 0,
@@ -622627,7 +625797,8 @@ bearer
         "fromTransportLatencyAverage": 0,
         "toTransportLatencyAverage": 0,
         "numUserInterrupted": 0,
-        "numAssistantInterrupted": 0
+        "numAssistantInterrupted": 0,
+        "turnLatencyUnmeasuredTracked": true
       },
       "structuredOutputs": {},
       "scorecards": {},
@@ -629814,6 +632985,7 @@ bearer
     "performanceMetrics": {
       "turnLatencies": [
         {
+          "unmeasured": "transcriber",
           "modelLatency": 0,
           "voiceLatency": 0,
           "transcriberLatency": 0,
@@ -629829,7 +633001,8 @@ bearer
       "fromTransportLatencyAverage": 0,
       "toTransportLatencyAverage": 0,
       "numUserInterrupted": 0,
-      "numAssistantInterrupted": 0
+      "numAssistantInterrupted": 0,
+      "turnLatencyUnmeasuredTracked": true
     },
     "structuredOutputs": {},
     "scorecards": {},
@@ -632463,6 +635636,7 @@ bearer
       "performanceMetrics": {
         "turnLatencies": [
           {
+            "unmeasured": "transcriber",
             "modelLatency": 0,
             "voiceLatency": 0,
             "transcriberLatency": 0,
@@ -632478,7 +635652,8 @@ bearer
         "fromTransportLatencyAverage": 0,
         "toTransportLatencyAverage": 0,
         "numUserInterrupted": 0,
-        "numAssistantInterrupted": 0
+        "numAssistantInterrupted": 0,
+        "turnLatencyUnmeasuredTracked": true
       },
       "structuredOutputs": {},
       "scorecards": {},
@@ -638180,6 +641355,7 @@ bearer
     "performanceMetrics": {
       "turnLatencies": [
         {
+          "unmeasured": "transcriber",
           "modelLatency": 0,
           "voiceLatency": 0,
           "transcriberLatency": 0,
@@ -638195,7 +641371,8 @@ bearer
       "fromTransportLatencyAverage": 0,
       "toTransportLatencyAverage": 0,
       "numUserInterrupted": 0,
-      "numAssistantInterrupted": 0
+      "numAssistantInterrupted": 0,
+      "turnLatencyUnmeasuredTracked": true
     },
     "structuredOutputs": {},
     "scorecards": {},
@@ -640829,6 +644006,7 @@ bearer
       "performanceMetrics": {
         "turnLatencies": [
           {
+            "unmeasured": "transcriber",
             "modelLatency": 0,
             "voiceLatency": 0,
             "transcriberLatency": 0,
@@ -640844,7 +644022,8 @@ bearer
         "fromTransportLatencyAverage": 0,
         "toTransportLatencyAverage": 0,
         "numUserInterrupted": 0,
-        "numAssistantInterrupted": 0
+        "numAssistantInterrupted": 0,
+        "turnLatencyUnmeasuredTracked": true
       },
       "structuredOutputs": {},
       "scorecards": {},
@@ -646517,6 +649696,7 @@ bearer
     "performanceMetrics": {
       "turnLatencies": [
         {
+          "unmeasured": "transcriber",
           "modelLatency": 0,
           "voiceLatency": 0,
           "transcriberLatency": 0,
@@ -646532,7 +649712,8 @@ bearer
       "fromTransportLatencyAverage": 0,
       "toTransportLatencyAverage": 0,
       "numUserInterrupted": 0,
-      "numAssistantInterrupted": 0
+      "numAssistantInterrupted": 0,
+      "turnLatencyUnmeasuredTracked": true
     },
     "structuredOutputs": {},
     "scorecards": {},
@@ -649166,6 +652347,7 @@ bearer
       "performanceMetrics": {
         "turnLatencies": [
           {
+            "unmeasured": "transcriber",
             "modelLatency": 0,
             "voiceLatency": 0,
             "transcriberLatency": 0,
@@ -649181,7 +652363,8 @@ bearer
         "fromTransportLatencyAverage": 0,
         "toTransportLatencyAverage": 0,
         "numUserInterrupted": 0,
-        "numAssistantInterrupted": 0
+        "numAssistantInterrupted": 0,
+        "turnLatencyUnmeasuredTracked": true
       },
       "structuredOutputs": {},
       "scorecards": {},
@@ -654855,6 +658038,7 @@ bearer
     "performanceMetrics": {
       "turnLatencies": [
         {
+          "unmeasured": "transcriber",
           "modelLatency": 0,
           "voiceLatency": 0,
           "transcriberLatency": 0,
@@ -654870,7 +658054,8 @@ bearer
       "fromTransportLatencyAverage": 0,
       "toTransportLatencyAverage": 0,
       "numUserInterrupted": 0,
-      "numAssistantInterrupted": 0
+      "numAssistantInterrupted": 0,
+      "turnLatencyUnmeasuredTracked": true
     },
     "structuredOutputs": {},
     "scorecards": {},
@@ -657504,6 +660689,7 @@ bearer
       "performanceMetrics": {
         "turnLatencies": [
           {
+            "unmeasured": "transcriber",
             "modelLatency": 0,
             "voiceLatency": 0,
             "transcriberLatency": 0,
@@ -657519,7 +660705,8 @@ bearer
         "fromTransportLatencyAverage": 0,
         "toTransportLatencyAverage": 0,
         "numUserInterrupted": 0,
-        "numAssistantInterrupted": 0
+        "numAssistantInterrupted": 0,
+        "turnLatencyUnmeasuredTracked": true
       },
       "structuredOutputs": {},
       "scorecards": {},
@@ -663208,6 +666395,7 @@ bearer
     "performanceMetrics": {
       "turnLatencies": [
         {
+          "unmeasured": "transcriber",
           "modelLatency": 0,
           "voiceLatency": 0,
           "transcriberLatency": 0,
@@ -663223,7 +666411,8 @@ bearer
       "fromTransportLatencyAverage": 0,
       "toTransportLatencyAverage": 0,
       "numUserInterrupted": 0,
-      "numAssistantInterrupted": 0
+      "numAssistantInterrupted": 0,
+      "turnLatencyUnmeasuredTracked": true
     },
     "structuredOutputs": {},
     "scorecards": {},
@@ -665857,6 +669046,7 @@ bearer
       "performanceMetrics": {
         "turnLatencies": [
           {
+            "unmeasured": "transcriber",
             "modelLatency": 0,
             "voiceLatency": 0,
             "transcriberLatency": 0,
@@ -665872,7 +669062,8 @@ bearer
         "fromTransportLatencyAverage": 0,
         "toTransportLatencyAverage": 0,
         "numUserInterrupted": 0,
-        "numAssistantInterrupted": 0
+        "numAssistantInterrupted": 0,
+        "turnLatencyUnmeasuredTracked": true
       },
       "structuredOutputs": {},
       "scorecards": {},
@@ -671551,6 +674742,7 @@ bearer
     "performanceMetrics": {
       "turnLatencies": [
         {
+          "unmeasured": "transcriber",
           "modelLatency": 0,
           "voiceLatency": 0,
           "transcriberLatency": 0,
@@ -671566,7 +674758,8 @@ bearer
       "fromTransportLatencyAverage": 0,
       "toTransportLatencyAverage": 0,
       "numUserInterrupted": 0,
-      "numAssistantInterrupted": 0
+      "numAssistantInterrupted": 0,
+      "turnLatencyUnmeasuredTracked": true
     },
     "structuredOutputs": {},
     "scorecards": {},
@@ -674200,6 +677393,7 @@ bearer
       "performanceMetrics": {
         "turnLatencies": [
           {
+            "unmeasured": "transcriber",
             "modelLatency": 0,
             "voiceLatency": 0,
             "transcriberLatency": 0,
@@ -674215,7 +677409,8 @@ bearer
         "fromTransportLatencyAverage": 0,
         "toTransportLatencyAverage": 0,
         "numUserInterrupted": 0,
-        "numAssistantInterrupted": 0
+        "numAssistantInterrupted": 0,
+        "turnLatencyUnmeasuredTracked": true
       },
       "structuredOutputs": {},
       "scorecards": {},
@@ -679930,6 +683125,7 @@ bearer
     "performanceMetrics": {
       "turnLatencies": [
         {
+          "unmeasured": "transcriber",
           "modelLatency": 0,
           "voiceLatency": 0,
           "transcriberLatency": 0,
@@ -679945,7 +683141,8 @@ bearer
       "fromTransportLatencyAverage": 0,
       "toTransportLatencyAverage": 0,
       "numUserInterrupted": 0,
-      "numAssistantInterrupted": 0
+      "numAssistantInterrupted": 0,
+      "turnLatencyUnmeasuredTracked": true
     },
     "structuredOutputs": {},
     "scorecards": {},
@@ -682579,6 +685776,7 @@ bearer
       "performanceMetrics": {
         "turnLatencies": [
           {
+            "unmeasured": "transcriber",
             "modelLatency": 0,
             "voiceLatency": 0,
             "transcriberLatency": 0,
@@ -682594,7 +685792,8 @@ bearer
         "fromTransportLatencyAverage": 0,
         "toTransportLatencyAverage": 0,
         "numUserInterrupted": 0,
-        "numAssistantInterrupted": 0
+        "numAssistantInterrupted": 0,
+        "turnLatencyUnmeasuredTracked": true
       },
       "structuredOutputs": {},
       "scorecards": {},
@@ -688268,6 +691467,7 @@ bearer
     "performanceMetrics": {
       "turnLatencies": [
         {
+          "unmeasured": "transcriber",
           "modelLatency": 0,
           "voiceLatency": 0,
           "transcriberLatency": 0,
@@ -688283,7 +691483,8 @@ bearer
       "fromTransportLatencyAverage": 0,
       "toTransportLatencyAverage": 0,
       "numUserInterrupted": 0,
-      "numAssistantInterrupted": 0
+      "numAssistantInterrupted": 0,
+      "turnLatencyUnmeasuredTracked": true
     },
     "structuredOutputs": {},
     "scorecards": {},
@@ -690917,6 +694118,7 @@ bearer
       "performanceMetrics": {
         "turnLatencies": [
           {
+            "unmeasured": "transcriber",
             "modelLatency": 0,
             "voiceLatency": 0,
             "transcriberLatency": 0,
@@ -690932,7 +694134,8 @@ bearer
         "fromTransportLatencyAverage": 0,
         "toTransportLatencyAverage": 0,
         "numUserInterrupted": 0,
-        "numAssistantInterrupted": 0
+        "numAssistantInterrupted": 0,
+        "turnLatencyUnmeasuredTracked": true
       },
       "structuredOutputs": {},
       "scorecards": {},
@@ -696604,6 +699807,7 @@ bearer
     "performanceMetrics": {
       "turnLatencies": [
         {
+          "unmeasured": "transcriber",
           "modelLatency": 0,
           "voiceLatency": 0,
           "transcriberLatency": 0,
@@ -696619,7 +699823,8 @@ bearer
       "fromTransportLatencyAverage": 0,
       "toTransportLatencyAverage": 0,
       "numUserInterrupted": 0,
-      "numAssistantInterrupted": 0
+      "numAssistantInterrupted": 0,
+      "turnLatencyUnmeasuredTracked": true
     },
     "structuredOutputs": {},
     "scorecards": {},
@@ -699253,6 +702458,7 @@ bearer
       "performanceMetrics": {
         "turnLatencies": [
           {
+            "unmeasured": "transcriber",
             "modelLatency": 0,
             "voiceLatency": 0,
             "transcriberLatency": 0,
@@ -699268,7 +702474,8 @@ bearer
         "fromTransportLatencyAverage": 0,
         "toTransportLatencyAverage": 0,
         "numUserInterrupted": 0,
-        "numAssistantInterrupted": 0
+        "numAssistantInterrupted": 0,
+        "turnLatencyUnmeasuredTracked": true
       },
       "structuredOutputs": {},
       "scorecards": {},
@@ -704940,6 +708147,7 @@ bearer
     "performanceMetrics": {
       "turnLatencies": [
         {
+          "unmeasured": "transcriber",
           "modelLatency": 0,
           "voiceLatency": 0,
           "transcriberLatency": 0,
@@ -704955,7 +708163,8 @@ bearer
       "fromTransportLatencyAverage": 0,
       "toTransportLatencyAverage": 0,
       "numUserInterrupted": 0,
-      "numAssistantInterrupted": 0
+      "numAssistantInterrupted": 0,
+      "turnLatencyUnmeasuredTracked": true
     },
     "structuredOutputs": {},
     "scorecards": {},
@@ -707589,6 +710798,7 @@ bearer
       "performanceMetrics": {
         "turnLatencies": [
           {
+            "unmeasured": "transcriber",
             "modelLatency": 0,
             "voiceLatency": 0,
             "transcriberLatency": 0,
@@ -707604,7 +710814,8 @@ bearer
         "fromTransportLatencyAverage": 0,
         "toTransportLatencyAverage": 0,
         "numUserInterrupted": 0,
-        "numAssistantInterrupted": 0
+        "numAssistantInterrupted": 0,
+        "turnLatencyUnmeasuredTracked": true
       },
       "structuredOutputs": {},
       "scorecards": {},
@@ -715792,6 +719003,7 @@ bearer
       "performanceMetrics": {
         "turnLatencies": [
           {
+            "unmeasured": "transcriber",
             "modelLatency": 0,
             "voiceLatency": 0,
             "transcriberLatency": 0,
@@ -715807,7 +719019,8 @@ bearer
         "fromTransportLatencyAverage": 0,
         "toTransportLatencyAverage": 0,
         "numUserInterrupted": 0,
-        "numAssistantInterrupted": 0
+        "numAssistantInterrupted": 0,
+        "turnLatencyUnmeasuredTracked": true
       },
       "structuredOutputs": {},
       "scorecards": {},
@@ -716182,6 +719395,7 @@ bearer
     "performanceMetrics": {
       "turnLatencies": [
         {
+          "unmeasured": "transcriber",
           "modelLatency": 0,
           "voiceLatency": 0,
           "transcriberLatency": 0,
@@ -716197,7 +719411,8 @@ bearer
       "fromTransportLatencyAverage": 0,
       "toTransportLatencyAverage": 0,
       "numUserInterrupted": 0,
-      "numAssistantInterrupted": 0
+      "numAssistantInterrupted": 0,
+      "turnLatencyUnmeasuredTracked": true
     },
     "structuredOutputs": {},
     "scorecards": {},
@@ -718831,6 +722046,7 @@ bearer
       "performanceMetrics": {
         "turnLatencies": [
           {
+            "unmeasured": "transcriber",
             "modelLatency": 0,
             "voiceLatency": 0,
             "transcriberLatency": 0,
@@ -718846,7 +722062,8 @@ bearer
         "fromTransportLatencyAverage": 0,
         "toTransportLatencyAverage": 0,
         "numUserInterrupted": 0,
-        "numAssistantInterrupted": 0
+        "numAssistantInterrupted": 0,
+        "turnLatencyUnmeasuredTracked": true
       },
       "structuredOutputs": {},
       "scorecards": {},
@@ -727034,6 +730251,7 @@ bearer
       "performanceMetrics": {
         "turnLatencies": [
           {
+            "unmeasured": "transcriber",
             "modelLatency": 0,
             "voiceLatency": 0,
             "transcriberLatency": 0,
@@ -727049,7 +730267,8 @@ bearer
         "fromTransportLatencyAverage": 0,
         "toTransportLatencyAverage": 0,
         "numUserInterrupted": 0,
-        "numAssistantInterrupted": 0
+        "numAssistantInterrupted": 0,
+        "turnLatencyUnmeasuredTracked": true
       },
       "structuredOutputs": {},
       "scorecards": {},
@@ -727424,6 +730643,7 @@ bearer
     "performanceMetrics": {
       "turnLatencies": [
         {
+          "unmeasured": "transcriber",
           "modelLatency": 0,
           "voiceLatency": 0,
           "transcriberLatency": 0,
@@ -727439,7 +730659,8 @@ bearer
       "fromTransportLatencyAverage": 0,
       "toTransportLatencyAverage": 0,
       "numUserInterrupted": 0,
-      "numAssistantInterrupted": 0
+      "numAssistantInterrupted": 0,
+      "turnLatencyUnmeasuredTracked": true
     },
     "structuredOutputs": {},
     "scorecards": {},
@@ -730073,6 +733294,7 @@ bearer
       "performanceMetrics": {
         "turnLatencies": [
           {
+            "unmeasured": "transcriber",
             "modelLatency": 0,
             "voiceLatency": 0,
             "transcriberLatency": 0,
@@ -730088,7 +733310,8 @@ bearer
         "fromTransportLatencyAverage": 0,
         "toTransportLatencyAverage": 0,
         "numUserInterrupted": 0,
-        "numAssistantInterrupted": 0
+        "numAssistantInterrupted": 0,
+        "turnLatencyUnmeasuredTracked": true
       },
       "structuredOutputs": {},
       "scorecards": {},
@@ -738276,6 +741499,7 @@ bearer
       "performanceMetrics": {
         "turnLatencies": [
           {
+            "unmeasured": "transcriber",
             "modelLatency": 0,
             "voiceLatency": 0,
             "transcriberLatency": 0,
@@ -738291,7 +741515,8 @@ bearer
         "fromTransportLatencyAverage": 0,
         "toTransportLatencyAverage": 0,
         "numUserInterrupted": 0,
-        "numAssistantInterrupted": 0
+        "numAssistantInterrupted": 0,
+        "turnLatencyUnmeasuredTracked": true
       },
       "structuredOutputs": {},
       "scorecards": {},
@@ -738666,6 +741891,7 @@ bearer
     "performanceMetrics": {
       "turnLatencies": [
         {
+          "unmeasured": "transcriber",
           "modelLatency": 0,
           "voiceLatency": 0,
           "transcriberLatency": 0,
@@ -738681,7 +741907,8 @@ bearer
       "fromTransportLatencyAverage": 0,
       "toTransportLatencyAverage": 0,
       "numUserInterrupted": 0,
-      "numAssistantInterrupted": 0
+      "numAssistantInterrupted": 0,
+      "turnLatencyUnmeasuredTracked": true
     },
     "structuredOutputs": {},
     "scorecards": {},
@@ -741315,6 +744542,7 @@ bearer
       "performanceMetrics": {
         "turnLatencies": [
           {
+            "unmeasured": "transcriber",
             "modelLatency": 0,
             "voiceLatency": 0,
             "transcriberLatency": 0,
@@ -741330,7 +744558,8 @@ bearer
         "fromTransportLatencyAverage": 0,
         "toTransportLatencyAverage": 0,
         "numUserInterrupted": 0,
-        "numAssistantInterrupted": 0
+        "numAssistantInterrupted": 0,
+        "turnLatencyUnmeasuredTracked": true
       },
       "structuredOutputs": {},
       "scorecards": {},
@@ -747002,6 +750231,7 @@ bearer
     "performanceMetrics": {
       "turnLatencies": [
         {
+          "unmeasured": "transcriber",
           "modelLatency": 0,
           "voiceLatency": 0,
           "transcriberLatency": 0,
@@ -747017,7 +750247,8 @@ bearer
       "fromTransportLatencyAverage": 0,
       "toTransportLatencyAverage": 0,
       "numUserInterrupted": 0,
-      "numAssistantInterrupted": 0
+      "numAssistantInterrupted": 0,
+      "turnLatencyUnmeasuredTracked": true
     },
     "structuredOutputs": {},
     "scorecards": {},
@@ -749651,6 +752882,7 @@ bearer
       "performanceMetrics": {
         "turnLatencies": [
           {
+            "unmeasured": "transcriber",
             "modelLatency": 0,
             "voiceLatency": 0,
             "transcriberLatency": 0,
@@ -749666,7 +752898,8 @@ bearer
         "fromTransportLatencyAverage": 0,
         "toTransportLatencyAverage": 0,
         "numUserInterrupted": 0,
-        "numAssistantInterrupted": 0
+        "numAssistantInterrupted": 0,
+        "turnLatencyUnmeasuredTracked": true
       },
       "structuredOutputs": {},
       "scorecards": {},
@@ -755377,6 +758610,7 @@ bearer
     "performanceMetrics": {
       "turnLatencies": [
         {
+          "unmeasured": "transcriber",
           "modelLatency": 0,
           "voiceLatency": 0,
           "transcriberLatency": 0,
@@ -755392,7 +758626,8 @@ bearer
       "fromTransportLatencyAverage": 0,
       "toTransportLatencyAverage": 0,
       "numUserInterrupted": 0,
-      "numAssistantInterrupted": 0
+      "numAssistantInterrupted": 0,
+      "turnLatencyUnmeasuredTracked": true
     },
     "structuredOutputs": {},
     "scorecards": {},
@@ -758026,6 +761261,7 @@ bearer
       "performanceMetrics": {
         "turnLatencies": [
           {
+            "unmeasured": "transcriber",
             "modelLatency": 0,
             "voiceLatency": 0,
             "transcriberLatency": 0,
@@ -758041,7 +761277,8 @@ bearer
         "fromTransportLatencyAverage": 0,
         "toTransportLatencyAverage": 0,
         "numUserInterrupted": 0,
-        "numAssistantInterrupted": 0
+        "numAssistantInterrupted": 0,
+        "turnLatencyUnmeasuredTracked": true
       },
       "structuredOutputs": {},
       "scorecards": {},
@@ -766313,6 +769550,7 @@ bearer
     "performanceMetrics": {
       "turnLatencies": [
         {
+          "unmeasured": "transcriber",
           "modelLatency": 0,
           "voiceLatency": 0,
           "transcriberLatency": 0,
@@ -766328,7 +769566,8 @@ bearer
       "fromTransportLatencyAverage": 0,
       "toTransportLatencyAverage": 0,
       "numUserInterrupted": 0,
-      "numAssistantInterrupted": 0
+      "numAssistantInterrupted": 0,
+      "turnLatencyUnmeasuredTracked": true
     },
     "structuredOutputs": {},
     "scorecards": {},
@@ -768962,6 +772201,7 @@ bearer
       "performanceMetrics": {
         "turnLatencies": [
           {
+            "unmeasured": "transcriber",
             "modelLatency": 0,
             "voiceLatency": 0,
             "transcriberLatency": 0,
@@ -768977,7 +772217,8 @@ bearer
         "fromTransportLatencyAverage": 0,
         "toTransportLatencyAverage": 0,
         "numUserInterrupted": 0,
-        "numAssistantInterrupted": 0
+        "numAssistantInterrupted": 0,
+        "turnLatencyUnmeasuredTracked": true
       },
       "structuredOutputs": {},
       "scorecards": {},
@@ -774652,6 +777893,7 @@ bearer
       "performanceMetrics": {
         "turnLatencies": [
           {
+            "unmeasured": "transcriber",
             "modelLatency": 0,
             "voiceLatency": 0,
             "transcriberLatency": 0,
@@ -774667,7 +777909,8 @@ bearer
         "fromTransportLatencyAverage": 0,
         "toTransportLatencyAverage": 0,
         "numUserInterrupted": 0,
-        "numAssistantInterrupted": 0
+        "numAssistantInterrupted": 0,
+        "turnLatencyUnmeasuredTracked": true
       },
       "structuredOutputs": {},
       "scorecards": {},
@@ -777301,6 +780544,7 @@ bearer
         "performanceMetrics": {
           "turnLatencies": [
             {
+              "unmeasured": "transcriber",
               "modelLatency": 0,
               "voiceLatency": 0,
               "transcriberLatency": 0,
@@ -777316,7 +780560,8 @@ bearer
           "fromTransportLatencyAverage": 0,
           "toTransportLatencyAverage": 0,
           "numUserInterrupted": 0,
-          "numAssistantInterrupted": 0
+          "numAssistantInterrupted": 0,
+          "turnLatencyUnmeasuredTracked": true
         },
         "structuredOutputs": {},
         "scorecards": {},

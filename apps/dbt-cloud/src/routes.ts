@@ -1408,6 +1408,7 @@ const AccountConnectionUpdateBodyRequestSchema = z
 
 const PlanEnumSchema = z
   .enum([
+    'bc_2027',
     'cancelled',
     'cancelled_2022',
     'cancelled_2025',
@@ -1429,7 +1430,7 @@ const PlanEnumSchema = z
   ])
   .openapi({
     description:
-      '* `cancelled` - CANCELLED\n* `cancelled_2022` - CANCELLED_2022\n* `cancelled_2025` - CANCELLED_2025\n* `developer` - DEVELOPER\n* `developer_2022` - DEVELOPER_2022\n* `enterprise` - ENTERPRISE\n* `enterprise_2025` - ENTERPRISE_2025\n* `enterprise_plus_2025` - ENTERPRISE_PLUS_2025\n* `free` - FREE\n* `starter_2025` - STARTER_2025\n* `team` - TEAM\n* `team_2022` - TEAM_2022\n* `team_annual` - TEAM_ANNUAL\n* `trial` - TRIAL\n* `trial_2022` - TRIAL_2022\n* `trial_2025` - TRIAL_2025\n* `usage_2026` - USAGE_2026\n* `usage_managed_2026` - USAGE_MANAGED_2026',
+      '* `bc_2027` - BC_2027\n* `cancelled` - CANCELLED\n* `cancelled_2022` - CANCELLED_2022\n* `cancelled_2025` - CANCELLED_2025\n* `developer` - DEVELOPER\n* `developer_2022` - DEVELOPER_2022\n* `enterprise` - ENTERPRISE\n* `enterprise_2025` - ENTERPRISE_2025\n* `enterprise_plus_2025` - ENTERPRISE_PLUS_2025\n* `free` - FREE\n* `starter_2025` - STARTER_2025\n* `team` - TEAM\n* `team_2022` - TEAM_2022\n* `team_annual` - TEAM_ANNUAL\n* `trial` - TRIAL\n* `trial_2022` - TRIAL_2022\n* `trial_2025` - TRIAL_2025\n* `usage_2026` - USAGE_2026\n* `usage_managed_2026` - USAGE_MANAGED_2026',
   })
   .openapi('PlanEnum')
 
@@ -1501,7 +1502,7 @@ const AccountResponseSchema = z
     plan: PlanEnumSchema.openapi({
       readOnly: true,
       description:
-        'The active plan type for the account\n\n* `cancelled` - CANCELLED\n* `cancelled_2022` - CANCELLED_2022\n* `cancelled_2025` - CANCELLED_2025\n* `developer` - DEVELOPER\n* `developer_2022` - DEVELOPER_2022\n* `enterprise` - ENTERPRISE\n* `enterprise_2025` - ENTERPRISE_2025\n* `enterprise_plus_2025` - ENTERPRISE_PLUS_2025\n* `free` - FREE\n* `starter_2025` - STARTER_2025\n* `team` - TEAM\n* `team_2022` - TEAM_2022\n* `team_annual` - TEAM_ANNUAL\n* `trial` - TRIAL\n* `trial_2022` - TRIAL_2022\n* `trial_2025` - TRIAL_2025\n* `usage_2026` - USAGE_2026\n* `usage_managed_2026` - USAGE_MANAGED_2026',
+        'The active plan type for the account\n\n* `bc_2027` - BC_2027\n* `cancelled` - CANCELLED\n* `cancelled_2022` - CANCELLED_2022\n* `cancelled_2025` - CANCELLED_2025\n* `developer` - DEVELOPER\n* `developer_2022` - DEVELOPER_2022\n* `enterprise` - ENTERPRISE\n* `enterprise_2025` - ENTERPRISE_2025\n* `enterprise_plus_2025` - ENTERPRISE_PLUS_2025\n* `free` - FREE\n* `starter_2025` - STARTER_2025\n* `team` - TEAM\n* `team_2022` - TEAM_2022\n* `team_annual` - TEAM_ANNUAL\n* `trial` - TRIAL\n* `trial_2022` - TRIAL_2022\n* `trial_2025` - TRIAL_2025\n* `usage_2026` - USAGE_2026\n* `usage_managed_2026` - USAGE_MANAGED_2026',
     }),
     run_slots: z
       .int()
@@ -1606,7 +1607,7 @@ const AccountResponseSchema = z
       .exactOptional()
       .openapi({
         description:
-          'The license type assigned to new users provisioned onto this account when no other license type is determined (e.g. no SSO group mapping, SCIM payload, or existing invite). Writes are ignored unless the account-wide default license flag is enabled for this account.\n\n* `developer` - DEVELOPER\n* `read_only` - READ_ONLY\n* `analyst` - ANALYST\n* `it` - IT',
+          "The license type assigned to new users provisioned onto this account when no other license type is determined (e.g. no SSO group mapping, SCIM payload, or existing invite). Analyst and IT can only be set when the account's plan includes that license type.\n\n* `developer` - DEVELOPER\n* `read_only` - READ_ONLY\n* `analyst` - ANALYST\n* `it` - IT",
       }),
     starter_repo_url: z
       .string()
@@ -1757,11 +1758,6 @@ const AccountListEnvelopedSchema = z
   })
   .openapi({ required: ['data', 'extra', 'status'] })
   .openapi('AccountListEnveloped')
-
-const AccountScopedPATRequestRequestSchema = z
-  .object({ name: z.string().min(1), expires_at: z.iso.datetime({ offset: true }).exactOptional() })
-  .openapi({ required: ['name'] })
-  .openapi('AccountScopedPATRequestRequest')
 
 const UserSchema = z
   .object({ first_name: z.string(), last_name: z.string() })
@@ -2168,6 +2164,58 @@ const AdapterVersionEnumSchema = z
   })
   .openapi('AdapterVersionEnum')
 
+const All597EnumSchema = z.literal(false).openapi('All597Enum')
+
+const All61dEnumSchema = z.literal(true).openapi('All61dEnum')
+
+const SelectionEnumSchema = z.literal('all').openapi('SelectionEnum')
+
+const StatusEnumSchema = z.enum(['complete', 'partial']).openapi('StatusEnum')
+
+const StopReasonEnumSchema = z.literal('request_limit').openapi('StopReasonEnum')
+
+const AllEnvironmentOverridesResourceSchema = z
+  .object({
+    selection: SelectionEnumSchema.openapi({ title: 'Selection' }),
+    status: StatusEnumSchema.openapi({ title: 'Status' }),
+    processed_environment_count: z.int().openapi({ title: 'Processed Environment Count' }),
+    changed_environment_count: z.int().openapi({ title: 'Changed Environment Count' }),
+    unchanged_environment_count: z.int().openapi({ title: 'Unchanged Environment Count' }),
+    skipped_environment_count: z.int().openapi({ title: 'Skipped Environment Count' }),
+    remaining_environment_count: z
+      .int()
+      .openapi({
+        title: 'Remaining Environment Count',
+        description: "Matching environments still after this request's slice when it committed.",
+      }),
+    stop_reason: StopReasonEnumSchema.nullable().openapi({
+      title: 'Stop Reason',
+      description: 'request_limit when more environments remain; null when complete.',
+    }),
+    next_cursor: z
+      .string()
+      .nullable()
+      .openapi({
+        title: 'Next Cursor',
+        description: 'Resume with the identical all-mode selection and action.',
+      }),
+  })
+  .openapi({
+    title: 'AllEnvironmentOverridesResource',
+    required: [
+      'selection',
+      'status',
+      'processed_environment_count',
+      'changed_environment_count',
+      'unchanged_environment_count',
+      'skipped_environment_count',
+      'remaining_environment_count',
+      'stop_reason',
+      'next_cursor',
+    ],
+  })
+  .openapi('AllEnvironmentOverridesResource')
+
 const AssignGroupsRequestRequestSchema = z
   .object({
     user_id: z
@@ -2259,6 +2307,10 @@ const AuditLogStartBulkExportResponseEnvelopedSchema = z
   .object({ data: AuditLogStartBulkExportResponseSchema, status: ResponseStatusSchema })
   .openapi({ required: ['data', 'status'] })
   .openapi('AuditLogStartBulkExportResponseEnveloped')
+
+const AvailabilityEnumSchema = z
+  .enum(['available', 'empty', 'unavailable'])
+  .openapi('AvailabilityEnum')
 
 const BaseConnectionV3Schema = z
   .object({
@@ -2562,6 +2614,8 @@ const BaseConnectionV3RequestSchema = z
   .openapi({ required: ['account_id', 'name', 'project_id', 'state', 'type'] })
   .openapi('BaseConnectionV3Request')
 
+const BasisEnumSchema = z.literal('effective').openapi('BasisEnum')
+
 const BigqueryCredentialsSchema = z
   .object({
     account_id: z
@@ -2652,6 +2706,10 @@ const BigqueryCredentialsRequestSchema = z
   .openapi({ required: ['account_id', 'schema', 'state', 'target_name', 'threads', 'type'] })
   .openapi('BigqueryCredentialsRequest')
 
+const BlockedReasonEnumSchema = z
+  .enum(['not_legacy', 'no_develop_access', 'unavailable'])
+  .openapi('BlockedReasonEnum')
+
 const BulkPutErrorResponseSchema = z
   .object({ reason: z.string().exactOptional() })
   .openapi({ required: [] })
@@ -2707,6 +2765,39 @@ const BulkPutSuccessResponseEnvelopedSchema = z
   .object({ data: BulkPutSuccessResponseSchema, status: ResponseStatusSchema })
   .openapi({ required: ['data', 'status'] })
   .openapi('BulkPutSuccessResponseEnveloped')
+
+const CohortEnumSchema = z.literal('baseline_legacy').openapi('CohortEnum')
+
+const ComplianceCountsResourceSchema = z
+  .object({
+    total: z.int().openapi({ title: 'Total' }),
+    compliant: z.int().openapi({ title: 'Compliant' }),
+    non_compliant: z.int().openapi({ title: 'Non Compliant' }),
+  })
+  .openapi({ title: 'ComplianceCountsResource', required: ['total', 'compliant', 'non_compliant'] })
+  .openapi('ComplianceCountsResource')
+
+const ScopeEnumSchema = z.enum(['account', 'project']).openapi('ScopeEnum')
+
+const ComplianceSummaryResourceSchema = z
+  .object({
+    basis: BasisEnumSchema.openapi({
+      title: 'Basis',
+      description: 'Compliance uses effective execution versions after overrides.',
+    }),
+    scope: ScopeEnumSchema.openapi({
+      title: 'Scope',
+      description: 'Scope of readable resources included in these counts.',
+    }),
+    projects: ComplianceCountsResourceSchema,
+    environments: ComplianceCountsResourceSchema,
+    jobs: ComplianceCountsResourceSchema,
+  })
+  .openapi({
+    title: 'ComplianceSummaryResource',
+    required: ['basis', 'scope', 'projects', 'environments', 'jobs'],
+  })
+  .openapi('ComplianceSummaryResource')
 
 const ServiceTokenTypeSchema = z
   .union([z.literal(1), z.literal(2), z.literal(3), z.literal(4)])
@@ -2827,6 +2918,168 @@ const CreateAccountScopedPATSchema = z
     ],
   })
   .openapi('CreateAccountScopedPAT')
+
+const CreateAccountScopedPATBodyTypeEnumSchema = z
+  .union([z.literal(1), z.literal(2)])
+  .openapi('CreateAccountScopedPATBodyTypeEnum')
+
+const CreateAccountScopedPATBodyRequestSchema = z
+  .object({
+    name: z.string().min(1).openapi({ title: 'Name' }),
+    type: CreateAccountScopedPATBodyTypeEnumSchema.exactOptional().openapi({ title: 'Type' }),
+    expires_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        title: 'Expires At',
+        description:
+          'When the token stops authenticating, ISO 8601 with a timezone offset. Omit for no expiry.',
+      }),
+  })
+  .openapi({
+    title: 'CreateAccountScopedPATBody',
+    description: 'Request body for creating an account-scoped personal access token.',
+    required: ['name'],
+  })
+  .openapi('CreateAccountScopedPATBodyRequest')
+
+const IPRestrictionTypeSchema = z
+  .union([z.literal(1), z.literal(2)])
+  .openapi({ title: 'IPRestrictionType', description: 'An enumeration.' })
+  .openapi('IPRestrictionType')
+
+const IPRestrictionCidrBodySchema = z
+  .strictObject({
+    id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64', title: 'Id' }),
+    cidr: z.string().openapi({ title: 'Cidr' }),
+    enabled: z.boolean().default(true).exactOptional().openapi({ title: 'Enabled' }),
+    state: z
+      .int()
+      .exactOptional()
+      .openapi({ title: 'State', description: '1 keeps the range, 2 deletes it.' }),
+    ip_restriction_rule_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        title: 'Ip Restriction Rule Id',
+        description: 'Read-only, ignored.',
+      }),
+    cidr_ipv6: z
+      .string()
+      .exactOptional()
+      .openapi({ title: 'Cidr Ipv6', description: 'Read-only, ignored.' }),
+    created_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ title: 'Created At', description: 'Read-only, ignored.' }),
+    updated_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ title: 'Updated At', description: 'Read-only, ignored.' }),
+  })
+  .openapi({
+    title: 'IPRestrictionCidrBody',
+    description:
+      'A CIDR range in an IP restriction rule. Include `id` to update an existing range.',
+    required: ['cidr'],
+  })
+  .openapi('IPRestrictionCidrBody')
+
+const CreateIPRestrictionBodyRequestSchema = z
+  .strictObject({
+    name: z.string().min(1).openapi({ title: 'Name' }),
+    type: IPRestrictionTypeSchema.openapi({ description: '1 allows the ranges, 2 denies them.' }),
+    description: z.string().exactOptional().openapi({ title: 'Description' }),
+    rule_set_enabled: z.boolean().exactOptional().openapi({ title: 'Rule Set Enabled' }),
+    cidrs: z
+      .array(IPRestrictionCidrBodySchema)
+      .default([])
+      .exactOptional()
+      .openapi({ title: 'Cidrs' }),
+    account_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        title: 'Account Id',
+        description: 'Read-only, ignored.',
+      }),
+    ip_restriction_rule_set_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        title: 'Ip Restriction Rule Set Id',
+        description: 'Read-only, ignored.',
+      }),
+    state: z.int().exactOptional().openapi({ title: 'State', description: 'Read-only, ignored.' }),
+    created_by_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        title: 'Created By Id',
+        description: 'Read-only, ignored.',
+      }),
+    enabled_for_service_tokens: z
+      .boolean()
+      .exactOptional()
+      .openapi({ title: 'Enabled For Service Tokens', description: 'Read-only, ignored.' }),
+  })
+  .openapi({
+    title: 'CreateIPRestrictionBody',
+    description: 'An IP restriction rule and its CIDR ranges.',
+    required: ['name', 'type'],
+  })
+  .openapi('CreateIPRestrictionBodyRequest')
 
 const CreateManagedRepositoryRequestRequestSchema = z
   .object({ name: z.string().min(1) })
@@ -5074,6 +5327,379 @@ const DetailUserSCIMResponseSchema = z
   .openapi({ title: 'DetailUserSCIMResponse', required: ['data'] })
   .openapi('DetailUserSCIMResponse')
 
+const ViewEnumSchema = z.enum(['all', 'enabled']).openapi('ViewEnum')
+
+const DisableEnvironmentOverridesBodyRequestSchema = (() => {
+  const Schema = z
+    .xor([
+      z
+        .any()
+        .refine(
+          (val) =>
+            !z
+              .union([
+                z
+                  .unknown()
+                  .superRefine((val, ctx) => {
+                    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                      if (!Object.hasOwn(val, 'view')) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
+                    }
+                  })
+                  .openapi({ required: ['view'] }),
+                z
+                  .unknown()
+                  .superRefine((val, ctx) => {
+                    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                      if (!Object.hasOwn(val, 'project_id')) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
+                    }
+                  })
+                  .openapi({ required: ['project_id'] }),
+                z
+                  .unknown()
+                  .superRefine((val, ctx) => {
+                    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                      if (!Object.hasOwn(val, 'excluded_environment_ids')) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
+                    }
+                  })
+                  .openapi({ required: ['excluded_environment_ids'] }),
+                z
+                  .unknown()
+                  .superRefine((val, ctx) => {
+                    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                      if (!Object.hasOwn(val, 'cursor')) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
+                    }
+                  })
+                  .openapi({ required: ['cursor'] }),
+              ])
+              .safeParse(val).success,
+        )
+        .openapi({
+          required: ['environment_ids'],
+          not: {
+            anyOf: [
+              { required: ['view'] },
+              { required: ['project_id'] },
+              { required: ['excluded_environment_ids'] },
+              { required: ['cursor'] },
+            ],
+          },
+        }),
+      z
+        .any()
+        .refine(
+          (val) =>
+            !z
+              .unknown()
+              .superRefine((val, ctx) => {
+                if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                  if (!Object.hasOwn(val, 'environment_ids')) {
+                    ctx.addIssue({ code: 'custom' })
+                  }
+                }
+              })
+              .openapi({ required: ['environment_ids'] })
+              .safeParse(val).success,
+        )
+        .openapi({ required: ['all', 'view'], not: { required: ['environment_ids'] } }),
+    ])
+    .and(
+      z
+        .object({
+          environment_ids: z
+            .array(
+              z
+                .preprocess(
+                  (val) =>
+                    typeof val === 'number' && Number.isSafeInteger(val)
+                      ? BigInt(val)
+                      : typeof val === 'string' && /^-?\d+$/.test(val)
+                        ? BigInt(val)
+                        : val,
+                  z.int64(),
+                )
+                .openapi({ type: 'integer', format: 'int64' }),
+            )
+            .min(1)
+            .max(100)
+            .exactOptional()
+            .openapi({ title: 'Environment Ids' }),
+          all: z.boolean().default(false).exactOptional().openapi({ title: 'All' }),
+          view: ViewEnumSchema.exactOptional().openapi({ title: 'View' }),
+          project_id: z
+            .preprocess(
+              (val) =>
+                typeof val === 'number' && Number.isSafeInteger(val)
+                  ? BigInt(val)
+                  : typeof val === 'string' && /^-?\d+$/.test(val)
+                    ? BigInt(val)
+                    : val,
+              z.int64(),
+            )
+            .exactOptional()
+            .openapi({ type: 'integer', format: 'int64', title: 'Project Id' }),
+          excluded_environment_ids: z
+            .array(
+              z
+                .preprocess(
+                  (val) =>
+                    typeof val === 'number' && Number.isSafeInteger(val)
+                      ? BigInt(val)
+                      : typeof val === 'string' && /^-?\d+$/.test(val)
+                        ? BigInt(val)
+                        : val,
+                  z.int64(),
+                )
+                .openapi({ type: 'integer', format: 'int64' }),
+            )
+            .max(100)
+            .exactOptional()
+            .openapi({ title: 'Excluded Environment Ids' }),
+          cursor: z.string().max(4096).exactOptional().openapi({ title: 'Cursor' }),
+        })
+        .openapi({ required: [] }),
+    )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (
+          ![
+            'environment_ids',
+            'all',
+            'view',
+            'project_id',
+            'excluded_environment_ids',
+            'cursor',
+          ].includes(k)
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({ additionalProperties: false })
+  .openapi({
+    title: 'DisableEnvironmentOverridesBody',
+    description:
+      'Base class for all request payloads.\nIt is expected that each endpoint extends this class to define its own payload format',
+  })
+  .openapi('DisableEnvironmentOverridesBodyRequest')
+
+const TargetDbtVersionEnumSchema = z.literal('latest').openapi('TargetDbtVersionEnum')
+
+const EnableEnvironmentOverridesBodyRequestSchema = (() => {
+  const Schema = z
+    .xor([
+      z
+        .any()
+        .refine(
+          (val) =>
+            !z
+              .union([
+                z
+                  .unknown()
+                  .superRefine((val, ctx) => {
+                    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                      if (!Object.hasOwn(val, 'view')) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
+                    }
+                  })
+                  .openapi({ required: ['view'] }),
+                z
+                  .unknown()
+                  .superRefine((val, ctx) => {
+                    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                      if (!Object.hasOwn(val, 'project_id')) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
+                    }
+                  })
+                  .openapi({ required: ['project_id'] }),
+                z
+                  .unknown()
+                  .superRefine((val, ctx) => {
+                    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                      if (!Object.hasOwn(val, 'excluded_environment_ids')) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
+                    }
+                  })
+                  .openapi({ required: ['excluded_environment_ids'] }),
+                z
+                  .unknown()
+                  .superRefine((val, ctx) => {
+                    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                      if (!Object.hasOwn(val, 'cursor')) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
+                    }
+                  })
+                  .openapi({ required: ['cursor'] }),
+              ])
+              .safeParse(val).success,
+        )
+        .openapi({
+          required: ['environment_ids'],
+          not: {
+            anyOf: [
+              { required: ['view'] },
+              { required: ['project_id'] },
+              { required: ['excluded_environment_ids'] },
+              { required: ['cursor'] },
+            ],
+          },
+        }),
+      z
+        .any()
+        .refine(
+          (val) =>
+            !z
+              .unknown()
+              .superRefine((val, ctx) => {
+                if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                  if (!Object.hasOwn(val, 'environment_ids')) {
+                    ctx.addIssue({ code: 'custom' })
+                  }
+                }
+              })
+              .openapi({ required: ['environment_ids'] })
+              .safeParse(val).success,
+        )
+        .openapi({ required: ['all', 'view'], not: { required: ['environment_ids'] } }),
+    ])
+    .and(
+      z
+        .object({
+          environment_ids: z
+            .array(
+              z
+                .preprocess(
+                  (val) =>
+                    typeof val === 'number' && Number.isSafeInteger(val)
+                      ? BigInt(val)
+                      : typeof val === 'string' && /^-?\d+$/.test(val)
+                        ? BigInt(val)
+                        : val,
+                  z.int64(),
+                )
+                .openapi({ type: 'integer', format: 'int64' }),
+            )
+            .min(1)
+            .max(100)
+            .exactOptional()
+            .openapi({ title: 'Environment Ids' }),
+          all: z.boolean().default(false).exactOptional().openapi({ title: 'All' }),
+          view: ViewEnumSchema.exactOptional().openapi({ title: 'View' }),
+          project_id: z
+            .preprocess(
+              (val) =>
+                typeof val === 'number' && Number.isSafeInteger(val)
+                  ? BigInt(val)
+                  : typeof val === 'string' && /^-?\d+$/.test(val)
+                    ? BigInt(val)
+                    : val,
+              z.int64(),
+            )
+            .exactOptional()
+            .openapi({ type: 'integer', format: 'int64', title: 'Project Id' }),
+          excluded_environment_ids: z
+            .array(
+              z
+                .preprocess(
+                  (val) =>
+                    typeof val === 'number' && Number.isSafeInteger(val)
+                      ? BigInt(val)
+                      : typeof val === 'string' && /^-?\d+$/.test(val)
+                        ? BigInt(val)
+                        : val,
+                  z.int64(),
+                )
+                .openapi({ type: 'integer', format: 'int64' }),
+            )
+            .max(100)
+            .exactOptional()
+            .openapi({ title: 'Excluded Environment Ids' }),
+          cursor: z.string().max(4096).exactOptional().openapi({ title: 'Cursor' }),
+          target_dbt_version: TargetDbtVersionEnumSchema.openapi({
+            title: 'Target Dbt Version',
+            description: 'Explicit migration target; only latest is supported.',
+          }),
+        })
+        .openapi({ required: ['target_dbt_version'] }),
+    )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (
+          ![
+            'environment_ids',
+            'all',
+            'view',
+            'project_id',
+            'excluded_environment_ids',
+            'cursor',
+            'target_dbt_version',
+          ].includes(k)
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({ additionalProperties: false })
+  .openapi({
+    title: 'EnableEnvironmentOverridesBody',
+    description:
+      'Base class for all request payloads.\nIt is expected that each endpoint extends this class to define its own payload format',
+    required: ['target_dbt_version'],
+  })
+  .openapi('EnableEnvironmentOverridesBodyRequest')
+
+const EnableIPRestrictionsBodyRequestSchema = z
+  .strictObject({
+    enabled: z.boolean().openapi({ title: 'Enabled' }),
+    account_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        title: 'Account Id',
+        description: 'Read-only, ignored.',
+      }),
+    state: z.int().exactOptional().openapi({ title: 'State', description: 'Read-only, ignored.' }),
+  })
+  .openapi({
+    title: 'EnableIPRestrictionsBody',
+    description: 'Turns IP restrictions on or off for the account.',
+    required: ['enabled'],
+  })
+  .openapi('EnableIPRestrictionsBodyRequest')
+
 const EncryptedJSONValueSchema = z
   .object({
     _ciphertext: z.string().default('NOT_SET').exactOptional().openapi({ title: ' ciphertext' }),
@@ -5203,6 +5829,89 @@ const EnvVarUserResponseSchema = z
     required: ['data'],
   })
   .openapi('EnvVarUserResponse')
+
+const EnvironmentOverrideResultResourceSchema = z
+  .object({
+    migration_target: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        title: 'Migration Target',
+        description: 'Current override target; null when disabled.',
+      }),
+    migration_enabled: z
+      .boolean()
+      .openapi({ title: 'Migration Enabled', description: 'Whether an override target is set.' }),
+    migration_change_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        title: 'Migration Change Id',
+        description:
+          'ID of the current upgrade or revert. Trial results only count runs attributed to this change. Null when the environment has never been upgraded.',
+      }),
+    migration_changed_at: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .exactOptional()
+      .openapi({
+        title: 'Migration Changed At',
+        description:
+          'When the current change was made; null when the environment has never been upgraded.',
+      }),
+    environment_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64', title: 'Environment Id' }),
+    changed: z.boolean().openapi({ title: 'Changed' }),
+  })
+  .openapi({
+    title: 'EnvironmentOverrideResultResource',
+    required: ['migration_enabled', 'environment_id', 'changed'],
+  })
+  .openapi('EnvironmentOverrideResultResource')
+
+const EnvironmentOverridesResourceSchema = z
+  .object({
+    results: z.array(EnvironmentOverrideResultResourceSchema).openapi({ title: 'Results' }),
+    changed_environment_count: z.int().openapi({ title: 'Changed Environment Count' }),
+  })
+  .openapi({
+    title: 'EnvironmentOverridesResource',
+    required: ['results', 'changed_environment_count'],
+  })
+  .openapi('EnvironmentOverridesResource')
+
+const EnvironmentOverridesResponseSchema = z
+  .object({
+    status: StatusSchema.exactOptional(),
+    data: z
+      .union([EnvironmentOverridesResourceSchema, AllEnvironmentOverridesResourceSchema])
+      .openapi({ title: 'Data' }),
+    extra: z.looseObject({}).exactOptional().openapi({ title: 'Extra' }),
+    error_code: z.int().exactOptional().openapi({ title: 'Error Code' }),
+  })
+  .openapi({ title: 'EnvironmentOverridesResponse', required: ['data'] })
+  .openapi('EnvironmentOverridesResponse')
 
 const Type24eEnumSchema = z
   .union([z.literal(0), z.literal(1)])
@@ -6184,61 +6893,6 @@ const IPRestrictionCidrSchema = z
   .openapi({ required: ['cidr', 'enabled', 'ip_restriction_rule_id', 'state'] })
   .openapi('IPRestrictionCidr')
 
-const IPRestrictionCidrRequestRequestSchema = z
-  .object({
-    state: z
-      .int()
-      .default(1)
-      .exactOptional()
-      .openapi({
-        example: 1,
-        description:
-          'A value of 1 means this entity is active and a value of 2 means this entity is deleted',
-      }),
-    cidr: z.string().min(1),
-    id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-  })
-  .openapi({ required: ['cidr'] })
-  .openapi('IPRestrictionCidrRequestRequest')
-
-const TypeEdaEnumSchema = z
-  .union([z.literal(1), z.literal(2)])
-  .openapi({ description: '* `1` - ALLOW\n* `2` - DENY' })
-  .openapi('TypeEdaEnum')
-
-const IPRestrictionRequestRequestSchema = z
-  .object({
-    name: z.string().min(1),
-    type: TypeEdaEnumSchema,
-    rule_set_enabled: z.boolean(),
-    account_id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({ type: 'integer', format: 'int64' }),
-    cidrs: z.array(IPRestrictionCidrRequestRequestSchema),
-    description: z.string().min(1).exactOptional(),
-  })
-  .openapi({ required: ['account_id', 'cidrs', 'name', 'rule_set_enabled', 'type'] })
-  .openapi('IPRestrictionRequestRequest')
-
 const IPRestrictionRuleSchema = z
   .object({
     name: z.string(),
@@ -6455,15 +7109,658 @@ const IPRestrictionRuleSetEnvelopedSchema = z
   .openapi({ required: ['data', 'status'] })
   .openapi('IPRestrictionRuleSetEnveloped')
 
-const IPRestrictionSetRequestRequestSchema = z
-  .object({ enabled: z.boolean() })
-  .openapi({ required: ['enabled'] })
-  .openapi('IPRestrictionSetRequestRequest')
-
 const IPRestrictionSetValidateSchema = z
   .object({ is_valid_for_admin: z.boolean() })
   .openapi({ required: ['is_valid_for_admin'] })
   .openapi('IPRestrictionSetValidate')
+
+const TargetCapabilityResourceSchema = z
+  .object({
+    target: z
+      .string()
+      .openapi({
+        title: 'Target',
+        description: 'Supported migration target. Currently only latest is offered.',
+      }),
+    display_name: z.string().openapi({ title: 'Display Name' }),
+    can_enable: z.boolean().openapi({ title: 'Can Enable' }),
+    blocked_reason: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        title: 'Blocked Reason',
+        description: 'Why enabling is blocked: insufficient_permissions or no_legacy_workloads.',
+      }),
+  })
+  .openapi({
+    title: 'TargetCapabilityResource',
+    required: ['target', 'display_name', 'can_enable'],
+  })
+  .openapi('TargetCapabilityResource')
+
+const UnavailableReasonEnumSchema = z
+  .enum(['runs_read_denied', 'no_change'])
+  .openapi('UnavailableReasonEnum')
+
+const NullEnumSchema = z.literal(null).openapi('NullEnum')
+
+const MigrationRunCountsResourceSchema = z
+  .object({
+    succeeded: z.int().openapi({ title: 'Succeeded' }),
+    failed: z.int().openapi({ title: 'Failed' }),
+    queued: z.int().openapi({ title: 'Queued' }),
+    starting: z.int().openapi({ title: 'Starting' }),
+    running: z.int().openapi({ title: 'Running' }),
+    cancelled: z.int().openapi({ title: 'Cancelled' }),
+    unknown: z.int().openapi({ title: 'Unknown' }),
+    no_qualifying_run: z.int().openapi({ title: 'No Qualifying Run' }),
+  })
+  .nullable()
+  .openapi({
+    title: 'MigrationRunCountsResource',
+    required: [
+      'succeeded',
+      'failed',
+      'queued',
+      'starting',
+      'running',
+      'cancelled',
+      'unknown',
+      'no_qualifying_run',
+    ],
+  })
+  .openapi('MigrationRunCountsResource')
+
+const MigrationRunSummaryResourceSchema = z
+  .object({
+    cohort: CohortEnumSchema.openapi({ title: 'Cohort' }),
+    job_count: z.int().openapi({ title: 'Job Count' }),
+    change_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        title: 'Change Id',
+        description: 'Migration change whose attributed runs are counted; null when there is none.',
+      }),
+    window_started_at: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .exactOptional()
+      .openapi({
+        title: 'Window Started At',
+        description:
+          'When that change was made. Display only: runs are selected by change, not by time.',
+      }),
+    availability: AvailabilityEnumSchema.openapi({ title: 'Availability' }),
+    unavailable_reason: z
+      .xor([UnavailableReasonEnumSchema, NullEnumSchema])
+      .nullable()
+      .exactOptional()
+      .openapi({
+        title: 'Unavailable Reason',
+        description: 'no_change when the environment has never been upgraded.',
+      }),
+    counts: MigrationRunCountsResourceSchema.nullable()
+      .exactOptional()
+      .openapi({ title: 'Counts' }),
+  })
+  .nullable()
+  .openapi({
+    title: 'MigrationRunSummaryResource',
+    required: ['cohort', 'job_count', 'availability'],
+  })
+  .openapi('MigrationRunSummaryResource')
+
+const InventoryEnvironmentSchema = z
+  .object({
+    migration_target: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        title: 'Migration Target',
+        description: 'Current override target; null when disabled.',
+      }),
+    migration_enabled: z
+      .boolean()
+      .openapi({ title: 'Migration Enabled', description: 'Whether an override target is set.' }),
+    migration_change_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        title: 'Migration Change Id',
+        description:
+          'ID of the current upgrade or revert. Trial results only count runs attributed to this change. Null when the environment has never been upgraded.',
+      }),
+    migration_changed_at: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .exactOptional()
+      .openapi({
+        title: 'Migration Changed At',
+        description:
+          'When the current change was made; null when the environment has never been upgraded.',
+      }),
+    environment_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64', title: 'Environment Id' }),
+    environment_name: z.string().openapi({ title: 'Environment Name' }),
+    project_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64', title: 'Project Id' }),
+    project_name: z.string().openapi({ title: 'Project Name' }),
+    environment_type: z.string().openapi({ title: 'Environment Type' }),
+    deployment_type: z.string().exactOptional().openapi({ title: 'Deployment Type' }),
+    configured_dbt_version: z.string().exactOptional().openapi({ title: 'Configured Dbt Version' }),
+    baseline_dbt_version: z
+      .string()
+      .openapi({
+        title: 'Baseline Dbt Version',
+        description: 'Resolved version before applying the migration override.',
+      }),
+    effective_dbt_version: z
+      .string()
+      .openapi({
+        title: 'Effective Dbt Version',
+        description: 'Resolved version after applying a supported migration override.',
+      }),
+    is_legacy: z.boolean().openapi({ title: 'Is Legacy' }),
+    job_count: z.int().openapi({ title: 'Job Count' }),
+    legacy_job_count: z.int().openapi({ title: 'Legacy Job Count' }),
+    effective_legacy_job_count: z.int().openapi({ title: 'Effective Legacy Job Count' }),
+    overridden_job_count: z.int().openapi({ title: 'Overridden Job Count' }),
+    can_enable: z
+      .boolean()
+      .openapi({
+        title: 'Can Enable',
+        description: 'Whether this actor may enable or replace the override.',
+      }),
+    can_disable: z
+      .boolean()
+      .openapi({
+        title: 'Can Disable',
+        description: 'Whether this actor may disable the override.',
+      }),
+    enable_blocked_reason: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        title: 'Enable Blocked Reason',
+        description:
+          'insufficient_permissions or no_legacy_workloads; null when enabling is allowed.',
+      }),
+    disable_blocked_reason: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        title: 'Disable Blocked Reason',
+        description: 'insufficient_permissions when the actor cannot disable; null otherwise.',
+      }),
+    can_read_runs: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        title: 'Can Read Runs',
+        description: 'Omitted when include_run_summary is false.',
+      }),
+    last_run_at: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .exactOptional()
+      .openapi({
+        title: 'Last Run At',
+        description:
+          'Creation time of the most recent readable run across all current inventory jobs. Omitted when include_run_summary is false.',
+      }),
+    resolved_execution_version: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        title: 'Resolved Execution Version',
+        description: 'Execution version; currently always equal to effective_dbt_version.',
+      }),
+    execution_blocked_reason: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ title: 'Execution Blocked Reason', description: 'Currently always null.' }),
+    target_capabilities: z
+      .array(TargetCapabilityResourceSchema)
+      .openapi({ title: 'Target Capabilities' }),
+    migration_run_summary: MigrationRunSummaryResourceSchema.nullable().openapi({
+      title: 'Migration Run Summary',
+      description:
+        "Outcomes of each baseline legacy job's newest run attributed to the current migration change; null unless include_run_summary is true.",
+    }),
+  })
+  .openapi({
+    title: 'InventoryEnvironment',
+    required: [
+      'migration_enabled',
+      'environment_id',
+      'environment_name',
+      'project_id',
+      'project_name',
+      'environment_type',
+      'baseline_dbt_version',
+      'effective_dbt_version',
+      'is_legacy',
+      'job_count',
+      'legacy_job_count',
+      'effective_legacy_job_count',
+      'overridden_job_count',
+      'can_enable',
+      'can_disable',
+      'target_capabilities',
+      'migration_run_summary',
+    ],
+  })
+  .openapi('InventoryEnvironment')
+
+const V3RequestParamsSchema = z
+  .looseObject({})
+  .openapi({
+    title: 'V3RequestParams',
+    description:
+      'Base class for all URL request parameters.\nIt is expected that each endpoint extends this class to define its own parameters format',
+  })
+  .openapi('V3RequestParams')
+
+const V3ResponsePaginationSchema = z
+  .object({
+    count: z.int().openapi({ title: 'Count' }),
+    total_count: z.int().openapi({ title: 'Total Count' }),
+  })
+  .openapi({ title: 'V3ResponsePagination', required: ['count', 'total_count'] })
+  .openapi('V3ResponsePagination')
+
+const OverrideActionCountsResourceSchema = z
+  .object({
+    eligible_environment_count: z.int().openapi({ title: 'Eligible Environment Count' }),
+    legacy_job_count: z.int().openapi({ title: 'Legacy Job Count' }),
+    excluded_environment_count: z.int().openapi({ title: 'Excluded Environment Count' }),
+  })
+  .openapi({
+    title: 'OverrideActionCountsResource',
+    required: ['eligible_environment_count', 'legacy_job_count', 'excluded_environment_count'],
+  })
+  .openapi('OverrideActionCountsResource')
+
+const OverrideActionPreviewsResourceSchema = z
+  .object({
+    enable_latest: OverrideActionCountsResourceSchema,
+    disable: OverrideActionCountsResourceSchema,
+  })
+  .nullable()
+  .openapi({ title: 'OverrideActionPreviewsResource', required: ['enable_latest', 'disable'] })
+  .openapi('OverrideActionPreviewsResource')
+
+const InventorySummaryResourceSchema = z
+  .object({
+    account_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64', title: 'Account Id' }),
+    compliance: ComplianceSummaryResourceSchema,
+    environment_count: z
+      .int()
+      .openapi({
+        title: 'Environment Count',
+        description: 'Environment count in the selected worklist, before pagination.',
+      }),
+    supported_targets: z
+      .array(z.string())
+      .openapi({
+        title: 'Supported Targets',
+        description: 'Targets offered for new overrides; currently only latest.',
+      }),
+    actions: OverrideActionPreviewsResourceSchema.nullable()
+      .exactOptional()
+      .openapi({
+        title: 'Actions',
+        description: 'Action preview when include_action_counts=true; null otherwise.',
+      }),
+  })
+  .openapi({
+    title: 'InventorySummaryResource',
+    required: ['account_id', 'compliance', 'environment_count', 'supported_targets'],
+  })
+  .openapi('InventorySummaryResource')
+
+const InventoryEnvironmentExtraDataSchema = z
+  .object({
+    filters: V3RequestParamsSchema.exactOptional(),
+    order_by: z
+      .union([z.string(), z.array(z.string())])
+      .exactOptional()
+      .openapi({ title: 'Order By' }),
+    pagination: V3ResponsePaginationSchema,
+    migration_summary: InventorySummaryResourceSchema.nullable()
+      .exactOptional()
+      .openapi({
+        title: 'Migration Summary',
+        description: 'Scoped inventory summary when include_summary=true; null otherwise.',
+      }),
+  })
+  .openapi({ title: 'InventoryEnvironmentExtraData', required: ['pagination'] })
+  .openapi('InventoryEnvironmentExtraData')
+
+const InventoryEnvironmentResponseSchema = z
+  .object({
+    status: StatusSchema.exactOptional(),
+    data: z.array(InventoryEnvironmentSchema).openapi({ title: 'Data' }),
+    extra: InventoryEnvironmentExtraDataSchema,
+    error_code: z.int().exactOptional().openapi({ title: 'Error Code' }),
+  })
+  .openapi({ title: 'InventoryEnvironmentResponse', required: ['data', 'extra'] })
+  .openapi('InventoryEnvironmentResponse')
+
+const VersionGroupEnumSchema = z.enum(['compliant', 'legacy']).openapi('VersionGroupEnum')
+
+const LatestJobRunResourceSchema = z
+  .object({
+    id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64', title: 'Id' }),
+    status: z.int().openapi({ title: 'Status' }),
+    status_humanized: z.string().openapi({ title: 'Status Humanized' }),
+    status_message: z.string().nullable().openapi({ title: 'Status Message' }),
+  })
+  .nullable()
+  .openapi({
+    title: 'LatestJobRunResource',
+    required: ['id', 'status', 'status_humanized', 'status_message'],
+  })
+  .openapi('LatestJobRunResource')
+
+const LastJobRunResourceSchema = z
+  .object({
+    id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64', title: 'Id' }),
+    status: z.int().openapi({ title: 'Status' }),
+    status_humanized: z.string().openapi({ title: 'Status Humanized' }),
+    status_message: z.string().nullable().openapi({ title: 'Status Message' }),
+    created_at: z.iso.datetime({ offset: true }).openapi({ title: 'Created At' }),
+    dbt_version: z
+      .string()
+      .nullable()
+      .openapi({
+        title: 'Dbt Version',
+        description:
+          'Version saved on this run; null when execution has not started or the version is unknown.',
+      }),
+  })
+  .nullable()
+  .openapi({
+    title: 'LastJobRunResource',
+    required: ['id', 'status', 'status_humanized', 'status_message', 'created_at', 'dbt_version'],
+  })
+  .openapi('LastJobRunResource')
+
+const InventoryJobResourceSchema = z
+  .object({
+    migration_target: z.string().nullable().openapi({ title: 'Migration Target' }),
+    migration_enabled: z
+      .boolean()
+      .openapi({ title: 'Migration Enabled', description: 'Whether an override target is set.' }),
+    migration_change_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .openapi({ type: ['integer', 'null'], format: 'int64', title: 'Migration Change Id' }),
+    migration_changed_at: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .openapi({ title: 'Migration Changed At' }),
+    job_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64', title: 'Job Id' }),
+    job_name: z.string().openapi({ title: 'Job Name' }),
+    environment_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64', title: 'Environment Id' }),
+    configured_dbt_version: z.string().nullable().openapi({ title: 'Configured Dbt Version' }),
+    baseline_dbt_version: z.string().openapi({ title: 'Baseline Dbt Version' }),
+    effective_dbt_version: z.string().openapi({ title: 'Effective Dbt Version' }),
+    version_source: z.string().openapi({ title: 'Version Source' }),
+    is_legacy: z.boolean().openapi({ title: 'Is Legacy' }),
+    is_effectively_legacy: z.boolean().openapi({ title: 'Is Effectively Legacy' }),
+    is_overridden: z.boolean().openapi({ title: 'Is Overridden' }),
+    is_deactivated: z.boolean().openapi({ title: 'Is Deactivated' }),
+    version_group: VersionGroupEnumSchema.openapi({ title: 'Version Group' }),
+    can_read_runs: z.boolean().openapi({ title: 'Can Read Runs' }),
+    latest_run: LatestJobRunResourceSchema.nullable().openapi({
+      title: 'Latest Run',
+      description:
+        'Newest run attributed to the current migration change; null when there is none.',
+    }),
+    last_run: LastJobRunResourceSchema.nullable().openapi({
+      title: 'Last Run',
+      description:
+        'Most recently finished run of any kind, including explicit-version runs and runs before the trial.',
+    }),
+    resolved_execution_version: z
+      .string()
+      .nullable()
+      .openapi({ title: 'Resolved Execution Version' }),
+    execution_blocked_reason: z.string().nullable().openapi({ title: 'Execution Blocked Reason' }),
+  })
+  .openapi({
+    title: 'InventoryJobResource',
+    required: [
+      'migration_target',
+      'migration_enabled',
+      'migration_change_id',
+      'migration_changed_at',
+      'job_id',
+      'job_name',
+      'environment_id',
+      'configured_dbt_version',
+      'baseline_dbt_version',
+      'effective_dbt_version',
+      'version_source',
+      'is_legacy',
+      'is_effectively_legacy',
+      'is_overridden',
+      'is_deactivated',
+      'version_group',
+      'can_read_runs',
+      'latest_run',
+      'last_run',
+      'resolved_execution_version',
+      'execution_blocked_reason',
+    ],
+  })
+  .openapi('InventoryJobResource')
+
+const InventoryJobPaginationResourceSchema = z
+  .object({
+    count: z.int().openapi({ title: 'Count' }),
+    total_count: z.int().openapi({ title: 'Total Count' }),
+    limit: z.int().openapi({ title: 'Limit' }),
+    offset: z.int().openapi({ title: 'Offset' }),
+  })
+  .openapi({
+    title: 'InventoryJobPaginationResource',
+    required: ['count', 'total_count', 'limit', 'offset'],
+  })
+  .openapi('InventoryJobPaginationResource')
+
+const InventoryJobGroupPageResourceSchema = z
+  .object({
+    jobs: z.array(InventoryJobResourceSchema).openapi({ title: 'Jobs' }),
+    pagination: InventoryJobPaginationResourceSchema,
+  })
+  .openapi({ title: 'InventoryJobGroupPageResource', required: ['jobs', 'pagination'] })
+  .openapi('InventoryJobGroupPageResource')
+
+const InventoryJobGroupsSchema = z
+  .object({
+    environment_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64', title: 'Environment Id' }),
+    compliant: InventoryJobGroupPageResourceSchema,
+    legacy: InventoryJobGroupPageResourceSchema,
+  })
+  .openapi({ title: 'InventoryJobGroups', required: ['environment_id', 'compliant', 'legacy'] })
+  .openapi('InventoryJobGroups')
+
+const InventoryJobGroupsResponseSchema = z
+  .object({
+    status: StatusSchema.exactOptional(),
+    data: InventoryJobGroupsSchema,
+    extra: z.looseObject({}).exactOptional().openapi({ title: 'Extra' }),
+    error_code: z.int().exactOptional().openapi({ title: 'Error Code' }),
+  })
+  .openapi({ title: 'InventoryJobGroupsResponse', required: ['data'] })
+  .openapi('InventoryJobGroupsResponse')
+
+const InventorySummarySchema = z
+  .object({
+    account_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64', title: 'Account Id' }),
+    compliance: ComplianceSummaryResourceSchema,
+    environment_count: z
+      .int()
+      .openapi({
+        title: 'Environment Count',
+        description: 'Environment count in the selected worklist, before pagination.',
+      }),
+    supported_targets: z
+      .array(z.string())
+      .openapi({
+        title: 'Supported Targets',
+        description: 'Targets offered for new overrides; currently only latest.',
+      }),
+    actions: OverrideActionPreviewsResourceSchema.nullable()
+      .exactOptional()
+      .openapi({
+        title: 'Actions',
+        description: 'Action preview when include_action_counts=true; null otherwise.',
+      }),
+  })
+  .openapi({
+    title: 'InventorySummary',
+    required: ['account_id', 'compliance', 'environment_count', 'supported_targets'],
+  })
+  .openapi('InventorySummary')
+
+const InventorySummaryResponseSchema = z
+  .object({
+    status: StatusSchema.exactOptional(),
+    data: InventorySummarySchema,
+    extra: z.looseObject({}).exactOptional().openapi({ title: 'Extra' }),
+    error_code: z.int().exactOptional().openapi({ title: 'Error Code' }),
+  })
+  .openapi({ title: 'InventorySummaryResponse', required: ['data'] })
+  .openapi('InventorySummaryResponse')
 
 const LicenseTypeEnumSchema = z
   .enum(['developer', 'read_only', 'analyst', 'it'])
@@ -6808,23 +8105,6 @@ const LineageIntegrationTypeSchema = z
   .openapi({ title: 'LineageIntegrationType', description: 'An enumeration.' })
   .openapi('LineageIntegrationType')
 
-const V3RequestParamsSchema = z
-  .looseObject({})
-  .openapi({
-    title: 'V3RequestParams',
-    description:
-      'Base class for all URL request parameters.\nIt is expected that each endpoint extends this class to define its own parameters format',
-  })
-  .openapi('V3RequestParams')
-
-const V3ResponsePaginationSchema = z
-  .object({
-    count: z.int().openapi({ title: 'Count' }),
-    total_count: z.int().openapi({ title: 'Total Count' }),
-  })
-  .openapi({ title: 'V3ResponsePagination', required: ['count', 'total_count'] })
-  .openapi('V3ResponsePagination')
-
 const V3ResponseExtraDataSchema = z
   .object({
     filters: V3RequestParamsSchema.exactOptional(),
@@ -6901,6 +8181,102 @@ const ListWebhooksReceiptsResponseEnvelopeSchema = z
   .object({ data: z.array(ReceiptSchema), status: WebhookResponseStatusSchema })
   .openapi({ required: ['data', 'status'] })
   .openapi('ListWebhooksReceiptsResponseEnvelope')
+
+const MantleStatusResourceSchema = z
+  .object({
+    account_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64', title: 'Account Id' }),
+    project_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64', title: 'Project Id' }),
+    is_legacy: z
+      .boolean()
+      .openapi({
+        title: 'Is Legacy',
+        description: 'Whether any environment or job resolves to a pre-1.8 dbt Core version',
+      }),
+    oldest_legacy_version: z
+      .string()
+      .nullable()
+      .openapi({
+        title: 'Oldest Legacy Version',
+        description: 'Oldest legacy version as "major.minor"',
+      }),
+    legacy_job_count: z
+      .int()
+      .openapi({
+        title: 'Legacy Job Count',
+        description: 'Jobs with an effective legacy version, pinned or inherited',
+      }),
+    target_dbt_version: z
+      .string()
+      .openapi({
+        title: 'Target Dbt Version',
+        description: 'Migration target release track, currently "latest"',
+      }),
+  })
+  .openapi({
+    title: 'MantleStatusResource',
+    required: [
+      'account_id',
+      'project_id',
+      'is_legacy',
+      'oldest_legacy_version',
+      'legacy_job_count',
+      'target_dbt_version',
+    ],
+  })
+  .openapi('MantleStatusResource')
+
+const MantleEligibilitySchema = z
+  .object({
+    project_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64', title: 'Project Id' }),
+    eligible: z.boolean().openapi({ title: 'Eligible' }),
+    blocked_reason: BlockedReasonEnumSchema.nullable().openapi({ title: 'Blocked Reason' }),
+    status: MantleStatusResourceSchema.nullable().openapi({ title: 'Status' }),
+  })
+  .openapi({
+    title: 'MantleEligibility',
+    required: ['project_id', 'eligible', 'blocked_reason', 'status'],
+  })
+  .openapi('MantleEligibility')
+
+const MantleEligibilityResponseSchema = z
+  .object({
+    status: StatusSchema.exactOptional(),
+    data: z.array(MantleEligibilitySchema).openapi({ title: 'Data' }),
+    extra: z.looseObject({}).exactOptional().openapi({ title: 'Extra' }),
+    error_code: z.int().exactOptional().openapi({ title: 'Error Code' }),
+  })
+  .openapi({ title: 'MantleEligibilityResponse', required: ['data'] })
+  .openapi('MantleEligibilityResponse')
 
 const NotFoundStatusSchema = z
   .object({
@@ -7660,11 +9036,13 @@ const ProfileDetailSchema = z
               : val,
         z.int64(),
       )
+      .exactOptional()
       .openapi({
         type: 'integer',
         format: 'int64',
         title: 'Credentials Id',
-        description: 'The ID of the credentials',
+        description:
+          'The ID of the credentials. Null for profiles that have not been assigned credentials.',
       }),
     extended_attributes_id: z
       .preprocess(
@@ -7697,7 +9075,7 @@ const ProfileDetailSchema = z
   })
   .openapi({
     title: 'ProfileDetail',
-    required: ['id', 'account_id', 'project_id', 'key', 'credentials_id', 'primary_bindings'],
+    required: ['id', 'account_id', 'project_id', 'key', 'primary_bindings'],
   })
   .openapi('ProfileDetail')
 
@@ -7796,11 +9174,13 @@ const ProfileListSchema = z
               : val,
         z.int64(),
       )
+      .exactOptional()
       .openapi({
         type: 'integer',
         format: 'int64',
         title: 'Credentials Id',
-        description: 'The ID of the credentials',
+        description:
+          'The ID of the credentials. Null for profiles that have not been assigned credentials.',
       }),
     extended_attributes_id: z
       .preprocess(
@@ -7833,7 +9213,7 @@ const ProfileListSchema = z
   })
   .openapi({
     title: 'ProfileList',
-    required: ['id', 'account_id', 'project_id', 'key', 'credentials_id', 'primary_bindings'],
+    required: ['id', 'account_id', 'project_id', 'key', 'primary_bindings'],
   })
   .openapi('ProfileList')
 
@@ -7925,7 +9305,8 @@ const ProfileUpdateBodyRequestSchema = z
         format: 'int64',
         default: null,
         title: 'Connection Id',
-        description: 'The ID of the connection',
+        description:
+          "The ID of the connection. Null is only accepted for a profile that has no connection; a profile's connection cannot be removed once set.",
       }),
     credentials_id: z
       .preprocess(
@@ -7945,7 +9326,8 @@ const ProfileUpdateBodyRequestSchema = z
         format: 'int64',
         default: null,
         title: 'Credentials Id',
-        description: 'The ID of the credentials',
+        description:
+          'The ID of the credentials. Null is only accepted for a profile that has no credentials; credentials cannot be removed once set.',
       }),
     extended_attributes_id: z
       .preprocess(
@@ -8022,7 +9404,7 @@ const RepositoryV3Schema = z
       .exactOptional()
       .openapi({
         description:
-          "The name of the repo⚠️ If not set to the correct values, CI jobs may not trigger and the branch link from the dbt Cloud IDE may not work.For example, if the remote URL is 'git://github.com/your_org/your_repo_name.git',the correct full_name is 'your_org/your_repo_name'.",
+          "(Deprecated) The name of the repo. The returned value is computed from the remote URL, for example 'your_org/your_repo_name' for 'git://github.com/your_org/your_repo_name.git'.",
       }),
     remote_backend: RemoteBackendEnumSchema.exactOptional().openapi({
       description:
@@ -8566,7 +9948,7 @@ const RepositoryV3ResponseSchema = z
       .exactOptional()
       .openapi({
         description:
-          "The name of the repo⚠️ If not set to the correct values, CI jobs may not trigger and the branch link from the dbt Cloud IDE may not work.For example, if the remote URL is 'git://github.com/your_org/your_repo_name.git',the correct full_name is 'your_org/your_repo_name'.",
+          "(Deprecated) The name of the repo. The returned value is computed from the remote URL, for example 'your_org/your_repo_name' for 'git://github.com/your_org/your_repo_name.git'.",
       }),
     remote_backend: RemoteBackendEnumSchema.exactOptional().openapi({
       description:
@@ -8731,7 +10113,7 @@ const RepositoryV3RequestSchema = z
       .exactOptional()
       .openapi({
         description:
-          "The name of the repo⚠️ If not set to the correct values, CI jobs may not trigger and the branch link from the dbt Cloud IDE may not work.For example, if the remote URL is 'git://github.com/your_org/your_repo_name.git',the correct full_name is 'your_org/your_repo_name'.",
+          "(Deprecated) The name of the repo. The returned value is computed from the remote URL, for example 'your_org/your_repo_name' for 'git://github.com/your_org/your_repo_name.git'.",
       }),
     remote_backend: RemoteBackendEnumSchema.exactOptional().openapi({
       description:
@@ -9187,11 +10569,17 @@ const TestSubscriptionResponseEnvelopeSchema = z
   .openapi({ required: ['data', 'status'] })
   .openapi('TestSubscriptionResponseEnvelope')
 
-const UpdateIPRestrictionRequestRequestSchema = z
-  .object({
-    name: z.string().min(1),
-    type: TypeEdaEnumSchema,
-    rule_set_enabled: z.boolean(),
+const UpdateIPRestrictionBodyRequestSchema = z
+  .strictObject({
+    name: z.string().min(1).openapi({ title: 'Name' }),
+    type: IPRestrictionTypeSchema.openapi({ description: '1 allows the ranges, 2 denies them.' }),
+    description: z.string().exactOptional().openapi({ title: 'Description' }),
+    rule_set_enabled: z.boolean().exactOptional().openapi({ title: 'Rule Set Enabled' }),
+    cidrs: z
+      .array(IPRestrictionCidrBodySchema)
+      .default([])
+      .exactOptional()
+      .openapi({ title: 'Cidrs' }),
     account_id: z
       .preprocess(
         (val) =>
@@ -9202,9 +10590,52 @@ const UpdateIPRestrictionRequestRequestSchema = z
               : val,
         z.int64(),
       )
-      .openapi({ type: 'integer', format: 'int64' }),
-    cidrs: z.array(IPRestrictionCidrRequestRequestSchema),
-    description: z.string().min(1).exactOptional(),
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        title: 'Account Id',
+        description: 'Read-only, ignored.',
+      }),
+    ip_restriction_rule_set_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        title: 'Ip Restriction Rule Set Id',
+        description: 'Read-only, ignored.',
+      }),
+    state: z.int().exactOptional().openapi({ title: 'State', description: 'Read-only, ignored.' }),
+    created_by_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        title: 'Created By Id',
+        description: 'Read-only, ignored.',
+      }),
+    enabled_for_service_tokens: z
+      .boolean()
+      .exactOptional()
+      .openapi({ title: 'Enabled For Service Tokens', description: 'Read-only, ignored.' }),
     id: z
       .preprocess(
         (val) =>
@@ -9215,10 +10646,20 @@ const UpdateIPRestrictionRequestRequestSchema = z
               : val,
         z.int64(),
       )
-      .openapi({ type: 'integer', format: 'int64' }),
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        title: 'Id',
+        description: 'Read-only, ignored.',
+      }),
   })
-  .openapi({ required: ['account_id', 'cidrs', 'id', 'name', 'rule_set_enabled', 'type'] })
-  .openapi('UpdateIPRestrictionRequestRequest')
+  .openapi({
+    title: 'UpdateIPRestrictionBody',
+    description: 'New values for an IP restriction rule and its CIDR ranges.',
+    required: ['name', 'type'],
+  })
+  .openapi('UpdateIPRestrictionBodyRequest')
 
 const UpdateServiceTokenRequestRequestSchema = z
   .object({
@@ -15663,27 +17104,121 @@ export const postApiV3AccountsAccountIdIpRestrictionsIndexRoute = createRoute({
     }),
     body: {
       content: {
-        'application/json': { schema: IPRestrictionRequestRequestSchema },
+        'application/json': { schema: CreateIPRestrictionBodyRequestSchema },
         'application/x-www-form-urlencoded': {
           schema: z
-            .object({
-              name: z.string().min(1),
-              type: z.preprocess(
-                (val) =>
-                  typeof val === 'string' &&
-                  /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
-                  (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
-                    ? Number(val)
-                    : val,
-                TypeEdaEnumSchema,
-              ),
-              rule_set_enabled: z.preprocess(
-                ((read) => (val: unknown) => {
-                  const result = read.safeParse(val)
-                  return result.success ? result.data : val
-                })(z.stringbool()),
-                z.boolean(),
-              ),
+            .strictObject({
+              name: z.string().min(1).openapi({ title: 'Name' }),
+              type: z
+                .preprocess(
+                  (val) =>
+                    typeof val === 'string' &&
+                    /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+                    (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+                      ? Number(val)
+                      : val,
+                  IPRestrictionTypeSchema,
+                )
+                .openapi({ description: '1 allows the ranges, 2 denies them.' }),
+              description: z.string().exactOptional().openapi({ title: 'Description' }),
+              rule_set_enabled: z
+                .preprocess(
+                  ((read) => (val: unknown) => {
+                    const result = read.safeParse(val)
+                    return result.success ? result.data : val
+                  })(z.stringbool()),
+                  z.boolean(),
+                )
+                .exactOptional()
+                .openapi({ title: 'Rule Set Enabled' }),
+              cidrs: z
+                .preprocess(
+                  (val) => (val === undefined || Array.isArray(val) ? val : [val]),
+                  z.array(
+                    z
+                      .strictObject({
+                        id: z
+                          .preprocess((val) => {
+                            if (
+                              typeof val !== 'string' ||
+                              !/^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val)
+                            )
+                              return val
+                            if (/^-?\d+$/.test(val)) return BigInt(val)
+                            const num = Number(val)
+                            return Number.isSafeInteger(num) ? BigInt(num) : val
+                          }, z.int64())
+                          .exactOptional()
+                          .openapi({ type: 'integer', format: 'int64', title: 'Id' }),
+                        cidr: z.string().openapi({ title: 'Cidr' }),
+                        enabled: z
+                          .preprocess(
+                            ((read) => (val: unknown) => {
+                              const result = read.safeParse(val)
+                              return result.success ? result.data : val
+                            })(z.stringbool()),
+                            z.boolean(),
+                          )
+                          .default(true)
+                          .exactOptional()
+                          .openapi({ title: 'Enabled' }),
+                        state: z
+                          .preprocess(
+                            (val) =>
+                              typeof val === 'string' &&
+                              /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+                              (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+                                ? Number(val)
+                                : val,
+                            z.int(),
+                          )
+                          .exactOptional()
+                          .openapi({
+                            title: 'State',
+                            description: '1 keeps the range, 2 deletes it.',
+                          }),
+                        ip_restriction_rule_id: z
+                          .preprocess((val) => {
+                            if (
+                              typeof val !== 'string' ||
+                              !/^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val)
+                            )
+                              return val
+                            if (/^-?\d+$/.test(val)) return BigInt(val)
+                            const num = Number(val)
+                            return Number.isSafeInteger(num) ? BigInt(num) : val
+                          }, z.int64())
+                          .exactOptional()
+                          .openapi({
+                            type: 'integer',
+                            format: 'int64',
+                            title: 'Ip Restriction Rule Id',
+                            description: 'Read-only, ignored.',
+                          }),
+                        cidr_ipv6: z
+                          .string()
+                          .exactOptional()
+                          .openapi({ title: 'Cidr Ipv6', description: 'Read-only, ignored.' }),
+                        created_at: z.iso
+                          .datetime({ offset: true })
+                          .exactOptional()
+                          .openapi({ title: 'Created At', description: 'Read-only, ignored.' }),
+                        updated_at: z.iso
+                          .datetime({ offset: true })
+                          .exactOptional()
+                          .openapi({ title: 'Updated At', description: 'Read-only, ignored.' }),
+                      })
+                      .openapi({
+                        title: 'IPRestrictionCidrBody',
+                        description:
+                          'A CIDR range in an IP restriction rule. Include `id` to update an existing range.',
+                        required: ['cidr'],
+                      }),
+                  ),
+                )
+                .default([])
+                .exactOptional()
+                .openapi({ title: 'Cidrs' }),
               account_id: z
                 .preprocess((val) => {
                   if (
@@ -15695,71 +17230,195 @@ export const postApiV3AccountsAccountIdIpRestrictionsIndexRoute = createRoute({
                   const num = Number(val)
                   return Number.isSafeInteger(num) ? BigInt(num) : val
                 }, z.int64())
-                .openapi({ type: 'integer', format: 'int64' }),
-              cidrs: z.preprocess(
-                (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-                z.array(
-                  z
-                    .object({
-                      state: z
-                        .preprocess(
-                          (val) =>
-                            typeof val === 'string' &&
-                            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
-                            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
-                              ? Number(val)
-                              : val,
-                          z.int(),
-                        )
-                        .default(1)
-                        .exactOptional()
-                        .openapi({
-                          example: 1,
-                          description:
-                            'A value of 1 means this entity is active and a value of 2 means this entity is deleted',
-                        }),
-                      cidr: z.string().min(1),
-                      id: z
-                        .preprocess((val) => {
-                          if (
-                            typeof val !== 'string' ||
-                            !/^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val)
-                          )
-                            return val
-                          if (/^-?\d+$/.test(val)) return BigInt(val)
-                          const num = Number(val)
-                          return Number.isSafeInteger(num) ? BigInt(num) : val
-                        }, z.int64())
-                        .exactOptional()
-                        .openapi({ type: 'integer', format: 'int64' }),
-                    })
-                    .openapi({ required: ['cidr'] }),
-                ),
-              ),
-              description: z.string().min(1).exactOptional(),
+                .exactOptional()
+                .openapi({
+                  type: 'integer',
+                  format: 'int64',
+                  title: 'Account Id',
+                  description: 'Read-only, ignored.',
+                }),
+              ip_restriction_rule_set_id: z
+                .preprocess((val) => {
+                  if (
+                    typeof val !== 'string' ||
+                    !/^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val)
+                  )
+                    return val
+                  if (/^-?\d+$/.test(val)) return BigInt(val)
+                  const num = Number(val)
+                  return Number.isSafeInteger(num) ? BigInt(num) : val
+                }, z.int64())
+                .exactOptional()
+                .openapi({
+                  type: 'integer',
+                  format: 'int64',
+                  title: 'Ip Restriction Rule Set Id',
+                  description: 'Read-only, ignored.',
+                }),
+              state: z
+                .preprocess(
+                  (val) =>
+                    typeof val === 'string' &&
+                    /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+                    (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+                      ? Number(val)
+                      : val,
+                  z.int(),
+                )
+                .exactOptional()
+                .openapi({ title: 'State', description: 'Read-only, ignored.' }),
+              created_by_id: z
+                .preprocess((val) => {
+                  if (
+                    typeof val !== 'string' ||
+                    !/^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val)
+                  )
+                    return val
+                  if (/^-?\d+$/.test(val)) return BigInt(val)
+                  const num = Number(val)
+                  return Number.isSafeInteger(num) ? BigInt(num) : val
+                }, z.int64())
+                .exactOptional()
+                .openapi({
+                  type: 'integer',
+                  format: 'int64',
+                  title: 'Created By Id',
+                  description: 'Read-only, ignored.',
+                }),
+              enabled_for_service_tokens: z
+                .preprocess(
+                  ((read) => (val: unknown) => {
+                    const result = read.safeParse(val)
+                    return result.success ? result.data : val
+                  })(z.stringbool()),
+                  z.boolean(),
+                )
+                .exactOptional()
+                .openapi({
+                  title: 'Enabled For Service Tokens',
+                  description: 'Read-only, ignored.',
+                }),
             })
-            .openapi({ required: ['account_id', 'cidrs', 'name', 'rule_set_enabled', 'type'] }),
+            .openapi({
+              title: 'CreateIPRestrictionBody',
+              description: 'An IP restriction rule and its CIDR ranges.',
+              required: ['name', 'type'],
+            }),
         },
         'multipart/form-data': {
           schema: z
-            .object({
-              name: z.string().min(1),
-              type: z.preprocess(
-                (val) =>
-                  typeof val === 'string' &&
-                  /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
-                  (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
-                    ? Number(val)
-                    : val,
-                TypeEdaEnumSchema,
-              ),
-              rule_set_enabled: z.preprocess(
-                ((read) => (val: unknown) => {
-                  const result = read.safeParse(val)
-                  return result.success ? result.data : val
-                })(z.stringbool()),
-                z.boolean(),
-              ),
+            .strictObject({
+              name: z.string().min(1).openapi({ title: 'Name' }),
+              type: z
+                .preprocess(
+                  (val) =>
+                    typeof val === 'string' &&
+                    /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+                    (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+                      ? Number(val)
+                      : val,
+                  IPRestrictionTypeSchema,
+                )
+                .openapi({ description: '1 allows the ranges, 2 denies them.' }),
+              description: z.string().exactOptional().openapi({ title: 'Description' }),
+              rule_set_enabled: z
+                .preprocess(
+                  ((read) => (val: unknown) => {
+                    const result = read.safeParse(val)
+                    return result.success ? result.data : val
+                  })(z.stringbool()),
+                  z.boolean(),
+                )
+                .exactOptional()
+                .openapi({ title: 'Rule Set Enabled' }),
+              cidrs: z
+                .preprocess(
+                  (val) => (val === undefined || Array.isArray(val) ? val : [val]),
+                  z.array(
+                    z
+                      .strictObject({
+                        id: z
+                          .preprocess((val) => {
+                            if (
+                              typeof val !== 'string' ||
+                              !/^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val)
+                            )
+                              return val
+                            if (/^-?\d+$/.test(val)) return BigInt(val)
+                            const num = Number(val)
+                            return Number.isSafeInteger(num) ? BigInt(num) : val
+                          }, z.int64())
+                          .exactOptional()
+                          .openapi({ type: 'integer', format: 'int64', title: 'Id' }),
+                        cidr: z.string().openapi({ title: 'Cidr' }),
+                        enabled: z
+                          .preprocess(
+                            ((read) => (val: unknown) => {
+                              const result = read.safeParse(val)
+                              return result.success ? result.data : val
+                            })(z.stringbool()),
+                            z.boolean(),
+                          )
+                          .default(true)
+                          .exactOptional()
+                          .openapi({ title: 'Enabled' }),
+                        state: z
+                          .preprocess(
+                            (val) =>
+                              typeof val === 'string' &&
+                              /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+                              (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+                                ? Number(val)
+                                : val,
+                            z.int(),
+                          )
+                          .exactOptional()
+                          .openapi({
+                            title: 'State',
+                            description: '1 keeps the range, 2 deletes it.',
+                          }),
+                        ip_restriction_rule_id: z
+                          .preprocess((val) => {
+                            if (
+                              typeof val !== 'string' ||
+                              !/^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val)
+                            )
+                              return val
+                            if (/^-?\d+$/.test(val)) return BigInt(val)
+                            const num = Number(val)
+                            return Number.isSafeInteger(num) ? BigInt(num) : val
+                          }, z.int64())
+                          .exactOptional()
+                          .openapi({
+                            type: 'integer',
+                            format: 'int64',
+                            title: 'Ip Restriction Rule Id',
+                            description: 'Read-only, ignored.',
+                          }),
+                        cidr_ipv6: z
+                          .string()
+                          .exactOptional()
+                          .openapi({ title: 'Cidr Ipv6', description: 'Read-only, ignored.' }),
+                        created_at: z.iso
+                          .datetime({ offset: true })
+                          .exactOptional()
+                          .openapi({ title: 'Created At', description: 'Read-only, ignored.' }),
+                        updated_at: z.iso
+                          .datetime({ offset: true })
+                          .exactOptional()
+                          .openapi({ title: 'Updated At', description: 'Read-only, ignored.' }),
+                      })
+                      .openapi({
+                        title: 'IPRestrictionCidrBody',
+                        description:
+                          'A CIDR range in an IP restriction rule. Include `id` to update an existing range.',
+                        required: ['cidr'],
+                      }),
+                  ),
+                )
+                .default([])
+                .exactOptional()
+                .openapi({ title: 'Cidrs' }),
               account_id: z
                 .preprocess((val) => {
                   if (
@@ -15771,50 +17430,80 @@ export const postApiV3AccountsAccountIdIpRestrictionsIndexRoute = createRoute({
                   const num = Number(val)
                   return Number.isSafeInteger(num) ? BigInt(num) : val
                 }, z.int64())
-                .openapi({ type: 'integer', format: 'int64' }),
-              cidrs: z.preprocess(
-                (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-                z.array(
-                  z
-                    .object({
-                      state: z
-                        .preprocess(
-                          (val) =>
-                            typeof val === 'string' &&
-                            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
-                            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
-                              ? Number(val)
-                              : val,
-                          z.int(),
-                        )
-                        .default(1)
-                        .exactOptional()
-                        .openapi({
-                          example: 1,
-                          description:
-                            'A value of 1 means this entity is active and a value of 2 means this entity is deleted',
-                        }),
-                      cidr: z.string().min(1),
-                      id: z
-                        .preprocess((val) => {
-                          if (
-                            typeof val !== 'string' ||
-                            !/^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val)
-                          )
-                            return val
-                          if (/^-?\d+$/.test(val)) return BigInt(val)
-                          const num = Number(val)
-                          return Number.isSafeInteger(num) ? BigInt(num) : val
-                        }, z.int64())
-                        .exactOptional()
-                        .openapi({ type: 'integer', format: 'int64' }),
-                    })
-                    .openapi({ required: ['cidr'] }),
-                ),
-              ),
-              description: z.string().min(1).exactOptional(),
+                .exactOptional()
+                .openapi({
+                  type: 'integer',
+                  format: 'int64',
+                  title: 'Account Id',
+                  description: 'Read-only, ignored.',
+                }),
+              ip_restriction_rule_set_id: z
+                .preprocess((val) => {
+                  if (
+                    typeof val !== 'string' ||
+                    !/^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val)
+                  )
+                    return val
+                  if (/^-?\d+$/.test(val)) return BigInt(val)
+                  const num = Number(val)
+                  return Number.isSafeInteger(num) ? BigInt(num) : val
+                }, z.int64())
+                .exactOptional()
+                .openapi({
+                  type: 'integer',
+                  format: 'int64',
+                  title: 'Ip Restriction Rule Set Id',
+                  description: 'Read-only, ignored.',
+                }),
+              state: z
+                .preprocess(
+                  (val) =>
+                    typeof val === 'string' &&
+                    /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+                    (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+                      ? Number(val)
+                      : val,
+                  z.int(),
+                )
+                .exactOptional()
+                .openapi({ title: 'State', description: 'Read-only, ignored.' }),
+              created_by_id: z
+                .preprocess((val) => {
+                  if (
+                    typeof val !== 'string' ||
+                    !/^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val)
+                  )
+                    return val
+                  if (/^-?\d+$/.test(val)) return BigInt(val)
+                  const num = Number(val)
+                  return Number.isSafeInteger(num) ? BigInt(num) : val
+                }, z.int64())
+                .exactOptional()
+                .openapi({
+                  type: 'integer',
+                  format: 'int64',
+                  title: 'Created By Id',
+                  description: 'Read-only, ignored.',
+                }),
+              enabled_for_service_tokens: z
+                .preprocess(
+                  ((read) => (val: unknown) => {
+                    const result = read.safeParse(val)
+                    return result.success ? result.data : val
+                  })(z.stringbool()),
+                  z.boolean(),
+                )
+                .exactOptional()
+                .openapi({
+                  title: 'Enabled For Service Tokens',
+                  description: 'Read-only, ignored.',
+                }),
             })
-            .openapi({ required: ['account_id', 'cidrs', 'name', 'rule_set_enabled', 'type'] }),
+            .openapi({
+              title: 'CreateIPRestrictionBody',
+              description: 'An IP restriction rule and its CIDR ranges.',
+              required: ['name', 'type'],
+            }),
         },
       },
       required: true,
@@ -15856,32 +17545,104 @@ export const postApiV3AccountsAccountIdIpRestrictionsSetIndexRoute = createRoute
     }),
     body: {
       content: {
-        'application/json': { schema: IPRestrictionSetRequestRequestSchema },
+        'application/json': { schema: EnableIPRestrictionsBodyRequestSchema },
         'application/x-www-form-urlencoded': {
           schema: z
-            .object({
-              enabled: z.preprocess(
-                ((read) => (val: unknown) => {
-                  const result = read.safeParse(val)
-                  return result.success ? result.data : val
-                })(z.stringbool()),
-                z.boolean(),
-              ),
+            .strictObject({
+              enabled: z
+                .preprocess(
+                  ((read) => (val: unknown) => {
+                    const result = read.safeParse(val)
+                    return result.success ? result.data : val
+                  })(z.stringbool()),
+                  z.boolean(),
+                )
+                .openapi({ title: 'Enabled' }),
+              account_id: z
+                .preprocess((val) => {
+                  if (
+                    typeof val !== 'string' ||
+                    !/^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val)
+                  )
+                    return val
+                  if (/^-?\d+$/.test(val)) return BigInt(val)
+                  const num = Number(val)
+                  return Number.isSafeInteger(num) ? BigInt(num) : val
+                }, z.int64())
+                .exactOptional()
+                .openapi({
+                  type: 'integer',
+                  format: 'int64',
+                  title: 'Account Id',
+                  description: 'Read-only, ignored.',
+                }),
+              state: z
+                .preprocess(
+                  (val) =>
+                    typeof val === 'string' &&
+                    /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+                    (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+                      ? Number(val)
+                      : val,
+                  z.int(),
+                )
+                .exactOptional()
+                .openapi({ title: 'State', description: 'Read-only, ignored.' }),
             })
-            .openapi({ required: ['enabled'] }),
+            .openapi({
+              title: 'EnableIPRestrictionsBody',
+              description: 'Turns IP restrictions on or off for the account.',
+              required: ['enabled'],
+            }),
         },
         'multipart/form-data': {
           schema: z
-            .object({
-              enabled: z.preprocess(
-                ((read) => (val: unknown) => {
-                  const result = read.safeParse(val)
-                  return result.success ? result.data : val
-                })(z.stringbool()),
-                z.boolean(),
-              ),
+            .strictObject({
+              enabled: z
+                .preprocess(
+                  ((read) => (val: unknown) => {
+                    const result = read.safeParse(val)
+                    return result.success ? result.data : val
+                  })(z.stringbool()),
+                  z.boolean(),
+                )
+                .openapi({ title: 'Enabled' }),
+              account_id: z
+                .preprocess((val) => {
+                  if (
+                    typeof val !== 'string' ||
+                    !/^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val)
+                  )
+                    return val
+                  if (/^-?\d+$/.test(val)) return BigInt(val)
+                  const num = Number(val)
+                  return Number.isSafeInteger(num) ? BigInt(num) : val
+                }, z.int64())
+                .exactOptional()
+                .openapi({
+                  type: 'integer',
+                  format: 'int64',
+                  title: 'Account Id',
+                  description: 'Read-only, ignored.',
+                }),
+              state: z
+                .preprocess(
+                  (val) =>
+                    typeof val === 'string' &&
+                    /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+                    (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+                      ? Number(val)
+                      : val,
+                  z.int(),
+                )
+                .exactOptional()
+                .openapi({ title: 'State', description: 'Read-only, ignored.' }),
             })
-            .openapi({ required: ['enabled'] }),
+            .openapi({
+              title: 'EnableIPRestrictionsBody',
+              description: 'Turns IP restrictions on or off for the account.',
+              required: ['enabled'],
+            }),
         },
       },
       required: true,
@@ -16152,27 +17913,121 @@ export const putApiV3AccountsAccountIdIpRestrictionsIdRoute = createRoute({
     }),
     body: {
       content: {
-        'application/json': { schema: UpdateIPRestrictionRequestRequestSchema },
+        'application/json': { schema: UpdateIPRestrictionBodyRequestSchema },
         'application/x-www-form-urlencoded': {
           schema: z
-            .object({
-              name: z.string().min(1),
-              type: z.preprocess(
-                (val) =>
-                  typeof val === 'string' &&
-                  /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
-                  (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
-                    ? Number(val)
-                    : val,
-                TypeEdaEnumSchema,
-              ),
-              rule_set_enabled: z.preprocess(
-                ((read) => (val: unknown) => {
-                  const result = read.safeParse(val)
-                  return result.success ? result.data : val
-                })(z.stringbool()),
-                z.boolean(),
-              ),
+            .strictObject({
+              name: z.string().min(1).openapi({ title: 'Name' }),
+              type: z
+                .preprocess(
+                  (val) =>
+                    typeof val === 'string' &&
+                    /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+                    (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+                      ? Number(val)
+                      : val,
+                  IPRestrictionTypeSchema,
+                )
+                .openapi({ description: '1 allows the ranges, 2 denies them.' }),
+              description: z.string().exactOptional().openapi({ title: 'Description' }),
+              rule_set_enabled: z
+                .preprocess(
+                  ((read) => (val: unknown) => {
+                    const result = read.safeParse(val)
+                    return result.success ? result.data : val
+                  })(z.stringbool()),
+                  z.boolean(),
+                )
+                .exactOptional()
+                .openapi({ title: 'Rule Set Enabled' }),
+              cidrs: z
+                .preprocess(
+                  (val) => (val === undefined || Array.isArray(val) ? val : [val]),
+                  z.array(
+                    z
+                      .strictObject({
+                        id: z
+                          .preprocess((val) => {
+                            if (
+                              typeof val !== 'string' ||
+                              !/^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val)
+                            )
+                              return val
+                            if (/^-?\d+$/.test(val)) return BigInt(val)
+                            const num = Number(val)
+                            return Number.isSafeInteger(num) ? BigInt(num) : val
+                          }, z.int64())
+                          .exactOptional()
+                          .openapi({ type: 'integer', format: 'int64', title: 'Id' }),
+                        cidr: z.string().openapi({ title: 'Cidr' }),
+                        enabled: z
+                          .preprocess(
+                            ((read) => (val: unknown) => {
+                              const result = read.safeParse(val)
+                              return result.success ? result.data : val
+                            })(z.stringbool()),
+                            z.boolean(),
+                          )
+                          .default(true)
+                          .exactOptional()
+                          .openapi({ title: 'Enabled' }),
+                        state: z
+                          .preprocess(
+                            (val) =>
+                              typeof val === 'string' &&
+                              /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+                              (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+                                ? Number(val)
+                                : val,
+                            z.int(),
+                          )
+                          .exactOptional()
+                          .openapi({
+                            title: 'State',
+                            description: '1 keeps the range, 2 deletes it.',
+                          }),
+                        ip_restriction_rule_id: z
+                          .preprocess((val) => {
+                            if (
+                              typeof val !== 'string' ||
+                              !/^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val)
+                            )
+                              return val
+                            if (/^-?\d+$/.test(val)) return BigInt(val)
+                            const num = Number(val)
+                            return Number.isSafeInteger(num) ? BigInt(num) : val
+                          }, z.int64())
+                          .exactOptional()
+                          .openapi({
+                            type: 'integer',
+                            format: 'int64',
+                            title: 'Ip Restriction Rule Id',
+                            description: 'Read-only, ignored.',
+                          }),
+                        cidr_ipv6: z
+                          .string()
+                          .exactOptional()
+                          .openapi({ title: 'Cidr Ipv6', description: 'Read-only, ignored.' }),
+                        created_at: z.iso
+                          .datetime({ offset: true })
+                          .exactOptional()
+                          .openapi({ title: 'Created At', description: 'Read-only, ignored.' }),
+                        updated_at: z.iso
+                          .datetime({ offset: true })
+                          .exactOptional()
+                          .openapi({ title: 'Updated At', description: 'Read-only, ignored.' }),
+                      })
+                      .openapi({
+                        title: 'IPRestrictionCidrBody',
+                        description:
+                          'A CIDR range in an IP restriction rule. Include `id` to update an existing range.',
+                        required: ['cidr'],
+                      }),
+                  ),
+                )
+                .default([])
+                .exactOptional()
+                .openapi({ title: 'Cidrs' }),
               account_id: z
                 .preprocess((val) => {
                   if (
@@ -16184,48 +18039,74 @@ export const putApiV3AccountsAccountIdIpRestrictionsIdRoute = createRoute({
                   const num = Number(val)
                   return Number.isSafeInteger(num) ? BigInt(num) : val
                 }, z.int64())
-                .openapi({ type: 'integer', format: 'int64' }),
-              cidrs: z.preprocess(
-                (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-                z.array(
-                  z
-                    .object({
-                      state: z
-                        .preprocess(
-                          (val) =>
-                            typeof val === 'string' &&
-                            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
-                            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
-                              ? Number(val)
-                              : val,
-                          z.int(),
-                        )
-                        .default(1)
-                        .exactOptional()
-                        .openapi({
-                          example: 1,
-                          description:
-                            'A value of 1 means this entity is active and a value of 2 means this entity is deleted',
-                        }),
-                      cidr: z.string().min(1),
-                      id: z
-                        .preprocess((val) => {
-                          if (
-                            typeof val !== 'string' ||
-                            !/^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val)
-                          )
-                            return val
-                          if (/^-?\d+$/.test(val)) return BigInt(val)
-                          const num = Number(val)
-                          return Number.isSafeInteger(num) ? BigInt(num) : val
-                        }, z.int64())
-                        .exactOptional()
-                        .openapi({ type: 'integer', format: 'int64' }),
-                    })
-                    .openapi({ required: ['cidr'] }),
-                ),
-              ),
-              description: z.string().min(1).exactOptional(),
+                .exactOptional()
+                .openapi({
+                  type: 'integer',
+                  format: 'int64',
+                  title: 'Account Id',
+                  description: 'Read-only, ignored.',
+                }),
+              ip_restriction_rule_set_id: z
+                .preprocess((val) => {
+                  if (
+                    typeof val !== 'string' ||
+                    !/^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val)
+                  )
+                    return val
+                  if (/^-?\d+$/.test(val)) return BigInt(val)
+                  const num = Number(val)
+                  return Number.isSafeInteger(num) ? BigInt(num) : val
+                }, z.int64())
+                .exactOptional()
+                .openapi({
+                  type: 'integer',
+                  format: 'int64',
+                  title: 'Ip Restriction Rule Set Id',
+                  description: 'Read-only, ignored.',
+                }),
+              state: z
+                .preprocess(
+                  (val) =>
+                    typeof val === 'string' &&
+                    /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+                    (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+                      ? Number(val)
+                      : val,
+                  z.int(),
+                )
+                .exactOptional()
+                .openapi({ title: 'State', description: 'Read-only, ignored.' }),
+              created_by_id: z
+                .preprocess((val) => {
+                  if (
+                    typeof val !== 'string' ||
+                    !/^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val)
+                  )
+                    return val
+                  if (/^-?\d+$/.test(val)) return BigInt(val)
+                  const num = Number(val)
+                  return Number.isSafeInteger(num) ? BigInt(num) : val
+                }, z.int64())
+                .exactOptional()
+                .openapi({
+                  type: 'integer',
+                  format: 'int64',
+                  title: 'Created By Id',
+                  description: 'Read-only, ignored.',
+                }),
+              enabled_for_service_tokens: z
+                .preprocess(
+                  ((read) => (val: unknown) => {
+                    const result = read.safeParse(val)
+                    return result.success ? result.data : val
+                  })(z.stringbool()),
+                  z.boolean(),
+                )
+                .exactOptional()
+                .openapi({
+                  title: 'Enabled For Service Tokens',
+                  description: 'Read-only, ignored.',
+                }),
               id: z
                 .preprocess((val) => {
                   if (
@@ -16237,32 +18118,134 @@ export const putApiV3AccountsAccountIdIpRestrictionsIdRoute = createRoute({
                   const num = Number(val)
                   return Number.isSafeInteger(num) ? BigInt(num) : val
                 }, z.int64())
-                .openapi({ type: 'integer', format: 'int64' }),
+                .exactOptional()
+                .openapi({
+                  type: 'integer',
+                  format: 'int64',
+                  title: 'Id',
+                  description: 'Read-only, ignored.',
+                }),
             })
             .openapi({
-              required: ['account_id', 'cidrs', 'id', 'name', 'rule_set_enabled', 'type'],
+              title: 'UpdateIPRestrictionBody',
+              description: 'New values for an IP restriction rule and its CIDR ranges.',
+              required: ['name', 'type'],
             }),
         },
         'multipart/form-data': {
           schema: z
-            .object({
-              name: z.string().min(1),
-              type: z.preprocess(
-                (val) =>
-                  typeof val === 'string' &&
-                  /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
-                  (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
-                    ? Number(val)
-                    : val,
-                TypeEdaEnumSchema,
-              ),
-              rule_set_enabled: z.preprocess(
-                ((read) => (val: unknown) => {
-                  const result = read.safeParse(val)
-                  return result.success ? result.data : val
-                })(z.stringbool()),
-                z.boolean(),
-              ),
+            .strictObject({
+              name: z.string().min(1).openapi({ title: 'Name' }),
+              type: z
+                .preprocess(
+                  (val) =>
+                    typeof val === 'string' &&
+                    /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+                    (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+                      ? Number(val)
+                      : val,
+                  IPRestrictionTypeSchema,
+                )
+                .openapi({ description: '1 allows the ranges, 2 denies them.' }),
+              description: z.string().exactOptional().openapi({ title: 'Description' }),
+              rule_set_enabled: z
+                .preprocess(
+                  ((read) => (val: unknown) => {
+                    const result = read.safeParse(val)
+                    return result.success ? result.data : val
+                  })(z.stringbool()),
+                  z.boolean(),
+                )
+                .exactOptional()
+                .openapi({ title: 'Rule Set Enabled' }),
+              cidrs: z
+                .preprocess(
+                  (val) => (val === undefined || Array.isArray(val) ? val : [val]),
+                  z.array(
+                    z
+                      .strictObject({
+                        id: z
+                          .preprocess((val) => {
+                            if (
+                              typeof val !== 'string' ||
+                              !/^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val)
+                            )
+                              return val
+                            if (/^-?\d+$/.test(val)) return BigInt(val)
+                            const num = Number(val)
+                            return Number.isSafeInteger(num) ? BigInt(num) : val
+                          }, z.int64())
+                          .exactOptional()
+                          .openapi({ type: 'integer', format: 'int64', title: 'Id' }),
+                        cidr: z.string().openapi({ title: 'Cidr' }),
+                        enabled: z
+                          .preprocess(
+                            ((read) => (val: unknown) => {
+                              const result = read.safeParse(val)
+                              return result.success ? result.data : val
+                            })(z.stringbool()),
+                            z.boolean(),
+                          )
+                          .default(true)
+                          .exactOptional()
+                          .openapi({ title: 'Enabled' }),
+                        state: z
+                          .preprocess(
+                            (val) =>
+                              typeof val === 'string' &&
+                              /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+                              (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+                                ? Number(val)
+                                : val,
+                            z.int(),
+                          )
+                          .exactOptional()
+                          .openapi({
+                            title: 'State',
+                            description: '1 keeps the range, 2 deletes it.',
+                          }),
+                        ip_restriction_rule_id: z
+                          .preprocess((val) => {
+                            if (
+                              typeof val !== 'string' ||
+                              !/^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val)
+                            )
+                              return val
+                            if (/^-?\d+$/.test(val)) return BigInt(val)
+                            const num = Number(val)
+                            return Number.isSafeInteger(num) ? BigInt(num) : val
+                          }, z.int64())
+                          .exactOptional()
+                          .openapi({
+                            type: 'integer',
+                            format: 'int64',
+                            title: 'Ip Restriction Rule Id',
+                            description: 'Read-only, ignored.',
+                          }),
+                        cidr_ipv6: z
+                          .string()
+                          .exactOptional()
+                          .openapi({ title: 'Cidr Ipv6', description: 'Read-only, ignored.' }),
+                        created_at: z.iso
+                          .datetime({ offset: true })
+                          .exactOptional()
+                          .openapi({ title: 'Created At', description: 'Read-only, ignored.' }),
+                        updated_at: z.iso
+                          .datetime({ offset: true })
+                          .exactOptional()
+                          .openapi({ title: 'Updated At', description: 'Read-only, ignored.' }),
+                      })
+                      .openapi({
+                        title: 'IPRestrictionCidrBody',
+                        description:
+                          'A CIDR range in an IP restriction rule. Include `id` to update an existing range.',
+                        required: ['cidr'],
+                      }),
+                  ),
+                )
+                .default([])
+                .exactOptional()
+                .openapi({ title: 'Cidrs' }),
               account_id: z
                 .preprocess((val) => {
                   if (
@@ -16274,48 +18257,74 @@ export const putApiV3AccountsAccountIdIpRestrictionsIdRoute = createRoute({
                   const num = Number(val)
                   return Number.isSafeInteger(num) ? BigInt(num) : val
                 }, z.int64())
-                .openapi({ type: 'integer', format: 'int64' }),
-              cidrs: z.preprocess(
-                (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-                z.array(
-                  z
-                    .object({
-                      state: z
-                        .preprocess(
-                          (val) =>
-                            typeof val === 'string' &&
-                            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
-                            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
-                              ? Number(val)
-                              : val,
-                          z.int(),
-                        )
-                        .default(1)
-                        .exactOptional()
-                        .openapi({
-                          example: 1,
-                          description:
-                            'A value of 1 means this entity is active and a value of 2 means this entity is deleted',
-                        }),
-                      cidr: z.string().min(1),
-                      id: z
-                        .preprocess((val) => {
-                          if (
-                            typeof val !== 'string' ||
-                            !/^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val)
-                          )
-                            return val
-                          if (/^-?\d+$/.test(val)) return BigInt(val)
-                          const num = Number(val)
-                          return Number.isSafeInteger(num) ? BigInt(num) : val
-                        }, z.int64())
-                        .exactOptional()
-                        .openapi({ type: 'integer', format: 'int64' }),
-                    })
-                    .openapi({ required: ['cidr'] }),
-                ),
-              ),
-              description: z.string().min(1).exactOptional(),
+                .exactOptional()
+                .openapi({
+                  type: 'integer',
+                  format: 'int64',
+                  title: 'Account Id',
+                  description: 'Read-only, ignored.',
+                }),
+              ip_restriction_rule_set_id: z
+                .preprocess((val) => {
+                  if (
+                    typeof val !== 'string' ||
+                    !/^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val)
+                  )
+                    return val
+                  if (/^-?\d+$/.test(val)) return BigInt(val)
+                  const num = Number(val)
+                  return Number.isSafeInteger(num) ? BigInt(num) : val
+                }, z.int64())
+                .exactOptional()
+                .openapi({
+                  type: 'integer',
+                  format: 'int64',
+                  title: 'Ip Restriction Rule Set Id',
+                  description: 'Read-only, ignored.',
+                }),
+              state: z
+                .preprocess(
+                  (val) =>
+                    typeof val === 'string' &&
+                    /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+                    (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+                      ? Number(val)
+                      : val,
+                  z.int(),
+                )
+                .exactOptional()
+                .openapi({ title: 'State', description: 'Read-only, ignored.' }),
+              created_by_id: z
+                .preprocess((val) => {
+                  if (
+                    typeof val !== 'string' ||
+                    !/^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val)
+                  )
+                    return val
+                  if (/^-?\d+$/.test(val)) return BigInt(val)
+                  const num = Number(val)
+                  return Number.isSafeInteger(num) ? BigInt(num) : val
+                }, z.int64())
+                .exactOptional()
+                .openapi({
+                  type: 'integer',
+                  format: 'int64',
+                  title: 'Created By Id',
+                  description: 'Read-only, ignored.',
+                }),
+              enabled_for_service_tokens: z
+                .preprocess(
+                  ((read) => (val: unknown) => {
+                    const result = read.safeParse(val)
+                    return result.success ? result.data : val
+                  })(z.stringbool()),
+                  z.boolean(),
+                )
+                .exactOptional()
+                .openapi({
+                  title: 'Enabled For Service Tokens',
+                  description: 'Read-only, ignored.',
+                }),
               id: z
                 .preprocess((val) => {
                   if (
@@ -16327,10 +18336,18 @@ export const putApiV3AccountsAccountIdIpRestrictionsIdRoute = createRoute({
                   const num = Number(val)
                   return Number.isSafeInteger(num) ? BigInt(num) : val
                 }, z.int64())
-                .openapi({ type: 'integer', format: 'int64' }),
+                .exactOptional()
+                .openapi({
+                  type: 'integer',
+                  format: 'int64',
+                  title: 'Id',
+                  description: 'Read-only, ignored.',
+                }),
             })
             .openapi({
-              required: ['account_id', 'cidrs', 'id', 'name', 'rule_set_enabled', 'type'],
+              title: 'UpdateIPRestrictionBody',
+              description: 'New values for an IP restriction rule and its CIDR ranges.',
+              required: ['name', 'type'],
             }),
         },
       },
@@ -16904,6 +18921,1405 @@ export const deleteApiV3AccountsAccountIdLicenseMapsIdIndexRoute = createRoute({
     }),
   },
   responses: { 204: { description: 'No response body' } },
+  security: [{ BearerAuthentication: [] }],
+})
+
+export const getApiV3AccountsAccountIdMantleMigrationStatusIndexRoute = createRoute({
+  method: 'get',
+  path: '/api/v3/accounts/{account_id}/mantle-migration/status/',
+  tags: ['Mantle Migration'],
+  description:
+    'Return ordered eligibility results for 1-100 projects. Unavailable projects have no status.',
+  operationId: 'Retrieve Wizard Migration Eligibility',
+  request: {
+    params: z.object({
+      account_id: z
+        .preprocess((val) => {
+          if (typeof val !== 'string' || !/^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val))
+            return val
+          if (/^-?\d+$/.test(val)) return BigInt(val)
+          const num = Number(val)
+          return Number.isSafeInteger(num) ? BigInt(num) : val
+        }, z.int64())
+        .openapi({
+          param: {
+            in: 'path',
+            name: 'account_id',
+            schema: { type: 'integer', format: 'int64' },
+            required: true,
+          },
+        }),
+    }),
+    query: z.object({
+      project_ids: z
+        .preprocess(
+          (val) =>
+            val === undefined
+              ? val
+              : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+                  typeof item === 'string' ? item.split(',') : [item],
+                ),
+          z
+            .array(
+              z
+                .preprocess((val) => {
+                  if (
+                    typeof val !== 'string' ||
+                    !/^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val)
+                  )
+                    return val
+                  if (/^-?\d+$/.test(val)) return BigInt(val)
+                  const num = Number(val)
+                  return Number.isSafeInteger(num) ? BigInt(num) : val
+                }, z.int64().min(1n))
+                .openapi({ type: 'integer', format: 'int64', minimum: 1 }),
+            )
+            .min(1)
+            .max(100)
+            .superRefine((items, ctx) => {
+              const seen = new Map()
+              for (const [i, val] of items.entries()) {
+                const key = JSON.stringify(val)
+                if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+                else seen.set(key, i)
+              }
+            }),
+        )
+        .openapi({
+          param: {
+            in: 'query',
+            name: 'project_ids',
+            schema: {
+              type: 'array',
+              items: { type: 'integer', format: 'int64', minimum: 1 },
+              minItems: 1,
+              maxItems: 100,
+              uniqueItems: true,
+            },
+            description:
+              'Comma-separated distinct project IDs. One result per ID, in request order.',
+            required: true,
+            explode: false,
+            style: 'form',
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: '',
+      content: { 'application/json': { schema: MantleEligibilityResponseSchema } },
+    },
+  },
+  security: [{ BearerAuthentication: [] }],
+})
+
+export const postApiV3AccountsAccountIdMigrationInventoryEnvironmentOverridesDisableIndexRoute =
+  createRoute({
+    method: 'post',
+    path: '/api/v3/accounts/{account_id}/migration-inventory/environment-overrides/disable/',
+    tags: ['Migration Inventory'],
+    description:
+      'Revert environments to their configured versions without changing version pins. Each actual revert records a new migration change; already reverted or never upgraded environments are unchanged. Explicit 1-100 IDs are atomic. all:true with view applies to the next slice of up to 1000 matching environments in one transaction and returns a cursor when more remain. 408 means a slice timed out and nothing in it changed. For explicit IDs, 404 hides unavailable resources; 403 indicates insufficient token scopes. Invalid selections return 400.',
+    operationId: 'Disable Environment Overrides',
+    request: {
+      params: z.object({
+        account_id: z
+          .preprocess((val) => {
+            if (typeof val !== 'string' || !/^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val))
+              return val
+            if (/^-?\d+$/.test(val)) return BigInt(val)
+            const num = Number(val)
+            return Number.isSafeInteger(num) ? BigInt(num) : val
+          }, z.int64())
+          .openapi({
+            param: {
+              in: 'path',
+              name: 'account_id',
+              schema: { type: 'integer', format: 'int64' },
+              required: true,
+            },
+          }),
+      }),
+      body: {
+        content: {
+          'application/json': { schema: DisableEnvironmentOverridesBodyRequestSchema },
+          'application/x-www-form-urlencoded': {
+            schema: (() => {
+              const Schema = z
+                .xor([
+                  z
+                    .any()
+                    .refine(
+                      (val) =>
+                        !z
+                          .union([
+                            z
+                              .unknown()
+                              .superRefine((val, ctx) => {
+                                if (
+                                  typeof val === 'object' &&
+                                  val !== null &&
+                                  !Array.isArray(val)
+                                ) {
+                                  if (!Object.hasOwn(val, 'view')) {
+                                    ctx.addIssue({ code: 'custom' })
+                                  }
+                                }
+                              })
+                              .openapi({ required: ['view'] }),
+                            z
+                              .unknown()
+                              .superRefine((val, ctx) => {
+                                if (
+                                  typeof val === 'object' &&
+                                  val !== null &&
+                                  !Array.isArray(val)
+                                ) {
+                                  if (!Object.hasOwn(val, 'project_id')) {
+                                    ctx.addIssue({ code: 'custom' })
+                                  }
+                                }
+                              })
+                              .openapi({ required: ['project_id'] }),
+                            z
+                              .unknown()
+                              .superRefine((val, ctx) => {
+                                if (
+                                  typeof val === 'object' &&
+                                  val !== null &&
+                                  !Array.isArray(val)
+                                ) {
+                                  if (!Object.hasOwn(val, 'excluded_environment_ids')) {
+                                    ctx.addIssue({ code: 'custom' })
+                                  }
+                                }
+                              })
+                              .openapi({ required: ['excluded_environment_ids'] }),
+                            z
+                              .unknown()
+                              .superRefine((val, ctx) => {
+                                if (
+                                  typeof val === 'object' &&
+                                  val !== null &&
+                                  !Array.isArray(val)
+                                ) {
+                                  if (!Object.hasOwn(val, 'cursor')) {
+                                    ctx.addIssue({ code: 'custom' })
+                                  }
+                                }
+                              })
+                              .openapi({ required: ['cursor'] }),
+                          ])
+                          .safeParse(val).success,
+                    )
+                    .openapi({
+                      required: ['environment_ids'],
+                      not: {
+                        anyOf: [
+                          { required: ['view'] },
+                          { required: ['project_id'] },
+                          { required: ['excluded_environment_ids'] },
+                          { required: ['cursor'] },
+                        ],
+                      },
+                    }),
+                  z
+                    .any()
+                    .refine(
+                      (val) =>
+                        !z
+                          .unknown()
+                          .superRefine((val, ctx) => {
+                            if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                              if (!Object.hasOwn(val, 'environment_ids')) {
+                                ctx.addIssue({ code: 'custom' })
+                              }
+                            }
+                          })
+                          .openapi({ required: ['environment_ids'] })
+                          .safeParse(val).success,
+                    )
+                    .openapi({ required: ['all', 'view'], not: { required: ['environment_ids'] } }),
+                ])
+                .and(
+                  z
+                    .object({
+                      environment_ids: z
+                        .preprocess(
+                          (val) => (val === undefined || Array.isArray(val) ? val : [val]),
+                          z
+                            .array(
+                              z
+                                .preprocess((val) => {
+                                  if (
+                                    typeof val !== 'string' ||
+                                    !/^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val)
+                                  )
+                                    return val
+                                  if (/^-?\d+$/.test(val)) return BigInt(val)
+                                  const num = Number(val)
+                                  return Number.isSafeInteger(num) ? BigInt(num) : val
+                                }, z.int64())
+                                .openapi({ type: 'integer', format: 'int64' }),
+                            )
+                            .min(1)
+                            .max(100),
+                        )
+                        .exactOptional()
+                        .openapi({ title: 'Environment Ids' }),
+                      all: z
+                        .preprocess(
+                          ((read) => (val: unknown) => {
+                            const result = read.safeParse(val)
+                            return result.success ? result.data : val
+                          })(z.stringbool()),
+                          z.boolean(),
+                        )
+                        .default(false)
+                        .exactOptional()
+                        .openapi({ title: 'All' }),
+                      view: ViewEnumSchema.exactOptional().openapi({ title: 'View' }),
+                      project_id: z
+                        .preprocess((val) => {
+                          if (
+                            typeof val !== 'string' ||
+                            !/^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val)
+                          )
+                            return val
+                          if (/^-?\d+$/.test(val)) return BigInt(val)
+                          const num = Number(val)
+                          return Number.isSafeInteger(num) ? BigInt(num) : val
+                        }, z.int64())
+                        .exactOptional()
+                        .openapi({ type: 'integer', format: 'int64', title: 'Project Id' }),
+                      excluded_environment_ids: z
+                        .preprocess(
+                          (val) => (val === undefined || Array.isArray(val) ? val : [val]),
+                          z
+                            .array(
+                              z
+                                .preprocess((val) => {
+                                  if (
+                                    typeof val !== 'string' ||
+                                    !/^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val)
+                                  )
+                                    return val
+                                  if (/^-?\d+$/.test(val)) return BigInt(val)
+                                  const num = Number(val)
+                                  return Number.isSafeInteger(num) ? BigInt(num) : val
+                                }, z.int64())
+                                .openapi({ type: 'integer', format: 'int64' }),
+                            )
+                            .max(100),
+                        )
+                        .exactOptional()
+                        .openapi({ title: 'Excluded Environment Ids' }),
+                      cursor: z.string().max(4096).exactOptional().openapi({ title: 'Cursor' }),
+                    })
+                    .openapi({ required: [] }),
+                )
+              return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+                ;((ctx) => {
+                  const o = ctx.value
+                  if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+                  for (const k of Object.keys(o)) {
+                    if (
+                      ![
+                        'environment_ids',
+                        'all',
+                        'view',
+                        'project_id',
+                        'excluded_environment_ids',
+                        'cursor',
+                      ].includes(k)
+                    ) {
+                      ctx.issues.push({ code: 'custom', path: [k], input: o })
+                    }
+                  }
+                })(ctx)
+                return val
+              }, Schema)
+            })()
+              .openapi({ additionalProperties: false })
+              .openapi({
+                title: 'DisableEnvironmentOverridesBody',
+                description:
+                  'Base class for all request payloads.\nIt is expected that each endpoint extends this class to define its own payload format',
+              }),
+          },
+          'multipart/form-data': {
+            schema: (() => {
+              const Schema = z
+                .xor([
+                  z
+                    .any()
+                    .refine(
+                      (val) =>
+                        !z
+                          .union([
+                            z
+                              .unknown()
+                              .superRefine((val, ctx) => {
+                                if (
+                                  typeof val === 'object' &&
+                                  val !== null &&
+                                  !Array.isArray(val)
+                                ) {
+                                  if (!Object.hasOwn(val, 'view')) {
+                                    ctx.addIssue({ code: 'custom' })
+                                  }
+                                }
+                              })
+                              .openapi({ required: ['view'] }),
+                            z
+                              .unknown()
+                              .superRefine((val, ctx) => {
+                                if (
+                                  typeof val === 'object' &&
+                                  val !== null &&
+                                  !Array.isArray(val)
+                                ) {
+                                  if (!Object.hasOwn(val, 'project_id')) {
+                                    ctx.addIssue({ code: 'custom' })
+                                  }
+                                }
+                              })
+                              .openapi({ required: ['project_id'] }),
+                            z
+                              .unknown()
+                              .superRefine((val, ctx) => {
+                                if (
+                                  typeof val === 'object' &&
+                                  val !== null &&
+                                  !Array.isArray(val)
+                                ) {
+                                  if (!Object.hasOwn(val, 'excluded_environment_ids')) {
+                                    ctx.addIssue({ code: 'custom' })
+                                  }
+                                }
+                              })
+                              .openapi({ required: ['excluded_environment_ids'] }),
+                            z
+                              .unknown()
+                              .superRefine((val, ctx) => {
+                                if (
+                                  typeof val === 'object' &&
+                                  val !== null &&
+                                  !Array.isArray(val)
+                                ) {
+                                  if (!Object.hasOwn(val, 'cursor')) {
+                                    ctx.addIssue({ code: 'custom' })
+                                  }
+                                }
+                              })
+                              .openapi({ required: ['cursor'] }),
+                          ])
+                          .safeParse(val).success,
+                    )
+                    .openapi({
+                      required: ['environment_ids'],
+                      not: {
+                        anyOf: [
+                          { required: ['view'] },
+                          { required: ['project_id'] },
+                          { required: ['excluded_environment_ids'] },
+                          { required: ['cursor'] },
+                        ],
+                      },
+                    }),
+                  z
+                    .any()
+                    .refine(
+                      (val) =>
+                        !z
+                          .unknown()
+                          .superRefine((val, ctx) => {
+                            if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                              if (!Object.hasOwn(val, 'environment_ids')) {
+                                ctx.addIssue({ code: 'custom' })
+                              }
+                            }
+                          })
+                          .openapi({ required: ['environment_ids'] })
+                          .safeParse(val).success,
+                    )
+                    .openapi({ required: ['all', 'view'], not: { required: ['environment_ids'] } }),
+                ])
+                .and(
+                  z
+                    .object({
+                      environment_ids: z
+                        .preprocess(
+                          (val) => (val === undefined || Array.isArray(val) ? val : [val]),
+                          z
+                            .array(
+                              z
+                                .preprocess((val) => {
+                                  if (
+                                    typeof val !== 'string' ||
+                                    !/^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val)
+                                  )
+                                    return val
+                                  if (/^-?\d+$/.test(val)) return BigInt(val)
+                                  const num = Number(val)
+                                  return Number.isSafeInteger(num) ? BigInt(num) : val
+                                }, z.int64())
+                                .openapi({ type: 'integer', format: 'int64' }),
+                            )
+                            .min(1)
+                            .max(100),
+                        )
+                        .exactOptional()
+                        .openapi({ title: 'Environment Ids' }),
+                      all: z
+                        .preprocess(
+                          ((read) => (val: unknown) => {
+                            const result = read.safeParse(val)
+                            return result.success ? result.data : val
+                          })(z.stringbool()),
+                          z.boolean(),
+                        )
+                        .default(false)
+                        .exactOptional()
+                        .openapi({ title: 'All' }),
+                      view: ViewEnumSchema.exactOptional().openapi({ title: 'View' }),
+                      project_id: z
+                        .preprocess((val) => {
+                          if (
+                            typeof val !== 'string' ||
+                            !/^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val)
+                          )
+                            return val
+                          if (/^-?\d+$/.test(val)) return BigInt(val)
+                          const num = Number(val)
+                          return Number.isSafeInteger(num) ? BigInt(num) : val
+                        }, z.int64())
+                        .exactOptional()
+                        .openapi({ type: 'integer', format: 'int64', title: 'Project Id' }),
+                      excluded_environment_ids: z
+                        .preprocess(
+                          (val) => (val === undefined || Array.isArray(val) ? val : [val]),
+                          z
+                            .array(
+                              z
+                                .preprocess((val) => {
+                                  if (
+                                    typeof val !== 'string' ||
+                                    !/^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val)
+                                  )
+                                    return val
+                                  if (/^-?\d+$/.test(val)) return BigInt(val)
+                                  const num = Number(val)
+                                  return Number.isSafeInteger(num) ? BigInt(num) : val
+                                }, z.int64())
+                                .openapi({ type: 'integer', format: 'int64' }),
+                            )
+                            .max(100),
+                        )
+                        .exactOptional()
+                        .openapi({ title: 'Excluded Environment Ids' }),
+                      cursor: z.string().max(4096).exactOptional().openapi({ title: 'Cursor' }),
+                    })
+                    .openapi({ required: [] }),
+                )
+              return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+                ;((ctx) => {
+                  const o = ctx.value
+                  if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+                  for (const k of Object.keys(o)) {
+                    if (
+                      ![
+                        'environment_ids',
+                        'all',
+                        'view',
+                        'project_id',
+                        'excluded_environment_ids',
+                        'cursor',
+                      ].includes(k)
+                    ) {
+                      ctx.issues.push({ code: 'custom', path: [k], input: o })
+                    }
+                  }
+                })(ctx)
+                return val
+              }, Schema)
+            })()
+              .openapi({ additionalProperties: false })
+              .openapi({
+                title: 'DisableEnvironmentOverridesBody',
+                description:
+                  'Base class for all request payloads.\nIt is expected that each endpoint extends this class to define its own payload format',
+              }),
+          },
+        },
+      },
+    },
+    responses: {
+      200: {
+        description: '',
+        content: { 'application/json': { schema: EnvironmentOverridesResponseSchema } },
+      },
+    },
+    security: [{ BearerAuthentication: [] }],
+  })
+
+export const postApiV3AccountsAccountIdMigrationInventoryEnvironmentOverridesEnableIndexRoute =
+  createRoute({
+    method: 'post',
+    path: '/api/v3/accounts/{account_id}/migration-inventory/environment-overrides/enable/',
+    tags: ['Migration Inventory'],
+    description:
+      'Upgrade environments to latest. Each actual change records a new migration change; environments already on latest keep their current change. Explicit 1-100 IDs are atomic. all:true with view applies to the next slice of up to 1000 matching environments in one transaction, skips environments the actor cannot change, and returns a cursor when more remain. 408 means a slice timed out and nothing in it changed. For explicit IDs, 404 hides unavailable resources; 403 indicates insufficient token scopes; 409 means an environment no longer has legacy workloads. Invalid selections or unsupported targets return 400.',
+    operationId: 'Enable Environment Overrides',
+    request: {
+      params: z.object({
+        account_id: z
+          .preprocess((val) => {
+            if (typeof val !== 'string' || !/^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val))
+              return val
+            if (/^-?\d+$/.test(val)) return BigInt(val)
+            const num = Number(val)
+            return Number.isSafeInteger(num) ? BigInt(num) : val
+          }, z.int64())
+          .openapi({
+            param: {
+              in: 'path',
+              name: 'account_id',
+              schema: { type: 'integer', format: 'int64' },
+              required: true,
+            },
+          }),
+      }),
+      body: {
+        content: {
+          'application/json': { schema: EnableEnvironmentOverridesBodyRequestSchema },
+          'application/x-www-form-urlencoded': {
+            schema: (() => {
+              const Schema = z
+                .xor([
+                  z
+                    .any()
+                    .refine(
+                      (val) =>
+                        !z
+                          .union([
+                            z
+                              .unknown()
+                              .superRefine((val, ctx) => {
+                                if (
+                                  typeof val === 'object' &&
+                                  val !== null &&
+                                  !Array.isArray(val)
+                                ) {
+                                  if (!Object.hasOwn(val, 'view')) {
+                                    ctx.addIssue({ code: 'custom' })
+                                  }
+                                }
+                              })
+                              .openapi({ required: ['view'] }),
+                            z
+                              .unknown()
+                              .superRefine((val, ctx) => {
+                                if (
+                                  typeof val === 'object' &&
+                                  val !== null &&
+                                  !Array.isArray(val)
+                                ) {
+                                  if (!Object.hasOwn(val, 'project_id')) {
+                                    ctx.addIssue({ code: 'custom' })
+                                  }
+                                }
+                              })
+                              .openapi({ required: ['project_id'] }),
+                            z
+                              .unknown()
+                              .superRefine((val, ctx) => {
+                                if (
+                                  typeof val === 'object' &&
+                                  val !== null &&
+                                  !Array.isArray(val)
+                                ) {
+                                  if (!Object.hasOwn(val, 'excluded_environment_ids')) {
+                                    ctx.addIssue({ code: 'custom' })
+                                  }
+                                }
+                              })
+                              .openapi({ required: ['excluded_environment_ids'] }),
+                            z
+                              .unknown()
+                              .superRefine((val, ctx) => {
+                                if (
+                                  typeof val === 'object' &&
+                                  val !== null &&
+                                  !Array.isArray(val)
+                                ) {
+                                  if (!Object.hasOwn(val, 'cursor')) {
+                                    ctx.addIssue({ code: 'custom' })
+                                  }
+                                }
+                              })
+                              .openapi({ required: ['cursor'] }),
+                          ])
+                          .safeParse(val).success,
+                    )
+                    .openapi({
+                      required: ['environment_ids'],
+                      not: {
+                        anyOf: [
+                          { required: ['view'] },
+                          { required: ['project_id'] },
+                          { required: ['excluded_environment_ids'] },
+                          { required: ['cursor'] },
+                        ],
+                      },
+                    }),
+                  z
+                    .any()
+                    .refine(
+                      (val) =>
+                        !z
+                          .unknown()
+                          .superRefine((val, ctx) => {
+                            if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                              if (!Object.hasOwn(val, 'environment_ids')) {
+                                ctx.addIssue({ code: 'custom' })
+                              }
+                            }
+                          })
+                          .openapi({ required: ['environment_ids'] })
+                          .safeParse(val).success,
+                    )
+                    .openapi({ required: ['all', 'view'], not: { required: ['environment_ids'] } }),
+                ])
+                .and(
+                  z
+                    .object({
+                      environment_ids: z
+                        .preprocess(
+                          (val) => (val === undefined || Array.isArray(val) ? val : [val]),
+                          z
+                            .array(
+                              z
+                                .preprocess((val) => {
+                                  if (
+                                    typeof val !== 'string' ||
+                                    !/^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val)
+                                  )
+                                    return val
+                                  if (/^-?\d+$/.test(val)) return BigInt(val)
+                                  const num = Number(val)
+                                  return Number.isSafeInteger(num) ? BigInt(num) : val
+                                }, z.int64())
+                                .openapi({ type: 'integer', format: 'int64' }),
+                            )
+                            .min(1)
+                            .max(100),
+                        )
+                        .exactOptional()
+                        .openapi({ title: 'Environment Ids' }),
+                      all: z
+                        .preprocess(
+                          ((read) => (val: unknown) => {
+                            const result = read.safeParse(val)
+                            return result.success ? result.data : val
+                          })(z.stringbool()),
+                          z.boolean(),
+                        )
+                        .default(false)
+                        .exactOptional()
+                        .openapi({ title: 'All' }),
+                      view: ViewEnumSchema.exactOptional().openapi({ title: 'View' }),
+                      project_id: z
+                        .preprocess((val) => {
+                          if (
+                            typeof val !== 'string' ||
+                            !/^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val)
+                          )
+                            return val
+                          if (/^-?\d+$/.test(val)) return BigInt(val)
+                          const num = Number(val)
+                          return Number.isSafeInteger(num) ? BigInt(num) : val
+                        }, z.int64())
+                        .exactOptional()
+                        .openapi({ type: 'integer', format: 'int64', title: 'Project Id' }),
+                      excluded_environment_ids: z
+                        .preprocess(
+                          (val) => (val === undefined || Array.isArray(val) ? val : [val]),
+                          z
+                            .array(
+                              z
+                                .preprocess((val) => {
+                                  if (
+                                    typeof val !== 'string' ||
+                                    !/^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val)
+                                  )
+                                    return val
+                                  if (/^-?\d+$/.test(val)) return BigInt(val)
+                                  const num = Number(val)
+                                  return Number.isSafeInteger(num) ? BigInt(num) : val
+                                }, z.int64())
+                                .openapi({ type: 'integer', format: 'int64' }),
+                            )
+                            .max(100),
+                        )
+                        .exactOptional()
+                        .openapi({ title: 'Excluded Environment Ids' }),
+                      cursor: z.string().max(4096).exactOptional().openapi({ title: 'Cursor' }),
+                      target_dbt_version: TargetDbtVersionEnumSchema.openapi({
+                        title: 'Target Dbt Version',
+                        description: 'Explicit migration target; only latest is supported.',
+                      }),
+                    })
+                    .openapi({ required: ['target_dbt_version'] }),
+                )
+              return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+                ;((ctx) => {
+                  const o = ctx.value
+                  if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+                  for (const k of Object.keys(o)) {
+                    if (
+                      ![
+                        'environment_ids',
+                        'all',
+                        'view',
+                        'project_id',
+                        'excluded_environment_ids',
+                        'cursor',
+                        'target_dbt_version',
+                      ].includes(k)
+                    ) {
+                      ctx.issues.push({ code: 'custom', path: [k], input: o })
+                    }
+                  }
+                })(ctx)
+                return val
+              }, Schema)
+            })()
+              .openapi({ additionalProperties: false })
+              .openapi({
+                title: 'EnableEnvironmentOverridesBody',
+                description:
+                  'Base class for all request payloads.\nIt is expected that each endpoint extends this class to define its own payload format',
+                required: ['target_dbt_version'],
+              }),
+          },
+          'multipart/form-data': {
+            schema: (() => {
+              const Schema = z
+                .xor([
+                  z
+                    .any()
+                    .refine(
+                      (val) =>
+                        !z
+                          .union([
+                            z
+                              .unknown()
+                              .superRefine((val, ctx) => {
+                                if (
+                                  typeof val === 'object' &&
+                                  val !== null &&
+                                  !Array.isArray(val)
+                                ) {
+                                  if (!Object.hasOwn(val, 'view')) {
+                                    ctx.addIssue({ code: 'custom' })
+                                  }
+                                }
+                              })
+                              .openapi({ required: ['view'] }),
+                            z
+                              .unknown()
+                              .superRefine((val, ctx) => {
+                                if (
+                                  typeof val === 'object' &&
+                                  val !== null &&
+                                  !Array.isArray(val)
+                                ) {
+                                  if (!Object.hasOwn(val, 'project_id')) {
+                                    ctx.addIssue({ code: 'custom' })
+                                  }
+                                }
+                              })
+                              .openapi({ required: ['project_id'] }),
+                            z
+                              .unknown()
+                              .superRefine((val, ctx) => {
+                                if (
+                                  typeof val === 'object' &&
+                                  val !== null &&
+                                  !Array.isArray(val)
+                                ) {
+                                  if (!Object.hasOwn(val, 'excluded_environment_ids')) {
+                                    ctx.addIssue({ code: 'custom' })
+                                  }
+                                }
+                              })
+                              .openapi({ required: ['excluded_environment_ids'] }),
+                            z
+                              .unknown()
+                              .superRefine((val, ctx) => {
+                                if (
+                                  typeof val === 'object' &&
+                                  val !== null &&
+                                  !Array.isArray(val)
+                                ) {
+                                  if (!Object.hasOwn(val, 'cursor')) {
+                                    ctx.addIssue({ code: 'custom' })
+                                  }
+                                }
+                              })
+                              .openapi({ required: ['cursor'] }),
+                          ])
+                          .safeParse(val).success,
+                    )
+                    .openapi({
+                      required: ['environment_ids'],
+                      not: {
+                        anyOf: [
+                          { required: ['view'] },
+                          { required: ['project_id'] },
+                          { required: ['excluded_environment_ids'] },
+                          { required: ['cursor'] },
+                        ],
+                      },
+                    }),
+                  z
+                    .any()
+                    .refine(
+                      (val) =>
+                        !z
+                          .unknown()
+                          .superRefine((val, ctx) => {
+                            if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                              if (!Object.hasOwn(val, 'environment_ids')) {
+                                ctx.addIssue({ code: 'custom' })
+                              }
+                            }
+                          })
+                          .openapi({ required: ['environment_ids'] })
+                          .safeParse(val).success,
+                    )
+                    .openapi({ required: ['all', 'view'], not: { required: ['environment_ids'] } }),
+                ])
+                .and(
+                  z
+                    .object({
+                      environment_ids: z
+                        .preprocess(
+                          (val) => (val === undefined || Array.isArray(val) ? val : [val]),
+                          z
+                            .array(
+                              z
+                                .preprocess((val) => {
+                                  if (
+                                    typeof val !== 'string' ||
+                                    !/^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val)
+                                  )
+                                    return val
+                                  if (/^-?\d+$/.test(val)) return BigInt(val)
+                                  const num = Number(val)
+                                  return Number.isSafeInteger(num) ? BigInt(num) : val
+                                }, z.int64())
+                                .openapi({ type: 'integer', format: 'int64' }),
+                            )
+                            .min(1)
+                            .max(100),
+                        )
+                        .exactOptional()
+                        .openapi({ title: 'Environment Ids' }),
+                      all: z
+                        .preprocess(
+                          ((read) => (val: unknown) => {
+                            const result = read.safeParse(val)
+                            return result.success ? result.data : val
+                          })(z.stringbool()),
+                          z.boolean(),
+                        )
+                        .default(false)
+                        .exactOptional()
+                        .openapi({ title: 'All' }),
+                      view: ViewEnumSchema.exactOptional().openapi({ title: 'View' }),
+                      project_id: z
+                        .preprocess((val) => {
+                          if (
+                            typeof val !== 'string' ||
+                            !/^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val)
+                          )
+                            return val
+                          if (/^-?\d+$/.test(val)) return BigInt(val)
+                          const num = Number(val)
+                          return Number.isSafeInteger(num) ? BigInt(num) : val
+                        }, z.int64())
+                        .exactOptional()
+                        .openapi({ type: 'integer', format: 'int64', title: 'Project Id' }),
+                      excluded_environment_ids: z
+                        .preprocess(
+                          (val) => (val === undefined || Array.isArray(val) ? val : [val]),
+                          z
+                            .array(
+                              z
+                                .preprocess((val) => {
+                                  if (
+                                    typeof val !== 'string' ||
+                                    !/^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val)
+                                  )
+                                    return val
+                                  if (/^-?\d+$/.test(val)) return BigInt(val)
+                                  const num = Number(val)
+                                  return Number.isSafeInteger(num) ? BigInt(num) : val
+                                }, z.int64())
+                                .openapi({ type: 'integer', format: 'int64' }),
+                            )
+                            .max(100),
+                        )
+                        .exactOptional()
+                        .openapi({ title: 'Excluded Environment Ids' }),
+                      cursor: z.string().max(4096).exactOptional().openapi({ title: 'Cursor' }),
+                      target_dbt_version: TargetDbtVersionEnumSchema.openapi({
+                        title: 'Target Dbt Version',
+                        description: 'Explicit migration target; only latest is supported.',
+                      }),
+                    })
+                    .openapi({ required: ['target_dbt_version'] }),
+                )
+              return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+                ;((ctx) => {
+                  const o = ctx.value
+                  if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+                  for (const k of Object.keys(o)) {
+                    if (
+                      ![
+                        'environment_ids',
+                        'all',
+                        'view',
+                        'project_id',
+                        'excluded_environment_ids',
+                        'cursor',
+                        'target_dbt_version',
+                      ].includes(k)
+                    ) {
+                      ctx.issues.push({ code: 'custom', path: [k], input: o })
+                    }
+                  }
+                })(ctx)
+                return val
+              }, Schema)
+            })()
+              .openapi({ additionalProperties: false })
+              .openapi({
+                title: 'EnableEnvironmentOverridesBody',
+                description:
+                  'Base class for all request payloads.\nIt is expected that each endpoint extends this class to define its own payload format',
+                required: ['target_dbt_version'],
+              }),
+          },
+        },
+        required: true,
+      },
+    },
+    responses: {
+      200: {
+        description: '',
+        content: { 'application/json': { schema: EnvironmentOverridesResponseSchema } },
+      },
+    },
+    security: [{ BearerAuthentication: [] }],
+  })
+
+export const getApiV3AccountsAccountIdMigrationInventoryEnvironmentsIndexRoute = createRoute({
+  method: 'get',
+  path: '/api/v3/accounts/{account_id}/migration-inventory/environments/',
+  tags: ['Migration Inventory'],
+  description:
+    'List readable environments with legacy workloads or a saved migration override, in ascending ID order. include_summary adds the same scoped summary as GET /summary/ under extra.migration_summary, using the same read permissions. Returns 400 for invalid pagination or ordering and 404 for an unavailable account or project. Write capabilities are advisory: insufficient_permissions blocks changes, and no_legacy_workloads blocks enabling an environment without legacy workloads.',
+  operationId: 'List Inventory Environments',
+  request: {
+    params: z.object({
+      account_id: z
+        .preprocess((val) => {
+          if (typeof val !== 'string' || !/^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val))
+            return val
+          if (/^-?\d+$/.test(val)) return BigInt(val)
+          const num = Number(val)
+          return Number.isSafeInteger(num) ? BigInt(num) : val
+        }, z.int64())
+        .openapi({
+          param: {
+            in: 'path',
+            name: 'account_id',
+            schema: { type: 'integer', format: 'int64' },
+            required: true,
+          },
+        }),
+    }),
+    query: z.object({
+      include_run_summary: z
+        .stringbool()
+        .exactOptional()
+        .openapi({
+          param: {
+            in: 'query',
+            name: 'include_run_summary',
+            schema: { type: 'boolean' },
+            description: 'Include environment run history and migration outcomes.',
+            required: false,
+          },
+        }),
+      include_summary: z
+        .stringbool()
+        .exactOptional()
+        .openapi({
+          param: {
+            in: 'query',
+            name: 'include_summary',
+            schema: { type: 'boolean' },
+            description: 'Include the same scoped summary as GET /summary/ in extra.',
+            required: false,
+          },
+        }),
+      limit: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int(),
+        )
+        .exactOptional()
+        .openapi({
+          param: { in: 'query', name: 'limit', schema: { type: 'integer' }, required: false },
+        }),
+      offset: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int(),
+        )
+        .exactOptional()
+        .openapi({
+          param: { in: 'query', name: 'offset', schema: { type: 'integer' }, required: false },
+        }),
+      project_id: z
+        .preprocess((val) => {
+          if (typeof val !== 'string' || !/^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val))
+            return val
+          if (/^-?\d+$/.test(val)) return BigInt(val)
+          const num = Number(val)
+          return Number.isSafeInteger(num) ? BigInt(num) : val
+        }, z.int64())
+        .exactOptional()
+        .openapi({
+          param: {
+            in: 'query',
+            name: 'project_id',
+            schema: { type: 'integer', format: 'int64' },
+            description: 'Restrict inventory to a readable project.',
+            required: false,
+          },
+        }),
+      view: z
+        .enum(['all', 'enabled'])
+        .exactOptional()
+        .openapi({
+          param: {
+            in: 'query',
+            name: 'view',
+            schema: { type: 'string', enum: ['all', 'enabled'] },
+            description:
+              'Filter the worklist count; compliance always covers every readable resource in scope.',
+            required: false,
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: '',
+      content: { 'application/json': { schema: InventoryEnvironmentResponseSchema } },
+    },
+  },
+  security: [{ BearerAuthentication: [] }],
+})
+
+export const getApiV3AccountsAccountIdMigrationInventoryEnvironmentsEnvironmentIdJobGroupsIndexRoute =
+  createRoute({
+    method: 'get',
+    path: '/api/v3/accounts/{account_id}/migration-inventory/environments/{environment_id}/job-groups/',
+    tags: ['Migration Inventory'],
+    description:
+      'Return independently paginated compliant and legacy jobs with all-history last runs and runs attributed to the current migration change.',
+    operationId: 'Retrieve Inventory Job Groups',
+    request: {
+      params: z.object({
+        account_id: z
+          .preprocess((val) => {
+            if (typeof val !== 'string' || !/^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val))
+              return val
+            if (/^-?\d+$/.test(val)) return BigInt(val)
+            const num = Number(val)
+            return Number.isSafeInteger(num) ? BigInt(num) : val
+          }, z.int64())
+          .openapi({
+            param: {
+              in: 'path',
+              name: 'account_id',
+              schema: { type: 'integer', format: 'int64' },
+              required: true,
+            },
+          }),
+        environment_id: z
+          .preprocess((val) => {
+            if (typeof val !== 'string' || !/^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val))
+              return val
+            if (/^-?\d+$/.test(val)) return BigInt(val)
+            const num = Number(val)
+            return Number.isSafeInteger(num) ? BigInt(num) : val
+          }, z.int64())
+          .openapi({
+            param: {
+              in: 'path',
+              name: 'environment_id',
+              schema: { type: 'integer', format: 'int64' },
+              required: true,
+            },
+          }),
+      }),
+      query: z.object({
+        compliant_limit: z
+          .preprocess(
+            (val) =>
+              typeof val === 'string' &&
+              /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+              (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+                ? Number(val)
+                : val,
+            z.int(),
+          )
+          .exactOptional()
+          .openapi({
+            param: {
+              in: 'query',
+              name: 'compliant_limit',
+              schema: { type: 'integer' },
+              required: false,
+            },
+          }),
+        compliant_offset: z
+          .preprocess(
+            (val) =>
+              typeof val === 'string' &&
+              /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+              (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+                ? Number(val)
+                : val,
+            z.int(),
+          )
+          .exactOptional()
+          .openapi({
+            param: {
+              in: 'query',
+              name: 'compliant_offset',
+              schema: { type: 'integer' },
+              required: false,
+            },
+          }),
+        include_related: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: {
+              in: 'query',
+              name: 'include_related',
+              schema: { type: 'string' },
+              description: 'Comma-separated list of related objects to include in the response.',
+              required: false,
+            },
+          }),
+        legacy_limit: z
+          .preprocess(
+            (val) =>
+              typeof val === 'string' &&
+              /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+              (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+                ? Number(val)
+                : val,
+            z.int(),
+          )
+          .exactOptional()
+          .openapi({
+            param: {
+              in: 'query',
+              name: 'legacy_limit',
+              schema: { type: 'integer' },
+              required: false,
+            },
+          }),
+        legacy_offset: z
+          .preprocess(
+            (val) =>
+              typeof val === 'string' &&
+              /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+              (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+                ? Number(val)
+                : val,
+            z.int(),
+          )
+          .exactOptional()
+          .openapi({
+            param: {
+              in: 'query',
+              name: 'legacy_offset',
+              schema: { type: 'integer' },
+              required: false,
+            },
+          }),
+      }),
+    },
+    responses: {
+      200: {
+        description: '',
+        content: { 'application/json': { schema: InventoryJobGroupsResponseSchema } },
+      },
+    },
+    security: [{ BearerAuthentication: [] }],
+  })
+
+export const getApiV3AccountsAccountIdMigrationInventorySummaryIndexRoute = createRoute({
+  method: 'get',
+  path: '/api/v3/accounts/{account_id}/migration-inventory/summary/',
+  tags: ['Migration Inventory'],
+  description:
+    'Summarize readable inventory for an account or project. The view filters environment_count; compliance covers all readable resources in scope. Pagination and ordering parameters are rejected. include_action_counts adds advisory counts for all matching environments after optional deselections. Returns 404 for an unavailable account or project.',
+  operationId: 'Retrieve Inventory Summary',
+  request: {
+    params: z.object({
+      account_id: z
+        .preprocess((val) => {
+          if (typeof val !== 'string' || !/^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val))
+            return val
+          if (/^-?\d+$/.test(val)) return BigInt(val)
+          const num = Number(val)
+          return Number.isSafeInteger(num) ? BigInt(num) : val
+        }, z.int64())
+        .openapi({
+          param: {
+            in: 'path',
+            name: 'account_id',
+            schema: { type: 'integer', format: 'int64' },
+            required: true,
+          },
+        }),
+    }),
+    query: z.object({
+      excluded_environment_ids: z
+        .preprocess(
+          (val) =>
+            val === undefined
+              ? val
+              : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+                  typeof item === 'string' ? item.split(',') : [item],
+                ),
+          z
+            .array(
+              z
+                .preprocess((val) => {
+                  if (
+                    typeof val !== 'string' ||
+                    !/^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val)
+                  )
+                    return val
+                  if (/^-?\d+$/.test(val)) return BigInt(val)
+                  const num = Number(val)
+                  return Number.isSafeInteger(num) ? BigInt(num) : val
+                }, z.int64().min(1n))
+                .openapi({ type: 'integer', format: 'int64', minimum: 1 }),
+            )
+            .max(100)
+            .superRefine((items, ctx) => {
+              const seen = new Map()
+              for (const [i, val] of items.entries()) {
+                const key = JSON.stringify(val)
+                if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+                else seen.set(key, i)
+              }
+            }),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            in: 'query',
+            name: 'excluded_environment_ids',
+            schema: {
+              type: 'array',
+              items: { type: 'integer', format: 'int64', minimum: 1 },
+              maxItems: 100,
+              uniqueItems: true,
+            },
+            description: 'Comma-separated deselections for action counts only.',
+            explode: false,
+            style: 'form',
+            required: false,
+          },
+        }),
+      include_action_counts: z
+        .stringbool()
+        .exactOptional()
+        .openapi({
+          param: {
+            in: 'query',
+            name: 'include_action_counts',
+            schema: { type: 'boolean' },
+            description:
+              'Include advisory counts for applying overrides to all matching environments.',
+            required: false,
+          },
+        }),
+      project_id: z
+        .preprocess((val) => {
+          if (typeof val !== 'string' || !/^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val))
+            return val
+          if (/^-?\d+$/.test(val)) return BigInt(val)
+          const num = Number(val)
+          return Number.isSafeInteger(num) ? BigInt(num) : val
+        }, z.int64())
+        .exactOptional()
+        .openapi({
+          param: {
+            in: 'query',
+            name: 'project_id',
+            schema: { type: 'integer', format: 'int64' },
+            description: 'Restrict inventory to a readable project.',
+            required: false,
+          },
+        }),
+      view: z
+        .enum(['all', 'enabled'])
+        .exactOptional()
+        .openapi({
+          param: {
+            in: 'query',
+            name: 'view',
+            schema: { type: 'string', enum: ['all', 'enabled'] },
+            description:
+              'Filter the worklist count; compliance always covers every readable resource in scope.',
+            required: false,
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: '',
+      content: { 'application/json': { schema: InventorySummaryResponseSchema } },
+    },
+  },
   security: [{ BearerAuthentication: [] }],
 })
 
@@ -27478,7 +30894,8 @@ export const patchApiV3AccountsAccountIdProjectsProjectIdProfilesIdIndexRoute = 
                   format: 'int64',
                   default: null,
                   title: 'Connection Id',
-                  description: 'The ID of the connection',
+                  description:
+                    "The ID of the connection. Null is only accepted for a profile that has no connection; a profile's connection cannot be removed once set.",
                 }),
               credentials_id: z
                 .preprocess((val) => {
@@ -27499,7 +30916,8 @@ export const patchApiV3AccountsAccountIdProjectsProjectIdProfilesIdIndexRoute = 
                   format: 'int64',
                   default: null,
                   title: 'Credentials Id',
-                  description: 'The ID of the credentials',
+                  description:
+                    'The ID of the credentials. Null is only accepted for a profile that has no credentials; credentials cannot be removed once set.',
                 }),
               extended_attributes_id: z
                 .preprocess((val) => {
@@ -27613,7 +31031,8 @@ export const patchApiV3AccountsAccountIdProjectsProjectIdProfilesIdIndexRoute = 
                   format: 'int64',
                   default: null,
                   title: 'Connection Id',
-                  description: 'The ID of the connection',
+                  description:
+                    "The ID of the connection. Null is only accepted for a profile that has no connection; a profile's connection cannot be removed once set.",
                 }),
               credentials_id: z
                 .preprocess((val) => {
@@ -27634,7 +31053,8 @@ export const patchApiV3AccountsAccountIdProjectsProjectIdProfilesIdIndexRoute = 
                   format: 'int64',
                   default: null,
                   title: 'Credentials Id',
-                  description: 'The ID of the credentials',
+                  description:
+                    'The ID of the credentials. Null is only accepted for a profile that has no credentials; credentials cannot be removed once set.',
                 }),
               extended_attributes_id: z
                 .preprocess((val) => {
@@ -27958,7 +31378,7 @@ export const postApiV3AccountsAccountIdProjectsProjectIdRepositoriesIndexRoute =
                 .exactOptional()
                 .openapi({
                   description:
-                    "The name of the repo⚠️ If not set to the correct values, CI jobs may not trigger and the branch link from the dbt Cloud IDE may not work.For example, if the remote URL is 'git://github.com/your_org/your_repo_name.git',the correct full_name is 'your_org/your_repo_name'.",
+                    "(Deprecated) The name of the repo. The returned value is computed from the remote URL, for example 'your_org/your_repo_name' for 'git://github.com/your_org/your_repo_name.git'.",
                 }),
               remote_backend: RemoteBackendEnumSchema.exactOptional().openapi({
                 description:
@@ -28094,7 +31514,7 @@ export const postApiV3AccountsAccountIdProjectsProjectIdRepositoriesIndexRoute =
                 .exactOptional()
                 .openapi({
                   description:
-                    "The name of the repo⚠️ If not set to the correct values, CI jobs may not trigger and the branch link from the dbt Cloud IDE may not work.For example, if the remote URL is 'git://github.com/your_org/your_repo_name.git',the correct full_name is 'your_org/your_repo_name'.",
+                    "(Deprecated) The name of the repo. The returned value is computed from the remote URL, for example 'your_org/your_repo_name' for 'git://github.com/your_org/your_repo_name.git'.",
                 }),
               remote_backend: RemoteBackendEnumSchema.exactOptional().openapi({
                 description:
@@ -28385,7 +31805,7 @@ export const postApiV3AccountsAccountIdProjectsProjectIdRepositoriesIdIndexRoute
                 .exactOptional()
                 .openapi({
                   description:
-                    "The name of the repo⚠️ If not set to the correct values, CI jobs may not trigger and the branch link from the dbt Cloud IDE may not work.For example, if the remote URL is 'git://github.com/your_org/your_repo_name.git',the correct full_name is 'your_org/your_repo_name'.",
+                    "(Deprecated) The name of the repo. The returned value is computed from the remote URL, for example 'your_org/your_repo_name' for 'git://github.com/your_org/your_repo_name.git'.",
                 }),
               remote_backend: RemoteBackendEnumSchema.exactOptional().openapi({
                 description:
@@ -28521,7 +31941,7 @@ export const postApiV3AccountsAccountIdProjectsProjectIdRepositoriesIdIndexRoute
                 .exactOptional()
                 .openapi({
                   description:
-                    "The name of the repo⚠️ If not set to the correct values, CI jobs may not trigger and the branch link from the dbt Cloud IDE may not work.For example, if the remote URL is 'git://github.com/your_org/your_repo_name.git',the correct full_name is 'your_org/your_repo_name'.",
+                    "(Deprecated) The name of the repo. The returned value is computed from the remote URL, for example 'your_org/your_repo_name' for 'git://github.com/your_org/your_repo_name.git'.",
                 }),
               remote_backend: RemoteBackendEnumSchema.exactOptional().openapi({
                 description:
@@ -30701,7 +34121,7 @@ export const getApiV3AccountsAccountIdUsersIndexRoute = createRoute({
             name: 'pk__in',
             schema: { type: 'string' },
             description:
-              'Filter by primary keys (ids), as serialized JSON, e.g., [1,2,3]. Overrides "pk".',
+              'Filter by primary keys (ids), as serialized JSON, e.g., [1,2,3]. Combined with "pk", only ids in both match.',
             required: false,
           },
         }),
@@ -30896,9 +34316,69 @@ export const postApiV3AccountsAccountIdUsersUserIdAccountApikeysIndexRoute = cre
     }),
     body: {
       content: {
-        'application/json': { schema: AccountScopedPATRequestRequestSchema },
-        'application/x-www-form-urlencoded': { schema: AccountScopedPATRequestRequestSchema },
-        'multipart/form-data': { schema: AccountScopedPATRequestRequestSchema },
+        'application/json': { schema: CreateAccountScopedPATBodyRequestSchema },
+        'application/x-www-form-urlencoded': {
+          schema: z
+            .object({
+              name: z.string().min(1).openapi({ title: 'Name' }),
+              type: z
+                .preprocess(
+                  (val) =>
+                    typeof val === 'string' &&
+                    /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+                    (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+                      ? Number(val)
+                      : val,
+                  CreateAccountScopedPATBodyTypeEnumSchema,
+                )
+                .exactOptional()
+                .openapi({ title: 'Type' }),
+              expires_at: z.iso
+                .datetime({ offset: true })
+                .exactOptional()
+                .openapi({
+                  title: 'Expires At',
+                  description:
+                    'When the token stops authenticating, ISO 8601 with a timezone offset. Omit for no expiry.',
+                }),
+            })
+            .openapi({
+              title: 'CreateAccountScopedPATBody',
+              description: 'Request body for creating an account-scoped personal access token.',
+              required: ['name'],
+            }),
+        },
+        'multipart/form-data': {
+          schema: z
+            .object({
+              name: z.string().min(1).openapi({ title: 'Name' }),
+              type: z
+                .preprocess(
+                  (val) =>
+                    typeof val === 'string' &&
+                    /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+                    (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+                      ? Number(val)
+                      : val,
+                  CreateAccountScopedPATBodyTypeEnumSchema,
+                )
+                .exactOptional()
+                .openapi({ title: 'Type' }),
+              expires_at: z.iso
+                .datetime({ offset: true })
+                .exactOptional()
+                .openapi({
+                  title: 'Expires At',
+                  description:
+                    'When the token stops authenticating, ISO 8601 with a timezone offset. Omit for no expiry.',
+                }),
+            })
+            .openapi({
+              title: 'CreateAccountScopedPATBody',
+              description: 'Request body for creating an account-scoped personal access token.',
+              required: ['name'],
+            }),
+        },
       },
       required: true,
     },

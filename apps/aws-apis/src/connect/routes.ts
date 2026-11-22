@@ -1,29 +1,134 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const NextToken2500Schema = z.string().min(1).max(2500).openapi('NextToken2500')
+
+const DimensionsV2ValueSchema = z.string().openapi('DimensionsV2Value')
+
+const DimensionsV2MapSchema = z
+  .record(z.string(), DimensionsV2ValueSchema)
+  .openapi('DimensionsV2Map')
+
+const MetricNameV2Schema = z.string().openapi('MetricNameV2')
+
+const ResourceArnOrIdSchema = z.string().min(1).max(250).openapi('ResourceArnOrId')
+
+const ThresholdValueSchema = z.float64().openapi('ThresholdValue')
+
+const ThresholdV2Schema = z
+  .object({
+    Comparison: ResourceArnOrIdSchema.exactOptional().openapi({
+      description: 'The type of comparison. Only "less than" (LT) comparisons are supported.',
+    }),
+    ThresholdValue: ThresholdValueSchema.exactOptional().openapi({
+      description: 'The threshold value to compare.',
+    }),
+  })
+  .openapi({
+    description: 'Contains information about the threshold for service level metrics.',
+    required: [],
+  })
+  .openapi('ThresholdV2')
+
+const ThresholdCollectionsSchema = z.array(ThresholdV2Schema).max(1).openapi('ThresholdCollections')
+
+const StringSchema = z.string().openapi('String')
+
+const MetricFilterValueListSchema = z
+  .array(StringSchema)
+  .min(1)
+  .max(10)
+  .openapi('MetricFilterValueList')
+
+const MetricFilterV2Schema = z
+  .object({
+    MetricFilterKey: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The key to use for filtering data. </p> <p>Valid metric filter keys: <code>INITIATION_METHOD</code>, <code>DISCONNECT_REASON</code>. These are the same values as the <code>InitiationMethod</code> and <code>DisconnectReason</code> in the contact record. For more information, see <a href="https://docs.aws.amazon.com/connect/latest/adminguide/ctr-data-model.html#ctr-ContactTraceRecord">ContactTraceRecord</a> in the <i>Amazon Connect Administrator\'s Guide</i>. </p>',
+    }),
+    MetricFilterValues: MetricFilterValueListSchema.exactOptional().openapi({
+      description:
+        '<p>The values to use for filtering data. </p> <p>Valid metric filter values for <code>INITIATION_METHOD</code>: <code>INBOUND</code> | <code>OUTBOUND</code> | <code>TRANSFER</code> | <code>QUEUE_TRANSFER</code> | <code>CALLBACK</code> | <code>API</code> </p> <p>Valid metric filter values for <code>DISCONNECT_REASON</code>: <code>CUSTOMER_DISCONNECT</code> | <code>AGENT_DISCONNECT</code> | <code>THIRD_PARTY_DISCONNECT</code> | <code>TELECOM_PROBLEM</code> | <code>BARGED</code> | <code>CONTACT_FLOW_DISCONNECT</code> | <code>OTHER</code> | <code>EXPIRED</code> | <code>API</code> </p>',
+    }),
+  })
+  .openapi({
+    description:
+      'Contains information about the filter used when retrieving metrics. <code>MetricFiltersV2</code> can be used on the following metrics: <code>AVG_AGENT_CONNECTING_TIME</code>, <code>CONTACTS_CREATED</code>, <code>CONTACTS_HANDLED</code>, <code>SUM_CONTACTS_DISCONNECTED</code>.',
+    required: [],
+  })
+  .openapi('MetricFilterV2')
+
+const MetricFiltersV2ListSchema = z
+  .array(MetricFilterV2Schema)
+  .max(2)
+  .openapi('MetricFiltersV2List')
+
+const MetricV2Schema = z
+  .object({
+    Name: MetricNameV2Schema.exactOptional().openapi({ description: 'The name of the metric.' }),
+    Threshold: ThresholdCollectionsSchema.exactOptional().openapi({
+      description: 'Contains information about the threshold for service level metrics.',
+    }),
+    MetricFilters: MetricFiltersV2ListSchema.exactOptional().openapi({
+      description: 'Contains the filters to be used when returning data.',
+    }),
+  })
+  .openapi({ description: 'Contains information about the metric.', required: [] })
+  .openapi('MetricV2')
+
+const ValueSchema = z.float64().openapi('Value')
+
+const MetricDataV2Schema = z
+  .object({
+    Metric: MetricV2Schema.exactOptional().openapi({
+      description: 'The metric name, thresholds, and metric filters of the returned metric.',
+    }),
+    Value: ValueSchema.exactOptional().openapi({
+      description: 'The corresponding value of the metric returned in the response.',
+    }),
+  })
+  .openapi({ description: 'Contains the name, thresholds, and metric filters.', required: [] })
+  .openapi('MetricDataV2')
+
+const MetricDataCollectionsV2Schema = z.array(MetricDataV2Schema).openapi('MetricDataCollectionsV2')
+
+const MetricResultV2Schema = z
+  .object({
+    Dimensions: DimensionsV2MapSchema.exactOptional().openapi({
+      description: 'The dimension for the metrics.',
+    }),
+    Collections: MetricDataCollectionsV2Schema.exactOptional().openapi({
+      description: 'The set of metrics.',
+    }),
+  })
+  .openapi({ description: 'Contains information about the metric results.', required: [] })
+  .openapi('MetricResultV2')
+
+type MetricResultsV2Type = z.infer<typeof MetricResultV2Schema>[]
+
+const MetricResultsV2Schema: z.ZodType<MetricResultsV2Type> = z
+  .array(MetricResultV2Schema)
+  .openapi('MetricResultsV2')
+
+type GetMetricDataV2ResponseType = {
+  NextToken?: z.infer<typeof NextToken2500Schema> & unknown
+  MetricResults?: z.infer<typeof MetricResultsV2Schema> & unknown
+}
+
 const QueueSearchCriteriaSchema: z.ZodType<QueueSearchCriteriaType> = z
   .lazy(() =>
     z
       .object({
-        OrConditions: QueueSearchConditionListSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'A list of conditions which would be applied together with an OR condition.',
-            }),
-        ).exactOptional(),
-        AndConditions: QueueSearchConditionListSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'A list of conditions which would be applied together with an AND condition.',
-            }),
-        ).exactOptional(),
+        OrConditions: QueueSearchConditionListSchema.exactOptional().openapi({
+          description: 'A list of conditions which would be applied together with an OR condition.',
+        }),
+        AndConditions: QueueSearchConditionListSchema.exactOptional().openapi({
+          description:
+            'A list of conditions which would be applied together with an AND condition.',
+        }),
         StringCondition: StringConditionSchema.exactOptional(),
-        QueueTypeCondition: SearchableQueueTypeSchema.and(
-          z.any().openapi({ description: 'The type of queue.' }),
-        ).exactOptional(),
+        QueueTypeCondition: SearchableQueueTypeSchema.exactOptional().openapi({
+          description: 'The type of queue.',
+        }),
       })
       .openapi({
         description:
@@ -35,8 +140,6 @@ const QueueSearchCriteriaSchema: z.ZodType<QueueSearchCriteriaType> = z
 
 type QueueSearchConditionListType = z.infer<typeof QueueSearchCriteriaSchema>[]
 
-const StringSchema = z.string().openapi('String')
-
 type ComparisonType = 'LT'
 
 const StringComparisonTypeSchema = z
@@ -44,9 +147,9 @@ const StringComparisonTypeSchema = z
   .openapi('StringComparisonType')
 
 type StringConditionType = {
-  FieldName?: z.infer<typeof StringSchema> & { [key: string]: unknown }
-  Value?: z.infer<typeof StringSchema> & { [key: string]: unknown }
-  ComparisonType?: z.infer<typeof StringComparisonTypeSchema> & { [key: string]: unknown }
+  FieldName?: z.infer<typeof StringSchema> & unknown
+  Value?: z.infer<typeof StringSchema> & unknown
+  ComparisonType?: z.infer<typeof StringComparisonTypeSchema> & unknown
 }
 
 type SearchableQueueTypeType = 'STANDARD'
@@ -55,22 +158,13 @@ const RoutingProfileSearchCriteriaSchema: z.ZodType<RoutingProfileSearchCriteria
   .lazy(() =>
     z
       .object({
-        OrConditions: RoutingProfileSearchConditionListSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'A list of conditions which would be applied together with an OR condition.',
-            }),
-        ).exactOptional(),
-        AndConditions: RoutingProfileSearchConditionListSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'A list of conditions which would be applied together with an AND condition.',
-            }),
-        ).exactOptional(),
+        OrConditions: RoutingProfileSearchConditionListSchema.exactOptional().openapi({
+          description: 'A list of conditions which would be applied together with an OR condition.',
+        }),
+        AndConditions: RoutingProfileSearchConditionListSchema.exactOptional().openapi({
+          description:
+            'A list of conditions which would be applied together with an AND condition.',
+        }),
         StringCondition: StringConditionSchema.exactOptional(),
       })
       .openapi({
@@ -87,22 +181,13 @@ const SecurityProfileSearchCriteriaSchema: z.ZodType<SecurityProfileSearchCriter
   .lazy(() =>
     z
       .object({
-        OrConditions: SecurityProfileSearchConditionListSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'A list of conditions which would be applied together with an OR condition.',
-            }),
-        ).exactOptional(),
-        AndConditions: SecurityProfileSearchConditionListSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'A list of conditions which would be applied together with an AND condition.',
-            }),
-        ).exactOptional(),
+        OrConditions: SecurityProfileSearchConditionListSchema.exactOptional().openapi({
+          description: 'A list of conditions which would be applied together with an OR condition.',
+        }),
+        AndConditions: SecurityProfileSearchConditionListSchema.exactOptional().openapi({
+          description:
+            'A list of conditions which would be applied together with an AND condition.',
+        }),
         StringCondition: StringConditionSchema.exactOptional(),
       })
       .openapi({
@@ -119,37 +204,21 @@ const UserSearchCriteriaSchema: z.ZodType<UserSearchCriteriaType> = z
   .lazy(() =>
     z
       .object({
-        OrConditions: UserSearchConditionListSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'A list of conditions which would be applied together with an <code>OR</code> condition.',
-            }),
-        ).exactOptional(),
-        AndConditions: UserSearchConditionListSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'A list of conditions which would be applied together with an <code>AND</code> condition. ',
-            }),
-        ).exactOptional(),
-        StringCondition: StringConditionSchema.and(
-          z
-            .any()
-            .openapi({
-              description: 'A leaf node condition which can be used to specify a string condition.',
-            }),
-        ).exactOptional(),
-        HierarchyGroupCondition: HierarchyGroupConditionSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'A leaf node condition which can be used to specify a hierarchy group condition.',
-            }),
-        ).exactOptional(),
+        OrConditions: UserSearchConditionListSchema.exactOptional().openapi({
+          description:
+            'A list of conditions which would be applied together with an <code>OR</code> condition.',
+        }),
+        AndConditions: UserSearchConditionListSchema.exactOptional().openapi({
+          description:
+            'A list of conditions which would be applied together with an <code>AND</code> condition. ',
+        }),
+        StringCondition: StringConditionSchema.exactOptional().openapi({
+          description: 'A leaf node condition which can be used to specify a string condition.',
+        }),
+        HierarchyGroupCondition: HierarchyGroupConditionSchema.exactOptional().openapi({
+          description:
+            'A leaf node condition which can be used to specify a hierarchy group condition.',
+        }),
       })
       .openapi({
         description:
@@ -166,139 +235,8 @@ const HierarchyGroupMatchTypeSchema = z
   .openapi('HierarchyGroupMatchType')
 
 type HierarchyGroupConditionType = {
-  Value?: z.infer<typeof StringSchema> & { [key: string]: unknown }
-  HierarchyGroupMatchType?: z.infer<typeof HierarchyGroupMatchTypeSchema> & {
-    [key: string]: unknown
-  }
-}
-
-const ARNSchema = z.string().openapi('ARN')
-
-const QuickConnectIdSchema = z.string().openapi('QuickConnectId')
-
-const QuickConnectNameSchema = z.string().min(1).max(127).openapi('QuickConnectName')
-
-const QuickConnectDescriptionSchema = z.string().min(1).max(250).openapi('QuickConnectDescription')
-
-const QuickConnectConfigSchema: z.ZodType<QuickConnectConfigType> = z
-  .lazy(() =>
-    z
-      .object({
-        QuickConnectType: QuickConnectTypeSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'The type of quick connect. In the Amazon Connect console, when you create a quick connect, you are prompted to assign one of the following types: Agent (USER), External (PHONE_NUMBER), or Queue (QUEUE). ',
-            }),
-        ),
-        UserConfig: UserQuickConnectConfigSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'The user configuration. This is required only if QuickConnectType is USER.',
-            }),
-        ).exactOptional(),
-        QueueConfig: QueueQuickConnectConfigSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'The queue configuration. This is required only if QuickConnectType is QUEUE.',
-            }),
-        ).exactOptional(),
-        PhoneConfig: PhoneNumberQuickConnectConfigSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'The phone configuration. This is required only if QuickConnectType is PHONE_NUMBER.',
-            }),
-        ).exactOptional(),
-      })
-      .openapi({
-        required: ['QuickConnectType'],
-        description: 'Contains configuration settings for a quick connect.',
-      }),
-  )
-  .openapi('QuickConnectConfig')
-
-const TagValueSchema = z.string().max(256).openapi('TagValue')
-
-const TagMapSchema = z
-  .record(z.string(), TagValueSchema)
-  .refine((val) => Object.keys(val).length >= 1)
-  .refine((val) => Object.keys(val).length <= 50)
-  .openapi('TagMap')
-
-type QuickConnectType = {
-  QuickConnectARN?: z.infer<typeof ARNSchema> & { [key: string]: unknown }
-  QuickConnectId?: z.infer<typeof QuickConnectIdSchema> & { [key: string]: unknown }
-  Name?: z.infer<typeof QuickConnectNameSchema> & { [key: string]: unknown }
-  Description?: z.infer<typeof QuickConnectDescriptionSchema> & { [key: string]: unknown }
-  QuickConnectConfig?: z.infer<typeof QuickConnectConfigSchema> & { [key: string]: unknown }
-  Tags?: z.infer<typeof TagMapSchema> & { [key: string]: unknown }
-}
-
-const QuickConnectTypeSchema = z.enum(['USER', 'QUEUE', 'PHONE_NUMBER']).openapi('QuickConnectType')
-
-const UserIdSchema = z.string().openapi('UserId')
-
-const ContactFlowIdSchema = z.string().max(500).openapi('ContactFlowId')
-
-const UserQuickConnectConfigSchema = z
-  .object({
-    UserId: UserIdSchema.and(z.any().openapi({ description: 'The identifier of the user.' })),
-    ContactFlowId: ContactFlowIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the flow.' }),
-    ),
-  })
-  .openapi({
-    required: ['UserId', 'ContactFlowId'],
-    description:
-      'Contains information about the quick connect configuration settings for a user. The contact flow must be of type Transfer to Agent.',
-  })
-  .openapi('UserQuickConnectConfig')
-
-const QueueIdSchema = z.string().openapi('QueueId')
-
-const QueueQuickConnectConfigSchema = z
-  .object({
-    QueueId: QueueIdSchema.and(z.any().openapi({ description: 'The identifier for the queue.' })),
-    ContactFlowId: ContactFlowIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the flow.' }),
-    ),
-  })
-  .openapi({
-    required: ['QueueId', 'ContactFlowId'],
-    description:
-      'Contains information about a queue for a quick connect. The flow must be of type Transfer to Queue.',
-  })
-  .openapi('QueueQuickConnectConfig')
-
-const PhoneNumberSchema = z
-  .string()
-  .regex(/\\+[1-9]\\d{1,14}$/)
-  .openapi('PhoneNumber')
-
-const PhoneNumberQuickConnectConfigSchema = z
-  .object({
-    PhoneNumber: PhoneNumberSchema.and(
-      z.any().openapi({ description: 'The phone number in E.164 format.' }),
-    ),
-  })
-  .openapi({
-    required: ['PhoneNumber'],
-    description: 'Contains information about a phone number for a quick connect.',
-  })
-  .openapi('PhoneNumberQuickConnectConfig')
-
-type QuickConnectConfigType = {
-  QuickConnectType: z.infer<typeof QuickConnectTypeSchema> & { [key: string]: unknown }
-  UserConfig?: z.infer<typeof UserQuickConnectConfigSchema> & { [key: string]: unknown }
-  QueueConfig?: z.infer<typeof QueueQuickConnectConfigSchema> & { [key: string]: unknown }
-  PhoneConfig?: z.infer<typeof PhoneNumberQuickConnectConfigSchema> & { [key: string]: unknown }
+  Value?: z.infer<typeof StringSchema> & unknown
+  HierarchyGroupMatchType?: z.infer<typeof HierarchyGroupMatchTypeSchema> & unknown
 }
 
 const QueueSearchConditionListSchema: z.ZodType<QueueSearchConditionListType> = z
@@ -307,19 +245,13 @@ const QueueSearchConditionListSchema: z.ZodType<QueueSearchConditionListType> = 
 
 const StringConditionSchema: z.ZodType<StringConditionType> = z
   .object({
-    FieldName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the field in the string condition.' }),
-    ).exactOptional(),
-    Value: StringSchema.and(
-      z.any().openapi({ description: 'The value of the string.' }),
-    ).exactOptional(),
-    ComparisonType: StringComparisonTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The type of comparison to be made when evaluating the string condition.',
-        }),
-    ).exactOptional(),
+    FieldName: StringSchema.exactOptional().openapi({
+      description: 'The name of the field in the string condition.',
+    }),
+    Value: StringSchema.exactOptional().openapi({ description: 'The value of the string.' }),
+    ComparisonType: StringComparisonTypeSchema.exactOptional().openapi({
+      description: 'The type of comparison to be made when evaluating the string condition.',
+    }),
   })
   .openapi({
     description:
@@ -333,10 +265,10 @@ const SearchableQueueTypeSchema: z.ZodType<SearchableQueueTypeType> = z
   .openapi('SearchableQueueType')
 
 type QueueSearchCriteriaType = {
-  OrConditions?: z.infer<typeof QueueSearchConditionListSchema> & { [key: string]: unknown }
-  AndConditions?: z.infer<typeof QueueSearchConditionListSchema> & { [key: string]: unknown }
+  OrConditions?: z.infer<typeof QueueSearchConditionListSchema> & unknown
+  AndConditions?: z.infer<typeof QueueSearchConditionListSchema> & unknown
   StringCondition?: z.infer<typeof StringConditionSchema>
-  QueueTypeCondition?: z.infer<typeof SearchableQueueTypeSchema> & { [key: string]: unknown }
+  QueueTypeCondition?: z.infer<typeof SearchableQueueTypeSchema> & unknown
 }
 
 const RoutingProfileSearchConditionListSchema: z.ZodType<RoutingProfileSearchConditionListType> = z
@@ -344,12 +276,8 @@ const RoutingProfileSearchConditionListSchema: z.ZodType<RoutingProfileSearchCon
   .openapi('RoutingProfileSearchConditionList')
 
 type RoutingProfileSearchCriteriaType = {
-  OrConditions?: z.infer<typeof RoutingProfileSearchConditionListSchema> & {
-    [key: string]: unknown
-  }
-  AndConditions?: z.infer<typeof RoutingProfileSearchConditionListSchema> & {
-    [key: string]: unknown
-  }
+  OrConditions?: z.infer<typeof RoutingProfileSearchConditionListSchema> & unknown
+  AndConditions?: z.infer<typeof RoutingProfileSearchConditionListSchema> & unknown
   StringCondition?: z.infer<typeof StringConditionSchema>
 }
 
@@ -359,12 +287,8 @@ const SecurityProfileSearchConditionListSchema: z.ZodType<SecurityProfileSearchC
     .openapi('SecurityProfileSearchConditionList')
 
 type SecurityProfileSearchCriteriaType = {
-  OrConditions?: z.infer<typeof SecurityProfileSearchConditionListSchema> & {
-    [key: string]: unknown
-  }
-  AndConditions?: z.infer<typeof SecurityProfileSearchConditionListSchema> & {
-    [key: string]: unknown
-  }
+  OrConditions?: z.infer<typeof SecurityProfileSearchConditionListSchema> & unknown
+  AndConditions?: z.infer<typeof SecurityProfileSearchConditionListSchema> & unknown
   StringCondition?: z.infer<typeof StringConditionSchema>
 }
 
@@ -374,12 +298,12 @@ const UserSearchConditionListSchema: z.ZodType<UserSearchConditionListType> = z
 
 const HierarchyGroupConditionSchema: z.ZodType<HierarchyGroupConditionType> = z
   .object({
-    Value: StringSchema.and(
-      z.any().openapi({ description: 'The value in the hierarchy group condition.' }),
-    ).exactOptional(),
-    HierarchyGroupMatchType: HierarchyGroupMatchTypeSchema.and(
-      z.any().openapi({ description: 'The type of hierarchy group match.' }),
-    ).exactOptional(),
+    Value: StringSchema.exactOptional().openapi({
+      description: 'The value in the hierarchy group condition.',
+    }),
+    HierarchyGroupMatchType: HierarchyGroupMatchTypeSchema.exactOptional().openapi({
+      description: 'The type of hierarchy group match.',
+    }),
   })
   .openapi({
     description: 'A leaf node condition which can be used to specify a hierarchy group condition.',
@@ -388,12 +312,10 @@ const HierarchyGroupConditionSchema: z.ZodType<HierarchyGroupConditionType> = z
   .openapi('HierarchyGroupCondition')
 
 type UserSearchCriteriaType = {
-  OrConditions?: z.infer<typeof UserSearchConditionListSchema> & { [key: string]: unknown }
-  AndConditions?: z.infer<typeof UserSearchConditionListSchema> & { [key: string]: unknown }
-  StringCondition?: z.infer<typeof StringConditionSchema> & { [key: string]: unknown }
-  HierarchyGroupCondition?: z.infer<typeof HierarchyGroupConditionSchema> & {
-    [key: string]: unknown
-  }
+  OrConditions?: z.infer<typeof UserSearchConditionListSchema> & unknown
+  AndConditions?: z.infer<typeof UserSearchConditionListSchema> & unknown
+  StringCondition?: z.infer<typeof StringConditionSchema> & unknown
+  HierarchyGroupCondition?: z.infer<typeof HierarchyGroupConditionSchema> & unknown
 }
 
 const ResourceNotFoundExceptionSchema = z.any().openapi('ResourceNotFoundException')
@@ -419,7 +341,7 @@ const AliasArnSchema = z.string().min(1).max(100).openapi('AliasArn')
 const LimitExceededExceptionSchema = z.any().openapi('LimitExceededException')
 
 const AssociateDefaultVocabularyResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('AssociateDefaultVocabularyResponse')
 
 const AccessDeniedExceptionSchema = z.any().openapi('AccessDeniedException')
@@ -428,14 +350,10 @@ const AssociationIdSchema = z.string().min(1).max(100).openapi('AssociationId')
 
 const AssociateInstanceStorageConfigResponseSchema = z
   .object({
-    AssociationId: AssociationIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The existing association identifier that uniquely identifies the resource type and storage config for the given instance ID.',
-        }),
-    ).exactOptional(),
+    AssociationId: AssociationIdSchema.exactOptional().openapi({
+      description:
+        'The existing association identifier that uniquely identifies the resource type and storage config for the given instance ID.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('AssociateInstanceStorageConfigResponse')
@@ -454,28 +372,22 @@ const KeyIdSchema = z.string().min(1).max(128).openapi('KeyId')
 
 const EncryptionConfigSchema = z
   .object({
-    EncryptionType: EncryptionTypeSchema.and(
-      z.any().openapi({ description: 'The type of encryption.' }),
-    ),
-    KeyId: KeyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The full ARN of the encryption key. </p> <note> <p>Be sure to provide the full ARN of the encryption key, not just the ID.</p> <p>Amazon Connect supports only KMS keys with the default key spec of <a href="https://docs.aws.amazon.com/kms/latest/developerguide/asymmetric-key-specs.html#key-spec-symmetric-default"> <code>SYMMETRIC_DEFAULT</code> </a>. </p> </note>',
-        }),
-    ),
+    EncryptionType: EncryptionTypeSchema.openapi({ description: 'The type of encryption.' }),
+    KeyId: KeyIdSchema.openapi({
+      description:
+        '<p>The full ARN of the encryption key. </p> <note> <p>Be sure to provide the full ARN of the encryption key, not just the ID.</p> <p>Amazon Connect supports only KMS keys with the default key spec of <a href="https://docs.aws.amazon.com/kms/latest/developerguide/asymmetric-key-specs.html#key-spec-symmetric-default"> <code>SYMMETRIC_DEFAULT</code> </a>. </p> </note>',
+    }),
   })
   .openapi({ required: ['EncryptionType', 'KeyId'], description: 'The encryption configuration.' })
   .openapi('EncryptionConfig')
 
 const S3ConfigSchema = z
   .object({
-    BucketName: BucketNameSchema.and(z.any().openapi({ description: 'The S3 bucket name.' })),
-    BucketPrefix: PrefixSchema.and(z.any().openapi({ description: 'The S3 bucket prefix.' })),
-    EncryptionConfig: EncryptionConfigSchema.and(
-      z.any().openapi({ description: 'The Amazon S3 encryption configuration.' }),
-    ).exactOptional(),
+    BucketName: BucketNameSchema.openapi({ description: 'The S3 bucket name.' }),
+    BucketPrefix: PrefixSchema.openapi({ description: 'The S3 bucket prefix.' }),
+    EncryptionConfig: EncryptionConfigSchema.exactOptional().openapi({
+      description: 'The Amazon S3 encryption configuration.',
+    }),
   })
   .openapi({
     required: ['BucketName', 'BucketPrefix'],
@@ -487,18 +399,14 @@ const HoursSchema = z.int().min(0).max(87600).openapi('Hours')
 
 const KinesisVideoStreamConfigSchema = z
   .object({
-    Prefix: PrefixSchema.and(z.any().openapi({ description: 'The prefix of the video stream.' })),
-    RetentionPeriodHours: HoursSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The number of hours data is retained in the stream. Kinesis Video Streams retains the data in a data store that is associated with the stream.</p> <p>The default value is 0, indicating that the stream does not persist data.</p>',
-        }),
-    ),
-    EncryptionConfig: EncryptionConfigSchema.and(
-      z.any().openapi({ description: 'The encryption configuration.' }),
-    ),
+    Prefix: PrefixSchema.openapi({ description: 'The prefix of the video stream.' }),
+    RetentionPeriodHours: HoursSchema.openapi({
+      description:
+        '<p>The number of hours data is retained in the stream. Kinesis Video Streams retains the data in a data store that is associated with the stream.</p> <p>The default value is 0, indicating that the stream does not persist data.</p>',
+    }),
+    EncryptionConfig: EncryptionConfigSchema.openapi({
+      description: 'The encryption configuration.',
+    }),
   })
   .openapi({
     required: ['Prefix', 'RetentionPeriodHours', 'EncryptionConfig'],
@@ -506,11 +414,13 @@ const KinesisVideoStreamConfigSchema = z
   })
   .openapi('KinesisVideoStreamConfig')
 
+const ARNSchema = z.string().openapi('ARN')
+
 const KinesisStreamConfigSchema = z
   .object({
-    StreamArn: ARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the data stream.' }),
-    ),
+    StreamArn: ARNSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the data stream.',
+    }),
   })
   .openapi({
     required: ['StreamArn'],
@@ -520,9 +430,9 @@ const KinesisStreamConfigSchema = z
 
 const KinesisFirehoseConfigSchema = z
   .object({
-    FirehoseArn: ARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the delivery stream.' }),
-    ),
+    FirehoseArn: ARNSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the delivery stream.',
+    }),
   })
   .openapi({
     required: ['FirehoseArn'],
@@ -530,19 +440,19 @@ const KinesisFirehoseConfigSchema = z
   })
   .openapi('KinesisFirehoseConfig')
 
+const QuickConnectIdSchema = z.string().openapi('QuickConnectId')
+
+const QueueIdSchema = z.string().openapi('QueueId')
+
 const ChannelSchema = z.enum(['VOICE', 'CHAT', 'TASK']).openapi('Channel')
 
 const RoutingProfileQueueReferenceSchema = z
   .object({
-    QueueId: QueueIdSchema.and(z.any().openapi({ description: 'The identifier for the queue.' })),
-    Channel: ChannelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The channels agents can handle in the Contact Control Panel (CCP) for this routing profile.',
-        }),
-    ),
+    QueueId: QueueIdSchema.openapi({ description: 'The identifier for the queue.' }),
+    Channel: ChannelSchema.openapi({
+      description:
+        'The channels agents can handle in the Contact Control Panel (CCP) for this routing profile.',
+    }),
   })
   .openapi({
     required: ['QueueId', 'Channel'],
@@ -556,25 +466,17 @@ const DelaySchema = z.int().min(0).max(9999).openapi('Delay')
 
 const RoutingProfileQueueConfigSchema = z
   .object({
-    QueueReference: RoutingProfileQueueReferenceSchema.and(
-      z.any().openapi({ description: 'Contains information about a queue resource.' }),
-    ),
-    Priority: PrioritySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The order in which contacts are to be handled for the queue. For more information, see <a href="https://docs.aws.amazon.com/connect/latest/adminguide/concepts-routing-profiles-priority.html">Queues: priority and delay</a>.',
-        }),
-    ),
-    Delay: DelaySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The delay, in seconds, a contact should be in the queue before they are routed to an available agent. For more information, see <a href="https://docs.aws.amazon.com/connect/latest/adminguide/concepts-routing-profiles-priority.html">Queues: priority and delay</a> in the <i>Amazon Connect Administrator Guide</i>.',
-        }),
-    ),
+    QueueReference: RoutingProfileQueueReferenceSchema.openapi({
+      description: 'Contains information about a queue resource.',
+    }),
+    Priority: PrioritySchema.openapi({
+      description:
+        'The order in which contacts are to be handled for the queue. For more information, see <a href="https://docs.aws.amazon.com/connect/latest/adminguide/concepts-routing-profiles-priority.html">Queues: priority and delay</a>.',
+    }),
+    Delay: DelaySchema.openapi({
+      description:
+        'The delay, in seconds, a contact should be in the queue before they are routed to an available agent. For more information, see <a href="https://docs.aws.amazon.com/connect/latest/adminguide/concepts-routing-profiles-priority.html">Queues: priority and delay</a> in the <i>Amazon Connect Administrator Guide</i>.',
+    }),
   })
   .openapi({
     required: ['QueueReference', 'Priority', 'Delay'],
@@ -585,14 +487,10 @@ const RoutingProfileQueueConfigSchema = z
 
 const AssociateSecurityKeyResponseSchema = z
   .object({
-    AssociationId: AssociationIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The existing association identifier that uniquely identifies the resource type and storage config for the given instance ID.',
-        }),
-    ).exactOptional(),
+    AssociationId: AssociationIdSchema.exactOptional().openapi({
+      description:
+        'The existing association identifier that uniquely identifies the resource type and storage config for the given instance ID.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('AssociateSecurityKeyResponse')
@@ -601,15 +499,17 @@ const PhoneNumberIdSchema = z.string().openapi('PhoneNumberId')
 
 const ClaimPhoneNumberResponseSchema = z
   .object({
-    PhoneNumberId: PhoneNumberIdSchema.and(
-      z.any().openapi({ description: 'A unique identifier for the phone number.' }),
-    ).exactOptional(),
-    PhoneNumberArn: ARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the phone number.' }),
-    ).exactOptional(),
+    PhoneNumberId: PhoneNumberIdSchema.exactOptional().openapi({
+      description: 'A unique identifier for the phone number.',
+    }),
+    PhoneNumberArn: ARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the phone number.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ClaimPhoneNumberResponse')
+
+const TagValueSchema = z.string().max(256).openapi('TagValue')
 
 const IdempotencyExceptionSchema = z.any().openapi('IdempotencyException')
 
@@ -617,26 +517,28 @@ const AgentStatusIdSchema = z.string().openapi('AgentStatusId')
 
 const CreateAgentStatusResponseSchema = z
   .object({
-    AgentStatusARN: ARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the agent status.' }),
-    ).exactOptional(),
-    AgentStatusId: AgentStatusIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the agent status.' }),
-    ).exactOptional(),
+    AgentStatusARN: ARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the agent status.',
+    }),
+    AgentStatusId: AgentStatusIdSchema.exactOptional().openapi({
+      description: 'The identifier of the agent status.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateAgentStatusResponse')
 
 const DuplicateResourceExceptionSchema = z.any().openapi('DuplicateResourceException')
 
+const ContactFlowIdSchema = z.string().max(500).openapi('ContactFlowId')
+
 const CreateContactFlowResponseSchema = z
   .object({
-    ContactFlowId: ContactFlowIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the flow.' }),
-    ).exactOptional(),
-    ContactFlowArn: ARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the flow.' }),
-    ).exactOptional(),
+    ContactFlowId: ContactFlowIdSchema.exactOptional().openapi({
+      description: 'The identifier of the flow.',
+    }),
+    ContactFlowArn: ARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the flow.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateContactFlowResponse')
@@ -647,12 +549,12 @@ const ContactFlowModuleIdSchema = z.string().min(1).max(256).openapi('ContactFlo
 
 const CreateContactFlowModuleResponseSchema = z
   .object({
-    Id: ContactFlowModuleIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the flow module.' }),
-    ).exactOptional(),
-    Arn: ARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the flow module.' }),
-    ).exactOptional(),
+    Id: ContactFlowModuleIdSchema.exactOptional().openapi({
+      description: 'The identifier of the flow module.',
+    }),
+    Arn: ARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the flow module.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateContactFlowModuleResponse')
@@ -663,14 +565,12 @@ const HoursOfOperationIdSchema = z.string().openapi('HoursOfOperationId')
 
 const CreateHoursOfOperationResponseSchema = z
   .object({
-    HoursOfOperationId: HoursOfOperationIdSchema.and(
-      z.any().openapi({ description: 'The identifier for the hours of operation.' }),
-    ).exactOptional(),
-    HoursOfOperationArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) for the hours of operation.' }),
-    ).exactOptional(),
+    HoursOfOperationId: HoursOfOperationIdSchema.exactOptional().openapi({
+      description: 'The identifier for the hours of operation.',
+    }),
+    HoursOfOperationArn: ARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) for the hours of operation.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateHoursOfOperationResponse')
@@ -685,8 +585,8 @@ const MinutesLimit60Schema = z.int().min(0).max(59).openapi('MinutesLimit60')
 
 const HoursOfOperationTimeSliceSchema = z
   .object({
-    Hours: Hours24FormatSchema.and(z.any().openapi({ description: 'The hours.' })),
-    Minutes: MinutesLimit60Schema.and(z.any().openapi({ description: 'The minutes.' })),
+    Hours: Hours24FormatSchema.openapi({ description: 'The hours.' }),
+    Minutes: MinutesLimit60Schema.openapi({ description: 'The minutes.' }),
   })
   .openapi({
     required: ['Hours', 'Minutes'],
@@ -696,15 +596,15 @@ const HoursOfOperationTimeSliceSchema = z
 
 const HoursOfOperationConfigSchema = z
   .object({
-    Day: HoursOfOperationDaysSchema.and(
-      z.any().openapi({ description: 'The day that the hours of operation applies to.' }),
-    ),
-    StartTime: HoursOfOperationTimeSliceSchema.and(
-      z.any().openapi({ description: 'The start time that your contact center opens.' }),
-    ),
-    EndTime: HoursOfOperationTimeSliceSchema.and(
-      z.any().openapi({ description: 'The end time that your contact center closes.' }),
-    ),
+    Day: HoursOfOperationDaysSchema.openapi({
+      description: 'The day that the hours of operation applies to.',
+    }),
+    StartTime: HoursOfOperationTimeSliceSchema.openapi({
+      description: 'The start time that your contact center opens.',
+    }),
+    EndTime: HoursOfOperationTimeSliceSchema.openapi({
+      description: 'The end time that your contact center closes.',
+    }),
   })
   .openapi({
     required: ['Day', 'StartTime', 'EndTime'],
@@ -716,12 +616,12 @@ const InstanceIdSchema = z.string().min(1).max(100).openapi('InstanceId')
 
 const CreateInstanceResponseSchema = z
   .object({
-    Id: InstanceIdSchema.and(
-      z.any().openapi({ description: 'The identifier for the instance.' }),
-    ).exactOptional(),
-    Arn: ARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the instance.' }),
-    ).exactOptional(),
+    Id: InstanceIdSchema.exactOptional().openapi({
+      description: 'The identifier for the instance.',
+    }),
+    Arn: ARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the instance.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateInstanceResponse')
@@ -734,12 +634,12 @@ const IntegrationAssociationIdSchema = z
 
 const CreateIntegrationAssociationResponseSchema = z
   .object({
-    IntegrationAssociationId: IntegrationAssociationIdSchema.and(
-      z.any().openapi({ description: 'The identifier for the integration association.' }),
-    ).exactOptional(),
-    IntegrationAssociationArn: ARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) for the association.' }),
-    ).exactOptional(),
+    IntegrationAssociationId: IntegrationAssociationIdSchema.exactOptional().openapi({
+      description: 'The identifier for the integration association.',
+    }),
+    IntegrationAssociationArn: ARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) for the association.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateIntegrationAssociationResponse')
@@ -750,22 +650,14 @@ const ISO8601DatetimeSchema = z.string().openapi('ISO8601Datetime')
 
 const ParticipantTokenCredentialsSchema = z
   .object({
-    ParticipantToken: ParticipantTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token used by the chat participant to call <a href="https://docs.aws.amazon.com/connect-participant/latest/APIReference/API_CreateParticipantConnection.html">CreateParticipantConnection</a>. The participant token is valid for the lifetime of a chat participant. ',
-        }),
-    ).exactOptional(),
-    Expiry: ISO8601DatetimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The expiration of the token. It's specified in ISO 8601 format: yyyy-MM-ddThh:mm:ss.SSSZ. For example, 2019-11-08T02:41:28.172Z.",
-        }),
-    ).exactOptional(),
+    ParticipantToken: ParticipantTokenSchema.exactOptional().openapi({
+      description:
+        'The token used by the chat participant to call <a href="https://docs.aws.amazon.com/connect-participant/latest/APIReference/API_CreateParticipantConnection.html">CreateParticipantConnection</a>. The participant token is valid for the lifetime of a chat participant. ',
+    }),
+    Expiry: ISO8601DatetimeSchema.exactOptional().openapi({
+      description:
+        "The expiration of the token. It's specified in ISO 8601 format: yyyy-MM-ddThh:mm:ss.SSSZ. For example, 2019-11-08T02:41:28.172Z.",
+    }),
   })
   .openapi({ description: 'The credentials used by the participant.', required: [] })
   .openapi('ParticipantTokenCredentials')
@@ -774,22 +666,14 @@ const ParticipantIdSchema = z.string().min(1).max(256).openapi('ParticipantId')
 
 const CreateParticipantResponseSchema = z
   .object({
-    ParticipantCredentials: ParticipantTokenCredentialsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token used by the chat participant to call <code>CreateParticipantConnection</code>. The participant token is valid for the lifetime of a chat participant.',
-        }),
-    ).exactOptional(),
-    ParticipantId: ParticipantIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier for a chat participant. The participantId for a chat participant is the same throughout the chat lifecycle.',
-        }),
-    ).exactOptional(),
+    ParticipantCredentials: ParticipantTokenCredentialsSchema.exactOptional().openapi({
+      description:
+        'The token used by the chat participant to call <code>CreateParticipantConnection</code>. The participant token is valid for the lifetime of a chat participant.',
+    }),
+    ParticipantId: ParticipantIdSchema.exactOptional().openapi({
+      description:
+        'The identifier for a chat participant. The participantId for a chat participant is the same throughout the chat lifecycle.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateParticipantResponse')
@@ -802,12 +686,12 @@ const DisplayNameSchema = z.string().min(1).max(256).openapi('DisplayName')
 
 const CreateQueueResponseSchema = z
   .object({
-    QueueArn: ARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the queue.' }),
-    ).exactOptional(),
-    QueueId: QueueIdSchema.and(
-      z.any().openapi({ description: 'The identifier for the queue.' }),
-    ).exactOptional(),
+    QueueArn: ARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the queue.',
+    }),
+    QueueId: QueueIdSchema.exactOptional().openapi({
+      description: 'The identifier for the queue.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateQueueResponse')
@@ -816,26 +700,69 @@ const OutboundCallerIdNameSchema = z.string().min(1).max(255).openapi('OutboundC
 
 const CreateQuickConnectResponseSchema = z
   .object({
-    QuickConnectARN: ARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) for the quick connect. ' }),
-    ).exactOptional(),
-    QuickConnectId: QuickConnectIdSchema.and(
-      z.any().openapi({ description: 'The identifier for the quick connect. ' }),
-    ).exactOptional(),
+    QuickConnectARN: ARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) for the quick connect. ',
+    }),
+    QuickConnectId: QuickConnectIdSchema.exactOptional().openapi({
+      description: 'The identifier for the quick connect. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateQuickConnectResponse')
+
+const QuickConnectTypeSchema = z.enum(['USER', 'QUEUE', 'PHONE_NUMBER']).openapi('QuickConnectType')
+
+const UserIdSchema = z.string().openapi('UserId')
+
+const UserQuickConnectConfigSchema = z
+  .object({
+    UserId: UserIdSchema.openapi({ description: 'The identifier of the user.' }),
+    ContactFlowId: ContactFlowIdSchema.openapi({ description: 'The identifier of the flow.' }),
+  })
+  .openapi({
+    required: ['UserId', 'ContactFlowId'],
+    description:
+      'Contains information about the quick connect configuration settings for a user. The contact flow must be of type Transfer to Agent.',
+  })
+  .openapi('UserQuickConnectConfig')
+
+const QueueQuickConnectConfigSchema = z
+  .object({
+    QueueId: QueueIdSchema.openapi({ description: 'The identifier for the queue.' }),
+    ContactFlowId: ContactFlowIdSchema.openapi({ description: 'The identifier of the flow.' }),
+  })
+  .openapi({
+    required: ['QueueId', 'ContactFlowId'],
+    description:
+      'Contains information about a queue for a quick connect. The flow must be of type Transfer to Queue.',
+  })
+  .openapi('QueueQuickConnectConfig')
+
+const PhoneNumberSchema = z
+  .string()
+  .regex(/\\+[1-9]\\d{1,14}$/)
+  .openapi('PhoneNumber')
+
+const PhoneNumberQuickConnectConfigSchema = z
+  .object({
+    PhoneNumber: PhoneNumberSchema.openapi({ description: 'The phone number in E.164 format.' }),
+  })
+  .openapi({
+    required: ['PhoneNumber'],
+    description: 'Contains information about a phone number for a quick connect.',
+  })
+  .openapi('PhoneNumberQuickConnectConfig')
 
 const RoutingProfileIdSchema = z.string().openapi('RoutingProfileId')
 
 const CreateRoutingProfileResponseSchema = z
   .object({
-    RoutingProfileArn: ARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the routing profile.' }),
-    ).exactOptional(),
-    RoutingProfileId: RoutingProfileIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the routing profile.' }),
-    ).exactOptional(),
+    RoutingProfileArn: ARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the routing profile.',
+    }),
+    RoutingProfileId: RoutingProfileIdSchema.exactOptional().openapi({
+      description: 'The identifier of the routing profile.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateRoutingProfileResponse')
@@ -848,14 +775,10 @@ const BehaviorTypeSchema = z
 
 const CrossChannelBehaviorSchema = z
   .object({
-    BehaviorType: BehaviorTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the other channels that can be routed to an agent handling their current channel.',
-        }),
-    ),
+    BehaviorType: BehaviorTypeSchema.openapi({
+      description:
+        'Specifies the other channels that can be routed to an agent handling their current channel.',
+    }),
   })
   .openapi({
     required: ['BehaviorType'],
@@ -866,29 +789,17 @@ const CrossChannelBehaviorSchema = z
 
 const MediaConcurrencySchema = z
   .object({
-    Channel: ChannelSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The channels that agents can handle in the Contact Control Panel (CCP).',
-        }),
-    ),
-    Concurrency: ConcurrencySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The number of contacts an agent can have on a channel simultaneously.</p> <p>Valid Range for <code>VOICE</code>: Minimum value of 1. Maximum value of 1.</p> <p>Valid Range for <code>CHAT</code>: Minimum value of 1. Maximum value of 10.</p> <p>Valid Range for <code>TASK</code>: Minimum value of 1. Maximum value of 10.</p>',
-        }),
-    ),
-    CrossChannelBehavior: CrossChannelBehaviorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Defines the cross-channel routing behavior for each channel that is enabled for this Routing Profile. For example, this allows you to offer an agent a different contact from another channel when they are currently working with a contact from a Voice channel.',
-        }),
-    ).exactOptional(),
+    Channel: ChannelSchema.openapi({
+      description: 'The channels that agents can handle in the Contact Control Panel (CCP).',
+    }),
+    Concurrency: ConcurrencySchema.openapi({
+      description:
+        '<p>The number of contacts an agent can have on a channel simultaneously.</p> <p>Valid Range for <code>VOICE</code>: Minimum value of 1. Maximum value of 1.</p> <p>Valid Range for <code>CHAT</code>: Minimum value of 1. Maximum value of 10.</p> <p>Valid Range for <code>TASK</code>: Minimum value of 1. Maximum value of 10.</p>',
+    }),
+    CrossChannelBehavior: CrossChannelBehaviorSchema.exactOptional().openapi({
+      description:
+        'Defines the cross-channel routing behavior for each channel that is enabled for this Routing Profile. For example, this allows you to offer an agent a different contact from another channel when they are currently working with a contact from a Voice channel.',
+    }),
   })
   .openapi({
     required: ['Channel', 'Concurrency'],
@@ -901,10 +812,8 @@ const RuleIdSchema = z.string().min(1).max(256).openapi('RuleId')
 
 const CreateRuleResponseSchema = z
   .object({
-    RuleArn: ARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the rule.' }),
-    ),
-    RuleId: RuleIdSchema.and(z.any().openapi({ description: 'A unique identifier for the rule.' })),
+    RuleArn: ARNSchema.openapi({ description: 'The Amazon Resource Name (ARN) of the rule.' }),
+    RuleId: RuleIdSchema.openapi({ description: 'A unique identifier for the rule.' }),
   })
   .openapi({ required: ['RuleArn', 'RuleId'] })
   .openapi('CreateRuleResponse')
@@ -945,22 +854,13 @@ const ReferenceTypeSchema = z
 
 const ReferenceSchema = z
   .object({
-    Value: ReferenceValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A valid value for the reference. For example, for a URL reference, a formatted URL that is displayed to an agent in the Contact Control Panel (CCP).',
-        }),
-    ),
-    Type: ReferenceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of the reference. <code>DATE</code> must be of type Epoch timestamp. ',
-        }),
-    ),
+    Value: ReferenceValueSchema.openapi({
+      description:
+        'A valid value for the reference. For example, for a URL reference, a formatted URL that is displayed to an agent in the Contact Control Panel (CCP).',
+    }),
+    Type: ReferenceTypeSchema.openapi({
+      description: 'The type of the reference. <code>DATE</code> must be of type Epoch timestamp. ',
+    }),
   })
   .openapi({
     required: ['Value', 'Type'],
@@ -973,33 +873,19 @@ const ContactReferencesSchema = z.record(z.string(), ReferenceSchema).openapi('C
 
 const TaskActionDefinitionSchema = z
   .object({
-    Name: TaskNameExpressionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name. Supports variable injection. For more information, see <a href="https://docs.aws.amazon.com/connect/latest/adminguide/contact-lens-variable-injection.html">JSONPath reference</a> in the <i>Amazon Connect Administrators Guide</i>.',
-        }),
-    ),
-    Description: TaskDescriptionExpressionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The description. Supports variable injection. For more information, see <a href="https://docs.aws.amazon.com/connect/latest/adminguide/contact-lens-variable-injection.html">JSONPath reference</a> in the <i>Amazon Connect Administrators Guide</i>.',
-        }),
-    ).exactOptional(),
-    ContactFlowId: ContactFlowIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the flow.' }),
-    ),
-    References: ContactReferencesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the reference when the <code>referenceType</code> is <code>URL</code>. Otherwise, null. (Supports variable injection in the <code>Value</code> field.)',
-        }),
-    ).exactOptional(),
+    Name: TaskNameExpressionSchema.openapi({
+      description:
+        'The name. Supports variable injection. For more information, see <a href="https://docs.aws.amazon.com/connect/latest/adminguide/contact-lens-variable-injection.html">JSONPath reference</a> in the <i>Amazon Connect Administrators Guide</i>.',
+    }),
+    Description: TaskDescriptionExpressionSchema.exactOptional().openapi({
+      description:
+        'The description. Supports variable injection. For more information, see <a href="https://docs.aws.amazon.com/connect/latest/adminguide/contact-lens-variable-injection.html">JSONPath reference</a> in the <i>Amazon Connect Administrators Guide</i>.',
+    }),
+    ContactFlowId: ContactFlowIdSchema.openapi({ description: 'The identifier of the flow.' }),
+    References: ContactReferencesSchema.exactOptional().openapi({
+      description:
+        'Information about the reference when the <code>referenceType</code> is <code>URL</code>. Otherwise, null. (Supports variable injection in the <code>Value</code> field.)',
+    }),
   })
   .openapi({
     required: ['Name', 'ContactFlowId'],
@@ -1010,12 +896,12 @@ const TaskActionDefinitionSchema = z
 const EventBridgeActionNameSchema = z.string().min(1).max(100).openapi('EventBridgeActionName')
 
 const EventBridgeActionDefinitionSchema = z
-  .object({ Name: EventBridgeActionNameSchema.and(z.any().openapi({ description: 'The name.' })) })
+  .object({ Name: EventBridgeActionNameSchema.openapi({ description: 'The name.' }) })
   .openapi({ required: ['Name'], description: 'The EventBridge action definition.' })
   .openapi('EventBridgeActionDefinition')
 
 const AssignContactCategoryActionDefinitionSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       '<p>This action must be set if <code>TriggerEventSource</code> is one of the following values: <code>OnPostCallAnalysisAvailable</code> | <code>OnRealTimeCallAnalysisAvailable</code> | <code>OnPostChatAnalysisAvailable</code>. Contact is categorized using the rule name.</p> <p> <code>RuleName</code> is used as <code>ContactCategory</code>.</p>',
@@ -1036,48 +922,30 @@ const UserIdListSchema = z.array(UserIdSchema).openapi('UserIdList')
 
 const NotificationRecipientTypeSchema = z
   .object({
-    UserTags: UserTagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tags used to organize, track, or control access for this resource. For example, { "tags": {"key1":"value1", "key2":"value2"} }. Amazon Connect users with the specified tags will be notified.',
-        }),
-    ).exactOptional(),
-    UserIds: UserIdListSchema.and(
-      z.any().openapi({ description: 'A list of user IDs.' }),
-    ).exactOptional(),
+    UserTags: UserTagMapSchema.exactOptional().openapi({
+      description:
+        'The tags used to organize, track, or control access for this resource. For example, { "tags": {"key1":"value1", "key2":"value2"} }. Amazon Connect users with the specified tags will be notified.',
+    }),
+    UserIds: UserIdListSchema.exactOptional().openapi({ description: 'A list of user IDs.' }),
   })
   .openapi({ description: 'The type of notification recipient.', required: [] })
   .openapi('NotificationRecipientType')
 
 const SendNotificationActionDefinitionSchema = z
   .object({
-    DeliveryMethod: NotificationDeliveryTypeSchema.and(
-      z.any().openapi({ description: 'Notification delivery method.' }),
-    ),
-    Subject: SubjectSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The subject of the email if the delivery method is <code>EMAIL</code>. Supports variable injection. For more information, see <a href="https://docs.aws.amazon.com/connect/latest/adminguide/contact-lens-variable-injection.html">JSONPath reference</a> in the <i>Amazon Connect Administrators Guide</i>.',
-        }),
-    ).exactOptional(),
-    Content: ContentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Notification content. Supports variable injection. For more information, see <a href="https://docs.aws.amazon.com/connect/latest/adminguide/contact-lens-variable-injection.html">JSONPath reference</a> in the <i>Amazon Connect Administrators Guide</i>.',
-        }),
-    ),
-    ContentType: NotificationContentTypeSchema.and(
-      z.any().openapi({ description: 'Content type format.' }),
-    ),
-    Recipient: NotificationRecipientTypeSchema.and(
-      z.any().openapi({ description: 'Notification recipient.' }),
-    ),
+    DeliveryMethod: NotificationDeliveryTypeSchema.openapi({
+      description: 'Notification delivery method.',
+    }),
+    Subject: SubjectSchema.exactOptional().openapi({
+      description:
+        'The subject of the email if the delivery method is <code>EMAIL</code>. Supports variable injection. For more information, see <a href="https://docs.aws.amazon.com/connect/latest/adminguide/contact-lens-variable-injection.html">JSONPath reference</a> in the <i>Amazon Connect Administrators Guide</i>.',
+    }),
+    Content: ContentSchema.openapi({
+      description:
+        'Notification content. Supports variable injection. For more information, see <a href="https://docs.aws.amazon.com/connect/latest/adminguide/contact-lens-variable-injection.html">JSONPath reference</a> in the <i>Amazon Connect Administrators Guide</i>.',
+    }),
+    ContentType: NotificationContentTypeSchema.openapi({ description: 'Content type format.' }),
+    Recipient: NotificationRecipientTypeSchema.openapi({ description: 'Notification recipient.' }),
   })
   .openapi({
     required: ['DeliveryMethod', 'Content', 'ContentType', 'Recipient'],
@@ -1087,26 +955,23 @@ const SendNotificationActionDefinitionSchema = z
 
 const RuleActionSchema = z
   .object({
-    ActionType: ActionTypeSchema.and(
-      z.any().openapi({ description: 'The type of action that creates a rule.' }),
-    ),
-    TaskAction: TaskActionDefinitionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the task action. This field is required if <code>TriggerEventSource</code> is one of the following values: <code>OnZendeskTicketCreate</code> | <code>OnZendeskTicketStatusUpdate</code> | <code>OnSalesforceCaseCreate</code> ',
-        }),
-    ).exactOptional(),
-    EventBridgeAction: EventBridgeActionDefinitionSchema.and(
-      z.any().openapi({ description: 'Information about the EventBridge action.' }),
-    ).exactOptional(),
-    AssignContactCategoryAction: AssignContactCategoryActionDefinitionSchema.and(
-      z.any().openapi({ description: 'Information about the contact category action.' }),
-    ).exactOptional(),
-    SendNotificationAction: SendNotificationActionDefinitionSchema.and(
-      z.any().openapi({ description: 'Information about the send notification action.' }),
-    ).exactOptional(),
+    ActionType: ActionTypeSchema.openapi({
+      description: 'The type of action that creates a rule.',
+    }),
+    TaskAction: TaskActionDefinitionSchema.exactOptional().openapi({
+      description:
+        'Information about the task action. This field is required if <code>TriggerEventSource</code> is one of the following values: <code>OnZendeskTicketCreate</code> | <code>OnZendeskTicketStatusUpdate</code> | <code>OnSalesforceCaseCreate</code> ',
+    }),
+    EventBridgeAction: EventBridgeActionDefinitionSchema.exactOptional().openapi({
+      description: 'Information about the EventBridge action.',
+    }),
+    AssignContactCategoryAction:
+      AssignContactCategoryActionDefinitionSchema.exactOptional().openapi({
+        description: 'Information about the contact category action.',
+      }),
+    SendNotificationAction: SendNotificationActionDefinitionSchema.exactOptional().openapi({
+      description: 'Information about the send notification action.',
+    }),
   })
   .openapi({
     required: ['ActionType'],
@@ -1118,12 +983,12 @@ const SecurityProfileIdSchema = z.string().openapi('SecurityProfileId')
 
 const CreateSecurityProfileResponseSchema = z
   .object({
-    SecurityProfileId: SecurityProfileIdSchema.and(
-      z.any().openapi({ description: 'The identifier for the security profle.' }),
-    ).exactOptional(),
-    SecurityProfileArn: ARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) for the security profile.' }),
-    ).exactOptional(),
+    SecurityProfileId: SecurityProfileIdSchema.exactOptional().openapi({
+      description: 'The identifier for the security profle.',
+    }),
+    SecurityProfileArn: ARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) for the security profile.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateSecurityProfileResponse')
@@ -1148,14 +1013,12 @@ const TaskTemplateArnSchema = z.string().min(1).max(500).openapi('TaskTemplateAr
 
 const CreateTaskTemplateResponseSchema = z
   .object({
-    Id: TaskTemplateIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the task template resource.' }),
-    ),
-    Arn: TaskTemplateArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) for the task template resource.' }),
-    ),
+    Id: TaskTemplateIdSchema.openapi({
+      description: 'The identifier of the task template resource.',
+    }),
+    Arn: TaskTemplateArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) for the task template resource.',
+    }),
   })
   .openapi({ required: ['Id', 'Arn'] })
   .openapi('CreateTaskTemplateResponse')
@@ -1164,18 +1027,18 @@ const TaskTemplateFieldNameSchema = z.string().min(1).max(100).openapi('TaskTemp
 
 const TaskTemplateFieldIdentifierSchema = z
   .object({
-    Name: TaskTemplateFieldNameSchema.and(
-      z.any().openapi({ description: 'The name of the task template field.' }),
-    ).exactOptional(),
+    Name: TaskTemplateFieldNameSchema.exactOptional().openapi({
+      description: 'The name of the task template field.',
+    }),
   })
   .openapi({ description: 'The identifier of the task template field.', required: [] })
   .openapi('TaskTemplateFieldIdentifier')
 
 const RequiredFieldInfoSchema = z
   .object({
-    Id: TaskTemplateFieldIdentifierSchema.and(
-      z.any().openapi({ description: 'The unique identifier for the field.' }),
-    ).exactOptional(),
+    Id: TaskTemplateFieldIdentifierSchema.exactOptional().openapi({
+      description: 'The unique identifier for the field.',
+    }),
   })
   .openapi({ description: 'Information about a required field.', required: [] })
   .openapi('RequiredFieldInfo')
@@ -1186,9 +1049,9 @@ const RequiredTaskTemplateFieldsSchema = z
 
 const ReadOnlyFieldInfoSchema = z
   .object({
-    Id: TaskTemplateFieldIdentifierSchema.and(
-      z.any().openapi({ description: 'Identifier of the read-only field.' }),
-    ).exactOptional(),
+    Id: TaskTemplateFieldIdentifierSchema.exactOptional().openapi({
+      description: 'Identifier of the read-only field.',
+    }),
   })
   .openapi({ description: 'Indicates a field that is read-only to an agent.', required: [] })
   .openapi('ReadOnlyFieldInfo')
@@ -1199,9 +1062,9 @@ const ReadOnlyTaskTemplateFieldsSchema = z
 
 const InvisibleFieldInfoSchema = z
   .object({
-    Id: TaskTemplateFieldIdentifierSchema.and(
-      z.any().openapi({ description: 'Identifier of the invisible field.' }),
-    ).exactOptional(),
+    Id: TaskTemplateFieldIdentifierSchema.exactOptional().openapi({
+      description: 'Identifier of the invisible field.',
+    }),
   })
   .openapi({ description: 'A field that is invisible to an agent.', required: [] })
   .openapi('InvisibleFieldInfo')
@@ -1214,12 +1077,12 @@ const TaskTemplateFieldValueSchema = z.string().min(0).max(4096).openapi('TaskTe
 
 const TaskTemplateDefaultFieldValueSchema = z
   .object({
-    Id: TaskTemplateFieldIdentifierSchema.and(
-      z.any().openapi({ description: 'Identifier of a field. ' }),
-    ).exactOptional(),
-    DefaultValue: TaskTemplateFieldValueSchema.and(
-      z.any().openapi({ description: 'Default value for the field.' }),
-    ).exactOptional(),
+    Id: TaskTemplateFieldIdentifierSchema.exactOptional().openapi({
+      description: 'Identifier of a field. ',
+    }),
+    DefaultValue: TaskTemplateFieldValueSchema.exactOptional().openapi({
+      description: 'Default value for the field.',
+    }),
   })
   .openapi({ description: 'Describes a default field and its corresponding value.', required: [] })
   .openapi('TaskTemplateDefaultFieldValue')
@@ -1263,18 +1126,18 @@ const SingleSelectOptionsSchema = z
 
 const TaskTemplateFieldSchema = z
   .object({
-    Id: TaskTemplateFieldIdentifierSchema.and(
-      z.any().openapi({ description: 'The unique identifier for the field.' }),
-    ),
-    Description: TaskTemplateFieldDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the field.' }),
-    ).exactOptional(),
-    Type: TaskTemplateFieldTypeSchema.and(
-      z.any().openapi({ description: 'Indicates the type of field.' }),
-    ).exactOptional(),
-    SingleSelectOptions: SingleSelectOptionsSchema.and(
-      z.any().openapi({ description: 'A list of options for a single select field.' }),
-    ).exactOptional(),
+    Id: TaskTemplateFieldIdentifierSchema.openapi({
+      description: 'The unique identifier for the field.',
+    }),
+    Description: TaskTemplateFieldDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the field.',
+    }),
+    Type: TaskTemplateFieldTypeSchema.exactOptional().openapi({
+      description: 'Indicates the type of field.',
+    }),
+    SingleSelectOptions: SingleSelectOptionsSchema.exactOptional().openapi({
+      description: 'A list of options for a single select field.',
+    }),
   })
   .openapi({ required: ['Id'], description: 'Describes a single task template field.' })
   .openapi('TaskTemplateField')
@@ -1295,21 +1158,13 @@ const TrafficDistributionGroupArnSchema = z
 
 const CreateTrafficDistributionGroupResponseSchema = z
   .object({
-    Id: TrafficDistributionGroupIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the traffic distribution group. This can be the ID or the ARN if the API is being called in the Region where the traffic distribution group was created. The ARN must be provided if the call is from the replicated Region.',
-        }),
-    ).exactOptional(),
-    Arn: TrafficDistributionGroupArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the traffic distribution group.',
-        }),
-    ).exactOptional(),
+    Id: TrafficDistributionGroupIdSchema.exactOptional().openapi({
+      description:
+        'The identifier of the traffic distribution group. This can be the ID or the ARN if the API is being called in the Region where the traffic distribution group was created. The ARN must be provided if the call is from the replicated Region.',
+    }),
+    Arn: TrafficDistributionGroupArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the traffic distribution group.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateTrafficDistributionGroupResponse')
@@ -1320,24 +1175,24 @@ const UseCaseIdSchema = z.string().min(1).max(200).openapi('UseCaseId')
 
 const CreateUseCaseResponseSchema = z
   .object({
-    UseCaseId: UseCaseIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the use case.' }),
-    ).exactOptional(),
-    UseCaseArn: ARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) for the use case.' }),
-    ).exactOptional(),
+    UseCaseId: UseCaseIdSchema.exactOptional().openapi({
+      description: 'The identifier of the use case.',
+    }),
+    UseCaseArn: ARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) for the use case.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateUseCaseResponse')
 
 const CreateUserResponseSchema = z
   .object({
-    UserId: UserIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the user account.' }),
-    ).exactOptional(),
-    UserArn: ARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the user account.' }),
-    ).exactOptional(),
+    UserId: UserIdSchema.exactOptional().openapi({
+      description: 'The identifier of the user account.',
+    }),
+    UserArn: ARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the user account.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateUserResponse')
@@ -1358,12 +1213,12 @@ const HierarchyGroupIdSchema = z.string().openapi('HierarchyGroupId')
 
 const CreateUserHierarchyGroupResponseSchema = z
   .object({
-    HierarchyGroupId: HierarchyGroupIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the hierarchy group.' }),
-    ).exactOptional(),
-    HierarchyGroupArn: ARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the hierarchy group. ' }),
-    ).exactOptional(),
+    HierarchyGroupId: HierarchyGroupIdSchema.exactOptional().openapi({
+      description: 'The identifier of the hierarchy group.',
+    }),
+    HierarchyGroupArn: ARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the hierarchy group. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateUserHierarchyGroupResponse')
@@ -1376,44 +1231,44 @@ const VocabularyStateSchema = z
 
 const CreateVocabularyResponseSchema = z
   .object({
-    VocabularyArn: ARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the custom vocabulary.' }),
-    ),
-    VocabularyId: VocabularyIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the custom vocabulary.' }),
-    ),
-    State: VocabularyStateSchema.and(
-      z.any().openapi({ description: 'The current state of the custom vocabulary.' }),
-    ),
+    VocabularyArn: ARNSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the custom vocabulary.',
+    }),
+    VocabularyId: VocabularyIdSchema.openapi({
+      description: 'The identifier of the custom vocabulary.',
+    }),
+    State: VocabularyStateSchema.openapi({
+      description: 'The current state of the custom vocabulary.',
+    }),
   })
   .openapi({ required: ['VocabularyArn', 'VocabularyId', 'State'] })
   .openapi('CreateVocabularyResponse')
 
-const DeleteContactFlowResponseSchema = z.object({}).openapi('DeleteContactFlowResponse')
+const DeleteContactFlowResponseSchema = z.looseObject({}).openapi('DeleteContactFlowResponse')
 
 const DeleteContactFlowModuleResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DeleteContactFlowModuleResponse')
 
 const ResourceInUseExceptionSchema = z.any().openapi('ResourceInUseException')
 
-const DeleteTaskTemplateResponseSchema = z.object({}).openapi('DeleteTaskTemplateResponse')
+const DeleteTaskTemplateResponseSchema = z.looseObject({}).openapi('DeleteTaskTemplateResponse')
 
 const DeleteTrafficDistributionGroupResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DeleteTrafficDistributionGroupResponse')
 
 const DeleteVocabularyResponseSchema = z
   .object({
-    VocabularyArn: ARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the custom vocabulary.' }),
-    ),
-    VocabularyId: VocabularyIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the custom vocabulary.' }),
-    ),
-    State: VocabularyStateSchema.and(
-      z.any().openapi({ description: 'The current state of the custom vocabulary.' }),
-    ),
+    VocabularyArn: ARNSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the custom vocabulary.',
+    }),
+    VocabularyId: VocabularyIdSchema.openapi({
+      description: 'The identifier of the custom vocabulary.',
+    }),
+    State: VocabularyStateSchema.openapi({
+      description: 'The current state of the custom vocabulary.',
+    }),
   })
   .openapi({ required: ['VocabularyArn', 'VocabularyId', 'State'] })
   .openapi('DeleteVocabularyResponse')
@@ -1428,46 +1283,46 @@ const AgentStatusOrderNumberSchema = z.int().min(1).max(50).openapi('AgentStatus
 
 const AgentStatusStateSchema = z.enum(['ENABLED', 'DISABLED']).openapi('AgentStatusState')
 
+const TagMapSchema = z
+  .record(z.string(), TagValueSchema)
+  .refine((val) => Object.keys(val).length >= 1)
+  .refine((val) => Object.keys(val).length <= 50)
+  .openapi('TagMap')
+
 const AgentStatusSchema = z
   .object({
-    AgentStatusARN: ARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the agent status.' }),
-    ).exactOptional(),
-    AgentStatusId: AgentStatusIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the agent status.' }),
-    ).exactOptional(),
-    Name: AgentStatusNameSchema.and(
-      z.any().openapi({ description: 'The name of the agent status.' }),
-    ).exactOptional(),
-    Description: AgentStatusDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the agent status.' }),
-    ).exactOptional(),
-    Type: AgentStatusTypeSchema.and(
-      z.any().openapi({ description: 'The type of agent status.' }),
-    ).exactOptional(),
-    DisplayOrder: AgentStatusOrderNumberSchema.and(
-      z.any().openapi({ description: 'The display order of the agent status.' }),
-    ).exactOptional(),
-    State: AgentStatusStateSchema.and(
-      z.any().openapi({ description: 'The state of the agent status.' }),
-    ).exactOptional(),
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tags used to organize, track, or control access for this resource. For example, { "tags": {"key1":"value1", "key2":"value2"} }.',
-        }),
-    ).exactOptional(),
+    AgentStatusARN: ARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the agent status.',
+    }),
+    AgentStatusId: AgentStatusIdSchema.exactOptional().openapi({
+      description: 'The identifier of the agent status.',
+    }),
+    Name: AgentStatusNameSchema.exactOptional().openapi({
+      description: 'The name of the agent status.',
+    }),
+    Description: AgentStatusDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the agent status.',
+    }),
+    Type: AgentStatusTypeSchema.exactOptional().openapi({
+      description: 'The type of agent status.',
+    }),
+    DisplayOrder: AgentStatusOrderNumberSchema.exactOptional().openapi({
+      description: 'The display order of the agent status.',
+    }),
+    State: AgentStatusStateSchema.exactOptional().openapi({
+      description: 'The state of the agent status.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description:
+        'The tags used to organize, track, or control access for this resource. For example, { "tags": {"key1":"value1", "key2":"value2"} }.',
+    }),
   })
   .openapi({ description: 'Contains information about an agent status.', required: [] })
   .openapi('AgentStatus')
 
 const DescribeAgentStatusResponseSchema = z
   .object({
-    AgentStatus: AgentStatusSchema.and(
-      z.any().openapi({ description: 'The agent status.' }),
-    ).exactOptional(),
+    AgentStatus: AgentStatusSchema.exactOptional().openapi({ description: 'The agent status.' }),
   })
   .openapi({ required: [] })
   .openapi('DescribeAgentStatusResponse')
@@ -1495,12 +1350,12 @@ const Timestamp2Schema = z.iso.datetime({ offset: true }).openapi('Timestamp2')
 
 const QueueInfoSchema = z
   .object({
-    Id: QueueIdSchema.and(
-      z.any().openapi({ description: 'The unique identifier for the queue.' }),
-    ).exactOptional(),
-    EnqueueTimestamp: Timestamp2Schema.and(
-      z.any().openapi({ description: 'The timestamp when the contact was added to the queue.' }),
-    ).exactOptional(),
+    Id: QueueIdSchema.exactOptional().openapi({
+      description: 'The unique identifier for the queue.',
+    }),
+    EnqueueTimestamp: Timestamp2Schema.exactOptional().openapi({
+      description: 'The timestamp when the contact was added to the queue.',
+    }),
   })
   .openapi({
     description: 'If this contact was queued, this contains information about the queue. ',
@@ -1512,119 +1367,85 @@ const AgentResourceIdSchema = z.string().min(1).max(256).openapi('AgentResourceI
 
 const AgentInfoSchema = z
   .object({
-    Id: AgentResourceIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the agent who accepted the contact.' }),
-    ).exactOptional(),
-    ConnectedToAgentTimestamp: Timestamp2Schema.and(
-      z
-        .any()
-        .openapi({ description: 'The timestamp when the contact was connected to the agent.' }),
-    ).exactOptional(),
+    Id: AgentResourceIdSchema.exactOptional().openapi({
+      description: 'The identifier of the agent who accepted the contact.',
+    }),
+    ConnectedToAgentTimestamp: Timestamp2Schema.exactOptional().openapi({
+      description: 'The timestamp when the contact was connected to the agent.',
+    }),
   })
   .openapi({ description: 'Information about the agent who accepted the contact.', required: [] })
   .openapi('AgentInfo')
 
 const WisdomInfoSchema = z
   .object({
-    SessionArn: ARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the Wisdom session.' }),
-    ).exactOptional(),
+    SessionArn: ARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the Wisdom session.',
+    }),
   })
   .openapi({ description: 'Information about Amazon Connect Wisdom.', required: [] })
   .openapi('WisdomInfo')
 
 const ContactSchema = z
   .object({
-    Arn: ARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) for the contact.' }),
-    ).exactOptional(),
-    Id: ContactIdSchema.and(
-      z.any().openapi({ description: 'The identifier for the contact.' }),
-    ).exactOptional(),
-    InitialContactId: ContactIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If this contact is related to other contacts, this is the ID of the initial contact.',
-        }),
-    ).exactOptional(),
-    PreviousContactId: ContactIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If this contact is not the first contact, this is the ID of the previous contact.',
-        }),
-    ).exactOptional(),
-    InitiationMethod: ContactInitiationMethodSchema.and(
-      z.any().openapi({ description: 'Indicates how the contact was initiated.' }),
-    ).exactOptional(),
-    Name: NameSchema.and(
-      z.any().openapi({ description: 'The name of the contact.' }),
-    ).exactOptional(),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the contact.' }),
-    ).exactOptional(),
-    Channel: ChannelSchema.and(
-      z.any().openapi({ description: 'How the contact reached your contact center.' }),
-    ).exactOptional(),
-    QueueInfo: QueueInfoSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'If this contact was queued, this contains information about the queue. ',
-        }),
-    ).exactOptional(),
-    AgentInfo: AgentInfoSchema.and(
-      z.any().openapi({ description: 'Information about the agent who accepted the contact.' }),
-    ).exactOptional(),
-    InitiationTimestamp: Timestamp2Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time this contact was initiated, in UTC time. For <code>INBOUND</code>, this is when the contact arrived. For <code>OUTBOUND</code>, this is when the agent began dialing. For <code>CALLBACK</code>, this is when the callback contact was created. For <code>TRANSFER</code> and <code>QUEUE_TRANSFER</code>, this is when the transfer was initiated. For <code>API</code>, this is when the request arrived.',
-        }),
-    ).exactOptional(),
-    DisconnectTimestamp: Timestamp2Schema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The timestamp when the customer endpoint disconnected from Amazon Connect.',
-        }),
-    ).exactOptional(),
-    LastUpdateTimestamp: Timestamp2Schema.and(
-      z.any().openapi({ description: 'The timestamp when contact was last updated.' }),
-    ).exactOptional(),
-    ScheduledTimestamp: Timestamp2Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timestamp, in Unix epoch time format, at which to start running the inbound flow. ',
-        }),
-    ).exactOptional(),
-    RelatedContactId: ContactIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The contactId that is <a href="https://docs.aws.amazon.com/connect/latest/adminguide/chat-persistence.html#relatedcontactid">related</a> to this contact.',
-        }),
-    ).exactOptional(),
-    WisdomInfo: WisdomInfoSchema.and(
-      z.any().openapi({ description: 'Information about Amazon Connect Wisdom.' }),
-    ).exactOptional(),
+    Arn: ARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) for the contact.',
+    }),
+    Id: ContactIdSchema.exactOptional().openapi({ description: 'The identifier for the contact.' }),
+    InitialContactId: ContactIdSchema.exactOptional().openapi({
+      description:
+        'If this contact is related to other contacts, this is the ID of the initial contact.',
+    }),
+    PreviousContactId: ContactIdSchema.exactOptional().openapi({
+      description:
+        'If this contact is not the first contact, this is the ID of the previous contact.',
+    }),
+    InitiationMethod: ContactInitiationMethodSchema.exactOptional().openapi({
+      description: 'Indicates how the contact was initiated.',
+    }),
+    Name: NameSchema.exactOptional().openapi({ description: 'The name of the contact.' }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'The description of the contact.',
+    }),
+    Channel: ChannelSchema.exactOptional().openapi({
+      description: 'How the contact reached your contact center.',
+    }),
+    QueueInfo: QueueInfoSchema.exactOptional().openapi({
+      description: 'If this contact was queued, this contains information about the queue. ',
+    }),
+    AgentInfo: AgentInfoSchema.exactOptional().openapi({
+      description: 'Information about the agent who accepted the contact.',
+    }),
+    InitiationTimestamp: Timestamp2Schema.exactOptional().openapi({
+      description:
+        'The date and time this contact was initiated, in UTC time. For <code>INBOUND</code>, this is when the contact arrived. For <code>OUTBOUND</code>, this is when the agent began dialing. For <code>CALLBACK</code>, this is when the callback contact was created. For <code>TRANSFER</code> and <code>QUEUE_TRANSFER</code>, this is when the transfer was initiated. For <code>API</code>, this is when the request arrived.',
+    }),
+    DisconnectTimestamp: Timestamp2Schema.exactOptional().openapi({
+      description: 'The timestamp when the customer endpoint disconnected from Amazon Connect.',
+    }),
+    LastUpdateTimestamp: Timestamp2Schema.exactOptional().openapi({
+      description: 'The timestamp when contact was last updated.',
+    }),
+    ScheduledTimestamp: Timestamp2Schema.exactOptional().openapi({
+      description:
+        'The timestamp, in Unix epoch time format, at which to start running the inbound flow. ',
+    }),
+    RelatedContactId: ContactIdSchema.exactOptional().openapi({
+      description:
+        'The contactId that is <a href="https://docs.aws.amazon.com/connect/latest/adminguide/chat-persistence.html#relatedcontactid">related</a> to this contact.',
+    }),
+    WisdomInfo: WisdomInfoSchema.exactOptional().openapi({
+      description: 'Information about Amazon Connect Wisdom.',
+    }),
   })
   .openapi({ description: 'Contains information about a contact.', required: [] })
   .openapi('Contact')
 
 const DescribeContactResponseSchema = z
   .object({
-    Contact: ContactSchema.and(
-      z.any().openapi({ description: 'Information about the contact.' }),
-    ).exactOptional(),
+    Contact: ContactSchema.exactOptional().openapi({
+      description: 'Information about the contact.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeContactResponse')
@@ -1653,49 +1474,35 @@ const ContactFlowContentSchema = z.string().openapi('ContactFlowContent')
 
 const ContactFlowSchema = z
   .object({
-    Arn: ARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the flow.' }),
-    ).exactOptional(),
-    Id: ContactFlowIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the flow.' }),
-    ).exactOptional(),
-    Name: ContactFlowNameSchema.and(
-      z.any().openapi({ description: 'The name of the flow.' }),
-    ).exactOptional(),
-    Type: ContactFlowTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of the flow. For descriptions of the available types, see <a href="https://docs.aws.amazon.com/connect/latest/adminguide/create-contact-flow.html#contact-flow-types">Choose a flow type</a> in the <i>Amazon Connect Administrator Guide</i>.',
-        }),
-    ).exactOptional(),
-    State: ContactFlowStateSchema.and(
-      z.any().openapi({ description: 'The type of flow.' }),
-    ).exactOptional(),
-    Description: ContactFlowDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the flow.' }),
-    ).exactOptional(),
-    Content: ContactFlowContentSchema.and(
-      z.any().openapi({ description: 'The content of the flow.' }),
-    ).exactOptional(),
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tags used to organize, track, or control access for this resource. For example, { "tags": {"key1":"value1", "key2":"value2"} }.',
-        }),
-    ).exactOptional(),
+    Arn: ARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the flow.',
+    }),
+    Id: ContactFlowIdSchema.exactOptional().openapi({ description: 'The identifier of the flow.' }),
+    Name: ContactFlowNameSchema.exactOptional().openapi({ description: 'The name of the flow.' }),
+    Type: ContactFlowTypeSchema.exactOptional().openapi({
+      description:
+        'The type of the flow. For descriptions of the available types, see <a href="https://docs.aws.amazon.com/connect/latest/adminguide/create-contact-flow.html#contact-flow-types">Choose a flow type</a> in the <i>Amazon Connect Administrator Guide</i>.',
+    }),
+    State: ContactFlowStateSchema.exactOptional().openapi({ description: 'The type of flow.' }),
+    Description: ContactFlowDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the flow.',
+    }),
+    Content: ContactFlowContentSchema.exactOptional().openapi({
+      description: 'The content of the flow.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description:
+        'The tags used to organize, track, or control access for this resource. For example, { "tags": {"key1":"value1", "key2":"value2"} }.',
+    }),
   })
   .openapi({ description: 'Contains information about a flow.', required: [] })
   .openapi('ContactFlow')
 
 const DescribeContactFlowResponseSchema = z
   .object({
-    ContactFlow: ContactFlowSchema.and(
-      z.any().openapi({ description: 'Information about the flow.' }),
-    ).exactOptional(),
+    ContactFlow: ContactFlowSchema.exactOptional().openapi({
+      description: 'Information about the flow.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeContactFlowResponse')
@@ -1732,44 +1539,38 @@ const ContactFlowModuleStatusSchema = z
 
 const ContactFlowModuleSchema = z
   .object({
-    Arn: ARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN).' }),
-    ).exactOptional(),
-    Id: ContactFlowModuleIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the flow module.' }),
-    ).exactOptional(),
-    Name: ContactFlowModuleNameSchema.and(
-      z.any().openapi({ description: 'The name of the flow module.' }),
-    ).exactOptional(),
-    Content: ContactFlowModuleContentSchema.and(
-      z.any().openapi({ description: 'The content of the flow module.' }),
-    ).exactOptional(),
-    Description: ContactFlowModuleDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the flow module.' }),
-    ).exactOptional(),
-    State: ContactFlowModuleStateSchema.and(
-      z.any().openapi({ description: 'The type of flow module.' }),
-    ).exactOptional(),
-    Status: ContactFlowModuleStatusSchema.and(
-      z.any().openapi({ description: 'The status of the flow module.' }),
-    ).exactOptional(),
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tags used to organize, track, or control access for this resource. For example, { "tags": {"key1":"value1", "key2":"value2"} }.',
-        }),
-    ).exactOptional(),
+    Arn: ARNSchema.exactOptional().openapi({ description: 'The Amazon Resource Name (ARN).' }),
+    Id: ContactFlowModuleIdSchema.exactOptional().openapi({
+      description: 'The identifier of the flow module.',
+    }),
+    Name: ContactFlowModuleNameSchema.exactOptional().openapi({
+      description: 'The name of the flow module.',
+    }),
+    Content: ContactFlowModuleContentSchema.exactOptional().openapi({
+      description: 'The content of the flow module.',
+    }),
+    Description: ContactFlowModuleDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the flow module.',
+    }),
+    State: ContactFlowModuleStateSchema.exactOptional().openapi({
+      description: 'The type of flow module.',
+    }),
+    Status: ContactFlowModuleStatusSchema.exactOptional().openapi({
+      description: 'The status of the flow module.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description:
+        'The tags used to organize, track, or control access for this resource. For example, { "tags": {"key1":"value1", "key2":"value2"} }.',
+    }),
   })
   .openapi({ description: 'Contains information about a flow module.', required: [] })
   .openapi('ContactFlowModule')
 
 const DescribeContactFlowModuleResponseSchema = z
   .object({
-    ContactFlowModule: ContactFlowModuleSchema.and(
-      z.any().openapi({ description: 'Information about the flow module.' }),
-    ).exactOptional(),
+    ContactFlowModule: ContactFlowModuleSchema.exactOptional().openapi({
+      description: 'Information about the flow module.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeContactFlowModuleResponse')
@@ -1792,43 +1593,37 @@ const HoursOfOperationConfigListSchema = z
 
 const HoursOfOperationSchema = z
   .object({
-    HoursOfOperationId: HoursOfOperationIdSchema.and(
-      z.any().openapi({ description: 'The identifier for the hours of operation.' }),
-    ).exactOptional(),
-    HoursOfOperationArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) for the hours of operation.' }),
-    ).exactOptional(),
-    Name: CommonNameLength127Schema.and(
-      z.any().openapi({ description: 'The name for the hours of operation.' }),
-    ).exactOptional(),
-    Description: HoursOfOperationDescriptionSchema.and(
-      z.any().openapi({ description: 'The description for the hours of operation.' }),
-    ).exactOptional(),
-    TimeZone: TimeZoneSchema.and(
-      z.any().openapi({ description: 'The time zone for the hours of operation.' }),
-    ).exactOptional(),
-    Config: HoursOfOperationConfigListSchema.and(
-      z.any().openapi({ description: 'Configuration information for the hours of operation.' }),
-    ).exactOptional(),
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tags used to organize, track, or control access for this resource. For example, { "tags": {"key1":"value1", "key2":"value2"} }.',
-        }),
-    ).exactOptional(),
+    HoursOfOperationId: HoursOfOperationIdSchema.exactOptional().openapi({
+      description: 'The identifier for the hours of operation.',
+    }),
+    HoursOfOperationArn: ARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) for the hours of operation.',
+    }),
+    Name: CommonNameLength127Schema.exactOptional().openapi({
+      description: 'The name for the hours of operation.',
+    }),
+    Description: HoursOfOperationDescriptionSchema.exactOptional().openapi({
+      description: 'The description for the hours of operation.',
+    }),
+    TimeZone: TimeZoneSchema.exactOptional().openapi({
+      description: 'The time zone for the hours of operation.',
+    }),
+    Config: HoursOfOperationConfigListSchema.exactOptional().openapi({
+      description: 'Configuration information for the hours of operation.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description:
+        'The tags used to organize, track, or control access for this resource. For example, { "tags": {"key1":"value1", "key2":"value2"} }.',
+    }),
   })
   .openapi({ description: 'Information about of the hours of operation.', required: [] })
   .openapi('HoursOfOperation')
 
 const DescribeHoursOfOperationResponseSchema = z
   .object({
-    HoursOfOperation: HoursOfOperationSchema.and(
-      z.any().openapi({ description: 'The hours of operation.' }),
-    ).exactOptional(),
+    HoursOfOperation: HoursOfOperationSchema.exactOptional().openapi({
+      description: 'The hours of operation.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeHoursOfOperationResponse')
@@ -1851,9 +1646,7 @@ const InstanceStatusSchema = z
   .openapi('InstanceStatus')
 
 const InstanceStatusReasonSchema = z
-  .object({
-    Message: StringSchema.and(z.any().openapi({ description: 'The message.' })).exactOptional(),
-  })
+  .object({ Message: StringSchema.exactOptional().openapi({ description: 'The message.' }) })
   .openapi({
     description: 'Relevant details why the instance was not successfully created.',
     required: [],
@@ -1866,54 +1659,44 @@ const OutboundCallsEnabledSchema = z.boolean().openapi('OutboundCallsEnabled')
 
 const InstanceSchema = z
   .object({
-    Id: InstanceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the Amazon Connect instance. You can <a href="https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.',
-        }),
-    ).exactOptional(),
-    Arn: ARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the instance.' }),
-    ).exactOptional(),
-    IdentityManagementType: DirectoryTypeSchema.and(
-      z.any().openapi({ description: 'The identity management type.' }),
-    ).exactOptional(),
-    InstanceAlias: DirectoryAliasSchema.and(
-      z.any().openapi({ description: 'The alias of instance.' }),
-    ).exactOptional(),
-    CreatedTime: TimestampSchema.and(
-      z.any().openapi({ description: 'When the instance was created.' }),
-    ).exactOptional(),
-    ServiceRole: ARNSchema.and(
-      z.any().openapi({ description: 'The service role of the instance.' }),
-    ).exactOptional(),
-    InstanceStatus: InstanceStatusSchema.and(
-      z.any().openapi({ description: 'The state of the instance.' }),
-    ).exactOptional(),
-    StatusReason: InstanceStatusReasonSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Relevant details why the instance was not successfully created. ',
-        }),
-    ).exactOptional(),
-    InboundCallsEnabled: InboundCallsEnabledSchema.and(
-      z.any().openapi({ description: 'Whether inbound calls are enabled.' }),
-    ).exactOptional(),
-    OutboundCallsEnabled: OutboundCallsEnabledSchema.and(
-      z.any().openapi({ description: 'Whether outbound calls are enabled.' }),
-    ).exactOptional(),
+    Id: InstanceIdSchema.exactOptional().openapi({
+      description:
+        'The identifier of the Amazon Connect instance. You can <a href="https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.',
+    }),
+    Arn: ARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the instance.',
+    }),
+    IdentityManagementType: DirectoryTypeSchema.exactOptional().openapi({
+      description: 'The identity management type.',
+    }),
+    InstanceAlias: DirectoryAliasSchema.exactOptional().openapi({
+      description: 'The alias of instance.',
+    }),
+    CreatedTime: TimestampSchema.exactOptional().openapi({
+      description: 'When the instance was created.',
+    }),
+    ServiceRole: ARNSchema.exactOptional().openapi({
+      description: 'The service role of the instance.',
+    }),
+    InstanceStatus: InstanceStatusSchema.exactOptional().openapi({
+      description: 'The state of the instance.',
+    }),
+    StatusReason: InstanceStatusReasonSchema.exactOptional().openapi({
+      description: 'Relevant details why the instance was not successfully created. ',
+    }),
+    InboundCallsEnabled: InboundCallsEnabledSchema.exactOptional().openapi({
+      description: 'Whether inbound calls are enabled.',
+    }),
+    OutboundCallsEnabled: OutboundCallsEnabledSchema.exactOptional().openapi({
+      description: 'Whether outbound calls are enabled.',
+    }),
   })
   .openapi({ description: 'The Amazon Connect instance.', required: [] })
   .openapi('Instance')
 
 const DescribeInstanceResponseSchema = z
   .object({
-    Instance: InstanceSchema.and(
-      z.any().openapi({ description: 'The name of the instance.' }),
-    ).exactOptional(),
+    Instance: InstanceSchema.exactOptional().openapi({ description: 'The name of the instance.' }),
   })
   .openapi({ required: [] })
   .openapi('DescribeInstanceResponse')
@@ -1937,12 +1720,12 @@ const InstanceAttributeValueSchema = z.string().min(1).max(100).openapi('Instanc
 
 const AttributeSchema = z
   .object({
-    AttributeType: InstanceAttributeTypeSchema.and(
-      z.any().openapi({ description: 'The type of attribute.' }),
-    ).exactOptional(),
-    Value: InstanceAttributeValueSchema.and(
-      z.any().openapi({ description: 'The value of the attribute.' }),
-    ).exactOptional(),
+    AttributeType: InstanceAttributeTypeSchema.exactOptional().openapi({
+      description: 'The type of attribute.',
+    }),
+    Value: InstanceAttributeValueSchema.exactOptional().openapi({
+      description: 'The value of the attribute.',
+    }),
   })
   .openapi({
     description: 'A toggle for an individual feature at the instance level.',
@@ -1952,38 +1735,30 @@ const AttributeSchema = z
 
 const DescribeInstanceAttributeResponseSchema = z
   .object({
-    Attribute: AttributeSchema.and(
-      z.any().openapi({ description: 'The type of attribute.' }),
-    ).exactOptional(),
+    Attribute: AttributeSchema.exactOptional().openapi({ description: 'The type of attribute.' }),
   })
   .openapi({ required: [] })
   .openapi('DescribeInstanceAttributeResponse')
 
 const InstanceStorageConfigSchema = z
   .object({
-    AssociationId: AssociationIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The existing association identifier that uniquely identifies the resource type and storage config for the given instance ID.',
-        }),
-    ).exactOptional(),
-    StorageType: StorageTypeSchema.and(z.any().openapi({ description: 'A valid storage type.' })),
-    S3Config: S3ConfigSchema.and(
-      z.any().openapi({ description: 'The S3 bucket configuration.' }),
-    ).exactOptional(),
-    KinesisVideoStreamConfig: KinesisVideoStreamConfigSchema.and(
-      z.any().openapi({ description: 'The configuration of the Kinesis video stream.' }),
-    ).exactOptional(),
-    KinesisStreamConfig: KinesisStreamConfigSchema.and(
-      z.any().openapi({ description: 'The configuration of the Kinesis data stream.' }),
-    ).exactOptional(),
-    KinesisFirehoseConfig: KinesisFirehoseConfigSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The configuration of the Kinesis Firehose delivery stream.' }),
-    ).exactOptional(),
+    AssociationId: AssociationIdSchema.exactOptional().openapi({
+      description:
+        'The existing association identifier that uniquely identifies the resource type and storage config for the given instance ID.',
+    }),
+    StorageType: StorageTypeSchema.openapi({ description: 'A valid storage type.' }),
+    S3Config: S3ConfigSchema.exactOptional().openapi({
+      description: 'The S3 bucket configuration.',
+    }),
+    KinesisVideoStreamConfig: KinesisVideoStreamConfigSchema.exactOptional().openapi({
+      description: 'The configuration of the Kinesis video stream.',
+    }),
+    KinesisStreamConfig: KinesisStreamConfigSchema.exactOptional().openapi({
+      description: 'The configuration of the Kinesis data stream.',
+    }),
+    KinesisFirehoseConfig: KinesisFirehoseConfigSchema.exactOptional().openapi({
+      description: 'The configuration of the Kinesis Firehose delivery stream.',
+    }),
   })
   .openapi({
     required: ['StorageType'],
@@ -1993,9 +1768,9 @@ const InstanceStorageConfigSchema = z
 
 const DescribeInstanceStorageConfigResponseSchema = z
   .object({
-    StorageConfig: InstanceStorageConfigSchema.and(
-      z.any().openapi({ description: 'A valid storage type.' }),
-    ).exactOptional(),
+    StorageConfig: InstanceStorageConfigSchema.exactOptional().openapi({
+      description: 'A valid storage type.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeInstanceStorageConfigResponse')
@@ -2264,12 +2039,10 @@ const PhoneNumberWorkflowMessageSchema = z
 
 const PhoneNumberStatusSchema = z
   .object({
-    Status: PhoneNumberWorkflowStatusSchema.and(
-      z.any().openapi({ description: 'The status.' }),
-    ).exactOptional(),
-    Message: PhoneNumberWorkflowMessageSchema.and(
-      z.any().openapi({ description: 'The status message.' }),
-    ).exactOptional(),
+    Status: PhoneNumberWorkflowStatusSchema.exactOptional().openapi({ description: 'The status.' }),
+    Message: PhoneNumberWorkflowMessageSchema.exactOptional().openapi({
+      description: 'The status message.',
+    }),
   })
   .openapi({
     description:
@@ -2280,53 +2053,37 @@ const PhoneNumberStatusSchema = z
 
 const ClaimedPhoneNumberSummarySchema = z
   .object({
-    PhoneNumberId: PhoneNumberIdSchema.and(
-      z.any().openapi({ description: 'A unique identifier for the phone number.' }),
-    ).exactOptional(),
-    PhoneNumberArn: ARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the phone number.' }),
-    ).exactOptional(),
-    PhoneNumber: PhoneNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The phone number. Phone numbers are formatted <code>[+] [country code] [subscriber number including area code]</code>.',
-        }),
-    ).exactOptional(),
-    PhoneNumberCountryCode: PhoneNumberCountryCodeSchema.and(
-      z.any().openapi({ description: 'The ISO country code.' }),
-    ).exactOptional(),
-    PhoneNumberType: PhoneNumberTypeSchema.and(
-      z.any().openapi({ description: 'The type of phone number.' }),
-    ).exactOptional(),
-    PhoneNumberDescription: PhoneNumberDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the phone number.' }),
-    ).exactOptional(),
-    TargetArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) for Amazon Connect instances or traffic distribution groups that phone numbers are claimed to.',
-        }),
-    ).exactOptional(),
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tags used to organize, track, or control access for this resource. For example, { "tags": {"key1":"value1", "key2":"value2"} }.',
-        }),
-    ).exactOptional(),
-    PhoneNumberStatus: PhoneNumberStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the phone number.</p> <ul> <li> <p> <code>CLAIMED</code> means the previous <a href="https://docs.aws.amazon.com/connect/latest/APIReference/API_ClaimedPhoneNumber.html">ClaimedPhoneNumber</a> or <a href="https://docs.aws.amazon.com/connect/latest/APIReference/API_UpdatePhoneNumber.html">UpdatePhoneNumber</a> operation succeeded.</p> </li> <li> <p> <code>IN_PROGRESS</code> means a <a href="https://docs.aws.amazon.com/connect/latest/APIReference/API_ClaimedPhoneNumber.html">ClaimedPhoneNumber</a> or <a href="https://docs.aws.amazon.com/connect/latest/APIReference/API_UpdatePhoneNumber.html">UpdatePhoneNumber</a> operation is still in progress and has not yet completed. You can call <a href="https://docs.aws.amazon.com/connect/latest/APIReference/API_DescribePhoneNumber.html">DescribePhoneNumber</a> at a later time to verify if the previous operation has completed.</p> </li> <li> <p> <code>FAILED</code> indicates that the previous <a href="https://docs.aws.amazon.com/connect/latest/APIReference/API_ClaimedPhoneNumber.html">ClaimedPhoneNumber</a> or <a href="https://docs.aws.amazon.com/connect/latest/APIReference/API_UpdatePhoneNumber.html">UpdatePhoneNumber</a> operation has failed. It will include a message indicating the failure reason. A common reason for a failure may be that the <code>TargetArn</code> value you are claiming or updating a phone number to has reached its limit of total claimed numbers. If you received a <code>FAILED</code> status from a <code>ClaimPhoneNumber</code> API call, you have one day to retry claiming the phone number before the number is released back to the inventory for other customers to claim.</p> </li> </ul> <note> <p>You will not be billed for the phone number during the 1-day period if number claiming fails. </p> </note>',
-        }),
-    ).exactOptional(),
+    PhoneNumberId: PhoneNumberIdSchema.exactOptional().openapi({
+      description: 'A unique identifier for the phone number.',
+    }),
+    PhoneNumberArn: ARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the phone number.',
+    }),
+    PhoneNumber: PhoneNumberSchema.exactOptional().openapi({
+      description:
+        'The phone number. Phone numbers are formatted <code>[+] [country code] [subscriber number including area code]</code>.',
+    }),
+    PhoneNumberCountryCode: PhoneNumberCountryCodeSchema.exactOptional().openapi({
+      description: 'The ISO country code.',
+    }),
+    PhoneNumberType: PhoneNumberTypeSchema.exactOptional().openapi({
+      description: 'The type of phone number.',
+    }),
+    PhoneNumberDescription: PhoneNumberDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the phone number.',
+    }),
+    TargetArn: ARNSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) for Amazon Connect instances or traffic distribution groups that phone numbers are claimed to.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description:
+        'The tags used to organize, track, or control access for this resource. For example, { "tags": {"key1":"value1", "key2":"value2"} }.',
+    }),
+    PhoneNumberStatus: PhoneNumberStatusSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the phone number.</p> <ul> <li> <p> <code>CLAIMED</code> means the previous <a href="https://docs.aws.amazon.com/connect/latest/APIReference/API_ClaimedPhoneNumber.html">ClaimedPhoneNumber</a> or <a href="https://docs.aws.amazon.com/connect/latest/APIReference/API_UpdatePhoneNumber.html">UpdatePhoneNumber</a> operation succeeded.</p> </li> <li> <p> <code>IN_PROGRESS</code> means a <a href="https://docs.aws.amazon.com/connect/latest/APIReference/API_ClaimedPhoneNumber.html">ClaimedPhoneNumber</a> or <a href="https://docs.aws.amazon.com/connect/latest/APIReference/API_UpdatePhoneNumber.html">UpdatePhoneNumber</a> operation is still in progress and has not yet completed. You can call <a href="https://docs.aws.amazon.com/connect/latest/APIReference/API_DescribePhoneNumber.html">DescribePhoneNumber</a> at a later time to verify if the previous operation has completed.</p> </li> <li> <p> <code>FAILED</code> indicates that the previous <a href="https://docs.aws.amazon.com/connect/latest/APIReference/API_ClaimedPhoneNumber.html">ClaimedPhoneNumber</a> or <a href="https://docs.aws.amazon.com/connect/latest/APIReference/API_UpdatePhoneNumber.html">UpdatePhoneNumber</a> operation has failed. It will include a message indicating the failure reason. A common reason for a failure may be that the <code>TargetArn</code> value you are claiming or updating a phone number to has reached its limit of total claimed numbers. If you received a <code>FAILED</code> status from a <code>ClaimPhoneNumber</code> API call, you have one day to retry claiming the phone number before the number is released back to the inventory for other customers to claim.</p> </li> </ul> <note> <p>You will not be billed for the phone number during the 1-day period if number claiming fails. </p> </note>',
+    }),
   })
   .openapi({
     description:
@@ -2337,14 +2094,10 @@ const ClaimedPhoneNumberSummarySchema = z
 
 const DescribePhoneNumberResponseSchema = z
   .object({
-    ClaimedPhoneNumberSummary: ClaimedPhoneNumberSummarySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Information about a phone number that's been claimed to your Amazon Connect instance or traffic distribution group.",
-        }),
-    ).exactOptional(),
+    ClaimedPhoneNumberSummary: ClaimedPhoneNumberSummarySchema.exactOptional().openapi({
+      description:
+        "Information about a phone number that's been claimed to your Amazon Connect instance or traffic distribution group.",
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribePhoneNumberResponse')
@@ -2353,17 +2106,15 @@ const QueueDescriptionSchema = z.string().min(1).max(250).openapi('QueueDescript
 
 const OutboundCallerConfigSchema = z
   .object({
-    OutboundCallerIdName: OutboundCallerIdNameSchema.and(
-      z.any().openapi({ description: 'The caller ID name.' }),
-    ).exactOptional(),
-    OutboundCallerIdNumberId: PhoneNumberIdSchema.and(
-      z.any().openapi({ description: 'The caller ID number.' }),
-    ).exactOptional(),
-    OutboundFlowId: ContactFlowIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The outbound whisper flow to be used during an outbound call.' }),
-    ).exactOptional(),
+    OutboundCallerIdName: OutboundCallerIdNameSchema.exactOptional().openapi({
+      description: 'The caller ID name.',
+    }),
+    OutboundCallerIdNumberId: PhoneNumberIdSchema.exactOptional().openapi({
+      description: 'The caller ID number.',
+    }),
+    OutboundFlowId: ContactFlowIdSchema.exactOptional().openapi({
+      description: 'The outbound whisper flow to be used during an outbound call.',
+    }),
   })
   .openapi({
     description: 'The outbound caller ID name, number, and outbound whisper flow.',
@@ -2377,94 +2128,99 @@ const QueueStatusSchema = z.enum(['ENABLED', 'DISABLED']).openapi('QueueStatus')
 
 const QueueSchema = z
   .object({
-    Name: CommonNameLength127Schema.and(
-      z.any().openapi({ description: 'The name of the queue.' }),
-    ).exactOptional(),
-    QueueArn: ARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) for the queue.' }),
-    ).exactOptional(),
-    QueueId: QueueIdSchema.and(
-      z.any().openapi({ description: 'The identifier for the queue.' }),
-    ).exactOptional(),
-    Description: QueueDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the queue.' }),
-    ).exactOptional(),
-    OutboundCallerConfig: OutboundCallerConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The outbound caller ID name, number, and outbound whisper flow.',
-        }),
-    ).exactOptional(),
-    HoursOfOperationId: HoursOfOperationIdSchema.and(
-      z.any().openapi({ description: 'The identifier for the hours of operation.' }),
-    ).exactOptional(),
-    MaxContacts: QueueMaxContactsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of contacts that can be in the queue before it is considered full.',
-        }),
-    ).exactOptional(),
-    Status: QueueStatusSchema.and(
-      z.any().openapi({ description: 'The status of the queue.' }),
-    ).exactOptional(),
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tags used to organize, track, or control access for this resource. For example, { "tags": {"key1":"value1", "key2":"value2"} }.',
-        }),
-    ).exactOptional(),
+    Name: CommonNameLength127Schema.exactOptional().openapi({
+      description: 'The name of the queue.',
+    }),
+    QueueArn: ARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) for the queue.',
+    }),
+    QueueId: QueueIdSchema.exactOptional().openapi({
+      description: 'The identifier for the queue.',
+    }),
+    Description: QueueDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the queue.',
+    }),
+    OutboundCallerConfig: OutboundCallerConfigSchema.exactOptional().openapi({
+      description: 'The outbound caller ID name, number, and outbound whisper flow.',
+    }),
+    HoursOfOperationId: HoursOfOperationIdSchema.exactOptional().openapi({
+      description: 'The identifier for the hours of operation.',
+    }),
+    MaxContacts: QueueMaxContactsSchema.exactOptional().openapi({
+      description:
+        'The maximum number of contacts that can be in the queue before it is considered full.',
+    }),
+    Status: QueueStatusSchema.exactOptional().openapi({ description: 'The status of the queue.' }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description:
+        'The tags used to organize, track, or control access for this resource. For example, { "tags": {"key1":"value1", "key2":"value2"} }.',
+    }),
   })
   .openapi({ description: 'Contains information about a queue.', required: [] })
   .openapi('Queue')
 
 const DescribeQueueResponseSchema = z
-  .object({
-    Queue: QueueSchema.and(
-      z.any().openapi({ description: 'The name of the queue.' }),
-    ).exactOptional(),
-  })
+  .object({ Queue: QueueSchema.exactOptional().openapi({ description: 'The name of the queue.' }) })
   .openapi({ required: [] })
   .openapi('DescribeQueueResponse')
 
+const QuickConnectNameSchema = z.string().min(1).max(127).openapi('QuickConnectName')
+
+const QuickConnectDescriptionSchema = z.string().min(1).max(250).openapi('QuickConnectDescription')
+
+const QuickConnectConfigSchema = z
+  .object({
+    QuickConnectType: QuickConnectTypeSchema.openapi({
+      description:
+        'The type of quick connect. In the Amazon Connect console, when you create a quick connect, you are prompted to assign one of the following types: Agent (USER), External (PHONE_NUMBER), or Queue (QUEUE). ',
+    }),
+    UserConfig: UserQuickConnectConfigSchema.exactOptional().openapi({
+      description: 'The user configuration. This is required only if QuickConnectType is USER.',
+    }),
+    QueueConfig: QueueQuickConnectConfigSchema.exactOptional().openapi({
+      description: 'The queue configuration. This is required only if QuickConnectType is QUEUE.',
+    }),
+    PhoneConfig: PhoneNumberQuickConnectConfigSchema.exactOptional().openapi({
+      description:
+        'The phone configuration. This is required only if QuickConnectType is PHONE_NUMBER.',
+    }),
+  })
+  .openapi({
+    required: ['QuickConnectType'],
+    description: 'Contains configuration settings for a quick connect.',
+  })
+  .openapi('QuickConnectConfig')
+
 const QuickConnectSchema = z
   .object({
-    QuickConnectARN: ARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the quick connect.' }),
-    ).exactOptional(),
-    QuickConnectId: QuickConnectIdSchema.and(
-      z.any().openapi({ description: 'The identifier for the quick connect.' }),
-    ).exactOptional(),
-    Name: QuickConnectNameSchema.and(
-      z.any().openapi({ description: 'The name of the quick connect.' }),
-    ).exactOptional(),
-    Description: QuickConnectDescriptionSchema.and(
-      z.any().openapi({ description: 'The description.' }),
-    ).exactOptional(),
-    QuickConnectConfig: QuickConnectConfigSchema.and(
-      z.any().openapi({ description: 'Contains information about the quick connect.' }),
-    ).exactOptional(),
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tags used to organize, track, or control access for this resource. For example, { "tags": {"key1":"value1", "key2":"value2"} }.',
-        }),
-    ).exactOptional(),
+    QuickConnectARN: ARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the quick connect.',
+    }),
+    QuickConnectId: QuickConnectIdSchema.exactOptional().openapi({
+      description: 'The identifier for the quick connect.',
+    }),
+    Name: QuickConnectNameSchema.exactOptional().openapi({
+      description: 'The name of the quick connect.',
+    }),
+    Description: QuickConnectDescriptionSchema.exactOptional().openapi({
+      description: 'The description.',
+    }),
+    QuickConnectConfig: QuickConnectConfigSchema.exactOptional().openapi({
+      description: 'Contains information about the quick connect.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description:
+        'The tags used to organize, track, or control access for this resource. For example, { "tags": {"key1":"value1", "key2":"value2"} }.',
+    }),
   })
   .openapi({ description: 'Contains information about a quick connect.', required: [] })
   .openapi('QuickConnect')
 
 const DescribeQuickConnectResponseSchema = z
   .object({
-    QuickConnect: QuickConnectSchema.and(
-      z.any().openapi({ description: 'Information about the quick connect.' }),
-    ).exactOptional(),
+    QuickConnect: QuickConnectSchema.exactOptional().openapi({
+      description: 'Information about the quick connect.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeQuickConnectResponse')
@@ -2483,64 +2239,48 @@ const LongSchema = z.int().openapi('Long')
 
 const RoutingProfileSchema = z
   .object({
-    InstanceId: InstanceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the Amazon Connect instance. You can <a href="https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.',
-        }),
-    ).exactOptional(),
-    Name: RoutingProfileNameSchema.and(
-      z.any().openapi({ description: 'The name of the routing profile.' }),
-    ).exactOptional(),
-    RoutingProfileArn: ARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the routing profile.' }),
-    ).exactOptional(),
-    RoutingProfileId: RoutingProfileIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the routing profile.' }),
-    ).exactOptional(),
-    Description: RoutingProfileDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the routing profile.' }),
-    ).exactOptional(),
-    MediaConcurrencies: MediaConcurrenciesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The channels agents can handle in the Contact Control Panel (CCP) for this routing profile.',
-        }),
-    ).exactOptional(),
-    DefaultOutboundQueueId: QueueIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier of the default outbound queue for this routing profile.',
-        }),
-    ).exactOptional(),
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tags used to organize, track, or control access for this resource. For example, { "tags": {"key1":"value1", "key2":"value2"} }.',
-        }),
-    ).exactOptional(),
-    NumberOfAssociatedQueues: LongSchema.and(
-      z.any().openapi({ description: 'The number of associated queues in routing profile.' }),
-    ).exactOptional(),
-    NumberOfAssociatedUsers: LongSchema.and(
-      z.any().openapi({ description: 'The number of associated users in routing profile.' }),
-    ).exactOptional(),
+    InstanceId: InstanceIdSchema.exactOptional().openapi({
+      description:
+        'The identifier of the Amazon Connect instance. You can <a href="https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.',
+    }),
+    Name: RoutingProfileNameSchema.exactOptional().openapi({
+      description: 'The name of the routing profile.',
+    }),
+    RoutingProfileArn: ARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the routing profile.',
+    }),
+    RoutingProfileId: RoutingProfileIdSchema.exactOptional().openapi({
+      description: 'The identifier of the routing profile.',
+    }),
+    Description: RoutingProfileDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the routing profile.',
+    }),
+    MediaConcurrencies: MediaConcurrenciesSchema.exactOptional().openapi({
+      description:
+        'The channels agents can handle in the Contact Control Panel (CCP) for this routing profile.',
+    }),
+    DefaultOutboundQueueId: QueueIdSchema.exactOptional().openapi({
+      description: 'The identifier of the default outbound queue for this routing profile.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description:
+        'The tags used to organize, track, or control access for this resource. For example, { "tags": {"key1":"value1", "key2":"value2"} }.',
+    }),
+    NumberOfAssociatedQueues: LongSchema.exactOptional().openapi({
+      description: 'The number of associated queues in routing profile.',
+    }),
+    NumberOfAssociatedUsers: LongSchema.exactOptional().openapi({
+      description: 'The number of associated users in routing profile.',
+    }),
   })
   .openapi({ description: 'Contains information about a routing profile.', required: [] })
   .openapi('RoutingProfile')
 
 const DescribeRoutingProfileResponseSchema = z
   .object({
-    RoutingProfile: RoutingProfileSchema.and(
-      z.any().openapi({ description: 'The routing profile.' }),
-    ).exactOptional(),
+    RoutingProfile: RoutingProfileSchema.exactOptional().openapi({
+      description: 'The routing profile.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeRoutingProfileResponse')
@@ -2554,12 +2294,12 @@ const RuleNameSchema = z
 
 const RuleTriggerEventSourceSchema = z
   .object({
-    EventSourceName: EventSourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the event source.' }),
-    ),
-    IntegrationAssociationId: IntegrationAssociationIdSchema.and(
-      z.any().openapi({ description: 'The identifier for the integration association.' }),
-    ).exactOptional(),
+    EventSourceName: EventSourceNameSchema.openapi({
+      description: 'The name of the event source.',
+    }),
+    IntegrationAssociationId: IntegrationAssociationIdSchema.exactOptional().openapi({
+      description: 'The identifier for the integration association.',
+    }),
   })
   .openapi({
     required: ['EventSourceName'],
@@ -2576,44 +2316,32 @@ const RulePublishStatusSchema = z.enum(['DRAFT', 'PUBLISHED']).openapi('RulePubl
 
 const RuleSchema = z
   .object({
-    Name: RuleNameSchema.and(z.any().openapi({ description: 'The name of the rule.' })),
-    RuleId: RuleIdSchema.and(z.any().openapi({ description: 'A unique identifier for the rule.' })),
-    RuleArn: ARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the rule.' }),
-    ),
-    TriggerEventSource: RuleTriggerEventSourceSchema.and(
-      z.any().openapi({ description: 'The event source to trigger the rule.' }),
-    ),
-    Function: RuleFunctionSchema.and(
-      z.any().openapi({ description: 'The conditions of the rule.' }),
-    ),
-    Actions: RuleActionsSchema.and(
-      z.any().openapi({ description: 'A list of actions to be run when the rule is triggered.' }),
-    ),
-    PublishStatus: RulePublishStatusSchema.and(
-      z.any().openapi({ description: 'The publish status of the rule.' }),
-    ),
-    CreatedTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The timestamp for when the rule was created.' }),
-    ),
-    LastUpdatedTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The timestamp for the when the rule was last updated.' }),
-    ),
-    LastUpdatedBy: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the user who last updated the rule.',
-        }),
-    ),
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tags used to organize, track, or control access for this resource. For example, { "tags": {"key1":"value1", "key2":"value2"} }.',
-        }),
-    ).exactOptional(),
+    Name: RuleNameSchema.openapi({ description: 'The name of the rule.' }),
+    RuleId: RuleIdSchema.openapi({ description: 'A unique identifier for the rule.' }),
+    RuleArn: ARNSchema.openapi({ description: 'The Amazon Resource Name (ARN) of the rule.' }),
+    TriggerEventSource: RuleTriggerEventSourceSchema.openapi({
+      description: 'The event source to trigger the rule.',
+    }),
+    Function: RuleFunctionSchema.openapi({ description: 'The conditions of the rule.' }),
+    Actions: RuleActionsSchema.openapi({
+      description: 'A list of actions to be run when the rule is triggered.',
+    }),
+    PublishStatus: RulePublishStatusSchema.openapi({
+      description: 'The publish status of the rule.',
+    }),
+    CreatedTime: TimestampSchema.openapi({
+      description: 'The timestamp for when the rule was created.',
+    }),
+    LastUpdatedTime: TimestampSchema.openapi({
+      description: 'The timestamp for the when the rule was last updated.',
+    }),
+    LastUpdatedBy: ARNSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the user who last updated the rule.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description:
+        'The tags used to organize, track, or control access for this resource. For example, { "tags": {"key1":"value1", "key2":"value2"} }.',
+    }),
   })
   .openapi({
     required: [
@@ -2633,7 +2361,7 @@ const RuleSchema = z
   .openapi('Rule')
 
 const DescribeRuleResponseSchema = z
-  .object({ Rule: RuleSchema.and(z.any().openapi({ description: 'Information about the rule.' })) })
+  .object({ Rule: RuleSchema.openapi({ description: 'Information about the rule.' }) })
   .openapi({ required: ['Rule'] })
   .openapi('DescribeRuleResponse')
 
@@ -2653,56 +2381,42 @@ const TagRestrictedResourceListSchema = z
 
 const SecurityProfileSchema = z
   .object({
-    Id: SecurityProfileIdSchema.and(
-      z.any().openapi({ description: 'The identifier for the security profile.' }),
-    ).exactOptional(),
-    OrganizationResourceId: InstanceIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The organization resource identifier for the security profile.' }),
-    ).exactOptional(),
-    Arn: ARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) for the secruity profile.' }),
-    ).exactOptional(),
-    SecurityProfileName: SecurityProfileNameSchema.and(
-      z.any().openapi({ description: 'The name for the security profile.' }),
-    ).exactOptional(),
-    Description: SecurityProfileDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the security profile.' }),
-    ).exactOptional(),
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tags used to organize, track, or control access for this resource. For example, { "tags": {"key1":"value1", "key2":"value2"} }.',
-        }),
-    ).exactOptional(),
-    AllowedAccessControlTags: AllowedAccessControlTagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of tags that a security profile uses to restrict access to resources in Amazon Connect.',
-        }),
-    ).exactOptional(),
-    TagRestrictedResources: TagRestrictedResourceListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of resources that a security profile applies tag restrictions to in Amazon Connect.',
-        }),
-    ).exactOptional(),
+    Id: SecurityProfileIdSchema.exactOptional().openapi({
+      description: 'The identifier for the security profile.',
+    }),
+    OrganizationResourceId: InstanceIdSchema.exactOptional().openapi({
+      description: 'The organization resource identifier for the security profile.',
+    }),
+    Arn: ARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) for the secruity profile.',
+    }),
+    SecurityProfileName: SecurityProfileNameSchema.exactOptional().openapi({
+      description: 'The name for the security profile.',
+    }),
+    Description: SecurityProfileDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the security profile.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description:
+        'The tags used to organize, track, or control access for this resource. For example, { "tags": {"key1":"value1", "key2":"value2"} }.',
+    }),
+    AllowedAccessControlTags: AllowedAccessControlTagsSchema.exactOptional().openapi({
+      description:
+        'The list of tags that a security profile uses to restrict access to resources in Amazon Connect.',
+    }),
+    TagRestrictedResources: TagRestrictedResourceListSchema.exactOptional().openapi({
+      description:
+        'The list of resources that a security profile applies tag restrictions to in Amazon Connect.',
+    }),
   })
   .openapi({ description: 'Contains information about a security profile.', required: [] })
   .openapi('SecurityProfile')
 
 const DescribeSecurityProfileResponseSchema = z
   .object({
-    SecurityProfile: SecurityProfileSchema.and(
-      z.any().openapi({ description: 'The security profile.' }),
-    ).exactOptional(),
+    SecurityProfile: SecurityProfileSchema.exactOptional().openapi({
+      description: 'The security profile.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeSecurityProfileResponse')
@@ -2741,55 +2455,39 @@ const TrafficDistributionGroupStatusSchema = z
 
 const TrafficDistributionGroupSchema = z
   .object({
-    Id: TrafficDistributionGroupIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the traffic distribution group. This can be the ID or the ARN if the API is being called in the Region where the traffic distribution group was created. The ARN must be provided if the call is from the replicated Region.',
-        }),
-    ).exactOptional(),
-    Arn: TrafficDistributionGroupArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the traffic distribution group.',
-        }),
-    ).exactOptional(),
-    Name: Name128Schema.and(
-      z.any().openapi({ description: 'The name of the traffic distribution group.' }),
-    ).exactOptional(),
-    Description: Description250Schema.and(
-      z.any().openapi({ description: 'The description of the traffic distribution group.' }),
-    ).exactOptional(),
-    InstanceArn: InstanceArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN).' }),
-    ).exactOptional(),
-    Status: TrafficDistributionGroupStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the traffic distribution group.</p> <ul> <li> <p> <code>CREATION_IN_PROGRESS</code> means the previous <a href="https://docs.aws.amazon.com/connect/latest/APIReference/API_CreateTrafficDistributionGroup.html">CreateTrafficDistributionGroup</a> operation is still in progress and has not yet completed.</p> </li> <li> <p> <code>ACTIVE</code> means the previous <a href="https://docs.aws.amazon.com/connect/latest/APIReference/API_CreateTrafficDistributionGroup.html">CreateTrafficDistributionGroup</a> operation has succeeded.</p> </li> <li> <p> <code>CREATION_FAILED</code> indicates that the previous <a href="https://docs.aws.amazon.com/connect/latest/APIReference/API_CreateTrafficDistributionGroup.html">CreateTrafficDistributionGroup</a> operation has failed.</p> </li> <li> <p> <code>PENDING_DELETION</code> means the previous <a href="https://docs.aws.amazon.com/connect/latest/APIReference/API_DeleteTrafficDistributionGroup.html">DeleteTrafficDistributionGroup</a> operation is still in progress and has not yet completed.</p> </li> <li> <p> <code>DELETION_FAILED</code> means the previous <a href="https://docs.aws.amazon.com/connect/latest/APIReference/API_DeleteTrafficDistributionGroup.html">DeleteTrafficDistributionGroup</a> operation has failed.</p> </li> <li> <p> <code>UPDATE_IN_PROGRESS</code> means the previous <a href="https://docs.aws.amazon.com/connect/latest/APIReference/API_UpdateTrafficDistributionGroup.html">UpdateTrafficDistributionGroup</a> operation is still in progress and has not yet completed.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tags used to organize, track, or control access for this resource. For example, { "tags": {"key1":"value1", "key2":"value2"} }.',
-        }),
-    ).exactOptional(),
+    Id: TrafficDistributionGroupIdSchema.exactOptional().openapi({
+      description:
+        'The identifier of the traffic distribution group. This can be the ID or the ARN if the API is being called in the Region where the traffic distribution group was created. The ARN must be provided if the call is from the replicated Region.',
+    }),
+    Arn: TrafficDistributionGroupArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the traffic distribution group.',
+    }),
+    Name: Name128Schema.exactOptional().openapi({
+      description: 'The name of the traffic distribution group.',
+    }),
+    Description: Description250Schema.exactOptional().openapi({
+      description: 'The description of the traffic distribution group.',
+    }),
+    InstanceArn: InstanceArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN).',
+    }),
+    Status: TrafficDistributionGroupStatusSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the traffic distribution group.</p> <ul> <li> <p> <code>CREATION_IN_PROGRESS</code> means the previous <a href="https://docs.aws.amazon.com/connect/latest/APIReference/API_CreateTrafficDistributionGroup.html">CreateTrafficDistributionGroup</a> operation is still in progress and has not yet completed.</p> </li> <li> <p> <code>ACTIVE</code> means the previous <a href="https://docs.aws.amazon.com/connect/latest/APIReference/API_CreateTrafficDistributionGroup.html">CreateTrafficDistributionGroup</a> operation has succeeded.</p> </li> <li> <p> <code>CREATION_FAILED</code> indicates that the previous <a href="https://docs.aws.amazon.com/connect/latest/APIReference/API_CreateTrafficDistributionGroup.html">CreateTrafficDistributionGroup</a> operation has failed.</p> </li> <li> <p> <code>PENDING_DELETION</code> means the previous <a href="https://docs.aws.amazon.com/connect/latest/APIReference/API_DeleteTrafficDistributionGroup.html">DeleteTrafficDistributionGroup</a> operation is still in progress and has not yet completed.</p> </li> <li> <p> <code>DELETION_FAILED</code> means the previous <a href="https://docs.aws.amazon.com/connect/latest/APIReference/API_DeleteTrafficDistributionGroup.html">DeleteTrafficDistributionGroup</a> operation has failed.</p> </li> <li> <p> <code>UPDATE_IN_PROGRESS</code> means the previous <a href="https://docs.aws.amazon.com/connect/latest/APIReference/API_UpdateTrafficDistributionGroup.html">UpdateTrafficDistributionGroup</a> operation is still in progress and has not yet completed.</p> </li> </ul>',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description:
+        'The tags used to organize, track, or control access for this resource. For example, { "tags": {"key1":"value1", "key2":"value2"} }.',
+    }),
   })
   .openapi({ description: 'Information about a traffic distribution group.', required: [] })
   .openapi('TrafficDistributionGroup')
 
 const DescribeTrafficDistributionGroupResponseSchema = z
   .object({
-    TrafficDistributionGroup: TrafficDistributionGroupSchema.and(
-      z.any().openapi({ description: 'Information about the traffic distribution group.' }),
-    ).exactOptional(),
+    TrafficDistributionGroup: TrafficDistributionGroupSchema.exactOptional().openapi({
+      description: 'Information about the traffic distribution group.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeTrafficDistributionGroupResponse')
@@ -2798,62 +2496,40 @@ const AgentUsernameSchema = z.string().min(1).max(100).openapi('AgentUsername')
 
 const UserIdentityInfoSchema = z
   .object({
-    FirstName: AgentFirstNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The first name. This is required if you are using Amazon Connect or SAML for identity management.',
-        }),
-    ).exactOptional(),
-    LastName: AgentLastNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The last name. This is required if you are using Amazon Connect or SAML for identity management.',
-        }),
-    ).exactOptional(),
-    Email: EmailSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The email address. If you are using SAML for identity management and include this parameter, an error is returned.',
-        }),
-    ).exactOptional(),
-    SecondaryEmail: EmailSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The user's secondary email address. If you provide a secondary email, the user receives email notifications - other than password reset notifications - to this email address instead of to their primary email address.</p> <p>Pattern: <code>(?=^.{0,265}$)[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,63}</code> </p>",
-        }),
-    ).exactOptional(),
-    Mobile: PhoneNumberSchema.and(
-      z.any().openapi({ description: "The user's mobile number." }),
-    ).exactOptional(),
+    FirstName: AgentFirstNameSchema.exactOptional().openapi({
+      description:
+        'The first name. This is required if you are using Amazon Connect or SAML for identity management.',
+    }),
+    LastName: AgentLastNameSchema.exactOptional().openapi({
+      description:
+        'The last name. This is required if you are using Amazon Connect or SAML for identity management.',
+    }),
+    Email: EmailSchema.exactOptional().openapi({
+      description:
+        'The email address. If you are using SAML for identity management and include this parameter, an error is returned.',
+    }),
+    SecondaryEmail: EmailSchema.exactOptional().openapi({
+      description:
+        "<p>The user's secondary email address. If you provide a secondary email, the user receives email notifications - other than password reset notifications - to this email address instead of to their primary email address.</p> <p>Pattern: <code>(?=^.{0,265}$)[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,63}</code> </p>",
+    }),
+    Mobile: PhoneNumberSchema.exactOptional().openapi({ description: "The user's mobile number." }),
   })
   .openapi({ description: 'Contains information about the identity of a user.', required: [] })
   .openapi('UserIdentityInfo')
 
 const UserPhoneConfigSchema = z
   .object({
-    PhoneType: PhoneTypeSchema.and(z.any().openapi({ description: 'The phone type.' })),
-    AutoAccept: AutoAcceptSchema.and(
-      z.any().openapi({ description: 'The Auto accept setting.' }),
-    ).exactOptional(),
-    AfterContactWorkTimeLimit: AfterContactWorkTimeLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The After Call Work (ACW) timeout setting, in seconds.</p> <note> <p>When returned by a <code>SearchUsers</code> call, <code>AfterContactWorkTimeLimit</code> is returned in milliseconds. </p> </note>',
-        }),
-    ).exactOptional(),
-    DeskPhoneNumber: PhoneNumberSchema.and(
-      z.any().openapi({ description: "The phone number for the user's desk phone." }),
-    ).exactOptional(),
+    PhoneType: PhoneTypeSchema.openapi({ description: 'The phone type.' }),
+    AutoAccept: AutoAcceptSchema.exactOptional().openapi({
+      description: 'The Auto accept setting.',
+    }),
+    AfterContactWorkTimeLimit: AfterContactWorkTimeLimitSchema.exactOptional().openapi({
+      description:
+        '<p>The After Call Work (ACW) timeout setting, in seconds.</p> <note> <p>When returned by a <code>SearchUsers</code> call, <code>AfterContactWorkTimeLimit</code> is returned in milliseconds. </p> </note>',
+    }),
+    DeskPhoneNumber: PhoneNumberSchema.exactOptional().openapi({
+      description: "The phone number for the user's desk phone.",
+    }),
   })
   .openapi({
     required: ['PhoneType'],
@@ -2871,39 +2547,35 @@ const SecurityProfileIdsSchema = z
 
 const UserSchema = z
   .object({
-    Id: UserIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the user account.' }),
-    ).exactOptional(),
-    Arn: ARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the user account.' }),
-    ).exactOptional(),
-    Username: AgentUsernameSchema.and(
-      z.any().openapi({ description: 'The user name assigned to the user account.' }),
-    ).exactOptional(),
-    IdentityInfo: UserIdentityInfoSchema.and(
-      z.any().openapi({ description: 'Information about the user identity.' }),
-    ).exactOptional(),
-    PhoneConfig: UserPhoneConfigSchema.and(
-      z.any().openapi({ description: 'Information about the phone configuration for the user.' }),
-    ).exactOptional(),
-    DirectoryUserId: DirectoryUserIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the user account in the directory used for identity management.',
-        }),
-    ).exactOptional(),
-    SecurityProfileIds: SecurityProfileIdsSchema.and(
-      z.any().openapi({ description: 'The identifiers of the security profiles for the user.' }),
-    ).exactOptional(),
-    RoutingProfileId: RoutingProfileIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the routing profile for the user.' }),
-    ).exactOptional(),
-    HierarchyGroupId: HierarchyGroupIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the hierarchy group for the user.' }),
-    ).exactOptional(),
-    Tags: TagMapSchema.and(z.any().openapi({ description: 'The tags.' })).exactOptional(),
+    Id: UserIdSchema.exactOptional().openapi({
+      description: 'The identifier of the user account.',
+    }),
+    Arn: ARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the user account.',
+    }),
+    Username: AgentUsernameSchema.exactOptional().openapi({
+      description: 'The user name assigned to the user account.',
+    }),
+    IdentityInfo: UserIdentityInfoSchema.exactOptional().openapi({
+      description: 'Information about the user identity.',
+    }),
+    PhoneConfig: UserPhoneConfigSchema.exactOptional().openapi({
+      description: 'Information about the phone configuration for the user.',
+    }),
+    DirectoryUserId: DirectoryUserIdSchema.exactOptional().openapi({
+      description:
+        'The identifier of the user account in the directory used for identity management.',
+    }),
+    SecurityProfileIds: SecurityProfileIdsSchema.exactOptional().openapi({
+      description: 'The identifiers of the security profiles for the user.',
+    }),
+    RoutingProfileId: RoutingProfileIdSchema.exactOptional().openapi({
+      description: 'The identifier of the routing profile for the user.',
+    }),
+    HierarchyGroupId: HierarchyGroupIdSchema.exactOptional().openapi({
+      description: 'The identifier of the hierarchy group for the user.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({ description: 'The tags.' }),
   })
   .openapi({
     description: 'Contains information about a user account for an Amazon Connect instance.',
@@ -2913,11 +2585,9 @@ const UserSchema = z
 
 const DescribeUserResponseSchema = z
   .object({
-    User: UserSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Information about the user account and configuration settings.' }),
-    ).exactOptional(),
+    User: UserSchema.exactOptional().openapi({
+      description: 'Information about the user account and configuration settings.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeUserResponse')
@@ -2928,36 +2598,36 @@ const HierarchyLevelIdSchema = z.string().openapi('HierarchyLevelId')
 
 const HierarchyGroupSummarySchema = z
   .object({
-    Id: HierarchyGroupIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the hierarchy group.' }),
-    ).exactOptional(),
-    Arn: ARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the hierarchy group.' }),
-    ).exactOptional(),
-    Name: HierarchyGroupNameSchema.and(
-      z.any().openapi({ description: 'The name of the hierarchy group.' }),
-    ).exactOptional(),
+    Id: HierarchyGroupIdSchema.exactOptional().openapi({
+      description: 'The identifier of the hierarchy group.',
+    }),
+    Arn: ARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the hierarchy group.',
+    }),
+    Name: HierarchyGroupNameSchema.exactOptional().openapi({
+      description: 'The name of the hierarchy group.',
+    }),
   })
   .openapi({ description: 'Contains summary information about a hierarchy group.', required: [] })
   .openapi('HierarchyGroupSummary')
 
 const HierarchyPathSchema = z
   .object({
-    LevelOne: HierarchyGroupSummarySchema.and(
-      z.any().openapi({ description: 'Information about level one.' }),
-    ).exactOptional(),
-    LevelTwo: HierarchyGroupSummarySchema.and(
-      z.any().openapi({ description: 'Information about level two.' }),
-    ).exactOptional(),
-    LevelThree: HierarchyGroupSummarySchema.and(
-      z.any().openapi({ description: 'Information about level three.' }),
-    ).exactOptional(),
-    LevelFour: HierarchyGroupSummarySchema.and(
-      z.any().openapi({ description: 'Information about level four.' }),
-    ).exactOptional(),
-    LevelFive: HierarchyGroupSummarySchema.and(
-      z.any().openapi({ description: 'Information about level five.' }),
-    ).exactOptional(),
+    LevelOne: HierarchyGroupSummarySchema.exactOptional().openapi({
+      description: 'Information about level one.',
+    }),
+    LevelTwo: HierarchyGroupSummarySchema.exactOptional().openapi({
+      description: 'Information about level two.',
+    }),
+    LevelThree: HierarchyGroupSummarySchema.exactOptional().openapi({
+      description: 'Information about level three.',
+    }),
+    LevelFour: HierarchyGroupSummarySchema.exactOptional().openapi({
+      description: 'Information about level four.',
+    }),
+    LevelFive: HierarchyGroupSummarySchema.exactOptional().openapi({
+      description: 'Information about level five.',
+    }),
   })
   .openapi({
     description: 'Contains information about the levels of a hierarchy group.',
@@ -2967,38 +2637,34 @@ const HierarchyPathSchema = z
 
 const HierarchyGroupSchema = z
   .object({
-    Id: HierarchyGroupIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the hierarchy group.' }),
-    ).exactOptional(),
-    Arn: ARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the hierarchy group.' }),
-    ).exactOptional(),
-    Name: HierarchyGroupNameSchema.and(
-      z.any().openapi({ description: 'The name of the hierarchy group.' }),
-    ).exactOptional(),
-    LevelId: HierarchyLevelIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the level in the hierarchy group.' }),
-    ).exactOptional(),
-    HierarchyPath: HierarchyPathSchema.and(
-      z.any().openapi({ description: 'Information about the levels in the hierarchy group.' }),
-    ).exactOptional(),
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tags used to organize, track, or control access for this resource. For example, { "tags": {"key1":"value1", "key2":"value2"} }.',
-        }),
-    ).exactOptional(),
+    Id: HierarchyGroupIdSchema.exactOptional().openapi({
+      description: 'The identifier of the hierarchy group.',
+    }),
+    Arn: ARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the hierarchy group.',
+    }),
+    Name: HierarchyGroupNameSchema.exactOptional().openapi({
+      description: 'The name of the hierarchy group.',
+    }),
+    LevelId: HierarchyLevelIdSchema.exactOptional().openapi({
+      description: 'The identifier of the level in the hierarchy group.',
+    }),
+    HierarchyPath: HierarchyPathSchema.exactOptional().openapi({
+      description: 'Information about the levels in the hierarchy group.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description:
+        'The tags used to organize, track, or control access for this resource. For example, { "tags": {"key1":"value1", "key2":"value2"} }.',
+    }),
   })
   .openapi({ description: 'Contains information about a hierarchy group.', required: [] })
   .openapi('HierarchyGroup')
 
 const DescribeUserHierarchyGroupResponseSchema = z
   .object({
-    HierarchyGroup: HierarchyGroupSchema.and(
-      z.any().openapi({ description: 'Information about the hierarchy group.' }),
-    ).exactOptional(),
+    HierarchyGroup: HierarchyGroupSchema.exactOptional().openapi({
+      description: 'Information about the hierarchy group.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeUserHierarchyGroupResponse')
@@ -3007,45 +2673,45 @@ const HierarchyLevelNameSchema = z.string().openapi('HierarchyLevelName')
 
 const HierarchyLevelSchema = z
   .object({
-    Id: HierarchyLevelIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the hierarchy level.' }),
-    ).exactOptional(),
-    Arn: ARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the hierarchy level.' }),
-    ).exactOptional(),
-    Name: HierarchyLevelNameSchema.and(
-      z.any().openapi({ description: 'The name of the hierarchy level.' }),
-    ).exactOptional(),
+    Id: HierarchyLevelIdSchema.exactOptional().openapi({
+      description: 'The identifier of the hierarchy level.',
+    }),
+    Arn: ARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the hierarchy level.',
+    }),
+    Name: HierarchyLevelNameSchema.exactOptional().openapi({
+      description: 'The name of the hierarchy level.',
+    }),
   })
   .openapi({ description: 'Contains information about a hierarchy level.', required: [] })
   .openapi('HierarchyLevel')
 
 const HierarchyStructureSchema = z
   .object({
-    LevelOne: HierarchyLevelSchema.and(
-      z.any().openapi({ description: 'Information about level one.' }),
-    ).exactOptional(),
-    LevelTwo: HierarchyLevelSchema.and(
-      z.any().openapi({ description: 'Information about level two.' }),
-    ).exactOptional(),
-    LevelThree: HierarchyLevelSchema.and(
-      z.any().openapi({ description: 'Information about level three.' }),
-    ).exactOptional(),
-    LevelFour: HierarchyLevelSchema.and(
-      z.any().openapi({ description: 'Information about level four.' }),
-    ).exactOptional(),
-    LevelFive: HierarchyLevelSchema.and(
-      z.any().openapi({ description: 'Information about level five.' }),
-    ).exactOptional(),
+    LevelOne: HierarchyLevelSchema.exactOptional().openapi({
+      description: 'Information about level one.',
+    }),
+    LevelTwo: HierarchyLevelSchema.exactOptional().openapi({
+      description: 'Information about level two.',
+    }),
+    LevelThree: HierarchyLevelSchema.exactOptional().openapi({
+      description: 'Information about level three.',
+    }),
+    LevelFour: HierarchyLevelSchema.exactOptional().openapi({
+      description: 'Information about level four.',
+    }),
+    LevelFive: HierarchyLevelSchema.exactOptional().openapi({
+      description: 'Information about level five.',
+    }),
   })
   .openapi({ description: 'Contains information about a hierarchy structure.', required: [] })
   .openapi('HierarchyStructure')
 
 const DescribeUserHierarchyStructureResponseSchema = z
   .object({
-    HierarchyStructure: HierarchyStructureSchema.and(
-      z.any().openapi({ description: 'Information about the hierarchy structure.' }),
-    ).exactOptional(),
+    HierarchyStructure: HierarchyStructureSchema.exactOptional().openapi({
+      description: 'Information about the hierarchy structure.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeUserHierarchyStructureResponse')
@@ -3095,50 +2761,32 @@ const VocabularyContentSchema = z.string().min(1).max(60000).openapi('Vocabulary
 
 const VocabularySchema = z
   .object({
-    Name: VocabularyNameSchema.and(
-      z.any().openapi({ description: 'A unique name of the custom vocabulary.' }),
-    ),
-    Id: VocabularyIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the custom vocabulary.' }),
-    ),
-    Arn: ARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the custom vocabulary.' }),
-    ),
-    LanguageCode: VocabularyLanguageCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The language code of the vocabulary entries. For a list of languages and their corresponding language codes, see <a href="https://docs.aws.amazon.com/transcribe/latest/dg/transcribe-whatis.html">What is Amazon Transcribe?</a> ',
-        }),
-    ),
-    State: VocabularyStateSchema.and(
-      z.any().openapi({ description: 'The current state of the custom vocabulary.' }),
-    ),
-    LastModifiedTime: VocabularyLastModifiedTimeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The timestamp when the custom vocabulary was last modified.' }),
-    ),
-    FailureReason: VocabularyFailureReasonSchema.and(
-      z.any().openapi({ description: 'The reason why the custom vocabulary was not created.' }),
-    ).exactOptional(),
-    Content: VocabularyContentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The content of the custom vocabulary in plain-text format with a table of values. Each row in the table represents a word or a phrase, described with <code>Phrase</code>, <code>IPA</code>, <code>SoundsLike</code>, and <code>DisplayAs</code> fields. Separate the fields with TAB characters. For more information, see <a href="https://docs.aws.amazon.com/transcribe/latest/dg/custom-vocabulary.html#create-vocabulary-table">Create a custom vocabulary using a table</a>.',
-        }),
-    ).exactOptional(),
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tags used to organize, track, or control access for this resource. For example, { "tags": {"key1":"value1", "key2":"value2"} }.',
-        }),
-    ).exactOptional(),
+    Name: VocabularyNameSchema.openapi({ description: 'A unique name of the custom vocabulary.' }),
+    Id: VocabularyIdSchema.openapi({ description: 'The identifier of the custom vocabulary.' }),
+    Arn: ARNSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the custom vocabulary.',
+    }),
+    LanguageCode: VocabularyLanguageCodeSchema.openapi({
+      description:
+        'The language code of the vocabulary entries. For a list of languages and their corresponding language codes, see <a href="https://docs.aws.amazon.com/transcribe/latest/dg/transcribe-whatis.html">What is Amazon Transcribe?</a> ',
+    }),
+    State: VocabularyStateSchema.openapi({
+      description: 'The current state of the custom vocabulary.',
+    }),
+    LastModifiedTime: VocabularyLastModifiedTimeSchema.openapi({
+      description: 'The timestamp when the custom vocabulary was last modified.',
+    }),
+    FailureReason: VocabularyFailureReasonSchema.exactOptional().openapi({
+      description: 'The reason why the custom vocabulary was not created.',
+    }),
+    Content: VocabularyContentSchema.exactOptional().openapi({
+      description:
+        'The content of the custom vocabulary in plain-text format with a table of values. Each row in the table represents a word or a phrase, described with <code>Phrase</code>, <code>IPA</code>, <code>SoundsLike</code>, and <code>DisplayAs</code> fields. Separate the fields with TAB characters. For more information, see <a href="https://docs.aws.amazon.com/transcribe/latest/dg/custom-vocabulary.html#create-vocabulary-table">Create a custom vocabulary using a table</a>.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description:
+        'The tags used to organize, track, or control access for this resource. For example, { "tags": {"key1":"value1", "key2":"value2"} }.',
+    }),
   })
   .openapi({
     required: ['Name', 'Id', 'Arn', 'LanguageCode', 'State', 'LastModifiedTime'],
@@ -3148,19 +2796,15 @@ const VocabularySchema = z
 
 const DescribeVocabularyResponseSchema = z
   .object({
-    Vocabulary: VocabularySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of specific words that you want Contact Lens for Amazon Connect to recognize in your audio input. They are generally domain-specific words and phrases, words that Contact Lens is not recognizing, or proper nouns.',
-        }),
-    ),
+    Vocabulary: VocabularySchema.openapi({
+      description:
+        'A list of specific words that you want Contact Lens for Amazon Connect to recognize in your audio input. They are generally domain-specific words and phrases, words that Contact Lens is not recognizing, or proper nouns.',
+    }),
   })
   .openapi({ required: ['Vocabulary'] })
   .openapi('DescribeVocabularyResponse')
 
-const DismissUserContactResponseSchema = z.object({}).openapi('DismissUserContactResponse')
+const DismissUserContactResponseSchema = z.looseObject({}).openapi('DismissUserContactResponse')
 
 const AttributeValueSchema = z.string().min(0).max(32767).openapi('AttributeValue')
 
@@ -3168,9 +2812,9 @@ const AttributesSchema = z.record(z.string(), AttributeValueSchema).openapi('Att
 
 const GetContactAttributesResponseSchema = z
   .object({
-    Attributes: AttributesSchema.and(
-      z.any().openapi({ description: 'Information about the attributes.' }),
-    ).exactOptional(),
+    Attributes: AttributesSchema.exactOptional().openapi({
+      description: 'Information about the attributes.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetContactAttributesResponse')
@@ -3179,12 +2823,10 @@ const NextTokenSchema = z.string().openapi('NextToken')
 
 const QueueReferenceSchema = z
   .object({
-    Id: QueueIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the queue.' }),
-    ).exactOptional(),
-    Arn: ARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the queue.' }),
-    ).exactOptional(),
+    Id: QueueIdSchema.exactOptional().openapi({ description: 'The identifier of the queue.' }),
+    Arn: ARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the queue.',
+    }),
   })
   .openapi({
     description: 'Contains information about a queue resource for which metrics are returned.',
@@ -3194,12 +2836,12 @@ const QueueReferenceSchema = z
 
 const RoutingProfileReferenceSchema = z
   .object({
-    Id: RoutingProfileIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the routing profile.' }),
-    ).exactOptional(),
-    Arn: ARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the routing profile.' }),
-    ).exactOptional(),
+    Id: RoutingProfileIdSchema.exactOptional().openapi({
+      description: 'The identifier of the routing profile.',
+    }),
+    Arn: ARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the routing profile.',
+    }),
   })
   .openapi({
     description: 'Information about the routing profile assigned to the user.',
@@ -3209,14 +2851,12 @@ const RoutingProfileReferenceSchema = z
 
 const DimensionsSchema = z
   .object({
-    Queue: QueueReferenceSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Information about the queue for which metrics are returned.' }),
-    ).exactOptional(),
-    Channel: ChannelSchema.and(
-      z.any().openapi({ description: 'The channel used for grouping and filters.' }),
-    ).exactOptional(),
+    Queue: QueueReferenceSchema.exactOptional().openapi({
+      description: 'Information about the queue for which metrics are returned.',
+    }),
+    Channel: ChannelSchema.exactOptional().openapi({
+      description: 'The channel used for grouping and filters.',
+    }),
     RoutingProfile: RoutingProfileReferenceSchema.exactOptional(),
   })
   .openapi({
@@ -3248,12 +2888,10 @@ const UnitSchema = z.enum(['SECONDS', 'COUNT', 'PERCENT']).openapi('Unit')
 
 const CurrentMetricSchema = z
   .object({
-    Name: CurrentMetricNameSchema.and(
-      z.any().openapi({ description: 'The name of the metric.' }),
-    ).exactOptional(),
-    Unit: UnitSchema.and(
-      z.any().openapi({ description: 'The unit for the metric.' }),
-    ).exactOptional(),
+    Name: CurrentMetricNameSchema.exactOptional().openapi({
+      description: 'The name of the metric.',
+    }),
+    Unit: UnitSchema.exactOptional().openapi({ description: 'The unit for the metric.' }),
   })
   .openapi({
     description:
@@ -3262,16 +2900,12 @@ const CurrentMetricSchema = z
   })
   .openapi('CurrentMetric')
 
-const ValueSchema = z.float64().openapi('Value')
-
 const CurrentMetricDataSchema = z
   .object({
-    Metric: CurrentMetricSchema.and(
-      z.any().openapi({ description: 'Information about the metric.' }),
-    ).exactOptional(),
-    Value: ValueSchema.and(
-      z.any().openapi({ description: 'The value of the metric.' }),
-    ).exactOptional(),
+    Metric: CurrentMetricSchema.exactOptional().openapi({
+      description: 'Information about the metric.',
+    }),
+    Value: ValueSchema.exactOptional().openapi({ description: 'The value of the metric.' }),
   })
   .openapi({ description: 'Contains the data for a real-time metric.', required: [] })
   .openapi('CurrentMetricData')
@@ -3282,12 +2916,12 @@ const CurrentMetricDataCollectionsSchema = z
 
 const CurrentMetricResultSchema = z
   .object({
-    Dimensions: DimensionsSchema.and(
-      z.any().openapi({ description: 'The dimensions for the metrics.' }),
-    ).exactOptional(),
-    Collections: CurrentMetricDataCollectionsSchema.and(
-      z.any().openapi({ description: 'The set of metrics.' }),
-    ).exactOptional(),
+    Dimensions: DimensionsSchema.exactOptional().openapi({
+      description: 'The dimensions for the metrics.',
+    }),
+    Collections: CurrentMetricDataCollectionsSchema.exactOptional().openapi({
+      description: 'The set of metrics.',
+    }),
   })
   .openapi({ description: 'Contains information about a set of real-time metrics.', required: [] })
   .openapi('CurrentMetricResult')
@@ -3300,31 +2934,19 @@ const ApproximateTotalCountSchema = z.int().openapi('ApproximateTotalCount')
 
 const GetCurrentMetricDataResponseSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If there are additional results, this is the token for the next set of results.</p> <p>The token expires after 5 minutes from the time it is created. Subsequent requests that use the token must use the same request parameters as the request that generated the token.</p>',
-        }),
-    ).exactOptional(),
-    MetricResults: CurrentMetricResultsSchema.and(
-      z.any().openapi({ description: 'Information about the real-time metrics.' }),
-    ).exactOptional(),
-    DataSnapshotTime: Timestamp2Schema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time at which the metrics were retrieved and cached for pagination.',
-        }),
-    ).exactOptional(),
-    ApproximateTotalCount: ApproximateTotalCountSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The total count of the result, regardless of the current page size. ',
-        }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        '<p>If there are additional results, this is the token for the next set of results.</p> <p>The token expires after 5 minutes from the time it is created. Subsequent requests that use the token must use the same request parameters as the request that generated the token.</p>',
+    }),
+    MetricResults: CurrentMetricResultsSchema.exactOptional().openapi({
+      description: 'Information about the real-time metrics.',
+    }),
+    DataSnapshotTime: Timestamp2Schema.exactOptional().openapi({
+      description: 'The time at which the metrics were retrieved and cached for pagination.',
+    }),
+    ApproximateTotalCount: ApproximateTotalCountSchema.exactOptional().openapi({
+      description: 'The total count of the result, regardless of the current page size. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetCurrentMetricDataResponse')
@@ -3346,9 +2968,7 @@ const SortOrderSchema = z.enum(['ASCENDING', 'DESCENDING']).openapi('SortOrder')
 const CurrentMetricSortCriteriaSchema = z
   .object({
     SortByMetric: CurrentMetricNameSchema.exactOptional(),
-    SortOrder: SortOrderSchema.and(
-      z.any().openapi({ description: 'The way to sort.' }),
-    ).exactOptional(),
+    SortOrder: SortOrderSchema.exactOptional().openapi({ description: 'The way to sort.' }),
   })
   .openapi({
     description:
@@ -3359,60 +2979,60 @@ const CurrentMetricSortCriteriaSchema = z
 
 const UserReferenceSchema = z
   .object({
-    Id: UserIdSchema.and(
-      z.any().openapi({ description: 'The unique identifier for the user.' }),
-    ).exactOptional(),
-    Arn: ARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) for the user.' }),
-    ).exactOptional(),
+    Id: UserIdSchema.exactOptional().openapi({
+      description: 'The unique identifier for the user.',
+    }),
+    Arn: ARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) for the user.',
+    }),
   })
   .openapi({ description: 'Information about the user.', required: [] })
   .openapi('UserReference')
 
 const HierarchyGroupSummaryReferenceSchema = z
   .object({
-    Id: HierarchyGroupIdSchema.and(
-      z.any().openapi({ description: 'The unique identifier for the hierarchy group.' }),
-    ).exactOptional(),
-    Arn: ARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) for the hierarchy group. ' }),
-    ).exactOptional(),
+    Id: HierarchyGroupIdSchema.exactOptional().openapi({
+      description: 'The unique identifier for the hierarchy group.',
+    }),
+    Arn: ARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) for the hierarchy group. ',
+    }),
   })
   .openapi({ description: 'Information about the hierarchy group.', required: [] })
   .openapi('HierarchyGroupSummaryReference')
 
 const HierarchyPathReferenceSchema = z
   .object({
-    LevelOne: HierarchyGroupSummaryReferenceSchema.and(
-      z.any().openapi({ description: 'Information about level one.' }),
-    ).exactOptional(),
-    LevelTwo: HierarchyGroupSummaryReferenceSchema.and(
-      z.any().openapi({ description: 'Information about level two.' }),
-    ).exactOptional(),
-    LevelThree: HierarchyGroupSummaryReferenceSchema.and(
-      z.any().openapi({ description: 'Information about level three.' }),
-    ).exactOptional(),
-    LevelFour: HierarchyGroupSummaryReferenceSchema.and(
-      z.any().openapi({ description: 'Information about level four.' }),
-    ).exactOptional(),
-    LevelFive: HierarchyGroupSummaryReferenceSchema.and(
-      z.any().openapi({ description: 'Information about level five.' }),
-    ).exactOptional(),
+    LevelOne: HierarchyGroupSummaryReferenceSchema.exactOptional().openapi({
+      description: 'Information about level one.',
+    }),
+    LevelTwo: HierarchyGroupSummaryReferenceSchema.exactOptional().openapi({
+      description: 'Information about level two.',
+    }),
+    LevelThree: HierarchyGroupSummaryReferenceSchema.exactOptional().openapi({
+      description: 'Information about level three.',
+    }),
+    LevelFour: HierarchyGroupSummaryReferenceSchema.exactOptional().openapi({
+      description: 'Information about level four.',
+    }),
+    LevelFive: HierarchyGroupSummaryReferenceSchema.exactOptional().openapi({
+      description: 'Information about level five.',
+    }),
   })
   .openapi({ description: 'Information about the levels in the hierarchy group.', required: [] })
   .openapi('HierarchyPathReference')
 
 const AgentStatusReferenceSchema = z
   .object({
-    StatusStartTimestamp: TimestampSchema.and(
-      z.any().openapi({ description: "The start timestamp of the agent's status." }),
-    ).exactOptional(),
-    StatusArn: ARNSchema.and(
-      z.any().openapi({ description: "The Amazon Resource Name (ARN) of the agent's status." }),
-    ).exactOptional(),
-    StatusName: AgentStatusNameSchema.and(
-      z.any().openapi({ description: 'The name of the agent status.' }),
-    ).exactOptional(),
+    StatusStartTimestamp: TimestampSchema.exactOptional().openapi({
+      description: "The start timestamp of the agent's status.",
+    }),
+    StatusArn: ARNSchema.exactOptional().openapi({
+      description: "The Amazon Resource Name (ARN) of the agent's status.",
+    }),
+    StatusName: AgentStatusNameSchema.exactOptional().openapi({
+      description: 'The name of the agent status.',
+    }),
   })
   .openapi({ description: "Information about the agent's status.", required: [] })
   .openapi('AgentStatusReference')
@@ -3439,33 +3059,23 @@ const ContactStateSchema = z
 
 const AgentContactReferenceSchema = z
   .object({
-    ContactId: ContactIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier of the contact in this instance of Amazon Connect. ',
-        }),
-    ).exactOptional(),
-    Channel: ChannelSchema.and(
-      z.any().openapi({ description: 'The channel of the contact.' }),
-    ).exactOptional(),
-    InitiationMethod: ContactInitiationMethodSchema.and(
-      z.any().openapi({ description: 'How the contact was initiated.' }),
-    ).exactOptional(),
-    AgentContactState: ContactStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <a href="https://docs.aws.amazon.com/connect/latest/adminguide/about-contact-states.html">state of the contact</a>.',
-        }),
-    ).exactOptional(),
-    StateStartTimestamp: TimestampSchema.and(
-      z.any().openapi({ description: 'The epoch timestamp when the contact state started.' }),
-    ).exactOptional(),
-    ConnectedToAgentTimestamp: TimestampSchema.and(
-      z.any().openapi({ description: 'The time at which the contact was connected to an agent.' }),
-    ).exactOptional(),
+    ContactId: ContactIdSchema.exactOptional().openapi({
+      description: 'The identifier of the contact in this instance of Amazon Connect. ',
+    }),
+    Channel: ChannelSchema.exactOptional().openapi({ description: 'The channel of the contact.' }),
+    InitiationMethod: ContactInitiationMethodSchema.exactOptional().openapi({
+      description: 'How the contact was initiated.',
+    }),
+    AgentContactState: ContactStateSchema.exactOptional().openapi({
+      description:
+        'The <a href="https://docs.aws.amazon.com/connect/latest/adminguide/about-contact-states.html">state of the contact</a>.',
+    }),
+    StateStartTimestamp: TimestampSchema.exactOptional().openapi({
+      description: 'The epoch timestamp when the contact state started.',
+    }),
+    ConnectedToAgentTimestamp: TimestampSchema.exactOptional().openapi({
+      description: 'The time at which the contact was connected to an agent.',
+    }),
     Queue: QueueReferenceSchema.exactOptional(),
   })
   .openapi({
@@ -3481,67 +3091,38 @@ const AgentContactReferenceListSchema = z
 
 const UserDataSchema = z
   .object({
-    User: UserReferenceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the user for the data that is returned. It contains the <code>resourceId</code> and ARN of the user. ',
-        }),
-    ).exactOptional(),
-    RoutingProfile: RoutingProfileReferenceSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Information about the routing profile that is assigned to the user.',
-        }),
-    ).exactOptional(),
-    HierarchyPath: HierarchyPathReferenceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains information about the levels of a hierarchy group assigned to a user.',
-        }),
-    ).exactOptional(),
-    Status: AgentStatusReferenceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status of the agent that they manually set in their Contact Control Panel (CCP), or that the supervisor manually changes in the real-time metrics report.',
-        }),
-    ).exactOptional(),
-    AvailableSlotsByChannel: ChannelToCountMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A map of available slots by channel. The key is a channel name. The value is an integer: the available number of slots. ',
-        }),
-    ).exactOptional(),
-    MaxSlotsByChannel: ChannelToCountMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A map of maximum slots by channel. The key is a channel name. The value is an integer: the maximum number of slots. This is calculated from <a href="https://docs.aws.amazon.com/connect/latest/APIReference/API_MediaConcurrency.html">MediaConcurrency</a> of the <code>RoutingProfile</code> assigned to the agent. ',
-        }),
-    ).exactOptional(),
-    ActiveSlotsByChannel: ChannelToCountMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A map of active slots by channel. The key is a channel name. The value is an integer: the number of active slots. ',
-        }),
-    ).exactOptional(),
-    Contacts: AgentContactReferenceListSchema.and(
-      z.any().openapi({ description: 'A list of contact reference information.' }),
-    ).exactOptional(),
-    NextStatus: AgentStatusNameSchema.and(
-      z.any().openapi({ description: 'The Next status of the agent.' }),
-    ).exactOptional(),
+    User: UserReferenceSchema.exactOptional().openapi({
+      description:
+        'Information about the user for the data that is returned. It contains the <code>resourceId</code> and ARN of the user. ',
+    }),
+    RoutingProfile: RoutingProfileReferenceSchema.exactOptional().openapi({
+      description: 'Information about the routing profile that is assigned to the user.',
+    }),
+    HierarchyPath: HierarchyPathReferenceSchema.exactOptional().openapi({
+      description: 'Contains information about the levels of a hierarchy group assigned to a user.',
+    }),
+    Status: AgentStatusReferenceSchema.exactOptional().openapi({
+      description:
+        'The status of the agent that they manually set in their Contact Control Panel (CCP), or that the supervisor manually changes in the real-time metrics report.',
+    }),
+    AvailableSlotsByChannel: ChannelToCountMapSchema.exactOptional().openapi({
+      description:
+        'A map of available slots by channel. The key is a channel name. The value is an integer: the available number of slots. ',
+    }),
+    MaxSlotsByChannel: ChannelToCountMapSchema.exactOptional().openapi({
+      description:
+        'A map of maximum slots by channel. The key is a channel name. The value is an integer: the maximum number of slots. This is calculated from <a href="https://docs.aws.amazon.com/connect/latest/APIReference/API_MediaConcurrency.html">MediaConcurrency</a> of the <code>RoutingProfile</code> assigned to the agent. ',
+    }),
+    ActiveSlotsByChannel: ChannelToCountMapSchema.exactOptional().openapi({
+      description:
+        ' A map of active slots by channel. The key is a channel name. The value is an integer: the number of active slots. ',
+    }),
+    Contacts: AgentContactReferenceListSchema.exactOptional().openapi({
+      description: 'A list of contact reference information.',
+    }),
+    NextStatus: AgentStatusNameSchema.exactOptional().openapi({
+      description: 'The Next status of the agent.',
+    }),
   })
   .openapi({ description: 'Data for a user.', required: [] })
   .openapi('UserData')
@@ -3550,24 +3131,16 @@ const UserDataListSchema = z.array(UserDataSchema).openapi('UserDataList')
 
 const GetCurrentUserDataResponseSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If there are additional results, this is the token for the next set of results.',
-        }),
-    ).exactOptional(),
-    UserDataList: UserDataListSchema.and(
-      z.any().openapi({ description: 'A list of the user data that is returned.' }),
-    ).exactOptional(),
-    ApproximateTotalCount: ApproximateTotalCountSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The total count of the result, regardless of the current page size.',
-        }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If there are additional results, this is the token for the next set of results.',
+    }),
+    UserDataList: UserDataListSchema.exactOptional().openapi({
+      description: 'A list of the user data that is returned.',
+    }),
+    ApproximateTotalCount: ApproximateTotalCountSchema.exactOptional().openapi({
+      description: 'The total count of the result, regardless of the current page size.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetCurrentUserDataResponse')
@@ -3576,14 +3149,10 @@ const ContactStatesSchema = z.array(ContactStateSchema).max(9).openapi('ContactS
 
 const ContactFilterSchema = z
   .object({
-    ContactStates: ContactStatesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of up to 9 <a href="https://docs.aws.amazon.com/connect/latest/adminguide/about-contact-states.html">contact states</a>.',
-        }),
-    ).exactOptional(),
+    ContactStates: ContactStatesSchema.exactOptional().openapi({
+      description:
+        'A list of up to 9 <a href="https://docs.aws.amazon.com/connect/latest/adminguide/about-contact-states.html">contact states</a>.',
+    }),
   })
   .openapi({
     description:
@@ -3607,31 +3176,19 @@ const SecurityTokenSchema = z.string().openapi('SecurityToken')
 
 const CredentialsSchema = z
   .object({
-    AccessToken: SecurityTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An access token generated for a federated user to access Amazon Connect.',
-        }),
-    ).exactOptional(),
-    AccessTokenExpiration: Timestamp2Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token generated with an expiration time for the session a user is logged in to Amazon Connect.',
-        }),
-    ).exactOptional(),
-    RefreshToken: SecurityTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Renews a token generated for a user to access the Amazon Connect instance.',
-        }),
-    ).exactOptional(),
-    RefreshTokenExpiration: Timestamp2Schema.and(
-      z.any().openapi({ description: 'Renews the expiration timer for a generated token.' }),
-    ).exactOptional(),
+    AccessToken: SecurityTokenSchema.exactOptional().openapi({
+      description: 'An access token generated for a federated user to access Amazon Connect.',
+    }),
+    AccessTokenExpiration: Timestamp2Schema.exactOptional().openapi({
+      description:
+        'A token generated with an expiration time for the session a user is logged in to Amazon Connect.',
+    }),
+    RefreshToken: SecurityTokenSchema.exactOptional().openapi({
+      description: 'Renews a token generated for a user to access the Amazon Connect instance.',
+    }),
+    RefreshTokenExpiration: Timestamp2Schema.exactOptional().openapi({
+      description: 'Renews the expiration timer for a generated token.',
+    }),
   })
   .openapi({ description: 'Contains credentials to use for federation.', required: [] })
   .openapi('Credentials')
@@ -3640,18 +3197,18 @@ const UrlSchema = z.string().openapi('Url')
 
 const GetFederationTokenResponseSchema = z
   .object({
-    Credentials: CredentialsSchema.and(
-      z.any().openapi({ description: 'The credentials to use for federation.' }),
-    ).exactOptional(),
-    SignInUrl: UrlSchema.and(
-      z.any().openapi({ description: "The URL to sign into the user's instance. " }),
-    ).exactOptional(),
-    UserArn: ARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the user.' }),
-    ).exactOptional(),
-    UserId: AgentResourceIdSchema.and(
-      z.any().openapi({ description: 'The identifier for the user.' }),
-    ).exactOptional(),
+    Credentials: CredentialsSchema.exactOptional().openapi({
+      description: 'The credentials to use for federation.',
+    }),
+    SignInUrl: UrlSchema.exactOptional().openapi({
+      description: "The URL to sign into the user's instance. ",
+    }),
+    UserArn: ARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the user.',
+    }),
+    UserId: AgentResourceIdSchema.exactOptional().openapi({
+      description: 'The identifier for the user.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetFederationTokenResponse')
@@ -3691,20 +3248,14 @@ const HistoricalMetricNameSchema = z
 
 const ComparisonSchema = z.literal('LT').openapi('Comparison')
 
-const ThresholdValueSchema = z.float64().openapi('ThresholdValue')
-
 const ThresholdSchema = z
   .object({
-    Comparison: ComparisonSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The type of comparison. Only "less than" (LT) comparisons are supported.',
-        }),
-    ).exactOptional(),
-    ThresholdValue: ThresholdValueSchema.and(
-      z.any().openapi({ description: 'The threshold value to compare.' }),
-    ).exactOptional(),
+    Comparison: ComparisonSchema.exactOptional().openapi({
+      description: 'The type of comparison. Only "less than" (LT) comparisons are supported.',
+    }),
+    ThresholdValue: ThresholdValueSchema.exactOptional().openapi({
+      description: 'The threshold value to compare.',
+    }),
   })
   .openapi({
     description: 'Contains information about the threshold for service level metrics.',
@@ -3716,20 +3267,16 @@ const StatisticSchema = z.enum(['SUM', 'MAX', 'AVG']).openapi('Statistic')
 
 const HistoricalMetricSchema = z
   .object({
-    Name: HistoricalMetricNameSchema.and(
-      z.any().openapi({ description: 'The name of the metric.' }),
-    ).exactOptional(),
-    Threshold: ThresholdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The threshold for the metric, used with service level metrics.' }),
-    ).exactOptional(),
-    Statistic: StatisticSchema.and(
-      z.any().openapi({ description: 'The statistic for the metric.' }),
-    ).exactOptional(),
-    Unit: UnitSchema.and(
-      z.any().openapi({ description: 'The unit for the metric.' }),
-    ).exactOptional(),
+    Name: HistoricalMetricNameSchema.exactOptional().openapi({
+      description: 'The name of the metric.',
+    }),
+    Threshold: ThresholdSchema.exactOptional().openapi({
+      description: 'The threshold for the metric, used with service level metrics.',
+    }),
+    Statistic: StatisticSchema.exactOptional().openapi({
+      description: 'The statistic for the metric.',
+    }),
+    Unit: UnitSchema.exactOptional().openapi({ description: 'The unit for the metric.' }),
   })
   .openapi({
     description:
@@ -3740,12 +3287,10 @@ const HistoricalMetricSchema = z
 
 const HistoricalMetricDataSchema = z
   .object({
-    Metric: HistoricalMetricSchema.and(
-      z.any().openapi({ description: 'Information about the metric.' }),
-    ).exactOptional(),
-    Value: ValueSchema.and(
-      z.any().openapi({ description: 'The value of the metric.' }),
-    ).exactOptional(),
+    Metric: HistoricalMetricSchema.exactOptional().openapi({
+      description: 'Information about the metric.',
+    }),
+    Value: ValueSchema.exactOptional().openapi({ description: 'The value of the metric.' }),
   })
   .openapi({ description: 'Contains the data for a historical metric.', required: [] })
   .openapi('HistoricalMetricData')
@@ -3756,12 +3301,12 @@ const HistoricalMetricDataCollectionsSchema = z
 
 const HistoricalMetricResultSchema = z
   .object({
-    Dimensions: DimensionsSchema.and(
-      z.any().openapi({ description: 'The dimension for the metrics.' }),
-    ).exactOptional(),
-    Collections: HistoricalMetricDataCollectionsSchema.and(
-      z.any().openapi({ description: 'The set of metrics.' }),
-    ).exactOptional(),
+    Dimensions: DimensionsSchema.exactOptional().openapi({
+      description: 'The dimension for the metrics.',
+    }),
+    Collections: HistoricalMetricDataCollectionsSchema.exactOptional().openapi({
+      description: 'The set of metrics.',
+    }),
   })
   .openapi({
     description: 'Contains information about the historical metrics retrieved.',
@@ -3775,169 +3320,28 @@ const HistoricalMetricResultsSchema = z
 
 const GetMetricDataResponseSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If there are additional results, this is the token for the next set of results.</p> <p>The token expires after 5 minutes from the time it is created. Subsequent requests that use the token must use the same request parameters as the request that generated the token.</p>',
-        }),
-    ).exactOptional(),
-    MetricResults: HistoricalMetricResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Information about the historical metrics.</p> <p>If no grouping is specified, a summary of metric data is returned.</p>',
-        }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        '<p>If there are additional results, this is the token for the next set of results.</p> <p>The token expires after 5 minutes from the time it is created. Subsequent requests that use the token must use the same request parameters as the request that generated the token.</p>',
+    }),
+    MetricResults: HistoricalMetricResultsSchema.exactOptional().openapi({
+      description:
+        '<p>Information about the historical metrics.</p> <p>If no grouping is specified, a summary of metric data is returned.</p>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetMetricDataResponse')
 
-const NextToken2500Schema = z.string().min(1).max(2500).openapi('NextToken2500')
-
-const DimensionsV2ValueSchema = z.string().openapi('DimensionsV2Value')
-
-const DimensionsV2MapSchema = z
-  .record(z.string(), DimensionsV2ValueSchema)
-  .openapi('DimensionsV2Map')
-
-const MetricNameV2Schema = z.string().openapi('MetricNameV2')
-
-const ResourceArnOrIdSchema = z.string().min(1).max(250).openapi('ResourceArnOrId')
-
-const ThresholdV2Schema = z
+const GetMetricDataV2ResponseSchema: z.ZodType<GetMetricDataV2ResponseType> = z
   .object({
-    Comparison: ResourceArnOrIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The type of comparison. Only "less than" (LT) comparisons are supported.',
-        }),
-    ).exactOptional(),
-    ThresholdValue: ThresholdValueSchema.and(
-      z.any().openapi({ description: 'The threshold value to compare.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'Contains information about the threshold for service level metrics.',
-    required: [],
-  })
-  .openapi('ThresholdV2')
-
-const ThresholdCollectionsSchema = z.array(ThresholdV2Schema).max(1).openapi('ThresholdCollections')
-
-const MetricFilterValueListSchema = z
-  .array(StringSchema)
-  .min(1)
-  .max(10)
-  .openapi('MetricFilterValueList')
-
-const MetricFilterV2Schema = z
-  .object({
-    MetricFilterKey: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The key to use for filtering data. </p> <p>Valid metric filter keys: <code>INITIATION_METHOD</code>, <code>DISCONNECT_REASON</code>. These are the same values as the <code>InitiationMethod</code> and <code>DisconnectReason</code> in the contact record. For more information, see <a href="https://docs.aws.amazon.com/connect/latest/adminguide/ctr-data-model.html#ctr-ContactTraceRecord">ContactTraceRecord</a> in the <i>Amazon Connect Administrator\'s Guide</i>. </p>',
-        }),
-    ).exactOptional(),
-    MetricFilterValues: MetricFilterValueListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The values to use for filtering data. </p> <p>Valid metric filter values for <code>INITIATION_METHOD</code>: <code>INBOUND</code> | <code>OUTBOUND</code> | <code>TRANSFER</code> | <code>QUEUE_TRANSFER</code> | <code>CALLBACK</code> | <code>API</code> </p> <p>Valid metric filter values for <code>DISCONNECT_REASON</code>: <code>CUSTOMER_DISCONNECT</code> | <code>AGENT_DISCONNECT</code> | <code>THIRD_PARTY_DISCONNECT</code> | <code>TELECOM_PROBLEM</code> | <code>BARGED</code> | <code>CONTACT_FLOW_DISCONNECT</code> | <code>OTHER</code> | <code>EXPIRED</code> | <code>API</code> </p>',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Contains information about the filter used when retrieving metrics. <code>MetricFiltersV2</code> can be used on the following metrics: <code>AVG_AGENT_CONNECTING_TIME</code>, <code>CONTACTS_CREATED</code>, <code>CONTACTS_HANDLED</code>, <code>SUM_CONTACTS_DISCONNECTED</code>.',
-    required: [],
-  })
-  .openapi('MetricFilterV2')
-
-const MetricFiltersV2ListSchema = z
-  .array(MetricFilterV2Schema)
-  .max(2)
-  .openapi('MetricFiltersV2List')
-
-const MetricV2Schema = z
-  .object({
-    Name: MetricNameV2Schema.and(
-      z.any().openapi({ description: 'The name of the metric.' }),
-    ).exactOptional(),
-    Threshold: ThresholdCollectionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Contains information about the threshold for service level metrics.',
-        }),
-    ).exactOptional(),
-    MetricFilters: MetricFiltersV2ListSchema.and(
-      z.any().openapi({ description: 'Contains the filters to be used when returning data.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Contains information about the metric.', required: [] })
-  .openapi('MetricV2')
-
-const MetricDataV2Schema = z
-  .object({
-    Metric: MetricV2Schema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The metric name, thresholds, and metric filters of the returned metric.',
-        }),
-    ).exactOptional(),
-    Value: ValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The corresponding value of the metric returned in the response.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Contains the name, thresholds, and metric filters.', required: [] })
-  .openapi('MetricDataV2')
-
-const MetricDataCollectionsV2Schema = z.array(MetricDataV2Schema).openapi('MetricDataCollectionsV2')
-
-const MetricResultV2Schema = z
-  .object({
-    Dimensions: DimensionsV2MapSchema.and(
-      z.any().openapi({ description: 'The dimension for the metrics.' }),
-    ).exactOptional(),
-    Collections: MetricDataCollectionsV2Schema.and(
-      z.any().openapi({ description: 'The set of metrics.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Contains information about the metric results.', required: [] })
-  .openapi('MetricResultV2')
-
-const MetricResultsV2Schema = z.array(MetricResultV2Schema).openapi('MetricResultsV2')
-
-const GetMetricDataV2ResponseSchema = z
-  .object({
-    NextToken: NextToken2500Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If there are additional results, this is the token for the next set of results.',
-        }),
-    ).exactOptional(),
-    MetricResults: MetricResultsV2Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the metrics requested in the API request If no grouping is specified, a summary of metric data is returned. ',
-        }),
-    ).exactOptional(),
+    NextToken: NextToken2500Schema.exactOptional().openapi({
+      description:
+        'If there are additional results, this is the token for the next set of results.',
+    }),
+    MetricResults: MetricResultsV2Schema.exactOptional().openapi({
+      description:
+        'Information about the metrics requested in the API request If no grouping is specified, a summary of metric data is returned. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetMetricDataV2Response')
@@ -3950,22 +3354,14 @@ const FilterValueListSchema = z
 
 const FilterV2Schema = z
   .object({
-    FilterKey: ResourceArnOrIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The key to use for filtering data. For example, <code>QUEUE</code>, <code>ROUTING_PROFILE, AGENT</code>, <code>CHANNEL</code>, <code>AGENT_HIERARCHY_LEVEL_ONE</code>, <code>AGENT_HIERARCHY_LEVEL_TWO</code>, <code>AGENT_HIERARCHY_LEVEL_THREE</code>, <code>AGENT_HIERARCHY_LEVEL_FOUR</code>, <code>AGENT_HIERARCHY_LEVEL_FIVE</code>. There must be at least 1 key and a maximum 5 keys. ',
-        }),
-    ).exactOptional(),
-    FilterValues: FilterValueListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifiers to use for filtering data. For example, if you have a filter key of <code>QUEUE</code>, you would add queue IDs or ARNs in <code>FilterValues</code>. ',
-        }),
-    ).exactOptional(),
+    FilterKey: ResourceArnOrIdSchema.exactOptional().openapi({
+      description:
+        'The key to use for filtering data. For example, <code>QUEUE</code>, <code>ROUTING_PROFILE, AGENT</code>, <code>CHANNEL</code>, <code>AGENT_HIERARCHY_LEVEL_ONE</code>, <code>AGENT_HIERARCHY_LEVEL_TWO</code>, <code>AGENT_HIERARCHY_LEVEL_THREE</code>, <code>AGENT_HIERARCHY_LEVEL_FOUR</code>, <code>AGENT_HIERARCHY_LEVEL_FIVE</code>. There must be at least 1 key and a maximum 5 keys. ',
+    }),
+    FilterValues: FilterValueListSchema.exactOptional().openapi({
+      description:
+        'The identifiers to use for filtering data. For example, if you have a filter key of <code>QUEUE</code>, you would add queue IDs or ARNs in <code>FilterValues</code>. ',
+    }),
   })
   .openapi({
     description:
@@ -3982,21 +3378,15 @@ const TaskTemplateDescriptionSchema = z.string().min(1).max(255).openapi('TaskTe
 
 const TaskTemplateConstraintsSchema = z
   .object({
-    RequiredFields: RequiredTaskTemplateFieldsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Lists the fields that are required to be filled by agents.' }),
-    ).exactOptional(),
-    ReadOnlyFields: ReadOnlyTaskTemplateFieldsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Lists the fields that are read-only to agents, and cannot be edited.',
-        }),
-    ).exactOptional(),
-    InvisibleFields: InvisibleTaskTemplateFieldsSchema.and(
-      z.any().openapi({ description: 'Lists the fields that are invisible to agents.' }),
-    ).exactOptional(),
+    RequiredFields: RequiredTaskTemplateFieldsSchema.exactOptional().openapi({
+      description: 'Lists the fields that are required to be filled by agents.',
+    }),
+    ReadOnlyFields: ReadOnlyTaskTemplateFieldsSchema.exactOptional().openapi({
+      description: 'Lists the fields that are read-only to agents, and cannot be edited.',
+    }),
+    InvisibleFields: InvisibleTaskTemplateFieldsSchema.exactOptional().openapi({
+      description: 'Lists the fields that are invisible to agents.',
+    }),
   })
   .openapi({
     description: 'Describes constraints that apply to the template fields.',
@@ -4006,9 +3396,9 @@ const TaskTemplateConstraintsSchema = z
 
 const TaskTemplateDefaultsSchema = z
   .object({
-    DefaultFieldValues: TaskTemplateDefaultFieldValueListSchema.and(
-      z.any().openapi({ description: 'Default value for the field.' }),
-    ).exactOptional(),
+    DefaultFieldValues: TaskTemplateDefaultFieldValueListSchema.exactOptional().openapi({
+      description: 'Default value for the field.',
+    }),
   })
   .openapi({ description: 'Describes default values for fields on a template.', required: [] })
   .openapi('TaskTemplateDefaults')
@@ -4019,70 +3409,44 @@ const TaskTemplateStatusSchema = z.enum(['ACTIVE', 'INACTIVE']).openapi('TaskTem
 
 const GetTaskTemplateResponseSchema = z
   .object({
-    InstanceId: InstanceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the Amazon Connect instance. You can <a href="https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.',
-        }),
-    ).exactOptional(),
-    Id: TaskTemplateIdSchema.and(
-      z.any().openapi({ description: 'A unique identifier for the task template.' }),
-    ),
-    Arn: TaskTemplateArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN).' }),
-    ),
-    Name: TaskTemplateNameSchema.and(
-      z.any().openapi({ description: 'The name of the task template.' }),
-    ),
-    Description: TaskTemplateDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the task template.' }),
-    ).exactOptional(),
-    ContactFlowId: ContactFlowIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the flow that runs by default when a task is created by referencing this template.',
-        }),
-    ).exactOptional(),
-    Constraints: TaskTemplateConstraintsSchema.and(
-      z.any().openapi({ description: 'Constraints that are applicable to the fields listed.' }),
-    ).exactOptional(),
-    Defaults: TaskTemplateDefaultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The default values for fields when a task is created by referencing this template.',
-        }),
-    ).exactOptional(),
-    Fields: TaskTemplateFieldsSchema.and(
-      z.any().openapi({ description: 'Fields that are part of the template.' }),
-    ).exactOptional(),
-    Status: TaskTemplateStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Marks a template as <code>ACTIVE</code> or <code>INACTIVE</code> for a task to refer to it. Tasks can only be created from <code>ACTIVE</code> templates. If a template is marked as <code>INACTIVE</code>, then a task that refers to this template cannot be created.',
-        }),
-    ).exactOptional(),
-    LastModifiedTime: Timestamp2Schema.and(
-      z.any().openapi({ description: 'The timestamp when the task template was last modified.' }),
-    ).exactOptional(),
-    CreatedTime: Timestamp2Schema.and(
-      z.any().openapi({ description: 'The timestamp when the task template was created.' }),
-    ).exactOptional(),
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tags used to organize, track, or control access for this resource. For example, { "tags": {"key1":"value1", "key2":"value2"} }.',
-        }),
-    ).exactOptional(),
+    InstanceId: InstanceIdSchema.exactOptional().openapi({
+      description:
+        'The identifier of the Amazon Connect instance. You can <a href="https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.',
+    }),
+    Id: TaskTemplateIdSchema.openapi({ description: 'A unique identifier for the task template.' }),
+    Arn: TaskTemplateArnSchema.openapi({ description: 'The Amazon Resource Name (ARN).' }),
+    Name: TaskTemplateNameSchema.openapi({ description: 'The name of the task template.' }),
+    Description: TaskTemplateDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the task template.',
+    }),
+    ContactFlowId: ContactFlowIdSchema.exactOptional().openapi({
+      description:
+        'The identifier of the flow that runs by default when a task is created by referencing this template.',
+    }),
+    Constraints: TaskTemplateConstraintsSchema.exactOptional().openapi({
+      description: 'Constraints that are applicable to the fields listed.',
+    }),
+    Defaults: TaskTemplateDefaultsSchema.exactOptional().openapi({
+      description:
+        'The default values for fields when a task is created by referencing this template.',
+    }),
+    Fields: TaskTemplateFieldsSchema.exactOptional().openapi({
+      description: 'Fields that are part of the template.',
+    }),
+    Status: TaskTemplateStatusSchema.exactOptional().openapi({
+      description:
+        'Marks a template as <code>ACTIVE</code> or <code>INACTIVE</code> for a task to refer to it. Tasks can only be created from <code>ACTIVE</code> templates. If a template is marked as <code>INACTIVE</code>, then a task that refers to this template cannot be created.',
+    }),
+    LastModifiedTime: Timestamp2Schema.exactOptional().openapi({
+      description: 'The timestamp when the task template was last modified.',
+    }),
+    CreatedTime: Timestamp2Schema.exactOptional().openapi({
+      description: 'The timestamp when the task template was created.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description:
+        'The tags used to organize, track, or control access for this resource. For example, { "tags": {"key1":"value1", "key2":"value2"} }.',
+    }),
   })
   .openapi({ required: ['Id', 'Arn', 'Name'] })
   .openapi('GetTaskTemplateResponse')
@@ -4098,20 +3462,12 @@ const PercentageSchema = z.int().min(0).max(100).openapi('Percentage')
 
 const DistributionSchema = z
   .object({
-    Region: AwsRegionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Web Services Region where the traffic is distributed.',
-        }),
-    ),
-    Percentage: PercentageSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The percentage of the traffic that is distributed, in increments of 10.',
-        }),
-    ),
+    Region: AwsRegionSchema.openapi({
+      description: 'The Amazon Web Services Region where the traffic is distributed.',
+    }),
+    Percentage: PercentageSchema.openapi({
+      description: 'The percentage of the traffic that is distributed, in increments of 10.',
+    }),
   })
   .openapi({
     required: ['Region', 'Percentage'],
@@ -4123,9 +3479,9 @@ const DistributionListSchema = z.array(DistributionSchema).openapi('Distribution
 
 const TelephonyConfigSchema = z
   .object({
-    Distributions: DistributionListSchema.and(
-      z.any().openapi({ description: 'Information about traffic distributions.' }),
-    ),
+    Distributions: DistributionListSchema.openapi({
+      description: 'Information about traffic distributions.',
+    }),
   })
   .openapi({
     required: ['Distributions'],
@@ -4135,46 +3491,34 @@ const TelephonyConfigSchema = z
 
 const GetTrafficDistributionResponseSchema = z
   .object({
-    TelephonyConfig: TelephonyConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The distribution of traffic between the instance and its replicas.',
-        }),
-    ).exactOptional(),
-    Id: TrafficDistributionGroupIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the traffic distribution group. This can be the ID or the ARN if the API is being called in the Region where the traffic distribution group was created. The ARN must be provided if the call is from the replicated Region.',
-        }),
-    ).exactOptional(),
-    Arn: TrafficDistributionGroupArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the traffic distribution group.',
-        }),
-    ).exactOptional(),
+    TelephonyConfig: TelephonyConfigSchema.exactOptional().openapi({
+      description: 'The distribution of traffic between the instance and its replicas.',
+    }),
+    Id: TrafficDistributionGroupIdSchema.exactOptional().openapi({
+      description:
+        'The identifier of the traffic distribution group. This can be the ID or the ARN if the API is being called in the Region where the traffic distribution group was created. The ARN must be provided if the call is from the replicated Region.',
+    }),
+    Arn: TrafficDistributionGroupArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the traffic distribution group.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetTrafficDistributionResponse')
 
 const AgentStatusSummarySchema = z
   .object({
-    Id: AgentStatusIdSchema.and(
-      z.any().openapi({ description: 'The identifier for an agent status.' }),
-    ).exactOptional(),
-    Arn: ARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) for the agent status.' }),
-    ).exactOptional(),
-    Name: AgentStatusNameSchema.and(
-      z.any().openapi({ description: 'The name of the agent status.' }),
-    ).exactOptional(),
-    Type: AgentStatusTypeSchema.and(
-      z.any().openapi({ description: 'The type of the agent status.' }),
-    ).exactOptional(),
+    Id: AgentStatusIdSchema.exactOptional().openapi({
+      description: 'The identifier for an agent status.',
+    }),
+    Arn: ARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) for the agent status.',
+    }),
+    Name: AgentStatusNameSchema.exactOptional().openapi({
+      description: 'The name of the agent status.',
+    }),
+    Type: AgentStatusTypeSchema.exactOptional().openapi({
+      description: 'The type of the agent status.',
+    }),
   })
   .openapi({ description: 'Summary information for an agent status.', required: [] })
   .openapi('AgentStatusSummary')
@@ -4185,17 +3529,13 @@ const AgentStatusSummaryListSchema = z
 
 const ListAgentStatusResponseSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If there are additional results, this is the token for the next set of results.',
-        }),
-    ).exactOptional(),
-    AgentStatusSummaryList: AgentStatusSummaryListSchema.and(
-      z.any().openapi({ description: 'A summary of agent statuses.' }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If there are additional results, this is the token for the next set of results.',
+    }),
+    AgentStatusSummaryList: AgentStatusSummaryListSchema.exactOptional().openapi({
+      description: 'A summary of agent statuses.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListAgentStatusResponse')
@@ -4206,31 +3546,21 @@ const OriginsListSchema = z.array(OriginSchema).openapi('OriginsList')
 
 const ListApprovedOriginsResponseSchema = z
   .object({
-    Origins: OriginsListSchema.and(
-      z.any().openapi({ description: 'The approved origins.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If there are additional results, this is the token for the next set of results.',
-        }),
-    ).exactOptional(),
+    Origins: OriginsListSchema.exactOptional().openapi({ description: 'The approved origins.' }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If there are additional results, this is the token for the next set of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListApprovedOriginsResponse')
 
 const LexBotSchema = z
   .object({
-    Name: BotNameSchema.and(z.any().openapi({ description: 'The name of the Amazon Lex bot.' })),
-    LexRegion: LexRegionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Web Services Region where the Amazon Lex bot was created.',
-        }),
-    ),
+    Name: BotNameSchema.openapi({ description: 'The name of the Amazon Lex bot.' }),
+    LexRegion: LexRegionSchema.openapi({
+      description: 'The Amazon Web Services Region where the Amazon Lex bot was created.',
+    }),
   })
   .openapi({
     required: ['Name', 'LexRegion'],
@@ -4240,9 +3570,9 @@ const LexBotSchema = z
 
 const LexV2BotSchema = z
   .object({
-    AliasArn: AliasArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the Amazon Lex V2 bot.' }),
-    ).exactOptional(),
+    AliasArn: AliasArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the Amazon Lex V2 bot.',
+    }),
   })
   .openapi({ description: 'Configuration information of an Amazon Lex V2 bot.', required: [] })
   .openapi('LexV2Bot')
@@ -4250,9 +3580,9 @@ const LexV2BotSchema = z
 const LexBotConfigSchema = z
   .object({
     LexBot: LexBotSchema.exactOptional(),
-    LexV2Bot: LexV2BotSchema.and(
-      z.any().openapi({ description: 'Configuration information of an Amazon Lex V2 bot.' }),
-    ).exactOptional(),
+    LexV2Bot: LexV2BotSchema.exactOptional().openapi({
+      description: 'Configuration information of an Amazon Lex V2 bot.',
+    }),
   })
   .openapi({
     description: 'Configuration information of an Amazon Lex or Amazon Lex V2 bot.',
@@ -4264,40 +3594,32 @@ const LexBotConfigListSchema = z.array(LexBotConfigSchema).openapi('LexBotConfig
 
 const ListBotsResponseSchema = z
   .object({
-    LexBots: LexBotConfigListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The names and Amazon Web Services Regions of the Amazon Lex or Amazon Lex V2 bots associated with the specified instance.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If there are additional results, this is the token for the next set of results.',
-        }),
-    ).exactOptional(),
+    LexBots: LexBotConfigListSchema.exactOptional().openapi({
+      description:
+        'The names and Amazon Web Services Regions of the Amazon Lex or Amazon Lex V2 bots associated with the specified instance.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If there are additional results, this is the token for the next set of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListBotsResponse')
 
 const ContactFlowModuleSummarySchema = z
   .object({
-    Id: ContactFlowModuleIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the flow module.' }),
-    ).exactOptional(),
-    Arn: ARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the flow module.' }),
-    ).exactOptional(),
-    Name: ContactFlowModuleNameSchema.and(
-      z.any().openapi({ description: 'The name of the flow module.' }),
-    ).exactOptional(),
-    State: ContactFlowModuleStateSchema.and(
-      z.any().openapi({ description: 'The type of flow module.' }),
-    ).exactOptional(),
+    Id: ContactFlowModuleIdSchema.exactOptional().openapi({
+      description: 'The identifier of the flow module.',
+    }),
+    Arn: ARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the flow module.',
+    }),
+    Name: ContactFlowModuleNameSchema.exactOptional().openapi({
+      description: 'The name of the flow module.',
+    }),
+    State: ContactFlowModuleStateSchema.exactOptional().openapi({
+      description: 'The type of flow module.',
+    }),
   })
   .openapi({ description: 'Contains summary information about a flow.', required: [] })
   .openapi('ContactFlowModuleSummary')
@@ -4308,38 +3630,30 @@ const ContactFlowModulesSummaryListSchema = z
 
 const ListContactFlowModulesResponseSchema = z
   .object({
-    ContactFlowModulesSummaryList: ContactFlowModulesSummaryListSchema.and(
-      z.any().openapi({ description: 'Information about the flow module.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If there are additional results, this is the token for the next set of results.',
-        }),
-    ).exactOptional(),
+    ContactFlowModulesSummaryList: ContactFlowModulesSummaryListSchema.exactOptional().openapi({
+      description: 'Information about the flow module.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If there are additional results, this is the token for the next set of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListContactFlowModulesResponse')
 
 const ContactFlowSummarySchema = z
   .object({
-    Id: ContactFlowIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the flow.' }),
-    ).exactOptional(),
-    Arn: ARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the flow.' }),
-    ).exactOptional(),
-    Name: ContactFlowNameSchema.and(
-      z.any().openapi({ description: 'The name of the flow.' }),
-    ).exactOptional(),
-    ContactFlowType: ContactFlowTypeSchema.and(
-      z.any().openapi({ description: 'The type of flow.' }),
-    ).exactOptional(),
-    ContactFlowState: ContactFlowStateSchema.and(
-      z.any().openapi({ description: 'The type of flow.' }),
-    ).exactOptional(),
+    Id: ContactFlowIdSchema.exactOptional().openapi({ description: 'The identifier of the flow.' }),
+    Arn: ARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the flow.',
+    }),
+    Name: ContactFlowNameSchema.exactOptional().openapi({ description: 'The name of the flow.' }),
+    ContactFlowType: ContactFlowTypeSchema.exactOptional().openapi({
+      description: 'The type of flow.',
+    }),
+    ContactFlowState: ContactFlowStateSchema.exactOptional().openapi({
+      description: 'The type of flow.',
+    }),
   })
   .openapi({
     description:
@@ -4354,17 +3668,13 @@ const ContactFlowSummaryListSchema = z
 
 const ListContactFlowsResponseSchema = z
   .object({
-    ContactFlowSummaryList: ContactFlowSummaryListSchema.and(
-      z.any().openapi({ description: 'Information about the flows.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If there are additional results, this is the token for the next set of results.',
-        }),
-    ).exactOptional(),
+    ContactFlowSummaryList: ContactFlowSummaryListSchema.exactOptional().openapi({
+      description: 'Information about the flows.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If there are additional results, this is the token for the next set of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListContactFlowsResponse')
@@ -4373,12 +3683,10 @@ const ReferenceKeySchema = z.string().min(1).max(4096).openapi('ReferenceKey')
 
 const UrlReferenceSchema = z
   .object({
-    Name: ReferenceKeySchema.and(
-      z.any().openapi({ description: 'Identifier of the URL reference.' }),
-    ).exactOptional(),
-    Value: ReferenceValueSchema.and(
-      z.any().openapi({ description: 'A valid URL.' }),
-    ).exactOptional(),
+    Name: ReferenceKeySchema.exactOptional().openapi({
+      description: 'Identifier of the URL reference.',
+    }),
+    Value: ReferenceValueSchema.exactOptional().openapi({ description: 'A valid URL.' }),
   })
   .openapi({ description: 'The URL reference.', required: [] })
   .openapi('UrlReference')
@@ -4387,15 +3695,15 @@ const ReferenceStatusSchema = z.enum(['APPROVED', 'REJECTED']).openapi('Referenc
 
 const AttachmentReferenceSchema = z
   .object({
-    Name: ReferenceKeySchema.and(
-      z.any().openapi({ description: 'Identifier of the attachment reference.' }),
-    ).exactOptional(),
-    Value: ReferenceValueSchema.and(
-      z.any().openapi({ description: 'The location path of the attachment reference.' }),
-    ).exactOptional(),
-    Status: ReferenceStatusSchema.and(
-      z.any().openapi({ description: 'Status of the attachment reference type.' }),
-    ).exactOptional(),
+    Name: ReferenceKeySchema.exactOptional().openapi({
+      description: 'Identifier of the attachment reference.',
+    }),
+    Value: ReferenceValueSchema.exactOptional().openapi({
+      description: 'The location path of the attachment reference.',
+    }),
+    Status: ReferenceStatusSchema.exactOptional().openapi({
+      description: 'Status of the attachment reference type.',
+    }),
   })
   .openapi({
     description:
@@ -4406,12 +3714,10 @@ const AttachmentReferenceSchema = z
 
 const StringReferenceSchema = z
   .object({
-    Name: ReferenceKeySchema.and(
-      z.any().openapi({ description: 'Identifier of the string reference.' }),
-    ).exactOptional(),
-    Value: ReferenceValueSchema.and(
-      z.any().openapi({ description: 'A valid string.' }),
-    ).exactOptional(),
+    Name: ReferenceKeySchema.exactOptional().openapi({
+      description: 'Identifier of the string reference.',
+    }),
+    Value: ReferenceValueSchema.exactOptional().openapi({ description: 'A valid string.' }),
   })
   .openapi({
     description:
@@ -4422,12 +3728,10 @@ const StringReferenceSchema = z
 
 const NumberReferenceSchema = z
   .object({
-    Name: ReferenceKeySchema.and(
-      z.any().openapi({ description: 'Identifier of the number reference.' }),
-    ).exactOptional(),
-    Value: ReferenceValueSchema.and(
-      z.any().openapi({ description: 'A valid number.' }),
-    ).exactOptional(),
+    Name: ReferenceKeySchema.exactOptional().openapi({
+      description: 'Identifier of the number reference.',
+    }),
+    Value: ReferenceValueSchema.exactOptional().openapi({ description: 'A valid number.' }),
   })
   .openapi({
     description:
@@ -4438,12 +3742,10 @@ const NumberReferenceSchema = z
 
 const DateReferenceSchema = z
   .object({
-    Name: ReferenceKeySchema.and(
-      z.any().openapi({ description: 'Identifier of the date reference.' }),
-    ).exactOptional(),
-    Value: ReferenceValueSchema.and(
-      z.any().openapi({ description: 'A valid date.' }),
-    ).exactOptional(),
+    Name: ReferenceKeySchema.exactOptional().openapi({
+      description: 'Identifier of the date reference.',
+    }),
+    Value: ReferenceValueSchema.exactOptional().openapi({ description: 'A valid date.' }),
   })
   .openapi({
     description:
@@ -4454,12 +3756,10 @@ const DateReferenceSchema = z
 
 const EmailReferenceSchema = z
   .object({
-    Name: ReferenceKeySchema.and(
-      z.any().openapi({ description: 'Identifier of the email reference.' }),
-    ).exactOptional(),
-    Value: ReferenceValueSchema.and(
-      z.any().openapi({ description: 'A valid email address.' }),
-    ).exactOptional(),
+    Name: ReferenceKeySchema.exactOptional().openapi({
+      description: 'Identifier of the email reference.',
+    }),
+    Value: ReferenceValueSchema.exactOptional().openapi({ description: 'A valid email address.' }),
   })
   .openapi({
     description:
@@ -4470,54 +3770,30 @@ const EmailReferenceSchema = z
 
 const ReferenceSummarySchema = z
   .object({
-    Url: UrlReferenceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the reference when the <code>referenceType</code> is <code>URL</code>. Otherwise, null.',
-        }),
-    ).exactOptional(),
-    Attachment: AttachmentReferenceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the reference when the <code>referenceType</code> is <code>ATTACHMENT</code>. Otherwise, null.',
-        }),
-    ).exactOptional(),
-    String: StringReferenceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about a reference when the <code>referenceType</code> is <code>STRING</code>. Otherwise, null.',
-        }),
-    ).exactOptional(),
-    Number: NumberReferenceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about a reference when the <code>referenceType</code> is <code>NUMBER</code>. Otherwise, null.',
-        }),
-    ).exactOptional(),
-    Date: DateReferenceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about a reference when the <code>referenceType</code> is <code>DATE</code>. Otherwise, null.',
-        }),
-    ).exactOptional(),
-    Email: EmailReferenceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about a reference when the <code>referenceType</code> is <code>EMAIL</code>. Otherwise, null.',
-        }),
-    ).exactOptional(),
+    Url: UrlReferenceSchema.exactOptional().openapi({
+      description:
+        'Information about the reference when the <code>referenceType</code> is <code>URL</code>. Otherwise, null.',
+    }),
+    Attachment: AttachmentReferenceSchema.exactOptional().openapi({
+      description:
+        'Information about the reference when the <code>referenceType</code> is <code>ATTACHMENT</code>. Otherwise, null.',
+    }),
+    String: StringReferenceSchema.exactOptional().openapi({
+      description:
+        'Information about a reference when the <code>referenceType</code> is <code>STRING</code>. Otherwise, null.',
+    }),
+    Number: NumberReferenceSchema.exactOptional().openapi({
+      description:
+        'Information about a reference when the <code>referenceType</code> is <code>NUMBER</code>. Otherwise, null.',
+    }),
+    Date: DateReferenceSchema.exactOptional().openapi({
+      description:
+        'Information about a reference when the <code>referenceType</code> is <code>DATE</code>. Otherwise, null.',
+    }),
+    Email: EmailReferenceSchema.exactOptional().openapi({
+      description:
+        'Information about a reference when the <code>referenceType</code> is <code>EMAIL</code>. Otherwise, null.',
+    }),
   })
   .openapi({
     description:
@@ -4530,45 +3806,33 @@ const ReferenceSummaryListSchema = z.array(ReferenceSummarySchema).openapi('Refe
 
 const ListContactReferencesResponseSchema = z
   .object({
-    ReferenceSummaryList: ReferenceSummaryListSchema.and(
-      z.any().openapi({ description: 'Information about the flows.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If there are additional results, this is the token for the next set of results.</p> <important> <p>This is always returned as null in the response.</p> </important>',
-        }),
-    ).exactOptional(),
+    ReferenceSummaryList: ReferenceSummaryListSchema.exactOptional().openapi({
+      description: 'Information about the flows.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        '<p>If there are additional results, this is the token for the next set of results.</p> <important> <p>This is always returned as null in the response.</p> </important>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListContactReferencesResponse')
 
 const DefaultVocabularySchema = z
   .object({
-    InstanceId: InstanceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the Amazon Connect instance. You can <a href="https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.',
-        }),
-    ),
-    LanguageCode: VocabularyLanguageCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The language code of the vocabulary entries. For a list of languages and their corresponding language codes, see <a href="https://docs.aws.amazon.com/transcribe/latest/dg/transcribe-whatis.html">What is Amazon Transcribe?</a> ',
-        }),
-    ),
-    VocabularyId: VocabularyIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the custom vocabulary.' }),
-    ),
-    VocabularyName: VocabularyNameSchema.and(
-      z.any().openapi({ description: 'A unique name of the custom vocabulary.' }),
-    ),
+    InstanceId: InstanceIdSchema.openapi({
+      description:
+        'The identifier of the Amazon Connect instance. You can <a href="https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.',
+    }),
+    LanguageCode: VocabularyLanguageCodeSchema.openapi({
+      description:
+        'The language code of the vocabulary entries. For a list of languages and their corresponding language codes, see <a href="https://docs.aws.amazon.com/transcribe/latest/dg/transcribe-whatis.html">What is Amazon Transcribe?</a> ',
+    }),
+    VocabularyId: VocabularyIdSchema.openapi({
+      description: 'The identifier of the custom vocabulary.',
+    }),
+    VocabularyName: VocabularyNameSchema.openapi({
+      description: 'A unique name of the custom vocabulary.',
+    }),
   })
   .openapi({
     required: ['InstanceId', 'LanguageCode', 'VocabularyId', 'VocabularyName'],
@@ -4589,17 +3853,13 @@ const VocabularyNextTokenSchema = z
 
 const ListDefaultVocabulariesResponseSchema = z
   .object({
-    DefaultVocabularyList: DefaultVocabularyListSchema.and(
-      z.any().openapi({ description: 'A list of default vocabularies.' }),
-    ),
-    NextToken: VocabularyNextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If there are additional results, this is the token for the next set of results.',
-        }),
-    ).exactOptional(),
+    DefaultVocabularyList: DefaultVocabularyListSchema.openapi({
+      description: 'A list of default vocabularies.',
+    }),
+    NextToken: VocabularyNextTokenSchema.exactOptional().openapi({
+      description:
+        'If there are additional results, this is the token for the next set of results.',
+    }),
   })
   .openapi({ required: ['DefaultVocabularyList'] })
   .openapi('ListDefaultVocabulariesResponse')
@@ -4608,15 +3868,15 @@ const HoursOfOperationNameSchema = z.string().openapi('HoursOfOperationName')
 
 const HoursOfOperationSummarySchema = z
   .object({
-    Id: HoursOfOperationIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the hours of operation.' }),
-    ).exactOptional(),
-    Arn: ARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the hours of operation.' }),
-    ).exactOptional(),
-    Name: HoursOfOperationNameSchema.and(
-      z.any().openapi({ description: 'The name of the hours of operation.' }),
-    ).exactOptional(),
+    Id: HoursOfOperationIdSchema.exactOptional().openapi({
+      description: 'The identifier of the hours of operation.',
+    }),
+    Arn: ARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the hours of operation.',
+    }),
+    Name: HoursOfOperationNameSchema.exactOptional().openapi({
+      description: 'The name of the hours of operation.',
+    }),
   })
   .openapi({
     description: 'Contains summary information about hours of operation for a contact center.',
@@ -4630,17 +3890,13 @@ const HoursOfOperationSummaryListSchema = z
 
 const ListHoursOfOperationsResponseSchema = z
   .object({
-    HoursOfOperationSummaryList: HoursOfOperationSummaryListSchema.and(
-      z.any().openapi({ description: 'Information about the hours of operation.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If there are additional results, this is the token for the next set of results.',
-        }),
-    ).exactOptional(),
+    HoursOfOperationSummaryList: HoursOfOperationSummaryListSchema.exactOptional().openapi({
+      description: 'Information about the hours of operation.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If there are additional results, this is the token for the next set of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListHoursOfOperationsResponse')
@@ -4649,17 +3905,13 @@ const AttributesListSchema = z.array(AttributeSchema).openapi('AttributesList')
 
 const ListInstanceAttributesResponseSchema = z
   .object({
-    Attributes: AttributesListSchema.and(
-      z.any().openapi({ description: 'The attribute types.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If there are additional results, this is the token for the next set of results.',
-        }),
-    ).exactOptional(),
+    Attributes: AttributesListSchema.exactOptional().openapi({
+      description: 'The attribute types.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If there are additional results, this is the token for the next set of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListInstanceAttributesResponse')
@@ -4670,50 +3922,46 @@ const InstanceStorageConfigsSchema = z
 
 const ListInstanceStorageConfigsResponseSchema = z
   .object({
-    StorageConfigs: InstanceStorageConfigsSchema.and(
-      z.any().openapi({ description: 'A valid storage type.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If there are additional results, this is the token for the next set of results.',
-        }),
-    ).exactOptional(),
+    StorageConfigs: InstanceStorageConfigsSchema.exactOptional().openapi({
+      description: 'A valid storage type.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If there are additional results, this is the token for the next set of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListInstanceStorageConfigsResponse')
 
 const InstanceSummarySchema = z
   .object({
-    Id: InstanceIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the instance.' }),
-    ).exactOptional(),
-    Arn: ARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the instance.' }),
-    ).exactOptional(),
-    IdentityManagementType: DirectoryTypeSchema.and(
-      z.any().openapi({ description: 'The identity management type of the instance.' }),
-    ).exactOptional(),
-    InstanceAlias: DirectoryAliasSchema.and(
-      z.any().openapi({ description: 'The alias of the instance.' }),
-    ).exactOptional(),
-    CreatedTime: TimestampSchema.and(
-      z.any().openapi({ description: 'When the instance was created.' }),
-    ).exactOptional(),
-    ServiceRole: ARNSchema.and(
-      z.any().openapi({ description: 'The service role of the instance.' }),
-    ).exactOptional(),
-    InstanceStatus: InstanceStatusSchema.and(
-      z.any().openapi({ description: 'The state of the instance.' }),
-    ).exactOptional(),
-    InboundCallsEnabled: InboundCallsEnabledSchema.and(
-      z.any().openapi({ description: 'Whether inbound calls are enabled.' }),
-    ).exactOptional(),
-    OutboundCallsEnabled: OutboundCallsEnabledSchema.and(
-      z.any().openapi({ description: 'Whether outbound calls are enabled.' }),
-    ).exactOptional(),
+    Id: InstanceIdSchema.exactOptional().openapi({
+      description: 'The identifier of the instance.',
+    }),
+    Arn: ARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the instance.',
+    }),
+    IdentityManagementType: DirectoryTypeSchema.exactOptional().openapi({
+      description: 'The identity management type of the instance.',
+    }),
+    InstanceAlias: DirectoryAliasSchema.exactOptional().openapi({
+      description: 'The alias of the instance.',
+    }),
+    CreatedTime: TimestampSchema.exactOptional().openapi({
+      description: 'When the instance was created.',
+    }),
+    ServiceRole: ARNSchema.exactOptional().openapi({
+      description: 'The service role of the instance.',
+    }),
+    InstanceStatus: InstanceStatusSchema.exactOptional().openapi({
+      description: 'The state of the instance.',
+    }),
+    InboundCallsEnabled: InboundCallsEnabledSchema.exactOptional().openapi({
+      description: 'Whether inbound calls are enabled.',
+    }),
+    OutboundCallsEnabled: OutboundCallsEnabledSchema.exactOptional().openapi({
+      description: 'Whether outbound calls are enabled.',
+    }),
   })
   .openapi({ description: 'Information about the instance.', required: [] })
   .openapi('InstanceSummary')
@@ -4722,17 +3970,13 @@ const InstanceSummaryListSchema = z.array(InstanceSummarySchema).openapi('Instan
 
 const ListInstancesResponseSchema = z
   .object({
-    InstanceSummaryList: InstanceSummaryListSchema.and(
-      z.any().openapi({ description: 'Information about the instances.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If there are additional results, this is the token for the next set of results.',
-        }),
-    ).exactOptional(),
+    InstanceSummaryList: InstanceSummaryListSchema.exactOptional().openapi({
+      description: 'Information about the instances.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If there are additional results, this is the token for the next set of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListInstancesResponse')
@@ -4761,41 +4005,31 @@ const SourceTypeSchema = z.enum(['SALESFORCE', 'ZENDESK']).openapi('SourceType')
 
 const IntegrationAssociationSummarySchema = z
   .object({
-    IntegrationAssociationId: IntegrationAssociationIdSchema.and(
-      z.any().openapi({ description: 'The identifier for the AppIntegration association.' }),
-    ).exactOptional(),
-    IntegrationAssociationArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) for the AppIntegration association.',
-        }),
-    ).exactOptional(),
-    InstanceId: InstanceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the Amazon Connect instance. You can <a href="https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.',
-        }),
-    ).exactOptional(),
-    IntegrationType: IntegrationTypeSchema.and(
-      z.any().openapi({ description: 'The integration type.' }),
-    ).exactOptional(),
-    IntegrationArn: ARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) for the AppIntegration.' }),
-    ).exactOptional(),
-    SourceApplicationUrl: URISchema.and(
-      z.any().openapi({ description: 'The URL for the external application.' }),
-    ).exactOptional(),
-    SourceApplicationName: SourceApplicationNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The user-provided, friendly name for the external application.' }),
-    ).exactOptional(),
-    SourceType: SourceTypeSchema.and(
-      z.any().openapi({ description: 'The name of the source.' }),
-    ).exactOptional(),
+    IntegrationAssociationId: IntegrationAssociationIdSchema.exactOptional().openapi({
+      description: 'The identifier for the AppIntegration association.',
+    }),
+    IntegrationAssociationArn: ARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) for the AppIntegration association.',
+    }),
+    InstanceId: InstanceIdSchema.exactOptional().openapi({
+      description:
+        'The identifier of the Amazon Connect instance. You can <a href="https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.',
+    }),
+    IntegrationType: IntegrationTypeSchema.exactOptional().openapi({
+      description: 'The integration type.',
+    }),
+    IntegrationArn: ARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) for the AppIntegration.',
+    }),
+    SourceApplicationUrl: URISchema.exactOptional().openapi({
+      description: 'The URL for the external application.',
+    }),
+    SourceApplicationName: SourceApplicationNameSchema.exactOptional().openapi({
+      description: 'The user-provided, friendly name for the external application.',
+    }),
+    SourceType: SourceTypeSchema.exactOptional().openapi({
+      description: 'The name of the source.',
+    }),
   })
   .openapi({
     description: 'Contains summary information about the associated AppIntegrations.',
@@ -4809,17 +4043,14 @@ const IntegrationAssociationSummaryListSchema = z
 
 const ListIntegrationAssociationsResponseSchema = z
   .object({
-    IntegrationAssociationSummaryList: IntegrationAssociationSummaryListSchema.and(
-      z.any().openapi({ description: 'The associations.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If there are additional results, this is the token for the next set of results.',
-        }),
-    ).exactOptional(),
+    IntegrationAssociationSummaryList:
+      IntegrationAssociationSummaryListSchema.exactOptional().openapi({
+        description: 'The associations.',
+      }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If there are additional results, this is the token for the next set of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListIntegrationAssociationsResponse')
@@ -4830,21 +4061,13 @@ const FunctionArnsListSchema = z.array(FunctionArnSchema).openapi('FunctionArnsL
 
 const ListLambdaFunctionsResponseSchema = z
   .object({
-    LambdaFunctions: FunctionArnsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Lambdafunction ARNs associated with the specified instance.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If there are additional results, this is the token for the next set of results.',
-        }),
-    ).exactOptional(),
+    LambdaFunctions: FunctionArnsListSchema.exactOptional().openapi({
+      description: 'The Lambdafunction ARNs associated with the specified instance.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If there are additional results, this is the token for the next set of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListLambdaFunctionsResponse')
@@ -4853,43 +4076,33 @@ const LexBotsListSchema = z.array(LexBotSchema).openapi('LexBotsList')
 
 const ListLexBotsResponseSchema = z
   .object({
-    LexBots: LexBotsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The names and Amazon Web Services Regions of the Amazon Lex bots associated with the specified instance.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If there are additional results, this is the token for the next set of results.',
-        }),
-    ).exactOptional(),
+    LexBots: LexBotsListSchema.exactOptional().openapi({
+      description:
+        'The names and Amazon Web Services Regions of the Amazon Lex bots associated with the specified instance.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If there are additional results, this is the token for the next set of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListLexBotsResponse')
 
 const PhoneNumberSummarySchema = z
   .object({
-    Id: PhoneNumberIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the phone number.' }),
-    ).exactOptional(),
-    Arn: ARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the phone number.' }),
-    ).exactOptional(),
-    PhoneNumber: PhoneNumberSchema.and(
-      z.any().openapi({ description: 'The phone number.' }),
-    ).exactOptional(),
-    PhoneNumberType: PhoneNumberTypeSchema.and(
-      z.any().openapi({ description: 'The type of phone number.' }),
-    ).exactOptional(),
-    PhoneNumberCountryCode: PhoneNumberCountryCodeSchema.and(
-      z.any().openapi({ description: 'The ISO country code.' }),
-    ).exactOptional(),
+    Id: PhoneNumberIdSchema.exactOptional().openapi({
+      description: 'The identifier of the phone number.',
+    }),
+    Arn: ARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the phone number.',
+    }),
+    PhoneNumber: PhoneNumberSchema.exactOptional().openapi({ description: 'The phone number.' }),
+    PhoneNumberType: PhoneNumberTypeSchema.exactOptional().openapi({
+      description: 'The type of phone number.',
+    }),
+    PhoneNumberCountryCode: PhoneNumberCountryCodeSchema.exactOptional().openapi({
+      description: 'The ISO country code.',
+    }),
   })
   .openapi({
     description: 'Contains summary information about a phone number for a contact center.',
@@ -4903,17 +4116,13 @@ const PhoneNumberSummaryListSchema = z
 
 const ListPhoneNumbersResponseSchema = z
   .object({
-    PhoneNumberSummaryList: PhoneNumberSummaryListSchema.and(
-      z.any().openapi({ description: 'Information about the phone numbers.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If there are additional results, this is the token for the next set of results.',
-        }),
-    ).exactOptional(),
+    PhoneNumberSummaryList: PhoneNumberSummaryListSchema.exactOptional().openapi({
+      description: 'Information about the phone numbers.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If there are additional results, this is the token for the next set of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListPhoneNumbersResponse')
@@ -4922,34 +4131,26 @@ const LargeNextTokenSchema = z.string().min(1).max(100000).openapi('LargeNextTok
 
 const ListPhoneNumbersSummarySchema = z
   .object({
-    PhoneNumberId: PhoneNumberIdSchema.and(
-      z.any().openapi({ description: 'A unique identifier for the phone number.' }),
-    ).exactOptional(),
-    PhoneNumberArn: ARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the phone number.' }),
-    ).exactOptional(),
-    PhoneNumber: PhoneNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The phone number. Phone numbers are formatted <code>[+] [country code] [subscriber number including area code]</code>.',
-        }),
-    ).exactOptional(),
-    PhoneNumberCountryCode: PhoneNumberCountryCodeSchema.and(
-      z.any().openapi({ description: 'The ISO country code.' }),
-    ).exactOptional(),
-    PhoneNumberType: PhoneNumberTypeSchema.and(
-      z.any().openapi({ description: 'The type of phone number.' }),
-    ).exactOptional(),
-    TargetArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) for Amazon Connect instances or traffic distribution groups that phone numbers are claimed to.',
-        }),
-    ).exactOptional(),
+    PhoneNumberId: PhoneNumberIdSchema.exactOptional().openapi({
+      description: 'A unique identifier for the phone number.',
+    }),
+    PhoneNumberArn: ARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the phone number.',
+    }),
+    PhoneNumber: PhoneNumberSchema.exactOptional().openapi({
+      description:
+        'The phone number. Phone numbers are formatted <code>[+] [country code] [subscriber number including area code]</code>.',
+    }),
+    PhoneNumberCountryCode: PhoneNumberCountryCodeSchema.exactOptional().openapi({
+      description: 'The ISO country code.',
+    }),
+    PhoneNumberType: PhoneNumberTypeSchema.exactOptional().openapi({
+      description: 'The type of phone number.',
+    }),
+    TargetArn: ARNSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) for Amazon Connect instances or traffic distribution groups that phone numbers are claimed to.',
+    }),
   })
   .openapi({
     description:
@@ -4964,22 +4165,14 @@ const ListPhoneNumbersSummaryListSchema = z
 
 const ListPhoneNumbersV2ResponseSchema = z
   .object({
-    NextToken: LargeNextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If there are additional results, this is the token for the next set of results.',
-        }),
-    ).exactOptional(),
-    ListPhoneNumbersSummaryList: ListPhoneNumbersSummaryListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about phone numbers that have been claimed to your Amazon Connect instances or traffic distribution groups.',
-        }),
-    ).exactOptional(),
+    NextToken: LargeNextTokenSchema.exactOptional().openapi({
+      description:
+        'If there are additional results, this is the token for the next set of results.',
+    }),
+    ListPhoneNumbersSummaryList: ListPhoneNumbersSummaryListSchema.exactOptional().openapi({
+      description:
+        'Information about phone numbers that have been claimed to your Amazon Connect instances or traffic distribution groups.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListPhoneNumbersV2Response')
@@ -4990,15 +4183,11 @@ const PromptNameSchema = z.string().min(1).max(256).openapi('PromptName')
 
 const PromptSummarySchema = z
   .object({
-    Id: PromptIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the prompt.' }),
-    ).exactOptional(),
-    Arn: ARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the prompt.' }),
-    ).exactOptional(),
-    Name: PromptNameSchema.and(
-      z.any().openapi({ description: 'The name of the prompt.' }),
-    ).exactOptional(),
+    Id: PromptIdSchema.exactOptional().openapi({ description: 'The identifier of the prompt.' }),
+    Arn: ARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the prompt.',
+    }),
+    Name: PromptNameSchema.exactOptional().openapi({ description: 'The name of the prompt.' }),
   })
   .openapi({ description: 'Contains information about the prompt.', required: [] })
   .openapi('PromptSummary')
@@ -5007,40 +4196,32 @@ const PromptSummaryListSchema = z.array(PromptSummarySchema).openapi('PromptSumm
 
 const ListPromptsResponseSchema = z
   .object({
-    PromptSummaryList: PromptSummaryListSchema.and(
-      z.any().openapi({ description: 'Information about the prompts.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If there are additional results, this is the token for the next set of results.',
-        }),
-    ).exactOptional(),
+    PromptSummaryList: PromptSummaryListSchema.exactOptional().openapi({
+      description: 'Information about the prompts.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If there are additional results, this is the token for the next set of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListPromptsResponse')
 
 const QuickConnectSummarySchema = z
   .object({
-    Id: QuickConnectIdSchema.and(
-      z.any().openapi({ description: 'The identifier for the quick connect.' }),
-    ).exactOptional(),
-    Arn: ARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the quick connect.' }),
-    ).exactOptional(),
-    Name: QuickConnectNameSchema.and(
-      z.any().openapi({ description: 'The name of the quick connect.' }),
-    ).exactOptional(),
-    QuickConnectType: QuickConnectTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of quick connect. In the Amazon Connect console, when you create a quick connect, you are prompted to assign one of the following types: Agent (USER), External (PHONE_NUMBER), or Queue (QUEUE).',
-        }),
-    ).exactOptional(),
+    Id: QuickConnectIdSchema.exactOptional().openapi({
+      description: 'The identifier for the quick connect.',
+    }),
+    Arn: ARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the quick connect.',
+    }),
+    Name: QuickConnectNameSchema.exactOptional().openapi({
+      description: 'The name of the quick connect.',
+    }),
+    QuickConnectType: QuickConnectTypeSchema.exactOptional().openapi({
+      description:
+        'The type of quick connect. In the Amazon Connect console, when you create a quick connect, you are prompted to assign one of the following types: Agent (USER), External (PHONE_NUMBER), or Queue (QUEUE).',
+    }),
   })
   .openapi({ description: 'Contains summary information about a quick connect.', required: [] })
   .openapi('QuickConnectSummary')
@@ -5051,17 +4232,13 @@ const QuickConnectSummaryListSchema = z
 
 const ListQueueQuickConnectsResponseSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If there are additional results, this is the token for the next set of results.',
-        }),
-    ).exactOptional(),
-    QuickConnectSummaryList: QuickConnectSummaryListSchema.and(
-      z.any().openapi({ description: 'Information about the quick connects.' }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If there are additional results, this is the token for the next set of results.',
+    }),
+    QuickConnectSummaryList: QuickConnectSummaryListSchema.exactOptional().openapi({
+      description: 'Information about the quick connects.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListQueueQuickConnectsResponse')
@@ -5072,18 +4249,12 @@ const QueueTypeSchema = z.enum(['STANDARD', 'AGENT']).openapi('QueueType')
 
 const QueueSummarySchema = z
   .object({
-    Id: QueueIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the queue.' }),
-    ).exactOptional(),
-    Arn: ARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the queue.' }),
-    ).exactOptional(),
-    Name: QueueNameSchema.and(
-      z.any().openapi({ description: 'The name of the queue.' }),
-    ).exactOptional(),
-    QueueType: QueueTypeSchema.and(
-      z.any().openapi({ description: 'The type of queue.' }),
-    ).exactOptional(),
+    Id: QueueIdSchema.exactOptional().openapi({ description: 'The identifier of the queue.' }),
+    Arn: ARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the queue.',
+    }),
+    Name: QueueNameSchema.exactOptional().openapi({ description: 'The name of the queue.' }),
+    QueueType: QueueTypeSchema.exactOptional().openapi({ description: 'The type of queue.' }),
   })
   .openapi({ description: 'Contains summary information about a queue.', required: [] })
   .openapi('QueueSummary')
@@ -5092,64 +4263,44 @@ const QueueSummaryListSchema = z.array(QueueSummarySchema).openapi('QueueSummary
 
 const ListQueuesResponseSchema = z
   .object({
-    QueueSummaryList: QueueSummaryListSchema.and(
-      z.any().openapi({ description: 'Information about the queues.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If there are additional results, this is the token for the next set of results.',
-        }),
-    ).exactOptional(),
+    QueueSummaryList: QueueSummaryListSchema.exactOptional().openapi({
+      description: 'Information about the queues.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If there are additional results, this is the token for the next set of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListQueuesResponse')
 
 const ListQuickConnectsResponseSchema = z
   .object({
-    QuickConnectSummaryList: QuickConnectSummaryListSchema.and(
-      z.any().openapi({ description: 'Information about the quick connects.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If there are additional results, this is the token for the next set of results.',
-        }),
-    ).exactOptional(),
+    QuickConnectSummaryList: QuickConnectSummaryListSchema.exactOptional().openapi({
+      description: 'Information about the quick connects.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If there are additional results, this is the token for the next set of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListQuickConnectsResponse')
 
 const RoutingProfileQueueConfigSummarySchema = z
   .object({
-    QueueId: QueueIdSchema.and(z.any().openapi({ description: 'The identifier for the queue.' })),
-    QueueArn: ARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the queue.' }),
-    ),
-    QueueName: QueueNameSchema.and(z.any().openapi({ description: 'The name of the queue.' })),
-    Priority: PrioritySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The order in which contacts are to be handled for the queue. For more information, see <a href="https://docs.aws.amazon.com/connect/latest/adminguide/concepts-routing-profiles-priority.html">Queues: priority and delay</a>.',
-        }),
-    ),
-    Delay: DelaySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The delay, in seconds, that a contact should be in the queue before they are routed to an available agent. For more information, see <a href="https://docs.aws.amazon.com/connect/latest/adminguide/concepts-routing-profiles-priority.html">Queues: priority and delay</a> in the <i>Amazon Connect Administrator Guide</i>.',
-        }),
-    ),
-    Channel: ChannelSchema.and(
-      z.any().openapi({ description: 'The channels this queue supports.' }),
-    ),
+    QueueId: QueueIdSchema.openapi({ description: 'The identifier for the queue.' }),
+    QueueArn: ARNSchema.openapi({ description: 'The Amazon Resource Name (ARN) of the queue.' }),
+    QueueName: QueueNameSchema.openapi({ description: 'The name of the queue.' }),
+    Priority: PrioritySchema.openapi({
+      description:
+        'The order in which contacts are to be handled for the queue. For more information, see <a href="https://docs.aws.amazon.com/connect/latest/adminguide/concepts-routing-profiles-priority.html">Queues: priority and delay</a>.',
+    }),
+    Delay: DelaySchema.openapi({
+      description:
+        'The delay, in seconds, that a contact should be in the queue before they are routed to an available agent. For more information, see <a href="https://docs.aws.amazon.com/connect/latest/adminguide/concepts-routing-profiles-priority.html">Queues: priority and delay</a> in the <i>Amazon Connect Administrator Guide</i>.',
+    }),
+    Channel: ChannelSchema.openapi({ description: 'The channels this queue supports.' }),
   })
   .openapi({
     required: ['QueueId', 'QueueArn', 'QueueName', 'Priority', 'Delay', 'Channel'],
@@ -5163,32 +4314,29 @@ const RoutingProfileQueueConfigSummaryListSchema = z
 
 const ListRoutingProfileQueuesResponseSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If there are additional results, this is the token for the next set of results.',
-        }),
-    ).exactOptional(),
-    RoutingProfileQueueConfigSummaryList: RoutingProfileQueueConfigSummaryListSchema.and(
-      z.any().openapi({ description: 'Information about the routing profiles.' }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If there are additional results, this is the token for the next set of results.',
+    }),
+    RoutingProfileQueueConfigSummaryList:
+      RoutingProfileQueueConfigSummaryListSchema.exactOptional().openapi({
+        description: 'Information about the routing profiles.',
+      }),
   })
   .openapi({ required: [] })
   .openapi('ListRoutingProfileQueuesResponse')
 
 const RoutingProfileSummarySchema = z
   .object({
-    Id: RoutingProfileIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the routing profile.' }),
-    ).exactOptional(),
-    Arn: ARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the routing profile.' }),
-    ).exactOptional(),
-    Name: RoutingProfileNameSchema.and(
-      z.any().openapi({ description: 'The name of the routing profile.' }),
-    ).exactOptional(),
+    Id: RoutingProfileIdSchema.exactOptional().openapi({
+      description: 'The identifier of the routing profile.',
+    }),
+    Arn: ARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the routing profile.',
+    }),
+    Name: RoutingProfileNameSchema.exactOptional().openapi({
+      description: 'The name of the routing profile.',
+    }),
   })
   .openapi({ description: 'Contains summary information about a routing profile.', required: [] })
   .openapi('RoutingProfileSummary')
@@ -5199,25 +4347,19 @@ const RoutingProfileSummaryListSchema = z
 
 const ListRoutingProfilesResponseSchema = z
   .object({
-    RoutingProfileSummaryList: RoutingProfileSummaryListSchema.and(
-      z.any().openapi({ description: 'Information about the routing profiles.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If there are additional results, this is the token for the next set of results.',
-        }),
-    ).exactOptional(),
+    RoutingProfileSummaryList: RoutingProfileSummaryListSchema.exactOptional().openapi({
+      description: 'Information about the routing profiles.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If there are additional results, this is the token for the next set of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListRoutingProfilesResponse')
 
 const ActionSummarySchema = z
-  .object({
-    ActionType: ActionTypeSchema.and(z.any().openapi({ description: 'The action type.' })),
-  })
+  .object({ ActionType: ActionTypeSchema.openapi({ description: 'The action type.' }) })
   .openapi({ required: ['ActionType'], description: 'Information about an action.' })
   .openapi('ActionSummary')
 
@@ -5225,26 +4367,24 @@ const ActionSummariesSchema = z.array(ActionSummarySchema).openapi('ActionSummar
 
 const RuleSummarySchema = z
   .object({
-    Name: RuleNameSchema.and(z.any().openapi({ description: 'The name of the rule.' })),
-    RuleId: RuleIdSchema.and(z.any().openapi({ description: 'A unique identifier for the rule.' })),
-    RuleArn: ARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the rule.' }),
-    ),
-    EventSourceName: EventSourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the event source.' }),
-    ),
-    PublishStatus: RulePublishStatusSchema.and(
-      z.any().openapi({ description: 'The publish status of the rule.' }),
-    ),
-    ActionSummaries: ActionSummariesSchema.and(
-      z.any().openapi({ description: 'A list of ActionTypes associated with a rule. ' }),
-    ),
-    CreatedTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The timestamp for when the rule was created. ' }),
-    ),
-    LastUpdatedTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The timestamp for when the rule was last updated.' }),
-    ),
+    Name: RuleNameSchema.openapi({ description: 'The name of the rule.' }),
+    RuleId: RuleIdSchema.openapi({ description: 'A unique identifier for the rule.' }),
+    RuleArn: ARNSchema.openapi({ description: 'The Amazon Resource Name (ARN) of the rule.' }),
+    EventSourceName: EventSourceNameSchema.openapi({
+      description: 'The name of the event source.',
+    }),
+    PublishStatus: RulePublishStatusSchema.openapi({
+      description: 'The publish status of the rule.',
+    }),
+    ActionSummaries: ActionSummariesSchema.openapi({
+      description: 'A list of ActionTypes associated with a rule. ',
+    }),
+    CreatedTime: TimestampSchema.openapi({
+      description: 'The timestamp for when the rule was created. ',
+    }),
+    LastUpdatedTime: TimestampSchema.openapi({
+      description: 'The timestamp for when the rule was last updated.',
+    }),
   })
   .openapi({
     required: [
@@ -5265,17 +4405,13 @@ const RuleSummaryListSchema = z.array(RuleSummarySchema).openapi('RuleSummaryLis
 
 const ListRulesResponseSchema = z
   .object({
-    RuleSummaryList: RuleSummaryListSchema.and(
-      z.any().openapi({ description: 'Summary information about a rule.' }),
-    ),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If there are additional results, this is the token for the next set of results.',
-        }),
-    ).exactOptional(),
+    RuleSummaryList: RuleSummaryListSchema.openapi({
+      description: 'Summary information about a rule.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If there are additional results, this is the token for the next set of results.',
+    }),
   })
   .openapi({ required: ['RuleSummaryList'] })
   .openapi('ListRulesResponse')
@@ -5284,20 +4420,14 @@ const PEMSchema = z.string().min(1).max(1024).openapi('PEM')
 
 const SecurityKeySchema = z
   .object({
-    AssociationId: AssociationIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The existing association identifier that uniquely identifies the resource type and storage config for the given instance ID.',
-        }),
-    ).exactOptional(),
-    Key: PEMSchema.and(
-      z.any().openapi({ description: 'The key of the security key.' }),
-    ).exactOptional(),
-    CreationTime: Timestamp2Schema.and(
-      z.any().openapi({ description: 'When the security key was created.' }),
-    ).exactOptional(),
+    AssociationId: AssociationIdSchema.exactOptional().openapi({
+      description:
+        'The existing association identifier that uniquely identifies the resource type and storage config for the given instance ID.',
+    }),
+    Key: PEMSchema.exactOptional().openapi({ description: 'The key of the security key.' }),
+    CreationTime: Timestamp2Schema.exactOptional().openapi({
+      description: 'When the security key was created.',
+    }),
   })
   .openapi({ description: 'Configuration information of the security key.', required: [] })
   .openapi('SecurityKey')
@@ -5306,17 +4436,13 @@ const SecurityKeysListSchema = z.array(SecurityKeySchema).openapi('SecurityKeysL
 
 const ListSecurityKeysResponseSchema = z
   .object({
-    SecurityKeys: SecurityKeysListSchema.and(
-      z.any().openapi({ description: 'The security keys.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If there are additional results, this is the token for the next set of results.',
-        }),
-    ).exactOptional(),
+    SecurityKeys: SecurityKeysListSchema.exactOptional().openapi({
+      description: 'The security keys.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If there are additional results, this is the token for the next set of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListSecurityKeysResponse')
@@ -5328,37 +4454,29 @@ const PermissionsListSchema = z
 
 const ListSecurityProfilePermissionsResponseSchema = z
   .object({
-    Permissions: PermissionsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The permissions granted to the security profile. For a complete list of valid permissions, see <a href="https://docs.aws.amazon.com/connect/latest/adminguide/security-profile-list.html">List of security profile permissions</a>.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If there are additional results, this is the token for the next set of results.',
-        }),
-    ).exactOptional(),
+    Permissions: PermissionsListSchema.exactOptional().openapi({
+      description:
+        'The permissions granted to the security profile. For a complete list of valid permissions, see <a href="https://docs.aws.amazon.com/connect/latest/adminguide/security-profile-list.html">List of security profile permissions</a>.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If there are additional results, this is the token for the next set of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListSecurityProfilePermissionsResponse')
 
 const SecurityProfileSummarySchema = z
   .object({
-    Id: SecurityProfileIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the security profile.' }),
-    ).exactOptional(),
-    Arn: ARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the security profile.' }),
-    ).exactOptional(),
-    Name: SecurityProfileNameSchema.and(
-      z.any().openapi({ description: 'The name of the security profile.' }),
-    ).exactOptional(),
+    Id: SecurityProfileIdSchema.exactOptional().openapi({
+      description: 'The identifier of the security profile.',
+    }),
+    Arn: ARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the security profile.',
+    }),
+    Name: SecurityProfileNameSchema.exactOptional().openapi({
+      description: 'The name of the security profile.',
+    }),
   })
   .openapi({ description: 'Contains information about a security profile.', required: [] })
   .openapi('SecurityProfileSummary')
@@ -5369,58 +4487,48 @@ const SecurityProfileSummaryListSchema = z
 
 const ListSecurityProfilesResponseSchema = z
   .object({
-    SecurityProfileSummaryList: SecurityProfileSummaryListSchema.and(
-      z.any().openapi({ description: 'Information about the security profiles.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If there are additional results, this is the token for the next set of results.',
-        }),
-    ).exactOptional(),
+    SecurityProfileSummaryList: SecurityProfileSummaryListSchema.exactOptional().openapi({
+      description: 'Information about the security profiles.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If there are additional results, this is the token for the next set of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListSecurityProfilesResponse')
 
 const ListTagsForResourceResponseSchema = z
   .object({
-    tags: TagMapSchema.and(
-      z.any().openapi({ description: 'Information about the tags.' }),
-    ).exactOptional(),
+    tags: TagMapSchema.exactOptional().openapi({ description: 'Information about the tags.' }),
   })
   .openapi({ required: [] })
   .openapi('ListTagsForResourceResponse')
 
 const TaskTemplateMetadataSchema = z
   .object({
-    Id: TaskTemplateIdSchema.and(
-      z.any().openapi({ description: 'A unique identifier for the task template.' }),
-    ).exactOptional(),
-    Arn: TaskTemplateArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the task template.' }),
-    ).exactOptional(),
-    Name: TaskTemplateNameSchema.and(
-      z.any().openapi({ description: 'The name of the task template.' }),
-    ).exactOptional(),
-    Description: TaskTemplateDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the task template.' }),
-    ).exactOptional(),
-    Status: TaskTemplateStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Marks a template as <code>ACTIVE</code> or <code>INACTIVE</code> for a task to refer to it. Tasks can only be created from <code>ACTIVE</code> templates. If a template is marked as <code>INACTIVE</code>, then a task that refers to this template cannot be created.',
-        }),
-    ).exactOptional(),
-    LastModifiedTime: Timestamp2Schema.and(
-      z.any().openapi({ description: 'The timestamp when the task template was last modified.' }),
-    ).exactOptional(),
-    CreatedTime: Timestamp2Schema.and(
-      z.any().openapi({ description: 'The timestamp when the task template was created.' }),
-    ).exactOptional(),
+    Id: TaskTemplateIdSchema.exactOptional().openapi({
+      description: 'A unique identifier for the task template.',
+    }),
+    Arn: TaskTemplateArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the task template.',
+    }),
+    Name: TaskTemplateNameSchema.exactOptional().openapi({
+      description: 'The name of the task template.',
+    }),
+    Description: TaskTemplateDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the task template.',
+    }),
+    Status: TaskTemplateStatusSchema.exactOptional().openapi({
+      description:
+        'Marks a template as <code>ACTIVE</code> or <code>INACTIVE</code> for a task to refer to it. Tasks can only be created from <code>ACTIVE</code> templates. If a template is marked as <code>INACTIVE</code>, then a task that refers to this template cannot be created.',
+    }),
+    LastModifiedTime: Timestamp2Schema.exactOptional().openapi({
+      description: 'The timestamp when the task template was last modified.',
+    }),
+    CreatedTime: Timestamp2Schema.exactOptional().openapi({
+      description: 'The timestamp when the task template was created.',
+    }),
   })
   .openapi({ description: 'Contains summary information about the task template.', required: [] })
   .openapi('TaskTemplateMetadata')
@@ -5429,60 +4537,36 @@ const TaskTemplateListSchema = z.array(TaskTemplateMetadataSchema).openapi('Task
 
 const ListTaskTemplatesResponseSchema = z
   .object({
-    TaskTemplates: TaskTemplateListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Provides details about a list of task templates belonging to an instance.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If there are additional results, this is the token for the next set of results.</p> <important> <p>This is always returned as a null in the response.</p> </important>',
-        }),
-    ).exactOptional(),
+    TaskTemplates: TaskTemplateListSchema.exactOptional().openapi({
+      description: 'Provides details about a list of task templates belonging to an instance.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        '<p>If there are additional results, this is the token for the next set of results.</p> <important> <p>This is always returned as a null in the response.</p> </important>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTaskTemplatesResponse')
 
 const TrafficDistributionGroupSummarySchema = z
   .object({
-    Id: TrafficDistributionGroupIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the traffic distribution group. This can be the ID or the ARN if the API is being called in the Region where the traffic distribution group was created. The ARN must be provided if the call is from the replicated Region.',
-        }),
-    ).exactOptional(),
-    Arn: TrafficDistributionGroupArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the traffic distribution group.',
-        }),
-    ).exactOptional(),
-    Name: Name128Schema.and(
-      z.any().openapi({ description: 'The name of the traffic distribution group.' }),
-    ).exactOptional(),
-    InstanceArn: InstanceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the traffic distribution group.',
-        }),
-    ).exactOptional(),
-    Status: TrafficDistributionGroupStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the traffic distribution group. </p> <ul> <li> <p> <code>CREATION_IN_PROGRESS</code> means the previous <a href="https://docs.aws.amazon.com/connect/latest/APIReference/API_CreateTrafficDistributionGroup.html">CreateTrafficDistributionGroup</a> operation is still in progress and has not yet completed.</p> </li> <li> <p> <code>ACTIVE</code> means the previous <a href="https://docs.aws.amazon.com/connect/latest/APIReference/API_CreateTrafficDistributionGroup.html">CreateTrafficDistributionGroup</a> operation has succeeded.</p> </li> <li> <p> <code>CREATION_FAILED</code> indicates that the previous <a href="https://docs.aws.amazon.com/connect/latest/APIReference/API_CreateTrafficDistributionGroup.html">CreateTrafficDistributionGroup</a> operation has failed.</p> </li> <li> <p> <code>PENDING_DELETION</code> means the previous <a href="https://docs.aws.amazon.com/connect/latest/APIReference/API_DeleteTrafficDistributionGroup.html">DeleteTrafficDistributionGroup</a> operation is still in progress and has not yet completed.</p> </li> <li> <p> <code>DELETION_FAILED</code> means the previous <a href="https://docs.aws.amazon.com/connect/latest/APIReference/API_DeleteTrafficDistributionGroup.html">DeleteTrafficDistributionGroup</a> operation has failed.</p> </li> <li> <p> <code>UPDATE_IN_PROGRESS</code> means the previous <a href="https://docs.aws.amazon.com/connect/latest/APIReference/API_UpdateTrafficDistributionGroup.html">UpdateTrafficDistributionGroup</a> operation is still in progress and has not yet completed.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    Id: TrafficDistributionGroupIdSchema.exactOptional().openapi({
+      description:
+        'The identifier of the traffic distribution group. This can be the ID or the ARN if the API is being called in the Region where the traffic distribution group was created. The ARN must be provided if the call is from the replicated Region.',
+    }),
+    Arn: TrafficDistributionGroupArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the traffic distribution group.',
+    }),
+    Name: Name128Schema.exactOptional().openapi({
+      description: 'The name of the traffic distribution group.',
+    }),
+    InstanceArn: InstanceArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the traffic distribution group.',
+    }),
+    Status: TrafficDistributionGroupStatusSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the traffic distribution group. </p> <ul> <li> <p> <code>CREATION_IN_PROGRESS</code> means the previous <a href="https://docs.aws.amazon.com/connect/latest/APIReference/API_CreateTrafficDistributionGroup.html">CreateTrafficDistributionGroup</a> operation is still in progress and has not yet completed.</p> </li> <li> <p> <code>ACTIVE</code> means the previous <a href="https://docs.aws.amazon.com/connect/latest/APIReference/API_CreateTrafficDistributionGroup.html">CreateTrafficDistributionGroup</a> operation has succeeded.</p> </li> <li> <p> <code>CREATION_FAILED</code> indicates that the previous <a href="https://docs.aws.amazon.com/connect/latest/APIReference/API_CreateTrafficDistributionGroup.html">CreateTrafficDistributionGroup</a> operation has failed.</p> </li> <li> <p> <code>PENDING_DELETION</code> means the previous <a href="https://docs.aws.amazon.com/connect/latest/APIReference/API_DeleteTrafficDistributionGroup.html">DeleteTrafficDistributionGroup</a> operation is still in progress and has not yet completed.</p> </li> <li> <p> <code>DELETION_FAILED</code> means the previous <a href="https://docs.aws.amazon.com/connect/latest/APIReference/API_DeleteTrafficDistributionGroup.html">DeleteTrafficDistributionGroup</a> operation has failed.</p> </li> <li> <p> <code>UPDATE_IN_PROGRESS</code> means the previous <a href="https://docs.aws.amazon.com/connect/latest/APIReference/API_UpdateTrafficDistributionGroup.html">UpdateTrafficDistributionGroup</a> operation is still in progress and has not yet completed.</p> </li> </ul>',
+    }),
   })
   .openapi({ description: 'Information about traffic distribution groups.', required: [] })
   .openapi('TrafficDistributionGroupSummary')
@@ -5495,17 +4579,14 @@ const TrafficDistributionGroupSummaryListSchema = z
 
 const ListTrafficDistributionGroupsResponseSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If there are additional results, this is the token for the next set of results.',
-        }),
-    ).exactOptional(),
-    TrafficDistributionGroupSummaryList: TrafficDistributionGroupSummaryListSchema.and(
-      z.any().openapi({ description: 'A list of traffic distribution groups.' }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If there are additional results, this is the token for the next set of results.',
+    }),
+    TrafficDistributionGroupSummaryList:
+      TrafficDistributionGroupSummaryListSchema.exactOptional().openapi({
+        description: 'A list of traffic distribution groups.',
+      }),
   })
   .openapi({ required: [] })
   .openapi('ListTrafficDistributionGroupsResponse')
@@ -5514,20 +4595,16 @@ const UseCaseTypeSchema = z.enum(['RULES_EVALUATION', 'CONNECT_CAMPAIGNS']).open
 
 const UseCaseSchema = z
   .object({
-    UseCaseId: UseCaseIdSchema.and(
-      z.any().openapi({ description: 'The identifier for the use case.' }),
-    ).exactOptional(),
-    UseCaseArn: ARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) for the use case.' }),
-    ).exactOptional(),
-    UseCaseType: UseCaseTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of use case to associate to the integration association. Each integration association can have only one of each use case type.',
-        }),
-    ).exactOptional(),
+    UseCaseId: UseCaseIdSchema.exactOptional().openapi({
+      description: 'The identifier for the use case.',
+    }),
+    UseCaseArn: ARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) for the use case.',
+    }),
+    UseCaseType: UseCaseTypeSchema.exactOptional().openapi({
+      description:
+        'The type of use case to associate to the integration association. Each integration association can have only one of each use case type.',
+    }),
   })
   .openapi({ description: 'Contains the use case.', required: [] })
   .openapi('UseCase')
@@ -5536,17 +4613,13 @@ const UseCaseSummaryListSchema = z.array(UseCaseSchema).openapi('UseCaseSummaryL
 
 const ListUseCasesResponseSchema = z
   .object({
-    UseCaseSummaryList: UseCaseSummaryListSchema.and(
-      z.any().openapi({ description: 'The use cases.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If there are additional results, this is the token for the next set of results.',
-        }),
-    ).exactOptional(),
+    UseCaseSummaryList: UseCaseSummaryListSchema.exactOptional().openapi({
+      description: 'The use cases.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If there are additional results, this is the token for the next set of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListUseCasesResponse')
@@ -5557,32 +4630,28 @@ const HierarchyGroupSummaryListSchema = z
 
 const ListUserHierarchyGroupsResponseSchema = z
   .object({
-    UserHierarchyGroupSummaryList: HierarchyGroupSummaryListSchema.and(
-      z.any().openapi({ description: 'Information about the hierarchy groups.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If there are additional results, this is the token for the next set of results.',
-        }),
-    ).exactOptional(),
+    UserHierarchyGroupSummaryList: HierarchyGroupSummaryListSchema.exactOptional().openapi({
+      description: 'Information about the hierarchy groups.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If there are additional results, this is the token for the next set of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListUserHierarchyGroupsResponse')
 
 const UserSummarySchema = z
   .object({
-    Id: UserIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the user account.' }),
-    ).exactOptional(),
-    Arn: ARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the user account.' }),
-    ).exactOptional(),
-    Username: AgentUsernameSchema.and(
-      z.any().openapi({ description: 'The Amazon Connect user name of the user account.' }),
-    ).exactOptional(),
+    Id: UserIdSchema.exactOptional().openapi({
+      description: 'The identifier of the user account.',
+    }),
+    Arn: ARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the user account.',
+    }),
+    Username: AgentUsernameSchema.exactOptional().openapi({
+      description: 'The Amazon Connect user name of the user account.',
+    }),
   })
   .openapi({ description: 'Contains summary information about a user.', required: [] })
   .openapi('UserSummary')
@@ -5591,74 +4660,60 @@ const UserSummaryListSchema = z.array(UserSummarySchema).openapi('UserSummaryLis
 
 const ListUsersResponseSchema = z
   .object({
-    UserSummaryList: UserSummaryListSchema.and(
-      z.any().openapi({ description: 'Information about the users.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If there are additional results, this is the token for the next set of results.',
-        }),
-    ).exactOptional(),
+    UserSummaryList: UserSummaryListSchema.exactOptional().openapi({
+      description: 'Information about the users.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If there are additional results, this is the token for the next set of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListUsersResponse')
 
 const MonitorContactResponseSchema = z
   .object({
-    ContactId: ContactIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the contact.' }),
-    ).exactOptional(),
-    ContactArn: ARNSchema.and(
-      z.any().openapi({ description: 'The ARN of the contact.' }),
-    ).exactOptional(),
+    ContactId: ContactIdSchema.exactOptional().openapi({
+      description: 'The identifier of the contact.',
+    }),
+    ContactArn: ARNSchema.exactOptional().openapi({ description: 'The ARN of the contact.' }),
   })
   .openapi({ required: [] })
   .openapi('MonitorContactResponse')
 
 const MonitorCapabilitySchema = z.enum(['SILENT_MONITOR', 'BARGE']).openapi('MonitorCapability')
 
-const PutUserStatusResponseSchema = z.object({}).openapi('PutUserStatusResponse')
+const PutUserStatusResponseSchema = z.looseObject({}).openapi('PutUserStatusResponse')
 
 const ReplicateInstanceResponseSchema = z
   .object({
-    Id: InstanceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the replicated instance. You can find the <code>instanceId</code> in the ARN of the instance. The replicated instance has the same identifier as the instance it was replicated from.',
-        }),
-    ).exactOptional(),
-    Arn: ARNSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) of the replicated instance.' }),
-    ).exactOptional(),
+    Id: InstanceIdSchema.exactOptional().openapi({
+      description:
+        'The identifier of the replicated instance. You can find the <code>instanceId</code> in the ARN of the instance. The replicated instance has the same identifier as the instance it was replicated from.',
+    }),
+    Arn: ARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the replicated instance.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ReplicateInstanceResponse')
 
-const ResumeContactRecordingResponseSchema = z.object({}).openapi('ResumeContactRecordingResponse')
+const ResumeContactRecordingResponseSchema = z
+  .looseObject({})
+  .openapi('ResumeContactRecordingResponse')
 
 const AvailableNumberSummarySchema = z
   .object({
-    PhoneNumber: PhoneNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The phone number. Phone numbers are formatted <code>[+] [country code] [subscriber number including area code]</code>.',
-        }),
-    ).exactOptional(),
-    PhoneNumberCountryCode: PhoneNumberCountryCodeSchema.and(
-      z.any().openapi({ description: 'The ISO country code.' }),
-    ).exactOptional(),
-    PhoneNumberType: PhoneNumberTypeSchema.and(
-      z.any().openapi({ description: 'The type of phone number.' }),
-    ).exactOptional(),
+    PhoneNumber: PhoneNumberSchema.exactOptional().openapi({
+      description:
+        'The phone number. Phone numbers are formatted <code>[+] [country code] [subscriber number including area code]</code>.',
+    }),
+    PhoneNumberCountryCode: PhoneNumberCountryCodeSchema.exactOptional().openapi({
+      description: 'The ISO country code.',
+    }),
+    PhoneNumberType: PhoneNumberTypeSchema.exactOptional().openapi({
+      description: 'The type of phone number.',
+    }),
   })
   .openapi({ description: 'Information about available phone numbers.', required: [] })
   .openapi('AvailableNumberSummary')
@@ -5669,22 +4724,14 @@ const AvailableNumbersListSchema = z
 
 const SearchAvailablePhoneNumbersResponseSchema = z
   .object({
-    NextToken: LargeNextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If there are additional results, this is the token for the next set of results.',
-        }),
-    ).exactOptional(),
-    AvailableNumbersList: AvailableNumbersListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of available phone numbers that you can claim to your Amazon Connect instance or traffic distribution group.',
-        }),
-    ).exactOptional(),
+    NextToken: LargeNextTokenSchema.exactOptional().openapi({
+      description:
+        'If there are additional results, this is the token for the next set of results.',
+    }),
+    AvailableNumbersList: AvailableNumbersListSchema.exactOptional().openapi({
+      description:
+        'A list of available phone numbers that you can claim to your Amazon Connect instance or traffic distribution group.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('SearchAvailablePhoneNumbersResponse')
@@ -5693,34 +4740,28 @@ const QueueSearchSummaryListSchema = z.array(QueueSchema).openapi('QueueSearchSu
 
 const SearchQueuesResponseSchema = z
   .object({
-    Queues: QueueSearchSummaryListSchema.and(
-      z.any().openapi({ description: 'Information about the queues.' }),
-    ).exactOptional(),
-    NextToken: NextToken2500Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If there are additional results, this is the token for the next set of results.',
-        }),
-    ).exactOptional(),
-    ApproximateTotalCount: ApproximateTotalCountSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The total number of queues which matched your search query.' }),
-    ).exactOptional(),
+    Queues: QueueSearchSummaryListSchema.exactOptional().openapi({
+      description: 'Information about the queues.',
+    }),
+    NextToken: NextToken2500Schema.exactOptional().openapi({
+      description:
+        'If there are additional results, this is the token for the next set of results.',
+    }),
+    ApproximateTotalCount: ApproximateTotalCountSchema.exactOptional().openapi({
+      description: 'The total number of queues which matched your search query.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('SearchQueuesResponse')
 
 const TagConditionSchema = z
   .object({
-    TagKey: StringSchema.and(
-      z.any().openapi({ description: 'The tag key in the tag condition.' }),
-    ).exactOptional(),
-    TagValue: StringSchema.and(
-      z.any().openapi({ description: 'The tag value in the tag condition.' }),
-    ).exactOptional(),
+    TagKey: StringSchema.exactOptional().openapi({
+      description: 'The tag key in the tag condition.',
+    }),
+    TagValue: StringSchema.exactOptional().openapi({
+      description: 'The tag value in the tag condition.',
+    }),
   })
   .openapi({
     description:
@@ -5735,29 +4776,17 @@ const TagOrConditionListSchema = z.array(TagAndConditionListSchema).openapi('Tag
 
 const ControlPlaneTagFilterSchema = z
   .object({
-    OrConditions: TagOrConditionListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of conditions which would be applied together with an <code>OR</code> condition. ',
-        }),
-    ).exactOptional(),
-    AndConditions: TagAndConditionListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of conditions which would be applied together with an <code>AND</code> condition.',
-        }),
-    ).exactOptional(),
-    TagCondition: TagConditionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A leaf node condition which can be used to specify a tag condition. ',
-        }),
-    ).exactOptional(),
+    OrConditions: TagOrConditionListSchema.exactOptional().openapi({
+      description:
+        'A list of conditions which would be applied together with an <code>OR</code> condition. ',
+    }),
+    AndConditions: TagAndConditionListSchema.exactOptional().openapi({
+      description:
+        'A list of conditions which would be applied together with an <code>AND</code> condition.',
+    }),
+    TagCondition: TagConditionSchema.exactOptional().openapi({
+      description: 'A leaf node condition which can be used to specify a tag condition. ',
+    }),
   })
   .openapi({
     description:
@@ -5770,53 +4799,41 @@ const RoutingProfileListSchema = z.array(RoutingProfileSchema).openapi('RoutingP
 
 const SearchRoutingProfilesResponseSchema = z
   .object({
-    RoutingProfiles: RoutingProfileListSchema.and(
-      z.any().openapi({ description: 'Information about the routing profiles.' }),
-    ).exactOptional(),
-    NextToken: NextToken2500Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If there are additional results, this is the token for the next set of results.',
-        }),
-    ).exactOptional(),
-    ApproximateTotalCount: ApproximateTotalCountSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The total number of routing profiles which matched your search query.',
-        }),
-    ).exactOptional(),
+    RoutingProfiles: RoutingProfileListSchema.exactOptional().openapi({
+      description: 'Information about the routing profiles.',
+    }),
+    NextToken: NextToken2500Schema.exactOptional().openapi({
+      description:
+        'If there are additional results, this is the token for the next set of results.',
+    }),
+    ApproximateTotalCount: ApproximateTotalCountSchema.exactOptional().openapi({
+      description: 'The total number of routing profiles which matched your search query.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('SearchRoutingProfilesResponse')
 
 const SecurityProfileSearchSummarySchema = z
   .object({
-    Id: SecurityProfileIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the security profile.' }),
-    ).exactOptional(),
-    OrganizationResourceId: InstanceIdSchema.and(
-      z.any().openapi({ description: 'The organization resource identifier.' }),
-    ).exactOptional(),
-    Arn: ARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the security profile.' }),
-    ).exactOptional(),
-    SecurityProfileName: SecurityProfileNameSchema.and(
-      z.any().openapi({ description: 'The name of the security profile.' }),
-    ).exactOptional(),
-    Description: SecurityProfileDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the security profile.' }),
-    ).exactOptional(),
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tags used to organize, track, or control access for this resource. For example, { "tags": {"key1":"value1", "key2":"value2"} }.',
-        }),
-    ).exactOptional(),
+    Id: SecurityProfileIdSchema.exactOptional().openapi({
+      description: 'The identifier of the security profile.',
+    }),
+    OrganizationResourceId: InstanceIdSchema.exactOptional().openapi({
+      description: 'The organization resource identifier.',
+    }),
+    Arn: ARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the security profile.',
+    }),
+    SecurityProfileName: SecurityProfileNameSchema.exactOptional().openapi({
+      description: 'The name of the security profile.',
+    }),
+    Description: SecurityProfileDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the security profile.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description:
+        'The tags used to organize, track, or control access for this resource. For example, { "tags": {"key1":"value1", "key2":"value2"} }.',
+    }),
   })
   .openapi({ description: 'Information about the returned security profiles.', required: [] })
   .openapi('SecurityProfileSearchSummary')
@@ -5827,75 +4844,59 @@ const SecurityProfilesSearchSummaryListSchema = z
 
 const SearchSecurityProfilesResponseSchema = z
   .object({
-    SecurityProfiles: SecurityProfilesSearchSummaryListSchema.and(
-      z.any().openapi({ description: 'Information about the security profiles.' }),
-    ).exactOptional(),
-    NextToken: NextToken2500Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If there are additional results, this is the token for the next set of results.',
-        }),
-    ).exactOptional(),
-    ApproximateTotalCount: ApproximateTotalCountSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The total number of security profiles which matched your search query.',
-        }),
-    ).exactOptional(),
+    SecurityProfiles: SecurityProfilesSearchSummaryListSchema.exactOptional().openapi({
+      description: 'Information about the security profiles.',
+    }),
+    NextToken: NextToken2500Schema.exactOptional().openapi({
+      description:
+        'If there are additional results, this is the token for the next set of results.',
+    }),
+    ApproximateTotalCount: ApproximateTotalCountSchema.exactOptional().openapi({
+      description: 'The total number of security profiles which matched your search query.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('SearchSecurityProfilesResponse')
 
 const UserIdentityInfoLiteSchema = z
   .object({
-    FirstName: AgentFirstNameSchema.and(
-      z.any().openapi({ description: "The user's first name." }),
-    ).exactOptional(),
-    LastName: AgentLastNameSchema.and(
-      z.any().openapi({ description: "The user's last name." }),
-    ).exactOptional(),
+    FirstName: AgentFirstNameSchema.exactOptional().openapi({
+      description: "The user's first name.",
+    }),
+    LastName: AgentLastNameSchema.exactOptional().openapi({ description: "The user's last name." }),
   })
   .openapi({ description: "The user's first name and last name.", required: [] })
   .openapi('UserIdentityInfoLite')
 
 const UserSearchSummarySchema = z
   .object({
-    Arn: ARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the user.' }),
-    ).exactOptional(),
-    DirectoryUserId: DirectoryUserIdSchema.and(
-      z.any().openapi({ description: 'The directory identifier of the user.' }),
-    ).exactOptional(),
-    HierarchyGroupId: HierarchyGroupIdSchema.and(
-      z.any().openapi({ description: "The identifier of the user's hierarchy group." }),
-    ).exactOptional(),
-    Id: UserIdSchema.and(
-      z.any().openapi({ description: "The identifier of the user's summary." }),
-    ).exactOptional(),
-    IdentityInfo: UserIdentityInfoLiteSchema.and(
-      z.any().openapi({ description: "The user's first name and last name." }),
-    ).exactOptional(),
+    Arn: ARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the user.',
+    }),
+    DirectoryUserId: DirectoryUserIdSchema.exactOptional().openapi({
+      description: 'The directory identifier of the user.',
+    }),
+    HierarchyGroupId: HierarchyGroupIdSchema.exactOptional().openapi({
+      description: "The identifier of the user's hierarchy group.",
+    }),
+    Id: UserIdSchema.exactOptional().openapi({
+      description: "The identifier of the user's summary.",
+    }),
+    IdentityInfo: UserIdentityInfoLiteSchema.exactOptional().openapi({
+      description: "The user's first name and last name.",
+    }),
     PhoneConfig: UserPhoneConfigSchema.exactOptional(),
-    RoutingProfileId: RoutingProfileIdSchema.and(
-      z.any().openapi({ description: "The identifier of the user's routing profile." }),
-    ).exactOptional(),
-    SecurityProfileIds: SecurityProfileIdsSchema.and(
-      z.any().openapi({ description: "The identifiers of the user's security profiles." }),
-    ).exactOptional(),
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tags used to organize, track, or control access for this resource. For example, { "tags": {"key1":"value1", "key2":"value2"} }.',
-        }),
-    ).exactOptional(),
-    Username: AgentUsernameSchema.and(
-      z.any().openapi({ description: 'The name of the user.' }),
-    ).exactOptional(),
+    RoutingProfileId: RoutingProfileIdSchema.exactOptional().openapi({
+      description: "The identifier of the user's routing profile.",
+    }),
+    SecurityProfileIds: SecurityProfileIdsSchema.exactOptional().openapi({
+      description: "The identifiers of the user's security profiles.",
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description:
+        'The tags used to organize, track, or control access for this resource. For example, { "tags": {"key1":"value1", "key2":"value2"} }.',
+    }),
+    Username: AgentUsernameSchema.exactOptional().openapi({ description: 'The name of the user.' }),
   })
   .openapi({ description: 'Information about the returned users.', required: [] })
   .openapi('UserSearchSummary')
@@ -5906,54 +4907,40 @@ const UserSearchSummaryListSchema = z
 
 const SearchUsersResponseSchema = z
   .object({
-    Users: UserSearchSummaryListSchema.and(
-      z.any().openapi({ description: 'Information about the users.' }),
-    ).exactOptional(),
-    NextToken: NextToken2500Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If there are additional results, this is the token for the next set of results.',
-        }),
-    ).exactOptional(),
-    ApproximateTotalCount: ApproximateTotalCountSchema.and(
-      z.any().openapi({ description: 'The total number of users who matched your search query.' }),
-    ).exactOptional(),
+    Users: UserSearchSummaryListSchema.exactOptional().openapi({
+      description: 'Information about the users.',
+    }),
+    NextToken: NextToken2500Schema.exactOptional().openapi({
+      description:
+        'If there are additional results, this is the token for the next set of results.',
+    }),
+    ApproximateTotalCount: ApproximateTotalCountSchema.exactOptional().openapi({
+      description: 'The total number of users who matched your search query.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('SearchUsersResponse')
 
 const VocabularySummarySchema = z
   .object({
-    Name: VocabularyNameSchema.and(
-      z.any().openapi({ description: 'A unique name of the custom vocabulary.' }),
-    ),
-    Id: VocabularyIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the custom vocabulary.' }),
-    ),
-    Arn: ARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the custom vocabulary.' }),
-    ),
-    LanguageCode: VocabularyLanguageCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The language code of the vocabulary entries. For a list of languages and their corresponding language codes, see <a href="https://docs.aws.amazon.com/transcribe/latest/dg/transcribe-whatis.html">What is Amazon Transcribe?</a> ',
-        }),
-    ),
-    State: VocabularyStateSchema.and(
-      z.any().openapi({ description: 'The current state of the custom vocabulary.' }),
-    ),
-    LastModifiedTime: VocabularyLastModifiedTimeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The timestamp when the custom vocabulary was last modified.' }),
-    ),
-    FailureReason: VocabularyFailureReasonSchema.and(
-      z.any().openapi({ description: 'The reason why the custom vocabulary was not created.' }),
-    ).exactOptional(),
+    Name: VocabularyNameSchema.openapi({ description: 'A unique name of the custom vocabulary.' }),
+    Id: VocabularyIdSchema.openapi({ description: 'The identifier of the custom vocabulary.' }),
+    Arn: ARNSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the custom vocabulary.',
+    }),
+    LanguageCode: VocabularyLanguageCodeSchema.openapi({
+      description:
+        'The language code of the vocabulary entries. For a list of languages and their corresponding language codes, see <a href="https://docs.aws.amazon.com/transcribe/latest/dg/transcribe-whatis.html">What is Amazon Transcribe?</a> ',
+    }),
+    State: VocabularyStateSchema.openapi({
+      description: 'The current state of the custom vocabulary.',
+    }),
+    LastModifiedTime: VocabularyLastModifiedTimeSchema.openapi({
+      description: 'The timestamp when the custom vocabulary was last modified.',
+    }),
+    FailureReason: VocabularyFailureReasonSchema.exactOptional().openapi({
+      description: 'The reason why the custom vocabulary was not created.',
+    }),
   })
   .openapi({
     required: ['Name', 'Id', 'Arn', 'LanguageCode', 'State', 'LastModifiedTime'],
@@ -5967,54 +4954,34 @@ const VocabularySummaryListSchema = z
 
 const SearchVocabulariesResponseSchema = z
   .object({
-    VocabularySummaryList: VocabularySummaryListSchema.and(
-      z.any().openapi({ description: 'The list of the available custom vocabularies.' }),
-    ).exactOptional(),
-    NextToken: VocabularyNextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If there are additional results, this is the token for the next set of results.',
-        }),
-    ).exactOptional(),
+    VocabularySummaryList: VocabularySummaryListSchema.exactOptional().openapi({
+      description: 'The list of the available custom vocabularies.',
+    }),
+    NextToken: VocabularyNextTokenSchema.exactOptional().openapi({
+      description:
+        'If there are additional results, this is the token for the next set of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('SearchVocabulariesResponse')
 
 const StartChatContactResponseSchema = z
   .object({
-    ContactId: ContactIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier of this contact within the Amazon Connect instance. ',
-        }),
-    ).exactOptional(),
-    ParticipantId: ParticipantIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier for a chat participant. The participantId for a chat participant is the same throughout the chat lifecycle.',
-        }),
-    ).exactOptional(),
-    ParticipantToken: ParticipantTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token used by the chat participant to call <a href="https://docs.aws.amazon.com/connect-participant/latest/APIReference/API_CreateParticipantConnection.html">CreateParticipantConnection</a>. The participant token is valid for the lifetime of a chat participant.',
-        }),
-    ).exactOptional(),
-    ContinuedFromContactId: ContactIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The contactId from which a persistent chat session is started. This field is populated only for persistent chats.',
-        }),
-    ).exactOptional(),
+    ContactId: ContactIdSchema.exactOptional().openapi({
+      description: 'The identifier of this contact within the Amazon Connect instance. ',
+    }),
+    ParticipantId: ParticipantIdSchema.exactOptional().openapi({
+      description:
+        'The identifier for a chat participant. The participantId for a chat participant is the same throughout the chat lifecycle.',
+    }),
+    ParticipantToken: ParticipantTokenSchema.exactOptional().openapi({
+      description:
+        'The token used by the chat participant to call <a href="https://docs.aws.amazon.com/connect-participant/latest/APIReference/API_CreateParticipantConnection.html">CreateParticipantConnection</a>. The participant token is valid for the lifetime of a chat participant.',
+    }),
+    ContinuedFromContactId: ContactIdSchema.exactOptional().openapi({
+      description:
+        'The contactId from which a persistent chat session is started. This field is populated only for persistent chats.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StartChatContactResponse')
@@ -6033,7 +5000,9 @@ const RehydrationTypeSchema = z
   .enum(['ENTIRE_PAST_SESSION', 'FROM_SEGMENT'])
   .openapi('RehydrationType')
 
-const StartContactRecordingResponseSchema = z.object({}).openapi('StartContactRecordingResponse')
+const StartContactRecordingResponseSchema = z
+  .looseObject({})
+  .openapi('StartContactRecordingResponse')
 
 const VoiceRecordingTrackSchema = z
   .enum(['FROM_AGENT', 'TO_AGENT', 'ALL'])
@@ -6043,9 +5012,9 @@ const StreamingIdSchema = z.string().min(1).max(100).openapi('StreamingId')
 
 const StartContactStreamingResponseSchema = z
   .object({
-    StreamingId: StreamingIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the streaming configuration enabled. ' }),
-    ),
+    StreamingId: StreamingIdSchema.openapi({
+      description: 'The identifier of the streaming configuration enabled. ',
+    }),
   })
   .openapi({ required: ['StreamingId'] })
   .openapi('StartContactStreamingResponse')
@@ -6058,13 +5027,9 @@ const ChatStreamingEndpointARNSchema = z
 
 const StartOutboundVoiceContactResponseSchema = z
   .object({
-    ContactId: ContactIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier of this contact within the Amazon Connect instance.',
-        }),
-    ).exactOptional(),
+    ContactId: ContactIdSchema.exactOptional().openapi({
+      description: 'The identifier of this contact within the Amazon Connect instance.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StartOutboundVoiceContactResponse')
@@ -6079,41 +5044,33 @@ const OutboundContactNotPermittedExceptionSchema = z
 
 const StartTaskContactResponseSchema = z
   .object({
-    ContactId: ContactIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier of this contact within the Amazon Connect instance.',
-        }),
-    ).exactOptional(),
+    ContactId: ContactIdSchema.exactOptional().openapi({
+      description: 'The identifier of this contact within the Amazon Connect instance.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StartTaskContactResponse')
 
-const StopContactResponseSchema = z.object({}).openapi('StopContactResponse')
+const StopContactResponseSchema = z.looseObject({}).openapi('StopContactResponse')
 
 const ContactNotFoundExceptionSchema = z.any().openapi('ContactNotFoundException')
 
-const StopContactRecordingResponseSchema = z.object({}).openapi('StopContactRecordingResponse')
+const StopContactRecordingResponseSchema = z.looseObject({}).openapi('StopContactRecordingResponse')
 
-const StopContactStreamingResponseSchema = z.object({}).openapi('StopContactStreamingResponse')
+const StopContactStreamingResponseSchema = z.looseObject({}).openapi('StopContactStreamingResponse')
 
 const SuspendContactRecordingResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('SuspendContactRecordingResponse')
 
 const TransferContactResponseSchema = z
   .object({
-    ContactId: ContactIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier of the contact in this instance of Amazon Connect. ',
-        }),
-    ).exactOptional(),
-    ContactArn: ARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the contact.' }),
-    ).exactOptional(),
+    ContactId: ContactIdSchema.exactOptional().openapi({
+      description: 'The identifier of the contact in this instance of Amazon Connect. ',
+    }),
+    ContactArn: ARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the contact.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('TransferContactResponse')
@@ -6125,34 +5082,38 @@ const TagKeySchema = z
   .max(128)
   .openapi('TagKey')
 
-const UpdateContactResponseSchema = z.object({}).openapi('UpdateContactResponse')
+const UpdateContactResponseSchema = z.looseObject({}).openapi('UpdateContactResponse')
 
 const UpdateContactAttributesResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('UpdateContactAttributesResponse')
 
 const UpdateContactFlowContentResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('UpdateContactFlowContentResponse')
 
 const UpdateContactFlowMetadataResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('UpdateContactFlowMetadataResponse')
 
 const UpdateContactFlowModuleContentResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('UpdateContactFlowModuleContentResponse')
 
 const UpdateContactFlowModuleMetadataResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('UpdateContactFlowModuleMetadataResponse')
 
-const UpdateContactFlowNameResponseSchema = z.object({}).openapi('UpdateContactFlowNameResponse')
+const UpdateContactFlowNameResponseSchema = z
+  .looseObject({})
+  .openapi('UpdateContactFlowNameResponse')
 
-const UpdateContactScheduleResponseSchema = z.object({}).openapi('UpdateContactScheduleResponse')
+const UpdateContactScheduleResponseSchema = z
+  .looseObject({})
+  .openapi('UpdateContactScheduleResponse')
 
 const UpdateParticipantRoleConfigResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('UpdateParticipantRoleConfigResponse')
 
 const TimerEligibleParticipantRolesSchema = z
@@ -6173,17 +5134,14 @@ const ParticipantTimerDurationInMinutesSchema = z
 
 const ParticipantTimerValueSchema = z
   .object({
-    ParticipantTimerAction: ParticipantTimerActionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timer action. Currently only one value is allowed: <code>Unset</code>. It deletes a timer.',
-        }),
-    ).exactOptional(),
-    ParticipantTimerDurationInMinutes: ParticipantTimerDurationInMinutesSchema.and(
-      z.any().openapi({ description: 'The duration of a timer, in minutes. ' }),
-    ).exactOptional(),
+    ParticipantTimerAction: ParticipantTimerActionSchema.exactOptional().openapi({
+      description:
+        'The timer action. Currently only one value is allowed: <code>Unset</code>. It deletes a timer.',
+    }),
+    ParticipantTimerDurationInMinutes:
+      ParticipantTimerDurationInMinutesSchema.exactOptional().openapi({
+        description: 'The duration of a timer, in minutes. ',
+      }),
   })
   .openapi({
     description:
@@ -6194,25 +5152,17 @@ const ParticipantTimerValueSchema = z
 
 const ParticipantTimerConfigurationSchema = z
   .object({
-    ParticipantRole: TimerEligibleParticipantRolesSchema.and(
-      z.any().openapi({ description: 'The role of the participant in the chat conversation.' }),
-    ),
-    TimerType: ParticipantTimerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of timer. <code>IDLE</code> indicates the timer applies for considering a human chat participant as idle. <code>DISCONNECT_NONCUSTOMER</code> indicates the timer applies to automatically disconnecting a chat participant due to idleness.',
-        }),
-    ),
-    TimerValue: ParticipantTimerValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The value of the timer. Either the timer action (Unset to delete the timer), or the duration of the timer in minutes. Only one value can be set.',
-        }),
-    ),
+    ParticipantRole: TimerEligibleParticipantRolesSchema.openapi({
+      description: 'The role of the participant in the chat conversation.',
+    }),
+    TimerType: ParticipantTimerTypeSchema.openapi({
+      description:
+        'The type of timer. <code>IDLE</code> indicates the timer applies for considering a human chat participant as idle. <code>DISCONNECT_NONCUSTOMER</code> indicates the timer applies to automatically disconnecting a chat participant due to idleness.',
+    }),
+    TimerValue: ParticipantTimerValueSchema.openapi({
+      description:
+        'The value of the timer. Either the timer action (Unset to delete the timer), or the duration of the timer in minutes. Only one value can be set.',
+    }),
   })
   .openapi({
     required: ['ParticipantRole', 'TimerType', 'TimerValue'],
@@ -6229,14 +5179,10 @@ const ParticipantTimerConfigListSchema = z
 
 const ChatParticipantRoleConfigSchema = z
   .object({
-    ParticipantTimerConfigList: ParticipantTimerConfigListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of participant timers. You can specify any unique combination of role and timer type. Duplicate entries error out the request with a 400.',
-        }),
-    ),
+    ParticipantTimerConfigList: ParticipantTimerConfigListSchema.openapi({
+      description:
+        'A list of participant timers. You can specify any unique combination of role and timer type. Duplicate entries error out the request with a 400.',
+    }),
   })
   .openapi({
     required: ['ParticipantTimerConfigList'],
@@ -6246,93 +5192,71 @@ const ChatParticipantRoleConfigSchema = z
 
 const UpdatePhoneNumberResponseSchema = z
   .object({
-    PhoneNumberId: PhoneNumberIdSchema.and(
-      z.any().openapi({ description: 'A unique identifier for the phone number.' }),
-    ).exactOptional(),
-    PhoneNumberArn: ARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the phone number.' }),
-    ).exactOptional(),
+    PhoneNumberId: PhoneNumberIdSchema.exactOptional().openapi({
+      description: 'A unique identifier for the phone number.',
+    }),
+    PhoneNumberArn: ARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the phone number.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdatePhoneNumberResponse')
 
 const UpdateTaskTemplateResponseSchema = z
   .object({
-    InstanceId: InstanceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the Amazon Connect instance. You can <a href="https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.',
-        }),
-    ).exactOptional(),
-    Id: TaskTemplateIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the task template resource.' }),
-    ).exactOptional(),
-    Arn: TaskTemplateArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) for the task template resource.' }),
-    ).exactOptional(),
-    Name: TaskTemplateNameSchema.and(
-      z.any().openapi({ description: 'The name of the task template.' }),
-    ).exactOptional(),
-    Description: TaskTemplateDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the task template.' }),
-    ).exactOptional(),
-    ContactFlowId: ContactFlowIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the flow that runs by default when a task is created by referencing this template.',
-        }),
-    ).exactOptional(),
-    Constraints: TaskTemplateConstraintsSchema.and(
-      z.any().openapi({ description: 'Constraints that are applicable to the fields listed.' }),
-    ).exactOptional(),
-    Defaults: TaskTemplateDefaultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The default values for fields when a task is created by referencing this template.',
-        }),
-    ).exactOptional(),
-    Fields: TaskTemplateFieldsSchema.and(
-      z.any().openapi({ description: 'Fields that are part of the template.' }),
-    ).exactOptional(),
-    Status: TaskTemplateStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Marks a template as <code>ACTIVE</code> or <code>INACTIVE</code> for a task to refer to it. Tasks can only be created from <code>ACTIVE</code> templates. If a template is marked as <code>INACTIVE</code>, then a task that refers to this template cannot be created.',
-        }),
-    ).exactOptional(),
-    LastModifiedTime: Timestamp2Schema.and(
-      z.any().openapi({ description: 'The timestamp when the task template was last modified.' }),
-    ).exactOptional(),
-    CreatedTime: Timestamp2Schema.and(
-      z.any().openapi({ description: 'The timestamp when the task template was created.' }),
-    ).exactOptional(),
+    InstanceId: InstanceIdSchema.exactOptional().openapi({
+      description:
+        'The identifier of the Amazon Connect instance. You can <a href="https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.',
+    }),
+    Id: TaskTemplateIdSchema.exactOptional().openapi({
+      description: 'The identifier of the task template resource.',
+    }),
+    Arn: TaskTemplateArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) for the task template resource.',
+    }),
+    Name: TaskTemplateNameSchema.exactOptional().openapi({
+      description: 'The name of the task template.',
+    }),
+    Description: TaskTemplateDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the task template.',
+    }),
+    ContactFlowId: ContactFlowIdSchema.exactOptional().openapi({
+      description:
+        'The identifier of the flow that runs by default when a task is created by referencing this template.',
+    }),
+    Constraints: TaskTemplateConstraintsSchema.exactOptional().openapi({
+      description: 'Constraints that are applicable to the fields listed.',
+    }),
+    Defaults: TaskTemplateDefaultsSchema.exactOptional().openapi({
+      description:
+        'The default values for fields when a task is created by referencing this template.',
+    }),
+    Fields: TaskTemplateFieldsSchema.exactOptional().openapi({
+      description: 'Fields that are part of the template.',
+    }),
+    Status: TaskTemplateStatusSchema.exactOptional().openapi({
+      description:
+        'Marks a template as <code>ACTIVE</code> or <code>INACTIVE</code> for a task to refer to it. Tasks can only be created from <code>ACTIVE</code> templates. If a template is marked as <code>INACTIVE</code>, then a task that refers to this template cannot be created.',
+    }),
+    LastModifiedTime: Timestamp2Schema.exactOptional().openapi({
+      description: 'The timestamp when the task template was last modified.',
+    }),
+    CreatedTime: Timestamp2Schema.exactOptional().openapi({
+      description: 'The timestamp when the task template was created.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateTaskTemplateResponse')
 
 const UpdateTrafficDistributionResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('UpdateTrafficDistributionResponse')
 
 const HierarchyLevelUpdateSchema = z
   .object({
-    Name: HierarchyLevelNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the user hierarchy level. Must not be more than 50 characters.',
-        }),
-    ),
+    Name: HierarchyLevelNameSchema.openapi({
+      description: 'The name of the user hierarchy level. Must not be more than 50 characters.',
+    }),
   })
   .openapi({
     required: ['Name'],
@@ -6349,26 +5273,20 @@ const AllowedMonitorCapabilitiesSchema = z
 
 const AnswerMachineDetectionConfigSchema = z
   .object({
-    EnableAnswerMachineDetection: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The flag to indicate if answer machine detection analysis needs to be performed for a voice call. If set to <code>true</code>, <code>TrafficType</code> must be set as <code>CAMPAIGN</code>. ',
-        }),
-    ).exactOptional(),
-    AwaitAnswerMachinePrompt: BooleanSchema.and(
-      z.any().openapi({ description: 'Wait for the answering machine prompt.' }),
-    ).exactOptional(),
+    EnableAnswerMachineDetection: BooleanSchema.exactOptional().openapi({
+      description:
+        'The flag to indicate if answer machine detection analysis needs to be performed for a voice call. If set to <code>true</code>, <code>TrafficType</code> must be set as <code>CAMPAIGN</code>. ',
+    }),
+    AwaitAnswerMachinePrompt: BooleanSchema.exactOptional().openapi({
+      description: 'Wait for the answering machine prompt.',
+    }),
   })
   .openapi({ description: 'Configuration of the answering machine detection.', required: [] })
   .openapi('AnswerMachineDetectionConfig')
 
 const AssociateApprovedOriginRequestSchema = z
   .object({
-    Origin: OriginSchema.and(
-      z.any().openapi({ description: 'The domain to add to your allow list.' }),
-    ),
+    Origin: OriginSchema.openapi({ description: 'The domain to add to your allow list.' }),
   })
   .openapi({ required: ['Origin'], title: 'AssociateApprovedOriginRequest' })
   .openapi('AssociateApprovedOriginRequest')
@@ -6376,23 +5294,19 @@ const AssociateApprovedOriginRequestSchema = z
 const AssociateBotRequestSchema = z
   .object({
     LexBot: LexBotSchema.exactOptional(),
-    LexV2Bot: LexV2BotSchema.and(
-      z.any().openapi({ description: 'The Amazon Lex V2 bot to associate with the instance.' }),
-    ).exactOptional(),
+    LexV2Bot: LexV2BotSchema.exactOptional().openapi({
+      description: 'The Amazon Lex V2 bot to associate with the instance.',
+    }),
   })
   .openapi({ title: 'AssociateBotRequest', required: [] })
   .openapi('AssociateBotRequest')
 
 const AssociateDefaultVocabularyRequestSchema = z
   .object({
-    VocabularyId: VocabularyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the custom vocabulary. If this is empty, the default is set to none.',
-        }),
-    ).exactOptional(),
+    VocabularyId: VocabularyIdSchema.exactOptional().openapi({
+      description:
+        'The identifier of the custom vocabulary. If this is empty, the default is set to none.',
+    }),
   })
   .openapi({ title: 'AssociateDefaultVocabularyRequest', required: [] })
   .openapi('AssociateDefaultVocabularyRequest')
@@ -6413,12 +5327,10 @@ const InstanceStorageResourceTypeSchema = z
 
 const AssociateInstanceStorageConfigRequestSchema = z
   .object({
-    ResourceType: InstanceStorageResourceTypeSchema.and(
-      z.any().openapi({ description: 'A valid resource type.' }),
-    ),
-    StorageConfig: InstanceStorageConfigSchema.and(
-      z.any().openapi({ description: 'A valid storage type.' }),
-    ),
+    ResourceType: InstanceStorageResourceTypeSchema.openapi({
+      description: 'A valid resource type.',
+    }),
+    StorageConfig: InstanceStorageConfigSchema.openapi({ description: 'A valid storage type.' }),
   })
   .openapi({
     required: ['ResourceType', 'StorageConfig'],
@@ -6428,40 +5340,30 @@ const AssociateInstanceStorageConfigRequestSchema = z
 
 const AssociateLambdaFunctionRequestSchema = z
   .object({
-    FunctionArn: FunctionArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) for the Lambda function being associated. Maximum number of characters allowed is 140.',
-        }),
-    ),
+    FunctionArn: FunctionArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) for the Lambda function being associated. Maximum number of characters allowed is 140.',
+    }),
   })
   .openapi({ required: ['FunctionArn'], title: 'AssociateLambdaFunctionRequest' })
   .openapi('AssociateLambdaFunctionRequest')
 
 const AssociateLexBotRequestSchema = z
   .object({
-    LexBot: LexBotSchema.and(
-      z.any().openapi({ description: 'The Amazon Lex bot to associate with the instance.' }),
-    ),
+    LexBot: LexBotSchema.openapi({
+      description: 'The Amazon Lex bot to associate with the instance.',
+    }),
   })
   .openapi({ required: ['LexBot'], title: 'AssociateLexBotRequest' })
   .openapi('AssociateLexBotRequest')
 
 const AssociatePhoneNumberContactFlowRequestSchema = z
   .object({
-    InstanceId: InstanceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the Amazon Connect instance. You can <a href="https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.',
-        }),
-    ),
-    ContactFlowId: ContactFlowIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the flow.' }),
-    ),
+    InstanceId: InstanceIdSchema.openapi({
+      description:
+        'The identifier of the Amazon Connect instance. You can <a href="https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.',
+    }),
+    ContactFlowId: ContactFlowIdSchema.openapi({ description: 'The identifier of the flow.' }),
   })
   .openapi({
     required: ['InstanceId', 'ContactFlowId'],
@@ -6477,9 +5379,9 @@ const QuickConnectsListSchema = z
 
 const AssociateQueueQuickConnectsRequestSchema = z
   .object({
-    QuickConnectIds: QuickConnectsListSchema.and(
-      z.any().openapi({ description: 'The quick connects to associate with this queue.' }),
-    ),
+    QuickConnectIds: QuickConnectsListSchema.openapi({
+      description: 'The quick connects to associate with this queue.',
+    }),
   })
   .openapi({ required: ['QuickConnectIds'], title: 'AssociateQueueQuickConnectsRequest' })
   .openapi('AssociateQueueQuickConnectsRequest')
@@ -6492,17 +5394,15 @@ const RoutingProfileQueueConfigListSchema = z
 
 const AssociateRoutingProfileQueuesRequestSchema = z
   .object({
-    QueueConfigs: RoutingProfileQueueConfigListSchema.and(
-      z.any().openapi({ description: 'The queues to associate with this routing profile.' }),
-    ),
+    QueueConfigs: RoutingProfileQueueConfigListSchema.openapi({
+      description: 'The queues to associate with this routing profile.',
+    }),
   })
   .openapi({ required: ['QueueConfigs'], title: 'AssociateRoutingProfileQueuesRequest' })
   .openapi('AssociateRoutingProfileQueuesRequest')
 
 const AssociateSecurityKeyRequestSchema = z
-  .object({
-    Key: PEMSchema.and(z.any().openapi({ description: 'A valid security key in PEM format.' })),
-  })
+  .object({ Key: PEMSchema.openapi({ description: 'A valid security key in PEM format.' }) })
   .openapi({ required: ['Key'], title: 'AssociateSecurityKeyRequest' })
   .openapi('AssociateSecurityKeyRequest')
 
@@ -6514,36 +5414,24 @@ const ChatDurationInMinutesSchema = z.int().min(60).max(10080).openapi('ChatDura
 
 const ChatMessageSchema = z
   .object({
-    ContentType: ChatContentTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of the content. Supported types are <code>text/plain</code>, <code>text/markdown</code>, <code>application/json</code>, and <code>application/vnd.amazonaws.connect.message.interactive.response</code>.',
-        }),
-    ),
-    Content: ChatContentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The content of the chat message. </p> <ul> <li> <p>For <code>text/plain</code> and <code>text/markdown</code>, the Length Constraints are Minimum of 1, Maximum of 1024. </p> </li> <li> <p>For <code>application/json</code>, the Length Constraints are Minimum of 1, Maximum of 12000. </p> </li> <li> <p>For <code>application/vnd.amazonaws.connect.message.interactive.response</code>, the Length Constraints are Minimum of 1, Maximum of 12288.</p> </li> </ul>',
-        }),
-    ),
+    ContentType: ChatContentTypeSchema.openapi({
+      description:
+        'The type of the content. Supported types are <code>text/plain</code>, <code>text/markdown</code>, <code>application/json</code>, and <code>application/vnd.amazonaws.connect.message.interactive.response</code>.',
+    }),
+    Content: ChatContentSchema.openapi({
+      description:
+        '<p>The content of the chat message. </p> <ul> <li> <p>For <code>text/plain</code> and <code>text/markdown</code>, the Length Constraints are Minimum of 1, Maximum of 1024. </p> </li> <li> <p>For <code>application/json</code>, the Length Constraints are Minimum of 1, Maximum of 12000. </p> </li> <li> <p>For <code>application/vnd.amazonaws.connect.message.interactive.response</code>, the Length Constraints are Minimum of 1, Maximum of 12288.</p> </li> </ul>',
+    }),
   })
   .openapi({ required: ['ContentType', 'Content'], description: 'A chat message.' })
   .openapi('ChatMessage')
 
 const ChatStreamingConfigurationSchema = z
   .object({
-    StreamingEndpointArn: ChatStreamingEndpointARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the standard Amazon SNS topic. The Amazon Resource Name (ARN) of the streaming endpoint that is used to publish real-time message streaming for chat conversations.',
-        }),
-    ),
+    StreamingEndpointArn: ChatStreamingEndpointARNSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the standard Amazon SNS topic. The Amazon Resource Name (ARN) of the streaming endpoint that is used to publish real-time message streaming for chat conversations.',
+    }),
   })
   .openapi({
     required: ['StreamingEndpointArn'],
@@ -6555,41 +5443,25 @@ const ClientTokenSchema = z.string().max(500).openapi('ClientToken')
 
 const ClaimPhoneNumberRequestSchema = z
   .object({
-    TargetArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) for Amazon Connect instances or traffic distribution groups that phone numbers are claimed to.',
-        }),
-    ),
-    PhoneNumber: PhoneNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The phone number you want to claim. Phone numbers are formatted <code>[+] [country code] [subscriber number including area code]</code>.',
-        }),
-    ),
-    PhoneNumberDescription: PhoneNumberDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the phone number.' }),
-    ).exactOptional(),
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tags used to organize, track, or control access for this resource. For example, { "tags": {"key1":"value1", "key2":"value2"} }.',
-        }),
-    ).exactOptional(),
-    ClientToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href="https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/">Making retries safe with idempotent APIs</a>.</p> <p>Pattern: <code>^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$</code> </p>',
-        }),
-    ).exactOptional(),
+    TargetArn: ARNSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) for Amazon Connect instances or traffic distribution groups that phone numbers are claimed to.',
+    }),
+    PhoneNumber: PhoneNumberSchema.openapi({
+      description:
+        'The phone number you want to claim. Phone numbers are formatted <code>[+] [country code] [subscriber number including area code]</code>.',
+    }),
+    PhoneNumberDescription: PhoneNumberDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the phone number.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description:
+        'The tags used to organize, track, or control access for this resource. For example, { "tags": {"key1":"value1", "key2":"value2"} }.',
+    }),
+    ClientToken: ClientTokenSchema.exactOptional().openapi({
+      description:
+        '<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href="https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/">Making retries safe with idempotent APIs</a>.</p> <p>Pattern: <code>^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$</code> </p>',
+    }),
   })
   .openapi({ required: ['TargetArn', 'PhoneNumber'], title: 'ClaimPhoneNumberRequest' })
   .openapi('ClaimPhoneNumberRequest')
@@ -6598,113 +5470,77 @@ const ContactFlowTypesSchema = z.array(ContactFlowTypeSchema).max(10).openapi('C
 
 const CreateAgentStatusRequestSchema = z
   .object({
-    Name: AgentStatusNameSchema.and(z.any().openapi({ description: 'The name of the status.' })),
-    Description: AgentStatusDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the status.' }),
-    ).exactOptional(),
-    State: AgentStatusStateSchema.and(z.any().openapi({ description: 'The state of the status.' })),
-    DisplayOrder: AgentStatusOrderNumberSchema.and(
-      z.any().openapi({ description: 'The display order of the status.' }),
-    ).exactOptional(),
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tags used to organize, track, or control access for this resource. For example, { "tags": {"key1":"value1", "key2":"value2"} }.',
-        }),
-    ).exactOptional(),
+    Name: AgentStatusNameSchema.openapi({ description: 'The name of the status.' }),
+    Description: AgentStatusDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the status.',
+    }),
+    State: AgentStatusStateSchema.openapi({ description: 'The state of the status.' }),
+    DisplayOrder: AgentStatusOrderNumberSchema.exactOptional().openapi({
+      description: 'The display order of the status.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description:
+        'The tags used to organize, track, or control access for this resource. For example, { "tags": {"key1":"value1", "key2":"value2"} }.',
+    }),
   })
   .openapi({ required: ['Name', 'State'], title: 'CreateAgentStatusRequest' })
   .openapi('CreateAgentStatusRequest')
 
 const CreateContactFlowModuleRequestSchema = z
   .object({
-    Name: ContactFlowModuleNameSchema.and(
-      z.any().openapi({ description: 'The name of the flow module.' }),
-    ),
-    Description: ContactFlowModuleDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the flow module. ' }),
-    ).exactOptional(),
-    Content: ContactFlowModuleContentSchema.and(
-      z.any().openapi({ description: 'The content of the flow module.' }),
-    ),
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tags used to organize, track, or control access for this resource. For example, { "tags": {"key1":"value1", "key2":"value2"} }.',
-        }),
-    ).exactOptional(),
-    ClientToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href="https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/">Making retries safe with idempotent APIs</a>.',
-        }),
-    ).exactOptional(),
+    Name: ContactFlowModuleNameSchema.openapi({ description: 'The name of the flow module.' }),
+    Description: ContactFlowModuleDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the flow module. ',
+    }),
+    Content: ContactFlowModuleContentSchema.openapi({
+      description: 'The content of the flow module.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description:
+        'The tags used to organize, track, or control access for this resource. For example, { "tags": {"key1":"value1", "key2":"value2"} }.',
+    }),
+    ClientToken: ClientTokenSchema.exactOptional().openapi({
+      description:
+        'A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href="https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/">Making retries safe with idempotent APIs</a>.',
+    }),
   })
   .openapi({ required: ['Name', 'Content'], title: 'CreateContactFlowModuleRequest' })
   .openapi('CreateContactFlowModuleRequest')
 
 const CreateContactFlowRequestSchema = z
   .object({
-    Name: ContactFlowNameSchema.and(z.any().openapi({ description: 'The name of the flow.' })),
-    Type: ContactFlowTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of the flow. For descriptions of the available types, see <a href="https://docs.aws.amazon.com/connect/latest/adminguide/create-contact-flow.html#contact-flow-types">Choose a flow type</a> in the <i>Amazon Connect Administrator Guide</i>.',
-        }),
-    ),
-    Description: ContactFlowDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the flow. ' }),
-    ).exactOptional(),
-    Content: ContactFlowContentSchema.and(
-      z.any().openapi({ description: 'The content of the flow. ' }),
-    ),
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tags used to organize, track, or control access for this resource. For example, { "tags": {"key1":"value1", "key2":"value2"} }.',
-        }),
-    ).exactOptional(),
+    Name: ContactFlowNameSchema.openapi({ description: 'The name of the flow.' }),
+    Type: ContactFlowTypeSchema.openapi({
+      description:
+        'The type of the flow. For descriptions of the available types, see <a href="https://docs.aws.amazon.com/connect/latest/adminguide/create-contact-flow.html#contact-flow-types">Choose a flow type</a> in the <i>Amazon Connect Administrator Guide</i>.',
+    }),
+    Description: ContactFlowDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the flow. ',
+    }),
+    Content: ContactFlowContentSchema.openapi({ description: 'The content of the flow. ' }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description:
+        'The tags used to organize, track, or control access for this resource. For example, { "tags": {"key1":"value1", "key2":"value2"} }.',
+    }),
   })
   .openapi({ required: ['Name', 'Type', 'Content'], title: 'CreateContactFlowRequest' })
   .openapi('CreateContactFlowRequest')
 
 const CreateHoursOfOperationRequestSchema = z
   .object({
-    Name: CommonNameLength127Schema.and(
-      z.any().openapi({ description: 'The name of the hours of operation.' }),
-    ),
-    Description: HoursOfOperationDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the hours of operation.' }),
-    ).exactOptional(),
-    TimeZone: TimeZoneSchema.and(
-      z.any().openapi({ description: 'The time zone of the hours of operation.' }),
-    ),
-    Config: HoursOfOperationConfigListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Configuration information for the hours of operation: day, start time, and end time.',
-        }),
-    ),
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tags used to organize, track, or control access for this resource. For example, { "tags": {"key1":"value1", "key2":"value2"} }.',
-        }),
-    ).exactOptional(),
+    Name: CommonNameLength127Schema.openapi({ description: 'The name of the hours of operation.' }),
+    Description: HoursOfOperationDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the hours of operation.',
+    }),
+    TimeZone: TimeZoneSchema.openapi({ description: 'The time zone of the hours of operation.' }),
+    Config: HoursOfOperationConfigListSchema.openapi({
+      description:
+        'Configuration information for the hours of operation: day, start time, and end time.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description:
+        'The tags used to organize, track, or control access for this resource. For example, { "tags": {"key1":"value1", "key2":"value2"} }.',
+    }),
   })
   .openapi({ required: ['Name', 'TimeZone', 'Config'], title: 'CreateHoursOfOperationRequest' })
   .openapi('CreateHoursOfOperationRequest')
@@ -6717,26 +5553,24 @@ const DirectoryIdSchema = z
 
 const CreateInstanceRequestSchema = z
   .object({
-    ClientToken: ClientTokenSchema.and(
-      z.any().openapi({ description: 'The idempotency token.' }),
-    ).exactOptional(),
-    IdentityManagementType: DirectoryTypeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The type of identity management for your Amazon Connect users.' }),
-    ),
-    InstanceAlias: DirectoryAliasSchema.and(
-      z.any().openapi({ description: 'The name for your instance.' }),
-    ).exactOptional(),
-    DirectoryId: DirectoryIdSchema.and(
-      z.any().openapi({ description: 'The identifier for the directory.' }),
-    ).exactOptional(),
-    InboundCallsEnabled: InboundCallsEnabledSchema.and(
-      z.any().openapi({ description: 'Your contact center handles incoming contacts.' }),
-    ),
-    OutboundCallsEnabled: OutboundCallsEnabledSchema.and(
-      z.any().openapi({ description: 'Your contact center allows outbound calls.' }),
-    ),
+    ClientToken: ClientTokenSchema.exactOptional().openapi({
+      description: 'The idempotency token.',
+    }),
+    IdentityManagementType: DirectoryTypeSchema.openapi({
+      description: 'The type of identity management for your Amazon Connect users.',
+    }),
+    InstanceAlias: DirectoryAliasSchema.exactOptional().openapi({
+      description: 'The name for your instance.',
+    }),
+    DirectoryId: DirectoryIdSchema.exactOptional().openapi({
+      description: 'The identifier for the directory.',
+    }),
+    InboundCallsEnabled: InboundCallsEnabledSchema.openapi({
+      description: 'Your contact center handles incoming contacts.',
+    }),
+    OutboundCallsEnabled: OutboundCallsEnabledSchema.openapi({
+      description: 'Your contact center allows outbound calls.',
+    }),
   })
   .openapi({
     required: ['IdentityManagementType', 'InboundCallsEnabled', 'OutboundCallsEnabled'],
@@ -6746,49 +5580,29 @@ const CreateInstanceRequestSchema = z
 
 const CreateIntegrationAssociationRequestSchema = z
   .object({
-    IntegrationType: IntegrationTypeSchema.and(
-      z.any().openapi({ description: 'The type of information to be ingested.' }),
-    ),
-    IntegrationArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the integration.</p> <note> <p>When integrating with Amazon Pinpoint, the Amazon Connect and Amazon Pinpoint instances must be in the same account.</p> </note>',
-        }),
-    ),
-    SourceApplicationUrl: URISchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The URL for the external application. This field is only required for the EVENT integration type.',
-        }),
-    ).exactOptional(),
-    SourceApplicationName: SourceApplicationNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the external application. This field is only required for the EVENT integration type.',
-        }),
-    ).exactOptional(),
-    SourceType: SourceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of the data source. This field is only required for the EVENT integration type.',
-        }),
-    ).exactOptional(),
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tags used to organize, track, or control access for this resource. For example, { "tags": {"key1":"value1", "key2":"value2"} }.',
-        }),
-    ).exactOptional(),
+    IntegrationType: IntegrationTypeSchema.openapi({
+      description: 'The type of information to be ingested.',
+    }),
+    IntegrationArn: ARNSchema.openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the integration.</p> <note> <p>When integrating with Amazon Pinpoint, the Amazon Connect and Amazon Pinpoint instances must be in the same account.</p> </note>',
+    }),
+    SourceApplicationUrl: URISchema.exactOptional().openapi({
+      description:
+        'The URL for the external application. This field is only required for the EVENT integration type.',
+    }),
+    SourceApplicationName: SourceApplicationNameSchema.exactOptional().openapi({
+      description:
+        'The name of the external application. This field is only required for the EVENT integration type.',
+    }),
+    SourceType: SourceTypeSchema.exactOptional().openapi({
+      description:
+        'The type of the data source. This field is only required for the EVENT integration type.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description:
+        'The tags used to organize, track, or control access for this resource. For example, { "tags": {"key1":"value1", "key2":"value2"} }.',
+    }),
   })
   .openapi({
     required: ['IntegrationType', 'IntegrationArn'],
@@ -6798,50 +5612,34 @@ const CreateIntegrationAssociationRequestSchema = z
 
 const ParticipantDetailsToAddSchema = z
   .object({
-    ParticipantRole: ParticipantRoleSchema.and(
-      z.any().openapi({ description: 'The role of the participant being added.' }),
-    ).exactOptional(),
-    DisplayName: DisplayNameSchema.and(
-      z.any().openapi({ description: 'The display name of the participant.' }),
-    ).exactOptional(),
+    ParticipantRole: ParticipantRoleSchema.exactOptional().openapi({
+      description: 'The role of the participant being added.',
+    }),
+    DisplayName: DisplayNameSchema.exactOptional().openapi({
+      description: 'The display name of the participant.',
+    }),
   })
   .openapi({ description: 'The details to add for the participant.', required: [] })
   .openapi('ParticipantDetailsToAdd')
 
 const CreateParticipantRequestSchema = z
   .object({
-    InstanceId: InstanceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the Amazon Connect instance. You can <a href="https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance. ',
-        }),
-    ),
-    ContactId: ContactIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the contact in this instance of Amazon Connect. Only contacts in the CHAT channel are supported.',
-        }),
-    ),
-    ClientToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href="https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/">Making retries safe with idempotent APIs</a>.',
-        }),
-    ).exactOptional(),
-    ParticipantDetails: ParticipantDetailsToAddSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Information identifying the participant.</p> <important> <p>The only Valid value for <code>ParticipantRole</code> is <code>CUSTOM_BOT</code>. </p> <p> <code>DisplayName</code> is <b>Required</b>.</p> </important>',
-        }),
-    ),
+    InstanceId: InstanceIdSchema.openapi({
+      description:
+        'The identifier of the Amazon Connect instance. You can <a href="https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance. ',
+    }),
+    ContactId: ContactIdSchema.openapi({
+      description:
+        'The identifier of the contact in this instance of Amazon Connect. Only contacts in the CHAT channel are supported.',
+    }),
+    ClientToken: ClientTokenSchema.exactOptional().openapi({
+      description:
+        'A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href="https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/">Making retries safe with idempotent APIs</a>.',
+    }),
+    ParticipantDetails: ParticipantDetailsToAddSchema.openapi({
+      description:
+        '<p>Information identifying the participant.</p> <important> <p>The only Valid value for <code>ParticipantRole</code> is <code>CUSTOM_BOT</code>. </p> <p> <code>DisplayName</code> is <b>Required</b>.</p> </important>',
+    }),
   })
   .openapi({
     required: ['InstanceId', 'ContactId', 'ParticipantDetails'],
@@ -6851,113 +5649,71 @@ const CreateParticipantRequestSchema = z
 
 const CreateQueueRequestSchema = z
   .object({
-    Name: CommonNameLength127Schema.and(z.any().openapi({ description: 'The name of the queue.' })),
-    Description: QueueDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the queue.' }),
-    ).exactOptional(),
-    OutboundCallerConfig: OutboundCallerConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The outbound caller ID name, number, and outbound whisper flow.',
-        }),
-    ).exactOptional(),
-    HoursOfOperationId: HoursOfOperationIdSchema.and(
-      z.any().openapi({ description: 'The identifier for the hours of operation.' }),
-    ),
-    MaxContacts: QueueMaxContactsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of contacts that can be in the queue before it is considered full.',
-        }),
-    ).exactOptional(),
-    QuickConnectIds: QuickConnectsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The quick connects available to agents who are working the queue.',
-        }),
-    ).exactOptional(),
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tags used to organize, track, or control access for this resource. For example, { "tags": {"key1":"value1", "key2":"value2"} }.',
-        }),
-    ).exactOptional(),
+    Name: CommonNameLength127Schema.openapi({ description: 'The name of the queue.' }),
+    Description: QueueDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the queue.',
+    }),
+    OutboundCallerConfig: OutboundCallerConfigSchema.exactOptional().openapi({
+      description: 'The outbound caller ID name, number, and outbound whisper flow.',
+    }),
+    HoursOfOperationId: HoursOfOperationIdSchema.openapi({
+      description: 'The identifier for the hours of operation.',
+    }),
+    MaxContacts: QueueMaxContactsSchema.exactOptional().openapi({
+      description:
+        'The maximum number of contacts that can be in the queue before it is considered full.',
+    }),
+    QuickConnectIds: QuickConnectsListSchema.exactOptional().openapi({
+      description: 'The quick connects available to agents who are working the queue.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description:
+        'The tags used to organize, track, or control access for this resource. For example, { "tags": {"key1":"value1", "key2":"value2"} }.',
+    }),
   })
   .openapi({ required: ['Name', 'HoursOfOperationId'], title: 'CreateQueueRequest' })
   .openapi('CreateQueueRequest')
 
 const CreateQuickConnectRequestSchema = z
   .object({
-    Name: QuickConnectNameSchema.and(
-      z.any().openapi({ description: 'The name of the quick connect.' }),
-    ),
-    Description: QuickConnectDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the quick connect.' }),
-    ).exactOptional(),
-    QuickConnectConfig: QuickConnectConfigSchema.and(
-      z.any().openapi({ description: 'Configuration settings for the quick connect.' }),
-    ),
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tags used to organize, track, or control access for this resource. For example, { "tags": {"key1":"value1", "key2":"value2"} }.',
-        }),
-    ).exactOptional(),
+    Name: QuickConnectNameSchema.openapi({ description: 'The name of the quick connect.' }),
+    Description: QuickConnectDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the quick connect.',
+    }),
+    QuickConnectConfig: QuickConnectConfigSchema.openapi({
+      description: 'Configuration settings for the quick connect.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description:
+        'The tags used to organize, track, or control access for this resource. For example, { "tags": {"key1":"value1", "key2":"value2"} }.',
+    }),
   })
   .openapi({ required: ['Name', 'QuickConnectConfig'], title: 'CreateQuickConnectRequest' })
   .openapi('CreateQuickConnectRequest')
 
 const CreateRoutingProfileRequestSchema = z
   .object({
-    Name: RoutingProfileNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the routing profile. Must not be more than 127 characters.',
-        }),
-    ),
-    Description: RoutingProfileDescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Description of the routing profile. Must not be more than 250 characters.',
-        }),
-    ),
-    DefaultOutboundQueueId: QueueIdSchema.and(
-      z.any().openapi({ description: 'The default outbound queue for the routing profile.' }),
-    ),
-    QueueConfigs: RoutingProfileQueueConfigListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The inbound queues associated with the routing profile. If no queue is added, the agent can make only outbound calls.</p> <p>The limit of 10 array members applies to the maximum number of <code>RoutingProfileQueueConfig</code> objects that can be passed during a CreateRoutingProfile API request. It is different from the quota of 50 queues per routing profile per instance that is listed in <a href="https://docs.aws.amazon.com/connect/latest/adminguide/amazon-connect-service-limits.html">Amazon Connect service quotas</a>. </p>',
-        }),
-    ).exactOptional(),
-    MediaConcurrencies: MediaConcurrenciesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The channels that agents can handle in the Contact Control Panel (CCP) for this routing profile.',
-        }),
-    ),
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tags used to organize, track, or control access for this resource. For example, { "tags": {"key1":"value1", "key2":"value2"} }.',
-        }),
-    ).exactOptional(),
+    Name: RoutingProfileNameSchema.openapi({
+      description: 'The name of the routing profile. Must not be more than 127 characters.',
+    }),
+    Description: RoutingProfileDescriptionSchema.openapi({
+      description: 'Description of the routing profile. Must not be more than 250 characters.',
+    }),
+    DefaultOutboundQueueId: QueueIdSchema.openapi({
+      description: 'The default outbound queue for the routing profile.',
+    }),
+    QueueConfigs: RoutingProfileQueueConfigListSchema.exactOptional().openapi({
+      description:
+        '<p>The inbound queues associated with the routing profile. If no queue is added, the agent can make only outbound calls.</p> <p>The limit of 10 array members applies to the maximum number of <code>RoutingProfileQueueConfig</code> objects that can be passed during a CreateRoutingProfile API request. It is different from the quota of 50 queues per routing profile per instance that is listed in <a href="https://docs.aws.amazon.com/connect/latest/adminguide/amazon-connect-service-limits.html">Amazon Connect service quotas</a>. </p>',
+    }),
+    MediaConcurrencies: MediaConcurrenciesSchema.openapi({
+      description:
+        'The channels that agents can handle in the Contact Control Panel (CCP) for this routing profile.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description:
+        'The tags used to organize, track, or control access for this resource. For example, { "tags": {"key1":"value1", "key2":"value2"} }.',
+    }),
   })
   .openapi({
     required: ['Name', 'Description', 'DefaultOutboundQueueId', 'MediaConcurrencies'],
@@ -6967,27 +5723,21 @@ const CreateRoutingProfileRequestSchema = z
 
 const CreateRuleRequestSchema = z
   .object({
-    Name: RuleNameSchema.and(z.any().openapi({ description: 'A unique name for the rule.' })),
-    TriggerEventSource: RuleTriggerEventSourceSchema.and(
-      z.any().openapi({ description: 'The event source to trigger the rule.' }),
-    ),
-    Function: RuleFunctionSchema.and(
-      z.any().openapi({ description: 'The conditions of the rule.' }),
-    ),
-    Actions: RuleActionsSchema.and(
-      z.any().openapi({ description: 'A list of actions to be run when the rule is triggered.' }),
-    ),
-    PublishStatus: RulePublishStatusSchema.and(
-      z.any().openapi({ description: 'The publish status of the rule.' }),
-    ),
-    ClientToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href="https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/">Making retries safe with idempotent APIs</a>.',
-        }),
-    ).exactOptional(),
+    Name: RuleNameSchema.openapi({ description: 'A unique name for the rule.' }),
+    TriggerEventSource: RuleTriggerEventSourceSchema.openapi({
+      description: 'The event source to trigger the rule.',
+    }),
+    Function: RuleFunctionSchema.openapi({ description: 'The conditions of the rule.' }),
+    Actions: RuleActionsSchema.openapi({
+      description: 'A list of actions to be run when the rule is triggered.',
+    }),
+    PublishStatus: RulePublishStatusSchema.openapi({
+      description: 'The publish status of the rule.',
+    }),
+    ClientToken: ClientTokenSchema.exactOptional().openapi({
+      description:
+        'A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href="https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/">Making retries safe with idempotent APIs</a>.',
+    }),
   })
   .openapi({
     required: ['Name', 'TriggerEventSource', 'Function', 'Actions', 'PublishStatus'],
@@ -7004,94 +5754,60 @@ const CreateSecurityProfileNameSchema = z
 
 const CreateSecurityProfileRequestSchema = z
   .object({
-    SecurityProfileName: CreateSecurityProfileNameSchema.and(
-      z.any().openapi({ description: 'The name of the security profile.' }),
-    ),
-    Description: SecurityProfileDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the security profile.' }),
-    ).exactOptional(),
-    Permissions: PermissionsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Permissions assigned to the security profile. For a list of valid permissions, see <a href="https://docs.aws.amazon.com/connect/latest/adminguide/security-profile-list.html">List of security profile permissions</a>. ',
-        }),
-    ).exactOptional(),
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tags used to organize, track, or control access for this resource. For example, { "tags": {"key1":"value1", "key2":"value2"} }.',
-        }),
-    ).exactOptional(),
-    AllowedAccessControlTags: AllowedAccessControlTagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of tags that a security profile uses to restrict access to resources in Amazon Connect.',
-        }),
-    ).exactOptional(),
-    TagRestrictedResources: TagRestrictedResourceListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of resources that a security profile applies tag restrictions to in Amazon Connect. Following are acceptable ResourceNames: <code>User</code> | <code>SecurityProfile</code> | <code>Queue</code> | <code>RoutingProfile</code> ',
-        }),
-    ).exactOptional(),
+    SecurityProfileName: CreateSecurityProfileNameSchema.openapi({
+      description: 'The name of the security profile.',
+    }),
+    Description: SecurityProfileDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the security profile.',
+    }),
+    Permissions: PermissionsListSchema.exactOptional().openapi({
+      description:
+        'Permissions assigned to the security profile. For a list of valid permissions, see <a href="https://docs.aws.amazon.com/connect/latest/adminguide/security-profile-list.html">List of security profile permissions</a>. ',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description:
+        'The tags used to organize, track, or control access for this resource. For example, { "tags": {"key1":"value1", "key2":"value2"} }.',
+    }),
+    AllowedAccessControlTags: AllowedAccessControlTagsSchema.exactOptional().openapi({
+      description:
+        'The list of tags that a security profile uses to restrict access to resources in Amazon Connect.',
+    }),
+    TagRestrictedResources: TagRestrictedResourceListSchema.exactOptional().openapi({
+      description:
+        'The list of resources that a security profile applies tag restrictions to in Amazon Connect. Following are acceptable ResourceNames: <code>User</code> | <code>SecurityProfile</code> | <code>Queue</code> | <code>RoutingProfile</code> ',
+    }),
   })
   .openapi({ required: ['SecurityProfileName'], title: 'CreateSecurityProfileRequest' })
   .openapi('CreateSecurityProfileRequest')
 
 const CreateTaskTemplateRequestSchema = z
   .object({
-    Name: TaskTemplateNameSchema.and(
-      z.any().openapi({ description: 'The name of the task template.' }),
-    ),
-    Description: TaskTemplateDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the task template.' }),
-    ).exactOptional(),
-    ContactFlowId: ContactFlowIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the flow that runs by default when a task is created by referencing this template.',
-        }),
-    ).exactOptional(),
-    Constraints: TaskTemplateConstraintsSchema.and(
-      z.any().openapi({ description: 'Constraints that are applicable to the fields listed.' }),
-    ).exactOptional(),
-    Defaults: TaskTemplateDefaultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The default values for fields when a task is created by referencing this template.',
-        }),
-    ).exactOptional(),
-    Status: TaskTemplateStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Marks a template as <code>ACTIVE</code> or <code>INACTIVE</code> for a task to refer to it. Tasks can only be created from <code>ACTIVE</code> templates. If a template is marked as <code>INACTIVE</code>, then a task that refers to this template cannot be created. ',
-        }),
-    ).exactOptional(),
-    Fields: TaskTemplateFieldsSchema.and(
-      z.any().openapi({ description: 'Fields that are part of the template.' }),
-    ),
-    ClientToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href="https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/">Making retries safe with idempotent APIs</a>.',
-        }),
-    ).exactOptional(),
+    Name: TaskTemplateNameSchema.openapi({ description: 'The name of the task template.' }),
+    Description: TaskTemplateDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the task template.',
+    }),
+    ContactFlowId: ContactFlowIdSchema.exactOptional().openapi({
+      description:
+        'The identifier of the flow that runs by default when a task is created by referencing this template.',
+    }),
+    Constraints: TaskTemplateConstraintsSchema.exactOptional().openapi({
+      description: 'Constraints that are applicable to the fields listed.',
+    }),
+    Defaults: TaskTemplateDefaultsSchema.exactOptional().openapi({
+      description:
+        'The default values for fields when a task is created by referencing this template.',
+    }),
+    Status: TaskTemplateStatusSchema.exactOptional().openapi({
+      description:
+        'Marks a template as <code>ACTIVE</code> or <code>INACTIVE</code> for a task to refer to it. Tasks can only be created from <code>ACTIVE</code> templates. If a template is marked as <code>INACTIVE</code>, then a task that refers to this template cannot be created. ',
+    }),
+    Fields: TaskTemplateFieldsSchema.openapi({
+      description: 'Fields that are part of the template.',
+    }),
+    ClientToken: ClientTokenSchema.exactOptional().openapi({
+      description:
+        'A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href="https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/">Making retries safe with idempotent APIs</a>.',
+    }),
   })
   .openapi({ required: ['Name', 'Fields'], title: 'CreateTaskTemplateRequest' })
   .openapi('CreateTaskTemplateRequest')
@@ -7107,88 +5823,53 @@ const InstanceIdOrArnSchema = z
 
 const CreateTrafficDistributionGroupRequestSchema = z
   .object({
-    Name: Name128Schema.and(
-      z.any().openapi({ description: 'The name for the traffic distribution group. ' }),
-    ),
-    Description: Description250Schema.and(
-      z.any().openapi({ description: 'A description for the traffic distribution group.' }),
-    ).exactOptional(),
-    InstanceId: InstanceIdOrArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the Amazon Connect instance that has been replicated. You can find the <code>instanceId</code> in the ARN of the instance.',
-        }),
-    ),
-    ClientToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href="https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/">Making retries safe with idempotent APIs</a>.',
-        }),
-    ).exactOptional(),
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tags used to organize, track, or control access for this resource. For example, { "tags": {"key1":"value1", "key2":"value2"} }.',
-        }),
-    ).exactOptional(),
+    Name: Name128Schema.openapi({ description: 'The name for the traffic distribution group. ' }),
+    Description: Description250Schema.exactOptional().openapi({
+      description: 'A description for the traffic distribution group.',
+    }),
+    InstanceId: InstanceIdOrArnSchema.openapi({
+      description:
+        'The identifier of the Amazon Connect instance that has been replicated. You can find the <code>instanceId</code> in the ARN of the instance.',
+    }),
+    ClientToken: ClientTokenSchema.exactOptional().openapi({
+      description:
+        'A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href="https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/">Making retries safe with idempotent APIs</a>.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description:
+        'The tags used to organize, track, or control access for this resource. For example, { "tags": {"key1":"value1", "key2":"value2"} }.',
+    }),
   })
   .openapi({ required: ['Name', 'InstanceId'], title: 'CreateTrafficDistributionGroupRequest' })
   .openapi('CreateTrafficDistributionGroupRequest')
 
 const CreateUseCaseRequestSchema = z
   .object({
-    UseCaseType: UseCaseTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of use case to associate to the integration association. Each integration association can have only one of each use case type.',
-        }),
-    ),
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tags used to organize, track, or control access for this resource. For example, { "tags": {"key1":"value1", "key2":"value2"} }.',
-        }),
-    ).exactOptional(),
+    UseCaseType: UseCaseTypeSchema.openapi({
+      description:
+        'The type of use case to associate to the integration association. Each integration association can have only one of each use case type.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description:
+        'The tags used to organize, track, or control access for this resource. For example, { "tags": {"key1":"value1", "key2":"value2"} }.',
+    }),
   })
   .openapi({ required: ['UseCaseType'], title: 'CreateUseCaseRequest' })
   .openapi('CreateUseCaseRequest')
 
 const CreateUserHierarchyGroupRequestSchema = z
   .object({
-    Name: HierarchyGroupNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the user hierarchy group. Must not be more than 100 characters.',
-        }),
-    ),
-    ParentGroupId: HierarchyGroupIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier for the parent hierarchy group. The user hierarchy is created at level one if the parent group ID is null.',
-        }),
-    ).exactOptional(),
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tags used to organize, track, or control access for this resource. For example, { "tags": {"key1":"value1", "key2":"value2"} }.',
-        }),
-    ).exactOptional(),
+    Name: HierarchyGroupNameSchema.openapi({
+      description: 'The name of the user hierarchy group. Must not be more than 100 characters.',
+    }),
+    ParentGroupId: HierarchyGroupIdSchema.exactOptional().openapi({
+      description:
+        'The identifier for the parent hierarchy group. The user hierarchy is created at level one if the parent group ID is null.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description:
+        'The tags used to organize, track, or control access for this resource. For example, { "tags": {"key1":"value1", "key2":"value2"} }.',
+    }),
   })
   .openapi({ required: ['Name'], title: 'CreateUserHierarchyGroupRequest' })
   .openapi('CreateUserHierarchyGroupRequest')
@@ -7200,53 +5881,35 @@ const PasswordSchema = z
 
 const CreateUserRequestSchema = z
   .object({
-    Username: AgentUsernameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The user name for the account. For instances not using SAML for identity management, the user name can include up to 20 characters. If you are using SAML for identity management, the user name can include up to 64 characters from [a-zA-Z0-9_-.\\@]+.',
-        }),
-    ),
-    Password: PasswordSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The password for the user account. A password is required if you are using Amazon Connect for identity management. Otherwise, it is an error to include a password.',
-        }),
-    ).exactOptional(),
-    IdentityInfo: UserIdentityInfoSchema.and(
-      z.any().openapi({ description: 'The information about the identity of the user.' }),
-    ).exactOptional(),
-    PhoneConfig: UserPhoneConfigSchema.and(
-      z.any().openapi({ description: 'The phone settings for the user.' }),
-    ),
-    DirectoryUserId: DirectoryUserIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The identifier of the user account in the directory used for identity management. If Amazon Connect cannot access the directory, you can specify this identifier to authenticate users. If you include the identifier, we assume that Amazon Connect cannot access the directory. Otherwise, the identity information is used to authenticate users from your directory.</p> <p>This parameter is required if you are using an existing directory for identity management in Amazon Connect when Amazon Connect cannot access your directory to authenticate users. If you are using SAML for identity management and include this parameter, an error is returned.</p>',
-        }),
-    ).exactOptional(),
-    SecurityProfileIds: SecurityProfileIdsSchema.and(
-      z.any().openapi({ description: 'The identifier of the security profile for the user.' }),
-    ),
-    RoutingProfileId: RoutingProfileIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the routing profile for the user.' }),
-    ),
-    HierarchyGroupId: HierarchyGroupIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the hierarchy group for the user.' }),
-    ).exactOptional(),
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tags used to organize, track, or control access for this resource. For example, { "tags": {"key1":"value1", "key2":"value2"} }.',
-        }),
-    ).exactOptional(),
+    Username: AgentUsernameSchema.openapi({
+      description:
+        'The user name for the account. For instances not using SAML for identity management, the user name can include up to 20 characters. If you are using SAML for identity management, the user name can include up to 64 characters from [a-zA-Z0-9_-.\\@]+.',
+    }),
+    Password: PasswordSchema.exactOptional().openapi({
+      description:
+        'The password for the user account. A password is required if you are using Amazon Connect for identity management. Otherwise, it is an error to include a password.',
+    }),
+    IdentityInfo: UserIdentityInfoSchema.exactOptional().openapi({
+      description: 'The information about the identity of the user.',
+    }),
+    PhoneConfig: UserPhoneConfigSchema.openapi({ description: 'The phone settings for the user.' }),
+    DirectoryUserId: DirectoryUserIdSchema.exactOptional().openapi({
+      description:
+        '<p>The identifier of the user account in the directory used for identity management. If Amazon Connect cannot access the directory, you can specify this identifier to authenticate users. If you include the identifier, we assume that Amazon Connect cannot access the directory. Otherwise, the identity information is used to authenticate users from your directory.</p> <p>This parameter is required if you are using an existing directory for identity management in Amazon Connect when Amazon Connect cannot access your directory to authenticate users. If you are using SAML for identity management and include this parameter, an error is returned.</p>',
+    }),
+    SecurityProfileIds: SecurityProfileIdsSchema.openapi({
+      description: 'The identifier of the security profile for the user.',
+    }),
+    RoutingProfileId: RoutingProfileIdSchema.openapi({
+      description: 'The identifier of the routing profile for the user.',
+    }),
+    HierarchyGroupId: HierarchyGroupIdSchema.exactOptional().openapi({
+      description: 'The identifier of the hierarchy group for the user.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description:
+        'The tags used to organize, track, or control access for this resource. For example, { "tags": {"key1":"value1", "key2":"value2"} }.',
+    }),
   })
   .openapi({
     required: ['Username', 'PhoneConfig', 'SecurityProfileIds', 'RoutingProfileId'],
@@ -7256,41 +5919,25 @@ const CreateUserRequestSchema = z
 
 const CreateVocabularyRequestSchema = z
   .object({
-    ClientToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href="https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/">Making retries safe with idempotent APIs</a>. If a create request is received more than once with same client token, subsequent requests return the previous response without creating a vocabulary again.',
-        }),
-    ).exactOptional(),
-    VocabularyName: VocabularyNameSchema.and(
-      z.any().openapi({ description: 'A unique name of the custom vocabulary.' }),
-    ),
-    LanguageCode: VocabularyLanguageCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The language code of the vocabulary entries. For a list of languages and their corresponding language codes, see <a href="https://docs.aws.amazon.com/transcribe/latest/dg/transcribe-whatis.html">What is Amazon Transcribe?</a> ',
-        }),
-    ),
-    Content: VocabularyContentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The content of the custom vocabulary in plain-text format with a table of values. Each row in the table represents a word or a phrase, described with <code>Phrase</code>, <code>IPA</code>, <code>SoundsLike</code>, and <code>DisplayAs</code> fields. Separate the fields with TAB characters. The size limit is 50KB. For more information, see <a href="https://docs.aws.amazon.com/transcribe/latest/dg/custom-vocabulary.html#create-vocabulary-table">Create a custom vocabulary using a table</a>.',
-        }),
-    ),
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tags used to organize, track, or control access for this resource. For example, { "tags": {"key1":"value1", "key2":"value2"} }.',
-        }),
-    ).exactOptional(),
+    ClientToken: ClientTokenSchema.exactOptional().openapi({
+      description:
+        'A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href="https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/">Making retries safe with idempotent APIs</a>. If a create request is received more than once with same client token, subsequent requests return the previous response without creating a vocabulary again.',
+    }),
+    VocabularyName: VocabularyNameSchema.openapi({
+      description: 'A unique name of the custom vocabulary.',
+    }),
+    LanguageCode: VocabularyLanguageCodeSchema.openapi({
+      description:
+        'The language code of the vocabulary entries. For a list of languages and their corresponding language codes, see <a href="https://docs.aws.amazon.com/transcribe/latest/dg/transcribe-whatis.html">What is Amazon Transcribe?</a> ',
+    }),
+    Content: VocabularyContentSchema.openapi({
+      description:
+        'The content of the custom vocabulary in plain-text format with a table of values. Each row in the table represents a word or a phrase, described with <code>Phrase</code>, <code>IPA</code>, <code>SoundsLike</code>, and <code>DisplayAs</code> fields. Separate the fields with TAB characters. The size limit is 50KB. For more information, see <a href="https://docs.aws.amazon.com/transcribe/latest/dg/custom-vocabulary.html#create-vocabulary-table">Create a custom vocabulary using a table</a>.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description:
+        'The tags used to organize, track, or control access for this resource. For example, { "tags": {"key1":"value1", "key2":"value2"} }.',
+    }),
   })
   .openapi({
     required: ['VocabularyName', 'LanguageCode', 'Content'],
@@ -7307,47 +5954,47 @@ const CurrentMetricSortCriteriaMaxOneSchema = z
 const CurrentMetricsSchema = z.array(CurrentMetricSchema).openapi('CurrentMetrics')
 
 const DeleteContactFlowModuleRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteContactFlowModuleRequest' })
   .openapi('DeleteContactFlowModuleRequest')
 
 const DeleteContactFlowRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteContactFlowRequest' })
   .openapi('DeleteContactFlowRequest')
 
 const DeleteHoursOfOperationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteHoursOfOperationRequest' })
   .openapi('DeleteHoursOfOperationRequest')
 
 const DeleteInstanceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteInstanceRequest' })
   .openapi('DeleteInstanceRequest')
 
 const DeleteIntegrationAssociationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteIntegrationAssociationRequest' })
   .openapi('DeleteIntegrationAssociationRequest')
 
 const DeleteQuickConnectRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteQuickConnectRequest' })
   .openapi('DeleteQuickConnectRequest')
 
 const DeleteRuleRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteRuleRequest' })
   .openapi('DeleteRuleRequest')
 
 const DeleteSecurityProfileRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteSecurityProfileRequest' })
   .openapi('DeleteSecurityProfileRequest')
 
 const DeleteTaskTemplateRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteTaskTemplateRequest' })
   .openapi('DeleteTaskTemplateRequest')
 
@@ -7359,167 +6006,167 @@ const TrafficDistributionGroupIdOrArnSchema = z
   .openapi('TrafficDistributionGroupIdOrArn')
 
 const DeleteTrafficDistributionGroupRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteTrafficDistributionGroupRequest' })
   .openapi('DeleteTrafficDistributionGroupRequest')
 
 const DeleteUseCaseRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteUseCaseRequest' })
   .openapi('DeleteUseCaseRequest')
 
 const DeleteUserHierarchyGroupRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteUserHierarchyGroupRequest' })
   .openapi('DeleteUserHierarchyGroupRequest')
 
 const DeleteUserRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteUserRequest' })
   .openapi('DeleteUserRequest')
 
 const DeleteVocabularyRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteVocabularyRequest' })
   .openapi('DeleteVocabularyRequest')
 
 const DescribeAgentStatusRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeAgentStatusRequest' })
   .openapi('DescribeAgentStatusRequest')
 
 const DescribeContactFlowModuleRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeContactFlowModuleRequest' })
   .openapi('DescribeContactFlowModuleRequest')
 
 const DescribeContactFlowRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeContactFlowRequest' })
   .openapi('DescribeContactFlowRequest')
 
 const DescribeContactRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeContactRequest' })
   .openapi('DescribeContactRequest')
 
 const DescribeHoursOfOperationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeHoursOfOperationRequest' })
   .openapi('DescribeHoursOfOperationRequest')
 
 const DescribeInstanceAttributeRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeInstanceAttributeRequest' })
   .openapi('DescribeInstanceAttributeRequest')
 
 const DescribeInstanceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeInstanceRequest' })
   .openapi('DescribeInstanceRequest')
 
 const DescribeInstanceStorageConfigRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeInstanceStorageConfigRequest' })
   .openapi('DescribeInstanceStorageConfigRequest')
 
 const DescribePhoneNumberRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribePhoneNumberRequest' })
   .openapi('DescribePhoneNumberRequest')
 
 const DescribeQueueRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeQueueRequest' })
   .openapi('DescribeQueueRequest')
 
 const DescribeQuickConnectRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeQuickConnectRequest' })
   .openapi('DescribeQuickConnectRequest')
 
 const DescribeRoutingProfileRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeRoutingProfileRequest' })
   .openapi('DescribeRoutingProfileRequest')
 
 const DescribeRuleRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeRuleRequest' })
   .openapi('DescribeRuleRequest')
 
 const DescribeSecurityProfileRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeSecurityProfileRequest' })
   .openapi('DescribeSecurityProfileRequest')
 
 const DescribeTrafficDistributionGroupRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeTrafficDistributionGroupRequest' })
   .openapi('DescribeTrafficDistributionGroupRequest')
 
 const DescribeUserHierarchyGroupRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeUserHierarchyGroupRequest' })
   .openapi('DescribeUserHierarchyGroupRequest')
 
 const DescribeUserHierarchyStructureRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeUserHierarchyStructureRequest' })
   .openapi('DescribeUserHierarchyStructureRequest')
 
 const DescribeUserRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeUserRequest' })
   .openapi('DescribeUserRequest')
 
 const DescribeVocabularyRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeVocabularyRequest' })
   .openapi('DescribeVocabularyRequest')
 
 const DimensionsV2KeySchema = z.string().openapi('DimensionsV2Key')
 
 const DisassociateApprovedOriginRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DisassociateApprovedOriginRequest' })
   .openapi('DisassociateApprovedOriginRequest')
 
 const DisassociateBotRequestSchema = z
   .object({
     LexBot: LexBotSchema.exactOptional(),
-    LexV2Bot: LexV2BotSchema.and(
-      z.any().openapi({ description: 'The Amazon Lex V2 bot to disassociate from the instance.' }),
-    ).exactOptional(),
+    LexV2Bot: LexV2BotSchema.exactOptional().openapi({
+      description: 'The Amazon Lex V2 bot to disassociate from the instance.',
+    }),
   })
   .openapi({ title: 'DisassociateBotRequest', required: [] })
   .openapi('DisassociateBotRequest')
 
 const DisassociateInstanceStorageConfigRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DisassociateInstanceStorageConfigRequest' })
   .openapi('DisassociateInstanceStorageConfigRequest')
 
 const DisassociateLambdaFunctionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DisassociateLambdaFunctionRequest' })
   .openapi('DisassociateLambdaFunctionRequest')
 
 const DisassociateLexBotRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DisassociateLexBotRequest' })
   .openapi('DisassociateLexBotRequest')
 
 const DisassociatePhoneNumberContactFlowRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DisassociatePhoneNumberContactFlowRequest' })
   .openapi('DisassociatePhoneNumberContactFlowRequest')
 
 const DisassociateQueueQuickConnectsRequestSchema = z
   .object({
-    QuickConnectIds: QuickConnectsListSchema.and(
-      z.any().openapi({ description: 'The quick connects to disassociate from the queue.' }),
-    ),
+    QuickConnectIds: QuickConnectsListSchema.openapi({
+      description: 'The quick connects to disassociate from the queue.',
+    }),
   })
   .openapi({ required: ['QuickConnectIds'], title: 'DisassociateQueueQuickConnectsRequest' })
   .openapi('DisassociateQueueQuickConnectsRequest')
@@ -7530,43 +6177,35 @@ const RoutingProfileQueueReferenceListSchema = z
 
 const DisassociateRoutingProfileQueuesRequestSchema = z
   .object({
-    QueueReferences: RoutingProfileQueueReferenceListSchema.and(
-      z.any().openapi({ description: 'The queues to disassociate from this routing profile.' }),
-    ),
+    QueueReferences: RoutingProfileQueueReferenceListSchema.openapi({
+      description: 'The queues to disassociate from this routing profile.',
+    }),
   })
   .openapi({ required: ['QueueReferences'], title: 'DisassociateRoutingProfileQueuesRequest' })
   .openapi('DisassociateRoutingProfileQueuesRequest')
 
 const DisassociateSecurityKeyRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DisassociateSecurityKeyRequest' })
   .openapi('DisassociateSecurityKeyRequest')
 
 const DismissUserContactRequestSchema = z
-  .object({
-    ContactId: ContactIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the contact.' }),
-    ),
-  })
+  .object({ ContactId: ContactIdSchema.openapi({ description: 'The identifier of the contact.' }) })
   .openapi({ required: ['ContactId'], title: 'DismissUserContactRequest' })
   .openapi('DismissUserContactRequest')
 
 const FiltersSchema = z
   .object({
-    Queues: QueuesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The queues to use to filter the metrics. You should specify at least one queue, and can specify up to 100 queues per request. The <code>GetCurrentMetricsData</code> API in particular requires a queue when you include a <code>Filter</code> in your request. ',
-        }),
-    ).exactOptional(),
-    Channels: ChannelsSchema.and(
-      z.any().openapi({ description: 'The channel to use to filter the metrics.' }),
-    ).exactOptional(),
-    RoutingProfiles: RoutingProfilesSchema.and(
-      z.any().openapi({ description: 'A list of up to 100 routing profile IDs or ARNs.' }),
-    ).exactOptional(),
+    Queues: QueuesSchema.exactOptional().openapi({
+      description:
+        'The queues to use to filter the metrics. You should specify at least one queue, and can specify up to 100 queues per request. The <code>GetCurrentMetricsData</code> API in particular requires a queue when you include a <code>Filter</code> in your request. ',
+    }),
+    Channels: ChannelsSchema.exactOptional().openapi({
+      description: 'The channel to use to filter the metrics.',
+    }),
+    RoutingProfiles: RoutingProfilesSchema.exactOptional().openapi({
+      description: 'A list of up to 100 routing profile IDs or ARNs.',
+    }),
   })
   .openapi({ description: 'Contains the filter to apply when retrieving metrics.', required: [] })
   .openapi('Filters')
@@ -7574,7 +6213,7 @@ const FiltersSchema = z
 const FiltersV2ListSchema = z.array(FilterV2Schema).min(1).max(5).openapi('FiltersV2List')
 
 const GetContactAttributesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetContactAttributesRequest' })
   .openapi('GetContactAttributesRequest')
 
@@ -7584,106 +6223,74 @@ const MaxResult100Schema = z.int().min(1).max(100).openapi('MaxResult100')
 
 const GetCurrentMetricDataRequestSchema = z
   .object({
-    Filters: FiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The filters to apply to returned metrics. You can filter up to the following limits:</p> <ul> <li> <p>Queues: 100</p> </li> <li> <p>Routing profiles: 100</p> </li> <li> <p>Channels: 3 (VOICE, CHAT, and TASK channels are supported.)</p> </li> </ul> <p>Metric data is retrieved only for the resources associated with the queues or routing profiles, and by any channels included in the filter. (You cannot filter by both queue AND routing profile.) You can include both resource IDs and resource ARNs in the same request. </p> <p>Currently tagging is only supported on the resources that are passed in the filter.</p>',
-        }),
-    ),
-    Groupings: GroupingsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The grouping applied to the metrics returned. For example, when grouped by <code>QUEUE</code>, the metrics returned apply to each queue rather than aggregated for all queues. </p> <ul> <li> <p>If you group by <code>CHANNEL</code>, you should include a Channels filter. VOICE, CHAT, and TASK channels are supported.</p> </li> <li> <p>If you group by <code>ROUTING_PROFILE</code>, you must include either a queue or routing profile filter. In addition, a routing profile filter is required for metrics <code>CONTACTS_SCHEDULED</code>, <code>CONTACTS_IN_QUEUE</code>, and <code> OLDEST_CONTACT_AGE</code>.</p> </li> <li> <p>If no <code>Grouping</code> is included in the request, a summary of metrics is returned.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    CurrentMetrics: CurrentMetricsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The metrics to retrieve. Specify the name and unit for each metric. The following metrics are available. For a description of all the metrics, see <a href="https://docs.aws.amazon.com/connect/latest/adminguide/real-time-metrics-definitions.html">Real-time Metrics Definitions</a> in the <i>Amazon Connect Administrator Guide</i>.</p> <dl> <dt>AGENTS_AFTER_CONTACT_WORK</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href="https://docs.aws.amazon.com/connect/latest/adminguide/real-time-metrics-definitions.html#aftercallwork-real-time">ACW</a> </p> </dd> <dt>AGENTS_AVAILABLE</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href="https://docs.aws.amazon.com/connect/latest/adminguide/real-time-metrics-definitions.html#available-real-time">Available</a> </p> </dd> <dt>AGENTS_ERROR</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href="https://docs.aws.amazon.com/connect/latest/adminguide/real-time-metrics-definitions.html#error-real-time">Error</a> </p> </dd> <dt>AGENTS_NON_PRODUCTIVE</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href="https://docs.aws.amazon.com/connect/latest/adminguide/real-time-metrics-definitions.html#non-productive-time-real-time">NPT (Non-Productive Time)</a> </p> </dd> <dt>AGENTS_ON_CALL</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href="https://docs.aws.amazon.com/connect/latest/adminguide/real-time-metrics-definitions.html#on-call-real-time">On contact</a> </p> </dd> <dt>AGENTS_ON_CONTACT</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href="https://docs.aws.amazon.com/connect/latest/adminguide/real-time-metrics-definitions.html#on-call-real-time">On contact</a> </p> </dd> <dt>AGENTS_ONLINE</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href="https://docs.aws.amazon.com/connect/latest/adminguide/real-time-metrics-definitions.html#online-real-time">Online</a> </p> </dd> <dt>AGENTS_STAFFED</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href="https://docs.aws.amazon.com/connect/latest/adminguide/real-time-metrics-definitions.html#staffed-real-time">Staffed</a> </p> </dd> <dt>CONTACTS_IN_QUEUE</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href="https://docs.aws.amazon.com/connect/latest/adminguide/real-time-metrics-definitions.html#in-queue-real-time">In queue</a> </p> </dd> <dt>CONTACTS_SCHEDULED</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href="https://docs.aws.amazon.com/connect/latest/adminguide/real-time-metrics-definitions.html#scheduled-real-time">Scheduled</a> </p> </dd> <dt>OLDEST_CONTACT_AGE</dt> <dd> <p>Unit: SECONDS</p> <p>When you use groupings, Unit says SECONDS and the Value is returned in SECONDS. </p> <p>When you do not use groupings, Unit says SECONDS but the Value is returned in MILLISECONDS. For example, if you get a response like this:</p> <p> <code>{ "Metric": { "Name": "OLDEST_CONTACT_AGE", "Unit": "SECONDS" }, "Value": 24113.0 </code>}</p> <p>The actual OLDEST_CONTACT_AGE is 24 seconds.</p> <p>Name in real-time metrics report: <a href="https://docs.aws.amazon.com/connect/latest/adminguide/real-time-metrics-definitions.html#oldest-real-time">Oldest</a> </p> </dd> <dt>SLOTS_ACTIVE</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href="https://docs.aws.amazon.com/connect/latest/adminguide/real-time-metrics-definitions.html#active-real-time">Active</a> </p> </dd> <dt>SLOTS_AVAILABLE</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href="https://docs.aws.amazon.com/connect/latest/adminguide/real-time-metrics-definitions.html#availability-real-time">Availability</a> </p> </dd> </dl>',
-        }),
-    ),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.</p> <p>The token expires after 5 minutes from the time it is created. Subsequent requests that use the token must use the same request parameters as the request that generated the token.</p>',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResult100Schema.and(
-      z.any().openapi({ description: 'The maximum number of results to return per page.' }),
-    ).exactOptional(),
-    SortCriteria: CurrentMetricSortCriteriaMaxOneSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The way to sort the resulting response based on metrics. You can enter one sort criteria. By default resources are sorted based on <code>AGENTS_ONLINE</code>, <code>DESCENDING</code>. The metric collection is sorted based on the input metrics.</p> <p>Note the following:</p> <ul> <li> <p>Sorting on <code>SLOTS_ACTIVE</code> and <code>SLOTS_AVAILABLE</code> is not supported.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    Filters: FiltersSchema.openapi({
+      description:
+        '<p>The filters to apply to returned metrics. You can filter up to the following limits:</p> <ul> <li> <p>Queues: 100</p> </li> <li> <p>Routing profiles: 100</p> </li> <li> <p>Channels: 3 (VOICE, CHAT, and TASK channels are supported.)</p> </li> </ul> <p>Metric data is retrieved only for the resources associated with the queues or routing profiles, and by any channels included in the filter. (You cannot filter by both queue AND routing profile.) You can include both resource IDs and resource ARNs in the same request. </p> <p>Currently tagging is only supported on the resources that are passed in the filter.</p>',
+    }),
+    Groupings: GroupingsSchema.exactOptional().openapi({
+      description:
+        '<p>The grouping applied to the metrics returned. For example, when grouped by <code>QUEUE</code>, the metrics returned apply to each queue rather than aggregated for all queues. </p> <ul> <li> <p>If you group by <code>CHANNEL</code>, you should include a Channels filter. VOICE, CHAT, and TASK channels are supported.</p> </li> <li> <p>If you group by <code>ROUTING_PROFILE</code>, you must include either a queue or routing profile filter. In addition, a routing profile filter is required for metrics <code>CONTACTS_SCHEDULED</code>, <code>CONTACTS_IN_QUEUE</code>, and <code> OLDEST_CONTACT_AGE</code>.</p> </li> <li> <p>If no <code>Grouping</code> is included in the request, a summary of metrics is returned.</p> </li> </ul>',
+    }),
+    CurrentMetrics: CurrentMetricsSchema.openapi({
+      description:
+        '<p>The metrics to retrieve. Specify the name and unit for each metric. The following metrics are available. For a description of all the metrics, see <a href="https://docs.aws.amazon.com/connect/latest/adminguide/real-time-metrics-definitions.html">Real-time Metrics Definitions</a> in the <i>Amazon Connect Administrator Guide</i>.</p> <dl> <dt>AGENTS_AFTER_CONTACT_WORK</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href="https://docs.aws.amazon.com/connect/latest/adminguide/real-time-metrics-definitions.html#aftercallwork-real-time">ACW</a> </p> </dd> <dt>AGENTS_AVAILABLE</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href="https://docs.aws.amazon.com/connect/latest/adminguide/real-time-metrics-definitions.html#available-real-time">Available</a> </p> </dd> <dt>AGENTS_ERROR</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href="https://docs.aws.amazon.com/connect/latest/adminguide/real-time-metrics-definitions.html#error-real-time">Error</a> </p> </dd> <dt>AGENTS_NON_PRODUCTIVE</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href="https://docs.aws.amazon.com/connect/latest/adminguide/real-time-metrics-definitions.html#non-productive-time-real-time">NPT (Non-Productive Time)</a> </p> </dd> <dt>AGENTS_ON_CALL</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href="https://docs.aws.amazon.com/connect/latest/adminguide/real-time-metrics-definitions.html#on-call-real-time">On contact</a> </p> </dd> <dt>AGENTS_ON_CONTACT</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href="https://docs.aws.amazon.com/connect/latest/adminguide/real-time-metrics-definitions.html#on-call-real-time">On contact</a> </p> </dd> <dt>AGENTS_ONLINE</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href="https://docs.aws.amazon.com/connect/latest/adminguide/real-time-metrics-definitions.html#online-real-time">Online</a> </p> </dd> <dt>AGENTS_STAFFED</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href="https://docs.aws.amazon.com/connect/latest/adminguide/real-time-metrics-definitions.html#staffed-real-time">Staffed</a> </p> </dd> <dt>CONTACTS_IN_QUEUE</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href="https://docs.aws.amazon.com/connect/latest/adminguide/real-time-metrics-definitions.html#in-queue-real-time">In queue</a> </p> </dd> <dt>CONTACTS_SCHEDULED</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href="https://docs.aws.amazon.com/connect/latest/adminguide/real-time-metrics-definitions.html#scheduled-real-time">Scheduled</a> </p> </dd> <dt>OLDEST_CONTACT_AGE</dt> <dd> <p>Unit: SECONDS</p> <p>When you use groupings, Unit says SECONDS and the Value is returned in SECONDS. </p> <p>When you do not use groupings, Unit says SECONDS but the Value is returned in MILLISECONDS. For example, if you get a response like this:</p> <p> <code>{ "Metric": { "Name": "OLDEST_CONTACT_AGE", "Unit": "SECONDS" }, "Value": 24113.0 </code>}</p> <p>The actual OLDEST_CONTACT_AGE is 24 seconds.</p> <p>Name in real-time metrics report: <a href="https://docs.aws.amazon.com/connect/latest/adminguide/real-time-metrics-definitions.html#oldest-real-time">Oldest</a> </p> </dd> <dt>SLOTS_ACTIVE</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href="https://docs.aws.amazon.com/connect/latest/adminguide/real-time-metrics-definitions.html#active-real-time">Active</a> </p> </dd> <dt>SLOTS_AVAILABLE</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href="https://docs.aws.amazon.com/connect/latest/adminguide/real-time-metrics-definitions.html#availability-real-time">Availability</a> </p> </dd> </dl>',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        '<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.</p> <p>The token expires after 5 minutes from the time it is created. Subsequent requests that use the token must use the same request parameters as the request that generated the token.</p>',
+    }),
+    MaxResults: MaxResult100Schema.exactOptional().openapi({
+      description: 'The maximum number of results to return per page.',
+    }),
+    SortCriteria: CurrentMetricSortCriteriaMaxOneSchema.exactOptional().openapi({
+      description:
+        '<p>The way to sort the resulting response based on metrics. You can enter one sort criteria. By default resources are sorted based on <code>AGENTS_ONLINE</code>, <code>DESCENDING</code>. The metric collection is sorted based on the input metrics.</p> <p>Note the following:</p> <ul> <li> <p>Sorting on <code>SLOTS_ACTIVE</code> and <code>SLOTS_AVAILABLE</code> is not supported.</p> </li> </ul>',
+    }),
   })
   .openapi({ required: ['Filters', 'CurrentMetrics'], title: 'GetCurrentMetricDataRequest' })
   .openapi('GetCurrentMetricDataRequest')
 
 const UserDataFiltersSchema = z
   .object({
-    Queues: QueuesSchema.and(
-      z.any().openapi({ description: 'A list of up to 100 queues or ARNs.' }),
-    ).exactOptional(),
-    ContactFilter: ContactFilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A filter for the user data based on the contact information that is associated to the user. It contains a list of contact states. ',
-        }),
-    ).exactOptional(),
-    RoutingProfiles: RoutingProfilesSchema.and(
-      z.any().openapi({ description: 'A list of up to 100 routing profile IDs or ARNs.' }),
-    ).exactOptional(),
-    Agents: AgentsMinOneMaxHundredSchema.and(
-      z.any().openapi({ description: 'A list of up to 100 agent IDs or ARNs.' }),
-    ).exactOptional(),
-    UserHierarchyGroups: UserDataHierarchyGroupsSchema.and(
-      z.any().openapi({ description: 'A UserHierarchyGroup ID or ARN.' }),
-    ).exactOptional(),
+    Queues: QueuesSchema.exactOptional().openapi({
+      description: 'A list of up to 100 queues or ARNs.',
+    }),
+    ContactFilter: ContactFilterSchema.exactOptional().openapi({
+      description:
+        'A filter for the user data based on the contact information that is associated to the user. It contains a list of contact states. ',
+    }),
+    RoutingProfiles: RoutingProfilesSchema.exactOptional().openapi({
+      description: 'A list of up to 100 routing profile IDs or ARNs.',
+    }),
+    Agents: AgentsMinOneMaxHundredSchema.exactOptional().openapi({
+      description: 'A list of up to 100 agent IDs or ARNs.',
+    }),
+    UserHierarchyGroups: UserDataHierarchyGroupsSchema.exactOptional().openapi({
+      description: 'A UserHierarchyGroup ID or ARN.',
+    }),
   })
   .openapi({ description: 'A filter for the user data.', required: [] })
   .openapi('UserDataFilters')
 
 const GetCurrentUserDataRequestSchema = z
   .object({
-    Filters: UserDataFiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The filters to apply to returned user data. You can filter up to the following limits:</p> <ul> <li> <p>Queues: 100</p> </li> <li> <p>Routing profiles: 100</p> </li> <li> <p>Agents: 100</p> </li> <li> <p>Contact states: 9</p> </li> <li> <p>User hierarchy groups: 1</p> </li> </ul> <p> The user data is retrieved for only the specified values/resources in the filter. A maximum of one filter can be passed from queues, routing profiles, agents, and user hierarchy groups. </p> <p>Currently tagging is only supported on the resources that are passed in the filter.</p>',
-        }),
-    ),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResult100Schema.and(
-      z.any().openapi({ description: 'The maximum number of results to return per page.' }),
-    ).exactOptional(),
+    Filters: UserDataFiltersSchema.openapi({
+      description:
+        '<p>The filters to apply to returned user data. You can filter up to the following limits:</p> <ul> <li> <p>Queues: 100</p> </li> <li> <p>Routing profiles: 100</p> </li> <li> <p>Agents: 100</p> </li> <li> <p>Contact states: 9</p> </li> <li> <p>User hierarchy groups: 1</p> </li> </ul> <p> The user data is retrieved for only the specified values/resources in the filter. A maximum of one filter can be passed from queues, routing profiles, agents, and user hierarchy groups. </p> <p>Currently tagging is only supported on the resources that are passed in the filter.</p>',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.',
+    }),
+    MaxResults: MaxResult100Schema.exactOptional().openapi({
+      description: 'The maximum number of results to return per page.',
+    }),
   })
   .openapi({ required: ['Filters'], title: 'GetCurrentUserDataRequest' })
   .openapi('GetCurrentUserDataRequest')
 
 const GetFederationTokenRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetFederationTokenRequest' })
   .openapi('GetFederationTokenRequest')
 
@@ -7691,57 +6298,33 @@ const HistoricalMetricsSchema = z.array(HistoricalMetricSchema).openapi('Histori
 
 const GetMetricDataRequestSchema = z
   .object({
-    StartTime: Timestamp2Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The timestamp, in UNIX Epoch time format, at which to start the reporting interval for the retrieval of historical metrics data. The time must be specified using a multiple of 5 minutes, such as 10:05, 10:10, 10:15.</p> <p>The start time cannot be earlier than 24 hours before the time of the request. Historical metrics are available only for 24 hours.</p>',
-        }),
-    ),
-    EndTime: Timestamp2Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The timestamp, in UNIX Epoch time format, at which to end the reporting interval for the retrieval of historical metrics data. The time must be specified using an interval of 5 minutes, such as 11:00, 11:05, 11:10, and must be later than the start time timestamp.</p> <p>The time range between the start and end time must be less than 24 hours.</p>',
-        }),
-    ),
-    Filters: FiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The queues, up to 100, or channels, to use to filter the metrics returned. Metric data is retrieved only for the resources associated with the queues or channels included in the filter. You can include both queue IDs and queue ARNs in the same request. VOICE, CHAT, and TASK channels are supported.</p> <note> <p>To filter by <code>Queues</code>, enter the queue ID/ARN, not the name of the queue.</p> </note>',
-        }),
-    ),
-    Groupings: GroupingsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The grouping applied to the metrics returned. For example, when results are grouped by queue, the metrics returned are grouped by queue. The values returned apply to the metrics for each queue rather than aggregated for all queues.</p> <p>If no grouping is specified, a summary of metrics for all queues is returned.</p>',
-        }),
-    ).exactOptional(),
-    HistoricalMetrics: HistoricalMetricsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The metrics to retrieve. Specify the name, unit, and statistic for each metric. The following historical metrics are available. For a description of each metric, see <a href="https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html">Historical Metrics Definitions</a> in the <i>Amazon Connect Administrator Guide</i>.</p> <note> <p>This API does not support a contacts incoming metric (there\'s no CONTACTS_INCOMING metric missing from the documented list). </p> </note> <dl> <dt>ABANDON_TIME</dt> <dd> <p>Unit: SECONDS</p> <p>Statistic: AVG</p> </dd> <dt>AFTER_CONTACT_WORK_TIME</dt> <dd> <p>Unit: SECONDS</p> <p>Statistic: AVG</p> </dd> <dt>API_CONTACTS_HANDLED</dt> <dd> <p>Unit: COUNT</p> <p>Statistic: SUM</p> </dd> <dt>CALLBACK_CONTACTS_HANDLED</dt> <dd> <p>Unit: COUNT</p> <p>Statistic: SUM</p> </dd> <dt>CONTACTS_ABANDONED</dt> <dd> <p>Unit: COUNT</p> <p>Statistic: SUM</p> </dd> <dt>CONTACTS_AGENT_HUNG_UP_FIRST</dt> <dd> <p>Unit: COUNT</p> <p>Statistic: SUM</p> </dd> <dt>CONTACTS_CONSULTED</dt> <dd> <p>Unit: COUNT</p> <p>Statistic: SUM</p> </dd> <dt>CONTACTS_HANDLED</dt> <dd> <p>Unit: COUNT</p> <p>Statistic: SUM</p> </dd> <dt>CONTACTS_HANDLED_INCOMING</dt> <dd> <p>Unit: COUNT</p> <p>Statistic: SUM</p> </dd> <dt>CONTACTS_HANDLED_OUTBOUND</dt> <dd> <p>Unit: COUNT</p> <p>Statistic: SUM</p> </dd> <dt>CONTACTS_HOLD_ABANDONS</dt> <dd> <p>Unit: COUNT</p> <p>Statistic: SUM</p> </dd> <dt>CONTACTS_MISSED</dt> <dd> <p>Unit: COUNT</p> <p>Statistic: SUM</p> </dd> <dt>CONTACTS_QUEUED</dt> <dd> <p>Unit: COUNT</p> <p>Statistic: SUM</p> </dd> <dt>CONTACTS_TRANSFERRED_IN</dt> <dd> <p>Unit: COUNT</p> <p>Statistic: SUM</p> </dd> <dt>CONTACTS_TRANSFERRED_IN_FROM_QUEUE</dt> <dd> <p>Unit: COUNT</p> <p>Statistic: SUM</p> </dd> <dt>CONTACTS_TRANSFERRED_OUT</dt> <dd> <p>Unit: COUNT</p> <p>Statistic: SUM</p> </dd> <dt>CONTACTS_TRANSFERRED_OUT_FROM_QUEUE</dt> <dd> <p>Unit: COUNT</p> <p>Statistic: SUM</p> </dd> <dt>HANDLE_TIME</dt> <dd> <p>Unit: SECONDS</p> <p>Statistic: AVG</p> </dd> <dt>HOLD_TIME</dt> <dd> <p>Unit: SECONDS</p> <p>Statistic: AVG</p> </dd> <dt>INTERACTION_AND_HOLD_TIME</dt> <dd> <p>Unit: SECONDS</p> <p>Statistic: AVG</p> </dd> <dt>INTERACTION_TIME</dt> <dd> <p>Unit: SECONDS</p> <p>Statistic: AVG</p> </dd> <dt>OCCUPANCY</dt> <dd> <p>Unit: PERCENT</p> <p>Statistic: AVG</p> </dd> <dt>QUEUE_ANSWER_TIME</dt> <dd> <p>Unit: SECONDS</p> <p>Statistic: AVG</p> </dd> <dt>QUEUED_TIME</dt> <dd> <p>Unit: SECONDS</p> <p>Statistic: MAX</p> </dd> <dt>SERVICE_LEVEL</dt> <dd> <p>You can include up to 20 SERVICE_LEVEL metrics in a request.</p> <p>Unit: PERCENT</p> <p>Statistic: AVG</p> <p>Threshold: For <code>ThresholdValue</code>, enter any whole number from 1 to 604800 (inclusive), in seconds. For <code>Comparison</code>, you must enter <code>LT</code> (for "Less than"). </p> </dd> </dl>',
-        }),
-    ),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResult100Schema.and(
-      z.any().openapi({ description: 'The maximum number of results to return per page.' }),
-    ).exactOptional(),
+    StartTime: Timestamp2Schema.openapi({
+      description:
+        '<p>The timestamp, in UNIX Epoch time format, at which to start the reporting interval for the retrieval of historical metrics data. The time must be specified using a multiple of 5 minutes, such as 10:05, 10:10, 10:15.</p> <p>The start time cannot be earlier than 24 hours before the time of the request. Historical metrics are available only for 24 hours.</p>',
+    }),
+    EndTime: Timestamp2Schema.openapi({
+      description:
+        '<p>The timestamp, in UNIX Epoch time format, at which to end the reporting interval for the retrieval of historical metrics data. The time must be specified using an interval of 5 minutes, such as 11:00, 11:05, 11:10, and must be later than the start time timestamp.</p> <p>The time range between the start and end time must be less than 24 hours.</p>',
+    }),
+    Filters: FiltersSchema.openapi({
+      description:
+        '<p>The queues, up to 100, or channels, to use to filter the metrics returned. Metric data is retrieved only for the resources associated with the queues or channels included in the filter. You can include both queue IDs and queue ARNs in the same request. VOICE, CHAT, and TASK channels are supported.</p> <note> <p>To filter by <code>Queues</code>, enter the queue ID/ARN, not the name of the queue.</p> </note>',
+    }),
+    Groupings: GroupingsSchema.exactOptional().openapi({
+      description:
+        '<p>The grouping applied to the metrics returned. For example, when results are grouped by queue, the metrics returned are grouped by queue. The values returned apply to the metrics for each queue rather than aggregated for all queues.</p> <p>If no grouping is specified, a summary of metrics for all queues is returned.</p>',
+    }),
+    HistoricalMetrics: HistoricalMetricsSchema.openapi({
+      description:
+        '<p>The metrics to retrieve. Specify the name, unit, and statistic for each metric. The following historical metrics are available. For a description of each metric, see <a href="https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html">Historical Metrics Definitions</a> in the <i>Amazon Connect Administrator Guide</i>.</p> <note> <p>This API does not support a contacts incoming metric (there\'s no CONTACTS_INCOMING metric missing from the documented list). </p> </note> <dl> <dt>ABANDON_TIME</dt> <dd> <p>Unit: SECONDS</p> <p>Statistic: AVG</p> </dd> <dt>AFTER_CONTACT_WORK_TIME</dt> <dd> <p>Unit: SECONDS</p> <p>Statistic: AVG</p> </dd> <dt>API_CONTACTS_HANDLED</dt> <dd> <p>Unit: COUNT</p> <p>Statistic: SUM</p> </dd> <dt>CALLBACK_CONTACTS_HANDLED</dt> <dd> <p>Unit: COUNT</p> <p>Statistic: SUM</p> </dd> <dt>CONTACTS_ABANDONED</dt> <dd> <p>Unit: COUNT</p> <p>Statistic: SUM</p> </dd> <dt>CONTACTS_AGENT_HUNG_UP_FIRST</dt> <dd> <p>Unit: COUNT</p> <p>Statistic: SUM</p> </dd> <dt>CONTACTS_CONSULTED</dt> <dd> <p>Unit: COUNT</p> <p>Statistic: SUM</p> </dd> <dt>CONTACTS_HANDLED</dt> <dd> <p>Unit: COUNT</p> <p>Statistic: SUM</p> </dd> <dt>CONTACTS_HANDLED_INCOMING</dt> <dd> <p>Unit: COUNT</p> <p>Statistic: SUM</p> </dd> <dt>CONTACTS_HANDLED_OUTBOUND</dt> <dd> <p>Unit: COUNT</p> <p>Statistic: SUM</p> </dd> <dt>CONTACTS_HOLD_ABANDONS</dt> <dd> <p>Unit: COUNT</p> <p>Statistic: SUM</p> </dd> <dt>CONTACTS_MISSED</dt> <dd> <p>Unit: COUNT</p> <p>Statistic: SUM</p> </dd> <dt>CONTACTS_QUEUED</dt> <dd> <p>Unit: COUNT</p> <p>Statistic: SUM</p> </dd> <dt>CONTACTS_TRANSFERRED_IN</dt> <dd> <p>Unit: COUNT</p> <p>Statistic: SUM</p> </dd> <dt>CONTACTS_TRANSFERRED_IN_FROM_QUEUE</dt> <dd> <p>Unit: COUNT</p> <p>Statistic: SUM</p> </dd> <dt>CONTACTS_TRANSFERRED_OUT</dt> <dd> <p>Unit: COUNT</p> <p>Statistic: SUM</p> </dd> <dt>CONTACTS_TRANSFERRED_OUT_FROM_QUEUE</dt> <dd> <p>Unit: COUNT</p> <p>Statistic: SUM</p> </dd> <dt>HANDLE_TIME</dt> <dd> <p>Unit: SECONDS</p> <p>Statistic: AVG</p> </dd> <dt>HOLD_TIME</dt> <dd> <p>Unit: SECONDS</p> <p>Statistic: AVG</p> </dd> <dt>INTERACTION_AND_HOLD_TIME</dt> <dd> <p>Unit: SECONDS</p> <p>Statistic: AVG</p> </dd> <dt>INTERACTION_TIME</dt> <dd> <p>Unit: SECONDS</p> <p>Statistic: AVG</p> </dd> <dt>OCCUPANCY</dt> <dd> <p>Unit: PERCENT</p> <p>Statistic: AVG</p> </dd> <dt>QUEUE_ANSWER_TIME</dt> <dd> <p>Unit: SECONDS</p> <p>Statistic: AVG</p> </dd> <dt>QUEUED_TIME</dt> <dd> <p>Unit: SECONDS</p> <p>Statistic: MAX</p> </dd> <dt>SERVICE_LEVEL</dt> <dd> <p>You can include up to 20 SERVICE_LEVEL metrics in a request.</p> <p>Unit: PERCENT</p> <p>Statistic: AVG</p> <p>Threshold: For <code>ThresholdValue</code>, enter any whole number from 1 to 604800 (inclusive), in seconds. For <code>Comparison</code>, you must enter <code>LT</code> (for "Less than"). </p> </dd> </dl>',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.',
+    }),
+    MaxResults: MaxResult100Schema.exactOptional().openapi({
+      description: 'The maximum number of results to return per page.',
+    }),
   })
   .openapi({
     required: ['StartTime', 'EndTime', 'Filters', 'HistoricalMetrics'],
@@ -7755,65 +6338,37 @@ const MetricsV2Schema = z.array(MetricV2Schema).openapi('MetricsV2')
 
 const GetMetricDataV2RequestSchema = z
   .object({
-    ResourceArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the resource. This includes the <code>instanceId</code> an Amazon Connect instance.',
-        }),
-    ),
-    StartTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timestamp, in UNIX Epoch time format, at which to start the reporting interval for the retrieval of historical metrics data. The time must be before the end time timestamp. The time range between the start and end time must be less than 24 hours. The start time cannot be earlier than 14 days before the time of the request. Historical metrics are available for 14 days.',
-        }),
-    ),
-    EndTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The timestamp, in UNIX Epoch time format, at which to end the reporting interval for the retrieval of historical metrics data. The time must be later than the start time timestamp. It cannot be later than the current timestamp.</p> <p>The time range between the start and end time must be less than 24 hours.</p>',
-        }),
-    ),
-    Filters: FiltersV2ListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The filters to apply to returned metrics. You can filter on the following resources:</p> <ul> <li> <p>Queues</p> </li> <li> <p>Routing profiles</p> </li> <li> <p>Agents</p> </li> <li> <p>Channels</p> </li> <li> <p>User hierarchy groups</p> </li> </ul> <p>At least one filter must be passed from queues, routing profiles, agents, or user hierarchy groups.</p> <p>To filter by phone number, see <a href="https://docs.aws.amazon.com/connect/latest/adminguide/create-historical-metrics-report.html">Create a historical metrics report</a> in the <i>Amazon Connect Administrator\'s Guide</i>.</p> <p>Note the following limits:</p> <ul> <li> <p> <b>Filter keys</b>: A maximum of 5 filter keys are supported in a single request. Valid filter keys: <code>QUEUE</code> | <code>ROUTING_PROFILE</code> | <code>AGENT</code> | <code>CHANNEL</code> | <code>AGENT_HIERARCHY_LEVEL_ONE</code> | <code>AGENT_HIERARCHY_LEVEL_TWO</code> | <code>AGENT_HIERARCHY_LEVEL_THREE</code> | <code>AGENT_HIERARCHY_LEVEL_FOUR</code> | <code>AGENT_HIERARCHY_LEVEL_FIVE</code> </p> </li> <li> <p> <b>Filter values</b>: A maximum of 100 filter values are supported in a single request. For example, a <code>GetMetricDataV2</code> request can filter by 50 queues, 35 agents, and 15 routing profiles for a total of 100 filter values. <code>VOICE</code>, <code>CHAT</code>, and <code>TASK</code> are valid <code>filterValue</code> for the <code>CHANNEL</code> filter key.</p> </li> </ul>',
-        }),
-    ),
-    Groupings: GroupingsV2Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The grouping applied to the metrics that are returned. For example, when results are grouped by queue, the metrics returned are grouped by queue. The values that are returned apply to the metrics for each queue. They are not aggregated for all queues.</p> <p>If no grouping is specified, a summary of all metrics is returned.</p> <p>Valid grouping keys: <code>QUEUE</code> | <code>ROUTING_PROFILE</code> | <code>AGENT</code> | <code>CHANNEL</code> | <code>AGENT_HIERARCHY_LEVEL_ONE</code> | <code>AGENT_HIERARCHY_LEVEL_TWO</code> | <code>AGENT_HIERARCHY_LEVEL_THREE</code> | <code>AGENT_HIERARCHY_LEVEL_FOUR</code> | <code>AGENT_HIERARCHY_LEVEL_FIVE</code> </p>',
-        }),
-    ).exactOptional(),
-    Metrics: MetricsV2Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The metrics to retrieve. Specify the name, groupings, and filters for each metric. The following historical metrics are available. For a description of each metric, see <a href="https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html">Historical metrics definitions</a> in the <i>Amazon Connect Administrator\'s Guide</i>.</p> <dl> <dt>AGENT_ADHERENT_TIME</dt> <dd> <p>This metric is available only in Amazon Web Services Regions where <a href="https://docs.aws.amazon.com/connect/latest/adminguide/regions.html#optimization_region">Forecasting, capacity planning, and scheduling</a> is available.</p> <p>Unit: Seconds</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy </p> </dd> <dt>AGENT_NON_RESPONSE</dt> <dd> <p>Unit: Count</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy </p> </dd> <dt>AGENT_OCCUPANCY</dt> <dd> <p>Unit: Percentage</p> <p>Valid groupings and filters: Routing Profile, Agent, Agent Hierarchy </p> </dd> <dt>AGENT_SCHEDULE_ADHERENCE</dt> <dd> <p>This metric is available only in Amazon Web Services Regions where <a href="https://docs.aws.amazon.com/connect/latest/adminguide/regions.html#optimization_region">Forecasting, capacity planning, and scheduling</a> is available.</p> <p>Unit: Percent</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy</p> </dd> <dt>AGENT_SCHEDULED_TIME</dt> <dd> <p>This metric is available only in Amazon Web Services Regions where <a href="https://docs.aws.amazon.com/connect/latest/adminguide/regions.html#optimization_region">Forecasting, capacity planning, and scheduling</a> is available.</p> <p>Unit: Seconds</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy</p> </dd> <dt>AVG_ABANDON_TIME</dt> <dd> <p>Unit: Seconds</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy</p> </dd> <dt>AVG_AFTER_CONTACT_WORK_TIME</dt> <dd> <p>Unit: Seconds</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy</p> </dd> <dt>AVG_AGENT_CONNECTING_TIME</dt> <dd> <p>Unit: Seconds</p> <p>Valid metric filter key: <code>INITIATION_METHOD</code>. For now, this metric only supports the following as <code>INITIATION_METHOD</code>: <code>INBOUND</code> | <code>OUTBOUND</code> | <code>CALLBACK</code> | <code>API</code> </p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy</p> </dd> <dt>AVG_HANDLE_TIME</dt> <dd> <p>Unit: Seconds</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy</p> </dd> <dt>AVG_HOLD_TIME</dt> <dd> <p>Unit: Seconds</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy</p> </dd> <dt>AVG_INTERACTION_AND_HOLD_TIME</dt> <dd> <p>Unit: Seconds</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy</p> </dd> <dt>AVG_INTERACTION_TIME</dt> <dd> <p>Unit: Seconds</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile</p> </dd> <dt>AVG_QUEUE_ANSWER_TIME</dt> <dd> <p>Unit: Seconds</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile</p> </dd> <dt>CONTACTS_ABANDONED</dt> <dd> <p>Unit: Count</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy</p> </dd> <dt>CONTACTS_CREATED</dt> <dd> <p>Unit: Count</p> <p>Valid metric filter key: <code>INITIATION_METHOD</code> </p> <p>Valid groupings and filters: Queue, Channel, Routing Profile</p> </dd> <dt>CONTACTS_HANDLED</dt> <dd> <p>Unit: Count</p> <p>Valid metric filter key: <code>INITIATION_METHOD</code>, <code>DISCONNECT_REASON</code> </p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy</p> </dd> <dt>CONTACTS_HOLD_ABANDONS</dt> <dd> <p>Unit: Count</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy</p> </dd> <dt>CONTACTS_QUEUED</dt> <dd> <p>Unit: Count</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy</p> </dd> <dt>CONTACTS_TRANSFERRED_OUT</dt> <dd> <p>Unit: Count</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy</p> </dd> <dt>CONTACTS_TRANSFERRED_OUT_BY_AGENT</dt> <dd> <p>Unit: Count</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy</p> </dd> <dt>CONTACTS_TRANSFERRED_OUT_FROM_QUEUE</dt> <dd> <p>Unit: Count</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy</p> </dd> <dt>MAX_QUEUED_TIME</dt> <dd> <p>Unit: Seconds</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy</p> </dd> <dt>SERVICE_LEVEL</dt> <dd> <p>You can include up to 20 SERVICE_LEVEL metrics in a request.</p> <p>Unit: Percent</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile</p> <p>Threshold: For <code>ThresholdValue</code>, enter any whole number from 1 to 604800 (inclusive), in seconds. For <code>Comparison</code>, you must enter <code>LT</code> (for "Less than"). </p> </dd> <dt>SUM_CONTACTS_ANSWERED_IN_X</dt> <dd> <p>Unit: Count</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile</p> <p>Threshold: For <code>ThresholdValue</code>, enter any whole number from 1 to 604800 (inclusive), in seconds. For <code>Comparison</code>, you must enter <code>LT</code> (for "Less than"). </p> </dd> <dt>SUM_CONTACTS_ABANDONED_IN_X</dt> <dd> <p>Unit: Count</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile</p> <p>Threshold: For <code>ThresholdValue</code>, enter any whole number from 1 to 604800 (inclusive), in seconds. For <code>Comparison</code>, you must enter <code>LT</code> (for "Less than"). </p> </dd> <dt>SUM_CONTACTS_DISCONNECTED </dt> <dd> <p>Valid metric filter key: <code>DISCONNECT_REASON</code> </p> <p>Unit: Count</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile</p> </dd> <dt>SUM_RETRY_CALLBACK_ATTEMPTS</dt> <dd> <p>Unit: Count</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile</p> </dd> </dl>',
-        }),
-    ),
-    NextToken: NextToken2500Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResult100Schema.and(
-      z.any().openapi({ description: 'The maximum number of results to return per page.' }),
-    ).exactOptional(),
+    ResourceArn: ARNSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the resource. This includes the <code>instanceId</code> an Amazon Connect instance.',
+    }),
+    StartTime: TimestampSchema.openapi({
+      description:
+        'The timestamp, in UNIX Epoch time format, at which to start the reporting interval for the retrieval of historical metrics data. The time must be before the end time timestamp. The time range between the start and end time must be less than 24 hours. The start time cannot be earlier than 14 days before the time of the request. Historical metrics are available for 14 days.',
+    }),
+    EndTime: TimestampSchema.openapi({
+      description:
+        '<p>The timestamp, in UNIX Epoch time format, at which to end the reporting interval for the retrieval of historical metrics data. The time must be later than the start time timestamp. It cannot be later than the current timestamp.</p> <p>The time range between the start and end time must be less than 24 hours.</p>',
+    }),
+    Filters: FiltersV2ListSchema.openapi({
+      description:
+        '<p>The filters to apply to returned metrics. You can filter on the following resources:</p> <ul> <li> <p>Queues</p> </li> <li> <p>Routing profiles</p> </li> <li> <p>Agents</p> </li> <li> <p>Channels</p> </li> <li> <p>User hierarchy groups</p> </li> </ul> <p>At least one filter must be passed from queues, routing profiles, agents, or user hierarchy groups.</p> <p>To filter by phone number, see <a href="https://docs.aws.amazon.com/connect/latest/adminguide/create-historical-metrics-report.html">Create a historical metrics report</a> in the <i>Amazon Connect Administrator\'s Guide</i>.</p> <p>Note the following limits:</p> <ul> <li> <p> <b>Filter keys</b>: A maximum of 5 filter keys are supported in a single request. Valid filter keys: <code>QUEUE</code> | <code>ROUTING_PROFILE</code> | <code>AGENT</code> | <code>CHANNEL</code> | <code>AGENT_HIERARCHY_LEVEL_ONE</code> | <code>AGENT_HIERARCHY_LEVEL_TWO</code> | <code>AGENT_HIERARCHY_LEVEL_THREE</code> | <code>AGENT_HIERARCHY_LEVEL_FOUR</code> | <code>AGENT_HIERARCHY_LEVEL_FIVE</code> </p> </li> <li> <p> <b>Filter values</b>: A maximum of 100 filter values are supported in a single request. For example, a <code>GetMetricDataV2</code> request can filter by 50 queues, 35 agents, and 15 routing profiles for a total of 100 filter values. <code>VOICE</code>, <code>CHAT</code>, and <code>TASK</code> are valid <code>filterValue</code> for the <code>CHANNEL</code> filter key.</p> </li> </ul>',
+    }),
+    Groupings: GroupingsV2Schema.exactOptional().openapi({
+      description:
+        '<p>The grouping applied to the metrics that are returned. For example, when results are grouped by queue, the metrics returned are grouped by queue. The values that are returned apply to the metrics for each queue. They are not aggregated for all queues.</p> <p>If no grouping is specified, a summary of all metrics is returned.</p> <p>Valid grouping keys: <code>QUEUE</code> | <code>ROUTING_PROFILE</code> | <code>AGENT</code> | <code>CHANNEL</code> | <code>AGENT_HIERARCHY_LEVEL_ONE</code> | <code>AGENT_HIERARCHY_LEVEL_TWO</code> | <code>AGENT_HIERARCHY_LEVEL_THREE</code> | <code>AGENT_HIERARCHY_LEVEL_FOUR</code> | <code>AGENT_HIERARCHY_LEVEL_FIVE</code> </p>',
+    }),
+    Metrics: MetricsV2Schema.openapi({
+      description:
+        '<p>The metrics to retrieve. Specify the name, groupings, and filters for each metric. The following historical metrics are available. For a description of each metric, see <a href="https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html">Historical metrics definitions</a> in the <i>Amazon Connect Administrator\'s Guide</i>.</p> <dl> <dt>AGENT_ADHERENT_TIME</dt> <dd> <p>This metric is available only in Amazon Web Services Regions where <a href="https://docs.aws.amazon.com/connect/latest/adminguide/regions.html#optimization_region">Forecasting, capacity planning, and scheduling</a> is available.</p> <p>Unit: Seconds</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy </p> </dd> <dt>AGENT_NON_RESPONSE</dt> <dd> <p>Unit: Count</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy </p> </dd> <dt>AGENT_OCCUPANCY</dt> <dd> <p>Unit: Percentage</p> <p>Valid groupings and filters: Routing Profile, Agent, Agent Hierarchy </p> </dd> <dt>AGENT_SCHEDULE_ADHERENCE</dt> <dd> <p>This metric is available only in Amazon Web Services Regions where <a href="https://docs.aws.amazon.com/connect/latest/adminguide/regions.html#optimization_region">Forecasting, capacity planning, and scheduling</a> is available.</p> <p>Unit: Percent</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy</p> </dd> <dt>AGENT_SCHEDULED_TIME</dt> <dd> <p>This metric is available only in Amazon Web Services Regions where <a href="https://docs.aws.amazon.com/connect/latest/adminguide/regions.html#optimization_region">Forecasting, capacity planning, and scheduling</a> is available.</p> <p>Unit: Seconds</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy</p> </dd> <dt>AVG_ABANDON_TIME</dt> <dd> <p>Unit: Seconds</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy</p> </dd> <dt>AVG_AFTER_CONTACT_WORK_TIME</dt> <dd> <p>Unit: Seconds</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy</p> </dd> <dt>AVG_AGENT_CONNECTING_TIME</dt> <dd> <p>Unit: Seconds</p> <p>Valid metric filter key: <code>INITIATION_METHOD</code>. For now, this metric only supports the following as <code>INITIATION_METHOD</code>: <code>INBOUND</code> | <code>OUTBOUND</code> | <code>CALLBACK</code> | <code>API</code> </p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy</p> </dd> <dt>AVG_HANDLE_TIME</dt> <dd> <p>Unit: Seconds</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy</p> </dd> <dt>AVG_HOLD_TIME</dt> <dd> <p>Unit: Seconds</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy</p> </dd> <dt>AVG_INTERACTION_AND_HOLD_TIME</dt> <dd> <p>Unit: Seconds</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy</p> </dd> <dt>AVG_INTERACTION_TIME</dt> <dd> <p>Unit: Seconds</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile</p> </dd> <dt>AVG_QUEUE_ANSWER_TIME</dt> <dd> <p>Unit: Seconds</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile</p> </dd> <dt>CONTACTS_ABANDONED</dt> <dd> <p>Unit: Count</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy</p> </dd> <dt>CONTACTS_CREATED</dt> <dd> <p>Unit: Count</p> <p>Valid metric filter key: <code>INITIATION_METHOD</code> </p> <p>Valid groupings and filters: Queue, Channel, Routing Profile</p> </dd> <dt>CONTACTS_HANDLED</dt> <dd> <p>Unit: Count</p> <p>Valid metric filter key: <code>INITIATION_METHOD</code>, <code>DISCONNECT_REASON</code> </p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy</p> </dd> <dt>CONTACTS_HOLD_ABANDONS</dt> <dd> <p>Unit: Count</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy</p> </dd> <dt>CONTACTS_QUEUED</dt> <dd> <p>Unit: Count</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy</p> </dd> <dt>CONTACTS_TRANSFERRED_OUT</dt> <dd> <p>Unit: Count</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy</p> </dd> <dt>CONTACTS_TRANSFERRED_OUT_BY_AGENT</dt> <dd> <p>Unit: Count</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy</p> </dd> <dt>CONTACTS_TRANSFERRED_OUT_FROM_QUEUE</dt> <dd> <p>Unit: Count</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy</p> </dd> <dt>MAX_QUEUED_TIME</dt> <dd> <p>Unit: Seconds</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy</p> </dd> <dt>SERVICE_LEVEL</dt> <dd> <p>You can include up to 20 SERVICE_LEVEL metrics in a request.</p> <p>Unit: Percent</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile</p> <p>Threshold: For <code>ThresholdValue</code>, enter any whole number from 1 to 604800 (inclusive), in seconds. For <code>Comparison</code>, you must enter <code>LT</code> (for "Less than"). </p> </dd> <dt>SUM_CONTACTS_ANSWERED_IN_X</dt> <dd> <p>Unit: Count</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile</p> <p>Threshold: For <code>ThresholdValue</code>, enter any whole number from 1 to 604800 (inclusive), in seconds. For <code>Comparison</code>, you must enter <code>LT</code> (for "Less than"). </p> </dd> <dt>SUM_CONTACTS_ABANDONED_IN_X</dt> <dd> <p>Unit: Count</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile</p> <p>Threshold: For <code>ThresholdValue</code>, enter any whole number from 1 to 604800 (inclusive), in seconds. For <code>Comparison</code>, you must enter <code>LT</code> (for "Less than"). </p> </dd> <dt>SUM_CONTACTS_DISCONNECTED </dt> <dd> <p>Valid metric filter key: <code>DISCONNECT_REASON</code> </p> <p>Unit: Count</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile</p> </dd> <dt>SUM_RETRY_CALLBACK_ATTEMPTS</dt> <dd> <p>Unit: Count</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile</p> </dd> </dl>',
+    }),
+    NextToken: NextToken2500Schema.exactOptional().openapi({
+      description:
+        'The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.',
+    }),
+    MaxResults: MaxResult100Schema.exactOptional().openapi({
+      description: 'The maximum number of results to return per page.',
+    }),
   })
   .openapi({
     required: ['ResourceArn', 'StartTime', 'EndTime', 'Filters', 'Metrics'],
@@ -7824,32 +6379,32 @@ const GetMetricDataV2RequestSchema = z
 const SnapshotVersionSchema = z.string().openapi('SnapshotVersion')
 
 const GetTaskTemplateRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetTaskTemplateRequest' })
   .openapi('GetTaskTemplateRequest')
 
 const GetTrafficDistributionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetTrafficDistributionRequest' })
   .openapi('GetTrafficDistributionRequest')
 
 const HierarchyStructureUpdateSchema = z
   .object({
-    LevelOne: HierarchyLevelUpdateSchema.and(
-      z.any().openapi({ description: 'The update for level one.' }),
-    ).exactOptional(),
-    LevelTwo: HierarchyLevelUpdateSchema.and(
-      z.any().openapi({ description: 'The update for level two.' }),
-    ).exactOptional(),
-    LevelThree: HierarchyLevelUpdateSchema.and(
-      z.any().openapi({ description: 'The update for level three.' }),
-    ).exactOptional(),
-    LevelFour: HierarchyLevelUpdateSchema.and(
-      z.any().openapi({ description: 'The update for level four.' }),
-    ).exactOptional(),
-    LevelFive: HierarchyLevelUpdateSchema.and(
-      z.any().openapi({ description: 'The update for level five.' }),
-    ).exactOptional(),
+    LevelOne: HierarchyLevelUpdateSchema.exactOptional().openapi({
+      description: 'The update for level one.',
+    }),
+    LevelTwo: HierarchyLevelUpdateSchema.exactOptional().openapi({
+      description: 'The update for level two.',
+    }),
+    LevelThree: HierarchyLevelUpdateSchema.exactOptional().openapi({
+      description: 'The update for level three.',
+    }),
+    LevelFour: HierarchyLevelUpdateSchema.exactOptional().openapi({
+      description: 'The update for level four.',
+    }),
+    LevelFive: HierarchyLevelUpdateSchema.exactOptional().openapi({
+      description: 'The update for level five.',
+    }),
   })
   .openapi({
     description: 'Contains information about the level hierarchy to update.',
@@ -7862,100 +6417,92 @@ const LexVersionSchema = z.enum(['V1', 'V2']).openapi('LexVersion')
 const MaxResult1000Schema = z.int().min(1).max(1000).openapi('MaxResult1000')
 
 const ListAgentStatusRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListAgentStatusRequest' })
   .openapi('ListAgentStatusRequest')
 
 const MaxResult25Schema = z.int().min(1).max(25).openapi('MaxResult25')
 
 const ListApprovedOriginsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListApprovedOriginsRequest' })
   .openapi('ListApprovedOriginsRequest')
 
 const ListBotsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListBotsRequest' })
   .openapi('ListBotsRequest')
 
 const ListContactFlowModulesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListContactFlowModulesRequest' })
   .openapi('ListContactFlowModulesRequest')
 
 const ListContactFlowsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListContactFlowsRequest' })
   .openapi('ListContactFlowsRequest')
 
 const ReferenceTypesSchema = z.array(ReferenceTypeSchema).max(6).openapi('ReferenceTypes')
 
 const ListContactReferencesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListContactReferencesRequest' })
   .openapi('ListContactReferencesRequest')
 
 const ListDefaultVocabulariesRequestSchema = z
   .object({
-    LanguageCode: VocabularyLanguageCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The language code of the vocabulary entries. For a list of languages and their corresponding language codes, see <a href="https://docs.aws.amazon.com/transcribe/latest/dg/transcribe-whatis.html">What is Amazon Transcribe?</a> ',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResult100Schema.and(
-      z.any().openapi({ description: 'The maximum number of results to return per page.' }),
-    ).exactOptional(),
-    NextToken: VocabularyNextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.',
-        }),
-    ).exactOptional(),
+    LanguageCode: VocabularyLanguageCodeSchema.exactOptional().openapi({
+      description:
+        'The language code of the vocabulary entries. For a list of languages and their corresponding language codes, see <a href="https://docs.aws.amazon.com/transcribe/latest/dg/transcribe-whatis.html">What is Amazon Transcribe?</a> ',
+    }),
+    MaxResults: MaxResult100Schema.exactOptional().openapi({
+      description: 'The maximum number of results to return per page.',
+    }),
+    NextToken: VocabularyNextTokenSchema.exactOptional().openapi({
+      description:
+        'The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.',
+    }),
   })
   .openapi({ title: 'ListDefaultVocabulariesRequest', required: [] })
   .openapi('ListDefaultVocabulariesRequest')
 
 const ListHoursOfOperationsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListHoursOfOperationsRequest' })
   .openapi('ListHoursOfOperationsRequest')
 
 const MaxResult7Schema = z.int().min(1).max(7).openapi('MaxResult7')
 
 const ListInstanceAttributesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListInstanceAttributesRequest' })
   .openapi('ListInstanceAttributesRequest')
 
 const MaxResult10Schema = z.int().min(1).max(10).openapi('MaxResult10')
 
 const ListInstanceStorageConfigsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListInstanceStorageConfigsRequest' })
   .openapi('ListInstanceStorageConfigsRequest')
 
 const ListInstancesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListInstancesRequest' })
   .openapi('ListInstancesRequest')
 
 const ListIntegrationAssociationsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListIntegrationAssociationsRequest' })
   .openapi('ListIntegrationAssociationsRequest')
 
 const ListLambdaFunctionsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListLambdaFunctionsRequest' })
   .openapi('ListLambdaFunctionsRequest')
 
 const ListLexBotsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListLexBotsRequest' })
   .openapi('ListLexBotsRequest')
 
@@ -7967,7 +6514,7 @@ const PhoneNumberCountryCodesSchema = z
   .openapi('PhoneNumberCountryCodes')
 
 const ListPhoneNumbersRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListPhoneNumbersRequest' })
   .openapi('ListPhoneNumbersRequest')
 
@@ -7978,118 +6525,106 @@ const PhoneNumberPrefixSchema = z
 
 const ListPhoneNumbersV2RequestSchema = z
   .object({
-    TargetArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) for Amazon Connect instances or traffic distribution groups that phone numbers are claimed to. If <code>TargetArn</code> input is not provided, this API lists numbers claimed to all the Amazon Connect instances belonging to your account in the same Amazon Web Services Region as the request.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResult1000Schema.and(
-      z.any().openapi({ description: 'The maximum number of results to return per page.' }),
-    ).exactOptional(),
-    NextToken: LargeNextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.',
-        }),
-    ).exactOptional(),
-    PhoneNumberCountryCodes: PhoneNumberCountryCodesSchema.and(
-      z.any().openapi({ description: 'The ISO country code.' }),
-    ).exactOptional(),
-    PhoneNumberTypes: PhoneNumberTypesSchema.and(
-      z.any().openapi({ description: 'The type of phone number.' }),
-    ).exactOptional(),
-    PhoneNumberPrefix: PhoneNumberPrefixSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The prefix of the phone number. If provided, it must contain <code>+</code> as part of the country code.',
-        }),
-    ).exactOptional(),
+    TargetArn: ARNSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) for Amazon Connect instances or traffic distribution groups that phone numbers are claimed to. If <code>TargetArn</code> input is not provided, this API lists numbers claimed to all the Amazon Connect instances belonging to your account in the same Amazon Web Services Region as the request.',
+    }),
+    MaxResults: MaxResult1000Schema.exactOptional().openapi({
+      description: 'The maximum number of results to return per page.',
+    }),
+    NextToken: LargeNextTokenSchema.exactOptional().openapi({
+      description:
+        'The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.',
+    }),
+    PhoneNumberCountryCodes: PhoneNumberCountryCodesSchema.exactOptional().openapi({
+      description: 'The ISO country code.',
+    }),
+    PhoneNumberTypes: PhoneNumberTypesSchema.exactOptional().openapi({
+      description: 'The type of phone number.',
+    }),
+    PhoneNumberPrefix: PhoneNumberPrefixSchema.exactOptional().openapi({
+      description:
+        'The prefix of the phone number. If provided, it must contain <code>+</code> as part of the country code.',
+    }),
   })
   .openapi({ title: 'ListPhoneNumbersV2Request', required: [] })
   .openapi('ListPhoneNumbersV2Request')
 
 const ListPromptsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListPromptsRequest' })
   .openapi('ListPromptsRequest')
 
 const ListQueueQuickConnectsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListQueueQuickConnectsRequest' })
   .openapi('ListQueueQuickConnectsRequest')
 
 const QueueTypesSchema = z.array(QueueTypeSchema).max(2).openapi('QueueTypes')
 
 const ListQueuesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListQueuesRequest' })
   .openapi('ListQueuesRequest')
 
 const QuickConnectTypesSchema = z.array(QuickConnectTypeSchema).max(3).openapi('QuickConnectTypes')
 
 const ListQuickConnectsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListQuickConnectsRequest' })
   .openapi('ListQuickConnectsRequest')
 
 const ListRoutingProfileQueuesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListRoutingProfileQueuesRequest' })
   .openapi('ListRoutingProfileQueuesRequest')
 
 const ListRoutingProfilesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListRoutingProfilesRequest' })
   .openapi('ListRoutingProfilesRequest')
 
 const MaxResult200Schema = z.int().min(1).max(200).openapi('MaxResult200')
 
 const ListRulesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListRulesRequest' })
   .openapi('ListRulesRequest')
 
 const MaxResult2Schema = z.int().min(1).max(2).openapi('MaxResult2')
 
 const ListSecurityKeysRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListSecurityKeysRequest' })
   .openapi('ListSecurityKeysRequest')
 
 const ListSecurityProfilePermissionsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListSecurityProfilePermissionsRequest' })
   .openapi('ListSecurityProfilePermissionsRequest')
 
 const ListSecurityProfilesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListSecurityProfilesRequest' })
   .openapi('ListSecurityProfilesRequest')
 
 const ListTagsForResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListTagsForResourceRequest' })
   .openapi('ListTagsForResourceRequest')
 
 const ListTaskTemplatesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListTaskTemplatesRequest' })
   .openapi('ListTaskTemplatesRequest')
 
 const ListTrafficDistributionGroupsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListTrafficDistributionGroupsRequest' })
   .openapi('ListTrafficDistributionGroupsRequest')
 
 const ListUseCasesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'ListUseCasesRequest',
     description:
@@ -8098,77 +6633,51 @@ const ListUseCasesRequestSchema = z
   .openapi('ListUseCasesRequest')
 
 const ListUserHierarchyGroupsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListUserHierarchyGroupsRequest' })
   .openapi('ListUserHierarchyGroupsRequest')
 
 const ListUsersRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListUsersRequest' })
   .openapi('ListUsersRequest')
 
 const MonitorContactRequestSchema = z
   .object({
-    InstanceId: InstanceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the Amazon Connect instance. You can find the instanceId in the ARN of the instance.',
-        }),
-    ),
-    ContactId: ContactIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the contact.' }),
-    ),
-    UserId: AgentResourceIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the user account.' }),
-    ),
-    AllowedMonitorCapabilities: AllowedMonitorCapabilitiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specify which monitoring actions the user is allowed to take. For example, whether the user is allowed to escalate from silent monitoring to barge.',
-        }),
-    ).exactOptional(),
-    ClientToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href="https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/">Making retries safe with idempotent APIs</a>.',
-        }),
-    ).exactOptional(),
+    InstanceId: InstanceIdSchema.openapi({
+      description:
+        'The identifier of the Amazon Connect instance. You can find the instanceId in the ARN of the instance.',
+    }),
+    ContactId: ContactIdSchema.openapi({ description: 'The identifier of the contact.' }),
+    UserId: AgentResourceIdSchema.openapi({ description: 'The identifier of the user account.' }),
+    AllowedMonitorCapabilities: AllowedMonitorCapabilitiesSchema.exactOptional().openapi({
+      description:
+        'Specify which monitoring actions the user is allowed to take. For example, whether the user is allowed to escalate from silent monitoring to barge.',
+    }),
+    ClientToken: ClientTokenSchema.exactOptional().openapi({
+      description:
+        'A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href="https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/">Making retries safe with idempotent APIs</a>.',
+    }),
   })
   .openapi({ required: ['InstanceId', 'ContactId', 'UserId'], title: 'MonitorContactRequest' })
   .openapi('MonitorContactRequest')
 
 const ParticipantDetailsSchema = z
   .object({
-    DisplayName: DisplayNameSchema.and(
-      z.any().openapi({ description: 'Display name of the participant.' }),
-    ),
+    DisplayName: DisplayNameSchema.openapi({ description: 'Display name of the participant.' }),
   })
   .openapi({ required: ['DisplayName'], description: "The customer's details." })
   .openapi('ParticipantDetails')
 
 const PersistentChatSchema = z
   .object({
-    RehydrationType: RehydrationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The contactId that is used for rehydration depends on the rehydration type. RehydrationType is required for persistent chat. </p> <ul> <li> <p> <code>ENTIRE_PAST_SESSION</code>: Rehydrates a chat from the most recently terminated past chat contact of the specified past ended chat session. To use this type, provide the <code>initialContactId</code> of the past ended chat session in the <code>sourceContactId</code> field. In this type, Amazon Connect determines the most recent chat contact on the specified chat session that has ended, and uses it to start a persistent chat. </p> </li> <li> <p> <code>FROM_SEGMENT</code>: Rehydrates a chat from the past chat contact that is specified in the <code>sourceContactId</code> field. </p> </li> </ul> <p>The actual contactId used for rehydration is provided in the response of this API. </p>',
-        }),
-    ).exactOptional(),
-    SourceContactId: ContactIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The contactId from which a persistent chat session must be started.',
-        }),
-    ).exactOptional(),
+    RehydrationType: RehydrationTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The contactId that is used for rehydration depends on the rehydration type. RehydrationType is required for persistent chat. </p> <ul> <li> <p> <code>ENTIRE_PAST_SESSION</code>: Rehydrates a chat from the most recently terminated past chat contact of the specified past ended chat session. To use this type, provide the <code>initialContactId</code> of the past ended chat session in the <code>sourceContactId</code> field. In this type, Amazon Connect determines the most recent chat contact on the specified chat session that has ended, and uses it to start a persistent chat. </p> </li> <li> <p> <code>FROM_SEGMENT</code>: Rehydrates a chat from the past chat contact that is specified in the <code>sourceContactId</code> field. </p> </li> </ul> <p>The actual contactId used for rehydration is provided in the response of this API. </p>',
+    }),
+    SourceContactId: ContactIdSchema.exactOptional().openapi({
+      description: 'The contactId from which a persistent chat session must be started.',
+    }),
   })
   .openapi({
     description:
@@ -8179,9 +6688,9 @@ const PersistentChatSchema = z
 
 const PutUserStatusRequestSchema = z
   .object({
-    AgentStatusId: AgentStatusIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the agent status.' }),
-    ),
+    AgentStatusId: AgentStatusIdSchema.openapi({
+      description: 'The identifier of the agent status.',
+    }),
   })
   .openapi({ required: ['AgentStatusId'], title: 'PutUserStatusRequest' })
   .openapi('PutUserStatusRequest')
@@ -8192,61 +6701,38 @@ const QueueSearchFilterSchema = z
   .openapi('QueueSearchFilter')
 
 const ReleasePhoneNumberRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ReleasePhoneNumberRequest' })
   .openapi('ReleasePhoneNumberRequest')
 
 const ReplicateInstanceRequestSchema = z
   .object({
-    ReplicaRegion: AwsRegionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services Region where to replicate the Amazon Connect instance.',
-        }),
-    ),
-    ClientToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href="https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/">Making retries safe with idempotent APIs</a>.',
-        }),
-    ).exactOptional(),
-    ReplicaAlias: DirectoryAliasSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The alias for the replicated instance. The <code>ReplicaAlias</code> must be unique.',
-        }),
-    ),
+    ReplicaRegion: AwsRegionSchema.openapi({
+      description: 'The Amazon Web Services Region where to replicate the Amazon Connect instance.',
+    }),
+    ClientToken: ClientTokenSchema.exactOptional().openapi({
+      description:
+        'A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href="https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/">Making retries safe with idempotent APIs</a>.',
+    }),
+    ReplicaAlias: DirectoryAliasSchema.openapi({
+      description:
+        'The alias for the replicated instance. The <code>ReplicaAlias</code> must be unique.',
+    }),
   })
   .openapi({ required: ['ReplicaRegion', 'ReplicaAlias'], title: 'ReplicateInstanceRequest' })
   .openapi('ReplicateInstanceRequest')
 
 const ResumeContactRecordingRequestSchema = z
   .object({
-    InstanceId: InstanceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the Amazon Connect instance. You can <a href="https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.',
-        }),
-    ),
-    ContactId: ContactIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the contact.' }),
-    ),
-    InitialContactId: ContactIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the contact. This is the identifier of the contact associated with the first interaction with the contact center.',
-        }),
-    ),
+    InstanceId: InstanceIdSchema.openapi({
+      description:
+        'The identifier of the Amazon Connect instance. You can <a href="https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.',
+    }),
+    ContactId: ContactIdSchema.openapi({ description: 'The identifier of the contact.' }),
+    InitialContactId: ContactIdSchema.openapi({
+      description:
+        'The identifier of the contact. This is the identifier of the contact associated with the first interaction with the contact center.',
+    }),
   })
   .openapi({
     required: ['InstanceId', 'ContactId', 'InitialContactId'],
@@ -8261,39 +6747,25 @@ const RoutingProfileSearchFilterSchema = z
 
 const SearchAvailablePhoneNumbersRequestSchema = z
   .object({
-    TargetArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) for Amazon Connect instances or traffic distribution groups that phone numbers are claimed to.',
-        }),
-    ),
-    PhoneNumberCountryCode: PhoneNumberCountryCodeSchema.and(
-      z.any().openapi({ description: 'The ISO country code.' }),
-    ),
-    PhoneNumberType: PhoneNumberTypeSchema.and(
-      z.any().openapi({ description: 'The type of phone number.' }),
-    ),
-    PhoneNumberPrefix: PhoneNumberPrefixSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The prefix of the phone number. If provided, it must contain <code>+</code> as part of the country code.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResult10Schema.and(
-      z.any().openapi({ description: 'The maximum number of results to return per page.' }),
-    ).exactOptional(),
-    NextToken: LargeNextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.',
-        }),
-    ).exactOptional(),
+    TargetArn: ARNSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) for Amazon Connect instances or traffic distribution groups that phone numbers are claimed to.',
+    }),
+    PhoneNumberCountryCode: PhoneNumberCountryCodeSchema.openapi({
+      description: 'The ISO country code.',
+    }),
+    PhoneNumberType: PhoneNumberTypeSchema.openapi({ description: 'The type of phone number.' }),
+    PhoneNumberPrefix: PhoneNumberPrefixSchema.exactOptional().openapi({
+      description:
+        'The prefix of the phone number. If provided, it must contain <code>+</code> as part of the country code.',
+    }),
+    MaxResults: MaxResult10Schema.exactOptional().openapi({
+      description: 'The maximum number of results to return per page.',
+    }),
+    NextToken: LargeNextTokenSchema.exactOptional().openapi({
+      description:
+        'The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.',
+    }),
   })
   .openapi({
     required: ['TargetArn', 'PhoneNumberCountryCode', 'PhoneNumberType'],
@@ -8303,72 +6775,48 @@ const SearchAvailablePhoneNumbersRequestSchema = z
 
 const SearchQueuesRequestSchema = z
   .object({
-    InstanceId: InstanceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the Amazon Connect instance. You can <a href="https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.',
-        }),
-    ),
-    NextToken: NextToken2500Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResult100Schema.and(
-      z.any().openapi({ description: 'The maximum number of results to return per page.' }),
-    ).exactOptional(),
-    SearchFilter: QueueSearchFilterSchema.and(
-      z.any().openapi({ description: 'Filters to be applied to search results.' }),
-    ).exactOptional(),
-    SearchCriteria: QueueSearchCriteriaSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The search criteria to be used to return queues.</p> <note> <p>The <code>name</code> and <code>description</code> fields support "contains" queries with a minimum of 2 characters and a maximum of 25 characters. Any queries with character lengths outside of this range will throw invalid results. </p> </note>',
-        }),
-    ).exactOptional(),
+    InstanceId: InstanceIdSchema.openapi({
+      description:
+        'The identifier of the Amazon Connect instance. You can <a href="https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.',
+    }),
+    NextToken: NextToken2500Schema.exactOptional().openapi({
+      description:
+        'The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.',
+    }),
+    MaxResults: MaxResult100Schema.exactOptional().openapi({
+      description: 'The maximum number of results to return per page.',
+    }),
+    SearchFilter: QueueSearchFilterSchema.exactOptional().openapi({
+      description: 'Filters to be applied to search results.',
+    }),
+    SearchCriteria: QueueSearchCriteriaSchema.exactOptional().openapi({
+      description:
+        '<p>The search criteria to be used to return queues.</p> <note> <p>The <code>name</code> and <code>description</code> fields support "contains" queries with a minimum of 2 characters and a maximum of 25 characters. Any queries with character lengths outside of this range will throw invalid results. </p> </note>',
+    }),
   })
   .openapi({ required: ['InstanceId'], title: 'SearchQueuesRequest' })
   .openapi('SearchQueuesRequest')
 
 const SearchRoutingProfilesRequestSchema = z
   .object({
-    InstanceId: InstanceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the Amazon Connect instance. You can <a href="https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.',
-        }),
-    ),
-    NextToken: NextToken2500Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResult100Schema.and(
-      z.any().openapi({ description: 'The maximum number of results to return per page.' }),
-    ).exactOptional(),
-    SearchFilter: RoutingProfileSearchFilterSchema.and(
-      z.any().openapi({ description: 'Filters to be applied to search results.' }),
-    ).exactOptional(),
-    SearchCriteria: RoutingProfileSearchCriteriaSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The search criteria to be used to return routing profiles.</p> <note> <p>The <code>name</code> and <code>description</code> fields support "contains" queries with a minimum of 2 characters and a maximum of 25 characters. Any queries with character lengths outside of this range will throw invalid results. </p> </note>',
-        }),
-    ).exactOptional(),
+    InstanceId: InstanceIdSchema.openapi({
+      description:
+        'The identifier of the Amazon Connect instance. You can <a href="https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.',
+    }),
+    NextToken: NextToken2500Schema.exactOptional().openapi({
+      description:
+        'The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.',
+    }),
+    MaxResults: MaxResult100Schema.exactOptional().openapi({
+      description: 'The maximum number of results to return per page.',
+    }),
+    SearchFilter: RoutingProfileSearchFilterSchema.exactOptional().openapi({
+      description: 'Filters to be applied to search results.',
+    }),
+    SearchCriteria: RoutingProfileSearchCriteriaSchema.exactOptional().openapi({
+      description:
+        '<p>The search criteria to be used to return routing profiles.</p> <note> <p>The <code>name</code> and <code>description</code> fields support "contains" queries with a minimum of 2 characters and a maximum of 25 characters. Any queries with character lengths outside of this range will throw invalid results. </p> </note>',
+    }),
   })
   .openapi({ required: ['InstanceId'], title: 'SearchRoutingProfilesRequest' })
   .openapi('SearchRoutingProfilesRequest')
@@ -8380,36 +6828,24 @@ const SecurityProfilesSearchFilterSchema = z
 
 const SearchSecurityProfilesRequestSchema = z
   .object({
-    InstanceId: InstanceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the Amazon Connect instance. You can <a href="https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.',
-        }),
-    ),
-    NextToken: NextToken2500Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResult100Schema.and(
-      z.any().openapi({ description: 'The maximum number of results to return per page.' }),
-    ).exactOptional(),
-    SearchCriteria: SecurityProfileSearchCriteriaSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The search criteria to be used to return security profiles. </p> <note> <p>The <code>name</code> field support "contains" queries with a minimum of 2 characters and maximum of 25 characters. Any queries with character lengths outside of this range will throw invalid results.</p> </note> <note> <p>The currently supported value for <code>FieldName</code>: <code>name</code> </p> </note>',
-        }),
-    ).exactOptional(),
-    SearchFilter: SecurityProfilesSearchFilterSchema.and(
-      z.any().openapi({ description: 'Filters to be applied to search results.' }),
-    ).exactOptional(),
+    InstanceId: InstanceIdSchema.openapi({
+      description:
+        'The identifier of the Amazon Connect instance. You can <a href="https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.',
+    }),
+    NextToken: NextToken2500Schema.exactOptional().openapi({
+      description:
+        'The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.',
+    }),
+    MaxResults: MaxResult100Schema.exactOptional().openapi({
+      description: 'The maximum number of results to return per page.',
+    }),
+    SearchCriteria: SecurityProfileSearchCriteriaSchema.exactOptional().openapi({
+      description:
+        '<p>The search criteria to be used to return security profiles. </p> <note> <p>The <code>name</code> field support "contains" queries with a minimum of 2 characters and maximum of 25 characters. Any queries with character lengths outside of this range will throw invalid results.</p> </note> <note> <p>The currently supported value for <code>FieldName</code>: <code>name</code> </p> </note>',
+    }),
+    SearchFilter: SecurityProfilesSearchFilterSchema.exactOptional().openapi({
+      description: 'Filters to be applied to search results.',
+    }),
   })
   .openapi({ required: ['InstanceId'], title: 'SearchSecurityProfilesRequest' })
   .openapi('SearchSecurityProfilesRequest')
@@ -8421,28 +6857,20 @@ const UserSearchFilterSchema = z
 
 const SearchUsersRequestSchema = z
   .object({
-    InstanceId: InstanceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the Amazon Connect instance. You can <a href="https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.',
-        }),
-    ).exactOptional(),
-    NextToken: NextToken2500Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResult100Schema.and(
-      z.any().openapi({ description: 'The maximum number of results to return per page.' }),
-    ).exactOptional(),
-    SearchFilter: UserSearchFilterSchema.and(
-      z.any().openapi({ description: 'Filters to be applied to search results.' }),
-    ).exactOptional(),
+    InstanceId: InstanceIdSchema.exactOptional().openapi({
+      description:
+        'The identifier of the Amazon Connect instance. You can <a href="https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.',
+    }),
+    NextToken: NextToken2500Schema.exactOptional().openapi({
+      description:
+        'The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.',
+    }),
+    MaxResults: MaxResult100Schema.exactOptional().openapi({
+      description: 'The maximum number of results to return per page.',
+    }),
+    SearchFilter: UserSearchFilterSchema.exactOptional().openapi({
+      description: 'Filters to be applied to search results.',
+    }),
     SearchCriteria: UserSearchCriteriaSchema.exactOptional(),
   })
   .openapi({ title: 'SearchUsersRequest', required: [] })
@@ -8450,31 +6878,23 @@ const SearchUsersRequestSchema = z
 
 const SearchVocabulariesRequestSchema = z
   .object({
-    MaxResults: MaxResult100Schema.and(
-      z.any().openapi({ description: 'The maximum number of results to return per page.' }),
-    ).exactOptional(),
-    NextToken: VocabularyNextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.',
-        }),
-    ).exactOptional(),
-    State: VocabularyStateSchema.and(
-      z.any().openapi({ description: 'The current state of the custom vocabulary.' }),
-    ).exactOptional(),
-    NameStartsWith: VocabularyNameSchema.and(
-      z.any().openapi({ description: 'The starting pattern of the name of the vocabulary.' }),
-    ).exactOptional(),
-    LanguageCode: VocabularyLanguageCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The language code of the vocabulary entries. For a list of languages and their corresponding language codes, see <a href="https://docs.aws.amazon.com/transcribe/latest/dg/transcribe-whatis.html">What is Amazon Transcribe?</a> ',
-        }),
-    ).exactOptional(),
+    MaxResults: MaxResult100Schema.exactOptional().openapi({
+      description: 'The maximum number of results to return per page.',
+    }),
+    NextToken: VocabularyNextTokenSchema.exactOptional().openapi({
+      description:
+        'The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.',
+    }),
+    State: VocabularyStateSchema.exactOptional().openapi({
+      description: 'The current state of the custom vocabulary.',
+    }),
+    NameStartsWith: VocabularyNameSchema.exactOptional().openapi({
+      description: 'The starting pattern of the name of the vocabulary.',
+    }),
+    LanguageCode: VocabularyLanguageCodeSchema.exactOptional().openapi({
+      description:
+        'The language code of the vocabulary entries. For a list of languages and their corresponding language codes, see <a href="https://docs.aws.amazon.com/transcribe/latest/dg/transcribe-whatis.html">What is Amazon Transcribe?</a> ',
+    }),
   })
   .openapi({ title: 'SearchVocabulariesRequest', required: [] })
   .openapi('SearchVocabulariesRequest')
@@ -8491,76 +6911,44 @@ const SupportedMessagingContentTypesSchema = z
 
 const StartChatContactRequestSchema = z
   .object({
-    InstanceId: InstanceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the Amazon Connect instance. You can <a href="https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.',
-        }),
-    ),
-    ContactFlowId: ContactFlowIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The identifier of the flow for initiating the chat. To see the ContactFlowId in the Amazon Connect console user interface, on the navigation menu go to <b>Routing</b>, <b>Contact Flows</b>. Choose the flow. On the flow page, under the name of the flow, choose <b>Show additional flow information</b>. The ContactFlowId is the last part of the ARN, shown here in bold: </p> <p>arn:aws:connect:us-west-2:xxxxxxxxxxxx:instance/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/contact-flow/<b>846ec553-a005-41c0-8341-xxxxxxxxxxxx</b> </p>',
-        }),
-    ),
-    Attributes: AttributesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A custom key-value pair using an attribute map. The attributes are standard Amazon Connect attributes. They can be accessed in flows just like any other contact attributes. </p> <p>There can be up to 32,768 UTF-8 bytes across all key-value pairs per contact. Attribute keys can include only alphanumeric, dash, and underscore characters.</p>',
-        }),
-    ).exactOptional(),
-    ParticipantDetails: ParticipantDetailsSchema.and(
-      z.any().openapi({ description: 'Information identifying the participant.' }),
-    ),
-    InitialMessage: ChatMessageSchema.and(
-      z.any().openapi({ description: 'The initial message to be sent to the newly created chat.' }),
-    ).exactOptional(),
-    ClientToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href="https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/">Making retries safe with idempotent APIs</a>.',
-        }),
-    ).exactOptional(),
-    ChatDurationInMinutes: ChatDurationInMinutesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The total duration of the newly started chat session. If not specified, the chat session duration defaults to 25 hour. The minimum configurable time is 60 minutes. The maximum configurable time is 10,080 minutes (7 days).',
-        }),
-    ).exactOptional(),
-    SupportedMessagingContentTypes: SupportedMessagingContentTypesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The supported chat message content types. Supported types are <code>text/plain</code>, <code>text/markdown</code>, <code>application/json</code>, <code>application/vnd.amazonaws.connect.message.interactive</code>, and <code>application/vnd.amazonaws.connect.message.interactive.response</code>. </p> <p>Content types must always contain <code>text/plain</code>. You can then put any other supported type in the list. For example, all the following lists are valid because they contain <code>text/plain</code>: <code>[text/plain, text/markdown, application/json]</code>, <code>[text/markdown, text/plain]</code>, <code>[text/plain, application/json, application/vnd.amazonaws.connect.message.interactive.response]</code>. </p> <note> <p>The type <code>application/vnd.amazonaws.connect.message.interactive</code> is required to use the <a href="https://docs.aws.amazon.com/connect/latest/adminguide/show-view-block.html">Show view</a> flow block.</p> </note>',
-        }),
-    ).exactOptional(),
-    PersistentChat: PersistentChatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Enable persistent chats. For more information about enabling persistent chat, and for example use cases and how to configure for them, see <a href="https://docs.aws.amazon.com/connect/latest/adminguide/chat-persistence.html">Enable persistent chat</a>.',
-        }),
-    ).exactOptional(),
-    RelatedContactId: ContactIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The unique identifier for an Amazon Connect contact. This identifier is related to the chat starting.</p> <note> <p>You cannot provide data for both RelatedContactId and PersistentChat. </p> </note>',
-        }),
-    ).exactOptional(),
+    InstanceId: InstanceIdSchema.openapi({
+      description:
+        'The identifier of the Amazon Connect instance. You can <a href="https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.',
+    }),
+    ContactFlowId: ContactFlowIdSchema.openapi({
+      description:
+        '<p>The identifier of the flow for initiating the chat. To see the ContactFlowId in the Amazon Connect console user interface, on the navigation menu go to <b>Routing</b>, <b>Contact Flows</b>. Choose the flow. On the flow page, under the name of the flow, choose <b>Show additional flow information</b>. The ContactFlowId is the last part of the ARN, shown here in bold: </p> <p>arn:aws:connect:us-west-2:xxxxxxxxxxxx:instance/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/contact-flow/<b>846ec553-a005-41c0-8341-xxxxxxxxxxxx</b> </p>',
+    }),
+    Attributes: AttributesSchema.exactOptional().openapi({
+      description:
+        '<p>A custom key-value pair using an attribute map. The attributes are standard Amazon Connect attributes. They can be accessed in flows just like any other contact attributes. </p> <p>There can be up to 32,768 UTF-8 bytes across all key-value pairs per contact. Attribute keys can include only alphanumeric, dash, and underscore characters.</p>',
+    }),
+    ParticipantDetails: ParticipantDetailsSchema.openapi({
+      description: 'Information identifying the participant.',
+    }),
+    InitialMessage: ChatMessageSchema.exactOptional().openapi({
+      description: 'The initial message to be sent to the newly created chat.',
+    }),
+    ClientToken: ClientTokenSchema.exactOptional().openapi({
+      description:
+        'A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href="https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/">Making retries safe with idempotent APIs</a>.',
+    }),
+    ChatDurationInMinutes: ChatDurationInMinutesSchema.exactOptional().openapi({
+      description:
+        'The total duration of the newly started chat session. If not specified, the chat session duration defaults to 25 hour. The minimum configurable time is 60 minutes. The maximum configurable time is 10,080 minutes (7 days).',
+    }),
+    SupportedMessagingContentTypes: SupportedMessagingContentTypesSchema.exactOptional().openapi({
+      description:
+        '<p>The supported chat message content types. Supported types are <code>text/plain</code>, <code>text/markdown</code>, <code>application/json</code>, <code>application/vnd.amazonaws.connect.message.interactive</code>, and <code>application/vnd.amazonaws.connect.message.interactive.response</code>. </p> <p>Content types must always contain <code>text/plain</code>. You can then put any other supported type in the list. For example, all the following lists are valid because they contain <code>text/plain</code>: <code>[text/plain, text/markdown, application/json]</code>, <code>[text/markdown, text/plain]</code>, <code>[text/plain, application/json, application/vnd.amazonaws.connect.message.interactive.response]</code>. </p> <note> <p>The type <code>application/vnd.amazonaws.connect.message.interactive</code> is required to use the <a href="https://docs.aws.amazon.com/connect/latest/adminguide/show-view-block.html">Show view</a> flow block.</p> </note>',
+    }),
+    PersistentChat: PersistentChatSchema.exactOptional().openapi({
+      description:
+        'Enable persistent chats. For more information about enabling persistent chat, and for example use cases and how to configure for them, see <a href="https://docs.aws.amazon.com/connect/latest/adminguide/chat-persistence.html">Enable persistent chat</a>.',
+    }),
+    RelatedContactId: ContactIdSchema.exactOptional().openapi({
+      description:
+        '<p>The unique identifier for an Amazon Connect contact. This identifier is related to the chat starting.</p> <note> <p>You cannot provide data for both RelatedContactId and PersistentChat. </p> </note>',
+    }),
   })
   .openapi({
     required: ['InstanceId', 'ContactFlowId', 'ParticipantDetails'],
@@ -8570,9 +6958,9 @@ const StartChatContactRequestSchema = z
 
 const VoiceRecordingConfigurationSchema = z
   .object({
-    VoiceRecordingTrack: VoiceRecordingTrackSchema.and(
-      z.any().openapi({ description: 'Identifies which track is being recorded.' }),
-    ).exactOptional(),
+    VoiceRecordingTrack: VoiceRecordingTrackSchema.exactOptional().openapi({
+      description: 'Identifies which track is being recorded.',
+    }),
   })
   .openapi({
     description: 'Contains information about the recording configuration settings.',
@@ -8582,28 +6970,18 @@ const VoiceRecordingConfigurationSchema = z
 
 const StartContactRecordingRequestSchema = z
   .object({
-    InstanceId: InstanceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the Amazon Connect instance. You can <a href="https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.',
-        }),
-    ),
-    ContactId: ContactIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the contact.' }),
-    ),
-    InitialContactId: ContactIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the contact. This is the identifier of the contact associated with the first interaction with the contact center.',
-        }),
-    ),
-    VoiceRecordingConfiguration: VoiceRecordingConfigurationSchema.and(
-      z.any().openapi({ description: 'The person being recorded.' }),
-    ),
+    InstanceId: InstanceIdSchema.openapi({
+      description:
+        'The identifier of the Amazon Connect instance. You can <a href="https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.',
+    }),
+    ContactId: ContactIdSchema.openapi({ description: 'The identifier of the contact.' }),
+    InitialContactId: ContactIdSchema.openapi({
+      description:
+        'The identifier of the contact. This is the identifier of the contact associated with the first interaction with the contact center.',
+    }),
+    VoiceRecordingConfiguration: VoiceRecordingConfigurationSchema.openapi({
+      description: 'The person being recorded.',
+    }),
   })
   .openapi({
     required: ['InstanceId', 'ContactId', 'InitialContactId', 'VoiceRecordingConfiguration'],
@@ -8613,37 +6991,21 @@ const StartContactRecordingRequestSchema = z
 
 const StartContactStreamingRequestSchema = z
   .object({
-    InstanceId: InstanceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the Amazon Connect instance. You can <a href="https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.',
-        }),
-    ),
-    ContactId: ContactIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the contact. This is the identifier of the contact associated with the first interaction with the contact center.',
-        }),
-    ),
-    ChatStreamingConfiguration: ChatStreamingConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The streaming configuration, such as the Amazon SNS streaming endpoint.',
-        }),
-    ),
-    ClientToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href="https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/">Making retries safe with idempotent APIs</a>.',
-        }),
-    ),
+    InstanceId: InstanceIdSchema.openapi({
+      description:
+        'The identifier of the Amazon Connect instance. You can <a href="https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.',
+    }),
+    ContactId: ContactIdSchema.openapi({
+      description:
+        'The identifier of the contact. This is the identifier of the contact associated with the first interaction with the contact center.',
+    }),
+    ChatStreamingConfiguration: ChatStreamingConfigurationSchema.openapi({
+      description: 'The streaming configuration, such as the Amazon SNS streaming endpoint.',
+    }),
+    ClientToken: ClientTokenSchema.openapi({
+      description:
+        'A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href="https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/">Making retries safe with idempotent APIs</a>.',
+    }),
   })
   .openapi({
     required: ['InstanceId', 'ContactId', 'ChatStreamingConfiguration', 'ClientToken'],
@@ -8655,75 +7017,43 @@ const TrafficTypeSchema = z.enum(['GENERAL', 'CAMPAIGN']).openapi('TrafficType')
 
 const StartOutboundVoiceContactRequestSchema = z
   .object({
-    DestinationPhoneNumber: PhoneNumberSchema.and(
-      z.any().openapi({ description: 'The phone number of the customer, in E.164 format.' }),
-    ),
-    ContactFlowId: ContactFlowIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The identifier of the flow for the outbound call. To see the ContactFlowId in the Amazon Connect console user interface, on the navigation menu go to <b>Routing</b>, <b>Contact Flows</b>. Choose the flow. On the flow page, under the name of the flow, choose <b>Show additional flow information</b>. The ContactFlowId is the last part of the ARN, shown here in bold: </p> <p>arn:aws:connect:us-west-2:xxxxxxxxxxxx:instance/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/contact-flow/<b>846ec553-a005-41c0-8341-xxxxxxxxxxxx</b> </p>',
-        }),
-    ),
-    InstanceId: InstanceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the Amazon Connect instance. You can <a href="https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.',
-        }),
-    ),
-    ClientToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href="https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/">Making retries safe with idempotent APIs</a>. The token is valid for 7 days after creation. If a contact is already started, the contact ID is returned. ',
-        }),
-    ).exactOptional(),
-    SourcePhoneNumber: PhoneNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The phone number associated with the Amazon Connect instance, in E.164 format. If you do not specify a source phone number, you must specify a queue.',
-        }),
-    ).exactOptional(),
-    QueueId: QueueIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The queue for the call. If you specify a queue, the phone displayed for caller ID is the phone number specified in the queue. If you do not specify a queue, the queue defined in the flow is used. If you do not specify a queue, you must specify a source phone number.',
-        }),
-    ).exactOptional(),
-    Attributes: AttributesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A custom key-value pair using an attribute map. The attributes are standard Amazon Connect attributes, and can be accessed in flows just like any other contact attributes.</p> <p>There can be up to 32,768 UTF-8 bytes across all key-value pairs per contact. Attribute keys can include only alphanumeric, dash, and underscore characters.</p>',
-        }),
-    ).exactOptional(),
-    AnswerMachineDetectionConfig: AnswerMachineDetectionConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Configuration of the answering machine detection for this outbound call. ',
-        }),
-    ).exactOptional(),
-    CampaignId: CampaignIdSchema.and(
-      z.any().openapi({ description: 'The campaign identifier of the outbound communication.' }),
-    ).exactOptional(),
-    TrafficType: TrafficTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Denotes the class of traffic. Calls with different traffic types are handled differently by Amazon Connect. The default value is <code>GENERAL</code>. Use <code>CAMPAIGN</code> if <code>EnableAnswerMachineDetection</code> is set to <code>true</code>. For all other cases, use <code>GENERAL</code>. ',
-        }),
-    ).exactOptional(),
+    DestinationPhoneNumber: PhoneNumberSchema.openapi({
+      description: 'The phone number of the customer, in E.164 format.',
+    }),
+    ContactFlowId: ContactFlowIdSchema.openapi({
+      description:
+        '<p>The identifier of the flow for the outbound call. To see the ContactFlowId in the Amazon Connect console user interface, on the navigation menu go to <b>Routing</b>, <b>Contact Flows</b>. Choose the flow. On the flow page, under the name of the flow, choose <b>Show additional flow information</b>. The ContactFlowId is the last part of the ARN, shown here in bold: </p> <p>arn:aws:connect:us-west-2:xxxxxxxxxxxx:instance/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/contact-flow/<b>846ec553-a005-41c0-8341-xxxxxxxxxxxx</b> </p>',
+    }),
+    InstanceId: InstanceIdSchema.openapi({
+      description:
+        'The identifier of the Amazon Connect instance. You can <a href="https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.',
+    }),
+    ClientToken: ClientTokenSchema.exactOptional().openapi({
+      description:
+        'A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href="https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/">Making retries safe with idempotent APIs</a>. The token is valid for 7 days after creation. If a contact is already started, the contact ID is returned. ',
+    }),
+    SourcePhoneNumber: PhoneNumberSchema.exactOptional().openapi({
+      description:
+        'The phone number associated with the Amazon Connect instance, in E.164 format. If you do not specify a source phone number, you must specify a queue.',
+    }),
+    QueueId: QueueIdSchema.exactOptional().openapi({
+      description:
+        'The queue for the call. If you specify a queue, the phone displayed for caller ID is the phone number specified in the queue. If you do not specify a queue, the queue defined in the flow is used. If you do not specify a queue, you must specify a source phone number.',
+    }),
+    Attributes: AttributesSchema.exactOptional().openapi({
+      description:
+        '<p>A custom key-value pair using an attribute map. The attributes are standard Amazon Connect attributes, and can be accessed in flows just like any other contact attributes.</p> <p>There can be up to 32,768 UTF-8 bytes across all key-value pairs per contact. Attribute keys can include only alphanumeric, dash, and underscore characters.</p>',
+    }),
+    AnswerMachineDetectionConfig: AnswerMachineDetectionConfigSchema.exactOptional().openapi({
+      description: 'Configuration of the answering machine detection for this outbound call. ',
+    }),
+    CampaignId: CampaignIdSchema.exactOptional().openapi({
+      description: 'The campaign identifier of the outbound communication.',
+    }),
+    TrafficType: TrafficTypeSchema.exactOptional().openapi({
+      description:
+        'Denotes the class of traffic. Calls with different traffic types are handled differently by Amazon Connect. The default value is <code>GENERAL</code>. Use <code>CAMPAIGN</code> if <code>EnableAnswerMachineDetection</code> is set to <code>true</code>. For all other cases, use <code>GENERAL</code>. ',
+    }),
   })
   .openapi({
     required: ['DestinationPhoneNumber', 'ContactFlowId', 'InstanceId'],
@@ -8733,114 +7063,65 @@ const StartOutboundVoiceContactRequestSchema = z
 
 const StartTaskContactRequestSchema = z
   .object({
-    InstanceId: InstanceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the Amazon Connect instance. You can <a href="https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.',
-        }),
-    ),
-    PreviousContactId: ContactIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The identifier of the previous chat, voice, or task contact. ' }),
-    ).exactOptional(),
-    ContactFlowId: ContactFlowIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The identifier of the flow for initiating the tasks. To see the ContactFlowId in the Amazon Connect console user interface, on the navigation menu go to <b>Routing</b>, <b>Contact Flows</b>. Choose the flow. On the flow page, under the name of the flow, choose <b>Show additional flow information</b>. The ContactFlowId is the last part of the ARN, shown here in bold: </p> <p>arn:aws:connect:us-west-2:xxxxxxxxxxxx:instance/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/contact-flow/<b>846ec553-a005-41c0-8341-xxxxxxxxxxxx</b> </p>',
-        }),
-    ).exactOptional(),
-    Attributes: AttributesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A custom key-value pair using an attribute map. The attributes are standard Amazon Connect attributes, and can be accessed in flows just like any other contact attributes.</p> <p>There can be up to 32,768 UTF-8 bytes across all key-value pairs per contact. Attribute keys can include only alphanumeric, dash, and underscore characters.</p>',
-        }),
-    ).exactOptional(),
-    Name: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of a task that is shown to an agent in the Contact Control Panel (CCP).',
-        }),
-    ),
-    References: ContactReferencesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A formatted URL that is shown to an agent in the Contact Control Panel (CCP).',
-        }),
-    ).exactOptional(),
-    Description: DescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A description of the task that is shown to an agent in the Contact Control Panel (CCP).',
-        }),
-    ).exactOptional(),
-    ClientToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href="https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/">Making retries safe with idempotent APIs</a>.',
-        }),
-    ).exactOptional(),
-    ScheduledTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timestamp, in Unix Epoch seconds format, at which to start running the inbound flow. The scheduled time cannot be in the past. It must be within up to 6 days in future. ',
-        }),
-    ).exactOptional(),
-    TaskTemplateId: TaskTemplateIdSchema.and(
-      z.any().openapi({ description: 'A unique identifier for the task template.' }),
-    ).exactOptional(),
-    QuickConnectId: QuickConnectIdSchema.and(
-      z.any().openapi({ description: 'The identifier for the quick connect.' }),
-    ).exactOptional(),
-    RelatedContactId: ContactIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The contactId that is <a href="https://docs.aws.amazon.com/connect/latest/adminguide/tasks.html#linked-tasks">related</a> to this contact.',
-        }),
-    ).exactOptional(),
+    InstanceId: InstanceIdSchema.openapi({
+      description:
+        'The identifier of the Amazon Connect instance. You can <a href="https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.',
+    }),
+    PreviousContactId: ContactIdSchema.exactOptional().openapi({
+      description: 'The identifier of the previous chat, voice, or task contact. ',
+    }),
+    ContactFlowId: ContactFlowIdSchema.exactOptional().openapi({
+      description:
+        '<p>The identifier of the flow for initiating the tasks. To see the ContactFlowId in the Amazon Connect console user interface, on the navigation menu go to <b>Routing</b>, <b>Contact Flows</b>. Choose the flow. On the flow page, under the name of the flow, choose <b>Show additional flow information</b>. The ContactFlowId is the last part of the ARN, shown here in bold: </p> <p>arn:aws:connect:us-west-2:xxxxxxxxxxxx:instance/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/contact-flow/<b>846ec553-a005-41c0-8341-xxxxxxxxxxxx</b> </p>',
+    }),
+    Attributes: AttributesSchema.exactOptional().openapi({
+      description:
+        '<p>A custom key-value pair using an attribute map. The attributes are standard Amazon Connect attributes, and can be accessed in flows just like any other contact attributes.</p> <p>There can be up to 32,768 UTF-8 bytes across all key-value pairs per contact. Attribute keys can include only alphanumeric, dash, and underscore characters.</p>',
+    }),
+    Name: NameSchema.openapi({
+      description:
+        'The name of a task that is shown to an agent in the Contact Control Panel (CCP).',
+    }),
+    References: ContactReferencesSchema.exactOptional().openapi({
+      description: 'A formatted URL that is shown to an agent in the Contact Control Panel (CCP).',
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description:
+        'A description of the task that is shown to an agent in the Contact Control Panel (CCP).',
+    }),
+    ClientToken: ClientTokenSchema.exactOptional().openapi({
+      description:
+        'A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href="https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/">Making retries safe with idempotent APIs</a>.',
+    }),
+    ScheduledTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'The timestamp, in Unix Epoch seconds format, at which to start running the inbound flow. The scheduled time cannot be in the past. It must be within up to 6 days in future. ',
+    }),
+    TaskTemplateId: TaskTemplateIdSchema.exactOptional().openapi({
+      description: 'A unique identifier for the task template.',
+    }),
+    QuickConnectId: QuickConnectIdSchema.exactOptional().openapi({
+      description: 'The identifier for the quick connect.',
+    }),
+    RelatedContactId: ContactIdSchema.exactOptional().openapi({
+      description:
+        'The contactId that is <a href="https://docs.aws.amazon.com/connect/latest/adminguide/tasks.html#linked-tasks">related</a> to this contact.',
+    }),
   })
   .openapi({ required: ['InstanceId', 'Name'], title: 'StartTaskContactRequest' })
   .openapi('StartTaskContactRequest')
 
 const StopContactRecordingRequestSchema = z
   .object({
-    InstanceId: InstanceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the Amazon Connect instance. You can <a href="https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.',
-        }),
-    ),
-    ContactId: ContactIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the contact.' }),
-    ),
-    InitialContactId: ContactIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the contact. This is the identifier of the contact associated with the first interaction with the contact center.',
-        }),
-    ),
+    InstanceId: InstanceIdSchema.openapi({
+      description:
+        'The identifier of the Amazon Connect instance. You can <a href="https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.',
+    }),
+    ContactId: ContactIdSchema.openapi({ description: 'The identifier of the contact.' }),
+    InitialContactId: ContactIdSchema.openapi({
+      description:
+        'The identifier of the contact. This is the identifier of the contact associated with the first interaction with the contact center.',
+    }),
   })
   .openapi({
     required: ['InstanceId', 'ContactId', 'InitialContactId'],
@@ -8850,40 +7131,28 @@ const StopContactRecordingRequestSchema = z
 
 const StopContactRequestSchema = z
   .object({
-    ContactId: ContactIdSchema.and(z.any().openapi({ description: 'The ID of the contact.' })),
-    InstanceId: InstanceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the Amazon Connect instance. You can <a href="https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.',
-        }),
-    ),
+    ContactId: ContactIdSchema.openapi({ description: 'The ID of the contact.' }),
+    InstanceId: InstanceIdSchema.openapi({
+      description:
+        'The identifier of the Amazon Connect instance. You can <a href="https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.',
+    }),
   })
   .openapi({ required: ['ContactId', 'InstanceId'], title: 'StopContactRequest' })
   .openapi('StopContactRequest')
 
 const StopContactStreamingRequestSchema = z
   .object({
-    InstanceId: InstanceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the Amazon Connect instance. You can <a href="https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.',
-        }),
-    ),
-    ContactId: ContactIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the contact. This is the identifier of the contact that is associated with the first interaction with the contact center.',
-        }),
-    ),
-    StreamingId: StreamingIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the streaming configuration enabled. ' }),
-    ),
+    InstanceId: InstanceIdSchema.openapi({
+      description:
+        'The identifier of the Amazon Connect instance. You can <a href="https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.',
+    }),
+    ContactId: ContactIdSchema.openapi({
+      description:
+        'The identifier of the contact. This is the identifier of the contact that is associated with the first interaction with the contact center.',
+    }),
+    StreamingId: StreamingIdSchema.openapi({
+      description: 'The identifier of the streaming configuration enabled. ',
+    }),
   })
   .openapi({
     required: ['InstanceId', 'ContactId', 'StreamingId'],
@@ -8893,25 +7162,15 @@ const StopContactStreamingRequestSchema = z
 
 const SuspendContactRecordingRequestSchema = z
   .object({
-    InstanceId: InstanceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the Amazon Connect instance. You can <a href="https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.',
-        }),
-    ),
-    ContactId: ContactIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the contact.' }),
-    ),
-    InitialContactId: ContactIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the contact. This is the identifier of the contact associated with the first interaction with the contact center.',
-        }),
-    ),
+    InstanceId: InstanceIdSchema.openapi({
+      description:
+        'The identifier of the Amazon Connect instance. You can <a href="https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.',
+    }),
+    ContactId: ContactIdSchema.openapi({ description: 'The identifier of the contact.' }),
+    InitialContactId: ContactIdSchema.openapi({
+      description:
+        'The identifier of the contact. This is the identifier of the contact associated with the first interaction with the contact center.',
+    }),
   })
   .openapi({
     required: ['InstanceId', 'ContactId', 'InitialContactId'],
@@ -8923,52 +7182,34 @@ const TagKeyListSchema = z.array(TagKeySchema).min(1).max(50).openapi('TagKeyLis
 
 const TagResourceRequestSchema = z
   .object({
-    tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tags used to organize, track, or control access for this resource. For example, { "tags": {"key1":"value1", "key2":"value2"} }.',
-        }),
-    ),
+    tags: TagMapSchema.openapi({
+      description:
+        'The tags used to organize, track, or control access for this resource. For example, { "tags": {"key1":"value1", "key2":"value2"} }.',
+    }),
   })
   .openapi({ required: ['tags'], title: 'TagResourceRequest' })
   .openapi('TagResourceRequest')
 
 const TransferContactRequestSchema = z
   .object({
-    InstanceId: InstanceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the Amazon Connect instance. You can <a href="https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.',
-        }),
-    ),
-    ContactId: ContactIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier of the contact in this instance of Amazon Connect. ',
-        }),
-    ),
-    QueueId: QueueIdSchema.and(
-      z.any().openapi({ description: 'The identifier for the queue.' }),
-    ).exactOptional(),
-    UserId: AgentResourceIdSchema.and(
-      z.any().openapi({ description: 'The identifier for the user.' }),
-    ).exactOptional(),
-    ContactFlowId: ContactFlowIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the flow.' }),
-    ),
-    ClientToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href="https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/">Making retries safe with idempotent APIs</a>.',
-        }),
-    ).exactOptional(),
+    InstanceId: InstanceIdSchema.openapi({
+      description:
+        'The identifier of the Amazon Connect instance. You can <a href="https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.',
+    }),
+    ContactId: ContactIdSchema.openapi({
+      description: 'The identifier of the contact in this instance of Amazon Connect. ',
+    }),
+    QueueId: QueueIdSchema.exactOptional().openapi({
+      description: 'The identifier for the queue.',
+    }),
+    UserId: AgentResourceIdSchema.exactOptional().openapi({
+      description: 'The identifier for the user.',
+    }),
+    ContactFlowId: ContactFlowIdSchema.openapi({ description: 'The identifier of the flow.' }),
+    ClientToken: ClientTokenSchema.exactOptional().openapi({
+      description:
+        'A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href="https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/">Making retries safe with idempotent APIs</a>.',
+    }),
   })
   .openapi({
     required: ['InstanceId', 'ContactId', 'ContactFlowId'],
@@ -8977,7 +7218,7 @@ const TransferContactRequestSchema = z
   .openapi('TransferContactRequest')
 
 const UntagResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')
 
@@ -8989,51 +7230,39 @@ const UpdateAgentStatusDescriptionSchema = z
 
 const UpdateAgentStatusRequestSchema = z
   .object({
-    Name: AgentStatusNameSchema.and(
-      z.any().openapi({ description: 'The name of the agent status.' }),
-    ).exactOptional(),
-    Description: UpdateAgentStatusDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the agent status.' }),
-    ).exactOptional(),
-    State: AgentStatusStateSchema.and(
-      z.any().openapi({ description: 'The state of the agent status.' }),
-    ).exactOptional(),
-    DisplayOrder: AgentStatusOrderNumberSchema.and(
-      z.any().openapi({ description: 'The display order of the agent status.' }),
-    ).exactOptional(),
-    ResetOrderNumber: BooleanSchema.and(
-      z.any().openapi({ description: 'A number indicating the reset order of the agent status.' }),
-    ).exactOptional(),
+    Name: AgentStatusNameSchema.exactOptional().openapi({
+      description: 'The name of the agent status.',
+    }),
+    Description: UpdateAgentStatusDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the agent status.',
+    }),
+    State: AgentStatusStateSchema.exactOptional().openapi({
+      description: 'The state of the agent status.',
+    }),
+    DisplayOrder: AgentStatusOrderNumberSchema.exactOptional().openapi({
+      description: 'The display order of the agent status.',
+    }),
+    ResetOrderNumber: BooleanSchema.exactOptional().openapi({
+      description: 'A number indicating the reset order of the agent status.',
+    }),
   })
   .openapi({ title: 'UpdateAgentStatusRequest', required: [] })
   .openapi('UpdateAgentStatusRequest')
 
 const UpdateContactAttributesRequestSchema = z
   .object({
-    InitialContactId: ContactIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the contact. This is the identifier of the contact associated with the first interaction with the contact center.',
-        }),
-    ),
-    InstanceId: InstanceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the Amazon Connect instance. You can <a href="https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.',
-        }),
-    ),
-    Attributes: AttributesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Connect attributes. These attributes can be accessed in flows just like any other contact attributes.</p> <p>You can have up to 32,768 UTF-8 bytes across all attributes for a contact. Attribute keys can include only alphanumeric, dash, and underscore characters.</p>',
-        }),
-    ),
+    InitialContactId: ContactIdSchema.openapi({
+      description:
+        'The identifier of the contact. This is the identifier of the contact associated with the first interaction with the contact center.',
+    }),
+    InstanceId: InstanceIdSchema.openapi({
+      description:
+        'The identifier of the Amazon Connect instance. You can <a href="https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.',
+    }),
+    Attributes: AttributesSchema.openapi({
+      description:
+        '<p>The Amazon Connect attributes. These attributes can be accessed in flows just like any other contact attributes.</p> <p>You can have up to 32,768 UTF-8 bytes across all attributes for a contact. Attribute keys can include only alphanumeric, dash, and underscore characters.</p>',
+    }),
   })
   .openapi({
     required: ['InitialContactId', 'InstanceId', 'Attributes'],
@@ -9043,110 +7272,85 @@ const UpdateContactAttributesRequestSchema = z
 
 const UpdateContactFlowContentRequestSchema = z
   .object({
-    Content: ContactFlowContentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The JSON string that represents flow\'s content. For an example, see <a href="https://docs.aws.amazon.com/connect/latest/APIReference/flow-language-example.html">Example contact flow in Amazon Connect Flow language</a>. ',
-        }),
-    ),
+    Content: ContactFlowContentSchema.openapi({
+      description:
+        'The JSON string that represents flow\'s content. For an example, see <a href="https://docs.aws.amazon.com/connect/latest/APIReference/flow-language-example.html">Example contact flow in Amazon Connect Flow language</a>. ',
+    }),
   })
   .openapi({ required: ['Content'], title: 'UpdateContactFlowContentRequest' })
   .openapi('UpdateContactFlowContentRequest')
 
 const UpdateContactFlowMetadataRequestSchema = z
   .object({
-    Name: ContactFlowNameSchema.and(
-      z.any().openapi({ description: 'The name of the flow.' }),
-    ).exactOptional(),
-    Description: ContactFlowDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the flow.' }),
-    ).exactOptional(),
-    ContactFlowState: ContactFlowStateSchema.and(
-      z.any().openapi({ description: 'The state of flow.' }),
-    ).exactOptional(),
+    Name: ContactFlowNameSchema.exactOptional().openapi({ description: 'The name of the flow.' }),
+    Description: ContactFlowDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the flow.',
+    }),
+    ContactFlowState: ContactFlowStateSchema.exactOptional().openapi({
+      description: 'The state of flow.',
+    }),
   })
   .openapi({ title: 'UpdateContactFlowMetadataRequest', required: [] })
   .openapi('UpdateContactFlowMetadataRequest')
 
 const UpdateContactFlowModuleContentRequestSchema = z
   .object({
-    Content: ContactFlowModuleContentSchema.and(
-      z.any().openapi({ description: 'The content of the flow module.' }),
-    ),
+    Content: ContactFlowModuleContentSchema.openapi({
+      description: 'The content of the flow module.',
+    }),
   })
   .openapi({ required: ['Content'], title: 'UpdateContactFlowModuleContentRequest' })
   .openapi('UpdateContactFlowModuleContentRequest')
 
 const UpdateContactFlowModuleMetadataRequestSchema = z
   .object({
-    Name: ContactFlowModuleNameSchema.and(
-      z.any().openapi({ description: 'The name of the flow module.' }),
-    ).exactOptional(),
-    Description: ContactFlowModuleDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the flow module.' }),
-    ).exactOptional(),
-    State: ContactFlowModuleStateSchema.and(
-      z.any().openapi({ description: 'The state of flow module.' }),
-    ).exactOptional(),
+    Name: ContactFlowModuleNameSchema.exactOptional().openapi({
+      description: 'The name of the flow module.',
+    }),
+    Description: ContactFlowModuleDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the flow module.',
+    }),
+    State: ContactFlowModuleStateSchema.exactOptional().openapi({
+      description: 'The state of flow module.',
+    }),
   })
   .openapi({ title: 'UpdateContactFlowModuleMetadataRequest', required: [] })
   .openapi('UpdateContactFlowModuleMetadataRequest')
 
 const UpdateContactFlowNameRequestSchema = z
   .object({
-    Name: ContactFlowNameSchema.and(
-      z.any().openapi({ description: 'The name of the flow.' }),
-    ).exactOptional(),
-    Description: ContactFlowDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the flow.' }),
-    ).exactOptional(),
+    Name: ContactFlowNameSchema.exactOptional().openapi({ description: 'The name of the flow.' }),
+    Description: ContactFlowDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the flow.',
+    }),
   })
   .openapi({ title: 'UpdateContactFlowNameRequest', required: [] })
   .openapi('UpdateContactFlowNameRequest')
 
 const UpdateContactRequestSchema = z
   .object({
-    Name: NameSchema.and(
-      z.any().openapi({ description: 'The name of the contact.' }),
-    ).exactOptional(),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the contact.' }),
-    ).exactOptional(),
-    References: ContactReferencesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Well-formed data on contact, shown to agents on Contact Control Panel (CCP).',
-        }),
-    ).exactOptional(),
+    Name: NameSchema.exactOptional().openapi({ description: 'The name of the contact.' }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'The description of the contact.',
+    }),
+    References: ContactReferencesSchema.exactOptional().openapi({
+      description: 'Well-formed data on contact, shown to agents on Contact Control Panel (CCP).',
+    }),
   })
   .openapi({ title: 'UpdateContactRequest', required: [] })
   .openapi('UpdateContactRequest')
 
 const UpdateContactScheduleRequestSchema = z
   .object({
-    InstanceId: InstanceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the Amazon Connect instance. You can <a href="https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.',
-        }),
-    ),
-    ContactId: ContactIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the contact.' }),
-    ),
-    ScheduledTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timestamp, in Unix Epoch seconds format, at which to start running the inbound flow. The scheduled time cannot be in the past. It must be within up to 6 days in future. ',
-        }),
-    ),
+    InstanceId: InstanceIdSchema.openapi({
+      description:
+        'The identifier of the Amazon Connect instance. You can <a href="https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.',
+    }),
+    ContactId: ContactIdSchema.openapi({ description: 'The identifier of the contact.' }),
+    ScheduledTime: TimestampSchema.openapi({
+      description:
+        'The timestamp, in Unix Epoch seconds format, at which to start running the inbound flow. The scheduled time cannot be in the past. It must be within up to 6 days in future. ',
+    }),
   })
   .openapi({
     required: ['InstanceId', 'ContactId', 'ScheduledTime'],
@@ -9162,29 +7366,27 @@ const UpdateHoursOfOperationDescriptionSchema = z
 
 const UpdateHoursOfOperationRequestSchema = z
   .object({
-    Name: CommonNameLength127Schema.and(
-      z.any().openapi({ description: 'The name of the hours of operation.' }),
-    ).exactOptional(),
-    Description: UpdateHoursOfOperationDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the hours of operation.' }),
-    ).exactOptional(),
-    TimeZone: TimeZoneSchema.and(
-      z.any().openapi({ description: 'The time zone of the hours of operation.' }),
-    ).exactOptional(),
-    Config: HoursOfOperationConfigListSchema.and(
-      z.any().openapi({ description: 'Configuration information of the hours of operation.' }),
-    ).exactOptional(),
+    Name: CommonNameLength127Schema.exactOptional().openapi({
+      description: 'The name of the hours of operation.',
+    }),
+    Description: UpdateHoursOfOperationDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the hours of operation.',
+    }),
+    TimeZone: TimeZoneSchema.exactOptional().openapi({
+      description: 'The time zone of the hours of operation.',
+    }),
+    Config: HoursOfOperationConfigListSchema.exactOptional().openapi({
+      description: 'Configuration information of the hours of operation.',
+    }),
   })
   .openapi({ title: 'UpdateHoursOfOperationRequest', required: [] })
   .openapi('UpdateHoursOfOperationRequest')
 
 const UpdateInstanceAttributeRequestSchema = z
   .object({
-    Value: InstanceAttributeValueSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The value for the attribute. Maximum character limit is 100. ' }),
-    ),
+    Value: InstanceAttributeValueSchema.openapi({
+      description: 'The value for the attribute. Maximum character limit is 100. ',
+    }),
   })
   .openapi({ required: ['Value'], title: 'UpdateInstanceAttributeRequest' })
   .openapi('UpdateInstanceAttributeRequest')
@@ -9196,9 +7398,9 @@ const UpdateInstanceStorageConfigRequestSchema = z
 
 const UpdateParticipantRoleConfigChannelInfoSchema = z
   .object({
-    Chat: ChatParticipantRoleConfigSchema.and(
-      z.any().openapi({ description: 'Configuration information for the chat participant role.' }),
-    ).exactOptional(),
+    Chat: ChatParticipantRoleConfigSchema.exactOptional().openapi({
+      description: 'Configuration information for the chat participant role.',
+    }),
   })
   .openapi({
     description: 'Configuration information for the chat participant role.',
@@ -9208,99 +7410,77 @@ const UpdateParticipantRoleConfigChannelInfoSchema = z
 
 const UpdateParticipantRoleConfigRequestSchema = z
   .object({
-    ChannelConfiguration: UpdateParticipantRoleConfigChannelInfoSchema.and(
-      z.any().openapi({ description: 'The Amazon Connect channel you want to configure.' }),
-    ),
+    ChannelConfiguration: UpdateParticipantRoleConfigChannelInfoSchema.openapi({
+      description: 'The Amazon Connect channel you want to configure.',
+    }),
   })
   .openapi({ required: ['ChannelConfiguration'], title: 'UpdateParticipantRoleConfigRequest' })
   .openapi('UpdateParticipantRoleConfigRequest')
 
 const UpdatePhoneNumberRequestSchema = z
   .object({
-    TargetArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) for Amazon Connect instances or traffic distribution groups that phone numbers are claimed to.',
-        }),
-    ),
-    ClientToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href="https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/">Making retries safe with idempotent APIs</a>.',
-        }),
-    ).exactOptional(),
+    TargetArn: ARNSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) for Amazon Connect instances or traffic distribution groups that phone numbers are claimed to.',
+    }),
+    ClientToken: ClientTokenSchema.exactOptional().openapi({
+      description:
+        'A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href="https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/">Making retries safe with idempotent APIs</a>.',
+    }),
   })
   .openapi({ required: ['TargetArn'], title: 'UpdatePhoneNumberRequest' })
   .openapi('UpdatePhoneNumberRequest')
 
 const UpdateQueueHoursOfOperationRequestSchema = z
   .object({
-    HoursOfOperationId: HoursOfOperationIdSchema.and(
-      z.any().openapi({ description: 'The identifier for the hours of operation.' }),
-    ),
+    HoursOfOperationId: HoursOfOperationIdSchema.openapi({
+      description: 'The identifier for the hours of operation.',
+    }),
   })
   .openapi({ required: ['HoursOfOperationId'], title: 'UpdateQueueHoursOfOperationRequest' })
   .openapi('UpdateQueueHoursOfOperationRequest')
 
 const UpdateQueueMaxContactsRequestSchema = z
   .object({
-    MaxContacts: QueueMaxContactsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of contacts that can be in the queue before it is considered full.',
-        }),
-    ).exactOptional(),
+    MaxContacts: QueueMaxContactsSchema.exactOptional().openapi({
+      description:
+        'The maximum number of contacts that can be in the queue before it is considered full.',
+    }),
   })
   .openapi({ title: 'UpdateQueueMaxContactsRequest', required: [] })
   .openapi('UpdateQueueMaxContactsRequest')
 
 const UpdateQueueNameRequestSchema = z
   .object({
-    Name: CommonNameLength127Schema.and(
-      z.any().openapi({ description: 'The name of the queue.' }),
-    ).exactOptional(),
-    Description: QueueDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the queue.' }),
-    ).exactOptional(),
+    Name: CommonNameLength127Schema.exactOptional().openapi({
+      description: 'The name of the queue.',
+    }),
+    Description: QueueDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the queue.',
+    }),
   })
   .openapi({ title: 'UpdateQueueNameRequest', required: [] })
   .openapi('UpdateQueueNameRequest')
 
 const UpdateQueueOutboundCallerConfigRequestSchema = z
   .object({
-    OutboundCallerConfig: OutboundCallerConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The outbound caller ID name, number, and outbound whisper flow.',
-        }),
-    ),
+    OutboundCallerConfig: OutboundCallerConfigSchema.openapi({
+      description: 'The outbound caller ID name, number, and outbound whisper flow.',
+    }),
   })
   .openapi({ required: ['OutboundCallerConfig'], title: 'UpdateQueueOutboundCallerConfigRequest' })
   .openapi('UpdateQueueOutboundCallerConfigRequest')
 
 const UpdateQueueStatusRequestSchema = z
-  .object({
-    Status: QueueStatusSchema.and(z.any().openapi({ description: 'The status of the queue.' })),
-  })
+  .object({ Status: QueueStatusSchema.openapi({ description: 'The status of the queue.' }) })
   .openapi({ required: ['Status'], title: 'UpdateQueueStatusRequest' })
   .openapi('UpdateQueueStatusRequest')
 
 const UpdateQuickConnectConfigRequestSchema = z
   .object({
-    QuickConnectConfig: QuickConnectConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Information about the configuration settings for the quick connect.',
-        }),
-    ),
+    QuickConnectConfig: QuickConnectConfigSchema.openapi({
+      description: 'Information about the configuration settings for the quick connect.',
+    }),
   })
   .openapi({ required: ['QuickConnectConfig'], title: 'UpdateQuickConnectConfigRequest' })
   .openapi('UpdateQuickConnectConfigRequest')
@@ -9313,34 +7493,30 @@ const UpdateQuickConnectDescriptionSchema = z
 
 const UpdateQuickConnectNameRequestSchema = z
   .object({
-    Name: QuickConnectNameSchema.and(
-      z.any().openapi({ description: 'The name of the quick connect.' }),
-    ).exactOptional(),
-    Description: UpdateQuickConnectDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the quick connect.' }),
-    ).exactOptional(),
+    Name: QuickConnectNameSchema.exactOptional().openapi({
+      description: 'The name of the quick connect.',
+    }),
+    Description: UpdateQuickConnectDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the quick connect.',
+    }),
   })
   .openapi({ title: 'UpdateQuickConnectNameRequest', required: [] })
   .openapi('UpdateQuickConnectNameRequest')
 
 const UpdateRoutingProfileConcurrencyRequestSchema = z
   .object({
-    MediaConcurrencies: MediaConcurrenciesSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The channels that agents can handle in the Contact Control Panel (CCP).',
-        }),
-    ),
+    MediaConcurrencies: MediaConcurrenciesSchema.openapi({
+      description: 'The channels that agents can handle in the Contact Control Panel (CCP).',
+    }),
   })
   .openapi({ required: ['MediaConcurrencies'], title: 'UpdateRoutingProfileConcurrencyRequest' })
   .openapi('UpdateRoutingProfileConcurrencyRequest')
 
 const UpdateRoutingProfileDefaultOutboundQueueRequestSchema = z
   .object({
-    DefaultOutboundQueueId: QueueIdSchema.and(
-      z.any().openapi({ description: 'The identifier for the default outbound queue.' }),
-    ),
+    DefaultOutboundQueueId: QueueIdSchema.openapi({
+      description: 'The identifier for the default outbound queue.',
+    }),
   })
   .openapi({
     required: ['DefaultOutboundQueueId'],
@@ -9350,58 +7526,39 @@ const UpdateRoutingProfileDefaultOutboundQueueRequestSchema = z
 
 const UpdateRoutingProfileNameRequestSchema = z
   .object({
-    Name: RoutingProfileNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the routing profile. Must not be more than 127 characters.',
-        }),
-    ).exactOptional(),
-    Description: RoutingProfileDescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The description of the routing profile. Must not be more than 250 characters.',
-        }),
-    ).exactOptional(),
+    Name: RoutingProfileNameSchema.exactOptional().openapi({
+      description: 'The name of the routing profile. Must not be more than 127 characters.',
+    }),
+    Description: RoutingProfileDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the routing profile. Must not be more than 250 characters.',
+    }),
   })
   .openapi({ title: 'UpdateRoutingProfileNameRequest', required: [] })
   .openapi('UpdateRoutingProfileNameRequest')
 
 const UpdateRoutingProfileQueuesRequestSchema = z
   .object({
-    QueueConfigs: RoutingProfileQueueConfigListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The queues to be updated for this routing profile. Queues must first be associated to the routing profile. You can do this using AssociateRoutingProfileQueues.',
-        }),
-    ),
+    QueueConfigs: RoutingProfileQueueConfigListSchema.openapi({
+      description:
+        'The queues to be updated for this routing profile. Queues must first be associated to the routing profile. You can do this using AssociateRoutingProfileQueues.',
+    }),
   })
   .openapi({ required: ['QueueConfigs'], title: 'UpdateRoutingProfileQueuesRequest' })
   .openapi('UpdateRoutingProfileQueuesRequest')
 
 const UpdateRuleRequestSchema = z
   .object({
-    Name: RuleNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the rule. You can change the name only if <code>TriggerEventSource</code> is one of the following values: <code>OnZendeskTicketCreate</code> | <code>OnZendeskTicketStatusUpdate</code> | <code>OnSalesforceCaseCreate</code> ',
-        }),
-    ),
-    Function: RuleFunctionSchema.and(
-      z.any().openapi({ description: 'The conditions of the rule.' }),
-    ),
-    Actions: RuleActionsSchema.and(
-      z.any().openapi({ description: 'A list of actions to be run when the rule is triggered.' }),
-    ),
-    PublishStatus: RulePublishStatusSchema.and(
-      z.any().openapi({ description: 'The publish status of the rule.' }),
-    ),
+    Name: RuleNameSchema.openapi({
+      description:
+        'The name of the rule. You can change the name only if <code>TriggerEventSource</code> is one of the following values: <code>OnZendeskTicketCreate</code> | <code>OnZendeskTicketStatusUpdate</code> | <code>OnSalesforceCaseCreate</code> ',
+    }),
+    Function: RuleFunctionSchema.openapi({ description: 'The conditions of the rule.' }),
+    Actions: RuleActionsSchema.openapi({
+      description: 'A list of actions to be run when the rule is triggered.',
+    }),
+    PublishStatus: RulePublishStatusSchema.openapi({
+      description: 'The publish status of the rule.',
+    }),
   })
   .openapi({
     required: ['Name', 'Function', 'Actions', 'PublishStatus'],
@@ -9411,157 +7568,123 @@ const UpdateRuleRequestSchema = z
 
 const UpdateSecurityProfileRequestSchema = z
   .object({
-    Description: SecurityProfileDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the security profile.' }),
-    ).exactOptional(),
-    Permissions: PermissionsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The permissions granted to a security profile. For a list of valid permissions, see <a href="https://docs.aws.amazon.com/connect/latest/adminguide/security-profile-list.html">List of security profile permissions</a>.',
-        }),
-    ).exactOptional(),
-    AllowedAccessControlTags: AllowedAccessControlTagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of tags that a security profile uses to restrict access to resources in Amazon Connect.',
-        }),
-    ).exactOptional(),
-    TagRestrictedResources: TagRestrictedResourceListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of resources that a security profile applies tag restrictions to in Amazon Connect.',
-        }),
-    ).exactOptional(),
+    Description: SecurityProfileDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the security profile.',
+    }),
+    Permissions: PermissionsListSchema.exactOptional().openapi({
+      description:
+        'The permissions granted to a security profile. For a list of valid permissions, see <a href="https://docs.aws.amazon.com/connect/latest/adminguide/security-profile-list.html">List of security profile permissions</a>.',
+    }),
+    AllowedAccessControlTags: AllowedAccessControlTagsSchema.exactOptional().openapi({
+      description:
+        'The list of tags that a security profile uses to restrict access to resources in Amazon Connect.',
+    }),
+    TagRestrictedResources: TagRestrictedResourceListSchema.exactOptional().openapi({
+      description:
+        'The list of resources that a security profile applies tag restrictions to in Amazon Connect.',
+    }),
   })
   .openapi({ title: 'UpdateSecurityProfileRequest', required: [] })
   .openapi('UpdateSecurityProfileRequest')
 
 const UpdateTaskTemplateRequestSchema = z
   .object({
-    Name: TaskTemplateNameSchema.and(
-      z.any().openapi({ description: 'The name of the task template.' }),
-    ).exactOptional(),
-    Description: TaskTemplateDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the task template.' }),
-    ).exactOptional(),
-    ContactFlowId: ContactFlowIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the flow that runs by default when a task is created by referencing this template.',
-        }),
-    ).exactOptional(),
-    Constraints: TaskTemplateConstraintsSchema.and(
-      z.any().openapi({ description: 'Constraints that are applicable to the fields listed.' }),
-    ).exactOptional(),
-    Defaults: TaskTemplateDefaultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The default values for fields when a task is created by referencing this template.',
-        }),
-    ).exactOptional(),
-    Status: TaskTemplateStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Marks a template as <code>ACTIVE</code> or <code>INACTIVE</code> for a task to refer to it. Tasks can only be created from <code>ACTIVE</code> templates. If a template is marked as <code>INACTIVE</code>, then a task that refers to this template cannot be created.',
-        }),
-    ).exactOptional(),
-    Fields: TaskTemplateFieldsSchema.and(
-      z.any().openapi({ description: 'Fields that are part of the template.' }),
-    ).exactOptional(),
+    Name: TaskTemplateNameSchema.exactOptional().openapi({
+      description: 'The name of the task template.',
+    }),
+    Description: TaskTemplateDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the task template.',
+    }),
+    ContactFlowId: ContactFlowIdSchema.exactOptional().openapi({
+      description:
+        'The identifier of the flow that runs by default when a task is created by referencing this template.',
+    }),
+    Constraints: TaskTemplateConstraintsSchema.exactOptional().openapi({
+      description: 'Constraints that are applicable to the fields listed.',
+    }),
+    Defaults: TaskTemplateDefaultsSchema.exactOptional().openapi({
+      description:
+        'The default values for fields when a task is created by referencing this template.',
+    }),
+    Status: TaskTemplateStatusSchema.exactOptional().openapi({
+      description:
+        'Marks a template as <code>ACTIVE</code> or <code>INACTIVE</code> for a task to refer to it. Tasks can only be created from <code>ACTIVE</code> templates. If a template is marked as <code>INACTIVE</code>, then a task that refers to this template cannot be created.',
+    }),
+    Fields: TaskTemplateFieldsSchema.exactOptional().openapi({
+      description: 'Fields that are part of the template.',
+    }),
   })
   .openapi({ title: 'UpdateTaskTemplateRequest', required: [] })
   .openapi('UpdateTaskTemplateRequest')
 
 const UpdateTrafficDistributionRequestSchema = z
   .object({
-    TelephonyConfig: TelephonyConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The distribution of traffic between the instance and its replica(s).',
-        }),
-    ).exactOptional(),
+    TelephonyConfig: TelephonyConfigSchema.exactOptional().openapi({
+      description: 'The distribution of traffic between the instance and its replica(s).',
+    }),
   })
   .openapi({ title: 'UpdateTrafficDistributionRequest', required: [] })
   .openapi('UpdateTrafficDistributionRequest')
 
 const UpdateUserHierarchyGroupNameRequestSchema = z
   .object({
-    Name: HierarchyGroupNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the hierarchy group. Must not be more than 100 characters.',
-        }),
-    ),
+    Name: HierarchyGroupNameSchema.openapi({
+      description: 'The name of the hierarchy group. Must not be more than 100 characters.',
+    }),
   })
   .openapi({ required: ['Name'], title: 'UpdateUserHierarchyGroupNameRequest' })
   .openapi('UpdateUserHierarchyGroupNameRequest')
 
 const UpdateUserHierarchyRequestSchema = z
   .object({
-    HierarchyGroupId: HierarchyGroupIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the hierarchy group.' }),
-    ).exactOptional(),
+    HierarchyGroupId: HierarchyGroupIdSchema.exactOptional().openapi({
+      description: 'The identifier of the hierarchy group.',
+    }),
   })
   .openapi({ title: 'UpdateUserHierarchyRequest', required: [] })
   .openapi('UpdateUserHierarchyRequest')
 
 const UpdateUserHierarchyStructureRequestSchema = z
   .object({
-    HierarchyStructure: HierarchyStructureUpdateSchema.and(
-      z.any().openapi({ description: 'The hierarchy levels to update.' }),
-    ),
+    HierarchyStructure: HierarchyStructureUpdateSchema.openapi({
+      description: 'The hierarchy levels to update.',
+    }),
   })
   .openapi({ required: ['HierarchyStructure'], title: 'UpdateUserHierarchyStructureRequest' })
   .openapi('UpdateUserHierarchyStructureRequest')
 
 const UpdateUserIdentityInfoRequestSchema = z
   .object({
-    IdentityInfo: UserIdentityInfoSchema.and(
-      z.any().openapi({ description: 'The identity information for the user.' }),
-    ),
+    IdentityInfo: UserIdentityInfoSchema.openapi({
+      description: 'The identity information for the user.',
+    }),
   })
   .openapi({ required: ['IdentityInfo'], title: 'UpdateUserIdentityInfoRequest' })
   .openapi('UpdateUserIdentityInfoRequest')
 
 const UpdateUserPhoneConfigRequestSchema = z
   .object({
-    PhoneConfig: UserPhoneConfigSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Information about phone configuration settings for the user.' }),
-    ),
+    PhoneConfig: UserPhoneConfigSchema.openapi({
+      description: 'Information about phone configuration settings for the user.',
+    }),
   })
   .openapi({ required: ['PhoneConfig'], title: 'UpdateUserPhoneConfigRequest' })
   .openapi('UpdateUserPhoneConfigRequest')
 
 const UpdateUserRoutingProfileRequestSchema = z
   .object({
-    RoutingProfileId: RoutingProfileIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the routing profile for the user.' }),
-    ),
+    RoutingProfileId: RoutingProfileIdSchema.openapi({
+      description: 'The identifier of the routing profile for the user.',
+    }),
   })
   .openapi({ required: ['RoutingProfileId'], title: 'UpdateUserRoutingProfileRequest' })
   .openapi('UpdateUserRoutingProfileRequest')
 
 const UpdateUserSecurityProfilesRequestSchema = z
   .object({
-    SecurityProfileIds: SecurityProfileIdsSchema.and(
-      z.any().openapi({ description: 'The identifiers of the security profiles for the user.' }),
-    ),
+    SecurityProfileIds: SecurityProfileIdsSchema.openapi({
+      description: 'The identifiers of the security profiles for the user.',
+    }),
   })
   .openapi({ required: ['SecurityProfileIds'], title: 'UpdateUserSecurityProfilesRequest' })
   .openapi('UpdateUserSecurityProfilesRequest')
@@ -9758,17 +7881,13 @@ export const putInstanceInstanceIdBotRoute = createRoute({
             .object({
               LexBot: z
                 .object({
-                  Name: BotNameSchema.and(
-                    z.any().openapi({ description: 'The name of the Amazon Lex bot.' }),
-                  ).exactOptional(),
-                  LexRegion: LexRegionSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The Amazon Web Services Region where the Amazon Lex bot was created.',
-                      }),
-                  ).exactOptional(),
+                  Name: BotNameSchema.exactOptional().openapi({
+                    description: 'The name of the Amazon Lex bot.',
+                  }),
+                  LexRegion: LexRegionSchema.exactOptional().openapi({
+                    description:
+                      'The Amazon Web Services Region where the Amazon Lex bot was created.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -9777,13 +7896,9 @@ export const putInstanceInstanceIdBotRoute = createRoute({
                 }),
               LexV2Bot: z
                 .object({
-                  AliasArn: AliasArnSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The Amazon Resource Name (ARN) of the Amazon Lex V2 bot.',
-                      }),
-                  ).exactOptional(),
+                  AliasArn: AliasArnSchema.exactOptional().openapi({
+                    description: 'The Amazon Resource Name (ARN) of the Amazon Lex V2 bot.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -9869,17 +7984,13 @@ export const postInstanceInstanceIdBotRoute = createRoute({
             .object({
               LexBot: z
                 .object({
-                  Name: BotNameSchema.and(
-                    z.any().openapi({ description: 'The name of the Amazon Lex bot.' }),
-                  ).exactOptional(),
-                  LexRegion: LexRegionSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The Amazon Web Services Region where the Amazon Lex bot was created.',
-                      }),
-                  ).exactOptional(),
+                  Name: BotNameSchema.exactOptional().openapi({
+                    description: 'The name of the Amazon Lex bot.',
+                  }),
+                  LexRegion: LexRegionSchema.exactOptional().openapi({
+                    description:
+                      'The Amazon Web Services Region where the Amazon Lex bot was created.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -9888,13 +7999,9 @@ export const postInstanceInstanceIdBotRoute = createRoute({
                 }),
               LexV2Bot: z
                 .object({
-                  AliasArn: AliasArnSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The Amazon Resource Name (ARN) of the Amazon Lex V2 bot.',
-                      }),
-                  ).exactOptional(),
+                  AliasArn: AliasArnSchema.exactOptional().openapi({
+                    description: 'The Amazon Resource Name (ARN) of the Amazon Lex V2 bot.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -10125,37 +8232,25 @@ export const putInstanceInstanceIdStorageConfigRoute = createRoute({
                 .openapi({ description: 'A valid resource type.' }),
               StorageConfig: z
                 .object({
-                  AssociationId: AssociationIdSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The existing association identifier that uniquely identifies the resource type and storage config for the given instance ID.',
-                      }),
-                  ).exactOptional(),
-                  StorageType: StorageTypeSchema.and(
-                    z.any().openapi({ description: 'A valid storage type.' }),
-                  ).exactOptional(),
-                  S3Config: S3ConfigSchema.and(
-                    z.any().openapi({ description: 'The S3 bucket configuration.' }),
-                  ).exactOptional(),
-                  KinesisVideoStreamConfig: KinesisVideoStreamConfigSchema.and(
-                    z
-                      .any()
-                      .openapi({ description: 'The configuration of the Kinesis video stream.' }),
-                  ).exactOptional(),
-                  KinesisStreamConfig: KinesisStreamConfigSchema.and(
-                    z
-                      .any()
-                      .openapi({ description: 'The configuration of the Kinesis data stream.' }),
-                  ).exactOptional(),
-                  KinesisFirehoseConfig: KinesisFirehoseConfigSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The configuration of the Kinesis Firehose delivery stream.',
-                      }),
-                  ).exactOptional(),
+                  AssociationId: AssociationIdSchema.exactOptional().openapi({
+                    description:
+                      'The existing association identifier that uniquely identifies the resource type and storage config for the given instance ID.',
+                  }),
+                  StorageType: StorageTypeSchema.exactOptional().openapi({
+                    description: 'A valid storage type.',
+                  }),
+                  S3Config: S3ConfigSchema.exactOptional().openapi({
+                    description: 'The S3 bucket configuration.',
+                  }),
+                  KinesisVideoStreamConfig: KinesisVideoStreamConfigSchema.exactOptional().openapi({
+                    description: 'The configuration of the Kinesis video stream.',
+                  }),
+                  KinesisStreamConfig: KinesisStreamConfigSchema.exactOptional().openapi({
+                    description: 'The configuration of the Kinesis data stream.',
+                  }),
+                  KinesisFirehoseConfig: KinesisFirehoseConfigSchema.exactOptional().openapi({
+                    description: 'The configuration of the Kinesis Firehose delivery stream.',
+                  }),
                 })
                 .openapi({
                   description: 'The storage configuration for the instance.',
@@ -10324,17 +8419,13 @@ export const putInstanceInstanceIdLexBotRoute = createRoute({
             .object({
               LexBot: z
                 .object({
-                  Name: BotNameSchema.and(
-                    z.any().openapi({ description: 'The name of the Amazon Lex bot.' }),
-                  ).exactOptional(),
-                  LexRegion: LexRegionSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The Amazon Web Services Region where the Amazon Lex bot was created.',
-                      }),
-                  ).exactOptional(),
+                  Name: BotNameSchema.exactOptional().openapi({
+                    description: 'The name of the Amazon Lex bot.',
+                  }),
+                  LexRegion: LexRegionSchema.exactOptional().openapi({
+                    description:
+                      'The Amazon Web Services Region where the Amazon Lex bot was created.',
+                  }),
                 })
                 .openapi({
                   description: 'Configuration information of an Amazon Lex bot.',
@@ -11902,12 +9993,12 @@ export const postContactCreateParticipantRoute = createRoute({
                 }),
               ParticipantDetails: z
                 .object({
-                  ParticipantRole: ParticipantRoleSchema.and(
-                    z.any().openapi({ description: 'The role of the participant being added.' }),
-                  ).exactOptional(),
-                  DisplayName: DisplayNameSchema.and(
-                    z.any().openapi({ description: 'The display name of the participant.' }),
-                  ).exactOptional(),
+                  ParticipantRole: ParticipantRoleSchema.exactOptional().openapi({
+                    description: 'The role of the participant being added.',
+                  }),
+                  DisplayName: DisplayNameSchema.exactOptional().openapi({
+                    description: 'The display name of the participant.',
+                  }),
                 })
                 .openapi({ description: 'The details to add for the participant.', required: [] }),
             })
@@ -11995,20 +10086,15 @@ export const putQueuesInstanceIdRoute = createRoute({
                 .openapi({ description: 'The description of the queue.' }),
               OutboundCallerConfig: z
                 .object({
-                  OutboundCallerIdName: OutboundCallerIdNameSchema.and(
-                    z.any().openapi({ description: 'The caller ID name.' }),
-                  ).exactOptional(),
-                  OutboundCallerIdNumberId: PhoneNumberIdSchema.and(
-                    z.any().openapi({ description: 'The caller ID number.' }),
-                  ).exactOptional(),
-                  OutboundFlowId: ContactFlowIdSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The outbound whisper flow to be used during an outbound call.',
-                      }),
-                  ).exactOptional(),
+                  OutboundCallerIdName: OutboundCallerIdNameSchema.exactOptional().openapi({
+                    description: 'The caller ID name.',
+                  }),
+                  OutboundCallerIdNumberId: PhoneNumberIdSchema.exactOptional().openapi({
+                    description: 'The caller ID number.',
+                  }),
+                  OutboundFlowId: ContactFlowIdSchema.exactOptional().openapi({
+                    description: 'The outbound whisper flow to be used during an outbound call.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -12276,38 +10362,22 @@ export const putQuickConnectsInstanceIdRoute = createRoute({
                 .openapi({ description: 'The description of the quick connect.' }),
               QuickConnectConfig: z
                 .object({
-                  QuickConnectType: QuickConnectTypeSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The type of quick connect. In the Amazon Connect console, when you create a quick connect, you are prompted to assign one of the following types: Agent (USER), External (PHONE_NUMBER), or Queue (QUEUE). ',
-                      }),
-                  ).exactOptional(),
-                  UserConfig: UserQuickConnectConfigSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The user configuration. This is required only if QuickConnectType is USER.',
-                      }),
-                  ).exactOptional(),
-                  QueueConfig: QueueQuickConnectConfigSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The queue configuration. This is required only if QuickConnectType is QUEUE.',
-                      }),
-                  ).exactOptional(),
-                  PhoneConfig: PhoneNumberQuickConnectConfigSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The phone configuration. This is required only if QuickConnectType is PHONE_NUMBER.',
-                      }),
-                  ).exactOptional(),
+                  QuickConnectType: QuickConnectTypeSchema.exactOptional().openapi({
+                    description:
+                      'The type of quick connect. In the Amazon Connect console, when you create a quick connect, you are prompted to assign one of the following types: Agent (USER), External (PHONE_NUMBER), or Queue (QUEUE). ',
+                  }),
+                  UserConfig: UserQuickConnectConfigSchema.exactOptional().openapi({
+                    description:
+                      'The user configuration. This is required only if QuickConnectType is USER.',
+                  }),
+                  QueueConfig: QueueQuickConnectConfigSchema.exactOptional().openapi({
+                    description:
+                      'The queue configuration. This is required only if QuickConnectType is QUEUE.',
+                  }),
+                  PhoneConfig: PhoneNumberQuickConnectConfigSchema.exactOptional().openapi({
+                    description:
+                      'The phone configuration. This is required only if QuickConnectType is PHONE_NUMBER.',
+                  }),
                 })
                 .openapi({
                   description: 'Contains configuration settings for a quick connect.',
@@ -12694,14 +10764,12 @@ export const postRulesInstanceIdRoute = createRoute({
                 .openapi({ description: 'A unique name for the rule.' }),
               TriggerEventSource: z
                 .object({
-                  EventSourceName: EventSourceNameSchema.and(
-                    z.any().openapi({ description: 'The name of the event source.' }),
-                  ).exactOptional(),
-                  IntegrationAssociationId: IntegrationAssociationIdSchema.and(
-                    z
-                      .any()
-                      .openapi({ description: 'The identifier for the integration association.' }),
-                  ).exactOptional(),
+                  EventSourceName: EventSourceNameSchema.exactOptional().openapi({
+                    description: 'The name of the event source.',
+                  }),
+                  IntegrationAssociationId: IntegrationAssociationIdSchema.exactOptional().openapi({
+                    description: 'The identifier for the integration association.',
+                  }),
                 })
                 .openapi({
                   description:
@@ -13098,26 +11166,16 @@ export const putInstanceInstanceIdTaskTemplateRoute = createRoute({
                 }),
               Constraints: z
                 .object({
-                  RequiredFields: RequiredTaskTemplateFieldsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'Lists the fields that are required to be filled by agents.',
-                      }),
-                  ).exactOptional(),
-                  ReadOnlyFields: ReadOnlyTaskTemplateFieldsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Lists the fields that are read-only to agents, and cannot be edited.',
-                      }),
-                  ).exactOptional(),
-                  InvisibleFields: InvisibleTaskTemplateFieldsSchema.and(
-                    z
-                      .any()
-                      .openapi({ description: 'Lists the fields that are invisible to agents.' }),
-                  ).exactOptional(),
+                  RequiredFields: RequiredTaskTemplateFieldsSchema.exactOptional().openapi({
+                    description: 'Lists the fields that are required to be filled by agents.',
+                  }),
+                  ReadOnlyFields: ReadOnlyTaskTemplateFieldsSchema.exactOptional().openapi({
+                    description:
+                      'Lists the fields that are read-only to agents, and cannot be edited.',
+                  }),
+                  InvisibleFields: InvisibleTaskTemplateFieldsSchema.exactOptional().openapi({
+                    description: 'Lists the fields that are invisible to agents.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -13126,9 +11184,10 @@ export const putInstanceInstanceIdTaskTemplateRoute = createRoute({
                 }),
               Defaults: z
                 .object({
-                  DefaultFieldValues: TaskTemplateDefaultFieldValueListSchema.and(
-                    z.any().openapi({ description: 'Default value for the field.' }),
-                  ).exactOptional(),
+                  DefaultFieldValues:
+                    TaskTemplateDefaultFieldValueListSchema.exactOptional().openapi({
+                      description: 'Default value for the field.',
+                    }),
                 })
                 .exactOptional()
                 .openapi({
@@ -13585,41 +11644,25 @@ export const putUsersInstanceIdRoute = createRoute({
                 }),
               IdentityInfo: z
                 .object({
-                  FirstName: AgentFirstNameSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The first name. This is required if you are using Amazon Connect or SAML for identity management.',
-                      }),
-                  ).exactOptional(),
-                  LastName: AgentLastNameSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The last name. This is required if you are using Amazon Connect or SAML for identity management.',
-                      }),
-                  ).exactOptional(),
-                  Email: EmailSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The email address. If you are using SAML for identity management and include this parameter, an error is returned.',
-                      }),
-                  ).exactOptional(),
-                  SecondaryEmail: EmailSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          "<p>The user's secondary email address. If you provide a secondary email, the user receives email notifications - other than password reset notifications - to this email address instead of to their primary email address.</p> <p>Pattern: <code>(?=^.{0,265}$)[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,63}</code> </p>",
-                      }),
-                  ).exactOptional(),
-                  Mobile: PhoneNumberSchema.and(
-                    z.any().openapi({ description: "The user's mobile number." }),
-                  ).exactOptional(),
+                  FirstName: AgentFirstNameSchema.exactOptional().openapi({
+                    description:
+                      'The first name. This is required if you are using Amazon Connect or SAML for identity management.',
+                  }),
+                  LastName: AgentLastNameSchema.exactOptional().openapi({
+                    description:
+                      'The last name. This is required if you are using Amazon Connect or SAML for identity management.',
+                  }),
+                  Email: EmailSchema.exactOptional().openapi({
+                    description:
+                      'The email address. If you are using SAML for identity management and include this parameter, an error is returned.',
+                  }),
+                  SecondaryEmail: EmailSchema.exactOptional().openapi({
+                    description:
+                      "<p>The user's secondary email address. If you provide a secondary email, the user receives email notifications - other than password reset notifications - to this email address instead of to their primary email address.</p> <p>Pattern: <code>(?=^.{0,265}$)[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,63}</code> </p>",
+                  }),
+                  Mobile: PhoneNumberSchema.exactOptional().openapi({
+                    description: "The user's mobile number.",
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -13628,23 +11671,20 @@ export const putUsersInstanceIdRoute = createRoute({
                 }),
               PhoneConfig: z
                 .object({
-                  PhoneType: PhoneTypeSchema.and(
-                    z.any().openapi({ description: 'The phone type.' }),
-                  ).exactOptional(),
-                  AutoAccept: AutoAcceptSchema.and(
-                    z.any().openapi({ description: 'The Auto accept setting.' }),
-                  ).exactOptional(),
-                  AfterContactWorkTimeLimit: AfterContactWorkTimeLimitSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>The After Call Work (ACW) timeout setting, in seconds.</p> <note> <p>When returned by a <code>SearchUsers</code> call, <code>AfterContactWorkTimeLimit</code> is returned in milliseconds. </p> </note>',
-                      }),
-                  ).exactOptional(),
-                  DeskPhoneNumber: PhoneNumberSchema.and(
-                    z.any().openapi({ description: "The phone number for the user's desk phone." }),
-                  ).exactOptional(),
+                  PhoneType: PhoneTypeSchema.exactOptional().openapi({
+                    description: 'The phone type.',
+                  }),
+                  AutoAccept: AutoAcceptSchema.exactOptional().openapi({
+                    description: 'The Auto accept setting.',
+                  }),
+                  AfterContactWorkTimeLimit:
+                    AfterContactWorkTimeLimitSchema.exactOptional().openapi({
+                      description:
+                        '<p>The After Call Work (ACW) timeout setting, in seconds.</p> <note> <p>When returned by a <code>SearchUsers</code> call, <code>AfterContactWorkTimeLimit</code> is returned in milliseconds. </p> </note>',
+                    }),
+                  DeskPhoneNumber: PhoneNumberSchema.exactOptional().openapi({
+                    description: "The phone number for the user's desk phone.",
+                  }),
                 })
                 .openapi({
                   description:
@@ -15495,26 +13535,16 @@ export const postInstanceInstanceIdTaskTemplateTaskTemplateIdRoute = createRoute
                 }),
               Constraints: z
                 .object({
-                  RequiredFields: RequiredTaskTemplateFieldsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'Lists the fields that are required to be filled by agents.',
-                      }),
-                  ).exactOptional(),
-                  ReadOnlyFields: ReadOnlyTaskTemplateFieldsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Lists the fields that are read-only to agents, and cannot be edited.',
-                      }),
-                  ).exactOptional(),
-                  InvisibleFields: InvisibleTaskTemplateFieldsSchema.and(
-                    z
-                      .any()
-                      .openapi({ description: 'Lists the fields that are invisible to agents.' }),
-                  ).exactOptional(),
+                  RequiredFields: RequiredTaskTemplateFieldsSchema.exactOptional().openapi({
+                    description: 'Lists the fields that are required to be filled by agents.',
+                  }),
+                  ReadOnlyFields: ReadOnlyTaskTemplateFieldsSchema.exactOptional().openapi({
+                    description:
+                      'Lists the fields that are read-only to agents, and cannot be edited.',
+                  }),
+                  InvisibleFields: InvisibleTaskTemplateFieldsSchema.exactOptional().openapi({
+                    description: 'Lists the fields that are invisible to agents.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -15523,9 +13553,10 @@ export const postInstanceInstanceIdTaskTemplateTaskTemplateIdRoute = createRoute
                 }),
               Defaults: z
                 .object({
-                  DefaultFieldValues: TaskTemplateDefaultFieldValueListSchema.and(
-                    z.any().openapi({ description: 'Default value for the field.' }),
-                  ).exactOptional(),
+                  DefaultFieldValues:
+                    TaskTemplateDefaultFieldValueListSchema.exactOptional().openapi({
+                      description: 'Default value for the field.',
+                    }),
                 })
                 .exactOptional()
                 .openapi({
@@ -17005,37 +15036,25 @@ export const postInstanceInstanceIdStorageConfigAssociationIdResourceTypeRoute =
             .object({
               StorageConfig: z
                 .object({
-                  AssociationId: AssociationIdSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The existing association identifier that uniquely identifies the resource type and storage config for the given instance ID.',
-                      }),
-                  ).exactOptional(),
-                  StorageType: StorageTypeSchema.and(
-                    z.any().openapi({ description: 'A valid storage type.' }),
-                  ).exactOptional(),
-                  S3Config: S3ConfigSchema.and(
-                    z.any().openapi({ description: 'The S3 bucket configuration.' }),
-                  ).exactOptional(),
-                  KinesisVideoStreamConfig: KinesisVideoStreamConfigSchema.and(
-                    z
-                      .any()
-                      .openapi({ description: 'The configuration of the Kinesis video stream.' }),
-                  ).exactOptional(),
-                  KinesisStreamConfig: KinesisStreamConfigSchema.and(
-                    z
-                      .any()
-                      .openapi({ description: 'The configuration of the Kinesis data stream.' }),
-                  ).exactOptional(),
-                  KinesisFirehoseConfig: KinesisFirehoseConfigSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The configuration of the Kinesis Firehose delivery stream.',
-                      }),
-                  ).exactOptional(),
+                  AssociationId: AssociationIdSchema.exactOptional().openapi({
+                    description:
+                      'The existing association identifier that uniquely identifies the resource type and storage config for the given instance ID.',
+                  }),
+                  StorageType: StorageTypeSchema.exactOptional().openapi({
+                    description: 'A valid storage type.',
+                  }),
+                  S3Config: S3ConfigSchema.exactOptional().openapi({
+                    description: 'The S3 bucket configuration.',
+                  }),
+                  KinesisVideoStreamConfig: KinesisVideoStreamConfigSchema.exactOptional().openapi({
+                    description: 'The configuration of the Kinesis video stream.',
+                  }),
+                  KinesisStreamConfig: KinesisStreamConfigSchema.exactOptional().openapi({
+                    description: 'The configuration of the Kinesis data stream.',
+                  }),
+                  KinesisFirehoseConfig: KinesisFirehoseConfigSchema.exactOptional().openapi({
+                    description: 'The configuration of the Kinesis Firehose delivery stream.',
+                  }),
                 })
                 .openapi({
                   description: 'The storage configuration for the instance.',
@@ -17651,21 +15670,21 @@ export const postUserHierarchyStructureInstanceIdRoute = createRoute({
             .object({
               HierarchyStructure: z
                 .object({
-                  LevelOne: HierarchyLevelUpdateSchema.and(
-                    z.any().openapi({ description: 'The update for level one.' }),
-                  ).exactOptional(),
-                  LevelTwo: HierarchyLevelUpdateSchema.and(
-                    z.any().openapi({ description: 'The update for level two.' }),
-                  ).exactOptional(),
-                  LevelThree: HierarchyLevelUpdateSchema.and(
-                    z.any().openapi({ description: 'The update for level three.' }),
-                  ).exactOptional(),
-                  LevelFour: HierarchyLevelUpdateSchema.and(
-                    z.any().openapi({ description: 'The update for level four.' }),
-                  ).exactOptional(),
-                  LevelFive: HierarchyLevelUpdateSchema.and(
-                    z.any().openapi({ description: 'The update for level five.' }),
-                  ).exactOptional(),
+                  LevelOne: HierarchyLevelUpdateSchema.exactOptional().openapi({
+                    description: 'The update for level one.',
+                  }),
+                  LevelTwo: HierarchyLevelUpdateSchema.exactOptional().openapi({
+                    description: 'The update for level two.',
+                  }),
+                  LevelThree: HierarchyLevelUpdateSchema.exactOptional().openapi({
+                    description: 'The update for level three.',
+                  }),
+                  LevelFour: HierarchyLevelUpdateSchema.exactOptional().openapi({
+                    description: 'The update for level four.',
+                  }),
+                  LevelFive: HierarchyLevelUpdateSchema.exactOptional().openapi({
+                    description: 'The update for level five.',
+                  }),
                 })
                 .openapi({
                   description: 'Contains information about the level hierarchy to update.',
@@ -18542,22 +16561,16 @@ export const postMetricsCurrentInstanceIdRoute = createRoute({
             .object({
               Filters: z
                 .object({
-                  Queues: QueuesSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The queues to use to filter the metrics. You should specify at least one queue, and can specify up to 100 queues per request. The <code>GetCurrentMetricsData</code> API in particular requires a queue when you include a <code>Filter</code> in your request. ',
-                      }),
-                  ).exactOptional(),
-                  Channels: ChannelsSchema.and(
-                    z.any().openapi({ description: 'The channel to use to filter the metrics.' }),
-                  ).exactOptional(),
-                  RoutingProfiles: RoutingProfilesSchema.and(
-                    z
-                      .any()
-                      .openapi({ description: 'A list of up to 100 routing profile IDs or ARNs.' }),
-                  ).exactOptional(),
+                  Queues: QueuesSchema.exactOptional().openapi({
+                    description:
+                      'The queues to use to filter the metrics. You should specify at least one queue, and can specify up to 100 queues per request. The <code>GetCurrentMetricsData</code> API in particular requires a queue when you include a <code>Filter</code> in your request. ',
+                  }),
+                  Channels: ChannelsSchema.exactOptional().openapi({
+                    description: 'The channel to use to filter the metrics.',
+                  }),
+                  RoutingProfiles: RoutingProfilesSchema.exactOptional().openapi({
+                    description: 'A list of up to 100 routing profile IDs or ARNs.',
+                  }),
                 })
                 .openapi({
                   description: 'Contains the filter to apply when retrieving metrics.',
@@ -18698,28 +16711,22 @@ export const postMetricsUserdataInstanceIdRoute = createRoute({
             .object({
               Filters: z
                 .object({
-                  Queues: QueuesSchema.and(
-                    z.any().openapi({ description: 'A list of up to 100 queues or ARNs.' }),
-                  ).exactOptional(),
-                  ContactFilter: ContactFilterSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'A filter for the user data based on the contact information that is associated to the user. It contains a list of contact states. ',
-                      }),
-                  ).exactOptional(),
-                  RoutingProfiles: RoutingProfilesSchema.and(
-                    z
-                      .any()
-                      .openapi({ description: 'A list of up to 100 routing profile IDs or ARNs.' }),
-                  ).exactOptional(),
-                  Agents: AgentsMinOneMaxHundredSchema.and(
-                    z.any().openapi({ description: 'A list of up to 100 agent IDs or ARNs.' }),
-                  ).exactOptional(),
-                  UserHierarchyGroups: UserDataHierarchyGroupsSchema.and(
-                    z.any().openapi({ description: 'A UserHierarchyGroup ID or ARN.' }),
-                  ).exactOptional(),
+                  Queues: QueuesSchema.exactOptional().openapi({
+                    description: 'A list of up to 100 queues or ARNs.',
+                  }),
+                  ContactFilter: ContactFilterSchema.exactOptional().openapi({
+                    description:
+                      'A filter for the user data based on the contact information that is associated to the user. It contains a list of contact states. ',
+                  }),
+                  RoutingProfiles: RoutingProfilesSchema.exactOptional().openapi({
+                    description: 'A list of up to 100 routing profile IDs or ARNs.',
+                  }),
+                  Agents: AgentsMinOneMaxHundredSchema.exactOptional().openapi({
+                    description: 'A list of up to 100 agent IDs or ARNs.',
+                  }),
+                  UserHierarchyGroups: UserDataHierarchyGroupsSchema.exactOptional().openapi({
+                    description: 'A UserHierarchyGroup ID or ARN.',
+                  }),
                 })
                 .openapi({ description: 'A filter for the user data.', required: [] }),
               NextToken: z
@@ -18912,22 +16919,16 @@ export const postMetricsHistoricalInstanceIdRoute = createRoute({
                 }),
               Filters: z
                 .object({
-                  Queues: QueuesSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The queues to use to filter the metrics. You should specify at least one queue, and can specify up to 100 queues per request. The <code>GetCurrentMetricsData</code> API in particular requires a queue when you include a <code>Filter</code> in your request. ',
-                      }),
-                  ).exactOptional(),
-                  Channels: ChannelsSchema.and(
-                    z.any().openapi({ description: 'The channel to use to filter the metrics.' }),
-                  ).exactOptional(),
-                  RoutingProfiles: RoutingProfilesSchema.and(
-                    z
-                      .any()
-                      .openapi({ description: 'A list of up to 100 routing profile IDs or ARNs.' }),
-                  ).exactOptional(),
+                  Queues: QueuesSchema.exactOptional().openapi({
+                    description:
+                      'The queues to use to filter the metrics. You should specify at least one queue, and can specify up to 100 queues per request. The <code>GetCurrentMetricsData</code> API in particular requires a queue when you include a <code>Filter</code> in your request. ',
+                  }),
+                  Channels: ChannelsSchema.exactOptional().openapi({
+                    description: 'The channel to use to filter the metrics.',
+                  }),
+                  RoutingProfiles: RoutingProfilesSchema.exactOptional().openapi({
+                    description: 'A list of up to 100 routing profile IDs or ARNs.',
+                  }),
                 })
                 .openapi({
                   description: 'Contains the filter to apply when retrieving metrics.',
@@ -19240,9 +17241,9 @@ export const putTrafficDistributionIdRoute = createRoute({
             .object({
               TelephonyConfig: z
                 .object({
-                  Distributions: DistributionListSchema.and(
-                    z.any().openapi({ description: 'Information about traffic distributions.' }),
-                  ).exactOptional(),
+                  Distributions: DistributionListSchema.exactOptional().openapi({
+                    description: 'Information about traffic distributions.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -23390,26 +21391,18 @@ export const postSearchQueuesRoute = createRoute({
                 .openapi({ description: 'Filters to be applied to search results.', required: [] }),
               SearchCriteria: z
                 .object({
-                  OrConditions: QueueSearchConditionListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'A list of conditions which would be applied together with an OR condition.',
-                      }),
-                  ).exactOptional(),
-                  AndConditions: QueueSearchConditionListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'A list of conditions which would be applied together with an AND condition.',
-                      }),
-                  ).exactOptional(),
+                  OrConditions: QueueSearchConditionListSchema.exactOptional().openapi({
+                    description:
+                      'A list of conditions which would be applied together with an OR condition.',
+                  }),
+                  AndConditions: QueueSearchConditionListSchema.exactOptional().openapi({
+                    description:
+                      'A list of conditions which would be applied together with an AND condition.',
+                  }),
                   StringCondition: StringConditionSchema.exactOptional(),
-                  QueueTypeCondition: SearchableQueueTypeSchema.and(
-                    z.any().openapi({ description: 'The type of queue.' }),
-                  ).exactOptional(),
+                  QueueTypeCondition: SearchableQueueTypeSchema.exactOptional().openapi({
+                    description: 'The type of queue.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -23528,22 +21521,14 @@ export const postSearchRoutingProfilesRoute = createRoute({
                 .openapi({ description: 'Filters to be applied to search results.', required: [] }),
               SearchCriteria: z
                 .object({
-                  OrConditions: RoutingProfileSearchConditionListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'A list of conditions which would be applied together with an OR condition.',
-                      }),
-                  ).exactOptional(),
-                  AndConditions: RoutingProfileSearchConditionListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'A list of conditions which would be applied together with an AND condition.',
-                      }),
-                  ).exactOptional(),
+                  OrConditions: RoutingProfileSearchConditionListSchema.exactOptional().openapi({
+                    description:
+                      'A list of conditions which would be applied together with an OR condition.',
+                  }),
+                  AndConditions: RoutingProfileSearchConditionListSchema.exactOptional().openapi({
+                    description:
+                      'A list of conditions which would be applied together with an AND condition.',
+                  }),
                   StringCondition: StringConditionSchema.exactOptional(),
                 })
                 .exactOptional()
@@ -23659,22 +21644,14 @@ export const postSearchSecurityProfilesRoute = createRoute({
                 .openapi({ description: 'The maximum number of results to return per page.' }),
               SearchCriteria: z
                 .object({
-                  OrConditions: SecurityProfileSearchConditionListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'A list of conditions which would be applied together with an OR condition.',
-                      }),
-                  ).exactOptional(),
-                  AndConditions: SecurityProfileSearchConditionListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'A list of conditions which would be applied together with an AND condition.',
-                      }),
-                  ).exactOptional(),
+                  OrConditions: SecurityProfileSearchConditionListSchema.exactOptional().openapi({
+                    description:
+                      'A list of conditions which would be applied together with an OR condition.',
+                  }),
+                  AndConditions: SecurityProfileSearchConditionListSchema.exactOptional().openapi({
+                    description:
+                      'A list of conditions which would be applied together with an AND condition.',
+                  }),
                   StringCondition: StringConditionSchema.exactOptional(),
                 })
                 .exactOptional()
@@ -23799,38 +21776,22 @@ export const postSearchUsersRoute = createRoute({
                 .openapi({ description: 'Filters to be applied to search results.', required: [] }),
               SearchCriteria: z
                 .object({
-                  OrConditions: UserSearchConditionListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'A list of conditions which would be applied together with an <code>OR</code> condition.',
-                      }),
-                  ).exactOptional(),
-                  AndConditions: UserSearchConditionListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'A list of conditions which would be applied together with an <code>AND</code> condition. ',
-                      }),
-                  ).exactOptional(),
-                  StringCondition: StringConditionSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'A leaf node condition which can be used to specify a string condition.',
-                      }),
-                  ).exactOptional(),
-                  HierarchyGroupCondition: HierarchyGroupConditionSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'A leaf node condition which can be used to specify a hierarchy group condition.',
-                      }),
-                  ).exactOptional(),
+                  OrConditions: UserSearchConditionListSchema.exactOptional().openapi({
+                    description:
+                      'A list of conditions which would be applied together with an <code>OR</code> condition.',
+                  }),
+                  AndConditions: UserSearchConditionListSchema.exactOptional().openapi({
+                    description:
+                      'A list of conditions which would be applied together with an <code>AND</code> condition. ',
+                  }),
+                  StringCondition: StringConditionSchema.exactOptional().openapi({
+                    description:
+                      'A leaf node condition which can be used to specify a string condition.',
+                  }),
+                  HierarchyGroupCondition: HierarchyGroupConditionSchema.exactOptional().openapi({
+                    description:
+                      'A leaf node condition which can be used to specify a hierarchy group condition.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -24070,29 +22031,21 @@ export const putContactChatRoute = createRoute({
                 }),
               ParticipantDetails: z
                 .object({
-                  DisplayName: DisplayNameSchema.and(
-                    z.any().openapi({ description: 'Display name of the participant.' }),
-                  ).exactOptional(),
+                  DisplayName: DisplayNameSchema.exactOptional().openapi({
+                    description: 'Display name of the participant.',
+                  }),
                 })
                 .openapi({ description: "The customer's details.", required: [] }),
               InitialMessage: z
                 .object({
-                  ContentType: ChatContentTypeSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The type of the content. Supported types are <code>text/plain</code>, <code>text/markdown</code>, <code>application/json</code>, and <code>application/vnd.amazonaws.connect.message.interactive.response</code>.',
-                      }),
-                  ).exactOptional(),
-                  Content: ChatContentSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>The content of the chat message. </p> <ul> <li> <p>For <code>text/plain</code> and <code>text/markdown</code>, the Length Constraints are Minimum of 1, Maximum of 1024. </p> </li> <li> <p>For <code>application/json</code>, the Length Constraints are Minimum of 1, Maximum of 12000. </p> </li> <li> <p>For <code>application/vnd.amazonaws.connect.message.interactive.response</code>, the Length Constraints are Minimum of 1, Maximum of 12288.</p> </li> </ul>',
-                      }),
-                  ).exactOptional(),
+                  ContentType: ChatContentTypeSchema.exactOptional().openapi({
+                    description:
+                      'The type of the content. Supported types are <code>text/plain</code>, <code>text/markdown</code>, <code>application/json</code>, and <code>application/vnd.amazonaws.connect.message.interactive.response</code>.',
+                  }),
+                  Content: ChatContentSchema.exactOptional().openapi({
+                    description:
+                      '<p>The content of the chat message. </p> <ul> <li> <p>For <code>text/plain</code> and <code>text/markdown</code>, the Length Constraints are Minimum of 1, Maximum of 1024. </p> </li> <li> <p>For <code>application/json</code>, the Length Constraints are Minimum of 1, Maximum of 12000. </p> </li> <li> <p>For <code>application/vnd.amazonaws.connect.message.interactive.response</code>, the Length Constraints are Minimum of 1, Maximum of 12288.</p> </li> </ul>',
+                  }),
                 })
                 .exactOptional()
                 .openapi({ description: 'A chat message.', required: [] }),
@@ -24122,22 +22075,14 @@ export const putContactChatRoute = createRoute({
                 }),
               PersistentChat: z
                 .object({
-                  RehydrationType: RehydrationTypeSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>The contactId that is used for rehydration depends on the rehydration type. RehydrationType is required for persistent chat. </p> <ul> <li> <p> <code>ENTIRE_PAST_SESSION</code>: Rehydrates a chat from the most recently terminated past chat contact of the specified past ended chat session. To use this type, provide the <code>initialContactId</code> of the past ended chat session in the <code>sourceContactId</code> field. In this type, Amazon Connect determines the most recent chat contact on the specified chat session that has ended, and uses it to start a persistent chat. </p> </li> <li> <p> <code>FROM_SEGMENT</code>: Rehydrates a chat from the past chat contact that is specified in the <code>sourceContactId</code> field. </p> </li> </ul> <p>The actual contactId used for rehydration is provided in the response of this API. </p>',
-                      }),
-                  ).exactOptional(),
-                  SourceContactId: ContactIdSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The contactId from which a persistent chat session must be started.',
-                      }),
-                  ).exactOptional(),
+                  RehydrationType: RehydrationTypeSchema.exactOptional().openapi({
+                    description:
+                      '<p>The contactId that is used for rehydration depends on the rehydration type. RehydrationType is required for persistent chat. </p> <ul> <li> <p> <code>ENTIRE_PAST_SESSION</code>: Rehydrates a chat from the most recently terminated past chat contact of the specified past ended chat session. To use this type, provide the <code>initialContactId</code> of the past ended chat session in the <code>sourceContactId</code> field. In this type, Amazon Connect determines the most recent chat contact on the specified chat session that has ended, and uses it to start a persistent chat. </p> </li> <li> <p> <code>FROM_SEGMENT</code>: Rehydrates a chat from the past chat contact that is specified in the <code>sourceContactId</code> field. </p> </li> </ul> <p>The actual contactId used for rehydration is provided in the response of this API. </p>',
+                  }),
+                  SourceContactId: ContactIdSchema.exactOptional().openapi({
+                    description:
+                      'The contactId from which a persistent chat session must be started.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -24233,9 +22178,9 @@ export const postContactStartRecordingRoute = createRoute({
                 }),
               VoiceRecordingConfiguration: z
                 .object({
-                  VoiceRecordingTrack: VoiceRecordingTrackSchema.and(
-                    z.any().openapi({ description: 'Identifies which track is being recorded.' }),
-                  ).exactOptional(),
+                  VoiceRecordingTrack: VoiceRecordingTrackSchema.exactOptional().openapi({
+                    description: 'Identifies which track is being recorded.',
+                  }),
                 })
                 .openapi({
                   description: 'Contains information about the recording configuration settings.',
@@ -24318,14 +22263,10 @@ export const postContactStartStreamingRoute = createRoute({
                 }),
               ChatStreamingConfiguration: z
                 .object({
-                  StreamingEndpointArn: ChatStreamingEndpointARNSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The Amazon Resource Name (ARN) of the standard Amazon SNS topic. The Amazon Resource Name (ARN) of the streaming endpoint that is used to publish real-time message streaming for chat conversations.',
-                      }),
-                  ).exactOptional(),
+                  StreamingEndpointArn: ChatStreamingEndpointARNSchema.exactOptional().openapi({
+                    description:
+                      'The Amazon Resource Name (ARN) of the standard Amazon SNS topic. The Amazon Resource Name (ARN) of the streaming endpoint that is used to publish real-time message streaming for chat conversations.',
+                  }),
                 })
                 .openapi({
                   description:
@@ -24448,17 +22389,13 @@ export const putContactOutboundVoiceRoute = createRoute({
                 }),
               AnswerMachineDetectionConfig: z
                 .object({
-                  EnableAnswerMachineDetection: BooleanSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The flag to indicate if answer machine detection analysis needs to be performed for a voice call. If set to <code>true</code>, <code>TrafficType</code> must be set as <code>CAMPAIGN</code>. ',
-                      }),
-                  ).exactOptional(),
-                  AwaitAnswerMachinePrompt: BooleanSchema.and(
-                    z.any().openapi({ description: 'Wait for the answering machine prompt.' }),
-                  ).exactOptional(),
+                  EnableAnswerMachineDetection: BooleanSchema.exactOptional().openapi({
+                    description:
+                      'The flag to indicate if answer machine detection analysis needs to be performed for a voice call. If set to <code>true</code>, <code>TrafficType</code> must be set as <code>CAMPAIGN</code>. ',
+                  }),
+                  AwaitAnswerMachinePrompt: BooleanSchema.exactOptional().openapi({
+                    description: 'Wait for the answering machine prompt.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -25823,13 +23760,9 @@ export const putContactParticipantRoleConfigInstanceIdContactIdRoute = createRou
             .object({
               ChannelConfiguration: z
                 .object({
-                  Chat: ChatParticipantRoleConfigSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'Configuration information for the chat participant role.',
-                      }),
-                  ).exactOptional(),
+                  Chat: ChatParticipantRoleConfigSchema.exactOptional().openapi({
+                    description: 'Configuration information for the chat participant role.',
+                  }),
                 })
                 .openapi({
                   description: 'Configuration information for the chat participant role.',
@@ -26191,20 +24124,15 @@ export const postQueuesInstanceIdQueueIdOutboundCallerConfigRoute = createRoute(
             .object({
               OutboundCallerConfig: z
                 .object({
-                  OutboundCallerIdName: OutboundCallerIdNameSchema.and(
-                    z.any().openapi({ description: 'The caller ID name.' }),
-                  ).exactOptional(),
-                  OutboundCallerIdNumberId: PhoneNumberIdSchema.and(
-                    z.any().openapi({ description: 'The caller ID number.' }),
-                  ).exactOptional(),
-                  OutboundFlowId: ContactFlowIdSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The outbound whisper flow to be used during an outbound call.',
-                      }),
-                  ).exactOptional(),
+                  OutboundCallerIdName: OutboundCallerIdNameSchema.exactOptional().openapi({
+                    description: 'The caller ID name.',
+                  }),
+                  OutboundCallerIdNumberId: PhoneNumberIdSchema.exactOptional().openapi({
+                    description: 'The caller ID number.',
+                  }),
+                  OutboundFlowId: ContactFlowIdSchema.exactOptional().openapi({
+                    description: 'The outbound whisper flow to be used during an outbound call.',
+                  }),
                 })
                 .openapi({
                   description: 'The outbound caller ID name, number, and outbound whisper flow.',
@@ -26374,38 +24302,22 @@ export const postQuickConnectsInstanceIdQuickConnectIdConfigRoute = createRoute(
             .object({
               QuickConnectConfig: z
                 .object({
-                  QuickConnectType: QuickConnectTypeSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The type of quick connect. In the Amazon Connect console, when you create a quick connect, you are prompted to assign one of the following types: Agent (USER), External (PHONE_NUMBER), or Queue (QUEUE). ',
-                      }),
-                  ).exactOptional(),
-                  UserConfig: UserQuickConnectConfigSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The user configuration. This is required only if QuickConnectType is USER.',
-                      }),
-                  ).exactOptional(),
-                  QueueConfig: QueueQuickConnectConfigSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The queue configuration. This is required only if QuickConnectType is QUEUE.',
-                      }),
-                  ).exactOptional(),
-                  PhoneConfig: PhoneNumberQuickConnectConfigSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The phone configuration. This is required only if QuickConnectType is PHONE_NUMBER.',
-                      }),
-                  ).exactOptional(),
+                  QuickConnectType: QuickConnectTypeSchema.exactOptional().openapi({
+                    description:
+                      'The type of quick connect. In the Amazon Connect console, when you create a quick connect, you are prompted to assign one of the following types: Agent (USER), External (PHONE_NUMBER), or Queue (QUEUE). ',
+                  }),
+                  UserConfig: UserQuickConnectConfigSchema.exactOptional().openapi({
+                    description:
+                      'The user configuration. This is required only if QuickConnectType is USER.',
+                  }),
+                  QueueConfig: QueueQuickConnectConfigSchema.exactOptional().openapi({
+                    description:
+                      'The queue configuration. This is required only if QuickConnectType is QUEUE.',
+                  }),
+                  PhoneConfig: PhoneNumberQuickConnectConfigSchema.exactOptional().openapi({
+                    description:
+                      'The phone configuration. This is required only if QuickConnectType is PHONE_NUMBER.',
+                  }),
                 })
                 .openapi({
                   description: 'Contains configuration settings for a quick connect.',
@@ -27027,41 +24939,25 @@ export const postUsersInstanceIdUserIdIdentityInfoRoute = createRoute({
             .object({
               IdentityInfo: z
                 .object({
-                  FirstName: AgentFirstNameSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The first name. This is required if you are using Amazon Connect or SAML for identity management.',
-                      }),
-                  ).exactOptional(),
-                  LastName: AgentLastNameSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The last name. This is required if you are using Amazon Connect or SAML for identity management.',
-                      }),
-                  ).exactOptional(),
-                  Email: EmailSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The email address. If you are using SAML for identity management and include this parameter, an error is returned.',
-                      }),
-                  ).exactOptional(),
-                  SecondaryEmail: EmailSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          "<p>The user's secondary email address. If you provide a secondary email, the user receives email notifications - other than password reset notifications - to this email address instead of to their primary email address.</p> <p>Pattern: <code>(?=^.{0,265}$)[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,63}</code> </p>",
-                      }),
-                  ).exactOptional(),
-                  Mobile: PhoneNumberSchema.and(
-                    z.any().openapi({ description: "The user's mobile number." }),
-                  ).exactOptional(),
+                  FirstName: AgentFirstNameSchema.exactOptional().openapi({
+                    description:
+                      'The first name. This is required if you are using Amazon Connect or SAML for identity management.',
+                  }),
+                  LastName: AgentLastNameSchema.exactOptional().openapi({
+                    description:
+                      'The last name. This is required if you are using Amazon Connect or SAML for identity management.',
+                  }),
+                  Email: EmailSchema.exactOptional().openapi({
+                    description:
+                      'The email address. If you are using SAML for identity management and include this parameter, an error is returned.',
+                  }),
+                  SecondaryEmail: EmailSchema.exactOptional().openapi({
+                    description:
+                      "<p>The user's secondary email address. If you provide a secondary email, the user receives email notifications - other than password reset notifications - to this email address instead of to their primary email address.</p> <p>Pattern: <code>(?=^.{0,265}$)[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,63}</code> </p>",
+                  }),
+                  Mobile: PhoneNumberSchema.exactOptional().openapi({
+                    description: "The user's mobile number.",
+                  }),
                 })
                 .openapi({
                   description: 'Contains information about the identity of a user.',
@@ -27148,23 +25044,20 @@ export const postUsersInstanceIdUserIdPhoneConfigRoute = createRoute({
             .object({
               PhoneConfig: z
                 .object({
-                  PhoneType: PhoneTypeSchema.and(
-                    z.any().openapi({ description: 'The phone type.' }),
-                  ).exactOptional(),
-                  AutoAccept: AutoAcceptSchema.and(
-                    z.any().openapi({ description: 'The Auto accept setting.' }),
-                  ).exactOptional(),
-                  AfterContactWorkTimeLimit: AfterContactWorkTimeLimitSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>The After Call Work (ACW) timeout setting, in seconds.</p> <note> <p>When returned by a <code>SearchUsers</code> call, <code>AfterContactWorkTimeLimit</code> is returned in milliseconds. </p> </note>',
-                      }),
-                  ).exactOptional(),
-                  DeskPhoneNumber: PhoneNumberSchema.and(
-                    z.any().openapi({ description: "The phone number for the user's desk phone." }),
-                  ).exactOptional(),
+                  PhoneType: PhoneTypeSchema.exactOptional().openapi({
+                    description: 'The phone type.',
+                  }),
+                  AutoAccept: AutoAcceptSchema.exactOptional().openapi({
+                    description: 'The Auto accept setting.',
+                  }),
+                  AfterContactWorkTimeLimit:
+                    AfterContactWorkTimeLimitSchema.exactOptional().openapi({
+                      description:
+                        '<p>The After Call Work (ACW) timeout setting, in seconds.</p> <note> <p>When returned by a <code>SearchUsers</code> call, <code>AfterContactWorkTimeLimit</code> is returned in milliseconds. </p> </note>',
+                    }),
+                  DeskPhoneNumber: PhoneNumberSchema.exactOptional().openapi({
+                    description: "The phone number for the user's desk phone.",
+                  }),
                 })
                 .openapi({
                   description:

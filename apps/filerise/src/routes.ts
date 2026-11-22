@@ -294,7 +294,7 @@ export const getApiAdminAclGetGrantsPhpRoute = createRoute({
       description: 'Grants map',
       content: {
         'application/json': {
-          schema: z.object({ grants: z.object({}).exactOptional() }).openapi({ required: [] }),
+          schema: z.object({ grants: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
         },
       },
     },
@@ -328,7 +328,7 @@ export const postApiAdminAclSaveGrantsPhpRoute = createRoute({
               .object({
                 user: z.string().openapi({ example: 'johndoe' }),
                 sourceId: z.string().exactOptional().openapi({ example: 'local' }),
-                grants: z.object({}).openapi({ description: 'Map of folder -> capabilities' }),
+                grants: z.looseObject({}).openapi({ description: 'Map of folder -> capabilities' }),
               })
               .openapi({ required: ['user', 'grants'] }),
             z
@@ -338,7 +338,7 @@ export const postApiAdminAclSaveGrantsPhpRoute = createRoute({
                   z
                     .object({
                       user: z.string().openapi({ example: 'johndoe' }),
-                      grants: z.object({}),
+                      grants: z.looseObject({}),
                     })
                     .openapi({ required: ['user', 'grants'] }),
                 ),
@@ -3885,7 +3885,7 @@ export const postApiProGroupsSavePhpRoute = createRoute({
     body: {
       content: {
         'application/json': {
-          schema: z.object({ groups: z.object({}) }).openapi({ required: ['groups'] }),
+          schema: z.object({ groups: z.looseObject({}) }).openapi({ required: ['groups'] }),
         },
       },
       required: true,
@@ -3991,7 +3991,7 @@ export const postApiProPortalsSavePhpRoute = createRoute({
     body: {
       content: {
         'application/json': {
-          schema: z.object({ portals: z.object({}) }).openapi({ required: ['portals'] }),
+          schema: z.object({ portals: z.looseObject({}) }).openapi({ required: ['portals'] }),
         },
       },
       required: true,
@@ -4329,7 +4329,7 @@ export const getApiProfileGetUserPermissionsPhpRoute = createRoute({
   responses: {
     200: {
       description: 'Successful response with user permissions',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     401: { description: 'Unauthorized' },
   },
@@ -4941,13 +4941,10 @@ export const postApiUploadUploadPhpRoute = createRoute({
     302: {
       description: 'Redirect after a successful full upload.',
       headers: z.object({
-        Location: {
-          description: 'Where the client is redirected',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ description: 'Where the client is redirected', param: { required: false } }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Where the client is redirected', param: { required: false } }),
       }),
     },
     400: { description: 'Bad request (missing/invalid fields, model error)' },

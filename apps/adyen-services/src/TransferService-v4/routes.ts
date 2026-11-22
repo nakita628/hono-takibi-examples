@@ -2017,7 +2017,15 @@ type TransferDataType = {
   balanceAccount?: z.infer<typeof ResourceReferenceSchema>
   balancePlatform?: string
   balances?: z.infer<typeof BalanceMutationSchema>[]
-  category: 'bank' | 'card' | 'interest' | 'internal' | 'issuedCard' | 'platformPayment' | 'topUp'
+  category:
+    | 'bank'
+    | 'card'
+    | 'grants'
+    | 'interest'
+    | 'internal'
+    | 'issuedCard'
+    | 'platformPayment'
+    | 'topUp'
   categoryData?:
     | z.infer<typeof BankCategoryDataSchema>
     | z.infer<typeof InternalCategoryDataSchema>
@@ -2277,10 +2285,19 @@ const TransferDataSchema: z.ZodType<TransferDataType> = z
         'x-addedInVersion': '3',
       }),
     category: z
-      .enum(['bank', 'card', 'interest', 'internal', 'issuedCard', 'platformPayment', 'topUp'])
+      .enum([
+        'bank',
+        'card',
+        'grants',
+        'interest',
+        'internal',
+        'issuedCard',
+        'platformPayment',
+        'topUp',
+      ])
       .openapi({
         description:
-          'The category of the transfer.\n\nPossible values:\n\n - **bank**: A transfer involving a [transfer instrument](https://docs.adyen.com/api-explorer/legalentity/latest/post/transferInstruments#responses-200-id) or a bank account.\n\n- **card**: A transfer involving a third-party card.\n\n- **interest**: A transfer that settles accrued [interest](https://docs.adyen.com/business-accounts/earn-returns) on a business account.\n\n- **internal**: A transfer between [balance accounts](https://docs.adyen.com/api-explorer/balanceplatform/latest/post/balanceAccounts#responses-200-id) within your platform.\n\n- **issuedCard**: A transfer initiated by an Adyen-issued card.\n\n- **platformPayment**: Funds movements related to payments that are acquired for your users.\n\n- **topUp**: An incoming transfer initiated by your user to top up their balance account.',
+          'The category of the transfer.\n\nPossible values:\n\n - **bank**: A transfer involving a [transfer instrument](https://docs.adyen.com/api-explorer/legalentity/latest/post/transferInstruments#responses-200-id) or a bank account.\n\n- **card**: A transfer involving a third-party card.\n\n- **grants**: A transfer related to a capital grant, such as a disbursement or a repayment.\n\n- **interest**: A transfer that settles accrued [interest](https://docs.adyen.com/business-accounts/earn-returns) on a business account.\n\n- **internal**: A transfer between [balance accounts](https://docs.adyen.com/api-explorer/balanceplatform/latest/post/balanceAccounts#responses-200-id) within your platform.\n\n- **issuedCard**: A transfer initiated by an Adyen-issued card.\n\n- **platformPayment**: Funds movements related to payments that are acquired for your users.\n\n- **topUp**: An incoming transfer initiated by your user to top up their balance account.',
         'x-addedInVersion': '3',
       }),
     categoryData: z
@@ -3335,10 +3352,19 @@ const TransferSchema = z
       'x-addedInVersion': '3',
     }),
     category: z
-      .enum(['bank', 'card', 'interest', 'internal', 'issuedCard', 'platformPayment', 'topUp'])
+      .enum([
+        'bank',
+        'card',
+        'grants',
+        'interest',
+        'internal',
+        'issuedCard',
+        'platformPayment',
+        'topUp',
+      ])
       .openapi({
         description:
-          'The category of the transfer.\n\nPossible values:\n\n - **bank**: A transfer involving a [transfer instrument](https://docs.adyen.com/api-explorer/legalentity/latest/post/transferInstruments#responses-200-id) or a bank account.\n\n- **card**: A transfer involving a third-party card.\n\n- **interest**: A transfer that settles accrued [interest](https://docs.adyen.com/business-accounts/earn-returns) on a business account.\n\n- **internal**: A transfer between [balance accounts](https://docs.adyen.com/api-explorer/balanceplatform/latest/post/balanceAccounts#responses-200-id) within your platform.\n\n- **issuedCard**: A transfer initiated by an Adyen-issued card.\n\n- **platformPayment**: Funds movements related to payments that are acquired for your users.\n\n- **topUp**: An incoming transfer initiated by your user to top up their balance account.',
+          'The category of the transfer.\n\nPossible values:\n\n - **bank**: A transfer involving a [transfer instrument](https://docs.adyen.com/api-explorer/legalentity/latest/post/transferInstruments#responses-200-id) or a bank account.\n\n- **card**: A transfer involving a third-party card.\n\n- **grants**: A transfer related to a capital grant, such as a disbursement or a repayment.\n\n- **interest**: A transfer that settles accrued [interest](https://docs.adyen.com/business-accounts/earn-returns) on a business account.\n\n- **internal**: A transfer between [balance accounts](https://docs.adyen.com/api-explorer/balanceplatform/latest/post/balanceAccounts#responses-200-id) within your platform.\n\n- **issuedCard**: A transfer initiated by an Adyen-issued card.\n\n- **platformPayment**: Funds movements related to payments that are acquired for your users.\n\n- **topUp**: An incoming transfer initiated by your user to top up their balance account.',
         'x-addedInVersion': '3',
       }),
     categoryData: z
@@ -5442,7 +5468,7 @@ export const getTransfersRoute = createRoute({
             name: 'category',
             in: 'query',
             description:
-              'The category of the transfer.\n\nPossible values:\n\n - **bank**: A transfer involving a [transfer instrument](https://docs.adyen.com/api-explorer/legalentity/latest/post/transferInstruments#responses-200-id) or a bank account.\n\n- **card**: A transfer involving a third-party card.\n\n- **interest**: A transfer that settles accrued [interest](https://docs.adyen.com/business-accounts/earn-returns) on a business account.\n\n- **internal**: A transfer between [balance accounts](https://docs.adyen.com/api-explorer/balanceplatform/latest/post/balanceAccounts#responses-200-id) within your platform.\n\n- **issuedCard**: A transfer initiated by an Adyen-issued card.\n\n- **platformPayment**: Funds movements related to payments that are acquired for your users.\n\n- **topUp**: An incoming transfer initiated by your user to top up their balance account.',
+              'The category of the transfer.\n\nPossible values:\n\n - **bank**: A transfer involving a [transfer instrument](https://docs.adyen.com/api-explorer/legalentity/latest/post/transferInstruments#responses-200-id) or a bank account.\n\n- **card**: A transfer involving a third-party card.\n\n- **grants**: A transfer related to a capital grant, such as a disbursement or a repayment.\n\n- **interest**: A transfer that settles accrued [interest](https://docs.adyen.com/business-accounts/earn-returns) on a business account.\n\n- **internal**: A transfer between [balance accounts](https://docs.adyen.com/api-explorer/balanceplatform/latest/post/balanceAccounts#responses-200-id) within your platform.\n\n- **issuedCard**: A transfer initiated by an Adyen-issued card.\n\n- **platformPayment**: Funds movements related to payments that are acquired for your users.\n\n- **topUp**: An incoming transfer initiated by your user to top up their balance account.',
             required: false,
             style: 'form',
             explode: true,

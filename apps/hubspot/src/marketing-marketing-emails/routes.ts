@@ -1,113 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const AbTestCreateRequestVNextSchema = z
-  .object({
-    contentId: z.string().openapi({ description: 'ID of the object to test.', example: null }),
-    variationName: z
-      .string()
-      .openapi({ description: 'Name of the variation to be created.', example: null }),
-  })
-  .openapi({ required: ['contentId', 'variationName'], example: null })
-  .openapi('AbTestCreateRequestVNext')
-
-const EmailStatisticsDataSchema = z
-  .object({
-    counters: z
-      .record(
-        z.string(),
-        z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({ type: 'integer', format: 'int64', example: null }),
-      )
-      .openapi({
-        description: 'Counters like number of `sent`, `open` or `delivered`.',
-        example: null,
-      }),
-    deviceBreakdown: z
-      .record(
-        z.string(),
-        z
-          .record(
-            z.string(),
-            z
-              .preprocess(
-                (val) =>
-                  typeof val === 'number' && Number.isSafeInteger(val)
-                    ? BigInt(val)
-                    : typeof val === 'string' && /^-?\d+$/.test(val)
-                      ? BigInt(val)
-                      : val,
-                z.int64(),
-              )
-              .openapi({ type: 'integer', format: 'int64', example: null }),
-          )
-          .openapi({ example: null }),
-      )
-      .openapi({ description: 'Statistics by device.', example: null }),
-    qualifierStats: z
-      .record(
-        z.string(),
-        z
-          .record(
-            z.string(),
-            z
-              .preprocess(
-                (val) =>
-                  typeof val === 'number' && Number.isSafeInteger(val)
-                    ? BigInt(val)
-                    : typeof val === 'string' && /^-?\d+$/.test(val)
-                      ? BigInt(val)
-                      : val,
-                z.int64(),
-              )
-              .openapi({ type: 'integer', format: 'int64', example: null }),
-          )
-          .openapi({ example: null }),
-      )
-      .openapi({ description: 'Number of emails that were dropped and bounced.', example: null }),
-    ratios: z
-      .record(z.string(), z.number().openapi({ example: null }))
-      .openapi({ description: 'Ratios like `openratio` or `clickratio`', example: null }),
-  })
-  .openapi({ required: ['counters', 'deviceBreakdown', 'qualifierStats', 'ratios'], example: null })
-  .openapi('EmailStatisticsData')
-
-const AggregateEmailStatisticsSchema = z
-  .object({
-    aggregate: EmailStatisticsDataSchema,
-    campaignAggregations: z
-      .record(z.string(), EmailStatisticsDataSchema)
-      .openapi({ description: 'The aggregated statistics per campaign.', example: null }),
-    emails: z
-      .array(
-        z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({ type: 'integer', format: 'int64', example: null }),
-      )
-      .openapi({
-        description: 'List of email IDs that were sent during the time span.',
-        example: null,
-      }),
-  })
-  .openapi({ required: ['aggregate', 'campaignAggregations', 'emails'], example: null })
-  .openapi('AggregateEmailStatistics')
-
 const NextPageSchema = z
   .object({
     after: z
@@ -162,51 +54,10 @@ const PagingSchema = z
   })
   .openapi('Paging')
 
-const IntervalSchema = z
-  .object({
-    end: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'The end timestamp of the interval, in ISO8601 format.',
-        example: null,
-      }),
-    start: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'The start timestamp of the interval, in ISO8601 format.',
-        example: null,
-      }),
-  })
-  .openapi({ required: ['end', 'start'], example: null })
-  .openapi('Interval')
-
-const EmailStatisticIntervalSchema = z
-  .object({ aggregations: EmailStatisticsDataSchema, interval: IntervalSchema })
-  .openapi({ required: ['aggregations', 'interval'], example: null })
-  .openapi('EmailStatisticInterval')
-
-const CollectionResponseWithTotalEmailStatisticIntervalSchema = z
-  .object({
-    paging: PagingSchema.exactOptional(),
-    results: z
-      .array(EmailStatisticIntervalSchema)
-      .openapi({
-        description:
-          'An array of EmailStatisticInterval objects, each representing statistics for a specific time interval.',
-        example: null,
-      }),
-    total: z
-      .int32()
-      .openapi({
-        description:
-          'An integer representing the total number of email statistic intervals available.',
-        example: null,
-      }),
-  })
-  .openapi({ required: ['results', 'total'], example: null })
-  .openapi('CollectionResponseWithTotalEmailStatisticInterval')
-
-const SmartEmailFieldSchema = z.object({}).openapi({ example: null }).openapi('SmartEmailField')
+const SmartEmailFieldSchema = z
+  .looseObject({})
+  .openapi({ example: null })
+  .openapi('SmartEmailField')
 
 const PublicFontStyleSchema = z
   .object({
@@ -253,7 +104,7 @@ const PublicFontStyleSchema = z
 const PublicButtonStyleSettingsSchema = z
   .object({
     backgroundColor: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'An object representing the background color of the button.',
@@ -274,7 +125,7 @@ const PublicButtonStyleSettingsSchema = z
 const PublicDividerStyleSettingsSchema = z
   .object({
     color: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'An object representing the color settings of the divider.',
@@ -479,7 +330,7 @@ const PublicEmailStyleSettingsSchema = z
 const PublicEmailContentSchema = z
   .object({
     flexAreas: z
-      .record(z.string(), z.object({}).openapi({ example: null }))
+      .record(z.string(), z.looseObject({}).openapi({ example: null }))
       .exactOptional()
       .openapi({
         description:
@@ -510,7 +361,7 @@ const PublicEmailContentSchema = z
         example: null,
       }),
     themeSettingsValues: z
-      .record(z.string(), z.object({}).openapi({ example: null }))
+      .record(z.string(), z.looseObject({}).openapi({ example: null }))
       .exactOptional()
       .openapi({
         description:
@@ -518,7 +369,7 @@ const PublicEmailContentSchema = z
         example: null,
       }),
     widgetContainers: z
-      .record(z.string(), z.object({}).openapi({ example: null }))
+      .record(z.string(), z.looseObject({}).openapi({ example: null }))
       .exactOptional()
       .openapi({
         description:
@@ -526,7 +377,7 @@ const PublicEmailContentSchema = z
         example: null,
       }),
     widgets: z
-      .record(z.string(), z.object({}).openapi({ example: null }))
+      .record(z.string(), z.looseObject({}).openapi({ example: null }))
       .exactOptional()
       .openapi({
         description:
@@ -604,7 +455,7 @@ const PublicRssEmailDetailsSchema = z
         example: null,
       }),
     timing: z
-      .record(z.string(), z.object({}).openapi({ example: null }))
+      .record(z.string(), z.looseObject({}).openapi({ example: null }))
       .exactOptional()
       .openapi({
         description:
@@ -629,6 +480,76 @@ const PublicRssEmailDetailsSchema = z
   })
   .openapi({ example: null, required: [] })
   .openapi('PublicRssEmailDetails')
+
+const EmailStatisticsDataSchema = z
+  .object({
+    counters: z
+      .record(
+        z.string(),
+        z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({ type: 'integer', format: 'int64', example: null }),
+      )
+      .openapi({
+        description: 'Counters like number of `sent`, `open` or `delivered`.',
+        example: null,
+      }),
+    deviceBreakdown: z
+      .record(
+        z.string(),
+        z
+          .record(
+            z.string(),
+            z
+              .preprocess(
+                (val) =>
+                  typeof val === 'number' && Number.isSafeInteger(val)
+                    ? BigInt(val)
+                    : typeof val === 'string' && /^-?\d+$/.test(val)
+                      ? BigInt(val)
+                      : val,
+                z.int64(),
+              )
+              .openapi({ type: 'integer', format: 'int64', example: null }),
+          )
+          .openapi({ example: null }),
+      )
+      .openapi({ description: 'Statistics by device.', example: null }),
+    qualifierStats: z
+      .record(
+        z.string(),
+        z
+          .record(
+            z.string(),
+            z
+              .preprocess(
+                (val) =>
+                  typeof val === 'number' && Number.isSafeInteger(val)
+                    ? BigInt(val)
+                    : typeof val === 'string' && /^-?\d+$/.test(val)
+                      ? BigInt(val)
+                      : val,
+                z.int64(),
+              )
+              .openapi({ type: 'integer', format: 'int64', example: null }),
+          )
+          .openapi({ example: null }),
+      )
+      .openapi({ description: 'Number of emails that were dropped and bounced.', example: null }),
+    ratios: z
+      .record(z.string(), z.number().openapi({ example: null }))
+      .openapi({ description: 'Ratios like `openratio` or `clickratio`', example: null }),
+  })
+  .openapi({ required: ['counters', 'deviceBreakdown', 'qualifierStats', 'ratios'], example: null })
+  .openapi('EmailStatisticsData')
 
 const PublicEmailSubscriptionDetailsSchema = z
   .object({
@@ -2101,26 +2022,6 @@ const PublicEmailSchema = z
   .openapi({ required: ['isAb'], example: null })
   .openapi('PublicEmail')
 
-const CollectionResponseWithTotalPublicEmailSchema = z
-  .object({
-    paging: PagingSchema.exactOptional(),
-    results: z
-      .array(PublicEmailSchema)
-      .openapi({
-        description:
-          'An array containing the public email objects retrieved in the current page of results.',
-        example: null,
-      }),
-    total: z
-      .int32()
-      .openapi({
-        description: 'An integer representing the total number of public emails available.',
-        example: null,
-      }),
-  })
-  .openapi({ required: ['results', 'total'], example: null })
-  .openapi('CollectionResponseWithTotalPublicEmail')
-
 const VersionUserSchema = z
   .object({
     email: z.string().openapi({ description: 'Email address of the user.', example: null }),
@@ -2148,25 +2049,135 @@ const VersionPublicEmailSchema = z
   .openapi({ required: ['id', 'object', 'updatedAt', 'user'], example: null })
   .openapi('VersionPublicEmail')
 
-const CollectionResponseWithTotalPublicEmailVersionSchema = z
+type CollectionResponseWithTotalPublicEmailVersionType = {
+  paging?: z.infer<typeof PagingSchema>
+  results: z.infer<typeof VersionPublicEmailSchema>[]
+  total: number
+}
+
+const AbTestCreateRequestVNextSchema = z
+  .object({
+    contentId: z.string().openapi({ description: 'ID of the object to test.', example: null }),
+    variationName: z
+      .string()
+      .openapi({ description: 'Name of the variation to be created.', example: null }),
+  })
+  .openapi({ required: ['contentId', 'variationName'], example: null })
+  .openapi('AbTestCreateRequestVNext')
+
+const AggregateEmailStatisticsSchema = z
+  .object({
+    aggregate: EmailStatisticsDataSchema,
+    campaignAggregations: z
+      .record(z.string(), EmailStatisticsDataSchema)
+      .openapi({ description: 'The aggregated statistics per campaign.', example: null }),
+    emails: z
+      .array(
+        z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({ type: 'integer', format: 'int64', example: null }),
+      )
+      .openapi({
+        description: 'List of email IDs that were sent during the time span.',
+        example: null,
+      }),
+  })
+  .openapi({ required: ['aggregate', 'campaignAggregations', 'emails'], example: null })
+  .openapi('AggregateEmailStatistics')
+
+const IntervalSchema = z
+  .object({
+    end: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'The end timestamp of the interval, in ISO8601 format.',
+        example: null,
+      }),
+    start: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'The start timestamp of the interval, in ISO8601 format.',
+        example: null,
+      }),
+  })
+  .openapi({ required: ['end', 'start'], example: null })
+  .openapi('Interval')
+
+const EmailStatisticIntervalSchema = z
+  .object({ aggregations: EmailStatisticsDataSchema, interval: IntervalSchema })
+  .openapi({ required: ['aggregations', 'interval'], example: null })
+  .openapi('EmailStatisticInterval')
+
+const CollectionResponseWithTotalEmailStatisticIntervalSchema = z
   .object({
     paging: PagingSchema.exactOptional(),
     results: z
-      .array(VersionPublicEmailSchema)
+      .array(EmailStatisticIntervalSchema)
       .openapi({
         description:
-          'An array of email version objects, each conforming to the VersionPublicEmail schema.',
+          'An array of EmailStatisticInterval objects, each representing statistics for a specific time interval.',
         example: null,
       }),
     total: z
       .int32()
       .openapi({
-        description: 'An integer representing the total number of email version results available.',
+        description:
+          'An integer representing the total number of email statistic intervals available.',
         example: null,
       }),
   })
   .openapi({ required: ['results', 'total'], example: null })
-  .openapi('CollectionResponseWithTotalPublicEmailVersion')
+  .openapi('CollectionResponseWithTotalEmailStatisticInterval')
+
+const CollectionResponseWithTotalPublicEmailSchema = z
+  .object({
+    paging: PagingSchema.exactOptional(),
+    results: z
+      .array(PublicEmailSchema)
+      .openapi({
+        description:
+          'An array containing the public email objects retrieved in the current page of results.',
+        example: null,
+      }),
+    total: z
+      .int32()
+      .openapi({
+        description: 'An integer representing the total number of public emails available.',
+        example: null,
+      }),
+  })
+  .openapi({ required: ['results', 'total'], example: null })
+  .openapi('CollectionResponseWithTotalPublicEmail')
+
+const CollectionResponseWithTotalPublicEmailVersionSchema: z.ZodType<CollectionResponseWithTotalPublicEmailVersionType> =
+  z
+    .object({
+      paging: PagingSchema.exactOptional(),
+      results: z
+        .array(VersionPublicEmailSchema)
+        .openapi({
+          description:
+            'An array of email version objects, each conforming to the VersionPublicEmail schema.',
+          example: null,
+        }),
+      total: z
+        .int32()
+        .openapi({
+          description:
+            'An integer representing the total number of email version results available.',
+          example: null,
+        }),
+    })
+    .openapi({ required: ['results', 'total'], example: null })
+    .openapi('CollectionResponseWithTotalPublicEmailVersion')
 
 const EmailCloneRequestVNextSchema = z
   .object({
@@ -4562,15 +4573,20 @@ const Oauth2SecurityScheme = {
         'marketing-email': '',
         'marketing.email.read': '',
         'marketing.email.write': '',
+        marketplace_validation: '',
         'transactional-email': '',
       },
     },
   },
+  'x-hubspot-app-availability': {
+    content: { portal: ['public', 'private'], developer: false },
+    'marketing-email': { portal: ['public', 'private'], developer: false },
+    'marketing.email.read': { user: ['public', 'private'], developer: false },
+    'marketing.email.write': { user: ['public'], developer: false },
+    marketplace_validation: { developer: true },
+    'transactional-email': { portal: ['public', 'private'], developer: false },
+  },
 }
-
-const PrivateAppsSecurityScheme = { type: 'apiKey', name: 'private-app', in: 'header' }
-
-const PrivateAppsLegacySecurityScheme = { type: 'apiKey', name: 'private-app-legacy', in: 'header' }
 
 export const getMarketingEmails202609Route = createRoute({
   method: 'get',
@@ -5003,6 +5019,7 @@ export const getMarketingEmails202609Route = createRoute({
   security: [
     { oauth2: ['marketing.email.read'] },
     { oauth2: ['marketing.email.write'] },
+    { oauth2: ['marketplace_validation'] },
     { oauth2: ['content'] },
   ],
 })
@@ -5026,18 +5043,14 @@ export const postMarketingEmails202609Route = createRoute({
       description: 'successful operation',
       content: { 'application/json': { schema: PublicEmailSchema, example: null } },
       headers: z.object({
-        Location: {
-          description: 'URL of the newly created resource',
-          style: 'simple',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'URL of the newly created resource',
-              param: { required: false },
-              example: null,
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'URL of the newly created resource',
+            param: { required: false },
+            example: null,
+          }),
       }),
     },
     default: ErrorResponse,
@@ -5045,6 +5058,7 @@ export const postMarketingEmails202609Route = createRoute({
   security: [
     { oauth2: ['marketing.email.read'] },
     { oauth2: ['marketing.email.write'] },
+    { oauth2: ['marketplace_validation'] },
     { oauth2: ['content'] },
   ],
 })
@@ -5068,18 +5082,14 @@ export const postMarketingEmails202609AbTestCreateVariationRoute = createRoute({
       description: 'successful operation',
       content: { 'application/json': { schema: PublicEmailSchema, example: null } },
       headers: z.object({
-        Location: {
-          description: 'URL of the newly created resource',
-          style: 'simple',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'URL of the newly created resource',
-              param: { required: false },
-              example: null,
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'URL of the newly created resource',
+            param: { required: false },
+            example: null,
+          }),
       }),
     },
     default: ErrorResponse,
@@ -5087,6 +5097,7 @@ export const postMarketingEmails202609AbTestCreateVariationRoute = createRoute({
   security: [
     { oauth2: ['marketing.email.read'] },
     { oauth2: ['marketing.email.write'] },
+    { oauth2: ['marketplace_validation'] },
     { oauth2: ['content'] },
   ],
 })
@@ -5115,6 +5126,7 @@ export const postMarketingEmails202609CloneRoute = createRoute({
   security: [
     { oauth2: ['marketing.email.read'] },
     { oauth2: ['marketing.email.write'] },
+    { oauth2: ['marketplace_validation'] },
     { oauth2: ['content'] },
   ],
 })
@@ -5251,6 +5263,7 @@ export const getMarketingEmails202609StatisticsHistogramRoute = createRoute({
   security: [
     { oauth2: ['marketing.email.read'] },
     { oauth2: ['marketing.email.write'] },
+    { oauth2: ['marketplace_validation'] },
     { oauth2: ['content'] },
   ],
 })
@@ -5357,6 +5370,7 @@ export const getMarketingEmails202609StatisticsListRoute = createRoute({
   security: [
     { oauth2: ['marketing.email.read'] },
     { oauth2: ['marketing.email.write'] },
+    { oauth2: ['marketplace_validation'] },
     { oauth2: ['content'] },
   ],
 })
@@ -5491,6 +5505,7 @@ export const getMarketingEmails202609EmailIdRoute = createRoute({
   security: [
     { oauth2: ['marketing.email.read'] },
     { oauth2: ['marketing.email.write'] },
+    { oauth2: ['marketplace_validation'] },
     { oauth2: ['content'] },
   ],
 })
@@ -5541,6 +5556,7 @@ export const deleteMarketingEmails202609EmailIdRoute = createRoute({
   security: [
     { oauth2: ['marketing.email.read'] },
     { oauth2: ['marketing.email.write'] },
+    { oauth2: ['marketplace_validation'] },
     { oauth2: ['content'] },
   ],
 })
@@ -5601,6 +5617,7 @@ export const patchMarketingEmails202609EmailIdRoute = createRoute({
   security: [
     { oauth2: ['marketing.email.read'] },
     { oauth2: ['marketing.email.write'] },
+    { oauth2: ['marketplace_validation'] },
     { oauth2: ['content'] },
   ],
 })
@@ -5739,6 +5756,7 @@ export const getMarketingEmails202609EmailIdAbTestGetVariationRoute = createRout
   security: [
     { oauth2: ['marketing.email.read'] },
     { oauth2: ['marketing.email.write'] },
+    { oauth2: ['marketplace_validation'] },
     { oauth2: ['content'] },
   ],
 })
@@ -5779,6 +5797,7 @@ export const getMarketingEmails202609EmailIdDraftRoute = createRoute({
   security: [
     { oauth2: ['marketing.email.read'] },
     { oauth2: ['marketing.email.write'] },
+    { oauth2: ['marketplace_validation'] },
     { oauth2: ['content'] },
   ],
 })
@@ -5823,6 +5842,7 @@ export const patchMarketingEmails202609EmailIdDraftRoute = createRoute({
   security: [
     { oauth2: ['marketing.email.read'] },
     { oauth2: ['marketing.email.write'] },
+    { oauth2: ['marketplace_validation'] },
     { oauth2: ['content'] },
   ],
 })
@@ -5856,6 +5876,7 @@ export const postMarketingEmails202609EmailIdDraftResetRoute = createRoute({
   security: [
     { oauth2: ['marketing.email.read'] },
     { oauth2: ['marketing.email.write'] },
+    { oauth2: ['marketplace_validation'] },
     { oauth2: ['content'] },
   ],
 })
@@ -5988,6 +6009,7 @@ export const getMarketingEmails202609EmailIdRevisionsRoute = createRoute({
   security: [
     { oauth2: ['marketing.email.read'] },
     { oauth2: ['marketing.email.write'] },
+    { oauth2: ['marketplace_validation'] },
     { oauth2: ['content'] },
   ],
 })
@@ -6042,6 +6064,7 @@ export const getMarketingEmails202609EmailIdRevisionsRevisionIdRoute = createRou
   security: [
     { oauth2: ['marketing.email.read'] },
     { oauth2: ['marketing.email.write'] },
+    { oauth2: ['marketplace_validation'] },
     { oauth2: ['content'] },
   ],
 })
@@ -6091,6 +6114,7 @@ export const postMarketingEmails202609EmailIdRevisionsRevisionIdRestoreRoute = c
   security: [
     { oauth2: ['marketing.email.read'] },
     { oauth2: ['marketing.email.write'] },
+    { oauth2: ['marketplace_validation'] },
     { oauth2: ['content'] },
   ],
 })
@@ -6152,6 +6176,7 @@ export const postMarketingEmails202609EmailIdRevisionsRevisionIdRestoreToDraftRo
   security: [
     { oauth2: ['marketing.email.read'] },
     { oauth2: ['marketing.email.write'] },
+    { oauth2: ['marketplace_validation'] },
     { oauth2: ['content'] },
   ],
 })

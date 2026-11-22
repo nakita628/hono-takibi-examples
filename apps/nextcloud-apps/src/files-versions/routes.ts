@@ -112,12 +112,10 @@ export const getIndexPhpAppsFilesVersionsPreviewRoute = createRoute({
     303: {
       description: 'Redirect to the mime icon url if mimeFallback is true',
       headers: z.object({
-        Location: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {

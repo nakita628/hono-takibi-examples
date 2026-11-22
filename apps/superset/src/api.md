@@ -3130,6 +3130,7 @@ curl http://localhost:8088/api/v1/chart/data \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "async_mode": true,
+    "client_id": "string",
     "custom_cache_timeout": 0,
     "datasource": {
       "id": null,
@@ -3290,6 +3291,7 @@ Takes a query context constructed in the client and returns payload data respons
 ```json
 {
   "async_mode": true,
+  "client_id": "string",
   "custom_cache_timeout": 0,
   "datasource": {
     "id": null,
@@ -3447,6 +3449,7 @@ Takes a query context constructed in the client and returns payload data respons
 |---|---|---|---|---|
 |body|body|[ChartDataQueryContextSchema](#schemachartdataquerycontextschema)|true|A query context consists of a datasource from which to fetch data and one or many query objects.|
 |» async_mode|body|boolean \| null|false|Opt this request into asynchronous execution on the Global Task Framework (requires the GLOBAL_ASYNC_QUERIES feature flag). When true the response is HTTP 202 with the query task ids to poll; when absent or false the query runs synchronously (HTTP 200). Default: `false`.|
+|» client_id|body|string \| null|false|Client-generated id identifying this chart query run. When the database supports query cancellation, it lets the client stop the running query via POST /api/v1/chart/data/stop. Scoped to the requesting user, so it can never address another user's query.|
 |» custom_cache_timeout|body|integer \| null|false|Override the default cache timeout|
 |» datasource|body|[ChartDataDatasource](#schemachartdatadatasource)|false|none|
 |» force|body|boolean \| null|false|Should the queries be forced to load from the source. Default: `false`|
@@ -3629,6 +3632,132 @@ To perform this operation, you must be authenticated by means of one of the foll
 jwt, api_key
 </aside>
 
+## Cancel a running chart-data query
+
+> Code samples
+
+```bash
+curl http://localhost:8088/api/v1/chart/data/stop \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "client_id": "string"
+  }'
+```
+
+`POST /api/v1/chart/data/stop`
+
+Cancels the warehouse query started by a chart-data request that carried the given `client_id`, for databases whose engine supports query cancellation. The `client_id` is resolved only within the requesting user's own in-flight queries, so it cannot be used to reach another user's query.
+
+> Body parameter
+
+```json
+{
+  "client_id": "string"
+}
+```
+
+<h3 id="cancel-a-running-chart-data-query-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|body|body|[ChartDataStopSchema](#schemachartdatastopschema)|true|none|
+|» client_id|body|string|true|The `client_id` sent with the chart-data request whose query should be cancelled. Resolved within the requesting user's own in-flight queries only.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "result": {
+    "stopped": true
+  }
+}
+```
+
+> 400 Response
+
+```json
+{
+  "message": "string"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "message": "string"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "message": "string"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "message": "string"
+}
+```
+
+<h3 id="cancel-a-running-chart-data-query-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Cancellation outcome|Inline|
+|400|Bad Request|Bad request|Inline|
+|401|Unauthorized|Unauthorized|Inline|
+|403|Forbidden|Forbidden|Inline|
+|500|Internal Server Error|Fatal error|Inline|
+
+<h3 id="cancel-a-running-chart-data-query-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|result|object|false|none|none|
+|» stopped|boolean|false|none|Whether the engine reported the query cancelled. False when there was no such in-flight query for this user, or the engine could not cancel it.|
+
+Status Code **400**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|message|string|false|none|none|
+
+Status Code **401**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|message|string|false|none|none|
+
+Status Code **403**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|message|string|false|none|none|
+
+Status Code **500**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|message|string|false|none|none|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+jwt, api_key
+</aside>
+
 ## Download multiple charts as YAML files
 
 > Code samples
@@ -3738,7 +3867,7 @@ curl http://localhost:8088/api/v1/chart/favorite_status/ \
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|q|query|[get_fav_star_ids_schema](#schemaget_fav_star_ids_schema)|false|none|
+|q|query|[get_fav_star_ids_schema2](#schemaget_fav_star_ids_schema2)|false|none|
 
 > Example responses
 
@@ -3837,6 +3966,7 @@ curl http://localhost:8088/api/v1/chart/import/ \
   -X POST \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -F 'encrypted_extra_secrets=string' \
   -F 'formData=@/path/to/file' \
   -F 'overwrite=true' \
   -F 'passwords=string' \
@@ -3850,6 +3980,7 @@ curl http://localhost:8088/api/v1/chart/import/ \
 > Body parameter
 
 ```yaml
+encrypted_extra_secrets: string
 formData: string
 overwrite: true
 passwords: string
@@ -3863,6 +3994,7 @@ ssh_tunnel_private_keys: string
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |body|body|object|true|none|
+|» encrypted_extra_secrets|body|string|false|JSON map of sensitive values for masked_encrypted_extra fields of featured databases. Keys are file paths (e.g., "databases/db.yaml") and values are JSON objects mapping JSONPath expressions to secrets.|
 |» formData|body|string(binary)|false|upload file (ZIP)|
 |» overwrite|body|boolean|false|overwrite existing charts?|
 |» passwords|body|string|false|JSON map of passwords for each featured database in the ZIP file. If the ZIP includes a database config in the path `databases/MyDatabase.yaml`, the password should be provided in the following format: `{"databases/MyDatabase.yaml": "my_password"}`.|
@@ -8294,7 +8426,7 @@ curl http://localhost:8088/api/v1/dashboard/favorite_status/ \
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|q|query|[get_fav_star_ids_schema](#schemaget_fav_star_ids_schema)|false|none|
+|q|query|[get_fav_star_ids_schema2](#schemaget_fav_star_ids_schema2)|false|none|
 
 > Example responses
 
@@ -8393,6 +8525,7 @@ curl http://localhost:8088/api/v1/dashboard/import/ \
   -X POST \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -F 'encrypted_extra_secrets=string' \
   -F 'formData=@/path/to/file' \
   -F 'overwrite=true' \
   -F 'overwrite_all=true' \
@@ -8407,6 +8540,7 @@ curl http://localhost:8088/api/v1/dashboard/import/ \
 > Body parameter
 
 ```yaml
+encrypted_extra_secrets: string
 formData: string
 overwrite: true
 overwrite_all: true
@@ -8421,6 +8555,7 @@ ssh_tunnel_private_keys: string
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |body|body|object|true|none|
+|» encrypted_extra_secrets|body|string|false|JSON map of sensitive values for masked_encrypted_extra fields of featured databases. Keys are file paths (e.g., "databases/db.yaml") and values are JSON objects mapping JSONPath expressions to secrets.|
 |» formData|body|string(binary)|false|upload file (ZIP or JSON)|
 |» overwrite|body|boolean|false|overwrite existing dashboards?|
 |» overwrite_all|body|boolean|false|overwrite all existing assets within the dashboard?|
@@ -11836,6 +11971,7 @@ curl http://localhost:8088/api/v1/dashboard/497f6eca-6276-4993-bfeb-53cbbbba6f08
 |---|---|---|---|---|
 |uuid_str|path|string(uuid)|true|Dashboard UUID|
 |version_uuid_str|path|string(uuid)|true|Version UUID as returned by the list endpoint|
+|include_restore_impact|query|boolean|false|Include the current count of charts a restore would detach|
 
 > Example responses
 
@@ -11844,6 +11980,9 @@ curl http://localhost:8088/api/v1/dashboard/497f6eca-6276-4993-bfeb-53cbbbba6f08
 ```json
 {
   "result": {
+    "_restore_impact": {
+      "removed_chart_count": 0
+    },
     "_version": {
       "changed_by": {
         "first_name": "string",
@@ -11918,6 +12057,8 @@ Status Code **200**
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |result|object|false|none|The dashboard's scalar fields at the target version (entity-specific keys), plus a `_version` block with the version-level metadata.|
+|» _restore_impact|object|false|none|Current membership impact when requested|
+|» » removed_chart_count|integer|false|none|none|
 |» _version|[VersionListItemSchema](#schemaversionlistitemschema)|false|none|none|
 
 Status Code **400**
@@ -13788,6 +13929,10 @@ curl http://localhost:8088/api/v1/database/available/ \
     "engine": "string",
     "engine_information": {
       "disable_ssh_tunneling": true,
+      "encrypted_extra_sensitive_fields": {
+        "property1": "string",
+        "property2": "string"
+      },
       "supports_file_upload": true
     },
     "name": "string",
@@ -13834,6 +13979,8 @@ Status Code **200**
 |» engine|string|false|none|Name of the SQLAlchemy engine|
 |» engine_information|object|false|none|Dict with public properties form the DB Engine|
 |» » disable_ssh_tunneling|boolean|false|none|Whether the engine supports SSH Tunnels|
+|» » encrypted_extra_sensitive_fields|object|false|none|JSONPath of each sensitive encrypted_extra field and its label|
+|» » » **additionalProperties**|string|false|none|none|
 |» » supports_file_upload|boolean|false|none|Whether the engine supports file uploads|
 |» name|string|false|none|Name of the database|
 |» parameters|object|false|none|JSON schema defining the needed parameters|
@@ -15446,6 +15593,20 @@ curl http://localhost:8088/api/v1/database/0/connection \
   "driver": "string",
   "engine_information": {
     "disable_ssh_tunneling": true,
+    "encrypted_extra_expirations": {
+      "property1": {
+        "expired": true,
+        "expires_at": "1970-01-01T00:00:00Z"
+      },
+      "property2": {
+        "expired": true,
+        "expires_at": "1970-01-01T00:00:00Z"
+      }
+    },
+    "encrypted_extra_sensitive_fields": {
+      "property1": "string",
+      "property2": "string"
+    },
     "identifier_quote": {
       "end": "string",
       "escape_by_doubling": true,
@@ -15543,6 +15704,117 @@ Status Code **401**
 |message|string|false|none|none|
 
 Status Code **422**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|message|string|false|none|none|
+
+Status Code **500**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|message|string|false|none|none|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+jwt, api_key
+</aside>
+
+## Get hints for the masked fields of a database's encrypted extra
+
+> Code samples
+
+```bash
+curl http://localhost:8088/api/v1/database/0/encrypted_extra_hints/ \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /api/v1/database/{pk}/encrypted_extra_hints/`
+
+Returns the label and last characters of each sensitive field in the database's encrypted extra, so that a stored secret can be told apart from another one without revealing it. A JWT also gets the expiry its unverified exp claim states. The number of characters is set by `ENCRYPTED_EXTRA_HINT_CHARS`; the list is empty when it is 0 or less.
+
+<h3 id="get-hints-for-the-masked-fields-of-a-databases-encrypted-extra-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|pk|path|integer|true|The database id|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "result": [
+    {
+      "expired": true,
+      "expires_at": "1970-01-01T00:00:00Z",
+      "label": "string",
+      "path": "string",
+      "suffix": "string"
+    }
+  ]
+}
+```
+
+> 401 Response
+
+```json
+{
+  "message": "string"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "message": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "message": "string"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "message": "string"
+}
+```
+
+<h3 id="get-hints-for-the-masked-fields-of-a-databases-encrypted-extra-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Hints for the masked fields|[EncryptedExtraHintsResponseSchema](#schemaencryptedextrahintsresponseschema)|
+|401|Unauthorized|Unauthorized|Inline|
+|403|Forbidden|Forbidden|Inline|
+|404|Not Found|Not found|Inline|
+|500|Internal Server Error|Fatal error|Inline|
+
+<h3 id="get-hints-for-the-masked-fields-of-a-databases-encrypted-extra-responseschema">Response Schema</h3>
+
+Status Code **401**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|message|string|false|none|none|
+
+Status Code **403**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|message|string|false|none|none|
+
+Status Code **404**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -18786,6 +19058,7 @@ curl http://localhost:8088/api/v1/dataset/import/ \
   -X POST \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -F 'encrypted_extra_secrets=string' \
   -F 'formData=@/path/to/file' \
   -F 'overwrite=true' \
   -F 'passwords=string' \
@@ -18801,6 +19074,7 @@ curl http://localhost:8088/api/v1/dataset/import/ \
 > Body parameter
 
 ```yaml
+encrypted_extra_secrets: string
 formData: string
 overwrite: true
 passwords: string
@@ -18816,6 +19090,7 @@ sync_metrics: true
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |body|body|object|true|none|
+|» encrypted_extra_secrets|body|string|false|JSON map of sensitive values for masked_encrypted_extra fields of featured databases. Keys are file paths (e.g., "databases/db.yaml") and values are JSON objects mapping JSONPath expressions to secrets.|
 |» formData|body|string(binary)|false|upload file (ZIP or YAML)|
 |» overwrite|body|boolean|false|overwrite existing datasets?|
 |» passwords|body|string|false|JSON map of passwords for each featured database in the ZIP file. If the ZIP includes a database config in the path `databases/MyDatabase.yaml`, the password should be provided in the following format: `{"databases/MyDatabase.yaml": "my_password"}`.|
@@ -19050,7 +19325,7 @@ curl http://localhost:8088/api/v1/dataset/related_objects/ \
 
 `GET /api/v1/dataset/related_objects/`
 
-Aggregates the charts built on any of the requested datasets and the dashboards those charts appear on. Each chart and dashboard is listed once even if it depends on several of the datasets. Requested datasets the user cannot see are ignored; the response is 404 only when none of them are visible.
+Aggregates the charts built on any of the requested datasets and the dashboards that depend on them, through those charts or through a native filter or display control targeting a dataset. Each chart and dashboard is listed once even if it depends on several of the datasets. Requested datasets the user cannot see are ignored; the response is 404 only when none of them are visible.
 
 <h3 id="get-charts-and-dashboards-associated-to-multiple-datasets-parameters">Parameters</h3>
 
@@ -20612,6 +20887,7 @@ curl http://localhost:8088/api/v1/dataset/0/partition_mapping/preview/ \
     "sample_values": [
       "string"
     ],
+    "validation_partition_values": null,
     "value_transform": "string"
   }'
 ```
@@ -20631,6 +20907,7 @@ Evaluate a partition value transform at sample values and return the predicate t
   "sample_values": [
     "string"
   ],
+  "validation_partition_values": null,
   "value_transform": "string"
 }
 ```
@@ -20646,6 +20923,7 @@ Evaluate a partition value transform at sample values and return the predicate t
 |» operator|body|string|false|Filter operator being mirrored. Only operators the preview can construct are accepted: TEMPORAL_RANGE is mirrored by the query path as two bounds decomposed from a since/until pair, which this request has no way to express.|
 |» partition_column|body|string \| null|false|Candidate partition column. The editor previews a mapping before it is saved, so this overrides the stored value; omitted, the stored one is used.|
 |» sample_values|body|[string]|true|Values to evaluate the transform at. A comparison operator takes one; IN takes the whole list.|
+|» validation_partition_values|body|[string]|false|One to three existing integer partition keys for explicit data validation|
 |» value_transform|body|string \| null|true|SQL expression containing a :value placeholder|
 
 #### Enumerated Values
@@ -20666,9 +20944,28 @@ Evaluate a partition value transform at sample values and return the predicate t
 ```json
 {
   "result": {
+    "data_validation": {
+      "checked_rows": 0,
+      "examples": [
+        {
+          "source_value": "string",
+          "stored_key": "string",
+          "transformed_value": "string"
+        }
+      ],
+      "inconclusive_keys": [
+        "string"
+      ],
+      "message": "string",
+      "mismatch_count": 0,
+      "partitions_checked": 0,
+      "partitions_requested": 0,
+      "skipped_rows": 0,
+      "status": "not_checked"
+    },
     "emitted_predicate": "string",
     "error": "string",
-    "reason": "unconfigured",
+    "reason": "unbucketed_epoch",
     "sample_input": "string",
     "valid": true
   }
@@ -20742,16 +21039,35 @@ Status Code **200**
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |result|object|false|none|none|
+|» data_validation|object|false|none|none|
+|» » checked_rows|integer|false|none|none|
+|» » examples|[object]|false|none|none|
+|» » » source_value|string|false|none|none|
+|» » » stored_key|string|false|none|none|
+|» » » transformed_value|string \| null|false|none|none|
+|» » inconclusive_keys|[string]|false|none|Partition keys whose rows could not be read, present when the status is inconclusive.|
+|» » message|string|false|none|none|
+|» » mismatch_count|integer|false|none|none|
+|» » partitions_checked|integer|false|none|none|
+|» » partitions_requested|integer|false|none|none|
+|» » skipped_rows|integer|false|none|none|
+|» » status|string|false|none|none|
 |» emitted_predicate|string|false|none|none|
 |» error|string|false|none|none|
-|» reason|string|false|none|Why the mapping is not valid. Absent when it is. The editor branches on this to decide how to present the failure.|
+|» reason|string|false|none|Why predicate evaluation was declined. Absent on evaluation success. The editor branches on this to decide how to present the failure.|
 |» sample_input|string|false|none|none|
-|» valid|boolean|false|none|none|
+|» valid|boolean|false|none|Expression/predicate evaluation succeeded; not a guarantee of partition correspondence.|
 
 #### Enumerated Values
 
 |Property|Value|
 |---|---|
+|» » status|not_checked|
+|» » status|matched|
+|» » status|mismatch|
+|» » status|inconclusive|
+|» » status|refused|
+|» reason|unbucketed_epoch|
 |» reason|unconfigured|
 |» reason|validation|
 |» reason|parse|
@@ -24676,6 +24992,66 @@ To perform this operation, you must be authenticated by means of one of the foll
 jwt, api_key
 </aside>
 
+## Get the self-issuable API-key scopes
+
+> Code samples
+
+```bash
+curl http://localhost:8088/api/v1/me/api_key_scopes/ \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /api/v1/me/api_key_scopes/`
+
+Lists the ``superset:<resource>:<action>`` API-key scopes the current user is allowed to put on a new API key, i.e. the subset of the scope catalog that does not exceed the user's own permissions. Returns a 401 error if the user is unauthenticated.
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "result": [
+    "string"
+  ]
+}
+```
+
+> 401 Response
+
+```json
+{
+  "message": "string"
+}
+```
+
+<h3 id="get-the-self-issuable-api-key-scopes-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|The allowed scopes|Inline|
+|401|Unauthorized|Unauthorized|Inline|
+
+<h3 id="get-the-self-issuable-api-key-scopes-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|result|[string]|false|none|none|
+
+Status Code **401**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|message|string|false|none|none|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+jwt, api_key
+</aside>
+
 ## Get the user roles
 
 > Code samples
@@ -26417,6 +26793,7 @@ curl http://localhost:8088/api/v1/saved_query/import/ \
   -X POST \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -F 'encrypted_extra_secrets=string' \
   -F 'formData=@/path/to/file' \
   -F 'overwrite=true' \
   -F 'passwords=string' \
@@ -26430,6 +26807,7 @@ curl http://localhost:8088/api/v1/saved_query/import/ \
 > Body parameter
 
 ```yaml
+encrypted_extra_secrets: string
 formData: string
 overwrite: true
 passwords: string
@@ -26443,6 +26821,7 @@ ssh_tunnel_private_keys: string
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |body|body|object|true|none|
+|» encrypted_extra_secrets|body|string|false|JSON map of sensitive values for masked_encrypted_extra fields of featured databases. Keys are file paths (e.g., "databases/db.yaml") and values are JSON objects mapping JSONPath expressions to secrets.|
 |» formData|body|string(binary)|false|upload file (ZIP)|
 |» overwrite|body|boolean|false|overwrite existing saved queries?|
 |» passwords|body|string|false|JSON map of passwords for each featured database in the ZIP file. If the ZIP includes a database config in the path `databases/MyDatabase.yaml`, the password should be provided in the following format: `{"databases/MyDatabase.yaml": "my_password"}`.|
@@ -28490,6 +28869,7 @@ Returns the values in effect for every setting: the stored value when an admin s
 
 ```json
 {
+  "default_executor": "string",
   "result": {
     "alert_minimum_interval": 3600,
     "alerts_attach_reports": true,
@@ -28543,6 +28923,7 @@ Status Code **200**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
+|default_executor|string \| null|false|none|Fixed default execution account, visible only to admins.|
 |result|[ReportConfigurationSchema](#schemareportconfigurationschema)|false|none|none|
 
 Status Code **401**
@@ -40218,6 +40599,25 @@ curl http://localhost:8088/api/v1/semantic_view/ \
 ```json
 {
   "archived_count": 0,
+  "blocked_view_ids": [
+    0
+  ],
+  "blocked_views": [
+    {
+      "archived_count": 0,
+      "dependents": [
+        {
+          "archived": true,
+          "id": 0,
+          "name": "string",
+          "type": "chart"
+        }
+      ],
+      "id": 0,
+      "inaccessible_count": 0,
+      "total": 0
+    }
+  ],
   "dependents": [
     {
       "archived": true,
@@ -40282,6 +40682,17 @@ Status Code **409**
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |archived_count|integer|true|none|Archived dependents are named only to users who could restore them from Recently Archived; the others are included in inaccessible_count. The counts overlap and must not be added together.|
+|blocked_view_ids|[integer]|false|none|The selected views that have dependents. Nothing is deleted; the others can be deleted in a new request.|
+|blocked_views|[object]|false|none|Caller-visible dependency details for each blocked view.|
+|» archived_count|integer|true|none|none|
+|» dependents|[object]|true|none|none|
+|» » archived|boolean|true|none|none|
+|» » id|integer|true|none|none|
+|» » name|string|true|none|none|
+|» » type|string|true|none|none|
+|» id|integer|true|none|none|
+|» inaccessible_count|integer|true|none|none|
+|» total|integer|true|none|none|
 |dependents|[object]|true|none|none|
 |» archived|boolean|true|none|none|
 |» id|integer|true|none|none|
@@ -40295,6 +40706,10 @@ Status Code **409**
 
 |Property|Value|
 |---|---|
+|» » type|chart|
+|» » type|dashboard|
+|» » type|alert|
+|» » type|report|
 |» type|chart|
 |» type|dashboard|
 |» type|alert|
@@ -40794,6 +41209,20 @@ Assembles SQLLab bootstrap data (active_tab, databases, queries, tab_state_ids) 
       "disable_drill_to_detail": true,
       "engine_information": {
         "disable_ssh_tunneling": true,
+        "encrypted_extra_expirations": {
+          "property1": {
+            "expired": true,
+            "expires_at": "1970-01-01T00:00:00Z"
+          },
+          "property2": {
+            "expired": true,
+            "expires_at": "1970-01-01T00:00:00Z"
+          }
+        },
+        "encrypted_extra_sensitive_fields": {
+          "property1": "string",
+          "property2": "string"
+        },
         "identifier_quote": {
           "end": "string",
           "escape_by_doubling": true,
@@ -40826,6 +41255,20 @@ Assembles SQLLab bootstrap data (active_tab, databases, queries, tab_state_ids) 
       "disable_drill_to_detail": true,
       "engine_information": {
         "disable_ssh_tunneling": true,
+        "encrypted_extra_expirations": {
+          "property1": {
+            "expired": true,
+            "expires_at": "1970-01-01T00:00:00Z"
+          },
+          "property2": {
+            "expired": true,
+            "expires_at": "1970-01-01T00:00:00Z"
+          }
+        },
+        "encrypted_extra_sensitive_fields": {
+          "property1": "string",
+          "property2": "string"
+        },
         "identifier_quote": {
           "end": "string",
           "escape_by_doubling": true,
@@ -42948,7 +43391,7 @@ Get favorited tags for current user
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|q|query|[get_fav_star_ids_schema](#schemaget_fav_star_ids_schema)|false|none|
+|q|query|[get_fav_star_ids_schema2](#schemaget_fav_star_ids_schema2)|false|none|
 
 > Example responses
 
@@ -47702,6 +48145,7 @@ jwt, api_key
 ```json
 {
   "async_mode": true,
+  "client_id": "string",
   "custom_cache_timeout": 0,
   "datasource": {
     "id": null,
@@ -47858,6 +48302,7 @@ jwt, api_key
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |async_mode|boolean \| null|false|none|Opt this request into asynchronous execution on the Global Task Framework (requires the GLOBAL_ASYNC_QUERIES feature flag). When true the response is HTTP 202 with the query task ids to poll; when absent or false the query runs synchronously (HTTP 200). Default: `false`.|
+|client_id|string \| null|false|none|Client-generated id identifying this chart query run. When the database supports query cancellation, it lets the client stop the running query via POST /api/v1/chart/data/stop. Scoped to the requesting user, so it can never address another user's query.|
 |custom_cache_timeout|integer \| null|false|none|Override the default cache timeout|
 |datasource|[ChartDataDatasource](#schemachartdatadatasource)|false|none|none|
 |force|boolean \| null|false|none|Should the queries be forced to load from the source. Default: `false`|
@@ -48913,6 +49358,25 @@ jwt, api_key
 |ascending|object|false|none|Sort ascending (the default) or descending. A list of booleans may be given to set the direction per entry in `by`.|
 |by|object|false|none|Name, or list of names, of the columns to sort by. Ignored when `is_sort_index` is set.|
 |is_sort_index|boolean|false|none|Whether to sort by the index rather than by column values.|
+
+<h2 id="tocS_ChartDataStopSchema">ChartDataStopSchema</h2>
+<!-- backwards compatibility -->
+<a id="schemachartdatastopschema"></a>
+<a id="schema_ChartDataStopSchema"></a>
+<a id="tocSchartdatastopschema"></a>
+<a id="tocschartdatastopschema"></a>
+
+```json
+{
+  "client_id": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|client_id|string|true|none|The `client_id` sent with the chart-data request whose query should be cancelled. Resolved within the requesting user's own in-flight queries only.|
 
 <h2 id="tocS_ChartDataTiming">ChartDataTiming</h2>
 <!-- backwards compatibility -->
@@ -50911,6 +51375,20 @@ jwt, api_key
   "driver": "string",
   "engine_information": {
     "disable_ssh_tunneling": true,
+    "encrypted_extra_expirations": {
+      "property1": {
+        "expired": true,
+        "expires_at": "1970-01-01T00:00:00Z"
+      },
+      "property2": {
+        "expired": true,
+        "expires_at": "1970-01-01T00:00:00Z"
+      }
+    },
+    "encrypted_extra_sensitive_fields": {
+      "property1": "string",
+      "property2": "string"
+    },
     "identifier_quote": {
       "end": "string",
       "escape_by_doubling": true,
@@ -53652,6 +54130,81 @@ jwt, api_key
 |---|---|---|---|---|
 |uuid|string(uuid)|false|none|none|
 
+<h2 id="tocS_EncryptedExtraExpiration">EncryptedExtraExpiration</h2>
+<!-- backwards compatibility -->
+<a id="schemaencryptedextraexpiration"></a>
+<a id="schema_EncryptedExtraExpiration"></a>
+<a id="tocSencryptedextraexpiration"></a>
+<a id="tocsencryptedextraexpiration"></a>
+
+```json
+{
+  "expired": true,
+  "expires_at": "1970-01-01T00:00:00Z"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|expired|boolean|false|none|Whether the stored JWT has expired|
+|expires_at|string(date-time)|false|none|When the stored JWT expires, from its exp claim, in UTC|
+
+<h2 id="tocS_EncryptedExtraHintSchema">EncryptedExtraHintSchema</h2>
+<!-- backwards compatibility -->
+<a id="schemaencryptedextrahintschema"></a>
+<a id="schema_EncryptedExtraHintSchema"></a>
+<a id="tocSencryptedextrahintschema"></a>
+<a id="tocsencryptedextrahintschema"></a>
+
+```json
+{
+  "expired": true,
+  "expires_at": "1970-01-01T00:00:00Z",
+  "label": "string",
+  "path": "string",
+  "suffix": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|expired|boolean \| null|false|none|Whether the stored JWT has expired; null when expires_at is null|
+|expires_at|string(date-time) \| null|false|none|When the stored JWT expires, from its exp claim, in UTC; null when the value is not a JWT with an exp claim|
+|label|string|true|none|Human readable name of the masked field|
+|path|string|true|none|JSONPath of the masked field|
+|suffix|string \| null|false|none|Last characters of the stored value (of the base64 body for a PEM key), null when the value is too short to reveal any|
+
+<h2 id="tocS_EncryptedExtraHintsResponseSchema">EncryptedExtraHintsResponseSchema</h2>
+<!-- backwards compatibility -->
+<a id="schemaencryptedextrahintsresponseschema"></a>
+<a id="schema_EncryptedExtraHintsResponseSchema"></a>
+<a id="tocSencryptedextrahintsresponseschema"></a>
+<a id="tocsencryptedextrahintsresponseschema"></a>
+
+```json
+{
+  "result": [
+    {
+      "expired": true,
+      "expires_at": "1970-01-01T00:00:00Z",
+      "label": "string",
+      "path": "string",
+      "suffix": "string"
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|result|[[EncryptedExtraHintSchema](#schemaencryptedextrahintschema)]|false|none|none|
+
 <h2 id="tocS_EngineInformation">EngineInformation</h2>
 <!-- backwards compatibility -->
 <a id="schemaengineinformation"></a>
@@ -53662,6 +54215,20 @@ jwt, api_key
 ```json
 {
   "disable_ssh_tunneling": true,
+  "encrypted_extra_expirations": {
+    "property1": {
+      "expired": true,
+      "expires_at": "1970-01-01T00:00:00Z"
+    },
+    "property2": {
+      "expired": true,
+      "expires_at": "1970-01-01T00:00:00Z"
+    }
+  },
+  "encrypted_extra_sensitive_fields": {
+    "property1": "string",
+    "property2": "string"
+  },
   "identifier_quote": {
     "end": "string",
     "escape_by_doubling": true,
@@ -53681,6 +54248,8 @@ jwt, api_key
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |disable_ssh_tunneling|boolean|false|none|SSH tunnel is not available to the database|
+|encrypted_extra_expirations|object|false|none|On `/connection` only: JSONPath of each stored sensitive encrypted_extra field holding a JWT with an exp claim, and when it expires. The signature is not verified.|
+|encrypted_extra_sensitive_fields|object|false|none|JSONPath of each sensitive encrypted_extra field and its label. On the database GET and on `available`: the engine's declared patterns. On `/connection`: the fields present in the stored encrypted_extra.|
 |identifier_quote|object|false|none|Characters used to quote identifiers for this dialect|
 |oauth2_enabled|boolean|false|none|OAuth2 authentication is enabled on this connection|
 |supports_dynamic_catalog|boolean|false|none|The database supports multiple catalogs in a single connection|
@@ -54405,6 +54974,7 @@ jwt, api_key
   "sample_values": [
     "string"
   ],
+  "validation_partition_values": null,
   "value_transform": "string"
 }
 ```
@@ -54418,6 +54988,7 @@ jwt, api_key
 |operator|string|false|none|Filter operator being mirrored. Only operators the preview can construct are accepted: TEMPORAL_RANGE is mirrored by the query path as two bounds decomposed from a since/until pair, which this request has no way to express.|
 |partition_column|string \| null|false|none|Candidate partition column. The editor previews a mapping before it is saved, so this overrides the stored value; omitted, the stored one is used.|
 |sample_values|[string]|true|none|Values to evaluate the transform at. A comparison operator takes one; IN takes the whole list.|
+|validation_partition_values|[string]|false|none|One to three existing integer partition keys for explicit data validation|
 |value_transform|string \| null|true|none|SQL expression containing a :value placeholder|
 
 #### Enumerated Values
@@ -57624,6 +58195,20 @@ jwt, api_key
   "disable_drill_to_detail": true,
   "engine_information": {
     "disable_ssh_tunneling": true,
+    "encrypted_extra_expirations": {
+      "property1": {
+        "expired": true,
+        "expires_at": "1970-01-01T00:00:00Z"
+      },
+      "property2": {
+        "expired": true,
+        "expires_at": "1970-01-01T00:00:00Z"
+      }
+    },
+    "encrypted_extra_sensitive_fields": {
+      "property1": "string",
+      "property2": "string"
+    },
     "identifier_quote": {
       "end": "string",
       "escape_by_doubling": true,
@@ -57744,6 +58329,20 @@ jwt, api_key
       "disable_drill_to_detail": true,
       "engine_information": {
         "disable_ssh_tunneling": true,
+        "encrypted_extra_expirations": {
+          "property1": {
+            "expired": true,
+            "expires_at": "1970-01-01T00:00:00Z"
+          },
+          "property2": {
+            "expired": true,
+            "expires_at": "1970-01-01T00:00:00Z"
+          }
+        },
+        "encrypted_extra_sensitive_fields": {
+          "property1": "string",
+          "property2": "string"
+        },
         "identifier_quote": {
           "end": "string",
           "escape_by_doubling": true,
@@ -57776,6 +58375,20 @@ jwt, api_key
       "disable_drill_to_detail": true,
       "engine_information": {
         "disable_ssh_tunneling": true,
+        "encrypted_extra_expirations": {
+          "property1": {
+            "expired": true,
+            "expires_at": "1970-01-01T00:00:00Z"
+          },
+          "property2": {
+            "expired": true,
+            "expires_at": "1970-01-01T00:00:00Z"
+          }
+        },
+        "encrypted_extra_sensitive_fields": {
+          "property1": "string",
+          "property2": "string"
+        },
         "identifier_quote": {
           "end": "string",
           "escape_by_doubling": true,
@@ -61695,12 +62308,12 @@ jwt, api_key
 ]
 ```
 
-<h2 id="tocS_get_fav_star_ids_schema">get_fav_star_ids_schema</h2>
+<h2 id="tocS_get_fav_star_ids_schema2">get_fav_star_ids_schema2</h2>
 <!-- backwards compatibility -->
-<a id="schemaget_fav_star_ids_schema"></a>
-<a id="schema_get_fav_star_ids_schema"></a>
-<a id="tocSget_fav_star_ids_schema"></a>
-<a id="tocsget_fav_star_ids_schema"></a>
+<a id="schemaget_fav_star_ids_schema2"></a>
+<a id="schema_get_fav_star_ids_schema2"></a>
+<a id="tocSget_fav_star_ids_schema2"></a>
+<a id="tocsget_fav_star_ids_schema2"></a>
 
 ```json
 [

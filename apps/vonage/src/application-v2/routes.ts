@@ -359,7 +359,7 @@ const CapabilitiesSchema = z
     messages: MessagesCapabilitySchema.exactOptional(),
     rtc: RtcCapabilitySchema.exactOptional(),
     vbc: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -409,7 +409,15 @@ const ApplicationResponseSchema = z
   .openapi({ required: [] })
   .openapi('ApplicationResponse')
 
-const ApplicationResponseCollectionSchema = z
+type ApplicationResponseCollectionType = {
+  _embedded?: { applications?: z.infer<typeof ApplicationResponseSchema>[] }
+  page?: number
+  page_size?: number
+  total_items?: number
+  total_pages?: number
+}
+
+const ApplicationResponseCollectionSchema: z.ZodType<ApplicationResponseCollectionType> = z
   .object({
     _embedded: z
       .object({ applications: z.array(ApplicationResponseSchema).exactOptional() })

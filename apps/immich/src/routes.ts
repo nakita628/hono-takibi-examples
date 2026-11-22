@@ -1,33 +1,147 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const ReactionTypeSchema = z
-  .enum(['comment', 'like'])
-  .openapi({ description: 'Reaction type' })
-  .openapi('ReactionType')
-
-const ActivityCreateDtoSchema = z
+const ExifResponseDtoSchema = z
   .object({
-    albumId: z
-      .uuid()
-      .regex(
-        /^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$/,
-      )
-      .openapi({ description: 'Album ID' }),
-    assetId: z
-      .uuid()
-      .regex(
-        /^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$/,
-      )
-      .exactOptional()
-      .openapi({ description: 'Asset ID (if activity is for an asset)' }),
-    comment: z
+    city: z.string().nullable().default(null).exactOptional().openapi({ description: 'City name' }),
+    country: z
       .string()
+      .nullable()
+      .default(null)
       .exactOptional()
-      .openapi({ description: 'Comment text (required if type is comment)' }),
-    type: ReactionTypeSchema,
+      .openapi({ description: 'Country name' }),
+    dateTimeOriginal: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .default(null)
+      .exactOptional()
+      .openapi({ description: 'Original date/time' }),
+    description: z
+      .string()
+      .nullable()
+      .default(null)
+      .exactOptional()
+      .openapi({ description: 'Image description' }),
+    exifImageHeight: z
+      .int()
+      .min(0)
+      .max(9007199254740991)
+      .nullable()
+      .default(null)
+      .exactOptional()
+      .openapi({ description: 'Image height in pixels' }),
+    exifImageWidth: z
+      .int()
+      .min(0)
+      .max(9007199254740991)
+      .nullable()
+      .default(null)
+      .exactOptional()
+      .openapi({ description: 'Image width in pixels' }),
+    exposureTime: z
+      .string()
+      .nullable()
+      .default(null)
+      .exactOptional()
+      .openapi({ description: 'Exposure time' }),
+    fNumber: z
+      .float64()
+      .nullable()
+      .default(null)
+      .exactOptional()
+      .openapi({ description: 'F-number (aperture)' }),
+    fileSizeInByte: z
+      .int()
+      .min(0)
+      .max(9007199254740991)
+      .nullable()
+      .default(null)
+      .exactOptional()
+      .openapi({ description: 'File size in bytes' }),
+    focalLength: z
+      .float64()
+      .nullable()
+      .default(null)
+      .exactOptional()
+      .openapi({ description: 'Focal length in mm' }),
+    iso: z
+      .int()
+      .min(-9007199254740991)
+      .max(9007199254740991)
+      .nullable()
+      .default(null)
+      .exactOptional()
+      .openapi({ description: 'ISO sensitivity' }),
+    latitude: z
+      .float64()
+      .nullable()
+      .default(null)
+      .exactOptional()
+      .openapi({ description: 'GPS latitude' }),
+    lensModel: z
+      .string()
+      .nullable()
+      .default(null)
+      .exactOptional()
+      .openapi({ description: 'Lens model' }),
+    longitude: z
+      .float64()
+      .nullable()
+      .default(null)
+      .exactOptional()
+      .openapi({ description: 'GPS longitude' }),
+    make: z
+      .string()
+      .nullable()
+      .default(null)
+      .exactOptional()
+      .openapi({ description: 'Camera make' }),
+    model: z
+      .string()
+      .nullable()
+      .default(null)
+      .exactOptional()
+      .openapi({ description: 'Camera model' }),
+    modifyDate: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .default(null)
+      .exactOptional()
+      .openapi({ description: 'Modification date/time' }),
+    orientation: z
+      .string()
+      .nullable()
+      .default(null)
+      .exactOptional()
+      .openapi({ description: 'Image orientation' }),
+    projectionType: z
+      .string()
+      .nullable()
+      .default(null)
+      .exactOptional()
+      .openapi({ description: 'Projection type' }),
+    rating: z
+      .int()
+      .min(1)
+      .max(5)
+      .nullable()
+      .default(null)
+      .exactOptional()
+      .openapi({ description: 'Rating' }),
+    state: z
+      .string()
+      .nullable()
+      .default(null)
+      .exactOptional()
+      .openapi({ description: 'State/province name' }),
+    timeZone: z
+      .string()
+      .nullable()
+      .default(null)
+      .exactOptional()
+      .openapi({ description: 'Time zone' }),
   })
-  .openapi({ description: 'Activity create', required: ['albumId', 'type'] })
-  .openapi('ActivityCreateDto')
+  .openapi({ description: 'EXIF response', required: [] })
+  .openapi('ExifResponseDto')
 
 const UserAvatarColorSchema = z
   .enum(['primary', 'pink', 'red', 'yellow', 'blue', 'green', 'purple', 'orange', 'gray', 'amber'])
@@ -60,6 +174,567 @@ const UserResponseDtoSchema = z
   })
   .openapi('UserResponseDto')
 
+const PersonUserRoleSchema = z
+  .enum(['read', 'write', 'admin'])
+  .openapi({
+    description: 'Levels of access for managing people resources on behalf of another user.',
+  })
+  .openapi('PersonUserRole')
+
+const PersonOtherResponseDtoSchema = z
+  .object({
+    birthDate: z.string().nullable(),
+    name: z.string(),
+    role: PersonUserRoleSchema,
+    sharedById: z
+      .uuid()
+      .regex(
+        /^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$/,
+      ),
+  })
+  .openapi({ required: ['birthDate', 'name', 'role', 'sharedById'] })
+  .openapi('PersonOtherResponseDto')
+
+const PeopleUserResponseDtoSchema = z
+  .object({
+    avatarColor: UserAvatarColorSchema,
+    email: z
+      .email()
+      .regex(
+        /^[\p{L}\p{M}\p{N}.!#$%&'*+\/=?^_`{|}~-]+@[\p{L}\p{N}](?:[\p{L}\p{M}\p{N}-]{0,61}[\p{L}\p{M}\p{N}])?(?:\.[\p{L}\p{N}](?:[\p{L}\p{M}\p{N}-]{0,61}[\p{L}\p{M}\p{N}])?)*$/u,
+      )
+      .openapi({ description: 'User email' }),
+    id: z
+      .uuid()
+      .regex(
+        /^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$/,
+      )
+      .openapi({ description: 'User ID' }),
+    name: z.string().openapi({ description: 'User name' }),
+    profileChangedAt: z.iso
+      .datetime({ offset: true })
+      .openapi({ description: 'Profile change date' }),
+    profileImagePath: z.string().openapi({ description: 'Profile image path' }),
+    role: PersonUserRoleSchema.openapi({ description: 'Access role' }),
+  })
+  .openapi({
+    required: [
+      'avatarColor',
+      'email',
+      'id',
+      'name',
+      'profileChangedAt',
+      'profileImagePath',
+      'role',
+    ],
+  })
+  .openapi('PeopleUserResponseDto')
+
+const PersonResponseDtoSchema = z
+  .object({
+    birthDate: z.iso.date().nullable().openapi({ description: 'Person date of birth' }),
+    color: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Person color (hex)',
+        'x-immich-history': [
+          { state: 'Added', version: 'v1.126.0' },
+          { state: 'Stable', version: 'v2' },
+        ],
+        'x-immich-state': 'Stable',
+      }),
+    id: z
+      .uuid()
+      .regex(
+        /^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$/,
+      )
+      .openapi({ description: 'Person ID' }),
+    isFavorite: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Is favorite',
+        'x-immich-history': [
+          { state: 'Added', version: 'v1.126.0' },
+          { state: 'Stable', version: 'v2' },
+        ],
+        'x-immich-state': 'Stable',
+      }),
+    isHidden: z.boolean().openapi({ description: 'Is hidden' }),
+    name: z.string().openapi({ description: 'Person name' }),
+    otherPeople: z.array(PersonOtherResponseDtoSchema),
+    sharedBy: z
+      .array(PeopleUserResponseDtoSchema)
+      .openapi({ description: 'Users that gave the current user access to this person' }),
+    sharedWith: z
+      .array(PeopleUserResponseDtoSchema)
+      .openapi({ description: 'Users the current user gave access to this person' }),
+    thumbnailPath: z.string().openapi({ description: 'Thumbnail path' }),
+    updatedAt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'Last update date',
+        'x-immich-history': [
+          { state: 'Added', version: 'v1.107.0' },
+          { state: 'Stable', version: 'v2' },
+        ],
+        'x-immich-state': 'Stable',
+      }),
+  })
+  .openapi({
+    required: [
+      'birthDate',
+      'id',
+      'isHidden',
+      'name',
+      'otherPeople',
+      'sharedBy',
+      'sharedWith',
+      'thumbnailPath',
+    ],
+  })
+  .openapi('PersonResponseDto')
+
+const AssetStackResponseDtoSchema = z
+  .object({
+    assetCount: z
+      .int()
+      .min(0)
+      .max(9007199254740991)
+      .openapi({ description: 'Number of assets in stack' }),
+    id: z
+      .uuid()
+      .regex(
+        /^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$/,
+      )
+      .openapi({ description: 'Stack ID' }),
+    primaryAssetId: z
+      .uuid()
+      .regex(
+        /^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$/,
+      )
+      .openapi({ description: 'Primary asset ID' }),
+  })
+  .openapi({ required: ['assetCount', 'id', 'primaryAssetId'] })
+  .openapi('AssetStackResponseDto')
+
+const TagResponseDtoSchema = z
+  .object({
+    color: z.string().exactOptional().openapi({ description: 'Tag color (hex)' }),
+    createdAt: z.iso.datetime({ offset: true }).openapi({ description: 'Creation date' }),
+    id: z
+      .uuid()
+      .regex(
+        /^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$/,
+      )
+      .openapi({ description: 'Tag ID' }),
+    name: z.string().openapi({ description: 'Tag name' }),
+    parentId: z.string().exactOptional().openapi({ description: 'Parent tag ID' }),
+    updatedAt: z.iso.datetime({ offset: true }).openapi({ description: 'Last update date' }),
+    value: z.string().openapi({ description: 'Tag value (full path)' }),
+  })
+  .openapi({ required: ['createdAt', 'id', 'name', 'updatedAt', 'value'] })
+  .openapi('TagResponseDto')
+
+const AssetTypeEnumSchema = z
+  .enum(['IMAGE', 'VIDEO', 'AUDIO', 'OTHER'])
+  .openapi({ description: 'Asset type' })
+  .openapi('AssetTypeEnum')
+
+const AssetVisibilitySchema = z
+  .enum(['archive', 'timeline', 'hidden', 'locked'])
+  .openapi({ description: 'Asset visibility' })
+  .openapi('AssetVisibility')
+
+const AssetResponseDtoSchema = z
+  .object({
+    checksum: z.string().openapi({ description: 'Base64 encoded SHA1 hash' }),
+    createdAt: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'The UTC timestamp when the asset was originally uploaded to Immich.',
+      }),
+    duplicateId: z
+      .uuid()
+      .regex(
+        /^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$/,
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Duplicate group ID' }),
+    duration: z
+      .int()
+      .min(0)
+      .max(2147483647)
+      .nullable()
+      .openapi({ description: 'Video/gif duration in milliseconds (null for static images)' }),
+    exifInfo: ExifResponseDtoSchema.exactOptional(),
+    fileCreatedAt: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description:
+          'The actual UTC timestamp when the file was created/captured, preserving timezone information. This is the authoritative timestamp for chronological sorting within timeline groups. Combined with timezone data, this can be used to determine the exact moment the photo was taken.',
+      }),
+    fileModifiedAt: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description:
+          'The UTC timestamp when the file was last modified on the filesystem. This reflects the last time the physical file was changed, which may be different from when the photo was originally taken.',
+      }),
+    hasMetadata: z.boolean().openapi({ description: 'Whether asset has metadata' }),
+    height: z
+      .int()
+      .min(0)
+      .max(9007199254740991)
+      .nullable()
+      .openapi({ description: 'Asset height' }),
+    id: z
+      .uuid()
+      .regex(
+        /^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$/,
+      )
+      .openapi({ description: 'Asset ID' }),
+    isArchived: z.boolean().openapi({ description: 'Is archived' }),
+    isEdited: z.boolean().openapi({
+      description: 'Is edited',
+      'x-immich-history': [
+        { state: 'Added', version: 'v2.5.0' },
+        { state: 'Beta', version: 'v2.5.0' },
+      ],
+      'x-immich-state': 'Beta',
+    }),
+    isFavorite: z.boolean().openapi({ description: 'Is favorite' }),
+    isOffline: z.boolean().openapi({ description: 'Is offline' }),
+    isTrashed: z.boolean().openapi({ description: 'Is trashed' }),
+    libraryId: z
+      .uuid()
+      .regex(
+        /^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$/,
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Library ID',
+        'x-immich-history': [
+          { state: 'Added', version: 'v1' },
+          { state: 'Deprecated', version: 'v1' },
+        ],
+        'x-immich-state': 'Deprecated',
+      }),
+    livePhotoVideoId: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Live photo video ID' }),
+    localDateTime: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description:
+          'The local date and time when the photo/video was taken, derived from EXIF metadata. This represents the photographer\'s local time regardless of timezone, stored as a timezone-agnostic timestamp. Used for timeline grouping by "local" days and months.',
+      }),
+    originalFileName: z.string().openapi({ description: 'Original file name' }),
+    originalMimeType: z.string().exactOptional().openapi({ description: 'Original MIME type' }),
+    originalPath: z.string().openapi({ description: 'Original file path' }),
+    owner: UserResponseDtoSchema.exactOptional(),
+    ownerId: z
+      .uuid()
+      .regex(
+        /^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$/,
+      )
+      .openapi({ description: 'Owner user ID' }),
+    people: z.array(PersonResponseDtoSchema).exactOptional(),
+    resized: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Is resized',
+        'x-immich-history': [
+          { state: 'Added', version: 'v1' },
+          { state: 'Deprecated', version: 'v1.113.0' },
+        ],
+        'x-immich-state': 'Deprecated',
+      }),
+    stack: z.union([AssetStackResponseDtoSchema, z.null().nullable()]).exactOptional(),
+    tags: z.array(TagResponseDtoSchema).exactOptional(),
+    thumbhash: z
+      .string()
+      .nullable()
+      .openapi({
+        description:
+          'Thumbhash for thumbnail generation (base64) also used as the c query param for thumbnail cache busting.',
+      }),
+    type: AssetTypeEnumSchema,
+    updatedAt: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description:
+          'The UTC timestamp when the asset record was last updated in the database. This is automatically maintained by the database and reflects when any field in the asset was last modified.',
+      }),
+    visibility: AssetVisibilitySchema,
+    width: z.int().min(0).max(9007199254740991).nullable().openapi({ description: 'Asset width' }),
+  })
+  .openapi({
+    required: [
+      'checksum',
+      'createdAt',
+      'duration',
+      'fileCreatedAt',
+      'fileModifiedAt',
+      'hasMetadata',
+      'height',
+      'id',
+      'isArchived',
+      'isEdited',
+      'isFavorite',
+      'isOffline',
+      'isTrashed',
+      'localDateTime',
+      'originalFileName',
+      'originalPath',
+      'ownerId',
+      'thumbhash',
+      'type',
+      'updatedAt',
+      'visibility',
+      'width',
+    ],
+  })
+  .openapi('AssetResponseDto')
+
+const SearchExploreItemSchema = z
+  .object({
+    data: AssetResponseDtoSchema,
+    value: z.string().openapi({ description: 'Explore value' }),
+  })
+  .openapi({ required: ['data', 'value'] })
+  .openapi('SearchExploreItem')
+
+type SearchExploreResponseDtoType = {
+  fieldName: string
+  items: z.infer<typeof SearchExploreItemSchema>[]
+}
+
+const SearchFacetCountResponseDtoSchema = z
+  .object({
+    count: z
+      .int()
+      .min(0)
+      .max(9007199254740991)
+      .openapi({ description: 'Number of assets with this facet value' }),
+    value: z.string().openapi({ description: 'Facet value' }),
+  })
+  .openapi({ required: ['count', 'value'] })
+  .openapi('SearchFacetCountResponseDto')
+
+const SearchFacetResponseDtoSchema = z
+  .object({
+    counts: z.array(SearchFacetCountResponseDtoSchema),
+    fieldName: z.string().openapi({ description: 'Facet field name' }),
+  })
+  .openapi({ required: ['counts', 'fieldName'] })
+  .openapi('SearchFacetResponseDto')
+
+const AlbumUserRoleSchema = z
+  .enum(['editor', 'owner', 'viewer'])
+  .openapi({ description: 'Album user role' })
+  .openapi('AlbumUserRole')
+
+const AlbumUserResponseDtoSchema = z
+  .object({ role: AlbumUserRoleSchema, user: UserResponseDtoSchema })
+  .openapi({ required: ['role', 'user'] })
+  .openapi('AlbumUserResponseDto')
+
+const ContributorCountResponseDtoSchema = z
+  .object({
+    assetCount: z
+      .int()
+      .min(0)
+      .max(9007199254740991)
+      .openapi({ description: 'Number of assets contributed' }),
+    userId: z
+      .uuid()
+      .regex(
+        /^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$/,
+      )
+      .openapi({ description: 'User ID' }),
+  })
+  .openapi({ required: ['assetCount', 'userId'] })
+  .openapi('ContributorCountResponseDto')
+
+const AssetOrderSchema = z
+  .enum(['asc', 'desc'])
+  .openapi({ description: 'Asset sort order' })
+  .openapi('AssetOrder')
+
+const AlbumResponseDtoSchema = z
+  .object({
+    albumName: z.string().openapi({ description: 'Album name' }),
+    albumThumbnailAssetId: z
+      .uuid()
+      .regex(
+        /^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$/,
+      )
+      .nullable()
+      .openapi({ description: 'Thumbnail asset ID' }),
+    albumUsers: z
+      .array(AlbumUserResponseDtoSchema)
+      .min(1)
+      .openapi({
+        description:
+          'First entry is always the album owner. Second entry is the auth user, if it differs from the owner. The rest are ordered alphabetically.',
+      }),
+    assetCount: z.int().min(0).max(9007199254740991).openapi({ description: 'Number of assets' }),
+    contributorCounts: z.array(ContributorCountResponseDtoSchema).exactOptional(),
+    createdAt: z.iso.datetime({ offset: true }).openapi({ description: 'Creation date' }),
+    description: z.string().openapi({
+      description: 'Album description',
+      'x-immich-history': [
+        { state: 'Added', version: 'v1' },
+        {
+          description:
+            'An empty string is returned instead of null for backwards compatibility; null will be returned in v4.',
+          state: 'Updated',
+          version: 'v3',
+        },
+      ],
+    }),
+    endDate: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'UTC representation of (local) end date (latest asset)' }),
+    hasSharedLink: z.boolean().openapi({ description: 'Has shared link' }),
+    id: z
+      .uuid()
+      .regex(
+        /^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$/,
+      )
+      .openapi({ description: 'Album ID' }),
+    isActivityEnabled: z.boolean().openapi({ description: 'Activity feed enabled' }),
+    lastModifiedAssetTimestamp: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'Last modified asset timestamp' }),
+    order: AssetOrderSchema.exactOptional(),
+    shared: z.boolean().openapi({ description: 'Is shared album' }),
+    startDate: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'UTC representation of (local) start date (earliest asset)' }),
+    updatedAt: z.iso.datetime({ offset: true }).openapi({ description: 'Last update date' }),
+  })
+  .openapi({
+    required: [
+      'albumName',
+      'albumThumbnailAssetId',
+      'albumUsers',
+      'assetCount',
+      'createdAt',
+      'description',
+      'hasSharedLink',
+      'id',
+      'isActivityEnabled',
+      'shared',
+      'updatedAt',
+    ],
+  })
+  .openapi('AlbumResponseDto')
+
+const SearchAlbumResponseDtoSchema = z
+  .object({
+    count: z
+      .int()
+      .min(0)
+      .max(9007199254740991)
+      .openapi({ description: 'Number of albums in this page' }),
+    facets: z.array(SearchFacetResponseDtoSchema),
+    items: z.array(AlbumResponseDtoSchema),
+    total: z
+      .int()
+      .min(0)
+      .max(9007199254740991)
+      .openapi({ description: 'Total number of matching albums' }),
+  })
+  .openapi({ required: ['count', 'facets', 'items', 'total'] })
+  .openapi('SearchAlbumResponseDto')
+
+const SearchAssetResponseDtoSchema = z
+  .object({
+    count: z
+      .int()
+      .min(0)
+      .max(9007199254740991)
+      .openapi({ description: 'Number of assets in this page' }),
+    facets: z.array(SearchFacetResponseDtoSchema),
+    items: z.array(AssetResponseDtoSchema),
+    nextCursor: z
+      .string()
+      .nullable()
+      .openapi({
+        description: 'Cursor for the next page of results',
+        'x-immich-history': [{ state: 'Added', version: 'v3.2.0' }],
+      }),
+    nextPage: z
+      .string()
+      .nullable()
+      .openapi({
+        deprecated: true,
+        description: 'Next page token',
+        'x-immich-history': [
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
+        ],
+        'x-immich-state': 'Deprecated',
+      }),
+    total: z
+      .int()
+      .min(0)
+      .max(9007199254740991)
+      .openapi({
+        description: 'Total number of matching assets',
+        'x-immich-history': [{ state: 'Deprecated', version: 'v3.0.0' }],
+        'x-immich-state': 'Deprecated',
+      }),
+  })
+  .openapi({ required: ['count', 'facets', 'items', 'nextCursor', 'nextPage', 'total'] })
+  .openapi('SearchAssetResponseDto')
+
+type SearchResponseDtoType = {
+  albums: z.infer<typeof SearchAlbumResponseDtoSchema>
+  assets: z.infer<typeof SearchAssetResponseDtoSchema>
+}
+
+const ReactionTypeSchema = z
+  .enum(['comment', 'like'])
+  .openapi({ description: 'Reaction type' })
+  .openapi('ReactionType')
+
+const ActivityCreateDtoSchema = z
+  .object({
+    albumId: z
+      .uuid()
+      .regex(
+        /^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$/,
+      )
+      .openapi({ description: 'Album ID' }),
+    assetId: z
+      .uuid()
+      .regex(
+        /^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$/,
+      )
+      .exactOptional()
+      .openapi({ description: 'Asset ID (if activity is for an asset)' }),
+    comment: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Comment text (required if type is comment)' }),
+    type: ReactionTypeSchema,
+  })
+  .openapi({ description: 'Activity create', required: ['albumId', 'type'] })
+  .openapi('ActivityCreateDto')
+
 const ActivityResponseDtoSchema = z
   .object({
     assetId: z
@@ -77,7 +752,7 @@ const ActivityResponseDtoSchema = z
     createdAt: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .openapi({ description: 'Creation date', example: '2024-01-01T00:00:00.000Z' }),
     id: z
@@ -99,11 +774,6 @@ const ActivityStatisticsResponseDtoSchema = z
   })
   .openapi({ required: ['comments', 'likes'] })
   .openapi('ActivityStatisticsResponseDto')
-
-const AlbumUserRoleSchema = z
-  .enum(['editor', 'owner', 'viewer'])
-  .openapi({ description: 'Album user role' })
-  .openapi('AlbumUserRole')
 
 const AlbumUserAddDtoSchema = z
   .object({
@@ -279,6 +949,11 @@ const ColorspaceSchema = z
   .openapi({ description: 'Colorspace' })
   .openapi('Colorspace')
 
+const ImageEffortSchema = z
+  .enum(['low', 'medium', 'high', 'max'])
+  .openapi({ description: 'Image effort' })
+  .openapi('ImageEffort')
+
 const ImageFormatSchema = z
   .enum(['jpeg', 'jxl', 'webp'])
   .openapi({ description: 'Image format' })
@@ -286,22 +961,24 @@ const ImageFormatSchema = z
 
 const AdminConfigGeneratedFullsizeImageDtoSchema = z
   .object({
+    effort: ImageEffortSchema,
     enabled: z.boolean().openapi({ description: 'Enabled' }),
     format: ImageFormatSchema,
     progressive: z.boolean().exactOptional().openapi({ description: 'Progressive' }),
     quality: z.int().min(1).max(100).openapi({ description: 'Quality' }),
   })
-  .openapi({ required: ['enabled', 'format', 'quality'] })
+  .openapi({ required: ['effort', 'enabled', 'format', 'quality'] })
   .openapi('AdminConfigGeneratedFullsizeImageDto')
 
 const AdminConfigGeneratedImageDtoSchema = z
   .object({
+    effort: ImageEffortSchema,
     format: ImageFormatSchema,
     progressive: z.boolean().exactOptional().openapi({ description: 'Progressive' }),
     quality: z.int().min(1).max(100).openapi({ description: 'Quality' }),
     size: z.int().min(1).max(9007199254740991).openapi({ description: 'Size' }),
   })
-  .openapi({ required: ['format', 'quality', 'size'] })
+  .openapi({ required: ['effort', 'format', 'quality', 'size'] })
   .openapi('AdminConfigGeneratedImageDto')
 
 const AdminConfigImageDtoSchema = z
@@ -811,106 +1488,6 @@ const AdminOnboardingUpdateDtoSchema = z
   .openapi({ required: ['isOnboarded'] })
   .openapi('AdminOnboardingUpdateDto')
 
-const AlbumUserResponseDtoSchema = z
-  .object({ role: AlbumUserRoleSchema, user: UserResponseDtoSchema })
-  .openapi({ required: ['role', 'user'] })
-  .openapi('AlbumUserResponseDto')
-
-const ContributorCountResponseDtoSchema = z
-  .object({
-    assetCount: z
-      .int()
-      .min(0)
-      .max(9007199254740991)
-      .openapi({ description: 'Number of assets contributed' }),
-    userId: z
-      .uuid()
-      .regex(
-        /^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$/,
-      )
-      .openapi({ description: 'User ID' }),
-  })
-  .openapi({ required: ['assetCount', 'userId'] })
-  .openapi('ContributorCountResponseDto')
-
-const AssetOrderSchema = z
-  .enum(['asc', 'desc'])
-  .openapi({ description: 'Asset sort order' })
-  .openapi('AssetOrder')
-
-const AlbumResponseDtoSchema = z
-  .object({
-    albumName: z.string().openapi({ description: 'Album name' }),
-    albumThumbnailAssetId: z
-      .uuid()
-      .regex(
-        /^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$/,
-      )
-      .nullable()
-      .openapi({ description: 'Thumbnail asset ID' }),
-    albumUsers: z
-      .array(AlbumUserResponseDtoSchema)
-      .min(1)
-      .openapi({
-        description:
-          'First entry is always the album owner. Second entry is the auth user, if it differs from the owner. The rest are ordered alphabetically.',
-      }),
-    assetCount: z.int().min(0).max(9007199254740991).openapi({ description: 'Number of assets' }),
-    contributorCounts: z.array(ContributorCountResponseDtoSchema).exactOptional(),
-    createdAt: z.iso.datetime({ offset: true }).openapi({ description: 'Creation date' }),
-    description: z.string().openapi({
-      description: 'Album description',
-      'x-immich-history': [
-        { version: 'v1', state: 'Added' },
-        {
-          version: 'v3',
-          state: 'Updated',
-          description:
-            'An empty string is returned instead of null for backwards compatibility; null will be returned in v4.',
-        },
-      ],
-    }),
-    endDate: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'UTC representation of (local) end date (latest asset)' }),
-    hasSharedLink: z.boolean().openapi({ description: 'Has shared link' }),
-    id: z
-      .uuid()
-      .regex(
-        /^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$/,
-      )
-      .openapi({ description: 'Album ID' }),
-    isActivityEnabled: z.boolean().openapi({ description: 'Activity feed enabled' }),
-    lastModifiedAssetTimestamp: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'Last modified asset timestamp' }),
-    order: AssetOrderSchema.exactOptional(),
-    shared: z.boolean().openapi({ description: 'Is shared album' }),
-    startDate: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'UTC representation of (local) start date (earliest asset)' }),
-    updatedAt: z.iso.datetime({ offset: true }).openapi({ description: 'Last update date' }),
-  })
-  .openapi({
-    required: [
-      'albumName',
-      'albumThumbnailAssetId',
-      'albumUsers',
-      'assetCount',
-      'createdAt',
-      'description',
-      'hasSharedLink',
-      'id',
-      'isActivityEnabled',
-      'shared',
-      'updatedAt',
-    ],
-  })
-  .openapi('AlbumResponseDto')
-
 const AlbumStatisticsResponseDtoSchema = z
   .object({
     notShared: z
@@ -1179,7 +1756,7 @@ const ApiKeyResponseDtoSchema = z
     createdAt: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .openapi({ description: 'Creation date', example: '2024-01-01T00:00:00.000Z' }),
     id: z
@@ -1193,7 +1770,7 @@ const ApiKeyResponseDtoSchema = z
     updatedAt: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .openapi({ description: 'Last update date', example: '2024-01-01T00:00:00.000Z' }),
   })
@@ -1204,15 +1781,15 @@ const ApiKeyCreateResponseDtoSchema = z
   .object({
     apiKey: ApiKeyResponseDtoSchema.openapi({
       'x-immich-history': [
-        { version: 'v1', state: 'Added' },
-        { version: 'v3.2.0', state: 'Deprecated' },
+        { state: 'Added', version: 'v1' },
+        { state: 'Deprecated', version: 'v3.2.0' },
       ],
       'x-immich-state': 'Deprecated',
     }),
     createdAt: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .openapi({ description: 'Creation date', example: '2024-01-01T00:00:00.000Z' }),
     id: z
@@ -1227,7 +1804,7 @@ const ApiKeyCreateResponseDtoSchema = z
     updatedAt: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .openapi({ description: 'Last update date', example: '2024-01-01T00:00:00.000Z' }),
   })
@@ -1263,11 +1840,6 @@ const AssetBulkDeleteDtoSchema = z
   })
   .openapi({ required: ['ids'] })
   .openapi('AssetBulkDeleteDto')
-
-const AssetVisibilitySchema = z
-  .enum(['archive', 'timeline', 'hidden', 'locked'])
-  .openapi({ description: 'Asset visibility' })
-  .openapi('AssetVisibility')
 
 const AssetBulkUpdateDtoSchema = z
   .object({
@@ -1311,12 +1883,12 @@ const AssetBulkUpdateDtoSchema = z
       .openapi({
         description: 'Rating in range [1-5] (starred), -1 (rejected), or null (unrated)',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
           {
-            version: 'v3',
-            state: 'Updated',
             description: 'Using 0 as a rating is no longer valid.',
+            state: 'Updated',
+            version: 'v3',
           },
         ],
         'x-immich-state': 'Stable',
@@ -1586,129 +2158,6 @@ const AssetFaceDeleteDtoSchema = z
   .openapi({ required: ['force'] })
   .openapi('AssetFaceDeleteDto')
 
-const PersonUserRoleSchema = z
-  .enum(['read', 'write', 'admin'])
-  .openapi({
-    description: 'Levels of access for managing people resources on behalf of another user.',
-  })
-  .openapi('PersonUserRole')
-
-const PersonOtherResponseDtoSchema = z
-  .object({
-    birthDate: z.string().nullable(),
-    name: z.string(),
-    role: PersonUserRoleSchema,
-    sharedById: z
-      .uuid()
-      .regex(
-        /^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$/,
-      ),
-  })
-  .openapi({ required: ['birthDate', 'name', 'role', 'sharedById'] })
-  .openapi('PersonOtherResponseDto')
-
-const PeopleUserResponseDtoSchema = z
-  .object({
-    avatarColor: UserAvatarColorSchema,
-    email: z
-      .email()
-      .regex(
-        /^[\p{L}\p{M}\p{N}.!#$%&'*+\/=?^_`{|}~-]+@[\p{L}\p{N}](?:[\p{L}\p{M}\p{N}-]{0,61}[\p{L}\p{M}\p{N}])?(?:\.[\p{L}\p{N}](?:[\p{L}\p{M}\p{N}-]{0,61}[\p{L}\p{M}\p{N}])?)*$/u,
-      )
-      .openapi({ description: 'User email' }),
-    id: z
-      .uuid()
-      .regex(
-        /^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$/,
-      )
-      .openapi({ description: 'User ID' }),
-    name: z.string().openapi({ description: 'User name' }),
-    profileChangedAt: z.iso
-      .datetime({ offset: true })
-      .openapi({ description: 'Profile change date' }),
-    profileImagePath: z.string().openapi({ description: 'Profile image path' }),
-    role: PersonUserRoleSchema.openapi({ description: 'Access role' }),
-  })
-  .openapi({
-    required: [
-      'avatarColor',
-      'email',
-      'id',
-      'name',
-      'profileChangedAt',
-      'profileImagePath',
-      'role',
-    ],
-  })
-  .openapi('PeopleUserResponseDto')
-
-const PersonResponseDtoSchema = z
-  .object({
-    birthDate: z.iso.date().nullable().openapi({ description: 'Person date of birth' }),
-    color: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Person color (hex)',
-        'x-immich-history': [
-          { version: 'v1.126.0', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-        ],
-        'x-immich-state': 'Stable',
-      }),
-    id: z
-      .uuid()
-      .regex(
-        /^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$/,
-      )
-      .openapi({ description: 'Person ID' }),
-    isFavorite: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Is favorite',
-        'x-immich-history': [
-          { version: 'v1.126.0', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-        ],
-        'x-immich-state': 'Stable',
-      }),
-    isHidden: z.boolean().openapi({ description: 'Is hidden' }),
-    name: z.string().openapi({ description: 'Person name' }),
-    otherPeople: z.array(PersonOtherResponseDtoSchema),
-    sharedBy: z
-      .array(PeopleUserResponseDtoSchema)
-      .openapi({ description: 'Users that gave the current user access to this person' }),
-    sharedWith: z
-      .array(PeopleUserResponseDtoSchema)
-      .openapi({ description: 'Users the current user gave access to this person' }),
-    thumbnailPath: z.string().openapi({ description: 'Thumbnail path' }),
-    updatedAt: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'Last update date',
-        'x-immich-history': [
-          { version: 'v1.107.0', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-        ],
-        'x-immich-state': 'Stable',
-      }),
-  })
-  .openapi({
-    required: [
-      'birthDate',
-      'id',
-      'isHidden',
-      'name',
-      'otherPeople',
-      'sharedBy',
-      'sharedWith',
-      'thumbnailPath',
-    ],
-  })
-  .openapi('PersonResponseDto')
-
 const SourceTypeSchema = z
   .enum(['machine-learning', 'exif', 'manual'])
   .openapi({ description: 'Face detection source type' })
@@ -1752,7 +2201,7 @@ const AssetFaceResponseDtoSchema = z
       .min(0)
       .max(9007199254740991)
       .openapi({ description: 'Image width in pixels' }),
-    person: PersonResponseDtoSchema.nullable(),
+    person: z.union([PersonResponseDtoSchema, z.null().nullable()]),
     sourceType: SourceTypeSchema.exactOptional(),
   })
   .openapi({
@@ -1812,7 +2261,7 @@ const AssetFileResponseDtoSchema = z
     createdAt: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .openapi({ description: 'Creation date', example: '2024-01-01T00:00:00.000Z' }),
     id: z
@@ -1829,7 +2278,7 @@ const AssetFileResponseDtoSchema = z
     updatedAt: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .openapi({ description: 'Update date', example: '2024-01-01T00:00:00.000Z' }),
   })
@@ -1924,13 +2373,13 @@ const AssetMediaCreateDtoSchema = z
     fileCreatedAt: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .openapi({ description: 'File creation date', example: '2024-01-01T00:00:00.000Z' }),
     fileModifiedAt: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .openapi({ description: 'File modification date', example: '2024-01-01T00:00:00.000Z' }),
     filename: z.string().exactOptional().openapi({ description: 'Filename' }),
@@ -2012,7 +2461,7 @@ const AssetMetadataBulkResponseDtoSchema = z
     updatedAt: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .openapi({ description: 'Last update date', example: '2024-01-01T00:00:00.000Z' }),
     value: z.record(z.string(), z.any()).openapi({ description: 'Metadata value (object)' }),
@@ -2049,7 +2498,7 @@ const AssetMetadataResponseDtoSchema = z
     updatedAt: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .openapi({ description: 'Last update date', example: '2024-01-01T00:00:00.000Z' }),
     value: z.record(z.string(), z.any()).openapi({ description: 'Metadata value (object)' }),
@@ -2114,350 +2563,6 @@ const AssetOrderBySchema = z
   .openapi({ description: 'Asset sorting property' })
   .openapi('AssetOrderBy')
 
-const ExifResponseDtoSchema = z
-  .object({
-    city: z.string().nullable().default(null).exactOptional().openapi({ description: 'City name' }),
-    country: z
-      .string()
-      .nullable()
-      .default(null)
-      .exactOptional()
-      .openapi({ description: 'Country name' }),
-    dateTimeOriginal: z.iso
-      .datetime({ offset: true })
-      .nullable()
-      .default(null)
-      .exactOptional()
-      .openapi({ description: 'Original date/time' }),
-    description: z
-      .string()
-      .nullable()
-      .default(null)
-      .exactOptional()
-      .openapi({ description: 'Image description' }),
-    exifImageHeight: z
-      .int()
-      .min(0)
-      .max(9007199254740991)
-      .nullable()
-      .default(null)
-      .exactOptional()
-      .openapi({ description: 'Image height in pixels' }),
-    exifImageWidth: z
-      .int()
-      .min(0)
-      .max(9007199254740991)
-      .nullable()
-      .default(null)
-      .exactOptional()
-      .openapi({ description: 'Image width in pixels' }),
-    exposureTime: z
-      .string()
-      .nullable()
-      .default(null)
-      .exactOptional()
-      .openapi({ description: 'Exposure time' }),
-    fNumber: z
-      .float64()
-      .nullable()
-      .default(null)
-      .exactOptional()
-      .openapi({ description: 'F-number (aperture)' }),
-    fileSizeInByte: z
-      .int()
-      .min(0)
-      .max(9007199254740991)
-      .nullable()
-      .default(null)
-      .exactOptional()
-      .openapi({ description: 'File size in bytes' }),
-    focalLength: z
-      .float64()
-      .nullable()
-      .default(null)
-      .exactOptional()
-      .openapi({ description: 'Focal length in mm' }),
-    iso: z
-      .int()
-      .min(-9007199254740991)
-      .max(9007199254740991)
-      .nullable()
-      .default(null)
-      .exactOptional()
-      .openapi({ description: 'ISO sensitivity' }),
-    latitude: z
-      .float64()
-      .nullable()
-      .default(null)
-      .exactOptional()
-      .openapi({ description: 'GPS latitude' }),
-    lensModel: z
-      .string()
-      .nullable()
-      .default(null)
-      .exactOptional()
-      .openapi({ description: 'Lens model' }),
-    longitude: z
-      .float64()
-      .nullable()
-      .default(null)
-      .exactOptional()
-      .openapi({ description: 'GPS longitude' }),
-    make: z
-      .string()
-      .nullable()
-      .default(null)
-      .exactOptional()
-      .openapi({ description: 'Camera make' }),
-    model: z
-      .string()
-      .nullable()
-      .default(null)
-      .exactOptional()
-      .openapi({ description: 'Camera model' }),
-    modifyDate: z.iso
-      .datetime({ offset: true })
-      .nullable()
-      .default(null)
-      .exactOptional()
-      .openapi({ description: 'Modification date/time' }),
-    orientation: z
-      .string()
-      .nullable()
-      .default(null)
-      .exactOptional()
-      .openapi({ description: 'Image orientation' }),
-    projectionType: z
-      .string()
-      .nullable()
-      .default(null)
-      .exactOptional()
-      .openapi({ description: 'Projection type' }),
-    rating: z
-      .int()
-      .min(1)
-      .max(5)
-      .nullable()
-      .default(null)
-      .exactOptional()
-      .openapi({ description: 'Rating' }),
-    state: z
-      .string()
-      .nullable()
-      .default(null)
-      .exactOptional()
-      .openapi({ description: 'State/province name' }),
-    timeZone: z
-      .string()
-      .nullable()
-      .default(null)
-      .exactOptional()
-      .openapi({ description: 'Time zone' }),
-  })
-  .openapi({ description: 'EXIF response', required: [] })
-  .openapi('ExifResponseDto')
-
-const AssetStackResponseDtoSchema = z
-  .object({
-    assetCount: z
-      .int()
-      .min(0)
-      .max(9007199254740991)
-      .openapi({ description: 'Number of assets in stack' }),
-    id: z
-      .uuid()
-      .regex(
-        /^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$/,
-      )
-      .openapi({ description: 'Stack ID' }),
-    primaryAssetId: z
-      .uuid()
-      .regex(
-        /^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$/,
-      )
-      .openapi({ description: 'Primary asset ID' }),
-  })
-  .openapi({ required: ['assetCount', 'id', 'primaryAssetId'] })
-  .openapi('AssetStackResponseDto')
-
-const TagResponseDtoSchema = z
-  .object({
-    color: z.string().exactOptional().openapi({ description: 'Tag color (hex)' }),
-    createdAt: z.iso.datetime({ offset: true }).openapi({ description: 'Creation date' }),
-    id: z
-      .uuid()
-      .regex(
-        /^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$/,
-      )
-      .openapi({ description: 'Tag ID' }),
-    name: z.string().openapi({ description: 'Tag name' }),
-    parentId: z.string().exactOptional().openapi({ description: 'Parent tag ID' }),
-    updatedAt: z.iso.datetime({ offset: true }).openapi({ description: 'Last update date' }),
-    value: z.string().openapi({ description: 'Tag value (full path)' }),
-  })
-  .openapi({ required: ['createdAt', 'id', 'name', 'updatedAt', 'value'] })
-  .openapi('TagResponseDto')
-
-const AssetTypeEnumSchema = z
-  .enum(['IMAGE', 'VIDEO', 'AUDIO', 'OTHER'])
-  .openapi({ description: 'Asset type' })
-  .openapi('AssetTypeEnum')
-
-const AssetResponseDtoSchema = z
-  .object({
-    checksum: z.string().openapi({ description: 'Base64 encoded SHA1 hash' }),
-    createdAt: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'The UTC timestamp when the asset was originally uploaded to Immich.',
-      }),
-    duplicateId: z
-      .uuid()
-      .regex(
-        /^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$/,
-      )
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Duplicate group ID' }),
-    duration: z
-      .int()
-      .min(0)
-      .max(2147483647)
-      .nullable()
-      .openapi({ description: 'Video/gif duration in milliseconds (null for static images)' }),
-    exifInfo: ExifResponseDtoSchema.exactOptional(),
-    fileCreatedAt: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description:
-          'The actual UTC timestamp when the file was created/captured, preserving timezone information. This is the authoritative timestamp for chronological sorting within timeline groups. Combined with timezone data, this can be used to determine the exact moment the photo was taken.',
-      }),
-    fileModifiedAt: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description:
-          'The UTC timestamp when the file was last modified on the filesystem. This reflects the last time the physical file was changed, which may be different from when the photo was originally taken.',
-      }),
-    hasMetadata: z.boolean().openapi({ description: 'Whether asset has metadata' }),
-    height: z
-      .int()
-      .min(0)
-      .max(9007199254740991)
-      .nullable()
-      .openapi({ description: 'Asset height' }),
-    id: z
-      .uuid()
-      .regex(
-        /^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$/,
-      )
-      .openapi({ description: 'Asset ID' }),
-    isArchived: z.boolean().openapi({ description: 'Is archived' }),
-    isEdited: z.boolean().openapi({
-      description: 'Is edited',
-      'x-immich-history': [
-        { version: 'v2.5.0', state: 'Added' },
-        { version: 'v2.5.0', state: 'Beta' },
-      ],
-      'x-immich-state': 'Beta',
-    }),
-    isFavorite: z.boolean().openapi({ description: 'Is favorite' }),
-    isOffline: z.boolean().openapi({ description: 'Is offline' }),
-    isTrashed: z.boolean().openapi({ description: 'Is trashed' }),
-    libraryId: z
-      .uuid()
-      .regex(
-        /^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$/,
-      )
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Library ID',
-        'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v1', state: 'Deprecated' },
-        ],
-        'x-immich-state': 'Deprecated',
-      }),
-    livePhotoVideoId: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Live photo video ID' }),
-    localDateTime: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description:
-          'The local date and time when the photo/video was taken, derived from EXIF metadata. This represents the photographer\'s local time regardless of timezone, stored as a timezone-agnostic timestamp. Used for timeline grouping by "local" days and months.',
-      }),
-    originalFileName: z.string().openapi({ description: 'Original file name' }),
-    originalMimeType: z.string().exactOptional().openapi({ description: 'Original MIME type' }),
-    originalPath: z.string().openapi({ description: 'Original file path' }),
-    owner: UserResponseDtoSchema.exactOptional(),
-    ownerId: z
-      .uuid()
-      .regex(
-        /^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$/,
-      )
-      .openapi({ description: 'Owner user ID' }),
-    people: z.array(PersonResponseDtoSchema).exactOptional(),
-    resized: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Is resized',
-        'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v1.113.0', state: 'Deprecated' },
-        ],
-        'x-immich-state': 'Deprecated',
-      }),
-    stack: AssetStackResponseDtoSchema.nullable().exactOptional(),
-    tags: z.array(TagResponseDtoSchema).exactOptional(),
-    thumbhash: z
-      .string()
-      .nullable()
-      .openapi({
-        description:
-          'Thumbhash for thumbnail generation (base64) also used as the c query param for thumbnail cache busting.',
-      }),
-    type: AssetTypeEnumSchema,
-    updatedAt: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description:
-          'The UTC timestamp when the asset record was last updated in the database. This is automatically maintained by the database and reflects when any field in the asset was last modified.',
-      }),
-    visibility: AssetVisibilitySchema,
-    width: z.int().min(0).max(9007199254740991).nullable().openapi({ description: 'Asset width' }),
-  })
-  .openapi({
-    required: [
-      'checksum',
-      'createdAt',
-      'duration',
-      'fileCreatedAt',
-      'fileModifiedAt',
-      'hasMetadata',
-      'height',
-      'id',
-      'isArchived',
-      'isEdited',
-      'isFavorite',
-      'isOffline',
-      'isTrashed',
-      'localDateTime',
-      'originalFileName',
-      'originalPath',
-      'ownerId',
-      'thumbhash',
-      'type',
-      'updatedAt',
-      'visibility',
-      'width',
-    ],
-  })
-  .openapi('AssetResponseDto')
-
 const AssetStatsResponseDtoSchema = z
   .object({
     images: z
@@ -2495,50 +2600,10 @@ const AvatarUpdateSchema = z
   .openapi({ required: [] })
   .openapi('AvatarUpdate')
 
-const BackendTypeSchema = z.enum(['yucca', 'local', 's3']).openapi('BackendType')
-
-const BackendDtoSchema = z
-  .object({
-    description: z.string(),
-    error: z.string().exactOptional(),
-    id: z.string(),
-    isOnline: z.boolean(),
-    type: BackendTypeSchema,
-  })
-  .openapi({ required: ['description', 'id', 'isOnline', 'type'] })
-  .openapi('BackendDto')
-
-const BackendResponseDtoSchema = z
-  .object({ backend: BackendDtoSchema })
-  .openapi({ required: ['backend'] })
-  .openapi('BackendResponseDto')
-
-const BackendsResponseDtoSchema = z
-  .object({ backends: z.array(BackendDtoSchema) })
-  .openapi({ required: ['backends'] })
-  .openapi('BackendsResponseDto')
-
-const BackupStatusSchema = z
-  .enum(['incomplete', 'complete', 'warn', 'failed', 'cancelled'])
-  .openapi('BackupStatus')
-
-const BandwidthDtoSchema = z
-  .object({
-    bytesPerSec: z.int().min(0).max(9007199254740991),
-    quietHours: z
-      .string()
-      .regex(/^([01]\d|2[0-3]):[0-5]\d-([01]\d|2[0-3]):[0-5]\d$/)
-      .exactOptional(),
-  })
-  .openapi({ required: ['bytesPerSec'] })
-  .openapi('BandwidthDto')
-
 const BoolFilterSchema = z
   .object({ eq: z.boolean() })
   .openapi({ required: ['eq'] })
   .openapi('BoolFilter')
-
-const BootstrapStatusSchema = z.enum(['not-ready', 'ready', 'error']).openapi('BootstrapStatus')
 
 const BulkIdResponseDtoSchema = z
   .object({
@@ -2579,7 +2644,7 @@ const CalendarHeatmapResponseDtoSchema = z
           count: z.int().min(0).max(9007199254740991).openapi({ description: 'Activity count' }),
           date: z.string().openapi({ description: 'Date in UTC', example: '2024-01-01' }),
         })
-        .openapi({ required: ['date', 'count'] }),
+        .openapi({ required: ['count', 'date'] }),
     ),
     to: z.string().openapi({ description: 'End date in UTC', example: '2024-12-31' }),
     totalCount: z
@@ -2650,7 +2715,7 @@ const ClusterGroupRequestResponseDtoSchema = z
     createdAt: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .openapi({ description: 'Creation date', example: '2024-01-01T00:00:00.000Z' }),
     id: z
@@ -2668,64 +2733,6 @@ const ClusterGroupRequestResponseDtoSchema = z
   })
   .openapi({ required: ['clusterGroupId', 'createdAt', 'id', 'userId'] })
   .openapi('ClusterGroupRequestResponseDto')
-
-const ConfigResponseDtoSchema = z
-  .object({ bandwidth: BandwidthDtoSchema })
-  .openapi({ required: ['bandwidth'] })
-  .openapi('ConfigResponseDto')
-
-const ConfigUpdateRequestDtoSchema = z
-  .object({ bandwidth: BandwidthDtoSchema })
-  .openapi({ required: ['bandwidth'] })
-  .openapi('ConfigUpdateRequestDto')
-
-const ConfigureImmichDatabaseDumpRequestDtoSchema = z
-  .object({
-    enabled: z.boolean().exactOptional(),
-    keepLastAmount: z.int().min(1).max(9007199254740991).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ConfigureImmichDatabaseDumpRequestDto')
-
-const RetentionPolicyDtoSchema = z
-  .object({
-    keepLast: z.int().min(-9007199254740991).max(9007199254740991).exactOptional(),
-    keepWithin: z.string().exactOptional(),
-    keepWithinDaily: z.string().exactOptional(),
-    keepWithinHourly: z.string().exactOptional(),
-    keepWithinMonthly: z.string().exactOptional(),
-    keepWithinWeekly: z.string().exactOptional(),
-    keepWithinYearly: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('RetentionPolicyDto')
-
-const ConfigureImmichIntegrationRequestDtoSchema = z
-  .object({
-    backupConfiguration: z.boolean(),
-    cron: z.string(),
-    dataFolders: z.array(z.string()),
-    libraries: z
-      .array(z.string())
-      .openapi({
-        description:
-          'IDs of the external libraries to back up. Use ["all"] to back up every library, including ones added later.',
-      }),
-    name: z.string(),
-    paused: z.boolean().exactOptional(),
-    repositoryId: z.string().exactOptional(),
-    retentionPolicy: RetentionPolicyDtoSchema.nullable().exactOptional(),
-    worm: z.boolean(),
-  })
-  .openapi({
-    required: ['backupConfiguration', 'cron', 'dataFolders', 'libraries', 'name', 'worm'],
-  })
-  .openapi('ConfigureImmichIntegrationRequestDto')
-
-const ConfigureImmichIntegrationResponseDtoSchema = z
-  .object({ repositoryId: z.string() })
-  .openapi({ required: ['repositoryId'] })
-  .openapi('ConfigureImmichIntegrationResponseDto')
 
 const CreateAlbumDtoSchema = z
   .object({
@@ -2751,12 +2758,12 @@ const CreateAlbumDtoSchema = z
       .openapi({
         description: 'Album description',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
+          { state: 'Added', version: 'v1' },
           {
-            version: 'v3',
-            state: 'Updated',
             description:
               'Sending an empty string is deprecated; send null instead. Empty strings will no longer be coerced to null in v4.',
+            state: 'Updated',
+            version: 'v3',
           },
         ],
       }),
@@ -2787,11 +2794,6 @@ const CreateLibraryDtoSchema = z
   .openapi({ required: ['ownerId'] })
   .openapi('CreateLibraryDto')
 
-const CreateLocalBackendRequestDtoSchema = z
-  .object({ path: z.string() })
-  .openapi({ required: ['path'] })
-  .openapi('CreateLocalBackendRequestDto')
-
 const CreateProfileImageDtoSchema = z
   .object({
     file: z.file().openapi({ type: 'string', format: 'binary', description: 'Profile image file' }),
@@ -2804,7 +2806,7 @@ const CreateProfileImageResponseDtoSchema = z
     profileChangedAt: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .openapi({ description: 'Profile image change date', example: '2024-01-01T00:00:00.000Z' }),
     profileImagePath: z.string().openapi({ description: 'Profile image file path' }),
@@ -2817,16 +2819,6 @@ const CreateProfileImageResponseDtoSchema = z
   })
   .openapi({ required: ['profileChangedAt', 'profileImagePath', 'userId'] })
   .openapi('CreateProfileImageResponseDto')
-
-const CreateSessionRequestDtoSchema = z
-  .object({ token: z.string() })
-  .openapi({ required: ['token'] })
-  .openapi('CreateSessionRequestDto')
-
-const CurrentRecoveryKeyResponseSchema = z
-  .object({ recoveryKey: z.string() })
-  .openapi({ required: ['recoveryKey'] })
-  .openapi('CurrentRecoveryKeyResponse')
 
 const DatabaseBackupDeleteDtoSchema = z
   .object({ backups: z.array(z.string()).openapi({ description: 'Backup filenames to delete' }) })
@@ -2866,42 +2858,42 @@ const DateFilterSchema = z
     eq: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .exactOptional()
       .openapi({ example: '2024-01-01T00:00:00.000Z' }),
     gt: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .exactOptional()
       .openapi({ example: '2024-01-01T00:00:00.000Z' }),
     gte: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .exactOptional()
       .openapi({ example: '2024-01-01T00:00:00.000Z' }),
     lt: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .exactOptional()
       .openapi({ example: '2024-01-01T00:00:00.000Z' }),
     lte: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .exactOptional()
       .openapi({ example: '2024-01-01T00:00:00.000Z' }),
     ne: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .exactOptional()
       .openapi({ example: '2024-01-01T00:00:00.000Z' }),
@@ -2914,7 +2906,7 @@ const DateFilterNullableSchema = z
     eq: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .nullable()
       .exactOptional()
@@ -2922,35 +2914,35 @@ const DateFilterNullableSchema = z
     gt: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .exactOptional()
       .openapi({ example: '2024-01-01T00:00:00.000Z' }),
     gte: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .exactOptional()
       .openapi({ example: '2024-01-01T00:00:00.000Z' }),
     lt: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .exactOptional()
       .openapi({ example: '2024-01-01T00:00:00.000Z' }),
     lte: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .exactOptional()
       .openapi({ example: '2024-01-01T00:00:00.000Z' }),
     ne: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .nullable()
       .exactOptional()
@@ -2958,26 +2950,6 @@ const DateFilterNullableSchema = z
   })
   .openapi({ required: [] })
   .openapi('DateFilterNullable')
-
-const DeviceFlowFailureReasonSchema = z
-  .enum(['NOT_CONNECTED', 'DEVICE_FLOW_FAILED', 'WRONG_ACCOUNT', 'UNKNOWN'])
-  .openapi('DeviceFlowFailureReason')
-
-const DeviceFlowEventTypeSchema = z
-  .enum(['START', 'SUCCESS', 'FAILURE'])
-  .openapi('DeviceFlowEventType')
-
-const DeviceFlowEventDtoSchema = z
-  .object({
-    backendId: z.string().exactOptional(),
-    reason: DeviceFlowFailureReasonSchema.exactOptional(),
-    token: z.string().exactOptional(),
-    type: DeviceFlowEventTypeSchema,
-    userCode: z.string().exactOptional(),
-    verificationUri: z.string().exactOptional(),
-  })
-  .openapi({ required: ['type'] })
-  .openapi('DeviceFlowEventDto')
 
 const DownloadArchiveDtoSchema = z
   .object({
@@ -3192,6 +3164,11 @@ const EmailNotificationsUpdateSchema = z
   .openapi({ required: [] })
   .openapi('EmailNotificationsUpdate')
 
+const EmailTemplateSchema = z
+  .enum(['test', 'welcome', 'reset-password', 'album-invite', 'album-update'])
+  .openapi({ description: 'Email template name' })
+  .openapi('EmailTemplate')
+
 const EnumFilterAssetTypeSchema = z
   .object({
     eq: AssetTypeEnumSchema.exactOptional(),
@@ -3223,16 +3200,6 @@ const FaceDtoSchema = z
   })
   .openapi({ required: ['id'] })
   .openapi('FaceDto')
-
-const FilesystemListingItemDtoSchema = z
-  .object({ isDirectory: z.boolean(), path: z.string() })
-  .openapi({ required: ['isDirectory', 'path'] })
-  .openapi('FilesystemListingItemDto')
-
-const FilesystemListingResponseDtoSchema = z
-  .object({ items: z.array(FilesystemListingItemDtoSchema), parent: z.string(), path: z.string() })
-  .openapi({ required: ['items', 'parent', 'path'] })
-  .openapi('FilesystemListingResponseDto')
 
 const FoldersResponseSchema = z
   .object({
@@ -3327,316 +3294,6 @@ const IdsFilterSchema = z
   .openapi({ required: [] })
   .openapi('IdsFilter')
 
-const ImmichDatabaseDumpConfigDtoSchema = z
-  .object({ enabled: z.boolean(), keepLastAmount: z.int().min(1).max(9007199254740991) })
-  .openapi({ required: ['enabled', 'keepLastAmount'] })
-  .openapi('ImmichDatabaseDumpConfigDto')
-
-const ImmichIntegrationConfigurationDtoSchema = z
-  .object({
-    backupConfiguration: z.boolean(),
-    dataFolders: z.array(z.string()),
-    libraries: z
-      .array(z.string())
-      .openapi({
-        description:
-          'IDs of the external libraries to back up. Use ["all"] to back up every library, including ones added later.',
-      }),
-  })
-  .openapi({ required: ['backupConfiguration', 'dataFolders', 'libraries'] })
-  .openapi('ImmichIntegrationConfigurationDto')
-
-const ImmichIntegrationDtoSchema = z
-  .object({
-    configuration: ImmichIntegrationConfigurationDtoSchema,
-    id: z.string(),
-    scheduleId: z.string(),
-  })
-  .openapi({ required: ['configuration', 'id', 'scheduleId'] })
-  .openapi('ImmichIntegrationDto')
-
-const YuccaJobNameSchema = z
-  .enum([
-    'repository-backup',
-    'repository-prune',
-    'repository-restore',
-    'repository-restore-from-point',
-    'repository-snapshot-forget',
-    'repository-sync-metrics',
-  ])
-  .openapi('YuccaJobName')
-
-const JobSummaryDtoSchema = z
-  .xor([
-    z
-      .object({
-        type: z.literal('backup'),
-        filesNew: z.int().min(-9007199254740991).max(9007199254740991),
-        filesChanged: z.int().min(-9007199254740991).max(9007199254740991),
-        totalFilesProcessed: z.int().min(-9007199254740991).max(9007199254740991),
-        totalBytesProcessed: z.int().min(-9007199254740991).max(9007199254740991),
-        snapshotId: z.string().exactOptional(),
-      })
-      .openapi({
-        required: [
-          'type',
-          'filesNew',
-          'filesChanged',
-          'totalFilesProcessed',
-          'totalBytesProcessed',
-        ],
-      }),
-    z
-      .object({
-        type: z.literal('restore'),
-        filesRestored: z.int().min(-9007199254740991).max(9007199254740991),
-        filesSkipped: z.int().min(-9007199254740991).max(9007199254740991),
-        bytesRestored: z.int().min(-9007199254740991).max(9007199254740991),
-      })
-      .openapi({ required: ['type', 'filesRestored', 'filesSkipped', 'bytesRestored'] }),
-    z
-      .object({
-        type: z.literal('prune'),
-        kept: z.int().min(-9007199254740991).max(9007199254740991),
-        removed: z.int().min(-9007199254740991).max(9007199254740991),
-      })
-      .openapi({ required: ['type', 'kept', 'removed'] }),
-  ])
-  .openapi('JobSummaryDto')
-
-const JobSupportDtoSchema = z
-  .object({
-    droppedLines: z
-      .int()
-      .min(-9007199254740991)
-      .max(9007199254740991)
-      .openapi({ description: 'Log lines that could not be streamed in time' }),
-    localDroppedLines: z
-      .int()
-      .min(-9007199254740991)
-      .max(9007199254740991)
-      .openapi({ description: 'Log lines that could not be written to the local support log' }),
-    sessionId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Support code to share with FUTO when the logs were streamed' }),
-  })
-  .openapi({ required: ['droppedLines', 'localDroppedLines'] })
-  .openapi('JobSupportDto')
-
-const JobOutcomeDtoSchema = z
-  .object({
-    errors: z.array(z.string()),
-    summary: JobSummaryDtoSchema.exactOptional(),
-    support: JobSupportDtoSchema.exactOptional(),
-  })
-  .openapi({ required: ['errors'] })
-  .openapi('JobOutcomeDto')
-
-const JobProgressDtoSchema = z
-  .object({
-    bytesDone: z.int().min(-9007199254740991).max(9007199254740991).exactOptional(),
-    currentFiles: z.array(z.string()),
-    estimatedEndAt: z.string().exactOptional(),
-    percentDone: z.float64(),
-    scanning: z.boolean(),
-    totalBytes: z.int().min(-9007199254740991).max(9007199254740991).exactOptional(),
-  })
-  .openapi({ required: ['currentFiles', 'percentDone', 'scanning'] })
-  .openapi('JobProgressDto')
-
-const YuccaJobStatusSchema = z
-  .enum(['queued', 'running', 'complete', 'warn', 'failed', 'cancelled', 'incomplete'])
-  .openapi('YuccaJobStatus')
-
-const JobDtoSchema = z
-  .object({
-    end: z.string().exactOptional(),
-    id: z.string(),
-    name: YuccaJobNameSchema,
-    outcome: JobOutcomeDtoSchema.exactOptional(),
-    progress: JobProgressDtoSchema.exactOptional(),
-    queuedAt: z.string(),
-    repositoryId: z.string(),
-    start: z.string().exactOptional(),
-    status: YuccaJobStatusSchema,
-  })
-  .openapi({ required: ['id', 'name', 'queuedAt', 'repositoryId', 'status'] })
-  .openapi('JobDto')
-
-const RepositoryBackendDtoSchema = z
-  .object({ id: z.string(), online: z.boolean(), type: BackendTypeSchema })
-  .openapi({ required: ['id', 'online', 'type'] })
-  .openapi('RepositoryBackendDto')
-
-const RepositoryBackendsDtoSchema = z
-  .object({ primary: RepositoryBackendDtoSchema, secondary: z.array(RepositoryBackendDtoSchema) })
-  .openapi({ required: ['primary', 'secondary'] })
-  .openapi('RepositoryBackendsDto')
-
-const RepositoryConfigurationDtoSchema = z
-  .object({
-    paths: z.array(z.string()),
-    retentionPolicy: RetentionPolicyDtoSchema.nullable().exactOptional(),
-  })
-  .openapi({ required: ['paths'] })
-  .openapi('RepositoryConfigurationDto')
-
-const RepositoryMeterDtoSchema = z
-  .object({
-    lastUpdated: z.string().nullable().exactOptional(),
-    objectCount: z.int().min(-9007199254740991).max(9007199254740991),
-    sizeBytes: z.int().min(-9007199254740991).max(9007199254740991),
-  })
-  .openapi({ required: ['objectCount', 'sizeBytes'] })
-  .openapi('RepositoryMeterDto')
-
-const RepositoryMetricsDtoSchema = z
-  .object({
-    lastBackup: z.string().nullable().exactOptional(),
-    lastBackupDuration: z
-      .int()
-      .min(-9007199254740991)
-      .max(9007199254740991)
-      .nullable()
-      .exactOptional(),
-    lastBackupStatus: BackupStatusSchema.nullable().exactOptional(),
-    lastStarted: z.string().nullable().exactOptional(),
-    sizeBytes: z.int().min(-9007199254740991).max(9007199254740991),
-  })
-  .openapi({ required: ['sizeBytes'] })
-  .openapi('RepositoryMetricsDto')
-
-const LocalRepositoryDtoSchema = z
-  .object({
-    backends: RepositoryBackendsDtoSchema.exactOptional(),
-    configuration: RepositoryConfigurationDtoSchema.exactOptional(),
-    id: z.string(),
-    meter: RepositoryMeterDtoSchema.exactOptional(),
-    metrics: RepositoryMetricsDtoSchema,
-    name: z.string(),
-    siteCode: z.string().nullable(),
-    storageClusterCode: z.string().nullable(),
-    worm: z.boolean(),
-  })
-  .openapi({ required: ['id', 'metrics', 'name', 'siteCode', 'storageClusterCode', 'worm'] })
-  .openapi('LocalRepositoryDto')
-
-const ScheduleDtoSchema = z
-  .object({
-    cron: z.string(),
-    id: z.string(),
-    lastFinished: z.string().exactOptional(),
-    lastRun: z.string().exactOptional(),
-    name: z.string(),
-    paused: z.boolean(),
-    repositories: z.array(z.string()),
-  })
-  .openapi({ required: ['cron', 'id', 'name', 'paused', 'repositories'] })
-  .openapi('ScheduleDto')
-
-const ImmichBackupStatusDtoSchema = z
-  .object({
-    backend: BackendDtoSchema.exactOptional(),
-    databaseDump: ImmichDatabaseDumpConfigDtoSchema.exactOptional(),
-    databaseDumpWarningIgnored: z.boolean().exactOptional(),
-    integration: ImmichIntegrationDtoSchema.exactOptional(),
-    latestBackupJob: JobDtoSchema.exactOptional(),
-    repository: LocalRepositoryDtoSchema.exactOptional(),
-    schedule: ScheduleDtoSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ImmichBackupStatusDto')
-
-const ImmichLibraryDtoSchema = z
-  .object({
-    exclusionPatterns: z.array(z.string()),
-    id: z.string(),
-    importPaths: z.array(z.string()),
-    name: z.string(),
-  })
-  .openapi({ required: ['exclusionPatterns', 'id', 'importPaths', 'name'] })
-  .openapi('ImmichLibraryDto')
-
-const ImmichRollbackRequestDtoSchema = z
-  .object({
-    backupFileName: z.string().exactOptional(),
-    repositoryId: z.string(),
-    snapshotId: z.string(),
-  })
-  .openapi({ required: ['repositoryId', 'snapshotId'] })
-  .openapi('ImmichRollbackRequestDto')
-
-const ImmichStateDtoSchema = z
-  .object({
-    dataFolders: z.array(z.string()),
-    dataPath: z.string(),
-    libraries: z.array(ImmichLibraryDtoSchema),
-  })
-  .openapi({ required: ['dataFolders', 'dataPath', 'libraries'] })
-  .openapi('ImmichStateDto')
-
-const ImportRecoveryKeyRequestSchema = z
-  .object({ recoveryKey: z.string() })
-  .openapi({ required: ['recoveryKey'] })
-  .openapi('ImportRecoveryKeyRequest')
-
-const SnapshotSummaryDtoSchema = z
-  .object({
-    dataAdded: z.int().min(-9007199254740991).max(9007199254740991),
-    filesChanged: z.int().min(-9007199254740991).max(9007199254740991),
-    filesNew: z.int().min(-9007199254740991).max(9007199254740991),
-    filesUnmodified: z.int().min(-9007199254740991).max(9007199254740991),
-    totalBytes: z.int().min(-9007199254740991).max(9007199254740991),
-    totalFiles: z.int().min(-9007199254740991).max(9007199254740991),
-  })
-  .openapi({
-    required: [
-      'dataAdded',
-      'filesChanged',
-      'filesNew',
-      'filesUnmodified',
-      'totalBytes',
-      'totalFiles',
-    ],
-  })
-  .openapi('SnapshotSummaryDto')
-
-const SnapshotDtoSchema = z
-  .object({
-    id: z.string(),
-    paths: z.array(z.string()),
-    summary: SnapshotSummaryDtoSchema.exactOptional(),
-    tags: z.array(z.string()).exactOptional(),
-    time: z.string(),
-  })
-  .openapi({ required: ['id', 'paths', 'time'] })
-  .openapi('SnapshotDto')
-
-const InspectedLocalRepositoryDtoSchema = z
-  .object({
-    backends: RepositoryBackendsDtoSchema.exactOptional(),
-    configuration: RepositoryConfigurationDtoSchema.exactOptional(),
-    id: z.string(),
-    meter: RepositoryMeterDtoSchema.exactOptional(),
-    metrics: RepositoryMetricsDtoSchema,
-    name: z.string(),
-    siteCode: z.string().nullable(),
-    snapshots: z.array(SnapshotDtoSchema).exactOptional(),
-    storageClusterCode: z.string().nullable(),
-    worm: z.boolean(),
-  })
-  .openapi({ required: ['id', 'metrics', 'name', 'siteCode', 'storageClusterCode', 'worm'] })
-  .openapi('InspectedLocalRepositoryDto')
-
-const IntegrationsResponseDtoSchema = z
-  .object({
-    immichIntegration: ImmichIntegrationDtoSchema.exactOptional(),
-    immichState: ImmichStateDtoSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('IntegrationsResponseDto')
-
 const IntegrityReportSchema = z
   .enum(['untracked_file', 'missing_file', 'checksum_mismatch'])
   .openapi({ description: 'Integrity report type' })
@@ -3656,7 +3313,7 @@ const IntegrityReportResponseDtoSchema = z
           path: z.string().openapi({ description: 'Integrity report item path' }),
           type: IntegrityReportSchema,
         })
-        .openapi({ required: ['id', 'type', 'path'] }),
+        .openapi({ required: ['id', 'path', 'type'] }),
     ),
     nextCursor: z.string().exactOptional(),
   })
@@ -3697,11 +3354,6 @@ const JobCreateDtoSchema = z
   .object({ name: ManualJobNameSchema })
   .openapi({ required: ['name'] })
   .openapi('JobCreateDto')
-
-const JobListResponseDtoSchema = z
-  .object({ jobs: z.array(JobDtoSchema) })
-  .openapi({ required: ['jobs'] })
-  .openapi('JobListResponseDto')
 
 const JobNameSchema = z
   .enum([
@@ -3776,11 +3428,6 @@ const JobNameSchema = z
   .openapi({ description: 'Job name' })
   .openapi('JobName')
 
-const JobResponseDtoSchema = z
-  .object({ jobId: z.string() })
-  .openapi({ required: ['jobId'] })
-  .openapi('JobResponseDto')
-
 const LibraryResponseDtoSchema = z
   .object({
     assetCount: z
@@ -3791,7 +3438,7 @@ const LibraryResponseDtoSchema = z
     createdAt: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .openapi({ description: 'Creation date', example: '2024-01-01T00:00:00.000Z' }),
     exclusionPatterns: z.array(z.string()).openapi({ description: 'Exclusion patterns' }),
@@ -3812,14 +3459,14 @@ const LibraryResponseDtoSchema = z
     refreshedAt: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .nullable()
       .openapi({ description: 'Last refresh date', example: '2024-01-01T00:00:00.000Z' }),
     updatedAt: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .openapi({ description: 'Last update date', example: '2024-01-01T00:00:00.000Z' }),
   })
@@ -3880,7 +3527,7 @@ const UserLicenseSchema = z
     activatedAt: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .openapi({ description: 'Activation date', example: '2024-01-01T00:00:00.000Z' }),
     activationKey: z.string().openapi({ description: 'Activation key' }),
@@ -3893,11 +3540,6 @@ const UserLicenseSchema = z
   .openapi('UserLicense')
 
 const LicenseResponseDtoSchema = UserLicenseSchema.openapi('LicenseResponseDto')
-
-const ListSnapshotsResponseDtoSchema = z
-  .object({ snapshots: z.array(SnapshotDtoSchema) })
-  .openapi({ required: ['snapshots'] })
-  .openapi('ListSnapshotsResponseDto')
 
 const LoginCredentialDtoSchema = z
   .object({
@@ -4103,15 +3745,15 @@ const MemoryCreateDtoSchema = z
     hideAt: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .exactOptional()
       .openapi({
         description: 'Date when memory should be hidden',
         example: '2024-01-01T00:00:00.000Z',
         'x-immich-history': [
-          { version: 'v2.6.0', state: 'Added' },
-          { version: 'v2.6.0', state: 'Stable' },
+          { state: 'Added', version: 'v2.6.0' },
+          { state: 'Stable', version: 'v2.6.0' },
         ],
         'x-immich-state': 'Stable',
       }),
@@ -4119,28 +3761,28 @@ const MemoryCreateDtoSchema = z
     memoryAt: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .openapi({ description: 'Memory date', example: '2024-01-01T00:00:00.000Z' }),
     seenAt: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .exactOptional()
       .openapi({ description: 'Date when memory was seen', example: '2024-01-01T00:00:00.000Z' }),
     showAt: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .exactOptional()
       .openapi({
         description: 'Date when memory should be shown',
         example: '2024-01-01T00:00:00.000Z',
         'x-immich-history': [
-          { version: 'v2.6.0', state: 'Added' },
-          { version: 'v2.6.0', state: 'Stable' },
+          { state: 'Added', version: 'v2.6.0' },
+          { state: 'Stable', version: 'v2.6.0' },
         ],
         'x-immich-state': 'Stable',
       }),
@@ -4155,21 +3797,21 @@ const MemoryResponseDtoSchema = z
     createdAt: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .openapi({ description: 'Creation date', example: '2024-01-01T00:00:00.000Z' }),
     data: MemoryDataDtoSchema,
     deletedAt: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .exactOptional()
       .openapi({ description: 'Deletion date', example: '2024-01-01T00:00:00.000Z' }),
     hideAt: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .exactOptional()
       .openapi({
@@ -4186,7 +3828,7 @@ const MemoryResponseDtoSchema = z
     memoryAt: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .openapi({ description: 'Memory date', example: '2024-01-01T00:00:00.000Z' }),
     ownerId: z
@@ -4198,14 +3840,14 @@ const MemoryResponseDtoSchema = z
     seenAt: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .exactOptional()
       .openapi({ description: 'Date when memory was seen', example: '2024-01-01T00:00:00.000Z' }),
     showAt: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .exactOptional()
       .openapi({
@@ -4216,7 +3858,7 @@ const MemoryResponseDtoSchema = z
     updatedAt: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .openapi({ description: 'Last update date', example: '2024-01-01T00:00:00.000Z' }),
   })
@@ -4259,14 +3901,14 @@ const MemoryUpdateDtoSchema = z
     memoryAt: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .exactOptional()
       .openapi({ description: 'Memory date', example: '2024-01-01T00:00:00.000Z' }),
     seenAt: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .exactOptional()
       .openapi({ description: 'Date when memory was seen', example: '2024-01-01T00:00:00.000Z' }),
@@ -4460,9 +4102,9 @@ const MetadataSearchDtoSchema = z
         deprecated: true,
         description: 'Filter by album IDs',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
@@ -4473,9 +4115,9 @@ const MetadataSearchDtoSchema = z
         deprecated: true,
         description: 'Filter by file checksum',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
@@ -4487,9 +4129,9 @@ const MetadataSearchDtoSchema = z
         deprecated: true,
         description: 'Filter by city name',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
@@ -4501,16 +4143,16 @@ const MetadataSearchDtoSchema = z
         deprecated: true,
         description: 'Filter by country name',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
     createdAfter: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .exactOptional()
       .openapi({
@@ -4518,16 +4160,16 @@ const MetadataSearchDtoSchema = z
         description: 'Filter by creation date (after)',
         example: '2024-01-01T00:00:00.000Z',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
     createdBefore: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .exactOptional()
       .openapi({
@@ -4535,9 +4177,9 @@ const MetadataSearchDtoSchema = z
         description: 'Filter by creation date (before)',
         example: '2024-01-01T00:00:00.000Z',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
@@ -4547,7 +4189,7 @@ const MetadataSearchDtoSchema = z
       .exactOptional()
       .openapi({
         description: 'Cursor for the next page of results',
-        'x-immich-history': [{ version: 'v3.2.0', state: 'Added' }],
+        'x-immich-history': [{ state: 'Added', version: 'v3.2.0' }],
       }),
     description: z
       .string()
@@ -4556,9 +4198,9 @@ const MetadataSearchDtoSchema = z
         deprecated: true,
         description: 'Filter by description text',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
@@ -4569,14 +4211,14 @@ const MetadataSearchDtoSchema = z
         deprecated: true,
         description: 'Filter by encoded video file path',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
     filter: SearchFilterSchema.exactOptional().openapi({
-      'x-immich-history': [{ version: 'v3.2.0', state: 'Added' }],
+      'x-immich-history': [{ state: 'Added', version: 'v3.2.0' }],
     }),
     id: z
       .uuid()
@@ -4588,9 +4230,9 @@ const MetadataSearchDtoSchema = z
         deprecated: true,
         description: 'Filter by asset ID',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
@@ -4601,9 +4243,9 @@ const MetadataSearchDtoSchema = z
         deprecated: true,
         description: 'Filter by encoded status',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
@@ -4614,9 +4256,9 @@ const MetadataSearchDtoSchema = z
         deprecated: true,
         description: 'Filter by favorite status',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
@@ -4627,9 +4269,9 @@ const MetadataSearchDtoSchema = z
         deprecated: true,
         description: 'Filter by motion photo status',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
@@ -4640,9 +4282,9 @@ const MetadataSearchDtoSchema = z
         deprecated: true,
         description: 'Filter assets not in any album',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
@@ -4653,9 +4295,9 @@ const MetadataSearchDtoSchema = z
         deprecated: true,
         description: 'Filter by offline status',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
@@ -4667,9 +4309,9 @@ const MetadataSearchDtoSchema = z
         deprecated: true,
         description: 'Filter by lens model',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
@@ -4684,9 +4326,9 @@ const MetadataSearchDtoSchema = z
         deprecated: true,
         description: 'Library ID to filter by',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
@@ -4698,9 +4340,9 @@ const MetadataSearchDtoSchema = z
         deprecated: true,
         description: 'Filter by camera make',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
@@ -4712,9 +4354,9 @@ const MetadataSearchDtoSchema = z
         deprecated: true,
         description: 'Filter by camera model',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
@@ -4725,9 +4367,9 @@ const MetadataSearchDtoSchema = z
         deprecated: true,
         description: 'Filter by OCR text content',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
@@ -4735,14 +4377,14 @@ const MetadataSearchDtoSchema = z
       deprecated: true,
       description: 'Sort order',
       'x-immich-history': [
-        { version: 'v1', state: 'Added' },
-        { version: 'v2', state: 'Stable' },
-        { version: 'v3.2.0', state: 'Deprecated' },
+        { state: 'Added', version: 'v1' },
+        { state: 'Stable', version: 'v2' },
+        { state: 'Deprecated', version: 'v3.2.0' },
       ],
       'x-immich-state': 'Deprecated',
     }),
     orderBy: SearchOrderSchema.exactOptional().openapi({
-      'x-immich-history': [{ version: 'v3.2.0', state: 'Added' }],
+      'x-immich-history': [{ state: 'Added', version: 'v3.2.0' }],
     }),
     originalFileName: z
       .string()
@@ -4751,9 +4393,9 @@ const MetadataSearchDtoSchema = z
         deprecated: true,
         description: 'Filter by original file name',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
@@ -4764,9 +4406,9 @@ const MetadataSearchDtoSchema = z
         deprecated: true,
         description: 'Filter by original file path',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
@@ -4779,9 +4421,9 @@ const MetadataSearchDtoSchema = z
         deprecated: true,
         description: 'Page number',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
@@ -4798,9 +4440,9 @@ const MetadataSearchDtoSchema = z
         deprecated: true,
         description: 'Filter by person IDs',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
@@ -4811,9 +4453,9 @@ const MetadataSearchDtoSchema = z
         deprecated: true,
         description: 'Filter by preview file path',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
@@ -4827,20 +4469,20 @@ const MetadataSearchDtoSchema = z
         deprecated: true,
         description: 'Filter by rating [1-5], or null for unrated',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
           {
-            version: 'v2.6.0',
-            state: 'Updated',
             description:
               'Using -1 as a rating is deprecated and will be removed in the next major version.',
+            state: 'Updated',
+            version: 'v2.6.0',
           },
           {
-            version: 'v3',
-            state: 'Updated',
             description: 'Using -1 as a rating is no longer valid.',
+            state: 'Updated',
+            version: 'v3',
           },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
@@ -4859,9 +4501,9 @@ const MetadataSearchDtoSchema = z
         deprecated: true,
         description: 'Filter by state/province name',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
@@ -4879,16 +4521,16 @@ const MetadataSearchDtoSchema = z
         deprecated: true,
         description: 'Filter by tag IDs',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
     takenAfter: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .exactOptional()
       .openapi({
@@ -4896,16 +4538,16 @@ const MetadataSearchDtoSchema = z
         description: 'Filter by taken date (after)',
         example: '2024-01-01T00:00:00.000Z',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
     takenBefore: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .exactOptional()
       .openapi({
@@ -4913,9 +4555,9 @@ const MetadataSearchDtoSchema = z
         description: 'Filter by taken date (before)',
         example: '2024-01-01T00:00:00.000Z',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
@@ -4926,16 +4568,16 @@ const MetadataSearchDtoSchema = z
         deprecated: true,
         description: 'Filter by thumbnail file path',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
     trashedAfter: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .exactOptional()
       .openapi({
@@ -4943,16 +4585,16 @@ const MetadataSearchDtoSchema = z
         description: 'Filter by trash date (after)',
         example: '2024-01-01T00:00:00.000Z',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
     trashedBefore: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .exactOptional()
       .openapi({
@@ -4960,25 +4602,25 @@ const MetadataSearchDtoSchema = z
         description: 'Filter by trash date (before)',
         example: '2024-01-01T00:00:00.000Z',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
     type: AssetTypeEnumSchema.exactOptional().openapi({
       deprecated: true,
       'x-immich-history': [
-        { version: 'v1', state: 'Added' },
-        { version: 'v2', state: 'Stable' },
-        { version: 'v3.2.0', state: 'Deprecated' },
+        { state: 'Added', version: 'v1' },
+        { state: 'Stable', version: 'v2' },
+        { state: 'Deprecated', version: 'v3.2.0' },
       ],
       'x-immich-state': 'Deprecated',
     }),
     updatedAfter: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .exactOptional()
       .openapi({
@@ -4986,16 +4628,16 @@ const MetadataSearchDtoSchema = z
         description: 'Filter by update date (after)',
         example: '2024-01-01T00:00:00.000Z',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
     updatedBefore: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .exactOptional()
       .openapi({
@@ -5003,18 +4645,18 @@ const MetadataSearchDtoSchema = z
         description: 'Filter by update date (before)',
         example: '2024-01-01T00:00:00.000Z',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
     visibility: AssetVisibilitySchema.exactOptional().openapi({
       deprecated: true,
       'x-immich-history': [
-        { version: 'v1', state: 'Added' },
-        { version: 'v2', state: 'Stable' },
-        { version: 'v3.2.0', state: 'Deprecated' },
+        { state: 'Added', version: 'v1' },
+        { state: 'Stable', version: 'v2' },
+        { state: 'Deprecated', version: 'v3.2.0' },
       ],
       'x-immich-state': 'Deprecated',
     }),
@@ -5025,9 +4667,9 @@ const MetadataSearchDtoSchema = z
         deprecated: true,
         description: 'Include deleted assets',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
@@ -5074,7 +4716,7 @@ const NotificationCreateDtoSchema = z
     readAt: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .nullable()
       .exactOptional()
@@ -5115,7 +4757,7 @@ const NotificationDtoSchema = z
     createdAt: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .openapi({ description: 'Creation date', example: '2024-01-01T00:00:00.000Z' }),
     data: z
@@ -5133,7 +4775,7 @@ const NotificationDtoSchema = z
     readAt: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .exactOptional()
       .openapi({
@@ -5161,7 +4803,7 @@ const NotificationUpdateAllDtoSchema = z
     readAt: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .nullable()
       .exactOptional()
@@ -5178,7 +4820,7 @@ const NotificationUpdateDtoSchema = z
     readAt: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .nullable()
       .exactOptional()
@@ -5230,36 +4872,6 @@ const OnboardingResponseDtoSchema = z
   .object({ isOnboarded: z.boolean().openapi({ description: 'Is user onboarded' }) })
   .openapi({ required: ['isOnboarded'] })
   .openapi('OnboardingResponseDto')
-
-const TelemetryLevelSchema = z.enum(['full', 'none']).openapi('TelemetryLevel')
-
-const OnboardingStatusResponseDtoSchema = z
-  .object({
-    error: z.string().exactOptional(),
-    hasBackend: z.boolean(),
-    hasBackup: z.boolean(),
-    hasOnboardedKey: z.boolean(),
-    hasSchedule: z.boolean(),
-    hasSkippedExtraConfig: z.boolean(),
-    hasTelemetry: TelemetryLevelSchema,
-    isAuthenticated: z.boolean(),
-    requiresAuthentication: z.boolean(),
-    status: BootstrapStatusSchema,
-  })
-  .openapi({
-    required: [
-      'hasBackend',
-      'hasBackup',
-      'hasOnboardedKey',
-      'hasSchedule',
-      'hasSkippedExtraConfig',
-      'hasTelemetry',
-      'isAuthenticated',
-      'requiresAuthentication',
-      'status',
-    ],
-  })
-  .openapi('OnboardingStatusResponseDto')
 
 const PartnerCreateDtoSchema = z
   .object({
@@ -5317,17 +4929,30 @@ const PasskeyAuthenticationFinishDtoSchema = z
       .object({
         id: z
           .base64url()
-          .regex(/^[A-Za-z0-9_-]*$/)
+          .transform((val) =>
+            new TextDecoder().decode(
+              Uint8Array.from(atob(val.replace(/-/g, '+').replace(/_/g, '/')), (char) =>
+                char.charCodeAt(0),
+              ),
+            ),
+          )
           .openapi({ description: 'Credential ID' }),
         response: z
           .object({
             userHandle: z
               .base64url()
-              .regex(/^[A-Za-z0-9_-]*$/)
+              .transform((val) =>
+                new TextDecoder().decode(
+                  Uint8Array.from(atob(val.replace(/-/g, '+').replace(/_/g, '/')), (char) =>
+                    char.charCodeAt(0),
+                  ),
+                ),
+              )
               .exactOptional()
               .openapi({ description: 'User handle' }),
           })
-          .catchall(z.any()),
+          .catchall(z.any())
+          .openapi({ required: [] }),
       })
       .catchall(z.any())
       .openapi({
@@ -5369,7 +4994,7 @@ const PasskeyResponseDtoSchema = z
     createdAt: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .openapi({ description: 'Creation date', example: '2024-01-01T00:00:00.000Z' }),
     id: z
@@ -5382,13 +5007,13 @@ const PasskeyResponseDtoSchema = z
     updatedAt: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .openapi({ description: 'Last update date', example: '2024-01-01T00:00:00.000Z' }),
     usedAt: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .nullable()
       .openapi({ description: 'Last used date', example: '2024-01-01T00:00:00.000Z' }),
@@ -5414,7 +5039,7 @@ const PeopleDeleteDtoSchema = z
       .openapi({ description: 'IDs to process' }),
     userId: z.string().exactOptional(),
   })
-  .openapi({ required: ['ids'], 'x-immich-history': [{ version: 'v3.3', state: 'Added' }] })
+  .openapi({ required: ['ids'], 'x-immich-history': [{ state: 'Added', version: 'v3.3' }] })
   .openapi('PeopleDeleteDto')
 
 const PersonUpdateStrategySchema = z
@@ -5445,8 +5070,8 @@ const PeopleResponseDtoSchema = z
       .openapi({
         description: 'Whether there are more pages',
         'x-immich-history': [
-          { version: 'v1.110.0', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
+          { state: 'Added', version: 'v1.110.0' },
+          { state: 'Stable', version: 'v2' },
         ],
         'x-immich-state': 'Stable',
       }),
@@ -5483,6 +5108,9 @@ const PeopleUpdateItemSchema = z
   .object({
     birthDate: z.iso
       .date()
+      .regex(
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))$/,
+      )
       .nullable()
       .exactOptional()
       .openapi({ description: 'Person date of birth' }),
@@ -5560,6 +5188,9 @@ const PersonCreateDtoSchema = z
   .object({
     birthDate: z.iso
       .date()
+      .regex(
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))$/,
+      )
       .nullable()
       .exactOptional()
       .openapi({ description: 'Person date of birth' }),
@@ -5581,8 +5212,8 @@ const PersonDeleteDtoSchema = z
   .default({})
   .openapi({
     'x-immich-history': [
-      { version: 'v3.3', state: 'Added' },
-      { version: 'v3.3', state: 'Stable' },
+      { state: 'Added', version: 'v3.3' },
+      { state: 'Stable', version: 'v3.3' },
     ],
     'x-immich-state': 'Stable',
     required: [],
@@ -5604,6 +5235,9 @@ const PersonUpdateDtoSchema = z
   .object({
     birthDate: z.iso
       .date()
+      .regex(
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))$/,
+      )
       .nullable()
       .exactOptional()
       .openapi({ description: 'Person date of birth' }),
@@ -5693,7 +5327,7 @@ const PersonUsersResponseDtoSchema = z
           .openapi({ description: 'User ID of the user that was given access to this person' }),
       })
       .openapi({
-        required: ['personId', 'sharedById', 'sharedWithId', 'sharedBy', 'sharedWith', 'role'],
+        required: ['personId', 'role', 'sharedBy', 'sharedById', 'sharedWith', 'sharedWithId'],
       }),
   )
   .openapi('PersonUsersResponseDto')
@@ -5776,7 +5410,7 @@ const PluginMethodResponseDtoSchema = z
     hostFunctions: z.boolean(),
     key: z.string().openapi({ description: 'Key' }),
     name: z.string().openapi({ description: 'Name' }),
-    schema: z.object({}).exactOptional(),
+    schema: z.looseObject({}).exactOptional(),
     title: z.string().openapi({ description: 'Title' }),
     types: z.array(WorkflowTypeSchema).openapi({ description: 'Workflow types' }),
     uiHints: z.array(z.string()).openapi({ description: 'Ui hints' }),
@@ -5820,7 +5454,9 @@ const PluginResponseDtoSchema = z
 
 const PluginTemplateStepResponseDtoSchema = z
   .object({
-    config: z.record(z.string(), z.any()).nullable().openapi({ description: 'Step configuration' }),
+    config: z
+      .union([z.record(z.string(), z.any()), z.null().nullable()])
+      .openapi({ description: 'Step configuration' }),
     enabled: z.boolean().exactOptional().openapi({ description: 'Whether the step is enabled' }),
     method: z.string().openapi({ description: 'Step plugin method' }),
   })
@@ -5950,8 +5586,8 @@ const QueueDeleteDtoSchema = z
       .openapi({
         description: 'If true, will also remove failed jobs from the queue.',
         'x-immich-history': [
-          { version: 'v2.4.0', state: 'Added' },
-          { version: 'v2.4.0', state: 'Alpha' },
+          { state: 'Added', version: 'v2.4.0' },
+          { state: 'Alpha', version: 'v2.4.0' },
         ],
         'x-immich-state': 'Alpha',
       }),
@@ -6032,13 +5668,13 @@ const QueueStatisticsDtoSchema = z
       .openapi({
         description: 'Number of paused jobs',
         'x-immich-history': [
-          { version: 'v2.0.0', state: 'Added' },
+          { state: 'Added', version: 'v2.0.0' },
           {
-            version: 'v4.0.0',
-            state: 'Updated',
             description: 'A paused queue will now also shows its job as `waiting`',
+            state: 'Updated',
+            version: 'v4.0.0',
           },
-          { version: 'v4.0.0', state: 'Deprecated' },
+          { state: 'Deprecated', version: 'v4.0.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
@@ -6144,9 +5780,9 @@ const RandomSearchDtoSchema = z
         deprecated: true,
         description: 'Filter by album IDs',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
@@ -6158,9 +5794,9 @@ const RandomSearchDtoSchema = z
         deprecated: true,
         description: 'Filter by city name',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
@@ -6172,16 +5808,16 @@ const RandomSearchDtoSchema = z
         deprecated: true,
         description: 'Filter by country name',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
     createdAfter: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .exactOptional()
       .openapi({
@@ -6189,16 +5825,16 @@ const RandomSearchDtoSchema = z
         description: 'Filter by creation date (after)',
         example: '2024-01-01T00:00:00.000Z',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
     createdBefore: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .exactOptional()
       .openapi({
@@ -6206,14 +5842,14 @@ const RandomSearchDtoSchema = z
         description: 'Filter by creation date (before)',
         example: '2024-01-01T00:00:00.000Z',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
     filter: SearchFilterSchema.exactOptional().openapi({
-      'x-immich-history': [{ version: 'v3.2.0', state: 'Added' }],
+      'x-immich-history': [{ state: 'Added', version: 'v3.2.0' }],
     }),
     isEncoded: z
       .boolean()
@@ -6222,9 +5858,9 @@ const RandomSearchDtoSchema = z
         deprecated: true,
         description: 'Filter by encoded status',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
@@ -6235,9 +5871,9 @@ const RandomSearchDtoSchema = z
         deprecated: true,
         description: 'Filter by favorite status',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
@@ -6248,9 +5884,9 @@ const RandomSearchDtoSchema = z
         deprecated: true,
         description: 'Filter by motion photo status',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
@@ -6261,9 +5897,9 @@ const RandomSearchDtoSchema = z
         deprecated: true,
         description: 'Filter assets not in any album',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
@@ -6274,9 +5910,9 @@ const RandomSearchDtoSchema = z
         deprecated: true,
         description: 'Filter by offline status',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
@@ -6288,9 +5924,9 @@ const RandomSearchDtoSchema = z
         deprecated: true,
         description: 'Filter by lens model',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
@@ -6305,9 +5941,9 @@ const RandomSearchDtoSchema = z
         deprecated: true,
         description: 'Library ID to filter by',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
@@ -6319,9 +5955,9 @@ const RandomSearchDtoSchema = z
         deprecated: true,
         description: 'Filter by camera make',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
@@ -6333,9 +5969,9 @@ const RandomSearchDtoSchema = z
         deprecated: true,
         description: 'Filter by camera model',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
@@ -6346,9 +5982,9 @@ const RandomSearchDtoSchema = z
         deprecated: true,
         description: 'Filter by OCR text content',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
@@ -6365,9 +6001,9 @@ const RandomSearchDtoSchema = z
         deprecated: true,
         description: 'Filter by person IDs',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
@@ -6381,20 +6017,20 @@ const RandomSearchDtoSchema = z
         deprecated: true,
         description: 'Filter by rating [1-5], or null for unrated',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
           {
-            version: 'v2.6.0',
-            state: 'Updated',
             description:
               'Using -1 as a rating is deprecated and will be removed in the next major version.',
+            state: 'Updated',
+            version: 'v2.6.0',
           },
           {
-            version: 'v3',
-            state: 'Updated',
             description: 'Using -1 as a rating is no longer valid.',
+            state: 'Updated',
+            version: 'v3',
           },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
@@ -6413,9 +6049,9 @@ const RandomSearchDtoSchema = z
         deprecated: true,
         description: 'Filter by state/province name',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
@@ -6433,16 +6069,16 @@ const RandomSearchDtoSchema = z
         deprecated: true,
         description: 'Filter by tag IDs',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
     takenAfter: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .exactOptional()
       .openapi({
@@ -6450,16 +6086,16 @@ const RandomSearchDtoSchema = z
         description: 'Filter by taken date (after)',
         example: '2024-01-01T00:00:00.000Z',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
     takenBefore: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .exactOptional()
       .openapi({
@@ -6467,16 +6103,16 @@ const RandomSearchDtoSchema = z
         description: 'Filter by taken date (before)',
         example: '2024-01-01T00:00:00.000Z',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
     trashedAfter: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .exactOptional()
       .openapi({
@@ -6484,16 +6120,16 @@ const RandomSearchDtoSchema = z
         description: 'Filter by trash date (after)',
         example: '2024-01-01T00:00:00.000Z',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
     trashedBefore: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .exactOptional()
       .openapi({
@@ -6501,25 +6137,25 @@ const RandomSearchDtoSchema = z
         description: 'Filter by trash date (before)',
         example: '2024-01-01T00:00:00.000Z',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
     type: AssetTypeEnumSchema.exactOptional().openapi({
       deprecated: true,
       'x-immich-history': [
-        { version: 'v1', state: 'Added' },
-        { version: 'v2', state: 'Stable' },
-        { version: 'v3.2.0', state: 'Deprecated' },
+        { state: 'Added', version: 'v1' },
+        { state: 'Stable', version: 'v2' },
+        { state: 'Deprecated', version: 'v3.2.0' },
       ],
       'x-immich-state': 'Deprecated',
     }),
     updatedAfter: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .exactOptional()
       .openapi({
@@ -6527,16 +6163,16 @@ const RandomSearchDtoSchema = z
         description: 'Filter by update date (after)',
         example: '2024-01-01T00:00:00.000Z',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
     updatedBefore: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .exactOptional()
       .openapi({
@@ -6544,18 +6180,18 @@ const RandomSearchDtoSchema = z
         description: 'Filter by update date (before)',
         example: '2024-01-01T00:00:00.000Z',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
     visibility: AssetVisibilitySchema.exactOptional().openapi({
       deprecated: true,
       'x-immich-history': [
-        { version: 'v1', state: 'Added' },
-        { version: 'v2', state: 'Stable' },
-        { version: 'v3.2.0', state: 'Deprecated' },
+        { state: 'Added', version: 'v1' },
+        { state: 'Stable', version: 'v2' },
+        { state: 'Deprecated', version: 'v3.2.0' },
       ],
       'x-immich-state': 'Deprecated',
     }),
@@ -6566,9 +6202,9 @@ const RandomSearchDtoSchema = z
         deprecated: true,
         description: 'Include deleted assets',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
@@ -6627,7 +6263,7 @@ const ServerVersionResponseDtoSchema = z
       .openapi({
         description:
           'Highest feature level supported by the server, which increments independently of the release version',
-        'x-immich-history': [{ version: 'v4.0.0', state: 'Added' }],
+        'x-immich-history': [{ state: 'Added', version: 'v4.0.0' }],
       }),
     major: z.int().min(0).max(9007199254740991).openapi({ description: 'Major version number' }),
     minor: z.int().min(0).max(9007199254740991).openapi({ description: 'Minor version number' }),
@@ -6639,7 +6275,7 @@ const ServerVersionResponseDtoSchema = z
       .nullable()
       .openapi({
         description: 'Pre-release version number',
-        'x-immich-history': [{ version: 'v3.0.0', state: 'Added' }],
+        'x-immich-history': [{ state: 'Added', version: 'v3.0.0' }],
       }),
   })
   .openapi({ required: ['featureLevel', 'major', 'minor', 'patch', 'prerelease'] })
@@ -6659,85 +6295,12 @@ const ReleaseEventV1Schema = z
     isAvailable: z.boolean().openapi({ description: 'Whether a new version is available' }),
     releaseVersion: ServerVersionResponseDtoSchema,
     serverVersion: ServerVersionResponseDtoSchema,
-    type: ReleaseTypeSchema.nullable().openapi({ description: 'Release type' }),
+    type: z
+      .union([ReleaseTypeSchema, z.null().nullable()])
+      .openapi({ description: 'Release type' }),
   })
   .openapi({ required: ['checkedAt', 'isAvailable', 'releaseVersion', 'serverVersion', 'type'] })
   .openapi('ReleaseEventV1')
-
-const RepositoryCheckImportResponseDtoSchema = z
-  .object({ readable: z.boolean() })
-  .openapi({ required: ['readable'] })
-  .openapi('RepositoryCheckImportResponseDto')
-
-const RepositoryCreateRequestDtoSchema = z
-  .object({
-    name: z.string(),
-    paths: z.array(z.string()).exactOptional(),
-    retentionPolicy: RetentionPolicyDtoSchema.nullable().exactOptional(),
-    site: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Internal site code from environment metadata' }),
-    worm: z.boolean(),
-  })
-  .openapi({ required: ['name', 'worm'] })
-  .openapi('RepositoryCreateRequestDto')
-
-const RepositoryCreateResponseDtoSchema = z
-  .object({ repository: LocalRepositoryDtoSchema })
-  .openapi({ required: ['repository'] })
-  .openapi('RepositoryCreateResponseDto')
-
-const RepositoryInspectResponseDtoSchema = z
-  .object({ repositories: z.array(InspectedLocalRepositoryDtoSchema) })
-  .openapi({ required: ['repositories'] })
-  .openapi('RepositoryInspectResponseDto')
-
-const RepositoryListResponseDtoSchema = z
-  .object({ repositories: z.array(LocalRepositoryDtoSchema) })
-  .openapi({ required: ['repositories'] })
-  .openapi('RepositoryListResponseDto')
-
-const RepositoryPrimaryBackendReconfigureRequestDtoSchema = z
-  .object({ backendId: z.string() })
-  .openapi({ required: ['backendId'] })
-  .openapi('RepositoryPrimaryBackendReconfigureRequestDto')
-
-const RepositorySnapshotRestoreFromPointRequestDtoSchema = z
-  .object({ include: z.array(z.string()).exactOptional(), yuccaConfig: z.string().exactOptional() })
-  .openapi({ required: [] })
-  .openapi('RepositorySnapshotRestoreFromPointRequestDto')
-
-const RepositorySnapshotRestoreRequestDtoSchema = z
-  .object({ include: z.array(z.string()).exactOptional(), target: z.string().exactOptional() })
-  .openapi({ required: [] })
-  .openapi('RepositorySnapshotRestoreRequestDto')
-
-const RepositorySyncDeletionResponseDtoSchema = z
-  .object({
-    deleted: z
-      .boolean()
-      .openapi({
-        description: 'Whether the repository was deleted remotely and removed from this server',
-      }),
-  })
-  .openapi({ required: ['deleted'] })
-  .openapi('RepositorySyncDeletionResponseDto')
-
-const RepositoryUpdateRequestDtoSchema = z
-  .object({
-    name: z.string().exactOptional(),
-    paths: z.array(z.string()).exactOptional(),
-    retentionPolicy: RetentionPolicyDtoSchema.nullable().exactOptional(),
-    worm: z.boolean().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('RepositoryUpdateRequestDto')
-
-const RepositoryUpdateResponseDtoSchema = z
-  .object({ repository: LocalRepositoryDtoSchema })
-  .openapi({ required: ['repository'] })
-  .openapi('RepositoryUpdateResponseDto')
 
 const ReverseGeocodingStateResponseDtoSchema = z
   .object({
@@ -6747,130 +6310,7 @@ const ReverseGeocodingStateResponseDtoSchema = z
   .openapi({ required: ['lastImportFileName', 'lastUpdate'] })
   .openapi('ReverseGeocodingStateResponseDto')
 
-const ScheduleCreateRequestDtoSchema = z
-  .object({
-    cron: z.string(),
-    name: z.string(),
-    paused: z.boolean().default(false).exactOptional(),
-    repositories: z.array(z.string()),
-  })
-  .openapi({ required: ['cron', 'name', 'repositories'] })
-  .openapi('ScheduleCreateRequestDto')
-
-const ScheduleCreateResponseDtoSchema = z
-  .object({ schedule: ScheduleDtoSchema })
-  .openapi({ required: ['schedule'] })
-  .openapi('ScheduleCreateResponseDto')
-
-const ScheduleListResponseDtoSchema = z
-  .object({ schedules: z.array(ScheduleDtoSchema) })
-  .openapi({ required: ['schedules'] })
-  .openapi('ScheduleListResponseDto')
-
-const ScheduleUpdateRequestDtoSchema = z
-  .object({
-    cron: z.string().exactOptional(),
-    name: z.string().exactOptional(),
-    paused: z.boolean().exactOptional(),
-    repositories: z.array(z.string()).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ScheduleUpdateRequestDto')
-
-const ScheduleUpdateResponseDtoSchema = z
-  .object({ schedule: ScheduleDtoSchema })
-  .openapi({ required: ['schedule'] })
-  .openapi('ScheduleUpdateResponseDto')
-
-const SearchFacetCountResponseDtoSchema = z
-  .object({
-    count: z
-      .int()
-      .min(0)
-      .max(9007199254740991)
-      .openapi({ description: 'Number of assets with this facet value' }),
-    value: z.string().openapi({ description: 'Facet value' }),
-  })
-  .openapi({ required: ['count', 'value'] })
-  .openapi('SearchFacetCountResponseDto')
-
-const SearchFacetResponseDtoSchema = z
-  .object({
-    counts: z.array(SearchFacetCountResponseDtoSchema),
-    fieldName: z.string().openapi({ description: 'Facet field name' }),
-  })
-  .openapi({ required: ['counts', 'fieldName'] })
-  .openapi('SearchFacetResponseDto')
-
-const SearchAlbumResponseDtoSchema = z
-  .object({
-    count: z
-      .int()
-      .min(0)
-      .max(9007199254740991)
-      .openapi({ description: 'Number of albums in this page' }),
-    facets: z.array(SearchFacetResponseDtoSchema),
-    items: z.array(AlbumResponseDtoSchema),
-    total: z
-      .int()
-      .min(0)
-      .max(9007199254740991)
-      .openapi({ description: 'Total number of matching albums' }),
-  })
-  .openapi({ required: ['count', 'facets', 'items', 'total'] })
-  .openapi('SearchAlbumResponseDto')
-
-const SearchAssetResponseDtoSchema = z
-  .object({
-    count: z
-      .int()
-      .min(0)
-      .max(9007199254740991)
-      .openapi({ description: 'Number of assets in this page' }),
-    facets: z.array(SearchFacetResponseDtoSchema),
-    items: z.array(AssetResponseDtoSchema),
-    nextCursor: z
-      .string()
-      .nullable()
-      .openapi({
-        description: 'Cursor for the next page of results',
-        'x-immich-history': [{ version: 'v3.2.0', state: 'Added' }],
-      }),
-    nextPage: z
-      .string()
-      .nullable()
-      .openapi({
-        deprecated: true,
-        description: 'Next page token',
-        'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
-        ],
-        'x-immich-state': 'Deprecated',
-      }),
-    total: z
-      .int()
-      .min(0)
-      .max(9007199254740991)
-      .openapi({
-        description: 'Total number of matching assets',
-        'x-immich-history': [{ version: 'v3.0.0', state: 'Deprecated' }],
-        'x-immich-state': 'Deprecated',
-      }),
-  })
-  .openapi({ required: ['count', 'facets', 'items', 'nextCursor', 'nextPage', 'total'] })
-  .openapi('SearchAssetResponseDto')
-
-const SearchExploreItemSchema = z
-  .object({
-    data: AssetResponseDtoSchema,
-    value: z.string().openapi({ description: 'Explore value' }),
-  })
-  .openapi({ required: ['data', 'value'] })
-  .openapi('SearchExploreItem')
-
-const SearchExploreResponseDtoSchema = z
+const SearchExploreResponseDtoSchema: z.ZodType<SearchExploreResponseDtoType> = z
   .object({
     fieldName: z.string().openapi({ description: 'Explore field name' }),
     items: z.array(SearchExploreItemSchema),
@@ -6878,7 +6318,7 @@ const SearchExploreResponseDtoSchema = z
   .openapi({ required: ['fieldName', 'items'] })
   .openapi('SearchExploreResponseDto')
 
-const SearchResponseDtoSchema = z
+const SearchResponseDtoSchema: z.ZodType<SearchResponseDtoType> = z
   .object({ albums: SearchAlbumResponseDtoSchema, assets: SearchAssetResponseDtoSchema })
   .openapi({ required: ['albums', 'assets'] })
   .openapi('SearchResponseDto')
@@ -7201,7 +6641,7 @@ const ServerVersionHistoryResponseDtoSchema = z
     createdAt: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .openapi({
         description: 'When this version was first seen',
@@ -7359,7 +6799,11 @@ const SharedLinkCreateDtoSchema = z
       .default(true)
       .exactOptional()
       .openapi({ description: 'Allow downloads' }),
-    allowUpload: z.boolean().exactOptional().openapi({ description: 'Allow uploads' }),
+    allowUpload: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({ description: 'Allow uploads' }),
     assetIds: z
       .array(
         z
@@ -7374,7 +6818,7 @@ const SharedLinkCreateDtoSchema = z
     expiresAt: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .nullable()
       .exactOptional()
@@ -7399,7 +6843,7 @@ const SharedLinkEditDtoSchema = z
     expiresAt: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .nullable()
       .exactOptional()
@@ -7427,14 +6871,14 @@ const SharedLinkResponseDtoSchema = z
     createdAt: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .openapi({ description: 'Creation date', example: '2024-01-01T00:00:00.000Z' }),
     description: z.string().nullable().openapi({ description: 'Link description' }),
     expiresAt: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .nullable()
       .openapi({ description: 'Expiration date', example: '2024-01-01T00:00:00.000Z' }),
@@ -7532,9 +6976,9 @@ const SmartSearchDtoSchema = z
         deprecated: true,
         description: 'Filter by album IDs',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
@@ -7546,9 +6990,9 @@ const SmartSearchDtoSchema = z
         deprecated: true,
         description: 'Filter by city name',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
@@ -7560,16 +7004,16 @@ const SmartSearchDtoSchema = z
         deprecated: true,
         description: 'Filter by country name',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
     createdAfter: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .exactOptional()
       .openapi({
@@ -7577,16 +7021,16 @@ const SmartSearchDtoSchema = z
         description: 'Filter by creation date (after)',
         example: '2024-01-01T00:00:00.000Z',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
     createdBefore: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .exactOptional()
       .openapi({
@@ -7594,14 +7038,14 @@ const SmartSearchDtoSchema = z
         description: 'Filter by creation date (before)',
         example: '2024-01-01T00:00:00.000Z',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
     filter: SearchFilterSchema.exactOptional().openapi({
-      'x-immich-history': [{ version: 'v3.2.0', state: 'Added' }],
+      'x-immich-history': [{ state: 'Added', version: 'v3.2.0' }],
     }),
     isEncoded: z
       .boolean()
@@ -7610,9 +7054,9 @@ const SmartSearchDtoSchema = z
         deprecated: true,
         description: 'Filter by encoded status',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
@@ -7623,9 +7067,9 @@ const SmartSearchDtoSchema = z
         deprecated: true,
         description: 'Filter by favorite status',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
@@ -7636,9 +7080,9 @@ const SmartSearchDtoSchema = z
         deprecated: true,
         description: 'Filter by motion photo status',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
@@ -7649,9 +7093,9 @@ const SmartSearchDtoSchema = z
         deprecated: true,
         description: 'Filter assets not in any album',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
@@ -7662,9 +7106,9 @@ const SmartSearchDtoSchema = z
         deprecated: true,
         description: 'Filter by offline status',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
@@ -7677,9 +7121,9 @@ const SmartSearchDtoSchema = z
         deprecated: true,
         description: 'Filter by lens model',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
@@ -7694,9 +7138,9 @@ const SmartSearchDtoSchema = z
         deprecated: true,
         description: 'Library ID to filter by',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
@@ -7708,9 +7152,9 @@ const SmartSearchDtoSchema = z
         deprecated: true,
         description: 'Filter by camera make',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
@@ -7722,9 +7166,9 @@ const SmartSearchDtoSchema = z
         deprecated: true,
         description: 'Filter by camera model',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
@@ -7735,9 +7179,9 @@ const SmartSearchDtoSchema = z
         deprecated: true,
         description: 'Filter by OCR text content',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
@@ -7750,9 +7194,9 @@ const SmartSearchDtoSchema = z
         deprecated: true,
         description: 'Page number',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
@@ -7769,9 +7213,9 @@ const SmartSearchDtoSchema = z
         deprecated: true,
         description: 'Filter by person IDs',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
@@ -7793,20 +7237,20 @@ const SmartSearchDtoSchema = z
         deprecated: true,
         description: 'Filter by rating [1-5], or null for unrated',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
           {
-            version: 'v2.6.0',
-            state: 'Updated',
             description:
               'Using -1 as a rating is deprecated and will be removed in the next major version.',
+            state: 'Updated',
+            version: 'v2.6.0',
           },
           {
-            version: 'v3',
-            state: 'Updated',
             description: 'Using -1 as a rating is no longer valid.',
+            state: 'Updated',
+            version: 'v3',
           },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
@@ -7825,9 +7269,9 @@ const SmartSearchDtoSchema = z
         deprecated: true,
         description: 'Filter by state/province name',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
@@ -7845,16 +7289,16 @@ const SmartSearchDtoSchema = z
         deprecated: true,
         description: 'Filter by tag IDs',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
     takenAfter: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .exactOptional()
       .openapi({
@@ -7862,16 +7306,16 @@ const SmartSearchDtoSchema = z
         description: 'Filter by taken date (after)',
         example: '2024-01-01T00:00:00.000Z',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
     takenBefore: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .exactOptional()
       .openapi({
@@ -7879,16 +7323,16 @@ const SmartSearchDtoSchema = z
         description: 'Filter by taken date (before)',
         example: '2024-01-01T00:00:00.000Z',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
     trashedAfter: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .exactOptional()
       .openapi({
@@ -7896,16 +7340,16 @@ const SmartSearchDtoSchema = z
         description: 'Filter by trash date (after)',
         example: '2024-01-01T00:00:00.000Z',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
     trashedBefore: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .exactOptional()
       .openapi({
@@ -7913,25 +7357,25 @@ const SmartSearchDtoSchema = z
         description: 'Filter by trash date (before)',
         example: '2024-01-01T00:00:00.000Z',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
     type: AssetTypeEnumSchema.exactOptional().openapi({
       deprecated: true,
       'x-immich-history': [
-        { version: 'v1', state: 'Added' },
-        { version: 'v2', state: 'Stable' },
-        { version: 'v3.2.0', state: 'Deprecated' },
+        { state: 'Added', version: 'v1' },
+        { state: 'Stable', version: 'v2' },
+        { state: 'Deprecated', version: 'v3.2.0' },
       ],
       'x-immich-state': 'Deprecated',
     }),
     updatedAfter: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .exactOptional()
       .openapi({
@@ -7939,16 +7383,16 @@ const SmartSearchDtoSchema = z
         description: 'Filter by update date (after)',
         example: '2024-01-01T00:00:00.000Z',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
     updatedBefore: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .exactOptional()
       .openapi({
@@ -7956,18 +7400,18 @@ const SmartSearchDtoSchema = z
         description: 'Filter by update date (before)',
         example: '2024-01-01T00:00:00.000Z',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
     visibility: AssetVisibilitySchema.exactOptional().openapi({
       deprecated: true,
       'x-immich-history': [
-        { version: 'v1', state: 'Added' },
-        { version: 'v2', state: 'Stable' },
-        { version: 'v3.2.0', state: 'Deprecated' },
+        { state: 'Added', version: 'v1' },
+        { state: 'Stable', version: 'v2' },
+        { state: 'Deprecated', version: 'v3.2.0' },
       ],
       'x-immich-state': 'Deprecated',
     }),
@@ -7978,9 +7422,9 @@ const SmartSearchDtoSchema = z
         deprecated: true,
         description: 'Include deleted assets',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
@@ -8052,9 +7496,9 @@ const StatisticsSearchDtoSchema = z
         deprecated: true,
         description: 'Filter by album IDs',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
@@ -8066,9 +7510,9 @@ const StatisticsSearchDtoSchema = z
         deprecated: true,
         description: 'Filter by city name',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
@@ -8080,16 +7524,16 @@ const StatisticsSearchDtoSchema = z
         deprecated: true,
         description: 'Filter by country name',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
     createdAfter: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .exactOptional()
       .openapi({
@@ -8097,16 +7541,16 @@ const StatisticsSearchDtoSchema = z
         description: 'Filter by creation date (after)',
         example: '2024-01-01T00:00:00.000Z',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
     createdBefore: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .exactOptional()
       .openapi({
@@ -8114,9 +7558,9 @@ const StatisticsSearchDtoSchema = z
         description: 'Filter by creation date (before)',
         example: '2024-01-01T00:00:00.000Z',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
@@ -8127,14 +7571,14 @@ const StatisticsSearchDtoSchema = z
         deprecated: true,
         description: 'Filter by description text',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
     filter: SearchFilterSchema.exactOptional().openapi({
-      'x-immich-history': [{ version: 'v3.2.0', state: 'Added' }],
+      'x-immich-history': [{ state: 'Added', version: 'v3.2.0' }],
     }),
     isEncoded: z
       .boolean()
@@ -8143,9 +7587,9 @@ const StatisticsSearchDtoSchema = z
         deprecated: true,
         description: 'Filter by encoded status',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
@@ -8156,9 +7600,9 @@ const StatisticsSearchDtoSchema = z
         deprecated: true,
         description: 'Filter by favorite status',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
@@ -8169,9 +7613,9 @@ const StatisticsSearchDtoSchema = z
         deprecated: true,
         description: 'Filter by motion photo status',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
@@ -8182,9 +7626,9 @@ const StatisticsSearchDtoSchema = z
         deprecated: true,
         description: 'Filter assets not in any album',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
@@ -8195,9 +7639,9 @@ const StatisticsSearchDtoSchema = z
         deprecated: true,
         description: 'Filter by offline status',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
@@ -8209,9 +7653,9 @@ const StatisticsSearchDtoSchema = z
         deprecated: true,
         description: 'Filter by lens model',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
@@ -8226,9 +7670,9 @@ const StatisticsSearchDtoSchema = z
         deprecated: true,
         description: 'Library ID to filter by',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
@@ -8240,9 +7684,9 @@ const StatisticsSearchDtoSchema = z
         deprecated: true,
         description: 'Filter by camera make',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
@@ -8254,9 +7698,9 @@ const StatisticsSearchDtoSchema = z
         deprecated: true,
         description: 'Filter by camera model',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
@@ -8267,9 +7711,9 @@ const StatisticsSearchDtoSchema = z
         deprecated: true,
         description: 'Filter by OCR text content',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
@@ -8286,9 +7730,9 @@ const StatisticsSearchDtoSchema = z
         deprecated: true,
         description: 'Filter by person IDs',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
@@ -8302,20 +7746,20 @@ const StatisticsSearchDtoSchema = z
         deprecated: true,
         description: 'Filter by rating [1-5], or null for unrated',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
           {
-            version: 'v2.6.0',
-            state: 'Updated',
             description:
               'Using -1 as a rating is deprecated and will be removed in the next major version.',
+            state: 'Updated',
+            version: 'v2.6.0',
           },
           {
-            version: 'v3',
-            state: 'Updated',
             description: 'Using -1 as a rating is no longer valid.',
+            state: 'Updated',
+            version: 'v3',
           },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
@@ -8327,9 +7771,9 @@ const StatisticsSearchDtoSchema = z
         deprecated: true,
         description: 'Filter by state/province name',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
@@ -8347,16 +7791,16 @@ const StatisticsSearchDtoSchema = z
         deprecated: true,
         description: 'Filter by tag IDs',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
     takenAfter: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .exactOptional()
       .openapi({
@@ -8364,16 +7808,16 @@ const StatisticsSearchDtoSchema = z
         description: 'Filter by taken date (after)',
         example: '2024-01-01T00:00:00.000Z',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
     takenBefore: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .exactOptional()
       .openapi({
@@ -8381,16 +7825,16 @@ const StatisticsSearchDtoSchema = z
         description: 'Filter by taken date (before)',
         example: '2024-01-01T00:00:00.000Z',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
     trashedAfter: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .exactOptional()
       .openapi({
@@ -8398,16 +7842,16 @@ const StatisticsSearchDtoSchema = z
         description: 'Filter by trash date (after)',
         example: '2024-01-01T00:00:00.000Z',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
     trashedBefore: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .exactOptional()
       .openapi({
@@ -8415,25 +7859,25 @@ const StatisticsSearchDtoSchema = z
         description: 'Filter by trash date (before)',
         example: '2024-01-01T00:00:00.000Z',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
     type: AssetTypeEnumSchema.exactOptional().openapi({
       deprecated: true,
       'x-immich-history': [
-        { version: 'v1', state: 'Added' },
-        { version: 'v2', state: 'Stable' },
-        { version: 'v3.2.0', state: 'Deprecated' },
+        { state: 'Added', version: 'v1' },
+        { state: 'Stable', version: 'v2' },
+        { state: 'Deprecated', version: 'v3.2.0' },
       ],
       'x-immich-state': 'Deprecated',
     }),
     updatedAfter: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .exactOptional()
       .openapi({
@@ -8441,16 +7885,16 @@ const StatisticsSearchDtoSchema = z
         description: 'Filter by update date (after)',
         example: '2024-01-01T00:00:00.000Z',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
     updatedBefore: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .exactOptional()
       .openapi({
@@ -8458,18 +7902,18 @@ const StatisticsSearchDtoSchema = z
         description: 'Filter by update date (before)',
         example: '2024-01-01T00:00:00.000Z',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
-          { version: 'v3.2.0', state: 'Deprecated' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
+          { state: 'Deprecated', version: 'v3.2.0' },
         ],
         'x-immich-state': 'Deprecated',
       }),
     visibility: AssetVisibilitySchema.exactOptional().openapi({
       deprecated: true,
       'x-immich-history': [
-        { version: 'v1', state: 'Added' },
-        { version: 'v2', state: 'Stable' },
-        { version: 'v3.2.0', state: 'Deprecated' },
+        { state: 'Added', version: 'v1' },
+        { state: 'Stable', version: 'v2' },
+        { state: 'Deprecated', version: 'v3.2.0' },
       ],
       'x-immich-state': 'Deprecated',
     }),
@@ -8477,52 +7921,66 @@ const StatisticsSearchDtoSchema = z
   .openapi({ required: [] })
   .openapi('StatisticsSearchDto')
 
-const SupportModeResponseDtoSchema = z
+const StorageTemplatePresetDtoSchema = z
   .object({
-    includePaths: z
-      .boolean()
-      .openapi({ description: 'Send file paths as-is instead of redacted placeholders' }),
-    remainingRuns: z
-      .int()
-      .min(0)
-      .max(20)
-      .openapi({
-        description:
-          'How many more backup, cleanup, restore and delete runs use verbose restic logging',
-      }),
-    streamToFuto: z
-      .boolean()
-      .openapi({
-        description: 'Stream those runs’ logs to FUTO; requires the support-log-streaming feature',
-      }),
-    streamingAvailable: z
-      .boolean()
-      .openapi({ description: 'Whether this account may stream support logs to FUTO' }),
+    preview: z.string().openapi({ description: 'Example path rendered from the preset' }),
+    template: z.string().openapi({ description: 'Preset storage template' }),
   })
-  .openapi({ required: ['includePaths', 'remainingRuns', 'streamToFuto', 'streamingAvailable'] })
-  .openapi('SupportModeResponseDto')
+  .openapi({ required: ['preview', 'template'] })
+  .openapi('StorageTemplatePresetDto')
 
-const SupportModeUpdateRequestDtoSchema = z
+const StorageTemplateOptionsResponseDtoSchema = z
   .object({
-    includePaths: z
-      .boolean()
-      .openapi({ description: 'Send file paths as-is instead of redacted placeholders' }),
-    remainingRuns: z
-      .int()
-      .min(0)
-      .max(20)
-      .openapi({
-        description:
-          'How many more backup, cleanup, restore and delete runs use verbose restic logging',
-      }),
-    streamToFuto: z
-      .boolean()
-      .openapi({
-        description: 'Stream those runs’ logs to FUTO; requires the support-log-streaming feature',
-      }),
+    dayOptions: z
+      .array(z.string())
+      .openapi({ description: 'Available day format options for storage template' }),
+    hourOptions: z
+      .array(z.string())
+      .openapi({ description: 'Available hour format options for storage template' }),
+    minuteOptions: z
+      .array(z.string())
+      .openapi({ description: 'Available minute format options for storage template' }),
+    monthOptions: z
+      .array(z.string())
+      .openapi({ description: 'Available month format options for storage template' }),
+    presets: z
+      .array(StorageTemplatePresetDtoSchema)
+      .openapi({ description: 'Preset storage templates with an example path' }),
+    secondOptions: z
+      .array(z.string())
+      .openapi({ description: 'Available second format options for storage template' }),
+    weekOptions: z
+      .array(z.string())
+      .openapi({ description: 'Available week format options for storage template' }),
+    yearOptions: z
+      .array(z.string())
+      .openapi({ description: 'Available year format options for storage template' }),
   })
-  .openapi({ required: ['includePaths', 'remainingRuns', 'streamToFuto'] })
-  .openapi('SupportModeUpdateRequestDto')
+  .openapi({
+    required: [
+      'dayOptions',
+      'hourOptions',
+      'minuteOptions',
+      'monthOptions',
+      'presets',
+      'secondOptions',
+      'weekOptions',
+      'yearOptions',
+    ],
+  })
+  .openapi('StorageTemplateOptionsResponseDto')
+
+const StorageTemplatePreviewDtoSchema = z
+  .object({ template: z.string().openapi({ description: 'Storage template' }) })
+  .openapi({ required: ['template'] })
+  .openapi('StorageTemplatePreviewDto')
+
+const StorageTemplatePreviewResponseDtoSchema = z
+  .object({
+    preview: z.string().openapi({ description: 'Example path rendered from the template' }),
+  })
+  .openapi({ required: ['preview'] })
+  .openapi('StorageTemplatePreviewResponseDto')
 
 const SyncEntityTypeSchema = z
   .enum([
@@ -8618,7 +8076,7 @@ const SyncAckSetDtoSchema = z
   .openapi({ required: ['acks'] })
   .openapi('SyncAckSetDto')
 
-const SyncAckV1Schema = z.object({}).openapi('SyncAckV1')
+const SyncAckV1Schema = z.looseObject({}).openapi('SyncAckV1')
 
 const SyncAlbumDeleteV1Schema = z
   .object({
@@ -8710,7 +8168,7 @@ const SyncAlbumV1Schema = z
     createdAt: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .openapi({ description: 'Created at', example: '2024-01-01T00:00:00.000Z' }),
     description: z.string().openapi({ description: 'Album description' }),
@@ -8733,7 +8191,7 @@ const SyncAlbumV1Schema = z
     updatedAt: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .openapi({ description: 'Updated at', example: '2024-01-01T00:00:00.000Z' }),
   })
@@ -8757,7 +8215,7 @@ const SyncAlbumV2Schema = z
     createdAt: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .openapi({ description: 'Created at', example: '2024-01-01T00:00:00.000Z' }),
     description: z.string().openapi({ description: 'Album description' }),
@@ -8774,7 +8232,7 @@ const SyncAlbumV2Schema = z
     updatedAt: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .openapi({ description: 'Updated at', example: '2024-01-01T00:00:00.000Z' }),
   })
@@ -8854,7 +8312,7 @@ const SyncAssetExifV1Schema = z
     dateTimeOriginal: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .nullable()
       .openapi({ description: 'Date time original', example: '2024-01-01T00:00:00.000Z' }),
@@ -8895,7 +8353,7 @@ const SyncAssetExifV1Schema = z
     modifyDate: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .nullable()
       .openapi({ description: 'Modify date', example: '2024-01-01T00:00:00.000Z' }),
@@ -9048,7 +8506,7 @@ const SyncAssetFaceV3Schema = z
     deletedAt: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .nullable()
       .openapi({ description: 'Face deleted at', example: '2024-01-01T00:00:00.000Z' }),
@@ -9123,7 +8581,7 @@ const SyncAssetOcrDeleteV1Schema = z
     deletedAt: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .openapi({
         description: 'Timestamp when the OCR entry was deleted',
@@ -9187,14 +8645,14 @@ const SyncAssetV1Schema = z
     createdAt: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .nullable()
       .openapi({ description: 'Uploaded to Immich at', example: '2024-01-01T00:00:00.000Z' }),
     deletedAt: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .nullable()
       .openapi({ description: 'Deleted at', example: '2024-01-01T00:00:00.000Z' }),
@@ -9202,14 +8660,14 @@ const SyncAssetV1Schema = z
     fileCreatedAt: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .nullable()
       .openapi({ description: 'File created at', example: '2024-01-01T00:00:00.000Z' }),
     fileModifiedAt: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .nullable()
       .openapi({ description: 'File modified at', example: '2024-01-01T00:00:00.000Z' }),
@@ -9232,7 +8690,7 @@ const SyncAssetV1Schema = z
     localDateTime: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .nullable()
       .openapi({ description: 'Local date time', example: '2024-01-01T00:00:00.000Z' }),
@@ -9286,14 +8744,14 @@ const SyncAssetV2Schema = z
     createdAt: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .nullable()
       .openapi({ description: 'Uploaded to Immich at', example: '2024-01-01T00:00:00.000Z' }),
     deletedAt: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .nullable()
       .openapi({ description: 'Deleted at', example: '2024-01-01T00:00:00.000Z' }),
@@ -9301,14 +8759,14 @@ const SyncAssetV2Schema = z
     fileCreatedAt: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .nullable()
       .openapi({ description: 'File created at', example: '2024-01-01T00:00:00.000Z' }),
     fileModifiedAt: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .nullable()
       .openapi({ description: 'File modified at', example: '2024-01-01T00:00:00.000Z' }),
@@ -9331,7 +8789,7 @@ const SyncAssetV2Schema = z
     localDateTime: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .nullable()
       .openapi({ description: 'Local date time', example: '2024-01-01T00:00:00.000Z' }),
@@ -9381,11 +8839,11 @@ const SyncAssetV2Schema = z
 
 const SyncAuthUserV1Schema = z
   .object({
-    avatarColor: UserAvatarColorSchema.nullable().exactOptional(),
+    avatarColor: z.union([UserAvatarColorSchema, z.null().nullable()]).exactOptional(),
     deletedAt: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .nullable()
       .openapi({ description: 'User deleted at', example: '2024-01-01T00:00:00.000Z' }),
@@ -9404,7 +8862,7 @@ const SyncAuthUserV1Schema = z
     profileChangedAt: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .openapi({ description: 'User profile changed at', example: '2024-01-01T00:00:00.000Z' }),
     quotaSizeInBytes: z
@@ -9440,11 +8898,11 @@ const SyncAuthUserV1Schema = z
 
 const SyncAuthUserV2Schema = z
   .object({
-    avatarColor: UserAvatarColorSchema.nullable().exactOptional(),
+    avatarColor: z.union([UserAvatarColorSchema, z.null().nullable()]).exactOptional(),
     deletedAt: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .nullable()
       .openapi({ description: 'User deleted at', example: '2024-01-01T00:00:00.000Z' }),
@@ -9463,7 +8921,7 @@ const SyncAuthUserV2Schema = z
     profileChangedAt: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .openapi({ description: 'User profile changed at', example: '2024-01-01T00:00:00.000Z' }),
     quotaSizeInBytes: z
@@ -9497,7 +8955,7 @@ const SyncAuthUserV2Schema = z
   })
   .openapi('SyncAuthUserV2')
 
-const SyncCompleteV1Schema = z.object({}).openapi('SyncCompleteV1')
+const SyncCompleteV1Schema = z.looseObject({}).openapi('SyncCompleteV1')
 
 const SyncMemoryAssetDeleteV1Schema = z
   .object({
@@ -9552,21 +9010,21 @@ const SyncMemoryV1Schema = z
     createdAt: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .openapi({ description: 'Created at', example: '2024-01-01T00:00:00.000Z' }),
     data: z.record(z.string(), z.any()).openapi({ description: 'Data' }),
     deletedAt: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .nullable()
       .openapi({ description: 'Deleted at', example: '2024-01-01T00:00:00.000Z' }),
     hideAt: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .nullable()
       .openapi({ description: 'Hide at', example: '2024-01-01T00:00:00.000Z' }),
@@ -9580,7 +9038,7 @@ const SyncMemoryV1Schema = z
     memoryAt: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .openapi({ description: 'Memory at', example: '2024-01-01T00:00:00.000Z' }),
     ownerId: z
@@ -9592,14 +9050,14 @@ const SyncMemoryV1Schema = z
     seenAt: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .nullable()
       .openapi({ description: 'Seen at', example: '2024-01-01T00:00:00.000Z' }),
     showAt: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .nullable()
       .openapi({ description: 'Show at', example: '2024-01-01T00:00:00.000Z' }),
@@ -9607,7 +9065,7 @@ const SyncMemoryV1Schema = z
     updatedAt: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .openapi({ description: 'Updated at', example: '2024-01-01T00:00:00.000Z' }),
   })
@@ -9634,21 +9092,21 @@ const SyncMemoryV2Schema = z
     createdAt: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .openapi({ description: 'Created at', example: '2024-01-01T00:00:00.000Z' }),
     data: z.record(z.string(), z.any()).openapi({ description: 'Data' }),
     deletedAt: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .nullable()
       .openapi({ description: 'Deleted at', example: '2024-01-01T00:00:00.000Z' }),
     hideAt: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .nullable()
       .openapi({ description: 'Hide at', example: '2024-01-01T00:00:00.000Z' }),
@@ -9662,7 +9120,7 @@ const SyncMemoryV2Schema = z
     memoryAt: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .openapi({ description: 'Memory at', example: '2024-01-01T00:00:00.000Z' }),
     ownerId: z
@@ -9674,14 +9132,14 @@ const SyncMemoryV2Schema = z
     seenAt: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .nullable()
       .openapi({ description: 'Seen at', example: '2024-01-01T00:00:00.000Z' }),
     showAt: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .nullable()
       .openapi({ description: 'Show at', example: '2024-01-01T00:00:00.000Z' }),
@@ -9689,7 +9147,7 @@ const SyncMemoryV2Schema = z
     updatedAt: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .openapi({ description: 'Updated at', example: '2024-01-01T00:00:00.000Z' }),
   })
@@ -9765,7 +9223,7 @@ const SyncPersonV1Schema = z
     birthDate: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .nullable()
       .openapi({ description: 'Birth date', example: '2024-01-01T00:00:00.000Z' }),
@@ -9773,7 +9231,7 @@ const SyncPersonV1Schema = z
     createdAt: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .openapi({ description: 'Created at', example: '2024-01-01T00:00:00.000Z' }),
     faceAssetId: z.string().nullable().openapi({ description: 'Face asset ID' }),
@@ -9795,7 +9253,7 @@ const SyncPersonV1Schema = z
     updatedAt: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .openapi({ description: 'Updated at', example: '2024-01-01T00:00:00.000Z' }),
   })
@@ -9852,7 +9310,7 @@ const SyncRequestTypeSchema = z
   .openapi({ description: 'Sync request type' })
   .openapi('SyncRequestType')
 
-const SyncResetV1Schema = z.object({}).openapi('SyncResetV1')
+const SyncResetV1Schema = z.looseObject({}).openapi('SyncResetV1')
 
 const SyncStackDeleteV1Schema = z
   .object({
@@ -9871,7 +9329,7 @@ const SyncStackV1Schema = z
     createdAt: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .openapi({ description: 'Created at', example: '2024-01-01T00:00:00.000Z' }),
     id: z
@@ -9895,7 +9353,7 @@ const SyncStackV1Schema = z
     updatedAt: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .openapi({ description: 'Updated at', example: '2024-01-01T00:00:00.000Z' }),
   })
@@ -9956,11 +9414,11 @@ const SyncUserMetadataV1Schema = z
 
 const SyncUserV1Schema = z
   .object({
-    avatarColor: UserAvatarColorSchema.nullable().exactOptional(),
+    avatarColor: z.union([UserAvatarColorSchema, z.null().nullable()]).exactOptional(),
     deletedAt: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .nullable()
       .openapi({ description: 'User deleted at', example: '2024-01-01T00:00:00.000Z' }),
@@ -9976,7 +9434,7 @@ const SyncUserV1Schema = z
     profileChangedAt: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .openapi({ description: 'User profile changed at', example: '2024-01-01T00:00:00.000Z' }),
   })
@@ -10144,32 +9602,6 @@ const TestEmailResponseDtoSchema = z
   .openapi({ required: ['messageId'] })
   .openapi('TestEmailResponseDto')
 
-const TicketActionSchema = z
-  .enum(['repository.delete', 'repository.disable-worm'])
-  .openapi('TicketAction')
-
-const TicketCreateRequestDtoSchema = z
-  .object({
-    action: TicketActionSchema,
-    repositoryId: z
-      .uuid()
-      .regex(
-        /^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$/,
-      )
-      .openapi({ description: 'Repository the ticket is bound to' }),
-  })
-  .openapi({ required: ['action', 'repositoryId'] })
-  .openapi('TicketCreateRequestDto')
-
-const TicketCreateResponseDtoSchema = z
-  .object({
-    redirectTo: z
-      .string()
-      .openapi({ description: 'Identity provider URL the browser must be sent to' }),
-  })
-  .openapi({ required: ['redirectTo'] })
-  .openapi('TicketCreateResponseDto')
-
 const TimeBucketAssetResponseDtoSchema = z
   .object({
     city: z
@@ -10317,12 +9749,12 @@ const UpdateAlbumDtoSchema = z
       .openapi({
         description: 'Album description',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
+          { state: 'Added', version: 'v1' },
           {
-            version: 'v3',
-            state: 'Updated',
             description:
               'Sending an empty string is deprecated; send null instead. Empty strings will no longer be coerced to null in v4.',
+            state: 'Updated',
+            version: 'v3',
           },
         ],
       }),
@@ -10371,12 +9803,12 @@ const UpdateAssetDtoSchema = z
       .openapi({
         description: 'Rating in range [1-5] (starred), -1 (rejected), or null (unrated)',
         'x-immich-history': [
-          { version: 'v1', state: 'Added' },
-          { version: 'v2', state: 'Stable' },
+          { state: 'Added', version: 'v1' },
+          { state: 'Stable', version: 'v2' },
           {
-            version: 'v3',
-            state: 'Updated',
             description: 'Using 0 as a rating is no longer valid.',
+            state: 'Updated',
+            version: 'v3',
           },
         ],
         'x-immich-state': 'Stable',
@@ -10405,7 +9837,7 @@ const UpdateLibraryDtoSchema = z
 
 const UserAdminCreateDtoSchema = z
   .object({
-    avatarColor: UserAvatarColorSchema.nullable().exactOptional(),
+    avatarColor: z.union([UserAvatarColorSchema, z.null().nullable()]).exactOptional(),
     email: z
       .email()
       .regex(
@@ -10463,18 +9895,18 @@ const UserAdminResponseDtoSchema = z
       )
       .openapi({
         description: 'Cluster group the user is a member of',
-        'x-immich-history': [{ version: 'v3.2.0', state: 'Added' }],
+        'x-immich-history': [{ state: 'Added', version: 'v3.2.0' }],
       }),
     createdAt: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .openapi({ description: 'Creation date', example: '2024-01-01T00:00:00.000Z' }),
     deletedAt: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .nullable()
       .openapi({ description: 'Deletion date', example: '2024-01-01T00:00:00.000Z' }),
@@ -10491,7 +9923,7 @@ const UserAdminResponseDtoSchema = z
       )
       .openapi({ description: 'User ID' }),
     isAdmin: z.boolean().openapi({ description: 'Is admin user' }),
-    license: UserLicenseSchema.nullable(),
+    license: z.union([UserLicenseSchema, z.null().nullable()]),
     name: z.string().openapi({ description: 'User name' }),
     oauthId: z.string().openapi({ description: 'OAuth ID' }),
     profileChangedAt: z.iso
@@ -10518,7 +9950,7 @@ const UserAdminResponseDtoSchema = z
     updatedAt: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .openapi({ description: 'Last update date', example: '2024-01-01T00:00:00.000Z' }),
   })
@@ -10548,7 +9980,7 @@ const UserAdminResponseDtoSchema = z
 
 const UserAdminUpdateDtoSchema = z
   .object({
-    avatarColor: UserAvatarColorSchema.nullable().exactOptional(),
+    avatarColor: z.union([UserAvatarColorSchema, z.null().nullable()]).exactOptional(),
     email: z
       .email()
       .regex(
@@ -10818,7 +10250,7 @@ const UserPreferencesUpdateDtoSchema = z
 
 const UserUpdateMeDtoSchema = z
   .object({
-    avatarColor: UserAvatarColorSchema.nullable().exactOptional(),
+    avatarColor: z.union([UserAvatarColorSchema, z.null().nullable()]).exactOptional(),
     email: z
       .email()
       .regex(
@@ -10881,7 +10313,9 @@ const VersionCheckStateResponseDtoSchema = z
 
 const WorkflowStepDtoSchema = z
   .object({
-    config: z.record(z.string(), z.any()).nullable().openapi({ description: 'Step configuration' }),
+    config: z
+      .union([z.record(z.string(), z.any()), z.null().nullable()])
+      .openapi({ description: 'Step configuration' }),
     enabled: z.boolean().exactOptional().openapi({ description: 'Step is enabled' }),
     method: z.string().openapi({ description: 'Step plugin method' }),
   })
@@ -10914,7 +10348,7 @@ const WorkflowLogEntryDtoSchema = z
     at: z.iso
       .datetime({ offset: true })
       .regex(
-        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
       )
       .openapi({ description: 'Workflow run date/time', example: '2024-01-01T00:00:00.000Z' }),
     id: z
@@ -10927,7 +10361,7 @@ const WorkflowLogEntryDtoSchema = z
       .object({
         index: z
           .int()
-          .positive()
+          .gt(0)
           .max(9007199254740991)
           .openapi({ description: 'Index of the step in the workflow' }),
         method: z.string().openapi({ description: 'Method of the step' }),
@@ -10935,7 +10369,7 @@ const WorkflowLogEntryDtoSchema = z
       .exactOptional()
       .openapi({
         description: 'Last step ran, if the workflow ended early',
-        required: ['method', 'index'],
+        required: ['index', 'method'],
       }),
     result: WorkflowResultSchema,
     triggerDataId: z
@@ -10983,7 +10417,9 @@ const WorkflowResponseDtoSchema = z
 
 const WorkflowShareStepDtoSchema = z
   .object({
-    config: z.record(z.string(), z.any()).nullable().openapi({ description: 'Step configuration' }),
+    config: z
+      .union([z.record(z.string(), z.any()), z.null().nullable()])
+      .openapi({ description: 'Step configuration' }),
     enabled: z.boolean().exactOptional().openapi({ description: 'Step is enabled' }),
     method: z.string().openapi({ description: 'Step plugin method' }),
   })
@@ -11026,11 +10462,11 @@ const WorkflowUpdateDtoSchema = z
   .openapi({ required: [] })
   .openapi('WorkflowUpdateDto')
 
-const BearerSecurityScheme = { scheme: 'Bearer', bearerFormat: 'JWT', type: 'http', in: 'header' }
+const ApiKeySecurityScheme = { in: 'header', name: 'x-api-key', type: 'apiKey' }
 
-const CookieSecurityScheme = { type: 'apiKey', in: 'cookie', name: 'immich_access_token' }
+const BearerSecurityScheme = { bearerFormat: 'JWT', in: 'header', scheme: 'Bearer', type: 'http' }
 
-const ApiKeySecurityScheme = { type: 'apiKey', in: 'header', name: 'x-api-key' }
+const CookieSecurityScheme = { in: 'cookie', name: 'immich_access_token', type: 'apiKey' }
 
 export const getActivitiesRoute = createRoute({
   method: 'get',
@@ -11049,10 +10485,10 @@ export const getActivitiesRoute = createRoute({
         )
         .openapi({
           param: {
+            description: 'Album ID',
+            in: 'query',
             name: 'albumId',
             required: true,
-            in: 'query',
-            description: 'Album ID',
             schema: {
               format: 'uuid',
               pattern:
@@ -11069,10 +10505,10 @@ export const getActivitiesRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            description: 'Asset ID (if activity is for an asset)',
+            in: 'query',
             name: 'assetId',
             required: false,
-            in: 'query',
-            description: 'Asset ID (if activity is for an asset)',
             schema: {
               format: 'uuid',
               pattern:
@@ -11083,17 +10519,17 @@ export const getActivitiesRoute = createRoute({
         }),
       level: ReactionLevelSchema.openapi({
         param: {
+          in: 'query',
           name: 'level',
           required: false,
-          in: 'query',
           schema: { $ref: '#/components/schemas/ReactionLevel' },
         },
       }).exactOptional(),
       type: ReactionTypeSchema.openapi({
         param: {
+          in: 'query',
           name: 'type',
           required: false,
-          in: 'query',
           schema: { $ref: '#/components/schemas/ReactionType' },
         },
       }).exactOptional(),
@@ -11105,10 +10541,10 @@ export const getActivitiesRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            description: 'Filter by user ID',
+            in: 'query',
             name: 'userId',
             required: false,
-            in: 'query',
-            description: 'Filter by user ID',
             schema: {
               format: 'uuid',
               pattern:
@@ -11163,10 +10599,10 @@ export const getActivitiesStatisticsRoute = createRoute({
         )
         .openapi({
           param: {
+            description: 'Album ID',
+            in: 'query',
             name: 'albumId',
             required: true,
-            in: 'query',
-            description: 'Album ID',
             schema: {
               format: 'uuid',
               pattern:
@@ -11183,10 +10619,10 @@ export const getActivitiesStatisticsRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            description: 'Asset ID (if activity is for an asset)',
+            in: 'query',
             name: 'assetId',
             required: false,
-            in: 'query',
-            description: 'Asset ID (if activity is for an asset)',
             schema: {
               format: 'uuid',
               pattern:
@@ -11222,9 +10658,9 @@ export const deleteActivitiesIdRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -11288,6 +10724,45 @@ export const getAdminConfigDefaultsRoute = createRoute({
   operationId: 'getAdminConfigDefaults',
   responses: {
     200: { description: '', content: { 'application/json': { schema: AdminConfigDtoSchema } } },
+  },
+  security: [{ bearer: [] }, { cookie: [] }, { api_key: [] }],
+})
+
+export const getAdminConfigStorageTemplateRoute = createRoute({
+  method: 'get',
+  path: '/admin/config/storage-template',
+  tags: ['Config (admin)'],
+  summary: 'Get storage template options',
+  description:
+    'Retrieve the storage template variables and the preset templates, each with an example path.',
+  operationId: 'getAdminStorageTemplateOptions',
+  responses: {
+    200: {
+      description: '',
+      content: { 'application/json': { schema: StorageTemplateOptionsResponseDtoSchema } },
+    },
+  },
+  security: [{ bearer: [] }, { cookie: [] }, { api_key: [] }],
+})
+
+export const postAdminConfigStorageTemplatePreviewRoute = createRoute({
+  method: 'post',
+  path: '/admin/config/storage-template/preview',
+  tags: ['Config (admin)'],
+  summary: 'Preview a storage template',
+  description: 'Render an example path from the provided storage template.',
+  operationId: 'previewStorageTemplate',
+  request: {
+    body: {
+      content: { 'application/json': { schema: StorageTemplatePreviewDtoSchema } },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: '',
+      content: { 'application/json': { schema: StorageTemplatePreviewResponseDtoSchema } },
+    },
   },
   security: [{ bearer: [] }, { cookie: [] }, { api_key: [] }],
 })
@@ -11368,9 +10843,9 @@ export const getAdminDatabaseBackupsFilenameRoute = createRoute({
         .regex(/^[a-zA-Z0-9_\-.]+$/)
         .openapi({
           param: {
+            in: 'path',
             name: 'filename',
             required: true,
-            in: 'path',
             schema: { pattern: '^[a-zA-Z0-9_\\-.]+$', type: 'string' },
           },
         }),
@@ -11403,10 +10878,10 @@ export const getAdminIntegrityReportRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            description: 'Cursor for pagination',
+            in: 'query',
             name: 'cursor',
             required: false,
-            in: 'query',
-            description: 'Cursor for pagination',
             schema: { type: 'string' },
           },
         }),
@@ -11418,30 +10893,29 @@ export const getAdminIntegrityReportRoute = createRoute({
             (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
               ? Number(val)
               : val,
-          z.int().positive().max(9007199254740991),
+          z.int().gt(0).max(9007199254740991),
         )
         .default(500)
         .exactOptional()
         .openapi({
           param: {
+            description: 'Number of items per page',
+            in: 'query',
             name: 'limit',
             required: false,
-            in: 'query',
-            description: 'Number of items per page',
             schema: {
-              maximum: 9007199254740991,
-              exclusiveMinimum: true,
               default: 500,
+              exclusiveMinimum: 0,
+              maximum: 9007199254740991,
               type: 'integer',
-              minimum: 0,
             },
           },
         }),
       type: IntegrityReportSchema.openapi({
         param: {
+          in: 'query',
           name: 'type',
           required: true,
-          in: 'query',
           schema: { $ref: '#/components/schemas/IntegrityReport' },
         },
       }),
@@ -11473,9 +10947,9 @@ export const deleteAdminIntegrityReportIdRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -11506,9 +10980,9 @@ export const getAdminIntegrityReportIdFileRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -11543,9 +11017,9 @@ export const getAdminIntegrityReportTypeCsvRoute = createRoute({
     params: z.object({
       type: IntegrityReportSchema.openapi({
         param: {
+          in: 'path',
           name: 'type',
           required: true,
-          in: 'path',
           schema: { $ref: '#/components/schemas/IntegrityReport' },
         },
       }),
@@ -11669,7 +11143,7 @@ export const postAdminNotificationsRoute = createRoute({
 export const postAdminNotificationsTemplatesNameRoute = createRoute({
   method: 'post',
   path: '/admin/notifications/templates/{name}',
-  tags: ['Notifications (admin)'],
+  tags: ['Notifications (admin)', 'Deprecated'],
   summary: 'Render email template',
   description: 'Retrieve a preview of the provided email template.',
   operationId: 'getNotificationTemplateAdmin',
@@ -11678,7 +11152,7 @@ export const postAdminNotificationsTemplatesNameRoute = createRoute({
       name: z
         .string()
         .openapi({
-          param: { name: 'name', required: true, in: 'path', schema: { type: 'string' } },
+          param: { in: 'path', name: 'name', required: true, schema: { type: 'string' } },
         }),
     }),
     body: { content: { 'application/json': { schema: TemplateDtoSchema } }, required: true },
@@ -11689,6 +11163,31 @@ export const postAdminNotificationsTemplatesNameRoute = createRoute({
       content: { 'application/json': { schema: TemplateResponseDtoSchema } },
     },
   },
+  deprecated: true,
+  security: [{ bearer: [] }, { cookie: [] }, { api_key: [] }],
+})
+
+export const postAdminNotificationsTemplatesNamePreviewRoute = createRoute({
+  method: 'post',
+  path: '/admin/notifications/templates/{name}/preview',
+  tags: ['Notifications (admin)'],
+  summary: 'Preview email template',
+  description: 'Render the provided email template as an HTML document.',
+  operationId: 'previewNotificationTemplateAdmin',
+  request: {
+    params: z.object({
+      name: EmailTemplateSchema.openapi({
+        param: {
+          in: 'path',
+          name: 'name',
+          required: true,
+          schema: { $ref: '#/components/schemas/EmailTemplate' },
+        },
+      }),
+    }),
+    body: { content: { 'application/json': { schema: TemplateDtoSchema } }, required: true },
+  },
+  responses: { 200: { description: '', content: { 'text/html': { schema: z.string() } } } },
   security: [{ bearer: [] }, { cookie: [] }, { api_key: [] }],
 })
 
@@ -11728,10 +11227,10 @@ export const getAdminUsersRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            description: 'User ID filter',
+            in: 'query',
             name: 'id',
             required: false,
-            in: 'query',
-            description: 'User ID filter',
             schema: {
               format: 'uuid',
               pattern:
@@ -11745,10 +11244,10 @@ export const getAdminUsersRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            description: 'Include deleted users',
+            in: 'query',
             name: 'withDeleted',
             required: false,
-            in: 'query',
-            description: 'Include deleted users',
             schema: { type: 'boolean' },
           },
         }),
@@ -11798,9 +11297,9 @@ export const getAdminUsersIdRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -11836,9 +11335,9 @@ export const putAdminUsersIdRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -11875,9 +11374,9 @@ export const deleteAdminUsersIdRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -11915,15 +11414,15 @@ export const getAdminUsersIdCalendarHeatmapRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            description: 'Start date in UTC',
+            in: 'query',
             name: 'from',
             required: false,
-            in: 'query',
-            description: 'Start date in UTC',
             schema: {
+              example: '2024-01-01',
               format: 'date',
               pattern:
                 '^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$',
-              example: '2024-01-01',
               type: 'string',
             },
           },
@@ -11937,15 +11436,15 @@ export const getAdminUsersIdCalendarHeatmapRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            description: 'End date in UTC',
+            in: 'query',
             name: 'to',
             required: false,
-            in: 'query',
-            description: 'End date in UTC',
             schema: {
+              example: '2024-01-01',
               format: 'date',
               pattern:
                 '^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$',
-              example: '2024-01-01',
               type: 'string',
             },
           },
@@ -11957,9 +11456,9 @@ export const getAdminUsersIdCalendarHeatmapRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            in: 'query',
             name: 'type',
             required: false,
-            in: 'query',
             schema: {
               description: 'Type of calendar heatmap',
               enum: ['Upload', 'Taken'],
@@ -11978,9 +11477,9 @@ export const getAdminUsersIdCalendarHeatmapRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -12016,9 +11515,9 @@ export const getAdminUsersIdPreferencesRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -12054,9 +11553,9 @@ export const putAdminUsersIdPreferencesRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -12096,9 +11595,9 @@ export const postAdminUsersIdRestoreRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -12134,9 +11633,9 @@ export const getAdminUsersIdSessionsRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -12172,9 +11671,9 @@ export const getAdminUsersIdStatisticsRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -12190,10 +11689,10 @@ export const getAdminUsersIdStatisticsRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            description: 'Filter by favorite status',
+            in: 'query',
             name: 'isFavorite',
             required: false,
-            in: 'query',
-            description: 'Filter by favorite status',
             schema: { type: 'boolean' },
           },
         }),
@@ -12202,18 +11701,18 @@ export const getAdminUsersIdStatisticsRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            description: 'Filter by trash status',
+            in: 'query',
             name: 'isTrashed',
             required: false,
-            in: 'query',
-            description: 'Filter by trash status',
             schema: { type: 'boolean' },
           },
         }),
       visibility: AssetVisibilitySchema.openapi({
         param: {
+          in: 'query',
           name: 'visibility',
           required: false,
-          in: 'query',
           schema: { $ref: '#/components/schemas/AssetVisibility' },
         },
       }).exactOptional(),
@@ -12245,10 +11744,10 @@ export const getAlbumsRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            description: 'Filter albums containing this asset ID (ignores other parameters)',
+            in: 'query',
             name: 'assetId',
             required: false,
-            in: 'query',
-            description: 'Filter albums containing this asset ID (ignores other parameters)',
             schema: {
               format: 'uuid',
               pattern:
@@ -12265,10 +11764,10 @@ export const getAlbumsRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            description: 'Album ID',
+            in: 'query',
             name: 'id',
             required: false,
-            in: 'query',
-            description: 'Album ID',
             schema: {
               format: 'uuid',
               pattern:
@@ -12282,11 +11781,11 @@ export const getAlbumsRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
-            name: 'isOwned',
-            required: false,
-            in: 'query',
             description:
               'Filter by ownership: true = only owned, false = only shared-with-me, undefined = no filter',
+            in: 'query',
+            name: 'isOwned',
+            required: false,
             schema: { type: 'boolean' },
           },
         }),
@@ -12295,11 +11794,11 @@ export const getAlbumsRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
-            name: 'isShared',
-            required: false,
-            in: 'query',
             description:
               'Filter by shared status: true = only shared, false = not shared, undefined = no filter',
+            in: 'query',
+            name: 'isShared',
+            required: false,
             schema: { type: 'boolean' },
           },
         }),
@@ -12308,10 +11807,10 @@ export const getAlbumsRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            description: 'Album name (exact match)',
+            in: 'query',
             name: 'name',
             required: false,
-            in: 'query',
-            description: 'Album name (exact match)',
             schema: { type: 'string' },
           },
         }),
@@ -12393,9 +11892,9 @@ export const getAlbumsIdRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -12410,13 +11909,13 @@ export const getAlbumsIdRoute = createRoute({
         .string()
         .exactOptional()
         .openapi({
-          param: { name: 'key', required: false, in: 'query', schema: { type: 'string' } },
+          param: { in: 'query', name: 'key', required: false, schema: { type: 'string' } },
         }),
       slug: z
         .string()
         .exactOptional()
         .openapi({
-          param: { name: 'slug', required: false, in: 'query', schema: { type: 'string' } },
+          param: { in: 'query', name: 'slug', required: false, schema: { type: 'string' } },
         }),
     }),
   },
@@ -12443,9 +11942,9 @@ export const deleteAlbumsIdRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -12477,9 +11976,9 @@ export const patchAlbumsIdRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -12513,9 +12012,9 @@ export const putAlbumsIdAssetsRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -12552,9 +12051,9 @@ export const deleteAlbumsIdAssetsRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -12591,9 +12090,9 @@ export const getAlbumsIdMapMarkersRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -12608,13 +12107,13 @@ export const getAlbumsIdMapMarkersRoute = createRoute({
         .string()
         .exactOptional()
         .openapi({
-          param: { name: 'key', required: false, in: 'query', schema: { type: 'string' } },
+          param: { in: 'query', name: 'key', required: false, schema: { type: 'string' } },
         }),
       slug: z
         .string()
         .exactOptional()
         .openapi({
-          param: { name: 'slug', required: false, in: 'query', schema: { type: 'string' } },
+          param: { in: 'query', name: 'slug', required: false, schema: { type: 'string' } },
         }),
     }),
   },
@@ -12643,10 +12142,10 @@ export const putAlbumsIdUserUserIdRoute = createRoute({
         )
         .openapi({
           param: {
+            description: 'Album ID',
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
-            description: 'Album ID',
             schema: {
               format: 'uuid',
               pattern:
@@ -12659,14 +12158,14 @@ export const putAlbumsIdUserUserIdRoute = createRoute({
         .string()
         .openapi({
           param: {
+            description: 'Album user ID, or "me" to reference the current user.',
+            in: 'path',
             name: 'userId',
             required: true,
-            in: 'path',
-            description: 'Album user ID, or "me" to reference the current user.',
-            'x-immich-history': [
-              { version: 'v3', state: 'Updated', description: '"me" as a value is deprecated' },
-            ],
             schema: { type: 'string' },
+            'x-immich-history': [
+              { description: '"me" as a value is deprecated', state: 'Updated', version: 'v3' },
+            ],
           },
         }),
     }),
@@ -12692,10 +12191,10 @@ export const deleteAlbumsIdUserUserIdRoute = createRoute({
         )
         .openapi({
           param: {
+            description: 'Album ID',
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
-            description: 'Album ID',
             schema: {
               format: 'uuid',
               pattern:
@@ -12708,14 +12207,14 @@ export const deleteAlbumsIdUserUserIdRoute = createRoute({
         .string()
         .openapi({
           param: {
+            description: 'Album user ID, or "me" to reference the current user.',
+            in: 'path',
             name: 'userId',
             required: true,
-            in: 'path',
-            description: 'Album user ID, or "me" to reference the current user.',
-            'x-immich-history': [
-              { version: 'v3', state: 'Updated', description: '"me" as a value is deprecated' },
-            ],
             schema: { type: 'string' },
+            'x-immich-history': [
+              { description: '"me" as a value is deprecated', state: 'Updated', version: 'v3' },
+            ],
           },
         }),
     }),
@@ -12741,9 +12240,9 @@ export const putAlbumsIdUsersRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -12825,9 +12324,9 @@ export const getApiKeysIdRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -12861,9 +12360,9 @@ export const putApiKeysIdRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -12897,9 +12396,9 @@ export const deleteApiKeysIdRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -12931,9 +12430,9 @@ export const postApiKeysIdRotateRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -12969,10 +12468,10 @@ export const getAssetFilesRoute = createRoute({
         )
         .openapi({
           param: {
+            description: 'Asset ID to filter files by',
+            in: 'query',
             name: 'assetId',
             required: true,
-            in: 'query',
-            description: 'Asset ID to filter files by',
             schema: {
               format: 'uuid',
               pattern:
@@ -12986,10 +12485,10 @@ export const getAssetFilesRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            description: 'The file was generated from an edit',
+            in: 'query',
             name: 'isEdited',
             required: false,
-            in: 'query',
-            description: 'The file was generated from an edit',
             schema: { type: 'boolean' },
           },
         }),
@@ -12998,10 +12497,10 @@ export const getAssetFilesRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            description: 'The file is a progressively encoded JPEG',
+            in: 'query',
             name: 'isProgressive',
             required: false,
-            in: 'query',
-            description: 'The file is a progressively encoded JPEG',
             schema: { type: 'boolean' },
           },
         }),
@@ -13010,19 +12509,19 @@ export const getAssetFilesRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            description: 'The file is transparent',
+            in: 'query',
             name: 'isTransparent',
             required: false,
-            in: 'query',
-            description: 'The file is transparent',
             schema: { type: 'boolean' },
           },
         }),
       type: AssetFileTypeSchema.openapi({
         param: {
+          description: 'Filter by type of file',
+          in: 'query',
           name: 'type',
           required: false,
-          in: 'query',
-          description: 'Filter by type of file',
           schema: { $ref: '#/components/schemas/AssetFileType' },
         },
       }).exactOptional(),
@@ -13053,9 +12552,9 @@ export const getAssetFilesIdRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -13091,9 +12590,9 @@ export const deleteAssetFilesIdRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -13124,9 +12623,9 @@ export const getAssetFilesIdDownloadRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -13177,13 +12676,13 @@ export const postAssetsRoute = createRoute({
         .string()
         .exactOptional()
         .openapi({
-          param: { name: 'key', required: false, in: 'query', schema: { type: 'string' } },
+          param: { in: 'query', name: 'key', required: false, schema: { type: 'string' } },
         }),
       slug: z
         .string()
         .exactOptional()
         .openapi({
-          param: { name: 'slug', required: false, in: 'query', schema: { type: 'string' } },
+          param: { in: 'query', name: 'slug', required: false, schema: { type: 'string' } },
         }),
     }),
     headers: z.object({
@@ -13192,10 +12691,10 @@ export const postAssetsRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
-            name: 'x-immich-checksum',
-            in: 'header',
             description:
               'sha1 checksum that can be used for duplicate detection before the file is uploaded',
+            in: 'header',
+            name: 'x-immich-checksum',
             required: false,
             schema: { type: 'string' },
           },
@@ -13225,7 +12724,7 @@ export const postAssetsRoute = createRoute({
               fileCreatedAt: z.iso
                 .datetime({ offset: true })
                 .regex(
-                  /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+                  /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
                 )
                 .openapi({
                   description: 'File creation date',
@@ -13234,7 +12733,7 @@ export const postAssetsRoute = createRoute({
               fileModifiedAt: z.iso
                 .datetime({ offset: true })
                 .regex(
-                  /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+                  /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
                 )
                 .openapi({
                   description: 'File modification date',
@@ -13408,10 +12907,10 @@ export const getAssetsStatisticsRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            description: 'Filter by favorite status',
+            in: 'query',
             name: 'isFavorite',
             required: false,
-            in: 'query',
-            description: 'Filter by favorite status',
             schema: { type: 'boolean' },
           },
         }),
@@ -13420,18 +12919,18 @@ export const getAssetsStatisticsRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            description: 'Filter by trash status',
+            in: 'query',
             name: 'isTrashed',
             required: false,
-            in: 'query',
-            description: 'Filter by trash status',
             schema: { type: 'boolean' },
           },
         }),
       visibility: AssetVisibilitySchema.openapi({
         param: {
+          in: 'query',
           name: 'visibility',
           required: false,
-          in: 'query',
           schema: { $ref: '#/components/schemas/AssetVisibility' },
         },
       }).exactOptional(),
@@ -13462,9 +12961,9 @@ export const getAssetsIdRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -13479,13 +12978,13 @@ export const getAssetsIdRoute = createRoute({
         .string()
         .exactOptional()
         .openapi({
-          param: { name: 'key', required: false, in: 'query', schema: { type: 'string' } },
+          param: { in: 'query', name: 'key', required: false, schema: { type: 'string' } },
         }),
       slug: z
         .string()
         .exactOptional()
         .openapi({
-          param: { name: 'slug', required: false, in: 'query', schema: { type: 'string' } },
+          param: { in: 'query', name: 'slug', required: false, schema: { type: 'string' } },
         }),
     }),
   },
@@ -13511,9 +13010,9 @@ export const putAssetsIdRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -13548,9 +13047,9 @@ export const getAssetsIdEditsRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -13586,9 +13085,9 @@ export const putAssetsIdEditsRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -13629,9 +13128,9 @@ export const deleteAssetsIdEditsRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -13662,9 +13161,9 @@ export const getAssetsIdMetadataRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -13700,9 +13199,9 @@ export const putAssetsIdMetadataRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -13742,10 +13241,10 @@ export const getAssetsIdMetadataKeyRoute = createRoute({
         )
         .openapi({
           param: {
+            description: 'Asset ID',
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
-            description: 'Asset ID',
             schema: {
               format: 'uuid',
               pattern:
@@ -13758,10 +13257,10 @@ export const getAssetsIdMetadataKeyRoute = createRoute({
         .string()
         .openapi({
           param: {
+            description: 'Metadata key',
+            in: 'path',
             name: 'key',
             required: true,
-            in: 'path',
-            description: 'Metadata key',
             schema: { type: 'string' },
           },
         }),
@@ -13792,10 +13291,10 @@ export const deleteAssetsIdMetadataKeyRoute = createRoute({
         )
         .openapi({
           param: {
+            description: 'Asset ID',
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
-            description: 'Asset ID',
             schema: {
               format: 'uuid',
               pattern:
@@ -13808,10 +13307,10 @@ export const deleteAssetsIdMetadataKeyRoute = createRoute({
         .string()
         .openapi({
           param: {
+            description: 'Metadata key',
+            in: 'path',
             name: 'key',
             required: true,
-            in: 'path',
-            description: 'Metadata key',
             schema: { type: 'string' },
           },
         }),
@@ -13838,9 +13337,9 @@ export const getAssetsIdOcrRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -13874,10 +13373,10 @@ export const getAssetsIdOriginalRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            description: 'Return edited asset if available',
+            in: 'query',
             name: 'edited',
             required: false,
-            in: 'query',
-            description: 'Return edited asset if available',
             schema: { type: 'boolean' },
           },
         }),
@@ -13885,13 +13384,13 @@ export const getAssetsIdOriginalRoute = createRoute({
         .string()
         .exactOptional()
         .openapi({
-          param: { name: 'key', required: false, in: 'query', schema: { type: 'string' } },
+          param: { in: 'query', name: 'key', required: false, schema: { type: 'string' } },
         }),
       slug: z
         .string()
         .exactOptional()
         .openapi({
-          param: { name: 'slug', required: false, in: 'query', schema: { type: 'string' } },
+          param: { in: 'query', name: 'slug', required: false, schema: { type: 'string' } },
         }),
     }),
     params: z.object({
@@ -13902,9 +13401,9 @@ export const getAssetsIdOriginalRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -13943,10 +13442,10 @@ export const getAssetsIdThumbnailRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            description: 'Return edited asset if available',
+            in: 'query',
             name: 'edited',
             required: false,
-            in: 'query',
-            description: 'Return edited asset if available',
             schema: { type: 'boolean' },
           },
         }),
@@ -13954,29 +13453,29 @@ export const getAssetsIdThumbnailRoute = createRoute({
         .string()
         .exactOptional()
         .openapi({
-          param: { name: 'key', required: false, in: 'query', schema: { type: 'string' } },
+          param: { in: 'query', name: 'key', required: false, schema: { type: 'string' } },
         }),
       size: AssetMediaSizeSchema.openapi({
         param: {
+          in: 'query',
           name: 'size',
           required: false,
-          in: 'query',
+          schema: { $ref: '#/components/schemas/AssetMediaSize' },
           'x-immich-history': [
             {
-              version: 'v3',
-              state: 'Updated',
               description:
                 "Specifying 'original' is deprecated. Use the original endpoint directly instead",
+              state: 'Updated',
+              version: 'v3',
             },
           ],
-          schema: { $ref: '#/components/schemas/AssetMediaSize' },
         },
       }).exactOptional(),
       slug: z
         .string()
         .exactOptional()
         .openapi({
-          param: { name: 'slug', required: false, in: 'query', schema: { type: 'string' } },
+          param: { in: 'query', name: 'slug', required: false, schema: { type: 'string' } },
         }),
     }),
     params: z.object({
@@ -13987,9 +13486,9 @@ export const getAssetsIdThumbnailRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -14030,9 +13529,9 @@ export const getAssetsIdVideoPlaybackRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -14047,13 +13546,13 @@ export const getAssetsIdVideoPlaybackRoute = createRoute({
         .string()
         .exactOptional()
         .openapi({
-          param: { name: 'key', required: false, in: 'query', schema: { type: 'string' } },
+          param: { in: 'query', name: 'key', required: false, schema: { type: 'string' } },
         }),
       slug: z
         .string()
         .exactOptional()
         .openapi({
-          param: { name: 'slug', required: false, in: 'query', schema: { type: 'string' } },
+          param: { in: 'query', name: 'slug', required: false, schema: { type: 'string' } },
         }),
     }),
   },
@@ -14086,9 +13585,9 @@ export const getAssetsIdVideoStreamMainM3u8Route = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -14103,13 +13602,13 @@ export const getAssetsIdVideoStreamMainM3u8Route = createRoute({
         .string()
         .exactOptional()
         .openapi({
-          param: { name: 'key', required: false, in: 'query', schema: { type: 'string' } },
+          param: { in: 'query', name: 'key', required: false, schema: { type: 'string' } },
         }),
       slug: z
         .string()
         .exactOptional()
         .openapi({
-          param: { name: 'slug', required: false, in: 'query', schema: { type: 'string' } },
+          param: { in: 'query', name: 'slug', required: false, schema: { type: 'string' } },
         }),
     }),
   },
@@ -14135,9 +13634,9 @@ export const deleteAssetsIdVideoStreamSessionIdRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -14153,9 +13652,9 @@ export const deleteAssetsIdVideoStreamSessionIdRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'sessionId',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -14170,13 +13669,13 @@ export const deleteAssetsIdVideoStreamSessionIdRoute = createRoute({
         .string()
         .exactOptional()
         .openapi({
-          param: { name: 'key', required: false, in: 'query', schema: { type: 'string' } },
+          param: { in: 'query', name: 'key', required: false, schema: { type: 'string' } },
         }),
       slug: z
         .string()
         .exactOptional()
         .openapi({
-          param: { name: 'slug', required: false, in: 'query', schema: { type: 'string' } },
+          param: { in: 'query', name: 'slug', required: false, schema: { type: 'string' } },
         }),
     }),
   },
@@ -14200,9 +13699,9 @@ export const getAssetsIdVideoStreamSessionIdVariantIndexPlaylistM3u8Route = crea
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -14218,9 +13717,9 @@ export const getAssetsIdVideoStreamSessionIdVariantIndexPlaylistM3u8Route = crea
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'sessionId',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -14241,10 +13740,10 @@ export const getAssetsIdVideoStreamSessionIdVariantIndexPlaylistM3u8Route = crea
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'variantIndex',
             required: true,
-            in: 'path',
-            schema: { minimum: 0, maximum: 9007199254740991, type: 'integer' },
+            schema: { maximum: 9007199254740991, minimum: 0, type: 'integer' },
           },
         }),
     }),
@@ -14253,13 +13752,13 @@ export const getAssetsIdVideoStreamSessionIdVariantIndexPlaylistM3u8Route = crea
         .string()
         .exactOptional()
         .openapi({
-          param: { name: 'key', required: false, in: 'query', schema: { type: 'string' } },
+          param: { in: 'query', name: 'key', required: false, schema: { type: 'string' } },
         }),
       slug: z
         .string()
         .exactOptional()
         .openapi({
-          param: { name: 'slug', required: false, in: 'query', schema: { type: 'string' } },
+          param: { in: 'query', name: 'slug', required: false, schema: { type: 'string' } },
         }),
     }),
     headers: z.object({
@@ -14276,9 +13775,9 @@ export const getAssetsIdVideoStreamSessionIdVariantIndexPlaylistM3u8Route = crea
         .exactOptional()
         .openapi({
           param: {
+            in: 'header',
             name: 'x-immich-hls-pos',
             required: false,
-            in: 'header',
             schema: { minimum: 0, type: 'number' },
           },
         }),
@@ -14304,9 +13803,9 @@ export const getAssetsIdVideoStreamSessionIdVariantIndexFilenameRoute = createRo
         .regex(/^(init\.mp4|seg_\d+\.m4s)$/)
         .openapi({
           param: {
+            in: 'path',
             name: 'filename',
             required: true,
-            in: 'path',
             schema: { pattern: '^(init\\.mp4|seg_\\d+\\.m4s)$', type: 'string' },
           },
         }),
@@ -14317,9 +13816,9 @@ export const getAssetsIdVideoStreamSessionIdVariantIndexFilenameRoute = createRo
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -14335,9 +13834,9 @@ export const getAssetsIdVideoStreamSessionIdVariantIndexFilenameRoute = createRo
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'sessionId',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -14358,10 +13857,10 @@ export const getAssetsIdVideoStreamSessionIdVariantIndexFilenameRoute = createRo
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'variantIndex',
             required: true,
-            in: 'path',
-            schema: { minimum: 0, maximum: 9007199254740991, type: 'integer' },
+            schema: { maximum: 9007199254740991, minimum: 0, type: 'integer' },
           },
         }),
     }),
@@ -14370,13 +13869,13 @@ export const getAssetsIdVideoStreamSessionIdVariantIndexFilenameRoute = createRo
         .string()
         .exactOptional()
         .openapi({
-          param: { name: 'key', required: false, in: 'query', schema: { type: 'string' } },
+          param: { in: 'query', name: 'key', required: false, schema: { type: 'string' } },
         }),
       slug: z
         .string()
         .exactOptional()
         .openapi({
-          param: { name: 'slug', required: false, in: 'query', schema: { type: 'string' } },
+          param: { in: 'query', name: 'slug', required: false, schema: { type: 'string' } },
         }),
     }),
     headers: z.object({
@@ -14393,10 +13892,10 @@ export const getAssetsIdVideoStreamSessionIdVariantIndexFilenameRoute = createRo
         .exactOptional()
         .openapi({
           param: {
+            in: 'header',
             name: 'x-immich-hls-msn',
             required: false,
-            in: 'header',
-            schema: { minimum: 0, maximum: 9007199254740991, type: 'integer' },
+            schema: { maximum: 9007199254740991, minimum: 0, type: 'integer' },
           },
         }),
     }),
@@ -14612,9 +14111,9 @@ export const deleteClusterGroupsRequestsIdRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -14645,9 +14144,9 @@ export const postClusterGroupsRequestsIdAcceptRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -14678,9 +14177,9 @@ export const postClusterGroupsIdLeaveRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -14711,9 +14210,9 @@ export const postClusterGroupsIdRegeneratePeopleRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -14744,9 +14243,9 @@ export const getClusterGroupsIdRequestsRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -14782,9 +14281,9 @@ export const putClusterGroupsIdRequestsRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -14824,9 +14323,9 @@ export const getClusterGroupsIdUsersRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -14887,13 +14386,13 @@ export const postDownloadArchiveRoute = createRoute({
         .string()
         .exactOptional()
         .openapi({
-          param: { name: 'key', required: false, in: 'query', schema: { type: 'string' } },
+          param: { in: 'query', name: 'key', required: false, schema: { type: 'string' } },
         }),
       slug: z
         .string()
         .exactOptional()
         .openapi({
-          param: { name: 'slug', required: false, in: 'query', schema: { type: 'string' } },
+          param: { in: 'query', name: 'slug', required: false, schema: { type: 'string' } },
         }),
     }),
     body: { content: { 'application/json': { schema: DownloadArchiveDtoSchema } }, required: true },
@@ -14925,13 +14424,13 @@ export const postDownloadInfoRoute = createRoute({
         .string()
         .exactOptional()
         .openapi({
-          param: { name: 'key', required: false, in: 'query', schema: { type: 'string' } },
+          param: { in: 'query', name: 'key', required: false, schema: { type: 'string' } },
         }),
       slug: z
         .string()
         .exactOptional()
         .openapi({
-          param: { name: 'slug', required: false, in: 'query', schema: { type: 'string' } },
+          param: { in: 'query', name: 'slug', required: false, schema: { type: 'string' } },
         }),
     }),
     body: { content: { 'application/json': { schema: DownloadInfoDtoSchema } }, required: true },
@@ -15015,9 +14514,9 @@ export const deleteDuplicatesIdRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -15048,10 +14547,10 @@ export const getFacesRoute = createRoute({
         )
         .openapi({
           param: {
+            description: 'Face ID',
+            in: 'query',
             name: 'id',
             required: true,
-            in: 'query',
-            description: 'Face ID',
             schema: {
               format: 'uuid',
               pattern:
@@ -15103,9 +14602,9 @@ export const putFacesIdRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -15139,9 +14638,9 @@ export const deleteFacesIdRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -15154,1035 +14653,6 @@ export const deleteFacesIdRoute = createRoute({
     body: { content: { 'application/json': { schema: AssetFaceDeleteDtoSchema } }, required: true },
   },
   responses: { 204: { description: '' } },
-  security: [{ bearer: [] }, { cookie: [] }, { api_key: [] }],
-})
-
-export const getFutoBackupsAuthOidcDeviceRoute = createRoute({
-  method: 'get',
-  path: '/futo-backups/auth/oidc/device',
-  tags: ['Backups'],
-  summary: 'Connect a FUTO Backups account',
-  description: 'Connect an existing FUTO Backups account to this server.',
-  operationId: 'futoBackupsConnectDeviceFlow',
-  responses: {
-    200: { description: '', content: { 'application/json': { schema: DeviceFlowEventDtoSchema } } },
-  },
-  security: [{ bearer: [] }, { cookie: [] }, { api_key: [] }],
-})
-
-export const postFutoBackupsAuthSessionRoute = createRoute({
-  method: 'post',
-  path: '/futo-backups/auth/session',
-  tags: ['Backups'],
-  summary: 'Create session',
-  description: 'Use existing session token to create a session on your device.',
-  operationId: 'futoBackupsCreateSession',
-  request: {
-    body: {
-      content: { 'application/json': { schema: CreateSessionRequestDtoSchema } },
-      required: true,
-    },
-  },
-  responses: { 201: { description: '' } },
-  security: [{ bearer: [] }, { cookie: [] }, { api_key: [] }],
-})
-
-export const getFutoBackupsAuthSessionDeviceRoute = createRoute({
-  method: 'get',
-  path: '/futo-backups/auth/session/device',
-  tags: ['Backups'],
-  summary: 'Sign in with FUTO Backups account',
-  description: 'Log into standalone backups app using the associated cloud account.',
-  operationId: 'futoBackupsSessionDeviceFlow',
-  responses: {
-    200: { description: '', content: { 'application/json': { schema: DeviceFlowEventDtoSchema } } },
-  },
-  security: [{ bearer: [] }, { cookie: [] }, { api_key: [] }],
-})
-
-export const postFutoBackupsAuthTicketRoute = createRoute({
-  method: 'post',
-  path: '/futo-backups/auth/ticket',
-  tags: ['Backups'],
-  summary: 'Create a ticket',
-  description: 'Create a ticket to perform a protected repository action.',
-  operationId: 'futoBackupsCreateTicket',
-  request: {
-    body: {
-      content: { 'application/json': { schema: TicketCreateRequestDtoSchema } },
-      required: true,
-    },
-  },
-  responses: {
-    201: {
-      description: '',
-      content: { 'application/json': { schema: TicketCreateResponseDtoSchema } },
-    },
-  },
-  security: [{ bearer: [] }, { cookie: [] }, { api_key: [] }],
-})
-
-export const getFutoBackupsBackendRoute = createRoute({
-  method: 'get',
-  path: '/futo-backups/backend',
-  tags: ['Backups'],
-  summary: 'List backends',
-  description: 'List the storage backends configured on this server.',
-  operationId: 'futoBackupsGetBackends',
-  responses: {
-    200: {
-      description: '',
-      content: { 'application/json': { schema: BackendsResponseDtoSchema } },
-    },
-  },
-  security: [{ bearer: [] }, { cookie: [] }, { api_key: [] }],
-})
-
-export const postFutoBackupsBackendLocalRoute = createRoute({
-  method: 'post',
-  path: '/futo-backups/backend/local',
-  tags: ['Backups'],
-  summary: 'Create a local backend',
-  description: 'Add a storage backend that writes to a local path on this server.',
-  operationId: 'futoBackupsCreateLocalBackend',
-  request: {
-    body: {
-      content: { 'application/json': { schema: CreateLocalBackendRequestDtoSchema } },
-      required: true,
-    },
-  },
-  responses: {
-    201: { description: '', content: { 'application/json': { schema: BackendResponseDtoSchema } } },
-  },
-  security: [{ bearer: [] }, { cookie: [] }, { api_key: [] }],
-})
-
-export const getFutoBackupsConfigRoute = createRoute({
-  method: 'get',
-  path: '/futo-backups/config',
-  tags: ['Backups'],
-  summary: 'Get backups orchestrator configuration',
-  description: 'Retrieve the current backups orchestrator configuration.',
-  operationId: 'futoBackupsGetConfig',
-  responses: {
-    200: { description: '', content: { 'application/json': { schema: ConfigResponseDtoSchema } } },
-  },
-  security: [{ bearer: [] }, { cookie: [] }, { api_key: [] }],
-})
-
-export const putFutoBackupsConfigRoute = createRoute({
-  method: 'put',
-  path: '/futo-backups/config',
-  tags: ['Backups'],
-  summary: 'Update backups orchestrator configuration',
-  description: 'Update the backups orchestrator configuration.',
-  operationId: 'futoBackupsUpdateConfig',
-  request: {
-    body: {
-      content: { 'application/json': { schema: ConfigUpdateRequestDtoSchema } },
-      required: true,
-    },
-  },
-  responses: {
-    200: { description: '', content: { 'application/json': { schema: ConfigResponseDtoSchema } } },
-  },
-  security: [{ bearer: [] }, { cookie: [] }, { api_key: [] }],
-})
-
-export const postFutoBackupsDebugResetRoute = createRoute({
-  method: 'post',
-  path: '/futo-backups/debug/reset',
-  tags: ['Backups'],
-  summary: 'Reset the backups orchestrator',
-  description: 'Delete all orchestrator state. Only available in development mode.',
-  operationId: 'futoBackupsResetOrchestrator',
-  responses: { 201: { description: '' } },
-  security: [{ bearer: [] }, { cookie: [] }, { api_key: [] }],
-})
-
-export const getFutoBackupsFsRoute = createRoute({
-  method: 'get',
-  path: '/futo-backups/fs',
-  tags: ['Backups'],
-  summary: 'List files',
-  description: 'List the files and folders at a path on this server.',
-  operationId: 'futoBackupsGetFileListing',
-  request: {
-    query: z.object({
-      path: z
-        .string()
-        .exactOptional()
-        .openapi({
-          param: { name: 'path', required: false, in: 'query', schema: { type: 'string' } },
-        }),
-    }),
-  },
-  responses: {
-    200: {
-      description: '',
-      content: { 'application/json': { schema: FilesystemListingResponseDtoSchema } },
-    },
-  },
-  security: [{ bearer: [] }, { cookie: [] }, { api_key: [] }],
-})
-
-export const getFutoBackupsIntegrationsRoute = createRoute({
-  method: 'get',
-  path: '/futo-backups/integrations',
-  tags: ['Backups'],
-  summary: 'Get backup integrations',
-  description: 'Retrieve the configuration and state of each integration.',
-  operationId: 'futoBackupsGetIntegrations',
-  responses: {
-    200: {
-      description: '',
-      content: { 'application/json': { schema: IntegrationsResponseDtoSchema } },
-    },
-  },
-  security: [{ bearer: [] }, { cookie: [] }, { api_key: [] }],
-})
-
-export const postFutoBackupsIntegrationsImmichRoute = createRoute({
-  method: 'post',
-  path: '/futo-backups/integrations/immich',
-  tags: ['Backups'],
-  summary: 'Configure the Immich backup integration',
-  description: 'Set up backups for the Immich backup integration.',
-  operationId: 'futoBackupsConfigureImmichIntegration',
-  request: {
-    body: {
-      content: { 'application/json': { schema: ConfigureImmichIntegrationRequestDtoSchema } },
-      required: true,
-    },
-  },
-  responses: {
-    201: {
-      description: '',
-      content: { 'application/json': { schema: ConfigureImmichIntegrationResponseDtoSchema } },
-    },
-  },
-  security: [{ bearer: [] }, { cookie: [] }, { api_key: [] }],
-})
-
-export const postFutoBackupsIntegrationsImmichDatabaseDumpRoute = createRoute({
-  method: 'post',
-  path: '/futo-backups/integrations/immich/database-dump',
-  tags: ['Backups'],
-  summary: 'Configure Immich database dumps',
-  description: 'Configure the Immich database dumps included in backups.',
-  operationId: 'futoBackupsConfigureImmichDatabaseDump',
-  request: {
-    body: {
-      content: { 'application/json': { schema: ConfigureImmichDatabaseDumpRequestDtoSchema } },
-      required: true,
-    },
-  },
-  responses: { 201: { description: '' } },
-  security: [{ bearer: [] }, { cookie: [] }, { api_key: [] }],
-})
-
-export const postFutoBackupsIntegrationsImmichDatabaseDumpIgnoreWarningRoute = createRoute({
-  method: 'post',
-  path: '/futo-backups/integrations/immich/database-dump/ignore-warning',
-  tags: ['Backups'],
-  summary: 'Ignore the Immich database dump warning',
-  description: 'Stop warning that Immich database dumps are not configured.',
-  operationId: 'futoBackupsIgnoreImmichDatabaseDumpWarning',
-  responses: { 201: { description: '' } },
-  security: [{ bearer: [] }, { cookie: [] }, { api_key: [] }],
-})
-
-export const postFutoBackupsIntegrationsImmichRollbackRoute = createRoute({
-  method: 'post',
-  path: '/futo-backups/integrations/immich/rollback',
-  tags: ['Backups'],
-  summary: 'Roll Immich back to a snapshot',
-  description: 'Put Immich into maintenance mode and restore it from a snapshot.',
-  operationId: 'futoBackupsStartImmichRollback',
-  request: {
-    body: {
-      content: { 'application/json': { schema: ImmichRollbackRequestDtoSchema } },
-      required: true,
-    },
-  },
-  responses: { 201: { description: '' } },
-  security: [{ bearer: [] }, { cookie: [] }, { api_key: [] }],
-})
-
-export const getFutoBackupsIntegrationsImmichStatusRoute = createRoute({
-  method: 'get',
-  path: '/futo-backups/integrations/immich/status',
-  tags: ['Backups'],
-  summary: 'Get Immich backup status',
-  description: 'Retrieve the backup status of the Immich integration.',
-  operationId: 'futoBackupsGetImmichBackupStatus',
-  responses: {
-    200: {
-      description: '',
-      content: { 'application/json': { schema: ImmichBackupStatusDtoSchema } },
-    },
-  },
-  security: [{ bearer: [] }, { cookie: [] }, { api_key: [] }],
-})
-
-export const getFutoBackupsJobsRoute = createRoute({
-  method: 'get',
-  path: '/futo-backups/jobs',
-  tags: ['Backups'],
-  summary: 'List jobs',
-  description: 'List the jobs for a repository, newest first.',
-  operationId: 'futoBackupsGetJobs',
-  request: {
-    query: z.object({
-      repositoryId: z
-        .string()
-        .openapi({
-          param: { name: 'repositoryId', required: true, in: 'query', schema: { type: 'string' } },
-        }),
-    }),
-  },
-  responses: {
-    200: { description: '', content: { 'application/json': { schema: JobListResponseDtoSchema } } },
-  },
-  security: [{ bearer: [] }, { cookie: [] }, { api_key: [] }],
-})
-
-export const getFutoBackupsJobsIdRoute = createRoute({
-  method: 'get',
-  path: '/futo-backups/jobs/{id}',
-  tags: ['Backups'],
-  summary: 'Get a job',
-  description: 'Get the status of a job.',
-  operationId: 'futoBackupsGetJob',
-  request: {
-    params: z.object({
-      id: z
-        .string()
-        .openapi({ param: { name: 'id', required: true, in: 'path', schema: { type: 'string' } } }),
-    }),
-  },
-  responses: {
-    200: { description: '', content: { 'application/json': { schema: JobDtoSchema } } },
-  },
-  security: [{ bearer: [] }, { cookie: [] }, { api_key: [] }],
-})
-
-export const deleteFutoBackupsJobsIdRoute = createRoute({
-  method: 'delete',
-  path: '/futo-backups/jobs/{id}',
-  tags: ['Backups'],
-  summary: 'Cancel a job',
-  description: 'Cancel a queued job, or stop it if it is already running.',
-  operationId: 'futoBackupsCancelJob',
-  request: {
-    params: z.object({
-      id: z
-        .string()
-        .openapi({ param: { name: 'id', required: true, in: 'path', schema: { type: 'string' } } }),
-    }),
-  },
-  responses: { 204: { description: '' } },
-  security: [{ bearer: [] }, { cookie: [] }, { api_key: [] }],
-})
-
-export const getFutoBackupsJobsIdDownloadRoute = createRoute({
-  method: 'get',
-  path: '/futo-backups/jobs/{id}/download',
-  tags: ['Backups'],
-  summary: 'Download a job log',
-  description: 'Download the full log of a job as JSON lines.',
-  operationId: 'futoBackupsDownloadJobLog',
-  request: {
-    params: z.object({
-      id: z
-        .string()
-        .openapi({ param: { name: 'id', required: true, in: 'path', schema: { type: 'string' } } }),
-    }),
-  },
-  responses: {
-    200: {
-      description: '',
-      content: {
-        'application/jsonl': { schema: z.file().openapi({ type: 'string', format: 'binary' }) },
-      },
-    },
-  },
-  security: [{ bearer: [] }, { cookie: [] }, { api_key: [] }],
-})
-
-export const getFutoBackupsJobsIdSupportLogDownloadRoute = createRoute({
-  method: 'get',
-  path: '/futo-backups/jobs/{id}/support-log/download',
-  tags: ['Backups'],
-  summary: 'Download a job support log',
-  description:
-    'Download the verbose restic output recorded while the job ran in support mode, as JSON lines.',
-  operationId: 'futoBackupsDownloadJobSupportLog',
-  request: {
-    params: z.object({
-      id: z
-        .string()
-        .openapi({ param: { name: 'id', required: true, in: 'path', schema: { type: 'string' } } }),
-    }),
-  },
-  responses: {
-    200: {
-      description: '',
-      content: {
-        'application/jsonl': { schema: z.file().openapi({ type: 'string', format: 'binary' }) },
-      },
-    },
-  },
-  security: [{ bearer: [] }, { cookie: [] }, { api_key: [] }],
-})
-
-export const getFutoBackupsOnboardingRoute = createRoute({
-  method: 'get',
-  path: '/futo-backups/onboarding',
-  tags: ['Backups'],
-  summary: 'Get backup onboarding status',
-  description: 'Retrieve which onboarding steps this server has completed.',
-  operationId: 'futoBackupsOnboardingStatus',
-  responses: {
-    200: {
-      description: '',
-      content: { 'application/json': { schema: OnboardingStatusResponseDtoSchema } },
-    },
-  },
-  security: [{ bearer: [] }, { cookie: [] }, { api_key: [] }],
-})
-
-export const getFutoBackupsOnboardingRecoveryKeyRoute = createRoute({
-  method: 'get',
-  path: '/futo-backups/onboarding/recovery-key',
-  tags: ['Backups'],
-  summary: 'Get the backup recovery key',
-  description: 'Retrieve the recovery key that encrypts the backups of this server.',
-  operationId: 'futoBackupsCurrentRecoveryKey',
-  responses: {
-    200: {
-      description: '',
-      content: { 'application/json': { schema: CurrentRecoveryKeyResponseSchema } },
-    },
-  },
-  security: [{ bearer: [] }, { cookie: [] }, { api_key: [] }],
-})
-
-export const putFutoBackupsOnboardingRecoveryKeyRoute = createRoute({
-  method: 'put',
-  path: '/futo-backups/onboarding/recovery-key',
-  tags: ['Backups'],
-  summary: 'Import a backup recovery key',
-  description: 'Replace the recovery key with one from an earlier installation.',
-  operationId: 'futoBackupsImportRecoveryKey',
-  request: {
-    body: {
-      content: { 'application/json': { schema: ImportRecoveryKeyRequestSchema } },
-      required: true,
-    },
-  },
-  responses: { 200: { description: '' } },
-  security: [{ bearer: [] }, { cookie: [] }, { api_key: [] }],
-})
-
-export const postFutoBackupsOnboardingRecoveryKeyRoute = createRoute({
-  method: 'post',
-  path: '/futo-backups/onboarding/recovery-key',
-  tags: ['Backups'],
-  summary: 'Confirm the backup recovery key',
-  description: 'Record that the user has saved the recovery key.',
-  operationId: 'futoBackupsConfirmRecoveryKey',
-  responses: { 201: { description: '' } },
-  security: [{ bearer: [] }, { cookie: [] }, { api_key: [] }],
-})
-
-export const postFutoBackupsOnboardingReportErrorRoute = createRoute({
-  method: 'post',
-  path: '/futo-backups/onboarding/report-error',
-  tags: ['Backups'],
-  summary: 'Report a startup error',
-  description: 'Send the current startup error to telemetry.',
-  operationId: 'futoBackupsReportError',
-  responses: { 201: { description: '' } },
-  security: [{ bearer: [] }, { cookie: [] }, { api_key: [] }],
-})
-
-export const postFutoBackupsOnboardingSkipRoute = createRoute({
-  method: 'post',
-  path: '/futo-backups/onboarding/skip',
-  tags: ['Backups'],
-  summary: 'Skip optional backup onboarding',
-  description: 'Skip the optional configuration steps of onboarding.',
-  operationId: 'futoBackupsSkipOnboardingExtraConfig',
-  responses: { 201: { description: '' } },
-  security: [{ bearer: [] }, { cookie: [] }, { api_key: [] }],
-})
-
-export const postFutoBackupsOnboardingTelemetryRoute = createRoute({
-  method: 'post',
-  path: '/futo-backups/onboarding/telemetry',
-  tags: ['Backups'],
-  summary: 'Enable FUTO Backups telemetry',
-  description: 'Record that the user consents to sending telemetry.',
-  operationId: 'futoBackupsEnableTelemetry',
-  responses: { 201: { description: '' } },
-  security: [{ bearer: [] }, { cookie: [] }, { api_key: [] }],
-})
-
-export const getFutoBackupsRepositoryRoute = createRoute({
-  method: 'get',
-  path: '/futo-backups/repository',
-  tags: ['Backups'],
-  summary: 'List backups',
-  description: 'List the backup repositories known to this server.',
-  operationId: 'futoBackupsGetRepositories',
-  responses: {
-    200: {
-      description: '',
-      content: { 'application/json': { schema: RepositoryListResponseDtoSchema } },
-    },
-  },
-  security: [{ bearer: [] }, { cookie: [] }, { api_key: [] }],
-})
-
-export const postFutoBackupsRepositoryRoute = createRoute({
-  method: 'post',
-  path: '/futo-backups/repository',
-  tags: ['Backups'],
-  summary: 'Create a new backup',
-  description: 'Create a backup repository on a backend.',
-  operationId: 'futoBackupsCreateRepository',
-  request: {
-    query: z.object({
-      backend: z
-        .string()
-        .exactOptional()
-        .openapi({
-          param: { name: 'backend', required: false, in: 'query', schema: { type: 'string' } },
-        }),
-    }),
-    body: {
-      content: { 'application/json': { schema: RepositoryCreateRequestDtoSchema } },
-      required: true,
-    },
-  },
-  responses: {
-    201: {
-      description: '',
-      content: { 'application/json': { schema: RepositoryCreateResponseDtoSchema } },
-    },
-  },
-  security: [{ bearer: [] }, { cookie: [] }, { api_key: [] }],
-})
-
-export const getFutoBackupsRepositoryInspectRoute = createRoute({
-  method: 'get',
-  path: '/futo-backups/repository/inspect',
-  tags: ['Backups'],
-  summary: 'List remote backups',
-  description: 'List repositories on a backend that are not configured on this server.',
-  operationId: 'futoBackupsInspectRepositories',
-  request: {
-    query: z.object({
-      backend: z
-        .string()
-        .exactOptional()
-        .openapi({
-          param: { name: 'backend', required: false, in: 'query', schema: { type: 'string' } },
-        }),
-    }),
-  },
-  responses: {
-    200: {
-      description: '',
-      content: { 'application/json': { schema: RepositoryInspectResponseDtoSchema } },
-    },
-  },
-  security: [{ bearer: [] }, { cookie: [] }, { api_key: [] }],
-})
-
-export const postFutoBackupsRepositoryIdRoute = createRoute({
-  method: 'post',
-  path: '/futo-backups/repository/{id}',
-  tags: ['Backups'],
-  summary: 'Start a backup',
-  description: 'Queue a backup to a repository and return the ID of its job.',
-  operationId: 'futoBackupsCreateBackup',
-  request: {
-    params: z.object({
-      id: z
-        .string()
-        .openapi({ param: { name: 'id', required: true, in: 'path', schema: { type: 'string' } } }),
-    }),
-  },
-  responses: {
-    201: { description: '', content: { 'application/json': { schema: JobResponseDtoSchema } } },
-  },
-  security: [{ bearer: [] }, { cookie: [] }, { api_key: [] }],
-})
-
-export const deleteFutoBackupsRepositoryIdRoute = createRoute({
-  method: 'delete',
-  path: '/futo-backups/repository/{id}',
-  tags: ['Backups'],
-  summary: 'Remove a backup',
-  description: 'Remove a repository from this server.',
-  operationId: 'futoBackupsDeleteRepository',
-  request: {
-    params: z.object({
-      id: z
-        .string()
-        .openapi({ param: { name: 'id', required: true, in: 'path', schema: { type: 'string' } } }),
-    }),
-  },
-  responses: { 200: { description: '' } },
-  security: [{ bearer: [] }, { cookie: [] }, { api_key: [] }],
-})
-
-export const patchFutoBackupsRepositoryIdRoute = createRoute({
-  method: 'patch',
-  path: '/futo-backups/repository/{id}',
-  tags: ['Backups'],
-  summary: 'Update a backup',
-  description: 'Update the settings of a repository.',
-  operationId: 'futoBackupsUpdateRepository',
-  request: {
-    query: z.object({
-      backend: z
-        .string()
-        .exactOptional()
-        .openapi({
-          param: { name: 'backend', required: false, in: 'query', schema: { type: 'string' } },
-        }),
-    }),
-    params: z.object({
-      id: z
-        .string()
-        .openapi({ param: { name: 'id', required: true, in: 'path', schema: { type: 'string' } } }),
-    }),
-    body: {
-      content: { 'application/json': { schema: RepositoryUpdateRequestDtoSchema } },
-      required: true,
-    },
-  },
-  responses: {
-    200: {
-      description: '',
-      content: { 'application/json': { schema: RepositoryUpdateResponseDtoSchema } },
-    },
-  },
-  security: [{ bearer: [] }, { cookie: [] }, { api_key: [] }],
-})
-
-export const putFutoBackupsRepositoryIdBackendRoute = createRoute({
-  method: 'put',
-  path: '/futo-backups/repository/{id}/backend',
-  tags: ['Backups'],
-  summary: 'Change the primary backend',
-  description:
-    'Create a new empty repository on the selected backend and redirect future backups to it. Existing snapshots are not migrated.',
-  operationId: 'futoBackupsReconfigureRepositoryPrimaryBackend',
-  request: {
-    params: z.object({
-      id: z
-        .string()
-        .openapi({ param: { name: 'id', required: true, in: 'path', schema: { type: 'string' } } }),
-    }),
-    body: {
-      content: {
-        'application/json': { schema: RepositoryPrimaryBackendReconfigureRequestDtoSchema },
-      },
-      required: true,
-    },
-  },
-  responses: {
-    200: {
-      description: '',
-      content: { 'application/json': { schema: RepositoryCreateResponseDtoSchema } },
-    },
-  },
-  security: [{ bearer: [] }, { cookie: [] }, { api_key: [] }],
-})
-
-export const getFutoBackupsRepositoryIdImportRoute = createRoute({
-  method: 'get',
-  path: '/futo-backups/repository/{id}/import',
-  tags: ['Backups'],
-  summary: 'Check a repository import',
-  description:
-    'Check that an existing repository on a backend can be opened with the recovery key.',
-  operationId: 'futoBackupsCheckImportRepository',
-  request: {
-    query: z.object({
-      backend: z
-        .string()
-        .openapi({
-          param: { name: 'backend', required: true, in: 'query', schema: { type: 'string' } },
-        }),
-    }),
-    params: z.object({
-      id: z
-        .string()
-        .openapi({ param: { name: 'id', required: true, in: 'path', schema: { type: 'string' } } }),
-    }),
-  },
-  responses: {
-    200: {
-      description: '',
-      content: { 'application/json': { schema: RepositoryCheckImportResponseDtoSchema } },
-    },
-  },
-  security: [{ bearer: [] }, { cookie: [] }, { api_key: [] }],
-})
-
-export const postFutoBackupsRepositoryIdImportRoute = createRoute({
-  method: 'post',
-  path: '/futo-backups/repository/{id}/import',
-  tags: ['Backups'],
-  summary: 'Import a repository',
-  description: 'Add an existing repository on a backend to this server.',
-  operationId: 'futoBackupsImportRepository',
-  request: {
-    query: z.object({
-      backend: z
-        .string()
-        .openapi({
-          param: { name: 'backend', required: true, in: 'query', schema: { type: 'string' } },
-        }),
-    }),
-    params: z.object({
-      id: z
-        .string()
-        .openapi({ param: { name: 'id', required: true, in: 'path', schema: { type: 'string' } } }),
-    }),
-  },
-  responses: {
-    201: {
-      description: '',
-      content: { 'application/json': { schema: RepositoryCreateResponseDtoSchema } },
-    },
-  },
-  security: [{ bearer: [] }, { cookie: [] }, { api_key: [] }],
-})
-
-export const getFutoBackupsRepositoryIdSnapshotsRoute = createRoute({
-  method: 'get',
-  path: '/futo-backups/repository/{id}/snapshots',
-  tags: ['Backups'],
-  summary: 'List snapshots',
-  description: 'List the snapshots in a repository.',
-  operationId: 'futoBackupsGetSnapshots',
-  request: {
-    params: z.object({
-      id: z
-        .string()
-        .openapi({ param: { name: 'id', required: true, in: 'path', schema: { type: 'string' } } }),
-    }),
-  },
-  responses: {
-    200: {
-      description: '',
-      content: { 'application/json': { schema: ListSnapshotsResponseDtoSchema } },
-    },
-  },
-  security: [{ bearer: [] }, { cookie: [] }, { api_key: [] }],
-})
-
-export const postFutoBackupsRepositoryIdSnapshotsPruneRoute = createRoute({
-  method: 'post',
-  path: '/futo-backups/repository/{id}/snapshots/prune',
-  tags: ['Backups'],
-  summary: 'Prune a repository',
-  description:
-    'Queue the removal of snapshots outside the retention policy and return the ID of its job.',
-  operationId: 'futoBackupsPruneRepository',
-  request: {
-    params: z.object({
-      id: z
-        .string()
-        .openapi({ param: { name: 'id', required: true, in: 'path', schema: { type: 'string' } } }),
-    }),
-  },
-  responses: {
-    201: { description: '', content: { 'application/json': { schema: JobResponseDtoSchema } } },
-  },
-  security: [{ bearer: [] }, { cookie: [] }, { api_key: [] }],
-})
-
-export const postFutoBackupsRepositoryIdSnapshotsSnapshotRoute = createRoute({
-  method: 'post',
-  path: '/futo-backups/repository/{id}/snapshots/{snapshot}',
-  tags: ['Backups'],
-  summary: 'Restore a snapshot',
-  description: 'Queue a restore of files from a snapshot and return the ID of its job.',
-  operationId: 'futoBackupsRestoreSnapshot',
-  request: {
-    params: z.object({
-      id: z
-        .string()
-        .openapi({ param: { name: 'id', required: true, in: 'path', schema: { type: 'string' } } }),
-      snapshot: z
-        .string()
-        .openapi({
-          param: { name: 'snapshot', required: true, in: 'path', schema: { type: 'string' } },
-        }),
-    }),
-    body: {
-      content: { 'application/json': { schema: RepositorySnapshotRestoreRequestDtoSchema } },
-      required: true,
-    },
-  },
-  responses: {
-    201: { description: '', content: { 'application/json': { schema: JobResponseDtoSchema } } },
-  },
-  security: [{ bearer: [] }, { cookie: [] }, { api_key: [] }],
-})
-
-export const deleteFutoBackupsRepositoryIdSnapshotsSnapshotRoute = createRoute({
-  method: 'delete',
-  path: '/futo-backups/repository/{id}/snapshots/{snapshot}',
-  tags: ['Backups'],
-  summary: 'Delete a snapshot',
-  description: 'Remove a snapshot from a repository.',
-  operationId: 'futoBackupsForgetSnapshot',
-  request: {
-    params: z.object({
-      id: z
-        .string()
-        .openapi({ param: { name: 'id', required: true, in: 'path', schema: { type: 'string' } } }),
-      snapshot: z
-        .string()
-        .openapi({
-          param: { name: 'snapshot', required: true, in: 'path', schema: { type: 'string' } },
-        }),
-    }),
-  },
-  responses: {
-    200: {
-      description: '',
-      content: { 'application/json': { schema: ListSnapshotsResponseDtoSchema } },
-    },
-  },
-  security: [{ bearer: [] }, { cookie: [] }, { api_key: [] }],
-})
-
-export const getFutoBackupsRepositoryIdSnapshotsSnapshotListingRoute = createRoute({
-  method: 'get',
-  path: '/futo-backups/repository/{id}/snapshots/{snapshot}/listing',
-  tags: ['Backups'],
-  summary: 'List snapshot files',
-  description: 'List the files and folders at a path in a snapshot.',
-  operationId: 'futoBackupsGetSnapshotListing',
-  request: {
-    params: z.object({
-      id: z
-        .string()
-        .openapi({ param: { name: 'id', required: true, in: 'path', schema: { type: 'string' } } }),
-      snapshot: z
-        .string()
-        .openapi({
-          param: { name: 'snapshot', required: true, in: 'path', schema: { type: 'string' } },
-        }),
-    }),
-    query: z.object({
-      path: z
-        .string()
-        .exactOptional()
-        .openapi({
-          param: { name: 'path', required: false, in: 'query', schema: { type: 'string' } },
-        }),
-    }),
-  },
-  responses: {
-    200: {
-      description: '',
-      content: { 'application/json': { schema: FilesystemListingResponseDtoSchema } },
-    },
-  },
-  security: [{ bearer: [] }, { cookie: [] }, { api_key: [] }],
-})
-
-export const postFutoBackupsRepositoryIdSnapshotsSnapshotRestoreFromPointRoute = createRoute({
-  method: 'post',
-  path: '/futo-backups/repository/{id}/snapshots/{snapshot}/restore-from-point',
-  tags: ['Backups'],
-  summary: 'Restore from snapshot',
-  description: 'Restore the orchestrator to a previous state, wiping the current state.',
-  operationId: 'futoBackupsRestoreFromPoint',
-  request: {
-    query: z.object({
-      backend: z
-        .string()
-        .openapi({
-          param: { name: 'backend', required: true, in: 'query', schema: { type: 'string' } },
-        }),
-    }),
-    params: z.object({
-      id: z
-        .string()
-        .openapi({ param: { name: 'id', required: true, in: 'path', schema: { type: 'string' } } }),
-      snapshot: z
-        .string()
-        .openapi({
-          param: { name: 'snapshot', required: true, in: 'path', schema: { type: 'string' } },
-        }),
-    }),
-    body: {
-      content: {
-        'application/json': { schema: RepositorySnapshotRestoreFromPointRequestDtoSchema },
-      },
-      required: true,
-    },
-  },
-  responses: {
-    201: { description: '', content: { 'application/json': { schema: JobResponseDtoSchema } } },
-  },
-  security: [{ bearer: [] }, { cookie: [] }, { api_key: [] }],
-})
-
-export const postFutoBackupsRepositoryIdSyncDeletionRoute = createRoute({
-  method: 'post',
-  path: '/futo-backups/repository/{id}/sync-deletion',
-  tags: ['Backups'],
-  summary: 'Sync a remote deletion',
-  description: 'Remove a repository from this server once it has been deleted from its backend.',
-  operationId: 'futoBackupsSyncRepositoryDeletion',
-  request: {
-    params: z.object({
-      id: z
-        .string()
-        .openapi({ param: { name: 'id', required: true, in: 'path', schema: { type: 'string' } } }),
-    }),
-  },
-  responses: {
-    201: {
-      description: '',
-      content: { 'application/json': { schema: RepositorySyncDeletionResponseDtoSchema } },
-    },
-  },
-  security: [{ bearer: [] }, { cookie: [] }, { api_key: [] }],
-})
-
-export const getFutoBackupsScheduleRoute = createRoute({
-  method: 'get',
-  path: '/futo-backups/schedule',
-  tags: ['Backups'],
-  summary: 'List schedules',
-  description: 'List the backup schedules.',
-  operationId: 'futoBackupsGetSchedules',
-  responses: {
-    200: {
-      description: '',
-      content: { 'application/json': { schema: ScheduleListResponseDtoSchema } },
-    },
-  },
-  security: [{ bearer: [] }, { cookie: [] }, { api_key: [] }],
-})
-
-export const postFutoBackupsScheduleRoute = createRoute({
-  method: 'post',
-  path: '/futo-backups/schedule',
-  tags: ['Backups'],
-  summary: 'Create a schedule',
-  description: 'Create a backup schedule for one or more repositories.',
-  operationId: 'futoBackupsCreateSchedule',
-  request: {
-    body: {
-      content: { 'application/json': { schema: ScheduleCreateRequestDtoSchema } },
-      required: true,
-    },
-  },
-  responses: {
-    201: {
-      description: '',
-      content: { 'application/json': { schema: ScheduleCreateResponseDtoSchema } },
-    },
-  },
-  security: [{ bearer: [] }, { cookie: [] }, { api_key: [] }],
-})
-
-export const deleteFutoBackupsScheduleIdRoute = createRoute({
-  method: 'delete',
-  path: '/futo-backups/schedule/{id}',
-  tags: ['Backups'],
-  summary: 'Delete a schedule',
-  description: 'Delete a backup schedule.',
-  operationId: 'futoBackupsRemoveSchedule',
-  request: {
-    params: z.object({
-      id: z
-        .string()
-        .openapi({ param: { name: 'id', required: true, in: 'path', schema: { type: 'string' } } }),
-    }),
-  },
-  responses: { 200: { description: '' } },
-  security: [{ bearer: [] }, { cookie: [] }, { api_key: [] }],
-})
-
-export const patchFutoBackupsScheduleIdRoute = createRoute({
-  method: 'patch',
-  path: '/futo-backups/schedule/{id}',
-  tags: ['Backups'],
-  summary: 'Update a schedule',
-  description: 'Update a backup schedule.',
-  operationId: 'futoBackupsUpdateSchedule',
-  request: {
-    params: z.object({
-      id: z
-        .string()
-        .openapi({ param: { name: 'id', required: true, in: 'path', schema: { type: 'string' } } }),
-    }),
-    body: {
-      content: { 'application/json': { schema: ScheduleUpdateRequestDtoSchema } },
-      required: true,
-    },
-  },
-  responses: {
-    200: {
-      description: '',
-      content: { 'application/json': { schema: ScheduleUpdateResponseDtoSchema } },
-    },
-  },
-  security: [{ bearer: [] }, { cookie: [] }, { api_key: [] }],
-})
-
-export const getFutoBackupsSupportModeRoute = createRoute({
-  method: 'get',
-  path: '/futo-backups/support-mode',
-  tags: ['Backups'],
-  summary: 'Get support mode',
-  description:
-    'Retrieve how many upcoming runs use verbose restic logging, and whether they stream to FUTO.',
-  operationId: 'futoBackupsGetSupportMode',
-  responses: {
-    200: {
-      description: '',
-      content: { 'application/json': { schema: SupportModeResponseDtoSchema } },
-    },
-  },
-  security: [{ bearer: [] }, { cookie: [] }, { api_key: [] }],
-})
-
-export const putFutoBackupsSupportModeRoute = createRoute({
-  method: 'put',
-  path: '/futo-backups/support-mode',
-  tags: ['Backups'],
-  summary: 'Update support mode',
-  description:
-    'Set how many upcoming runs use verbose restic logging, and whether they stream to FUTO.',
-  operationId: 'futoBackupsUpdateSupportMode',
-  request: {
-    body: {
-      content: { 'application/json': { schema: SupportModeUpdateRequestDtoSchema } },
-      required: true,
-    },
-  },
-  responses: {
-    200: {
-      description: '',
-      content: { 'application/json': { schema: SupportModeResponseDtoSchema } },
-    },
-  },
   security: [{ bearer: [] }, { cookie: [] }, { api_key: [] }],
 })
 
@@ -16230,9 +14700,9 @@ export const putJobsNameRoute = createRoute({
     params: z.object({
       name: QueueNameSchema.openapi({
         param: {
+          in: 'path',
           name: 'name',
           required: true,
-          in: 'path',
           schema: { $ref: '#/components/schemas/QueueName' },
         },
       }),
@@ -16297,9 +14767,9 @@ export const getLibrariesIdRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -16332,9 +14802,9 @@ export const putLibrariesIdRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -16368,9 +14838,9 @@ export const deleteLibrariesIdRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -16401,9 +14871,9 @@ export const postLibrariesIdScanRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -16435,9 +14905,9 @@ export const getLibrariesIdStatisticsRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -16473,9 +14943,9 @@ export const postLibrariesIdValidateRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -16509,20 +14979,20 @@ export const getMapMarkersRoute = createRoute({
       fileCreatedAfter: z.iso
         .datetime({ offset: true })
         .regex(
-          /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+          /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
         )
         .exactOptional()
         .openapi({
           param: {
+            description: 'Filter assets created after this date',
+            in: 'query',
             name: 'fileCreatedAfter',
             required: false,
-            in: 'query',
-            description: 'Filter assets created after this date',
             schema: {
+              example: '2024-01-01T00:00:00.000Z',
               format: 'date-time',
               pattern:
-                '^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$',
-              example: '2024-01-01T00:00:00.000Z',
+                '^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$',
               type: 'string',
             },
           },
@@ -16531,20 +15001,20 @@ export const getMapMarkersRoute = createRoute({
       fileCreatedBefore: z.iso
         .datetime({ offset: true })
         .regex(
-          /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+          /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
         )
         .exactOptional()
         .openapi({
           param: {
+            description: 'Filter assets created before this date',
+            in: 'query',
             name: 'fileCreatedBefore',
             required: false,
-            in: 'query',
-            description: 'Filter assets created before this date',
             schema: {
+              example: '2024-01-01T00:00:00.000Z',
               format: 'date-time',
               pattern:
-                '^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$',
-              example: '2024-01-01T00:00:00.000Z',
+                '^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$',
               type: 'string',
             },
           },
@@ -16555,10 +15025,10 @@ export const getMapMarkersRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            description: 'Filter by archived status',
+            in: 'query',
             name: 'isArchived',
             required: false,
-            in: 'query',
-            description: 'Filter by archived status',
             schema: { type: 'boolean' },
           },
         }),
@@ -16567,10 +15037,10 @@ export const getMapMarkersRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            description: 'Filter by favorite status',
+            in: 'query',
             name: 'isFavorite',
             required: false,
-            in: 'query',
-            description: 'Filter by favorite status',
             schema: { type: 'boolean' },
           },
         }),
@@ -16579,10 +15049,10 @@ export const getMapMarkersRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            description: 'Include partner assets',
+            in: 'query',
             name: 'withPartners',
             required: false,
-            in: 'query',
-            description: 'Include partner assets',
             schema: { type: 'boolean' },
           },
         }),
@@ -16591,10 +15061,10 @@ export const getMapMarkersRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            description: 'Include shared album assets',
+            in: 'query',
             name: 'withSharedAlbums',
             required: false,
-            in: 'query',
-            description: 'Include shared album assets',
             schema: { type: 'boolean' },
           },
         }),
@@ -16631,10 +15101,10 @@ export const getMapReverseGeocodeRoute = createRoute({
         )
         .openapi({
           param: {
+            description: 'Latitude (-90 to 90)',
+            in: 'query',
             name: 'lat',
             required: true,
-            in: 'query',
-            description: 'Latitude (-90 to 90)',
             schema: { format: 'double', type: 'number' },
           },
         }),
@@ -16650,10 +15120,10 @@ export const getMapReverseGeocodeRoute = createRoute({
         )
         .openapi({
           param: {
+            description: 'Longitude (-180 to 180)',
+            in: 'query',
             name: 'lon',
             required: true,
-            in: 'query',
-            description: 'Longitude (-180 to 180)',
             schema: { format: 'double', type: 'number' },
           },
         }),
@@ -16686,15 +15156,15 @@ export const getMemoriesRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            description: 'Filter by date',
+            in: 'query',
             name: 'for',
             required: false,
-            in: 'query',
-            description: 'Filter by date',
             schema: {
+              example: '2024-01-01',
               format: 'date',
               pattern:
                 '^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$',
-              example: '2024-01-01',
               type: 'string',
             },
           },
@@ -16708,10 +15178,10 @@ export const getMemoriesRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            description: 'Memory ID',
+            in: 'query',
             name: 'id',
             required: false,
-            in: 'query',
-            description: 'Memory ID',
             schema: {
               format: 'uuid',
               pattern:
@@ -16725,10 +15195,10 @@ export const getMemoriesRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            description: 'Filter by saved status',
+            in: 'query',
             name: 'isSaved',
             required: false,
-            in: 'query',
-            description: 'Filter by saved status',
             schema: { type: 'boolean' },
           },
         }),
@@ -16737,10 +15207,10 @@ export const getMemoriesRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            description: 'Include trashed memories',
+            in: 'query',
             name: 'isTrashed',
             required: false,
-            in: 'query',
-            description: 'Include trashed memories',
             schema: { type: 'boolean' },
           },
         }),
@@ -16749,18 +15219,18 @@ export const getMemoriesRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            description: 'Filter by memories that have not been shown yet',
+            in: 'query',
             name: 'isUpcoming',
             required: false,
-            in: 'query',
-            description: 'Filter by memories that have not been shown yet',
             schema: { type: 'boolean' },
           },
         }),
       order: MemorySearchOrderSchema.openapi({
         param: {
+          in: 'query',
           name: 'order',
           required: false,
-          in: 'query',
           schema: { $ref: '#/components/schemas/MemorySearchOrder' },
         },
       }).exactOptional(),
@@ -16777,11 +15247,11 @@ export const getMemoriesRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            description: 'Page number',
+            in: 'query',
             name: 'page',
             required: false,
-            in: 'query',
-            description: 'Page number',
-            schema: { minimum: 1, maximum: 9007199254740991, type: 'integer' },
+            schema: { maximum: 9007199254740991, minimum: 1, type: 'integer' },
           },
         }),
       size: z
@@ -16797,18 +15267,18 @@ export const getMemoriesRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            description: 'Number of memories to return',
+            in: 'query',
             name: 'size',
             required: false,
-            in: 'query',
-            description: 'Number of memories to return',
-            schema: { minimum: 1, maximum: 9007199254740991, type: 'integer' },
+            schema: { maximum: 9007199254740991, minimum: 1, type: 'integer' },
           },
         }),
       type: MemoryTypeSchema.openapi({
         param: {
+          in: 'query',
           name: 'type',
           required: false,
-          in: 'query',
           schema: { $ref: '#/components/schemas/MemoryType' },
         },
       }).exactOptional(),
@@ -16858,15 +15328,15 @@ export const getMemoriesStatisticsRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            description: 'Filter by date',
+            in: 'query',
             name: 'for',
             required: false,
-            in: 'query',
-            description: 'Filter by date',
             schema: {
+              example: '2024-01-01',
               format: 'date',
               pattern:
                 '^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$',
-              example: '2024-01-01',
               type: 'string',
             },
           },
@@ -16880,10 +15350,10 @@ export const getMemoriesStatisticsRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            description: 'Memory ID',
+            in: 'query',
             name: 'id',
             required: false,
-            in: 'query',
-            description: 'Memory ID',
             schema: {
               format: 'uuid',
               pattern:
@@ -16897,10 +15367,10 @@ export const getMemoriesStatisticsRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            description: 'Filter by saved status',
+            in: 'query',
             name: 'isSaved',
             required: false,
-            in: 'query',
-            description: 'Filter by saved status',
             schema: { type: 'boolean' },
           },
         }),
@@ -16909,10 +15379,10 @@ export const getMemoriesStatisticsRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            description: 'Include trashed memories',
+            in: 'query',
             name: 'isTrashed',
             required: false,
-            in: 'query',
-            description: 'Include trashed memories',
             schema: { type: 'boolean' },
           },
         }),
@@ -16921,18 +15391,18 @@ export const getMemoriesStatisticsRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            description: 'Filter by memories that have not been shown yet',
+            in: 'query',
             name: 'isUpcoming',
             required: false,
-            in: 'query',
-            description: 'Filter by memories that have not been shown yet',
             schema: { type: 'boolean' },
           },
         }),
       order: MemorySearchOrderSchema.openapi({
         param: {
+          in: 'query',
           name: 'order',
           required: false,
-          in: 'query',
           schema: { $ref: '#/components/schemas/MemorySearchOrder' },
         },
       }).exactOptional(),
@@ -16949,11 +15419,11 @@ export const getMemoriesStatisticsRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            description: 'Page number',
+            in: 'query',
             name: 'page',
             required: false,
-            in: 'query',
-            description: 'Page number',
-            schema: { minimum: 1, maximum: 9007199254740991, type: 'integer' },
+            schema: { maximum: 9007199254740991, minimum: 1, type: 'integer' },
           },
         }),
       size: z
@@ -16969,18 +15439,18 @@ export const getMemoriesStatisticsRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            description: 'Number of memories to return',
+            in: 'query',
             name: 'size',
             required: false,
-            in: 'query',
-            description: 'Number of memories to return',
-            schema: { minimum: 1, maximum: 9007199254740991, type: 'integer' },
+            schema: { maximum: 9007199254740991, minimum: 1, type: 'integer' },
           },
         }),
       type: MemoryTypeSchema.openapi({
         param: {
+          in: 'query',
           name: 'type',
           required: false,
-          in: 'query',
           schema: { $ref: '#/components/schemas/MemoryType' },
         },
       }).exactOptional(),
@@ -17011,9 +15481,9 @@ export const getMemoriesIdRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -17046,9 +15516,9 @@ export const putMemoriesIdRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -17082,9 +15552,9 @@ export const deleteMemoriesIdRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -17115,9 +15585,9 @@ export const putMemoriesIdAssetsRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -17154,9 +15624,9 @@ export const deleteMemoriesIdAssetsRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -17194,10 +15664,10 @@ export const getNotificationsRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            description: 'Filter by notification ID',
+            in: 'query',
             name: 'id',
             required: false,
-            in: 'query',
-            description: 'Filter by notification ID',
             schema: {
               format: 'uuid',
               pattern:
@@ -17208,17 +15678,17 @@ export const getNotificationsRoute = createRoute({
         }),
       level: NotificationLevelSchema.openapi({
         param: {
+          in: 'query',
           name: 'level',
           required: false,
-          in: 'query',
           schema: { $ref: '#/components/schemas/NotificationLevel' },
         },
       }).exactOptional(),
       type: NotificationTypeSchema.openapi({
         param: {
+          in: 'query',
           name: 'type',
           required: false,
-          in: 'query',
           schema: { $ref: '#/components/schemas/NotificationType' },
         },
       }).exactOptional(),
@@ -17227,10 +15697,10 @@ export const getNotificationsRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            description: 'Filter by unread status',
+            in: 'query',
             name: 'unread',
             required: false,
-            in: 'query',
-            description: 'Filter by unread status',
             schema: { type: 'boolean' },
           },
         }),
@@ -17296,9 +15766,9 @@ export const getNotificationsIdRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -17331,9 +15801,9 @@ export const putNotificationsIdRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -17370,9 +15840,9 @@ export const deleteNotificationsIdRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -17495,9 +15965,9 @@ export const getPartnersRoute = createRoute({
     query: z.object({
       direction: PartnerDirectionSchema.openapi({
         param: {
+          in: 'query',
           name: 'direction',
           required: true,
-          in: 'query',
           schema: { $ref: '#/components/schemas/PartnerDirection' },
         },
       }),
@@ -17544,9 +16014,9 @@ export const putPartnersIdRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -17580,9 +16050,9 @@ export const postPartnersIdRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -17616,9 +16086,9 @@ export const deletePartnersIdRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -17650,10 +16120,10 @@ export const getPasskeysRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            description: 'Filter by passkey ID',
+            in: 'query',
             name: 'id',
             required: false,
-            in: 'query',
-            description: 'Filter by passkey ID',
             schema: {
               format: 'uuid',
               pattern:
@@ -17759,9 +16229,9 @@ export const getPasskeysIdRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -17794,9 +16264,9 @@ export const deletePasskeysIdRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -17827,9 +16297,9 @@ export const patchPasskeysIdRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -17864,10 +16334,10 @@ export const getPeopleRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            description: 'Closest asset ID for similarity search',
+            in: 'query',
             name: 'closestAssetId',
             required: false,
-            in: 'query',
-            description: 'Closest asset ID for similarity search',
             schema: {
               format: 'uuid',
               pattern:
@@ -17884,10 +16354,10 @@ export const getPeopleRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            description: 'Closest person ID for similarity search',
+            in: 'query',
             name: 'closestPersonId',
             required: false,
-            in: 'query',
-            description: 'Closest person ID for similarity search',
             schema: {
               format: 'uuid',
               pattern:
@@ -17901,10 +16371,10 @@ export const getPeopleRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            description: 'Filter by favorite status',
+            in: 'query',
             name: 'isFavorite',
             required: false,
-            in: 'query',
-            description: 'Filter by favorite status',
             schema: { type: 'boolean' },
           },
         }),
@@ -17913,10 +16383,10 @@ export const getPeopleRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            description: 'Filter by hidden status',
+            in: 'query',
             name: 'isHidden',
             required: false,
-            in: 'query',
-            description: 'Filter by hidden status',
             schema: { type: 'boolean' },
           },
         }),
@@ -17925,10 +16395,10 @@ export const getPeopleRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            description: 'Filter by person name',
+            in: 'query',
             name: 'name',
             required: false,
-            in: 'query',
-            description: 'Filter by person name',
             schema: { type: 'string' },
           },
         }),
@@ -17946,11 +16416,11 @@ export const getPeopleRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            description: 'Page number for pagination',
+            in: 'query',
             name: 'page',
             required: false,
-            in: 'query',
-            description: 'Page number for pagination',
-            schema: { minimum: 1, maximum: 9007199254740991, default: 1, type: 'integer' },
+            schema: { default: 1, maximum: 9007199254740991, minimum: 1, type: 'integer' },
           },
         }),
       sharedById: z
@@ -17961,10 +16431,10 @@ export const getPeopleRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            description: 'Only include people to which the user gave access',
+            in: 'query',
             name: 'sharedById',
             required: false,
-            in: 'query',
-            description: 'Only include people to which the user gave access',
             schema: {
               format: 'uuid',
               pattern:
@@ -17981,10 +16451,10 @@ export const getPeopleRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            description: 'Only include people to which the user was given access',
+            in: 'query',
             name: 'sharedWithId',
             required: false,
-            in: 'query',
-            description: 'Only include people to which the user was given access',
             schema: {
               format: 'uuid',
               pattern:
@@ -18007,11 +16477,11 @@ export const getPeopleRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            description: 'Number of items per page',
+            in: 'query',
             name: 'size',
             required: false,
-            in: 'query',
-            description: 'Number of items per page',
-            schema: { minimum: 1, maximum: 1000, default: 500, type: 'integer' },
+            schema: { default: 500, maximum: 1000, minimum: 1, type: 'integer' },
           },
         }),
       withHidden: z
@@ -18019,10 +16489,10 @@ export const getPeopleRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            description: 'Include hidden people',
+            in: 'query',
             name: 'withHidden',
             required: false,
-            in: 'query',
-            description: 'Include hidden people',
             schema: { type: 'boolean' },
           },
         }),
@@ -18114,9 +16584,9 @@ export const getPeopleUsersRoute = createRoute({
     query: z.object({
       direction: SharingDirectionSchema.openapi({
         param: {
+          in: 'query',
           name: 'direction',
           required: false,
-          in: 'query',
           schema: { $ref: '#/components/schemas/SharingDirection' },
         },
       }).exactOptional(),
@@ -18128,10 +16598,10 @@ export const getPeopleUsersRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            description: 'Person ID',
+            in: 'query',
             name: 'personId',
             required: false,
-            in: 'query',
-            description: 'Person ID',
             schema: {
               format: 'uuid',
               pattern:
@@ -18142,10 +16612,10 @@ export const getPeopleUsersRoute = createRoute({
         }),
       role: PersonUserRoleSchema.openapi({
         param: {
+          description: 'Role of user',
+          in: 'query',
           name: 'role',
           required: false,
-          in: 'query',
-          description: 'Role of user',
           schema: { $ref: '#/components/schemas/PersonUserRole' },
         },
       }).exactOptional(),
@@ -18157,10 +16627,10 @@ export const getPeopleUsersRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            description: 'User ID of the user that gave access',
+            in: 'query',
             name: 'sharedById',
             required: false,
-            in: 'query',
-            description: 'User ID of the user that gave access',
             schema: {
               format: 'uuid',
               pattern:
@@ -18177,10 +16647,10 @@ export const getPeopleUsersRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            description: 'User ID of the user that was given access',
+            in: 'query',
             name: 'sharedWithId',
             required: false,
-            in: 'query',
-            description: 'User ID of the user that was given access',
             schema: {
               format: 'uuid',
               pattern:
@@ -18250,9 +16720,9 @@ export const getPeopleIdRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -18285,9 +16755,9 @@ export const putPeopleIdRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -18321,9 +16791,9 @@ export const deletePeopleIdRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -18355,9 +16825,9 @@ export const postPeopleIdMergeRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -18395,9 +16865,9 @@ export const putPeopleIdReassignRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -18434,9 +16904,9 @@ export const getPeopleIdStatisticsRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -18472,9 +16942,9 @@ export const getPeopleIdThumbnailRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -18511,17 +16981,17 @@ export const getPluginsRoute = createRoute({
         .string()
         .exactOptional()
         .openapi({
-          param: { name: 'description', required: false, in: 'query', schema: { type: 'string' } },
+          param: { in: 'query', name: 'description', required: false, schema: { type: 'string' } },
         }),
       enabled: z
         .stringbool()
         .exactOptional()
         .openapi({
           param: {
+            description: 'Whether the plugin is enabled',
+            in: 'query',
             name: 'enabled',
             required: false,
-            in: 'query',
-            description: 'Whether the plugin is enabled',
             schema: { type: 'boolean' },
           },
         }),
@@ -18533,10 +17003,10 @@ export const getPluginsRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            description: 'Plugin ID',
+            in: 'query',
             name: 'id',
             required: false,
-            in: 'query',
-            description: 'Plugin ID',
             schema: {
               format: 'uuid',
               pattern:
@@ -18549,19 +17019,19 @@ export const getPluginsRoute = createRoute({
         .string()
         .exactOptional()
         .openapi({
-          param: { name: 'name', required: false, in: 'query', schema: { type: 'string' } },
+          param: { in: 'query', name: 'name', required: false, schema: { type: 'string' } },
         }),
       title: z
         .string()
         .exactOptional()
         .openapi({
-          param: { name: 'title', required: false, in: 'query', schema: { type: 'string' } },
+          param: { in: 'query', name: 'title', required: false, schema: { type: 'string' } },
         }),
       version: z
         .string()
         .exactOptional()
         .openapi({
-          param: { name: 'version', required: false, in: 'query', schema: { type: 'string' } },
+          param: { in: 'query', name: 'version', required: false, schema: { type: 'string' } },
         }),
     }),
   },
@@ -18587,17 +17057,17 @@ export const getPluginsMethodsRoute = createRoute({
         .string()
         .exactOptional()
         .openapi({
-          param: { name: 'description', required: false, in: 'query', schema: { type: 'string' } },
+          param: { in: 'query', name: 'description', required: false, schema: { type: 'string' } },
         }),
       enabled: z
         .stringbool()
         .exactOptional()
         .openapi({
           param: {
+            description: 'Whether the plugin method is enabled',
+            in: 'query',
             name: 'enabled',
             required: false,
-            in: 'query',
-            description: 'Whether the plugin method is enabled',
             schema: { type: 'boolean' },
           },
         }),
@@ -18609,10 +17079,10 @@ export const getPluginsMethodsRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            description: 'Plugin method ID',
+            in: 'query',
             name: 'id',
             required: false,
-            in: 'query',
-            description: 'Plugin method ID',
             schema: {
               format: 'uuid',
               pattern:
@@ -18625,17 +17095,17 @@ export const getPluginsMethodsRoute = createRoute({
         .string()
         .exactOptional()
         .openapi({
-          param: { name: 'name', required: false, in: 'query', schema: { type: 'string' } },
+          param: { in: 'query', name: 'name', required: false, schema: { type: 'string' } },
         }),
       pluginName: z
         .string()
         .exactOptional()
         .openapi({
           param: {
+            description: 'Plugin name',
+            in: 'query',
             name: 'pluginName',
             required: false,
-            in: 'query',
-            description: 'Plugin name',
             schema: { type: 'string' },
           },
         }),
@@ -18644,10 +17114,10 @@ export const getPluginsMethodsRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            description: 'Plugin version',
+            in: 'query',
             name: 'pluginVersion',
             required: false,
-            in: 'query',
-            description: 'Plugin version',
             schema: { type: 'string' },
           },
         }),
@@ -18655,23 +17125,23 @@ export const getPluginsMethodsRoute = createRoute({
         .string()
         .exactOptional()
         .openapi({
-          param: { name: 'title', required: false, in: 'query', schema: { type: 'string' } },
+          param: { in: 'query', name: 'title', required: false, schema: { type: 'string' } },
         }),
       trigger: WorkflowTriggerSchema.openapi({
         param: {
+          description: 'Workflow trigger',
+          in: 'query',
           name: 'trigger',
           required: false,
-          in: 'query',
-          description: 'Workflow trigger',
           schema: { $ref: '#/components/schemas/WorkflowTrigger' },
         },
       }).exactOptional(),
       type: WorkflowTypeSchema.openapi({
         param: {
+          description: 'Workflow types',
+          in: 'query',
           name: 'type',
           required: false,
-          in: 'query',
-          description: 'Workflow types',
           schema: { $ref: '#/components/schemas/WorkflowType' },
         },
       }).exactOptional(),
@@ -18718,9 +17188,9 @@ export const getPluginsIdRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -18789,9 +17259,9 @@ export const getQueuesNameRoute = createRoute({
     params: z.object({
       name: QueueNameSchema.openapi({
         param: {
+          in: 'path',
           name: 'name',
           required: true,
-          in: 'path',
           schema: { $ref: '#/components/schemas/QueueName' },
         },
       }),
@@ -18814,9 +17284,9 @@ export const putQueuesNameRoute = createRoute({
     params: z.object({
       name: QueueNameSchema.openapi({
         param: {
+          in: 'path',
           name: 'name',
           required: true,
-          in: 'path',
           schema: { $ref: '#/components/schemas/QueueName' },
         },
       }),
@@ -18840,9 +17310,9 @@ export const getQueuesNameJobsRoute = createRoute({
     params: z.object({
       name: QueueNameSchema.openapi({
         param: {
+          in: 'path',
           name: 'name',
           required: true,
-          in: 'path',
           schema: { $ref: '#/components/schemas/QueueName' },
         },
       }),
@@ -18856,11 +17326,11 @@ export const getQueuesNameJobsRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            description: 'Filter jobs by status',
+            in: 'query',
             name: 'status',
             required: false,
-            in: 'query',
-            description: 'Filter jobs by status',
-            schema: { type: 'array', items: { $ref: '#/components/schemas/QueueJobStatus' } },
+            schema: { items: { $ref: '#/components/schemas/QueueJobStatus' }, type: 'array' },
           },
         }),
     }),
@@ -18885,9 +17355,9 @@ export const deleteQueuesNameJobsRoute = createRoute({
     params: z.object({
       name: QueueNameSchema.openapi({
         param: {
+          in: 'path',
           name: 'name',
           required: true,
-          in: 'path',
           schema: { $ref: '#/components/schemas/QueueName' },
         },
       }),
@@ -18954,26 +17424,26 @@ export const postSearchLargeAssetsRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            deprecated: true,
+            description: 'Filter by album IDs',
+            in: 'query',
             name: 'albumIds',
             required: false,
-            in: 'query',
-            description: 'Filter by album IDs',
-            'x-immich-history': [
-              { version: 'v1', state: 'Added' },
-              { version: 'v2', state: 'Stable' },
-              { version: 'v3.2.0', state: 'Deprecated' },
-            ],
-            'x-immich-state': 'Deprecated',
-            deprecated: true,
             schema: {
-              type: 'array',
               items: {
-                type: 'string',
                 format: 'uuid',
                 pattern:
                   '^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$',
+                type: 'string',
               },
+              type: 'array',
             },
+            'x-immich-history': [
+              { state: 'Added', version: 'v1' },
+              { state: 'Stable', version: 'v2' },
+              { state: 'Deprecated', version: 'v3.2.0' },
+            ],
+            'x-immich-state': 'Deprecated',
           },
         }),
       city: z
@@ -18982,18 +17452,18 @@ export const postSearchLargeAssetsRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            deprecated: true,
+            description: 'Filter by city name',
+            in: 'query',
             name: 'city',
             required: false,
-            in: 'query',
-            description: 'Filter by city name',
+            schema: { type: ['string', 'null'] },
             'x-immich-history': [
-              { version: 'v1', state: 'Added' },
-              { version: 'v2', state: 'Stable' },
-              { version: 'v3.2.0', state: 'Deprecated' },
+              { state: 'Added', version: 'v1' },
+              { state: 'Stable', version: 'v2' },
+              { state: 'Deprecated', version: 'v3.2.0' },
             ],
             'x-immich-state': 'Deprecated',
-            deprecated: true,
-            schema: { type: 'string', nullable: true },
           },
         }),
       country: z
@@ -19002,75 +17472,75 @@ export const postSearchLargeAssetsRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            deprecated: true,
+            description: 'Filter by country name',
+            in: 'query',
             name: 'country',
             required: false,
-            in: 'query',
-            description: 'Filter by country name',
+            schema: { type: ['string', 'null'] },
             'x-immich-history': [
-              { version: 'v1', state: 'Added' },
-              { version: 'v2', state: 'Stable' },
-              { version: 'v3.2.0', state: 'Deprecated' },
+              { state: 'Added', version: 'v1' },
+              { state: 'Stable', version: 'v2' },
+              { state: 'Deprecated', version: 'v3.2.0' },
             ],
             'x-immich-state': 'Deprecated',
-            deprecated: true,
-            schema: { type: 'string', nullable: true },
           },
         }),
       createdAfter: z.iso
         .datetime({ offset: true })
         .regex(
-          /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+          /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
         )
         .exactOptional()
         .openapi({
           param: {
+            deprecated: true,
+            description: 'Filter by creation date (after)',
+            in: 'query',
             name: 'createdAfter',
             required: false,
-            in: 'query',
-            description: 'Filter by creation date (after)',
-            'x-immich-history': [
-              { version: 'v1', state: 'Added' },
-              { version: 'v2', state: 'Stable' },
-              { version: 'v3.2.0', state: 'Deprecated' },
-            ],
-            'x-immich-state': 'Deprecated',
-            deprecated: true,
             schema: {
+              example: '2024-01-01T00:00:00.000Z',
               format: 'date-time',
               pattern:
-                '^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$',
-              example: '2024-01-01T00:00:00.000Z',
+                '^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$',
               type: 'string',
             },
+            'x-immich-history': [
+              { state: 'Added', version: 'v1' },
+              { state: 'Stable', version: 'v2' },
+              { state: 'Deprecated', version: 'v3.2.0' },
+            ],
+            'x-immich-state': 'Deprecated',
           },
           example: '2024-01-01T00:00:00.000Z',
         }),
       createdBefore: z.iso
         .datetime({ offset: true })
         .regex(
-          /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+          /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
         )
         .exactOptional()
         .openapi({
           param: {
+            deprecated: true,
+            description: 'Filter by creation date (before)',
+            in: 'query',
             name: 'createdBefore',
             required: false,
-            in: 'query',
-            description: 'Filter by creation date (before)',
-            'x-immich-history': [
-              { version: 'v1', state: 'Added' },
-              { version: 'v2', state: 'Stable' },
-              { version: 'v3.2.0', state: 'Deprecated' },
-            ],
-            'x-immich-state': 'Deprecated',
-            deprecated: true,
             schema: {
+              example: '2024-01-01T00:00:00.000Z',
               format: 'date-time',
               pattern:
-                '^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$',
-              example: '2024-01-01T00:00:00.000Z',
+                '^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$',
               type: 'string',
             },
+            'x-immich-history': [
+              { state: 'Added', version: 'v1' },
+              { state: 'Stable', version: 'v2' },
+              { state: 'Deprecated', version: 'v3.2.0' },
+            ],
+            'x-immich-state': 'Deprecated',
           },
           example: '2024-01-01T00:00:00.000Z',
         }),
@@ -19079,18 +17549,18 @@ export const postSearchLargeAssetsRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            deprecated: true,
+            description: 'Filter by encoded status',
+            in: 'query',
             name: 'isEncoded',
             required: false,
-            in: 'query',
-            description: 'Filter by encoded status',
+            schema: { type: 'boolean' },
             'x-immich-history': [
-              { version: 'v1', state: 'Added' },
-              { version: 'v2', state: 'Stable' },
-              { version: 'v3.2.0', state: 'Deprecated' },
+              { state: 'Added', version: 'v1' },
+              { state: 'Stable', version: 'v2' },
+              { state: 'Deprecated', version: 'v3.2.0' },
             ],
             'x-immich-state': 'Deprecated',
-            deprecated: true,
-            schema: { type: 'boolean' },
           },
         }),
       isFavorite: z
@@ -19098,18 +17568,18 @@ export const postSearchLargeAssetsRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            deprecated: true,
+            description: 'Filter by favorite status',
+            in: 'query',
             name: 'isFavorite',
             required: false,
-            in: 'query',
-            description: 'Filter by favorite status',
+            schema: { type: 'boolean' },
             'x-immich-history': [
-              { version: 'v1', state: 'Added' },
-              { version: 'v2', state: 'Stable' },
-              { version: 'v3.2.0', state: 'Deprecated' },
+              { state: 'Added', version: 'v1' },
+              { state: 'Stable', version: 'v2' },
+              { state: 'Deprecated', version: 'v3.2.0' },
             ],
             'x-immich-state': 'Deprecated',
-            deprecated: true,
-            schema: { type: 'boolean' },
           },
         }),
       isMotion: z
@@ -19117,18 +17587,18 @@ export const postSearchLargeAssetsRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            deprecated: true,
+            description: 'Filter by motion photo status',
+            in: 'query',
             name: 'isMotion',
             required: false,
-            in: 'query',
-            description: 'Filter by motion photo status',
+            schema: { type: 'boolean' },
             'x-immich-history': [
-              { version: 'v1', state: 'Added' },
-              { version: 'v2', state: 'Stable' },
-              { version: 'v3.2.0', state: 'Deprecated' },
+              { state: 'Added', version: 'v1' },
+              { state: 'Stable', version: 'v2' },
+              { state: 'Deprecated', version: 'v3.2.0' },
             ],
             'x-immich-state': 'Deprecated',
-            deprecated: true,
-            schema: { type: 'boolean' },
           },
         }),
       isNotInAlbum: z
@@ -19136,18 +17606,18 @@ export const postSearchLargeAssetsRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            deprecated: true,
+            description: 'Filter assets not in any album',
+            in: 'query',
             name: 'isNotInAlbum',
             required: false,
-            in: 'query',
-            description: 'Filter assets not in any album',
+            schema: { type: 'boolean' },
             'x-immich-history': [
-              { version: 'v1', state: 'Added' },
-              { version: 'v2', state: 'Stable' },
-              { version: 'v3.2.0', state: 'Deprecated' },
+              { state: 'Added', version: 'v1' },
+              { state: 'Stable', version: 'v2' },
+              { state: 'Deprecated', version: 'v3.2.0' },
             ],
             'x-immich-state': 'Deprecated',
-            deprecated: true,
-            schema: { type: 'boolean' },
           },
         }),
       isOffline: z
@@ -19155,18 +17625,18 @@ export const postSearchLargeAssetsRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            deprecated: true,
+            description: 'Filter by offline status',
+            in: 'query',
             name: 'isOffline',
             required: false,
-            in: 'query',
-            description: 'Filter by offline status',
+            schema: { type: 'boolean' },
             'x-immich-history': [
-              { version: 'v1', state: 'Added' },
-              { version: 'v2', state: 'Stable' },
-              { version: 'v3.2.0', state: 'Deprecated' },
+              { state: 'Added', version: 'v1' },
+              { state: 'Stable', version: 'v2' },
+              { state: 'Deprecated', version: 'v3.2.0' },
             ],
             'x-immich-state': 'Deprecated',
-            deprecated: true,
-            schema: { type: 'boolean' },
           },
         }),
       lensModel: z
@@ -19175,18 +17645,18 @@ export const postSearchLargeAssetsRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            deprecated: true,
+            description: 'Filter by lens model',
+            in: 'query',
             name: 'lensModel',
             required: false,
-            in: 'query',
-            description: 'Filter by lens model',
+            schema: { type: ['string', 'null'] },
             'x-immich-history': [
-              { version: 'v1', state: 'Added' },
-              { version: 'v2', state: 'Stable' },
-              { version: 'v3.2.0', state: 'Deprecated' },
+              { state: 'Added', version: 'v1' },
+              { state: 'Stable', version: 'v2' },
+              { state: 'Deprecated', version: 'v3.2.0' },
             ],
             'x-immich-state': 'Deprecated',
-            deprecated: true,
-            schema: { type: 'string', nullable: true },
           },
         }),
       libraryId: ((schema) =>
@@ -19201,24 +17671,23 @@ export const postSearchLargeAssetsRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            deprecated: true,
+            description: 'Library ID to filter by',
+            in: 'query',
             name: 'libraryId',
             required: false,
-            in: 'query',
-            description: 'Library ID to filter by',
-            'x-immich-history': [
-              { version: 'v1', state: 'Added' },
-              { version: 'v2', state: 'Stable' },
-              { version: 'v3.2.0', state: 'Deprecated' },
-            ],
-            'x-immich-state': 'Deprecated',
-            deprecated: true,
             schema: {
-              type: 'string',
               format: 'uuid',
               pattern:
                 '^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$',
-              nullable: true,
+              type: ['string', 'null'],
             },
+            'x-immich-history': [
+              { state: 'Added', version: 'v1' },
+              { state: 'Stable', version: 'v2' },
+              { state: 'Deprecated', version: 'v3.2.0' },
+            ],
+            'x-immich-state': 'Deprecated',
           },
         }),
       make: z
@@ -19227,18 +17696,18 @@ export const postSearchLargeAssetsRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            deprecated: true,
+            description: 'Filter by camera make',
+            in: 'query',
             name: 'make',
             required: false,
-            in: 'query',
-            description: 'Filter by camera make',
+            schema: { type: ['string', 'null'] },
             'x-immich-history': [
-              { version: 'v1', state: 'Added' },
-              { version: 'v2', state: 'Stable' },
-              { version: 'v3.2.0', state: 'Deprecated' },
+              { state: 'Added', version: 'v1' },
+              { state: 'Stable', version: 'v2' },
+              { state: 'Deprecated', version: 'v3.2.0' },
             ],
             'x-immich-state': 'Deprecated',
-            deprecated: true,
-            schema: { type: 'string', nullable: true },
           },
         }),
       minFileSize: z
@@ -19254,11 +17723,11 @@ export const postSearchLargeAssetsRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            description: 'Minimum file size in bytes',
+            in: 'query',
             name: 'minFileSize',
             required: false,
-            in: 'query',
-            description: 'Minimum file size in bytes',
-            schema: { minimum: 0, maximum: 9007199254740991, type: 'integer' },
+            schema: { maximum: 9007199254740991, minimum: 0, type: 'integer' },
           },
         }),
       model: z
@@ -19267,18 +17736,18 @@ export const postSearchLargeAssetsRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            deprecated: true,
+            description: 'Filter by camera model',
+            in: 'query',
             name: 'model',
             required: false,
-            in: 'query',
-            description: 'Filter by camera model',
+            schema: { type: ['string', 'null'] },
             'x-immich-history': [
-              { version: 'v1', state: 'Added' },
-              { version: 'v2', state: 'Stable' },
-              { version: 'v3.2.0', state: 'Deprecated' },
+              { state: 'Added', version: 'v1' },
+              { state: 'Stable', version: 'v2' },
+              { state: 'Deprecated', version: 'v3.2.0' },
             ],
             'x-immich-state': 'Deprecated',
-            deprecated: true,
-            schema: { type: 'string', nullable: true },
           },
         }),
       ocr: z
@@ -19286,18 +17755,18 @@ export const postSearchLargeAssetsRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            deprecated: true,
+            description: 'Filter by OCR text content',
+            in: 'query',
             name: 'ocr',
             required: false,
-            in: 'query',
-            description: 'Filter by OCR text content',
+            schema: { type: 'string' },
             'x-immich-history': [
-              { version: 'v1', state: 'Added' },
-              { version: 'v2', state: 'Stable' },
-              { version: 'v3.2.0', state: 'Deprecated' },
+              { state: 'Added', version: 'v1' },
+              { state: 'Stable', version: 'v2' },
+              { state: 'Deprecated', version: 'v3.2.0' },
             ],
             'x-immich-state': 'Deprecated',
-            deprecated: true,
-            schema: { type: 'string' },
           },
         }),
       personIds: z
@@ -19314,26 +17783,26 @@ export const postSearchLargeAssetsRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            deprecated: true,
+            description: 'Filter by person IDs',
+            in: 'query',
             name: 'personIds',
             required: false,
-            in: 'query',
-            description: 'Filter by person IDs',
-            'x-immich-history': [
-              { version: 'v1', state: 'Added' },
-              { version: 'v2', state: 'Stable' },
-              { version: 'v3.2.0', state: 'Deprecated' },
-            ],
-            'x-immich-state': 'Deprecated',
-            deprecated: true,
             schema: {
-              type: 'array',
               items: {
-                type: 'string',
                 format: 'uuid',
                 pattern:
                   '^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$',
+                type: 'string',
               },
+              type: 'array',
             },
+            'x-immich-history': [
+              { state: 'Added', version: 'v1' },
+              { state: 'Stable', version: 'v2' },
+              { state: 'Deprecated', version: 'v3.2.0' },
+            ],
+            'x-immich-state': 'Deprecated',
           },
         }),
       rating: z
@@ -19354,29 +17823,29 @@ export const postSearchLargeAssetsRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            deprecated: true,
+            description: 'Filter by rating [1-5], or null for unrated',
+            in: 'query',
             name: 'rating',
             required: false,
-            in: 'query',
-            description: 'Filter by rating [1-5], or null for unrated',
+            schema: { maximum: 5, minimum: 1, type: ['integer', 'null'] },
             'x-immich-history': [
-              { version: 'v1', state: 'Added' },
-              { version: 'v2', state: 'Stable' },
+              { state: 'Added', version: 'v1' },
+              { state: 'Stable', version: 'v2' },
               {
-                version: 'v2.6.0',
-                state: 'Updated',
                 description:
                   'Using -1 as a rating is deprecated and will be removed in the next major version.',
+                state: 'Updated',
+                version: 'v2.6.0',
               },
               {
-                version: 'v3',
-                state: 'Updated',
                 description: 'Using -1 as a rating is no longer valid.',
+                state: 'Updated',
+                version: 'v3',
               },
-              { version: 'v3.2.0', state: 'Deprecated' },
+              { state: 'Deprecated', version: 'v3.2.0' },
             ],
             'x-immich-state': 'Deprecated',
-            deprecated: true,
-            schema: { type: 'integer', minimum: 1, maximum: 5, nullable: true },
           },
         }),
       size: z
@@ -19393,11 +17862,11 @@ export const postSearchLargeAssetsRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            description: 'Number of results to return',
+            in: 'query',
             name: 'size',
             required: false,
-            in: 'query',
-            description: 'Number of results to return',
-            schema: { minimum: 1, maximum: 1000, default: 250, type: 'integer' },
+            schema: { default: 250, maximum: 1000, minimum: 1, type: 'integer' },
           },
         }),
       state: z
@@ -19406,18 +17875,18 @@ export const postSearchLargeAssetsRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            deprecated: true,
+            description: 'Filter by state/province name',
+            in: 'query',
             name: 'state',
             required: false,
-            in: 'query',
-            description: 'Filter by state/province name',
+            schema: { type: ['string', 'null'] },
             'x-immich-history': [
-              { version: 'v1', state: 'Added' },
-              { version: 'v2', state: 'Stable' },
-              { version: 'v3.2.0', state: 'Deprecated' },
+              { state: 'Added', version: 'v1' },
+              { state: 'Stable', version: 'v2' },
+              { state: 'Deprecated', version: 'v3.2.0' },
             ],
             'x-immich-state': 'Deprecated',
-            deprecated: true,
-            schema: { type: 'string', nullable: true },
           },
         }),
       tagIds: z
@@ -19435,231 +17904,230 @@ export const postSearchLargeAssetsRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            deprecated: true,
+            description: 'Filter by tag IDs',
+            in: 'query',
             name: 'tagIds',
             required: false,
-            in: 'query',
-            description: 'Filter by tag IDs',
-            'x-immich-history': [
-              { version: 'v1', state: 'Added' },
-              { version: 'v2', state: 'Stable' },
-              { version: 'v3.2.0', state: 'Deprecated' },
-            ],
-            'x-immich-state': 'Deprecated',
-            deprecated: true,
             schema: {
-              type: 'array',
               items: {
-                type: 'string',
                 format: 'uuid',
                 pattern:
                   '^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$',
+                type: 'string',
               },
-              nullable: true,
+              type: ['array', 'null'],
             },
+            'x-immich-history': [
+              { state: 'Added', version: 'v1' },
+              { state: 'Stable', version: 'v2' },
+              { state: 'Deprecated', version: 'v3.2.0' },
+            ],
+            'x-immich-state': 'Deprecated',
           },
         }),
       takenAfter: z.iso
         .datetime({ offset: true })
         .regex(
-          /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+          /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
         )
         .exactOptional()
         .openapi({
           param: {
+            deprecated: true,
+            description: 'Filter by taken date (after)',
+            in: 'query',
             name: 'takenAfter',
             required: false,
-            in: 'query',
-            description: 'Filter by taken date (after)',
-            'x-immich-history': [
-              { version: 'v1', state: 'Added' },
-              { version: 'v2', state: 'Stable' },
-              { version: 'v3.2.0', state: 'Deprecated' },
-            ],
-            'x-immich-state': 'Deprecated',
-            deprecated: true,
             schema: {
+              example: '2024-01-01T00:00:00.000Z',
               format: 'date-time',
               pattern:
-                '^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$',
-              example: '2024-01-01T00:00:00.000Z',
+                '^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$',
               type: 'string',
             },
+            'x-immich-history': [
+              { state: 'Added', version: 'v1' },
+              { state: 'Stable', version: 'v2' },
+              { state: 'Deprecated', version: 'v3.2.0' },
+            ],
+            'x-immich-state': 'Deprecated',
           },
           example: '2024-01-01T00:00:00.000Z',
         }),
       takenBefore: z.iso
         .datetime({ offset: true })
         .regex(
-          /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+          /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
         )
         .exactOptional()
         .openapi({
           param: {
+            deprecated: true,
+            description: 'Filter by taken date (before)',
+            in: 'query',
             name: 'takenBefore',
             required: false,
-            in: 'query',
-            description: 'Filter by taken date (before)',
-            'x-immich-history': [
-              { version: 'v1', state: 'Added' },
-              { version: 'v2', state: 'Stable' },
-              { version: 'v3.2.0', state: 'Deprecated' },
-            ],
-            'x-immich-state': 'Deprecated',
-            deprecated: true,
             schema: {
+              example: '2024-01-01T00:00:00.000Z',
               format: 'date-time',
               pattern:
-                '^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$',
-              example: '2024-01-01T00:00:00.000Z',
+                '^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$',
               type: 'string',
             },
+            'x-immich-history': [
+              { state: 'Added', version: 'v1' },
+              { state: 'Stable', version: 'v2' },
+              { state: 'Deprecated', version: 'v3.2.0' },
+            ],
+            'x-immich-state': 'Deprecated',
           },
           example: '2024-01-01T00:00:00.000Z',
         }),
       trashedAfter: z.iso
         .datetime({ offset: true })
         .regex(
-          /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+          /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
         )
         .exactOptional()
         .openapi({
           param: {
+            deprecated: true,
+            description: 'Filter by trash date (after)',
+            in: 'query',
             name: 'trashedAfter',
             required: false,
-            in: 'query',
-            description: 'Filter by trash date (after)',
-            'x-immich-history': [
-              { version: 'v1', state: 'Added' },
-              { version: 'v2', state: 'Stable' },
-              { version: 'v3.2.0', state: 'Deprecated' },
-            ],
-            'x-immich-state': 'Deprecated',
-            deprecated: true,
             schema: {
+              example: '2024-01-01T00:00:00.000Z',
               format: 'date-time',
               pattern:
-                '^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$',
-              example: '2024-01-01T00:00:00.000Z',
+                '^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$',
               type: 'string',
             },
+            'x-immich-history': [
+              { state: 'Added', version: 'v1' },
+              { state: 'Stable', version: 'v2' },
+              { state: 'Deprecated', version: 'v3.2.0' },
+            ],
+            'x-immich-state': 'Deprecated',
           },
           example: '2024-01-01T00:00:00.000Z',
         }),
       trashedBefore: z.iso
         .datetime({ offset: true })
         .regex(
-          /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+          /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
         )
         .exactOptional()
         .openapi({
           param: {
+            deprecated: true,
+            description: 'Filter by trash date (before)',
+            in: 'query',
             name: 'trashedBefore',
             required: false,
-            in: 'query',
-            description: 'Filter by trash date (before)',
-            'x-immich-history': [
-              { version: 'v1', state: 'Added' },
-              { version: 'v2', state: 'Stable' },
-              { version: 'v3.2.0', state: 'Deprecated' },
-            ],
-            'x-immich-state': 'Deprecated',
-            deprecated: true,
             schema: {
+              example: '2024-01-01T00:00:00.000Z',
               format: 'date-time',
               pattern:
-                '^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$',
-              example: '2024-01-01T00:00:00.000Z',
+                '^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$',
               type: 'string',
             },
+            'x-immich-history': [
+              { state: 'Added', version: 'v1' },
+              { state: 'Stable', version: 'v2' },
+              { state: 'Deprecated', version: 'v3.2.0' },
+            ],
+            'x-immich-state': 'Deprecated',
           },
           example: '2024-01-01T00:00:00.000Z',
         }),
       type: AssetTypeEnumSchema.openapi({
         param: {
+          deprecated: true,
+          in: 'query',
           name: 'type',
           required: false,
-          in: 'query',
+          schema: { $ref: '#/components/schemas/AssetTypeEnum' },
           'x-immich-history': [
-            { version: 'v1', state: 'Added' },
-            { version: 'v2', state: 'Stable' },
-            { version: 'v3.2.0', state: 'Deprecated' },
+            { state: 'Added', version: 'v1' },
+            { state: 'Stable', version: 'v2' },
+            { state: 'Deprecated', version: 'v3.2.0' },
           ],
           'x-immich-state': 'Deprecated',
-          deprecated: true,
-          schema: { $ref: '#/components/schemas/AssetTypeEnum' },
         },
       }).exactOptional(),
       updatedAfter: z.iso
         .datetime({ offset: true })
         .regex(
-          /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+          /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
         )
         .exactOptional()
         .openapi({
           param: {
+            deprecated: true,
+            description: 'Filter by update date (after)',
+            in: 'query',
             name: 'updatedAfter',
             required: false,
-            in: 'query',
-            description: 'Filter by update date (after)',
-            'x-immich-history': [
-              { version: 'v1', state: 'Added' },
-              { version: 'v2', state: 'Stable' },
-              { version: 'v3.2.0', state: 'Deprecated' },
-            ],
-            'x-immich-state': 'Deprecated',
-            deprecated: true,
             schema: {
+              example: '2024-01-01T00:00:00.000Z',
               format: 'date-time',
               pattern:
-                '^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$',
-              example: '2024-01-01T00:00:00.000Z',
+                '^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$',
               type: 'string',
             },
+            'x-immich-history': [
+              { state: 'Added', version: 'v1' },
+              { state: 'Stable', version: 'v2' },
+              { state: 'Deprecated', version: 'v3.2.0' },
+            ],
+            'x-immich-state': 'Deprecated',
           },
           example: '2024-01-01T00:00:00.000Z',
         }),
       updatedBefore: z.iso
         .datetime({ offset: true })
         .regex(
-          /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+          /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
         )
         .exactOptional()
         .openapi({
           param: {
+            deprecated: true,
+            description: 'Filter by update date (before)',
+            in: 'query',
             name: 'updatedBefore',
             required: false,
-            in: 'query',
-            description: 'Filter by update date (before)',
-            'x-immich-history': [
-              { version: 'v1', state: 'Added' },
-              { version: 'v2', state: 'Stable' },
-              { version: 'v3.2.0', state: 'Deprecated' },
-            ],
-            'x-immich-state': 'Deprecated',
-            deprecated: true,
             schema: {
+              example: '2024-01-01T00:00:00.000Z',
               format: 'date-time',
               pattern:
-                '^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$',
-              example: '2024-01-01T00:00:00.000Z',
+                '^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$',
               type: 'string',
             },
+            'x-immich-history': [
+              { state: 'Added', version: 'v1' },
+              { state: 'Stable', version: 'v2' },
+              { state: 'Deprecated', version: 'v3.2.0' },
+            ],
+            'x-immich-state': 'Deprecated',
           },
           example: '2024-01-01T00:00:00.000Z',
         }),
       visibility: AssetVisibilitySchema.openapi({
         param: {
+          deprecated: true,
+          in: 'query',
           name: 'visibility',
           required: false,
-          in: 'query',
+          schema: { $ref: '#/components/schemas/AssetVisibility' },
           'x-immich-history': [
-            { version: 'v1', state: 'Added' },
-            { version: 'v2', state: 'Stable' },
-            { version: 'v3.2.0', state: 'Deprecated' },
+            { state: 'Added', version: 'v1' },
+            { state: 'Stable', version: 'v2' },
+            { state: 'Deprecated', version: 'v3.2.0' },
           ],
           'x-immich-state': 'Deprecated',
-          deprecated: true,
-          schema: { $ref: '#/components/schemas/AssetVisibility' },
         },
       }).exactOptional(),
       withDeleted: z
@@ -19667,18 +18135,18 @@ export const postSearchLargeAssetsRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            deprecated: true,
+            description: 'Include deleted assets',
+            in: 'query',
             name: 'withDeleted',
             required: false,
-            in: 'query',
-            description: 'Include deleted assets',
+            schema: { type: 'boolean' },
             'x-immich-history': [
-              { version: 'v1', state: 'Added' },
-              { version: 'v2', state: 'Stable' },
-              { version: 'v3.2.0', state: 'Deprecated' },
+              { state: 'Added', version: 'v1' },
+              { state: 'Stable', version: 'v2' },
+              { state: 'Deprecated', version: 'v3.2.0' },
             ],
             'x-immich-state': 'Deprecated',
-            deprecated: true,
-            schema: { type: 'boolean' },
           },
         }),
       withExif: z
@@ -19686,10 +18154,10 @@ export const postSearchLargeAssetsRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            description: 'Include EXIF data in response',
+            in: 'query',
             name: 'withExif',
             required: false,
-            in: 'query',
-            description: 'Include EXIF data in response',
             schema: { type: 'boolean' },
           },
         }),
@@ -19718,13 +18186,13 @@ export const postSearchMetadataRoute = createRoute({
         .string()
         .exactOptional()
         .openapi({
-          param: { name: 'key', required: false, in: 'query', schema: { type: 'string' } },
+          param: { in: 'query', name: 'key', required: false, schema: { type: 'string' } },
         }),
       slug: z
         .string()
         .exactOptional()
         .openapi({
-          param: { name: 'slug', required: false, in: 'query', schema: { type: 'string' } },
+          param: { in: 'query', name: 'slug', required: false, schema: { type: 'string' } },
         }),
     }),
     body: { content: { 'application/json': { schema: MetadataSearchDtoSchema } }, required: true },
@@ -19748,10 +18216,10 @@ export const getSearchPersonRoute = createRoute({
         .string()
         .openapi({
           param: {
+            description: 'Person name to search for',
+            in: 'query',
             name: 'name',
             required: true,
-            in: 'query',
-            description: 'Person name to search for',
             schema: { type: 'string' },
           },
         }),
@@ -19760,10 +18228,10 @@ export const getSearchPersonRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            description: 'Include hidden people',
+            in: 'query',
             name: 'withHidden',
             required: false,
-            in: 'query',
-            description: 'Include hidden people',
             schema: { type: 'boolean' },
           },
         }),
@@ -19791,10 +18259,10 @@ export const getSearchPlacesRoute = createRoute({
         .string()
         .openapi({
           param: {
+            description: 'Place name to search for',
+            in: 'query',
             name: 'name',
             required: true,
-            in: 'query',
-            description: 'Place name to search for',
             schema: { type: 'string' },
           },
         }),
@@ -19883,10 +18351,10 @@ export const getSearchSuggestionsRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            description: 'Filter by country',
+            in: 'query',
             name: 'country',
             required: false,
-            in: 'query',
-            description: 'Filter by country',
             schema: { type: 'string' },
           },
         }),
@@ -19895,16 +18363,16 @@ export const getSearchSuggestionsRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            description: 'Include null values in suggestions',
+            in: 'query',
             name: 'includeNull',
             required: false,
-            in: 'query',
-            description: 'Include null values in suggestions',
+            schema: { type: 'boolean' },
             'x-immich-history': [
-              { version: 'v1.111.0', state: 'Added' },
-              { version: 'v2', state: 'Stable' },
+              { state: 'Added', version: 'v1.111.0' },
+              { state: 'Stable', version: 'v2' },
             ],
             'x-immich-state': 'Stable',
-            schema: { type: 'boolean' },
           },
         }),
       lensModel: z
@@ -19912,10 +18380,10 @@ export const getSearchSuggestionsRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            description: 'Filter by lens model',
+            in: 'query',
             name: 'lensModel',
             required: false,
-            in: 'query',
-            description: 'Filter by lens model',
             schema: { type: 'string' },
           },
         }),
@@ -19924,10 +18392,10 @@ export const getSearchSuggestionsRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            description: 'Filter by camera make',
+            in: 'query',
             name: 'make',
             required: false,
-            in: 'query',
-            description: 'Filter by camera make',
             schema: { type: 'string' },
           },
         }),
@@ -19936,10 +18404,10 @@ export const getSearchSuggestionsRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            description: 'Filter by camera model',
+            in: 'query',
             name: 'model',
             required: false,
-            in: 'query',
-            description: 'Filter by camera model',
             schema: { type: 'string' },
           },
         }),
@@ -19948,18 +18416,18 @@ export const getSearchSuggestionsRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            description: 'Filter by state/province',
+            in: 'query',
             name: 'state',
             required: false,
-            in: 'query',
-            description: 'Filter by state/province',
             schema: { type: 'string' },
           },
         }),
       type: SearchSuggestionTypeSchema.openapi({
         param: {
+          in: 'query',
           name: 'type',
           required: true,
-          in: 'query',
           schema: { $ref: '#/components/schemas/SearchSuggestionType' },
         },
       }),
@@ -20236,9 +18704,9 @@ export const putSessionsIdRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -20272,9 +18740,9 @@ export const deleteSessionsIdRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -20305,9 +18773,9 @@ export const postSessionsIdLockRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -20339,10 +18807,10 @@ export const getSharedLinksRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            description: 'Filter by album ID',
+            in: 'query',
             name: 'albumId',
             required: false,
-            in: 'query',
-            description: 'Filter by album ID',
             schema: {
               format: 'uuid',
               pattern:
@@ -20359,17 +18827,17 @@ export const getSharedLinksRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            description: 'Filter by shared link ID',
+            in: 'query',
             name: 'id',
             required: false,
-            in: 'query',
-            description: 'Filter by shared link ID',
-            'x-immich-history': [{ version: 'v2.5.0', state: 'Added' }],
             schema: {
               format: 'uuid',
               pattern:
                 '^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$',
               type: 'string',
             },
+            'x-immich-history': [{ state: 'Added', version: 'v2.5.0' }],
           },
         }),
     }),
@@ -20418,13 +18886,13 @@ export const postSharedLinksLoginRoute = createRoute({
         .string()
         .exactOptional()
         .openapi({
-          param: { name: 'key', required: false, in: 'query', schema: { type: 'string' } },
+          param: { in: 'query', name: 'key', required: false, schema: { type: 'string' } },
         }),
       slug: z
         .string()
         .exactOptional()
         .openapi({
-          param: { name: 'slug', required: false, in: 'query', schema: { type: 'string' } },
+          param: { in: 'query', name: 'slug', required: false, schema: { type: 'string' } },
         }),
     }),
     body: { content: { 'application/json': { schema: SharedLinkLoginDtoSchema } }, required: true },
@@ -20451,13 +18919,13 @@ export const getSharedLinksMeRoute = createRoute({
         .string()
         .exactOptional()
         .openapi({
-          param: { name: 'key', required: false, in: 'query', schema: { type: 'string' } },
+          param: { in: 'query', name: 'key', required: false, schema: { type: 'string' } },
         }),
       slug: z
         .string()
         .exactOptional()
         .openapi({
-          param: { name: 'slug', required: false, in: 'query', schema: { type: 'string' } },
+          param: { in: 'query', name: 'slug', required: false, schema: { type: 'string' } },
         }),
     }),
   },
@@ -20486,9 +18954,9 @@ export const getSharedLinksIdRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -20524,9 +18992,9 @@ export const deleteSharedLinksIdRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -20557,9 +19025,9 @@ export const patchSharedLinksIdRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -20597,9 +19065,9 @@ export const putSharedLinksIdAssetsRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -20637,9 +19105,9 @@ export const deleteSharedLinksIdAssetsRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -20677,10 +19145,10 @@ export const getStacksRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            description: 'Filter by primary asset ID',
+            in: 'query',
             name: 'primaryAssetId',
             required: false,
-            in: 'query',
-            description: 'Filter by primary asset ID',
             schema: {
               format: 'uuid',
               pattern:
@@ -20747,9 +19215,9 @@ export const getStacksIdRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -20782,9 +19250,9 @@ export const putStacksIdRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -20818,9 +19286,9 @@ export const deleteStacksIdRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -20851,9 +19319,9 @@ export const deleteStacksIdAssetsAssetIdRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'assetId',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -20869,9 +19337,9 @@ export const deleteStacksIdAssetsAssetIdRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -20994,7 +19462,7 @@ export const getSystemConfigDefaultsRoute = createRoute({
 export const getSystemConfigStorageTemplateOptionsRoute = createRoute({
   method: 'get',
   path: '/system-config/storage-template-options',
-  tags: ['System config'],
+  tags: ['System config', 'Deprecated'],
   summary: 'Get storage template options',
   description: 'Retrieve exemplary storage template options.',
   operationId: 'getStorageTemplateOptions',
@@ -21004,6 +19472,7 @@ export const getSystemConfigStorageTemplateOptionsRoute = createRoute({
       content: { 'application/json': { schema: SystemConfigTemplateStorageOptionDtoSchema } },
     },
   },
+  deprecated: true,
   security: [{ bearer: [] }, { cookie: [] }, { api_key: [] }],
 })
 
@@ -21158,9 +19627,9 @@ export const getTagsIdRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -21193,9 +19662,9 @@ export const putTagsIdRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -21229,9 +19698,9 @@ export const deleteTagsIdRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -21262,9 +19731,9 @@ export const putTagsIdAssetsRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -21301,9 +19770,9 @@ export const deleteTagsIdAssetsRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -21341,10 +19810,10 @@ export const getTimelineBucketRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            description: 'Filter assets belonging to a specific album',
+            in: 'query',
             name: 'albumId',
             required: false,
-            in: 'query',
-            description: 'Filter assets belonging to a specific album',
             schema: {
               format: 'uuid',
               pattern:
@@ -21358,10 +19827,10 @@ export const getTimelineBucketRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            description: 'Bounding box coordinates as west,south,east,north (WGS84)',
+            in: 'query',
             name: 'bbox',
             required: false,
-            in: 'query',
-            description: 'Bounding box coordinates as west,south,east,north (WGS84)',
             schema: { example: '11.075683,49.416711,11.117589,49.454875', type: 'string' },
           },
           example: '11.075683,49.416711,11.117589,49.454875',
@@ -21371,11 +19840,11 @@ export const getTimelineBucketRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
-            name: 'isFavorite',
-            required: false,
-            in: 'query',
             description:
               'Filter by favorite status (true for favorites only, false for non-favorites only)',
+            in: 'query',
+            name: 'isFavorite',
+            required: false,
             schema: { type: 'boolean' },
           },
         }),
@@ -21384,11 +19853,11 @@ export const getTimelineBucketRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
-            name: 'isTrashed',
-            required: false,
-            in: 'query',
             description:
               'Filter by trash status (true for trashed assets only, false for non-trashed only)',
+            in: 'query',
+            name: 'isTrashed',
+            required: false,
             schema: { type: 'boolean' },
           },
         }),
@@ -21396,25 +19865,25 @@ export const getTimelineBucketRoute = createRoute({
         .string()
         .exactOptional()
         .openapi({
-          param: { name: 'key', required: false, in: 'query', schema: { type: 'string' } },
+          param: { in: 'query', name: 'key', required: false, schema: { type: 'string' } },
         }),
       order: AssetOrderSchema.openapi({
         param: {
-          name: 'order',
-          required: false,
-          in: 'query',
           description:
             'Sort order for assets within time buckets (ASC for oldest first, DESC for newest first)',
+          in: 'query',
+          name: 'order',
+          required: false,
           schema: { $ref: '#/components/schemas/AssetOrder' },
         },
       }).exactOptional(),
       orderBy: AssetOrderBySchema.openapi({
         param: {
-          name: 'orderBy',
-          required: false,
-          in: 'query',
           description:
             'Date to group and order assets by (takenAt for date taken, createdAt for date added to Immich)',
+          in: 'query',
+          name: 'orderBy',
+          required: false,
           schema: { $ref: '#/components/schemas/AssetOrderBy' },
         },
       }).exactOptional(),
@@ -21426,10 +19895,10 @@ export const getTimelineBucketRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            description: 'Filter assets containing a specific person (face recognition)',
+            in: 'query',
             name: 'personId',
             required: false,
-            in: 'query',
-            description: 'Filter assets containing a specific person (face recognition)',
             schema: {
               format: 'uuid',
               pattern:
@@ -21442,7 +19911,7 @@ export const getTimelineBucketRoute = createRoute({
         .string()
         .exactOptional()
         .openapi({
-          param: { name: 'slug', required: false, in: 'query', schema: { type: 'string' } },
+          param: { in: 'query', name: 'slug', required: false, schema: { type: 'string' } },
         }),
       tagId: z
         .uuid()
@@ -21452,10 +19921,10 @@ export const getTimelineBucketRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            description: 'Filter assets with a specific tag',
+            in: 'query',
             name: 'tagId',
             required: false,
-            in: 'query',
-            description: 'Filter assets with a specific tag',
             schema: {
               format: 'uuid',
               pattern:
@@ -21468,10 +19937,10 @@ export const getTimelineBucketRoute = createRoute({
         .string()
         .openapi({
           param: {
+            description: 'Time bucket identifier in YYYY-MM-DDT00:00:00.000Z format',
+            in: 'query',
             name: 'timeBucket',
             required: true,
-            in: 'query',
-            description: 'Time bucket identifier in YYYY-MM-DDT00:00:00.000Z format',
             schema: { example: '2024-01-01T00:00:00.000Z', type: 'string' },
           },
           example: '2024-01-01T00:00:00.000Z',
@@ -21484,10 +19953,10 @@ export const getTimelineBucketRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            description: 'Filter assets by specific user ID',
+            in: 'query',
             name: 'userId',
             required: false,
-            in: 'query',
-            description: 'Filter assets by specific user ID',
             schema: {
               format: 'uuid',
               pattern:
@@ -21498,10 +19967,10 @@ export const getTimelineBucketRoute = createRoute({
         }),
       visibility: AssetVisibilitySchema.openapi({
         param: {
+          description: 'Filter by asset visibility status (ARCHIVE, TIMELINE, HIDDEN, LOCKED)',
+          in: 'query',
           name: 'visibility',
           required: false,
-          in: 'query',
-          description: 'Filter by asset visibility status (ARCHIVE, TIMELINE, HIDDEN, LOCKED)',
           schema: { $ref: '#/components/schemas/AssetVisibility' },
         },
       }).exactOptional(),
@@ -21510,10 +19979,10 @@ export const getTimelineBucketRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            description: 'Include location data in the response',
+            in: 'query',
             name: 'withCoordinates',
             required: false,
-            in: 'query',
-            description: 'Include location data in the response',
             schema: { type: 'boolean' },
           },
         }),
@@ -21522,10 +19991,10 @@ export const getTimelineBucketRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            description: 'Include assets shared by partners',
+            in: 'query',
             name: 'withPartners',
             required: false,
-            in: 'query',
-            description: 'Include assets shared by partners',
             schema: { type: 'boolean' },
           },
         }),
@@ -21534,11 +20003,11 @@ export const getTimelineBucketRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
-            name: 'withStacked',
-            required: false,
-            in: 'query',
             description:
               'Include stacked assets in the response. When true, only primary assets from stacks are returned.',
+            in: 'query',
+            name: 'withStacked',
+            required: false,
             schema: { type: 'boolean' },
           },
         }),
@@ -21570,10 +20039,10 @@ export const getTimelineBucketsRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            description: 'Filter assets belonging to a specific album',
+            in: 'query',
             name: 'albumId',
             required: false,
-            in: 'query',
-            description: 'Filter assets belonging to a specific album',
             schema: {
               format: 'uuid',
               pattern:
@@ -21587,10 +20056,10 @@ export const getTimelineBucketsRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            description: 'Bounding box coordinates as west,south,east,north (WGS84)',
+            in: 'query',
             name: 'bbox',
             required: false,
-            in: 'query',
-            description: 'Bounding box coordinates as west,south,east,north (WGS84)',
             schema: { example: '11.075683,49.416711,11.117589,49.454875', type: 'string' },
           },
           example: '11.075683,49.416711,11.117589,49.454875',
@@ -21600,11 +20069,11 @@ export const getTimelineBucketsRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
-            name: 'isFavorite',
-            required: false,
-            in: 'query',
             description:
               'Filter by favorite status (true for favorites only, false for non-favorites only)',
+            in: 'query',
+            name: 'isFavorite',
+            required: false,
             schema: { type: 'boolean' },
           },
         }),
@@ -21613,11 +20082,11 @@ export const getTimelineBucketsRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
-            name: 'isTrashed',
-            required: false,
-            in: 'query',
             description:
               'Filter by trash status (true for trashed assets only, false for non-trashed only)',
+            in: 'query',
+            name: 'isTrashed',
+            required: false,
             schema: { type: 'boolean' },
           },
         }),
@@ -21625,25 +20094,25 @@ export const getTimelineBucketsRoute = createRoute({
         .string()
         .exactOptional()
         .openapi({
-          param: { name: 'key', required: false, in: 'query', schema: { type: 'string' } },
+          param: { in: 'query', name: 'key', required: false, schema: { type: 'string' } },
         }),
       order: AssetOrderSchema.openapi({
         param: {
-          name: 'order',
-          required: false,
-          in: 'query',
           description:
             'Sort order for assets within time buckets (ASC for oldest first, DESC for newest first)',
+          in: 'query',
+          name: 'order',
+          required: false,
           schema: { $ref: '#/components/schemas/AssetOrder' },
         },
       }).exactOptional(),
       orderBy: AssetOrderBySchema.openapi({
         param: {
-          name: 'orderBy',
-          required: false,
-          in: 'query',
           description:
             'Date to group and order assets by (takenAt for date taken, createdAt for date added to Immich)',
+          in: 'query',
+          name: 'orderBy',
+          required: false,
           schema: { $ref: '#/components/schemas/AssetOrderBy' },
         },
       }).exactOptional(),
@@ -21655,10 +20124,10 @@ export const getTimelineBucketsRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            description: 'Filter assets containing a specific person (face recognition)',
+            in: 'query',
             name: 'personId',
             required: false,
-            in: 'query',
-            description: 'Filter assets containing a specific person (face recognition)',
             schema: {
               format: 'uuid',
               pattern:
@@ -21671,7 +20140,7 @@ export const getTimelineBucketsRoute = createRoute({
         .string()
         .exactOptional()
         .openapi({
-          param: { name: 'slug', required: false, in: 'query', schema: { type: 'string' } },
+          param: { in: 'query', name: 'slug', required: false, schema: { type: 'string' } },
         }),
       tagId: z
         .uuid()
@@ -21681,10 +20150,10 @@ export const getTimelineBucketsRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            description: 'Filter assets with a specific tag',
+            in: 'query',
             name: 'tagId',
             required: false,
-            in: 'query',
-            description: 'Filter assets with a specific tag',
             schema: {
               format: 'uuid',
               pattern:
@@ -21701,10 +20170,10 @@ export const getTimelineBucketsRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            description: 'Filter assets by specific user ID',
+            in: 'query',
             name: 'userId',
             required: false,
-            in: 'query',
-            description: 'Filter assets by specific user ID',
             schema: {
               format: 'uuid',
               pattern:
@@ -21715,10 +20184,10 @@ export const getTimelineBucketsRoute = createRoute({
         }),
       visibility: AssetVisibilitySchema.openapi({
         param: {
+          description: 'Filter by asset visibility status (ARCHIVE, TIMELINE, HIDDEN, LOCKED)',
+          in: 'query',
           name: 'visibility',
           required: false,
-          in: 'query',
-          description: 'Filter by asset visibility status (ARCHIVE, TIMELINE, HIDDEN, LOCKED)',
           schema: { $ref: '#/components/schemas/AssetVisibility' },
         },
       }).exactOptional(),
@@ -21727,10 +20196,10 @@ export const getTimelineBucketsRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            description: 'Include location data in the response',
+            in: 'query',
             name: 'withCoordinates',
             required: false,
-            in: 'query',
-            description: 'Include location data in the response',
             schema: { type: 'boolean' },
           },
         }),
@@ -21739,10 +20208,10 @@ export const getTimelineBucketsRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            description: 'Include assets shared by partners',
+            in: 'query',
             name: 'withPartners',
             required: false,
-            in: 'query',
-            description: 'Include assets shared by partners',
             schema: { type: 'boolean' },
           },
         }),
@@ -21751,11 +20220,11 @@ export const getTimelineBucketsRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
-            name: 'withStacked',
-            required: false,
-            in: 'query',
             description:
               'Include stacked assets in the response. When true, only primary assets from stacks are returned.',
+            in: 'query',
+            name: 'withStacked',
+            required: false,
             schema: { type: 'boolean' },
           },
         }),
@@ -21880,15 +20349,15 @@ export const getUsersMeCalendarHeatmapRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            description: 'Start date in UTC',
+            in: 'query',
             name: 'from',
             required: false,
-            in: 'query',
-            description: 'Start date in UTC',
             schema: {
+              example: '2024-01-01',
               format: 'date',
               pattern:
                 '^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$',
-              example: '2024-01-01',
               type: 'string',
             },
           },
@@ -21902,15 +20371,15 @@ export const getUsersMeCalendarHeatmapRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            description: 'End date in UTC',
+            in: 'query',
             name: 'to',
             required: false,
-            in: 'query',
-            description: 'End date in UTC',
             schema: {
+              example: '2024-01-01',
               format: 'date',
               pattern:
                 '^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$',
-              example: '2024-01-01',
               type: 'string',
             },
           },
@@ -21922,9 +20391,9 @@ export const getUsersMeCalendarHeatmapRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            in: 'query',
             name: 'type',
             required: false,
-            in: 'query',
             schema: {
               description: 'Type of calendar heatmap',
               enum: ['Upload', 'Taken'],
@@ -22119,9 +20588,9 @@ export const getUsersIdRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -22154,9 +20623,9 @@ export const getUsersIdProfileImageRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -22192,7 +20661,7 @@ export const getViewFolderRoute = createRoute({
       path: z
         .string()
         .openapi({
-          param: { name: 'path', required: true, in: 'query', schema: { type: 'string' } },
+          param: { in: 'query', name: 'path', required: true, schema: { type: 'string' } },
         }),
     }),
   },
@@ -22232,10 +20701,10 @@ export const getWorkflowsRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            description: 'Workflow description',
+            in: 'query',
             name: 'description',
             required: false,
-            in: 'query',
-            description: 'Workflow description',
             schema: { type: 'string' },
           },
         }),
@@ -22244,10 +20713,10 @@ export const getWorkflowsRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            description: 'Workflow enabled',
+            in: 'query',
             name: 'enabled',
             required: false,
-            in: 'query',
-            description: 'Workflow enabled',
             schema: { type: 'boolean' },
           },
         }),
@@ -22259,10 +20728,10 @@ export const getWorkflowsRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            description: 'Workflow ID',
+            in: 'query',
             name: 'id',
             required: false,
-            in: 'query',
-            description: 'Workflow ID',
             schema: {
               format: 'uuid',
               pattern:
@@ -22276,10 +20745,10 @@ export const getWorkflowsRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            description: 'Workflow logs run results',
+            in: 'query',
             name: 'logging',
             required: false,
-            in: 'query',
-            description: 'Workflow logs run results',
             schema: { type: 'boolean' },
           },
         }),
@@ -22288,19 +20757,19 @@ export const getWorkflowsRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            description: 'Workflow name',
+            in: 'query',
             name: 'name',
             required: false,
-            in: 'query',
-            description: 'Workflow name',
             schema: { type: 'string' },
           },
         }),
       trigger: WorkflowTriggerSchema.openapi({
         param: {
+          description: 'Workflow trigger type',
+          in: 'query',
           name: 'trigger',
           required: false,
-          in: 'query',
-          description: 'Workflow trigger type',
           schema: { $ref: '#/components/schemas/WorkflowTrigger' },
         },
       }).exactOptional(),
@@ -22367,9 +20836,9 @@ export const getWorkflowsIdRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -22406,9 +20875,9 @@ export const putWorkflowsIdRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -22445,9 +20914,9 @@ export const deleteWorkflowsIdRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -22474,20 +20943,20 @@ export const getWorkflowsIdLogsRoute = createRoute({
       before: z.iso
         .datetime({ offset: true })
         .regex(
-          /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
+          /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|([+-](?:[01]\d|2[0-3]):[0-5]\d)))$/,
         )
         .exactOptional()
         .openapi({
           param: {
+            description: 'Filter by runs before a date/time',
+            in: 'query',
             name: 'before',
             required: false,
-            in: 'query',
-            description: 'Filter by runs before a date/time',
             schema: {
+              example: '2024-01-01T00:00:00.000Z',
               format: 'date-time',
               pattern:
-                '^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$',
-              example: '2024-01-01T00:00:00.000Z',
+                '^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$',
               type: 'string',
             },
           },
@@ -22501,31 +20970,30 @@ export const getWorkflowsIdLogsRoute = createRoute({
             (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
               ? Number(val)
               : val,
-          z.int().positive().max(9007199254740991),
+          z.int().gt(0).max(9007199254740991),
         )
         .default(50)
         .exactOptional()
         .openapi({
           param: {
+            description: 'Maximum number of logs',
+            in: 'query',
             name: 'limit',
             required: false,
-            in: 'query',
-            description: 'Maximum number of logs',
             schema: {
-              maximum: 9007199254740991,
-              exclusiveMinimum: true,
               default: 50,
+              exclusiveMinimum: 0,
+              maximum: 9007199254740991,
               type: 'integer',
-              minimum: 0,
             },
           },
         }),
       result: WorkflowResultSchema.openapi({
         param: {
+          description: 'Filter by run result',
+          in: 'query',
           name: 'result',
           required: false,
-          in: 'query',
-          description: 'Filter by run result',
           schema: { $ref: '#/components/schemas/WorkflowResult' },
         },
       }).exactOptional(),
@@ -22538,9 +21006,9 @@ export const getWorkflowsIdLogsRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:
@@ -22576,9 +21044,9 @@ export const getWorkflowsIdShareRoute = createRoute({
         )
         .openapi({
           param: {
+            in: 'path',
             name: 'id',
             required: true,
-            in: 'path',
             schema: {
               format: 'uuid',
               pattern:

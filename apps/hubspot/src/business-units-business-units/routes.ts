@@ -149,11 +149,14 @@ const Oauth2SecurityScheme = {
       scopes: { 'business_units_view.read': '' },
     },
   },
+  'x-hubspot-app-availability': {
+    'business_units_view.read': {
+      portal: ['public', 'private'],
+      user: ['public', 'private'],
+      developer: false,
+    },
+  },
 }
-
-const PrivateAppsSecurityScheme = { type: 'apiKey', name: 'private-app', in: 'header' }
-
-const PrivateAppsLegacySecurityScheme = { type: 'apiKey', name: 'private-app-legacy', in: 'header' }
 
 export const getBusinessUnitsPublic202609BusinessUnitsUserUserIdRoute = createRoute({
   method: 'get',

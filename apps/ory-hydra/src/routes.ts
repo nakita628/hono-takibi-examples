@@ -1,36 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const VerifiableCredentialProofSchema = z
-  .object({ jwt: z.string().exactOptional(), proof_type: z.string().exactOptional() })
-  .openapi({
-    title: 'VerifiableCredentialProof contains the proof of a verifiable credential.',
-    required: [],
-  })
-  .openapi('VerifiableCredentialProof')
-
-const CreateVerifiableCredentialRequestBodySchema = z
-  .object({
-    format: z.string().exactOptional(),
-    proof: VerifiableCredentialProofSchema.exactOptional(),
-    types: z.array(z.string()).exactOptional(),
-  })
-  .openapi({
-    title:
-      'CreateVerifiableCredentialRequestBody contains the request body to request a verifiable credential.',
-    required: [],
-  })
-  .openapi('CreateVerifiableCredentialRequestBody')
-
-const DefaultErrorSchema = z
-  .any()
-  .openapi({
-    description:
-      'From https://go.dev/wiki/CodeReviewComments#receiver-type:\n> Can function or methods, either concurrently or when called from this method, be mutating the receiver? A value type creates a copy of the receiver when the method is invoked, so outside updates will not be applied to this receiver. If changes must be visible in the original receiver, the receiver must be a pointer.\n> If the receiver is a struct, array or slice and any of its elements is a pointer to something that might be mutating,\n> prefer a pointer receiver, as it will make the intention clearer to the reader.\n> Don’t mix receiver types. Choose either pointers or struct types for all available methods.',
-    title:
-      'DefaultError is not safe to shallow copy because it contains\nfields which are not value types, e.g. maps.\nA shallow copy would inadvertently share these underlying fields,\nleading to incorrect behavior and data races in a concurrent context.\nConsequently, all methods take the type by pointer and not by value.',
-  })
-  .openapi('DefaultError')
-
 const NullDurationSchema = z
   .string()
   .regex(/^([0-9]+([.][0-9]+)?(ns|us|µs|ms|s|m|h))+$/)
@@ -454,10 +423,248 @@ const OAuth2ClientSchema = z
   })
   .openapi('OAuth2Client')
 
+const OAuth2ConsentRequestOpenIDConnectContextSchema = z
+  .object({
+    acr_values: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'ACRValues is the Authentication AuthorizationContext Class Reference requested in the OAuth 2.0 Authorization request.\nIt is a parameter defined by OpenID Connect and expresses which level of authentication (e.g. 2FA) is required.\n\nOpenID Connect defines it as follows:\n> Requested Authentication AuthorizationContext Class Reference values. Space-separated string that specifies the acr values\nthat the Authorization Server is being requested to use for processing this Authentication Request, with the\nvalues appearing in order of preference. The Authentication AuthorizationContext Class satisfied by the authentication\nperformed is returned as the acr Claim Value, as specified in Section 2. The acr Claim is requested as a\nVoluntary Claim by this parameter.',
+      }),
+    display: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Display is a string value that specifies how the Authorization Server displays the authentication and consent user interface pages to the End-User.\nThe defined values are:\npage: The Authorization Server SHOULD display the authentication and consent UI consistent with a full User Agent page view. If the display parameter is not specified, this is the default display mode.\npopup: The Authorization Server SHOULD display the authentication and consent UI consistent with a popup User Agent window. The popup User Agent window should be of an appropriate size for a login-focused dialog and should not obscure the entire window that it is popping up over.\ntouch: The Authorization Server SHOULD display the authentication and consent UI consistent with a device that leverages a touch interface.\nwap: The Authorization Server SHOULD display the authentication and consent UI consistent with a "feature phone" type display.\n\nThe Authorization Server MAY also attempt to detect the capabilities of the User Agent and present an appropriate display.',
+      }),
+    id_token_hint_claims: z
+      .record(z.string(), z.any())
+      .exactOptional()
+      .openapi({
+        description:
+          "IDTokenHintClaims are the claims of the ID Token previously issued by the Authorization Server being passed as a hint about the\nEnd-User's current or past authenticated session with the Client.",
+      }),
+    login_hint: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'LoginHint hints about the login identifier the End-User might use to log in (if necessary).\nThis hint can be used by an RP if it first asks the End-User for their e-mail address (or other identifier)\nand then wants to pass that value as a hint to the discovered authorization service. This value MAY also be a\nphone number in the format specified for the phone_number Claim. The use of this parameter is optional.',
+      }),
+    ui_locales: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'UILocales is the End-User\'id preferred languages and scripts for the user interface, represented as a\nspace-separated list of BCP47 [RFC5646] language tag values, ordered by preference. For instance, the value\n"fr-CA fr en" represents a preference for French as spoken in Canada, then French (without a region designation),\nfollowed by English (without a region designation). An error SHOULD NOT result if some or all of the requested\nlocales are not supported by the OpenID Provider.',
+      }),
+  })
+  .openapi({
+    title: 'Contains optional information about the OpenID Connect request.',
+    required: [],
+  })
+  .openapi('OAuth2ConsentRequestOpenIDConnectContext')
+
+const OAuth2ConsentRequestSchema = z
+  .object({
+    acr: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'ACR represents the Authentication AuthorizationContext Class Reference value for this authentication session. You can use it\nto express that, for example, a user authenticated using two factor authentication.',
+      }),
+    amr: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'AMR is the Authentication Methods References value for this\nauthentication session. You can use it to specify the method a user used to\nauthenticate. For example, if the acr indicates a user used two factor\nauthentication, the amr can express they used a software-secured key.',
+      }),
+    challenge: z
+      .string()
+      .openapi({ description: 'Challenge is used to retrieve/accept/deny the consent request.' }),
+    client: OAuth2ClientSchema.exactOptional(),
+    consent_request_id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'ConsentRequestID is the ID of the consent request.' }),
+    context: JSONRawMessageSchema.exactOptional(),
+    login_challenge: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'LoginChallenge is the login challenge this consent challenge belongs to. It can be used to associate\na login and consent request in the login & consent app.',
+      }),
+    login_session_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'LoginSessionID is the login session ID. If the user-agent reuses a login session (via cookie / remember flag)\nthis ID will remain the same. If the user-agent did not have an existing authentication session (e.g. remember is false)\nthis will be a new random value. This value is used as the "sid" parameter in the ID Token and in OIDC Front-/Back-\nchannel logout. It\'s value can generally be used to associate consecutive login requests by a certain user.',
+      }),
+    oidc_context: OAuth2ConsentRequestOpenIDConnectContextSchema.exactOptional(),
+    request_url: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'RequestURL is the original OAuth 2.0 Authorization URL requested by the OAuth 2.0 client. It is the URL which\ninitiates the OAuth 2.0 Authorization Code or OAuth 2.0 Implicit flow. This URL is typically not needed, but\nmight come in handy if you want to deal with additional request parameters.',
+      }),
+    requested_access_token_audience: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'RequestedAudience contains the access token audience as requested by the OAuth 2.0 Client.',
+      }),
+    requested_scope: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'RequestedScope contains the OAuth 2.0 Scope requested by the OAuth 2.0 Client.',
+      }),
+    skip: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Skip, if true, implies that the client has requested the same scopes from the same user previously.\nIf true, you must not ask the user to grant the requested scopes. You must however either allow or deny the\nconsent request using the usual API call.',
+      }),
+    subject: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Subject is the user ID of the end-user that authenticated. Now, that end user needs to grant or deny the scope\nrequested by the OAuth 2.0 client.',
+      }),
+  })
+  .openapi({
+    required: ['challenge'],
+    title: 'Contains information on an ongoing consent request.',
+  })
+  .openapi('OAuth2ConsentRequest')
+
 const NullTime2Schema = z.iso
   .datetime({ offset: true })
   .openapi({ title: 'NullTime implements sql.NullTime functionality.' })
   .openapi('NullTime2')
+
+const AcceptOAuth2ConsentRequestSessionSchema = z
+  .object({
+    access_token: z
+      .any()
+      .exactOptional()
+      .openapi({
+        description:
+          'AccessToken sets session data for the access and refresh token, as well as any future tokens issued by the\nrefresh grant. Keep in mind that this data will be available to anyone performing OAuth 2.0 Challenge Introspection.\nIf only your services can perform OAuth 2.0 Challenge Introspection, this is usually fine. But if third parties\ncan access that endpoint as well, sensitive data from the session might be exposed to them. Use with care!',
+      }),
+    id_token: z
+      .any()
+      .exactOptional()
+      .openapi({
+        description:
+          "IDToken sets session data for the OpenID Connect ID token. Keep in mind that the session'id payloads are readable\nby anyone that has access to the ID Challenge. Use with care!",
+      }),
+  })
+  .openapi({ title: 'Pass session data to a consent request.', required: [] })
+  .openapi('AcceptOAuth2ConsentRequestSession')
+
+const OAuth2ConsentSessionSchema = z
+  .object({
+    consent_request: OAuth2ConsentRequestSchema.exactOptional(),
+    consent_request_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'ConsentRequestID is the identifier of the consent request that initiated this consent session.',
+      }),
+    context: JSONRawMessageSchema.exactOptional(),
+    grant_access_token_audience: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Audience Granted\n\nGrantedAudience sets the audience the user authorized the client to use. Should be a subset of `requested_access_token_audience`.',
+      }),
+    grant_scope: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Scope Granted\n\nGrantScope sets the scope the user authorized the client to use. Should be a subset of `requested_scope`.',
+      }),
+    handled_at: NullTime2Schema.exactOptional(),
+    remember: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Remember Consent\n\nRemember, if set to true, tells ORY Hydra to remember this consent authorization and reuse it if the same\nclient asks the same user for the same, or a subset of, scope.',
+      }),
+    remember_for: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'Remember Consent For\n\nRememberFor sets how long the consent authorization should be remembered for in seconds. If set to `0`, the\nauthorization will be remembered indefinitely.',
+      }),
+    session: AcceptOAuth2ConsentRequestSessionSchema.exactOptional(),
+  })
+  .openapi({
+    description: 'A completed OAuth 2.0 Consent Session.',
+    title: 'OAuth 2.0 Consent Session',
+    required: [],
+  })
+  .openapi('OAuth2ConsentSession')
+
+type OAuth2ConsentSessionsType = z.infer<typeof OAuth2ConsentSessionSchema>[]
+
+const VerifiableCredentialProofSchema = z
+  .object({ jwt: z.string().exactOptional(), proof_type: z.string().exactOptional() })
+  .openapi({
+    title: 'VerifiableCredentialProof contains the proof of a verifiable credential.',
+    required: [],
+  })
+  .openapi('VerifiableCredentialProof')
+
+const CreateVerifiableCredentialRequestBodySchema = z
+  .object({
+    format: z.string().exactOptional(),
+    proof: VerifiableCredentialProofSchema.exactOptional(),
+    types: z.array(z.string()).exactOptional(),
+  })
+  .openapi({
+    title:
+      'CreateVerifiableCredentialRequestBody contains the request body to request a verifiable credential.',
+    required: [],
+  })
+  .openapi('CreateVerifiableCredentialRequestBody')
+
+const DefaultErrorSchema = z
+  .any()
+  .openapi({
+    description:
+      'From https://go.dev/wiki/CodeReviewComments#receiver-type:\n> Can function or methods, either concurrently or when called from this method, be mutating the receiver? A value type creates a copy of the receiver when the method is invoked, so outside updates will not be applied to this receiver. If changes must be visible in the original receiver, the receiver must be a pointer.\n> If the receiver is a struct, array or slice and any of its elements is a pointer to something that might be mutating,\n> prefer a pointer receiver, as it will make the intention clearer to the reader.\n> Don’t mix receiver types. Choose either pointers or struct types for all available methods.',
+    title:
+      'DefaultError is not safe to shallow copy because it contains\nfields which are not value types, e.g. maps.\nA shallow copy would inadvertently share these underlying fields,\nleading to incorrect behavior and data races in a concurrent context.\nConsequently, all methods take the type by pointer and not by value.',
+  })
+  .openapi('DefaultError')
 
 const DeviceUserAuthRequestSchema = z
   .object({
@@ -537,26 +744,6 @@ const AcceptDeviceUserCodeRequestSchema = z
   .object({ user_code: z.string().exactOptional() })
   .openapi({ description: 'Contains information on an device verification', required: [] })
   .openapi('AcceptDeviceUserCodeRequest')
-
-const AcceptOAuth2ConsentRequestSessionSchema = z
-  .object({
-    access_token: z
-      .any()
-      .exactOptional()
-      .openapi({
-        description:
-          'AccessToken sets session data for the access and refresh token, as well as any future tokens issued by the\nrefresh grant. Keep in mind that this data will be available to anyone performing OAuth 2.0 Challenge Introspection.\nIf only your services can perform OAuth 2.0 Challenge Introspection, this is usually fine. But if third parties\ncan access that endpoint as well, sensitive data from the session might be exposed to them. Use with care!',
-      }),
-    id_token: z
-      .any()
-      .exactOptional()
-      .openapi({
-        description:
-          "IDToken sets session data for the OpenID Connect ID token. Keep in mind that the session'id payloads are readable\nby anyone that has access to the ID Challenge. Use with care!",
-      }),
-  })
-  .openapi({ title: 'Pass session data to a consent request.', required: [] })
-  .openapi('AcceptOAuth2ConsentRequestSession')
 
 const AcceptOAuth2ConsentRequestSchema = z
   .object({
@@ -1164,192 +1351,7 @@ const OAuth2ClientTokenLifespansSchema = z
   })
   .openapi('OAuth2ClientTokenLifespans')
 
-const OAuth2ConsentRequestOpenIDConnectContextSchema = z
-  .object({
-    acr_values: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'ACRValues is the Authentication AuthorizationContext Class Reference requested in the OAuth 2.0 Authorization request.\nIt is a parameter defined by OpenID Connect and expresses which level of authentication (e.g. 2FA) is required.\n\nOpenID Connect defines it as follows:\n> Requested Authentication AuthorizationContext Class Reference values. Space-separated string that specifies the acr values\nthat the Authorization Server is being requested to use for processing this Authentication Request, with the\nvalues appearing in order of preference. The Authentication AuthorizationContext Class satisfied by the authentication\nperformed is returned as the acr Claim Value, as specified in Section 2. The acr Claim is requested as a\nVoluntary Claim by this parameter.',
-      }),
-    display: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Display is a string value that specifies how the Authorization Server displays the authentication and consent user interface pages to the End-User.\nThe defined values are:\npage: The Authorization Server SHOULD display the authentication and consent UI consistent with a full User Agent page view. If the display parameter is not specified, this is the default display mode.\npopup: The Authorization Server SHOULD display the authentication and consent UI consistent with a popup User Agent window. The popup User Agent window should be of an appropriate size for a login-focused dialog and should not obscure the entire window that it is popping up over.\ntouch: The Authorization Server SHOULD display the authentication and consent UI consistent with a device that leverages a touch interface.\nwap: The Authorization Server SHOULD display the authentication and consent UI consistent with a "feature phone" type display.\n\nThe Authorization Server MAY also attempt to detect the capabilities of the User Agent and present an appropriate display.',
-      }),
-    id_token_hint_claims: z
-      .record(z.string(), z.any())
-      .exactOptional()
-      .openapi({
-        description:
-          "IDTokenHintClaims are the claims of the ID Token previously issued by the Authorization Server being passed as a hint about the\nEnd-User's current or past authenticated session with the Client.",
-      }),
-    login_hint: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'LoginHint hints about the login identifier the End-User might use to log in (if necessary).\nThis hint can be used by an RP if it first asks the End-User for their e-mail address (or other identifier)\nand then wants to pass that value as a hint to the discovered authorization service. This value MAY also be a\nphone number in the format specified for the phone_number Claim. The use of this parameter is optional.',
-      }),
-    ui_locales: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'UILocales is the End-User\'id preferred languages and scripts for the user interface, represented as a\nspace-separated list of BCP47 [RFC5646] language tag values, ordered by preference. For instance, the value\n"fr-CA fr en" represents a preference for French as spoken in Canada, then French (without a region designation),\nfollowed by English (without a region designation). An error SHOULD NOT result if some or all of the requested\nlocales are not supported by the OpenID Provider.',
-      }),
-  })
-  .openapi({
-    title: 'Contains optional information about the OpenID Connect request.',
-    required: [],
-  })
-  .openapi('OAuth2ConsentRequestOpenIDConnectContext')
-
-const OAuth2ConsentRequestSchema = z
-  .object({
-    acr: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'ACR represents the Authentication AuthorizationContext Class Reference value for this authentication session. You can use it\nto express that, for example, a user authenticated using two factor authentication.',
-      }),
-    amr: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'AMR is the Authentication Methods References value for this\nauthentication session. You can use it to specify the method a user used to\nauthenticate. For example, if the acr indicates a user used two factor\nauthentication, the amr can express they used a software-secured key.',
-      }),
-    challenge: z
-      .string()
-      .openapi({ description: 'Challenge is used to retrieve/accept/deny the consent request.' }),
-    client: OAuth2ClientSchema.exactOptional(),
-    consent_request_id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'ConsentRequestID is the ID of the consent request.' }),
-    context: JSONRawMessageSchema.exactOptional(),
-    login_challenge: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'LoginChallenge is the login challenge this consent challenge belongs to. It can be used to associate\na login and consent request in the login & consent app.',
-      }),
-    login_session_id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'LoginSessionID is the login session ID. If the user-agent reuses a login session (via cookie / remember flag)\nthis ID will remain the same. If the user-agent did not have an existing authentication session (e.g. remember is false)\nthis will be a new random value. This value is used as the "sid" parameter in the ID Token and in OIDC Front-/Back-\nchannel logout. It\'s value can generally be used to associate consecutive login requests by a certain user.',
-      }),
-    oidc_context: OAuth2ConsentRequestOpenIDConnectContextSchema.exactOptional(),
-    request_url: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'RequestURL is the original OAuth 2.0 Authorization URL requested by the OAuth 2.0 client. It is the URL which\ninitiates the OAuth 2.0 Authorization Code or OAuth 2.0 Implicit flow. This URL is typically not needed, but\nmight come in handy if you want to deal with additional request parameters.',
-      }),
-    requested_access_token_audience: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'RequestedAudience contains the access token audience as requested by the OAuth 2.0 Client.',
-      }),
-    requested_scope: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'RequestedScope contains the OAuth 2.0 Scope requested by the OAuth 2.0 Client.',
-      }),
-    skip: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Skip, if true, implies that the client has requested the same scopes from the same user previously.\nIf true, you must not ask the user to grant the requested scopes. You must however either allow or deny the\nconsent request using the usual API call.',
-      }),
-    subject: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Subject is the user ID of the end-user that authenticated. Now, that end user needs to grant or deny the scope\nrequested by the OAuth 2.0 client.',
-      }),
-  })
-  .openapi({
-    required: ['challenge'],
-    title: 'Contains information on an ongoing consent request.',
-  })
-  .openapi('OAuth2ConsentRequest')
-
-const OAuth2ConsentSessionSchema = z
-  .object({
-    consent_request: OAuth2ConsentRequestSchema.exactOptional(),
-    consent_request_id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'ConsentRequestID is the identifier of the consent request that initiated this consent session.',
-      }),
-    context: JSONRawMessageSchema.exactOptional(),
-    grant_access_token_audience: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Audience Granted\n\nGrantedAudience sets the audience the user authorized the client to use. Should be a subset of `requested_access_token_audience`.',
-      }),
-    grant_scope: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Scope Granted\n\nGrantScope sets the scope the user authorized the client to use. Should be a subset of `requested_scope`.',
-      }),
-    handled_at: NullTime2Schema.exactOptional(),
-    remember: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Remember Consent\n\nRemember, if set to true, tells ORY Hydra to remember this consent authorization and reuse it if the same\nclient asks the same user for the same, or a subset of, scope.',
-      }),
-    remember_for: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'Remember Consent For\n\nRememberFor sets how long the consent authorization should be remembered for in seconds. If set to `0`, the\nauthorization will be remembered indefinitely.',
-      }),
-    session: AcceptOAuth2ConsentRequestSessionSchema.exactOptional(),
-  })
-  .openapi({
-    description: 'A completed OAuth 2.0 Consent Session.',
-    title: 'OAuth 2.0 Consent Session',
-    required: [],
-  })
-  .openapi('OAuth2ConsentSession')
-
-const OAuth2ConsentSessionsSchema = z
+const OAuth2ConsentSessionsSchema: z.ZodType<OAuth2ConsentSessionsType> = z
   .array(OAuth2ConsentSessionSchema)
   .openapi({ description: 'List of OAuth 2.0 Consent Sessions' })
   .openapi('OAuth2ConsentSessions')

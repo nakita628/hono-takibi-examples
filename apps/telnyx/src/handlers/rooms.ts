@@ -1,0 +1,31 @@
+import { OpenAPIHono } from '@hono/zod-openapi'
+import {
+  deleteRoomsRoomIdRoute,
+  getRoomsRoomIdRoute,
+  getRoomsRoomIdSessionsRoute,
+  getRoomsRoute,
+  patchRoomsRoomIdRoute,
+  postRoomsRoute,
+} from '../routes'
+
+const app = new OpenAPIHono()
+
+export const roomsHandler = app
+  .openapi(getRoomsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postRoomsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteRoomsRoomIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getRoomsRoomIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchRoomsRoomIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getRoomsRoomIdSessionsRoute, (c) => {
+    throw new Error('Not implemented')
+  })

@@ -18,6 +18,22 @@ License: ©2023 All Rights Reserved
 
 - oAuth2 authentication.
 
+    - Flow: clientCredentials
+    - Token URL = [https://api.canva.com/auth/v1/oauth/token](https://api.canva.com/auth/v1/oauth/token)
+
+|Scope|Scope Description|
+|---|---|
+|service:design:content:write|Create designs on the app's behalf.|
+|service:design:content:read|View the contents of the app's designs.|
+|service:design:meta:read|View the metadata of the app's designs.|
+|service:folder:write|Move designs, assets, and folders between folders on the app's behalf.|
+|service:asset:write|Upload assets on the app's behalf.|
+|service:asset:read|View the metadata for the app's assets, such as uploaded images.|
+|service:brandtemplate:meta:read|View the metadata of the brand templates associated with the developer's brand.|
+|service:brandtemplate:content:read|Read the content of the brand templates associated with the developer's brand.|
+
+- oAuth2 authentication.
+
     - Flow: authorizationCode
     - Authorization URL = [https://www.canva.com/api/oauth/authorize](https://www.canva.com/api/oauth/authorize)
     - Token URL = [https://api.canva.com/rest/v1/oauth/token](https://api.canva.com/rest/v1/oauth/token)
@@ -1193,7 +1209,7 @@ For more information on the workflow for using asynchronous jobs, see [API reque
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauthAuthCode ( Scopes: asset:write )
+oauthClientCredentials ( Scopes: service:asset:write ), oauthAuthCode ( Scopes: asset:write )
 </aside>
 
 ## GetAssetUploadJob
@@ -1271,7 +1287,7 @@ You might need to make multiple requests to this endpoint until you get a `succe
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauthAuthCode ( Scopes: asset:read )
+oauthClientCredentials ( Scopes: service:asset:read ), oauthAuthCode ( Scopes: asset:read )
 </aside>
 
 ## createUrlAssetUploadJob
@@ -1372,7 +1388,7 @@ For more information on the workflow for using asynchronous jobs, see [API reque
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauthAuthCode ( Scopes: asset:write )
+oauthClientCredentials ( Scopes: service:asset:write ), oauthAuthCode ( Scopes: asset:write )
 </aside>
 
 ## getUrlAssetUploadJob
@@ -1450,7 +1466,7 @@ You might need to make multiple requests to this endpoint until you get a `succe
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauthAuthCode ( Scopes: asset:read )
+oauthClientCredentials ( Scopes: service:asset:read ), oauthAuthCode ( Scopes: asset:read )
 </aside>
 
 <h1 id="canva-rest-apis-autofill">autofill</h1>
@@ -1921,7 +1937,7 @@ NOTE: For more information on the workflow for using asynchronous jobs, see [API
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauthAuthCode ( Scopes: design:content:write )
+oauthClientCredentials ( Scopes: service:design:content:write ), oauthAuthCode ( Scopes: design:content:write )
 </aside>
 
 ## getDesignAutofillJob
@@ -2004,7 +2020,7 @@ You might need to make multiple requests to this endpoint until you get a `succe
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauthAuthCode ( Scopes: design:meta:read )
+oauthClientCredentials ( Scopes: service:design:meta:read ), oauthAuthCode ( Scopes: design:meta:read )
 </aside>
 
 <h1 id="canva-rest-apis-brandtemplate">brand_template</h1>
@@ -2116,7 +2132,7 @@ Get a list of the [brand templates](https://www.canva.com/help/publish-team-temp
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauthAuthCode ( Scopes: brandtemplate:meta:read )
+oauthClientCredentials ( Scopes: service:brandtemplate:meta:read ), oauthAuthCode ( Scopes: brandtemplate:meta:read )
 </aside>
 
 ## publishBrandTemplate
@@ -2330,7 +2346,7 @@ Retrieves the metadata for a brand template.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauthAuthCode ( Scopes: brandtemplate:meta:read )
+oauthClientCredentials ( Scopes: service:brandtemplate:meta:read ), oauthAuthCode ( Scopes: brandtemplate:meta:read )
 </aside>
 
 ## getBrandTemplateDataset
@@ -2434,7 +2450,7 @@ API](https://www.canva.dev/docs/apps/rest-apis/reference/autofills/create-design
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauthAuthCode ( Scopes: brandtemplate:content:read )
+oauthClientCredentials ( Scopes: service:brandtemplate:content:read ), oauthAuthCode ( Scopes: brandtemplate:content:read )
 </aside>
 
 <h1 id="canva-rest-apis-comment">comment</h1>
@@ -3963,7 +3979,7 @@ Each format includes the page numbers that support it. If a format is supported 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauthAuthCode ( Scopes: design:content:read )
+oauthClientCredentials ( Scopes: service:design:content:read ), oauthAuthCode ( Scopes: design:content:read )
 </aside>
 
 ## getDesignDataset
@@ -4065,7 +4081,7 @@ with `type: create_from_design`.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauthAuthCode ( Scopes: design:content:read )
+oauthClientCredentials ( Scopes: service:design:content:read ), oauthAuthCode ( Scopes: design:content:read )
 </aside>
 
 ## createPrintPartnerDesign
@@ -4405,7 +4421,7 @@ You can generate a document or presentation. For presentations, you can also pro
 
 Requires the `design_generation` capability. You can check whether the user has this capability using the [Get user capabilities API](https://www.canva.dev/docs/apps/rest-apis/reference/users/get-user-capabilities/).
 
-Starting a job consumes the user's [AI credit allowance](https://www.canva.com/help/ai-access/). If the user has reached their AI allowance limit, the request returns a `429` error with the `credit_quota_exceeded` code. Polling for the result of a job doesn't consume any of the allowance.
+Starting a job consumes the user's [AI credit allowance](https://www.canva.com/help/ai-access/). If the user has reached their AI allowance limit, the request returns a `402` error with the `credit_quota_exceeded` code. Polling for the result of a job doesn't consume any of the allowance.
 
 <Note>
 
@@ -4465,11 +4481,6 @@ For more information on the workflow for using asynchronous jobs, see [API reque
   "job": {
     "id": "f81b26fd-a33d-4c2d-9e8c-4a7aca798b17",
     "status": "in_progress"
-  },
-  "quota_usage": {
-    "used_percentage": 25,
-    "resets_at": 1789257600,
-    "using_bonus_credits": false
   }
 }
 ```
@@ -4492,6 +4503,15 @@ For more information on the workflow for using asynchronous jobs, see [API reque
 }
 ```
 
+> 402 Response
+
+```json
+{
+  "code": "credit_quota_exceeded",
+  "message": "User has exceeded their credit quota"
+}
+```
+
 > 403 Response
 
 ```json
@@ -4507,23 +4527,6 @@ For more information on the workflow for using asynchronous jobs, see [API reque
 {
   "code": "not_found",
   "message": "The specified attachment wasn't found."
-}
-```
-
-> 429 Response
-
-```json
-{
-  "code": "credit_quota_exceeded",
-  "message": "User has exceeded their credit quota",
-  "quota_usage": {
-    "used_percentage": 100,
-    "resets_at": 1735689600,
-    "using_bonus_credits": false,
-    "upgrade_url": "https://www.canva.com/upgrade",
-    "is_admin": false,
-    "generation_pending": false
-  }
 }
 ```
 
@@ -4543,14 +4546,14 @@ For more information on the workflow for using asynchronous jobs, see [API reque
 |200|OK|OK|[CreateDesignGenerationJobResponseV2](#schemacreatedesigngenerationjobresponsev2)|
 |400|Bad Request|Bad Request|[Error](#schemaerror)|
 |401|Unauthorized|Unauthorized|[Error](#schemaerror)|
+|402|Payment Required|Payment Required|[Error](#schemaerror)|
 |403|Forbidden|Forbidden|[Error](#schemaerror)|
 |404|Not Found|Not Found|[Error](#schemaerror)|
-|429|Too Many Requests|Credit Quota Exceeded|[CreditQuotaError](#schemacreditquotaerror)|
 |default|Default|Error Response|[Error](#schemaerror)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauthAuthCode ( Scopes: design:content:write )
+oauthClientCredentials ( Scopes: service:design:content:write ), oauthAuthCode ( Scopes: design:content:write )
 </aside>
 
 ## getDesignGenerationJobV2
@@ -4674,7 +4677,7 @@ Requires the `design_generation` capability.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauthAuthCode ( Scopes: design:content:write )
+oauthClientCredentials ( Scopes: service:design:content:write ), oauthAuthCode ( Scopes: design:content:write )
 </aside>
 
 <h1 id="canva-rest-apis-designimport">design_import</h1>
@@ -4748,7 +4751,7 @@ For more information on the workflow for using asynchronous jobs, see [API reque
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauthAuthCode ( Scopes: design:content:write )
+oauthClientCredentials ( Scopes: service:design:content:write ), oauthAuthCode ( Scopes: design:content:write )
 </aside>
 
 ## getDesignImportJob
@@ -4836,7 +4839,7 @@ You might need to make multiple requests to this endpoint until you get a `succe
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauthAuthCode ( Scopes: design:content:write )
+oauthClientCredentials ( Scopes: service:design:content:write ), oauthAuthCode ( Scopes: design:content:write )
 </aside>
 
 ## createUrlImportJob
@@ -4940,7 +4943,7 @@ For more information on the workflow for using asynchronous jobs, see [API reque
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauthAuthCode ( Scopes: design:content:write )
+oauthClientCredentials ( Scopes: service:design:content:write ), oauthAuthCode ( Scopes: design:content:write )
 </aside>
 
 ## getUrlImportJob
@@ -5028,7 +5031,7 @@ You might need to make multiple requests to this endpoint until you get a `succe
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauthAuthCode ( Scopes: design:content:write )
+oauthClientCredentials ( Scopes: service:design:content:write ), oauthAuthCode ( Scopes: design:content:write )
 </aside>
 
 ## createImageToDesignImportJob
@@ -5071,7 +5074,7 @@ The image must be a standard photo or graphic file, such as a PNG or JPEG. Vecto
 
 This conversion is designed for flat, non-photographic images such as posters, flyers, banners, and social graphics.
 
-Starting a job consumes the user's [AI credit allowance](https://www.canva.com/help/ai-access/). If the user has reached their AI allowance limit, the request returns a `429` error with the `credit_quota_exceeded` code. Polling for the result of a job using the [Get image-to-design import job API](https://www.canva.dev/docs/apps/rest-apis/reference/design-imports/get-image-to-design-import-job/) doesn't consume any of the allowance.
+Starting a job consumes the user's [AI credit allowance](https://www.canva.com/help/ai-access/). If the user has reached their AI allowance limit, the request returns a `402` error with the `credit_quota_exceeded` code. Polling for the result of a job using the [Get image-to-design import job API](https://www.canva.dev/docs/apps/rest-apis/reference/design-imports/get-image-to-design-import-job/) doesn't consume any of the allowance.
 
 Use this API when the user wants to edit the contents of the image, such as changing its text, colors, or individual elements. If you only need to place the image into a design as a single flat image, use the [Create design API](https://www.canva.dev/docs/apps/rest-apis/reference/designs/create-design/) with an `asset_id` instead. The Create design API doesn't consume AI credits.
 
@@ -5122,6 +5125,15 @@ For more information on the workflow for using asynchronous jobs, see [API reque
 }
 ```
 
+> 402 Response
+
+```json
+{
+  "code": "credit_quota_exceeded",
+  "message": "User has exceeded their credit quota"
+}
+```
+
 > 403 Response
 
 ```json
@@ -5140,15 +5152,6 @@ For more information on the workflow for using asynchronous jobs, see [API reque
 }
 ```
 
-> 429 Response
-
-```json
-{
-  "code": "credit_quota_exceeded",
-  "message": "User has exceeded their credit quota"
-}
-```
-
 > default Response
 
 ```json
@@ -5164,14 +5167,14 @@ For more information on the workflow for using asynchronous jobs, see [API reque
 |---|---|---|---|
 |200|OK|OK|[CreateImageToDesignImportJobResponse](#schemacreateimagetodesignimportjobresponse)|
 |400|Bad Request|Bad Request|[Error](#schemaerror)|
+|402|Payment Required|Payment Required|[Error](#schemaerror)|
 |403|Forbidden|Forbidden|[Error](#schemaerror)|
 |404|Not Found|Not Found|[Error](#schemaerror)|
-|429|Too Many Requests|Too Many Requests|[Error](#schemaerror)|
 |default|Default|Error Response|[Error](#schemaerror)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauthAuthCode ( Scopes: design:content:write )
+oauthClientCredentials ( Scopes: service:design:content:write ), oauthAuthCode ( Scopes: design:content:write )
 </aside>
 
 ## getImageToDesignImportJob
@@ -5279,7 +5282,7 @@ You might need to make multiple requests to this endpoint until you get a `succe
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauthAuthCode ( Scopes: design:content:write )
+oauthClientCredentials ( Scopes: service:design:content:write ), oauthAuthCode ( Scopes: design:content:write )
 </aside>
 
 <h1 id="canva-rest-apis-export">export</h1>
@@ -5430,7 +5433,7 @@ For more information on the workflow for using asynchronous jobs, see [API reque
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauthAuthCode ( Scopes: design:content:read )
+oauthClientCredentials ( Scopes: service:design:content:read ), oauthAuthCode ( Scopes: design:content:read )
 </aside>
 
 ## createPrintPartnerDesignExportJob
@@ -5481,6 +5484,15 @@ Starts a new [asynchronous job](https://www.canva.dev/docs/apps/rest-apis/reques
 it using the URL(s) provided. The download URLs are only valid for 24 hours.
 The request requires the design ID and exports a file as a print-quality PDF.
 
+<Note>
+
+This endpoint has the following additional rate limits:
+
+  - **Integration throttle:** Each integration can export a maximum of 750 times per 5-minute window, and 5,000 times per 24-hour window.
+  - **Document throttle:** Each document can be exported a maximum of 75 times per 5-minute window.
+  - **User throttle:** Each user can export a maximum of 75 times per 5-minute window, and 500 times per 24-hour window.
+
+</Note>
 <Note>
 For more information on the workflow for using asynchronous jobs, see [API requests and responses](https://www.canva.dev/docs/apps/rest-apis/requests-responses/#asynchronous-job-endpoints). You can check the status and get the results of export jobs created with this API using the [Get design export job API](https://www.canva.dev/docs/apps/rest-apis/reference/exports/get-design-export-job/).
 </Note>
@@ -5668,7 +5680,7 @@ You might need to make multiple requests to this endpoint until you get a `succe
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauthAuthCode ( Scopes: design:content:read )
+oauthClientCredentials ( Scopes: service:design:content:read ), oauthAuthCode ( Scopes: design:content:read )
 </aside>
 
 <h1 id="canva-rest-apis-folder">folder</h1>
@@ -6178,7 +6190,7 @@ NOTE: In some situations, a single item can exist in multiple folders. If you at
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauthAuthCode ( Scopes: folder:write )
+oauthClientCredentials ( Scopes: service:folder:write ), oauthAuthCode ( Scopes: folder:write )
 </aside>
 
 ## createFolder
@@ -6341,7 +6353,7 @@ The request requires a prompt and an idempotency key. Call this API with a user 
 
 To also save the generated image to the user's Canva account as an image asset, set `asset_upload` to `type: upload`. The job then returns the asset alongside the download URL. Saving the asset requires a user access token.
 
-Starting a job consumes the user's [AI credit allowance](https://www.canva.com/help/ai-access/). If the user has reached their AI allowance limit, the request returns a `429` error with the `credit_quota_exceeded` code.
+Starting a job consumes the user's [AI credit allowance](https://www.canva.com/help/ai-access/). If the user has reached their AI allowance limit, the request returns a `402` error with the `credit_quota_exceeded` code.
 
 <Note>
 
@@ -6369,7 +6381,7 @@ For more information on the workflow for using asynchronous jobs, see [API reque
 |---|---|---|---|---|
 |body|body|[CreateImageGenerationJobRequest](#schemacreateimagegenerationjobrequest)|false|none|
 |» prompt|body|string|true|A plain-text description of the image to generate.|
-|» aspect_ratio|body|[ImageGenerationAspectRatio](#schemaimagegenerationaspectratio)|false|The aspect ratio of the generated image. Every aspect ratio is supported by every model<br>you can select with `model`, so the choice of model never limits the aspect ratios you<br>can use. The pixel dimensions of the output depend on the model. The job result reports<br>the actual `width` and `height`.|
+|» aspect_ratio|body|[ImageGenerationAspectRatio](#schemaimagegenerationaspectratio)|false|The aspect ratio of the generated image. Every aspect ratio is supported by every model<br>you can select with `model`, so the choice of model never limits the aspect ratios you<br>can use. The pixel dimensions of the output depend on the model. The job result reports<br>the actual `width` and `height`. If you omit the aspect ratio, Canva chooses one for the<br>image. Don't rely on a specific default: set the aspect ratio when the shape matters.|
 |» model|body|[ImageGenerationModel](#schemaimagegenerationmodel)|false|The model to use for image generation. We recommend omitting this parameter: Canva<br>then selects the best available model for the request and falls back to another<br>model if one is temporarily unavailable. Set it only if you need a specific model's<br>output. If the requested model can't serve the request, the job fails. Canva never<br>uses a different model to serve the request.<br><br>The model strengths below are based on Canva's evaluations. Results vary by<br>prompt, so test with your own prompts before pinning a model.|
 |» idempotency_key|body|string(uuid)|true|A key to make create requests idempotent. Retrying with the same key returns the<br>original job without creating a duplicate, even if the other request parameters<br>differ. Keys are held for 24 hours from job creation.|
 |» asset_upload|body|[ImageGenerationAssetUpload](#schemaimagegenerationassetupload)|false|Whether to save the generated image as an image asset in the user's Canva account.<br>Omitting `asset_upload` (or using `type: none`) returns only a download URL.<br><br>Saving the asset (`type: upload`) requires a user access token.|
@@ -6384,6 +6396,11 @@ For more information on the workflow for using asynchronous jobs, see [API reque
 |» aspect_ratio|landscape_3_2|
 |» aspect_ratio|portrait_2_3|
 |» aspect_ratio|portrait_4_5|
+|» aspect_ratio|landscape_4_3|
+|» aspect_ratio|portrait_3_4|
+|» aspect_ratio|landscape_5_4|
+|» aspect_ratio|landscape_2_1|
+|» aspect_ratio|portrait_1_2|
 |» model|craft_v1_2k|
 |» model|lucid_origin|
 |» model|z_image_turbo|
@@ -6425,12 +6442,6 @@ For more information on the workflow for using asynchronous jobs, see [API reque
       "code": "unsafe_input",
       "message": "string"
     }
-  },
-  "quota_usage": {
-    "used_percentage": 0,
-    "resets_at": 0,
-    "using_bonus_credits": true,
-    "usage_review_link": "string"
   }
 }
 ```
@@ -6453,6 +6464,15 @@ For more information on the workflow for using asynchronous jobs, see [API reque
 }
 ```
 
+> 402 Response
+
+```json
+{
+  "code": "credit_quota_exceeded",
+  "message": "User has exceeded their credit quota"
+}
+```
+
 > 403 Response
 
 ```json
@@ -6466,16 +6486,8 @@ For more information on the workflow for using asynchronous jobs, see [API reque
 
 ```json
 {
-  "code": "credit_quota_exceeded",
-  "message": "User has exceeded their credit quota",
-  "quota_usage": {
-    "used_percentage": 100,
-    "resets_at": 1735689600,
-    "using_bonus_credits": false,
-    "upgrade_url": "https://www.canva.com/upgrade",
-    "is_admin": false,
-    "generation_pending": false
-  }
+  "code": "model_capacity_reached",
+  "message": "The requested model has reached capacity. Try again later or choose a different model."
 }
 ```
 
@@ -6495,13 +6507,14 @@ For more information on the workflow for using asynchronous jobs, see [API reque
 |200|OK|OK|[CreateImageGenerationJobResponse](#schemacreateimagegenerationjobresponse)|
 |400|Bad Request|Bad Request|[Error](#schemaerror)|
 |401|Unauthorized|Unauthorized|[Error](#schemaerror)|
+|402|Payment Required|Payment Required|[Error](#schemaerror)|
 |403|Forbidden|Forbidden|[Error](#schemaerror)|
-|429|Too Many Requests|Credit Quota Exceeded|[CreditQuotaError](#schemacreditquotaerror)|
+|429|Too Many Requests|Too Many Requests|[Error](#schemaerror)|
 |default|Default|Error Response|[Error](#schemaerror)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauthAuthCode ( Scopes: asset:write )
+oauthClientCredentials ( Scopes: service:asset:write ), oauthAuthCode ( Scopes: asset:write )
 </aside>
 
 ## getImageGenerationJob
@@ -6639,7 +6652,7 @@ You might need to make multiple requests to this endpoint until you get a `succe
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauthAuthCode ( Scopes: asset:write )
+oauthClientCredentials ( Scopes: service:asset:write ), oauthAuthCode ( Scopes: asset:write )
 </aside>
 
 <h1 id="canva-rest-apis-imagetransformation">image_transformation</h1>
@@ -6685,7 +6698,7 @@ The request requires the ID of the source asset and at least one transformation.
 
 Transformations are applied in the order provided, with each one stacked on the result of the previous one.
 
-Starting a job consumes the user's [AI credit allowance](https://www.canva.com/help/ai-access/). If the user has reached their AI allowance limit, the request returns a `429` error with the `credit_quota_exceeded` code. Polling for the result of a job using the [Get image transformation job API](https://www.canva.dev/docs/apps/rest-apis/reference/image-transformations/get-image-transformation-job/) doesn't consume any of the allowance.
+Starting a job consumes the user's [AI credit allowance](https://www.canva.com/help/ai-access/). If the user has reached their AI allowance limit, the request returns a `402` error with the `credit_quota_exceeded` code. Polling for the result of a job using the [Get image transformation job API](https://www.canva.dev/docs/apps/rest-apis/reference/image-transformations/get-image-transformation-job/) doesn't consume any of the allowance.
 
 <Note>
 
@@ -6747,6 +6760,15 @@ For more information on the workflow for using asynchronous jobs, see [API reque
 }
 ```
 
+> 402 Response
+
+```json
+{
+  "code": "credit_quota_exceeded",
+  "message": "User has exceeded their credit quota"
+}
+```
+
 > 403 Response
 
 ```json
@@ -6762,23 +6784,6 @@ For more information on the workflow for using asynchronous jobs, see [API reque
 {
   "code": "asset_not_found",
   "message": "Asset not found"
-}
-```
-
-> 429 Response
-
-```json
-{
-  "code": "credit_quota_exceeded",
-  "message": "User has exceeded their credit quota",
-  "quota_usage": {
-    "used_percentage": 100,
-    "resets_at": 1735689600,
-    "using_bonus_credits": false,
-    "upgrade_url": "https://www.canva.com/upgrade",
-    "is_admin": false,
-    "generation_pending": false
-  }
 }
 ```
 
@@ -6798,9 +6803,9 @@ For more information on the workflow for using asynchronous jobs, see [API reque
 |200|OK|OK|[CreateImageTransformationJobResponse](#schemacreateimagetransformationjobresponse)|
 |400|Bad Request|Bad Request|[Error](#schemaerror)|
 |401|Unauthorized|Unauthorized|[Error](#schemaerror)|
+|402|Payment Required|Payment Required|[Error](#schemaerror)|
 |403|Forbidden|Forbidden|[Error](#schemaerror)|
 |404|Not Found|Not Found|[Error](#schemaerror)|
-|429|Too Many Requests|Credit Quota Exceeded|[CreditQuotaError](#schemacreditquotaerror)|
 |default|Default|Error Response|[Error](#schemaerror)|
 
 <aside class="warning">
@@ -7046,6 +7051,15 @@ For more information on the workflow for using asynchronous jobs, see [API reque
 }
 ```
 
+> 402 Response
+
+```json
+{
+  "code": "credit_quota_exceeded",
+  "message": "User has exceeded their credit quota"
+}
+```
+
 > 403 Response
 
 ```json
@@ -7088,6 +7102,7 @@ For more information on the workflow for using asynchronous jobs, see [API reque
 |---|---|---|---|
 |200|OK|OK|[CreateDesignMergeJobResponse](#schemacreatedesignmergejobresponse)|
 |400|Bad Request|Bad Request|[Error](#schemaerror)|
+|402|Payment Required|Payment Required|[Error](#schemaerror)|
 |403|Forbidden|Forbidden|[Error](#schemaerror)|
 |404|Not Found|Not Found|[Error](#schemaerror)|
 |413|Payload Too Large|Request Entity Too Large|[Error](#schemaerror)|
@@ -7095,7 +7110,7 @@ For more information on the workflow for using asynchronous jobs, see [API reque
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauthAuthCode ( Scopes: design:content:write design:meta:read )
+oauthClientCredentials ( Scopes: service:design:content:write service:design:meta:read ), oauthAuthCode ( Scopes: design:content:write design:meta:read )
 </aside>
 
 ## getDesignMergeJob
@@ -7208,7 +7223,7 @@ You might need to make multiple requests to this endpoint until you get a `succe
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauthAuthCode ( Scopes: design:meta:read )
+oauthClientCredentials ( Scopes: service:design:meta:read ), oauthAuthCode ( Scopes: design:meta:read )
 </aside>
 
 <h1 id="canva-rest-apis-oauth">oauth</h1>
@@ -7229,14 +7244,12 @@ curl https://api.canva.com/rest/v1/oauth/token \
 
 `POST /v1/oauth/token`
 
-This endpoint implements the OAuth 2.0 `token` endpoint, as part of the Authorization Code flow with Proof Key for Code Exchange (PKCE). For more information, see [Authentication](https://www.canva.dev/docs/apps/rest-apis/authentication/).
+This endpoint implements the OAuth 2.0 `token` endpoint. For more information, see [Authentication](https://www.canva.dev/docs/apps/rest-apis/authentication/).
 
-To generate an access token, you must provide one of the following:
+The way you generate an access token depends on your app type:
 
-- An authorization code
-- A refresh token
-
-Generating a token using either an authorization code or a refresh token allows your app to act on behalf of a user. You must first [obtain user authorization and get an authorization code](https://www.canva.dev/docs/apps/rest-apis/authentication/#obtain-user-authorization).
+- **Public or private apps** act on behalf of a user, using the OAuth authorization code flow with Proof Key for Code Exchange (PKCE). To generate an access token, you provide either an authorization code or a refresh token. You must first [obtain user authorization and get an authorization code](https://www.canva.dev/docs/apps/rest-apis/authentication/#obtain-user-authorization).
+- **Service apps** act on behalf of the app itself, using the OAuth client credentials flow. To generate an access token, you authenticate with your app's client ID and client secret. No user authorization is required.
 
 Access tokens may be up to 4 KB in size, and are only valid for a specified period of time. The expiry time (currently 4 hours) is shown in the endpoint response and is subject to change.
 
@@ -7251,6 +7264,8 @@ This endpoint can't be called from a user's web-browser client because it uses c
 
 **Generate an access token using an authorization code**
 
+Only public or private apps can use this grant type.
+
 To generate an access token with an authorization code, you must:
 
 - Set `grant_type` to `authorization_code`.
@@ -7259,12 +7274,26 @@ To generate an access token with an authorization code, you must:
 
 **Generate an access token using a refresh token**
 
+Only public or private apps can use this grant type.
+
 Using the `refresh_token` value from a previous user token request, you can get a new access token with the same or smaller scope as the previous one, but with a refreshed expiry time. You will also receive a new refresh token that you can use to refresh the access token again.
 
 To refresh an existing access token, you must:
 
 - Set `grant_type` to `refresh_token`.
 - Provide the `refresh_token` from a previous token request.
+
+**Generate an access token using client credentials**
+
+Only service apps can use this grant type. The access token acts on behalf of the app itself, so it can only use [scopes for service apps](https://www.canva.dev/docs/apps/rest-apis/scopes/#scopes-for-service-apps).
+
+To generate an access token using client credentials, you must:
+
+- Set `grant_type` to `client_credentials`.
+- Authenticate the request with your client ID and client secret, as described in **Endpoint authentication**.
+- Optionally, set `scope` to the scopes that the token needs. If you omit `scope`, the token is granted all the scopes that are enabled for your app in the Developer Portal.
+
+The response doesn't include a refresh token. When the access token expires, generate a new one by making the same request again.
 
 > Body parameter
 
@@ -7284,6 +7313,7 @@ redirect_uri: "https://example.com/process-auth"
 |body|body|[ExchangeAccessTokenRequest](#schemaexchangeaccesstokenrequest)|true|none|
 |» *oneOf*|body|[ExchangeAuthCodeRequest](#schemaexchangeauthcoderequest)|false|none|
 |» *oneOf*|body|[ExchangeRefreshTokenRequest](#schemaexchangerefreshtokenrequest)|false|none|
+|» *oneOf*|body|[ExchangeClientCredentialsRequest](#schemaexchangeclientcredentialsrequest)|false|none|
 
 > Example responses
 
@@ -7771,6 +7801,15 @@ You can check the status and get the results of resize jobs created with this AP
 }
 ```
 
+> 402 Response
+
+```json
+{
+  "code": "credit_quota_exceeded",
+  "message": "User has exceeded their credit quota"
+}
+```
+
 > 403 Response
 
 ```json
@@ -7814,6 +7853,7 @@ You can check the status and get the results of resize jobs created with this AP
 |---|---|---|---|
 |200|OK|OK|[CreateDesignResizeJobResponse](#schemacreatedesignresizejobresponse)|
 |400|Bad Request|Bad Request|[Error](#schemaerror)|
+|402|Payment Required|Payment Required|[Error](#schemaerror)|
 |403|Forbidden|Forbidden|[Error](#schemaerror)|
 |404|Not Found|Not Found|[Error](#schemaerror)|
 |429|Too Many Requests|Too Many Requests|[FeatureQuotaExceededError](#schemafeaturequotaexceedederror)|
@@ -7821,7 +7861,7 @@ You can check the status and get the results of resize jobs created with this AP
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauthAuthCode ( Scopes: design:content:read design:content:write )
+oauthClientCredentials ( Scopes: service:design:content:read service:design:content:write ), oauthAuthCode ( Scopes: design:content:read design:content:write )
 </aside>
 
 ## getDesignResizeJob
@@ -7902,7 +7942,7 @@ see [API requests and responses](https://www.canva.dev/docs/apps/rest-apis/reque
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauthAuthCode ( Scopes: design:content:read design:content:write )
+oauthClientCredentials ( Scopes: service:design:content:read service:design:content:write ), oauthAuthCode ( Scopes: design:content:read design:content:write )
 </aside>
 
 <h1 id="canva-rest-apis-user">user</h1>
@@ -8221,8 +8261,10 @@ or is in a cooldown period after heavy usage.
 |code|quota_exceeded|
 |code|credit_quota_exceeded|
 |code|credit_quota_cooldown|
+|code|app_credit_quota_exceeded|
 |code|unsupported_content_type|
 |code|request_too_large|
+|code|model_capacity_reached|
 |code|folder_not_found|
 |code|item_in_multiple_folders|
 |code|asset_not_found|
@@ -14838,7 +14880,7 @@ Creates a design that matches your dimensions. Add a product type for more preci
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |type|string|true|none|none|
-|dimensions|[PrintPartnerDesignDimensions](#schemaprintpartnerdesigndimensions)|true|none|Dimensions of the design. Used to match a product type, or to create a custom-size design if<br>no product matches.|
+|dimensions|[PrintPartnerDesignDimensions](#schemaprintpartnerdesigndimensions)|true|none|Dimensions of the design. Used to match a product type, or to create a custom-size design if<br>no product matches.<br><br>When no matching product is found, the dimensions of each side, converted to pixels, must be<br>between 40 and 8000, and the total area (width × height) must not exceed 25,000,000 pixels<br>squared.|
 |product_type|string|false|none|The product type is used alongside your dimensions to find a matching product in Canva Print's product catalogue, and templates for that product are recommended. If no match is found, only dimensions are used, so templates may include unrelated product types.|
 
 #### Enumerated Values
@@ -14864,6 +14906,10 @@ Creates a design that matches your dimensions. Add a product type for more preci
 
 Dimensions of the design. Used to match a product type, or to create a custom-size design if
 no product matches.
+
+When no matching product is found, the dimensions of each side, converted to pixels, must be
+between 40 and 8000, and the total area (width × height) must not exceed 25,000,000 pixels
+squared.
 
 ### Properties
 
@@ -15702,12 +15748,6 @@ One slide in a presentation outline.
       "code": "content_not_allowed",
       "message": "string"
     }
-  },
-  "quota_usage": {
-    "used_percentage": 0,
-    "resets_at": 0,
-    "using_bonus_credits": true,
-    "usage_review_link": "string"
   }
 }
 ```
@@ -15717,7 +15757,6 @@ One slide in a presentation outline.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |job|[DesignGenerationJobV2](#schemadesigngenerationjobv2)|true|none|The status and result of a public design generation job.|
-|quota_usage|object|false|none|Credit quota usage after reserving credits for this job. Omitted if unavailable.|
 
 <h2 id="tocS_GetDesignGenerationJobResponseV2">GetDesignGenerationJobResponseV2</h2>
 <!-- backwards compatibility -->
@@ -15754,12 +15793,6 @@ One slide in a presentation outline.
       "code": "content_not_allowed",
       "message": "string"
     }
-  },
-  "quota_usage": {
-    "used_percentage": 0,
-    "resets_at": 0,
-    "using_bonus_credits": true,
-    "usage_review_link": "string"
   }
 }
 ```
@@ -15769,7 +15802,6 @@ One slide in a presentation outline.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |job|[DesignGenerationJobV2](#schemadesigngenerationjobv2)|true|none|The status and result of a public design generation job.|
-|quota_usage|object|false|none|Credit quota snapshot when available. Polling does not reserve or consume credits; omitted if unavailable.|
 
 <h2 id="tocS_DesignGenerationJobV2">DesignGenerationJobV2</h2>
 <!-- backwards compatibility -->
@@ -16755,8 +16787,10 @@ The type of content a design or page contains. The list of design types may grow
 |code|quota_exceeded|
 |code|credit_quota_exceeded|
 |code|credit_quota_cooldown|
+|code|app_credit_quota_exceeded|
 |code|unsupported_content_type|
 |code|request_too_large|
+|code|model_capacity_reached|
 |code|folder_not_found|
 |code|item_in_multiple_folders|
 |code|asset_not_found|
@@ -16868,8 +16902,10 @@ Feature quota exceeded
 |code|quota_exceeded|
 |code|credit_quota_exceeded|
 |code|credit_quota_cooldown|
+|code|app_credit_quota_exceeded|
 |code|unsupported_content_type|
 |code|request_too_large|
+|code|model_capacity_reached|
 |code|folder_not_found|
 |code|item_in_multiple_folders|
 |code|asset_not_found|
@@ -16977,8 +17013,10 @@ Feature quota exceeded
 |error|quota_exceeded|
 |error|credit_quota_exceeded|
 |error|credit_quota_cooldown|
+|error|app_credit_quota_exceeded|
 |error|unsupported_content_type|
 |error|request_too_large|
+|error|model_capacity_reached|
 |error|folder_not_found|
 |error|item_in_multiple_folders|
 |error|asset_not_found|
@@ -18854,7 +18892,7 @@ display name, and whether it's an external Canva Group.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |prompt|string|true|none|A plain-text description of the image to generate.|
-|aspect_ratio|[ImageGenerationAspectRatio](#schemaimagegenerationaspectratio)|false|none|The aspect ratio of the generated image. Every aspect ratio is supported by every model<br>you can select with `model`, so the choice of model never limits the aspect ratios you<br>can use. The pixel dimensions of the output depend on the model. The job result reports<br>the actual `width` and `height`.|
+|aspect_ratio|[ImageGenerationAspectRatio](#schemaimagegenerationaspectratio)|false|none|The aspect ratio of the generated image. Every aspect ratio is supported by every model<br>you can select with `model`, so the choice of model never limits the aspect ratios you<br>can use. The pixel dimensions of the output depend on the model. The job result reports<br>the actual `width` and `height`. If you omit the aspect ratio, Canva chooses one for the<br>image. Don't rely on a specific default: set the aspect ratio when the shape matters.|
 |model|[ImageGenerationModel](#schemaimagegenerationmodel)|false|none|The model to use for image generation. We recommend omitting this parameter: Canva<br>then selects the best available model for the request and falls back to another<br>model if one is temporarily unavailable. Set it only if you need a specific model's<br>output. If the requested model can't serve the request, the job fails. Canva never<br>uses a different model to serve the request.<br><br>The model strengths below are based on Canva's evaluations. Results vary by<br>prompt, so test with your own prompts before pinning a model.|
 |idempotency_key|string(uuid)|true|none|A key to make create requests idempotent. Retrying with the same key returns the<br>original job without creating a duplicate, even if the other request parameters<br>differ. Keys are held for 24 hours from job creation.|
 |asset_upload|[ImageGenerationAssetUpload](#schemaimagegenerationassetupload)|false|none|Whether to save the generated image as an image asset in the user's Canva account.<br>Omitting `asset_upload` (or using `type: none`) returns only a download URL.<br><br>Saving the asset (`type: upload`) requires a user access token.|
@@ -18869,6 +18907,11 @@ display name, and whether it's an external Canva Group.
 |aspect_ratio|landscape_3_2|
 |aspect_ratio|portrait_2_3|
 |aspect_ratio|portrait_4_5|
+|aspect_ratio|landscape_4_3|
+|aspect_ratio|portrait_3_4|
+|aspect_ratio|landscape_5_4|
+|aspect_ratio|landscape_2_1|
+|aspect_ratio|portrait_1_2|
 |model|craft_v1_2k|
 |model|lucid_origin|
 |model|z_image_turbo|
@@ -18996,12 +19039,6 @@ alongside its download `url`.
       "code": "unsafe_input",
       "message": "string"
     }
-  },
-  "quota_usage": {
-    "used_percentage": 0,
-    "resets_at": 0,
-    "using_bonus_credits": true,
-    "usage_review_link": "string"
   }
 }
 ```
@@ -19011,7 +19048,6 @@ alongside its download `url`.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |job|[ImageGenerationJob](#schemaimagegenerationjob)|true|none|Details about the image generation job. If the job status is `success`, the job's<br>`result` is present.|
-|quota_usage|object|false|none|Credit quota usage after reserving credits for this job. Not present if quota data is unavailable.|
 
 <h2 id="tocS_GetImageGenerationJobResponse">GetImageGenerationJobResponse</h2>
 <!-- backwards compatibility -->
@@ -19259,7 +19295,8 @@ prompt, so test with your own prompts before pinning a model.
 The aspect ratio of the generated image. Every aspect ratio is supported by every model
 you can select with `model`, so the choice of model never limits the aspect ratios you
 can use. The pixel dimensions of the output depend on the model. The job result reports
-the actual `width` and `height`.
+the actual `width` and `height`. If you omit the aspect ratio, Canva chooses one for the
+image. Don't rely on a specific default: set the aspect ratio when the shape matters.
 
 <h2 id="tocS_ImageGenerationErrorCode">ImageGenerationErrorCode</h2>
 <!-- backwards compatibility -->
@@ -19355,7 +19392,7 @@ parameters.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|*oneOf*|[BackgroundRemovalImageTransformation](#schemabackgroundremovalimagetransformation)|false|none|Removes the background from an image, keeping the foreground subject. The resulting<br>image has a transparent background. This transformation takes no parameters.<br><br>The output image is limited to a maximum of 10 megapixels. If the source image is<br>larger, the output image is scaled down to stay within this limit.<br><br>Requires the user to have the `background_removal` capability. To check this before<br>creating a job, use the<br>[Get user capabilities API](https://www.canva.dev/docs/apps/rest-apis/reference/users/get-user-capabilities/).|
+|*oneOf*|[BackgroundRemovalImageTransformation](#schemabackgroundremovalimagetransformation)|false|none|Removes the background from an image, keeping the foreground subject. The resulting<br>image has a transparent background. This transformation takes no parameters.<br><br>The output image is limited to a maximum of 25 megapixels. If the source image is<br>larger, the output image is scaled down to stay within this limit.<br><br>Requires the user to have the `background_removal` capability. To check this before<br>creating a job, use the<br>[Get user capabilities API](https://www.canva.dev/docs/apps/rest-apis/reference/users/get-user-capabilities/).|
 
 <h2 id="tocS_BackgroundRemovalImageTransformation">BackgroundRemovalImageTransformation</h2>
 <!-- backwards compatibility -->
@@ -19373,7 +19410,7 @@ parameters.
 Removes the background from an image, keeping the foreground subject. The resulting
 image has a transparent background. This transformation takes no parameters.
 
-The output image is limited to a maximum of 10 megapixels. If the source image is
+The output image is limited to a maximum of 25 megapixels. If the source image is
 larger, the output image is scaled down to stay within this limit.
 
 Requires the user to have the `background_removal` capability. To check this before
@@ -19443,7 +19480,8 @@ creating a job, use the
             "nature"
           ]
         }
-      }
+      },
+      "url": "https://media-private.canva.com/Vczz9/zF9vzVtdADc/1/p.png?<query-string>"
     },
     "error": {
       "code": "no_foreground_found",
@@ -19510,7 +19548,8 @@ creating a job, use the
             "nature"
           ]
         }
-      }
+      },
+      "url": "https://media-private.canva.com/Vczz9/zF9vzVtdADc/1/p.png?<query-string>"
     },
     "error": {
       "code": "no_foreground_found",
@@ -19576,7 +19615,8 @@ creating a job, use the
           "nature"
         ]
       }
-    }
+    },
+    "url": "https://media-private.canva.com/Vczz9/zF9vzVtdADc/1/p.png?<query-string>"
   },
   "error": {
     "code": "no_foreground_found",
@@ -19668,7 +19708,8 @@ immediately, returning `success` or `failed` from job creation. If the status is
         "nature"
       ]
     }
-  }
+  },
+  "url": "https://media-private.canva.com/Vczz9/zF9vzVtdADc/1/p.png?<query-string>"
 }
 ```
 
@@ -19679,6 +19720,7 @@ Result of the image transformation job. Only present if the job status is `succe
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |asset|object|true|none|The new image asset produced by applying all of the requested transformations.|
+|url|string|false|none|A URL for retrieving the transformed image at full resolution.<br>This URL is temporary and includes a query string that's required for retrieving the<br>image. To get a new URL, call the<br>[Get image transformation job](https://www.canva.dev/docs/apps/rest-apis/reference/image-transformations/get-image-transformation-job/)<br>API again.<br><br>Only present if the user is allowed to access the transformed image at full<br>resolution. For example, it's omitted if the source asset contains premium content<br>that the user doesn't have a license for.|
 
 <h2 id="tocS_ImageTransformationErrorCode">ImageTransformationErrorCode</h2>
 <!-- backwards compatibility -->
@@ -20361,6 +20403,7 @@ If the merge job fails, this object provides details about the error.
 |---|---|---|---|---|
 |*oneOf*|[ExchangeAuthCodeRequest](#schemaexchangeauthcoderequest)|false|none|none|
 |*oneOf*|[ExchangeRefreshTokenRequest](#schemaexchangerefreshtokenrequest)|false|none|none|
+|*oneOf*|[ExchangeClientCredentialsRequest](#schemaexchangeclientcredentialsrequest)|false|none|none|
 
 <h2 id="tocS_ExchangeAuthCodeRequest">ExchangeAuthCodeRequest</h2>
 <!-- backwards compatibility -->
@@ -20430,6 +20473,37 @@ If the merge job fails, this object provides details about the error.
 |---|---|
 |grant_type|refresh_token|
 
+<h2 id="tocS_ExchangeClientCredentialsRequest">ExchangeClientCredentialsRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemaexchangeclientcredentialsrequest"></a>
+<a id="schema_ExchangeClientCredentialsRequest"></a>
+<a id="tocSexchangeclientcredentialsrequest"></a>
+<a id="tocsexchangeclientcredentialsrequest"></a>
+
+```json
+{
+  "grant_type": "client_credentials",
+  "client_id": "OC-FAB12-AbCdEf",
+  "client_secret": "cnvcaAbcdefg12345_hijklm6789",
+  "scope": "service:design:meta:read"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|grant_type|string|true|none|For generating an access token using your app's client credentials. Only service apps can use this grant type.|
+|client_id|string|false|none|Your app's unique ID, for authenticating the request.<br><br>NOTE: We recommend that you use basic access authentication instead of specifying `client_id` and `client_secret` as body parameters.<br>|
+|client_secret|string|false|none|Your app's client secret, for authenticating the request. Begins with `cnvca`.<br><br>NOTE: We recommend that you use basic access authentication instead of specifying `client_id` and `client_secret` as body parameters.<br>|
+|scope|string|false|none|Optional scope value when generating an access token using client credentials. Separate multiple [scopes for service apps](https://www.canva.dev/docs/apps/rest-apis/scopes/#scopes-for-service-apps) with a single space between each scope.<br><br>The requested scopes must be enabled for your app in the Developer Portal. If omitted, the token is granted all the scopes that are enabled for your app.<br>|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|grant_type|client_credentials|
+
 <h2 id="tocS_ExchangeAccessTokenResponse">ExchangeAccessTokenResponse</h2>
 <!-- backwards compatibility -->
 <a id="schemaexchangeaccesstokenresponse"></a>
@@ -20453,8 +20527,8 @@ Exchange auth token to access token.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|access_token|string|true|none|The bearer access token to use to authenticate to Canva REST API endpoints. If requested using a `authorization_code` or `refresh_token`, this allows you to act on behalf of a user.|
-|refresh_token|string|true|none|The token that you can use to refresh the access token.|
+|access_token|string|true|none|The bearer access token to use to authenticate to Canva REST API endpoints. If requested using `authorization_code` or `refresh_token`, this allows you to act on behalf of a user. If requested using `client_credentials`, this allows your service app to act on its own behalf.|
+|refresh_token|string|true|none|The token that you can use to refresh the access token.<br><br>This is only returned when the access token was requested using `authorization_code` or `refresh_token`. Access tokens requested using `client_credentials` don't have a refresh token, so service apps generate a new access token instead.<br>|
 |token_type|string|true|none|The token type returned. This is always `Bearer`.|
 |expires_in|integer(int64)|true|none|The expiry time (in seconds) for the access token.|
 |scope|string|false|none|The [scopes](https://www.canva.dev/docs/apps/rest-apis/scopes/) that the token has been granted.|

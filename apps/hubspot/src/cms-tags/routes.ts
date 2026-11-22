@@ -1817,7 +1817,7 @@ const AttachToLangPrimaryRequestVNextSchema = z
 const BatchInputJsonNodeSchema = z
   .object({
     inputs: z
-      .array(z.object({}).openapi({ example: null }))
+      .array(z.looseObject({}).openapi({ example: null }))
       .openapi({ description: 'JSON nodes to input.', example: null }),
   })
   .openapi({ required: ['inputs'], example: null })
@@ -2882,7 +2882,7 @@ const StandardErrorSchema = z
     message: z.string().openapi({ description: 'Error message.', example: null }),
     status: z.string().openapi({ description: 'Error status.', example: null }),
     subCategory: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Error subcategory.', example: null }),
   })
@@ -2972,17 +2972,17 @@ const CollectionResponseWithTotalTagForwardPagingSchema = z
   .openapi('CollectionResponseWithTotalTagForwardPaging')
 
 const CursorPagedResultBlogAuthorLongSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ example: null })
   .openapi('CursorPagedResultBlogAuthorLong')
 
 const CursorPagedResultBlogPostLongSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ example: null })
   .openapi('CursorPagedResultBlogPostLong')
 
 const CursorPagedResultTagLongSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ example: null })
   .openapi('CursorPagedResultTagLong')
 
@@ -4020,14 +4020,14 @@ const Oauth2SecurityScheme = {
     authorizationCode: {
       authorizationUrl: 'https://app.hubspot.com/oauth/authorize',
       tokenUrl: 'https://api.hubapi.com/oauth/v1/token',
-      scopes: { content: '' },
+      scopes: { 'cms.blogs.blog_posts.read': '', content: '' },
     },
   },
+  'x-hubspot-app-availability': {
+    'cms.blogs.blog_posts.read': { user: ['public', 'private'], developer: false },
+    content: { portal: ['public', 'private'], developer: false },
+  },
 }
-
-const PrivateAppsSecurityScheme = { type: 'apiKey', name: 'private-app', in: 'header' }
-
-const PrivateAppsLegacySecurityScheme = { type: 'apiKey', name: 'private-app-legacy', in: 'header' }
 
 export const getCmsBlogs202609AuthorsCursorRoute = createRoute({
   method: 'get',
@@ -4226,11 +4226,13 @@ export const getCmsBlogs202609AuthorsCursorRoute = createRoute({
   responses: {
     200: {
       description: 'successful operation',
-      content: { '*/*': { schema: CursorPagedResultBlogAuthorLongSchema, example: null } },
+      content: {
+        'application/json': { schema: CursorPagedResultBlogAuthorLongSchema, example: null },
+      },
     },
     default: ErrorResponse,
   },
-  security: [{ oauth2: ['content'] }],
+  security: [{ oauth2: ['cms.blogs.blog_posts.read'] }, { oauth2: ['content'] }],
 })
 
 export const getCmsBlogs202609AuthorsCursorQueryRoute = createRoute({
@@ -4425,11 +4427,13 @@ export const getCmsBlogs202609AuthorsCursorQueryRoute = createRoute({
   responses: {
     200: {
       description: 'successful operation',
-      content: { '*/*': { schema: CursorPagedResultBlogAuthorLongSchema, example: null } },
+      content: {
+        'application/json': { schema: CursorPagedResultBlogAuthorLongSchema, example: null },
+      },
     },
     default: ErrorResponse,
   },
-  security: [{ oauth2: ['content'] }],
+  security: [{ oauth2: ['cms.blogs.blog_posts.read'] }, { oauth2: ['content'] }],
 })
 
 export const getCmsBlogs202609PostsCursorRoute = createRoute({
@@ -4624,11 +4628,13 @@ export const getCmsBlogs202609PostsCursorRoute = createRoute({
   responses: {
     200: {
       description: 'successful operation',
-      content: { '*/*': { schema: CursorPagedResultBlogPostLongSchema, example: null } },
+      content: {
+        'application/json': { schema: CursorPagedResultBlogPostLongSchema, example: null },
+      },
     },
     default: ErrorResponse,
   },
-  security: [{ oauth2: ['content'] }],
+  security: [{ oauth2: ['cms.blogs.blog_posts.read'] }, { oauth2: ['content'] }],
 })
 
 export const getCmsBlogs202609PostsCursorQueryRoute = createRoute({
@@ -4823,11 +4829,13 @@ export const getCmsBlogs202609PostsCursorQueryRoute = createRoute({
   responses: {
     200: {
       description: 'successful operation',
-      content: { '*/*': { schema: CursorPagedResultBlogPostLongSchema, example: null } },
+      content: {
+        'application/json': { schema: CursorPagedResultBlogPostLongSchema, example: null },
+      },
     },
     default: ErrorResponse,
   },
-  security: [{ oauth2: ['content'] }],
+  security: [{ oauth2: ['cms.blogs.blog_posts.read'] }, { oauth2: ['content'] }],
 })
 
 export const getCmsBlogs202609TagsRoute = createRoute({
@@ -5024,12 +5032,15 @@ export const getCmsBlogs202609TagsRoute = createRoute({
     200: {
       description: 'successful operation',
       content: {
-        '*/*': { schema: CollectionResponseWithTotalTagForwardPagingSchema, example: null },
+        'application/json': {
+          schema: CollectionResponseWithTotalTagForwardPagingSchema,
+          example: null,
+        },
       },
     },
     default: ErrorResponse,
   },
-  security: [{ oauth2: ['content'] }],
+  security: [{ oauth2: ['cms.blogs.blog_posts.read'] }, { oauth2: ['content'] }],
 })
 
 export const postCmsBlogs202609TagsRoute = createRoute({
@@ -5039,24 +5050,22 @@ export const postCmsBlogs202609TagsRoute = createRoute({
   summary: 'Create a new Blog Tag',
   description: 'Create a new Blog Tag.',
   operationId: 'post-/cms/blogs/2026-09/tags_create',
-  request: { body: { content: { '*/*': { schema: TagSchema, example: null } }, required: true } },
+  request: {
+    body: { content: { 'application/json': { schema: TagSchema, example: null } }, required: true },
+  },
   responses: {
     201: {
       description: 'successful operation',
-      content: { '*/*': { schema: TagSchema, example: null } },
+      content: { 'application/json': { schema: TagSchema, example: null } },
       headers: z.object({
-        Location: {
-          description: 'URL of the newly created resource',
-          style: 'simple',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'URL of the newly created resource',
-              param: { required: false },
-              example: null,
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'URL of the newly created resource',
+            param: { required: false },
+            example: null,
+          }),
       }),
     },
     default: ErrorResponse,
@@ -5072,9 +5081,19 @@ export const postCmsBlogs202609TagsBatchArchiveRoute = createRoute({
   description: 'Delete the Blog Tag objects identified in the request body.',
   operationId: 'post-/cms/blogs/2026-09/tags/batch/archive_archiveBatch',
   request: {
-    body: { content: { '*/*': { schema: BatchInputStringSchema, example: null } }, required: true },
+    body: {
+      content: { 'application/json': { schema: BatchInputStringSchema, example: null } },
+      required: true,
+    },
   },
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+  responses: {
+    204: { description: 'No content', content: {} },
+    207: {
+      description: 'multiple statuses',
+      content: { 'application/json': { schema: BatchResponseTagWithErrorsSchema, example: null } },
+    },
+    default: ErrorResponse,
+  },
   security: [{ oauth2: ['content'] }],
 })
 
@@ -5086,16 +5105,19 @@ export const postCmsBlogs202609TagsBatchCreateRoute = createRoute({
   description: 'Create the Blog Tag objects detailed in the request body.',
   operationId: 'post-/cms/blogs/2026-09/tags/batch/create_createBatch',
   request: {
-    body: { content: { '*/*': { schema: BatchInputTagSchema, example: null } }, required: true },
+    body: {
+      content: { 'application/json': { schema: BatchInputTagSchema, example: null } },
+      required: true,
+    },
   },
   responses: {
     201: {
       description: 'successful operation',
-      content: { '*/*': { schema: BatchResponseTagSchema, example: null } },
+      content: { 'application/json': { schema: BatchResponseTagSchema, example: null } },
     },
     207: {
       description: 'multiple statuses',
-      content: { '*/*': { schema: BatchResponseTagWithErrorsSchema, example: null } },
+      content: { 'application/json': { schema: BatchResponseTagWithErrorsSchema, example: null } },
     },
     default: ErrorResponse,
   },
@@ -5127,20 +5149,23 @@ export const postCmsBlogs202609TagsBatchReadRoute = createRoute({
           example: null,
         }),
     }),
-    body: { content: { '*/*': { schema: BatchInputStringSchema, example: null } }, required: true },
+    body: {
+      content: { 'application/json': { schema: BatchInputStringSchema, example: null } },
+      required: true,
+    },
   },
   responses: {
     200: {
       description: 'successful operation',
-      content: { '*/*': { schema: BatchResponseTagSchema, example: null } },
+      content: { 'application/json': { schema: BatchResponseTagSchema, example: null } },
     },
     207: {
       description: 'multiple statuses',
-      content: { '*/*': { schema: BatchResponseTagWithErrorsSchema, example: null } },
+      content: { 'application/json': { schema: BatchResponseTagWithErrorsSchema, example: null } },
     },
     default: ErrorResponse,
   },
-  security: [{ oauth2: ['content'] }],
+  security: [{ oauth2: ['cms.blogs.blog_posts.read'] }, { oauth2: ['content'] }],
 })
 
 export const postCmsBlogs202609TagsBatchUpdateRoute = createRoute({
@@ -5169,18 +5194,18 @@ export const postCmsBlogs202609TagsBatchUpdateRoute = createRoute({
         }),
     }),
     body: {
-      content: { '*/*': { schema: BatchInputJsonNodeSchema, example: null } },
+      content: { 'application/json': { schema: BatchInputJsonNodeSchema, example: null } },
       required: true,
     },
   },
   responses: {
     200: {
       description: 'successful operation',
-      content: { '*/*': { schema: BatchResponseTagSchema, example: null } },
+      content: { 'application/json': { schema: BatchResponseTagSchema, example: null } },
     },
     207: {
       description: 'multiple statuses',
-      content: { '*/*': { schema: BatchResponseTagWithErrorsSchema, example: null } },
+      content: { 'application/json': { schema: BatchResponseTagWithErrorsSchema, example: null } },
     },
     default: ErrorResponse,
   },
@@ -5385,11 +5410,11 @@ export const getCmsBlogs202609TagsCursorRoute = createRoute({
   responses: {
     200: {
       description: 'successful operation',
-      content: { '*/*': { schema: CursorPagedResultTagLongSchema, example: null } },
+      content: { 'application/json': { schema: CursorPagedResultTagLongSchema, example: null } },
     },
     default: ErrorResponse,
   },
-  security: [{ oauth2: ['content'] }],
+  security: [{ oauth2: ['cms.blogs.blog_posts.read'] }, { oauth2: ['content'] }],
 })
 
 export const getCmsBlogs202609TagsCursorQueryRoute = createRoute({
@@ -5590,11 +5615,11 @@ export const getCmsBlogs202609TagsCursorQueryRoute = createRoute({
   responses: {
     200: {
       description: 'successful operation',
-      content: { '*/*': { schema: CursorPagedResultTagLongSchema, example: null } },
+      content: { 'application/json': { schema: CursorPagedResultTagLongSchema, example: null } },
     },
     default: ErrorResponse,
   },
-  security: [{ oauth2: ['content'] }],
+  security: [{ oauth2: ['cms.blogs.blog_posts.read'] }, { oauth2: ['content'] }],
 })
 
 export const postCmsBlogs202609TagsMultiLanguageAttachToLangGroupRoute = createRoute({
@@ -5606,7 +5631,9 @@ export const postCmsBlogs202609TagsMultiLanguageAttachToLangGroupRoute = createR
   operationId: 'post-/cms/blogs/2026-09/tags/multi-language/attach-to-lang-group_attachToLangGroup',
   request: {
     body: {
-      content: { '*/*': { schema: AttachToLangPrimaryRequestVNextSchema, example: null } },
+      content: {
+        'application/json': { schema: AttachToLangPrimaryRequestVNextSchema, example: null },
+      },
       required: true,
     },
   },
@@ -5624,14 +5651,14 @@ export const postCmsBlogs202609TagsMultiLanguageCreateLanguageVariationRoute = c
     'post-/cms/blogs/2026-09/tags/multi-language/create-language-variation_createLangVariation',
   request: {
     body: {
-      content: { '*/*': { schema: TagCloneRequestVNextSchema, example: null } },
+      content: { 'application/json': { schema: TagCloneRequestVNextSchema, example: null } },
       required: true,
     },
   },
   responses: {
     200: {
       description: 'successful operation',
-      content: { '*/*': { schema: TagSchema, example: null } },
+      content: { 'application/json': { schema: TagSchema, example: null } },
     },
     default: ErrorResponse,
   },
@@ -5648,7 +5675,9 @@ export const postCmsBlogs202609TagsMultiLanguageDetachFromLangGroupRoute = creat
     'post-/cms/blogs/2026-09/tags/multi-language/detach-from-lang-group_detachFromLangGroup',
   request: {
     body: {
-      content: { '*/*': { schema: DetachFromLangGroupRequestVNextSchema, example: null } },
+      content: {
+        'application/json': { schema: DetachFromLangGroupRequestVNextSchema, example: null },
+      },
       required: true,
     },
   },
@@ -5665,7 +5694,9 @@ export const putCmsBlogs202609TagsMultiLanguageSetNewLangPrimaryRoute = createRo
   operationId: 'put-/cms/blogs/2026-09/tags/multi-language/set-new-lang-primary_setLangPrimary',
   request: {
     body: {
-      content: { '*/*': { schema: SetNewLanguagePrimaryRequestVNextSchema, example: null } },
+      content: {
+        'application/json': { schema: SetNewLanguagePrimaryRequestVNextSchema, example: null },
+      },
       required: true,
     },
   },
@@ -5682,7 +5713,7 @@ export const postCmsBlogs202609TagsMultiLanguageUpdateLanguagesRoute = createRou
   operationId: 'post-/cms/blogs/2026-09/tags/multi-language/update-languages_updateLangs',
   request: {
     body: {
-      content: { '*/*': { schema: UpdateLanguagesRequestVNextSchema, example: null } },
+      content: { 'application/json': { schema: UpdateLanguagesRequestVNextSchema, example: null } },
       required: true,
     },
   },
@@ -5750,11 +5781,11 @@ export const getCmsBlogs202609TagsObjectIdRoute = createRoute({
   responses: {
     200: {
       description: 'successful operation',
-      content: { '*/*': { schema: TagSchema, example: null } },
+      content: { 'application/json': { schema: TagSchema, example: null } },
     },
     default: ErrorResponse,
   },
-  security: [{ oauth2: ['content'] }],
+  security: [{ oauth2: ['cms.blogs.blog_posts.read'] }, { oauth2: ['content'] }],
 })
 
 export const deleteCmsBlogs202609TagsObjectIdRoute = createRoute({
@@ -5845,12 +5876,12 @@ export const patchCmsBlogs202609TagsObjectIdRoute = createRoute({
           example: null,
         }),
     }),
-    body: { content: { '*/*': { schema: TagSchema, example: null } }, required: true },
+    body: { content: { 'application/json': { schema: TagSchema, example: null } }, required: true },
   },
   responses: {
     200: {
       description: 'successful operation',
-      content: { '*/*': { schema: TagSchema, example: null } },
+      content: { 'application/json': { schema: TagSchema, example: null } },
     },
     default: ErrorResponse,
   },

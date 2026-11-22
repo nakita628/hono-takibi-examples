@@ -12,7 +12,7 @@ type JsonArrayType = z.infer<typeof JsonValueSchema>[]
 
 type JsonObjectType = { [key: string]: unknown }
 
-type JsonPrimitiveType = boolean | number | string | ({ [key: string]: unknown } | null)
+type JsonPrimitiveType = boolean | number | string | null
 
 const JsonObjectSchema: z.ZodType<JsonObjectType> = z
   .record(z.string(), z.any())
@@ -127,7 +127,7 @@ const ListActionsResponseSchema = z
 const SerializedTaskSchema = z
   .object({
     id: z.string(),
-    spec: z.object({}),
+    spec: z.looseObject({}),
     status: TaskStatusSchema,
     createdAt: z.string(),
     lastHeartbeatAt: z.string().exactOptional(),
@@ -195,7 +195,7 @@ const TemplateGlobalFunctionSchema = z
 const TemplateGlobalValueSchema = z
   .object({
     description: z.string().exactOptional(),
-    value: z.union([z.object({}), z.null().nullable()]),
+    value: z.union([z.looseObject({}), z.null().nullable()]),
   })
   .openapi({
     required: ['value'],
@@ -276,7 +276,8 @@ const TemplateParameterSchemaSchema = z
         .object({
           title: z.string(),
           description: z.string().exactOptional(),
-          schema: z.object({}),
+          when: z.xor([z.string(), z.boolean()]).exactOptional(),
+          schema: z.looseObject({}),
         })
         .openapi({ required: ['title', 'schema'] }),
     ),
@@ -294,9 +295,9 @@ const ValidationErrorSchema = z
     path: z.array(z.xor([z.string(), z.int()])),
     property: z.string(),
     message: z.string(),
-    instance: z.object({}),
+    instance: z.looseObject({}),
     name: z.string(),
-    argument: z.xor([z.boolean(), z.number(), z.object({}), z.string()]),
+    argument: z.xor([z.boolean(), z.number(), z.looseObject({}), z.string()]),
     stack: z.string(),
   })
   .catchall(z.any())
@@ -639,7 +640,7 @@ export const postV2DryRunRoute = createRoute({
         'application/json': {
           schema: z
             .object({
-              template: z.object({}),
+              template: z.looseObject({}),
               values: JsonObjectSchema,
               secrets: z.record(z.string(), z.string()).exactOptional(),
               directoryContents: z.array(

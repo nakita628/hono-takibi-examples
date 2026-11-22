@@ -1,4 +1,4 @@
-<h1 id="the-jira-cloud-platform-rest-api">The Jira Cloud platform REST API v1001.0.0-SNAPSHOT-f6465463661722583daccffab8c9da1746fe0520</h1>
+<h1 id="the-jira-cloud-platform-rest-api">The Jira Cloud platform REST API v1001.0.0-SNAPSHOT-eac1257d8e1582ed7dd2a97a93dbea3c277d24be</h1>
 
 > Scroll down for code samples, example requests and responses. Select a language for code samples from the tabs above or the mobile navigation menu.
 
@@ -5917,6 +5917,7 @@ REST Endpoint for searching for projects belonging to a given field association 
 |startAt|query|integer(int64)|false|The starting index of the returned projects. Base index: 0.|
 |maxResults|query|integer(int32)|false|The maximum number of projects to return per page, maximum allowed value is 100.|
 |projectId|query|[integer(int64)]|false|The project Ids to filter by, if empty then all projects belonging to a field association scheme will be returned|
+|query|query|string|false|none|
 |id|path|integer(int64)|true|The scheme id to search for associated projects|
 
 > Example responses
@@ -6893,9 +6894,7 @@ curl https://your-domain.atlassian.net/rest/api/3/filter/0/columns \
 
 Sets the columns for a filter. Only navigable fields can be set as columns. Use [Get fields](#api-rest-api-3-field-get) to get the list fields in Jira. A navigable field has `navigable` set to `true`.
 
-The parameters for this resource are expressed as HTML form data. For example, in curl:
-
-`curl -X PUT -d columns=summary -d columns=description https://your-domain.atlassian.net/rest/api/3/filter/10000/columns`
+Send the columns as a JSON request body, for example `{"columns": ["summary", "description"]}`. To remove all columns from the filter, send an empty `columns` array or omit `columns` from the request body.
 
 **[Permissions](#permissions) required:** Permission to access Jira, however, columns are only set for:
 
@@ -6920,7 +6919,7 @@ The parameters for this resource are expressed as HTML form data. For example, i
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |id|path|integer(int64)|true|The ID of the filter.|
-|body|body|[ColumnRequestBody](#schemacolumnrequestbody)|true|The IDs of the fields to set as columns. In the form data, specify each field as `columns=id`, where `id` is the *id* of a field (as seen in the response for [Get fields](#api-rest-api-<ver>-field-get)). For example, `columns=summary`.|
+|body|body|[ColumnRequestBody](#schemacolumnrequestbody)|true|The IDs of the fields to set as columns, specified in the `columns` array of the JSON request body, where each entry is the *id* of a field (as seen in the response for [Get fields](#api-rest-api-<ver>-field-get)). For example, `{"columns": ["summary"]}`.|
 |» columns|body|[string]|false|none|
 
 > Example responses
@@ -11438,6 +11437,8 @@ For contexts that have not been converted to the multiple-contexts data model, e
 
 The value object on each entry is the same polymorphic `CustomFieldContextDefaultValueBean` exposed by the deprecated `GET /defaultValue` endpoint - its concrete subtype depends on the custom field's type (see the list of supported types on that endpoint).
 
+Only tenants enrolled in the early access program (EAP) can access this resource. See the [EAP announcement](https://ecosystem.atlassian.net/browse/CHANGE-3082) for details.
+
 **[Permissions](#permissions) required:** *Administer Jira* [global permission](https://confluence.atlassian.com/x/x4dKLg).
 
 <h3 id="get-default-values-for-a-custom-field-grouped-by-context-and-issue-type-parameters">Parameters</h3>
@@ -11500,7 +11501,7 @@ The value object on each entry is the same polymorphic `CustomFieldContextDefaul
 |---|---|---|---|
 |200|OK|Returned if the request is successful.|[PageBeanContextDefaultValues](#schemapagebeancontextdefaultvalues)|
 |401|Unauthorized|Returned if the authentication credentials are incorrect or missing.|None|
-|403|Forbidden|Returned if the user does not have the required permissions.|None|
+|403|Forbidden|Returned if the user does not have the required permissions, or the feature is not enabled for the tenant.|None|
 |404|Not Found|Returned if the custom field is not found.|None|
 
 <aside class="warning">
@@ -12454,6 +12455,7 @@ This operation works for custom field options created in Jira or the operations 
 |fieldId|path|string|true|The ID of the custom field.|
 |contextId|path|integer(int64)|true|The ID of the context.|
 |optionId|query|integer(int64)|false|The ID of the option.|
+|query|query|string|false|Case-insensitive literal substring of the option value. Blank queries do not filter. Combined with optionId and onlyOptions before pagination; totals count matching options.|
 |onlyOptions|query|boolean|false|Whether only options are returned.|
 |startAt|query|integer(int64)|false|The index of the first item to return in a page of results (page offset).|
 |maxResults|query|integer(int32)|false|The maximum number of items to return per page.|
@@ -21316,6 +21318,20 @@ Creates a security scheme with security scheme levels and levels' members. You c
 "{\"errorMessages\":[\"You are not authorized to perform this action. Administrator privileges are required.\"],\"errors\":{}}"
 ```
 
+> 422 Response
+
+```json
+{
+  "current_count": 0,
+  "entity_type": "string",
+  "error_code": "string",
+  "limit_type": "string",
+  "max_allowed_limit": 0,
+  "message": "string",
+  "scope_id": "string"
+}
+```
+
 <h3 id="create-issue-security-scheme-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
@@ -21324,6 +21340,7 @@ Creates a security scheme with security scheme levels and levels' members. You c
 |400|Bad Request|Returned if the request is invalid.|[ErrorCollection](#schemaerrorcollection)|
 |401|Unauthorized|Returned if the authentication credentials are incorrect or missing.|[ErrorCollection](#schemaerrorcollection)|
 |403|Forbidden|Returned if the user doesn't have the necessary permission.|[ErrorCollection](#schemaerrorcollection)|
+|422|Unprocessable Entity|Returned if the number of issue security levels requested exceeds the limit for an issue security scheme.|[LimitExceededResponseBean](#schemalimitexceededresponsebean)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -29836,6 +29853,7 @@ This operation can be accessed anonymously.
 |fieldValue|query|string|false|The partial field item name entered by the user.|
 |predicateName|query|string|false|The name of the [ CHANGED operator predicate](https://confluence.atlassian.com/x/hQORLQ#Advancedsearching-operatorsreference-CHANGEDCHANGED) for which the suggestions are generated. The valid predicate operators are *by*, *from*, and *to*.|
 |predicateValue|query|string|false|The partial predicate item name entered by the user.|
+|maxResults|query|integer(int32)|false|EXPERIMENTAL. A hint for the maximum number of suggestions to return for each of the field and predicate values. The value is capped at 50 and may be ignored, in which case the default of 15 is used. It is subject to change and may be removed without notice.|
 
 > Example responses
 
@@ -32259,6 +32277,20 @@ Creates a new permission scheme. You can create a permission scheme with or with
 "{\"description\":\"description\",\"id\":10000,\"name\":\"Example permission scheme\",\"permissions\":[{\"holder\":{\"expand\":\"group\",\"parameter\":\"jira-core-users\",\"type\":\"group\",\"value\":\"ca85fac0-d974-40ca-a615-7af99c48d24f\"},\"id\":10000,\"permission\":\"ADMINISTER_PROJECTS\",\"self\":\"https://your-domain.atlassian.net/rest/api/3/permissionscheme/permission/10000\"}],\"self\":\"https://your-domain.atlassian.net/rest/api/3/permissionscheme/10000\"}"
 ```
 
+> 422 Response
+
+```json
+{
+  "current_count": 0,
+  "entity_type": "string",
+  "error_code": "string",
+  "limit_type": "string",
+  "max_allowed_limit": 0,
+  "message": "string",
+  "scope_id": "string"
+}
+```
+
 <h3 id="create-permission-scheme-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
@@ -32267,6 +32299,7 @@ Creates a new permission scheme. You can create a permission scheme with or with
 |400|Bad Request|Returned if the request is invalid.|None|
 |401|Unauthorized|Returned if the authentication credentials are incorrect or missing.|None|
 |403|Forbidden|Returned if the user does not have the necessary permission or the feature is not available in the Jira plan.|None|
+|422|Unprocessable Entity|Returned if the limit on grants per permission is breached while creating the new permission scheme. The limit applies to each permission separately rather than to the scheme as a whole, and the response body identifies the permission that breached it. No permission scheme is created.|[LimitExceededResponseBean](#schemalimitexceededresponsebean)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -33353,6 +33386,7 @@ Creates a plan.
 |» » inferredDates|None|
 |» » inferredDates|SprintDates|
 |» » inferredDates|ReleaseDates|
+|» » inferredDates|AnySprintDates|
 |» » » type|DueDate|
 |» » » type|TargetStartDate|
 |» » » type|TargetEndDate|
@@ -34070,7 +34104,7 @@ curl https://your-domain.atlassian.net/rest/api/3/policies \
 
 Returns a paginated summary of all known policies, including their names, descriptions, and which projects each policy is assigned to.
 
-When \{@code tanuki-358-cursor-policy-listing\} is enabled, omit cursor for the first page and pass the returned \{@code nextPageCursor\} for subsequent pages. The legacy \{@code startAt\} and \{@code total\} fields are null because an offset and total are not available in cursor mode. When disabled, the offset contract is unchanged.
+Omit cursor for the first page and pass the returned \{@code nextPageCursor\} for subsequent pages. The legacy \{@code startAt\} and \{@code total\} fields are null because an offset and total are not available in cursor mode.
 
 <h3 id="get-all-policies-parameters">Parameters</h3>
 
@@ -39586,11 +39620,26 @@ This operation is:
 null
 ```
 
+> 422 Response
+
+```json
+{
+  "current_count": 0,
+  "entity_type": "string",
+  "error_code": "string",
+  "limit_type": "string",
+  "max_allowed_limit": 0,
+  "message": "string",
+  "scope_id": "string"
+}
+```
+
 <h3 id="create-custom-project-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |303|See Other|The project creation task has been queued for execution|Inline|
+|422|Unprocessable Entity|422 response|[LimitExceededResponseBean](#schemalimitexceededresponsebean)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -61548,6 +61597,7 @@ Details of an issue resolution.
 |inferredDates|None|
 |inferredDates|SprintDates|
 |inferredDates|ReleaseDates|
+|inferredDates|AnySprintDates|
 
 <h2 id="tocS_CreateUiModificationDetails">CreateUiModificationDetails</h2>
 <!-- backwards compatibility -->
@@ -62539,7 +62589,7 @@ The default text for a text area custom field.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |contextId|string|true|none|The ID of the context.|
-|text|string|false|none|The default text. The maximum length is 32767 characters.|
+|text|string|false|none|The default text. The maximum length is the instance's text field character limit.|
 |type|string|true|none|none|
 
 <h2 id="tocS_CustomFieldContextDefaultValueTextField">CustomFieldContextDefaultValueTextField</h2>
@@ -73791,6 +73841,7 @@ Response item returned from get projects with field schemes.
 |inferredDates|None|
 |inferredDates|SprintDates|
 |inferredDates|ReleaseDates|
+|inferredDates|AnySprintDates|
 
 <h2 id="tocS_GetTeamResponseForPage">GetTeamResponseForPage</h2>
 <!-- backwards compatibility -->
@@ -114811,12 +114862,12 @@ Details about data policy.
 |---|---|---|---|---|
 |anyContentBlocked|boolean|false|read-only|Whether the workspace contains any content inaccessible to the requesting application.|
 
-<h2 id="tocS_fields">fields</h2>
+<h2 id="tocS_fields2">fields2</h2>
 <!-- backwards compatibility -->
-<a id="schemafields-1"></a>
-<a id="schema_fields"></a>
-<a id="tocSfields-1"></a>
-<a id="tocsfields-1"></a>
+<a id="schemafields2"></a>
+<a id="schema_fields2"></a>
+<a id="tocSfields2"></a>
+<a id="tocsfields2"></a>
 
 ```json
 {

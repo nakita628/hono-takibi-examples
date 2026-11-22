@@ -1,33 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const TokenLogprobSchema = z
-  .object({
-    token: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The text representation of the token' }),
-    logprob: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'The log probability of this token' }),
-    bytes: z
-      .array(z.int())
-      .exactOptional()
-      .openapi({ description: 'The raw byte representation of the token' }),
-  })
-  .openapi({
-    description: 'Log probability information for a single token alternative',
-    required: [],
-  })
-  .openapi('TokenLogprob')
-
-type LogprobType = {
-  token?: string
-  logprob?: number
-  bytes?: number[]
-  top_logprobs?: z.infer<typeof TokenLogprobSchema>[]
-}
-
 const ModelOptionsSchema = z
   .looseObject({
     seed: z
@@ -96,7 +68,7 @@ const GenerateRequestSchema = z
       )
       .exactOptional(),
     format: z
-      .xor([z.string(), z.object({})])
+      .xor([z.string(), z.looseObject({})])
       .exactOptional()
       .openapi({
         description:
@@ -141,31 +113,47 @@ const GenerateRequestSchema = z
   .openapi({ required: ['model'] })
   .openapi('GenerateRequest')
 
-const LogprobSchema: z.ZodType<LogprobType> = z
-  .lazy(() =>
-    z
-      .object({
-        token: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The text representation of the token' }),
-        logprob: z
-          .number()
-          .exactOptional()
-          .openapi({ description: 'The log probability of this token' }),
-        bytes: z
-          .array(z.int())
-          .exactOptional()
-          .openapi({ description: 'The raw byte representation of the token' }),
-        top_logprobs: z
-          .array(TokenLogprobSchema)
-          .exactOptional()
-          .openapi({
-            description: 'Most likely tokens and their log probabilities at this position',
-          }),
-      })
-      .openapi({ description: 'Log probability information for a generated token', required: [] }),
-  )
+const TokenLogprobSchema = z
+  .object({
+    token: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The text representation of the token' }),
+    logprob: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'The log probability of this token' }),
+    bytes: z
+      .array(z.int())
+      .exactOptional()
+      .openapi({ description: 'The raw byte representation of the token' }),
+  })
+  .openapi({
+    description: 'Log probability information for a single token alternative',
+    required: [],
+  })
+  .openapi('TokenLogprob')
+
+const LogprobSchema = z
+  .object({
+    token: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The text representation of the token' }),
+    logprob: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'The log probability of this token' }),
+    bytes: z
+      .array(z.int())
+      .exactOptional()
+      .openapi({ description: 'The raw byte representation of the token' }),
+    top_logprobs: z
+      .array(TokenLogprobSchema)
+      .exactOptional()
+      .openapi({ description: 'Most likely tokens and their log probabilities at this position' }),
+  })
+  .openapi({ description: 'Log probability information for a generated token', required: [] })
   .openapi('Logprob')
 
 const GenerateResponseSchema = z
@@ -289,7 +277,7 @@ const ToolCallSchema = z
         name: z.string().openapi({ description: 'Name of the function to call' }),
         description: z.string().exactOptional().openapi({ description: 'What the function does' }),
         arguments: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({ description: 'JSON object of arguments to pass to the function' }),
       })
@@ -328,7 +316,7 @@ const ToolDefinitionSchema = z
           .exactOptional()
           .openapi({ description: 'Human-readable description of the function' }),
         parameters: z
-          .object({})
+          .looseObject({})
           .openapi({ description: 'JSON Schema for the function parameters' }),
       })
       .openapi({ required: ['name', 'parameters'] }),
@@ -351,7 +339,7 @@ const ChatRequestSchema = z
         description: 'Optional list of function tools the model may call during the chat',
       }),
     format: z
-      .xor([z.literal('json'), z.object({})])
+      .xor([z.literal('json'), z.looseObject({})])
       .exactOptional()
       .openapi({ description: 'Format to return a response in. Can be `json` or a JSON schema' }),
     options: ModelOptionsSchema.exactOptional(),
@@ -626,7 +614,7 @@ const CreateRequestSchema = z
       .exactOptional()
       .openapi({ description: 'System prompt to embed in the model' }),
     parameters: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Key-value parameters for the model' }),
     messages: z
@@ -729,7 +717,7 @@ const ShowResponseSchema = z
       .string()
       .exactOptional()
       .openapi({ description: 'Last modified timestamp in ISO 8601 format' }),
-    details: z.object({}).exactOptional().openapi({ description: 'High-level model details' }),
+    details: z.looseObject({}).exactOptional().openapi({ description: 'High-level model details' }),
     template: z
       .string()
       .exactOptional()
@@ -755,7 +743,10 @@ const ShowResponseSchema = z
       .array(z.string())
       .exactOptional()
       .openapi({ description: 'List of supported features' }),
-    model_info: z.object({}).exactOptional().openapi({ description: 'Additional model metadata' }),
+    model_info: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({ description: 'Additional model metadata' }),
   })
   .openapi({ required: [] })
   .openapi('ShowResponse')
@@ -828,7 +819,7 @@ const PsSchema = z
     size: z.int().exactOptional().openapi({ description: 'Size of the model in bytes' }),
     digest: z.string().exactOptional().openapi({ description: 'SHA256 digest of the model' }),
     details: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Model details such as format and family' }),
     expires_at: z
@@ -1945,17 +1936,11 @@ export const getApiUsageRoute = createRoute({
       description: 'Too many requests.',
       content: { 'application/json': { schema: ErrorResponseSchema } },
       headers: z.object({
-        'Retry-After': {
-          description: 'Seconds to wait before retrying.',
-          schema: z
-            .int()
-            .min(1)
-            .exactOptional()
-            .openapi({
-              description: 'Seconds to wait before retrying.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int()
+          .min(1)
+          .exactOptional()
+          .openapi({ description: 'Seconds to wait before retrying.', param: { required: false } }),
       }),
     },
     503: {
@@ -1994,17 +1979,11 @@ export const getApiBalanceRoute = createRoute({
       description: 'Too many requests.',
       content: { 'application/json': { schema: ErrorResponseSchema } },
       headers: z.object({
-        'Retry-After': {
-          description: 'Seconds to wait before retrying.',
-          schema: z
-            .int()
-            .min(1)
-            .exactOptional()
-            .openapi({
-              description: 'Seconds to wait before retrying.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int()
+          .min(1)
+          .exactOptional()
+          .openapi({ description: 'Seconds to wait before retrying.', param: { required: false } }),
       }),
     },
     503: {

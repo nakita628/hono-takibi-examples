@@ -1,43 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const AppInfoSchema = z
-  .object({
-    id: z.string().openapi({ description: 'The ID of the application', example: null }),
-    name: z.string().openapi({ description: 'The name of the application', example: null }),
-  })
-  .openapi({ required: ['id', 'name'], example: null })
-  .openapi('AppInfo')
-
-const AttendanceCountersSchema = z
-  .object({
-    attended: z
-      .int32()
-      .openapi({
-        description: 'Number of attended contact records of a marketing event',
-        example: null,
-      }),
-    cancelled: z
-      .int32()
-      .openapi({
-        description: 'Number of cancelled contact records of a marketing event',
-        example: null,
-      }),
-    noShows: z
-      .int32()
-      .openapi({
-        description: 'Number of no-show contact records of a marketing event',
-        example: null,
-      }),
-    registered: z
-      .int32()
-      .openapi({
-        description: 'Number of registered contact records of a marketing event',
-        example: null,
-      }),
-  })
-  .openapi({ required: ['attended', 'cancelled', 'noShows', 'registered'], example: null })
-  .openapi('AttendanceCounters')
-
 const MaskedSubstringSchema = z
   .object({
     end: z
@@ -422,18 +384,287 @@ const MarketingEventCreateRequestParamsSchema = z
   })
   .openapi('MarketingEventCreateRequestParams')
 
-const BatchInputMarketingEventCreateRequestParamsSchema = z
+type BatchInputMarketingEventCreateRequestParamsType = {
+  inputs: z.infer<typeof MarketingEventCreateRequestParamsSchema>[]
+}
+
+const MarketingEventPublicUpdateRequestFullV2Schema = z
   .object({
-    inputs: z
-      .array(MarketingEventCreateRequestParamsSchema)
+    customProperties: z
+      .array(PropertyValueSchema)
       .openapi({
         description:
-          'An array of MarketingEventCreateRequestParams objects, each containing the necessary details to create a marketing event. This includes properties such as event name, organizer, and custom properties.',
+          'An array of custom properties associated with the event, where each property is defined by a PropertyValue object.',
+        example: null,
+      }),
+    endDateTime: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'The end date and time of the marketing event', example: null }),
+    eventCancelled: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Indicates if the marketing event has been cancelled',
+        example: null,
+      }),
+    eventDescription: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The description of the marketing event', example: null }),
+    eventName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the marketing event', example: null }),
+    eventOrganizer: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the organizer of the marketing event', example: null }),
+    eventType: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The type of the marketing event', example: null }),
+    eventUrl: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A URL in the external event application where the marketing event can be managed',
+        example: null,
+      }),
+    objectId: z
+      .string()
+      .openapi({ description: 'The internal ID of the marketing event in HubSpot', example: null }),
+    startDateTime: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'The start date and time of the marketing event', example: null }),
+  })
+  .openapi({ required: ['customProperties', 'objectId'], example: null })
+  .openapi('MarketingEventPublicUpdateRequestFullV2')
+
+type BatchInputMarketingEventPublicUpdateRequestFullV2Type = {
+  inputs: z.infer<typeof MarketingEventPublicUpdateRequestFullV2Schema>[]
+}
+
+const ErrorDetailSchema = z
+  .object({
+    code: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The status code associated with the error detail', example: null }),
+    context: z
+      .record(z.string(), z.array(z.string().openapi({ example: null })).openapi({ example: null }))
+      .exactOptional()
+      .openapi({
+        description: 'Context about the error condition',
+        example: '{missingScopes=[scope1, scope2]}',
+      }),
+    in: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The name of the field or parameter in which the error was found.',
+        example: null,
+      }),
+    message: z
+      .string()
+      .openapi({
+        description:
+          'A human readable message describing the error along with remediation steps where appropriate',
+        example: null,
+      }),
+    subCategory: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'A specific category that contains more specific detail about the error',
         example: null,
       }),
   })
-  .openapi({ required: ['inputs'], example: null })
-  .openapi('BatchInputMarketingEventCreateRequestParams')
+  .openapi({
+    required: ['message'],
+    description:
+      'Represents detailed information about an error that occurred in the API. This component is used to provide additional context and specifics about errors, typically as part of an error response.',
+    example: null,
+  })
+  .openapi('ErrorDetail')
+
+const StandardErrorSchema = z
+  .object({
+    category: z.string().openapi({ description: 'The category of the error', example: null }),
+    context: z
+      .record(z.string(), z.array(z.string().openapi({ example: null })).openapi({ example: null }))
+      .openapi({ description: 'The object that contains details of the errors', example: null }),
+    errors: z
+      .array(ErrorDetailSchema)
+      .openapi({
+        description:
+          'An array of ErrorDetail objects providing further information about the error.',
+        example: null,
+      }),
+    id: z.string().exactOptional().openapi({ description: 'The ID of the request', example: null }),
+    links: z
+      .record(z.string(), z.string().openapi({ example: null }))
+      .openapi({ description: 'Results of the request', example: null }),
+    message: z
+      .string()
+      .openapi({
+        description:
+          'A human readable message describing the error along with remediation steps where appropriate',
+        example: null,
+      }),
+    status: z.string().openapi({ description: 'Status of the response', example: null }),
+    subCategory: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({ description: 'The Sub-category of the error', example: null }),
+  })
+  .openapi({
+    required: ['category', 'context', 'errors', 'links', 'message', 'status'],
+    description: 'Ye olde error',
+    example: null,
+  })
+  .openapi('StandardError')
+
+const MarketingEventPublicDefaultResponseSchema = z
+  .object({
+    createdAt: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'The creation date and time of the marketing event.',
+        example: null,
+      }),
+    customProperties: z
+      .array(PropertyValueSchema)
+      .openapi({
+        description:
+          "A list of PropertyValues. These can be whatever kind of property names and values you want. However, they must already exist on the HubSpot account's definition of the MarketingEvent Object. If they don't they will be filtered out and not set.\nIn order to do this you'll need to create a new PropertyGroup on the HubSpot account's MarketingEvent object for your specific app and create the Custom Property you want to track on that HubSpot account. Do not create any new default properties on the MarketingEvent object as that will apply to all HubSpot accounts.\n",
+        example: null,
+      }),
+    endDateTime: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'The end date and time of the marketing event.', example: null }),
+    eventCancelled: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Indicates if the marketing event has been cancelled.',
+        example: null,
+      }),
+    eventCompleted: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Indicates if the marketing event has been completed.',
+        example: null,
+      }),
+    eventDescription: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The description of the marketing event.', example: null }),
+    eventName: z
+      .string()
+      .openapi({ description: 'The name of the marketing event.', example: null }),
+    eventOrganizer: z
+      .string()
+      .openapi({ description: 'The name of the organizer of the marketing event.', example: null }),
+    eventType: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The type of the marketing event.', example: null }),
+    eventUrl: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A URL in the external event application where the marketing event can be managed.',
+        example: null,
+      }),
+    id: z
+      .string()
+      .openapi({ description: 'The ID of the marketing event CRM object.', example: null }),
+    objectId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The ID of the marketing event CRM object.', example: null }),
+    startDateTime: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'The start date and time of the marketing event.', example: null }),
+    updatedAt: z.iso
+      .datetime({ offset: true })
+      .openapi({ description: 'The update date and time of the marketing event.', example: null }),
+  })
+  .openapi({
+    required: ['createdAt', 'customProperties', 'eventName', 'eventOrganizer', 'id', 'updatedAt'],
+    example: null,
+  })
+  .openapi('MarketingEventPublicDefaultResponse')
+
+type BatchResponseMarketingEventPublicDefaultResponseType = {
+  completedAt: string
+  errors?: z.infer<typeof StandardErrorSchema>[]
+  links?: { [key: string]: string }
+  numErrors?: number
+  requestedAt?: string
+  results: z.infer<typeof MarketingEventPublicDefaultResponseSchema>[]
+  startedAt: string
+  status: 'CANCELED' | 'COMPLETE' | 'PENDING' | 'PROCESSING'
+}
+
+const AppInfoSchema = z
+  .object({
+    id: z.string().openapi({ description: 'The ID of the application', example: null }),
+    name: z.string().openapi({ description: 'The name of the application', example: null }),
+  })
+  .openapi({ required: ['id', 'name'], example: null })
+  .openapi('AppInfo')
+
+const AttendanceCountersSchema = z
+  .object({
+    attended: z
+      .int32()
+      .openapi({
+        description: 'Number of attended contact records of a marketing event',
+        example: null,
+      }),
+    cancelled: z
+      .int32()
+      .openapi({
+        description: 'Number of cancelled contact records of a marketing event',
+        example: null,
+      }),
+    noShows: z
+      .int32()
+      .openapi({
+        description: 'Number of no-show contact records of a marketing event',
+        example: null,
+      }),
+    registered: z
+      .int32()
+      .openapi({
+        description: 'Number of registered contact records of a marketing event',
+        example: null,
+      }),
+  })
+  .openapi({ required: ['attended', 'cancelled', 'noShows', 'registered'], example: null })
+  .openapi('AttendanceCounters')
+
+const BatchInputMarketingEventCreateRequestParamsSchema: z.ZodType<BatchInputMarketingEventCreateRequestParamsType> =
+  z
+    .object({
+      inputs: z
+        .array(MarketingEventCreateRequestParamsSchema)
+        .openapi({
+          description:
+            'An array of MarketingEventCreateRequestParams objects, each containing the necessary details to create a marketing event. This includes properties such as event name, organizer, and custom properties.',
+          example: null,
+        }),
+    })
+    .openapi({ required: ['inputs'], example: null })
+    .openapi('BatchInputMarketingEventCreateRequestParams')
 
 const MarketingEventEmailSubscriberSchema = z
   .object({
@@ -550,73 +781,19 @@ const BatchInputMarketingEventPublicObjectIdDeleteRequestSchema = z
   .openapi({ required: ['inputs'], example: null })
   .openapi('BatchInputMarketingEventPublicObjectIdDeleteRequest')
 
-const MarketingEventPublicUpdateRequestFullV2Schema = z
-  .object({
-    customProperties: z
-      .array(PropertyValueSchema)
-      .openapi({
-        description:
-          'An array of custom properties associated with the event, where each property is defined by a PropertyValue object.',
-        example: null,
-      }),
-    endDateTime: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'The end date and time of the marketing event', example: null }),
-    eventCancelled: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Indicates if the marketing event has been cancelled',
-        example: null,
-      }),
-    eventDescription: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The description of the marketing event', example: null }),
-    eventName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The name of the marketing event', example: null }),
-    eventOrganizer: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The name of the organizer of the marketing event', example: null }),
-    eventType: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The type of the marketing event', example: null }),
-    eventUrl: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A URL in the external event application where the marketing event can be managed',
-        example: null,
-      }),
-    objectId: z
-      .string()
-      .openapi({ description: 'The internal ID of the marketing event in HubSpot', example: null }),
-    startDateTime: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'The start date and time of the marketing event', example: null }),
-  })
-  .openapi({ required: ['customProperties', 'objectId'], example: null })
-  .openapi('MarketingEventPublicUpdateRequestFullV2')
-
-const BatchInputMarketingEventPublicUpdateRequestFullV2Schema = z
-  .object({
-    inputs: z
-      .array(MarketingEventPublicUpdateRequestFullV2Schema)
-      .openapi({
-        description:
-          'An array of MarketingEventPublicUpdateRequestFullV2 objects, each representing a marketing event update request. This property is required.',
-        example: null,
-      }),
-  })
-  .openapi({ required: ['inputs'], example: null })
-  .openapi('BatchInputMarketingEventPublicUpdateRequestFullV2')
+const BatchInputMarketingEventPublicUpdateRequestFullV2Schema: z.ZodType<BatchInputMarketingEventPublicUpdateRequestFullV2Type> =
+  z
+    .object({
+      inputs: z
+        .array(MarketingEventPublicUpdateRequestFullV2Schema)
+        .openapi({
+          description:
+            'An array of MarketingEventPublicUpdateRequestFullV2 objects, each representing a marketing event update request. This property is required.',
+          example: null,
+        }),
+    })
+    .openapi({ required: ['inputs'], example: null })
+    .openapi('BatchInputMarketingEventPublicUpdateRequestFullV2')
 
 const MarketingEventSubscriberSchema = z
   .object({
@@ -674,206 +851,54 @@ const BatchInputMarketingEventSubscriberSchema = z
   .openapi({ required: ['inputs'], example: null })
   .openapi('BatchInputMarketingEventSubscriber')
 
-const ErrorDetailSchema = z
-  .object({
-    code: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The status code associated with the error detail', example: null }),
-    context: z
-      .record(z.string(), z.array(z.string().openapi({ example: null })).openapi({ example: null }))
-      .exactOptional()
-      .openapi({
-        description: 'Context about the error condition',
-        example: '{missingScopes=[scope1, scope2]}',
-      }),
-    in: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The name of the field or parameter in which the error was found.',
-        example: null,
-      }),
-    message: z
-      .string()
-      .openapi({
-        description:
-          'A human readable message describing the error along with remediation steps where appropriate',
-        example: null,
-      }),
-    subCategory: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'A specific category that contains more specific detail about the error',
-        example: null,
-      }),
-  })
-  .openapi({
-    required: ['message'],
-    description:
-      'Represents detailed information about an error that occurred in the API. This component is used to provide additional context and specifics about errors, typically as part of an error response.',
-    example: null,
-  })
-  .openapi('ErrorDetail')
-
-const StandardErrorSchema = z
-  .object({
-    category: z.string().openapi({ description: 'The category of the error', example: null }),
-    context: z
-      .record(z.string(), z.array(z.string().openapi({ example: null })).openapi({ example: null }))
-      .openapi({ description: 'The object that contains details of the errors', example: null }),
-    errors: z
-      .array(ErrorDetailSchema)
-      .openapi({
-        description:
-          'An array of ErrorDetail objects providing further information about the error.',
-        example: null,
-      }),
-    id: z.string().exactOptional().openapi({ description: 'The ID of the request', example: null }),
-    links: z
-      .record(z.string(), z.string().openapi({ example: null }))
-      .openapi({ description: 'Results of the request', example: null }),
-    message: z
-      .string()
-      .openapi({
-        description:
-          'A human readable message describing the error along with remediation steps where appropriate',
-        example: null,
-      }),
-    status: z.string().openapi({ description: 'Status of the response', example: null }),
-    subCategory: z
-      .object({})
-      .exactOptional()
-      .openapi({ description: 'The Sub-category of the error', example: null }),
-  })
-  .openapi({
-    required: ['category', 'context', 'errors', 'links', 'message', 'status'],
-    description: 'Ye olde error',
-    example: null,
-  })
-  .openapi('StandardError')
-
-const MarketingEventPublicDefaultResponseSchema = z
-  .object({
-    createdAt: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'The creation date and time of the marketing event.',
-        example: null,
-      }),
-    customProperties: z
-      .array(PropertyValueSchema)
-      .openapi({
-        description:
-          "A list of PropertyValues. These can be whatever kind of property names and values you want. However, they must already exist on the HubSpot account's definition of the MarketingEvent Object. If they don't they will be filtered out and not set.\nIn order to do this you'll need to create a new PropertyGroup on the HubSpot account's MarketingEvent object for your specific app and create the Custom Property you want to track on that HubSpot account. Do not create any new default properties on the MarketingEvent object as that will apply to all HubSpot accounts.\n",
-        example: null,
-      }),
-    endDateTime: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'The end date and time of the marketing event.', example: null }),
-    eventCancelled: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Indicates if the marketing event has been cancelled.',
-        example: null,
-      }),
-    eventCompleted: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Indicates if the marketing event has been completed.',
-        example: null,
-      }),
-    eventDescription: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The description of the marketing event.', example: null }),
-    eventName: z
-      .string()
-      .openapi({ description: 'The name of the marketing event.', example: null }),
-    eventOrganizer: z
-      .string()
-      .openapi({ description: 'The name of the organizer of the marketing event.', example: null }),
-    eventType: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The type of the marketing event.', example: null }),
-    eventUrl: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A URL in the external event application where the marketing event can be managed.',
-        example: null,
-      }),
-    id: z
-      .string()
-      .openapi({ description: 'The ID of the marketing event CRM object.', example: null }),
-    objectId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The ID of the marketing event CRM object.', example: null }),
-    startDateTime: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'The start date and time of the marketing event.', example: null }),
-    updatedAt: z.iso
-      .datetime({ offset: true })
-      .openapi({ description: 'The update date and time of the marketing event.', example: null }),
-  })
-  .openapi({
-    required: ['createdAt', 'customProperties', 'eventName', 'eventOrganizer', 'id', 'updatedAt'],
-    example: null,
-  })
-  .openapi('MarketingEventPublicDefaultResponse')
-
-const BatchResponseMarketingEventPublicDefaultResponseSchema = z
-  .object({
-    completedAt: z.iso
-      .datetime({ offset: true })
-      .openapi({ description: 'Timestamp of when the request was completed.', example: null }),
-    errors: z
-      .array(StandardErrorSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'An array of errors encountered during the batch operation, each item detailing a specific error.',
-        example: null,
-      }),
-    links: z
-      .record(z.string(), z.string().openapi({ example: null }))
-      .exactOptional()
-      .openapi({ description: 'Result of the request.', example: null }),
-    numErrors: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'The number of errors that occurred during the request.',
-        example: null,
-      }),
-    requestedAt: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'Timestamp of when the request was sent.', example: null }),
-    results: z
-      .array(MarketingEventPublicDefaultResponseSchema)
-      .openapi({
-        description:
-          'An array of results from the batch operation, each item representing a response for an individual marketing event.',
-        example: null,
-      }),
-    startedAt: z.iso
-      .datetime({ offset: true })
-      .openapi({ description: 'Timestamp of when the request started processing.', example: null }),
-    status: z
-      .enum(['CANCELED', 'COMPLETE', 'PENDING', 'PROCESSING'])
-      .openapi({ description: 'Status of the response.', example: null }),
-  })
-  .openapi({ required: ['completedAt', 'results', 'startedAt', 'status'], example: null })
-  .openapi('BatchResponseMarketingEventPublicDefaultResponse')
+const BatchResponseMarketingEventPublicDefaultResponseSchema: z.ZodType<BatchResponseMarketingEventPublicDefaultResponseType> =
+  z
+    .object({
+      completedAt: z.iso
+        .datetime({ offset: true })
+        .openapi({ description: 'Timestamp of when the request was completed.', example: null }),
+      errors: z
+        .array(StandardErrorSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'An array of errors encountered during the batch operation, each item detailing a specific error.',
+          example: null,
+        }),
+      links: z
+        .record(z.string(), z.string().openapi({ example: null }))
+        .exactOptional()
+        .openapi({ description: 'Result of the request.', example: null }),
+      numErrors: z
+        .int32()
+        .exactOptional()
+        .openapi({
+          description: 'The number of errors that occurred during the request.',
+          example: null,
+        }),
+      requestedAt: z.iso
+        .datetime({ offset: true })
+        .exactOptional()
+        .openapi({ description: 'Timestamp of when the request was sent.', example: null }),
+      results: z
+        .array(MarketingEventPublicDefaultResponseSchema)
+        .openapi({
+          description:
+            'An array of results from the batch operation, each item representing a response for an individual marketing event.',
+          example: null,
+        }),
+      startedAt: z.iso
+        .datetime({ offset: true })
+        .openapi({
+          description: 'Timestamp of when the request started processing.',
+          example: null,
+        }),
+      status: z
+        .enum(['CANCELED', 'COMPLETE', 'PENDING', 'PROCESSING'])
+        .openapi({ description: 'Status of the response.', example: null }),
+    })
+    .openapi({ required: ['completedAt', 'results', 'startedAt', 'status'], example: null })
+    .openapi('BatchResponseMarketingEventPublicDefaultResponse')
 
 const CrmPropertyWrapperSchema = z
   .object({
@@ -2117,11 +2142,19 @@ const Oauth2SecurityScheme = {
       scopes: { 'crm.objects.marketing_events.read': '', 'crm.objects.marketing_events.write': '' },
     },
   },
+  'x-hubspot-app-availability': {
+    'crm.objects.marketing_events.read': {
+      portal: ['public', 'private'],
+      user: ['public', 'private'],
+      developer: false,
+    },
+    'crm.objects.marketing_events.write': {
+      portal: ['public', 'private'],
+      user: ['public', 'private'],
+      developer: false,
+    },
+  },
 }
-
-const PrivateAppsSecurityScheme = { type: 'apiKey', name: 'private-app', in: 'header' }
-
-const PrivateAppsLegacySecurityScheme = { type: 'apiKey', name: 'private-app-legacy', in: 'header' }
 
 export const getMarketingMarketingEvents202609Route = createRoute({
   method: 'get',

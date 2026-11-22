@@ -37,7 +37,7 @@ const ContentDispositionSchema: z.ZodType<ContentDispositionType> = z
 type MessageBodyWorkersType = { [key: string]: unknown }
 
 const MessageBodyWorkersSchema: z.ZodType<MessageBodyWorkersType> = z
-  .object({})
+  .looseObject({})
   .openapi('MessageBodyWorkers')
 
 const MultiPartSchema: z.ZodType<MultiPartType> = z
@@ -45,11 +45,12 @@ const MultiPartSchema: z.ZodType<MultiPartType> = z
     z
       .object({
         contentDisposition: ContentDispositionSchema.exactOptional(),
-        entity: z.object({}).exactOptional(),
+        entity: z.looseObject({}).exactOptional(),
         headers: z
           .object({ empty: z.boolean().exactOptional() })
           .catchall(z.array(z.string()))
-          .exactOptional(),
+          .exactOptional()
+          .openapi({ required: [] }),
         mediaType: z
           .object({
             type: z.string().exactOptional(),
@@ -62,12 +63,13 @@ const MultiPartSchema: z.ZodType<MultiPartType> = z
           .openapi({ required: [] }),
         messageBodyWorkers: MessageBodyWorkersSchema.exactOptional(),
         parent: MultiPartSchema.exactOptional(),
-        providers: z.object({}).exactOptional(),
+        providers: z.looseObject({}).exactOptional(),
         bodyParts: z.array(BodyPartSchema).exactOptional(),
         parameterizedHeaders: z
           .object({ empty: z.boolean().exactOptional() })
           .catchall(z.array(ParameterizedHeaderSchema))
-          .exactOptional(),
+          .exactOptional()
+          .openapi({ required: [] }),
       })
       .openapi({ required: [] }),
   )
@@ -95,11 +97,12 @@ const BodyPartSchema: z.ZodType<BodyPartType> = z
     z
       .object({
         contentDisposition: ContentDispositionSchema.exactOptional(),
-        entity: z.object({}).exactOptional(),
+        entity: z.looseObject({}).exactOptional(),
         headers: z
           .object({ empty: z.boolean().exactOptional() })
           .catchall(z.array(z.string()))
-          .exactOptional(),
+          .exactOptional()
+          .openapi({ required: [] }),
         mediaType: z
           .object({
             type: z.string().exactOptional(),
@@ -112,11 +115,12 @@ const BodyPartSchema: z.ZodType<BodyPartType> = z
           .openapi({ required: [] }),
         messageBodyWorkers: MessageBodyWorkersSchema.exactOptional(),
         parent: MultiPartSchema.exactOptional(),
-        providers: z.object({}).exactOptional(),
+        providers: z.looseObject({}).exactOptional(),
         parameterizedHeaders: z
           .object({ empty: z.boolean().exactOptional() })
           .catchall(z.array(ParameterizedHeaderSchema))
-          .exactOptional(),
+          .exactOptional()
+          .openapi({ required: [] }),
       })
       .openapi({ required: [] }),
   )
@@ -218,11 +222,12 @@ const ParameterizedHeaderSchema: z.ZodType<ParameterizedHeaderType> = z
 const FormDataBodyPartSchema = z
   .object({
     contentDisposition: ContentDispositionSchema.exactOptional(),
-    entity: z.object({}).exactOptional(),
+    entity: z.looseObject({}).exactOptional(),
     headers: z
       .object({ empty: z.boolean().exactOptional() })
       .catchall(z.array(z.string()))
-      .exactOptional(),
+      .exactOptional()
+      .openapi({ required: [] }),
     mediaType: z
       .object({
         type: z.string().exactOptional(),
@@ -235,7 +240,7 @@ const FormDataBodyPartSchema = z
       .openapi({ required: [] }),
     messageBodyWorkers: MessageBodyWorkersSchema.exactOptional(),
     parent: MultiPartSchema.exactOptional(),
-    providers: z.object({}).exactOptional(),
+    providers: z.looseObject({}).exactOptional(),
     name: z.string().exactOptional(),
     value: z.string().exactOptional(),
     formDataContentDisposition: FormDataContentDispositionSchema.exactOptional(),
@@ -243,7 +248,8 @@ const FormDataBodyPartSchema = z
     parameterizedHeaders: z
       .object({ empty: z.boolean().exactOptional() })
       .catchall(z.array(ParameterizedHeaderSchema))
-      .exactOptional(),
+      .exactOptional()
+      .openapi({ required: [] }),
   })
   .openapi({
     description:
@@ -352,7 +358,7 @@ export const putCircularRoute = createRoute({
                     })
                     .exactOptional()
                     .openapi({ required: [] }),
-                  entity: z.object({}).exactOptional(),
+                  entity: z.looseObject({}).exactOptional(),
                   headers: z
                     .object({
                       empty: z
@@ -371,7 +377,8 @@ export const putCircularRoute = createRoute({
                         z.array(z.string()),
                       ),
                     )
-                    .exactOptional(),
+                    .exactOptional()
+                    .openapi({ required: [] }),
                   mediaType: z
                     .object({
                       type: z.string().exactOptional(),
@@ -425,7 +432,7 @@ export const putCircularRoute = createRoute({
                         })
                         .exactOptional()
                         .openapi({ required: [] }),
-                      entity: z.object({}).exactOptional(),
+                      entity: z.looseObject({}).exactOptional(),
                       headers: z
                         .object({
                           empty: z
@@ -444,7 +451,8 @@ export const putCircularRoute = createRoute({
                             z.array(z.string()),
                           ),
                         )
-                        .exactOptional(),
+                        .exactOptional()
+                        .openapi({ required: [] }),
                       mediaType: z
                         .object({
                           type: z.string().exactOptional(),
@@ -473,7 +481,7 @@ export const putCircularRoute = createRoute({
                         .openapi({ required: [] }),
                       messageBodyWorkers: MessageBodyWorkersSchema.exactOptional(),
                       parent: MultiPartSchema.exactOptional(),
-                      providers: z.object({}).exactOptional(),
+                      providers: z.looseObject({}).exactOptional(),
                       bodyParts: z
                         .preprocess(
                           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
@@ -506,7 +514,7 @@ export const putCircularRoute = createRoute({
                                   })
                                   .exactOptional()
                                   .openapi({ required: [] }),
-                                entity: z.object({}).exactOptional(),
+                                entity: z.looseObject({}).exactOptional(),
                                 headers: z
                                   .object({
                                     empty: z
@@ -526,7 +534,8 @@ export const putCircularRoute = createRoute({
                                       z.array(z.string()),
                                     ),
                                   )
-                                  .exactOptional(),
+                                  .exactOptional()
+                                  .openapi({ required: [] }),
                                 mediaType: z
                                   .object({
                                     type: z.string().exactOptional(),
@@ -555,7 +564,7 @@ export const putCircularRoute = createRoute({
                                   .openapi({ required: [] }),
                                 messageBodyWorkers: MessageBodyWorkersSchema.exactOptional(),
                                 parent: MultiPartSchema.exactOptional(),
-                                providers: z.object({}).exactOptional(),
+                                providers: z.looseObject({}).exactOptional(),
                                 parameterizedHeaders: z
                                   .object({
                                     empty: z
@@ -575,7 +584,8 @@ export const putCircularRoute = createRoute({
                                       z.array(ParameterizedHeaderSchema),
                                     ),
                                   )
-                                  .exactOptional(),
+                                  .exactOptional()
+                                  .openapi({ required: [] }),
                               })
                               .openapi({ required: [] }),
                           ),
@@ -599,11 +609,12 @@ export const putCircularRoute = createRoute({
                             z.array(ParameterizedHeaderSchema),
                           ),
                         )
-                        .exactOptional(),
+                        .exactOptional()
+                        .openapi({ required: [] }),
                     })
                     .exactOptional()
                     .openapi({ required: [] }),
-                  providers: z.object({}).exactOptional(),
+                  providers: z.looseObject({}).exactOptional(),
                   name: z.string().exactOptional(),
                   value: z.string().exactOptional(),
                   formDataContentDisposition: z
@@ -658,7 +669,8 @@ export const putCircularRoute = createRoute({
                         z.array(ParameterizedHeaderSchema),
                       ),
                     )
-                    .exactOptional(),
+                    .exactOptional()
+                    .openapi({ required: [] }),
                 })
                 .exactOptional()
                 .openapi({

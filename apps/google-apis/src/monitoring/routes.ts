@@ -1,207 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const AggregationSchema = z
-  .object({
-    alignmentPeriod: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The alignment_period specifies a time interval, in seconds, that is used to divide the data in all the time series into consistent blocks of time. This will be done before the per-series aligner can be applied to the data.The value must be at least 60 seconds. If a per-series aligner other than ALIGN_NONE is specified, this field is required or an error is returned. If no per-series aligner is specified, or the aligner ALIGN_NONE is specified, then this field is ignored.The maximum value of the alignment_period is 2 years, or 104 weeks.',
-      }),
-    crossSeriesReducer: z
-      .enum([
-        'REDUCE_NONE',
-        'REDUCE_MEAN',
-        'REDUCE_MIN',
-        'REDUCE_MAX',
-        'REDUCE_SUM',
-        'REDUCE_STDDEV',
-        'REDUCE_COUNT',
-        'REDUCE_COUNT_TRUE',
-        'REDUCE_COUNT_FALSE',
-        'REDUCE_FRACTION_TRUE',
-        'REDUCE_PERCENTILE_99',
-        'REDUCE_PERCENTILE_95',
-        'REDUCE_PERCENTILE_50',
-        'REDUCE_PERCENTILE_05',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'The reduction operation to be used to combine time series into a single time series, where the value of each data point in the resulting series is a function of all the already aligned values in the input time series.Not all reducer operations can be applied to all time series. The valid choices depend on the metric_kind and the value_type of the original time series. Reduction can yield a time series with a different metric_kind or value_type than the input time series.Time series data must first be aligned (see per_series_aligner) in order to perform cross-time series reduction. If cross_series_reducer is specified, then per_series_aligner must be specified, and must not be ALIGN_NONE. An alignment_period must also be specified; otherwise, an error is returned.',
-      }),
-    groupByFields: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'The set of fields to preserve when cross_series_reducer is specified. The group_by_fields determine how the time series are partitioned into subsets prior to applying the aggregation operation. Each subset contains time series that have the same value for each of the grouping fields. Each individual time series is a member of exactly one subset. The cross_series_reducer is applied to each subset of time series. It is not possible to reduce across different resource types, so this field implicitly contains resource.type. Fields not specified in group_by_fields are aggregated away. If group_by_fields is not specified and all the time series have the same resource type, then the time series are aggregated into a single output time series. If cross_series_reducer is not defined, this field is ignored.',
-      }),
-    perSeriesAligner: z
-      .enum([
-        'ALIGN_NONE',
-        'ALIGN_DELTA',
-        'ALIGN_RATE',
-        'ALIGN_INTERPOLATE',
-        'ALIGN_NEXT_OLDER',
-        'ALIGN_MIN',
-        'ALIGN_MAX',
-        'ALIGN_MEAN',
-        'ALIGN_COUNT',
-        'ALIGN_SUM',
-        'ALIGN_STDDEV',
-        'ALIGN_COUNT_TRUE',
-        'ALIGN_COUNT_FALSE',
-        'ALIGN_FRACTION_TRUE',
-        'ALIGN_PERCENTILE_99',
-        'ALIGN_PERCENTILE_95',
-        'ALIGN_PERCENTILE_50',
-        'ALIGN_PERCENTILE_05',
-        'ALIGN_PERCENT_CHANGE',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'An Aligner describes how to bring the data points in a single time series into temporal alignment. Except for ALIGN_NONE, all alignments cause all the data points in an alignment_period to be mathematically grouped together, resulting in a single data point for each alignment_period with end timestamp at the end of the period.Not all alignment operations may be applied to all time series. The valid choices depend on the metric_kind and value_type of the original time series. Alignment can change the metric_kind or the value_type of the time series.Time series data must be aligned in order to perform cross-time series reduction. If cross_series_reducer is specified, then per_series_aligner must be specified and not equal to ALIGN_NONE and alignment_period must be specified; otherwise, an error is returned.',
-      }),
-  })
-  .openapi({
-    description:
-      'Describes how to combine multiple time series to provide a different view of the data. Aggregation of time series is done in two steps. First, each time series in the set is aligned to the same time interval boundaries, then the set of time series is optionally reduced in number.Alignment consists of applying the per_series_aligner operation to each time series after its data has been divided into regular alignment_period time intervals. This process takes all of the data points in an alignment period, applies a mathematical transformation such as averaging, minimum, maximum, delta, etc., and converts them into a single data point per period.Reduction is when the aligned and transformed time series can optionally be combined, reducing the number of time series through similar mathematical transformations. Reduction involves applying a cross_series_reducer to all the time series, optionally sorting the time series into subsets with group_by_fields, and applying the reducer to each subset.The raw time series data can contain a huge amount of information from multiple sources. Alignment and reduction transforms this mass of data into a more manageable and representative collection of data, for example "the 95% latency across the average of all tasks in a cluster". This representative data can be more easily graphed and comprehended, and the individual time series data is still available for later drilldown. For more details, see Filtering and aggregation (https://cloud.google.com/monitoring/api/v3/aggregation).',
-    required: [],
-  })
-  .openapi('Aggregation')
-
-const IntervalSchema = z
-  .object({
-    endTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Exclusive end of the interval.If specified, a Timestamp matching this interval will have to be before the end.',
-      }),
-    startTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Inclusive start of the interval.If specified, a Timestamp matching this interval will have to be the same or after the start.',
-      }),
-  })
-  .openapi({
-    description:
-      'Represents a time interval, encoded as a Timestamp start (inclusive) and a Timestamp end (exclusive).The start must be less than or equal to the end. When the start equals the end, the interval is empty (matches no time). When both start and end are unspecified, the interval matches any time.',
-    required: [],
-  })
-  .openapi('Interval')
-
-const PickTimeSeriesFilterSchema = z
-  .object({
-    direction: z
-      .enum(['DIRECTION_UNSPECIFIED', 'TOP', 'BOTTOM'])
-      .exactOptional()
-      .openapi({
-        description: 'How to use the ranking to select time series that pass through the filter.',
-      }),
-    interval: IntervalSchema.exactOptional().openapi({
-      description: 'Select the top N streams/time series within this time interval',
-    }),
-    numTimeSeries: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'How many time series to allow to pass through the filter.' }),
-    rankingMethod: z
-      .enum([
-        'METHOD_UNSPECIFIED',
-        'METHOD_MEAN',
-        'METHOD_MAX',
-        'METHOD_MIN',
-        'METHOD_SUM',
-        'METHOD_LATEST',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'ranking_method is applied to each time series independently to produce the value which will be used to compare the time series to other time series.',
-      }),
-  })
-  .openapi({
-    description:
-      'Describes a ranking-based time series filter. Each input time series is ranked with an aligner. The filter will allow up to num_time_series time series to pass through it, selecting them based on the relative ranking.For example, if ranking_method is METHOD_MEAN,direction is BOTTOM, and num_time_series is 3, then the 3 times series with the lowest mean values will pass through the filter.',
-    required: [],
-  })
-  .openapi('PickTimeSeriesFilter')
-
-const StatisticalTimeSeriesFilterSchema = z
-  .object({
-    numTimeSeries: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'How many time series to output.' }),
-    rankingMethod: z
-      .enum(['METHOD_UNSPECIFIED', 'METHOD_CLUSTER_OUTLIER'])
-      .exactOptional()
-      .openapi({
-        description:
-          'rankingMethod is applied to a set of time series, and then the produced value for each individual time series is used to compare a given time series to others. These are methods that cannot be applied stream-by-stream, but rather require the full context of a request to evaluate time series.',
-      }),
-  })
-  .openapi({
-    description:
-      'A filter that ranks streams based on their statistical relation to other streams in a request. Note: This field is deprecated and completely ignored by the API.',
-    required: [],
-  })
-  .openapi('StatisticalTimeSeriesFilter')
-
-type TimeSeriesFilterType = {
-  aggregation?: z.infer<typeof AggregationSchema>
-  filter?: string
-  pickTimeSeriesFilter?: z.infer<typeof PickTimeSeriesFilterSchema>
-  secondaryAggregation?: z.infer<typeof AggregationSchema>
-  statisticalTimeSeriesFilter?: z.infer<typeof StatisticalTimeSeriesFilterSchema>
-}
-
-const ParameterSchema = z
-  .object({
-    doubleValue: z
-      .float64()
-      .exactOptional()
-      .openapi({ description: 'A floating-point parameter value.' }),
-    intValue: z.string().exactOptional().openapi({ description: 'An integer parameter value.' }),
-  })
-  .openapi({
-    description:
-      'Preview: Parameter value applied to the aggregation function. This is a preview feature and may be subject to change before final release.',
-    required: [],
-  })
-  .openapi('Parameter')
-
-const AggregationFunctionSchema = z
-  .object({
-    parameters: z
-      .array(ParameterSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Parameters applied to the aggregation function. Only used for functions that require them.',
-      }),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The type of aggregation function, must be one of the following: "none" - no function. "percentile" - APPROX_QUANTILES() - 1 parameter numeric value "average" - AVG() "count" - COUNT() "count-distinct" - COUNT(DISTINCT) "count-distinct-approx" - APPROX_COUNT_DISTINCT() "max" - MAX() "min" - MIN() "sum" - SUM()',
-      }),
-  })
-  .openapi({
-    description:
-      'Preview: An identifier for an aggregation function. Aggregation functions are SQL functions that group or transform data from multiple points to a single point. This is a preview feature and may be subject to change before final release.',
-    required: [],
-  })
-  .openapi('AggregationFunction')
-
 const AlertChartSchema = z
   .object({
     name: z
@@ -215,72 +13,13 @@ const AlertChartSchema = z
   .openapi({ description: 'A chart that displays alert policy data.', required: [] })
   .openapi('AlertChart')
 
-const AxisSchema = z
-  .object({
-    label: z.string().exactOptional().openapi({ description: 'The label of the axis.' }),
-    scale: z
-      .enum(['SCALE_UNSPECIFIED', 'LINEAR', 'LOG10'])
-      .exactOptional()
-      .openapi({ description: 'The axis scale. By default, a linear scale is used.' }),
-  })
-  .openapi({ description: 'A chart axis.', required: [] })
-  .openapi('Axis')
-
-const BreakdownSchema = z
-  .object({
-    aggregationFunction: AggregationFunctionSchema.exactOptional().openapi({
-      description:
-        'Required. The Aggregation function is applied across all data in each breakdown created.',
-    }),
-    column: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The name of the column in the dataset containing the breakdown values.',
-      }),
-    limit: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. A limit to the number of breakdowns. If set to zero then all possible breakdowns are applied. The list of breakdowns is dependent on the value of the sort_order field.',
-      }),
-    sortOrder: z
-      .enum([
-        'SORT_ORDER_UNSPECIFIED',
-        'SORT_ORDER_NONE',
-        'SORT_ORDER_ASCENDING',
-        'SORT_ORDER_DESCENDING',
-      ])
-      .exactOptional()
-      .openapi({
-        description: 'Required. The sort order is applied to the values of the breakdown column.',
-      }),
-  })
+const EmptySchema = z
+  .looseObject({})
   .openapi({
     description:
-      'Preview: A breakdown is an aggregation applied to the measures over a specified column. A breakdown can result in multiple series across a category for the provided measure. This is a preview feature and may be subject to change before final release.',
-    required: [],
+      'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); } ',
   })
-  .openapi('Breakdown')
-
-const ChartOptionsSchema = z
-  .object({
-    displayHorizontal: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Preview: Configures whether the charted values are shown on the horizontal or vertical axis. By default, values are represented the vertical axis. This is a preview feature and may be subject to change before final release.',
-      }),
-    mode: z
-      .enum(['MODE_UNSPECIFIED', 'COLOR', 'X_RAY', 'STATS'])
-      .exactOptional()
-      .openapi({ description: 'The chart mode.' }),
-  })
-  .openapi({ description: 'Options to control visual rendering of a chart.', required: [] })
-  .openapi('ChartOptions')
+  .openapi('Empty')
 
 const CollapsibleGroupSchema = z
   .object({
@@ -295,14 +34,6 @@ const CollapsibleGroupSchema = z
     required: [],
   })
   .openapi('CollapsibleGroup')
-
-const EmptySchema = z
-  .object({})
-  .openapi({
-    description:
-      'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); } ',
-  })
-  .openapi('Empty')
 
 const ErrorReportingPanelSchema = z
   .object({
@@ -463,6 +194,45 @@ const DimensionSchema = z
   })
   .openapi('Dimension')
 
+const ParameterSchema = z
+  .object({
+    doubleValue: z
+      .float64()
+      .exactOptional()
+      .openapi({ description: 'A floating-point parameter value.' }),
+    intValue: z.string().exactOptional().openapi({ description: 'An integer parameter value.' }),
+  })
+  .openapi({
+    description:
+      'Preview: Parameter value applied to the aggregation function. This is a preview feature and may be subject to change before final release.',
+    required: [],
+  })
+  .openapi('Parameter')
+
+const AggregationFunctionSchema = z
+  .object({
+    parameters: z
+      .array(ParameterSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Parameters applied to the aggregation function. Only used for functions that require them.',
+      }),
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The type of aggregation function, must be one of the following: "none" - no function. "percentile" - APPROX_QUANTILES() - 1 parameter numeric value "average" - AVG() "count" - COUNT() "count-distinct" - COUNT(DISTINCT) "count-distinct-approx" - APPROX_COUNT_DISTINCT() "max" - MAX() "min" - MIN() "sum" - SUM()',
+      }),
+  })
+  .openapi({
+    description:
+      'Preview: An identifier for an aggregation function. Aggregation functions are SQL functions that group or transform data from multiple points to a single point. This is a preview feature and may be subject to change before final release.',
+    required: [],
+  })
+  .openapi('AggregationFunction')
+
 const MeasureSchema = z
   .object({
     aggregationFunction: AggregationFunctionSchema.exactOptional().openapi({
@@ -499,39 +269,191 @@ const OpsAnalyticsQuerySchema = z
   })
   .openapi('OpsAnalyticsQuery')
 
-const TimeSeriesFilterSchema: z.ZodType<TimeSeriesFilterType> = z
-  .lazy(() =>
-    z
-      .object({
-        aggregation: AggregationSchema.exactOptional().openapi({
-          description:
-            'By default, the raw time series data is returned. Use this field to combine multiple time series for different views of the data.',
-        }),
-        filter: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Required. The monitoring filter (https://cloud.google.com/monitoring/api/v3/filters) that identifies the metric types, resources, and projects to query.',
-          }),
-        pickTimeSeriesFilter: PickTimeSeriesFilterSchema.exactOptional().openapi({
-          description: 'Ranking based time series filter.',
-        }),
-        secondaryAggregation: AggregationSchema.exactOptional().openapi({
-          description: 'Apply a second aggregation after aggregation is applied.',
-        }),
-        statisticalTimeSeriesFilter: StatisticalTimeSeriesFilterSchema.exactOptional().openapi({
-          deprecated: true,
-          description:
-            'Statistics based time series filter. Note: This field is deprecated and completely ignored by the API.',
-        }),
-      })
+const AggregationSchema = z
+  .object({
+    alignmentPeriod: z
+      .string()
+      .exactOptional()
       .openapi({
         description:
-          'A filter that defines a subset of time series data that is displayed in a widget. Time series data is fetched using the ListTimeSeries (https://cloud.google.com/monitoring/api/ref_v3/rest/v3/projects.timeSeries/list) method.',
-        required: [],
+          'The alignment_period specifies a time interval, in seconds, that is used to divide the data in all the time series into consistent blocks of time. This will be done before the per-series aligner can be applied to the data.The value must be at least 60 seconds. If a per-series aligner other than ALIGN_NONE is specified, this field is required or an error is returned. If no per-series aligner is specified, or the aligner ALIGN_NONE is specified, then this field is ignored.The maximum value of the alignment_period is 2 years, or 104 weeks.',
       }),
-  )
+    crossSeriesReducer: z
+      .enum([
+        'REDUCE_NONE',
+        'REDUCE_MEAN',
+        'REDUCE_MIN',
+        'REDUCE_MAX',
+        'REDUCE_SUM',
+        'REDUCE_STDDEV',
+        'REDUCE_COUNT',
+        'REDUCE_COUNT_TRUE',
+        'REDUCE_COUNT_FALSE',
+        'REDUCE_FRACTION_TRUE',
+        'REDUCE_PERCENTILE_99',
+        'REDUCE_PERCENTILE_95',
+        'REDUCE_PERCENTILE_50',
+        'REDUCE_PERCENTILE_05',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'The reduction operation to be used to combine time series into a single time series, where the value of each data point in the resulting series is a function of all the already aligned values in the input time series.Not all reducer operations can be applied to all time series. The valid choices depend on the metric_kind and the value_type of the original time series. Reduction can yield a time series with a different metric_kind or value_type than the input time series.Time series data must first be aligned (see per_series_aligner) in order to perform cross-time series reduction. If cross_series_reducer is specified, then per_series_aligner must be specified, and must not be ALIGN_NONE. An alignment_period must also be specified; otherwise, an error is returned.',
+      }),
+    groupByFields: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'The set of fields to preserve when cross_series_reducer is specified. The group_by_fields determine how the time series are partitioned into subsets prior to applying the aggregation operation. Each subset contains time series that have the same value for each of the grouping fields. Each individual time series is a member of exactly one subset. The cross_series_reducer is applied to each subset of time series. It is not possible to reduce across different resource types, so this field implicitly contains resource.type. Fields not specified in group_by_fields are aggregated away. If group_by_fields is not specified and all the time series have the same resource type, then the time series are aggregated into a single output time series. If cross_series_reducer is not defined, this field is ignored.',
+      }),
+    perSeriesAligner: z
+      .enum([
+        'ALIGN_NONE',
+        'ALIGN_DELTA',
+        'ALIGN_RATE',
+        'ALIGN_INTERPOLATE',
+        'ALIGN_NEXT_OLDER',
+        'ALIGN_MIN',
+        'ALIGN_MAX',
+        'ALIGN_MEAN',
+        'ALIGN_COUNT',
+        'ALIGN_SUM',
+        'ALIGN_STDDEV',
+        'ALIGN_COUNT_TRUE',
+        'ALIGN_COUNT_FALSE',
+        'ALIGN_FRACTION_TRUE',
+        'ALIGN_PERCENTILE_99',
+        'ALIGN_PERCENTILE_95',
+        'ALIGN_PERCENTILE_50',
+        'ALIGN_PERCENTILE_05',
+        'ALIGN_PERCENT_CHANGE',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'An Aligner describes how to bring the data points in a single time series into temporal alignment. Except for ALIGN_NONE, all alignments cause all the data points in an alignment_period to be mathematically grouped together, resulting in a single data point for each alignment_period with end timestamp at the end of the period.Not all alignment operations may be applied to all time series. The valid choices depend on the metric_kind and value_type of the original time series. Alignment can change the metric_kind or the value_type of the time series.Time series data must be aligned in order to perform cross-time series reduction. If cross_series_reducer is specified, then per_series_aligner must be specified and not equal to ALIGN_NONE and alignment_period must be specified; otherwise, an error is returned.',
+      }),
+  })
+  .openapi({
+    description:
+      'Describes how to combine multiple time series to provide a different view of the data. Aggregation of time series is done in two steps. First, each time series in the set is aligned to the same time interval boundaries, then the set of time series is optionally reduced in number.Alignment consists of applying the per_series_aligner operation to each time series after its data has been divided into regular alignment_period time intervals. This process takes all of the data points in an alignment period, applies a mathematical transformation such as averaging, minimum, maximum, delta, etc., and converts them into a single data point per period.Reduction is when the aligned and transformed time series can optionally be combined, reducing the number of time series through similar mathematical transformations. Reduction involves applying a cross_series_reducer to all the time series, optionally sorting the time series into subsets with group_by_fields, and applying the reducer to each subset.The raw time series data can contain a huge amount of information from multiple sources. Alignment and reduction transforms this mass of data into a more manageable and representative collection of data, for example "the 95% latency across the average of all tasks in a cluster". This representative data can be more easily graphed and comprehended, and the individual time series data is still available for later drilldown. For more details, see Filtering and aggregation (https://cloud.google.com/monitoring/api/v3/aggregation).',
+    required: [],
+  })
+  .openapi('Aggregation')
+
+const IntervalSchema = z
+  .object({
+    endTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Exclusive end of the interval.If specified, a Timestamp matching this interval will have to be before the end.',
+      }),
+    startTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Inclusive start of the interval.If specified, a Timestamp matching this interval will have to be the same or after the start.',
+      }),
+  })
+  .openapi({
+    description:
+      'Represents a time interval, encoded as a Timestamp start (inclusive) and a Timestamp end (exclusive).The start must be less than or equal to the end. When the start equals the end, the interval is empty (matches no time). When both start and end are unspecified, the interval matches any time.',
+    required: [],
+  })
+  .openapi('Interval')
+
+const PickTimeSeriesFilterSchema = z
+  .object({
+    direction: z
+      .enum(['DIRECTION_UNSPECIFIED', 'TOP', 'BOTTOM'])
+      .exactOptional()
+      .openapi({
+        description: 'How to use the ranking to select time series that pass through the filter.',
+      }),
+    interval: IntervalSchema.exactOptional().openapi({
+      description: 'Select the top N streams/time series within this time interval',
+    }),
+    numTimeSeries: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'How many time series to allow to pass through the filter.' }),
+    rankingMethod: z
+      .enum([
+        'METHOD_UNSPECIFIED',
+        'METHOD_MEAN',
+        'METHOD_MAX',
+        'METHOD_MIN',
+        'METHOD_SUM',
+        'METHOD_LATEST',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'ranking_method is applied to each time series independently to produce the value which will be used to compare the time series to other time series.',
+      }),
+  })
+  .openapi({
+    description:
+      'Describes a ranking-based time series filter. Each input time series is ranked with an aligner. The filter will allow up to num_time_series time series to pass through it, selecting them based on the relative ranking.For example, if ranking_method is METHOD_MEAN,direction is BOTTOM, and num_time_series is 3, then the 3 times series with the lowest mean values will pass through the filter.',
+    required: [],
+  })
+  .openapi('PickTimeSeriesFilter')
+
+const StatisticalTimeSeriesFilterSchema = z
+  .object({
+    numTimeSeries: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'How many time series to output.' }),
+    rankingMethod: z
+      .enum(['METHOD_UNSPECIFIED', 'METHOD_CLUSTER_OUTLIER'])
+      .exactOptional()
+      .openapi({
+        description:
+          'rankingMethod is applied to a set of time series, and then the produced value for each individual time series is used to compare a given time series to others. These are methods that cannot be applied stream-by-stream, but rather require the full context of a request to evaluate time series.',
+      }),
+  })
+  .openapi({
+    description:
+      'A filter that ranks streams based on their statistical relation to other streams in a request. Note: This field is deprecated and completely ignored by the API.',
+    required: [],
+  })
+  .openapi('StatisticalTimeSeriesFilter')
+
+const TimeSeriesFilterSchema = z
+  .object({
+    aggregation: AggregationSchema.exactOptional().openapi({
+      description:
+        'By default, the raw time series data is returned. Use this field to combine multiple time series for different views of the data.',
+    }),
+    filter: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The monitoring filter (https://cloud.google.com/monitoring/api/v3/filters) that identifies the metric types, resources, and projects to query.',
+      }),
+    pickTimeSeriesFilter: PickTimeSeriesFilterSchema.exactOptional().openapi({
+      description: 'Ranking based time series filter.',
+    }),
+    secondaryAggregation: AggregationSchema.exactOptional().openapi({
+      description: 'Apply a second aggregation after aggregation is applied.',
+    }),
+    statisticalTimeSeriesFilter: StatisticalTimeSeriesFilterSchema.exactOptional().openapi({
+      deprecated: true,
+      description:
+        'Statistics based time series filter. Note: This field is deprecated and completely ignored by the API.',
+    }),
+  })
+  .openapi({
+    description:
+      'A filter that defines a subset of time series data that is displayed in a widget. Time series data is fetched using the ListTimeSeries (https://cloud.google.com/monitoring/api/ref_v3/rest/v3/projects.timeSeries/list) method.',
+    required: [],
+  })
   .openapi('TimeSeriesFilter')
 
 const RatioPartSchema = z
@@ -662,7 +584,13 @@ const PieChartDataSetSchema = z
   .openapi({ description: 'Groups a time series query definition.', required: [] })
   .openapi('PieChartDataSet')
 
-const PieChartSchema = z
+type PieChartType = {
+  chartType?: 'PIE_CHART_TYPE_UNSPECIFIED' | 'PIE' | 'DONUT'
+  dataSets?: z.infer<typeof PieChartDataSetSchema>[]
+  showLabels?: boolean
+}
+
+const PieChartSchema: z.ZodType<PieChartType> = z
   .object({
     chartType: z
       .enum(['PIE_CHART_TYPE_UNSPECIFIED', 'PIE', 'DONUT'])
@@ -816,7 +744,7 @@ const SectionHeaderSchema = z
   .openapi('SectionHeader')
 
 const SingleViewGroupSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A widget that groups the other widgets by using a dropdown menu. All widgets that are within the area spanned by the grouping widget are considered member widgets.',
@@ -963,7 +891,13 @@ const TableDataSetSchema = z
   })
   .openapi('TableDataSet')
 
-const TimeSeriesTableSchema = z
+type TimeSeriesTableType = {
+  columnSettings?: z.infer<typeof ColumnSettingsSchema>[]
+  dataSets?: z.infer<typeof TableDataSetSchema>[]
+  metricVisualization?: 'METRIC_VISUALIZATION_UNSPECIFIED' | 'NUMBER' | 'BAR'
+}
+
+const TimeSeriesTableSchema: z.ZodType<TimeSeriesTableType> = z
   .object({
     columnSettings: z
       .array(ColumnSettingsSchema)
@@ -982,6 +916,62 @@ const TimeSeriesTableSchema = z
   })
   .openapi({ description: 'A table that displays time series data.', required: [] })
   .openapi('TimeSeriesTable')
+
+const ChartOptionsSchema = z
+  .object({
+    displayHorizontal: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Preview: Configures whether the charted values are shown on the horizontal or vertical axis. By default, values are represented the vertical axis. This is a preview feature and may be subject to change before final release.',
+      }),
+    mode: z
+      .enum(['MODE_UNSPECIFIED', 'COLOR', 'X_RAY', 'STATS'])
+      .exactOptional()
+      .openapi({ description: 'The chart mode.' }),
+  })
+  .openapi({ description: 'Options to control visual rendering of a chart.', required: [] })
+  .openapi('ChartOptions')
+
+const BreakdownSchema = z
+  .object({
+    aggregationFunction: AggregationFunctionSchema.exactOptional().openapi({
+      description:
+        'Required. The Aggregation function is applied across all data in each breakdown created.',
+    }),
+    column: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The name of the column in the dataset containing the breakdown values.',
+      }),
+    limit: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. A limit to the number of breakdowns. If set to zero then all possible breakdowns are applied. The list of breakdowns is dependent on the value of the sort_order field.',
+      }),
+    sortOrder: z
+      .enum([
+        'SORT_ORDER_UNSPECIFIED',
+        'SORT_ORDER_NONE',
+        'SORT_ORDER_ASCENDING',
+        'SORT_ORDER_DESCENDING',
+      ])
+      .exactOptional()
+      .openapi({
+        description: 'Required. The sort order is applied to the values of the breakdown column.',
+      }),
+  })
+  .openapi({
+    description:
+      'Preview: A breakdown is an aggregation applied to the measures over a specified column. A breakdown can result in multiple series across a category for the provided measure. This is a preview feature and may be subject to change before final release.',
+    required: [],
+  })
+  .openapi('Breakdown')
 
 const DataSetSchema = z
   .object({
@@ -1032,7 +1022,28 @@ const DataSetSchema = z
   })
   .openapi('DataSet')
 
-const XyChartSchema = z
+const AxisSchema = z
+  .object({
+    label: z.string().exactOptional().openapi({ description: 'The label of the axis.' }),
+    scale: z
+      .enum(['SCALE_UNSPECIFIED', 'LINEAR', 'LOG10'])
+      .exactOptional()
+      .openapi({ description: 'The axis scale. By default, a linear scale is used.' }),
+  })
+  .openapi({ description: 'A chart axis.', required: [] })
+  .openapi('Axis')
+
+type XyChartType = {
+  chartOptions?: z.infer<typeof ChartOptionsSchema>
+  dataSets?: z.infer<typeof DataSetSchema>[]
+  thresholds?: z.infer<typeof ThresholdSchema>[]
+  timeshiftDuration?: string
+  xAxis?: z.infer<typeof AxisSchema>
+  y2Axis?: z.infer<typeof AxisSchema>
+  yAxis?: z.infer<typeof AxisSchema>
+}
+
+const XyChartSchema: z.ZodType<XyChartType> = z
   .object({
     chartOptions: ChartOptionsSchema.exactOptional().openapi({
       description: 'Display options for the chart.',
@@ -1068,7 +1079,25 @@ const XyChartSchema = z
   })
   .openapi('XyChart')
 
-const WidgetSchema = z
+type WidgetType = {
+  alertChart?: z.infer<typeof AlertChartSchema>
+  blank?: z.infer<typeof EmptySchema>
+  collapsibleGroup?: z.infer<typeof CollapsibleGroupSchema>
+  errorReportingPanel?: z.infer<typeof ErrorReportingPanelSchema>
+  id?: string
+  incidentList?: z.infer<typeof IncidentListSchema>
+  logsPanel?: z.infer<typeof LogsPanelSchema>
+  pieChart?: z.infer<typeof PieChartSchema>
+  scorecard?: z.infer<typeof ScorecardSchema>
+  sectionHeader?: z.infer<typeof SectionHeaderSchema>
+  singleViewGroup?: z.infer<typeof SingleViewGroupSchema>
+  text?: z.infer<typeof TextSchema>
+  timeSeriesTable?: z.infer<typeof TimeSeriesTableSchema>
+  title?: string
+  xyChart?: z.infer<typeof XyChartSchema>
+}
+
+const WidgetSchema: z.ZodType<WidgetType> = z
   .object({
     alertChart: AlertChartSchema.exactOptional().openapi({
       description: 'A chart of alert policy data.',
@@ -1125,7 +1154,9 @@ const WidgetSchema = z
   })
   .openapi('Widget')
 
-const ColumnSchema = z
+type ColumnType = { weight?: string; widgets?: z.infer<typeof WidgetSchema>[] }
+
+const ColumnSchema: z.ZodType<ColumnType> = z
   .object({
     weight: z
       .string()
@@ -1142,7 +1173,9 @@ const ColumnSchema = z
   .openapi({ description: 'Defines the layout properties and content for a column.', required: [] })
   .openapi('Column')
 
-const ColumnLayoutSchema = z
+type ColumnLayoutType = { columns?: z.infer<typeof ColumnSchema>[] }
+
+const ColumnLayoutSchema: z.ZodType<ColumnLayoutType> = z
   .object({
     columns: z
       .array(ColumnSchema)
@@ -1191,7 +1224,9 @@ const DashboardFilterSchema = z
   })
   .openapi('DashboardFilter')
 
-const GridLayoutSchema = z
+type GridLayoutType = { columns?: string; widgets?: z.infer<typeof WidgetSchema>[] }
+
+const GridLayoutSchema: z.ZodType<GridLayoutType> = z
   .object({
     columns: z
       .string()
@@ -1214,7 +1249,15 @@ const GridLayoutSchema = z
   })
   .openapi('GridLayout')
 
-const TileSchema = z
+type TileType = {
+  height?: number
+  widget?: z.infer<typeof WidgetSchema>
+  width?: number
+  xPos?: number
+  yPos?: number
+}
+
+const TileSchema: z.ZodType<TileType> = z
   .object({
     height: z
       .int32()
@@ -1255,7 +1298,9 @@ const TileSchema = z
   })
   .openapi('Tile')
 
-const MosaicLayoutSchema = z
+type MosaicLayoutType = { columns?: number; tiles?: z.infer<typeof TileSchema>[] }
+
+const MosaicLayoutSchema: z.ZodType<MosaicLayoutType> = z
   .object({
     columns: z
       .int32()
@@ -1273,7 +1318,9 @@ const MosaicLayoutSchema = z
   })
   .openapi('MosaicLayout')
 
-const RowSchema = z
+type RowType = { weight?: string; widgets?: z.infer<typeof WidgetSchema>[] }
+
+const RowSchema: z.ZodType<RowType> = z
   .object({
     weight: z
       .string()
@@ -1290,7 +1337,9 @@ const RowSchema = z
   .openapi({ description: 'Defines the layout properties and content for a row.', required: [] })
   .openapi('Row')
 
-const RowLayoutSchema = z
+type RowLayoutType = { rows?: z.infer<typeof RowSchema>[] }
+
+const RowLayoutSchema: z.ZodType<RowLayoutType> = z
   .object({
     rows: z
       .array(RowSchema)
@@ -1304,7 +1353,19 @@ const RowLayoutSchema = z
   })
   .openapi('RowLayout')
 
-const DashboardSchema = z
+type DashboardType = {
+  columnLayout?: z.infer<typeof ColumnLayoutSchema>
+  dashboardFilters?: z.infer<typeof DashboardFilterSchema>[]
+  displayName?: string
+  etag?: string
+  gridLayout?: z.infer<typeof GridLayoutSchema>
+  labels?: { [key: string]: string }
+  mosaicLayout?: z.infer<typeof MosaicLayoutSchema>
+  name?: string
+  rowLayout?: z.infer<typeof RowLayoutSchema>
+}
+
+const DashboardSchema: z.ZodType<DashboardType> = z
   .object({
     columnLayout: ColumnLayoutSchema.exactOptional().openapi({
       description:
@@ -1354,6 +1415,11 @@ const DashboardSchema = z
     required: [],
   })
   .openapi('Dashboard')
+
+type ListDashboardsResponseType = {
+  dashboards?: z.infer<typeof DashboardSchema>[]
+  nextPageToken?: string
+}
 
 const DroppedLabelsSchema = z
   .object({
@@ -1508,7 +1574,7 @@ const HttpBodySchema = z
   })
   .openapi('HttpBody')
 
-const ListDashboardsResponseSchema = z
+const ListDashboardsResponseSchema: z.ZodType<ListDashboardsResponseType> = z
   .object({
     dashboards: z
       .array(DashboardSchema)

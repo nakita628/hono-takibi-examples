@@ -249,7 +249,7 @@ const ManagedUserOutputSchema = z
         description: "URL of the user's avatar image",
       }),
     metadata: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ example: { key: 'value' } }),
   })
@@ -356,7 +356,7 @@ const CreateManagedUserInputSchema = z
       }),
     bio: z.string().exactOptional().openapi({ description: 'Bio', example: 'I am a bio' }),
     metadata: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -390,7 +390,7 @@ const CreateManagedUserOutputSchema = z
   .object({
     status: z.enum(['success', 'error']).openapi({ example: 'success' }),
     data: CreateManagedUserDataSchema,
-    error: z.object({}).exactOptional(),
+    error: z.looseObject({}).exactOptional(),
   })
   .openapi({ required: ['status', 'data'] })
   .openapi('CreateManagedUserOutput')
@@ -474,7 +474,7 @@ const UpdateManagedUserInputSchema = z
       }),
     bio: z.string().exactOptional().openapi({ description: 'Bio', example: 'I am a bio' }),
     metadata: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -603,7 +603,7 @@ const PlatformOAuthClientDtoSchema = z
         description: 'Array of permission keys like ["BOOKING_READ", "BOOKING_WRITE"]',
         example: ['BOOKING_READ', 'BOOKING_WRITE'],
       }),
-    logo: z.object({}).exactOptional().openapi({ example: 'https://example.com/logo.png' }),
+    logo: z.looseObject({}).exactOptional().openapi({ example: 'https://example.com/logo.png' }),
     redirectUris: z.array(z.string()).openapi({ example: ['https://example.com/callback'] }),
     organizationId: z.number().openapi({ example: 1 }),
     createdAt: z.iso.datetime({ offset: true }).openapi({ example: '2024-03-23T08:33:21.851Z' }),
@@ -1527,7 +1527,7 @@ const EmailDefaultFieldInput_2024_06_14Schema = z
       .openapi({ example: 'email', description: 'only allowed value for type is `email`' }),
     label: z.string(),
     required: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -1752,7 +1752,7 @@ const CalVideoSettingsSchema = z
       .exactOptional()
       .openapi({ description: 'If true, the guests will not be able to record the meeting' }),
     redirectUrlOnExit: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'URL to which participants are redirected when they exit the call' }),
     enableAutomaticRecordingForOrganizer: z
@@ -2190,7 +2190,7 @@ const EmailDefaultFieldOutput_2024_06_14Schema = z
       .openapi({ example: 'email', description: 'only allowed value for type is `email`' }),
     label: z.string(),
     required: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -2212,7 +2212,7 @@ const EmailDefaultFieldOutput_2024_06_14Schema = z
           "Disable this booking field if the URL contains query parameter with key equal to the slug and prefill it with the provided value.      For example, if URL contains query parameter `&email=bob@gmail.com`,      the email field will be prefilled with this value and disabled. In case of Booker atom need to pass 'email' to defaultFormValues prop with the desired value e.g. `defaultFormValues={{email: 'bob@gmail.com'}}`. See guide https://cal.com/docs/platform/guides/booking-field",
       }),
     isDefault: z
-      .object({})
+      .looseObject({})
       .openapi({
         description: "This property is always true because it's a default field",
         example: true,
@@ -2243,7 +2243,7 @@ const NameDefaultFieldOutput_2024_06_14Schema = z
           "Disable this booking field if the URL contains query parameter with key equal to the slug and prefill it with the provided value.      For example, if URL contains query parameter `&name=bob`,      the name field will be prefilled with this value and disabled. In case of Booker atom need to pass 'name' to defaultFormValues prop with the desired value e.g. `defaultFormValues={{name: 'bob'}}`. See guide https://cal.com/docs/platform/guides/booking-fields",
       }),
     isDefault: z
-      .object({})
+      .looseObject({})
       .openapi({
         description: "This property is always true because it's a default field",
         example: true,
@@ -2258,7 +2258,7 @@ const NameDefaultFieldOutput_2024_06_14Schema = z
 const LocationDefaultFieldOutput_2024_06_14Schema = z
   .object({
     isDefault: z
-      .object({})
+      .looseObject({})
       .openapi({
         description: "This property is always true because it's a default field",
         example: true,
@@ -2311,7 +2311,7 @@ const RescheduleReasonDefaultFieldOutput_2024_06_14Schema = z
           'Disable this booking field if the URL contains query parameter with key equal to the slug and prefill it with the provided value.      For example, if URL contains query parameter `&rescheduleReason=busy`,      the reschedule reason field will be prefilled with this value and disabled.',
       }),
     isDefault: z
-      .object({})
+      .looseObject({})
       .openapi({
         description: "This property is always true because it's a default field",
         example: true,
@@ -2346,7 +2346,7 @@ const TitleDefaultFieldOutput_2024_06_14Schema = z
           'Disable this booking field if the URL contains query parameter with key equal to the slug and prefill it with the provided value.      For example, if URL contains query parameter `&title=masterclass`,      the title field will be prefilled with this value and disabled.',
       }),
     isDefault: z
-      .object({})
+      .looseObject({})
       .openapi({
         description: "This property is always true because it's a default field",
         example: true,
@@ -2381,7 +2381,7 @@ const NotesDefaultFieldOutput_2024_06_14Schema = z
           'Disable this booking field if the URL contains query parameter with key equal to the slug and prefill it with the provided value.      For example, if URL contains query parameter `&notes=hello`,      the notes field will be prefilled with this value and disabled.',
       }),
     isDefault: z
-      .object({})
+      .looseObject({})
       .openapi({
         description: "This property is always true because it's a default field",
         example: true,
@@ -2416,7 +2416,7 @@ const GuestsDefaultFieldOutput_2024_06_14Schema = z
           'Disable this booking field if the URL contains query parameter with key equal to the slug and prefill it with the provided value.      For example, if URL contains query parameter `&guests=lauris@cal.com`,      the guests field will be prefilled with this value and disabled.',
       }),
     isDefault: z
-      .object({})
+      .looseObject({})
       .openapi({
         description: "This property is always true because it's a default field",
         example: true,
@@ -2456,7 +2456,7 @@ const AddressFieldOutput_2024_06_14Schema = z
           "If true show under event type settings but don't show this booking field in the Booker. If false show in both.",
       }),
     isDefault: z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           "This property is always false because it's not default field but custom field",
@@ -2497,7 +2497,7 @@ const BooleanFieldOutput_2024_06_14Schema = z
           "If true show under event type settings but don't show this booking field in the Booker. If false show in both.",
       }),
     isDefault: z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           "This property is always false because it's not default field but custom field",
@@ -2537,7 +2537,7 @@ const CheckboxGroupFieldOutput_2024_06_14Schema = z
           "If true show under event type settings but don't show this booking field in the Booker. If false show in both.",
       }),
     isDefault: z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           "This property is always false because it's not default field but custom field",
@@ -2580,7 +2580,7 @@ const MultiEmailFieldOutput_2024_06_14Schema = z
           "If true show under event type settings but don't show this booking field in the Booker. If false show in both.",
       }),
     isDefault: z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           "This property is always false because it's not default field but custom field",
@@ -2625,7 +2625,7 @@ const MultiSelectFieldOutput_2024_06_14Schema = z
           "If true show under event type settings but don't show this booking field in the Booker. If false show in both.",
       }),
     isDefault: z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           "This property is always false because it's not default field but custom field",
@@ -2665,7 +2665,7 @@ const UrlFieldOutput_2024_06_14Schema = z
           "If true show under event type settings but don't show this booking field in the Booker. If false show in both.",
       }),
     isDefault: z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           "This property is always false because it's not default field but custom field",
@@ -2707,7 +2707,7 @@ const NumberFieldOutput_2024_06_14Schema = z
           "If true show under event type settings but don't show this booking field in the Booker. If false show in both.",
       }),
     isDefault: z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           "This property is always false because it's not default field but custom field",
@@ -2749,7 +2749,7 @@ const PhoneFieldOutput_2024_06_14Schema = z
           "If true show under event type settings but don't show this booking field in the Booker. If false show in both.",
       }),
     isDefault: z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           "This property is always false because it's not default field but custom field",
@@ -2791,7 +2791,7 @@ const RadioGroupFieldOutput_2024_06_14Schema = z
           "If true show under event type settings but don't show this booking field in the Booker. If false show in both.",
       }),
     isDefault: z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           "This property is always false because it's not default field but custom field",
@@ -2832,7 +2832,7 @@ const SelectFieldOutput_2024_06_14Schema = z
           "If true show under event type settings but don't show this booking field in the Booker. If false show in both.",
       }),
     isDefault: z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           "This property is always false because it's not default field but custom field",
@@ -2883,7 +2883,7 @@ const TextAreaFieldOutput_2024_06_14Schema = z
           "If true show under event type settings but don't show this booking field in the Booker. If false show in both.",
       }),
     isDefault: z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           "This property is always false because it's not default field but custom field",
@@ -2925,7 +2925,7 @@ const TextFieldOutput_2024_06_14Schema = z
           "If true show under event type settings but don't show this booking field in the Booker. If false show in both.",
       }),
     isDefault: z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           "This property is always false because it's not default field but custom field",
@@ -3045,25 +3045,25 @@ const EventTypeOutput_2024_06_14Schema = z
       ]),
     ),
     disableGuests: z.boolean(),
-    slotInterval: z.object({}).nullable().exactOptional().openapi({ example: 60 }),
+    slotInterval: z.looseObject({}).nullable().exactOptional().openapi({ example: 60 }),
     minimumBookingNotice: z.number().exactOptional().openapi({ example: 0 }),
     beforeEventBuffer: z.number().exactOptional().openapi({ example: 0 }),
     afterEventBuffer: z.number().exactOptional().openapi({ example: 0 }),
     recurrence: Recurrence_2024_06_14Schema.nullable(),
-    metadata: z.object({}),
+    metadata: z.looseObject({}),
     price: z.number(),
     currency: z.string(),
     lockTimeZoneToggleOnBookingPage: z.boolean(),
-    seatsPerTimeSlot: z.object({}).nullable().exactOptional(),
-    forwardParamsSuccessRedirect: z.object({}).nullable(),
-    successRedirectUrl: z.object({}).nullable(),
+    seatsPerTimeSlot: z.looseObject({}).nullable().exactOptional(),
+    forwardParamsSuccessRedirect: z.looseObject({}).nullable(),
+    successRedirectUrl: z.looseObject({}).nullable(),
     isInstantEvent: z.boolean(),
     seatsShowAvailabilityCount: z.boolean().nullable().exactOptional(),
     scheduleId: z.number().nullable(),
-    bookingLimitsCount: z.object({}).exactOptional(),
+    bookingLimitsCount: z.looseObject({}).exactOptional(),
     bookerActiveBookingsLimit: BookerActiveBookingsLimitOutput_2024_06_14Schema.exactOptional(),
     onlyShowFirstAvailableSlot: z.boolean().exactOptional(),
-    bookingLimitsDuration: z.object({}).exactOptional(),
+    bookingLimitsDuration: z.looseObject({}).exactOptional(),
     bookingWindow: z
       .array(
         z.xor([
@@ -3075,7 +3075,7 @@ const EventTypeOutput_2024_06_14Schema = z
       .exactOptional()
       .openapi({ description: 'Limit how far in the future this event can be booked' }),
     bookerLayouts: BookerLayouts_2024_06_14Schema.exactOptional(),
-    confirmationPolicy: z.object({}).exactOptional(),
+    confirmationPolicy: z.looseObject({}).exactOptional(),
     requiresBookerEmailVerification: z.boolean().exactOptional(),
     hideCalendarNotes: z.boolean().exactOptional(),
     color: EventTypeColor_2024_06_14Schema.exactOptional(),
@@ -3256,25 +3256,25 @@ const TeamEventTypeOutput_2024_06_14Schema = z
       ]),
     ),
     disableGuests: z.boolean(),
-    slotInterval: z.object({}).nullable().exactOptional().openapi({ example: 60 }),
+    slotInterval: z.looseObject({}).nullable().exactOptional().openapi({ example: 60 }),
     minimumBookingNotice: z.number().exactOptional().openapi({ example: 0 }),
     beforeEventBuffer: z.number().exactOptional().openapi({ example: 0 }),
     afterEventBuffer: z.number().exactOptional().openapi({ example: 0 }),
     recurrence: Recurrence_2024_06_14Schema.nullable(),
-    metadata: z.object({}),
+    metadata: z.looseObject({}),
     price: z.number(),
     currency: z.string(),
     lockTimeZoneToggleOnBookingPage: z.boolean(),
-    seatsPerTimeSlot: z.object({}).nullable().exactOptional(),
-    forwardParamsSuccessRedirect: z.object({}).nullable(),
-    successRedirectUrl: z.object({}).nullable(),
+    seatsPerTimeSlot: z.looseObject({}).nullable().exactOptional(),
+    forwardParamsSuccessRedirect: z.looseObject({}).nullable(),
+    successRedirectUrl: z.looseObject({}).nullable(),
     isInstantEvent: z.boolean(),
     seatsShowAvailabilityCount: z.boolean().nullable().exactOptional(),
     scheduleId: z.number().nullable(),
-    bookingLimitsCount: z.object({}).exactOptional(),
+    bookingLimitsCount: z.looseObject({}).exactOptional(),
     bookerActiveBookingsLimit: BookerActiveBookingsLimitOutput_2024_06_14Schema.exactOptional(),
     onlyShowFirstAvailableSlot: z.boolean().exactOptional(),
-    bookingLimitsDuration: z.object({}).exactOptional(),
+    bookingLimitsDuration: z.looseObject({}).exactOptional(),
     bookingWindow: z
       .array(
         z.xor([
@@ -3286,7 +3286,7 @@ const TeamEventTypeOutput_2024_06_14Schema = z
       .exactOptional()
       .openapi({ description: 'Limit how far in the future this event can be booked' }),
     bookerLayouts: BookerLayouts_2024_06_14Schema.exactOptional(),
-    confirmationPolicy: z.object({}).exactOptional(),
+    confirmationPolicy: z.looseObject({}).exactOptional(),
     requiresBookerEmailVerification: z.boolean().exactOptional(),
     hideCalendarNotes: z.boolean().exactOptional(),
     color: EventTypeColor_2024_06_14Schema.exactOptional(),
@@ -3343,9 +3343,9 @@ const TeamEventTypeOutput_2024_06_14Schema = z
       .exactOptional()
       .openapi({ description: 'Arrange time slots to optimize availability.' }),
     teamId: z.number(),
-    ownerId: z.object({}).nullable().exactOptional(),
+    ownerId: z.looseObject({}).nullable().exactOptional(),
     parentEventTypeId: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({
@@ -3763,7 +3763,7 @@ const StripCredentialsSaveOutputResponseDtoSchema = z
   .openapi('StripCredentialsSaveOutputResponseDto')
 
 const StripCredentialsCheckOutputResponseDtoSchema = z
-  .object({ status: z.object({}).openapi({ example: 'success' }) })
+  .object({ status: z.looseObject({}).openapi({ example: 'success' }) })
   .openapi({ required: ['status'] })
   .openapi('StripCredentialsCheckOutputResponseDto')
 
@@ -3891,7 +3891,7 @@ const GetScheduleOutput_2024_06_11Schema = z
   .object({
     status: z.enum(['success', 'error']).openapi({ example: 'success' }),
     data: ScheduleOutput_2024_06_11Schema.nullable(),
-    error: z.object({}).exactOptional(),
+    error: z.looseObject({}).exactOptional(),
   })
   .openapi({ required: ['status', 'data'] })
   .openapi('GetScheduleOutput_2024_06_11')
@@ -3900,7 +3900,7 @@ const GetSchedulesOutput_2024_06_11Schema = z
   .object({
     status: z.enum(['success', 'error']).openapi({ example: 'success' }),
     data: z.array(ScheduleOutput_2024_06_11Schema),
-    error: z.object({}).exactOptional(),
+    error: z.looseObject({}).exactOptional(),
   })
   .openapi({ required: ['status', 'data'] })
   .openapi('GetSchedulesOutput_2024_06_11')
@@ -3928,7 +3928,7 @@ const UpdateScheduleOutput_2024_06_11Schema = z
   .object({
     status: z.enum(['success', 'error']).openapi({ example: 'success' }),
     data: ScheduleOutput_2024_06_11Schema,
-    error: z.object({}).exactOptional(),
+    error: z.looseObject({}).exactOptional(),
   })
   .openapi({ required: ['status', 'data'] })
   .openapi('UpdateScheduleOutput_2024_06_11')
@@ -4217,7 +4217,7 @@ const GetBusyTimesOutputSchema = z
 
 const IntegrationSchema = z
   .object({
-    appData: z.object({}).nullable().exactOptional(),
+    appData: z.looseObject({}).nullable().exactOptional(),
     dirName: z.string().exactOptional(),
     __template: z.string().exactOptional(),
     name: z.string(),
@@ -4233,7 +4233,7 @@ const IntegrationSchema = z
     slug: z.string(),
     url: z.string(),
     email: z.string(),
-    locationOption: z.object({}).nullable(),
+    locationOption: z.looseObject({}).nullable(),
   })
   .openapi({
     required: [
@@ -4295,7 +4295,7 @@ const ConnectedCalendarSchema = z
 
 const DestinationCalendarSchema = z
   .object({
-    id: z.object({}),
+    id: z.looseObject({}),
     integration: z.string(),
     externalId: z.string(),
     primaryEmail: z.string().nullable(),
@@ -4513,7 +4513,7 @@ const BookingInputOrganizersDefaultAppLocation_2024_08_13Schema = z
   .openapi('BookingInputOrganizersDefaultAppLocation_2024_08_13')
 
 const ValidateBookingLocation_2024_08_13Schema = z
-  .object({})
+  .looseObject({})
   .openapi('ValidateBookingLocation_2024_08_13')
 
 const CreateBookingAttendeeSchema = z
@@ -4642,7 +4642,7 @@ const CreateBookingInput_2024_08_13Schema = z
       }),
     attendee: CreateBookingAttendeeSchema.openapi({ description: "The attendee's details." }),
     bookingFieldsResponses: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -4722,7 +4722,7 @@ const CreateBookingInput_2024_08_13Schema = z
           'One of the event type locations. If instead of passing one of the location objects as required by schema you are still passing a string please use an object.',
       }),
     metadata: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -4764,7 +4764,7 @@ const CreateRecurringBookingInput_2024_08_13Schema = z
       }),
     attendee: CreateBookingAttendeeSchema.openapi({ description: "The attendee's details." }),
     bookingFieldsResponses: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -4844,7 +4844,7 @@ const CreateRecurringBookingInput_2024_08_13Schema = z
           'One of the event type locations. If instead of passing one of the location objects as required by schema you are still passing a string please use an object.',
       }),
     metadata: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -5028,7 +5028,7 @@ const BookingOutput_2024_08_13Schema = z
     createdAt: z.string().openapi({ example: '2024-08-13T15:30:00Z' }),
     updatedAt: z.string().openapi({ example: '2024-08-13T15:30:00Z' }),
     metadata: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ example: { key: 'value' } }),
     rating: z.number().exactOptional().openapi({ example: 4 }),
@@ -5042,7 +5042,7 @@ const BookingOutput_2024_08_13Schema = z
       .exactOptional()
       .openapi({ example: ['guest1@example.com', 'guest2@example.com'] }),
     bookingFieldsResponses: z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'Booking field responses consisting of an object with booking field slug as keys and user response as values.',
@@ -5132,7 +5132,7 @@ const RecurringBookingOutput_2024_08_13Schema = z
     createdAt: z.string().openapi({ example: '2024-08-13T15:30:00Z' }),
     updatedAt: z.string().openapi({ example: '2024-08-13T15:30:00Z' }),
     metadata: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ example: { key: 'value' } }),
     rating: z.number().exactOptional().openapi({ example: 4 }),
@@ -5146,7 +5146,7 @@ const RecurringBookingOutput_2024_08_13Schema = z
       .exactOptional()
       .openapi({ example: ['guest1@example.com', 'guest2@example.com'] }),
     bookingFieldsResponses: z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'Booking field responses consisting of an object with booking field slug as keys and user response as values.',
@@ -5238,14 +5238,14 @@ const SeatedAttendeeSchema = z
     phoneNumber: z.string().exactOptional().openapi({ example: '+1234567890' }),
     seatUid: z.string().openapi({ example: '3be561a9-31f1-4b8e-aefc-9d9a085f0dd1' }),
     bookingFieldsResponses: z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'Booking field responses consisting of an object with booking field slug as keys and user response as values.',
         example: { customField: 'customValue' },
       }),
     metadata: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ example: { key: 'value' } }),
   })
@@ -5322,7 +5322,7 @@ const CreateSeatedBookingOutput_2024_08_13Schema = z
     createdAt: z.string().openapi({ example: '2024-08-13T15:30:00Z' }),
     updatedAt: z.string().openapi({ example: '2024-08-13T15:30:00Z' }),
     metadata: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ example: { key: 'value' } }),
     rating: z.number().exactOptional().openapi({ example: 4 }),
@@ -5416,7 +5416,7 @@ const CreateRecurringSeatedBookingOutput_2024_08_13Schema = z
     createdAt: z.string().openapi({ example: '2024-08-13T15:30:00Z' }),
     updatedAt: z.string().openapi({ example: '2024-08-13T15:30:00Z' }),
     metadata: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ example: { key: 'value' } }),
     rating: z.number().exactOptional().openapi({ example: 4 }),
@@ -5530,7 +5530,7 @@ const GetSeatedBookingOutput_2024_08_13Schema = z
     createdAt: z.string().openapi({ example: '2024-08-13T15:30:00Z' }),
     updatedAt: z.string().openapi({ example: '2024-08-13T15:30:00Z' }),
     metadata: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ example: { key: 'value' } }),
     rating: z.number().exactOptional().openapi({ example: 4 }),
@@ -5622,7 +5622,7 @@ const GetRecurringSeatedBookingOutput_2024_08_13Schema = z
     createdAt: z.string().openapi({ example: '2024-08-13T15:30:00Z' }),
     updatedAt: z.string().openapi({ example: '2024-08-13T15:30:00Z' }),
     metadata: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ example: { key: 'value' } }),
     rating: z.number().exactOptional().openapi({ example: 4 }),
@@ -5672,7 +5672,7 @@ const GetBookingOutput_2024_08_13Schema = z
         description:
           'Booking data, which can be either a BookingOutput object, a RecurringBookingOutput object, or an array of RecurringBookingOutput objects',
       }),
-    error: z.object({}).exactOptional(),
+    error: z.looseObject({}).exactOptional(),
   })
   .openapi({ required: ['status', 'data'] })
   .openapi('GetBookingOutput_2024_08_13')
@@ -5699,7 +5699,7 @@ const RecordingItemSchema = z
 const GetBookingRecordingsOutputSchema = z
   .object({
     status: z.enum(['success', 'error']).openapi({ example: 'success' }),
-    error: z.object({}).exactOptional(),
+    error: z.looseObject({}).exactOptional(),
     data: z.array(RecordingItemSchema),
   })
   .openapi({ required: ['status', 'data'] })
@@ -5711,7 +5711,7 @@ const GetBookingTranscriptsOutputSchema = z
     data: z
       .array(z.string())
       .openapi({ example: ['https://transcript1.com', 'https://transcript2.com'] }),
-    error: z.object({}).exactOptional(),
+    error: z.looseObject({}).exactOptional(),
   })
   .openapi({ required: ['status', 'data'] })
   .openapi('GetBookingTranscriptsOutput')
@@ -5793,7 +5793,7 @@ const GetBookingsOutput_2024_08_13Schema = z
           'Array of booking data, which can contain either BookingOutput objects or RecurringBookingOutput objects',
       }),
     pagination: PaginationMetaDtoSchema,
-    error: z.object({}).exactOptional(),
+    error: z.looseObject({}).exactOptional(),
   })
   .openapi({ required: ['status', 'data', 'pagination'] })
   .openapi('GetBookingsOutput_2024_08_13')
@@ -5985,10 +5985,55 @@ const ReassignBookingOutput_2024_08_13Schema: z.ZodType<ReassignBookingOutput_20
     z
       .object({
         status: z.enum(['success', 'error']).openapi({ example: 'success' }),
-        data: ReassignBookingOutput_2024_08_13Schema.openapi({
-          description:
-            'Booking data, which can be either a ReassignAutoBookingOutput object or a ReassignManualBookingOutput object',
-        }),
+        data: (() => {
+          const Schema = ReassignBookingOutput_2024_08_13Schema
+          return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+            const reported = ctx.issues.length
+            try {
+              ;((ctx) => {
+                const val = ctx.value
+                if ((ReassignBookingOutput_2024_08_13Schema.safeParse(val).success ? 1 : 0) !== 1) {
+                  ctx.issues.push({ code: 'custom', input: val })
+                }
+              })(ctx)
+            } catch (error) {
+              if (!(error instanceof z.core.$ZodAsyncError)) throw error
+              ctx.issues.length = reported
+              return (async (ctx) => {
+                const val = ctx.value
+                if (
+                  ((await ReassignBookingOutput_2024_08_13Schema.safeParseAsync(val)).success
+                    ? 1
+                    : 0) !== 1
+                ) {
+                  ctx.issues.push({ code: 'custom', input: val })
+                }
+              })(ctx).then(() => val)
+            }
+            return val
+          }, Schema)
+        })()
+          .openapi({
+            oneOf: [
+              {
+                type: 'object',
+                properties: {
+                  status: { type: 'string', example: 'success', enum: ['success', 'error'] },
+                  data: {
+                    oneOf: [{}],
+                    description:
+                      'Booking data, which can be either a ReassignAutoBookingOutput object or a ReassignManualBookingOutput object',
+                    allOf: [{}],
+                  },
+                },
+                required: ['status', 'data'],
+              },
+            ],
+          })
+          .openapi({
+            description:
+              'Booking data, which can be either a ReassignAutoBookingOutput object or a ReassignManualBookingOutput object',
+          }),
       })
       .openapi({ required: ['status', 'data'] }),
   )
@@ -6031,7 +6076,7 @@ const CalendarLinkSchema = z
 const CalendarLinksOutput_2024_08_13Schema = z
   .object({
     status: z
-      .object({})
+      .looseObject({})
       .openapi({
         description: "The status of the request, always 'success' for successful responses",
         example: 'success',
@@ -6057,7 +6102,7 @@ const BookingReferenceSchema = z
 const BookingReferencesOutput_2024_08_13Schema = z
   .object({
     status: z
-      .object({})
+      .looseObject({})
       .openapi({
         description: "The status of the request, always 'success' for successful responses",
         example: 'success',
@@ -6096,7 +6141,7 @@ const GetBookingVideoSessionsOutputSchema = z
   .object({
     status: z.enum(['success', 'error']).openapi({ example: 'success' }),
     data: z.array(CalMeetingSessionSchema),
-    error: z.object({}).exactOptional(),
+    error: z.looseObject({}).exactOptional(),
   })
   .openapi({ required: ['status', 'data'] })
   .openapi('GetBookingVideoSessionsOutput')
@@ -10351,7 +10396,7 @@ export const getV2CalendarsIcsFeedCheckRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: '', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: '', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
 })
 
@@ -10542,7 +10587,7 @@ export const getV2CalendarsCalendarConnectRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: '', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: '', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
 })
 
@@ -10657,7 +10702,7 @@ export const getV2CalendarsCalendarCheckRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: '', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: '', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
 })
 
@@ -13756,7 +13801,9 @@ export const deleteV2SlotsReservationsUidRoute = createRoute({
     200: {
       description: '',
       content: {
-        'application/json': { schema: z.object({}).openapi({ example: { status: 'success' } }) },
+        'application/json': {
+          schema: z.looseObject({}).openapi({ example: { status: 'success' } }),
+        },
       },
     },
   },

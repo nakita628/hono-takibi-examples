@@ -32206,24 +32206,36 @@ const WatcherTypesTimeOfYearSchema = z
 
 const WatcherTypesScheduleContainerSchema = z
   .object({
-    timezone: z.string().exactOptional(),
-    cron: WatcherTypesCronExpressionSchema.exactOptional(),
-    daily: WatcherTypesDailyScheduleSchema.exactOptional(),
-    hourly: WatcherTypesHourlyScheduleSchema.exactOptional(),
-    interval: TypesDurationSchema.exactOptional(),
-    monthly: z
-      .xor([WatcherTypesTimeOfMonthSchema, z.array(WatcherTypesTimeOfMonthSchema)])
-      .exactOptional(),
-    weekly: z
-      .xor([WatcherTypesTimeOfWeekSchema, z.array(WatcherTypesTimeOfWeekSchema)])
-      .exactOptional(),
-    yearly: z
-      .xor([WatcherTypesTimeOfYearSchema, z.array(WatcherTypesTimeOfYearSchema)])
-      .exactOptional(),
+    timezone: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The time zone to use for the schedule. Not supported for `interval` schedules.',
+      }),
   })
-  .refine((val) => Object.keys(val).length >= 1)
-  .refine((val) => Object.keys(val).length <= 1)
   .openapi({ required: [] })
+  .and(
+    z
+      .object({
+        cron: WatcherTypesCronExpressionSchema.exactOptional(),
+        daily: WatcherTypesDailyScheduleSchema.exactOptional(),
+        hourly: WatcherTypesHourlyScheduleSchema.exactOptional(),
+        interval: TypesDurationSchema.exactOptional(),
+        monthly: z
+          .xor([WatcherTypesTimeOfMonthSchema, z.array(WatcherTypesTimeOfMonthSchema)])
+          .exactOptional(),
+        weekly: z
+          .xor([WatcherTypesTimeOfWeekSchema, z.array(WatcherTypesTimeOfWeekSchema)])
+          .exactOptional(),
+        yearly: z
+          .xor([WatcherTypesTimeOfYearSchema, z.array(WatcherTypesTimeOfYearSchema)])
+          .exactOptional(),
+      })
+      .refine((val) => Object.keys(val).length >= 1)
+      .refine((val) => Object.keys(val).length <= 1)
+      .openapi({ required: [] }),
+  )
   .openapi('WatcherTypesScheduleContainer')
 
 const WatcherTypesTriggerContainerSchema = z

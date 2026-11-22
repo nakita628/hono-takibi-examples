@@ -1,5 +1,396 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const VoucherTypeSchema = z
+  .union([z.literal(0), z.literal(1), z.literal(2)])
+  .openapi({
+    description: 'Type of voucher',
+    'x-enumNames': ['Absolute', 'Percentage', 'DeliveryFee'],
+  })
+  .openapi('VoucherType')
+
+type DiscountType = { Amount?: number; VoucherType?: z.infer<typeof VoucherTypeSchema> }
+
+const CategoryOfferSchema = z
+  .object({
+    CategoryId: z.string().exactOptional(),
+    DiscountType: z.string().exactOptional().openapi({ description: 'The type of discount' }),
+    DiscountValue: z.number().exactOptional(),
+    OfferId: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'The unique identifier of underlying consumer offers, if applicable',
+      }),
+    ProductId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The unique identifier of product qualified for discount' }),
+  })
+  .openapi({ required: [] })
+  .openapi('CategoryOffer')
+
+const ModifierSchema = z
+  .object({
+    MaximumAdditionalModifiers: z.number(),
+    ModifierId: z.string().exactOptional(),
+    Name: z.string().exactOptional(),
+    Quantity: z.number().exactOptional(),
+    TotalPrice: z.number().exactOptional(),
+  })
+  .openapi({ required: ['MaximumAdditionalModifiers'] })
+  .openapi('Modifier')
+
+const ModifierGroupSchema = z
+  .object({
+    MinimumChoices: z.number(),
+    ModifierGroupId: z.string().exactOptional(),
+    Modifiers: z.array(ModifierSchema).exactOptional(),
+  })
+  .openapi({ required: ['MinimumChoices'] })
+  .openapi('ModifierGroup')
+
+const RemovedIngredientSchema = z
+  .object({ Details: z.string().exactOptional() })
+  .openapi({ required: [] })
+  .openapi('RemovedIngredient')
+
+const DealProductSchema = z
+  .object({
+    ModifierGroups: z.array(ModifierGroupSchema).nullable().exactOptional(),
+    Name: z.string().exactOptional(),
+    ProductId: z.string().exactOptional(),
+    Quantity: z.number().exactOptional(),
+    RemovedIngredients: z.array(RemovedIngredientSchema).nullable().exactOptional(),
+    TotalPrice: z.number().exactOptional(),
+    Variation: z.string().nullable().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('DealProduct')
+
+const DealGroupSchema = z
+  .object({
+    DealGroupId: z.string().exactOptional(),
+    Products: z.array(DealProductSchema).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('DealGroup')
+
+type DealType = {
+  BasketProductIds?: string[]
+  CategoryId?: string
+  DealGroups?: z.infer<typeof DealGroupSchema>[]
+  Name?: string
+  ProductId?: string
+  Quantity?: number
+  TotalPrice?: number
+  Variation?: string | null
+}
+
+const DealSchema: z.ZodType<DealType> = z
+  .object({
+    BasketProductIds: z.array(z.string()).exactOptional(),
+    CategoryId: z.string().exactOptional(),
+    DealGroups: z.array(DealGroupSchema).exactOptional(),
+    Name: z.string().exactOptional(),
+    ProductId: z.string().exactOptional(),
+    Quantity: z.number().exactOptional(),
+    TotalPrice: z.number().exactOptional(),
+    Variation: z.string().nullable().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('Deal')
+
+const PaymentDirectivesSchema = z
+  .object({
+    DisableCashPayment: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if cash payment option should be disabled' }),
+  })
+  .openapi({ description: 'The directives for payment component', required: [] })
+  .openapi('PaymentDirectives')
+
+const ProductSchema = z
+  .object({
+    BasketProductIds: z.array(z.string()).exactOptional(),
+    CategoryId: z.string().exactOptional(),
+    ModifierGroups: z.array(ModifierGroupSchema).nullable().exactOptional(),
+    Name: z.string().exactOptional(),
+    ProductId: z.string().exactOptional(),
+    Quantity: z.number().exactOptional(),
+    RemovedIngredients: z.array(RemovedIngredientSchema).nullable().exactOptional(),
+    TotalPrice: z.number().exactOptional(),
+    Variation: z.string().nullable().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('Product')
+
+const InvalidProductSchema = z
+  .object({ Name: z.string().exactOptional(), ProductId: z.string().exactOptional() })
+  .openapi({ required: [] })
+  .openapi('InvalidProduct')
+
+const ItemDiscountSchema = z
+  .strictObject({
+    discountPercentage: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'The discount percentage applied.' }),
+    modifierGroups: z
+      .array(ModifierGroupSchema)
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The collection of preselected modifier groups for the item.' }),
+    productId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The unique identifier of the discounted product item.' }),
+  })
+  .openapi({
+    example: {
+      discountPercentage: 100,
+      modifierGroups: [
+        {
+          MinimumChoices: 1,
+          ModifierGroupId: 'modifier111',
+          Modifiers: [
+            { MaximumAdditionalModifiers: 0, ModifierId: 'NoSugar11', Quantity: 1, TotalPrice: 0 },
+          ],
+        },
+      ],
+      productId: 'Lemonade1234',
+    },
+    title: 'ItemDiscount',
+    required: [],
+  })
+  .openapi('ItemDiscount')
+
+const ItemDiscountPromptSchema = z
+  .strictObject({
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The description of offer to show in prompt for customer' }),
+    header: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The header to show in prompt for customer' }),
+    itemDiscounts: z
+      .array(ItemDiscountSchema)
+      .exactOptional()
+      .openapi({ description: 'The array of items with discounts' }),
+    title: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The title to show in prompt for customer' }),
+  })
+  .openapi({
+    example: {
+      description: 'Get free lemonade with Super Burger',
+      header: 'Free item!',
+      itemDiscounts: [
+        {
+          discountPercentage: 100,
+          modifierGroups: [
+            {
+              MinimumChoices: 1,
+              ModifierGroupId: 'modifier111',
+              Modifiers: [
+                {
+                  MaximumAdditionalModifiers: 0,
+                  ModifierId: 'NoSugar11',
+                  Quantity: 1,
+                  TotalPrice: 0,
+                },
+              ],
+            },
+          ],
+          productId: 'Lemonade1234',
+        },
+      ],
+      title: 'Get free lemonade',
+    },
+    title: 'ItemDiscountPrompt',
+    required: [],
+  })
+  .openapi('ItemDiscountPrompt')
+
+const PartnerConsumerSegmentSchema = z
+  .enum(['All', 'NewToRestaurant'])
+  .openapi('PartnerConsumerSegment')
+
+const PartnerOfferTypeSchema = z
+  .enum(['Percent', 'FreeItem', 'Bogof', 'StampCard'])
+  .openapi('PartnerOfferType')
+
+type OfferType = {
+  campaignId?: string | null
+  consumerSegment?: z.infer<typeof PartnerConsumerSegmentSchema>
+  dayOfWeek?: 'Sunday' | 'Monday' | 'Tuesday' | 'Wednesday' | 'Thursday' | 'Friday' | 'Saturday'
+  discountAmount?: number
+  endTime?: string | null
+  freeProducts?:
+    | { id?: string; modifiers?: { modifierId?: string; quantity?: number }[] | null }[]
+    | null
+  id?: string
+  offerDescription?: string | null
+  offerType?: z.infer<typeof PartnerOfferTypeSchema>
+  qualifyingProductIds?: string[] | null
+  qualifyingValue?: { currency?: string; value?: number } | null
+  startTime?: string | null
+  validFrom?: string
+  validTo?: string | null
+}
+
+const OfflineProductSchema = z
+  .object({ Name: z.string().exactOptional(), ProductId: z.string().exactOptional() })
+  .openapi({ required: [] })
+  .openapi('OfflineProduct')
+
+type PromptsType = {
+  DiscountApplied?: { Amount?: number } | null
+  InvalidProducts?: z.infer<typeof InvalidProductSchema>[]
+  ItemDiscounts?: z.infer<typeof ItemDiscountPromptSchema>[]
+  Offers?: {
+    DiscountValue?: number
+    OfferType?: string
+    QualifyingValue?: number
+    ToSpendValue?: number
+  }[]
+  OfflineProducts?: z.infer<typeof OfflineProductSchema>[]
+  RequiresOther?: boolean
+  SpendMore?: { MinimumOrderAmount?: number; ToSpend?: number } | null
+}
+
+const PromptsSchema: z.ZodType<PromptsType> = z
+  .object({
+    DiscountApplied: z
+      .object({ Amount: z.number().exactOptional() })
+      .nullable()
+      .exactOptional()
+      .openapi({ required: [] }),
+    InvalidProducts: z.array(InvalidProductSchema).exactOptional(),
+    ItemDiscounts: z
+      .array(ItemDiscountPromptSchema)
+      .exactOptional()
+      .openapi({ description: 'Collection of item discount prompts to be shown customer' }),
+    Offers: z
+      .array(
+        z
+          .object({
+            DiscountValue: z.number().exactOptional(),
+            OfferType: z.string().exactOptional(),
+            QualifyingValue: z.number().exactOptional(),
+            ToSpendValue: z.number().exactOptional(),
+          })
+          .openapi({ required: [] }),
+      )
+      .exactOptional(),
+    OfflineProducts: z.array(OfflineProductSchema).exactOptional(),
+    RequiresOther: z.boolean().exactOptional(),
+    SpendMore: z
+      .object({
+        MinimumOrderAmount: z.number().exactOptional(),
+        ToSpend: z.number().exactOptional(),
+      })
+      .nullable()
+      .exactOptional()
+      .openapi({ required: [] }),
+  })
+  .openapi({ required: [] })
+  .openapi('Prompts')
+
+const RestaurantOfferSchema = z
+  .object({
+    ConsumerSegment: z
+      .string()
+      .openapi({
+        description: 'Consumer Segment to which offer applies',
+        example: 'NewToRestaurant',
+      }),
+    DiscountApplied: z.number().openapi({ description: 'The money value discount' }),
+    DiscountCode: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'The unique code of the discount, acts as a lock object at payment stage',
+      }),
+    DiscountValue: z
+      .number()
+      .exactOptional()
+      .openapi({
+        description: 'The percentage value discount. Returned 0 when offer is not of Percent type',
+      }),
+    OfferId: z.string().openapi({ description: 'The unique identifier of the offer' }),
+    OfferType: z.string().openapi({ description: 'The type of the offer' }),
+  })
+  .openapi({ required: ['OfferId', 'OfferType', 'ConsumerSegment', 'DiscountApplied'] })
+  .openapi('RestaurantOffer')
+
+type BasketSummaryType = {
+  BasketTotals?: { [key: string]: unknown }
+  CategoryOffers?: z.infer<typeof CategoryOfferSchema>[]
+  Deals?: z.infer<typeof DealSchema>[]
+  DeliveryCharge?: number
+  MaximumAdditionalOrderItems: number
+  PaymentDirectives?: z.infer<typeof PaymentDirectivesSchema>
+  Products?: z.infer<typeof ProductSchema>[]
+  Prompts?: z.infer<typeof PromptsSchema> | null
+  RestaurantOffers?: z.infer<typeof RestaurantOfferSchema>[]
+}
+
+const BasketSummarySchema: z.ZodType<BasketSummaryType> = z
+  .object({
+    BasketTotals: z.looseObject({}).exactOptional(),
+    CategoryOffers: z.array(CategoryOfferSchema).exactOptional(),
+    Deals: z.array(DealSchema).exactOptional(),
+    DeliveryCharge: z.number().exactOptional(),
+    MaximumAdditionalOrderItems: z.number(),
+    PaymentDirectives: PaymentDirectivesSchema.exactOptional().openapi({
+      description: 'The directives to payment component',
+      example: { DisableCashPayment: true },
+    }),
+    Products: z.array(ProductSchema).exactOptional(),
+    Prompts: PromptsSchema.nullable().exactOptional(),
+    RestaurantOffers: z
+      .array(RestaurantOfferSchema)
+      .exactOptional()
+      .openapi({
+        description: 'The list of restaurant offers',
+        example: [
+          {
+            ConsumerSegment: 'NewToRestaurant',
+            DiscountApplied: 8.37,
+            DiscountValue: 20,
+            OfferId: 'ftcOfferId75',
+            OfferType: 'Percent',
+          },
+          {
+            ConsumerSegment: 'All',
+            DiscountApplied: 28.37,
+            DiscountCode: 'mgt36rtp8VoucherCode',
+            DiscountValue: 0,
+            OfferId: 'stampCardLoyaltyCampaignOfferId287',
+            OfferType: 'StampCard',
+          },
+        ],
+      }),
+  })
+  .openapi({ required: ['MaximumAdditionalOrderItems'] })
+  .openapi('BasketSummary')
+
+type BasketResponseType = {
+  BasketId?: string
+  BasketSummary?: z.infer<typeof BasketSummarySchema>
+  CreateDate?: string | null
+  IsOrderable?: boolean
+  MenuGroupId?: string
+  RestaurantSeoName?: string | null
+  ServiceType?: string
+}
+
 const ConsumerOrderMealAccessorySchema = z
   .object({
     accessoryId: z.string().exactOptional().openapi({ description: 'The accessory Id.' }),
@@ -28,6 +419,1101 @@ type ConsumerOrderBasketSummaryItemType = {
   unitPrice?: number
 }
 
+const ConsumerOrderLinkSchema = z
+  .object({
+    href: z.string().exactOptional().openapi({ description: 'The URL of the link.' }),
+    templated: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'A value indicating whether the URL is templated.' }),
+  })
+  .openapi({
+    description: 'A link to an API resource.',
+    'x-api-version-from': '2017-10',
+    required: [],
+  })
+  .openapi('ConsumerOrderLink')
+
+const ConsumerOrderApplicationInfoSchema = z
+  .object({
+    clientIdentifier: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The client identifier associated with the order, if any, such as a device Id or IP address.',
+      }),
+    feature: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the Just Eat feature that placed the order.' }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the application that placed the order.' }),
+    userAgent: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The User Agent of the client that placed the order.' }),
+    version: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The version of the application that placed the order.' }),
+  })
+  .openapi({
+    description: 'Information about an application used to place an order.',
+    'x-api-version-from': '2017-10',
+    required: [],
+  })
+  .openapi('ConsumerOrderApplicationInfo')
+
+const ConsumerOrderBulkDiscountSchema = z
+  .object({
+    amount: z
+      .float64()
+      .exactOptional()
+      .openapi({ description: 'The amount of the bulk discount.' }),
+    name: z.string().exactOptional().openapi({ description: 'The name of the bulk discount.' }),
+    productTypeId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The Id of the product type the discount applies to.' }),
+  })
+  .openapi({ description: 'A bulk discount.', 'x-api-version-from': '2017-10', required: [] })
+  .openapi('ConsumerOrderBulkDiscount')
+
+const ConsumerOrderDiscountSchema = z
+  .object({
+    amount: z.float64().exactOptional().openapi({ description: 'The amount of the discount.' }),
+    name: z.string().exactOptional().openapi({ description: 'The name of the discount.' }),
+  })
+  .openapi({ description: 'A discount.', 'x-api-version-from': '2017-10', required: [] })
+  .openapi('ConsumerOrderDiscount')
+
+const ConsumerOrderMealPartSchema = z
+  .object({
+    groupId: z.string().exactOptional().openapi({ description: 'The group Id.' }),
+    mealPartId: z.string().exactOptional().openapi({ description: 'The meal part Id.' }),
+    name: z.string().exactOptional().openapi({ description: 'The name of the meal part.' }),
+    optionalAccessories: z
+      .array(ConsumerOrderMealAccessorySchema)
+      .exactOptional()
+      .openapi({ description: 'The optional meal part accessories, if any.' }),
+    requiredAccessories: z
+      .array(ConsumerOrderMealAccessorySchema)
+      .exactOptional()
+      .openapi({ description: 'The required meal part accessories, if any.' }),
+    synonym: z.string().exactOptional().openapi({ description: 'The synonym of the meal part.' }),
+  })
+  .openapi({ description: 'A part of a meal.', 'x-api-version-from': '2017-10', required: [] })
+  .openapi('ConsumerOrderMealPart')
+
+const ConsumerOrderBasketItemSchema = z
+  .object({
+    bulkDiscounts: z
+      .array(ConsumerOrderBulkDiscountSchema)
+      .exactOptional()
+      .openapi({ description: 'The bulk discounts, if any.' }),
+    combinedPrice: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description: 'The combined price for the item, including any accessories and/or discounts.',
+      }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The description for the item.' }),
+    discounts: z
+      .array(ConsumerOrderDiscountSchema)
+      .exactOptional()
+      .openapi({ description: 'The discounts, if any.' }),
+    name: z.string().exactOptional().openapi({ description: 'The name of the item.' }),
+    optionalAccessories: z
+      .array(ConsumerOrderMealAccessorySchema)
+      .exactOptional()
+      .openapi({ description: 'The optional meal part accessories, if any.' }),
+    parts: z
+      .array(ConsumerOrderMealPartSchema)
+      .exactOptional()
+      .openapi({ description: 'The parts of the meal, if any.' }),
+    productId: z.string().exactOptional().openapi({ description: 'The product Id.' }),
+    requiredAccessories: z
+      .array(ConsumerOrderMealAccessorySchema)
+      .exactOptional()
+      .openapi({ description: 'The required meal part accessories, if any.' }),
+    synonym: z.string().exactOptional().openapi({ description: 'The synonym of the item.' }),
+    unitPrice: z.float64().exactOptional().openapi({ description: 'The unit price for the item.' }),
+  })
+  .openapi({ description: 'An item in a basket.', 'x-api-version-from': '2017-10', required: [] })
+  .openapi('ConsumerOrderBasketItem')
+
+const ConsumerOrderOfferSchema = z
+  .object({
+    id: z.string().exactOptional().openapi({ description: 'The offer Id.' }),
+    offerAmount: z.float64().exactOptional().openapi({ description: 'The value of the offer.' }),
+    offerType: z.string().exactOptional().openapi({ description: 'The type of the offer.' }),
+    qualifyingValue: z
+      .float64()
+      .exactOptional()
+      .openapi({ description: 'The qualifying value for the offer.' }),
+  })
+  .openapi({
+    description: 'An offer applied to a basket.',
+    'x-api-version-from': '2017-10',
+    required: [],
+  })
+  .openapi('ConsumerOrderOffer')
+
+const ConsumerOrderBasketSummaryItemSchema: z.ZodType<ConsumerOrderBasketSummaryItemType> = z
+  .lazy(() =>
+    z
+      .object({
+        accessories: z
+          .array(ConsumerOrderMealAccessorySchema)
+          .exactOptional()
+          .openapi({ description: 'The accessories in the basket summary item.' }),
+        id: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'The Id of the item, such as a product Id or meal part Id.' }),
+        items: z
+          .array(ConsumerOrderBasketSummaryItemSchema)
+          .exactOptional()
+          .openapi({ description: 'The items in the basket summary item.' }),
+        name: z.string().exactOptional().openapi({ description: 'The name of the item.' }),
+        price: z
+          .float64()
+          .exactOptional()
+          .openapi({ description: 'The price of the item for the associated quantity.' }),
+        quantity: z.int32().exactOptional().openapi({ description: 'The quantity of the item.' }),
+        synonym: z.string().exactOptional().openapi({ description: 'The synonym of the item.' }),
+        unitPrice: z
+          .float64()
+          .exactOptional()
+          .openapi({ description: 'The unit price of the item.' }),
+      })
+      .openapi({
+        description: 'A summarised item in a basket.',
+        'x-api-version-from': '2017-10',
+        required: [],
+      }),
+  )
+  .openapi('ConsumerOrderBasketSummaryItem')
+
+const ConsumerOrderBasketSummarySchema = z
+  .object({
+    items: z
+      .array(ConsumerOrderBasketSummaryItemSchema)
+      .exactOptional()
+      .openapi({ description: 'The items in the basket summary.' }),
+  })
+  .openapi({
+    description: 'A summary of the items in the basket for an order.',
+    'x-api-version-from': '2017-10',
+    required: [],
+  })
+  .openapi('ConsumerOrderBasketSummary')
+
+const ConsumerOrderTipItemSchema = z
+  .object({
+    amount: z.float64().exactOptional().openapi({ description: 'The cash value of the tip.' }),
+    name: z.string().exactOptional().openapi({ description: 'The name of the type of the tip.' }),
+    value: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description: 'The value of the tip relative to its type, such as the percentage.',
+      }),
+  })
+  .openapi({ description: 'A tip.', 'x-api-version-from': '2017-10', required: [] })
+  .openapi('ConsumerOrderTipItem')
+
+const ConsumerOrderBasketInfoSchema = z
+  .object({
+    currencyCode: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The ISO-4217 currency code associated with the basket.' }),
+    discounts: z
+      .record(z.string(), z.float64())
+      .exactOptional()
+      .openapi({ description: 'The discounts applied to the basket, if any.' }),
+    fees: z
+      .record(z.string(), z.float64())
+      .exactOptional()
+      .openapi({ description: 'The fees applied to the basket, if any.' }),
+    items: z
+      .array(ConsumerOrderBasketItemSchema)
+      .exactOptional()
+      .openapi({ description: 'The items in the basket.' }),
+    metadata: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({ description: 'Arbitrary metadata about the basket.' }),
+    offers: z
+      .array(ConsumerOrderOfferSchema)
+      .exactOptional()
+      .openapi({ description: 'The offer discounts applied to the basket.' }),
+    subtotal: z
+      .float64()
+      .exactOptional()
+      .openapi({ description: 'The subtotal for the basket before any discounts or fees.' }),
+    summary: ConsumerOrderBasketSummarySchema.exactOptional(),
+    tips: z
+      .record(z.string(), ConsumerOrderTipItemSchema)
+      .exactOptional()
+      .openapi({ description: 'The tips associated with the basket.' }),
+    total: z.float64().exactOptional().openapi({ description: 'The total value of the basket.' }),
+  })
+  .openapi({
+    description: 'Information about the items in the basket for an order.',
+    'x-api-version-from': '2017-10',
+    required: [],
+  })
+  .openapi('ConsumerOrderBasketInfo')
+
+const ConsumerOrderGeopositionSchema = z
+  .object({
+    latitude: z.float64().exactOptional().openapi({ description: 'The latitude.' }),
+    longitude: z.float64().exactOptional().openapi({ description: 'The longitude.' }),
+  })
+  .openapi({ description: 'A geoposition.', 'x-api-version-from': '2017-10', required: [] })
+  .openapi('ConsumerOrderGeoposition')
+
+const ConsumerOrderAddressSchema = z
+  .object({
+    addressLines: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'The lines of the address.' }),
+    city: z.string().exactOptional().openapi({ description: 'The city or town.' }),
+    countryCode: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The ISO 3166-1 alpha-2 country code.' }),
+    locality: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The locality, such as a district or suburb, if any.' }),
+    location: ConsumerOrderGeopositionSchema.exactOptional(),
+    postalCode: z.string().exactOptional().openapi({ description: 'The postal code.' }),
+    region: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The region, such as a county, province or state.' }),
+  })
+  .openapi({ description: 'A postal address.', 'x-api-version-from': '2017-10', required: [] })
+  .openapi('ConsumerOrderAddress')
+
+const ConsumerOrderConsumerInfoSchema = z
+  .object({
+    contactNumber: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "The consumer's contact number." }),
+    deliveryAddress: ConsumerOrderAddressSchema.exactOptional(),
+    email: z.string().exactOptional().openapi({ description: "The consumer's email address." }),
+    id: z.string().exactOptional().openapi({ description: 'The consumer Id.' }),
+    name: z.string().exactOptional().openapi({ description: "The consumer's name." }),
+    timeZone: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The IANA time zone Id the consumer is located in.' }),
+  })
+  .openapi({
+    description: 'Information about a consumer.',
+    'x-api-version-from': '2017-10',
+    required: [],
+  })
+  .openapi('ConsumerOrderConsumerInfo')
+
+const ConsumerOrderOrderInfoSchema = z
+  .object({
+    canReorder: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'A value indicating whether the order can be re-ordered.' }),
+    createdAt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'The date and time the order was created.' }),
+    isAsap: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'A value indicating whether the order should be fulfilled as soon as possible.',
+      }),
+    isForDelivery: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'A value indicating whether the order is for delivery.' }),
+    notes: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({ description: 'Any notes associated with the order given by the consumer.' }),
+  })
+  .openapi({
+    description: 'Additional information about an order.',
+    'x-api-version-from': '2017-10',
+    required: [],
+  })
+  .openapi('ConsumerOrderOrderInfo')
+
+const ConsumerOrderPaymentItemSchema = z
+  .object({
+    cardType: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The card type, such as VISA, if used.' }),
+    deferredFee: z
+      .float64()
+      .exactOptional()
+      .openapi({ description: 'The deferred fee value, if any.', 'x-api-version-from': '2019-05' }),
+    fee: z.float64().exactOptional().openapi({ description: 'The payment fee, if any.' }),
+    lastCardDigits: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The last digits of a payment card, if used.' }),
+    paymentMethod: z
+      .enum(['None', 'Cash', 'Card', 'AccountCredit', 'Voucher', 'PayPal', 'Interac', 'ApplePay'])
+      .exactOptional()
+      .openapi({
+        description: 'The payment method, such as cash or card.',
+        'x-api-version-from': '2017-10',
+      }),
+    pspName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the Payment Service Provider, if any.' }),
+    transactionReference: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The transaction reference, if any.' }),
+    value: z.float64().exactOptional().openapi({ description: 'The payment value.' }),
+    voucherCode: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The voucher code used, if any.', 'x-api-version-from': '2019-05' }),
+  })
+  .openapi({ description: 'An individual payment.', 'x-api-version-from': '2017-10', required: [] })
+  .openapi('ConsumerOrderPaymentItem')
+
+const ConsumerOrderTaxItemSchema = z
+  .object({
+    name: z.string().exactOptional().openapi({ description: 'The name of the tax.' }),
+    rate: z.float64().exactOptional().openapi({ description: 'The tax rate.' }),
+    value: z.float64().exactOptional().openapi({ description: 'The value of the tax due.' }),
+  })
+  .openapi({ description: 'A tax item.', 'x-api-version-from': '2017-10', required: [] })
+  .openapi('ConsumerOrderTaxItem')
+
+const ConsumerOrderTotalsSchema = z
+  .object({
+    accountCredits: z
+      .float64()
+      .exactOptional()
+      .openapi({ description: 'The total amount of account credit(s) applied to the order.' }),
+    complimentary: z
+      .float64()
+      .exactOptional()
+      .openapi({ description: 'The total amount of promotional credit(s) applied to the order.' }),
+    discounts: z
+      .float64()
+      .exactOptional()
+      .openapi({ description: 'The total amount of discount(s) applied to the order.' }),
+    fees: z
+      .float64()
+      .exactOptional()
+      .openapi({ description: 'The total amount of fees applied to the order.' }),
+    subtotal: z.float64().exactOptional().openapi({ description: 'The subtotal for the order.' }),
+    taxes: z
+      .float64()
+      .exactOptional()
+      .openapi({ description: 'The total amount of taxes applied to the order.' }),
+    tips: z
+      .float64()
+      .exactOptional()
+      .openapi({ description: 'The total amount of tips applied to the order.' }),
+    totalPaid: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description:
+          'The total paid for the order, after taking into account credit, vouchers etc.',
+      }),
+    totalToPay: z
+      .float64()
+      .exactOptional()
+      .openapi({ description: 'The total to pay for the order.' }),
+    vouchers: z
+      .float64()
+      .exactOptional()
+      .openapi({ description: 'The total amount of any voucher(s) applied to the order.' }),
+  })
+  .openapi({
+    description: 'A class containing payment totals.',
+    'x-api-version-from': '2017-10',
+    required: [],
+  })
+  .openapi('ConsumerOrderTotals')
+
+const ConsumerOrderPaymentInfoSchema = z
+  .object({
+    currencyCode: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The ISO-4217 currency code associated with the payment.' }),
+    fees: z
+      .record(z.string(), z.float64())
+      .exactOptional()
+      .openapi({ description: 'The amount of fees applied to the order.' }),
+    paidAt: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The date and time the order was paid for, if known.' }),
+    payments: z
+      .array(ConsumerOrderPaymentItemSchema)
+      .exactOptional()
+      .openapi({ description: 'The individual payment(s).' }),
+    taxes: z
+      .record(z.string(), ConsumerOrderTaxItemSchema)
+      .exactOptional()
+      .openapi({ description: 'The taxes applied to the order.' }),
+    totals: ConsumerOrderTotalsSchema.exactOptional(),
+  })
+  .openapi({
+    description: 'Information about a payment.',
+    'x-api-version-from': '2017-10',
+    required: [],
+  })
+  .openapi('ConsumerOrderPaymentInfo')
+
+const ConsumerOrderRestaurantCapabilitySchema = z
+  .object({
+    isCapable: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'A value indicating whether the restaurant is capable of fulfilling the capability.',
+      }),
+    metadata: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({ description: 'Arbitrary metadata about the capability.' }),
+    name: z.string().exactOptional().openapi({ description: 'The name of the capability.' }),
+  })
+  .openapi({
+    description: 'A capability of a restaurant.',
+    'x-api-version-from': '2018-09',
+    required: [],
+  })
+  .openapi('ConsumerOrderRestaurantCapability')
+
+const ConsumerOrderCuisineInfoSchema = z
+  .object({
+    id: z.string().exactOptional().openapi({ description: 'The Id of the cuisine.' }),
+    name: z.string().exactOptional().openapi({ description: 'The name of the cuisine.' }),
+    rank: z.int32().exactOptional().openapi({ description: 'The ranking for the cuisine.' }),
+  })
+  .openapi({
+    description: 'Information about a restaurant cuisine.',
+    'x-api-version-from': '2017-10',
+    required: [],
+  })
+  .openapi('ConsumerOrderCuisineInfo')
+
+const ConsumerOrderImageSchema = z
+  .object({
+    height: z
+      .int32()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The optional height of the image, in pixels.' }),
+    imageType: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The type of the image, such as a logo.' }),
+    uri: z.string().exactOptional().openapi({ description: 'The URI of the image.' }),
+    width: z
+      .int32()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The optional width of the image, in pixels.' }),
+  })
+  .openapi({ description: 'An image.', 'x-api-version-from': '2017-10', required: [] })
+  .openapi('ConsumerOrderImage')
+
+const ConsumerOrderRestaurantInfoSchema = z
+  .object({
+    capabilities: z
+      .record(z.string(), ConsumerOrderRestaurantCapabilitySchema)
+      .exactOptional()
+      .openapi({
+        description: 'The capabilities of the restaurant.',
+        'x-api-version-from': '2018-09',
+      }),
+    contactNumber: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The contact telephone number for the restaurant.' }),
+    cuisines: z
+      .array(ConsumerOrderCuisineInfoSchema)
+      .exactOptional()
+      .openapi({ description: 'The cuisines associated with the restaurant.' }),
+    displayName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The display name of the restaurant.' }),
+    id: z.string().exactOptional().openapi({ description: 'The Id of the restaurant.' }),
+    images: z
+      .record(z.string(), ConsumerOrderImageSchema)
+      .exactOptional()
+      .openapi({ description: 'The images associated with the restaurant.' }),
+    isClosed: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'A value indicating whether the restaurant is currently closed.' }),
+    isOffline: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'A value indicating whether the restaurant is currently offline.' }),
+    metadata: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({ description: 'Arbitrary metadata about the restaurant.' }),
+    nextClosesAt: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The date and time the restaurant next closes, if open.' }),
+    nextOpensAt: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The date and time the restaurant next opens, if closed.' }),
+    postalAddress: ConsumerOrderAddressSchema.exactOptional(),
+    seoName: z.string().exactOptional().openapi({ description: 'The SEO name of the restaurant.' }),
+    timeZone: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'IANA time zone Id the restaurant is located in.' }),
+  })
+  .openapi({
+    description: 'Information about a restaurant.',
+    'x-api-version-from': '2017-10',
+    required: [],
+  })
+  .openapi('ConsumerOrderRestaurantInfo')
+
+const ConsumerOrderReviewInfoSchema = z
+  .object({
+    averageScore: z
+      .float64()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The average score for the attributes of the review.' }),
+    canReview: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'A value indicating whether the order can be reviewed.' }),
+    comments: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Any comments left by the consumer in the review.' }),
+    isReviewed: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'A value indicating whether the order has been reviewed.' }),
+    maximumScore: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description: 'The maximum score that can be given to an attribute of the review.',
+      }),
+    ratingCode: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The rating code for the review.' }),
+    scores: z
+      .record(z.string(), z.float64())
+      .exactOptional()
+      .openapi({ description: 'The scores given for the scored attributes of the review.' }),
+  })
+  .openapi({
+    description: 'Information about the review for an order.',
+    'x-api-version-from': '2017-10',
+    required: [],
+  })
+  .openapi('ConsumerOrderReviewInfo')
+
+const ConsumerOrderDateTimeRangeSchema = z
+  .object({
+    end: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'The end of the range.' }),
+    start: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'The start of the range.' }),
+  })
+  .openapi({
+    description: 'A range of date and time values.',
+    'x-api-version-from': '2017-10',
+    required: [],
+  })
+  .openapi('ConsumerOrderDateTimeRange')
+
+const ConsumerOrderStatusHistoryItemSchema = z
+  .object({
+    confidence: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The confidence level of the status.' }),
+    dueDate: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'The due date at the date and time associated with the timestamp, if any.',
+      }),
+    reason: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The reason for the order's status, if known.\nIf your client does not understand this reason, assume that it has no value.",
+        'x-api-version-from': '2019-05',
+      }),
+    timestamp: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'The timestamp associated with this order status.' }),
+    value: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The order status at the date and time associated with the timestamp.',
+      }),
+  })
+  .openapi({
+    description: 'Information about the status of an order at a specific point in time.',
+    'x-api-version-from': '2017-10',
+    required: [],
+  })
+  .openapi('ConsumerOrderStatusHistoryItem')
+
+const ConsumerOrderStatusNotificationsInfoSchema = z
+  .object({
+    channelKey: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The key for the status updates notification channel, if any.' }),
+    channelName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the status updates notification channel.' }),
+    providerName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The name of the status updates notification provider, such as PubNub.',
+      }),
+  })
+  .openapi({
+    description: 'Status updates notification information for an order.',
+    'x-api-version-from': '2018-09',
+    required: [],
+  })
+  .openapi('ConsumerOrderStatusNotificationsInfo')
+
+const ConsumerOrderTrackingInfoSchema = z
+  .object({
+    channelKey: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The key for the tracking channel, if any.' }),
+    channelName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the tracking channel.' }),
+    providerName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the tracking provider, such as PubNub.' }),
+  })
+  .openapi({
+    description: 'Tracking information for an order.',
+    'x-api-version-from': '2017-10',
+    required: [],
+  })
+  .openapi('ConsumerOrderTrackingInfo')
+
+const ConsumerOrderUpcomingStatusItemSchema = z
+  .object({
+    sortOrder: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'The sort order of the upcoming status.' }),
+    value: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The upcoming status for the order.' }),
+  })
+  .openapi({
+    description: 'Information about an upcoming status an order is expected to reach.',
+    'x-api-version-from': '2017-10',
+    required: [],
+  })
+  .openapi('ConsumerOrderUpcomingStatusItem')
+
+const ConsumerOrderStatusInfoSchema = z
+  .object({
+    confidence: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "The confidence level of the order's status." }),
+    currentDueDate: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The current due date of the order, if any.' }),
+    delay: z.string().exactOptional().openapi({ description: 'How delayed the order is.' }),
+    estimatedCompletion: ConsumerOrderDateTimeRangeSchema.exactOptional(),
+    expectPreorderNotificationAt: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'The date and time the restaurant is expected to accept a preorder, if any.',
+      }),
+    finishedAt: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'The date and time the order was finished, if completed successfully.',
+      }),
+    history: z
+      .array(ConsumerOrderStatusHistoryItemSchema)
+      .exactOptional()
+      .openapi({ description: "The history of the order's statuses, if available." }),
+    initialDueDate: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The initial due date of the order, if any.' }),
+    isActive: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'A value indicating whether the status of the order may change further.',
+      }),
+    isDelayed: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'A value indicating whether the order is delayed.' }),
+    isDueDateDynamic: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'A value indicating whether the current due date was determined\ndynamically, for example from the current location of a delivery driver.',
+        'x-api-version-from': '2019-04',
+      }),
+    isRecent: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'A value indicating whether the order is a recent order.' }),
+    notifications: ConsumerOrderStatusNotificationsInfoSchema.exactOptional(),
+    statusReason: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The reason for the status of the order, if known.\nIf your client does not understand this status reason, assume that it has no value.',
+        'x-api-version-from': '2019-05',
+      }),
+    timeZone: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'IANA time zone Id associated with the order.' }),
+    tracking: ConsumerOrderTrackingInfoSchema.exactOptional(),
+    upcoming: z
+      .array(ConsumerOrderUpcomingStatusItemSchema)
+      .exactOptional()
+      .openapi({ description: 'The expected upcoming order statuses for the order, if known.' }),
+    value: z.string().exactOptional().openapi({ description: 'The current status of the order.' }),
+  })
+  .openapi({
+    description: 'Information about the status of an order.',
+    'x-api-version-from': '2017-10',
+    required: [],
+  })
+  .openapi('ConsumerOrderStatusInfo')
+
+type ConsumerOrderOrderType = {
+  _links?: { [key: string]: z.infer<typeof ConsumerOrderLinkSchema> }
+  application?: z.infer<typeof ConsumerOrderApplicationInfoSchema>
+  basket?: z.infer<typeof ConsumerOrderBasketInfoSchema>
+  consumer?: z.infer<typeof ConsumerOrderConsumerInfoSchema>
+  friendlyId?: string
+  id?: string
+  information?: z.infer<typeof ConsumerOrderOrderInfoSchema>
+  metadata?: { [key: string]: string }
+  payment?: z.infer<typeof ConsumerOrderPaymentInfoSchema>
+  restaurant?: z.infer<typeof ConsumerOrderRestaurantInfoSchema>
+  review?: z.infer<typeof ConsumerOrderReviewInfoSchema>
+  status?: z.infer<typeof ConsumerOrderStatusInfoSchema>
+  tenant?: string
+  timestamp?: string
+}
+
+const ConsumerOrderPaginationInfoSchema = z
+  .object({
+    count: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64', description: 'The current number of results.' }),
+    links: z
+      .record(z.string(), ConsumerOrderLinkSchema)
+      .exactOptional()
+      .openapi({ description: 'The pagination links.' }),
+    token: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The pagination token for the next page of results, if any.' }),
+    total: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description: 'The total number of results, if known.',
+      }),
+  })
+  .openapi({
+    description: 'Pagination information for a request.',
+    'x-api-version-from': '2017-10',
+    required: [],
+  })
+  .openapi('ConsumerOrderPaginationInfo')
+
+const ConsumerOrderOrderSchema: z.ZodType<ConsumerOrderOrderType> = z
+  .object({
+    _links: z
+      .record(z.string(), ConsumerOrderLinkSchema)
+      .exactOptional()
+      .openapi({ description: 'The links information, if any.' }),
+    application: ConsumerOrderApplicationInfoSchema.exactOptional(),
+    basket: ConsumerOrderBasketInfoSchema.exactOptional(),
+    consumer: ConsumerOrderConsumerInfoSchema.exactOptional(),
+    friendlyId: z.string().exactOptional().openapi({ description: 'The friendly order Id.' }),
+    id: z.string().exactOptional().openapi({ description: 'The Id of the order.' }),
+    information: ConsumerOrderOrderInfoSchema.exactOptional(),
+    metadata: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({ description: 'Arbitrary metadata about the order.' }),
+    payment: ConsumerOrderPaymentInfoSchema.exactOptional(),
+    restaurant: ConsumerOrderRestaurantInfoSchema.exactOptional(),
+    review: ConsumerOrderReviewInfoSchema.exactOptional(),
+    status: ConsumerOrderStatusInfoSchema.exactOptional(),
+    tenant: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The tenant associated with the order.' }),
+    timestamp: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'The UTC timestamp of the date and time that the response was generated at.',
+        'x-api-version-from': '2019-04',
+      }),
+  })
+  .openapi({ description: 'An order.', 'x-api-version-from': '2017-10', required: [] })
+  .openapi('ConsumerOrderOrder')
+
+type ConsumerOrderOrderHistoryType = {
+  _links?: { [key: string]: z.infer<typeof ConsumerOrderLinkSchema> }
+  _pagination?: z.infer<typeof ConsumerOrderPaginationInfoSchema>
+  consumerId?: string
+  orders?: z.infer<typeof ConsumerOrderOrderSchema>[]
+  tenant?: string
+  timestamp?: string
+}
+
+const CreateModifierSchema = z
+  .object({ ModifierId: z.string().exactOptional(), Quantity: z.number().exactOptional() })
+  .openapi({ required: [] })
+  .openapi('CreateModifier')
+
+const CreateModifierGroupSchema = z
+  .object({
+    ModifierGroupId: z.string().exactOptional(),
+    Modifiers: z.array(CreateModifierSchema).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('CreateModifierGroup')
+
+const CreateRemovedIngredientSchema = z
+  .object({ Details: z.string().exactOptional() })
+  .openapi({ required: [] })
+  .openapi('CreateRemovedIngredient')
+
+const CreateProductSchema = z
+  .object({
+    Date: z.string().exactOptional().openapi({ description: '`YYYY-MM-DDThh:mm:ssZ (UTC)`' }),
+    ModifierGroups: z.array(CreateModifierGroupSchema).nullable().exactOptional(),
+    ProductId: z.string().exactOptional(),
+    Quantity: z.number().exactOptional(),
+    RemovedIngredients: z.array(CreateRemovedIngredientSchema).nullable().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('CreateProduct')
+
+const CreateDealGroupSchema = z
+  .object({
+    DealGroupId: z.string().exactOptional(),
+    Products: z.array(CreateProductSchema).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('CreateDealGroup')
+
+type CreateDealType = {
+  Date?: string
+  DealGroups?: z.infer<typeof CreateDealGroupSchema>[]
+  ProductId?: string
+  Quantity?: number
+}
+
+const CreateDealSchema: z.ZodType<CreateDealType> = z
+  .object({
+    Date: z.string().exactOptional().openapi({ description: '`YYYY-MM-DDThh:mm:ssZ (UTC)`' }),
+    DealGroups: z.array(CreateDealGroupSchema).exactOptional(),
+    ProductId: z.string().exactOptional(),
+    Quantity: z.number().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('CreateDeal')
+
+const CreateGeoLocationSchema = z
+  .object({ Latitude: z.number().exactOptional(), Longitude: z.number().exactOptional() })
+  .openapi({ required: [] })
+  .openapi('CreateGeoLocation')
+
+const CreateLocationSchema = z
+  .object({
+    GeoLocation: CreateGeoLocationSchema.nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Not available across platform yet, but applied for future proofing.',
+      }),
+    ZipCode: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('CreateLocation')
+
+const CreateOrderDetailsSchema = z
+  .object({ Location: CreateLocationSchema.exactOptional() })
+  .openapi({ required: [] })
+  .openapi('CreateOrderDetails')
+
+type CreateRequestType = {
+  Deals?: z.infer<typeof CreateDealSchema>[] | null
+  MenuGroupId?: string
+  OrderDetails?: z.infer<typeof CreateOrderDetailsSchema>
+  Products?: z.infer<typeof CreateProductSchema>[] | null
+  RestaurantSeoName?: string | null
+}
+
+const DeliveryZoneSchema = z
+  .object({
+    deliveryMinutes: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'geographical zone generated by SKIP, based on delivery minutes.' }),
+    unboundedZone: z
+      .object({
+        coordinates: z
+          .array(
+            z
+              .object({
+                coordinates: z
+                  .array(
+                    z
+                      .object({
+                        latitude: z
+                          .number()
+                          .exactOptional()
+                          .openapi({ description: 'geographical point latitude' }),
+                        longitude: z
+                          .number()
+                          .exactOptional()
+                          .openapi({ description: 'geographical point longitude' }),
+                      })
+                      .openapi({ required: [] }),
+                  )
+                  .exactOptional()
+                  .openapi({ description: 'geographical coordinates of linear ring' }),
+              })
+              .openapi({ required: [] }),
+          )
+          .exactOptional()
+          .openapi({
+            description:
+              'geographical polygon https://tools.ietf.org/html/rfc7946#section-3.1.4. It might consist from multiple linear rings',
+          }),
+      })
+      .exactOptional()
+      .openapi({ description: 'json representation of delivery zone', required: [] }),
+    zoneId: z.string().exactOptional().openapi({ description: 'id of the zone' }),
+  })
+  .openapi({
+    example: {
+      deliveryMinutes: 5,
+      unboundedZone: {
+        items: [
+          {
+            coordinates: null,
+            items: [
+              { latitude: 57.159200668, longitude: -2.08593559299993 },
+              { latitude: 57.459200668, longitude: -2.18593559299993 },
+              { latitude: 57.159200668, longitude: -2.28593559299993 },
+              { latitude: 57.159200668, longitude: -2.08593559299993 },
+            ],
+          },
+        ],
+      },
+      zoneId: '1',
+    },
+    required: [],
+  })
+  .openapi('DeliveryZone')
+
+type GetDeliveryZonesResponseType = { deliveryZones?: z.infer<typeof DeliveryZoneSchema>[] }
+
 const VariationModifierResponseSchema = z
   .object({
     AdditionalPrice: z.float64().exactOptional().openapi({ description: 'The additional price' }),
@@ -54,16 +1540,344 @@ const VariationModifierResponseSchema = z
   })
   .openapi('VariationModifierResponse')
 
-type ModifierResponseType = {
-  AdditionPrice?: number
-  DefaultChoices?: number
-  Id?: string
-  MaxChoices?: number
-  MinChoices?: number
-  Name?: string
-  RemovePrice?: number
-  Variations?: z.infer<typeof VariationModifierResponseSchema>[]
+const ModifierResponseSchema = z
+  .object({
+    AdditionPrice: z.float64().exactOptional().openapi({ description: 'The additional price' }),
+    DefaultChoices: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'The default number of options allowed to be selected' }),
+    Id: z.string().exactOptional().openapi({ description: 'Id of the modifier' }),
+    MaxChoices: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'The maximum number of options allowed to be selected' }),
+    MinChoices: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'The minimum number of options allowed to be selected' }),
+    Name: z.string().exactOptional().openapi({ description: 'Name of the modifier' }),
+    RemovePrice: z.float64().exactOptional().openapi({ description: 'The cost to remove' }),
+    Variations: z
+      .array(VariationModifierResponseSchema)
+      .exactOptional()
+      .openapi({ description: 'The variations to which this modifiers applies' }),
+  })
+  .openapi({
+    example: {
+      Id: '9',
+      Name: 'Ham',
+      Variations: [
+        {
+          AdditionPrice: 0.5,
+          ModifierGroupId: '1',
+          Selected: true,
+          VariationId: '4',
+          VariationName: 'Large',
+        },
+      ],
+    },
+    required: [],
+  })
+  .openapi('ModifierResponse')
+
+const ModifierGroupResponseSchema = z
+  .object({
+    Id: z.string().exactOptional().openapi({ description: 'Id of Modifier Group' }),
+    MaxChoices: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'The maximum number of options allowed to be selected' }),
+    MinChoices: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'The minimum number of options allowed to be selected' }),
+    Modifiers: z
+      .array(ModifierResponseSchema)
+      .exactOptional()
+      .openapi({ description: 'A list of modifiers within the group' }),
+    Name: z.string().exactOptional().openapi({ description: 'Name of Modifier Group' }),
+  })
+  .openapi({
+    example: {
+      Id: '1',
+      MaxChoices: 3,
+      MinChoices: 0,
+      Modifiers: [
+        {
+          Id: '9',
+          Name: 'Ham',
+          Variations: [
+            {
+              AdditionPrice: 0.5,
+              ModifierGroupId: '1',
+              Selected: true,
+              VariationId: '4',
+              VariationName: 'Large',
+            },
+          ],
+        },
+        {
+          Id: '10',
+          Name: 'Sausage',
+          Variations: [
+            {
+              AdditionPrice: 0.5,
+              ModifierGroupId: '1',
+              Selected: true,
+              VariationId: '4',
+              VariationName: 'Large',
+            },
+          ],
+        },
+      ],
+      Name: 'Toppings',
+    },
+    required: [],
+  })
+  .openapi('ModifierGroupResponse')
+
+const VariationResponseSchema = z
+  .object({
+    Id: z.string().exactOptional().openapi({ description: 'Id' }),
+    Name: z.string().exactOptional().openapi({ description: 'Name' }),
+    OptionGroupIds: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'List of option group ids applicable to this variation' }),
+    PreferenceGroupIds: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'List of preference group ids applicable to this variation' }),
+    Price: z.float64().exactOptional().openapi({ description: 'Price' }),
+    Type: z.string().exactOptional().openapi({ description: 'Type' }),
+  })
+  .openapi({
+    example: {
+      Id: '32',
+      Name: 'Large',
+      OptionGroupIds: ['1'],
+      PreferenceGroupIds: ['12', '32'],
+      Price: 12.32,
+    },
+    required: [],
+  })
+  .openapi('VariationResponse')
+
+const MenuEditResponseSchema = z
+  .object({
+    CategoryId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Id of the category of the menu item' }),
+    CategoryName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Name of the category of the menu item' }),
+    Description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Description of the menu item' }),
+    EditType: z
+      .enum(['Add', 'Edit', 'Delete', 'None'])
+      .exactOptional()
+      .openapi({ description: 'Action being applied to the menu item' }),
+    Labels: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'Labels for the menu item' }),
+    MenuItemId: z.string().exactOptional().openapi({ description: 'Id of the menu item' }),
+    MenuItemName: z.string().exactOptional().openapi({ description: 'Name of the menu item' }),
+    OptionGroups: z
+      .array(ModifierGroupResponseSchema)
+      .exactOptional()
+      .openapi({ description: 'Option groups available for the menu item' }),
+    PreferenceGroups: z
+      .array(ModifierGroupResponseSchema)
+      .exactOptional()
+      .openapi({ description: 'Preference groups available for the menu item' }),
+    ReceiptNumber: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Receipt or kitchen number of the menu item' }),
+    Variations: z
+      .array(VariationResponseSchema)
+      .exactOptional()
+      .openapi({ description: 'Variations applicable to the menu item' }),
+  })
+  .openapi({
+    example: {
+      CategoryId: '1',
+      CategoryName: 'Pizzas',
+      Description: 'Cheesy pizza',
+      EditType: 'Add',
+      Labels: ['Vegetarian'],
+      MenuItemId: '12',
+      MenuItemName: 'Cheese pizza',
+      OptionGroups: [
+        {
+          Id: '1',
+          MaxChoices: 1,
+          MinChoices: 1,
+          Modifiers: [
+            {
+              Id: '9',
+              Name: 'Gluten-free',
+              Variations: [
+                {
+                  AdditionPrice: 1.5,
+                  ModifierGroupId: '1',
+                  Selected: true,
+                  VariationId: '4',
+                  VariationName: 'Large',
+                },
+                {
+                  AdditionPrice: 1.3,
+                  ModifierGroupId: '1',
+                  Selected: true,
+                  VariationId: '5',
+                  VariationName: 'Small',
+                },
+              ],
+            },
+          ],
+          Name: 'Bases',
+        },
+      ],
+      PreferenceGroups: [
+        {
+          Id: '12',
+          MaxChoices: 1,
+          MinChoices: 0,
+          Modifiers: [
+            {
+              Id: '9',
+              Name: 'Ham',
+              Variations: [
+                {
+                  AdditionPrice: 0.5,
+                  ModifierGroupId: '12',
+                  Selected: true,
+                  VariationId: '4',
+                  VariationName: 'Large',
+                },
+              ],
+            },
+          ],
+          Name: 'Meats',
+        },
+        {
+          Id: '32',
+          MaxChoices: 1,
+          MinChoices: 0,
+          Modifiers: [
+            {
+              Id: '7',
+              Name: 'Pineapple',
+              Variations: [
+                {
+                  AdditionPrice: 0.5,
+                  ModifierGroupId: '32',
+                  Selected: true,
+                  VariationId: '4',
+                  VariationName: 'Large',
+                },
+                {
+                  AdditionPrice: 0.3,
+                  ModifierGroupId: '32',
+                  Selected: true,
+                  VariationId: '5',
+                  VariationName: 'Small',
+                },
+              ],
+            },
+          ],
+          Name: 'Veggies',
+        },
+      ],
+      ReceiptNumber: '123',
+      Variations: [
+        {
+          Id: '4',
+          Name: 'Large',
+          OptionGroupIds: ['1'],
+          PreferenceGroupIds: ['12', '32'],
+          Price: 12.32,
+        },
+        { Id: '5', Name: 'Small', OptionGroupIds: ['1'], PreferenceGroupIds: ['32'], Price: 8.99 },
+      ],
+    },
+    required: [],
+  })
+  .openapi('MenuEditResponse')
+
+type MenuAllEditsResponseType = z.infer<typeof MenuEditResponseSchema>[]
+
+const MergedProductSchema = z
+  .strictObject({
+    id: z.string().nullable().exactOptional().openapi({ description: 'The id of the product' }),
+    ids: z
+      .array(z.int32())
+      .nullable()
+      .exactOptional()
+      .openapi({ deprecated: true, description: 'Deprecated, not in use' }),
+    isOffline: z.boolean().exactOptional().openapi({ description: 'Is this product offline?' }),
+    name: z.string().nullable().exactOptional().openapi({ description: 'Product name' }),
+  })
+  .openapi({ required: [] })
+  .openapi('MergedProduct')
+
+const ProductGroupSchema = z
+  .strictObject({
+    products: z
+      .array(MergedProductSchema)
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'List of products' }),
+  })
+  .openapi({ required: [] })
+  .openapi('ProductGroup')
+
+const MenuCategorySchema = z
+  .strictObject({
+    description: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Description of category', readOnly: true }),
+    name: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Name of category', readOnly: true }),
+    productGroups: z
+      .array(ProductGroupSchema)
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Product group', readOnly: true }),
+  })
+  .openapi({ required: [] })
+  .openapi('MenuCategory')
+
+type MergedMenuCardType = {
+  categories?: { [key: string]: z.infer<typeof MenuCategorySchema> } | null
 }
+
+const MergedMenuCardSchema: z.ZodType<MergedMenuCardType> = z
+  .strictObject({
+    categories: z
+      .record(z.string(), MenuCategorySchema)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Menu items of the restaurant with offline/online statuses grouped by category',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('MergedMenuCard')
+
+type MergedMenuResponseType = { menuCard?: z.infer<typeof MergedMenuCardSchema> }
 
 const OrderItemAccessorySchema = z
   .strictObject({
@@ -118,63 +1932,1117 @@ type RestaurantOrderItemType = {
 
 type SupportRequestTypeType = { name?: string; subTypes?: SupportRequestTypeType[]; value?: string }
 
-const OrderNumberValiditySchema = z
-  .strictObject({
-    ComparisonOperator: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The comparison operator (e.g. >, <, ==)' }),
-    NumberOfOrders: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'The number of orders for the comparison' }),
+const UpdateModifierSchema = z
+  .object({ ModifierId: z.string().exactOptional(), Quantity: z.number().exactOptional() })
+  .openapi({ required: [] })
+  .openapi('UpdateModifier')
+
+const UpdateModifierGroupSchema = z
+  .object({
+    ModifierGroupId: z.string().exactOptional(),
+    Modifiers: z.array(UpdateModifierSchema).exactOptional(),
   })
   .openapi({ required: [] })
-  .openapi('OrderNumberValidity')
+  .openapi('UpdateModifierGroup')
 
-const ConsumerStatusSchema = z
-  .union([z.literal(0), z.literal(1), z.literal(2)])
-  .openapi({ description: '', 'x-enumNames': ['Undefined', 'NewConsumer', 'ReturnConsumer'] })
-  .openapi('ConsumerStatus')
+const UpdateRemovedIngredientSchema = z
+  .object({ Details: z.string().exactOptional() })
+  .openapi({ required: [] })
+  .openapi('UpdateRemovedIngredient')
 
-const ServiceTypeSchema = z
-  .union([z.literal(1), z.literal(2)])
-  .openapi({ description: '', 'x-enumNames': ['Collection', 'Delivery'] })
-  .openapi('ServiceType')
-
-const DayOfWeekSchema = z
-  .union([
-    z.literal(0),
-    z.literal(1),
-    z.literal(2),
-    z.literal(3),
-    z.literal(4),
-    z.literal(5),
-    z.literal(6),
-  ])
-  .openapi({
-    description: '',
-    'x-enumNames': ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+const UpdateAddedProductSchema = z
+  .object({
+    Date: z.string().exactOptional().openapi({ description: '`YYYY-MM-DDThh:mm:ssZ (UTC)`' }),
+    ModifierGroups: z.array(UpdateModifierGroupSchema).nullable().exactOptional(),
+    ProductId: z.string().exactOptional(),
+    Quantity: z.number().exactOptional(),
+    RemovedIngredients: z.array(UpdateRemovedIngredientSchema).nullable().exactOptional(),
   })
-  .openapi('DayOfWeek')
+  .openapi({ required: [] })
+  .openapi('UpdateAddedProduct')
 
-type ValidityType = {
-  CuisineIds?: string[] | null
-  EndDate?: string | null
-  MinimumSpend?: number | null
-  OrderNumberValidity?: z.infer<typeof OrderNumberValiditySchema> | null
-  PaymentOptionTypes?: string[] | null
-  Platform?: string | null
-  PostCode?: string | null
-  RestaurantIds?: string | null
-  RestrictedToConsumerStatus?: z.infer<typeof ConsumerStatusSchema> | null
-  ServiceType?: z.infer<typeof ServiceTypeSchema> | null
-  StartDate?: string | null
-  ValidFromHour?: string | null
-  ValidOnDays?: z.infer<typeof DayOfWeekSchema>[] | null
-  ValidToHour?: string | null
+const UpdateDealGroupSchema = z
+  .object({
+    DealGroupId: z.string().exactOptional(),
+    Products: z.array(UpdateAddedProductSchema).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('UpdateDealGroup')
+
+type UpdateAddedDealType = {
+  Date?: string
+  DealGroups?: z.infer<typeof UpdateDealGroupSchema>[]
+  ProductId?: string
+  Quantity?: number
 }
+
+const UpdateAddedDealSchema: z.ZodType<UpdateAddedDealType> = z
+  .object({
+    Date: z.string().exactOptional().openapi({ description: '`YYYY-MM-DDThh:mm:ssZ (UTC)`' }),
+    DealGroups: z.array(UpdateDealGroupSchema).exactOptional(),
+    ProductId: z.string().exactOptional(),
+    Quantity: z.number().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('UpdateAddedDeal')
+
+const UpdateRemovedSchema = z
+  .object({
+    BasketProductId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A unique identifier for a product in the basket. This is needed to support complex products to make sure remove/update is applied to the correct product.',
+      }),
+    Date: z.string().exactOptional().openapi({ description: '`YYYY-MM-DDThh:mm:ssZ (UTC)`' }),
+  })
+  .openapi({ required: [] })
+  .openapi('UpdateRemoved')
+
+type UpdateUpdatedDealType = {
+  BasketProductId?: string
+  Date?: string
+  DealGroups?: z.infer<typeof UpdateDealGroupSchema>[]
+  Quantity?: { [key: string]: unknown }
+}
+
+const UpdateUpdatedDealSchema: z.ZodType<UpdateUpdatedDealType> = z
+  .object({
+    BasketProductId: z.string().exactOptional(),
+    Date: z.string().exactOptional().openapi({ description: '`YYYY-MM-DDThh:mm:ssZ (UTC)`' }),
+    DealGroups: z.array(UpdateDealGroupSchema).exactOptional(),
+    Quantity: z.looseObject({}).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('UpdateUpdatedDeal')
+
+type UpdateDealType = {
+  Added?: z.infer<typeof UpdateAddedDealSchema>[] | null
+  Removed?: z.infer<typeof UpdateRemovedSchema>[] | null
+  Updated?: z.infer<typeof UpdateUpdatedDealSchema>[] | null
+}
+
+const UpdateDealSchema: z.ZodType<UpdateDealType> = z
+  .object({
+    Added: z.array(UpdateAddedDealSchema).nullable().exactOptional(),
+    Removed: z.array(UpdateRemovedSchema).nullable().exactOptional(),
+    Updated: z.array(UpdateUpdatedDealSchema).nullable().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('UpdateDeal')
+
+const UpdateLocationSchema = z
+  .object({
+    GeoLocation: z
+      .object({
+        Date: z.string().exactOptional(),
+        Value: z
+          .object({ Latitude: z.number().exactOptional(), Longitude: z.number().exactOptional() })
+          .openapi({ required: [] })
+          .exactOptional()
+          .openapi({
+            description: 'Not available across platform yet, but applied for future proofing.',
+          }),
+      })
+      .nullable()
+      .exactOptional()
+      .openapi({ required: [] }),
+    ZipCode: z
+      .object({ Date: z.string().exactOptional(), Value: z.string().exactOptional() })
+      .nullable()
+      .exactOptional()
+      .openapi({ required: [] }),
+  })
+  .openapi({ required: [] })
+  .openapi('UpdateLocation')
+
+const UpdateOrderDetailsSchema = z
+  .object({ Location: UpdateLocationSchema.nullable().exactOptional() })
+  .openapi({ required: [] })
+  .openapi('UpdateOrderDetails')
+
+const UpdateUpdatedProductSchema = z
+  .object({
+    BasketProductId: z.string().exactOptional(),
+    Date: z.string().exactOptional().openapi({ description: '`YYYY-MM-DDThh:mm:ssZ (UTC)`' }),
+    ModifierGroups: z.array(UpdateModifierGroupSchema).nullable().exactOptional(),
+    Quantity: z.looseObject({}).exactOptional(),
+    RemovedIngredients: z.array(UpdateRemovedIngredientSchema).nullable().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('UpdateUpdatedProduct')
+
+const UpdateProductSchema = z
+  .object({
+    Added: z.array(UpdateAddedProductSchema).nullable().exactOptional(),
+    Removed: z.array(UpdateRemovedSchema).nullable().exactOptional(),
+    Updated: z.array(UpdateUpdatedProductSchema).nullable().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('UpdateProduct')
+
+type UpdateRequestType = {
+  BasketId?: string
+  Deal?: z.infer<typeof UpdateDealSchema> | null
+  OrderDetails?: z.infer<typeof UpdateOrderDetailsSchema> | null
+  Product?: z.infer<typeof UpdateProductSchema> | null
+  SelectedServiceType?: { Date?: string; Value?: string } | null
+}
+
+const VariationReorderModifierSchema = z
+  .strictObject({
+    Id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'A unique identifier for the variation modifier.' }),
+    Quantity: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'How many of the modifier were previously added to the variation.' }),
+  })
+  .openapi({ title: 'VariationReorderModifier', required: [] })
+  .openapi('VariationReorderModifier')
+
+const VariationReorderModifierGroupSchema = z
+  .strictObject({
+    Id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The unique identifier for a modifier group.' }),
+    Modifiers: z
+      .array(VariationReorderModifierSchema)
+      .exactOptional()
+      .openapi({
+        description: 'A list of modifiers applied in this modifier group. 20 items maximum.',
+      }),
+  })
+  .openapi({ title: 'VariationReorderModifierGroup', required: [] })
+  .openapi('VariationReorderModifierGroup')
+
+const VariationReorderVariationSchema = z
+  .strictObject({
+    Id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The unique identifier for the variation.' }),
+    ModifierGroups: z
+      .array(VariationReorderModifierGroupSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'A list of all the modifiers previously applied to the variation. 20 items maximum.',
+      }),
+    Quantity: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'How many of the variation were previously ordered.' }),
+  })
+  .openapi({ title: 'VariationReorderVariation', required: [] })
+  .openapi('VariationReorderVariation')
+
+const VariationReorderDealGroupSchema = z
+  .strictObject({
+    Id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The unique identifier for a deal group.' }),
+    Variations: z
+      .array(VariationReorderVariationSchema)
+      .exactOptional()
+      .openapi({ description: 'A list of variations in the deal group. 20 items maximum.' }),
+  })
+  .openapi({ title: 'VariationReorderDealGroup', required: [] })
+  .openapi('VariationReorderDealGroup')
+
+type VariationReorderDealType = {
+  Attributes?: {
+    DealGroups?: z.infer<typeof VariationReorderDealGroupSchema>[]
+    Quantity?: number
+    Rank?: number
+  }
+  Id?: string
+  Type?: string
+}
+
+const OrderItemRestrictionSchema = z
+  .object({
+    Type: z
+      .literal('Alcohol')
+      .exactOptional()
+      .openapi({
+        description:
+          "The type of restricted item contained in the order. The only supported value is 'Alcohol'.",
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('OrderItemRestriction')
+
+type ConnectorderType = {
+  BasketInfo?: {
+    BasketId?: string
+    DeliveryCharge?: number
+    Discount?: number
+    Discounts?: {
+      Discount?: number
+      DiscountType?: string
+      Id?: number
+      QualifyingValue?: number
+    }[]
+    GroupedBasketItems?: {
+      BasketItem?: {
+        CombinedPrice?: number
+        Discounts?: { Amount?: number; DiscountType?: string }[]
+        MealParts?: {
+          GroupId?: number
+          MealPartId?: number
+          Name?: string
+          OptionalAccessories?: {
+            Name?: string
+            OptionalAccessoryId?: number
+            Quantity?: number
+            UnitPrice?: number
+          }[]
+          RequiredAccessories?: {
+            GroupId?: number
+            Name?: string
+            RequiredAccessoryId?: number
+            UnitPrice?: number
+          }[]
+          Synonym?: string
+        }[]
+        MenuCardNumber?: string
+        MultiBuyDiscounts?: {
+          Amount?: number
+          DiscountType?: string
+          OrderItemId?: string
+          ProductTypeId?: number
+        }[]
+        Name?: string
+        OptionalAccessories?: {
+          Name?: string
+          OptionalAccessoryId?: number
+          Quantity?: number
+          UnitPrice?: number
+        }[]
+        ProductId?: number
+        ProductTypeId?: number
+        RequiredAccessories?: {
+          GroupId?: number
+          Name?: string
+          RequiredAccessoryId?: number
+          UnitPrice?: number
+        }[]
+        Synonym?: string
+        UnitPrice?: number
+      }
+      CombinedPrice?: number
+      MenuCardNumber?: string
+      OrderSubId?: number
+      Quantity?: number
+    }[]
+    MenuId?: number
+    MultiBuyDiscount?: number
+    SubTotal?: number
+    ToSpend?: number
+    Total?: number
+  }
+  CustomerInfo?: {
+    Address?: string
+    City?: string
+    DisplayPhoneNumber?: string
+    Email?: string
+    Id?: string
+    Latitude?: number
+    LocationAccuracyDescription?: string
+    LocationAccuracyInMeters?: number
+    LocationSource?: string
+    Longitude?: number
+    Name?: string
+    PhoneMaskingCode?: string
+    PhoneNumber?: string
+    Postcode?: string
+    PreviousRestuarantOrderCount?: number
+    TimeZone?: string
+  }
+  CustomerOrderId?: number
+  FriendlyOrderReference?: string
+  Id?: string
+  IsAMiniFistPumpOrder?: boolean
+  Order?: {
+    DueDate?: string
+    DueDateWithUtcOffset?: string
+    InitialDueDate?: string
+    InitialDueDateWithUtcOffset?: string
+    NoteToRestaurant?: string
+    PickupNoticePeriod?: string
+    PlacedDate?: string
+    PromptAsap?: boolean
+    RdsPickupTimeWithUtcOffset?: string
+    ServiceType?: 'Collection' | 'Delivery'
+  }
+  OrderId?: string
+  OrderReference?: string
+  PaymentInfo?: {
+    CashOnDelivery?: boolean
+    DriverTipValue?: number
+    PaidDate?: string
+    PaymentLines?: { CardFee?: number; Type?: 'Card'; Value?: number }[]
+    Total?: number
+    TotalComplementary?: number
+  }
+  RestaurantInfo?: {
+    AddressLines?: string[]
+    City?: string
+    DispatchMethod?: string
+    EmailAddress?: string
+    Id?: string
+    Latitude?: number
+    Longitude?: number
+    Name?: string
+    PhoneNumber?: string
+    PickupNotes?: string
+    Postcode?: string
+  }
+  Restrictions?: z.infer<typeof OrderItemRestrictionSchema>[]
+}
+
+const ConnectorderSchema: z.ZodType<ConnectorderType> = z
+  .object({
+    BasketInfo: z
+      .object({
+        BasketId: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Unique Basket Id for the Order.',
+            example: 'ABCb8DzdnUy7G481b0JN5g',
+          }),
+        DeliveryCharge: z
+          .float64()
+          .exactOptional()
+          .openapi({ description: 'Amount of cost that comes from delivery.', example: 5 }),
+        Discount: z
+          .float64()
+          .exactOptional()
+          .openapi({
+            description: 'The discount amount, used in conjunction with `DiscountType`.',
+            example: 4.78,
+          }),
+        Discounts: z
+          .array(
+            z
+              .object({
+                Discount: z
+                  .number()
+                  .exactOptional()
+                  .openapi({
+                    description: 'The discount amount, used in conjunction with `DiscountType`.',
+                    example: 10,
+                  }),
+                DiscountType: z
+                  .string()
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      'The type of discount, e.g. a percentage or the order or fixed amount.',
+                    example: 'Percent',
+                  }),
+                Id: z
+                  .number()
+                  .exactOptional()
+                  .openapi({ description: 'Basket item id.', example: 21950 }),
+                QualifyingValue: z
+                  .float64()
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      'The minimum order amount in order for this discount to be applicable.',
+                    example: 4.78,
+                  }),
+              })
+              .openapi({ description: 'Discount data', required: [] }),
+          )
+          .exactOptional()
+          .openapi({ description: 'Any Discounts applied to the Order.' }),
+        GroupedBasketItems: z
+          .array(
+            z
+              .object({
+                BasketItem: z
+                  .object({
+                    CombinedPrice: z
+                      .float64()
+                      .exactOptional()
+                      .openapi({
+                        description: 'Unit Price plus individual Meal Part item cost.',
+                        example: 3.58,
+                      }),
+                    Discounts: z
+                      .array(
+                        z
+                          .object({
+                            Amount: z
+                              .float64()
+                              .exactOptional()
+                              .openapi({
+                                description: 'Amount of the discount applied',
+                                example: 4.5,
+                              }),
+                            DiscountType: z
+                              .string()
+                              .exactOptional()
+                              .openapi({
+                                description: 'Type of the discount applied',
+                                example: 'Percent',
+                              }),
+                          })
+                          .openapi({ description: 'Discount data', required: [] }),
+                      )
+                      .exactOptional()
+                      .openapi({ description: 'Any discounts applied to this specific item.' }),
+                    MealParts: z
+                      .array(
+                        z
+                          .object({
+                            GroupId: z
+                              .number()
+                              .exactOptional()
+                              .openapi({ description: 'The group Id.', example: 1 }),
+                            MealPartId: z
+                              .number()
+                              .exactOptional()
+                              .openapi({ description: 'The meal part Id.', example: 45822750 }),
+                            Name: z
+                              .string()
+                              .exactOptional()
+                              .openapi({
+                                description: 'The name of the meal part.',
+                                example: 'Any Sides?',
+                              }),
+                            OptionalAccessories: z
+                              .array(
+                                z
+                                  .object({
+                                    Name: z
+                                      .string()
+                                      .exactOptional()
+                                      .openapi({
+                                        description: 'The name of the accessory.',
+                                        example: 'Add Bacon',
+                                      }),
+                                    OptionalAccessoryId: z
+                                      .number()
+                                      .exactOptional()
+                                      .openapi({
+                                        description: 'The accessory Id.',
+                                        example: 56168,
+                                      }),
+                                    Quantity: z
+                                      .number()
+                                      .exactOptional()
+                                      .openapi({
+                                        description: 'The quantity of the accessory.',
+                                        example: 1,
+                                      }),
+                                    UnitPrice: z
+                                      .float64()
+                                      .exactOptional()
+                                      .openapi({
+                                        description: 'The unit price of the accessory.',
+                                        example: 0.5,
+                                      }),
+                                  })
+                                  .openapi({ description: 'Optional accessory', required: [] }),
+                              )
+                              .exactOptional()
+                              .openapi({ description: 'Optional accessories' }),
+                            RequiredAccessories: z
+                              .array(
+                                z
+                                  .object({
+                                    GroupId: z
+                                      .number()
+                                      .exactOptional()
+                                      .openapi({
+                                        description: 'The group Id of the accessory.',
+                                        example: 3,
+                                      }),
+                                    Name: z
+                                      .string()
+                                      .exactOptional()
+                                      .openapi({
+                                        description: 'The name of the accessory.',
+                                        example: 'Coca-Cola Original Taste',
+                                      }),
+                                    RequiredAccessoryId: z
+                                      .number()
+                                      .exactOptional()
+                                      .openapi({
+                                        description: 'The accessory Id.',
+                                        example: 225025,
+                                      }),
+                                    UnitPrice: z
+                                      .float64()
+                                      .exactOptional()
+                                      .openapi({
+                                        description: 'The unit price of the accessory.',
+                                        example: 0.16,
+                                      }),
+                                  })
+                                  .openapi({ description: 'Required accessory', required: [] }),
+                              )
+                              .exactOptional()
+                              .openapi({ description: 'Required accessories' }),
+                            Synonym: z
+                              .string()
+                              .exactOptional()
+                              .openapi({ description: 'The synonym of the meal part.' }),
+                          })
+                          .openapi({ description: 'Meal part data', required: [] }),
+                      )
+                      .exactOptional()
+                      .openapi({ description: 'Represents sub-parts of a meal.' }),
+                    MenuCardNumber: z
+                      .string()
+                      .exactOptional()
+                      .openapi({ description: 'Menu card number.', example: '1' }),
+                    MultiBuyDiscounts: z
+                      .array(
+                        z
+                          .object({
+                            Amount: z
+                              .float64()
+                              .exactOptional()
+                              .openapi({
+                                description: 'Amount of the discount applied',
+                                example: 4.5,
+                              }),
+                            DiscountType: z
+                              .string()
+                              .exactOptional()
+                              .openapi({
+                                description: 'Type of the discount applied',
+                                example: 'Percent',
+                              }),
+                            OrderItemId: z
+                              .string()
+                              .exactOptional()
+                              .openapi({ description: 'Id of the Order item.' }),
+                            ProductTypeId: z
+                              .number()
+                              .exactOptional()
+                              .openapi({
+                                description: 'The Id of the product type the discount applies to.',
+                              }),
+                          })
+                          .openapi({ description: 'Multi-purchase discount data', required: [] }),
+                      )
+                      .exactOptional()
+                      .openapi({
+                        description: 'Any multi-purchase discounts applied to this item.',
+                      }),
+                    Name: z
+                      .string()
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          'The Item name, e.g. Chicken Tikka Masala or Family Meal Deal 3.',
+                        example: 'Mini Fillet Burger',
+                      }),
+                    OptionalAccessories: z
+                      .array(
+                        z
+                          .object({
+                            Name: z
+                              .string()
+                              .exactOptional()
+                              .openapi({
+                                description: 'The name of the accessory.',
+                                example: 'Add Bacon',
+                              }),
+                            OptionalAccessoryId: z
+                              .number()
+                              .exactOptional()
+                              .openapi({ description: 'The accessory Id.', example: 56168 }),
+                            Quantity: z
+                              .number()
+                              .exactOptional()
+                              .openapi({
+                                description: 'The quantity of the accessory.',
+                                example: 1,
+                              }),
+                            UnitPrice: z
+                              .float64()
+                              .exactOptional()
+                              .openapi({
+                                description: 'The unit price of the accessory.',
+                                example: 0.5,
+                              }),
+                          })
+                          .openapi({ description: 'Optional accessory', required: [] }),
+                      )
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          'An option item added to the Basket Item, this may be options such as Garlic Bread or a bottle of Coke.',
+                      }),
+                    ProductId: z
+                      .number()
+                      .exactOptional()
+                      .openapi({ description: 'Id of the Product.', example: 45858074 }),
+                    ProductTypeId: z
+                      .number()
+                      .exactOptional()
+                      .openapi({ description: 'Id of the Product.', example: 428 }),
+                    RequiredAccessories: z
+                      .array(
+                        z
+                          .object({
+                            GroupId: z
+                              .number()
+                              .exactOptional()
+                              .openapi({
+                                description: 'The group Id of the accessory.',
+                                example: 3,
+                              }),
+                            Name: z
+                              .string()
+                              .exactOptional()
+                              .openapi({
+                                description: 'The name of the accessory.',
+                                example: 'Large Meal',
+                              }),
+                            RequiredAccessoryId: z
+                              .number()
+                              .exactOptional()
+                              .openapi({ description: 'The accessory Id.', example: 225025 }),
+                            UnitPrice: z
+                              .float64()
+                              .exactOptional()
+                              .openapi({
+                                description: 'The unit price of the accessory.',
+                                example: 0.1,
+                              }),
+                          })
+                          .openapi({ description: 'Required accessory', required: [] }),
+                      )
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          'Items required as part of the Item, for example, Pizza base sauce.',
+                      }),
+                    Synonym: z
+                      .string()
+                      .exactOptional()
+                      .openapi({ description: 'Legacy - ignore.' }),
+                    UnitPrice: z
+                      .float64()
+                      .exactOptional()
+                      .openapi({ description: 'The price of the item.', example: 1.79 }),
+                  })
+                  .exactOptional()
+                  .openapi({ description: 'An item in the Basket.', required: [] }),
+                CombinedPrice: z
+                  .float64()
+                  .exactOptional()
+                  .openapi({
+                    description: 'The total price of the Basket Item (including discounts).',
+                    example: 3.58,
+                  }),
+                MenuCardNumber: z
+                  .string()
+                  .exactOptional()
+                  .openapi({ description: 'Menu card number.', example: '1' }),
+                OrderSubId: z
+                  .number()
+                  .exactOptional()
+                  .openapi({ description: 'Order `SubId`', example: 0 }),
+                Quantity: z
+                  .number()
+                  .exactOptional()
+                  .openapi({ description: 'The quantity of Basket Items requested.', example: 2 }),
+              })
+              .openapi({ description: 'An item in the Basket.', required: [] }),
+          )
+          .exactOptional()
+          .openapi({ description: 'Grouped basket items' }),
+        MenuId: z
+          .number()
+          .exactOptional()
+          .openapi({ description: "Id of the Restaurant's menu.", example: 777890 }),
+        MultiBuyDiscount: z
+          .float64()
+          .exactOptional()
+          .openapi({ description: 'MultiBuy discount.', example: 0 }),
+        SubTotal: z
+          .float64()
+          .exactOptional()
+          .openapi({
+            description: 'The Basket total cost, excluding any discounts.',
+            example: 47.75,
+          }),
+        ToSpend: z
+          .float64()
+          .exactOptional()
+          .openapi({ description: 'Amount to spend.', example: 0 }),
+        Total: z
+          .float64()
+          .exactOptional()
+          .openapi({ description: 'Total price of the Order.', example: 47.97 }),
+      })
+      .exactOptional()
+      .openapi({ description: 'Basket data', required: [] }),
+    CustomerInfo: z
+      .object({
+        Address: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Customer Address. Note that Address is comma delimited.',
+            example: 'Fleet Place House, 2 Fleet Place, London',
+          }),
+        City: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'The name of the city where the Customer is located.',
+            example: 'London',
+          }),
+        DisplayPhoneNumber: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: "The customer's masked phone number.",
+            example: '(01) 872 7863',
+          }),
+        Email: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Email address for the Customer.',
+            example: 'contact@just-eat.com',
+          }),
+        Id: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'The JUST EAT Customer Id.', example: '123456' }),
+        Latitude: z
+          .float64()
+          .exactOptional()
+          .openapi({
+            description: 'Customer address latitude. Will be 0 if not provided.',
+            example: 51.50015,
+          }),
+        LocationAccuracyDescription: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Location accuracy description', example: 'ROOFTOP' }),
+        LocationAccuracyInMeters: z
+          .float64()
+          .exactOptional()
+          .openapi({ description: 'Accuracy of the location data in meters.', example: 0 }),
+        LocationSource: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Provider of the location data.', example: 'GeodataGeocoder' }),
+        Longitude: z
+          .float64()
+          .exactOptional()
+          .openapi({
+            description: 'Customer address longitude. Will be 0 if not provided.',
+            example: -0.12624,
+          }),
+        Name: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'The name of the Customer.', example: 'Just Eat' }),
+        PhoneMaskingCode: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Code to use when calling customer phone masked number (`DisplayPhoneNumber`) about this order. Null if phone masking not enabled',
+            example: '444333222',
+          }),
+        PhoneNumber: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              "The customer's unmasked phone number. Please don't expose this to drivers, instead use this number to provide your own phone masking number or use the JustEat masked number `DisplayPhoneNumber` below",
+            example: '018727863',
+          }),
+        Postcode: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'The post code where Customer is located.',
+            example: 'EC4M 7RF',
+          }),
+        PreviousRestuarantOrderCount: z
+          .number()
+          .exactOptional()
+          .openapi({
+            description:
+              'The number of Orders the Customer has placed at this Restaurant via JUST EAT',
+          }),
+        TimeZone: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: "Customer timezone, e.g. 'Central European Standard Time'.",
+            example: 'GMT Standard Time',
+          }),
+      })
+      .exactOptional()
+      .openapi({ description: 'Customer data', required: [] }),
+    CustomerOrderId: z
+      .number()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          'This is a deprecated customer-facing ID that we maintain to support existing implementations.',
+        example: 348322088,
+      }),
+    FriendlyOrderReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The customer facing identifier for the order, which should be used in any UI or receipts to identify the order to the customer, driver or restaurant. This identifier is not guaranteed to be globally unique.',
+        example: '348322088',
+      }),
+    Id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          'The unique identifier for an order within the country. You can provide this ID whenever sending requests related to the order. Note that further messages from Just Eat relating to this order may not use this same identifier, use `OrderId` for a more consistent identifier.',
+        example: '348322088',
+      }),
+    IsAMiniFistPumpOrder: z
+      .boolean()
+      .exactOptional()
+      .openapi({ deprecated: true, description: 'Legacy Promotion - Ignore.' }),
+    Order: z
+      .object({
+        DueDate: z.iso
+          .datetime({ offset: true })
+          .exactOptional()
+          .openapi({ deprecated: true, description: 'Ignore - use `DueDateWithUtcOffset`.' }),
+        DueDateWithUtcOffset: z.iso
+          .datetime({ offset: true })
+          .exactOptional()
+          .openapi({
+            description:
+              'The DateTime when the Customer has been told they will receive the Order.',
+          }),
+        InitialDueDate: z.iso
+          .datetime({ offset: true })
+          .exactOptional()
+          .openapi({ deprecated: true, description: 'Ignore - use `IntialDueDateWithUtcOffset`.' }),
+        InitialDueDateWithUtcOffset: z.iso
+          .datetime({ offset: true })
+          .exactOptional()
+          .openapi({
+            description:
+              'When the Customer was originally told the order would be delivered (prior to Restaurant adjustment)',
+          }),
+        NoteToRestaurant: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Notes from the customer about their order. In addition to notes for the restaurant, this field can also delivery instructions - and should be displayed to the delivery driver.',
+            example: 'Contact-free delivery',
+          }),
+        PickupNoticePeriod: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Desired minimum amount of notice needed before the driver arrives to pickup the order at the restaurant. This is to allow restaurant enough time to prepare the order. If less notice is given the driver may have to wait for the order to be prepared. Field is in the format "hh:mm:ss"',
+            example: '00:10:00',
+          }),
+        PlacedDate: z.iso
+          .datetime({ offset: true })
+          .exactOptional()
+          .openapi({
+            description:
+              'Date Customer placed the order. Note that JUST EAT accepts pre-orders therefore there may be a significant difference between Placed Date and Due Date This Date/Time is set as UTC without an offset, regardless of Country.',
+          }),
+        PromptAsap: z
+          .boolean()
+          .exactOptional()
+          .openapi({ description: 'Did the Customer request the Order to ready ASAP' }),
+        RdsPickupTimeWithUtcOffset: z.iso
+          .datetime({ offset: true })
+          .exactOptional()
+          .openapi({
+            description:
+              'When the Delivery Partner needs to be at the Restaurant to pickup the Order.',
+          }),
+        ServiceType: z
+          .enum(['Collection', 'Delivery'])
+          .exactOptional()
+          .openapi({ description: 'Type of the Order.' }),
+      })
+      .exactOptional()
+      .openapi({ description: 'Order data', required: [] }),
+    OrderId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Globally unique Identifier for the order. Please use this whenever sending requests related to this order. Just Eat will provide this same identifier on any further messages relating to this order.',
+        example: 'ijdhpy7bdusgtc28bapspa',
+      }),
+    OrderReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          'This field is used to store external references to the order. This is defined by either Just Eat or the partner that created the order.',
+        example: '39cce3f0-0278-dd25-ae32-e8effe1ce4eb',
+      }),
+    PaymentInfo: z
+      .object({
+        CashOnDelivery: z
+          .boolean()
+          .exactOptional()
+          .openapi({ description: 'Is the Customer paying on Delivery.' }),
+        DriverTipValue: z
+          .float64()
+          .exactOptional()
+          .openapi({ description: 'The value of the tip given to the Driver.', example: 0 }),
+        PaidDate: z.iso
+          .datetime({ offset: true })
+          .exactOptional()
+          .openapi({ description: 'DateTime when the Order was Paid (excludes UTC offset).' }),
+        PaymentLines: z
+          .array(
+            z
+              .object({
+                CardFee: z
+                  .float64()
+                  .exactOptional()
+                  .openapi({
+                    description: 'Was there a fee for the payment mechanism.',
+                    example: 0.5,
+                  }),
+                Type: z
+                  .literal('Card')
+                  .exactOptional()
+                  .openapi({ description: 'How was the order Paid.' }),
+                Value: z
+                  .float64()
+                  .exactOptional()
+                  .openapi({ description: 'The value of the payment.', example: 22.05 }),
+              })
+              .openapi({ description: 'Payment line data', required: [] }),
+          )
+          .exactOptional()
+          .openapi({ description: 'How the Customer has paid for the Order.' }),
+        Total: z
+          .float64()
+          .exactOptional()
+          .openapi({ description: 'The total order value.', example: 22.55 }),
+        TotalComplementary: z
+          .float64()
+          .exactOptional()
+          .openapi({ description: 'Order amount covered by JUST EAT.', example: 0 }),
+      })
+      .exactOptional()
+      .openapi({ description: 'Payment data', required: [] }),
+    RestaurantInfo: z
+      .object({
+        AddressLines: z
+          .array(
+            z
+              .string()
+              .openapi({
+                description: 'Address line',
+                example: 'Fleet Place House 2, Fleet Place, London',
+              }),
+          )
+          .exactOptional()
+          .openapi({ description: 'Restaurant address.' }),
+        City: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'The name of the city where the Restaurant is located',
+            example: 'London',
+          }),
+        DispatchMethod: z
+          .string()
+          .exactOptional()
+          .openapi({ description: '`DispatchMethod` to use.', example: 'Phone' }),
+        EmailAddress: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Email address for the Restaurant.',
+            example: 'contact@testrestaurant.com',
+          }),
+        Id: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Unique ID of the Restaurant.', example: '123456' }),
+        Latitude: z
+          .float64()
+          .exactOptional()
+          .openapi({
+            description: 'Restaurant address latitude. Will be 0 if not provided.',
+            example: 51.50015,
+          }),
+        Longitude: z
+          .float64()
+          .exactOptional()
+          .openapi({
+            description: 'Restaurant address longitude. Will be 0 if not provided.',
+            example: -0.12624,
+          }),
+        Name: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'The name of the Restaurant.', example: 'Test Restaurant' }),
+        PhoneNumber: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'The Restaurant phone number.', example: '07123456789' }),
+        PickupNotes: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Order pickup instructions for the Delivery Partner.',
+            example: 'Use the back entrance',
+          }),
+        Postcode: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'The post code where Restaurant is located',
+            example: 'EC4M 7RF',
+          }),
+      })
+      .exactOptional()
+      .openapi({ description: 'Restaurant data', required: [] }),
+    Restrictions: z
+      .array(OrderItemRestrictionSchema)
+      .exactOptional()
+      .openapi({
+        description: 'This is a list of types of restricted items contained in the order.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('Connectorder')
+
+type ConnectorderListType = z.infer<typeof ConnectorderSchema>[]
 
 type Item2Type = {
   Description?: string
@@ -613,8 +3481,8 @@ const ActiveConsumerOffersByRestaurantSchema = z
           .xor([ActiveConsumerOfferSchema, PercentSchema])
           .openapi({
             discriminator: {
-              mapping: { Percent: '#/components/schemas/Percent' },
               propertyName: 'Type',
+              mapping: { Percent: '#/components/schemas/Percent' },
             },
           }),
       )
@@ -1071,7 +3939,7 @@ const AttemptedDeliveryResolutionRedeliveryRequestSchema = z
   .openapi('AttemptedDeliveryResolutionRedeliveryRequest')
 
 const AuthorizeResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'The response object for the `authorize` endpoint.' })
   .openapi('AuthorizeResponse')
 
@@ -1653,313 +4521,7 @@ const BasketProductsRequestSchema = z
   })
   .openapi('BasketProductsRequest')
 
-const CategoryOfferSchema = z
-  .object({
-    CategoryId: z.string().exactOptional(),
-    DiscountType: z.string().exactOptional().openapi({ description: 'The type of discount' }),
-    DiscountValue: z.number().exactOptional(),
-    OfferId: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'The unique identifier of underlying consumer offers, if applicable',
-      }),
-    ProductId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The unique identifier of product qualified for discount' }),
-  })
-  .openapi({ required: [] })
-  .openapi('CategoryOffer')
-
-const ModifierSchema = z
-  .object({
-    MaximumAdditionalModifiers: z.number(),
-    ModifierId: z.string().exactOptional(),
-    Name: z.string().exactOptional(),
-    Quantity: z.number().exactOptional(),
-    TotalPrice: z.number().exactOptional(),
-  })
-  .openapi({ required: ['MaximumAdditionalModifiers'] })
-  .openapi('Modifier')
-
-const ModifierGroupSchema = z
-  .object({
-    MinimumChoices: z.number(),
-    ModifierGroupId: z.string().exactOptional(),
-    Modifiers: z.array(ModifierSchema).exactOptional(),
-  })
-  .openapi({ required: ['MinimumChoices'] })
-  .openapi('ModifierGroup')
-
-const RemovedIngredientSchema = z
-  .object({ Details: z.string().exactOptional() })
-  .openapi({ required: [] })
-  .openapi('RemovedIngredient')
-
-const DealProductSchema = z
-  .object({
-    ModifierGroups: z.array(ModifierGroupSchema).nullable().exactOptional(),
-    Name: z.string().exactOptional(),
-    ProductId: z.string().exactOptional(),
-    Quantity: z.number().exactOptional(),
-    RemovedIngredients: z.array(RemovedIngredientSchema).nullable().exactOptional(),
-    TotalPrice: z.number().exactOptional(),
-    Variation: z.string().nullable().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('DealProduct')
-
-const DealGroupSchema = z
-  .object({
-    DealGroupId: z.string().exactOptional(),
-    Products: z.array(DealProductSchema).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('DealGroup')
-
-const DealSchema = z
-  .object({
-    BasketProductIds: z.array(z.string()).exactOptional(),
-    CategoryId: z.string().exactOptional(),
-    DealGroups: z.array(DealGroupSchema).exactOptional(),
-    Name: z.string().exactOptional(),
-    ProductId: z.string().exactOptional(),
-    Quantity: z.number().exactOptional(),
-    TotalPrice: z.number().exactOptional(),
-    Variation: z.string().nullable().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('Deal')
-
-const PaymentDirectivesSchema = z
-  .object({
-    DisableCashPayment: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Indicates if cash payment option should be disabled' }),
-  })
-  .openapi({ description: 'The directives for payment component', required: [] })
-  .openapi('PaymentDirectives')
-
-const ProductSchema = z
-  .object({
-    BasketProductIds: z.array(z.string()).exactOptional(),
-    CategoryId: z.string().exactOptional(),
-    ModifierGroups: z.array(ModifierGroupSchema).nullable().exactOptional(),
-    Name: z.string().exactOptional(),
-    ProductId: z.string().exactOptional(),
-    Quantity: z.number().exactOptional(),
-    RemovedIngredients: z.array(RemovedIngredientSchema).nullable().exactOptional(),
-    TotalPrice: z.number().exactOptional(),
-    Variation: z.string().nullable().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('Product')
-
-const InvalidProductSchema = z
-  .object({ Name: z.string().exactOptional(), ProductId: z.string().exactOptional() })
-  .openapi({ required: [] })
-  .openapi('InvalidProduct')
-
-const ItemDiscountSchema = z
-  .strictObject({
-    discountPercentage: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'The discount percentage applied.' }),
-    modifierGroups: z
-      .array(ModifierGroupSchema)
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The collection of preselected modifier groups for the item.' }),
-    productId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The unique identifier of the discounted product item.' }),
-  })
-  .openapi({
-    example: {
-      discountPercentage: 100,
-      modifierGroups: [
-        {
-          MinimumChoices: 1,
-          ModifierGroupId: 'modifier111',
-          Modifiers: [
-            { MaximumAdditionalModifiers: 0, ModifierId: 'NoSugar11', Quantity: 1, TotalPrice: 0 },
-          ],
-        },
-      ],
-      productId: 'Lemonade1234',
-    },
-    title: 'ItemDiscount',
-    required: [],
-  })
-  .openapi('ItemDiscount')
-
-const ItemDiscountPromptSchema = z
-  .strictObject({
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The description of offer to show in prompt for customer' }),
-    header: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The header to show in prompt for customer' }),
-    itemDiscounts: z
-      .array(ItemDiscountSchema)
-      .exactOptional()
-      .openapi({ description: 'The array of items with discounts' }),
-    title: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The title to show in prompt for customer' }),
-  })
-  .openapi({
-    example: {
-      description: 'Get free lemonade with Super Burger',
-      header: 'Free item!',
-      itemDiscounts: [
-        {
-          discountPercentage: 100,
-          modifierGroups: [
-            {
-              MinimumChoices: 1,
-              ModifierGroupId: 'modifier111',
-              Modifiers: [
-                {
-                  MaximumAdditionalModifiers: 0,
-                  ModifierId: 'NoSugar11',
-                  Quantity: 1,
-                  TotalPrice: 0,
-                },
-              ],
-            },
-          ],
-          productId: 'Lemonade1234',
-        },
-      ],
-      title: 'Get free lemonade',
-    },
-    title: 'ItemDiscountPrompt',
-    required: [],
-  })
-  .openapi('ItemDiscountPrompt')
-
-const OfflineProductSchema = z
-  .object({ Name: z.string().exactOptional(), ProductId: z.string().exactOptional() })
-  .openapi({ required: [] })
-  .openapi('OfflineProduct')
-
-const PromptsSchema = z
-  .object({
-    DiscountApplied: z
-      .object({ Amount: z.number().exactOptional() })
-      .nullable()
-      .exactOptional()
-      .openapi({ required: [] }),
-    InvalidProducts: z.array(InvalidProductSchema).exactOptional(),
-    ItemDiscounts: z
-      .array(ItemDiscountPromptSchema)
-      .exactOptional()
-      .openapi({ description: 'Collection of item discount prompts to be shown customer' }),
-    Offers: z
-      .array(
-        z
-          .object({
-            DiscountValue: z.number().exactOptional(),
-            OfferType: z.string().exactOptional(),
-            QualifyingValue: z.number().exactOptional(),
-            ToSpendValue: z.number().exactOptional(),
-          })
-          .openapi({ required: [] }),
-      )
-      .exactOptional(),
-    OfflineProducts: z.array(OfflineProductSchema).exactOptional(),
-    RequiresOther: z.boolean().exactOptional(),
-    SpendMore: z
-      .object({
-        MinimumOrderAmount: z.number().exactOptional(),
-        ToSpend: z.number().exactOptional(),
-      })
-      .nullable()
-      .exactOptional()
-      .openapi({ required: [] }),
-  })
-  .openapi({ required: [] })
-  .openapi('Prompts')
-
-const RestaurantOfferSchema = z
-  .object({
-    ConsumerSegment: z
-      .string()
-      .openapi({
-        description: 'Consumer Segment to which offer applies',
-        example: 'NewToRestaurant',
-      }),
-    DiscountApplied: z.number().openapi({ description: 'The money value discount' }),
-    DiscountCode: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'The unique code of the discount, acts as a lock object at payment stage',
-      }),
-    DiscountValue: z
-      .number()
-      .exactOptional()
-      .openapi({
-        description: 'The percentage value discount. Returned 0 when offer is not of Percent type',
-      }),
-    OfferId: z.string().openapi({ description: 'The unique identifier of the offer' }),
-    OfferType: z.string().openapi({ description: 'The type of the offer' }),
-  })
-  .openapi({ required: ['OfferId', 'OfferType', 'ConsumerSegment', 'DiscountApplied'] })
-  .openapi('RestaurantOffer')
-
-const BasketSummarySchema = z
-  .object({
-    BasketTotals: z.object({}).exactOptional(),
-    CategoryOffers: z.array(CategoryOfferSchema).exactOptional(),
-    Deals: z.array(DealSchema).exactOptional(),
-    DeliveryCharge: z.number().exactOptional(),
-    MaximumAdditionalOrderItems: z.number(),
-    PaymentDirectives: PaymentDirectivesSchema.exactOptional().openapi({
-      description: 'The directives to payment component',
-      example: { DisableCashPayment: true },
-    }),
-    Products: z.array(ProductSchema).exactOptional(),
-    Prompts: PromptsSchema.nullable().exactOptional(),
-    RestaurantOffers: z
-      .array(RestaurantOfferSchema)
-      .exactOptional()
-      .openapi({
-        description: 'The list of restaurant offers',
-        example: [
-          {
-            ConsumerSegment: 'NewToRestaurant',
-            DiscountApplied: 8.37,
-            DiscountValue: 20,
-            OfferId: 'ftcOfferId75',
-            OfferType: 'Percent',
-          },
-          {
-            ConsumerSegment: 'All',
-            DiscountApplied: 28.37,
-            DiscountCode: 'mgt36rtp8VoucherCode',
-            DiscountValue: 0,
-            OfferId: 'stampCardLoyaltyCampaignOfferId287',
-            OfferType: 'StampCard',
-          },
-        ],
-      }),
-  })
-  .openapi({ required: ['MaximumAdditionalOrderItems'] })
-  .openapi('BasketSummary')
-
-const BasketResponseSchema = z
+const BasketResponseSchema: z.ZodType<BasketResponseType> = z
   .object({
     BasketId: z.string().exactOptional(),
     BasketSummary: BasketSummarySchema.exactOptional().openapi({
@@ -2871,6 +5433,7 @@ const CheckoutIssueSchema = z
   })
   .openapi({
     discriminator: {
+      propertyName: 'code',
       mapping: {
         ADDITIONAL_ITEMS_REQUIRED: '#/components/schemas/CheckoutIssue_AdditionalItemsRequired',
         ADDRESS_LINES_REQUIRED: '#/components/schemas/CheckoutIssue_AddressLinesRequired',
@@ -2892,7 +5455,6 @@ const CheckoutIssueSchema = z
           '#/components/schemas/CheckoutIssue_RestaurantNotTakingOrders',
         SERVICE_TYPE_UNAVAILABLE: '#/components/schemas/CheckoutIssue_ServiceTypeUnavailable',
       },
-      propertyName: 'code',
     },
     required: ['code'],
   })
@@ -3854,6 +6416,16 @@ const OrderClaimRestaurantResponseSchema = z
     description: 'Restaurant response for the claim',
     example: {
       decision: 'PartiallyAccepted',
+      items: [
+        {
+          decision: 'Accepted',
+          id: 'NJ7iYXNrZXRJdGVtLTM2NTc0GTk2LTMwNDY2LXMzOWJxb3hkb2V1cGR4OXc4ZXZvcnc1',
+        },
+        {
+          decision: 'Rejected',
+          id: 'NJ7iYXNrZXRJdGVtLTM2NTc0GTk2LTMwNDY2LXMzOWJxb3hkb2V1cGR4OXc4ZXZvcnc3',
+        },
+      ],
       justification: { comments: 'The food was packed properly', reason: 'Other' },
     },
     required: [],
@@ -3946,6 +6518,16 @@ const OrderClaimSchema = z
       },
       restaurantResponse: {
         decision: 'PartiallyAccepted',
+        items: [
+          {
+            decision: 'Rejected',
+            id: 'NJ7iYXNrZXRJdGVtLTM2NTc0GTk2LTMwNDY2LXMzOWJxb3hkb2V1cGR4OXc4ZXZvcnc1',
+          },
+          {
+            decision: 'Accepted',
+            id: '123iYXNrZXRJdGVtLTM2NTc0GTk2LTMwNDY2LXMzOWJxb3hkb2V1cGR4OXc4ZXZvcnc1',
+          },
+        ],
         justification: { comments: 'The food was packed properly', reason: 'Other' },
       },
       state: 'Closed',
@@ -3993,7 +6575,19 @@ const ClaimResponseSchema = OrderClaimSchema.openapi({
       resolvedDate: '2020-05-28T06:40:48.1053368+00:00',
       totalClaimedAccepted: 1900,
     },
-    restaurantResponse: { justification: { comments: 'Not our fault at all', reason: 'Other' } },
+    restaurantResponse: {
+      items: [
+        {
+          decision: 'Rejected',
+          id: 'NJ7iYXNrZXRJdGVtLTM2NTc0GTk2LTMwNDY2LXMzOWJxb3hkb2V1cGR4OXc4ZXZvcnc1',
+        },
+        {
+          decision: 'Accepted',
+          id: '123iYXNrZXRJdGVtLTM2NTc0GTk2LTMwNDY2LXMzOWJxb3hkb2V1cGR4OXc4ZXZvcnc1',
+        },
+      ],
+      justification: { comments: 'Not our fault at all', reason: 'Other' },
+    },
     state: 'Closed',
     submittedDate: '2020-05-20T14:22:11.1053368+00:00',
     totalClaimed: 3800,
@@ -4086,7 +6680,15 @@ const ClaimsResponseSchema = z
             resolvedDate: '2020-05-28T06:40:48.1053368+00:00',
             totalClaimedAccepted: 0,
           },
-          restaurantResponse: { justification: { comments: null, reason: 'OrderWasHot' } },
+          restaurantResponse: {
+            items: [
+              {
+                decision: 'Rejected',
+                id: 'NJ7iYXNrZXRJdGVtLTM2NTc0GTk2LTMwNDY2LXMzOWJxb3hkb2V1cGR4OXc4ZXZvcnc1',
+              },
+            ],
+            justification: { comments: null, reason: 'OrderWasHot' },
+          },
           state: 'Closed',
           submittedDate: '2020-05-20T14:22:11.1053368+00:00',
           totalClaimed: 1900,
@@ -4116,7 +6718,15 @@ const ClaimsResponseSchema = z
             resolvedDate: '2020-05-28T06:40:48.1053368+00:00',
             totalClaimedAccepted: 1900,
           },
-          restaurantResponse: { justification: null },
+          restaurantResponse: {
+            items: [
+              {
+                decision: 'Accepted',
+                id: 'NJ7iYXNrZXRJdGVtLTM2NTc0GTk2LTMwNDY2LXMzOWJxb3hkb2V1cGR4OXc4ZXZvcnc1',
+              },
+            ],
+            justification: null,
+          },
           state: 'Closed',
           submittedDate: '2020-05-20T14:22:11.1053368+00:00',
           totalClaimed: 1900,
@@ -4156,7 +6766,19 @@ const ClaimsResponseSchema = z
             resolvedDate: '2020-05-28T06:40:48.1053368+00:00',
             totalClaimedAccepted: 1900,
           },
-          restaurantResponse: { justification: null },
+          restaurantResponse: {
+            items: [
+              {
+                decision: 'Accepted',
+                id: 'NJ7iYXNrZXRJdGVtLTM2NTc0GTk2LTMwNDY2LXMzOWJxb3hkb2V1cGR4OXc4ZXZvcnc1',
+              },
+              {
+                decision: 'Rejected',
+                id: 'NJ7iYXNrZXRJdGVtLTM2NTc0GTk2LTMwNDY2LXMzOWJxb3hkb2V1cGR4OXc4ZXZvcnc3',
+              },
+            ],
+            justification: null,
+          },
           state: 'Closed',
           submittedDate: '2020-05-20T14:22:11.1053368+00:00',
           totalClaimed: 1900,
@@ -4933,13 +7555,13 @@ const ConsumerOffersResponseSchema = z
           ])
           .openapi({
             discriminator: {
+              propertyName: 'offerType',
               mapping: {
                 Bogof: '#/components/schemas/ConsumerOffer_Bogof',
                 FreeItem: '#/components/schemas/ConsumerOffer_FreeItem',
                 Percent: '#/components/schemas/ConsumerOffer_Percent',
                 StampCard: '#/components/schemas/ConsumerOffer_StampCard',
               },
-              propertyName: 'offerType',
             },
           }),
       )
@@ -5001,300 +7623,6 @@ const ConsumerOffersResponseSchema = z
   })
   .openapi('ConsumerOffersResponse')
 
-const ConsumerOrderGeopositionSchema = z
-  .object({
-    latitude: z.float64().exactOptional().openapi({ description: 'The latitude.' }),
-    longitude: z.float64().exactOptional().openapi({ description: 'The longitude.' }),
-  })
-  .openapi({ description: 'A geoposition.', 'x-api-version-from': '2017-10', required: [] })
-  .openapi('ConsumerOrderGeoposition')
-
-const ConsumerOrderAddressSchema = z
-  .object({
-    addressLines: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'The lines of the address.' }),
-    city: z.string().exactOptional().openapi({ description: 'The city or town.' }),
-    countryCode: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The ISO 3166-1 alpha-2 country code.' }),
-    locality: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The locality, such as a district or suburb, if any.' }),
-    location: ConsumerOrderGeopositionSchema.exactOptional(),
-    postalCode: z.string().exactOptional().openapi({ description: 'The postal code.' }),
-    region: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The region, such as a county, province or state.' }),
-  })
-  .openapi({ description: 'A postal address.', 'x-api-version-from': '2017-10', required: [] })
-  .openapi('ConsumerOrderAddress')
-
-const ConsumerOrderApplicationInfoSchema = z
-  .object({
-    clientIdentifier: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The client identifier associated with the order, if any, such as a device Id or IP address.',
-      }),
-    feature: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The name of the Just Eat feature that placed the order.' }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The name of the application that placed the order.' }),
-    userAgent: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The User Agent of the client that placed the order.' }),
-    version: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The version of the application that placed the order.' }),
-  })
-  .openapi({
-    description: 'Information about an application used to place an order.',
-    'x-api-version-from': '2017-10',
-    required: [],
-  })
-  .openapi('ConsumerOrderApplicationInfo')
-
-const ConsumerOrderBulkDiscountSchema = z
-  .object({
-    amount: z
-      .float64()
-      .exactOptional()
-      .openapi({ description: 'The amount of the bulk discount.' }),
-    name: z.string().exactOptional().openapi({ description: 'The name of the bulk discount.' }),
-    productTypeId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The Id of the product type the discount applies to.' }),
-  })
-  .openapi({ description: 'A bulk discount.', 'x-api-version-from': '2017-10', required: [] })
-  .openapi('ConsumerOrderBulkDiscount')
-
-const ConsumerOrderDiscountSchema = z
-  .object({
-    amount: z.float64().exactOptional().openapi({ description: 'The amount of the discount.' }),
-    name: z.string().exactOptional().openapi({ description: 'The name of the discount.' }),
-  })
-  .openapi({ description: 'A discount.', 'x-api-version-from': '2017-10', required: [] })
-  .openapi('ConsumerOrderDiscount')
-
-const ConsumerOrderMealPartSchema = z
-  .object({
-    groupId: z.string().exactOptional().openapi({ description: 'The group Id.' }),
-    mealPartId: z.string().exactOptional().openapi({ description: 'The meal part Id.' }),
-    name: z.string().exactOptional().openapi({ description: 'The name of the meal part.' }),
-    optionalAccessories: z
-      .array(ConsumerOrderMealAccessorySchema)
-      .exactOptional()
-      .openapi({ description: 'The optional meal part accessories, if any.' }),
-    requiredAccessories: z
-      .array(ConsumerOrderMealAccessorySchema)
-      .exactOptional()
-      .openapi({ description: 'The required meal part accessories, if any.' }),
-    synonym: z.string().exactOptional().openapi({ description: 'The synonym of the meal part.' }),
-  })
-  .openapi({ description: 'A part of a meal.', 'x-api-version-from': '2017-10', required: [] })
-  .openapi('ConsumerOrderMealPart')
-
-const ConsumerOrderBasketItemSchema = z
-  .object({
-    bulkDiscounts: z
-      .array(ConsumerOrderBulkDiscountSchema)
-      .exactOptional()
-      .openapi({ description: 'The bulk discounts, if any.' }),
-    combinedPrice: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description: 'The combined price for the item, including any accessories and/or discounts.',
-      }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The description for the item.' }),
-    discounts: z
-      .array(ConsumerOrderDiscountSchema)
-      .exactOptional()
-      .openapi({ description: 'The discounts, if any.' }),
-    name: z.string().exactOptional().openapi({ description: 'The name of the item.' }),
-    optionalAccessories: z
-      .array(ConsumerOrderMealAccessorySchema)
-      .exactOptional()
-      .openapi({ description: 'The optional meal part accessories, if any.' }),
-    parts: z
-      .array(ConsumerOrderMealPartSchema)
-      .exactOptional()
-      .openapi({ description: 'The parts of the meal, if any.' }),
-    productId: z.string().exactOptional().openapi({ description: 'The product Id.' }),
-    requiredAccessories: z
-      .array(ConsumerOrderMealAccessorySchema)
-      .exactOptional()
-      .openapi({ description: 'The required meal part accessories, if any.' }),
-    synonym: z.string().exactOptional().openapi({ description: 'The synonym of the item.' }),
-    unitPrice: z.float64().exactOptional().openapi({ description: 'The unit price for the item.' }),
-  })
-  .openapi({ description: 'An item in a basket.', 'x-api-version-from': '2017-10', required: [] })
-  .openapi('ConsumerOrderBasketItem')
-
-const ConsumerOrderOfferSchema = z
-  .object({
-    id: z.string().exactOptional().openapi({ description: 'The offer Id.' }),
-    offerAmount: z.float64().exactOptional().openapi({ description: 'The value of the offer.' }),
-    offerType: z.string().exactOptional().openapi({ description: 'The type of the offer.' }),
-    qualifyingValue: z
-      .float64()
-      .exactOptional()
-      .openapi({ description: 'The qualifying value for the offer.' }),
-  })
-  .openapi({
-    description: 'An offer applied to a basket.',
-    'x-api-version-from': '2017-10',
-    required: [],
-  })
-  .openapi('ConsumerOrderOffer')
-
-const ConsumerOrderBasketSummaryItemSchema: z.ZodType<ConsumerOrderBasketSummaryItemType> = z
-  .lazy(() =>
-    z
-      .object({
-        accessories: z
-          .array(ConsumerOrderMealAccessorySchema)
-          .exactOptional()
-          .openapi({ description: 'The accessories in the basket summary item.' }),
-        id: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The Id of the item, such as a product Id or meal part Id.' }),
-        items: z
-          .array(ConsumerOrderBasketSummaryItemSchema)
-          .exactOptional()
-          .openapi({ description: 'The items in the basket summary item.' }),
-        name: z.string().exactOptional().openapi({ description: 'The name of the item.' }),
-        price: z
-          .float64()
-          .exactOptional()
-          .openapi({ description: 'The price of the item for the associated quantity.' }),
-        quantity: z.int32().exactOptional().openapi({ description: 'The quantity of the item.' }),
-        synonym: z.string().exactOptional().openapi({ description: 'The synonym of the item.' }),
-        unitPrice: z
-          .float64()
-          .exactOptional()
-          .openapi({ description: 'The unit price of the item.' }),
-      })
-      .openapi({
-        description: 'A summarised item in a basket.',
-        'x-api-version-from': '2017-10',
-        required: [],
-      }),
-  )
-  .openapi('ConsumerOrderBasketSummaryItem')
-
-const ConsumerOrderBasketSummarySchema = z
-  .object({
-    items: z
-      .array(ConsumerOrderBasketSummaryItemSchema)
-      .exactOptional()
-      .openapi({ description: 'The items in the basket summary.' }),
-  })
-  .openapi({
-    description: 'A summary of the items in the basket for an order.',
-    'x-api-version-from': '2017-10',
-    required: [],
-  })
-  .openapi('ConsumerOrderBasketSummary')
-
-const ConsumerOrderTipItemSchema = z
-  .object({
-    amount: z.float64().exactOptional().openapi({ description: 'The cash value of the tip.' }),
-    name: z.string().exactOptional().openapi({ description: 'The name of the type of the tip.' }),
-    value: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description: 'The value of the tip relative to its type, such as the percentage.',
-      }),
-  })
-  .openapi({ description: 'A tip.', 'x-api-version-from': '2017-10', required: [] })
-  .openapi('ConsumerOrderTipItem')
-
-const ConsumerOrderBasketInfoSchema = z
-  .object({
-    currencyCode: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The ISO-4217 currency code associated with the basket.' }),
-    discounts: z
-      .record(z.string(), z.float64())
-      .exactOptional()
-      .openapi({ description: 'The discounts applied to the basket, if any.' }),
-    fees: z
-      .record(z.string(), z.float64())
-      .exactOptional()
-      .openapi({ description: 'The fees applied to the basket, if any.' }),
-    items: z
-      .array(ConsumerOrderBasketItemSchema)
-      .exactOptional()
-      .openapi({ description: 'The items in the basket.' }),
-    metadata: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({ description: 'Arbitrary metadata about the basket.' }),
-    offers: z
-      .array(ConsumerOrderOfferSchema)
-      .exactOptional()
-      .openapi({ description: 'The offer discounts applied to the basket.' }),
-    subtotal: z
-      .float64()
-      .exactOptional()
-      .openapi({ description: 'The subtotal for the basket before any discounts or fees.' }),
-    summary: ConsumerOrderBasketSummarySchema.exactOptional(),
-    tips: z
-      .record(z.string(), ConsumerOrderTipItemSchema)
-      .exactOptional()
-      .openapi({ description: 'The tips associated with the basket.' }),
-    total: z.float64().exactOptional().openapi({ description: 'The total value of the basket.' }),
-  })
-  .openapi({
-    description: 'Information about the items in the basket for an order.',
-    'x-api-version-from': '2017-10',
-    required: [],
-  })
-  .openapi('ConsumerOrderBasketInfo')
-
-const ConsumerOrderConsumerInfoSchema = z
-  .object({
-    contactNumber: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "The consumer's contact number." }),
-    deliveryAddress: ConsumerOrderAddressSchema.exactOptional(),
-    email: z.string().exactOptional().openapi({ description: "The consumer's email address." }),
-    id: z.string().exactOptional().openapi({ description: 'The consumer Id.' }),
-    name: z.string().exactOptional().openapi({ description: "The consumer's name." }),
-    timeZone: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The IANA time zone Id the consumer is located in.' }),
-  })
-  .openapi({
-    description: 'Information about a consumer.',
-    'x-api-version-from': '2017-10',
-    required: [],
-  })
-  .openapi('ConsumerOrderConsumerInfo')
-
 const ConsumerOrderConsumerReviewSchema = z
   .object({
     comments: z
@@ -5315,59 +7643,16 @@ const ConsumerOrderConsumerReviewSchema = z
   })
   .openapi('ConsumerOrderConsumerReview')
 
-const ConsumerOrderCuisineInfoSchema = z
-  .object({
-    id: z.string().exactOptional().openapi({ description: 'The Id of the cuisine.' }),
-    name: z.string().exactOptional().openapi({ description: 'The name of the cuisine.' }),
-    rank: z.int32().exactOptional().openapi({ description: 'The ranking for the cuisine.' }),
-  })
-  .openapi({
-    description: 'Information about a restaurant cuisine.',
-    'x-api-version-from': '2017-10',
-    required: [],
-  })
-  .openapi('ConsumerOrderCuisineInfo')
-
-const ConsumerOrderDateTimeRangeSchema = z
-  .object({
-    end: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'The end of the range.' }),
-    start: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'The start of the range.' }),
-  })
-  .openapi({
-    description: 'A range of date and time values.',
-    'x-api-version-from': '2017-10',
-    required: [],
-  })
-  .openapi('ConsumerOrderDateTimeRange')
-
-const ConsumerOrderLinkSchema = z
-  .object({
-    href: z.string().exactOptional().openapi({ description: 'The URL of the link.' }),
-    templated: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'A value indicating whether the URL is templated.' }),
-  })
-  .openapi({
-    description: 'A link to an API resource.',
-    'x-api-version-from': '2017-10',
-    required: [],
-  })
-  .openapi('ConsumerOrderLink')
-
 const ConsumerOrderErrorResponseSchema = z
   .object({
     _links: z
       .record(z.string(), ConsumerOrderLinkSchema)
       .exactOptional()
       .openapi({ description: 'The links information, if any.' }),
-    detail: z.object({}).exactOptional().openapi({ description: 'The optional error detail.' }),
+    detail: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({ description: 'The optional error detail.' }),
     errorCode: z.string().exactOptional().openapi({ description: 'The API error code, if any.' }),
     errorId: z.string().exactOptional().openapi({ description: 'The error Id.' }),
     fingerprint: z
@@ -5389,586 +7674,7 @@ const ConsumerOrderErrorResponseSchema = z
   .openapi({ description: 'An error response.', 'x-api-version-from': '2017-10', required: [] })
   .openapi('ConsumerOrderErrorResponse')
 
-const ConsumerOrderImageSchema = z
-  .object({
-    height: z
-      .int32()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The optional height of the image, in pixels.' }),
-    imageType: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The type of the image, such as a logo.' }),
-    uri: z.string().exactOptional().openapi({ description: 'The URI of the image.' }),
-    width: z
-      .int32()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The optional width of the image, in pixels.' }),
-  })
-  .openapi({ description: 'An image.', 'x-api-version-from': '2017-10', required: [] })
-  .openapi('ConsumerOrderImage')
-
-const ConsumerOrderOrderInfoSchema = z
-  .object({
-    canReorder: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'A value indicating whether the order can be re-ordered.' }),
-    createdAt: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'The date and time the order was created.' }),
-    isAsap: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'A value indicating whether the order should be fulfilled as soon as possible.',
-      }),
-    isForDelivery: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'A value indicating whether the order is for delivery.' }),
-    notes: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({ description: 'Any notes associated with the order given by the consumer.' }),
-  })
-  .openapi({
-    description: 'Additional information about an order.',
-    'x-api-version-from': '2017-10',
-    required: [],
-  })
-  .openapi('ConsumerOrderOrderInfo')
-
-const ConsumerOrderPaymentItemSchema = z
-  .object({
-    cardType: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The card type, such as VISA, if used.' }),
-    deferredFee: z
-      .float64()
-      .exactOptional()
-      .openapi({ description: 'The deferred fee value, if any.', 'x-api-version-from': '2019-05' }),
-    fee: z.float64().exactOptional().openapi({ description: 'The payment fee, if any.' }),
-    lastCardDigits: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The last digits of a payment card, if used.' }),
-    paymentMethod: z
-      .enum(['None', 'Cash', 'Card', 'AccountCredit', 'Voucher', 'PayPal', 'Interac', 'ApplePay'])
-      .exactOptional()
-      .openapi({
-        description: 'The payment method, such as cash or card.',
-        'x-api-version-from': '2017-10',
-      }),
-    pspName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The name of the Payment Service Provider, if any.' }),
-    transactionReference: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The transaction reference, if any.' }),
-    value: z.float64().exactOptional().openapi({ description: 'The payment value.' }),
-    voucherCode: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The voucher code used, if any.', 'x-api-version-from': '2019-05' }),
-  })
-  .openapi({ description: 'An individual payment.', 'x-api-version-from': '2017-10', required: [] })
-  .openapi('ConsumerOrderPaymentItem')
-
-const ConsumerOrderTaxItemSchema = z
-  .object({
-    name: z.string().exactOptional().openapi({ description: 'The name of the tax.' }),
-    rate: z.float64().exactOptional().openapi({ description: 'The tax rate.' }),
-    value: z.float64().exactOptional().openapi({ description: 'The value of the tax due.' }),
-  })
-  .openapi({ description: 'A tax item.', 'x-api-version-from': '2017-10', required: [] })
-  .openapi('ConsumerOrderTaxItem')
-
-const ConsumerOrderTotalsSchema = z
-  .object({
-    accountCredits: z
-      .float64()
-      .exactOptional()
-      .openapi({ description: 'The total amount of account credit(s) applied to the order.' }),
-    complimentary: z
-      .float64()
-      .exactOptional()
-      .openapi({ description: 'The total amount of promotional credit(s) applied to the order.' }),
-    discounts: z
-      .float64()
-      .exactOptional()
-      .openapi({ description: 'The total amount of discount(s) applied to the order.' }),
-    fees: z
-      .float64()
-      .exactOptional()
-      .openapi({ description: 'The total amount of fees applied to the order.' }),
-    subtotal: z.float64().exactOptional().openapi({ description: 'The subtotal for the order.' }),
-    taxes: z
-      .float64()
-      .exactOptional()
-      .openapi({ description: 'The total amount of taxes applied to the order.' }),
-    tips: z
-      .float64()
-      .exactOptional()
-      .openapi({ description: 'The total amount of tips applied to the order.' }),
-    totalPaid: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description:
-          'The total paid for the order, after taking into account credit, vouchers etc.',
-      }),
-    totalToPay: z
-      .float64()
-      .exactOptional()
-      .openapi({ description: 'The total to pay for the order.' }),
-    vouchers: z
-      .float64()
-      .exactOptional()
-      .openapi({ description: 'The total amount of any voucher(s) applied to the order.' }),
-  })
-  .openapi({
-    description: 'A class containing payment totals.',
-    'x-api-version-from': '2017-10',
-    required: [],
-  })
-  .openapi('ConsumerOrderTotals')
-
-const ConsumerOrderPaymentInfoSchema = z
-  .object({
-    currencyCode: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The ISO-4217 currency code associated with the payment.' }),
-    fees: z
-      .record(z.string(), z.float64())
-      .exactOptional()
-      .openapi({ description: 'The amount of fees applied to the order.' }),
-    paidAt: z.iso
-      .datetime({ offset: true })
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The date and time the order was paid for, if known.' }),
-    payments: z
-      .array(ConsumerOrderPaymentItemSchema)
-      .exactOptional()
-      .openapi({ description: 'The individual payment(s).' }),
-    taxes: z
-      .record(z.string(), ConsumerOrderTaxItemSchema)
-      .exactOptional()
-      .openapi({ description: 'The taxes applied to the order.' }),
-    totals: ConsumerOrderTotalsSchema.exactOptional(),
-  })
-  .openapi({
-    description: 'Information about a payment.',
-    'x-api-version-from': '2017-10',
-    required: [],
-  })
-  .openapi('ConsumerOrderPaymentInfo')
-
-const ConsumerOrderRestaurantCapabilitySchema = z
-  .object({
-    isCapable: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'A value indicating whether the restaurant is capable of fulfilling the capability.',
-      }),
-    metadata: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({ description: 'Arbitrary metadata about the capability.' }),
-    name: z.string().exactOptional().openapi({ description: 'The name of the capability.' }),
-  })
-  .openapi({
-    description: 'A capability of a restaurant.',
-    'x-api-version-from': '2018-09',
-    required: [],
-  })
-  .openapi('ConsumerOrderRestaurantCapability')
-
-const ConsumerOrderRestaurantInfoSchema = z
-  .object({
-    capabilities: z
-      .record(z.string(), ConsumerOrderRestaurantCapabilitySchema)
-      .exactOptional()
-      .openapi({
-        description: 'The capabilities of the restaurant.',
-        'x-api-version-from': '2018-09',
-      }),
-    contactNumber: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The contact telephone number for the restaurant.' }),
-    cuisines: z
-      .array(ConsumerOrderCuisineInfoSchema)
-      .exactOptional()
-      .openapi({ description: 'The cuisines associated with the restaurant.' }),
-    displayName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The display name of the restaurant.' }),
-    id: z.string().exactOptional().openapi({ description: 'The Id of the restaurant.' }),
-    images: z
-      .record(z.string(), ConsumerOrderImageSchema)
-      .exactOptional()
-      .openapi({ description: 'The images associated with the restaurant.' }),
-    isClosed: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'A value indicating whether the restaurant is currently closed.' }),
-    isOffline: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'A value indicating whether the restaurant is currently offline.' }),
-    metadata: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({ description: 'Arbitrary metadata about the restaurant.' }),
-    nextClosesAt: z.iso
-      .datetime({ offset: true })
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The date and time the restaurant next closes, if open.' }),
-    nextOpensAt: z.iso
-      .datetime({ offset: true })
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The date and time the restaurant next opens, if closed.' }),
-    postalAddress: ConsumerOrderAddressSchema.exactOptional(),
-    seoName: z.string().exactOptional().openapi({ description: 'The SEO name of the restaurant.' }),
-    timeZone: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'IANA time zone Id the restaurant is located in.' }),
-  })
-  .openapi({
-    description: 'Information about a restaurant.',
-    'x-api-version-from': '2017-10',
-    required: [],
-  })
-  .openapi('ConsumerOrderRestaurantInfo')
-
-const ConsumerOrderReviewInfoSchema = z
-  .object({
-    averageScore: z
-      .float64()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The average score for the attributes of the review.' }),
-    canReview: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'A value indicating whether the order can be reviewed.' }),
-    comments: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Any comments left by the consumer in the review.' }),
-    isReviewed: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'A value indicating whether the order has been reviewed.' }),
-    maximumScore: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description: 'The maximum score that can be given to an attribute of the review.',
-      }),
-    ratingCode: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The rating code for the review.' }),
-    scores: z
-      .record(z.string(), z.float64())
-      .exactOptional()
-      .openapi({ description: 'The scores given for the scored attributes of the review.' }),
-  })
-  .openapi({
-    description: 'Information about the review for an order.',
-    'x-api-version-from': '2017-10',
-    required: [],
-  })
-  .openapi('ConsumerOrderReviewInfo')
-
-const ConsumerOrderStatusHistoryItemSchema = z
-  .object({
-    confidence: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The confidence level of the status.' }),
-    dueDate: z.iso
-      .datetime({ offset: true })
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'The due date at the date and time associated with the timestamp, if any.',
-      }),
-    reason: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The reason for the order's status, if known.\nIf your client does not understand this reason, assume that it has no value.",
-        'x-api-version-from': '2019-05',
-      }),
-    timestamp: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'The timestamp associated with this order status.' }),
-    value: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The order status at the date and time associated with the timestamp.',
-      }),
-  })
-  .openapi({
-    description: 'Information about the status of an order at a specific point in time.',
-    'x-api-version-from': '2017-10',
-    required: [],
-  })
-  .openapi('ConsumerOrderStatusHistoryItem')
-
-const ConsumerOrderStatusNotificationsInfoSchema = z
-  .object({
-    channelKey: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The key for the status updates notification channel, if any.' }),
-    channelName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The name of the status updates notification channel.' }),
-    providerName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The name of the status updates notification provider, such as PubNub.',
-      }),
-  })
-  .openapi({
-    description: 'Status updates notification information for an order.',
-    'x-api-version-from': '2018-09',
-    required: [],
-  })
-  .openapi('ConsumerOrderStatusNotificationsInfo')
-
-const ConsumerOrderTrackingInfoSchema = z
-  .object({
-    channelKey: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The key for the tracking channel, if any.' }),
-    channelName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The name of the tracking channel.' }),
-    providerName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The name of the tracking provider, such as PubNub.' }),
-  })
-  .openapi({
-    description: 'Tracking information for an order.',
-    'x-api-version-from': '2017-10',
-    required: [],
-  })
-  .openapi('ConsumerOrderTrackingInfo')
-
-const ConsumerOrderUpcomingStatusItemSchema = z
-  .object({
-    sortOrder: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'The sort order of the upcoming status.' }),
-    value: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The upcoming status for the order.' }),
-  })
-  .openapi({
-    description: 'Information about an upcoming status an order is expected to reach.',
-    'x-api-version-from': '2017-10',
-    required: [],
-  })
-  .openapi('ConsumerOrderUpcomingStatusItem')
-
-const ConsumerOrderStatusInfoSchema = z
-  .object({
-    confidence: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "The confidence level of the order's status." }),
-    currentDueDate: z.iso
-      .datetime({ offset: true })
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The current due date of the order, if any.' }),
-    delay: z.string().exactOptional().openapi({ description: 'How delayed the order is.' }),
-    estimatedCompletion: ConsumerOrderDateTimeRangeSchema.exactOptional(),
-    expectPreorderNotificationAt: z.iso
-      .datetime({ offset: true })
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'The date and time the restaurant is expected to accept a preorder, if any.',
-      }),
-    finishedAt: z.iso
-      .datetime({ offset: true })
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'The date and time the order was finished, if completed successfully.',
-      }),
-    history: z
-      .array(ConsumerOrderStatusHistoryItemSchema)
-      .exactOptional()
-      .openapi({ description: "The history of the order's statuses, if available." }),
-    initialDueDate: z.iso
-      .datetime({ offset: true })
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The initial due date of the order, if any.' }),
-    isActive: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'A value indicating whether the status of the order may change further.',
-      }),
-    isDelayed: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'A value indicating whether the order is delayed.' }),
-    isDueDateDynamic: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'A value indicating whether the current due date was determined\ndynamically, for example from the current location of a delivery driver.',
-        'x-api-version-from': '2019-04',
-      }),
-    isRecent: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'A value indicating whether the order is a recent order.' }),
-    notifications: ConsumerOrderStatusNotificationsInfoSchema.exactOptional(),
-    statusReason: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The reason for the status of the order, if known.\nIf your client does not understand this status reason, assume that it has no value.',
-        'x-api-version-from': '2019-05',
-      }),
-    timeZone: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'IANA time zone Id associated with the order.' }),
-    tracking: ConsumerOrderTrackingInfoSchema.exactOptional(),
-    upcoming: z
-      .array(ConsumerOrderUpcomingStatusItemSchema)
-      .exactOptional()
-      .openapi({ description: 'The expected upcoming order statuses for the order, if known.' }),
-    value: z.string().exactOptional().openapi({ description: 'The current status of the order.' }),
-  })
-  .openapi({
-    description: 'Information about the status of an order.',
-    'x-api-version-from': '2017-10',
-    required: [],
-  })
-  .openapi('ConsumerOrderStatusInfo')
-
-const ConsumerOrderOrderSchema = z
-  .object({
-    _links: z
-      .record(z.string(), ConsumerOrderLinkSchema)
-      .exactOptional()
-      .openapi({ description: 'The links information, if any.' }),
-    application: ConsumerOrderApplicationInfoSchema.exactOptional(),
-    basket: ConsumerOrderBasketInfoSchema.exactOptional(),
-    consumer: ConsumerOrderConsumerInfoSchema.exactOptional(),
-    friendlyId: z.string().exactOptional().openapi({ description: 'The friendly order Id.' }),
-    id: z.string().exactOptional().openapi({ description: 'The Id of the order.' }),
-    information: ConsumerOrderOrderInfoSchema.exactOptional(),
-    metadata: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({ description: 'Arbitrary metadata about the order.' }),
-    payment: ConsumerOrderPaymentInfoSchema.exactOptional(),
-    restaurant: ConsumerOrderRestaurantInfoSchema.exactOptional(),
-    review: ConsumerOrderReviewInfoSchema.exactOptional(),
-    status: ConsumerOrderStatusInfoSchema.exactOptional(),
-    tenant: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The tenant associated with the order.' }),
-    timestamp: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'The UTC timestamp of the date and time that the response was generated at.',
-        'x-api-version-from': '2019-04',
-      }),
-  })
-  .openapi({ description: 'An order.', 'x-api-version-from': '2017-10', required: [] })
-  .openapi('ConsumerOrderOrder')
-
-const ConsumerOrderPaginationInfoSchema = z
-  .object({
-    count: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64', description: 'The current number of results.' }),
-    links: z
-      .record(z.string(), ConsumerOrderLinkSchema)
-      .exactOptional()
-      .openapi({ description: 'The pagination links.' }),
-    token: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The pagination token for the next page of results, if any.' }),
-    total: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .nullable()
-      .exactOptional()
-      .openapi({
-        type: ['integer', 'null'],
-        format: 'int64',
-        description: 'The total number of results, if known.',
-      }),
-  })
-  .openapi({
-    description: 'Pagination information for a request.',
-    'x-api-version-from': '2017-10',
-    required: [],
-  })
-  .openapi('ConsumerOrderPaginationInfo')
-
-const ConsumerOrderOrderHistorySchema = z
+const ConsumerOrderOrderHistorySchema: z.ZodType<ConsumerOrderOrderHistoryType> = z
   .object({
     _links: z
       .record(z.string(), ConsumerOrderLinkSchema)
@@ -6220,6 +7926,11 @@ const ConsumerOrdersPlacementResponseSchema = z
   })
   .openapi({ description: 'An order placement response.', 'x-api-version-from': 1, required: [] })
   .openapi('ConsumerOrdersPlacementResponse')
+
+const ConsumerStatusSchema = z
+  .union([z.literal(0), z.literal(1), z.literal(2)])
+  .openapi({ description: '', 'x-enumNames': ['Undefined', 'NewConsumer', 'ReturnConsumer'] })
+  .openapi('ConsumerStatus')
 
 const CourierFeedbackRequestSchema = z
   .object({
@@ -6768,70 +8479,6 @@ const CreateCancellationQuerySchema = z
   .openapi({ required: [] })
   .openapi('CreateCancellationQuery')
 
-const CreateModifierSchema = z
-  .object({ ModifierId: z.string().exactOptional(), Quantity: z.number().exactOptional() })
-  .openapi({ required: [] })
-  .openapi('CreateModifier')
-
-const CreateModifierGroupSchema = z
-  .object({
-    ModifierGroupId: z.string().exactOptional(),
-    Modifiers: z.array(CreateModifierSchema).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('CreateModifierGroup')
-
-const CreateRemovedIngredientSchema = z
-  .object({ Details: z.string().exactOptional() })
-  .openapi({ required: [] })
-  .openapi('CreateRemovedIngredient')
-
-const CreateProductSchema = z
-  .object({
-    Date: z.string().exactOptional().openapi({ description: '`YYYY-MM-DDThh:mm:ssZ (UTC)`' }),
-    ModifierGroups: z.array(CreateModifierGroupSchema).nullable().exactOptional(),
-    ProductId: z.string().exactOptional(),
-    Quantity: z.number().exactOptional(),
-    RemovedIngredients: z.array(CreateRemovedIngredientSchema).nullable().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('CreateProduct')
-
-const CreateDealGroupSchema = z
-  .object({
-    DealGroupId: z.string().exactOptional(),
-    Products: z.array(CreateProductSchema).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('CreateDealGroup')
-
-const CreateDealSchema = z
-  .object({
-    Date: z.string().exactOptional().openapi({ description: '`YYYY-MM-DDThh:mm:ssZ (UTC)`' }),
-    DealGroups: z.array(CreateDealGroupSchema).exactOptional(),
-    ProductId: z.string().exactOptional(),
-    Quantity: z.number().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('CreateDeal')
-
-const CreateGeoLocationSchema = z
-  .object({ Latitude: z.number().exactOptional(), Longitude: z.number().exactOptional() })
-  .openapi({ required: [] })
-  .openapi('CreateGeoLocation')
-
-const CreateLocationSchema = z
-  .object({
-    GeoLocation: CreateGeoLocationSchema.nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Not available across platform yet, but applied for future proofing.',
-      }),
-    ZipCode: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('CreateLocation')
-
 const UpdateModifierRequestSchema = z
   .object({
     AdditionPrice: z.float64().exactOptional().openapi({ description: 'Additional price' }),
@@ -7223,12 +8870,7 @@ const CreateOffersRequestSchema = z
   })
   .openapi('CreateOffersRequest')
 
-const CreateOrderDetailsSchema = z
-  .object({ Location: CreateLocationSchema.exactOptional() })
-  .openapi({ required: [] })
-  .openapi('CreateOrderDetails')
-
-const CreateRequestSchema = z
+const CreateRequestSchema: z.ZodType<CreateRequestType> = z
   .object({
     Deals: z
       .array(CreateDealSchema.openapi({ description: 'Individual deal to added to new basket.' }))
@@ -7946,6 +9588,22 @@ const CustomisationResponseWebSchema = z
   })
   .openapi('CustomisationResponseWeb')
 
+const DayOfWeekSchema = z
+  .union([
+    z.literal(0),
+    z.literal(1),
+    z.literal(2),
+    z.literal(3),
+    z.literal(4),
+    z.literal(5),
+    z.literal(6),
+  ])
+  .openapi({
+    description: '',
+    'x-enumNames': ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+  })
+  .openapi('DayOfWeek')
+
 const DealItemVariationSchema = z
   .object({
     additionPrice: z
@@ -8078,59 +9736,6 @@ const DeliveryFeeSchema = z
   })
   .openapi({ required: [] })
   .openapi('DeliveryFee')
-
-const DeliveryZoneSchema = z
-  .object({
-    deliveryMinutes: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'geographical zone generated by SKIP, based on delivery minutes.' }),
-    unboundedZone: z
-      .object({
-        coordinates: z
-          .array(
-            z
-              .object({
-                coordinates: z
-                  .array(
-                    z
-                      .object({
-                        latitude: z
-                          .number()
-                          .exactOptional()
-                          .openapi({ description: 'geographical point latitude' }),
-                        longitude: z
-                          .number()
-                          .exactOptional()
-                          .openapi({ description: 'geographical point longitude' }),
-                      })
-                      .openapi({ required: [] }),
-                  )
-                  .exactOptional()
-                  .openapi({ description: 'geographical coordinates of linear ring' }),
-              })
-              .openapi({ required: [] }),
-          )
-          .exactOptional()
-          .openapi({
-            description:
-              'geographical polygon https://tools.ietf.org/html/rfc7946#section-3.1.4. It might consist from multiple linear rings',
-          }),
-      })
-      .exactOptional()
-      .openapi({ description: 'json representation of delivery zone', required: [] }),
-    zoneId: z.string().exactOptional().openapi({ description: 'id of the zone' }),
-  })
-  .openapi({ example: { deliveryMinutes: 5, unboundedZone: {}, zoneId: '1' }, required: [] })
-  .openapi('DeliveryZone')
-
-const VoucherTypeSchema = z
-  .union([z.literal(0), z.literal(1), z.literal(2)])
-  .openapi({
-    description: 'Type of voucher',
-    'x-enumNames': ['Absolute', 'Percentage', 'DeliveryFee'],
-  })
-  .openapi('VoucherType')
 
 const DiscountSchema = z
   .strictObject({
@@ -8863,7 +10468,7 @@ const GetDeliveryFeesResponseSchema = z
   })
   .openapi('GetDeliveryFeesResponse')
 
-const GetDeliveryZonesResponseSchema = z
+const GetDeliveryZonesResponseSchema: z.ZodType<GetDeliveryZonesResponseType> = z
   .object({
     deliveryZones: z
       .array(DeliveryZoneSchema)
@@ -8885,8 +10490,40 @@ const GetDeliveryZonesResponseSchema = z
   .openapi({
     example: {
       deliveryZones: [
-        { deliveryMinutes: 5, unboundedZone: {}, zoneId: '1' },
-        { deliveryMinutes: 7, unboundedZone: {}, zoneId: '2' },
+        {
+          deliveryMinutes: 5,
+          unboundedZone: {
+            items: [
+              {
+                coordinates: null,
+                items: [
+                  { latitude: 57.159200668, longitude: -2.08593559299993 },
+                  { latitude: 57.459200668, longitude: -2.18593559299993 },
+                  { latitude: 57.159200668, longitude: -2.28593559299993 },
+                  { latitude: 57.159200668, longitude: -2.08593559299993 },
+                ],
+              },
+            ],
+          },
+          zoneId: '1',
+        },
+        {
+          deliveryMinutes: 7,
+          unboundedZone: {
+            items: [
+              {
+                coordinates: null,
+                items: [
+                  { latitude: 57.159200668, longitude: -2.08593559299993 },
+                  { latitude: 57.459200668, longitude: -2.18593559299993 },
+                  { latitude: 57.159200668, longitude: -2.28593559299993 },
+                  { latitude: 57.159200668, longitude: -2.08593559299993 },
+                ],
+              },
+            ],
+          },
+          zoneId: '2',
+        },
       ],
     },
     required: [],
@@ -9897,287 +11534,633 @@ const MenuSchema = MenuBaseSchema.and(
       ],
       currency: 'GBP',
       description: 'My excellent menu',
+      items: [
+        {
+          dealGroups: [
+            {
+              dealItemVariations: [
+                { additionPrice: 0, dealItemVariationId: '1577341', maxChoices: 1, minChoices: 0 },
+              ],
+              id: '23435309-1',
+              name: 'Choose your base',
+              numberOfChoices: 1,
+            },
+            {
+              dealItemVariations: [
+                { additionPrice: 0, dealItemVariationId: '8547121', maxChoices: 1, minChoices: 0 },
+                { additionPrice: 0, dealItemVariationId: '3547157', maxChoices: 1, minChoices: 0 },
+                { additionPrice: 50, dealItemVariationId: '8548153', maxChoices: 1, minChoices: 0 },
+              ],
+              id: '23435309-2',
+              name: 'Choose your halves',
+              numberOfChoices: 2,
+            },
+          ],
+          description: 'Choose each half.',
+          id: '23435309',
+          labels: [],
+          modifierGroups: [],
+          name: 'Half-and-half Pizza',
+          type: 'deal',
+          variations: [
+            {
+              availabilityIds: ['1-lunch-delivery', '2-lunch-collection', '3-dinner-delivery'],
+              basePrice: 3099,
+              dealGroupsIds: ['23435309-1', '23435309-2'],
+              dealOnly: false,
+              id: '23435309',
+              modifierGroupsIds: [],
+              name: '',
+              type: 'noVariation',
+            },
+          ],
+        },
+        {
+          dealGroups: [
+            {
+              dealItemVariations: [
+                { additionPrice: 0, dealItemVariationId: '9750011', maxChoices: 1, minChoices: 0 },
+                { additionPrice: 0, dealItemVariationId: '9750021', maxChoices: 1, minChoices: 0 },
+                { additionPrice: 0, dealItemVariationId: '23435309', maxChoices: 1, minChoices: 0 },
+              ],
+              id: '33445308-1',
+              name: 'Choose your pizza',
+              numberOfChoices: 1,
+            },
+            {
+              dealItemVariations: [
+                { additionPrice: 13, dealItemVariationId: '6537130', maxChoices: 1, minChoices: 0 },
+                { additionPrice: 0, dealItemVariationId: '6537140', maxChoices: 1, minChoices: 0 },
+                { additionPrice: 0, dealItemVariationId: '7739164', maxChoices: 1, minChoices: 0 },
+              ],
+              id: '33445308-2',
+              name: 'Choose your drink',
+              numberOfChoices: 1,
+            },
+          ],
+          description:
+            'Choose a 14 inch Pizza (including half-and-half) and any drink. Note: Alcohol is only available for collection.',
+          id: '33445308',
+          labels: [],
+          modifierGroups: [],
+          name: '14 inch Pizza & A Drink For 1',
+          type: 'deal',
+          variations: [
+            {
+              availabilityIds: ['1-lunch-delivery', '2-lunch-collection', '3-dinner-delivery'],
+              basePrice: 3099,
+              dealGroupsIds: ['33445308-1', '33445308-2'],
+              dealOnly: false,
+              id: '33445308',
+              modifierGroupsIds: [],
+              name: '',
+              type: 'noVariation',
+            },
+          ],
+        },
+        {
+          dealGroups: [],
+          description: '',
+          id: '65143901',
+          labels: [],
+          modifierGroups: [
+            {
+              id: '65143901-req-1',
+              maxChoices: 1,
+              minChoices: 1,
+              modifiers: [
+                {
+                  additionPrice: 0,
+                  id: '834502',
+                  maxChoices: 1,
+                  minChoices: 0,
+                  name: 'Pitta Bread',
+                },
+                { additionPrice: 0, id: '835700', maxChoices: 1, minChoices: 0, name: 'Sourdough' },
+                {
+                  additionPrice: 50,
+                  id: '835601',
+                  maxChoices: 1,
+                  minChoices: 0,
+                  name: 'Wholemeal',
+                },
+              ],
+              name: 'Choose your bread',
+            },
+            {
+              id: '65143901-req-2',
+              maxChoices: 2,
+              minChoices: 2,
+              modifiers: [
+                { additionPrice: 0, id: '835340', maxChoices: 2, minChoices: 0, name: 'Tzatziki' },
+                {
+                  additionPrice: 0,
+                  id: '835341',
+                  maxChoices: 2,
+                  minChoices: 0,
+                  name: 'Taramasalata',
+                },
+                { additionPrice: 0, id: '825344', maxChoices: 2, minChoices: 0, name: 'Hummus' },
+                { additionPrice: 0, id: '825346', maxChoices: 2, minChoices: 0, name: 'Onion' },
+              ],
+              name: 'Choose your dips',
+            },
+          ],
+          name: 'Flat Bread and Dips (Pick any 2 Dips)',
+          requireOtherProducts: false,
+          type: 'menuItem',
+          variations: [
+            {
+              availabilityIds: [
+                '1-lunch-delivery',
+                '2-lunch-collection',
+                '3-dinner-delivery',
+                '4-dinner-collection',
+              ],
+              basePrice: 650,
+              dealGroupsIds: [],
+              dealOnly: false,
+              id: '65143901',
+              kitchenNumber: '90',
+              modifierGroupsIds: ['65143901-req-1', '65143901-req-2'],
+              name: '',
+              type: 'noVariation',
+            },
+          ],
+        },
+        {
+          dealGroups: [],
+          description: '',
+          id: '1577341',
+          labels: [],
+          modifierGroups: [
+            {
+              id: '1577341-req-1',
+              maxChoices: 1,
+              minChoices: 1,
+              modifiers: [
+                {
+                  additionPrice: 0,
+                  id: '854500',
+                  maxChoices: 1,
+                  minChoices: 0,
+                  name: 'Classic Crust',
+                },
+                {
+                  additionPrice: 200,
+                  id: '854600',
+                  maxChoices: 1,
+                  minChoices: 0,
+                  name: 'Stuffed Crust',
+                },
+              ],
+              name: 'Crust',
+            },
+          ],
+          name: 'Base',
+          requireOtherProducts: true,
+          type: 'menuItem',
+          variations: [
+            {
+              availabilityIds: [
+                '1-lunch-delivery',
+                '2-lunch-collection',
+                '3-dinner-delivery',
+                '4-dinner-collection',
+              ],
+              basePrice: 200,
+              dealGroupsIds: [],
+              dealOnly: true,
+              id: '1577341',
+              modifierGroupsIds: ['1577341-req-1'],
+              name: '',
+              type: 'noVariation',
+            },
+          ],
+        },
+        {
+          dealGroups: [],
+          description: '',
+          id: '8547130',
+          labels: [],
+          modifierGroups: [
+            {
+              id: '8547130-req-1',
+              maxChoices: 1,
+              minChoices: 1,
+              modifiers: [
+                {
+                  additionPrice: 0,
+                  id: '854500',
+                  maxChoices: 1,
+                  minChoices: 0,
+                  name: 'Classic Crust',
+                },
+                {
+                  additionPrice: 200,
+                  id: '854600',
+                  maxChoices: 1,
+                  minChoices: 0,
+                  name: 'Stuffed Crust',
+                },
+              ],
+              name: 'Choose your crust',
+            },
+            {
+              id: '8547130-opt-1',
+              maxChoices: 10,
+              minChoices: 0,
+              modifiers: [
+                {
+                  additionPrice: 50,
+                  id: '1000',
+                  maxChoices: 2,
+                  minChoices: 0,
+                  name: 'Mozzarella Cheese',
+                },
+                { additionPrice: 50, id: '1001', maxChoices: 1, minChoices: 0, name: 'Ham' },
+                { additionPrice: 50, id: '1002', maxChoices: 1, minChoices: 0, name: 'Red Onion' },
+                { additionPrice: 50, id: '1003', maxChoices: 1, minChoices: 0, name: 'Pepperoni' },
+                { additionPrice: 50, id: '1004', maxChoices: 1, minChoices: 0, name: 'Olives' },
+              ],
+              name: 'Any extra toppings?',
+            },
+          ],
+          name: 'Margherita',
+          requireOtherProducts: true,
+          type: 'menuItem',
+          variations: [
+            {
+              availabilityIds: [
+                '1-lunch-delivery',
+                '2-lunch-collection',
+                '3-dinner-delivery',
+                '4-dinner-collection',
+              ],
+              basePrice: 500,
+              dealGroupsIds: [],
+              dealOnly: true,
+              id: '8547121',
+              kitchenNumber: '100',
+              modifierGroupsIds: ['8547130-opt-1'],
+              name: 'Half',
+              type: 'variation',
+            },
+            {
+              availabilityIds: [
+                '1-lunch-delivery',
+                '2-lunch-collection',
+                '3-dinner-delivery',
+                '4-dinner-collection',
+              ],
+              basePrice: 1000,
+              dealGroupsIds: [],
+              dealOnly: false,
+              id: '8547130',
+              kitchenNumber: '100',
+              modifierGroupsIds: ['8547130-req-1', '8547130-opt-1'],
+              name: '12 inch',
+              type: 'variation',
+            },
+            {
+              availabilityIds: [
+                '1-lunch-delivery-weekday',
+                '2-lunch-collection-weekday',
+                '3-dinner-delivery-weekday',
+                '4-dinner-collection-weekday',
+              ],
+              basePrice: 1200,
+              dealGroupsIds: [],
+              dealOnly: true,
+              id: '8543123',
+              kitchenNumber: '200',
+              modifierGroupsIds: ['8547130-req-1', '8547130-opt-1'],
+              name: '14 inch',
+              type: 'variation',
+            },
+          ],
+        },
+        {
+          dealGroups: [],
+          description: '',
+          id: '8547140',
+          labels: [],
+          modifierGroups: [
+            {
+              id: '8547140-req-1',
+              maxChoices: 1,
+              minChoices: 1,
+              modifiers: [
+                {
+                  additionPrice: 0,
+                  id: '854500',
+                  maxChoices: 1,
+                  minChoices: 0,
+                  name: 'Classic Crust',
+                },
+                {
+                  additionPrice: 200,
+                  id: '854600',
+                  maxChoices: 1,
+                  minChoices: 0,
+                  name: 'Stuffed Crust',
+                },
+              ],
+              name: 'Choose your crust',
+            },
+            {
+              id: '8547140-opt-1',
+              maxChoices: 10,
+              minChoices: 0,
+              modifiers: [
+                {
+                  additionPrice: 50,
+                  id: '1000',
+                  maxChoices: 2,
+                  minChoices: 0,
+                  name: 'Mozzarella Cheese',
+                },
+                { additionPrice: 50, id: '1001', maxChoices: 2, minChoices: 0, name: 'Ham' },
+                { additionPrice: 50, id: '1002', maxChoices: 2, minChoices: 0, name: 'Red Onion' },
+                { additionPrice: 50, id: '1003', maxChoices: 4, minChoices: 2, name: 'Pepperoni' },
+                { additionPrice: 50, id: '1004', maxChoices: 2, minChoices: 0, name: 'Olives' },
+              ],
+              name: 'Any extra toppings?',
+            },
+            {
+              id: '9755052-req-1',
+              maxChoices: 1,
+              minChoices: 1,
+              modifiers: [
+                {
+                  additionPrice: 0,
+                  id: '854500',
+                  maxChoices: 1,
+                  minChoices: 0,
+                  name: 'Classic Crust',
+                },
+                {
+                  additionPrice: 250,
+                  id: '854600',
+                  maxChoices: 1,
+                  minChoices: 0,
+                  name: 'Stuffed Crust',
+                },
+              ],
+              name: 'Choose your crust',
+            },
+            {
+              id: '9755052-opt-1',
+              maxChoices: 10,
+              minChoices: 0,
+              modifiers: [
+                {
+                  additionPrice: 70,
+                  id: '1000',
+                  maxChoices: 2,
+                  minChoices: 0,
+                  name: 'Mozzarella Cheese',
+                },
+                { additionPrice: 70, id: '1001', maxChoices: 2, minChoices: 0, name: 'Ham' },
+                { additionPrice: 70, id: '1002', maxChoices: 2, minChoices: 0, name: 'Red Onion' },
+                { additionPrice: 70, id: '1003', maxChoices: 2, minChoices: 0, name: 'Pepperoni' },
+                { additionPrice: 70, id: '1004', maxChoices: 2, minChoices: 0, name: 'Olives' },
+              ],
+              name: 'Any extra toppings?',
+            },
+          ],
+          name: 'Double Pepperoni',
+          requireOtherProducts: false,
+          type: 'menuItem',
+          variations: [
+            {
+              availabilityIds: [
+                '1-lunch-delivery',
+                '2-lunch-collection',
+                '3-dinner-delivery',
+                '4-dinner-collection',
+              ],
+              basePrice: 500,
+              dealGroupsIds: [],
+              dealOnly: true,
+              id: '8548153',
+              kitchenNumber: '100',
+              modifierGroupsIds: ['8547140-opt-1'],
+              name: 'Half',
+              type: 'variation',
+            },
+            {
+              availabilityIds: [
+                '1-lunch-delivery',
+                '2-lunch-collection',
+                '3-dinner-delivery',
+                '4-dinner-collection',
+              ],
+              basePrice: 1000,
+              dealGroupsIds: [],
+              dealOnly: false,
+              id: '8547140',
+              kitchenNumber: '100',
+              modifierGroupsIds: ['8547140-req-1', '8547140-opt-1'],
+              name: '12 inch',
+              type: 'variation',
+            },
+            {
+              availabilityIds: [
+                '1-lunch-delivery',
+                '2-lunch-collection',
+                '3-dinner-delivery',
+                '4-dinner-collection',
+              ],
+              basePrice: 1200,
+              dealGroupsIds: [],
+              dealOnly: true,
+              id: '9750021',
+              kitchenNumber: '200',
+              modifierGroupsIds: ['8547140-req-1', '8547140-opt-1'],
+              name: '14 inch',
+              type: 'variation',
+            },
+            {
+              availabilityIds: ['2-lunch-collection', '4-dinner-collection'],
+              basePrice: 1200,
+              dealGroupsIds: [],
+              dealOnly: false,
+              id: '9755052',
+              kitchenNumber: '200',
+              modifierGroupsIds: ['9755052-req-1', '9755052-opt-1'],
+              name: '18 inch',
+              type: 'variation',
+            },
+          ],
+        },
+        {
+          dealGroups: [],
+          description: '',
+          id: '3547157',
+          labels: ['vegetarian'],
+          modifierGroups: [
+            {
+              id: '8547140-opt-1',
+              maxChoices: 10,
+              minChoices: 0,
+              modifiers: [
+                {
+                  additionPrice: 50,
+                  id: '1000',
+                  maxChoices: 2,
+                  minChoices: 0,
+                  name: 'Mozzarella Cheese',
+                },
+                { additionPrice: 50, id: '1001', maxChoices: 2, minChoices: 0, name: 'Ham' },
+                { additionPrice: 50, id: '1002', maxChoices: 2, minChoices: 1, name: 'Red Onion' },
+                { additionPrice: 50, id: '1003', maxChoices: 2, minChoices: 0, name: 'Pepperoni' },
+                { additionPrice: 50, id: '1004', maxChoices: 2, minChoices: 1, name: 'Olives' },
+              ],
+              name: 'Any extra toppings?',
+            },
+          ],
+          name: 'Vegetarian',
+          requireOtherProducts: false,
+          type: 'menuItem',
+          variations: [
+            {
+              availabilityIds: [
+                '1-lunch-delivery',
+                '2-lunch-collection',
+                '3-dinner-delivery',
+                '4-dinner-collection',
+              ],
+              basePrice: 500,
+              dealGroupsIds: [],
+              dealOnly: true,
+              id: '3547157',
+              kitchenNumber: '121',
+              modifierGroupsIds: ['8547140-opt-1'],
+              name: '',
+              type: 'noVariation',
+            },
+          ],
+        },
+        {
+          dealGroups: [],
+          description: '',
+          id: '6537130',
+          labels: [],
+          modifierGroups: [],
+          name: 'Coca-Cola',
+          requireOtherProducts: true,
+          type: 'menuItem',
+          variations: [
+            {
+              availabilityIds: [
+                '1-lunch-delivery',
+                '2-lunch-collection',
+                '3-dinner-delivery',
+                '4-dinner-collection',
+              ],
+              basePrice: 100,
+              dealGroupsIds: [],
+              dealOnly: false,
+              id: '6537130',
+              kitchenNumber: '300',
+              modifierGroupsIds: [],
+              name: '0.33L',
+              type: 'variation',
+            },
+            {
+              availabilityIds: [
+                '1-lunch-delivery',
+                '2-lunch-collection',
+                '3-dinner-delivery',
+                '4-dinner-collection',
+              ],
+              basePrice: 300,
+              dealGroupsIds: [],
+              dealOnly: false,
+              id: '9750011',
+              kitchenNumber: '400',
+              modifierGroupsIds: [],
+              name: '1.5L',
+              type: 'variation',
+            },
+          ],
+        },
+        {
+          dealGroups: [],
+          description: '',
+          id: '6537140',
+          labels: [],
+          modifierGroups: [],
+          name: 'Diet Coke',
+          requireOtherProducts: true,
+          type: 'menuItem',
+          variations: [
+            {
+              availabilityIds: [
+                '1-lunch-delivery',
+                '2-lunch-collection',
+                '3-dinner-delivery',
+                '4-dinner-collection',
+              ],
+              basePrice: 100,
+              dealGroupsIds: [],
+              dealOnly: false,
+              id: '6537140',
+              kitchenNumber: '300',
+              modifierGroupsIds: [],
+              name: '0.33L',
+              type: 'variation',
+            },
+            {
+              availabilityIds: [
+                '1-lunch-delivery',
+                '2-lunch-collection',
+                '3-dinner-delivery',
+                '4-dinner-collection',
+              ],
+              basePrice: 300,
+              dealGroupsIds: [],
+              dealOnly: false,
+              id: '9750312',
+              kitchenNumber: '400',
+              modifierGroupsIds: [],
+              name: '1.5L',
+              type: 'variation',
+            },
+          ],
+        },
+        {
+          dealGroups: [],
+          description: '',
+          id: '7739164',
+          labels: [],
+          modifierGroups: [],
+          name: 'Bottle of Lager',
+          requireOtherProducts: true,
+          type: 'menuItem',
+          variations: [
+            {
+              availabilityIds: ['2-lunch-collection', '4-dinner-collection'],
+              basePrice: 300,
+              dealGroupsIds: [],
+              dealOnly: false,
+              id: '7739164',
+              kitchenNumber: '700',
+              modifierGroupsIds: [],
+              name: '',
+              type: 'noVariation',
+            },
+          ],
+        },
+      ],
       name: 'My Restaurant',
       restaurantId: '100059',
     },
   })
   .openapi('Menu')
 
-const ModifierResponseSchema: z.ZodType<ModifierResponseType> = z
-  .lazy(() =>
-    z
-      .object({
-        AdditionPrice: z.float64().exactOptional().openapi({ description: 'The additional price' }),
-        DefaultChoices: z
-          .int32()
-          .exactOptional()
-          .openapi({ description: 'The default number of options allowed to be selected' }),
-        Id: z.string().exactOptional().openapi({ description: 'Id of the modifier' }),
-        MaxChoices: z
-          .int32()
-          .exactOptional()
-          .openapi({ description: 'The maximum number of options allowed to be selected' }),
-        MinChoices: z
-          .int32()
-          .exactOptional()
-          .openapi({ description: 'The minimum number of options allowed to be selected' }),
-        Name: z.string().exactOptional().openapi({ description: 'Name of the modifier' }),
-        RemovePrice: z.float64().exactOptional().openapi({ description: 'The cost to remove' }),
-        Variations: z
-          .array(VariationModifierResponseSchema)
-          .exactOptional()
-          .openapi({ description: 'The variations to which this modifiers applies' }),
-      })
-      .openapi({
-        example: {
-          Id: '9',
-          Name: 'Ham',
-          Variations: [
-            {
-              AdditionPrice: 0.5,
-              ModifierGroupId: '1',
-              Selected: true,
-              VariationId: '4',
-              VariationName: 'Large',
-            },
-          ],
-        },
-        required: [],
-      }),
-  )
-  .openapi('ModifierResponse')
-
-const ModifierGroupResponseSchema = z
-  .object({
-    Id: z.string().exactOptional().openapi({ description: 'Id of Modifier Group' }),
-    MaxChoices: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'The maximum number of options allowed to be selected' }),
-    MinChoices: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'The minimum number of options allowed to be selected' }),
-    Modifiers: z
-      .array(ModifierResponseSchema)
-      .exactOptional()
-      .openapi({ description: 'A list of modifiers within the group' }),
-    Name: z.string().exactOptional().openapi({ description: 'Name of Modifier Group' }),
-  })
-  .openapi({
-    example: {
-      Id: '1',
-      MaxChoices: 3,
-      MinChoices: 0,
-      Modifiers: [
-        {
-          Id: '9',
-          Name: 'Ham',
-          Variations: [
-            {
-              AdditionPrice: 0.5,
-              ModifierGroupId: '1',
-              Selected: true,
-              VariationId: '4',
-              VariationName: 'Large',
-            },
-          ],
-        },
-        {
-          Id: '10',
-          Name: 'Sausage',
-          Variations: [
-            {
-              AdditionPrice: 0.5,
-              ModifierGroupId: '1',
-              Selected: true,
-              VariationId: '4',
-              VariationName: 'Large',
-            },
-          ],
-        },
-      ],
-      Name: 'Toppings',
-    },
-    required: [],
-  })
-  .openapi('ModifierGroupResponse')
-
-const VariationResponseSchema = z
-  .object({
-    Id: z.string().exactOptional().openapi({ description: 'Id' }),
-    Name: z.string().exactOptional().openapi({ description: 'Name' }),
-    OptionGroupIds: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'List of option group ids applicable to this variation' }),
-    PreferenceGroupIds: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'List of preference group ids applicable to this variation' }),
-    Price: z.float64().exactOptional().openapi({ description: 'Price' }),
-    Type: z.string().exactOptional().openapi({ description: 'Type' }),
-  })
-  .openapi({
-    example: {
-      Id: '32',
-      Name: 'Large',
-      OptionGroupIds: ['1'],
-      PreferenceGroupIds: ['12', '32'],
-      Price: 12.32,
-    },
-    required: [],
-  })
-  .openapi('VariationResponse')
-
-const MenuEditResponseSchema = z
-  .object({
-    CategoryId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Id of the category of the menu item' }),
-    CategoryName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Name of the category of the menu item' }),
-    Description: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Description of the menu item' }),
-    EditType: z
-      .enum(['Add', 'Edit', 'Delete', 'None'])
-      .exactOptional()
-      .openapi({ description: 'Action being applied to the menu item' }),
-    Labels: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'Labels for the menu item' }),
-    MenuItemId: z.string().exactOptional().openapi({ description: 'Id of the menu item' }),
-    MenuItemName: z.string().exactOptional().openapi({ description: 'Name of the menu item' }),
-    OptionGroups: z
-      .array(ModifierGroupResponseSchema)
-      .exactOptional()
-      .openapi({ description: 'Option groups available for the menu item' }),
-    PreferenceGroups: z
-      .array(ModifierGroupResponseSchema)
-      .exactOptional()
-      .openapi({ description: 'Preference groups available for the menu item' }),
-    ReceiptNumber: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Receipt or kitchen number of the menu item' }),
-    Variations: z
-      .array(VariationResponseSchema)
-      .exactOptional()
-      .openapi({ description: 'Variations applicable to the menu item' }),
-  })
-  .openapi({
-    example: {
-      CategoryId: '1',
-      CategoryName: 'Pizzas',
-      Description: 'Cheesy pizza',
-      EditType: 'Add',
-      Labels: ['Vegetarian'],
-      MenuItemId: '12',
-      MenuItemName: 'Cheese pizza',
-      OptionGroups: [
-        {
-          Id: '1',
-          MaxChoices: 1,
-          MinChoices: 1,
-          Modifiers: [
-            {
-              Id: '9',
-              Name: 'Gluten-free',
-              Variations: [
-                {
-                  AdditionPrice: 1.5,
-                  ModifierGroupId: '1',
-                  Selected: true,
-                  VariationId: '4',
-                  VariationName: 'Large',
-                },
-                {
-                  AdditionPrice: 1.3,
-                  ModifierGroupId: '1',
-                  Selected: true,
-                  VariationId: '5',
-                  VariationName: 'Small',
-                },
-              ],
-            },
-          ],
-          Name: 'Bases',
-        },
-      ],
-      PreferenceGroups: [
-        {
-          Id: '12',
-          MaxChoices: 1,
-          MinChoices: 0,
-          Modifiers: [
-            {
-              Id: '9',
-              Name: 'Ham',
-              Variations: [
-                {
-                  AdditionPrice: 0.5,
-                  ModifierGroupId: '12',
-                  Selected: true,
-                  VariationId: '4',
-                  VariationName: 'Large',
-                },
-              ],
-            },
-          ],
-          Name: 'Meats',
-        },
-        {
-          Id: '32',
-          MaxChoices: 1,
-          MinChoices: 0,
-          Modifiers: [
-            {
-              Id: '7',
-              Name: 'Pineapple',
-              Variations: [
-                {
-                  AdditionPrice: 0.5,
-                  ModifierGroupId: '32',
-                  Selected: true,
-                  VariationId: '4',
-                  VariationName: 'Large',
-                },
-                {
-                  AdditionPrice: 0.3,
-                  ModifierGroupId: '32',
-                  Selected: true,
-                  VariationId: '5',
-                  VariationName: 'Small',
-                },
-              ],
-            },
-          ],
-          Name: 'Veggies',
-        },
-      ],
-      ReceiptNumber: '123',
-      Variations: [
-        {
-          Id: '4',
-          Name: 'Large',
-          OptionGroupIds: ['1'],
-          PreferenceGroupIds: ['12', '32'],
-          Price: 12.32,
-        },
-        { Id: '5', Name: 'Small', OptionGroupIds: ['1'], PreferenceGroupIds: ['32'], Price: 8.99 },
-      ],
-    },
-    required: [],
-  })
-  .openapi('MenuEditResponse')
-
-const MenuAllEditsResponseSchema = z
+const MenuAllEditsResponseSchema: z.ZodType<MenuAllEditsResponseType> = z
   .array(MenuEditResponseSchema)
   .openapi({
     description: 'All pending changes',
@@ -10258,52 +12241,6 @@ const MenuAllEditsResponseSchema = z
     ],
   })
   .openapi('MenuAllEditsResponse')
-
-const MergedProductSchema = z
-  .strictObject({
-    id: z.string().nullable().exactOptional().openapi({ description: 'The id of the product' }),
-    ids: z
-      .array(z.int32())
-      .nullable()
-      .exactOptional()
-      .openapi({ deprecated: true, description: 'Deprecated, not in use' }),
-    isOffline: z.boolean().exactOptional().openapi({ description: 'Is this product offline?' }),
-    name: z.string().nullable().exactOptional().openapi({ description: 'Product name' }),
-  })
-  .openapi({ required: [] })
-  .openapi('MergedProduct')
-
-const ProductGroupSchema = z
-  .strictObject({
-    products: z
-      .array(MergedProductSchema)
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'List of products' }),
-  })
-  .openapi({ required: [] })
-  .openapi('ProductGroup')
-
-const MenuCategorySchema = z
-  .strictObject({
-    description: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Description of category', readOnly: true }),
-    name: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Name of category', readOnly: true }),
-    productGroups: z
-      .array(ProductGroupSchema)
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Product group', readOnly: true }),
-  })
-  .openapi({ required: [] })
-  .openapi('MenuCategory')
 
 const MenuIngestionResponseSchema = z
   .object({
@@ -10612,21 +12549,7 @@ const MenuRecommendationsResponseSchema = z
   .openapi({ description: 'Contains menu dish recommendations.', required: ['themes'] })
   .openapi('MenuRecommendationsResponse')
 
-const MergedMenuCardSchema = z
-  .strictObject({
-    categories: z
-      .record(z.string(), MenuCategorySchema)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Menu items of the restaurant with offline/online statuses grouped by category',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('MergedMenuCard')
-
-const MergedMenuResponseSchema = z
+const MergedMenuResponseSchema: z.ZodType<MergedMenuResponseType> = z
   .strictObject({
     menuCard: MergedMenuCardSchema.exactOptional().openapi({
       description: 'Menu items of the restaurant with offline/online statuses grouped by category',
@@ -10793,14 +12716,6 @@ const NutritionalSchema = z
     required: [],
   })
   .openapi('Nutritional')
-
-const PartnerConsumerSegmentSchema = z
-  .enum(['All', 'NewToRestaurant'])
-  .openapi('PartnerConsumerSegment')
-
-const PartnerOfferTypeSchema = z
-  .enum(['Percent', 'FreeItem', 'Bogof', 'StampCard'])
-  .openapi('PartnerOfferType')
 
 const OfferSchema = z
   .object({
@@ -11388,6 +13303,21 @@ const OrderItemSchema: z.ZodType<OrderItemType> = z
       .openapi({ required: [] }),
   )
   .openapi('OrderItem')
+
+const OrderNumberValiditySchema = z
+  .strictObject({
+    ComparisonOperator: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The comparison operator (e.g. >, <, ==)' }),
+    NumberOfOrders: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'The number of orders for the comparison' }),
+  })
+  .openapi({ required: [] })
+  .openapi('OrderNumberValidity')
 
 const OrderTypeSchema = z
   .enum(['Collection', 'Delivery', 'Unknown'])
@@ -12075,7 +14005,29 @@ const PagedMenuItemsResponseSchema = PagedAfterOnlyCursorResponseSchema.and(
     })
     .openapi({ required: [] }),
 )
-  .openapi({ example: { paging: { cursors: { after: 'NDMyNzQyODI3OTQw' } } } })
+  .openapi({
+    example: {
+      items: [
+        {
+          description: '',
+          id: '65143901',
+          labels: [],
+          name: 'Flat Bread and Dips (Pick any 2 Dips)',
+          requireOtherProducts: false,
+          type: 'menuItem',
+        },
+        {
+          description: '',
+          id: '8547130',
+          labels: [],
+          name: 'Margherita',
+          requireOtherProducts: true,
+          type: 'menuItem',
+        },
+      ],
+      paging: { cursors: { after: 'NDMyNzQyODI3OTQw' } },
+    },
+  })
   .openapi('PagedMenuItemsResponse')
 
 const PagedMenuModifierGroupsResponseSchema = PagedAfterOnlyCursorResponseSchema.and(
@@ -15073,7 +17025,7 @@ const SearchRestaurantSchema = z
       })
       .exactOptional()
       .openapi({ required: [] }),
-    Badges: z.array(z.object({})).exactOptional(),
+    Badges: z.array(z.looseObject({})).exactOptional(),
     BrandName: z.string().exactOptional(),
     City: z.string().exactOptional(),
     CollectionMenuId: z.number().nullable().exactOptional(),
@@ -15172,7 +17124,7 @@ const SearchRestaurantSchema = z
     OpeningTimeIso: LocalDateTimeSchema.exactOptional(),
     OpeningTimeLocal: LocalDateTimeSchema.exactOptional(),
     OpeningTimeUtc: z.iso.datetime({ offset: true }).nullable().exactOptional(),
-    OpeningTimes: z.array(z.object({})).exactOptional(),
+    OpeningTimes: z.array(z.looseObject({})).exactOptional(),
     Postcode: z.string().exactOptional(),
     Rating: z
       .object({
@@ -15196,12 +17148,12 @@ const SearchRestaurantSchema = z
     SecondDateRank: z.number().exactOptional(),
     SecondDateRanking: z.number().exactOptional(),
     SendsOnItsWayNotifications: z.boolean().exactOptional(),
-    ServiceableAreas: z.array(z.object({})).exactOptional(),
+    ServiceableAreas: z.array(z.looseObject({})).exactOptional(),
     ShowSmiley: z.boolean().exactOptional(),
-    SmileyDate: z.object({}).nullable().exactOptional(),
+    SmileyDate: z.looseObject({}).nullable().exactOptional(),
     SmileyElite: z.boolean().exactOptional(),
-    SmileyResult: z.object({}).nullable().exactOptional(),
-    SmileyUrl: z.object({}).nullable().exactOptional(),
+    SmileyResult: z.looseObject({}).nullable().exactOptional(),
+    SmileyUrl: z.looseObject({}).nullable().exactOptional(),
     SponsoredPosition: z.number().exactOptional(),
     Tags: z.array(z.string()).exactOptional(),
     UniqueName: z.string().exactOptional(),
@@ -15303,7 +17255,7 @@ const SearchResponseSchema = z
           .openapi({ description: 'The longitude of the search location' }),
         Postcode: z.string().exactOptional(),
         ResultCount: z.number().exactOptional(),
-        SearchedTerms: z.object({}).nullable().exactOptional(),
+        SearchedTerms: z.looseObject({}).nullable().exactOptional(),
         TagDetails: z
           .array(
             z
@@ -15362,7 +17314,7 @@ const SearchResponseSchema = z
                 TemplateName: z.string().exactOptional(),
                 TrackingId: z.string().exactOptional(),
                 Type: z.string().exactOptional(),
-                ViewData: z.object({}).exactOptional(),
+                ViewData: z.looseObject({}).exactOptional(),
               })
               .exactOptional()
               .openapi({ required: [] }),
@@ -15747,6 +17699,11 @@ const ServiceTimesSchema = z
   })
   .openapi('ServiceTimes')
 
+const ServiceTypeSchema = z
+  .union([z.literal(1), z.literal(2)])
+  .openapi({ description: '', 'x-enumNames': ['Collection', 'Delivery'] })
+  .openapi('ServiceType')
+
 const SetPaymentModeRequestSchema = z
   .strictObject({
     paymentMode: z
@@ -15802,16 +17759,19 @@ const SetupOrderpadRequestSchema = z
 const SkipMenuEditorGatewayRequestSchema = z
   .object({
     query: z.string().exactOptional().openapi({ description: 'GraphQL statement' }),
-    variables: z.object({}).exactOptional().openapi({ description: 'variables used in query' }),
+    variables: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({ description: 'variables used in query' }),
   })
   .openapi({ description: 'GraphQL request', required: [] })
   .openapi('SkipMenuEditorGatewayRequest')
 
 const SkipMenuEditorGatewayResponseSchema = z
   .object({
-    data: z.object({}).exactOptional().openapi({ description: 'GraphQL data response' }),
+    data: z.looseObject({}).exactOptional().openapi({ description: 'GraphQL data response' }),
     errors: z
-      .array(z.object({}))
+      .array(z.looseObject({}))
       .exactOptional()
       .openapi({ description: 'GraphQL errors response' }),
   })
@@ -16203,111 +18163,6 @@ const UnauthorisedMarketingResponseSchema = MarketingErrorResponseSchema.and(
   })
   .openapi('UnauthorisedMarketingResponse')
 
-const UpdateModifierSchema = z
-  .object({ ModifierId: z.string().exactOptional(), Quantity: z.number().exactOptional() })
-  .openapi({ required: [] })
-  .openapi('UpdateModifier')
-
-const UpdateModifierGroupSchema = z
-  .object({
-    ModifierGroupId: z.string().exactOptional(),
-    Modifiers: z.array(UpdateModifierSchema).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('UpdateModifierGroup')
-
-const UpdateRemovedIngredientSchema = z
-  .object({ Details: z.string().exactOptional() })
-  .openapi({ required: [] })
-  .openapi('UpdateRemovedIngredient')
-
-const UpdateAddedProductSchema = z
-  .object({
-    Date: z.string().exactOptional().openapi({ description: '`YYYY-MM-DDThh:mm:ssZ (UTC)`' }),
-    ModifierGroups: z.array(UpdateModifierGroupSchema).nullable().exactOptional(),
-    ProductId: z.string().exactOptional(),
-    Quantity: z.number().exactOptional(),
-    RemovedIngredients: z.array(UpdateRemovedIngredientSchema).nullable().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('UpdateAddedProduct')
-
-const UpdateDealGroupSchema = z
-  .object({
-    DealGroupId: z.string().exactOptional(),
-    Products: z.array(UpdateAddedProductSchema).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('UpdateDealGroup')
-
-const UpdateAddedDealSchema = z
-  .object({
-    Date: z.string().exactOptional().openapi({ description: '`YYYY-MM-DDThh:mm:ssZ (UTC)`' }),
-    DealGroups: z.array(UpdateDealGroupSchema).exactOptional(),
-    ProductId: z.string().exactOptional(),
-    Quantity: z.number().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('UpdateAddedDeal')
-
-const UpdateRemovedSchema = z
-  .object({
-    BasketProductId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A unique identifier for a product in the basket. This is needed to support complex products to make sure remove/update is applied to the correct product.',
-      }),
-    Date: z.string().exactOptional().openapi({ description: '`YYYY-MM-DDThh:mm:ssZ (UTC)`' }),
-  })
-  .openapi({ required: [] })
-  .openapi('UpdateRemoved')
-
-const UpdateUpdatedDealSchema = z
-  .object({
-    BasketProductId: z.string().exactOptional(),
-    Date: z.string().exactOptional().openapi({ description: '`YYYY-MM-DDThh:mm:ssZ (UTC)`' }),
-    DealGroups: z.array(UpdateDealGroupSchema).exactOptional(),
-    Quantity: z.object({}).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('UpdateUpdatedDeal')
-
-const UpdateDealSchema = z
-  .object({
-    Added: z.array(UpdateAddedDealSchema).nullable().exactOptional(),
-    Removed: z.array(UpdateRemovedSchema).nullable().exactOptional(),
-    Updated: z.array(UpdateUpdatedDealSchema).nullable().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('UpdateDeal')
-
-const UpdateLocationSchema = z
-  .object({
-    GeoLocation: z
-      .object({
-        Date: z.string().exactOptional(),
-        Value: z
-          .object({ Latitude: z.number().exactOptional(), Longitude: z.number().exactOptional() })
-          .openapi({ required: [] })
-          .exactOptional()
-          .openapi({
-            description: 'Not available across platform yet, but applied for future proofing.',
-          }),
-      })
-      .nullable()
-      .exactOptional()
-      .openapi({ required: [] }),
-    ZipCode: z
-      .object({ Date: z.string().exactOptional(), Value: z.string().exactOptional() })
-      .nullable()
-      .exactOptional()
-      .openapi({ required: [] }),
-  })
-  .openapi({ required: [] })
-  .openapi('UpdateLocation')
-
 const UpdateMenuItemRequestSchema = z
   .object({
     Category: CategoryRequestSchema.exactOptional().openapi({ description: 'Category' }),
@@ -16494,11 +18349,6 @@ const UpdateOrderAddressRequestSchema = z
   })
   .openapi('UpdateOrderAddressRequest')
 
-const UpdateOrderDetailsSchema = z
-  .object({ Location: UpdateLocationSchema.nullable().exactOptional() })
-  .openapi({ required: [] })
-  .openapi('UpdateOrderDetails')
-
 const UpdateOrderTimeRequestSchema = z
   .object({
     asap: z
@@ -16535,26 +18385,6 @@ const UpdatePasswordResetFlowResponseSchema = z
   })
   .openapi('UpdatePasswordResetFlowResponse')
 
-const UpdateUpdatedProductSchema = z
-  .object({
-    BasketProductId: z.string().exactOptional(),
-    Date: z.string().exactOptional().openapi({ description: '`YYYY-MM-DDThh:mm:ssZ (UTC)`' }),
-    ModifierGroups: z.array(UpdateModifierGroupSchema).nullable().exactOptional(),
-    Quantity: z.object({}).exactOptional(),
-    RemovedIngredients: z.array(UpdateRemovedIngredientSchema).nullable().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('UpdateUpdatedProduct')
-
-const UpdateProductSchema = z
-  .object({
-    Added: z.array(UpdateAddedProductSchema).nullable().exactOptional(),
-    Removed: z.array(UpdateRemovedSchema).nullable().exactOptional(),
-    Updated: z.array(UpdateUpdatedProductSchema).nullable().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('UpdateProduct')
-
 const UpdateQuantitySchema = z
   .object({
     Change: z
@@ -16569,7 +18399,7 @@ const UpdateQuantitySchema = z
   .openapi({ required: [] })
   .openapi('UpdateQuantity')
 
-const UpdateRequestSchema = z
+const UpdateRequestSchema: z.ZodType<UpdateRequestType> = z
   .object({
     BasketId: z.string().exactOptional(),
     Deal: UpdateDealSchema.nullable().exactOptional(),
@@ -16646,157 +18476,88 @@ const ValidationErrorSchema = z
   })
   .openapi('ValidationError')
 
-const ValiditySchema: z.ZodType<ValidityType> = z
-  .lazy(() =>
-    z
-      .strictObject({
-        CuisineIds: z
-          .array(z.string())
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'The cuisine ids the voucher is valid for' }),
-        EndDate: z.iso
-          .datetime({ offset: true })
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'The end date of the voucher' }),
-        MinimumSpend: z
-          .number()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'The minimum spend to use the voucher' }),
-        OrderNumberValidity: z
-          .xor([OrderNumberValiditySchema])
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'The number of orders a customer has placed to satisfy the requirements of the voucher',
-          }),
-        PaymentOptionTypes: z
-          .array(z.string())
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'The payment options the voucher is restricted to' }),
-        Platform: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'The order platform using the voucher' }),
-        PostCode: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'The post code applicable to the order' }),
-        RestaurantIds: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'A comma separate list of restaurant ids' }),
-        RestrictedToConsumerStatus: z
-          .xor([ConsumerStatusSchema])
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'Whether the voucher is restricted to new customers, returning customers etc',
-          }),
-        ServiceType: z
-          .xor([ServiceTypeSchema])
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'The service type for the voucher (e.g. Delivery, collection)' }),
-        StartDate: z.iso
-          .datetime({ offset: true })
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'The start date of the voucher' }),
-        ValidFromHour: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Whether time the voucher is valid from' }),
-        ValidOnDays: z
-          .array(DayOfWeekSchema)
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'The days of the week the voucher is valid on' }),
-        ValidToHour: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Whether time the voucher is valid to' }),
-      })
-      .openapi({ required: [] }),
-  )
-  .openapi('Validity')
-
-const VariationReorderModifierSchema = z
+const ValiditySchema = z
   .strictObject({
-    Id: z
-      .string()
+    CuisineIds: z
+      .array(z.string())
+      .nullable()
       .exactOptional()
-      .openapi({ description: 'A unique identifier for the variation modifier.' }),
-    Quantity: z
-      .int()
+      .openapi({ description: 'The cuisine ids the voucher is valid for' }),
+    EndDate: z.iso
+      .datetime({ offset: true })
+      .nullable()
       .exactOptional()
-      .openapi({ description: 'How many of the modifier were previously added to the variation.' }),
-  })
-  .openapi({ title: 'VariationReorderModifier', required: [] })
-  .openapi('VariationReorderModifier')
-
-const VariationReorderModifierGroupSchema = z
-  .strictObject({
-    Id: z
-      .string()
+      .openapi({ description: 'The end date of the voucher' }),
+    MinimumSpend: z
+      .number()
+      .nullable()
       .exactOptional()
-      .openapi({ description: 'The unique identifier for a modifier group.' }),
-    Modifiers: z
-      .array(VariationReorderModifierSchema)
-      .exactOptional()
-      .openapi({
-        description: 'A list of modifiers applied in this modifier group. 20 items maximum.',
-      }),
-  })
-  .openapi({ title: 'VariationReorderModifierGroup', required: [] })
-  .openapi('VariationReorderModifierGroup')
-
-const VariationReorderVariationSchema = z
-  .strictObject({
-    Id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The unique identifier for the variation.' }),
-    ModifierGroups: z
-      .array(VariationReorderModifierGroupSchema)
+      .openapi({ description: 'The minimum spend to use the voucher' }),
+    OrderNumberValidity: z
+      .xor([OrderNumberValiditySchema])
+      .nullable()
       .exactOptional()
       .openapi({
         description:
-          'A list of all the modifiers previously applied to the variation. 20 items maximum.',
+          'The number of orders a customer has placed to satisfy the requirements of the voucher',
       }),
-    Quantity: z
-      .int()
+    PaymentOptionTypes: z
+      .array(z.string())
+      .nullable()
       .exactOptional()
-      .openapi({ description: 'How many of the variation were previously ordered.' }),
-  })
-  .openapi({ title: 'VariationReorderVariation', required: [] })
-  .openapi('VariationReorderVariation')
-
-const VariationReorderDealGroupSchema = z
-  .strictObject({
-    Id: z
+      .openapi({ description: 'The payment options the voucher is restricted to' }),
+    Platform: z
       .string()
+      .nullable()
       .exactOptional()
-      .openapi({ description: 'The unique identifier for a deal group.' }),
-    Variations: z
-      .array(VariationReorderVariationSchema)
+      .openapi({ description: 'The order platform using the voucher' }),
+    PostCode: z
+      .string()
+      .nullable()
       .exactOptional()
-      .openapi({ description: 'A list of variations in the deal group. 20 items maximum.' }),
+      .openapi({ description: 'The post code applicable to the order' }),
+    RestaurantIds: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'A comma separate list of restaurant ids' }),
+    RestrictedToConsumerStatus: z
+      .xor([ConsumerStatusSchema])
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Whether the voucher is restricted to new customers, returning customers etc',
+      }),
+    ServiceType: z
+      .xor([ServiceTypeSchema])
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The service type for the voucher (e.g. Delivery, collection)' }),
+    StartDate: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The start date of the voucher' }),
+    ValidFromHour: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Whether time the voucher is valid from' }),
+    ValidOnDays: z
+      .array(DayOfWeekSchema)
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The days of the week the voucher is valid on' }),
+    ValidToHour: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Whether time the voucher is valid to' }),
   })
-  .openapi({ title: 'VariationReorderDealGroup', required: [] })
-  .openapi('VariationReorderDealGroup')
+  .openapi({ required: [] })
+  .openapi('Validity')
 
-const VariationReorderDealSchema = z
+const VariationReorderDealSchema: z.ZodType<VariationReorderDealType> = z
   .strictObject({
     Attributes: z
       .strictObject({
@@ -17160,19 +18921,6 @@ const OrderItem2Schema: z.ZodType<OrderItem2Type> = z
     ),
   )
   .openapi('OrderItem2')
-
-const OrderItemRestrictionSchema = z
-  .object({
-    Type: z
-      .literal('Alcohol')
-      .exactOptional()
-      .openapi({
-        description:
-          "The type of restricted item contained in the order. The only supported value is 'Alcohol'.",
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('OrderItemRestriction')
 
 const AcceptanceRequestedSchema = z
   .object({
@@ -17672,742 +19420,9 @@ const CampaignIdSchema = z
   .openapi({ required: [] })
   .openapi('CampaignId')
 
-const ConnectorderSchema = z
-  .object({
-    BasketInfo: z
-      .object({
-        BasketId: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'Unique Basket Id for the Order.',
-            example: 'ABCb8DzdnUy7G481b0JN5g',
-          }),
-        DeliveryCharge: z
-          .float64()
-          .exactOptional()
-          .openapi({ description: 'Amount of cost that comes from delivery.', example: 5 }),
-        Discount: z
-          .float64()
-          .exactOptional()
-          .openapi({
-            description: 'The discount amount, used in conjunction with `DiscountType`.',
-            example: 4.78,
-          }),
-        Discounts: z
-          .array(
-            z
-              .object({
-                Discount: z
-                  .number()
-                  .exactOptional()
-                  .openapi({
-                    description: 'The discount amount, used in conjunction with `DiscountType`.',
-                    example: 10,
-                  }),
-                DiscountType: z
-                  .string()
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'The type of discount, e.g. a percentage or the order or fixed amount.',
-                    example: 'Percent',
-                  }),
-                Id: z
-                  .number()
-                  .exactOptional()
-                  .openapi({ description: 'Basket item id.', example: 21950 }),
-                QualifyingValue: z
-                  .float64()
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'The minimum order amount in order for this discount to be applicable.',
-                    example: 4.78,
-                  }),
-              })
-              .openapi({ description: 'Discount data', required: [] }),
-          )
-          .exactOptional()
-          .openapi({ description: 'Any Discounts applied to the Order.' }),
-        GroupedBasketItems: z
-          .array(
-            z
-              .object({
-                BasketItem: z
-                  .object({
-                    CombinedPrice: z
-                      .float64()
-                      .exactOptional()
-                      .openapi({
-                        description: 'Unit Price plus individual Meal Part item cost.',
-                        example: 3.58,
-                      }),
-                    Discounts: z
-                      .array(
-                        z
-                          .object({
-                            Amount: z
-                              .float64()
-                              .exactOptional()
-                              .openapi({
-                                description: 'Amount of the discount applied',
-                                example: 4.5,
-                              }),
-                            DiscountType: z
-                              .string()
-                              .exactOptional()
-                              .openapi({
-                                description: 'Type of the discount applied',
-                                example: 'Percent',
-                              }),
-                          })
-                          .openapi({ description: 'Discount data', required: [] }),
-                      )
-                      .exactOptional()
-                      .openapi({ description: 'Any discounts applied to this specific item.' }),
-                    MealParts: z
-                      .array(
-                        z
-                          .object({
-                            GroupId: z
-                              .number()
-                              .exactOptional()
-                              .openapi({ description: 'The group Id.', example: 1 }),
-                            MealPartId: z
-                              .number()
-                              .exactOptional()
-                              .openapi({ description: 'The meal part Id.', example: 45822750 }),
-                            Name: z
-                              .string()
-                              .exactOptional()
-                              .openapi({
-                                description: 'The name of the meal part.',
-                                example: 'Any Sides?',
-                              }),
-                            OptionalAccessories: z
-                              .array(
-                                z
-                                  .object({
-                                    Name: z
-                                      .string()
-                                      .exactOptional()
-                                      .openapi({
-                                        description: 'The name of the accessory.',
-                                        example: 'Add Bacon',
-                                      }),
-                                    OptionalAccessoryId: z
-                                      .number()
-                                      .exactOptional()
-                                      .openapi({
-                                        description: 'The accessory Id.',
-                                        example: 56168,
-                                      }),
-                                    Quantity: z
-                                      .number()
-                                      .exactOptional()
-                                      .openapi({
-                                        description: 'The quantity of the accessory.',
-                                        example: 1,
-                                      }),
-                                    UnitPrice: z
-                                      .float64()
-                                      .exactOptional()
-                                      .openapi({
-                                        description: 'The unit price of the accessory.',
-                                        example: 0.5,
-                                      }),
-                                  })
-                                  .openapi({ description: 'Optional accessory', required: [] }),
-                              )
-                              .exactOptional()
-                              .openapi({ description: 'Optional accessories' }),
-                            RequiredAccessories: z
-                              .array(
-                                z
-                                  .object({
-                                    GroupId: z
-                                      .number()
-                                      .exactOptional()
-                                      .openapi({
-                                        description: 'The group Id of the accessory.',
-                                        example: 3,
-                                      }),
-                                    Name: z
-                                      .string()
-                                      .exactOptional()
-                                      .openapi({
-                                        description: 'The name of the accessory.',
-                                        example: 'Coca-Cola Original Taste',
-                                      }),
-                                    RequiredAccessoryId: z
-                                      .number()
-                                      .exactOptional()
-                                      .openapi({
-                                        description: 'The accessory Id.',
-                                        example: 225025,
-                                      }),
-                                    UnitPrice: z
-                                      .float64()
-                                      .exactOptional()
-                                      .openapi({
-                                        description: 'The unit price of the accessory.',
-                                        example: 0.16,
-                                      }),
-                                  })
-                                  .openapi({ description: 'Required accessory', required: [] }),
-                              )
-                              .exactOptional()
-                              .openapi({ description: 'Required accessories' }),
-                            Synonym: z
-                              .string()
-                              .exactOptional()
-                              .openapi({ description: 'The synonym of the meal part.' }),
-                          })
-                          .openapi({ description: 'Meal part data', required: [] }),
-                      )
-                      .exactOptional()
-                      .openapi({ description: 'Represents sub-parts of a meal.' }),
-                    MenuCardNumber: z
-                      .string()
-                      .exactOptional()
-                      .openapi({ description: 'Menu card number.', example: '1' }),
-                    MultiBuyDiscounts: z
-                      .array(
-                        z
-                          .object({
-                            Amount: z
-                              .float64()
-                              .exactOptional()
-                              .openapi({
-                                description: 'Amount of the discount applied',
-                                example: 4.5,
-                              }),
-                            DiscountType: z
-                              .string()
-                              .exactOptional()
-                              .openapi({
-                                description: 'Type of the discount applied',
-                                example: 'Percent',
-                              }),
-                            OrderItemId: z
-                              .string()
-                              .exactOptional()
-                              .openapi({ description: 'Id of the Order item.' }),
-                            ProductTypeId: z
-                              .number()
-                              .exactOptional()
-                              .openapi({
-                                description: 'The Id of the product type the discount applies to.',
-                              }),
-                          })
-                          .openapi({ description: 'Multi-purchase discount data', required: [] }),
-                      )
-                      .exactOptional()
-                      .openapi({
-                        description: 'Any multi-purchase discounts applied to this item.',
-                      }),
-                    Name: z
-                      .string()
-                      .exactOptional()
-                      .openapi({
-                        description:
-                          'The Item name, e.g. Chicken Tikka Masala or Family Meal Deal 3.',
-                        example: 'Mini Fillet Burger',
-                      }),
-                    OptionalAccessories: z
-                      .array(
-                        z
-                          .object({
-                            Name: z
-                              .string()
-                              .exactOptional()
-                              .openapi({
-                                description: 'The name of the accessory.',
-                                example: 'Add Bacon',
-                              }),
-                            OptionalAccessoryId: z
-                              .number()
-                              .exactOptional()
-                              .openapi({ description: 'The accessory Id.', example: 56168 }),
-                            Quantity: z
-                              .number()
-                              .exactOptional()
-                              .openapi({
-                                description: 'The quantity of the accessory.',
-                                example: 1,
-                              }),
-                            UnitPrice: z
-                              .float64()
-                              .exactOptional()
-                              .openapi({
-                                description: 'The unit price of the accessory.',
-                                example: 0.5,
-                              }),
-                          })
-                          .openapi({ description: 'Optional accessory', required: [] }),
-                      )
-                      .exactOptional()
-                      .openapi({
-                        description:
-                          'An option item added to the Basket Item, this may be options such as Garlic Bread or a bottle of Coke.',
-                      }),
-                    ProductId: z
-                      .number()
-                      .exactOptional()
-                      .openapi({ description: 'Id of the Product.', example: 45858074 }),
-                    ProductTypeId: z
-                      .number()
-                      .exactOptional()
-                      .openapi({ description: 'Id of the Product.', example: 428 }),
-                    RequiredAccessories: z
-                      .array(
-                        z
-                          .object({
-                            GroupId: z
-                              .number()
-                              .exactOptional()
-                              .openapi({
-                                description: 'The group Id of the accessory.',
-                                example: 3,
-                              }),
-                            Name: z
-                              .string()
-                              .exactOptional()
-                              .openapi({
-                                description: 'The name of the accessory.',
-                                example: 'Large Meal',
-                              }),
-                            RequiredAccessoryId: z
-                              .number()
-                              .exactOptional()
-                              .openapi({ description: 'The accessory Id.', example: 225025 }),
-                            UnitPrice: z
-                              .float64()
-                              .exactOptional()
-                              .openapi({
-                                description: 'The unit price of the accessory.',
-                                example: 0.1,
-                              }),
-                          })
-                          .openapi({ description: 'Required accessory', required: [] }),
-                      )
-                      .exactOptional()
-                      .openapi({
-                        description:
-                          'Items required as part of the Item, for example, Pizza base sauce.',
-                      }),
-                    Synonym: z
-                      .string()
-                      .exactOptional()
-                      .openapi({ description: 'Legacy - ignore.' }),
-                    UnitPrice: z
-                      .float64()
-                      .exactOptional()
-                      .openapi({ description: 'The price of the item.', example: 1.79 }),
-                  })
-                  .exactOptional()
-                  .openapi({ description: 'An item in the Basket.', required: [] }),
-                CombinedPrice: z
-                  .float64()
-                  .exactOptional()
-                  .openapi({
-                    description: 'The total price of the Basket Item (including discounts).',
-                    example: 3.58,
-                  }),
-                MenuCardNumber: z
-                  .string()
-                  .exactOptional()
-                  .openapi({ description: 'Menu card number.', example: '1' }),
-                OrderSubId: z
-                  .number()
-                  .exactOptional()
-                  .openapi({ description: 'Order `SubId`', example: 0 }),
-                Quantity: z
-                  .number()
-                  .exactOptional()
-                  .openapi({ description: 'The quantity of Basket Items requested.', example: 2 }),
-              })
-              .openapi({ description: 'An item in the Basket.', required: [] }),
-          )
-          .exactOptional()
-          .openapi({ description: 'Grouped basket items' }),
-        MenuId: z
-          .number()
-          .exactOptional()
-          .openapi({ description: "Id of the Restaurant's menu.", example: 777890 }),
-        MultiBuyDiscount: z
-          .float64()
-          .exactOptional()
-          .openapi({ description: 'MultiBuy discount.', example: 0 }),
-        SubTotal: z
-          .float64()
-          .exactOptional()
-          .openapi({
-            description: 'The Basket total cost, excluding any discounts.',
-            example: 47.75,
-          }),
-        ToSpend: z
-          .float64()
-          .exactOptional()
-          .openapi({ description: 'Amount to spend.', example: 0 }),
-        Total: z
-          .float64()
-          .exactOptional()
-          .openapi({ description: 'Total price of the Order.', example: 47.97 }),
-      })
-      .exactOptional()
-      .openapi({ description: 'Basket data', required: [] }),
-    CustomerInfo: z
-      .object({
-        Address: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'Customer Address. Note that Address is comma delimited.',
-            example: 'Fleet Place House, 2 Fleet Place, London',
-          }),
-        City: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'The name of the city where the Customer is located.',
-            example: 'London',
-          }),
-        DisplayPhoneNumber: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: "The customer's masked phone number.",
-            example: '(01) 872 7863',
-          }),
-        Email: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'Email address for the Customer.',
-            example: 'contact@just-eat.com',
-          }),
-        Id: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The JUST EAT Customer Id.', example: '123456' }),
-        Latitude: z
-          .float64()
-          .exactOptional()
-          .openapi({
-            description: 'Customer address latitude. Will be 0 if not provided.',
-            example: 51.50015,
-          }),
-        LocationAccuracyDescription: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Location accuracy description', example: 'ROOFTOP' }),
-        LocationAccuracyInMeters: z
-          .float64()
-          .exactOptional()
-          .openapi({ description: 'Accuracy of the location data in meters.', example: 0 }),
-        LocationSource: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Provider of the location data.', example: 'GeodataGeocoder' }),
-        Longitude: z
-          .float64()
-          .exactOptional()
-          .openapi({
-            description: 'Customer address longitude. Will be 0 if not provided.',
-            example: -0.12624,
-          }),
-        Name: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The name of the Customer.', example: 'Just Eat' }),
-        PhoneMaskingCode: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Code to use when calling customer phone masked number (`DisplayPhoneNumber`) about this order. Null if phone masking not enabled',
-            example: '444333222',
-          }),
-        PhoneNumber: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              "The customer's unmasked phone number. Please don't expose this to drivers, instead use this number to provide your own phone masking number or use the JustEat masked number `DisplayPhoneNumber` below",
-            example: '018727863',
-          }),
-        Postcode: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'The post code where Customer is located.',
-            example: 'EC4M 7RF',
-          }),
-        PreviousRestuarantOrderCount: z
-          .number()
-          .exactOptional()
-          .openapi({
-            description:
-              'The number of Orders the Customer has placed at this Restaurant via JUST EAT',
-          }),
-        TimeZone: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: "Customer timezone, e.g. 'Central European Standard Time'.",
-            example: 'GMT Standard Time',
-          }),
-      })
-      .exactOptional()
-      .openapi({ description: 'Customer data', required: [] }),
-    CustomerOrderId: z
-      .number()
-      .exactOptional()
-      .openapi({
-        deprecated: true,
-        description:
-          'This is a deprecated customer-facing ID that we maintain to support existing implementations.',
-        example: 348322088,
-      }),
-    FriendlyOrderReference: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The customer facing identifier for the order, which should be used in any UI or receipts to identify the order to the customer, driver or restaurant. This identifier is not guaranteed to be globally unique.',
-        example: '348322088',
-      }),
-    Id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        deprecated: true,
-        description:
-          'The unique identifier for an order within the country. You can provide this ID whenever sending requests related to the order. Note that further messages from Just Eat relating to this order may not use this same identifier, use `OrderId` for a more consistent identifier.',
-        example: '348322088',
-      }),
-    IsAMiniFistPumpOrder: z
-      .boolean()
-      .exactOptional()
-      .openapi({ deprecated: true, description: 'Legacy Promotion - Ignore.' }),
-    Order: z
-      .object({
-        DueDate: z.iso
-          .datetime({ offset: true })
-          .exactOptional()
-          .openapi({ deprecated: true, description: 'Ignore - use `DueDateWithUtcOffset`.' }),
-        DueDateWithUtcOffset: z.iso
-          .datetime({ offset: true })
-          .exactOptional()
-          .openapi({
-            description:
-              'The DateTime when the Customer has been told they will receive the Order.',
-          }),
-        InitialDueDate: z.iso
-          .datetime({ offset: true })
-          .exactOptional()
-          .openapi({ deprecated: true, description: 'Ignore - use `IntialDueDateWithUtcOffset`.' }),
-        InitialDueDateWithUtcOffset: z.iso
-          .datetime({ offset: true })
-          .exactOptional()
-          .openapi({
-            description:
-              'When the Customer was originally told the order would be delivered (prior to Restaurant adjustment)',
-          }),
-        NoteToRestaurant: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Notes from the customer about their order. In addition to notes for the restaurant, this field can also delivery instructions - and should be displayed to the delivery driver.',
-            example: 'Contact-free delivery',
-          }),
-        PickupNoticePeriod: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Desired minimum amount of notice needed before the driver arrives to pickup the order at the restaurant. This is to allow restaurant enough time to prepare the order. If less notice is given the driver may have to wait for the order to be prepared. Field is in the format "hh:mm:ss"',
-            example: '00:10:00',
-          }),
-        PlacedDate: z.iso
-          .datetime({ offset: true })
-          .exactOptional()
-          .openapi({
-            description:
-              'Date Customer placed the order. Note that JUST EAT accepts pre-orders therefore there may be a significant difference between Placed Date and Due Date This Date/Time is set as UTC without an offset, regardless of Country.',
-          }),
-        PromptAsap: z
-          .boolean()
-          .exactOptional()
-          .openapi({ description: 'Did the Customer request the Order to ready ASAP' }),
-        RdsPickupTimeWithUtcOffset: z.iso
-          .datetime({ offset: true })
-          .exactOptional()
-          .openapi({
-            description:
-              'When the Delivery Partner needs to be at the Restaurant to pickup the Order.',
-          }),
-        ServiceType: z
-          .enum(['Collection', 'Delivery'])
-          .exactOptional()
-          .openapi({ description: 'Type of the Order.' }),
-      })
-      .exactOptional()
-      .openapi({ description: 'Order data', required: [] }),
-    OrderId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Globally unique Identifier for the order. Please use this whenever sending requests related to this order. Just Eat will provide this same identifier on any further messages relating to this order.',
-        example: 'ijdhpy7bdusgtc28bapspa',
-      }),
-    OrderReference: z
-      .string()
-      .exactOptional()
-      .openapi({
-        deprecated: true,
-        description:
-          'This field is used to store external references to the order. This is defined by either Just Eat or the partner that created the order.',
-        example: '39cce3f0-0278-dd25-ae32-e8effe1ce4eb',
-      }),
-    PaymentInfo: z
-      .object({
-        CashOnDelivery: z
-          .boolean()
-          .exactOptional()
-          .openapi({ description: 'Is the Customer paying on Delivery.' }),
-        DriverTipValue: z
-          .float64()
-          .exactOptional()
-          .openapi({ description: 'The value of the tip given to the Driver.', example: 0 }),
-        PaidDate: z.iso
-          .datetime({ offset: true })
-          .exactOptional()
-          .openapi({ description: 'DateTime when the Order was Paid (excludes UTC offset).' }),
-        PaymentLines: z
-          .array(
-            z
-              .object({
-                CardFee: z
-                  .float64()
-                  .exactOptional()
-                  .openapi({
-                    description: 'Was there a fee for the payment mechanism.',
-                    example: 0.5,
-                  }),
-                Type: z
-                  .literal('Card')
-                  .exactOptional()
-                  .openapi({ description: 'How was the order Paid.' }),
-                Value: z
-                  .float64()
-                  .exactOptional()
-                  .openapi({ description: 'The value of the payment.', example: 22.05 }),
-              })
-              .openapi({ description: 'Payment line data', required: [] }),
-          )
-          .exactOptional()
-          .openapi({ description: 'How the Customer has paid for the Order.' }),
-        Total: z
-          .float64()
-          .exactOptional()
-          .openapi({ description: 'The total order value.', example: 22.55 }),
-        TotalComplementary: z
-          .float64()
-          .exactOptional()
-          .openapi({ description: 'Order amount covered by JUST EAT.', example: 0 }),
-      })
-      .exactOptional()
-      .openapi({ description: 'Payment data', required: [] }),
-    RestaurantInfo: z
-      .object({
-        AddressLines: z
-          .array(
-            z
-              .string()
-              .openapi({
-                description: 'Address line',
-                example: 'Fleet Place House 2, Fleet Place, London',
-              }),
-          )
-          .exactOptional()
-          .openapi({ description: 'Restaurant address.' }),
-        City: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'The name of the city where the Restaurant is located',
-            example: 'London',
-          }),
-        DispatchMethod: z
-          .string()
-          .exactOptional()
-          .openapi({ description: '`DispatchMethod` to use.', example: 'Phone' }),
-        EmailAddress: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'Email address for the Restaurant.',
-            example: 'contact@testrestaurant.com',
-          }),
-        Id: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Unique ID of the Restaurant.', example: '123456' }),
-        Latitude: z
-          .float64()
-          .exactOptional()
-          .openapi({
-            description: 'Restaurant address latitude. Will be 0 if not provided.',
-            example: 51.50015,
-          }),
-        Longitude: z
-          .float64()
-          .exactOptional()
-          .openapi({
-            description: 'Restaurant address longitude. Will be 0 if not provided.',
-            example: -0.12624,
-          }),
-        Name: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The name of the Restaurant.', example: 'Test Restaurant' }),
-        PhoneNumber: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The Restaurant phone number.', example: '07123456789' }),
-        PickupNotes: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'Order pickup instructions for the Delivery Partner.',
-            example: 'Use the back entrance',
-          }),
-        Postcode: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'The post code where Restaurant is located',
-            example: 'EC4M 7RF',
-          }),
-      })
-      .exactOptional()
-      .openapi({ description: 'Restaurant data', required: [] }),
-    Restrictions: z
-      .array(OrderItemRestrictionSchema)
-      .exactOptional()
-      .openapi({
-        description: 'This is a list of types of restricted items contained in the order.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('Connectorder')
-
-const ConnectorderListSchema = z.array(ConnectorderSchema).openapi('ConnectorderList')
+const ConnectorderListSchema: z.ZodType<ConnectorderListType> = z
+  .array(ConnectorderSchema)
+  .openapi('ConnectorderList')
 
 const ConsumerMarketingPreferencev2Schema = z
   .object({
@@ -19238,7 +20253,7 @@ const HygieneScoreDetailSchema = z
         description: 'Represent if the restaurant has passed the hygiene score criteria',
       }),
     maximumScore: z
-      .union([z.number(), z.string(), z.object({})])
+      .union([z.number(), z.string(), z.looseObject({})])
       .nullable()
       .exactOptional()
       .openapi({
@@ -19246,7 +20261,7 @@ const HygieneScoreDetailSchema = z
           'Represent the maximum hygiene score that can be achieved. Based in the score type value, type of this field can be string or number of in future anything else',
       }),
     requiredScore: z
-      .union([z.number(), z.string(), z.object({})])
+      .union([z.number(), z.string(), z.looseObject({})])
       .exactOptional()
       .openapi({
         description:
@@ -19256,7 +20271,7 @@ const HygieneScoreDetailSchema = z
       description: 'Represent the hygiene scheme used by the restaurant',
     }),
     score: z
-      .union([z.number(), z.string(), z.object({})])
+      .union([z.number(), z.string(), z.looseObject({})])
       .exactOptional()
       .openapi({
         description:
@@ -19519,7 +20534,7 @@ const MenuIngestionCompleteSchema = z
   })
   .openapi('MenuIngestionComplete')
 
-const ObjectSchema = z.object({}).openapi('Object')
+const ObjectSchema = z.looseObject({}).openapi('Object')
 
 const OnItsWayDetailsSchema = z
   .object({
@@ -20960,16 +21975,13 @@ export const getCheckoutTenantCheckoutIdRoute = createRoute({
         },
       },
       headers: z.object({
-        'cache-control': {
-          description: 'Response caching must not be applied.',
-          schema: z
-            .literal('no-store')
-            .exactOptional()
-            .openapi({
-              description: 'Response caching must not be applied.',
-              param: { required: false },
-            }),
-        },
+        'cache-control': z
+          .literal('no-store')
+          .exactOptional()
+          .openapi({
+            description: 'Response caching must not be applied.',
+            param: { required: false },
+          }),
       }),
     },
     400: {
@@ -21189,16 +22201,13 @@ export const patchCheckoutTenantCheckoutIdRoute = createRoute({
         },
       },
       headers: z.object({
-        'cache-control': {
-          description: 'Response caching must not be applied.',
-          schema: z
-            .literal('no-store')
-            .exactOptional()
-            .openapi({
-              description: 'Response caching must not be applied.',
-              param: { required: false },
-            }),
-        },
+        'cache-control': z
+          .literal('no-store')
+          .exactOptional()
+          .openapi({
+            description: 'Response caching must not be applied.',
+            param: { required: false },
+          }),
       }),
     },
     400: {
@@ -21397,16 +22406,13 @@ export const getCheckoutTenantCheckoutIdFulfilmentAvailabletimesRoute = createRo
         },
       },
       headers: z.object({
-        'cache-control': {
-          description: 'Response caching must not be applied.',
-          schema: z
-            .literal('no-store')
-            .exactOptional()
-            .openapi({
-              description: 'Response caching must not be applied.',
-              param: { required: false },
-            }),
-        },
+        'cache-control': z
+          .literal('no-store')
+          .exactOptional()
+          .openapi({
+            description: 'Response caching must not be applied.',
+            param: { required: false },
+          }),
       }),
     },
     400: {
@@ -21577,16 +22583,13 @@ export const getConsumersTenantRoute = createRoute({
       description: 'Success',
       content: { 'text/plain': { schema: z.int(), example: 1 } },
       headers: z.object({
-        'cache-control': {
-          description: 'Information about how the response can be cached.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Information about how the response can be cached.',
-              param: { required: false },
-            }),
-        },
+        'cache-control': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Information about how the response can be cached.',
+            param: { required: false },
+          }),
       }),
     },
     400: {
@@ -21754,16 +22757,13 @@ export const getConsumersTenantMeCommunicationPreferencesRoute = createRoute({
         },
       },
       headers: z.object({
-        'cache-control': {
-          description: 'Information about how the response can be cached.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Information about how the response can be cached.',
-              param: { required: false },
-            }),
-        },
+        'cache-control': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Information about how the response can be cached.',
+            param: { required: false },
+          }),
       }),
     },
     401: {
@@ -21859,16 +22859,13 @@ export const getConsumersTenantMeCommunicationPreferencesTypeRoute = createRoute
         },
       },
       headers: z.object({
-        'cache-control': {
-          description: 'Information about how the response can be cached.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Information about how the response can be cached.',
-              param: { required: false },
-            }),
-        },
+        'cache-control': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Information about how the response can be cached.',
+            param: { required: false },
+          }),
       }),
     },
     401: {
@@ -24422,23 +25419,20 @@ export const getRestaurantsBylatlongRoute = createRoute({
         },
       },
       headers: z.object({
-        'cache-control': {
-          description: 'Information about how the response can be cached.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Information about how the response can be cached.',
-              param: { required: false },
-            }),
-        },
+        'cache-control': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Information about how the response can be cached.',
+            param: { required: false },
+          }),
       }),
     },
     400: {
       description: 'Bad Request',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           example: {
             Message: 'The request is invalid.',
             ModelState: { Longitude: ["The value 'nan' is not valid for Longitude."] },
@@ -24450,7 +25444,7 @@ export const getRestaurantsBylatlongRoute = createRoute({
       description: 'Unauthorized',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           example: { message: 'No API key found in request' },
         },
       },
@@ -24459,7 +25453,7 @@ export const getRestaurantsBylatlongRoute = createRoute({
       description: 'Server Error',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           example: {
             ExceptionMessage: 'Object reference not set to an instance of an object.',
             ExceptionType: 'System.NullReferenceException',
@@ -24579,23 +25573,20 @@ export const getRestaurantsBypostcodePostcodeRoute = createRoute({
         },
       },
       headers: z.object({
-        'cache-control': {
-          description: 'Information about how the response can be cached.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Information about how the response can be cached.',
-              param: { required: false },
-            }),
-        },
+        'cache-control': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Information about how the response can be cached.',
+            param: { required: false },
+          }),
       }),
     },
     400: {
       description: 'Bad Request',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           example: {
             Message: 'The request is invalid.',
             ModelState: { Postcode: ['Invalid Postcode.'] },
@@ -24607,7 +25598,7 @@ export const getRestaurantsBypostcodePostcodeRoute = createRoute({
       description: 'Unauthorized',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           example: { message: 'No API key found in request' },
         },
       },
@@ -24616,7 +25607,7 @@ export const getRestaurantsBypostcodePostcodeRoute = createRoute({
       description: 'Server Error',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           example: {
             ExceptionMessage: 'Object reference not set to an instance of an object.',
             ExceptionType: 'System.NullReferenceException',
@@ -24688,16 +25679,13 @@ export const getRestaurantsTenantRestaurantIdCatalogueRoute = createRoute({
       description: 'Request succeeded.',
       content: { 'application/json': { schema: MenuBaseSchema } },
       headers: z.object({
-        'cache-control': {
-          description: 'Information about how the response can be cached.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Information about how the response can be cached.',
-              param: { required: false },
-            }),
-        },
+        'cache-control': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Information about how the response can be cached.',
+            param: { required: false },
+          }),
       }),
     },
     404: {
@@ -24792,16 +25780,13 @@ export const getRestaurantsTenantRestaurantIdCatalogueAvailabilitiesRoute = crea
       description: 'Request succeeded.',
       content: { 'application/json': { schema: PagedAvailabilitiesResponseSchema } },
       headers: z.object({
-        'cache-control': {
-          description: 'Information about how the response can be cached.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Information about how the response can be cached.',
-              param: { required: false },
-            }),
-        },
+        'cache-control': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Information about how the response can be cached.',
+            param: { required: false },
+          }),
       }),
     },
     400: {
@@ -24908,16 +25893,13 @@ export const getRestaurantsTenantRestaurantIdCatalogueCategoriesRoute = createRo
       description: 'Request succeeded.',
       content: { 'application/json': { schema: PagedCategoriesResponseSchema } },
       headers: z.object({
-        'cache-control': {
-          description: 'Information about how the response can be cached.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Information about how the response can be cached.',
-              param: { required: false },
-            }),
-        },
+        'cache-control': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Information about how the response can be cached.',
+            param: { required: false },
+          }),
       }),
     },
     400: {
@@ -25035,16 +26017,13 @@ export const getRestaurantsTenantRestaurantIdCatalogueCategoriesCategoryIdItemsR
       description: 'Request succeeded.',
       content: { 'application/json': { schema: PagedCategoryItemsResponseSchema } },
       headers: z.object({
-        'cache-control': {
-          description: 'Information about how the response can be cached.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Information about how the response can be cached.',
-              param: { required: false },
-            }),
-        },
+        'cache-control': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Information about how the response can be cached.',
+            param: { required: false },
+          }),
       }),
     },
     400: {
@@ -25151,16 +26130,13 @@ export const getRestaurantsTenantRestaurantIdCatalogueItemsRoute = createRoute({
       description: 'Request succeeded.',
       content: { 'application/json': { schema: PagedMenuItemsResponseSchema } },
       headers: z.object({
-        'cache-control': {
-          description: 'Information about how the response can be cached.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Information about how the response can be cached.',
-              param: { required: false },
-            }),
-        },
+        'cache-control': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Information about how the response can be cached.',
+            param: { required: false },
+          }),
       }),
     },
     400: {
@@ -25278,16 +26254,13 @@ export const getRestaurantsTenantRestaurantIdCatalogueItemsItemIdDealgroupsRoute
       description: 'Request succeeded.',
       content: { 'application/json': { schema: PagedMenuDealGroupsResponseSchema } },
       headers: z.object({
-        'cache-control': {
-          description: 'Information about how the response can be cached.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Information about how the response can be cached.',
-              param: { required: false },
-            }),
-        },
+        'cache-control': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Information about how the response can be cached.',
+            param: { required: false },
+          }),
       }),
     },
     400: {
@@ -25418,16 +26391,13 @@ export const getRestaurantsTenantRestaurantIdCatalogueItemsItemIdDealgroupsDealG
         description: 'Request succeeded.',
         content: { 'application/json': { schema: PagedDealItemVariationResponseSchema } },
         headers: z.object({
-          'cache-control': {
-            description: 'Information about how the response can be cached.',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Information about how the response can be cached.',
-                param: { required: false },
-              }),
-          },
+          'cache-control': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Information about how the response can be cached.',
+              param: { required: false },
+            }),
         }),
       },
       400: {
@@ -25546,16 +26516,13 @@ export const getRestaurantsTenantRestaurantIdCatalogueItemsItemIdModifiergroupsR
       description: 'Request succeeded.',
       content: { 'application/json': { schema: PagedMenuModifierGroupsResponseSchema } },
       headers: z.object({
-        'cache-control': {
-          description: 'Information about how the response can be cached.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Information about how the response can be cached.',
-              param: { required: false },
-            }),
-        },
+        'cache-control': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Information about how the response can be cached.',
+            param: { required: false },
+          }),
       }),
     },
     400: {
@@ -25673,16 +26640,13 @@ export const getRestaurantsTenantRestaurantIdCatalogueItemsItemIdVariationsRoute
       description: 'Request succeeded.',
       content: { 'application/json': { schema: PagedVariationsResponseSchema } },
       headers: z.object({
-        'cache-control': {
-          description: 'Information about how the response can be cached.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Information about how the response can be cached.',
-              param: { required: false },
-            }),
-        },
+        'cache-control': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Information about how the response can be cached.',
+            param: { required: false },
+          }),
       }),
     },
     400: {
@@ -25859,28 +26823,21 @@ export const getRestaurantsTenantRestaurantIdCustomerclaimsRoute = createRoute({
       description: 'Request succeeded',
       content: { 'application/json': { schema: ClaimsResponseSchema } },
       headers: z.object({
-        'Content-Type': {
-          description: 'Content type of document including version',
-          example: 'application/json;v=1',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Content type of document including version',
-              example: 'application/json;v=1',
-              param: { required: false },
-            }),
-        },
-        'cache-control': {
-          description: 'Information about how the response can be cached',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Information about how the response can be cached',
-              param: { required: false },
-            }),
-        },
+        'Content-Type': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Content type of document including version',
+            example: 'application/json;v=1',
+            param: { required: false },
+          }),
+        'cache-control': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Information about how the response can be cached',
+            param: { required: false },
+          }),
       }),
     },
     400: {
@@ -25970,28 +26927,21 @@ export const getRestaurantsTenantRestaurantIdCustomerclaimsIdRoute = createRoute
       description: 'Request succeeded',
       content: { 'application/json': { schema: OrderClaimSchema } },
       headers: z.object({
-        'Content-Type': {
-          description: 'Content type of document including version',
-          example: 'application/json;v=1',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Content type of document including version',
-              example: 'application/json;v=1',
-              param: { required: false },
-            }),
-        },
-        'cache-control': {
-          description: 'Information about how the response can be cached.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Information about how the response can be cached.',
-              param: { required: false },
-            }),
-        },
+        'Content-Type': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Content type of document including version',
+            example: 'application/json;v=1',
+            param: { required: false },
+          }),
+        'cache-control': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Information about how the response can be cached.',
+            param: { required: false },
+          }),
       }),
     },
     401: _401UnauthorizedResponseResponse,
@@ -26307,18 +27257,14 @@ export const getRestaurantsTenantRestaurantIdFeesRoute = createRoute({
         },
       },
       headers: z.object({
-        'cache-control': {
-          description:
-            'Information about how the response can be cached. (No caching will be applied)',
-          schema: z
-            .literal('no-store')
-            .exactOptional()
-            .openapi({
-              description:
-                'Information about how the response can be cached. (No caching will be applied)',
-              param: { required: false },
-            }),
-        },
+        'cache-control': z
+          .literal('no-store')
+          .exactOptional()
+          .openapi({
+            description:
+              'Information about how the response can be cached. (No caching will be applied)',
+            param: { required: false },
+          }),
       }),
     },
     400: {
@@ -26479,18 +27425,14 @@ export const putRestaurantsTenantRestaurantIdFeesRoute = createRoute({
         },
       },
       headers: z.object({
-        'cache-control': {
-          description:
-            'Information about how the response can be cached. (No caching will be applied)',
-          schema: z
-            .literal('no-store')
-            .exactOptional()
-            .openapi({
-              description:
-                'Information about how the response can be cached. (No caching will be applied)',
-              param: { required: false },
-            }),
-        },
+        'cache-control': z
+          .literal('no-store')
+          .exactOptional()
+          .openapi({
+            description:
+              'Information about how the response can be cached. (No caching will be applied)',
+            param: { required: false },
+          }),
       }),
     },
     400: {
@@ -26863,16 +27805,13 @@ export const getRestaurantsTenantRestaurantIdOrdertimesRoute = createRoute({
         },
       },
       headers: z.object({
-        'cache-control': {
-          description: 'Information about how the response can be cached.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Information about how the response can be cached.',
-              param: { required: false },
-            }),
-        },
+        'cache-control': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Information about how the response can be cached.',
+            param: { required: false },
+          }),
       }),
     },
     401: _401UnauthorizedResponseResponse,
@@ -27042,16 +27981,13 @@ export const getRestaurantsTenantRestaurantIdServicetimesRoute = createRoute({
       description: "The restaurant's service times",
       content: { 'application/json': { schema: ServiceTimesSchema } },
       headers: z.object({
-        'cache-control': {
-          description: 'Information about how the response can be cached.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Information about how the response can be cached.',
-              param: { required: false },
-            }),
-        },
+        'cache-control': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Information about how the response can be cached.',
+            param: { required: false },
+          }),
       }),
     },
     403: { description: 'Forbidden' },
@@ -27112,16 +28048,13 @@ export const putRestaurantsTenantRestaurantIdServicetimesRoute = createRoute({
       description: 'The new service times',
       content: { 'application/json': { schema: ServiceTimesSchema } },
       headers: z.object({
-        'cache-control': {
-          description: 'Information about how the response can be cached.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Information about how the response can be cached.',
-              param: { required: false },
-            }),
-        },
+        'cache-control': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Information about how the response can be cached.',
+            param: { required: false },
+          }),
       }),
     },
     400: {
@@ -27248,16 +28181,13 @@ export const getSearchAutocompleteTenantRoute = createRoute({
       description: 'Success',
       content: { 'application/json': { schema: AutoCompleteSearchResponseSchema } },
       headers: z.object({
-        'cache-control': {
-          description: 'Information about how the response can be cached.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Information about how the response can be cached.',
-              param: { required: false },
-            }),
-        },
+        'cache-control': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Information about how the response can be cached.',
+            param: { required: false },
+          }),
       }),
     },
     400: {
@@ -27474,16 +28404,13 @@ export const getSearchRestaurantsTenantRoute = createRoute({
       description: 'Success',
       content: { 'application/json': { schema: RestaurantSearchResponseSchema } },
       headers: z.object({
-        'cache-control': {
-          description: 'Information about how the response can be cached.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Information about how the response can be cached.',
-              param: { required: false },
-            }),
-        },
+        'cache-control': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Information about how the response can be cached.',
+            param: { required: false },
+          }),
       }),
     },
     400: {

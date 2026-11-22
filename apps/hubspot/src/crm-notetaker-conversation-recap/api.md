@@ -26,12 +26,6 @@ Base URLs:
 |crm.objects.contacts.sensitive.read.v2||
 |crm.schemas.contacts.read||
 
-* API Key (private_apps)
-    - Parameter Name: **private-app**, in: header.
-
-* API Key (private_apps_legacy)
-    - Parameter Name: **private-app-legacy**, in: header.
-
 <h1 id="crm-notetaker-conversation-recap-basic">Basic</h1>
 
 ## Retrieve conversation recap data
@@ -80,7 +74,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: crm.objects.contacts.highly_sensitive.read.v2 ), oauth2 ( Scopes: crm.schemas.contacts.read ), oauth2 ( Scopes: crm.objects.contacts.sensitive.read.v2 ), oauth2 ( Scopes: crm.objects.contacts.read )
+oauth2 ( Scopes: crm.objects.contacts.highly_sensitive.read.v2 ), oauth2 ( Scopes: crm.objects.contacts.sensitive.read.v2 ), oauth2 ( Scopes: crm.schemas.contacts.read ), oauth2 ( Scopes: crm.objects.contacts.read )
 </aside>
 
 # Schemas

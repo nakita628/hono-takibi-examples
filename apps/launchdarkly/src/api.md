@@ -2,13 +2,13 @@
 
 > Scroll down for code samples, example requests and responses. Select a language for code samples from the tabs above or the mobile navigation menu.
 
-This documentation describes LaunchDarkly's REST API. To access the complete OpenAPI spec directly, use [Get OpenAPI spec](https://launchdarkly.com/docs/api/other/get-openapi-spec).
+This documentation describes the LaunchDarkly REST API. To access the complete OpenAPI spec directly, use [Get OpenAPI spec](https://launchdarkly.com/docs/api/other/get-openapi-spec).
 
 To learn how to use LaunchDarkly using the user interface (UI) instead, read our [product documentation](https://launchdarkly.com/docs/home).
 
 ## Authentication
 
-LaunchDarkly's REST API uses the HTTPS protocol with a minimum TLS version of 1.2.
+The LaunchDarkly REST API uses the HTTPS protocol with a minimum TLS version of 1.2.
 
 All REST API resources are authenticated with either [personal or service access tokens](https://launchdarkly.com/docs/home/account/api), or session cookies. Other authentication mechanisms are not supported. You can manage personal access tokens on your [**Authorization**](https://app.launchdarkly.com/settings/authorization) page in the LaunchDarkly UI.
 
@@ -452,7 +452,7 @@ If you would like to upgrade your integration to use a new API version, you can 
   </tr>
 </table>
 
-To learn more about how EOL is determined, read LaunchDarkly's [End of Life (EOL) Policy](https://launchdarkly.com/policies/end-of-life-policy/).
+To learn more about how EOL is determined, read the LaunchDarkly [End of Life (EOL) Policy](https://launchdarkly.com/policies/end-of-life-policy/).
 
 Base URLs:
 
@@ -6901,14 +6901,14 @@ ApiKey
 
 The AgentControl API allows you to create, retrieve, and edit AgentControl configs, config variations, and AI model configurations.
 
-**This product name has changed, but the API has not.** AgentControl was previously called AI Configs. Resources previously called "AI Configs" are now referred to as "AgentControl configs" or "configs." This is not a breaking change to the API. Existing AI Configs API endpoints, paths, request/response bodies, and operation IDs are unchanged. Integrations that use those resources still work and do not need modification.
+**This product name has changed, but the API has not.** AgentControl was previously called AI Configs. Resources previously called "AI Configs" are now referred to as "agent configs" or "configs." This is not a breaking change to the API. Existing configs API endpoints, paths, request/response bodies, and operation IDs are unchanged. Integrations that use those resources still work and do not need modification.
 
-An AgentControl config is a resource in LaunchDarkly that you can use to customize, test, and roll out new large language models (LLMs) within your generative AI applications. Within each config, you define one or more variations, each of which includes a model configuration and one or more messages. The model configuration can be a standard one from the list provided by LaunchDarkly, or you can define your own custom AI model configuration.
+An agent config is a resource in LaunchDarkly that you can use to customize, test, and roll out new large language models (LLMs) within your generative AI applications. Within each config, you define one or more variations, each of which includes a model configuration and one or more messages. The model configuration can be a standard one from the list provided by LaunchDarkly, or you can define your own custom AI model configuration.
 
 To learn more, read [AgentControl](https://launchdarkly.com/docs/home/agentcontrol).
 
 
-## Show an AI Config's targeting
+## Show an agent config's targeting
 
 <a id="opIdgetAIConfigTargeting"></a>
 
@@ -6922,14 +6922,14 @@ curl https://app.launchdarkly.com/api/v2/projects/string/ai-configs/string/targe
 
 `GET /api/v2/projects/{projectKey}/ai-configs/{configKey}/targeting`
 
-Retrieves a specific AI Config's targeting by its key
+Retrieves a specific agent config's targeting by its key
 
-<h3 id="show-an-ai-configs-targeting-parameters">Parameters</h3>
+<h3 id="show-an-agent-configs-targeting-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |projectKey|path|string|true|The project key|
-|configKey|path|string|true|The AI Config key|
+|configKey|path|string|true|The agent config key|
 
 > Example responses
 
@@ -6966,6 +6966,28 @@ Retrieves a specific AI Config's targeting by its key
       ],
       "rules": [
         {
+          "rollout": {
+            "experimentAllocation": {
+              "defaultVariation": 2,
+              "canReshuffle": true,
+              "type": "type"
+            },
+            "seed": 7,
+            "variations": [
+              {
+                "weight": 3,
+                "_untracked": true,
+                "variation": 9
+              },
+              {
+                "weight": 3,
+                "_untracked": true,
+                "variation": 9
+              }
+            ],
+            "contextKind": "contextKind",
+            "bucketBy": "bucketBy"
+          },
           "clauses": [
             {
               "op": "op",
@@ -6974,6 +6996,7 @@ Retrieves a specific AI Config's targeting by its key
                 "",
                 ""
               ],
+              "contextKind": "contextKind",
               "attribute": "attribute",
               "id": "id"
             },
@@ -6984,37 +7007,40 @@ Retrieves a specific AI Config's targeting by its key
                 "",
                 ""
               ],
+              "contextKind": "contextKind",
               "attribute": "attribute",
               "id": "id"
             }
           ],
-          "shadows": [
-            {
-              "variationId": "variationId",
-              "endCondition": {
-                "kind": "kind",
-                "value": 4
-              },
-              "samplingRate": 0.20271230230023218,
-              "id": "id",
-              "ownerId": "ownerId",
-              "ownerKind": "ownerKind"
-            },
-            {
-              "variationId": "variationId",
-              "endCondition": {
-                "kind": "kind",
-                "value": 4
-              },
-              "samplingRate": 0.20271230230023218,
-              "id": "id",
-              "ownerId": "ownerId",
-              "ownerKind": "ownerKind"
-            }
-          ],
-          "trackEvents": true
+          "description": "description",
+          "disabled": true,
+          "_id": "_id",
+          "trackEvents": true,
+          "variation": 1
         },
         {
+          "rollout": {
+            "experimentAllocation": {
+              "defaultVariation": 2,
+              "canReshuffle": true,
+              "type": "type"
+            },
+            "seed": 7,
+            "variations": [
+              {
+                "weight": 3,
+                "_untracked": true,
+                "variation": 9
+              },
+              {
+                "weight": 3,
+                "_untracked": true,
+                "variation": 9
+              }
+            ],
+            "contextKind": "contextKind",
+            "bucketBy": "bucketBy"
+          },
           "clauses": [
             {
               "op": "op",
@@ -7023,6 +7049,7 @@ Retrieves a specific AI Config's targeting by its key
                 "",
                 ""
               ],
+              "contextKind": "contextKind",
               "attribute": "attribute",
               "id": "id"
             },
@@ -7033,35 +7060,16 @@ Retrieves a specific AI Config's targeting by its key
                 "",
                 ""
               ],
+              "contextKind": "contextKind",
               "attribute": "attribute",
               "id": "id"
             }
           ],
-          "shadows": [
-            {
-              "variationId": "variationId",
-              "endCondition": {
-                "kind": "kind",
-                "value": 4
-              },
-              "samplingRate": 0.20271230230023218,
-              "id": "id",
-              "ownerId": "ownerId",
-              "ownerKind": "ownerKind"
-            },
-            {
-              "variationId": "variationId",
-              "endCondition": {
-                "kind": "kind",
-                "value": 4
-              },
-              "samplingRate": 0.20271230230023218,
-              "id": "id",
-              "ownerId": "ownerId",
-              "ownerKind": "ownerKind"
-            }
-          ],
-          "trackEvents": true
+          "description": "description",
+          "disabled": true,
+          "_id": "_id",
+          "trackEvents": true,
+          "variation": 1
         }
       ],
       "lastModified": 7,
@@ -7089,30 +7097,6 @@ Retrieves a specific AI Config's targeting by its key
           "contextKind": "contextKind",
           "bucketBy": "bucketBy"
         },
-        "shadows": [
-          {
-            "variationId": "variationId",
-            "endCondition": {
-              "kind": "kind",
-              "value": 4
-            },
-            "samplingRate": 0.20271230230023218,
-            "id": "id",
-            "ownerId": "ownerId",
-            "ownerKind": "ownerKind"
-          },
-          {
-            "variationId": "variationId",
-            "endCondition": {
-              "kind": "kind",
-              "value": 4
-            },
-            "samplingRate": 0.20271230230023218,
-            "id": "id",
-            "ownerId": "ownerId",
-            "ownerKind": "ownerKind"
-          }
-        ],
         "variation": 5
       },
       "offVariation": 1,
@@ -7153,7 +7137,7 @@ Retrieves a specific AI Config's targeting by its key
     }
   ],
   "experiments": {
-    "baselineIdx": 1,
+    "baselineIdx": 6,
     "items": [
       {
         "metricKey": "my-metric",
@@ -7164,16 +7148,16 @@ Retrieves a specific AI Config's targeting by its key
         ],
         "_environmentSettings": {
           "key": {
-            "startDate": 9,
-            "stopDate": 6,
+            "startDate": 6,
+            "stopDate": 3,
             "enabledPeriods": [
               {
-                "startDate": 3,
-                "stopDate": 6
+                "startDate": 6,
+                "stopDate": 1
               },
               {
-                "startDate": 3,
-                "stopDate": 6
+                "startDate": 6,
+                "stopDate": 1
               }
             ]
           }
@@ -7190,7 +7174,7 @@ Retrieves a specific AI Config's targeting by its key
             }
           },
           "activeExperimentCount": 2,
-          "windowEndOffset": 5,
+          "windowEndOffset": 9,
           "randomizationUnits": [
             "user"
           ],
@@ -7292,8 +7276,8 @@ Retrieves a specific AI Config's targeting by its key
           "kind": "custom",
           "_attachedFlagCount": 0,
           "metricGroupCount": 0,
-          "_creationDate": 6,
-          "windowStartOffset": 4,
+          "_creationDate": 7,
+          "windowStartOffset": 5,
           "tags": [],
           "winsorIncludeImputed": false,
           "denominator": {
@@ -7319,14 +7303,14 @@ Retrieves a specific AI Config's targeting by its key
               "environmentKey": "environmentKey"
             },
             "windowStartOffset": 9,
-            "windowEndOffset": 9,
-            "winsorLowerPercentile": 6.683562403749608,
-            "winsorUpperPercentile": 8.762042012749001,
+            "windowEndOffset": 6,
+            "winsorLowerPercentile": 8.762042012749001,
+            "winsorUpperPercentile": 9.018348186070783,
             "winsorIncludeImputed": true
           },
           "maintainerId": "569fdeadbeef1644facecafe",
           "unit": "unit",
-          "lastSeen": 7,
+          "lastSeen": 1,
           "isNumeric": true,
           "experimentCount": 0,
           "name": "My metric",
@@ -7382,11 +7366,12 @@ Retrieves a specific AI Config's targeting by its key
             "attribute": "country",
             "type": "contextAttribute"
           },
+          "environmentReleasePlanCount": 0,
           "eventDefault": {
             "disabled": true,
             "value": 0
           },
-          "archivedAt": 1,
+          "archivedAt": 4,
           "successCriteria": "HigherThanBaseline",
           "releasePolicyCount": 0,
           "_versionId": "version-id-123abc",
@@ -7405,16 +7390,16 @@ Retrieves a specific AI Config's targeting by its key
         ],
         "_environmentSettings": {
           "key": {
-            "startDate": 9,
-            "stopDate": 6,
+            "startDate": 6,
+            "stopDate": 3,
             "enabledPeriods": [
               {
-                "startDate": 3,
-                "stopDate": 6
+                "startDate": 6,
+                "stopDate": 1
               },
               {
-                "startDate": 3,
-                "stopDate": 6
+                "startDate": 6,
+                "stopDate": 1
               }
             ]
           }
@@ -7431,7 +7416,7 @@ Retrieves a specific AI Config's targeting by its key
             }
           },
           "activeExperimentCount": 2,
-          "windowEndOffset": 5,
+          "windowEndOffset": 9,
           "randomizationUnits": [
             "user"
           ],
@@ -7533,8 +7518,8 @@ Retrieves a specific AI Config's targeting by its key
           "kind": "custom",
           "_attachedFlagCount": 0,
           "metricGroupCount": 0,
-          "_creationDate": 6,
-          "windowStartOffset": 4,
+          "_creationDate": 7,
+          "windowStartOffset": 5,
           "tags": [],
           "winsorIncludeImputed": false,
           "denominator": {
@@ -7560,14 +7545,14 @@ Retrieves a specific AI Config's targeting by its key
               "environmentKey": "environmentKey"
             },
             "windowStartOffset": 9,
-            "windowEndOffset": 9,
-            "winsorLowerPercentile": 6.683562403749608,
-            "winsorUpperPercentile": 8.762042012749001,
+            "windowEndOffset": 6,
+            "winsorLowerPercentile": 8.762042012749001,
+            "winsorUpperPercentile": 9.018348186070783,
             "winsorIncludeImputed": true
           },
           "maintainerId": "569fdeadbeef1644facecafe",
           "unit": "unit",
-          "lastSeen": 7,
+          "lastSeen": 1,
           "isNumeric": true,
           "experimentCount": 0,
           "name": "My metric",
@@ -7623,11 +7608,12 @@ Retrieves a specific AI Config's targeting by its key
             "attribute": "country",
             "type": "contextAttribute"
           },
+          "environmentReleasePlanCount": 0,
           "eventDefault": {
             "disabled": true,
             "value": 0
           },
-          "archivedAt": 1,
+          "archivedAt": 4,
           "successCriteria": "HigherThanBaseline",
           "releasePolicyCount": 0,
           "_versionId": "version-id-123abc",
@@ -7640,7 +7626,7 @@ Retrieves a specific AI Config's targeting by its key
     ]
   },
   "name": "name",
-  "_version": 1,
+  "_version": 2,
   "key": "key",
   "tags": [
     "tags",
@@ -7676,7 +7662,7 @@ Retrieves a specific AI Config's targeting by its key
 }
 ```
 
-<h3 id="show-an-ai-configs-targeting-responses">Responses</h3>
+<h3 id="show-an-agent-configs-targeting-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -7690,7 +7676,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 ApiKey
 </aside>
 
-## Update AI Config targeting
+## Update agent config targeting
 
 <a id="opIdpatchAIConfigTargeting"></a>
 
@@ -7718,13 +7704,13 @@ curl https://app.launchdarkly.com/api/v2/projects/string/ai-configs/string/targe
 
 `PATCH /api/v2/projects/{projectKey}/ai-configs/{configKey}/targeting`
 
-Perform a partial update to an AI Config's targeting. The request body must be a valid semantic patch.
+Perform a partial update to an agent config's targeting. The request body must be a valid semantic patch.
 
-### Using semantic patches on an AI Config
+### Using semantic patches on an agent config
 
 To make a semantic patch request, you must append `domain-model=launchdarkly.semanticpatch` to your `Content-Type` header. To learn more, read [Updates using semantic patch](https://launchdarkly.com/docs/api#updates-using-semantic-patch).
 
-The body of a semantic patch request for updating an AI Config's targeting takes the following properties:
+The body of a semantic patch request for updating an agent config's targeting takes the following properties:
 
 * `comment` (string): (Optional) A description of the update.
 * `environmentKey` (string): The key of the LaunchDarkly environment.
@@ -7732,10 +7718,10 @@ The body of a semantic patch request for updating an AI Config's targeting takes
 
 ### Instructions
 
-Semantic patch requests support the following `kind` instructions for updating AI Configs.
+Semantic patch requests support the following `kind` instructions for updating agent configs.
 
 <details>
-<summary>Click to expand instructions for <strong>working with targeting and variations</strong> for AI Configs</summary>
+<summary>Click to expand instructions for <strong>working with targeting and variations</strong> for agent configs</summary>
 
 #### addClauses
 
@@ -7743,7 +7729,7 @@ Adds the given clauses to the rule indicated by `ruleId`.
 
 ##### Parameters
 
-- `ruleId`: ID of a rule in the AI Config.
+- `ruleId`: ID of a rule in the agent config.
 - `clauses`: Array of clause objects, with `contextKind` (string), `attribute` (string), `op` (string), `negate` (boolean), and `values` (array of strings, numbers, or dates) properties. The `contextKind`, `attribute`, and `values` are case sensitive. The `op` must be lower-case.
 
 Here's an example:
@@ -7767,7 +7753,7 @@ Here's an example:
 
 #### addRule
 
-Adds a new targeting rule to the AI Config. The rule may contain `clauses` and serve the variation that `variationId` indicates, or serve a percentage rollout that `rolloutWeights`, `rolloutBucketBy`, and `rolloutContextKind` indicate.
+Adds a new targeting rule to the agent config. The rule may contain `clauses` and serve the variation that `variationId` indicates, or serve a percentage rollout that `rolloutWeights`, `rolloutBucketBy`, and `rolloutContextKind` indicate.
 
 If you set `beforeRuleId`, this adds the new rule before the indicated rule. Otherwise, adds the new rule to the end of the list.
 
@@ -7828,7 +7814,7 @@ Here's an example that uses a percentage rollout:
 
 #### addTargets
 
-Adds context keys to the individual context targets for the context kind that `contextKind` specifies and the variation that `variationId` specifies. Returns an error if this causes the AI Config to target the same context key in multiple variations.
+Adds context keys to the individual context targets for the context kind that `contextKind` specifies and the variation that `variationId` specifies. Returns an error if this causes the agent config to target the same context key in multiple variations.
 
 ##### Parameters
 
@@ -7855,7 +7841,7 @@ Adds `values` to the values of the clause that `ruleId` and `clauseId` indicate.
 
 ##### Parameters
 
-- `ruleId`: ID of a rule in the AI Config.
+- `ruleId`: ID of a rule in the agent config.
 - `clauseId`: ID of a clause in that rule.
 - `values`: Array of strings, case sensitive.
 
@@ -7978,7 +7964,7 @@ Here's an example:
 
 #### reorderRules
 
-Rearranges the rules to match the order given in `ruleIds`. Returns an error if `ruleIds` does not match the current set of rules on the AI Config.
+Rearranges the rules to match the order given in `ruleIds`. Returns an error if `ruleIds` does not match the current set of rules on the agent config.
 
 ##### Parameters
 
@@ -7998,7 +7984,7 @@ Here's an example:
 
 #### replaceRules
 
-Removes all targeting rules for the AI Config and replaces them with the list you provide.
+Removes all targeting rules for the agent config and replaces them with the list you provide.
 
 ##### Parameters
 
@@ -8096,7 +8082,7 @@ Here's an example:
 
 #### updateDefaultVariation
 
-Updates the default on or off variation of the AI Config.
+Updates the default on or off variation of the agent config.
 
 ##### Parameters
 
@@ -8113,7 +8099,7 @@ Here's an example:
 
 #### updateFallthroughVariationOrRollout
 
-Updates the default or "fallthrough" rule for the AI Config, which the AI Config serves when a context matches none of the targeting rules. The rule can serve either the variation that `variationId` indicates, or a percentage rollout that `rolloutWeights` and `rolloutBucketBy` indicate.
+Updates the default or "fallthrough" rule for the agent config, which the agent config serves when a context matches none of the targeting rules. The rule can serve either the variation that `variationId` indicates, or a percentage rollout that `rolloutWeights` and `rolloutBucketBy` indicate.
 
 ##### Parameters
 
@@ -8155,7 +8141,7 @@ Here's an example that uses a percentage rollout:
 
 #### updateOffVariation
 
-Updates the default off variation to `variationId`. The AI Config serves the default off variation when the AI Config's targeting is **Off**.
+Updates the default off variation to `variationId`. The agent config serves the default off variation when the agent config's targeting is **Off**.
 
 ##### Parameters
 
@@ -8177,7 +8163,7 @@ Updates the description of the targeting rule.
 ##### Parameters
 
 - `description`: The new human-readable description for this rule.
-- `ruleId`: The ID of the rule. You can retrieve this by making a GET request for the AI Config.
+- `ruleId`: The ID of the rule. You can retrieve this by making a GET request for the agent config.
 
 Here's an example:
 
@@ -8194,11 +8180,11 @@ Here's an example:
 
 #### updateRuleTrackEvents
 
-Updates whether or not LaunchDarkly tracks events for the AI Config associated with this rule.
+Updates whether or not LaunchDarkly tracks events for the agent config associated with this rule.
 
 ##### Parameters
 
-- `ruleId`: The ID of the rule. You can retrieve this by making a GET request for the AI Config.
+- `ruleId`: The ID of the rule. You can retrieve this by making a GET request for the agent config.
 - `trackEvents`: Whether or not events are tracked.
 
 Here's an example:
@@ -8244,7 +8230,7 @@ Here's an example:
 
 #### updateTrackEvents
 
-Updates whether or not LaunchDarkly tracks events for the AI Config, for all rules.
+Updates whether or not LaunchDarkly tracks events for the agent config, for all rules.
 
 ##### Parameters
 
@@ -8261,7 +8247,7 @@ Here's an example:
 
 #### updateTrackEventsFallthrough
 
-Updates whether or not LaunchDarkly tracks events for the AI Config, for the default rule.
+Updates whether or not LaunchDarkly tracks events for the agent config, for the default rule.
 
 ##### Parameters
 
@@ -8295,13 +8281,13 @@ Here's an example:
 }
 ```
 
-<h3 id="update-ai-config-targeting-parameters">Parameters</h3>
+<h3 id="update-agent-config-targeting-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |projectKey|path|string|true|The project key|
-|configKey|path|string|true|The AI Config key|
-|body|body|[AIConfigTargetingPatch](#schemaaiconfigtargetingpatch)|false|AI Config targeting semantic patch instructions|
+|configKey|path|string|true|The agent config key|
+|body|body|[AIConfigTargetingPatch](#schemaaiconfigtargetingpatch)|false|Agent config targeting semantic patch instructions|
 |» comment|body|string|false|A comment describing the change|
 |» environmentKey|body|string|true|The environment key|
 |» instructions|body|[object]|true|The semantic patch instructions to apply|
@@ -8341,6 +8327,28 @@ Here's an example:
       ],
       "rules": [
         {
+          "rollout": {
+            "experimentAllocation": {
+              "defaultVariation": 2,
+              "canReshuffle": true,
+              "type": "type"
+            },
+            "seed": 7,
+            "variations": [
+              {
+                "weight": 3,
+                "_untracked": true,
+                "variation": 9
+              },
+              {
+                "weight": 3,
+                "_untracked": true,
+                "variation": 9
+              }
+            ],
+            "contextKind": "contextKind",
+            "bucketBy": "bucketBy"
+          },
           "clauses": [
             {
               "op": "op",
@@ -8349,6 +8357,7 @@ Here's an example:
                 "",
                 ""
               ],
+              "contextKind": "contextKind",
               "attribute": "attribute",
               "id": "id"
             },
@@ -8359,37 +8368,40 @@ Here's an example:
                 "",
                 ""
               ],
+              "contextKind": "contextKind",
               "attribute": "attribute",
               "id": "id"
             }
           ],
-          "shadows": [
-            {
-              "variationId": "variationId",
-              "endCondition": {
-                "kind": "kind",
-                "value": 4
-              },
-              "samplingRate": 0.20271230230023218,
-              "id": "id",
-              "ownerId": "ownerId",
-              "ownerKind": "ownerKind"
-            },
-            {
-              "variationId": "variationId",
-              "endCondition": {
-                "kind": "kind",
-                "value": 4
-              },
-              "samplingRate": 0.20271230230023218,
-              "id": "id",
-              "ownerId": "ownerId",
-              "ownerKind": "ownerKind"
-            }
-          ],
-          "trackEvents": true
+          "description": "description",
+          "disabled": true,
+          "_id": "_id",
+          "trackEvents": true,
+          "variation": 1
         },
         {
+          "rollout": {
+            "experimentAllocation": {
+              "defaultVariation": 2,
+              "canReshuffle": true,
+              "type": "type"
+            },
+            "seed": 7,
+            "variations": [
+              {
+                "weight": 3,
+                "_untracked": true,
+                "variation": 9
+              },
+              {
+                "weight": 3,
+                "_untracked": true,
+                "variation": 9
+              }
+            ],
+            "contextKind": "contextKind",
+            "bucketBy": "bucketBy"
+          },
           "clauses": [
             {
               "op": "op",
@@ -8398,6 +8410,7 @@ Here's an example:
                 "",
                 ""
               ],
+              "contextKind": "contextKind",
               "attribute": "attribute",
               "id": "id"
             },
@@ -8408,35 +8421,16 @@ Here's an example:
                 "",
                 ""
               ],
+              "contextKind": "contextKind",
               "attribute": "attribute",
               "id": "id"
             }
           ],
-          "shadows": [
-            {
-              "variationId": "variationId",
-              "endCondition": {
-                "kind": "kind",
-                "value": 4
-              },
-              "samplingRate": 0.20271230230023218,
-              "id": "id",
-              "ownerId": "ownerId",
-              "ownerKind": "ownerKind"
-            },
-            {
-              "variationId": "variationId",
-              "endCondition": {
-                "kind": "kind",
-                "value": 4
-              },
-              "samplingRate": 0.20271230230023218,
-              "id": "id",
-              "ownerId": "ownerId",
-              "ownerKind": "ownerKind"
-            }
-          ],
-          "trackEvents": true
+          "description": "description",
+          "disabled": true,
+          "_id": "_id",
+          "trackEvents": true,
+          "variation": 1
         }
       ],
       "lastModified": 7,
@@ -8464,30 +8458,6 @@ Here's an example:
           "contextKind": "contextKind",
           "bucketBy": "bucketBy"
         },
-        "shadows": [
-          {
-            "variationId": "variationId",
-            "endCondition": {
-              "kind": "kind",
-              "value": 4
-            },
-            "samplingRate": 0.20271230230023218,
-            "id": "id",
-            "ownerId": "ownerId",
-            "ownerKind": "ownerKind"
-          },
-          {
-            "variationId": "variationId",
-            "endCondition": {
-              "kind": "kind",
-              "value": 4
-            },
-            "samplingRate": 0.20271230230023218,
-            "id": "id",
-            "ownerId": "ownerId",
-            "ownerKind": "ownerKind"
-          }
-        ],
         "variation": 5
       },
       "offVariation": 1,
@@ -8528,7 +8498,7 @@ Here's an example:
     }
   ],
   "experiments": {
-    "baselineIdx": 1,
+    "baselineIdx": 6,
     "items": [
       {
         "metricKey": "my-metric",
@@ -8539,16 +8509,16 @@ Here's an example:
         ],
         "_environmentSettings": {
           "key": {
-            "startDate": 9,
-            "stopDate": 6,
+            "startDate": 6,
+            "stopDate": 3,
             "enabledPeriods": [
               {
-                "startDate": 3,
-                "stopDate": 6
+                "startDate": 6,
+                "stopDate": 1
               },
               {
-                "startDate": 3,
-                "stopDate": 6
+                "startDate": 6,
+                "stopDate": 1
               }
             ]
           }
@@ -8565,7 +8535,7 @@ Here's an example:
             }
           },
           "activeExperimentCount": 2,
-          "windowEndOffset": 5,
+          "windowEndOffset": 9,
           "randomizationUnits": [
             "user"
           ],
@@ -8667,8 +8637,8 @@ Here's an example:
           "kind": "custom",
           "_attachedFlagCount": 0,
           "metricGroupCount": 0,
-          "_creationDate": 6,
-          "windowStartOffset": 4,
+          "_creationDate": 7,
+          "windowStartOffset": 5,
           "tags": [],
           "winsorIncludeImputed": false,
           "denominator": {
@@ -8694,14 +8664,14 @@ Here's an example:
               "environmentKey": "environmentKey"
             },
             "windowStartOffset": 9,
-            "windowEndOffset": 9,
-            "winsorLowerPercentile": 6.683562403749608,
-            "winsorUpperPercentile": 8.762042012749001,
+            "windowEndOffset": 6,
+            "winsorLowerPercentile": 8.762042012749001,
+            "winsorUpperPercentile": 9.018348186070783,
             "winsorIncludeImputed": true
           },
           "maintainerId": "569fdeadbeef1644facecafe",
           "unit": "unit",
-          "lastSeen": 7,
+          "lastSeen": 1,
           "isNumeric": true,
           "experimentCount": 0,
           "name": "My metric",
@@ -8757,11 +8727,12 @@ Here's an example:
             "attribute": "country",
             "type": "contextAttribute"
           },
+          "environmentReleasePlanCount": 0,
           "eventDefault": {
             "disabled": true,
             "value": 0
           },
-          "archivedAt": 1,
+          "archivedAt": 4,
           "successCriteria": "HigherThanBaseline",
           "releasePolicyCount": 0,
           "_versionId": "version-id-123abc",
@@ -8780,16 +8751,16 @@ Here's an example:
         ],
         "_environmentSettings": {
           "key": {
-            "startDate": 9,
-            "stopDate": 6,
+            "startDate": 6,
+            "stopDate": 3,
             "enabledPeriods": [
               {
-                "startDate": 3,
-                "stopDate": 6
+                "startDate": 6,
+                "stopDate": 1
               },
               {
-                "startDate": 3,
-                "stopDate": 6
+                "startDate": 6,
+                "stopDate": 1
               }
             ]
           }
@@ -8806,7 +8777,7 @@ Here's an example:
             }
           },
           "activeExperimentCount": 2,
-          "windowEndOffset": 5,
+          "windowEndOffset": 9,
           "randomizationUnits": [
             "user"
           ],
@@ -8908,8 +8879,8 @@ Here's an example:
           "kind": "custom",
           "_attachedFlagCount": 0,
           "metricGroupCount": 0,
-          "_creationDate": 6,
-          "windowStartOffset": 4,
+          "_creationDate": 7,
+          "windowStartOffset": 5,
           "tags": [],
           "winsorIncludeImputed": false,
           "denominator": {
@@ -8935,14 +8906,14 @@ Here's an example:
               "environmentKey": "environmentKey"
             },
             "windowStartOffset": 9,
-            "windowEndOffset": 9,
-            "winsorLowerPercentile": 6.683562403749608,
-            "winsorUpperPercentile": 8.762042012749001,
+            "windowEndOffset": 6,
+            "winsorLowerPercentile": 8.762042012749001,
+            "winsorUpperPercentile": 9.018348186070783,
             "winsorIncludeImputed": true
           },
           "maintainerId": "569fdeadbeef1644facecafe",
           "unit": "unit",
-          "lastSeen": 7,
+          "lastSeen": 1,
           "isNumeric": true,
           "experimentCount": 0,
           "name": "My metric",
@@ -8998,11 +8969,12 @@ Here's an example:
             "attribute": "country",
             "type": "contextAttribute"
           },
+          "environmentReleasePlanCount": 0,
           "eventDefault": {
             "disabled": true,
             "value": 0
           },
-          "archivedAt": 1,
+          "archivedAt": 4,
           "successCriteria": "HigherThanBaseline",
           "releasePolicyCount": 0,
           "_versionId": "version-id-123abc",
@@ -9015,7 +8987,7 @@ Here's an example:
     ]
   },
   "name": "name",
-  "_version": 1,
+  "_version": 2,
   "key": "key",
   "tags": [
     "tags",
@@ -9060,11 +9032,11 @@ Here's an example:
 }
 ```
 
-<h3 id="update-ai-config-targeting-responses">Responses</h3>
+<h3 id="update-agent-config-targeting-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|OK|AI Config targeting updated|[AIConfigTargeting](#schemaaiconfigtargeting)|
+|200|OK|Agent config targeting updated|[AIConfigTargeting](#schemaaiconfigtargeting)|
 |400|Bad Request|Bad request|[Error](#schemaerror)|
 |403|Forbidden|Forbidden|[Error](#schemaerror)|
 |404|Not Found|Not found|[Error](#schemaerror)|
@@ -9075,7 +9047,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 ApiKey
 </aside>
 
-## List AI Configs
+## List agent configs
 
 <a id="opIdgetAIConfigs"></a>
 
@@ -9089,9 +9061,9 @@ curl https://app.launchdarkly.com/api/v2/projects/default/ai-configs \
 
 `GET /api/v2/projects/{projectKey}/ai-configs`
 
-Get a list of all AI Configs in the given project.
+Get a list of all agent configs in the given project.
 
-<h3 id="list-ai-configs-parameters">Parameters</h3>
+<h3 id="list-agent-configs-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -9449,6 +9421,7 @@ Get a list of all AI Configs in the given project.
         }
       ],
       "name": "name",
+      "defaultThreshold": 0.9,
       "key": "key",
       "isInverted": true,
       "updatedAt": 4
@@ -9771,6 +9744,7 @@ Get a list of all AI Configs in the given project.
         }
       ],
       "name": "name",
+      "defaultThreshold": 0.9,
       "key": "key",
       "isInverted": true,
       "updatedAt": 4
@@ -9815,7 +9789,7 @@ Get a list of all AI Configs in the given project.
 }
 ```
 
-<h3 id="list-ai-configs-responses">Responses</h3>
+<h3 id="list-agent-configs-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -9830,7 +9804,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 ApiKey
 </aside>
 
-## Create new AI Config
+## Create new agent config
 
 <a id="opIdpostAIConfig"></a>
 
@@ -9926,6 +9900,7 @@ curl https://app.launchdarkly.com/api/v2/projects/string/ai-configs \
       "viewKeys"
     ],
     "evaluationMetricKey": "evaluationMetricKey",
+    "defaultThreshold": 0.9,
     "key": "key",
     "isInverted": true,
     "tags": [
@@ -9937,7 +9912,7 @@ curl https://app.launchdarkly.com/api/v2/projects/string/ai-configs \
 
 `POST /api/v2/projects/{projectKey}/ai-configs`
 
-Create a new AI Config within the given project.
+Create a new agent config within the given project.
 
 > Body parameter
 
@@ -10026,6 +10001,7 @@ Create a new AI Config within the given project.
     "viewKeys"
   ],
   "evaluationMetricKey": "evaluationMetricKey",
+  "defaultThreshold": 0.9,
   "key": "key",
   "isInverted": true,
   "tags": [
@@ -10035,23 +10011,24 @@ Create a new AI Config within the given project.
 }
 ```
 
-<h3 id="create-new-ai-config-parameters">Parameters</h3>
+<h3 id="create-new-agent-config-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |projectKey|path|string|true|The project key|
-|body|body|[AIConfigPost](#schemaaiconfigpost)|true|AI Config object to create|
-|» description|body|string|false|A description of the AI Config|
-|» key|body|string|true|A unique key for the AI Config|
+|body|body|[AIConfigPost](#schemaaiconfigpost)|true|Agent config object to create|
+|» description|body|string|false|A description of the agent config|
+|» key|body|string|true|A unique key for the agent config|
 |» maintainerId|body|string|false|The ID of the member who maintains this resource|
 |» maintainerTeamKey|body|string|false|The key of the team that maintains this resource|
-|» mode|body|string|false|The AI Config mode|
-|» name|body|string|true|A human-readable name for the AI Config|
+|» mode|body|string|false|The agent config mode|
+|» name|body|string|true|A human-readable name for the agent config|
 |» tags|body|[string]|false|Tags for this resource|
-|» viewKeys|body|[string]|false|Keys of the views to add the AI Config to|
+|» viewKeys|body|[string]|false|Keys of the views to add the agent config to|
 |» defaultVariation|body|[AIConfigVariationPost](#schemaaiconfigvariationpost)|false|none|
 |» evaluationMetricKey|body|string|false|Evaluation metric key for this config|
 |» isInverted|body|boolean|false|The success direction of a judge. Offline evaluations use it to decide whether a score passes.<br><br>- `true`: A lower score is better. Use this for a judge that scores bad output, such as a toxicity or hallucination judge.<br>- `false`: A higher score is better. Use this for a judge that scores good output, such as an accuracy or relevance judge.<br><br>**Required for a custom judge.** A custom judge has `mode` set to `judge` and a `key` that is not a built-in judge key. Built-in judge keys are `ld-ai-judge-accuracy`, `ld-ai-judge-relevance`, and `ld-ai-judge-toxicity`, with or without a `-<timestamp>` suffix such as `ld-ai-judge-accuracy-1760000000000`. For a built-in judge key, this field is optional, and the API always uses the built-in direction.<br><br>Do not send this field when `mode` is `agent` or `completion`.<br><br>This field is not in the schema's `required` list, because only custom judges need it.<br><br>The API returns a `400` error in these cases:<br>- `isInverted is required for a custom judge: ...`: You create a custom judge without this field. Send `true` or `false`.<br>- `isInverted is only supported for judge mode`: You send this field and `mode` is `agent` or `completion`. Remove the field, or set `mode` to `judge`.<br>- `isInverted is not supported`: Custom judges are not available for your account. Remove the field from the request.<br>|
+|» defaultThreshold|body|number(double)|false|The judge's threshold: the pass line for its main score, from 0 to 1. It applies wherever the judge is used. Omit it to create the judge with no threshold.<br><br>Send this field only when `mode` is `judge`.<br><br>The API returns a `400` error in these cases:<br>- `Threshold is only supported for judges`: You send this field and `mode` is `agent` or `completion`.<br>- `Threshold must be from 0 to 1`: The value is below 0 or above 1.<br>- `Thresholds don't support classifier rules yet`: The default variation uses classifier rules.<br>- `Threshold is not supported`: Thresholds are not available for your account. Remove the field from the request.<br>|
 
 #### Enumerated Values
 
@@ -10384,6 +10361,7 @@ Create a new AI Config within the given project.
     }
   ],
   "name": "name",
+  "defaultThreshold": 0.9,
   "key": "key",
   "isInverted": true,
   "updatedAt": 4
@@ -10426,11 +10404,11 @@ Create a new AI Config within the given project.
 }
 ```
 
-<h3 id="create-new-ai-config-responses">Responses</h3>
+<h3 id="create-new-agent-config-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|201|Created|AI Config created|[AIConfig](#schemaaiconfig)|
+|201|Created|Agent config created|[AIConfig](#schemaaiconfig)|
 |400|Bad Request|Bad request|[Error](#schemaerror)|
 |403|Forbidden|Forbidden|[Error](#schemaerror)|
 |429|Too Many Requests|Rate Limited|[Error](#schemaerror)|
@@ -10441,7 +10419,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 ApiKey
 </aside>
 
-## Get AI Config
+## Get agent config
 
 <a id="opIdgetAIConfig"></a>
 
@@ -10455,14 +10433,14 @@ curl https://app.launchdarkly.com/api/v2/projects/string/ai-configs/string \
 
 `GET /api/v2/projects/{projectKey}/ai-configs/{configKey}`
 
-Retrieve a specific AI Config by its key.
+Retrieve a specific agent config by its key.
 
-<h3 id="get-ai-config-parameters">Parameters</h3>
+<h3 id="get-agent-config-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |projectKey|path|string|true|The project key|
-|configKey|path|string|true|The AI Config key|
+|configKey|path|string|true|The agent config key|
 
 > Example responses
 
@@ -10787,6 +10765,7 @@ Retrieve a specific AI Config by its key.
     }
   ],
   "name": "name",
+  "defaultThreshold": 0.9,
   "key": "key",
   "isInverted": true,
   "updatedAt": 4
@@ -10829,11 +10808,11 @@ Retrieve a specific AI Config by its key.
 }
 ```
 
-<h3 id="get-ai-config-responses">Responses</h3>
+<h3 id="get-agent-config-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|OK|AI Config found|[AIConfig](#schemaaiconfig)|
+|200|OK|Agent config found|[AIConfig](#schemaaiconfig)|
 |400|Bad Request|Bad request|[Error](#schemaerror)|
 |403|Forbidden|Forbidden|[Error](#schemaerror)|
 |404|Not Found|Not found|[Error](#schemaerror)|
@@ -10844,7 +10823,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 ApiKey
 </aside>
 
-## Delete AI Config
+## Delete agent config
 
 <a id="opIddeleteAIConfig"></a>
 
@@ -10859,14 +10838,14 @@ curl https://app.launchdarkly.com/api/v2/projects/default/ai-configs/string \
 
 `DELETE /api/v2/projects/{projectKey}/ai-configs/{configKey}`
 
-Delete an existing AI Config.
+Delete an existing agent config.
 
-<h3 id="delete-ai-config-parameters">Parameters</h3>
+<h3 id="delete-agent-config-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |projectKey|path|string|true|The project key|
-|configKey|path|string|true|The AI Config key|
+|configKey|path|string|true|The agent config key|
 
 > Example responses
 
@@ -10906,7 +10885,7 @@ Delete an existing AI Config.
 }
 ```
 
-<h3 id="delete-ai-config-responses">Responses</h3>
+<h3 id="delete-agent-config-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -10921,7 +10900,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 ApiKey
 </aside>
 
-## Update AI Config
+## Update agent config
 
 <a id="opIdpatchAIConfig"></a>
 
@@ -10938,7 +10917,9 @@ curl https://app.launchdarkly.com/api/v2/projects/string/ai-configs/string \
     "maintainerTeamKey": "example-team-key",
     "name": "name",
     "description": "description",
+    "clearDefaultThreshold": true,
     "evaluationMetricKey": "evaluationMetricKey",
+    "defaultThreshold": 0.9,
     "defaultVariationKey": "defaultVariationKey",
     "isInverted": true,
     "tags": [
@@ -10950,7 +10931,7 @@ curl https://app.launchdarkly.com/api/v2/projects/string/ai-configs/string \
 
 `PATCH /api/v2/projects/{projectKey}/ai-configs/{configKey}`
 
-Edit an existing AI Config.
+Edit an existing agent config.
 
 The request body must be a JSON object of the fields to update. The values you include replace the existing values for the fields.
 
@@ -10971,7 +10952,9 @@ Here's an example:
   "maintainerTeamKey": "example-team-key",
   "name": "name",
   "description": "description",
+  "clearDefaultThreshold": true,
   "evaluationMetricKey": "evaluationMetricKey",
+  "defaultThreshold": 0.9,
   "defaultVariationKey": "defaultVariationKey",
   "isInverted": true,
   "tags": [
@@ -10981,21 +10964,23 @@ Here's an example:
 }
 ```
 
-<h3 id="update-ai-config-parameters">Parameters</h3>
+<h3 id="update-agent-config-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |projectKey|path|string|true|The project key|
-|configKey|path|string|true|The AI Config key|
-|body|body|[AIConfigPatch](#schemaaiconfigpatch)|false|AI Config object to update|
+|configKey|path|string|true|The agent config key|
+|body|body|[AIConfigPatch](#schemaaiconfigpatch)|false|Agent config object to update|
 |» defaultVariationKey|body|string|false|Key of the variation this config serves by default|
-|» description|body|string|false|A description of the AI Config|
+|» description|body|string|false|A description of the agent config|
 |» maintainerId|body|string|false|The ID of the member who maintains this resource|
 |» maintainerTeamKey|body|string|false|The key of the team that maintains this resource|
-|» name|body|string|false|A human-readable name for the AI Config|
+|» name|body|string|false|A human-readable name for the agent config|
 |» tags|body|[string]|false|Tags for this resource|
 |» evaluationMetricKey|body|string|false|Evaluation metric key for this config|
-|» isInverted|body|boolean|false|The success direction of a judge. Offline evaluations use it to decide whether a score passes.<br><br>- `true`: A lower score is better. Use this for a judge that scores bad output, such as a toxicity or hallucination judge.<br>- `false`: A higher score is better. Use this for a judge that scores good output, such as an accuracy or relevance judge.<br><br>Send this field only when the AI Config's `mode` is `judge`. If you omit it, the current direction does not change. For a built-in judge key, the API always returns the built-in direction. Built-in judge keys are `ld-ai-judge-accuracy`, `ld-ai-judge-relevance`, and `ld-ai-judge-toxicity`, with or without a `-<timestamp>` suffix such as `ld-ai-judge-accuracy-1760000000000`.<br><br>The API returns a `400` error in these cases:<br>- `isInverted is only supported for judge mode`: You send this field and the AI Config's `mode` is `agent` or `completion`. Remove the field.<br>- `isInverted is not supported`: Custom judges are not available for your account. Remove the field from the request.<br>|
+|» isInverted|body|boolean|false|The success direction of a judge. Offline evaluations use it to decide whether a score passes.<br><br>- `true`: A lower score is better. Use this for a judge that scores bad output, such as a toxicity or hallucination judge.<br>- `false`: A higher score is better. Use this for a judge that scores good output, such as an accuracy or relevance judge.<br><br>Send this field only when the agent config's `mode` is `judge`. If you omit it, the current direction does not change. For a built-in judge key, the API always returns the built-in direction. Built-in judge keys are `ld-ai-judge-accuracy`, `ld-ai-judge-relevance`, and `ld-ai-judge-toxicity`, with or without a `-<timestamp>` suffix such as `ld-ai-judge-accuracy-1760000000000`.<br><br>The API returns a `400` error in these cases:<br>- `isInverted is only supported for judge mode`: You send this field and the agent config's `mode` is `agent` or `completion`. Remove the field.<br>- `isInverted is not supported`: Custom judges are not available for your account. Remove the field from the request.<br>|
+|» defaultThreshold|body|number(double)|false|The judge's threshold: the pass line for its main score, from 0 to 1. It applies wherever the judge is used. If you omit it, the current threshold does not change. To remove the threshold, send `clearDefaultThreshold` instead.<br><br>The API returns a `400` error in these cases:<br>- `Threshold is only supported for judges`: You send this field and the agent config's `mode` is `agent` or `completion`.<br>- `Threshold must be from 0 to 1`: The value is below 0 or above 1.<br>- `Thresholds don't support classifier rules yet`: Every active variation of the judge uses classifier rules. Archived variations don't count.<br>- `Threshold can't be set and cleared in the same request`: You send this field and `clearDefaultThreshold: true`.<br>- `Threshold is not supported`: Thresholds are not available for your account. Remove the field from the request.<br>|
+|» clearDefaultThreshold|body|boolean|false|Set to `true` to remove the judge's threshold. Don't send it with `defaultThreshold`.<br><br>The API returns a `400` error with `Threshold is not supported` when thresholds are not available for your account.<br>|
 
 > Example responses
 
@@ -11320,6 +11305,7 @@ Here's an example:
     }
   ],
   "name": "name",
+  "defaultThreshold": 0.9,
   "key": "key",
   "isInverted": true,
   "updatedAt": 4
@@ -11362,11 +11348,11 @@ Here's an example:
 }
 ```
 
-<h3 id="update-ai-config-responses">Responses</h3>
+<h3 id="update-agent-config-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|OK|AI Config updated|[AIConfig](#schemaaiconfig)|
+|200|OK|Agent config updated|[AIConfig](#schemaaiconfig)|
 |400|Bad Request|Bad request|[Error](#schemaerror)|
 |403|Forbidden|Forbidden|[Error](#schemaerror)|
 |404|Not Found|Not found|[Error](#schemaerror)|
@@ -11377,7 +11363,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 ApiKey
 </aside>
 
-## Create AI Config variation
+## Create agent config variation
 
 <a id="opIdpostAIConfigVariation"></a>
 
@@ -11466,7 +11452,7 @@ curl https://app.launchdarkly.com/api/v2/projects/string/ai-configs/string/varia
 
 `POST /api/v2/projects/{projectKey}/ai-configs/{configKey}/variations`
 
-Create a new variation for a given AI Config.
+Create a new variation for a given agent config.
 
 The <code>model</code> in the request body requires a <code>modelName</code> and <code>parameters</code>, for example:
 
@@ -11558,13 +11544,13 @@ The <code>model</code> in the request body requires a <code>modelName</code> and
 }
 ```
 
-<h3 id="create-ai-config-variation-parameters">Parameters</h3>
+<h3 id="create-agent-config-variation-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |projectKey|path|string|true|The project key|
-|configKey|path|string|true|The AI Config key|
-|body|body|[AIConfigVariationPost](#schemaaiconfigvariationpost)|true|AI Config variation object to create|
+|configKey|path|string|true|The agent config key|
+|body|body|[AIConfigVariationPost](#schemaaiconfigvariationpost)|true|Agent config variation object to create|
 |» classifiers|body|[[Classifier](#schemaclassifier)]|false|Classifier rules for a judge variation. When this array is non-empty, messages must be empty.<br>|
 |» comment|body|string|false|Human-readable description of this variation|
 |» description|body|string|false|Returns the description for the agent. This is only returned for agent variations.|
@@ -11716,11 +11702,11 @@ The <code>model</code> in the request body requires a <code>modelName</code> and
 }
 ```
 
-<h3 id="create-ai-config-variation-responses">Responses</h3>
+<h3 id="create-agent-config-variation-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|201|Created|AI Config variation created|[AIConfigVariation](#schemaaiconfigvariation)|
+|201|Created|Agent config variation created|[AIConfigVariation](#schemaaiconfigvariation)|
 |400|Bad Request|Bad request|[Error](#schemaerror)|
 |403|Forbidden|Forbidden|[Error](#schemaerror)|
 |429|Too Many Requests|Rate Limited|[Error](#schemaerror)|
@@ -11731,7 +11717,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 ApiKey
 </aside>
 
-## Get AI Config variation
+## Get agent config variation
 
 <a id="opIdgetAIConfigVariation"></a>
 
@@ -11745,15 +11731,15 @@ curl https://app.launchdarkly.com/api/v2/projects/default/ai-configs/default/var
 
 `GET /api/v2/projects/{projectKey}/ai-configs/{configKey}/variations/{variationKey}`
 
-Get an AI Config variation by key. The response includes all variation versions for the given variation key.
+Get an agent config variation by key. The response includes all variation versions for the given variation key.
 
-<h3 id="get-ai-config-variation-parameters">Parameters</h3>
+<h3 id="get-agent-config-variation-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |projectKey|path|string|true|The project key|
-|configKey|path|string|true|The AI Config key|
-|variationKey|path|string|true|The AI Config variation key|
+|configKey|path|string|true|The agent config key|
+|variationKey|path|string|true|The agent config variation key|
 
 > Example responses
 
@@ -11987,7 +11973,7 @@ Get an AI Config variation by key. The response includes all variation versions 
 }
 ```
 
-<h3 id="get-ai-config-variation-responses">Responses</h3>
+<h3 id="get-agent-config-variation-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -12002,7 +11988,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 ApiKey
 </aside>
 
-## Delete AI Config variation
+## Delete agent config variation
 
 <a id="opIddeleteAIConfigVariation"></a>
 
@@ -12017,15 +12003,15 @@ curl https://app.launchdarkly.com/api/v2/projects/string/ai-configs/string/varia
 
 `DELETE /api/v2/projects/{projectKey}/ai-configs/{configKey}/variations/{variationKey}`
 
-Delete a specific variation of an AI Config by config key and variation key.
+Delete a specific variation of an agent config by config key and variation key.
 
-<h3 id="delete-ai-config-variation-parameters">Parameters</h3>
+<h3 id="delete-agent-config-variation-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |projectKey|path|string|true|The project key|
-|configKey|path|string|true|The AI Config key|
-|variationKey|path|string|true|The AI Config variation key|
+|configKey|path|string|true|The agent config key|
+|variationKey|path|string|true|The agent config variation key|
 
 > Example responses
 
@@ -12065,7 +12051,7 @@ Delete a specific variation of an AI Config by config key and variation key.
 }
 ```
 
-<h3 id="delete-ai-config-variation-responses">Responses</h3>
+<h3 id="delete-agent-config-variation-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -12080,7 +12066,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 ApiKey
 </aside>
 
-## Update AI Config variation
+## Update agent config variation
 
 <a id="opIdpatchAIConfigVariation"></a>
 
@@ -12170,11 +12156,11 @@ curl https://app.launchdarkly.com/api/v2/projects/string/ai-configs/string/varia
 
 `PATCH /api/v2/projects/{projectKey}/ai-configs/{configKey}/variations/{variationKey}`
 
-Edit an existing variation of an AI Config. This creates a new version of the variation.
+Edit an existing variation of an agent config. This creates a new version of the variation.
 
 The request body must be a JSON object of the fields to update. The values you include replace the existing values for the fields.
 
-If the variation is in use in a project environment where approval settings require review for this AI Config, this endpoint returns 403 and the change must be submitted through an approval request.
+If the variation is in use in a project environment where approval settings require review for this agent config, this endpoint returns 403 and the change must be submitted through an approval request.
 
 Here's an example:
 ```
@@ -12268,14 +12254,14 @@ Here's an example:
 }
 ```
 
-<h3 id="update-ai-config-variation-parameters">Parameters</h3>
+<h3 id="update-agent-config-variation-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |projectKey|path|string|true|The project key|
-|configKey|path|string|true|The AI Config key|
-|variationKey|path|string|true|The AI Config variation key|
-|body|body|[AIConfigVariationPatch](#schemaaiconfigvariationpatch)|false|AI Config variation object to update|
+|configKey|path|string|true|The agent config key|
+|variationKey|path|string|true|The agent config variation key|
+|body|body|[AIConfigVariationPatch](#schemaaiconfigvariationpatch)|false|Agent config variation object to update|
 |» classifiers|body|[[Classifier](#schemaclassifier)]|false|Replaces classifier rules on a judge variation. An empty array clears them. When this array is<br>non-empty, messages must be empty.<br>|
 |» comment|body|string|false|Human-readable description of what this patch changes|
 |» description|body|string|false|Description for agent when the config is in agent mode.|
@@ -12287,7 +12273,7 @@ Here's an example:
 |» name|body|string|false|A human-readable name for the variation|
 |» outputFormat|body|object|false|JSON Schema defining the structured output format for the variation.|
 |» published|body|boolean|false|Whether to publish this version of the variation|
-|» state|body|string|false|The state to move the variation to. Omit this field to keep the current state.<br>- `archived`: Archive a published variation. You cannot archive a variation that is already archived. You also cannot archive the only variation of an AI Config. An AI Config itself cannot be archived.<br>- `published`: Restore an archived variation. You cannot publish a variation that is already published.<br>|
+|» state|body|string|false|The state to move the variation to. Omit this field to keep the current state.<br>- `archived`: Archive a published variation. You cannot archive a variation that is already archived. You also cannot archive the only variation of an agent config. An agent config itself cannot be archived.<br>- `published`: Restore an archived variation. You cannot publish a variation that is already published.<br>|
 |» tools|body|[[VariationToolPost](#schemavariationtoolpost)]|false|List of tools to use for this variation. The latest version of the tool will be used.|
 |» toolKeys|body|[string]|false|List of tool keys to use for this variation. The latest version of the tool will be used.|
 |» skills|body|[[VariationSkillPost](#schemavariationskillpost)]|false|List of agent skills to attach to this variation. Replaces the current attachments.|
@@ -12435,11 +12421,11 @@ Here's an example:
 }
 ```
 
-<h3 id="update-ai-config-variation-responses">Responses</h3>
+<h3 id="update-agent-config-variation-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|OK|AI Config variation updated|[AIConfigVariation](#schemaaiconfigvariation)|
+|200|OK|Agent config variation updated|[AIConfigVariation](#schemaaiconfigvariation)|
 |400|Bad Request|Bad request|[Error](#schemaerror)|
 |403|Forbidden|Forbidden|[Error](#schemaerror)|
 |404|Not Found|Not found|[Error](#schemaerror)|
@@ -12450,7 +12436,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 ApiKey
 </aside>
 
-## Get AI Config quick stats
+## Get agent config quick stats
 
 <a id="opIdgetAIConfigQuickStats"></a>
 
@@ -12464,9 +12450,9 @@ curl 'https://app.launchdarkly.com/api/v2/projects/string/ai-configs/quick-stats
 
 `GET /api/v2/projects/{projectKey}/ai-configs/quick-stats`
 
-Retrieve aggregate quick stats for AI Configs in a project.
+Retrieve aggregate quick stats for agent configs in a project.
 
-<h3 id="get-ai-config-quick-stats-parameters">Parameters</h3>
+<h3 id="get-agent-config-quick-stats-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -12522,7 +12508,7 @@ Retrieve aggregate quick stats for AI Configs in a project.
 }
 ```
 
-<h3 id="get-ai-config-quick-stats-responses">Responses</h3>
+<h3 id="get-agent-config-quick-stats-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -12537,7 +12523,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 ApiKey
 </aside>
 
-## Get AI Config metrics
+## Get agent config metrics
 
 <a id="opIdgetAIConfigMetrics"></a>
 
@@ -12551,19 +12537,20 @@ curl 'https://app.launchdarkly.com/api/v2/projects/string/ai-configs/string/metr
 
 `GET /api/v2/projects/{projectKey}/ai-configs/{configKey}/metrics`
 
-Retrieve usage metrics for an AI Config by config key.
+Retrieve usage metrics for an agent config by config key.
 
-<h3 id="get-ai-config-metrics-parameters">Parameters</h3>
+<h3 id="get-agent-config-metrics-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |projectKey|path|string|true|The project key|
-|configKey|path|string|true|The AI Config key|
+|configKey|path|string|true|The agent config key|
 |from|query|integer|true|The starting time, as milliseconds since epoch (inclusive).|
 |to|query|integer|true|The ending time, as milliseconds since epoch (exclusive). May not be more than 100 days after `from`.|
 |env|query|string|true|An environment key. Only metrics from this environment will be included.|
 |contextKind|query|string|false|A context kind. Only metrics from events that include a context of this kind are included. Required if `contextKey` is provided.|
 |contextKey|query|string|false|A context key. Only metrics from events whose context of the `contextKind` kind has this key are included. Requires `contextKind`.|
+|includeShadow|query|boolean|false|Whether to include Shadow Test events. When `true`, each metric also counts the matching `$ld:ai-shadow:*` events, under the variation the Shadow Test ran. Defaults to `false`.|
 
 > Example responses
 
@@ -12638,7 +12625,7 @@ Retrieve usage metrics for an AI Config by config key.
 }
 ```
 
-<h3 id="get-ai-config-metrics-responses">Responses</h3>
+<h3 id="get-agent-config-metrics-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -12653,7 +12640,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 ApiKey
 </aside>
 
-## Get AI Config metrics by variation
+## Get agent config metrics by variation
 
 <a id="opIdgetAIConfigMetricsByVariation"></a>
 
@@ -12667,19 +12654,20 @@ curl 'https://app.launchdarkly.com/api/v2/projects/string/ai-configs/string/metr
 
 `GET /api/v2/projects/{projectKey}/ai-configs/{configKey}/metrics-by-variation`
 
-Retrieve usage metrics for an AI Config by config key, with results split by variation.
+Retrieve usage metrics for an agent config by config key, with results split by variation.
 
-<h3 id="get-ai-config-metrics-by-variation-parameters">Parameters</h3>
+<h3 id="get-agent-config-metrics-by-variation-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |projectKey|path|string|true|The project key|
-|configKey|path|string|true|The AI Config key|
+|configKey|path|string|true|The agent config key|
 |from|query|integer|true|The starting time, as milliseconds since epoch (inclusive).|
 |to|query|integer|true|The ending time, as milliseconds since epoch (exclusive). May not be more than 100 days after `from`.|
 |env|query|string|true|An environment key. Only metrics from this environment will be included.|
 |contextKind|query|string|false|A context kind. Only metrics from events that include a context of this kind are included. Required if `contextKey` is provided.|
 |contextKey|query|string|false|A context key. Only metrics from events whose context of the `contextKind` kind has this key are included. Requires `contextKind`.|
+|includeShadow|query|boolean|false|Whether to include Shadow Test events. When `true`, each metric also counts the matching `$ld:ai-shadow:*` events, under the variation the Shadow Test ran. Defaults to `false`.|
 
 > Example responses
 
@@ -12759,7 +12747,7 @@ Retrieve usage metrics for an AI Config by config key, with results split by var
 }
 ```
 
-<h3 id="get-ai-config-metrics-by-variation-responses">Responses</h3>
+<h3 id="get-agent-config-metrics-by-variation-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -15227,7 +15215,7 @@ curl https://app.launchdarkly.com/api/v2/projects/string/ai-tools/string/referen
 
 `GET /api/v2/projects/{projectKey}/ai-tools/{toolKey}/references`
 
-Get all AgentControl config variations that currently reference this tool.
+Get all AgentControl config variations that currently reference this tool, and every agent skill version that pins it. The same `limit` and `offset` apply to `items` and to `skills`, and each list is paged on its own. The pagination links follow whichever list has more entries, so keep requesting `next` until both lists are complete, or use `totalCount` and `skillsTotalCount`.
 
 <h3 id="list-ai-tool-references-parameters">Parameters</h3>
 
@@ -15244,6 +15232,18 @@ Get all AgentControl config variations that currently reference this tool.
 
 ```json
 {
+  "skills": [
+    {
+      "toolVersion": 1,
+      "skillVersion": 2,
+      "skillKey": "weather-lookup"
+    },
+    {
+      "toolVersion": 1,
+      "skillVersion": 2,
+      "skillKey": "weather-lookup"
+    }
+  ],
   "resourceKey": "resourceKey",
   "_links": {
     "next": {
@@ -15286,7 +15286,8 @@ Get all AgentControl config variations that currently reference this tool.
       "aiConfigName": "aiConfigName"
     }
   ],
-  "resourceType": "resourceType"
+  "resourceType": "resourceType",
+  "skillsTotalCount": 1
 }
 ```
 
@@ -15596,6 +15597,15 @@ Delete an existing AI tool.
 }
 ```
 
+> 409 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
 > 500 Response
 
 ```json
@@ -15613,6 +15623,7 @@ Delete an existing AI tool.
 |400|Bad Request|Bad request|[Error](#schemaerror)|
 |403|Forbidden|Forbidden|[Error](#schemaerror)|
 |404|Not Found|Not found|[Error](#schemaerror)|
+|409|Conflict|Conflict|[Error](#schemaerror)|
 |500|Internal Server Error|Internal server error|[Error](#schemaerror)|
 
 <aside class="warning">
@@ -17451,6 +17462,7 @@ Get a list of all agent skills in the given project.
 |limit|query|integer|false|The number of resources to return.|
 |offset|query|integer|false|Where to start in the list. Use this with pagination. For example, an offset of 10 skips the first ten items and then returns the next items in the list, up to the query `limit`.|
 |filter|query|string|false|A filter to apply to the list.|
+|sort|query|string|false|A sort to apply to the list of agent skills. Use `usedIn` to sort by the number of AgentControl configs that use each skill, fewest first, or `-usedIn` for most first. Without a sort, skills are ordered by creation date, newest first.|
 
 > Example responses
 
@@ -17591,6 +17603,16 @@ Get a list of all agent skills in the given project.
       "markdown": "markdown",
       "description": "Extracts text and tables from PDF files.",
       "version": 2,
+      "tools": [
+        {
+          "key": "get-weather",
+          "version": 1
+        },
+        {
+          "key": "search-docs",
+          "version": 3
+        }
+      ],
       "key": "key",
       "tags": [
         "documents"
@@ -17705,6 +17727,16 @@ Get a list of all agent skills in the given project.
       "markdown": "markdown",
       "description": "Extracts text and tables from PDF files.",
       "version": 2,
+      "tools": [
+        {
+          "key": "get-weather",
+          "version": 1
+        },
+        {
+          "key": "search-docs",
+          "version": 3
+        }
+      ],
       "key": "key",
       "tags": [
         "documents"
@@ -17783,6 +17815,15 @@ curl https://app.launchdarkly.com/api/v2/projects/string/ai-configs/skills \
     "markdown": "markdown",
     "maintainerTeamKey": "example-team-key",
     "description": "Extracts text and tables from PDF files.",
+    "tools": [
+      {
+        "key": "get-weather",
+        "version": 1
+      },
+      {
+        "key": "search-docs"
+      }
+    ],
     "key": "pdf-extraction",
     "tags": [
       "documents"
@@ -17803,6 +17844,15 @@ Create a new agent skill within the given project.
   "markdown": "markdown",
   "maintainerTeamKey": "example-team-key",
   "description": "Extracts text and tables from PDF files.",
+  "tools": [
+    {
+      "key": "get-weather",
+      "version": 1
+    },
+    {
+      "key": "search-docs"
+    }
+  ],
   "key": "pdf-extraction",
   "tags": [
     "documents"
@@ -17823,6 +17873,7 @@ Create a new agent skill within the given project.
 |» maintainerId|body|string|false|The ID of the member who maintains this resource|
 |» maintainerTeamKey|body|string|false|The key of the team that maintains this resource|
 |» tags|body|[string]|false|Tags for the agent skill. Tags can be used in custom role policies.|
+|» tools|body|[[SkillToolRef](#schemaskilltoolref)]|false|AI tools in the same project to pin to the agent skill, in the order they reach the agent. Each tool key can appear once, and a skill can pin up to 20 tools by default. You need read access to each tool.|
 
 > Example responses
 
@@ -17938,6 +17989,16 @@ Create a new agent skill within the given project.
   "markdown": "markdown",
   "description": "Extracts text and tables from PDF files.",
   "version": 2,
+  "tools": [
+    {
+      "key": "get-weather",
+      "version": 1
+    },
+    {
+      "key": "search-docs",
+      "version": 3
+    }
+  ],
   "key": "key",
   "tags": [
     "documents"
@@ -18143,6 +18204,16 @@ Retrieve a specific agent skill by its key.
   "markdown": "markdown",
   "description": "Extracts text and tables from PDF files.",
   "version": 2,
+  "tools": [
+    {
+      "key": "get-weather",
+      "version": 1
+    },
+    {
+      "key": "search-docs",
+      "version": 3
+    }
+  ],
   "key": "key",
   "tags": [
     "documents"
@@ -18286,6 +18357,15 @@ curl https://app.launchdarkly.com/api/v2/projects/string/ai-configs/skills/strin
     "markdown": "markdown",
     "maintainerTeamKey": "example-team-key",
     "description": "Extracts text and tables from PDF files.",
+    "tools": [
+      {
+        "key": "get-weather",
+        "version": 1
+      },
+      {
+        "key": "search-docs"
+      }
+    ],
     "tags": [
       "documents"
     ]
@@ -18305,6 +18385,15 @@ Update an existing agent skill. Creates a new version of the skill.
   "markdown": "markdown",
   "maintainerTeamKey": "example-team-key",
   "description": "Extracts text and tables from PDF files.",
+  "tools": [
+    {
+      "key": "get-weather",
+      "version": 1
+    },
+    {
+      "key": "search-docs"
+    }
+  ],
   "tags": [
     "documents"
   ]
@@ -18324,6 +18413,7 @@ Update an existing agent skill. Creates a new version of the skill.
 |» maintainerId|body|string|false|The ID of the member who maintains this resource|
 |» maintainerTeamKey|body|string|false|The key of the team that maintains this resource|
 |» tags|body|[string]|false|Replaces the tags on the agent skill. Tags can be used in custom role policies. Changing only the tags does not create a new version.|
+|» tools|body|[[SkillToolRef](#schemaskilltoolref)]|false|Replaces the AI tools pinned to the agent skill, in the order they reach the agent. Leave it out to keep the current tools, or send an empty array to remove them all. A change to the tools or their order creates a new version. Each tool key can appear once, and a skill can pin up to 20 tools by default. You need read access to each tool.|
 
 > Example responses
 
@@ -18439,6 +18529,16 @@ Update an existing agent skill. Creates a new version of the skill.
   "markdown": "markdown",
   "description": "Extracts text and tables from PDF files.",
   "version": 2,
+  "tools": [
+    {
+      "key": "get-weather",
+      "version": 1
+    },
+    {
+      "key": "search-docs",
+      "version": 3
+    }
+  ],
   "key": "key",
   "tags": [
     "documents"
@@ -18789,6 +18889,16 @@ Get all versions of an agent skill in the given project, ordered by version desc
       "markdown": "markdown",
       "description": "Extracts text and tables from PDF files.",
       "version": 2,
+      "tools": [
+        {
+          "key": "get-weather",
+          "version": 1
+        },
+        {
+          "key": "search-docs",
+          "version": 3
+        }
+      ],
       "key": "key",
       "tags": [
         "documents"
@@ -18903,6 +19013,16 @@ Get all versions of an agent skill in the given project, ordered by version desc
       "markdown": "markdown",
       "description": "Extracts text and tables from PDF files.",
       "version": 2,
+      "tools": [
+        {
+          "key": "get-weather",
+          "version": 1
+        },
+        {
+          "key": "search-docs",
+          "version": 3
+        }
+      ],
       "key": "key",
       "tags": [
         "documents"
@@ -20153,6 +20273,16 @@ curl https://app.launchdarkly.com/api/v2/projects/string/agent-optimizations \
 
 Get a list of all agent optimizations in the given project.
 
+### Filtering optimizations
+
+The `filter` parameter supports the following fields and operators:
+
+- `query` with the `equals` operator: case-insensitive substring match on the optimization key, label, or AgentControl config key.
+- `aiConfigKey` with the `equals` operator: exact match on the key of the AgentControl config being optimized.
+
+Separate multiple fields with a comma, for example `filter=aiConfigKey equals "my-agent",query equals "tone"`.
+
+
 <h3 id="list-agent-optimizations-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
@@ -20695,7 +20825,7 @@ Create a new agent optimization within the given project.
 |projectKey|path|string|true|The project key|
 |body|body|[AgentOptimizationPost](#schemaagentoptimizationpost)|true|Agent optimization object to create|
 |» key|body|string|true|A unique key for the agent optimization|
-|» aiConfigKey|body|string|true|The key of the AI Config to optimize|
+|» aiConfigKey|body|string|true|The key of the agent config to optimize|
 |» maxAttempts|body|integer|true|The maximum number of attempts|
 |» modelChoices|body|[string]|false|The models to try|
 |» judgeModel|body|string|true|The model used to judge responses|
@@ -25622,6 +25752,7 @@ LaunchDarkly supports the `filter` query param for filtering, with the following
 - `resourceKind` filters for only approvals that correspond to the specified resource kind. For example: `filter=resourceKind equals flag`. Currently, `flag`, `segment`, and `aiConfig` resource kinds are supported.
 - `reviewStatus` filters for only approvals which correspond to the review status in the specified list. The possible values are `approved`, `declined`, and `pending`. For example: `filter=reviewStatus anyOf ["pending", "approved"]`.
 - `status` filters for only approvals which correspond to the status in the specified list. The possible values are `pending`, `scheduled`, `failed`, and `completed`. For example: `filter=status anyOf ["pending", "scheduled"]`.
+- `creationDate` filters for only approvals created before or after a time. Use the `before` or `after` operator with Unix milliseconds or an RFC 3339 timestamp in quotes. Both are exclusive. For example: `filter=creationDate after 1794000000000` or `filter=creationDate after "2026-11-10T00:00:00Z", creationDate before "2026-11-17T00:00:00Z"`. URL-encode a `+` in a timestamp's offset as `%2B`, or use `Z`.
 
 You can also apply multiple filters at once. For example, setting `filter=projectKey equals my-project, reviewStatus anyOf ["pending","approved"]` matches approval requests which correspond to the `my-project` project key, and a review status of either `pending` or `approved`.
 
@@ -26393,7 +26524,7 @@ For example, `expand=project,flag` includes the `project` and `flag` fields in t
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Approval request collection response|[ExpandableApprovalRequestsResponse](#schemaexpandableapprovalrequestsresponse)|
-|400|Bad Request|Unsupported filter field. Filter field must be one of: requestorId, projectKey, notifyMemberIds, reviewStatus, or status|[InvalidRequestErrorRep](#schemainvalidrequesterrorrep)|
+|400|Bad Request|Unsupported filter field. Filter field must be one of: requestorId, projectKey, notifyMemberIds, reviewStatus, status, resourceKind, resourceId, or creationDate|[InvalidRequestErrorRep](#schemainvalidrequesterrorrep)|
 |401|Unauthorized|Invalid access token|[UnauthorizedErrorRep](#schemaunauthorizederrorrep)|
 |403|Forbidden|Forbidden|[ForbiddenErrorRep](#schemaforbiddenerrorrep)|
 |429|Too Many Requests|Rate limited|[RateLimitedErrorRep](#schemaratelimitederrorrep)|
@@ -30232,6 +30363,7 @@ LaunchDarkly uses a resource specifier syntax to name resources or collections o
 |limit|query|integer(int64)|false|A limit on the number of audit log entries that return. Set between 1 and 20. The default is 10.|
 |member|query|string(string)|false|A member ID that lets you filter audit log listings by the member who made the change. Repeat the parameter to filter by multiple members.|
 |token|query|string(string)|false|An access token ID that lets you filter audit log listings by the token that made the change. Repeat the parameter to filter by multiple tokens.|
+|rollup|query|integer(int64)|false|Set to 1 to return rolled-up audit log entries, which group related changes into one entry. By default, entries aren't rolled up.|
 |body|body|[StatementPostList](#schemastatementpostlist)|false|none|
 
 > Example responses
@@ -33775,7 +33907,7 @@ curl https://app.launchdarkly.com/api/v2/projects/string/environments/string/fla
 
 `POST /api/v2/projects/{projectKey}/environments/{environmentKey}/flags/evaluate`
 
-Evaluate flags for a context instance, for example, to determine the expected flag variation. **Do not use this API instead of an SDK.** The LaunchDarkly SDKs are specialized for the tasks of evaluating feature flags in your application at scale and generating analytics events based on those evaluations. This API is not designed for that use case. Any evaluations you perform with this API will not be reflected in features such as flag statuses and flag insights. Context instances evaluated by this API will not appear in the Contexts list. To learn more, read [Comparing LaunchDarkly's SDKs and REST API](https://launchdarkly.com/docs/guides/api/comparing-sdk-rest-api).
+Evaluate flags for a context instance, for example, to determine the expected flag variation. **Do not use this API instead of an SDK.** The LaunchDarkly SDKs are specialized for the tasks of evaluating feature flags in your application at scale and generating analytics events based on those evaluations. This API is not designed for that use case. Any evaluations you perform with this API will not be reflected in features such as flag statuses and flag insights. Context instances evaluated by this API will not appear in the Contexts list. To learn more, read [Comparing LaunchDarkly SDKs and REST API](https://launchdarkly.com/docs/guides/api/comparing-sdk-rest-api).
 
 ### Filtering
 
@@ -35698,7 +35830,7 @@ To create a Data Export destination with a `kind` of `mparticle`, the `config` o
 
 To create a Data Export destination with a `kind` of `segment`, the `config` object requires the following fields:
 
-* `writeKey`: The Segment write key. This is used to authenticate LaunchDarkly's calls to Segment.
+* `writeKey`: The Segment write key. This is used to authenticate calls from LaunchDarkly to Segment.
 
 #### Snowflake
 
@@ -36304,6 +36436,2041 @@ To perform this operation, you must be authenticated by means of one of the foll
 ApiKey
 </aside>
 
+<h1 id="launchdarkly-rest-api-environment-release-plans-beta">Environment release plans (beta)</h1>
+
+> ### This feature is in beta
+>
+> To use this feature, pass in a header including the `LD-API-Version` key with value set to `beta`. Use this header with each call. To learn more, read [Beta resources](https://launchdarkly.com/docs/api#beta-resources).
+>
+> Resources that are in beta are still undergoing testing and development. They may change without notice, including becoming backwards incompatible.
+
+An environment release plan is a reusable release configuration for one environment. Each plan has an ordered list of phases that [progressively](https://launchdarkly.com/docs/home/releases/progressive-rollouts) roll out a new flag variation to an audience, and can [guard](https://launchdarkly.com/docs/home/releases/guarded-rollouts) one or more metrics to monitor for regressions. When you start a release in that environment, you can select one of its plans instead of configuring the release from scratch. An environment can also have a default release plan, which is preselected when you start a release.
+
+Use the environment release plans API to create, list, view, update, and delete the release plans in an environment, and to read, set, or clear an environment's default release plan. Environment release plans replace release policies.
+
+
+## List release plans
+
+<a id="opIdGetEnvironmentReleasePlans"></a>
+
+> Code samples
+
+```bash
+curl https://app.launchdarkly.com/api/v2/projects/default/environments/production/release-plans \
+  -H 'Accept: application/json' \
+  -H "Authorization: ${API_KEY}" \
+  -H 'LD-API-Version: beta'
+```
+
+`GET /api/v2/projects/{projectKey}/environments/{environmentKey}/release-plans`
+
+Get the environment's release plans, ordered by creation time.
+
+<h3 id="list-release-plans-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|LD-API-Version|header|string|true|Version of the endpoint.|
+|projectKey|path|string|true|The project key|
+|environmentKey|path|string|true|The environment key|
+|filter|query|string|false|A queryfilter expression that narrows the list by text match. Supported field and operators: `query` (`equals`, `contains`). When present, only release plans whose name or key contains the text, case-insensitively, are returned, and totalCount counts the matches. Surrounding whitespace is ignored, and the text is at most 256 bytes. Omitting the filter lists every release plan in the environment.|
+|limit|query|integer|false|The number of release plans to return. Defaults to 20. Maximum is 100.|
+|offset|query|integer|false|The number of release plans to skip. Used for pagination.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|LD-API-Version|beta|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "_links": {
+    "next": {
+      "href": "href",
+      "type": "type"
+    },
+    "last": {
+      "href": "href",
+      "type": "type"
+    },
+    "prev": {
+      "href": "href",
+      "type": "type"
+    },
+    "self": {
+      "href": "href",
+      "type": "type"
+    },
+    "first": {
+      "href": "href",
+      "type": "type"
+    }
+  },
+  "totalCount": 5,
+  "items": [
+    {
+      "releaseMethod": "progressive_release",
+      "createdAt": 6,
+      "default": true,
+      "progressiveRelease": {
+        "advancementMode": "manual",
+        "metrics": {
+          "key": {
+            "autoRollback": false,
+            "isGroup": true
+          }
+        },
+        "randomizationUnit": "user",
+        "cleanupBehavior": "remove_rules_and_update_default_rule",
+        "phases": [
+          {
+            "clauses": [
+              {
+                "op": "endsWith",
+                "negate": false,
+                "values": [
+                  "",
+                  ""
+                ],
+                "contextKind": "user",
+                "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+                "attribute": "email"
+              },
+              {
+                "op": "endsWith",
+                "negate": false,
+                "values": [
+                  "",
+                  ""
+                ],
+                "contextKind": "user",
+                "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+                "attribute": "email"
+              }
+            ],
+            "description": "description",
+            "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+            "steps": [
+              {
+                "allocation": 50000,
+                "durationMillis": 3600000,
+                "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+              },
+              {
+                "allocation": 50000,
+                "durationMillis": 3600000,
+                "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+              }
+            ]
+          },
+          {
+            "clauses": [
+              {
+                "op": "endsWith",
+                "negate": false,
+                "values": [
+                  "",
+                  ""
+                ],
+                "contextKind": "user",
+                "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+                "attribute": "email"
+              },
+              {
+                "op": "endsWith",
+                "negate": false,
+                "values": [
+                  "",
+                  ""
+                ],
+                "contextKind": "user",
+                "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+                "attribute": "email"
+              }
+            ],
+            "description": "description",
+            "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+            "steps": [
+              {
+                "allocation": 50000,
+                "durationMillis": 3600000,
+                "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+              },
+              {
+                "allocation": 50000,
+                "durationMillis": 3600000,
+                "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+              }
+            ]
+          }
+        ]
+      },
+      "name": "name",
+      "description": "description",
+      "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+      "version": 0,
+      "key": "key",
+      "environmentKey": "environmentKey",
+      "updatedAt": 1
+    },
+    {
+      "releaseMethod": "progressive_release",
+      "createdAt": 6,
+      "default": true,
+      "progressiveRelease": {
+        "advancementMode": "manual",
+        "metrics": {
+          "key": {
+            "autoRollback": false,
+            "isGroup": true
+          }
+        },
+        "randomizationUnit": "user",
+        "cleanupBehavior": "remove_rules_and_update_default_rule",
+        "phases": [
+          {
+            "clauses": [
+              {
+                "op": "endsWith",
+                "negate": false,
+                "values": [
+                  "",
+                  ""
+                ],
+                "contextKind": "user",
+                "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+                "attribute": "email"
+              },
+              {
+                "op": "endsWith",
+                "negate": false,
+                "values": [
+                  "",
+                  ""
+                ],
+                "contextKind": "user",
+                "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+                "attribute": "email"
+              }
+            ],
+            "description": "description",
+            "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+            "steps": [
+              {
+                "allocation": 50000,
+                "durationMillis": 3600000,
+                "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+              },
+              {
+                "allocation": 50000,
+                "durationMillis": 3600000,
+                "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+              }
+            ]
+          },
+          {
+            "clauses": [
+              {
+                "op": "endsWith",
+                "negate": false,
+                "values": [
+                  "",
+                  ""
+                ],
+                "contextKind": "user",
+                "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+                "attribute": "email"
+              },
+              {
+                "op": "endsWith",
+                "negate": false,
+                "values": [
+                  "",
+                  ""
+                ],
+                "contextKind": "user",
+                "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+                "attribute": "email"
+              }
+            ],
+            "description": "description",
+            "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+            "steps": [
+              {
+                "allocation": 50000,
+                "durationMillis": 3600000,
+                "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+              },
+              {
+                "allocation": 50000,
+                "durationMillis": 3600000,
+                "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+              }
+            ]
+          }
+        ]
+      },
+      "name": "name",
+      "description": "description",
+      "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+      "version": 0,
+      "key": "key",
+      "environmentKey": "environmentKey",
+      "updatedAt": 1
+    }
+  ]
+}
+```
+
+> 400 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+<h3 id="list-release-plans-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Release plan collection response|[EnvironmentReleasePlans](#schemaenvironmentreleaseplans)|
+|400|Bad Request|Bad request|[Error](#schemaerror)|
+|401|Unauthorized|Invalid access token|[Error](#schemaerror)|
+|403|Forbidden|Forbidden|[Error](#schemaerror)|
+|404|Not Found|Not found|[Error](#schemaerror)|
+|500|Internal Server Error|Internal server error|[Error](#schemaerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+ApiKey
+</aside>
+
+## Create a release plan
+
+<a id="opIdPostEnvironmentReleasePlan"></a>
+
+> Code samples
+
+```bash
+curl https://app.launchdarkly.com/api/v2/projects/default/environments/production/release-plans \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: ${API_KEY}" \
+  -H 'LD-API-Version: beta' \
+  -d '{
+    "releaseMethod": "progressive_release",
+    "progressiveRelease": {
+      "advancementMode": "manual",
+      "metrics": {
+        "key": {
+          "autoRollback": false,
+          "isGroup": true
+        }
+      },
+      "randomizationUnit": "user",
+      "cleanupBehavior": "remove_rules_and_update_default_rule",
+      "phases": [
+        {
+          "clauses": [
+            {
+              "op": "endsWith",
+              "negate": false,
+              "values": [
+                "",
+                ""
+              ],
+              "contextKind": "user",
+              "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+              "attribute": "email"
+            },
+            {
+              "op": "endsWith",
+              "negate": false,
+              "values": [
+                "",
+                ""
+              ],
+              "contextKind": "user",
+              "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+              "attribute": "email"
+            }
+          ],
+          "description": "description",
+          "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+          "steps": [
+            {
+              "allocation": 50000,
+              "durationMillis": 3600000,
+              "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+            },
+            {
+              "allocation": 50000,
+              "durationMillis": 3600000,
+              "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+            }
+          ]
+        },
+        {
+          "clauses": [
+            {
+              "op": "endsWith",
+              "negate": false,
+              "values": [
+                "",
+                ""
+              ],
+              "contextKind": "user",
+              "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+              "attribute": "email"
+            },
+            {
+              "op": "endsWith",
+              "negate": false,
+              "values": [
+                "",
+                ""
+              ],
+              "contextKind": "user",
+              "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+              "attribute": "email"
+            }
+          ],
+          "description": "description",
+          "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+          "steps": [
+            {
+              "allocation": 50000,
+              "durationMillis": 3600000,
+              "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+            },
+            {
+              "allocation": 50000,
+              "durationMillis": 3600000,
+              "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+            }
+          ]
+        }
+      ]
+    },
+    "name": "Checkout flow rollout",
+    "description": "Standard rollout for checkout changes",
+    "key": "checkout-flow-rollout"
+  }'
+```
+
+`POST /api/v2/projects/{projectKey}/environments/{environmentKey}/release-plans`
+
+Create a new release plan for the specified environment.
+
+> Body parameter
+
+```json
+{
+  "releaseMethod": "progressive_release",
+  "progressiveRelease": {
+    "advancementMode": "manual",
+    "metrics": {
+      "key": {
+        "autoRollback": false,
+        "isGroup": true
+      }
+    },
+    "randomizationUnit": "user",
+    "cleanupBehavior": "remove_rules_and_update_default_rule",
+    "phases": [
+      {
+        "clauses": [
+          {
+            "op": "endsWith",
+            "negate": false,
+            "values": [
+              "",
+              ""
+            ],
+            "contextKind": "user",
+            "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+            "attribute": "email"
+          },
+          {
+            "op": "endsWith",
+            "negate": false,
+            "values": [
+              "",
+              ""
+            ],
+            "contextKind": "user",
+            "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+            "attribute": "email"
+          }
+        ],
+        "description": "description",
+        "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+        "steps": [
+          {
+            "allocation": 50000,
+            "durationMillis": 3600000,
+            "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+          },
+          {
+            "allocation": 50000,
+            "durationMillis": 3600000,
+            "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+          }
+        ]
+      },
+      {
+        "clauses": [
+          {
+            "op": "endsWith",
+            "negate": false,
+            "values": [
+              "",
+              ""
+            ],
+            "contextKind": "user",
+            "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+            "attribute": "email"
+          },
+          {
+            "op": "endsWith",
+            "negate": false,
+            "values": [
+              "",
+              ""
+            ],
+            "contextKind": "user",
+            "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+            "attribute": "email"
+          }
+        ],
+        "description": "description",
+        "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+        "steps": [
+          {
+            "allocation": 50000,
+            "durationMillis": 3600000,
+            "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+          },
+          {
+            "allocation": 50000,
+            "durationMillis": 3600000,
+            "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+          }
+        ]
+      }
+    ]
+  },
+  "name": "Checkout flow rollout",
+  "description": "Standard rollout for checkout changes",
+  "key": "checkout-flow-rollout"
+}
+```
+
+<h3 id="create-a-release-plan-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|LD-API-Version|header|string|true|Version of the endpoint.|
+|projectKey|path|string|true|The project key|
+|environmentKey|path|string|true|The environment key|
+|body|body|[PostEnvironmentReleasePlanRequest](#schemapostenvironmentreleaseplanrequest)|true|Release plan to create|
+|» name|body|string|true|Human-readable name for this release plan|
+|» key|body|string|true|Unique key identifying this release plan within the project. Immutable once created. Unique only among active (non-deleted) plans — a soft-deleted plan's key can be reused by a new plan.|
+|» description|body|string|false|Human-readable description of this release plan's purpose|
+|» releaseMethod|body|string|false|Discriminates which nested config object is required|
+|» progressiveRelease|body|[EnvironmentReleasePlanProgressiveRelease](#schemaenvironmentreleaseplanprogressiverelease)|true|none|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|LD-API-Version|beta|
+|» releaseMethod|progressive_release|
+
+> Example responses
+
+> 201 Response
+
+```json
+{
+  "releaseMethod": "progressive_release",
+  "createdAt": 6,
+  "default": true,
+  "progressiveRelease": {
+    "advancementMode": "manual",
+    "metrics": {
+      "key": {
+        "autoRollback": false,
+        "isGroup": true
+      }
+    },
+    "randomizationUnit": "user",
+    "cleanupBehavior": "remove_rules_and_update_default_rule",
+    "phases": [
+      {
+        "clauses": [
+          {
+            "op": "endsWith",
+            "negate": false,
+            "values": [
+              "",
+              ""
+            ],
+            "contextKind": "user",
+            "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+            "attribute": "email"
+          },
+          {
+            "op": "endsWith",
+            "negate": false,
+            "values": [
+              "",
+              ""
+            ],
+            "contextKind": "user",
+            "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+            "attribute": "email"
+          }
+        ],
+        "description": "description",
+        "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+        "steps": [
+          {
+            "allocation": 50000,
+            "durationMillis": 3600000,
+            "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+          },
+          {
+            "allocation": 50000,
+            "durationMillis": 3600000,
+            "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+          }
+        ]
+      },
+      {
+        "clauses": [
+          {
+            "op": "endsWith",
+            "negate": false,
+            "values": [
+              "",
+              ""
+            ],
+            "contextKind": "user",
+            "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+            "attribute": "email"
+          },
+          {
+            "op": "endsWith",
+            "negate": false,
+            "values": [
+              "",
+              ""
+            ],
+            "contextKind": "user",
+            "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+            "attribute": "email"
+          }
+        ],
+        "description": "description",
+        "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+        "steps": [
+          {
+            "allocation": 50000,
+            "durationMillis": 3600000,
+            "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+          },
+          {
+            "allocation": 50000,
+            "durationMillis": 3600000,
+            "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+          }
+        ]
+      }
+    ]
+  },
+  "name": "name",
+  "description": "description",
+  "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+  "version": 0,
+  "key": "key",
+  "environmentKey": "environmentKey",
+  "updatedAt": 1
+}
+```
+
+> 400 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+> 409 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+<h3 id="create-a-release-plan-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|201|Created|Release plan created successfully|[EnvironmentReleasePlan](#schemaenvironmentreleaseplan)|
+|400|Bad Request|Bad request|[Error](#schemaerror)|
+|401|Unauthorized|Invalid access token|[Error](#schemaerror)|
+|403|Forbidden|Forbidden|[Error](#schemaerror)|
+|404|Not Found|Not found|[Error](#schemaerror)|
+|409|Conflict|Conflict|[Error](#schemaerror)|
+|500|Internal Server Error|Internal server error|[Error](#schemaerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+ApiKey
+</aside>
+
+## Get a release plan
+
+<a id="opIdGetEnvironmentReleasePlan"></a>
+
+> Code samples
+
+```bash
+curl https://app.launchdarkly.com/api/v2/projects/default/environments/production/release-plans/checkout-flow-rollout \
+  -H 'Accept: application/json' \
+  -H "Authorization: ${API_KEY}" \
+  -H 'LD-API-Version: beta'
+```
+
+`GET /api/v2/projects/{projectKey}/environments/{environmentKey}/release-plans/{releasePlanKey}`
+
+Get a single release plan by its key.
+
+<h3 id="get-a-release-plan-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|LD-API-Version|header|string|true|Version of the endpoint.|
+|projectKey|path|string|true|The project key|
+|environmentKey|path|string|true|The environment key|
+|releasePlanKey|path|string|true|The release plan key|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|LD-API-Version|beta|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "releaseMethod": "progressive_release",
+  "createdAt": 6,
+  "default": true,
+  "progressiveRelease": {
+    "advancementMode": "manual",
+    "metrics": {
+      "key": {
+        "autoRollback": false,
+        "isGroup": true
+      }
+    },
+    "randomizationUnit": "user",
+    "cleanupBehavior": "remove_rules_and_update_default_rule",
+    "phases": [
+      {
+        "clauses": [
+          {
+            "op": "endsWith",
+            "negate": false,
+            "values": [
+              "",
+              ""
+            ],
+            "contextKind": "user",
+            "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+            "attribute": "email"
+          },
+          {
+            "op": "endsWith",
+            "negate": false,
+            "values": [
+              "",
+              ""
+            ],
+            "contextKind": "user",
+            "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+            "attribute": "email"
+          }
+        ],
+        "description": "description",
+        "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+        "steps": [
+          {
+            "allocation": 50000,
+            "durationMillis": 3600000,
+            "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+          },
+          {
+            "allocation": 50000,
+            "durationMillis": 3600000,
+            "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+          }
+        ]
+      },
+      {
+        "clauses": [
+          {
+            "op": "endsWith",
+            "negate": false,
+            "values": [
+              "",
+              ""
+            ],
+            "contextKind": "user",
+            "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+            "attribute": "email"
+          },
+          {
+            "op": "endsWith",
+            "negate": false,
+            "values": [
+              "",
+              ""
+            ],
+            "contextKind": "user",
+            "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+            "attribute": "email"
+          }
+        ],
+        "description": "description",
+        "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+        "steps": [
+          {
+            "allocation": 50000,
+            "durationMillis": 3600000,
+            "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+          },
+          {
+            "allocation": 50000,
+            "durationMillis": 3600000,
+            "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+          }
+        ]
+      }
+    ]
+  },
+  "name": "name",
+  "description": "description",
+  "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+  "version": 0,
+  "key": "key",
+  "environmentKey": "environmentKey",
+  "updatedAt": 1
+}
+```
+
+> 400 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+<h3 id="get-a-release-plan-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Release plan response|[EnvironmentReleasePlan](#schemaenvironmentreleaseplan)|
+|400|Bad Request|Bad request|[Error](#schemaerror)|
+|401|Unauthorized|Invalid access token|[Error](#schemaerror)|
+|403|Forbidden|Forbidden|[Error](#schemaerror)|
+|404|Not Found|Not found|[Error](#schemaerror)|
+|500|Internal Server Error|Internal server error|[Error](#schemaerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+ApiKey
+</aside>
+
+## Update a release plan
+
+<a id="opIdPutEnvironmentReleasePlan"></a>
+
+> Code samples
+
+```bash
+curl https://app.launchdarkly.com/api/v2/projects/default/environments/production/release-plans/checkout-flow-rollout \
+  -X PUT \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: ${API_KEY}" \
+  -H 'LD-API-Version: beta' \
+  -d '{
+    "releaseMethod": "progressive_release",
+    "progressiveRelease": {
+      "advancementMode": "manual",
+      "metrics": {
+        "key": {
+          "autoRollback": false,
+          "isGroup": true
+        }
+      },
+      "randomizationUnit": "user",
+      "cleanupBehavior": "remove_rules_and_update_default_rule",
+      "phases": [
+        {
+          "clauses": [
+            {
+              "op": "endsWith",
+              "negate": false,
+              "values": [
+                "",
+                ""
+              ],
+              "contextKind": "user",
+              "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+              "attribute": "email"
+            },
+            {
+              "op": "endsWith",
+              "negate": false,
+              "values": [
+                "",
+                ""
+              ],
+              "contextKind": "user",
+              "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+              "attribute": "email"
+            }
+          ],
+          "description": "description",
+          "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+          "steps": [
+            {
+              "allocation": 50000,
+              "durationMillis": 3600000,
+              "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+            },
+            {
+              "allocation": 50000,
+              "durationMillis": 3600000,
+              "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+            }
+          ]
+        },
+        {
+          "clauses": [
+            {
+              "op": "endsWith",
+              "negate": false,
+              "values": [
+                "",
+                ""
+              ],
+              "contextKind": "user",
+              "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+              "attribute": "email"
+            },
+            {
+              "op": "endsWith",
+              "negate": false,
+              "values": [
+                "",
+                ""
+              ],
+              "contextKind": "user",
+              "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+              "attribute": "email"
+            }
+          ],
+          "description": "description",
+          "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+          "steps": [
+            {
+              "allocation": 50000,
+              "durationMillis": 3600000,
+              "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+            },
+            {
+              "allocation": 50000,
+              "durationMillis": 3600000,
+              "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+            }
+          ]
+        }
+      ]
+    },
+    "name": "Checkout flow rollout",
+    "description": "Standard rollout for checkout changes",
+    "version": 3
+  }'
+```
+
+`PUT /api/v2/projects/{projectKey}/environments/{environmentKey}/release-plans/{releasePlanKey}`
+
+Replace a release plan's configuration. This is a full replace, not a merge: the plan's phases, steps, clauses, and metrics become exactly what the request specifies, and anything omitted is removed. The plan's key and environment are immutable, and its version increments by 1 on every successful update. The request's version is an optional optimistic lock: when present it must match the plan's current version, and on mismatch the request is rejected with 409 and no changes are applied, meaning the plan was edited since it was read; get the plan again and retry with its current version. When omitted the update applies unconditionally to the plan currently holding the key. A release already started from the plan is not affected.
+
+> Body parameter
+
+```json
+{
+  "releaseMethod": "progressive_release",
+  "progressiveRelease": {
+    "advancementMode": "manual",
+    "metrics": {
+      "key": {
+        "autoRollback": false,
+        "isGroup": true
+      }
+    },
+    "randomizationUnit": "user",
+    "cleanupBehavior": "remove_rules_and_update_default_rule",
+    "phases": [
+      {
+        "clauses": [
+          {
+            "op": "endsWith",
+            "negate": false,
+            "values": [
+              "",
+              ""
+            ],
+            "contextKind": "user",
+            "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+            "attribute": "email"
+          },
+          {
+            "op": "endsWith",
+            "negate": false,
+            "values": [
+              "",
+              ""
+            ],
+            "contextKind": "user",
+            "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+            "attribute": "email"
+          }
+        ],
+        "description": "description",
+        "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+        "steps": [
+          {
+            "allocation": 50000,
+            "durationMillis": 3600000,
+            "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+          },
+          {
+            "allocation": 50000,
+            "durationMillis": 3600000,
+            "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+          }
+        ]
+      },
+      {
+        "clauses": [
+          {
+            "op": "endsWith",
+            "negate": false,
+            "values": [
+              "",
+              ""
+            ],
+            "contextKind": "user",
+            "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+            "attribute": "email"
+          },
+          {
+            "op": "endsWith",
+            "negate": false,
+            "values": [
+              "",
+              ""
+            ],
+            "contextKind": "user",
+            "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+            "attribute": "email"
+          }
+        ],
+        "description": "description",
+        "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+        "steps": [
+          {
+            "allocation": 50000,
+            "durationMillis": 3600000,
+            "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+          },
+          {
+            "allocation": 50000,
+            "durationMillis": 3600000,
+            "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+          }
+        ]
+      }
+    ]
+  },
+  "name": "Checkout flow rollout",
+  "description": "Standard rollout for checkout changes",
+  "version": 3
+}
+```
+
+<h3 id="update-a-release-plan-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|LD-API-Version|header|string|true|Version of the endpoint.|
+|projectKey|path|string|true|The project key|
+|environmentKey|path|string|true|The environment key|
+|releasePlanKey|path|string|true|The release plan key|
+|body|body|[PutEnvironmentReleasePlanRequest](#schemaputenvironmentreleaseplanrequest)|true|The release plan's replacement configuration|
+|» name|body|string|true|Human-readable name for this release plan|
+|» version|body|integer(int64)|false|Optional. The plan version this request was based on, from a previous read. Plans start at version 1. When present it must match the plan's current version — on mismatch the request is rejected with 409 and no changes are applied, so a stale copy can't silently overwrite a concurrent edit. When omitted, the plan's version is not checked.|
+|» description|body|string|false|Human-readable description of this release plan's purpose|
+|» releaseMethod|body|string|false|Discriminates which nested config object is required|
+|» progressiveRelease|body|[EnvironmentReleasePlanProgressiveRelease](#schemaenvironmentreleaseplanprogressiverelease)|true|none|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|LD-API-Version|beta|
+|» releaseMethod|progressive_release|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "releaseMethod": "progressive_release",
+  "createdAt": 6,
+  "default": true,
+  "progressiveRelease": {
+    "advancementMode": "manual",
+    "metrics": {
+      "key": {
+        "autoRollback": false,
+        "isGroup": true
+      }
+    },
+    "randomizationUnit": "user",
+    "cleanupBehavior": "remove_rules_and_update_default_rule",
+    "phases": [
+      {
+        "clauses": [
+          {
+            "op": "endsWith",
+            "negate": false,
+            "values": [
+              "",
+              ""
+            ],
+            "contextKind": "user",
+            "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+            "attribute": "email"
+          },
+          {
+            "op": "endsWith",
+            "negate": false,
+            "values": [
+              "",
+              ""
+            ],
+            "contextKind": "user",
+            "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+            "attribute": "email"
+          }
+        ],
+        "description": "description",
+        "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+        "steps": [
+          {
+            "allocation": 50000,
+            "durationMillis": 3600000,
+            "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+          },
+          {
+            "allocation": 50000,
+            "durationMillis": 3600000,
+            "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+          }
+        ]
+      },
+      {
+        "clauses": [
+          {
+            "op": "endsWith",
+            "negate": false,
+            "values": [
+              "",
+              ""
+            ],
+            "contextKind": "user",
+            "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+            "attribute": "email"
+          },
+          {
+            "op": "endsWith",
+            "negate": false,
+            "values": [
+              "",
+              ""
+            ],
+            "contextKind": "user",
+            "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+            "attribute": "email"
+          }
+        ],
+        "description": "description",
+        "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+        "steps": [
+          {
+            "allocation": 50000,
+            "durationMillis": 3600000,
+            "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+          },
+          {
+            "allocation": 50000,
+            "durationMillis": 3600000,
+            "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+          }
+        ]
+      }
+    ]
+  },
+  "name": "name",
+  "description": "description",
+  "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+  "version": 0,
+  "key": "key",
+  "environmentKey": "environmentKey",
+  "updatedAt": 1
+}
+```
+
+> 400 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+> 409 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+<h3 id="update-a-release-plan-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Release plan updated successfully|[EnvironmentReleasePlan](#schemaenvironmentreleaseplan)|
+|400|Bad Request|Bad request|[Error](#schemaerror)|
+|401|Unauthorized|Invalid access token|[Error](#schemaerror)|
+|403|Forbidden|Forbidden|[Error](#schemaerror)|
+|404|Not Found|Not found|[Error](#schemaerror)|
+|409|Conflict|Conflict|[Error](#schemaerror)|
+|500|Internal Server Error|Internal server error|[Error](#schemaerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+ApiKey
+</aside>
+
+## Delete a release plan
+
+<a id="opIdDeleteEnvironmentReleasePlan"></a>
+
+> Code samples
+
+```bash
+curl https://app.launchdarkly.com/api/v2/projects/default/environments/production/release-plans/checkout-flow-rollout \
+  -X DELETE \
+  -H 'Accept: application/json' \
+  -H "Authorization: ${API_KEY}" \
+  -H 'LD-API-Version: beta'
+```
+
+`DELETE /api/v2/projects/{projectKey}/environments/{environmentKey}/release-plans/{releasePlanKey}`
+
+Delete a release plan by its key. The plan no longer appears in reads, and its key becomes available for reuse by a new plan. Returns 409 while a flag release plan still uses the release plan; remove it from those flag release plans first.
+
+<h3 id="delete-a-release-plan-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|LD-API-Version|header|string|true|Version of the endpoint.|
+|projectKey|path|string|true|The project key|
+|environmentKey|path|string|true|The environment key|
+|releasePlanKey|path|string|true|The release plan key|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|LD-API-Version|beta|
+
+> Example responses
+
+> 400 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+> 409 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+<h3 id="delete-a-release-plan-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|204|No Content|Release plan deleted successfully|None|
+|400|Bad Request|Bad request|[Error](#schemaerror)|
+|401|Unauthorized|Invalid access token|[Error](#schemaerror)|
+|403|Forbidden|Forbidden|[Error](#schemaerror)|
+|404|Not Found|Not found|[Error](#schemaerror)|
+|409|Conflict|Conflict|[Error](#schemaerror)|
+|500|Internal Server Error|Internal server error|[Error](#schemaerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+ApiKey
+</aside>
+
+## Get the default release plan
+
+<a id="opIdGetDefaultEnvironmentReleasePlan"></a>
+
+> Code samples
+
+```bash
+curl https://app.launchdarkly.com/api/v2/projects/default/environments/production/default-release-plan \
+  -H 'Accept: application/json' \
+  -H "Authorization: ${API_KEY}" \
+  -H 'LD-API-Version: beta'
+```
+
+`GET /api/v2/projects/{projectKey}/environments/{environmentKey}/default-release-plan`
+
+Get the environment's default release plan — the plan consumers preselect when starting a release. Returns `204 No Content` when the environment has no default.
+
+<h3 id="get-the-default-release-plan-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|LD-API-Version|header|string|true|Version of the endpoint.|
+|projectKey|path|string|true|The project key|
+|environmentKey|path|string|true|The environment key|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|LD-API-Version|beta|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "releaseMethod": "progressive_release",
+  "createdAt": 6,
+  "default": true,
+  "progressiveRelease": {
+    "advancementMode": "manual",
+    "metrics": {
+      "key": {
+        "autoRollback": false,
+        "isGroup": true
+      }
+    },
+    "randomizationUnit": "user",
+    "cleanupBehavior": "remove_rules_and_update_default_rule",
+    "phases": [
+      {
+        "clauses": [
+          {
+            "op": "endsWith",
+            "negate": false,
+            "values": [
+              "",
+              ""
+            ],
+            "contextKind": "user",
+            "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+            "attribute": "email"
+          },
+          {
+            "op": "endsWith",
+            "negate": false,
+            "values": [
+              "",
+              ""
+            ],
+            "contextKind": "user",
+            "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+            "attribute": "email"
+          }
+        ],
+        "description": "description",
+        "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+        "steps": [
+          {
+            "allocation": 50000,
+            "durationMillis": 3600000,
+            "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+          },
+          {
+            "allocation": 50000,
+            "durationMillis": 3600000,
+            "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+          }
+        ]
+      },
+      {
+        "clauses": [
+          {
+            "op": "endsWith",
+            "negate": false,
+            "values": [
+              "",
+              ""
+            ],
+            "contextKind": "user",
+            "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+            "attribute": "email"
+          },
+          {
+            "op": "endsWith",
+            "negate": false,
+            "values": [
+              "",
+              ""
+            ],
+            "contextKind": "user",
+            "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+            "attribute": "email"
+          }
+        ],
+        "description": "description",
+        "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+        "steps": [
+          {
+            "allocation": 50000,
+            "durationMillis": 3600000,
+            "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+          },
+          {
+            "allocation": 50000,
+            "durationMillis": 3600000,
+            "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+          }
+        ]
+      }
+    ]
+  },
+  "name": "name",
+  "description": "description",
+  "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+  "version": 0,
+  "key": "key",
+  "environmentKey": "environmentKey",
+  "updatedAt": 1
+}
+```
+
+> 400 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+<h3 id="get-the-default-release-plan-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Default release plan response|[EnvironmentReleasePlan](#schemaenvironmentreleaseplan)|
+|204|No Content|The environment has no default release plan|None|
+|400|Bad Request|Bad request|[Error](#schemaerror)|
+|401|Unauthorized|Invalid access token|[Error](#schemaerror)|
+|403|Forbidden|Forbidden|[Error](#schemaerror)|
+|404|Not Found|Not found|[Error](#schemaerror)|
+|500|Internal Server Error|Internal server error|[Error](#schemaerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+ApiKey
+</aside>
+
+## Set the default release plan
+
+<a id="opIdPutDefaultEnvironmentReleasePlan"></a>
+
+> Code samples
+
+```bash
+curl https://app.launchdarkly.com/api/v2/projects/default/environments/production/default-release-plan \
+  -X PUT \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: ${API_KEY}" \
+  -H 'LD-API-Version: beta' \
+  -d '{
+    "key": "checkout-flow-rollout"
+  }'
+```
+
+`PUT /api/v2/projects/{projectKey}/environments/{environmentKey}/default-release-plan`
+
+Set the plan with the given key as the environment's default, atomically replacing whatever was default before. Each plan whose default flag changes has its version incremented by 1. Idempotent: setting the current default again changes nothing. Rejects a key that is not an active plan in the environment, or a plan that has no randomization unit.
+
+> Body parameter
+
+```json
+{
+  "key": "checkout-flow-rollout"
+}
+```
+
+<h3 id="set-the-default-release-plan-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|LD-API-Version|header|string|true|Version of the endpoint.|
+|projectKey|path|string|true|The project key|
+|environmentKey|path|string|true|The environment key|
+|body|body|[PutDefaultEnvironmentReleasePlanRequest](#schemaputdefaultenvironmentreleaseplanrequest)|true|The plan to set as the environment's default|
+|» key|body|string|true|Key of the release plan to set as the environment's default|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|LD-API-Version|beta|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "releaseMethod": "progressive_release",
+  "createdAt": 6,
+  "default": true,
+  "progressiveRelease": {
+    "advancementMode": "manual",
+    "metrics": {
+      "key": {
+        "autoRollback": false,
+        "isGroup": true
+      }
+    },
+    "randomizationUnit": "user",
+    "cleanupBehavior": "remove_rules_and_update_default_rule",
+    "phases": [
+      {
+        "clauses": [
+          {
+            "op": "endsWith",
+            "negate": false,
+            "values": [
+              "",
+              ""
+            ],
+            "contextKind": "user",
+            "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+            "attribute": "email"
+          },
+          {
+            "op": "endsWith",
+            "negate": false,
+            "values": [
+              "",
+              ""
+            ],
+            "contextKind": "user",
+            "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+            "attribute": "email"
+          }
+        ],
+        "description": "description",
+        "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+        "steps": [
+          {
+            "allocation": 50000,
+            "durationMillis": 3600000,
+            "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+          },
+          {
+            "allocation": 50000,
+            "durationMillis": 3600000,
+            "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+          }
+        ]
+      },
+      {
+        "clauses": [
+          {
+            "op": "endsWith",
+            "negate": false,
+            "values": [
+              "",
+              ""
+            ],
+            "contextKind": "user",
+            "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+            "attribute": "email"
+          },
+          {
+            "op": "endsWith",
+            "negate": false,
+            "values": [
+              "",
+              ""
+            ],
+            "contextKind": "user",
+            "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+            "attribute": "email"
+          }
+        ],
+        "description": "description",
+        "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+        "steps": [
+          {
+            "allocation": 50000,
+            "durationMillis": 3600000,
+            "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+          },
+          {
+            "allocation": 50000,
+            "durationMillis": 3600000,
+            "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+          }
+        ]
+      }
+    ]
+  },
+  "name": "name",
+  "description": "description",
+  "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+  "version": 0,
+  "key": "key",
+  "environmentKey": "environmentKey",
+  "updatedAt": 1
+}
+```
+
+> 400 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+<h3 id="set-the-default-release-plan-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|The now-default release plan|[EnvironmentReleasePlan](#schemaenvironmentreleaseplan)|
+|400|Bad Request|Bad request|[Error](#schemaerror)|
+|401|Unauthorized|Invalid access token|[Error](#schemaerror)|
+|403|Forbidden|Forbidden|[Error](#schemaerror)|
+|404|Not Found|Not found|[Error](#schemaerror)|
+|500|Internal Server Error|Internal server error|[Error](#schemaerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+ApiKey
+</aside>
+
+## Clear the default release plan
+
+<a id="opIdDeleteDefaultEnvironmentReleasePlan"></a>
+
+> Code samples
+
+```bash
+curl https://app.launchdarkly.com/api/v2/projects/default/environments/production/default-release-plan \
+  -X DELETE \
+  -H 'Accept: application/json' \
+  -H "Authorization: ${API_KEY}" \
+  -H 'LD-API-Version: beta'
+```
+
+`DELETE /api/v2/projects/{projectKey}/environments/{environmentKey}/default-release-plan`
+
+Clear the environment's default release plan, incrementing the formerly-default plan's version by 1; the environment then has none. Idempotent: returns `204` whether or not a default was set.
+
+<h3 id="clear-the-default-release-plan-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|LD-API-Version|header|string|true|Version of the endpoint.|
+|projectKey|path|string|true|The project key|
+|environmentKey|path|string|true|The environment key|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|LD-API-Version|beta|
+
+> Example responses
+
+> 400 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+<h3 id="clear-the-default-release-plan-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|204|No Content|The environment no longer has a default release plan|None|
+|400|Bad Request|Bad request|[Error](#schemaerror)|
+|401|Unauthorized|Invalid access token|[Error](#schemaerror)|
+|403|Forbidden|Forbidden|[Error](#schemaerror)|
+|404|Not Found|Not found|[Error](#schemaerror)|
+|500|Internal Server Error|Internal server error|[Error](#schemaerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+ApiKey
+</aside>
+
 <h1 id="launchdarkly-rest-api-environment-releases-beta">Environment releases (beta)</h1>
 
 > ### This feature is in beta
@@ -36312,7 +38479,7 @@ ApiKey
 >
 > Resources that are in beta are still undergoing testing and development. They may change without notice, including becoming backwards incompatible.
 
-An environment release [progressively](https://launchdarkly.com/docs/home/releases/progressive-rollouts#progressive-rollouts) rolls out a new flag variation in one environment. On select plans, you can [guard](https://launchdarkly.com/docs/home/releases/guarded-rollouts) one or more metrics, monitoring them for regressions. Use the environment releases API to list releases, get a release, start a release, or stop an active release.
+An environment release [progressively](https://launchdarkly.com/docs/home/releases/progressive-rollouts) rolls out a new flag variation in one environment. On select plans, you can [guard](https://launchdarkly.com/docs/home/releases/guarded-rollouts) one or more metrics, monitoring them for regressions. Use the environment releases API to list releases, get a release, start a release, or stop an active release.
 
 
 ## List environment releases
@@ -38973,7 +41140,7 @@ ApiKey
 
 > ### Available for subscription customers
 >
-> Experimentation is available to all customers on a Developer, Foundation, Enterprise, or Guardian plan. If you're on an older Pro or Enterprise plan, Experimentation is available as an add-on. To learn more, [read about our pricing](https://launchdarkly.com/pricing/). To change your plan, [contact Sales](https://launchdarkly.com/contact-sales/).
+> Experimentation is available to all customers on a Developer, Foundation, or Enterprise plan. If you're on an older Pro or Enterprise plan, Experimentation is available as an add-on. To learn more, [read about our pricing](https://launchdarkly.com/pricing/). To change your plan, [contact Sales](https://launchdarkly.com/contact-sales/).
 
 Experimentation lets you validate the impact of features you roll out to your app or infrastructure. You can measure things like page views, clicks, load time, infrastructure costs, and more. By connecting metrics you create to flags in your LaunchDarkly environment, you can measure the changes in your customers' behavior based on what flags they evaluate. You can run experiments with any type of flag, including boolean, string, number, and JSON flags. To learn more, read [Experimentation](https://launchdarkly.com/docs/home/experimentation).
 
@@ -39052,6 +41219,7 @@ For example, `expand=draftIteration,treatments` includes the `draftIteration` an
       "environmentKey": "string",
       "methodology": "bayesian",
       "dataSource": "snowflake",
+      "assignmentSourceType": "snowflake",
       "archivedDate": "1654104600000",
       "tags": [
         "experiment",
@@ -39228,7 +41396,8 @@ For example, `expand=draftIteration,treatments` includes the `draftIteration` an
                 "variationId": "string",
                 "flagKey": "string"
               }
-            ]
+            ],
+            "assignmentVariantId": "treatment_a"
           }
         ],
         "secondaryMetrics": [
@@ -39305,6 +41474,13 @@ For example, `expand=draftIteration,treatments` includes the `draftIteration` an
           "id": "74a49a2b-4834-4246-917e-5d85231d8c2a",
           "fileName": "covariate.csv",
           "createdAt": "1654104600000"
+        },
+        "assignmentDataSource": {
+          "key": "my-assignment-data-source",
+          "name": "Snowflake production assignments",
+          "experimentId": "experiment-123",
+          "startTime": "1690000000000",
+          "endTime": "1690000000000"
         }
       },
       "type": "experiment",
@@ -39512,7 +41688,8 @@ For example, `expand=draftIteration,treatments` includes the `draftIteration` an
                 "variationId": "string",
                 "flagKey": "string"
               }
-            ]
+            ],
+            "assignmentVariantId": "treatment_a"
           }
         ],
         "secondaryMetrics": [
@@ -39589,6 +41766,13 @@ For example, `expand=draftIteration,treatments` includes the `draftIteration` an
           "id": "74a49a2b-4834-4246-917e-5d85231d8c2a",
           "fileName": "covariate.csv",
           "createdAt": "1654104600000"
+        },
+        "assignmentDataSource": {
+          "key": "my-assignment-data-source",
+          "name": "Snowflake production assignments",
+          "experimentId": "experiment-123",
+          "startTime": "1690000000000",
+          "endTime": "1690000000000"
         }
       },
       "previousIterations": [
@@ -39752,7 +41936,8 @@ For example, `expand=draftIteration,treatments` includes the `draftIteration` an
                   "variationId": "string",
                   "flagKey": "string"
                 }
-              ]
+              ],
+              "assignmentVariantId": "treatment_a"
             }
           ],
           "secondaryMetrics": [
@@ -39829,6 +42014,13 @@ For example, `expand=draftIteration,treatments` includes the `draftIteration` an
             "id": "74a49a2b-4834-4246-917e-5d85231d8c2a",
             "fileName": "covariate.csv",
             "createdAt": "1654104600000"
+          },
+          "assignmentDataSource": {
+            "key": "my-assignment-data-source",
+            "name": "Snowflake production assignments",
+            "experimentId": "experiment-123",
+            "startTime": "1690000000000",
+            "endTime": "1690000000000"
           }
         }
       ],
@@ -39993,10 +42185,17 @@ curl https://app.launchdarkly.com/api/v2/projects/string/environments/string/exp
               "flagKey": "example-flag-for-experiment",
               "variationId": "e432f62b-55f6-49dd-a02f-eb24acf39d05"
             }
-          ]
+          ],
+          "assignmentVariantId": "treatment-1"
         }
       ],
       "flags": "{\"example-flag-key\": { \"ruleId\": \"e432f62b-55f6-49dd-a02f-eb24acf39d05\", \"flagConfigVersion\": 12, \"notInExperimentVariationId\": \"e432f62b-55f6-49dd-a02f-eb24acf39d05\" }}",
+      "assignmentDataSource": {
+        "key": "my-assignment-data-source",
+        "experimentId": "experiment-123",
+        "startTime": "1690000000000",
+        "endTime": "1690000000000"
+      },
       "randomizationUnit": "user",
       "reallocationFrequencyMillis": 3600000,
       "covariateId": "string",
@@ -40078,10 +42277,17 @@ To learn more, read [Creating experiments](https://launchdarkly.com/docs/home/ex
             "flagKey": "example-flag-for-experiment",
             "variationId": "e432f62b-55f6-49dd-a02f-eb24acf39d05"
           }
-        ]
+        ],
+        "assignmentVariantId": "treatment-1"
       }
     ],
     "flags": "{\"example-flag-key\": { \"ruleId\": \"e432f62b-55f6-49dd-a02f-eb24acf39d05\", \"flagConfigVersion\": 12, \"notInExperimentVariationId\": \"e432f62b-55f6-49dd-a02f-eb24acf39d05\" }}",
+    "assignmentDataSource": {
+      "key": "my-assignment-data-source",
+      "experimentId": "experiment-123",
+      "startTime": "1690000000000",
+      "endTime": "1690000000000"
+    },
     "randomizationUnit": "user",
     "reallocationFrequencyMillis": 3600000,
     "covariateId": "string",
@@ -40156,6 +42362,7 @@ To learn more, read [Creating experiments](https://launchdarkly.com/docs/home/ex
   "environmentKey": "string",
   "methodology": "bayesian",
   "dataSource": "snowflake",
+  "assignmentSourceType": "snowflake",
   "archivedDate": "1654104600000",
   "tags": [
     "experiment",
@@ -40332,7 +42539,8 @@ To learn more, read [Creating experiments](https://launchdarkly.com/docs/home/ex
             "variationId": "string",
             "flagKey": "string"
           }
-        ]
+        ],
+        "assignmentVariantId": "treatment_a"
       }
     ],
     "secondaryMetrics": [
@@ -40409,6 +42617,13 @@ To learn more, read [Creating experiments](https://launchdarkly.com/docs/home/ex
       "id": "74a49a2b-4834-4246-917e-5d85231d8c2a",
       "fileName": "covariate.csv",
       "createdAt": "1654104600000"
+    },
+    "assignmentDataSource": {
+      "key": "my-assignment-data-source",
+      "name": "Snowflake production assignments",
+      "experimentId": "experiment-123",
+      "startTime": "1690000000000",
+      "endTime": "1690000000000"
     }
   },
   "type": "experiment",
@@ -40616,7 +42831,8 @@ To learn more, read [Creating experiments](https://launchdarkly.com/docs/home/ex
             "variationId": "string",
             "flagKey": "string"
           }
-        ]
+        ],
+        "assignmentVariantId": "treatment_a"
       }
     ],
     "secondaryMetrics": [
@@ -40693,6 +42909,13 @@ To learn more, read [Creating experiments](https://launchdarkly.com/docs/home/ex
       "id": "74a49a2b-4834-4246-917e-5d85231d8c2a",
       "fileName": "covariate.csv",
       "createdAt": "1654104600000"
+    },
+    "assignmentDataSource": {
+      "key": "my-assignment-data-source",
+      "name": "Snowflake production assignments",
+      "experimentId": "experiment-123",
+      "startTime": "1690000000000",
+      "endTime": "1690000000000"
     }
   },
   "previousIterations": [
@@ -40856,7 +43079,8 @@ To learn more, read [Creating experiments](https://launchdarkly.com/docs/home/ex
               "variationId": "string",
               "flagKey": "string"
             }
-          ]
+          ],
+          "assignmentVariantId": "treatment_a"
         }
       ],
       "secondaryMetrics": [
@@ -40933,6 +43157,13 @@ To learn more, read [Creating experiments](https://launchdarkly.com/docs/home/ex
         "id": "74a49a2b-4834-4246-917e-5d85231d8c2a",
         "fileName": "covariate.csv",
         "createdAt": "1654104600000"
+      },
+      "assignmentDataSource": {
+        "key": "my-assignment-data-source",
+        "name": "Snowflake production assignments",
+        "experimentId": "experiment-123",
+        "startTime": "1690000000000",
+        "endTime": "1690000000000"
       }
     }
   ],
@@ -41089,6 +43320,7 @@ For example, `expand=draftIteration,treatments` includes the `draftIteration` an
   "environmentKey": "string",
   "methodology": "bayesian",
   "dataSource": "snowflake",
+  "assignmentSourceType": "snowflake",
   "archivedDate": "1654104600000",
   "tags": [
     "experiment",
@@ -41265,7 +43497,8 @@ For example, `expand=draftIteration,treatments` includes the `draftIteration` an
             "variationId": "string",
             "flagKey": "string"
           }
-        ]
+        ],
+        "assignmentVariantId": "treatment_a"
       }
     ],
     "secondaryMetrics": [
@@ -41342,6 +43575,13 @@ For example, `expand=draftIteration,treatments` includes the `draftIteration` an
       "id": "74a49a2b-4834-4246-917e-5d85231d8c2a",
       "fileName": "covariate.csv",
       "createdAt": "1654104600000"
+    },
+    "assignmentDataSource": {
+      "key": "my-assignment-data-source",
+      "name": "Snowflake production assignments",
+      "experimentId": "experiment-123",
+      "startTime": "1690000000000",
+      "endTime": "1690000000000"
     }
   },
   "type": "experiment",
@@ -41549,7 +43789,8 @@ For example, `expand=draftIteration,treatments` includes the `draftIteration` an
             "variationId": "string",
             "flagKey": "string"
           }
-        ]
+        ],
+        "assignmentVariantId": "treatment_a"
       }
     ],
     "secondaryMetrics": [
@@ -41626,6 +43867,13 @@ For example, `expand=draftIteration,treatments` includes the `draftIteration` an
       "id": "74a49a2b-4834-4246-917e-5d85231d8c2a",
       "fileName": "covariate.csv",
       "createdAt": "1654104600000"
+    },
+    "assignmentDataSource": {
+      "key": "my-assignment-data-source",
+      "name": "Snowflake production assignments",
+      "experimentId": "experiment-123",
+      "startTime": "1690000000000",
+      "endTime": "1690000000000"
     }
   },
   "previousIterations": [
@@ -41789,7 +44037,8 @@ For example, `expand=draftIteration,treatments` includes the `draftIteration` an
               "variationId": "string",
               "flagKey": "string"
             }
-          ]
+          ],
+          "assignmentVariantId": "treatment_a"
         }
       ],
       "secondaryMetrics": [
@@ -41866,6 +44115,13 @@ For example, `expand=draftIteration,treatments` includes the `draftIteration` an
         "id": "74a49a2b-4834-4246-917e-5d85231d8c2a",
         "fileName": "covariate.csv",
         "createdAt": "1654104600000"
+      },
+      "assignmentDataSource": {
+        "key": "my-assignment-data-source",
+        "name": "Snowflake production assignments",
+        "experimentId": "experiment-123",
+        "startTime": "1690000000000",
+        "endTime": "1690000000000"
       }
     }
   ],
@@ -42086,6 +44342,44 @@ Here's an example:
 }
 ```
 
+##### Custom assignment source fields
+
+If your experiment reads its assignment data from your data warehouse, two additional fields control the assignment source it uses.
+
+Use `assignmentDataSource` to attach an assignment source to an iteration, change which source it points at, or detach it. Its value is an object with the following properties:
+
+- `key`: (Required) The key of the assignment data source.
+- `experimentId`: The experiment identifier in the assignment data source. You can omit this while the experiment is a draft, but you must set it before you start the experiment.
+- `startTime`: (Optional) The start of the assignment data window, in Unix milliseconds.
+- `endTime`: (Optional) The end of the assignment data window, in Unix milliseconds. This must be later than `startTime`.
+
+To detach the assignment source, send `null` as the value. You can only change this field while the iteration is still a draft.
+
+Use `assignmentDataSourceWindow` to change only the dates on an assignment source that is already attached. Its value is an object with the same `startTime` and `endTime` properties. The iteration must already have an assignment source. This is how you adjust the dates after an iteration has run, because the source itself is fixed at that point.
+
+Multi-armed bandits use flags for assignment, so they support neither field.
+
+Here's an example:
+
+```json
+{
+  "instructions": [{
+    "kind": "updateExperimentFields",
+    "value": {
+      "assignmentDataSource": {
+        "operation": "update",
+        "value": {
+          "key": "my-assignment-data-source",
+          "experimentId": "experiment-123",
+          "startTime": 1690000000000,
+          "endTime": 1690600000000
+        }
+      }
+    }
+  }]
+}
+```
+
 #### saveAndStartNewIteration
 
 Stops the current running iteration, creates a new iteration from it, optionally applies field updates, and starts the new iteration. This is a convenience instruction that combines stopping, updating, and starting in a single operation.
@@ -42223,6 +44517,7 @@ Here's an example:
   "environmentKey": "string",
   "methodology": "bayesian",
   "dataSource": "snowflake",
+  "assignmentSourceType": "snowflake",
   "archivedDate": "1654104600000",
   "tags": [
     "experiment",
@@ -42399,7 +44694,8 @@ Here's an example:
             "variationId": "string",
             "flagKey": "string"
           }
-        ]
+        ],
+        "assignmentVariantId": "treatment_a"
       }
     ],
     "secondaryMetrics": [
@@ -42476,6 +44772,13 @@ Here's an example:
       "id": "74a49a2b-4834-4246-917e-5d85231d8c2a",
       "fileName": "covariate.csv",
       "createdAt": "1654104600000"
+    },
+    "assignmentDataSource": {
+      "key": "my-assignment-data-source",
+      "name": "Snowflake production assignments",
+      "experimentId": "experiment-123",
+      "startTime": "1690000000000",
+      "endTime": "1690000000000"
     }
   },
   "type": "experiment",
@@ -42683,7 +44986,8 @@ Here's an example:
             "variationId": "string",
             "flagKey": "string"
           }
-        ]
+        ],
+        "assignmentVariantId": "treatment_a"
       }
     ],
     "secondaryMetrics": [
@@ -42760,6 +45064,13 @@ Here's an example:
       "id": "74a49a2b-4834-4246-917e-5d85231d8c2a",
       "fileName": "covariate.csv",
       "createdAt": "1654104600000"
+    },
+    "assignmentDataSource": {
+      "key": "my-assignment-data-source",
+      "name": "Snowflake production assignments",
+      "experimentId": "experiment-123",
+      "startTime": "1690000000000",
+      "endTime": "1690000000000"
     }
   },
   "previousIterations": [
@@ -42923,7 +45234,8 @@ Here's an example:
               "variationId": "string",
               "flagKey": "string"
             }
-          ]
+          ],
+          "assignmentVariantId": "treatment_a"
         }
       ],
       "secondaryMetrics": [
@@ -43000,6 +45312,13 @@ Here's an example:
         "id": "74a49a2b-4834-4246-917e-5d85231d8c2a",
         "fileName": "covariate.csv",
         "createdAt": "1654104600000"
+      },
+      "assignmentDataSource": {
+        "key": "my-assignment-data-source",
+        "name": "Snowflake production assignments",
+        "experimentId": "experiment-123",
+        "startTime": "1690000000000",
+        "endTime": "1690000000000"
       }
     }
   ],
@@ -43156,10 +45475,17 @@ curl https://app.launchdarkly.com/api/v2/projects/string/environments/string/exp
             "flagKey": "example-flag-for-experiment",
             "variationId": "e432f62b-55f6-49dd-a02f-eb24acf39d05"
           }
-        ]
+        ],
+        "assignmentVariantId": "treatment-1"
       }
     ],
     "flags": "{\"example-flag-key\": { \"ruleId\": \"e432f62b-55f6-49dd-a02f-eb24acf39d05\", \"flagConfigVersion\": 12, \"notInExperimentVariationId\": \"e432f62b-55f6-49dd-a02f-eb24acf39d05\" }}",
+    "assignmentDataSource": {
+      "key": "my-assignment-data-source",
+      "experimentId": "experiment-123",
+      "startTime": "1690000000000",
+      "endTime": "1690000000000"
+    },
     "randomizationUnit": "user",
     "reallocationFrequencyMillis": 3600000,
     "covariateId": "string",
@@ -43212,10 +45538,17 @@ To learn more, read [Start experiment iterations](https://launchdarkly.com/docs/
           "flagKey": "example-flag-for-experiment",
           "variationId": "e432f62b-55f6-49dd-a02f-eb24acf39d05"
         }
-      ]
+      ],
+      "assignmentVariantId": "treatment-1"
     }
   ],
   "flags": "{\"example-flag-key\": { \"ruleId\": \"e432f62b-55f6-49dd-a02f-eb24acf39d05\", \"flagConfigVersion\": 12, \"notInExperimentVariationId\": \"e432f62b-55f6-49dd-a02f-eb24acf39d05\" }}",
+  "assignmentDataSource": {
+    "key": "my-assignment-data-source",
+    "experimentId": "experiment-123",
+    "startTime": "1690000000000",
+    "endTime": "1690000000000"
+  },
   "randomizationUnit": "user",
   "reallocationFrequencyMillis": 3600000,
   "covariateId": "string",
@@ -43242,10 +45575,11 @@ To learn more, read [Start experiment iterations](https://launchdarkly.com/docs/
 |» primaryFunnelKey|body|string|false|The key of the primary funnel group for this experiment. Either <code>primarySingleMetricKey</code> or <code>primaryFunnelKey</code> must be present.|
 |» treatments|body|[TreatmentsInput](#schematreatmentsinput)|true|Details on the variations you are testing in the experiment. You establish these variations in feature flags, and then reuse them in experiments.|
 |» flags|body|[FlagsInput](#schemaflagsinput)|true|Details on the feature flag and targeting rules for this iteration|
+|» assignmentDataSource|body|[AssignmentDataSourceInput](#schemaassignmentdatasourceinput)|false|Details on the custom assignment data source configuration for this iteration|
 |» randomizationUnit|body|string|false|The unit of randomization for this iteration. Defaults to user.|
 |» reallocationFrequencyMillis|body|integer|false|The cadence (in milliseconds) to update the allocation.|
 |» covariateId|body|string|false|The ID of the covariate CSV|
-|» attributes|body|[string]|false|The attributes that this iteration's results can be sliced by|
+|» attributes|body|[string]|false|The attributes that this iteration's results can be sliced by, whose values come from flag evaluation events|
 
 > Example responses
 
@@ -43412,7 +45746,8 @@ To learn more, read [Start experiment iterations](https://launchdarkly.com/docs/
           "variationId": "string",
           "flagKey": "string"
         }
-      ]
+      ],
+      "assignmentVariantId": "treatment_a"
     }
   ],
   "secondaryMetrics": [
@@ -43489,6 +45824,13 @@ To learn more, read [Start experiment iterations](https://launchdarkly.com/docs/
     "id": "74a49a2b-4834-4246-917e-5d85231d8c2a",
     "fileName": "covariate.csv",
     "createdAt": "1654104600000"
+  },
+  "assignmentDataSource": {
+    "key": "my-assignment-data-source",
+    "name": "Snowflake production assignments",
+    "experimentId": "experiment-123",
+    "startTime": "1690000000000",
+    "endTime": "1690000000000"
   }
 }
 ```
@@ -43871,6 +46213,7 @@ Get a list of experiments from across all environments in the project
       "environmentKey": "string",
       "methodology": "bayesian",
       "dataSource": "snowflake",
+      "assignmentSourceType": "snowflake",
       "archivedDate": "1654104600000",
       "tags": [
         "experiment",
@@ -44047,7 +46390,8 @@ Get a list of experiments from across all environments in the project
                 "variationId": "string",
                 "flagKey": "string"
               }
-            ]
+            ],
+            "assignmentVariantId": "treatment_a"
           }
         ],
         "secondaryMetrics": [
@@ -44124,6 +46468,13 @@ Get a list of experiments from across all environments in the project
           "id": "74a49a2b-4834-4246-917e-5d85231d8c2a",
           "fileName": "covariate.csv",
           "createdAt": "1654104600000"
+        },
+        "assignmentDataSource": {
+          "key": "my-assignment-data-source",
+          "name": "Snowflake production assignments",
+          "experimentId": "experiment-123",
+          "startTime": "1690000000000",
+          "endTime": "1690000000000"
         }
       },
       "type": "experiment",
@@ -44331,7 +46682,8 @@ Get a list of experiments from across all environments in the project
                 "variationId": "string",
                 "flagKey": "string"
               }
-            ]
+            ],
+            "assignmentVariantId": "treatment_a"
           }
         ],
         "secondaryMetrics": [
@@ -44408,6 +46760,13 @@ Get a list of experiments from across all environments in the project
           "id": "74a49a2b-4834-4246-917e-5d85231d8c2a",
           "fileName": "covariate.csv",
           "createdAt": "1654104600000"
+        },
+        "assignmentDataSource": {
+          "key": "my-assignment-data-source",
+          "name": "Snowflake production assignments",
+          "experimentId": "experiment-123",
+          "startTime": "1690000000000",
+          "endTime": "1690000000000"
         }
       },
       "previousIterations": [
@@ -44571,7 +46930,8 @@ Get a list of experiments from across all environments in the project
                   "variationId": "string",
                   "flagKey": "string"
                 }
-              ]
+              ],
+              "assignmentVariantId": "treatment_a"
             }
           ],
           "secondaryMetrics": [
@@ -44648,6 +47008,13 @@ Get a list of experiments from across all environments in the project
             "id": "74a49a2b-4834-4246-917e-5d85231d8c2a",
             "fileName": "covariate.csv",
             "createdAt": "1654104600000"
+          },
+          "assignmentDataSource": {
+            "key": "my-assignment-data-source",
+            "name": "Snowflake production assignments",
+            "experimentId": "experiment-123",
+            "startTime": "1690000000000",
+            "endTime": "1690000000000"
           }
         }
       ],
@@ -47383,7 +49750,7 @@ Here's an example:
 
 #### deprecateFlag
 
-Deprecates the feature flag. This hides it from the live flags list without archiving or deleting it.
+Deprecates the feature flag. This hides it from the live flags list without archiving or deleting it. You cannot deprecate an archived flag. If the flag is archived, this instruction fails with a `409` status code and makes no changes. To deprecate an archived flag, restore it with `restoreFlag` first.
 
 Here's an example:
 
@@ -47395,7 +49762,7 @@ Here's an example:
 
 #### restoreDeprecatedFlag
 
-Restores the feature flag if it was previously deprecated.
+Restores the feature flag if it was previously deprecated. If the flag is archived, this instruction fails with a `409` status code and makes no changes. To restore an archived flag, use `restoreFlag`.
 
 Here's an example:
 
@@ -50670,6 +53037,890 @@ To perform this operation, you must be authenticated by means of one of the foll
 ApiKey
 </aside>
 
+<h1 id="launchdarkly-rest-api-flag-release-plans-beta">Flag release plans (beta)</h1>
+
+> ### This feature is in beta
+>
+> To use this feature, pass in a header including the `LD-API-Version` key with value set to `beta`. Use this header with each call. To learn more, read [Beta resources](https://launchdarkly.com/docs/api#beta-resources).
+>
+> Resources that are in beta are still undergoing testing and development. They may change without notice, including becoming backwards incompatible.
+
+A flag release plan is a reusable release configuration for a flag across the environments in a project. It lists the environments to release to, the order to release them in, and how each one releases: either immediately or by running one of that environment's [environment release plans](https://launchdarkly.com/docs/api/environment-release-plans-beta). Each environment also has a trigger that starts its release, such as a manual start or a promotion from the previous environment. A project can have one default flag release plan.
+
+Use the flag release plans API to create, list, view, update, and delete the flag release plans in a project.
+
+
+## List a project's flag release plans
+
+<a id="opIdlistFlagReleasePlans"></a>
+
+> Code samples
+
+```bash
+curl https://app.launchdarkly.com/api/v2/projects/string/flag-release-plans \
+  -H 'Accept: application/json' \
+  -H "Authorization: ${API_KEY}" \
+  -H 'LD-API-Version: beta'
+```
+
+`GET /api/v2/projects/{projectKey}/flag-release-plans`
+
+List a project's flag release plans, in creation order.
+
+<h3 id="list-a-projects-flag-release-plans-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|LD-API-Version|header|string|true|Version of the endpoint.|
+|projectKey|path|string|true|none|
+|limit|query|integer|false|The number of flag release plans to return.|
+|offset|query|integer|false|The number of flag release plans to skip. Used for pagination.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|LD-API-Version|beta|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "_links": {
+    "next": {
+      "href": "href",
+      "type": "type"
+    },
+    "last": {
+      "href": "href",
+      "type": "type"
+    },
+    "prev": {
+      "href": "href",
+      "type": "type"
+    },
+    "self": {
+      "href": "href",
+      "type": "type"
+    },
+    "first": {
+      "href": "href",
+      "type": "type"
+    }
+  },
+  "totalCount": 5,
+  "items": [
+    {
+      "applicationKeys": [
+        "applicationKeys",
+        "applicationKeys"
+      ],
+      "environments": [
+        {
+          "environmentReleasePlanKey": "environmentReleasePlanKey",
+          "isImmediate": true,
+          "triggerType": "flag_eval",
+          "environmentKey": "environmentKey"
+        },
+        {
+          "environmentReleasePlanKey": "environmentReleasePlanKey",
+          "isImmediate": true,
+          "triggerType": "flag_eval",
+          "environmentKey": "environmentKey"
+        }
+      ],
+      "description": "description",
+      "executionMode": "sequential",
+      "version": 0,
+      "maintainer": {
+        "firstName": "firstName",
+        "lastName": "lastName",
+        "kind": "member",
+        "email": "email",
+        "memberId": "memberId"
+      },
+      "createdAt": 6,
+      "default": false,
+      "name": "name",
+      "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+      "key": "key",
+      "updatedAt": 1
+    },
+    {
+      "applicationKeys": [
+        "applicationKeys",
+        "applicationKeys"
+      ],
+      "environments": [
+        {
+          "environmentReleasePlanKey": "environmentReleasePlanKey",
+          "isImmediate": true,
+          "triggerType": "flag_eval",
+          "environmentKey": "environmentKey"
+        },
+        {
+          "environmentReleasePlanKey": "environmentReleasePlanKey",
+          "isImmediate": true,
+          "triggerType": "flag_eval",
+          "environmentKey": "environmentKey"
+        }
+      ],
+      "description": "description",
+      "executionMode": "sequential",
+      "version": 0,
+      "maintainer": {
+        "firstName": "firstName",
+        "lastName": "lastName",
+        "kind": "member",
+        "email": "email",
+        "memberId": "memberId"
+      },
+      "createdAt": 6,
+      "default": false,
+      "name": "name",
+      "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+      "key": "key",
+      "updatedAt": 1
+    }
+  ]
+}
+```
+
+> 400 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+<h3 id="list-a-projects-flag-release-plans-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Flag release plans found.|[ListFlagReleasePlansResponse](#schemalistflagreleaseplansresponse)|
+|400|Bad Request|Invalid request|[FlagReleasePlansError](#schemaflagreleaseplanserror)|
+|401|Unauthorized|Missing authenticated account identity|[FlagReleasePlansError](#schemaflagreleaseplanserror)|
+|403|Forbidden|The caller may not act on this account or project|[FlagReleasePlansError](#schemaflagreleaseplanserror)|
+|404|Not Found|No such project or rollout config|[FlagReleasePlansError](#schemaflagreleaseplanserror)|
+|500|Internal Server Error|Internal Server Error|[FlagReleasePlansError](#schemaflagreleaseplanserror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+ApiKey
+</aside>
+
+## Create a flag release plan for a project
+
+<a id="opIdcreateFlagReleasePlan"></a>
+
+> Code samples
+
+```bash
+curl https://app.launchdarkly.com/api/v2/projects/string/flag-release-plans \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: ${API_KEY}" \
+  -H 'LD-API-Version: beta' \
+  -d '{
+    "applicationKeys": [
+      "applicationKeys",
+      "applicationKeys"
+    ],
+    "default": true,
+    "environments": [
+      {
+        "environmentReleasePlanKey": "environmentReleasePlanKey",
+        "isImmediate": true,
+        "triggerType": "flag_eval",
+        "environmentKey": "environmentKey"
+      },
+      {
+        "environmentReleasePlanKey": "environmentReleasePlanKey",
+        "isImmediate": true,
+        "triggerType": "flag_eval",
+        "environmentKey": "environmentKey"
+      }
+    ],
+    "name": "name",
+    "description": "description",
+    "executionMode": "sequential",
+    "maintainer": {
+      "kind": "member",
+      "memberId": "memberId"
+    },
+    "key": "key"
+  }'
+```
+
+`POST /api/v2/projects/{projectKey}/flag-release-plans`
+
+Creates a flag release plan. The key must not be in use by another
+active plan in the project, or the request is rejected with 409.
+The request is rejected with 400 when an environment isn't in the
+project, the maintainer isn't in the account, an environment release
+plan doesn't exist, is incomplete, or is in another environment,
+`default` is set while the project already has a default plan, or the
+project already has the maximum number of plans. To make a new plan
+the project's default, create it, then update it with `default` set,
+which demotes the current default.
+
+
+> Body parameter
+
+```json
+{
+  "applicationKeys": [
+    "applicationKeys",
+    "applicationKeys"
+  ],
+  "default": true,
+  "environments": [
+    {
+      "environmentReleasePlanKey": "environmentReleasePlanKey",
+      "isImmediate": true,
+      "triggerType": "flag_eval",
+      "environmentKey": "environmentKey"
+    },
+    {
+      "environmentReleasePlanKey": "environmentReleasePlanKey",
+      "isImmediate": true,
+      "triggerType": "flag_eval",
+      "environmentKey": "environmentKey"
+    }
+  ],
+  "name": "name",
+  "description": "description",
+  "executionMode": "sequential",
+  "maintainer": {
+    "kind": "member",
+    "memberId": "memberId"
+  },
+  "key": "key"
+}
+```
+
+<h3 id="create-a-flag-release-plan-for-a-project-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|LD-API-Version|header|string|true|Version of the endpoint.|
+|projectKey|path|string|true|none|
+|body|body|[CreateFlagReleasePlanRequest](#schemacreateflagreleaseplanrequest)|true|none|
+|» name|body|string|true|none|
+|» description|body|string|false|none|
+|» maintainer|body|[MaintainerIdentifier](#schemamaintaineridentifier)|false|The maintainer to assign, either a member or a team.|
+|» executionMode|body|[ExecutionMode](#schemaexecutionmode)|false|`sequential` releases environments in array order. `parallel` is not accepted on create or update; it is only returned for plans and releases created with it.|
+|» applicationKeys|body|[string]|false|none|
+|» default|body|boolean|false|Whether this plan is the project's default. At most one active plan per project is the default. On update, omitting it demotes the current default.|
+|» environments|body|[[FlagReleasePlanEnvironment](#schemaflagreleaseplanenvironment)]|true|none|
+|» key|body|string|true|none|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|LD-API-Version|beta|
+|» executionMode|sequential|
+|» executionMode|parallel|
+
+> Example responses
+
+> 201 Response
+
+```json
+{
+  "applicationKeys": [
+    "applicationKeys",
+    "applicationKeys"
+  ],
+  "environments": [
+    {
+      "environmentReleasePlanKey": "environmentReleasePlanKey",
+      "isImmediate": true,
+      "triggerType": "flag_eval",
+      "environmentKey": "environmentKey"
+    },
+    {
+      "environmentReleasePlanKey": "environmentReleasePlanKey",
+      "isImmediate": true,
+      "triggerType": "flag_eval",
+      "environmentKey": "environmentKey"
+    }
+  ],
+  "description": "description",
+  "executionMode": "sequential",
+  "version": 0,
+  "maintainer": {
+    "firstName": "firstName",
+    "lastName": "lastName",
+    "kind": "member",
+    "email": "email",
+    "memberId": "memberId"
+  },
+  "createdAt": 6,
+  "default": false,
+  "name": "name",
+  "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+  "key": "key",
+  "updatedAt": 1
+}
+```
+
+> 400 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+> 409 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+<h3 id="create-a-flag-release-plan-for-a-project-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|201|Created|Flag release plan created.|[FlagReleasePlan](#schemaflagreleaseplan)|
+|400|Bad Request|Invalid request|[FlagReleasePlansError](#schemaflagreleaseplanserror)|
+|401|Unauthorized|Missing authenticated account identity|[FlagReleasePlansError](#schemaflagreleaseplanserror)|
+|403|Forbidden|The caller may not act on this account or project|[FlagReleasePlansError](#schemaflagreleaseplanserror)|
+|404|Not Found|No such project or rollout config|[FlagReleasePlansError](#schemaflagreleaseplanserror)|
+|409|Conflict|The request conflicts with the current state of the rollout config|[FlagReleasePlansError](#schemaflagreleaseplanserror)|
+|500|Internal Server Error|Internal Server Error|[FlagReleasePlansError](#schemaflagreleaseplanserror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+ApiKey
+</aside>
+
+## Get a flag release plan in a project by plan key
+
+<a id="opIdgetFlagReleasePlan"></a>
+
+> Code samples
+
+```bash
+curl https://app.launchdarkly.com/api/v2/projects/string/flag-release-plans/string \
+  -H 'Accept: application/json' \
+  -H "Authorization: ${API_KEY}" \
+  -H 'LD-API-Version: beta'
+```
+
+`GET /api/v2/projects/{projectKey}/flag-release-plans/{planKey}`
+
+Get a flag release plan in a project by plan key.
+
+<h3 id="get-a-flag-release-plan-in-a-project-by-plan-key-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|LD-API-Version|header|string|true|Version of the endpoint.|
+|projectKey|path|string|true|none|
+|planKey|path|string|true|none|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|LD-API-Version|beta|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "applicationKeys": [
+    "applicationKeys",
+    "applicationKeys"
+  ],
+  "environments": [
+    {
+      "environmentReleasePlanKey": "environmentReleasePlanKey",
+      "isImmediate": true,
+      "triggerType": "flag_eval",
+      "environmentKey": "environmentKey"
+    },
+    {
+      "environmentReleasePlanKey": "environmentReleasePlanKey",
+      "isImmediate": true,
+      "triggerType": "flag_eval",
+      "environmentKey": "environmentKey"
+    }
+  ],
+  "description": "description",
+  "executionMode": "sequential",
+  "version": 0,
+  "maintainer": {
+    "firstName": "firstName",
+    "lastName": "lastName",
+    "kind": "member",
+    "email": "email",
+    "memberId": "memberId"
+  },
+  "createdAt": 6,
+  "default": false,
+  "name": "name",
+  "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+  "key": "key",
+  "updatedAt": 1
+}
+```
+
+> 401 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+<h3 id="get-a-flag-release-plan-in-a-project-by-plan-key-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Flag release plan found.|[FlagReleasePlan](#schemaflagreleaseplan)|
+|401|Unauthorized|Missing authenticated account identity|[FlagReleasePlansError](#schemaflagreleaseplanserror)|
+|403|Forbidden|The caller may not act on this account or project|[FlagReleasePlansError](#schemaflagreleaseplanserror)|
+|404|Not Found|No such project or rollout config|[FlagReleasePlansError](#schemaflagreleaseplanserror)|
+|500|Internal Server Error|Internal Server Error|[FlagReleasePlansError](#schemaflagreleaseplanserror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+ApiKey
+</aside>
+
+## Replace a flag release plan configuration in a project
+
+<a id="opIdupdateFlagReleasePlan"></a>
+
+> Code samples
+
+```bash
+curl https://app.launchdarkly.com/api/v2/projects/string/flag-release-plans/string \
+  -X PUT \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: ${API_KEY}" \
+  -H 'LD-API-Version: beta' \
+  -d '{
+    "applicationKeys": [
+      "applicationKeys",
+      "applicationKeys"
+    ],
+    "default": true,
+    "environments": [
+      {
+        "environmentReleasePlanKey": "environmentReleasePlanKey",
+        "isImmediate": true,
+        "triggerType": "flag_eval",
+        "environmentKey": "environmentKey"
+      },
+      {
+        "environmentReleasePlanKey": "environmentReleasePlanKey",
+        "isImmediate": true,
+        "triggerType": "flag_eval",
+        "environmentKey": "environmentKey"
+      }
+    ],
+    "name": "name",
+    "description": "description",
+    "executionMode": "sequential",
+    "version": 1,
+    "maintainer": {
+      "kind": "member",
+      "memberId": "memberId"
+    }
+  }'
+```
+
+`PUT /api/v2/projects/{projectKey}/flag-release-plans/{planKey}`
+
+Replace a flag release plan configuration in a project. This is a
+full replace, not a merge, and anything omitted is overwritten.
+Omitting `default` clears it, so a request without it demotes the
+project's default plan. The flag release plan's key is immutable, and
+its version increments by 1 on every successful update. The request's
+version is an optional optimistic lock: when present it must match the
+plan's current version, and on mismatch the request is rejected with
+409 and no changes are applied, meaning the plan was edited since it
+was read; get the plan again and retry with its current version. When
+omitted the update applies unconditionally to the plan currently
+holding the key. A flag release already started from the plan is not
+affected.
+
+
+> Body parameter
+
+```json
+{
+  "applicationKeys": [
+    "applicationKeys",
+    "applicationKeys"
+  ],
+  "default": true,
+  "environments": [
+    {
+      "environmentReleasePlanKey": "environmentReleasePlanKey",
+      "isImmediate": true,
+      "triggerType": "flag_eval",
+      "environmentKey": "environmentKey"
+    },
+    {
+      "environmentReleasePlanKey": "environmentReleasePlanKey",
+      "isImmediate": true,
+      "triggerType": "flag_eval",
+      "environmentKey": "environmentKey"
+    }
+  ],
+  "name": "name",
+  "description": "description",
+  "executionMode": "sequential",
+  "version": 1,
+  "maintainer": {
+    "kind": "member",
+    "memberId": "memberId"
+  }
+}
+```
+
+<h3 id="replace-a-flag-release-plan-configuration-in-a-project-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|LD-API-Version|header|string|true|Version of the endpoint.|
+|projectKey|path|string|true|none|
+|planKey|path|string|true|none|
+|body|body|[PutFlagReleasePlanRequest](#schemaputflagreleaseplanrequest)|true|none|
+|» name|body|string|true|none|
+|» description|body|string|false|none|
+|» maintainer|body|[MaintainerIdentifier](#schemamaintaineridentifier)|false|The maintainer to assign, either a member or a team.|
+|» executionMode|body|[ExecutionMode](#schemaexecutionmode)|false|`sequential` releases environments in array order. `parallel` is not accepted on create or update; it is only returned for plans and releases created with it.|
+|» applicationKeys|body|[string]|false|none|
+|» default|body|boolean|false|Whether this plan is the project's default. At most one active plan per project is the default. On update, omitting it demotes the current default.|
+|» environments|body|[[FlagReleasePlanEnvironment](#schemaflagreleaseplanenvironment)]|true|none|
+|» version|body|integer(int64)|false|Optional. The plan version this request was based on, from a<br>previous read. Plans start at version 1. When present it must<br>match the plan's current version — on mismatch the request is<br>rejected with 409 and no changes are applied, so a stale copy<br>can't silently overwrite a concurrent edit. When omitted, the<br>plan's version is not checked.<br>|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|LD-API-Version|beta|
+|» executionMode|sequential|
+|» executionMode|parallel|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "applicationKeys": [
+    "applicationKeys",
+    "applicationKeys"
+  ],
+  "environments": [
+    {
+      "environmentReleasePlanKey": "environmentReleasePlanKey",
+      "isImmediate": true,
+      "triggerType": "flag_eval",
+      "environmentKey": "environmentKey"
+    },
+    {
+      "environmentReleasePlanKey": "environmentReleasePlanKey",
+      "isImmediate": true,
+      "triggerType": "flag_eval",
+      "environmentKey": "environmentKey"
+    }
+  ],
+  "description": "description",
+  "executionMode": "sequential",
+  "version": 0,
+  "maintainer": {
+    "firstName": "firstName",
+    "lastName": "lastName",
+    "kind": "member",
+    "email": "email",
+    "memberId": "memberId"
+  },
+  "createdAt": 6,
+  "default": false,
+  "name": "name",
+  "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+  "key": "key",
+  "updatedAt": 1
+}
+```
+
+> 400 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+> 409 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+<h3 id="replace-a-flag-release-plan-configuration-in-a-project-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Flag release plan updated.|[FlagReleasePlan](#schemaflagreleaseplan)|
+|400|Bad Request|Invalid request|[FlagReleasePlansError](#schemaflagreleaseplanserror)|
+|401|Unauthorized|Missing authenticated account identity|[FlagReleasePlansError](#schemaflagreleaseplanserror)|
+|403|Forbidden|The caller may not act on this account or project|[FlagReleasePlansError](#schemaflagreleaseplanserror)|
+|404|Not Found|No such project or rollout config|[FlagReleasePlansError](#schemaflagreleaseplanserror)|
+|409|Conflict|The request conflicts with the current state of the rollout config|[FlagReleasePlansError](#schemaflagreleaseplanserror)|
+|500|Internal Server Error|Internal Server Error|[FlagReleasePlansError](#schemaflagreleaseplanserror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+ApiKey
+</aside>
+
+## Delete a flag release plan in a project
+
+<a id="opIddeleteFlagReleasePlan"></a>
+
+> Code samples
+
+```bash
+curl https://app.launchdarkly.com/api/v2/projects/string/flag-release-plans/string \
+  -X DELETE \
+  -H 'Accept: application/json' \
+  -H "Authorization: ${API_KEY}" \
+  -H 'LD-API-Version: beta'
+```
+
+`DELETE /api/v2/projects/{projectKey}/flag-release-plans/{planKey}`
+
+Delete a flag release plan in a project.
+
+<h3 id="delete-a-flag-release-plan-in-a-project-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|LD-API-Version|header|string|true|Version of the endpoint.|
+|projectKey|path|string|true|none|
+|planKey|path|string|true|none|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|LD-API-Version|beta|
+
+> Example responses
+
+> 401 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+<h3 id="delete-a-flag-release-plan-in-a-project-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|204|No Content|Flag release plan deleted.|None|
+|401|Unauthorized|Missing authenticated account identity|[FlagReleasePlansError](#schemaflagreleaseplanserror)|
+|403|Forbidden|The caller may not act on this account or project|[FlagReleasePlansError](#schemaflagreleaseplanserror)|
+|404|Not Found|No such project or rollout config|[FlagReleasePlansError](#schemaflagreleaseplanserror)|
+|500|Internal Server Error|Internal Server Error|[FlagReleasePlansError](#schemaflagreleaseplanserror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+ApiKey
+</aside>
+
 <h1 id="launchdarkly-rest-api-flag-triggers">Flag triggers</h1>
 
 > ### Flag triggers is an Enterprise feature
@@ -52071,6 +55322,7 @@ Create a new holdout in the specified project.
     "environmentKey": "string",
     "methodology": "bayesian",
     "dataSource": "snowflake",
+    "assignmentSourceType": "snowflake",
     "archivedDate": "1654104600000",
     "tags": [
       "experiment",
@@ -52247,7 +55499,8 @@ Create a new holdout in the specified project.
               "variationId": "string",
               "flagKey": "string"
             }
-          ]
+          ],
+          "assignmentVariantId": "treatment_a"
         }
       ],
       "secondaryMetrics": [
@@ -52324,6 +55577,13 @@ Create a new holdout in the specified project.
         "id": "74a49a2b-4834-4246-917e-5d85231d8c2a",
         "fileName": "covariate.csv",
         "createdAt": "1654104600000"
+      },
+      "assignmentDataSource": {
+        "key": "my-assignment-data-source",
+        "name": "Snowflake production assignments",
+        "experimentId": "experiment-123",
+        "startTime": "1690000000000",
+        "endTime": "1690000000000"
       }
     },
     "type": "experiment",
@@ -52531,7 +55791,8 @@ Create a new holdout in the specified project.
               "variationId": "string",
               "flagKey": "string"
             }
-          ]
+          ],
+          "assignmentVariantId": "treatment_a"
         }
       ],
       "secondaryMetrics": [
@@ -52608,6 +55869,13 @@ Create a new holdout in the specified project.
         "id": "74a49a2b-4834-4246-917e-5d85231d8c2a",
         "fileName": "covariate.csv",
         "createdAt": "1654104600000"
+      },
+      "assignmentDataSource": {
+        "key": "my-assignment-data-source",
+        "name": "Snowflake production assignments",
+        "experimentId": "experiment-123",
+        "startTime": "1690000000000",
+        "endTime": "1690000000000"
       }
     },
     "previousIterations": [
@@ -52771,7 +56039,8 @@ Create a new holdout in the specified project.
                 "variationId": "string",
                 "flagKey": "string"
               }
-            ]
+            ],
+            "assignmentVariantId": "treatment_a"
           }
         ],
         "secondaryMetrics": [
@@ -52848,6 +56117,13 @@ Create a new holdout in the specified project.
           "id": "74a49a2b-4834-4246-917e-5d85231d8c2a",
           "fileName": "covariate.csv",
           "createdAt": "1654104600000"
+        },
+        "assignmentDataSource": {
+          "key": "my-assignment-data-source",
+          "name": "Snowflake production assignments",
+          "experimentId": "experiment-123",
+          "startTime": "1690000000000",
+          "endTime": "1690000000000"
         }
       }
     ],
@@ -52961,6 +56237,7 @@ curl https://app.launchdarkly.com/api/v2/projects/string/environments/string/hol
     "environmentKey": "string",
     "methodology": "bayesian",
     "dataSource": "snowflake",
+    "assignmentSourceType": "snowflake",
     "archivedDate": "1654104600000",
     "tags": [
       "experiment",
@@ -53137,7 +56414,8 @@ curl https://app.launchdarkly.com/api/v2/projects/string/environments/string/hol
               "variationId": "string",
               "flagKey": "string"
             }
-          ]
+          ],
+          "assignmentVariantId": "treatment_a"
         }
       ],
       "secondaryMetrics": [
@@ -53214,6 +56492,13 @@ curl https://app.launchdarkly.com/api/v2/projects/string/environments/string/hol
         "id": "74a49a2b-4834-4246-917e-5d85231d8c2a",
         "fileName": "covariate.csv",
         "createdAt": "1654104600000"
+      },
+      "assignmentDataSource": {
+        "key": "my-assignment-data-source",
+        "name": "Snowflake production assignments",
+        "experimentId": "experiment-123",
+        "startTime": "1690000000000",
+        "endTime": "1690000000000"
       }
     },
     "type": "experiment",
@@ -53421,7 +56706,8 @@ curl https://app.launchdarkly.com/api/v2/projects/string/environments/string/hol
               "variationId": "string",
               "flagKey": "string"
             }
-          ]
+          ],
+          "assignmentVariantId": "treatment_a"
         }
       ],
       "secondaryMetrics": [
@@ -53498,6 +56784,13 @@ curl https://app.launchdarkly.com/api/v2/projects/string/environments/string/hol
         "id": "74a49a2b-4834-4246-917e-5d85231d8c2a",
         "fileName": "covariate.csv",
         "createdAt": "1654104600000"
+      },
+      "assignmentDataSource": {
+        "key": "my-assignment-data-source",
+        "name": "Snowflake production assignments",
+        "experimentId": "experiment-123",
+        "startTime": "1690000000000",
+        "endTime": "1690000000000"
       }
     },
     "previousIterations": [
@@ -53661,7 +56954,8 @@ curl https://app.launchdarkly.com/api/v2/projects/string/environments/string/hol
                 "variationId": "string",
                 "flagKey": "string"
               }
-            ]
+            ],
+            "assignmentVariantId": "treatment_a"
           }
         ],
         "secondaryMetrics": [
@@ -53738,6 +57032,13 @@ curl https://app.launchdarkly.com/api/v2/projects/string/environments/string/hol
           "id": "74a49a2b-4834-4246-917e-5d85231d8c2a",
           "fileName": "covariate.csv",
           "createdAt": "1654104600000"
+        },
+        "assignmentDataSource": {
+          "key": "my-assignment-data-source",
+          "name": "Snowflake production assignments",
+          "experimentId": "experiment-123",
+          "startTime": "1690000000000",
+          "endTime": "1690000000000"
         }
       }
     ],
@@ -53914,6 +57215,7 @@ For example, `expand=draftIteration,rel-draftIteration` includes the `draftItera
     "environmentKey": "string",
     "methodology": "bayesian",
     "dataSource": "snowflake",
+    "assignmentSourceType": "snowflake",
     "archivedDate": "1654104600000",
     "tags": [
       "experiment",
@@ -54090,7 +57392,8 @@ For example, `expand=draftIteration,rel-draftIteration` includes the `draftItera
               "variationId": "string",
               "flagKey": "string"
             }
-          ]
+          ],
+          "assignmentVariantId": "treatment_a"
         }
       ],
       "secondaryMetrics": [
@@ -54167,6 +57470,13 @@ For example, `expand=draftIteration,rel-draftIteration` includes the `draftItera
         "id": "74a49a2b-4834-4246-917e-5d85231d8c2a",
         "fileName": "covariate.csv",
         "createdAt": "1654104600000"
+      },
+      "assignmentDataSource": {
+        "key": "my-assignment-data-source",
+        "name": "Snowflake production assignments",
+        "experimentId": "experiment-123",
+        "startTime": "1690000000000",
+        "endTime": "1690000000000"
       }
     },
     "type": "experiment",
@@ -54374,7 +57684,8 @@ For example, `expand=draftIteration,rel-draftIteration` includes the `draftItera
               "variationId": "string",
               "flagKey": "string"
             }
-          ]
+          ],
+          "assignmentVariantId": "treatment_a"
         }
       ],
       "secondaryMetrics": [
@@ -54451,6 +57762,13 @@ For example, `expand=draftIteration,rel-draftIteration` includes the `draftItera
         "id": "74a49a2b-4834-4246-917e-5d85231d8c2a",
         "fileName": "covariate.csv",
         "createdAt": "1654104600000"
+      },
+      "assignmentDataSource": {
+        "key": "my-assignment-data-source",
+        "name": "Snowflake production assignments",
+        "experimentId": "experiment-123",
+        "startTime": "1690000000000",
+        "endTime": "1690000000000"
       }
     },
     "previousIterations": [
@@ -54614,7 +57932,8 @@ For example, `expand=draftIteration,rel-draftIteration` includes the `draftItera
                 "variationId": "string",
                 "flagKey": "string"
               }
-            ]
+            ],
+            "assignmentVariantId": "treatment_a"
           }
         ],
         "secondaryMetrics": [
@@ -54691,6 +58010,13 @@ For example, `expand=draftIteration,rel-draftIteration` includes the `draftItera
           "id": "74a49a2b-4834-4246-917e-5d85231d8c2a",
           "fileName": "covariate.csv",
           "createdAt": "1654104600000"
+        },
+        "assignmentDataSource": {
+          "key": "my-assignment-data-source",
+          "name": "Snowflake production assignments",
+          "experimentId": "experiment-123",
+          "startTime": "1690000000000",
+          "endTime": "1690000000000"
         }
       }
     ],
@@ -54740,6 +58066,7 @@ For example, `expand=draftIteration,rel-draftIteration` includes the `draftItera
       "environmentKey": "string",
       "methodology": "bayesian",
       "dataSource": "snowflake",
+      "assignmentSourceType": "snowflake",
       "archivedDate": "1654104600000",
       "tags": [
         "experiment",
@@ -54916,7 +58243,8 @@ For example, `expand=draftIteration,rel-draftIteration` includes the `draftItera
                 "variationId": "string",
                 "flagKey": "string"
               }
-            ]
+            ],
+            "assignmentVariantId": "treatment_a"
           }
         ],
         "secondaryMetrics": [
@@ -54993,6 +58321,13 @@ For example, `expand=draftIteration,rel-draftIteration` includes the `draftItera
           "id": "74a49a2b-4834-4246-917e-5d85231d8c2a",
           "fileName": "covariate.csv",
           "createdAt": "1654104600000"
+        },
+        "assignmentDataSource": {
+          "key": "my-assignment-data-source",
+          "name": "Snowflake production assignments",
+          "experimentId": "experiment-123",
+          "startTime": "1690000000000",
+          "endTime": "1690000000000"
         }
       },
       "type": "experiment",
@@ -55200,7 +58535,8 @@ For example, `expand=draftIteration,rel-draftIteration` includes the `draftItera
                 "variationId": "string",
                 "flagKey": "string"
               }
-            ]
+            ],
+            "assignmentVariantId": "treatment_a"
           }
         ],
         "secondaryMetrics": [
@@ -55277,6 +58613,13 @@ For example, `expand=draftIteration,rel-draftIteration` includes the `draftItera
           "id": "74a49a2b-4834-4246-917e-5d85231d8c2a",
           "fileName": "covariate.csv",
           "createdAt": "1654104600000"
+        },
+        "assignmentDataSource": {
+          "key": "my-assignment-data-source",
+          "name": "Snowflake production assignments",
+          "experimentId": "experiment-123",
+          "startTime": "1690000000000",
+          "endTime": "1690000000000"
         }
       },
       "previousIterations": [
@@ -55440,7 +58783,8 @@ For example, `expand=draftIteration,rel-draftIteration` includes the `draftItera
                   "variationId": "string",
                   "flagKey": "string"
                 }
-              ]
+              ],
+              "assignmentVariantId": "treatment_a"
             }
           ],
           "secondaryMetrics": [
@@ -55517,6 +58861,13 @@ For example, `expand=draftIteration,rel-draftIteration` includes the `draftItera
             "id": "74a49a2b-4834-4246-917e-5d85231d8c2a",
             "fileName": "covariate.csv",
             "createdAt": "1654104600000"
+          },
+          "assignmentDataSource": {
+            "key": "my-assignment-data-source",
+            "name": "Snowflake production assignments",
+            "experimentId": "experiment-123",
+            "startTime": "1690000000000",
+            "endTime": "1690000000000"
           }
         }
       ],
@@ -55785,6 +59136,7 @@ Here's an example:
     "environmentKey": "string",
     "methodology": "bayesian",
     "dataSource": "snowflake",
+    "assignmentSourceType": "snowflake",
     "archivedDate": "1654104600000",
     "tags": [
       "experiment",
@@ -55961,7 +59313,8 @@ Here's an example:
               "variationId": "string",
               "flagKey": "string"
             }
-          ]
+          ],
+          "assignmentVariantId": "treatment_a"
         }
       ],
       "secondaryMetrics": [
@@ -56038,6 +59391,13 @@ Here's an example:
         "id": "74a49a2b-4834-4246-917e-5d85231d8c2a",
         "fileName": "covariate.csv",
         "createdAt": "1654104600000"
+      },
+      "assignmentDataSource": {
+        "key": "my-assignment-data-source",
+        "name": "Snowflake production assignments",
+        "experimentId": "experiment-123",
+        "startTime": "1690000000000",
+        "endTime": "1690000000000"
       }
     },
     "type": "experiment",
@@ -56245,7 +59605,8 @@ Here's an example:
               "variationId": "string",
               "flagKey": "string"
             }
-          ]
+          ],
+          "assignmentVariantId": "treatment_a"
         }
       ],
       "secondaryMetrics": [
@@ -56322,6 +59683,13 @@ Here's an example:
         "id": "74a49a2b-4834-4246-917e-5d85231d8c2a",
         "fileName": "covariate.csv",
         "createdAt": "1654104600000"
+      },
+      "assignmentDataSource": {
+        "key": "my-assignment-data-source",
+        "name": "Snowflake production assignments",
+        "experimentId": "experiment-123",
+        "startTime": "1690000000000",
+        "endTime": "1690000000000"
       }
     },
     "previousIterations": [
@@ -56485,7 +59853,8 @@ Here's an example:
                 "variationId": "string",
                 "flagKey": "string"
               }
-            ]
+            ],
+            "assignmentVariantId": "treatment_a"
           }
         ],
         "secondaryMetrics": [
@@ -56562,6 +59931,13 @@ Here's an example:
           "id": "74a49a2b-4834-4246-917e-5d85231d8c2a",
           "fileName": "covariate.csv",
           "createdAt": "1654104600000"
+        },
+        "assignmentDataSource": {
+          "key": "my-assignment-data-source",
+          "name": "Snowflake production assignments",
+          "experimentId": "experiment-123",
+          "startTime": "1690000000000",
+          "endTime": "1690000000000"
         }
       }
     ],
@@ -62179,6 +65555,19 @@ List all delivery configurations.
             }
           }
         ]
+      },
+      "_status": {
+        "available": false,
+        "potentiallyStale": true,
+        "lastSync": "1717263000000",
+        "lastError": "1714584600000",
+        "errors": [
+          {
+            "statusCode": 0,
+            "message": "string",
+            "timestamp": 0
+          }
+        ]
       }
     }
   ]
@@ -62348,6 +65737,19 @@ Get delivery configurations by environment.
               "effect": "allow",
               "role_name": "string"
             }
+          }
+        ]
+      },
+      "_status": {
+        "available": false,
+        "potentiallyStale": true,
+        "lastSync": "1717263000000",
+        "lastError": "1714584600000",
+        "errors": [
+          {
+            "statusCode": 0,
+            "message": "string",
+            "timestamp": 0
           }
         ]
       }
@@ -62544,6 +65946,19 @@ Create a delivery configuration.
         }
       }
     ]
+  },
+  "_status": {
+    "available": false,
+    "potentiallyStale": true,
+    "lastSync": "1717263000000",
+    "lastError": "1714584600000",
+    "errors": [
+      {
+        "statusCode": 0,
+        "message": "string",
+        "timestamp": 0
+      }
+    ]
   }
 }
 ```
@@ -62711,6 +66126,19 @@ Get delivery configuration by ID.
           "effect": "allow",
           "role_name": "string"
         }
+      }
+    ]
+  },
+  "_status": {
+    "available": false,
+    "potentiallyStale": true,
+    "lastSync": "1717263000000",
+    "lastError": "1714584600000",
+    "errors": [
+      {
+        "statusCode": 0,
+        "message": "string",
+        "timestamp": 0
       }
     ]
   }
@@ -62963,6 +66391,19 @@ Update an integration delivery configuration. Updating an integration delivery c
         }
       }
     ]
+  },
+  "_status": {
+    "available": false,
+    "potentiallyStale": true,
+    "lastSync": "1717263000000",
+    "lastError": "1714584600000",
+    "errors": [
+      {
+        "statusCode": 0,
+        "message": "string",
+        "timestamp": 0
+      }
+    ]
   }
 }
 ```
@@ -63170,7 +66611,7 @@ curl https://app.launchdarkly.com/api/v2/integration-configurations/keys/string 
 
 `GET /api/v2/integration-configurations/keys/{integrationKey}`
 
-Get all integration configurations with the specified integration key. (Excludes [persistent store](https://launchdarkly.com/docs/api/persistent-store-integrations-beta) and [flag import configurations](https://launchdarkly.com/docs/api/flag-import-configurations-beta).).
+Get all integration configurations with the specified integration key. This endpoint does not include persistent store integrations or flag import configurations. To manage those, use the [persistent store](https://launchdarkly.com/docs/api/persistent-store-integrations-beta) and [flag import configuration](https://launchdarkly.com/docs/api/flag-import-configurations-beta) endpoints.
 
 <h3 id="get-all-configurations-for-the-integration-parameters">Parameters</h3>
 
@@ -63367,7 +66808,7 @@ curl https://app.launchdarkly.com/api/v2/integration-configurations/keys/string 
 
 `POST /api/v2/integration-configurations/keys/{integrationKey}`
 
-Create a new integration configuration. (Excludes [persistent store](https://launchdarkly.com/docs/api/persistent-store-integrations-beta) and [flag import configurations](https://launchdarkly.com/docs/api/flag-import-configurations-beta).)
+Create a new integration configuration. This endpoint does not include persistent store integrations or flag import configurations. To manage those, use the [persistent store](https://launchdarkly.com/docs/api/persistent-store-integrations-beta) and [flag import configuration](https://launchdarkly.com/docs/api/flag-import-configurations-beta) endpoints.
 
 > Body parameter
 
@@ -63569,7 +67010,7 @@ curl https://app.launchdarkly.com/api/v2/integration-configurations/string \
 
 `GET /api/v2/integration-configurations/{integrationConfigurationId}`
 
-Get integration configuration with the specified ID. (Excludes [persistent store](https://launchdarkly.com/docs/api/persistent-store-integrations-beta) and [flag import configurations](https://launchdarkly.com/docs/api/flag-import-configurations-beta).)
+Get integration configuration with the specified ID. This endpoint does not include persistent store integrations or flag import configurations. To manage those, use the [persistent store](https://launchdarkly.com/docs/api/persistent-store-integrations-beta) and [flag import configuration](https://launchdarkly.com/docs/api/flag-import-configurations-beta) endpoints.
 
 <h3 id="get-an-integration-configuration-parameters">Parameters</h3>
 
@@ -63737,7 +67178,7 @@ curl https://app.launchdarkly.com/api/v2/integration-configurations/string \
 
 `DELETE /api/v2/integration-configurations/{integrationConfigurationId}`
 
-Delete an integration configuration by ID. (Excludes [persistent store](https://launchdarkly.com/docs/api/persistent-store-integrations-beta) and [flag import configurations](https://launchdarkly.com/docs/api/flag-import-configurations-beta).)
+Delete an integration configuration by ID. This endpoint does not include persistent store integrations or flag import configurations. To manage those, use the [persistent store](https://launchdarkly.com/docs/api/persistent-store-integrations-beta) and [flag import configuration](https://launchdarkly.com/docs/api/flag-import-configurations-beta) endpoints.
 
 <h3 id="delete-integration-configuration-parameters">Parameters</h3>
 
@@ -64012,7 +67453,7 @@ your members can access their LaunchDarkly account.
 The IP allowlist supports both individual IP addresses and classless inter-domain routing (CIDR) ranges. The 
 allowlist only supports IPv4 values.
 
-Use of the IP allowlist is an Enterprise and Guardian feature.
+Use of the IP allowlist is an Enterprise feature.
 
 To learn more, read [IP allowlist](https://launchdarkly.com/docs/home/account/ip-allowlist).
 
@@ -65105,7 +68546,7 @@ For details on the metric import API, read [Importing metric events](https://lau
 
 > #### The metric import API uses a different base URL
 >
-> The metric import API differs from other LaunchDarkly REST APIs because it uses a different base URL: it requires `https://events.launchdarkly.com` rather than `https://app.launchdarkly.com`. For this reason, the metric import API is also not included as part of LaunchDarkly's [generated client libraries](https://launchdarkly.com/docs/api#openapi-swagger-and-client-libraries), and details are not included in the [OpenAPI specification](https://launchdarkly.com/docs/api/other/get-openapi-spec). To learn more, read [Importing metric events](https://launchdarkly.com/docs/home/observability/import-events).
+> The metric import API differs from other LaunchDarkly REST APIs because it uses a different base URL: it requires `https://events.launchdarkly.com` rather than `https://app.launchdarkly.com`. For this reason, the metric import API is also not included as part of LaunchDarkly [generated client libraries](https://launchdarkly.com/docs/api#openapi-swagger-and-client-libraries), and details are not included in the [OpenAPI specification](https://launchdarkly.com/docs/api/other/get-openapi-spec). To learn more, read [Importing metric events](https://launchdarkly.com/docs/home/observability/import-events).
 
 
 ## List metrics
@@ -73928,1781 +77369,6 @@ To perform this operation, you must be authenticated by means of one of the foll
 ApiKey
 </aside>
 
-<h1 id="launchdarkly-rest-api-release-policies-beta">Release policies (beta)</h1>
-
-> ### This feature is in beta
->
-> To use this feature, pass in a header including the `LD-API-Version` key with value set to `beta`. Use this header with each call. To learn more, read [Beta resources](https://launchdarkly.com/docs/api#beta-resources).
->
-> Resources that are in beta are still undergoing testing and development. They may change without notice, including becoming backwards incompatible.
-
-> ### This feature is deprecated
->
-> The release policies API is deprecated and will be removed. Release policies continue to work during the deprecation period. LaunchDarkly will announce the exact dates for end of support and removal of access separately.
-
-Release policies let you specify your preferred rollout method for a given set of environments.
-
-
-## List release policies
-
-<a id="opIdGetReleasePolicies"></a>
-
-> Code samples
-
-```bash
-curl https://app.launchdarkly.com/api/v2/projects/default/release-policies \
-  -H 'Accept: application/json' \
-  -H "Authorization: ${API_KEY}" \
-  -H 'LD-API-Version: beta'
-```
-
-`GET /api/v2/projects/{projectKey}/release-policies`
-
-Get a list of release policies for the specified project with optional filtering.
-
-<h3 id="list-release-policies-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|LD-API-Version|header|string|true|Version of the endpoint.|
-|projectKey|path|string|true|The project key|
-|excludeDefault|query|boolean|false|When true, exclude the default release policy from the response. When false or omitted, include the default policy if an environment filter is present.|
-
-#### Enumerated Values
-
-|Parameter|Value|
-|---|---|
-|LD-API-Version|beta|
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "totalCount": 42,
-  "items": [
-    {
-      "releaseMethod": "guarded-release",
-      "_access": {
-        "allowed": [
-          {
-            "reason": {
-              "role_name": "role_name",
-              "notActions": [
-                null,
-                null
-              ],
-              "notResources": [
-                "notResources",
-                "notResources"
-              ],
-              "effect": "allow",
-              "resources": [
-                "proj/*:env/*;qa_*:/flag/*"
-              ],
-              "actions": [
-                "*"
-              ]
-            },
-            "action": "action"
-          },
-          {
-            "reason": {
-              "role_name": "role_name",
-              "notActions": [
-                null,
-                null
-              ],
-              "notResources": [
-                "notResources",
-                "notResources"
-              ],
-              "effect": "allow",
-              "resources": [
-                "proj/*:env/*;qa_*:/flag/*"
-              ],
-              "actions": [
-                "*"
-              ]
-            },
-            "action": "action"
-          }
-        ],
-        "denied": [
-          {
-            "reason": {
-              "role_name": "role_name",
-              "notActions": [
-                null,
-                null
-              ],
-              "notResources": [
-                "notResources",
-                "notResources"
-              ],
-              "effect": "allow",
-              "resources": [
-                "proj/*:env/*;qa_*:/flag/*"
-              ],
-              "actions": [
-                "*"
-              ]
-            },
-            "action": "action"
-          },
-          {
-            "reason": {
-              "role_name": "role_name",
-              "notActions": [
-                null,
-                null
-              ],
-              "notResources": [
-                "notResources",
-                "notResources"
-              ],
-              "effect": "allow",
-              "resources": [
-                "proj/*:env/*;qa_*:/flag/*"
-              ],
-              "actions": [
-                "*"
-              ]
-            },
-            "action": "action"
-          }
-        ]
-      },
-      "scope": {
-        "environmentKeys": [
-          "production",
-          "staging"
-        ],
-        "flagTagKeys": [
-          "frontend",
-          "backend"
-        ],
-        "viewKeys": [
-          "feature-a",
-          "team-a"
-        ]
-      },
-      "progressiveReleaseConfig": {
-        "rolloutContextKindKey": "user",
-        "stages": [
-          {
-            "allocation": 25000,
-            "durationMillis": 60000
-          },
-          {
-            "allocation": 50000,
-            "durationMillis": 60000
-          }
-        ]
-      },
-      "name": "Production Release",
-      "rank": 1,
-      "_id": "550e8400-e29b-41d4-a716-446655440000",
-      "guardedReleaseConfig": {
-        "metricKeys": [
-          "http-errors",
-          "latency"
-        ],
-        "rolloutContextKindKey": "user",
-        "metricGroupKeys": [
-          "frontend-metrics",
-          "backend-metrics"
-        ],
-        "minSampleSize": 100,
-        "stages": [
-          {
-            "allocation": 25000,
-            "durationMillis": 60000
-          },
-          {
-            "allocation": 50000,
-            "durationMillis": 60000
-          }
-        ],
-        "rollbackOnRegression": true
-      },
-      "key": "production-release"
-    },
-    {
-      "releaseMethod": "guarded-release",
-      "_access": {
-        "allowed": [
-          {
-            "reason": {
-              "role_name": "role_name",
-              "notActions": [
-                null,
-                null
-              ],
-              "notResources": [
-                "notResources",
-                "notResources"
-              ],
-              "effect": "allow",
-              "resources": [
-                "proj/*:env/*;qa_*:/flag/*"
-              ],
-              "actions": [
-                "*"
-              ]
-            },
-            "action": "action"
-          },
-          {
-            "reason": {
-              "role_name": "role_name",
-              "notActions": [
-                null,
-                null
-              ],
-              "notResources": [
-                "notResources",
-                "notResources"
-              ],
-              "effect": "allow",
-              "resources": [
-                "proj/*:env/*;qa_*:/flag/*"
-              ],
-              "actions": [
-                "*"
-              ]
-            },
-            "action": "action"
-          }
-        ],
-        "denied": [
-          {
-            "reason": {
-              "role_name": "role_name",
-              "notActions": [
-                null,
-                null
-              ],
-              "notResources": [
-                "notResources",
-                "notResources"
-              ],
-              "effect": "allow",
-              "resources": [
-                "proj/*:env/*;qa_*:/flag/*"
-              ],
-              "actions": [
-                "*"
-              ]
-            },
-            "action": "action"
-          },
-          {
-            "reason": {
-              "role_name": "role_name",
-              "notActions": [
-                null,
-                null
-              ],
-              "notResources": [
-                "notResources",
-                "notResources"
-              ],
-              "effect": "allow",
-              "resources": [
-                "proj/*:env/*;qa_*:/flag/*"
-              ],
-              "actions": [
-                "*"
-              ]
-            },
-            "action": "action"
-          }
-        ]
-      },
-      "scope": {
-        "environmentKeys": [
-          "production",
-          "staging"
-        ],
-        "flagTagKeys": [
-          "frontend",
-          "backend"
-        ],
-        "viewKeys": [
-          "feature-a",
-          "team-a"
-        ]
-      },
-      "progressiveReleaseConfig": {
-        "rolloutContextKindKey": "user",
-        "stages": [
-          {
-            "allocation": 25000,
-            "durationMillis": 60000
-          },
-          {
-            "allocation": 50000,
-            "durationMillis": 60000
-          }
-        ]
-      },
-      "name": "Production Release",
-      "rank": 1,
-      "_id": "550e8400-e29b-41d4-a716-446655440000",
-      "guardedReleaseConfig": {
-        "metricKeys": [
-          "http-errors",
-          "latency"
-        ],
-        "rolloutContextKindKey": "user",
-        "metricGroupKeys": [
-          "frontend-metrics",
-          "backend-metrics"
-        ],
-        "minSampleSize": 100,
-        "stages": [
-          {
-            "allocation": 25000,
-            "durationMillis": 60000
-          },
-          {
-            "allocation": 50000,
-            "durationMillis": 60000
-          }
-        ],
-        "rollbackOnRegression": true
-      },
-      "key": "production-release"
-    }
-  ]
-}
-```
-
-> 400 Response
-
-```json
-{
-  "code": "code",
-  "message": "message"
-}
-```
-
-> 401 Response
-
-```json
-{
-  "code": "code",
-  "message": "message"
-}
-```
-
-> 403 Response
-
-```json
-{
-  "code": "code",
-  "message": "message"
-}
-```
-
-> 404 Response
-
-```json
-{
-  "code": "code",
-  "message": "message"
-}
-```
-
-> 500 Response
-
-```json
-{
-  "code": "code",
-  "message": "message"
-}
-```
-
-<h3 id="list-release-policies-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK|List of release policies|[ReleasePoliciesResponse](#schemareleasepoliciesresponse)|
-|400|Bad Request|Bad request|[Error](#schemaerror)|
-|401|Unauthorized|Invalid access token|[Error](#schemaerror)|
-|403|Forbidden|Forbidden|[Error](#schemaerror)|
-|404|Not Found|Not found|[Error](#schemaerror)|
-|500|Internal Server Error|Internal server error|[Error](#schemaerror)|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-ApiKey
-</aside>
-
-## Create a release policy
-
-<a id="opIdPostReleasePolicy"></a>
-
-> Code samples
-
-```bash
-curl https://app.launchdarkly.com/api/v2/projects/default/release-policies \
-  -X POST \
-  -H 'Content-Type: application/json' \
-  -H 'Accept: application/json' \
-  -H "Authorization: ${API_KEY}" \
-  -H 'LD-API-Version: beta' \
-  -d '{
-    "releaseMethod": "guarded-release",
-    "scope": {
-      "environmentKeys": [
-        "production",
-        "staging"
-      ],
-      "flagTagKeys": [
-        "frontend",
-        "backend"
-      ],
-      "viewKeys": [
-        "feature-a",
-        "team-a"
-      ]
-    },
-    "progressiveReleaseConfig": {
-      "rolloutContextKindKey": "user",
-      "stages": [
-        {
-          "allocation": 25000,
-          "durationMillis": 60000
-        },
-        {
-          "allocation": 50000,
-          "durationMillis": 60000
-        }
-      ]
-    },
-    "name": "Production Release",
-    "guardedReleaseConfig": {
-      "metricKeys": [
-        "http-errors",
-        "latency"
-      ],
-      "rolloutContextKindKey": "user",
-      "metricGroupKeys": [
-        "frontend-metrics",
-        "backend-metrics"
-      ],
-      "minSampleSize": 100,
-      "stages": [
-        {
-          "allocation": 25000,
-          "durationMillis": 60000
-        },
-        {
-          "allocation": 50000,
-          "durationMillis": 60000
-        }
-      ],
-      "rollbackOnRegression": true
-    },
-    "key": "production-release"
-  }'
-```
-
-`POST /api/v2/projects/{projectKey}/release-policies`
-
-Create a new release policy for the specified project.
-
-> Body parameter
-
-```json
-{
-  "releaseMethod": "guarded-release",
-  "scope": {
-    "environmentKeys": [
-      "production",
-      "staging"
-    ],
-    "flagTagKeys": [
-      "frontend",
-      "backend"
-    ],
-    "viewKeys": [
-      "feature-a",
-      "team-a"
-    ]
-  },
-  "progressiveReleaseConfig": {
-    "rolloutContextKindKey": "user",
-    "stages": [
-      {
-        "allocation": 25000,
-        "durationMillis": 60000
-      },
-      {
-        "allocation": 50000,
-        "durationMillis": 60000
-      }
-    ]
-  },
-  "name": "Production Release",
-  "guardedReleaseConfig": {
-    "metricKeys": [
-      "http-errors",
-      "latency"
-    ],
-    "rolloutContextKindKey": "user",
-    "metricGroupKeys": [
-      "frontend-metrics",
-      "backend-metrics"
-    ],
-    "minSampleSize": 100,
-    "stages": [
-      {
-        "allocation": 25000,
-        "durationMillis": 60000
-      },
-      {
-        "allocation": 50000,
-        "durationMillis": 60000
-      }
-    ],
-    "rollbackOnRegression": true
-  },
-  "key": "production-release"
-}
-```
-
-<h3 id="create-a-release-policy-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|LD-API-Version|header|string|true|Version of the endpoint.|
-|projectKey|path|string|true|The project key|
-|body|body|[PostReleasePolicyRequest](#schemapostreleasepolicyrequest)|true|Release policy to create|
-|» scope|body|[ReleasePolicyScope](#schemareleasepolicyscope)|false|none|
-|» releaseMethod|body|[ReleaseMethod](#schemareleasemethod)|true|The release method for this policy|
-|» guardedReleaseConfig|body|[GuardedReleaseConfig](#schemaguardedreleaseconfig)|false|Configuration for guarded releases|
-|» progressiveReleaseConfig|body|[ProgressiveReleaseConfig](#schemaprogressivereleaseconfig)|false|Configuration for progressive releases|
-|» name|body|string|true|The name of the release policy|
-|» key|body|string|true|The human-readable key of the release policy|
-
-#### Enumerated Values
-
-|Parameter|Value|
-|---|---|
-|LD-API-Version|beta|
-|» releaseMethod|guarded-release|
-|» releaseMethod|immediate-release|
-|» releaseMethod|progressive-release|
-
-> Example responses
-
-> 201 Response
-
-```json
-{
-  "releaseMethod": "guarded-release",
-  "_access": {
-    "allowed": [
-      {
-        "reason": {
-          "role_name": "role_name",
-          "notActions": [
-            null,
-            null
-          ],
-          "notResources": [
-            "notResources",
-            "notResources"
-          ],
-          "effect": "allow",
-          "resources": [
-            "proj/*:env/*;qa_*:/flag/*"
-          ],
-          "actions": [
-            "*"
-          ]
-        },
-        "action": "action"
-      },
-      {
-        "reason": {
-          "role_name": "role_name",
-          "notActions": [
-            null,
-            null
-          ],
-          "notResources": [
-            "notResources",
-            "notResources"
-          ],
-          "effect": "allow",
-          "resources": [
-            "proj/*:env/*;qa_*:/flag/*"
-          ],
-          "actions": [
-            "*"
-          ]
-        },
-        "action": "action"
-      }
-    ],
-    "denied": [
-      {
-        "reason": {
-          "role_name": "role_name",
-          "notActions": [
-            null,
-            null
-          ],
-          "notResources": [
-            "notResources",
-            "notResources"
-          ],
-          "effect": "allow",
-          "resources": [
-            "proj/*:env/*;qa_*:/flag/*"
-          ],
-          "actions": [
-            "*"
-          ]
-        },
-        "action": "action"
-      },
-      {
-        "reason": {
-          "role_name": "role_name",
-          "notActions": [
-            null,
-            null
-          ],
-          "notResources": [
-            "notResources",
-            "notResources"
-          ],
-          "effect": "allow",
-          "resources": [
-            "proj/*:env/*;qa_*:/flag/*"
-          ],
-          "actions": [
-            "*"
-          ]
-        },
-        "action": "action"
-      }
-    ]
-  },
-  "scope": {
-    "environmentKeys": [
-      "production",
-      "staging"
-    ],
-    "flagTagKeys": [
-      "frontend",
-      "backend"
-    ],
-    "viewKeys": [
-      "feature-a",
-      "team-a"
-    ]
-  },
-  "progressiveReleaseConfig": {
-    "rolloutContextKindKey": "user",
-    "stages": [
-      {
-        "allocation": 25000,
-        "durationMillis": 60000
-      },
-      {
-        "allocation": 50000,
-        "durationMillis": 60000
-      }
-    ]
-  },
-  "name": "Production Release",
-  "rank": 1,
-  "_id": "550e8400-e29b-41d4-a716-446655440000",
-  "guardedReleaseConfig": {
-    "metricKeys": [
-      "http-errors",
-      "latency"
-    ],
-    "rolloutContextKindKey": "user",
-    "metricGroupKeys": [
-      "frontend-metrics",
-      "backend-metrics"
-    ],
-    "minSampleSize": 100,
-    "stages": [
-      {
-        "allocation": 25000,
-        "durationMillis": 60000
-      },
-      {
-        "allocation": 50000,
-        "durationMillis": 60000
-      }
-    ],
-    "rollbackOnRegression": true
-  },
-  "key": "production-release"
-}
-```
-
-> 400 Response
-
-```json
-{
-  "code": "code",
-  "message": "message"
-}
-```
-
-> 401 Response
-
-```json
-{
-  "code": "code",
-  "message": "message"
-}
-```
-
-> 403 Response
-
-```json
-{
-  "code": "code",
-  "message": "message"
-}
-```
-
-> 404 Response
-
-```json
-{
-  "code": "code",
-  "message": "message"
-}
-```
-
-> 409 Response
-
-```json
-{
-  "code": "code",
-  "message": "message"
-}
-```
-
-> 500 Response
-
-```json
-{
-  "code": "code",
-  "message": "message"
-}
-```
-
-<h3 id="create-a-release-policy-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|201|Created|Release policy created successfully|[ReleasePolicy](#schemareleasepolicy)|
-|400|Bad Request|Bad request|[Error](#schemaerror)|
-|401|Unauthorized|Invalid access token|[Error](#schemaerror)|
-|403|Forbidden|Forbidden|[Error](#schemaerror)|
-|404|Not Found|Not found|[Error](#schemaerror)|
-|409|Conflict|Conflict|[Error](#schemaerror)|
-|500|Internal Server Error|Internal server error|[Error](#schemaerror)|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-ApiKey
-</aside>
-
-## Update the order of existing release policies
-
-<a id="opIdPostReleasePoliciesOrder"></a>
-
-> Code samples
-
-```bash
-curl https://app.launchdarkly.com/api/v2/projects/default/release-policies/order \
-  -X POST \
-  -H 'Content-Type: application/json' \
-  -H 'Accept: application/json' \
-  -H "Authorization: ${API_KEY}" \
-  -H 'LD-API-Version: beta' \
-  -d '[
-    "string"
-  ]'
-```
-
-`POST /api/v2/projects/{projectKey}/release-policies/order`
-
-Update the order of existing release policies for the specified project.
-
-> Body parameter
-
-```json
-[
-  "string"
-]
-```
-
-<h3 id="update-the-order-of-existing-release-policies-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|LD-API-Version|header|string|true|Version of the endpoint.|
-|projectKey|path|string|true|The project key|
-|body|body|[string]|true|Array of release policy keys in the desired rank order (scoped policies only). These keys must include _all_ of the scoped release policies for the project.|
-
-#### Enumerated Values
-
-|Parameter|Value|
-|---|---|
-|LD-API-Version|beta|
-
-> Example responses
-
-> 200 Response
-
-```json
-[
-  {
-    "releaseMethod": "guarded-release",
-    "_access": {
-      "allowed": [
-        {
-          "reason": {
-            "role_name": "role_name",
-            "notActions": [
-              null,
-              null
-            ],
-            "notResources": [
-              "notResources",
-              "notResources"
-            ],
-            "effect": "allow",
-            "resources": [
-              "proj/*:env/*;qa_*:/flag/*"
-            ],
-            "actions": [
-              "*"
-            ]
-          },
-          "action": "action"
-        },
-        {
-          "reason": {
-            "role_name": "role_name",
-            "notActions": [
-              null,
-              null
-            ],
-            "notResources": [
-              "notResources",
-              "notResources"
-            ],
-            "effect": "allow",
-            "resources": [
-              "proj/*:env/*;qa_*:/flag/*"
-            ],
-            "actions": [
-              "*"
-            ]
-          },
-          "action": "action"
-        }
-      ],
-      "denied": [
-        {
-          "reason": {
-            "role_name": "role_name",
-            "notActions": [
-              null,
-              null
-            ],
-            "notResources": [
-              "notResources",
-              "notResources"
-            ],
-            "effect": "allow",
-            "resources": [
-              "proj/*:env/*;qa_*:/flag/*"
-            ],
-            "actions": [
-              "*"
-            ]
-          },
-          "action": "action"
-        },
-        {
-          "reason": {
-            "role_name": "role_name",
-            "notActions": [
-              null,
-              null
-            ],
-            "notResources": [
-              "notResources",
-              "notResources"
-            ],
-            "effect": "allow",
-            "resources": [
-              "proj/*:env/*;qa_*:/flag/*"
-            ],
-            "actions": [
-              "*"
-            ]
-          },
-          "action": "action"
-        }
-      ]
-    },
-    "scope": {
-      "environmentKeys": [
-        "production",
-        "staging"
-      ],
-      "flagTagKeys": [
-        "frontend",
-        "backend"
-      ],
-      "viewKeys": [
-        "feature-a",
-        "team-a"
-      ]
-    },
-    "progressiveReleaseConfig": {
-      "rolloutContextKindKey": "user",
-      "stages": [
-        {
-          "allocation": 25000,
-          "durationMillis": 60000
-        },
-        {
-          "allocation": 50000,
-          "durationMillis": 60000
-        }
-      ]
-    },
-    "name": "Production Release",
-    "rank": 1,
-    "_id": "550e8400-e29b-41d4-a716-446655440000",
-    "guardedReleaseConfig": {
-      "metricKeys": [
-        "http-errors",
-        "latency"
-      ],
-      "rolloutContextKindKey": "user",
-      "metricGroupKeys": [
-        "frontend-metrics",
-        "backend-metrics"
-      ],
-      "minSampleSize": 100,
-      "stages": [
-        {
-          "allocation": 25000,
-          "durationMillis": 60000
-        },
-        {
-          "allocation": 50000,
-          "durationMillis": 60000
-        }
-      ],
-      "rollbackOnRegression": true
-    },
-    "key": "production-release"
-  }
-]
-```
-
-> 400 Response
-
-```json
-{
-  "code": "code",
-  "message": "message"
-}
-```
-
-> 401 Response
-
-```json
-{
-  "code": "code",
-  "message": "message"
-}
-```
-
-> 403 Response
-
-```json
-{
-  "code": "code",
-  "message": "message"
-}
-```
-
-> 404 Response
-
-```json
-{
-  "code": "code",
-  "message": "message"
-}
-```
-
-> 500 Response
-
-```json
-{
-  "code": "code",
-  "message": "message"
-}
-```
-
-<h3 id="update-the-order-of-existing-release-policies-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK|Release policies updated successfully|Inline|
-|400|Bad Request|Bad request|[Error](#schemaerror)|
-|401|Unauthorized|Invalid access token|[Error](#schemaerror)|
-|403|Forbidden|Forbidden|[Error](#schemaerror)|
-|404|Not Found|Not found|[Error](#schemaerror)|
-|500|Internal Server Error|Internal server error|[Error](#schemaerror)|
-
-<h3 id="update-the-order-of-existing-release-policies-responseschema">Response Schema</h3>
-
-Status Code **200**
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|*anonymous*|[[ReleasePolicy](#schemareleasepolicy)]|false|none|none|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-ApiKey
-</aside>
-
-## Get a release policy by key
-
-<a id="opIdGetReleasePolicy"></a>
-
-> Code samples
-
-```bash
-curl https://app.launchdarkly.com/api/v2/projects/default/release-policies/production-release \
-  -H 'Accept: application/json' \
-  -H "Authorization: ${API_KEY}" \
-  -H 'LD-API-Version: beta'
-```
-
-`GET /api/v2/projects/{projectKey}/release-policies/{policyKey}`
-
-Retrieve a single release policy by its key for the specified project.
-
-<h3 id="get-a-release-policy-by-key-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|LD-API-Version|header|string|true|Version of the endpoint.|
-|projectKey|path|string|true|The project key|
-|policyKey|path|string|true|The release policy key|
-
-#### Enumerated Values
-
-|Parameter|Value|
-|---|---|
-|LD-API-Version|beta|
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "releaseMethod": "guarded-release",
-  "_access": {
-    "allowed": [
-      {
-        "reason": {
-          "role_name": "role_name",
-          "notActions": [
-            null,
-            null
-          ],
-          "notResources": [
-            "notResources",
-            "notResources"
-          ],
-          "effect": "allow",
-          "resources": [
-            "proj/*:env/*;qa_*:/flag/*"
-          ],
-          "actions": [
-            "*"
-          ]
-        },
-        "action": "action"
-      },
-      {
-        "reason": {
-          "role_name": "role_name",
-          "notActions": [
-            null,
-            null
-          ],
-          "notResources": [
-            "notResources",
-            "notResources"
-          ],
-          "effect": "allow",
-          "resources": [
-            "proj/*:env/*;qa_*:/flag/*"
-          ],
-          "actions": [
-            "*"
-          ]
-        },
-        "action": "action"
-      }
-    ],
-    "denied": [
-      {
-        "reason": {
-          "role_name": "role_name",
-          "notActions": [
-            null,
-            null
-          ],
-          "notResources": [
-            "notResources",
-            "notResources"
-          ],
-          "effect": "allow",
-          "resources": [
-            "proj/*:env/*;qa_*:/flag/*"
-          ],
-          "actions": [
-            "*"
-          ]
-        },
-        "action": "action"
-      },
-      {
-        "reason": {
-          "role_name": "role_name",
-          "notActions": [
-            null,
-            null
-          ],
-          "notResources": [
-            "notResources",
-            "notResources"
-          ],
-          "effect": "allow",
-          "resources": [
-            "proj/*:env/*;qa_*:/flag/*"
-          ],
-          "actions": [
-            "*"
-          ]
-        },
-        "action": "action"
-      }
-    ]
-  },
-  "scope": {
-    "environmentKeys": [
-      "production",
-      "staging"
-    ],
-    "flagTagKeys": [
-      "frontend",
-      "backend"
-    ],
-    "viewKeys": [
-      "feature-a",
-      "team-a"
-    ]
-  },
-  "progressiveReleaseConfig": {
-    "rolloutContextKindKey": "user",
-    "stages": [
-      {
-        "allocation": 25000,
-        "durationMillis": 60000
-      },
-      {
-        "allocation": 50000,
-        "durationMillis": 60000
-      }
-    ]
-  },
-  "name": "Production Release",
-  "rank": 1,
-  "_id": "550e8400-e29b-41d4-a716-446655440000",
-  "guardedReleaseConfig": {
-    "metricKeys": [
-      "http-errors",
-      "latency"
-    ],
-    "rolloutContextKindKey": "user",
-    "metricGroupKeys": [
-      "frontend-metrics",
-      "backend-metrics"
-    ],
-    "minSampleSize": 100,
-    "stages": [
-      {
-        "allocation": 25000,
-        "durationMillis": 60000
-      },
-      {
-        "allocation": 50000,
-        "durationMillis": 60000
-      }
-    ],
-    "rollbackOnRegression": true
-  },
-  "key": "production-release"
-}
-```
-
-> 400 Response
-
-```json
-{
-  "code": "code",
-  "message": "message"
-}
-```
-
-> 401 Response
-
-```json
-{
-  "code": "code",
-  "message": "message"
-}
-```
-
-> 403 Response
-
-```json
-{
-  "code": "code",
-  "message": "message"
-}
-```
-
-> 404 Response
-
-```json
-{
-  "code": "code",
-  "message": "message"
-}
-```
-
-> 500 Response
-
-```json
-{
-  "code": "code",
-  "message": "message"
-}
-```
-
-<h3 id="get-a-release-policy-by-key-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK|Release policy found|[ReleasePolicy](#schemareleasepolicy)|
-|400|Bad Request|Bad request|[Error](#schemaerror)|
-|401|Unauthorized|Invalid access token|[Error](#schemaerror)|
-|403|Forbidden|Forbidden|[Error](#schemaerror)|
-|404|Not Found|Not found|[Error](#schemaerror)|
-|500|Internal Server Error|Internal server error|[Error](#schemaerror)|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-ApiKey
-</aside>
-
-## Update a release policy
-
-<a id="opIdPutReleasePolicy"></a>
-
-> Code samples
-
-```bash
-curl https://app.launchdarkly.com/api/v2/projects/default/release-policies/production-release \
-  -X PUT \
-  -H 'Content-Type: application/json' \
-  -H 'Accept: application/json' \
-  -H "Authorization: ${API_KEY}" \
-  -H 'LD-API-Version: beta' \
-  -d '{
-    "releaseMethod": "guarded-release",
-    "scope": {
-      "environmentKeys": [
-        "production",
-        "staging"
-      ],
-      "flagTagKeys": [
-        "frontend",
-        "backend"
-      ],
-      "viewKeys": [
-        "feature-a",
-        "team-a"
-      ]
-    },
-    "progressiveReleaseConfig": {
-      "rolloutContextKindKey": "user",
-      "stages": [
-        {
-          "allocation": 25000,
-          "durationMillis": 60000
-        },
-        {
-          "allocation": 50000,
-          "durationMillis": 60000
-        }
-      ]
-    },
-    "name": "Production Release",
-    "guardedReleaseConfig": {
-      "metricKeys": [
-        "http-errors",
-        "latency"
-      ],
-      "rolloutContextKindKey": "user",
-      "metricGroupKeys": [
-        "frontend-metrics",
-        "backend-metrics"
-      ],
-      "minSampleSize": 100,
-      "stages": [
-        {
-          "allocation": 25000,
-          "durationMillis": 60000
-        },
-        {
-          "allocation": 50000,
-          "durationMillis": 60000
-        }
-      ],
-      "rollbackOnRegression": true
-    }
-  }'
-```
-
-`PUT /api/v2/projects/{projectKey}/release-policies/{policyKey}`
-
-Update an existing release policy for the specified project.
-
-> Body parameter
-
-```json
-{
-  "releaseMethod": "guarded-release",
-  "scope": {
-    "environmentKeys": [
-      "production",
-      "staging"
-    ],
-    "flagTagKeys": [
-      "frontend",
-      "backend"
-    ],
-    "viewKeys": [
-      "feature-a",
-      "team-a"
-    ]
-  },
-  "progressiveReleaseConfig": {
-    "rolloutContextKindKey": "user",
-    "stages": [
-      {
-        "allocation": 25000,
-        "durationMillis": 60000
-      },
-      {
-        "allocation": 50000,
-        "durationMillis": 60000
-      }
-    ]
-  },
-  "name": "Production Release",
-  "guardedReleaseConfig": {
-    "metricKeys": [
-      "http-errors",
-      "latency"
-    ],
-    "rolloutContextKindKey": "user",
-    "metricGroupKeys": [
-      "frontend-metrics",
-      "backend-metrics"
-    ],
-    "minSampleSize": 100,
-    "stages": [
-      {
-        "allocation": 25000,
-        "durationMillis": 60000
-      },
-      {
-        "allocation": 50000,
-        "durationMillis": 60000
-      }
-    ],
-    "rollbackOnRegression": true
-  }
-}
-```
-
-<h3 id="update-a-release-policy-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|LD-API-Version|header|string|true|Version of the endpoint.|
-|projectKey|path|string|true|The project key|
-|policyKey|path|string|true|The human-readable key of the release policy|
-|body|body|[PutReleasePolicyRequest](#schemaputreleasepolicyrequest)|true|Release policy data to update|
-|» scope|body|[ReleasePolicyScope](#schemareleasepolicyscope)|false|none|
-|» releaseMethod|body|[ReleaseMethod](#schemareleasemethod)|true|The release method for this policy|
-|» guardedReleaseConfig|body|[GuardedReleaseConfig](#schemaguardedreleaseconfig)|false|Configuration for guarded releases|
-|» progressiveReleaseConfig|body|[ProgressiveReleaseConfig](#schemaprogressivereleaseconfig)|false|Configuration for progressive releases|
-|» name|body|string|true|The name of the release policy|
-
-#### Enumerated Values
-
-|Parameter|Value|
-|---|---|
-|LD-API-Version|beta|
-|» releaseMethod|guarded-release|
-|» releaseMethod|immediate-release|
-|» releaseMethod|progressive-release|
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "releaseMethod": "guarded-release",
-  "_access": {
-    "allowed": [
-      {
-        "reason": {
-          "role_name": "role_name",
-          "notActions": [
-            null,
-            null
-          ],
-          "notResources": [
-            "notResources",
-            "notResources"
-          ],
-          "effect": "allow",
-          "resources": [
-            "proj/*:env/*;qa_*:/flag/*"
-          ],
-          "actions": [
-            "*"
-          ]
-        },
-        "action": "action"
-      },
-      {
-        "reason": {
-          "role_name": "role_name",
-          "notActions": [
-            null,
-            null
-          ],
-          "notResources": [
-            "notResources",
-            "notResources"
-          ],
-          "effect": "allow",
-          "resources": [
-            "proj/*:env/*;qa_*:/flag/*"
-          ],
-          "actions": [
-            "*"
-          ]
-        },
-        "action": "action"
-      }
-    ],
-    "denied": [
-      {
-        "reason": {
-          "role_name": "role_name",
-          "notActions": [
-            null,
-            null
-          ],
-          "notResources": [
-            "notResources",
-            "notResources"
-          ],
-          "effect": "allow",
-          "resources": [
-            "proj/*:env/*;qa_*:/flag/*"
-          ],
-          "actions": [
-            "*"
-          ]
-        },
-        "action": "action"
-      },
-      {
-        "reason": {
-          "role_name": "role_name",
-          "notActions": [
-            null,
-            null
-          ],
-          "notResources": [
-            "notResources",
-            "notResources"
-          ],
-          "effect": "allow",
-          "resources": [
-            "proj/*:env/*;qa_*:/flag/*"
-          ],
-          "actions": [
-            "*"
-          ]
-        },
-        "action": "action"
-      }
-    ]
-  },
-  "scope": {
-    "environmentKeys": [
-      "production",
-      "staging"
-    ],
-    "flagTagKeys": [
-      "frontend",
-      "backend"
-    ],
-    "viewKeys": [
-      "feature-a",
-      "team-a"
-    ]
-  },
-  "progressiveReleaseConfig": {
-    "rolloutContextKindKey": "user",
-    "stages": [
-      {
-        "allocation": 25000,
-        "durationMillis": 60000
-      },
-      {
-        "allocation": 50000,
-        "durationMillis": 60000
-      }
-    ]
-  },
-  "name": "Production Release",
-  "rank": 1,
-  "_id": "550e8400-e29b-41d4-a716-446655440000",
-  "guardedReleaseConfig": {
-    "metricKeys": [
-      "http-errors",
-      "latency"
-    ],
-    "rolloutContextKindKey": "user",
-    "metricGroupKeys": [
-      "frontend-metrics",
-      "backend-metrics"
-    ],
-    "minSampleSize": 100,
-    "stages": [
-      {
-        "allocation": 25000,
-        "durationMillis": 60000
-      },
-      {
-        "allocation": 50000,
-        "durationMillis": 60000
-      }
-    ],
-    "rollbackOnRegression": true
-  },
-  "key": "production-release"
-}
-```
-
-> 400 Response
-
-```json
-{
-  "code": "code",
-  "message": "message"
-}
-```
-
-> 401 Response
-
-```json
-{
-  "code": "code",
-  "message": "message"
-}
-```
-
-> 403 Response
-
-```json
-{
-  "code": "code",
-  "message": "message"
-}
-```
-
-> 404 Response
-
-```json
-{
-  "code": "code",
-  "message": "message"
-}
-```
-
-> 500 Response
-
-```json
-{
-  "code": "code",
-  "message": "message"
-}
-```
-
-<h3 id="update-a-release-policy-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK|Release policy updated successfully|[ReleasePolicy](#schemareleasepolicy)|
-|400|Bad Request|Bad request|[Error](#schemaerror)|
-|401|Unauthorized|Invalid access token|[Error](#schemaerror)|
-|403|Forbidden|Forbidden|[Error](#schemaerror)|
-|404|Not Found|Not found|[Error](#schemaerror)|
-|500|Internal Server Error|Internal server error|[Error](#schemaerror)|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-ApiKey
-</aside>
-
-## Delete a release policy
-
-<a id="opIdDeleteReleasePolicy"></a>
-
-> Code samples
-
-```bash
-curl https://app.launchdarkly.com/api/v2/projects/default/release-policies/production-release \
-  -X DELETE \
-  -H 'Accept: application/json' \
-  -H "Authorization: ${API_KEY}" \
-  -H 'LD-API-Version: beta'
-```
-
-`DELETE /api/v2/projects/{projectKey}/release-policies/{policyKey}`
-
-Delete an existing release policy for the specified project.
-
-<h3 id="delete-a-release-policy-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|LD-API-Version|header|string|true|Version of the endpoint.|
-|projectKey|path|string|true|The project key|
-|policyKey|path|string|true|The human-readable key of the release policy|
-
-#### Enumerated Values
-
-|Parameter|Value|
-|---|---|
-|LD-API-Version|beta|
-
-> Example responses
-
-> 400 Response
-
-```json
-{
-  "code": "code",
-  "message": "message"
-}
-```
-
-> 401 Response
-
-```json
-{
-  "code": "code",
-  "message": "message"
-}
-```
-
-> 403 Response
-
-```json
-{
-  "code": "code",
-  "message": "message"
-}
-```
-
-> 404 Response
-
-```json
-{
-  "code": "code",
-  "message": "message"
-}
-```
-
-> 500 Response
-
-```json
-{
-  "code": "code",
-  "message": "message"
-}
-```
-
-<h3 id="delete-a-release-policy-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|204|No Content|Release policy deleted successfully|None|
-|400|Bad Request|Bad request|[Error](#schemaerror)|
-|401|Unauthorized|Invalid access token|[Error](#schemaerror)|
-|403|Forbidden|Forbidden|[Error](#schemaerror)|
-|404|Not Found|Not found|[Error](#schemaerror)|
-|500|Internal Server Error|Internal server error|[Error](#schemaerror)|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-ApiKey
-</aside>
-
 <h1 id="launchdarkly-rest-api-scheduled-changes">Scheduled changes</h1>
 
 > ### Scheduled flag changes is an Enterprise feature
@@ -77548,6 +79214,8 @@ Segments are groups of contexts that you can use to manage flag targeting behavi
 To learn more, read [Segments](https://launchdarkly.com/docs/home/flags/segments).
 
 The segments API allows you to list, create, modify, and delete segments programmatically.
+
+You can also schedule segment changes that take effect at a later time. Scheduled changes use the same semantic patch instructions as updating a segment. You can list, edit, and delete scheduled changes for each segment. Use the `scheduled-changes` endpoints to manage them.
 
 You can find other APIs for working with big segments under [Persistent store integrations (beta)](https://launchdarkly.com/docs/api/persistent-store-integrations-beta).
 
@@ -80906,6 +82574,710 @@ To perform this operation, you must be authenticated by means of one of the foll
 ApiKey
 </aside>
 
+## List scheduled changes for a segment
+
+<a id="opIdgetSegmentScheduledChanges"></a>
+
+> Code samples
+
+```bash
+curl https://app.launchdarkly.com/api/v2/segments/string/string/string/scheduled-changes \
+  -H 'Accept: application/json' \
+  -H "Authorization: ${API_KEY}"
+```
+
+`GET /api/v2/segments/{projectKey}/{environmentKey}/{segmentKey}/scheduled-changes`
+
+Get every scheduled change for a segment that has not been applied yet, plus any that failed to apply, soonest first. Use the `status` of each change to tell them apart.
+
+The caller must be allowed to view the segment's project.
+
+
+<h3 id="list-scheduled-changes-for-a-segment-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|projectKey|path|string|true|none|
+|environmentKey|path|string|true|none|
+|segmentKey|path|string|true|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "_links": {
+    "key": {
+      "href": "href",
+      "type": "type"
+    }
+  },
+  "items": [
+    {
+      "instructions": [
+        null,
+        null
+      ],
+      "_maintainerId": "_maintainerId",
+      "_links": {
+        "key": {
+          "href": "href",
+          "type": "type"
+        }
+      },
+      "_maintainerServiceTokenId": "_maintainerServiceTokenId",
+      "executionDate": 6,
+      "comment": "comment",
+      "_id": "_id",
+      "_creationDate": 0,
+      "status": "pending"
+    },
+    {
+      "instructions": [
+        null,
+        null
+      ],
+      "_maintainerId": "_maintainerId",
+      "_links": {
+        "key": {
+          "href": "href",
+          "type": "type"
+        }
+      },
+      "_maintainerServiceTokenId": "_maintainerServiceTokenId",
+      "executionDate": 6,
+      "comment": "comment",
+      "_id": "_id",
+      "_creationDate": 0,
+      "status": "pending"
+    }
+  ]
+}
+```
+
+> 400 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+<h3 id="list-scheduled-changes-for-a-segment-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Scheduled changes for the segment|[SegmentScheduledChanges](#schemasegmentscheduledchanges)|
+|400|Bad Request|Invalid request|[Error](#schemaerror)|
+|401|Unauthorized|Invalid access token|[Error](#schemaerror)|
+|403|Forbidden|Forbidden|[Error](#schemaerror)|
+|404|Not Found|Invalid resource identifier|[Error](#schemaerror)|
+|429|Too Many Requests|Rate limited|[Error](#schemaerror)|
+|500|Internal Server Error|Internal server error|[Error](#schemaerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+ApiKey
+</aside>
+
+## Create a scheduled change for a segment
+
+<a id="opIdpostSegmentScheduledChange"></a>
+
+> Code samples
+
+```bash
+curl https://app.launchdarkly.com/api/v2/segments/string/string/string/scheduled-changes \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: ${API_KEY}" \
+  -d '{
+    "instructions": [
+      null,
+      null
+    ],
+    "executionDate": 0,
+    "comment": "comment"
+  }'
+```
+
+`POST /api/v2/segments/{projectKey}/{environmentKey}/{segmentKey}/scheduled-changes`
+
+Schedule semantic patch instructions to be applied to a segment at a future time.
+
+Each instruction uses the same format as an instruction in a semantic patch request to update a segment. Send between 1 and 100 instructions. LaunchDarkly rejects the request with a 400 if an instruction has an unknown `kind` or is malformed.
+
+The caller must be allowed to update scheduled changes on the segment, and must also be allowed to make each instruction's change directly. If the segment requires approvals for an instruction, the caller must also be allowed to bypass them. Otherwise, request the change through an approval request instead. To learn more about semantic patches, read [Updates](/reference#updates-using-semantic-patch).
+
+
+> Body parameter
+
+```json
+{
+  "instructions": [
+    null,
+    null
+  ],
+  "executionDate": 0,
+  "comment": "comment"
+}
+```
+
+<h3 id="create-a-scheduled-change-for-a-segment-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|projectKey|path|string|true|none|
+|environmentKey|path|string|true|none|
+|segmentKey|path|string|true|none|
+|body|body|[PostSegmentScheduledChangeInput](#schemapostsegmentscheduledchangeinput)|true|none|
+|» executionDate|body|integer(int64)|true|none|
+|» comment|body|string|false|Optional comment describing the scheduled change|
+|» instructions|body|[[SegmentInstruction](#schemasegmentinstruction)]|true|The segment semantic patch instructions to apply on the execution date|
+
+> Example responses
+
+> 201 Response
+
+```json
+{
+  "instructions": [
+    null,
+    null
+  ],
+  "_maintainerId": "_maintainerId",
+  "_links": {
+    "key": {
+      "href": "href",
+      "type": "type"
+    }
+  },
+  "_maintainerServiceTokenId": "_maintainerServiceTokenId",
+  "executionDate": 6,
+  "comment": "comment",
+  "_id": "_id",
+  "_creationDate": 0,
+  "status": "pending"
+}
+```
+
+> 400 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+<h3 id="create-a-scheduled-change-for-a-segment-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|201|Created|Scheduled change created|[SegmentScheduledChange](#schemasegmentscheduledchange)|
+|400|Bad Request|Invalid request|[Error](#schemaerror)|
+|401|Unauthorized|Invalid access token|[Error](#schemaerror)|
+|403|Forbidden|Forbidden|[Error](#schemaerror)|
+|404|Not Found|Invalid resource identifier|[Error](#schemaerror)|
+|429|Too Many Requests|Rate limited|[Error](#schemaerror)|
+|500|Internal Server Error|Internal server error|[Error](#schemaerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+ApiKey
+</aside>
+
+## Get a scheduled change for a segment
+
+<a id="opIdgetSegmentScheduledChange"></a>
+
+> Code samples
+
+```bash
+curl https://app.launchdarkly.com/api/v2/segments/string/string/string/scheduled-changes/string \
+  -H 'Accept: application/json' \
+  -H "Authorization: ${API_KEY}"
+```
+
+`GET /api/v2/segments/{projectKey}/{environmentKey}/{segmentKey}/scheduled-changes/{id}`
+
+Get one scheduled change that has not been applied yet, or that failed to apply. Returns 404 if the ID is not a scheduled change for the segment in the path.
+
+The caller must be allowed to view the segment's project.
+
+
+<h3 id="get-a-scheduled-change-for-a-segment-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|projectKey|path|string|true|none|
+|environmentKey|path|string|true|none|
+|segmentKey|path|string|true|none|
+|id|path|string|true|The ID of the scheduled change|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "instructions": [
+    null,
+    null
+  ],
+  "_maintainerId": "_maintainerId",
+  "_links": {
+    "key": {
+      "href": "href",
+      "type": "type"
+    }
+  },
+  "_maintainerServiceTokenId": "_maintainerServiceTokenId",
+  "executionDate": 6,
+  "comment": "comment",
+  "_id": "_id",
+  "_creationDate": 0,
+  "status": "pending"
+}
+```
+
+> 400 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+<h3 id="get-a-scheduled-change-for-a-segment-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|The scheduled change|[SegmentScheduledChange](#schemasegmentscheduledchange)|
+|400|Bad Request|Invalid request|[Error](#schemaerror)|
+|401|Unauthorized|Invalid access token|[Error](#schemaerror)|
+|403|Forbidden|Forbidden|[Error](#schemaerror)|
+|404|Not Found|Invalid resource identifier|[Error](#schemaerror)|
+|429|Too Many Requests|Rate limited|[Error](#schemaerror)|
+|500|Internal Server Error|Internal server error|[Error](#schemaerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+ApiKey
+</aside>
+
+## Delete a scheduled change for a segment
+
+<a id="opIddeleteSegmentScheduledChange"></a>
+
+> Code samples
+
+```bash
+curl https://app.launchdarkly.com/api/v2/segments/string/string/string/scheduled-changes/string \
+  -X DELETE \
+  -H 'Accept: application/json' \
+  -H "Authorization: ${API_KEY}"
+```
+
+`DELETE /api/v2/segments/{projectKey}/{environmentKey}/{segmentKey}/scheduled-changes/{id}`
+
+Delete a scheduled change before its execution date, so that its instructions are never applied to the segment.
+
+Deleting a change with a `failed` status removes it from the segment's scheduled changes. Its instructions were not applied.
+
+The caller must be allowed to update scheduled changes on the segment.
+
+If an approval request scheduled the change, deleting the change also terminates that request, so it cannot be applied again. Declining the request is only an option while it is still awaiting review. Once it is applied, its instructions belong to a scheduled change, and this endpoint is how to stop them.
+
+Returns 409 if the scheduled change is already being applied or has already run.
+
+
+<h3 id="delete-a-scheduled-change-for-a-segment-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|projectKey|path|string|true|none|
+|environmentKey|path|string|true|none|
+|segmentKey|path|string|true|none|
+|id|path|string|true|The ID of the scheduled change|
+
+> Example responses
+
+> 400 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+> 409 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+<h3 id="delete-a-scheduled-change-for-a-segment-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|204|No Content|Scheduled change deleted|None|
+|400|Bad Request|Invalid request|[Error](#schemaerror)|
+|401|Unauthorized|Invalid access token|[Error](#schemaerror)|
+|403|Forbidden|Forbidden|[Error](#schemaerror)|
+|404|Not Found|Invalid resource identifier|[Error](#schemaerror)|
+|409|Conflict|Conflict|[Error](#schemaerror)|
+|429|Too Many Requests|Rate limited|[Error](#schemaerror)|
+|500|Internal Server Error|Internal server error|[Error](#schemaerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+ApiKey
+</aside>
+
+## Update a scheduled change for a segment
+
+<a id="opIdpatchSegmentScheduledChange"></a>
+
+> Code samples
+
+```bash
+curl https://app.launchdarkly.com/api/v2/segments/string/string/string/scheduled-changes/string \
+  -X PATCH \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: ${API_KEY}" \
+  -d '{
+    "executionDate": 0,
+    "comment": "comment"
+  }'
+```
+
+`PATCH /api/v2/segments/{projectKey}/{environmentKey}/{segmentKey}/scheduled-changes/{id}`
+
+Edit the execution date and/or the comment of a scheduled change that has not been applied yet. A field you leave out is unchanged, and an empty comment clears the comment.
+
+The caller must be allowed to update scheduled changes on the segment, and must also be allowed to make the change's instructions directly. If the segment requires approvals, the caller must also be allowed to bypass them.
+
+Returns 409 if the scheduled change is already being applied or was changed by someone else in the meantime.
+
+
+> Body parameter
+
+```json
+{
+  "executionDate": 0,
+  "comment": "comment"
+}
+```
+
+<h3 id="update-a-scheduled-change-for-a-segment-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|projectKey|path|string|true|none|
+|environmentKey|path|string|true|none|
+|segmentKey|path|string|true|none|
+|id|path|string|true|The ID of the scheduled change|
+|body|body|[PatchSegmentScheduledChangeInput](#schemapatchsegmentscheduledchangeinput)|true|none|
+|» executionDate|body|integer(int64)|false|none|
+|» comment|body|string|false|The new comment describing the scheduled change. Leave out to keep the current comment, or send an empty string to clear it.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "instructions": [
+    null,
+    null
+  ],
+  "_maintainerId": "_maintainerId",
+  "_links": {
+    "key": {
+      "href": "href",
+      "type": "type"
+    }
+  },
+  "_maintainerServiceTokenId": "_maintainerServiceTokenId",
+  "executionDate": 6,
+  "comment": "comment",
+  "_id": "_id",
+  "_creationDate": 0,
+  "status": "pending"
+}
+```
+
+> 400 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+> 409 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+<h3 id="update-a-scheduled-change-for-a-segment-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|The updated scheduled change|[SegmentScheduledChange](#schemasegmentscheduledchange)|
+|400|Bad Request|Invalid request|[Error](#schemaerror)|
+|401|Unauthorized|Invalid access token|[Error](#schemaerror)|
+|403|Forbidden|Forbidden|[Error](#schemaerror)|
+|404|Not Found|Invalid resource identifier|[Error](#schemaerror)|
+|409|Conflict|Conflict|[Error](#schemaerror)|
+|429|Too Many Requests|Rate limited|[Error](#schemaerror)|
+|500|Internal Server Error|Internal server error|[Error](#schemaerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+ApiKey
+</aside>
+
 <h1 id="launchdarkly-rest-api-tags">Tags</h1>
 
 Tags are simple strings that you can attach to most resources in LaunchDarkly. Tags are useful for grouping resources into a set that you can name in a resource specifier. To learn more, read [Specifying resources in the advanced editor](https://launchdarkly.com/docs/home/account/roles/role-resources#specifying-resources-in-the-advanced-editor).
@@ -83149,7 +85521,7 @@ ApiKey
 >
 > After you have upgraded your LaunchDarkly SDK to use contexts instead of users, you should use [Contexts](https://launchdarkly.com/docs/api/contexts) instead of the user settings API. To learn more, read [Contexts](https://launchdarkly.com/docs/home/observability/contexts).
 
-LaunchDarkly's user settings API provides a picture of all feature flags and their current values for a specific user. This gives you instant visibility into how a particular user experiences your site or application. To learn more, read [View and manage contexts](https://launchdarkly.com/docs/home/observability/context-attributes#view-and-manage-contexts).
+The LaunchDarkly user settings API provides a picture of all feature flags and their current values for a specific user. This gives you instant visibility into how a particular user experiences your site or application. To learn more, read [View and manage contexts](https://launchdarkly.com/docs/home/observability/context-attributes#view-and-manage-contexts).
 
 You can also use the user settings API to assign a user to a specific variation for any feature flag.
 
@@ -84740,9 +87112,6 @@ Get a list of all views in the given project.
       },
       "key": "key",
       "updatedAt": 1,
-      "payloadSummary": {
-        "sdkKeyCount": 6
-      },
       "resourcesExpanded": {
         "totalCount": 7,
         "items": {
@@ -84859,112 +87228,6 @@ Get a list of all views in the given project.
               }
             ]
           },
-          "aiConfigs": {
-            "totalCount": 3,
-            "items": [
-              {
-                "createdAt": 2,
-                "_links": {
-                  "parent": {
-                    "href": "href",
-                    "type": "type"
-                  },
-                  "self": {
-                    "href": "href",
-                    "type": "type"
-                  }
-                },
-                "name": "name",
-                "description": "description",
-                "version": 1,
-                "key": "key",
-                "flagKey": "flagKey",
-                "tags": [
-                  "tags",
-                  "tags"
-                ],
-                "updatedAt": 6
-              },
-              {
-                "createdAt": 2,
-                "_links": {
-                  "parent": {
-                    "href": "href",
-                    "type": "type"
-                  },
-                  "self": {
-                    "href": "href",
-                    "type": "type"
-                  }
-                },
-                "name": "name",
-                "description": "description",
-                "version": 1,
-                "key": "key",
-                "flagKey": "flagKey",
-                "tags": [
-                  "tags",
-                  "tags"
-                ],
-                "updatedAt": 6
-              }
-            ]
-          },
-          "metrics": {
-            "totalCount": 3,
-            "items": [
-              {
-                "_links": {
-                  "parent": {
-                    "href": "href",
-                    "type": "type"
-                  },
-                  "self": {
-                    "href": "href",
-                    "type": "type"
-                  }
-                },
-                "kind": "kind",
-                "description": "description",
-                "creationDate": 9,
-                "isActive": true,
-                "lastSeen": 3,
-                "eventKey": "eventKey",
-                "_versionId": "_versionId",
-                "isNumeric": true,
-                "name": "name",
-                "lastModified": 6,
-                "_id": "_id",
-                "category": "category",
-                "key": "key"
-              },
-              {
-                "_links": {
-                  "parent": {
-                    "href": "href",
-                    "type": "type"
-                  },
-                  "self": {
-                    "href": "href",
-                    "type": "type"
-                  }
-                },
-                "kind": "kind",
-                "description": "description",
-                "creationDate": 9,
-                "isActive": true,
-                "lastSeen": 3,
-                "eventKey": "eventKey",
-                "_versionId": "_versionId",
-                "isNumeric": true,
-                "name": "name",
-                "lastModified": 6,
-                "_id": "_id",
-                "category": "category",
-                "key": "key"
-              }
-            ]
-          },
           "segments": {
             "totalCount": 6,
             "items": [
@@ -85028,19 +87291,14 @@ Get a list of all views in the given project.
       },
       "resourceSummary": {
         "flagCount": 4,
-        "metricCount": 1,
         "totalCount": 1,
-        "segmentCount": 7,
-        "aiConfigCount": 1
+        "segmentCount": 7
       },
       "version": 0,
       "tags": [
         "tags",
         "tags"
       ],
-      "applicationSummary": {
-        "applicationKey": "applicationKey"
-      },
       "accountId": "accountId",
       "deletedAt": 5,
       "deleted": false,
@@ -85514,9 +87772,6 @@ Get a list of all views in the given project.
       },
       "key": "key",
       "updatedAt": 1,
-      "payloadSummary": {
-        "sdkKeyCount": 6
-      },
       "resourcesExpanded": {
         "totalCount": 7,
         "items": {
@@ -85633,112 +87888,6 @@ Get a list of all views in the given project.
               }
             ]
           },
-          "aiConfigs": {
-            "totalCount": 3,
-            "items": [
-              {
-                "createdAt": 2,
-                "_links": {
-                  "parent": {
-                    "href": "href",
-                    "type": "type"
-                  },
-                  "self": {
-                    "href": "href",
-                    "type": "type"
-                  }
-                },
-                "name": "name",
-                "description": "description",
-                "version": 1,
-                "key": "key",
-                "flagKey": "flagKey",
-                "tags": [
-                  "tags",
-                  "tags"
-                ],
-                "updatedAt": 6
-              },
-              {
-                "createdAt": 2,
-                "_links": {
-                  "parent": {
-                    "href": "href",
-                    "type": "type"
-                  },
-                  "self": {
-                    "href": "href",
-                    "type": "type"
-                  }
-                },
-                "name": "name",
-                "description": "description",
-                "version": 1,
-                "key": "key",
-                "flagKey": "flagKey",
-                "tags": [
-                  "tags",
-                  "tags"
-                ],
-                "updatedAt": 6
-              }
-            ]
-          },
-          "metrics": {
-            "totalCount": 3,
-            "items": [
-              {
-                "_links": {
-                  "parent": {
-                    "href": "href",
-                    "type": "type"
-                  },
-                  "self": {
-                    "href": "href",
-                    "type": "type"
-                  }
-                },
-                "kind": "kind",
-                "description": "description",
-                "creationDate": 9,
-                "isActive": true,
-                "lastSeen": 3,
-                "eventKey": "eventKey",
-                "_versionId": "_versionId",
-                "isNumeric": true,
-                "name": "name",
-                "lastModified": 6,
-                "_id": "_id",
-                "category": "category",
-                "key": "key"
-              },
-              {
-                "_links": {
-                  "parent": {
-                    "href": "href",
-                    "type": "type"
-                  },
-                  "self": {
-                    "href": "href",
-                    "type": "type"
-                  }
-                },
-                "kind": "kind",
-                "description": "description",
-                "creationDate": 9,
-                "isActive": true,
-                "lastSeen": 3,
-                "eventKey": "eventKey",
-                "_versionId": "_versionId",
-                "isNumeric": true,
-                "name": "name",
-                "lastModified": 6,
-                "_id": "_id",
-                "category": "category",
-                "key": "key"
-              }
-            ]
-          },
           "segments": {
             "totalCount": 6,
             "items": [
@@ -85802,19 +87951,14 @@ Get a list of all views in the given project.
       },
       "resourceSummary": {
         "flagCount": 4,
-        "metricCount": 1,
         "totalCount": 1,
-        "segmentCount": 7,
-        "aiConfigCount": 1
+        "segmentCount": 7
       },
       "version": 0,
       "tags": [
         "tags",
         "tags"
       ],
-      "applicationSummary": {
-        "applicationKey": "applicationKey"
-      },
       "accountId": "accountId",
       "deletedAt": 5,
       "deleted": false,
@@ -86406,9 +88550,6 @@ Create a new view in the given project.
   },
   "key": "key",
   "updatedAt": 1,
-  "payloadSummary": {
-    "sdkKeyCount": 6
-  },
   "resourcesExpanded": {
     "totalCount": 7,
     "items": {
@@ -86525,112 +88666,6 @@ Create a new view in the given project.
           }
         ]
       },
-      "aiConfigs": {
-        "totalCount": 3,
-        "items": [
-          {
-            "createdAt": 2,
-            "_links": {
-              "parent": {
-                "href": "href",
-                "type": "type"
-              },
-              "self": {
-                "href": "href",
-                "type": "type"
-              }
-            },
-            "name": "name",
-            "description": "description",
-            "version": 1,
-            "key": "key",
-            "flagKey": "flagKey",
-            "tags": [
-              "tags",
-              "tags"
-            ],
-            "updatedAt": 6
-          },
-          {
-            "createdAt": 2,
-            "_links": {
-              "parent": {
-                "href": "href",
-                "type": "type"
-              },
-              "self": {
-                "href": "href",
-                "type": "type"
-              }
-            },
-            "name": "name",
-            "description": "description",
-            "version": 1,
-            "key": "key",
-            "flagKey": "flagKey",
-            "tags": [
-              "tags",
-              "tags"
-            ],
-            "updatedAt": 6
-          }
-        ]
-      },
-      "metrics": {
-        "totalCount": 3,
-        "items": [
-          {
-            "_links": {
-              "parent": {
-                "href": "href",
-                "type": "type"
-              },
-              "self": {
-                "href": "href",
-                "type": "type"
-              }
-            },
-            "kind": "kind",
-            "description": "description",
-            "creationDate": 9,
-            "isActive": true,
-            "lastSeen": 3,
-            "eventKey": "eventKey",
-            "_versionId": "_versionId",
-            "isNumeric": true,
-            "name": "name",
-            "lastModified": 6,
-            "_id": "_id",
-            "category": "category",
-            "key": "key"
-          },
-          {
-            "_links": {
-              "parent": {
-                "href": "href",
-                "type": "type"
-              },
-              "self": {
-                "href": "href",
-                "type": "type"
-              }
-            },
-            "kind": "kind",
-            "description": "description",
-            "creationDate": 9,
-            "isActive": true,
-            "lastSeen": 3,
-            "eventKey": "eventKey",
-            "_versionId": "_versionId",
-            "isNumeric": true,
-            "name": "name",
-            "lastModified": 6,
-            "_id": "_id",
-            "category": "category",
-            "key": "key"
-          }
-        ]
-      },
       "segments": {
         "totalCount": 6,
         "items": [
@@ -86694,19 +88729,14 @@ Create a new view in the given project.
   },
   "resourceSummary": {
     "flagCount": 4,
-    "metricCount": 1,
     "totalCount": 1,
-    "segmentCount": 7,
-    "aiConfigCount": 1
+    "segmentCount": 7
   },
   "version": 0,
   "tags": [
     "tags",
     "tags"
   ],
-  "applicationSummary": {
-    "applicationKey": "applicationKey"
-  },
   "accountId": "accountId",
   "deletedAt": 5,
   "deleted": false,
@@ -87285,9 +89315,6 @@ Retrieve a specific view by its key.
   },
   "key": "key",
   "updatedAt": 1,
-  "payloadSummary": {
-    "sdkKeyCount": 6
-  },
   "resourcesExpanded": {
     "totalCount": 7,
     "items": {
@@ -87404,112 +89431,6 @@ Retrieve a specific view by its key.
           }
         ]
       },
-      "aiConfigs": {
-        "totalCount": 3,
-        "items": [
-          {
-            "createdAt": 2,
-            "_links": {
-              "parent": {
-                "href": "href",
-                "type": "type"
-              },
-              "self": {
-                "href": "href",
-                "type": "type"
-              }
-            },
-            "name": "name",
-            "description": "description",
-            "version": 1,
-            "key": "key",
-            "flagKey": "flagKey",
-            "tags": [
-              "tags",
-              "tags"
-            ],
-            "updatedAt": 6
-          },
-          {
-            "createdAt": 2,
-            "_links": {
-              "parent": {
-                "href": "href",
-                "type": "type"
-              },
-              "self": {
-                "href": "href",
-                "type": "type"
-              }
-            },
-            "name": "name",
-            "description": "description",
-            "version": 1,
-            "key": "key",
-            "flagKey": "flagKey",
-            "tags": [
-              "tags",
-              "tags"
-            ],
-            "updatedAt": 6
-          }
-        ]
-      },
-      "metrics": {
-        "totalCount": 3,
-        "items": [
-          {
-            "_links": {
-              "parent": {
-                "href": "href",
-                "type": "type"
-              },
-              "self": {
-                "href": "href",
-                "type": "type"
-              }
-            },
-            "kind": "kind",
-            "description": "description",
-            "creationDate": 9,
-            "isActive": true,
-            "lastSeen": 3,
-            "eventKey": "eventKey",
-            "_versionId": "_versionId",
-            "isNumeric": true,
-            "name": "name",
-            "lastModified": 6,
-            "_id": "_id",
-            "category": "category",
-            "key": "key"
-          },
-          {
-            "_links": {
-              "parent": {
-                "href": "href",
-                "type": "type"
-              },
-              "self": {
-                "href": "href",
-                "type": "type"
-              }
-            },
-            "kind": "kind",
-            "description": "description",
-            "creationDate": 9,
-            "isActive": true,
-            "lastSeen": 3,
-            "eventKey": "eventKey",
-            "_versionId": "_versionId",
-            "isNumeric": true,
-            "name": "name",
-            "lastModified": 6,
-            "_id": "_id",
-            "category": "category",
-            "key": "key"
-          }
-        ]
-      },
       "segments": {
         "totalCount": 6,
         "items": [
@@ -87573,19 +89494,14 @@ Retrieve a specific view by its key.
   },
   "resourceSummary": {
     "flagCount": 4,
-    "metricCount": 1,
     "totalCount": 1,
-    "segmentCount": 7,
-    "aiConfigCount": 1
+    "segmentCount": 7
   },
   "version": 0,
   "tags": [
     "tags",
     "tags"
   ],
-  "applicationSummary": {
-    "applicationKey": "applicationKey"
-  },
   "accountId": "accountId",
   "deletedAt": 5,
   "deleted": false,
@@ -88251,9 +90167,6 @@ Here's an example:
   },
   "key": "key",
   "updatedAt": 1,
-  "payloadSummary": {
-    "sdkKeyCount": 6
-  },
   "resourcesExpanded": {
     "totalCount": 7,
     "items": {
@@ -88370,112 +90283,6 @@ Here's an example:
           }
         ]
       },
-      "aiConfigs": {
-        "totalCount": 3,
-        "items": [
-          {
-            "createdAt": 2,
-            "_links": {
-              "parent": {
-                "href": "href",
-                "type": "type"
-              },
-              "self": {
-                "href": "href",
-                "type": "type"
-              }
-            },
-            "name": "name",
-            "description": "description",
-            "version": 1,
-            "key": "key",
-            "flagKey": "flagKey",
-            "tags": [
-              "tags",
-              "tags"
-            ],
-            "updatedAt": 6
-          },
-          {
-            "createdAt": 2,
-            "_links": {
-              "parent": {
-                "href": "href",
-                "type": "type"
-              },
-              "self": {
-                "href": "href",
-                "type": "type"
-              }
-            },
-            "name": "name",
-            "description": "description",
-            "version": 1,
-            "key": "key",
-            "flagKey": "flagKey",
-            "tags": [
-              "tags",
-              "tags"
-            ],
-            "updatedAt": 6
-          }
-        ]
-      },
-      "metrics": {
-        "totalCount": 3,
-        "items": [
-          {
-            "_links": {
-              "parent": {
-                "href": "href",
-                "type": "type"
-              },
-              "self": {
-                "href": "href",
-                "type": "type"
-              }
-            },
-            "kind": "kind",
-            "description": "description",
-            "creationDate": 9,
-            "isActive": true,
-            "lastSeen": 3,
-            "eventKey": "eventKey",
-            "_versionId": "_versionId",
-            "isNumeric": true,
-            "name": "name",
-            "lastModified": 6,
-            "_id": "_id",
-            "category": "category",
-            "key": "key"
-          },
-          {
-            "_links": {
-              "parent": {
-                "href": "href",
-                "type": "type"
-              },
-              "self": {
-                "href": "href",
-                "type": "type"
-              }
-            },
-            "kind": "kind",
-            "description": "description",
-            "creationDate": 9,
-            "isActive": true,
-            "lastSeen": 3,
-            "eventKey": "eventKey",
-            "_versionId": "_versionId",
-            "isNumeric": true,
-            "name": "name",
-            "lastModified": 6,
-            "_id": "_id",
-            "category": "category",
-            "key": "key"
-          }
-        ]
-      },
       "segments": {
         "totalCount": 6,
         "items": [
@@ -88539,19 +90346,14 @@ Here's an example:
   },
   "resourceSummary": {
     "flagCount": 4,
-    "metricCount": 1,
     "totalCount": 1,
-    "segmentCount": 7,
-    "aiConfigCount": 1
+    "segmentCount": 7
   },
   "version": 0,
   "tags": [
     "tags",
     "tags"
   ],
-  "applicationSummary": {
-    "applicationKey": "applicationKey"
-  },
   "accountId": "accountId",
   "deletedAt": 5,
   "deleted": false,
@@ -89188,9 +90990,6 @@ When both keys and filters are provided, resources matching either condition are
             },
             "key": "key",
             "updatedAt": 1,
-            "payloadSummary": {
-              "sdkKeyCount": 6
-            },
             "resourcesExpanded": {
               "totalCount": 7,
               "items": {
@@ -89307,112 +91106,6 @@ When both keys and filters are provided, resources matching either condition are
                     }
                   ]
                 },
-                "aiConfigs": {
-                  "totalCount": 3,
-                  "items": [
-                    {
-                      "createdAt": 2,
-                      "_links": {
-                        "parent": {
-                          "href": "href",
-                          "type": "type"
-                        },
-                        "self": {
-                          "href": "href",
-                          "type": "type"
-                        }
-                      },
-                      "name": "name",
-                      "description": "description",
-                      "version": 1,
-                      "key": "key",
-                      "flagKey": "flagKey",
-                      "tags": [
-                        "tags",
-                        "tags"
-                      ],
-                      "updatedAt": 6
-                    },
-                    {
-                      "createdAt": 2,
-                      "_links": {
-                        "parent": {
-                          "href": "href",
-                          "type": "type"
-                        },
-                        "self": {
-                          "href": "href",
-                          "type": "type"
-                        }
-                      },
-                      "name": "name",
-                      "description": "description",
-                      "version": 1,
-                      "key": "key",
-                      "flagKey": "flagKey",
-                      "tags": [
-                        "tags",
-                        "tags"
-                      ],
-                      "updatedAt": 6
-                    }
-                  ]
-                },
-                "metrics": {
-                  "totalCount": 3,
-                  "items": [
-                    {
-                      "_links": {
-                        "parent": {
-                          "href": "href",
-                          "type": "type"
-                        },
-                        "self": {
-                          "href": "href",
-                          "type": "type"
-                        }
-                      },
-                      "kind": "kind",
-                      "description": "description",
-                      "creationDate": 9,
-                      "isActive": true,
-                      "lastSeen": 3,
-                      "eventKey": "eventKey",
-                      "_versionId": "_versionId",
-                      "isNumeric": true,
-                      "name": "name",
-                      "lastModified": 6,
-                      "_id": "_id",
-                      "category": "category",
-                      "key": "key"
-                    },
-                    {
-                      "_links": {
-                        "parent": {
-                          "href": "href",
-                          "type": "type"
-                        },
-                        "self": {
-                          "href": "href",
-                          "type": "type"
-                        }
-                      },
-                      "kind": "kind",
-                      "description": "description",
-                      "creationDate": 9,
-                      "isActive": true,
-                      "lastSeen": 3,
-                      "eventKey": "eventKey",
-                      "_versionId": "_versionId",
-                      "isNumeric": true,
-                      "name": "name",
-                      "lastModified": 6,
-                      "_id": "_id",
-                      "category": "category",
-                      "key": "key"
-                    }
-                  ]
-                },
                 "segments": {
                   "totalCount": 6,
                   "items": [
@@ -89476,19 +91169,14 @@ When both keys and filters are provided, resources matching either condition are
             },
             "resourceSummary": {
               "flagCount": 4,
-              "metricCount": 1,
               "totalCount": 1,
-              "segmentCount": 7,
-              "aiConfigCount": 1
+              "segmentCount": 7
             },
             "version": 0,
             "tags": [
               "tags",
               "tags"
             ],
-            "applicationSummary": {
-              "applicationKey": "applicationKey"
-            },
             "accountId": "accountId",
             "deletedAt": 5,
             "deleted": false,
@@ -90110,9 +91798,6 @@ When both keys and filters are provided, resources matching either condition are
             },
             "key": "key",
             "updatedAt": 1,
-            "payloadSummary": {
-              "sdkKeyCount": 6
-            },
             "resourcesExpanded": {
               "totalCount": 7,
               "items": {
@@ -90229,112 +91914,6 @@ When both keys and filters are provided, resources matching either condition are
                     }
                   ]
                 },
-                "aiConfigs": {
-                  "totalCount": 3,
-                  "items": [
-                    {
-                      "createdAt": 2,
-                      "_links": {
-                        "parent": {
-                          "href": "href",
-                          "type": "type"
-                        },
-                        "self": {
-                          "href": "href",
-                          "type": "type"
-                        }
-                      },
-                      "name": "name",
-                      "description": "description",
-                      "version": 1,
-                      "key": "key",
-                      "flagKey": "flagKey",
-                      "tags": [
-                        "tags",
-                        "tags"
-                      ],
-                      "updatedAt": 6
-                    },
-                    {
-                      "createdAt": 2,
-                      "_links": {
-                        "parent": {
-                          "href": "href",
-                          "type": "type"
-                        },
-                        "self": {
-                          "href": "href",
-                          "type": "type"
-                        }
-                      },
-                      "name": "name",
-                      "description": "description",
-                      "version": 1,
-                      "key": "key",
-                      "flagKey": "flagKey",
-                      "tags": [
-                        "tags",
-                        "tags"
-                      ],
-                      "updatedAt": 6
-                    }
-                  ]
-                },
-                "metrics": {
-                  "totalCount": 3,
-                  "items": [
-                    {
-                      "_links": {
-                        "parent": {
-                          "href": "href",
-                          "type": "type"
-                        },
-                        "self": {
-                          "href": "href",
-                          "type": "type"
-                        }
-                      },
-                      "kind": "kind",
-                      "description": "description",
-                      "creationDate": 9,
-                      "isActive": true,
-                      "lastSeen": 3,
-                      "eventKey": "eventKey",
-                      "_versionId": "_versionId",
-                      "isNumeric": true,
-                      "name": "name",
-                      "lastModified": 6,
-                      "_id": "_id",
-                      "category": "category",
-                      "key": "key"
-                    },
-                    {
-                      "_links": {
-                        "parent": {
-                          "href": "href",
-                          "type": "type"
-                        },
-                        "self": {
-                          "href": "href",
-                          "type": "type"
-                        }
-                      },
-                      "kind": "kind",
-                      "description": "description",
-                      "creationDate": 9,
-                      "isActive": true,
-                      "lastSeen": 3,
-                      "eventKey": "eventKey",
-                      "_versionId": "_versionId",
-                      "isNumeric": true,
-                      "name": "name",
-                      "lastModified": 6,
-                      "_id": "_id",
-                      "category": "category",
-                      "key": "key"
-                    }
-                  ]
-                },
                 "segments": {
                   "totalCount": 6,
                   "items": [
@@ -90398,19 +91977,14 @@ When both keys and filters are provided, resources matching either condition are
             },
             "resourceSummary": {
               "flagCount": 4,
-              "metricCount": 1,
               "totalCount": 1,
-              "segmentCount": 7,
-              "aiConfigCount": 1
+              "segmentCount": 7
             },
             "version": 0,
             "tags": [
               "tags",
               "tags"
             ],
-            "applicationSummary": {
-              "applicationKey": "applicationKey"
-            },
             "accountId": "accountId",
             "deletedAt": 5,
             "deleted": false,
@@ -91315,9 +92889,6 @@ Get a list of all linked resources for a given view.
           },
           "key": "key",
           "updatedAt": 1,
-          "payloadSummary": {
-            "sdkKeyCount": 6
-          },
           "resourcesExpanded": {
             "totalCount": 7,
             "items": {
@@ -91434,112 +93005,6 @@ Get a list of all linked resources for a given view.
                   }
                 ]
               },
-              "aiConfigs": {
-                "totalCount": 3,
-                "items": [
-                  {
-                    "createdAt": 2,
-                    "_links": {
-                      "parent": {
-                        "href": "href",
-                        "type": "type"
-                      },
-                      "self": {
-                        "href": "href",
-                        "type": "type"
-                      }
-                    },
-                    "name": "name",
-                    "description": "description",
-                    "version": 1,
-                    "key": "key",
-                    "flagKey": "flagKey",
-                    "tags": [
-                      "tags",
-                      "tags"
-                    ],
-                    "updatedAt": 6
-                  },
-                  {
-                    "createdAt": 2,
-                    "_links": {
-                      "parent": {
-                        "href": "href",
-                        "type": "type"
-                      },
-                      "self": {
-                        "href": "href",
-                        "type": "type"
-                      }
-                    },
-                    "name": "name",
-                    "description": "description",
-                    "version": 1,
-                    "key": "key",
-                    "flagKey": "flagKey",
-                    "tags": [
-                      "tags",
-                      "tags"
-                    ],
-                    "updatedAt": 6
-                  }
-                ]
-              },
-              "metrics": {
-                "totalCount": 3,
-                "items": [
-                  {
-                    "_links": {
-                      "parent": {
-                        "href": "href",
-                        "type": "type"
-                      },
-                      "self": {
-                        "href": "href",
-                        "type": "type"
-                      }
-                    },
-                    "kind": "kind",
-                    "description": "description",
-                    "creationDate": 9,
-                    "isActive": true,
-                    "lastSeen": 3,
-                    "eventKey": "eventKey",
-                    "_versionId": "_versionId",
-                    "isNumeric": true,
-                    "name": "name",
-                    "lastModified": 6,
-                    "_id": "_id",
-                    "category": "category",
-                    "key": "key"
-                  },
-                  {
-                    "_links": {
-                      "parent": {
-                        "href": "href",
-                        "type": "type"
-                      },
-                      "self": {
-                        "href": "href",
-                        "type": "type"
-                      }
-                    },
-                    "kind": "kind",
-                    "description": "description",
-                    "creationDate": 9,
-                    "isActive": true,
-                    "lastSeen": 3,
-                    "eventKey": "eventKey",
-                    "_versionId": "_versionId",
-                    "isNumeric": true,
-                    "name": "name",
-                    "lastModified": 6,
-                    "_id": "_id",
-                    "category": "category",
-                    "key": "key"
-                  }
-                ]
-              },
               "segments": {
                 "totalCount": 6,
                 "items": [
@@ -91603,19 +93068,14 @@ Get a list of all linked resources for a given view.
           },
           "resourceSummary": {
             "flagCount": 4,
-            "metricCount": 1,
             "totalCount": 1,
-            "segmentCount": 7,
-            "aiConfigCount": 1
+            "segmentCount": 7
           },
           "version": 0,
           "tags": [
             "tags",
             "tags"
           ],
-          "applicationSummary": {
-            "applicationKey": "applicationKey"
-          },
           "accountId": "accountId",
           "deletedAt": 5,
           "deleted": false,
@@ -92237,9 +93697,6 @@ Get a list of all linked resources for a given view.
           },
           "key": "key",
           "updatedAt": 1,
-          "payloadSummary": {
-            "sdkKeyCount": 6
-          },
           "resourcesExpanded": {
             "totalCount": 7,
             "items": {
@@ -92356,112 +93813,6 @@ Get a list of all linked resources for a given view.
                   }
                 ]
               },
-              "aiConfigs": {
-                "totalCount": 3,
-                "items": [
-                  {
-                    "createdAt": 2,
-                    "_links": {
-                      "parent": {
-                        "href": "href",
-                        "type": "type"
-                      },
-                      "self": {
-                        "href": "href",
-                        "type": "type"
-                      }
-                    },
-                    "name": "name",
-                    "description": "description",
-                    "version": 1,
-                    "key": "key",
-                    "flagKey": "flagKey",
-                    "tags": [
-                      "tags",
-                      "tags"
-                    ],
-                    "updatedAt": 6
-                  },
-                  {
-                    "createdAt": 2,
-                    "_links": {
-                      "parent": {
-                        "href": "href",
-                        "type": "type"
-                      },
-                      "self": {
-                        "href": "href",
-                        "type": "type"
-                      }
-                    },
-                    "name": "name",
-                    "description": "description",
-                    "version": 1,
-                    "key": "key",
-                    "flagKey": "flagKey",
-                    "tags": [
-                      "tags",
-                      "tags"
-                    ],
-                    "updatedAt": 6
-                  }
-                ]
-              },
-              "metrics": {
-                "totalCount": 3,
-                "items": [
-                  {
-                    "_links": {
-                      "parent": {
-                        "href": "href",
-                        "type": "type"
-                      },
-                      "self": {
-                        "href": "href",
-                        "type": "type"
-                      }
-                    },
-                    "kind": "kind",
-                    "description": "description",
-                    "creationDate": 9,
-                    "isActive": true,
-                    "lastSeen": 3,
-                    "eventKey": "eventKey",
-                    "_versionId": "_versionId",
-                    "isNumeric": true,
-                    "name": "name",
-                    "lastModified": 6,
-                    "_id": "_id",
-                    "category": "category",
-                    "key": "key"
-                  },
-                  {
-                    "_links": {
-                      "parent": {
-                        "href": "href",
-                        "type": "type"
-                      },
-                      "self": {
-                        "href": "href",
-                        "type": "type"
-                      }
-                    },
-                    "kind": "kind",
-                    "description": "description",
-                    "creationDate": 9,
-                    "isActive": true,
-                    "lastSeen": 3,
-                    "eventKey": "eventKey",
-                    "_versionId": "_versionId",
-                    "isNumeric": true,
-                    "name": "name",
-                    "lastModified": 6,
-                    "_id": "_id",
-                    "category": "category",
-                    "key": "key"
-                  }
-                ]
-              },
               "segments": {
                 "totalCount": 6,
                 "items": [
@@ -92525,19 +93876,14 @@ Get a list of all linked resources for a given view.
           },
           "resourceSummary": {
             "flagCount": 4,
-            "metricCount": 1,
             "totalCount": 1,
-            "segmentCount": 7,
-            "aiConfigCount": 1
+            "segmentCount": 7
           },
           "version": 0,
           "tags": [
             "tags",
             "tags"
           ],
-          "applicationSummary": {
-            "applicationKey": "applicationKey"
-          },
           "accountId": "accountId",
           "deletedAt": 5,
           "deleted": false,
@@ -93265,9 +94611,6 @@ Get a list of all linked views for a resource. Flags and AI configs are identifi
       },
       "key": "key",
       "updatedAt": 1,
-      "payloadSummary": {
-        "sdkKeyCount": 6
-      },
       "resourcesExpanded": {
         "totalCount": 7,
         "items": {
@@ -93384,112 +94727,6 @@ Get a list of all linked views for a resource. Flags and AI configs are identifi
               }
             ]
           },
-          "aiConfigs": {
-            "totalCount": 3,
-            "items": [
-              {
-                "createdAt": 2,
-                "_links": {
-                  "parent": {
-                    "href": "href",
-                    "type": "type"
-                  },
-                  "self": {
-                    "href": "href",
-                    "type": "type"
-                  }
-                },
-                "name": "name",
-                "description": "description",
-                "version": 1,
-                "key": "key",
-                "flagKey": "flagKey",
-                "tags": [
-                  "tags",
-                  "tags"
-                ],
-                "updatedAt": 6
-              },
-              {
-                "createdAt": 2,
-                "_links": {
-                  "parent": {
-                    "href": "href",
-                    "type": "type"
-                  },
-                  "self": {
-                    "href": "href",
-                    "type": "type"
-                  }
-                },
-                "name": "name",
-                "description": "description",
-                "version": 1,
-                "key": "key",
-                "flagKey": "flagKey",
-                "tags": [
-                  "tags",
-                  "tags"
-                ],
-                "updatedAt": 6
-              }
-            ]
-          },
-          "metrics": {
-            "totalCount": 3,
-            "items": [
-              {
-                "_links": {
-                  "parent": {
-                    "href": "href",
-                    "type": "type"
-                  },
-                  "self": {
-                    "href": "href",
-                    "type": "type"
-                  }
-                },
-                "kind": "kind",
-                "description": "description",
-                "creationDate": 9,
-                "isActive": true,
-                "lastSeen": 3,
-                "eventKey": "eventKey",
-                "_versionId": "_versionId",
-                "isNumeric": true,
-                "name": "name",
-                "lastModified": 6,
-                "_id": "_id",
-                "category": "category",
-                "key": "key"
-              },
-              {
-                "_links": {
-                  "parent": {
-                    "href": "href",
-                    "type": "type"
-                  },
-                  "self": {
-                    "href": "href",
-                    "type": "type"
-                  }
-                },
-                "kind": "kind",
-                "description": "description",
-                "creationDate": 9,
-                "isActive": true,
-                "lastSeen": 3,
-                "eventKey": "eventKey",
-                "_versionId": "_versionId",
-                "isNumeric": true,
-                "name": "name",
-                "lastModified": 6,
-                "_id": "_id",
-                "category": "category",
-                "key": "key"
-              }
-            ]
-          },
           "segments": {
             "totalCount": 6,
             "items": [
@@ -93553,19 +94790,14 @@ Get a list of all linked views for a resource. Flags and AI configs are identifi
       },
       "resourceSummary": {
         "flagCount": 4,
-        "metricCount": 1,
         "totalCount": 1,
-        "segmentCount": 7,
-        "aiConfigCount": 1
+        "segmentCount": 7
       },
       "version": 0,
       "tags": [
         "tags",
         "tags"
       ],
-      "applicationSummary": {
-        "applicationKey": "applicationKey"
-      },
       "accountId": "accountId",
       "deletedAt": 5,
       "deleted": false,
@@ -94039,9 +95271,6 @@ Get a list of all linked views for a resource. Flags and AI configs are identifi
       },
       "key": "key",
       "updatedAt": 1,
-      "payloadSummary": {
-        "sdkKeyCount": 6
-      },
       "resourcesExpanded": {
         "totalCount": 7,
         "items": {
@@ -94158,112 +95387,6 @@ Get a list of all linked views for a resource. Flags and AI configs are identifi
               }
             ]
           },
-          "aiConfigs": {
-            "totalCount": 3,
-            "items": [
-              {
-                "createdAt": 2,
-                "_links": {
-                  "parent": {
-                    "href": "href",
-                    "type": "type"
-                  },
-                  "self": {
-                    "href": "href",
-                    "type": "type"
-                  }
-                },
-                "name": "name",
-                "description": "description",
-                "version": 1,
-                "key": "key",
-                "flagKey": "flagKey",
-                "tags": [
-                  "tags",
-                  "tags"
-                ],
-                "updatedAt": 6
-              },
-              {
-                "createdAt": 2,
-                "_links": {
-                  "parent": {
-                    "href": "href",
-                    "type": "type"
-                  },
-                  "self": {
-                    "href": "href",
-                    "type": "type"
-                  }
-                },
-                "name": "name",
-                "description": "description",
-                "version": 1,
-                "key": "key",
-                "flagKey": "flagKey",
-                "tags": [
-                  "tags",
-                  "tags"
-                ],
-                "updatedAt": 6
-              }
-            ]
-          },
-          "metrics": {
-            "totalCount": 3,
-            "items": [
-              {
-                "_links": {
-                  "parent": {
-                    "href": "href",
-                    "type": "type"
-                  },
-                  "self": {
-                    "href": "href",
-                    "type": "type"
-                  }
-                },
-                "kind": "kind",
-                "description": "description",
-                "creationDate": 9,
-                "isActive": true,
-                "lastSeen": 3,
-                "eventKey": "eventKey",
-                "_versionId": "_versionId",
-                "isNumeric": true,
-                "name": "name",
-                "lastModified": 6,
-                "_id": "_id",
-                "category": "category",
-                "key": "key"
-              },
-              {
-                "_links": {
-                  "parent": {
-                    "href": "href",
-                    "type": "type"
-                  },
-                  "self": {
-                    "href": "href",
-                    "type": "type"
-                  }
-                },
-                "kind": "kind",
-                "description": "description",
-                "creationDate": 9,
-                "isActive": true,
-                "lastSeen": 3,
-                "eventKey": "eventKey",
-                "_versionId": "_versionId",
-                "isNumeric": true,
-                "name": "name",
-                "lastModified": 6,
-                "_id": "_id",
-                "category": "category",
-                "key": "key"
-              }
-            ]
-          },
           "segments": {
             "totalCount": 6,
             "items": [
@@ -94327,19 +95450,14 @@ Get a list of all linked views for a resource. Flags and AI configs are identifi
       },
       "resourceSummary": {
         "flagCount": 4,
-        "metricCount": 1,
         "totalCount": 1,
-        "segmentCount": 7,
-        "aiConfigCount": 1
+        "segmentCount": 7
       },
       "version": 0,
       "tags": [
         "tags",
         "tags"
       ],
-      "applicationSummary": {
-        "applicationKey": "applicationKey"
-      },
       "accountId": "accountId",
       "deletedAt": 5,
       "deleted": false,
@@ -94796,6 +95914,7 @@ Fetch a list of all webhooks.
       "name": "Example hook",
       "url": "http://www.example.com",
       "secret": "frobozz",
+      "hasBearerToken": true,
       "statements": [
         {
           "resources": [
@@ -94978,6 +96097,7 @@ Create a new webhook.
 |» name|body|string|false|A human-readable name for your webhook|
 |» url|body|string|true|The URL of the remote webhook|
 |» secret|body|string|false|If sign is true, and the secret attribute is omitted, LaunchDarkly automatically generates a secret for you.|
+|» bearerToken|body|string|false|An optional token. If set, LaunchDarkly sends it in an Authorization: Bearer header with each request. It is write-only and is never returned.|
 |» statements|body|[StatementPostList](#schemastatementpostlist)|false|Represents a Custom role policy, defining a resource kinds filter the webhook should respond to.|
 |» sign|body|boolean|true|If sign is false, the webhook does not include a signature header, and the secret can be omitted.|
 |» on|body|boolean|true|Whether or not this webhook is enabled.|
@@ -95003,6 +96123,7 @@ Create a new webhook.
   "name": "Example hook",
   "url": "http://www.example.com",
   "secret": "frobozz",
+  "hasBearerToken": true,
   "statements": [
     {
       "resources": [
@@ -95164,6 +96285,7 @@ Get a single webhook by ID.
   "name": "Example hook",
   "url": "http://www.example.com",
   "secret": "frobozz",
+  "hasBearerToken": true,
   "statements": [
     {
       "resources": [
@@ -95423,6 +96545,7 @@ Update a webhook's settings. Updating webhook settings uses a [JSON patch](https
   "name": "Example hook",
   "url": "http://www.example.com",
   "secret": "frobozz",
+  "hasBearerToken": true,
   "statements": [
     {
       "resources": [
@@ -96864,7 +97987,7 @@ curl https://app.launchdarkly.com/api/v2/openapi.json \
 
 `GET /api/v2/openapi.json`
 
-Get the latest version of the OpenAPI specification for LaunchDarkly's API in JSON format. In the sandbox, click 'Play' and enter any string in the 'Authorization' field to test this endpoint.
+Get the latest version of the OpenAPI specification for the LaunchDarkly API in JSON format. In the sandbox, click 'Play' and enter any string in the 'Authorization' field to test this endpoint.
 
 > Example responses
 
@@ -98318,6 +99441,31 @@ ApiKey
 |---|---|---|---|---|
 |membersCount|integer|false|none|The number of individual members this role is assigned to|
 |teamsCount|integer|false|none|The number of teams this role is assigned to|
+
+<h2 id="tocS_AssignmentDataSourceInput">AssignmentDataSourceInput</h2>
+<!-- backwards compatibility -->
+<a id="schemaassignmentdatasourceinput"></a>
+<a id="schema_AssignmentDataSourceInput"></a>
+<a id="tocSassignmentdatasourceinput"></a>
+<a id="tocsassignmentdatasourceinput"></a>
+
+```json
+{
+  "key": "my-assignment-data-source",
+  "experimentId": "experiment-123",
+  "startTime": "1690000000000",
+  "endTime": "1690000000000"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|key|string|true|none|The key of the assignment data source to use for this iteration|
+|experimentId|string|false|none|The experiment identifier in the assignment data source. You can omit this while the experiment is a draft, but it must be set before you start the experiment.|
+|startTime|[UnixMillis](#schemaunixmillis)|false|none|The start of the assignment data window, in Unix milliseconds|
+|endTime|[UnixMillis](#schemaunixmillis)|false|none|The end of the assignment data window, in Unix milliseconds|
 
 <h2 id="tocS_Audience">Audience</h2>
 <!-- backwards compatibility -->
@@ -105289,6 +106437,7 @@ ApiKey
   "environmentKey": "string",
   "methodology": "bayesian",
   "dataSource": "snowflake",
+  "assignmentSourceType": "snowflake",
   "archivedDate": "1654104600000",
   "tags": [
     "experiment",
@@ -105465,7 +106614,8 @@ ApiKey
             "variationId": "string",
             "flagKey": "string"
           }
-        ]
+        ],
+        "assignmentVariantId": "treatment_a"
       }
     ],
     "secondaryMetrics": [
@@ -105542,6 +106692,13 @@ ApiKey
       "id": "74a49a2b-4834-4246-917e-5d85231d8c2a",
       "fileName": "covariate.csv",
       "createdAt": "1654104600000"
+    },
+    "assignmentDataSource": {
+      "key": "my-assignment-data-source",
+      "name": "Snowflake production assignments",
+      "experimentId": "experiment-123",
+      "startTime": "1690000000000",
+      "endTime": "1690000000000"
     }
   },
   "type": "experiment",
@@ -105749,7 +106906,8 @@ ApiKey
             "variationId": "string",
             "flagKey": "string"
           }
-        ]
+        ],
+        "assignmentVariantId": "treatment_a"
       }
     ],
     "secondaryMetrics": [
@@ -105826,6 +106984,13 @@ ApiKey
       "id": "74a49a2b-4834-4246-917e-5d85231d8c2a",
       "fileName": "covariate.csv",
       "createdAt": "1654104600000"
+    },
+    "assignmentDataSource": {
+      "key": "my-assignment-data-source",
+      "name": "Snowflake production assignments",
+      "experimentId": "experiment-123",
+      "startTime": "1690000000000",
+      "endTime": "1690000000000"
     }
   },
   "previousIterations": [
@@ -105989,7 +107154,8 @@ ApiKey
               "variationId": "string",
               "flagKey": "string"
             }
-          ]
+          ],
+          "assignmentVariantId": "treatment_a"
         }
       ],
       "secondaryMetrics": [
@@ -106066,6 +107232,13 @@ ApiKey
         "id": "74a49a2b-4834-4246-917e-5d85231d8c2a",
         "fileName": "covariate.csv",
         "createdAt": "1654104600000"
+      },
+      "assignmentDataSource": {
+        "key": "my-assignment-data-source",
+        "name": "Snowflake production assignments",
+        "experimentId": "experiment-123",
+        "startTime": "1690000000000",
+        "endTime": "1690000000000"
       }
     }
   ],
@@ -106119,6 +107292,7 @@ ApiKey
 |environmentKey|string|true|none|none|
 |methodology|string|false|none|The results analysis approach.|
 |dataSource|string|false|none|The source of metric data in order to analyze results. Defaults to "launchdarkly" when not provided.|
+|assignmentSourceType|string|false|none|The source of assignment data for this experiment. Defaults to "launchdarkly" when not provided.|
 |archivedDate|[UnixMillis](#schemaunixmillis)|false|none|Timestamp of when the experiment was archived|
 |tags|[string]|false|none|Tags for the experiment|
 |_links|object|true|none|The location and content type of related resources|
@@ -106140,6 +107314,12 @@ ApiKey
 |methodology|export_only|
 |dataSource|launchdarkly|
 |dataSource|snowflake|
+|assignmentSourceType|launchdarkly|
+|assignmentSourceType|snowflake|
+|assignmentSourceType|databricks|
+|assignmentSourceType|redshift|
+|assignmentSourceType|bigquery|
+|assignmentSourceType|clickhouse|
 
 <h2 id="tocS_ExperimentAllocationRep">ExperimentAllocationRep</h2>
 <!-- backwards compatibility -->
@@ -106182,6 +107362,7 @@ ApiKey
       "environmentKey": "string",
       "methodology": "bayesian",
       "dataSource": "snowflake",
+      "assignmentSourceType": "snowflake",
       "archivedDate": "1654104600000",
       "tags": [
         "experiment",
@@ -106358,7 +107539,8 @@ ApiKey
                 "variationId": "string",
                 "flagKey": "string"
               }
-            ]
+            ],
+            "assignmentVariantId": "treatment_a"
           }
         ],
         "secondaryMetrics": [
@@ -106435,6 +107617,13 @@ ApiKey
           "id": "74a49a2b-4834-4246-917e-5d85231d8c2a",
           "fileName": "covariate.csv",
           "createdAt": "1654104600000"
+        },
+        "assignmentDataSource": {
+          "key": "my-assignment-data-source",
+          "name": "Snowflake production assignments",
+          "experimentId": "experiment-123",
+          "startTime": "1690000000000",
+          "endTime": "1690000000000"
         }
       },
       "type": "experiment",
@@ -106642,7 +107831,8 @@ ApiKey
                 "variationId": "string",
                 "flagKey": "string"
               }
-            ]
+            ],
+            "assignmentVariantId": "treatment_a"
           }
         ],
         "secondaryMetrics": [
@@ -106719,6 +107909,13 @@ ApiKey
           "id": "74a49a2b-4834-4246-917e-5d85231d8c2a",
           "fileName": "covariate.csv",
           "createdAt": "1654104600000"
+        },
+        "assignmentDataSource": {
+          "key": "my-assignment-data-source",
+          "name": "Snowflake production assignments",
+          "experimentId": "experiment-123",
+          "startTime": "1690000000000",
+          "endTime": "1690000000000"
         }
       },
       "previousIterations": [
@@ -106882,7 +108079,8 @@ ApiKey
                   "variationId": "string",
                   "flagKey": "string"
                 }
-              ]
+              ],
+              "assignmentVariantId": "treatment_a"
             }
           ],
           "secondaryMetrics": [
@@ -106959,6 +108157,13 @@ ApiKey
             "id": "74a49a2b-4834-4246-917e-5d85231d8c2a",
             "fileName": "covariate.csv",
             "createdAt": "1654104600000"
+          },
+          "assignmentDataSource": {
+            "key": "my-assignment-data-source",
+            "name": "Snowflake production assignments",
+            "experimentId": "experiment-123",
+            "startTime": "1690000000000",
+            "endTime": "1690000000000"
           }
         }
       ],
@@ -107320,10 +108525,17 @@ ApiKey
             "flagKey": "example-flag-for-experiment",
             "variationId": "e432f62b-55f6-49dd-a02f-eb24acf39d05"
           }
-        ]
+        ],
+        "assignmentVariantId": "treatment-1"
       }
     ],
     "flags": "{\"example-flag-key\": { \"ruleId\": \"e432f62b-55f6-49dd-a02f-eb24acf39d05\", \"flagConfigVersion\": 12, \"notInExperimentVariationId\": \"e432f62b-55f6-49dd-a02f-eb24acf39d05\" }}",
+    "assignmentDataSource": {
+      "key": "my-assignment-data-source",
+      "experimentId": "experiment-123",
+      "startTime": "1690000000000",
+      "endTime": "1690000000000"
+    },
     "randomizationUnit": "user",
     "reallocationFrequencyMillis": 3600000,
     "covariateId": "string",
@@ -110259,6 +111471,7 @@ ApiKey
     "environmentKey": "string",
     "methodology": "bayesian",
     "dataSource": "snowflake",
+    "assignmentSourceType": "snowflake",
     "archivedDate": "1654104600000",
     "tags": [
       "experiment",
@@ -110435,7 +111648,8 @@ ApiKey
               "variationId": "string",
               "flagKey": "string"
             }
-          ]
+          ],
+          "assignmentVariantId": "treatment_a"
         }
       ],
       "secondaryMetrics": [
@@ -110512,6 +111726,13 @@ ApiKey
         "id": "74a49a2b-4834-4246-917e-5d85231d8c2a",
         "fileName": "covariate.csv",
         "createdAt": "1654104600000"
+      },
+      "assignmentDataSource": {
+        "key": "my-assignment-data-source",
+        "name": "Snowflake production assignments",
+        "experimentId": "experiment-123",
+        "startTime": "1690000000000",
+        "endTime": "1690000000000"
       }
     },
     "type": "experiment",
@@ -110719,7 +111940,8 @@ ApiKey
               "variationId": "string",
               "flagKey": "string"
             }
-          ]
+          ],
+          "assignmentVariantId": "treatment_a"
         }
       ],
       "secondaryMetrics": [
@@ -110796,6 +112018,13 @@ ApiKey
         "id": "74a49a2b-4834-4246-917e-5d85231d8c2a",
         "fileName": "covariate.csv",
         "createdAt": "1654104600000"
+      },
+      "assignmentDataSource": {
+        "key": "my-assignment-data-source",
+        "name": "Snowflake production assignments",
+        "experimentId": "experiment-123",
+        "startTime": "1690000000000",
+        "endTime": "1690000000000"
       }
     },
     "previousIterations": [
@@ -110959,7 +112188,8 @@ ApiKey
                 "variationId": "string",
                 "flagKey": "string"
               }
-            ]
+            ],
+            "assignmentVariantId": "treatment_a"
           }
         ],
         "secondaryMetrics": [
@@ -111036,6 +112266,13 @@ ApiKey
           "id": "74a49a2b-4834-4246-917e-5d85231d8c2a",
           "fileName": "covariate.csv",
           "createdAt": "1654104600000"
+        },
+        "assignmentDataSource": {
+          "key": "my-assignment-data-source",
+          "name": "Snowflake production assignments",
+          "experimentId": "experiment-123",
+          "startTime": "1690000000000",
+          "endTime": "1690000000000"
         }
       }
     ],
@@ -111085,6 +112322,7 @@ ApiKey
       "environmentKey": "string",
       "methodology": "bayesian",
       "dataSource": "snowflake",
+      "assignmentSourceType": "snowflake",
       "archivedDate": "1654104600000",
       "tags": [
         "experiment",
@@ -111261,7 +112499,8 @@ ApiKey
                 "variationId": "string",
                 "flagKey": "string"
               }
-            ]
+            ],
+            "assignmentVariantId": "treatment_a"
           }
         ],
         "secondaryMetrics": [
@@ -111338,6 +112577,13 @@ ApiKey
           "id": "74a49a2b-4834-4246-917e-5d85231d8c2a",
           "fileName": "covariate.csv",
           "createdAt": "1654104600000"
+        },
+        "assignmentDataSource": {
+          "key": "my-assignment-data-source",
+          "name": "Snowflake production assignments",
+          "experimentId": "experiment-123",
+          "startTime": "1690000000000",
+          "endTime": "1690000000000"
         }
       },
       "type": "experiment",
@@ -111545,7 +112791,8 @@ ApiKey
                 "variationId": "string",
                 "flagKey": "string"
               }
-            ]
+            ],
+            "assignmentVariantId": "treatment_a"
           }
         ],
         "secondaryMetrics": [
@@ -111622,6 +112869,13 @@ ApiKey
           "id": "74a49a2b-4834-4246-917e-5d85231d8c2a",
           "fileName": "covariate.csv",
           "createdAt": "1654104600000"
+        },
+        "assignmentDataSource": {
+          "key": "my-assignment-data-source",
+          "name": "Snowflake production assignments",
+          "experimentId": "experiment-123",
+          "startTime": "1690000000000",
+          "endTime": "1690000000000"
         }
       },
       "previousIterations": [
@@ -111785,7 +113039,8 @@ ApiKey
                   "variationId": "string",
                   "flagKey": "string"
                 }
-              ]
+              ],
+              "assignmentVariantId": "treatment_a"
             }
           ],
           "secondaryMetrics": [
@@ -111862,6 +113117,13 @@ ApiKey
             "id": "74a49a2b-4834-4246-917e-5d85231d8c2a",
             "fileName": "covariate.csv",
             "createdAt": "1654104600000"
+          },
+          "assignmentDataSource": {
+            "key": "my-assignment-data-source",
+            "name": "Snowflake production assignments",
+            "experimentId": "experiment-123",
+            "startTime": "1690000000000",
+            "endTime": "1690000000000"
           }
         }
       ],
@@ -112021,6 +113283,7 @@ ApiKey
     "environmentKey": "string",
     "methodology": "bayesian",
     "dataSource": "snowflake",
+    "assignmentSourceType": "snowflake",
     "archivedDate": "1654104600000",
     "tags": [
       "experiment",
@@ -112197,7 +113460,8 @@ ApiKey
               "variationId": "string",
               "flagKey": "string"
             }
-          ]
+          ],
+          "assignmentVariantId": "treatment_a"
         }
       ],
       "secondaryMetrics": [
@@ -112274,6 +113538,13 @@ ApiKey
         "id": "74a49a2b-4834-4246-917e-5d85231d8c2a",
         "fileName": "covariate.csv",
         "createdAt": "1654104600000"
+      },
+      "assignmentDataSource": {
+        "key": "my-assignment-data-source",
+        "name": "Snowflake production assignments",
+        "experimentId": "experiment-123",
+        "startTime": "1690000000000",
+        "endTime": "1690000000000"
       }
     },
     "type": "experiment",
@@ -112481,7 +113752,8 @@ ApiKey
               "variationId": "string",
               "flagKey": "string"
             }
-          ]
+          ],
+          "assignmentVariantId": "treatment_a"
         }
       ],
       "secondaryMetrics": [
@@ -112558,6 +113830,13 @@ ApiKey
         "id": "74a49a2b-4834-4246-917e-5d85231d8c2a",
         "fileName": "covariate.csv",
         "createdAt": "1654104600000"
+      },
+      "assignmentDataSource": {
+        "key": "my-assignment-data-source",
+        "name": "Snowflake production assignments",
+        "experimentId": "experiment-123",
+        "startTime": "1690000000000",
+        "endTime": "1690000000000"
       }
     },
     "previousIterations": [
@@ -112721,7 +114000,8 @@ ApiKey
                 "variationId": "string",
                 "flagKey": "string"
               }
-            ]
+            ],
+            "assignmentVariantId": "treatment_a"
           }
         ],
         "secondaryMetrics": [
@@ -112798,6 +114078,13 @@ ApiKey
           "id": "74a49a2b-4834-4246-917e-5d85231d8c2a",
           "fileName": "covariate.csv",
           "createdAt": "1654104600000"
+        },
+        "assignmentDataSource": {
+          "key": "my-assignment-data-source",
+          "name": "Snowflake production assignments",
+          "experimentId": "experiment-123",
+          "startTime": "1690000000000",
+          "endTime": "1690000000000"
         }
       }
     ],
@@ -113512,6 +114799,19 @@ ApiKey
         }
       }
     ]
+  },
+  "_status": {
+    "available": false,
+    "potentiallyStale": true,
+    "lastSync": "1717263000000",
+    "lastError": "1714584600000",
+    "errors": [
+      {
+        "statusCode": 0,
+        "message": "string",
+        "timestamp": 0
+      }
+    ]
   }
 }
 ```
@@ -113531,6 +114831,7 @@ ApiKey
 |name|string|true|none|Name of the configuration|
 |version|integer|true|none|Version of the current configuration|
 |_access|[Access](#schemaaccess)|false|none|Details on the allowed and denied actions for this configuration|
+|_status|[IntegrationDeliveryConfigurationStatus](#schemaintegrationdeliveryconfigurationstatus)|false|none|Sync status for this feature store. Recent error bodies are included only when fetching a single configuration.|
 
 <h2 id="tocS_IntegrationDeliveryConfigurationCollection">IntegrationDeliveryConfigurationCollection</h2>
 <!-- backwards compatibility -->
@@ -113624,6 +114925,19 @@ ApiKey
               "effect": "allow",
               "role_name": "string"
             }
+          }
+        ]
+      },
+      "_status": {
+        "available": false,
+        "potentiallyStale": true,
+        "lastSync": "1717263000000",
+        "lastError": "1714584600000",
+        "errors": [
+          {
+            "statusCode": 0,
+            "message": "string",
+            "timestamp": 0
           }
         ]
       }
@@ -113754,6 +115068,39 @@ ApiKey
 |error|string|false|none|none|
 |timestamp|[UnixMillis](#schemaunixmillis)|false|none|Timestamp of when the validation was performed|
 |responseBody|string|false|none|JSON response to the validation request|
+
+<h2 id="tocS_IntegrationDeliveryConfigurationStatus">IntegrationDeliveryConfigurationStatus</h2>
+<!-- backwards compatibility -->
+<a id="schemaintegrationdeliveryconfigurationstatus"></a>
+<a id="schema_IntegrationDeliveryConfigurationStatus"></a>
+<a id="tocSintegrationdeliveryconfigurationstatus"></a>
+<a id="tocsintegrationdeliveryconfigurationstatus"></a>
+
+```json
+{
+  "available": false,
+  "potentiallyStale": true,
+  "lastSync": "1717263000000",
+  "lastError": "1714584600000",
+  "errors": [
+    {
+      "statusCode": 0,
+      "message": "string",
+      "timestamp": 0
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|available|boolean|true|none|Whether the latest sync succeeded|
+|potentiallyStale|boolean|true|none|Whether the feature store may be missing flag data from a failed or in-progress sync|
+|lastSync|[UnixMillis](#schemaunixmillis)|false|none|Timestamp of the most recent successful sync|
+|lastError|[UnixMillis](#schemaunixmillis)|false|none|Timestamp of the most recent sync error, if any|
+|errors|[[StoreIntegrationError](#schemastoreintegrationerror)]|false|none|Recent failed sync responses. Successful (200) and in-progress (202) responses are omitted. Included only when fetching a single configuration by ID.|
 
 <h2 id="tocS_IntegrationMetadata">IntegrationMetadata</h2>
 <!-- backwards compatibility -->
@@ -114013,6 +115360,33 @@ ApiKey
 |code|string|true|none|Specific error code encountered|
 |message|string|true|none|Description of the error|
 
+<h2 id="tocS_IterationAssignmentDataSourceRep">IterationAssignmentDataSourceRep</h2>
+<!-- backwards compatibility -->
+<a id="schemaiterationassignmentdatasourcerep"></a>
+<a id="schema_IterationAssignmentDataSourceRep"></a>
+<a id="tocSiterationassignmentdatasourcerep"></a>
+<a id="tocsiterationassignmentdatasourcerep"></a>
+
+```json
+{
+  "key": "my-assignment-data-source",
+  "name": "Snowflake production assignments",
+  "experimentId": "experiment-123",
+  "startTime": "1690000000000",
+  "endTime": "1690000000000"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|key|string|true|none|The key of the assignment data source used for this iteration|
+|name|string|true|none|The display name of the assignment data source|
+|experimentId|string|true|none|The experiment identifier in the assignment data source|
+|startTime|[UnixMillis](#schemaunixmillis)|false|none|The start of the assignment data window, in Unix milliseconds|
+|endTime|[UnixMillis](#schemaunixmillis)|false|none|The end of the assignment data window, in Unix milliseconds|
+
 <h2 id="tocS_IterationInput">IterationInput</h2>
 <!-- backwards compatibility -->
 <a id="schemaiterationinput"></a>
@@ -114044,10 +115418,17 @@ ApiKey
           "flagKey": "example-flag-for-experiment",
           "variationId": "e432f62b-55f6-49dd-a02f-eb24acf39d05"
         }
-      ]
+      ],
+      "assignmentVariantId": "treatment-1"
     }
   ],
   "flags": "{\"example-flag-key\": { \"ruleId\": \"e432f62b-55f6-49dd-a02f-eb24acf39d05\", \"flagConfigVersion\": 12, \"notInExperimentVariationId\": \"e432f62b-55f6-49dd-a02f-eb24acf39d05\" }}",
+  "assignmentDataSource": {
+    "key": "my-assignment-data-source",
+    "experimentId": "experiment-123",
+    "startTime": "1690000000000",
+    "endTime": "1690000000000"
+  },
   "randomizationUnit": "user",
   "reallocationFrequencyMillis": 3600000,
   "covariateId": "string",
@@ -114070,10 +115451,11 @@ ApiKey
 |primaryFunnelKey|string|false|none|The key of the primary funnel group for this experiment. Either <code>primarySingleMetricKey</code> or <code>primaryFunnelKey</code> must be present.|
 |treatments|[TreatmentsInput](#schematreatmentsinput)|true|none|Details on the variations you are testing in the experiment. You establish these variations in feature flags, and then reuse them in experiments.|
 |flags|[FlagsInput](#schemaflagsinput)|true|none|Details on the feature flag and targeting rules for this iteration|
+|assignmentDataSource|[AssignmentDataSourceInput](#schemaassignmentdatasourceinput)|false|none|Details on the custom assignment data source configuration for this iteration|
 |randomizationUnit|string|false|none|The unit of randomization for this iteration. Defaults to user.|
 |reallocationFrequencyMillis|integer|false|none|The cadence (in milliseconds) to update the allocation.|
 |covariateId|string|false|none|The ID of the covariate CSV|
-|attributes|[string]|false|none|The attributes that this iteration's results can be sliced by|
+|attributes|[string]|false|none|The attributes that this iteration's results can be sliced by, whose values come from flag evaluation events|
 
 <h2 id="tocS_IterationRep">IterationRep</h2>
 <!-- backwards compatibility -->
@@ -114243,7 +115625,8 @@ ApiKey
           "variationId": "string",
           "flagKey": "string"
         }
-      ]
+      ],
+      "assignmentVariantId": "treatment_a"
     }
   ],
   "secondaryMetrics": [
@@ -114320,6 +115703,13 @@ ApiKey
     "id": "74a49a2b-4834-4246-917e-5d85231d8c2a",
     "fileName": "covariate.csv",
     "createdAt": "1654104600000"
+  },
+  "assignmentDataSource": {
+    "key": "my-assignment-data-source",
+    "name": "Snowflake production assignments",
+    "experimentId": "experiment-123",
+    "startTime": "1690000000000",
+    "endTime": "1690000000000"
   }
 }
 ```
@@ -114344,12 +115734,13 @@ ApiKey
 |primarySingleMetric|[MetricV2Rep](#schemametricv2rep)|false|none|Details on the primary metric for this experiment|
 |primaryFunnel|[DependentMetricGroupRepWithMetrics](#schemadependentmetricgrouprepwithmetrics)|false|none|Details on the primary funnel group for this experiment|
 |randomizationUnit|string|false|none|The unit of randomization for this iteration|
-|attributes|[string]|false|none|The available attribute filters for this iteration|
+|attributes|[string]|false|none|The attributes this iteration slices results by, whose values come from flag evaluation events.|
 |treatments|[[TreatmentRep](#schematreatmentrep)]|false|none|Details on the variations you are testing in the experiment|
 |secondaryMetrics|[[MetricV2Rep](#schemametricv2rep)]|false|none|**Deprecated.** Deprecated, use <code>metrics</code> instead. Details on the secondary metrics for this experiment.|
 |metrics|[[DependentMetricOrMetricGroupRep](#schemadependentmetricormetricgrouprep)]|false|none|Details on the metrics for this experiment|
 |layerSnapshot|[LayerSnapshotRep](#schemalayersnapshotrep)|false|none|Snapshot of the layer state on iteration stop, if part of a layer. Otherwise omitted.|
 |covariateInfo|[CovariateInfoRep](#schemacovariateinforep)|false|none|Details of the covariate file for stratified sampling|
+|assignmentDataSource|[IterationAssignmentDataSourceRep](#schemaiterationassignmentdatasourcerep)|false|none|The custom assignment data source configuration for this iteration|
 
 #### Enumerated Values
 
@@ -122122,7 +123513,8 @@ ApiKey
       "flagKey": "example-flag-for-experiment",
       "variationId": "e432f62b-55f6-49dd-a02f-eb24acf39d05"
     }
-  ]
+  ],
+  "assignmentVariantId": "treatment-1"
 }
 ```
 
@@ -122134,6 +123526,7 @@ ApiKey
 |baseline|boolean|true|none|Whether this treatment is the baseline to compare other treatments against|
 |allocationPercent|string|true|none|The percentage of traffic allocated to this treatment during the iteration|
 |parameters|[[TreatmentParameterInput](#schematreatmentparameterinput)]|true|none|Details on the flag and variation to use for this treatment|
+|assignmentVariantId|string|false|none|The variant identifier in the warehouse-native assignment source that maps to this treatment|
 
 <h2 id="tocS_TreatmentParameterInput">TreatmentParameterInput</h2>
 <!-- backwards compatibility -->
@@ -122174,7 +123567,8 @@ ApiKey
       "variationId": "string",
       "flagKey": "string"
     }
-  ]
+  ],
+  "assignmentVariantId": "treatment_a"
 }
 ```
 
@@ -122187,6 +123581,7 @@ ApiKey
 |allocationPercent|string|true|none|The percentage of traffic allocated to this treatment during the iteration|
 |baseline|boolean|false|none|Whether this treatment is the baseline to compare other treatments against|
 |parameters|[[ParameterRep](#schemaparameterrep)]|false|none|Details on the flag and variation used for this treatment|
+|assignmentVariantId|string|false|none|The variant identifier in the warehouse-native assignment source that maps to this treatment|
 
 <h2 id="tocS_TreatmentsInput">TreatmentsInput</h2>
 <!-- backwards compatibility -->
@@ -122206,7 +123601,8 @@ ApiKey
         "flagKey": "example-flag-for-experiment",
         "variationId": "e432f62b-55f6-49dd-a02f-eb24acf39d05"
       }
-    ]
+    ],
+    "assignmentVariantId": "treatment-1"
   }
 ]
 ```
@@ -123777,6 +125173,7 @@ ApiKey
   "name": "Example hook",
   "url": "http://www.example.com",
   "secret": "frobozz",
+  "hasBearerToken": true,
   "statements": [
     {
       "resources": [
@@ -123854,6 +125251,7 @@ ApiKey
 |name|string|false|none|A human-readable name for this webhook|
 |url|string|true|none|The URL to which LaunchDarkly sends an HTTP POST payload for this webhook|
 |secret|string|false|none|The secret for this webhook|
+|hasBearerToken|boolean|false|none|Whether this webhook sends a bearer token. The token itself is never returned.|
 |statements|[[Statement](#schemastatement)]|false|none|Represents a Custom role policy, defining a resource kinds filter the webhook responds to.|
 |on|boolean|true|none|Whether or not this webhook is enabled|
 |tags|[string]|true|none|List of tags for this webhook|
@@ -123894,6 +125292,7 @@ ApiKey
       "name": "Example hook",
       "url": "http://www.example.com",
       "secret": "frobozz",
+      "hasBearerToken": true,
       "statements": [
         {
           "resources": [
@@ -125256,6 +126655,7 @@ ApiKey
   "name": "Example hook",
   "url": "http://www.example.com",
   "secret": "frobozz",
+  "bearerToken": "example-token",
   "statements": [
     {
       "resources": [
@@ -125286,6 +126686,7 @@ ApiKey
 |name|string|false|none|A human-readable name for your webhook|
 |url|string|true|none|The URL of the remote webhook|
 |secret|string|false|none|If sign is true, and the secret attribute is omitted, LaunchDarkly automatically generates a secret for you.|
+|bearerToken|string|false|none|An optional token. If set, LaunchDarkly sends it in an Authorization: Bearer header with each request. It is write-only and is never returned.|
 |statements|[StatementPostList](#schemastatementpostlist)|false|none|Represents a Custom role policy, defining a resource kinds filter the webhook should respond to.|
 |sign|boolean|true|none|If sign is false, the webhook does not include a signature header, and the secret can be omitted.|
 |on|boolean|true|none|Whether or not this webhook is enabled.|
@@ -125591,8 +126992,8 @@ A bounded Streaming project ranking.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|activeConfigs|integer|true|none|Number of active AI Configs|
-|activeExperiments|integer|true|none|Number of active experiments on AI Configs|
+|activeConfigs|integer|true|none|Number of active agent configs|
+|activeExperiments|integer|true|none|Number of active experiments on agent configs|
 |averageSatisfaction7D|number(float) \| null|false|none|Average satisfaction rating over the last 7 days|
 |spendMonthToDate|number(double) \| null|false|none|Spend so far this month|
 
@@ -125947,6 +127348,7 @@ A bounded Streaming project ranking.
         }
       ],
       "name": "name",
+      "defaultThreshold": 0.9,
       "key": "key",
       "isInverted": true,
       "updatedAt": 4
@@ -126269,6 +127671,7 @@ A bounded Streaming project ranking.
         }
       ],
       "name": "name",
+      "defaultThreshold": 0.9,
       "key": "key",
       "isInverted": true,
       "updatedAt": 4
@@ -126611,6 +128014,7 @@ A bounded Streaming project ranking.
     }
   ],
   "name": "name",
+  "defaultThreshold": 0.9,
   "key": "key",
   "isInverted": true,
   "updatedAt": 4
@@ -126624,19 +128028,20 @@ A bounded Streaming project ranking.
 |_access|[AiConfigsAccess](#schemaaiconfigsaccess)|false|none|none|
 |_links|[ParentAndSelfLinks](#schemaparentandselflinks)|false|none|The location and content type of related resources|
 |_site|[CoreLink](#schemacorelink)|false|none|none|
-|description|string|true|none|A description of the AI Config|
-|key|string|true|none|The AI Config key|
+|description|string|true|none|A description of the agent config|
+|key|string|true|none|The agent config key|
 |_maintainer|[AIConfig__maintainer](#schemaaiconfig__maintainer)|false|none|The member or team that maintains this resource|
-|mode|string|false|none|The AI Config mode|
-|name|string|true|none|The AI Config name|
+|mode|string|false|none|The agent config mode|
+|name|string|true|none|The agent config name|
 |tags|[string]|true|none|Tags for this resource|
 |version|integer|true|none|The version number of this resource|
-|variations|[[AIConfigVariation](#schemaaiconfigvariation)]|true|none|The variations of this AI Config|
+|variations|[[AIConfigVariation](#schemaaiconfigvariation)]|true|none|The variations of this agent config|
 |createdAt|integer(int64)|true|none|none|
 |updatedAt|integer(int64)|true|none|none|
 |evaluationMetricKey|string|false|none|Evaluation metric key for this config|
 |evaluationMetricKeys|[string]|false|none|**Deprecated.** List of evaluation metric keys for this config|
 |isInverted|boolean|false|none|The success direction of a judge. Offline evaluations use it to decide whether a score passes.<br><br>- `true`: A lower score is better. Use this for a judge that scores bad output, such as a toxicity or hallucination judge.<br>- `false`: A higher score is better. Use this for a judge that scores good output, such as an accuracy or relevance judge.<br><br>The response includes this field only when `mode` is `judge`. For a built-in judge key, the value is always the built-in direction. Built-in judge keys are `ld-ai-judge-accuracy`, `ld-ai-judge-relevance`, and `ld-ai-judge-toxicity`, with or without a `-<timestamp>` suffix such as `ld-ai-judge-accuracy-1760000000000`. A custom judge with no stored direction omits this field.<br>|
+|defaultThreshold|number(double)|false|none|The judge's threshold: the pass line for its main score, from 0 to 1. It applies wherever the judge is used. The average score passes when it is at or above this value, or at or below it when `isInverted` is `true`.<br><br>The response includes this field only when `mode` is `judge` and a threshold is set.<br>|
 |dependencies|[[AIConfigDependency](#schemaaiconfigdependency)]|false|none|Resources that depend on this config, grouped by type|
 
 #### Enumerated Values
@@ -126739,6 +128144,7 @@ A bounded Streaming project ranking.
     "viewKeys"
   ],
   "evaluationMetricKey": "evaluationMetricKey",
+  "defaultThreshold": 0.9,
   "key": "key",
   "isInverted": true,
   "tags": [
@@ -126752,17 +128158,18 @@ A bounded Streaming project ranking.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|description|string|false|none|A description of the AI Config|
-|key|string|true|none|A unique key for the AI Config|
+|description|string|false|none|A description of the agent config|
+|key|string|true|none|A unique key for the agent config|
 |maintainerId|string|false|none|The ID of the member who maintains this resource|
 |maintainerTeamKey|string|false|none|The key of the team that maintains this resource|
-|mode|string|false|none|The AI Config mode|
-|name|string|true|none|A human-readable name for the AI Config|
+|mode|string|false|none|The agent config mode|
+|name|string|true|none|A human-readable name for the agent config|
 |tags|[string]|false|none|Tags for this resource|
-|viewKeys|[string]|false|none|Keys of the views to add the AI Config to|
+|viewKeys|[string]|false|none|Keys of the views to add the agent config to|
 |defaultVariation|[AIConfigVariationPost](#schemaaiconfigvariationpost)|false|none|none|
 |evaluationMetricKey|string|false|none|Evaluation metric key for this config|
 |isInverted|boolean|false|none|The success direction of a judge. Offline evaluations use it to decide whether a score passes.<br><br>- `true`: A lower score is better. Use this for a judge that scores bad output, such as a toxicity or hallucination judge.<br>- `false`: A higher score is better. Use this for a judge that scores good output, such as an accuracy or relevance judge.<br><br>**Required for a custom judge.** A custom judge has `mode` set to `judge` and a `key` that is not a built-in judge key. Built-in judge keys are `ld-ai-judge-accuracy`, `ld-ai-judge-relevance`, and `ld-ai-judge-toxicity`, with or without a `-<timestamp>` suffix such as `ld-ai-judge-accuracy-1760000000000`. For a built-in judge key, this field is optional, and the API always uses the built-in direction.<br><br>Do not send this field when `mode` is `agent` or `completion`.<br><br>This field is not in the schema's `required` list, because only custom judges need it.<br><br>The API returns a `400` error in these cases:<br>- `isInverted is required for a custom judge: ...`: You create a custom judge without this field. Send `true` or `false`.<br>- `isInverted is only supported for judge mode`: You send this field and `mode` is `agent` or `completion`. Remove the field, or set `mode` to `judge`.<br>- `isInverted is not supported`: Custom judges are not available for your account. Remove the field from the request.<br>|
+|defaultThreshold|number(double)|false|none|The judge's threshold: the pass line for its main score, from 0 to 1. It applies wherever the judge is used. Omit it to create the judge with no threshold.<br><br>Send this field only when `mode` is `judge`.<br><br>The API returns a `400` error in these cases:<br>- `Threshold is only supported for judges`: You send this field and `mode` is `agent` or `completion`.<br>- `Threshold must be from 0 to 1`: The value is below 0 or above 1.<br>- `Thresholds don't support classifier rules yet`: The default variation uses classifier rules.<br>- `Threshold is not supported`: Thresholds are not available for your account. Remove the field from the request.<br>|
 
 #### Enumerated Values
 
@@ -126785,7 +128192,9 @@ A bounded Streaming project ranking.
   "maintainerTeamKey": "example-team-key",
   "name": "name",
   "description": "description",
+  "clearDefaultThreshold": true,
   "evaluationMetricKey": "evaluationMetricKey",
+  "defaultThreshold": 0.9,
   "defaultVariationKey": "defaultVariationKey",
   "isInverted": true,
   "tags": [
@@ -126800,13 +128209,15 @@ A bounded Streaming project ranking.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |defaultVariationKey|string|false|none|Key of the variation this config serves by default|
-|description|string|false|none|A description of the AI Config|
+|description|string|false|none|A description of the agent config|
 |maintainerId|string|false|none|The ID of the member who maintains this resource|
 |maintainerTeamKey|string|false|none|The key of the team that maintains this resource|
-|name|string|false|none|A human-readable name for the AI Config|
+|name|string|false|none|A human-readable name for the agent config|
 |tags|[string]|false|none|Tags for this resource|
 |evaluationMetricKey|string|false|none|Evaluation metric key for this config|
-|isInverted|boolean|false|none|The success direction of a judge. Offline evaluations use it to decide whether a score passes.<br><br>- `true`: A lower score is better. Use this for a judge that scores bad output, such as a toxicity or hallucination judge.<br>- `false`: A higher score is better. Use this for a judge that scores good output, such as an accuracy or relevance judge.<br><br>Send this field only when the AI Config's `mode` is `judge`. If you omit it, the current direction does not change. For a built-in judge key, the API always returns the built-in direction. Built-in judge keys are `ld-ai-judge-accuracy`, `ld-ai-judge-relevance`, and `ld-ai-judge-toxicity`, with or without a `-<timestamp>` suffix such as `ld-ai-judge-accuracy-1760000000000`.<br><br>The API returns a `400` error in these cases:<br>- `isInverted is only supported for judge mode`: You send this field and the AI Config's `mode` is `agent` or `completion`. Remove the field.<br>- `isInverted is not supported`: Custom judges are not available for your account. Remove the field from the request.<br>|
+|isInverted|boolean|false|none|The success direction of a judge. Offline evaluations use it to decide whether a score passes.<br><br>- `true`: A lower score is better. Use this for a judge that scores bad output, such as a toxicity or hallucination judge.<br>- `false`: A higher score is better. Use this for a judge that scores good output, such as an accuracy or relevance judge.<br><br>Send this field only when the agent config's `mode` is `judge`. If you omit it, the current direction does not change. For a built-in judge key, the API always returns the built-in direction. Built-in judge keys are `ld-ai-judge-accuracy`, `ld-ai-judge-relevance`, and `ld-ai-judge-toxicity`, with or without a `-<timestamp>` suffix such as `ld-ai-judge-accuracy-1760000000000`.<br><br>The API returns a `400` error in these cases:<br>- `isInverted is only supported for judge mode`: You send this field and the agent config's `mode` is `agent` or `completion`. Remove the field.<br>- `isInverted is not supported`: Custom judges are not available for your account. Remove the field from the request.<br>|
+|defaultThreshold|number(double)|false|none|The judge's threshold: the pass line for its main score, from 0 to 1. It applies wherever the judge is used. If you omit it, the current threshold does not change. To remove the threshold, send `clearDefaultThreshold` instead.<br><br>The API returns a `400` error in these cases:<br>- `Threshold is only supported for judges`: You send this field and the agent config's `mode` is `agent` or `completion`.<br>- `Threshold must be from 0 to 1`: The value is below 0 or above 1.<br>- `Thresholds don't support classifier rules yet`: Every active variation of the judge uses classifier rules. Archived variations don't count.<br>- `Threshold can't be set and cleared in the same request`: You send this field and `clearDefaultThreshold: true`.<br>- `Threshold is not supported`: Thresholds are not available for your account. Remove the field from the request.<br>|
+|clearDefaultThreshold|boolean|false|none|Set to `true` to remove the judge's threshold. Don't send it with `defaultThreshold`.<br><br>The API returns a `400` error with `Threshold is not supported` when thresholds are not available for your account.<br>|
 
 <h2 id="tocS_AIConfigVariation">AIConfigVariation</h2>
 <!-- backwards compatibility -->
@@ -126936,7 +128347,7 @@ A bounded Streaming project ranking.
 |tools|[[VariationTool](#schemavariationtool)]|false|none|The tools this variation can use|
 |skills|[[VariationSkill](#schemavariationskill)]|false|none|The agent skills this variation can use|
 |judgeConfiguration|[JudgeConfiguration](#schemajudgeconfiguration)|false|none|none|
-|judgingConfigKeys|[string]|false|none|Keys of the judge AI Configs attached to this variation|
+|judgingConfigKeys|[string]|false|none|Keys of the judge agent configs attached to this variation|
 
 #### Enumerated Values
 
@@ -127353,7 +128764,7 @@ A bounded Streaming project ranking.
 |name|string|false|none|A human-readable name for the variation|
 |outputFormat|object|false|none|JSON Schema defining the structured output format for the variation.|
 |published|boolean|false|none|Whether to publish this version of the variation|
-|state|string|false|none|The state to move the variation to. Omit this field to keep the current state.<br>- `archived`: Archive a published variation. You cannot archive a variation that is already archived. You also cannot archive the only variation of an AI Config. An AI Config itself cannot be archived.<br>- `published`: Restore an archived variation. You cannot publish a variation that is already published.<br>|
+|state|string|false|none|The state to move the variation to. Omit this field to keep the current state.<br>- `archived`: Archive a published variation. You cannot archive a variation that is already archived. You also cannot archive the only variation of an agent config. An agent config itself cannot be archived.<br>- `published`: Restore an archived variation. You cannot publish a variation that is already published.<br>|
 |tools|[[VariationToolPost](#schemavariationtoolpost)]|false|none|List of tools to use for this variation. The latest version of the tool will be used.|
 |toolKeys|[string]|false|none|List of tool keys to use for this variation. The latest version of the tool will be used.|
 |skills|[[VariationSkillPost](#schemavariationskillpost)]|false|none|List of agent skills to attach to this variation. Replaces the current attachments.|
@@ -128134,6 +129545,28 @@ Fields to update. Omitted fields keep their current values. `params`, `customPar
       ],
       "rules": [
         {
+          "rollout": {
+            "experimentAllocation": {
+              "defaultVariation": 2,
+              "canReshuffle": true,
+              "type": "type"
+            },
+            "seed": 7,
+            "variations": [
+              {
+                "weight": 3,
+                "_untracked": true,
+                "variation": 9
+              },
+              {
+                "weight": 3,
+                "_untracked": true,
+                "variation": 9
+              }
+            ],
+            "contextKind": "contextKind",
+            "bucketBy": "bucketBy"
+          },
           "clauses": [
             {
               "op": "op",
@@ -128142,6 +129575,7 @@ Fields to update. Omitted fields keep their current values. `params`, `customPar
                 "",
                 ""
               ],
+              "contextKind": "contextKind",
               "attribute": "attribute",
               "id": "id"
             },
@@ -128152,37 +129586,40 @@ Fields to update. Omitted fields keep their current values. `params`, `customPar
                 "",
                 ""
               ],
+              "contextKind": "contextKind",
               "attribute": "attribute",
               "id": "id"
             }
           ],
-          "shadows": [
-            {
-              "variationId": "variationId",
-              "endCondition": {
-                "kind": "kind",
-                "value": 4
-              },
-              "samplingRate": 0.20271230230023218,
-              "id": "id",
-              "ownerId": "ownerId",
-              "ownerKind": "ownerKind"
-            },
-            {
-              "variationId": "variationId",
-              "endCondition": {
-                "kind": "kind",
-                "value": 4
-              },
-              "samplingRate": 0.20271230230023218,
-              "id": "id",
-              "ownerId": "ownerId",
-              "ownerKind": "ownerKind"
-            }
-          ],
-          "trackEvents": true
+          "description": "description",
+          "disabled": true,
+          "_id": "_id",
+          "trackEvents": true,
+          "variation": 1
         },
         {
+          "rollout": {
+            "experimentAllocation": {
+              "defaultVariation": 2,
+              "canReshuffle": true,
+              "type": "type"
+            },
+            "seed": 7,
+            "variations": [
+              {
+                "weight": 3,
+                "_untracked": true,
+                "variation": 9
+              },
+              {
+                "weight": 3,
+                "_untracked": true,
+                "variation": 9
+              }
+            ],
+            "contextKind": "contextKind",
+            "bucketBy": "bucketBy"
+          },
           "clauses": [
             {
               "op": "op",
@@ -128191,6 +129628,7 @@ Fields to update. Omitted fields keep their current values. `params`, `customPar
                 "",
                 ""
               ],
+              "contextKind": "contextKind",
               "attribute": "attribute",
               "id": "id"
             },
@@ -128201,35 +129639,16 @@ Fields to update. Omitted fields keep their current values. `params`, `customPar
                 "",
                 ""
               ],
+              "contextKind": "contextKind",
               "attribute": "attribute",
               "id": "id"
             }
           ],
-          "shadows": [
-            {
-              "variationId": "variationId",
-              "endCondition": {
-                "kind": "kind",
-                "value": 4
-              },
-              "samplingRate": 0.20271230230023218,
-              "id": "id",
-              "ownerId": "ownerId",
-              "ownerKind": "ownerKind"
-            },
-            {
-              "variationId": "variationId",
-              "endCondition": {
-                "kind": "kind",
-                "value": 4
-              },
-              "samplingRate": 0.20271230230023218,
-              "id": "id",
-              "ownerId": "ownerId",
-              "ownerKind": "ownerKind"
-            }
-          ],
-          "trackEvents": true
+          "description": "description",
+          "disabled": true,
+          "_id": "_id",
+          "trackEvents": true,
+          "variation": 1
         }
       ],
       "lastModified": 7,
@@ -128257,30 +129676,6 @@ Fields to update. Omitted fields keep their current values. `params`, `customPar
           "contextKind": "contextKind",
           "bucketBy": "bucketBy"
         },
-        "shadows": [
-          {
-            "variationId": "variationId",
-            "endCondition": {
-              "kind": "kind",
-              "value": 4
-            },
-            "samplingRate": 0.20271230230023218,
-            "id": "id",
-            "ownerId": "ownerId",
-            "ownerKind": "ownerKind"
-          },
-          {
-            "variationId": "variationId",
-            "endCondition": {
-              "kind": "kind",
-              "value": 4
-            },
-            "samplingRate": 0.20271230230023218,
-            "id": "id",
-            "ownerId": "ownerId",
-            "ownerKind": "ownerKind"
-          }
-        ],
         "variation": 5
       },
       "offVariation": 1,
@@ -128321,7 +129716,7 @@ Fields to update. Omitted fields keep their current values. `params`, `customPar
     }
   ],
   "experiments": {
-    "baselineIdx": 1,
+    "baselineIdx": 6,
     "items": [
       {
         "metricKey": "my-metric",
@@ -128332,16 +129727,16 @@ Fields to update. Omitted fields keep their current values. `params`, `customPar
         ],
         "_environmentSettings": {
           "key": {
-            "startDate": 9,
-            "stopDate": 6,
+            "startDate": 6,
+            "stopDate": 3,
             "enabledPeriods": [
               {
-                "startDate": 3,
-                "stopDate": 6
+                "startDate": 6,
+                "stopDate": 1
               },
               {
-                "startDate": 3,
-                "stopDate": 6
+                "startDate": 6,
+                "stopDate": 1
               }
             ]
           }
@@ -128358,7 +129753,7 @@ Fields to update. Omitted fields keep their current values. `params`, `customPar
             }
           },
           "activeExperimentCount": 2,
-          "windowEndOffset": 5,
+          "windowEndOffset": 9,
           "randomizationUnits": [
             "user"
           ],
@@ -128460,8 +129855,8 @@ Fields to update. Omitted fields keep their current values. `params`, `customPar
           "kind": "custom",
           "_attachedFlagCount": 0,
           "metricGroupCount": 0,
-          "_creationDate": 6,
-          "windowStartOffset": 4,
+          "_creationDate": 7,
+          "windowStartOffset": 5,
           "tags": [],
           "winsorIncludeImputed": false,
           "denominator": {
@@ -128487,14 +129882,14 @@ Fields to update. Omitted fields keep their current values. `params`, `customPar
               "environmentKey": "environmentKey"
             },
             "windowStartOffset": 9,
-            "windowEndOffset": 9,
-            "winsorLowerPercentile": 6.683562403749608,
-            "winsorUpperPercentile": 8.762042012749001,
+            "windowEndOffset": 6,
+            "winsorLowerPercentile": 8.762042012749001,
+            "winsorUpperPercentile": 9.018348186070783,
             "winsorIncludeImputed": true
           },
           "maintainerId": "569fdeadbeef1644facecafe",
           "unit": "unit",
-          "lastSeen": 7,
+          "lastSeen": 1,
           "isNumeric": true,
           "experimentCount": 0,
           "name": "My metric",
@@ -128550,11 +129945,12 @@ Fields to update. Omitted fields keep their current values. `params`, `customPar
             "attribute": "country",
             "type": "contextAttribute"
           },
+          "environmentReleasePlanCount": 0,
           "eventDefault": {
             "disabled": true,
             "value": 0
           },
-          "archivedAt": 1,
+          "archivedAt": 4,
           "successCriteria": "HigherThanBaseline",
           "releasePolicyCount": 0,
           "_versionId": "version-id-123abc",
@@ -128573,16 +129969,16 @@ Fields to update. Omitted fields keep their current values. `params`, `customPar
         ],
         "_environmentSettings": {
           "key": {
-            "startDate": 9,
-            "stopDate": 6,
+            "startDate": 6,
+            "stopDate": 3,
             "enabledPeriods": [
               {
-                "startDate": 3,
-                "stopDate": 6
+                "startDate": 6,
+                "stopDate": 1
               },
               {
-                "startDate": 3,
-                "stopDate": 6
+                "startDate": 6,
+                "stopDate": 1
               }
             ]
           }
@@ -128599,7 +129995,7 @@ Fields to update. Omitted fields keep their current values. `params`, `customPar
             }
           },
           "activeExperimentCount": 2,
-          "windowEndOffset": 5,
+          "windowEndOffset": 9,
           "randomizationUnits": [
             "user"
           ],
@@ -128701,8 +130097,8 @@ Fields to update. Omitted fields keep their current values. `params`, `customPar
           "kind": "custom",
           "_attachedFlagCount": 0,
           "metricGroupCount": 0,
-          "_creationDate": 6,
-          "windowStartOffset": 4,
+          "_creationDate": 7,
+          "windowStartOffset": 5,
           "tags": [],
           "winsorIncludeImputed": false,
           "denominator": {
@@ -128728,14 +130124,14 @@ Fields to update. Omitted fields keep their current values. `params`, `customPar
               "environmentKey": "environmentKey"
             },
             "windowStartOffset": 9,
-            "windowEndOffset": 9,
-            "winsorLowerPercentile": 6.683562403749608,
-            "winsorUpperPercentile": 8.762042012749001,
+            "windowEndOffset": 6,
+            "winsorLowerPercentile": 8.762042012749001,
+            "winsorUpperPercentile": 9.018348186070783,
             "winsorIncludeImputed": true
           },
           "maintainerId": "569fdeadbeef1644facecafe",
           "unit": "unit",
-          "lastSeen": 7,
+          "lastSeen": 1,
           "isNumeric": true,
           "experimentCount": 0,
           "name": "My metric",
@@ -128791,11 +130187,12 @@ Fields to update. Omitted fields keep their current values. `params`, `customPar
             "attribute": "country",
             "type": "contextAttribute"
           },
+          "environmentReleasePlanCount": 0,
           "eventDefault": {
             "disabled": true,
             "value": 0
           },
-          "archivedAt": 1,
+          "archivedAt": 4,
           "successCriteria": "HigherThanBaseline",
           "releasePolicyCount": 0,
           "_versionId": "version-id-123abc",
@@ -128808,7 +130205,7 @@ Fields to update. Omitted fields keep their current values. `params`, `customPar
     ]
   },
   "name": "name",
-  "_version": 1,
+  "_version": 2,
   "key": "key",
   "tags": [
     "tags",
@@ -128825,10 +130222,10 @@ Fields to update. Omitted fields keep their current values. `params`, `customPar
 |defaults|[AIConfigTargetingDefaults](#schemaaiconfigtargetingdefaults)|false|none|none|
 |environments|object|true|none|Targeting for each environment, keyed by environment key|
 |experiments|[AiConfigsExperimentInfoRep](#schemaaiconfigsexperimentinforep)|true|none|none|
-|key|string|true|none|The AI Config key|
-|name|string|true|none|The AI Config name|
+|key|string|true|none|The agent config key|
+|name|string|true|none|The agent config name|
 |tags|[string]|true|none|Tags for this resource|
-|variations|[[AIConfigTargetingVariation](#schemaaiconfigtargetingvariation)]|true|none|The variations of this AI Config|
+|variations|[[AIConfigTargetingVariation](#schemaaiconfigtargetingvariation)]|true|none|The variations of this agent config|
 |_version|integer|true|none|The version number of this resource|
 
 <h2 id="tocS_AIConfigTargetingPatch">AIConfigTargetingPatch</h2>
@@ -129186,6 +130583,28 @@ The location and content type of related resources
   ],
   "rules": [
     {
+      "rollout": {
+        "experimentAllocation": {
+          "defaultVariation": 2,
+          "canReshuffle": true,
+          "type": "type"
+        },
+        "seed": 7,
+        "variations": [
+          {
+            "weight": 3,
+            "_untracked": true,
+            "variation": 9
+          },
+          {
+            "weight": 3,
+            "_untracked": true,
+            "variation": 9
+          }
+        ],
+        "contextKind": "contextKind",
+        "bucketBy": "bucketBy"
+      },
       "clauses": [
         {
           "op": "op",
@@ -129194,6 +130613,7 @@ The location and content type of related resources
             "",
             ""
           ],
+          "contextKind": "contextKind",
           "attribute": "attribute",
           "id": "id"
         },
@@ -129204,37 +130624,40 @@ The location and content type of related resources
             "",
             ""
           ],
+          "contextKind": "contextKind",
           "attribute": "attribute",
           "id": "id"
         }
       ],
-      "shadows": [
-        {
-          "variationId": "variationId",
-          "endCondition": {
-            "kind": "kind",
-            "value": 4
-          },
-          "samplingRate": 0.20271230230023218,
-          "id": "id",
-          "ownerId": "ownerId",
-          "ownerKind": "ownerKind"
-        },
-        {
-          "variationId": "variationId",
-          "endCondition": {
-            "kind": "kind",
-            "value": 4
-          },
-          "samplingRate": 0.20271230230023218,
-          "id": "id",
-          "ownerId": "ownerId",
-          "ownerKind": "ownerKind"
-        }
-      ],
-      "trackEvents": true
+      "description": "description",
+      "disabled": true,
+      "_id": "_id",
+      "trackEvents": true,
+      "variation": 1
     },
     {
+      "rollout": {
+        "experimentAllocation": {
+          "defaultVariation": 2,
+          "canReshuffle": true,
+          "type": "type"
+        },
+        "seed": 7,
+        "variations": [
+          {
+            "weight": 3,
+            "_untracked": true,
+            "variation": 9
+          },
+          {
+            "weight": 3,
+            "_untracked": true,
+            "variation": 9
+          }
+        ],
+        "contextKind": "contextKind",
+        "bucketBy": "bucketBy"
+      },
       "clauses": [
         {
           "op": "op",
@@ -129243,6 +130666,7 @@ The location and content type of related resources
             "",
             ""
           ],
+          "contextKind": "contextKind",
           "attribute": "attribute",
           "id": "id"
         },
@@ -129253,35 +130677,16 @@ The location and content type of related resources
             "",
             ""
           ],
+          "contextKind": "contextKind",
           "attribute": "attribute",
           "id": "id"
         }
       ],
-      "shadows": [
-        {
-          "variationId": "variationId",
-          "endCondition": {
-            "kind": "kind",
-            "value": 4
-          },
-          "samplingRate": 0.20271230230023218,
-          "id": "id",
-          "ownerId": "ownerId",
-          "ownerKind": "ownerKind"
-        },
-        {
-          "variationId": "variationId",
-          "endCondition": {
-            "kind": "kind",
-            "value": 4
-          },
-          "samplingRate": 0.20271230230023218,
-          "id": "id",
-          "ownerId": "ownerId",
-          "ownerKind": "ownerKind"
-        }
-      ],
-      "trackEvents": true
+      "description": "description",
+      "disabled": true,
+      "_id": "_id",
+      "trackEvents": true,
+      "variation": 1
     }
   ],
   "lastModified": 7,
@@ -129309,30 +130714,6 @@ The location and content type of related resources
       "contextKind": "contextKind",
       "bucketBy": "bucketBy"
     },
-    "shadows": [
-      {
-        "variationId": "variationId",
-        "endCondition": {
-          "kind": "kind",
-          "value": 4
-        },
-        "samplingRate": 0.20271230230023218,
-        "id": "id",
-        "ownerId": "ownerId",
-        "ownerKind": "ownerKind"
-      },
-      {
-        "variationId": "variationId",
-        "endCondition": {
-          "kind": "kind",
-          "value": 4
-        },
-        "samplingRate": 0.20271230230023218,
-        "id": "id",
-        "ownerId": "ownerId",
-        "ownerKind": "ownerKind"
-      }
-    ],
     "variation": 5
   },
   "offVariation": 1,
@@ -129406,30 +130787,6 @@ The location and content type of related resources
     "contextKind": "contextKind",
     "bucketBy": "bucketBy"
   },
-  "shadows": [
-    {
-      "variationId": "variationId",
-      "endCondition": {
-        "kind": "kind",
-        "value": 4
-      },
-      "samplingRate": 0.20271230230023218,
-      "id": "id",
-      "ownerId": "ownerId",
-      "ownerKind": "ownerKind"
-    },
-    {
-      "variationId": "variationId",
-      "endCondition": {
-        "kind": "kind",
-        "value": 4
-      },
-      "samplingRate": 0.20271230230023218,
-      "id": "id",
-      "ownerId": "ownerId",
-      "ownerKind": "ownerKind"
-    }
-  ],
   "variation": 5
 }
 ```
@@ -129538,6 +130895,28 @@ The location and content type of related resources
 
 ```json
 {
+  "rollout": {
+    "experimentAllocation": {
+      "defaultVariation": 2,
+      "canReshuffle": true,
+      "type": "type"
+    },
+    "seed": 7,
+    "variations": [
+      {
+        "weight": 3,
+        "_untracked": true,
+        "variation": 9
+      },
+      {
+        "weight": 3,
+        "_untracked": true,
+        "variation": 9
+      }
+    ],
+    "contextKind": "contextKind",
+    "bucketBy": "bucketBy"
+  },
   "clauses": [
     {
       "op": "op",
@@ -129546,6 +130925,7 @@ The location and content type of related resources
         "",
         ""
       ],
+      "contextKind": "contextKind",
       "attribute": "attribute",
       "id": "id"
     },
@@ -129556,35 +130936,16 @@ The location and content type of related resources
         "",
         ""
       ],
+      "contextKind": "contextKind",
       "attribute": "attribute",
       "id": "id"
     }
   ],
-  "shadows": [
-    {
-      "variationId": "variationId",
-      "endCondition": {
-        "kind": "kind",
-        "value": 4
-      },
-      "samplingRate": 0.20271230230023218,
-      "id": "id",
-      "ownerId": "ownerId",
-      "ownerKind": "ownerKind"
-    },
-    {
-      "variationId": "variationId",
-      "endCondition": {
-        "kind": "kind",
-        "value": 4
-      },
-      "samplingRate": 0.20271230230023218,
-      "id": "id",
-      "ownerId": "ownerId",
-      "ownerKind": "ownerKind"
-    }
-  ],
-  "trackEvents": true
+  "description": "description",
+  "disabled": true,
+  "_id": "_id",
+  "trackEvents": true,
+  "variation": 1
 }
 ```
 
@@ -129592,7 +130953,12 @@ The location and content type of related resources
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
+|_id|string|true|none|The rule ID. Pass it as ruleId in targeting instructions that change this rule.|
+|disabled|boolean|false|none|Whether the rule is disabled. A disabled rule doesn't match any contexts.|
+|description|string|false|none|The rule description|
 |clauses|[[AIConfigTargetingEnvironmentRuleClause](#schemaaiconfigtargetingenvironmentruleclause)]|true|none|The clauses a context must match|
+|variation|integer|false|none|Index of the variation served by this rule|
+|rollout|[AIConfigTargetingEnvironmentFallthroughRollout](#schemaaiconfigtargetingenvironmentfallthroughrollout)|false|none|none|
 |trackEvents|boolean|true|none|Whether to send detailed events for evaluations that match this rule|
 
 <h2 id="tocS_AIConfigTargetingEnvironmentRuleClause">AIConfigTargetingEnvironmentRuleClause</h2>
@@ -129610,6 +130976,7 @@ The location and content type of related resources
     "",
     ""
   ],
+  "contextKind": "contextKind",
   "attribute": "attribute",
   "id": "id"
 }
@@ -129620,6 +130987,7 @@ The location and content type of related resources
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |attribute|string|true|none|The context attribute to match|
+|contextKind|string|false|none|The context kind of the attribute to match. Omitted for clauses on the kind attribute, which match the context kind itself.|
 |id|string|true|none|The clause ID|
 |negate|boolean|true|none|Whether to negate the match|
 |op|string|true|none|The operator to use|
@@ -130835,6 +132203,16 @@ true
   "markdown": "markdown",
   "description": "Extracts text and tables from PDF files.",
   "version": 2,
+  "tools": [
+    {
+      "key": "get-weather",
+      "version": 1
+    },
+    {
+      "key": "search-docs",
+      "version": 3
+    }
+  ],
   "key": "key",
   "tags": [
     "documents"
@@ -130854,8 +132232,55 @@ true
 |description|string|false|none|Human-readable description of what the agent skill does.|
 |markdown|string|true|none|The verbatim SKILL.md content of the agent skill|
 |tags|[string]|true|none|Tags for the agent skill. Tags can be used in custom role policies.|
-|version|integer|true|none|Version of the agent skill. Starts at 1, and each update that changes the name, description, or markdown creates a new version. Pass this value with `key` in a variation's `skills: [{key, version}]`.|
+|version|integer|true|none|Version of the agent skill. Starts at 1, and each update that changes the name, description, markdown, or tools creates a new version. Pass this value with `key` in a variation's `skills: [{key, version}]`.|
+|tools|[[PinnedSkillToolRef](#schemapinnedskilltoolref)]|false|none|The AI tool versions this version of the agent skill pins, in the order they reach the agent.|
 |createdAt|integer(int64)|true|none|none|
+
+<h2 id="tocS_SkillToolRef">SkillToolRef</h2>
+<!-- backwards compatibility -->
+<a id="schemaskilltoolref"></a>
+<a id="schema_SkillToolRef"></a>
+<a id="tocSskilltoolref"></a>
+<a id="tocsskilltoolref"></a>
+
+```json
+{
+  "key": "get-weather",
+  "version": 1
+}
+```
+
+A reference to a version of an AI tool in the same project, pinned to an agent skill version.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|key|string|true|none|The key of the AI tool.|
+|version|integer|false|none|The version of the AI tool to pin. Leave it out to pin the tool's latest version at the time of the request.|
+
+<h2 id="tocS_PinnedSkillToolRef">PinnedSkillToolRef</h2>
+<!-- backwards compatibility -->
+<a id="schemapinnedskilltoolref"></a>
+<a id="schema_PinnedSkillToolRef"></a>
+<a id="tocSpinnedskilltoolref"></a>
+<a id="tocspinnedskilltoolref"></a>
+
+```json
+{
+  "key": "get-weather",
+  "version": 1
+}
+```
+
+A version of an AI tool in the same project that an agent skill version pins.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|key|string|true|none|The key of the AI tool.|
+|version|integer|true|none|The pinned version of the AI tool.|
 
 <h2 id="tocS_AgentSkills">AgentSkills</h2>
 <!-- backwards compatibility -->
@@ -130999,6 +132424,16 @@ true
       "markdown": "markdown",
       "description": "Extracts text and tables from PDF files.",
       "version": 2,
+      "tools": [
+        {
+          "key": "get-weather",
+          "version": 1
+        },
+        {
+          "key": "search-docs",
+          "version": 3
+        }
+      ],
       "key": "key",
       "tags": [
         "documents"
@@ -131113,6 +132548,16 @@ true
       "markdown": "markdown",
       "description": "Extracts text and tables from PDF files.",
       "version": 2,
+      "tools": [
+        {
+          "key": "get-weather",
+          "version": 1
+        },
+        {
+          "key": "search-docs",
+          "version": 3
+        }
+      ],
       "key": "key",
       "tags": [
         "documents"
@@ -131144,6 +132589,15 @@ true
   "markdown": "markdown",
   "maintainerTeamKey": "example-team-key",
   "description": "Extracts text and tables from PDF files.",
+  "tools": [
+    {
+      "key": "get-weather",
+      "version": 1
+    },
+    {
+      "key": "search-docs"
+    }
+  ],
   "key": "pdf-extraction",
   "tags": [
     "documents"
@@ -131162,6 +132616,7 @@ true
 |maintainerId|string|false|none|The ID of the member who maintains this resource|
 |maintainerTeamKey|string|false|none|The key of the team that maintains this resource|
 |tags|[string]|false|none|Tags for the agent skill. Tags can be used in custom role policies.|
+|tools|[[SkillToolRef](#schemaskilltoolref)]|false|none|AI tools in the same project to pin to the agent skill, in the order they reach the agent. Each tool key can appear once, and a skill can pin up to 20 tools by default. You need read access to each tool.|
 
 <h2 id="tocS_AgentSkillPatch">AgentSkillPatch</h2>
 <!-- backwards compatibility -->
@@ -131177,6 +132632,15 @@ true
   "markdown": "markdown",
   "maintainerTeamKey": "example-team-key",
   "description": "Extracts text and tables from PDF files.",
+  "tools": [
+    {
+      "key": "get-weather",
+      "version": 1
+    },
+    {
+      "key": "search-docs"
+    }
+  ],
   "tags": [
     "documents"
   ]
@@ -131193,6 +132657,7 @@ true
 |maintainerId|string|false|none|The ID of the member who maintains this resource|
 |maintainerTeamKey|string|false|none|The key of the team that maintains this resource|
 |tags|[string]|false|none|Replaces the tags on the agent skill. Tags can be used in custom role policies. Changing only the tags does not create a new version.|
+|tools|[[SkillToolRef](#schemaskilltoolref)]|false|none|Replaces the AI tools pinned to the agent skill, in the order they reach the agent. Leave it out to keep the current tools, or send an empty array to remove them all. A change to the tools or their order creates a new version. Each tool key can appear once, and a skill can pin up to 20 tools by default. You need read access to each tool.|
 
 <h2 id="tocS_AgentSkillReference">AgentSkillReference</h2>
 <!-- backwards compatibility -->
@@ -131224,6 +132689,31 @@ A usage of an agent skill in a specific config variation.
 |variationKey|string|true|none|The key of the config variation that references this skill.|
 |variationName|string|true|none|The name of the variation that references this skill.|
 |resourceVersion|integer|true|none|The version of the skill being referenced.|
+
+<h2 id="tocS_ToolSkillReference">ToolSkillReference</h2>
+<!-- backwards compatibility -->
+<a id="schematoolskillreference"></a>
+<a id="schema_ToolSkillReference"></a>
+<a id="tocStoolskillreference"></a>
+<a id="tocstoolskillreference"></a>
+
+```json
+{
+  "toolVersion": 1,
+  "skillVersion": 2,
+  "skillKey": "weather-lookup"
+}
+```
+
+An agent skill version that pins a version of an AI tool.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|skillKey|string|true|none|The key of the agent skill.|
+|skillVersion|integer|true|none|The version of the agent skill that pins the tool.|
+|toolVersion|integer|true|none|The version of the tool the skill version pins.|
 
 <h2 id="tocS_AgentSkillReferences">AgentSkillReferences</h2>
 <!-- backwards compatibility -->
@@ -132088,7 +133578,7 @@ Request body for updating an agent graph. If rootConfigKey or edges are present,
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|key|string|true|none|The key of the judge AI Config|
+|key|string|true|none|The key of the judge agent config|
 |threshold|number(double)|true|none|The minimum score needed to pass|
 
 <h2 id="tocS_AgentOptimization">AgentOptimization</h2>
@@ -132265,7 +133755,7 @@ Request body for updating an agent graph. If rootConfigKey or edges are present,
 |_links|[ParentAndSelfLinks](#schemaparentandselflinks)|false|none|The location and content type of related resources|
 |id|string|true|none|The agent optimization ID|
 |key|string|true|none|The agent optimization key|
-|aiConfigKey|string|true|none|The key of the AI Config to optimize|
+|aiConfigKey|string|true|none|The key of the agent config to optimize|
 |maxAttempts|integer|true|none|The maximum number of attempts|
 |modelChoices|[string]|true|none|The models to try|
 |judgeModel|string|true|none|The model used to judge responses|
@@ -132790,7 +134280,7 @@ Request body for updating an agent graph. If rootConfigKey or edges are present,
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |key|string|true|none|A unique key for the agent optimization|
-|aiConfigKey|string|true|none|The key of the AI Config to optimize|
+|aiConfigKey|string|true|none|The key of the agent config to optimize|
 |maxAttempts|integer|true|none|The maximum number of attempts|
 |modelChoices|[string]|false|none|The models to try|
 |judgeModel|string|true|none|The model used to judge responses|
@@ -133607,6 +135097,18 @@ A usage of an AI tool in a specific AgentControl config variation.
 
 ```json
 {
+  "skills": [
+    {
+      "toolVersion": 1,
+      "skillVersion": 2,
+      "skillKey": "weather-lookup"
+    },
+    {
+      "toolVersion": 1,
+      "skillVersion": 2,
+      "skillKey": "weather-lookup"
+    }
+  ],
   "resourceKey": "resourceKey",
   "_links": {
     "next": {
@@ -133649,7 +135151,8 @@ A usage of an AI tool in a specific AgentControl config variation.
       "aiConfigName": "aiConfigName"
     }
   ],
-  "resourceType": "resourceType"
+  "resourceType": "resourceType",
+  "skillsTotalCount": 1
 }
 ```
 
@@ -133662,6 +135165,8 @@ A usage of an AI tool in a specific AgentControl config variation.
 |resourceType|string|true|none|The type of the resource being referenced.|
 |items|[[ToolReference](#schematoolreference)]|true|none|The resources that reference this tool|
 |totalCount|integer|true|none|The total number of references.|
+|skills|[[ToolSkillReference](#schematoolskillreference)]|false|none|One page of the agent skill versions that pin a version of this tool, ordered by skill key then skill version, newest first. It is paged by `limit` and `offset` like `items`. A tool cannot be deleted while any skill version pins it.|
+|skillsTotalCount|integer|false|none|The total number of agent skill versions that pin this tool, across all pages.|
 
 <h2 id="tocS_AccessRep">AccessRep</h2>
 <!-- backwards compatibility -->
@@ -134054,7 +135559,7 @@ A usage of an AI tool in a specific AgentControl config variation.
 
 ```json
 {
-  "baselineIdx": 1,
+  "baselineIdx": 6,
   "items": [
     {
       "metricKey": "my-metric",
@@ -134065,16 +135570,16 @@ A usage of an AI tool in a specific AgentControl config variation.
       ],
       "_environmentSettings": {
         "key": {
-          "startDate": 9,
-          "stopDate": 6,
+          "startDate": 6,
+          "stopDate": 3,
           "enabledPeriods": [
             {
-              "startDate": 3,
-              "stopDate": 6
+              "startDate": 6,
+              "stopDate": 1
             },
             {
-              "startDate": 3,
-              "stopDate": 6
+              "startDate": 6,
+              "stopDate": 1
             }
           ]
         }
@@ -134091,7 +135596,7 @@ A usage of an AI tool in a specific AgentControl config variation.
           }
         },
         "activeExperimentCount": 2,
-        "windowEndOffset": 5,
+        "windowEndOffset": 9,
         "randomizationUnits": [
           "user"
         ],
@@ -134193,8 +135698,8 @@ A usage of an AI tool in a specific AgentControl config variation.
         "kind": "custom",
         "_attachedFlagCount": 0,
         "metricGroupCount": 0,
-        "_creationDate": 6,
-        "windowStartOffset": 4,
+        "_creationDate": 7,
+        "windowStartOffset": 5,
         "tags": [],
         "winsorIncludeImputed": false,
         "denominator": {
@@ -134220,14 +135725,14 @@ A usage of an AI tool in a specific AgentControl config variation.
             "environmentKey": "environmentKey"
           },
           "windowStartOffset": 9,
-          "windowEndOffset": 9,
-          "winsorLowerPercentile": 6.683562403749608,
-          "winsorUpperPercentile": 8.762042012749001,
+          "windowEndOffset": 6,
+          "winsorLowerPercentile": 8.762042012749001,
+          "winsorUpperPercentile": 9.018348186070783,
           "winsorIncludeImputed": true
         },
         "maintainerId": "569fdeadbeef1644facecafe",
         "unit": "unit",
-        "lastSeen": 7,
+        "lastSeen": 1,
         "isNumeric": true,
         "experimentCount": 0,
         "name": "My metric",
@@ -134283,11 +135788,12 @@ A usage of an AI tool in a specific AgentControl config variation.
           "attribute": "country",
           "type": "contextAttribute"
         },
+        "environmentReleasePlanCount": 0,
         "eventDefault": {
           "disabled": true,
           "value": 0
         },
-        "archivedAt": 1,
+        "archivedAt": 4,
         "successCriteria": "HigherThanBaseline",
         "releasePolicyCount": 0,
         "_versionId": "version-id-123abc",
@@ -134306,16 +135812,16 @@ A usage of an AI tool in a specific AgentControl config variation.
       ],
       "_environmentSettings": {
         "key": {
-          "startDate": 9,
-          "stopDate": 6,
+          "startDate": 6,
+          "stopDate": 3,
           "enabledPeriods": [
             {
-              "startDate": 3,
-              "stopDate": 6
+              "startDate": 6,
+              "stopDate": 1
             },
             {
-              "startDate": 3,
-              "stopDate": 6
+              "startDate": 6,
+              "stopDate": 1
             }
           ]
         }
@@ -134332,7 +135838,7 @@ A usage of an AI tool in a specific AgentControl config variation.
           }
         },
         "activeExperimentCount": 2,
-        "windowEndOffset": 5,
+        "windowEndOffset": 9,
         "randomizationUnits": [
           "user"
         ],
@@ -134434,8 +135940,8 @@ A usage of an AI tool in a specific AgentControl config variation.
         "kind": "custom",
         "_attachedFlagCount": 0,
         "metricGroupCount": 0,
-        "_creationDate": 6,
-        "windowStartOffset": 4,
+        "_creationDate": 7,
+        "windowStartOffset": 5,
         "tags": [],
         "winsorIncludeImputed": false,
         "denominator": {
@@ -134461,14 +135967,14 @@ A usage of an AI tool in a specific AgentControl config variation.
             "environmentKey": "environmentKey"
           },
           "windowStartOffset": 9,
-          "windowEndOffset": 9,
-          "winsorLowerPercentile": 6.683562403749608,
-          "winsorUpperPercentile": 8.762042012749001,
+          "windowEndOffset": 6,
+          "winsorLowerPercentile": 8.762042012749001,
+          "winsorUpperPercentile": 9.018348186070783,
           "winsorIncludeImputed": true
         },
         "maintainerId": "569fdeadbeef1644facecafe",
         "unit": "unit",
-        "lastSeen": 7,
+        "lastSeen": 1,
         "isNumeric": true,
         "experimentCount": 0,
         "name": "My metric",
@@ -134524,11 +136030,12 @@ A usage of an AI tool in a specific AgentControl config variation.
           "attribute": "country",
           "type": "contextAttribute"
         },
+        "environmentReleasePlanCount": 0,
         "eventDefault": {
           "disabled": true,
           "value": 0
         },
-        "archivedAt": 1,
+        "archivedAt": 4,
         "successCriteria": "HigherThanBaseline",
         "releasePolicyCount": 0,
         "_versionId": "version-id-123abc",
@@ -134566,16 +136073,16 @@ A usage of an AI tool in a specific AgentControl config variation.
   ],
   "_environmentSettings": {
     "key": {
-      "startDate": 9,
-      "stopDate": 6,
+      "startDate": 6,
+      "stopDate": 3,
       "enabledPeriods": [
         {
-          "startDate": 3,
-          "stopDate": 6
+          "startDate": 6,
+          "stopDate": 1
         },
         {
-          "startDate": 3,
-          "stopDate": 6
+          "startDate": 6,
+          "stopDate": 1
         }
       ]
     }
@@ -134592,7 +136099,7 @@ A usage of an AI tool in a specific AgentControl config variation.
       }
     },
     "activeExperimentCount": 2,
-    "windowEndOffset": 5,
+    "windowEndOffset": 9,
     "randomizationUnits": [
       "user"
     ],
@@ -134694,8 +136201,8 @@ A usage of an AI tool in a specific AgentControl config variation.
     "kind": "custom",
     "_attachedFlagCount": 0,
     "metricGroupCount": 0,
-    "_creationDate": 6,
-    "windowStartOffset": 4,
+    "_creationDate": 7,
+    "windowStartOffset": 5,
     "tags": [],
     "winsorIncludeImputed": false,
     "denominator": {
@@ -134721,14 +136228,14 @@ A usage of an AI tool in a specific AgentControl config variation.
         "environmentKey": "environmentKey"
       },
       "windowStartOffset": 9,
-      "windowEndOffset": 9,
-      "winsorLowerPercentile": 6.683562403749608,
-      "winsorUpperPercentile": 8.762042012749001,
+      "windowEndOffset": 6,
+      "winsorLowerPercentile": 8.762042012749001,
+      "winsorUpperPercentile": 9.018348186070783,
       "winsorIncludeImputed": true
     },
     "maintainerId": "569fdeadbeef1644facecafe",
     "unit": "unit",
-    "lastSeen": 7,
+    "lastSeen": 1,
     "isNumeric": true,
     "experimentCount": 0,
     "name": "My metric",
@@ -134784,11 +136291,12 @@ A usage of an AI tool in a specific AgentControl config variation.
       "attribute": "country",
       "type": "contextAttribute"
     },
+    "environmentReleasePlanCount": 0,
     "eventDefault": {
       "disabled": true,
       "value": 0
     },
-    "archivedAt": 1,
+    "archivedAt": 4,
     "successCriteria": "HigherThanBaseline",
     "releasePolicyCount": 0,
     "_versionId": "version-id-123abc",
@@ -134829,7 +136337,7 @@ A usage of an AI tool in a specific AgentControl config variation.
     }
   },
   "activeExperimentCount": 2,
-  "windowEndOffset": 5,
+  "windowEndOffset": 9,
   "randomizationUnits": [
     "user"
   ],
@@ -134931,8 +136439,8 @@ A usage of an AI tool in a specific AgentControl config variation.
   "kind": "custom",
   "_attachedFlagCount": 0,
   "metricGroupCount": 0,
-  "_creationDate": 6,
-  "windowStartOffset": 4,
+  "_creationDate": 7,
+  "windowStartOffset": 5,
   "tags": [],
   "winsorIncludeImputed": false,
   "denominator": {
@@ -134958,14 +136466,14 @@ A usage of an AI tool in a specific AgentControl config variation.
       "environmentKey": "environmentKey"
     },
     "windowStartOffset": 9,
-    "windowEndOffset": 9,
-    "winsorLowerPercentile": 6.683562403749608,
-    "winsorUpperPercentile": 8.762042012749001,
+    "windowEndOffset": 6,
+    "winsorLowerPercentile": 8.762042012749001,
+    "winsorUpperPercentile": 9.018348186070783,
     "winsorIncludeImputed": true
   },
   "maintainerId": "569fdeadbeef1644facecafe",
   "unit": "unit",
-  "lastSeen": 7,
+  "lastSeen": 1,
   "isNumeric": true,
   "experimentCount": 0,
   "name": "My metric",
@@ -135021,11 +136529,12 @@ A usage of an AI tool in a specific AgentControl config variation.
     "attribute": "country",
     "type": "contextAttribute"
   },
+  "environmentReleasePlanCount": 0,
   "eventDefault": {
     "disabled": true,
     "value": 0
   },
-  "archivedAt": 1,
+  "archivedAt": 4,
   "successCriteria": "HigherThanBaseline",
   "releasePolicyCount": 0,
   "_versionId": "version-id-123abc",
@@ -135044,6 +136553,7 @@ A usage of an AI tool in a specific AgentControl config variation.
 |metricGroupCount|integer|false|none|The number of metric groups using this metric|
 |guardedRolloutCount|integer|false|none|The number of guarded rollouts using this metric|
 |releasePolicyCount|integer|false|none|The number of release policies using this metric|
+|environmentReleasePlanCount|integer|false|none|The number of environment release plans using this metric|
 |activeExperimentCount|integer|false|none|The number of active experiments using this metric|
 |activeGuardedRolloutCount|integer|false|none|The number of active guarded rollouts using this metric|
 |_id|string|true|none|The ID of this metric|
@@ -135296,9 +136806,9 @@ A usage of an AI tool in a specific AgentControl config variation.
     "environmentKey": "environmentKey"
   },
   "windowStartOffset": 9,
-  "windowEndOffset": 9,
-  "winsorLowerPercentile": 6.683562403749608,
-  "winsorUpperPercentile": 8.762042012749001,
+  "windowEndOffset": 6,
+  "winsorLowerPercentile": 8.762042012749001,
+  "winsorUpperPercentile": 9.018348186070783,
   "winsorIncludeImputed": true
 }
 ```
@@ -135329,16 +136839,16 @@ A usage of an AI tool in a specific AgentControl config variation.
 
 ```json
 {
-  "startDate": 9,
-  "stopDate": 6,
+  "startDate": 6,
+  "stopDate": 3,
   "enabledPeriods": [
     {
-      "startDate": 3,
-      "stopDate": 6
+      "startDate": 6,
+      "stopDate": 1
     },
     {
-      "startDate": 3,
-      "stopDate": 6
+      "startDate": 6,
+      "stopDate": 1
     }
   ]
 }
@@ -135361,8 +136871,8 @@ A usage of an AI tool in a specific AgentControl config variation.
 
 ```json
 {
-  "startDate": 3,
-  "stopDate": 6
+  "startDate": 6,
+  "stopDate": 1
 }
 ```
 
@@ -136890,9 +138400,6 @@ Configuration that controls how changes to a resource are gated by approvals.
       },
       "key": "key",
       "updatedAt": 1,
-      "payloadSummary": {
-        "sdkKeyCount": 6
-      },
       "resourcesExpanded": {
         "totalCount": 7,
         "items": {
@@ -137009,112 +138516,6 @@ Configuration that controls how changes to a resource are gated by approvals.
               }
             ]
           },
-          "aiConfigs": {
-            "totalCount": 3,
-            "items": [
-              {
-                "createdAt": 2,
-                "_links": {
-                  "parent": {
-                    "href": "href",
-                    "type": "type"
-                  },
-                  "self": {
-                    "href": "href",
-                    "type": "type"
-                  }
-                },
-                "name": "name",
-                "description": "description",
-                "version": 1,
-                "key": "key",
-                "flagKey": "flagKey",
-                "tags": [
-                  "tags",
-                  "tags"
-                ],
-                "updatedAt": 6
-              },
-              {
-                "createdAt": 2,
-                "_links": {
-                  "parent": {
-                    "href": "href",
-                    "type": "type"
-                  },
-                  "self": {
-                    "href": "href",
-                    "type": "type"
-                  }
-                },
-                "name": "name",
-                "description": "description",
-                "version": 1,
-                "key": "key",
-                "flagKey": "flagKey",
-                "tags": [
-                  "tags",
-                  "tags"
-                ],
-                "updatedAt": 6
-              }
-            ]
-          },
-          "metrics": {
-            "totalCount": 3,
-            "items": [
-              {
-                "_links": {
-                  "parent": {
-                    "href": "href",
-                    "type": "type"
-                  },
-                  "self": {
-                    "href": "href",
-                    "type": "type"
-                  }
-                },
-                "kind": "kind",
-                "description": "description",
-                "creationDate": 9,
-                "isActive": true,
-                "lastSeen": 3,
-                "eventKey": "eventKey",
-                "_versionId": "_versionId",
-                "isNumeric": true,
-                "name": "name",
-                "lastModified": 6,
-                "_id": "_id",
-                "category": "category",
-                "key": "key"
-              },
-              {
-                "_links": {
-                  "parent": {
-                    "href": "href",
-                    "type": "type"
-                  },
-                  "self": {
-                    "href": "href",
-                    "type": "type"
-                  }
-                },
-                "kind": "kind",
-                "description": "description",
-                "creationDate": 9,
-                "isActive": true,
-                "lastSeen": 3,
-                "eventKey": "eventKey",
-                "_versionId": "_versionId",
-                "isNumeric": true,
-                "name": "name",
-                "lastModified": 6,
-                "_id": "_id",
-                "category": "category",
-                "key": "key"
-              }
-            ]
-          },
           "segments": {
             "totalCount": 6,
             "items": [
@@ -137178,19 +138579,14 @@ Configuration that controls how changes to a resource are gated by approvals.
       },
       "resourceSummary": {
         "flagCount": 4,
-        "metricCount": 1,
         "totalCount": 1,
-        "segmentCount": 7,
-        "aiConfigCount": 1
+        "segmentCount": 7
       },
       "version": 0,
       "tags": [
         "tags",
         "tags"
       ],
-      "applicationSummary": {
-        "applicationKey": "applicationKey"
-      },
       "accountId": "accountId",
       "deletedAt": 5,
       "deleted": false,
@@ -137664,9 +139060,6 @@ Configuration that controls how changes to a resource are gated by approvals.
       },
       "key": "key",
       "updatedAt": 1,
-      "payloadSummary": {
-        "sdkKeyCount": 6
-      },
       "resourcesExpanded": {
         "totalCount": 7,
         "items": {
@@ -137783,112 +139176,6 @@ Configuration that controls how changes to a resource are gated by approvals.
               }
             ]
           },
-          "aiConfigs": {
-            "totalCount": 3,
-            "items": [
-              {
-                "createdAt": 2,
-                "_links": {
-                  "parent": {
-                    "href": "href",
-                    "type": "type"
-                  },
-                  "self": {
-                    "href": "href",
-                    "type": "type"
-                  }
-                },
-                "name": "name",
-                "description": "description",
-                "version": 1,
-                "key": "key",
-                "flagKey": "flagKey",
-                "tags": [
-                  "tags",
-                  "tags"
-                ],
-                "updatedAt": 6
-              },
-              {
-                "createdAt": 2,
-                "_links": {
-                  "parent": {
-                    "href": "href",
-                    "type": "type"
-                  },
-                  "self": {
-                    "href": "href",
-                    "type": "type"
-                  }
-                },
-                "name": "name",
-                "description": "description",
-                "version": 1,
-                "key": "key",
-                "flagKey": "flagKey",
-                "tags": [
-                  "tags",
-                  "tags"
-                ],
-                "updatedAt": 6
-              }
-            ]
-          },
-          "metrics": {
-            "totalCount": 3,
-            "items": [
-              {
-                "_links": {
-                  "parent": {
-                    "href": "href",
-                    "type": "type"
-                  },
-                  "self": {
-                    "href": "href",
-                    "type": "type"
-                  }
-                },
-                "kind": "kind",
-                "description": "description",
-                "creationDate": 9,
-                "isActive": true,
-                "lastSeen": 3,
-                "eventKey": "eventKey",
-                "_versionId": "_versionId",
-                "isNumeric": true,
-                "name": "name",
-                "lastModified": 6,
-                "_id": "_id",
-                "category": "category",
-                "key": "key"
-              },
-              {
-                "_links": {
-                  "parent": {
-                    "href": "href",
-                    "type": "type"
-                  },
-                  "self": {
-                    "href": "href",
-                    "type": "type"
-                  }
-                },
-                "kind": "kind",
-                "description": "description",
-                "creationDate": 9,
-                "isActive": true,
-                "lastSeen": 3,
-                "eventKey": "eventKey",
-                "_versionId": "_versionId",
-                "isNumeric": true,
-                "name": "name",
-                "lastModified": 6,
-                "_id": "_id",
-                "category": "category",
-                "key": "key"
-              }
-            ]
-          },
           "segments": {
             "totalCount": 6,
             "items": [
@@ -137952,19 +139239,14 @@ Configuration that controls how changes to a resource are gated by approvals.
       },
       "resourceSummary": {
         "flagCount": 4,
-        "metricCount": 1,
         "totalCount": 1,
-        "segmentCount": 7,
-        "aiConfigCount": 1
+        "segmentCount": 7
       },
       "version": 0,
       "tags": [
         "tags",
         "tags"
       ],
-      "applicationSummary": {
-        "applicationKey": "applicationKey"
-      },
       "accountId": "accountId",
       "deletedAt": 5,
       "deleted": false,
@@ -138458,9 +139740,6 @@ Configuration that controls how changes to a resource are gated by approvals.
   },
   "key": "key",
   "updatedAt": 1,
-  "payloadSummary": {
-    "sdkKeyCount": 6
-  },
   "resourcesExpanded": {
     "totalCount": 7,
     "items": {
@@ -138577,112 +139856,6 @@ Configuration that controls how changes to a resource are gated by approvals.
           }
         ]
       },
-      "aiConfigs": {
-        "totalCount": 3,
-        "items": [
-          {
-            "createdAt": 2,
-            "_links": {
-              "parent": {
-                "href": "href",
-                "type": "type"
-              },
-              "self": {
-                "href": "href",
-                "type": "type"
-              }
-            },
-            "name": "name",
-            "description": "description",
-            "version": 1,
-            "key": "key",
-            "flagKey": "flagKey",
-            "tags": [
-              "tags",
-              "tags"
-            ],
-            "updatedAt": 6
-          },
-          {
-            "createdAt": 2,
-            "_links": {
-              "parent": {
-                "href": "href",
-                "type": "type"
-              },
-              "self": {
-                "href": "href",
-                "type": "type"
-              }
-            },
-            "name": "name",
-            "description": "description",
-            "version": 1,
-            "key": "key",
-            "flagKey": "flagKey",
-            "tags": [
-              "tags",
-              "tags"
-            ],
-            "updatedAt": 6
-          }
-        ]
-      },
-      "metrics": {
-        "totalCount": 3,
-        "items": [
-          {
-            "_links": {
-              "parent": {
-                "href": "href",
-                "type": "type"
-              },
-              "self": {
-                "href": "href",
-                "type": "type"
-              }
-            },
-            "kind": "kind",
-            "description": "description",
-            "creationDate": 9,
-            "isActive": true,
-            "lastSeen": 3,
-            "eventKey": "eventKey",
-            "_versionId": "_versionId",
-            "isNumeric": true,
-            "name": "name",
-            "lastModified": 6,
-            "_id": "_id",
-            "category": "category",
-            "key": "key"
-          },
-          {
-            "_links": {
-              "parent": {
-                "href": "href",
-                "type": "type"
-              },
-              "self": {
-                "href": "href",
-                "type": "type"
-              }
-            },
-            "kind": "kind",
-            "description": "description",
-            "creationDate": 9,
-            "isActive": true,
-            "lastSeen": 3,
-            "eventKey": "eventKey",
-            "_versionId": "_versionId",
-            "isNumeric": true,
-            "name": "name",
-            "lastModified": 6,
-            "_id": "_id",
-            "category": "category",
-            "key": "key"
-          }
-        ]
-      },
       "segments": {
         "totalCount": 6,
         "items": [
@@ -138746,19 +139919,14 @@ Configuration that controls how changes to a resource are gated by approvals.
   },
   "resourceSummary": {
     "flagCount": 4,
-    "metricCount": 1,
     "totalCount": 1,
-    "segmentCount": 7,
-    "aiConfigCount": 1
+    "segmentCount": 7
   },
   "version": 0,
   "tags": [
     "tags",
     "tags"
   ],
-  "applicationSummary": {
-    "applicationKey": "applicationKey"
-  },
   "accountId": "accountId",
   "deletedAt": 5,
   "deleted": false,
@@ -139461,9 +140629,6 @@ Configuration that controls how changes to a resource are gated by approvals.
           },
           "key": "key",
           "updatedAt": 1,
-          "payloadSummary": {
-            "sdkKeyCount": 6
-          },
           "resourcesExpanded": {
             "totalCount": 7,
             "items": {
@@ -139580,112 +140745,6 @@ Configuration that controls how changes to a resource are gated by approvals.
                   }
                 ]
               },
-              "aiConfigs": {
-                "totalCount": 3,
-                "items": [
-                  {
-                    "createdAt": 2,
-                    "_links": {
-                      "parent": {
-                        "href": "href",
-                        "type": "type"
-                      },
-                      "self": {
-                        "href": "href",
-                        "type": "type"
-                      }
-                    },
-                    "name": "name",
-                    "description": "description",
-                    "version": 1,
-                    "key": "key",
-                    "flagKey": "flagKey",
-                    "tags": [
-                      "tags",
-                      "tags"
-                    ],
-                    "updatedAt": 6
-                  },
-                  {
-                    "createdAt": 2,
-                    "_links": {
-                      "parent": {
-                        "href": "href",
-                        "type": "type"
-                      },
-                      "self": {
-                        "href": "href",
-                        "type": "type"
-                      }
-                    },
-                    "name": "name",
-                    "description": "description",
-                    "version": 1,
-                    "key": "key",
-                    "flagKey": "flagKey",
-                    "tags": [
-                      "tags",
-                      "tags"
-                    ],
-                    "updatedAt": 6
-                  }
-                ]
-              },
-              "metrics": {
-                "totalCount": 3,
-                "items": [
-                  {
-                    "_links": {
-                      "parent": {
-                        "href": "href",
-                        "type": "type"
-                      },
-                      "self": {
-                        "href": "href",
-                        "type": "type"
-                      }
-                    },
-                    "kind": "kind",
-                    "description": "description",
-                    "creationDate": 9,
-                    "isActive": true,
-                    "lastSeen": 3,
-                    "eventKey": "eventKey",
-                    "_versionId": "_versionId",
-                    "isNumeric": true,
-                    "name": "name",
-                    "lastModified": 6,
-                    "_id": "_id",
-                    "category": "category",
-                    "key": "key"
-                  },
-                  {
-                    "_links": {
-                      "parent": {
-                        "href": "href",
-                        "type": "type"
-                      },
-                      "self": {
-                        "href": "href",
-                        "type": "type"
-                      }
-                    },
-                    "kind": "kind",
-                    "description": "description",
-                    "creationDate": 9,
-                    "isActive": true,
-                    "lastSeen": 3,
-                    "eventKey": "eventKey",
-                    "_versionId": "_versionId",
-                    "isNumeric": true,
-                    "name": "name",
-                    "lastModified": 6,
-                    "_id": "_id",
-                    "category": "category",
-                    "key": "key"
-                  }
-                ]
-              },
               "segments": {
                 "totalCount": 6,
                 "items": [
@@ -139749,19 +140808,14 @@ Configuration that controls how changes to a resource are gated by approvals.
           },
           "resourceSummary": {
             "flagCount": 4,
-            "metricCount": 1,
             "totalCount": 1,
-            "segmentCount": 7,
-            "aiConfigCount": 1
+            "segmentCount": 7
           },
           "version": 0,
           "tags": [
             "tags",
             "tags"
           ],
-          "applicationSummary": {
-            "applicationKey": "applicationKey"
-          },
           "accountId": "accountId",
           "deletedAt": 5,
           "deleted": false,
@@ -140383,9 +141437,6 @@ Configuration that controls how changes to a resource are gated by approvals.
           },
           "key": "key",
           "updatedAt": 1,
-          "payloadSummary": {
-            "sdkKeyCount": 6
-          },
           "resourcesExpanded": {
             "totalCount": 7,
             "items": {
@@ -140502,112 +141553,6 @@ Configuration that controls how changes to a resource are gated by approvals.
                   }
                 ]
               },
-              "aiConfigs": {
-                "totalCount": 3,
-                "items": [
-                  {
-                    "createdAt": 2,
-                    "_links": {
-                      "parent": {
-                        "href": "href",
-                        "type": "type"
-                      },
-                      "self": {
-                        "href": "href",
-                        "type": "type"
-                      }
-                    },
-                    "name": "name",
-                    "description": "description",
-                    "version": 1,
-                    "key": "key",
-                    "flagKey": "flagKey",
-                    "tags": [
-                      "tags",
-                      "tags"
-                    ],
-                    "updatedAt": 6
-                  },
-                  {
-                    "createdAt": 2,
-                    "_links": {
-                      "parent": {
-                        "href": "href",
-                        "type": "type"
-                      },
-                      "self": {
-                        "href": "href",
-                        "type": "type"
-                      }
-                    },
-                    "name": "name",
-                    "description": "description",
-                    "version": 1,
-                    "key": "key",
-                    "flagKey": "flagKey",
-                    "tags": [
-                      "tags",
-                      "tags"
-                    ],
-                    "updatedAt": 6
-                  }
-                ]
-              },
-              "metrics": {
-                "totalCount": 3,
-                "items": [
-                  {
-                    "_links": {
-                      "parent": {
-                        "href": "href",
-                        "type": "type"
-                      },
-                      "self": {
-                        "href": "href",
-                        "type": "type"
-                      }
-                    },
-                    "kind": "kind",
-                    "description": "description",
-                    "creationDate": 9,
-                    "isActive": true,
-                    "lastSeen": 3,
-                    "eventKey": "eventKey",
-                    "_versionId": "_versionId",
-                    "isNumeric": true,
-                    "name": "name",
-                    "lastModified": 6,
-                    "_id": "_id",
-                    "category": "category",
-                    "key": "key"
-                  },
-                  {
-                    "_links": {
-                      "parent": {
-                        "href": "href",
-                        "type": "type"
-                      },
-                      "self": {
-                        "href": "href",
-                        "type": "type"
-                      }
-                    },
-                    "kind": "kind",
-                    "description": "description",
-                    "creationDate": 9,
-                    "isActive": true,
-                    "lastSeen": 3,
-                    "eventKey": "eventKey",
-                    "_versionId": "_versionId",
-                    "isNumeric": true,
-                    "name": "name",
-                    "lastModified": 6,
-                    "_id": "_id",
-                    "category": "category",
-                    "key": "key"
-                  }
-                ]
-              },
               "segments": {
                 "totalCount": 6,
                 "items": [
@@ -140671,19 +141616,14 @@ Configuration that controls how changes to a resource are gated by approvals.
           },
           "resourceSummary": {
             "flagCount": 4,
-            "metricCount": 1,
             "totalCount": 1,
-            "segmentCount": 7,
-            "aiConfigCount": 1
+            "segmentCount": 7
           },
           "version": 0,
           "tags": [
             "tags",
             "tags"
           ],
-          "applicationSummary": {
-            "applicationKey": "applicationKey"
-          },
           "accountId": "accountId",
           "deletedAt": 5,
           "deleted": false,
@@ -141325,9 +142265,6 @@ Configuration that controls how changes to a resource are gated by approvals.
       },
       "key": "key",
       "updatedAt": 1,
-      "payloadSummary": {
-        "sdkKeyCount": 6
-      },
       "resourcesExpanded": {
         "totalCount": 7,
         "items": {
@@ -141444,112 +142381,6 @@ Configuration that controls how changes to a resource are gated by approvals.
               }
             ]
           },
-          "aiConfigs": {
-            "totalCount": 3,
-            "items": [
-              {
-                "createdAt": 2,
-                "_links": {
-                  "parent": {
-                    "href": "href",
-                    "type": "type"
-                  },
-                  "self": {
-                    "href": "href",
-                    "type": "type"
-                  }
-                },
-                "name": "name",
-                "description": "description",
-                "version": 1,
-                "key": "key",
-                "flagKey": "flagKey",
-                "tags": [
-                  "tags",
-                  "tags"
-                ],
-                "updatedAt": 6
-              },
-              {
-                "createdAt": 2,
-                "_links": {
-                  "parent": {
-                    "href": "href",
-                    "type": "type"
-                  },
-                  "self": {
-                    "href": "href",
-                    "type": "type"
-                  }
-                },
-                "name": "name",
-                "description": "description",
-                "version": 1,
-                "key": "key",
-                "flagKey": "flagKey",
-                "tags": [
-                  "tags",
-                  "tags"
-                ],
-                "updatedAt": 6
-              }
-            ]
-          },
-          "metrics": {
-            "totalCount": 3,
-            "items": [
-              {
-                "_links": {
-                  "parent": {
-                    "href": "href",
-                    "type": "type"
-                  },
-                  "self": {
-                    "href": "href",
-                    "type": "type"
-                  }
-                },
-                "kind": "kind",
-                "description": "description",
-                "creationDate": 9,
-                "isActive": true,
-                "lastSeen": 3,
-                "eventKey": "eventKey",
-                "_versionId": "_versionId",
-                "isNumeric": true,
-                "name": "name",
-                "lastModified": 6,
-                "_id": "_id",
-                "category": "category",
-                "key": "key"
-              },
-              {
-                "_links": {
-                  "parent": {
-                    "href": "href",
-                    "type": "type"
-                  },
-                  "self": {
-                    "href": "href",
-                    "type": "type"
-                  }
-                },
-                "kind": "kind",
-                "description": "description",
-                "creationDate": 9,
-                "isActive": true,
-                "lastSeen": 3,
-                "eventKey": "eventKey",
-                "_versionId": "_versionId",
-                "isNumeric": true,
-                "name": "name",
-                "lastModified": 6,
-                "_id": "_id",
-                "category": "category",
-                "key": "key"
-              }
-            ]
-          },
           "segments": {
             "totalCount": 6,
             "items": [
@@ -141613,19 +142444,14 @@ Configuration that controls how changes to a resource are gated by approvals.
       },
       "resourceSummary": {
         "flagCount": 4,
-        "metricCount": 1,
         "totalCount": 1,
-        "segmentCount": 7,
-        "aiConfigCount": 1
+        "segmentCount": 7
       },
       "version": 0,
       "tags": [
         "tags",
         "tags"
       ],
-      "applicationSummary": {
-        "applicationKey": "applicationKey"
-      },
       "accountId": "accountId",
       "deletedAt": 5,
       "deleted": false,
@@ -142362,9 +143188,6 @@ Configuration that controls how changes to a resource are gated by approvals.
             },
             "key": "key",
             "updatedAt": 1,
-            "payloadSummary": {
-              "sdkKeyCount": 6
-            },
             "resourcesExpanded": {
               "totalCount": 7,
               "items": {
@@ -142481,112 +143304,6 @@ Configuration that controls how changes to a resource are gated by approvals.
                     }
                   ]
                 },
-                "aiConfigs": {
-                  "totalCount": 3,
-                  "items": [
-                    {
-                      "createdAt": 2,
-                      "_links": {
-                        "parent": {
-                          "href": "href",
-                          "type": "type"
-                        },
-                        "self": {
-                          "href": "href",
-                          "type": "type"
-                        }
-                      },
-                      "name": "name",
-                      "description": "description",
-                      "version": 1,
-                      "key": "key",
-                      "flagKey": "flagKey",
-                      "tags": [
-                        "tags",
-                        "tags"
-                      ],
-                      "updatedAt": 6
-                    },
-                    {
-                      "createdAt": 2,
-                      "_links": {
-                        "parent": {
-                          "href": "href",
-                          "type": "type"
-                        },
-                        "self": {
-                          "href": "href",
-                          "type": "type"
-                        }
-                      },
-                      "name": "name",
-                      "description": "description",
-                      "version": 1,
-                      "key": "key",
-                      "flagKey": "flagKey",
-                      "tags": [
-                        "tags",
-                        "tags"
-                      ],
-                      "updatedAt": 6
-                    }
-                  ]
-                },
-                "metrics": {
-                  "totalCount": 3,
-                  "items": [
-                    {
-                      "_links": {
-                        "parent": {
-                          "href": "href",
-                          "type": "type"
-                        },
-                        "self": {
-                          "href": "href",
-                          "type": "type"
-                        }
-                      },
-                      "kind": "kind",
-                      "description": "description",
-                      "creationDate": 9,
-                      "isActive": true,
-                      "lastSeen": 3,
-                      "eventKey": "eventKey",
-                      "_versionId": "_versionId",
-                      "isNumeric": true,
-                      "name": "name",
-                      "lastModified": 6,
-                      "_id": "_id",
-                      "category": "category",
-                      "key": "key"
-                    },
-                    {
-                      "_links": {
-                        "parent": {
-                          "href": "href",
-                          "type": "type"
-                        },
-                        "self": {
-                          "href": "href",
-                          "type": "type"
-                        }
-                      },
-                      "kind": "kind",
-                      "description": "description",
-                      "creationDate": 9,
-                      "isActive": true,
-                      "lastSeen": 3,
-                      "eventKey": "eventKey",
-                      "_versionId": "_versionId",
-                      "isNumeric": true,
-                      "name": "name",
-                      "lastModified": 6,
-                      "_id": "_id",
-                      "category": "category",
-                      "key": "key"
-                    }
-                  ]
-                },
                 "segments": {
                   "totalCount": 6,
                   "items": [
@@ -142650,19 +143367,14 @@ Configuration that controls how changes to a resource are gated by approvals.
             },
             "resourceSummary": {
               "flagCount": 4,
-              "metricCount": 1,
               "totalCount": 1,
-              "segmentCount": 7,
-              "aiConfigCount": 1
+              "segmentCount": 7
             },
             "version": 0,
             "tags": [
               "tags",
               "tags"
             ],
-            "applicationSummary": {
-              "applicationKey": "applicationKey"
-            },
             "accountId": "accountId",
             "deletedAt": 5,
             "deleted": false,
@@ -143284,9 +143996,6 @@ Configuration that controls how changes to a resource are gated by approvals.
             },
             "key": "key",
             "updatedAt": 1,
-            "payloadSummary": {
-              "sdkKeyCount": 6
-            },
             "resourcesExpanded": {
               "totalCount": 7,
               "items": {
@@ -143403,112 +144112,6 @@ Configuration that controls how changes to a resource are gated by approvals.
                     }
                   ]
                 },
-                "aiConfigs": {
-                  "totalCount": 3,
-                  "items": [
-                    {
-                      "createdAt": 2,
-                      "_links": {
-                        "parent": {
-                          "href": "href",
-                          "type": "type"
-                        },
-                        "self": {
-                          "href": "href",
-                          "type": "type"
-                        }
-                      },
-                      "name": "name",
-                      "description": "description",
-                      "version": 1,
-                      "key": "key",
-                      "flagKey": "flagKey",
-                      "tags": [
-                        "tags",
-                        "tags"
-                      ],
-                      "updatedAt": 6
-                    },
-                    {
-                      "createdAt": 2,
-                      "_links": {
-                        "parent": {
-                          "href": "href",
-                          "type": "type"
-                        },
-                        "self": {
-                          "href": "href",
-                          "type": "type"
-                        }
-                      },
-                      "name": "name",
-                      "description": "description",
-                      "version": 1,
-                      "key": "key",
-                      "flagKey": "flagKey",
-                      "tags": [
-                        "tags",
-                        "tags"
-                      ],
-                      "updatedAt": 6
-                    }
-                  ]
-                },
-                "metrics": {
-                  "totalCount": 3,
-                  "items": [
-                    {
-                      "_links": {
-                        "parent": {
-                          "href": "href",
-                          "type": "type"
-                        },
-                        "self": {
-                          "href": "href",
-                          "type": "type"
-                        }
-                      },
-                      "kind": "kind",
-                      "description": "description",
-                      "creationDate": 9,
-                      "isActive": true,
-                      "lastSeen": 3,
-                      "eventKey": "eventKey",
-                      "_versionId": "_versionId",
-                      "isNumeric": true,
-                      "name": "name",
-                      "lastModified": 6,
-                      "_id": "_id",
-                      "category": "category",
-                      "key": "key"
-                    },
-                    {
-                      "_links": {
-                        "parent": {
-                          "href": "href",
-                          "type": "type"
-                        },
-                        "self": {
-                          "href": "href",
-                          "type": "type"
-                        }
-                      },
-                      "kind": "kind",
-                      "description": "description",
-                      "creationDate": 9,
-                      "isActive": true,
-                      "lastSeen": 3,
-                      "eventKey": "eventKey",
-                      "_versionId": "_versionId",
-                      "isNumeric": true,
-                      "name": "name",
-                      "lastModified": 6,
-                      "_id": "_id",
-                      "category": "category",
-                      "key": "key"
-                    }
-                  ]
-                },
                 "segments": {
                   "totalCount": 6,
                   "items": [
@@ -143572,19 +144175,14 @@ Configuration that controls how changes to a resource are gated by approvals.
             },
             "resourceSummary": {
               "flagCount": 4,
-              "metricCount": 1,
               "totalCount": 1,
-              "segmentCount": 7,
-              "aiConfigCount": 1
+              "segmentCount": 7
             },
             "version": 0,
             "tags": [
               "tags",
               "tags"
             ],
-            "applicationSummary": {
-              "applicationKey": "applicationKey"
-            },
             "accountId": "accountId",
             "deletedAt": 5,
             "deleted": false,
@@ -144164,10 +144762,8 @@ Configuration that controls how changes to a resource are gated by approvals.
 ```json
 {
   "flagCount": 4,
-  "metricCount": 1,
   "totalCount": 1,
-  "segmentCount": 7,
-  "aiConfigCount": 1
+  "segmentCount": 7
 }
 ```
 
@@ -144824,112 +145420,6 @@ Details on linked segments for a view - requires passing the 'allSegments' expan
         }
       ]
     },
-    "aiConfigs": {
-      "totalCount": 3,
-      "items": [
-        {
-          "createdAt": 2,
-          "_links": {
-            "parent": {
-              "href": "href",
-              "type": "type"
-            },
-            "self": {
-              "href": "href",
-              "type": "type"
-            }
-          },
-          "name": "name",
-          "description": "description",
-          "version": 1,
-          "key": "key",
-          "flagKey": "flagKey",
-          "tags": [
-            "tags",
-            "tags"
-          ],
-          "updatedAt": 6
-        },
-        {
-          "createdAt": 2,
-          "_links": {
-            "parent": {
-              "href": "href",
-              "type": "type"
-            },
-            "self": {
-              "href": "href",
-              "type": "type"
-            }
-          },
-          "name": "name",
-          "description": "description",
-          "version": 1,
-          "key": "key",
-          "flagKey": "flagKey",
-          "tags": [
-            "tags",
-            "tags"
-          ],
-          "updatedAt": 6
-        }
-      ]
-    },
-    "metrics": {
-      "totalCount": 3,
-      "items": [
-        {
-          "_links": {
-            "parent": {
-              "href": "href",
-              "type": "type"
-            },
-            "self": {
-              "href": "href",
-              "type": "type"
-            }
-          },
-          "kind": "kind",
-          "description": "description",
-          "creationDate": 9,
-          "isActive": true,
-          "lastSeen": 3,
-          "eventKey": "eventKey",
-          "_versionId": "_versionId",
-          "isNumeric": true,
-          "name": "name",
-          "lastModified": 6,
-          "_id": "_id",
-          "category": "category",
-          "key": "key"
-        },
-        {
-          "_links": {
-            "parent": {
-              "href": "href",
-              "type": "type"
-            },
-            "self": {
-              "href": "href",
-              "type": "type"
-            }
-          },
-          "kind": "kind",
-          "description": "description",
-          "creationDate": 9,
-          "isActive": true,
-          "lastSeen": 3,
-          "eventKey": "eventKey",
-          "_versionId": "_versionId",
-          "isNumeric": true,
-          "name": "name",
-          "lastModified": 6,
-          "_id": "_id",
-          "category": "category",
-          "key": "key"
-        }
-      ]
-    },
     "segments": {
       "totalCount": 6,
       "items": [
@@ -145231,7 +145721,7 @@ Flag representation for Views API - contains only fields actually used by the Vi
 }
 ```
 
-AI Config representation for Views API - contains only fields actually used by the Views service
+Agent config representation for Views API - contains only fields actually used by the Views service
 
 ### Properties
 
@@ -146009,9 +146499,6 @@ Metric representation for Views API - contains only fields actually used by the 
     },
     "key": "key",
     "updatedAt": 1,
-    "payloadSummary": {
-      "sdkKeyCount": 6
-    },
     "resourcesExpanded": {
       "totalCount": 7,
       "items": {
@@ -146128,112 +146615,6 @@ Metric representation for Views API - contains only fields actually used by the 
             }
           ]
         },
-        "aiConfigs": {
-          "totalCount": 3,
-          "items": [
-            {
-              "createdAt": 2,
-              "_links": {
-                "parent": {
-                  "href": "href",
-                  "type": "type"
-                },
-                "self": {
-                  "href": "href",
-                  "type": "type"
-                }
-              },
-              "name": "name",
-              "description": "description",
-              "version": 1,
-              "key": "key",
-              "flagKey": "flagKey",
-              "tags": [
-                "tags",
-                "tags"
-              ],
-              "updatedAt": 6
-            },
-            {
-              "createdAt": 2,
-              "_links": {
-                "parent": {
-                  "href": "href",
-                  "type": "type"
-                },
-                "self": {
-                  "href": "href",
-                  "type": "type"
-                }
-              },
-              "name": "name",
-              "description": "description",
-              "version": 1,
-              "key": "key",
-              "flagKey": "flagKey",
-              "tags": [
-                "tags",
-                "tags"
-              ],
-              "updatedAt": 6
-            }
-          ]
-        },
-        "metrics": {
-          "totalCount": 3,
-          "items": [
-            {
-              "_links": {
-                "parent": {
-                  "href": "href",
-                  "type": "type"
-                },
-                "self": {
-                  "href": "href",
-                  "type": "type"
-                }
-              },
-              "kind": "kind",
-              "description": "description",
-              "creationDate": 9,
-              "isActive": true,
-              "lastSeen": 3,
-              "eventKey": "eventKey",
-              "_versionId": "_versionId",
-              "isNumeric": true,
-              "name": "name",
-              "lastModified": 6,
-              "_id": "_id",
-              "category": "category",
-              "key": "key"
-            },
-            {
-              "_links": {
-                "parent": {
-                  "href": "href",
-                  "type": "type"
-                },
-                "self": {
-                  "href": "href",
-                  "type": "type"
-                }
-              },
-              "kind": "kind",
-              "description": "description",
-              "creationDate": 9,
-              "isActive": true,
-              "lastSeen": 3,
-              "eventKey": "eventKey",
-              "_versionId": "_versionId",
-              "isNumeric": true,
-              "name": "name",
-              "lastModified": 6,
-              "_id": "_id",
-              "category": "category",
-              "key": "key"
-            }
-          ]
-        },
         "segments": {
           "totalCount": 6,
           "items": [
@@ -146297,19 +146678,14 @@ Metric representation for Views API - contains only fields actually used by the 
     },
     "resourceSummary": {
       "flagCount": 4,
-      "metricCount": 1,
       "totalCount": 1,
-      "segmentCount": 7,
-      "aiConfigCount": 1
+      "segmentCount": 7
     },
     "version": 0,
     "tags": [
       "tags",
       "tags"
     ],
-    "applicationSummary": {
-      "applicationKey": "applicationKey"
-    },
     "accountId": "accountId",
     "deletedAt": 5,
     "deleted": false,
@@ -146709,7 +147085,7 @@ Metric representation for Views API - contains only fields actually used by the 
 |view|[View](#schemaview)|false|none|none|
 |flag|[ExpandedFlag](#schemaexpandedflag)|false|none|Flag representation for Views API - contains only fields actually used by the Views service|
 |segment|[ExpandedSegment](#schemaexpandedsegment)|false|none|Segment representation for Views API - contains only fields actually used by the Views service|
-|aiConfig|[ExpandedAIConfig](#schemaexpandedaiconfig)|false|none|AI Config representation for Views API - contains only fields actually used by the Views service|
+|aiConfig|[ExpandedAIConfig](#schemaexpandedaiconfig)|false|none|Agent config representation for Views API - contains only fields actually used by the Views service|
 |metric|[ExpandedMetric](#schemaexpandedmetric)|false|none|Metric representation for Views API - contains only fields actually used by the Views service|
 
 <h2 id="tocS_ViewLinkRequestKeys">ViewLinkRequestKeys</h2>
@@ -147140,112 +147516,6 @@ Metric representation for Views API - contains only fields actually used by the 
       }
     ]
   },
-  "aiConfigs": {
-    "totalCount": 3,
-    "items": [
-      {
-        "createdAt": 2,
-        "_links": {
-          "parent": {
-            "href": "href",
-            "type": "type"
-          },
-          "self": {
-            "href": "href",
-            "type": "type"
-          }
-        },
-        "name": "name",
-        "description": "description",
-        "version": 1,
-        "key": "key",
-        "flagKey": "flagKey",
-        "tags": [
-          "tags",
-          "tags"
-        ],
-        "updatedAt": 6
-      },
-      {
-        "createdAt": 2,
-        "_links": {
-          "parent": {
-            "href": "href",
-            "type": "type"
-          },
-          "self": {
-            "href": "href",
-            "type": "type"
-          }
-        },
-        "name": "name",
-        "description": "description",
-        "version": 1,
-        "key": "key",
-        "flagKey": "flagKey",
-        "tags": [
-          "tags",
-          "tags"
-        ],
-        "updatedAt": 6
-      }
-    ]
-  },
-  "metrics": {
-    "totalCount": 3,
-    "items": [
-      {
-        "_links": {
-          "parent": {
-            "href": "href",
-            "type": "type"
-          },
-          "self": {
-            "href": "href",
-            "type": "type"
-          }
-        },
-        "kind": "kind",
-        "description": "description",
-        "creationDate": 9,
-        "isActive": true,
-        "lastSeen": 3,
-        "eventKey": "eventKey",
-        "_versionId": "_versionId",
-        "isNumeric": true,
-        "name": "name",
-        "lastModified": 6,
-        "_id": "_id",
-        "category": "category",
-        "key": "key"
-      },
-      {
-        "_links": {
-          "parent": {
-            "href": "href",
-            "type": "type"
-          },
-          "self": {
-            "href": "href",
-            "type": "type"
-          }
-        },
-        "kind": "kind",
-        "description": "description",
-        "creationDate": 9,
-        "isActive": true,
-        "lastSeen": 3,
-        "eventKey": "eventKey",
-        "_versionId": "_versionId",
-        "isNumeric": true,
-        "name": "name",
-        "lastModified": 6,
-        "_id": "_id",
-        "category": "category",
-        "key": "key"
-      }
-    ]
-  },
   "segments": {
     "totalCount": 6,
     "items": [
@@ -147314,1150 +147584,6 @@ Metric representation for Views API - contains only fields actually used by the 
 |---|---|---|---|---|
 |flags|[ExpandedLinkedResourcesFlags](#schemaexpandedlinkedresourcesflags)|true|none|none|
 |segments|[ExpandedLinkedResourcesSegments](#schemaexpandedlinkedresourcessegments)|false|none|none|
-
-<h2 id="tocS_PostReleasePolicyRequest">PostReleasePolicyRequest</h2>
-<!-- backwards compatibility -->
-<a id="schemapostreleasepolicyrequest"></a>
-<a id="schema_PostReleasePolicyRequest"></a>
-<a id="tocSpostreleasepolicyrequest"></a>
-<a id="tocspostreleasepolicyrequest"></a>
-
-```json
-{
-  "releaseMethod": "guarded-release",
-  "scope": {
-    "environmentKeys": [
-      "production",
-      "staging"
-    ],
-    "flagTagKeys": [
-      "frontend",
-      "backend"
-    ],
-    "viewKeys": [
-      "feature-a",
-      "team-a"
-    ]
-  },
-  "progressiveReleaseConfig": {
-    "rolloutContextKindKey": "user",
-    "stages": [
-      {
-        "allocation": 25000,
-        "durationMillis": 60000
-      },
-      {
-        "allocation": 50000,
-        "durationMillis": 60000
-      }
-    ]
-  },
-  "name": "Production Release",
-  "guardedReleaseConfig": {
-    "metricKeys": [
-      "http-errors",
-      "latency"
-    ],
-    "rolloutContextKindKey": "user",
-    "metricGroupKeys": [
-      "frontend-metrics",
-      "backend-metrics"
-    ],
-    "minSampleSize": 100,
-    "stages": [
-      {
-        "allocation": 25000,
-        "durationMillis": 60000
-      },
-      {
-        "allocation": 50000,
-        "durationMillis": 60000
-      }
-    ],
-    "rollbackOnRegression": true
-  },
-  "key": "production-release"
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|scope|[ReleasePolicyScope](#schemareleasepolicyscope)|false|none|none|
-|releaseMethod|[ReleaseMethod](#schemareleasemethod)|true|none|The release method for this policy|
-|guardedReleaseConfig|[GuardedReleaseConfig](#schemaguardedreleaseconfig)|false|none|Configuration for guarded releases|
-|progressiveReleaseConfig|[ProgressiveReleaseConfig](#schemaprogressivereleaseconfig)|false|none|Configuration for progressive releases|
-|name|string|true|none|The name of the release policy|
-|key|string|true|none|The human-readable key of the release policy|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|releaseMethod|guarded-release|
-|releaseMethod|immediate-release|
-|releaseMethod|progressive-release|
-
-<h2 id="tocS_PutReleasePolicyRequest">PutReleasePolicyRequest</h2>
-<!-- backwards compatibility -->
-<a id="schemaputreleasepolicyrequest"></a>
-<a id="schema_PutReleasePolicyRequest"></a>
-<a id="tocSputreleasepolicyrequest"></a>
-<a id="tocsputreleasepolicyrequest"></a>
-
-```json
-{
-  "releaseMethod": "guarded-release",
-  "scope": {
-    "environmentKeys": [
-      "production",
-      "staging"
-    ],
-    "flagTagKeys": [
-      "frontend",
-      "backend"
-    ],
-    "viewKeys": [
-      "feature-a",
-      "team-a"
-    ]
-  },
-  "progressiveReleaseConfig": {
-    "rolloutContextKindKey": "user",
-    "stages": [
-      {
-        "allocation": 25000,
-        "durationMillis": 60000
-      },
-      {
-        "allocation": 50000,
-        "durationMillis": 60000
-      }
-    ]
-  },
-  "name": "Production Release",
-  "guardedReleaseConfig": {
-    "metricKeys": [
-      "http-errors",
-      "latency"
-    ],
-    "rolloutContextKindKey": "user",
-    "metricGroupKeys": [
-      "frontend-metrics",
-      "backend-metrics"
-    ],
-    "minSampleSize": 100,
-    "stages": [
-      {
-        "allocation": 25000,
-        "durationMillis": 60000
-      },
-      {
-        "allocation": 50000,
-        "durationMillis": 60000
-      }
-    ],
-    "rollbackOnRegression": true
-  }
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|scope|[ReleasePolicyScope](#schemareleasepolicyscope)|false|none|none|
-|releaseMethod|[ReleaseMethod](#schemareleasemethod)|true|none|The release method for this policy|
-|guardedReleaseConfig|[GuardedReleaseConfig](#schemaguardedreleaseconfig)|false|none|Configuration for guarded releases|
-|progressiveReleaseConfig|[ProgressiveReleaseConfig](#schemaprogressivereleaseconfig)|false|none|Configuration for progressive releases|
-|name|string|true|none|The name of the release policy|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|releaseMethod|guarded-release|
-|releaseMethod|immediate-release|
-|releaseMethod|progressive-release|
-
-<h2 id="tocS_ReleasePolicy">ReleasePolicy</h2>
-<!-- backwards compatibility -->
-<a id="schemareleasepolicy"></a>
-<a id="schema_ReleasePolicy"></a>
-<a id="tocSreleasepolicy"></a>
-<a id="tocsreleasepolicy"></a>
-
-```json
-{
-  "releaseMethod": "guarded-release",
-  "_access": {
-    "allowed": [
-      {
-        "reason": {
-          "role_name": "role_name",
-          "notActions": [
-            null,
-            null
-          ],
-          "notResources": [
-            "notResources",
-            "notResources"
-          ],
-          "effect": "allow",
-          "resources": [
-            "proj/*:env/*;qa_*:/flag/*"
-          ],
-          "actions": [
-            "*"
-          ]
-        },
-        "action": "action"
-      },
-      {
-        "reason": {
-          "role_name": "role_name",
-          "notActions": [
-            null,
-            null
-          ],
-          "notResources": [
-            "notResources",
-            "notResources"
-          ],
-          "effect": "allow",
-          "resources": [
-            "proj/*:env/*;qa_*:/flag/*"
-          ],
-          "actions": [
-            "*"
-          ]
-        },
-        "action": "action"
-      }
-    ],
-    "denied": [
-      {
-        "reason": {
-          "role_name": "role_name",
-          "notActions": [
-            null,
-            null
-          ],
-          "notResources": [
-            "notResources",
-            "notResources"
-          ],
-          "effect": "allow",
-          "resources": [
-            "proj/*:env/*;qa_*:/flag/*"
-          ],
-          "actions": [
-            "*"
-          ]
-        },
-        "action": "action"
-      },
-      {
-        "reason": {
-          "role_name": "role_name",
-          "notActions": [
-            null,
-            null
-          ],
-          "notResources": [
-            "notResources",
-            "notResources"
-          ],
-          "effect": "allow",
-          "resources": [
-            "proj/*:env/*;qa_*:/flag/*"
-          ],
-          "actions": [
-            "*"
-          ]
-        },
-        "action": "action"
-      }
-    ]
-  },
-  "scope": {
-    "environmentKeys": [
-      "production",
-      "staging"
-    ],
-    "flagTagKeys": [
-      "frontend",
-      "backend"
-    ],
-    "viewKeys": [
-      "feature-a",
-      "team-a"
-    ]
-  },
-  "progressiveReleaseConfig": {
-    "rolloutContextKindKey": "user",
-    "stages": [
-      {
-        "allocation": 25000,
-        "durationMillis": 60000
-      },
-      {
-        "allocation": 50000,
-        "durationMillis": 60000
-      }
-    ]
-  },
-  "name": "Production Release",
-  "rank": 1,
-  "_id": "550e8400-e29b-41d4-a716-446655440000",
-  "guardedReleaseConfig": {
-    "metricKeys": [
-      "http-errors",
-      "latency"
-    ],
-    "rolloutContextKindKey": "user",
-    "metricGroupKeys": [
-      "frontend-metrics",
-      "backend-metrics"
-    ],
-    "minSampleSize": 100,
-    "stages": [
-      {
-        "allocation": 25000,
-        "durationMillis": 60000
-      },
-      {
-        "allocation": 50000,
-        "durationMillis": 60000
-      }
-    ],
-    "rollbackOnRegression": true
-  },
-  "key": "production-release"
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|_access|[ReleasePoliciesAccessRep](#schemareleasepoliciesaccessrep)|false|none|none|
-|_id|string|true|none|The unique identifier of the release policy|
-|scope|[ReleasePolicyScope](#schemareleasepolicyscope)|false|none|none|
-|rank|integer|true|none|The rank/priority of the release policy|
-|releaseMethod|[ReleaseMethod](#schemareleasemethod)|true|none|The release method for this policy|
-|guardedReleaseConfig|[GuardedReleaseConfig](#schemaguardedreleaseconfig)|false|none|Configuration for guarded releases|
-|progressiveReleaseConfig|[ProgressiveReleaseConfig](#schemaprogressivereleaseconfig)|false|none|Configuration for progressive releases|
-|name|string|true|none|The name of the release policy|
-|key|string|true|none|The human-readable key of the release policy|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|releaseMethod|guarded-release|
-|releaseMethod|immediate-release|
-|releaseMethod|progressive-release|
-
-<h2 id="tocS_ReleasePolicyScope">ReleasePolicyScope</h2>
-<!-- backwards compatibility -->
-<a id="schemareleasepolicyscope"></a>
-<a id="schema_ReleasePolicyScope"></a>
-<a id="tocSreleasepolicyscope"></a>
-<a id="tocsreleasepolicyscope"></a>
-
-```json
-{
-  "environmentKeys": [
-    "production",
-    "staging"
-  ],
-  "flagTagKeys": [
-    "frontend",
-    "backend"
-  ],
-  "viewKeys": [
-    "feature-a",
-    "team-a"
-  ]
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|environmentKeys|[string]|false|none|List of environment keys this policy applies to|
-|flagTagKeys|[string]|false|none|List of flag tag keys this policy applies to. At most 1000 keys. Each key must only contain letters, numbers, '-', '_', or '.', and be at most 64 characters.|
-
-<h2 id="tocS_GuardedReleaseConfig">GuardedReleaseConfig</h2>
-<!-- backwards compatibility -->
-<a id="schemaguardedreleaseconfig"></a>
-<a id="schema_GuardedReleaseConfig"></a>
-<a id="tocSguardedreleaseconfig"></a>
-<a id="tocsguardedreleaseconfig"></a>
-
-```json
-{
-  "metricKeys": [
-    "http-errors",
-    "latency"
-  ],
-  "rolloutContextKindKey": "user",
-  "metricGroupKeys": [
-    "frontend-metrics",
-    "backend-metrics"
-  ],
-  "minSampleSize": 100,
-  "stages": [
-    {
-      "allocation": 25000,
-      "durationMillis": 60000
-    },
-    {
-      "allocation": 50000,
-      "durationMillis": 60000
-    }
-  ],
-  "rollbackOnRegression": true
-}
-```
-
-Configuration for guarded releases
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|rolloutContextKindKey|string|false|none|Context kind key to use as the randomization unit for the rollout|
-|minSampleSize|integer|false|none|The minimum number of samples required to make a decision|
-|rollbackOnRegression|boolean|false|none|Whether to roll back on regression|
-|metricKeys|[string]|false|none|List of metric keys|
-|metricGroupKeys|[string]|false|none|List of metric group keys|
-|stages|[[ReleasePolicyStage](#schemareleasepolicystage)]|false|none|List of stages. At most 10 stages by default; the server enforces the per-account limit, which is never more than 20.|
-
-<h2 id="tocS_ProgressiveReleaseConfig">ProgressiveReleaseConfig</h2>
-<!-- backwards compatibility -->
-<a id="schemaprogressivereleaseconfig"></a>
-<a id="schema_ProgressiveReleaseConfig"></a>
-<a id="tocSprogressivereleaseconfig"></a>
-<a id="tocsprogressivereleaseconfig"></a>
-
-```json
-{
-  "rolloutContextKindKey": "user",
-  "stages": [
-    {
-      "allocation": 25000,
-      "durationMillis": 60000
-    },
-    {
-      "allocation": 50000,
-      "durationMillis": 60000
-    }
-  ]
-}
-```
-
-Configuration for progressive releases
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|rolloutContextKindKey|string|false|none|Context kind key to use as the randomization unit for the rollout|
-|stages|[[ReleasePolicyStage](#schemareleasepolicystage)]|false|none|List of stages. At most 10 stages by default; the server enforces the per-account limit, which is never more than 20.|
-
-<h2 id="tocS_ReleasePoliciesResponse">ReleasePoliciesResponse</h2>
-<!-- backwards compatibility -->
-<a id="schemareleasepoliciesresponse"></a>
-<a id="schema_ReleasePoliciesResponse"></a>
-<a id="tocSreleasepoliciesresponse"></a>
-<a id="tocsreleasepoliciesresponse"></a>
-
-```json
-{
-  "totalCount": 42,
-  "items": [
-    {
-      "releaseMethod": "guarded-release",
-      "_access": {
-        "allowed": [
-          {
-            "reason": {
-              "role_name": "role_name",
-              "notActions": [
-                null,
-                null
-              ],
-              "notResources": [
-                "notResources",
-                "notResources"
-              ],
-              "effect": "allow",
-              "resources": [
-                "proj/*:env/*;qa_*:/flag/*"
-              ],
-              "actions": [
-                "*"
-              ]
-            },
-            "action": "action"
-          },
-          {
-            "reason": {
-              "role_name": "role_name",
-              "notActions": [
-                null,
-                null
-              ],
-              "notResources": [
-                "notResources",
-                "notResources"
-              ],
-              "effect": "allow",
-              "resources": [
-                "proj/*:env/*;qa_*:/flag/*"
-              ],
-              "actions": [
-                "*"
-              ]
-            },
-            "action": "action"
-          }
-        ],
-        "denied": [
-          {
-            "reason": {
-              "role_name": "role_name",
-              "notActions": [
-                null,
-                null
-              ],
-              "notResources": [
-                "notResources",
-                "notResources"
-              ],
-              "effect": "allow",
-              "resources": [
-                "proj/*:env/*;qa_*:/flag/*"
-              ],
-              "actions": [
-                "*"
-              ]
-            },
-            "action": "action"
-          },
-          {
-            "reason": {
-              "role_name": "role_name",
-              "notActions": [
-                null,
-                null
-              ],
-              "notResources": [
-                "notResources",
-                "notResources"
-              ],
-              "effect": "allow",
-              "resources": [
-                "proj/*:env/*;qa_*:/flag/*"
-              ],
-              "actions": [
-                "*"
-              ]
-            },
-            "action": "action"
-          }
-        ]
-      },
-      "scope": {
-        "environmentKeys": [
-          "production",
-          "staging"
-        ],
-        "flagTagKeys": [
-          "frontend",
-          "backend"
-        ],
-        "viewKeys": [
-          "feature-a",
-          "team-a"
-        ]
-      },
-      "progressiveReleaseConfig": {
-        "rolloutContextKindKey": "user",
-        "stages": [
-          {
-            "allocation": 25000,
-            "durationMillis": 60000
-          },
-          {
-            "allocation": 50000,
-            "durationMillis": 60000
-          }
-        ]
-      },
-      "name": "Production Release",
-      "rank": 1,
-      "_id": "550e8400-e29b-41d4-a716-446655440000",
-      "guardedReleaseConfig": {
-        "metricKeys": [
-          "http-errors",
-          "latency"
-        ],
-        "rolloutContextKindKey": "user",
-        "metricGroupKeys": [
-          "frontend-metrics",
-          "backend-metrics"
-        ],
-        "minSampleSize": 100,
-        "stages": [
-          {
-            "allocation": 25000,
-            "durationMillis": 60000
-          },
-          {
-            "allocation": 50000,
-            "durationMillis": 60000
-          }
-        ],
-        "rollbackOnRegression": true
-      },
-      "key": "production-release"
-    },
-    {
-      "releaseMethod": "guarded-release",
-      "_access": {
-        "allowed": [
-          {
-            "reason": {
-              "role_name": "role_name",
-              "notActions": [
-                null,
-                null
-              ],
-              "notResources": [
-                "notResources",
-                "notResources"
-              ],
-              "effect": "allow",
-              "resources": [
-                "proj/*:env/*;qa_*:/flag/*"
-              ],
-              "actions": [
-                "*"
-              ]
-            },
-            "action": "action"
-          },
-          {
-            "reason": {
-              "role_name": "role_name",
-              "notActions": [
-                null,
-                null
-              ],
-              "notResources": [
-                "notResources",
-                "notResources"
-              ],
-              "effect": "allow",
-              "resources": [
-                "proj/*:env/*;qa_*:/flag/*"
-              ],
-              "actions": [
-                "*"
-              ]
-            },
-            "action": "action"
-          }
-        ],
-        "denied": [
-          {
-            "reason": {
-              "role_name": "role_name",
-              "notActions": [
-                null,
-                null
-              ],
-              "notResources": [
-                "notResources",
-                "notResources"
-              ],
-              "effect": "allow",
-              "resources": [
-                "proj/*:env/*;qa_*:/flag/*"
-              ],
-              "actions": [
-                "*"
-              ]
-            },
-            "action": "action"
-          },
-          {
-            "reason": {
-              "role_name": "role_name",
-              "notActions": [
-                null,
-                null
-              ],
-              "notResources": [
-                "notResources",
-                "notResources"
-              ],
-              "effect": "allow",
-              "resources": [
-                "proj/*:env/*;qa_*:/flag/*"
-              ],
-              "actions": [
-                "*"
-              ]
-            },
-            "action": "action"
-          }
-        ]
-      },
-      "scope": {
-        "environmentKeys": [
-          "production",
-          "staging"
-        ],
-        "flagTagKeys": [
-          "frontend",
-          "backend"
-        ],
-        "viewKeys": [
-          "feature-a",
-          "team-a"
-        ]
-      },
-      "progressiveReleaseConfig": {
-        "rolloutContextKindKey": "user",
-        "stages": [
-          {
-            "allocation": 25000,
-            "durationMillis": 60000
-          },
-          {
-            "allocation": 50000,
-            "durationMillis": 60000
-          }
-        ]
-      },
-      "name": "Production Release",
-      "rank": 1,
-      "_id": "550e8400-e29b-41d4-a716-446655440000",
-      "guardedReleaseConfig": {
-        "metricKeys": [
-          "http-errors",
-          "latency"
-        ],
-        "rolloutContextKindKey": "user",
-        "metricGroupKeys": [
-          "frontend-metrics",
-          "backend-metrics"
-        ],
-        "minSampleSize": 100,
-        "stages": [
-          {
-            "allocation": 25000,
-            "durationMillis": 60000
-          },
-          {
-            "allocation": 50000,
-            "durationMillis": 60000
-          }
-        ],
-        "rollbackOnRegression": true
-      },
-      "key": "production-release"
-    }
-  ]
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|items|[[ReleasePolicy](#schemareleasepolicy)]|true|none|List of release policies|
-|totalCount|integer|true|none|Total number of release policies|
-
-<h2 id="tocS_ReleaseMethod">ReleaseMethod</h2>
-<!-- backwards compatibility -->
-<a id="schemareleasemethod"></a>
-<a id="schema_ReleaseMethod"></a>
-<a id="tocSreleasemethod"></a>
-<a id="tocsreleasemethod"></a>
-
-```json
-"guarded-release"
-```
-
-The release method for this policy
-
-<h2 id="tocS_ReleasePolicyStage">ReleasePolicyStage</h2>
-<!-- backwards compatibility -->
-<a id="schemareleasepolicystage"></a>
-<a id="schema_ReleasePolicyStage"></a>
-<a id="tocSreleasepolicystage"></a>
-<a id="tocsreleasepolicystage"></a>
-
-```json
-{
-  "allocation": 25000,
-  "durationMillis": 60000
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|allocation|integer|true|none|none|
-|durationMillis|integer(int64)|true|none|none|
-
-<h2 id="tocS_ReleasePoliciesAccessRep">ReleasePoliciesAccessRep</h2>
-<!-- backwards compatibility -->
-<a id="schemareleasepoliciesaccessrep"></a>
-<a id="schema_ReleasePoliciesAccessRep"></a>
-<a id="tocSreleasepoliciesaccessrep"></a>
-<a id="tocsreleasepoliciesaccessrep"></a>
-
-```json
-{
-  "allowed": [
-    {
-      "reason": {
-        "role_name": "role_name",
-        "notActions": [
-          null,
-          null
-        ],
-        "notResources": [
-          "notResources",
-          "notResources"
-        ],
-        "effect": "allow",
-        "resources": [
-          "proj/*:env/*;qa_*:/flag/*"
-        ],
-        "actions": [
-          "*"
-        ]
-      },
-      "action": "action"
-    },
-    {
-      "reason": {
-        "role_name": "role_name",
-        "notActions": [
-          null,
-          null
-        ],
-        "notResources": [
-          "notResources",
-          "notResources"
-        ],
-        "effect": "allow",
-        "resources": [
-          "proj/*:env/*;qa_*:/flag/*"
-        ],
-        "actions": [
-          "*"
-        ]
-      },
-      "action": "action"
-    }
-  ],
-  "denied": [
-    {
-      "reason": {
-        "role_name": "role_name",
-        "notActions": [
-          null,
-          null
-        ],
-        "notResources": [
-          "notResources",
-          "notResources"
-        ],
-        "effect": "allow",
-        "resources": [
-          "proj/*:env/*;qa_*:/flag/*"
-        ],
-        "actions": [
-          "*"
-        ]
-      },
-      "action": "action"
-    },
-    {
-      "reason": {
-        "role_name": "role_name",
-        "notActions": [
-          null,
-          null
-        ],
-        "notResources": [
-          "notResources",
-          "notResources"
-        ],
-        "effect": "allow",
-        "resources": [
-          "proj/*:env/*;qa_*:/flag/*"
-        ],
-        "actions": [
-          "*"
-        ]
-      },
-      "action": "action"
-    }
-  ]
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|denied|[[ReleasePoliciesAccessDenied](#schemareleasepoliciesaccessdenied)]|true|none|none|
-|allowed|[[ReleasePoliciesAccessAllowedRep](#schemareleasepoliciesaccessallowedrep)]|true|none|none|
-
-<h2 id="tocS_ReleasePoliciesAccess">ReleasePoliciesAccess</h2>
-<!-- backwards compatibility -->
-<a id="schemareleasepoliciesaccess"></a>
-<a id="schema_ReleasePoliciesAccess"></a>
-<a id="tocSreleasepoliciesaccess"></a>
-<a id="tocsreleasepoliciesaccess"></a>
-
-```json
-{
-  "denied": [
-    {
-      "reason": {
-        "role_name": "role_name",
-        "notActions": [
-          null,
-          null
-        ],
-        "notResources": [
-          "notResources",
-          "notResources"
-        ],
-        "effect": "allow",
-        "resources": [
-          "proj/*:env/*;qa_*:/flag/*"
-        ],
-        "actions": [
-          "*"
-        ]
-      },
-      "action": "action"
-    }
-  ],
-  "allowed": [
-    {
-      "reason": {
-        "role_name": "role_name",
-        "notActions": [
-          null,
-          null
-        ],
-        "notResources": [
-          "notResources",
-          "notResources"
-        ],
-        "effect": "allow",
-        "resources": [
-          "proj/*:env/*;qa_*:/flag/*"
-        ],
-        "actions": [
-          "*"
-        ]
-      },
-      "action": "action"
-    }
-  ]
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|denied|[[ReleasePoliciesAccessDenied](#schemareleasepoliciesaccessdenied)]|true|none|none|
-|allowed|[[ReleasePoliciesAccessAllowedRep](#schemareleasepoliciesaccessallowedrep)]|true|none|none|
-
-<h2 id="tocS_ReleasePoliciesAccessDenied">ReleasePoliciesAccessDenied</h2>
-<!-- backwards compatibility -->
-<a id="schemareleasepoliciesaccessdenied"></a>
-<a id="schema_ReleasePoliciesAccessDenied"></a>
-<a id="tocSreleasepoliciesaccessdenied"></a>
-<a id="tocsreleasepoliciesaccessdenied"></a>
-
-```json
-{
-  "reason": {
-    "role_name": "role_name",
-    "notActions": [
-      null,
-      null
-    ],
-    "notResources": [
-      "notResources",
-      "notResources"
-    ],
-    "effect": "allow",
-    "resources": [
-      "proj/*:env/*;qa_*:/flag/*"
-    ],
-    "actions": [
-      "*"
-    ]
-  },
-  "action": "action"
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|action|string|true|none|none|
-|reason|[ReleasePoliciesAccessDeniedReason](#schemareleasepoliciesaccessdeniedreason)|true|none|none|
-
-<h2 id="tocS_ReleasePoliciesAccessDeniedReason">ReleasePoliciesAccessDeniedReason</h2>
-<!-- backwards compatibility -->
-<a id="schemareleasepoliciesaccessdeniedreason"></a>
-<a id="schema_ReleasePoliciesAccessDeniedReason"></a>
-<a id="tocSreleasepoliciesaccessdeniedreason"></a>
-<a id="tocsreleasepoliciesaccessdeniedreason"></a>
-
-```json
-{
-  "role_name": "role_name",
-  "notActions": [
-    null,
-    null
-  ],
-  "notResources": [
-    "notResources",
-    "notResources"
-  ],
-  "effect": "allow",
-  "resources": [
-    "proj/*:env/*;qa_*:/flag/*"
-  ],
-  "actions": [
-    "*"
-  ]
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|resources|[string]|false|none|Resource specifier strings|
-|notResources|[string]|false|none|Targeted resources are the resources NOT in this list. The <code>resources</code> and <code>notActions</code> fields must be empty to use this field.|
-|actions|[[ActionSpecifier](#schemaactionspecifier)]|false|none|Actions to perform on a resource|
-|notActions|[[ActionSpecifier](#schemaactionspecifier)]|false|none|Targeted actions are the actions NOT in this list. The <code>actions</code> and <code>notResources</code> fields must be empty to use this field.|
-|effect|string|true|none|Whether this statement should allow or deny actions on the resources.|
-|role_name|string|false|none|none|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|effect|allow|
-|effect|deny|
-
-<h2 id="tocS_ReleasePoliciesAccessAllowedRep">ReleasePoliciesAccessAllowedRep</h2>
-<!-- backwards compatibility -->
-<a id="schemareleasepoliciesaccessallowedrep"></a>
-<a id="schema_ReleasePoliciesAccessAllowedRep"></a>
-<a id="tocSreleasepoliciesaccessallowedrep"></a>
-<a id="tocsreleasepoliciesaccessallowedrep"></a>
-
-```json
-{
-  "reason": {
-    "role_name": "role_name",
-    "notActions": [
-      null,
-      null
-    ],
-    "notResources": [
-      "notResources",
-      "notResources"
-    ],
-    "effect": "allow",
-    "resources": [
-      "proj/*:env/*;qa_*:/flag/*"
-    ],
-    "actions": [
-      "*"
-    ]
-  },
-  "action": "action"
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|action|string|true|none|none|
-|reason|[ReleasePoliciesAccessAllowedReason](#schemareleasepoliciesaccessallowedreason)|true|none|none|
-
-<h2 id="tocS_ReleasePoliciesAccessAllowedReason">ReleasePoliciesAccessAllowedReason</h2>
-<!-- backwards compatibility -->
-<a id="schemareleasepoliciesaccessallowedreason"></a>
-<a id="schema_ReleasePoliciesAccessAllowedReason"></a>
-<a id="tocSreleasepoliciesaccessallowedreason"></a>
-<a id="tocsreleasepoliciesaccessallowedreason"></a>
-
-```json
-{
-  "role_name": "role_name",
-  "notActions": [
-    null,
-    null
-  ],
-  "notResources": [
-    "notResources",
-    "notResources"
-  ],
-  "effect": "allow",
-  "resources": [
-    "proj/*:env/*;qa_*:/flag/*"
-  ],
-  "actions": [
-    "*"
-  ]
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|resources|[string]|false|none|Resource specifier strings|
-|notResources|[string]|false|none|Targeted resources are the resources NOT in this list. The <code>resources</code> and <code>notActions</code> fields must be empty to use this field.|
-|actions|[[ActionSpecifier](#schemaactionspecifier)]|false|none|Actions to perform on a resource|
-|notActions|[[ActionSpecifier](#schemaactionspecifier)]|false|none|Targeted actions are the actions NOT in this list. The <code>actions</code> and <code>notResources</code> fields must be empty to use this field.|
-|effect|string|true|none|Whether this statement should allow or deny actions on the resources.|
-|role_name|string|false|none|none|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|effect|allow|
-|effect|deny|
 
 <h2 id="tocS_ReleaseType">ReleaseType</h2>
 <!-- backwards compatibility -->
@@ -149565,6 +148691,7 @@ One page of environment releases for one flag in one environment, newest first.
   "metricGroupCount": 0,
   "guardedRolloutCount": 0,
   "releasePolicyCount": 0,
+  "environmentReleasePlanCount": 0,
   "activeExperimentCount": 2,
   "activeGuardedRolloutCount": 1,
   "_id": "5902deadbeef667524a01290",
@@ -149743,6 +148870,7 @@ One page of environment releases for one flag in one environment, newest first.
 |metricGroupCount|integer|false|none|The number of metric groups using this metric|
 |guardedRolloutCount|integer|false|none|The number of guarded rollouts using this metric|
 |releasePolicyCount|integer|false|none|The number of release policies using this metric|
+|environmentReleasePlanCount|integer|false|none|The number of environment release plans using this metric|
 |activeExperimentCount|integer|false|none|The number of active experiments using this metric|
 |activeGuardedRolloutCount|integer|false|none|The number of active guarded rollouts using this metric|
 |_id|string|true|none|The ID of this metric|
@@ -150084,6 +149212,2001 @@ One page of environment releases for one flag in one environment, newest first.
 |winsorLowerPercentile|number|false|none|Lower winsorization percentile in the open interval (0, 100)|
 |winsorUpperPercentile|number|false|none|Upper winsorization percentile in the open interval (0, 100)|
 |winsorIncludeImputed|boolean|false|none|When true, the percentile bound calculation includes imputed zeros|
+
+<h2 id="tocS_PostEnvironmentReleasePlanRequest">PostEnvironmentReleasePlanRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemapostenvironmentreleaseplanrequest"></a>
+<a id="schema_PostEnvironmentReleasePlanRequest"></a>
+<a id="tocSpostenvironmentreleaseplanrequest"></a>
+<a id="tocspostenvironmentreleaseplanrequest"></a>
+
+```json
+{
+  "releaseMethod": "progressive_release",
+  "progressiveRelease": {
+    "advancementMode": "manual",
+    "metrics": {
+      "key": {
+        "autoRollback": false,
+        "isGroup": true
+      }
+    },
+    "randomizationUnit": "user",
+    "cleanupBehavior": "remove_rules_and_update_default_rule",
+    "phases": [
+      {
+        "clauses": [
+          {
+            "op": "endsWith",
+            "negate": false,
+            "values": [
+              "",
+              ""
+            ],
+            "contextKind": "user",
+            "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+            "attribute": "email"
+          },
+          {
+            "op": "endsWith",
+            "negate": false,
+            "values": [
+              "",
+              ""
+            ],
+            "contextKind": "user",
+            "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+            "attribute": "email"
+          }
+        ],
+        "description": "description",
+        "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+        "steps": [
+          {
+            "allocation": 50000,
+            "durationMillis": 3600000,
+            "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+          },
+          {
+            "allocation": 50000,
+            "durationMillis": 3600000,
+            "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+          }
+        ]
+      },
+      {
+        "clauses": [
+          {
+            "op": "endsWith",
+            "negate": false,
+            "values": [
+              "",
+              ""
+            ],
+            "contextKind": "user",
+            "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+            "attribute": "email"
+          },
+          {
+            "op": "endsWith",
+            "negate": false,
+            "values": [
+              "",
+              ""
+            ],
+            "contextKind": "user",
+            "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+            "attribute": "email"
+          }
+        ],
+        "description": "description",
+        "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+        "steps": [
+          {
+            "allocation": 50000,
+            "durationMillis": 3600000,
+            "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+          },
+          {
+            "allocation": 50000,
+            "durationMillis": 3600000,
+            "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+          }
+        ]
+      }
+    ]
+  },
+  "name": "Checkout flow rollout",
+  "description": "Standard rollout for checkout changes",
+  "key": "checkout-flow-rollout"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|name|string|true|none|Human-readable name for this release plan|
+|key|string|true|none|Unique key identifying this release plan within the project. Immutable once created. Unique only among active (non-deleted) plans — a soft-deleted plan's key can be reused by a new plan.|
+|description|string|false|none|Human-readable description of this release plan's purpose|
+|releaseMethod|string|false|none|Discriminates which nested config object is required|
+|progressiveRelease|[EnvironmentReleasePlanProgressiveRelease](#schemaenvironmentreleaseplanprogressiverelease)|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|releaseMethod|progressive_release|
+
+<h2 id="tocS_PutEnvironmentReleasePlanRequest">PutEnvironmentReleasePlanRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemaputenvironmentreleaseplanrequest"></a>
+<a id="schema_PutEnvironmentReleasePlanRequest"></a>
+<a id="tocSputenvironmentreleaseplanrequest"></a>
+<a id="tocsputenvironmentreleaseplanrequest"></a>
+
+```json
+{
+  "releaseMethod": "progressive_release",
+  "progressiveRelease": {
+    "advancementMode": "manual",
+    "metrics": {
+      "key": {
+        "autoRollback": false,
+        "isGroup": true
+      }
+    },
+    "randomizationUnit": "user",
+    "cleanupBehavior": "remove_rules_and_update_default_rule",
+    "phases": [
+      {
+        "clauses": [
+          {
+            "op": "endsWith",
+            "negate": false,
+            "values": [
+              "",
+              ""
+            ],
+            "contextKind": "user",
+            "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+            "attribute": "email"
+          },
+          {
+            "op": "endsWith",
+            "negate": false,
+            "values": [
+              "",
+              ""
+            ],
+            "contextKind": "user",
+            "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+            "attribute": "email"
+          }
+        ],
+        "description": "description",
+        "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+        "steps": [
+          {
+            "allocation": 50000,
+            "durationMillis": 3600000,
+            "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+          },
+          {
+            "allocation": 50000,
+            "durationMillis": 3600000,
+            "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+          }
+        ]
+      },
+      {
+        "clauses": [
+          {
+            "op": "endsWith",
+            "negate": false,
+            "values": [
+              "",
+              ""
+            ],
+            "contextKind": "user",
+            "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+            "attribute": "email"
+          },
+          {
+            "op": "endsWith",
+            "negate": false,
+            "values": [
+              "",
+              ""
+            ],
+            "contextKind": "user",
+            "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+            "attribute": "email"
+          }
+        ],
+        "description": "description",
+        "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+        "steps": [
+          {
+            "allocation": 50000,
+            "durationMillis": 3600000,
+            "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+          },
+          {
+            "allocation": 50000,
+            "durationMillis": 3600000,
+            "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+          }
+        ]
+      }
+    ]
+  },
+  "name": "Checkout flow rollout",
+  "description": "Standard rollout for checkout changes",
+  "version": 3
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|name|string|true|none|Human-readable name for this release plan|
+|version|integer(int64)|false|none|Optional. The plan version this request was based on, from a previous read. Plans start at version 1. When present it must match the plan's current version — on mismatch the request is rejected with 409 and no changes are applied, so a stale copy can't silently overwrite a concurrent edit. When omitted, the plan's version is not checked.|
+|description|string|false|none|Human-readable description of this release plan's purpose|
+|releaseMethod|string|false|none|Discriminates which nested config object is required|
+|progressiveRelease|[EnvironmentReleasePlanProgressiveRelease](#schemaenvironmentreleaseplanprogressiverelease)|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|releaseMethod|progressive_release|
+
+<h2 id="tocS_EnvironmentReleasePlanProgressiveRelease">EnvironmentReleasePlanProgressiveRelease</h2>
+<!-- backwards compatibility -->
+<a id="schemaenvironmentreleaseplanprogressiverelease"></a>
+<a id="schema_EnvironmentReleasePlanProgressiveRelease"></a>
+<a id="tocSenvironmentreleaseplanprogressiverelease"></a>
+<a id="tocsenvironmentreleaseplanprogressiverelease"></a>
+
+```json
+{
+  "advancementMode": "manual",
+  "metrics": {
+    "key": {
+      "autoRollback": false,
+      "isGroup": true
+    }
+  },
+  "randomizationUnit": "user",
+  "cleanupBehavior": "remove_rules_and_update_default_rule",
+  "phases": [
+    {
+      "clauses": [
+        {
+          "op": "endsWith",
+          "negate": false,
+          "values": [
+            "",
+            ""
+          ],
+          "contextKind": "user",
+          "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+          "attribute": "email"
+        },
+        {
+          "op": "endsWith",
+          "negate": false,
+          "values": [
+            "",
+            ""
+          ],
+          "contextKind": "user",
+          "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+          "attribute": "email"
+        }
+      ],
+      "description": "description",
+      "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+      "steps": [
+        {
+          "allocation": 50000,
+          "durationMillis": 3600000,
+          "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+        },
+        {
+          "allocation": 50000,
+          "durationMillis": 3600000,
+          "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+        }
+      ]
+    },
+    {
+      "clauses": [
+        {
+          "op": "endsWith",
+          "negate": false,
+          "values": [
+            "",
+            ""
+          ],
+          "contextKind": "user",
+          "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+          "attribute": "email"
+        },
+        {
+          "op": "endsWith",
+          "negate": false,
+          "values": [
+            "",
+            ""
+          ],
+          "contextKind": "user",
+          "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+          "attribute": "email"
+        }
+      ],
+      "description": "description",
+      "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+      "steps": [
+        {
+          "allocation": 50000,
+          "durationMillis": 3600000,
+          "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+        },
+        {
+          "allocation": 50000,
+          "durationMillis": 3600000,
+          "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+        }
+      ]
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|randomizationUnit|string|true|none|Context kind used to bucket contexts for allocation|
+|advancementMode|string|false|none|Whether a release started from this plan advances to the next phase automatically once the current phase's steps complete, or waits for a user/API action|
+|cleanupBehavior|string|false|none|What happens to the flag's rules once a release started from this plan completes. Defaults to `remove_rules_and_update_default_rule`, which removes the release's targeting rules and updates the flag's default rule to serve the target variation; `leave_rules_in_place` leaves the targeting rules untouched.|
+|phases|[[EnvironmentReleasePlanPhase](#schemaenvironmentreleaseplanphase)]|true|none|Ordered list of phases this release plan configures|
+|metrics|object|false|none|Metrics/metric groups to monitor during rollout, keyed by metric/group key|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|advancementMode|manual|
+|advancementMode|automatic|
+|cleanupBehavior|remove_rules_and_update_default_rule|
+|cleanupBehavior|leave_rules_in_place|
+
+<h2 id="tocS_EnvironmentReleasePlanProgressiveReleaseRep">EnvironmentReleasePlanProgressiveReleaseRep</h2>
+<!-- backwards compatibility -->
+<a id="schemaenvironmentreleaseplanprogressivereleaserep"></a>
+<a id="schema_EnvironmentReleasePlanProgressiveReleaseRep"></a>
+<a id="tocSenvironmentreleaseplanprogressivereleaserep"></a>
+<a id="tocsenvironmentreleaseplanprogressivereleaserep"></a>
+
+```json
+{
+  "advancementMode": "manual",
+  "metrics": {
+    "key": {
+      "autoRollback": false,
+      "isGroup": true
+    }
+  },
+  "randomizationUnit": "user",
+  "cleanupBehavior": "remove_rules_and_update_default_rule",
+  "phases": [
+    {
+      "clauses": [
+        {
+          "op": "endsWith",
+          "negate": false,
+          "values": [
+            "",
+            ""
+          ],
+          "contextKind": "user",
+          "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+          "attribute": "email"
+        },
+        {
+          "op": "endsWith",
+          "negate": false,
+          "values": [
+            "",
+            ""
+          ],
+          "contextKind": "user",
+          "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+          "attribute": "email"
+        }
+      ],
+      "description": "description",
+      "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+      "steps": [
+        {
+          "allocation": 50000,
+          "durationMillis": 3600000,
+          "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+        },
+        {
+          "allocation": 50000,
+          "durationMillis": 3600000,
+          "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+        }
+      ]
+    },
+    {
+      "clauses": [
+        {
+          "op": "endsWith",
+          "negate": false,
+          "values": [
+            "",
+            ""
+          ],
+          "contextKind": "user",
+          "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+          "attribute": "email"
+        },
+        {
+          "op": "endsWith",
+          "negate": false,
+          "values": [
+            "",
+            ""
+          ],
+          "contextKind": "user",
+          "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+          "attribute": "email"
+        }
+      ],
+      "description": "description",
+      "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+      "steps": [
+        {
+          "allocation": 50000,
+          "durationMillis": 3600000,
+          "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+        },
+        {
+          "allocation": 50000,
+          "durationMillis": 3600000,
+          "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+        }
+      ]
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|randomizationUnit|string|false|none|Context kind used to bucket contexts for allocation. Required when you create or update a plan.|
+|advancementMode|string|false|none|Whether a release started from this plan advances to the next phase automatically once the current phase's steps complete, or waits for a user/API action|
+|cleanupBehavior|string|false|none|What happens to the flag's rules once a release started from this plan completes. `remove_rules_and_update_default_rule` removes the release's targeting rules and updates the flag's default rule to serve the target variation; `leave_rules_in_place` leaves the targeting rules untouched.|
+|phases|[[EnvironmentReleasePlanPhase](#schemaenvironmentreleaseplanphase)]|true|none|Ordered list of phases this release plan configures|
+|metrics|object|false|none|Metrics/metric groups to monitor during rollout, keyed by metric/group key|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|advancementMode|manual|
+|advancementMode|automatic|
+|cleanupBehavior|remove_rules_and_update_default_rule|
+|cleanupBehavior|leave_rules_in_place|
+
+<h2 id="tocS_EnvironmentReleasePlanPhase">EnvironmentReleasePlanPhase</h2>
+<!-- backwards compatibility -->
+<a id="schemaenvironmentreleaseplanphase"></a>
+<a id="schema_EnvironmentReleasePlanPhase"></a>
+<a id="tocSenvironmentreleaseplanphase"></a>
+<a id="tocsenvironmentreleaseplanphase"></a>
+
+```json
+{
+  "clauses": [
+    {
+      "op": "endsWith",
+      "negate": false,
+      "values": [
+        "",
+        ""
+      ],
+      "contextKind": "user",
+      "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+      "attribute": "email"
+    },
+    {
+      "op": "endsWith",
+      "negate": false,
+      "values": [
+        "",
+        ""
+      ],
+      "contextKind": "user",
+      "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+      "attribute": "email"
+    }
+  ],
+  "description": "description",
+  "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+  "steps": [
+    {
+      "allocation": 50000,
+      "durationMillis": 3600000,
+      "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+    },
+    {
+      "allocation": 50000,
+      "durationMillis": 3600000,
+      "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|_id|string(uuid)|false|read-only|The phase's server-generated identifier|
+|description|string|false|none|Human-readable description of this phase|
+|steps|[[EnvironmentReleasePlanStep](#schemaenvironmentreleaseplanstep)]|true|none|Ordered allocation increments within this phase|
+|clauses|[[EnvironmentReleasePlanClause](#schemaenvironmentreleaseplanclause)]|false|none|Targeting clauses scoping this phase's audience. Each phase's clauses must include the randomization unit clause {"contextKind": "<randomizationUnit>", "attribute": "kind", "op": "in", "values": ["<randomizationUnit>"]}, so the release only reaches contexts with that context kind. To release to every context of the randomization unit, provide exactly that clause.|
+
+<h2 id="tocS_EnvironmentReleasePlanStep">EnvironmentReleasePlanStep</h2>
+<!-- backwards compatibility -->
+<a id="schemaenvironmentreleaseplanstep"></a>
+<a id="schema_EnvironmentReleasePlanStep"></a>
+<a id="tocSenvironmentreleaseplanstep"></a>
+<a id="tocsenvironmentreleaseplanstep"></a>
+
+```json
+{
+  "allocation": 50000,
+  "durationMillis": 3600000,
+  "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|_id|string(uuid)|false|read-only|The step's server-generated identifier|
+|allocation|integer(int64)|true|none|Traffic allocation in per-100k units (100000 = 100%)|
+|durationMillis|integer(int64)|true|none|How long this step holds before the next one starts|
+
+<h2 id="tocS_EnvironmentReleasePlanClause">EnvironmentReleasePlanClause</h2>
+<!-- backwards compatibility -->
+<a id="schemaenvironmentreleaseplanclause"></a>
+<a id="schema_EnvironmentReleasePlanClause"></a>
+<a id="tocSenvironmentreleaseplanclause"></a>
+<a id="tocsenvironmentreleaseplanclause"></a>
+
+```json
+{
+  "op": "endsWith",
+  "negate": false,
+  "values": [
+    "",
+    ""
+  ],
+  "contextKind": "user",
+  "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+  "attribute": "email"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|_id|string(uuid)|false|read-only|The clause's server-generated identifier|
+|contextKind|string|false|none|Context kind this clause applies to|
+|attribute|string|true|none|Context attribute to match on (may be empty for segmentMatch)|
+|op|string|true|none|Clause operator|
+|values|[object]|true|none|Values to match against (strings, numbers, or booleans). Each string value can be at most 1,024 bytes when UTF-8 encoded, so a value with multibyte characters can be rejected even if it has fewer than 1,024 characters.|
+|negate|boolean|false|none|Whether to negate the clause|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|op|in|
+|op|endsWith|
+|op|startsWith|
+|op|matches|
+|op|contains|
+|op|lessThan|
+|op|lessThanOrEqual|
+|op|greaterThan|
+|op|greaterThanOrEqual|
+|op|before|
+|op|after|
+|op|semVerEqual|
+|op|semVerLessThan|
+|op|semVerGreaterThan|
+|op|segmentMatch|
+
+<h2 id="tocS_EnvironmentReleasePlanMetric">EnvironmentReleasePlanMetric</h2>
+<!-- backwards compatibility -->
+<a id="schemaenvironmentreleaseplanmetric"></a>
+<a id="schema_EnvironmentReleasePlanMetric"></a>
+<a id="tocSenvironmentreleaseplanmetric"></a>
+<a id="tocsenvironmentreleaseplanmetric"></a>
+
+```json
+{
+  "autoRollback": false,
+  "isGroup": true
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|isGroup|boolean|true|none|true if this key identifies a metric group, false if it identifies a single metric|
+|autoRollback|boolean|false|none|Whether to automatically roll back the release if this metric/group regresses|
+
+<h2 id="tocS_EnvironmentReleasePlan">EnvironmentReleasePlan</h2>
+<!-- backwards compatibility -->
+<a id="schemaenvironmentreleaseplan"></a>
+<a id="schema_EnvironmentReleasePlan"></a>
+<a id="tocSenvironmentreleaseplan"></a>
+<a id="tocsenvironmentreleaseplan"></a>
+
+```json
+{
+  "releaseMethod": "progressive_release",
+  "createdAt": 6,
+  "default": true,
+  "progressiveRelease": {
+    "advancementMode": "manual",
+    "metrics": {
+      "key": {
+        "autoRollback": false,
+        "isGroup": true
+      }
+    },
+    "randomizationUnit": "user",
+    "cleanupBehavior": "remove_rules_and_update_default_rule",
+    "phases": [
+      {
+        "clauses": [
+          {
+            "op": "endsWith",
+            "negate": false,
+            "values": [
+              "",
+              ""
+            ],
+            "contextKind": "user",
+            "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+            "attribute": "email"
+          },
+          {
+            "op": "endsWith",
+            "negate": false,
+            "values": [
+              "",
+              ""
+            ],
+            "contextKind": "user",
+            "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+            "attribute": "email"
+          }
+        ],
+        "description": "description",
+        "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+        "steps": [
+          {
+            "allocation": 50000,
+            "durationMillis": 3600000,
+            "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+          },
+          {
+            "allocation": 50000,
+            "durationMillis": 3600000,
+            "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+          }
+        ]
+      },
+      {
+        "clauses": [
+          {
+            "op": "endsWith",
+            "negate": false,
+            "values": [
+              "",
+              ""
+            ],
+            "contextKind": "user",
+            "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+            "attribute": "email"
+          },
+          {
+            "op": "endsWith",
+            "negate": false,
+            "values": [
+              "",
+              ""
+            ],
+            "contextKind": "user",
+            "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+            "attribute": "email"
+          }
+        ],
+        "description": "description",
+        "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+        "steps": [
+          {
+            "allocation": 50000,
+            "durationMillis": 3600000,
+            "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+          },
+          {
+            "allocation": 50000,
+            "durationMillis": 3600000,
+            "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+          }
+        ]
+      }
+    ]
+  },
+  "name": "name",
+  "description": "description",
+  "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+  "version": 0,
+  "key": "key",
+  "environmentKey": "environmentKey",
+  "updatedAt": 1
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|_id|string(uuid)|true|none|The release plan's unique identifier|
+|key|string|true|none|Unique key identifying this release plan within the project|
+|name|string|true|none|Human-readable name for this release plan|
+|description|string|false|none|Human-readable description of this release plan's purpose|
+|environmentKey|string|true|none|The environment this release plan is scoped to|
+|releaseMethod|string|true|none|Discriminates which nested config object is present|
+|version|integer(int64)|true|none|The release plan's version, starting at 1 and incremented on every update|
+|createdAt|integer(int64)|false|none|none|
+|updatedAt|integer(int64)|false|none|none|
+|default|boolean|false|read-only|Whether this plan is the default for its environment. At most one active plan per environment is the default. Managed via the environment's default-release-plan sub-resource, not this request body.|
+|progressiveRelease|[EnvironmentReleasePlanProgressiveReleaseRep](#schemaenvironmentreleaseplanprogressivereleaserep)|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|releaseMethod|progressive_release|
+
+<h2 id="tocS_PutDefaultEnvironmentReleasePlanRequest">PutDefaultEnvironmentReleasePlanRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemaputdefaultenvironmentreleaseplanrequest"></a>
+<a id="schema_PutDefaultEnvironmentReleasePlanRequest"></a>
+<a id="tocSputdefaultenvironmentreleaseplanrequest"></a>
+<a id="tocsputdefaultenvironmentreleaseplanrequest"></a>
+
+```json
+{
+  "key": "checkout-flow-rollout"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|key|string|true|none|Key of the release plan to set as the environment's default|
+
+<h2 id="tocS_EnvironmentReleasePlans">EnvironmentReleasePlans</h2>
+<!-- backwards compatibility -->
+<a id="schemaenvironmentreleaseplans"></a>
+<a id="schema_EnvironmentReleasePlans"></a>
+<a id="tocSenvironmentreleaseplans"></a>
+<a id="tocsenvironmentreleaseplans"></a>
+
+```json
+{
+  "_links": {
+    "next": {
+      "href": "href",
+      "type": "type"
+    },
+    "last": {
+      "href": "href",
+      "type": "type"
+    },
+    "prev": {
+      "href": "href",
+      "type": "type"
+    },
+    "self": {
+      "href": "href",
+      "type": "type"
+    },
+    "first": {
+      "href": "href",
+      "type": "type"
+    }
+  },
+  "totalCount": 5,
+  "items": [
+    {
+      "releaseMethod": "progressive_release",
+      "createdAt": 6,
+      "default": true,
+      "progressiveRelease": {
+        "advancementMode": "manual",
+        "metrics": {
+          "key": {
+            "autoRollback": false,
+            "isGroup": true
+          }
+        },
+        "randomizationUnit": "user",
+        "cleanupBehavior": "remove_rules_and_update_default_rule",
+        "phases": [
+          {
+            "clauses": [
+              {
+                "op": "endsWith",
+                "negate": false,
+                "values": [
+                  "",
+                  ""
+                ],
+                "contextKind": "user",
+                "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+                "attribute": "email"
+              },
+              {
+                "op": "endsWith",
+                "negate": false,
+                "values": [
+                  "",
+                  ""
+                ],
+                "contextKind": "user",
+                "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+                "attribute": "email"
+              }
+            ],
+            "description": "description",
+            "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+            "steps": [
+              {
+                "allocation": 50000,
+                "durationMillis": 3600000,
+                "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+              },
+              {
+                "allocation": 50000,
+                "durationMillis": 3600000,
+                "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+              }
+            ]
+          },
+          {
+            "clauses": [
+              {
+                "op": "endsWith",
+                "negate": false,
+                "values": [
+                  "",
+                  ""
+                ],
+                "contextKind": "user",
+                "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+                "attribute": "email"
+              },
+              {
+                "op": "endsWith",
+                "negate": false,
+                "values": [
+                  "",
+                  ""
+                ],
+                "contextKind": "user",
+                "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+                "attribute": "email"
+              }
+            ],
+            "description": "description",
+            "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+            "steps": [
+              {
+                "allocation": 50000,
+                "durationMillis": 3600000,
+                "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+              },
+              {
+                "allocation": 50000,
+                "durationMillis": 3600000,
+                "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+              }
+            ]
+          }
+        ]
+      },
+      "name": "name",
+      "description": "description",
+      "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+      "version": 0,
+      "key": "key",
+      "environmentKey": "environmentKey",
+      "updatedAt": 1
+    },
+    {
+      "releaseMethod": "progressive_release",
+      "createdAt": 6,
+      "default": true,
+      "progressiveRelease": {
+        "advancementMode": "manual",
+        "metrics": {
+          "key": {
+            "autoRollback": false,
+            "isGroup": true
+          }
+        },
+        "randomizationUnit": "user",
+        "cleanupBehavior": "remove_rules_and_update_default_rule",
+        "phases": [
+          {
+            "clauses": [
+              {
+                "op": "endsWith",
+                "negate": false,
+                "values": [
+                  "",
+                  ""
+                ],
+                "contextKind": "user",
+                "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+                "attribute": "email"
+              },
+              {
+                "op": "endsWith",
+                "negate": false,
+                "values": [
+                  "",
+                  ""
+                ],
+                "contextKind": "user",
+                "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+                "attribute": "email"
+              }
+            ],
+            "description": "description",
+            "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+            "steps": [
+              {
+                "allocation": 50000,
+                "durationMillis": 3600000,
+                "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+              },
+              {
+                "allocation": 50000,
+                "durationMillis": 3600000,
+                "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+              }
+            ]
+          },
+          {
+            "clauses": [
+              {
+                "op": "endsWith",
+                "negate": false,
+                "values": [
+                  "",
+                  ""
+                ],
+                "contextKind": "user",
+                "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+                "attribute": "email"
+              },
+              {
+                "op": "endsWith",
+                "negate": false,
+                "values": [
+                  "",
+                  ""
+                ],
+                "contextKind": "user",
+                "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+                "attribute": "email"
+              }
+            ],
+            "description": "description",
+            "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+            "steps": [
+              {
+                "allocation": 50000,
+                "durationMillis": 3600000,
+                "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+              },
+              {
+                "allocation": 50000,
+                "durationMillis": 3600000,
+                "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+              }
+            ]
+          }
+        ]
+      },
+      "name": "name",
+      "description": "description",
+      "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+      "version": 0,
+      "key": "key",
+      "environmentKey": "environmentKey",
+      "updatedAt": 1
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|_links|[EnvironmentReleasePlansPaginatedLinks](#schemaenvironmentreleaseplanspaginatedlinks)|false|none|none|
+|items|[[EnvironmentReleasePlan](#schemaenvironmentreleaseplan)]|true|none|One page of the listed release plans, ordered by creation time|
+|totalCount|integer|true|none|The total number of release plans in the listed scope, before pagination|
+
+<h2 id="tocS_EnvironmentReleasePlansPaginatedLinks">EnvironmentReleasePlansPaginatedLinks</h2>
+<!-- backwards compatibility -->
+<a id="schemaenvironmentreleaseplanspaginatedlinks"></a>
+<a id="schema_EnvironmentReleasePlansPaginatedLinks"></a>
+<a id="tocSenvironmentreleaseplanspaginatedlinks"></a>
+<a id="tocsenvironmentreleaseplanspaginatedlinks"></a>
+
+```json
+{
+  "next": {
+    "href": "href",
+    "type": "type"
+  },
+  "last": {
+    "href": "href",
+    "type": "type"
+  },
+  "prev": {
+    "href": "href",
+    "type": "type"
+  },
+  "self": {
+    "href": "href",
+    "type": "type"
+  },
+  "first": {
+    "href": "href",
+    "type": "type"
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|first|[EnvironmentReleasePlansLink](#schemaenvironmentreleaseplanslink)|false|none|none|
+|last|[EnvironmentReleasePlansLink](#schemaenvironmentreleaseplanslink)|false|none|none|
+|next|[EnvironmentReleasePlansLink](#schemaenvironmentreleaseplanslink)|false|none|none|
+|prev|[EnvironmentReleasePlansLink](#schemaenvironmentreleaseplanslink)|false|none|none|
+|self|[EnvironmentReleasePlansLink](#schemaenvironmentreleaseplanslink)|true|none|none|
+
+<h2 id="tocS_EnvironmentReleasePlansLink">EnvironmentReleasePlansLink</h2>
+<!-- backwards compatibility -->
+<a id="schemaenvironmentreleaseplanslink"></a>
+<a id="schema_EnvironmentReleasePlansLink"></a>
+<a id="tocSenvironmentreleaseplanslink"></a>
+<a id="tocsenvironmentreleaseplanslink"></a>
+
+```json
+{
+  "href": "href",
+  "type": "type"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|href|string|false|none|none|
+|type|string|false|none|none|
+
+<h2 id="tocS_FlagReleasePlansError">FlagReleasePlansError</h2>
+<!-- backwards compatibility -->
+<a id="schemaflagreleaseplanserror"></a>
+<a id="schema_FlagReleasePlansError"></a>
+<a id="tocSflagreleaseplanserror"></a>
+<a id="tocsflagreleaseplanserror"></a>
+
+```json
+{
+  "code": "code",
+  "message": "message"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|message|string|true|none|none|
+|code|string|true|none|none|
+
+<h2 id="tocS_MaintainerResponse">MaintainerResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemamaintainerresponse"></a>
+<a id="schema_MaintainerResponse"></a>
+<a id="tocSmaintainerresponse"></a>
+<a id="tocsmaintainerresponse"></a>
+
+```json
+{
+  "firstName": "firstName",
+  "lastName": "lastName",
+  "kind": "member",
+  "email": "email",
+  "memberId": "memberId"
+}
+```
+
+The flag's maintainer, either a member or a team.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*oneOf*|[MaintainerResponseMember](#schemamaintainerresponsemember)|false|none|none|
+|*oneOf*|[MaintainerResponseTeam](#schemamaintainerresponseteam)|false|none|none|
+
+<h2 id="tocS_MaintainerResponseMember">MaintainerResponseMember</h2>
+<!-- backwards compatibility -->
+<a id="schemamaintainerresponsemember"></a>
+<a id="schema_MaintainerResponseMember"></a>
+<a id="tocSmaintainerresponsemember"></a>
+<a id="tocsmaintainerresponsemember"></a>
+
+```json
+{
+  "firstName": "firstName",
+  "lastName": "lastName",
+  "kind": "member",
+  "email": "email",
+  "memberId": "memberId"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|kind|string|true|none|none|
+|memberId|string|false|none|none|
+|firstName|string|false|none|none|
+|lastName|string|false|none|none|
+|email|string|false|none|The member's email, used to show their avatar.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|kind|member|
+
+<h2 id="tocS_MaintainerResponseTeam">MaintainerResponseTeam</h2>
+<!-- backwards compatibility -->
+<a id="schemamaintainerresponseteam"></a>
+<a id="schema_MaintainerResponseTeam"></a>
+<a id="tocSmaintainerresponseteam"></a>
+<a id="tocsmaintainerresponseteam"></a>
+
+```json
+{
+  "kind": "team",
+  "key": "string",
+  "name": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|kind|string|true|none|none|
+|key|string|false|none|none|
+|name|string|false|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|kind|team|
+
+<h2 id="tocS_ExecutionMode">ExecutionMode</h2>
+<!-- backwards compatibility -->
+<a id="schemaexecutionmode"></a>
+<a id="schema_ExecutionMode"></a>
+<a id="tocSexecutionmode"></a>
+<a id="tocsexecutionmode"></a>
+
+```json
+"sequential"
+```
+
+`sequential` releases environments in array order. `parallel` is not accepted on create or update; it is only returned for plans and releases created with it.
+
+<h2 id="tocS_TriggerType">TriggerType</h2>
+<!-- backwards compatibility -->
+<a id="schematriggertype"></a>
+<a id="schema_TriggerType"></a>
+<a id="tocStriggertype"></a>
+<a id="tocstriggertype"></a>
+
+```json
+"flag_eval"
+```
+
+<h2 id="tocS_MaintainerIdentifier">MaintainerIdentifier</h2>
+<!-- backwards compatibility -->
+<a id="schemamaintaineridentifier"></a>
+<a id="schema_MaintainerIdentifier"></a>
+<a id="tocSmaintaineridentifier"></a>
+<a id="tocsmaintaineridentifier"></a>
+
+```json
+{
+  "kind": "member",
+  "memberId": "memberId"
+}
+```
+
+The maintainer to assign, either a member or a team.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*oneOf*|[MaintainerIdentifierMember](#schemamaintaineridentifiermember)|false|none|none|
+|*oneOf*|[MaintainerIdentifierTeam](#schemamaintaineridentifierteam)|false|none|none|
+
+<h2 id="tocS_MaintainerIdentifierMember">MaintainerIdentifierMember</h2>
+<!-- backwards compatibility -->
+<a id="schemamaintaineridentifiermember"></a>
+<a id="schema_MaintainerIdentifierMember"></a>
+<a id="tocSmaintaineridentifiermember"></a>
+<a id="tocsmaintaineridentifiermember"></a>
+
+```json
+{
+  "kind": "member",
+  "memberId": "memberId"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|kind|string|true|none|none|
+|memberId|string|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|kind|member|
+
+<h2 id="tocS_MaintainerIdentifierTeam">MaintainerIdentifierTeam</h2>
+<!-- backwards compatibility -->
+<a id="schemamaintaineridentifierteam"></a>
+<a id="schema_MaintainerIdentifierTeam"></a>
+<a id="tocSmaintaineridentifierteam"></a>
+<a id="tocsmaintaineridentifierteam"></a>
+
+```json
+{
+  "kind": "team",
+  "teamKey": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|kind|string|true|none|none|
+|teamKey|string|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|kind|team|
+
+<h2 id="tocS_FlagReleasePlanEnvironment">FlagReleasePlanEnvironment</h2>
+<!-- backwards compatibility -->
+<a id="schemaflagreleaseplanenvironment"></a>
+<a id="schema_FlagReleasePlanEnvironment"></a>
+<a id="tocSflagreleaseplanenvironment"></a>
+<a id="tocsflagreleaseplanenvironment"></a>
+
+```json
+{
+  "environmentReleasePlanKey": "environmentReleasePlanKey",
+  "isImmediate": true,
+  "triggerType": "flag_eval",
+  "environmentKey": "environmentKey"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|environmentKey|string|true|none|none|
+|environmentReleasePlanKey|string|false|none|The environment release plan to run. Omitted for an immediate release.|
+|isImmediate|boolean|false|none|none|
+|triggerType|[TriggerType](#schematriggertype)|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|triggerType|flag_eval|
+|triggerType|webhook|
+|triggerType|manual|
+|triggerType|promotion|
+
+<h2 id="tocS_FlagReleasePlan">FlagReleasePlan</h2>
+<!-- backwards compatibility -->
+<a id="schemaflagreleaseplan"></a>
+<a id="schema_FlagReleasePlan"></a>
+<a id="tocSflagreleaseplan"></a>
+<a id="tocsflagreleaseplan"></a>
+
+```json
+{
+  "applicationKeys": [
+    "applicationKeys",
+    "applicationKeys"
+  ],
+  "environments": [
+    {
+      "environmentReleasePlanKey": "environmentReleasePlanKey",
+      "isImmediate": true,
+      "triggerType": "flag_eval",
+      "environmentKey": "environmentKey"
+    },
+    {
+      "environmentReleasePlanKey": "environmentReleasePlanKey",
+      "isImmediate": true,
+      "triggerType": "flag_eval",
+      "environmentKey": "environmentKey"
+    }
+  ],
+  "description": "description",
+  "executionMode": "sequential",
+  "version": 0,
+  "maintainer": {
+    "firstName": "firstName",
+    "lastName": "lastName",
+    "kind": "member",
+    "email": "email",
+    "memberId": "memberId"
+  },
+  "createdAt": 6,
+  "default": false,
+  "name": "name",
+  "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+  "key": "key",
+  "updatedAt": 1
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|key|string|true|none|none|
+|_id|string(uuid)|true|none|none|
+|version|integer(int64)|true|none|none|
+|createdAt|integer(int64)|true|none|none|
+|updatedAt|integer(int64)|true|none|none|
+|name|string|true|none|none|
+|description|string|false|none|none|
+|maintainer|[MaintainerResponse](#schemamaintainerresponse)|false|none|The flag's maintainer, either a member or a team.|
+|executionMode|[ExecutionMode](#schemaexecutionmode)|false|none|`sequential` releases environments in array order. `parallel` is not accepted on create or update; it is only returned for plans and releases created with it.|
+|applicationKeys|[string]|false|none|none|
+|default|boolean|true|none|Whether this plan is the project's default. At most one active plan per project is the default.|
+|environments|[[FlagReleasePlanEnvironment](#schemaflagreleaseplanenvironment)]|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|executionMode|sequential|
+|executionMode|parallel|
+
+<h2 id="tocS_CreateFlagReleasePlanRequest">CreateFlagReleasePlanRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemacreateflagreleaseplanrequest"></a>
+<a id="schema_CreateFlagReleasePlanRequest"></a>
+<a id="tocScreateflagreleaseplanrequest"></a>
+<a id="tocscreateflagreleaseplanrequest"></a>
+
+```json
+{
+  "applicationKeys": [
+    "applicationKeys",
+    "applicationKeys"
+  ],
+  "default": true,
+  "environments": [
+    {
+      "environmentReleasePlanKey": "environmentReleasePlanKey",
+      "isImmediate": true,
+      "triggerType": "flag_eval",
+      "environmentKey": "environmentKey"
+    },
+    {
+      "environmentReleasePlanKey": "environmentReleasePlanKey",
+      "isImmediate": true,
+      "triggerType": "flag_eval",
+      "environmentKey": "environmentKey"
+    }
+  ],
+  "name": "name",
+  "description": "description",
+  "executionMode": "sequential",
+  "maintainer": {
+    "kind": "member",
+    "memberId": "memberId"
+  },
+  "key": "key"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|name|string|true|none|none|
+|description|string|false|none|none|
+|maintainer|[MaintainerIdentifier](#schemamaintaineridentifier)|false|none|The maintainer to assign, either a member or a team.|
+|executionMode|[ExecutionMode](#schemaexecutionmode)|false|none|`sequential` releases environments in array order. `parallel` is not accepted on create or update; it is only returned for plans and releases created with it.|
+|applicationKeys|[string]|false|none|none|
+|default|boolean|false|none|Whether this plan is the project's default. At most one active plan per project is the default. On update, omitting it demotes the current default.|
+|environments|[[FlagReleasePlanEnvironment](#schemaflagreleaseplanenvironment)]|true|none|none|
+|key|string|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|executionMode|sequential|
+|executionMode|parallel|
+
+<h2 id="tocS_FlagReleasePlanRequest">FlagReleasePlanRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemaflagreleaseplanrequest"></a>
+<a id="schema_FlagReleasePlanRequest"></a>
+<a id="tocSflagreleaseplanrequest"></a>
+<a id="tocsflagreleaseplanrequest"></a>
+
+```json
+{
+  "name": "string",
+  "description": "string",
+  "maintainer": {
+    "kind": "member",
+    "memberId": "memberId"
+  },
+  "executionMode": "sequential",
+  "applicationKeys": [
+    "string"
+  ],
+  "default": true,
+  "environments": [
+    {
+      "environmentReleasePlanKey": "environmentReleasePlanKey",
+      "isImmediate": true,
+      "triggerType": "flag_eval",
+      "environmentKey": "environmentKey"
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|name|string|true|none|none|
+|description|string|false|none|none|
+|maintainer|[MaintainerIdentifier](#schemamaintaineridentifier)|false|none|The maintainer to assign, either a member or a team.|
+|executionMode|[ExecutionMode](#schemaexecutionmode)|false|none|`sequential` releases environments in array order. `parallel` is not accepted on create or update; it is only returned for plans and releases created with it.|
+|applicationKeys|[string]|false|none|none|
+|default|boolean|false|none|Whether this plan is the project's default. At most one active plan per project is the default. On update, omitting it demotes the current default.|
+|environments|[[FlagReleasePlanEnvironment](#schemaflagreleaseplanenvironment)]|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|executionMode|sequential|
+|executionMode|parallel|
+
+<h2 id="tocS_PutFlagReleasePlanRequest">PutFlagReleasePlanRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemaputflagreleaseplanrequest"></a>
+<a id="schema_PutFlagReleasePlanRequest"></a>
+<a id="tocSputflagreleaseplanrequest"></a>
+<a id="tocsputflagreleaseplanrequest"></a>
+
+```json
+{
+  "applicationKeys": [
+    "applicationKeys",
+    "applicationKeys"
+  ],
+  "default": true,
+  "environments": [
+    {
+      "environmentReleasePlanKey": "environmentReleasePlanKey",
+      "isImmediate": true,
+      "triggerType": "flag_eval",
+      "environmentKey": "environmentKey"
+    },
+    {
+      "environmentReleasePlanKey": "environmentReleasePlanKey",
+      "isImmediate": true,
+      "triggerType": "flag_eval",
+      "environmentKey": "environmentKey"
+    }
+  ],
+  "name": "name",
+  "description": "description",
+  "executionMode": "sequential",
+  "version": 1,
+  "maintainer": {
+    "kind": "member",
+    "memberId": "memberId"
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|name|string|true|none|none|
+|description|string|false|none|none|
+|maintainer|[MaintainerIdentifier](#schemamaintaineridentifier)|false|none|The maintainer to assign, either a member or a team.|
+|executionMode|[ExecutionMode](#schemaexecutionmode)|false|none|`sequential` releases environments in array order. `parallel` is not accepted on create or update; it is only returned for plans and releases created with it.|
+|applicationKeys|[string]|false|none|none|
+|default|boolean|false|none|Whether this plan is the project's default. At most one active plan per project is the default. On update, omitting it demotes the current default.|
+|environments|[[FlagReleasePlanEnvironment](#schemaflagreleaseplanenvironment)]|true|none|none|
+|version|integer(int64)|false|none|Optional. The plan version this request was based on, from a<br>previous read. Plans start at version 1. When present it must<br>match the plan's current version — on mismatch the request is<br>rejected with 409 and no changes are applied, so a stale copy<br>can't silently overwrite a concurrent edit. When omitted, the<br>plan's version is not checked.<br>|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|executionMode|sequential|
+|executionMode|parallel|
+
+<h2 id="tocS_ListFlagReleasePlansResponse">ListFlagReleasePlansResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemalistflagreleaseplansresponse"></a>
+<a id="schema_ListFlagReleasePlansResponse"></a>
+<a id="tocSlistflagreleaseplansresponse"></a>
+<a id="tocslistflagreleaseplansresponse"></a>
+
+```json
+{
+  "_links": {
+    "next": {
+      "href": "href",
+      "type": "type"
+    },
+    "last": {
+      "href": "href",
+      "type": "type"
+    },
+    "prev": {
+      "href": "href",
+      "type": "type"
+    },
+    "self": {
+      "href": "href",
+      "type": "type"
+    },
+    "first": {
+      "href": "href",
+      "type": "type"
+    }
+  },
+  "totalCount": 5,
+  "items": [
+    {
+      "applicationKeys": [
+        "applicationKeys",
+        "applicationKeys"
+      ],
+      "environments": [
+        {
+          "environmentReleasePlanKey": "environmentReleasePlanKey",
+          "isImmediate": true,
+          "triggerType": "flag_eval",
+          "environmentKey": "environmentKey"
+        },
+        {
+          "environmentReleasePlanKey": "environmentReleasePlanKey",
+          "isImmediate": true,
+          "triggerType": "flag_eval",
+          "environmentKey": "environmentKey"
+        }
+      ],
+      "description": "description",
+      "executionMode": "sequential",
+      "version": 0,
+      "maintainer": {
+        "firstName": "firstName",
+        "lastName": "lastName",
+        "kind": "member",
+        "email": "email",
+        "memberId": "memberId"
+      },
+      "createdAt": 6,
+      "default": false,
+      "name": "name",
+      "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+      "key": "key",
+      "updatedAt": 1
+    },
+    {
+      "applicationKeys": [
+        "applicationKeys",
+        "applicationKeys"
+      ],
+      "environments": [
+        {
+          "environmentReleasePlanKey": "environmentReleasePlanKey",
+          "isImmediate": true,
+          "triggerType": "flag_eval",
+          "environmentKey": "environmentKey"
+        },
+        {
+          "environmentReleasePlanKey": "environmentReleasePlanKey",
+          "isImmediate": true,
+          "triggerType": "flag_eval",
+          "environmentKey": "environmentKey"
+        }
+      ],
+      "description": "description",
+      "executionMode": "sequential",
+      "version": 0,
+      "maintainer": {
+        "firstName": "firstName",
+        "lastName": "lastName",
+        "kind": "member",
+        "email": "email",
+        "memberId": "memberId"
+      },
+      "createdAt": 6,
+      "default": false,
+      "name": "name",
+      "_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+      "key": "key",
+      "updatedAt": 1
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|items|[[FlagReleasePlan](#schemaflagreleaseplan)]|true|none|none|
+|totalCount|integer|true|none|The total number of flag release plans in the project, before pagination.|
+|_links|[FlagReleasePlansPaginatedLinks](#schemaflagreleaseplanspaginatedlinks)|false|none|none|
+
+<h2 id="tocS_FlagReleasePlansPaginatedLinks">FlagReleasePlansPaginatedLinks</h2>
+<!-- backwards compatibility -->
+<a id="schemaflagreleaseplanspaginatedlinks"></a>
+<a id="schema_FlagReleasePlansPaginatedLinks"></a>
+<a id="tocSflagreleaseplanspaginatedlinks"></a>
+<a id="tocsflagreleaseplanspaginatedlinks"></a>
+
+```json
+{
+  "next": {
+    "href": "href",
+    "type": "type"
+  },
+  "last": {
+    "href": "href",
+    "type": "type"
+  },
+  "prev": {
+    "href": "href",
+    "type": "type"
+  },
+  "self": {
+    "href": "href",
+    "type": "type"
+  },
+  "first": {
+    "href": "href",
+    "type": "type"
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|first|[FlagReleasePlansLink](#schemaflagreleaseplanslink)|false|none|none|
+|last|[FlagReleasePlansLink](#schemaflagreleaseplanslink)|false|none|none|
+|next|[FlagReleasePlansLink](#schemaflagreleaseplanslink)|false|none|none|
+|prev|[FlagReleasePlansLink](#schemaflagreleaseplanslink)|false|none|none|
+|self|[FlagReleasePlansLink](#schemaflagreleaseplanslink)|true|none|none|
+
+<h2 id="tocS_FlagReleasePlansLink">FlagReleasePlansLink</h2>
+<!-- backwards compatibility -->
+<a id="schemaflagreleaseplanslink"></a>
+<a id="schema_FlagReleasePlansLink"></a>
+<a id="tocSflagreleaseplanslink"></a>
+<a id="tocsflagreleaseplanslink"></a>
+
+```json
+{
+  "href": "href",
+  "type": "type"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|href|string|false|none|none|
+|type|string|false|none|none|
+
+<h2 id="tocS_SegmentInstruction">SegmentInstruction</h2>
+<!-- backwards compatibility -->
+<a id="schemasegmentinstruction"></a>
+<a id="schema_SegmentInstruction"></a>
+<a id="tocSsegmentinstruction"></a>
+<a id="tocssegmentinstruction"></a>
+
+```json
+{}
+```
+
+A segment semantic patch instruction, such as <code>{"kind": "addIncludedTargets", "contextKind": "user", "values": ["user-key"]}</code>. The <code>kind</code> and the other fields follow the instructions for updating a segment with a semantic patch.
+
+<h2 id="tocS_PostSegmentScheduledChangeInput">PostSegmentScheduledChangeInput</h2>
+<!-- backwards compatibility -->
+<a id="schemapostsegmentscheduledchangeinput"></a>
+<a id="schema_PostSegmentScheduledChangeInput"></a>
+<a id="tocSpostsegmentscheduledchangeinput"></a>
+<a id="tocspostsegmentscheduledchangeinput"></a>
+
+```json
+{
+  "instructions": [
+    null,
+    null
+  ],
+  "executionDate": 0,
+  "comment": "comment"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|executionDate|integer(int64)|true|none|none|
+|comment|string|false|none|Optional comment describing the scheduled change|
+|instructions|[[SegmentInstruction](#schemasegmentinstruction)]|true|none|The segment semantic patch instructions to apply on the execution date|
+
+<h2 id="tocS_PatchSegmentScheduledChangeInput">PatchSegmentScheduledChangeInput</h2>
+<!-- backwards compatibility -->
+<a id="schemapatchsegmentscheduledchangeinput"></a>
+<a id="schema_PatchSegmentScheduledChangeInput"></a>
+<a id="tocSpatchsegmentscheduledchangeinput"></a>
+<a id="tocspatchsegmentscheduledchangeinput"></a>
+
+```json
+{
+  "executionDate": 0,
+  "comment": "comment"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|executionDate|integer(int64)|false|none|none|
+|comment|string|false|none|The new comment describing the scheduled change. Leave out to keep the current comment, or send an empty string to clear it.|
+
+<h2 id="tocS_SegmentScheduledChangesLink">SegmentScheduledChangesLink</h2>
+<!-- backwards compatibility -->
+<a id="schemasegmentscheduledchangeslink"></a>
+<a id="schema_SegmentScheduledChangesLink"></a>
+<a id="tocSsegmentscheduledchangeslink"></a>
+<a id="tocssegmentscheduledchangeslink"></a>
+
+```json
+{
+  "href": "href",
+  "type": "type"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|href|string|false|none|none|
+|type|string|false|none|none|
+
+<h2 id="tocS_SegmentScheduledChangeStatus">SegmentScheduledChangeStatus</h2>
+<!-- backwards compatibility -->
+<a id="schemasegmentscheduledchangestatus"></a>
+<a id="schema_SegmentScheduledChangeStatus"></a>
+<a id="tocSsegmentscheduledchangestatus"></a>
+<a id="tocssegmentscheduledchangestatus"></a>
+
+```json
+"pending"
+```
+
+Where the scheduled change is in its lifecycle. `pending` means the execution date is still in the future; `inFlight` means the change is being applied; `failed` means the change could not be applied on its execution date. More values may be added, so treat an unrecognized value as a change that has not been applied yet.
+
+<h2 id="tocS_SegmentScheduledChange">SegmentScheduledChange</h2>
+<!-- backwards compatibility -->
+<a id="schemasegmentscheduledchange"></a>
+<a id="schema_SegmentScheduledChange"></a>
+<a id="tocSsegmentscheduledchange"></a>
+<a id="tocssegmentscheduledchange"></a>
+
+```json
+{
+  "instructions": [
+    null,
+    null
+  ],
+  "_maintainerId": "_maintainerId",
+  "_links": {
+    "key": {
+      "href": "href",
+      "type": "type"
+    }
+  },
+  "_maintainerServiceTokenId": "_maintainerServiceTokenId",
+  "executionDate": 6,
+  "comment": "comment",
+  "_id": "_id",
+  "_creationDate": 0,
+  "status": "pending"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|_links|object|true|none|The location and content type of related resources|
+|status|[SegmentScheduledChangeStatus](#schemasegmentscheduledchangestatus)|true|none|Where the scheduled change is in its lifecycle. `pending` means the execution date is still in the future; `inFlight` means the change is being applied; `failed` means the change could not be applied on its execution date. More values may be added, so treat an unrecognized value as a change that has not been applied yet.<br>|
+|_id|string|true|none|The ID of this scheduled change|
+|_creationDate|integer(int64)|true|none|none|
+|_maintainerId|string|false|none|The ID of the member who scheduled the change|
+|_maintainerServiceTokenId|string|false|none|The ID of the service token that scheduled the change|
+|executionDate|integer(int64)|true|none|none|
+|comment|string|false|none|The comment describing the scheduled change|
+|instructions|[[SegmentInstruction](#schemasegmentinstruction)]|true|none|The segment semantic patch instructions to apply on the execution date|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|status|pending|
+|status|inFlight|
+|status|failed|
+
+<h2 id="tocS_SegmentScheduledChanges">SegmentScheduledChanges</h2>
+<!-- backwards compatibility -->
+<a id="schemasegmentscheduledchanges"></a>
+<a id="schema_SegmentScheduledChanges"></a>
+<a id="tocSsegmentscheduledchanges"></a>
+<a id="tocssegmentscheduledchanges"></a>
+
+```json
+{
+  "_links": {
+    "key": {
+      "href": "href",
+      "type": "type"
+    }
+  },
+  "items": [
+    {
+      "instructions": [
+        null,
+        null
+      ],
+      "_maintainerId": "_maintainerId",
+      "_links": {
+        "key": {
+          "href": "href",
+          "type": "type"
+        }
+      },
+      "_maintainerServiceTokenId": "_maintainerServiceTokenId",
+      "executionDate": 6,
+      "comment": "comment",
+      "_id": "_id",
+      "_creationDate": 0,
+      "status": "pending"
+    },
+    {
+      "instructions": [
+        null,
+        null
+      ],
+      "_maintainerId": "_maintainerId",
+      "_links": {
+        "key": {
+          "href": "href",
+          "type": "type"
+        }
+      },
+      "_maintainerServiceTokenId": "_maintainerServiceTokenId",
+      "executionDate": 6,
+      "comment": "comment",
+      "_id": "_id",
+      "_creationDate": 0,
+      "status": "pending"
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|_links|object|true|none|The location and content type of related resources|
+|items|[[SegmentScheduledChange](#schemasegmentscheduledchange)]|true|none|The segment's scheduled changes that have not been applied yet, plus any that failed to apply, soonest first|
 
 <h2 id="tocS_CreateIpAllowlistEntryRequest">CreateIpAllowlistEntryRequest</h2>
 <!-- backwards compatibility -->

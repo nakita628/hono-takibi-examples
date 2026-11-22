@@ -1,0 +1,121 @@
+import { OpenAPIHono } from '@hono/zod-openapi'
+import {
+  XAmzTargetAmazonEC2ContainerServiceV20141113CreateCapacityProviderHandler,
+  XAmzTargetAmazonEC2ContainerServiceV20141113CreateClusterHandler,
+  XAmzTargetAmazonEC2ContainerServiceV20141113CreateServiceHandler,
+  XAmzTargetAmazonEC2ContainerServiceV20141113CreateTaskSetHandler,
+  XAmzTargetAmazonEC2ContainerServiceV20141113DeleteAccountSettingHandler,
+  XAmzTargetAmazonEC2ContainerServiceV20141113DeleteAttributesHandler,
+  XAmzTargetAmazonEC2ContainerServiceV20141113DeleteCapacityProviderHandler,
+  XAmzTargetAmazonEC2ContainerServiceV20141113DeleteClusterHandler,
+  XAmzTargetAmazonEC2ContainerServiceV20141113DeleteServiceHandler,
+  XAmzTargetAmazonEC2ContainerServiceV20141113DeleteTaskDefinitionsHandler,
+  XAmzTargetAmazonEC2ContainerServiceV20141113DeleteTaskSetHandler,
+  XAmzTargetAmazonEC2ContainerServiceV20141113DeregisterContainerInstanceHandler,
+  XAmzTargetAmazonEC2ContainerServiceV20141113DeregisterTaskDefinitionHandler,
+  XAmzTargetAmazonEC2ContainerServiceV20141113DescribeCapacityProvidersHandler,
+  XAmzTargetAmazonEC2ContainerServiceV20141113DescribeClustersHandler,
+  XAmzTargetAmazonEC2ContainerServiceV20141113DescribeContainerInstancesHandler,
+  XAmzTargetAmazonEC2ContainerServiceV20141113DescribeServicesHandler,
+  XAmzTargetAmazonEC2ContainerServiceV20141113DescribeTaskDefinitionHandler,
+  XAmzTargetAmazonEC2ContainerServiceV20141113DescribeTaskSetsHandler,
+  XAmzTargetAmazonEC2ContainerServiceV20141113DescribeTasksHandler,
+  XAmzTargetAmazonEC2ContainerServiceV20141113DiscoverPollEndpointHandler,
+  XAmzTargetAmazonEC2ContainerServiceV20141113ExecuteCommandHandler,
+  XAmzTargetAmazonEC2ContainerServiceV20141113GetTaskProtectionHandler,
+  XAmzTargetAmazonEC2ContainerServiceV20141113ListAccountSettingsHandler,
+  XAmzTargetAmazonEC2ContainerServiceV20141113ListAttributesHandler,
+  XAmzTargetAmazonEC2ContainerServiceV20141113ListClustersHandler,
+  XAmzTargetAmazonEC2ContainerServiceV20141113ListContainerInstancesHandler,
+  XAmzTargetAmazonEC2ContainerServiceV20141113ListServicesByNamespaceHandler,
+  XAmzTargetAmazonEC2ContainerServiceV20141113ListServicesHandler,
+  XAmzTargetAmazonEC2ContainerServiceV20141113ListTagsForResourceHandler,
+  XAmzTargetAmazonEC2ContainerServiceV20141113ListTaskDefinitionFamiliesHandler,
+  XAmzTargetAmazonEC2ContainerServiceV20141113ListTaskDefinitionsHandler,
+  XAmzTargetAmazonEC2ContainerServiceV20141113ListTasksHandler,
+  XAmzTargetAmazonEC2ContainerServiceV20141113PutAccountSettingDefaultHandler,
+  XAmzTargetAmazonEC2ContainerServiceV20141113PutAccountSettingHandler,
+  XAmzTargetAmazonEC2ContainerServiceV20141113PutAttributesHandler,
+  XAmzTargetAmazonEC2ContainerServiceV20141113PutClusterCapacityProvidersHandler,
+  XAmzTargetAmazonEC2ContainerServiceV20141113RegisterContainerInstanceHandler,
+  XAmzTargetAmazonEC2ContainerServiceV20141113RegisterTaskDefinitionHandler,
+  XAmzTargetAmazonEC2ContainerServiceV20141113RunTaskHandler,
+  XAmzTargetAmazonEC2ContainerServiceV20141113StartTaskHandler,
+  XAmzTargetAmazonEC2ContainerServiceV20141113StopTaskHandler,
+  XAmzTargetAmazonEC2ContainerServiceV20141113SubmitAttachmentStateChangesHandler,
+  XAmzTargetAmazonEC2ContainerServiceV20141113SubmitContainerStateChangeHandler,
+  XAmzTargetAmazonEC2ContainerServiceV20141113SubmitTaskStateChangeHandler,
+  XAmzTargetAmazonEC2ContainerServiceV20141113TagResourceHandler,
+  XAmzTargetAmazonEC2ContainerServiceV20141113UntagResourceHandler,
+  XAmzTargetAmazonEC2ContainerServiceV20141113UpdateCapacityProviderHandler,
+  XAmzTargetAmazonEC2ContainerServiceV20141113UpdateClusterHandler,
+  XAmzTargetAmazonEC2ContainerServiceV20141113UpdateClusterSettingsHandler,
+  XAmzTargetAmazonEC2ContainerServiceV20141113UpdateContainerAgentHandler,
+  XAmzTargetAmazonEC2ContainerServiceV20141113UpdateContainerInstancesStateHandler,
+  XAmzTargetAmazonEC2ContainerServiceV20141113UpdateServiceHandler,
+  XAmzTargetAmazonEC2ContainerServiceV20141113UpdateServicePrimaryTaskSetHandler,
+  XAmzTargetAmazonEC2ContainerServiceV20141113UpdateTaskProtectionHandler,
+  XAmzTargetAmazonEC2ContainerServiceV20141113UpdateTaskSetHandler,
+} from './handlers'
+
+const app = new OpenAPIHono()
+
+export const api = app
+  .route('/', XAmzTargetAmazonEC2ContainerServiceV20141113CreateCapacityProviderHandler)
+  .route('/', XAmzTargetAmazonEC2ContainerServiceV20141113CreateClusterHandler)
+  .route('/', XAmzTargetAmazonEC2ContainerServiceV20141113CreateServiceHandler)
+  .route('/', XAmzTargetAmazonEC2ContainerServiceV20141113CreateTaskSetHandler)
+  .route('/', XAmzTargetAmazonEC2ContainerServiceV20141113DeleteAccountSettingHandler)
+  .route('/', XAmzTargetAmazonEC2ContainerServiceV20141113DeleteAttributesHandler)
+  .route('/', XAmzTargetAmazonEC2ContainerServiceV20141113DeleteCapacityProviderHandler)
+  .route('/', XAmzTargetAmazonEC2ContainerServiceV20141113DeleteClusterHandler)
+  .route('/', XAmzTargetAmazonEC2ContainerServiceV20141113DeleteServiceHandler)
+  .route('/', XAmzTargetAmazonEC2ContainerServiceV20141113DeleteTaskDefinitionsHandler)
+  .route('/', XAmzTargetAmazonEC2ContainerServiceV20141113DeleteTaskSetHandler)
+  .route('/', XAmzTargetAmazonEC2ContainerServiceV20141113DeregisterContainerInstanceHandler)
+  .route('/', XAmzTargetAmazonEC2ContainerServiceV20141113DeregisterTaskDefinitionHandler)
+  .route('/', XAmzTargetAmazonEC2ContainerServiceV20141113DescribeCapacityProvidersHandler)
+  .route('/', XAmzTargetAmazonEC2ContainerServiceV20141113DescribeClustersHandler)
+  .route('/', XAmzTargetAmazonEC2ContainerServiceV20141113DescribeContainerInstancesHandler)
+  .route('/', XAmzTargetAmazonEC2ContainerServiceV20141113DescribeServicesHandler)
+  .route('/', XAmzTargetAmazonEC2ContainerServiceV20141113DescribeTaskDefinitionHandler)
+  .route('/', XAmzTargetAmazonEC2ContainerServiceV20141113DescribeTaskSetsHandler)
+  .route('/', XAmzTargetAmazonEC2ContainerServiceV20141113DescribeTasksHandler)
+  .route('/', XAmzTargetAmazonEC2ContainerServiceV20141113DiscoverPollEndpointHandler)
+  .route('/', XAmzTargetAmazonEC2ContainerServiceV20141113ExecuteCommandHandler)
+  .route('/', XAmzTargetAmazonEC2ContainerServiceV20141113GetTaskProtectionHandler)
+  .route('/', XAmzTargetAmazonEC2ContainerServiceV20141113ListAccountSettingsHandler)
+  .route('/', XAmzTargetAmazonEC2ContainerServiceV20141113ListAttributesHandler)
+  .route('/', XAmzTargetAmazonEC2ContainerServiceV20141113ListClustersHandler)
+  .route('/', XAmzTargetAmazonEC2ContainerServiceV20141113ListContainerInstancesHandler)
+  .route('/', XAmzTargetAmazonEC2ContainerServiceV20141113ListServicesHandler)
+  .route('/', XAmzTargetAmazonEC2ContainerServiceV20141113ListServicesByNamespaceHandler)
+  .route('/', XAmzTargetAmazonEC2ContainerServiceV20141113ListTagsForResourceHandler)
+  .route('/', XAmzTargetAmazonEC2ContainerServiceV20141113ListTaskDefinitionFamiliesHandler)
+  .route('/', XAmzTargetAmazonEC2ContainerServiceV20141113ListTaskDefinitionsHandler)
+  .route('/', XAmzTargetAmazonEC2ContainerServiceV20141113ListTasksHandler)
+  .route('/', XAmzTargetAmazonEC2ContainerServiceV20141113PutAccountSettingHandler)
+  .route('/', XAmzTargetAmazonEC2ContainerServiceV20141113PutAccountSettingDefaultHandler)
+  .route('/', XAmzTargetAmazonEC2ContainerServiceV20141113PutAttributesHandler)
+  .route('/', XAmzTargetAmazonEC2ContainerServiceV20141113PutClusterCapacityProvidersHandler)
+  .route('/', XAmzTargetAmazonEC2ContainerServiceV20141113RegisterContainerInstanceHandler)
+  .route('/', XAmzTargetAmazonEC2ContainerServiceV20141113RegisterTaskDefinitionHandler)
+  .route('/', XAmzTargetAmazonEC2ContainerServiceV20141113RunTaskHandler)
+  .route('/', XAmzTargetAmazonEC2ContainerServiceV20141113StartTaskHandler)
+  .route('/', XAmzTargetAmazonEC2ContainerServiceV20141113StopTaskHandler)
+  .route('/', XAmzTargetAmazonEC2ContainerServiceV20141113SubmitAttachmentStateChangesHandler)
+  .route('/', XAmzTargetAmazonEC2ContainerServiceV20141113SubmitContainerStateChangeHandler)
+  .route('/', XAmzTargetAmazonEC2ContainerServiceV20141113SubmitTaskStateChangeHandler)
+  .route('/', XAmzTargetAmazonEC2ContainerServiceV20141113TagResourceHandler)
+  .route('/', XAmzTargetAmazonEC2ContainerServiceV20141113UntagResourceHandler)
+  .route('/', XAmzTargetAmazonEC2ContainerServiceV20141113UpdateCapacityProviderHandler)
+  .route('/', XAmzTargetAmazonEC2ContainerServiceV20141113UpdateClusterHandler)
+  .route('/', XAmzTargetAmazonEC2ContainerServiceV20141113UpdateClusterSettingsHandler)
+  .route('/', XAmzTargetAmazonEC2ContainerServiceV20141113UpdateContainerAgentHandler)
+  .route('/', XAmzTargetAmazonEC2ContainerServiceV20141113UpdateContainerInstancesStateHandler)
+  .route('/', XAmzTargetAmazonEC2ContainerServiceV20141113UpdateServiceHandler)
+  .route('/', XAmzTargetAmazonEC2ContainerServiceV20141113UpdateServicePrimaryTaskSetHandler)
+  .route('/', XAmzTargetAmazonEC2ContainerServiceV20141113UpdateTaskProtectionHandler)
+  .route('/', XAmzTargetAmazonEC2ContainerServiceV20141113UpdateTaskSetHandler)
+
+export default app

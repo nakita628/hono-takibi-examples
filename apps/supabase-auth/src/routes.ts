@@ -81,7 +81,7 @@ const IdentitySchemaSchema = z
     identity_id: z.uuid().exactOptional(),
     id: z.uuid().exactOptional(),
     user_id: z.uuid().exactOptional(),
-    identity_data: z.object({}).exactOptional(),
+    identity_data: z.looseObject({}).exactOptional(),
     provider: z.string().exactOptional(),
     last_sign_in_at: z.iso.datetime({ offset: true }).exactOptional(),
     created_at: z.iso.datetime({ offset: true }).exactOptional(),
@@ -121,8 +121,8 @@ const UserSchemaSchema = z
     phone_change_sent_at: z.iso.datetime({ offset: true }).exactOptional(),
     reauthentication_sent_at: z.iso.datetime({ offset: true }).exactOptional(),
     last_sign_in_at: z.iso.datetime({ offset: true }).exactOptional(),
-    app_metadata: z.object({}).exactOptional(),
-    user_metadata: z.object({}).exactOptional(),
+    app_metadata: z.looseObject({}).exactOptional(),
+    user_metadata: z.looseObject({}).exactOptional(),
     factors: z.array(MFAFactorSchemaSchema).exactOptional(),
     identities: z.array(IdentitySchemaSchema).exactOptional(),
     banned_until: z.iso.datetime({ offset: true }).exactOptional(),
@@ -147,7 +147,9 @@ const SAMLAttributeMappingSchemaSchema = z
           .object({
             name: z.string().exactOptional(),
             names: z.array(z.string()).exactOptional(),
-            default: z.xor([z.string(), z.number(), z.boolean(), z.object({})]).exactOptional(),
+            default: z
+              .xor([z.string(), z.number(), z.boolean(), z.looseObject({})])
+              .exactOptional(),
           })
           .openapi({ required: [] })
         for (const [k, val] of Object.entries(o)) {
@@ -162,7 +164,28 @@ const SAMLAttributeMappingSchemaSchema = z
           }
         }
       })
-      .exactOptional(),
+      .exactOptional()
+      .openapi({
+        ...{
+          patternProperties: {
+            '.+': {
+              type: 'object',
+              properties: {
+                name: { type: 'string' },
+                names: { type: 'array', items: { type: 'string' } },
+                default: {
+                  oneOf: [
+                    { type: 'string' },
+                    { type: 'number' },
+                    { type: 'boolean' },
+                    { type: 'object' },
+                  ],
+                },
+              },
+            },
+          },
+        },
+      }),
   })
   .openapi({ required: [] })
   .openapi('SAMLAttributeMappingSchema')
@@ -179,6 +202,13 @@ const SSOProviderSchemaSchema = z
         metadata_xml: z.string().exactOptional(),
         metadata_url: z.string().exactOptional(),
         attribute_mapping: SAMLAttributeMappingSchemaSchema.exactOptional(),
+        dedicated_scope: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description:
+              "When `true`, this provider's SAML ACS URL and entity ID are scoped to its own provider ID instead of the ones shared by all SAML providers in this project. The same signing key is still used. This cannot be changed once the provider is created.\n",
+          }),
       })
       .exactOptional()
       .openapi({ required: [] }),
@@ -406,7 +436,7 @@ const CredentialCreationOptionsSchema = z
       .exactOptional()
       .openapi({ description: 'Hints for the browser about what types of authenticators to show' }),
     extensions: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'WebAuthn extensions to enable' }),
   })
@@ -442,7 +472,7 @@ const CredentialRequestOptionsSchema = z
       .exactOptional()
       .openapi({ description: 'Hints for the browser about what types of authenticators to show' }),
     extensions: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'WebAuthn extensions to enable' }),
   })
@@ -564,6 +594,19 @@ const CustomOAuthProviderSchemaSchema = z
       .string()
       .openapi({ description: 'Human-readable name of the provider', example: 'My Company SSO' }),
     client_id: z.string().openapi({ description: 'OAuth client ID' }),
+    client_auth_method: z
+      .enum(['client_secret', 'private_key_jwt'])
+      .exactOptional()
+      .openapi({
+        description:
+          "How the server authenticates to the provider's token endpoint. The client secret itself is never returned.",
+      }),
+    client_assertion_audience: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Override for the aud claim of client assertions. Omitted when not set.',
+      }),
     acceptable_client_ids: z
       .array(z.string())
       .exactOptional()
@@ -661,36 +704,29 @@ const OAuthCallbackRedirectResponseResponse = {
   description:
     'HTTP Redirect to a URL containing the `error` and `error_description` query parameters which should be shown to the user requesting the OAuth sign-in flow.\n',
   headers: z.object({
-    Location: {
-      description: 'URL containing the `error` and `error_description` query parameters.\n',
-      schema: z
-        .url()
-        .exactOptional()
-        .openapi({
-          description: 'URL containing the `error` and `error_description` query parameters.\n',
-          param: { required: false },
-          example:
-            'https://example.com/?error=server_error&error_description=User%20does%20not%20exist.',
-        }),
-    },
+    Location: z
+      .url()
+      .exactOptional()
+      .openapi({
+        description: 'URL containing the `error` and `error_description` query parameters.\n',
+        param: { required: false },
+        example:
+          'https://example.com/?error=server_error&error_description=User%20does%20not%20exist.',
+      }),
   }),
 }
 
 const OAuthAuthorizeRedirectResponseResponse = {
   description: "HTTP Redirect to the OAuth identity provider's authorization URL.\n",
   headers: z.object({
-    Location: {
-      description:
-        'URL to which the user agent should redirect (or open in a browser for mobile apps).\n',
-      schema: z
-        .url()
-        .exactOptional()
-        .openapi({
-          description:
-            'URL to which the user agent should redirect (or open in a browser for mobile apps).\n',
-          param: { required: false },
-        }),
-    },
+    Location: z
+      .url()
+      .exactOptional()
+      .openapi({
+        description:
+          'URL to which the user agent should redirect (or open in a browser for mobile apps).\n',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -740,15 +776,13 @@ const AccessRefreshTokenRedirectResponseResponse = {
   description:
     'HTTP See Other redirect response where `Location` is a specially formatted URL that includes an `access_token`, `refresh_token`, `expires_in` as URL query encoded values in the URL fragment (anything after `#`). These values are encoded in the fragment as this value is only visible to the browser handling the redirect and is not sent to the server.\n',
   headers: z.object({
-    Location: {
-      schema: z
-        .url()
-        .exactOptional()
-        .openapi({
-          param: { required: false },
-          example: 'https://example.com/#access_token=...&refresh_token=...&expires_in=...',
-        }),
-    },
+    Location: z
+      .url()
+      .exactOptional()
+      .openapi({
+        param: { required: false },
+        example: 'https://example.com/#access_token=...&refresh_token=...&expires_in=...',
+      }),
   }),
 }
 
@@ -1132,7 +1166,7 @@ export const postSignupRoute = createRoute({
               phone: z.string().exactOptional(),
               channel: z.enum(['sms', 'whatsapp']).exactOptional(),
               password: z.string().exactOptional(),
-              data: z.object({}).exactOptional(),
+              data: z.looseObject({}).exactOptional(),
               code_challenge: z.string().exactOptional(),
               code_challenge_method: z.enum(['plain', 's256']).exactOptional(),
               gotrue_meta_security: GoTrueSecuritySchema.exactOptional(),
@@ -1197,7 +1231,7 @@ export const postRecoverRoute = createRoute({
     200: {
       description:
         'A recovery email has been sent to the address. An empty JSON object is returned. To obfuscate whether such an email address already exists in the system this response is sent regardless whether the address exists or not.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     400: BadRequestResponseResponse,
     422: {
@@ -1286,7 +1320,7 @@ export const postMagiclinkRoute = createRoute({
           schema: z
             .object({
               email: z.email(),
-              data: z.object({}).exactOptional(),
+              data: z.looseObject({}).exactOptional(),
               gotrue_meta_security: GoTrueSecuritySchema.exactOptional(),
             })
             .openapi({ required: ['email'] }),
@@ -1298,7 +1332,7 @@ export const postMagiclinkRoute = createRoute({
     200: {
       description:
         'A recovery email has been sent to the address. An empty JSON object is returned. To obfuscate whether such an email address already exists in the system this response is sent regardless whether the address exists or not.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     400: BadRequestResponseResponse,
     422: {
@@ -1325,7 +1359,7 @@ export const postOtpRoute = createRoute({
               phone: z.string().exactOptional(),
               channel: z.enum(['sms', 'whatsapp']).exactOptional(),
               create_user: z.boolean().exactOptional(),
-              data: z.object({}).exactOptional(),
+              data: z.looseObject({}).exactOptional(),
               code_challenge_method: z.enum(['s256', 'plain']).exactOptional(),
               code_challenge: z.string().exactOptional(),
               gotrue_meta_security: GoTrueSecuritySchema.exactOptional(),
@@ -1394,8 +1428,8 @@ export const putUserRoute = createRoute({
               phone: z.string().exactOptional(),
               password: z.string().exactOptional(),
               nonce: z.string().exactOptional(),
-              data: z.object({}).exactOptional(),
-              app_metadata: z.object({}).exactOptional(),
+              data: z.looseObject({}).exactOptional(),
+              app_metadata: z.looseObject({}).exactOptional(),
               channel: z.enum(['sms', 'whatsapp']).exactOptional(),
             })
             .openapi({ required: [] }),
@@ -1500,7 +1534,7 @@ export const deleteUserIdentitiesIdentityIdRoute = createRoute({
   responses: {
     200: {
       description: "User's account data.",
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     401: {
       description: 'The user is not authenticated.',
@@ -1704,7 +1738,7 @@ export const postReauthenticateRoute = createRoute({
   responses: {
     200: {
       description: "A One-Time Password was sent to the user's email or phone.",
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     400: BadRequestResponseResponse,
     429: RateLimitResponseResponse,
@@ -1841,7 +1875,7 @@ export const postFactorsFactorIdVerifyRoute = createRoute({
                     .enum(['create', 'request'])
                     .openapi({ description: 'Type of WebAuthn operation' }),
                   credential_response: z
-                    .object({})
+                    .looseObject({})
                     .openapi({ description: 'WebAuthn credential response from the client' }),
                 })
                 .exactOptional()
@@ -2331,12 +2365,10 @@ export const postSsoRoute = createRoute({
       description:
         'Returned only when `skip_http_redirect` is `false` or not present and the SSO provider could be identified from the `provider_id` or `domain`. Client libraries should follow the redirect. 303 is used instead of 302 because the request should be executed with a `GET` verb.\n',
       headers: z.object({
-        Location: {
-          schema: z
-            .url()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        Location: z
+          .url()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: BadRequestResponseResponse,
@@ -2377,30 +2409,23 @@ export const getSamlMetadataRoute = createRoute({
       description:
         'A valid SAML 2.0 Metadata XML document. Should be cached according to the `Cache-Control` header and/or caching data specified in the document itself.\n',
       headers: z.object({
-        'Content-Disposition': {
-          description:
-            'Present if `download=true`, which triggers the browser to show a donwload dialog.\n',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Present if `download=true`, which triggers the browser to show a donwload dialog.\n',
-              param: { required: false },
-              example: 'attachment; filename="metadata.xml"',
-            }),
-        },
-        'Cache-Control': {
-          description: 'Should be parsed and obeyed to avoid putting strain on the server.\n',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Should be parsed and obeyed to avoid putting strain on the server.\n',
-              param: { required: false },
-              example: 'public, max-age=600',
-            }),
-        },
+        'Content-Disposition': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Present if `download=true`, which triggers the browser to show a donwload dialog.\n',
+            param: { required: false },
+            example: 'attachment; filename="metadata.xml"',
+          }),
+        'Cache-Control': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Should be parsed and obeyed to avoid putting strain on the server.\n',
+            param: { required: false },
+            example: 'public, max-age=600',
+          }),
       }),
     },
   },
@@ -2502,7 +2527,7 @@ export const postInviteRoute = createRoute({
       content: {
         'application/json': {
           schema: z
-            .object({ email: z.string(), data: z.object({}).exactOptional() })
+            .object({ email: z.string(), data: z.looseObject({}).exactOptional() })
             .openapi({ required: ['email'] }),
         },
       },
@@ -2543,7 +2568,7 @@ export const postAdminGenerateLinkRoute = createRoute({
               email: z.email(),
               new_email: z.email().exactOptional(),
               password: z.string().exactOptional(),
-              data: z.object({}).exactOptional(),
+              data: z.looseObject({}).exactOptional(),
               redirect_to: z.url().exactOptional(),
             })
             .openapi({ required: ['type', 'email'] }),
@@ -2654,7 +2679,7 @@ export const getAdminAuditRoute = createRoute({
                       }),
                     actor_username: z.string().exactOptional(),
                     actor_name: z.string().exactOptional(),
-                    traits: z.object({}).exactOptional(),
+                    traits: z.looseObject({}).exactOptional(),
                     action: z
                       .string()
                       .exactOptional()
@@ -2842,11 +2867,29 @@ export const deleteAdminUsersUserIdRoute = createRoute({
           },
         }),
     }),
+    body: {
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              should_soft_delete: z
+                .boolean()
+                .default(false)
+                .exactOptional()
+                .openapi({
+                  description:
+                    'Soft delete the user instead of permanently deleting their account.',
+                }),
+            })
+            .openapi({ required: [] }),
+        },
+      },
+    },
   },
   responses: {
     200: {
-      description: "User's account data.",
-      content: { 'application/json': { schema: UserSchemaSchema } },
+      description: 'Empty JSON object. No user data is returned after hard or soft deletion.',
+      content: { 'application/json': { schema: z.strictObject({}).openapi({ example: {} }) } },
     },
     401: UnauthorizedResponseResponse,
     403: ForbiddenResponseResponse,
@@ -2920,7 +2963,7 @@ export const putAdminUsersUserIdFactorsFactorIdRoute = createRoute({
           },
         }),
     }),
-    body: { content: { 'application/json': { schema: z.object({}) } } },
+    body: { content: { 'application/json': { schema: z.looseObject({}) } } },
   },
   responses: {
     200: {
@@ -3017,6 +3060,13 @@ export const postAdminSsoProvidersRoute = createRoute({
               metadata_xml: z.string().exactOptional(),
               domains: z.array(z.hostname()).exactOptional(),
               attribute_mapping: SAMLAttributeMappingSchemaSchema.exactOptional(),
+              dedicated_scope: z
+                .boolean()
+                .exactOptional()
+                .openapi({
+                  description:
+                    "When `true`, this provider's SAML ACS URL and entity ID are scoped to its own provider ID instead of the ones shared by all SAML providers in this project. The same signing key is still used. This cannot be changed once the provider is created.\n",
+                }),
             })
             .openapi({ required: ['type'] }),
         },
@@ -3075,7 +3125,7 @@ export const putAdminSsoProvidersSsoProviderIdRoute = createRoute({
   tags: ['admin'],
   summary: 'Update details about a SSO provider.',
   description:
-    'You can only update only one of `metadata_url` or `metadata_xml` at once. The SAML Metadata represented by these updates must advertize the same Identity Provider EntityID. Do not include the `domains` or `attribute_mapping` property to keep the existing database values.\n',
+    'You can only update only one of `metadata_url` or `metadata_xml` at once. The SAML Metadata represented by these updates must advertize the same Identity Provider EntityID. Do not include the `domains` or `attribute_mapping` property to keep the existing database values. `dedicated_scope` cannot be changed once the provider is created, and this request fails if it is included.\n',
   request: {
     params: z.object({
       ssoProviderId: z
@@ -3549,7 +3599,27 @@ export const postAdminCustomProvidersRoute = createRoute({
               client_id: z.string().openapi({ description: 'OAuth client ID from the provider' }),
               client_secret: z
                 .string()
-                .openapi({ description: 'OAuth client secret (will be encrypted at rest)' }),
+                .exactOptional()
+                .openapi({
+                  description:
+                    "OAuth client secret (will be encrypted at rest). Required when client_auth_method is 'client_secret', and must not be set when it is 'private_key_jwt'.",
+                }),
+              client_auth_method: z
+                .enum(['client_secret', 'private_key_jwt'])
+                .default('client_secret')
+                .exactOptional()
+                .openapi({
+                  description:
+                    "How the server authenticates to the provider's token endpoint. 'private_key_jwt' sends a signed client assertion (RFC 7523) instead of a client secret. It is currently only available for OIDC providers, and only when client assertions are enabled on the server; otherwise the request is rejected with 400.\n",
+                }),
+              client_assertion_audience: z
+                .string()
+                .max(2048)
+                .exactOptional()
+                .openapi({
+                  description:
+                    "Overrides the aud claim of client assertions, which defaults to the provider's issuer. Only allowed with client_auth_method 'private_key_jwt'.",
+                }),
               acceptable_client_ids: z
                 .array(z.string())
                 .exactOptional()
@@ -3649,9 +3719,7 @@ export const postAdminCustomProvidersRoute = createRoute({
                 .exactOptional()
                 .openapi({ description: 'JWKS URI for token validation (optional for OAuth2)' }),
             })
-            .openapi({
-              required: ['provider_type', 'identifier', 'name', 'client_id', 'client_secret'],
-            }),
+            .openapi({ required: ['provider_type', 'identifier', 'name', 'client_id'] }),
           examples: {
             oidc_provider: {
               summary: 'Create OIDC provider',
@@ -3861,7 +3929,23 @@ export const putAdminCustomProvidersIdentifierRoute = createRoute({
                 .string()
                 .exactOptional()
                 .openapi({
-                  description: 'OAuth client secret (only provide if changing, will be encrypted)',
+                  description:
+                    "OAuth client secret (only provide if changing, will be encrypted). Required when switching client_auth_method to 'client_secret', and must not be set for 'private_key_jwt' providers.",
+                }),
+              client_auth_method: z
+                .enum(['client_secret', 'private_key_jwt'])
+                .exactOptional()
+                .openapi({
+                  description:
+                    "How the server authenticates to the provider's token endpoint. Switching to 'private_key_jwt' clears the stored client secret, and switching to 'client_secret' clears client_assertion_audience. 'private_key_jwt' is currently only available for OIDC providers, and only when client assertions are enabled on the server.\n",
+                }),
+              client_assertion_audience: z
+                .string()
+                .max(2048)
+                .exactOptional()
+                .openapi({
+                  description:
+                    "Overrides the aud claim of client assertions. An empty string clears the override. Only allowed for 'private_key_jwt' providers.",
                 }),
               acceptable_client_ids: z
                 .array(z.string())
@@ -4303,12 +4387,10 @@ export const getOauthAuthorizeRoute = createRoute({
     302: {
       description: 'Redirect to login or authorization page',
       headers: z.object({
-        Location: {
-          schema: z
-            .url()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        Location: z
+          .url()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: BadRequestResponseResponse,
@@ -4531,6 +4613,7 @@ export const getSettingsRoute = createRoute({
                 })
                 .exactOptional()
                 .openapi({
+                  ...{ patternProperties: { '[a-zA-Z0-9]+': { type: 'boolean' } } },
                   description: 'Which external identity providers are enabled.',
                   example: { github: true, apple: true, email: true, phone: true },
                 }),

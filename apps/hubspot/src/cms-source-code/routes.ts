@@ -263,14 +263,21 @@ const Oauth2SecurityScheme = {
     authorizationCode: {
       authorizationUrl: 'https://app.hubspot.com/oauth/authorize',
       tokenUrl: 'https://api.hubapi.com/oauth/v1/token',
-      scopes: { content: '' },
+      scopes: {
+        'cms.source_code.read': '',
+        'cms.source_code.write': '',
+        content: '',
+        marketplace_validation: '',
+      },
     },
   },
+  'x-hubspot-app-availability': {
+    'cms.source_code.read': { developer: true },
+    'cms.source_code.write': { developer: true },
+    content: { portal: ['public', 'private'], developer: false },
+    marketplace_validation: { developer: true },
+  },
 }
-
-const PrivateAppsSecurityScheme = { type: 'apiKey', name: 'private-app', in: 'header' }
-
-const PrivateAppsLegacySecurityScheme = { type: 'apiKey', name: 'private-app-legacy', in: 'header' }
 
 export const postCmsSourceCode202609ExtractAsyncRoute = createRoute({
   method: 'post',
@@ -293,7 +300,12 @@ export const postCmsSourceCode202609ExtractAsyncRoute = createRoute({
     },
     default: ErrorResponse,
   },
-  security: [{ oauth2: ['content'] }],
+  security: [
+    { oauth2: ['cms.source_code.read'] },
+    { oauth2: ['marketplace_validation'] },
+    { oauth2: ['content'] },
+    { oauth2: ['cms.source_code.write'] },
+  ],
 })
 
 export const getCmsSourceCode202609ExtractAsyncTasksTaskIdStatusRoute = createRoute({
@@ -338,7 +350,12 @@ export const getCmsSourceCode202609ExtractAsyncTasksTaskIdStatusRoute = createRo
     },
     default: ErrorResponse,
   },
-  security: [{ oauth2: ['content'] }],
+  security: [
+    { oauth2: ['cms.source_code.read'] },
+    { oauth2: ['marketplace_validation'] },
+    { oauth2: ['content'] },
+    { oauth2: ['cms.source_code.write'] },
+  ],
 })
 
 export const getCmsSourceCode202609EnvironmentContentPathRoute = createRoute({
@@ -385,7 +402,11 @@ export const getCmsSourceCode202609EnvironmentContentPathRoute = createRoute({
     }),
   },
   responses: { default: ErrorResponse },
-  security: [{ oauth2: ['content'] }],
+  security: [
+    { oauth2: ['cms.source_code.read'] },
+    { oauth2: ['marketplace_validation'] },
+    { oauth2: ['content'] },
+  ],
 })
 
 export const putCmsSourceCode202609EnvironmentContentPathRoute = createRoute({
@@ -452,7 +473,11 @@ export const putCmsSourceCode202609EnvironmentContentPathRoute = createRoute({
     },
     default: ErrorResponse,
   },
-  security: [{ oauth2: ['content'] }],
+  security: [
+    { oauth2: ['cms.source_code.write'] },
+    { oauth2: ['marketplace_validation'] },
+    { oauth2: ['content'] },
+  ],
 })
 
 export const postCmsSourceCode202609EnvironmentContentPathRoute = createRoute({
@@ -521,7 +546,11 @@ export const postCmsSourceCode202609EnvironmentContentPathRoute = createRoute({
     default: ErrorResponse,
   },
   deprecated: true,
-  security: [{ oauth2: ['content'] }],
+  security: [
+    { oauth2: ['cms.source_code.write'] },
+    { oauth2: ['marketplace_validation'] },
+    { oauth2: ['content'] },
+  ],
 })
 
 export const deleteCmsSourceCode202609EnvironmentContentPathRoute = createRoute({
@@ -567,7 +596,11 @@ export const deleteCmsSourceCode202609EnvironmentContentPathRoute = createRoute(
     }),
   },
   responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
-  security: [{ oauth2: ['content'] }],
+  security: [
+    { oauth2: ['cms.source_code.write'] },
+    { oauth2: ['marketplace_validation'] },
+    { oauth2: ['content'] },
+  ],
 })
 
 export const getCmsSourceCode202609EnvironmentMetadataPathRoute = createRoute({
@@ -638,7 +671,11 @@ export const getCmsSourceCode202609EnvironmentMetadataPathRoute = createRoute({
     },
     default: ErrorResponse,
   },
-  security: [{ oauth2: ['content'] }],
+  security: [
+    { oauth2: ['cms.source_code.read'] },
+    { oauth2: ['marketplace_validation'] },
+    { oauth2: ['content'] },
+  ],
 })
 
 export const postCmsSourceCode202609EnvironmentValidatePathRoute = createRoute({
@@ -697,5 +734,10 @@ export const postCmsSourceCode202609EnvironmentValidatePathRoute = createRoute({
     },
   },
   responses: { default: ErrorResponse },
-  security: [{ oauth2: ['content'] }],
+  security: [
+    { oauth2: ['cms.source_code.read'] },
+    { oauth2: ['marketplace_validation'] },
+    { oauth2: ['content'] },
+    { oauth2: ['cms.source_code.write'] },
+  ],
 })

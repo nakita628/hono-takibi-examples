@@ -1,5 +1,575 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const AudioSchema = z
+  .object({
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The media object ID returned when the media is successfully uploaded to the media endpoint.',
+        example: 'your-media-id',
+      }),
+    link: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The protocol and URL of the media to be sent. Use only with HTTP/HTTPS URLs. Either id or link must be provided, not both.',
+        example: 'http://www.example.com/file',
+      }),
+  })
+  .openapi({
+    description: 'The media object containing audio details.',
+    example: { id: 'f043afd0-f0ae-4b9c-ab3d-696fb4c8cd68' },
+    title: 'Audio',
+    required: [],
+  })
+  .openapi('Audio')
+
+const WhatsAppContactAddressSchema = z
+  .object({
+    city: z.string().openapi({ description: 'City name' }),
+    country: z.string().openapi({ description: 'Full country name' }),
+    country_code: z.string().openapi({ description: 'Two-letter country abbreviation' }),
+    state: z.string().openapi({ description: 'State abbreviation' }),
+    street: z.string().openapi({ description: 'Street number and name' }),
+    type: z.string().openapi({ description: 'Standard Values: HOME, WORK' }),
+    zip: z.string().openapi({ description: 'ZIP code' }),
+  })
+  .openapi({
+    example: {
+      city: 'Menlo Park',
+      country: 'United States',
+      country_code: 'us',
+      state: 'CA',
+      street: '1 Hacker Way',
+      type: 'HOME',
+      zip: '94025',
+    },
+    required: ['city', 'country', 'country_code', 'state', 'street', 'type', 'zip'],
+    title: 'Address',
+  })
+  .openapi('WhatsAppContactAddress')
+
+const EmailSchema = z
+  .object({ email: z.string(), type: z.string() })
+  .openapi({
+    example: { email: "<Contact's Email>", type: "<Contact's Email Type>" },
+    required: ['email', 'type'],
+    title: 'Email',
+  })
+  .openapi('Email')
+
+const NameSchema = z
+  .object({
+    first_name: z.string().exactOptional().openapi({ description: 'First name' }),
+    formatted_name: z.string().openapi({ description: 'Full name as it normally appears' }),
+    last_name: z.string().exactOptional().openapi({ description: 'Last name' }),
+    prefix: z.string().exactOptional().openapi({ description: 'Name preffix' }),
+    suffix: z.string().exactOptional().openapi({ description: 'Name suffix' }),
+  })
+  .openapi({
+    description: 'Full contact name',
+    example: { first_name: 'John', formatted_name: 'John Smith', last_name: 'Smith' },
+    required: ['formatted_name'],
+    title: 'Name',
+  })
+  .openapi('Name')
+
+const OrganizationSchema = z
+  .object({
+    company: z.string().openapi({ description: "Name of the contact's company" }),
+    department: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "Name of the contact's department" }),
+    title: z.string().exactOptional().openapi({ description: "Contact's business title" }),
+  })
+  .openapi({
+    description: 'Contact organization information',
+    example: { company: 'WhatsApp', department: 'Design', title: 'Manager' },
+    required: ['company'],
+    title: 'Organization',
+  })
+  .openapi('Organization')
+
+const PhoneSchema = z
+  .object({
+    id: z.string().exactOptional().openapi({ description: 'WhatsApp ID' }),
+    phone: z.string().exactOptional(),
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Standard Values: CELL, MAIN, IPHONE, HOME, WORK' }),
+  })
+  .openapi({
+    example: { id: '16505551234', phone: '+1 (650) 555-1234', type: 'WORK' },
+    title: 'Phone Number',
+    required: [],
+  })
+  .openapi('Phone')
+
+const UrlSchema = z
+  .object({
+    type: z.string().exactOptional().openapi({ description: 'Standard Values: HOME, WORK' }),
+    url: z.string().exactOptional().openapi({ description: 'URL' }),
+  })
+  .openapi({
+    description: 'Standard Values: HOME, WORK',
+    example: { type: 'WORK', url: 'https://www.facebook.com' },
+    title: 'Root Type for Url',
+    required: [],
+  })
+  .openapi('Url')
+
+const ContactSchema = z
+  .object({
+    addresses: z
+      .array(WhatsAppContactAddressSchema)
+      .exactOptional()
+      .openapi({ description: 'Full contact address(es)' }),
+    birthday: z.string().exactOptional().openapi({ description: 'YYYY-MM-DD formatted string' }),
+    emails: z
+      .array(EmailSchema)
+      .exactOptional()
+      .openapi({ description: 'Contact email address(es)' }),
+    ims: z.array(z.string()).exactOptional().openapi({ description: '' }),
+    name: NameSchema.exactOptional(),
+    org: OrganizationSchema.exactOptional(),
+    phones: z
+      .array(PhoneSchema)
+      .exactOptional()
+      .openapi({ description: 'Contact phone number(s)' }),
+    urls: z.array(UrlSchema).exactOptional().openapi({ description: 'Contact URL(s)' }),
+  })
+  .openapi({
+    example: {
+      addresses: [
+        {
+          city: 'Menlo Park',
+          country: 'United States',
+          country_code: 'us',
+          state: 'CA',
+          street: '1 Hacker Way',
+          type: 'HOME',
+          zip: '94025',
+        },
+        {
+          city: 'Menlo Park',
+          country: 'United States',
+          country_code: 'us',
+          state: 'CA',
+          street: '200 Jefferson Dr',
+          type: 'WORK',
+          zip: '94025',
+        },
+      ],
+      birthday: '2012-08-18',
+      emails: [
+        { email: 'test@fb.com', type: 'WORK' },
+        { email: 'test@whatsapp.com', type: 'WORK' },
+      ],
+      name: { first_name: 'John', formatted_name: 'John Smith', last_name: 'Smith' },
+      org: { company: 'WhatsApp', department: 'Design', title: 'Manager' },
+      phones: [
+        { phone: '+1 (940) 555-1234', type: 'HOME' },
+        { id: '16505551234', phone: '+1 (650) 555-1234', type: 'WORK' },
+      ],
+      urls: [{ type: 'WORK', url: 'https://www.facebook.com' }],
+    },
+    title: 'Contact',
+    required: [],
+  })
+  .openapi('Contact')
+
+const DocumentSchema = z
+  .object({
+    caption: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Describes the specified media.', example: 'My cool media!' }),
+    filename: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Describes the filename for the specific document.',
+        example: 'example.pdf',
+      }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The media object ID returned when the media is successfully uploaded to the media endpoint.',
+        example: 'f043afd0-f0ae-4b9c-ab3d-696fb4c8cd68',
+      }),
+    link: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The protocol and URL of the media to be sent. Use only with HTTP/HTTPS URLs. Either id or link must be provided, not both.',
+        example: 'http://www.example.com/file',
+      }),
+  })
+  .openapi({
+    description: 'The media object containing a document reference',
+    example: {
+      caption: 'Very important document',
+      filename: 'example.pdf',
+      id: 'f043afd0-f0ae-4b9c-ab3d-696fb4c8cd68',
+    },
+    title: 'Document',
+    required: [],
+  })
+  .openapi('Document')
+
+const LanguageSchema = z
+  .object({
+    code: z
+      .string()
+      .openapi({
+        description:
+          'The code of the language or locale to use — Accepts both language and language_locale formats (e.g., en and en_US).',
+      }),
+    policy: z
+      .enum(['fallback', 'deterministic'])
+      .openapi({ description: 'The language policy the message should follow' }),
+  })
+  .openapi({
+    example: { code: 'en', policy: 'deterministic' },
+    required: ['policy', 'code'],
+    title: 'Language',
+  })
+  .openapi('Language')
+
+const CurrencySchema = z
+  .object({
+    amount_1000: z.int32(),
+    currency_code: z.string(),
+    fallback_value: z.string().exactOptional(),
+  })
+  .openapi({
+    description: '',
+    example: { amount_1000: 100990, currency_code: 'USD' },
+    required: ['amount_1000', 'currency_code'],
+    title: 'Currency',
+  })
+  .openapi('Currency')
+
+const DateTimeComponentSchema = z
+  .object({
+    day_of_month: z.int32().exactOptional().openapi({ description: 'The day of month' }),
+    day_of_week: z
+      .union([
+        z.literal(1),
+        z.literal(2),
+        z.literal(3),
+        z.literal(4),
+        z.literal(5),
+        z.literal(6),
+        z.literal(7),
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'Both strings and numbers are accepted. If different from the value derived from the date (if specified), use the derived value.',
+        'x-enum-descriptions': [
+          'Monday',
+          'Tuesday',
+          'Wednesday',
+          'Thursday',
+          'Friday',
+          'Saturday',
+          'Sunday',
+        ],
+        'x-enum-varnames': [
+          'MONDAY',
+          'TUESDAY',
+          'WEDNESDAY',
+          'THURSDAY',
+          'FRIDAY',
+          'SATURDAY',
+          'SUNDAY',
+        ],
+      }),
+    hour: z.int32().exactOptional().openapi({ description: 'The hour' }),
+    minute: z.int32().exactOptional().openapi({ description: 'The minute' }),
+    month: z.int32().exactOptional().openapi({ description: 'The month' }),
+    year: z.int32().exactOptional().openapi({ description: 'The year' }),
+  })
+  .openapi({
+    description: 'Date/time by component',
+    example: { day_of_month: 25, day_of_week: 5, hour: 15, minute: 33, month: 2, year: 1977 },
+    title: 'Date Time by Component',
+    required: [],
+  })
+  .openapi('DateTimeComponent')
+
+const DateTimeUnixEpochSchema = z
+  .object({
+    timestamp: z.int32().exactOptional().openapi({ description: 'Epoch timestamp in seconds' }),
+  })
+  .openapi({
+    description: 'Date/time by Unix epoch',
+    example: { timestamp: 123456789 },
+    title: 'Date Time by Unix Epoch',
+    required: [],
+  })
+  .openapi('DateTimeUnixEpoch')
+
+const DateTimeObjectSchema = z
+  .object({
+    component: DateTimeComponentSchema.exactOptional(),
+    unix_epoch: DateTimeUnixEpochSchema.exactOptional(),
+  })
+  .openapi({
+    description:
+      'The Whatsapp Business API Client will attempt to format the date/time based on a specified localization.',
+    example: {
+      component: { day_of_month: 25, day_of_week: 5, hour: 15, minute: 33, month: 2, year: 1977 },
+    },
+    title: 'Date Time Object',
+    required: [],
+  })
+  .openapi('DateTimeObject')
+
+const LocalizableParamSchema = z
+  .object({
+    currency: CurrencySchema.exactOptional(),
+    date_time: DateTimeObjectSchema.exactOptional(),
+    default: z.string().openapi({ description: 'Default text if localization fails' }),
+  })
+  .openapi({
+    example: { default: '<param value>' },
+    required: ['default'],
+    title: 'LocalizableParam',
+  })
+  .openapi('LocalizableParam')
+
+const HsmSchema = z
+  .object({
+    element_name: z
+      .string()
+      .openapi({
+        description: 'The element name that indicates which template to use within the namespace',
+      }),
+    language: LanguageSchema,
+    localizable_params: z
+      .array(LocalizableParamSchema)
+      .openapi({
+        description: 'This field is an array of values to apply to variables in the template',
+      }),
+    namespace: z.string().openapi({ description: 'The namespace that will be used' }),
+  })
+  .openapi({
+    description:
+      'The containing element for the message content — Indicates that the message is highly structured. Parameters contained within provide the structure.',
+    example: {
+      element_name: 'hello_world',
+      language: { code: 'en', policy: 'deterministic' },
+      localizable_params: [{ default: '1234' }],
+      namespace: 'business_a_namespace',
+    },
+    required: ['namespace', 'element_name', 'language', 'localizable_params'],
+    title: 'Hsm',
+  })
+  .openapi('Hsm')
+
+const ImageSchema = z
+  .object({
+    caption: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Describes the specified media.', example: 'My cool media!' }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The media object ID returned when the media is successfully uploaded to the media endpoint.',
+        example: 'f043afd0-f0ae-4b9c-ab3d-696fb4c8cd68',
+      }),
+    link: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The protocol and URL of the media to be sent. Use only with HTTP/HTTPS URLs. Either id or link must be provided, not both.',
+        example: 'http://www.example.com/file',
+      }),
+  })
+  .openapi({
+    description: 'The media object containing an image',
+    example: { caption: 'My cool media!', id: 'f043afd0-f0ae-4b9c-ab3d-696fb4c8cd68' },
+    title: 'Image',
+    required: [],
+  })
+  .openapi('Image')
+
+const LocationSchema = z
+  .object({
+    address: z
+      .string()
+      .openapi({ description: 'Address of the location. Only displayed if name is present.' }),
+    latitude: z.string().openapi({ description: 'Latitude of the location' }),
+    longitude: z.string().openapi({ description: 'Longitude of the location' }),
+    name: z.string().openapi({ description: 'Name of the location' }),
+  })
+  .openapi({
+    example: {
+      address: "<Location's Address>",
+      latitude: '<Latitude>',
+      longitude: '<Longitude>',
+      name: '<Location Name>',
+    },
+    required: ['longitude', 'latitude', 'name', 'address'],
+    title: 'Location',
+  })
+  .openapi('Location')
+
+const VideoSchema = z
+  .object({
+    caption: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Describes the specified media.', example: 'My cool media!' }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The media object ID returned when the media is successfully uploaded to the media endpoint.',
+        example: 'f043afd0-f0ae-4b9c-ab3d-696fb4c8cd68',
+      }),
+    link: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The protocol and URL of the media to be sent. Use only with HTTP/HTTPS URLs. Either id or link must be provided, not both.',
+        example: 'http://www.example.com/file',
+      }),
+  })
+  .openapi({
+    description: 'The media object containing a video',
+    example: { caption: 'My cool media!', id: 'f043afd0-f0ae-4b9c-ab3d-696fb4c8cd68' },
+    title: 'Video',
+    required: [],
+  })
+  .openapi('Video')
+
+const TemplateParametersSchema = z
+  .array(
+    z
+      .object({
+        currency: CurrencySchema.exactOptional(),
+        date_time: DateTimeObjectSchema.exactOptional(),
+        document: DocumentSchema.exactOptional(),
+        image: ImageSchema.exactOptional(),
+        text: z.string().exactOptional(),
+        type: z
+          .enum(['text', 'currency', 'date_time', 'image', 'document', 'video'])
+          .openapi({ description: 'Describes the parameter type.' }),
+        video: VideoSchema.exactOptional(),
+      })
+      .openapi({
+        description: 'Array containing the content of the message.',
+        required: ['type'],
+        title: 'Template Parameters',
+      }),
+  )
+  .openapi({ title: 'Template Component Parameters' })
+  .openapi('TemplateParameters')
+
+const TemplateComponentsSchema = z
+  .array(
+    z
+      .object({
+        parameters: TemplateParametersSchema.exactOptional(),
+        type: z
+          .enum(['header', 'body', 'footer'])
+          .openapi({ description: 'Describes the component type.' }),
+      })
+      .openapi({ description: '', required: ['type'], title: 'Template Components' }),
+  )
+  .openapi({ title: 'Template Components' })
+  .openapi('TemplateComponents')
+
+const TemplateSchema = z
+  .object({
+    components: TemplateComponentsSchema.exactOptional(),
+    language: LanguageSchema,
+    name: z.string().openapi({ description: 'Name of the template.' }),
+    namespace: z
+      .string()
+      .openapi({
+        description:
+          'Namespace of the template. This must be the namespace associated with the WhatsApp business account that owns the phone number associated with the current WhatsApp Business API client or the message fails to send.',
+      }),
+  })
+  .openapi({ required: ['namespace', 'name', 'language'], title: 'Template' })
+  .openapi('Template')
+
+const TextSchema = z
+  .object({ body: z.string() })
+  .openapi({ example: { body: '<Message Text>' }, required: ['body'], title: 'Text' })
+  .openapi('Text')
+
+const MessageTypeSchema = z
+  .enum([
+    'audio',
+    'contacts',
+    'document',
+    'hsm',
+    'image',
+    'location',
+    'template',
+    'text',
+    'video',
+    'voice',
+    'unknown',
+  ])
+  .default('text')
+  .openapi({ description: 'type of the message', title: 'Message Type' })
+  .openapi('MessageType')
+
+type CreateWhatsAppMessageRequestType = {
+  audio?: z.infer<typeof AudioSchema>
+  contacts?: z.infer<typeof ContactSchema>[]
+  document?: z.infer<typeof DocumentSchema>
+  hsm?: z.infer<typeof HsmSchema>
+  image?: z.infer<typeof ImageSchema>
+  location?: z.infer<typeof LocationSchema>
+  preview_url?: boolean
+  template?: z.infer<typeof TemplateSchema>
+  text?: z.infer<typeof TextSchema>
+  to: string
+  type?: z.infer<typeof MessageTypeSchema>
+  video?: z.infer<typeof VideoSchema>
+  whatsapp_user_id: string
+}
+
+const ActivationStatusSchema = z
+  .enum([
+    'New',
+    'Pending',
+    'Conflict',
+    'Cancel Pending',
+    'Failed',
+    'Concurred',
+    'Activate RDY',
+    'Disconnect Pending',
+    'Concurrence Sent',
+    'Old',
+    'Sending',
+    'Active',
+    'Canceled',
+  ])
+  .openapi({ description: 'Activation status', example: 'Active' })
+  .openapi('ActivationStatus')
+
 const AddressBookSchema = z
   .boolean()
   .default(true)
@@ -129,508 +699,47 @@ const ValidateAddress2Schema = z
   })
   .openapi('ValidateAddress2')
 
-type AddressType = {
-  address_book?: z.infer<typeof AddressBookSchema>
-  administrative_area?: z.infer<typeof AdministrativeAreaSchema>
-  borough?: z.infer<typeof BoroughSchema>
-  business_name?: z.infer<typeof BusinessNameSchema>
-  country_code?: z.infer<typeof CountryCodeSchema>
-  created_at?: string
-  customer_reference?: z.infer<typeof CustomerReferenceSchema>
-  extended_address?: z.infer<typeof ExtendedAddressSchema>
-  first_name?: z.infer<typeof FirstNameSchema>
-  id?: string
-  last_name?: z.infer<typeof LastNameSchema>
-  locality?: z.infer<typeof LocalitySchema>
-  neighborhood?: z.infer<typeof NeighborhoodSchema>
-  phone_number?: z.infer<typeof PhoneNumber2Schema>
-  postal_code?: z.infer<typeof PostalCodeSchema>
-  record_type?: string
-  street_address?: z.infer<typeof StreetAddressSchema>
-  updated_at?: string
-  validate_address?: z.infer<typeof ValidateAddress2Schema>
-}
-
-const MessageDetailRecordSchema = z
+const AddressSchema = z
   .object({
-    carrier: z
+    address_book: AddressBookSchema.exactOptional(),
+    administrative_area: AdministrativeAreaSchema.exactOptional(),
+    borough: BoroughSchema.exactOptional(),
+    business_name: BusinessNameSchema.exactOptional(),
+    country_code: CountryCodeSchema.exactOptional(),
+    created_at: z
       .string()
       .exactOptional()
       .openapi({
-        description: 'Country-specific carrier used to send or receive the message',
-        example: 'T-Mobile USA',
+        description: 'ISO 8601 formatted date indicating when the resource was created.',
+        example: '2018-02-02T22:25:27.521Z',
       }),
-    carrier_fee: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Fee charged by certain carriers in order to deliver certain message types. Telnyx passes this fee on to the customer according to our pricing table',
-        example: '0.003',
-      }),
-    cld: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The recipient of the message (to parameter in the Messaging API)',
-        example: '+1555123456',
-      }),
-    cli: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The sender of the message (from parameter in the Messaging API). For Alphanumeric ID messages, this is the sender ID value',
-        example: '+1555123456',
-      }),
-    completed_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'Message completion time', example: '2020-07-01T00:00:00Z' }),
-    cost: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Amount, in the user currency, for the Telnyx billing cost',
-        example: '0.003',
-      }),
-    country_code: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Two-letter representation of the country of the cld property using the ISO 3166-1 alpha-2 format',
-        example: 'US',
-      }),
-    created_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'Message creation time', example: '2020-07-01T00:00:00Z' }),
-    currency: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Telnyx account currency used to describe monetary values, including billing cost',
-        example: 'USD',
-      }),
-    delivery_status: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Final webhook delivery status',
-        example: 'success: webhook succeeded',
-      }),
-    delivery_status_failover_url: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Failover customer-provided URL which Telnyx posts delivery status webhooks to',
-        example: 'https://api.example.com/sms/telnyx/inbound',
-      }),
-    delivery_status_webhook_url: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Primary customer-provided URL which Telnyx posts delivery status webhooks to',
-        example: 'https://api.example.com/sms/telnyx/inbound',
-      }),
-    direction: z
-      .enum(['inbound', 'outbound'])
-      .exactOptional()
-      .openapi({
-        description:
-          "Logical direction of the message from the Telnyx customer's perspective. It's inbound when the Telnyx customer receives the message, or outbound otherwise",
-        example: 'outbound',
-      }),
-    errors: z
-      .array(z.string().openapi({ example: '40001' }))
-      .exactOptional()
-      .openapi({ description: 'Telnyx API error codes returned by the Telnyx gateway' }),
-    fteu: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Indicates whether this is a Free-To-End-User (FTEU) short code message',
-        example: false,
-      }),
-    mcc: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Mobile country code. Only available for certain products, such as Global Outbound-Only from Alphanumeric Sender ID',
-        example: '204',
-      }),
-    message_type: z
-      .enum(['SMS', 'MMS', 'RCS'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Describes the Messaging service used to send the message. Available services are: Short Message Service (SMS), Multimedia Messaging Service (MMS), and Rich Communication Services (RCS)',
-        example: 'SMS',
-      }),
-    mnc: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Mobile network code. Only available for certain products, such as Global Outbound-Only from Alphanumeric Sender ID',
-        example: '01',
-      }),
-    on_net: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Indicates whether both sender and recipient numbers are Telnyx-managed',
-        example: true,
-      }),
-    parts: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description:
-          'Number of message parts. The message is broken down in multiple parts when its length surpasses the limit of 160 characters',
-        example: 2,
-      }),
-    profile_id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Unique identifier of the Messaging Profile used to send or receive the message',
-        example: '30ef55db-c4a2-4c4a-9804-a68077973d07',
-      }),
-    profile_name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Name of the Messaging Profile used to send or receive the message',
-        example: 'My Messaging Profile',
-      }),
-    rate: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Currency amount per billing unit used to calculate the Telnyx billing cost',
-        example: '0.003',
-      }),
-    record_type: z
-      .string()
-      .default('message_detail_record')
-      .openapi({ description: 'Identifies the record schema', example: 'message_detail_record' }),
-    sent_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'Time when the message was sent', example: '2020-07-01T00:00:00Z' }),
-    source_country_code: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Two-letter representation of the country of the cli property using the ISO 3166-1 alpha-2 format',
-        example: 'US',
-      }),
-    status: z
-      .enum([
-        'gw_timeout',
-        'delivered',
-        'dlr_unconfirmed',
-        'dlr_timeout',
-        'received',
-        'gw_reject',
-        'failed',
-      ])
-      .exactOptional()
-      .openapi({
-        description: 'Final status of the message after the delivery attempt',
-        example: 'delivered',
-      }),
-    tags: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Comma-separated tags assigned to the Telnyx number associated with the message',
-        example: 'tag1,tag2,tag3',
-      }),
-    updated_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'Message updated time', example: '2020-07-01T00:00:00Z' }),
-    user_id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Identifier of the Telnyx account who owns the message',
-        example: '3ca7bd3d-7d82-4e07-9df4-009123068320',
-      }),
-    uuid: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Unique identifier of the message',
-        example: '3ca7bd3d-7d82-4e07-9df4-009123068320',
-      }),
-  })
-  .openapi({ required: ['record_type'] })
-  .openapi('MessageDetailRecord')
-
-const ConferenceDetailRecordSchema = z
-  .object({
-    call_leg_id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Telnyx UUID that identifies the conference call leg',
-        example: '3ca7bd3d-7d82-4e07-9df4-009123068320',
-      }),
-    call_sec: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'Duration of the conference call in seconds', example: 100 }),
-    call_session_id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Telnyx UUID that identifies with conference call session',
-        example: '3ca7bd3d-7d82-4e07-9df4-009123068320',
-      }),
-    connection_id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Connection id', example: '1583941447772537867' }),
-    ended_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'Conference end time', example: '2020-07-01T00:00:00-06:00' }),
-    expires_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'Conference expiry time', example: '2020-07-01T00:00:00-06:00' }),
+    customer_reference: CustomerReferenceSchema.exactOptional(),
+    extended_address: ExtendedAddressSchema.exactOptional(),
+    first_name: FirstNameSchema.exactOptional(),
     id: z
       .string()
       .exactOptional()
-      .openapi({ description: 'Conference id', example: '3ca7bd3d-7d82-4e07-9df4-009123068320' }),
-    is_telnyx_billable: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Indicates whether Telnyx billing charges might be applicable',
-        example: false,
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Conference name', example: 'My Conference' }),
-    participant_call_sec: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'Sum of the conference call duration for all participants in seconds',
-        example: 100,
-      }),
-    participant_count: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'Number of participants that joined the conference call',
-        example: 5,
-      }),
+      .openapi({ description: 'Uniquely identifies the address.', example: '1293384261075731499' }),
+    last_name: LastNameSchema.exactOptional(),
+    locality: LocalitySchema.exactOptional(),
+    neighborhood: NeighborhoodSchema.exactOptional(),
+    phone_number: PhoneNumber2Schema.exactOptional(),
+    postal_code: PostalCodeSchema.exactOptional(),
     record_type: z
       .string()
-      .default('conference_detail_record')
-      .openapi({ example: 'conference_detail_record' }),
-    region: z
+      .exactOptional()
+      .openapi({ description: 'Identifies the type of the resource.', example: 'address' }),
+    street_address: StreetAddressSchema.exactOptional(),
+    updated_at: z
       .string()
       .exactOptional()
-      .openapi({ description: 'Region where the conference is hosted', example: 'ch1' }),
-    started_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'Conference start time', example: '2020-07-01T00:00:00-06:00' }),
-    user_id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'User id', example: '3ca7bd3d-7d82-4e07-9df4-009123068320' }),
+      .openapi({
+        description: 'ISO 8601 formatted date indicating when the resource was updated.',
+        example: '2018-02-02T22:25:27.521Z',
+      }),
+    validate_address: ValidateAddress2Schema.exactOptional(),
   })
-  .openapi({ required: ['record_type'] })
-  .openapi('ConferenceDetailRecord')
-
-const ConferenceParticipantDetailRecordSchema = z
-  .object({
-    billed_sec: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'Duration of the conference call for billing purposes',
-        example: 120,
-      }),
-    call_leg_id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Telnyx UUID that identifies the conference call leg',
-        example: '3ca7bd3d-7d82-4e07-9df4-009123068320',
-      }),
-    call_sec: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'Duration of the conference call in seconds', example: 100 }),
-    call_session_id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Telnyx UUID that identifies with conference call session',
-        example: '3ca7bd3d-7d82-4e07-9df4-009123068320',
-      }),
-    conference_id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Conference id', example: '3ca7bd3d-7d82-4e07-9df4-009123068320' }),
-    cost: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Currency amount for Telnyx billing cost', example: '0.004' }),
-    currency: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Telnyx account currency used to describe monetary values, including billing cost',
-        example: 'USD',
-      }),
-    destination_number: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Number called by the participant to join the conference',
-        example: '+18005550199',
-      }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Participant id', example: '3ca7bd3d-7d82-4e07-9df4-009123068320' }),
-    is_telnyx_billable: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Indicates whether Telnyx billing charges might be applicable',
-        example: true,
-      }),
-    joined_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'Participant join time', example: '2020-07-01T00:00:00-06:00' }),
-    left_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'Participant leave time', example: '2020-07-01T00:00:00-06:00' }),
-    originating_number: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Participant origin number used in the conference call',
-        example: '+18005550199',
-      }),
-    rate: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Currency amount per billing unit used to calculate the Telnyx billing cost',
-        example: '0.002',
-      }),
-    rate_measured_in: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Billing unit used to calculate the Telnyx billing cost',
-        example: 'minutes',
-      }),
-    record_type: z
-      .string()
-      .default('conference_participant_detail_record')
-      .openapi({ example: 'conference_participant_detail_record' }),
-    user_id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'User id', example: '3ca7bd3d-7d82-4e07-9df4-009123068320' }),
-  })
-  .openapi({ required: ['record_type'] })
-  .openapi('ConferenceParticipantDetailRecord')
-
-type DetailRecordType =
-  | z.infer<typeof MessageDetailRecordSchema>
-  | z.infer<typeof ConferenceDetailRecordSchema>
-  | z.infer<typeof ConferenceParticipantDetailRecordSchema>
-
-const ActivationStatusSchema = z
-  .enum([
-    'New',
-    'Pending',
-    'Conflict',
-    'Cancel Pending',
-    'Failed',
-    'Concurred',
-    'Activate RDY',
-    'Disconnect Pending',
-    'Concurrence Sent',
-    'Old',
-    'Sending',
-    'Active',
-    'Canceled',
-  ])
-  .openapi({ description: 'Activation status', example: 'Active' })
-  .openapi('ActivationStatus')
-
-const AddressSchema: z.ZodType<AddressType> = z
-  .lazy(() =>
-    z
-      .object({
-        address_book: AddressBookSchema.exactOptional(),
-        administrative_area: AdministrativeAreaSchema.exactOptional(),
-        borough: BoroughSchema.exactOptional(),
-        business_name: BusinessNameSchema.exactOptional(),
-        country_code: CountryCodeSchema.exactOptional(),
-        created_at: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'ISO 8601 formatted date indicating when the resource was created.',
-            example: '2018-02-02T22:25:27.521Z',
-          }),
-        customer_reference: CustomerReferenceSchema.exactOptional(),
-        extended_address: ExtendedAddressSchema.exactOptional(),
-        first_name: FirstNameSchema.exactOptional(),
-        id: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'Uniquely identifies the address.',
-            example: '1293384261075731499',
-          }),
-        last_name: LastNameSchema.exactOptional(),
-        locality: LocalitySchema.exactOptional(),
-        neighborhood: NeighborhoodSchema.exactOptional(),
-        phone_number: PhoneNumber2Schema.exactOptional(),
-        postal_code: PostalCodeSchema.exactOptional(),
-        record_type: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Identifies the type of the resource.', example: 'address' }),
-        street_address: StreetAddressSchema.exactOptional(),
-        updated_at: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'ISO 8601 formatted date indicating when the resource was updated.',
-            example: '2018-02-02T22:25:27.521Z',
-          }),
-        validate_address: ValidateAddress2Schema.exactOptional(),
-      })
-      .openapi({ title: 'Address', required: [] }),
-  )
+  .openapi({ title: 'Address', required: [] })
   .openapi('Address')
 
 const AddressCreateSchema = z
@@ -745,33 +854,6 @@ const ApplicationNameSchema = z
     title: 'Application Name',
   })
   .openapi('ApplicationName')
-
-const AudioSchema = z
-  .object({
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The media object ID returned when the media is successfully uploaded to the media endpoint.',
-        example: 'your-media-id',
-      }),
-    link: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The protocol and URL of the media to be sent. Use only with HTTP/HTTPS URLs. Either id or link must be provided, not both.',
-        example: 'http://www.example.com/file',
-      }),
-  })
-  .openapi({
-    description: 'The media object containing audio details.',
-    example: { id: 'f043afd0-f0ae-4b9c-ab3d-696fb4c8cd68' },
-    title: 'Audio',
-    required: [],
-  })
-  .openapi('Audio')
 
 const ActiveSchema = z
   .boolean()
@@ -1916,7 +1998,7 @@ const CallEventSchema = z
       .string()
       .openapi({ description: 'Event timestamp', example: '2019-03-29T11:10:19.127783Z' }),
     metadata: z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'Event metadata, which includes raw event, and extra information based on event type',
@@ -4167,9 +4249,21 @@ const CdrUsageReportResponseSchema = z
       .enum(['NO_AGGREGATION', 'CONNECTION', 'TAG', 'BILLING_GROUP'])
       .exactOptional(),
     connections: z
-      .object({ empty: z.boolean().exactOptional() })
+      .array(
+        z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({ type: 'integer', format: 'int64' }),
+      )
       .exactOptional()
-      .openapi({ example: '[1234567890L, 9876543210L]', required: [] }),
+      .openapi({ example: '[1234567890L, 9876543210L]' }),
     created_at: z.iso
       .datetime({ offset: true })
       .exactOptional()
@@ -4187,7 +4281,7 @@ const CdrUsageReportResponseSchema = z
       .string()
       .exactOptional()
       .openapi({ example: 'http://portal.telnyx.com/downloads/report_name_8hvb45Gu.csv' }),
-    result: z.object({}).exactOptional(),
+    result: z.looseObject({}).exactOptional(),
     start_time: z.iso
       .datetime({ offset: true })
       .exactOptional()
@@ -4805,6 +4899,87 @@ const ConferenceCreatedEventSchema = z
   .openapi({ title: 'Conference Created Event', required: [] })
   .openapi('ConferenceCreatedEvent')
 
+const ConferenceDetailRecordSchema = z
+  .object({
+    call_leg_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Telnyx UUID that identifies the conference call leg',
+        example: '3ca7bd3d-7d82-4e07-9df4-009123068320',
+      }),
+    call_sec: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'Duration of the conference call in seconds', example: 100 }),
+    call_session_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Telnyx UUID that identifies with conference call session',
+        example: '3ca7bd3d-7d82-4e07-9df4-009123068320',
+      }),
+    connection_id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Connection id', example: '1583941447772537867' }),
+    ended_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'Conference end time', example: '2020-07-01T00:00:00-06:00' }),
+    expires_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'Conference expiry time', example: '2020-07-01T00:00:00-06:00' }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Conference id', example: '3ca7bd3d-7d82-4e07-9df4-009123068320' }),
+    is_telnyx_billable: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Indicates whether Telnyx billing charges might be applicable',
+        example: false,
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Conference name', example: 'My Conference' }),
+    participant_call_sec: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'Sum of the conference call duration for all participants in seconds',
+        example: 100,
+      }),
+    participant_count: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'Number of participants that joined the conference call',
+        example: 5,
+      }),
+    record_type: z
+      .string()
+      .default('conference_detail_record')
+      .openapi({ example: 'conference_detail_record' }),
+    region: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Region where the conference is hosted', example: 'ch1' }),
+    started_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'Conference start time', example: '2020-07-01T00:00:00-06:00' }),
+    user_id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'User id', example: '3ca7bd3d-7d82-4e07-9df4-009123068320' }),
+  })
+  .openapi({ required: ['record_type'] })
+  .openapi('ConferenceDetailRecord')
+
 const ConferenceEndedSchema = z
   .object({
     event_type: z
@@ -5058,6 +5233,108 @@ const ConferenceMuteRequestSchema = z
     required: [],
   })
   .openapi('ConferenceMuteRequest')
+
+const ConferenceParticipantDetailRecordSchema = z
+  .object({
+    billed_sec: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'Duration of the conference call for billing purposes',
+        example: 120,
+      }),
+    call_leg_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Telnyx UUID that identifies the conference call leg',
+        example: '3ca7bd3d-7d82-4e07-9df4-009123068320',
+      }),
+    call_sec: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'Duration of the conference call in seconds', example: 100 }),
+    call_session_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Telnyx UUID that identifies with conference call session',
+        example: '3ca7bd3d-7d82-4e07-9df4-009123068320',
+      }),
+    conference_id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Conference id', example: '3ca7bd3d-7d82-4e07-9df4-009123068320' }),
+    cost: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Currency amount for Telnyx billing cost', example: '0.004' }),
+    currency: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Telnyx account currency used to describe monetary values, including billing cost',
+        example: 'USD',
+      }),
+    destination_number: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Number called by the participant to join the conference',
+        example: '+18005550199',
+      }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Participant id', example: '3ca7bd3d-7d82-4e07-9df4-009123068320' }),
+    is_telnyx_billable: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Indicates whether Telnyx billing charges might be applicable',
+        example: true,
+      }),
+    joined_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'Participant join time', example: '2020-07-01T00:00:00-06:00' }),
+    left_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'Participant leave time', example: '2020-07-01T00:00:00-06:00' }),
+    originating_number: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Participant origin number used in the conference call',
+        example: '+18005550199',
+      }),
+    rate: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Currency amount per billing unit used to calculate the Telnyx billing cost',
+        example: '0.002',
+      }),
+    rate_measured_in: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Billing unit used to calculate the Telnyx billing cost',
+        example: 'minutes',
+      }),
+    record_type: z
+      .string()
+      .default('conference_participant_detail_record')
+      .openapi({ example: 'conference_participant_detail_record' }),
+    user_id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'User id', example: '3ca7bd3d-7d82-4e07-9df4-009123068320' }),
+  })
+  .openapi({ required: ['record_type'] })
+  .openapi('ConferenceParticipantDetailRecord')
 
 const ConferenceParticipantJoinedSchema = z
   .object({
@@ -6572,162 +6849,6 @@ const ConsumedDataSchema = z
     required: [],
   })
   .openapi('ConsumedData')
-
-const WhatsAppContactAddressSchema = z
-  .object({
-    city: z.string().openapi({ description: 'City name' }),
-    country: z.string().openapi({ description: 'Full country name' }),
-    country_code: z.string().openapi({ description: 'Two-letter country abbreviation' }),
-    state: z.string().openapi({ description: 'State abbreviation' }),
-    street: z.string().openapi({ description: 'Street number and name' }),
-    type: z.string().openapi({ description: 'Standard Values: HOME, WORK' }),
-    zip: z.string().openapi({ description: 'ZIP code' }),
-  })
-  .openapi({
-    example: {
-      city: 'Menlo Park',
-      country: 'United States',
-      country_code: 'us',
-      state: 'CA',
-      street: '1 Hacker Way',
-      type: 'HOME',
-      zip: '94025',
-    },
-    required: ['city', 'country', 'country_code', 'state', 'street', 'type', 'zip'],
-    title: 'Address',
-  })
-  .openapi('WhatsAppContactAddress')
-
-const EmailSchema = z
-  .object({ email: z.string(), type: z.string() })
-  .openapi({
-    example: { email: "<Contact's Email>", type: "<Contact's Email Type>" },
-    required: ['email', 'type'],
-    title: 'Email',
-  })
-  .openapi('Email')
-
-const NameSchema = z
-  .object({
-    first_name: z.string().exactOptional().openapi({ description: 'First name' }),
-    formatted_name: z.string().openapi({ description: 'Full name as it normally appears' }),
-    last_name: z.string().exactOptional().openapi({ description: 'Last name' }),
-    prefix: z.string().exactOptional().openapi({ description: 'Name preffix' }),
-    suffix: z.string().exactOptional().openapi({ description: 'Name suffix' }),
-  })
-  .openapi({
-    description: 'Full contact name',
-    example: { first_name: 'John', formatted_name: 'John Smith', last_name: 'Smith' },
-    required: ['formatted_name'],
-    title: 'Name',
-  })
-  .openapi('Name')
-
-const OrganizationSchema = z
-  .object({
-    company: z.string().openapi({ description: "Name of the contact's company" }),
-    department: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "Name of the contact's department" }),
-    title: z.string().exactOptional().openapi({ description: "Contact's business title" }),
-  })
-  .openapi({
-    description: 'Contact organization information',
-    example: { company: 'WhatsApp', department: 'Design', title: 'Manager' },
-    required: ['company'],
-    title: 'Organization',
-  })
-  .openapi('Organization')
-
-const PhoneSchema = z
-  .object({
-    id: z.string().exactOptional().openapi({ description: 'WhatsApp ID' }),
-    phone: z.string().exactOptional(),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Standard Values: CELL, MAIN, IPHONE, HOME, WORK' }),
-  })
-  .openapi({
-    example: { id: '16505551234', phone: '+1 (650) 555-1234', type: 'WORK' },
-    title: 'Phone Number',
-    required: [],
-  })
-  .openapi('Phone')
-
-const UrlSchema = z
-  .object({
-    type: z.string().exactOptional().openapi({ description: 'Standard Values: HOME, WORK' }),
-    url: z.string().exactOptional().openapi({ description: 'URL' }),
-  })
-  .openapi({
-    description: 'Standard Values: HOME, WORK',
-    example: { type: 'WORK', url: 'https://www.facebook.com' },
-    title: 'Root Type for Url',
-    required: [],
-  })
-  .openapi('Url')
-
-const ContactSchema = z
-  .object({
-    addresses: z
-      .array(WhatsAppContactAddressSchema)
-      .exactOptional()
-      .openapi({ description: 'Full contact address(es)' }),
-    birthday: z.string().exactOptional().openapi({ description: 'YYYY-MM-DD formatted string' }),
-    emails: z
-      .array(EmailSchema)
-      .exactOptional()
-      .openapi({ description: 'Contact email address(es)' }),
-    ims: z.array(z.string()).exactOptional().openapi({ description: '' }),
-    name: NameSchema.exactOptional(),
-    org: OrganizationSchema.exactOptional(),
-    phones: z
-      .array(PhoneSchema)
-      .exactOptional()
-      .openapi({ description: 'Contact phone number(s)' }),
-    urls: z.array(UrlSchema).exactOptional().openapi({ description: 'Contact URL(s)' }),
-  })
-  .openapi({
-    example: {
-      addresses: [
-        {
-          city: 'Menlo Park',
-          country: 'United States',
-          country_code: 'us',
-          state: 'CA',
-          street: '1 Hacker Way',
-          type: 'HOME',
-          zip: '94025',
-        },
-        {
-          city: 'Menlo Park',
-          country: 'United States',
-          country_code: 'us',
-          state: 'CA',
-          street: '200 Jefferson Dr',
-          type: 'WORK',
-          zip: '94025',
-        },
-      ],
-      birthday: '2012-08-18',
-      emails: [
-        { email: 'test@fb.com', type: 'WORK' },
-        { email: 'test@whatsapp.com', type: 'WORK' },
-      ],
-      name: { first_name: 'John', formatted_name: 'John Smith', last_name: 'Smith' },
-      org: { company: 'WhatsApp', department: 'Design', title: 'Manager' },
-      phones: [
-        { phone: '+1 (940) 555-1234', type: 'HOME' },
-        { id: '16505551234', phone: '+1 (650) 555-1234', type: 'WORK' },
-      ],
-      urls: [{ type: 'WORK', url: 'https://www.facebook.com' }],
-    },
-    title: 'Contact',
-    required: [],
-  })
-  .openapi('Contact')
 
 const CreateCallControlApplicationRequestSchema = z
   .object({
@@ -9851,359 +9972,7 @@ const CreateVerifyProfileWhatsappRequestSchema = z
   .openapi({ title: 'CreateVerifyProfileWhatsappRequest', required: [] })
   .openapi('CreateVerifyProfileWhatsappRequest')
 
-const DocumentSchema = z
-  .object({
-    caption: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Describes the specified media.', example: 'My cool media!' }),
-    filename: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Describes the filename for the specific document.',
-        example: 'example.pdf',
-      }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The media object ID returned when the media is successfully uploaded to the media endpoint.',
-        example: 'f043afd0-f0ae-4b9c-ab3d-696fb4c8cd68',
-      }),
-    link: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The protocol and URL of the media to be sent. Use only with HTTP/HTTPS URLs. Either id or link must be provided, not both.',
-        example: 'http://www.example.com/file',
-      }),
-  })
-  .openapi({
-    description: 'The media object containing a document reference',
-    example: {
-      caption: 'Very important document',
-      filename: 'example.pdf',
-      id: 'f043afd0-f0ae-4b9c-ab3d-696fb4c8cd68',
-    },
-    title: 'Document',
-    required: [],
-  })
-  .openapi('Document')
-
-const LanguageSchema = z
-  .object({
-    code: z
-      .string()
-      .openapi({
-        description:
-          'The code of the language or locale to use — Accepts both language and language_locale formats (e.g., en and en_US).',
-      }),
-    policy: z
-      .enum(['fallback', 'deterministic'])
-      .openapi({ description: 'The language policy the message should follow' }),
-  })
-  .openapi({
-    example: { code: 'en', policy: 'deterministic' },
-    required: ['policy', 'code'],
-    title: 'Language',
-  })
-  .openapi('Language')
-
-const CurrencySchema = z
-  .object({
-    amount_1000: z.int32(),
-    currency_code: z.string(),
-    fallback_value: z.string().exactOptional(),
-  })
-  .openapi({
-    description: '',
-    example: { amount_1000: 100990, currency_code: 'USD' },
-    required: ['amount_1000', 'currency_code'],
-    title: 'Currency',
-  })
-  .openapi('Currency')
-
-const DateTimeComponentSchema = z
-  .object({
-    day_of_month: z.int32().exactOptional().openapi({ description: 'The day of month' }),
-    day_of_week: z
-      .union([
-        z.literal(1),
-        z.literal(2),
-        z.literal(3),
-        z.literal(4),
-        z.literal(5),
-        z.literal(6),
-        z.literal(7),
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'Both strings and numbers are accepted. If different from the value derived from the date (if specified), use the derived value.',
-        'x-enum-descriptions': [
-          'Monday',
-          'Tuesday',
-          'Wednesday',
-          'Thursday',
-          'Friday',
-          'Saturday',
-          'Sunday',
-        ],
-        'x-enum-varnames': [
-          'MONDAY',
-          'TUESDAY',
-          'WEDNESDAY',
-          'THURSDAY',
-          'FRIDAY',
-          'SATURDAY',
-          'SUNDAY',
-        ],
-      }),
-    hour: z.int32().exactOptional().openapi({ description: 'The hour' }),
-    minute: z.int32().exactOptional().openapi({ description: 'The minute' }),
-    month: z.int32().exactOptional().openapi({ description: 'The month' }),
-    year: z.int32().exactOptional().openapi({ description: 'The year' }),
-  })
-  .openapi({
-    description: 'Date/time by component',
-    example: { day_of_month: 25, day_of_week: 5, hour: 15, minute: 33, month: 2, year: 1977 },
-    title: 'Date Time by Component',
-    required: [],
-  })
-  .openapi('DateTimeComponent')
-
-const DateTimeUnixEpochSchema = z
-  .object({
-    timestamp: z.int32().exactOptional().openapi({ description: 'Epoch timestamp in seconds' }),
-  })
-  .openapi({
-    description: 'Date/time by Unix epoch',
-    example: { timestamp: 123456789 },
-    title: 'Date Time by Unix Epoch',
-    required: [],
-  })
-  .openapi('DateTimeUnixEpoch')
-
-const DateTimeObjectSchema = z
-  .object({
-    component: DateTimeComponentSchema.exactOptional(),
-    unix_epoch: DateTimeUnixEpochSchema.exactOptional(),
-  })
-  .openapi({
-    description:
-      'The Whatsapp Business API Client will attempt to format the date/time based on a specified localization.',
-    example: {
-      component: { day_of_month: 25, day_of_week: 5, hour: 15, minute: 33, month: 2, year: 1977 },
-    },
-    title: 'Date Time Object',
-    required: [],
-  })
-  .openapi('DateTimeObject')
-
-const LocalizableParamSchema = z
-  .object({
-    currency: CurrencySchema.exactOptional(),
-    date_time: DateTimeObjectSchema.exactOptional(),
-    default: z.string().openapi({ description: 'Default text if localization fails' }),
-  })
-  .openapi({
-    example: { default: '<param value>' },
-    required: ['default'],
-    title: 'LocalizableParam',
-  })
-  .openapi('LocalizableParam')
-
-const HsmSchema = z
-  .object({
-    element_name: z
-      .string()
-      .openapi({
-        description: 'The element name that indicates which template to use within the namespace',
-      }),
-    language: LanguageSchema,
-    localizable_params: z
-      .array(LocalizableParamSchema)
-      .openapi({
-        description: 'This field is an array of values to apply to variables in the template',
-      }),
-    namespace: z.string().openapi({ description: 'The namespace that will be used' }),
-  })
-  .openapi({
-    description:
-      'The containing element for the message content — Indicates that the message is highly structured. Parameters contained within provide the structure.',
-    example: {
-      element_name: 'hello_world',
-      language: { code: 'en', policy: 'deterministic' },
-      localizable_params: [{ default: '1234' }],
-      namespace: 'business_a_namespace',
-    },
-    required: ['namespace', 'element_name', 'language', 'localizable_params'],
-    title: 'Hsm',
-  })
-  .openapi('Hsm')
-
-const ImageSchema = z
-  .object({
-    caption: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Describes the specified media.', example: 'My cool media!' }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The media object ID returned when the media is successfully uploaded to the media endpoint.',
-        example: 'f043afd0-f0ae-4b9c-ab3d-696fb4c8cd68',
-      }),
-    link: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The protocol and URL of the media to be sent. Use only with HTTP/HTTPS URLs. Either id or link must be provided, not both.',
-        example: 'http://www.example.com/file',
-      }),
-  })
-  .openapi({
-    description: 'The media object containing an image',
-    example: { caption: 'My cool media!', id: 'f043afd0-f0ae-4b9c-ab3d-696fb4c8cd68' },
-    title: 'Image',
-    required: [],
-  })
-  .openapi('Image')
-
-const LocationSchema = z
-  .object({
-    address: z
-      .string()
-      .openapi({ description: 'Address of the location. Only displayed if name is present.' }),
-    latitude: z.string().openapi({ description: 'Latitude of the location' }),
-    longitude: z.string().openapi({ description: 'Longitude of the location' }),
-    name: z.string().openapi({ description: 'Name of the location' }),
-  })
-  .openapi({
-    example: {
-      address: "<Location's Address>",
-      latitude: '<Latitude>',
-      longitude: '<Longitude>',
-      name: '<Location Name>',
-    },
-    required: ['longitude', 'latitude', 'name', 'address'],
-    title: 'Location',
-  })
-  .openapi('Location')
-
-const VideoSchema = z
-  .object({
-    caption: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Describes the specified media.', example: 'My cool media!' }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The media object ID returned when the media is successfully uploaded to the media endpoint.',
-        example: 'f043afd0-f0ae-4b9c-ab3d-696fb4c8cd68',
-      }),
-    link: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The protocol and URL of the media to be sent. Use only with HTTP/HTTPS URLs. Either id or link must be provided, not both.',
-        example: 'http://www.example.com/file',
-      }),
-  })
-  .openapi({
-    description: 'The media object containing a video',
-    example: { caption: 'My cool media!', id: 'f043afd0-f0ae-4b9c-ab3d-696fb4c8cd68' },
-    title: 'Video',
-    required: [],
-  })
-  .openapi('Video')
-
-const TemplateParametersSchema = z
-  .array(
-    z
-      .object({
-        currency: CurrencySchema.exactOptional(),
-        date_time: DateTimeObjectSchema.exactOptional(),
-        document: DocumentSchema.exactOptional(),
-        image: ImageSchema.exactOptional(),
-        text: z.string().exactOptional(),
-        type: z
-          .enum(['text', 'currency', 'date_time', 'image', 'document', 'video'])
-          .openapi({ description: 'Describes the parameter type.' }),
-        video: VideoSchema.exactOptional(),
-      })
-      .openapi({
-        description: 'Array containing the content of the message.',
-        required: ['type'],
-        title: 'Template Parameters',
-      }),
-  )
-  .openapi({ title: 'Template Component Parameters' })
-  .openapi('TemplateParameters')
-
-const TemplateComponentsSchema = z
-  .array(
-    z
-      .object({
-        parameters: TemplateParametersSchema.exactOptional(),
-        type: z
-          .enum(['header', 'body', 'footer'])
-          .openapi({ description: 'Describes the component type.' }),
-      })
-      .openapi({ description: '', required: ['type'], title: 'Template Components' }),
-  )
-  .openapi({ title: 'Template Components' })
-  .openapi('TemplateComponents')
-
-const TemplateSchema = z
-  .object({
-    components: TemplateComponentsSchema.exactOptional(),
-    language: LanguageSchema,
-    name: z.string().openapi({ description: 'Name of the template.' }),
-    namespace: z
-      .string()
-      .openapi({
-        description:
-          'Namespace of the template. This must be the namespace associated with the WhatsApp business account that owns the phone number associated with the current WhatsApp Business API client or the message fails to send.',
-      }),
-  })
-  .openapi({ required: ['namespace', 'name', 'language'], title: 'Template' })
-  .openapi('Template')
-
-const TextSchema = z
-  .object({ body: z.string() })
-  .openapi({ example: { body: '<Message Text>' }, required: ['body'], title: 'Text' })
-  .openapi('Text')
-
-const MessageTypeSchema = z
-  .enum([
-    'audio',
-    'contacts',
-    'document',
-    'hsm',
-    'image',
-    'location',
-    'template',
-    'text',
-    'video',
-    'voice',
-    'unknown',
-  ])
-  .default('text')
-  .openapi({ description: 'type of the message', title: 'Message Type' })
-  .openapi('MessageType')
-
-const CreateWhatsAppMessageRequestSchema = z
+const CreateWhatsAppMessageRequestSchema: z.ZodType<CreateWhatsAppMessageRequestType> = z
   .object({
     audio: AudioSchema.exactOptional(),
     contacts: z.array(ContactSchema).exactOptional().openapi({ description: '' }),
@@ -10469,21 +10238,257 @@ const CsvDownloadSchema = z
   })
   .openapi('CsvDownload')
 
-const DetailRecordSchema: z.ZodType<DetailRecordType> = z
-  .lazy(() =>
+const MessageDetailRecordSchema = z
+  .object({
+    carrier: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Country-specific carrier used to send or receive the message',
+        example: 'T-Mobile USA',
+      }),
+    carrier_fee: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Fee charged by certain carriers in order to deliver certain message types. Telnyx passes this fee on to the customer according to our pricing table',
+        example: '0.003',
+      }),
+    cld: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The recipient of the message (to parameter in the Messaging API)',
+        example: '+1555123456',
+      }),
+    cli: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The sender of the message (from parameter in the Messaging API). For Alphanumeric ID messages, this is the sender ID value',
+        example: '+1555123456',
+      }),
+    completed_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'Message completion time', example: '2020-07-01T00:00:00Z' }),
+    cost: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Amount, in the user currency, for the Telnyx billing cost',
+        example: '0.003',
+      }),
+    country_code: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Two-letter representation of the country of the cld property using the ISO 3166-1 alpha-2 format',
+        example: 'US',
+      }),
+    created_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'Message creation time', example: '2020-07-01T00:00:00Z' }),
+    currency: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Telnyx account currency used to describe monetary values, including billing cost',
+        example: 'USD',
+      }),
+    delivery_status: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Final webhook delivery status',
+        example: 'success: webhook succeeded',
+      }),
+    delivery_status_failover_url: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Failover customer-provided URL which Telnyx posts delivery status webhooks to',
+        example: 'https://api.example.com/sms/telnyx/inbound',
+      }),
+    delivery_status_webhook_url: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Primary customer-provided URL which Telnyx posts delivery status webhooks to',
+        example: 'https://api.example.com/sms/telnyx/inbound',
+      }),
+    direction: z
+      .enum(['inbound', 'outbound'])
+      .exactOptional()
+      .openapi({
+        description:
+          "Logical direction of the message from the Telnyx customer's perspective. It's inbound when the Telnyx customer receives the message, or outbound otherwise",
+        example: 'outbound',
+      }),
+    errors: z
+      .array(z.string().openapi({ example: '40001' }))
+      .exactOptional()
+      .openapi({ description: 'Telnyx API error codes returned by the Telnyx gateway' }),
+    fteu: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Indicates whether this is a Free-To-End-User (FTEU) short code message',
+        example: false,
+      }),
+    mcc: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Mobile country code. Only available for certain products, such as Global Outbound-Only from Alphanumeric Sender ID',
+        example: '204',
+      }),
+    message_type: z
+      .enum(['SMS', 'MMS', 'RCS'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Describes the Messaging service used to send the message. Available services are: Short Message Service (SMS), Multimedia Messaging Service (MMS), and Rich Communication Services (RCS)',
+        example: 'SMS',
+      }),
+    mnc: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Mobile network code. Only available for certain products, such as Global Outbound-Only from Alphanumeric Sender ID',
+        example: '01',
+      }),
+    on_net: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Indicates whether both sender and recipient numbers are Telnyx-managed',
+        example: true,
+      }),
+    parts: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          'Number of message parts. The message is broken down in multiple parts when its length surpasses the limit of 160 characters',
+        example: 2,
+      }),
+    profile_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Unique identifier of the Messaging Profile used to send or receive the message',
+        example: '30ef55db-c4a2-4c4a-9804-a68077973d07',
+      }),
+    profile_name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Name of the Messaging Profile used to send or receive the message',
+        example: 'My Messaging Profile',
+      }),
+    rate: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Currency amount per billing unit used to calculate the Telnyx billing cost',
+        example: '0.003',
+      }),
+    record_type: z
+      .string()
+      .default('message_detail_record')
+      .openapi({ description: 'Identifies the record schema', example: 'message_detail_record' }),
+    sent_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'Time when the message was sent', example: '2020-07-01T00:00:00Z' }),
+    source_country_code: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Two-letter representation of the country of the cli property using the ISO 3166-1 alpha-2 format',
+        example: 'US',
+      }),
+    status: z
+      .enum([
+        'gw_timeout',
+        'delivered',
+        'dlr_unconfirmed',
+        'dlr_timeout',
+        'received',
+        'gw_reject',
+        'failed',
+      ])
+      .exactOptional()
+      .openapi({
+        description: 'Final status of the message after the delivery attempt',
+        example: 'delivered',
+      }),
+    tags: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Comma-separated tags assigned to the Telnyx number associated with the message',
+        example: 'tag1,tag2,tag3',
+      }),
+    updated_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'Message updated time', example: '2020-07-01T00:00:00Z' }),
+    user_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Identifier of the Telnyx account who owns the message',
+        example: '3ca7bd3d-7d82-4e07-9df4-009123068320',
+      }),
+    uuid: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Unique identifier of the message',
+        example: '3ca7bd3d-7d82-4e07-9df4-009123068320',
+      }),
+  })
+  .openapi({ required: ['record_type'] })
+  .openapi('MessageDetailRecord')
+
+const DetailRecordSchema = z
+  .unknown()
+  .check((ctx) => {
+    const val = ctx.value
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'record_type')) {
+        ctx.issues.push({ ...{ code: 'custom' }, input: val })
+      }
+    }
+  })
+  .pipe(
     z
       .xor([
         MessageDetailRecordSchema,
         ConferenceDetailRecordSchema,
         ConferenceParticipantDetailRecordSchema,
       ])
-      .openapi({
-        description:
-          'An object following one of the schemas published in https://developers.telnyx.com/docs/api/v2/detail-records',
-        discriminator: { propertyName: 'record_type' },
-        required: ['record_type'],
-      }),
+      .and(z.looseObject({}).openapi({ required: ['record_type'] })),
   )
+  .openapi({
+    description:
+      'An object following one of the schemas published in https://developers.telnyx.com/docs/api/v2/detail-records',
+    discriminator: { propertyName: 'record_type' },
+    required: ['record_type'],
+  })
   .openapi('DetailRecord')
 
 const PaginationMetaSchema = z
@@ -10923,7 +10928,7 @@ const ErrorSchema = z
   .object({
     code: z.string(),
     detail: z.string().exactOptional(),
-    meta: z.object({}).exactOptional(),
+    meta: z.looseObject({}).exactOptional(),
     source: z
       .object({
         parameter: z
@@ -11039,12 +11044,18 @@ const ExternalMessageDetailRecordDtoSchema = z
       .openapi({ description: 'Message sent time', example: '2020-07-01T00:00:00-06:00' }),
     direction: DirectionSchema.exactOptional(),
     errors: z
-      .object({ empty: z.boolean().exactOptional() })
+      .array(
+        z
+          .string()
+          .openapi({
+            description: 'Error returned by the gateway in case sending of message failed.',
+            example: '40001',
+          }),
+      )
       .exactOptional()
       .openapi({
         description: 'Error returned by the gateway in case sending of message failed.',
         example: 'US',
-        required: [],
       }),
     id: z
       .string()
@@ -12551,17 +12562,35 @@ const HostedNumberSchema = z
   .openapi('HostedNumber')
 
 const ImmutableListStringSchema = z
-  .object({ empty: z.boolean().exactOptional() })
+  .array(
+    z
+      .string()
+      .openapi({
+        description: 'Error returned by the gateway in case sending of message failed.',
+        example: 'US',
+      }),
+  )
   .openapi({
     description: 'Error returned by the gateway in case sending of message failed.',
     example: 'US',
-    required: [],
   })
   .openapi('ImmutableListString')
 
 const ImmutableSetLongSchema = z
-  .object({ empty: z.boolean().exactOptional() })
-  .openapi({ example: '[1234567890L, 9876543210L]', required: [] })
+  .array(
+    z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64' }),
+  )
+  .openapi({ example: '[1234567890L, 9876543210L]' })
   .openapi('ImmutableSetLong')
 
 const InboundIpSchema = z
@@ -20852,7 +20881,7 @@ const UnprocessableEntityErrorSchema = z
   .object({
     code: z.string(),
     detail: z.string().exactOptional(),
-    meta: z.object({}).exactOptional(),
+    meta: z.looseObject({}).exactOptional(),
     source: z
       .object({
         parameter: z
@@ -23238,7 +23267,7 @@ const WebhookDeliverySchema = z
             description: 'ISO 8601 datetime of when the event occurred.',
             example: '2018-02-02T22:25:27.521992Z',
           }),
-        payload: z.object({}).exactOptional(),
+        payload: z.looseObject({}).exactOptional(),
         record_type: z
           .literal('event')
           .exactOptional()
@@ -23367,7 +23396,7 @@ const CommentResponseResponse = {
   content: {
     'application/json': {
       schema: z
-        .object({ data: CommentSchema.and(z.object({})).exactOptional() })
+        .object({ data: CommentSchema.and(z.looseObject({})).exactOptional() })
         .openapi({ required: [] }),
     },
   },
@@ -24138,7 +24167,7 @@ const ListFaxesResponseResponse = {
         .object({
           data: z.array(FaxSchema).exactOptional(),
           meta: z
-            .object({})
+            .looseObject({})
             .exactOptional()
             .openapi({
               example: { page_number: 2, page_size: 1, total_pages: 3, total_results: 3 },
@@ -24995,7 +25024,7 @@ const ReadCommentResponseResponse = {
   content: {
     'application/json': {
       schema: z
-        .object({ data: ReadCommentSchema.and(z.object({})).exactOptional() })
+        .object({ data: ReadCommentSchema.and(z.looseObject({})).exactOptional() })
         .openapi({ required: [] }),
     },
   },
@@ -27004,6 +27033,8 @@ const Id2ParamsSchema = z
   })
 
 const BearerAuthSecurityScheme = { scheme: 'bearer', type: 'http' }
+
+const BearerAuth2SecurityScheme = { scheme: 'bearer', type: 'http' }
 
 export const postActionsBulkTelephonyCredentialsRoute = createRoute({
   method: 'post',
@@ -30643,7 +30674,7 @@ export const getDetailRecordsRoute = createRoute({
       content: { 'application/json': { schema: DetailRecordsSearchResponseSchema } },
     },
   },
-  security: [{ bearerAuth: [] }],
+  security: [{ bearerAuth2: [] }],
 })
 
 export const getDocumentLinksRoute = createRoute({
@@ -32527,7 +32558,7 @@ export const getMessageDetailRecordsRoute = createRoute({
       content: { 'application/json': { schema: MdrGetDetailResponseSchema } },
     },
   },
-  security: [{ bearerAuth: [] }],
+  security: [{ bearerAuth2: [] }],
 })
 
 export const getMessageDetailRecordsIdMessageBodyRoute = createRoute({
@@ -34908,7 +34939,7 @@ export const patchPhoneNumbersInboundChannelsRoute = createRoute({
                     .object({
                       code: z.string(),
                       detail: z.string().exactOptional(),
-                      meta: z.object({}).exactOptional(),
+                      meta: z.looseObject({}).exactOptional(),
                       source: z
                         .object({
                           parameter: z
@@ -36426,7 +36457,7 @@ export const getReportsBatchMdrReportsRoute = createRoute({
       content: { 'application/json': { schema: MdrGetDetailReportResponseSchema } },
     },
   },
-  security: [{ bearerAuth: [] }],
+  security: [{ bearerAuth2: [] }],
 })
 
 export const postReportsBatchMdrReportsRoute = createRoute({
@@ -36449,7 +36480,7 @@ export const postReportsBatchMdrReportsRoute = createRoute({
       content: { 'application/json': { schema: MdrPostDetailReportResponseSchema } },
     },
   },
-  security: [{ bearerAuth: [] }],
+  security: [{ bearerAuth2: [] }],
 })
 
 export const getReportsBatchMdrReportsIdRoute = createRoute({
@@ -36478,7 +36509,7 @@ export const getReportsBatchMdrReportsIdRoute = createRoute({
       content: { 'application/json': { schema: MdrGetDetailReportByIdResponseSchema } },
     },
   },
-  security: [{ bearerAuth: [] }],
+  security: [{ bearerAuth2: [] }],
 })
 
 export const deleteReportsBatchMdrReportsIdRoute = createRoute({
@@ -36507,7 +36538,7 @@ export const deleteReportsBatchMdrReportsIdRoute = createRoute({
       content: { 'application/json': { schema: MdrDeleteDetailReportResponseSchema } },
     },
   },
-  security: [{ bearerAuth: [] }],
+  security: [{ bearerAuth2: [] }],
 })
 
 export const getReportsCdrUsageReportsSyncRoute = createRoute({
@@ -36612,7 +36643,7 @@ export const getReportsCdrUsageReportsSyncRoute = createRoute({
       content: { 'application/json': { schema: CdrGetSyncUsageReportResponseSchema } },
     },
   },
-  security: [{ bearerAuth: [] }],
+  security: [{ bearerAuth2: [] }],
 })
 
 export const getReportsMdrUsageReportsRoute = createRoute({
@@ -36674,7 +36705,7 @@ export const getReportsMdrUsageReportsRoute = createRoute({
       content: { 'application/json': { schema: MdrGetUsageReportsResponseSchema } },
     },
   },
-  security: [{ bearerAuth: [] }],
+  security: [{ bearerAuth2: [] }],
 })
 
 export const postReportsMdrUsageReportsRoute = createRoute({
@@ -36697,7 +36728,7 @@ export const postReportsMdrUsageReportsRoute = createRoute({
       content: { 'application/json': { schema: MdrPostUsageReportsResponseSchema } },
     },
   },
-  security: [{ bearerAuth: [] }],
+  security: [{ bearerAuth2: [] }],
 })
 
 export const getReportsMdrUsageReportsSyncRoute = createRoute({
@@ -36775,7 +36806,7 @@ export const getReportsMdrUsageReportsSyncRoute = createRoute({
       content: { 'application/json': { schema: MdrGetSyncUsageReportResponseSchema } },
     },
   },
-  security: [{ bearerAuth: [] }],
+  security: [{ bearerAuth2: [] }],
 })
 
 export const getReportsMdrUsageReportsIdRoute = createRoute({
@@ -36804,7 +36835,7 @@ export const getReportsMdrUsageReportsIdRoute = createRoute({
       content: { 'application/json': { schema: MdrGetUsageReportsByIdResponseSchema } },
     },
   },
-  security: [{ bearerAuth: [] }],
+  security: [{ bearerAuth2: [] }],
 })
 
 export const deleteReportsMdrUsageReportsIdRoute = createRoute({
@@ -36833,7 +36864,7 @@ export const deleteReportsMdrUsageReportsIdRoute = createRoute({
       content: { 'application/json': { schema: MdrDeleteUsageReportsResponseSchema } },
     },
   },
-  security: [{ bearerAuth: [] }],
+  security: [{ bearerAuth2: [] }],
 })
 
 export const getReportsMdrsRoute = createRoute({
@@ -37001,7 +37032,7 @@ export const getReportsMdrsRoute = createRoute({
       content: { 'application/json': { schema: MdrGetDetailResponseSchema } },
     },
   },
-  security: [{ bearerAuth: [] }],
+  security: [{ bearerAuth2: [] }],
 })
 
 export const getReportsWdrsRoute = createRoute({
@@ -40175,7 +40206,7 @@ export const getWhatsappDetailRecordReportsRoute = createRoute({
       content: { 'application/json': { schema: WhatsAppGetAllDetailReportResponseSchema } },
     },
   },
-  security: [{ bearerAuth: [] }],
+  security: [{ bearerAuth2: [] }],
 })
 
 export const postWhatsappDetailRecordReportsRoute = createRoute({
@@ -40198,7 +40229,7 @@ export const postWhatsappDetailRecordReportsRoute = createRoute({
       content: { 'application/json': { schema: WhatsAppDetailReportResponseSchema } },
     },
   },
-  security: [{ bearerAuth: [] }],
+  security: [{ bearerAuth2: [] }],
 })
 
 export const getWhatsappDetailRecordReportsIdRoute = createRoute({
@@ -40231,7 +40262,7 @@ export const getWhatsappDetailRecordReportsIdRoute = createRoute({
       content: { 'application/json': { schema: ErrorSchema } },
     },
   },
-  security: [{ bearerAuth: [] }],
+  security: [{ bearerAuth2: [] }],
 })
 
 export const deleteWhatsappDetailRecordReportsIdRoute = createRoute({
@@ -40260,7 +40291,7 @@ export const deleteWhatsappDetailRecordReportsIdRoute = createRoute({
       content: { 'application/json': { schema: WhatsAppDetailReportResponseSchema } },
     },
   },
-  security: [{ bearerAuth: [] }],
+  security: [{ bearerAuth2: [] }],
 })
 
 export const postWhatsappMediaRoute = createRoute({
@@ -40474,7 +40505,7 @@ export const getWhatsappUsageAggregationsRoute = createRoute({
       content: { 'application/json': { schema: WhatsAppUsageAggregationsResponseContainerSchema } },
     },
   },
-  security: [{ bearerAuth: [] }],
+  security: [{ bearerAuth2: [] }],
 })
 
 export const getWhatsappUsersWhatsappUserIdRoute = createRoute({

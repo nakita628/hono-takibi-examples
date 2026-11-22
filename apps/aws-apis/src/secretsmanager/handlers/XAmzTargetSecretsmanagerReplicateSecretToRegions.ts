@@ -1,0 +1,9 @@
+import { OpenAPIHono } from '@hono/zod-openapi'
+import { postXAmzTargetSecretsmanagerReplicateSecretToRegionsRoute } from '../routes'
+
+const app = new OpenAPIHono()
+
+export const XAmzTargetSecretsmanagerReplicateSecretToRegionsHandler = app.openapi(
+  postXAmzTargetSecretsmanagerReplicateSecretToRegionsRoute,
+  (c) => {},
+)

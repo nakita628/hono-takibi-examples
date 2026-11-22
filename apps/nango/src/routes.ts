@@ -175,12 +175,36 @@ const NangoToolFunctionSchema = z
   })
   .openapi('NangoToolFunction')
 
-const ProviderTemplateFunctionSchema = z
-  .xor([NangoSyncFunctionSchema, NangoActionFunctionSchema])
-  .openapi({
-    description:
-      'A sync template or catalog tool definition (no deployment metadata). Catalog tool templates currently use deprecated action definitions.',
+const ProviderTemplateToolFunctionSchema = z
+  .object({
+    name: z.string(),
+    type: z.literal('tool'),
+    description: z.string(),
+    scopes: z.array(z.string()).exactOptional(),
+    input_json_schema: z
+      .looseObject({})
+      .nullable()
+      .openapi({
+        description:
+          'Input JSON Schema with its referenced definitions, or null when absent or unresolved.',
+      }),
+    output_json_schema: z
+      .looseObject({})
+      .nullable()
+      .openapi({
+        description:
+          'Output JSON Schema with its referenced definitions, or null when absent or unresolved.',
+      }),
   })
+  .openapi({
+    description: 'A catalog tool definition.',
+    required: ['name', 'type', 'description', 'input_json_schema', 'output_json_schema'],
+  })
+  .openapi('ProviderTemplateToolFunction')
+
+const ProviderTemplateFunctionSchema = z
+  .xor([NangoSyncFunctionSchema, NangoActionFunctionSchema, ProviderTemplateToolFunctionSchema])
+  .openapi({ description: 'A sync template or catalog tool definition (no deployment metadata).' })
   .openapi('ProviderTemplateFunction')
 
 const ListedNangoFunctionSchema = z
@@ -4908,7 +4932,7 @@ export const getActionActionIdRoute = createRoute({
   path: '/action/{actionId}',
   summary: 'Get action result (deprecated)',
   description:
-    'Retrieves the result of an asynchronous action. See [Asynchronous action documentation](/guides/functions/action-functions#trigger-asynchronously) for more details.',
+    'Retrieves the result of an asynchronous action. See [Asynchronous action documentation](/guides/platform/functions/action-functions#trigger-asynchronously) for more details.',
   request: {
     params: z.object({
       actionId: z
@@ -5175,7 +5199,7 @@ export const postActionTriggerRoute = createRoute({
             required: false,
             schema: { type: 'boolean' },
             description:
-              'Set to true to trigger the action asynchronously. When true, the response will include a status URL and ID for retrieving the action result later. See [Asynchronous action documentation](/guides/functions/action-functions#trigger-asynchronously) for more details.',
+              'Set to true to trigger the action asynchronously. When true, the response will include a status URL and ID for retrieving the action result later. See [Asynchronous action documentation](/guides/platform/functions/action-functions#trigger-asynchronously) for more details.',
           },
         }),
       'X-Max-Retries': z
@@ -5305,7 +5329,10 @@ export const postActionTriggerRoute = createRoute({
                           }
                         })
                         .exactOptional()
-                        .openapi({ required: [] }),
+                        .openapi({
+                          ...{ patternProperties: { '^x-rate': { type: 'string' } } },
+                          required: [],
+                        }),
                       body: z.looseObject({}).exactOptional(),
                     })
                     .exactOptional()
@@ -5436,7 +5463,7 @@ export const postEnvironmentsRoute = createRoute({
                 .openapi({
                   deprecated: true,
                   description:
-                    'Legacy public-key authorization HMAC key. Use [Connect sessions](/guides/auth/auth-guide#guide) instead.',
+                    'Legacy public-key authorization HMAC key. Use [Connect sessions](/guides/auth/setup#generate-session-token) instead.',
                 }),
               hmac_enabled: z
                 .boolean()
@@ -5444,7 +5471,7 @@ export const postEnvironmentsRoute = createRoute({
                 .openapi({
                   deprecated: true,
                   description:
-                    'Whether legacy public-key authorization HMAC verification is enabled. Use [Connect sessions](/guides/auth/auth-guide#guide) instead.',
+                    'Whether legacy public-key authorization HMAC verification is enabled. Use [Connect sessions](/guides/auth/setup#generate-session-token) instead.',
                 }),
               slack_notifications: z
                 .boolean()

@@ -44,6 +44,7 @@ curl https://api.e2b.dev/v3/templates \
     "alias": "string",
     "teamID": "string",
     "cpuCount": 1,
+    "maxCpuCount": {},
     "memoryMB": 128,
     "minFreeDiskMb": 0
   }'
@@ -51,7 +52,7 @@ curl https://api.e2b.dev/v3/templates \
 
 `POST /v3/templates`
 
-Create a new template
+Create a new template.
 
 > Body parameter
 
@@ -64,6 +65,7 @@ Create a new template
   "alias": "string",
   "teamID": "string",
   "cpuCount": 1,
+  "maxCpuCount": {},
   "memoryMB": 128,
   "minFreeDiskMb": 0
 }
@@ -73,12 +75,14 @@ Create a new template
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
+|Idempotency-Key|header|string|false|Optional team-scoped key for retrying the request. Use 1 to 255 lowercase ASCII letters,<br>digits, or hyphens (a-z, 0-9, -), such as a lowercase UUID. The HTTP method, path, query,<br>and request content identify the request. When idempotency is enabled, a matching retry of<br>a completed request replays its status and body, including the IDs of any resources it<br>created, without repeating the operation. A failure explicitly classified as safe to retry<br>(Should-Retry: true) permits a fresh attempt with the same key and request. Only one<br>attempt can run at a time. A different request returns 409 with error_code<br>idempotency_request_mismatch. A matching request whose original has no recorded response<br>yet and is within its expected response window returns 409 with error_code<br>idempotency_in_progress. A matching request whose original has no recorded response and<br>whose expected response deadline has passed or is unknown returns 422 with error_code<br>idempotency_outcome_unknown. These conflicts and unknown outcomes do not execute the<br>request again. If the key's record is unavailable or idempotency is misconfigured, the<br>request returns 503; Should-Retry tells whether to retry with the same key. After the<br>retention period expires, the key can start a new operation.<br>|
 |body|body|[TemplateBuildRequestV3](#schematemplatebuildrequestv3)|true|none|
 |» name|body|string|false|Name of the template. Can include a tag with colon separator (e.g. "my-template" or "my-template:v1"). If tag is included, it will be treated as if the tag was provided in the tags array.|
 |» tags|body|[string]|false|Tags to assign to the template build|
 |» alias|body|string|false|**Deprecated.** Alias of the template. Deprecated, use name instead.|
 |» teamID|body|string|false|**Deprecated.** Identifier of the team, as its UUID or its public project ID (prj_)|
 |» cpuCount|body|[CPUCount](#schemacpucount)|false|CPU cores for the sandbox|
+|» maxCpuCount|body|object|false|Maximum CPU count the template's sandboxes can be resized to; makes the template resizable. Must be at least cpuCount.|
 |» memoryMB|body|[MemoryMB](#schemamemorymb)|false|Memory for the sandbox in MiB|
 |» minFreeDiskMb|body|[MinFreeDiskMb](#schemaminfreediskmb)|false|Requested minimum free space after the template's build steps, in MiB. Omit to use the team's default. Set to 0 to request no minimum free-disk growth. The filesystem is never shrunk, including inherited or already-larger filesystems. Growth is best effort, so filesystem metadata can leave the available space slightly below the requested minimum.|
 
@@ -143,6 +147,16 @@ Create a new template
 }
 ```
 
+> 422 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
 > 429 Response
 
 ```json
@@ -163,6 +177,16 @@ Create a new template
 }
 ```
 
+> 503 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
 <h3 id="create-template-v3-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
@@ -172,14 +196,24 @@ Create a new template
 |401|Unauthorized|Authentication error|[Error](#schemaerror)|
 |403|Forbidden|Forbidden|[Error](#schemaerror)|
 |409|Conflict|Conflict|[Error](#schemaerror)|
+|422|Unprocessable Entity|Unprocessable request|[Error](#schemaerror)|
 |429|Too Many Requests|Too many requests|[Error](#schemaerror)|
 |500|Internal Server Error|Server error|[Error](#schemaerror)|
+|503|Service Unavailable|Service unavailable|[Error](#schemaerror)|
 
 ### Response Headers
 
 |Status|Header|Type|Format|Description|
 |---|---|---|---|---|
+|400|Should-Retry|boolean||none|
+|401|Should-Retry|boolean||none|
+|403|Should-Retry|boolean||none|
+|409|Should-Retry|boolean||none|
+|422|Should-Retry|boolean||none|
+|429|Should-Retry|boolean||none|
 |429|Retry-After|integer||When present, the number of seconds to wait before retrying the request.|
+|500|Should-Retry|boolean||none|
+|503|Should-Retry|boolean||none|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -218,6 +252,7 @@ List all templates
     "templateID": "string",
     "buildID": "string",
     "cpuCount": 1,
+    "maxCpuCount": {},
     "memoryMB": 128,
     "diskSizeMB": 0,
     "public": true,
@@ -449,7 +484,7 @@ curl https://api.e2b.dev/templates \
 This operation is deprecated
 </aside>
 
-List all templates
+List all templates. Returns 400 when the team has more than 5000 templates; use /v2/templates to page through them.
 
 <h3 id="list-templates-parameters">Parameters</h3>
 
@@ -467,6 +502,7 @@ List all templates
     "templateID": "string",
     "buildID": "string",
     "cpuCount": 1,
+    "maxCpuCount": {},
     "memoryMB": 128,
     "diskSizeMB": 0,
     "public": true,
@@ -491,6 +527,16 @@ List all templates
     "description": "string"
   }
 ]
+```
+
+> 400 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
 ```
 
 > 401 Response
@@ -528,6 +574,7 @@ List all templates
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Successfully returned all templates|Inline|
+|400|Bad Request|Bad request|[Error](#schemaerror)|
 |401|Unauthorized|Authentication error|[Error](#schemaerror)|
 |429|Too Many Requests|Too many requests|[Error](#schemaerror)|
 |500|Internal Server Error|Server error|[Error](#schemaerror)|
@@ -576,6 +623,7 @@ Lists the platform's default templates, ordered by template ID. Deleted template
     "templateID": "string",
     "buildID": "string",
     "cpuCount": 1,
+    "maxCpuCount": {},
     "memoryMB": 128,
     "diskSizeMB": 0,
     "public": true,
@@ -691,6 +739,7 @@ List all builds for a template
   "templateID": "string",
   "buildID": "string",
   "cpuCount": 1,
+  "maxCpuCount": {},
   "memoryMB": 128,
   "diskSizeMB": 0,
   "public": true,
@@ -721,6 +770,7 @@ List all builds for a template
       "updatedAt": "1970-01-01T00:00:00Z",
       "finishedAt": "1970-01-01T00:00:00Z",
       "cpuCount": 1,
+      "maxCpuCount": {},
       "memoryMB": 128,
       "diskSizeMB": 0,
       "envdVersion": "string"
@@ -955,6 +1005,155 @@ To perform this operation, you must be authenticated by means of one of the foll
 ApiKeyAuth, AuthProviderBearerAuth & AuthProviderTeamAuth, AdminApiKeyAuth & AdminTeamAuth, AdminJWTAuth & AdminTeamAuth
 </aside>
 
+## List a template's builds
+
+> Code samples
+
+```bash
+curl https://api.e2b.dev/templates/string/builds \
+  -H 'Accept: application/json' \
+  -H "X-API-Key: ${API_KEY}"
+```
+
+`GET /templates/{templateID}/builds`
+
+List the builds of a template, newest first. The template is given by its ID or name. A template named `aliases` is given by its ID or by its name with the team prefix.
+
+<h3 id="list-a-templates-builds-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|templateID|path|string|true|none|
+|nextToken|query|string|false|Cursor to start the list from|
+|limit|query|integer(int32)|false|Maximum number of items to return per page|
+|statuses|query|[[TemplateBuildStatus](#schematemplatebuildstatus)]|false|Comma-separated list of build statuses to include. Every status when omitted.|
+|tags|query|[string]|false|Comma-separated list of tags. Only the builds these tags point at are returned. Every build when omitted.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|statuses|building|
+|statuses|waiting|
+|statuses|ready|
+|statuses|error|
+
+> Example responses
+
+> 200 Response
+
+```json
+[
+  {
+    "buildID": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+    "status": "building",
+    "createdAt": "1970-01-01T00:00:00Z",
+    "updatedAt": "1970-01-01T00:00:00Z",
+    "finishedAt": "1970-01-01T00:00:00Z",
+    "cpuCount": 1,
+    "maxCpuCount": {},
+    "memoryMB": 128,
+    "diskSizeMB": 0,
+    "envdVersion": "string",
+    "tags": [
+      "string"
+    ]
+  }
+]
+```
+
+> 400 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+<h3 id="list-a-templates-builds-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Successfully returned the template builds|Inline|
+|400|Bad Request|Bad request|[Error](#schemaerror)|
+|401|Unauthorized|Authentication error|[Error](#schemaerror)|
+|403|Forbidden|Forbidden|[Error](#schemaerror)|
+|404|Not Found|Not found|[Error](#schemaerror)|
+|429|Too Many Requests|Too many requests|[Error](#schemaerror)|
+|500|Internal Server Error|Server error|[Error](#schemaerror)|
+
+<h3 id="list-a-templates-builds-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*anonymous*|[[TemplateBuildWithTags](#schematemplatebuildwithtags)]|false|none|none|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|200|X-Next-Token|string||Cursor to fetch the next page of results, if more exist|
+|429|Retry-After|integer||When present, the number of seconds to wait before retrying the request.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+ApiKeyAuth, AuthProviderBearerAuth & AuthProviderTeamAuth, AdminApiKeyAuth & AdminTeamAuth, AdminJWTAuth & AdminTeamAuth
+</aside>
+
 ## Start template build (v2)
 
 > Code samples
@@ -971,7 +1170,7 @@ curl https://api.e2b.dev/v2/templates/string/builds/string \
     "fromImageRegistry": {
       "type": "aws",
       "awsAccessKeyId": "string",
-      "awsSecretAccessKey": "string",
+      "awsSecretAccessKey": "password",
       "awsRegion": "string"
     },
     "force": false,
@@ -983,7 +1182,7 @@ curl https://api.e2b.dev/v2/templates/string/builds/string \
 
 `POST /v2/templates/{templateID}/builds/{buildID}`
 
-Start the build
+Start the build. With an Idempotency-Key, replays continue to work after the build has left the waiting state.
 
 > Body parameter
 
@@ -994,7 +1193,7 @@ Start the build
   "fromImageRegistry": {
     "type": "aws",
     "awsAccessKeyId": "string",
-    "awsSecretAccessKey": "string",
+    "awsSecretAccessKey": "password",
     "awsRegion": "string"
   },
   "force": false,
@@ -1010,6 +1209,7 @@ Start the build
 |---|---|---|---|---|
 |templateID|path|string|true|none|
 |buildID|path|string|true|none|
+|Idempotency-Key|header|string|false|Optional team-scoped key for retrying the request. Use 1 to 255 lowercase ASCII letters,<br>digits, or hyphens (a-z, 0-9, -), such as a lowercase UUID. The HTTP method, path, query,<br>and request content identify the request. When idempotency is enabled, a matching retry of<br>a completed request replays its status and body, including the IDs of any resources it<br>created, without repeating the operation. A failure explicitly classified as safe to retry<br>(Should-Retry: true) permits a fresh attempt with the same key and request. Only one<br>attempt can run at a time. A different request returns 409 with error_code<br>idempotency_request_mismatch. A matching request whose original has no recorded response<br>yet and is within its expected response window returns 409 with error_code<br>idempotency_in_progress. A matching request whose original has no recorded response and<br>whose expected response deadline has passed or is unknown returns 422 with error_code<br>idempotency_outcome_unknown. These conflicts and unknown outcomes do not execute the<br>request again. If the key's record is unavailable or idempotency is misconfigured, the<br>request returns 503; Should-Retry tells whether to retry with the same key. After the<br>retention period expires, the key can start a new operation.<br>|
 |body|body|[TemplateBuildStartV2](#schematemplatebuildstartv2)|true|none|
 |» fromImage|body|string|false|Image to use as a base for the template build|
 |» fromTemplate|body|string|false|Template to use as a base for the template build|
@@ -1041,6 +1241,46 @@ Start the build
 }
 ```
 
+> 403 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 409 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 422 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
 > 429 Response
 
 ```json
@@ -1061,6 +1301,16 @@ Start the build
 }
 ```
 
+> 503 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
 <h3 id="start-template-build-v2-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
@@ -1068,6 +1318,160 @@ Start the build
 |202|Accepted|The build has started|None|
 |400|Bad Request|Bad request|[Error](#schemaerror)|
 |401|Unauthorized|Authentication error|[Error](#schemaerror)|
+|403|Forbidden|Forbidden|[Error](#schemaerror)|
+|404|Not Found|Not found|[Error](#schemaerror)|
+|409|Conflict|The Idempotency-Key conflicts with a different request (error_code idempotency_request_mismatch), or the matching original request has no recorded response yet and is within its expected response window (error_code idempotency_in_progress); this request was not executed again|[Error](#schemaerror)|
+|422|Unprocessable Entity|The matching original request has no recorded response and its expected response deadline has passed or is unknown (error_code idempotency_outcome_unknown); this request was not executed again|[Error](#schemaerror)|
+|429|Too Many Requests|Too many requests|[Error](#schemaerror)|
+|500|Internal Server Error|Server error|[Error](#schemaerror)|
+|503|Service Unavailable|Service unavailable|[Error](#schemaerror)|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|400|Should-Retry|boolean||none|
+|401|Should-Retry|boolean||none|
+|403|Should-Retry|boolean||none|
+|404|Should-Retry|boolean||none|
+|409|Should-Retry|boolean||none|
+|422|Should-Retry|boolean||none|
+|429|Retry-After|integer||When present, the number of seconds to wait before retrying the request.|
+|500|Should-Retry|boolean||none|
+|503|Should-Retry|boolean||none|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+ApiKeyAuth, AuthProviderBearerAuth & AuthProviderTeamAuth, AdminApiKeyAuth & AdminTeamAuth, AdminJWTAuth & AdminTeamAuth
+</aside>
+
+## Template info (v2)
+
+> Code samples
+
+```bash
+curl https://api.e2b.dev/v2/templates/string \
+  -H 'Accept: application/json' \
+  -H "X-API-Key: ${API_KEY}"
+```
+
+`GET /v2/templates/{templateID}`
+
+Get a template by its ID or name, with its default build and without its other builds.
+
+<h3 id="template-info-v2-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|templateID|path|string|true|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "templateID": "string",
+  "names": [
+    "string"
+  ],
+  "public": true,
+  "createdAt": "1970-01-01T00:00:00Z",
+  "updatedAt": "1970-01-01T00:00:00Z",
+  "createdBy": {
+    "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+    "email": null
+  },
+  "lastSpawnedAt": "1970-01-01T00:00:00Z",
+  "spawnCount": 0,
+  "buildCount": 0,
+  "isDefault": true,
+  "description": "string",
+  "buildStatus": "building",
+  "defaultBuild": {
+    "buildID": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+    "status": "building",
+    "createdAt": "1970-01-01T00:00:00Z",
+    "updatedAt": "1970-01-01T00:00:00Z",
+    "finishedAt": "1970-01-01T00:00:00Z",
+    "cpuCount": 1,
+    "maxCpuCount": {},
+    "memoryMB": 128,
+    "diskSizeMB": 0,
+    "envdVersion": "string"
+  }
+}
+```
+
+> 400 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+<h3 id="template-info-v2-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Successfully returned the template|[TemplateV2](#schematemplatev2)|
+|400|Bad Request|Bad request|[Error](#schemaerror)|
+|401|Unauthorized|Authentication error|[Error](#schemaerror)|
+|403|Forbidden|Forbidden|[Error](#schemaerror)|
+|404|Not Found|Not found|[Error](#schemaerror)|
 |429|Too Many Requests|Too many requests|[Error](#schemaerror)|
 |500|Internal Server Error|Server error|[Error](#schemaerror)|
 
@@ -1534,7 +1938,7 @@ curl https://api.e2b.dev/sandboxes \
 This operation is deprecated
 </aside>
 
-List all running sandboxes. Use GET /v2/sandboxes instead.
+List all running sandboxes. Returns 400 when more than 5000 running sandboxes match; use GET /v2/sandboxes to page through them.
 
 <h3 id="list-running-sandboxes-parameters">Parameters</h3>
 
@@ -1564,6 +1968,7 @@ List all running sandboxes. Use GET /v2/sandboxes instead.
     },
     "state": "running",
     "envdVersion": "string",
+    "envdUnresponsiveAtPause": true,
     "volumeMounts": [
       {
         "name": "string",
@@ -1656,6 +2061,7 @@ curl https://api.e2b.dev/sandboxes \
   -d '{
     "templateID": "string",
     "timeout": 15,
+    "cpuCount": {},
     "autoPause": false,
     "autoPauseMemory": true,
     "autoResume": {
@@ -1758,6 +2164,7 @@ Create a sandbox from the template. All system communication with the sandbox is
 {
   "templateID": "string",
   "timeout": 15,
+  "cpuCount": {},
   "autoPause": false,
   "autoPauseMemory": true,
   "autoResume": {
@@ -1853,6 +2260,7 @@ Create a sandbox from the template. All system communication with the sandbox is
 |body|body|[NewSandbox](#schemanewsandbox)|true|none|
 |» templateID|body|string|true|Identifier of the required template|
 |» timeout|body|integer(int32)|false|Time to live for the sandbox in seconds.|
+|» cpuCount|body|object|false|Online vCPU target for the sandbox. Defaults to the template's cpuCount; at most its maxCpuCount (fixed-size templates accept only their cpuCount).|
 |» autoPause|body|boolean|false|Automatically pauses the sandbox after the timeout|
 |» autoPauseMemory|body|boolean|false|Controls the snapshot kind taken when the sandbox auto-pauses on timeout (only relevant when autoPause is true). When false, the auto-pause drops the in-memory state and persists only the filesystem (a filesystem-only snapshot); resuming it cold-boots (reboots) the sandbox from disk. Such a snapshot cannot be auto-resumed by traffic and must be resumed explicitly, so it cannot be combined with autoResume. Defaults to true (full memory snapshot).|
 |» autoResume|body|[SandboxAutoResumeConfig](#schemasandboxautoresumeconfig)|false|Auto-resume configuration for paused sandboxes.|
@@ -2022,6 +2430,7 @@ List all sandboxes
     },
     "state": "running",
     "envdVersion": "string",
+    "envdUnresponsiveAtPause": true,
     "volumeMounts": [
       {
         "name": "string",
@@ -2116,6 +2525,7 @@ curl https://api.e2b.dev/v2/sandboxes \
   -d '{
     "templateID": "string",
     "timeout": 300,
+    "cpuCount": {},
     "autoPause": false,
     "autoPauseMemory": true,
     "autoResume": {
@@ -2213,6 +2623,7 @@ Create a sandbox from the template. All system communication with the sandbox is
 {
   "templateID": "string",
   "timeout": 300,
+  "cpuCount": {},
   "autoPause": false,
   "autoPauseMemory": true,
   "autoResume": {
@@ -2304,10 +2715,11 @@ Create a sandbox from the template. All system communication with the sandbox is
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|Idempotency-Key|header|string|false|Optional team-scoped key for retrying sandbox creation. Use 1 to 255 lowercase ASCII<br>letters, digits, or hyphens (a-z, 0-9, -), such as a lowercase UUID. When idempotency is enabled,<br>matching retries replay the original status and body, including errors, for the retention period.<br>Different request parameters return 409 with error_code idempotency_request_mismatch.<br>An in-progress request returns 409 with error_code idempotency_in_progress; an unknown<br>outcome returns 422 with error_code idempotency_outcome_unknown. These retries do not execute the request again.<br>Retries do not extend retention. After the key expires, it can start a new creation.<br>|
+|Idempotency-Key|header|string|false|Optional team-scoped key for retrying sandbox creation. Use 1 to 255 lowercase ASCII<br>letters, digits, or hyphens (a-z, 0-9, -), such as a lowercase UUID. When idempotency is enabled,<br>matching retries replay a completed status and body for the retention period. A creation<br>failure explicitly classified as safe to retry (Should-Retry: true) permits a fresh<br>attempt with the same key and parameters. Only one attempt can run at a time.<br>Different request parameters return 409 with error_code idempotency_request_mismatch.<br>An in-progress request returns 409 with error_code idempotency_in_progress; an unknown<br>outcome returns 422 with error_code idempotency_outcome_unknown. These retries do not execute the request again.<br>Retries do not extend retention. If a fresh attempt's request deadline plus response<br>persistence budget would exceed the remaining retention, the previous error is replayed.<br>After the key expires, it can start a new creation.<br>|
 |body|body|[NewSandboxV2](#schemanewsandboxv2)|true|none|
 |» templateID|body|string|true|Identifier of the required template|
 |» timeout|body|integer(int32)|false|Time to live for the sandbox in seconds.|
+|» cpuCount|body|object|false|Online vCPU target for the sandbox. Defaults to the template's cpuCount; at most its maxCpuCount (fixed-size templates accept only their cpuCount).|
 |» autoPause|body|boolean|false|Automatically pauses the sandbox after the timeout|
 |» autoPauseMemory|body|boolean|false|Controls the snapshot kind taken when the sandbox auto-pauses on timeout (only relevant when autoPause is true). When false, the auto-pause drops the in-memory state and persists only the filesystem (a filesystem-only snapshot); resuming it cold-boots (reboots) the sandbox from disk. Such a snapshot cannot be auto-resumed by traffic and must be resumed explicitly, so it cannot be combined with autoResume. Defaults to true (full memory snapshot).|
 |» autoResume|body|[SandboxAutoResumeConfig](#schemasandboxautoresumeconfig)|false|Auto-resume configuration for paused sandboxes.|
@@ -2456,16 +2868,16 @@ Create a sandbox from the template. All system communication with the sandbox is
 
 |Status|Header|Type|Format|Description|
 |---|---|---|---|---|
-|400|Should-Retry|boolean||Whether the condition behind this error may clear, so that retrying the request could<br>succeed. true marks a transient failure such as missing capacity, a rate limit, or a<br>creation still in progress: retry after Retry-After when present, otherwise with<br>exponential backoff. false marks a failure a retry cannot fix, such as a malformed request<br>or a configuration fault, or an outcome that is unknown, where a retry could create a<br>second sandbox. Successful responses and errors without an explicit classification omit<br>the header.<br>|
-|403|Should-Retry|boolean||Whether the condition behind this error may clear, so that retrying the request could<br>succeed. true marks a transient failure such as missing capacity, a rate limit, or a<br>creation still in progress: retry after Retry-After when present, otherwise with<br>exponential backoff. false marks a failure a retry cannot fix, such as a malformed request<br>or a configuration fault, or an outcome that is unknown, where a retry could create a<br>second sandbox. Successful responses and errors without an explicit classification omit<br>the header.<br>|
-|404|Should-Retry|boolean||Whether the condition behind this error may clear, so that retrying the request could<br>succeed. true marks a transient failure such as missing capacity, a rate limit, or a<br>creation still in progress: retry after Retry-After when present, otherwise with<br>exponential backoff. false marks a failure a retry cannot fix, such as a malformed request<br>or a configuration fault, or an outcome that is unknown, where a retry could create a<br>second sandbox. Successful responses and errors without an explicit classification omit<br>the header.<br>|
-|409|Should-Retry|boolean||Whether the condition behind this error may clear, so that retrying the request could<br>succeed. true marks a transient failure such as missing capacity, a rate limit, or a<br>creation still in progress: retry after Retry-After when present, otherwise with<br>exponential backoff. false marks a failure a retry cannot fix, such as a malformed request<br>or a configuration fault, or an outcome that is unknown, where a retry could create a<br>second sandbox. Successful responses and errors without an explicit classification omit<br>the header.<br>|
-|422|Should-Retry|boolean||Whether the condition behind this error may clear, so that retrying the request could<br>succeed. true marks a transient failure such as missing capacity, a rate limit, or a<br>creation still in progress: retry after Retry-After when present, otherwise with<br>exponential backoff. false marks a failure a retry cannot fix, such as a malformed request<br>or a configuration fault, or an outcome that is unknown, where a retry could create a<br>second sandbox. Successful responses and errors without an explicit classification omit<br>the header.<br>|
-|429|Should-Retry|boolean||Whether the condition behind this error may clear, so that retrying the request could<br>succeed. true marks a transient failure such as missing capacity, a rate limit, or a<br>creation still in progress: retry after Retry-After when present, otherwise with<br>exponential backoff. false marks a failure a retry cannot fix, such as a malformed request<br>or a configuration fault, or an outcome that is unknown, where a retry could create a<br>second sandbox. Successful responses and errors without an explicit classification omit<br>the header.<br>|
+|400|Should-Retry|boolean||none|
+|403|Should-Retry|boolean||none|
+|404|Should-Retry|boolean||none|
+|409|Should-Retry|boolean||none|
+|422|Should-Retry|boolean||none|
+|429|Should-Retry|boolean||none|
 |429|Retry-After|integer||When present, the number of seconds to wait before retrying the request.|
-|500|Should-Retry|boolean||Whether the condition behind this error may clear, so that retrying the request could<br>succeed. true marks a transient failure such as missing capacity, a rate limit, or a<br>creation still in progress: retry after Retry-After when present, otherwise with<br>exponential backoff. false marks a failure a retry cannot fix, such as a malformed request<br>or a configuration fault, or an outcome that is unknown, where a retry could create a<br>second sandbox. Successful responses and errors without an explicit classification omit<br>the header.<br>|
-|503|Should-Retry|boolean||Whether the condition behind this error may clear, so that retrying the request could<br>succeed. true marks a transient failure such as missing capacity, a rate limit, or a<br>creation still in progress: retry after Retry-After when present, otherwise with<br>exponential backoff. false marks a failure a retry cannot fix, such as a malformed request<br>or a configuration fault, or an outcome that is unknown, where a retry could create a<br>second sandbox. Successful responses and errors without an explicit classification omit<br>the header.<br>|
-|504|Should-Retry|boolean||Whether the condition behind this error may clear, so that retrying the request could<br>succeed. true marks a transient failure such as missing capacity, a rate limit, or a<br>creation still in progress: retry after Retry-After when present, otherwise with<br>exponential backoff. false marks a failure a retry cannot fix, such as a malformed request<br>or a configuration fault, or an outcome that is unknown, where a retry could create a<br>second sandbox. Successful responses and errors without an explicit classification omit<br>the header.<br>|
+|500|Should-Retry|boolean||none|
+|503|Should-Retry|boolean||none|
+|504|Should-Retry|boolean||none|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -2839,6 +3251,7 @@ Get a sandbox by id
   "startedAt": "1970-01-01T00:00:00Z",
   "endAt": "1970-01-01T00:00:00Z",
   "envdVersion": "string",
+  "envdUnresponsiveAtPause": true,
   "envdAccessToken": "string",
   "allowInternetAccess": true,
   "domain": "string",
@@ -3016,6 +3429,16 @@ Kill a sandbox
 }
 ```
 
+> 409 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
 > 429 Response
 
 ```json
@@ -3043,6 +3466,7 @@ Kill a sandbox
 |204|No Content|The sandbox was killed successfully|None|
 |401|Unauthorized|Authentication error|[Error](#schemaerror)|
 |404|Not Found|Not found|[Error](#schemaerror)|
+|409|Conflict|Conflict|[Error](#schemaerror)|
 |429|Too Many Requests|Too many requests|[Error](#schemaerror)|
 |500|Internal Server Error|Server error|[Error](#schemaerror)|
 
@@ -3179,6 +3603,130 @@ To perform this operation, you must be authenticated by means of one of the foll
 ApiKeyAuth, AuthProviderBearerAuth & AuthProviderTeamAuth, AdminApiKeyAuth & AdminTeamAuth, AdminJWTAuth & AdminTeamAuth
 </aside>
 
+## Sandbox record
+
+> Code samples
+
+```bash
+curl https://api.e2b.dev/unstable/sandboxes/string/record \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -H "X-Team-ID: ${API_KEY}"
+```
+
+`GET /unstable/sandboxes/{sandboxID}/record`
+
+Returns the team's latest recorded run of the sandbox, including runs that have already ended, and whether its monitoring, logs and events data are still retained. Returns 404 when the team has no recorded run of the sandbox.
+
+<h3 id="sandbox-record-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|sandboxID|path|string|true|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "templateID": "string",
+  "alias": "string",
+  "sandboxID": "string",
+  "startedAt": "1970-01-01T00:00:00Z",
+  "stoppedAt": "1970-01-01T00:00:00Z",
+  "domain": "string",
+  "cpuCount": 1,
+  "memoryMB": 128,
+  "diskSizeMB": 0,
+  "retentionExpired": true,
+  "eventsRetentionExpired": true
+}
+```
+
+> 400 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+<h3 id="sandbox-record-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Successfully returned the sandbox record|[SandboxRecord](#schemasandboxrecord)|
+|400|Bad Request|Bad request|[Error](#schemaerror)|
+|401|Unauthorized|Authentication error|[Error](#schemaerror)|
+|403|Forbidden|Forbidden|[Error](#schemaerror)|
+|404|Not Found|Not found|[Error](#schemaerror)|
+|429|Too Many Requests|Too many requests|[Error](#schemaerror)|
+|500|Internal Server Error|Server error|[Error](#schemaerror)|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|429|Retry-After|integer||When present, the number of seconds to wait before retrying the request.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+AuthProviderBearerAuth & AuthProviderTeamAuth
+</aside>
+
 ## Pause sandbox
 
 > Code samples
@@ -3190,19 +3738,21 @@ curl https://api.e2b.dev/sandboxes/string/pause \
   -H 'Accept: application/json' \
   -H "X-API-Key: ${API_KEY}" \
   -d '{
-    "memory": true
+    "memory": true,
+    "requireHealthyGuest": false
   }'
 ```
 
 `POST /sandboxes/{sandboxID}/pause`
 
-Pause the sandbox
+Pause the sandbox. Answers 503 and leaves the sandbox running when it cannot be paused right now: its node is busy, it is being snapshotted, or `requireHealthyGuest` was set and the sandbox guest agent is not responding; retry later.
 
 > Body parameter
 
 ```json
 {
-  "memory": true
+  "memory": true,
+  "requireHealthyGuest": false
 }
 ```
 
@@ -3213,8 +3763,19 @@ Pause the sandbox
 |sandboxID|path|string|true|none|
 |body|body|[SandboxPauseRequest](#schemasandboxpauserequest)|false|none|
 |» memory|body|boolean|false|Whether to capture a full memory snapshot. When false, only the filesystem is persisted and resuming the sandbox cold-boots (reboots) it from disk, losing in-memory state, running processes, and open connections. Resume it with an explicit request (connect or resume); auto-resume, which can be triggered by arbitrary traffic, refuses such a sandbox. Defaults to true.|
+|» requireHealthyGuest|body|boolean|false|The pause checks that the sandbox guest agent answers before it takes the snapshot. By default an unresponsive agent is recorded on the snapshot and the pause proceeds; the sandbox then shows `envdUnresponsiveAtPause` and a later resume must ask for `memory: false`, since restoring that memory would bring the unresponsive agent back. With this true, the pause is instead refused with 503 while the agent does not answer, and the sandbox keeps running. A filesystem-only pause (`memory: false`) is always refused while the agent does not answer, whatever this says.|
 
 > Example responses
+
+> 400 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
 
 > 401 Response
 
@@ -3281,6 +3842,7 @@ Pause the sandbox
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |204|No Content|The sandbox was paused successfully and can be resumed|None|
+|400|Bad Request|Bad request|[Error](#schemaerror)|
 |401|Unauthorized|Authentication error|[Error](#schemaerror)|
 |404|Not Found|Not found|[Error](#schemaerror)|
 |409|Conflict|Conflict|[Error](#schemaerror)|
@@ -3311,6 +3873,7 @@ curl https://api.e2b.dev/sandboxes/string/resume \
   -H "X-API-Key: ${API_KEY}" \
   -d '{
     "timeout": 15,
+    "cpuCount": {},
     "autoPause": true,
     "memory": true
   }'
@@ -3322,13 +3885,14 @@ curl https://api.e2b.dev/sandboxes/string/resume \
 This operation is deprecated
 </aside>
 
-Resume the sandbox
+Resume the sandbox. Answers 409 when the sandbox is already running, or when its snapshot was taken while the sandbox guest agent was not responding and a plain resume would restore that memory (error_code sandbox_snapshot_guest_agent_unresponsive); resume such a sandbox without memory (`memory: false`).
 
 > Body parameter
 
 ```json
 {
   "timeout": 15,
+  "cpuCount": {},
   "autoPause": true,
   "memory": true
 }
@@ -3341,8 +3905,9 @@ Resume the sandbox
 |sandboxID|path|string|true|none|
 |body|body|[ResumedSandbox](#schemaresumedsandbox)|false|none|
 |» timeout|body|integer(int32)|false|Time to live for the sandbox in seconds.|
+|» cpuCount|body|object|false|Online vCPU target for the resumed sandbox. Defaults to the snapshot's cpuCount; at most the template's maxCpuCount (fixed-size templates accept only their cpuCount).|
 |» autoPause|body|boolean|false|**Deprecated.** Automatically pauses the sandbox after the timeout|
-|» memory|body|boolean|false|Defaults to true. When false, resume from disk state only: the sandbox cold-boots fresh and any memory in the snapshot is ignored, never modified or deleted. Disk state has crash-recovery semantics — writes not flushed before the pause may be lost. A no-op for snapshots that contain no memory. Rejected with an error in environments where this capability is not enabled, never silently downgraded to a memory restore.|
+|» memory|body|boolean|false|Defaults to true. When false, resume from disk state only: the sandbox cold-boots fresh and any memory in the snapshot is ignored, never modified or deleted. Disk state has crash-recovery semantics — writes not flushed before the pause may be lost. A no-op for snapshots that contain no memory. Rejected with an error in environments where this capability is not enabled, never silently downgraded to a memory restore. A snapshot taken while the sandbox guest agent was not responding (envdUnresponsiveAtPause) can only be resumed this way, and needs no enablement.|
 
 > Example responses
 
@@ -3643,7 +4208,7 @@ curl https://api.e2b.dev/sandboxes/string/connect \
 This operation is deprecated
 </aside>
 
-Returns sandbox details. If the sandbox is paused, it will be resumed. TTL is only extended. Use POST /v2/sandboxes/{sandboxID}/connect instead.
+Returns sandbox details. If the sandbox is paused, it will be resumed. TTL is only extended. Use POST /v2/sandboxes/{sandboxID}/connect instead. Answers 409 with error_code sandbox_snapshot_guest_agent_unresponsive when the paused sandbox's snapshot was taken while its guest agent was not responding and the request did not ask for `memory: false`.
 
 > Body parameter
 
@@ -3661,7 +4226,7 @@ Returns sandbox details. If the sandbox is paused, it will be resumed. TTL is on
 |sandboxID|path|string|true|none|
 |body|body|[ConnectSandbox](#schemaconnectsandbox)|true|none|
 |» timeout|body|integer(int32)|true|Timeout in seconds from the current time after which the sandbox should expire|
-|» memory|body|boolean|false|Defaults to true. When false and the sandbox is paused, resume from disk state only: the sandbox cold-boots fresh and any memory in the snapshot is ignored, never modified or deleted. Disk state has crash-recovery semantics — writes not flushed before the pause may be lost. A no-op for snapshots that contain no memory. Rejected with an error in environments where this capability is not enabled, never silently downgraded to a memory restore.|
+|» memory|body|boolean|false|Defaults to true. When false and the sandbox is paused, resume from disk state only: the sandbox cold-boots fresh and any memory in the snapshot is ignored, never modified or deleted. Disk state has crash-recovery semantics — writes not flushed before the pause may be lost. A no-op for snapshots that contain no memory. Rejected with an error in environments where this capability is not enabled, never silently downgraded to a memory restore. A snapshot taken while the sandbox guest agent was not responding (envdUnresponsiveAtPause) can only be resumed this way, and needs no enablement.|
 
 > Example responses
 
@@ -3819,7 +4384,7 @@ curl https://api.e2b.dev/v2/sandboxes/string/connect \
 
 `POST /v2/sandboxes/{sandboxID}/connect`
 
-Returns sandbox details. If the sandbox is paused, it will be resumed. TTL is only extended. The request body is optional; an omitted timeout defaults to 300 seconds.
+Returns sandbox details. If the sandbox is paused, it will be resumed. TTL is only extended. The request body is optional; an omitted timeout defaults to 300 seconds. Answers 409 with error_code sandbox_snapshot_guest_agent_unresponsive when the paused sandbox's snapshot was taken while its guest agent was not responding and the request did not ask for `memory: false`.
 
 > Body parameter
 
@@ -3837,7 +4402,7 @@ Returns sandbox details. If the sandbox is paused, it will be resumed. TTL is on
 |sandboxID|path|string|true|none|
 |body|body|[ConnectSandboxV2](#schemaconnectsandboxv2)|false|none|
 |» timeout|body|integer(int32)|false|Timeout in seconds from the current time after which the sandbox should expire|
-|» memory|body|boolean|false|Defaults to true. When false and the sandbox is paused, resume from disk state only: the sandbox cold-boots fresh and any memory in the snapshot is ignored, never modified or deleted. Disk state has crash-recovery semantics — writes not flushed before the pause may be lost. A no-op for snapshots that contain no memory. Rejected with an error in environments where this capability is not enabled, never silently downgraded to a memory restore.|
+|» memory|body|boolean|false|Defaults to true. When false and the sandbox is paused, resume from disk state only: the sandbox cold-boots fresh and any memory in the snapshot is ignored, never modified or deleted. Disk state has crash-recovery semantics — writes not flushed before the pause may be lost. A no-op for snapshots that contain no memory. Rejected with an error in environments where this capability is not enabled, never silently downgraded to a memory restore. A snapshot taken while the sandbox guest agent was not responding (envdUnresponsiveAtPause) can only be resumed this way, and needs no enablement.|
 
 > Example responses
 
@@ -4393,6 +4958,7 @@ Create a persistent snapshot from the sandbox's current state. Snapshots can be 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |sandboxID|path|string|true|none|
+|Idempotency-Key|header|string|false|Optional team-scoped key for retrying the request. Use 1 to 255 lowercase ASCII letters,<br>digits, or hyphens (a-z, 0-9, -), such as a lowercase UUID. The HTTP method, path, query,<br>and request content identify the request. When idempotency is enabled, a matching retry of<br>a completed request replays its status and body, including the IDs of any resources it<br>created, without repeating the operation. A failure explicitly classified as safe to retry<br>(Should-Retry: true) permits a fresh attempt with the same key and request. Only one<br>attempt can run at a time. A different request returns 409 with error_code<br>idempotency_request_mismatch. A matching request whose original has no recorded response<br>yet and is within its expected response window returns 409 with error_code<br>idempotency_in_progress. A matching request whose original has no recorded response and<br>whose expected response deadline has passed or is unknown returns 422 with error_code<br>idempotency_outcome_unknown. These conflicts and unknown outcomes do not execute the<br>request again. If the key's record is unavailable or idempotency is misconfigured, the<br>request returns 503; Should-Retry tells whether to retry with the same key. After the<br>retention period expires, the key can start a new operation.<br>|
 |body|body|[SandboxSnapshotRequest](#schemasandboxsnapshotrequest)|true|none|
 |» name|body|string|false|Optional name for the snapshot template. If a snapshot template with this name already exists, a new build will be assigned to the existing template instead of creating a new one.|
 |» memory|body|boolean|false|Whether to capture a full memory snapshot. When false, only the filesystem is persisted: the snapshot is smaller and faster to take, and sandboxes created from it cold-boot (start fresh from disk) instead of restoring memory, so they begin without the source sandbox's running processes, in-memory state, and open connections. The source sandbox keeps running in both cases. Defaults to true.|
@@ -4440,6 +5006,26 @@ Create a persistent snapshot from the sandbox's current state. Snapshots can be 
 }
 ```
 
+> 409 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 422 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
 > 429 Response
 
 ```json
@@ -4451,6 +5037,16 @@ Create a persistent snapshot from the sandbox's current state. Snapshots can be 
 ```
 
 > 500 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 503 Response
 
 ```json
 {
@@ -4468,14 +5064,23 @@ Create a persistent snapshot from the sandbox's current state. Snapshots can be 
 |400|Bad Request|Bad request|[Error](#schemaerror)|
 |401|Unauthorized|Authentication error|[Error](#schemaerror)|
 |404|Not Found|Not found|[Error](#schemaerror)|
+|409|Conflict|Conflict|[Error](#schemaerror)|
+|422|Unprocessable Entity|Unprocessable request|[Error](#schemaerror)|
 |429|Too Many Requests|Too many requests|[Error](#schemaerror)|
 |500|Internal Server Error|Server error|[Error](#schemaerror)|
+|503|Service Unavailable|Service unavailable|[Error](#schemaerror)|
 
 ### Response Headers
 
 |Status|Header|Type|Format|Description|
 |---|---|---|---|---|
+|400|Should-Retry|boolean||none|
+|404|Should-Retry|boolean||none|
+|409|Should-Retry|boolean||none|
+|422|Should-Retry|boolean||none|
 |429|Retry-After|integer||When present, the number of seconds to wait before retrying the request.|
+|500|Should-Retry|boolean||none|
+|503|Should-Retry|boolean||none|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -4483,93 +5088,6 @@ ApiKeyAuth, AuthProviderBearerAuth & AuthProviderTeamAuth, AdminApiKeyAuth & Adm
 </aside>
 
 <h1 id="e2b-api-auth">auth</h1>
-
-## List teams
-
-> Code samples
-
-```bash
-curl https://api.e2b.dev/teams \
-  -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`GET /teams`
-
-List all teams
-
-> Example responses
-
-> 200 Response
-
-```json
-[
-  {
-    "teamID": "string",
-    "name": "string",
-    "apiKey": "string",
-    "isDefault": true
-  }
-]
-```
-
-> 401 Response
-
-```json
-{
-  "code": 0,
-  "error_code": "string",
-  "message": "string"
-}
-```
-
-> 429 Response
-
-```json
-{
-  "code": 0,
-  "error_code": "string",
-  "message": "string"
-}
-```
-
-> 500 Response
-
-```json
-{
-  "code": 0,
-  "error_code": "string",
-  "message": "string"
-}
-```
-
-<h3 id="list-teams-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK|Successfully returned all teams|Inline|
-|401|Unauthorized|Authentication error|[Error](#schemaerror)|
-|429|Too Many Requests|Too many requests|[Error](#schemaerror)|
-|500|Internal Server Error|Server error|[Error](#schemaerror)|
-
-<h3 id="list-teams-responseschema">Response Schema</h3>
-
-Status Code **200**
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|*anonymous*|[[Team](#schemateam)]|false|none|none|
-
-### Response Headers
-
-|Status|Header|Type|Format|Description|
-|---|---|---|---|---|
-|429|Retry-After|integer||When present, the number of seconds to wait before retrying the request.|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-AuthProviderBearerAuth
-</aside>
 
 ## Team metrics
 
@@ -4956,7 +5474,8 @@ Returns the team's effective resource limits. A team-authenticated request may r
     "defaultFreeDiskSizeMb": 0,
     "maxFreeDiskSizeMb": 0,
     "apiTeamRpsList": 0,
-    "apiTeamRpsDelete": 0
+    "apiTeamRpsDelete": 0,
+    "maxSecrets": 0
   }
 }
 ```
@@ -5459,7 +5978,7 @@ curl https://api.e2b.dev/templates/tags \
 
 `POST /templates/tags`
 
-Assign tag(s) to a template build
+Assign tag(s) to a template build.
 
 > Body parameter
 
@@ -5476,6 +5995,7 @@ Assign tag(s) to a template build
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
+|Idempotency-Key|header|string|false|Optional team-scoped key for retrying the request. Use 1 to 255 lowercase ASCII letters,<br>digits, or hyphens (a-z, 0-9, -), such as a lowercase UUID. The HTTP method, path, query,<br>and request content identify the request. When idempotency is enabled, a matching retry of<br>a completed request replays its status and body, including the IDs of any resources it<br>created, without repeating the operation. A failure explicitly classified as safe to retry<br>(Should-Retry: true) permits a fresh attempt with the same key and request. Only one<br>attempt can run at a time. A different request returns 409 with error_code<br>idempotency_request_mismatch. A matching request whose original has no recorded response<br>yet and is within its expected response window returns 409 with error_code<br>idempotency_in_progress. A matching request whose original has no recorded response and<br>whose expected response deadline has passed or is unknown returns 422 with error_code<br>idempotency_outcome_unknown. These conflicts and unknown outcomes do not execute the<br>request again. If the key's record is unavailable or idempotency is misconfigured, the<br>request returns 503; Should-Retry tells whether to retry with the same key. After the<br>retention period expires, the key can start a new operation.<br>|
 |body|body|[AssignTemplateTagsRequest](#schemaassigntemplatetagsrequest)|true|none|
 |» target|body|string|true|Target template in "name:tag" format|
 |» tags|body|[string]|true|Tags to assign to the template|
@@ -5513,7 +6033,47 @@ Assign tag(s) to a template build
 }
 ```
 
+> 403 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
 > 404 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 408 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 409 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 422 Response
 
 ```json
 {
@@ -5543,6 +6103,16 @@ Assign tag(s) to a template build
 }
 ```
 
+> 503 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
 <h3 id="assign-template-tags-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
@@ -5550,15 +6120,32 @@ Assign tag(s) to a template build
 |201|Created|Tag assigned successfully|[AssignedTemplateTags](#schemaassignedtemplatetags)|
 |400|Bad Request|Bad request|[Error](#schemaerror)|
 |401|Unauthorized|Authentication error|[Error](#schemaerror)|
+|403|Forbidden|Forbidden|[Error](#schemaerror)|
 |404|Not Found|Not found|[Error](#schemaerror)|
+|408|Request Timeout|Request body read timed out before execution|[Error](#schemaerror)|
+|409|Conflict|The Idempotency-Key conflicts with a different request (error_code idempotency_request_mismatch), or the matching original request has no recorded response yet and is within its expected response window (error_code idempotency_in_progress); this request was not executed again|[Error](#schemaerror)|
+|413|Payload Too Large|Request body exceeds the size limit|Inline|
+|422|Unprocessable Entity|The matching original request has no recorded response and its expected response deadline has passed or is unknown (error_code idempotency_outcome_unknown); this request was not executed again|[Error](#schemaerror)|
 |429|Too Many Requests|Too many requests|[Error](#schemaerror)|
-|500|Internal Server Error|Server error|[Error](#schemaerror)|
+|500|Internal Server Error|Server error. A failed commit has an uncertain outcome and omits Should-Retry; with an Idempotency-Key that error is replayed without executing again.|[Error](#schemaerror)|
+|503|Service Unavailable|Idempotency is unavailable; the request was not executed|[Error](#schemaerror)|
 
 ### Response Headers
 
 |Status|Header|Type|Format|Description|
 |---|---|---|---|---|
+|400|Should-Retry|boolean||none|
+|401|Should-Retry|boolean||none|
+|403|Should-Retry|boolean||none|
+|404|Should-Retry|boolean||none|
+|408|Should-Retry|boolean||none|
+|409|Should-Retry|boolean||none|
+|413|Should-Retry|boolean||none|
+|422|Should-Retry|boolean||none|
+|429|Should-Retry|boolean||none|
 |429|Retry-After|integer||When present, the number of seconds to wait before retrying the request.|
+|500|Should-Retry|boolean||none|
+|503|Should-Retry|boolean||none|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -6835,7 +7422,7 @@ curl https://api.e2b.dev/secrets \
   -H "X-API-Key: ${API_KEY}" \
   -d '{
     "name": "string",
-    "value": "string",
+    "value": "password",
     "metadata": {
       "property1": "string",
       "property2": "string"
@@ -6852,7 +7439,7 @@ Create a secret by storing a runtime marker as its first version. The response c
 ```json
 {
   "name": "string",
-  "value": "string",
+  "value": "password",
   "metadata": {
     "property1": "string",
     "property2": "string"
@@ -6866,7 +7453,7 @@ Create a secret by storing a runtime marker as its first version. The response c
 |---|---|---|---|---|
 |body|body|[NewSecret](#schemanewsecret)|true|none|
 |» name|body|string|true|Name of the secret, unique within the project. Names are lower-cased before storage and returned in that canonical form; the sec_ prefix is reserved for secret identifiers.<br>|
-|» value|body|string|true|Runtime marker stored as the secret's first version. The runtime resolves it to a value at sandbox egress.|
+|» value|body|string(password)|true|Runtime marker stored as the secret's first version. The runtime resolves it to a value at sandbox egress.|
 |» metadata|body|[SecretMetadata](#schemasecretmetadata)|false|Customer metadata of the secret. Always present, empty when unset. At most 32 entries; keys are limited to 128 bytes, values to 1024 bytes, and a secret's metadata to 8192 bytes in total.<br>|
 
 > Example responses
@@ -7168,7 +7755,7 @@ curl https://api.e2b.dev/secrets/string \
   -H 'Accept: application/json' \
   -H "X-API-Key: ${API_KEY}" \
   -d '{
-    "value": "string",
+    "value": "password",
     "metadata": {
       "property1": "string",
       "property2": "string"
@@ -7184,7 +7771,7 @@ Replace the secret's stored marker by appending a new version. The response carr
 
 ```json
 {
-  "value": "string",
+  "value": "password",
   "metadata": {
     "property1": "string",
     "property2": "string"
@@ -7198,7 +7785,7 @@ Replace the secret's stored marker by appending a new version. The response carr
 |---|---|---|---|---|
 |secretID|path|string|true|none|
 |body|body|[SecretUpdate](#schemasecretupdate)|true|none|
-|» value|body|string|true|Runtime marker stored as the secret's new version. The runtime resolves it to a value at sandbox egress.|
+|» value|body|string(password)|true|Runtime marker stored as the secret's new version. The runtime resolves it to a value at sandbox egress.|
 |» metadata|body|[SecretMetadata](#schemasecretmetadata)|false|Customer metadata of the secret. Always present, empty when unset. At most 32 entries; keys are limited to 128 bytes, values to 1024 bytes, and a secret's metadata to 8192 bytes in total.<br>|
 
 > Example responses
@@ -7515,9 +8102,10 @@ Health check
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|204|No Content|The service is healthy|None|
+|200|OK|The service is healthy|Inline|
 |401|Unauthorized|Authentication error|[Error](#schemaerror)|
 |429|Too Many Requests|Too many requests|[Error](#schemaerror)|
+|503|Service Unavailable|The service is starting up or draining|Inline|
 
 ### Response Headers
 
@@ -7675,6 +8263,7 @@ Lists the team's templates together with the platform's public default templates
       "templateID": "string",
       "buildID": "string",
       "cpuCount": 1,
+      "maxCpuCount": {},
       "memoryMB": 128,
       "diskSizeMB": 0,
       "public": true,
@@ -7764,6 +8353,365 @@ To perform this operation, you must be authenticated by means of one of the foll
 ApiKeyAuth, AuthProviderBearerAuth & AuthProviderTeamAuth, AdminApiKeyAuth & AdminTeamAuth, AdminJWTAuth & AdminTeamAuth
 </aside>
 
+## List team builds
+
+> Code samples
+
+```bash
+curl https://api.e2b.dev/unstable/builds \
+  -H 'Accept: application/json' \
+  -H "X-API-Key: ${API_KEY}"
+```
+
+`GET /unstable/builds`
+
+Lists the team's builds, newest first, with an optional filter by build ID, template ID or template alias and by status. `nextCursor` continues the listing. For E2B's own clients: it may change or disappear without notice.
+
+
+<h3 id="list-team-builds-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|build_id_or_template|query|string|false|Optional filter by build identifier, template identifier, or template alias.|
+|statuses|query|[[BuildStatus](#schemabuildstatus)]|false|Comma-separated list of build statuses to include.|
+|limit|query|integer(int32)|false|Maximum number of builds to return per page.|
+|cursor|query|string|false|Cursor returned by the previous list response in `created_at\|build_id` format.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|statuses|building|
+|statuses|failed|
+|statuses|success|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "data": [
+    {
+      "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "template": "string",
+      "templateId": "string",
+      "status": "building",
+      "statusMessage": "string",
+      "createdAt": "1970-01-01T00:00:00Z",
+      "finishedAt": "1970-01-01T00:00:00Z",
+      "cpuCount": 0,
+      "memoryMB": 0,
+      "diskSizeMB": 0,
+      "envdVersion": "string"
+    }
+  ],
+  "nextCursor": "string"
+}
+```
+
+> 400 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+<h3 id="list-team-builds-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Successfully returned paginated builds.|[BuildsListResponse](#schemabuildslistresponse)|
+|400|Bad Request|Bad request|[Error](#schemaerror)|
+|401|Unauthorized|Authentication error|[Error](#schemaerror)|
+|403|Forbidden|Forbidden|[Error](#schemaerror)|
+|429|Too Many Requests|Too many requests|[Error](#schemaerror)|
+|500|Internal Server Error|Server error|[Error](#schemaerror)|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|429|Retry-After|integer||When present, the number of seconds to wait before retrying the request.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+ApiKeyAuth, AuthProviderBearerAuth & AuthProviderTeamAuth, AdminApiKeyAuth & AdminTeamAuth, AdminJWTAuth & AdminTeamAuth
+</aside>
+
+## Build statuses
+
+> Code samples
+
+```bash
+curl 'https://api.e2b.dev/unstable/builds/statuses?build_ids=497f6eca-6276-4993-bfeb-53cbbbba6f08' \
+  -H 'Accept: application/json' \
+  -H "X-API-Key: ${API_KEY}"
+```
+
+`GET /unstable/builds/statuses`
+
+Returns the statuses of the team's builds with the given IDs; IDs of other teams' builds are left out. For E2B's own clients: it may change or disappear without notice.
+
+
+<h3 id="build-statuses-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|build_ids|query|[string(uuid)]|true|Comma-separated list of build IDs to get statuses for.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "buildStatuses": [
+    {
+      "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "status": "building",
+      "finishedAt": "1970-01-01T00:00:00Z",
+      "statusMessage": "string"
+    }
+  ]
+}
+```
+
+> 400 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+<h3 id="build-statuses-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Successfully returned build statuses|[BuildsStatusesResponse](#schemabuildsstatusesresponse)|
+|400|Bad Request|Bad request|[Error](#schemaerror)|
+|401|Unauthorized|Authentication error|[Error](#schemaerror)|
+|403|Forbidden|Forbidden|[Error](#schemaerror)|
+|429|Too Many Requests|Too many requests|[Error](#schemaerror)|
+|500|Internal Server Error|Server error|[Error](#schemaerror)|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|429|Retry-After|integer||When present, the number of seconds to wait before retrying the request.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+ApiKeyAuth, AuthProviderBearerAuth & AuthProviderTeamAuth, AdminApiKeyAuth & AdminTeamAuth, AdminJWTAuth & AdminTeamAuth
+</aside>
+
+## Build details
+
+> Code samples
+
+```bash
+curl https://api.e2b.dev/unstable/builds/string \
+  -H 'Accept: application/json' \
+  -H "X-API-Key: ${API_KEY}"
+```
+
+`GET /unstable/builds/{buildID}`
+
+Returns a build of the team with the names of its template. For E2B's own clients: it may change or disappear without notice.
+
+
+<h3 id="build-details-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|buildID|path|string|true|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "names": [
+    "string"
+  ],
+  "createdAt": "1970-01-01T00:00:00Z",
+  "finishedAt": "1970-01-01T00:00:00Z",
+  "status": "building",
+  "statusMessage": "string"
+}
+```
+
+> 400 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+<h3 id="build-details-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Successfully returned build details.|[BuildInfo](#schemabuildinfo)|
+|400|Bad Request|Bad request|[Error](#schemaerror)|
+|401|Unauthorized|Authentication error|[Error](#schemaerror)|
+|403|Forbidden|Forbidden|[Error](#schemaerror)|
+|404|Not Found|Not found|[Error](#schemaerror)|
+|429|Too Many Requests|Too many requests|[Error](#schemaerror)|
+|500|Internal Server Error|Server error|[Error](#schemaerror)|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|429|Retry-After|integer||When present, the number of seconds to wait before retrying the request.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+ApiKeyAuth, AuthProviderBearerAuth & AuthProviderTeamAuth, AdminApiKeyAuth & AdminTeamAuth, AdminJWTAuth & AdminTeamAuth
+</aside>
+
 <h1 id="e2b-api-admin">admin</h1>
 
 ## List nodes
@@ -7806,6 +8754,10 @@ List all nodes
     },
     "status": "ready",
     "statusChangedAt": "1970-01-01T00:00:00Z",
+    "statusOwner": "string",
+    "capabilities": [
+      "string"
+    ],
     "sandboxCount": 0,
     "maxSandboxes": 0,
     "outstandingWork": 0,
@@ -7935,6 +8887,10 @@ Get node info
   },
   "status": "ready",
   "statusChangedAt": "1970-01-01T00:00:00Z",
+  "statusOwner": "string",
+  "capabilities": [
+    "string"
+  ],
   "sandboxCount": 0,
   "maxSandboxes": 0,
   "outstandingWork": 0,
@@ -8037,7 +8993,9 @@ curl https://api.e2b.dev/nodes/string \
   -H "X-Admin-Token: ${API_KEY}" \
   -d '{
     "clusterID": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
-    "status": "ready"
+    "status": "ready",
+    "owner": "string",
+    "force": true
   }'
 ```
 
@@ -8050,7 +9008,9 @@ Change status of a node
 ```json
 {
   "clusterID": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
-  "status": "ready"
+  "status": "ready",
+  "owner": "string",
+  "force": true
 }
 ```
 
@@ -8061,7 +9021,9 @@ Change status of a node
 |nodeID|path|string|true|none|
 |body|body|[NodeStatusChange](#schemanodestatuschange)|false|none|
 |» clusterID|body|string(uuid)|false|Identifier of the cluster|
-|» status|body|[NodeStatus](#schemanodestatus)|true|Status of the node.<br>- standby: the node is not actively used, but it can return to ready and continue serving traffic.<br>|
+|» status|body|[NodeStatus](#schemanodestatus)|true|Status of the node.<br>- standby: the node refuses new sandboxes and keeps serving the ones it holds; it can return to ready.<br>- not_ready: the node is starting and cannot take new work yet. It becomes ready by itself and cannot be set through the API.<br>|
+|» owner|body|string|false|Owner of a standby override; required to release a standby that carries one|
+|» force|body|boolean|false|Apply the status and owner regardless of the recorded owner|
 
 #### Enumerated Values
 
@@ -8073,8 +9035,19 @@ Change status of a node
 |» status|unhealthy|
 |» status|standby|
 |» status|shutting_down|
+|» status|not_ready|
 
 > Example responses
+
+> 400 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
 
 > 401 Response
 
@@ -8131,9 +9104,113 @@ Change status of a node
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |204|No Content|The node status was changed successfully|None|
+|400|Bad Request|Bad request|[Error](#schemaerror)|
 |401|Unauthorized|Authentication error|[Error](#schemaerror)|
 |404|Not Found|Not found|[Error](#schemaerror)|
 |409|Conflict|Conflict|[Error](#schemaerror)|
+|429|Too Many Requests|Too many requests|[Error](#schemaerror)|
+|500|Internal Server Error|Server error|[Error](#schemaerror)|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|429|Retry-After|integer||When present, the number of seconds to wait before retrying the request.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+AdminApiKeyAuth, AdminJWTAuth
+</aside>
+
+## Node sandboxes
+
+> Code samples
+
+```bash
+curl https://api.e2b.dev/nodes/string/sandboxes \
+  -H 'Accept: application/json' \
+  -H "X-Admin-Token: ${API_KEY}"
+```
+
+`GET /nodes/{nodeID}/sandboxes`
+
+List the sandboxes the API confirms are running on the node
+
+<h3 id="node-sandboxes-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|nodeID|path|string|true|none|
+|clusterID|query|string(uuid)|false|Identifier of the cluster|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "nodeID": "string",
+  "observedAt": "1970-01-01T00:00:00Z",
+  "items": [
+    {
+      "teamID": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "sandboxID": "string",
+      "executionID": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "lifecycleHoldUntil": "1970-01-01T00:00:00Z",
+      "networkMode": "string",
+      "volumesAttached": true
+    }
+  ]
+}
+```
+
+> 401 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+<h3 id="node-sandboxes-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Successfully returned the node's sandboxes|[NodeSandboxes](#schemanodesandboxes)|
+|401|Unauthorized|Authentication error|[Error](#schemaerror)|
+|404|Not Found|Not found|[Error](#schemaerror)|
 |429|Too Many Requests|Too many requests|[Error](#schemaerror)|
 |500|Internal Server Error|Server error|[Error](#schemaerror)|
 
@@ -8411,6 +9488,403 @@ whose events have expired is not found.
 |400|Bad Request|Bad request|[Error](#schemaerror)|
 |401|Unauthorized|Authentication error|[Error](#schemaerror)|
 |404|Not Found|Not found|[Error](#schemaerror)|
+|429|Too Many Requests|Too many requests|[Error](#schemaerror)|
+|500|Internal Server Error|Server error|[Error](#schemaerror)|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|429|Retry-After|integer||When present, the number of seconds to wait before retrying the request.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+AdminApiKeyAuth, AdminJWTAuth
+</aside>
+
+## Sandbox overview
+
+> Code samples
+
+```bash
+curl https://api.e2b.dev/unstable/admin/sandboxes/string/overview \
+  -H 'Accept: application/json' \
+  -H "X-Admin-Token: ${API_KEY}"
+```
+
+`GET /unstable/admin/sandboxes/{sandboxID}/overview`
+
+Reads a sandbox's team, snapshot template, most recent pause and newest
+default-tag build from the database. The team comes from the
+stopped-sandbox log, or from the snapshot when the sandbox has not
+stopped. Returns 404 when neither knows the sandbox. A sandbox without
+a snapshot returns null `snapshotTemplateId`, `lastPause` and
+`latestBuild`.
+
+
+<h3 id="sandbox-overview-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|sandboxID|path|string|true|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "sandboxId": "string",
+  "team": {
+    "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+    "name": "string",
+    "email": "string"
+  },
+  "snapshotTemplateId": "string",
+  "lastPause": {
+    "kind": {},
+    "autoPause": true,
+    "autoPauseKind": {}
+  },
+  "latestBuild": {
+    "buildId": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+    "templateId": "string",
+    "tag": "string",
+    "status": "string",
+    "statusGroup": {},
+    "clusterNodeId": "string",
+    "assignedAt": "1970-01-01T00:00:00Z",
+    "isCurrent": true,
+    "restorable": true
+  },
+  "buildCount": 0
+}
+```
+
+> 400 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+<h3 id="sandbox-overview-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|The sandbox overview|[AdminSandboxOverview](#schemaadminsandboxoverview)|
+|400|Bad Request|Bad request|[Error](#schemaerror)|
+|401|Unauthorized|Authentication error|[Error](#schemaerror)|
+|404|Not Found|Not found|[Error](#schemaerror)|
+|429|Too Many Requests|Too many requests|[Error](#schemaerror)|
+|500|Internal Server Error|Server error|[Error](#schemaerror)|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|429|Retry-After|integer||When present, the number of seconds to wait before retrying the request.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+AdminApiKeyAuth, AdminJWTAuth
+</aside>
+
+## List the builds of a sandbox's snapshot template
+
+> Code samples
+
+```bash
+curl https://api.e2b.dev/unstable/admin/sandboxes/string/builds \
+  -H 'Accept: application/json' \
+  -H "X-Admin-Token: ${API_KEY}"
+```
+
+`GET /unstable/admin/sandboxes/{sandboxID}/builds`
+
+Lists the build assignments of the template that holds the sandbox's
+snapshot under one tag. Assignments without a creation time are left
+out. A sandbox without a snapshot returns no items and a null
+`snapshotTemplateID`; this route does not report whether the sandbox
+exists.
+
+
+<h3 id="list-the-builds-of-a-sandboxs-snapshot-template-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|sandboxID|path|string|true|none|
+|statusGroup|query|[[AdminSandboxBuildStatusGroup](#schemaadminsandboxbuildstatusgroup)]|false|Only list builds in these status groups, comma-separated. Omit to list every group.|
+|tag|query|string|false|Tag whose assignments are listed|
+|order|query|[OrderDirection](#schemaorderdirection)|false|Direction of the assignment time order|
+|limit|query|integer(int32)|false|Maximum number of builds to return|
+|offset|query|integer(int32)|false|Number of matching builds to skip|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|statusGroup|pending|
+|statusGroup|in_progress|
+|statusGroup|ready|
+|statusGroup|failed|
+|order|asc|
+|order|desc|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "items": [
+    {
+      "buildID": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "templateID": "string",
+      "tag": "string",
+      "status": "string",
+      "statusGroup": "pending",
+      "clusterNodeID": "string",
+      "assignedAt": "1970-01-01T00:00:00Z",
+      "isCurrent": true,
+      "restorable": true
+    }
+  ],
+  "total": 0,
+  "snapshotTemplateID": "string"
+}
+```
+
+> 400 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+<h3 id="list-the-builds-of-a-sandboxs-snapshot-template-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|A page of the snapshot template's build assignments|[AdminSandboxBuildList](#schemaadminsandboxbuildlist)|
+|400|Bad Request|Bad request|[Error](#schemaerror)|
+|401|Unauthorized|Authentication error|[Error](#schemaerror)|
+|429|Too Many Requests|Too many requests|[Error](#schemaerror)|
+|500|Internal Server Error|Server error|[Error](#schemaerror)|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|429|Retry-After|integer||When present, the number of seconds to wait before retrying the request.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+AdminApiKeyAuth, AdminJWTAuth
+</aside>
+
+## Make a build the current build of a sandbox's snapshot
+
+> Code samples
+
+```bash
+curl https://api.e2b.dev/unstable/admin/sandboxes/string/builds/restore \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "X-Admin-Token: ${API_KEY}" \
+  -d '{
+    "buildID": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+  }'
+```
+
+`POST /unstable/admin/sandboxes/{sandboxID}/builds/restore`
+
+Assigns a ready build of the sandbox's snapshot template to the template
+again under the default tag, so the sandbox resumes from that build.
+The snapshot takes the restored build's kind, filesystem-only or
+memory.
+Answers 404 when the sandbox has no snapshot, its snapshot template is
+deleted, or the build is not assigned to that template under the
+default tag, and 409 when the build is not ready or is already the
+current build.
+
+
+> Body parameter
+
+```json
+{
+  "buildID": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+}
+```
+
+<h3 id="make-a-build-the-current-build-of-a-sandboxs-snapshot-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|sandboxID|path|string|true|none|
+|body|body|[AdminSandboxBuildRestoreRequest](#schemaadminsandboxbuildrestorerequest)|true|none|
+|» buildID|body|string(uuid)|true|Build to make current. It must be ready and already assigned to the<br>sandbox's snapshot template under the default tag.<br>|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "sandboxID": "string",
+  "templateID": "string",
+  "buildID": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "assignedAt": "1970-01-01T00:00:00Z",
+  "previousBuildID": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+}
+```
+
+> 400 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 409 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+<h3 id="make-a-build-the-current-build-of-a-sandboxs-snapshot-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|The build is now the snapshot template's current default build|[AdminSandboxBuildRestoreResult](#schemaadminsandboxbuildrestoreresult)|
+|400|Bad Request|Bad request|[Error](#schemaerror)|
+|401|Unauthorized|Authentication error|[Error](#schemaerror)|
+|404|Not Found|Not found|[Error](#schemaerror)|
+|409|Conflict|Conflict|[Error](#schemaerror)|
 |429|Too Many Requests|Too many requests|[Error](#schemaerror)|
 |500|Internal Server Error|Server error|[Error](#schemaerror)|
 
@@ -8853,6 +10327,1352 @@ To perform this operation, you must be authenticated by means of one of the foll
 AdminApiKeyAuth, AdminJWTAuth
 </aside>
 
+## Read team and cluster names for telemetry.
+
+<a id="opIdmanagementTelemetryNames"></a>
+
+> Code samples
+
+```bash
+curl https://api.e2b.dev/unstable/management/telemetry/names \
+  -H 'Accept: application/json'
+```
+
+`GET /unstable/management/telemetry/names`
+
+Requires a direct mutual TLS connection from the configured telemetry reader service identity. Bearer tokens and forwarded identity headers are not accepted. Returns regional team and cluster names without connection credentials. Deleted projects and clusters being deleted are omitted.
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "teams": {
+    "property1": {
+      "name": "string",
+      "clusterId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+    },
+    "property2": {
+      "name": "string",
+      "clusterId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+    }
+  },
+  "clusters": [
+    {
+      "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "name": "string",
+      "clientId": "string"
+    }
+  ]
+}
+```
+
+> 401 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+<h3 id="read-team-and-cluster-names-for-telemetry-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Current regional names.|[TelemetryNames](#schematelemetrynames)|
+|401|Unauthorized|Authentication error|[Error](#schemaerror)|
+|500|Internal Server Error|Server error|[Error](#schemaerror)|
+
+<aside class="success">
+This operation does not require authentication
+</aside>
+
+## Register a cluster.
+
+<a id="opIdmanagementRegisterCluster"></a>
+
+> Code samples
+
+```bash
+curl https://api.e2b.dev/unstable/management/clusters/497f6eca-6276-4993-bfeb-53cbbbba6f08 \
+  -X PUT \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "name": "string",
+    "endpoint": "string",
+    "endpoint_tls": true,
+    "token": "string",
+    "sandbox_proxy_domain": "string",
+    "auth_org_id": "string",
+    "telemetry_client_id": "string"
+  }'
+```
+
+`PUT /unstable/management/clusters/{clusterID}`
+
+A cluster registered here for the first time starts with deletion protection turned off. Registering an existing cluster again with the same auth organization updates its endpoint, TLS setting, sandbox proxy domain and token, while preserving its regional display name and deletion protection, then sets a telemetry client ID the cluster does not have yet. An omitted telemetry client ID preserves the stored one. A different auth organization returns a conflict with error_code cluster_registration_conflict, and so does a telemetry client ID different from the stored one, after the endpoint, TLS setting, sandbox proxy domain and token are updated. An invalid registration returns 400 with error_code cluster_registration_invalid.
+
+> Body parameter
+
+```json
+{
+  "name": "string",
+  "endpoint": "string",
+  "endpoint_tls": true,
+  "token": "string",
+  "sandbox_proxy_domain": "string",
+  "auth_org_id": "string",
+  "telemetry_client_id": "string"
+}
+```
+
+<h3 id="register-a-cluster-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|clusterID|path|string(uuid)|true|Identifier of the cluster|
+|body|body|[ManagementClusterRegistrationRequest](#schemamanagementclusterregistrationrequest)|true|none|
+|» name|body|string|true|none|
+|» endpoint|body|string|true|none|
+|» endpoint_tls|body|boolean|true|none|
+|» token|body|string|true|none|
+|» sandbox_proxy_domain|body|string \| null|false|none|
+|» auth_org_id|body|string \| null|false|none|
+|» telemetry_client_id|body|string|false|none|
+
+> Example responses
+
+> 400 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 409 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 503 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+<h3 id="register-a-cluster-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|204|No Content|Cluster registration is present.|None|
+|400|Bad Request|Bad request|[Error](#schemaerror)|
+|401|Unauthorized|Authentication error|[Error](#schemaerror)|
+|409|Conflict|Conflict|[Error](#schemaerror)|
+|500|Internal Server Error|Server error|[Error](#schemaerror)|
+|503|Service Unavailable|Service unavailable|[Error](#schemaerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+AdminJWTAuth
+</aside>
+
+## Delete a cluster and its environments.
+
+<a id="opIdmanagementDeleteCluster"></a>
+
+> Code samples
+
+```bash
+curl https://api.e2b.dev/unstable/management/clusters/497f6eca-6276-4993-bfeb-53cbbbba6f08 \
+  -X DELETE \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`DELETE /unstable/management/clusters/{clusterID}`
+
+Deletes a cluster after all team assignments are detached. Deletion protection on the cluster rejects the deletion, and so does a live team assignment, before anything changes. In one transaction it then soft-deletes every live template, snapshot template and paused sandbox snapshot on the cluster, releases their aliases, and releases all environment references while preserving environment and build history, and afterwards the cluster service deletes the cluster. A team assigned between those two steps returns a conflict with the templates already deleted; repeating the deletion once that team is detached completes it. The local cluster's nil ID is rejected. Repeating a completed deletion succeeds.
+
+<h3 id="delete-a-cluster-and-its-environments-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|clusterID|path|string(uuid)|true|Identifier of the cluster|
+
+> Example responses
+
+> 400 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 409 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 503 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+<h3 id="delete-a-cluster-and-its-environments-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|204|No Content|Cluster is absent.|None|
+|400|Bad Request|Bad request|[Error](#schemaerror)|
+|401|Unauthorized|Authentication error|[Error](#schemaerror)|
+|409|Conflict|Conflict|[Error](#schemaerror)|
+|500|Internal Server Error|Server error|[Error](#schemaerror)|
+|503|Service Unavailable|Service unavailable|[Error](#schemaerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+AdminJWTAuth
+</aside>
+
+## Update the telemetry identity of an existing cluster.
+
+<a id="opIdmanagementUpdateClusterTelemetry"></a>
+
+> Code samples
+
+```bash
+curl https://api.e2b.dev/unstable/management/clusters/497f6eca-6276-4993-bfeb-53cbbbba6f08/telemetry \
+  -X PUT \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "telemetry_client_id": "string"
+  }'
+```
+
+`PUT /unstable/management/clusters/{clusterID}/telemetry`
+
+Changes only the telemetry client mapping. Missing or deleting clusters are refused; connection settings, credentials and names are preserved.
+
+> Body parameter
+
+```json
+{
+  "telemetry_client_id": "string"
+}
+```
+
+<h3 id="update-the-telemetry-identity-of-an-existing-cluster-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|clusterID|path|string(uuid)|true|Identifier of the cluster|
+|body|body|object|true|none|
+|» telemetry_client_id|body|string|true|none|
+
+> Example responses
+
+> 400 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 409 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 503 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+<h3 id="update-the-telemetry-identity-of-an-existing-cluster-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|204|No Content|Telemetry identity updated.|None|
+|400|Bad Request|Bad request|[Error](#schemaerror)|
+|401|Unauthorized|Authentication error|[Error](#schemaerror)|
+|404|Not Found|Not found|[Error](#schemaerror)|
+|409|Conflict|Conflict|[Error](#schemaerror)|
+|500|Internal Server Error|Server error|[Error](#schemaerror)|
+|503|Service Unavailable|Service unavailable|[Error](#schemaerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+AdminJWTAuth
+</aside>
+
+## List the projects assigned to a cluster.
+
+<a id="opIdmanagementListClusterProjects"></a>
+
+> Code samples
+
+```bash
+curl https://api.e2b.dev/unstable/management/clusters/497f6eca-6276-4993-bfeb-53cbbbba6f08/projects \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /unstable/management/clusters/{clusterID}/projects`
+
+Returns the ID of every project whose team is assigned to the cluster, whichever way it was assigned. A deleted project is never assigned. An absent cluster has no projects.
+
+<h3 id="list-the-projects-assigned-to-a-cluster-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|clusterID|path|string(uuid)|true|Identifier of the cluster|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "project_ids": [
+    "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+  ]
+}
+```
+
+> 400 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+<h3 id="list-the-projects-assigned-to-a-cluster-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|The projects assigned to the cluster.|[ManagementClusterProjects](#schemamanagementclusterprojects)|
+|400|Bad Request|Bad request|[Error](#schemaerror)|
+|401|Unauthorized|Authentication error|[Error](#schemaerror)|
+|500|Internal Server Error|Server error|[Error](#schemaerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+AdminJWTAuth
+</aside>
+
+## Record that a cluster is being deleted.
+
+<a id="opIdmanagementRequestClusterDeletion"></a>
+
+> Code samples
+
+```bash
+curl https://api.e2b.dev/unstable/management/clusters/497f6eca-6276-4993-bfeb-53cbbbba6f08/deletion \
+  -X PUT \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`PUT /unstable/management/clusters/{clusterID}/deletion`
+
+Records that the caller is deleting the cluster, for a caller that deletes the cluster's teams before the cluster itself. Refused while the cluster has deletion protection turned on; a protection change in flight commits before or after the check, never between. Once recorded, deletion protection cannot be turned on, so the cluster delete that follows is not refused for protection, and no team can be newly assigned to the cluster. An assignment either commits before the deletion is recorded, where the caller's next project listing finds it, or is refused with cluster_assignment_cluster_deleting. Succeeds when the cluster is absent. Repeating the request succeeds. The local cluster's nil ID is rejected.
+
+<h3 id="record-that-a-cluster-is-being-deleted-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|clusterID|path|string(uuid)|true|Identifier of the cluster|
+
+> Example responses
+
+> 400 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 409 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 503 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+<h3 id="record-that-a-cluster-is-being-deleted-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|204|No Content|The deletion is recorded, or the cluster is absent.|None|
+|400|Bad Request|Bad request|[Error](#schemaerror)|
+|401|Unauthorized|Authentication error|[Error](#schemaerror)|
+|409|Conflict|The cluster has deletion protection turned on.|[Error](#schemaerror)|
+|500|Internal Server Error|Server error|[Error](#schemaerror)|
+|503|Service Unavailable|Service unavailable|[Error](#schemaerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+AdminJWTAuth
+</aside>
+
+## Check cluster destroy readiness.
+
+<a id="opIdmanagementClusterDestroyReadiness"></a>
+
+> Code samples
+
+```bash
+curl https://api.e2b.dev/unstable/management/clusters/497f6eca-6276-4993-bfeb-53cbbbba6f08/destroy-readiness \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /unstable/management/clusters/{clusterID}/destroy-readiness`
+
+Checks whether the cluster has deletion protection turned on, or more than one team uses this exact cluster, either as an assigned team or as the owner of active templates or snapshots on it. One team's own templates and snapshots do not block this check, because deleting the cluster soft-deletes them. Soft-deleted history does not count. Returns success if the cluster is absent. This read does not change resources or prevent later assignments or template creation.
+
+<h3 id="check-cluster-destroy-readiness-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|clusterID|path|string(uuid)|true|Identifier of the cluster|
+
+> Example responses
+
+> 400 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 409 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 503 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+<h3 id="check-cluster-destroy-readiness-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|204|No Content|At most one team uses the cluster.|None|
+|400|Bad Request|Bad request|[Error](#schemaerror)|
+|401|Unauthorized|Authentication error|[Error](#schemaerror)|
+|409|Conflict|The cluster has deletion protection turned on, or more than one team uses it and the other teams and their templates must move off it before destroying the cluster.|[Error](#schemaerror)|
+|500|Internal Server Error|Server error|[Error](#schemaerror)|
+|503|Service Unavailable|Service unavailable|[Error](#schemaerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+AdminJWTAuth
+</aside>
+
+## Assign a cluster to a project.
+
+<a id="opIdmanagementAssignProjectCluster"></a>
+
+> Code samples
+
+```bash
+curl https://api.e2b.dev/unstable/management/projects/497f6eca-6276-4993-bfeb-53cbbbba6f08/cluster/497f6eca-6276-4993-bfeb-53cbbbba6f08 \
+  -X PUT \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`PUT /unstable/management/projects/{projectID}/cluster/{clusterID}`
+
+Assigns the cluster when the project has no cluster assigned. Replaying the identical assignment succeeds; replacing a different assigned cluster returns a conflict. Answers 404 when the project is missing or deleted.
+
+<h3 id="assign-a-cluster-to-a-project-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|projectID|path|string(uuid)|true|none|
+|clusterID|path|string(uuid)|true|Identifier of the cluster|
+
+> Example responses
+
+> 400 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 409 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 503 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+<h3 id="assign-a-cluster-to-a-project-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|204|No Content|Cluster is assigned to the project.|None|
+|400|Bad Request|Bad request|[Error](#schemaerror)|
+|401|Unauthorized|Authentication error|[Error](#schemaerror)|
+|404|Not Found|Not found|[Error](#schemaerror)|
+|409|Conflict|Conflict|[Error](#schemaerror)|
+|500|Internal Server Error|Server error|[Error](#schemaerror)|
+|503|Service Unavailable|Service unavailable|[Error](#schemaerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+AdminJWTAuth
+</aside>
+
+## Detach a cluster assignment from a project.
+
+<a id="opIdmanagementDetachProjectCluster"></a>
+
+> Code samples
+
+```bash
+curl https://api.e2b.dev/unstable/management/projects/497f6eca-6276-4993-bfeb-53cbbbba6f08/cluster/497f6eca-6276-4993-bfeb-53cbbbba6f08 \
+  -X DELETE \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`DELETE /unstable/management/projects/{projectID}/cluster/{clusterID}`
+
+Answers 404 when the project is missing or deleted.
+
+<h3 id="detach-a-cluster-assignment-from-a-project-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|projectID|path|string(uuid)|true|none|
+|clusterID|path|string(uuid)|true|Identifier of the cluster|
+
+> Example responses
+
+> 401 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 409 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+<h3 id="detach-a-cluster-assignment-from-a-project-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|204|No Content|The matching assignment is absent.|None|
+|401|Unauthorized|Authentication error|[Error](#schemaerror)|
+|404|Not Found|Not found|[Error](#schemaerror)|
+|409|Conflict|Conflict|[Error](#schemaerror)|
+|500|Internal Server Error|Server error|[Error](#schemaerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+AdminJWTAuth
+</aside>
+
+## Create or reconcile a project.
+
+<a id="opIdmanagementUpsertProject"></a>
+
+> Code samples
+
+```bash
+curl https://api.e2b.dev/unstable/management/projects/497f6eca-6276-4993-bfeb-53cbbbba6f08 \
+  -X PUT \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "cluster_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+    "name": "string",
+    "slug": "string",
+    "email": "string"
+  }'
+```
+
+`PUT /unstable/management/projects/{projectID}`
+
+> Body parameter
+
+```json
+{
+  "cluster_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "name": "string",
+  "slug": "string",
+  "email": "string"
+}
+```
+
+<h3 id="create-or-reconcile-a-project-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|projectID|path|string(uuid)|true|none|
+|body|body|[ManagementProjectUpsertRequest](#schemamanagementprojectupsertrequest)|true|none|
+|» cluster_id|body|string(uuid)|false|Cluster assignment to synchronize. Omission preserves the existing assignment.|
+|» name|body|string|true|none|
+|» slug|body|string|true|Changing it renames the project, and its template names follow: each name held under an earlier slug is also given under the new one, and the old names keep working. A name the new slug already holds is left as it is. A slug already held on this control plane is a 409, on a rename as much as on a create.|
+|» email|body|string|true|Contact address recorded on the project.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "cluster_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "name": "string",
+  "slug": "string",
+  "email": "string",
+  "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+}
+```
+
+> 201 Response
+
+```json
+{
+  "cluster_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "name": "string",
+  "slug": "string",
+  "email": "string",
+  "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+}
+```
+
+> 400 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 409 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 503 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+<h3 id="create-or-reconcile-a-project-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Existing project reconciled.|[ManagementProject](#schemamanagementproject)|
+|201|Created|Project created.|[ManagementProject](#schemamanagementproject)|
+|400|Bad Request|Bad request|[Error](#schemaerror)|
+|401|Unauthorized|Authentication error|[Error](#schemaerror)|
+|404|Not Found|Not found|[Error](#schemaerror)|
+|409|Conflict|Conflict|[Error](#schemaerror)|
+|500|Internal Server Error|Server error|[Error](#schemaerror)|
+|503|Service Unavailable|Service unavailable|[Error](#schemaerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+AdminJWTAuth
+</aside>
+
+## Soft-delete a project.
+
+<a id="opIdmanagementDeleteProject"></a>
+
+> Code samples
+
+```bash
+curl https://api.e2b.dev/unstable/management/projects/497f6eca-6276-4993-bfeb-53cbbbba6f08 \
+  -X DELETE \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`DELETE /unstable/management/projects/{projectID}`
+
+Marks the project deleted and blocked, releases its cluster assignment, scrubs its name and email to DELETED and its slug to deleted-<project ID>, which releases the old slug for reuse, deletes its memberships and API keys, soft-deletes its templates and snapshots, and enqueues the teardown of its running sandboxes, all in one transaction. The project row remains. Afterwards the project answers 404 to other management writes. Repeating the call answers 204 and repeats every step except the deletion time: it re-blocks and re-scrubs the project, clears a cluster assignment written since, deletes any memberships, keys, templates or snapshots created since, and enqueues the teardown again.
+
+<h3 id="soft-delete-a-project-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|projectID|path|string(uuid)|true|none|
+
+> Example responses
+
+> 400 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+<h3 id="soft-delete-a-project-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|204|No Content|Project is deleted and its teardown is enqueued.|None|
+|400|Bad Request|Bad request|[Error](#schemaerror)|
+|401|Unauthorized|Authentication error|[Error](#schemaerror)|
+|404|Not Found|Not found|[Error](#schemaerror)|
+|500|Internal Server Error|Server error|[Error](#schemaerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+AdminJWTAuth
+</aside>
+
+## Apply one versioned project member projection.
+
+<a id="opIdmanagementApplyProjectMember"></a>
+
+> Code samples
+
+```bash
+curl https://api.e2b.dev/unstable/management/projects/497f6eca-6276-4993-bfeb-53cbbbba6f08/members/497f6eca-6276-4993-bfeb-53cbbbba6f08 \
+  -X PUT \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "revision": 1,
+    "present": true,
+    "is_default": false,
+    "role": "owner",
+    "identities": [
+      {
+        "issuer": "string",
+        "subject": "string"
+      }
+    ]
+  }'
+```
+
+`PUT /unstable/management/projects/{projectID}/members/{userID}`
+
+Applies the newest desired presence for one project member. An older or duplicate revision is accepted without changing target state.
+
+> Body parameter
+
+```json
+{
+  "revision": 1,
+  "present": true,
+  "is_default": false,
+  "role": "owner",
+  "identities": [
+    {
+      "issuer": "string",
+      "subject": "string"
+    }
+  ]
+}
+```
+
+<h3 id="apply-one-versioned-project-member-projection-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|projectID|path|string(uuid)|true|none|
+|userID|path|string(uuid)|true|none|
+|body|body|[ManagementProjectMemberApplyRequest](#schemamanagementprojectmemberapplyrequest)|true|none|
+|» revision|body|integer(int64)|true|none|
+|» present|body|boolean|true|none|
+|» is_default|body|boolean|false|Whether this membership is the user's default team. Omitted requests from older sources remain non-default.|
+|» role|body|string|false|The member's effective role on the project. A viewer may only read. An omitted role keeps the stored one, and a new member without one is stored as member.|
+|» identities|body|[[ManagementProjectMemberIdentity](#schemamanagementprojectmemberidentity)]|false|none|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|» role|owner|
+|» role|member|
+|» role|viewer|
+
+> Example responses
+
+> 400 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 409 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+<h3 id="apply-one-versioned-project-member-projection-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|204|No Content|Membership projection is applied or already superseded.|None|
+|400|Bad Request|Bad request|[Error](#schemaerror)|
+|401|Unauthorized|Authentication error|[Error](#schemaerror)|
+|404|Not Found|Not found|[Error](#schemaerror)|
+|409|Conflict|Conflict|[Error](#schemaerror)|
+|500|Internal Server Error|Server error|[Error](#schemaerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+AdminJWTAuth
+</aside>
+
+## Reconcile effective limits for a project.
+
+<a id="opIdmanagementUpsertProjectLimits"></a>
+
+> Code samples
+
+```bash
+curl https://api.e2b.dev/unstable/management/projects/497f6eca-6276-4993-bfeb-53cbbbba6f08/limits \
+  -X PUT \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "revision": 1,
+    "concurrent_sandboxes": 1,
+    "max_sandbox_length_hours": 1,
+    "max_vcpu": 1,
+    "max_ram_mb": 1,
+    "disk_mb": 1,
+    "concurrent_template_builds": 1,
+    "events_ttl_days": 1,
+    "default_free_disk_size_mb": 0,
+    "max_free_disk_size_mb": 1,
+    "max_disk_size_mb": 1,
+    "api_team_rps_list": 0,
+    "api_team_rps_delete": 0,
+    "max_secrets": 1,
+    "decided_at": "1970-01-01T00:00:00Z"
+  }'
+```
+
+`PUT /unstable/management/projects/{projectID}/limits`
+
+> Body parameter
+
+```json
+{
+  "revision": 1,
+  "concurrent_sandboxes": 1,
+  "max_sandbox_length_hours": 1,
+  "max_vcpu": 1,
+  "max_ram_mb": 1,
+  "disk_mb": 1,
+  "concurrent_template_builds": 1,
+  "events_ttl_days": 1,
+  "default_free_disk_size_mb": 0,
+  "max_free_disk_size_mb": 1,
+  "max_disk_size_mb": 1,
+  "api_team_rps_list": 0,
+  "api_team_rps_delete": 0,
+  "max_secrets": 1,
+  "decided_at": "1970-01-01T00:00:00Z"
+}
+```
+
+<h3 id="reconcile-effective-limits-for-a-project-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|projectID|path|string(uuid)|true|none|
+|body|body|[ManagementProjectLimits](#schemamanagementprojectlimits)|true|none|
+|» revision|body|integer(int64)|true|The caller's version of this answer, raised whenever the limits it resolved for the project change. Delivery is over a network, so two pushes can be in flight at once and arrive in either order: this side stores the revision it accepted and drops a delivery at or below it, which is what keeps a delayed retry from putting the project back on limits it has already left.<br><br>Comparable only against earlier revisions for the same project.|
+|» concurrent_sandboxes|body|integer(int32)|true|none|
+|» max_sandbox_length_hours|body|integer(int32)|true|none|
+|» max_vcpu|body|integer(int32)|true|none|
+|» max_ram_mb|body|integer(int64)|true|none|
+|» disk_mb|body|integer(int64)|true|none|
+|» concurrent_template_builds|body|integer(int32)|true|none|
+|» events_ttl_days|body|integer(int32)|true|none|
+|» default_free_disk_size_mb|body|integer(int64)|true|The default free-space growth target when a template build request omits one. May sit anywhere at or below the maximum free-space growth target, and usually sits well below it; a delivery whose default exceeds the maximum is rejected.|
+|» max_free_disk_size_mb|body|integer(int64)|false|The most a template build may request as its free-space growth target.|
+|» max_disk_size_mb|body|integer(int64)|false|The same ceiling as max_free_disk_size_mb, under the name it was first published with. Kept until every deployed sender and receiver speaks the other name.|
+|» api_team_rps_list|body|integer(int64)|true|Requests per second a project may make to each list endpoint. Zero disables the limit.|
+|» api_team_rps_delete|body|integer(int64)|true|Requests per second a project may make to each delete endpoint. Zero disables the limit.|
+|» max_secrets|body|integer(int32)|true|Live secrets the project may hold.|
+|» decided_at|body|[ManagementDecidedAt](#schemamanagementdecidedat)|false|When the caller decided this revision, in RFC 3339. Stored with the revision and used to measure how long the decision took to apply here. Omit it when the caller does not know; the delivery is then counted as origin unknown rather than as zero lag.|
+|» *anyOf*|body|object|false|none|
+|» *anyOf*|body|object|false|none|
+
+> Example responses
+
+> 400 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+<h3 id="reconcile-effective-limits-for-a-project-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|204|No Content|Effective limits are synchronized.|None|
+|400|Bad Request|Bad request|[Error](#schemaerror)|
+|401|Unauthorized|Authentication error|[Error](#schemaerror)|
+|404|Not Found|Not found|[Error](#schemaerror)|
+|500|Internal Server Error|Server error|[Error](#schemaerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+AdminJWTAuth
+</aside>
+
 ## Apply a project's settings revision.
 
 <a id="opIdmanagementSetProjectSettings"></a>
@@ -8948,6 +11768,209 @@ Replaces the complete project settings document when the revision is newer than 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |204|No Content|Project settings are applied or already superseded.|None|
+|400|Bad Request|Bad request|[Error](#schemaerror)|
+|401|Unauthorized|Authentication error|[Error](#schemaerror)|
+|404|Not Found|Not found|[Error](#schemaerror)|
+|500|Internal Server Error|Server error|[Error](#schemaerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+AdminJWTAuth
+</aside>
+
+## Apply a project's block state.
+
+<a id="opIdmanagementApplyProjectBlock"></a>
+
+> Code samples
+
+```bash
+curl https://api.e2b.dev/unstable/management/projects/497f6eca-6276-4993-bfeb-53cbbbba6f08/block \
+  -X PUT \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "revision": 1,
+    "blocked": true,
+    "reason": "string",
+    "decided_at": "1970-01-01T00:00:00Z"
+  }'
+```
+
+`PUT /unstable/management/projects/{projectID}/block`
+
+Records whether the project is refused billable work, which the auth path reads before it lets a sandbox start. An older or duplicate revision is accepted without changing target state. Answers 404 when the project is missing or deleted.
+
+> Body parameter
+
+```json
+{
+  "revision": 1,
+  "blocked": true,
+  "reason": "string",
+  "decided_at": "1970-01-01T00:00:00Z"
+}
+```
+
+<h3 id="apply-a-projects-block-state-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|projectID|path|string(uuid)|true|none|
+|body|body|[ManagementProjectBlockRequest](#schemamanagementprojectblockrequest)|true|none|
+|» revision|body|integer(int64)|true|Monotonic per-project revision. Older or duplicate revisions succeed without changing stored state.|
+|» blocked|body|boolean|true|Whether the project is refused billable work.|
+|» reason|body|string|false|Reason included in blocked-request errors. Cleared when blocked is false.|
+|» decided_at|body|[ManagementDecidedAt](#schemamanagementdecidedat)|false|When the caller decided this revision, in RFC 3339. Stored with the revision and used to measure how long the decision took to apply here. Omit it when the caller does not know; the delivery is then counted as origin unknown rather than as zero lag.|
+
+> Example responses
+
+> 400 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+<h3 id="apply-a-projects-block-state-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|204|No Content|Block state is applied or already superseded.|None|
+|400|Bad Request|Bad request|[Error](#schemaerror)|
+|401|Unauthorized|Authentication error|[Error](#schemaerror)|
+|404|Not Found|Not found|[Error](#schemaerror)|
+|500|Internal Server Error|Server error|[Error](#schemaerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+AdminJWTAuth
+</aside>
+
+## Apply a project's ban state.
+
+<a id="opIdmanagementApplyProjectBan"></a>
+
+> Code samples
+
+```bash
+curl https://api.e2b.dev/unstable/management/projects/497f6eca-6276-4993-bfeb-53cbbbba6f08/ban \
+  -X PUT \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "revision": 1,
+    "banned": true,
+    "decided_at": "1970-01-01T00:00:00Z"
+  }'
+```
+
+`PUT /unstable/management/projects/{projectID}/ban`
+
+Records whether the project is banned. Authentication refuses a banned project's API keys and members. A revision that turns the ban on also kills the project's running sandboxes and cancels its builds in the background, and retries while the project stays banned and any of them remain. The newest revision wins: an older or duplicate revision is accepted without changing target state. Answers 404 when the project is missing or deleted.
+
+> Body parameter
+
+```json
+{
+  "revision": 1,
+  "banned": true,
+  "decided_at": "1970-01-01T00:00:00Z"
+}
+```
+
+<h3 id="apply-a-projects-ban-state-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|projectID|path|string(uuid)|true|none|
+|body|body|[ManagementProjectBanRequest](#schemamanagementprojectbanrequest)|true|none|
+|» revision|body|integer(int64)|true|Monotonic per-project revision. Older or duplicate revisions succeed without changing stored state.|
+|» banned|body|boolean|true|Whether the project is refused at authentication.|
+|» decided_at|body|[ManagementDecidedAt](#schemamanagementdecidedat)|false|When the caller decided this revision, in RFC 3339. Stored with the revision and used to measure how long the decision took to apply here. Omit it when the caller does not know; the delivery is then counted as origin unknown rather than as zero lag.|
+
+> Example responses
+
+> 400 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+<h3 id="apply-a-projects-ban-state-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|204|No Content|Ban state is applied or already superseded.|None|
 |400|Bad Request|Bad request|[Error](#schemaerror)|
 |401|Unauthorized|Authentication error|[Error](#schemaerror)|
 |404|Not Found|Not found|[Error](#schemaerror)|
@@ -9103,6 +12126,143 @@ too long for a query string.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|The page of matching teams and the number of all matching teams|[AdminTeamList](#schemaadminteamlist)|
+|400|Bad Request|Bad request|[Error](#schemaerror)|
+|401|Unauthorized|Authentication error|[Error](#schemaerror)|
+|429|Too Many Requests|Too many requests|[Error](#schemaerror)|
+|500|Internal Server Error|Server error|[Error](#schemaerror)|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|429|Retry-After|integer||When present, the number of seconds to wait before retrying the request.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+AdminApiKeyAuth, AdminJWTAuth
+</aside>
+
+## Ban teams
+
+<a id="opIdadminBanTeams"></a>
+
+> Code samples
+
+```bash
+curl https://api.e2b.dev/unstable/admin/teams/bans \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "X-Admin-Token: ${API_KEY}" \
+  -d '{
+    "teamIDs": [
+      "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+    ]
+  }'
+```
+
+`POST /unstable/admin/teams/bans`
+
+Bans up to 100 teams at once, as
+`PUT /unstable/admin/teams/{teamID}/ban` does, except that every
+team's ban is stored before any team's sandboxes are killed or builds
+cancelled, and the kills and cancellations of all teams share one time
+budget. One team's failure does not stop the others; the response sorts
+every requested team into banned, not found or failed. The work
+continues if the caller disconnects.
+
+
+> Body parameter
+
+```json
+{
+  "teamIDs": [
+    "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+  ]
+}
+```
+
+<h3 id="ban-teams-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|body|body|[AdminTeamsBanRequest](#schemaadminteamsbanrequest)|true|none|
+|» teamIDs|body|[string(uuid)]|true|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "banned": [
+    {
+      "teamID": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "sandboxesKilled": 0,
+      "sandboxesFailedToKill": 0,
+      "sandboxKillError": "string",
+      "buildsCancelled": 0,
+      "buildsFailedToCancel": 0,
+      "buildCancelError": "string"
+    }
+  ],
+  "notFound": [
+    "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+  ],
+  "failed": [
+    {
+      "teamID": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "error": "string"
+    }
+  ]
+}
+```
+
+> 400 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+<h3 id="ban-teams-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|The outcome for every requested team|[AdminTeamsBanResult](#schemaadminteamsbanresult)|
 |400|Bad Request|Bad request|[Error](#schemaerror)|
 |401|Unauthorized|Authentication error|[Error](#schemaerror)|
 |429|Too Many Requests|Too many requests|[Error](#schemaerror)|
@@ -9352,6 +12512,1873 @@ nodes. Labels are deduplicated, keeping the first occurrence of each.
 |Status|Header|Type|Format|Description|
 |---|---|---|---|---|
 |429|Retry-After|integer||When present, the number of seconds to wait before retrying the request.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+AdminApiKeyAuth, AdminJWTAuth
+</aside>
+
+## Ban a team
+
+<a id="opIdadminBanTeam"></a>
+
+> Code samples
+
+```bash
+curl https://api.e2b.dev/unstable/admin/teams/497f6eca-6276-4993-bfeb-53cbbbba6f08/ban \
+  -X PUT \
+  -H 'Accept: application/json' \
+  -H "X-Admin-Token: ${API_KEY}"
+```
+
+`PUT /unstable/admin/teams/{teamID}/ban`
+
+Marks the team as banned so its API keys stop authenticating, then
+kills its sandboxes and cancels its builds. The ban is stored first:
+a failure to kill or cancel is reported in the result and does not
+undo it. Killing and cancelling stop after a fixed time budget, and a
+step cut short is reported as failed. Banning an already banned team
+repeats the kill and cancel. The work continues if the caller
+disconnects.
+
+
+<h3 id="ban-a-team-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|teamID|path|string(uuid)|true|Team ID|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "teamID": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "sandboxesKilled": 0,
+  "sandboxesFailedToKill": 0,
+  "sandboxKillError": "string",
+  "buildsCancelled": 0,
+  "buildsFailedToCancel": 0,
+  "buildCancelError": "string"
+}
+```
+
+> 400 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+<h3 id="ban-a-team-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|The team is banned|[AdminTeamBanResult](#schemaadminteambanresult)|
+|400|Bad Request|Bad request|[Error](#schemaerror)|
+|401|Unauthorized|Authentication error|[Error](#schemaerror)|
+|404|Not Found|Not found|[Error](#schemaerror)|
+|429|Too Many Requests|Too many requests|[Error](#schemaerror)|
+|500|Internal Server Error|Server error|[Error](#schemaerror)|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|429|Retry-After|integer||When present, the number of seconds to wait before retrying the request.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+AdminApiKeyAuth, AdminJWTAuth
+</aside>
+
+## Unban a team
+
+<a id="opIdadminUnbanTeam"></a>
+
+> Code samples
+
+```bash
+curl https://api.e2b.dev/unstable/admin/teams/497f6eca-6276-4993-bfeb-53cbbbba6f08/ban \
+  -X DELETE \
+  -H 'Accept: application/json' \
+  -H "X-Admin-Token: ${API_KEY}"
+```
+
+`DELETE /unstable/admin/teams/{teamID}/ban`
+
+Clears the team's ban. Idempotent.
+
+<h3 id="unban-a-team-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|teamID|path|string(uuid)|true|Team ID|
+
+> Example responses
+
+> 400 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+<h3 id="unban-a-team-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|204|No Content|The team is not banned|None|
+|400|Bad Request|Bad request|[Error](#schemaerror)|
+|401|Unauthorized|Authentication error|[Error](#schemaerror)|
+|404|Not Found|Not found|[Error](#schemaerror)|
+|429|Too Many Requests|Too many requests|[Error](#schemaerror)|
+|500|Internal Server Error|Server error|[Error](#schemaerror)|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|429|Retry-After|integer||When present, the number of seconds to wait before retrying the request.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+AdminApiKeyAuth, AdminJWTAuth
+</aside>
+
+## List clusters as admin
+
+<a id="opIdadminListClusters"></a>
+
+> Code samples
+
+```bash
+curl https://api.e2b.dev/unstable/admin/clusters \
+  -H 'Accept: application/json' \
+  -H "X-Admin-Token: ${API_KEY}"
+```
+
+`GET /unstable/admin/clusters`
+
+Lists the registered clusters with the number of teams assigned to each. Never returns a cluster's token. The local cluster is not a registered cluster and is not listed.
+
+<h3 id="list-clusters-as-admin-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|limit|query|integer(int32)|false|Maximum number of clusters to return|
+|offset|query|integer(int32)|false|Number of matching clusters to skip|
+|search|query|string|false|Case-insensitive substring match on the cluster name or endpoint|
+|sortBy|query|string|false|Column to order by|
+|sortOrder|query|string|false|none|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|sortBy|endpoint|
+|sortBy|name|
+|sortBy|teamCount|
+|sortOrder|asc|
+|sortOrder|desc|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "items": [
+    {
+      "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "name": "string",
+      "endpoint": "string",
+      "sandboxProxyDomain": "string",
+      "teamCount": 0
+    }
+  ],
+  "total": 0
+}
+```
+
+> 400 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 503 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+<h3 id="list-clusters-as-admin-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|The page of matching clusters and the number of all matching clusters|[ClusterListResponse](#schemaclusterlistresponse)|
+|400|Bad Request|Bad request|[Error](#schemaerror)|
+|401|Unauthorized|Authentication error|[Error](#schemaerror)|
+|500|Internal Server Error|Server error|[Error](#schemaerror)|
+|503|Service Unavailable|Service unavailable|[Error](#schemaerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+AdminApiKeyAuth, AdminJWTAuth
+</aside>
+
+## Create a cluster as admin
+
+<a id="opIdadminCreateCluster"></a>
+
+> Code samples
+
+```bash
+curl https://api.e2b.dev/unstable/admin/clusters \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "X-Admin-Token: ${API_KEY}" \
+  -d '{
+    "cluster_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+    "name": "string",
+    "endpoint": "string",
+    "endpoint_tls": true,
+    "token": "string",
+    "sandbox_proxy_domain": "string",
+    "auth_org_id": "string",
+    "telemetry_client_id": "string"
+  }'
+```
+
+`POST /unstable/admin/clusters`
+
+Creates a cluster whose configuration cannot be modified through this route. A new cluster starts with deletion protection turned on. Creating a cluster again with the same `cluster_id` and an identical configuration answers 201 with the stored cluster, whose deletionProtection is whatever is stored; a different configuration, or an auth organization another cluster uses, returns 409 with error_code cluster_registration_conflict. An invalid request returns 400 with error_code cluster_registration_invalid.
+
+> Body parameter
+
+```json
+{
+  "cluster_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "name": "string",
+  "endpoint": "string",
+  "endpoint_tls": true,
+  "token": "string",
+  "sandbox_proxy_domain": "string",
+  "auth_org_id": "string",
+  "telemetry_client_id": "string"
+}
+```
+
+<h3 id="create-a-cluster-as-admin-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|body|body|[AdminClusterCreateRequest](#schemaadminclustercreaterequest)|true|none|
+|» cluster_id|body|string(uuid)|false|Optional stable identifier for idempotent creation. Reuse succeeds only when the immutable configuration is identical.|
+|» name|body|string|true|none|
+|» endpoint|body|string|true|none|
+|» endpoint_tls|body|boolean|true|none|
+|» token|body|string|true|none|
+|» sandbox_proxy_domain|body|string \| null|false|none|
+|» auth_org_id|body|string \| null|false|none|
+|» telemetry_client_id|body|string|false|none|
+
+> Example responses
+
+> 201 Response
+
+```json
+{
+  "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "name": "string",
+  "endpoint": "string",
+  "endpointTls": true,
+  "sandboxProxyDomain": "string",
+  "authOrgId": "string",
+  "deletionProtection": true
+}
+```
+
+> 400 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 409 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 503 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+<h3 id="create-a-cluster-as-admin-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|201|Created|Cluster created.|[ClusterDetail](#schemaclusterdetail)|
+|400|Bad Request|Bad request|[Error](#schemaerror)|
+|401|Unauthorized|Authentication error|[Error](#schemaerror)|
+|409|Conflict|Conflict|[Error](#schemaerror)|
+|500|Internal Server Error|Server error|[Error](#schemaerror)|
+|503|Service Unavailable|Service unavailable|[Error](#schemaerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+AdminApiKeyAuth, AdminJWTAuth
+</aside>
+
+## Cluster as admin
+
+<a id="opIdadminGetCluster"></a>
+
+> Code samples
+
+```bash
+curl https://api.e2b.dev/unstable/admin/clusters/497f6eca-6276-4993-bfeb-53cbbbba6f08 \
+  -H 'Accept: application/json' \
+  -H "X-Admin-Token: ${API_KEY}"
+```
+
+`GET /unstable/admin/clusters/{clusterID}`
+
+Returns a cluster with the first page of its assigned teams, the number of teams assigned to it and the number of live templates on it. Never returns the cluster's token.
+
+<h3 id="cluster-as-admin-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|teamsLimit|query|integer(int32)|false|Page size for the embedded teams page|
+|teamsOffset|query|integer(int32)|false|Offset for the embedded teams page|
+|clusterID|path|string(uuid)|true|Identifier of the cluster|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "cluster": {
+    "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+    "name": "string",
+    "endpoint": "string",
+    "endpointTls": true,
+    "sandboxProxyDomain": "string",
+    "authOrgId": "string",
+    "deletionProtection": true
+  },
+  "teams": {
+    "items": [
+      {
+        "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+        "email": "string",
+        "name": "string",
+        "slug": "string",
+        "isBanned": true,
+        "createdAt": "1970-01-01T00:00:00Z"
+      }
+    ],
+    "total": 0
+  },
+  "teamCount": 0,
+  "templateCount": 0
+}
+```
+
+> 400 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 503 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+<h3 id="cluster-as-admin-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|The cluster|[ClusterDetailWithTeams](#schemaclusterdetailwithteams)|
+|400|Bad Request|Bad request|[Error](#schemaerror)|
+|401|Unauthorized|Authentication error|[Error](#schemaerror)|
+|404|Not Found|Not found|[Error](#schemaerror)|
+|500|Internal Server Error|Server error|[Error](#schemaerror)|
+|503|Service Unavailable|Service unavailable|[Error](#schemaerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+AdminApiKeyAuth, AdminJWTAuth
+</aside>
+
+## Delete a cluster and its environments as admin
+
+<a id="opIdadminDeleteCluster"></a>
+
+> Code samples
+
+```bash
+curl https://api.e2b.dev/unstable/admin/clusters/497f6eca-6276-4993-bfeb-53cbbbba6f08 \
+  -X DELETE \
+  -H 'Accept: application/json' \
+  -H "X-Admin-Token: ${API_KEY}"
+```
+
+`DELETE /unstable/admin/clusters/{clusterID}`
+
+Deletes a cluster after all team assignments are detached. Deletion protection on the cluster rejects the deletion, and so does a live team assignment, before anything changes. In one transaction it then soft-deletes every live template, snapshot template and paused sandbox snapshot on the cluster, releases their aliases, and releases all environment references while preserving environment and build history, and afterwards the cluster service deletes the cluster. A team assigned between those two steps returns a conflict with the templates already deleted; repeating the deletion once that team is detached completes it. The local cluster's nil ID is rejected. Repeating a completed deletion succeeds.
+
+<h3 id="delete-a-cluster-and-its-environments-as-admin-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|clusterID|path|string(uuid)|true|Identifier of the cluster|
+
+> Example responses
+
+> 400 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 409 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 503 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+<h3 id="delete-a-cluster-and-its-environments-as-admin-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|204|No Content|Cluster deleted or already absent.|None|
+|400|Bad Request|Bad request|[Error](#schemaerror)|
+|401|Unauthorized|Authentication error|[Error](#schemaerror)|
+|409|Conflict|Conflict|[Error](#schemaerror)|
+|500|Internal Server Error|Server error|[Error](#schemaerror)|
+|503|Service Unavailable|Service unavailable|[Error](#schemaerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+AdminApiKeyAuth, AdminJWTAuth
+</aside>
+
+## Update a cluster as admin
+
+<a id="opIdadminUpdateCluster"></a>
+
+> Code samples
+
+```bash
+curl https://api.e2b.dev/unstable/admin/clusters/497f6eca-6276-4993-bfeb-53cbbbba6f08 \
+  -X PATCH \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "X-Admin-Token: ${API_KEY}" \
+  -d '{
+    "name": "string",
+    "endpoint": "string",
+    "endpointTls": true,
+    "sandboxProxyDomain": "string",
+    "authOrgId": "string",
+    "deletionProtection": true
+  }'
+```
+
+`PATCH /unstable/admin/clusters/{clusterID}`
+
+Writes only the properties present in the body. `endpoint` and `endpointTls` change where orchestration traffic for every team on the cluster goes, `sandboxProxyDomain` changes the public URL of every sandbox on it, and `authOrgId` changes how the cluster authenticates. A body with no property returns 400. Another cluster using the auth organization returns 409, and so does turning deletion protection on after the cluster's deletion is recorded. The token is rotated through `PUT /unstable/admin/clusters/{clusterID}/token`.
+
+> Body parameter
+
+```json
+{
+  "name": "string",
+  "endpoint": "string",
+  "endpointTls": true,
+  "sandboxProxyDomain": "string",
+  "authOrgId": "string",
+  "deletionProtection": true
+}
+```
+
+<h3 id="update-a-cluster-as-admin-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|clusterID|path|string(uuid)|true|Identifier of the cluster|
+|body|body|[ClusterUpdateRequest](#schemaclusterupdaterequest)|true|none|
+|» name|body|string|false|none|
+|» endpoint|body|string|false|none|
+|» endpointTls|body|boolean|false|none|
+|» sandboxProxyDomain|body|string \| null|false|none|
+|» authOrgId|body|string \| null|false|none|
+|» deletionProtection|body|boolean|false|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "name": "string",
+  "endpoint": "string",
+  "endpointTls": true,
+  "sandboxProxyDomain": "string",
+  "authOrgId": "string",
+  "deletionProtection": true
+}
+```
+
+> 400 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 409 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 503 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+<h3 id="update-a-cluster-as-admin-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|The cluster as updated|[ClusterDetail](#schemaclusterdetail)|
+|400|Bad Request|Bad request|[Error](#schemaerror)|
+|401|Unauthorized|Authentication error|[Error](#schemaerror)|
+|404|Not Found|Not found|[Error](#schemaerror)|
+|409|Conflict|Conflict|[Error](#schemaerror)|
+|500|Internal Server Error|Server error|[Error](#schemaerror)|
+|503|Service Unavailable|Service unavailable|[Error](#schemaerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+AdminApiKeyAuth, AdminJWTAuth
+</aside>
+
+## Cluster metadata as admin
+
+<a id="opIdadminGetClusterMetadata"></a>
+
+> Code samples
+
+```bash
+curl https://api.e2b.dev/unstable/admin/clusters/497f6eca-6276-4993-bfeb-53cbbbba6f08/metadata \
+  -H 'Accept: application/json' \
+  -H "X-Admin-Token: ${API_KEY}"
+```
+
+`GET /unstable/admin/clusters/{clusterID}/metadata`
+
+Returns cluster metadata without reading assigned teams or counting teams and templates. Never returns the cluster's token.
+
+<h3 id="cluster-metadata-as-admin-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|clusterID|path|string(uuid)|true|Identifier of the cluster|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "name": "string",
+  "endpoint": "string",
+  "endpointTls": true,
+  "sandboxProxyDomain": "string",
+  "authOrgId": "string",
+  "deletionProtection": true
+}
+```
+
+> 400 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 503 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+<h3 id="cluster-metadata-as-admin-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Cluster metadata|[ClusterDetail](#schemaclusterdetail)|
+|400|Bad Request|Bad request|[Error](#schemaerror)|
+|401|Unauthorized|Authentication error|[Error](#schemaerror)|
+|404|Not Found|Not found|[Error](#schemaerror)|
+|500|Internal Server Error|Server error|[Error](#schemaerror)|
+|503|Service Unavailable|Service unavailable|[Error](#schemaerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+AdminApiKeyAuth, AdminJWTAuth
+</aside>
+
+## List a cluster's teams as admin
+
+<a id="opIdadminListClusterTeams"></a>
+
+> Code samples
+
+```bash
+curl https://api.e2b.dev/unstable/admin/clusters/497f6eca-6276-4993-bfeb-53cbbbba6f08/teams \
+  -H 'Accept: application/json' \
+  -H "X-Admin-Token: ${API_KEY}"
+```
+
+`GET /unstable/admin/clusters/{clusterID}/teams`
+
+Lists the teams assigned to the cluster.
+
+<h3 id="list-a-clusters-teams-as-admin-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|limit|query|integer(int32)|false|Maximum number of teams to return|
+|offset|query|integer(int32)|false|Number of teams to skip|
+|sortBy|query|string|false|Column to order by|
+|sortOrder|query|string|false|none|
+|clusterID|path|string(uuid)|true|Identifier of the cluster|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|sortBy|createdAt|
+|sortBy|name|
+|sortOrder|asc|
+|sortOrder|desc|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "items": [
+    {
+      "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "email": "string",
+      "name": "string",
+      "slug": "string",
+      "isBanned": true,
+      "createdAt": "1970-01-01T00:00:00Z"
+    }
+  ],
+  "total": 0
+}
+```
+
+> 400 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 503 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+<h3 id="list-a-clusters-teams-as-admin-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|The page of teams assigned to the cluster|[ClusterTeamListResponse](#schemaclusterteamlistresponse)|
+|400|Bad Request|Bad request|[Error](#schemaerror)|
+|401|Unauthorized|Authentication error|[Error](#schemaerror)|
+|404|Not Found|Not found|[Error](#schemaerror)|
+|500|Internal Server Error|Server error|[Error](#schemaerror)|
+|503|Service Unavailable|Service unavailable|[Error](#schemaerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+AdminApiKeyAuth, AdminJWTAuth
+</aside>
+
+## Rotate a cluster's token as admin
+
+<a id="opIdadminRotateClusterToken"></a>
+
+> Code samples
+
+```bash
+curl https://api.e2b.dev/unstable/admin/clusters/497f6eca-6276-4993-bfeb-53cbbbba6f08/token \
+  -X PUT \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "X-Admin-Token: ${API_KEY}" \
+  -d '{
+    "token": "password"
+  }'
+```
+
+`PUT /unstable/admin/clusters/{clusterID}/token`
+
+Replaces the token used to reach the cluster. The previous token stops working at once. No route returns a cluster's token.
+
+> Body parameter
+
+```json
+{
+  "token": "password"
+}
+```
+
+<h3 id="rotate-a-clusters-token-as-admin-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|clusterID|path|string(uuid)|true|Identifier of the cluster|
+|body|body|[ClusterTokenRotateRequest](#schemaclustertokenrotaterequest)|true|none|
+|» token|body|string(password)|true|New cluster access token. Write-only.|
+
+> Example responses
+
+> 400 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 503 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+<h3 id="rotate-a-clusters-token-as-admin-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|204|No Content|Token rotated.|None|
+|400|Bad Request|Bad request|[Error](#schemaerror)|
+|401|Unauthorized|Authentication error|[Error](#schemaerror)|
+|404|Not Found|Not found|[Error](#schemaerror)|
+|500|Internal Server Error|Server error|[Error](#schemaerror)|
+|503|Service Unavailable|Service unavailable|[Error](#schemaerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+AdminApiKeyAuth, AdminJWTAuth
+</aside>
+
+## Search template aliases as admin
+
+> Code samples
+
+```bash
+curl 'https://api.e2b.dev/unstable/admin/templates/aliases?search=string' \
+  -H 'Accept: application/json' \
+  -H "X-Admin-Token: ${API_KEY}"
+```
+
+`GET /unstable/admin/templates/aliases`
+
+Finds the templates whose ID equals `search`, or that own an alias equal to `search` in any namespace, with their owning team and all their aliases. Deleted templates are left out. Results are ordered by template ID; the next page's token is returned in `X-Next-Token`.
+
+
+<h3 id="search-template-aliases-as-admin-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|search|query|string|true|Exact template ID or alias|
+|nextToken|query|string|false|Cursor to start the list from|
+|limit|query|integer(int32)|false|Maximum number of items to return per page|
+
+> Example responses
+
+> 200 Response
+
+```json
+[
+  {
+    "templateID": "string",
+    "public": true,
+    "team": {
+      "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "name": "string",
+      "email": "string"
+    },
+    "aliases": [
+      {
+        "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+        "templateID": "string",
+        "alias": "string",
+        "namespace": "string",
+        "isRenamable": true
+      }
+    ]
+  }
+]
+```
+
+> 400 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+<h3 id="search-template-aliases-as-admin-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Successfully returned the matching templates|Inline|
+|400|Bad Request|Bad request|[Error](#schemaerror)|
+|401|Unauthorized|Authentication error|[Error](#schemaerror)|
+|500|Internal Server Error|Server error|[Error](#schemaerror)|
+
+<h3 id="search-template-aliases-as-admin-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*anonymous*|[[AdminTemplateAliases](#schemaadmintemplatealiases)]|false|none|none|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|200|X-Next-Token|string||Cursor to fetch the next page of results, if more exist|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+AdminApiKeyAuth, AdminJWTAuth
+</aside>
+
+## Add a template alias without a namespace as admin
+
+> Code samples
+
+```bash
+curl https://api.e2b.dev/unstable/admin/templates/aliases \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "X-Admin-Token: ${API_KEY}" \
+  -d '{
+    "templateID": "string",
+    "alias": "string"
+  }'
+```
+
+`POST /unstable/admin/templates/aliases`
+
+Adds an alias without a namespace to a template, so the template resolves by that name for every team. The alias follows the rules of template names (lowercase letters, digits, `-` and `_`) and cannot equal a template ID. Returns 404 when the template does not exist and 409 when the alias is taken.
+
+
+> Body parameter
+
+```json
+{
+  "templateID": "string",
+  "alias": "string"
+}
+```
+
+<h3 id="add-a-template-alias-without-a-namespace-as-admin-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|body|body|[AdminTemplateAliasCreateRequest](#schemaadmintemplatealiascreaterequest)|true|none|
+|» templateID|body|string|true|Identifier of the template the alias resolves to|
+|» alias|body|string|true|The alias, without a namespace or tag|
+
+> Example responses
+
+> 201 Response
+
+```json
+{
+  "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "templateID": "string",
+  "alias": "string",
+  "namespace": "string",
+  "isRenamable": true
+}
+```
+
+> 400 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 409 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+<h3 id="add-a-template-alias-without-a-namespace-as-admin-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|201|Created|The alias was added|[AdminTemplateAlias](#schemaadmintemplatealias)|
+|400|Bad Request|Bad request|[Error](#schemaerror)|
+|401|Unauthorized|Authentication error|[Error](#schemaerror)|
+|404|Not Found|Not found|[Error](#schemaerror)|
+|409|Conflict|Conflict|[Error](#schemaerror)|
+|500|Internal Server Error|Server error|[Error](#schemaerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+AdminApiKeyAuth, AdminJWTAuth
+</aside>
+
+## Remove a template alias without a namespace as admin
+
+> Code samples
+
+```bash
+curl https://api.e2b.dev/unstable/admin/templates/aliases/497f6eca-6276-4993-bfeb-53cbbbba6f08 \
+  -X DELETE \
+  -H 'Accept: application/json' \
+  -H "X-Admin-Token: ${API_KEY}"
+```
+
+`DELETE /unstable/admin/templates/aliases/{aliasID}`
+
+Removes an alias without a namespace. A namespaced alias is not removed and answers 404.
+
+
+<h3 id="remove-a-template-alias-without-a-namespace-as-admin-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|aliasID|path|string(uuid)|true|Identifier of the alias|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "aliasID": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "templateID": "string",
+  "alias": "string"
+}
+```
+
+> 400 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+<h3 id="remove-a-template-alias-without-a-namespace-as-admin-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|The alias was removed|[AdminTemplateAliasDeleted](#schemaadmintemplatealiasdeleted)|
+|400|Bad Request|Bad request|[Error](#schemaerror)|
+|401|Unauthorized|Authentication error|[Error](#schemaerror)|
+|404|Not Found|Not found|[Error](#schemaerror)|
+|500|Internal Server Error|Server error|[Error](#schemaerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+AdminApiKeyAuth, AdminJWTAuth
+</aside>
+
+## Add a default template as admin
+
+> Code samples
+
+```bash
+curl https://api.e2b.dev/unstable/admin/templates/defaults \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "X-Admin-Token: ${API_KEY}" \
+  -d '{
+    "templateID": "string",
+    "description": "string"
+  }'
+```
+
+`POST /unstable/admin/templates/defaults`
+
+Makes a template one of the platform's default templates. Returns 404 when the template does not exist and 409 when it is already a default template.
+
+
+> Body parameter
+
+```json
+{
+  "templateID": "string",
+  "description": "string"
+}
+```
+
+<h3 id="add-a-default-template-as-admin-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|body|body|[AdminDefaultTemplateCreateRequest](#schemaadmindefaulttemplatecreaterequest)|true|none|
+|» templateID|body|string|true|Identifier of the template to make a default template|
+|» description|body|string \| null|false|Description of the default template; blank is stored as none|
+
+> Example responses
+
+> 201 Response
+
+```json
+{
+  "templateID": "string",
+  "description": "string"
+}
+```
+
+> 400 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 409 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+<h3 id="add-a-default-template-as-admin-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|201|Created|The template is now a default template|[AdminDefaultTemplate](#schemaadmindefaulttemplate)|
+|400|Bad Request|Bad request|[Error](#schemaerror)|
+|401|Unauthorized|Authentication error|[Error](#schemaerror)|
+|404|Not Found|Not found|[Error](#schemaerror)|
+|409|Conflict|Conflict|[Error](#schemaerror)|
+|500|Internal Server Error|Server error|[Error](#schemaerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+AdminApiKeyAuth, AdminJWTAuth
+</aside>
+
+## Remove a default template as admin
+
+> Code samples
+
+```bash
+curl https://api.e2b.dev/unstable/admin/templates/defaults/string \
+  -X DELETE \
+  -H 'Accept: application/json' \
+  -H "X-Admin-Token: ${API_KEY}"
+```
+
+`DELETE /unstable/admin/templates/defaults/{templateID}`
+
+Stops a template being one of the platform's default templates. The template itself is not changed. Returns 404 when the template is not a default template.
+
+
+<h3 id="remove-a-default-template-as-admin-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|templateID|path|string|true|none|
+
+> Example responses
+
+> 401 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+<h3 id="remove-a-default-template-as-admin-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|204|No Content|The template is no longer a default template|None|
+|401|Unauthorized|Authentication error|[Error](#schemaerror)|
+|404|Not Found|Not found|[Error](#schemaerror)|
+|500|Internal Server Error|Server error|[Error](#schemaerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+AdminApiKeyAuth, AdminJWTAuth
+</aside>
+
+## Update a default template as admin
+
+> Code samples
+
+```bash
+curl https://api.e2b.dev/unstable/admin/templates/defaults/string \
+  -X PATCH \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "X-Admin-Token: ${API_KEY}" \
+  -d '{
+    "description": "string"
+  }'
+```
+
+`PATCH /unstable/admin/templates/defaults/{templateID}`
+
+Updates the description of a default template. Returns 404 when the template is not a default template.
+
+> Body parameter
+
+```json
+{
+  "description": "string"
+}
+```
+
+<h3 id="update-a-default-template-as-admin-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|templateID|path|string|true|none|
+|body|body|[AdminDefaultTemplateUpdateRequest](#schemaadmindefaulttemplateupdaterequest)|true|none|
+|» description|body|string \| null|true|New description of the default template; null or blank clears it|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "templateID": "string",
+  "description": "string"
+}
+```
+
+> 400 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+<h3 id="update-a-default-template-as-admin-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|The default template was updated|[AdminDefaultTemplate](#schemaadmindefaulttemplate)|
+|400|Bad Request|Bad request|[Error](#schemaerror)|
+|401|Unauthorized|Authentication error|[Error](#schemaerror)|
+|404|Not Found|Not found|[Error](#schemaerror)|
+|500|Internal Server Error|Server error|[Error](#schemaerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+AdminApiKeyAuth, AdminJWTAuth
+</aside>
+
+## Look up a template as admin
+
+> Code samples
+
+```bash
+curl 'https://api.e2b.dev/unstable/admin/templates/lookup?query=string' \
+  -H 'Accept: application/json' \
+  -H "X-Admin-Token: ${API_KEY}"
+```
+
+`GET /unstable/admin/templates/lookup`
+
+Resolves `query` as, in order: a build ID (a UUID, matched to the template of the build's newest assignment, with no fallback), a template ID, or a template name (`namespace/alias`, or an alias without a namespace). Returns the template with its owning team and its newest builds. Deleted templates are not found.
+
+
+<h3 id="look-up-a-template-as-admin-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|query|query|string|true|Build ID, template ID, or template name|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "templateID": "string",
+  "team": {
+    "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+    "name": "string",
+    "email": "string"
+  },
+  "names": [
+    "string"
+  ],
+  "public": true,
+  "createdAt": "1970-01-01T00:00:00Z",
+  "lastSpawnedAt": "1970-01-01T00:00:00Z",
+  "spawnCount": 0,
+  "isSnapshot": true,
+  "snapshotSandboxID": "string",
+  "matchedBuildID": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "builds": [
+    {
+      "buildID": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "status": "building",
+      "createdAt": "1970-01-01T00:00:00Z",
+      "updatedAt": "1970-01-01T00:00:00Z",
+      "finishedAt": "1970-01-01T00:00:00Z",
+      "cpuCount": 1,
+      "maxCpuCount": {},
+      "memoryMB": 128,
+      "diskSizeMB": 0,
+      "envdVersion": "string"
+    }
+  ]
+}
+```
+
+> 400 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "code": 0,
+  "error_code": "string",
+  "message": "string"
+}
+```
+
+<h3 id="look-up-a-template-as-admin-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Successfully resolved the template|[AdminTemplateLookup](#schemaadmintemplatelookup)|
+|400|Bad Request|Bad request|[Error](#schemaerror)|
+|401|Unauthorized|Authentication error|[Error](#schemaerror)|
+|404|Not Found|Not found|[Error](#schemaerror)|
+|500|Internal Server Error|Server error|[Error](#schemaerror)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -10314,7 +15341,7 @@ curl https://api.e2b.dev/events/webhooks \
       "string"
     ],
     "enabled": true,
-    "signatureSecret": "string"
+    "signatureSecret": "password"
   }'
 ```
 
@@ -10332,7 +15359,7 @@ Register events webhook.
     "string"
   ],
   "enabled": true,
-  "signatureSecret": "string"
+  "signatureSecret": "password"
 }
 ```
 
@@ -10345,7 +15372,7 @@ Register events webhook.
 |» url|body|string(uri)|true|none|
 |» events|body|[string]|true|none|
 |» enabled|body|boolean|false|none|
-|» signatureSecret|body|string|true|Secret used to sign the webhook payloads|
+|» signatureSecret|body|string(password)|true|Secret used to sign the webhook payloads|
 
 > Example responses
 
@@ -10586,7 +15613,7 @@ curl https://api.e2b.dev/events/webhooks/497f6eca-6276-4993-bfeb-53cbbbba6f08 \
     "events": [
       "string"
     ],
-    "signatureSecret": "string"
+    "signatureSecret": "password"
   }'
 ```
 
@@ -10604,7 +15631,7 @@ Update a registered webhook configuration.
   "events": [
     "string"
   ],
-  "signatureSecret": "string"
+  "signatureSecret": "password"
 }
 ```
 
@@ -10618,7 +15645,7 @@ Update a registered webhook configuration.
 |» name|body|string|false|Webhook user friendly name|
 |» url|body|string(uri)|false|none|
 |» events|body|[string]|false|none|
-|» signatureSecret|body|string|false|Secret used to sign the webhook payloads|
+|» signatureSecret|body|string(password)|false|Secret used to sign the webhook payloads|
 
 > Example responses
 
@@ -10916,6 +15943,86 @@ ApiKeyAuth, AuthProviderBearerAuth & AuthProviderTeamAuth, AdminApiKeyAuth & Adm
 
 # Schemas
 
+<h2 id="tocS_TelemetryNames">TelemetryNames</h2>
+<!-- backwards compatibility -->
+<a id="schematelemetrynames"></a>
+<a id="schema_TelemetryNames"></a>
+<a id="tocStelemetrynames"></a>
+<a id="tocstelemetrynames"></a>
+
+```json
+{
+  "teams": {
+    "property1": {
+      "name": "string",
+      "clusterId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+    },
+    "property2": {
+      "name": "string",
+      "clusterId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+    }
+  },
+  "clusters": [
+    {
+      "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "name": "string",
+      "clientId": "string"
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|teams|object|true|none|none|
+|clusters|[[TelemetryClusterName](#schematelemetryclustername)]|true|none|none|
+
+<h2 id="tocS_TelemetryTeamName">TelemetryTeamName</h2>
+<!-- backwards compatibility -->
+<a id="schematelemetryteamname"></a>
+<a id="schema_TelemetryTeamName"></a>
+<a id="tocStelemetryteamname"></a>
+<a id="tocstelemetryteamname"></a>
+
+```json
+{
+  "name": "string",
+  "clusterId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|name|string|true|none|none|
+|clusterId|string(uuid)|false|none|none|
+
+<h2 id="tocS_TelemetryClusterName">TelemetryClusterName</h2>
+<!-- backwards compatibility -->
+<a id="schematelemetryclustername"></a>
+<a id="schema_TelemetryClusterName"></a>
+<a id="tocStelemetryclustername"></a>
+<a id="tocstelemetryclustername"></a>
+
+```json
+{
+  "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "name": "string",
+  "clientId": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string(uuid)|true|none|none|
+|name|string|true|none|none|
+|clientId|string|false|none|none|
+
 <h2 id="tocS_Rig">Rig</h2>
 <!-- backwards compatibility -->
 <a id="schemarig"></a>
@@ -11025,31 +16132,6 @@ Scaling error on the rig's scaling group, e.g. a failed instance creation due to
 |message|string|true|none|Human-readable error message|
 |instance|string|false|none|Instance the error relates to, if any|
 |action|string|false|none|Action being performed when the error occurred (e.g. CREATING)|
-
-<h2 id="tocS_Team">Team</h2>
-<!-- backwards compatibility -->
-<a id="schemateam"></a>
-<a id="schema_Team"></a>
-<a id="tocSteam"></a>
-<a id="tocsteam"></a>
-
-```json
-{
-  "teamID": "string",
-  "name": "string",
-  "apiKey": "string",
-  "isDefault": true
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|teamID|string|true|none|Identifier of the team|
-|name|string|true|none|Name of the team|
-|apiKey|string|true|none|API key for the team|
-|isDefault|boolean|true|none|Whether the team is the default team|
 
 <h2 id="tocS_TeamUser">TeamUser</h2>
 <!-- backwards compatibility -->
@@ -11609,6 +16691,19 @@ Sandbox lifecycle policy returned by sandbox info.
 |onTimeout|kill|
 |onTimeout|pause|
 
+<h2 id="tocS_EnvdUnresponsiveAtPause">EnvdUnresponsiveAtPause</h2>
+<!-- backwards compatibility -->
+<a id="schemaenvdunresponsiveatpause"></a>
+<a id="schema_EnvdUnresponsiveAtPause"></a>
+<a id="tocSenvdunresponsiveatpause"></a>
+<a id="tocsenvdunresponsiveatpause"></a>
+
+```json
+true
+```
+
+True when the snapshot a paused sandbox would resume from was taken while the sandbox guest agent was not responding. A plain resume of it is refused with 409 and error_code sandbox_snapshot_guest_agent_unresponsive, because restoring that memory would bring the unresponsive agent back; resume it without memory (`memory: false`), which cold-boots the sandbox from its disk. Omitted for a running sandbox and for a snapshot whose agent answered.
+
 <h2 id="tocS_SandboxPauseMode">SandboxPauseMode</h2>
 <!-- backwards compatibility -->
 <a id="schemasandboxpausemode"></a>
@@ -11844,6 +16939,7 @@ Metric entry with timestamp and line
   "startedAt": "1970-01-01T00:00:00Z",
   "endAt": "1970-01-01T00:00:00Z",
   "envdVersion": "string",
+  "envdUnresponsiveAtPause": true,
   "envdAccessToken": "string",
   "allowInternetAccess": true,
   "domain": "string",
@@ -11928,6 +17024,7 @@ Metric entry with timestamp and line
 |startedAt|string(date-time)|true|none|Time when the sandbox was started|
 |endAt|string(date-time)|true|none|Time when the sandbox will expire|
 |envdVersion|[EnvdVersion](#schemaenvdversion)|true|none|Version of the envd running in the sandbox|
+|envdUnresponsiveAtPause|[EnvdUnresponsiveAtPause](#schemaenvdunresponsiveatpause)|false|none|True when the snapshot a paused sandbox would resume from was taken while the sandbox guest agent was not responding. A plain resume of it is refused with 409 and error_code sandbox_snapshot_guest_agent_unresponsive, because restoring that memory would bring the unresponsive agent back; resume it without memory (`memory: false`), which cold-boots the sandbox from its disk. Omitted for a running sandbox and for a snapshot whose agent answered.|
 |envdAccessToken|string|false|none|Access token used for envd communication|
 |allowInternetAccess|boolean \| null|false|none|Whether internet access was explicitly enabled or disabled for the sandbox. Null means it was not explicitly set.|
 |domain|string \| null|false|none|Base domain where the sandbox traffic is accessible|
@@ -11949,6 +17046,45 @@ Metric entry with timestamp and line
 |state|paused|
 |pauseMode|full|
 |pauseMode|filesystem|
+
+<h2 id="tocS_SandboxRecord">SandboxRecord</h2>
+<!-- backwards compatibility -->
+<a id="schemasandboxrecord"></a>
+<a id="schema_SandboxRecord"></a>
+<a id="tocSsandboxrecord"></a>
+<a id="tocssandboxrecord"></a>
+
+```json
+{
+  "templateID": "string",
+  "alias": "string",
+  "sandboxID": "string",
+  "startedAt": "1970-01-01T00:00:00Z",
+  "stoppedAt": "1970-01-01T00:00:00Z",
+  "domain": "string",
+  "cpuCount": 1,
+  "memoryMB": 128,
+  "diskSizeMB": 0,
+  "retentionExpired": true,
+  "eventsRetentionExpired": true
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|templateID|string|true|none|Identifier of the template from which is the sandbox created|
+|alias|string|false|none|Alias of the template|
+|sandboxID|string|true|none|Identifier of the sandbox|
+|startedAt|string(date-time)|true|none|Time when the sandbox was started|
+|stoppedAt|string(date-time) \| null|false|none|Time when the sandbox was stopped|
+|domain|string \| null|false|none|Base domain where the sandbox traffic is accessible|
+|cpuCount|[CPUCount](#schemacpucount)|true|none|CPU cores for the sandbox|
+|memoryMB|[MemoryMB](#schemamemorymb)|true|none|Memory for the sandbox in MiB|
+|diskSizeMB|[DiskSizeMB](#schemadisksizemb)|true|none|Disk size for the sandbox in MiB|
+|retentionExpired|boolean|true|none|Whether the sandbox ended more than the fixed retention window ago, so its monitoring and logs data is no longer available|
+|eventsRetentionExpired|boolean|true|none|Whether the sandbox ended more than the team's events retention window ago, so its events data is no longer available|
 
 <h2 id="tocS_ListedSandbox">ListedSandbox</h2>
 <!-- backwards compatibility -->
@@ -11974,6 +17110,7 @@ Metric entry with timestamp and line
   },
   "state": "running",
   "envdVersion": "string",
+  "envdUnresponsiveAtPause": true,
   "volumeMounts": [
     {
       "name": "string",
@@ -11999,6 +17136,7 @@ Metric entry with timestamp and line
 |metadata|[SandboxMetadata](#schemasandboxmetadata)|false|none|none|
 |state|[SandboxState](#schemasandboxstate)|true|none|State of the sandbox|
 |envdVersion|[EnvdVersion](#schemaenvdversion)|true|none|Version of the envd running in the sandbox|
+|envdUnresponsiveAtPause|[EnvdUnresponsiveAtPause](#schemaenvdunresponsiveatpause)|false|none|True when the snapshot a paused sandbox would resume from was taken while the sandbox guest agent was not responding. A plain resume of it is refused with 409 and error_code sandbox_snapshot_guest_agent_unresponsive, because restoring that memory would bring the unresponsive agent back; resume it without memory (`memory: false`), which cold-boots the sandbox from its disk. Omitted for a running sandbox and for a snapshot whose agent answered.|
 |volumeMounts|[[SandboxVolumeMount](#schemasandboxvolumemount)]|false|none|none|
 
 #### Enumerated Values
@@ -12061,6 +17199,7 @@ Metric entry with timestamp and line
 {
   "templateID": "string",
   "timeout": 15,
+  "cpuCount": {},
   "autoPause": false,
   "autoPauseMemory": true,
   "autoResume": {
@@ -12155,6 +17294,7 @@ Metric entry with timestamp and line
 |---|---|---|---|---|
 |templateID|string|true|none|Identifier of the required template|
 |timeout|integer(int32)|false|none|Time to live for the sandbox in seconds.|
+|cpuCount|object|false|none|Online vCPU target for the sandbox. Defaults to the template's cpuCount; at most its maxCpuCount (fixed-size templates accept only their cpuCount).|
 |autoPause|boolean|false|none|Automatically pauses the sandbox after the timeout|
 |autoPauseMemory|boolean|false|none|Controls the snapshot kind taken when the sandbox auto-pauses on timeout (only relevant when autoPause is true). When false, the auto-pause drops the in-memory state and persists only the filesystem (a filesystem-only snapshot); resuming it cold-boots (reboots) the sandbox from disk. Such a snapshot cannot be auto-resumed by traffic and must be resumed explicitly, so it cannot be combined with autoResume. Defaults to true (full memory snapshot).|
 |autoResume|[SandboxAutoResumeConfig](#schemasandboxautoresumeconfig)|false|none|Auto-resume configuration for paused sandboxes.|
@@ -12178,6 +17318,7 @@ Metric entry with timestamp and line
 {
   "templateID": "string",
   "timeout": 300,
+  "cpuCount": {},
   "autoPause": false,
   "autoPauseMemory": true,
   "autoResume": {
@@ -12273,6 +17414,7 @@ Sandbox creation request. All system communication with the sandbox is always se
 |---|---|---|---|---|
 |templateID|string|true|none|Identifier of the required template|
 |timeout|integer(int32)|false|none|Time to live for the sandbox in seconds.|
+|cpuCount|object|false|none|Online vCPU target for the sandbox. Defaults to the template's cpuCount; at most its maxCpuCount (fixed-size templates accept only their cpuCount).|
 |autoPause|boolean|false|none|Automatically pauses the sandbox after the timeout|
 |autoPauseMemory|boolean|false|none|Controls the snapshot kind taken when the sandbox auto-pauses on timeout (only relevant when autoPause is true). When false, the auto-pause drops the in-memory state and persists only the filesystem (a filesystem-only snapshot); resuming it cold-boots (reboots) the sandbox from disk. Such a snapshot cannot be auto-resumed by traffic and must be resumed explicitly, so it cannot be combined with autoResume. Defaults to true (full memory snapshot).|
 |autoResume|[SandboxAutoResumeConfig](#schemasandboxautoresumeconfig)|false|none|Auto-resume configuration for paused sandboxes.|
@@ -12373,6 +17515,7 @@ Named workload-token definitions, keyed by a caller-chosen token name.
 ```json
 {
   "timeout": 15,
+  "cpuCount": {},
   "autoPause": true,
   "memory": true
 }
@@ -12383,8 +17526,9 @@ Named workload-token definitions, keyed by a caller-chosen token name.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |timeout|integer(int32)|false|none|Time to live for the sandbox in seconds.|
+|cpuCount|object|false|none|Online vCPU target for the resumed sandbox. Defaults to the snapshot's cpuCount; at most the template's maxCpuCount (fixed-size templates accept only their cpuCount).|
 |autoPause|boolean|false|none|**Deprecated.** Automatically pauses the sandbox after the timeout|
-|memory|boolean|false|none|Defaults to true. When false, resume from disk state only: the sandbox cold-boots fresh and any memory in the snapshot is ignored, never modified or deleted. Disk state has crash-recovery semantics — writes not flushed before the pause may be lost. A no-op for snapshots that contain no memory. Rejected with an error in environments where this capability is not enabled, never silently downgraded to a memory restore.|
+|memory|boolean|false|none|Defaults to true. When false, resume from disk state only: the sandbox cold-boots fresh and any memory in the snapshot is ignored, never modified or deleted. Disk state has crash-recovery semantics — writes not flushed before the pause may be lost. A no-op for snapshots that contain no memory. Rejected with an error in environments where this capability is not enabled, never silently downgraded to a memory restore. A snapshot taken while the sandbox guest agent was not responding (envdUnresponsiveAtPause) can only be resumed this way, and needs no enablement.|
 
 <h2 id="tocS_ConnectSandbox">ConnectSandbox</h2>
 <!-- backwards compatibility -->
@@ -12405,7 +17549,7 @@ Named workload-token definitions, keyed by a caller-chosen token name.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |timeout|integer(int32)|true|none|Timeout in seconds from the current time after which the sandbox should expire|
-|memory|boolean|false|none|Defaults to true. When false and the sandbox is paused, resume from disk state only: the sandbox cold-boots fresh and any memory in the snapshot is ignored, never modified or deleted. Disk state has crash-recovery semantics — writes not flushed before the pause may be lost. A no-op for snapshots that contain no memory. Rejected with an error in environments where this capability is not enabled, never silently downgraded to a memory restore.|
+|memory|boolean|false|none|Defaults to true. When false and the sandbox is paused, resume from disk state only: the sandbox cold-boots fresh and any memory in the snapshot is ignored, never modified or deleted. Disk state has crash-recovery semantics — writes not flushed before the pause may be lost. A no-op for snapshots that contain no memory. Rejected with an error in environments where this capability is not enabled, never silently downgraded to a memory restore. A snapshot taken while the sandbox guest agent was not responding (envdUnresponsiveAtPause) can only be resumed this way, and needs no enablement.|
 
 <h2 id="tocS_ConnectSandboxV2">ConnectSandboxV2</h2>
 <!-- backwards compatibility -->
@@ -12426,7 +17570,7 @@ Named workload-token definitions, keyed by a caller-chosen token name.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |timeout|integer(int32)|false|none|Timeout in seconds from the current time after which the sandbox should expire|
-|memory|boolean|false|none|Defaults to true. When false and the sandbox is paused, resume from disk state only: the sandbox cold-boots fresh and any memory in the snapshot is ignored, never modified or deleted. Disk state has crash-recovery semantics — writes not flushed before the pause may be lost. A no-op for snapshots that contain no memory. Rejected with an error in environments where this capability is not enabled, never silently downgraded to a memory restore.|
+|memory|boolean|false|none|Defaults to true. When false and the sandbox is paused, resume from disk state only: the sandbox cold-boots fresh and any memory in the snapshot is ignored, never modified or deleted. Disk state has crash-recovery semantics — writes not flushed before the pause may be lost. A no-op for snapshots that contain no memory. Rejected with an error in environments where this capability is not enabled, never silently downgraded to a memory restore. A snapshot taken while the sandbox guest agent was not responding (envdUnresponsiveAtPause) can only be resumed this way, and needs no enablement.|
 
 <h2 id="tocS_SandboxTimeoutRequest">SandboxTimeoutRequest</h2>
 <!-- backwards compatibility -->
@@ -12496,7 +17640,8 @@ Named workload-token definitions, keyed by a caller-chosen token name.
 
 ```json
 {
-  "memory": true
+  "memory": true,
+  "requireHealthyGuest": false
 }
 ```
 
@@ -12505,6 +17650,7 @@ Named workload-token definitions, keyed by a caller-chosen token name.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |memory|boolean|false|none|Whether to capture a full memory snapshot. When false, only the filesystem is persisted and resuming the sandbox cold-boots (reboots) it from disk, losing in-memory state, running processes, and open connections. Resume it with an explicit request (connect or resume); auto-resume, which can be triggered by arbitrary traffic, refuses such a sandbox. Defaults to true.|
+|requireHealthyGuest|boolean|false|none|The pause checks that the sandbox guest agent answers before it takes the snapshot. By default an unresponsive agent is recorded on the snapshot and the pause proceeds; the sandbox then shows `envdUnresponsiveAtPause` and a later resume must ask for `memory: false`, since restoring that memory would bring the unresponsive agent back. With this true, the pause is instead refused with 503 while the agent does not answer, and the sandbox keeps running. A filesystem-only pause (`memory: false`) is always refused while the agent does not answer, whatever this says.|
 
 <h2 id="tocS_SandboxForkRequest">SandboxForkRequest</h2>
 <!-- backwards compatibility -->
@@ -12657,7 +17803,8 @@ Team metric with timestamp
   "defaultFreeDiskSizeMb": 0,
   "maxFreeDiskSizeMb": 0,
   "apiTeamRpsList": 0,
-  "apiTeamRpsDelete": 0
+  "apiTeamRpsDelete": 0,
+  "maxSecrets": 0
 }
 ```
 
@@ -12678,6 +17825,7 @@ The team's effective resource limits
 |maxFreeDiskSizeMb|integer(int64)|true|none|Maximum free disk space a template build may request, in MiB|
 |apiTeamRpsList|integer(int64)|true|none|Requests per second the team may make to list endpoints|
 |apiTeamRpsDelete|integer(int64)|true|none|Requests per second the team may make to delete endpoints|
+|maxSecrets|integer(int64)|true|none|Maximum number of secrets the team may store|
 
 <h2 id="tocS_TeamLimitsResponse">TeamLimitsResponse</h2>
 <!-- backwards compatibility -->
@@ -12699,7 +17847,8 @@ The team's effective resource limits
     "defaultFreeDiskSizeMb": 0,
     "maxFreeDiskSizeMb": 0,
     "apiTeamRpsList": 0,
-    "apiTeamRpsDelete": 0
+    "apiTeamRpsDelete": 0,
+    "maxSecrets": 0
   }
 }
 ```
@@ -12709,6 +17858,282 @@ The team's effective resource limits
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |limits|[TeamLimits](#schemateamlimits)|true|none|The team's effective resource limits|
+
+<h2 id="tocS_ClusterDetail">ClusterDetail</h2>
+<!-- backwards compatibility -->
+<a id="schemaclusterdetail"></a>
+<a id="schema_ClusterDetail"></a>
+<a id="tocSclusterdetail"></a>
+<a id="tocsclusterdetail"></a>
+
+```json
+{
+  "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "name": "string",
+  "endpoint": "string",
+  "endpointTls": true,
+  "sandboxProxyDomain": "string",
+  "authOrgId": "string",
+  "deletionProtection": true
+}
+```
+
+A cluster's configuration. The cluster's token is never returned.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string(uuid)|true|none|none|
+|name|string|true|none|none|
+|endpoint|string|true|none|none|
+|endpointTls|boolean|true|none|none|
+|sandboxProxyDomain|string \| null|false|none|none|
+|authOrgId|string \| null|false|none|none|
+|deletionProtection|boolean|true|none|While true, deleting the cluster is refused.|
+
+<h2 id="tocS_ClusterDetailWithTeams">ClusterDetailWithTeams</h2>
+<!-- backwards compatibility -->
+<a id="schemaclusterdetailwithteams"></a>
+<a id="schema_ClusterDetailWithTeams"></a>
+<a id="tocSclusterdetailwithteams"></a>
+<a id="tocsclusterdetailwithteams"></a>
+
+```json
+{
+  "cluster": {
+    "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+    "name": "string",
+    "endpoint": "string",
+    "endpointTls": true,
+    "sandboxProxyDomain": "string",
+    "authOrgId": "string",
+    "deletionProtection": true
+  },
+  "teams": {
+    "items": [
+      {
+        "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+        "email": "string",
+        "name": "string",
+        "slug": "string",
+        "isBanned": true,
+        "createdAt": "1970-01-01T00:00:00Z"
+      }
+    ],
+    "total": 0
+  },
+  "teamCount": 0,
+  "templateCount": 0
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|cluster|[ClusterDetail](#schemaclusterdetail)|true|none|A cluster's configuration. The cluster's token is never returned.|
+|teams|[ClusterTeamListResponse](#schemaclusterteamlistresponse)|true|none|none|
+|teamCount|integer(int64)|true|none|Teams assigned to the cluster. Must be 0 before the cluster can be deleted.|
+|templateCount|integer(int64)|true|none|Live templates on the cluster. Deleting the cluster deletes them.|
+
+<h2 id="tocS_ClusterListItem">ClusterListItem</h2>
+<!-- backwards compatibility -->
+<a id="schemaclusterlistitem"></a>
+<a id="schema_ClusterListItem"></a>
+<a id="tocSclusterlistitem"></a>
+<a id="tocsclusterlistitem"></a>
+
+```json
+{
+  "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "name": "string",
+  "endpoint": "string",
+  "sandboxProxyDomain": "string",
+  "teamCount": 0
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string(uuid)|true|none|none|
+|name|string|true|none|none|
+|endpoint|string|true|none|none|
+|sandboxProxyDomain|string \| null|false|none|none|
+|teamCount|integer(int64)|true|none|Number of teams assigned to the cluster.|
+
+<h2 id="tocS_ClusterListResponse">ClusterListResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemaclusterlistresponse"></a>
+<a id="schema_ClusterListResponse"></a>
+<a id="tocSclusterlistresponse"></a>
+<a id="tocsclusterlistresponse"></a>
+
+```json
+{
+  "items": [
+    {
+      "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "name": "string",
+      "endpoint": "string",
+      "sandboxProxyDomain": "string",
+      "teamCount": 0
+    }
+  ],
+  "total": 0
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|items|[[ClusterListItem](#schemaclusterlistitem)]|true|none|none|
+|total|integer(int64)|true|none|Number of clusters matching the search, ignoring limit and offset|
+
+<h2 id="tocS_ClusterTeamListItem">ClusterTeamListItem</h2>
+<!-- backwards compatibility -->
+<a id="schemaclusterteamlistitem"></a>
+<a id="schema_ClusterTeamListItem"></a>
+<a id="tocSclusterteamlistitem"></a>
+<a id="tocsclusterteamlistitem"></a>
+
+```json
+{
+  "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "email": "string",
+  "name": "string",
+  "slug": "string",
+  "isBanned": true,
+  "createdAt": "1970-01-01T00:00:00Z"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string(uuid)|true|none|none|
+|email|string|true|none|none|
+|name|string \| null|false|none|none|
+|slug|string \| null|false|none|none|
+|isBanned|boolean|true|none|none|
+|createdAt|string(date-time)|true|none|none|
+
+<h2 id="tocS_ClusterTeamListResponse">ClusterTeamListResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemaclusterteamlistresponse"></a>
+<a id="schema_ClusterTeamListResponse"></a>
+<a id="tocSclusterteamlistresponse"></a>
+<a id="tocsclusterteamlistresponse"></a>
+
+```json
+{
+  "items": [
+    {
+      "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "email": "string",
+      "name": "string",
+      "slug": "string",
+      "isBanned": true,
+      "createdAt": "1970-01-01T00:00:00Z"
+    }
+  ],
+  "total": 0
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|items|[[ClusterTeamListItem](#schemaclusterteamlistitem)]|true|none|none|
+|total|integer(int64)|true|none|Number of teams assigned to the cluster, ignoring limit and offset|
+
+<h2 id="tocS_AdminClusterCreateRequest">AdminClusterCreateRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemaadminclustercreaterequest"></a>
+<a id="schema_AdminClusterCreateRequest"></a>
+<a id="tocSadminclustercreaterequest"></a>
+<a id="tocsadminclustercreaterequest"></a>
+
+```json
+{
+  "cluster_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "name": "string",
+  "endpoint": "string",
+  "endpoint_tls": true,
+  "token": "string",
+  "sandbox_proxy_domain": "string",
+  "auth_org_id": "string",
+  "telemetry_client_id": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|cluster_id|string(uuid)|false|none|Optional stable identifier for idempotent creation. Reuse succeeds only when the immutable configuration is identical.|
+|name|string|true|none|none|
+|endpoint|string|true|none|none|
+|endpoint_tls|boolean|true|none|none|
+|token|string|true|none|none|
+|sandbox_proxy_domain|string \| null|false|none|none|
+|auth_org_id|string \| null|false|none|none|
+|telemetry_client_id|string|false|none|none|
+
+<h2 id="tocS_ClusterUpdateRequest">ClusterUpdateRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemaclusterupdaterequest"></a>
+<a id="schema_ClusterUpdateRequest"></a>
+<a id="tocSclusterupdaterequest"></a>
+<a id="tocsclusterupdaterequest"></a>
+
+```json
+{
+  "name": "string",
+  "endpoint": "string",
+  "endpointTls": true,
+  "sandboxProxyDomain": "string",
+  "authOrgId": "string",
+  "deletionProtection": true
+}
+```
+
+Partial update; only the properties present are written. An explicit null or an empty string clears `sandboxProxyDomain` or `authOrgId`.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|name|string|false|none|none|
+|endpoint|string|false|none|none|
+|endpointTls|boolean|false|none|none|
+|sandboxProxyDomain|string \| null|false|none|none|
+|authOrgId|string \| null|false|none|none|
+|deletionProtection|boolean|false|none|none|
+
+<h2 id="tocS_ClusterTokenRotateRequest">ClusterTokenRotateRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemaclustertokenrotaterequest"></a>
+<a id="schema_ClusterTokenRotateRequest"></a>
+<a id="tocSclustertokenrotaterequest"></a>
+<a id="tocsclustertokenrotaterequest"></a>
+
+```json
+{
+  "token": "password"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|token|string(password)|true|none|New cluster access token. Write-only.|
 
 <h2 id="tocS_AdminSandboxKillResult">AdminSandboxKillResult</h2>
 <!-- backwards compatibility -->
@@ -12774,6 +18199,303 @@ The team's effective resource limits
 ```
 
 State after the sandbox's latest create, resume, pause or kill event
+
+<h2 id="tocS_AdminSandboxBuildStatusGroup">AdminSandboxBuildStatusGroup</h2>
+<!-- backwards compatibility -->
+<a id="schemaadminsandboxbuildstatusgroup"></a>
+<a id="schema_AdminSandboxBuildStatusGroup"></a>
+<a id="tocSadminsandboxbuildstatusgroup"></a>
+<a id="tocsadminsandboxbuildstatusgroup"></a>
+
+```json
+"pending"
+```
+
+Coarse build state derived from the build status: pending (pending,
+waiting), in_progress (in_progress, building, snapshotting), ready
+(ready, uploaded, success) or failed (any other status)
+
+<h2 id="tocS_AdminSandboxBuild">AdminSandboxBuild</h2>
+<!-- backwards compatibility -->
+<a id="schemaadminsandboxbuild"></a>
+<a id="schema_AdminSandboxBuild"></a>
+<a id="tocSadminsandboxbuild"></a>
+<a id="tocsadminsandboxbuild"></a>
+
+```json
+{
+  "buildID": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "templateID": "string",
+  "tag": "string",
+  "status": "string",
+  "statusGroup": "pending",
+  "clusterNodeID": "string",
+  "assignedAt": "1970-01-01T00:00:00Z",
+  "isCurrent": true,
+  "restorable": true
+}
+```
+
+A build assigned to a sandbox's snapshot template under a tag
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|buildID|string(uuid)|true|none|Identifier of the build|
+|templateID|string|true|none|Identifier of the snapshot template the build is assigned to|
+|tag|string|true|none|Tag the build is assigned under|
+|status|string|true|none|**Deprecated.** Same value as statusGroup|
+|statusGroup|[AdminSandboxBuildStatusGroup](#schemaadminsandboxbuildstatusgroup)|true|none|Coarse build state derived from the build status: pending (pending,<br>waiting), in_progress (in_progress, building, snapshotting), ready<br>(ready, uploaded, success) or failed (any other status)<br>|
+|clusterNodeID|string \| null|true|none|Node that produced the build, null when it was not recorded|
+|assignedAt|string(date-time)|true|none|When the build was assigned to the template under this tag|
+|isCurrent|boolean|true|none|Whether this build is the template's newest ready assignment under<br>the tag, the build a resume uses, regardless of the status filter<br>|
+|restorable|boolean|true|none|Whether the restore route would accept this build: it is ready,<br>assigned under the default tag, not the current build, and its<br>snapshot template is not deleted<br>|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|statusGroup|pending|
+|statusGroup|in_progress|
+|statusGroup|ready|
+|statusGroup|failed|
+
+<h2 id="tocS_AdminSandboxBuildList">AdminSandboxBuildList</h2>
+<!-- backwards compatibility -->
+<a id="schemaadminsandboxbuildlist"></a>
+<a id="schema_AdminSandboxBuildList"></a>
+<a id="tocSadminsandboxbuildlist"></a>
+<a id="tocsadminsandboxbuildlist"></a>
+
+```json
+{
+  "items": [
+    {
+      "buildID": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "templateID": "string",
+      "tag": "string",
+      "status": "string",
+      "statusGroup": "pending",
+      "clusterNodeID": "string",
+      "assignedAt": "1970-01-01T00:00:00Z",
+      "isCurrent": true,
+      "restorable": true
+    }
+  ],
+  "total": 0,
+  "snapshotTemplateID": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|items|[[AdminSandboxBuild](#schemaadminsandboxbuild)]|true|none|none|
+|total|integer(int64)|true|none|Number of assignments matching the tag and status filter, ignoring limit and offset|
+|snapshotTemplateID|string \| null|true|none|Identifier of the template that holds the sandbox's snapshot, null<br>when the sandbox has no snapshot<br>|
+
+<h2 id="tocS_AdminSandboxBuildRestoreRequest">AdminSandboxBuildRestoreRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemaadminsandboxbuildrestorerequest"></a>
+<a id="schema_AdminSandboxBuildRestoreRequest"></a>
+<a id="tocSadminsandboxbuildrestorerequest"></a>
+<a id="tocsadminsandboxbuildrestorerequest"></a>
+
+```json
+{
+  "buildID": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|buildID|string(uuid)|true|none|Build to make current. It must be ready and already assigned to the<br>sandbox's snapshot template under the default tag.<br>|
+
+<h2 id="tocS_AdminSandboxBuildRestoreResult">AdminSandboxBuildRestoreResult</h2>
+<!-- backwards compatibility -->
+<a id="schemaadminsandboxbuildrestoreresult"></a>
+<a id="schema_AdminSandboxBuildRestoreResult"></a>
+<a id="tocSadminsandboxbuildrestoreresult"></a>
+<a id="tocsadminsandboxbuildrestoreresult"></a>
+
+```json
+{
+  "sandboxID": "string",
+  "templateID": "string",
+  "buildID": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "assignedAt": "1970-01-01T00:00:00Z",
+  "previousBuildID": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|sandboxID|string|true|none|Identifier of the sandbox|
+|templateID|string|true|none|Identifier of the snapshot template that received the assignment|
+|buildID|string(uuid)|true|none|Build that is now the template's current default build|
+|assignedAt|string(date-time)|true|none|When the new assignment was written|
+|previousBuildID|string(uuid) \| null|true|none|Build that was current before the restore, null when there was none|
+
+<h2 id="tocS_AdminSandboxOverview">AdminSandboxOverview</h2>
+<!-- backwards compatibility -->
+<a id="schemaadminsandboxoverview"></a>
+<a id="schema_AdminSandboxOverview"></a>
+<a id="tocSadminsandboxoverview"></a>
+<a id="tocsadminsandboxoverview"></a>
+
+```json
+{
+  "sandboxId": "string",
+  "team": {
+    "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+    "name": "string",
+    "email": "string"
+  },
+  "snapshotTemplateId": "string",
+  "lastPause": {
+    "kind": {},
+    "autoPause": true,
+    "autoPauseKind": {}
+  },
+  "latestBuild": {
+    "buildId": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+    "templateId": "string",
+    "tag": "string",
+    "status": "string",
+    "statusGroup": {},
+    "clusterNodeId": "string",
+    "assignedAt": "1970-01-01T00:00:00Z",
+    "isCurrent": true,
+    "restorable": true
+  },
+  "buildCount": 0
+}
+```
+
+Who owns a sandbox and what its snapshot holds, read from the database:
+the team, the snapshot template and its most recent pause, and the
+newest default-tag build assignment of that template
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|sandboxId|string|true|none|Identifier of the sandbox|
+|team|[AdminSandboxOverviewTeam](#schemaadminsandboxoverviewteam)|true|none|The team the sandbox belongs to|
+|snapshotTemplateId|string \| null|true|none|Template that holds the sandbox's snapshot, null when the sandbox has no snapshot|
+|lastPause|object \| null|true|none|What the most recent pause recorded, null when the sandbox has no snapshot|
+|latestBuild|object \| null|true|none|Newest default-tag build assignment of the snapshot template, null<br>when there is no snapshot or no assignment<br>|
+|buildCount|integer(int64)|true|none|Number of default-tag build assignments of the snapshot template|
+
+<h2 id="tocS_AdminSandboxOverviewTeam">AdminSandboxOverviewTeam</h2>
+<!-- backwards compatibility -->
+<a id="schemaadminsandboxoverviewteam"></a>
+<a id="schema_AdminSandboxOverviewTeam"></a>
+<a id="tocSadminsandboxoverviewteam"></a>
+<a id="tocsadminsandboxoverviewteam"></a>
+
+```json
+{
+  "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "name": "string",
+  "email": "string"
+}
+```
+
+The team the sandbox belongs to
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string(uuid)|true|none|Identifier of the team|
+|name|string \| null|true|none|Name of the team|
+|email|string \| null|true|none|Contact email of the team|
+
+<h2 id="tocS_AdminSandboxLastPause">AdminSandboxLastPause</h2>
+<!-- backwards compatibility -->
+<a id="schemaadminsandboxlastpause"></a>
+<a id="schema_AdminSandboxLastPause"></a>
+<a id="tocSadminsandboxlastpause"></a>
+<a id="tocsadminsandboxlastpause"></a>
+
+```json
+{
+  "kind": {},
+  "autoPause": true,
+  "autoPauseKind": {}
+}
+```
+
+The snapshot as the most recent pause left it. A resume can change
+whether the sandbox auto-pauses without rewriting it, and restoring an
+older build does not change it.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|kind|object|true|none|Kind of snapshot the most recent pause took|
+|autoPause|boolean|true|none|Whether the sandbox pauses instead of being killed on timeout, as of the most recent pause|
+|autoPauseKind|object|true|none|Kind of snapshot an auto-pause takes, as of the most recent pause|
+
+<h2 id="tocS_AdminSandboxPauseKind">AdminSandboxPauseKind</h2>
+<!-- backwards compatibility -->
+<a id="schemaadminsandboxpausekind"></a>
+<a id="schema_AdminSandboxPauseKind"></a>
+<a id="tocSadminsandboxpausekind"></a>
+<a id="tocsadminsandboxpausekind"></a>
+
+```json
+"memory"
+```
+
+What a pause kept: memory is a full snapshot that resumes where the
+sandbox left off, filesystem keeps only the root filesystem and boots
+it again on resume
+
+<h2 id="tocS_AdminSandboxOverviewBuild">AdminSandboxOverviewBuild</h2>
+<!-- backwards compatibility -->
+<a id="schemaadminsandboxoverviewbuild"></a>
+<a id="schema_AdminSandboxOverviewBuild"></a>
+<a id="tocSadminsandboxoverviewbuild"></a>
+<a id="tocsadminsandboxoverviewbuild"></a>
+
+```json
+{
+  "buildId": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "templateId": "string",
+  "tag": "string",
+  "status": "string",
+  "statusGroup": {},
+  "clusterNodeId": "string",
+  "assignedAt": "1970-01-01T00:00:00Z",
+  "isCurrent": true,
+  "restorable": true
+}
+```
+
+The newest default-tag build assignment of a sandbox's snapshot template
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|buildId|string(uuid)|true|none|Identifier of the build|
+|templateId|string|true|none|Identifier of the snapshot template the build is assigned to|
+|tag|string|true|none|Tag the build is assigned under|
+|status|string|true|none|**Deprecated.** Same value as statusGroup|
+|statusGroup|object \| null|true|none|Coarse build state, null when the stored group is not one of the known values|
+|clusterNodeId|string \| null|true|none|Node that produced the build, null when it was not recorded|
+|assignedAt|string(date-time)|true|none|When the build was assigned to the template under the tag|
+|isCurrent|boolean|true|none|Always true, the newest assignment is the one the template resolves to|
+|restorable|boolean|true|none|Always false, the newest assignment is already current|
 
 <h2 id="tocS_AdminTeamRunningSandboxCounts">AdminTeamRunningSandboxCounts</h2>
 <!-- backwards compatibility -->
@@ -13009,6 +18731,373 @@ to list the newest teams first.
 |---|---|---|---|---|
 |labels|[string]|true|none|The team's full set of labels. A request's labels replace the current ones.|
 
+<h2 id="tocS_AdminTeamBanResult">AdminTeamBanResult</h2>
+<!-- backwards compatibility -->
+<a id="schemaadminteambanresult"></a>
+<a id="schema_AdminTeamBanResult"></a>
+<a id="tocSadminteambanresult"></a>
+<a id="tocsadminteambanresult"></a>
+
+```json
+{
+  "teamID": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "sandboxesKilled": 0,
+  "sandboxesFailedToKill": 0,
+  "sandboxKillError": "string",
+  "buildsCancelled": 0,
+  "buildsFailedToCancel": 0,
+  "buildCancelError": "string"
+}
+```
+
+The outcome of banning one team. The ban is stored before the team's
+sandboxes are killed and its builds cancelled, so it holds even when
+either step fails.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|teamID|string(uuid)|true|none|none|
+|sandboxesKilled|integer|true|none|Number of the team's sandboxes killed|
+|sandboxesFailedToKill|integer|true|none|Number of the team's sandboxes that failed to kill|
+|sandboxKillError|string|false|none|Set when the kill step failed or ran out of time; the counts cover what it did until then.|
+|buildsCancelled|integer|true|none|Number of the team's builds cancelled|
+|buildsFailedToCancel|integer|true|none|Number of the team's builds that failed to cancel|
+|buildCancelError|string|false|none|Set when the cancel step failed or ran out of time; the counts cover what it did until then.|
+
+<h2 id="tocS_AdminTeamsBanRequest">AdminTeamsBanRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemaadminteamsbanrequest"></a>
+<a id="schema_AdminTeamsBanRequest"></a>
+<a id="tocSadminteamsbanrequest"></a>
+<a id="tocsadminteamsbanrequest"></a>
+
+```json
+{
+  "teamIDs": [
+    "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|teamIDs|[string(uuid)]|true|none|none|
+
+<h2 id="tocS_AdminTeamsBanResult">AdminTeamsBanResult</h2>
+<!-- backwards compatibility -->
+<a id="schemaadminteamsbanresult"></a>
+<a id="schema_AdminTeamsBanResult"></a>
+<a id="tocSadminteamsbanresult"></a>
+<a id="tocsadminteamsbanresult"></a>
+
+```json
+{
+  "banned": [
+    {
+      "teamID": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "sandboxesKilled": 0,
+      "sandboxesFailedToKill": 0,
+      "sandboxKillError": "string",
+      "buildsCancelled": 0,
+      "buildsFailedToCancel": 0,
+      "buildCancelError": "string"
+    }
+  ],
+  "notFound": [
+    "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+  ],
+  "failed": [
+    {
+      "teamID": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "error": "string"
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|banned|[[AdminTeamBanResult](#schemaadminteambanresult)]|true|none|Teams whose ban is stored, with the outcome of killing their sandboxes and cancelling their builds|
+|notFound|[string(uuid)]|true|none|Requested teams that do not exist|
+|failed|[[AdminTeamBanFailure](#schemaadminteambanfailure)]|true|none|Teams whose ban could not be stored or put into force; retrying repeats every step|
+
+<h2 id="tocS_AdminTeamBanFailure">AdminTeamBanFailure</h2>
+<!-- backwards compatibility -->
+<a id="schemaadminteambanfailure"></a>
+<a id="schema_AdminTeamBanFailure"></a>
+<a id="tocSadminteambanfailure"></a>
+<a id="tocsadminteambanfailure"></a>
+
+```json
+{
+  "teamID": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "error": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|teamID|string(uuid)|true|none|none|
+|error|string|true|none|none|
+
+<h2 id="tocS_AdminTemplateTeam">AdminTemplateTeam</h2>
+<!-- backwards compatibility -->
+<a id="schemaadmintemplateteam"></a>
+<a id="schema_AdminTemplateTeam"></a>
+<a id="tocSadmintemplateteam"></a>
+<a id="tocsadmintemplateteam"></a>
+
+```json
+{
+  "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "name": "string",
+  "email": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string(uuid)|true|none|Identifier of the team that owns the template|
+|name|string|true|none|Name of the team|
+|email|string|true|none|Contact email of the team|
+
+<h2 id="tocS_AdminTemplateAlias">AdminTemplateAlias</h2>
+<!-- backwards compatibility -->
+<a id="schemaadmintemplatealias"></a>
+<a id="schema_AdminTemplateAlias"></a>
+<a id="tocSadmintemplatealias"></a>
+<a id="tocsadmintemplatealias"></a>
+
+```json
+{
+  "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "templateID": "string",
+  "alias": "string",
+  "namespace": "string",
+  "isRenamable": true
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string(uuid)|true|none|Identifier of the alias|
+|templateID|string|true|none|Identifier of the template the alias resolves to|
+|alias|string|true|none|The alias|
+|namespace|string \| null|true|none|Namespace of the alias, or null for an alias that resolves for every team|
+|isRenamable|boolean|true|none|Whether building the template under another name replaces the alias|
+
+<h2 id="tocS_AdminTemplateAliases">AdminTemplateAliases</h2>
+<!-- backwards compatibility -->
+<a id="schemaadmintemplatealiases"></a>
+<a id="schema_AdminTemplateAliases"></a>
+<a id="tocSadmintemplatealiases"></a>
+<a id="tocsadmintemplatealiases"></a>
+
+```json
+{
+  "templateID": "string",
+  "public": true,
+  "team": {
+    "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+    "name": "string",
+    "email": "string"
+  },
+  "aliases": [
+    {
+      "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "templateID": "string",
+      "alias": "string",
+      "namespace": "string",
+      "isRenamable": true
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|templateID|string|true|none|Identifier of the template|
+|public|boolean|true|none|Whether the template is public|
+|team|[AdminTemplateTeam](#schemaadmintemplateteam)|true|none|none|
+|aliases|[[AdminTemplateAlias](#schemaadmintemplatealias)]|true|none|All aliases of the template, those without a namespace first|
+
+<h2 id="tocS_AdminTemplateAliasCreateRequest">AdminTemplateAliasCreateRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemaadmintemplatealiascreaterequest"></a>
+<a id="schema_AdminTemplateAliasCreateRequest"></a>
+<a id="tocSadmintemplatealiascreaterequest"></a>
+<a id="tocsadmintemplatealiascreaterequest"></a>
+
+```json
+{
+  "templateID": "string",
+  "alias": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|templateID|string|true|none|Identifier of the template the alias resolves to|
+|alias|string|true|none|The alias, without a namespace or tag|
+
+<h2 id="tocS_AdminTemplateAliasDeleted">AdminTemplateAliasDeleted</h2>
+<!-- backwards compatibility -->
+<a id="schemaadmintemplatealiasdeleted"></a>
+<a id="schema_AdminTemplateAliasDeleted"></a>
+<a id="tocSadmintemplatealiasdeleted"></a>
+<a id="tocsadmintemplatealiasdeleted"></a>
+
+```json
+{
+  "aliasID": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "templateID": "string",
+  "alias": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|aliasID|string(uuid)|true|none|Identifier of the removed alias|
+|templateID|string|true|none|Identifier of the template the alias resolved to|
+|alias|string|true|none|The removed alias|
+
+<h2 id="tocS_AdminDefaultTemplate">AdminDefaultTemplate</h2>
+<!-- backwards compatibility -->
+<a id="schemaadmindefaulttemplate"></a>
+<a id="schema_AdminDefaultTemplate"></a>
+<a id="tocSadmindefaulttemplate"></a>
+<a id="tocsadmindefaulttemplate"></a>
+
+```json
+{
+  "templateID": "string",
+  "description": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|templateID|string|true|none|Identifier of the default template|
+|description|string \| null|true|none|Description of the default template|
+
+<h2 id="tocS_AdminDefaultTemplateCreateRequest">AdminDefaultTemplateCreateRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemaadmindefaulttemplatecreaterequest"></a>
+<a id="schema_AdminDefaultTemplateCreateRequest"></a>
+<a id="tocSadmindefaulttemplatecreaterequest"></a>
+<a id="tocsadmindefaulttemplatecreaterequest"></a>
+
+```json
+{
+  "templateID": "string",
+  "description": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|templateID|string|true|none|Identifier of the template to make a default template|
+|description|string \| null|false|none|Description of the default template; blank is stored as none|
+
+<h2 id="tocS_AdminDefaultTemplateUpdateRequest">AdminDefaultTemplateUpdateRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemaadmindefaulttemplateupdaterequest"></a>
+<a id="schema_AdminDefaultTemplateUpdateRequest"></a>
+<a id="tocSadmindefaulttemplateupdaterequest"></a>
+<a id="tocsadmindefaulttemplateupdaterequest"></a>
+
+```json
+{
+  "description": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|description|string \| null|true|none|New description of the default template; null or blank clears it|
+
+<h2 id="tocS_AdminTemplateLookup">AdminTemplateLookup</h2>
+<!-- backwards compatibility -->
+<a id="schemaadmintemplatelookup"></a>
+<a id="schema_AdminTemplateLookup"></a>
+<a id="tocSadmintemplatelookup"></a>
+<a id="tocsadmintemplatelookup"></a>
+
+```json
+{
+  "templateID": "string",
+  "team": {
+    "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+    "name": "string",
+    "email": "string"
+  },
+  "names": [
+    "string"
+  ],
+  "public": true,
+  "createdAt": "1970-01-01T00:00:00Z",
+  "lastSpawnedAt": "1970-01-01T00:00:00Z",
+  "spawnCount": 0,
+  "isSnapshot": true,
+  "snapshotSandboxID": "string",
+  "matchedBuildID": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "builds": [
+    {
+      "buildID": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "status": "building",
+      "createdAt": "1970-01-01T00:00:00Z",
+      "updatedAt": "1970-01-01T00:00:00Z",
+      "finishedAt": "1970-01-01T00:00:00Z",
+      "cpuCount": 1,
+      "maxCpuCount": {},
+      "memoryMB": 128,
+      "diskSizeMB": 0,
+      "envdVersion": "string"
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|templateID|string|true|none|Identifier of the template|
+|team|[AdminTemplateTeam](#schemaadmintemplateteam)|true|none|none|
+|names|[string]|true|none|Names of the template (namespace/alias format when namespaced)|
+|public|boolean|true|none|Whether the template is public|
+|createdAt|string(date-time)|true|none|Time when the template was created|
+|lastSpawnedAt|string(date-time) \| null|true|none|Time when the template was last used|
+|spawnCount|integer(int64)|true|none|Number of times the template was used|
+|isSnapshot|boolean|true|none|Whether the template is a snapshot of a sandbox|
+|snapshotSandboxID|string \| null|true|none|The sandbox a snapshot template was taken from|
+|matchedBuildID|string(uuid) \| null|true|none|The build the query matched, when it was a build ID|
+|builds|[[TemplateBuild](#schematemplatebuild)]|true|none|The template's newest builds of any tag and status, newest first, at most 100|
+
 <h2 id="tocS_VolumeToken">VolumeToken</h2>
 <!-- backwards compatibility -->
 <a id="schemavolumetoken"></a>
@@ -13040,6 +19129,7 @@ to list the newest teams first.
   "templateID": "string",
   "buildID": "string",
   "cpuCount": 1,
+  "maxCpuCount": {},
   "memoryMB": 128,
   "diskSizeMB": 0,
   "public": true,
@@ -13072,6 +19162,7 @@ to list the newest teams first.
 |templateID|string|true|none|Identifier of the template|
 |buildID|string|true|none|Identifier of the last successful build for given template|
 |cpuCount|[CPUCount](#schemacpucount)|true|none|CPU cores for the sandbox|
+|maxCpuCount|object|false|none|Maximum CPU count for resizable templates; absent for fixed-size templates.|
 |memoryMB|[MemoryMB](#schemamemorymb)|true|none|Memory for the sandbox in MiB|
 |diskSizeMB|[DiskSizeMB](#schemadisksizemb)|true|none|Disk size for the sandbox in MiB|
 |public|boolean|true|none|Whether the template is public or only accessible by the team|
@@ -13111,6 +19202,7 @@ to list the newest teams first.
       "templateID": "string",
       "buildID": "string",
       "cpuCount": 1,
+      "maxCpuCount": {},
       "memoryMB": 128,
       "diskSizeMB": 0,
       "public": true,
@@ -13145,6 +19237,197 @@ to list the newest teams first.
 |---|---|---|---|---|
 |data|[[Template](#schematemplate)]|true|none|none|
 |nextCursor|string \| null|true|none|Cursor of the next page, or null on the last page|
+
+<h2 id="tocS_BuildStatus">BuildStatus</h2>
+<!-- backwards compatibility -->
+<a id="schemabuildstatus"></a>
+<a id="schema_BuildStatus"></a>
+<a id="tocSbuildstatus"></a>
+<a id="tocsbuildstatus"></a>
+
+```json
+"building"
+```
+
+Build status as the builds list reports it.
+
+<h2 id="tocS_ListedBuild">ListedBuild</h2>
+<!-- backwards compatibility -->
+<a id="schemalistedbuild"></a>
+<a id="schema_ListedBuild"></a>
+<a id="tocSlistedbuild"></a>
+<a id="tocslistedbuild"></a>
+
+```json
+{
+  "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "template": "string",
+  "templateId": "string",
+  "status": "building",
+  "statusMessage": "string",
+  "createdAt": "1970-01-01T00:00:00Z",
+  "finishedAt": "1970-01-01T00:00:00Z",
+  "cpuCount": 0,
+  "memoryMB": 0,
+  "diskSizeMB": 0,
+  "envdVersion": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string(uuid)|true|none|Identifier of the build.|
+|template|string|true|none|Template alias when present, otherwise template ID.|
+|templateId|string|true|none|Identifier of the template.|
+|status|[BuildStatus](#schemabuildstatus)|true|none|Build status as the builds list reports it.|
+|statusMessage|string \| null|true|none|Failure message when status is `failed`, otherwise `null`.|
+|createdAt|string(date-time)|true|none|Build creation timestamp in RFC3339 format.|
+|finishedAt|string(date-time) \| null|true|none|Build completion timestamp in RFC3339 format, if finished.|
+|cpuCount|integer(int64)|true|none|CPU cores configured for the build.|
+|memoryMB|integer(int64)|true|none|Memory in MiB configured for the build.|
+|diskSizeMB|integer(int64) \| null|true|none|Disk size in MiB configured for the build, if recorded.|
+|envdVersion|string \| null|true|none|envd version the build was created with, if recorded.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|status|building|
+|status|failed|
+|status|success|
+
+<h2 id="tocS_BuildsListResponse">BuildsListResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemabuildslistresponse"></a>
+<a id="schema_BuildsListResponse"></a>
+<a id="tocSbuildslistresponse"></a>
+<a id="tocsbuildslistresponse"></a>
+
+```json
+{
+  "data": [
+    {
+      "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "template": "string",
+      "templateId": "string",
+      "status": "building",
+      "statusMessage": "string",
+      "createdAt": "1970-01-01T00:00:00Z",
+      "finishedAt": "1970-01-01T00:00:00Z",
+      "cpuCount": 0,
+      "memoryMB": 0,
+      "diskSizeMB": 0,
+      "envdVersion": "string"
+    }
+  ],
+  "nextCursor": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|data|[[ListedBuild](#schemalistedbuild)]|true|none|none|
+|nextCursor|string \| null|true|none|Cursor to pass to the next list request, or `null` if there is no next page.|
+
+<h2 id="tocS_BuildStatusItem">BuildStatusItem</h2>
+<!-- backwards compatibility -->
+<a id="schemabuildstatusitem"></a>
+<a id="schema_BuildStatusItem"></a>
+<a id="tocSbuildstatusitem"></a>
+<a id="tocsbuildstatusitem"></a>
+
+```json
+{
+  "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "status": "building",
+  "finishedAt": "1970-01-01T00:00:00Z",
+  "statusMessage": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string(uuid)|true|none|Identifier of the build.|
+|status|[BuildStatus](#schemabuildstatus)|true|none|Build status as the builds list reports it.|
+|finishedAt|string(date-time) \| null|true|none|Build completion timestamp in RFC3339 format, if finished.|
+|statusMessage|string \| null|true|none|Failure message when status is `failed`, otherwise `null`.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|status|building|
+|status|failed|
+|status|success|
+
+<h2 id="tocS_BuildsStatusesResponse">BuildsStatusesResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemabuildsstatusesresponse"></a>
+<a id="schema_BuildsStatusesResponse"></a>
+<a id="tocSbuildsstatusesresponse"></a>
+<a id="tocsbuildsstatusesresponse"></a>
+
+```json
+{
+  "buildStatuses": [
+    {
+      "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "status": "building",
+      "finishedAt": "1970-01-01T00:00:00Z",
+      "statusMessage": "string"
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|buildStatuses|[[BuildStatusItem](#schemabuildstatusitem)]|true|none|List of build statuses|
+
+<h2 id="tocS_BuildInfo">BuildInfo</h2>
+<!-- backwards compatibility -->
+<a id="schemabuildinfo"></a>
+<a id="schema_BuildInfo"></a>
+<a id="tocSbuildinfo"></a>
+<a id="tocsbuildinfo"></a>
+
+```json
+{
+  "names": [
+    "string"
+  ],
+  "createdAt": "1970-01-01T00:00:00Z",
+  "finishedAt": "1970-01-01T00:00:00Z",
+  "status": "building",
+  "statusMessage": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|names|[string]|false|none|Template names related to this build, if available.|
+|createdAt|string(date-time)|true|none|Build creation timestamp in RFC3339 format.|
+|finishedAt|string(date-time) \| null|true|none|Build completion timestamp in RFC3339 format, if finished.|
+|status|[BuildStatus](#schemabuildstatus)|true|none|Build status as the builds list reports it.|
+|statusMessage|string \| null|true|none|Failure message when status is `failed`, otherwise `null`.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|status|building|
+|status|failed|
+|status|success|
 
 <h2 id="tocS_TemplateRequestResponseV3">TemplateRequestResponseV3</h2>
 <!-- backwards compatibility -->
@@ -13196,6 +19479,7 @@ to list the newest teams first.
   "updatedAt": "1970-01-01T00:00:00Z",
   "finishedAt": "1970-01-01T00:00:00Z",
   "cpuCount": 1,
+  "maxCpuCount": {},
   "memoryMB": 128,
   "diskSizeMB": 0,
   "envdVersion": "string"
@@ -13212,6 +19496,7 @@ to list the newest teams first.
 |updatedAt|string(date-time)|true|none|Time when the build was last updated|
 |finishedAt|string(date-time)|false|none|Time when the build was finished|
 |cpuCount|[CPUCount](#schemacpucount)|true|none|CPU cores for the sandbox|
+|maxCpuCount|object|false|none|Maximum CPU count for resizable templates; absent for fixed-size templates.|
 |memoryMB|[MemoryMB](#schemamemorymb)|true|none|Memory for the sandbox in MiB|
 |diskSizeMB|[DiskSizeMB](#schemadisksizemb)|false|none|Disk size for the sandbox in MiB|
 |envdVersion|[EnvdVersion](#schemaenvdversion)|false|none|Version of the envd running in the sandbox|
@@ -13225,6 +19510,126 @@ to list the newest teams first.
 |status|ready|
 |status|error|
 
+<h2 id="tocS_TemplateBuildWithTags">TemplateBuildWithTags</h2>
+<!-- backwards compatibility -->
+<a id="schematemplatebuildwithtags"></a>
+<a id="schema_TemplateBuildWithTags"></a>
+<a id="tocStemplatebuildwithtags"></a>
+<a id="tocstemplatebuildwithtags"></a>
+
+```json
+{
+  "buildID": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "status": "building",
+  "createdAt": "1970-01-01T00:00:00Z",
+  "updatedAt": "1970-01-01T00:00:00Z",
+  "finishedAt": "1970-01-01T00:00:00Z",
+  "cpuCount": 1,
+  "maxCpuCount": {},
+  "memoryMB": 128,
+  "diskSizeMB": 0,
+  "envdVersion": "string",
+  "tags": [
+    "string"
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|buildID|string(uuid)|true|none|Identifier of the build|
+|status|[TemplateBuildStatus](#schematemplatebuildstatus)|true|none|Status of the template build|
+|createdAt|string(date-time)|true|none|Time when the build was created|
+|updatedAt|string(date-time)|true|none|Time when the build was last updated|
+|finishedAt|string(date-time)|false|none|Time when the build was finished|
+|cpuCount|[CPUCount](#schemacpucount)|true|none|CPU cores for the sandbox|
+|maxCpuCount|object|false|none|Maximum CPU count for resizable templates; absent for fixed-size templates.|
+|memoryMB|[MemoryMB](#schemamemorymb)|true|none|Memory for the sandbox in MiB|
+|diskSizeMB|[DiskSizeMB](#schemadisksizemb)|false|none|Disk size for the sandbox in MiB|
+|envdVersion|[EnvdVersion](#schemaenvdversion)|false|none|Version of the envd running in the sandbox|
+|tags|[string]|true|none|Tags of the template that point at this build. A tag points at the latest ready build it was assigned to, the build a sandbox created with that tag starts from.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|status|building|
+|status|waiting|
+|status|ready|
+|status|error|
+
+<h2 id="tocS_TemplateV2">TemplateV2</h2>
+<!-- backwards compatibility -->
+<a id="schematemplatev2"></a>
+<a id="schema_TemplateV2"></a>
+<a id="tocStemplatev2"></a>
+<a id="tocstemplatev2"></a>
+
+```json
+{
+  "templateID": "string",
+  "names": [
+    "string"
+  ],
+  "public": true,
+  "createdAt": "1970-01-01T00:00:00Z",
+  "updatedAt": "1970-01-01T00:00:00Z",
+  "createdBy": {
+    "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+    "email": null
+  },
+  "lastSpawnedAt": "1970-01-01T00:00:00Z",
+  "spawnCount": 0,
+  "buildCount": 0,
+  "isDefault": true,
+  "description": "string",
+  "buildStatus": "building",
+  "defaultBuild": {
+    "buildID": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+    "status": "building",
+    "createdAt": "1970-01-01T00:00:00Z",
+    "updatedAt": "1970-01-01T00:00:00Z",
+    "finishedAt": "1970-01-01T00:00:00Z",
+    "cpuCount": 1,
+    "maxCpuCount": {},
+    "memoryMB": 128,
+    "diskSizeMB": 0,
+    "envdVersion": "string"
+  }
+}
+```
+
+A template with its default build. `defaultBuild` is the build a sandbox created without a tag starts from, the latest ready build tagged default; it is absent until such a build is ready. `buildStatus` is the status of the latest build tagged default in any state: it is `building` while a rebuild runs, although sandboxes still start from the default build.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|templateID|string|true|none|Identifier of the template|
+|names|[string]|true|none|Names of the template (namespace/alias format when namespaced)|
+|public|boolean|true|none|Whether the template is public or only accessible by the team|
+|createdAt|string(date-time)|true|none|Time when the template was created|
+|updatedAt|string(date-time)|true|none|Time when the template was last updated|
+|createdBy|object \| null|true|none|none|
+|lastSpawnedAt|string(date-time) \| null|true|none|Time when the template was last used|
+|spawnCount|integer(int64)|true|none|Number of times the template was used|
+|buildCount|integer(int32)|true|none|Number of times the template was built|
+|isDefault|boolean|true|none|Whether the template is one of the platform's default templates|
+|description|string|false|none|Description of the template|
+|buildStatus|[TemplateBuildStatus](#schematemplatebuildstatus)|true|none|Status of the template build|
+|defaultBuild|[TemplateBuild](#schematemplatebuild)|false|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|buildStatus|building|
+|buildStatus|waiting|
+|buildStatus|ready|
+|buildStatus|error|
+
 <h2 id="tocS_TemplateWithBuilds">TemplateWithBuilds</h2>
 <!-- backwards compatibility -->
 <a id="schematemplatewithbuilds"></a>
@@ -13237,6 +19642,7 @@ to list the newest teams first.
   "templateID": "string",
   "buildID": "string",
   "cpuCount": 1,
+  "maxCpuCount": {},
   "memoryMB": 128,
   "diskSizeMB": 0,
   "public": true,
@@ -13267,6 +19673,7 @@ to list the newest teams first.
       "updatedAt": "1970-01-01T00:00:00Z",
       "finishedAt": "1970-01-01T00:00:00Z",
       "cpuCount": 1,
+      "maxCpuCount": {},
       "memoryMB": 128,
       "diskSizeMB": 0,
       "envdVersion": "string"
@@ -13282,6 +19689,7 @@ to list the newest teams first.
 |templateID|string|true|none|Identifier of the template|
 |buildID|string|true|none|Identifier of the last successful build for given template|
 |cpuCount|[CPUCount](#schemacpucount)|true|none|CPU cores for the sandbox|
+|maxCpuCount|object|false|none|Maximum CPU count for resizable templates; absent for fixed-size templates.|
 |memoryMB|[MemoryMB](#schemamemorymb)|true|none|Memory for the sandbox in MiB|
 |diskSizeMB|[DiskSizeMB](#schemadisksizemb)|true|none|Disk size for the sandbox in MiB|
 |public|boolean|true|none|Whether the template is public or only accessible by the team|
@@ -13372,6 +19780,7 @@ Step in the template build process
   "alias": "string",
   "teamID": "string",
   "cpuCount": 1,
+  "maxCpuCount": {},
   "memoryMB": 128,
   "minFreeDiskMb": 0
 }
@@ -13386,6 +19795,7 @@ Step in the template build process
 |alias|string|false|none|**Deprecated.** Alias of the template. Deprecated, use name instead.|
 |teamID|string|false|none|**Deprecated.** Identifier of the team, as its UUID or its public project ID (prj_)|
 |cpuCount|[CPUCount](#schemacpucount)|false|none|CPU cores for the sandbox|
+|maxCpuCount|object|false|none|Maximum CPU count the template's sandboxes can be resized to; makes the template resizable. Must be at least cpuCount.|
 |memoryMB|[MemoryMB](#schemamemorymb)|false|none|Memory for the sandbox in MiB|
 |minFreeDiskMb|[MinFreeDiskMb](#schemaminfreediskmb)|false|none|Requested minimum free space after the template's build steps, in MiB. Omit to use the team's default. Set to 0 to request no minimum free-disk growth. The filesystem is never shrunk, including inherited or already-larger filesystems. Growth is best effort, so filesystem metadata can leave the available space slightly below the requested minimum.|
 
@@ -13400,7 +19810,7 @@ Step in the template build process
 {
   "type": "aws",
   "awsAccessKeyId": "string",
-  "awsSecretAccessKey": "string",
+  "awsSecretAccessKey": "password",
   "awsRegion": "string"
 }
 ```
@@ -13424,7 +19834,7 @@ Step in the template build process
 {
   "type": "aws",
   "awsAccessKeyId": "string",
-  "awsSecretAccessKey": "string",
+  "awsSecretAccessKey": "password",
   "awsRegion": "string"
 }
 ```
@@ -13435,7 +19845,7 @@ Step in the template build process
 |---|---|---|---|---|
 |type|string|true|none|Type of registry authentication|
 |awsAccessKeyId|string|true|none|AWS Access Key ID for ECR authentication|
-|awsSecretAccessKey|string|true|none|AWS Secret Access Key for ECR authentication|
+|awsSecretAccessKey|string(password)|true|none|AWS Secret Access Key for ECR authentication|
 |awsRegion|string|true|none|AWS Region where the ECR registry is located|
 
 #### Enumerated Values
@@ -13454,7 +19864,7 @@ Step in the template build process
 ```json
 {
   "type": "gcp",
-  "serviceAccountJson": "string"
+  "serviceAccountJson": "password"
 }
 ```
 
@@ -13463,7 +19873,7 @@ Step in the template build process
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |type|string|true|none|Type of registry authentication|
-|serviceAccountJson|string|true|none|Service Account JSON for GCP authentication|
+|serviceAccountJson|string(password)|true|none|Service Account JSON for GCP authentication|
 
 #### Enumerated Values
 
@@ -13482,7 +19892,7 @@ Step in the template build process
 {
   "type": "registry",
   "username": "string",
-  "password": "string"
+  "password": "password"
 }
 ```
 
@@ -13492,7 +19902,7 @@ Step in the template build process
 |---|---|---|---|---|
 |type|string|true|none|Type of registry authentication|
 |username|string|true|none|Username to use for the registry|
-|password|string|true|none|Password to use for the registry|
+|password|string(password)|true|none|Password to use for the registry|
 
 #### Enumerated Values
 
@@ -13514,7 +19924,7 @@ Step in the template build process
   "fromImageRegistry": {
     "type": "aws",
     "awsAccessKeyId": "string",
-    "awsSecretAccessKey": "string",
+    "awsSecretAccessKey": "password",
     "awsRegion": "string"
   },
   "force": false,
@@ -13746,7 +20156,8 @@ Source of the logs that should be returned
 ```
 
 Status of the node.
-- standby: the node is not actively used, but it can return to ready and continue serving traffic.
+- standby: the node refuses new sandboxes and keeps serving the ones it holds; it can return to ready.
+- not_ready: the node is starting and cannot take new work yet. It becomes ready by itself and cannot be set through the API.
 
 <h2 id="tocS_NodeStatusChange">NodeStatusChange</h2>
 <!-- backwards compatibility -->
@@ -13758,7 +20169,9 @@ Status of the node.
 ```json
 {
   "clusterID": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
-  "status": "ready"
+  "status": "ready",
+  "owner": "string",
+  "force": true
 }
 ```
 
@@ -13767,7 +20180,9 @@ Status of the node.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |clusterID|string(uuid)|false|none|Identifier of the cluster|
-|status|[NodeStatus](#schemanodestatus)|true|none|Status of the node.<br>- standby: the node is not actively used, but it can return to ready and continue serving traffic.<br>|
+|status|[NodeStatus](#schemanodestatus)|true|none|Status of the node.<br>- standby: the node refuses new sandboxes and keeps serving the ones it holds; it can return to ready.<br>- not_ready: the node is starting and cannot take new work yet. It becomes ready by itself and cannot be set through the API.<br>|
+|owner|string|false|none|Owner of a standby override; required to release a standby that carries one|
+|force|boolean|false|none|Apply the status and owner regardless of the recorded owner|
 
 #### Enumerated Values
 
@@ -13779,6 +20194,7 @@ Status of the node.
 |status|unhealthy|
 |status|standby|
 |status|shutting_down|
+|status|not_ready|
 
 <h2 id="tocS_DiskMetrics">DiskMetrics</h2>
 <!-- backwards compatibility -->
@@ -13903,6 +20319,10 @@ Node metrics
   },
   "status": "ready",
   "statusChangedAt": "1970-01-01T00:00:00Z",
+  "statusOwner": "string",
+  "capabilities": [
+    "string"
+  ],
   "sandboxCount": 0,
   "maxSandboxes": 0,
   "outstandingWork": 0,
@@ -13943,8 +20363,10 @@ Node metrics
 |serviceInstanceID|string|true|none|Service instance identifier of the node|
 |clusterID|string|true|none|Identifier of the cluster|
 |machineInfo|[MachineInfo](#schemamachineinfo)|true|none|none|
-|status|[NodeStatus](#schemanodestatus)|true|none|Status of the node.<br>- standby: the node is not actively used, but it can return to ready and continue serving traffic.<br>|
+|status|[NodeStatus](#schemanodestatus)|true|none|Status of the node.<br>- standby: the node refuses new sandboxes and keeps serving the ones it holds; it can return to ready.<br>- not_ready: the node is starting and cannot take new work yet. It becomes ready by itself and cannot be set through the API.<br>|
 |statusChangedAt|string(date-time)|true|none|Time when the node status was last changed|
+|statusOwner|string|false|none|Owner recorded by the current standby override|
+|capabilities|[string]|false|none|Capabilities of the orchestrator build, for example park-owner|
 |sandboxCount|integer(uint32)|true|none|Number of sandboxes running on the node|
 |maxSandboxes|integer(int64)|true|none|Cached node-scoped sandbox admission limit. Nonpositive values reject creation.|
 |outstandingWork|integer(uint64)|true|none|Cached count of work holds on the node. Zero means idle or not yet reported; it does not by itself authorize deletion.|
@@ -13963,6 +20385,70 @@ Node metrics
 |status|unhealthy|
 |status|standby|
 |status|shutting_down|
+|status|not_ready|
+
+<h2 id="tocS_NodeSandboxes">NodeSandboxes</h2>
+<!-- backwards compatibility -->
+<a id="schemanodesandboxes"></a>
+<a id="schema_NodeSandboxes"></a>
+<a id="tocSnodesandboxes"></a>
+<a id="tocsnodesandboxes"></a>
+
+```json
+{
+  "nodeID": "string",
+  "observedAt": "1970-01-01T00:00:00Z",
+  "items": [
+    {
+      "teamID": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "sandboxID": "string",
+      "executionID": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "lifecycleHoldUntil": "1970-01-01T00:00:00Z",
+      "networkMode": "string",
+      "volumesAttached": true
+    }
+  ]
+}
+```
+
+The sandboxes the API confirms are running on a node, as the node and the API's records agree on them when read. A guest the node runs for an execution the API records elsewhere, or does not record, is left out.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|nodeID|string|true|none|Identifier of the node|
+|observedAt|string(date-time)|true|none|Time the node's sandboxes were read|
+|items|[[NodeSandbox](#schemanodesandbox)]|true|none|none|
+
+<h2 id="tocS_NodeSandbox">NodeSandbox</h2>
+<!-- backwards compatibility -->
+<a id="schemanodesandbox"></a>
+<a id="schema_NodeSandbox"></a>
+<a id="tocSnodesandbox"></a>
+<a id="tocsnodesandbox"></a>
+
+```json
+{
+  "teamID": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "sandboxID": "string",
+  "executionID": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "lifecycleHoldUntil": "1970-01-01T00:00:00Z",
+  "networkMode": "string",
+  "volumesAttached": true
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|teamID|string(uuid)|true|none|Identifier of the team|
+|sandboxID|string|true|none|Identifier of the sandbox|
+|executionID|string(uuid)|true|none|Identifier of the running execution|
+|lifecycleHoldUntil|string(date-time)|false|none|Deadline of the operation holding the sandbox's lifecycle, absent when it is not held|
+|networkMode|string|true|none|Network the execution runs on, legacy, egress-router or full-router|
+|volumesAttached|boolean|true|none|Whether the sandbox runs with managed volumes attached|
 
 <h2 id="tocS_NodeDetail">NodeDetail</h2>
 <!-- backwards compatibility -->
@@ -13986,6 +20472,10 @@ Node metrics
   },
   "status": "ready",
   "statusChangedAt": "1970-01-01T00:00:00Z",
+  "statusOwner": "string",
+  "capabilities": [
+    "string"
+  ],
   "sandboxCount": 0,
   "maxSandboxes": 0,
   "outstandingWork": 0,
@@ -14025,8 +20515,10 @@ Node metrics
 |id|string|true|none|Identifier of the node|
 |serviceInstanceID|string|true|none|Service instance identifier of the node|
 |machineInfo|[MachineInfo](#schemamachineinfo)|true|none|none|
-|status|[NodeStatus](#schemanodestatus)|true|none|Status of the node.<br>- standby: the node is not actively used, but it can return to ready and continue serving traffic.<br>|
+|status|[NodeStatus](#schemanodestatus)|true|none|Status of the node.<br>- standby: the node refuses new sandboxes and keeps serving the ones it holds; it can return to ready.<br>- not_ready: the node is starting and cannot take new work yet. It becomes ready by itself and cannot be set through the API.<br>|
 |statusChangedAt|string(date-time)|true|none|Time when the node status was last changed|
+|statusOwner|string|false|none|Owner recorded by the current standby override|
+|capabilities|[string]|false|none|Capabilities of the orchestrator build, for example park-owner|
 |sandboxCount|integer(uint32)|true|none|Number of sandboxes running on the node|
 |maxSandboxes|integer(int64)|true|none|Cached node-scoped sandbox admission limit. Nonpositive values reject creation.|
 |outstandingWork|integer(uint64)|true|none|Cached count of work holds on the node. Zero means idle or not yet reported; it does not by itself authorize deletion.|
@@ -14044,6 +20536,7 @@ Node metrics
 |status|unhealthy|
 |status|standby|
 |status|shutting_down|
+|status|not_ready|
 
 <h2 id="tocS_TeamAPIKey">TeamAPIKey</h2>
 <!-- backwards compatibility -->
@@ -14433,7 +20926,7 @@ Node metrics
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |code|integer(int32)|true|none|Error code|
-|error_code|string|false|none|Machine-readable semantic error code. Not a closed set; initial values: sandbox_capacity_unavailable, sandbox_placement_timeout, sandbox_no_compatible_node, sandbox_create_failed (a node could not create the sandbox this time; retry), sandbox_create_refused (a node refused the sandbox for a reason no retry changes, such as a vcpu count out of bounds in the stored build; a server error, since no request field reaches that check), internal_server_error, secret_limit_reached, idempotency_request_mismatch, idempotency_in_progress, idempotency_outcome_unknown.|
+|error_code|string|false|none|Machine-readable semantic error code. Not a closed set; initial values: sandbox_capacity_unavailable, sandbox_placement_timeout, sandbox_no_compatible_node, sandbox_create_failed (a node could not create the sandbox this time; retry), sandbox_create_refused (a node refused the sandbox for a reason no retry changes, such as a vcpu count out of bounds in the stored build; a server error, since no request field reaches that check), internal_server_error, secret_limit_reached, idempotency_request_mismatch, idempotency_in_progress, idempotency_outcome_unknown, cluster_registration_invalid, cluster_registration_conflict, cluster_assignment_invalid, cluster_assignment_project_not_found, cluster_assignment_cluster_not_found, cluster_assignment_already_assigned, cluster_assignment_cluster_deleting, sandbox_snapshot_guest_agent_unresponsive (a plain resume of a snapshot taken while the sandbox guest agent was not responding; resume it with memory: false).|
 |message|string|true|none|Error|
 
 <h2 id="tocS_IdentifierMaskingDetails">IdentifierMaskingDetails</h2>
@@ -14592,7 +21085,7 @@ Metadata of a secret. It never carries the secret value.
 ```json
 {
   "name": "string",
-  "value": "string",
+  "value": "password",
   "metadata": {
     "property1": "string",
     "property2": "string"
@@ -14605,7 +21098,7 @@ Metadata of a secret. It never carries the secret value.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |name|string|true|none|Name of the secret, unique within the project. Names are lower-cased before storage and returned in that canonical form; the sec_ prefix is reserved for secret identifiers.<br>|
-|value|string|true|none|Runtime marker stored as the secret's first version. The runtime resolves it to a value at sandbox egress.|
+|value|string(password)|true|none|Runtime marker stored as the secret's first version. The runtime resolves it to a value at sandbox egress.|
 |metadata|[SecretMetadata](#schemasecretmetadata)|false|none|Customer metadata of the secret. Always present, empty when unset. At most 32 entries; keys are limited to 128 bytes, values to 1024 bytes, and a secret's metadata to 8192 bytes in total.<br>|
 
 <h2 id="tocS_SecretUpdate">SecretUpdate</h2>
@@ -14617,7 +21110,7 @@ Metadata of a secret. It never carries the secret value.
 
 ```json
 {
-  "value": "string",
+  "value": "password",
   "metadata": {
     "property1": "string",
     "property2": "string"
@@ -14629,7 +21122,7 @@ Metadata of a secret. It never carries the secret value.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|value|string|true|none|Runtime marker stored as the secret's new version. The runtime resolves it to a value at sandbox egress.|
+|value|string(password)|true|none|Runtime marker stored as the secret's new version. The runtime resolves it to a value at sandbox egress.|
 |metadata|[SecretMetadata](#schemasecretmetadata)|false|none|Customer metadata of the secret. Always present, empty when unset. At most 32 entries; keys are limited to 128 bytes, values to 1024 bytes, and a secret's metadata to 8192 bytes in total.<br>|
 
 <h2 id="tocS_SandboxEvent">SandboxEvent</h2>
@@ -14690,7 +21183,7 @@ Sandbox event
     "string"
   ],
   "enabled": true,
-  "signatureSecret": "string"
+  "signatureSecret": "password"
 }
 ```
 
@@ -14704,7 +21197,7 @@ Configuration for registering new webhooks
 |url|string(uri)|true|none|none|
 |events|[string]|true|none|none|
 |enabled|boolean|false|none|none|
-|signatureSecret|string|true|none|Secret used to sign the webhook payloads|
+|signatureSecret|string(password)|true|none|Secret used to sign the webhook payloads|
 
 <h2 id="tocS_WebhookCreation">WebhookCreation</h2>
 <!-- backwards compatibility -->
@@ -14791,7 +21284,7 @@ Webhook detail response
   "events": [
     "string"
   ],
-  "signatureSecret": "string"
+  "signatureSecret": "password"
 }
 ```
 
@@ -14805,7 +21298,7 @@ Configuration for updating existing webhooks
 |name|string|false|none|Webhook user friendly name|
 |url|string(uri)|false|none|none|
 |events|[string]|false|none|none|
-|signatureSecret|string|false|none|Secret used to sign the webhook payloads|
+|signatureSecret|string(password)|false|none|Secret used to sign the webhook payloads|
 
 <h2 id="tocS_WebhookDelivery">WebhookDelivery</h2>
 <!-- backwards compatibility -->
@@ -15069,6 +21562,58 @@ Paginated webhook delivery attempts grouped by event
 |data|[[WebhookDeliveryGroup](#schemawebhookdeliverygroup)]|true|none|none|
 |nextCursor|string \| null|true|none|Cursor to pass to the next list request, or null when there is no next page.|
 
+<h2 id="tocS_ManagementClusterRegistrationRequest">ManagementClusterRegistrationRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemamanagementclusterregistrationrequest"></a>
+<a id="schema_ManagementClusterRegistrationRequest"></a>
+<a id="tocSmanagementclusterregistrationrequest"></a>
+<a id="tocsmanagementclusterregistrationrequest"></a>
+
+```json
+{
+  "name": "string",
+  "endpoint": "string",
+  "endpoint_tls": true,
+  "token": "string",
+  "sandbox_proxy_domain": "string",
+  "auth_org_id": "string",
+  "telemetry_client_id": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|name|string|true|none|none|
+|endpoint|string|true|none|none|
+|endpoint_tls|boolean|true|none|none|
+|token|string|true|none|none|
+|sandbox_proxy_domain|string \| null|false|none|none|
+|auth_org_id|string \| null|false|none|none|
+|telemetry_client_id|string|false|none|none|
+
+<h2 id="tocS_ManagementClusterProjects">ManagementClusterProjects</h2>
+<!-- backwards compatibility -->
+<a id="schemamanagementclusterprojects"></a>
+<a id="schema_ManagementClusterProjects"></a>
+<a id="tocSmanagementclusterprojects"></a>
+<a id="tocsmanagementclusterprojects"></a>
+
+```json
+{
+  "project_ids": [
+    "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|project_ids|[string(uuid)]|true|none|none|
+
 <h2 id="tocS_ManagementProjectSettingsRequest">ManagementProjectSettingsRequest</h2>
 <!-- backwards compatibility -->
 <a id="schemamanagementprojectsettingsrequest"></a>
@@ -15135,3 +21680,240 @@ The project's stored settings. PUT replaces the complete document.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |defaultAllowPublicTraffic|boolean|false|none|Whether new sandboxes without an explicit network.allowPublicTraffic accept traffic without a traffic access token. Omission uses the public default. Existing sandboxes, resumes and forks keep their settings.|
+
+<h2 id="tocS_ManagementProjectUpsertRequest">ManagementProjectUpsertRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemamanagementprojectupsertrequest"></a>
+<a id="schema_ManagementProjectUpsertRequest"></a>
+<a id="tocSmanagementprojectupsertrequest"></a>
+<a id="tocsmanagementprojectupsertrequest"></a>
+
+```json
+{
+  "cluster_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "name": "string",
+  "slug": "string",
+  "email": "string"
+}
+```
+
+The properties of a project this side stores. Name, slug and email are synchronized on every push. The optional cluster assignment is preserved when omitted.
+
+A project's tier is not among them, and this side assigns none. Limits arrive separately and in full through managementUpsertProjectLimits.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|cluster_id|string(uuid)|false|none|Cluster assignment to synchronize. Omission preserves the existing assignment.|
+|name|string|true|none|none|
+|slug|string|true|none|Changing it renames the project, and its template names follow: each name held under an earlier slug is also given under the new one, and the old names keep working. A name the new slug already holds is left as it is. A slug already held on this control plane is a 409, on a rename as much as on a create.|
+|email|string|true|none|Contact address recorded on the project.|
+
+<h2 id="tocS_ManagementProject">ManagementProject</h2>
+<!-- backwards compatibility -->
+<a id="schemamanagementproject"></a>
+<a id="schema_ManagementProject"></a>
+<a id="tocSmanagementproject"></a>
+<a id="tocsmanagementproject"></a>
+
+```json
+{
+  "cluster_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "name": "string",
+  "slug": "string",
+  "email": "string",
+  "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|cluster_id|string(uuid)|false|none|Cluster assignment to synchronize. Omission preserves the existing assignment.|
+|name|string|true|none|none|
+|slug|string|true|none|Changing it renames the project, and its template names follow: each name held under an earlier slug is also given under the new one, and the old names keep working. A name the new slug already holds is left as it is. A slug already held on this control plane is a 409, on a rename as much as on a create.|
+|email|string|true|none|Contact address recorded on the project.|
+|id|string(uuid)|true|none|none|
+
+<h2 id="tocS_ManagementProjectMemberIdentity">ManagementProjectMemberIdentity</h2>
+<!-- backwards compatibility -->
+<a id="schemamanagementprojectmemberidentity"></a>
+<a id="schema_ManagementProjectMemberIdentity"></a>
+<a id="tocSmanagementprojectmemberidentity"></a>
+<a id="tocsmanagementprojectmemberidentity"></a>
+
+```json
+{
+  "issuer": "string",
+  "subject": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|issuer|string|true|none|none|
+|subject|string|true|none|none|
+
+<h2 id="tocS_ManagementProjectMemberApplyRequest">ManagementProjectMemberApplyRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemamanagementprojectmemberapplyrequest"></a>
+<a id="schema_ManagementProjectMemberApplyRequest"></a>
+<a id="tocSmanagementprojectmemberapplyrequest"></a>
+<a id="tocsmanagementprojectmemberapplyrequest"></a>
+
+```json
+{
+  "revision": 1,
+  "present": true,
+  "is_default": false,
+  "role": "owner",
+  "identities": [
+    {
+      "issuer": "string",
+      "subject": "string"
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|revision|integer(int64)|true|none|none|
+|present|boolean|true|none|none|
+|is_default|boolean|false|none|Whether this membership is the user's default team. Omitted requests from older sources remain non-default.|
+|role|string|false|none|The member's effective role on the project. A viewer may only read. An omitted role keeps the stored one, and a new member without one is stored as member.|
+|identities|[[ManagementProjectMemberIdentity](#schemamanagementprojectmemberidentity)]|false|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|role|owner|
+|role|member|
+|role|viewer|
+
+<h2 id="tocS_ManagementProjectBlockRequest">ManagementProjectBlockRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemamanagementprojectblockrequest"></a>
+<a id="schema_ManagementProjectBlockRequest"></a>
+<a id="tocSmanagementprojectblockrequest"></a>
+<a id="tocsmanagementprojectblockrequest"></a>
+
+```json
+{
+  "revision": 1,
+  "blocked": true,
+  "reason": "string",
+  "decided_at": "1970-01-01T00:00:00Z"
+}
+```
+
+Desired project block state. A newer revision replaces the state, including any intervening manual block or unblock.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|revision|integer(int64)|true|none|Monotonic per-project revision. Older or duplicate revisions succeed without changing stored state.|
+|blocked|boolean|true|none|Whether the project is refused billable work.|
+|reason|string|false|none|Reason included in blocked-request errors. Cleared when blocked is false.|
+|decided_at|[ManagementDecidedAt](#schemamanagementdecidedat)|false|none|When the caller decided this revision, in RFC 3339. Stored with the revision and used to measure how long the decision took to apply here. Omit it when the caller does not know; the delivery is then counted as origin unknown rather than as zero lag.|
+
+<h2 id="tocS_ManagementProjectBanRequest">ManagementProjectBanRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemamanagementprojectbanrequest"></a>
+<a id="schema_ManagementProjectBanRequest"></a>
+<a id="tocSmanagementprojectbanrequest"></a>
+<a id="tocsmanagementprojectbanrequest"></a>
+
+```json
+{
+  "revision": 1,
+  "banned": true,
+  "decided_at": "1970-01-01T00:00:00Z"
+}
+```
+
+Desired project ban state. A newer revision replaces the state, including any intervening manual ban or unban.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|revision|integer(int64)|true|none|Monotonic per-project revision. Older or duplicate revisions succeed without changing stored state.|
+|banned|boolean|true|none|Whether the project is refused at authentication.|
+|decided_at|[ManagementDecidedAt](#schemamanagementdecidedat)|false|none|When the caller decided this revision, in RFC 3339. Stored with the revision and used to measure how long the decision took to apply here. Omit it when the caller does not know; the delivery is then counted as origin unknown rather than as zero lag.|
+
+<h2 id="tocS_ManagementDecidedAt">ManagementDecidedAt</h2>
+<!-- backwards compatibility -->
+<a id="schemamanagementdecidedat"></a>
+<a id="schema_ManagementDecidedAt"></a>
+<a id="tocSmanagementdecidedat"></a>
+<a id="tocsmanagementdecidedat"></a>
+
+```json
+"1970-01-01T00:00:00Z"
+```
+
+When the caller decided this revision, in RFC 3339. Stored with the revision and used to measure how long the decision took to apply here. Omit it when the caller does not know; the delivery is then counted as origin unknown rather than as zero lag.
+
+<h2 id="tocS_ManagementProjectLimits">ManagementProjectLimits</h2>
+<!-- backwards compatibility -->
+<a id="schemamanagementprojectlimits"></a>
+<a id="schema_ManagementProjectLimits"></a>
+<a id="tocSmanagementprojectlimits"></a>
+<a id="tocsmanagementprojectlimits"></a>
+
+```json
+{
+  "revision": 1,
+  "concurrent_sandboxes": 1,
+  "max_sandbox_length_hours": 1,
+  "max_vcpu": 1,
+  "max_ram_mb": 1,
+  "disk_mb": 1,
+  "concurrent_template_builds": 1,
+  "events_ttl_days": 1,
+  "default_free_disk_size_mb": 0,
+  "max_free_disk_size_mb": 1,
+  "max_disk_size_mb": 1,
+  "api_team_rps_list": 0,
+  "api_team_rps_delete": 0,
+  "max_secrets": 1,
+  "decided_at": "1970-01-01T00:00:00Z"
+}
+```
+
+A project's effective limits, already resolved by the caller. Every field is absolute: this side stores what it is given and performs no arithmetic of its own.
+
+The minimums below are the contract for what a limit may be, at least as strict as the CHECK constraints on default_limits. project_limits stores the same values under looser constraints on purpose — it is a push target, and a floor that only rejects the impossible keeps a future decision about what is allowed a change to this schema rather than a migration.
+
+`max_disk_size_mb` and `max_free_disk_size_mb` are one ceiling under two names, and either name alone carries it. A caller that sends both must send them equal; a caller that sends neither is refused. Sending both is what a caller does while receivers older than the second name are still running.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|revision|integer(int64)|true|none|The caller's version of this answer, raised whenever the limits it resolved for the project change. Delivery is over a network, so two pushes can be in flight at once and arrive in either order: this side stores the revision it accepted and drops a delivery at or below it, which is what keeps a delayed retry from putting the project back on limits it has already left.<br><br>Comparable only against earlier revisions for the same project.|
+|concurrent_sandboxes|integer(int32)|true|none|none|
+|max_sandbox_length_hours|integer(int32)|true|none|none|
+|max_vcpu|integer(int32)|true|none|none|
+|max_ram_mb|integer(int64)|true|none|none|
+|disk_mb|integer(int64)|true|none|none|
+|concurrent_template_builds|integer(int32)|true|none|none|
+|events_ttl_days|integer(int32)|true|none|none|
+|default_free_disk_size_mb|integer(int64)|true|none|The default free-space growth target when a template build request omits one. May sit anywhere at or below the maximum free-space growth target, and usually sits well below it; a delivery whose default exceeds the maximum is rejected.|
+|max_free_disk_size_mb|integer(int64)|false|none|The most a template build may request as its free-space growth target.|
+|max_disk_size_mb|integer(int64)|false|none|The same ceiling as max_free_disk_size_mb, under the name it was first published with. Kept until every deployed sender and receiver speaks the other name.|
+|api_team_rps_list|integer(int64)|true|none|Requests per second a project may make to each list endpoint. Zero disables the limit.|
+|api_team_rps_delete|integer(int64)|true|none|Requests per second a project may make to each delete endpoint. Zero disables the limit.|
+|max_secrets|integer(int32)|true|none|Live secrets the project may hold.|
+|decided_at|[ManagementDecidedAt](#schemamanagementdecidedat)|false|none|When the caller decided this revision, in RFC 3339. Stored with the revision and used to measure how long the decision took to apply here. Omit it when the caller does not know; the delivery is then counted as origin unknown rather than as zero lag.|
+|*anyOf*|object|false|none|none|
+|*anyOf*|object|false|none|none|

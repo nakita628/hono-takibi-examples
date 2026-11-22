@@ -3869,6 +3869,7 @@ const RoutableConnectorsSchema = z
     'opennode',
     'paybox',
     'paydotcom',
+    'payhound',
     'payme',
     'paynearme',
     'payload',
@@ -9248,6 +9249,94 @@ const MaskedRecipientDetailsSchema = z
   })
   .openapi('MaskedRecipientDetails')
 
+const MaskedSenderPhoneDetailsSchema = z
+  .object({
+    number: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: "The sender's partially masked phone number.",
+        example: '********89',
+      }),
+    country_code: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: "The country code of the sender's phone number.", example: '+44' }),
+  })
+  .openapi({
+    description: 'A partially masked view of [`PhoneDetails`], safe to return in API responses.',
+    required: [],
+  })
+  .openapi('MaskedSenderPhoneDetails')
+
+const IndividualSenderDetailsResponseSchema = z
+  .object({
+    first_name: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: "The sender's first name.", example: 'John' }),
+    last_name: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: "The sender's last name.", example: 'Doe' }),
+    address: AddressDetailsSchema.nullable().exactOptional(),
+    phone: MaskedSenderPhoneDetailsSchema.nullable().exactOptional(),
+    email: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: "The sender's masked email address.",
+        example: 'jo******@example.com',
+      }),
+  })
+  .openapi({
+    description:
+      'A partially masked view of `IndividualSenderDetails`, safe to return in API responses.',
+    required: [],
+  })
+  .openapi('IndividualSenderDetailsResponse')
+
+const CorporateSenderDetailsResponseSchema = z
+  .object({
+    company_name: z
+      .string()
+      .openapi({ description: "The sender's legal company name.", example: 'Acme Ltd' }),
+    address: AddressDetailsSchema.nullable().exactOptional(),
+    phone: MaskedSenderPhoneDetailsSchema.nullable().exactOptional(),
+    email: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: "The sender's masked email address.", example: 'tr******@acme.com' }),
+  })
+  .openapi({
+    description:
+      'A partially masked view of `CorporateSenderDetails`, safe to return in API responses.',
+    required: ['company_name'],
+  })
+  .openapi('CorporateSenderDetailsResponse')
+
+const SenderDetailsResponseSchema = z
+  .xor([
+    IndividualSenderDetailsResponseSchema.and(
+      z.object({ type: z.literal('individual') }).openapi({ required: ['type'] }),
+    ),
+    CorporateSenderDetailsResponseSchema.and(
+      z.object({ type: z.literal('corporate') }).openapi({ required: ['type'] }),
+    ),
+  ])
+  .openapi({
+    description:
+      "A partially masked view of `SenderDetails`, safe to return in API responses. The sender's\ndate of birth is never returned.",
+    discriminator: { propertyName: 'type' },
+  })
+  .openapi('SenderDetailsResponse')
+
 const TokenizationSchema = z
   .enum(['skip_psp', 'tokenize_at_psp'])
   .openapi({ description: 'The type of tokenization to use for the payment method' })
@@ -9516,6 +9605,7 @@ type PaymentsResponseType = {
   billing_descriptor?: z.infer<typeof BillingDescriptorSchema> | null
   is_account_funded_transaction?: boolean | null
   recipient_details?: z.infer<typeof MaskedRecipientDetailsSchema> | null
+  sender_details?: z.infer<typeof SenderDetailsResponseSchema> | null
   tokenization?: z.infer<typeof TokenizationSchema> | null
   partner_merchant_identifier_details?: z.infer<
     typeof PartnerMerchantIdentifierDetailsSchema
@@ -10230,6 +10320,7 @@ const PaymentsResponseSchema: z.ZodType<PaymentsResponseType> = z
         example: true,
       }),
     recipient_details: MaskedRecipientDetailsSchema.nullable().exactOptional(),
+    sender_details: SenderDetailsResponseSchema.nullable().exactOptional(),
     tokenization: TokenizationSchema.nullable().exactOptional(),
     partner_merchant_identifier_details:
       PartnerMerchantIdentifierDetailsSchema.nullable().exactOptional(),
@@ -11025,6 +11116,31 @@ const PayoutFundsTransferTypeSchema = z
   .openapi({ description: 'The category of funds transfer to use when processing a payout.' })
   .openapi('PayoutFundsTransferType')
 
+const PayoutPurposeSchema = z
+  .enum([
+    'donations',
+    'education',
+    'emergency_need',
+    'expatriation',
+    'family_support',
+    'financial_services',
+    'gifts',
+    'income',
+    'insurance',
+    'investment',
+    'it_services',
+    'leisure',
+    'loan_payment',
+    'medical_treatment',
+    'pension',
+    'royalties',
+    'savings',
+    'travel_and_tourism',
+    'other',
+  ])
+  .openapi({ description: 'The purpose for which a payout is being carried out.' })
+  .openapi('PayoutPurpose')
+
 const SourceOfFundsSchema = z
   .enum(['credit', 'debit', 'prepaid', 'deposit_account', 'mobile_money_account', 'cash'])
   .openapi({ description: 'Origin of the funds, supplied by the merchant.' })
@@ -11267,8 +11383,7 @@ const PayoutCreateResponseSchema = z
       .string()
       .max(255)
       .openapi({
-        description:
-          'The identifier for the customer object. If not provided the customer ID will be autogenerated. _Deprecated: Use the customer object instead._',
+        description: 'Attached customer ID, if any. _Deprecated: Use customer.id instead._',
         deprecated: true,
         example: 'cus_y3oqhf46pyzuxjbcn2giaqnb44',
       }),
@@ -11320,6 +11435,7 @@ const PayoutCreateResponseSchema = z
           'You can specify up to 50 keys, with key names up to 40 characters long and values up to 500 characters long. Metadata is useful for storing additional, structured information on an object.',
       }),
     funds_transfer_type: PayoutFundsTransferTypeSchema.nullable().exactOptional(),
+    purpose: PayoutPurposeSchema.nullable().exactOptional(),
     sender_details: SenderDetailsSchema.nullable().exactOptional(),
     merchant_connector_id: z
       .string()
@@ -11979,6 +12095,7 @@ type PaymentsCreateResponseOpenApiType = {
   billing_descriptor?: z.infer<typeof BillingDescriptorSchema> | null
   is_account_funded_transaction?: boolean | null
   recipient_details?: z.infer<typeof MaskedRecipientDetailsSchema> | null
+  sender_details?: z.infer<typeof SenderDetailsResponseSchema> | null
   tokenization?: z.infer<typeof TokenizationSchema> | null
   partner_merchant_identifier_details?: z.infer<
     typeof PartnerMerchantIdentifierDetailsSchema
@@ -12793,6 +12910,7 @@ type PayoutConfirmRequestType = {
   recurring?: boolean | null
   metadata?: { [key: string]: unknown } | null
   funds_transfer_type?: z.infer<typeof PayoutFundsTransferTypeSchema> | null
+  purpose?: z.infer<typeof PayoutPurposeSchema> | null
   sender_details?: z.infer<typeof SenderDetailsSchema> | null
   payout_token?: string | null
   profile_id?: string | null
@@ -12831,6 +12949,7 @@ type PayoutUpdateRequestType = {
   recurring?: boolean | null
   metadata?: { [key: string]: unknown } | null
   funds_transfer_type?: z.infer<typeof PayoutFundsTransferTypeSchema> | null
+  purpose?: z.infer<typeof PayoutPurposeSchema> | null
   sender_details?: z.infer<typeof SenderDetailsSchema> | null
   payout_token?: string | null
   profile_id?: string | null
@@ -12869,6 +12988,7 @@ type PayoutsCreateRequestType = {
   recurring?: boolean | null
   metadata?: { [key: string]: unknown } | null
   funds_transfer_type?: z.infer<typeof PayoutFundsTransferTypeSchema> | null
+  purpose?: z.infer<typeof PayoutPurposeSchema> | null
   sender_details?: z.infer<typeof SenderDetailsSchema> | null
   payout_token?: string | null
   profile_id?: string | null
@@ -17813,6 +17933,7 @@ const ConnectorSchema = z
     'opennode',
     'paybox',
     'paydotcom',
+    'payhound',
     'payload',
     'payme',
     'paynearme',
@@ -20506,6 +20627,7 @@ const MerchantAccountCreateSchema: z.ZodType<MerchantAccountCreateType> = z
       }),
     payment_response_hash_key: z
       .string()
+      .min(32)
       .nullable()
       .exactOptional()
       .openapi({
@@ -20627,13 +20749,13 @@ const MerchantAccountResponseSchema: z.ZodType<MerchantAccountResponseType> = z
       }),
     payment_response_hash_key: z
       .string()
-      .max(255)
+      .max(4)
       .nullable()
       .exactOptional()
       .openapi({
         description:
-          'Refers to the hash key used for calculating the signature for webhooks and redirect response. If the value is not provided, a value is automatically generated.',
-        example: 'xkkdf909012sdjki2dkh5sdf',
+          'The first 4 characters of the hash key used to sign webhooks and redirect responses.',
+        example: 'xkkd',
       }),
     redirect_to_merchant_with_http_post: z
       .boolean()
@@ -20795,6 +20917,7 @@ const MerchantAccountUpdateSchema: z.ZodType<MerchantAccountUpdateType> = z
       }),
     payment_response_hash_key: z
       .string()
+      .min(32)
       .nullable()
       .exactOptional()
       .openapi({
@@ -20943,8 +21066,22 @@ const PaymentMethodsEnabledSchema = z
 
 const MerchantConnectorWebhookDetailsSchema = z
   .strictObject({
-    merchant_secret: z.string().openapi({ example: '12345678900987654321' }),
-    additional_secret: z.string().openapi({ example: '12345678900987654321' }),
+    merchant_secret: z
+      .string()
+      .min(1)
+      .openapi({
+        description:
+          'Webhook verification secret. Must contain at least one non-whitespace character.',
+        example: '12345678900987654321',
+      }),
+    additional_secret: z
+      .string()
+      .min(1)
+      .openapi({
+        description:
+          'Optional additional secret. When supplied, must contain a non-whitespace character.',
+        example: '12345678900987654321',
+      }),
   })
   .openapi({ required: ['merchant_secret', 'additional_secret'] })
   .openapi('MerchantConnectorWebhookDetails')
@@ -22742,10 +22879,44 @@ const RetryActionSchema = z
   .openapi({ description: 'Denotes the retry action' })
   .openapi('RetryAction')
 
+const ProcessorPaymentTokenDetailsSchema = z
+  .object({
+    card_exp_month: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: "The card's expiry month.", example: '12' }),
+    card_exp_year: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: "The card's expiry year.", example: '2030' }),
+    network_transaction_id: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'The network transaction ID from the original customer initiated transaction.',
+      }),
+    transaction_link_id: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'The Mastercard Transaction Link Identifier from the original transaction.',
+      }),
+  })
+  .openapi({
+    description: 'Card and network reference details associated with a processor payment token.',
+    required: [],
+  })
+  .openapi('ProcessorPaymentTokenDetails')
+
 const ProcessorPaymentTokenSchema = z
   .object({
     processor_payment_token: z.string(),
     merchant_connector_id: z.string().nullable().exactOptional(),
+    processor_payment_token_details: ProcessorPaymentTokenDetailsSchema.nullable().exactOptional(),
   })
   .openapi({
     description:
@@ -24068,6 +24239,7 @@ const PaymentsCreateRequestSchema = z
         example: true,
       }),
     recipient_details: RecipientDetailsSchema.nullable().exactOptional(),
+    sender_details: SenderDetailsSchema.nullable().exactOptional(),
     tokenization: TokenizationSchema.nullable().exactOptional(),
     partner_merchant_identifier_details:
       PartnerMerchantIdentifierDetailsSchema.nullable().exactOptional(),
@@ -24795,6 +24967,7 @@ const PaymentsCreateResponseOpenApiSchema: z.ZodType<PaymentsCreateResponseOpenA
         example: true,
       }),
     recipient_details: MaskedRecipientDetailsSchema.nullable().exactOptional(),
+    sender_details: SenderDetailsResponseSchema.nullable().exactOptional(),
     tokenization: TokenizationSchema.nullable().exactOptional(),
     partner_merchant_identifier_details:
       PartnerMerchantIdentifierDetailsSchema.nullable().exactOptional(),
@@ -25616,6 +25789,7 @@ const PaymentsRequestSchema = z
         example: true,
       }),
     recipient_details: RecipientDetailsSchema.nullable().exactOptional(),
+    sender_details: SenderDetailsSchema.nullable().exactOptional(),
     tokenization: TokenizationSchema.nullable().exactOptional(),
     partner_merchant_identifier_details:
       PartnerMerchantIdentifierDetailsSchema.nullable().exactOptional(),
@@ -26205,6 +26379,7 @@ const PaymentsUpdateRequestSchema = z
         example: true,
       }),
     recipient_details: RecipientDetailsSchema.nullable().exactOptional(),
+    sender_details: SenderDetailsSchema.nullable().exactOptional(),
     tokenization: TokenizationSchema.nullable().exactOptional(),
     partner_merchant_identifier_details:
       PartnerMerchantIdentifierDetailsSchema.nullable().exactOptional(),
@@ -26335,7 +26510,7 @@ const PayoutConfirmRequestSchema: z.ZodType<PayoutConfirmRequestType> = z
       .exactOptional()
       .openapi({
         description:
-          'Customer identifier for normal and proxy payouts; normal creates may generate it when omitted, while proxy creates require this or customer.id owning payout_method_id. _Deprecated: Use customer.id instead._',
+          'Existing customer ID used at creation. Ignored on update and confirm.\n_Deprecated: Use customer.id instead._',
         deprecated: true,
         example: 'cus_y3oqhf46pyzuxjbcn2giaqnb44',
       }),
@@ -26384,6 +26559,7 @@ const PayoutConfirmRequestSchema: z.ZodType<PayoutConfirmRequestType> = z
           'Legacy vendor/individual details in metadata are a compatibility fallback for Stripe.\nExplicit sender_details takes precedence and is never merged with that identity.\nYou can specify up to 50 keys, with key names up to 40 characters long and values up to 500 characters long. Metadata is useful for storing additional, structured information on an object.',
       }),
     funds_transfer_type: PayoutFundsTransferTypeSchema.nullable().exactOptional(),
+    purpose: PayoutPurposeSchema.nullable().exactOptional(),
     sender_details: SenderDetailsSchema.nullable().exactOptional(),
     payout_token: z
       .string()
@@ -26428,7 +26604,7 @@ const PayoutConfirmRequestSchema: z.ZodType<PayoutConfirmRequestType> = z
       .nullable()
       .exactOptional()
       .openapi({
-        description: "Customer's email. _Deprecated: Use customer object instead._",
+        description: 'Ignored. _Deprecated: Manage customer details through the Customers API._',
         deprecated: true,
         example: 'johntest@test.com',
       }),
@@ -26438,7 +26614,7 @@ const PayoutConfirmRequestSchema: z.ZodType<PayoutConfirmRequestType> = z
       .nullable()
       .exactOptional()
       .openapi({
-        description: "Customer's name. _Deprecated: Use customer object instead._",
+        description: 'Ignored. _Deprecated: Manage customer details through the Customers API._',
         deprecated: true,
         example: 'John Test',
       }),
@@ -26448,7 +26624,7 @@ const PayoutConfirmRequestSchema: z.ZodType<PayoutConfirmRequestType> = z
       .nullable()
       .exactOptional()
       .openapi({
-        description: "Customer's phone. _Deprecated: Use customer object instead._",
+        description: 'Ignored. _Deprecated: Manage customer details through the Customers API._',
         deprecated: true,
         example: '9123456789',
       }),
@@ -26458,7 +26634,7 @@ const PayoutConfirmRequestSchema: z.ZodType<PayoutConfirmRequestType> = z
       .nullable()
       .exactOptional()
       .openapi({
-        description: "Customer's phone country code. _Deprecated: Use customer object instead._",
+        description: 'Ignored. _Deprecated: Manage customer details through the Customers API._',
         deprecated: true,
         example: '+1',
       }),
@@ -26770,7 +26946,7 @@ const PayoutUpdateRequestSchema: z.ZodType<PayoutUpdateRequestType> = z
       .exactOptional()
       .openapi({
         description:
-          'Customer identifier for normal and proxy payouts; normal creates may generate it when omitted, while proxy creates require this or customer.id owning payout_method_id. _Deprecated: Use customer.id instead._',
+          'Existing customer ID used at creation. Ignored on update and confirm.\n_Deprecated: Use customer.id instead._',
         deprecated: true,
         example: 'cus_y3oqhf46pyzuxjbcn2giaqnb44',
       }),
@@ -26819,6 +26995,7 @@ const PayoutUpdateRequestSchema: z.ZodType<PayoutUpdateRequestType> = z
           'Legacy vendor/individual details in metadata are a compatibility fallback for Stripe.\nExplicit sender_details takes precedence and is never merged with that identity.\nYou can specify up to 50 keys, with key names up to 40 characters long and values up to 500 characters long. Metadata is useful for storing additional, structured information on an object.',
       }),
     funds_transfer_type: PayoutFundsTransferTypeSchema.nullable().exactOptional(),
+    purpose: PayoutPurposeSchema.nullable().exactOptional(),
     sender_details: SenderDetailsSchema.nullable().exactOptional(),
     payout_token: z
       .string()
@@ -26863,7 +27040,7 @@ const PayoutUpdateRequestSchema: z.ZodType<PayoutUpdateRequestType> = z
       .nullable()
       .exactOptional()
       .openapi({
-        description: "Customer's email. _Deprecated: Use customer object instead._",
+        description: 'Ignored. _Deprecated: Manage customer details through the Customers API._',
         deprecated: true,
         example: 'johntest@test.com',
       }),
@@ -26873,7 +27050,7 @@ const PayoutUpdateRequestSchema: z.ZodType<PayoutUpdateRequestType> = z
       .nullable()
       .exactOptional()
       .openapi({
-        description: "Customer's name. _Deprecated: Use customer object instead._",
+        description: 'Ignored. _Deprecated: Manage customer details through the Customers API._',
         deprecated: true,
         example: 'John Test',
       }),
@@ -26883,7 +27060,7 @@ const PayoutUpdateRequestSchema: z.ZodType<PayoutUpdateRequestType> = z
       .nullable()
       .exactOptional()
       .openapi({
-        description: "Customer's phone. _Deprecated: Use customer object instead._",
+        description: 'Ignored. _Deprecated: Manage customer details through the Customers API._',
         deprecated: true,
         example: '9123456789',
       }),
@@ -26893,7 +27070,7 @@ const PayoutUpdateRequestSchema: z.ZodType<PayoutUpdateRequestType> = z
       .nullable()
       .exactOptional()
       .openapi({
-        description: "Customer's phone country code. _Deprecated: Use customer object instead._",
+        description: 'Ignored. _Deprecated: Manage customer details through the Customers API._',
         deprecated: true,
         example: '+1',
       }),
@@ -26980,7 +27157,7 @@ const PayoutsCreateRequestSchema: z.ZodType<PayoutsCreateRequestType> = z
       .exactOptional()
       .openapi({
         description:
-          'Customer identifier for normal and proxy payouts; normal creates may generate it when omitted, while proxy creates require this or customer.id owning payout_method_id. _Deprecated: Use customer.id instead._',
+          'Existing customer ID used at creation. Ignored on update and confirm.\n_Deprecated: Use customer.id instead._',
         deprecated: true,
         example: 'cus_y3oqhf46pyzuxjbcn2giaqnb44',
       }),
@@ -27029,6 +27206,7 @@ const PayoutsCreateRequestSchema: z.ZodType<PayoutsCreateRequestType> = z
           'Legacy vendor/individual details in metadata are a compatibility fallback for Stripe.\nExplicit sender_details takes precedence and is never merged with that identity.\nYou can specify up to 50 keys, with key names up to 40 characters long and values up to 500 characters long. Metadata is useful for storing additional, structured information on an object.',
       }),
     funds_transfer_type: PayoutFundsTransferTypeSchema.nullable().exactOptional(),
+    purpose: PayoutPurposeSchema.nullable().exactOptional(),
     sender_details: SenderDetailsSchema.nullable().exactOptional(),
     payout_token: z
       .string()
@@ -27073,7 +27251,7 @@ const PayoutsCreateRequestSchema: z.ZodType<PayoutsCreateRequestType> = z
       .nullable()
       .exactOptional()
       .openapi({
-        description: "Customer's email. _Deprecated: Use customer object instead._",
+        description: 'Ignored. _Deprecated: Manage customer details through the Customers API._',
         deprecated: true,
         example: 'johntest@test.com',
       }),
@@ -27083,7 +27261,7 @@ const PayoutsCreateRequestSchema: z.ZodType<PayoutsCreateRequestType> = z
       .nullable()
       .exactOptional()
       .openapi({
-        description: "Customer's name. _Deprecated: Use customer object instead._",
+        description: 'Ignored. _Deprecated: Manage customer details through the Customers API._',
         deprecated: true,
         example: 'John Test',
       }),
@@ -27093,7 +27271,7 @@ const PayoutsCreateRequestSchema: z.ZodType<PayoutsCreateRequestType> = z
       .nullable()
       .exactOptional()
       .openapi({
-        description: "Customer's phone. _Deprecated: Use customer object instead._",
+        description: 'Ignored. _Deprecated: Manage customer details through the Customers API._',
         deprecated: true,
         example: '9123456789',
       }),
@@ -27103,7 +27281,7 @@ const PayoutsCreateRequestSchema: z.ZodType<PayoutsCreateRequestType> = z
       .nullable()
       .exactOptional()
       .openapi({
-        description: "Customer's phone country code. _Deprecated: Use customer object instead._",
+        description: 'Ignored. _Deprecated: Manage customer details through the Customers API._',
         deprecated: true,
         example: '+1',
       }),
@@ -27270,6 +27448,7 @@ const ProfileCreateSchema: z.ZodType<ProfileCreateType> = z
       }),
     payment_response_hash_key: z
       .string()
+      .min(32)
       .nullable()
       .exactOptional()
       .openapi({
@@ -27592,11 +27771,13 @@ const ProfileResponseSchema: z.ZodType<ProfileResponseType> = z
       }),
     payment_response_hash_key: z
       .string()
+      .max(4)
       .nullable()
       .exactOptional()
       .openapi({
         description:
-          'Refers to the hash key used for calculating the signature for webhooks and redirect response. If the value is not provided, a value is automatically generated.',
+          'The first 4 characters of the hash key used to sign webhooks and redirect responses.',
+        example: 'xkkd',
       }),
     redirect_to_merchant_with_http_post: z
       .boolean()
@@ -36265,6 +36446,7 @@ export const postPayoutsCreateRoute = createRoute({
       content: { 'application/json': { schema: PayoutCreateResponseSchema } },
     },
     400: { description: 'Missing mandatory fields or invalid request' },
+    404: { description: "Customer does not exist in the merchant's records" },
     501: { description: 'External-vault proxy payout execution is not implemented yet' },
   },
   security: [{ api_key: [] }],
@@ -36345,7 +36527,8 @@ export const postPayoutsPayoutIdRoute = createRoute({
       description: 'Payout updated',
       content: { 'application/json': { schema: PayoutCreateResponseSchema } },
     },
-    400: { description: 'Missing Mandatory fields' },
+    400: { description: 'Missing mandatory fields or invalid request' },
+    404: { description: "Payout does not exist in the merchant's records" },
   },
   security: [{ api_key: [] }],
 })
@@ -36560,7 +36743,8 @@ export const postPayoutsPayoutIdConfirmRoute = createRoute({
       description: 'Payout updated',
       content: { 'application/json': { schema: PayoutCreateResponseSchema } },
     },
-    400: { description: 'Missing Mandatory fields' },
+    400: { description: 'Missing mandatory fields or invalid request' },
+    404: { description: "Payout does not exist in the merchant's records" },
   },
   security: [{ api_key: [] }],
 })

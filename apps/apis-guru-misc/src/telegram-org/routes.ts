@@ -1682,25 +1682,6 @@ type MessageType = {
   voice?: z.infer<typeof VoiceSchema>
 }
 
-const BotCommandSchema = z
-  .object({
-    command: z
-      .string()
-      .openapi({
-        description:
-          'Text of the command, 1-32 characters. Can contain only lowercase English letters, digits and underscores.',
-      }),
-    description: z
-      .string()
-      .openapi({ description: 'Description of the command, 3-256 characters.' }),
-  })
-  .openapi({
-    description: 'This object represents a bot command.',
-    externalDocs: { url: 'https://core.telegram.org/bots/api/#botcommand' },
-    required: ['command', 'description'],
-  })
-  .openapi('BotCommand')
-
 const CallbackQuerySchema = z
   .object({
     chat_instance: z
@@ -1741,6 +1722,145 @@ const CallbackQuerySchema = z
     required: ['id', 'from', 'chat_instance'],
   })
   .openapi('CallbackQuery')
+
+const ChosenInlineResultSchema = z
+  .object({
+    from: UserSchema,
+    inline_message_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          '*Optional*. Identifier of the sent inline message. Available only if there is an [inline keyboard](https://core.telegram.org/bots/api/#inlinekeyboardmarkup) attached to the message. Will be also received in [callback queries](https://core.telegram.org/bots/api/#callbackquery) and can be used to [edit](https://core.telegram.org/bots/api/#updating-messages) the message.',
+      }),
+    location: LocationSchema.exactOptional(),
+    query: z.string().openapi({ description: 'The query that was used to obtain the result' }),
+    result_id: z
+      .string()
+      .openapi({ description: 'The unique identifier for the result that was chosen' }),
+  })
+  .openapi({
+    description:
+      'Represents a [result](https://core.telegram.org/bots/api/#inlinequeryresult) of an inline query that was chosen by the user and sent to their chat partner.',
+    externalDocs: { url: 'https://core.telegram.org/bots/api/#choseninlineresult' },
+    required: ['result_id', 'from', 'query'],
+  })
+  .openapi('ChosenInlineResult')
+
+const InlineQuerySchema = z
+  .object({
+    from: UserSchema,
+    id: z.string().openapi({ description: 'Unique identifier for this query' }),
+    location: LocationSchema.exactOptional(),
+    offset: z
+      .string()
+      .openapi({
+        description: 'Offset of the results to be returned, can be controlled by the bot',
+      }),
+    query: z.string().openapi({ description: 'Text of the query (up to 256 characters)' }),
+  })
+  .openapi({
+    description:
+      'This object represents an incoming inline query. When the user sends an empty query, your bot could return some default or trending results.',
+    externalDocs: { url: 'https://core.telegram.org/bots/api/#inlinequery' },
+    required: ['id', 'from', 'query', 'offset'],
+  })
+  .openapi('InlineQuery')
+
+const PollAnswerSchema = z
+  .object({
+    option_ids: z
+      .array(z.int())
+      .openapi({
+        description:
+          '0-based identifiers of answer options, chosen by the user. May be empty if the user retracted their vote.',
+      }),
+    poll_id: z.string().openapi({ description: 'Unique poll identifier' }),
+    user: UserSchema,
+  })
+  .openapi({
+    description: 'This object represents an answer of a user in a non-anonymous poll.',
+    externalDocs: { url: 'https://core.telegram.org/bots/api/#pollanswer' },
+    required: ['poll_id', 'user', 'option_ids'],
+  })
+  .openapi('PollAnswer')
+
+const PreCheckoutQuerySchema = z
+  .object({
+    currency: z
+      .string()
+      .openapi({
+        description: 'Three-letter ISO 4217 [currency](/bots/payments#supported-currencies) code',
+      }),
+    from: UserSchema,
+    id: z.string().openapi({ description: 'Unique query identifier' }),
+    invoice_payload: z.string().openapi({ description: 'Bot specified invoice payload' }),
+    order_info: OrderInfoSchema.exactOptional(),
+    shipping_option_id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: '*Optional*. Identifier of the shipping option chosen by the user' }),
+    total_amount: z
+      .int()
+      .openapi({
+        description:
+          'Total price in the *smallest units* of the currency (integer, **not** float/double). For example, for a price of `US$ 1.45` pass `amount = 145`. See the *exp* parameter in [currencies.json](https://core.telegram.org/bots/payments/currencies.json), it shows the number of digits past the decimal point for each currency (2 for the majority of currencies).',
+      }),
+  })
+  .openapi({
+    description: 'This object contains information about an incoming pre-checkout query.',
+    externalDocs: { url: 'https://core.telegram.org/bots/api/#precheckoutquery' },
+    required: ['id', 'from', 'currency', 'total_amount', 'invoice_payload'],
+  })
+  .openapi('PreCheckoutQuery')
+
+const ShippingQuerySchema = z
+  .object({
+    from: UserSchema,
+    id: z.string().openapi({ description: 'Unique query identifier' }),
+    invoice_payload: z.string().openapi({ description: 'Bot specified invoice payload' }),
+    shipping_address: ShippingAddressSchema,
+  })
+  .openapi({
+    description: 'This object contains information about an incoming shipping query.',
+    externalDocs: { url: 'https://core.telegram.org/bots/api/#shippingquery' },
+    required: ['id', 'from', 'invoice_payload', 'shipping_address'],
+  })
+  .openapi('ShippingQuery')
+
+type UpdateType = {
+  callback_query?: z.infer<typeof CallbackQuerySchema>
+  channel_post?: z.infer<typeof MessageSchema>
+  chosen_inline_result?: z.infer<typeof ChosenInlineResultSchema>
+  edited_channel_post?: z.infer<typeof MessageSchema>
+  edited_message?: z.infer<typeof MessageSchema>
+  inline_query?: z.infer<typeof InlineQuerySchema>
+  message?: z.infer<typeof MessageSchema>
+  poll?: z.infer<typeof PollSchema>
+  poll_answer?: z.infer<typeof PollAnswerSchema>
+  pre_checkout_query?: z.infer<typeof PreCheckoutQuerySchema>
+  shipping_query?: z.infer<typeof ShippingQuerySchema>
+  update_id: number
+}
+
+const BotCommandSchema = z
+  .object({
+    command: z
+      .string()
+      .openapi({
+        description:
+          'Text of the command, 1-32 characters. Can contain only lowercase English letters, digits and underscores.',
+      }),
+    description: z
+      .string()
+      .openapi({ description: 'Description of the command, 3-256 characters.' }),
+  })
+  .openapi({
+    description: 'This object represents a bot command.',
+    externalDocs: { url: 'https://core.telegram.org/bots/api/#botcommand' },
+    required: ['command', 'description'],
+  })
+  .openapi('BotCommand')
 
 const ChatMemberSchema = z
   .object({
@@ -1883,30 +2003,6 @@ const ChatMemberSchema = z
   })
   .openapi('ChatMember')
 
-const ChosenInlineResultSchema = z
-  .object({
-    from: UserSchema,
-    inline_message_id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          '*Optional*. Identifier of the sent inline message. Available only if there is an [inline keyboard](https://core.telegram.org/bots/api/#inlinekeyboardmarkup) attached to the message. Will be also received in [callback queries](https://core.telegram.org/bots/api/#callbackquery) and can be used to [edit](https://core.telegram.org/bots/api/#updating-messages) the message.',
-      }),
-    location: LocationSchema.exactOptional(),
-    query: z.string().openapi({ description: 'The query that was used to obtain the result' }),
-    result_id: z
-      .string()
-      .openapi({ description: 'The unique identifier for the result that was chosen' }),
-  })
-  .openapi({
-    description:
-      'Represents a [result](https://core.telegram.org/bots/api/#inlinequeryresult) of an inline query that was chosen by the user and sent to their chat partner.',
-    externalDocs: { url: 'https://core.telegram.org/bots/api/#choseninlineresult' },
-    required: ['result_id', 'from', 'query'],
-  })
-  .openapi('ChosenInlineResult')
-
 const ResponseParametersSchema = z
   .object({
     migrate_to_chat_id: z
@@ -2007,26 +2103,6 @@ const GameHighScoreSchema = z
     required: ['position', 'user', 'score'],
   })
   .openapi('GameHighScore')
-
-const InlineQuerySchema = z
-  .object({
-    from: UserSchema,
-    id: z.string().openapi({ description: 'Unique identifier for this query' }),
-    location: LocationSchema.exactOptional(),
-    offset: z
-      .string()
-      .openapi({
-        description: 'Offset of the results to be returned, can be controlled by the bot',
-      }),
-    query: z.string().openapi({ description: 'Text of the query (up to 256 characters)' }),
-  })
-  .openapi({
-    description:
-      'This object represents an incoming inline query. When the user sends an empty query, your bot could return some default or trending results.',
-    externalDocs: { url: 'https://core.telegram.org/bots/api/#inlinequery' },
-    required: ['id', 'from', 'query', 'offset'],
-  })
-  .openapi('InlineQuery')
 
 const InputTextMessageContentSchema = z
   .object({
@@ -3637,53 +3713,6 @@ const PassportElementErrorSchema = z
   })
   .openapi('PassportElementError')
 
-const PollAnswerSchema = z
-  .object({
-    option_ids: z
-      .array(z.int())
-      .openapi({
-        description:
-          '0-based identifiers of answer options, chosen by the user. May be empty if the user retracted their vote.',
-      }),
-    poll_id: z.string().openapi({ description: 'Unique poll identifier' }),
-    user: UserSchema,
-  })
-  .openapi({
-    description: 'This object represents an answer of a user in a non-anonymous poll.',
-    externalDocs: { url: 'https://core.telegram.org/bots/api/#pollanswer' },
-    required: ['poll_id', 'user', 'option_ids'],
-  })
-  .openapi('PollAnswer')
-
-const PreCheckoutQuerySchema = z
-  .object({
-    currency: z
-      .string()
-      .openapi({
-        description: 'Three-letter ISO 4217 [currency](/bots/payments#supported-currencies) code',
-      }),
-    from: UserSchema,
-    id: z.string().openapi({ description: 'Unique query identifier' }),
-    invoice_payload: z.string().openapi({ description: 'Bot specified invoice payload' }),
-    order_info: OrderInfoSchema.exactOptional(),
-    shipping_option_id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: '*Optional*. Identifier of the shipping option chosen by the user' }),
-    total_amount: z
-      .int()
-      .openapi({
-        description:
-          'Total price in the *smallest units* of the currency (integer, **not** float/double). For example, for a price of `US$ 1.45` pass `amount = 145`. See the *exp* parameter in [currencies.json](https://core.telegram.org/bots/payments/currencies.json), it shows the number of digits past the decimal point for each currency (2 for the majority of currencies).',
-      }),
-  })
-  .openapi({
-    description: 'This object contains information about an incoming pre-checkout query.',
-    externalDocs: { url: 'https://core.telegram.org/bots/api/#precheckoutquery' },
-    required: ['id', 'from', 'currency', 'total_amount', 'invoice_payload'],
-  })
-  .openapi('PreCheckoutQuery')
-
 const ReplyKeyboardMarkupSchema = z
   .object({
     keyboard: z
@@ -3761,20 +3790,6 @@ const ShippingOptionSchema = z
   })
   .openapi('ShippingOption')
 
-const ShippingQuerySchema = z
-  .object({
-    from: UserSchema,
-    id: z.string().openapi({ description: 'Unique query identifier' }),
-    invoice_payload: z.string().openapi({ description: 'Bot specified invoice payload' }),
-    shipping_address: ShippingAddressSchema,
-  })
-  .openapi({
-    description: 'This object contains information about an incoming shipping query.',
-    externalDocs: { url: 'https://core.telegram.org/bots/api/#shippingquery' },
-    required: ['id', 'from', 'invoice_payload', 'shipping_address'],
-  })
-  .openapi('ShippingQuery')
-
 const StickerSetSchema = z
   .object({
     contains_masks: z
@@ -3798,7 +3813,7 @@ const StickerSetSchema = z
   })
   .openapi('StickerSet')
 
-const UpdateSchema = z
+const UpdateSchema: z.ZodType<UpdateType> = z
   .object({
     callback_query: CallbackQuerySchema.exactOptional(),
     channel_post: MessageSchema.exactOptional(),

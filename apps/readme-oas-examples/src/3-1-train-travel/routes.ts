@@ -224,8 +224,8 @@ const BookingPaymentSchema = z
         description:
           'Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.',
       }),
-    source: z
-      .union([
+    source: (() => {
+      const Schema = z.union([
         z
           .object({
             object: z.literal('card').exactOptional(),
@@ -333,6 +333,165 @@ const BookingPaymentSchema = z
             required: ['name', 'number', 'account_type', 'bank_name', 'country'],
           }),
       ])
+      return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+        ;((ctx) => {
+          const o = ctx.value
+          if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+          let mA = 0
+          const e = new Set()
+          if (
+            z
+              .object({
+                object: z.literal('card').exactOptional(),
+                name: z
+                  .string()
+                  .openapi({
+                    description: "Cardholder's full name as it appears on the card.",
+                    examples: ['Francis Bourgeois'],
+                  }),
+                number: z
+                  .string()
+                  .openapi({
+                    description:
+                      'The card number, as a string without any separators. On read all but the last four digits will be masked for security.',
+                    examples: ['4242424242424242'],
+                  }),
+                cvc: z
+                  .int()
+                  .openapi({
+                    description:
+                      'Card security code, 3 or 4 digits usually found on the back of the card.',
+                    writeOnly: true,
+                    example: 123,
+                  }),
+                exp_month: z
+                  .preprocess(
+                    (val) =>
+                      typeof val === 'number' && Number.isSafeInteger(val)
+                        ? BigInt(val)
+                        : typeof val === 'string' && /^-?\d+$/.test(val)
+                          ? BigInt(val)
+                          : val,
+                    z.int64(),
+                  )
+                  .openapi({
+                    type: 'integer',
+                    format: 'int64',
+                    description: "Two-digit number representing the card's expiration month.",
+                    examples: [12],
+                  }),
+                exp_year: z
+                  .preprocess(
+                    (val) =>
+                      typeof val === 'number' && Number.isSafeInteger(val)
+                        ? BigInt(val)
+                        : typeof val === 'string' && /^-?\d+$/.test(val)
+                          ? BigInt(val)
+                          : val,
+                    z.int64(),
+                  )
+                  .openapi({
+                    type: 'integer',
+                    format: 'int64',
+                    description: "Four-digit number representing the card's expiration year.",
+                    examples: [2025],
+                  }),
+                address_line1: z.string().exactOptional().openapi({ writeOnly: true }),
+                address_line2: z.string().exactOptional().openapi({ writeOnly: true }),
+                address_city: z.string().exactOptional(),
+                address_country: z.string(),
+                address_post_code: z.string().exactOptional(),
+              })
+              .openapi({
+                title: 'Card',
+                description: 'A card (debit or credit) to take payment from.',
+                required: ['name', 'number', 'cvc', 'exp_month', 'exp_year', 'address_country'],
+              })
+              .safeParse(o).success
+          ) {
+            mA++
+            for (const k of [
+              'object',
+              'name',
+              'number',
+              'cvc',
+              'exp_month',
+              'exp_year',
+              'address_line1',
+              'address_line2',
+              'address_city',
+              'address_country',
+              'address_post_code',
+            ]) {
+              e.add(k)
+            }
+          }
+          if (
+            z
+              .object({
+                object: z.literal('bank_account').exactOptional(),
+                name: z.string(),
+                number: z
+                  .string()
+                  .openapi({
+                    description:
+                      'The account number for the bank account, in string form. Must be a current account.',
+                  }),
+                sort_code: z
+                  .string()
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      'The sort code for the bank account, in string form. Must be a six-digit number.',
+                  }),
+                account_type: z
+                  .enum(['individual', 'company'])
+                  .openapi({
+                    description:
+                      'The type of entity that holds the account. This can be either `individual` or `company`.',
+                  }),
+                bank_name: z
+                  .string()
+                  .openapi({
+                    description: 'The name of the bank associated with the routing number.',
+                    examples: ['Starling Bank'],
+                  }),
+                country: z
+                  .string()
+                  .openapi({ description: 'Two-letter country code (ISO 3166-1 alpha-2).' }),
+              })
+              .openapi({
+                title: 'Bank Account',
+                description:
+                  'A bank account to take payment from. Must be able to make payments in the currency specified in the payment.',
+                required: ['name', 'number', 'account_type', 'bank_name', 'country'],
+              })
+              .safeParse(o).success
+          ) {
+            mA++
+            for (const k of [
+              'object',
+              'name',
+              'number',
+              'sort_code',
+              'account_type',
+              'bank_name',
+              'country',
+            ]) {
+              e.add(k)
+            }
+          }
+          if (mA > 0) {
+            for (const k of Object.keys(o)) {
+              if (!e.has(k)) {
+                ctx.issues.push({ code: 'custom', path: [k], input: o })
+              }
+            }
+          }
+        })(ctx)
+        return val
+      }, Schema)
+    })()
       .exactOptional()
       .openapi({
         description:

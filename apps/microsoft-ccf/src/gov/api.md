@@ -1,4 +1,4 @@
-<h1 id="ccf-governance">CCF Governance v5.0.0</h1>
+<h1 id="ccf-governance">CCF Governance v5.0.1</h1>
 
 > Scroll down for code samples, example requests and responses. Select a language for code samples from the tabs above or the mobile navigation menu.
 
@@ -1050,6 +1050,7 @@ curl https://localhost:8000/gov/service/info \
     "recoveryThreshold": 0
   },
   "creationTransactionId": "string",
+  "pqCertificate": "string",
   "previousServiceCreationTransactionId": "string",
   "recoveryCount": 0,
   "serviceData": null,
@@ -2950,6 +2951,7 @@ This operation does not require authentication
     "recoveryThreshold": 0
   },
   "creationTransactionId": "string",
+  "pqCertificate": "string",
   "previousServiceCreationTransactionId": "string",
   "recoveryCount": 0,
   "serviceData": null,
@@ -2964,6 +2966,7 @@ This operation does not require authentication
 |certificate|[string](#schemastring)|true|none|none|
 |configuration|[ServiceConfiguration](#schemaserviceconfiguration)|false|none|none|
 |creationTransactionId|[TransactionId](#schematransactionid)|false|none|none|
+|pqCertificate|[string](#schemastring)|false|none|none|
 |previousServiceCreationTransactionId|[TransactionId](#schematransactionid)|false|none|none|
 |recoveryCount|[uint64](#schemauint64)|true|none|none|
 |serviceData|[json](#schemajson)|true|none|none|
@@ -3206,7 +3209,7 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|certificate|[string](#schemastring)|true|none|none|
+|certificate|[string](#schemastring)|false|none|none|
 |userData|[json](#schemajson)|true|none|none|
 |userId|[UserId](#schemauserid)|true|none|none|
 

@@ -36,9 +36,6 @@ enterprise may not set a higher cache retention limit.
 
 OAuth tokens and personal access tokens (classic) need the `admin:enterprise` scope to use this endpoint.
 
-> [!NOTE]
-> The "Enterprise administration" fine-grained permission is not available to callers. To use this API, you must use an OAuth app token or a personal access token (classic).
-
 <a href="https://docs.github.com/rest/actions/cache#get-github-actions-cache-retention-limit-for-an-enterprise">API method documentation</a>
 
 <h3 id="get-github-actions-cache-retention-limit-for-an-enterprise-parameters">Parameters</h3>
@@ -113,9 +110,6 @@ Sets GitHub Actions cache retention limit for an enterprise. All organizations a
 enterprise may not set a higher cache retention limit.
 
 OAuth tokens and personal access tokens (classic) need the `admin:enterprise` scope to use this endpoint.
-
-> [!NOTE]
-> The "Enterprise administration" fine-grained permission is not available to callers. To use this API, you must use an OAuth app token or a personal access token (classic).
 
 <a href="https://docs.github.com/rest/actions/cache#set-github-actions-cache-retention-limit-for-an-enterprise">API method documentation</a>
 
@@ -201,9 +195,6 @@ enterprise may not set a higher cache storage limit.
 
 OAuth tokens and personal access tokens (classic) need the `admin:enterprise` scope to use this endpoint.
 
-> [!NOTE]
-> The "Enterprise administration" fine-grained permission is not available to callers. To use this API, you must use an OAuth app token or a personal access token (classic).
-
 <a href="https://docs.github.com/rest/actions/cache#get-github-actions-cache-storage-limit-for-an-enterprise">API method documentation</a>
 
 <h3 id="get-github-actions-cache-storage-limit-for-an-enterprise-parameters">Parameters</h3>
@@ -278,9 +269,6 @@ Sets GitHub Actions cache storage limit for an enterprise. All organizations and
 enterprise may not set a higher cache storage limit.
 
 OAuth tokens and personal access tokens (classic) need the `admin:enterprise` scope to use this endpoint.
-
-> [!NOTE]
-> The "Enterprise administration" fine-grained permission is not available to callers. To use this API, you must use an OAuth app token or a personal access token (classic).
 
 <a href="https://docs.github.com/rest/actions/cache#set-github-actions-cache-storage-limit-for-an-enterprise">API method documentation</a>
 
@@ -12633,6 +12621,7 @@ This endpoint will return up to 1,000 results for each search when using the fol
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Response|Inline|
+|304|Not Modified|Not modified|None|
 
 <h3 id="list-workflow-runs-for-a-repository-responseschema">Response Schema</h3>
 
@@ -17066,6 +17055,7 @@ List all notifications for the current user, sorted by most recently updated.
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |all|query|boolean|false|If `true`, show notifications marked as read.|
+|is_done|query|boolean|false|Whether to return only done notifications (`true`) or exclude them (`false`). When omitted, notifications are not filtered by done status. Use `all=true&is_done=true` for done notifications or `all=true&is_done=false` for both read and unread inbox notifications. If `all` is omitted or `false`, `is_done=true` returns no notifications.|
 |participating|query|boolean|false|If `true`, only shows notifications in which the user is directly participating or mentioned.|
 |since|query|string(date-time)|false|Only show results that were last updated after the given time. This is a timestamp in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format: `YYYY-MM-DDTHH:MM:SSZ`.|
 |before|query|string(date-time)|false|Only show notifications updated before the given time. This is a timestamp in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format: `YYYY-MM-DDTHH:MM:SSZ`.|
@@ -18028,6 +18018,7 @@ Lists all notifications for the current user in the specified repository.
 |owner|path|string|true|The account owner of the repository. The name is not case sensitive.|
 |repo|path|string|true|The name of the repository without the `.git` extension. The name is not case sensitive.|
 |all|query|boolean|false|If `true`, show notifications marked as read.|
+|is_done|query|boolean|false|Whether to return only done notifications (`true`) or exclude them (`false`). When omitted, notifications are not filtered by done status. Use `all=true&is_done=true` for done notifications or `all=true&is_done=false` for both read and unread inbox notifications. If `all` is omitted or `false`, `is_done=true` returns no notifications.|
 |participating|query|boolean|false|If `true`, only shows notifications in which the user is directly participating or mentioned.|
 |since|query|string(date-time)|false|Only show results that were last updated after the given time. This is a timestamp in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format: `YYYY-MM-DDTHH:MM:SSZ`.|
 |before|query|string(date-time)|false|Only show notifications updated before the given time. This is a timestamp in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format: `YYYY-MM-DDTHH:MM:SSZ`.|
@@ -21815,7 +21806,7 @@ OAuth applications and GitHub applications with OAuth authorizations can use thi
     "client_id": "Iv1.8a61f9b3a7aba766"
   },
   "note": "optional note",
-  "note_url": "http://optional/note/url",
+  "note_url": "https://example.com/optional/note/url",
   "updated_at": "2011-09-06T20:39:23Z",
   "created_at": "2011-09-06T17:26:27Z",
   "fingerprint": "jklmnop12345678",
@@ -22014,7 +22005,7 @@ OAuth applications and GitHub applications with OAuth authorizations can use thi
     "client_id": "Iv1.8a61f9b3a7aba766"
   },
   "note": "optional note",
-  "note_url": "http://optional/note/url",
+  "note_url": "https://example.com/optional/note/url",
   "updated_at": "2011-09-06T20:39:23Z",
   "created_at": "2011-09-06T17:26:27Z",
   "fingerprint": "jklmnop12345678",
@@ -22149,7 +22140,7 @@ Invalid tokens will return `404 NOT FOUND`.
     "client_id": "Iv1.8a61f9b3a7aba766"
   },
   "note": "optional note",
-  "note_url": "http://optional/note/url",
+  "note_url": "https://example.com/optional/note/url",
   "updated_at": "2011-09-06T20:39:23Z",
   "created_at": "2011-09-06T17:26:27Z",
   "fingerprint": "jklmnop12345678",
@@ -29290,7 +29281,8 @@ OAuth app tokens and personal access tokens (classic) need the `admin:org`, `rep
 
 ```json
 {
-  "pr_scan": "enabled"
+  "pr_scan": "enabled",
+  "repository_scan": "enabled"
 }
 ```
 
@@ -29340,7 +29332,8 @@ curl https://api.github.com/orgs/string/code-scanning/ai-scan \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
   -d '{
-    "pr_scan": "enabled"
+    "pr_scan": "enabled",
+    "repository_scan": "enabled"
   }'
 ```
 
@@ -29358,7 +29351,8 @@ OAuth app tokens and personal access tokens (classic) need the `admin:org`, `rep
 
 ```json
 {
-  "pr_scan": "enabled"
+  "pr_scan": "enabled",
+  "repository_scan": "enabled"
 }
 ```
 
@@ -29368,7 +29362,8 @@ OAuth app tokens and personal access tokens (classic) need the `admin:org`, `rep
 |---|---|---|---|---|
 |org|path|string|true|The organization name. The name is not case sensitive.|
 |body|body|[code-scanning-ai-scan-org-enablement-update](#schemacode-scanning-ai-scan-org-enablement-update)|true|none|
-|» pr_scan|body|string|false|Whether AI Scan is enabled for the organization. Organization respects enterprise policy. Disabled organizations prevent repositories from enabling AI Scan. Enabled organizations enable AI Scan for their repositories, but individual repositories can opt out.|
+|» pr_scan|body|string|false|Whether AI Scan on pull requests is enabled for the organization. Organization respects enterprise policy. Disabled organizations prevent repositories from enabling AI Scan. Enabled organizations enable AI Scan for their repositories, but individual repositories can opt out.|
+|» repository_scan|body|string|false|Whether the full repository AI Scan is enabled for the organization. Organization respects enterprise policy. Disabled organizations prevent repositories from enabling the full repository AI Scan. Enabled organizations enable it for their repositories, but individual repositories can opt out.|
 
 #### Enumerated Values
 
@@ -29376,6 +29371,8 @@ OAuth app tokens and personal access tokens (classic) need the `admin:org`, `rep
 |---|---|
 |» pr_scan|enabled|
 |» pr_scan|disabled|
+|» repository_scan|enabled|
+|» repository_scan|disabled|
 
 > Example responses
 
@@ -29383,7 +29380,8 @@ OAuth app tokens and personal access tokens (classic) need the `admin:org`, `rep
 
 ```json
 {
-  "pr_scan": "enabled"
+  "pr_scan": "enabled",
+  "repository_scan": "enabled"
 }
 ```
 
@@ -29842,7 +29840,8 @@ OAuth app tokens and personal access tokens (classic) need the `security_events`
 
 ```json
 {
-  "pr_scan": "enabled"
+  "pr_scan": "enabled",
+  "repository_scan": "enabled"
 }
 ```
 
@@ -29919,7 +29918,8 @@ OAuth app tokens and personal access tokens (classic) need the `repo` scope to u
 |owner|path|string|true|The account owner of the repository. The name is not case sensitive.|
 |repo|path|string|true|The name of the repository without the `.git` extension. The name is not case sensitive.|
 |body|body|[code-scanning-ai-scan-enablement-update](#schemacode-scanning-ai-scan-enablement-update)|true|none|
-|» pr_scan|body|string|false|Whether to enable or disable AI Scan for the repository.|
+|» pr_scan|body|string|false|Whether to enable or disable AI Scan on pull requests for the repository.|
+|» repository_scan|body|string|false|Whether to enable or disable the full repository AI Scan for the repository.|
 
 #### Enumerated Values
 
@@ -29927,6 +29927,8 @@ OAuth app tokens and personal access tokens (classic) need the `repo` scope to u
 |---|---|
 |» pr_scan|enabled|
 |» pr_scan|disabled|
+|» repository_scan|enabled|
+|» repository_scan|disabled|
 
 > Example responses
 
@@ -29934,7 +29936,8 @@ OAuth app tokens and personal access tokens (classic) need the `repo` scope to u
 
 ```json
 {
-  "pr_scan": "enabled"
+  "pr_scan": "enabled",
+  "repository_scan": "enabled"
 }
 ```
 
@@ -35577,9 +35580,6 @@ Lists repositories that enterprise admins have allowed Dependabot to access when
 
 The authenticated user must be an enterprise owner to use this endpoint.
 
-> [!NOTE]
-> The "Enterprise administration" fine-grained permission is not available to callers. To use this API, you must use an OAuth app token or a personal access token (classic).
-
 <a href="https://docs.github.com/rest/dependabot/repository-access#lists-the-repositories-dependabot-can-access-in-an-enterprise">API method documentation</a>
 
 <h3 id="lists-the-repositories-dependabot-can-access-in-an-enterprise-parameters">Parameters</h3>
@@ -35743,9 +35743,6 @@ The authenticated user must be an enterprise owner to use this endpoint.
 }
 ```
 
-> [!NOTE]
-> The "Enterprise administration" fine-grained permission is not available to callers. To use this API, you must use an OAuth app token or a personal access token (classic).
-
 <a href="https://docs.github.com/rest/dependabot/repository-access#updates-dependabots-repository-access-list-for-an-enterprise">API method documentation</a>
 
 > Body parameter
@@ -35830,9 +35827,6 @@ Sets the default level of repository access Dependabot will have while performin
 - 'internal' - Dependabot will only have access to public and internal repositories, unless access is explicitly granted to private repositories.
 
 The authenticated user must be an enterprise owner to use this endpoint.
-
-> [!NOTE]
-> The "Enterprise administration" fine-grained permission is not available to callers. To use this API, you must use an OAuth app token or a personal access token (classic).
 
 <a href="https://docs.github.com/rest/dependabot/repository-access#set-the-default-repository-access-level-for-dependabot-in-an-enterprise">API method documentation</a>
 
@@ -38269,6 +38263,262 @@ OAuth app tokens and personal access tokens (classic) need the `security_events`
 |409|Conflict|Conflict|[basic-error](#schemabasic-error)|
 |410|Gone|Gone|[basic-error](#schemabasic-error)|
 |422|Unprocessable Entity|Validation failed, or the endpoint has been spammed.|[validation-error-simple](#schemavalidation-error-simple)|
+
+<aside class="success">
+This operation does not require authentication
+</aside>
+
+## Get repository Dependabot runner settings
+
+<a id="opIddependabot/get-repository-runner-settings"></a>
+
+> Code samples
+
+```bash
+curl https://api.github.com/repos/string/string/dependabot/runner-settings \
+  -H 'Accept: application/json'
+```
+
+`GET /repos/{owner}/{repo}/dependabot/runner-settings`
+
+Gets the runner Dependabot uses for this repository: standard GitHub-hosted
+runners, or labeled runners with their labels and optional runner group. The
+response matches the repository's code security settings page.
+
+Labeled runners take effect only for private and internal repositories with
+GitHub Actions enabled. Otherwise, the response shows `standard`.
+
+Repository administrators and users who can manage security products for the
+repository can use this endpoint. OAuth app tokens and personal access tokens
+(classic) require the `repo` scope for both public and private repositories.
+GitHub App tokens and fine-grained personal access tokens require repository
+Administration read permission. Workflow `GITHUB_TOKEN` access is not supported.
+
+<a href="https://docs.github.com/rest/dependabot/runner-settings#get-repository-dependabot-runner-settings">API method documentation</a>
+
+<h3 id="get-repository-dependabot-runner-settings-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|owner|path|string|true|The account owner of the repository. The name is not case sensitive.|
+|repo|path|string|true|The name of the repository without the `.git` extension. The name is not case sensitive.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "runner_type": "labeled",
+  "runner_labels": [
+    "dependabot"
+  ],
+  "runner_group": "dependabot-runners"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "message": "string",
+  "documentation_url": "string",
+  "url": "string",
+  "status": "string"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "message": "string",
+  "documentation_url": "string",
+  "url": "string",
+  "status": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "message": "string",
+  "documentation_url": "string",
+  "url": "string",
+  "status": "string"
+}
+```
+
+<h3 id="get-repository-dependabot-runner-settings-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Response|[dependabot-runner-settings](#schemadependabot-runner-settings)|
+|401|Unauthorized|Requires authentication|[basic-error](#schemabasic-error)|
+|403|Forbidden|Forbidden|[basic-error](#schemabasic-error)|
+|404|Not Found|Resource not found|[basic-error](#schemabasic-error)|
+
+<aside class="success">
+This operation does not require authentication
+</aside>
+
+## Set repository Dependabot runner settings
+
+<a id="opIddependabot/set-repository-runner-settings"></a>
+
+> Code samples
+
+```bash
+curl https://api.github.com/repos/string/string/dependabot/runner-settings \
+  -X PUT \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -d '{
+    "runner_type": "labeled",
+    "runner_labels": [
+      "dependabot"
+    ],
+    "runner_group": "dependabot-runners"
+  }'
+```
+
+`PUT /repos/{owner}/{repo}/dependabot/runner-settings`
+
+Sets the runner Dependabot uses for this repository. This is the same setting
+as on the repository's code security settings page.
+
+`labeled` turns on labeled runners with exactly one runner label and an optional
+runner group. `standard` turns them off and clears the label and group.
+
+Labeled runners are only available for private and internal repositories with
+GitHub Actions enabled. The response returns the settings after the change.
+
+Repository administrators and users who can manage security products for the
+repository can use this endpoint, subject to enterprise policy. OAuth app tokens
+and personal access tokens (classic) require the `repo` scope. GitHub App tokens
+and fine-grained personal access tokens require repository Administration write
+permission. Workflow `GITHUB_TOKEN` access is not supported.
+
+<a href="https://docs.github.com/rest/dependabot/runner-settings#set-repository-dependabot-runner-settings">API method documentation</a>
+
+> Body parameter
+
+```json
+{
+  "runner_type": "labeled",
+  "runner_labels": [
+    "dependabot"
+  ],
+  "runner_group": "dependabot-runners"
+}
+```
+
+<h3 id="set-repository-dependabot-runner-settings-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|owner|path|string|true|The account owner of the repository. The name is not case sensitive.|
+|repo|path|string|true|The name of the repository without the `.git` extension. The name is not case sensitive.|
+|body|body|[dependabot-runner-settings-update](#schemadependabot-runner-settings-update)|true|none|
+|» runner_type|body|string|true|`labeled` for labeled runners, `standard` for standard GitHub-hosted runners.|
+|» runner_labels|body|[string]|false|Required for `labeled`. Exactly one non-blank runner label. Not allowed for `standard`.|
+|» runner_group|body|string \| null|false|Optional for `labeled`. Omitted, `null` or blank means no group. Not allowed for `standard`.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|» runner_type|standard|
+|» runner_type|labeled|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "runner_type": "labeled",
+  "runner_labels": [
+    "dependabot"
+  ],
+  "runner_group": "dependabot-runners"
+}
+```
+
+> 400 Response
+
+```json
+{
+  "message": "string",
+  "documentation_url": "string",
+  "url": "string",
+  "status": "string"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "message": "string",
+  "documentation_url": "string",
+  "url": "string",
+  "status": "string"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "message": "string",
+  "documentation_url": "string",
+  "url": "string",
+  "status": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "message": "string",
+  "documentation_url": "string",
+  "url": "string",
+  "status": "string"
+}
+```
+
+> 422 Response
+
+```json
+{
+  "message": "string",
+  "documentation_url": "string",
+  "errors": [
+    {
+      "resource": "string",
+      "field": "string",
+      "message": "string",
+      "code": "string",
+      "index": 0,
+      "value": "string"
+    }
+  ]
+}
+```
+
+<h3 id="set-repository-dependabot-runner-settings-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Response|[dependabot-runner-settings](#schemadependabot-runner-settings)|
+|400|Bad Request|Bad Request|[basic-error](#schemabasic-error)|
+|401|Unauthorized|Requires authentication|[basic-error](#schemabasic-error)|
+|403|Forbidden|Forbidden|[basic-error](#schemabasic-error)|
+|404|Not Found|Resource not found|[basic-error](#schemabasic-error)|
+|422|Unprocessable Entity|Validation failed, or the endpoint has been spammed.|[validation-error](#schemavalidation-error)|
 
 <aside class="success">
 This operation does not require authentication
@@ -44212,7 +44462,7 @@ This endpoint supports the following custom media types. For more information, s
 |type|query|string|false|Can be the name of an issue type. If the string `*` is passed, issues with any type are accepted. If the string `none` is passed, issues without type are returned.|
 |creator|query|string|false|The user that created the issue.|
 |mentioned|query|string|false|A user that's mentioned in the issue.|
-|issue_field_values|query|string|false|A comma-separated list of issue field filters in `field_slug:value` format.<br>Only issues matching all specified field values are returned.<br>Requires issue fields to be enabled for the repository. Issue fields are<br>not available for user-owned repositories, and field availability for<br>organization-owned public repositories depends on the organization's<br>visibility settings. For example, `priority:Urgent,severity:High` filters<br>issues where the `priority` field is `Urgent` AND the `severity` field is<br>`High`.|
+|issue_field_values|query|string|false|A comma-separated list of issue field filters in `field_slug:value` format.<br>Only issues matching all specified field values are returned.<br>Requires issue fields to be enabled for the repository. Supports both<br>user-owned and organization-owned repositories. Field availability depends<br>on the owner's issue field visibility settings and the caller's access.<br>For example, `priority:Urgent,severity:High` filters<br>issues where the `priority` field is `Urgent` AND the `severity` field is<br>`High`.|
 |labels|query|string|false|A list of comma separated label names. Example: `bug,ui,@high`|
 |sort|query|string|false|What to sort results by.|
 |direction|query|string|false|The direction to sort the results by.|
@@ -44536,6 +44786,7 @@ This endpoint supports the following custom media types. For more information, s
 |» » *oneOf*|body|string|false|none|
 |» » *oneOf*|body|integer|false|none|
 |» body|body|string|false|The contents of the issue.|
+|» status|body|string|false|The initial status of the issue. Can be `Backlog`, `Todo`, `In progress`, or `In review`. If omitted, the issue starts in `Backlog`. If you do not have permission to set the status, the supplied value is ignored and the issue starts in `Backlog`. Cannot be `null` or an empty string. Ignored when issue statuses aren't available in the repository. Issue statuses are in preview and only available to accounts enrolled in the preview.|
 |» assignee|body|string \| null|false|Login for the user that this issue should be assigned to. _NOTE: Only users with push access can set the assignee for new issues. The assignee is silently dropped otherwise. **This field is closing down.**_|
 |» milestone|body|null \| string \| integer|false|none|
 |» » *oneOf*|body|string|false|none|
@@ -44548,7 +44799,7 @@ This endpoint supports the following custom media types. For more information, s
 |» » description|body|string \| null|false|none|
 |» » color|body|string \| null|false|none|
 |» assignees|body|[string]|false|Logins for Users to assign to this issue. _NOTE: Only users with push access can set assignees for new issues. Assignees are silently dropped otherwise._|
-|» issue_field_values|body|[object]|false|An array of issue field values to set on this issue. Each field value must include the field ID and the value to set. Issue fields are only available for organization-owned repositories with the feature enabled. Field values are silently dropped otherwise.|
+|» issue_field_values|body|[object]|false|An array of issue field values to set on this issue. Each field value must include the field ID and the value to set. Issue fields must be enabled for the repository owner. Field values are silently dropped otherwise.|
 |» » field_id|body|integer|true|The ID of the issue field to set|
 |» » value|body|string \| number \| [string]|true|The value to set for the field. For multi-select fields, provide an array of option names.|
 |» » » *oneOf*|body|string|false|none|
@@ -46195,6 +46446,7 @@ This endpoint supports the following custom media types. For more information, s
 |» body|body|string \| null|false|The contents of the issue.|
 |» assignee|body|string \| null|false|Username to assign to this issue. **This field is closing down.**|
 |» state|body|string|false|The open or closed state of the issue.|
+|» status|body|string|false|The status to give the issue. Can be `Backlog`, `Todo`, `In progress`, `In review`, `Done`, `Not planned`, or `Duplicate`. If omitted, the current status is preserved unless `state` or `state_reason` changes. Setting a status also updates `state` and `state_reason` as needed. If provided, `state` and `state_reason` must be consistent with the requested status. Changing the status to `Duplicate` requires `duplicate_issue_id`. Cannot be `null` or an empty string. The status and other applied field changes are saved together. If the status cannot be saved, those field changes are rolled back. Ignored when issue statuses aren't available in the repository. Issue statuses are in preview and only available to accounts enrolled in the preview.|
 |» state_reason|body|string \| null|false|The reason for the state change. Ignored unless `state` is changed.|
 |» duplicate_issue_id|body|integer|false|The ID of the issue that this issue duplicates, used when marking this issue as a duplicate with `status: Duplicate` or `state_reason: duplicate`. The issue must exist and be accessible to the authenticated user.|
 |» milestone|body|null \| string \| integer|false|none|
@@ -46525,6 +46777,10 @@ Status Code **200**
 |html_url|string(uri)|true|none|none|
 |number|integer|true|none|Number uniquely identifying the issue within its repository|
 |state|string|true|none|State of the issue; either 'open' or 'closed'|
+|status|object \| null|false|none|The status of the issue, or `null` if it has none. Issue statuses are in preview and only available to accounts enrolled in the preview.|
+|» id|integer(int64)|true|none|The stable identifier of the planning status.|
+|» name|string|true|none|The display name of the planning status, which may change in the future.|
+|» category|string|true|none|A stable identifier for the category, such as `backlog`, `planned`, `started`, `completed`, `not_planned` or `duplicate`. Clients should expect new keys to be added.|
 |state_reason|string \| null|false|none|The reason for the current state|
 |title|string|true|none|Title of the issue|
 |body|string \| null|false|none|Contents of the issue|
@@ -47091,6 +47347,8 @@ along with its version history ordered from newest to oldest.
 |repo|path|string|true|The name of the repository without the `.git` extension. The name is not case sensitive.|
 |issue_number|path|integer|true|The number that identifies the issue.|
 |artifact_number|path|integer|true|The artifact number within the issue.|
+|per_page|query|integer|false|The number of results per page (max 100). For more information, see "[Using pagination in the REST API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the-rest-api)."|
+|page|query|integer|false|The page number of the results to fetch. For more information, see "[Using pagination in the REST API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the-rest-api)."|
 
 > Example responses
 
@@ -47117,6 +47375,8 @@ along with its version history ordered from newest to oldest.
     "created_at": "2026-09-21T15:00:00Z",
     "updated_at": "2026-09-21T15:30:00Z"
   },
+  "has_next_page": false,
+  "total_count": 2,
   "versions": [
     {
       "version": 2,
@@ -47206,6 +47466,8 @@ Status Code **200**
 |*oneOf*|[issue-artifact](#schemaissue-artifact)|false|none|Issue artifacts are named, typed pieces of content attached to an issue.<br>They give people and agents a durable place to preserve context and<br>supporting material alongside the work. Each artifact has a number unique<br>within the issue.|
 |*oneOf*|object|false|none|none|
 |artifact|[issue-artifact](#schemaissue-artifact)|true|none|Issue artifacts are named, typed pieces of content attached to an issue.<br>They give people and agents a durable place to preserve context and<br>supporting material alongside the work. Each artifact has a number unique<br>within the issue.|
+|has_next_page|boolean|true|none|Whether another page of retained versions is available.|
+|total_count|integer|true|none|The number of retained artifact versions.|
 |versions|[object]|true|none|The artifact version history, ordered from newest to oldest.|
 |» version|integer|true|none|The sequential version number.|
 |» name|string|true|none|The artifact name at this version.|
@@ -49727,7 +49989,7 @@ curl https://api.github.com/repos/string/string/issues/0/issue-field-values \
 
 `PUT /repos/{owner}/{repo}/issues/{issue_number}/issue-field-values`
 
-Set custom field values for an issue, replacing any existing values. You can set values for organization-level issue fields that have been defined for the repository's organization.
+Set custom field values for an issue, replacing any existing values. You can set values for issue fields that have been defined for the repository's owner.
 
 This endpoint supports the following field data types:
 - **`text`**: String values for text fields
@@ -49964,7 +50226,7 @@ curl https://api.github.com/repos/string/string/issues/0/issue-field-values \
 
 `POST /repos/{owner}/{repo}/issues/{issue_number}/issue-field-values`
 
-Add custom field values to an issue. You can set values for organization-level issue fields that have been defined for the repository's organization.
+Add custom field values to an issue. You can set values for issue fields that have been defined for the repository's owner.
 Adding an empty array will clear all existing field values for the issue.
 
 This endpoint supports the following field data types:
@@ -59195,9 +59457,6 @@ Lists the repository custom properties that are included in the OIDC token for r
 
 OAuth app tokens and personal access tokens (classic) need the `admin:enterprise` scope to use this endpoint.
 
-> [!NOTE]
-> The "Enterprise administration" fine-grained permission is not available to callers. To use this API, you must use an OAuth app token or a personal access token (classic).
-
 <a href="https://docs.github.com/rest/actions/oidc#list-oidc-custom-property-inclusions-for-an-enterprise">API method documentation</a>
 
 <h3 id="list-oidc-custom-property-inclusions-for-an-enterprise-parameters">Parameters</h3>
@@ -59287,9 +59546,6 @@ Adds a repository custom property to be included in the OIDC token for repositor
 
 OAuth app tokens and personal access tokens (classic) need the `admin:enterprise` scope to use this endpoint.
 
-> [!NOTE]
-> The "Enterprise administration" fine-grained permission is not available to callers. To use this API, you must use an OAuth app token or a personal access token (classic).
-
 <a href="https://docs.github.com/rest/actions/oidc#create-an-oidc-custom-property-inclusion-for-an-enterprise">API method documentation</a>
 
 > Body parameter
@@ -59359,9 +59615,6 @@ curl https://api.github.com/enterprises/string/actions/oidc/customization/proper
 Removes a repository custom property from being included in the OIDC token for repository actions in an enterprise.
 
 OAuth app tokens and personal access tokens (classic) need the `admin:enterprise` scope to use this endpoint.
-
-> [!NOTE]
-> The "Enterprise administration" fine-grained permission is not available to callers. To use this API, you must use an OAuth app token or a personal access token (classic).
 
 <a href="https://docs.github.com/rest/actions/oidc#delete-an-oidc-custom-property-inclusion-for-an-enterprise">API method documentation</a>
 
@@ -60300,7 +60553,7 @@ with an organization.
 This endpoint allows you to record information about a specific
 artifact, such as its name, digest, environments, cluster, and
 deployment.
-The deployment name has to be uniqe within a cluster (i.e a
+The deployment name has to be unique within a cluster (i.e a
 combination of logical, physical environment and cluster) as it
 identifies unique deployment.
 Multiple requests for the same combination of logical, physical
@@ -61572,8 +61825,8 @@ curl https://api.github.com/orgs/string/attestations/repositories \
 
 `GET /orgs/{org}/attestations/repositories`
 
-List repositories owned by the provided organization that have created at least one attested artifact
-Results will be sorted in ascending order by repository ID
+List repositories owned by the provided organization that have created at least one attested artifact.
+Results will be sorted in ascending order by repository ID.
 
 <a href="https://docs.github.com/rest/orgs/attestations#list-attestation-repositories">API method documentation</a>
 
@@ -64289,6 +64542,7 @@ Lists all issue fields for an organization. OAuth app tokens and personal access
     "name": "Text field",
     "description": "DRI",
     "data_type": "text",
+    "visibility": "all",
     "created_at": "2024-12-11T14:39:09Z",
     "updated_at": "2024-12-11T14:39:09Z"
   },
@@ -64298,21 +64552,34 @@ Lists all issue fields for an organization. OAuth app tokens and personal access
     "name": "Priority",
     "description": "Level of importance",
     "data_type": "single_select",
+    "visibility": "all",
     "options": [
       {
         "id": 1,
         "name": "High",
-        "color": "red"
+        "description": "High priority",
+        "color": "red",
+        "priority": 1,
+        "created_at": "2024-12-11T14:39:09Z",
+        "updated_at": "2024-12-11T14:39:09Z"
       },
       {
         "id": 2,
         "name": "Medium",
-        "color": "yellow"
+        "description": "Medium priority",
+        "color": "yellow",
+        "priority": 2,
+        "created_at": "2024-12-11T14:39:09Z",
+        "updated_at": "2024-12-11T14:39:09Z"
       },
       {
         "id": 3,
         "name": "Low",
-        "color": "green"
+        "description": "Low priority",
+        "color": "green",
+        "priority": 3,
+        "created_at": "2024-12-11T14:39:09Z",
+        "updated_at": "2024-12-11T14:39:09Z"
       }
     ],
     "created_at": "2024-12-11T14:39:09Z",
@@ -64324,21 +64591,34 @@ Lists all issue fields for an organization. OAuth app tokens and personal access
     "name": "Categories",
     "description": "Issue categories",
     "data_type": "multi_select",
+    "visibility": "all",
     "options": [
       {
         "id": 4,
         "name": "Frontend",
-        "color": "blue"
+        "description": null,
+        "color": "blue",
+        "priority": 1,
+        "created_at": "2024-12-11T14:39:09Z",
+        "updated_at": "2024-12-11T14:39:09Z"
       },
       {
         "id": 5,
         "name": "Backend",
-        "color": "green"
+        "description": null,
+        "color": "green",
+        "priority": 2,
+        "created_at": "2024-12-11T14:39:09Z",
+        "updated_at": "2024-12-11T14:39:09Z"
       },
       {
         "id": 6,
         "name": "Infrastructure",
-        "color": "purple"
+        "description": null,
+        "color": "purple",
+        "priority": 3,
+        "created_at": "2024-12-11T14:39:09Z",
+        "updated_at": "2024-12-11T14:39:09Z"
       }
     ],
     "created_at": "2024-12-11T14:39:09Z",
@@ -64392,21 +64672,25 @@ curl https://api.github.com/orgs/string/issue-fields \
     "name": "Priority",
     "description": "Level of importance for the issue",
     "data_type": "single_select",
+    "visibility": "all",
     "options": [
       {
         "name": "High",
         "description": "High priority",
-        "color": "red"
+        "color": "red",
+        "priority": 1
       },
       {
         "name": "Medium",
         "description": "Medium priority",
-        "color": "yellow"
+        "color": "yellow",
+        "priority": 2
       },
       {
         "name": "Low",
         "description": "Low priority",
-        "color": "green"
+        "color": "green",
+        "priority": 3
       }
     ]
   }'
@@ -64430,21 +64714,25 @@ personal access tokens (classic) need the `admin:org` scope to use this endpoint
   "name": "Priority",
   "description": "Level of importance for the issue",
   "data_type": "single_select",
+  "visibility": "all",
   "options": [
     {
       "name": "High",
       "description": "High priority",
-      "color": "red"
+      "color": "red",
+      "priority": 1
     },
     {
       "name": "Medium",
       "description": "Medium priority",
-      "color": "yellow"
+      "color": "yellow",
+      "priority": 2
     },
     {
       "name": "Low",
       "description": "Low priority",
-      "color": "green"
+      "color": "green",
+      "priority": 3
     }
   ]
 }
@@ -64459,7 +64747,7 @@ personal access tokens (classic) need the `admin:org` scope to use this endpoint
 |» name|body|string|true|Name of the issue field.|
 |» description|body|string \| null|false|Description of the issue field.|
 |» data_type|body|string|true|The data type of the issue field.|
-|» visibility|body|string|false|The visibility of the issue field. Can be `organization_members_only` (visible only within the organization) or `all` (visible to all users who can see issues). Only used when the visibility settings feature is enabled. Defaults to `organization_members_only`.|
+|» visibility|body|string|false|The visibility of the issue field. Can be `restricted` (visible to organization members and to collaborators on the repository the field is read through) or `all` (visible to all users who can see issues). `organization_members_only` is deprecated. Use `restricted` instead. Removal will be announced for a future REST API version; existing REST API versions will continue to support this value. Only used when the visibility settings feature is enabled. Defaults to `organization_members_only`.|
 |» options|body|[object]|false|Options for select fields. Required when data_type is 'single_select' or 'multi_select'.|
 |» » name|body|string|true|Name of the option.|
 |» » description|body|string \| null|false|Description of the option.|
@@ -64477,6 +64765,7 @@ personal access tokens (classic) need the `admin:org` scope to use this endpoint
 |» data_type|number|
 |» visibility|organization_members_only|
 |» visibility|all|
+|» visibility|restricted|
 |» » color|gray|
 |» » color|blue|
 |» » color|green|
@@ -64497,6 +64786,7 @@ personal access tokens (classic) need the `admin:org` scope to use this endpoint
   "name": "Priority",
   "description": "Level of importance for the issue",
   "data_type": "single_select",
+  "visibility": "all",
   "options": [
     {
       "id": 1,
@@ -64679,7 +64969,7 @@ personal access tokens (classic) need the `admin:org` scope to use this endpoint
 |body|body|[organization-update-issue-field](#schemaorganization-update-issue-field)|true|none|
 |» name|body|string|false|Name of the issue field.|
 |» description|body|string \| null|false|Description of the issue field.|
-|» visibility|body|string|false|The visibility of the issue field. Can be `organization_members_only` (visible only within the organization) or `all` (visible to all users who can see issues). Only used when the visibility settings feature is enabled.|
+|» visibility|body|string|false|The visibility of the issue field. Can be `restricted` (visible to organization members and to collaborators on the repository the field is read through) or `all` (visible to all users who can see issues). `organization_members_only` is deprecated. Use `restricted` instead. Removal will be announced for a future REST API version; existing REST API versions will continue to support this value. Only used when the visibility settings feature is enabled.|
 |» options|body|[object]|false|Options for select fields. Only applicable when updating single_select or multi_select fields. When provided, this array **replaces** the entire existing set of options rather than adding to or updating individual options. To retain or update an existing option, include it in the array with its `id`. Options sent without an `id` are treated as new options and may cause existing options to be deleted and recreated.|
 |» » id|body|integer|false|The id of an existing option to retain or update. Omit this when creating a new option.|
 |» » name|body|string|true|Name of the option.|
@@ -64693,6 +64983,7 @@ personal access tokens (classic) need the `admin:org` scope to use this endpoint
 |---|---|
 |» visibility|organization_members_only|
 |» visibility|all|
+|» visibility|restricted|
 |» » color|gray|
 |» » color|blue|
 |» » color|green|
@@ -64713,6 +65004,7 @@ personal access tokens (classic) need the `admin:org` scope to use this endpoint
   "name": "Priority",
   "description": "Level of importance for the issue",
   "data_type": "single_select",
+  "visibility": "all",
   "options": [
     {
       "id": 1,
@@ -64816,16 +65108,20 @@ Lists all issue types for an organization. OAuth app tokens and personal access 
     "node_id": "IT_kwDNAd3NAZo",
     "name": "Task",
     "description": "A specific piece of work",
+    "color": "gray",
     "created_at": "2024-12-11T14:39:09Z",
-    "updated_at": "2024-12-11T14:39:09Z"
+    "updated_at": "2024-12-11T14:39:09Z",
+    "is_enabled": true
   },
   {
     "id": 411,
     "node_id": "IT_kwDNAd3NAZs",
     "name": "Bug",
     "description": "An unexpected problem or behavior",
+    "color": "red",
     "created_at": "2024-12-11T14:39:09Z",
-    "updated_at": "2024-12-11T14:39:09Z"
+    "updated_at": "2024-12-11T14:39:09Z",
+    "is_enabled": true
   }
 ]
 ```
@@ -64906,9 +65202,9 @@ personal access tokens (classic) need the `admin:org` scope to use this endpoint
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |org|path|string|true|The organization name. The name is not case sensitive.|
-|body|body|[organization-create-issue-type](#schemaorganization-create-issue-type)|true|none|
+|body|body|[issue-type-request](#schemaissue-type-request)|true|none|
 |» name|body|string|true|Name of the issue type.|
-|» is_enabled|body|boolean|true|Whether or not the issue type is enabled at the organization level.|
+|» is_enabled|body|boolean|true|Whether or not the issue type is enabled.|
 |» description|body|string \| null|false|Description of the issue type.|
 |» color|body|string \| null|false|Color for the issue type.|
 
@@ -64936,8 +65232,10 @@ personal access tokens (classic) need the `admin:org` scope to use this endpoint
   "node_id": "IT_kwDNAd3NAZo",
   "name": "Task",
   "description": "A specific piece of work",
+  "color": "gray",
   "created_at": "2024-12-11T14:39:09Z",
-  "updated_at": "2024-12-11T14:39:09Z"
+  "updated_at": "2024-12-11T14:39:09Z",
+  "is_enabled": true
 }
 ```
 
@@ -65023,9 +65321,9 @@ personal access tokens (classic) need the `admin:org` scope to use this endpoint
 |---|---|---|---|---|
 |org|path|string|true|The organization name. The name is not case sensitive.|
 |issue_type_id|path|integer|true|The unique identifier of the issue type.|
-|body|body|[organization-update-issue-type](#schemaorganization-update-issue-type)|true|none|
+|body|body|[issue-type-request](#schemaissue-type-request)|true|none|
 |» name|body|string|true|Name of the issue type.|
-|» is_enabled|body|boolean|true|Whether or not the issue type is enabled at the organization level.|
+|» is_enabled|body|boolean|true|Whether or not the issue type is enabled.|
 |» description|body|string \| null|false|Description of the issue type.|
 |» color|body|string \| null|false|Color for the issue type.|
 
@@ -65053,8 +65351,10 @@ personal access tokens (classic) need the `admin:org` scope to use this endpoint
   "node_id": "IT_kwDNAd3NAZo",
   "name": "Task",
   "description": "A specific piece of work",
+  "color": "gray",
   "created_at": "2024-12-11T14:39:09Z",
-  "updated_at": "2024-12-11T14:39:09Z"
+  "updated_at": "2024-12-11T14:39:09Z",
+  "is_enabled": true
 }
 ```
 
@@ -68691,7 +68991,7 @@ To use this endpoint, the authenticated user must be one of:
 |---|---|---|---|---|
 |org|path|string|true|The organization name. The name is not case sensitive.|
 |body|body|object|true|none|
-|» properties|body|[[custom-property](#schemacustom-property)]|true|The array of custom properties to create or update.|
+|» properties|body|[[custom-property-batch-item-payload](#schemacustom-property-batch-item-payload)]|true|The array of custom properties to create or update.|
 
 > Example responses
 
@@ -68914,6 +69214,7 @@ To use this endpoint, the authenticated user must be one of:
 |» description|body|string \| null|false|Short description of the property|
 |» allowed_values|body|[string]|false|An ordered list of the allowed values of the property.<br>The property can have up to 200 allowed values.|
 |» values_editable_by|body|string \| null|false|Who can edit the values of the property|
+|» regex|body|string \| null|false|A regular expression (RE2 syntax) that values of the property must match.<br>Only supported for properties with a `value_type` of `string`.|
 |» require_explicit_values|body|boolean|false|Whether setting properties values is mandatory|
 
 #### Enumerated Values
@@ -69870,7 +70171,7 @@ curl https://api.github.com/orgs/string/settings/immutable-releases \
 
 Gets the immutable releases policy for repositories in an organization.
 
-OAuth tokens and personal access tokens (classic) need the `admin:org` scope to use this endpoint.
+OAuth tokens and personal access tokens (classic) need the `admin:org` or `repo` scope to use this endpoint.
 
 <a href="https://docs.github.com/rest/orgs/orgs#get-immutable-releases-settings-for-an-organization">API method documentation</a>
 
@@ -69919,7 +70220,7 @@ curl https://api.github.com/orgs/string/settings/immutable-releases \
 
 Sets the immutable releases policy for repositories in an organization.
 
-OAuth tokens and personal access tokens (classic) need the `admin:org` scope to use this endpoint.
+OAuth tokens and personal access tokens (classic) need the `admin:org` or `repo` scope to use this endpoint.
 
 <a href="https://docs.github.com/rest/orgs/orgs#set-immutable-releases-settings-for-an-organization">API method documentation</a>
 
@@ -69973,7 +70274,7 @@ curl https://api.github.com/orgs/string/settings/immutable-releases/repositories
 
 List all of the repositories that have been selected for immutable releases enforcement in an organization.
 
-OAuth tokens and personal access tokens (classic) need the `admin:org` scope to use this endpoint.
+OAuth tokens and personal access tokens (classic) need the `admin:org` or `repo` scope to use this endpoint.
 
 <a href="https://docs.github.com/rest/orgs/orgs#list-selected-repositories-for-immutable-releases-enforcement">API method documentation</a>
 
@@ -70106,7 +70407,7 @@ curl https://api.github.com/orgs/string/settings/immutable-releases/repositories
 
 Replaces all repositories that have been selected for immutable releases enforcement in an organization. To use this endpoint, the organization immutable releases policy for `enforced_repositories` must be configured to `selected`.
 
-OAuth tokens and personal access tokens (classic) need the `admin:org` scope to use this endpoint.
+OAuth tokens and personal access tokens (classic) need the `admin:org` or `repo` scope to use this endpoint.
 
 <a href="https://docs.github.com/rest/orgs/orgs#set-selected-repositories-for-immutable-releases-enforcement">API method documentation</a>
 
@@ -70153,7 +70454,7 @@ curl https://api.github.com/orgs/string/settings/immutable-releases/repositories
 
 Adds a repository to the list of selected repositories that are enforced for immutable releases in an organization. To use this endpoint, the organization immutable releases policy for `enforced_repositories` must be configured to `selected`.
 
-OAuth tokens and personal access tokens (classic) need the `admin:org` scope to use this endpoint.
+OAuth tokens and personal access tokens (classic) need the `admin:org` or `repo` scope to use this endpoint.
 
 <a href="https://docs.github.com/rest/orgs/orgs#enable-a-selected-repository-for-immutable-releases-in-an-organization">API method documentation</a>
 
@@ -70189,7 +70490,7 @@ curl https://api.github.com/orgs/string/settings/immutable-releases/repositories
 
 Removes a repository from the list of selected repositories that are enforced for immutable releases in an organization. To use this endpoint, the organization immutable releases policy for `enforced_repositories` must be configured to `selected`.
 
-OAuth tokens and personal access tokens (classic) need the `admin:org` scope to use this endpoint.
+OAuth tokens and personal access tokens (classic) need the `admin:org` or `repo` scope to use this endpoint.
 
 <a href="https://docs.github.com/rest/orgs/orgs#disable-a-selected-repository-for-immutable-releases-in-an-organization">API method documentation</a>
 
@@ -77571,6 +77872,173 @@ Status Code **200**
 This operation does not require authentication
 </aside>
 
+## Request a Copilot code review for a pull request
+
+<a id="opIdpulls/request-copilot-code-review"></a>
+
+> Code samples
+
+```bash
+curl https://api.github.com/repos/string/string/pulls/0/copilot-code-review \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -d '{
+    "review_effort": "balanced"
+  }'
+```
+
+`POST /repos/{owner}/{repo}/pulls/{pull_number}/copilot-code-review`
+
+Requests a Copilot code review for a pull request. Every call expresses intent to start a
+new review: if no Copilot review has been requested yet, an initial request is created; if
+the most recent Copilot review has already completed (including if it was later dismissed or
+superseded), a new request is created automatically to continue the review lifecycle. If a
+Copilot code review request is already pending for the pull request, no new request is
+created and the response is `409`.
+
+If the actor or repository is not eligible for Copilot code review, the actor has no quota
+remaining, or the licensing organization is unavailable, no request is created and the
+response is `422` with a stable `failure_reason`. A `review_effort` is accepted only when that
+effort level is available for the repository and actor; an unrecognized or unavailable
+`review_effort` returns `422` with `failure_reason` `INVALID_REVIEW_EFFORT`. If
+the actor, repository owner, or requesting application owner has been flagged, the response
+is `403` with `failure_reason` `ACTOR_FLAGGED`. If the per-actor or per-owner request rate
+limit is exceeded, the response is `429` with `failure_reason` `RATE_LIMITED`. If Copilot
+code review cannot be serviced right now, the response is `503`.
+
+Existing human and team review requests on the pull request are left unchanged.
+
+<a href="https://docs.github.com/rest/pulls/copilot-code-review#request-a-copilot-code-review-for-a-pull-request">API method documentation</a>
+
+> Body parameter
+
+```json
+{
+  "review_effort": "balanced"
+}
+```
+
+<h3 id="request-a-copilot-code-review-for-a-pull-request-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|owner|path|string|true|The account owner of the repository. The name is not case sensitive.|
+|repo|path|string|true|The name of the repository without the `.git` extension. The name is not case sensitive.|
+|pull_number|path|integer|true|The number that identifies the pull request.|
+|body|body|object \| null|false|none|
+|» review_effort|body|string|false|The effort level to use for the Copilot code review. Omit to use the default effort level. Only effort levels available for the repository and actor are accepted. For more information, see [Review effort level](https://docs.github.com/copilot/concepts/agent-capabilities/agent-powered-workflows-and-operations/code-review#review-effort-level).|
+
+> Example responses
+
+> 201 Response
+
+```json
+{
+  "node_id": "RRR_kwDOAA",
+  "state": "PENDING"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "message": "string",
+  "documentation_url": "string",
+  "url": "string",
+  "status": "string"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "message": "string",
+  "documentation_url": "string",
+  "url": "string",
+  "status": "string",
+  "failure_reason": "REQUEST_CONFLICT"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "message": "string",
+  "documentation_url": "string",
+  "url": "string",
+  "status": "string"
+}
+```
+
+> 409 Response
+
+```json
+{
+  "message": "string",
+  "documentation_url": "string",
+  "url": "string",
+  "status": "string",
+  "failure_reason": "REQUEST_CONFLICT"
+}
+```
+
+> 422 Response
+
+```json
+{
+  "message": "string",
+  "documentation_url": "string",
+  "url": "string",
+  "status": "string",
+  "failure_reason": "REQUEST_CONFLICT"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "message": "string",
+  "documentation_url": "string",
+  "url": "string",
+  "status": "string",
+  "failure_reason": "REQUEST_CONFLICT"
+}
+```
+
+> 503 Response
+
+```json
+{
+  "message": "string",
+  "documentation_url": "string",
+  "url": "string",
+  "status": "string",
+  "failure_reason": "REQUEST_CONFLICT"
+}
+```
+
+<h3 id="request-a-copilot-code-review-for-a-pull-request-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|201|Created|Response|[copilot-code-review-request](#schemacopilot-code-review-request)|
+|401|Unauthorized|Requires authentication|[basic-error](#schemabasic-error)|
+|403|Forbidden|Forbidden. `failure_reason` is `ACTOR_FLAGGED` when the actor, repository owner, or requesting application owner has been flagged; it is absent for other authorization failures.|[copilot-code-review-request-denied](#schemacopilot-code-review-request-denied)|
+|404|Not Found|Resource not found|[basic-error](#schemabasic-error)|
+|409|Conflict|Conflict, a Copilot code review request is already pending for this pull request|[copilot-code-review-request-denied](#schemacopilot-code-review-request-denied)|
+|422|Unprocessable Entity|Validation failed. `failure_reason` is present for a stable business denial (the actor or repository is not eligible, the actor has no quota remaining, or the licensing organization is unavailable) and absent when the request body fails generic request validation. `failure_reason` is `INVALID_REVIEW_EFFORT` when the requested `review_effort` is unrecognized or not available for the repository and actor, and `message` lists the available effort levels.|[copilot-code-review-request-denied](#schemacopilot-code-review-request-denied)|
+|429|Too Many Requests|Too many requests. The per-actor or per-owner Copilot code review request rate limit has been exceeded. `failure_reason` is `RATE_LIMITED`.|[copilot-code-review-request-denied](#schemacopilot-code-review-request-denied)|
+|503|Service Unavailable|Service unavailable, Copilot code review cannot be serviced right now|[copilot-code-review-request-denied](#schemacopilot-code-review-request-denied)|
+
+<aside class="success">
+This operation does not require authentication
+</aside>
+
 ## List pull requests files
 
 <a id="opIdpulls/list-files"></a>
@@ -83919,7 +84387,7 @@ curl https://api.github.com/repos/string/string/releases/0/reactions/0 \
 `DELETE /repos/{owner}/{repo}/releases/{release_id}/reactions/{reaction_id}`
 
 > [!NOTE]
-> You can also specify a repository by `repository_id` using the route `DELETE delete /repositories/:repository_id/releases/:release_id/reactions/:reaction_id`.
+> You can also specify a repository by `repository_id` using the route `DELETE /repositories/:repository_id/releases/:release_id/reactions/:reaction_id`.
 
 Delete a reaction to a [release](https://docs.github.com/rest/releases/releases#get-a-release).
 
@@ -84219,7 +84687,7 @@ OAuth app tokens and personal access tokens (classic) need the `public_repo` or 
 |» allow_rebase_merge|body|boolean|false|Either `true` to allow rebase-merging pull requests, or `false` to prevent rebase-merging.|
 |» allow_auto_merge|body|boolean|false|Either `true` to allow auto-merge on pull requests, or `false` to disallow auto-merge.|
 |» delete_branch_on_merge|body|boolean|false|Either `true` to allow automatically deleting head branches when pull requests are merged, or `false` to prevent automatic deletion. **The authenticated user must be an organization owner to set this property to `true`.**|
-|» use_squash_pr_title_as_default|body|boolean|false|**Deprecated.** Either `true` to allow squash-merge commits to use pull request title, or `false` to use commit message. **This property is closing down. Please use `squash_merge_commit_title` instead.|
+|» use_squash_pr_title_as_default|body|boolean|false|**Deprecated.** Either `true` to allow squash-merge commits to use pull request title, or `false` to use commit message. **This property is closing down. Please use `squash_merge_commit_title` instead.**|
 |» squash_merge_commit_title|body|string|false|Required when using `squash_merge_commit_message`.<br><br>The default value for a squash merge commit title:<br><br>- `PR_TITLE` - default to the pull request's title.<br>- `COMMIT_OR_PR_TITLE` - default to the commit's title (if only one commit) or the pull request's title (when more than one commit).|
 |» squash_merge_commit_message|body|string|false|The default value for a squash merge commit message:<br><br>- `PR_BODY` - default to the pull request's body.<br>- `COMMIT_MESSAGES` - default to the branch's commit messages.<br>- `BLANK` - default to a blank commit message.|
 |» merge_commit_title|body|string|false|Required when using `merge_commit_message`.<br><br>The default value for a merge commit title.<br><br>- `PR_TITLE` - default to the pull request's title.<br>- `MERGE_MESSAGE` - default to the classic title for a merge message (e.g., Merge pull request #123 from branch-name).|
@@ -86630,7 +87098,7 @@ curl https://api.github.com/repos/string/string \
 |» allow_auto_merge|body|boolean|false|Either `true` to allow auto-merge on pull requests, or `false` to disallow auto-merge.|
 |» delete_branch_on_merge|body|boolean|false|Either `true` to allow automatically deleting head branches when pull requests are merged, or `false` to prevent automatic deletion.|
 |» allow_update_branch|body|boolean|false|Either `true` to always allow a pull request head branch that is behind its base branch to be updated even if it is not required to be up to date before merging, or false otherwise.|
-|» use_squash_pr_title_as_default|body|boolean|false|**Deprecated.** Either `true` to allow squash-merge commits to use pull request title, or `false` to use commit message. **This property is closing down. Please use `squash_merge_commit_title` instead.|
+|» use_squash_pr_title_as_default|body|boolean|false|**Deprecated.** Either `true` to allow squash-merge commits to use pull request title, or `false` to use commit message. **This property is closing down. Please use `squash_merge_commit_title` instead.**|
 |» squash_merge_commit_title|body|string|false|Required when using `squash_merge_commit_message`.<br><br>The default value for a squash merge commit title:<br><br>- `PR_TITLE` - default to the pull request's title.<br>- `COMMIT_OR_PR_TITLE` - default to the commit's title (if only one commit) or the pull request's title (when more than one commit).|
 |» squash_merge_commit_message|body|string|false|The default value for a squash merge commit message:<br><br>- `PR_BODY` - default to the pull request's body.<br>- `COMMIT_MESSAGES` - default to the branch's commit messages.<br>- `BLANK` - default to a blank commit message.|
 |» merge_commit_title|body|string|false|Required when using `merge_commit_message`.<br><br>The default value for a merge commit title.<br><br>- `PR_TITLE` - default to the pull request's title.<br>- `MERGE_MESSAGE` - default to the classic title for a merge message (e.g., Merge pull request #123 from branch-name).|
@@ -91866,7 +92334,7 @@ In order to rename the default branch, fine-grained access tokens also need the 
     },
     "author": {
       "gravatar_id": "",
-      "avatar_url": "https://secure.gravatar.com/avatar/7ad39074b0584bc555d0417ae3e7d974?d=https://a248.e.akamai.net/assets.github.com%2Fimages%2Fgravatars%2Fgravatar-140.png",
+      "avatar_url": "https://example.com/example.png",
       "url": "https://api.github.com/users/octocat",
       "id": 583231,
       "login": "octocat",
@@ -91897,7 +92365,7 @@ In order to rename the default branch, fine-grained access tokens also need the 
     "url": "https://api.github.com/repos/octocat/Hello-World/commits/7fd1a60b01f91b314f59955a4e4d4e80d8edf11d",
     "committer": {
       "gravatar_id": "",
-      "avatar_url": "https://secure.gravatar.com/avatar/7ad39074b0584bc555d0417ae3e7d974?d=https://a248.e.akamai.net/assets.github.com%2Fimages%2Fgravatars%2Fgravatar-140.png",
+      "avatar_url": "https://example.com/example.png",
       "url": "https://api.github.com/users/octocat",
       "id": 583231,
       "login": "octocat",
@@ -92103,7 +92571,7 @@ OAuth app tokens and personal access tokens (classic) need the `read:org` and `r
 |affiliation|all|
 |permission|pull|
 |permission|triage|
-|permission|triage_plus|
+|permission|moderate|
 |permission|push|
 |permission|maintain|
 |permission|admin|
@@ -92284,7 +92752,7 @@ You are limited to sending 50 invitations to a repository per 24 hour period. No
 |repo|path|string|true|The name of the repository without the `.git` extension. The name is not case sensitive.|
 |username|path|string|true|The handle for the GitHub user account.|
 |body|body|object|false|none|
-|» permission|body|string|false|The permission to grant the collaborator. **Only valid on organization-owned repositories.** We accept the following permissions to be set: `pull`, `triage`, `triage_plus`, `push`, `maintain`, `admin` and you can also specify a custom repository role name, if the owning organization has defined any.|
+|» permission|body|string|false|The permission to grant the collaborator. **Only valid on organization-owned repositories.** We accept the following permissions to be set: `pull`, `triage`, `moderate`, `push`, `maintain`, `admin` and you can also specify a custom repository role name, if the owning organization has defined any.|
 
 > Example responses
 
@@ -100253,7 +100721,7 @@ curl https://api.github.com/repos/string/string/invitations/0 \
 |repo|path|string|true|The name of the repository without the `.git` extension. The name is not case sensitive.|
 |invitation_id|path|integer|true|The unique identifier of the invitation.|
 |body|body|object|false|none|
-|» permissions|body|string|false|The permissions that the associated user will have on the repository. Valid values are `read`, `write`, `maintain`, `triage`, and `admin`.|
+|» permissions|body|string|false|The permissions that the associated user will have on the repository. Valid values are `read`, `write`, `maintain`, `triage`, `moderate`, and `admin`.|
 
 #### Enumerated Values
 
@@ -100263,6 +100731,7 @@ curl https://api.github.com/repos/string/string/invitations/0 \
 |» permissions|write|
 |» permissions|maintain|
 |» permissions|triage|
+|» permissions|moderate|
 |» permissions|admin|
 
 > Example responses
@@ -100437,16 +100906,20 @@ Fine-grained access tokens require the "Metadata" repository permission (read).
     "node_id": "IT_kwDNAd3NAZo",
     "name": "Task",
     "description": "A specific piece of work",
+    "color": "gray",
     "created_at": "2024-12-11T14:39:09Z",
-    "updated_at": "2024-12-11T14:39:09Z"
+    "updated_at": "2024-12-11T14:39:09Z",
+    "is_enabled": true
   },
   {
     "id": 411,
     "node_id": "IT_kwDNAd3NAZs",
     "name": "Bug",
     "description": "An unexpected problem or behavior",
+    "color": "red",
     "created_at": "2024-12-11T14:39:09Z",
-    "updated_at": "2024-12-11T14:39:09Z"
+    "updated_at": "2024-12-11T14:39:09Z",
+    "is_enabled": true
   }
 ]
 ```
@@ -101778,7 +102251,7 @@ curl https://api.github.com/repos/string/string/pages/deployments \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
   -d '{
-    "artifact_url": "https://downloadcontent/",
+    "artifact_url": "https://example.com/",
     "environment": "github-pages",
     "pages_build_version": "4fd754f7e594640989b406850d0bc8f06a121251",
     "oidc_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6IlV2R1h4SUhlY0JFc1JCdEttemUxUEhfUERiVSIsImtpZCI6IjUyRjE5N0M0ODFERTcwMTEyQzQ0MUI0QTlCMzdCNTNDN0ZDRjBEQjUifQ.eyJqdGkiOiJhMWIwNGNjNy0zNzZiLTQ1N2QtOTMzNS05NTY5YmVjZDExYTIiLCJzdWIiOiJyZXBvOnBhcGVyLXNwYS9taW55aTplbnZpcm9ubWVudDpQcm9kdWN0aW9uIiwiYXVkIjoiaHR0cHM6Ly9naXRodWIuY29tL3BhcGVyLXNwYSIsInJlZiI6InJlZnMvaGVhZHMvbWFpbiIsInNoYSI6ImEyODU1MWJmODdiZDk3NTFiMzdiMmM0YjM3M2MxZjU3NjFmYWM2MjYiLCJyZXBvc2l0b3J5IjoicGFwZXItc3BhL21pbnlpIiwicmVwb3NpdG9yeV9vd25lciI6InBhcGVyLXNwYSIsInJ1bl9pZCI6IjE1NDY0NTkzNjQiLCJydW5fbnVtYmVyIjoiMzQiLCJydW5fYXR0ZW1wdCI6IjYiLCJhY3RvciI6IllpTXlzdHkiLCJ3b3JrZmxvdyI6IkNJIiwiaGVhZF9yZWYiOiIiLCJiYXNlX3JlZiI6IiIsImV2ZW50X25hbWUiOiJwdXNoIiwicmVmX3R5cGUiOiJicmFuY2giLCJlbnZpcm9ubWVudCI6IlByb2R1Y3Rpb24iLCJqb2Jfd29ya2Zsb3dfcmVmIjoicGFwZXItc3BhL21pbnlpLy5naXRodWIvd29ya2Zsb3dzL2JsYW5rLnltbEByZWZzL2hlYWRzL21haW4iLCJpc3MiOiJodHRwczovL3Rva2VuLmFjdGlvbnMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwibmJmIjoxNjM5MDAwODU2LCJleHAiOjE2MzkwMDE3NTYsImlhdCI6MTYzOTAwMTQ1Nn0.VP8WictbQECKozE2SgvKb2FqJ9hisWsoMkYRTqfBrQfZTCXi5IcFEdgDMB2X7a99C2DeUuTvHh9RMKXLL2a0zg3-Sd7YrO7a2ll2kNlnvyIypcN6AeIc7BxHsTTnZN9Ud_xmEsTrSRGOEKmzCFkULQ6N4zlVD0sidypmXlMemmWEcv_ZHqhioEI_VMp5vwXQurketWH7qX4oDgG4okyYtPrv5RQHbfQcVo9izaPJ_jnsDd0CBA0QOx9InjPidtIkMYQLyUgJy33HLJy86EFNUnAf8UhBQuQi5mAsEpEzBBuKpG3PDiPtYCHOk64JZkZGd5mR888a5sbHRiaF8hm8YA"
@@ -101797,7 +102270,7 @@ The authenticated user must have write permission to the repository.
 
 ```json
 {
-  "artifact_url": "https://downloadcontent/",
+  "artifact_url": "https://example.com/",
   "environment": "github-pages",
   "pages_build_version": "4fd754f7e594640989b406850d0bc8f06a121251",
   "oidc_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6IlV2R1h4SUhlY0JFc1JCdEttemUxUEhfUERiVSIsImtpZCI6IjUyRjE5N0M0ODFERTcwMTEyQzQ0MUI0QTlCMzdCNTNDN0ZDRjBEQjUifQ.eyJqdGkiOiJhMWIwNGNjNy0zNzZiLTQ1N2QtOTMzNS05NTY5YmVjZDExYTIiLCJzdWIiOiJyZXBvOnBhcGVyLXNwYS9taW55aTplbnZpcm9ubWVudDpQcm9kdWN0aW9uIiwiYXVkIjoiaHR0cHM6Ly9naXRodWIuY29tL3BhcGVyLXNwYSIsInJlZiI6InJlZnMvaGVhZHMvbWFpbiIsInNoYSI6ImEyODU1MWJmODdiZDk3NTFiMzdiMmM0YjM3M2MxZjU3NjFmYWM2MjYiLCJyZXBvc2l0b3J5IjoicGFwZXItc3BhL21pbnlpIiwicmVwb3NpdG9yeV9vd25lciI6InBhcGVyLXNwYSIsInJ1bl9pZCI6IjE1NDY0NTkzNjQiLCJydW5fbnVtYmVyIjoiMzQiLCJydW5fYXR0ZW1wdCI6IjYiLCJhY3RvciI6IllpTXlzdHkiLCJ3b3JrZmxvdyI6IkNJIiwiaGVhZF9yZWYiOiIiLCJiYXNlX3JlZiI6IiIsImV2ZW50X25hbWUiOiJwdXNoIiwicmVmX3R5cGUiOiJicmFuY2giLCJlbnZpcm9ubWVudCI6IlByb2R1Y3Rpb24iLCJqb2Jfd29ya2Zsb3dfcmVmIjoicGFwZXItc3BhL21pbnlpLy5naXRodWIvd29ya2Zsb3dzL2JsYW5rLnltbEByZWZzL2hlYWRzL21haW4iLCJpc3MiOiJodHRwczovL3Rva2VuLmFjdGlvbnMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwibmJmIjoxNjM5MDAwODU2LCJleHAiOjE2MzkwMDE3NTYsImlhdCI6MTYzOTAwMTQ1Nn0.VP8WictbQECKozE2SgvKb2FqJ9hisWsoMkYRTqfBrQfZTCXi5IcFEdgDMB2X7a99C2DeUuTvHh9RMKXLL2a0zg3-Sd7YrO7a2ll2kNlnvyIypcN6AeIc7BxHsTTnZN9Ud_xmEsTrSRGOEKmzCFkULQ6N4zlVD0sidypmXlMemmWEcv_ZHqhioEI_VMp5vwXQurketWH7qX4oDgG4okyYtPrv5RQHbfQcVo9izaPJ_jnsDd0CBA0QOx9InjPidtIkMYQLyUgJy33HLJy86EFNUnAf8UhBQuQi5mAsEpEzBBuKpG3PDiPtYCHOk64JZkZGd5mR888a5sbHRiaF8hm8YA"
@@ -102119,6 +102592,118 @@ null
 |400|Bad Request|Custom domains are not available for GitHub Pages|None|
 |404|Not Found|Resource not found|[basic-error](#schemabasic-error)|
 |422|Unprocessable Entity|There isn't a CNAME for this page|None|
+
+<aside class="success">
+This operation does not require authentication
+</aside>
+
+## List planning statuses for a repository
+
+<a id="opIdrepos/list-planning-statuses"></a>
+
+> Code samples
+
+```bash
+curl https://api.github.com/repos/string/string/planning-statuses \
+  -H 'Accept: application/json'
+```
+
+`GET /repos/{owner}/{repo}/planning-statuses`
+
+Lists the selectable planning statuses available.
+Planning statuses are returned in deterministic display order:
+Backlog, Todo, In progress, In review, Done, Not planned, and Duplicate.
+Clients should expect new keys to be added.
+Returns `404 Not Found` when issue statuses aren't available in the repository.
+
+> [!NOTE]
+> Issue statuses are in preview and subject to change. They're only available to accounts enrolled in the preview.
+
+You need read access to the repository's issues to use this endpoint.
+
+OAuth app tokens and personal access tokens (classic) need the `repo` scope
+to use this endpoint with a private repository.
+
+Fine-grained access tokens require the "Issues" repository permission (read).
+
+<a href="https://docs.github.com/rest/repos/planning-statuses#list-planning-statuses-for-a-repository">API method documentation</a>
+
+<h3 id="list-planning-statuses-for-a-repository-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|owner|path|string|true|The account owner of the repository. The name is not case sensitive.|
+|repo|path|string|true|The name of the repository without the `.git` extension. The name is not case sensitive.|
+
+> Example responses
+
+> 200 Response
+
+```json
+[
+  {
+    "id": 2,
+    "name": "Backlog",
+    "category": "backlog"
+  },
+  {
+    "id": 3,
+    "name": "Todo",
+    "category": "planned"
+  },
+  {
+    "id": 4,
+    "name": "In progress",
+    "category": "started"
+  },
+  {
+    "id": 8,
+    "name": "In review",
+    "category": "started"
+  },
+  {
+    "id": 5,
+    "name": "Done",
+    "category": "completed"
+  },
+  {
+    "id": 6,
+    "name": "Not planned",
+    "category": "not_planned"
+  },
+  {
+    "id": 7,
+    "name": "Duplicate",
+    "category": "duplicate"
+  }
+]
+```
+
+> 404 Response
+
+```json
+{
+  "message": "string",
+  "documentation_url": "string",
+  "url": "string",
+  "status": "string"
+}
+```
+
+<h3 id="list-planning-statuses-for-a-repository-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Available planning statuses in display order|Inline|
+|404|Not Found|Resource not found|[basic-error](#schemabasic-error)|
+
+<h3 id="list-planning-statuses-for-a-repository-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*anonymous*|[[planning-status](#schemaplanning-status)]|false|none|none|
 
 <aside class="success">
 This operation does not require authentication
@@ -110059,7 +110644,7 @@ This query searches for the keyword `windows`, within any open issue that is lab
         "login": "Nick3C",
         "id": 90254,
         "node_id": "MDQ6VXNlcjkwMjU0",
-        "avatar_url": "https://secure.gravatar.com/avatar/934442aadfe3b2f4630510de416c5718?d=https://a248.e.akamai.net/assets.github.com%2Fimages%2Fgravatars%2Fgravatar-user-420.png",
+        "avatar_url": "https://avatars.githubusercontent.com/u/90254?v=4",
         "gravatar_id": "",
         "url": "https://api.github.com/users/Nick3C",
         "html_url": "https://github.com/Nick3C",
@@ -110128,7 +110713,7 @@ This query searches for the keyword `windows`, within any open issue that is lab
       "updated_at": "2009-07-19T09:23:43Z",
       "closed_at": null,
       "pull_request": {
-        "url": "https://api/github.com/repos/octocat/Hello-World/pull/1347",
+        "url": "https://api.github.com/repos/octocat/Hello-World/pull/1347",
         "html_url": "https://github.com/octocat/Hello-World/pull/1347",
         "diff_url": "https://github.com/octocat/Hello-World/pull/1347.diff",
         "patch_url": "https://api.github.com/repos/octocat/Hello-World/pulls/1347"
@@ -110475,7 +111060,7 @@ This query searches for repositories with the word `tetris` in the name, the des
         "login": "dtrupenn",
         "id": 872147,
         "node_id": "MDQ6VXNlcjg3MjE0Nw==",
-        "avatar_url": "https://secure.gravatar.com/avatar/e7956084e75f239de85d3a31bc172ace?d=https://a248.e.akamai.net/assets.github.com%2Fimages%2Fgravatars%2Fgravatar-user-420.png",
+        "avatar_url": "https://example.com/avatar/e7956084e75f239de85d3a31bc172ace",
         "gravatar_id": "",
         "url": "https://api.github.com/users/dtrupenn",
         "received_events_url": "https://api.github.com/users/dtrupenn/received_events",
@@ -111350,7 +111935,7 @@ Status Code **200**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|*anonymous*|[[secret-scanning-custom-pattern](#schemasecret-scanning-custom-pattern)]|false|none|none|
+|*anonymous*|[[secret-scanning-custom-pattern-with-dry-run](#schemasecret-scanning-custom-pattern-with-dry-run)]|false|none|none|
 
 ### Response Headers
 
@@ -112487,6 +113072,9 @@ The authenticated user must be an administrator for the repository or for the or
 
 OAuth app tokens and personal access tokens (classic) need the `repo` or `security_events` scope to use this endpoint. If this endpoint is only used with public repositories, the token can use the `public_repo` scope instead.
 
+> [!NOTE]
+> If [delegated alert dismissal](https://docs.github.com/code-security/how-tos/manage-security-alerts/manage-secret-scanning-alerts/enable-delegated-dismissal) is enabled, resolving or reopening an alert also requires write access to the "Secret scanning alert dismissal requests" permission. Granting the permission to the app alone is not sufficient if the token's permissions exclude it.
+
 <a href="https://docs.github.com/rest/secret-scanning/secret-scanning#update-a-secret-scanning-alert">API method documentation</a>
 
 > Body parameter
@@ -112945,7 +113533,7 @@ Status Code **200**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|*anonymous*|[[secret-scanning-custom-pattern](#schemasecret-scanning-custom-pattern)]|false|none|none|
+|*anonymous*|[[secret-scanning-custom-pattern-with-dry-run](#schemasecret-scanning-custom-pattern-with-dry-run)]|false|none|none|
 
 ### Response Headers
 
@@ -113723,7 +114311,7 @@ Lists all teams in an organization that are visible to the authenticated user.
 |org|path|string|true|The organization name. The name is not case sensitive.|
 |per_page|query|integer|false|The number of results per page (max 100). For more information, see "[Using pagination in the REST API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the-rest-api)."|
 |page|query|integer|false|The page number of the results to fetch. For more information, see "[Using pagination in the REST API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the-rest-api)."|
-|team_type|query|string|false|Filter team results by their type. For more information, see "[What kind of team should I use?](https://docs.github.com/enterprise-cloud@latest/admin/concepts/enterprise-fundamentals/teams-in-an-enterprise#what-kind-of-team-should-i-use)"|
+|team_type|query|string|false|Filter team results by their type. For more information, see "[What kind of team should I use?](https://docs.github.com/admin/concepts/enterprise-fundamentals/teams-in-an-enterprise#what-kind-of-team-should-i-use)"|
 
 #### Enumerated Values
 
@@ -115069,7 +115657,7 @@ If the repository is private, you must have at least `read` permission for that 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Alternative response with repository permissions|[team-repository](#schemateam-repository)|
-|204|No Content|Response if team has permission for the repository. This is the response when the repository media type hasn't been provded in the Accept header.|None|
+|204|No Content|Response if team has permission for the repository. This is the response when the repository media type hasn't been provided in the Accept header.|None|
 |404|Not Found|Not Found if team does not have permission for the repository|None|
 
 <aside class="success">
@@ -115119,7 +115707,7 @@ For more information about the permission levels, see "[Repository permission le
 |owner|path|string|true|The account owner of the repository. The name is not case sensitive.|
 |repo|path|string|true|The name of the repository without the `.git` extension. The name is not case sensitive.|
 |body|body|object|false|none|
-|» permission|body|string|false|The permission to grant the team on this repository. We accept the following permissions to be set: `pull`, `triage`, `push`, `maintain`, `admin` and you can also specify a custom repository role name, if the owning organization has defined any. If no permission is specified, the team's `permission` attribute will be used to determine what permission to grant the team on this repository.|
+|» permission|body|string|false|The permission to grant the team on this repository. We accept the following permissions to be set: `pull`, `triage`, `moderate`, `push`, `maintain`, `admin` and you can also specify a custom repository role name, if the owning organization has defined any. If no permission is specified, the team's `permission` attribute will be used to determine what permission to grant the team on this repository.|
 
 <h3 id="add-or-update-team-repository-permissions-responses">Responses</h3>
 
@@ -116038,7 +116626,7 @@ To remove a team member, the authenticated user must have 'admin' permissions to
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |204|No Content|Response|None|
-|404|Not Found|Not Found if team synchronization is setup|None|
+|404|Not Found|Not Found if team synchronization is set up|None|
 
 <aside class="success">
 This operation does not require authentication
@@ -116690,6 +117278,7 @@ Note that, if you choose not to pass any parameters, you'll need to set `Content
 |Parameter|Value|
 |---|---|
 |» permission|pull|
+|» permission|moderate|
 |» permission|push|
 |» permission|admin|
 
@@ -117070,6 +117659,8 @@ curl https://api.github.com/user \
 OAuth app tokens and personal access tokens (classic) need the `read:user` scope, or the broader `user` scope, for this endpoint to return the private user response. The private user response includes additional fields such as `private_gists`, `total_private_repos`, `owned_private_repos`, `disk_usage`, `collaborators`, and `two_factor_authentication`. Tokens without these scopes receive the public user response.
 
 The private and public user response types are unrelated to the [private profile](https://docs.github.com/account-and-profile/concepts/personal-profile#private-profiles) setting. A token without scopes still authenticates as the token's owner, so values subject to private profile visibility, such as `followers` and `following`, may differ from an unauthenticated response.
+
+For enterprise-managed users, if their email is unverified, this endpoint will return a placeholder email in the format `email+shortcode@domain.com` instead of their actual email. This placeholder email [may cause issues with some third-party apps](https://github.blog/changelog/2024-08-01-enterprise-managed-user-accounts-now-require-email-verification/). Once the user has [verified their email address](https://docs.github.com/account-and-profile/how-tos/email-preferences/verifying-your-email-address), the endpoint will return their real email.
 
 <a href="https://docs.github.com/rest/users/users#get-the-authenticated-user">API method documentation</a>
 
@@ -117833,6 +118424,8 @@ Lists all of your email addresses, and specifies which one is visible
 to the public.
 
 OAuth app tokens and personal access tokens (classic) need the `user:email` scope to use this endpoint.
+
+For enterprise-managed users, if their email is unverified, this endpoint will return a placeholder email in the format `email+shortcode@domain.com` instead of their actual email. This placeholder email [may cause issues with some third-party apps](https://github.blog/changelog/2024-08-01-enterprise-managed-user-accounts-now-require-email-verification/). Once the user has [verified their email address](https://docs.github.com/account-and-profile/how-tos/email-preferences/verifying-your-email-address), the endpoint will return their real email.
 
 <a href="https://docs.github.com/rest/users/emails#list-email-addresses-for-the-authenticated-user">API method documentation</a>
 
@@ -119118,6 +119711,925 @@ OAuth app tokens and personal access tokens (classic) need the `admin:gpg_key` s
 |403|Forbidden|Forbidden|[basic-error](#schemabasic-error)|
 |404|Not Found|Resource not found|[basic-error](#schemabasic-error)|
 |422|Unprocessable Entity|Validation failed, or the endpoint has been spammed.|[validation-error](#schemavalidation-error)|
+
+<aside class="success">
+This operation does not require authentication
+</aside>
+
+## List issue fields
+
+<a id="opIdusers/list-issue-fields-for-authenticated-user"></a>
+
+> Code samples
+
+```bash
+curl https://api.github.com/user/issue-fields \
+  -H 'Accept: application/json'
+```
+
+`GET /user/issue-fields`
+
+Lists all issue fields for the authenticated user. OAuth app tokens and personal access tokens (classic) need the `read:user` scope to use this endpoint.
+
+<a href="https://docs.github.com/rest/users/issue-fields#list-issue-fields">API method documentation</a>
+
+> Example responses
+
+> 200 Response
+
+```json
+[
+  {
+    "id": 1,
+    "node_id": "IFT_kwDNAd3NAZo",
+    "name": "Text field",
+    "description": "DRI",
+    "data_type": "text",
+    "visibility": "all",
+    "created_at": "2024-12-11T14:39:09Z",
+    "updated_at": "2024-12-11T14:39:09Z"
+  },
+  {
+    "id": 2,
+    "node_id": "IFSS_kwDNAd3NAZs",
+    "name": "Priority",
+    "description": "Level of importance",
+    "data_type": "single_select",
+    "visibility": "all",
+    "options": [
+      {
+        "id": 1,
+        "name": "High",
+        "description": "High priority",
+        "color": "red",
+        "priority": 1,
+        "created_at": "2024-12-11T14:39:09Z",
+        "updated_at": "2024-12-11T14:39:09Z"
+      },
+      {
+        "id": 2,
+        "name": "Medium",
+        "description": "Medium priority",
+        "color": "yellow",
+        "priority": 2,
+        "created_at": "2024-12-11T14:39:09Z",
+        "updated_at": "2024-12-11T14:39:09Z"
+      },
+      {
+        "id": 3,
+        "name": "Low",
+        "description": "Low priority",
+        "color": "green",
+        "priority": 3,
+        "created_at": "2024-12-11T14:39:09Z",
+        "updated_at": "2024-12-11T14:39:09Z"
+      }
+    ],
+    "created_at": "2024-12-11T14:39:09Z",
+    "updated_at": "2024-12-11T14:39:09Z"
+  },
+  {
+    "id": 3,
+    "node_id": "IFMS_kwDNAd3NAZt",
+    "name": "Categories",
+    "description": "Issue categories",
+    "data_type": "multi_select",
+    "visibility": "all",
+    "options": [
+      {
+        "id": 4,
+        "name": "Frontend",
+        "description": null,
+        "color": "blue",
+        "priority": 1,
+        "created_at": "2024-12-11T14:39:09Z",
+        "updated_at": "2024-12-11T14:39:09Z"
+      },
+      {
+        "id": 5,
+        "name": "Backend",
+        "description": null,
+        "color": "green",
+        "priority": 2,
+        "created_at": "2024-12-11T14:39:09Z",
+        "updated_at": "2024-12-11T14:39:09Z"
+      },
+      {
+        "id": 6,
+        "name": "Infrastructure",
+        "description": null,
+        "color": "purple",
+        "priority": 3,
+        "created_at": "2024-12-11T14:39:09Z",
+        "updated_at": "2024-12-11T14:39:09Z"
+      }
+    ],
+    "created_at": "2024-12-11T14:39:09Z",
+    "updated_at": "2024-12-11T14:39:09Z"
+  }
+]
+```
+
+> 404 Response
+
+```json
+{
+  "message": "string",
+  "documentation_url": "string",
+  "url": "string",
+  "status": "string"
+}
+```
+
+<h3 id="list-issue-fields-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Response|Inline|
+|404|Not Found|Resource not found|[basic-error](#schemabasic-error)|
+
+<h3 id="list-issue-fields-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*anonymous*|[[user-issue-field](#schemauser-issue-field)]|false|none|none|
+
+<aside class="success">
+This operation does not require authentication
+</aside>
+
+## Create an issue field
+
+<a id="opIdusers/create-issue-field-for-authenticated-user"></a>
+
+> Code samples
+
+```bash
+curl https://api.github.com/user/issue-fields \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -d '{
+    "name": "Priority",
+    "description": "Level of importance for the issue",
+    "data_type": "single_select",
+    "visibility": "all",
+    "options": [
+      {
+        "name": "High",
+        "description": "High priority",
+        "color": "red",
+        "priority": 1
+      },
+      {
+        "name": "Medium",
+        "description": "Medium priority",
+        "color": "yellow",
+        "priority": 2
+      },
+      {
+        "name": "Low",
+        "description": "Low priority",
+        "color": "green",
+        "priority": 3
+      }
+    ]
+  }'
+```
+
+`POST /user/issue-fields`
+
+Creates a new issue field for the authenticated user's personal account.
+
+OAuth app tokens and personal access tokens (classic) need the `user` scope to use this endpoint.
+
+<a href="https://docs.github.com/rest/users/issue-fields#create-an-issue-field">API method documentation</a>
+
+> Body parameter
+
+```json
+{
+  "name": "Priority",
+  "description": "Level of importance for the issue",
+  "data_type": "single_select",
+  "visibility": "all",
+  "options": [
+    {
+      "name": "High",
+      "description": "High priority",
+      "color": "red",
+      "priority": 1
+    },
+    {
+      "name": "Medium",
+      "description": "Medium priority",
+      "color": "yellow",
+      "priority": 2
+    },
+    {
+      "name": "Low",
+      "description": "Low priority",
+      "color": "green",
+      "priority": 3
+    }
+  ]
+}
+```
+
+<h3 id="create-an-issue-field-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|body|body|[user-create-issue-field](#schemauser-create-issue-field)|true|none|
+|» name|body|string|true|Name of the issue field.|
+|» description|body|string \| null|false|Description of the issue field.|
+|» data_type|body|string|true|The data type of the issue field.|
+|» visibility|body|string|false|The visibility of the issue field. Can be `restricted` (visible only to the owner and to collaborators on the repository the field is read through) or `all` (visible to all users who can see issues). Defaults to `restricted`.|
+|» options|body|[object]|false|Options for select fields. Required when data_type is 'single_select' or 'multi_select'.|
+|» » name|body|string|true|Name of the option.|
+|» » description|body|string \| null|false|Description of the option.|
+|» » color|body|string|true|Color for the option.|
+|» » priority|body|integer|true|Priority of the option for ordering.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|» data_type|text|
+|» data_type|date|
+|» data_type|single_select|
+|» data_type|multi_select|
+|» data_type|number|
+|» visibility|restricted|
+|» visibility|all|
+|» » color|gray|
+|» » color|blue|
+|» » color|green|
+|» » color|yellow|
+|» » color|orange|
+|» » color|red|
+|» » color|pink|
+|» » color|purple|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "id": 512,
+  "node_id": "IF_kwDNAd3NAZr",
+  "name": "Priority",
+  "description": "Level of importance for the issue",
+  "data_type": "single_select",
+  "visibility": "all",
+  "options": [
+    {
+      "id": 1,
+      "name": "High",
+      "description": "High priority",
+      "color": "red",
+      "priority": 1,
+      "created_at": "2025-01-15T10:30:15Z",
+      "updated_at": "2025-01-15T10:30:15Z"
+    },
+    {
+      "id": 2,
+      "name": "Medium",
+      "description": "Medium priority",
+      "color": "yellow",
+      "priority": 2,
+      "created_at": "2025-01-15T10:30:15Z",
+      "updated_at": "2025-01-15T10:30:15Z"
+    },
+    {
+      "id": 3,
+      "name": "Low",
+      "description": "Low priority",
+      "color": "green",
+      "priority": 3,
+      "created_at": "2025-01-15T10:30:15Z",
+      "updated_at": "2025-01-15T10:30:15Z"
+    }
+  ],
+  "created_at": "2025-01-15T10:30:15Z",
+  "updated_at": "2025-01-15T10:30:15Z"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "message": "string",
+  "documentation_url": "string",
+  "url": "string",
+  "status": "string"
+}
+```
+
+> 422 Response
+
+```json
+{
+  "message": "string",
+  "documentation_url": "string",
+  "errors": [
+    "string"
+  ]
+}
+```
+
+<h3 id="create-an-issue-field-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Response|[user-issue-field](#schemauser-issue-field)|
+|404|Not Found|Resource not found|[basic-error](#schemabasic-error)|
+|422|Unprocessable Entity|Validation failed, or the endpoint has been spammed.|[validation-error-simple](#schemavalidation-error-simple)|
+
+<aside class="success">
+This operation does not require authentication
+</aside>
+
+## Delete an issue field
+
+<a id="opIdusers/delete-issue-field-for-authenticated-user"></a>
+
+> Code samples
+
+```bash
+curl https://api.github.com/user/issue-fields/0 \
+  -X DELETE \
+  -H 'Accept: application/json'
+```
+
+`DELETE /user/issue-fields/{issue_field_id}`
+
+Deletes an issue field for the authenticated user.
+
+The authenticated user must own the issue field. OAuth app tokens and personal access tokens (classic)
+need the `user` scope to use this endpoint.
+
+<a href="https://docs.github.com/rest/users/issue-fields#delete-an-issue-field">API method documentation</a>
+
+<h3 id="delete-an-issue-field-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|issue_field_id|path|integer|true|The unique identifier of the issue field.|
+
+> Example responses
+
+> 404 Response
+
+```json
+{
+  "message": "string",
+  "documentation_url": "string",
+  "url": "string",
+  "status": "string"
+}
+```
+
+> 422 Response
+
+```json
+{
+  "message": "string",
+  "documentation_url": "string",
+  "errors": [
+    "string"
+  ]
+}
+```
+
+<h3 id="delete-an-issue-field-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|204|No Content|A header with no content is returned.|None|
+|404|Not Found|Resource not found|[basic-error](#schemabasic-error)|
+|422|Unprocessable Entity|Validation failed, or the endpoint has been spammed.|[validation-error-simple](#schemavalidation-error-simple)|
+
+<aside class="success">
+This operation does not require authentication
+</aside>
+
+## Update an issue field
+
+<a id="opIdusers/update-issue-field-for-authenticated-user"></a>
+
+> Code samples
+
+```bash
+curl https://api.github.com/user/issue-fields/0 \
+  -X PATCH \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -d '{
+    "name": "Priority",
+    "description": "Level of importance for the issue"
+  }'
+```
+
+`PATCH /user/issue-fields/{issue_field_id}`
+
+Updates an issue field for the authenticated user.
+
+The authenticated user must own the issue field. OAuth app tokens and personal access tokens (classic)
+need the `user` scope to use this endpoint.
+
+<a href="https://docs.github.com/rest/users/issue-fields#update-an-issue-field">API method documentation</a>
+
+> Body parameter
+
+```json
+{
+  "name": "Priority",
+  "description": "Level of importance for the issue"
+}
+```
+
+<h3 id="update-an-issue-field-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|issue_field_id|path|integer|true|The unique identifier of the issue field.|
+|body|body|[user-update-issue-field](#schemauser-update-issue-field)|true|none|
+|» name|body|string|false|Name of the issue field.|
+|» description|body|string \| null|false|Description of the issue field.|
+|» visibility|body|string|false|The visibility of the issue field. Can be `restricted` (visible only to the owner and to collaborators on the repository the field is read through) or `all` (visible to all users who can see issues).|
+|» options|body|[object]|false|Options for select fields. Only applicable when updating single_select or multi_select fields. When provided, this array **replaces** the entire existing set of options rather than adding to or updating individual options. To retain or update an existing option, include it in the array with its `id`. Options sent without an `id` are treated as new options and may cause existing options to be deleted and recreated.|
+|» » id|body|integer|false|The id of an existing option to retain or update. Omit this when creating a new option.|
+|» » name|body|string|true|Name of the option.|
+|» » description|body|string \| null|false|Description of the option.|
+|» » color|body|string|true|Color for the option.|
+|» » priority|body|integer|true|Priority of the option for ordering.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|» visibility|restricted|
+|» visibility|all|
+|» » color|gray|
+|» » color|blue|
+|» » color|green|
+|» » color|yellow|
+|» » color|orange|
+|» » color|red|
+|» » color|pink|
+|» » color|purple|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "id": 512,
+  "node_id": "IF_kwDNAd3NAZr",
+  "name": "Priority",
+  "description": "Level of importance for the issue",
+  "data_type": "single_select",
+  "visibility": "all",
+  "options": [
+    {
+      "id": 1,
+      "name": "High",
+      "description": "High priority",
+      "color": "red",
+      "priority": 1,
+      "created_at": "2025-01-15T10:30:15Z",
+      "updated_at": "2025-01-15T10:30:15Z"
+    },
+    {
+      "id": 2,
+      "name": "Medium",
+      "description": "Medium priority",
+      "color": "yellow",
+      "priority": 2,
+      "created_at": "2025-01-15T10:30:15Z",
+      "updated_at": "2025-01-15T10:30:15Z"
+    },
+    {
+      "id": 3,
+      "name": "Low",
+      "description": "Low priority",
+      "color": "green",
+      "priority": 3,
+      "created_at": "2025-01-15T10:30:15Z",
+      "updated_at": "2025-01-15T10:30:15Z"
+    }
+  ],
+  "created_at": "2025-01-15T10:30:15Z",
+  "updated_at": "2025-01-15T10:30:15Z"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "message": "string",
+  "documentation_url": "string",
+  "url": "string",
+  "status": "string"
+}
+```
+
+> 422 Response
+
+```json
+{
+  "message": "string",
+  "documentation_url": "string",
+  "errors": [
+    "string"
+  ]
+}
+```
+
+<h3 id="update-an-issue-field-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Response|[user-issue-field](#schemauser-issue-field)|
+|404|Not Found|Resource not found|[basic-error](#schemabasic-error)|
+|422|Unprocessable Entity|Validation failed, or the endpoint has been spammed.|[validation-error-simple](#schemavalidation-error-simple)|
+
+<aside class="success">
+This operation does not require authentication
+</aside>
+
+## List issue types
+
+<a id="opIdusers/list-issue-types-for-authenticated-user"></a>
+
+> Code samples
+
+```bash
+curl https://api.github.com/user/issue-types \
+  -H 'Accept: application/json'
+```
+
+`GET /user/issue-types`
+
+Lists all issue types for the authenticated user. OAuth app tokens and personal access tokens (classic) need the `read:user` scope to use this endpoint.
+
+<a href="https://docs.github.com/rest/users/issue-types#list-issue-types">API method documentation</a>
+
+> Example responses
+
+> 200 Response
+
+```json
+[
+  {
+    "id": 410,
+    "node_id": "IT_kwDNAd3NAZo",
+    "name": "Task",
+    "description": "A specific piece of work",
+    "color": "gray",
+    "created_at": "2024-12-11T14:39:09Z",
+    "updated_at": "2024-12-11T14:39:09Z",
+    "is_enabled": true
+  },
+  {
+    "id": 411,
+    "node_id": "IT_kwDNAd3NAZs",
+    "name": "Bug",
+    "description": "An unexpected problem or behavior",
+    "color": "red",
+    "created_at": "2024-12-11T14:39:09Z",
+    "updated_at": "2024-12-11T14:39:09Z",
+    "is_enabled": true
+  }
+]
+```
+
+> 404 Response
+
+```json
+{
+  "message": "string",
+  "documentation_url": "string",
+  "url": "string",
+  "status": "string"
+}
+```
+
+<h3 id="list-issue-types-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Response|Inline|
+|404|Not Found|Resource not found|[basic-error](#schemabasic-error)|
+
+<h3 id="list-issue-types-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*anonymous*|[[issue-type](#schemaissue-type)]|false|none|none|
+
+<aside class="success">
+This operation does not require authentication
+</aside>
+
+## Create an issue type
+
+<a id="opIdusers/create-issue-type-for-authenticated-user"></a>
+
+> Code samples
+
+```bash
+curl https://api.github.com/user/issue-types \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -d '{
+    "name": "Epic",
+    "description": "An issue type for a multi-week tracking of work",
+    "is_enabled": true,
+    "color": "green"
+  }'
+```
+
+`POST /user/issue-types`
+
+Creates a new issue type for the authenticated user's personal account.
+
+OAuth app tokens and personal access tokens (classic) need the `user` scope to use this endpoint.
+
+<a href="https://docs.github.com/rest/users/issue-types#create-an-issue-type">API method documentation</a>
+
+> Body parameter
+
+```json
+{
+  "name": "Epic",
+  "description": "An issue type for a multi-week tracking of work",
+  "is_enabled": true,
+  "color": "green"
+}
+```
+
+<h3 id="create-an-issue-type-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|body|body|[issue-type-request](#schemaissue-type-request)|true|none|
+|» name|body|string|true|Name of the issue type.|
+|» is_enabled|body|boolean|true|Whether or not the issue type is enabled.|
+|» description|body|string \| null|false|Description of the issue type.|
+|» color|body|string \| null|false|Color for the issue type.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|» color|gray|
+|» color|blue|
+|» color|green|
+|» color|yellow|
+|» color|orange|
+|» color|red|
+|» color|pink|
+|» color|purple|
+|» color|null|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "id": 410,
+  "node_id": "IT_kwDNAd3NAZo",
+  "name": "Task",
+  "description": "A specific piece of work",
+  "color": "gray",
+  "created_at": "2024-12-11T14:39:09Z",
+  "updated_at": "2024-12-11T14:39:09Z",
+  "is_enabled": true
+}
+```
+
+> 404 Response
+
+```json
+{
+  "message": "string",
+  "documentation_url": "string",
+  "url": "string",
+  "status": "string"
+}
+```
+
+> 422 Response
+
+```json
+{
+  "message": "string",
+  "documentation_url": "string",
+  "errors": [
+    "string"
+  ]
+}
+```
+
+<h3 id="create-an-issue-type-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Response|[issue-type](#schemaissue-type)|
+|404|Not Found|Resource not found|[basic-error](#schemabasic-error)|
+|422|Unprocessable Entity|Validation failed, or the endpoint has been spammed.|[validation-error-simple](#schemavalidation-error-simple)|
+
+<aside class="success">
+This operation does not require authentication
+</aside>
+
+## Update an issue type
+
+<a id="opIdusers/update-issue-type-for-authenticated-user"></a>
+
+> Code samples
+
+```bash
+curl https://api.github.com/user/issue-types/0 \
+  -X PUT \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -d '{
+    "name": "Epic",
+    "description": "An issue type for a multi-week tracking of work",
+    "is_enabled": true,
+    "color": "green"
+  }'
+```
+
+`PUT /user/issue-types/{issue_type_id}`
+
+Updates an issue type for the authenticated user.
+
+The authenticated user must own the issue type. OAuth app tokens and personal access tokens (classic)
+need the `user` scope to use this endpoint.
+
+<a href="https://docs.github.com/rest/users/issue-types#update-an-issue-type">API method documentation</a>
+
+> Body parameter
+
+```json
+{
+  "name": "Epic",
+  "description": "An issue type for a multi-week tracking of work",
+  "is_enabled": true,
+  "color": "green"
+}
+```
+
+<h3 id="update-an-issue-type-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|issue_type_id|path|integer|true|The unique identifier of the issue type.|
+|body|body|[issue-type-request](#schemaissue-type-request)|true|none|
+|» name|body|string|true|Name of the issue type.|
+|» is_enabled|body|boolean|true|Whether or not the issue type is enabled.|
+|» description|body|string \| null|false|Description of the issue type.|
+|» color|body|string \| null|false|Color for the issue type.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|» color|gray|
+|» color|blue|
+|» color|green|
+|» color|yellow|
+|» color|orange|
+|» color|red|
+|» color|pink|
+|» color|purple|
+|» color|null|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "id": 410,
+  "node_id": "IT_kwDNAd3NAZo",
+  "name": "Task",
+  "description": "A specific piece of work",
+  "color": "gray",
+  "created_at": "2024-12-11T14:39:09Z",
+  "updated_at": "2024-12-11T14:39:09Z",
+  "is_enabled": true
+}
+```
+
+> 404 Response
+
+```json
+{
+  "message": "string",
+  "documentation_url": "string",
+  "url": "string",
+  "status": "string"
+}
+```
+
+> 422 Response
+
+```json
+{
+  "message": "string",
+  "documentation_url": "string",
+  "errors": [
+    "string"
+  ]
+}
+```
+
+<h3 id="update-an-issue-type-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Response|[issue-type](#schemaissue-type)|
+|404|Not Found|Resource not found|[basic-error](#schemabasic-error)|
+|422|Unprocessable Entity|Validation failed, or the endpoint has been spammed.|[validation-error-simple](#schemavalidation-error-simple)|
+
+<aside class="success">
+This operation does not require authentication
+</aside>
+
+## Delete an issue type
+
+<a id="opIdusers/delete-issue-type-for-authenticated-user"></a>
+
+> Code samples
+
+```bash
+curl https://api.github.com/user/issue-types/0 \
+  -X DELETE \
+  -H 'Accept: application/json'
+```
+
+`DELETE /user/issue-types/{issue_type_id}`
+
+Deletes an issue type for the authenticated user.
+
+The authenticated user must own the issue type. OAuth app tokens and personal access tokens (classic)
+need the `user` scope to use this endpoint.
+
+<a href="https://docs.github.com/rest/users/issue-types#delete-an-issue-type">API method documentation</a>
+
+<h3 id="delete-an-issue-type-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|issue_type_id|path|integer|true|The unique identifier of the issue type.|
+
+> Example responses
+
+> 404 Response
+
+```json
+{
+  "message": "string",
+  "documentation_url": "string",
+  "url": "string",
+  "status": "string"
+}
+```
+
+> 422 Response
+
+```json
+{
+  "message": "string",
+  "documentation_url": "string",
+  "errors": [
+    "string"
+  ]
+}
+```
+
+<h3 id="delete-an-issue-type-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|204|No Content|Response|None|
+|404|Not Found|Resource not found|[basic-error](#schemabasic-error)|
+|422|Unprocessable Entity|Validation failed, or the endpoint has been spammed.|[validation-error-simple](#schemavalidation-error-simple)|
 
 <aside class="success">
 This operation does not require authentication
@@ -131354,6 +132866,218 @@ Enterprise owners, billing managers, and authorized users with fine-grained "Vie
 This operation does not require authentication
 </aside>
 
+## Get the Copilot code review policy for an enterprise
+
+<a id="opIdcopilot/get-enterprise-code-review-policy"></a>
+
+> Code samples
+
+```bash
+curl https://api.github.com/enterprises/string/copilot/policies/code-review \
+  -H 'Accept: application/json'
+```
+
+`GET /enterprises/{enterprise}/copilot/policies/code-review`
+
+Gets the configured Copilot code review policy for an enterprise.
+This does not return a user's effective access, preview approval controls, or automatic-review rulesets.
+
+Enterprise owners and users with the `read_enterprise_ai_controls` permission can use this endpoint.
+OAuth app tokens and personal access tokens (classic) need the `read:enterprise` scope.
+GitHub App tokens and fine-grained personal access tokens are not supported.
+
+<a href="https://docs.github.com/rest/copilot/copilot-code-review#get-the-copilot-code-review-policy-for-an-enterprise">API method documentation</a>
+
+<h3 id="get-the-copilot-code-review-policy-for-an-enterprise-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|enterprise|path|string|true|The slug version of the enterprise name.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "policy_state": "enabled_for_all_organizations"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "message": "string",
+  "documentation_url": "string",
+  "url": "string",
+  "status": "string"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "message": "string",
+  "documentation_url": "string",
+  "url": "string",
+  "status": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "message": "string",
+  "documentation_url": "string",
+  "url": "string",
+  "status": "string"
+}
+```
+
+<h3 id="get-the-copilot-code-review-policy-for-an-enterprise-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|The configured enterprise policy.|[enterprise-copilot-code-review-policy](#schemaenterprise-copilot-code-review-policy)|
+|401|Unauthorized|Requires authentication|[basic-error](#schemabasic-error)|
+|403|Forbidden|Forbidden|[basic-error](#schemabasic-error)|
+|404|Not Found|Resource not found|[basic-error](#schemabasic-error)|
+
+<aside class="success">
+This operation does not require authentication
+</aside>
+
+## Set the Copilot code review policy for an enterprise
+
+<a id="opIdcopilot/set-enterprise-code-review-policy"></a>
+
+> Code samples
+
+```bash
+curl https://api.github.com/enterprises/string/copilot/policies/code-review \
+  -X PUT \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -d '{
+    "policy_state": "enabled_for_all_organizations"
+  }'
+```
+
+`PUT /enterprises/{enterprise}/copilot/policies/code-review`
+
+Sets the configured Copilot code review policy for an enterprise, using the same
+asynchronous propagation and notifications as enterprise settings. Policies that
+depend on Copilot code review keep their values.
+
+Enterprise owners and users with the `write_enterprise_ai_controls` permission can use this endpoint.
+OAuth app tokens and personal access tokens (classic) need the `admin:enterprise` scope.
+GitHub App tokens and fine-grained personal access tokens are not supported.
+
+Standalone enterprises support enabled and disabled policies, but cannot delegate
+policy to organization administrators. Invalid or unsupported input does not change any policy.
+
+<a href="https://docs.github.com/rest/copilot/copilot-code-review#set-the-copilot-code-review-policy-for-an-enterprise">API method documentation</a>
+
+> Body parameter
+
+```json
+{
+  "policy_state": "enabled_for_all_organizations"
+}
+```
+
+<h3 id="set-the-copilot-code-review-policy-for-an-enterprise-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|enterprise|path|string|true|The slug version of the enterprise name.|
+|body|body|object|true|none|
+|» policy_state|body|string|true|The enterprise's Copilot code review policy.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|» policy_state|enabled_for_all_organizations|
+|» policy_state|disabled_for_all_organizations|
+|» policy_state|configured_by_organization_admins|
+
+> Example responses
+
+> 400 Response
+
+```json
+{
+  "message": "string",
+  "documentation_url": "string",
+  "url": "string",
+  "status": "string"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "message": "string",
+  "documentation_url": "string",
+  "url": "string",
+  "status": "string"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "message": "string",
+  "documentation_url": "string",
+  "url": "string",
+  "status": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "message": "string",
+  "documentation_url": "string",
+  "url": "string",
+  "status": "string"
+}
+```
+
+> 422 Response
+
+```json
+{
+  "message": "string",
+  "documentation_url": "string",
+  "errors": [
+    "string"
+  ]
+}
+```
+
+<h3 id="set-the-copilot-code-review-policy-for-an-enterprise-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|204|No Content|A header with no content is returned.|None|
+|400|Bad Request|Bad Request|[basic-error](#schemabasic-error)|
+|401|Unauthorized|Requires authentication|[basic-error](#schemabasic-error)|
+|403|Forbidden|Forbidden|[basic-error](#schemabasic-error)|
+|404|Not Found|Resource not found|[basic-error](#schemabasic-error)|
+|422|Unprocessable Entity|Validation failed, or the endpoint has been spammed.|[validation-error-simple](#schemavalidation-error-simple)|
+
+<aside class="success">
+This operation does not require authentication
+</aside>
+
 ## Set the coding agent policy for an enterprise
 
 <a id="opIdcopilot/set-enterprise-coding-agent-policy"></a>
@@ -132472,6 +134196,615 @@ Status Code **200**
 This operation does not require authentication
 </aside>
 
+## Get the Copilot code review runner configuration for an organization
+
+<a id="opIdcopilot/get-organization-code-review-runner"></a>
+
+> Code samples
+
+```bash
+curl https://api.github.com/orgs/string/copilot/code-review/runner \
+  -H 'Accept: application/json'
+```
+
+`GET /orgs/{org}/copilot/code-review/runner`
+
+Gets the runner configuration that Copilot code review uses for an organization.
+Until the organization saves a Copilot code review runner configuration, the response reports the values
+inherited from the organization's Copilot coding agent runner configuration, with `configured_by` set to `coding_agent`.
+
+Organization owners can use this endpoint.
+OAuth app tokens and personal access tokens (classic) need either the
+`manage_billing:copilot` or `read:org` scope.
+GitHub App tokens and fine-grained personal access tokens are not supported.
+
+<a href="https://docs.github.com/rest/copilot/copilot-code-review#get-the-copilot-code-review-runner-configuration-for-an-organization">API method documentation</a>
+
+<h3 id="get-the-copilot-code-review-runner-configuration-for-an-organization-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|org|path|string|true|The organization name. The name is not case sensitive.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "runner_type": "standard",
+  "runner_labels": [],
+  "runner_group_name": null,
+  "allow_repository_customization": true,
+  "configured_by": "coding_agent"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "message": "string",
+  "documentation_url": "string",
+  "url": "string",
+  "status": "string"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "message": "string",
+  "documentation_url": "string",
+  "url": "string",
+  "status": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "message": "string",
+  "documentation_url": "string",
+  "url": "string",
+  "status": "string"
+}
+```
+
+> 503 Response
+
+```json
+{
+  "code": "string",
+  "message": "string",
+  "documentation_url": "string"
+}
+```
+
+<h3 id="get-the-copilot-code-review-runner-configuration-for-an-organization-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|The organization runner configuration.|[organization-copilot-code-review-runner](#schemaorganization-copilot-code-review-runner)|
+|401|Unauthorized|Requires authentication|[basic-error](#schemabasic-error)|
+|403|Forbidden|Forbidden|[basic-error](#schemabasic-error)|
+|404|Not Found|Resource not found|[basic-error](#schemabasic-error)|
+|503|Service Unavailable|Service unavailable|Inline|
+
+<h3 id="get-the-copilot-code-review-runner-configuration-for-an-organization-responseschema">Response Schema</h3>
+
+Status Code **503**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|code|string|false|none|none|
+|message|string|false|none|none|
+|documentation_url|string|false|none|none|
+
+<aside class="success">
+This operation does not require authentication
+</aside>
+
+## Set the Copilot code review runner configuration for an organization
+
+<a id="opIdcopilot/set-organization-code-review-runner"></a>
+
+> Code samples
+
+```bash
+curl https://api.github.com/orgs/string/copilot/code-review/runner \
+  -X PUT \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -d '{
+    "runner_type": "labeled",
+    "runner_labels": [
+      "copilot-review"
+    ],
+    "runner_group_name": "copilot-runners",
+    "allow_repository_customization": false
+  }'
+```
+
+`PUT /orgs/{org}/copilot/code-review/runner`
+
+Sets the runner configuration that Copilot code review uses for an organization. After a successful
+update, Copilot code review uses its own runner configuration and `configured_by` is `code_review`.
+
+A `labeled` runner requires at least one label in `runner_labels` or a `runner_group_name`. A `standard`
+runner does not accept labels or a runner group. When `allow_repository_customization` is omitted, the current
+effective value is kept. The whole request is validated before any change is made, so invalid input does not
+change the configuration.
+
+Organization owners can use this endpoint.
+OAuth app tokens and personal access tokens (classic) need either the
+`manage_billing:copilot` or `admin:org` scope.
+GitHub App tokens and fine-grained personal access tokens are not supported.
+
+<a href="https://docs.github.com/rest/copilot/copilot-code-review#set-the-copilot-code-review-runner-configuration-for-an-organization">API method documentation</a>
+
+> Body parameter
+
+```json
+{
+  "runner_type": "labeled",
+  "runner_labels": [
+    "copilot-review"
+  ],
+  "runner_group_name": "copilot-runners",
+  "allow_repository_customization": false
+}
+```
+
+<h3 id="set-the-copilot-code-review-runner-configuration-for-an-organization-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|org|path|string|true|The organization name. The name is not case sensitive.|
+|body|body|object|true|none|
+|» runner_type|body|string|true|The type of runner. `standard` uses GitHub-hosted runners. `labeled` uses runners that match the labels or runner group.|
+|» runner_labels|body|[string]|false|The runner labels for a labeled runner.|
+|» runner_group_name|body|string \| null|false|The runner group for a labeled runner.|
+|» allow_repository_customization|body|boolean|false|Whether repositories can use their own runner configuration.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|» runner_type|standard|
+|» runner_type|labeled|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "runner_type": "labeled",
+  "runner_labels": [
+    "copilot-review"
+  ],
+  "runner_group_name": "copilot-runners",
+  "allow_repository_customization": false,
+  "configured_by": "code_review"
+}
+```
+
+> 400 Response
+
+```json
+{
+  "message": "string",
+  "documentation_url": "string",
+  "url": "string",
+  "status": "string"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "message": "string",
+  "documentation_url": "string",
+  "url": "string",
+  "status": "string"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "message": "string",
+  "documentation_url": "string",
+  "url": "string",
+  "status": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "message": "string",
+  "documentation_url": "string",
+  "url": "string",
+  "status": "string"
+}
+```
+
+> 422 Response
+
+```json
+{
+  "message": "string",
+  "documentation_url": "string",
+  "errors": [
+    "string"
+  ]
+}
+```
+
+> 503 Response
+
+```json
+{
+  "code": "string",
+  "message": "string",
+  "documentation_url": "string"
+}
+```
+
+<h3 id="set-the-copilot-code-review-runner-configuration-for-an-organization-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|The updated organization runner configuration.|[organization-copilot-code-review-runner](#schemaorganization-copilot-code-review-runner)|
+|400|Bad Request|Bad Request|[basic-error](#schemabasic-error)|
+|401|Unauthorized|Requires authentication|[basic-error](#schemabasic-error)|
+|403|Forbidden|Forbidden|[basic-error](#schemabasic-error)|
+|404|Not Found|Resource not found|[basic-error](#schemabasic-error)|
+|422|Unprocessable Entity|Validation failed, or the endpoint has been spammed.|[validation-error-simple](#schemavalidation-error-simple)|
+|503|Service Unavailable|Service unavailable|Inline|
+
+<h3 id="set-the-copilot-code-review-runner-configuration-for-an-organization-responseschema">Response Schema</h3>
+
+Status Code **503**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|code|string|false|none|none|
+|message|string|false|none|none|
+|documentation_url|string|false|none|none|
+
+<aside class="success">
+This operation does not require authentication
+</aside>
+
+## Get Copilot code review settings for an organization
+
+<a id="opIdcopilot/get-organization-code-review-settings"></a>
+
+> Code samples
+
+```bash
+curl https://api.github.com/orgs/string/copilot/code-review/settings \
+  -H 'Accept: application/json'
+```
+
+`GET /orgs/{org}/copilot/code-review/settings`
+
+Gets the Copilot code review settings for an organization. Currently this is the default review effort
+that repositories in the organization use when they do not choose their own.
+For each setting, the response includes the configured value, the effective value, the default inherited
+when nothing is configured, whether organization administrators can edit it, and whether the enterprise
+or the organization manages it.
+
+Organization owners can use this endpoint.
+OAuth app tokens and personal access tokens (classic) need either the
+`manage_billing:copilot` or `read:org` scope.
+GitHub App tokens and fine-grained personal access tokens are not supported.
+
+<a href="https://docs.github.com/rest/copilot/copilot-code-review#get-copilot-code-review-settings-for-an-organization">API method documentation</a>
+
+<h3 id="get-copilot-code-review-settings-for-an-organization-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|org|path|string|true|The organization name. The name is not case sensitive.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "default_review_effort": {
+    "configured": null,
+    "effective": "balanced",
+    "github_default": "balanced",
+    "editable": true,
+    "managed_by": "organization"
+  },
+  "available_review_efforts": [
+    "lite",
+    "balanced"
+  ]
+}
+```
+
+> 401 Response
+
+```json
+{
+  "message": "string",
+  "documentation_url": "string",
+  "url": "string",
+  "status": "string"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "message": "string",
+  "documentation_url": "string",
+  "url": "string",
+  "status": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "message": "string",
+  "documentation_url": "string",
+  "url": "string",
+  "status": "string"
+}
+```
+
+> 503 Response
+
+```json
+{
+  "code": "string",
+  "message": "string",
+  "documentation_url": "string"
+}
+```
+
+<h3 id="get-copilot-code-review-settings-for-an-organization-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|The organization settings.|[organization-copilot-code-review-settings](#schemaorganization-copilot-code-review-settings)|
+|401|Unauthorized|Requires authentication|[basic-error](#schemabasic-error)|
+|403|Forbidden|Forbidden|[basic-error](#schemabasic-error)|
+|404|Not Found|Resource not found|[basic-error](#schemabasic-error)|
+|503|Service Unavailable|Service unavailable|Inline|
+
+<h3 id="get-copilot-code-review-settings-for-an-organization-responseschema">Response Schema</h3>
+
+Status Code **503**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|code|string|false|none|none|
+|message|string|false|none|none|
+|documentation_url|string|false|none|none|
+
+<aside class="success">
+This operation does not require authentication
+</aside>
+
+## Update Copilot code review settings for an organization
+
+<a id="opIdcopilot/update-organization-code-review-settings"></a>
+
+> Code samples
+
+```bash
+curl https://api.github.com/orgs/string/copilot/code-review/settings \
+  -X PATCH \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -d '{
+    "default_review_effort": "balanced"
+  }'
+```
+
+`PATCH /orgs/{org}/copilot/code-review/settings`
+
+Updates the Copilot code review settings for an organization. Omitted settings are not changed.
+Set `default_review_effort` to `inherit` to clear the organization's value so repositories use the
+inherited default again. Changes use the same audit logging and telemetry as organization settings.
+
+Organization owners can use this endpoint.
+OAuth app tokens and personal access tokens (classic) need either the
+`manage_billing:copilot` or `admin:org` scope.
+GitHub App tokens and fine-grained personal access tokens are not supported.
+
+When a submitted setting cannot be changed by the organization, the request fails with `409` and the
+code `SETTING_NOT_EDITABLE`. The whole request is validated before any change is made, so invalid input
+and conflicts do not change any setting.
+
+<a href="https://docs.github.com/rest/copilot/copilot-code-review#update-copilot-code-review-settings-for-an-organization">API method documentation</a>
+
+> Body parameter
+
+```json
+{
+  "default_review_effort": "balanced"
+}
+```
+
+<h3 id="update-copilot-code-review-settings-for-an-organization-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|org|path|string|true|The organization name. The name is not case sensitive.|
+|body|body|object|true|none|
+|» default_review_effort|body|string|false|The default review effort for repositories that do not choose their own. Use `inherit` to clear the organization's value. Only efforts listed in the settings' `available_review_efforts` are accepted, and a rejected effort's error message lists them. For more information, see [Review effort level](https://docs.github.com/copilot/concepts/agent-capabilities/agent-powered-workflows-and-operations/code-review#review-effort-level).|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "default_review_effort": {
+    "configured": "balanced",
+    "effective": "balanced",
+    "github_default": "balanced",
+    "editable": true,
+    "managed_by": "organization"
+  },
+  "available_review_efforts": [
+    "lite",
+    "balanced"
+  ]
+}
+```
+
+> 400 Response
+
+```json
+{
+  "message": "string",
+  "documentation_url": "string",
+  "url": "string",
+  "status": "string"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "message": "string",
+  "documentation_url": "string",
+  "url": "string",
+  "status": "string"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "message": "string",
+  "documentation_url": "string",
+  "url": "string",
+  "status": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "message": "string",
+  "documentation_url": "string",
+  "url": "string",
+  "status": "string"
+}
+```
+
+> 409 Response
+
+```json
+{
+  "message": "The Copilot code review default review effort cannot be changed by this organization.",
+  "documentation_url": "https://docs.github.com/rest",
+  "status": "409",
+  "code": "SETTING_NOT_EDITABLE",
+  "settings": {
+    "default_review_effort": {
+      "configured": null,
+      "effective": "balanced",
+      "github_default": "balanced",
+      "editable": false,
+      "managed_by": "enterprise"
+    },
+    "available_review_efforts": [
+      "lite",
+      "balanced"
+    ]
+  }
+}
+```
+
+> 422 Response
+
+```json
+{
+  "message": "string",
+  "documentation_url": "string",
+  "errors": [
+    "string"
+  ]
+}
+```
+
+> 503 Response
+
+```json
+{
+  "code": "string",
+  "message": "string",
+  "documentation_url": "string"
+}
+```
+
+<h3 id="update-copilot-code-review-settings-for-an-organization-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|The updated organization settings.|[organization-copilot-code-review-settings](#schemaorganization-copilot-code-review-settings)|
+|400|Bad Request|Bad Request|[basic-error](#schemabasic-error)|
+|401|Unauthorized|Requires authentication|[basic-error](#schemabasic-error)|
+|403|Forbidden|Forbidden|[basic-error](#schemabasic-error)|
+|404|Not Found|Resource not found|[basic-error](#schemabasic-error)|
+|409|Conflict|The organization cannot change a submitted setting.|Inline|
+|422|Unprocessable Entity|Validation failed, or the endpoint has been spammed.|[validation-error-simple](#schemavalidation-error-simple)|
+|503|Service Unavailable|Service unavailable|Inline|
+
+<h3 id="update-copilot-code-review-settings-for-an-organization-responseschema">Response Schema</h3>
+
+Status Code **409**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|message|string|true|none|none|
+|documentation_url|string|false|none|none|
+|status|string|false|none|none|
+|code|string|true|none|none|
+|settings|[organization-copilot-code-review-settings](#schemaorganization-copilot-code-review-settings)|true|none|The organization's Copilot code review settings.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|code|SETTING_NOT_EDITABLE|
+
+Status Code **503**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|code|string|false|none|none|
+|message|string|false|none|none|
+|documentation_url|string|false|none|none|
+
+<aside class="success">
+This operation does not require authentication
+</aside>
+
 ## Get Copilot cloud agent permissions for an organization
 
 <a id="opIdcopilot/get-copilot-coding-agent-permissions-organization"></a>
@@ -132491,10 +134824,13 @@ curl https://api.github.com/orgs/string/copilot/coding-agent/permissions \
 Gets information about which repositories in an organization have been enabled
 or disabled for the Copilot cloud agent.
 
-Organization owners can configure whether Copilot cloud agent is enabled for
-all repositories, selected repositories, or no repositories owned by organization.
+Organization owners and members with a custom organization role that includes
+either the `View organization Copilot cloud agent settings` or `Manage organization
+Copilot cloud agent settings` permission can use this endpoint to view whether
+Copilot cloud agent is enabled for all repositories, selected repositories, or
+no repositories owned by the organization.
 
-OAuth app tokens and personal access tokens (classic) need the `admin:org` scope to use this endpoint.
+OAuth app tokens and personal access tokens (classic) need the `read:org` scope to use this endpoint.
 
 <a href="https://docs.github.com/rest/copilot/copilot-coding-agent-management#get-copilot-cloud-agent-permissions-for-an-organization">API method documentation</a>
 
@@ -132741,10 +135077,12 @@ curl https://api.github.com/orgs/string/copilot/coding-agent/permissions/reposit
 
 Lists the selected repositories that are enabled for Copilot cloud agent in an organization.
 
-Organization owners can use this endpoint when the coding agent repository policy
-is set to `selected` to see which repositories have been enabled.
+Organization owners and members with a custom organization role that includes
+either the `View organization Copilot cloud agent settings` or `Manage organization
+Copilot cloud agent settings` permission can use this endpoint when the coding agent
+repository policy is set to `selected` to see which repositories have been enabled.
 
-OAuth app tokens and personal access tokens (classic) need the `admin:org` scope to use this endpoint.
+OAuth app tokens and personal access tokens (classic) need the `read:org` scope to use this endpoint.
 
 <a href="https://docs.github.com/rest/copilot/copilot-coding-agent-management#list-repositories-enabled-for-copilot-cloud-agent-in-an-organization">API method documentation</a>
 
@@ -134282,6 +136620,260 @@ For more information about organization metrics attribution, see [How are metric
 This operation does not require authentication
 </aside>
 
+## Get the Copilot code review policy for an organization
+
+<a id="opIdcopilot/get-organization-code-review-policy"></a>
+
+> Code samples
+
+```bash
+curl https://api.github.com/orgs/string/copilot/policies/code-review \
+  -H 'Accept: application/json'
+```
+
+`GET /orgs/{org}/copilot/policies/code-review`
+
+Gets the configured and effective Copilot code review policy for an organization,
+whether organization administrators can edit it, and whether the enterprise or the organization manages it.
+This does not return review effort, repository settings, preview approval controls, or automatic-review rulesets.
+
+Organization owners can use this endpoint.
+OAuth app tokens and personal access tokens (classic) need either the
+`manage_billing:copilot` or `read:org` scope.
+GitHub App tokens and fine-grained personal access tokens are not supported.
+
+<a href="https://docs.github.com/rest/copilot/copilot-code-review#get-the-copilot-code-review-policy-for-an-organization">API method documentation</a>
+
+<h3 id="get-the-copilot-code-review-policy-for-an-organization-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|org|path|string|true|The organization name. The name is not case sensitive.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "configured_state": "enabled",
+  "effective_state": "enabled",
+  "editable": true,
+  "managed_by": "organization"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "message": "string",
+  "documentation_url": "string",
+  "url": "string",
+  "status": "string"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "message": "string",
+  "documentation_url": "string",
+  "url": "string",
+  "status": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "message": "string",
+  "documentation_url": "string",
+  "url": "string",
+  "status": "string"
+}
+```
+
+<h3 id="get-the-copilot-code-review-policy-for-an-organization-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|The organization policy.|[organization-copilot-code-review-policy](#schemaorganization-copilot-code-review-policy)|
+|401|Unauthorized|Requires authentication|[basic-error](#schemabasic-error)|
+|403|Forbidden|Forbidden|[basic-error](#schemabasic-error)|
+|404|Not Found|Resource not found|[basic-error](#schemabasic-error)|
+
+<aside class="success">
+This operation does not require authentication
+</aside>
+
+## Set the Copilot code review policy for an organization
+
+<a id="opIdcopilot/set-organization-code-review-policy"></a>
+
+> Code samples
+
+```bash
+curl https://api.github.com/orgs/string/copilot/policies/code-review \
+  -X PUT \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -d '{
+    "state": "enabled"
+  }'
+```
+
+`PUT /orgs/{org}/copilot/policies/code-review`
+
+Sets the Copilot code review policy for an organization, using the same
+user settings propagation and notifications as organization settings. Policies that
+depend on Copilot code review keep their values.
+
+Organization owners can use this endpoint.
+OAuth app tokens and personal access tokens (classic) need either the
+`manage_billing:copilot` or `admin:org` scope.
+GitHub App tokens and fine-grained personal access tokens are not supported.
+
+When the enterprise manages the policy, the request fails with `409` and the code
+`POLICY_MANAGED_BY_ENTERPRISE`, even if the requested state matches the effective state.
+Invalid input and conflicts do not change any policy.
+
+<a href="https://docs.github.com/rest/copilot/copilot-code-review#set-the-copilot-code-review-policy-for-an-organization">API method documentation</a>
+
+> Body parameter
+
+```json
+{
+  "state": "enabled"
+}
+```
+
+<h3 id="set-the-copilot-code-review-policy-for-an-organization-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|org|path|string|true|The organization name. The name is not case sensitive.|
+|body|body|object|true|none|
+|» state|body|string|true|The organization's Copilot code review policy.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|» state|enabled|
+|» state|disabled|
+
+> Example responses
+
+> 400 Response
+
+```json
+{
+  "message": "string",
+  "documentation_url": "string",
+  "url": "string",
+  "status": "string"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "message": "string",
+  "documentation_url": "string",
+  "url": "string",
+  "status": "string"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "message": "string",
+  "documentation_url": "string",
+  "url": "string",
+  "status": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "message": "string",
+  "documentation_url": "string",
+  "url": "string",
+  "status": "string"
+}
+```
+
+> 409 Response
+
+```json
+{
+  "message": "Copilot code review policy is managed by the enterprise.",
+  "documentation_url": "https://docs.github.com/rest",
+  "status": "409",
+  "code": "POLICY_MANAGED_BY_ENTERPRISE",
+  "policy": {
+    "configured_state": "enabled",
+    "effective_state": "disabled",
+    "editable": false,
+    "managed_by": "enterprise"
+  }
+}
+```
+
+> 422 Response
+
+```json
+{
+  "message": "string",
+  "documentation_url": "string",
+  "errors": [
+    "string"
+  ]
+}
+```
+
+<h3 id="set-the-copilot-code-review-policy-for-an-organization-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|204|No Content|A header with no content is returned.|None|
+|400|Bad Request|Bad Request|[basic-error](#schemabasic-error)|
+|401|Unauthorized|Requires authentication|[basic-error](#schemabasic-error)|
+|403|Forbidden|Forbidden|[basic-error](#schemabasic-error)|
+|404|Not Found|Resource not found|[basic-error](#schemabasic-error)|
+|409|Conflict|The enterprise manages the policy.|Inline|
+|422|Unprocessable Entity|Validation failed, or the endpoint has been spammed.|[validation-error-simple](#schemavalidation-error-simple)|
+
+<h3 id="set-the-copilot-code-review-policy-for-an-organization-responseschema">Response Schema</h3>
+
+Status Code **409**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|message|string|true|none|none|
+|documentation_url|string|false|none|none|
+|status|string|false|none|none|
+|code|string|true|none|none|
+|policy|[organization-copilot-code-review-policy](#schemaorganization-copilot-code-review-policy)|true|none|The organization's configured and effective Copilot code review policy.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|code|POLICY_MANAGED_BY_ENTERPRISE|
+
+<aside class="success">
+This operation does not require authentication
+</aside>
+
 ## Get Copilot seat assignment details for a user
 
 <a id="opIdcopilot/get-copilot-seat-details-for-user"></a>
@@ -134426,6 +137018,542 @@ OAuth app tokens and personal access tokens (classic) need either the `manage_bi
 This operation does not require authentication
 </aside>
 
+## Get Copilot customizations for a team
+
+<a id="opIdcopilot/get-copilot-team-customizations"></a>
+
+> Code samples
+
+```bash
+curl https://api.github.com/orgs/string/teams/string/copilot/customizations \
+  -H 'Accept: application/json'
+```
+
+`GET /orgs/{org}/teams/{team_slug}/copilot/customizations`
+
+> [!NOTE]
+> This endpoint is in public preview and is subject to change.
+
+Gets the GitHub-managed Copilot customizations of a team.
+
+The authenticated user must be an organization owner or a team maintainer. Teams that keep their
+customizations in a repository return `409`.
+
+OAuth app tokens and personal access tokens (classic) need the `admin:org` or `read:org` scope to use this endpoint.
+
+<a href="https://docs.github.com/rest/copilot/copilot-team-customizations#get-copilot-customizations-for-a-team">API method documentation</a>
+
+<h3 id="get-copilot-customizations-for-a-team-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|org|path|string|true|The organization name. The name is not case sensitive.|
+|team_slug|path|string|true|The slug of the team name.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "pluginAssignments": {
+    "code-review@acme-marketplace": {
+      "state": "defaultEnabled"
+    }
+  },
+  "extraKnownMarketplaces": {
+    "acme-marketplace": {
+      "source": {
+        "source": "github",
+        "repo": "acme/copilot-marketplace"
+      }
+    }
+  }
+}
+```
+
+> 401 Response
+
+```json
+{
+  "message": "string",
+  "documentation_url": "string",
+  "url": "string",
+  "status": "string"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "message": "string",
+  "documentation_url": "string",
+  "url": "string",
+  "status": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "message": "string",
+  "documentation_url": "string",
+  "url": "string",
+  "status": "string"
+}
+```
+
+> 409 Response
+
+```json
+{
+  "message": "string",
+  "documentation_url": "string",
+  "url": "string",
+  "status": "string"
+}
+```
+
+> 422 Response
+
+```json
+{
+  "message": "string",
+  "documentation_url": "string",
+  "errors": [
+    "string"
+  ]
+}
+```
+
+> 500 Response
+
+```json
+{
+  "message": "string",
+  "documentation_url": "string",
+  "url": "string",
+  "status": "string"
+}
+```
+
+> 503 Response
+
+```json
+{
+  "code": "string",
+  "message": "string",
+  "documentation_url": "string"
+}
+```
+
+<h3 id="get-copilot-customizations-for-a-team-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Response|Inline|
+|401|Unauthorized|Requires authentication|[basic-error](#schemabasic-error)|
+|403|Forbidden|Forbidden|[basic-error](#schemabasic-error)|
+|404|Not Found|Resource not found|[basic-error](#schemabasic-error)|
+|409|Conflict|Conflict|[basic-error](#schemabasic-error)|
+|422|Unprocessable Entity|Validation failed, or the endpoint has been spammed.|[validation-error-simple](#schemavalidation-error-simple)|
+|500|Internal Server Error|Internal Error|[basic-error](#schemabasic-error)|
+|503|Service Unavailable|Service unavailable|Inline|
+
+<h3 id="get-copilot-customizations-for-a-team-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|pluginAssignments|object|false|none|Plugins assigned to the team, keyed by `PLUGIN@MARKETPLACE`.|
+|» **additionalProperties**|object|false|none|none|
+|» » state|string|false|none|The assignment state.|
+|extraKnownMarketplaces|object|false|none|Additional plugin marketplaces available to the team, keyed by marketplace name.|
+|» **additionalProperties**|object|false|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|» » state|defaultEnabled|
+
+Status Code **503**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|code|string|false|none|none|
+|message|string|false|none|none|
+|documentation_url|string|false|none|none|
+
+<aside class="success">
+This operation does not require authentication
+</aside>
+
+## Set Copilot customizations for a team
+
+<a id="opIdcopilot/set-copilot-team-customizations"></a>
+
+> Code samples
+
+```bash
+curl https://api.github.com/orgs/string/teams/string/copilot/customizations \
+  -X PUT \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -d '{
+    "pluginAssignments": {
+      "code-review@acme-marketplace": {
+        "state": "defaultEnabled"
+      }
+    },
+    "extraKnownMarketplaces": {
+      "acme-marketplace": {
+        "source": {
+          "source": "github",
+          "repo": "acme/copilot-marketplace"
+        }
+      }
+    }
+  }'
+```
+
+`PUT /orgs/{org}/teams/{team_slug}/copilot/customizations`
+
+> [!NOTE]
+> This endpoint is in public preview and is subject to change.
+
+Replaces the GitHub-managed Copilot customizations of a team, creating them on the first write.
+
+The authenticated user must be an organization owner or a team maintainer. Teams that keep their
+customizations in a repository return `409`. Documents that fail validation return `422` with the reason.
+
+OAuth app tokens and personal access tokens (classic) need the `admin:org` scope to use this endpoint.
+
+<a href="https://docs.github.com/rest/copilot/copilot-team-customizations#set-copilot-customizations-for-a-team">API method documentation</a>
+
+> Body parameter
+
+```json
+{
+  "pluginAssignments": {
+    "code-review@acme-marketplace": {
+      "state": "defaultEnabled"
+    }
+  },
+  "extraKnownMarketplaces": {
+    "acme-marketplace": {
+      "source": {
+        "source": "github",
+        "repo": "acme/copilot-marketplace"
+      }
+    }
+  }
+}
+```
+
+<h3 id="set-copilot-customizations-for-a-team-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|org|path|string|true|The organization name. The name is not case sensitive.|
+|team_slug|path|string|true|The slug of the team name.|
+|body|body|object|true|none|
+|» pluginAssignments|body|object|false|Plugins assigned to the team, keyed by `PLUGIN@MARKETPLACE`.|
+|» » **additionalProperties**|body|object|false|none|
+|» » » state|body|string|false|The assignment state.|
+|» extraKnownMarketplaces|body|object|false|Additional plugin marketplaces available to the team, keyed by marketplace name.|
+|» » **additionalProperties**|body|object|false|none|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|» » » state|defaultEnabled|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "pluginAssignments": {
+    "code-review@acme-marketplace": {
+      "state": "defaultEnabled"
+    }
+  },
+  "extraKnownMarketplaces": {
+    "acme-marketplace": {
+      "source": {
+        "source": "github",
+        "repo": "acme/copilot-marketplace"
+      }
+    }
+  }
+}
+```
+
+> 401 Response
+
+```json
+{
+  "message": "string",
+  "documentation_url": "string",
+  "url": "string",
+  "status": "string"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "message": "string",
+  "documentation_url": "string",
+  "url": "string",
+  "status": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "message": "string",
+  "documentation_url": "string",
+  "url": "string",
+  "status": "string"
+}
+```
+
+> 409 Response
+
+```json
+{
+  "message": "string",
+  "documentation_url": "string",
+  "url": "string",
+  "status": "string"
+}
+```
+
+> 422 Response
+
+```json
+{
+  "message": "string",
+  "documentation_url": "string",
+  "errors": [
+    "string"
+  ]
+}
+```
+
+> 500 Response
+
+```json
+{
+  "message": "string",
+  "documentation_url": "string",
+  "url": "string",
+  "status": "string"
+}
+```
+
+> 503 Response
+
+```json
+{
+  "code": "string",
+  "message": "string",
+  "documentation_url": "string"
+}
+```
+
+<h3 id="set-copilot-customizations-for-a-team-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Response|Inline|
+|401|Unauthorized|Requires authentication|[basic-error](#schemabasic-error)|
+|403|Forbidden|Forbidden|[basic-error](#schemabasic-error)|
+|404|Not Found|Resource not found|[basic-error](#schemabasic-error)|
+|409|Conflict|Conflict|[basic-error](#schemabasic-error)|
+|422|Unprocessable Entity|Validation failed, or the endpoint has been spammed.|[validation-error-simple](#schemavalidation-error-simple)|
+|500|Internal Server Error|Internal Error|[basic-error](#schemabasic-error)|
+|503|Service Unavailable|Service unavailable|Inline|
+
+<h3 id="set-copilot-customizations-for-a-team-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|pluginAssignments|object|false|none|Plugins assigned to the team, keyed by `PLUGIN@MARKETPLACE`.|
+|» **additionalProperties**|object|false|none|none|
+|» » state|string|false|none|The assignment state.|
+|extraKnownMarketplaces|object|false|none|Additional plugin marketplaces available to the team, keyed by marketplace name.|
+|» **additionalProperties**|object|false|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|» » state|defaultEnabled|
+
+Status Code **503**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|code|string|false|none|none|
+|message|string|false|none|none|
+|documentation_url|string|false|none|none|
+
+<aside class="success">
+This operation does not require authentication
+</aside>
+
+## Delete Copilot customizations for a team
+
+<a id="opIdcopilot/delete-copilot-team-customizations"></a>
+
+> Code samples
+
+```bash
+curl https://api.github.com/orgs/string/teams/string/copilot/customizations \
+  -X DELETE \
+  -H 'Accept: application/json'
+```
+
+`DELETE /orgs/{org}/teams/{team_slug}/copilot/customizations`
+
+> [!NOTE]
+> This endpoint is in public preview and is subject to change.
+
+Deletes the GitHub-managed Copilot customizations of a team. Deleting customizations that don't exist succeeds.
+
+The authenticated user must be an organization owner or a team maintainer. Teams that keep their
+customizations in a repository return `409`.
+
+OAuth app tokens and personal access tokens (classic) need the `admin:org` scope to use this endpoint.
+
+<a href="https://docs.github.com/rest/copilot/copilot-team-customizations#delete-copilot-customizations-for-a-team">API method documentation</a>
+
+<h3 id="delete-copilot-customizations-for-a-team-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|org|path|string|true|The organization name. The name is not case sensitive.|
+|team_slug|path|string|true|The slug of the team name.|
+
+> Example responses
+
+> 401 Response
+
+```json
+{
+  "message": "string",
+  "documentation_url": "string",
+  "url": "string",
+  "status": "string"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "message": "string",
+  "documentation_url": "string",
+  "url": "string",
+  "status": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "message": "string",
+  "documentation_url": "string",
+  "url": "string",
+  "status": "string"
+}
+```
+
+> 409 Response
+
+```json
+{
+  "message": "string",
+  "documentation_url": "string",
+  "url": "string",
+  "status": "string"
+}
+```
+
+> 422 Response
+
+```json
+{
+  "message": "string",
+  "documentation_url": "string",
+  "errors": [
+    "string"
+  ]
+}
+```
+
+> 500 Response
+
+```json
+{
+  "message": "string",
+  "documentation_url": "string",
+  "url": "string",
+  "status": "string"
+}
+```
+
+> 503 Response
+
+```json
+{
+  "code": "string",
+  "message": "string",
+  "documentation_url": "string"
+}
+```
+
+<h3 id="delete-copilot-customizations-for-a-team-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|204|No Content|Response|None|
+|401|Unauthorized|Requires authentication|[basic-error](#schemabasic-error)|
+|403|Forbidden|Forbidden|[basic-error](#schemabasic-error)|
+|404|Not Found|Resource not found|[basic-error](#schemabasic-error)|
+|409|Conflict|Conflict|[basic-error](#schemabasic-error)|
+|422|Unprocessable Entity|Validation failed, or the endpoint has been spammed.|[validation-error-simple](#schemavalidation-error-simple)|
+|500|Internal Server Error|Internal Error|[basic-error](#schemabasic-error)|
+|503|Service Unavailable|Service unavailable|Inline|
+
+<h3 id="delete-copilot-customizations-for-a-team-responseschema">Response Schema</h3>
+
+Status Code **503**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|code|string|false|none|none|
+|message|string|false|none|none|
+|documentation_url|string|false|none|none|
+
+<aside class="success">
+This operation does not require authentication
+</aside>
+
 ## Get Copilot cloud agent configuration for a repository
 
 <a id="opIdcopilot/get-copilot-cloud-agent-configuration"></a>
@@ -134551,6 +137679,261 @@ Status Code **200**
 |custom_allowlist|[string]|true|none|A list of custom allowlist entries, as hosts or URLs, that the firewall will allow the Copilot cloud agent to access.|
 |is_automations_enabled|boolean|true|none|Whether automations are enabled in this repository. When true, users can create automations that automatically run agents on a schedule or in response to events like new issues or updated pull requests.|
 |require_write_access_for_automation_triggers|boolean|true|none|Whether write access is required for automation triggers. When true, automations will only run if the user triggering the event has write access to the repository. When false, users can create automations that listen for events triggered by users without write access.|
+
+<aside class="success">
+This operation does not require authentication
+</aside>
+
+## Get Copilot code review settings for a repository
+
+<a id="opIdcopilot/get-repository-code-review-settings"></a>
+
+> Code samples
+
+```bash
+curl https://api.github.com/repos/string/string/copilot/code-review/settings \
+  -H 'Accept: application/json'
+```
+
+`GET /repos/{owner}/{repo}/copilot/code-review/settings`
+
+Gets the Copilot code review settings for a repository. These settings tune how Copilot code review
+reviews pull requests in the repository. They do not enable Copilot code review.
+
+`review_effort.configured` is `null` when the repository inherits its review effort from the organization,
+the enterprise, or GitHub's default. `review_effort.effective` is the review effort that reviews use when the
+requester and the pull request do not choose one. Only review efforts available for the repository are reported;
+when reviews would use an unavailable effort, `review_effort.effective` is the review effort they would use without it.
+
+Repository administrators can use this endpoint.
+OAuth app tokens and personal access tokens (classic) need the `repo` scope to use this endpoint.
+
+<a href="https://docs.github.com/rest/copilot/copilot-code-review#get-copilot-code-review-settings-for-a-repository">API method documentation</a>
+
+<h3 id="get-copilot-code-review-settings-for-a-repository-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|owner|path|string|true|The account owner of the repository. The name is not case sensitive.|
+|repo|path|string|true|The name of the repository without the `.git` extension. The name is not case sensitive.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "review_effort": {
+    "configured": null,
+    "effective": "balanced"
+  },
+  "available_review_efforts": [
+    "lite",
+    "balanced"
+  ],
+  "severity_filter": "no_filter",
+  "custom_instructions_enabled": true,
+  "mcp_enabled": true,
+  "cross_repo_context_enabled": true
+}
+```
+
+> 401 Response
+
+```json
+{
+  "message": "string",
+  "documentation_url": "string",
+  "url": "string",
+  "status": "string"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "message": "string",
+  "documentation_url": "string",
+  "url": "string",
+  "status": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "message": "string",
+  "documentation_url": "string",
+  "url": "string",
+  "status": "string"
+}
+```
+
+<h3 id="get-copilot-code-review-settings-for-a-repository-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|The repository settings.|[repository-copilot-code-review-settings](#schemarepository-copilot-code-review-settings)|
+|401|Unauthorized|Requires authentication|[basic-error](#schemabasic-error)|
+|403|Forbidden|Forbidden|[basic-error](#schemabasic-error)|
+|404|Not Found|Resource not found|[basic-error](#schemabasic-error)|
+
+<aside class="success">
+This operation does not require authentication
+</aside>
+
+## Update Copilot code review settings for a repository
+
+<a id="opIdcopilot/update-repository-code-review-settings"></a>
+
+> Code samples
+
+```bash
+curl https://api.github.com/repos/string/string/copilot/code-review/settings \
+  -X PATCH \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -d '{
+    "review_effort": "balanced",
+    "severity_filter": "low"
+  }'
+```
+
+`PATCH /repos/{owner}/{repo}/copilot/code-review/settings`
+
+Updates the Copilot code review settings for a repository. These settings tune how Copilot code review
+reviews pull requests in the repository. They do not enable Copilot code review, and they can be stored
+while an enterprise or organization policy disables Copilot code review.
+
+Omitted settings are not changed. Set `review_effort` to `inherit` to clear the repository's review effort
+so it inherits the effort from the organization, the enterprise, or GitHub's default. The whole request is
+validated before any change is made, so invalid input does not change any setting. Changes use the same
+audit logging and telemetry as the repository settings page.
+
+Repository administrators can use this endpoint.
+OAuth app tokens and personal access tokens (classic) need the `repo` scope to use this endpoint.
+
+<a href="https://docs.github.com/rest/copilot/copilot-code-review#update-copilot-code-review-settings-for-a-repository">API method documentation</a>
+
+> Body parameter
+
+```json
+{
+  "review_effort": "balanced",
+  "severity_filter": "low"
+}
+```
+
+<h3 id="update-copilot-code-review-settings-for-a-repository-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|owner|path|string|true|The account owner of the repository. The name is not case sensitive.|
+|repo|path|string|true|The name of the repository without the `.git` extension. The name is not case sensitive.|
+|body|body|object|true|none|
+|» review_effort|body|string|false|The review effort for the repository. Use `inherit` to clear the repository's value. Only efforts listed in the settings' `available_review_efforts` are accepted, and a rejected effort's error message lists them. For more information, see [Review effort level](https://docs.github.com/copilot/concepts/agent-capabilities/agent-powered-workflows-and-operations/code-review#review-effort-level).|
+|» severity_filter|body|string|false|Which review comment severities Copilot code review leaves out. Can only be set when the severity filter is available for the repository.|
+|» custom_instructions_enabled|body|boolean|false|Whether reviews use the repository's custom instructions.|
+|» mcp_enabled|body|boolean|false|Whether reviews can use MCP servers.|
+|» cross_repo_context_enabled|body|boolean|false|Whether reviews can use public repository search. Can only be set when the public repository search setting is available for the repository.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|» severity_filter|no_filter|
+|» severity_filter|low|
+|» severity_filter|low_and_medium|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "review_effort": {
+    "configured": "balanced",
+    "effective": "balanced"
+  },
+  "available_review_efforts": [
+    "lite",
+    "balanced"
+  ],
+  "severity_filter": "low",
+  "custom_instructions_enabled": true,
+  "mcp_enabled": true,
+  "cross_repo_context_enabled": true
+}
+```
+
+> 400 Response
+
+```json
+{
+  "message": "string",
+  "documentation_url": "string",
+  "url": "string",
+  "status": "string"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "message": "string",
+  "documentation_url": "string",
+  "url": "string",
+  "status": "string"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "message": "string",
+  "documentation_url": "string",
+  "url": "string",
+  "status": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "message": "string",
+  "documentation_url": "string",
+  "url": "string",
+  "status": "string"
+}
+```
+
+> 422 Response
+
+```json
+{
+  "message": "string",
+  "documentation_url": "string",
+  "errors": [
+    "string"
+  ]
+}
+```
+
+<h3 id="update-copilot-code-review-settings-for-a-repository-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|The updated repository settings.|[repository-copilot-code-review-settings](#schemarepository-copilot-code-review-settings)|
+|400|Bad Request|Bad Request|[basic-error](#schemabasic-error)|
+|401|Unauthorized|Requires authentication|[basic-error](#schemabasic-error)|
+|403|Forbidden|Forbidden|[basic-error](#schemabasic-error)|
+|404|Not Found|Resource not found|[basic-error](#schemabasic-error)|
+|422|Unprocessable Entity|Validation failed, or the endpoint has been spammed.|[validation-error-simple](#schemavalidation-error-simple)|
 
 <aside class="success">
 This operation does not require authentication
@@ -142873,7 +146256,8 @@ Only users with admin access to the organization can view the cap configuration.
 ```json
 {
   "enabled": true,
-  "max_open_pull_requests": 1
+  "max_open_pull_requests": 1,
+  "include_drafts": true
 }
 ```
 
@@ -142927,7 +146311,7 @@ Status Code **200**
 |---|---|---|---|---|
 |enabled|boolean|true|none|Whether the pull request creation cap is enabled|
 |max_open_pull_requests|integer|true|none|The maximum number of open pull requests a user can have at one time|
-|include_drafts|boolean|false|none|Whether draft pull requests count toward the pull request creation cap|
+|include_drafts|boolean|true|none|Whether draft pull requests count toward the pull request creation cap|
 
 <aside class="success">
 This operation does not require authentication
@@ -142988,7 +146372,8 @@ Only users with admin access to the organization can configure the cap.
 ```json
 {
   "enabled": true,
-  "max_open_pull_requests": 1
+  "max_open_pull_requests": 1,
+  "include_drafts": true
 }
 ```
 
@@ -143062,7 +146447,7 @@ Status Code **200**
 |---|---|---|---|---|
 |enabled|boolean|true|none|Whether the pull request creation cap is enabled|
 |max_open_pull_requests|integer|true|none|The maximum number of open pull requests a user can have at one time|
-|include_drafts|boolean|false|none|Whether draft pull requests count toward the pull request creation cap|
+|include_drafts|boolean|true|none|Whether draft pull requests count toward the pull request creation cap|
 
 <aside class="success">
 This operation does not require authentication
@@ -143579,7 +146964,8 @@ Only users with admin access to the repository can view the cap configuration.
 ```json
 {
   "enabled": true,
-  "max_open_pull_requests": 1
+  "max_open_pull_requests": 1,
+  "include_drafts": true
 }
 ```
 
@@ -143633,7 +147019,7 @@ Status Code **200**
 |---|---|---|---|---|
 |enabled|boolean|true|none|Whether the pull request creation cap is enabled|
 |max_open_pull_requests|integer|true|none|The maximum number of open pull requests a user can have at one time|
-|include_drafts|boolean|false|none|Whether draft pull requests count toward the pull request creation cap|
+|include_drafts|boolean|true|none|Whether draft pull requests count toward the pull request creation cap|
 
 <aside class="success">
 This operation does not require authentication
@@ -143694,7 +147080,8 @@ Only users with admin access to the repository can configure the cap.
 ```json
 {
   "enabled": true,
-  "max_open_pull_requests": 1
+  "max_open_pull_requests": 1,
+  "include_drafts": true
 }
 ```
 
@@ -143768,7 +147155,7 @@ Status Code **200**
 |---|---|---|---|---|
 |enabled|boolean|true|none|Whether the pull request creation cap is enabled|
 |max_open_pull_requests|integer|true|none|The maximum number of open pull requests a user can have at one time|
-|include_drafts|boolean|false|none|Whether draft pull requests count toward the pull request creation cap|
+|include_drafts|boolean|true|none|Whether draft pull requests count toward the pull request creation cap|
 
 <aside class="success">
 This operation does not require authentication
@@ -149454,7 +152841,7 @@ Create draft issue item for the specified organization owned project.
   "node_id": "PVTI_lADOANN5s84ACbL0zgBueEI",
   "content": {
     "id": 38,
-    "node_id": "I_kwDOANN5s85FtLts",
+    "node_id": "DI_kwDOANN5s85FtLts",
     "title": "Example Draft Issue",
     "body": "This is a draft issue in the project.",
     "created_at": "2022-04-28T12:00:00Z",
@@ -149477,6 +152864,7 @@ Create draft issue item for the specified organization owned project.
       "events_url": "https://api.github.com/users/octocat/events{/privacy}",
       "received_events_url": "https://api.github.com/users/octocat/received_events",
       "type": "User",
+      "user_view_type": "public",
       "site_admin": false
     }
   },
@@ -149499,13 +152887,14 @@ Create draft issue item for the specified organization owned project.
     "events_url": "https://api.github.com/users/octocat/events{/privacy}",
     "received_events_url": "https://api.github.com/users/octocat/received_events",
     "type": "User",
+    "user_view_type": "public",
     "site_admin": false
   },
   "created_at": "2022-04-28T12:00:00Z",
   "updated_at": "2022-04-28T12:00:00Z",
   "archived_at": null,
-  "project_url": "https://api.github.com/users/octocat/projectsV2/1",
-  "item_url": "https://api.github.com/users/octocat/projectsV2/items/17"
+  "project_url": "https://api.github.com/orgs/octo-org/projectsV2/1",
+  "item_url": "https://api.github.com/orgs/octo-org/projectsV2/1/items/17"
 }
 ```
 
@@ -150351,8 +153740,8 @@ List all items for a specific organization-owned project accessible by the authe
         "created_at": "2025-08-01T18:44:14Z",
         "updated_at": "2025-08-01T18:48:38Z",
         "pushed_at": "2025-08-01T18:44:50Z",
-        "git_url": "git://github.localhost/github/Hello-World.git",
-        "ssh_url": "ssh://git@localhost:3035/github/Hello-World.git",
+        "git_url": "git://github.example.com/github/Hello-World.git",
+        "ssh_url": "ssh://git@example.com:3035/github/Hello-World.git",
         "clone_url": "https://github.com/github/Hello-World.git",
         "svn_url": "https://github.com/github/Hello-World",
         "homepage": null,
@@ -150478,8 +153867,8 @@ List all items for a specific organization-owned project accessible by the authe
         "created_at": "2025-08-01T18:44:14Z",
         "updated_at": "2025-08-01T18:48:38Z",
         "pushed_at": "2025-08-01T18:44:50Z",
-        "git_url": "git://github.localhost/github/Hello-World.git",
-        "ssh_url": "ssh://git@localhost:3035/github/Hello-World.git",
+        "git_url": "git://github.example.com/github/Hello-World.git",
+        "ssh_url": "ssh://git@example.com:3035/github/Hello-World.git",
         "clone_url": "https://github.com/github/Hello-World.git",
         "svn_url": "https://github.com/github/Hello-World",
         "homepage": null,
@@ -150933,7 +154322,56 @@ Add an issue or pull request item to the specified organization owned project.
 
 ```json
 {
-  "$ref": "#/components/examples/projects-v2-item-simple"
+  "id": 17,
+  "node_id": "PVTI_lADOANN5s84ACbL0zgBueEI",
+  "content": {
+    "id": 38,
+    "node_id": "I_kwDOANN5s85FtLts",
+    "url": "https://api.github.com/repos/octocat/hello-world/issues/42",
+    "repository_url": "https://api.github.com/repos/octocat/hello-world",
+    "labels_url": "https://api.github.com/repos/octocat/hello-world/issues/42/labels{/name}",
+    "comments_url": "https://api.github.com/repos/octocat/hello-world/issues/42/comments",
+    "events_url": "https://api.github.com/repos/octocat/hello-world/issues/42/events",
+    "html_url": "https://github.com/octocat/hello-world/issues/42",
+    "number": 42,
+    "state": "open",
+    "title": "Example issue",
+    "user": {
+      "login": "octocat",
+      "id": 1,
+      "node_id": "MDQ6VXNlcjE=",
+      "avatar_url": "https://github.com/images/error/octocat_happy.gif",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/octocat",
+      "html_url": "https://github.com/octocat",
+      "followers_url": "https://api.github.com/users/octocat/followers",
+      "following_url": "https://api.github.com/users/octocat/following{/other_user}",
+      "gists_url": "https://api.github.com/users/octocat/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/octocat/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/octocat/subscriptions",
+      "organizations_url": "https://api.github.com/users/octocat/orgs",
+      "repos_url": "https://api.github.com/users/octocat/repos",
+      "events_url": "https://api.github.com/users/octocat/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/octocat/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "labels": [],
+    "assignee": null,
+    "milestone": null,
+    "locked": false,
+    "comments": 0,
+    "closed_at": null,
+    "created_at": "2022-04-28T12:00:00Z",
+    "updated_at": "2022-04-28T12:00:00Z"
+  },
+  "content_type": "Issue",
+  "created_at": "2022-04-28T12:00:00Z",
+  "updated_at": "2022-04-28T12:00:00Z",
+  "archived_at": null,
+  "project_url": "https://api.github.com/orgs/octo-org/projectsV2/1",
+  "item_url": "https://api.github.com/orgs/octo-org/projectsV2/1/items/17"
 }
 ```
 
@@ -151283,8 +154721,8 @@ Get a specific item from an organization-owned project.
         "created_at": "2025-08-01T18:44:14Z",
         "updated_at": "2025-08-01T18:48:38Z",
         "pushed_at": "2025-08-01T18:44:50Z",
-        "git_url": "git://github.localhost/github/Hello-World.git",
-        "ssh_url": "ssh://git@localhost:3035/github/Hello-World.git",
+        "git_url": "git://github.example.com/github/Hello-World.git",
+        "ssh_url": "ssh://git@example.com:3035/github/Hello-World.git",
         "clone_url": "https://github.com/github/Hello-World.git",
         "svn_url": "https://github.com/github/Hello-World",
         "homepage": null,
@@ -151410,8 +154848,8 @@ Get a specific item from an organization-owned project.
         "created_at": "2025-08-01T18:44:14Z",
         "updated_at": "2025-08-01T18:48:38Z",
         "pushed_at": "2025-08-01T18:44:50Z",
-        "git_url": "git://github.localhost/github/Hello-World.git",
-        "ssh_url": "ssh://git@localhost:3035/github/Hello-World.git",
+        "git_url": "git://github.example.com/github/Hello-World.git",
+        "ssh_url": "ssh://git@example.com:3035/github/Hello-World.git",
         "clone_url": "https://github.com/github/Hello-World.git",
         "svn_url": "https://github.com/github/Hello-World",
         "homepage": null,
@@ -152198,8 +155636,8 @@ Update a specific item in an organization-owned project.
         "created_at": "2025-08-01T18:44:14Z",
         "updated_at": "2025-08-01T18:48:38Z",
         "pushed_at": "2025-08-01T18:44:50Z",
-        "git_url": "git://github.localhost/github/Hello-World.git",
-        "ssh_url": "ssh://git@localhost:3035/github/Hello-World.git",
+        "git_url": "git://github.example.com/github/Hello-World.git",
+        "ssh_url": "ssh://git@example.com:3035/github/Hello-World.git",
         "clone_url": "https://github.com/github/Hello-World.git",
         "svn_url": "https://github.com/github/Hello-World",
         "homepage": null,
@@ -152325,8 +155763,8 @@ Update a specific item in an organization-owned project.
         "created_at": "2025-08-01T18:44:14Z",
         "updated_at": "2025-08-01T18:48:38Z",
         "pushed_at": "2025-08-01T18:44:50Z",
-        "git_url": "git://github.localhost/github/Hello-World.git",
-        "ssh_url": "ssh://git@localhost:3035/github/Hello-World.git",
+        "git_url": "git://github.example.com/github/Hello-World.git",
+        "ssh_url": "ssh://git@example.com:3035/github/Hello-World.git",
         "clone_url": "https://github.com/github/Hello-World.git",
         "svn_url": "https://github.com/github/Hello-World",
         "homepage": null,
@@ -153207,8 +156645,8 @@ List items in an organization project with the saved view's filter applied.
         "created_at": "2025-08-01T18:44:14Z",
         "updated_at": "2025-08-01T18:48:38Z",
         "pushed_at": "2025-08-01T18:44:50Z",
-        "git_url": "git://github.localhost/github/Hello-World.git",
-        "ssh_url": "ssh://git@localhost:3035/github/Hello-World.git",
+        "git_url": "git://github.example.com/github/Hello-World.git",
+        "ssh_url": "ssh://git@example.com:3035/github/Hello-World.git",
         "clone_url": "https://github.com/github/Hello-World.git",
         "svn_url": "https://github.com/github/Hello-World",
         "homepage": null,
@@ -153334,8 +156772,8 @@ List items in an organization project with the saved view's filter applied.
         "created_at": "2025-08-01T18:44:14Z",
         "updated_at": "2025-08-01T18:48:38Z",
         "pushed_at": "2025-08-01T18:44:50Z",
-        "git_url": "git://github.localhost/github/Hello-World.git",
-        "ssh_url": "ssh://git@localhost:3035/github/Hello-World.git",
+        "git_url": "git://github.example.com/github/Hello-World.git",
+        "ssh_url": "ssh://git@example.com:3035/github/Hello-World.git",
         "clone_url": "https://github.com/github/Hello-World.git",
         "svn_url": "https://github.com/github/Hello-World",
         "homepage": null,
@@ -153791,7 +157229,7 @@ Create draft issue item for the specified user owned project.
   "node_id": "PVTI_lADOANN5s84ACbL0zgBueEI",
   "content": {
     "id": 38,
-    "node_id": "I_kwDOANN5s85FtLts",
+    "node_id": "DI_kwDOANN5s85FtLts",
     "title": "Example Draft Issue",
     "body": "This is a draft issue in the project.",
     "created_at": "2022-04-28T12:00:00Z",
@@ -153814,6 +157252,7 @@ Create draft issue item for the specified user owned project.
       "events_url": "https://api.github.com/users/octocat/events{/privacy}",
       "received_events_url": "https://api.github.com/users/octocat/received_events",
       "type": "User",
+      "user_view_type": "public",
       "site_admin": false
     }
   },
@@ -153836,13 +157275,14 @@ Create draft issue item for the specified user owned project.
     "events_url": "https://api.github.com/users/octocat/events{/privacy}",
     "received_events_url": "https://api.github.com/users/octocat/received_events",
     "type": "User",
+    "user_view_type": "public",
     "site_admin": false
   },
   "created_at": "2022-04-28T12:00:00Z",
   "updated_at": "2022-04-28T12:00:00Z",
   "archived_at": null,
   "project_url": "https://api.github.com/users/octocat/projectsV2/1",
-  "item_url": "https://api.github.com/users/octocat/projectsV2/items/17"
+  "item_url": "https://api.github.com/users/octocat/projectsV2/1/items/17"
 }
 ```
 
@@ -155169,8 +158609,8 @@ List all items for a specific user-owned project accessible by the authenticated
         "created_at": "2025-08-01T18:44:14Z",
         "updated_at": "2025-08-01T18:48:38Z",
         "pushed_at": "2025-08-01T18:44:50Z",
-        "git_url": "git://github.localhost/github/Hello-World.git",
-        "ssh_url": "ssh://git@localhost:3035/github/Hello-World.git",
+        "git_url": "git://github.example.com/github/Hello-World.git",
+        "ssh_url": "ssh://git@example.com:3035/github/Hello-World.git",
         "clone_url": "https://github.com/github/Hello-World.git",
         "svn_url": "https://github.com/github/Hello-World",
         "homepage": null,
@@ -155296,8 +158736,8 @@ List all items for a specific user-owned project accessible by the authenticated
         "created_at": "2025-08-01T18:44:14Z",
         "updated_at": "2025-08-01T18:48:38Z",
         "pushed_at": "2025-08-01T18:44:50Z",
-        "git_url": "git://github.localhost/github/Hello-World.git",
-        "ssh_url": "ssh://git@localhost:3035/github/Hello-World.git",
+        "git_url": "git://github.example.com/github/Hello-World.git",
+        "ssh_url": "ssh://git@example.com:3035/github/Hello-World.git",
         "clone_url": "https://github.com/github/Hello-World.git",
         "svn_url": "https://github.com/github/Hello-World",
         "homepage": null,
@@ -155751,7 +159191,56 @@ Add an issue or pull request item to the specified user owned project.
 
 ```json
 {
-  "$ref": "#/components/examples/projects-v2-item-simple"
+  "id": 17,
+  "node_id": "PVTI_lADOANN5s84ACbL0zgBueEI",
+  "content": {
+    "id": 38,
+    "node_id": "I_kwDOANN5s85FtLts",
+    "url": "https://api.github.com/repos/octocat/hello-world/issues/42",
+    "repository_url": "https://api.github.com/repos/octocat/hello-world",
+    "labels_url": "https://api.github.com/repos/octocat/hello-world/issues/42/labels{/name}",
+    "comments_url": "https://api.github.com/repos/octocat/hello-world/issues/42/comments",
+    "events_url": "https://api.github.com/repos/octocat/hello-world/issues/42/events",
+    "html_url": "https://github.com/octocat/hello-world/issues/42",
+    "number": 42,
+    "state": "open",
+    "title": "Example issue",
+    "user": {
+      "login": "octocat",
+      "id": 1,
+      "node_id": "MDQ6VXNlcjE=",
+      "avatar_url": "https://github.com/images/error/octocat_happy.gif",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/octocat",
+      "html_url": "https://github.com/octocat",
+      "followers_url": "https://api.github.com/users/octocat/followers",
+      "following_url": "https://api.github.com/users/octocat/following{/other_user}",
+      "gists_url": "https://api.github.com/users/octocat/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/octocat/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/octocat/subscriptions",
+      "organizations_url": "https://api.github.com/users/octocat/orgs",
+      "repos_url": "https://api.github.com/users/octocat/repos",
+      "events_url": "https://api.github.com/users/octocat/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/octocat/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "labels": [],
+    "assignee": null,
+    "milestone": null,
+    "locked": false,
+    "comments": 0,
+    "closed_at": null,
+    "created_at": "2022-04-28T12:00:00Z",
+    "updated_at": "2022-04-28T12:00:00Z"
+  },
+  "content_type": "Issue",
+  "created_at": "2022-04-28T12:00:00Z",
+  "updated_at": "2022-04-28T12:00:00Z",
+  "archived_at": null,
+  "project_url": "https://api.github.com/users/octocat/projectsV2/1",
+  "item_url": "https://api.github.com/users/octocat/projectsV2/1/items/17"
 }
 ```
 
@@ -156101,8 +159590,8 @@ Get a specific item from a user-owned project.
         "created_at": "2025-08-01T18:44:14Z",
         "updated_at": "2025-08-01T18:48:38Z",
         "pushed_at": "2025-08-01T18:44:50Z",
-        "git_url": "git://github.localhost/github/Hello-World.git",
-        "ssh_url": "ssh://git@localhost:3035/github/Hello-World.git",
+        "git_url": "git://github.example.com/github/Hello-World.git",
+        "ssh_url": "ssh://git@example.com:3035/github/Hello-World.git",
         "clone_url": "https://github.com/github/Hello-World.git",
         "svn_url": "https://github.com/github/Hello-World",
         "homepage": null,
@@ -156228,8 +159717,8 @@ Get a specific item from a user-owned project.
         "created_at": "2025-08-01T18:44:14Z",
         "updated_at": "2025-08-01T18:48:38Z",
         "pushed_at": "2025-08-01T18:44:50Z",
-        "git_url": "git://github.localhost/github/Hello-World.git",
-        "ssh_url": "ssh://git@localhost:3035/github/Hello-World.git",
+        "git_url": "git://github.example.com/github/Hello-World.git",
+        "ssh_url": "ssh://git@example.com:3035/github/Hello-World.git",
         "clone_url": "https://github.com/github/Hello-World.git",
         "svn_url": "https://github.com/github/Hello-World",
         "homepage": null,
@@ -157016,8 +160505,8 @@ Update a specific item in a user-owned project.
         "created_at": "2025-08-01T18:44:14Z",
         "updated_at": "2025-08-01T18:48:38Z",
         "pushed_at": "2025-08-01T18:44:50Z",
-        "git_url": "git://github.localhost/github/Hello-World.git",
-        "ssh_url": "ssh://git@localhost:3035/github/Hello-World.git",
+        "git_url": "git://github.example.com/github/Hello-World.git",
+        "ssh_url": "ssh://git@example.com:3035/github/Hello-World.git",
         "clone_url": "https://github.com/github/Hello-World.git",
         "svn_url": "https://github.com/github/Hello-World",
         "homepage": null,
@@ -157143,8 +160632,8 @@ Update a specific item in a user-owned project.
         "created_at": "2025-08-01T18:44:14Z",
         "updated_at": "2025-08-01T18:48:38Z",
         "pushed_at": "2025-08-01T18:44:50Z",
-        "git_url": "git://github.localhost/github/Hello-World.git",
-        "ssh_url": "ssh://git@localhost:3035/github/Hello-World.git",
+        "git_url": "git://github.example.com/github/Hello-World.git",
+        "ssh_url": "ssh://git@example.com:3035/github/Hello-World.git",
         "clone_url": "https://github.com/github/Hello-World.git",
         "svn_url": "https://github.com/github/Hello-World",
         "homepage": null,
@@ -157869,8 +161358,8 @@ List items in a user project with the saved view's filter applied.
         "created_at": "2025-08-01T18:44:14Z",
         "updated_at": "2025-08-01T18:48:38Z",
         "pushed_at": "2025-08-01T18:44:50Z",
-        "git_url": "git://github.localhost/github/Hello-World.git",
-        "ssh_url": "ssh://git@localhost:3035/github/Hello-World.git",
+        "git_url": "git://github.example.com/github/Hello-World.git",
+        "ssh_url": "ssh://git@example.com:3035/github/Hello-World.git",
         "clone_url": "https://github.com/github/Hello-World.git",
         "svn_url": "https://github.com/github/Hello-World",
         "homepage": null,
@@ -157996,8 +161485,8 @@ List items in a user project with the saved view's filter applied.
         "created_at": "2025-08-01T18:44:14Z",
         "updated_at": "2025-08-01T18:48:38Z",
         "pushed_at": "2025-08-01T18:44:50Z",
-        "git_url": "git://github.localhost/github/Hello-World.git",
-        "ssh_url": "ssh://git@localhost:3035/github/Hello-World.git",
+        "git_url": "git://github.example.com/github/Hello-World.git",
+        "ssh_url": "ssh://git@example.com:3035/github/Hello-World.git",
         "clone_url": "https://github.com/github/Hello-World.git",
         "svn_url": "https://github.com/github/Hello-World",
         "homepage": null,
@@ -158430,10 +161919,8 @@ shared automations created by another user.
 Use the repository-scoped list operation for those automations. The `type` filter
 only narrows this creator-scoped collection.
 
-To call this endpoint, OAuth app tokens and personal access tokens (classic) need:
-
-* the `repo` scope for private or internal repositories
-* the `repo` scope or `public_repo` scope for public repositories
+To call this endpoint, OAuth app tokens and personal access tokens (classic)
+need the `repo` scope.
 
 **Fine-grained access tokens for "List automations for user"**
 
@@ -158488,6 +161975,9 @@ GitHub App installation access tokens are not supported for this endpoint.
         "query": "is:open"
       }
     },
+    "tools": [
+      "github/issue_read"
+    ],
     "model": "gpt-5.4",
     "reasoning_effort": "high",
     "created_at": "2026-05-01T12:00:00Z",
@@ -158548,6 +162038,7 @@ Status Code **200**
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |*anonymous*|[object]|false|none|none|
+|» tools|[string]|false|none|The tools available to the automation. Omitted when no tools are configured.|
 |» id|string|true|none|The unique identifier of the automation.|
 |» repository|object|true|none|Repository identity for an automation in cross-repository list responses.|
 |» » id|integer(int64)|true|none|The unique identifier of the repository.|
@@ -158569,159 +162060,159 @@ Status Code **200**
 |» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » issue_opened|object|false|none|none|
 |» » » query|string|false|none|A GitHub issue or pull request search query.|
-|» » » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » issue_labeled|object|false|none|none|
 |» » » query|string|false|none|A GitHub issue or pull request search query.|
 |» » » labels|[string]|false|none|Label names matched case-insensitively against the label added by the event. Omit or use an empty array to match every added label.|
-|» » » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » workflow_run|object|false|none|none|
 |» » » workflows|[string]|true|none|Workflow names matched against the name in each workflow YAML file.|
 |» » » conclusions|[string]|true|none|Workflow conclusions to match. The current trigger supports failure.|
 |» » » query|string|false|none|A GitHub issue or pull request search query.|
-|» » » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » pull_request_opened|object|false|none|none|
 |» » » query|string|false|none|A GitHub issue or pull request search query.|
 |» » » paths|[string]|false|none|Gitignore-style changed-file path globs.|
-|» » » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » pull_request_synchronize|object|false|none|none|
 |» » » query|string|false|none|A GitHub issue or pull request search query.|
 |» » » paths|[string]|false|none|Gitignore-style changed-file path globs.|
-|» » » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » pull_request_merged|object|false|none|none|
 |» » » query|string|false|none|A GitHub issue or pull request search query.|
 |» » » paths|[string]|false|none|Gitignore-style changed-file path globs.|
-|» » » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » issue_comment|object|false|none|none|
 |» » » query|string|false|none|A GitHub issue or pull request search query.|
 |» » » body_substring|string|false|none|A case-insensitive substring matched against the event body.|
-|» » » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » pull_request_comment|object|false|none|none|
 |» » » comment_types|[string]|true|none|Pull request conversation and inline review comment types to match.|
 |» » » query|string|false|none|A GitHub issue or pull request search query.|
 |» » » paths|[string]|false|none|Gitignore-style changed-file path globs.|
 |» » » body_substring|string|false|none|A case-insensitive substring matched against the event body.|
-|» » » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » discussion_opened|object|false|none|none|
 |» » » categories|[string]|false|none|Discussion category names matched case-insensitively.|
 |» » » body_substring|string|false|none|A case-insensitive substring matched against the event body.|
-|» » » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » discussion_updated|object|false|none|none|
 |» » » categories|[string]|false|none|Discussion category names matched case-insensitively.|
 |» » » body_substring|string|false|none|A case-insensitive substring matched against the event body.|
-|» » » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » discussion_comment|object|false|none|none|
 |» » » comment_types|[string]|false|none|Top-level discussion comments and replies to match. Omit to match both.|
 |» » » categories|[string]|false|none|Discussion category names matched case-insensitively.|
 |» » » body_substring|string|false|none|A case-insensitive substring matched against the event body.|
-|» » » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » issue_assigned|object|false|none|none|
 |» » » query|string|false|none|A GitHub issue or pull request search query.|
 |» » » assignees|[string]|false|none|Affected assignee logins matched case-insensitively.|
-|» » » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » pull_request_assigned|object|false|none|none|
 |» » » query|string|false|none|A GitHub issue or pull request search query.|
 |» » » paths|[string]|false|none|Gitignore-style changed-file path globs.|
 |» » » assignees|[string]|false|none|Affected assignee logins matched case-insensitively.|
-|» » » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » sub_issue_added|object|false|none|none|
 |» » » query|string|false|none|A GitHub issue or pull request search query.|
-|» » » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » pull_request_ready_for_review|object|false|none|none|
 |» » » query|string|false|none|A GitHub issue or pull request search query.|
 |» » » paths|[string]|false|none|Gitignore-style changed-file path globs.|
-|» » » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » pull_request_labeled|object|false|none|none|
 |» » » query|string|false|none|A GitHub issue or pull request search query.|
 |» » » paths|[string]|false|none|Gitignore-style changed-file path globs.|
 |» » » labels|[string]|false|none|Label names matched case-insensitively against the label added by the event. Omit or use an empty array to match every added label.|
-|» » » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » pull_request_merge_conflict|object|false|none|none|
 |» » » query|string|false|none|A GitHub issue or pull request search query.|
 |» » » paths|[string]|false|none|Gitignore-style changed-file path globs.|
-|» » » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » pull_request_review_submitted|object|false|none|none|
 |» » » query|string|false|none|A GitHub issue or pull request search query.|
 |» » » paths|[string]|false|none|Gitignore-style changed-file path globs.|
 |» » » states|[string]|true|none|Submitted review states to match.|
-|» » » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » pull_request_review_requested|object|false|none|none|
 |» » » query|string|false|none|A GitHub issue or pull request search query.|
 |» » » paths|[string]|false|none|Gitignore-style changed-file path globs.|
-|» » » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » issue_closed|object|false|none|none|
 |» » » query|string|false|none|A GitHub issue or pull request search query.|
-|» » » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » issue_reopened|object|false|none|none|
 |» » » query|string|false|none|A GitHub issue or pull request search query.|
-|» » » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » pull_request_closed|object|false|none|none|
 |» » » query|string|false|none|A GitHub issue or pull request search query.|
 |» » » paths|[string]|false|none|Gitignore-style changed-file path globs.|
-|» » » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » pull_request_reopened|object|false|none|none|
 |» » » query|string|false|none|A GitHub issue or pull request search query.|
 |» » » paths|[string]|false|none|Gitignore-style changed-file path globs.|
-|» » » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » pull_request_converted_to_draft|object|false|none|none|
 |» » » query|string|false|none|A GitHub issue or pull request search query.|
 |» » » paths|[string]|false|none|Gitignore-style changed-file path globs.|
-|» » » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » pull_request_review_dismissed|object|false|none|none|
 |» » » query|string|false|none|A GitHub issue or pull request search query.|
 |» » » paths|[string]|false|none|Gitignore-style changed-file path globs.|
-|» » » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » pull_request_review_thread_resolved|object|false|none|none|
 |» » » query|string|false|none|A GitHub issue or pull request search query.|
 |» » » paths|[string]|false|none|Gitignore-style changed-file path globs.|
-|» » » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » pull_request_review_thread_unresolved|object|false|none|none|
 |» » » query|string|false|none|A GitHub issue or pull request search query.|
 |» » » paths|[string]|false|none|Gitignore-style changed-file path globs.|
-|» » » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » automation_completed|object|false|none|none|
 |» » » automation_ids|[string]|true|none|Upstream Automation IDs in the same repository.|
-|» » » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » automation_failed|object|false|none|none|
 |» » » automation_ids|[string]|true|none|Upstream Automation IDs in the same repository. An Automation cannot list itself, and a user-owned Automation can only be listed by its creator's user-owned Automations.|
 |» » » reasons|[string]|false|none|Failure reasons to match. Omit to match only reported failures.|
-|» » » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » code_scanning_alert|object|false|none|Runs on the default branch when a security alert of this kind is created in the repository. These are system events without an issue, pull request, or human actor, and cannot be run manually.|
-|» » » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » secret_scanning_alert|object|false|none|Runs on the default branch when a security alert of this kind is created in the repository. These are system events without an issue, pull request, or human actor, and cannot be run manually.|
-|» » » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » dependabot_alert|object|false|none|Runs on the default branch when a security alert of this kind is created in the repository. These are system events without an issue, pull request, or human actor, and cannot be run manually.|
-|» » » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» created_at|string(date-time)|true|none|When the automation was created.|
 |» updated_at|string(date-time)|true|none|When the automation was last updated.|
@@ -158901,10 +162392,8 @@ GitHub App installation access tokens can list shared automations.
 The installation must belong to the repository owner and the token must have
 "Agent tasks" repository permissions (read). Personal automations require a user token.
 
-OAuth app tokens and personal access tokens (classic) need:
-
-* the `repo` scope for private or internal repositories
-* the `repo` scope or `public_repo` scope for public repositories
+To call this endpoint, OAuth app tokens and personal access tokens (classic)
+need the `repo` scope.
 
 **Fine-grained access tokens for "List automations for a repository"**
 
@@ -158956,6 +162445,9 @@ The fine-grained token must have the following permission set:
           "query": "is:open"
         }
       },
+      "tools": [
+        "github/issue_read"
+      ],
       "model": "gpt-5.4",
       "reasoning_effort": "high",
       "created_at": "2026-05-01T12:00:00Z",
@@ -159056,6 +162548,7 @@ Status Code **200**
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |automations|[object]|true|none|List of automations in the repository|
+|» tools|[string]|false|none|The tools available to the automation. Omitted when no tools are configured.|
 |» id|string|true|none|The unique identifier of the automation.|
 |» name|string|true|none|The name of the automation.|
 |» enabled|boolean|false|none|Whether the automation is currently enabled.|
@@ -159073,159 +162566,159 @@ Status Code **200**
 |» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » issue_opened|object|false|none|none|
 |» » » query|string|false|none|A GitHub issue or pull request search query.|
-|» » » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » issue_labeled|object|false|none|none|
 |» » » query|string|false|none|A GitHub issue or pull request search query.|
 |» » » labels|[string]|false|none|Label names matched case-insensitively against the label added by the event. Omit or use an empty array to match every added label.|
-|» » » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » workflow_run|object|false|none|none|
 |» » » workflows|[string]|true|none|Workflow names matched against the name in each workflow YAML file.|
 |» » » conclusions|[string]|true|none|Workflow conclusions to match. The current trigger supports failure.|
 |» » » query|string|false|none|A GitHub issue or pull request search query.|
-|» » » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » pull_request_opened|object|false|none|none|
 |» » » query|string|false|none|A GitHub issue or pull request search query.|
 |» » » paths|[string]|false|none|Gitignore-style changed-file path globs.|
-|» » » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » pull_request_synchronize|object|false|none|none|
 |» » » query|string|false|none|A GitHub issue or pull request search query.|
 |» » » paths|[string]|false|none|Gitignore-style changed-file path globs.|
-|» » » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » pull_request_merged|object|false|none|none|
 |» » » query|string|false|none|A GitHub issue or pull request search query.|
 |» » » paths|[string]|false|none|Gitignore-style changed-file path globs.|
-|» » » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » issue_comment|object|false|none|none|
 |» » » query|string|false|none|A GitHub issue or pull request search query.|
 |» » » body_substring|string|false|none|A case-insensitive substring matched against the event body.|
-|» » » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » pull_request_comment|object|false|none|none|
 |» » » comment_types|[string]|true|none|Pull request conversation and inline review comment types to match.|
 |» » » query|string|false|none|A GitHub issue or pull request search query.|
 |» » » paths|[string]|false|none|Gitignore-style changed-file path globs.|
 |» » » body_substring|string|false|none|A case-insensitive substring matched against the event body.|
-|» » » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » discussion_opened|object|false|none|none|
 |» » » categories|[string]|false|none|Discussion category names matched case-insensitively.|
 |» » » body_substring|string|false|none|A case-insensitive substring matched against the event body.|
-|» » » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » discussion_updated|object|false|none|none|
 |» » » categories|[string]|false|none|Discussion category names matched case-insensitively.|
 |» » » body_substring|string|false|none|A case-insensitive substring matched against the event body.|
-|» » » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » discussion_comment|object|false|none|none|
 |» » » comment_types|[string]|false|none|Top-level discussion comments and replies to match. Omit to match both.|
 |» » » categories|[string]|false|none|Discussion category names matched case-insensitively.|
 |» » » body_substring|string|false|none|A case-insensitive substring matched against the event body.|
-|» » » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » issue_assigned|object|false|none|none|
 |» » » query|string|false|none|A GitHub issue or pull request search query.|
 |» » » assignees|[string]|false|none|Affected assignee logins matched case-insensitively.|
-|» » » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » pull_request_assigned|object|false|none|none|
 |» » » query|string|false|none|A GitHub issue or pull request search query.|
 |» » » paths|[string]|false|none|Gitignore-style changed-file path globs.|
 |» » » assignees|[string]|false|none|Affected assignee logins matched case-insensitively.|
-|» » » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » sub_issue_added|object|false|none|none|
 |» » » query|string|false|none|A GitHub issue or pull request search query.|
-|» » » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » pull_request_ready_for_review|object|false|none|none|
 |» » » query|string|false|none|A GitHub issue or pull request search query.|
 |» » » paths|[string]|false|none|Gitignore-style changed-file path globs.|
-|» » » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » pull_request_labeled|object|false|none|none|
 |» » » query|string|false|none|A GitHub issue or pull request search query.|
 |» » » paths|[string]|false|none|Gitignore-style changed-file path globs.|
 |» » » labels|[string]|false|none|Label names matched case-insensitively against the label added by the event. Omit or use an empty array to match every added label.|
-|» » » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » pull_request_merge_conflict|object|false|none|none|
 |» » » query|string|false|none|A GitHub issue or pull request search query.|
 |» » » paths|[string]|false|none|Gitignore-style changed-file path globs.|
-|» » » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » pull_request_review_submitted|object|false|none|none|
 |» » » query|string|false|none|A GitHub issue or pull request search query.|
 |» » » paths|[string]|false|none|Gitignore-style changed-file path globs.|
 |» » » states|[string]|true|none|Submitted review states to match.|
-|» » » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » pull_request_review_requested|object|false|none|none|
 |» » » query|string|false|none|A GitHub issue or pull request search query.|
 |» » » paths|[string]|false|none|Gitignore-style changed-file path globs.|
-|» » » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » issue_closed|object|false|none|none|
 |» » » query|string|false|none|A GitHub issue or pull request search query.|
-|» » » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » issue_reopened|object|false|none|none|
 |» » » query|string|false|none|A GitHub issue or pull request search query.|
-|» » » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » pull_request_closed|object|false|none|none|
 |» » » query|string|false|none|A GitHub issue or pull request search query.|
 |» » » paths|[string]|false|none|Gitignore-style changed-file path globs.|
-|» » » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » pull_request_reopened|object|false|none|none|
 |» » » query|string|false|none|A GitHub issue or pull request search query.|
 |» » » paths|[string]|false|none|Gitignore-style changed-file path globs.|
-|» » » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » pull_request_converted_to_draft|object|false|none|none|
 |» » » query|string|false|none|A GitHub issue or pull request search query.|
 |» » » paths|[string]|false|none|Gitignore-style changed-file path globs.|
-|» » » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » pull_request_review_dismissed|object|false|none|none|
 |» » » query|string|false|none|A GitHub issue or pull request search query.|
 |» » » paths|[string]|false|none|Gitignore-style changed-file path globs.|
-|» » » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » pull_request_review_thread_resolved|object|false|none|none|
 |» » » query|string|false|none|A GitHub issue or pull request search query.|
 |» » » paths|[string]|false|none|Gitignore-style changed-file path globs.|
-|» » » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » pull_request_review_thread_unresolved|object|false|none|none|
 |» » » query|string|false|none|A GitHub issue or pull request search query.|
 |» » » paths|[string]|false|none|Gitignore-style changed-file path globs.|
-|» » » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » automation_completed|object|false|none|none|
 |» » » automation_ids|[string]|true|none|Upstream Automation IDs in the same repository.|
-|» » » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » automation_failed|object|false|none|none|
 |» » » automation_ids|[string]|true|none|Upstream Automation IDs in the same repository. An Automation cannot list itself, and a user-owned Automation can only be listed by its creator's user-owned Automations.|
 |» » » reasons|[string]|false|none|Failure reasons to match. Omit to match only reported failures.|
-|» » » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » code_scanning_alert|object|false|none|Runs on the default branch when a security alert of this kind is created in the repository. These are system events without an issue, pull request, or human actor, and cannot be run manually.|
-|» » » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » secret_scanning_alert|object|false|none|Runs on the default branch when a security alert of this kind is created in the repository. These are system events without an issue, pull request, or human actor, and cannot be run manually.|
-|» » » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » dependabot_alert|object|false|none|Runs on the default branch when a security alert of this kind is created in the repository. These are system events without an issue, pull request, or human actor, and cannot be run manually.|
-|» » » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» created_at|string(date-time)|true|none|When the automation was created.|
 |» updated_at|string(date-time)|true|none|When the automation was last updated.|
@@ -159450,10 +162943,8 @@ For installation tokens, `created_by` identifies the App's bot account.
 To call this endpoint, you must have write access to the repository and the
 "Allow automations" setting must be enabled for the repository.
 
-OAuth app tokens and personal access tokens (classic) need:
-
-* the `repo` scope for private or internal repositories
-* the `repo` scope or `public_repo` scope for public repositories
+To call this endpoint, OAuth app tokens and personal access tokens (classic)
+need the `repo` scope.
 
 **Fine-grained access tokens for "Create an automation for a repository"**
 
@@ -159509,159 +163000,159 @@ The fine-grained token must have the following permission set:
 |» » » allow_copilot_triggers|body|boolean|false|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » issue_opened|body|object|false|none|
 |» » » query|body|string|false|A GitHub issue or pull request search query.|
-|» » » write_scope|body|string|false|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|body|string|false|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|body|boolean|false|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » issue_labeled|body|object|false|none|
 |» » » query|body|string|false|A GitHub issue or pull request search query.|
 |» » » labels|body|[string]|false|Label names matched case-insensitively against the label added by the event. Omit or use an empty array to match every added label.|
-|» » » write_scope|body|string|false|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|body|string|false|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|body|boolean|false|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » workflow_run|body|object|false|none|
 |» » » workflows|body|[string]|true|Workflow names matched against the name in each workflow YAML file.|
 |» » » conclusions|body|[string]|true|Workflow conclusions to match. The current trigger supports failure.|
 |» » » query|body|string|false|A GitHub issue or pull request search query.|
-|» » » write_scope|body|string|false|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|body|string|false|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|body|boolean|false|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » pull_request_opened|body|object|false|none|
 |» » » query|body|string|false|A GitHub issue or pull request search query.|
 |» » » paths|body|[string]|false|Gitignore-style changed-file path globs.|
-|» » » write_scope|body|string|false|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|body|string|false|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|body|boolean|false|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » pull_request_synchronize|body|object|false|none|
 |» » » query|body|string|false|A GitHub issue or pull request search query.|
 |» » » paths|body|[string]|false|Gitignore-style changed-file path globs.|
-|» » » write_scope|body|string|false|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|body|string|false|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|body|boolean|false|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » pull_request_merged|body|object|false|none|
 |» » » query|body|string|false|A GitHub issue or pull request search query.|
 |» » » paths|body|[string]|false|Gitignore-style changed-file path globs.|
-|» » » write_scope|body|string|false|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|body|string|false|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|body|boolean|false|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » issue_comment|body|object|false|none|
 |» » » query|body|string|false|A GitHub issue or pull request search query.|
 |» » » body_substring|body|string|false|A case-insensitive substring matched against the event body.|
-|» » » write_scope|body|string|false|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|body|string|false|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|body|boolean|false|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » pull_request_comment|body|object|false|none|
 |» » » comment_types|body|[string]|true|Pull request conversation and inline review comment types to match.|
 |» » » query|body|string|false|A GitHub issue or pull request search query.|
 |» » » paths|body|[string]|false|Gitignore-style changed-file path globs.|
 |» » » body_substring|body|string|false|A case-insensitive substring matched against the event body.|
-|» » » write_scope|body|string|false|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|body|string|false|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|body|boolean|false|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » discussion_opened|body|object|false|none|
 |» » » categories|body|[string]|false|Discussion category names matched case-insensitively.|
 |» » » body_substring|body|string|false|A case-insensitive substring matched against the event body.|
-|» » » write_scope|body|string|false|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|body|string|false|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|body|boolean|false|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » discussion_updated|body|object|false|none|
 |» » » categories|body|[string]|false|Discussion category names matched case-insensitively.|
 |» » » body_substring|body|string|false|A case-insensitive substring matched against the event body.|
-|» » » write_scope|body|string|false|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|body|string|false|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|body|boolean|false|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » discussion_comment|body|object|false|none|
 |» » » comment_types|body|[string]|false|Top-level discussion comments and replies to match. Omit to match both.|
 |» » » categories|body|[string]|false|Discussion category names matched case-insensitively.|
 |» » » body_substring|body|string|false|A case-insensitive substring matched against the event body.|
-|» » » write_scope|body|string|false|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|body|string|false|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|body|boolean|false|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » issue_assigned|body|object|false|none|
 |» » » query|body|string|false|A GitHub issue or pull request search query.|
 |» » » assignees|body|[string]|false|Affected assignee logins matched case-insensitively.|
-|» » » write_scope|body|string|false|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|body|string|false|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|body|boolean|false|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » pull_request_assigned|body|object|false|none|
 |» » » query|body|string|false|A GitHub issue or pull request search query.|
 |» » » paths|body|[string]|false|Gitignore-style changed-file path globs.|
 |» » » assignees|body|[string]|false|Affected assignee logins matched case-insensitively.|
-|» » » write_scope|body|string|false|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|body|string|false|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|body|boolean|false|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » sub_issue_added|body|object|false|none|
 |» » » query|body|string|false|A GitHub issue or pull request search query.|
-|» » » write_scope|body|string|false|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|body|string|false|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|body|boolean|false|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » pull_request_ready_for_review|body|object|false|none|
 |» » » query|body|string|false|A GitHub issue or pull request search query.|
 |» » » paths|body|[string]|false|Gitignore-style changed-file path globs.|
-|» » » write_scope|body|string|false|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|body|string|false|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|body|boolean|false|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » pull_request_labeled|body|object|false|none|
 |» » » query|body|string|false|A GitHub issue or pull request search query.|
 |» » » paths|body|[string]|false|Gitignore-style changed-file path globs.|
 |» » » labels|body|[string]|false|Label names matched case-insensitively against the label added by the event. Omit or use an empty array to match every added label.|
-|» » » write_scope|body|string|false|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|body|string|false|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|body|boolean|false|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » pull_request_merge_conflict|body|object|false|none|
 |» » » query|body|string|false|A GitHub issue or pull request search query.|
 |» » » paths|body|[string]|false|Gitignore-style changed-file path globs.|
-|» » » write_scope|body|string|false|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|body|string|false|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|body|boolean|false|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » pull_request_review_submitted|body|object|false|none|
 |» » » query|body|string|false|A GitHub issue or pull request search query.|
 |» » » paths|body|[string]|false|Gitignore-style changed-file path globs.|
 |» » » states|body|[string]|true|Submitted review states to match.|
-|» » » write_scope|body|string|false|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|body|string|false|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|body|boolean|false|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » pull_request_review_requested|body|object|false|none|
 |» » » query|body|string|false|A GitHub issue or pull request search query.|
 |» » » paths|body|[string]|false|Gitignore-style changed-file path globs.|
-|» » » write_scope|body|string|false|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|body|string|false|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|body|boolean|false|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » issue_closed|body|object|false|none|
 |» » » query|body|string|false|A GitHub issue or pull request search query.|
-|» » » write_scope|body|string|false|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|body|string|false|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|body|boolean|false|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » issue_reopened|body|object|false|none|
 |» » » query|body|string|false|A GitHub issue or pull request search query.|
-|» » » write_scope|body|string|false|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|body|string|false|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|body|boolean|false|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » pull_request_closed|body|object|false|none|
 |» » » query|body|string|false|A GitHub issue or pull request search query.|
 |» » » paths|body|[string]|false|Gitignore-style changed-file path globs.|
-|» » » write_scope|body|string|false|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|body|string|false|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|body|boolean|false|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » pull_request_reopened|body|object|false|none|
 |» » » query|body|string|false|A GitHub issue or pull request search query.|
 |» » » paths|body|[string]|false|Gitignore-style changed-file path globs.|
-|» » » write_scope|body|string|false|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|body|string|false|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|body|boolean|false|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » pull_request_converted_to_draft|body|object|false|none|
 |» » » query|body|string|false|A GitHub issue or pull request search query.|
 |» » » paths|body|[string]|false|Gitignore-style changed-file path globs.|
-|» » » write_scope|body|string|false|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|body|string|false|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|body|boolean|false|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » pull_request_review_dismissed|body|object|false|none|
 |» » » query|body|string|false|A GitHub issue or pull request search query.|
 |» » » paths|body|[string]|false|Gitignore-style changed-file path globs.|
-|» » » write_scope|body|string|false|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|body|string|false|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|body|boolean|false|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » pull_request_review_thread_resolved|body|object|false|none|
 |» » » query|body|string|false|A GitHub issue or pull request search query.|
 |» » » paths|body|[string]|false|Gitignore-style changed-file path globs.|
-|» » » write_scope|body|string|false|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|body|string|false|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|body|boolean|false|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » pull_request_review_thread_unresolved|body|object|false|none|
 |» » » query|body|string|false|A GitHub issue or pull request search query.|
 |» » » paths|body|[string]|false|Gitignore-style changed-file path globs.|
-|» » » write_scope|body|string|false|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|body|string|false|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|body|boolean|false|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » automation_completed|body|object|false|none|
 |» » » automation_ids|body|[string]|true|Upstream Automation IDs in the same repository.|
-|» » » write_scope|body|string|false|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|body|string|false|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|body|boolean|false|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » automation_failed|body|object|false|none|
 |» » » automation_ids|body|[string]|true|Upstream Automation IDs in the same repository. An Automation cannot list itself, and a user-owned Automation can only be listed by its creator's user-owned Automations.|
 |» » » reasons|body|[string]|false|Failure reasons to match. Omit to match only reported failures.|
-|» » » write_scope|body|string|false|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|body|string|false|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|body|boolean|false|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » code_scanning_alert|body|object|false|Runs on the default branch when a security alert of this kind is created in the repository. These are system events without an issue, pull request, or human actor, and cannot be run manually.|
-|» » » write_scope|body|string|false|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|body|string|false|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|body|boolean|false|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » secret_scanning_alert|body|object|false|Runs on the default branch when a security alert of this kind is created in the repository. These are system events without an issue, pull request, or human actor, and cannot be run manually.|
-|» » » write_scope|body|string|false|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|body|string|false|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|body|boolean|false|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » dependabot_alert|body|object|false|Runs on the default branch when a security alert of this kind is created in the repository. These are system events without an issue, pull request, or human actor, and cannot be run manually.|
-|» » » write_scope|body|string|false|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|body|string|false|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|body|boolean|false|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» prompt|body|string|true|The prompt for the automation.|
 |» model|body|string|false|The model to use for sessions triggered by this automation. Omit or leave empty to let the platform select the model.|
@@ -159920,159 +163411,159 @@ Status Code **201**
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» issue_opened|object|false|none|none|
 |» » query|string|false|none|A GitHub issue or pull request search query.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» issue_labeled|object|false|none|none|
 |» » query|string|false|none|A GitHub issue or pull request search query.|
 |» » labels|[string]|false|none|Label names matched case-insensitively against the label added by the event. Omit or use an empty array to match every added label.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» workflow_run|object|false|none|none|
 |» » workflows|[string]|true|none|Workflow names matched against the name in each workflow YAML file.|
 |» » conclusions|[string]|true|none|Workflow conclusions to match. The current trigger supports failure.|
 |» » query|string|false|none|A GitHub issue or pull request search query.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» pull_request_opened|object|false|none|none|
 |» » query|string|false|none|A GitHub issue or pull request search query.|
 |» » paths|[string]|false|none|Gitignore-style changed-file path globs.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» pull_request_synchronize|object|false|none|none|
 |» » query|string|false|none|A GitHub issue or pull request search query.|
 |» » paths|[string]|false|none|Gitignore-style changed-file path globs.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» pull_request_merged|object|false|none|none|
 |» » query|string|false|none|A GitHub issue or pull request search query.|
 |» » paths|[string]|false|none|Gitignore-style changed-file path globs.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» issue_comment|object|false|none|none|
 |» » query|string|false|none|A GitHub issue or pull request search query.|
 |» » body_substring|string|false|none|A case-insensitive substring matched against the event body.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» pull_request_comment|object|false|none|none|
 |» » comment_types|[string]|true|none|Pull request conversation and inline review comment types to match.|
 |» » query|string|false|none|A GitHub issue or pull request search query.|
 |» » paths|[string]|false|none|Gitignore-style changed-file path globs.|
 |» » body_substring|string|false|none|A case-insensitive substring matched against the event body.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» discussion_opened|object|false|none|none|
 |» » categories|[string]|false|none|Discussion category names matched case-insensitively.|
 |» » body_substring|string|false|none|A case-insensitive substring matched against the event body.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» discussion_updated|object|false|none|none|
 |» » categories|[string]|false|none|Discussion category names matched case-insensitively.|
 |» » body_substring|string|false|none|A case-insensitive substring matched against the event body.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» discussion_comment|object|false|none|none|
 |» » comment_types|[string]|false|none|Top-level discussion comments and replies to match. Omit to match both.|
 |» » categories|[string]|false|none|Discussion category names matched case-insensitively.|
 |» » body_substring|string|false|none|A case-insensitive substring matched against the event body.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» issue_assigned|object|false|none|none|
 |» » query|string|false|none|A GitHub issue or pull request search query.|
 |» » assignees|[string]|false|none|Affected assignee logins matched case-insensitively.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» pull_request_assigned|object|false|none|none|
 |» » query|string|false|none|A GitHub issue or pull request search query.|
 |» » paths|[string]|false|none|Gitignore-style changed-file path globs.|
 |» » assignees|[string]|false|none|Affected assignee logins matched case-insensitively.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» sub_issue_added|object|false|none|none|
 |» » query|string|false|none|A GitHub issue or pull request search query.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» pull_request_ready_for_review|object|false|none|none|
 |» » query|string|false|none|A GitHub issue or pull request search query.|
 |» » paths|[string]|false|none|Gitignore-style changed-file path globs.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» pull_request_labeled|object|false|none|none|
 |» » query|string|false|none|A GitHub issue or pull request search query.|
 |» » paths|[string]|false|none|Gitignore-style changed-file path globs.|
 |» » labels|[string]|false|none|Label names matched case-insensitively against the label added by the event. Omit or use an empty array to match every added label.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» pull_request_merge_conflict|object|false|none|none|
 |» » query|string|false|none|A GitHub issue or pull request search query.|
 |» » paths|[string]|false|none|Gitignore-style changed-file path globs.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» pull_request_review_submitted|object|false|none|none|
 |» » query|string|false|none|A GitHub issue or pull request search query.|
 |» » paths|[string]|false|none|Gitignore-style changed-file path globs.|
 |» » states|[string]|true|none|Submitted review states to match.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» pull_request_review_requested|object|false|none|none|
 |» » query|string|false|none|A GitHub issue or pull request search query.|
 |» » paths|[string]|false|none|Gitignore-style changed-file path globs.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» issue_closed|object|false|none|none|
 |» » query|string|false|none|A GitHub issue or pull request search query.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» issue_reopened|object|false|none|none|
 |» » query|string|false|none|A GitHub issue or pull request search query.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» pull_request_closed|object|false|none|none|
 |» » query|string|false|none|A GitHub issue or pull request search query.|
 |» » paths|[string]|false|none|Gitignore-style changed-file path globs.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» pull_request_reopened|object|false|none|none|
 |» » query|string|false|none|A GitHub issue or pull request search query.|
 |» » paths|[string]|false|none|Gitignore-style changed-file path globs.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» pull_request_converted_to_draft|object|false|none|none|
 |» » query|string|false|none|A GitHub issue or pull request search query.|
 |» » paths|[string]|false|none|Gitignore-style changed-file path globs.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» pull_request_review_dismissed|object|false|none|none|
 |» » query|string|false|none|A GitHub issue or pull request search query.|
 |» » paths|[string]|false|none|Gitignore-style changed-file path globs.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» pull_request_review_thread_resolved|object|false|none|none|
 |» » query|string|false|none|A GitHub issue or pull request search query.|
 |» » paths|[string]|false|none|Gitignore-style changed-file path globs.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» pull_request_review_thread_unresolved|object|false|none|none|
 |» » query|string|false|none|A GitHub issue or pull request search query.|
 |» » paths|[string]|false|none|Gitignore-style changed-file path globs.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» automation_completed|object|false|none|none|
 |» » automation_ids|[string]|true|none|Upstream Automation IDs in the same repository.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» automation_failed|object|false|none|none|
 |» » automation_ids|[string]|true|none|Upstream Automation IDs in the same repository. An Automation cannot list itself, and a user-owned Automation can only be listed by its creator's user-owned Automations.|
 |» » reasons|[string]|false|none|Failure reasons to match. Omit to match only reported failures.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» code_scanning_alert|object|false|none|Runs on the default branch when a security alert of this kind is created in the repository. These are system events without an issue, pull request, or human actor, and cannot be run manually.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» secret_scanning_alert|object|false|none|Runs on the default branch when a security alert of this kind is created in the repository. These are system events without an issue, pull request, or human actor, and cannot be run manually.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» dependabot_alert|object|false|none|Runs on the default branch when a security alert of this kind is created in the repository. These are system events without an issue, pull request, or human actor, and cannot be run manually.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |prompt|string|true|none|The prompt for the automation.|
 |tools|[string]|false|none|The tools available to the automation.|
@@ -160329,10 +163820,8 @@ GitHub App installation access tokens can list available automation tools.
 The installation must belong to the repository owner and the token must have
 "Agent tasks" repository permissions (read).
 
-To call this endpoint, OAuth app tokens and personal access tokens (classic) need:
-
-* the `repo` scope for private or internal repositories
-* the `repo` scope or `public_repo` scope for public repositories
+To call this endpoint, OAuth app tokens and personal access tokens (classic)
+need the `repo` scope.
 
 **Fine-grained access tokens for "List available automation tools for a repository"**
 
@@ -160457,7 +163946,7 @@ Status Code **200**
 |mcp_servers|[object]|true|none|Configured repository MCP servers, sorted by name. Empty when repository MCP is disabled or unconfigured.|
 |» name|string|true|none|The server name from the repository MCP configuration.|
 |» tools|[object]|true|none|Explicitly configured tools with server-qualified IDs, in configuration order. Empty when the server's allowlist is ["*"].|
-|» » id|string|true|none|The tool identifier in <server-name>/<tool-name> format, for example sentry/list_issues.|
+|» » id|string|true|none|The tool identifier in `<server-name>/<tool-name>` format, for example `sentry/list_issues`.|
 |» supports_wildcard|boolean|true|none|Whether the effective repository configuration permits selecting all tools on this server using ["*"], including future tools. Mutually exclusive with a non-empty tools list.|
 
 #### Enumerated Values
@@ -160543,10 +164032,8 @@ GitHub App installation access tokens can list available automation triggers.
 The installation must belong to the repository owner and the token must have
 "Agent tasks" repository permissions (read).
 
-To call this endpoint, OAuth app tokens and personal access tokens (classic) need:
-
-* the `repo` scope for private or internal repositories
-* the `repo` scope or `public_repo` scope for public repositories
+To call this endpoint, OAuth app tokens and personal access tokens (classic)
+need the `repo` scope.
 
 **Fine-grained access tokens for "List available automation triggers for a repository"**
 
@@ -160595,7 +164082,7 @@ The fine-grained token must have the following permission set:
         "id": "write_scope",
         "label": "Write scope",
         "required": false,
-        "description": "Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.",
+        "description": "Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.",
         "schema": {
           "type": "string",
           "enum": [
@@ -160772,10 +164259,8 @@ GitHub App installation access tokens can access shared automations.
 The installation must belong to the repository owner and the token must have
 "Agent tasks" repository permissions (read). Personal automations require a user token.
 
-OAuth app tokens and personal access tokens (classic) need:
-
-* the `repo` scope for private or internal repositories
-* the `repo` scope or `public_repo` scope for public repositories
+To call this endpoint, OAuth app tokens and personal access tokens (classic)
+need the `repo` scope.
 
 **Fine-grained access tokens for "Get an automation"**
 
@@ -160909,159 +164394,159 @@ Status Code **200**
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» issue_opened|object|false|none|none|
 |» » query|string|false|none|A GitHub issue or pull request search query.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» issue_labeled|object|false|none|none|
 |» » query|string|false|none|A GitHub issue or pull request search query.|
 |» » labels|[string]|false|none|Label names matched case-insensitively against the label added by the event. Omit or use an empty array to match every added label.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» workflow_run|object|false|none|none|
 |» » workflows|[string]|true|none|Workflow names matched against the name in each workflow YAML file.|
 |» » conclusions|[string]|true|none|Workflow conclusions to match. The current trigger supports failure.|
 |» » query|string|false|none|A GitHub issue or pull request search query.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» pull_request_opened|object|false|none|none|
 |» » query|string|false|none|A GitHub issue or pull request search query.|
 |» » paths|[string]|false|none|Gitignore-style changed-file path globs.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» pull_request_synchronize|object|false|none|none|
 |» » query|string|false|none|A GitHub issue or pull request search query.|
 |» » paths|[string]|false|none|Gitignore-style changed-file path globs.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» pull_request_merged|object|false|none|none|
 |» » query|string|false|none|A GitHub issue or pull request search query.|
 |» » paths|[string]|false|none|Gitignore-style changed-file path globs.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» issue_comment|object|false|none|none|
 |» » query|string|false|none|A GitHub issue or pull request search query.|
 |» » body_substring|string|false|none|A case-insensitive substring matched against the event body.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» pull_request_comment|object|false|none|none|
 |» » comment_types|[string]|true|none|Pull request conversation and inline review comment types to match.|
 |» » query|string|false|none|A GitHub issue or pull request search query.|
 |» » paths|[string]|false|none|Gitignore-style changed-file path globs.|
 |» » body_substring|string|false|none|A case-insensitive substring matched against the event body.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» discussion_opened|object|false|none|none|
 |» » categories|[string]|false|none|Discussion category names matched case-insensitively.|
 |» » body_substring|string|false|none|A case-insensitive substring matched against the event body.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» discussion_updated|object|false|none|none|
 |» » categories|[string]|false|none|Discussion category names matched case-insensitively.|
 |» » body_substring|string|false|none|A case-insensitive substring matched against the event body.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» discussion_comment|object|false|none|none|
 |» » comment_types|[string]|false|none|Top-level discussion comments and replies to match. Omit to match both.|
 |» » categories|[string]|false|none|Discussion category names matched case-insensitively.|
 |» » body_substring|string|false|none|A case-insensitive substring matched against the event body.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» issue_assigned|object|false|none|none|
 |» » query|string|false|none|A GitHub issue or pull request search query.|
 |» » assignees|[string]|false|none|Affected assignee logins matched case-insensitively.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» pull_request_assigned|object|false|none|none|
 |» » query|string|false|none|A GitHub issue or pull request search query.|
 |» » paths|[string]|false|none|Gitignore-style changed-file path globs.|
 |» » assignees|[string]|false|none|Affected assignee logins matched case-insensitively.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» sub_issue_added|object|false|none|none|
 |» » query|string|false|none|A GitHub issue or pull request search query.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» pull_request_ready_for_review|object|false|none|none|
 |» » query|string|false|none|A GitHub issue or pull request search query.|
 |» » paths|[string]|false|none|Gitignore-style changed-file path globs.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» pull_request_labeled|object|false|none|none|
 |» » query|string|false|none|A GitHub issue or pull request search query.|
 |» » paths|[string]|false|none|Gitignore-style changed-file path globs.|
 |» » labels|[string]|false|none|Label names matched case-insensitively against the label added by the event. Omit or use an empty array to match every added label.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» pull_request_merge_conflict|object|false|none|none|
 |» » query|string|false|none|A GitHub issue or pull request search query.|
 |» » paths|[string]|false|none|Gitignore-style changed-file path globs.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» pull_request_review_submitted|object|false|none|none|
 |» » query|string|false|none|A GitHub issue or pull request search query.|
 |» » paths|[string]|false|none|Gitignore-style changed-file path globs.|
 |» » states|[string]|true|none|Submitted review states to match.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» pull_request_review_requested|object|false|none|none|
 |» » query|string|false|none|A GitHub issue or pull request search query.|
 |» » paths|[string]|false|none|Gitignore-style changed-file path globs.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» issue_closed|object|false|none|none|
 |» » query|string|false|none|A GitHub issue or pull request search query.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» issue_reopened|object|false|none|none|
 |» » query|string|false|none|A GitHub issue or pull request search query.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» pull_request_closed|object|false|none|none|
 |» » query|string|false|none|A GitHub issue or pull request search query.|
 |» » paths|[string]|false|none|Gitignore-style changed-file path globs.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» pull_request_reopened|object|false|none|none|
 |» » query|string|false|none|A GitHub issue or pull request search query.|
 |» » paths|[string]|false|none|Gitignore-style changed-file path globs.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» pull_request_converted_to_draft|object|false|none|none|
 |» » query|string|false|none|A GitHub issue or pull request search query.|
 |» » paths|[string]|false|none|Gitignore-style changed-file path globs.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» pull_request_review_dismissed|object|false|none|none|
 |» » query|string|false|none|A GitHub issue or pull request search query.|
 |» » paths|[string]|false|none|Gitignore-style changed-file path globs.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» pull_request_review_thread_resolved|object|false|none|none|
 |» » query|string|false|none|A GitHub issue or pull request search query.|
 |» » paths|[string]|false|none|Gitignore-style changed-file path globs.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» pull_request_review_thread_unresolved|object|false|none|none|
 |» » query|string|false|none|A GitHub issue or pull request search query.|
 |» » paths|[string]|false|none|Gitignore-style changed-file path globs.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» automation_completed|object|false|none|none|
 |» » automation_ids|[string]|true|none|Upstream Automation IDs in the same repository.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» automation_failed|object|false|none|none|
 |» » automation_ids|[string]|true|none|Upstream Automation IDs in the same repository. An Automation cannot list itself, and a user-owned Automation can only be listed by its creator's user-owned Automations.|
 |» » reasons|[string]|false|none|Failure reasons to match. Omit to match only reported failures.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» code_scanning_alert|object|false|none|Runs on the default branch when a security alert of this kind is created in the repository. These are system events without an issue, pull request, or human actor, and cannot be run manually.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» secret_scanning_alert|object|false|none|Runs on the default branch when a security alert of this kind is created in the repository. These are system events without an issue, pull request, or human actor, and cannot be run manually.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» dependabot_alert|object|false|none|Runs on the default branch when a security alert of this kind is created in the repository. These are system events without an issue, pull request, or human actor, and cannot be run manually.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |prompt|string|true|none|The prompt for the automation.|
 |tools|[string]|false|none|The tools available to the automation.|
@@ -161255,6 +164740,8 @@ curl https://api.github.com/agents/repos/string/string/automations/string \
 
 Deletes an automation in a repository. The automation must be a personal
 automation belonging to you or a shared automation.
+Data dedicated to the automation is also deleted when present and may remain
+recoverable for a limited period according to the configured retention policy.
 
 GitHub App installation access tokens can delete shared automations.
 The installation must belong to the repository owner and the token must have
@@ -161263,10 +164750,8 @@ The installation must belong to the repository owner and the token must have
 To call this endpoint, you must have write access to the repository and the
 "Allow automations" setting must be enabled for the repository.
 
-OAuth app tokens and personal access tokens (classic) need:
-
-* the `repo` scope for private or internal repositories
-* the `repo` scope or `public_repo` scope for public repositories
+To call this endpoint, OAuth app tokens and personal access tokens (classic)
+need the `repo` scope.
 
 **Fine-grained access tokens for "Delete an automation"**
 
@@ -161344,6 +164829,23 @@ The fine-grained token must have the following permission set:
 }
 ```
 
+> 503 Response
+
+```json
+{
+  "message": "string",
+  "errors": [
+    {
+      "code": "missing",
+      "message": "string"
+    }
+  ],
+  "documentation_url": "string",
+  "error_code": "string",
+  "limited_resource": "string"
+}
+```
+
 <h3 id="delete-an-automation-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
@@ -161352,6 +164854,7 @@ The fine-grained token must have the following permission set:
 |400|Bad Request|Bad request|Inline|
 |401|Unauthorized|Authentication required|Inline|
 |404|Not Found|Resource not found|Inline|
+|503|Service Unavailable|Automation deletion is temporarily unavailable and can be retried.|Inline|
 
 <h3 id="delete-an-automation-responseschema">Response Schema</h3>
 
@@ -161424,6 +164927,29 @@ Status Code **404**
 |» code|unprocessable|
 |» code|custom|
 
+Status Code **503**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|message|string|true|none|Summary message (e.g. "Validation Failed", "Not Found")|
+|errors|[object]|false|none|List of validation errors (present only for 422 responses)|
+|» code|string|true|none|Machine-readable error code|
+|» message|string|false|none|Human-readable message (populated when code is "custom")|
+|documentation_url|string|true|none|URL to relevant API documentation|
+|error_code|string|false|none|Stable machine-readable code identifying the specific known failure. Omitted for failures without a classified cause.|
+|limited_resource|string|false|none|Which resource was rate limited, present when `error_code` is `rate_limit_exceeded` and the resource is known. One of `api`, `sandbox`, or `token_mint`. Clients should tolerate new values.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|» code|missing|
+|» code|missing_field|
+|» code|invalid|
+|» code|already_exists|
+|» code|unprocessable|
+|» code|custom|
+
 <aside class="success">
 This operation does not require authentication
 </aside>
@@ -161468,10 +164994,8 @@ The installation must belong to the repository owner and the token must have
 To call this endpoint, you must have write access to the repository and the
 "Allow automations" setting must be enabled for the repository.
 
-OAuth app tokens and personal access tokens (classic) need:
-
-* the `repo` scope for private or internal repositories
-* the `repo` scope or `public_repo` scope for public repositories
+To call this endpoint, OAuth app tokens and personal access tokens (classic)
+need the `repo` scope.
 
 **Fine-grained access tokens for "Update an automation"**
 
@@ -161530,159 +165054,159 @@ The fine-grained token must have the following permission set:
 |» » » allow_copilot_triggers|body|boolean|false|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » issue_opened|body|object|false|none|
 |» » » query|body|string|false|A GitHub issue or pull request search query.|
-|» » » write_scope|body|string|false|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|body|string|false|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|body|boolean|false|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » issue_labeled|body|object|false|none|
 |» » » query|body|string|false|A GitHub issue or pull request search query.|
 |» » » labels|body|[string]|false|Label names matched case-insensitively against the label added by the event. Omit or use an empty array to match every added label.|
-|» » » write_scope|body|string|false|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|body|string|false|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|body|boolean|false|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » workflow_run|body|object|false|none|
 |» » » workflows|body|[string]|true|Workflow names matched against the name in each workflow YAML file.|
 |» » » conclusions|body|[string]|true|Workflow conclusions to match. The current trigger supports failure.|
 |» » » query|body|string|false|A GitHub issue or pull request search query.|
-|» » » write_scope|body|string|false|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|body|string|false|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|body|boolean|false|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » pull_request_opened|body|object|false|none|
 |» » » query|body|string|false|A GitHub issue or pull request search query.|
 |» » » paths|body|[string]|false|Gitignore-style changed-file path globs.|
-|» » » write_scope|body|string|false|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|body|string|false|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|body|boolean|false|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » pull_request_synchronize|body|object|false|none|
 |» » » query|body|string|false|A GitHub issue or pull request search query.|
 |» » » paths|body|[string]|false|Gitignore-style changed-file path globs.|
-|» » » write_scope|body|string|false|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|body|string|false|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|body|boolean|false|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » pull_request_merged|body|object|false|none|
 |» » » query|body|string|false|A GitHub issue or pull request search query.|
 |» » » paths|body|[string]|false|Gitignore-style changed-file path globs.|
-|» » » write_scope|body|string|false|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|body|string|false|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|body|boolean|false|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » issue_comment|body|object|false|none|
 |» » » query|body|string|false|A GitHub issue or pull request search query.|
 |» » » body_substring|body|string|false|A case-insensitive substring matched against the event body.|
-|» » » write_scope|body|string|false|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|body|string|false|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|body|boolean|false|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » pull_request_comment|body|object|false|none|
 |» » » comment_types|body|[string]|true|Pull request conversation and inline review comment types to match.|
 |» » » query|body|string|false|A GitHub issue or pull request search query.|
 |» » » paths|body|[string]|false|Gitignore-style changed-file path globs.|
 |» » » body_substring|body|string|false|A case-insensitive substring matched against the event body.|
-|» » » write_scope|body|string|false|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|body|string|false|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|body|boolean|false|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » discussion_opened|body|object|false|none|
 |» » » categories|body|[string]|false|Discussion category names matched case-insensitively.|
 |» » » body_substring|body|string|false|A case-insensitive substring matched against the event body.|
-|» » » write_scope|body|string|false|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|body|string|false|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|body|boolean|false|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » discussion_updated|body|object|false|none|
 |» » » categories|body|[string]|false|Discussion category names matched case-insensitively.|
 |» » » body_substring|body|string|false|A case-insensitive substring matched against the event body.|
-|» » » write_scope|body|string|false|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|body|string|false|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|body|boolean|false|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » discussion_comment|body|object|false|none|
 |» » » comment_types|body|[string]|false|Top-level discussion comments and replies to match. Omit to match both.|
 |» » » categories|body|[string]|false|Discussion category names matched case-insensitively.|
 |» » » body_substring|body|string|false|A case-insensitive substring matched against the event body.|
-|» » » write_scope|body|string|false|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|body|string|false|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|body|boolean|false|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » issue_assigned|body|object|false|none|
 |» » » query|body|string|false|A GitHub issue or pull request search query.|
 |» » » assignees|body|[string]|false|Affected assignee logins matched case-insensitively.|
-|» » » write_scope|body|string|false|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|body|string|false|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|body|boolean|false|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » pull_request_assigned|body|object|false|none|
 |» » » query|body|string|false|A GitHub issue or pull request search query.|
 |» » » paths|body|[string]|false|Gitignore-style changed-file path globs.|
 |» » » assignees|body|[string]|false|Affected assignee logins matched case-insensitively.|
-|» » » write_scope|body|string|false|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|body|string|false|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|body|boolean|false|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » sub_issue_added|body|object|false|none|
 |» » » query|body|string|false|A GitHub issue or pull request search query.|
-|» » » write_scope|body|string|false|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|body|string|false|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|body|boolean|false|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » pull_request_ready_for_review|body|object|false|none|
 |» » » query|body|string|false|A GitHub issue or pull request search query.|
 |» » » paths|body|[string]|false|Gitignore-style changed-file path globs.|
-|» » » write_scope|body|string|false|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|body|string|false|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|body|boolean|false|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » pull_request_labeled|body|object|false|none|
 |» » » query|body|string|false|A GitHub issue or pull request search query.|
 |» » » paths|body|[string]|false|Gitignore-style changed-file path globs.|
 |» » » labels|body|[string]|false|Label names matched case-insensitively against the label added by the event. Omit or use an empty array to match every added label.|
-|» » » write_scope|body|string|false|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|body|string|false|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|body|boolean|false|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » pull_request_merge_conflict|body|object|false|none|
 |» » » query|body|string|false|A GitHub issue or pull request search query.|
 |» » » paths|body|[string]|false|Gitignore-style changed-file path globs.|
-|» » » write_scope|body|string|false|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|body|string|false|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|body|boolean|false|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » pull_request_review_submitted|body|object|false|none|
 |» » » query|body|string|false|A GitHub issue or pull request search query.|
 |» » » paths|body|[string]|false|Gitignore-style changed-file path globs.|
 |» » » states|body|[string]|true|Submitted review states to match.|
-|» » » write_scope|body|string|false|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|body|string|false|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|body|boolean|false|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » pull_request_review_requested|body|object|false|none|
 |» » » query|body|string|false|A GitHub issue or pull request search query.|
 |» » » paths|body|[string]|false|Gitignore-style changed-file path globs.|
-|» » » write_scope|body|string|false|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|body|string|false|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|body|boolean|false|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » issue_closed|body|object|false|none|
 |» » » query|body|string|false|A GitHub issue or pull request search query.|
-|» » » write_scope|body|string|false|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|body|string|false|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|body|boolean|false|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » issue_reopened|body|object|false|none|
 |» » » query|body|string|false|A GitHub issue or pull request search query.|
-|» » » write_scope|body|string|false|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|body|string|false|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|body|boolean|false|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » pull_request_closed|body|object|false|none|
 |» » » query|body|string|false|A GitHub issue or pull request search query.|
 |» » » paths|body|[string]|false|Gitignore-style changed-file path globs.|
-|» » » write_scope|body|string|false|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|body|string|false|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|body|boolean|false|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » pull_request_reopened|body|object|false|none|
 |» » » query|body|string|false|A GitHub issue or pull request search query.|
 |» » » paths|body|[string]|false|Gitignore-style changed-file path globs.|
-|» » » write_scope|body|string|false|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|body|string|false|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|body|boolean|false|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » pull_request_converted_to_draft|body|object|false|none|
 |» » » query|body|string|false|A GitHub issue or pull request search query.|
 |» » » paths|body|[string]|false|Gitignore-style changed-file path globs.|
-|» » » write_scope|body|string|false|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|body|string|false|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|body|boolean|false|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » pull_request_review_dismissed|body|object|false|none|
 |» » » query|body|string|false|A GitHub issue or pull request search query.|
 |» » » paths|body|[string]|false|Gitignore-style changed-file path globs.|
-|» » » write_scope|body|string|false|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|body|string|false|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|body|boolean|false|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » pull_request_review_thread_resolved|body|object|false|none|
 |» » » query|body|string|false|A GitHub issue or pull request search query.|
 |» » » paths|body|[string]|false|Gitignore-style changed-file path globs.|
-|» » » write_scope|body|string|false|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|body|string|false|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|body|boolean|false|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » pull_request_review_thread_unresolved|body|object|false|none|
 |» » » query|body|string|false|A GitHub issue or pull request search query.|
 |» » » paths|body|[string]|false|Gitignore-style changed-file path globs.|
-|» » » write_scope|body|string|false|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|body|string|false|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|body|boolean|false|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » automation_completed|body|object|false|none|
 |» » » automation_ids|body|[string]|true|Upstream Automation IDs in the same repository.|
-|» » » write_scope|body|string|false|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|body|string|false|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|body|boolean|false|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » automation_failed|body|object|false|none|
 |» » » automation_ids|body|[string]|true|Upstream Automation IDs in the same repository. An Automation cannot list itself, and a user-owned Automation can only be listed by its creator's user-owned Automations.|
 |» » » reasons|body|[string]|false|Failure reasons to match. Omit to match only reported failures.|
-|» » » write_scope|body|string|false|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|body|string|false|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|body|boolean|false|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » code_scanning_alert|body|object|false|Runs on the default branch when a security alert of this kind is created in the repository. These are system events without an issue, pull request, or human actor, and cannot be run manually.|
-|» » » write_scope|body|string|false|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|body|string|false|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|body|boolean|false|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » secret_scanning_alert|body|object|false|Runs on the default branch when a security alert of this kind is created in the repository. These are system events without an issue, pull request, or human actor, and cannot be run manually.|
-|» » » write_scope|body|string|false|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|body|string|false|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|body|boolean|false|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» » dependabot_alert|body|object|false|Runs on the default branch when a security alert of this kind is created in the repository. These are system events without an issue, pull request, or human actor, and cannot be run manually.|
-|» » » write_scope|body|string|false|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » write_scope|body|string|false|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » » allow_copilot_triggers|body|boolean|false|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» prompt|body|string|false|The prompt for the automation.|
 |» tools|body|[string]|false|The tools available to the automation. Send an empty array to clear all tools.|
@@ -161909,159 +165433,159 @@ Status Code **200**
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» issue_opened|object|false|none|none|
 |» » query|string|false|none|A GitHub issue or pull request search query.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» issue_labeled|object|false|none|none|
 |» » query|string|false|none|A GitHub issue or pull request search query.|
 |» » labels|[string]|false|none|Label names matched case-insensitively against the label added by the event. Omit or use an empty array to match every added label.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» workflow_run|object|false|none|none|
 |» » workflows|[string]|true|none|Workflow names matched against the name in each workflow YAML file.|
 |» » conclusions|[string]|true|none|Workflow conclusions to match. The current trigger supports failure.|
 |» » query|string|false|none|A GitHub issue or pull request search query.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» pull_request_opened|object|false|none|none|
 |» » query|string|false|none|A GitHub issue or pull request search query.|
 |» » paths|[string]|false|none|Gitignore-style changed-file path globs.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» pull_request_synchronize|object|false|none|none|
 |» » query|string|false|none|A GitHub issue or pull request search query.|
 |» » paths|[string]|false|none|Gitignore-style changed-file path globs.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» pull_request_merged|object|false|none|none|
 |» » query|string|false|none|A GitHub issue or pull request search query.|
 |» » paths|[string]|false|none|Gitignore-style changed-file path globs.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» issue_comment|object|false|none|none|
 |» » query|string|false|none|A GitHub issue or pull request search query.|
 |» » body_substring|string|false|none|A case-insensitive substring matched against the event body.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» pull_request_comment|object|false|none|none|
 |» » comment_types|[string]|true|none|Pull request conversation and inline review comment types to match.|
 |» » query|string|false|none|A GitHub issue or pull request search query.|
 |» » paths|[string]|false|none|Gitignore-style changed-file path globs.|
 |» » body_substring|string|false|none|A case-insensitive substring matched against the event body.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» discussion_opened|object|false|none|none|
 |» » categories|[string]|false|none|Discussion category names matched case-insensitively.|
 |» » body_substring|string|false|none|A case-insensitive substring matched against the event body.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» discussion_updated|object|false|none|none|
 |» » categories|[string]|false|none|Discussion category names matched case-insensitively.|
 |» » body_substring|string|false|none|A case-insensitive substring matched against the event body.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» discussion_comment|object|false|none|none|
 |» » comment_types|[string]|false|none|Top-level discussion comments and replies to match. Omit to match both.|
 |» » categories|[string]|false|none|Discussion category names matched case-insensitively.|
 |» » body_substring|string|false|none|A case-insensitive substring matched against the event body.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» issue_assigned|object|false|none|none|
 |» » query|string|false|none|A GitHub issue or pull request search query.|
 |» » assignees|[string]|false|none|Affected assignee logins matched case-insensitively.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» pull_request_assigned|object|false|none|none|
 |» » query|string|false|none|A GitHub issue or pull request search query.|
 |» » paths|[string]|false|none|Gitignore-style changed-file path globs.|
 |» » assignees|[string]|false|none|Affected assignee logins matched case-insensitively.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» sub_issue_added|object|false|none|none|
 |» » query|string|false|none|A GitHub issue or pull request search query.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» pull_request_ready_for_review|object|false|none|none|
 |» » query|string|false|none|A GitHub issue or pull request search query.|
 |» » paths|[string]|false|none|Gitignore-style changed-file path globs.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» pull_request_labeled|object|false|none|none|
 |» » query|string|false|none|A GitHub issue or pull request search query.|
 |» » paths|[string]|false|none|Gitignore-style changed-file path globs.|
 |» » labels|[string]|false|none|Label names matched case-insensitively against the label added by the event. Omit or use an empty array to match every added label.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» pull_request_merge_conflict|object|false|none|none|
 |» » query|string|false|none|A GitHub issue or pull request search query.|
 |» » paths|[string]|false|none|Gitignore-style changed-file path globs.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» pull_request_review_submitted|object|false|none|none|
 |» » query|string|false|none|A GitHub issue or pull request search query.|
 |» » paths|[string]|false|none|Gitignore-style changed-file path globs.|
 |» » states|[string]|true|none|Submitted review states to match.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» pull_request_review_requested|object|false|none|none|
 |» » query|string|false|none|A GitHub issue or pull request search query.|
 |» » paths|[string]|false|none|Gitignore-style changed-file path globs.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» issue_closed|object|false|none|none|
 |» » query|string|false|none|A GitHub issue or pull request search query.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» issue_reopened|object|false|none|none|
 |» » query|string|false|none|A GitHub issue or pull request search query.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» pull_request_closed|object|false|none|none|
 |» » query|string|false|none|A GitHub issue or pull request search query.|
 |» » paths|[string]|false|none|Gitignore-style changed-file path globs.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» pull_request_reopened|object|false|none|none|
 |» » query|string|false|none|A GitHub issue or pull request search query.|
 |» » paths|[string]|false|none|Gitignore-style changed-file path globs.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» pull_request_converted_to_draft|object|false|none|none|
 |» » query|string|false|none|A GitHub issue or pull request search query.|
 |» » paths|[string]|false|none|Gitignore-style changed-file path globs.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» pull_request_review_dismissed|object|false|none|none|
 |» » query|string|false|none|A GitHub issue or pull request search query.|
 |» » paths|[string]|false|none|Gitignore-style changed-file path globs.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» pull_request_review_thread_resolved|object|false|none|none|
 |» » query|string|false|none|A GitHub issue or pull request search query.|
 |» » paths|[string]|false|none|Gitignore-style changed-file path globs.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» pull_request_review_thread_unresolved|object|false|none|none|
 |» » query|string|false|none|A GitHub issue or pull request search query.|
 |» » paths|[string]|false|none|Gitignore-style changed-file path globs.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» automation_completed|object|false|none|none|
 |» » automation_ids|[string]|true|none|Upstream Automation IDs in the same repository.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» automation_failed|object|false|none|none|
 |» » automation_ids|[string]|true|none|Upstream Automation IDs in the same repository. An Automation cannot list itself, and a user-owned Automation can only be listed by its creator's user-owned Automations.|
 |» » reasons|[string]|false|none|Failure reasons to match. Omit to match only reported failures.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» code_scanning_alert|object|false|none|Runs on the default branch when a security alert of this kind is created in the repository. These are system events without an issue, pull request, or human actor, and cannot be run manually.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» secret_scanning_alert|object|false|none|Runs on the default branch when a security alert of this kind is created in the repository. These are system events without an issue, pull request, or human actor, and cannot be run manually.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |» dependabot_alert|object|false|none|Runs on the default branch when a security alert of this kind is created in the repository. These are system events without an issue, pull request, or human actor, and cannot be run manually.|
-|» » write_scope|string|false|none|Override the Automation `write_scope` for runs started by this trigger. If omitted, the automation's `write_scope` is used. Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
 |» » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
 |prompt|string|true|none|The prompt for the automation.|
 |tools|[string]|false|none|The tools available to the automation.|
@@ -162233,6 +165757,1026 @@ Status Code **404**
 |» code|custom|
 
 Status Code **422**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|message|string|true|none|Summary message (e.g. "Validation Failed", "Not Found")|
+|errors|[object]|false|none|List of validation errors (present only for 422 responses)|
+|» code|string|true|none|Machine-readable error code|
+|» message|string|false|none|Human-readable message (populated when code is "custom")|
+|documentation_url|string|true|none|URL to relevant API documentation|
+|error_code|string|false|none|Stable machine-readable code identifying the specific known failure. Omitted for failures without a classified cause.|
+|limited_resource|string|false|none|Which resource was rate limited, present when `error_code` is `rate_limit_exceeded` and the resource is known. One of `api`, `sandbox`, or `token_mint`. Clients should tolerate new values.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|» code|missing|
+|» code|missing_field|
+|» code|invalid|
+|» code|already_exists|
+|» code|unprocessable|
+|» code|custom|
+
+<aside class="success">
+This operation does not require authentication
+</aside>
+
+## List revisions for an automation
+
+<a id="opIdagent-automations/list-automation-revisions"></a>
+
+> Code samples
+
+```bash
+curl https://api.github.com/agents/repos/string/string/automations/string/revisions \
+  -H 'Accept: application/json'
+```
+
+`GET /agents/repos/{owner}/{repo}/automations/{automation_id}/revisions`
+
+> [!NOTE]
+> This endpoint is in public preview and is subject to change.
+
+Returns a list of revisions for an automation, ordered from newest to oldest.
+
+Access follows the automation's own ownership rules: a user-owned automation's
+history is readable only by its creator, and a repository-owned automation's
+history follows repository read access. History remains readable after the
+automation is deleted.
+
+Follow the opaque cursor in the `rel="next"` link from the `Link` header to
+continue when more revisions are available.
+
+**Fine-grained access tokens for "List revisions for an automation"**
+
+This endpoint works with the following fine-grained token types:
+
+* [GitHub App user access tokens](https://docs.github.com/en/apps/creating-github-apps/authenticating-with-a-github-app/generating-a-user-access-token-for-a-github-app)
+* [Fine-grained personal access tokens](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-fine-grained-personal-access-token)
+
+The fine-grained token must have the following permission set:
+
+* "Agent tasks" repository permissions (read)
+
+GitHub App installation access tokens are not supported for this endpoint.
+
+
+<a href="https://docs.github.com/rest/agent-automations/agent-automations#list-revisions-for-an-automation">API method documentation</a>
+
+<h3 id="list-revisions-for-an-automation-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|owner|path|string|true|The account owner of the repository. The name is not case sensitive.|
+|repo|path|string|true|The name of the repository. The name is not case sensitive.|
+|automation_id|path|string|true|The unique identifier of the automation.|
+|cursor|query|string|false|Opaque cursor identifying where to continue reading revision history,<br>taken from the `next` link of a previous response. Omit to start from<br>the most recent revision.<br>|
+|per_page|query|integer|false|The number of results per page (max 100).|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "revisions": [
+    {
+      "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890:000000000003",
+      "automation_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+      "revision_number": 3,
+      "change_type": "edited",
+      "creator": {
+        "id": 123
+      },
+      "editor": {
+        "id": 456
+      },
+      "editor_type": "user",
+      "changed_at": "2026-05-03T14:30:00Z",
+      "snapshot": {
+        "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+        "name": "Issue triage",
+        "enabled": true,
+        "type": "shared",
+        "require_actor_write_permission": false,
+        "triggers": {
+          "issue_opened": {
+            "query": "is:open"
+          }
+        },
+        "prompt": "Inspect the new issue and suggest labels, priority, and next steps.",
+        "tools": [
+          "github/issue_read"
+        ],
+        "model": "gpt-5.4",
+        "reasoning_effort": "high",
+        "created_at": "2026-05-01T12:00:00Z",
+        "updated_at": "2026-05-03T14:30:00Z",
+        "created_by": {
+          "id": 123
+        }
+      }
+    }
+  ]
+}
+```
+
+> 400 Response
+
+```json
+{
+  "message": "string",
+  "errors": [
+    {
+      "code": "missing",
+      "message": "string"
+    }
+  ],
+  "documentation_url": "string",
+  "error_code": "string",
+  "limited_resource": "string"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "message": "string",
+  "errors": [
+    {
+      "code": "missing",
+      "message": "string"
+    }
+  ],
+  "documentation_url": "string",
+  "error_code": "string",
+  "limited_resource": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "message": "string",
+  "errors": [
+    {
+      "code": "missing",
+      "message": "string"
+    }
+  ],
+  "documentation_url": "string",
+  "error_code": "string",
+  "limited_resource": "string"
+}
+```
+
+<h3 id="list-revisions-for-an-automation-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Revision history retrieved successfully|Inline|
+|400|Bad Request|Bad request|Inline|
+|401|Unauthorized|Authentication required|Inline|
+|404|Not Found|Resource not found|Inline|
+
+<h3 id="list-revisions-for-an-automation-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|revisions|[object]|true|none|Revisions ordered by revision number descending.|
+|» id|string|true|none|The unique identifier of this revision.|
+|» automation_id|string|true|none|The automation this revision belongs to.|
+|» revision_number|integer(int64)|true|none|Position of this revision in the automation's history, starting at 1.|
+|» change_type|string|true|none|The kind of change recorded by the revision.|
+|» creator|object|false|none|The automation's original creator. Omitted when not recorded.|
+|» » id|integer(int64)|false|none|The unique identifier of the user|
+|» editor|object|false|none|The person who made this change. Omitted for system changes and legacy records.|
+|» » id|integer(int64)|false|none|The unique identifier of the user|
+|» editor_type|string|false|none|The kind of actor that made the change.|
+|» changed_at|string(date-time)|true|none|When the change was applied.|
+|» restored_from_revision_id|string|false|none|The revision a rollback restored. Present only when `change_type` is `rolled_back`.|
+|» snapshot|object|false|none|The automation's public detail representation after the change,<br>including its enabled state at configuration-save time, not its current<br>lifecycle state. Legacy deleted revisions are identified by `change_type`.<br>|
+|» » id|string|true|none|The unique identifier of the automation.|
+|» » name|string|true|none|The name of the automation.|
+|» » enabled|boolean|false|none|Whether the automation was enabled when this configuration was saved.|
+|» » type|string|false|read-only|The type of automation. `personal` keeps it private to its creator and its runs act as that user. `shared` makes it belong to the repository, visible to anyone with read access to the repository, and its runs act as the Copilot app rather than as a person.|
+|» » require_actor_write_permission|boolean|false|none|When true, event-triggered runs require the event actor to have repo write permission, even when the org's allow_read_access_triggers policy is enabled. Does not apply to interval-scheduled runs, which always run as the automation owner.|
+|» » triggers|object|false|none|Trigger configuration for the automation.|
+|» » » interval|object|false|none|none|
+|» » » » cadence|[string]|true|none|One or more schedules on which the Automation runs.|
+|» » » » hour_utc|integer|false|none|UTC hour anchor (0 through 23) for daily and weekly schedules. Omitted daily and weekly values default to `0` (midnight UTC).|
+|» » » » day_of_week|integer|false|none|UTC weekday anchor for weekly schedules, where `0` is Sunday and `6` is Saturday. Omitted weekly values default to Monday (`1`).|
+|» » » » minute_utc|integer|false|none|UTC minute anchor for daily and weekly schedules. Omitted daily and weekly values default to `0`. Must be omitted whenever `cadence` includes `hourly`.|
+|» » » » write_scope|string|false|none|Has no effect: scheduled runs can change any resource in the repository, and an organization or repository policy requiring trigger-scoped writes does not apply to them.|
+|» » » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
+|» » » issue_opened|object|false|none|none|
+|» » » » query|string|false|none|A GitHub issue or pull request search query.|
+|» » » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
+|» » » issue_labeled|object|false|none|none|
+|» » » » query|string|false|none|A GitHub issue or pull request search query.|
+|» » » » labels|[string]|false|none|Label names matched case-insensitively against the label added by the event. Omit or use an empty array to match every added label.|
+|» » » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
+|» » » workflow_run|object|false|none|none|
+|» » » » workflows|[string]|true|none|Workflow names matched against the name in each workflow YAML file.|
+|» » » » conclusions|[string]|true|none|Workflow conclusions to match. The current trigger supports failure.|
+|» » » » query|string|false|none|A GitHub issue or pull request search query.|
+|» » » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
+|» » » pull_request_opened|object|false|none|none|
+|» » » » query|string|false|none|A GitHub issue or pull request search query.|
+|» » » » paths|[string]|false|none|Gitignore-style changed-file path globs.|
+|» » » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
+|» » » pull_request_synchronize|object|false|none|none|
+|» » » » query|string|false|none|A GitHub issue or pull request search query.|
+|» » » » paths|[string]|false|none|Gitignore-style changed-file path globs.|
+|» » » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
+|» » » pull_request_merged|object|false|none|none|
+|» » » » query|string|false|none|A GitHub issue or pull request search query.|
+|» » » » paths|[string]|false|none|Gitignore-style changed-file path globs.|
+|» » » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
+|» » » issue_comment|object|false|none|none|
+|» » » » query|string|false|none|A GitHub issue or pull request search query.|
+|» » » » body_substring|string|false|none|A case-insensitive substring matched against the event body.|
+|» » » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
+|» » » pull_request_comment|object|false|none|none|
+|» » » » comment_types|[string]|true|none|Pull request conversation and inline review comment types to match.|
+|» » » » query|string|false|none|A GitHub issue or pull request search query.|
+|» » » » paths|[string]|false|none|Gitignore-style changed-file path globs.|
+|» » » » body_substring|string|false|none|A case-insensitive substring matched against the event body.|
+|» » » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
+|» » » discussion_opened|object|false|none|none|
+|» » » » categories|[string]|false|none|Discussion category names matched case-insensitively.|
+|» » » » body_substring|string|false|none|A case-insensitive substring matched against the event body.|
+|» » » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
+|» » » discussion_updated|object|false|none|none|
+|» » » » categories|[string]|false|none|Discussion category names matched case-insensitively.|
+|» » » » body_substring|string|false|none|A case-insensitive substring matched against the event body.|
+|» » » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
+|» » » discussion_comment|object|false|none|none|
+|» » » » comment_types|[string]|false|none|Top-level discussion comments and replies to match. Omit to match both.|
+|» » » » categories|[string]|false|none|Discussion category names matched case-insensitively.|
+|» » » » body_substring|string|false|none|A case-insensitive substring matched against the event body.|
+|» » » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
+|» » » issue_assigned|object|false|none|none|
+|» » » » query|string|false|none|A GitHub issue or pull request search query.|
+|» » » » assignees|[string]|false|none|Affected assignee logins matched case-insensitively.|
+|» » » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
+|» » » pull_request_assigned|object|false|none|none|
+|» » » » query|string|false|none|A GitHub issue or pull request search query.|
+|» » » » paths|[string]|false|none|Gitignore-style changed-file path globs.|
+|» » » » assignees|[string]|false|none|Affected assignee logins matched case-insensitively.|
+|» » » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
+|» » » sub_issue_added|object|false|none|none|
+|» » » » query|string|false|none|A GitHub issue or pull request search query.|
+|» » » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
+|» » » pull_request_ready_for_review|object|false|none|none|
+|» » » » query|string|false|none|A GitHub issue or pull request search query.|
+|» » » » paths|[string]|false|none|Gitignore-style changed-file path globs.|
+|» » » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
+|» » » pull_request_labeled|object|false|none|none|
+|» » » » query|string|false|none|A GitHub issue or pull request search query.|
+|» » » » paths|[string]|false|none|Gitignore-style changed-file path globs.|
+|» » » » labels|[string]|false|none|Label names matched case-insensitively against the label added by the event. Omit or use an empty array to match every added label.|
+|» » » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
+|» » » pull_request_merge_conflict|object|false|none|none|
+|» » » » query|string|false|none|A GitHub issue or pull request search query.|
+|» » » » paths|[string]|false|none|Gitignore-style changed-file path globs.|
+|» » » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
+|» » » pull_request_review_submitted|object|false|none|none|
+|» » » » query|string|false|none|A GitHub issue or pull request search query.|
+|» » » » paths|[string]|false|none|Gitignore-style changed-file path globs.|
+|» » » » states|[string]|true|none|Submitted review states to match.|
+|» » » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
+|» » » pull_request_review_requested|object|false|none|none|
+|» » » » query|string|false|none|A GitHub issue or pull request search query.|
+|» » » » paths|[string]|false|none|Gitignore-style changed-file path globs.|
+|» » » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
+|» » » issue_closed|object|false|none|none|
+|» » » » query|string|false|none|A GitHub issue or pull request search query.|
+|» » » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
+|» » » issue_reopened|object|false|none|none|
+|» » » » query|string|false|none|A GitHub issue or pull request search query.|
+|» » » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
+|» » » pull_request_closed|object|false|none|none|
+|» » » » query|string|false|none|A GitHub issue or pull request search query.|
+|» » » » paths|[string]|false|none|Gitignore-style changed-file path globs.|
+|» » » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
+|» » » pull_request_reopened|object|false|none|none|
+|» » » » query|string|false|none|A GitHub issue or pull request search query.|
+|» » » » paths|[string]|false|none|Gitignore-style changed-file path globs.|
+|» » » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
+|» » » pull_request_converted_to_draft|object|false|none|none|
+|» » » » query|string|false|none|A GitHub issue or pull request search query.|
+|» » » » paths|[string]|false|none|Gitignore-style changed-file path globs.|
+|» » » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
+|» » » pull_request_review_dismissed|object|false|none|none|
+|» » » » query|string|false|none|A GitHub issue or pull request search query.|
+|» » » » paths|[string]|false|none|Gitignore-style changed-file path globs.|
+|» » » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
+|» » » pull_request_review_thread_resolved|object|false|none|none|
+|» » » » query|string|false|none|A GitHub issue or pull request search query.|
+|» » » » paths|[string]|false|none|Gitignore-style changed-file path globs.|
+|» » » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
+|» » » pull_request_review_thread_unresolved|object|false|none|none|
+|» » » » query|string|false|none|A GitHub issue or pull request search query.|
+|» » » » paths|[string]|false|none|Gitignore-style changed-file path globs.|
+|» » » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
+|» » » automation_completed|object|false|none|none|
+|» » » » automation_ids|[string]|true|none|Upstream Automation IDs in the same repository.|
+|» » » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
+|» » » automation_failed|object|false|none|none|
+|» » » » automation_ids|[string]|true|none|Upstream Automation IDs in the same repository. An Automation cannot list itself, and a user-owned Automation can only be listed by its creator's user-owned Automations.|
+|» » » » reasons|[string]|false|none|Failure reasons to match. Omit to match only reported failures.|
+|» » » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
+|» » » code_scanning_alert|object|false|none|Runs on the default branch when a security alert of this kind is created in the repository. These are system events without an issue, pull request, or human actor, and cannot be run manually.|
+|» » » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
+|» » » secret_scanning_alert|object|false|none|Runs on the default branch when a security alert of this kind is created in the repository. These are system events without an issue, pull request, or human actor, and cannot be run manually.|
+|» » » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
+|» » » dependabot_alert|object|false|none|Runs on the default branch when a security alert of this kind is created in the repository. These are system events without an issue, pull request, or human actor, and cannot be run manually.|
+|» » » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
+|» » prompt|string|true|none|The prompt for the automation.|
+|» » tools|[string]|false|none|The tools available to the automation.|
+|» » model|string|false|none|The model override for sessions triggered by this automation. Absent when the platform selects the model.|
+|» » reasoning_effort|string|false|none|The reasoning effort override for sessions triggered by this automation. Absent when the model's default is used.|
+|» » created_at|string(date-time)|true|none|When the automation was created.|
+|» » updated_at|string(date-time)|true|none|When the automation was last updated.|
+|» » created_by|object|true|none|A GitHub user|
+|» » » id|integer(int64)|false|none|The unique identifier of the user|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|» change_type|created|
+|» change_type|edited|
+|» change_type|enabled|
+|» change_type|disabled|
+|» change_type|deleted|
+|» change_type|rolled_back|
+|» change_type|unknown|
+|» editor_type|user|
+|» editor_type|system|
+|» editor_type|unknown|
+|» » type|personal|
+|» » type|shared|
+|» » » » cadence|hourly|
+|» » » » cadence|daily|
+|» » » » cadence|weekly|
+|» » » » minute_utc|0|
+|» » » » minute_utc|15|
+|» » » » minute_utc|30|
+|» » » » minute_utc|45|
+|» » » » write_scope|trigger|
+|» » » » write_scope|repository|
+|» » » » write_scope|trigger|
+|» » » » write_scope|repository|
+|» » » » write_scope|trigger|
+|» » » » write_scope|repository|
+|» » » » conclusions|failure|
+|» » » » write_scope|trigger|
+|» » » » write_scope|repository|
+|» » » » write_scope|trigger|
+|» » » » write_scope|repository|
+|» » » » write_scope|trigger|
+|» » » » write_scope|repository|
+|» » » » write_scope|trigger|
+|» » » » write_scope|repository|
+|» » » » write_scope|trigger|
+|» » » » write_scope|repository|
+|» » » » comment_types|timeline_comment|
+|» » » » comment_types|review_comment|
+|» » » » write_scope|trigger|
+|» » » » write_scope|repository|
+|» » » » write_scope|trigger|
+|» » » » write_scope|repository|
+|» » » » write_scope|trigger|
+|» » » » write_scope|repository|
+|» » » » comment_types|comment|
+|» » » » comment_types|reply|
+|» » » » write_scope|trigger|
+|» » » » write_scope|repository|
+|» » » » write_scope|trigger|
+|» » » » write_scope|repository|
+|» » » » write_scope|trigger|
+|» » » » write_scope|repository|
+|» » » » write_scope|trigger|
+|» » » » write_scope|repository|
+|» » » » write_scope|trigger|
+|» » » » write_scope|repository|
+|» » » » write_scope|trigger|
+|» » » » write_scope|repository|
+|» » » » write_scope|trigger|
+|» » » » write_scope|repository|
+|» » » » states|approved|
+|» » » » states|changes_requested|
+|» » » » states|commented|
+|» » » » write_scope|trigger|
+|» » » » write_scope|repository|
+|» » » » write_scope|trigger|
+|» » » » write_scope|repository|
+|» » » » write_scope|trigger|
+|» » » » write_scope|repository|
+|» » » » write_scope|trigger|
+|» » » » write_scope|repository|
+|» » » » write_scope|trigger|
+|» » » » write_scope|repository|
+|» » » » write_scope|trigger|
+|» » » » write_scope|repository|
+|» » » » write_scope|trigger|
+|» » » » write_scope|repository|
+|» » » » write_scope|trigger|
+|» » » » write_scope|repository|
+|» » » » write_scope|trigger|
+|» » » » write_scope|repository|
+|» » » » write_scope|trigger|
+|» » » » write_scope|repository|
+|» » » » write_scope|trigger|
+|» » » » write_scope|repository|
+|» » » » reasons|reported|
+|» » » » reasons|crashed|
+|» » » » reasons|timed_out|
+|» » » » write_scope|trigger|
+|» » » » write_scope|repository|
+|» » » » write_scope|trigger|
+|» » » » write_scope|repository|
+|» » » » write_scope|trigger|
+|» » » » write_scope|repository|
+|» » » » write_scope|trigger|
+|» » » » write_scope|repository|
+
+Status Code **400**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|message|string|true|none|Summary message (e.g. "Validation Failed", "Not Found")|
+|errors|[object]|false|none|List of validation errors (present only for 422 responses)|
+|» code|string|true|none|Machine-readable error code|
+|» message|string|false|none|Human-readable message (populated when code is "custom")|
+|documentation_url|string|true|none|URL to relevant API documentation|
+|error_code|string|false|none|Stable machine-readable code identifying the specific known failure. Omitted for failures without a classified cause.|
+|limited_resource|string|false|none|Which resource was rate limited, present when `error_code` is `rate_limit_exceeded` and the resource is known. One of `api`, `sandbox`, or `token_mint`. Clients should tolerate new values.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|» code|missing|
+|» code|missing_field|
+|» code|invalid|
+|» code|already_exists|
+|» code|unprocessable|
+|» code|custom|
+
+Status Code **401**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|message|string|true|none|Summary message (e.g. "Validation Failed", "Not Found")|
+|errors|[object]|false|none|List of validation errors (present only for 422 responses)|
+|» code|string|true|none|Machine-readable error code|
+|» message|string|false|none|Human-readable message (populated when code is "custom")|
+|documentation_url|string|true|none|URL to relevant API documentation|
+|error_code|string|false|none|Stable machine-readable code identifying the specific known failure. Omitted for failures without a classified cause.|
+|limited_resource|string|false|none|Which resource was rate limited, present when `error_code` is `rate_limit_exceeded` and the resource is known. One of `api`, `sandbox`, or `token_mint`. Clients should tolerate new values.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|» code|missing|
+|» code|missing_field|
+|» code|invalid|
+|» code|already_exists|
+|» code|unprocessable|
+|» code|custom|
+
+Status Code **404**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|message|string|true|none|Summary message (e.g. "Validation Failed", "Not Found")|
+|errors|[object]|false|none|List of validation errors (present only for 422 responses)|
+|» code|string|true|none|Machine-readable error code|
+|» message|string|false|none|Human-readable message (populated when code is "custom")|
+|documentation_url|string|true|none|URL to relevant API documentation|
+|error_code|string|false|none|Stable machine-readable code identifying the specific known failure. Omitted for failures without a classified cause.|
+|limited_resource|string|false|none|Which resource was rate limited, present when `error_code` is `rate_limit_exceeded` and the resource is known. One of `api`, `sandbox`, or `token_mint`. Clients should tolerate new values.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|» code|missing|
+|» code|missing_field|
+|» code|invalid|
+|» code|already_exists|
+|» code|unprocessable|
+|» code|custom|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|200|Link|string||Pagination links. Contains `next` when more revisions remain, and<br>`first` pointing at the start of history. A cursor walk has no<br>well-defined `prev` or `last`, so those relations are not returned.<br>|
+
+<aside class="success">
+This operation does not require authentication
+</aside>
+
+## Get an automation revision
+
+<a id="opIdagent-automations/get-automation-revision"></a>
+
+> Code samples
+
+```bash
+curl https://api.github.com/agents/repos/string/string/automations/string/revisions/string \
+  -H 'Accept: application/json'
+```
+
+`GET /agents/repos/{owner}/{repo}/automations/{automation_id}/revisions/{revision_id}`
+
+> [!NOTE]
+> This endpoint is in public preview and is subject to change.
+
+Returns a specific revision of an automation, including its configuration after that change.
+
+Access follows the automation's own ownership rules: a user-owned automation's
+history is readable only by its creator, and a repository-owned automation's
+history follows repository read access. History remains readable after the
+automation is deleted.
+
+A revision ID belonging to a different automation returns `404`.
+
+**Fine-grained access tokens for "Get an automation revision"**
+
+This endpoint works with the following fine-grained token types:
+
+* [GitHub App user access tokens](https://docs.github.com/en/apps/creating-github-apps/authenticating-with-a-github-app/generating-a-user-access-token-for-a-github-app)
+* [Fine-grained personal access tokens](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-fine-grained-personal-access-token)
+
+The fine-grained token must have the following permission set:
+
+* "Agent tasks" repository permissions (read)
+
+GitHub App installation access tokens are not supported for this endpoint.
+
+
+<a href="https://docs.github.com/rest/agent-automations/agent-automations#get-an-automation-revision">API method documentation</a>
+
+<h3 id="get-an-automation-revision-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|owner|path|string|true|The account owner of the repository. The name is not case sensitive.|
+|repo|path|string|true|The name of the repository. The name is not case sensitive.|
+|automation_id|path|string|true|The unique identifier of the automation.|
+|revision_id|path|string|true|The unique identifier of the automation revision.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890:000000000003",
+  "automation_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+  "revision_number": 3,
+  "change_type": "edited",
+  "creator": {
+    "id": 123
+  },
+  "editor": {
+    "id": 456
+  },
+  "editor_type": "user",
+  "changed_at": "2026-05-03T14:30:00Z",
+  "snapshot": {
+    "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    "name": "Issue triage",
+    "enabled": true,
+    "type": "shared",
+    "require_actor_write_permission": false,
+    "triggers": {
+      "issue_opened": {
+        "query": "is:open"
+      }
+    },
+    "prompt": "Inspect the new issue and suggest labels, priority, and next steps.",
+    "tools": [
+      "github/issue_read"
+    ],
+    "model": "gpt-5.4",
+    "reasoning_effort": "high",
+    "created_at": "2026-05-01T12:00:00Z",
+    "updated_at": "2026-05-03T14:30:00Z",
+    "created_by": {
+      "id": 123
+    }
+  }
+}
+```
+
+> 401 Response
+
+```json
+{
+  "message": "string",
+  "errors": [
+    {
+      "code": "missing",
+      "message": "string"
+    }
+  ],
+  "documentation_url": "string",
+  "error_code": "string",
+  "limited_resource": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "message": "string",
+  "errors": [
+    {
+      "code": "missing",
+      "message": "string"
+    }
+  ],
+  "documentation_url": "string",
+  "error_code": "string",
+  "limited_resource": "string"
+}
+```
+
+<h3 id="get-an-automation-revision-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Revision retrieved successfully|Inline|
+|401|Unauthorized|Authentication required|Inline|
+|404|Not Found|Resource not found|Inline|
+
+<h3 id="get-an-automation-revision-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|The unique identifier of this revision.|
+|automation_id|string|true|none|The automation this revision belongs to.|
+|revision_number|integer(int64)|true|none|Position of this revision in the automation's history, starting at 1.|
+|change_type|string|true|none|The kind of change recorded by the revision.|
+|creator|object|false|none|The automation's original creator. Omitted when not recorded.|
+|» id|integer(int64)|false|none|The unique identifier of the user|
+|editor|object|false|none|The person who made this change. Omitted for system changes and legacy records.|
+|» id|integer(int64)|false|none|The unique identifier of the user|
+|editor_type|string|false|none|The kind of actor that made the change.|
+|changed_at|string(date-time)|true|none|When the change was applied.|
+|restored_from_revision_id|string|false|none|The revision a rollback restored. Present only when `change_type` is `rolled_back`.|
+|snapshot|object|false|none|The automation's public detail representation after the change,<br>including its enabled state at configuration-save time, not its current<br>lifecycle state. Legacy deleted revisions are identified by `change_type`.<br>|
+|» id|string|true|none|The unique identifier of the automation.|
+|» name|string|true|none|The name of the automation.|
+|» enabled|boolean|false|none|Whether the automation was enabled when this configuration was saved.|
+|» type|string|false|read-only|The type of automation. `personal` keeps it private to its creator and its runs act as that user. `shared` makes it belong to the repository, visible to anyone with read access to the repository, and its runs act as the Copilot app rather than as a person.|
+|» require_actor_write_permission|boolean|false|none|When true, event-triggered runs require the event actor to have repo write permission, even when the org's allow_read_access_triggers policy is enabled. Does not apply to interval-scheduled runs, which always run as the automation owner.|
+|» triggers|object|false|none|Trigger configuration for the automation.|
+|» » interval|object|false|none|none|
+|» » » cadence|[string]|true|none|One or more schedules on which the Automation runs.|
+|» » » hour_utc|integer|false|none|UTC hour anchor (0 through 23) for daily and weekly schedules. Omitted daily and weekly values default to `0` (midnight UTC).|
+|» » » day_of_week|integer|false|none|UTC weekday anchor for weekly schedules, where `0` is Sunday and `6` is Saturday. Omitted weekly values default to Monday (`1`).|
+|» » » minute_utc|integer|false|none|UTC minute anchor for daily and weekly schedules. Omitted daily and weekly values default to `0`. Must be omitted whenever `cadence` includes `hourly`.|
+|» » » write_scope|string|false|none|Has no effect: scheduled runs can change any resource in the repository, and an organization or repository policy requiring trigger-scoped writes does not apply to them.|
+|» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
+|» » issue_opened|object|false|none|none|
+|» » » query|string|false|none|A GitHub issue or pull request search query.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
+|» » issue_labeled|object|false|none|none|
+|» » » query|string|false|none|A GitHub issue or pull request search query.|
+|» » » labels|[string]|false|none|Label names matched case-insensitively against the label added by the event. Omit or use an empty array to match every added label.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
+|» » workflow_run|object|false|none|none|
+|» » » workflows|[string]|true|none|Workflow names matched against the name in each workflow YAML file.|
+|» » » conclusions|[string]|true|none|Workflow conclusions to match. The current trigger supports failure.|
+|» » » query|string|false|none|A GitHub issue or pull request search query.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
+|» » pull_request_opened|object|false|none|none|
+|» » » query|string|false|none|A GitHub issue or pull request search query.|
+|» » » paths|[string]|false|none|Gitignore-style changed-file path globs.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
+|» » pull_request_synchronize|object|false|none|none|
+|» » » query|string|false|none|A GitHub issue or pull request search query.|
+|» » » paths|[string]|false|none|Gitignore-style changed-file path globs.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
+|» » pull_request_merged|object|false|none|none|
+|» » » query|string|false|none|A GitHub issue or pull request search query.|
+|» » » paths|[string]|false|none|Gitignore-style changed-file path globs.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
+|» » issue_comment|object|false|none|none|
+|» » » query|string|false|none|A GitHub issue or pull request search query.|
+|» » » body_substring|string|false|none|A case-insensitive substring matched against the event body.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
+|» » pull_request_comment|object|false|none|none|
+|» » » comment_types|[string]|true|none|Pull request conversation and inline review comment types to match.|
+|» » » query|string|false|none|A GitHub issue or pull request search query.|
+|» » » paths|[string]|false|none|Gitignore-style changed-file path globs.|
+|» » » body_substring|string|false|none|A case-insensitive substring matched against the event body.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
+|» » discussion_opened|object|false|none|none|
+|» » » categories|[string]|false|none|Discussion category names matched case-insensitively.|
+|» » » body_substring|string|false|none|A case-insensitive substring matched against the event body.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
+|» » discussion_updated|object|false|none|none|
+|» » » categories|[string]|false|none|Discussion category names matched case-insensitively.|
+|» » » body_substring|string|false|none|A case-insensitive substring matched against the event body.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
+|» » discussion_comment|object|false|none|none|
+|» » » comment_types|[string]|false|none|Top-level discussion comments and replies to match. Omit to match both.|
+|» » » categories|[string]|false|none|Discussion category names matched case-insensitively.|
+|» » » body_substring|string|false|none|A case-insensitive substring matched against the event body.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
+|» » issue_assigned|object|false|none|none|
+|» » » query|string|false|none|A GitHub issue or pull request search query.|
+|» » » assignees|[string]|false|none|Affected assignee logins matched case-insensitively.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
+|» » pull_request_assigned|object|false|none|none|
+|» » » query|string|false|none|A GitHub issue or pull request search query.|
+|» » » paths|[string]|false|none|Gitignore-style changed-file path globs.|
+|» » » assignees|[string]|false|none|Affected assignee logins matched case-insensitively.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
+|» » sub_issue_added|object|false|none|none|
+|» » » query|string|false|none|A GitHub issue or pull request search query.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
+|» » pull_request_ready_for_review|object|false|none|none|
+|» » » query|string|false|none|A GitHub issue or pull request search query.|
+|» » » paths|[string]|false|none|Gitignore-style changed-file path globs.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
+|» » pull_request_labeled|object|false|none|none|
+|» » » query|string|false|none|A GitHub issue or pull request search query.|
+|» » » paths|[string]|false|none|Gitignore-style changed-file path globs.|
+|» » » labels|[string]|false|none|Label names matched case-insensitively against the label added by the event. Omit or use an empty array to match every added label.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
+|» » pull_request_merge_conflict|object|false|none|none|
+|» » » query|string|false|none|A GitHub issue or pull request search query.|
+|» » » paths|[string]|false|none|Gitignore-style changed-file path globs.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
+|» » pull_request_review_submitted|object|false|none|none|
+|» » » query|string|false|none|A GitHub issue or pull request search query.|
+|» » » paths|[string]|false|none|Gitignore-style changed-file path globs.|
+|» » » states|[string]|true|none|Submitted review states to match.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
+|» » pull_request_review_requested|object|false|none|none|
+|» » » query|string|false|none|A GitHub issue or pull request search query.|
+|» » » paths|[string]|false|none|Gitignore-style changed-file path globs.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
+|» » issue_closed|object|false|none|none|
+|» » » query|string|false|none|A GitHub issue or pull request search query.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
+|» » issue_reopened|object|false|none|none|
+|» » » query|string|false|none|A GitHub issue or pull request search query.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
+|» » pull_request_closed|object|false|none|none|
+|» » » query|string|false|none|A GitHub issue or pull request search query.|
+|» » » paths|[string]|false|none|Gitignore-style changed-file path globs.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
+|» » pull_request_reopened|object|false|none|none|
+|» » » query|string|false|none|A GitHub issue or pull request search query.|
+|» » » paths|[string]|false|none|Gitignore-style changed-file path globs.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
+|» » pull_request_converted_to_draft|object|false|none|none|
+|» » » query|string|false|none|A GitHub issue or pull request search query.|
+|» » » paths|[string]|false|none|Gitignore-style changed-file path globs.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
+|» » pull_request_review_dismissed|object|false|none|none|
+|» » » query|string|false|none|A GitHub issue or pull request search query.|
+|» » » paths|[string]|false|none|Gitignore-style changed-file path globs.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
+|» » pull_request_review_thread_resolved|object|false|none|none|
+|» » » query|string|false|none|A GitHub issue or pull request search query.|
+|» » » paths|[string]|false|none|Gitignore-style changed-file path globs.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
+|» » pull_request_review_thread_unresolved|object|false|none|none|
+|» » » query|string|false|none|A GitHub issue or pull request search query.|
+|» » » paths|[string]|false|none|Gitignore-style changed-file path globs.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
+|» » automation_completed|object|false|none|none|
+|» » » automation_ids|[string]|true|none|Upstream Automation IDs in the same repository.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
+|» » automation_failed|object|false|none|none|
+|» » » automation_ids|[string]|true|none|Upstream Automation IDs in the same repository. An Automation cannot list itself, and a user-owned Automation can only be listed by its creator's user-owned Automations.|
+|» » » reasons|[string]|false|none|Failure reasons to match. Omit to match only reported failures.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
+|» » code_scanning_alert|object|false|none|Runs on the default branch when a security alert of this kind is created in the repository. These are system events without an issue, pull request, or human actor, and cannot be run manually.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
+|» » secret_scanning_alert|object|false|none|Runs on the default branch when a security alert of this kind is created in the repository. These are system events without an issue, pull request, or human actor, and cannot be run manually.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
+|» » dependabot_alert|object|false|none|Runs on the default branch when a security alert of this kind is created in the repository. These are system events without an issue, pull request, or human actor, and cannot be run manually.|
+|» » » write_scope|string|false|none|Sets the write scope for this trigger's runs. Omit to inherit the automation's effective scope (default `trigger`). Organization or repository policy may restrict the effective scope to `trigger`. Explicitly setting `repository` on create or edit returns 422 when policy validation is enabled and that policy applies.|
+|» » » allow_copilot_triggers|boolean|false|none|When true, events Copilot creates, including from other automations and Copilot sessions, can start this automation through this trigger. Defaults to false. The Copilot coding agent app cannot turn it on: creating a trigger with true, or changing it from false to true, returns 422.|
+|» prompt|string|true|none|The prompt for the automation.|
+|» tools|[string]|false|none|The tools available to the automation.|
+|» model|string|false|none|The model override for sessions triggered by this automation. Absent when the platform selects the model.|
+|» reasoning_effort|string|false|none|The reasoning effort override for sessions triggered by this automation. Absent when the model's default is used.|
+|» created_at|string(date-time)|true|none|When the automation was created.|
+|» updated_at|string(date-time)|true|none|When the automation was last updated.|
+|» created_by|object|true|none|A GitHub user|
+|» » id|integer(int64)|false|none|The unique identifier of the user|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|change_type|created|
+|change_type|edited|
+|change_type|enabled|
+|change_type|disabled|
+|change_type|deleted|
+|change_type|rolled_back|
+|change_type|unknown|
+|editor_type|user|
+|editor_type|system|
+|editor_type|unknown|
+|» type|personal|
+|» type|shared|
+|» » » cadence|hourly|
+|» » » cadence|daily|
+|» » » cadence|weekly|
+|» » » minute_utc|0|
+|» » » minute_utc|15|
+|» » » minute_utc|30|
+|» » » minute_utc|45|
+|» » » write_scope|trigger|
+|» » » write_scope|repository|
+|» » » write_scope|trigger|
+|» » » write_scope|repository|
+|» » » write_scope|trigger|
+|» » » write_scope|repository|
+|» » » conclusions|failure|
+|» » » write_scope|trigger|
+|» » » write_scope|repository|
+|» » » write_scope|trigger|
+|» » » write_scope|repository|
+|» » » write_scope|trigger|
+|» » » write_scope|repository|
+|» » » write_scope|trigger|
+|» » » write_scope|repository|
+|» » » write_scope|trigger|
+|» » » write_scope|repository|
+|» » » comment_types|timeline_comment|
+|» » » comment_types|review_comment|
+|» » » write_scope|trigger|
+|» » » write_scope|repository|
+|» » » write_scope|trigger|
+|» » » write_scope|repository|
+|» » » write_scope|trigger|
+|» » » write_scope|repository|
+|» » » comment_types|comment|
+|» » » comment_types|reply|
+|» » » write_scope|trigger|
+|» » » write_scope|repository|
+|» » » write_scope|trigger|
+|» » » write_scope|repository|
+|» » » write_scope|trigger|
+|» » » write_scope|repository|
+|» » » write_scope|trigger|
+|» » » write_scope|repository|
+|» » » write_scope|trigger|
+|» » » write_scope|repository|
+|» » » write_scope|trigger|
+|» » » write_scope|repository|
+|» » » write_scope|trigger|
+|» » » write_scope|repository|
+|» » » states|approved|
+|» » » states|changes_requested|
+|» » » states|commented|
+|» » » write_scope|trigger|
+|» » » write_scope|repository|
+|» » » write_scope|trigger|
+|» » » write_scope|repository|
+|» » » write_scope|trigger|
+|» » » write_scope|repository|
+|» » » write_scope|trigger|
+|» » » write_scope|repository|
+|» » » write_scope|trigger|
+|» » » write_scope|repository|
+|» » » write_scope|trigger|
+|» » » write_scope|repository|
+|» » » write_scope|trigger|
+|» » » write_scope|repository|
+|» » » write_scope|trigger|
+|» » » write_scope|repository|
+|» » » write_scope|trigger|
+|» » » write_scope|repository|
+|» » » write_scope|trigger|
+|» » » write_scope|repository|
+|» » » write_scope|trigger|
+|» » » write_scope|repository|
+|» » » reasons|reported|
+|» » » reasons|crashed|
+|» » » reasons|timed_out|
+|» » » write_scope|trigger|
+|» » » write_scope|repository|
+|» » » write_scope|trigger|
+|» » » write_scope|repository|
+|» » » write_scope|trigger|
+|» » » write_scope|repository|
+|» » » write_scope|trigger|
+|» » » write_scope|repository|
+
+Status Code **401**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|message|string|true|none|Summary message (e.g. "Validation Failed", "Not Found")|
+|errors|[object]|false|none|List of validation errors (present only for 422 responses)|
+|» code|string|true|none|Machine-readable error code|
+|» message|string|false|none|Human-readable message (populated when code is "custom")|
+|documentation_url|string|true|none|URL to relevant API documentation|
+|error_code|string|false|none|Stable machine-readable code identifying the specific known failure. Omitted for failures without a classified cause.|
+|limited_resource|string|false|none|Which resource was rate limited, present when `error_code` is `rate_limit_exceeded` and the resource is known. One of `api`, `sandbox`, or `token_mint`. Clients should tolerate new values.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|» code|missing|
+|» code|missing_field|
+|» code|invalid|
+|» code|already_exists|
+|» code|unprocessable|
+|» code|custom|
+
+Status Code **404**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -162592,17 +167136,17 @@ The installation must belong to the repository owner and the token must have
 "Agent tasks" repository permissions (write). Personal automations require a user token.
 
 A successful response accepts the run request and includes a preallocated
-`task_id`, which can be fetched with the "Get a task by repo" Agent tasks API.
-It does not confirm execution or task creation. Task creation is asynchronous,
-so fetching the task immediately may return `404 Not Found`, and downstream
-skips or failures can prevent its creation.
+`task_id`. User tokens can fetch it with the "Get a task by repo" Agent tasks
+API. GitHub App installation tokens can list tasks for the automation in the
+repository and match the returned `task_id`. The response does not confirm
+execution or task creation. Task creation is asynchronous, so fetching the
+task immediately may return `404 Not Found`, and downstream skips or failures
+can prevent its creation.
 
 To call this endpoint, you must have write access to the repository.
 
-OAuth app tokens and personal access tokens (classic) need:
-
-* the `repo` scope for private or internal repositories
-* the `repo` scope or `public_repo` scope for public repositories
+To call this endpoint, OAuth app tokens and personal access tokens (classic)
+need the `repo` scope.
 
 **Fine-grained access tokens for "Run an automation"**
 
@@ -162747,7 +167291,7 @@ The fine-grained token must have the following permission set:
 ```json
 {
   "message": "GitHub App installation tokens require a repository-owned automation",
-  "documentation_url": "https://docs.github.com/rest/agent-automations/agent-automations#create-an-automation-task"
+  "documentation_url": "https://docs.github.com/rest/agent-automations/agent-automations#run-an-automation"
 }
 ```
 
@@ -178541,6 +183085,7 @@ A new custom property was created.
       "string"
     ],
     "values_editable_by": "org_actors",
+    "regex": "^[a-z0-9-]+$",
     "require_explicit_values": true
   },
   "enterprise": {
@@ -178773,6 +183318,7 @@ A custom property was promoted to an enterprise.
       "string"
     ],
     "values_editable_by": "org_actors",
+    "regex": "^[a-z0-9-]+$",
     "require_explicit_values": true
   },
   "enterprise": {
@@ -178894,6 +183440,7 @@ A custom property was updated.
       "string"
     ],
     "values_editable_by": "org_actors",
+    "regex": "^[a-z0-9-]+$",
     "require_explicit_values": true
   },
   "enterprise": {
@@ -212069,6 +216616,11 @@ An issue was marked as blocked by another issue.
     "html_url": "http://example.com",
     "number": 42,
     "state": "open",
+    "status": {
+      "id": 4,
+      "name": "In progress",
+      "category": "started"
+    },
     "state_reason": "not_planned",
     "title": "Widget creation fails in Safari on OS X 10.8",
     "body": "It looks like the new widget form is broken on Safari. When I try and create the widget, Safari crashes. This is reproducible on 10.8, but not 10.9. Maybe a browser bug?",
@@ -212602,6 +217154,11 @@ An issue was marked as blocked by another issue.
     "html_url": "http://example.com",
     "number": 42,
     "state": "open",
+    "status": {
+      "id": 4,
+      "name": "In progress",
+      "category": "started"
+    },
     "state_reason": "not_planned",
     "title": "Widget creation fails in Safari on OS X 10.8",
     "body": "It looks like the new widget form is broken on Safari. When I try and create the widget, Safari crashes. This is reproducible on 10.8, but not 10.9. Maybe a browser bug?",
@@ -213655,6 +218212,11 @@ The blocked by relationship between an issue and another issue was removed.
     "html_url": "http://example.com",
     "number": 42,
     "state": "open",
+    "status": {
+      "id": 4,
+      "name": "In progress",
+      "category": "started"
+    },
     "state_reason": "not_planned",
     "title": "Widget creation fails in Safari on OS X 10.8",
     "body": "It looks like the new widget form is broken on Safari. When I try and create the widget, Safari crashes. This is reproducible on 10.8, but not 10.9. Maybe a browser bug?",
@@ -214188,6 +218750,11 @@ The blocked by relationship between an issue and another issue was removed.
     "html_url": "http://example.com",
     "number": 42,
     "state": "open",
+    "status": {
+      "id": 4,
+      "name": "In progress",
+      "category": "started"
+    },
     "state_reason": "not_planned",
     "title": "Widget creation fails in Safari on OS X 10.8",
     "body": "It looks like the new widget form is broken on Safari. When I try and create the widget, Safari crashes. This is reproducible on 10.8, but not 10.9. Maybe a browser bug?",
@@ -215241,6 +219808,11 @@ An issue was marked as blocking another issue.
     "html_url": "http://example.com",
     "number": 42,
     "state": "open",
+    "status": {
+      "id": 4,
+      "name": "In progress",
+      "category": "started"
+    },
     "state_reason": "not_planned",
     "title": "Widget creation fails in Safari on OS X 10.8",
     "body": "It looks like the new widget form is broken on Safari. When I try and create the widget, Safari crashes. This is reproducible on 10.8, but not 10.9. Maybe a browser bug?",
@@ -215915,6 +220487,11 @@ An issue was marked as blocking another issue.
     "html_url": "http://example.com",
     "number": 42,
     "state": "open",
+    "status": {
+      "id": 4,
+      "name": "In progress",
+      "category": "started"
+    },
     "state_reason": "not_planned",
     "title": "Widget creation fails in Safari on OS X 10.8",
     "body": "It looks like the new widget form is broken on Safari. When I try and create the widget, Safari crashes. This is reproducible on 10.8, but not 10.9. Maybe a browser bug?",
@@ -216827,6 +221404,11 @@ The blocking relationship between an issue and another issue was removed.
     "html_url": "http://example.com",
     "number": 42,
     "state": "open",
+    "status": {
+      "id": 4,
+      "name": "In progress",
+      "category": "started"
+    },
     "state_reason": "not_planned",
     "title": "Widget creation fails in Safari on OS X 10.8",
     "body": "It looks like the new widget form is broken on Safari. When I try and create the widget, Safari crashes. This is reproducible on 10.8, but not 10.9. Maybe a browser bug?",
@@ -217501,6 +222083,11 @@ The blocking relationship between an issue and another issue was removed.
     "html_url": "http://example.com",
     "number": 42,
     "state": "open",
+    "status": {
+      "id": 4,
+      "name": "In progress",
+      "category": "started"
+    },
     "state_reason": "not_planned",
     "title": "Widget creation fails in Safari on OS X 10.8",
     "body": "It looks like the new widget form is broken on Safari. When I try and create the widget, Safari crashes. This is reproducible on 10.8, but not 10.9. Maybe a browser bug?",
@@ -218413,6 +223000,11 @@ An issue was marked as related to another issue.
     "html_url": "http://example.com",
     "number": 42,
     "state": "open",
+    "status": {
+      "id": 4,
+      "name": "In progress",
+      "category": "started"
+    },
     "state_reason": "not_planned",
     "title": "Widget creation fails in Safari on OS X 10.8",
     "body": "It looks like the new widget form is broken on Safari. When I try and create the widget, Safari crashes. This is reproducible on 10.8, but not 10.9. Maybe a browser bug?",
@@ -218946,6 +223538,11 @@ An issue was marked as related to another issue.
     "html_url": "http://example.com",
     "number": 42,
     "state": "open",
+    "status": {
+      "id": 4,
+      "name": "In progress",
+      "category": "started"
+    },
     "state_reason": "not_planned",
     "title": "Widget creation fails in Safari on OS X 10.8",
     "body": "It looks like the new widget form is broken on Safari. When I try and create the widget, Safari crashes. This is reproducible on 10.8, but not 10.9. Maybe a browser bug?",
@@ -219857,6 +224454,11 @@ An issue's relationship to another issue was removed.
     "html_url": "http://example.com",
     "number": 42,
     "state": "open",
+    "status": {
+      "id": 4,
+      "name": "In progress",
+      "category": "started"
+    },
     "state_reason": "not_planned",
     "title": "Widget creation fails in Safari on OS X 10.8",
     "body": "It looks like the new widget form is broken on Safari. When I try and create the widget, Safari crashes. This is reproducible on 10.8, but not 10.9. Maybe a browser bug?",
@@ -220390,6 +224992,11 @@ An issue's relationship to another issue was removed.
     "html_url": "http://example.com",
     "number": 42,
     "state": "open",
+    "status": {
+      "id": 4,
+      "name": "In progress",
+      "category": "started"
+    },
     "state_reason": "not_planned",
     "title": "Widget creation fails in Safari on OS X 10.8",
     "body": "It looks like the new widget form is broken on Safari. When I try and create the widget, Safari crashes. This is reproducible on 10.8, but not 10.9. Maybe a browser bug?",
@@ -221719,6 +226326,11 @@ An issue was assigned to a user.
         ]
       }
     ],
+    "status": {
+      "id": 4,
+      "name": "In progress",
+      "category": "started"
+    },
     "state": "open",
     "state_reason": "string",
     "timeline_url": "http://example.com",
@@ -222380,6 +226992,11 @@ An issue was closed.
         ]
       }
     ],
+    "status": {
+      "id": 4,
+      "name": "In progress",
+      "category": "started"
+    },
     "state": "closed",
     "state_reason": "string",
     "timeline_url": "string",
@@ -222949,6 +227566,10 @@ An issue was closed.
 |» » sub_issues_summary|body|[sub-issues-summary](#schemasub-issues-summary)|false|none|
 |» » issue_dependencies_summary|body|[issue-dependencies-summary](#schemaissue-dependencies-summary)|false|none|
 |» » issue_field_values|body|[[issue-field-value](#schemaissue-field-value)]|false|none|
+|» » status|body|object \| null|false|The status of the issue, or `null` if it has none. Issue statuses are in preview and only available to accounts enrolled in the preview.|
+|» » » id|body|integer(int64)|true|The stable identifier of the planning status.|
+|» » » name|body|string|true|The display name of the planning status, which may change in the future.|
+|» » » category|body|string|true|A stable identifier for the category, such as `backlog`, `planned`, `started`, `completed`, `not_planned` or `duplicate`. Clients should expect new keys to be added.|
 |» » state|body|string|true|State of the issue; either 'open' or 'closed'|
 |» » state_reason|body|string \| null|false|none|
 |» » timeline_url|body|string(uri)|false|none|
@@ -223637,6 +228258,11 @@ An issue was deleted.
         ]
       }
     ],
+    "status": {
+      "id": 4,
+      "name": "In progress",
+      "category": "started"
+    },
     "state": "open",
     "state_reason": "string",
     "timeline_url": "http://example.com",
@@ -224216,6 +228842,10 @@ An issue was deleted.
 |» » sub_issues_summary|body|[sub-issues-summary](#schemasub-issues-summary)|false|none|
 |» » issue_dependencies_summary|body|[issue-dependencies-summary](#schemaissue-dependencies-summary)|false|none|
 |» » issue_field_values|body|[[issue-field-value](#schemaissue-field-value)]|false|none|
+|» » status|body|object \| null|false|The status of the issue, or `null` if it has none. Issue statuses are in preview and only available to accounts enrolled in the preview.|
+|» » » id|body|integer(int64)|true|The stable identifier of the planning status.|
+|» » » name|body|string|true|The display name of the planning status, which may change in the future.|
+|» » » category|body|string|true|A stable identifier for the category, such as `backlog`, `planned`, `started`, `completed`, `not_planned` or `duplicate`. Clients should expect new keys to be added.|
 |» » state|body|string|false|State of the issue; either 'open' or 'closed'|
 |» » state_reason|body|string \| null|false|none|
 |» » timeline_url|body|string(uri)|false|none|
@@ -224806,6 +229436,11 @@ An issue was removed from a milestone.
         ]
       }
     ],
+    "status": {
+      "id": 4,
+      "name": "In progress",
+      "category": "started"
+    },
     "state": "open",
     "state_reason": "string",
     "timeline_url": "http://example.com",
@@ -225424,6 +230059,10 @@ An issue was removed from a milestone.
 |» » sub_issues_summary|body|[sub-issues-summary](#schemasub-issues-summary)|false|none|
 |» » issue_dependencies_summary|body|[issue-dependencies-summary](#schemaissue-dependencies-summary)|false|none|
 |» » issue_field_values|body|[[issue-field-value](#schemaissue-field-value)]|false|none|
+|» » status|body|object \| null|false|The status of the issue, or `null` if it has none. Issue statuses are in preview and only available to accounts enrolled in the preview.|
+|» » » id|body|integer(int64)|true|The stable identifier of the planning status.|
+|» » » name|body|string|true|The display name of the planning status, which may change in the future.|
+|» » » category|body|string|true|A stable identifier for the category, such as `backlog`, `planned`, `started`, `completed`, `not_planned` or `duplicate`. Clients should expect new keys to be added.|
 |» » state|body|string|false|State of the issue; either 'open' or 'closed'|
 |» » state_reason|body|string \| null|false|none|
 |» » timeline_url|body|string(uri)|false|none|
@@ -226053,6 +230692,11 @@ The title or body on an issue was edited.
         ]
       }
     ],
+    "status": {
+      "id": 4,
+      "name": "In progress",
+      "category": "started"
+    },
     "state": "open",
     "state_reason": "string",
     "timeline_url": "http://example.com",
@@ -226663,6 +231307,10 @@ The title or body on an issue was edited.
 |» » sub_issues_summary|body|[sub-issues-summary](#schemasub-issues-summary)|false|none|
 |» » issue_dependencies_summary|body|[issue-dependencies-summary](#schemaissue-dependencies-summary)|false|none|
 |» » issue_field_values|body|[[issue-field-value](#schemaissue-field-value)]|false|none|
+|» » status|body|object \| null|false|The status of the issue, or `null` if it has none. Issue statuses are in preview and only available to accounts enrolled in the preview.|
+|» » » id|body|integer(int64)|true|The stable identifier of the planning status.|
+|» » » name|body|string|true|The display name of the planning status, which may change in the future.|
+|» » » category|body|string|true|A stable identifier for the category, such as `backlog`, `planned`, `started`, `completed`, `not_planned` or `duplicate`. Clients should expect new keys to be added.|
 |» » state|body|string|false|State of the issue; either 'open' or 'closed'|
 |» » state_reason|body|string \| null|false|none|
 |» » timeline_url|body|string(uri)|false|none|
@@ -227288,6 +231936,11 @@ An issue field value was set or updated on an issue.
         ]
       }
     ],
+    "status": {
+      "id": 4,
+      "name": "In progress",
+      "category": "started"
+    },
     "state": "open",
     "state_reason": "string",
     "timeline_url": "http://example.com",
@@ -228207,6 +232860,11 @@ An issue field value was cleared from an issue.
         ]
       }
     ],
+    "status": {
+      "id": 4,
+      "name": "In progress",
+      "category": "started"
+    },
     "state": "open",
     "state_reason": "string",
     "timeline_url": "http://example.com",
@@ -229079,6 +233737,11 @@ A label was added to an issue.
         ]
       }
     ],
+    "status": {
+      "id": 4,
+      "name": "In progress",
+      "category": "started"
+    },
     "state": "open",
     "state_reason": "string",
     "timeline_url": "http://example.com",
@@ -229715,6 +234378,10 @@ A label was added to an issue.
 |» » sub_issues_summary|body|[sub-issues-summary](#schemasub-issues-summary)|false|none|
 |» » issue_dependencies_summary|body|[issue-dependencies-summary](#schemaissue-dependencies-summary)|false|none|
 |» » issue_field_values|body|[[issue-field-value](#schemaissue-field-value)]|false|none|
+|» » status|body|object \| null|false|The status of the issue, or `null` if it has none. Issue statuses are in preview and only available to accounts enrolled in the preview.|
+|» » » id|body|integer(int64)|true|The stable identifier of the planning status.|
+|» » » name|body|string|true|The display name of the planning status, which may change in the future.|
+|» » » category|body|string|true|A stable identifier for the category, such as `backlog`, `planned`, `started`, `completed`, `not_planned` or `duplicate`. Clients should expect new keys to be added.|
 |» » state|body|string|false|State of the issue; either 'open' or 'closed'|
 |» » state_reason|body|string \| null|false|none|
 |» » timeline_url|body|string(uri)|false|none|
@@ -230314,6 +234981,11 @@ Conversation on an issue was locked. For more information, see "[Locking convers
         ]
       }
     ],
+    "status": {
+      "id": 4,
+      "name": "In progress",
+      "category": "started"
+    },
     "state": "open",
     "state_reason": "string",
     "timeline_url": "http://example.com",
@@ -230893,6 +235565,10 @@ Conversation on an issue was locked. For more information, see "[Locking convers
 |» » sub_issues_summary|body|[sub-issues-summary](#schemasub-issues-summary)|false|none|
 |» » issue_dependencies_summary|body|[issue-dependencies-summary](#schemaissue-dependencies-summary)|false|none|
 |» » issue_field_values|body|[[issue-field-value](#schemaissue-field-value)]|false|none|
+|» » status|body|object \| null|false|The status of the issue, or `null` if it has none. Issue statuses are in preview and only available to accounts enrolled in the preview.|
+|» » » id|body|integer(int64)|true|The stable identifier of the planning status.|
+|» » » name|body|string|true|The display name of the planning status, which may change in the future.|
+|» » » category|body|string|true|A stable identifier for the category, such as `backlog`, `planned`, `started`, `completed`, `not_planned` or `duplicate`. Clients should expect new keys to be added.|
 |» » state|body|string|false|State of the issue; either 'open' or 'closed'|
 |» » state_reason|body|string \| null|false|none|
 |» » timeline_url|body|string(uri)|false|none|
@@ -231485,6 +236161,11 @@ An issue was added to a milestone.
         ]
       }
     ],
+    "status": {
+      "id": 4,
+      "name": "In progress",
+      "category": "started"
+    },
     "state": "open",
     "state_reason": "string",
     "timeline_url": "http://example.com",
@@ -232103,6 +236784,10 @@ An issue was added to a milestone.
 |» » sub_issues_summary|body|[sub-issues-summary](#schemasub-issues-summary)|false|none|
 |» » issue_dependencies_summary|body|[issue-dependencies-summary](#schemaissue-dependencies-summary)|false|none|
 |» » issue_field_values|body|[[issue-field-value](#schemaissue-field-value)]|false|none|
+|» » status|body|object \| null|false|The status of the issue, or `null` if it has none. Issue statuses are in preview and only available to accounts enrolled in the preview.|
+|» » » id|body|integer(int64)|true|The stable identifier of the planning status.|
+|» » » name|body|string|true|The display name of the planning status, which may change in the future.|
+|» » » category|body|string|true|A stable identifier for the category, such as `backlog`, `planned`, `started`, `completed`, `not_planned` or `duplicate`. Clients should expect new keys to be added.|
 |» » state|body|string|false|State of the issue; either 'open' or 'closed'|
 |» » state_reason|body|string \| null|false|none|
 |» » timeline_url|body|string(uri)|false|none|
@@ -232562,6 +237247,11 @@ An issue was created. When a closed issue is reopened, the action will be `reope
           ]
         }
       ],
+      "status": {
+        "id": 4,
+        "name": "In progress",
+        "category": "started"
+      },
       "state": "open",
       "state_reason": "string",
       "timeline_url": "http://example.com",
@@ -233118,6 +237808,11 @@ An issue was created. When a closed issue is reopened, the action will be `reope
         ]
       }
     ],
+    "status": {
+      "id": 4,
+      "name": "In progress",
+      "category": "started"
+    },
     "state": "open",
     "state_reason": "string",
     "timeline_url": "http://example.com",
@@ -233814,6 +238509,10 @@ An issue was created. When a closed issue is reopened, the action will be `reope
 |» » » sub_issues_summary|body|[sub-issues-summary](#schemasub-issues-summary)|false|none|
 |» » » issue_dependencies_summary|body|[issue-dependencies-summary](#schemaissue-dependencies-summary)|false|none|
 |» » » issue_field_values|body|[[issue-field-value](#schemaissue-field-value)]|false|none|
+|» » » status|body|object \| null|false|The status of the issue, or `null` if it has none. Issue statuses are in preview and only available to accounts enrolled in the preview.|
+|» » » » id|body|integer(int64)|true|The stable identifier of the planning status.|
+|» » » » name|body|string|true|The display name of the planning status, which may change in the future.|
+|» » » » category|body|string|true|A stable identifier for the category, such as `backlog`, `planned`, `started`, `completed`, `not_planned` or `duplicate`. Clients should expect new keys to be added.|
 |» » » state|body|string|false|State of the issue; either 'open' or 'closed'|
 |» » » state_reason|body|string \| null|false|none|
 |» » » timeline_url|body|string(uri)|false|none|
@@ -234179,6 +238878,10 @@ An issue was created. When a closed issue is reopened, the action will be `reope
 |» » sub_issues_summary|body|[sub-issues-summary](#schemasub-issues-summary)|false|none|
 |» » issue_dependencies_summary|body|[issue-dependencies-summary](#schemaissue-dependencies-summary)|false|none|
 |» » issue_field_values|body|[[issue-field-value](#schemaissue-field-value)]|false|none|
+|» » status|body|object \| null|false|The status of the issue, or `null` if it has none. Issue statuses are in preview and only available to accounts enrolled in the preview.|
+|» » » id|body|integer(int64)|true|The stable identifier of the planning status.|
+|» » » name|body|string|true|The display name of the planning status, which may change in the future.|
+|» » » category|body|string|true|A stable identifier for the category, such as `backlog`, `planned`, `started`, `completed`, `not_planned` or `duplicate`. Clients should expect new keys to be added.|
 |» » state|body|string|false|State of the issue; either 'open' or 'closed'|
 |» » state_reason|body|string \| null|false|none|
 |» » timeline_url|body|string(uri)|false|none|
@@ -234956,6 +239659,11 @@ An issue was pinned to a repository. For more information, see "[Pinning an issu
         ]
       }
     ],
+    "status": {
+      "id": 4,
+      "name": "In progress",
+      "category": "started"
+    },
     "state": "open",
     "state_reason": "string",
     "timeline_url": "http://example.com",
@@ -235773,6 +240481,11 @@ A closed issue was reopened.
         ]
       }
     ],
+    "status": {
+      "id": 4,
+      "name": "In progress",
+      "category": "started"
+    },
     "state": "open",
     "state_reason": "string",
     "timeline_url": "http://example.com",
@@ -236374,6 +241087,10 @@ A closed issue was reopened.
 |» » sub_issues_summary|body|[sub-issues-summary](#schemasub-issues-summary)|false|none|
 |» » issue_dependencies_summary|body|[issue-dependencies-summary](#schemaissue-dependencies-summary)|false|none|
 |» » issue_field_values|body|[[issue-field-value](#schemaissue-field-value)]|false|none|
+|» » status|body|object \| null|false|The status of the issue, or `null` if it has none. Issue statuses are in preview and only available to accounts enrolled in the preview.|
+|» » » id|body|integer(int64)|true|The stable identifier of the planning status.|
+|» » » name|body|string|true|The display name of the planning status, which may change in the future.|
+|» » » category|body|string|true|A stable identifier for the category, such as `backlog`, `planned`, `started`, `completed`, `not_planned` or `duplicate`. Clients should expect new keys to be added.|
 |» » state|body|string|true|State of the issue; either 'open' or 'closed'|
 |» » state_reason|body|string \| null|false|none|
 |» » timeline_url|body|string(uri)|false|none|
@@ -236567,6 +241284,869 @@ A closed issue was reopened.
 |» » » type|Mannequin|
 
 <h3 id="this-event-occurs-when-there-is-activity-relating-to-an-issue-for-more-information-about-issues-see-about-issueshttpsdocsgithubcomissuestracking-your-work-with-issuesabout-issues-for-information-about-the-apis-to-manage-issues-see-the-graphql-documentationhttpsdocsgithubcomgraphqlreferenceobjectsissue-or-issueshttpsdocsgithubcomrestissues-in-the-rest-api-documentation-for-activity-relating-to-a-comment-on-an-issue-use-the-issuecomment-event-to-subscribe-to-this-event-a-github-app-must-have-at-least-read-level-access-for-the-issues-repository-permission-12-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Return a 200 status to indicate that the data was received successfully|None|
+
+<aside class="success">
+This operation does not require authentication
+</aside>
+
+## This event occurs when there is activity relating to an issue. For more information about issues, see &quot;[About issues](https://docs.github.com/issues/tracking-your-work-with-issues/about-issues).&quot; For information about the APIs to manage issues, see [the GraphQL documentation](https://docs.github.com/graphql/reference/objects#issue) or &quot;[Issues](https://docs.github.com/rest/issues)&quot; in the REST API documentation. For activity relating to a comment on an issue, use the `issue_comment` event. To subscribe to this event, a GitHub App must have at least read-level access for the &quot;Issues&quot; repository permission.
+
+<a id="opIdissues/status-changed"></a>
+
+`POST issues-status-changed`
+
+The status of an issue was changed. When the change also closes or reopens the issue, the `closed` or `reopened` action is sent too.
+
+> [!NOTE]
+> Issue statuses are in preview and subject to change. They're only available to accounts enrolled in the preview.
+
+<a href="https://docs.github.com/webhooks/webhook-events-and-payloads#issues">External documentation</a>
+
+> Body parameter
+
+```json
+{
+  "action": "status_changed",
+  "changes": {
+    "status": {
+      "from": {
+        "id": 4,
+        "name": "In progress",
+        "category": "started"
+      }
+    },
+    "state": {
+      "from": "open"
+    },
+    "state_reason": {
+      "from": "string"
+    }
+  },
+  "enterprise": {
+    "description": "string",
+    "html_url": "https://github.com/enterprises/octo-business",
+    "website_url": "http://example.com",
+    "id": 42,
+    "node_id": "MDEwOlJlcG9zaXRvcnkxMjk2MjY5",
+    "name": "Octo Business",
+    "slug": "octo-business",
+    "created_at": "2019-01-26T19:01:12Z",
+    "updated_at": "2019-01-26T19:14:43Z",
+    "avatar_url": "http://example.com"
+  },
+  "installation": {
+    "id": 1,
+    "node_id": "MDQ6VXNlcjU4MzIzMQ=="
+  },
+  "issue": {
+    "active_lock_reason": "resolved",
+    "assignee": {
+      "avatar_url": "http://example.com",
+      "deleted": true,
+      "email": "string",
+      "events_url": "string",
+      "followers_url": "http://example.com",
+      "following_url": "string",
+      "gists_url": "string",
+      "gravatar_id": "string",
+      "html_url": "http://example.com",
+      "id": 0,
+      "login": "string",
+      "name": "string",
+      "node_id": "string",
+      "organizations_url": "http://example.com",
+      "received_events_url": "http://example.com",
+      "repos_url": "http://example.com",
+      "site_admin": true,
+      "starred_url": "string",
+      "subscriptions_url": "http://example.com",
+      "type": "Bot",
+      "url": "http://example.com",
+      "user_view_type": "string"
+    },
+    "assignees": [
+      {
+        "avatar_url": "http://example.com",
+        "deleted": true,
+        "email": "string",
+        "events_url": "string",
+        "followers_url": "http://example.com",
+        "following_url": "string",
+        "gists_url": "string",
+        "gravatar_id": "string",
+        "html_url": "http://example.com",
+        "id": 0,
+        "login": "string",
+        "name": "string",
+        "node_id": "string",
+        "organizations_url": "http://example.com",
+        "received_events_url": "http://example.com",
+        "repos_url": "http://example.com",
+        "site_admin": true,
+        "starred_url": "string",
+        "subscriptions_url": "http://example.com",
+        "type": "Bot",
+        "url": "http://example.com",
+        "user_view_type": "string"
+      }
+    ],
+    "author_association": "COLLABORATOR",
+    "body": "string",
+    "closed_at": "1970-01-01T00:00:00Z",
+    "comments": 0,
+    "comments_url": "http://example.com",
+    "created_at": "1970-01-01T00:00:00Z",
+    "draft": true,
+    "events_url": "http://example.com",
+    "html_url": "http://example.com",
+    "id": 0,
+    "labels": [
+      {
+        "color": "string",
+        "default": true,
+        "description": "string",
+        "archived_at": "1970-01-01T00:00:00Z",
+        "archived_by": {
+          "name": "string",
+          "email": "string",
+          "login": "octocat",
+          "id": 1,
+          "node_id": "MDQ6VXNlcjE=",
+          "avatar_url": "https://github.com/images/error/octocat_happy.gif",
+          "gravatar_id": "41d064eb2195891e12d0413f63227ea7",
+          "url": "https://api.github.com/users/octocat",
+          "html_url": "https://github.com/octocat",
+          "followers_url": "https://api.github.com/users/octocat/followers",
+          "following_url": "https://api.github.com/users/octocat/following{/other_user}",
+          "gists_url": "https://api.github.com/users/octocat/gists{/gist_id}",
+          "starred_url": "https://api.github.com/users/octocat/starred{/owner}{/repo}",
+          "subscriptions_url": "https://api.github.com/users/octocat/subscriptions",
+          "organizations_url": "https://api.github.com/users/octocat/orgs",
+          "repos_url": "https://api.github.com/users/octocat/repos",
+          "events_url": "https://api.github.com/users/octocat/events{/privacy}",
+          "received_events_url": "https://api.github.com/users/octocat/received_events",
+          "type": "User",
+          "site_admin": true,
+          "starred_at": "\"2020-07-09T00:17:55Z\"",
+          "user_view_type": "public"
+        },
+        "id": 0,
+        "name": "string",
+        "node_id": "string",
+        "url": "http://example.com"
+      }
+    ],
+    "labels_url": "string",
+    "locked": true,
+    "milestone": {
+      "closed_at": "1970-01-01T00:00:00Z",
+      "closed_issues": 0,
+      "created_at": "1970-01-01T00:00:00Z",
+      "creator": {
+        "avatar_url": "http://example.com",
+        "deleted": true,
+        "email": "string",
+        "events_url": "string",
+        "followers_url": "http://example.com",
+        "following_url": "string",
+        "gists_url": "string",
+        "gravatar_id": "string",
+        "html_url": "http://example.com",
+        "id": 0,
+        "login": "string",
+        "name": "string",
+        "node_id": "string",
+        "organizations_url": "http://example.com",
+        "received_events_url": "http://example.com",
+        "repos_url": "http://example.com",
+        "site_admin": true,
+        "starred_url": "string",
+        "subscriptions_url": "http://example.com",
+        "type": "Bot",
+        "url": "http://example.com",
+        "user_view_type": "string"
+      },
+      "description": "string",
+      "due_on": "1970-01-01T00:00:00Z",
+      "html_url": "http://example.com",
+      "id": 0,
+      "labels_url": "http://example.com",
+      "node_id": "string",
+      "number": 0,
+      "open_issues": 0,
+      "state": "open",
+      "title": "string",
+      "updated_at": "1970-01-01T00:00:00Z",
+      "url": "http://example.com"
+    },
+    "node_id": "string",
+    "number": 0,
+    "performed_via_github_app": {
+      "created_at": "1970-01-01T00:00:00Z",
+      "description": "string",
+      "events": [
+        "branch_protection_rule"
+      ],
+      "external_url": "http://example.com",
+      "html_url": "http://example.com",
+      "id": 0,
+      "name": "string",
+      "node_id": "string",
+      "owner": {
+        "avatar_url": "http://example.com",
+        "deleted": true,
+        "email": "string",
+        "events_url": "string",
+        "followers_url": "http://example.com",
+        "following_url": "string",
+        "gists_url": "string",
+        "gravatar_id": "string",
+        "html_url": "http://example.com",
+        "id": 0,
+        "login": "string",
+        "name": "string",
+        "node_id": "string",
+        "organizations_url": "http://example.com",
+        "received_events_url": "http://example.com",
+        "repos_url": "http://example.com",
+        "site_admin": true,
+        "starred_url": "string",
+        "subscriptions_url": "http://example.com",
+        "type": "Bot",
+        "url": "http://example.com",
+        "user_view_type": "string"
+      },
+      "permissions": {
+        "actions": "read",
+        "administration": "read",
+        "checks": "read",
+        "content_references": "read",
+        "contents": "read",
+        "deployments": "read",
+        "discussions": "read",
+        "emails": "read",
+        "environments": "read",
+        "issues": "read",
+        "keys": "read",
+        "members": "read",
+        "metadata": "read",
+        "organization_administration": "read",
+        "organization_hooks": "read",
+        "organization_packages": "read",
+        "organization_plan": "read",
+        "organization_projects": "read",
+        "organization_secrets": "read",
+        "organization_self_hosted_runners": "read",
+        "organization_user_blocking": "read",
+        "packages": "read",
+        "pages": "read",
+        "pull_requests": "read",
+        "repository_hooks": "read",
+        "repository_projects": "read",
+        "secret_scanning_alerts": "read",
+        "secrets": "read",
+        "security_events": "read",
+        "security_scanning_alert": "read",
+        "single_file": "read",
+        "statuses": "read",
+        "vulnerability_alerts": "read",
+        "workflows": "read"
+      },
+      "slug": "string",
+      "updated_at": "1970-01-01T00:00:00Z"
+    },
+    "pull_request": {
+      "diff_url": "http://example.com",
+      "html_url": "http://example.com",
+      "merged_at": "1970-01-01T00:00:00Z",
+      "patch_url": "http://example.com",
+      "url": "http://example.com"
+    },
+    "reactions": {
+      "+1": 0,
+      "-1": 0,
+      "confused": 0,
+      "eyes": 0,
+      "heart": 0,
+      "hooray": 0,
+      "laugh": 0,
+      "rocket": 0,
+      "total_count": 0,
+      "url": "http://example.com"
+    },
+    "repository_url": "http://example.com",
+    "pinned_comment": {
+      "id": 42,
+      "node_id": "string",
+      "url": "https://api.github.com/repositories/42/issues/comments/1",
+      "body": "What version of Safari were you using when you observed this bug?",
+      "body_text": "string",
+      "body_html": "string",
+      "html_url": "http://example.com",
+      "user": {
+        "name": "string",
+        "email": "string",
+        "login": "octocat",
+        "id": 1,
+        "node_id": "MDQ6VXNlcjE=",
+        "avatar_url": "https://github.com/images/error/octocat_happy.gif",
+        "gravatar_id": "41d064eb2195891e12d0413f63227ea7",
+        "url": "https://api.github.com/users/octocat",
+        "html_url": "https://github.com/octocat",
+        "followers_url": "https://api.github.com/users/octocat/followers",
+        "following_url": "https://api.github.com/users/octocat/following{/other_user}",
+        "gists_url": "https://api.github.com/users/octocat/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/octocat/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/octocat/subscriptions",
+        "organizations_url": "https://api.github.com/users/octocat/orgs",
+        "repos_url": "https://api.github.com/users/octocat/repos",
+        "events_url": "https://api.github.com/users/octocat/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/octocat/received_events",
+        "type": "User",
+        "site_admin": true,
+        "starred_at": "\"2020-07-09T00:17:55Z\"",
+        "user_view_type": "public"
+      },
+      "created_at": "2011-04-14T16:00:49Z",
+      "updated_at": "2011-04-14T16:00:49Z",
+      "issue_url": "http://example.com",
+      "author_association": "OWNER",
+      "performed_via_github_app": {
+        "id": 37,
+        "slug": "probot-owners",
+        "node_id": "MDExOkludGVncmF0aW9uMQ==",
+        "client_id": "\"Iv1.25b5d1e65ffc4022\"",
+        "owner": {
+          "name": "string",
+          "email": "string",
+          "login": "octocat",
+          "id": 1,
+          "node_id": "MDQ6VXNlcjE=",
+          "avatar_url": "https://github.com/images/error/octocat_happy.gif",
+          "gravatar_id": "41d064eb2195891e12d0413f63227ea7",
+          "url": "https://api.github.com/users/octocat",
+          "html_url": "https://github.com/octocat",
+          "followers_url": "https://api.github.com/users/octocat/followers",
+          "following_url": "https://api.github.com/users/octocat/following{/other_user}",
+          "gists_url": "https://api.github.com/users/octocat/gists{/gist_id}",
+          "starred_url": "https://api.github.com/users/octocat/starred{/owner}{/repo}",
+          "subscriptions_url": "https://api.github.com/users/octocat/subscriptions",
+          "organizations_url": "https://api.github.com/users/octocat/orgs",
+          "repos_url": "https://api.github.com/users/octocat/repos",
+          "events_url": "https://api.github.com/users/octocat/events{/privacy}",
+          "received_events_url": "https://api.github.com/users/octocat/received_events",
+          "type": "User",
+          "site_admin": true,
+          "starred_at": "\"2020-07-09T00:17:55Z\"",
+          "user_view_type": "public"
+        },
+        "name": "Probot Owners",
+        "description": "The description of the app.",
+        "external_url": "https://example.com",
+        "html_url": "https://github.com/apps/super-ci",
+        "created_at": "2017-07-08T16:18:44-04:00",
+        "updated_at": "2017-07-08T16:18:44-04:00",
+        "permissions": {
+          "issues": "read",
+          "deployments": "write"
+        },
+        "events": "label",
+        "installations_count": 5
+      },
+      "reactions": {
+        "url": "http://example.com",
+        "total_count": 0,
+        "+1": 0,
+        "-1": 0,
+        "laugh": 0,
+        "confused": 0,
+        "heart": 0,
+        "hooray": 0,
+        "eyes": 0,
+        "rocket": 0
+      },
+      "pin": {
+        "pinned_at": "2011-04-14T16:00:49Z",
+        "pinned_by": {
+          "name": "string",
+          "email": "string",
+          "login": "octocat",
+          "id": 1,
+          "node_id": "MDQ6VXNlcjE=",
+          "avatar_url": "https://github.com/images/error/octocat_happy.gif",
+          "gravatar_id": "41d064eb2195891e12d0413f63227ea7",
+          "url": "https://api.github.com/users/octocat",
+          "html_url": "https://github.com/octocat",
+          "followers_url": "https://api.github.com/users/octocat/followers",
+          "following_url": "https://api.github.com/users/octocat/following{/other_user}",
+          "gists_url": "https://api.github.com/users/octocat/gists{/gist_id}",
+          "starred_url": "https://api.github.com/users/octocat/starred{/owner}{/repo}",
+          "subscriptions_url": "https://api.github.com/users/octocat/subscriptions",
+          "organizations_url": "https://api.github.com/users/octocat/orgs",
+          "repos_url": "https://api.github.com/users/octocat/repos",
+          "events_url": "https://api.github.com/users/octocat/events{/privacy}",
+          "received_events_url": "https://api.github.com/users/octocat/received_events",
+          "type": "User",
+          "site_admin": true,
+          "starred_at": "\"2020-07-09T00:17:55Z\"",
+          "user_view_type": "public"
+        }
+      },
+      "minimized": {
+        "reason": "low-quality"
+      }
+    },
+    "sub_issues_summary": {
+      "total": 0,
+      "completed": 0,
+      "percent_completed": 0
+    },
+    "issue_dependencies_summary": {
+      "blocked_by": 0,
+      "blocking": 0,
+      "total_blocked_by": 0,
+      "total_blocking": 0
+    },
+    "issue_field_values": [
+      {
+        "issue_field_id": 1,
+        "issue_field_name": "Priority",
+        "node_id": "IFT_GDKND",
+        "data_type": "text",
+        "value": "Sample text",
+        "single_select_option": {
+          "id": 1,
+          "name": "High",
+          "color": "red"
+        },
+        "multi_select_options": [
+          {
+            "id": 1,
+            "name": "High",
+            "color": "red"
+          }
+        ]
+      }
+    ],
+    "status": {
+      "id": 4,
+      "name": "In progress",
+      "category": "started"
+    },
+    "state": "open",
+    "state_reason": "string",
+    "timeline_url": "http://example.com",
+    "title": "string",
+    "type": {
+      "id": 0,
+      "node_id": "string",
+      "name": "string",
+      "description": "string",
+      "color": "gray",
+      "created_at": "1970-01-01T00:00:00Z",
+      "updated_at": "1970-01-01T00:00:00Z",
+      "is_enabled": true
+    },
+    "updated_at": "1970-01-01T00:00:00Z",
+    "url": "http://example.com",
+    "user": {
+      "avatar_url": "http://example.com",
+      "deleted": true,
+      "email": "string",
+      "events_url": "string",
+      "followers_url": "http://example.com",
+      "following_url": "string",
+      "gists_url": "string",
+      "gravatar_id": "string",
+      "html_url": "http://example.com",
+      "id": 0,
+      "login": "string",
+      "name": "string",
+      "node_id": "string",
+      "organizations_url": "http://example.com",
+      "received_events_url": "http://example.com",
+      "repos_url": "http://example.com",
+      "site_admin": true,
+      "starred_url": "string",
+      "subscriptions_url": "http://example.com",
+      "type": "Bot",
+      "url": "http://example.com",
+      "user_view_type": "string"
+    }
+  },
+  "organization": {
+    "login": "github",
+    "id": 1,
+    "node_id": "MDEyOk9yZ2FuaXphdGlvbjE=",
+    "url": "https://api.github.com/orgs/github",
+    "repos_url": "https://api.github.com/orgs/github/repos",
+    "events_url": "https://api.github.com/orgs/github/events",
+    "hooks_url": "https://api.github.com/orgs/github/hooks",
+    "issues_url": "https://api.github.com/orgs/github/issues",
+    "members_url": "https://api.github.com/orgs/github/members{/member}",
+    "public_members_url": "https://api.github.com/orgs/github/public_members{/member}",
+    "avatar_url": "https://github.com/images/error/octocat_happy.gif",
+    "description": "A great organization"
+  },
+  "repository": {
+    "id": 42,
+    "node_id": "MDEwOlJlcG9zaXRvcnkxMjk2MjY5",
+    "name": "Team Environment",
+    "full_name": "octocat/Hello-World",
+    "license": {
+      "key": "mit",
+      "name": "MIT License",
+      "url": "https://api.github.com/licenses/mit",
+      "spdx_id": "MIT",
+      "node_id": "MDc6TGljZW5zZW1pdA==",
+      "html_url": "http://example.com"
+    },
+    "organization": {
+      "name": "string",
+      "email": "string",
+      "login": "octocat",
+      "id": 1,
+      "node_id": "MDQ6VXNlcjE=",
+      "avatar_url": "https://github.com/images/error/octocat_happy.gif",
+      "gravatar_id": "41d064eb2195891e12d0413f63227ea7",
+      "url": "https://api.github.com/users/octocat",
+      "html_url": "https://github.com/octocat",
+      "followers_url": "https://api.github.com/users/octocat/followers",
+      "following_url": "https://api.github.com/users/octocat/following{/other_user}",
+      "gists_url": "https://api.github.com/users/octocat/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/octocat/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/octocat/subscriptions",
+      "organizations_url": "https://api.github.com/users/octocat/orgs",
+      "repos_url": "https://api.github.com/users/octocat/repos",
+      "events_url": "https://api.github.com/users/octocat/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/octocat/received_events",
+      "type": "User",
+      "site_admin": true,
+      "starred_at": "\"2020-07-09T00:17:55Z\"",
+      "user_view_type": "public"
+    },
+    "forks": 0,
+    "permissions": {
+      "admin": true,
+      "pull": true,
+      "triage": true,
+      "push": true,
+      "maintain": true
+    },
+    "owner": {
+      "name": "string",
+      "email": "string",
+      "login": "octocat",
+      "id": 1,
+      "node_id": "MDQ6VXNlcjE=",
+      "avatar_url": "https://github.com/images/error/octocat_happy.gif",
+      "gravatar_id": "41d064eb2195891e12d0413f63227ea7",
+      "url": "https://api.github.com/users/octocat",
+      "html_url": "https://github.com/octocat",
+      "followers_url": "https://api.github.com/users/octocat/followers",
+      "following_url": "https://api.github.com/users/octocat/following{/other_user}",
+      "gists_url": "https://api.github.com/users/octocat/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/octocat/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/octocat/subscriptions",
+      "organizations_url": "https://api.github.com/users/octocat/orgs",
+      "repos_url": "https://api.github.com/users/octocat/repos",
+      "events_url": "https://api.github.com/users/octocat/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/octocat/received_events",
+      "type": "User",
+      "site_admin": true,
+      "starred_at": "\"2020-07-09T00:17:55Z\"",
+      "user_view_type": "public"
+    },
+    "private": false,
+    "html_url": "https://github.com/octocat/Hello-World",
+    "description": "This your first repo!",
+    "fork": true,
+    "url": "https://api.github.com/repos/octocat/Hello-World",
+    "archive_url": "http://api.github.com/repos/octocat/Hello-World/{archive_format}{/ref}",
+    "assignees_url": "http://api.github.com/repos/octocat/Hello-World/assignees{/user}",
+    "blobs_url": "http://api.github.com/repos/octocat/Hello-World/git/blobs{/sha}",
+    "branches_url": "http://api.github.com/repos/octocat/Hello-World/branches{/branch}",
+    "collaborators_url": "http://api.github.com/repos/octocat/Hello-World/collaborators{/collaborator}",
+    "comments_url": "http://api.github.com/repos/octocat/Hello-World/comments{/number}",
+    "commits_url": "http://api.github.com/repos/octocat/Hello-World/commits{/sha}",
+    "compare_url": "http://api.github.com/repos/octocat/Hello-World/compare/{base}...{head}",
+    "contents_url": "http://api.github.com/repos/octocat/Hello-World/contents/{+path}",
+    "contributors_url": "http://api.github.com/repos/octocat/Hello-World/contributors",
+    "deployments_url": "http://api.github.com/repos/octocat/Hello-World/deployments",
+    "downloads_url": "http://api.github.com/repos/octocat/Hello-World/downloads",
+    "events_url": "http://api.github.com/repos/octocat/Hello-World/events",
+    "forks_url": "http://api.github.com/repos/octocat/Hello-World/forks",
+    "git_commits_url": "http://api.github.com/repos/octocat/Hello-World/git/commits{/sha}",
+    "git_refs_url": "http://api.github.com/repos/octocat/Hello-World/git/refs{/sha}",
+    "git_tags_url": "http://api.github.com/repos/octocat/Hello-World/git/tags{/sha}",
+    "git_url": "git:github.com/octocat/Hello-World.git",
+    "issue_comment_url": "http://api.github.com/repos/octocat/Hello-World/issues/comments{/number}",
+    "issue_events_url": "http://api.github.com/repos/octocat/Hello-World/issues/events{/number}",
+    "issues_url": "http://api.github.com/repos/octocat/Hello-World/issues{/number}",
+    "keys_url": "http://api.github.com/repos/octocat/Hello-World/keys{/key_id}",
+    "labels_url": "http://api.github.com/repos/octocat/Hello-World/labels{/name}",
+    "languages_url": "http://api.github.com/repos/octocat/Hello-World/languages",
+    "merges_url": "http://api.github.com/repos/octocat/Hello-World/merges",
+    "milestones_url": "http://api.github.com/repos/octocat/Hello-World/milestones{/number}",
+    "notifications_url": "http://api.github.com/repos/octocat/Hello-World/notifications{?since,all,participating}",
+    "pulls_url": "http://api.github.com/repos/octocat/Hello-World/pulls{/number}",
+    "releases_url": "http://api.github.com/repos/octocat/Hello-World/releases{/id}",
+    "ssh_url": "git@github.com:octocat/Hello-World.git",
+    "stargazers_url": "http://api.github.com/repos/octocat/Hello-World/stargazers",
+    "statuses_url": "http://api.github.com/repos/octocat/Hello-World/statuses/{sha}",
+    "subscribers_url": "http://api.github.com/repos/octocat/Hello-World/subscribers",
+    "subscription_url": "http://api.github.com/repos/octocat/Hello-World/subscription",
+    "tags_url": "http://api.github.com/repos/octocat/Hello-World/tags",
+    "teams_url": "http://api.github.com/repos/octocat/Hello-World/teams",
+    "trees_url": "http://api.github.com/repos/octocat/Hello-World/git/trees{/sha}",
+    "clone_url": "https://github.com/octocat/Hello-World.git",
+    "mirror_url": "git:git.example.com/octocat/Hello-World",
+    "hooks_url": "http://api.github.com/repos/octocat/Hello-World/hooks",
+    "svn_url": "https://svn.github.com/octocat/Hello-World",
+    "homepage": "https://github.com",
+    "language": "string",
+    "forks_count": 9,
+    "stargazers_count": 80,
+    "watchers_count": 80,
+    "size": 108,
+    "default_branch": "master",
+    "open_issues_count": 0,
+    "is_template": true,
+    "topics": [
+      "string"
+    ],
+    "custom_properties": {},
+    "has_issues": true,
+    "has_projects": true,
+    "has_wiki": true,
+    "has_pages": true,
+    "has_downloads": true,
+    "has_discussions": true,
+    "has_pull_requests": true,
+    "pull_request_creation_policy": "all",
+    "archived": false,
+    "disabled": true,
+    "visibility": "public",
+    "pushed_at": "2011-01-26T19:06:43Z",
+    "created_at": "2011-01-26T19:01:12Z",
+    "updated_at": "2011-01-26T19:14:43Z",
+    "allow_rebase_merge": true,
+    "template_repository": {
+      "id": 0,
+      "node_id": "string",
+      "name": "string",
+      "full_name": "string",
+      "owner": {
+        "login": "string",
+        "id": 0,
+        "node_id": "string",
+        "avatar_url": "string",
+        "gravatar_id": "string",
+        "url": "string",
+        "html_url": "string",
+        "followers_url": "string",
+        "following_url": "string",
+        "gists_url": "string",
+        "starred_url": "string",
+        "subscriptions_url": "string",
+        "organizations_url": "string",
+        "repos_url": "string",
+        "events_url": "string",
+        "received_events_url": "string",
+        "type": "string",
+        "site_admin": true
+      },
+      "private": true,
+      "html_url": "string",
+      "description": "string",
+      "fork": true,
+      "url": "string",
+      "archive_url": "string",
+      "assignees_url": "string",
+      "blobs_url": "string",
+      "branches_url": "string",
+      "collaborators_url": "string",
+      "comments_url": "string",
+      "commits_url": "string",
+      "compare_url": "string",
+      "contents_url": "string",
+      "contributors_url": "string",
+      "deployments_url": "string",
+      "downloads_url": "string",
+      "events_url": "string",
+      "forks_url": "string",
+      "git_commits_url": "string",
+      "git_refs_url": "string",
+      "git_tags_url": "string",
+      "git_url": "string",
+      "issue_comment_url": "string",
+      "issue_events_url": "string",
+      "issues_url": "string",
+      "keys_url": "string",
+      "labels_url": "string",
+      "languages_url": "string",
+      "merges_url": "string",
+      "milestones_url": "string",
+      "notifications_url": "string",
+      "pulls_url": "string",
+      "releases_url": "string",
+      "ssh_url": "string",
+      "stargazers_url": "string",
+      "statuses_url": "string",
+      "subscribers_url": "string",
+      "subscription_url": "string",
+      "tags_url": "string",
+      "teams_url": "string",
+      "trees_url": "string",
+      "clone_url": "string",
+      "mirror_url": "string",
+      "hooks_url": "string",
+      "svn_url": "string",
+      "homepage": "string",
+      "language": "string",
+      "forks_count": 0,
+      "stargazers_count": 0,
+      "watchers_count": 0,
+      "size": 0,
+      "default_branch": "string",
+      "open_issues_count": 0,
+      "is_template": true,
+      "topics": [
+        "string"
+      ],
+      "has_issues": true,
+      "has_projects": true,
+      "has_wiki": true,
+      "has_pages": true,
+      "has_downloads": true,
+      "archived": true,
+      "disabled": true,
+      "visibility": "string",
+      "pushed_at": "string",
+      "created_at": "string",
+      "updated_at": "string",
+      "permissions": {
+        "admin": true,
+        "maintain": true,
+        "push": true,
+        "triage": true,
+        "pull": true
+      },
+      "allow_rebase_merge": true,
+      "temp_clone_token": "string",
+      "allow_squash_merge": true,
+      "allow_auto_merge": true,
+      "delete_branch_on_merge": true,
+      "allow_update_branch": true,
+      "use_squash_pr_title_as_default": true,
+      "squash_merge_commit_title": "PR_TITLE",
+      "squash_merge_commit_message": "PR_BODY",
+      "merge_commit_title": "PR_TITLE",
+      "merge_commit_message": "PR_BODY",
+      "allow_merge_commit": true,
+      "subscribers_count": 0,
+      "network_count": 0
+    },
+    "temp_clone_token": "string",
+    "allow_squash_merge": true,
+    "allow_auto_merge": false,
+    "delete_branch_on_merge": false,
+    "allow_update_branch": false,
+    "use_squash_pr_title_as_default": false,
+    "squash_merge_commit_title": "PR_TITLE",
+    "squash_merge_commit_message": "PR_BODY",
+    "merge_commit_title": "PR_TITLE",
+    "merge_commit_message": "PR_BODY",
+    "allow_merge_commit": true,
+    "allow_forking": true,
+    "web_commit_signoff_required": false,
+    "subscribers_count": 0,
+    "network_count": 0,
+    "open_issues": 0,
+    "watchers": 0,
+    "master_branch": "string",
+    "starred_at": "\"2020-07-09T00:17:42Z\"",
+    "anonymous_access_enabled": true
+  },
+  "sender": {
+    "name": "string",
+    "email": "string",
+    "login": "octocat",
+    "id": 1,
+    "node_id": "MDQ6VXNlcjE=",
+    "avatar_url": "https://github.com/images/error/octocat_happy.gif",
+    "gravatar_id": "41d064eb2195891e12d0413f63227ea7",
+    "url": "https://api.github.com/users/octocat",
+    "html_url": "https://github.com/octocat",
+    "followers_url": "https://api.github.com/users/octocat/followers",
+    "following_url": "https://api.github.com/users/octocat/following{/other_user}",
+    "gists_url": "https://api.github.com/users/octocat/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/octocat/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/octocat/subscriptions",
+    "organizations_url": "https://api.github.com/users/octocat/orgs",
+    "repos_url": "https://api.github.com/users/octocat/repos",
+    "events_url": "https://api.github.com/users/octocat/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/octocat/received_events",
+    "type": "User",
+    "site_admin": true,
+    "starred_at": "\"2020-07-09T00:17:55Z\"",
+    "user_view_type": "public"
+  },
+  "status": {
+    "id": 4,
+    "name": "In progress",
+    "category": "started"
+  }
+}
+```
+
+<h3 id="this-event-occurs-when-there-is-activity-relating-to-an-issue-for-more-information-about-issues-see-about-issueshttpsdocsgithubcomissuestracking-your-work-with-issuesabout-issues-for-information-about-the-apis-to-manage-issues-see-the-graphql-documentationhttpsdocsgithubcomgraphqlreferenceobjectsissue-or-issueshttpsdocsgithubcomrestissues-in-the-rest-api-documentation-for-activity-relating-to-a-comment-on-an-issue-use-the-issuecomment-event-to-subscribe-to-this-event-a-github-app-must-have-at-least-read-level-access-for-the-issues-repository-permission-13-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|User-Agent|header|string|false|none|
+|X-Github-Hook-Id|header|string|false|none|
+|X-Github-Event|header|string|false|none|
+|X-Github-Hook-Installation-Target-Id|header|string|false|none|
+|X-Github-Hook-Installation-Target-Type|header|string|false|none|
+|X-GitHub-Delivery|header|string|false|none|
+|X-Hub-Signature-256|header|string|false|none|
+|body|body|[webhook-issues-status-changed](#schemawebhook-issues-status-changed)|true|none|
+|» action|body|string|true|none|
+|» changes|body|object|true|The changes to the issue. `state` and `state_reason` are only included when the status change also closed or reopened the issue, or changed the reason it was closed.|
+|» » status|body|object|true|none|
+|» » » from|body|object \| null|true|The status the issue had before the change, or `null` if it had none.|
+|» » » » id|body|integer(int64)|true|The stable identifier of the planning status.|
+|» » » » name|body|string|true|The display name of the planning status, which may change in the future.|
+|» » » » category|body|string|true|A stable identifier for the category, such as `backlog`, `planned`, `started`, `completed`, `not_planned` or `duplicate`. Clients should expect new keys to be added.|
+|» » state|body|object|false|none|
+|» » » from|body|string|true|The state of the issue before the change.|
+|» » state_reason|body|object|false|none|
+|» » » from|body|string \| null|true|The reason for the state of the issue before the change.|
+|» enterprise|body|[enterprise-webhooks](#schemaenterprise-webhooks)|false|An enterprise on GitHub. Webhook payloads contain the `enterprise` property when the webhook is configured<br>on an enterprise account or an organization that's part of an enterprise account. For more information,<br>see "[About enterprise accounts](https://docs.github.com/admin/overview/about-enterprise-accounts)."|
+|» installation|body|[simple-installation](#schemasimple-installation)|false|The GitHub App installation. Webhook payloads contain the `installation` property when the event is configured<br>for and sent to a GitHub App. For more information,<br>see "[Using webhooks with GitHub Apps](https://docs.github.com/apps/creating-github-apps/registering-a-github-app/using-webhooks-with-github-apps)."|
+|» issue|body|[webhooks_issue](#schemawebhooks_issue)|true|The [issue](https://docs.github.com/rest/issues/issues#get-an-issue) itself.|
+|» organization|body|[organization-simple-webhooks](#schemaorganization-simple-webhooks)|false|A GitHub organization. Webhook payloads contain the `organization` property when the webhook is configured for an<br>organization, or when the event occurs from activity in a repository owned by an organization.|
+|» repository|body|[repository-webhooks](#schemarepository-webhooks)|true|The repository on GitHub where the event occurred. Webhook payloads contain the `repository` property<br>when the event occurs from activity in a repository.|
+|» sender|body|[simple-user](#schemasimple-user)|true|A GitHub user.|
+|» status|body|object|true|The status the issue changed to.|
+|» » id|body|integer(int64)|true|The stable identifier of the planning status.|
+|» » name|body|string|true|The display name of the planning status, which may change in the future.|
+|» » category|body|string|true|A stable identifier for the category, such as `backlog`, `planned`, `started`, `completed`, `not_planned` or `duplicate`. Clients should expect new keys to be added.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|» action|status_changed|
+|» » » from|open|
+|» » » from|closed|
+
+<h3 id="this-event-occurs-when-there-is-activity-relating-to-an-issue-for-more-information-about-issues-see-about-issueshttpsdocsgithubcomissuestracking-your-work-with-issuesabout-issues-for-information-about-the-apis-to-manage-issues-see-the-graphql-documentationhttpsdocsgithubcomgraphqlreferenceobjectsissue-or-issueshttpsdocsgithubcomrestissues-in-the-rest-api-documentation-for-activity-relating-to-a-comment-on-an-issue-use-the-issuecomment-event-to-subscribe-to-this-event-a-github-app-must-have-at-least-read-level-access-for-the-issues-repository-permission-13-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -236957,6 +242537,11 @@ An issue was transferred to another repository. For more information, see "[Tran
           ]
         }
       ],
+      "status": {
+        "id": 4,
+        "name": "In progress",
+        "category": "started"
+      },
       "state": "open",
       "state_reason": "string",
       "timeline_url": "http://example.com",
@@ -237538,6 +243123,11 @@ An issue was transferred to another repository. For more information, see "[Tran
         ]
       }
     ],
+    "status": {
+      "id": 4,
+      "name": "In progress",
+      "category": "started"
+    },
     "state": "open",
     "state_reason": "string",
     "timeline_url": "http://example.com",
@@ -237900,7 +243490,7 @@ An issue was transferred to another repository. For more information, see "[Tran
 }
 ```
 
-<h3 id="this-event-occurs-when-there-is-activity-relating-to-an-issue-for-more-information-about-issues-see-about-issueshttpsdocsgithubcomissuestracking-your-work-with-issuesabout-issues-for-information-about-the-apis-to-manage-issues-see-the-graphql-documentationhttpsdocsgithubcomgraphqlreferenceobjectsissue-or-issueshttpsdocsgithubcomrestissues-in-the-rest-api-documentation-for-activity-relating-to-a-comment-on-an-issue-use-the-issuecomment-event-to-subscribe-to-this-event-a-github-app-must-have-at-least-read-level-access-for-the-issues-repository-permission-13-parameters">Parameters</h3>
+<h3 id="this-event-occurs-when-there-is-activity-relating-to-an-issue-for-more-information-about-issues-see-about-issueshttpsdocsgithubcomissuestracking-your-work-with-issuesabout-issues-for-information-about-the-apis-to-manage-issues-see-the-graphql-documentationhttpsdocsgithubcomgraphqlreferenceobjectsissue-or-issueshttpsdocsgithubcomrestissues-in-the-rest-api-documentation-for-activity-relating-to-a-comment-on-an-issue-use-the-issuecomment-event-to-subscribe-to-this-event-a-github-app-must-have-at-least-read-level-access-for-the-issues-repository-permission-14-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -238116,6 +243706,10 @@ An issue was transferred to another repository. For more information, see "[Tran
 |» » » sub_issues_summary|body|[sub-issues-summary](#schemasub-issues-summary)|false|none|
 |» » » issue_dependencies_summary|body|[issue-dependencies-summary](#schemaissue-dependencies-summary)|false|none|
 |» » » issue_field_values|body|[[issue-field-value](#schemaissue-field-value)]|false|none|
+|» » » status|body|object \| null|false|The status of the issue, or `null` if it has none. Issue statuses are in preview and only available to accounts enrolled in the preview.|
+|» » » » id|body|integer(int64)|true|The stable identifier of the planning status.|
+|» » » » name|body|string|true|The display name of the planning status, which may change in the future.|
+|» » » » category|body|string|true|A stable identifier for the category, such as `backlog`, `planned`, `started`, `completed`, `not_planned` or `duplicate`. Clients should expect new keys to be added.|
 |» » » state|body|string|false|State of the issue; either 'open' or 'closed'|
 |» » » state_reason|body|string \| null|false|none|
 |» » » timeline_url|body|string(uri)|false|none|
@@ -238443,7 +244037,7 @@ An issue was transferred to another repository. For more information, see "[Tran
 |» » » visibility|private|
 |» » » visibility|internal|
 
-<h3 id="this-event-occurs-when-there-is-activity-relating-to-an-issue-for-more-information-about-issues-see-about-issueshttpsdocsgithubcomissuestracking-your-work-with-issuesabout-issues-for-information-about-the-apis-to-manage-issues-see-the-graphql-documentationhttpsdocsgithubcomgraphqlreferenceobjectsissue-or-issueshttpsdocsgithubcomrestissues-in-the-rest-api-documentation-for-activity-relating-to-a-comment-on-an-issue-use-the-issuecomment-event-to-subscribe-to-this-event-a-github-app-must-have-at-least-read-level-access-for-the-issues-repository-permission-13-responses">Responses</h3>
+<h3 id="this-event-occurs-when-there-is-activity-relating-to-an-issue-for-more-information-about-issues-see-about-issueshttpsdocsgithubcomissuestracking-your-work-with-issuesabout-issues-for-information-about-the-apis-to-manage-issues-see-the-graphql-documentationhttpsdocsgithubcomgraphqlreferenceobjectsissue-or-issueshttpsdocsgithubcomrestissues-in-the-rest-api-documentation-for-activity-relating-to-a-comment-on-an-issue-use-the-issuecomment-event-to-subscribe-to-this-event-a-github-app-must-have-at-least-read-level-access-for-the-issues-repository-permission-14-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -238874,6 +244468,11 @@ An issue type was added to an issue.
         ]
       }
     ],
+    "status": {
+      "id": 4,
+      "name": "In progress",
+      "category": "started"
+    },
     "state": "open",
     "state_reason": "string",
     "timeline_url": "http://example.com",
@@ -239246,7 +244845,7 @@ An issue type was added to an issue.
 }
 ```
 
-<h3 id="this-event-occurs-when-there-is-activity-relating-to-an-issue-for-more-information-about-issues-see-about-issueshttpsdocsgithubcomissuestracking-your-work-with-issuesabout-issues-for-information-about-the-apis-to-manage-issues-see-the-graphql-documentationhttpsdocsgithubcomgraphqlreferenceobjectsissue-or-issueshttpsdocsgithubcomrestissues-in-the-rest-api-documentation-for-activity-relating-to-a-comment-on-an-issue-use-the-issuecomment-event-to-subscribe-to-this-event-a-github-app-must-have-at-least-read-level-access-for-the-issues-repository-permission-14-parameters">Parameters</h3>
+<h3 id="this-event-occurs-when-there-is-activity-relating-to-an-issue-for-more-information-about-issues-see-about-issueshttpsdocsgithubcomissuestracking-your-work-with-issuesabout-issues-for-information-about-the-apis-to-manage-issues-see-the-graphql-documentationhttpsdocsgithubcomgraphqlreferenceobjectsissue-or-issueshttpsdocsgithubcomrestissues-in-the-rest-api-documentation-for-activity-relating-to-a-comment-on-an-issue-use-the-issuecomment-event-to-subscribe-to-this-event-a-github-app-must-have-at-least-read-level-access-for-the-issues-repository-permission-15-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -239273,7 +244872,7 @@ An issue type was added to an issue.
 |---|---|
 |» action|typed|
 
-<h3 id="this-event-occurs-when-there-is-activity-relating-to-an-issue-for-more-information-about-issues-see-about-issueshttpsdocsgithubcomissuestracking-your-work-with-issuesabout-issues-for-information-about-the-apis-to-manage-issues-see-the-graphql-documentationhttpsdocsgithubcomgraphqlreferenceobjectsissue-or-issueshttpsdocsgithubcomrestissues-in-the-rest-api-documentation-for-activity-relating-to-a-comment-on-an-issue-use-the-issuecomment-event-to-subscribe-to-this-event-a-github-app-must-have-at-least-read-level-access-for-the-issues-repository-permission-14-responses">Responses</h3>
+<h3 id="this-event-occurs-when-there-is-activity-relating-to-an-issue-for-more-information-about-issues-see-about-issueshttpsdocsgithubcomissuestracking-your-work-with-issuesabout-issues-for-information-about-the-apis-to-manage-issues-see-the-graphql-documentationhttpsdocsgithubcomgraphqlreferenceobjectsissue-or-issueshttpsdocsgithubcomrestissues-in-the-rest-api-documentation-for-activity-relating-to-a-comment-on-an-issue-use-the-issuecomment-event-to-subscribe-to-this-event-a-github-app-must-have-at-least-read-level-access-for-the-issues-repository-permission-15-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -239728,6 +245327,11 @@ A user was unassigned from an issue.
         ]
       }
     ],
+    "status": {
+      "id": 4,
+      "name": "In progress",
+      "category": "started"
+    },
     "state": "open",
     "state_reason": "string",
     "timeline_url": "http://example.com",
@@ -240090,7 +245694,7 @@ A user was unassigned from an issue.
 }
 ```
 
-<h3 id="this-event-occurs-when-there-is-activity-relating-to-an-issue-for-more-information-about-issues-see-about-issueshttpsdocsgithubcomissuestracking-your-work-with-issuesabout-issues-for-information-about-the-apis-to-manage-issues-see-the-graphql-documentationhttpsdocsgithubcomgraphqlreferenceobjectsissue-or-issueshttpsdocsgithubcomrestissues-in-the-rest-api-documentation-for-activity-relating-to-a-comment-on-an-issue-use-the-issuecomment-event-to-subscribe-to-this-event-a-github-app-must-have-at-least-read-level-access-for-the-issues-repository-permission-15-parameters">Parameters</h3>
+<h3 id="this-event-occurs-when-there-is-activity-relating-to-an-issue-for-more-information-about-issues-see-about-issueshttpsdocsgithubcomissuestracking-your-work-with-issuesabout-issues-for-information-about-the-apis-to-manage-issues-see-the-graphql-documentationhttpsdocsgithubcomgraphqlreferenceobjectsissue-or-issueshttpsdocsgithubcomrestissues-in-the-rest-api-documentation-for-activity-relating-to-a-comment-on-an-issue-use-the-issuecomment-event-to-subscribe-to-this-event-a-github-app-must-have-at-least-read-level-access-for-the-issues-repository-permission-16-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -240117,7 +245721,7 @@ A user was unassigned from an issue.
 |---|---|
 |» action|unassigned|
 
-<h3 id="this-event-occurs-when-there-is-activity-relating-to-an-issue-for-more-information-about-issues-see-about-issueshttpsdocsgithubcomissuestracking-your-work-with-issuesabout-issues-for-information-about-the-apis-to-manage-issues-see-the-graphql-documentationhttpsdocsgithubcomgraphqlreferenceobjectsissue-or-issueshttpsdocsgithubcomrestissues-in-the-rest-api-documentation-for-activity-relating-to-a-comment-on-an-issue-use-the-issuecomment-event-to-subscribe-to-this-event-a-github-app-must-have-at-least-read-level-access-for-the-issues-repository-permission-15-responses">Responses</h3>
+<h3 id="this-event-occurs-when-there-is-activity-relating-to-an-issue-for-more-information-about-issues-see-about-issueshttpsdocsgithubcomissuestracking-your-work-with-issuesabout-issues-for-information-about-the-apis-to-manage-issues-see-the-graphql-documentationhttpsdocsgithubcomgraphqlreferenceobjectsissue-or-issueshttpsdocsgithubcomrestissues-in-the-rest-api-documentation-for-activity-relating-to-a-comment-on-an-issue-use-the-issuecomment-event-to-subscribe-to-this-event-a-github-app-must-have-at-least-read-level-access-for-the-issues-repository-permission-16-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -240548,6 +246152,11 @@ A label was removed from an issue.
         ]
       }
     ],
+    "status": {
+      "id": 4,
+      "name": "In progress",
+      "category": "started"
+    },
     "state": "open",
     "state_reason": "string",
     "timeline_url": "http://example.com",
@@ -240944,7 +246553,7 @@ A label was removed from an issue.
 }
 ```
 
-<h3 id="this-event-occurs-when-there-is-activity-relating-to-an-issue-for-more-information-about-issues-see-about-issueshttpsdocsgithubcomissuestracking-your-work-with-issuesabout-issues-for-information-about-the-apis-to-manage-issues-see-the-graphql-documentationhttpsdocsgithubcomgraphqlreferenceobjectsissue-or-issueshttpsdocsgithubcomrestissues-in-the-rest-api-documentation-for-activity-relating-to-a-comment-on-an-issue-use-the-issuecomment-event-to-subscribe-to-this-event-a-github-app-must-have-at-least-read-level-access-for-the-issues-repository-permission-16-parameters">Parameters</h3>
+<h3 id="this-event-occurs-when-there-is-activity-relating-to-an-issue-for-more-information-about-issues-see-about-issueshttpsdocsgithubcomissuestracking-your-work-with-issuesabout-issues-for-information-about-the-apis-to-manage-issues-see-the-graphql-documentationhttpsdocsgithubcomgraphqlreferenceobjectsissue-or-issueshttpsdocsgithubcomrestissues-in-the-rest-api-documentation-for-activity-relating-to-a-comment-on-an-issue-use-the-issuecomment-event-to-subscribe-to-this-event-a-github-app-must-have-at-least-read-level-access-for-the-issues-repository-permission-17-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -240971,7 +246580,7 @@ A label was removed from an issue.
 |---|---|
 |» action|unlabeled|
 
-<h3 id="this-event-occurs-when-there-is-activity-relating-to-an-issue-for-more-information-about-issues-see-about-issueshttpsdocsgithubcomissuestracking-your-work-with-issuesabout-issues-for-information-about-the-apis-to-manage-issues-see-the-graphql-documentationhttpsdocsgithubcomgraphqlreferenceobjectsissue-or-issueshttpsdocsgithubcomrestissues-in-the-rest-api-documentation-for-activity-relating-to-a-comment-on-an-issue-use-the-issuecomment-event-to-subscribe-to-this-event-a-github-app-must-have-at-least-read-level-access-for-the-issues-repository-permission-16-responses">Responses</h3>
+<h3 id="this-event-occurs-when-there-is-activity-relating-to-an-issue-for-more-information-about-issues-see-about-issueshttpsdocsgithubcomissuestracking-your-work-with-issuesabout-issues-for-information-about-the-apis-to-manage-issues-see-the-graphql-documentationhttpsdocsgithubcomgraphqlreferenceobjectsissue-or-issueshttpsdocsgithubcomrestissues-in-the-rest-api-documentation-for-activity-relating-to-a-comment-on-an-issue-use-the-issuecomment-event-to-subscribe-to-this-event-a-github-app-must-have-at-least-read-level-access-for-the-issues-repository-permission-17-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -241377,6 +246986,11 @@ Conversation on an issue was locked. For more information, see "[Locking convers
         ]
       }
     ],
+    "status": {
+      "id": 4,
+      "name": "In progress",
+      "category": "started"
+    },
     "state": "open",
     "state_reason": "string",
     "timeline_url": "http://example.com",
@@ -241739,7 +247353,7 @@ Conversation on an issue was locked. For more information, see "[Locking convers
 }
 ```
 
-<h3 id="this-event-occurs-when-there-is-activity-relating-to-an-issue-for-more-information-about-issues-see-about-issueshttpsdocsgithubcomissuestracking-your-work-with-issuesabout-issues-for-information-about-the-apis-to-manage-issues-see-the-graphql-documentationhttpsdocsgithubcomgraphqlreferenceobjectsissue-or-issueshttpsdocsgithubcomrestissues-in-the-rest-api-documentation-for-activity-relating-to-a-comment-on-an-issue-use-the-issuecomment-event-to-subscribe-to-this-event-a-github-app-must-have-at-least-read-level-access-for-the-issues-repository-permission-17-parameters">Parameters</h3>
+<h3 id="this-event-occurs-when-there-is-activity-relating-to-an-issue-for-more-information-about-issues-see-about-issueshttpsdocsgithubcomissuestracking-your-work-with-issuesabout-issues-for-information-about-the-apis-to-manage-issues-see-the-graphql-documentationhttpsdocsgithubcomgraphqlreferenceobjectsissue-or-issueshttpsdocsgithubcomrestissues-in-the-rest-api-documentation-for-activity-relating-to-a-comment-on-an-issue-use-the-issuecomment-event-to-subscribe-to-this-event-a-github-app-must-have-at-least-read-level-access-for-the-issues-repository-permission-18-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -241956,6 +247570,10 @@ Conversation on an issue was locked. For more information, see "[Locking convers
 |» » sub_issues_summary|body|[sub-issues-summary](#schemasub-issues-summary)|false|none|
 |» » issue_dependencies_summary|body|[issue-dependencies-summary](#schemaissue-dependencies-summary)|false|none|
 |» » issue_field_values|body|[[issue-field-value](#schemaissue-field-value)]|false|none|
+|» » status|body|object \| null|false|The status of the issue, or `null` if it has none. Issue statuses are in preview and only available to accounts enrolled in the preview.|
+|» » » id|body|integer(int64)|true|The stable identifier of the planning status.|
+|» » » name|body|string|true|The display name of the planning status, which may change in the future.|
+|» » » category|body|string|true|A stable identifier for the category, such as `backlog`, `planned`, `started`, `completed`, `not_planned` or `duplicate`. Clients should expect new keys to be added.|
 |» » state|body|string|false|State of the issue; either 'open' or 'closed'|
 |» » state_reason|body|string \| null|false|none|
 |» » timeline_url|body|string(uri)|false|none|
@@ -242142,7 +247760,7 @@ Conversation on an issue was locked. For more information, see "[Locking convers
 |» » » type|User|
 |» » » type|Organization|
 
-<h3 id="this-event-occurs-when-there-is-activity-relating-to-an-issue-for-more-information-about-issues-see-about-issueshttpsdocsgithubcomissuestracking-your-work-with-issuesabout-issues-for-information-about-the-apis-to-manage-issues-see-the-graphql-documentationhttpsdocsgithubcomgraphqlreferenceobjectsissue-or-issueshttpsdocsgithubcomrestissues-in-the-rest-api-documentation-for-activity-relating-to-a-comment-on-an-issue-use-the-issuecomment-event-to-subscribe-to-this-event-a-github-app-must-have-at-least-read-level-access-for-the-issues-repository-permission-17-responses">Responses</h3>
+<h3 id="this-event-occurs-when-there-is-activity-relating-to-an-issue-for-more-information-about-issues-see-about-issueshttpsdocsgithubcomissuestracking-your-work-with-issuesabout-issues-for-information-about-the-apis-to-manage-issues-see-the-graphql-documentationhttpsdocsgithubcomgraphqlreferenceobjectsissue-or-issueshttpsdocsgithubcomrestissues-in-the-rest-api-documentation-for-activity-relating-to-a-comment-on-an-issue-use-the-issuecomment-event-to-subscribe-to-this-event-a-github-app-must-have-at-least-read-level-access-for-the-issues-repository-permission-18-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -242573,6 +248191,11 @@ An issue was unpinned from a repository. For more information, see "[Pinning an 
         ]
       }
     ],
+    "status": {
+      "id": 4,
+      "name": "In progress",
+      "category": "started"
+    },
     "state": "open",
     "state_reason": "string",
     "timeline_url": "http://example.com",
@@ -242935,7 +248558,7 @@ An issue was unpinned from a repository. For more information, see "[Pinning an 
 }
 ```
 
-<h3 id="this-event-occurs-when-there-is-activity-relating-to-an-issue-for-more-information-about-issues-see-about-issueshttpsdocsgithubcomissuestracking-your-work-with-issuesabout-issues-for-information-about-the-apis-to-manage-issues-see-the-graphql-documentationhttpsdocsgithubcomgraphqlreferenceobjectsissue-or-issueshttpsdocsgithubcomrestissues-in-the-rest-api-documentation-for-activity-relating-to-a-comment-on-an-issue-use-the-issuecomment-event-to-subscribe-to-this-event-a-github-app-must-have-at-least-read-level-access-for-the-issues-repository-permission-18-parameters">Parameters</h3>
+<h3 id="this-event-occurs-when-there-is-activity-relating-to-an-issue-for-more-information-about-issues-see-about-issueshttpsdocsgithubcomissuestracking-your-work-with-issuesabout-issues-for-information-about-the-apis-to-manage-issues-see-the-graphql-documentationhttpsdocsgithubcomgraphqlreferenceobjectsissue-or-issueshttpsdocsgithubcomrestissues-in-the-rest-api-documentation-for-activity-relating-to-a-comment-on-an-issue-use-the-issuecomment-event-to-subscribe-to-this-event-a-github-app-must-have-at-least-read-level-access-for-the-issues-repository-permission-19-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -242961,7 +248584,7 @@ An issue was unpinned from a repository. For more information, see "[Pinning an 
 |---|---|
 |» action|unpinned|
 
-<h3 id="this-event-occurs-when-there-is-activity-relating-to-an-issue-for-more-information-about-issues-see-about-issueshttpsdocsgithubcomissuestracking-your-work-with-issuesabout-issues-for-information-about-the-apis-to-manage-issues-see-the-graphql-documentationhttpsdocsgithubcomgraphqlreferenceobjectsissue-or-issueshttpsdocsgithubcomrestissues-in-the-rest-api-documentation-for-activity-relating-to-a-comment-on-an-issue-use-the-issuecomment-event-to-subscribe-to-this-event-a-github-app-must-have-at-least-read-level-access-for-the-issues-repository-permission-18-responses">Responses</h3>
+<h3 id="this-event-occurs-when-there-is-activity-relating-to-an-issue-for-more-information-about-issues-see-about-issueshttpsdocsgithubcomissuestracking-your-work-with-issuesabout-issues-for-information-about-the-apis-to-manage-issues-see-the-graphql-documentationhttpsdocsgithubcomgraphqlreferenceobjectsissue-or-issueshttpsdocsgithubcomrestissues-in-the-rest-api-documentation-for-activity-relating-to-a-comment-on-an-issue-use-the-issuecomment-event-to-subscribe-to-this-event-a-github-app-must-have-at-least-read-level-access-for-the-issues-repository-permission-19-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -243392,6 +249015,11 @@ An issue type was removed from an issue.
         ]
       }
     ],
+    "status": {
+      "id": 4,
+      "name": "In progress",
+      "category": "started"
+    },
     "state": "open",
     "state_reason": "string",
     "timeline_url": "http://example.com",
@@ -243764,7 +249392,7 @@ An issue type was removed from an issue.
 }
 ```
 
-<h3 id="this-event-occurs-when-there-is-activity-relating-to-an-issue-for-more-information-about-issues-see-about-issueshttpsdocsgithubcomissuestracking-your-work-with-issuesabout-issues-for-information-about-the-apis-to-manage-issues-see-the-graphql-documentationhttpsdocsgithubcomgraphqlreferenceobjectsissue-or-issueshttpsdocsgithubcomrestissues-in-the-rest-api-documentation-for-activity-relating-to-a-comment-on-an-issue-use-the-issuecomment-event-to-subscribe-to-this-event-a-github-app-must-have-at-least-read-level-access-for-the-issues-repository-permission-19-parameters">Parameters</h3>
+<h3 id="this-event-occurs-when-there-is-activity-relating-to-an-issue-for-more-information-about-issues-see-about-issueshttpsdocsgithubcomissuestracking-your-work-with-issuesabout-issues-for-information-about-the-apis-to-manage-issues-see-the-graphql-documentationhttpsdocsgithubcomgraphqlreferenceobjectsissue-or-issueshttpsdocsgithubcomrestissues-in-the-rest-api-documentation-for-activity-relating-to-a-comment-on-an-issue-use-the-issuecomment-event-to-subscribe-to-this-event-a-github-app-must-have-at-least-read-level-access-for-the-issues-repository-permission-20-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -243791,7 +249419,7 @@ An issue type was removed from an issue.
 |---|---|
 |» action|untyped|
 
-<h3 id="this-event-occurs-when-there-is-activity-relating-to-an-issue-for-more-information-about-issues-see-about-issueshttpsdocsgithubcomissuestracking-your-work-with-issuesabout-issues-for-information-about-the-apis-to-manage-issues-see-the-graphql-documentationhttpsdocsgithubcomgraphqlreferenceobjectsissue-or-issueshttpsdocsgithubcomrestissues-in-the-rest-api-documentation-for-activity-relating-to-a-comment-on-an-issue-use-the-issuecomment-event-to-subscribe-to-this-event-a-github-app-must-have-at-least-read-level-access-for-the-issues-repository-permission-19-responses">Responses</h3>
+<h3 id="this-event-occurs-when-there-is-activity-relating-to-an-issue-for-more-information-about-issues-see-about-issueshttpsdocsgithubcomissuestracking-your-work-with-issuesabout-issues-for-information-about-the-apis-to-manage-issues-see-the-graphql-documentationhttpsdocsgithubcomgraphqlreferenceobjectsissue-or-issueshttpsdocsgithubcomrestissues-in-the-rest-api-documentation-for-activity-relating-to-a-comment-on-an-issue-use-the-issuecomment-event-to-subscribe-to-this-event-a-github-app-must-have-at-least-read-level-access-for-the-issues-repository-permission-20-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -343495,6 +349123,11 @@ A parent issue was added to an issue.
     "html_url": "http://example.com",
     "number": 42,
     "state": "open",
+    "status": {
+      "id": 4,
+      "name": "In progress",
+      "category": "started"
+    },
     "state_reason": "not_planned",
     "title": "Widget creation fails in Safari on OS X 10.8",
     "body": "It looks like the new widget form is broken on Safari. When I try and create the widget, Safari crashes. This is reproducible on 10.8, but not 10.9. Maybe a browser bug?",
@@ -344169,6 +349802,11 @@ A parent issue was added to an issue.
     "html_url": "http://example.com",
     "number": 42,
     "state": "open",
+    "status": {
+      "id": 4,
+      "name": "In progress",
+      "category": "started"
+    },
     "state_reason": "not_planned",
     "title": "Widget creation fails in Safari on OS X 10.8",
     "body": "It looks like the new widget form is broken on Safari. When I try and create the widget, Safari crashes. This is reproducible on 10.8, but not 10.9. Maybe a browser bug?",
@@ -345081,6 +350719,11 @@ A parent issue was removed from an issue.
     "html_url": "http://example.com",
     "number": 42,
     "state": "open",
+    "status": {
+      "id": 4,
+      "name": "In progress",
+      "category": "started"
+    },
     "state_reason": "not_planned",
     "title": "Widget creation fails in Safari on OS X 10.8",
     "body": "It looks like the new widget form is broken on Safari. When I try and create the widget, Safari crashes. This is reproducible on 10.8, but not 10.9. Maybe a browser bug?",
@@ -345755,6 +351398,11 @@ A parent issue was removed from an issue.
     "html_url": "http://example.com",
     "number": 42,
     "state": "open",
+    "status": {
+      "id": 4,
+      "name": "In progress",
+      "category": "started"
+    },
     "state_reason": "not_planned",
     "title": "Widget creation fails in Safari on OS X 10.8",
     "body": "It looks like the new widget form is broken on Safari. When I try and create the widget, Safari crashes. This is reproducible on 10.8, but not 10.9. Maybe a browser bug?",
@@ -346667,6 +352315,11 @@ A sub-issue was added to an issue.
     "html_url": "http://example.com",
     "number": 42,
     "state": "open",
+    "status": {
+      "id": 4,
+      "name": "In progress",
+      "category": "started"
+    },
     "state_reason": "not_planned",
     "title": "Widget creation fails in Safari on OS X 10.8",
     "body": "It looks like the new widget form is broken on Safari. When I try and create the widget, Safari crashes. This is reproducible on 10.8, but not 10.9. Maybe a browser bug?",
@@ -347341,6 +352994,11 @@ A sub-issue was added to an issue.
     "html_url": "http://example.com",
     "number": 42,
     "state": "open",
+    "status": {
+      "id": 4,
+      "name": "In progress",
+      "category": "started"
+    },
     "state_reason": "not_planned",
     "title": "Widget creation fails in Safari on OS X 10.8",
     "body": "It looks like the new widget form is broken on Safari. When I try and create the widget, Safari crashes. This is reproducible on 10.8, but not 10.9. Maybe a browser bug?",
@@ -348253,6 +353911,11 @@ A sub-issue was removed from an issue.
     "html_url": "http://example.com",
     "number": 42,
     "state": "open",
+    "status": {
+      "id": 4,
+      "name": "In progress",
+      "category": "started"
+    },
     "state_reason": "not_planned",
     "title": "Widget creation fails in Safari on OS X 10.8",
     "body": "It looks like the new widget form is broken on Safari. When I try and create the widget, Safari crashes. This is reproducible on 10.8, but not 10.9. Maybe a browser bug?",
@@ -348927,6 +354590,11 @@ A sub-issue was removed from an issue.
     "html_url": "http://example.com",
     "number": 42,
     "state": "open",
+    "status": {
+      "id": 4,
+      "name": "In progress",
+      "category": "started"
+    },
     "state_reason": "not_planned",
     "title": "Widget creation fails in Safari on OS X 10.8",
     "body": "It looks like the new widget form is broken on Safari. When I try and create the widget, Safari crashes. This is reproducible on 10.8, but not 10.9. Maybe a browser bug?",
@@ -360747,6 +366415,36 @@ Links to download the latest Copilot usage metrics report for an enterprise/orga
 |report_start_day|string(date)|true|none|The start date of the report period in `YYYY-MM-DD` format.|
 |report_end_day|string(date)|true|none|The end date of the report period in `YYYY-MM-DD` format.|
 
+<h2 id="tocS_enterprise-copilot-code-review-policy">enterprise-copilot-code-review-policy</h2>
+<!-- backwards compatibility -->
+<a id="schemaenterprise-copilot-code-review-policy"></a>
+<a id="schema_enterprise-copilot-code-review-policy"></a>
+<a id="tocSenterprise-copilot-code-review-policy"></a>
+<a id="tocsenterprise-copilot-code-review-policy"></a>
+
+```json
+{
+  "policy_state": "enabled_for_all_organizations"
+}
+```
+
+The configured enterprise policy, rather than a user's effective Copilot code review access.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|policy_state|string \| null|true|none|The configured policy. Null means the enterprise has not configured a policy.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|policy_state|enabled_for_all_organizations|
+|policy_state|disabled_for_all_organizations|
+|policy_state|configured_by_organization_admins|
+|policy_state|null|
+
 <h2 id="tocS_alert-number">alert-number</h2>
 <!-- backwards compatibility -->
 <a id="schemaalert-number"></a>
@@ -362257,6 +367955,11 @@ A value assigned to an issue field
   "html_url": "http://example.com",
   "number": 42,
   "state": "open",
+  "status": {
+    "id": 4,
+    "name": "In progress",
+    "category": "started"
+  },
   "state_reason": "not_planned",
   "title": "Widget creation fails in Safari on OS X 10.8",
   "body": "It looks like the new widget form is broken on Safari. When I try and create the widget, Safari crashes. This is reproducible on 10.8, but not 10.9. Maybe a browser bug?",
@@ -362796,6 +368499,7 @@ Issues are a great way to keep track of tasks, enhancements, and bugs for your p
 |html_url|string(uri)|true|none|none|
 |number|integer|true|none|Number uniquely identifying the issue within its repository|
 |state|string|true|none|State of the issue; either 'open' or 'closed'|
+|status|object \| null|false|none|The status of the issue, or `null` if it has none. Issue statuses are in preview and only available to accounts enrolled in the preview.|
 |state_reason|string \| null|false|none|The reason for the current state|
 |title|string|true|none|Title of the issue|
 |body|string \| null|false|none|Contents of the issue|
@@ -367673,7 +373377,8 @@ The campaign metadata and alert stats.
 
 ```json
 {
-  "pr_scan": "enabled"
+  "pr_scan": "enabled",
+  "repository_scan": "enabled"
 }
 ```
 
@@ -367684,6 +373389,7 @@ The AI Scan organization setting
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |pr_scan|string|true|none|Whether AI Scan on pull requests is enabled for the organization. The organization setting respects enterprise policy, and repositories inherit it: when disabled, repositories cannot enable AI Scan; when enabled, repositories can still opt out.|
+|repository_scan|string|false|none|Whether the full repository AI Scan is enabled for the organization. The organization setting respects enterprise policy, and repositories inherit it: when disabled, repositories cannot enable the full repository AI Scan; when enabled, repositories can still opt out.|
 
 #### Enumerated Values
 
@@ -367691,6 +373397,8 @@ The AI Scan organization setting
 |---|---|
 |pr_scan|enabled|
 |pr_scan|disabled|
+|repository_scan|enabled|
+|repository_scan|disabled|
 
 <h2 id="tocS_code-scanning-ai-scan-org-enablement-update">code-scanning-ai-scan-org-enablement-update</h2>
 <!-- backwards compatibility -->
@@ -367701,7 +373409,8 @@ The AI Scan organization setting
 
 ```json
 {
-  "pr_scan": "enabled"
+  "pr_scan": "enabled",
+  "repository_scan": "enabled"
 }
 ```
 
@@ -367711,7 +373420,8 @@ The AI Scan organization setting to apply
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|pr_scan|string|false|none|Whether AI Scan is enabled for the organization. Organization respects enterprise policy. Disabled organizations prevent repositories from enabling AI Scan. Enabled organizations enable AI Scan for their repositories, but individual repositories can opt out.|
+|pr_scan|string|false|none|Whether AI Scan on pull requests is enabled for the organization. Organization respects enterprise policy. Disabled organizations prevent repositories from enabling AI Scan. Enabled organizations enable AI Scan for their repositories, but individual repositories can opt out.|
+|repository_scan|string|false|none|Whether the full repository AI Scan is enabled for the organization. Organization respects enterprise policy. Disabled organizations prevent repositories from enabling the full repository AI Scan. Enabled organizations enable it for their repositories, but individual repositories can opt out.|
 
 #### Enumerated Values
 
@@ -367719,6 +373429,8 @@ The AI Scan organization setting to apply
 |---|---|
 |pr_scan|enabled|
 |pr_scan|disabled|
+|repository_scan|enabled|
+|repository_scan|disabled|
 
 <h2 id="tocS_code-scanning-analysis-tool-name">code-scanning-analysis-tool-name</h2>
 <!-- backwards compatibility -->
@@ -369308,6 +375020,77 @@ Information about a Copilot Business seat assignment for a user, team, or organi
 |plan_type|unknown|
 |plan_type|access|
 
+<h2 id="tocS_organization-copilot-code-review-runner">organization-copilot-code-review-runner</h2>
+<!-- backwards compatibility -->
+<a id="schemaorganization-copilot-code-review-runner"></a>
+<a id="schema_organization-copilot-code-review-runner"></a>
+<a id="tocSorganization-copilot-code-review-runner"></a>
+<a id="tocsorganization-copilot-code-review-runner"></a>
+
+```json
+{
+  "runner_type": "standard",
+  "runner_labels": [
+    "string"
+  ],
+  "runner_group_name": "string",
+  "allow_repository_customization": true,
+  "configured_by": "code_review"
+}
+```
+
+The effective runner configuration that Copilot code review uses for the organization.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|runner_type|string|true|none|The type of runner. `standard` uses GitHub-hosted runners. `labeled` uses runners that match the configured labels or runner group.|
+|runner_labels|[string]|true|none|The runner labels used for a labeled runner.|
+|runner_group_name|string \| null|true|none|The runner group used for a labeled runner, or null when none is set.|
+|allow_repository_customization|boolean|true|none|Whether repositories can use their own runner configuration.|
+|configured_by|string|true|none|Which configuration the values come from. `code_review` means the organization has saved a Copilot code review runner configuration. `coding_agent` means it has not, and the values are inherited from the organization's Copilot coding agent runner configuration.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|runner_type|standard|
+|runner_type|labeled|
+|configured_by|code_review|
+|configured_by|coding_agent|
+
+<h2 id="tocS_organization-copilot-code-review-settings">organization-copilot-code-review-settings</h2>
+<!-- backwards compatibility -->
+<a id="schemaorganization-copilot-code-review-settings"></a>
+<a id="schema_organization-copilot-code-review-settings"></a>
+<a id="tocSorganization-copilot-code-review-settings"></a>
+<a id="tocsorganization-copilot-code-review-settings"></a>
+
+```json
+{
+  "default_review_effort": {
+    "configured": "string",
+    "effective": "string",
+    "github_default": "string",
+    "editable": true,
+    "managed_by": "enterprise"
+  },
+  "available_review_efforts": [
+    "string"
+  ]
+}
+```
+
+The organization's Copilot code review settings.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|default_review_effort|object|true|none|The default review effort for repositories in the organization that do not choose their own. For more information, see [Review effort level](https://docs.github.com/copilot/concepts/agent-capabilities/agent-powered-workflows-and-operations/code-review#review-effort-level).|
+|available_review_efforts|[string]|true|none|The review efforts that can currently be set for this organization, in display order.|
+
 <h2 id="tocS_copilot-organization-content-exclusion-details">copilot-organization-content-exclusion-details</h2>
 <!-- backwards compatibility -->
 <a id="schemacopilot-organization-content-exclusion-details"></a>
@@ -369333,6 +375116,45 @@ List all Copilot Content Exclusion rules for an organization.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |**additionalProperties**|[string]|false|none|none|
+
+<h2 id="tocS_organization-copilot-code-review-policy">organization-copilot-code-review-policy</h2>
+<!-- backwards compatibility -->
+<a id="schemaorganization-copilot-code-review-policy"></a>
+<a id="schema_organization-copilot-code-review-policy"></a>
+<a id="tocSorganization-copilot-code-review-policy"></a>
+<a id="tocsorganization-copilot-code-review-policy"></a>
+
+```json
+{
+  "configured_state": "enabled",
+  "effective_state": "enabled",
+  "editable": true,
+  "managed_by": "enterprise"
+}
+```
+
+The organization's configured and effective Copilot code review policy.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|configured_state|string \| null|true|none|The policy stored for the organization. Null means the organization has not configured a policy.|
+|effective_state|string|true|none|The policy that applies to the organization after enterprise policy is considered.|
+|editable|boolean|true|none|Whether organization administrators can update the policy.|
+|managed_by|string|true|none|Whether the enterprise or the organization controls the policy.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|configured_state|enabled|
+|configured_state|disabled|
+|configured_state|null|
+|effective_state|enabled|
+|effective_state|disabled|
+|managed_by|enterprise|
+|managed_by|organization|
 
 <h2 id="tocS_organization-dependabot-secret">organization-dependabot-secret</h2>
 <!-- backwards compatibility -->
@@ -369992,7 +375814,7 @@ Limit interactions to a specific type of user for a specified duration
 }
 ```
 
-A custom attribute defined at the organization level for attaching structured data to issues.
+A custom attribute defined by a repository owner for attaching structured data to issues.
 
 ### Properties
 
@@ -370003,7 +375825,7 @@ A custom attribute defined at the organization level for attaching structured da
 |name|string|true|none|The name of the issue field.|
 |description|string \| null|false|none|The description of the issue field.|
 |data_type|string|true|none|The data type of the issue field.|
-|visibility|string|false|none|The visibility of the issue field. Can be `organization_members_only` (visible only within the organization) or `all` (visible to all users who can see issues).|
+|visibility|string|false|none|The visibility of the issue field. Organization-owned fields return `organization_members_only` for restricted visibility (visible to organization members and to collaborators on the repository the field is read through), or `all` (visible to all users who can see issues). For create and update requests, use `restricted` instead of the deprecated `organization_members_only` input. Existing REST API versions continue to return `organization_members_only` for restricted organization-owned fields, even when a request uses `restricted`. Any change to this response spelling will be introduced in a future REST API version.|
 |options|[object]|false|none|Available options for single select and multi select fields.|
 |created_at|string(date-time)|false|none|The time the issue field was created.|
 |updated_at|string(date-time)|false|none|The time the issue field was last updated.|
@@ -370019,6 +375841,7 @@ A custom attribute defined at the organization level for attaching structured da
 |data_type|number|
 |visibility|organization_members_only|
 |visibility|all|
+|visibility|restricted|
 
 <h2 id="tocS_organization-create-issue-field">organization-create-issue-field</h2>
 <!-- backwards compatibility -->
@@ -370051,7 +375874,7 @@ A custom attribute defined at the organization level for attaching structured da
 |name|string|true|none|Name of the issue field.|
 |description|string \| null|false|none|Description of the issue field.|
 |data_type|string|true|none|The data type of the issue field.|
-|visibility|string|false|none|The visibility of the issue field. Can be `organization_members_only` (visible only within the organization) or `all` (visible to all users who can see issues). Only used when the visibility settings feature is enabled. Defaults to `organization_members_only`.|
+|visibility|string|false|none|The visibility of the issue field. Can be `restricted` (visible to organization members and to collaborators on the repository the field is read through) or `all` (visible to all users who can see issues). `organization_members_only` is deprecated. Use `restricted` instead. Removal will be announced for a future REST API version; existing REST API versions will continue to support this value. Only used when the visibility settings feature is enabled. Defaults to `organization_members_only`.|
 |options|[object]|false|none|Options for select fields. Required when data_type is 'single_select' or 'multi_select'.|
 
 #### Enumerated Values
@@ -370065,6 +375888,7 @@ A custom attribute defined at the organization level for attaching structured da
 |data_type|number|
 |visibility|organization_members_only|
 |visibility|all|
+|visibility|restricted|
 
 <h2 id="tocS_organization-update-issue-field">organization-update-issue-field</h2>
 <!-- backwards compatibility -->
@@ -370096,7 +375920,7 @@ A custom attribute defined at the organization level for attaching structured da
 |---|---|---|---|---|
 |name|string|false|none|Name of the issue field.|
 |description|string \| null|false|none|Description of the issue field.|
-|visibility|string|false|none|The visibility of the issue field. Can be `organization_members_only` (visible only within the organization) or `all` (visible to all users who can see issues). Only used when the visibility settings feature is enabled.|
+|visibility|string|false|none|The visibility of the issue field. Can be `restricted` (visible to organization members and to collaborators on the repository the field is read through) or `all` (visible to all users who can see issues). `organization_members_only` is deprecated. Use `restricted` instead. Removal will be announced for a future REST API version; existing REST API versions will continue to support this value. Only used when the visibility settings feature is enabled.|
 |options|[object]|false|none|Options for select fields. Only applicable when updating single_select or multi_select fields. When provided, this array **replaces** the entire existing set of options rather than adding to or updating individual options. To retain or update an existing option, include it in the array with its `id`. Options sent without an `id` are treated as new options and may cause existing options to be deleted and recreated.|
 
 #### Enumerated Values
@@ -370105,13 +375929,14 @@ A custom attribute defined at the organization level for attaching structured da
 |---|---|
 |visibility|organization_members_only|
 |visibility|all|
+|visibility|restricted|
 
-<h2 id="tocS_organization-create-issue-type">organization-create-issue-type</h2>
+<h2 id="tocS_issue-type-request">issue-type-request</h2>
 <!-- backwards compatibility -->
-<a id="schemaorganization-create-issue-type"></a>
-<a id="schema_organization-create-issue-type"></a>
-<a id="tocSorganization-create-issue-type"></a>
-<a id="tocsorganization-create-issue-type"></a>
+<a id="schemaissue-type-request"></a>
+<a id="schema_issue-type-request"></a>
+<a id="tocSissue-type-request"></a>
+<a id="tocsissue-type-request"></a>
 
 ```json
 {
@@ -370127,46 +375952,7 @@ A custom attribute defined at the organization level for attaching structured da
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |name|string|true|none|Name of the issue type.|
-|is_enabled|boolean|true|none|Whether or not the issue type is enabled at the organization level.|
-|description|string \| null|false|none|Description of the issue type.|
-|color|string \| null|false|none|Color for the issue type.|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|color|gray|
-|color|blue|
-|color|green|
-|color|yellow|
-|color|orange|
-|color|red|
-|color|pink|
-|color|purple|
-|color|null|
-
-<h2 id="tocS_organization-update-issue-type">organization-update-issue-type</h2>
-<!-- backwards compatibility -->
-<a id="schemaorganization-update-issue-type"></a>
-<a id="schema_organization-update-issue-type"></a>
-<a id="tocSorganization-update-issue-type"></a>
-<a id="tocsorganization-update-issue-type"></a>
-
-```json
-{
-  "name": "string",
-  "is_enabled": true,
-  "description": "string",
-  "color": "gray"
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|name|string|true|none|Name of the issue type.|
-|is_enabled|boolean|true|none|Whether or not the issue type is enabled at the organization level.|
+|is_enabled|boolean|true|none|Whether or not the issue type is enabled.|
 |description|string \| null|false|none|Description of the issue type.|
 |color|string \| null|false|none|Color for the issue type.|
 
@@ -370559,6 +376345,7 @@ Organization roles
 |---|---|
 |base_role|read|
 |base_role|triage|
+|base_role|moderate|
 |base_role|write|
 |base_role|maintain|
 |base_role|admin|
@@ -372333,6 +378120,11 @@ The type of content tracked in a project item
     "html_url": "http://example.com",
     "number": 42,
     "state": "open",
+    "status": {
+      "id": 4,
+      "name": "In progress",
+      "category": "started"
+    },
     "state_reason": "not_planned",
     "title": "Widget creation fails in Safari on OS X 10.8",
     "body": "It looks like the new widget form is broken on Safari. When I try and create the widget, Safari crashes. This is reproducible on 10.8, but not 10.9. Maybe a browser bug?",
@@ -373408,6 +379200,7 @@ Repository name and associated external custom property value
     "string"
   ],
   "values_editable_by": "org_actors",
+  "regex": "^[a-z0-9-]+$",
   "require_explicit_values": true
 }
 ```
@@ -373427,6 +379220,7 @@ Custom property defined on an organization
 |description|string \| null|false|none|Short description of the property|
 |allowed_values|[string]|false|none|An ordered list of the allowed values of the property.<br>The property can have up to 200 allowed values.|
 |values_editable_by|string \| null|false|none|Who can edit the values of the property|
+|regex|string \| null|false|none|A regular expression (RE2 syntax) that values of the property must match.<br>Only present for properties with a `value_type` of `string` that define a regular expression.|
 |require_explicit_values|boolean|false|none|Whether setting properties values is mandatory|
 
 #### Enumerated Values
@@ -373435,6 +379229,58 @@ Custom property defined on an organization
 |---|---|
 |source_type|organization|
 |source_type|enterprise|
+|value_type|string|
+|value_type|single_select|
+|value_type|multi_select|
+|value_type|true_false|
+|value_type|url|
+|values_editable_by|org_actors|
+|values_editable_by|org_and_repo_actors|
+|values_editable_by|null|
+
+<h2 id="tocS_custom-property-batch-item-payload">custom-property-batch-item-payload</h2>
+<!-- backwards compatibility -->
+<a id="schemacustom-property-batch-item-payload"></a>
+<a id="schema_custom-property-batch-item-payload"></a>
+<a id="tocScustom-property-batch-item-payload"></a>
+<a id="tocscustom-property-batch-item-payload"></a>
+
+```json
+{
+  "property_name": "string",
+  "value_type": "single_select",
+  "required": true,
+  "default_value": "string",
+  "description": "string",
+  "allowed_values": [
+    "string"
+  ],
+  "values_editable_by": "org_actors",
+  "regex": "^[a-z0-9-]+$",
+  "require_explicit_values": true
+}
+```
+
+Payload for a single custom property definition when creating or updating custom properties in a batch
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|property_name|string|true|none|The name of the property|
+|value_type|string|true|none|The type of the value for the property|
+|required|boolean|false|none|Whether the property is required.|
+|default_value|null \| string \| array|false|none|Default value of the property|
+|description|string \| null|false|none|Short description of the property|
+|allowed_values|[string]|false|none|An ordered list of the allowed values of the property.<br>The property can have up to 200 allowed values.|
+|values_editable_by|string \| null|false|none|Who can edit the values of the property|
+|regex|string \| null|false|none|A regular expression (RE2 syntax) that values of the property must match.<br>Only supported for properties with a `value_type` of `string`.|
+|require_explicit_values|boolean|false|none|Whether setting properties values is mandatory|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
 |value_type|string|
 |value_type|single_select|
 |value_type|multi_select|
@@ -373461,6 +379307,7 @@ Custom property defined on an organization
     "string"
   ],
   "values_editable_by": "org_actors",
+  "regex": "^[a-z0-9-]+$",
   "require_explicit_values": true
 }
 ```
@@ -373477,6 +379324,7 @@ Custom property set payload
 |description|string \| null|false|none|Short description of the property|
 |allowed_values|[string]|false|none|An ordered list of the allowed values of the property.<br>The property can have up to 200 allowed values.|
 |values_editable_by|string \| null|false|none|Who can edit the values of the property|
+|regex|string \| null|false|none|A regular expression (RE2 syntax) that values of the property must match.<br>Only supported for properties with a `value_type` of `string`.|
 |require_explicit_values|boolean|false|none|Whether setting properties values is mandatory|
 
 #### Enumerated Values
@@ -376328,6 +382176,35 @@ Represents a 'pull_request_review_comment' secret scanning location type. This l
 |pull_request_review_comment_url|string(uri)|true|none|The API URL to get the pull request review comment where the secret was detected.|
 |html_url|string(uri)|false|none|The GitHub URL for the pull request review comment where the secret was detected.|
 
+<h2 id="tocS_secret-scanning-location-actions-log">secret-scanning-location-actions-log</h2>
+<!-- backwards compatibility -->
+<a id="schemasecret-scanning-location-actions-log"></a>
+<a id="schema_secret-scanning-location-actions-log"></a>
+<a id="tocSsecret-scanning-location-actions-log"></a>
+<a id="tocssecret-scanning-location-actions-log"></a>
+
+```json
+{
+  "path": ".github/workflows/build.yml",
+  "start_line": 0,
+  "end_line": 0,
+  "start_column": 0,
+  "end_column": 0
+}
+```
+
+Represents an 'actions_log' secret scanning location type. The path identifies the workflow definition, while line and column positions identify the secret in the raw job log, not in the workflow file.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|path|string|true|none|The workflow definition path. Dynamically generated workflows can have a synthetic path.|
+|start_line|number|true|none|Line number at which the secret starts in the raw job log.|
+|end_line|number|true|none|Line number at which the secret ends in the raw job log.|
+|start_column|number|true|none|The one-based column at which the secret starts within the start line of the raw job log.|
+|end_column|number|true|none|The one-based column at which the secret ends within the end line of the raw job log.|
+
 <h2 id="tocS_secret-scanning-first-detected-location">secret-scanning-first-detected-location</h2>
 <!-- backwards compatibility -->
 <a id="schemasecret-scanning-first-detected-location"></a>
@@ -376350,25 +382227,26 @@ Represents a 'pull_request_review_comment' secret scanning location type. This l
 }
 ```
 
-Details on the location where the token was initially detected. This can be a commit, wiki commit, issue, discussion, pull request.
+Details on the location where the token was initially detected. This can be a commit, wiki commit, issue, discussion, pull request, or Actions job log.
 
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|*oneOf*|[secret-scanning-location-commit](#schemasecret-scanning-location-commit)|false|none|Represents a 'commit' secret scanning location type. This location type shows that a secret was detected inside a commit to a repository.|
-|*oneOf*|[secret-scanning-location-wiki-commit](#schemasecret-scanning-location-wiki-commit)|false|none|Represents a 'wiki_commit' secret scanning location type. This location type shows that a secret was detected inside a commit to a repository wiki.|
-|*oneOf*|[secret-scanning-location-issue-title](#schemasecret-scanning-location-issue-title)|false|none|Represents an 'issue_title' secret scanning location type. This location type shows that a secret was detected in the title of an issue.|
-|*oneOf*|[secret-scanning-location-issue-body](#schemasecret-scanning-location-issue-body)|false|none|Represents an 'issue_body' secret scanning location type. This location type shows that a secret was detected in the body of an issue.|
-|*oneOf*|[secret-scanning-location-issue-comment](#schemasecret-scanning-location-issue-comment)|false|none|Represents an 'issue_comment' secret scanning location type. This location type shows that a secret was detected in a comment on an issue.|
-|*oneOf*|[secret-scanning-location-discussion-title](#schemasecret-scanning-location-discussion-title)|false|none|Represents a 'discussion_title' secret scanning location type. This location type shows that a secret was detected in the title of a discussion.|
-|*oneOf*|[secret-scanning-location-discussion-body](#schemasecret-scanning-location-discussion-body)|false|none|Represents a 'discussion_body' secret scanning location type. This location type shows that a secret was detected in the body of a discussion.|
-|*oneOf*|[secret-scanning-location-discussion-comment](#schemasecret-scanning-location-discussion-comment)|false|none|Represents a 'discussion_comment' secret scanning location type. This location type shows that a secret was detected in a comment on a discussion.|
-|*oneOf*|[secret-scanning-location-pull-request-title](#schemasecret-scanning-location-pull-request-title)|false|none|Represents a 'pull_request_title' secret scanning location type. This location type shows that a secret was detected in the title of a pull request.|
-|*oneOf*|[secret-scanning-location-pull-request-body](#schemasecret-scanning-location-pull-request-body)|false|none|Represents a 'pull_request_body' secret scanning location type. This location type shows that a secret was detected in the body of a pull request.|
-|*oneOf*|[secret-scanning-location-pull-request-comment](#schemasecret-scanning-location-pull-request-comment)|false|none|Represents a 'pull_request_comment' secret scanning location type. This location type shows that a secret was detected in a comment on a pull request.|
-|*oneOf*|[secret-scanning-location-pull-request-review](#schemasecret-scanning-location-pull-request-review)|false|none|Represents a 'pull_request_review' secret scanning location type. This location type shows that a secret was detected in a review on a pull request.|
-|*oneOf*|[secret-scanning-location-pull-request-review-comment](#schemasecret-scanning-location-pull-request-review-comment)|false|none|Represents a 'pull_request_review_comment' secret scanning location type. This location type shows that a secret was detected in a review comment on a pull request.|
+|*anyOf*|[secret-scanning-location-commit](#schemasecret-scanning-location-commit)|false|none|Represents a 'commit' secret scanning location type. This location type shows that a secret was detected inside a commit to a repository.|
+|*anyOf*|[secret-scanning-location-wiki-commit](#schemasecret-scanning-location-wiki-commit)|false|none|Represents a 'wiki_commit' secret scanning location type. This location type shows that a secret was detected inside a commit to a repository wiki.|
+|*anyOf*|[secret-scanning-location-issue-title](#schemasecret-scanning-location-issue-title)|false|none|Represents an 'issue_title' secret scanning location type. This location type shows that a secret was detected in the title of an issue.|
+|*anyOf*|[secret-scanning-location-issue-body](#schemasecret-scanning-location-issue-body)|false|none|Represents an 'issue_body' secret scanning location type. This location type shows that a secret was detected in the body of an issue.|
+|*anyOf*|[secret-scanning-location-issue-comment](#schemasecret-scanning-location-issue-comment)|false|none|Represents an 'issue_comment' secret scanning location type. This location type shows that a secret was detected in a comment on an issue.|
+|*anyOf*|[secret-scanning-location-discussion-title](#schemasecret-scanning-location-discussion-title)|false|none|Represents a 'discussion_title' secret scanning location type. This location type shows that a secret was detected in the title of a discussion.|
+|*anyOf*|[secret-scanning-location-discussion-body](#schemasecret-scanning-location-discussion-body)|false|none|Represents a 'discussion_body' secret scanning location type. This location type shows that a secret was detected in the body of a discussion.|
+|*anyOf*|[secret-scanning-location-discussion-comment](#schemasecret-scanning-location-discussion-comment)|false|none|Represents a 'discussion_comment' secret scanning location type. This location type shows that a secret was detected in a comment on a discussion.|
+|*anyOf*|[secret-scanning-location-pull-request-title](#schemasecret-scanning-location-pull-request-title)|false|none|Represents a 'pull_request_title' secret scanning location type. This location type shows that a secret was detected in the title of a pull request.|
+|*anyOf*|[secret-scanning-location-pull-request-body](#schemasecret-scanning-location-pull-request-body)|false|none|Represents a 'pull_request_body' secret scanning location type. This location type shows that a secret was detected in the body of a pull request.|
+|*anyOf*|[secret-scanning-location-pull-request-comment](#schemasecret-scanning-location-pull-request-comment)|false|none|Represents a 'pull_request_comment' secret scanning location type. This location type shows that a secret was detected in a comment on a pull request.|
+|*anyOf*|[secret-scanning-location-pull-request-review](#schemasecret-scanning-location-pull-request-review)|false|none|Represents a 'pull_request_review' secret scanning location type. This location type shows that a secret was detected in a review on a pull request.|
+|*anyOf*|[secret-scanning-location-pull-request-review-comment](#schemasecret-scanning-location-pull-request-review-comment)|false|none|Represents a 'pull_request_review_comment' secret scanning location type. This location type shows that a secret was detected in a review comment on a pull request.|
+|*anyOf*|[secret-scanning-location-actions-log](#schemasecret-scanning-location-actions-log)|false|none|Represents an 'actions_log' secret scanning location type. The path identifies the workflow definition, while line and column positions identify the secret in the raw job log, not in the workflow file.|
 
 <h2 id="tocS_organization-secret-scanning-alert">organization-secret-scanning-alert</h2>
 <!-- backwards compatibility -->
@@ -376679,12 +382557,12 @@ Details on the location where the token was initially detected. This can be a co
 
 The version of the entity. This is used to confirm you're updating the current version of the entity and mitigate unintentionally overriding someone else's update.
 
-<h2 id="tocS_secret-scanning-custom-pattern">secret-scanning-custom-pattern</h2>
+<h2 id="tocS_secret-scanning-custom-pattern-with-dry-run">secret-scanning-custom-pattern-with-dry-run</h2>
 <!-- backwards compatibility -->
-<a id="schemasecret-scanning-custom-pattern"></a>
-<a id="schema_secret-scanning-custom-pattern"></a>
-<a id="tocSsecret-scanning-custom-pattern"></a>
-<a id="tocssecret-scanning-custom-pattern"></a>
+<a id="schemasecret-scanning-custom-pattern-with-dry-run"></a>
+<a id="schema_secret-scanning-custom-pattern-with-dry-run"></a>
+<a id="tocSsecret-scanning-custom-pattern-with-dry-run"></a>
+<a id="tocssecret-scanning-custom-pattern-with-dry-run"></a>
 
 ```json
 {
@@ -376770,6 +382648,62 @@ A custom pattern to create in a bulk operation.
 |must_match|[string]|false|none|List of regexes that the secret must match.|
 |must_not_match|[string]|false|none|List of regexes that the secret must not match.|
 
+<h2 id="tocS_secret-scanning-custom-pattern">secret-scanning-custom-pattern</h2>
+<!-- backwards compatibility -->
+<a id="schemasecret-scanning-custom-pattern"></a>
+<a id="schema_secret-scanning-custom-pattern"></a>
+<a id="tocSsecret-scanning-custom-pattern"></a>
+<a id="tocssecret-scanning-custom-pattern"></a>
+
+```json
+{
+  "id": 0,
+  "name": "string",
+  "pattern": "string",
+  "slug": "string",
+  "state": "published",
+  "push_protection_enabled": true,
+  "start_delimiter": "string",
+  "end_delimiter": "string",
+  "must_match": [
+    "string"
+  ],
+  "must_not_match": [
+    "string"
+  ],
+  "custom_pattern_version": "string",
+  "created_at": "1970-01-01T00:00:00Z",
+  "updated_at": "1970-01-01T00:00:00Z"
+}
+```
+
+A custom pattern for secret scanning.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|integer|true|none|The ID of the custom pattern.|
+|name|string|true|none|The name of the custom pattern.|
+|pattern|string|true|none|The regular expression of the custom pattern.|
+|slug|string|true|none|A URL-friendly identifier for the custom pattern, derived from its name.|
+|state|string|true|none|The state of the custom pattern.|
+|push_protection_enabled|boolean|true|none|Whether push protection is enabled for this custom pattern.|
+|start_delimiter|string \| null|false|none|The start delimiter regex for the custom pattern.|
+|end_delimiter|string \| null|false|none|The end delimiter regex for the custom pattern.|
+|must_match|[string]|false|none|List of regexes that the secret must match.|
+|must_not_match|[string]|false|none|List of regexes that the secret must not match.|
+|custom_pattern_version|[secret-scanning-row-version](#schemasecret-scanning-row-version)|false|none|The version of the entity. This is used to confirm you're updating the current version of the entity and mitigate unintentionally overriding someone else's update.|
+|created_at|string(date-time)|false|none|The date and time the custom pattern was created in ISO 8601 format.|
+|updated_at|string(date-time)|false|none|The date and time the custom pattern was last updated in ISO 8601 format.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|state|published|
+|state|unpublished|
+
 <h2 id="tocS_secret-scanning-custom-pattern-validation-error">secret-scanning-custom-pattern-validation-error</h2>
 <!-- backwards compatibility -->
 <a id="schemasecret-scanning-custom-pattern-validation-error"></a>
@@ -376805,6 +382739,8 @@ A validation error for a custom pattern in a batch operation.
 |code|must_match|
 |code|must_not_match|
 |code|custom_pattern_version_mismatch|
+|code|invalid_state|
+|code|dry_run_in_progress|
 
 <h2 id="tocS_secret-scanning-custom-pattern-to-delete">secret-scanning-custom-pattern-to-delete</h2>
 <!-- backwards compatibility -->
@@ -383754,7 +389690,8 @@ You should not rely on this always being an actions workflow run object.
 
 ```json
 {
-  "pr_scan": "enabled"
+  "pr_scan": "enabled",
+  "repository_scan": "enabled"
 }
 ```
 
@@ -383764,7 +389701,8 @@ AI Scan enablement for a repository.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|pr_scan|string|true|none|Whether AI Scan is enabled for the repository.|
+|pr_scan|string|true|none|Whether AI Scan on pull requests is enabled for the repository.|
+|repository_scan|string|false|none|Whether the full repository AI Scan is enabled for the repository.|
 
 #### Enumerated Values
 
@@ -383772,6 +389710,8 @@ AI Scan enablement for a repository.
 |---|---|
 |pr_scan|enabled|
 |pr_scan|disabled|
+|repository_scan|enabled|
+|repository_scan|disabled|
 
 <h2 id="tocS_code-scanning-ai-scan-enablement-update">code-scanning-ai-scan-enablement-update</h2>
 <!-- backwards compatibility -->
@@ -383782,7 +389722,8 @@ AI Scan enablement for a repository.
 
 ```json
 {
-  "pr_scan": "enabled"
+  "pr_scan": "enabled",
+  "repository_scan": "enabled"
 }
 ```
 
@@ -383792,7 +389733,8 @@ AI Scan enablement update for a repository.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|pr_scan|string|false|none|Whether to enable or disable AI Scan for the repository.|
+|pr_scan|string|false|none|Whether to enable or disable AI Scan on pull requests for the repository.|
+|repository_scan|string|false|none|Whether to enable or disable the full repository AI Scan for the repository.|
 
 #### Enumerated Values
 
@@ -383800,6 +389742,123 @@ AI Scan enablement update for a repository.
 |---|---|
 |pr_scan|enabled|
 |pr_scan|disabled|
+|repository_scan|enabled|
+|repository_scan|disabled|
+
+<h2 id="tocS_pull-requests-on-alerts">pull-requests-on-alerts</h2>
+<!-- backwards compatibility -->
+<a id="schemapull-requests-on-alerts"></a>
+<a id="schema_pull-requests-on-alerts"></a>
+<a id="tocSpull-requests-on-alerts"></a>
+<a id="tocspull-requests-on-alerts"></a>
+
+```json
+{
+  "number": 0,
+  "id": 0,
+  "repository": {
+    "id": 1296269,
+    "node_id": "MDEwOlJlcG9zaXRvcnkxMjk2MjY5",
+    "name": "Hello-World",
+    "full_name": "octocat/Hello-World",
+    "owner": {
+      "name": "string",
+      "email": "string",
+      "login": "octocat",
+      "id": 1,
+      "node_id": "MDQ6VXNlcjE=",
+      "avatar_url": "https://github.com/images/error/octocat_happy.gif",
+      "gravatar_id": "41d064eb2195891e12d0413f63227ea7",
+      "url": "https://api.github.com/users/octocat",
+      "html_url": "https://github.com/octocat",
+      "followers_url": "https://api.github.com/users/octocat/followers",
+      "following_url": "https://api.github.com/users/octocat/following{/other_user}",
+      "gists_url": "https://api.github.com/users/octocat/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/octocat/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/octocat/subscriptions",
+      "organizations_url": "https://api.github.com/users/octocat/orgs",
+      "repos_url": "https://api.github.com/users/octocat/repos",
+      "events_url": "https://api.github.com/users/octocat/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/octocat/received_events",
+      "type": "User",
+      "site_admin": true,
+      "starred_at": "\"2020-07-09T00:17:55Z\"",
+      "user_view_type": "public"
+    },
+    "private": true,
+    "html_url": "https://github.com/octocat/Hello-World",
+    "description": "This your first repo!",
+    "fork": true,
+    "url": "https://api.github.com/repos/octocat/Hello-World",
+    "archive_url": "https://api.github.com/repos/octocat/Hello-World/{archive_format}{/ref}",
+    "assignees_url": "https://api.github.com/repos/octocat/Hello-World/assignees{/user}",
+    "blobs_url": "https://api.github.com/repos/octocat/Hello-World/git/blobs{/sha}",
+    "branches_url": "https://api.github.com/repos/octocat/Hello-World/branches{/branch}",
+    "collaborators_url": "https://api.github.com/repos/octocat/Hello-World/collaborators{/collaborator}",
+    "comments_url": "https://api.github.com/repos/octocat/Hello-World/comments{/number}",
+    "commits_url": "https://api.github.com/repos/octocat/Hello-World/commits{/sha}",
+    "compare_url": "https://api.github.com/repos/octocat/Hello-World/compare/{base}...{head}",
+    "contents_url": "https://api.github.com/repos/octocat/Hello-World/contents/{+path}",
+    "contributors_url": "https://api.github.com/repos/octocat/Hello-World/contributors",
+    "deployments_url": "https://api.github.com/repos/octocat/Hello-World/deployments",
+    "downloads_url": "https://api.github.com/repos/octocat/Hello-World/downloads",
+    "events_url": "https://api.github.com/repos/octocat/Hello-World/events",
+    "forks_url": "https://api.github.com/repos/octocat/Hello-World/forks",
+    "git_commits_url": "https://api.github.com/repos/octocat/Hello-World/git/commits{/sha}",
+    "git_refs_url": "https://api.github.com/repos/octocat/Hello-World/git/refs{/sha}",
+    "git_tags_url": "https://api.github.com/repos/octocat/Hello-World/git/tags{/sha}",
+    "issue_comment_url": "https://api.github.com/repos/octocat/Hello-World/issues/comments{/number}",
+    "issue_events_url": "https://api.github.com/repos/octocat/Hello-World/issues/events{/number}",
+    "issues_url": "https://api.github.com/repos/octocat/Hello-World/issues{/number}",
+    "keys_url": "https://api.github.com/repos/octocat/Hello-World/keys{/key_id}",
+    "labels_url": "https://api.github.com/repos/octocat/Hello-World/labels{/name}",
+    "languages_url": "https://api.github.com/repos/octocat/Hello-World/languages",
+    "merges_url": "https://api.github.com/repos/octocat/Hello-World/merges",
+    "milestones_url": "https://api.github.com/repos/octocat/Hello-World/milestones{/number}",
+    "notifications_url": "https://api.github.com/repos/octocat/Hello-World/notifications{?since,all,participating}",
+    "pulls_url": "https://api.github.com/repos/octocat/Hello-World/pulls{/number}",
+    "releases_url": "https://api.github.com/repos/octocat/Hello-World/releases{/id}",
+    "stargazers_url": "https://api.github.com/repos/octocat/Hello-World/stargazers",
+    "statuses_url": "https://api.github.com/repos/octocat/Hello-World/statuses/{sha}",
+    "subscribers_url": "https://api.github.com/repos/octocat/Hello-World/subscribers",
+    "subscription_url": "https://api.github.com/repos/octocat/Hello-World/subscription",
+    "tags_url": "https://api.github.com/repos/octocat/Hello-World/tags",
+    "teams_url": "https://api.github.com/repos/octocat/Hello-World/teams",
+    "trees_url": "https://api.github.com/repos/octocat/Hello-World/git/trees{/sha}",
+    "hooks_url": "https://api.github.com/repos/octocat/Hello-World/hooks"
+  },
+  "title": "string",
+  "state": "open",
+  "merged_at": "1970-01-01T00:00:00Z",
+  "html_url": "http://example.com",
+  "url": "http://example.com",
+  "draft": true
+}
+```
+
+A pull request linked to a code scanning alert.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|number|integer|true|none|The number of the linked pull request.|
+|id|integer(int64)|true|none|The ID of the linked pull request.|
+|repository|[simple-repository](#schemasimple-repository)|true|none|A GitHub repository.|
+|title|string|true|none|The title of the linked pull request.|
+|state|string|true|none|The state of the referenced pull request.|
+|merged_at|string \| null(date-time)|true|none|The time the linked pull request was merged. Null if it has not been merged.|
+|html_url|string(uri)|true|none|The URL of the linked pull request on GitHub.|
+|url|string(uri)|true|none|The REST API URL for the linked pull request.|
+|draft|boolean|true|none|Whether the linked pull request is a draft.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|state|open|
+|state|closed|
+|state|merged|
 
 <h2 id="tocS_code-scanning-alert-linked-issue">code-scanning-alert-linked-issue</h2>
 <!-- backwards compatibility -->
@@ -384047,6 +390106,179 @@ A GitHub issue linked to a code scanning alert. The issue may belong to a differ
       "starred_at": "\"2020-07-09T00:17:55Z\"",
       "user_view_type": "public"
     }
+  ],
+  "linked_pull_requests": [
+    {
+      "number": 0,
+      "id": 0,
+      "repository": {
+        "id": 1296269,
+        "node_id": "MDEwOlJlcG9zaXRvcnkxMjk2MjY5",
+        "name": "Hello-World",
+        "full_name": "octocat/Hello-World",
+        "owner": {
+          "name": "string",
+          "email": "string",
+          "login": "octocat",
+          "id": 1,
+          "node_id": "MDQ6VXNlcjE=",
+          "avatar_url": "https://github.com/images/error/octocat_happy.gif",
+          "gravatar_id": "41d064eb2195891e12d0413f63227ea7",
+          "url": "https://api.github.com/users/octocat",
+          "html_url": "https://github.com/octocat",
+          "followers_url": "https://api.github.com/users/octocat/followers",
+          "following_url": "https://api.github.com/users/octocat/following{/other_user}",
+          "gists_url": "https://api.github.com/users/octocat/gists{/gist_id}",
+          "starred_url": "https://api.github.com/users/octocat/starred{/owner}{/repo}",
+          "subscriptions_url": "https://api.github.com/users/octocat/subscriptions",
+          "organizations_url": "https://api.github.com/users/octocat/orgs",
+          "repos_url": "https://api.github.com/users/octocat/repos",
+          "events_url": "https://api.github.com/users/octocat/events{/privacy}",
+          "received_events_url": "https://api.github.com/users/octocat/received_events",
+          "type": "User",
+          "site_admin": true,
+          "starred_at": "\"2020-07-09T00:17:55Z\"",
+          "user_view_type": "public"
+        },
+        "private": true,
+        "html_url": "https://github.com/octocat/Hello-World",
+        "description": "This your first repo!",
+        "fork": true,
+        "url": "https://api.github.com/repos/octocat/Hello-World",
+        "archive_url": "https://api.github.com/repos/octocat/Hello-World/{archive_format}{/ref}",
+        "assignees_url": "https://api.github.com/repos/octocat/Hello-World/assignees{/user}",
+        "blobs_url": "https://api.github.com/repos/octocat/Hello-World/git/blobs{/sha}",
+        "branches_url": "https://api.github.com/repos/octocat/Hello-World/branches{/branch}",
+        "collaborators_url": "https://api.github.com/repos/octocat/Hello-World/collaborators{/collaborator}",
+        "comments_url": "https://api.github.com/repos/octocat/Hello-World/comments{/number}",
+        "commits_url": "https://api.github.com/repos/octocat/Hello-World/commits{/sha}",
+        "compare_url": "https://api.github.com/repos/octocat/Hello-World/compare/{base}...{head}",
+        "contents_url": "https://api.github.com/repos/octocat/Hello-World/contents/{+path}",
+        "contributors_url": "https://api.github.com/repos/octocat/Hello-World/contributors",
+        "deployments_url": "https://api.github.com/repos/octocat/Hello-World/deployments",
+        "downloads_url": "https://api.github.com/repos/octocat/Hello-World/downloads",
+        "events_url": "https://api.github.com/repos/octocat/Hello-World/events",
+        "forks_url": "https://api.github.com/repos/octocat/Hello-World/forks",
+        "git_commits_url": "https://api.github.com/repos/octocat/Hello-World/git/commits{/sha}",
+        "git_refs_url": "https://api.github.com/repos/octocat/Hello-World/git/refs{/sha}",
+        "git_tags_url": "https://api.github.com/repos/octocat/Hello-World/git/tags{/sha}",
+        "issue_comment_url": "https://api.github.com/repos/octocat/Hello-World/issues/comments{/number}",
+        "issue_events_url": "https://api.github.com/repos/octocat/Hello-World/issues/events{/number}",
+        "issues_url": "https://api.github.com/repos/octocat/Hello-World/issues{/number}",
+        "keys_url": "https://api.github.com/repos/octocat/Hello-World/keys{/key_id}",
+        "labels_url": "https://api.github.com/repos/octocat/Hello-World/labels{/name}",
+        "languages_url": "https://api.github.com/repos/octocat/Hello-World/languages",
+        "merges_url": "https://api.github.com/repos/octocat/Hello-World/merges",
+        "milestones_url": "https://api.github.com/repos/octocat/Hello-World/milestones{/number}",
+        "notifications_url": "https://api.github.com/repos/octocat/Hello-World/notifications{?since,all,participating}",
+        "pulls_url": "https://api.github.com/repos/octocat/Hello-World/pulls{/number}",
+        "releases_url": "https://api.github.com/repos/octocat/Hello-World/releases{/id}",
+        "stargazers_url": "https://api.github.com/repos/octocat/Hello-World/stargazers",
+        "statuses_url": "https://api.github.com/repos/octocat/Hello-World/statuses/{sha}",
+        "subscribers_url": "https://api.github.com/repos/octocat/Hello-World/subscribers",
+        "subscription_url": "https://api.github.com/repos/octocat/Hello-World/subscription",
+        "tags_url": "https://api.github.com/repos/octocat/Hello-World/tags",
+        "teams_url": "https://api.github.com/repos/octocat/Hello-World/teams",
+        "trees_url": "https://api.github.com/repos/octocat/Hello-World/git/trees{/sha}",
+        "hooks_url": "https://api.github.com/repos/octocat/Hello-World/hooks"
+      },
+      "title": "string",
+      "state": "open",
+      "merged_at": "1970-01-01T00:00:00Z",
+      "html_url": "http://example.com",
+      "url": "http://example.com",
+      "draft": true
+    }
+  ],
+  "linked_issues": [
+    {
+      "number": 0,
+      "title": "string",
+      "state": "string",
+      "url": "http://example.com",
+      "html_url": "http://example.com",
+      "repository": {
+        "id": 1296269,
+        "node_id": "MDEwOlJlcG9zaXRvcnkxMjk2MjY5",
+        "name": "Hello-World",
+        "full_name": "octocat/Hello-World",
+        "owner": {
+          "name": "string",
+          "email": "string",
+          "login": "octocat",
+          "id": 1,
+          "node_id": "MDQ6VXNlcjE=",
+          "avatar_url": "https://github.com/images/error/octocat_happy.gif",
+          "gravatar_id": "41d064eb2195891e12d0413f63227ea7",
+          "url": "https://api.github.com/users/octocat",
+          "html_url": "https://github.com/octocat",
+          "followers_url": "https://api.github.com/users/octocat/followers",
+          "following_url": "https://api.github.com/users/octocat/following{/other_user}",
+          "gists_url": "https://api.github.com/users/octocat/gists{/gist_id}",
+          "starred_url": "https://api.github.com/users/octocat/starred{/owner}{/repo}",
+          "subscriptions_url": "https://api.github.com/users/octocat/subscriptions",
+          "organizations_url": "https://api.github.com/users/octocat/orgs",
+          "repos_url": "https://api.github.com/users/octocat/repos",
+          "events_url": "https://api.github.com/users/octocat/events{/privacy}",
+          "received_events_url": "https://api.github.com/users/octocat/received_events",
+          "type": "User",
+          "site_admin": true,
+          "starred_at": "\"2020-07-09T00:17:55Z\"",
+          "user_view_type": "public"
+        },
+        "private": true,
+        "html_url": "https://github.com/octocat/Hello-World",
+        "description": "This your first repo!",
+        "fork": true,
+        "url": "https://api.github.com/repos/octocat/Hello-World",
+        "archive_url": "https://api.github.com/repos/octocat/Hello-World/{archive_format}{/ref}",
+        "assignees_url": "https://api.github.com/repos/octocat/Hello-World/assignees{/user}",
+        "blobs_url": "https://api.github.com/repos/octocat/Hello-World/git/blobs{/sha}",
+        "branches_url": "https://api.github.com/repos/octocat/Hello-World/branches{/branch}",
+        "collaborators_url": "https://api.github.com/repos/octocat/Hello-World/collaborators{/collaborator}",
+        "comments_url": "https://api.github.com/repos/octocat/Hello-World/comments{/number}",
+        "commits_url": "https://api.github.com/repos/octocat/Hello-World/commits{/sha}",
+        "compare_url": "https://api.github.com/repos/octocat/Hello-World/compare/{base}...{head}",
+        "contents_url": "https://api.github.com/repos/octocat/Hello-World/contents/{+path}",
+        "contributors_url": "https://api.github.com/repos/octocat/Hello-World/contributors",
+        "deployments_url": "https://api.github.com/repos/octocat/Hello-World/deployments",
+        "downloads_url": "https://api.github.com/repos/octocat/Hello-World/downloads",
+        "events_url": "https://api.github.com/repos/octocat/Hello-World/events",
+        "forks_url": "https://api.github.com/repos/octocat/Hello-World/forks",
+        "git_commits_url": "https://api.github.com/repos/octocat/Hello-World/git/commits{/sha}",
+        "git_refs_url": "https://api.github.com/repos/octocat/Hello-World/git/refs{/sha}",
+        "git_tags_url": "https://api.github.com/repos/octocat/Hello-World/git/tags{/sha}",
+        "issue_comment_url": "https://api.github.com/repos/octocat/Hello-World/issues/comments{/number}",
+        "issue_events_url": "https://api.github.com/repos/octocat/Hello-World/issues/events{/number}",
+        "issues_url": "https://api.github.com/repos/octocat/Hello-World/issues{/number}",
+        "keys_url": "https://api.github.com/repos/octocat/Hello-World/keys{/key_id}",
+        "labels_url": "https://api.github.com/repos/octocat/Hello-World/labels{/name}",
+        "languages_url": "https://api.github.com/repos/octocat/Hello-World/languages",
+        "merges_url": "https://api.github.com/repos/octocat/Hello-World/merges",
+        "milestones_url": "https://api.github.com/repos/octocat/Hello-World/milestones{/number}",
+        "notifications_url": "https://api.github.com/repos/octocat/Hello-World/notifications{?since,all,participating}",
+        "pulls_url": "https://api.github.com/repos/octocat/Hello-World/pulls{/number}",
+        "releases_url": "https://api.github.com/repos/octocat/Hello-World/releases{/id}",
+        "stargazers_url": "https://api.github.com/repos/octocat/Hello-World/stargazers",
+        "statuses_url": "https://api.github.com/repos/octocat/Hello-World/statuses/{sha}",
+        "subscribers_url": "https://api.github.com/repos/octocat/Hello-World/subscribers",
+        "subscription_url": "https://api.github.com/repos/octocat/Hello-World/subscription",
+        "tags_url": "https://api.github.com/repos/octocat/Hello-World/tags",
+        "teams_url": "https://api.github.com/repos/octocat/Hello-World/teams",
+        "trees_url": "https://api.github.com/repos/octocat/Hello-World/git/trees{/sha}",
+        "hooks_url": "https://api.github.com/repos/octocat/Hello-World/hooks"
+      },
+      "issue_type": {
+        "id": 0,
+        "node_id": "string",
+        "name": "string",
+        "description": "string",
+        "color": "gray",
+        "created_at": "1970-01-01T00:00:00Z",
+        "updated_at": "1970-01-01T00:00:00Z",
+        "is_enabled": true
+      }
+    }
   ]
 }
 ```
@@ -384072,6 +390304,8 @@ A GitHub issue linked to a code scanning alert. The issue may belong to a differ
 |most_recent_instance|[code-scanning-alert-instance](#schemacode-scanning-alert-instance)|true|none|none|
 |dismissal_approved_by|null \| [simple-user](#schemasimple-user)|false|none|none|
 |assignees|[[simple-user](#schemasimple-user)]|false|none|none|
+|linked_pull_requests|[[pull-requests-on-alerts](#schemapull-requests-on-alerts)]|false|none|Pull requests linked to this alert.|
+|linked_issues|[[code-scanning-alert-linked-issue](#schemacode-scanning-alert-linked-issue)]|false|none|Issues linked to this alert.|
 
 #### Enumerated Values
 
@@ -384928,6 +391162,96 @@ A GitHub issue linked to a code scanning alert. The issue may belong to a differ
       },
       "draft": false
     }
+  ],
+  "linked_issues": [
+    {
+      "number": 0,
+      "title": "string",
+      "state": "string",
+      "url": "http://example.com",
+      "html_url": "http://example.com",
+      "repository": {
+        "id": 1296269,
+        "node_id": "MDEwOlJlcG9zaXRvcnkxMjk2MjY5",
+        "name": "Hello-World",
+        "full_name": "octocat/Hello-World",
+        "owner": {
+          "name": "string",
+          "email": "string",
+          "login": "octocat",
+          "id": 1,
+          "node_id": "MDQ6VXNlcjE=",
+          "avatar_url": "https://github.com/images/error/octocat_happy.gif",
+          "gravatar_id": "41d064eb2195891e12d0413f63227ea7",
+          "url": "https://api.github.com/users/octocat",
+          "html_url": "https://github.com/octocat",
+          "followers_url": "https://api.github.com/users/octocat/followers",
+          "following_url": "https://api.github.com/users/octocat/following{/other_user}",
+          "gists_url": "https://api.github.com/users/octocat/gists{/gist_id}",
+          "starred_url": "https://api.github.com/users/octocat/starred{/owner}{/repo}",
+          "subscriptions_url": "https://api.github.com/users/octocat/subscriptions",
+          "organizations_url": "https://api.github.com/users/octocat/orgs",
+          "repos_url": "https://api.github.com/users/octocat/repos",
+          "events_url": "https://api.github.com/users/octocat/events{/privacy}",
+          "received_events_url": "https://api.github.com/users/octocat/received_events",
+          "type": "User",
+          "site_admin": true,
+          "starred_at": "\"2020-07-09T00:17:55Z\"",
+          "user_view_type": "public"
+        },
+        "private": true,
+        "html_url": "https://github.com/octocat/Hello-World",
+        "description": "This your first repo!",
+        "fork": true,
+        "url": "https://api.github.com/repos/octocat/Hello-World",
+        "archive_url": "https://api.github.com/repos/octocat/Hello-World/{archive_format}{/ref}",
+        "assignees_url": "https://api.github.com/repos/octocat/Hello-World/assignees{/user}",
+        "blobs_url": "https://api.github.com/repos/octocat/Hello-World/git/blobs{/sha}",
+        "branches_url": "https://api.github.com/repos/octocat/Hello-World/branches{/branch}",
+        "collaborators_url": "https://api.github.com/repos/octocat/Hello-World/collaborators{/collaborator}",
+        "comments_url": "https://api.github.com/repos/octocat/Hello-World/comments{/number}",
+        "commits_url": "https://api.github.com/repos/octocat/Hello-World/commits{/sha}",
+        "compare_url": "https://api.github.com/repos/octocat/Hello-World/compare/{base}...{head}",
+        "contents_url": "https://api.github.com/repos/octocat/Hello-World/contents/{+path}",
+        "contributors_url": "https://api.github.com/repos/octocat/Hello-World/contributors",
+        "deployments_url": "https://api.github.com/repos/octocat/Hello-World/deployments",
+        "downloads_url": "https://api.github.com/repos/octocat/Hello-World/downloads",
+        "events_url": "https://api.github.com/repos/octocat/Hello-World/events",
+        "forks_url": "https://api.github.com/repos/octocat/Hello-World/forks",
+        "git_commits_url": "https://api.github.com/repos/octocat/Hello-World/git/commits{/sha}",
+        "git_refs_url": "https://api.github.com/repos/octocat/Hello-World/git/refs{/sha}",
+        "git_tags_url": "https://api.github.com/repos/octocat/Hello-World/git/tags{/sha}",
+        "issue_comment_url": "https://api.github.com/repos/octocat/Hello-World/issues/comments{/number}",
+        "issue_events_url": "https://api.github.com/repos/octocat/Hello-World/issues/events{/number}",
+        "issues_url": "https://api.github.com/repos/octocat/Hello-World/issues{/number}",
+        "keys_url": "https://api.github.com/repos/octocat/Hello-World/keys{/key_id}",
+        "labels_url": "https://api.github.com/repos/octocat/Hello-World/labels{/name}",
+        "languages_url": "https://api.github.com/repos/octocat/Hello-World/languages",
+        "merges_url": "https://api.github.com/repos/octocat/Hello-World/merges",
+        "milestones_url": "https://api.github.com/repos/octocat/Hello-World/milestones{/number}",
+        "notifications_url": "https://api.github.com/repos/octocat/Hello-World/notifications{?since,all,participating}",
+        "pulls_url": "https://api.github.com/repos/octocat/Hello-World/pulls{/number}",
+        "releases_url": "https://api.github.com/repos/octocat/Hello-World/releases{/id}",
+        "stargazers_url": "https://api.github.com/repos/octocat/Hello-World/stargazers",
+        "statuses_url": "https://api.github.com/repos/octocat/Hello-World/statuses/{sha}",
+        "subscribers_url": "https://api.github.com/repos/octocat/Hello-World/subscribers",
+        "subscription_url": "https://api.github.com/repos/octocat/Hello-World/subscription",
+        "tags_url": "https://api.github.com/repos/octocat/Hello-World/tags",
+        "teams_url": "https://api.github.com/repos/octocat/Hello-World/teams",
+        "trees_url": "https://api.github.com/repos/octocat/Hello-World/git/trees{/sha}",
+        "hooks_url": "https://api.github.com/repos/octocat/Hello-World/hooks"
+      },
+      "issue_type": {
+        "id": 0,
+        "node_id": "string",
+        "name": "string",
+        "description": "string",
+        "color": "gray",
+        "created_at": "1970-01-01T00:00:00Z",
+        "updated_at": "1970-01-01T00:00:00Z",
+        "is_enabled": true
+      }
+    }
   ]
 }
 ```
@@ -384954,6 +391278,7 @@ A GitHub issue linked to a code scanning alert. The issue may belong to a differ
 |dismissal_approved_by|null \| [simple-user](#schemasimple-user)|false|none|none|
 |assignees|[[simple-user](#schemasimple-user)]|false|none|none|
 |linked_pull_requests|[[pull-request-simple](#schemapull-request-simple)]|false|none|Pull requests linked to this alert.|
+|linked_issues|[[code-scanning-alert-linked-issue](#schemacode-scanning-alert-linked-issue)]|false|none|Issues linked to this alert.|
 
 #### Enumerated Values
 
@@ -386543,7 +392868,7 @@ Repository invitations let you manage who you collaborate with.
 |permissions|write|
 |permissions|admin|
 |permissions|triage|
-|permissions|triage_plus|
+|permissions|moderate|
 |permissions|maintain|
 
 <h2 id="tocS_repository-collaborator-permission">repository-collaborator-permission</h2>
@@ -388027,6 +394352,50 @@ Contributor
 |name|string|false|none|none|
 |user_view_type|string|false|none|none|
 
+<h2 id="tocS_repository-copilot-code-review-settings">repository-copilot-code-review-settings</h2>
+<!-- backwards compatibility -->
+<a id="schemarepository-copilot-code-review-settings"></a>
+<a id="schema_repository-copilot-code-review-settings"></a>
+<a id="tocSrepository-copilot-code-review-settings"></a>
+<a id="tocsrepository-copilot-code-review-settings"></a>
+
+```json
+{
+  "review_effort": {
+    "configured": "string",
+    "effective": "string"
+  },
+  "available_review_efforts": [
+    "string"
+  ],
+  "severity_filter": "no_filter",
+  "custom_instructions_enabled": true,
+  "mcp_enabled": true,
+  "cross_repo_context_enabled": true
+}
+```
+
+The repository's Copilot code review settings. These settings tune reviews; they do not enable Copilot code review.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|review_effort|object|true|none|The review effort for the repository. For more information, see [Review effort level](https://docs.github.com/copilot/concepts/agent-capabilities/agent-powered-workflows-and-operations/code-review#review-effort-level).|
+|available_review_efforts|[string]|true|none|The review efforts that can currently be set for this repository, in display order.|
+|severity_filter|string|true|none|Which review comment severities Copilot code review leaves out. `no_filter` keeps every comment, `low` leaves out low-severity comments, and `low_and_medium` leaves out low- and medium-severity comments.|
+|custom_instructions_enabled|boolean|true|none|Whether reviews use the repository's custom instructions.|
+|mcp_enabled|boolean|true|none|Whether reviews can use MCP servers.|
+|cross_repo_context_enabled|boolean|true|none|Whether reviews can use public repository search.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|severity_filter|no_filter|
+|severity_filter|low|
+|severity_filter|low_and_medium|
+
 <h2 id="tocS_dependabot-alert">dependabot-alert</h2>
 <!-- backwards compatibility -->
 <a id="schemadependabot-alert"></a>
@@ -388233,6 +394602,74 @@ A Dependabot alert.
 |dismissed_reason|not_used|
 |dismissed_reason|tolerable_risk|
 |dismissed_reason|null|
+
+<h2 id="tocS_dependabot-runner-settings">dependabot-runner-settings</h2>
+<!-- backwards compatibility -->
+<a id="schemadependabot-runner-settings"></a>
+<a id="schema_dependabot-runner-settings"></a>
+<a id="tocSdependabot-runner-settings"></a>
+<a id="tocsdependabot-runner-settings"></a>
+
+```json
+{
+  "runner_type": "standard",
+  "runner_labels": [
+    "string"
+  ],
+  "runner_group": "string"
+}
+```
+
+The runner Dependabot uses for this repository, as shown in the repository settings.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|runner_type|string|true|none|`labeled` when Dependabot runs on labeled runners. Otherwise `standard`.|
+|runner_labels|[string]|true|none|Runner labels Dependabot uses. Empty for `standard`.|
+|runner_group|string \| null|true|none|Runner group Dependabot uses, or `null` for no group.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|runner_type|standard|
+|runner_type|labeled|
+
+<h2 id="tocS_dependabot-runner-settings-update">dependabot-runner-settings-update</h2>
+<!-- backwards compatibility -->
+<a id="schemadependabot-runner-settings-update"></a>
+<a id="schema_dependabot-runner-settings-update"></a>
+<a id="tocSdependabot-runner-settings-update"></a>
+<a id="tocsdependabot-runner-settings-update"></a>
+
+```json
+{
+  "runner_type": "standard",
+  "runner_labels": [
+    "string"
+  ],
+  "runner_group": "string"
+}
+```
+
+The runner Dependabot uses for this repository. `standard` accepts only `runner_type`.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|runner_type|string|true|none|`labeled` for labeled runners, `standard` for standard GitHub-hosted runners.|
+|runner_labels|[string]|false|none|Required for `labeled`. Exactly one non-blank runner label. Not allowed for `standard`.|
+|runner_group|string \| null|false|none|Optional for `labeled`. Omitted, `null` or blank means no group. Not allowed for `standard`.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|runner_type|standard|
+|runner_type|labeled|
 
 <h2 id="tocS_dependabot-secret">dependabot-secret</h2>
 <!-- backwards compatibility -->
@@ -389821,6 +396258,11 @@ The intent behind an agent's action on an issue, including the rationale and con
     "html_url": "http://example.com",
     "number": 42,
     "state": "open",
+    "status": {
+      "id": 4,
+      "name": "In progress",
+      "category": "started"
+    },
     "state_reason": "not_planned",
     "title": "Widget creation fails in Safari on OS X 10.8",
     "body": "It looks like the new widget form is broken on Safari. When I try and create the widget, Safari crashes. This is reproducible on 10.8, but not 10.9. Maybe a browser bug?",
@@ -395142,6 +401584,11 @@ Timeline Comment Event
       "html_url": "http://example.com",
       "number": 42,
       "state": "open",
+      "status": {
+        "id": 4,
+        "name": "In progress",
+        "category": "started"
+      },
       "state_reason": "not_planned",
       "title": "Widget creation fails in Safari on OS X 10.8",
       "body": "It looks like the new widget form is broken on Safari. When I try and create the widget, Safari crashes. This is reproducible on 10.8, but not 10.9. Maybe a browser bug?",
@@ -395844,6 +402291,12 @@ Timeline Reviewed Event
 
 ```json
 {
+  "is_copilot_code_review": false,
+  "copilot_code_review_sources": {
+    "kind": "SKILL",
+    "name": "code-review",
+    "path": ".github/skills/code-review/SKILL.md"
+  },
   "url": "https://api.github.com/repos/octocat/Hello-World/pulls/comments/1",
   "pull_request_review_id": 42,
   "id": 1,
@@ -395926,6 +402379,8 @@ Pull Request Review Comments are comments on a portion of the Pull Request's dif
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
+|is_copilot_code_review|boolean|false|none|Whether this comment was produced by Copilot code review. Not returned for issue timeline events.|
+|copilot_code_review_sources|[object]|false|none|Sources reported as contributing to this comment; may be incomplete. Not returned for issue timeline events.|
 |url|string|true|none|URL for the pull request review comment|
 |pull_request_review_id|integer \| null(int64)|true|none|The ID of the pull request review to which the comment belongs.|
 |id|integer(int64)|true|none|The ID of the pull request review comment.|
@@ -395989,6 +402444,12 @@ Pull Request Review Comments are comments on a portion of the Pull Request's dif
   "node_id": "string",
   "comments": [
     {
+      "is_copilot_code_review": false,
+      "copilot_code_review_sources": {
+        "kind": "SKILL",
+        "name": "code-review",
+        "path": ".github/skills/code-review/SKILL.md"
+      },
       "url": "https://api.github.com/repos/octocat/Hello-World/pulls/comments/1",
       "pull_request_review_id": 42,
       "id": 1,
@@ -397231,7 +403692,7 @@ Page Build Status
 {
   "id": 0,
   "status_url": "https://api.github.com/repos/github/hello-world/pages/deployments/4fd754f7e594640989b406850d0bc8f06a121251",
-  "page_url": "hello-world.github.io",
+  "page_url": "github.github.io",
   "preview_url": "monalisa-1231a2312sa32-23sda74.drafts.github.io"
 }
 ```
@@ -397362,6 +403823,31 @@ Pages Health Check Status
 |---|---|---|---|---|
 |domain|object|false|none|none|
 |alt_domain|object \| null|false|none|none|
+
+<h2 id="tocS_planning-status">planning-status</h2>
+<!-- backwards compatibility -->
+<a id="schemaplanning-status"></a>
+<a id="schema_planning-status"></a>
+<a id="tocSplanning-status"></a>
+<a id="tocsplanning-status"></a>
+
+```json
+{
+  "id": 4,
+  "name": "In progress",
+  "category": "started"
+}
+```
+
+A planning status and its lifecycle category.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|integer(int64)|true|none|The stable identifier of the planning status.|
+|name|string|true|none|The display name of the planning status, which may change in the future.|
+|category|string|true|none|A stable identifier for the category, such as `backlog`, `planned`, `started`, `completed`, `not_planned` or `duplicate`. Clients should expect new keys to be added.|
 
 <h2 id="tocS_pull-request">pull-request</h2>
 <!-- backwards compatibility -->
@@ -398107,6 +404593,81 @@ Pull requests let you tell others about changes you've pushed to a repository on
 |author_association|NONE|
 |author_association|OWNER|
 
+<h2 id="tocS_copilot-code-review-request">copilot-code-review-request</h2>
+<!-- backwards compatibility -->
+<a id="schemacopilot-code-review-request"></a>
+<a id="schema_copilot-code-review-request"></a>
+<a id="tocScopilot-code-review-request"></a>
+<a id="tocscopilot-code-review-request"></a>
+
+```json
+{
+  "node_id": "RRR_kwDOAA",
+  "state": "PENDING"
+}
+```
+
+A request for Copilot to review a pull request.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|node_id|string|true|none|The global node ID of the review request.|
+|state|string|true|none|The current state of the review request.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|state|PENDING|
+
+<h2 id="tocS_copilot-code-review-request-denied">copilot-code-review-request-denied</h2>
+<!-- backwards compatibility -->
+<a id="schemacopilot-code-review-request-denied"></a>
+<a id="schema_copilot-code-review-request-denied"></a>
+<a id="tocScopilot-code-review-request-denied"></a>
+<a id="tocscopilot-code-review-request-denied"></a>
+
+```json
+{
+  "message": "string",
+  "documentation_url": "string",
+  "url": "string",
+  "status": "string",
+  "failure_reason": "REQUEST_CONFLICT"
+}
+```
+
+A Copilot code review request was denied, conflicted with an existing request, or could not be serviced. The `failure_reason` field is present for stable, machine-readable denials -- overlapping with the reasons returned by the `failureReason` field on the `requestCopilotCodeReview` GraphQL mutation, plus a few additional reasons this REST endpoint reports explicitly rather than as an opaque error -- and is absent for generic validation failures.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|message|string|false|none|none|
+|documentation_url|string|false|none|none|
+|url|string|false|none|none|
+|status|string|false|none|none|
+|failure_reason|string|false|none|The stable reason the request was denied, conflicted with an existing request, or could not be serviced.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|failure_reason|ACTOR_INELIGIBLE|
+|failure_reason|REPOSITORY_INELIGIBLE|
+|failure_reason|APP_NOT_INSTALLED|
+|failure_reason|NO_QUOTA_REMAINING|
+|failure_reason|LICENSED_ORGANIZATION_UNAVAILABLE|
+|failure_reason|INVALID_REVIEW_EFFORT|
+|failure_reason|REQUEST_FAILED|
+|failure_reason|REQUEST_CONFLICT|
+|failure_reason|REVIEWER_UNAVAILABLE|
+|failure_reason|REQUEST_UNAVAILABLE|
+|failure_reason|ACTOR_FLAGGED|
+|failure_reason|RATE_LIMITED|
+
 <h2 id="tocS_pull-request-merge-result">pull-request-merge-result</h2>
 <!-- backwards compatibility -->
 <a id="schemapull-request-merge-result"></a>
@@ -398300,6 +404861,8 @@ Pull Request Review Request
   },
   "body": "This looks great.",
   "state": "CHANGES_REQUESTED",
+  "is_copilot_code_review": false,
+  "copilot_code_review_effort": null,
   "html_url": "https://github.com/octocat/Hello-World/pull/12#pullrequestreview-80",
   "pull_request_url": "https://api.github.com/repos/octocat/Hello-World/pulls/12",
   "_links": {
@@ -398329,6 +404892,8 @@ Pull Request Reviews are reviews on pull requests.
 |user|null \| [simple-user](#schemasimple-user)|true|none|none|
 |body|string|true|none|The text of the review.|
 |state|string|true|none|none|
+|is_copilot_code_review|boolean|false|none|Whether this review was produced by Copilot code review. Bot authorship alone does not establish provenance.|
+|copilot_code_review_effort|string \| null|false|none|The persisted effective effort used to produce this Copilot code review, or null if unavailable. For more information, see [Review effort level](https://docs.github.com/copilot/concepts/agent-capabilities/agent-powered-workflows-and-operations/code-review#review-effort-level).|
 |html_url|string(uri)|true|none|none|
 |pull_request_url|string(uri)|true|none|none|
 |_links|object|true|none|none|
@@ -398360,6 +404925,12 @@ Pull Request Reviews are reviews on pull requests.
 
 ```json
 {
+  "is_copilot_code_review": false,
+  "copilot_code_review_sources": {
+    "kind": "SKILL",
+    "name": "code-review",
+    "path": ".github/skills/code-review/SKILL.md"
+  },
   "url": "https://api.github.com/repos/octocat/Hello-World/pulls/comments/1",
   "pull_request_review_id": 42,
   "id": 10,
@@ -398442,6 +405013,8 @@ Legacy Review Comment
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
+|is_copilot_code_review|boolean|false|none|Whether this comment was produced by Copilot code review.|
+|copilot_code_review_sources|[object]|false|none|Sources reported as contributing to this comment; may be incomplete.|
 |url|string(uri)|true|none|none|
 |pull_request_review_id|integer \| null(int64)|true|none|none|
 |id|integer(int64)|true|none|none|
@@ -399323,7 +405896,7 @@ The username of the user to assign to the alert. Set to `null` to unassign the a
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |type|string|false|none|The location type. Because secrets may be found in different types of resources (ie. code, comments, issues, pull requests, discussions), this field identifies the type of resource where the secret was found.|
-|details|[secret-scanning-location-commit](#schemasecret-scanning-location-commit) \| [secret-scanning-location-wiki-commit](#schemasecret-scanning-location-wiki-commit) \| [secret-scanning-location-issue-title](#schemasecret-scanning-location-issue-title) \| [secret-scanning-location-issue-body](#schemasecret-scanning-location-issue-body) \| [secret-scanning-location-issue-comment](#schemasecret-scanning-location-issue-comment) \| [secret-scanning-location-discussion-title](#schemasecret-scanning-location-discussion-title) \| [secret-scanning-location-discussion-body](#schemasecret-scanning-location-discussion-body) \| [secret-scanning-location-discussion-comment](#schemasecret-scanning-location-discussion-comment) \| [secret-scanning-location-pull-request-title](#schemasecret-scanning-location-pull-request-title) \| [secret-scanning-location-pull-request-body](#schemasecret-scanning-location-pull-request-body) \| [secret-scanning-location-pull-request-comment](#schemasecret-scanning-location-pull-request-comment) \| [secret-scanning-location-pull-request-review](#schemasecret-scanning-location-pull-request-review) \| [secret-scanning-location-pull-request-review-comment](#schemasecret-scanning-location-pull-request-review-comment)|false|none|none|
+|details|[secret-scanning-location-commit](#schemasecret-scanning-location-commit) \| [secret-scanning-location-wiki-commit](#schemasecret-scanning-location-wiki-commit) \| [secret-scanning-location-issue-title](#schemasecret-scanning-location-issue-title) \| [secret-scanning-location-issue-body](#schemasecret-scanning-location-issue-body) \| [secret-scanning-location-issue-comment](#schemasecret-scanning-location-issue-comment) \| [secret-scanning-location-discussion-title](#schemasecret-scanning-location-discussion-title) \| [secret-scanning-location-discussion-body](#schemasecret-scanning-location-discussion-body) \| [secret-scanning-location-discussion-comment](#schemasecret-scanning-location-discussion-comment) \| [secret-scanning-location-pull-request-title](#schemasecret-scanning-location-pull-request-title) \| [secret-scanning-location-pull-request-body](#schemasecret-scanning-location-pull-request-body) \| [secret-scanning-location-pull-request-comment](#schemasecret-scanning-location-pull-request-comment) \| [secret-scanning-location-pull-request-review](#schemasecret-scanning-location-pull-request-review) \| [secret-scanning-location-pull-request-review-comment](#schemasecret-scanning-location-pull-request-review-comment) \| [secret-scanning-location-actions-log](#schemasecret-scanning-location-actions-log)|false|none|none|
 
 #### Enumerated Values
 
@@ -399342,6 +405915,7 @@ The username of the user to assign to the alert. Set to `null` to unassign the a
 |type|pull_request_comment|
 |type|pull_request_review|
 |type|pull_request_review_comment|
+|type|actions_log|
 
 <h2 id="tocS_secret-scanning-push-protection-bypass-reason">secret-scanning-push-protection-bypass-reason</h2>
 <!-- backwards compatibility -->
@@ -400881,6 +407455,11 @@ Commit Search Result Item
 
 ```json
 {
+  "status": {
+    "id": 4,
+    "name": "In progress",
+    "category": "started"
+  },
   "url": "http://example.com",
   "repository_url": "http://example.com",
   "labels_url": "string",
@@ -401447,6 +408026,7 @@ Issue Search Result Item
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
+|status|object \| null|false|none|The status of the issue, or `null` if it has none. Issue statuses are in preview and only available to accounts enrolled in the preview.|
 |url|string(uri)|true|none|none|
 |repository_url|string(uri)|true|none|none|
 |labels_url|string|true|none|none|
@@ -403123,6 +409703,151 @@ A unique encryption key
 |expires_at|string \| null(date-time)|true|none|none|
 |revoked|boolean|true|none|none|
 |raw_key|string \| null|true|none|none|
+
+<h2 id="tocS_user-issue-field">user-issue-field</h2>
+<!-- backwards compatibility -->
+<a id="schemauser-issue-field"></a>
+<a id="schema_user-issue-field"></a>
+<a id="tocSuser-issue-field"></a>
+<a id="tocsuser-issue-field"></a>
+
+```json
+{
+  "id": 0,
+  "node_id": "string",
+  "name": "string",
+  "description": "string",
+  "data_type": "text",
+  "visibility": "restricted",
+  "options": [
+    {
+      "id": 0,
+      "name": "string",
+      "description": "string",
+      "color": "gray",
+      "priority": 0,
+      "created_at": "1970-01-01T00:00:00Z",
+      "updated_at": "1970-01-01T00:00:00Z"
+    }
+  ],
+  "created_at": "1970-01-01T00:00:00Z",
+  "updated_at": "1970-01-01T00:00:00Z"
+}
+```
+
+A custom attribute defined by a personal account for attaching structured data to issues.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|integer|true|none|The unique identifier of the issue field.|
+|node_id|string|true|none|The node identifier of the issue field.|
+|name|string|true|none|The name of the issue field.|
+|description|string \| null|false|none|The description of the issue field.|
+|data_type|string|true|none|The data type of the issue field.|
+|visibility|string|false|none|The visibility of the issue field. Can be `restricted` (visible only to the owner and to collaborators on the repository the field is read through) or `all` (visible to all users who can see issues).|
+|options|[object]|false|none|Available options for single select and multi select fields.|
+|created_at|string(date-time)|false|none|The time the issue field was created.|
+|updated_at|string(date-time)|false|none|The time the issue field was updated.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|data_type|text|
+|data_type|date|
+|data_type|single_select|
+|data_type|multi_select|
+|data_type|number|
+|visibility|restricted|
+|visibility|all|
+
+<h2 id="tocS_user-create-issue-field">user-create-issue-field</h2>
+<!-- backwards compatibility -->
+<a id="schemauser-create-issue-field"></a>
+<a id="schema_user-create-issue-field"></a>
+<a id="tocSuser-create-issue-field"></a>
+<a id="tocsuser-create-issue-field"></a>
+
+```json
+{
+  "name": "string",
+  "description": "string",
+  "data_type": "text",
+  "visibility": "restricted",
+  "options": [
+    {
+      "name": "string",
+      "description": "string",
+      "color": "gray",
+      "priority": 0
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|name|string|true|none|Name of the issue field.|
+|description|string \| null|false|none|Description of the issue field.|
+|data_type|string|true|none|The data type of the issue field.|
+|visibility|string|false|none|The visibility of the issue field. Can be `restricted` (visible only to the owner and to collaborators on the repository the field is read through) or `all` (visible to all users who can see issues). Defaults to `restricted`.|
+|options|[object]|false|none|Options for select fields. Required when data_type is 'single_select' or 'multi_select'.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|data_type|text|
+|data_type|date|
+|data_type|single_select|
+|data_type|multi_select|
+|data_type|number|
+|visibility|restricted|
+|visibility|all|
+
+<h2 id="tocS_user-update-issue-field">user-update-issue-field</h2>
+<!-- backwards compatibility -->
+<a id="schemauser-update-issue-field"></a>
+<a id="schema_user-update-issue-field"></a>
+<a id="tocSuser-update-issue-field"></a>
+<a id="tocsuser-update-issue-field"></a>
+
+```json
+{
+  "name": "string",
+  "description": "string",
+  "visibility": "restricted",
+  "options": [
+    {
+      "id": 0,
+      "name": "string",
+      "description": "string",
+      "color": "gray",
+      "priority": 0
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|name|string|false|none|Name of the issue field.|
+|description|string \| null|false|none|Description of the issue field.|
+|visibility|string|false|none|The visibility of the issue field. Can be `restricted` (visible only to the owner and to collaborators on the repository the field is read through) or `all` (visible to all users who can see issues).|
+|options|[object]|false|none|Options for select fields. Only applicable when updating single_select or multi_select fields. When provided, this array **replaces** the entire existing set of options rather than adding to or updating individual options. To retain or update an existing option, include it in the array with its `id`. Options sent without an `id` are treated as new options and may cause existing options to be deleted and recreated.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|visibility|restricted|
+|visibility|all|
 
 <h2 id="tocS_key">key</h2>
 <!-- backwards compatibility -->
@@ -406335,6 +413060,11 @@ The changes to the comment.
       ]
     }
   ],
+  "status": {
+    "id": 4,
+    "name": "In progress",
+    "category": "started"
+  },
   "state": "open",
   "state_reason": "string",
   "timeline_url": "http://example.com",
@@ -406411,6 +413141,7 @@ The [issue](https://docs.github.com/rest/issues/issues#get-an-issue) itself.
 |sub_issues_summary|[sub-issues-summary](#schemasub-issues-summary)|false|none|none|
 |issue_dependencies_summary|[issue-dependencies-summary](#schemaissue-dependencies-summary)|false|none|none|
 |issue_field_values|[[issue-field-value](#schemaissue-field-value)]|false|none|none|
+|status|object \| null|false|none|The status of the issue, or `null` if it has none. Issue statuses are in preview and only available to accounts enrolled in the preview.|
 |state|string|false|none|State of the issue; either 'open' or 'closed'|
 |state_reason|string \| null|false|none|none|
 |timeline_url|string(uri)|false|none|none|
@@ -406919,6 +413650,11 @@ A collection of related issues and pull requests.
       ]
     }
   ],
+  "status": {
+    "id": 4,
+    "name": "In progress",
+    "category": "started"
+  },
   "state": "open",
   "state_reason": "string",
   "timeline_url": "http://example.com",
@@ -406995,6 +413731,7 @@ The [issue](https://docs.github.com/rest/issues/issues#get-an-issue) itself.
 |sub_issues_summary|[sub-issues-summary](#schemasub-issues-summary)|false|none|none|
 |issue_dependencies_summary|[issue-dependencies-summary](#schemaissue-dependencies-summary)|false|none|none|
 |issue_field_values|[[issue-field-value](#schemaissue-field-value)]|false|none|none|
+|status|object \| null|false|none|The status of the issue, or `null` if it has none. Issue statuses are in preview and only available to accounts enrolled in the preview.|
 |state|string|false|none|State of the issue; either 'open' or 'closed'|
 |state_reason|string \| null|false|none|none|
 |timeline_url|string(uri)|false|none|none|
@@ -421287,6 +428024,7 @@ The check_run.rerequested webhook encoded with URL encoding
       "string"
     ],
     "values_editable_by": "org_actors",
+    "regex": "^[a-z0-9-]+$",
     "require_explicit_values": true
   },
   "enterprise": {
@@ -421472,6 +428210,7 @@ The check_run.rerequested webhook encoded with URL encoding
       "string"
     ],
     "values_editable_by": "org_actors",
+    "regex": "^[a-z0-9-]+$",
     "require_explicit_values": true
   },
   "enterprise": {
@@ -421570,6 +428309,7 @@ The check_run.rerequested webhook encoded with URL encoding
       "string"
     ],
     "values_editable_by": "org_actors",
+    "regex": "^[a-z0-9-]+$",
     "require_explicit_values": true
   },
   "enterprise": {
@@ -449735,6 +456475,11 @@ A user forks a repository.
     "html_url": "http://example.com",
     "number": 42,
     "state": "open",
+    "status": {
+      "id": 4,
+      "name": "In progress",
+      "category": "started"
+    },
     "state_reason": "not_planned",
     "title": "Widget creation fails in Safari on OS X 10.8",
     "body": "It looks like the new widget form is broken on Safari. When I try and create the widget, Safari crashes. This is reproducible on 10.8, but not 10.9. Maybe a browser bug?",
@@ -450268,6 +457013,11 @@ A user forks a repository.
     "html_url": "http://example.com",
     "number": 42,
     "state": "open",
+    "status": {
+      "id": 4,
+      "name": "In progress",
+      "category": "started"
+    },
     "state_reason": "not_planned",
     "title": "Widget creation fails in Safari on OS X 10.8",
     "body": "It looks like the new widget form is broken on Safari. When I try and create the widget, Safari crashes. This is reproducible on 10.8, but not 10.9. Maybe a browser bug?",
@@ -451298,6 +458048,11 @@ A user forks a repository.
     "html_url": "http://example.com",
     "number": 42,
     "state": "open",
+    "status": {
+      "id": 4,
+      "name": "In progress",
+      "category": "started"
+    },
     "state_reason": "not_planned",
     "title": "Widget creation fails in Safari on OS X 10.8",
     "body": "It looks like the new widget form is broken on Safari. When I try and create the widget, Safari crashes. This is reproducible on 10.8, but not 10.9. Maybe a browser bug?",
@@ -451831,6 +458586,11 @@ A user forks a repository.
     "html_url": "http://example.com",
     "number": 42,
     "state": "open",
+    "status": {
+      "id": 4,
+      "name": "In progress",
+      "category": "started"
+    },
     "state_reason": "not_planned",
     "title": "Widget creation fails in Safari on OS X 10.8",
     "body": "It looks like the new widget form is broken on Safari. When I try and create the widget, Safari crashes. This is reproducible on 10.8, but not 10.9. Maybe a browser bug?",
@@ -452861,6 +459621,11 @@ A user forks a repository.
     "html_url": "http://example.com",
     "number": 42,
     "state": "open",
+    "status": {
+      "id": 4,
+      "name": "In progress",
+      "category": "started"
+    },
     "state_reason": "not_planned",
     "title": "Widget creation fails in Safari on OS X 10.8",
     "body": "It looks like the new widget form is broken on Safari. When I try and create the widget, Safari crashes. This is reproducible on 10.8, but not 10.9. Maybe a browser bug?",
@@ -453535,6 +460300,11 @@ A user forks a repository.
     "html_url": "http://example.com",
     "number": 42,
     "state": "open",
+    "status": {
+      "id": 4,
+      "name": "In progress",
+      "category": "started"
+    },
     "state_reason": "not_planned",
     "title": "Widget creation fails in Safari on OS X 10.8",
     "body": "It looks like the new widget form is broken on Safari. When I try and create the widget, Safari crashes. This is reproducible on 10.8, but not 10.9. Maybe a browser bug?",
@@ -454424,6 +461194,11 @@ A user forks a repository.
     "html_url": "http://example.com",
     "number": 42,
     "state": "open",
+    "status": {
+      "id": 4,
+      "name": "In progress",
+      "category": "started"
+    },
     "state_reason": "not_planned",
     "title": "Widget creation fails in Safari on OS X 10.8",
     "body": "It looks like the new widget form is broken on Safari. When I try and create the widget, Safari crashes. This is reproducible on 10.8, but not 10.9. Maybe a browser bug?",
@@ -455098,6 +461873,11 @@ A user forks a repository.
     "html_url": "http://example.com",
     "number": 42,
     "state": "open",
+    "status": {
+      "id": 4,
+      "name": "In progress",
+      "category": "started"
+    },
     "state_reason": "not_planned",
     "title": "Widget creation fails in Safari on OS X 10.8",
     "body": "It looks like the new widget form is broken on Safari. When I try and create the widget, Safari crashes. This is reproducible on 10.8, but not 10.9. Maybe a browser bug?",
@@ -455987,6 +462767,11 @@ A user forks a repository.
     "html_url": "http://example.com",
     "number": 42,
     "state": "open",
+    "status": {
+      "id": 4,
+      "name": "In progress",
+      "category": "started"
+    },
     "state_reason": "not_planned",
     "title": "Widget creation fails in Safari on OS X 10.8",
     "body": "It looks like the new widget form is broken on Safari. When I try and create the widget, Safari crashes. This is reproducible on 10.8, but not 10.9. Maybe a browser bug?",
@@ -456520,6 +463305,11 @@ A user forks a repository.
     "html_url": "http://example.com",
     "number": 42,
     "state": "open",
+    "status": {
+      "id": 4,
+      "name": "In progress",
+      "category": "started"
+    },
     "state_reason": "not_planned",
     "title": "Widget creation fails in Safari on OS X 10.8",
     "body": "It looks like the new widget form is broken on Safari. When I try and create the widget, Safari crashes. This is reproducible on 10.8, but not 10.9. Maybe a browser bug?",
@@ -457408,6 +464198,11 @@ A user forks a repository.
     "html_url": "http://example.com",
     "number": 42,
     "state": "open",
+    "status": {
+      "id": 4,
+      "name": "In progress",
+      "category": "started"
+    },
     "state_reason": "not_planned",
     "title": "Widget creation fails in Safari on OS X 10.8",
     "body": "It looks like the new widget form is broken on Safari. When I try and create the widget, Safari crashes. This is reproducible on 10.8, but not 10.9. Maybe a browser bug?",
@@ -457941,6 +464736,11 @@ A user forks a repository.
     "html_url": "http://example.com",
     "number": 42,
     "state": "open",
+    "status": {
+      "id": 4,
+      "name": "In progress",
+      "category": "started"
+    },
     "state_reason": "not_planned",
     "title": "Widget creation fails in Safari on OS X 10.8",
     "body": "It looks like the new widget form is broken on Safari. When I try and create the widget, Safari crashes. This is reproducible on 10.8, but not 10.9. Maybe a browser bug?",
@@ -459247,6 +466047,11 @@ A user forks a repository.
         ]
       }
     ],
+    "status": {
+      "id": 4,
+      "name": "In progress",
+      "category": "started"
+    },
     "state": "open",
     "state_reason": "string",
     "timeline_url": "http://example.com",
@@ -459885,6 +466690,11 @@ A user forks a repository.
         ]
       }
     ],
+    "status": {
+      "id": 4,
+      "name": "In progress",
+      "category": "started"
+    },
     "state": "closed",
     "state_reason": "string",
     "timeline_url": "string",
@@ -460653,6 +467463,11 @@ A user forks a repository.
         ]
       }
     ],
+    "status": {
+      "id": 4,
+      "name": "In progress",
+      "category": "started"
+    },
     "state": "open",
     "state_reason": "string",
     "timeline_url": "http://example.com",
@@ -461422,6 +468237,11 @@ A user forks a repository.
         ]
       }
     ],
+    "status": {
+      "id": 4,
+      "name": "In progress",
+      "category": "started"
+    },
     "state": "open",
     "state_reason": "string",
     "timeline_url": "http://example.com",
@@ -462267,6 +469087,11 @@ A user forks a repository.
         ]
       }
     ],
+    "status": {
+      "id": 4,
+      "name": "In progress",
+      "category": "started"
+    },
     "state": "open",
     "state_reason": "string",
     "timeline_url": "http://example.com",
@@ -463099,6 +469924,11 @@ A user forks a repository.
         ]
       }
     ],
+    "status": {
+      "id": 4,
+      "name": "In progress",
+      "category": "started"
+    },
     "state": "open",
     "state_reason": "string",
     "timeline_url": "http://example.com",
@@ -463951,6 +470781,11 @@ A user forks a repository.
         ]
       }
     ],
+    "status": {
+      "id": 4,
+      "name": "In progress",
+      "category": "started"
+    },
     "state": "open",
     "state_reason": "string",
     "timeline_url": "http://example.com",
@@ -464775,6 +471610,11 @@ A user forks a repository.
         ]
       }
     ],
+    "status": {
+      "id": 4,
+      "name": "In progress",
+      "category": "started"
+    },
     "state": "open",
     "state_reason": "string",
     "timeline_url": "http://example.com",
@@ -465581,6 +472421,11 @@ A user forks a repository.
         ]
       }
     ],
+    "status": {
+      "id": 4,
+      "name": "In progress",
+      "category": "started"
+    },
     "state": "open",
     "state_reason": "string",
     "timeline_url": "http://example.com",
@@ -466350,6 +473195,11 @@ A user forks a repository.
         ]
       }
     ],
+    "status": {
+      "id": 4,
+      "name": "In progress",
+      "category": "started"
+    },
     "state": "open",
     "state_reason": "string",
     "timeline_url": "http://example.com",
@@ -467027,6 +473877,11 @@ A user forks a repository.
           ]
         }
       ],
+      "status": {
+        "id": 4,
+        "name": "In progress",
+        "category": "started"
+      },
       "state": "open",
       "state_reason": "string",
       "timeline_url": "http://example.com",
@@ -467583,6 +474438,11 @@ A user forks a repository.
         ]
       }
     ],
+    "status": {
+      "id": 4,
+      "name": "In progress",
+      "category": "started"
+    },
     "state": "open",
     "state_reason": "string",
     "timeline_url": "http://example.com",
@@ -468501,6 +475361,11 @@ A user forks a repository.
         ]
       }
     ],
+    "status": {
+      "id": 4,
+      "name": "In progress",
+      "category": "started"
+    },
     "state": "open",
     "state_reason": "string",
     "timeline_url": "http://example.com",
@@ -469295,6 +476160,11 @@ A user forks a repository.
         ]
       }
     ],
+    "status": {
+      "id": 4,
+      "name": "In progress",
+      "category": "started"
+    },
     "state": "open",
     "state_reason": "string",
     "timeline_url": "http://example.com",
@@ -469675,6 +476545,829 @@ A user forks a repository.
 |---|---|
 |action|reopened|
 
+<h2 id="tocS_webhook-issues-status-changed">webhook-issues-status-changed</h2>
+<!-- backwards compatibility -->
+<a id="schemawebhook-issues-status-changed"></a>
+<a id="schema_webhook-issues-status-changed"></a>
+<a id="tocSwebhook-issues-status-changed"></a>
+<a id="tocswebhook-issues-status-changed"></a>
+
+```json
+{
+  "action": "status_changed",
+  "changes": {
+    "status": {
+      "from": {
+        "id": 4,
+        "name": "In progress",
+        "category": "started"
+      }
+    },
+    "state": {
+      "from": "open"
+    },
+    "state_reason": {
+      "from": "string"
+    }
+  },
+  "enterprise": {
+    "description": "string",
+    "html_url": "https://github.com/enterprises/octo-business",
+    "website_url": "http://example.com",
+    "id": 42,
+    "node_id": "MDEwOlJlcG9zaXRvcnkxMjk2MjY5",
+    "name": "Octo Business",
+    "slug": "octo-business",
+    "created_at": "2019-01-26T19:01:12Z",
+    "updated_at": "2019-01-26T19:14:43Z",
+    "avatar_url": "http://example.com"
+  },
+  "installation": {
+    "id": 1,
+    "node_id": "MDQ6VXNlcjU4MzIzMQ=="
+  },
+  "issue": {
+    "active_lock_reason": "resolved",
+    "assignee": {
+      "avatar_url": "http://example.com",
+      "deleted": true,
+      "email": "string",
+      "events_url": "string",
+      "followers_url": "http://example.com",
+      "following_url": "string",
+      "gists_url": "string",
+      "gravatar_id": "string",
+      "html_url": "http://example.com",
+      "id": 0,
+      "login": "string",
+      "name": "string",
+      "node_id": "string",
+      "organizations_url": "http://example.com",
+      "received_events_url": "http://example.com",
+      "repos_url": "http://example.com",
+      "site_admin": true,
+      "starred_url": "string",
+      "subscriptions_url": "http://example.com",
+      "type": "Bot",
+      "url": "http://example.com",
+      "user_view_type": "string"
+    },
+    "assignees": [
+      {
+        "avatar_url": "http://example.com",
+        "deleted": true,
+        "email": "string",
+        "events_url": "string",
+        "followers_url": "http://example.com",
+        "following_url": "string",
+        "gists_url": "string",
+        "gravatar_id": "string",
+        "html_url": "http://example.com",
+        "id": 0,
+        "login": "string",
+        "name": "string",
+        "node_id": "string",
+        "organizations_url": "http://example.com",
+        "received_events_url": "http://example.com",
+        "repos_url": "http://example.com",
+        "site_admin": true,
+        "starred_url": "string",
+        "subscriptions_url": "http://example.com",
+        "type": "Bot",
+        "url": "http://example.com",
+        "user_view_type": "string"
+      }
+    ],
+    "author_association": "COLLABORATOR",
+    "body": "string",
+    "closed_at": "1970-01-01T00:00:00Z",
+    "comments": 0,
+    "comments_url": "http://example.com",
+    "created_at": "1970-01-01T00:00:00Z",
+    "draft": true,
+    "events_url": "http://example.com",
+    "html_url": "http://example.com",
+    "id": 0,
+    "labels": [
+      {
+        "color": "string",
+        "default": true,
+        "description": "string",
+        "archived_at": "1970-01-01T00:00:00Z",
+        "archived_by": {
+          "name": "string",
+          "email": "string",
+          "login": "octocat",
+          "id": 1,
+          "node_id": "MDQ6VXNlcjE=",
+          "avatar_url": "https://github.com/images/error/octocat_happy.gif",
+          "gravatar_id": "41d064eb2195891e12d0413f63227ea7",
+          "url": "https://api.github.com/users/octocat",
+          "html_url": "https://github.com/octocat",
+          "followers_url": "https://api.github.com/users/octocat/followers",
+          "following_url": "https://api.github.com/users/octocat/following{/other_user}",
+          "gists_url": "https://api.github.com/users/octocat/gists{/gist_id}",
+          "starred_url": "https://api.github.com/users/octocat/starred{/owner}{/repo}",
+          "subscriptions_url": "https://api.github.com/users/octocat/subscriptions",
+          "organizations_url": "https://api.github.com/users/octocat/orgs",
+          "repos_url": "https://api.github.com/users/octocat/repos",
+          "events_url": "https://api.github.com/users/octocat/events{/privacy}",
+          "received_events_url": "https://api.github.com/users/octocat/received_events",
+          "type": "User",
+          "site_admin": true,
+          "starred_at": "\"2020-07-09T00:17:55Z\"",
+          "user_view_type": "public"
+        },
+        "id": 0,
+        "name": "string",
+        "node_id": "string",
+        "url": "http://example.com"
+      }
+    ],
+    "labels_url": "string",
+    "locked": true,
+    "milestone": {
+      "closed_at": "1970-01-01T00:00:00Z",
+      "closed_issues": 0,
+      "created_at": "1970-01-01T00:00:00Z",
+      "creator": {
+        "avatar_url": "http://example.com",
+        "deleted": true,
+        "email": "string",
+        "events_url": "string",
+        "followers_url": "http://example.com",
+        "following_url": "string",
+        "gists_url": "string",
+        "gravatar_id": "string",
+        "html_url": "http://example.com",
+        "id": 0,
+        "login": "string",
+        "name": "string",
+        "node_id": "string",
+        "organizations_url": "http://example.com",
+        "received_events_url": "http://example.com",
+        "repos_url": "http://example.com",
+        "site_admin": true,
+        "starred_url": "string",
+        "subscriptions_url": "http://example.com",
+        "type": "Bot",
+        "url": "http://example.com",
+        "user_view_type": "string"
+      },
+      "description": "string",
+      "due_on": "1970-01-01T00:00:00Z",
+      "html_url": "http://example.com",
+      "id": 0,
+      "labels_url": "http://example.com",
+      "node_id": "string",
+      "number": 0,
+      "open_issues": 0,
+      "state": "open",
+      "title": "string",
+      "updated_at": "1970-01-01T00:00:00Z",
+      "url": "http://example.com"
+    },
+    "node_id": "string",
+    "number": 0,
+    "performed_via_github_app": {
+      "created_at": "1970-01-01T00:00:00Z",
+      "description": "string",
+      "events": [
+        "branch_protection_rule"
+      ],
+      "external_url": "http://example.com",
+      "html_url": "http://example.com",
+      "id": 0,
+      "name": "string",
+      "node_id": "string",
+      "owner": {
+        "avatar_url": "http://example.com",
+        "deleted": true,
+        "email": "string",
+        "events_url": "string",
+        "followers_url": "http://example.com",
+        "following_url": "string",
+        "gists_url": "string",
+        "gravatar_id": "string",
+        "html_url": "http://example.com",
+        "id": 0,
+        "login": "string",
+        "name": "string",
+        "node_id": "string",
+        "organizations_url": "http://example.com",
+        "received_events_url": "http://example.com",
+        "repos_url": "http://example.com",
+        "site_admin": true,
+        "starred_url": "string",
+        "subscriptions_url": "http://example.com",
+        "type": "Bot",
+        "url": "http://example.com",
+        "user_view_type": "string"
+      },
+      "permissions": {
+        "actions": "read",
+        "administration": "read",
+        "checks": "read",
+        "content_references": "read",
+        "contents": "read",
+        "deployments": "read",
+        "discussions": "read",
+        "emails": "read",
+        "environments": "read",
+        "issues": "read",
+        "keys": "read",
+        "members": "read",
+        "metadata": "read",
+        "organization_administration": "read",
+        "organization_hooks": "read",
+        "organization_packages": "read",
+        "organization_plan": "read",
+        "organization_projects": "read",
+        "organization_secrets": "read",
+        "organization_self_hosted_runners": "read",
+        "organization_user_blocking": "read",
+        "packages": "read",
+        "pages": "read",
+        "pull_requests": "read",
+        "repository_hooks": "read",
+        "repository_projects": "read",
+        "secret_scanning_alerts": "read",
+        "secrets": "read",
+        "security_events": "read",
+        "security_scanning_alert": "read",
+        "single_file": "read",
+        "statuses": "read",
+        "vulnerability_alerts": "read",
+        "workflows": "read"
+      },
+      "slug": "string",
+      "updated_at": "1970-01-01T00:00:00Z"
+    },
+    "pull_request": {
+      "diff_url": "http://example.com",
+      "html_url": "http://example.com",
+      "merged_at": "1970-01-01T00:00:00Z",
+      "patch_url": "http://example.com",
+      "url": "http://example.com"
+    },
+    "reactions": {
+      "+1": 0,
+      "-1": 0,
+      "confused": 0,
+      "eyes": 0,
+      "heart": 0,
+      "hooray": 0,
+      "laugh": 0,
+      "rocket": 0,
+      "total_count": 0,
+      "url": "http://example.com"
+    },
+    "repository_url": "http://example.com",
+    "pinned_comment": {
+      "id": 42,
+      "node_id": "string",
+      "url": "https://api.github.com/repositories/42/issues/comments/1",
+      "body": "What version of Safari were you using when you observed this bug?",
+      "body_text": "string",
+      "body_html": "string",
+      "html_url": "http://example.com",
+      "user": {
+        "name": "string",
+        "email": "string",
+        "login": "octocat",
+        "id": 1,
+        "node_id": "MDQ6VXNlcjE=",
+        "avatar_url": "https://github.com/images/error/octocat_happy.gif",
+        "gravatar_id": "41d064eb2195891e12d0413f63227ea7",
+        "url": "https://api.github.com/users/octocat",
+        "html_url": "https://github.com/octocat",
+        "followers_url": "https://api.github.com/users/octocat/followers",
+        "following_url": "https://api.github.com/users/octocat/following{/other_user}",
+        "gists_url": "https://api.github.com/users/octocat/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/octocat/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/octocat/subscriptions",
+        "organizations_url": "https://api.github.com/users/octocat/orgs",
+        "repos_url": "https://api.github.com/users/octocat/repos",
+        "events_url": "https://api.github.com/users/octocat/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/octocat/received_events",
+        "type": "User",
+        "site_admin": true,
+        "starred_at": "\"2020-07-09T00:17:55Z\"",
+        "user_view_type": "public"
+      },
+      "created_at": "2011-04-14T16:00:49Z",
+      "updated_at": "2011-04-14T16:00:49Z",
+      "issue_url": "http://example.com",
+      "author_association": "OWNER",
+      "performed_via_github_app": {
+        "id": 37,
+        "slug": "probot-owners",
+        "node_id": "MDExOkludGVncmF0aW9uMQ==",
+        "client_id": "\"Iv1.25b5d1e65ffc4022\"",
+        "owner": {
+          "name": "string",
+          "email": "string",
+          "login": "octocat",
+          "id": 1,
+          "node_id": "MDQ6VXNlcjE=",
+          "avatar_url": "https://github.com/images/error/octocat_happy.gif",
+          "gravatar_id": "41d064eb2195891e12d0413f63227ea7",
+          "url": "https://api.github.com/users/octocat",
+          "html_url": "https://github.com/octocat",
+          "followers_url": "https://api.github.com/users/octocat/followers",
+          "following_url": "https://api.github.com/users/octocat/following{/other_user}",
+          "gists_url": "https://api.github.com/users/octocat/gists{/gist_id}",
+          "starred_url": "https://api.github.com/users/octocat/starred{/owner}{/repo}",
+          "subscriptions_url": "https://api.github.com/users/octocat/subscriptions",
+          "organizations_url": "https://api.github.com/users/octocat/orgs",
+          "repos_url": "https://api.github.com/users/octocat/repos",
+          "events_url": "https://api.github.com/users/octocat/events{/privacy}",
+          "received_events_url": "https://api.github.com/users/octocat/received_events",
+          "type": "User",
+          "site_admin": true,
+          "starred_at": "\"2020-07-09T00:17:55Z\"",
+          "user_view_type": "public"
+        },
+        "name": "Probot Owners",
+        "description": "The description of the app.",
+        "external_url": "https://example.com",
+        "html_url": "https://github.com/apps/super-ci",
+        "created_at": "2017-07-08T16:18:44-04:00",
+        "updated_at": "2017-07-08T16:18:44-04:00",
+        "permissions": {
+          "issues": "read",
+          "deployments": "write"
+        },
+        "events": "label",
+        "installations_count": 5
+      },
+      "reactions": {
+        "url": "http://example.com",
+        "total_count": 0,
+        "+1": 0,
+        "-1": 0,
+        "laugh": 0,
+        "confused": 0,
+        "heart": 0,
+        "hooray": 0,
+        "eyes": 0,
+        "rocket": 0
+      },
+      "pin": {
+        "pinned_at": "2011-04-14T16:00:49Z",
+        "pinned_by": {
+          "name": "string",
+          "email": "string",
+          "login": "octocat",
+          "id": 1,
+          "node_id": "MDQ6VXNlcjE=",
+          "avatar_url": "https://github.com/images/error/octocat_happy.gif",
+          "gravatar_id": "41d064eb2195891e12d0413f63227ea7",
+          "url": "https://api.github.com/users/octocat",
+          "html_url": "https://github.com/octocat",
+          "followers_url": "https://api.github.com/users/octocat/followers",
+          "following_url": "https://api.github.com/users/octocat/following{/other_user}",
+          "gists_url": "https://api.github.com/users/octocat/gists{/gist_id}",
+          "starred_url": "https://api.github.com/users/octocat/starred{/owner}{/repo}",
+          "subscriptions_url": "https://api.github.com/users/octocat/subscriptions",
+          "organizations_url": "https://api.github.com/users/octocat/orgs",
+          "repos_url": "https://api.github.com/users/octocat/repos",
+          "events_url": "https://api.github.com/users/octocat/events{/privacy}",
+          "received_events_url": "https://api.github.com/users/octocat/received_events",
+          "type": "User",
+          "site_admin": true,
+          "starred_at": "\"2020-07-09T00:17:55Z\"",
+          "user_view_type": "public"
+        }
+      },
+      "minimized": {
+        "reason": "low-quality"
+      }
+    },
+    "sub_issues_summary": {
+      "total": 0,
+      "completed": 0,
+      "percent_completed": 0
+    },
+    "issue_dependencies_summary": {
+      "blocked_by": 0,
+      "blocking": 0,
+      "total_blocked_by": 0,
+      "total_blocking": 0
+    },
+    "issue_field_values": [
+      {
+        "issue_field_id": 1,
+        "issue_field_name": "Priority",
+        "node_id": "IFT_GDKND",
+        "data_type": "text",
+        "value": "Sample text",
+        "single_select_option": {
+          "id": 1,
+          "name": "High",
+          "color": "red"
+        },
+        "multi_select_options": [
+          {
+            "id": 1,
+            "name": "High",
+            "color": "red"
+          }
+        ]
+      }
+    ],
+    "status": {
+      "id": 4,
+      "name": "In progress",
+      "category": "started"
+    },
+    "state": "open",
+    "state_reason": "string",
+    "timeline_url": "http://example.com",
+    "title": "string",
+    "type": {
+      "id": 0,
+      "node_id": "string",
+      "name": "string",
+      "description": "string",
+      "color": "gray",
+      "created_at": "1970-01-01T00:00:00Z",
+      "updated_at": "1970-01-01T00:00:00Z",
+      "is_enabled": true
+    },
+    "updated_at": "1970-01-01T00:00:00Z",
+    "url": "http://example.com",
+    "user": {
+      "avatar_url": "http://example.com",
+      "deleted": true,
+      "email": "string",
+      "events_url": "string",
+      "followers_url": "http://example.com",
+      "following_url": "string",
+      "gists_url": "string",
+      "gravatar_id": "string",
+      "html_url": "http://example.com",
+      "id": 0,
+      "login": "string",
+      "name": "string",
+      "node_id": "string",
+      "organizations_url": "http://example.com",
+      "received_events_url": "http://example.com",
+      "repos_url": "http://example.com",
+      "site_admin": true,
+      "starred_url": "string",
+      "subscriptions_url": "http://example.com",
+      "type": "Bot",
+      "url": "http://example.com",
+      "user_view_type": "string"
+    }
+  },
+  "organization": {
+    "login": "github",
+    "id": 1,
+    "node_id": "MDEyOk9yZ2FuaXphdGlvbjE=",
+    "url": "https://api.github.com/orgs/github",
+    "repos_url": "https://api.github.com/orgs/github/repos",
+    "events_url": "https://api.github.com/orgs/github/events",
+    "hooks_url": "https://api.github.com/orgs/github/hooks",
+    "issues_url": "https://api.github.com/orgs/github/issues",
+    "members_url": "https://api.github.com/orgs/github/members{/member}",
+    "public_members_url": "https://api.github.com/orgs/github/public_members{/member}",
+    "avatar_url": "https://github.com/images/error/octocat_happy.gif",
+    "description": "A great organization"
+  },
+  "repository": {
+    "id": 42,
+    "node_id": "MDEwOlJlcG9zaXRvcnkxMjk2MjY5",
+    "name": "Team Environment",
+    "full_name": "octocat/Hello-World",
+    "license": {
+      "key": "mit",
+      "name": "MIT License",
+      "url": "https://api.github.com/licenses/mit",
+      "spdx_id": "MIT",
+      "node_id": "MDc6TGljZW5zZW1pdA==",
+      "html_url": "http://example.com"
+    },
+    "organization": {
+      "name": "string",
+      "email": "string",
+      "login": "octocat",
+      "id": 1,
+      "node_id": "MDQ6VXNlcjE=",
+      "avatar_url": "https://github.com/images/error/octocat_happy.gif",
+      "gravatar_id": "41d064eb2195891e12d0413f63227ea7",
+      "url": "https://api.github.com/users/octocat",
+      "html_url": "https://github.com/octocat",
+      "followers_url": "https://api.github.com/users/octocat/followers",
+      "following_url": "https://api.github.com/users/octocat/following{/other_user}",
+      "gists_url": "https://api.github.com/users/octocat/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/octocat/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/octocat/subscriptions",
+      "organizations_url": "https://api.github.com/users/octocat/orgs",
+      "repos_url": "https://api.github.com/users/octocat/repos",
+      "events_url": "https://api.github.com/users/octocat/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/octocat/received_events",
+      "type": "User",
+      "site_admin": true,
+      "starred_at": "\"2020-07-09T00:17:55Z\"",
+      "user_view_type": "public"
+    },
+    "forks": 0,
+    "permissions": {
+      "admin": true,
+      "pull": true,
+      "triage": true,
+      "push": true,
+      "maintain": true
+    },
+    "owner": {
+      "name": "string",
+      "email": "string",
+      "login": "octocat",
+      "id": 1,
+      "node_id": "MDQ6VXNlcjE=",
+      "avatar_url": "https://github.com/images/error/octocat_happy.gif",
+      "gravatar_id": "41d064eb2195891e12d0413f63227ea7",
+      "url": "https://api.github.com/users/octocat",
+      "html_url": "https://github.com/octocat",
+      "followers_url": "https://api.github.com/users/octocat/followers",
+      "following_url": "https://api.github.com/users/octocat/following{/other_user}",
+      "gists_url": "https://api.github.com/users/octocat/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/octocat/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/octocat/subscriptions",
+      "organizations_url": "https://api.github.com/users/octocat/orgs",
+      "repos_url": "https://api.github.com/users/octocat/repos",
+      "events_url": "https://api.github.com/users/octocat/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/octocat/received_events",
+      "type": "User",
+      "site_admin": true,
+      "starred_at": "\"2020-07-09T00:17:55Z\"",
+      "user_view_type": "public"
+    },
+    "private": false,
+    "html_url": "https://github.com/octocat/Hello-World",
+    "description": "This your first repo!",
+    "fork": true,
+    "url": "https://api.github.com/repos/octocat/Hello-World",
+    "archive_url": "http://api.github.com/repos/octocat/Hello-World/{archive_format}{/ref}",
+    "assignees_url": "http://api.github.com/repos/octocat/Hello-World/assignees{/user}",
+    "blobs_url": "http://api.github.com/repos/octocat/Hello-World/git/blobs{/sha}",
+    "branches_url": "http://api.github.com/repos/octocat/Hello-World/branches{/branch}",
+    "collaborators_url": "http://api.github.com/repos/octocat/Hello-World/collaborators{/collaborator}",
+    "comments_url": "http://api.github.com/repos/octocat/Hello-World/comments{/number}",
+    "commits_url": "http://api.github.com/repos/octocat/Hello-World/commits{/sha}",
+    "compare_url": "http://api.github.com/repos/octocat/Hello-World/compare/{base}...{head}",
+    "contents_url": "http://api.github.com/repos/octocat/Hello-World/contents/{+path}",
+    "contributors_url": "http://api.github.com/repos/octocat/Hello-World/contributors",
+    "deployments_url": "http://api.github.com/repos/octocat/Hello-World/deployments",
+    "downloads_url": "http://api.github.com/repos/octocat/Hello-World/downloads",
+    "events_url": "http://api.github.com/repos/octocat/Hello-World/events",
+    "forks_url": "http://api.github.com/repos/octocat/Hello-World/forks",
+    "git_commits_url": "http://api.github.com/repos/octocat/Hello-World/git/commits{/sha}",
+    "git_refs_url": "http://api.github.com/repos/octocat/Hello-World/git/refs{/sha}",
+    "git_tags_url": "http://api.github.com/repos/octocat/Hello-World/git/tags{/sha}",
+    "git_url": "git:github.com/octocat/Hello-World.git",
+    "issue_comment_url": "http://api.github.com/repos/octocat/Hello-World/issues/comments{/number}",
+    "issue_events_url": "http://api.github.com/repos/octocat/Hello-World/issues/events{/number}",
+    "issues_url": "http://api.github.com/repos/octocat/Hello-World/issues{/number}",
+    "keys_url": "http://api.github.com/repos/octocat/Hello-World/keys{/key_id}",
+    "labels_url": "http://api.github.com/repos/octocat/Hello-World/labels{/name}",
+    "languages_url": "http://api.github.com/repos/octocat/Hello-World/languages",
+    "merges_url": "http://api.github.com/repos/octocat/Hello-World/merges",
+    "milestones_url": "http://api.github.com/repos/octocat/Hello-World/milestones{/number}",
+    "notifications_url": "http://api.github.com/repos/octocat/Hello-World/notifications{?since,all,participating}",
+    "pulls_url": "http://api.github.com/repos/octocat/Hello-World/pulls{/number}",
+    "releases_url": "http://api.github.com/repos/octocat/Hello-World/releases{/id}",
+    "ssh_url": "git@github.com:octocat/Hello-World.git",
+    "stargazers_url": "http://api.github.com/repos/octocat/Hello-World/stargazers",
+    "statuses_url": "http://api.github.com/repos/octocat/Hello-World/statuses/{sha}",
+    "subscribers_url": "http://api.github.com/repos/octocat/Hello-World/subscribers",
+    "subscription_url": "http://api.github.com/repos/octocat/Hello-World/subscription",
+    "tags_url": "http://api.github.com/repos/octocat/Hello-World/tags",
+    "teams_url": "http://api.github.com/repos/octocat/Hello-World/teams",
+    "trees_url": "http://api.github.com/repos/octocat/Hello-World/git/trees{/sha}",
+    "clone_url": "https://github.com/octocat/Hello-World.git",
+    "mirror_url": "git:git.example.com/octocat/Hello-World",
+    "hooks_url": "http://api.github.com/repos/octocat/Hello-World/hooks",
+    "svn_url": "https://svn.github.com/octocat/Hello-World",
+    "homepage": "https://github.com",
+    "language": "string",
+    "forks_count": 9,
+    "stargazers_count": 80,
+    "watchers_count": 80,
+    "size": 108,
+    "default_branch": "master",
+    "open_issues_count": 0,
+    "is_template": true,
+    "topics": [
+      "string"
+    ],
+    "custom_properties": {},
+    "has_issues": true,
+    "has_projects": true,
+    "has_wiki": true,
+    "has_pages": true,
+    "has_downloads": true,
+    "has_discussions": true,
+    "has_pull_requests": true,
+    "pull_request_creation_policy": "all",
+    "archived": false,
+    "disabled": true,
+    "visibility": "public",
+    "pushed_at": "2011-01-26T19:06:43Z",
+    "created_at": "2011-01-26T19:01:12Z",
+    "updated_at": "2011-01-26T19:14:43Z",
+    "allow_rebase_merge": true,
+    "template_repository": {
+      "id": 0,
+      "node_id": "string",
+      "name": "string",
+      "full_name": "string",
+      "owner": {
+        "login": "string",
+        "id": 0,
+        "node_id": "string",
+        "avatar_url": "string",
+        "gravatar_id": "string",
+        "url": "string",
+        "html_url": "string",
+        "followers_url": "string",
+        "following_url": "string",
+        "gists_url": "string",
+        "starred_url": "string",
+        "subscriptions_url": "string",
+        "organizations_url": "string",
+        "repos_url": "string",
+        "events_url": "string",
+        "received_events_url": "string",
+        "type": "string",
+        "site_admin": true
+      },
+      "private": true,
+      "html_url": "string",
+      "description": "string",
+      "fork": true,
+      "url": "string",
+      "archive_url": "string",
+      "assignees_url": "string",
+      "blobs_url": "string",
+      "branches_url": "string",
+      "collaborators_url": "string",
+      "comments_url": "string",
+      "commits_url": "string",
+      "compare_url": "string",
+      "contents_url": "string",
+      "contributors_url": "string",
+      "deployments_url": "string",
+      "downloads_url": "string",
+      "events_url": "string",
+      "forks_url": "string",
+      "git_commits_url": "string",
+      "git_refs_url": "string",
+      "git_tags_url": "string",
+      "git_url": "string",
+      "issue_comment_url": "string",
+      "issue_events_url": "string",
+      "issues_url": "string",
+      "keys_url": "string",
+      "labels_url": "string",
+      "languages_url": "string",
+      "merges_url": "string",
+      "milestones_url": "string",
+      "notifications_url": "string",
+      "pulls_url": "string",
+      "releases_url": "string",
+      "ssh_url": "string",
+      "stargazers_url": "string",
+      "statuses_url": "string",
+      "subscribers_url": "string",
+      "subscription_url": "string",
+      "tags_url": "string",
+      "teams_url": "string",
+      "trees_url": "string",
+      "clone_url": "string",
+      "mirror_url": "string",
+      "hooks_url": "string",
+      "svn_url": "string",
+      "homepage": "string",
+      "language": "string",
+      "forks_count": 0,
+      "stargazers_count": 0,
+      "watchers_count": 0,
+      "size": 0,
+      "default_branch": "string",
+      "open_issues_count": 0,
+      "is_template": true,
+      "topics": [
+        "string"
+      ],
+      "has_issues": true,
+      "has_projects": true,
+      "has_wiki": true,
+      "has_pages": true,
+      "has_downloads": true,
+      "archived": true,
+      "disabled": true,
+      "visibility": "string",
+      "pushed_at": "string",
+      "created_at": "string",
+      "updated_at": "string",
+      "permissions": {
+        "admin": true,
+        "maintain": true,
+        "push": true,
+        "triage": true,
+        "pull": true
+      },
+      "allow_rebase_merge": true,
+      "temp_clone_token": "string",
+      "allow_squash_merge": true,
+      "allow_auto_merge": true,
+      "delete_branch_on_merge": true,
+      "allow_update_branch": true,
+      "use_squash_pr_title_as_default": true,
+      "squash_merge_commit_title": "PR_TITLE",
+      "squash_merge_commit_message": "PR_BODY",
+      "merge_commit_title": "PR_TITLE",
+      "merge_commit_message": "PR_BODY",
+      "allow_merge_commit": true,
+      "subscribers_count": 0,
+      "network_count": 0
+    },
+    "temp_clone_token": "string",
+    "allow_squash_merge": true,
+    "allow_auto_merge": false,
+    "delete_branch_on_merge": false,
+    "allow_update_branch": false,
+    "use_squash_pr_title_as_default": false,
+    "squash_merge_commit_title": "PR_TITLE",
+    "squash_merge_commit_message": "PR_BODY",
+    "merge_commit_title": "PR_TITLE",
+    "merge_commit_message": "PR_BODY",
+    "allow_merge_commit": true,
+    "allow_forking": true,
+    "web_commit_signoff_required": false,
+    "subscribers_count": 0,
+    "network_count": 0,
+    "open_issues": 0,
+    "watchers": 0,
+    "master_branch": "string",
+    "starred_at": "\"2020-07-09T00:17:42Z\"",
+    "anonymous_access_enabled": true
+  },
+  "sender": {
+    "name": "string",
+    "email": "string",
+    "login": "octocat",
+    "id": 1,
+    "node_id": "MDQ6VXNlcjE=",
+    "avatar_url": "https://github.com/images/error/octocat_happy.gif",
+    "gravatar_id": "41d064eb2195891e12d0413f63227ea7",
+    "url": "https://api.github.com/users/octocat",
+    "html_url": "https://github.com/octocat",
+    "followers_url": "https://api.github.com/users/octocat/followers",
+    "following_url": "https://api.github.com/users/octocat/following{/other_user}",
+    "gists_url": "https://api.github.com/users/octocat/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/octocat/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/octocat/subscriptions",
+    "organizations_url": "https://api.github.com/users/octocat/orgs",
+    "repos_url": "https://api.github.com/users/octocat/repos",
+    "events_url": "https://api.github.com/users/octocat/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/octocat/received_events",
+    "type": "User",
+    "site_admin": true,
+    "starred_at": "\"2020-07-09T00:17:55Z\"",
+    "user_view_type": "public"
+  },
+  "status": {
+    "id": 4,
+    "name": "In progress",
+    "category": "started"
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|action|string|true|none|none|
+|changes|object|true|none|The changes to the issue. `state` and `state_reason` are only included when the status change also closed or reopened the issue, or changed the reason it was closed.|
+|enterprise|[enterprise-webhooks](#schemaenterprise-webhooks)|false|none|An enterprise on GitHub. Webhook payloads contain the `enterprise` property when the webhook is configured<br>on an enterprise account or an organization that's part of an enterprise account. For more information,<br>see "[About enterprise accounts](https://docs.github.com/admin/overview/about-enterprise-accounts)."|
+|installation|[simple-installation](#schemasimple-installation)|false|none|The GitHub App installation. Webhook payloads contain the `installation` property when the event is configured<br>for and sent to a GitHub App. For more information,<br>see "[Using webhooks with GitHub Apps](https://docs.github.com/apps/creating-github-apps/registering-a-github-app/using-webhooks-with-github-apps)."|
+|issue|[webhooks_issue](#schemawebhooks_issue)|true|none|The [issue](https://docs.github.com/rest/issues/issues#get-an-issue) itself.|
+|organization|[organization-simple-webhooks](#schemaorganization-simple-webhooks)|false|none|A GitHub organization. Webhook payloads contain the `organization` property when the webhook is configured for an<br>organization, or when the event occurs from activity in a repository owned by an organization.|
+|repository|[repository-webhooks](#schemarepository-webhooks)|true|none|The repository on GitHub where the event occurred. Webhook payloads contain the `repository` property<br>when the event occurs from activity in a repository.|
+|sender|[simple-user](#schemasimple-user)|true|none|A GitHub user.|
+|status|object|true|none|The status the issue changed to.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|action|status_changed|
+
 <h2 id="tocS_webhook-issues-transferred">webhook-issues-transferred</h2>
 <!-- backwards compatibility -->
 <a id="schemawebhook-issues-transferred"></a>
@@ -470051,6 +477744,11 @@ A user forks a repository.
           ]
         }
       ],
+      "status": {
+        "id": 4,
+        "name": "In progress",
+        "category": "started"
+      },
       "state": "open",
       "state_reason": "string",
       "timeline_url": "http://example.com",
@@ -470632,6 +478330,11 @@ A user forks a repository.
         ]
       }
     ],
+    "status": {
+      "id": 4,
+      "name": "In progress",
+      "category": "started"
+    },
     "state": "open",
     "state_reason": "string",
     "timeline_url": "http://example.com",
@@ -471429,6 +479132,11 @@ A user forks a repository.
         ]
       }
     ],
+    "status": {
+      "id": 4,
+      "name": "In progress",
+      "category": "started"
+    },
     "state": "open",
     "state_reason": "string",
     "timeline_url": "http://example.com",
@@ -472260,6 +479968,11 @@ A user forks a repository.
         ]
       }
     ],
+    "status": {
+      "id": 4,
+      "name": "In progress",
+      "category": "started"
+    },
     "state": "open",
     "state_reason": "string",
     "timeline_url": "http://example.com",
@@ -473057,6 +480770,11 @@ A user forks a repository.
         ]
       }
     ],
+    "status": {
+      "id": 4,
+      "name": "In progress",
+      "category": "started"
+    },
     "state": "open",
     "state_reason": "string",
     "timeline_url": "http://example.com",
@@ -473863,6 +481581,11 @@ A user forks a repository.
         ]
       }
     ],
+    "status": {
+      "id": 4,
+      "name": "In progress",
+      "category": "started"
+    },
     "state": "open",
     "state_reason": "string",
     "timeline_url": "http://example.com",
@@ -474659,6 +482382,11 @@ A user forks a repository.
         ]
       }
     ],
+    "status": {
+      "id": 4,
+      "name": "In progress",
+      "category": "started"
+    },
     "state": "open",
     "state_reason": "string",
     "timeline_url": "http://example.com",
@@ -475455,6 +483183,11 @@ A user forks a repository.
         ]
       }
     ],
+    "status": {
+      "id": 4,
+      "name": "In progress",
+      "category": "started"
+    },
     "state": "open",
     "state_reason": "string",
     "timeline_url": "http://example.com",
@@ -554156,6 +561889,11 @@ A project was created
     "html_url": "http://example.com",
     "number": 42,
     "state": "open",
+    "status": {
+      "id": 4,
+      "name": "In progress",
+      "category": "started"
+    },
     "state_reason": "not_planned",
     "title": "Widget creation fails in Safari on OS X 10.8",
     "body": "It looks like the new widget form is broken on Safari. When I try and create the widget, Safari crashes. This is reproducible on 10.8, but not 10.9. Maybe a browser bug?",
@@ -554830,6 +562568,11 @@ A project was created
     "html_url": "http://example.com",
     "number": 42,
     "state": "open",
+    "status": {
+      "id": 4,
+      "name": "In progress",
+      "category": "started"
+    },
     "state_reason": "not_planned",
     "title": "Widget creation fails in Safari on OS X 10.8",
     "body": "It looks like the new widget form is broken on Safari. When I try and create the widget, Safari crashes. This is reproducible on 10.8, but not 10.9. Maybe a browser bug?",
@@ -555719,6 +563462,11 @@ A project was created
     "html_url": "http://example.com",
     "number": 42,
     "state": "open",
+    "status": {
+      "id": 4,
+      "name": "In progress",
+      "category": "started"
+    },
     "state_reason": "not_planned",
     "title": "Widget creation fails in Safari on OS X 10.8",
     "body": "It looks like the new widget form is broken on Safari. When I try and create the widget, Safari crashes. This is reproducible on 10.8, but not 10.9. Maybe a browser bug?",
@@ -556393,6 +564141,11 @@ A project was created
     "html_url": "http://example.com",
     "number": 42,
     "state": "open",
+    "status": {
+      "id": 4,
+      "name": "In progress",
+      "category": "started"
+    },
     "state_reason": "not_planned",
     "title": "Widget creation fails in Safari on OS X 10.8",
     "body": "It looks like the new widget form is broken on Safari. When I try and create the widget, Safari crashes. This is reproducible on 10.8, but not 10.9. Maybe a browser bug?",
@@ -557282,6 +565035,11 @@ A project was created
     "html_url": "http://example.com",
     "number": 42,
     "state": "open",
+    "status": {
+      "id": 4,
+      "name": "In progress",
+      "category": "started"
+    },
     "state_reason": "not_planned",
     "title": "Widget creation fails in Safari on OS X 10.8",
     "body": "It looks like the new widget form is broken on Safari. When I try and create the widget, Safari crashes. This is reproducible on 10.8, but not 10.9. Maybe a browser bug?",
@@ -557956,6 +565714,11 @@ A project was created
     "html_url": "http://example.com",
     "number": 42,
     "state": "open",
+    "status": {
+      "id": 4,
+      "name": "In progress",
+      "category": "started"
+    },
     "state_reason": "not_planned",
     "title": "Widget creation fails in Safari on OS X 10.8",
     "body": "It looks like the new widget form is broken on Safari. When I try and create the widget, Safari crashes. This is reproducible on 10.8, but not 10.9. Maybe a browser bug?",
@@ -558845,6 +566608,11 @@ A project was created
     "html_url": "http://example.com",
     "number": 42,
     "state": "open",
+    "status": {
+      "id": 4,
+      "name": "In progress",
+      "category": "started"
+    },
     "state_reason": "not_planned",
     "title": "Widget creation fails in Safari on OS X 10.8",
     "body": "It looks like the new widget form is broken on Safari. When I try and create the widget, Safari crashes. This is reproducible on 10.8, but not 10.9. Maybe a browser bug?",
@@ -559519,6 +567287,11 @@ A project was created
     "html_url": "http://example.com",
     "number": 42,
     "state": "open",
+    "status": {
+      "id": 4,
+      "name": "In progress",
+      "category": "started"
+    },
     "state_reason": "not_planned",
     "title": "Widget creation fails in Safari on OS X 10.8",
     "body": "It looks like the new widget form is broken on Safari. When I try and create the widget, Safari crashes. This is reproducible on 10.8, but not 10.9. Maybe a browser bug?",
@@ -566872,6 +574645,11 @@ A project was created
     "html_url": "http://example.com",
     "number": 42,
     "state": "open",
+    "status": {
+      "id": 4,
+      "name": "In progress",
+      "category": "started"
+    },
     "state_reason": "not_planned",
     "title": "Widget creation fails in Safari on OS X 10.8",
     "body": "It looks like the new widget form is broken on Safari. When I try and create the widget, Safari crashes. This is reproducible on 10.8, but not 10.9. Maybe a browser bug?",
@@ -567548,6 +575326,11 @@ A project was created
     "html_url": "http://example.com",
     "number": 42,
     "state": "open",
+    "status": {
+      "id": 4,
+      "name": "In progress",
+      "category": "started"
+    },
     "state_reason": "not_planned",
     "title": "Widget creation fails in Safari on OS X 10.8",
     "body": "It looks like the new widget form is broken on Safari. When I try and create the widget, Safari crashes. This is reproducible on 10.8, but not 10.9. Maybe a browser bug?",

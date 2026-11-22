@@ -8527,6 +8527,7 @@ Retrieve a document by its `UUID`, `urlId`, or `shareId`. At least one of these 
     "text": "…",
     "data": {},
     "url": "string",
+    "path": "string",
     "urlId": "hDYep1TPAM",
     "collaboratorIds": [
       "497f6eca-6276-4993-bfeb-53cbbbba6f08"
@@ -8918,6 +8919,7 @@ publish: true
     "text": "…",
     "data": {},
     "url": "string",
+    "path": "string",
     "urlId": "hDYep1TPAM",
     "collaboratorIds": [
       "497f6eca-6276-4993-bfeb-53cbbbba6f08"
@@ -9338,6 +9340,7 @@ This method will list all published documents and draft documents belonging to t
       "text": "…",
       "data": {},
       "url": "string",
+      "path": "string",
       "urlId": "hDYep1TPAM",
       "collaboratorIds": [
         "497f6eca-6276-4993-bfeb-53cbbbba6f08"
@@ -9722,6 +9725,7 @@ This method will list all draft documents belonging to the current user.
       "text": "…",
       "data": {},
       "url": "string",
+      "path": "string",
       "urlId": "hDYep1TPAM",
       "collaboratorIds": [
         "497f6eca-6276-4993-bfeb-53cbbbba6f08"
@@ -9959,6 +9963,7 @@ This method will list all documents recently viewed by the current user.
       "text": "…",
       "data": {},
       "url": "string",
+      "path": "string",
       "urlId": "hDYep1TPAM",
       "collaboratorIds": [
         "497f6eca-6276-4993-bfeb-53cbbbba6f08"
@@ -10205,6 +10210,7 @@ This method allows asking direct questions of your documents – where possible 
       "text": "…",
       "data": {},
       "url": "string",
+      "path": "string",
       "urlId": "hDYep1TPAM",
       "collaboratorIds": [
         "497f6eca-6276-4993-bfeb-53cbbbba6f08"
@@ -10494,6 +10500,7 @@ This method allows you to search document titles with keywords. Unlike documents
       "text": "…",
       "data": {},
       "url": "string",
+      "path": "string",
       "urlId": "hDYep1TPAM",
       "collaboratorIds": [
         "497f6eca-6276-4993-bfeb-53cbbbba6f08"
@@ -10789,6 +10796,7 @@ This methods allows you to search your workspace's documents with keywords. Note
         "text": "…",
         "data": {},
         "url": "string",
+        "path": "string",
         "urlId": "hDYep1TPAM",
         "collaboratorIds": [
           "497f6eca-6276-4993-bfeb-53cbbbba6f08"
@@ -11076,6 +11084,7 @@ This method allows you to create or publish a new document. By default a documen
     "text": "…",
     "data": {},
     "url": "string",
+    "path": "string",
     "urlId": "hDYep1TPAM",
     "collaboratorIds": [
       "497f6eca-6276-4993-bfeb-53cbbbba6f08"
@@ -11379,6 +11388,7 @@ This method allows you to modify an already created document
     "text": "…",
     "data": {},
     "url": "string",
+    "path": "string",
     "urlId": "hDYep1TPAM",
     "collaboratorIds": [
       "497f6eca-6276-4993-bfeb-53cbbbba6f08"
@@ -11616,6 +11626,7 @@ This method allows you to create a new template using an existing document as th
   "data": {
     "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
     "url": "string",
+    "path": "string",
     "urlId": "string",
     "title": "string",
     "data": {},
@@ -11814,6 +11825,7 @@ Unpublishing a document moves it back to a draft status and out of the collectio
     "text": "…",
     "data": {},
     "url": "string",
+    "path": "string",
     "urlId": "hDYep1TPAM",
     "collaboratorIds": [
       "497f6eca-6276-4993-bfeb-53cbbbba6f08"
@@ -12063,6 +12075,7 @@ Move a document to a new location or collection. If no parent document is provid
         "text": "…",
         "data": {},
         "url": "string",
+        "path": "string",
         "urlId": "hDYep1TPAM",
         "collaboratorIds": [
           "497f6eca-6276-4993-bfeb-53cbbbba6f08"
@@ -12355,6 +12368,7 @@ Archiving a document allows outdated information to be moved out of sight whilst
     "text": "…",
     "data": {},
     "url": "string",
+    "path": "string",
     "urlId": "hDYep1TPAM",
     "collaboratorIds": [
       "497f6eca-6276-4993-bfeb-53cbbbba6f08"
@@ -12599,6 +12613,7 @@ If a document has been archived or deleted, it can be restored. Optionally a rev
     "text": "…",
     "data": {},
     "url": "string",
+    "path": "string",
     "urlId": "hDYep1TPAM",
     "collaboratorIds": [
       "497f6eca-6276-4993-bfeb-53cbbbba6f08"
@@ -13724,6 +13739,7 @@ This method will list all archived documents belonging to the workspace that the
       "text": "…",
       "data": {},
       "url": "string",
+      "path": "string",
       "urlId": "hDYep1TPAM",
       "collaboratorIds": [
         "497f6eca-6276-4993-bfeb-53cbbbba6f08"
@@ -13974,6 +13990,7 @@ This method will list all deleted documents belonging to the workspace that the 
       "text": "…",
       "data": {},
       "url": "string",
+      "path": "string",
       "urlId": "hDYep1TPAM",
       "collaboratorIds": [
         "497f6eca-6276-4993-bfeb-53cbbbba6f08"
@@ -14209,6 +14226,7 @@ This method allows you to duplicate an existing document and optionally all of i
         "text": "…",
         "data": {},
         "url": "string",
+        "path": "string",
         "urlId": "hDYep1TPAM",
         "collaboratorIds": [
           "497f6eca-6276-4993-bfeb-53cbbbba6f08"
@@ -15905,6 +15923,7 @@ List the documents that have been shared with groups the authenticated user belo
         "text": "…",
         "data": {},
         "url": "string",
+        "path": "string",
         "urlId": "hDYep1TPAM",
         "collaboratorIds": [
           "497f6eca-6276-4993-bfeb-53cbbbba6f08"
@@ -21389,6 +21408,7 @@ Retrieve the details of a share link by its unique identifier or by the associat
     "allowIndexing": true,
     "showLastUpdated": true,
     "showTOC": true,
+    "expiresAt": "1970-01-01T00:00:00Z",
     "views": 0,
     "createdAt": "1970-01-01T00:00:00Z",
     "createdBy": {
@@ -21590,6 +21610,7 @@ List all share links in the workspace.
       "allowIndexing": true,
       "showLastUpdated": true,
       "showTOC": true,
+      "expiresAt": "1970-01-01T00:00:00Z",
       "views": 0,
       "createdAt": "1970-01-01T00:00:00Z",
       "createdBy": {
@@ -21717,7 +21738,8 @@ curl https://app.getoutline.com/api/shares.create \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "documentId": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
-    "collectionId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+    "collectionId": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+    "expiresAt": "1970-01-01T00:00:00Z"
   }'
 ```
 
@@ -21730,7 +21752,8 @@ Creates a new share link that can be used by to access a document or collection.
 ```json
 {
   "documentId": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
-  "collectionId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+  "collectionId": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "expiresAt": "1970-01-01T00:00:00Z"
 }
 ```
 
@@ -21741,6 +21764,7 @@ Creates a new share link that can be used by to access a document or collection.
 |body|body|object|false|none|
 |» documentId|body|string(uuid)|false|Identifier for the document to share. Mutually exclusive with `collectionId`.|
 |» collectionId|body|string(uuid)|false|Identifier for the collection to share. Mutually exclusive with `documentId`.|
+|» expiresAt|body|string(date-time) \| null|false|An optional date and time when the share link should expire and no longer be usable. When omitted the workspace default share expiry is applied, if one is configured.|
 |» *oneOf*|body|object|false|none|
 |» *oneOf*|body|object|false|none|
 
@@ -21769,6 +21793,7 @@ Creates a new share link that can be used by to access a document or collection.
     "allowIndexing": true,
     "showLastUpdated": true,
     "showTOC": true,
+    "expiresAt": "1970-01-01T00:00:00Z",
     "views": 0,
     "createdAt": "1970-01-01T00:00:00Z",
     "createdBy": {
@@ -21905,7 +21930,8 @@ curl https://app.getoutline.com/api/shares.update \
     "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
     "published": true,
     "title": "string",
-    "iconUrl": "http://example.com"
+    "iconUrl": "http://example.com",
+    "expiresAt": "1970-01-01T00:00:00Z"
   }'
 ```
 
@@ -21920,7 +21946,8 @@ Allows changing an existing share's published status, which removes authenticati
   "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
   "published": true,
   "title": "string",
-  "iconUrl": "http://example.com"
+  "iconUrl": "http://example.com",
+  "expiresAt": "1970-01-01T00:00:00Z"
 }
 ```
 
@@ -21933,6 +21960,7 @@ Allows changing an existing share's published status, which removes authenticati
 |» published|body|boolean|true|none|
 |» title|body|string \| null|false|Override title displayed on the publicly shared page. If not set the source document or collection title is used.|
 |» iconUrl|body|string(uri) \| null|false|URL of an icon to display on the publicly shared page, overriding the workspace branding.|
+|» expiresAt|body|string(date-time) \| null|false|Date and time when the share link should expire and no longer be usable. Set to `null` to remove an existing expiry.|
 
 > Example responses
 
@@ -21959,6 +21987,7 @@ Allows changing an existing share's published status, which removes authenticati
     "allowIndexing": true,
     "showLastUpdated": true,
     "showTOC": true,
+    "expiresAt": "1970-01-01T00:00:00Z",
     "views": 0,
     "createdAt": "1970-01-01T00:00:00Z",
     "createdBy": {
@@ -22467,6 +22496,7 @@ List all starred documents for the authenticated user. Stars allow users to book
         "text": "…",
         "data": {},
         "url": "string",
+        "path": "string",
         "urlId": "hDYep1TPAM",
         "collaboratorIds": [
           "497f6eca-6276-4993-bfeb-53cbbbba6f08"
@@ -23696,6 +23726,7 @@ Create a new template that can be used as a starting point for new documents. Te
   "data": {
     "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
     "url": "string",
+    "path": "string",
     "urlId": "string",
     "title": "string",
     "data": {},
@@ -23906,6 +23937,7 @@ List all templates available to the current user. Optionally filter by collectio
     {
       "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
       "url": "string",
+      "path": "string",
       "urlId": "string",
       "title": "string",
       "data": {},
@@ -24086,6 +24118,7 @@ Retrieve a template by its unique identifier.
   "data": {
     "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
     "url": "string",
+    "path": "string",
     "urlId": "string",
     "title": "string",
     "data": {},
@@ -24307,6 +24340,7 @@ Update an existing template by its unique identifier.
   "data": {
     "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
     "url": "string",
+    "path": "string",
     "urlId": "string",
     "title": "string",
     "data": {},
@@ -24652,6 +24686,7 @@ Restore a previously deleted template by its unique identifier.
   "data": {
     "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
     "url": "string",
+    "path": "string",
     "urlId": "string",
     "title": "string",
     "data": {},
@@ -24858,6 +24893,7 @@ Create a copy of an existing template. Optionally override the title and target 
   "data": {
     "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
     "url": "string",
+    "path": "string",
     "urlId": "string",
     "title": "string",
     "data": {},
@@ -25089,6 +25125,7 @@ List the documents that have been shared directly with the authenticated user, a
         "text": "…",
         "data": {},
         "url": "string",
+        "path": "string",
         "urlId": "hDYep1TPAM",
         "collaboratorIds": [
           "497f6eca-6276-4993-bfeb-53cbbbba6f08"
@@ -28905,6 +28942,7 @@ Additional options for certain data attribute types.
   "text": "…",
   "data": {},
   "url": "string",
+  "path": "string",
   "urlId": "hDYep1TPAM",
   "collaboratorIds": [
     "497f6eca-6276-4993-bfeb-53cbbbba6f08"
@@ -28992,7 +29030,8 @@ Additional options for certain data attribute types.
 |color|string \| null|false|none|The color of the document icon in hex format.|
 |text|string|false|none|The text content of the document, contains markdown formatting|
 |data|object \| null|false|none|The body of the document as a Prosemirror document, returned in place of text when requested.|
-|url|string|false|read-only|A URL path to access the document.|
+|url|string|false|read-only|**Deprecated.** A URL path to access the document. Deprecated – prefer the `path` field.|
+|path|string|false|read-only|A URL path to access the document.|
 |urlId|string|false|none|A short unique ID that can be used to identify the document as an alternative to the UUID|
 |collaboratorIds|[string(uuid)]|false|none|Identifiers of users who have edited the document.|
 |tasks|object|false|none|Task completion counts for the document.|
@@ -29525,6 +29564,7 @@ A rollup of activity counts for a document over a daily or weekly period.
   "allowIndexing": true,
   "showLastUpdated": true,
   "showTOC": true,
+  "expiresAt": "1970-01-01T00:00:00Z",
   "views": 0,
   "createdAt": "1970-01-01T00:00:00Z",
   "createdBy": {
@@ -29569,6 +29609,7 @@ A rollup of activity counts for a document over a daily or weekly period.
 |allowIndexing|boolean|false|none|Whether the shared page may be indexed by search engines.|
 |showLastUpdated|boolean|false|none|Whether to show the last-updated time on the shared page.|
 |showTOC|boolean|false|none|Whether to show a table of contents on the shared page.|
+|expiresAt|string(date-time) \| null|false|none|Date and time when the share link expires and can no longer be used to access the document. When `null` the share does not expire.|
 |views|number|false|read-only|The number of times the shared page has been viewed.|
 |createdAt|string(date-time)|false|read-only|Date and time when this share was created|
 |createdBy|object \| null|false|read-only|The user that created the share. Only returned to viewers with access to read the share; omitted from responses to unauthenticated viewers of a published share, and when the creating user has been deleted.|
@@ -30055,6 +30096,7 @@ A single permission granted by a policy
 {
   "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
   "url": "string",
+  "path": "string",
   "urlId": "string",
   "title": "string",
   "data": {},
@@ -30104,7 +30146,8 @@ A single permission granted by a policy
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |id|string(uuid)|false|read-only|Unique identifier for the object.|
-|url|string|false|read-only|A URL path to access the template.|
+|url|string|false|read-only|**Deprecated.** A URL path to access the template. Deprecated – prefer the `path` field.|
+|path|string|false|read-only|A URL path to access the template.|
 |urlId|string|false|read-only|A short unique identifier for the template used in URLs.|
 |title|string|false|none|The title of the template.|
 |data|object|false|none|The body of the template as a Prosemirror document.|

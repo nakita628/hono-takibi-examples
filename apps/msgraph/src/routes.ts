@@ -765,6 +765,8 @@ const MicrosoftGraphEntitySchema: z.ZodType<MicrosoftGraphEntityType> = z
         '#microsoft.graph.agentUser': '#/components/schemas/microsoft.graph.agentUser',
         '#microsoft.graph.directoryRoleManagementDeletedItemContainer':
           '#/components/schemas/microsoft.graph.directoryRoleManagementDeletedItemContainer',
+        '#microsoft.graph.distributionListMember':
+          '#/components/schemas/microsoft.graph.distributionListMember',
         '#microsoft.graph.domain': '#/components/schemas/microsoft.graph.domain',
         '#microsoft.graph.domainDnsRecord': '#/components/schemas/microsoft.graph.domainDnsRecord',
         '#microsoft.graph.domainDnsCnameRecord':
@@ -1148,6 +1150,14 @@ const MicrosoftGraphEntitySchema: z.ZodType<MicrosoftGraphEntityType> = z
           '#/components/schemas/microsoft.graph.mobileAppContent',
         '#microsoft.graph.mobileAppContentFile':
           '#/components/schemas/microsoft.graph.mobileAppContentFile',
+        '#microsoft.graph.mobileAppContentScript':
+          '#/components/schemas/microsoft.graph.mobileAppContentScript',
+        '#microsoft.graph.win32LobAppScript':
+          '#/components/schemas/microsoft.graph.win32LobAppScript',
+        '#microsoft.graph.win32LobAppInstallPowerShellScript':
+          '#/components/schemas/microsoft.graph.win32LobAppInstallPowerShellScript',
+        '#microsoft.graph.win32LobAppUninstallPowerShellScript':
+          '#/components/schemas/microsoft.graph.win32LobAppUninstallPowerShellScript',
         '#microsoft.graph.mobileAppRelationship':
           '#/components/schemas/microsoft.graph.mobileAppRelationship',
         '#microsoft.graph.mobileAppTroubleshootingEvent':
@@ -1218,6 +1228,8 @@ const MicrosoftGraphEntitySchema: z.ZodType<MicrosoftGraphEntityType> = z
         '#microsoft.graph.outlookCategory': '#/components/schemas/microsoft.graph.outlookCategory',
         '#microsoft.graph.outlookItem': '#/components/schemas/microsoft.graph.outlookItem',
         '#microsoft.graph.contact': '#/components/schemas/microsoft.graph.contact',
+        '#microsoft.graph.distributionList':
+          '#/components/schemas/microsoft.graph.distributionList',
         '#microsoft.graph.event': '#/components/schemas/microsoft.graph.event',
         '#microsoft.graph.mailboxItem': '#/components/schemas/microsoft.graph.mailboxItem',
         '#microsoft.graph.message': '#/components/schemas/microsoft.graph.message',
@@ -2954,6 +2966,14 @@ const MicrosoftGraphUserSchema: z.ZodType<MicrosoftGraphUserType> = z
             .openapi({
               description:
                 'The users and contacts that report to the user. (The users and contacts that have their manager property set to this user.) Read-only. Nullable. Supports $expand.',
+              'x-ms-navigationProperty': true,
+            }),
+          distributionLists: z
+            .array(MicrosoftGraphDistributionListSchema)
+            .exactOptional()
+            .openapi({
+              description:
+                "The personal distribution lists in the user's mailbox. Read-only. Nullable.",
               'x-ms-navigationProperty': true,
             }),
           drive: z
@@ -7883,8 +7903,16 @@ const MicrosoftGraphCurrentLabelSchema = z
   .object({
     applicationMode: z
       .union([MicrosoftGraphApplicationModeSchema, z.looseObject({}).nullable()])
-      .exactOptional(),
-    id: z.string().nullable().exactOptional(),
+      .exactOptional()
+      .openapi({
+        description:
+          'The application mode associated with the sensitivity label. The possible values are: manual, automatic, recommended, unknownFutureValue.',
+      }),
+    id: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The GUID that identifies the sensitivity label.' }),
     '@odata.type': z.string(),
   })
   .openapi({ title: 'currentLabel', required: ['@odata.type'] })
@@ -7956,7 +7984,10 @@ const MicrosoftGraphProcessContentMetadataBaseSchema = z
         description:
           "Required. A descriptive name for the content (for example, file name, web page title, 'Chat Message').",
       }),
-    sensitivityLabels: z.array(MicrosoftGraphCurrentLabelSchema).exactOptional(),
+    sensitivityLabels: z
+      .array(MicrosoftGraphCurrentLabelSchema)
+      .exactOptional()
+      .openapi({ description: 'Caller-supplied sensitivity labels describing the content.' }),
     sequenceNumber: z
       .number()
       .nullable()
@@ -9686,6 +9717,14 @@ const MicrosoftGraphMailboxFolderSchema: z.ZodType<MicrosoftGraphMailboxFolderTy
             .nullable()
             .exactOptional()
             .openapi({ description: 'The display name of the folder.' }),
+          isHidden: z
+            .boolean()
+            .nullable()
+            .exactOptional()
+            .openapi({
+              description:
+                "Indicates whether the folder is hidden. The default value is false. This property can be set only when you create the folder; it can't be updated using PATCH. By default, listing folders or listing child folders returns only folders that aren't hidden. To include hidden folders in the response, use the optional query parameter includeHiddenFolders=true. The response includes both hidden and nonhidden folders. If you use $select to limit the returned properties, include isHidden in the selection.",
+            }),
           parentFolderId: z
             .string()
             .nullable()
@@ -14771,7 +14810,13 @@ const MicrosoftGraphOptionalClaimsSchema = z
       .array(MicrosoftGraphOptionalClaimSchema)
       .exactOptional()
       .openapi({ description: 'The optional claims returned in the JWT ID token.' }),
-    kerberosTicket: z.array(MicrosoftGraphOptionalClaimSchema).exactOptional(),
+    kerberosTicket: z
+      .array(MicrosoftGraphOptionalClaimSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional claims that control group SID resolution for Kerberos tickets. The supported claim name is groups.',
+      }),
     saml2Token: z
       .array(MicrosoftGraphOptionalClaimSchema)
       .exactOptional()
@@ -15576,6 +15621,7 @@ type MicrosoftGraphAgentIdentityBlueprintPrincipalType = z.infer<
 }
 
 type MicrosoftGraphAgentUserType = z.infer<typeof MicrosoftGraphUserSchema> & {
+  managerApplications?: string[]
   '@odata.type': string
 }
 
@@ -19304,6 +19350,40 @@ const MicrosoftGraphDriveProtectionRuleSchema = MicrosoftGraphProtectionRuleBase
   .openapi({ 'x-ms-discriminator-value': '#microsoft.graph.driveProtectionRule' })
   .openapi('MicrosoftGraphDriveProtectionRule')
 
+const MicrosoftGraphRetentionPeriodChangeStatusSchema = z
+  .enum(['none', 'inProgress', 'failed', 'completed', 'unknownFutureValue'])
+  .openapi({ title: 'retentionPeriodChangeStatus' })
+  .openapi('MicrosoftGraphRetentionPeriodChangeStatus')
+
+const MicrosoftGraphRetentionPeriodChangeSchema = z
+  .object({
+    effectiveFromDateTime: z.iso
+      .datetime({ offset: true })
+      .regex(
+        /^[0-9]{4,}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])T([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]([.][0-9]{1,12})?(Z|[+-][0-9][0-9]:[0-9][0-9])$/,
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The date and time from which the retention period change takes effect. The timestamp type represents date and time information using ISO 8601 format and is always in UTC. For example, midnight UTC on Jan 1, 2026, is 2026-01-01T00:00:00Z. Nullable.',
+      }),
+    status: MicrosoftGraphRetentionPeriodChangeStatusSchema.exactOptional(),
+    targetRetentionPeriodInDays: z
+      .number()
+      .min(-2147483648)
+      .max(2147483647)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Specifies the retention period, in days, that applies after the change is completed. Nullable.',
+      }),
+    '@odata.type': z.string(),
+  })
+  .openapi({ title: 'retentionPeriodChange', required: ['@odata.type'] })
+  .openapi('MicrosoftGraphRetentionPeriodChange')
+
 const MicrosoftGraphProtectionSourceSchema = z
   .enum(['none', 'manual', 'dynamicRule', 'unknownFutureValue'])
   .openapi({ title: 'protectionSource', 'x-ms-enum-flags': { isFlags: true } })
@@ -19327,6 +19407,15 @@ const MicrosoftGraphProtectionUnitStatusSchema = z
 const MicrosoftGraphProtectionUnitBaseSchema = MicrosoftGraphEntitySchema.and(
   z
     .object({
+      backupRetentionPeriodInDays: z
+        .number()
+        .min(-2147483648)
+        .max(2147483647)
+        .exactOptional()
+        .openapi({
+          description:
+            'The policy-configured retention period of the backup, in days. Not nullable.',
+        }),
       createdBy: z
         .union([MicrosoftGraphIdentitySetSchema, z.looseObject({}).nullable()])
         .exactOptional()
@@ -19374,6 +19463,14 @@ const MicrosoftGraphProtectionUnitBaseSchema = MicrosoftGraphEntitySchema.and(
         .openapi({
           description:
             'The date and time when protection unit offboard was requested. The timestamp type represents date and time information using ISO 8601 format and is always in UTC. For example, midnight UTC on Jan 1, 2014 is 2014-01-01T00:00:00Z.',
+        }),
+      pendingRetentionPeriodChange: z
+        .union([MicrosoftGraphRetentionPeriodChangeSchema, z.looseObject({}).nullable()])
+        .exactOptional()
+        .openapi({
+          description:
+            'The retention period change to be applied to the protection unit when it moves between policies with different retention periods. Read-only. null when no change is pending.',
+          readOnly: true,
         }),
       policyId: z
         .string()
@@ -19578,7 +19675,10 @@ const MicrosoftGraphRetentionSettingSchema = z
       .string()
       .nullable()
       .exactOptional()
-      .openapi({ description: 'The frequency of the backup.' }),
+      .openapi({
+        description:
+          'The backup frequency, expressed as an ISO 8601 repeating interval. The service defines the backup intervals: R/PT10M for 10-minute copies and R/P1W for weekly copies. Use R/P1W when specifying the policy retention period in a create or update request.',
+      }),
     period: z.iso
       .duration()
       .regex(/^-?P([0-9]+D)?(T([0-9]+H)?([0-9]+M)?([0-9]+([.][0-9]+)?S)?)?$/)
@@ -19586,7 +19686,7 @@ const MicrosoftGraphRetentionSettingSchema = z
       .exactOptional()
       .openapi({
         description:
-          'The period of time to retain the protected data for a single Microsoft 365 service.',
+          "The period of time to retain the protected data for a single Microsoft 365 service, expressed as an ISO 8601 duration. The supported policy retention periods in create and update requests are: P90D, P180D, P365D, P730D, P1095D, P1460D, P1825D, P2190D, P2555D, P2920D, P3285D, and P3650D. Other policy retention periods aren't supported.",
       }),
     '@odata.type': z.string(),
   })
@@ -20404,6 +20504,13 @@ const MicrosoftGraphGranularRestoreArtifactBaseSchema = MicrosoftGraphEntitySche
         .nullable()
         .exactOptional()
         .openapi({ description: "Date time when the artifact's restoration completes." }),
+      error: z
+        .union([MicrosoftGraphPublicErrorSchema, z.looseObject({}).nullable()])
+        .exactOptional()
+        .openapi({
+          description:
+            'Contains error details if the restoration fails or completes with an error.',
+        }),
       restoredItemKey: z
         .string()
         .nullable()
@@ -20704,7 +20811,7 @@ const MicrosoftGraphGranularSiteRestoreArtifactSchema =
           .string()
           .nullable()
           .exactOptional()
-          .openapi({ description: 'Id of the site in which artifact is present.' }),
+          .openapi({ description: 'The ID of the site in which the artifact is present.' }),
         '@odata.type': z.string(),
       })
       .openapi({ title: 'granularSiteRestoreArtifact', required: ['@odata.type'] }),
@@ -29489,6 +29596,8 @@ const MicrosoftGraphOutlookItemSchema: z.ZodType<MicrosoftGraphOutlookItemType> 
           propertyName: '@odata.type',
           mapping: {
             '#microsoft.graph.contact': '#/components/schemas/microsoft.graph.contact',
+            '#microsoft.graph.distributionList':
+              '#/components/schemas/microsoft.graph.distributionList',
             '#microsoft.graph.event': '#/components/schemas/microsoft.graph.event',
             '#microsoft.graph.mailboxItem': '#/components/schemas/microsoft.graph.mailboxItem',
             '#microsoft.graph.message': '#/components/schemas/microsoft.graph.message',
@@ -43975,6 +44084,53 @@ type MicrosoftGraphDirectoryType = z.infer<typeof MicrosoftGraphEntitySchema> & 
   '@odata.type': string
 }
 
+const MicrosoftGraphRecipientTypeSchema = z
+  .enum(['contact', 'oneOff', 'mailbox', 'privateDL', 'unknownFutureValue'])
+  .openapi({ title: 'recipientType' })
+  .openapi('MicrosoftGraphRecipientType')
+
+const MicrosoftGraphDistributionListMemberSchema = MicrosoftGraphEntitySchema.and(
+  z
+    .object({
+      displayName: z
+        .string()
+        .nullable()
+        .exactOptional()
+        .openapi({ description: 'The display name of the member. Read-only.' }),
+      memberId: z
+        .string()
+        .nullable()
+        .exactOptional()
+        .openapi({
+          description:
+            'A system-generated unique identifier. Nonempty for contact, privateDL, and mailbox members. Read-only.',
+        }),
+      type: MicrosoftGraphRecipientTypeSchema.exactOptional(),
+      contact: z
+        .union([MicrosoftGraphContactSchema, z.looseObject({}).nullable()])
+        .exactOptional()
+        .openapi({
+          description: 'The contact associated with the distribution list member. Read-only.',
+          'x-ms-navigationProperty': true,
+        }),
+      '@odata.type': z.string(),
+    })
+    .openapi({ title: 'distributionListMember', required: ['@odata.type'] }),
+)
+  .openapi({ 'x-ms-discriminator-value': '#microsoft.graph.distributionListMember' })
+  .openapi('MicrosoftGraphDistributionListMember')
+
+type MicrosoftGraphDistributionListType = z.infer<typeof MicrosoftGraphOutlookItemSchema> & {
+  displayName?: string | null
+  notes?: string | null
+  personId?: string | null
+  members?: z.infer<typeof MicrosoftGraphDistributionListMemberSchema>[]
+  singleValueExtendedProperties?: z.infer<
+    typeof MicrosoftGraphSingleValueLegacyExtendedPropertySchema
+  >[]
+  '@odata.type': string
+}
+
 const MicrosoftGraphBaseItemVersionSchema = MicrosoftGraphEntitySchema.and(
   z
     .object({
@@ -55234,7 +55390,8 @@ const MicrosoftGraphIdentityGovernanceLifecycleWorkflowsContainerSchema: z.ZodTy
           .union([MicrosoftGraphDeletedItemContainerSchema, z.looseObject({}).nullable()])
           .exactOptional()
           .openapi({
-            description: 'Deleted workflows in your lifecycle workflows instance.',
+            description:
+              'Deleted workflows and lifecycle policies in your lifecycle workflows instance.',
             'x-ms-navigationProperty': true,
           }),
         insights: z
@@ -57683,6 +57840,7 @@ const MicrosoftGraphMailboxItemSchema = MicrosoftGraphOutlookItemSchema.and(
 type MicrosoftGraphMailboxFolderType = z.infer<typeof MicrosoftGraphEntitySchema> & {
   childFolderCount?: number | null
   displayName?: string | null
+  isHidden?: boolean | null
   parentFolderId?: string | null
   totalItemCount?: number | null
   type?: string | null
@@ -65208,6 +65366,17 @@ const MicrosoftGraphUnifiedRoleDefinitionSchema: z.ZodType<MicrosoftGraphUnified
       MicrosoftGraphEntitySchema.and(
         z
           .object({
+            deletedDateTime: z.iso
+              .datetime({ offset: true })
+              .regex(
+                /^[0-9]{4,}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])T([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]([.][0-9]{1,12})?(Z|[+-][0-9][0-9]:[0-9][0-9])$/,
+              )
+              .nullable()
+              .exactOptional()
+              .openapi({
+                description:
+                  'The date and time when the custom role definition was deleted. The value is null for active and restored role definitions. Read-only.',
+              }),
             description: z
               .string()
               .nullable()
@@ -65239,6 +65408,14 @@ const MicrosoftGraphUnifiedRoleDefinitionSchema: z.ZodType<MicrosoftGraphUnified
               .openapi({
                 description:
                   'Flag indicating whether the role is enabled for assignment. If false the role is not available for assignment. Read-only when isBuiltIn is true.',
+              }),
+            isPrivileged: z
+              .boolean()
+              .nullable()
+              .exactOptional()
+              .openapi({
+                description:
+                  'Flag indicating whether the role is privileged. Microsoft Entra ID defines a role as privileged if it contains at least one sensitive resource action in the allowedResourceActions collection of rolePermissions. Applies only to actions in the microsoft.directory resource namespace. Nullable. A value of null indicates that the privileged classification is unavailable, not that the role is nonprivileged. Read-only. Supports $filter (eq).',
               }),
             resourceScopes: z
               .array(z.string())
@@ -81253,10 +81430,12 @@ const MicrosoftGraphUnifiedRolePermissionSchema = z
   .openapi('MicrosoftGraphUnifiedRolePermission')
 
 type MicrosoftGraphUnifiedRoleDefinitionType = z.infer<typeof MicrosoftGraphEntitySchema> & {
+  deletedDateTime?: string | null
   description?: string | null
   displayName?: string | null
   isBuiltIn?: boolean | null
   isEnabled?: boolean | null
+  isPrivileged?: boolean | null
   resourceScopes?: string[]
   rolePermissions?: z.infer<typeof MicrosoftGraphUnifiedRolePermissionSchema>[]
   templateId?: string | null
@@ -82167,6 +82346,51 @@ const MicrosoftGraphUserDataSecurityAndGovernanceSchema: z.ZodType<MicrosoftGrap
   )
     .openapi({ 'x-ms-discriminator-value': '#microsoft.graph.userDataSecurityAndGovernance' })
     .openapi('MicrosoftGraphUserDataSecurityAndGovernance')
+
+const MicrosoftGraphDistributionListSchema: z.ZodType<MicrosoftGraphDistributionListType> =
+  MicrosoftGraphOutlookItemSchema.and(
+    z
+      .object({
+        displayName: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'The display name of the distribution list.' }),
+        notes: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Notes about the distribution list.' }),
+        personId: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'The unique identifier of the distribution list in the mailbox. Read-only.',
+          }),
+        members: z
+          .array(MicrosoftGraphDistributionListMemberSchema)
+          .exactOptional()
+          .openapi({
+            description:
+              'The members of the distribution list. Not returned by default; use $expand=members to include. Read-only.',
+            'x-ms-navigationProperty': true,
+          }),
+        singleValueExtendedProperties: z
+          .array(MicrosoftGraphSingleValueLegacyExtendedPropertySchema)
+          .exactOptional()
+          .openapi({
+            description:
+              'The collection of single-value extended properties defined for the distribution list. Read-only.',
+            'x-ms-navigationProperty': true,
+          }),
+        '@odata.type': z.string().default('#microsoft.graph.distributionList'),
+      })
+      .openapi({ title: 'distributionList', required: ['@odata.type'] }),
+  )
+    .openapi({ 'x-ms-discriminator-value': '#microsoft.graph.distributionList' })
+    .openapi('MicrosoftGraphDistributionList')
 
 const MicrosoftGraphEmployeeExperienceUserSchema: z.ZodType<MicrosoftGraphEmployeeExperienceUserType> =
   z
@@ -83293,6 +83517,7 @@ type MicrosoftGraphUserType = z.infer<typeof MicrosoftGraphDirectoryObjectSchema
     typeof MicrosoftGraphDeviceManagementTroubleshootingEventSchema
   >[]
   directReports?: z.infer<typeof MicrosoftGraphDirectoryObjectSchema>[]
+  distributionLists?: z.infer<typeof MicrosoftGraphDistributionListSchema>[]
   drive?: z.infer<typeof MicrosoftGraphDriveSchema> | ({ [key: string]: unknown } | null)
   drives?: z.infer<typeof MicrosoftGraphDriveSchema>[]
   employeeExperience?:
@@ -89204,6 +89429,10 @@ type MicrosoftGraphContactFolderCollectionResponseType = z.infer<
   typeof BaseCollectionPaginationCountResponseSchema
 > & { value?: z.infer<typeof MicrosoftGraphContactFolderSchema>[] }
 
+type MicrosoftGraphDistributionListCollectionResponseType = z.infer<
+  typeof BaseCollectionPaginationCountResponseSchema
+> & { value?: z.infer<typeof MicrosoftGraphDistributionListSchema>[] }
+
 type MicrosoftGraphMailFolderCollectionResponseType = z.infer<
   typeof BaseCollectionPaginationCountResponseSchema
 > & { value?: z.infer<typeof MicrosoftGraphMailFolderSchema>[] }
@@ -89883,7 +90112,23 @@ type MicrosoftGraphAgentIdentityBlueprintPrincipalCollectionResponseType = z.inf
 const MicrosoftGraphAgentUserSchema: z.ZodType<MicrosoftGraphAgentUserType> =
   MicrosoftGraphUserSchema.and(
     z
-      .object({ '@odata.type': z.string().default('#microsoft.graph.agentUser') })
+      .object({
+        managerApplications: z
+          .array(
+            z
+              .uuid()
+              .regex(
+                /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/,
+              ),
+          )
+          .exactOptional()
+          .openapi({
+            description:
+              "The application IDs (appId values) authorized to manage the agent user's backing agent blueprint. Read-only. Not nullable. Returns an empty collection when no manager applications are configured. Returned only with $select and the microsoft.graph.agentUser type cast; see Get agentUser. Doesn't support $filter.",
+            readOnly: true,
+          }),
+        '@odata.type': z.string().default('#microsoft.graph.agentUser'),
+      })
       .openapi({ title: 'agentUser', required: ['@odata.type'] }),
   )
     .openapi({ 'x-ms-discriminator-value': '#microsoft.graph.agentUser' })
@@ -93324,6 +93569,77 @@ const MicrosoftGraphMobileAppContentFileSchema = MicrosoftGraphEntitySchema.and(
   .openapi({ 'x-ms-discriminator-value': '#microsoft.graph.mobileAppContentFile' })
   .openapi('MicrosoftGraphMobileAppContentFile')
 
+const MicrosoftGraphMobileAppContentScriptStateSchema = z
+  .enum(['commitPending', 'commitSuccess', 'commitFailed', 'unknownFutureValue'])
+  .openapi({
+    title: 'mobileAppContentScriptState',
+    description: 'A list of possible script lifecycle states.',
+    'x-ms-enum': {
+      name: 'mobileAppContentScriptState',
+      modelAsString: false,
+      values: [
+        {
+          value: 'commitPending',
+          description: 'Indicates that the script content is in a pending state.',
+          name: 'commitPending',
+        },
+        {
+          value: 'commitSuccess',
+          description: 'Indicates that the script content is ready.',
+          name: 'commitSuccess',
+        },
+        {
+          value: 'commitFailed',
+          description: 'Indicates that the script is in an unusable state.',
+          name: 'commitFailed',
+        },
+        {
+          value: 'unknownFutureValue',
+          description: 'Evolvable enumeration sentinel value. Do not use.',
+          name: 'unknownFutureValue',
+        },
+      ],
+    },
+  })
+  .openapi('MicrosoftGraphMobileAppContentScriptState')
+
+const MicrosoftGraphMobileAppContentScriptSchema = MicrosoftGraphEntitySchema.and(
+  z
+    .object({
+      content: z
+        .string()
+        .nullable()
+        .exactOptional()
+        .openapi({
+          description:
+            "The content of the script. This is a Base64-encoded representation of the script's original content. The original content (before Base64 encoding) has a maximum size limit of 100KB.",
+        }),
+      displayName: z
+        .string()
+        .nullable()
+        .exactOptional()
+        .openapi({ description: 'The display name for the script.' }),
+      state: MicrosoftGraphMobileAppContentScriptStateSchema.exactOptional(),
+      '@odata.type': z.string(),
+    })
+    .openapi({
+      title: 'mobileAppContentScript',
+      required: ['@odata.type'],
+      description: 'Contains properties for a script associated with amobileLobApp entity.',
+      discriminator: {
+        propertyName: '@odata.type',
+        mapping: {
+          '#microsoft.graph.win32LobAppScript':
+            '#/components/schemas/microsoft.graph.win32LobAppScript',
+          '#microsoft.graph.win32LobAppInstallPowerShellScript':
+            '#/components/schemas/microsoft.graph.win32LobAppInstallPowerShellScript',
+          '#microsoft.graph.win32LobAppUninstallPowerShellScript':
+            '#/components/schemas/microsoft.graph.win32LobAppUninstallPowerShellScript',
+        },
+      },
+    }),
+).openapi('MicrosoftGraphMobileAppContentScript')
+
 const MicrosoftGraphMobileAppContentSchema = MicrosoftGraphEntitySchema.and(
   z
     .object({
@@ -93339,6 +93655,13 @@ const MicrosoftGraphMobileAppContentSchema = MicrosoftGraphEntitySchema.and(
         .exactOptional()
         .openapi({
           description: 'The list of files for this app content version.',
+          'x-ms-navigationProperty': true,
+        }),
+      scripts: z
+        .array(MicrosoftGraphMobileAppContentScriptSchema)
+        .exactOptional()
+        .openapi({
+          description: 'The list of scripts for this app content version.',
           'x-ms-navigationProperty': true,
         }),
       '@odata.type': z.string(),
@@ -109426,6 +109749,40 @@ const MicrosoftGraphSkypeUserConversationMemberSchema = MicrosoftGraphConversati
   .openapi({ 'x-ms-discriminator-value': '#microsoft.graph.skypeUserConversationMember' })
   .openapi('MicrosoftGraphSkypeUserConversationMember')
 
+const MicrosoftGraphTelecomProviderSettingsSchema = z
+  .object({
+    appId: z
+      .uuid()
+      .regex(/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/)
+      .exactOptional()
+      .openapi({
+        description: 'The application (client) ID used to authenticate to the telecom provider.',
+      }),
+    isEvaluationModeEnabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'true to run the telecom provider integration in evaluation (nonenforcing) mode; otherwise, false.',
+      }),
+    migrationPercentage: z
+      .number()
+      .min(-2147483648)
+      .max(2147483647)
+      .exactOptional()
+      .openapi({
+        description:
+          'The percentage of authentication traffic routed to the telecom provider. Valid values range from 0 through 100.',
+      }),
+    url: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The endpoint URL of the telecom provider integration.' }),
+    '@odata.type': z.string(),
+  })
+  .openapi({ title: 'telecomProviderSettings', required: ['@odata.type'] })
+  .openapi('MicrosoftGraphTelecomProviderSettings')
+
 const MicrosoftGraphSmsAuthenticationMethodTargetSchema =
   MicrosoftGraphAuthenticationMethodTargetSchema.and(
     z
@@ -109448,6 +109805,13 @@ const MicrosoftGraphSmsAuthenticationMethodConfigurationSchema =
   MicrosoftGraphAuthenticationMethodConfigurationSchema.and(
     z
       .object({
+        telecomProviderSettings: z
+          .union([MicrosoftGraphTelecomProviderSettingsSchema, z.looseObject({}).nullable()])
+          .exactOptional()
+          .openapi({
+            description:
+              'Settings for routing SMS authentication traffic through a telecom provider integration.',
+          }),
         includeTargets: z
           .array(MicrosoftGraphSmsAuthenticationMethodTargetSchema)
           .exactOptional()
@@ -110308,6 +110672,13 @@ const MicrosoftGraphVoiceAuthenticationMethodConfigurationSchema =
           .nullable()
           .exactOptional()
           .openapi({ description: 'true if users can register office phones, otherwise, false.' }),
+        telecomProviderSettings: z
+          .union([MicrosoftGraphTelecomProviderSettingsSchema, z.looseObject({}).nullable()])
+          .exactOptional()
+          .openapi({
+            description:
+              'Settings for routing voice authentication traffic through a telecom provider integration.',
+          }),
         includeTargets: z
           .array(MicrosoftGraphAuthenticationMethodTargetSchema)
           .exactOptional()
@@ -110352,6 +110723,23 @@ const MicrosoftGraphWebAppSchema = MicrosoftGraphMobileAppSchema.and(
 )
   .openapi({ 'x-ms-discriminator-value': '#microsoft.graph.webApp' })
   .openapi('MicrosoftGraphWebApp')
+
+const MicrosoftGraphMobileAppScriptReferenceSchema = z
+  .object({
+    targetId: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The identifier of an associated mobileAppContentScript entity.' }),
+    '@odata.type': z.string(),
+  })
+  .openapi({
+    title: 'mobileAppScriptReference',
+    required: ['@odata.type'],
+    description:
+      'A complex type that contains an identifier which is a reference an associated mobileAppContentScript entity.',
+  })
+  .openapi('MicrosoftGraphMobileAppScriptReference')
 
 const MicrosoftGraphWindowsArchitectureSchema = z
   .enum(['none', 'x86', 'x64', 'arm', 'neutral'])
@@ -110601,6 +110989,20 @@ const MicrosoftGraphWin32LobAppRuleSchema = z
 const MicrosoftGraphWin32LobAppSchema = MicrosoftGraphMobileLobAppSchema.and(
   z
     .object({
+      activeInstallScript: z
+        .union([MicrosoftGraphMobileAppScriptReferenceSchema, z.looseObject({}).nullable()])
+        .exactOptional()
+        .openapi({
+          description:
+            'Contains the unique identifier of the associated install script for this Win32 app to be used instead of the install command line by the managed device during app installation. When null, the install command line is used instead.',
+        }),
+      activeUninstallScript: z
+        .union([MicrosoftGraphMobileAppScriptReferenceSchema, z.looseObject({}).nullable()])
+        .exactOptional()
+        .openapi({
+          description:
+            'Contains the unique identifier of the associated uninstall script for this Win32 app to be used instead of the uninstall command line by the managed device during app uninstallation. When null, the uninstall command line is used instead.',
+        }),
       allowedArchitectures: z
         .union([MicrosoftGraphWindowsArchitectureSchema, z.looseObject({}).nullable()])
         .exactOptional()
@@ -110710,6 +111112,76 @@ const MicrosoftGraphWin32LobAppSchema = MicrosoftGraphMobileLobAppSchema.and(
 )
   .openapi({ 'x-ms-discriminator-value': '#microsoft.graph.win32LobApp' })
   .openapi('MicrosoftGraphWin32LobApp')
+
+const MicrosoftGraphWin32LobAppScriptSchema = MicrosoftGraphMobileAppContentScriptSchema.and(
+  z
+    .object({
+      enforceSignatureCheck: z
+        .boolean()
+        .exactOptional()
+        .openapi({
+          description:
+            'Indicates whether or not to enforce a signature check when running the script. When TRUE, the script cannot be run without enforcing a signature check. When FALSE, no signature check will be enforced when running the script. Default value is FALSE.',
+        }),
+      runAs32Bit: z
+        .boolean()
+        .exactOptional()
+        .openapi({
+          description:
+            'Indicates whether the script will run as 32-bit or 64-bit. When TRUE, the script will run as 32-bit. When FALSE, the script will run as 64-bit. Default value is FALSE.',
+        }),
+      '@odata.type': z.string().default('#microsoft.graph.win32LobAppScript'),
+    })
+    .openapi({
+      title: 'win32LobAppScript',
+      required: ['@odata.type'],
+      description:
+        'A representation of a script that can be run on an end-user device managed by Intune in relation to a Win32 app.',
+      discriminator: {
+        propertyName: '@odata.type',
+        mapping: {
+          '#microsoft.graph.win32LobAppInstallPowerShellScript':
+            '#/components/schemas/microsoft.graph.win32LobAppInstallPowerShellScript',
+          '#microsoft.graph.win32LobAppUninstallPowerShellScript':
+            '#/components/schemas/microsoft.graph.win32LobAppUninstallPowerShellScript',
+        },
+      },
+    }),
+).openapi('MicrosoftGraphWin32LobAppScript')
+
+const MicrosoftGraphWin32LobAppInstallPowerShellScriptSchema =
+  MicrosoftGraphWin32LobAppScriptSchema.and(
+    z
+      .object({
+        '@odata.type': z.string().default('#microsoft.graph.win32LobAppInstallPowerShellScript'),
+      })
+      .openapi({
+        title: 'win32LobAppInstallPowerShellScript',
+        required: ['@odata.type'],
+        description:
+          'A representation of a PowerShell script that is used to install a Win32 app on an end-user device managed by Intune.',
+      }),
+  )
+    .openapi({ 'x-ms-discriminator-value': '#microsoft.graph.win32LobAppInstallPowerShellScript' })
+    .openapi('MicrosoftGraphWin32LobAppInstallPowerShellScript')
+
+const MicrosoftGraphWin32LobAppUninstallPowerShellScriptSchema =
+  MicrosoftGraphWin32LobAppScriptSchema.and(
+    z
+      .object({
+        '@odata.type': z.string().default('#microsoft.graph.win32LobAppUninstallPowerShellScript'),
+      })
+      .openapi({
+        title: 'win32LobAppUninstallPowerShellScript',
+        required: ['@odata.type'],
+        description:
+          'A representation of a PowerShell script that is used to uninstall a Win32 app on an end-user device managed by Intune.',
+      }),
+  )
+    .openapi({
+      'x-ms-discriminator-value': '#microsoft.graph.win32LobAppUninstallPowerShellScript',
+    })
+    .openapi('MicrosoftGraphWin32LobAppUninstallPowerShellScript')
 
 const MicrosoftGraphWindows10CustomConfigurationSchema =
   MicrosoftGraphDeviceConfigurationSchema.and(
@@ -117555,6 +118027,24 @@ const MicrosoftGraphBrowseQueryResponseItemTypeSchema = z
 
 const MicrosoftGraphBrowseQueryResponseItemSchema = z
   .object({
+    createdBy: z
+      .union([MicrosoftGraphIdentitySetSchema, z.looseObject({}).nullable()])
+      .exactOptional()
+      .openapi({
+        description:
+          'The identity of the user or application that created the item. Returned only when type is file or folder.',
+      }),
+    createdDateTime: z.iso
+      .datetime({ offset: true })
+      .regex(
+        /^[0-9]{4,}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])T([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]([.][0-9]{1,12})?(Z|[+-][0-9][0-9]:[0-9][0-9])$/,
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The date and time when the item was created. Returned only when type is file or folder. The timestamp type represents date and time information using ISO 8601 format and is always in UTC. For example, midnight UTC on Jan 1, 2024, is 2024-01-01T00:00:00Z.',
+      }),
     itemKey: z
       .string()
       .nullable()
@@ -117569,6 +118059,24 @@ const MicrosoftGraphBrowseQueryResponseItemSchema = z
       .openapi({
         description:
           'The count of items present within the items; for example, the count of files in a folder.',
+      }),
+    lastModifiedBy: z
+      .union([MicrosoftGraphIdentitySetSchema, z.looseObject({}).nullable()])
+      .exactOptional()
+      .openapi({
+        description:
+          'The identity of the user or application that last modified the item. Returned only when type is file or folder.',
+      }),
+    lastModifiedDateTime: z.iso
+      .datetime({ offset: true })
+      .regex(
+        /^[0-9]{4,}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])T([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]([.][0-9]{1,12})?(Z|[+-][0-9][0-9]:[0-9][0-9])$/,
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The date and time when the item was last modified. Returned only when type is file or folder. The timestamp type represents date and time information using ISO 8601 format and is always in UTC. For example, midnight UTC on Jan 1, 2024, is 2024-01-01T00:00:00Z.',
       }),
     name: z.string().nullable().exactOptional().openapi({ description: 'The name of the item.' }),
     sizeInBytes: z
@@ -121645,6 +122153,32 @@ const MicrosoftGraphMeetingTimeSuggestionsResultSchema = z
   })
   .openapi({ title: 'meetingTimeSuggestionsResult', required: ['@odata.type'] })
   .openapi('MicrosoftGraphMeetingTimeSuggestionsResult')
+
+const MicrosoftGraphMemberSchema = z
+  .object({
+    displayName: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The display name of the member. Optional.' }),
+    key: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The email address or routing key of the member. Optional.' }),
+    memberId: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'A system-generated unique identifier for contact, privateDL, and mailbox members. Optional.',
+      }),
+    type: MicrosoftGraphRecipientTypeSchema.exactOptional(),
+    '@odata.type': z.string(),
+  })
+  .openapi({ title: 'member', required: ['@odata.type'] })
+  .openapi('MicrosoftGraphMember')
 
 const MicrosoftGraphMembersAddedEventMessageDetailSchema =
   MicrosoftGraphEventMessageDetailSchema.and(
@@ -128413,6 +128947,8 @@ const MicrosoftGraphIdentityGovernanceWorkflowExecutionTriggerSchema = z
           '#/components/schemas/microsoft.graph.identityGovernance.membershipChangeTrigger',
         '#microsoft.graph.identityGovernance.timeBasedAttributeTrigger':
           '#/components/schemas/microsoft.graph.identityGovernance.timeBasedAttributeTrigger',
+        '#microsoft.graph.identityGovernance.timeBasedAttributeTriggerV2':
+          '#/components/schemas/microsoft.graph.identityGovernance.timeBasedAttributeTriggerV2',
         '#microsoft.graph.identityGovernance.userInactivityTrigger':
           '#/components/schemas/microsoft.graph.identityGovernance.userInactivityTrigger',
       },
@@ -128738,6 +129274,132 @@ const MicrosoftGraphIdentityGovernanceOnDemandExecutionOnlySchema =
     })
     .openapi('MicrosoftGraphIdentityGovernanceOnDemandExecutionOnly')
 
+const MicrosoftGraphIdentityGovernanceWorkflowExecutionTriggerOperatorSchema = z
+  .object({ '@odata.type': z.string() })
+  .openapi({
+    title: 'workflowExecutionTriggerOperator',
+    required: ['@odata.type'],
+    discriminator: {
+      propertyName: '@odata.type',
+      mapping: {
+        '#microsoft.graph.identityGovernance.workflowTriggerTimeBasedOperator':
+          '#/components/schemas/microsoft.graph.identityGovernance.workflowTriggerTimeBasedOperator',
+        '#microsoft.graph.identityGovernance.operatorBetween':
+          '#/components/schemas/microsoft.graph.identityGovernance.operatorBetween',
+        '#microsoft.graph.identityGovernance.operatorEqualTo':
+          '#/components/schemas/microsoft.graph.identityGovernance.operatorEqualTo',
+        '#microsoft.graph.identityGovernance.operatorLessThanEqualTo':
+          '#/components/schemas/microsoft.graph.identityGovernance.operatorLessThanEqualTo',
+      },
+    },
+  })
+  .openapi('MicrosoftGraphIdentityGovernanceWorkflowExecutionTriggerOperator')
+
+const MicrosoftGraphIdentityGovernanceWorkflowTriggerOperatorEventTimingSchema = z
+  .enum(['before', 'after', 'on', 'unknownFutureValue'])
+  .openapi({ title: 'workflowTriggerOperatorEventTiming' })
+  .openapi('MicrosoftGraphIdentityGovernanceWorkflowTriggerOperatorEventTiming')
+
+const MicrosoftGraphIdentityGovernanceWorkflowTriggerTimeBasedOperatorSchema =
+  MicrosoftGraphIdentityGovernanceWorkflowExecutionTriggerOperatorSchema.and(
+    z
+      .object({
+        eventTiming:
+          MicrosoftGraphIdentityGovernanceWorkflowTriggerOperatorEventTimingSchema.exactOptional(),
+        '@odata.type': z
+          .string()
+          .default('#microsoft.graph.identityGovernance.workflowTriggerTimeBasedOperator'),
+      })
+      .openapi({
+        title: 'workflowTriggerTimeBasedOperator',
+        required: ['@odata.type'],
+        discriminator: {
+          propertyName: '@odata.type',
+          mapping: {
+            '#microsoft.graph.identityGovernance.operatorBetween':
+              '#/components/schemas/microsoft.graph.identityGovernance.operatorBetween',
+            '#microsoft.graph.identityGovernance.operatorEqualTo':
+              '#/components/schemas/microsoft.graph.identityGovernance.operatorEqualTo',
+            '#microsoft.graph.identityGovernance.operatorLessThanEqualTo':
+              '#/components/schemas/microsoft.graph.identityGovernance.operatorLessThanEqualTo',
+          },
+        },
+      }),
+  ).openapi('MicrosoftGraphIdentityGovernanceWorkflowTriggerTimeBasedOperator')
+
+const MicrosoftGraphIdentityGovernanceOperatorBetweenSchema =
+  MicrosoftGraphIdentityGovernanceWorkflowTriggerTimeBasedOperatorSchema.and(
+    z
+      .object({
+        greaterThanOffsetInDays: z
+          .number()
+          .min(-2147483648)
+          .max(2147483647)
+          .exactOptional()
+          .openapi({
+            description:
+              'The exclusive lower bound of the date range, in days. The value must be a nonnegative integer and less than lessThanOffsetInDays.',
+          }),
+        lessThanOffsetInDays: z
+          .number()
+          .min(-2147483648)
+          .max(2147483647)
+          .exactOptional()
+          .openapi({
+            description:
+              "The exclusive upper bound of the date range, in days. The value must be a nonnegative integer and greater than greaterThanOffsetInDays. The difference between the upper and lower bounds can't exceed 180 days.",
+          }),
+        '@odata.type': z.string().default('#microsoft.graph.identityGovernance.operatorBetween'),
+      })
+      .openapi({ title: 'operatorBetween', required: ['@odata.type'] }),
+  )
+    .openapi({ 'x-ms-discriminator-value': '#microsoft.graph.identityGovernance.operatorBetween' })
+    .openapi('MicrosoftGraphIdentityGovernanceOperatorBetween')
+
+const MicrosoftGraphIdentityGovernanceOperatorEqualToSchema =
+  MicrosoftGraphIdentityGovernanceWorkflowTriggerTimeBasedOperatorSchema.and(
+    z
+      .object({
+        offsetInDays: z
+          .number()
+          .min(-2147483648)
+          .max(2147483647)
+          .exactOptional()
+          .openapi({
+            description:
+              'The exact number of days between the current date and the date in the user attribute. The value must be a nonnegative integer.',
+          }),
+        '@odata.type': z.string().default('#microsoft.graph.identityGovernance.operatorEqualTo'),
+      })
+      .openapi({ title: 'operatorEqualTo', required: ['@odata.type'] }),
+  )
+    .openapi({ 'x-ms-discriminator-value': '#microsoft.graph.identityGovernance.operatorEqualTo' })
+    .openapi('MicrosoftGraphIdentityGovernanceOperatorEqualTo')
+
+const MicrosoftGraphIdentityGovernanceOperatorLessThanEqualToSchema =
+  MicrosoftGraphIdentityGovernanceWorkflowTriggerTimeBasedOperatorSchema.and(
+    z
+      .object({
+        offsetInDays: z
+          .number()
+          .min(-2147483648)
+          .max(2147483647)
+          .exactOptional()
+          .openapi({
+            description:
+              'The maximum number of days between the current date and the date in the user attribute. The value must be a nonnegative integer.',
+          }),
+        '@odata.type': z
+          .string()
+          .default('#microsoft.graph.identityGovernance.operatorLessThanEqualTo'),
+      })
+      .openapi({ title: 'operatorLessThanEqualTo', required: ['@odata.type'] }),
+  )
+    .openapi({
+      'x-ms-discriminator-value': '#microsoft.graph.identityGovernance.operatorLessThanEqualTo',
+    })
+    .openapi('MicrosoftGraphIdentityGovernanceOperatorLessThanEqualTo')
+
 const MicrosoftGraphIdentityGovernancePercentageBasedQuarantineConditionSchema =
   MicrosoftGraphIdentityGovernanceQuarantineConditionSchema.and(
     z
@@ -129006,6 +129668,30 @@ const MicrosoftGraphIdentityGovernanceTimeBasedAttributeTriggerSchema =
       'x-ms-discriminator-value': '#microsoft.graph.identityGovernance.timeBasedAttributeTrigger',
     })
     .openapi('MicrosoftGraphIdentityGovernanceTimeBasedAttributeTrigger')
+
+const MicrosoftGraphIdentityGovernanceTimeBasedAttributeTriggerV2Schema =
+  MicrosoftGraphIdentityGovernanceWorkflowExecutionTriggerSchema.and(
+    z
+      .object({
+        attribute: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The name of the date-type user attribute to evaluate, such as employeeHireDate or employeeLeaveDateTime.',
+          }),
+        operator:
+          MicrosoftGraphIdentityGovernanceWorkflowExecutionTriggerOperatorSchema.exactOptional(),
+        '@odata.type': z
+          .string()
+          .default('#microsoft.graph.identityGovernance.timeBasedAttributeTriggerV2'),
+      })
+      .openapi({ title: 'timeBasedAttributeTriggerV2', required: ['@odata.type'] }),
+  )
+    .openapi({
+      'x-ms-discriminator-value': '#microsoft.graph.identityGovernance.timeBasedAttributeTriggerV2',
+    })
+    .openapi('MicrosoftGraphIdentityGovernanceTimeBasedAttributeTriggerV2')
 
 const MicrosoftGraphIdentityGovernanceTopTasksInsightsSummarySchema = z
   .object({
@@ -140060,6 +140746,15 @@ const MicrosoftGraphDeviceManagementTroubleshootingEventCollectionResponseSchema
     .openapi({ title: 'Collection of deviceManagementTroubleshootingEvent' })
     .openapi('MicrosoftGraphDeviceManagementTroubleshootingEventCollectionResponse')
 
+const MicrosoftGraphDistributionListCollectionResponseSchema: z.ZodType<MicrosoftGraphDistributionListCollectionResponseType> =
+  BaseCollectionPaginationCountResponseSchema.and(
+    z
+      .object({ value: z.array(MicrosoftGraphDistributionListSchema).exactOptional() })
+      .openapi({ required: [] }),
+  )
+    .openapi({ title: 'Collection of distributionList' })
+    .openapi('MicrosoftGraphDistributionListCollectionResponse')
+
 const MicrosoftGraphLicenseDetailsCollectionResponseSchema =
   BaseCollectionPaginationCountResponseSchema.and(
     z
@@ -142217,6 +142912,15 @@ const MicrosoftGraphUnifiedRoleDefinitionCollectionResponseSchema =
     .openapi({ title: 'Collection of unifiedRoleDefinition' })
     .openapi('MicrosoftGraphUnifiedRoleDefinitionCollectionResponse')
 
+const MicrosoftGraphDistributionListMemberCollectionResponseSchema =
+  BaseCollectionPaginationCountResponseSchema.and(
+    z
+      .object({ value: z.array(MicrosoftGraphDistributionListMemberSchema).exactOptional() })
+      .openapi({ required: [] }),
+  )
+    .openapi({ title: 'Collection of distributionListMember' })
+    .openapi('MicrosoftGraphDistributionListMemberCollectionResponse')
+
 const MicrosoftGraphInternalDomainFederationCollectionResponseSchema =
   BaseCollectionPaginationCountResponseSchema.and(
     z
@@ -143196,6 +143900,15 @@ const MicrosoftGraphMobileAppContentFileCollectionResponseSchema =
   )
     .openapi({ title: 'Collection of mobileAppContentFile' })
     .openapi('MicrosoftGraphMobileAppContentFileCollectionResponse')
+
+const MicrosoftGraphMobileAppContentScriptCollectionResponseSchema =
+  BaseCollectionPaginationCountResponseSchema.and(
+    z
+      .object({ value: z.array(MicrosoftGraphMobileAppContentScriptSchema).exactOptional() })
+      .openapi({ required: [] }),
+  )
+    .openapi({ title: 'Collection of mobileAppContentScript' })
+    .openapi('MicrosoftGraphMobileAppContentScriptCollectionResponse')
 
 const MicrosoftGraphAppLogCollectionRequestCollectionResponseSchema =
   BaseCollectionPaginationCountResponseSchema.and(
@@ -147803,6 +148516,37 @@ const MicrosoftGraphWindowsUniversalAppXContainedAppCollectionResponseSchema =
     .openapi({ title: 'Collection of windowsUniversalAppXContainedApp' })
     .openapi('MicrosoftGraphWindowsUniversalAppXContainedAppCollectionResponse')
 
+const MicrosoftGraphWin32LobAppScriptCollectionResponseSchema =
+  BaseCollectionPaginationCountResponseSchema.and(
+    z
+      .object({ value: z.array(MicrosoftGraphWin32LobAppScriptSchema).exactOptional() })
+      .openapi({ required: [] }),
+  )
+    .openapi({ title: 'Collection of win32LobAppScript' })
+    .openapi('MicrosoftGraphWin32LobAppScriptCollectionResponse')
+
+const MicrosoftGraphWin32LobAppInstallPowerShellScriptCollectionResponseSchema =
+  BaseCollectionPaginationCountResponseSchema.and(
+    z
+      .object({
+        value: z.array(MicrosoftGraphWin32LobAppInstallPowerShellScriptSchema).exactOptional(),
+      })
+      .openapi({ required: [] }),
+  )
+    .openapi({ title: 'Collection of win32LobAppInstallPowerShellScript' })
+    .openapi('MicrosoftGraphWin32LobAppInstallPowerShellScriptCollectionResponse')
+
+const MicrosoftGraphWin32LobAppUninstallPowerShellScriptCollectionResponseSchema =
+  BaseCollectionPaginationCountResponseSchema.and(
+    z
+      .object({
+        value: z.array(MicrosoftGraphWin32LobAppUninstallPowerShellScriptSchema).exactOptional(),
+      })
+      .openapi({ required: [] }),
+  )
+    .openapi({ title: 'Collection of win32LobAppUninstallPowerShellScript' })
+    .openapi('MicrosoftGraphWin32LobAppUninstallPowerShellScriptCollectionResponse')
+
 const MicrosoftGraphPrinterCreateOperationCollectionResponseSchema: z.ZodType<MicrosoftGraphPrinterCreateOperationCollectionResponseType> =
   BaseCollectionPaginationCountResponseSchema.and(
     z
@@ -151977,6 +152721,7 @@ const ReferenceUpdateSchema = z
 const ReferenceCreateSchema = z
   .object({ '@odata.id': z.string().exactOptional() })
   .catchall(z.looseObject({}))
+  .openapi({ required: [] })
   .openapi('ReferenceCreate')
 
 const BaseDeltaFunctionResponseSchema = z
@@ -152536,6 +153281,13 @@ const MicrosoftGraphDeviceManagementTroubleshootingEventCollectionResponseRespon
     'application/json': {
       schema: MicrosoftGraphDeviceManagementTroubleshootingEventCollectionResponseSchema,
     },
+  },
+}
+
+const MicrosoftGraphDistributionListCollectionResponseResponse = {
+  description: 'Retrieved collection',
+  content: {
+    'application/json': { schema: MicrosoftGraphDistributionListCollectionResponseSchema },
   },
 }
 
@@ -154168,6 +154920,13 @@ const MicrosoftGraphUnifiedRoleDefinitionCollectionResponseResponse = {
   },
 }
 
+const MicrosoftGraphDistributionListMemberCollectionResponseResponse = {
+  description: 'Retrieved collection',
+  content: {
+    'application/json': { schema: MicrosoftGraphDistributionListMemberCollectionResponseSchema },
+  },
+}
+
 const MicrosoftGraphInternalDomainFederationCollectionResponseResponse = {
   description: 'Retrieved collection',
   content: {
@@ -154894,6 +155653,13 @@ const MicrosoftGraphMobileAppContentFileCollectionResponseResponse = {
   description: 'Retrieved collection',
   content: {
     'application/json': { schema: MicrosoftGraphMobileAppContentFileCollectionResponseSchema },
+  },
+}
+
+const MicrosoftGraphMobileAppContentScriptCollectionResponseResponse = {
+  description: 'Retrieved collection',
+  content: {
+    'application/json': { schema: MicrosoftGraphMobileAppContentScriptCollectionResponseSchema },
   },
 }
 
@@ -158456,6 +159222,31 @@ const MicrosoftGraphWindowsUniversalAppXContainedAppCollectionResponseResponse =
   content: {
     'application/json': {
       schema: MicrosoftGraphWindowsUniversalAppXContainedAppCollectionResponseSchema,
+    },
+  },
+}
+
+const MicrosoftGraphWin32LobAppScriptCollectionResponseResponse = {
+  description: 'Retrieved collection',
+  content: {
+    'application/json': { schema: MicrosoftGraphWin32LobAppScriptCollectionResponseSchema },
+  },
+}
+
+const MicrosoftGraphWin32LobAppInstallPowerShellScriptCollectionResponseResponse = {
+  description: 'Retrieved collection',
+  content: {
+    'application/json': {
+      schema: MicrosoftGraphWin32LobAppInstallPowerShellScriptCollectionResponseSchema,
+    },
+  },
+}
+
+const MicrosoftGraphWin32LobAppUninstallPowerShellScriptCollectionResponseResponse = {
+  description: 'Retrieved collection',
+  content: {
+    'application/json': {
+      schema: MicrosoftGraphWin32LobAppUninstallPowerShellScriptCollectionResponseSchema,
     },
   },
 }
@@ -162319,7 +163110,9 @@ const MicrosoftGraphAgentIdentityBlueprintPrincipalExample = {
   },
 }
 
-const MicrosoftGraphAgentUserExample = { value: {} }
+const MicrosoftGraphAgentUserExample = {
+  value: { managerApplications: ['00000000-0000-0000-0000-000000000000'] },
+}
 
 const MicrosoftGraphAgreementExample = {
   value: {
@@ -165526,6 +166319,27 @@ const MicrosoftGraphDirectoryRoleTemplateExample = {
   value: { description: 'String', displayName: 'String' },
 }
 
+const MicrosoftGraphDistributionListExample = {
+  value: {
+    displayName: 'String',
+    members: [{ '@odata.type': 'microsoft.graph.distributionListMember' }],
+    notes: 'String',
+    personId: 'String',
+    singleValueExtendedProperties: [
+      { '@odata.type': 'microsoft.graph.singleValueLegacyExtendedProperty' },
+    ],
+  },
+}
+
+const MicrosoftGraphDistributionListMemberExample = {
+  value: {
+    contact: { '@odata.type': 'microsoft.graph.contact' },
+    displayName: 'String',
+    memberId: 'String',
+    type: { '@odata.type': 'microsoft.graph.recipientType' },
+  },
+}
+
 const MicrosoftGraphDocumentSetVersionExample = {
   value: {
     comment: 'String',
@@ -166611,6 +167425,7 @@ const MicrosoftGraphGranularRestoreArtifactBaseExample = {
   value: {
     browseSessionId: 'String',
     completionDateTime: '0001-01-01T00:00:00.0000000+00:00',
+    error: { '@odata.type': 'microsoft.graph.publicError' },
     restoredItemKey: 'String',
     restoredItemPath: 'String',
     restoredItemWebUrl: 'String',
@@ -167580,6 +168395,7 @@ const MicrosoftGraphMailboxFolderExample = {
     childFolderCount: '0',
     childFolders: [{ '@odata.type': 'microsoft.graph.mailboxFolder' }],
     displayName: 'String',
+    isHidden: 'true',
     items: [{ '@odata.type': 'microsoft.graph.mailboxItem' }],
     multiValueExtendedProperties: [
       { '@odata.type': 'microsoft.graph.multiValueLegacyExtendedProperty' },
@@ -168180,6 +168996,7 @@ const MicrosoftGraphMobileAppContentExample = {
   value: {
     containedApps: [{ '@odata.type': 'microsoft.graph.mobileContainedApp' }],
     files: [{ '@odata.type': 'microsoft.graph.mobileAppContentFile' }],
+    scripts: [{ '@odata.type': 'microsoft.graph.mobileAppContentScript' }],
   },
 }
 
@@ -168195,6 +169012,14 @@ const MicrosoftGraphMobileAppContentFileExample = {
     size: '0',
     sizeEncrypted: '0',
     uploadState: { '@odata.type': 'microsoft.graph.mobileAppContentFileUploadState' },
+  },
+}
+
+const MicrosoftGraphMobileAppContentScriptExample = {
+  value: {
+    content: 'String',
+    displayName: 'String',
+    state: { '@odata.type': 'microsoft.graph.mobileAppContentScriptState' },
   },
 }
 
@@ -169542,12 +170367,14 @@ const MicrosoftGraphProtectionRuleBaseExample = {
 
 const MicrosoftGraphProtectionUnitBaseExample = {
   value: {
+    backupRetentionPeriodInDays: '0',
     createdBy: { '@odata.type': 'microsoft.graph.identitySet' },
     createdDateTime: '0001-01-01T00:00:00.0000000+00:00',
     error: { '@odata.type': 'microsoft.graph.publicError' },
     lastModifiedBy: { '@odata.type': 'microsoft.graph.identitySet' },
     lastModifiedDateTime: '0001-01-01T00:00:00.0000000+00:00',
     offboardRequestedDateTime: '0001-01-01T00:00:00.0000000+00:00',
+    pendingRetentionPeriodChange: { '@odata.type': 'microsoft.graph.retentionPeriodChange' },
     policyId: 'String',
     protectionSources: { '@odata.type': 'microsoft.graph.protectionSource' },
     status: { '@odata.type': 'microsoft.graph.protectionUnitStatus' },
@@ -170790,7 +171617,10 @@ const MicrosoftGraphSkypeForBusinessUserConversationMemberExample = {
 const MicrosoftGraphSkypeUserConversationMemberExample = { value: { skypeId: 'String' } }
 
 const MicrosoftGraphSmsAuthenticationMethodConfigurationExample = {
-  value: { includeTargets: [{ '@odata.type': 'microsoft.graph.smsAuthenticationMethodTarget' }] },
+  value: {
+    includeTargets: [{ '@odata.type': 'microsoft.graph.smsAuthenticationMethodTarget' }],
+    telecomProviderSettings: { '@odata.type': 'microsoft.graph.telecomProviderSettings' },
+  },
 }
 
 const MicrosoftGraphSmsAuthenticationMethodTargetExample = { value: { isUsableForSignIn: 'true' } }
@@ -171532,11 +172362,13 @@ const MicrosoftGraphUnifiedRoleAssignmentScheduleRequestExample = {
 
 const MicrosoftGraphUnifiedRoleDefinitionExample = {
   value: {
+    deletedDateTime: '0001-01-01T00:00:00.0000000+00:00',
     description: 'String',
     displayName: 'String',
     inheritsPermissionsFrom: [{ '@odata.type': 'microsoft.graph.unifiedRoleDefinition' }],
     isBuiltIn: 'true',
     isEnabled: 'true',
+    isPrivileged: 'true',
     resourceScopes: ['String'],
     rolePermissions: [{ '@odata.type': 'microsoft.graph.unifiedRolePermission' }],
     templateId: 'String',
@@ -171758,6 +172590,7 @@ const MicrosoftGraphUserExample = {
     ],
     directReports: [{ '@odata.type': 'microsoft.graph.directoryObject' }],
     displayName: 'String',
+    distributionLists: [{ '@odata.type': 'microsoft.graph.distributionList' }],
     drive: { '@odata.type': 'microsoft.graph.drive' },
     drives: [{ '@odata.type': 'microsoft.graph.drive' }],
     employeeExperience: { '@odata.type': 'microsoft.graph.employeeExperienceUser' },
@@ -172478,6 +173311,7 @@ const MicrosoftGraphVoiceAuthenticationMethodConfigurationExample = {
   value: {
     includeTargets: [{ '@odata.type': 'microsoft.graph.authenticationMethodTarget' }],
     isOfficePhoneAllowed: 'true',
+    telecomProviderSettings: { '@odata.type': 'microsoft.graph.telecomProviderSettings' },
   },
 }
 
@@ -172524,6 +173358,8 @@ const MicrosoftGraphWhatIfAnalysisResultExample = {
 
 const MicrosoftGraphWin32LobAppExample = {
   value: {
+    activeInstallScript: { '@odata.type': 'microsoft.graph.mobileAppScriptReference' },
+    activeUninstallScript: { '@odata.type': 'microsoft.graph.mobileAppScriptReference' },
     allowedArchitectures: { '@odata.type': 'microsoft.graph.windowsArchitecture' },
     applicableArchitectures: { '@odata.type': 'microsoft.graph.windowsArchitecture' },
     installCommandLine: 'String',
@@ -172540,6 +173376,14 @@ const MicrosoftGraphWin32LobAppExample = {
     uninstallCommandLine: 'String',
   },
 }
+
+const MicrosoftGraphWin32LobAppInstallPowerShellScriptExample = { value: {} }
+
+const MicrosoftGraphWin32LobAppScriptExample = {
+  value: { enforceSignatureCheck: 'true', runAs32Bit: 'true' },
+}
+
+const MicrosoftGraphWin32LobAppUninstallPowerShellScriptExample = { value: {} }
 
 const MicrosoftGraphWindows10CompliancePolicyExample = {
   value: {
@@ -175100,8 +175944,12 @@ const MicrosoftGraphBroadcastMeetingSettingsExample = {
 
 const MicrosoftGraphBrowseQueryResponseItemExample = {
   value: {
+    createdBy: { '@odata.type': 'microsoft.graph.identitySet' },
+    createdDateTime: '0001-01-01T00:00:00.0000000+00:00',
     itemKey: 'String',
     itemsCount: '0',
+    lastModifiedBy: { '@odata.type': 'microsoft.graph.identitySet' },
+    lastModifiedDateTime: '0001-01-01T00:00:00.0000000+00:00',
     name: 'String',
     sizeInBytes: 'String',
     type: { '@odata.type': 'microsoft.graph.browseQueryResponseItemType' },
@@ -177728,6 +178576,15 @@ const MicrosoftGraphMeetingTimeSuggestionsResultExample = {
   },
 }
 
+const MicrosoftGraphMemberExample = {
+  value: {
+    displayName: 'String',
+    key: 'String',
+    memberId: 'String',
+    type: { '@odata.type': 'microsoft.graph.recipientType' },
+  },
+}
+
 const MicrosoftGraphMembersAddedEventMessageDetailExample = {
   value: {
     initiator: { '@odata.type': 'microsoft.graph.identitySet' },
@@ -177911,6 +178768,8 @@ const MicrosoftGraphMobileAppInstallTimeSettingsExample = {
     useLocalTime: 'true',
   },
 }
+
+const MicrosoftGraphMobileAppScriptReferenceExample = { value: { targetId: 'String' } }
 
 const MicrosoftGraphModifiedPropertyExample = {
   value: { displayName: 'String', newValue: 'String', oldValue: 'String' },
@@ -179398,6 +180257,14 @@ const MicrosoftGraphRetentionLabelSettingsExample = {
   },
 }
 
+const MicrosoftGraphRetentionPeriodChangeExample = {
+  value: {
+    effectiveFromDateTime: '0001-01-01T00:00:00.0000000+00:00',
+    status: { '@odata.type': 'microsoft.graph.retentionPeriodChangeStatus' },
+    targetRetentionPeriodInDays: '0',
+  },
+}
+
 const MicrosoftGraphRetentionSettingExample = { value: { interval: 'String', period: 'Duration' } }
 
 const MicrosoftGraphRetrievalExtractExample = { value: { relevanceScore: '0', text: 'String' } }
@@ -180376,6 +181243,15 @@ const MicrosoftGraphTeamworkTagIdentityExample = { value: {} }
 
 const MicrosoftGraphTeamworkUserIdentityExample = {
   value: { userIdentityType: { '@odata.type': 'microsoft.graph.teamworkUserIdentityType' } },
+}
+
+const MicrosoftGraphTelecomProviderSettingsExample = {
+  value: {
+    appId: '00000000-0000-0000-0000-000000000000',
+    isEvaluationModeEnabled: 'true',
+    migrationPercentage: '0',
+    url: 'String',
+  },
 }
 
 const MicrosoftGraphTeleconferenceDeviceAudioQualityExample = { value: {} }
@@ -182400,6 +183276,16 @@ const MicrosoftGraphIdentityGovernanceMembershipChangeTriggerExample = {
 
 const MicrosoftGraphIdentityGovernanceOnDemandExecutionOnlyExample = { value: {} }
 
+const MicrosoftGraphIdentityGovernanceOperatorBetweenExample = {
+  value: { greaterThanOffsetInDays: '0', lessThanOffsetInDays: '0' },
+}
+
+const MicrosoftGraphIdentityGovernanceOperatorEqualToExample = { value: { offsetInDays: '0' } }
+
+const MicrosoftGraphIdentityGovernanceOperatorLessThanEqualToExample = {
+  value: { offsetInDays: '0' },
+}
+
 const MicrosoftGraphIdentityGovernanceParameterExample = {
   value: {
     name: 'String',
@@ -182480,6 +183366,15 @@ const MicrosoftGraphIdentityGovernanceTimeBasedAttributeTriggerExample = {
   },
 }
 
+const MicrosoftGraphIdentityGovernanceTimeBasedAttributeTriggerV2Example = {
+  value: {
+    attribute: 'String',
+    operator: {
+      '@odata.type': 'microsoft.graph.identityGovernance.workflowExecutionTriggerOperator',
+    },
+  },
+}
+
 const MicrosoftGraphIdentityGovernanceTopTasksInsightsSummaryExample = {
   value: {
     failedTasks: '0',
@@ -182547,6 +183442,8 @@ const MicrosoftGraphIdentityGovernanceWorkflowExecutionConditionsExample = { val
 
 const MicrosoftGraphIdentityGovernanceWorkflowExecutionTriggerExample = { value: {} }
 
+const MicrosoftGraphIdentityGovernanceWorkflowExecutionTriggerOperatorExample = { value: {} }
+
 const MicrosoftGraphIdentityGovernanceWorkflowSettingExample = {
   value: {
     quarantineConfiguration: {
@@ -182584,6 +183481,14 @@ const MicrosoftGraphIdentityGovernanceWorkflowsInsightsSummaryExample = {
 }
 
 const MicrosoftGraphIdentityGovernanceWorkflowSubjectExample = { value: {} }
+
+const MicrosoftGraphIdentityGovernanceWorkflowTriggerTimeBasedOperatorExample = {
+  value: {
+    eventTiming: {
+      '@odata.type': 'microsoft.graph.identityGovernance.workflowTriggerOperatorEventTiming',
+    },
+  },
+}
 
 const MicrosoftGraphPartnersBillingAzureAggregatedUsageExample = {
   value: { billed: { '@odata.type': 'microsoft.graph.partners.billing.billedAggregatedUsage' } },
@@ -189382,7 +190287,7 @@ export const getAdminExchangeMailboxesMailboxIdFoldersRoute = createRoute({
   tags: ['admin.exchangeAdmin'],
   summary: 'List folders',
   description:
-    'Get all the mailboxFolder objects in the specified mailbox, including any search folders.',
+    "Get all the mailboxFolder objects in the specified mailbox, including any search folders. By default, hidden folders aren't returned. To include them, specify includeHiddenFolders=true.",
   externalDocs: {
     description: 'Find more info here',
     url: 'https://learn.microsoft.com/graph/api/mailbox-list-folders?view=graph-rest-1.0',
@@ -189772,7 +190677,8 @@ export const getAdminExchangeMailboxesMailboxIdFoldersMailboxFolderIdChildFolder
     path: '/admin/exchange/mailboxes/{mailbox-id}/folders/{mailboxFolder-id}/childFolders',
     tags: ['admin.exchangeAdmin'],
     summary: 'List childFolders',
-    description: 'Get the mailboxFolder collection under the specified mailboxFolder in a mailbox.',
+    description:
+      "Get the mailboxFolder collection under the specified mailboxFolder in a mailbox. By default, hidden child folders aren't returned. To include them, specify includeHiddenFolders=true.",
     externalDocs: {
       description: 'Find more info here',
       url: 'https://learn.microsoft.com/graph/api/mailboxfolder-list-childfolders?view=graph-rest-1.0',
@@ -268621,6 +269527,477 @@ export const getDeviceAppManagementMobileAppsMobileAppIdGraphAndroidLobAppConten
     responses: { '2XX': ODataCountResponseResponse, '4XX': ErrorResponse, '5XX': ErrorResponse },
   })
 
+export const getDeviceAppManagementMobileAppsMobileAppIdGraphAndroidLobAppContentVersionsMobileAppContentIdScriptsRoute =
+  createRoute({
+    method: 'get',
+    path: '/deviceAppManagement/mobileApps/{mobileApp-id}/graph.androidLobApp/contentVersions/{mobileAppContent-id}/scripts',
+    tags: ['deviceAppManagement.mobileApp'],
+    summary: 'Get scripts from deviceAppManagement',
+    description: 'The list of scripts for this app content version.',
+    operationId: 'deviceAppManagement.mobileApps.AsAndroidLobApp.contentVersions.ListScripts',
+    request: {
+      params: z.object({
+        'mobileApp-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileApp-id',
+              in: 'path',
+              description: 'The unique identifier of mobileApp',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileApp',
+            },
+          }),
+        'mobileAppContent-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContent-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContent',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContent',
+            },
+          }),
+      }),
+      query: z.object({
+        $top: TopParamsSchema,
+        $skip: SkipParamsSchema,
+        $search: SearchParamsSchema,
+        $filter: FilterParamsSchema,
+        $count: CountParamsSchema,
+        $orderby: z
+          .preprocess(
+            (val) =>
+              val === undefined
+                ? val
+                : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+                    typeof item === 'string' ? item.split(',') : [item],
+                  ),
+            z.array(z.string()).superRefine((items, ctx) => {
+              const seen = new Map()
+              for (const [i, val] of items.entries()) {
+                const key = JSON.stringify(val)
+                if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+                else seen.set(key, i)
+              }
+            }),
+          )
+          .exactOptional()
+          .openapi({
+            param: {
+              name: '$orderby',
+              in: 'query',
+              description: 'Order items by property values',
+              style: 'form',
+              explode: false,
+              schema: { uniqueItems: true, type: 'array', items: { type: 'string' } },
+              required: false,
+            },
+          }),
+        $select: z
+          .preprocess(
+            (val) =>
+              val === undefined
+                ? val
+                : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+                    typeof item === 'string' ? item.split(',') : [item],
+                  ),
+            z.array(z.string()).superRefine((items, ctx) => {
+              const seen = new Map()
+              for (const [i, val] of items.entries()) {
+                const key = JSON.stringify(val)
+                if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+                else seen.set(key, i)
+              }
+            }),
+          )
+          .exactOptional()
+          .openapi({
+            param: {
+              name: '$select',
+              in: 'query',
+              description: 'Select properties to be returned',
+              style: 'form',
+              explode: false,
+              schema: { uniqueItems: true, type: 'array', items: { type: 'string' } },
+              required: false,
+            },
+          }),
+        $expand: z
+          .preprocess(
+            (val) =>
+              val === undefined
+                ? val
+                : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+                    typeof item === 'string' ? item.split(',') : [item],
+                  ),
+            z.array(z.string()).superRefine((items, ctx) => {
+              const seen = new Map()
+              for (const [i, val] of items.entries()) {
+                const key = JSON.stringify(val)
+                if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+                else seen.set(key, i)
+              }
+            }),
+          )
+          .exactOptional()
+          .openapi({
+            param: {
+              name: '$expand',
+              in: 'query',
+              description: 'Expand related entities',
+              style: 'form',
+              explode: false,
+              schema: { uniqueItems: true, type: 'array', items: { type: 'string' } },
+              required: false,
+            },
+          }),
+      }),
+    },
+    responses: {
+      '2XX': MicrosoftGraphMobileAppContentScriptCollectionResponseResponse,
+      '4XX': ErrorResponse,
+      '5XX': ErrorResponse,
+    },
+  })
+
+export const postDeviceAppManagementMobileAppsMobileAppIdGraphAndroidLobAppContentVersionsMobileAppContentIdScriptsRoute =
+  createRoute({
+    method: 'post',
+    path: '/deviceAppManagement/mobileApps/{mobileApp-id}/graph.androidLobApp/contentVersions/{mobileAppContent-id}/scripts',
+    tags: ['deviceAppManagement.mobileApp'],
+    summary: 'Create new navigation property to scripts for deviceAppManagement',
+    operationId: 'deviceAppManagement.mobileApps.AsAndroidLobApp.contentVersions.CreateScripts',
+    request: {
+      params: z.object({
+        'mobileApp-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileApp-id',
+              in: 'path',
+              description: 'The unique identifier of mobileApp',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileApp',
+            },
+          }),
+        'mobileAppContent-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContent-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContent',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContent',
+            },
+          }),
+      }),
+      body: {
+        description: 'New navigation property',
+        content: { 'application/json': { schema: MicrosoftGraphMobileAppContentScriptSchema } },
+        required: true,
+      },
+    },
+    responses: {
+      '2XX': {
+        description: 'Created navigation property.',
+        content: { 'application/json': { schema: MicrosoftGraphMobileAppContentScriptSchema } },
+      },
+      '4XX': ErrorResponse,
+      '5XX': ErrorResponse,
+    },
+  })
+
+export const getDeviceAppManagementMobileAppsMobileAppIdGraphAndroidLobAppContentVersionsMobileAppContentIdScriptsMobileAppContentScriptIdRoute =
+  createRoute({
+    method: 'get',
+    path: '/deviceAppManagement/mobileApps/{mobileApp-id}/graph.androidLobApp/contentVersions/{mobileAppContent-id}/scripts/{mobileAppContentScript-id}',
+    tags: ['deviceAppManagement.mobileApp'],
+    summary: 'Get scripts from deviceAppManagement',
+    description: 'The list of scripts for this app content version.',
+    operationId: 'deviceAppManagement.mobileApps.AsAndroidLobApp.contentVersions.GetScripts',
+    request: {
+      params: z.object({
+        'mobileApp-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileApp-id',
+              in: 'path',
+              description: 'The unique identifier of mobileApp',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileApp',
+            },
+          }),
+        'mobileAppContent-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContent-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContent',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContent',
+            },
+          }),
+        'mobileAppContentScript-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContentScript-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContentScript',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContentScript',
+            },
+          }),
+      }),
+      query: z.object({
+        $select: z
+          .preprocess(
+            (val) =>
+              val === undefined
+                ? val
+                : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+                    typeof item === 'string' ? item.split(',') : [item],
+                  ),
+            z.array(z.string()).superRefine((items, ctx) => {
+              const seen = new Map()
+              for (const [i, val] of items.entries()) {
+                const key = JSON.stringify(val)
+                if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+                else seen.set(key, i)
+              }
+            }),
+          )
+          .exactOptional()
+          .openapi({
+            param: {
+              name: '$select',
+              in: 'query',
+              description: 'Select properties to be returned',
+              style: 'form',
+              explode: false,
+              schema: { uniqueItems: true, type: 'array', items: { type: 'string' } },
+              required: false,
+            },
+          }),
+        $expand: z
+          .preprocess(
+            (val) =>
+              val === undefined
+                ? val
+                : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+                    typeof item === 'string' ? item.split(',') : [item],
+                  ),
+            z.array(z.string()).superRefine((items, ctx) => {
+              const seen = new Map()
+              for (const [i, val] of items.entries()) {
+                const key = JSON.stringify(val)
+                if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+                else seen.set(key, i)
+              }
+            }),
+          )
+          .exactOptional()
+          .openapi({
+            param: {
+              name: '$expand',
+              in: 'query',
+              description: 'Expand related entities',
+              style: 'form',
+              explode: false,
+              schema: { uniqueItems: true, type: 'array', items: { type: 'string' } },
+              required: false,
+            },
+          }),
+      }),
+    },
+    responses: {
+      '2XX': {
+        description: 'Retrieved navigation property',
+        content: { 'application/json': { schema: MicrosoftGraphMobileAppContentScriptSchema } },
+      },
+      '4XX': ErrorResponse,
+      '5XX': ErrorResponse,
+    },
+  })
+
+export const deleteDeviceAppManagementMobileAppsMobileAppIdGraphAndroidLobAppContentVersionsMobileAppContentIdScriptsMobileAppContentScriptIdRoute =
+  createRoute({
+    method: 'delete',
+    path: '/deviceAppManagement/mobileApps/{mobileApp-id}/graph.androidLobApp/contentVersions/{mobileAppContent-id}/scripts/{mobileAppContentScript-id}',
+    tags: ['deviceAppManagement.mobileApp'],
+    summary: 'Delete navigation property scripts for deviceAppManagement',
+    operationId: 'deviceAppManagement.mobileApps.AsAndroidLobApp.contentVersions.DeleteScripts',
+    request: {
+      params: z.object({
+        'mobileApp-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileApp-id',
+              in: 'path',
+              description: 'The unique identifier of mobileApp',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileApp',
+            },
+          }),
+        'mobileAppContent-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContent-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContent',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContent',
+            },
+          }),
+        'mobileAppContentScript-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContentScript-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContentScript',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContentScript',
+            },
+          }),
+      }),
+      headers: z.object({
+        'If-Match': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: {
+              name: 'If-Match',
+              in: 'header',
+              description: 'ETag',
+              schema: { type: 'string' },
+              required: false,
+            },
+          }),
+      }),
+    },
+    responses: { 204: { description: 'Success' }, '4XX': ErrorResponse, '5XX': ErrorResponse },
+  })
+
+export const patchDeviceAppManagementMobileAppsMobileAppIdGraphAndroidLobAppContentVersionsMobileAppContentIdScriptsMobileAppContentScriptIdRoute =
+  createRoute({
+    method: 'patch',
+    path: '/deviceAppManagement/mobileApps/{mobileApp-id}/graph.androidLobApp/contentVersions/{mobileAppContent-id}/scripts/{mobileAppContentScript-id}',
+    tags: ['deviceAppManagement.mobileApp'],
+    summary: 'Update the navigation property scripts in deviceAppManagement',
+    operationId: 'deviceAppManagement.mobileApps.AsAndroidLobApp.contentVersions.UpdateScripts',
+    request: {
+      params: z.object({
+        'mobileApp-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileApp-id',
+              in: 'path',
+              description: 'The unique identifier of mobileApp',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileApp',
+            },
+          }),
+        'mobileAppContent-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContent-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContent',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContent',
+            },
+          }),
+        'mobileAppContentScript-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContentScript-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContentScript',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContentScript',
+            },
+          }),
+      }),
+      body: {
+        description: 'New navigation property values',
+        content: { 'application/json': { schema: MicrosoftGraphMobileAppContentScriptSchema } },
+        required: true,
+      },
+    },
+    responses: {
+      '2XX': {
+        description: 'Success',
+        content: { 'application/json': { schema: MicrosoftGraphMobileAppContentScriptSchema } },
+      },
+      '4XX': ErrorResponse,
+      '5XX': ErrorResponse,
+    },
+  })
+
+export const getDeviceAppManagementMobileAppsMobileAppIdGraphAndroidLobAppContentVersionsMobileAppContentIdScriptsCountRoute =
+  createRoute({
+    method: 'get',
+    path: '/deviceAppManagement/mobileApps/{mobileApp-id}/graph.androidLobApp/contentVersions/{mobileAppContent-id}/scripts/$count',
+    tags: ['deviceAppManagement.mobileApp'],
+    summary: 'Get the number of the resource',
+    operationId:
+      'deviceAppManagement.mobileApps.AsAndroidLobApp.contentVersions.scripts.GetCount-a85d',
+    request: {
+      params: z.object({
+        'mobileApp-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileApp-id',
+              in: 'path',
+              description: 'The unique identifier of mobileApp',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileApp',
+            },
+          }),
+        'mobileAppContent-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContent-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContent',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContent',
+            },
+          }),
+      }),
+      query: z.object({ $search: SearchParamsSchema, $filter: FilterParamsSchema }),
+    },
+    responses: { '2XX': ODataCountResponseResponse, '4XX': ErrorResponse, '5XX': ErrorResponse },
+  })
+
 export const getDeviceAppManagementMobileAppsMobileAppIdGraphAndroidLobAppContentVersionsCountRoute =
   createRoute({
     method: 'get',
@@ -271584,6 +272961,476 @@ export const getDeviceAppManagementMobileAppsMobileAppIdGraphIosLobAppContentVer
     tags: ['deviceAppManagement.mobileApp'],
     summary: 'Get the number of the resource',
     operationId: 'deviceAppManagement.mobileApps.AsIosLobApp.contentVersions.files.GetCount-ec6f',
+    request: {
+      params: z.object({
+        'mobileApp-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileApp-id',
+              in: 'path',
+              description: 'The unique identifier of mobileApp',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileApp',
+            },
+          }),
+        'mobileAppContent-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContent-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContent',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContent',
+            },
+          }),
+      }),
+      query: z.object({ $search: SearchParamsSchema, $filter: FilterParamsSchema }),
+    },
+    responses: { '2XX': ODataCountResponseResponse, '4XX': ErrorResponse, '5XX': ErrorResponse },
+  })
+
+export const getDeviceAppManagementMobileAppsMobileAppIdGraphIosLobAppContentVersionsMobileAppContentIdScriptsRoute =
+  createRoute({
+    method: 'get',
+    path: '/deviceAppManagement/mobileApps/{mobileApp-id}/graph.iosLobApp/contentVersions/{mobileAppContent-id}/scripts',
+    tags: ['deviceAppManagement.mobileApp'],
+    summary: 'Get scripts from deviceAppManagement',
+    description: 'The list of scripts for this app content version.',
+    operationId: 'deviceAppManagement.mobileApps.AsIosLobApp.contentVersions.ListScripts',
+    request: {
+      params: z.object({
+        'mobileApp-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileApp-id',
+              in: 'path',
+              description: 'The unique identifier of mobileApp',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileApp',
+            },
+          }),
+        'mobileAppContent-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContent-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContent',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContent',
+            },
+          }),
+      }),
+      query: z.object({
+        $top: TopParamsSchema,
+        $skip: SkipParamsSchema,
+        $search: SearchParamsSchema,
+        $filter: FilterParamsSchema,
+        $count: CountParamsSchema,
+        $orderby: z
+          .preprocess(
+            (val) =>
+              val === undefined
+                ? val
+                : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+                    typeof item === 'string' ? item.split(',') : [item],
+                  ),
+            z.array(z.string()).superRefine((items, ctx) => {
+              const seen = new Map()
+              for (const [i, val] of items.entries()) {
+                const key = JSON.stringify(val)
+                if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+                else seen.set(key, i)
+              }
+            }),
+          )
+          .exactOptional()
+          .openapi({
+            param: {
+              name: '$orderby',
+              in: 'query',
+              description: 'Order items by property values',
+              style: 'form',
+              explode: false,
+              schema: { uniqueItems: true, type: 'array', items: { type: 'string' } },
+              required: false,
+            },
+          }),
+        $select: z
+          .preprocess(
+            (val) =>
+              val === undefined
+                ? val
+                : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+                    typeof item === 'string' ? item.split(',') : [item],
+                  ),
+            z.array(z.string()).superRefine((items, ctx) => {
+              const seen = new Map()
+              for (const [i, val] of items.entries()) {
+                const key = JSON.stringify(val)
+                if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+                else seen.set(key, i)
+              }
+            }),
+          )
+          .exactOptional()
+          .openapi({
+            param: {
+              name: '$select',
+              in: 'query',
+              description: 'Select properties to be returned',
+              style: 'form',
+              explode: false,
+              schema: { uniqueItems: true, type: 'array', items: { type: 'string' } },
+              required: false,
+            },
+          }),
+        $expand: z
+          .preprocess(
+            (val) =>
+              val === undefined
+                ? val
+                : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+                    typeof item === 'string' ? item.split(',') : [item],
+                  ),
+            z.array(z.string()).superRefine((items, ctx) => {
+              const seen = new Map()
+              for (const [i, val] of items.entries()) {
+                const key = JSON.stringify(val)
+                if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+                else seen.set(key, i)
+              }
+            }),
+          )
+          .exactOptional()
+          .openapi({
+            param: {
+              name: '$expand',
+              in: 'query',
+              description: 'Expand related entities',
+              style: 'form',
+              explode: false,
+              schema: { uniqueItems: true, type: 'array', items: { type: 'string' } },
+              required: false,
+            },
+          }),
+      }),
+    },
+    responses: {
+      '2XX': MicrosoftGraphMobileAppContentScriptCollectionResponseResponse,
+      '4XX': ErrorResponse,
+      '5XX': ErrorResponse,
+    },
+  })
+
+export const postDeviceAppManagementMobileAppsMobileAppIdGraphIosLobAppContentVersionsMobileAppContentIdScriptsRoute =
+  createRoute({
+    method: 'post',
+    path: '/deviceAppManagement/mobileApps/{mobileApp-id}/graph.iosLobApp/contentVersions/{mobileAppContent-id}/scripts',
+    tags: ['deviceAppManagement.mobileApp'],
+    summary: 'Create new navigation property to scripts for deviceAppManagement',
+    operationId: 'deviceAppManagement.mobileApps.AsIosLobApp.contentVersions.CreateScripts',
+    request: {
+      params: z.object({
+        'mobileApp-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileApp-id',
+              in: 'path',
+              description: 'The unique identifier of mobileApp',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileApp',
+            },
+          }),
+        'mobileAppContent-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContent-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContent',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContent',
+            },
+          }),
+      }),
+      body: {
+        description: 'New navigation property',
+        content: { 'application/json': { schema: MicrosoftGraphMobileAppContentScriptSchema } },
+        required: true,
+      },
+    },
+    responses: {
+      '2XX': {
+        description: 'Created navigation property.',
+        content: { 'application/json': { schema: MicrosoftGraphMobileAppContentScriptSchema } },
+      },
+      '4XX': ErrorResponse,
+      '5XX': ErrorResponse,
+    },
+  })
+
+export const getDeviceAppManagementMobileAppsMobileAppIdGraphIosLobAppContentVersionsMobileAppContentIdScriptsMobileAppContentScriptIdRoute =
+  createRoute({
+    method: 'get',
+    path: '/deviceAppManagement/mobileApps/{mobileApp-id}/graph.iosLobApp/contentVersions/{mobileAppContent-id}/scripts/{mobileAppContentScript-id}',
+    tags: ['deviceAppManagement.mobileApp'],
+    summary: 'Get scripts from deviceAppManagement',
+    description: 'The list of scripts for this app content version.',
+    operationId: 'deviceAppManagement.mobileApps.AsIosLobApp.contentVersions.GetScripts',
+    request: {
+      params: z.object({
+        'mobileApp-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileApp-id',
+              in: 'path',
+              description: 'The unique identifier of mobileApp',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileApp',
+            },
+          }),
+        'mobileAppContent-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContent-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContent',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContent',
+            },
+          }),
+        'mobileAppContentScript-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContentScript-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContentScript',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContentScript',
+            },
+          }),
+      }),
+      query: z.object({
+        $select: z
+          .preprocess(
+            (val) =>
+              val === undefined
+                ? val
+                : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+                    typeof item === 'string' ? item.split(',') : [item],
+                  ),
+            z.array(z.string()).superRefine((items, ctx) => {
+              const seen = new Map()
+              for (const [i, val] of items.entries()) {
+                const key = JSON.stringify(val)
+                if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+                else seen.set(key, i)
+              }
+            }),
+          )
+          .exactOptional()
+          .openapi({
+            param: {
+              name: '$select',
+              in: 'query',
+              description: 'Select properties to be returned',
+              style: 'form',
+              explode: false,
+              schema: { uniqueItems: true, type: 'array', items: { type: 'string' } },
+              required: false,
+            },
+          }),
+        $expand: z
+          .preprocess(
+            (val) =>
+              val === undefined
+                ? val
+                : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+                    typeof item === 'string' ? item.split(',') : [item],
+                  ),
+            z.array(z.string()).superRefine((items, ctx) => {
+              const seen = new Map()
+              for (const [i, val] of items.entries()) {
+                const key = JSON.stringify(val)
+                if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+                else seen.set(key, i)
+              }
+            }),
+          )
+          .exactOptional()
+          .openapi({
+            param: {
+              name: '$expand',
+              in: 'query',
+              description: 'Expand related entities',
+              style: 'form',
+              explode: false,
+              schema: { uniqueItems: true, type: 'array', items: { type: 'string' } },
+              required: false,
+            },
+          }),
+      }),
+    },
+    responses: {
+      '2XX': {
+        description: 'Retrieved navigation property',
+        content: { 'application/json': { schema: MicrosoftGraphMobileAppContentScriptSchema } },
+      },
+      '4XX': ErrorResponse,
+      '5XX': ErrorResponse,
+    },
+  })
+
+export const deleteDeviceAppManagementMobileAppsMobileAppIdGraphIosLobAppContentVersionsMobileAppContentIdScriptsMobileAppContentScriptIdRoute =
+  createRoute({
+    method: 'delete',
+    path: '/deviceAppManagement/mobileApps/{mobileApp-id}/graph.iosLobApp/contentVersions/{mobileAppContent-id}/scripts/{mobileAppContentScript-id}',
+    tags: ['deviceAppManagement.mobileApp'],
+    summary: 'Delete navigation property scripts for deviceAppManagement',
+    operationId: 'deviceAppManagement.mobileApps.AsIosLobApp.contentVersions.DeleteScripts',
+    request: {
+      params: z.object({
+        'mobileApp-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileApp-id',
+              in: 'path',
+              description: 'The unique identifier of mobileApp',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileApp',
+            },
+          }),
+        'mobileAppContent-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContent-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContent',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContent',
+            },
+          }),
+        'mobileAppContentScript-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContentScript-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContentScript',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContentScript',
+            },
+          }),
+      }),
+      headers: z.object({
+        'If-Match': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: {
+              name: 'If-Match',
+              in: 'header',
+              description: 'ETag',
+              schema: { type: 'string' },
+              required: false,
+            },
+          }),
+      }),
+    },
+    responses: { 204: { description: 'Success' }, '4XX': ErrorResponse, '5XX': ErrorResponse },
+  })
+
+export const patchDeviceAppManagementMobileAppsMobileAppIdGraphIosLobAppContentVersionsMobileAppContentIdScriptsMobileAppContentScriptIdRoute =
+  createRoute({
+    method: 'patch',
+    path: '/deviceAppManagement/mobileApps/{mobileApp-id}/graph.iosLobApp/contentVersions/{mobileAppContent-id}/scripts/{mobileAppContentScript-id}',
+    tags: ['deviceAppManagement.mobileApp'],
+    summary: 'Update the navigation property scripts in deviceAppManagement',
+    operationId: 'deviceAppManagement.mobileApps.AsIosLobApp.contentVersions.UpdateScripts',
+    request: {
+      params: z.object({
+        'mobileApp-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileApp-id',
+              in: 'path',
+              description: 'The unique identifier of mobileApp',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileApp',
+            },
+          }),
+        'mobileAppContent-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContent-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContent',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContent',
+            },
+          }),
+        'mobileAppContentScript-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContentScript-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContentScript',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContentScript',
+            },
+          }),
+      }),
+      body: {
+        description: 'New navigation property values',
+        content: { 'application/json': { schema: MicrosoftGraphMobileAppContentScriptSchema } },
+        required: true,
+      },
+    },
+    responses: {
+      '2XX': {
+        description: 'Success',
+        content: { 'application/json': { schema: MicrosoftGraphMobileAppContentScriptSchema } },
+      },
+      '4XX': ErrorResponse,
+      '5XX': ErrorResponse,
+    },
+  })
+
+export const getDeviceAppManagementMobileAppsMobileAppIdGraphIosLobAppContentVersionsMobileAppContentIdScriptsCountRoute =
+  createRoute({
+    method: 'get',
+    path: '/deviceAppManagement/mobileApps/{mobileApp-id}/graph.iosLobApp/contentVersions/{mobileAppContent-id}/scripts/$count',
+    tags: ['deviceAppManagement.mobileApp'],
+    summary: 'Get the number of the resource',
+    operationId: 'deviceAppManagement.mobileApps.AsIosLobApp.contentVersions.scripts.GetCount-8d67',
     request: {
       params: z.object({
         'mobileApp-id': z
@@ -275319,6 +277166,477 @@ export const getDeviceAppManagementMobileAppsMobileAppIdGraphMacOSDmgAppContentV
     responses: { '2XX': ODataCountResponseResponse, '4XX': ErrorResponse, '5XX': ErrorResponse },
   })
 
+export const getDeviceAppManagementMobileAppsMobileAppIdGraphMacOSDmgAppContentVersionsMobileAppContentIdScriptsRoute =
+  createRoute({
+    method: 'get',
+    path: '/deviceAppManagement/mobileApps/{mobileApp-id}/graph.macOSDmgApp/contentVersions/{mobileAppContent-id}/scripts',
+    tags: ['deviceAppManagement.mobileApp'],
+    summary: 'Get scripts from deviceAppManagement',
+    description: 'The list of scripts for this app content version.',
+    operationId: 'deviceAppManagement.mobileApps.AsMacOSDmgApp.contentVersions.ListScripts',
+    request: {
+      params: z.object({
+        'mobileApp-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileApp-id',
+              in: 'path',
+              description: 'The unique identifier of mobileApp',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileApp',
+            },
+          }),
+        'mobileAppContent-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContent-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContent',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContent',
+            },
+          }),
+      }),
+      query: z.object({
+        $top: TopParamsSchema,
+        $skip: SkipParamsSchema,
+        $search: SearchParamsSchema,
+        $filter: FilterParamsSchema,
+        $count: CountParamsSchema,
+        $orderby: z
+          .preprocess(
+            (val) =>
+              val === undefined
+                ? val
+                : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+                    typeof item === 'string' ? item.split(',') : [item],
+                  ),
+            z.array(z.string()).superRefine((items, ctx) => {
+              const seen = new Map()
+              for (const [i, val] of items.entries()) {
+                const key = JSON.stringify(val)
+                if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+                else seen.set(key, i)
+              }
+            }),
+          )
+          .exactOptional()
+          .openapi({
+            param: {
+              name: '$orderby',
+              in: 'query',
+              description: 'Order items by property values',
+              style: 'form',
+              explode: false,
+              schema: { uniqueItems: true, type: 'array', items: { type: 'string' } },
+              required: false,
+            },
+          }),
+        $select: z
+          .preprocess(
+            (val) =>
+              val === undefined
+                ? val
+                : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+                    typeof item === 'string' ? item.split(',') : [item],
+                  ),
+            z.array(z.string()).superRefine((items, ctx) => {
+              const seen = new Map()
+              for (const [i, val] of items.entries()) {
+                const key = JSON.stringify(val)
+                if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+                else seen.set(key, i)
+              }
+            }),
+          )
+          .exactOptional()
+          .openapi({
+            param: {
+              name: '$select',
+              in: 'query',
+              description: 'Select properties to be returned',
+              style: 'form',
+              explode: false,
+              schema: { uniqueItems: true, type: 'array', items: { type: 'string' } },
+              required: false,
+            },
+          }),
+        $expand: z
+          .preprocess(
+            (val) =>
+              val === undefined
+                ? val
+                : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+                    typeof item === 'string' ? item.split(',') : [item],
+                  ),
+            z.array(z.string()).superRefine((items, ctx) => {
+              const seen = new Map()
+              for (const [i, val] of items.entries()) {
+                const key = JSON.stringify(val)
+                if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+                else seen.set(key, i)
+              }
+            }),
+          )
+          .exactOptional()
+          .openapi({
+            param: {
+              name: '$expand',
+              in: 'query',
+              description: 'Expand related entities',
+              style: 'form',
+              explode: false,
+              schema: { uniqueItems: true, type: 'array', items: { type: 'string' } },
+              required: false,
+            },
+          }),
+      }),
+    },
+    responses: {
+      '2XX': MicrosoftGraphMobileAppContentScriptCollectionResponseResponse,
+      '4XX': ErrorResponse,
+      '5XX': ErrorResponse,
+    },
+  })
+
+export const postDeviceAppManagementMobileAppsMobileAppIdGraphMacOSDmgAppContentVersionsMobileAppContentIdScriptsRoute =
+  createRoute({
+    method: 'post',
+    path: '/deviceAppManagement/mobileApps/{mobileApp-id}/graph.macOSDmgApp/contentVersions/{mobileAppContent-id}/scripts',
+    tags: ['deviceAppManagement.mobileApp'],
+    summary: 'Create new navigation property to scripts for deviceAppManagement',
+    operationId: 'deviceAppManagement.mobileApps.AsMacOSDmgApp.contentVersions.CreateScripts',
+    request: {
+      params: z.object({
+        'mobileApp-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileApp-id',
+              in: 'path',
+              description: 'The unique identifier of mobileApp',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileApp',
+            },
+          }),
+        'mobileAppContent-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContent-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContent',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContent',
+            },
+          }),
+      }),
+      body: {
+        description: 'New navigation property',
+        content: { 'application/json': { schema: MicrosoftGraphMobileAppContentScriptSchema } },
+        required: true,
+      },
+    },
+    responses: {
+      '2XX': {
+        description: 'Created navigation property.',
+        content: { 'application/json': { schema: MicrosoftGraphMobileAppContentScriptSchema } },
+      },
+      '4XX': ErrorResponse,
+      '5XX': ErrorResponse,
+    },
+  })
+
+export const getDeviceAppManagementMobileAppsMobileAppIdGraphMacOSDmgAppContentVersionsMobileAppContentIdScriptsMobileAppContentScriptIdRoute =
+  createRoute({
+    method: 'get',
+    path: '/deviceAppManagement/mobileApps/{mobileApp-id}/graph.macOSDmgApp/contentVersions/{mobileAppContent-id}/scripts/{mobileAppContentScript-id}',
+    tags: ['deviceAppManagement.mobileApp'],
+    summary: 'Get scripts from deviceAppManagement',
+    description: 'The list of scripts for this app content version.',
+    operationId: 'deviceAppManagement.mobileApps.AsMacOSDmgApp.contentVersions.GetScripts',
+    request: {
+      params: z.object({
+        'mobileApp-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileApp-id',
+              in: 'path',
+              description: 'The unique identifier of mobileApp',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileApp',
+            },
+          }),
+        'mobileAppContent-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContent-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContent',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContent',
+            },
+          }),
+        'mobileAppContentScript-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContentScript-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContentScript',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContentScript',
+            },
+          }),
+      }),
+      query: z.object({
+        $select: z
+          .preprocess(
+            (val) =>
+              val === undefined
+                ? val
+                : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+                    typeof item === 'string' ? item.split(',') : [item],
+                  ),
+            z.array(z.string()).superRefine((items, ctx) => {
+              const seen = new Map()
+              for (const [i, val] of items.entries()) {
+                const key = JSON.stringify(val)
+                if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+                else seen.set(key, i)
+              }
+            }),
+          )
+          .exactOptional()
+          .openapi({
+            param: {
+              name: '$select',
+              in: 'query',
+              description: 'Select properties to be returned',
+              style: 'form',
+              explode: false,
+              schema: { uniqueItems: true, type: 'array', items: { type: 'string' } },
+              required: false,
+            },
+          }),
+        $expand: z
+          .preprocess(
+            (val) =>
+              val === undefined
+                ? val
+                : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+                    typeof item === 'string' ? item.split(',') : [item],
+                  ),
+            z.array(z.string()).superRefine((items, ctx) => {
+              const seen = new Map()
+              for (const [i, val] of items.entries()) {
+                const key = JSON.stringify(val)
+                if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+                else seen.set(key, i)
+              }
+            }),
+          )
+          .exactOptional()
+          .openapi({
+            param: {
+              name: '$expand',
+              in: 'query',
+              description: 'Expand related entities',
+              style: 'form',
+              explode: false,
+              schema: { uniqueItems: true, type: 'array', items: { type: 'string' } },
+              required: false,
+            },
+          }),
+      }),
+    },
+    responses: {
+      '2XX': {
+        description: 'Retrieved navigation property',
+        content: { 'application/json': { schema: MicrosoftGraphMobileAppContentScriptSchema } },
+      },
+      '4XX': ErrorResponse,
+      '5XX': ErrorResponse,
+    },
+  })
+
+export const deleteDeviceAppManagementMobileAppsMobileAppIdGraphMacOSDmgAppContentVersionsMobileAppContentIdScriptsMobileAppContentScriptIdRoute =
+  createRoute({
+    method: 'delete',
+    path: '/deviceAppManagement/mobileApps/{mobileApp-id}/graph.macOSDmgApp/contentVersions/{mobileAppContent-id}/scripts/{mobileAppContentScript-id}',
+    tags: ['deviceAppManagement.mobileApp'],
+    summary: 'Delete navigation property scripts for deviceAppManagement',
+    operationId: 'deviceAppManagement.mobileApps.AsMacOSDmgApp.contentVersions.DeleteScripts',
+    request: {
+      params: z.object({
+        'mobileApp-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileApp-id',
+              in: 'path',
+              description: 'The unique identifier of mobileApp',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileApp',
+            },
+          }),
+        'mobileAppContent-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContent-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContent',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContent',
+            },
+          }),
+        'mobileAppContentScript-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContentScript-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContentScript',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContentScript',
+            },
+          }),
+      }),
+      headers: z.object({
+        'If-Match': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: {
+              name: 'If-Match',
+              in: 'header',
+              description: 'ETag',
+              schema: { type: 'string' },
+              required: false,
+            },
+          }),
+      }),
+    },
+    responses: { 204: { description: 'Success' }, '4XX': ErrorResponse, '5XX': ErrorResponse },
+  })
+
+export const patchDeviceAppManagementMobileAppsMobileAppIdGraphMacOSDmgAppContentVersionsMobileAppContentIdScriptsMobileAppContentScriptIdRoute =
+  createRoute({
+    method: 'patch',
+    path: '/deviceAppManagement/mobileApps/{mobileApp-id}/graph.macOSDmgApp/contentVersions/{mobileAppContent-id}/scripts/{mobileAppContentScript-id}',
+    tags: ['deviceAppManagement.mobileApp'],
+    summary: 'Update the navigation property scripts in deviceAppManagement',
+    operationId: 'deviceAppManagement.mobileApps.AsMacOSDmgApp.contentVersions.UpdateScripts',
+    request: {
+      params: z.object({
+        'mobileApp-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileApp-id',
+              in: 'path',
+              description: 'The unique identifier of mobileApp',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileApp',
+            },
+          }),
+        'mobileAppContent-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContent-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContent',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContent',
+            },
+          }),
+        'mobileAppContentScript-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContentScript-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContentScript',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContentScript',
+            },
+          }),
+      }),
+      body: {
+        description: 'New navigation property values',
+        content: { 'application/json': { schema: MicrosoftGraphMobileAppContentScriptSchema } },
+        required: true,
+      },
+    },
+    responses: {
+      '2XX': {
+        description: 'Success',
+        content: { 'application/json': { schema: MicrosoftGraphMobileAppContentScriptSchema } },
+      },
+      '4XX': ErrorResponse,
+      '5XX': ErrorResponse,
+    },
+  })
+
+export const getDeviceAppManagementMobileAppsMobileAppIdGraphMacOSDmgAppContentVersionsMobileAppContentIdScriptsCountRoute =
+  createRoute({
+    method: 'get',
+    path: '/deviceAppManagement/mobileApps/{mobileApp-id}/graph.macOSDmgApp/contentVersions/{mobileAppContent-id}/scripts/$count',
+    tags: ['deviceAppManagement.mobileApp'],
+    summary: 'Get the number of the resource',
+    operationId:
+      'deviceAppManagement.mobileApps.AsMacOSDmgApp.contentVersions.scripts.GetCount-d44f',
+    request: {
+      params: z.object({
+        'mobileApp-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileApp-id',
+              in: 'path',
+              description: 'The unique identifier of mobileApp',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileApp',
+            },
+          }),
+        'mobileAppContent-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContent-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContent',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContent',
+            },
+          }),
+      }),
+      query: z.object({ $search: SearchParamsSchema, $filter: FilterParamsSchema }),
+    },
+    responses: { '2XX': ODataCountResponseResponse, '4XX': ErrorResponse, '5XX': ErrorResponse },
+  })
+
 export const getDeviceAppManagementMobileAppsMobileAppIdGraphMacOSDmgAppContentVersionsCountRoute =
   createRoute({
     method: 'get',
@@ -277493,6 +279811,477 @@ export const getDeviceAppManagementMobileAppsMobileAppIdGraphMacOSLobAppContentV
     tags: ['deviceAppManagement.mobileApp'],
     summary: 'Get the number of the resource',
     operationId: 'deviceAppManagement.mobileApps.AsMacOSLobApp.contentVersions.files.GetCount-ebb2',
+    request: {
+      params: z.object({
+        'mobileApp-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileApp-id',
+              in: 'path',
+              description: 'The unique identifier of mobileApp',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileApp',
+            },
+          }),
+        'mobileAppContent-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContent-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContent',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContent',
+            },
+          }),
+      }),
+      query: z.object({ $search: SearchParamsSchema, $filter: FilterParamsSchema }),
+    },
+    responses: { '2XX': ODataCountResponseResponse, '4XX': ErrorResponse, '5XX': ErrorResponse },
+  })
+
+export const getDeviceAppManagementMobileAppsMobileAppIdGraphMacOSLobAppContentVersionsMobileAppContentIdScriptsRoute =
+  createRoute({
+    method: 'get',
+    path: '/deviceAppManagement/mobileApps/{mobileApp-id}/graph.macOSLobApp/contentVersions/{mobileAppContent-id}/scripts',
+    tags: ['deviceAppManagement.mobileApp'],
+    summary: 'Get scripts from deviceAppManagement',
+    description: 'The list of scripts for this app content version.',
+    operationId: 'deviceAppManagement.mobileApps.AsMacOSLobApp.contentVersions.ListScripts',
+    request: {
+      params: z.object({
+        'mobileApp-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileApp-id',
+              in: 'path',
+              description: 'The unique identifier of mobileApp',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileApp',
+            },
+          }),
+        'mobileAppContent-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContent-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContent',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContent',
+            },
+          }),
+      }),
+      query: z.object({
+        $top: TopParamsSchema,
+        $skip: SkipParamsSchema,
+        $search: SearchParamsSchema,
+        $filter: FilterParamsSchema,
+        $count: CountParamsSchema,
+        $orderby: z
+          .preprocess(
+            (val) =>
+              val === undefined
+                ? val
+                : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+                    typeof item === 'string' ? item.split(',') : [item],
+                  ),
+            z.array(z.string()).superRefine((items, ctx) => {
+              const seen = new Map()
+              for (const [i, val] of items.entries()) {
+                const key = JSON.stringify(val)
+                if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+                else seen.set(key, i)
+              }
+            }),
+          )
+          .exactOptional()
+          .openapi({
+            param: {
+              name: '$orderby',
+              in: 'query',
+              description: 'Order items by property values',
+              style: 'form',
+              explode: false,
+              schema: { uniqueItems: true, type: 'array', items: { type: 'string' } },
+              required: false,
+            },
+          }),
+        $select: z
+          .preprocess(
+            (val) =>
+              val === undefined
+                ? val
+                : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+                    typeof item === 'string' ? item.split(',') : [item],
+                  ),
+            z.array(z.string()).superRefine((items, ctx) => {
+              const seen = new Map()
+              for (const [i, val] of items.entries()) {
+                const key = JSON.stringify(val)
+                if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+                else seen.set(key, i)
+              }
+            }),
+          )
+          .exactOptional()
+          .openapi({
+            param: {
+              name: '$select',
+              in: 'query',
+              description: 'Select properties to be returned',
+              style: 'form',
+              explode: false,
+              schema: { uniqueItems: true, type: 'array', items: { type: 'string' } },
+              required: false,
+            },
+          }),
+        $expand: z
+          .preprocess(
+            (val) =>
+              val === undefined
+                ? val
+                : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+                    typeof item === 'string' ? item.split(',') : [item],
+                  ),
+            z.array(z.string()).superRefine((items, ctx) => {
+              const seen = new Map()
+              for (const [i, val] of items.entries()) {
+                const key = JSON.stringify(val)
+                if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+                else seen.set(key, i)
+              }
+            }),
+          )
+          .exactOptional()
+          .openapi({
+            param: {
+              name: '$expand',
+              in: 'query',
+              description: 'Expand related entities',
+              style: 'form',
+              explode: false,
+              schema: { uniqueItems: true, type: 'array', items: { type: 'string' } },
+              required: false,
+            },
+          }),
+      }),
+    },
+    responses: {
+      '2XX': MicrosoftGraphMobileAppContentScriptCollectionResponseResponse,
+      '4XX': ErrorResponse,
+      '5XX': ErrorResponse,
+    },
+  })
+
+export const postDeviceAppManagementMobileAppsMobileAppIdGraphMacOSLobAppContentVersionsMobileAppContentIdScriptsRoute =
+  createRoute({
+    method: 'post',
+    path: '/deviceAppManagement/mobileApps/{mobileApp-id}/graph.macOSLobApp/contentVersions/{mobileAppContent-id}/scripts',
+    tags: ['deviceAppManagement.mobileApp'],
+    summary: 'Create new navigation property to scripts for deviceAppManagement',
+    operationId: 'deviceAppManagement.mobileApps.AsMacOSLobApp.contentVersions.CreateScripts',
+    request: {
+      params: z.object({
+        'mobileApp-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileApp-id',
+              in: 'path',
+              description: 'The unique identifier of mobileApp',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileApp',
+            },
+          }),
+        'mobileAppContent-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContent-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContent',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContent',
+            },
+          }),
+      }),
+      body: {
+        description: 'New navigation property',
+        content: { 'application/json': { schema: MicrosoftGraphMobileAppContentScriptSchema } },
+        required: true,
+      },
+    },
+    responses: {
+      '2XX': {
+        description: 'Created navigation property.',
+        content: { 'application/json': { schema: MicrosoftGraphMobileAppContentScriptSchema } },
+      },
+      '4XX': ErrorResponse,
+      '5XX': ErrorResponse,
+    },
+  })
+
+export const getDeviceAppManagementMobileAppsMobileAppIdGraphMacOSLobAppContentVersionsMobileAppContentIdScriptsMobileAppContentScriptIdRoute =
+  createRoute({
+    method: 'get',
+    path: '/deviceAppManagement/mobileApps/{mobileApp-id}/graph.macOSLobApp/contentVersions/{mobileAppContent-id}/scripts/{mobileAppContentScript-id}',
+    tags: ['deviceAppManagement.mobileApp'],
+    summary: 'Get scripts from deviceAppManagement',
+    description: 'The list of scripts for this app content version.',
+    operationId: 'deviceAppManagement.mobileApps.AsMacOSLobApp.contentVersions.GetScripts',
+    request: {
+      params: z.object({
+        'mobileApp-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileApp-id',
+              in: 'path',
+              description: 'The unique identifier of mobileApp',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileApp',
+            },
+          }),
+        'mobileAppContent-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContent-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContent',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContent',
+            },
+          }),
+        'mobileAppContentScript-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContentScript-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContentScript',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContentScript',
+            },
+          }),
+      }),
+      query: z.object({
+        $select: z
+          .preprocess(
+            (val) =>
+              val === undefined
+                ? val
+                : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+                    typeof item === 'string' ? item.split(',') : [item],
+                  ),
+            z.array(z.string()).superRefine((items, ctx) => {
+              const seen = new Map()
+              for (const [i, val] of items.entries()) {
+                const key = JSON.stringify(val)
+                if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+                else seen.set(key, i)
+              }
+            }),
+          )
+          .exactOptional()
+          .openapi({
+            param: {
+              name: '$select',
+              in: 'query',
+              description: 'Select properties to be returned',
+              style: 'form',
+              explode: false,
+              schema: { uniqueItems: true, type: 'array', items: { type: 'string' } },
+              required: false,
+            },
+          }),
+        $expand: z
+          .preprocess(
+            (val) =>
+              val === undefined
+                ? val
+                : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+                    typeof item === 'string' ? item.split(',') : [item],
+                  ),
+            z.array(z.string()).superRefine((items, ctx) => {
+              const seen = new Map()
+              for (const [i, val] of items.entries()) {
+                const key = JSON.stringify(val)
+                if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+                else seen.set(key, i)
+              }
+            }),
+          )
+          .exactOptional()
+          .openapi({
+            param: {
+              name: '$expand',
+              in: 'query',
+              description: 'Expand related entities',
+              style: 'form',
+              explode: false,
+              schema: { uniqueItems: true, type: 'array', items: { type: 'string' } },
+              required: false,
+            },
+          }),
+      }),
+    },
+    responses: {
+      '2XX': {
+        description: 'Retrieved navigation property',
+        content: { 'application/json': { schema: MicrosoftGraphMobileAppContentScriptSchema } },
+      },
+      '4XX': ErrorResponse,
+      '5XX': ErrorResponse,
+    },
+  })
+
+export const deleteDeviceAppManagementMobileAppsMobileAppIdGraphMacOSLobAppContentVersionsMobileAppContentIdScriptsMobileAppContentScriptIdRoute =
+  createRoute({
+    method: 'delete',
+    path: '/deviceAppManagement/mobileApps/{mobileApp-id}/graph.macOSLobApp/contentVersions/{mobileAppContent-id}/scripts/{mobileAppContentScript-id}',
+    tags: ['deviceAppManagement.mobileApp'],
+    summary: 'Delete navigation property scripts for deviceAppManagement',
+    operationId: 'deviceAppManagement.mobileApps.AsMacOSLobApp.contentVersions.DeleteScripts',
+    request: {
+      params: z.object({
+        'mobileApp-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileApp-id',
+              in: 'path',
+              description: 'The unique identifier of mobileApp',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileApp',
+            },
+          }),
+        'mobileAppContent-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContent-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContent',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContent',
+            },
+          }),
+        'mobileAppContentScript-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContentScript-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContentScript',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContentScript',
+            },
+          }),
+      }),
+      headers: z.object({
+        'If-Match': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: {
+              name: 'If-Match',
+              in: 'header',
+              description: 'ETag',
+              schema: { type: 'string' },
+              required: false,
+            },
+          }),
+      }),
+    },
+    responses: { 204: { description: 'Success' }, '4XX': ErrorResponse, '5XX': ErrorResponse },
+  })
+
+export const patchDeviceAppManagementMobileAppsMobileAppIdGraphMacOSLobAppContentVersionsMobileAppContentIdScriptsMobileAppContentScriptIdRoute =
+  createRoute({
+    method: 'patch',
+    path: '/deviceAppManagement/mobileApps/{mobileApp-id}/graph.macOSLobApp/contentVersions/{mobileAppContent-id}/scripts/{mobileAppContentScript-id}',
+    tags: ['deviceAppManagement.mobileApp'],
+    summary: 'Update the navigation property scripts in deviceAppManagement',
+    operationId: 'deviceAppManagement.mobileApps.AsMacOSLobApp.contentVersions.UpdateScripts',
+    request: {
+      params: z.object({
+        'mobileApp-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileApp-id',
+              in: 'path',
+              description: 'The unique identifier of mobileApp',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileApp',
+            },
+          }),
+        'mobileAppContent-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContent-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContent',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContent',
+            },
+          }),
+        'mobileAppContentScript-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContentScript-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContentScript',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContentScript',
+            },
+          }),
+      }),
+      body: {
+        description: 'New navigation property values',
+        content: { 'application/json': { schema: MicrosoftGraphMobileAppContentScriptSchema } },
+        required: true,
+      },
+    },
+    responses: {
+      '2XX': {
+        description: 'Success',
+        content: { 'application/json': { schema: MicrosoftGraphMobileAppContentScriptSchema } },
+      },
+      '4XX': ErrorResponse,
+      '5XX': ErrorResponse,
+    },
+  })
+
+export const getDeviceAppManagementMobileAppsMobileAppIdGraphMacOSLobAppContentVersionsMobileAppContentIdScriptsCountRoute =
+  createRoute({
+    method: 'get',
+    path: '/deviceAppManagement/mobileApps/{mobileApp-id}/graph.macOSLobApp/contentVersions/{mobileAppContent-id}/scripts/$count',
+    tags: ['deviceAppManagement.mobileApp'],
+    summary: 'Get the number of the resource',
+    operationId:
+      'deviceAppManagement.mobileApps.AsMacOSLobApp.contentVersions.scripts.GetCount-d8ba',
     request: {
       params: z.object({
         'mobileApp-id': z
@@ -279742,6 +282531,481 @@ export const getDeviceAppManagementMobileAppsMobileAppIdGraphManagedAndroidLobAp
     responses: { '2XX': ODataCountResponseResponse, '4XX': ErrorResponse, '5XX': ErrorResponse },
   })
 
+export const getDeviceAppManagementMobileAppsMobileAppIdGraphManagedAndroidLobAppContentVersionsMobileAppContentIdScriptsRoute =
+  createRoute({
+    method: 'get',
+    path: '/deviceAppManagement/mobileApps/{mobileApp-id}/graph.managedAndroidLobApp/contentVersions/{mobileAppContent-id}/scripts',
+    tags: ['deviceAppManagement.mobileApp'],
+    summary: 'Get scripts from deviceAppManagement',
+    description: 'The list of scripts for this app content version.',
+    operationId:
+      'deviceAppManagement.mobileApps.AsManagedAndroidLobApp.contentVersions.ListScripts',
+    request: {
+      params: z.object({
+        'mobileApp-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileApp-id',
+              in: 'path',
+              description: 'The unique identifier of mobileApp',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileApp',
+            },
+          }),
+        'mobileAppContent-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContent-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContent',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContent',
+            },
+          }),
+      }),
+      query: z.object({
+        $top: TopParamsSchema,
+        $skip: SkipParamsSchema,
+        $search: SearchParamsSchema,
+        $filter: FilterParamsSchema,
+        $count: CountParamsSchema,
+        $orderby: z
+          .preprocess(
+            (val) =>
+              val === undefined
+                ? val
+                : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+                    typeof item === 'string' ? item.split(',') : [item],
+                  ),
+            z.array(z.string()).superRefine((items, ctx) => {
+              const seen = new Map()
+              for (const [i, val] of items.entries()) {
+                const key = JSON.stringify(val)
+                if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+                else seen.set(key, i)
+              }
+            }),
+          )
+          .exactOptional()
+          .openapi({
+            param: {
+              name: '$orderby',
+              in: 'query',
+              description: 'Order items by property values',
+              style: 'form',
+              explode: false,
+              schema: { uniqueItems: true, type: 'array', items: { type: 'string' } },
+              required: false,
+            },
+          }),
+        $select: z
+          .preprocess(
+            (val) =>
+              val === undefined
+                ? val
+                : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+                    typeof item === 'string' ? item.split(',') : [item],
+                  ),
+            z.array(z.string()).superRefine((items, ctx) => {
+              const seen = new Map()
+              for (const [i, val] of items.entries()) {
+                const key = JSON.stringify(val)
+                if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+                else seen.set(key, i)
+              }
+            }),
+          )
+          .exactOptional()
+          .openapi({
+            param: {
+              name: '$select',
+              in: 'query',
+              description: 'Select properties to be returned',
+              style: 'form',
+              explode: false,
+              schema: { uniqueItems: true, type: 'array', items: { type: 'string' } },
+              required: false,
+            },
+          }),
+        $expand: z
+          .preprocess(
+            (val) =>
+              val === undefined
+                ? val
+                : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+                    typeof item === 'string' ? item.split(',') : [item],
+                  ),
+            z.array(z.string()).superRefine((items, ctx) => {
+              const seen = new Map()
+              for (const [i, val] of items.entries()) {
+                const key = JSON.stringify(val)
+                if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+                else seen.set(key, i)
+              }
+            }),
+          )
+          .exactOptional()
+          .openapi({
+            param: {
+              name: '$expand',
+              in: 'query',
+              description: 'Expand related entities',
+              style: 'form',
+              explode: false,
+              schema: { uniqueItems: true, type: 'array', items: { type: 'string' } },
+              required: false,
+            },
+          }),
+      }),
+    },
+    responses: {
+      '2XX': MicrosoftGraphMobileAppContentScriptCollectionResponseResponse,
+      '4XX': ErrorResponse,
+      '5XX': ErrorResponse,
+    },
+  })
+
+export const postDeviceAppManagementMobileAppsMobileAppIdGraphManagedAndroidLobAppContentVersionsMobileAppContentIdScriptsRoute =
+  createRoute({
+    method: 'post',
+    path: '/deviceAppManagement/mobileApps/{mobileApp-id}/graph.managedAndroidLobApp/contentVersions/{mobileAppContent-id}/scripts',
+    tags: ['deviceAppManagement.mobileApp'],
+    summary: 'Create new navigation property to scripts for deviceAppManagement',
+    operationId:
+      'deviceAppManagement.mobileApps.AsManagedAndroidLobApp.contentVersions.CreateScripts',
+    request: {
+      params: z.object({
+        'mobileApp-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileApp-id',
+              in: 'path',
+              description: 'The unique identifier of mobileApp',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileApp',
+            },
+          }),
+        'mobileAppContent-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContent-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContent',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContent',
+            },
+          }),
+      }),
+      body: {
+        description: 'New navigation property',
+        content: { 'application/json': { schema: MicrosoftGraphMobileAppContentScriptSchema } },
+        required: true,
+      },
+    },
+    responses: {
+      '2XX': {
+        description: 'Created navigation property.',
+        content: { 'application/json': { schema: MicrosoftGraphMobileAppContentScriptSchema } },
+      },
+      '4XX': ErrorResponse,
+      '5XX': ErrorResponse,
+    },
+  })
+
+export const getDeviceAppManagementMobileAppsMobileAppIdGraphManagedAndroidLobAppContentVersionsMobileAppContentIdScriptsMobileAppContentScriptIdRoute =
+  createRoute({
+    method: 'get',
+    path: '/deviceAppManagement/mobileApps/{mobileApp-id}/graph.managedAndroidLobApp/contentVersions/{mobileAppContent-id}/scripts/{mobileAppContentScript-id}',
+    tags: ['deviceAppManagement.mobileApp'],
+    summary: 'Get scripts from deviceAppManagement',
+    description: 'The list of scripts for this app content version.',
+    operationId: 'deviceAppManagement.mobileApps.AsManagedAndroidLobApp.contentVersions.GetScripts',
+    request: {
+      params: z.object({
+        'mobileApp-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileApp-id',
+              in: 'path',
+              description: 'The unique identifier of mobileApp',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileApp',
+            },
+          }),
+        'mobileAppContent-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContent-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContent',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContent',
+            },
+          }),
+        'mobileAppContentScript-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContentScript-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContentScript',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContentScript',
+            },
+          }),
+      }),
+      query: z.object({
+        $select: z
+          .preprocess(
+            (val) =>
+              val === undefined
+                ? val
+                : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+                    typeof item === 'string' ? item.split(',') : [item],
+                  ),
+            z.array(z.string()).superRefine((items, ctx) => {
+              const seen = new Map()
+              for (const [i, val] of items.entries()) {
+                const key = JSON.stringify(val)
+                if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+                else seen.set(key, i)
+              }
+            }),
+          )
+          .exactOptional()
+          .openapi({
+            param: {
+              name: '$select',
+              in: 'query',
+              description: 'Select properties to be returned',
+              style: 'form',
+              explode: false,
+              schema: { uniqueItems: true, type: 'array', items: { type: 'string' } },
+              required: false,
+            },
+          }),
+        $expand: z
+          .preprocess(
+            (val) =>
+              val === undefined
+                ? val
+                : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+                    typeof item === 'string' ? item.split(',') : [item],
+                  ),
+            z.array(z.string()).superRefine((items, ctx) => {
+              const seen = new Map()
+              for (const [i, val] of items.entries()) {
+                const key = JSON.stringify(val)
+                if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+                else seen.set(key, i)
+              }
+            }),
+          )
+          .exactOptional()
+          .openapi({
+            param: {
+              name: '$expand',
+              in: 'query',
+              description: 'Expand related entities',
+              style: 'form',
+              explode: false,
+              schema: { uniqueItems: true, type: 'array', items: { type: 'string' } },
+              required: false,
+            },
+          }),
+      }),
+    },
+    responses: {
+      '2XX': {
+        description: 'Retrieved navigation property',
+        content: { 'application/json': { schema: MicrosoftGraphMobileAppContentScriptSchema } },
+      },
+      '4XX': ErrorResponse,
+      '5XX': ErrorResponse,
+    },
+  })
+
+export const deleteDeviceAppManagementMobileAppsMobileAppIdGraphManagedAndroidLobAppContentVersionsMobileAppContentIdScriptsMobileAppContentScriptIdRoute =
+  createRoute({
+    method: 'delete',
+    path: '/deviceAppManagement/mobileApps/{mobileApp-id}/graph.managedAndroidLobApp/contentVersions/{mobileAppContent-id}/scripts/{mobileAppContentScript-id}',
+    tags: ['deviceAppManagement.mobileApp'],
+    summary: 'Delete navigation property scripts for deviceAppManagement',
+    operationId:
+      'deviceAppManagement.mobileApps.AsManagedAndroidLobApp.contentVersions.DeleteScripts',
+    request: {
+      params: z.object({
+        'mobileApp-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileApp-id',
+              in: 'path',
+              description: 'The unique identifier of mobileApp',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileApp',
+            },
+          }),
+        'mobileAppContent-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContent-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContent',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContent',
+            },
+          }),
+        'mobileAppContentScript-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContentScript-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContentScript',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContentScript',
+            },
+          }),
+      }),
+      headers: z.object({
+        'If-Match': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: {
+              name: 'If-Match',
+              in: 'header',
+              description: 'ETag',
+              schema: { type: 'string' },
+              required: false,
+            },
+          }),
+      }),
+    },
+    responses: { 204: { description: 'Success' }, '4XX': ErrorResponse, '5XX': ErrorResponse },
+  })
+
+export const patchDeviceAppManagementMobileAppsMobileAppIdGraphManagedAndroidLobAppContentVersionsMobileAppContentIdScriptsMobileAppContentScriptIdRoute =
+  createRoute({
+    method: 'patch',
+    path: '/deviceAppManagement/mobileApps/{mobileApp-id}/graph.managedAndroidLobApp/contentVersions/{mobileAppContent-id}/scripts/{mobileAppContentScript-id}',
+    tags: ['deviceAppManagement.mobileApp'],
+    summary: 'Update the navigation property scripts in deviceAppManagement',
+    operationId:
+      'deviceAppManagement.mobileApps.AsManagedAndroidLobApp.contentVersions.UpdateScripts',
+    request: {
+      params: z.object({
+        'mobileApp-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileApp-id',
+              in: 'path',
+              description: 'The unique identifier of mobileApp',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileApp',
+            },
+          }),
+        'mobileAppContent-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContent-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContent',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContent',
+            },
+          }),
+        'mobileAppContentScript-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContentScript-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContentScript',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContentScript',
+            },
+          }),
+      }),
+      body: {
+        description: 'New navigation property values',
+        content: { 'application/json': { schema: MicrosoftGraphMobileAppContentScriptSchema } },
+        required: true,
+      },
+    },
+    responses: {
+      '2XX': {
+        description: 'Success',
+        content: { 'application/json': { schema: MicrosoftGraphMobileAppContentScriptSchema } },
+      },
+      '4XX': ErrorResponse,
+      '5XX': ErrorResponse,
+    },
+  })
+
+export const getDeviceAppManagementMobileAppsMobileAppIdGraphManagedAndroidLobAppContentVersionsMobileAppContentIdScriptsCountRoute =
+  createRoute({
+    method: 'get',
+    path: '/deviceAppManagement/mobileApps/{mobileApp-id}/graph.managedAndroidLobApp/contentVersions/{mobileAppContent-id}/scripts/$count',
+    tags: ['deviceAppManagement.mobileApp'],
+    summary: 'Get the number of the resource',
+    operationId:
+      'deviceAppManagement.mobileApps.AsManagedAndroidLobApp.contentVersions.scripts.GetCount-80ac',
+    request: {
+      params: z.object({
+        'mobileApp-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileApp-id',
+              in: 'path',
+              description: 'The unique identifier of mobileApp',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileApp',
+            },
+          }),
+        'mobileAppContent-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContent-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContent',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContent',
+            },
+          }),
+      }),
+      query: z.object({ $search: SearchParamsSchema, $filter: FilterParamsSchema }),
+    },
+    responses: { '2XX': ODataCountResponseResponse, '4XX': ErrorResponse, '5XX': ErrorResponse },
+  })
+
 export const getDeviceAppManagementMobileAppsMobileAppIdGraphManagedAndroidLobAppContentVersionsCountRoute =
   createRoute({
     method: 'get',
@@ -281923,6 +285187,477 @@ export const getDeviceAppManagementMobileAppsMobileAppIdGraphManagedIOSLobAppCon
     summary: 'Get the number of the resource',
     operationId:
       'deviceAppManagement.mobileApps.AsManagedIOSLobApp.contentVersions.files.GetCount-6260',
+    request: {
+      params: z.object({
+        'mobileApp-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileApp-id',
+              in: 'path',
+              description: 'The unique identifier of mobileApp',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileApp',
+            },
+          }),
+        'mobileAppContent-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContent-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContent',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContent',
+            },
+          }),
+      }),
+      query: z.object({ $search: SearchParamsSchema, $filter: FilterParamsSchema }),
+    },
+    responses: { '2XX': ODataCountResponseResponse, '4XX': ErrorResponse, '5XX': ErrorResponse },
+  })
+
+export const getDeviceAppManagementMobileAppsMobileAppIdGraphManagedIOSLobAppContentVersionsMobileAppContentIdScriptsRoute =
+  createRoute({
+    method: 'get',
+    path: '/deviceAppManagement/mobileApps/{mobileApp-id}/graph.managedIOSLobApp/contentVersions/{mobileAppContent-id}/scripts',
+    tags: ['deviceAppManagement.mobileApp'],
+    summary: 'Get scripts from deviceAppManagement',
+    description: 'The list of scripts for this app content version.',
+    operationId: 'deviceAppManagement.mobileApps.AsManagedIOSLobApp.contentVersions.ListScripts',
+    request: {
+      params: z.object({
+        'mobileApp-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileApp-id',
+              in: 'path',
+              description: 'The unique identifier of mobileApp',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileApp',
+            },
+          }),
+        'mobileAppContent-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContent-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContent',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContent',
+            },
+          }),
+      }),
+      query: z.object({
+        $top: TopParamsSchema,
+        $skip: SkipParamsSchema,
+        $search: SearchParamsSchema,
+        $filter: FilterParamsSchema,
+        $count: CountParamsSchema,
+        $orderby: z
+          .preprocess(
+            (val) =>
+              val === undefined
+                ? val
+                : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+                    typeof item === 'string' ? item.split(',') : [item],
+                  ),
+            z.array(z.string()).superRefine((items, ctx) => {
+              const seen = new Map()
+              for (const [i, val] of items.entries()) {
+                const key = JSON.stringify(val)
+                if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+                else seen.set(key, i)
+              }
+            }),
+          )
+          .exactOptional()
+          .openapi({
+            param: {
+              name: '$orderby',
+              in: 'query',
+              description: 'Order items by property values',
+              style: 'form',
+              explode: false,
+              schema: { uniqueItems: true, type: 'array', items: { type: 'string' } },
+              required: false,
+            },
+          }),
+        $select: z
+          .preprocess(
+            (val) =>
+              val === undefined
+                ? val
+                : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+                    typeof item === 'string' ? item.split(',') : [item],
+                  ),
+            z.array(z.string()).superRefine((items, ctx) => {
+              const seen = new Map()
+              for (const [i, val] of items.entries()) {
+                const key = JSON.stringify(val)
+                if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+                else seen.set(key, i)
+              }
+            }),
+          )
+          .exactOptional()
+          .openapi({
+            param: {
+              name: '$select',
+              in: 'query',
+              description: 'Select properties to be returned',
+              style: 'form',
+              explode: false,
+              schema: { uniqueItems: true, type: 'array', items: { type: 'string' } },
+              required: false,
+            },
+          }),
+        $expand: z
+          .preprocess(
+            (val) =>
+              val === undefined
+                ? val
+                : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+                    typeof item === 'string' ? item.split(',') : [item],
+                  ),
+            z.array(z.string()).superRefine((items, ctx) => {
+              const seen = new Map()
+              for (const [i, val] of items.entries()) {
+                const key = JSON.stringify(val)
+                if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+                else seen.set(key, i)
+              }
+            }),
+          )
+          .exactOptional()
+          .openapi({
+            param: {
+              name: '$expand',
+              in: 'query',
+              description: 'Expand related entities',
+              style: 'form',
+              explode: false,
+              schema: { uniqueItems: true, type: 'array', items: { type: 'string' } },
+              required: false,
+            },
+          }),
+      }),
+    },
+    responses: {
+      '2XX': MicrosoftGraphMobileAppContentScriptCollectionResponseResponse,
+      '4XX': ErrorResponse,
+      '5XX': ErrorResponse,
+    },
+  })
+
+export const postDeviceAppManagementMobileAppsMobileAppIdGraphManagedIOSLobAppContentVersionsMobileAppContentIdScriptsRoute =
+  createRoute({
+    method: 'post',
+    path: '/deviceAppManagement/mobileApps/{mobileApp-id}/graph.managedIOSLobApp/contentVersions/{mobileAppContent-id}/scripts',
+    tags: ['deviceAppManagement.mobileApp'],
+    summary: 'Create new navigation property to scripts for deviceAppManagement',
+    operationId: 'deviceAppManagement.mobileApps.AsManagedIOSLobApp.contentVersions.CreateScripts',
+    request: {
+      params: z.object({
+        'mobileApp-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileApp-id',
+              in: 'path',
+              description: 'The unique identifier of mobileApp',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileApp',
+            },
+          }),
+        'mobileAppContent-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContent-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContent',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContent',
+            },
+          }),
+      }),
+      body: {
+        description: 'New navigation property',
+        content: { 'application/json': { schema: MicrosoftGraphMobileAppContentScriptSchema } },
+        required: true,
+      },
+    },
+    responses: {
+      '2XX': {
+        description: 'Created navigation property.',
+        content: { 'application/json': { schema: MicrosoftGraphMobileAppContentScriptSchema } },
+      },
+      '4XX': ErrorResponse,
+      '5XX': ErrorResponse,
+    },
+  })
+
+export const getDeviceAppManagementMobileAppsMobileAppIdGraphManagedIOSLobAppContentVersionsMobileAppContentIdScriptsMobileAppContentScriptIdRoute =
+  createRoute({
+    method: 'get',
+    path: '/deviceAppManagement/mobileApps/{mobileApp-id}/graph.managedIOSLobApp/contentVersions/{mobileAppContent-id}/scripts/{mobileAppContentScript-id}',
+    tags: ['deviceAppManagement.mobileApp'],
+    summary: 'Get scripts from deviceAppManagement',
+    description: 'The list of scripts for this app content version.',
+    operationId: 'deviceAppManagement.mobileApps.AsManagedIOSLobApp.contentVersions.GetScripts',
+    request: {
+      params: z.object({
+        'mobileApp-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileApp-id',
+              in: 'path',
+              description: 'The unique identifier of mobileApp',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileApp',
+            },
+          }),
+        'mobileAppContent-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContent-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContent',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContent',
+            },
+          }),
+        'mobileAppContentScript-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContentScript-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContentScript',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContentScript',
+            },
+          }),
+      }),
+      query: z.object({
+        $select: z
+          .preprocess(
+            (val) =>
+              val === undefined
+                ? val
+                : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+                    typeof item === 'string' ? item.split(',') : [item],
+                  ),
+            z.array(z.string()).superRefine((items, ctx) => {
+              const seen = new Map()
+              for (const [i, val] of items.entries()) {
+                const key = JSON.stringify(val)
+                if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+                else seen.set(key, i)
+              }
+            }),
+          )
+          .exactOptional()
+          .openapi({
+            param: {
+              name: '$select',
+              in: 'query',
+              description: 'Select properties to be returned',
+              style: 'form',
+              explode: false,
+              schema: { uniqueItems: true, type: 'array', items: { type: 'string' } },
+              required: false,
+            },
+          }),
+        $expand: z
+          .preprocess(
+            (val) =>
+              val === undefined
+                ? val
+                : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+                    typeof item === 'string' ? item.split(',') : [item],
+                  ),
+            z.array(z.string()).superRefine((items, ctx) => {
+              const seen = new Map()
+              for (const [i, val] of items.entries()) {
+                const key = JSON.stringify(val)
+                if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+                else seen.set(key, i)
+              }
+            }),
+          )
+          .exactOptional()
+          .openapi({
+            param: {
+              name: '$expand',
+              in: 'query',
+              description: 'Expand related entities',
+              style: 'form',
+              explode: false,
+              schema: { uniqueItems: true, type: 'array', items: { type: 'string' } },
+              required: false,
+            },
+          }),
+      }),
+    },
+    responses: {
+      '2XX': {
+        description: 'Retrieved navigation property',
+        content: { 'application/json': { schema: MicrosoftGraphMobileAppContentScriptSchema } },
+      },
+      '4XX': ErrorResponse,
+      '5XX': ErrorResponse,
+    },
+  })
+
+export const deleteDeviceAppManagementMobileAppsMobileAppIdGraphManagedIOSLobAppContentVersionsMobileAppContentIdScriptsMobileAppContentScriptIdRoute =
+  createRoute({
+    method: 'delete',
+    path: '/deviceAppManagement/mobileApps/{mobileApp-id}/graph.managedIOSLobApp/contentVersions/{mobileAppContent-id}/scripts/{mobileAppContentScript-id}',
+    tags: ['deviceAppManagement.mobileApp'],
+    summary: 'Delete navigation property scripts for deviceAppManagement',
+    operationId: 'deviceAppManagement.mobileApps.AsManagedIOSLobApp.contentVersions.DeleteScripts',
+    request: {
+      params: z.object({
+        'mobileApp-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileApp-id',
+              in: 'path',
+              description: 'The unique identifier of mobileApp',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileApp',
+            },
+          }),
+        'mobileAppContent-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContent-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContent',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContent',
+            },
+          }),
+        'mobileAppContentScript-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContentScript-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContentScript',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContentScript',
+            },
+          }),
+      }),
+      headers: z.object({
+        'If-Match': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: {
+              name: 'If-Match',
+              in: 'header',
+              description: 'ETag',
+              schema: { type: 'string' },
+              required: false,
+            },
+          }),
+      }),
+    },
+    responses: { 204: { description: 'Success' }, '4XX': ErrorResponse, '5XX': ErrorResponse },
+  })
+
+export const patchDeviceAppManagementMobileAppsMobileAppIdGraphManagedIOSLobAppContentVersionsMobileAppContentIdScriptsMobileAppContentScriptIdRoute =
+  createRoute({
+    method: 'patch',
+    path: '/deviceAppManagement/mobileApps/{mobileApp-id}/graph.managedIOSLobApp/contentVersions/{mobileAppContent-id}/scripts/{mobileAppContentScript-id}',
+    tags: ['deviceAppManagement.mobileApp'],
+    summary: 'Update the navigation property scripts in deviceAppManagement',
+    operationId: 'deviceAppManagement.mobileApps.AsManagedIOSLobApp.contentVersions.UpdateScripts',
+    request: {
+      params: z.object({
+        'mobileApp-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileApp-id',
+              in: 'path',
+              description: 'The unique identifier of mobileApp',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileApp',
+            },
+          }),
+        'mobileAppContent-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContent-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContent',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContent',
+            },
+          }),
+        'mobileAppContentScript-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContentScript-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContentScript',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContentScript',
+            },
+          }),
+      }),
+      body: {
+        description: 'New navigation property values',
+        content: { 'application/json': { schema: MicrosoftGraphMobileAppContentScriptSchema } },
+        required: true,
+      },
+    },
+    responses: {
+      '2XX': {
+        description: 'Success',
+        content: { 'application/json': { schema: MicrosoftGraphMobileAppContentScriptSchema } },
+      },
+      '4XX': ErrorResponse,
+      '5XX': ErrorResponse,
+    },
+  })
+
+export const getDeviceAppManagementMobileAppsMobileAppIdGraphManagedIOSLobAppContentVersionsMobileAppContentIdScriptsCountRoute =
+  createRoute({
+    method: 'get',
+    path: '/deviceAppManagement/mobileApps/{mobileApp-id}/graph.managedIOSLobApp/contentVersions/{mobileAppContent-id}/scripts/$count',
+    tags: ['deviceAppManagement.mobileApp'],
+    summary: 'Get the number of the resource',
+    operationId:
+      'deviceAppManagement.mobileApps.AsManagedIOSLobApp.contentVersions.scripts.GetCount-194b',
     request: {
       params: z.object({
         'mobileApp-id': z
@@ -284138,6 +287873,480 @@ export const getDeviceAppManagementMobileAppsMobileAppIdGraphManagedMobileLobApp
     summary: 'Get the number of the resource',
     operationId:
       'deviceAppManagement.mobileApps.AsManagedMobileLobApp.contentVersions.files.GetCount-f9ec',
+    request: {
+      params: z.object({
+        'mobileApp-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileApp-id',
+              in: 'path',
+              description: 'The unique identifier of mobileApp',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileApp',
+            },
+          }),
+        'mobileAppContent-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContent-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContent',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContent',
+            },
+          }),
+      }),
+      query: z.object({ $search: SearchParamsSchema, $filter: FilterParamsSchema }),
+    },
+    responses: { '2XX': ODataCountResponseResponse, '4XX': ErrorResponse, '5XX': ErrorResponse },
+  })
+
+export const getDeviceAppManagementMobileAppsMobileAppIdGraphManagedMobileLobAppContentVersionsMobileAppContentIdScriptsRoute =
+  createRoute({
+    method: 'get',
+    path: '/deviceAppManagement/mobileApps/{mobileApp-id}/graph.managedMobileLobApp/contentVersions/{mobileAppContent-id}/scripts',
+    tags: ['deviceAppManagement.mobileApp'],
+    summary: 'Get scripts from deviceAppManagement',
+    description: 'The list of scripts for this app content version.',
+    operationId: 'deviceAppManagement.mobileApps.AsManagedMobileLobApp.contentVersions.ListScripts',
+    request: {
+      params: z.object({
+        'mobileApp-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileApp-id',
+              in: 'path',
+              description: 'The unique identifier of mobileApp',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileApp',
+            },
+          }),
+        'mobileAppContent-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContent-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContent',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContent',
+            },
+          }),
+      }),
+      query: z.object({
+        $top: TopParamsSchema,
+        $skip: SkipParamsSchema,
+        $search: SearchParamsSchema,
+        $filter: FilterParamsSchema,
+        $count: CountParamsSchema,
+        $orderby: z
+          .preprocess(
+            (val) =>
+              val === undefined
+                ? val
+                : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+                    typeof item === 'string' ? item.split(',') : [item],
+                  ),
+            z.array(z.string()).superRefine((items, ctx) => {
+              const seen = new Map()
+              for (const [i, val] of items.entries()) {
+                const key = JSON.stringify(val)
+                if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+                else seen.set(key, i)
+              }
+            }),
+          )
+          .exactOptional()
+          .openapi({
+            param: {
+              name: '$orderby',
+              in: 'query',
+              description: 'Order items by property values',
+              style: 'form',
+              explode: false,
+              schema: { uniqueItems: true, type: 'array', items: { type: 'string' } },
+              required: false,
+            },
+          }),
+        $select: z
+          .preprocess(
+            (val) =>
+              val === undefined
+                ? val
+                : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+                    typeof item === 'string' ? item.split(',') : [item],
+                  ),
+            z.array(z.string()).superRefine((items, ctx) => {
+              const seen = new Map()
+              for (const [i, val] of items.entries()) {
+                const key = JSON.stringify(val)
+                if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+                else seen.set(key, i)
+              }
+            }),
+          )
+          .exactOptional()
+          .openapi({
+            param: {
+              name: '$select',
+              in: 'query',
+              description: 'Select properties to be returned',
+              style: 'form',
+              explode: false,
+              schema: { uniqueItems: true, type: 'array', items: { type: 'string' } },
+              required: false,
+            },
+          }),
+        $expand: z
+          .preprocess(
+            (val) =>
+              val === undefined
+                ? val
+                : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+                    typeof item === 'string' ? item.split(',') : [item],
+                  ),
+            z.array(z.string()).superRefine((items, ctx) => {
+              const seen = new Map()
+              for (const [i, val] of items.entries()) {
+                const key = JSON.stringify(val)
+                if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+                else seen.set(key, i)
+              }
+            }),
+          )
+          .exactOptional()
+          .openapi({
+            param: {
+              name: '$expand',
+              in: 'query',
+              description: 'Expand related entities',
+              style: 'form',
+              explode: false,
+              schema: { uniqueItems: true, type: 'array', items: { type: 'string' } },
+              required: false,
+            },
+          }),
+      }),
+    },
+    responses: {
+      '2XX': MicrosoftGraphMobileAppContentScriptCollectionResponseResponse,
+      '4XX': ErrorResponse,
+      '5XX': ErrorResponse,
+    },
+  })
+
+export const postDeviceAppManagementMobileAppsMobileAppIdGraphManagedMobileLobAppContentVersionsMobileAppContentIdScriptsRoute =
+  createRoute({
+    method: 'post',
+    path: '/deviceAppManagement/mobileApps/{mobileApp-id}/graph.managedMobileLobApp/contentVersions/{mobileAppContent-id}/scripts',
+    tags: ['deviceAppManagement.mobileApp'],
+    summary: 'Create new navigation property to scripts for deviceAppManagement',
+    operationId:
+      'deviceAppManagement.mobileApps.AsManagedMobileLobApp.contentVersions.CreateScripts',
+    request: {
+      params: z.object({
+        'mobileApp-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileApp-id',
+              in: 'path',
+              description: 'The unique identifier of mobileApp',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileApp',
+            },
+          }),
+        'mobileAppContent-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContent-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContent',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContent',
+            },
+          }),
+      }),
+      body: {
+        description: 'New navigation property',
+        content: { 'application/json': { schema: MicrosoftGraphMobileAppContentScriptSchema } },
+        required: true,
+      },
+    },
+    responses: {
+      '2XX': {
+        description: 'Created navigation property.',
+        content: { 'application/json': { schema: MicrosoftGraphMobileAppContentScriptSchema } },
+      },
+      '4XX': ErrorResponse,
+      '5XX': ErrorResponse,
+    },
+  })
+
+export const getDeviceAppManagementMobileAppsMobileAppIdGraphManagedMobileLobAppContentVersionsMobileAppContentIdScriptsMobileAppContentScriptIdRoute =
+  createRoute({
+    method: 'get',
+    path: '/deviceAppManagement/mobileApps/{mobileApp-id}/graph.managedMobileLobApp/contentVersions/{mobileAppContent-id}/scripts/{mobileAppContentScript-id}',
+    tags: ['deviceAppManagement.mobileApp'],
+    summary: 'Get scripts from deviceAppManagement',
+    description: 'The list of scripts for this app content version.',
+    operationId: 'deviceAppManagement.mobileApps.AsManagedMobileLobApp.contentVersions.GetScripts',
+    request: {
+      params: z.object({
+        'mobileApp-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileApp-id',
+              in: 'path',
+              description: 'The unique identifier of mobileApp',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileApp',
+            },
+          }),
+        'mobileAppContent-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContent-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContent',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContent',
+            },
+          }),
+        'mobileAppContentScript-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContentScript-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContentScript',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContentScript',
+            },
+          }),
+      }),
+      query: z.object({
+        $select: z
+          .preprocess(
+            (val) =>
+              val === undefined
+                ? val
+                : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+                    typeof item === 'string' ? item.split(',') : [item],
+                  ),
+            z.array(z.string()).superRefine((items, ctx) => {
+              const seen = new Map()
+              for (const [i, val] of items.entries()) {
+                const key = JSON.stringify(val)
+                if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+                else seen.set(key, i)
+              }
+            }),
+          )
+          .exactOptional()
+          .openapi({
+            param: {
+              name: '$select',
+              in: 'query',
+              description: 'Select properties to be returned',
+              style: 'form',
+              explode: false,
+              schema: { uniqueItems: true, type: 'array', items: { type: 'string' } },
+              required: false,
+            },
+          }),
+        $expand: z
+          .preprocess(
+            (val) =>
+              val === undefined
+                ? val
+                : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+                    typeof item === 'string' ? item.split(',') : [item],
+                  ),
+            z.array(z.string()).superRefine((items, ctx) => {
+              const seen = new Map()
+              for (const [i, val] of items.entries()) {
+                const key = JSON.stringify(val)
+                if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+                else seen.set(key, i)
+              }
+            }),
+          )
+          .exactOptional()
+          .openapi({
+            param: {
+              name: '$expand',
+              in: 'query',
+              description: 'Expand related entities',
+              style: 'form',
+              explode: false,
+              schema: { uniqueItems: true, type: 'array', items: { type: 'string' } },
+              required: false,
+            },
+          }),
+      }),
+    },
+    responses: {
+      '2XX': {
+        description: 'Retrieved navigation property',
+        content: { 'application/json': { schema: MicrosoftGraphMobileAppContentScriptSchema } },
+      },
+      '4XX': ErrorResponse,
+      '5XX': ErrorResponse,
+    },
+  })
+
+export const deleteDeviceAppManagementMobileAppsMobileAppIdGraphManagedMobileLobAppContentVersionsMobileAppContentIdScriptsMobileAppContentScriptIdRoute =
+  createRoute({
+    method: 'delete',
+    path: '/deviceAppManagement/mobileApps/{mobileApp-id}/graph.managedMobileLobApp/contentVersions/{mobileAppContent-id}/scripts/{mobileAppContentScript-id}',
+    tags: ['deviceAppManagement.mobileApp'],
+    summary: 'Delete navigation property scripts for deviceAppManagement',
+    operationId:
+      'deviceAppManagement.mobileApps.AsManagedMobileLobApp.contentVersions.DeleteScripts',
+    request: {
+      params: z.object({
+        'mobileApp-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileApp-id',
+              in: 'path',
+              description: 'The unique identifier of mobileApp',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileApp',
+            },
+          }),
+        'mobileAppContent-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContent-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContent',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContent',
+            },
+          }),
+        'mobileAppContentScript-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContentScript-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContentScript',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContentScript',
+            },
+          }),
+      }),
+      headers: z.object({
+        'If-Match': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: {
+              name: 'If-Match',
+              in: 'header',
+              description: 'ETag',
+              schema: { type: 'string' },
+              required: false,
+            },
+          }),
+      }),
+    },
+    responses: { 204: { description: 'Success' }, '4XX': ErrorResponse, '5XX': ErrorResponse },
+  })
+
+export const patchDeviceAppManagementMobileAppsMobileAppIdGraphManagedMobileLobAppContentVersionsMobileAppContentIdScriptsMobileAppContentScriptIdRoute =
+  createRoute({
+    method: 'patch',
+    path: '/deviceAppManagement/mobileApps/{mobileApp-id}/graph.managedMobileLobApp/contentVersions/{mobileAppContent-id}/scripts/{mobileAppContentScript-id}',
+    tags: ['deviceAppManagement.mobileApp'],
+    summary: 'Update the navigation property scripts in deviceAppManagement',
+    operationId:
+      'deviceAppManagement.mobileApps.AsManagedMobileLobApp.contentVersions.UpdateScripts',
+    request: {
+      params: z.object({
+        'mobileApp-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileApp-id',
+              in: 'path',
+              description: 'The unique identifier of mobileApp',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileApp',
+            },
+          }),
+        'mobileAppContent-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContent-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContent',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContent',
+            },
+          }),
+        'mobileAppContentScript-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContentScript-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContentScript',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContentScript',
+            },
+          }),
+      }),
+      body: {
+        description: 'New navigation property values',
+        content: { 'application/json': { schema: MicrosoftGraphMobileAppContentScriptSchema } },
+        required: true,
+      },
+    },
+    responses: {
+      '2XX': {
+        description: 'Success',
+        content: { 'application/json': { schema: MicrosoftGraphMobileAppContentScriptSchema } },
+      },
+      '4XX': ErrorResponse,
+      '5XX': ErrorResponse,
+    },
+  })
+
+export const getDeviceAppManagementMobileAppsMobileAppIdGraphManagedMobileLobAppContentVersionsMobileAppContentIdScriptsCountRoute =
+  createRoute({
+    method: 'get',
+    path: '/deviceAppManagement/mobileApps/{mobileApp-id}/graph.managedMobileLobApp/contentVersions/{mobileAppContent-id}/scripts/$count',
+    tags: ['deviceAppManagement.mobileApp'],
+    summary: 'Get the number of the resource',
+    operationId:
+      'deviceAppManagement.mobileApps.AsManagedMobileLobApp.contentVersions.scripts.GetCount-14bf',
     request: {
       params: z.object({
         'mobileApp-id': z
@@ -287131,6 +291340,477 @@ export const getDeviceAppManagementMobileAppsMobileAppIdGraphWin32LobAppContentV
     responses: { '2XX': ODataCountResponseResponse, '4XX': ErrorResponse, '5XX': ErrorResponse },
   })
 
+export const getDeviceAppManagementMobileAppsMobileAppIdGraphWin32LobAppContentVersionsMobileAppContentIdScriptsRoute =
+  createRoute({
+    method: 'get',
+    path: '/deviceAppManagement/mobileApps/{mobileApp-id}/graph.win32LobApp/contentVersions/{mobileAppContent-id}/scripts',
+    tags: ['deviceAppManagement.mobileApp'],
+    summary: 'Get scripts from deviceAppManagement',
+    description: 'The list of scripts for this app content version.',
+    operationId: 'deviceAppManagement.mobileApps.AsWin32LobApp.contentVersions.ListScripts',
+    request: {
+      params: z.object({
+        'mobileApp-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileApp-id',
+              in: 'path',
+              description: 'The unique identifier of mobileApp',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileApp',
+            },
+          }),
+        'mobileAppContent-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContent-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContent',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContent',
+            },
+          }),
+      }),
+      query: z.object({
+        $top: TopParamsSchema,
+        $skip: SkipParamsSchema,
+        $search: SearchParamsSchema,
+        $filter: FilterParamsSchema,
+        $count: CountParamsSchema,
+        $orderby: z
+          .preprocess(
+            (val) =>
+              val === undefined
+                ? val
+                : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+                    typeof item === 'string' ? item.split(',') : [item],
+                  ),
+            z.array(z.string()).superRefine((items, ctx) => {
+              const seen = new Map()
+              for (const [i, val] of items.entries()) {
+                const key = JSON.stringify(val)
+                if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+                else seen.set(key, i)
+              }
+            }),
+          )
+          .exactOptional()
+          .openapi({
+            param: {
+              name: '$orderby',
+              in: 'query',
+              description: 'Order items by property values',
+              style: 'form',
+              explode: false,
+              schema: { uniqueItems: true, type: 'array', items: { type: 'string' } },
+              required: false,
+            },
+          }),
+        $select: z
+          .preprocess(
+            (val) =>
+              val === undefined
+                ? val
+                : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+                    typeof item === 'string' ? item.split(',') : [item],
+                  ),
+            z.array(z.string()).superRefine((items, ctx) => {
+              const seen = new Map()
+              for (const [i, val] of items.entries()) {
+                const key = JSON.stringify(val)
+                if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+                else seen.set(key, i)
+              }
+            }),
+          )
+          .exactOptional()
+          .openapi({
+            param: {
+              name: '$select',
+              in: 'query',
+              description: 'Select properties to be returned',
+              style: 'form',
+              explode: false,
+              schema: { uniqueItems: true, type: 'array', items: { type: 'string' } },
+              required: false,
+            },
+          }),
+        $expand: z
+          .preprocess(
+            (val) =>
+              val === undefined
+                ? val
+                : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+                    typeof item === 'string' ? item.split(',') : [item],
+                  ),
+            z.array(z.string()).superRefine((items, ctx) => {
+              const seen = new Map()
+              for (const [i, val] of items.entries()) {
+                const key = JSON.stringify(val)
+                if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+                else seen.set(key, i)
+              }
+            }),
+          )
+          .exactOptional()
+          .openapi({
+            param: {
+              name: '$expand',
+              in: 'query',
+              description: 'Expand related entities',
+              style: 'form',
+              explode: false,
+              schema: { uniqueItems: true, type: 'array', items: { type: 'string' } },
+              required: false,
+            },
+          }),
+      }),
+    },
+    responses: {
+      '2XX': MicrosoftGraphMobileAppContentScriptCollectionResponseResponse,
+      '4XX': ErrorResponse,
+      '5XX': ErrorResponse,
+    },
+  })
+
+export const postDeviceAppManagementMobileAppsMobileAppIdGraphWin32LobAppContentVersionsMobileAppContentIdScriptsRoute =
+  createRoute({
+    method: 'post',
+    path: '/deviceAppManagement/mobileApps/{mobileApp-id}/graph.win32LobApp/contentVersions/{mobileAppContent-id}/scripts',
+    tags: ['deviceAppManagement.mobileApp'],
+    summary: 'Create new navigation property to scripts for deviceAppManagement',
+    operationId: 'deviceAppManagement.mobileApps.AsWin32LobApp.contentVersions.CreateScripts',
+    request: {
+      params: z.object({
+        'mobileApp-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileApp-id',
+              in: 'path',
+              description: 'The unique identifier of mobileApp',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileApp',
+            },
+          }),
+        'mobileAppContent-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContent-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContent',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContent',
+            },
+          }),
+      }),
+      body: {
+        description: 'New navigation property',
+        content: { 'application/json': { schema: MicrosoftGraphMobileAppContentScriptSchema } },
+        required: true,
+      },
+    },
+    responses: {
+      '2XX': {
+        description: 'Created navigation property.',
+        content: { 'application/json': { schema: MicrosoftGraphMobileAppContentScriptSchema } },
+      },
+      '4XX': ErrorResponse,
+      '5XX': ErrorResponse,
+    },
+  })
+
+export const getDeviceAppManagementMobileAppsMobileAppIdGraphWin32LobAppContentVersionsMobileAppContentIdScriptsMobileAppContentScriptIdRoute =
+  createRoute({
+    method: 'get',
+    path: '/deviceAppManagement/mobileApps/{mobileApp-id}/graph.win32LobApp/contentVersions/{mobileAppContent-id}/scripts/{mobileAppContentScript-id}',
+    tags: ['deviceAppManagement.mobileApp'],
+    summary: 'Get scripts from deviceAppManagement',
+    description: 'The list of scripts for this app content version.',
+    operationId: 'deviceAppManagement.mobileApps.AsWin32LobApp.contentVersions.GetScripts',
+    request: {
+      params: z.object({
+        'mobileApp-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileApp-id',
+              in: 'path',
+              description: 'The unique identifier of mobileApp',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileApp',
+            },
+          }),
+        'mobileAppContent-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContent-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContent',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContent',
+            },
+          }),
+        'mobileAppContentScript-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContentScript-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContentScript',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContentScript',
+            },
+          }),
+      }),
+      query: z.object({
+        $select: z
+          .preprocess(
+            (val) =>
+              val === undefined
+                ? val
+                : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+                    typeof item === 'string' ? item.split(',') : [item],
+                  ),
+            z.array(z.string()).superRefine((items, ctx) => {
+              const seen = new Map()
+              for (const [i, val] of items.entries()) {
+                const key = JSON.stringify(val)
+                if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+                else seen.set(key, i)
+              }
+            }),
+          )
+          .exactOptional()
+          .openapi({
+            param: {
+              name: '$select',
+              in: 'query',
+              description: 'Select properties to be returned',
+              style: 'form',
+              explode: false,
+              schema: { uniqueItems: true, type: 'array', items: { type: 'string' } },
+              required: false,
+            },
+          }),
+        $expand: z
+          .preprocess(
+            (val) =>
+              val === undefined
+                ? val
+                : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+                    typeof item === 'string' ? item.split(',') : [item],
+                  ),
+            z.array(z.string()).superRefine((items, ctx) => {
+              const seen = new Map()
+              for (const [i, val] of items.entries()) {
+                const key = JSON.stringify(val)
+                if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+                else seen.set(key, i)
+              }
+            }),
+          )
+          .exactOptional()
+          .openapi({
+            param: {
+              name: '$expand',
+              in: 'query',
+              description: 'Expand related entities',
+              style: 'form',
+              explode: false,
+              schema: { uniqueItems: true, type: 'array', items: { type: 'string' } },
+              required: false,
+            },
+          }),
+      }),
+    },
+    responses: {
+      '2XX': {
+        description: 'Retrieved navigation property',
+        content: { 'application/json': { schema: MicrosoftGraphMobileAppContentScriptSchema } },
+      },
+      '4XX': ErrorResponse,
+      '5XX': ErrorResponse,
+    },
+  })
+
+export const deleteDeviceAppManagementMobileAppsMobileAppIdGraphWin32LobAppContentVersionsMobileAppContentIdScriptsMobileAppContentScriptIdRoute =
+  createRoute({
+    method: 'delete',
+    path: '/deviceAppManagement/mobileApps/{mobileApp-id}/graph.win32LobApp/contentVersions/{mobileAppContent-id}/scripts/{mobileAppContentScript-id}',
+    tags: ['deviceAppManagement.mobileApp'],
+    summary: 'Delete navigation property scripts for deviceAppManagement',
+    operationId: 'deviceAppManagement.mobileApps.AsWin32LobApp.contentVersions.DeleteScripts',
+    request: {
+      params: z.object({
+        'mobileApp-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileApp-id',
+              in: 'path',
+              description: 'The unique identifier of mobileApp',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileApp',
+            },
+          }),
+        'mobileAppContent-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContent-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContent',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContent',
+            },
+          }),
+        'mobileAppContentScript-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContentScript-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContentScript',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContentScript',
+            },
+          }),
+      }),
+      headers: z.object({
+        'If-Match': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: {
+              name: 'If-Match',
+              in: 'header',
+              description: 'ETag',
+              schema: { type: 'string' },
+              required: false,
+            },
+          }),
+      }),
+    },
+    responses: { 204: { description: 'Success' }, '4XX': ErrorResponse, '5XX': ErrorResponse },
+  })
+
+export const patchDeviceAppManagementMobileAppsMobileAppIdGraphWin32LobAppContentVersionsMobileAppContentIdScriptsMobileAppContentScriptIdRoute =
+  createRoute({
+    method: 'patch',
+    path: '/deviceAppManagement/mobileApps/{mobileApp-id}/graph.win32LobApp/contentVersions/{mobileAppContent-id}/scripts/{mobileAppContentScript-id}',
+    tags: ['deviceAppManagement.mobileApp'],
+    summary: 'Update the navigation property scripts in deviceAppManagement',
+    operationId: 'deviceAppManagement.mobileApps.AsWin32LobApp.contentVersions.UpdateScripts',
+    request: {
+      params: z.object({
+        'mobileApp-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileApp-id',
+              in: 'path',
+              description: 'The unique identifier of mobileApp',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileApp',
+            },
+          }),
+        'mobileAppContent-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContent-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContent',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContent',
+            },
+          }),
+        'mobileAppContentScript-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContentScript-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContentScript',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContentScript',
+            },
+          }),
+      }),
+      body: {
+        description: 'New navigation property values',
+        content: { 'application/json': { schema: MicrosoftGraphMobileAppContentScriptSchema } },
+        required: true,
+      },
+    },
+    responses: {
+      '2XX': {
+        description: 'Success',
+        content: { 'application/json': { schema: MicrosoftGraphMobileAppContentScriptSchema } },
+      },
+      '4XX': ErrorResponse,
+      '5XX': ErrorResponse,
+    },
+  })
+
+export const getDeviceAppManagementMobileAppsMobileAppIdGraphWin32LobAppContentVersionsMobileAppContentIdScriptsCountRoute =
+  createRoute({
+    method: 'get',
+    path: '/deviceAppManagement/mobileApps/{mobileApp-id}/graph.win32LobApp/contentVersions/{mobileAppContent-id}/scripts/$count',
+    tags: ['deviceAppManagement.mobileApp'],
+    summary: 'Get the number of the resource',
+    operationId:
+      'deviceAppManagement.mobileApps.AsWin32LobApp.contentVersions.scripts.GetCount-3f18',
+    request: {
+      params: z.object({
+        'mobileApp-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileApp-id',
+              in: 'path',
+              description: 'The unique identifier of mobileApp',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileApp',
+            },
+          }),
+        'mobileAppContent-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContent-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContent',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContent',
+            },
+          }),
+      }),
+      query: z.object({ $search: SearchParamsSchema, $filter: FilterParamsSchema }),
+    },
+    responses: { '2XX': ODataCountResponseResponse, '4XX': ErrorResponse, '5XX': ErrorResponse },
+  })
+
 export const getDeviceAppManagementMobileAppsMobileAppIdGraphWin32LobAppContentVersionsCountRoute =
   createRoute({
     method: 'get',
@@ -289305,6 +293985,477 @@ export const getDeviceAppManagementMobileAppsMobileAppIdGraphWindowsAppXContentV
     tags: ['deviceAppManagement.mobileApp'],
     summary: 'Get the number of the resource',
     operationId: 'deviceAppManagement.mobileApps.AsWindowsAppX.contentVersions.files.GetCount-21f7',
+    request: {
+      params: z.object({
+        'mobileApp-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileApp-id',
+              in: 'path',
+              description: 'The unique identifier of mobileApp',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileApp',
+            },
+          }),
+        'mobileAppContent-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContent-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContent',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContent',
+            },
+          }),
+      }),
+      query: z.object({ $search: SearchParamsSchema, $filter: FilterParamsSchema }),
+    },
+    responses: { '2XX': ODataCountResponseResponse, '4XX': ErrorResponse, '5XX': ErrorResponse },
+  })
+
+export const getDeviceAppManagementMobileAppsMobileAppIdGraphWindowsAppXContentVersionsMobileAppContentIdScriptsRoute =
+  createRoute({
+    method: 'get',
+    path: '/deviceAppManagement/mobileApps/{mobileApp-id}/graph.windowsAppX/contentVersions/{mobileAppContent-id}/scripts',
+    tags: ['deviceAppManagement.mobileApp'],
+    summary: 'Get scripts from deviceAppManagement',
+    description: 'The list of scripts for this app content version.',
+    operationId: 'deviceAppManagement.mobileApps.AsWindowsAppX.contentVersions.ListScripts',
+    request: {
+      params: z.object({
+        'mobileApp-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileApp-id',
+              in: 'path',
+              description: 'The unique identifier of mobileApp',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileApp',
+            },
+          }),
+        'mobileAppContent-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContent-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContent',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContent',
+            },
+          }),
+      }),
+      query: z.object({
+        $top: TopParamsSchema,
+        $skip: SkipParamsSchema,
+        $search: SearchParamsSchema,
+        $filter: FilterParamsSchema,
+        $count: CountParamsSchema,
+        $orderby: z
+          .preprocess(
+            (val) =>
+              val === undefined
+                ? val
+                : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+                    typeof item === 'string' ? item.split(',') : [item],
+                  ),
+            z.array(z.string()).superRefine((items, ctx) => {
+              const seen = new Map()
+              for (const [i, val] of items.entries()) {
+                const key = JSON.stringify(val)
+                if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+                else seen.set(key, i)
+              }
+            }),
+          )
+          .exactOptional()
+          .openapi({
+            param: {
+              name: '$orderby',
+              in: 'query',
+              description: 'Order items by property values',
+              style: 'form',
+              explode: false,
+              schema: { uniqueItems: true, type: 'array', items: { type: 'string' } },
+              required: false,
+            },
+          }),
+        $select: z
+          .preprocess(
+            (val) =>
+              val === undefined
+                ? val
+                : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+                    typeof item === 'string' ? item.split(',') : [item],
+                  ),
+            z.array(z.string()).superRefine((items, ctx) => {
+              const seen = new Map()
+              for (const [i, val] of items.entries()) {
+                const key = JSON.stringify(val)
+                if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+                else seen.set(key, i)
+              }
+            }),
+          )
+          .exactOptional()
+          .openapi({
+            param: {
+              name: '$select',
+              in: 'query',
+              description: 'Select properties to be returned',
+              style: 'form',
+              explode: false,
+              schema: { uniqueItems: true, type: 'array', items: { type: 'string' } },
+              required: false,
+            },
+          }),
+        $expand: z
+          .preprocess(
+            (val) =>
+              val === undefined
+                ? val
+                : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+                    typeof item === 'string' ? item.split(',') : [item],
+                  ),
+            z.array(z.string()).superRefine((items, ctx) => {
+              const seen = new Map()
+              for (const [i, val] of items.entries()) {
+                const key = JSON.stringify(val)
+                if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+                else seen.set(key, i)
+              }
+            }),
+          )
+          .exactOptional()
+          .openapi({
+            param: {
+              name: '$expand',
+              in: 'query',
+              description: 'Expand related entities',
+              style: 'form',
+              explode: false,
+              schema: { uniqueItems: true, type: 'array', items: { type: 'string' } },
+              required: false,
+            },
+          }),
+      }),
+    },
+    responses: {
+      '2XX': MicrosoftGraphMobileAppContentScriptCollectionResponseResponse,
+      '4XX': ErrorResponse,
+      '5XX': ErrorResponse,
+    },
+  })
+
+export const postDeviceAppManagementMobileAppsMobileAppIdGraphWindowsAppXContentVersionsMobileAppContentIdScriptsRoute =
+  createRoute({
+    method: 'post',
+    path: '/deviceAppManagement/mobileApps/{mobileApp-id}/graph.windowsAppX/contentVersions/{mobileAppContent-id}/scripts',
+    tags: ['deviceAppManagement.mobileApp'],
+    summary: 'Create new navigation property to scripts for deviceAppManagement',
+    operationId: 'deviceAppManagement.mobileApps.AsWindowsAppX.contentVersions.CreateScripts',
+    request: {
+      params: z.object({
+        'mobileApp-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileApp-id',
+              in: 'path',
+              description: 'The unique identifier of mobileApp',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileApp',
+            },
+          }),
+        'mobileAppContent-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContent-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContent',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContent',
+            },
+          }),
+      }),
+      body: {
+        description: 'New navigation property',
+        content: { 'application/json': { schema: MicrosoftGraphMobileAppContentScriptSchema } },
+        required: true,
+      },
+    },
+    responses: {
+      '2XX': {
+        description: 'Created navigation property.',
+        content: { 'application/json': { schema: MicrosoftGraphMobileAppContentScriptSchema } },
+      },
+      '4XX': ErrorResponse,
+      '5XX': ErrorResponse,
+    },
+  })
+
+export const getDeviceAppManagementMobileAppsMobileAppIdGraphWindowsAppXContentVersionsMobileAppContentIdScriptsMobileAppContentScriptIdRoute =
+  createRoute({
+    method: 'get',
+    path: '/deviceAppManagement/mobileApps/{mobileApp-id}/graph.windowsAppX/contentVersions/{mobileAppContent-id}/scripts/{mobileAppContentScript-id}',
+    tags: ['deviceAppManagement.mobileApp'],
+    summary: 'Get scripts from deviceAppManagement',
+    description: 'The list of scripts for this app content version.',
+    operationId: 'deviceAppManagement.mobileApps.AsWindowsAppX.contentVersions.GetScripts',
+    request: {
+      params: z.object({
+        'mobileApp-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileApp-id',
+              in: 'path',
+              description: 'The unique identifier of mobileApp',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileApp',
+            },
+          }),
+        'mobileAppContent-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContent-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContent',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContent',
+            },
+          }),
+        'mobileAppContentScript-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContentScript-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContentScript',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContentScript',
+            },
+          }),
+      }),
+      query: z.object({
+        $select: z
+          .preprocess(
+            (val) =>
+              val === undefined
+                ? val
+                : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+                    typeof item === 'string' ? item.split(',') : [item],
+                  ),
+            z.array(z.string()).superRefine((items, ctx) => {
+              const seen = new Map()
+              for (const [i, val] of items.entries()) {
+                const key = JSON.stringify(val)
+                if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+                else seen.set(key, i)
+              }
+            }),
+          )
+          .exactOptional()
+          .openapi({
+            param: {
+              name: '$select',
+              in: 'query',
+              description: 'Select properties to be returned',
+              style: 'form',
+              explode: false,
+              schema: { uniqueItems: true, type: 'array', items: { type: 'string' } },
+              required: false,
+            },
+          }),
+        $expand: z
+          .preprocess(
+            (val) =>
+              val === undefined
+                ? val
+                : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+                    typeof item === 'string' ? item.split(',') : [item],
+                  ),
+            z.array(z.string()).superRefine((items, ctx) => {
+              const seen = new Map()
+              for (const [i, val] of items.entries()) {
+                const key = JSON.stringify(val)
+                if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+                else seen.set(key, i)
+              }
+            }),
+          )
+          .exactOptional()
+          .openapi({
+            param: {
+              name: '$expand',
+              in: 'query',
+              description: 'Expand related entities',
+              style: 'form',
+              explode: false,
+              schema: { uniqueItems: true, type: 'array', items: { type: 'string' } },
+              required: false,
+            },
+          }),
+      }),
+    },
+    responses: {
+      '2XX': {
+        description: 'Retrieved navigation property',
+        content: { 'application/json': { schema: MicrosoftGraphMobileAppContentScriptSchema } },
+      },
+      '4XX': ErrorResponse,
+      '5XX': ErrorResponse,
+    },
+  })
+
+export const deleteDeviceAppManagementMobileAppsMobileAppIdGraphWindowsAppXContentVersionsMobileAppContentIdScriptsMobileAppContentScriptIdRoute =
+  createRoute({
+    method: 'delete',
+    path: '/deviceAppManagement/mobileApps/{mobileApp-id}/graph.windowsAppX/contentVersions/{mobileAppContent-id}/scripts/{mobileAppContentScript-id}',
+    tags: ['deviceAppManagement.mobileApp'],
+    summary: 'Delete navigation property scripts for deviceAppManagement',
+    operationId: 'deviceAppManagement.mobileApps.AsWindowsAppX.contentVersions.DeleteScripts',
+    request: {
+      params: z.object({
+        'mobileApp-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileApp-id',
+              in: 'path',
+              description: 'The unique identifier of mobileApp',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileApp',
+            },
+          }),
+        'mobileAppContent-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContent-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContent',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContent',
+            },
+          }),
+        'mobileAppContentScript-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContentScript-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContentScript',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContentScript',
+            },
+          }),
+      }),
+      headers: z.object({
+        'If-Match': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: {
+              name: 'If-Match',
+              in: 'header',
+              description: 'ETag',
+              schema: { type: 'string' },
+              required: false,
+            },
+          }),
+      }),
+    },
+    responses: { 204: { description: 'Success' }, '4XX': ErrorResponse, '5XX': ErrorResponse },
+  })
+
+export const patchDeviceAppManagementMobileAppsMobileAppIdGraphWindowsAppXContentVersionsMobileAppContentIdScriptsMobileAppContentScriptIdRoute =
+  createRoute({
+    method: 'patch',
+    path: '/deviceAppManagement/mobileApps/{mobileApp-id}/graph.windowsAppX/contentVersions/{mobileAppContent-id}/scripts/{mobileAppContentScript-id}',
+    tags: ['deviceAppManagement.mobileApp'],
+    summary: 'Update the navigation property scripts in deviceAppManagement',
+    operationId: 'deviceAppManagement.mobileApps.AsWindowsAppX.contentVersions.UpdateScripts',
+    request: {
+      params: z.object({
+        'mobileApp-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileApp-id',
+              in: 'path',
+              description: 'The unique identifier of mobileApp',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileApp',
+            },
+          }),
+        'mobileAppContent-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContent-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContent',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContent',
+            },
+          }),
+        'mobileAppContentScript-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContentScript-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContentScript',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContentScript',
+            },
+          }),
+      }),
+      body: {
+        description: 'New navigation property values',
+        content: { 'application/json': { schema: MicrosoftGraphMobileAppContentScriptSchema } },
+        required: true,
+      },
+    },
+    responses: {
+      '2XX': {
+        description: 'Success',
+        content: { 'application/json': { schema: MicrosoftGraphMobileAppContentScriptSchema } },
+      },
+      '4XX': ErrorResponse,
+      '5XX': ErrorResponse,
+    },
+  })
+
+export const getDeviceAppManagementMobileAppsMobileAppIdGraphWindowsAppXContentVersionsMobileAppContentIdScriptsCountRoute =
+  createRoute({
+    method: 'get',
+    path: '/deviceAppManagement/mobileApps/{mobileApp-id}/graph.windowsAppX/contentVersions/{mobileAppContent-id}/scripts/$count',
+    tags: ['deviceAppManagement.mobileApp'],
+    summary: 'Get the number of the resource',
+    operationId:
+      'deviceAppManagement.mobileApps.AsWindowsAppX.contentVersions.scripts.GetCount-72a4',
     request: {
       params: z.object({
         'mobileApp-id': z
@@ -291517,6 +296668,477 @@ export const getDeviceAppManagementMobileAppsMobileAppIdGraphWindowsMobileMSICon
     summary: 'Get the number of the resource',
     operationId:
       'deviceAppManagement.mobileApps.AsWindowsMobileMSI.contentVersions.files.GetCount-56d9',
+    request: {
+      params: z.object({
+        'mobileApp-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileApp-id',
+              in: 'path',
+              description: 'The unique identifier of mobileApp',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileApp',
+            },
+          }),
+        'mobileAppContent-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContent-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContent',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContent',
+            },
+          }),
+      }),
+      query: z.object({ $search: SearchParamsSchema, $filter: FilterParamsSchema }),
+    },
+    responses: { '2XX': ODataCountResponseResponse, '4XX': ErrorResponse, '5XX': ErrorResponse },
+  })
+
+export const getDeviceAppManagementMobileAppsMobileAppIdGraphWindowsMobileMSIContentVersionsMobileAppContentIdScriptsRoute =
+  createRoute({
+    method: 'get',
+    path: '/deviceAppManagement/mobileApps/{mobileApp-id}/graph.windowsMobileMSI/contentVersions/{mobileAppContent-id}/scripts',
+    tags: ['deviceAppManagement.mobileApp'],
+    summary: 'Get scripts from deviceAppManagement',
+    description: 'The list of scripts for this app content version.',
+    operationId: 'deviceAppManagement.mobileApps.AsWindowsMobileMSI.contentVersions.ListScripts',
+    request: {
+      params: z.object({
+        'mobileApp-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileApp-id',
+              in: 'path',
+              description: 'The unique identifier of mobileApp',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileApp',
+            },
+          }),
+        'mobileAppContent-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContent-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContent',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContent',
+            },
+          }),
+      }),
+      query: z.object({
+        $top: TopParamsSchema,
+        $skip: SkipParamsSchema,
+        $search: SearchParamsSchema,
+        $filter: FilterParamsSchema,
+        $count: CountParamsSchema,
+        $orderby: z
+          .preprocess(
+            (val) =>
+              val === undefined
+                ? val
+                : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+                    typeof item === 'string' ? item.split(',') : [item],
+                  ),
+            z.array(z.string()).superRefine((items, ctx) => {
+              const seen = new Map()
+              for (const [i, val] of items.entries()) {
+                const key = JSON.stringify(val)
+                if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+                else seen.set(key, i)
+              }
+            }),
+          )
+          .exactOptional()
+          .openapi({
+            param: {
+              name: '$orderby',
+              in: 'query',
+              description: 'Order items by property values',
+              style: 'form',
+              explode: false,
+              schema: { uniqueItems: true, type: 'array', items: { type: 'string' } },
+              required: false,
+            },
+          }),
+        $select: z
+          .preprocess(
+            (val) =>
+              val === undefined
+                ? val
+                : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+                    typeof item === 'string' ? item.split(',') : [item],
+                  ),
+            z.array(z.string()).superRefine((items, ctx) => {
+              const seen = new Map()
+              for (const [i, val] of items.entries()) {
+                const key = JSON.stringify(val)
+                if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+                else seen.set(key, i)
+              }
+            }),
+          )
+          .exactOptional()
+          .openapi({
+            param: {
+              name: '$select',
+              in: 'query',
+              description: 'Select properties to be returned',
+              style: 'form',
+              explode: false,
+              schema: { uniqueItems: true, type: 'array', items: { type: 'string' } },
+              required: false,
+            },
+          }),
+        $expand: z
+          .preprocess(
+            (val) =>
+              val === undefined
+                ? val
+                : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+                    typeof item === 'string' ? item.split(',') : [item],
+                  ),
+            z.array(z.string()).superRefine((items, ctx) => {
+              const seen = new Map()
+              for (const [i, val] of items.entries()) {
+                const key = JSON.stringify(val)
+                if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+                else seen.set(key, i)
+              }
+            }),
+          )
+          .exactOptional()
+          .openapi({
+            param: {
+              name: '$expand',
+              in: 'query',
+              description: 'Expand related entities',
+              style: 'form',
+              explode: false,
+              schema: { uniqueItems: true, type: 'array', items: { type: 'string' } },
+              required: false,
+            },
+          }),
+      }),
+    },
+    responses: {
+      '2XX': MicrosoftGraphMobileAppContentScriptCollectionResponseResponse,
+      '4XX': ErrorResponse,
+      '5XX': ErrorResponse,
+    },
+  })
+
+export const postDeviceAppManagementMobileAppsMobileAppIdGraphWindowsMobileMSIContentVersionsMobileAppContentIdScriptsRoute =
+  createRoute({
+    method: 'post',
+    path: '/deviceAppManagement/mobileApps/{mobileApp-id}/graph.windowsMobileMSI/contentVersions/{mobileAppContent-id}/scripts',
+    tags: ['deviceAppManagement.mobileApp'],
+    summary: 'Create new navigation property to scripts for deviceAppManagement',
+    operationId: 'deviceAppManagement.mobileApps.AsWindowsMobileMSI.contentVersions.CreateScripts',
+    request: {
+      params: z.object({
+        'mobileApp-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileApp-id',
+              in: 'path',
+              description: 'The unique identifier of mobileApp',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileApp',
+            },
+          }),
+        'mobileAppContent-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContent-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContent',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContent',
+            },
+          }),
+      }),
+      body: {
+        description: 'New navigation property',
+        content: { 'application/json': { schema: MicrosoftGraphMobileAppContentScriptSchema } },
+        required: true,
+      },
+    },
+    responses: {
+      '2XX': {
+        description: 'Created navigation property.',
+        content: { 'application/json': { schema: MicrosoftGraphMobileAppContentScriptSchema } },
+      },
+      '4XX': ErrorResponse,
+      '5XX': ErrorResponse,
+    },
+  })
+
+export const getDeviceAppManagementMobileAppsMobileAppIdGraphWindowsMobileMSIContentVersionsMobileAppContentIdScriptsMobileAppContentScriptIdRoute =
+  createRoute({
+    method: 'get',
+    path: '/deviceAppManagement/mobileApps/{mobileApp-id}/graph.windowsMobileMSI/contentVersions/{mobileAppContent-id}/scripts/{mobileAppContentScript-id}',
+    tags: ['deviceAppManagement.mobileApp'],
+    summary: 'Get scripts from deviceAppManagement',
+    description: 'The list of scripts for this app content version.',
+    operationId: 'deviceAppManagement.mobileApps.AsWindowsMobileMSI.contentVersions.GetScripts',
+    request: {
+      params: z.object({
+        'mobileApp-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileApp-id',
+              in: 'path',
+              description: 'The unique identifier of mobileApp',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileApp',
+            },
+          }),
+        'mobileAppContent-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContent-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContent',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContent',
+            },
+          }),
+        'mobileAppContentScript-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContentScript-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContentScript',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContentScript',
+            },
+          }),
+      }),
+      query: z.object({
+        $select: z
+          .preprocess(
+            (val) =>
+              val === undefined
+                ? val
+                : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+                    typeof item === 'string' ? item.split(',') : [item],
+                  ),
+            z.array(z.string()).superRefine((items, ctx) => {
+              const seen = new Map()
+              for (const [i, val] of items.entries()) {
+                const key = JSON.stringify(val)
+                if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+                else seen.set(key, i)
+              }
+            }),
+          )
+          .exactOptional()
+          .openapi({
+            param: {
+              name: '$select',
+              in: 'query',
+              description: 'Select properties to be returned',
+              style: 'form',
+              explode: false,
+              schema: { uniqueItems: true, type: 'array', items: { type: 'string' } },
+              required: false,
+            },
+          }),
+        $expand: z
+          .preprocess(
+            (val) =>
+              val === undefined
+                ? val
+                : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+                    typeof item === 'string' ? item.split(',') : [item],
+                  ),
+            z.array(z.string()).superRefine((items, ctx) => {
+              const seen = new Map()
+              for (const [i, val] of items.entries()) {
+                const key = JSON.stringify(val)
+                if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+                else seen.set(key, i)
+              }
+            }),
+          )
+          .exactOptional()
+          .openapi({
+            param: {
+              name: '$expand',
+              in: 'query',
+              description: 'Expand related entities',
+              style: 'form',
+              explode: false,
+              schema: { uniqueItems: true, type: 'array', items: { type: 'string' } },
+              required: false,
+            },
+          }),
+      }),
+    },
+    responses: {
+      '2XX': {
+        description: 'Retrieved navigation property',
+        content: { 'application/json': { schema: MicrosoftGraphMobileAppContentScriptSchema } },
+      },
+      '4XX': ErrorResponse,
+      '5XX': ErrorResponse,
+    },
+  })
+
+export const deleteDeviceAppManagementMobileAppsMobileAppIdGraphWindowsMobileMSIContentVersionsMobileAppContentIdScriptsMobileAppContentScriptIdRoute =
+  createRoute({
+    method: 'delete',
+    path: '/deviceAppManagement/mobileApps/{mobileApp-id}/graph.windowsMobileMSI/contentVersions/{mobileAppContent-id}/scripts/{mobileAppContentScript-id}',
+    tags: ['deviceAppManagement.mobileApp'],
+    summary: 'Delete navigation property scripts for deviceAppManagement',
+    operationId: 'deviceAppManagement.mobileApps.AsWindowsMobileMSI.contentVersions.DeleteScripts',
+    request: {
+      params: z.object({
+        'mobileApp-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileApp-id',
+              in: 'path',
+              description: 'The unique identifier of mobileApp',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileApp',
+            },
+          }),
+        'mobileAppContent-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContent-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContent',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContent',
+            },
+          }),
+        'mobileAppContentScript-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContentScript-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContentScript',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContentScript',
+            },
+          }),
+      }),
+      headers: z.object({
+        'If-Match': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: {
+              name: 'If-Match',
+              in: 'header',
+              description: 'ETag',
+              schema: { type: 'string' },
+              required: false,
+            },
+          }),
+      }),
+    },
+    responses: { 204: { description: 'Success' }, '4XX': ErrorResponse, '5XX': ErrorResponse },
+  })
+
+export const patchDeviceAppManagementMobileAppsMobileAppIdGraphWindowsMobileMSIContentVersionsMobileAppContentIdScriptsMobileAppContentScriptIdRoute =
+  createRoute({
+    method: 'patch',
+    path: '/deviceAppManagement/mobileApps/{mobileApp-id}/graph.windowsMobileMSI/contentVersions/{mobileAppContent-id}/scripts/{mobileAppContentScript-id}',
+    tags: ['deviceAppManagement.mobileApp'],
+    summary: 'Update the navigation property scripts in deviceAppManagement',
+    operationId: 'deviceAppManagement.mobileApps.AsWindowsMobileMSI.contentVersions.UpdateScripts',
+    request: {
+      params: z.object({
+        'mobileApp-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileApp-id',
+              in: 'path',
+              description: 'The unique identifier of mobileApp',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileApp',
+            },
+          }),
+        'mobileAppContent-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContent-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContent',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContent',
+            },
+          }),
+        'mobileAppContentScript-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContentScript-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContentScript',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContentScript',
+            },
+          }),
+      }),
+      body: {
+        description: 'New navigation property values',
+        content: { 'application/json': { schema: MicrosoftGraphMobileAppContentScriptSchema } },
+        required: true,
+      },
+    },
+    responses: {
+      '2XX': {
+        description: 'Success',
+        content: { 'application/json': { schema: MicrosoftGraphMobileAppContentScriptSchema } },
+      },
+      '4XX': ErrorResponse,
+      '5XX': ErrorResponse,
+    },
+  })
+
+export const getDeviceAppManagementMobileAppsMobileAppIdGraphWindowsMobileMSIContentVersionsMobileAppContentIdScriptsCountRoute =
+  createRoute({
+    method: 'get',
+    path: '/deviceAppManagement/mobileApps/{mobileApp-id}/graph.windowsMobileMSI/contentVersions/{mobileAppContent-id}/scripts/$count',
+    tags: ['deviceAppManagement.mobileApp'],
+    summary: 'Get the number of the resource',
+    operationId:
+      'deviceAppManagement.mobileApps.AsWindowsMobileMSI.contentVersions.scripts.GetCount-7e7d',
     request: {
       params: z.object({
         'mobileApp-id': z
@@ -294138,6 +299760,481 @@ export const getDeviceAppManagementMobileAppsMobileAppIdGraphWindowsUniversalApp
     summary: 'Get the number of the resource',
     operationId:
       'deviceAppManagement.mobileApps.AsWindowsUniversalAppX.contentVersions.files.GetCount-43a7',
+    request: {
+      params: z.object({
+        'mobileApp-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileApp-id',
+              in: 'path',
+              description: 'The unique identifier of mobileApp',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileApp',
+            },
+          }),
+        'mobileAppContent-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContent-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContent',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContent',
+            },
+          }),
+      }),
+      query: z.object({ $search: SearchParamsSchema, $filter: FilterParamsSchema }),
+    },
+    responses: { '2XX': ODataCountResponseResponse, '4XX': ErrorResponse, '5XX': ErrorResponse },
+  })
+
+export const getDeviceAppManagementMobileAppsMobileAppIdGraphWindowsUniversalAppXContentVersionsMobileAppContentIdScriptsRoute =
+  createRoute({
+    method: 'get',
+    path: '/deviceAppManagement/mobileApps/{mobileApp-id}/graph.windowsUniversalAppX/contentVersions/{mobileAppContent-id}/scripts',
+    tags: ['deviceAppManagement.mobileApp'],
+    summary: 'Get scripts from deviceAppManagement',
+    description: 'The list of scripts for this app content version.',
+    operationId:
+      'deviceAppManagement.mobileApps.AsWindowsUniversalAppX.contentVersions.ListScripts',
+    request: {
+      params: z.object({
+        'mobileApp-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileApp-id',
+              in: 'path',
+              description: 'The unique identifier of mobileApp',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileApp',
+            },
+          }),
+        'mobileAppContent-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContent-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContent',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContent',
+            },
+          }),
+      }),
+      query: z.object({
+        $top: TopParamsSchema,
+        $skip: SkipParamsSchema,
+        $search: SearchParamsSchema,
+        $filter: FilterParamsSchema,
+        $count: CountParamsSchema,
+        $orderby: z
+          .preprocess(
+            (val) =>
+              val === undefined
+                ? val
+                : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+                    typeof item === 'string' ? item.split(',') : [item],
+                  ),
+            z.array(z.string()).superRefine((items, ctx) => {
+              const seen = new Map()
+              for (const [i, val] of items.entries()) {
+                const key = JSON.stringify(val)
+                if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+                else seen.set(key, i)
+              }
+            }),
+          )
+          .exactOptional()
+          .openapi({
+            param: {
+              name: '$orderby',
+              in: 'query',
+              description: 'Order items by property values',
+              style: 'form',
+              explode: false,
+              schema: { uniqueItems: true, type: 'array', items: { type: 'string' } },
+              required: false,
+            },
+          }),
+        $select: z
+          .preprocess(
+            (val) =>
+              val === undefined
+                ? val
+                : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+                    typeof item === 'string' ? item.split(',') : [item],
+                  ),
+            z.array(z.string()).superRefine((items, ctx) => {
+              const seen = new Map()
+              for (const [i, val] of items.entries()) {
+                const key = JSON.stringify(val)
+                if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+                else seen.set(key, i)
+              }
+            }),
+          )
+          .exactOptional()
+          .openapi({
+            param: {
+              name: '$select',
+              in: 'query',
+              description: 'Select properties to be returned',
+              style: 'form',
+              explode: false,
+              schema: { uniqueItems: true, type: 'array', items: { type: 'string' } },
+              required: false,
+            },
+          }),
+        $expand: z
+          .preprocess(
+            (val) =>
+              val === undefined
+                ? val
+                : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+                    typeof item === 'string' ? item.split(',') : [item],
+                  ),
+            z.array(z.string()).superRefine((items, ctx) => {
+              const seen = new Map()
+              for (const [i, val] of items.entries()) {
+                const key = JSON.stringify(val)
+                if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+                else seen.set(key, i)
+              }
+            }),
+          )
+          .exactOptional()
+          .openapi({
+            param: {
+              name: '$expand',
+              in: 'query',
+              description: 'Expand related entities',
+              style: 'form',
+              explode: false,
+              schema: { uniqueItems: true, type: 'array', items: { type: 'string' } },
+              required: false,
+            },
+          }),
+      }),
+    },
+    responses: {
+      '2XX': MicrosoftGraphMobileAppContentScriptCollectionResponseResponse,
+      '4XX': ErrorResponse,
+      '5XX': ErrorResponse,
+    },
+  })
+
+export const postDeviceAppManagementMobileAppsMobileAppIdGraphWindowsUniversalAppXContentVersionsMobileAppContentIdScriptsRoute =
+  createRoute({
+    method: 'post',
+    path: '/deviceAppManagement/mobileApps/{mobileApp-id}/graph.windowsUniversalAppX/contentVersions/{mobileAppContent-id}/scripts',
+    tags: ['deviceAppManagement.mobileApp'],
+    summary: 'Create new navigation property to scripts for deviceAppManagement',
+    operationId:
+      'deviceAppManagement.mobileApps.AsWindowsUniversalAppX.contentVersions.CreateScripts',
+    request: {
+      params: z.object({
+        'mobileApp-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileApp-id',
+              in: 'path',
+              description: 'The unique identifier of mobileApp',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileApp',
+            },
+          }),
+        'mobileAppContent-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContent-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContent',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContent',
+            },
+          }),
+      }),
+      body: {
+        description: 'New navigation property',
+        content: { 'application/json': { schema: MicrosoftGraphMobileAppContentScriptSchema } },
+        required: true,
+      },
+    },
+    responses: {
+      '2XX': {
+        description: 'Created navigation property.',
+        content: { 'application/json': { schema: MicrosoftGraphMobileAppContentScriptSchema } },
+      },
+      '4XX': ErrorResponse,
+      '5XX': ErrorResponse,
+    },
+  })
+
+export const getDeviceAppManagementMobileAppsMobileAppIdGraphWindowsUniversalAppXContentVersionsMobileAppContentIdScriptsMobileAppContentScriptIdRoute =
+  createRoute({
+    method: 'get',
+    path: '/deviceAppManagement/mobileApps/{mobileApp-id}/graph.windowsUniversalAppX/contentVersions/{mobileAppContent-id}/scripts/{mobileAppContentScript-id}',
+    tags: ['deviceAppManagement.mobileApp'],
+    summary: 'Get scripts from deviceAppManagement',
+    description: 'The list of scripts for this app content version.',
+    operationId: 'deviceAppManagement.mobileApps.AsWindowsUniversalAppX.contentVersions.GetScripts',
+    request: {
+      params: z.object({
+        'mobileApp-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileApp-id',
+              in: 'path',
+              description: 'The unique identifier of mobileApp',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileApp',
+            },
+          }),
+        'mobileAppContent-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContent-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContent',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContent',
+            },
+          }),
+        'mobileAppContentScript-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContentScript-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContentScript',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContentScript',
+            },
+          }),
+      }),
+      query: z.object({
+        $select: z
+          .preprocess(
+            (val) =>
+              val === undefined
+                ? val
+                : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+                    typeof item === 'string' ? item.split(',') : [item],
+                  ),
+            z.array(z.string()).superRefine((items, ctx) => {
+              const seen = new Map()
+              for (const [i, val] of items.entries()) {
+                const key = JSON.stringify(val)
+                if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+                else seen.set(key, i)
+              }
+            }),
+          )
+          .exactOptional()
+          .openapi({
+            param: {
+              name: '$select',
+              in: 'query',
+              description: 'Select properties to be returned',
+              style: 'form',
+              explode: false,
+              schema: { uniqueItems: true, type: 'array', items: { type: 'string' } },
+              required: false,
+            },
+          }),
+        $expand: z
+          .preprocess(
+            (val) =>
+              val === undefined
+                ? val
+                : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+                    typeof item === 'string' ? item.split(',') : [item],
+                  ),
+            z.array(z.string()).superRefine((items, ctx) => {
+              const seen = new Map()
+              for (const [i, val] of items.entries()) {
+                const key = JSON.stringify(val)
+                if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+                else seen.set(key, i)
+              }
+            }),
+          )
+          .exactOptional()
+          .openapi({
+            param: {
+              name: '$expand',
+              in: 'query',
+              description: 'Expand related entities',
+              style: 'form',
+              explode: false,
+              schema: { uniqueItems: true, type: 'array', items: { type: 'string' } },
+              required: false,
+            },
+          }),
+      }),
+    },
+    responses: {
+      '2XX': {
+        description: 'Retrieved navigation property',
+        content: { 'application/json': { schema: MicrosoftGraphMobileAppContentScriptSchema } },
+      },
+      '4XX': ErrorResponse,
+      '5XX': ErrorResponse,
+    },
+  })
+
+export const deleteDeviceAppManagementMobileAppsMobileAppIdGraphWindowsUniversalAppXContentVersionsMobileAppContentIdScriptsMobileAppContentScriptIdRoute =
+  createRoute({
+    method: 'delete',
+    path: '/deviceAppManagement/mobileApps/{mobileApp-id}/graph.windowsUniversalAppX/contentVersions/{mobileAppContent-id}/scripts/{mobileAppContentScript-id}',
+    tags: ['deviceAppManagement.mobileApp'],
+    summary: 'Delete navigation property scripts for deviceAppManagement',
+    operationId:
+      'deviceAppManagement.mobileApps.AsWindowsUniversalAppX.contentVersions.DeleteScripts',
+    request: {
+      params: z.object({
+        'mobileApp-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileApp-id',
+              in: 'path',
+              description: 'The unique identifier of mobileApp',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileApp',
+            },
+          }),
+        'mobileAppContent-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContent-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContent',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContent',
+            },
+          }),
+        'mobileAppContentScript-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContentScript-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContentScript',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContentScript',
+            },
+          }),
+      }),
+      headers: z.object({
+        'If-Match': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: {
+              name: 'If-Match',
+              in: 'header',
+              description: 'ETag',
+              schema: { type: 'string' },
+              required: false,
+            },
+          }),
+      }),
+    },
+    responses: { 204: { description: 'Success' }, '4XX': ErrorResponse, '5XX': ErrorResponse },
+  })
+
+export const patchDeviceAppManagementMobileAppsMobileAppIdGraphWindowsUniversalAppXContentVersionsMobileAppContentIdScriptsMobileAppContentScriptIdRoute =
+  createRoute({
+    method: 'patch',
+    path: '/deviceAppManagement/mobileApps/{mobileApp-id}/graph.windowsUniversalAppX/contentVersions/{mobileAppContent-id}/scripts/{mobileAppContentScript-id}',
+    tags: ['deviceAppManagement.mobileApp'],
+    summary: 'Update the navigation property scripts in deviceAppManagement',
+    operationId:
+      'deviceAppManagement.mobileApps.AsWindowsUniversalAppX.contentVersions.UpdateScripts',
+    request: {
+      params: z.object({
+        'mobileApp-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileApp-id',
+              in: 'path',
+              description: 'The unique identifier of mobileApp',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileApp',
+            },
+          }),
+        'mobileAppContent-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContent-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContent',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContent',
+            },
+          }),
+        'mobileAppContentScript-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'mobileAppContentScript-id',
+              in: 'path',
+              description: 'The unique identifier of mobileAppContentScript',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'mobileAppContentScript',
+            },
+          }),
+      }),
+      body: {
+        description: 'New navigation property values',
+        content: { 'application/json': { schema: MicrosoftGraphMobileAppContentScriptSchema } },
+        required: true,
+      },
+    },
+    responses: {
+      '2XX': {
+        description: 'Success',
+        content: { 'application/json': { schema: MicrosoftGraphMobileAppContentScriptSchema } },
+      },
+      '4XX': ErrorResponse,
+      '5XX': ErrorResponse,
+    },
+  })
+
+export const getDeviceAppManagementMobileAppsMobileAppIdGraphWindowsUniversalAppXContentVersionsMobileAppContentIdScriptsCountRoute =
+  createRoute({
+    method: 'get',
+    path: '/deviceAppManagement/mobileApps/{mobileApp-id}/graph.windowsUniversalAppX/contentVersions/{mobileAppContent-id}/scripts/$count',
+    tags: ['deviceAppManagement.mobileApp'],
+    summary: 'Get the number of the resource',
+    operationId:
+      'deviceAppManagement.mobileApps.AsWindowsUniversalAppX.contentVersions.scripts.GetCount-b665',
     request: {
       params: z.object({
         'mobileApp-id': z
@@ -925637,7 +931734,7 @@ export const getIdentityGovernanceLifecycleWorkflowsDeletedItemsRoute = createRo
   path: '/identityGovernance/lifecycleWorkflows/deletedItems',
   tags: ['identityGovernance.lifecycleWorkflowsContainer'],
   summary: 'Get deletedItems from identityGovernance',
-  description: 'Deleted workflows in your lifecycle workflows instance.',
+  description: 'Deleted workflows and lifecycle policies in your lifecycle workflows instance.',
   operationId: 'identityGovernance.lifecycleWorkflows.GetDeletedItems',
   request: {
     query: z.object({
@@ -1018607,6 +1024704,785 @@ export const getMeDirectReportsGraphUserCountRoute = createRoute({
     }),
     query: z.object({ $search: SearchParamsSchema, $filter: FilterParamsSchema }),
   },
+  responses: { '2XX': ODataCountResponseResponse, '4XX': ErrorResponse, '5XX': ErrorResponse },
+})
+
+export const getMeDistributionListsRoute = createRoute({
+  method: 'get',
+  path: '/me/distributionLists',
+  tags: ['me.distributionList'],
+  summary: 'List distributionLists',
+  description: "Get a list of the personal distribution lists in the user's mailbox.",
+  externalDocs: {
+    description: 'Find more info here',
+    url: 'https://learn.microsoft.com/graph/api/user-list-distributionlists?view=graph-rest-1.0',
+  },
+  operationId: 'me.ListDistributionLists',
+  request: {
+    query: z.object({
+      $top: TopParamsSchema,
+      $skip: SkipParamsSchema,
+      $search: SearchParamsSchema,
+      $filter: FilterParamsSchema,
+      $count: CountParamsSchema,
+      $orderby: z
+        .preprocess(
+          (val) =>
+            val === undefined
+              ? val
+              : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+                  typeof item === 'string' ? item.split(',') : [item],
+                ),
+          z.array(z.string()).superRefine((items, ctx) => {
+            const seen = new Map()
+            for (const [i, val] of items.entries()) {
+              const key = JSON.stringify(val)
+              if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+              else seen.set(key, i)
+            }
+          }),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: '$orderby',
+            in: 'query',
+            description: 'Order items by property values',
+            style: 'form',
+            explode: false,
+            schema: { uniqueItems: true, type: 'array', items: { type: 'string' } },
+            required: false,
+          },
+        }),
+      $select: z
+        .preprocess(
+          (val) =>
+            val === undefined
+              ? val
+              : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+                  typeof item === 'string' ? item.split(',') : [item],
+                ),
+          z.array(z.string()).superRefine((items, ctx) => {
+            const seen = new Map()
+            for (const [i, val] of items.entries()) {
+              const key = JSON.stringify(val)
+              if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+              else seen.set(key, i)
+            }
+          }),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: '$select',
+            in: 'query',
+            description: 'Select properties to be returned',
+            style: 'form',
+            explode: false,
+            schema: { uniqueItems: true, type: 'array', items: { type: 'string' } },
+            required: false,
+          },
+        }),
+      $expand: z
+        .preprocess(
+          (val) =>
+            val === undefined
+              ? val
+              : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+                  typeof item === 'string' ? item.split(',') : [item],
+                ),
+          z.array(z.string()).superRefine((items, ctx) => {
+            const seen = new Map()
+            for (const [i, val] of items.entries()) {
+              const key = JSON.stringify(val)
+              if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+              else seen.set(key, i)
+            }
+          }),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: '$expand',
+            in: 'query',
+            description: 'Expand related entities',
+            style: 'form',
+            explode: false,
+            schema: { uniqueItems: true, type: 'array', items: { type: 'string' } },
+            required: false,
+          },
+        }),
+    }),
+  },
+  responses: {
+    '2XX': MicrosoftGraphDistributionListCollectionResponseResponse,
+    '4XX': ErrorResponse,
+    '5XX': ErrorResponse,
+  },
+})
+
+export const postMeDistributionListsRoute = createRoute({
+  method: 'post',
+  path: '/me/distributionLists',
+  tags: ['me.distributionList'],
+  summary: 'Create distributionList',
+  description: "Create a new personal distribution list in the user's mailbox.",
+  externalDocs: {
+    description: 'Find more info here',
+    url: 'https://learn.microsoft.com/graph/api/user-post-distributionlists?view=graph-rest-1.0',
+  },
+  operationId: 'me.CreateDistributionLists',
+  request: {
+    body: {
+      description: 'New navigation property',
+      content: { 'application/json': { schema: MicrosoftGraphDistributionListSchema } },
+      required: true,
+    },
+  },
+  responses: {
+    '2XX': {
+      description: 'Created navigation property.',
+      content: { 'application/json': { schema: MicrosoftGraphDistributionListSchema } },
+    },
+    '4XX': ErrorResponse,
+    '5XX': ErrorResponse,
+  },
+})
+
+export const getMeDistributionListsDistributionListIdRoute = createRoute({
+  method: 'get',
+  path: '/me/distributionLists/{distributionList-id}',
+  tags: ['me.distributionList'],
+  summary: 'Get distributionLists from me',
+  description: "The personal distribution lists in the user's mailbox. Read-only. Nullable.",
+  operationId: 'me.GetDistributionLists',
+  request: {
+    params: z.object({
+      'distributionList-id': z
+        .string()
+        .openapi({
+          param: {
+            name: 'distributionList-id',
+            in: 'path',
+            description: 'The unique identifier of distributionList',
+            required: true,
+            schema: { type: 'string' },
+            'x-ms-docs-key-type': 'distributionList',
+          },
+        }),
+    }),
+    query: z.object({
+      $select: z
+        .preprocess(
+          (val) =>
+            val === undefined
+              ? val
+              : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+                  typeof item === 'string' ? item.split(',') : [item],
+                ),
+          z.array(z.string()).superRefine((items, ctx) => {
+            const seen = new Map()
+            for (const [i, val] of items.entries()) {
+              const key = JSON.stringify(val)
+              if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+              else seen.set(key, i)
+            }
+          }),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: '$select',
+            in: 'query',
+            description: 'Select properties to be returned',
+            style: 'form',
+            explode: false,
+            schema: { uniqueItems: true, type: 'array', items: { type: 'string' } },
+            required: false,
+          },
+        }),
+      $expand: z
+        .preprocess(
+          (val) =>
+            val === undefined
+              ? val
+              : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+                  typeof item === 'string' ? item.split(',') : [item],
+                ),
+          z.array(z.string()).superRefine((items, ctx) => {
+            const seen = new Map()
+            for (const [i, val] of items.entries()) {
+              const key = JSON.stringify(val)
+              if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+              else seen.set(key, i)
+            }
+          }),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: '$expand',
+            in: 'query',
+            description: 'Expand related entities',
+            style: 'form',
+            explode: false,
+            schema: { uniqueItems: true, type: 'array', items: { type: 'string' } },
+            required: false,
+          },
+        }),
+    }),
+  },
+  responses: {
+    '2XX': {
+      description: 'Retrieved navigation property',
+      content: { 'application/json': { schema: MicrosoftGraphDistributionListSchema } },
+    },
+    '4XX': ErrorResponse,
+    '5XX': ErrorResponse,
+  },
+})
+
+export const deleteMeDistributionListsDistributionListIdRoute = createRoute({
+  method: 'delete',
+  path: '/me/distributionLists/{distributionList-id}',
+  tags: ['me.distributionList'],
+  summary: 'Delete navigation property distributionLists for me',
+  operationId: 'me.DeleteDistributionLists',
+  request: {
+    params: z.object({
+      'distributionList-id': z
+        .string()
+        .openapi({
+          param: {
+            name: 'distributionList-id',
+            in: 'path',
+            description: 'The unique identifier of distributionList',
+            required: true,
+            schema: { type: 'string' },
+            'x-ms-docs-key-type': 'distributionList',
+          },
+        }),
+    }),
+    headers: z.object({
+      'If-Match': z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'If-Match',
+            in: 'header',
+            description: 'ETag',
+            schema: { type: 'string' },
+            required: false,
+          },
+        }),
+    }),
+  },
+  responses: { 204: { description: 'Success' }, '4XX': ErrorResponse, '5XX': ErrorResponse },
+})
+
+export const patchMeDistributionListsDistributionListIdRoute = createRoute({
+  method: 'patch',
+  path: '/me/distributionLists/{distributionList-id}',
+  tags: ['me.distributionList'],
+  summary: 'Update the navigation property distributionLists in me',
+  operationId: 'me.UpdateDistributionLists',
+  request: {
+    params: z.object({
+      'distributionList-id': z
+        .string()
+        .openapi({
+          param: {
+            name: 'distributionList-id',
+            in: 'path',
+            description: 'The unique identifier of distributionList',
+            required: true,
+            schema: { type: 'string' },
+            'x-ms-docs-key-type': 'distributionList',
+          },
+        }),
+    }),
+    body: {
+      description: 'New navigation property values',
+      content: { 'application/json': { schema: MicrosoftGraphDistributionListSchema } },
+      required: true,
+    },
+  },
+  responses: {
+    '2XX': {
+      description: 'Success',
+      content: { 'application/json': { schema: MicrosoftGraphDistributionListSchema } },
+    },
+    '4XX': ErrorResponse,
+    '5XX': ErrorResponse,
+  },
+})
+
+export const getMeDistributionListsDistributionListIdMembersRoute = createRoute({
+  method: 'get',
+  path: '/me/distributionLists/{distributionList-id}/members',
+  tags: ['me.distributionList'],
+  summary: 'Get members from me',
+  description:
+    'The members of the distribution list. Not returned by default; use $expand=members to include. Read-only.',
+  operationId: 'me.distributionLists.ListMembers',
+  request: {
+    params: z.object({
+      'distributionList-id': z
+        .string()
+        .openapi({
+          param: {
+            name: 'distributionList-id',
+            in: 'path',
+            description: 'The unique identifier of distributionList',
+            required: true,
+            schema: { type: 'string' },
+            'x-ms-docs-key-type': 'distributionList',
+          },
+        }),
+    }),
+    query: z.object({
+      $top: TopParamsSchema,
+      $skip: SkipParamsSchema,
+      $search: SearchParamsSchema,
+      $filter: FilterParamsSchema,
+      $count: CountParamsSchema,
+      $orderby: z
+        .preprocess(
+          (val) =>
+            val === undefined
+              ? val
+              : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+                  typeof item === 'string' ? item.split(',') : [item],
+                ),
+          z.array(z.string()).superRefine((items, ctx) => {
+            const seen = new Map()
+            for (const [i, val] of items.entries()) {
+              const key = JSON.stringify(val)
+              if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+              else seen.set(key, i)
+            }
+          }),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: '$orderby',
+            in: 'query',
+            description: 'Order items by property values',
+            style: 'form',
+            explode: false,
+            schema: { uniqueItems: true, type: 'array', items: { type: 'string' } },
+            required: false,
+          },
+        }),
+      $select: z
+        .preprocess(
+          (val) =>
+            val === undefined
+              ? val
+              : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+                  typeof item === 'string' ? item.split(',') : [item],
+                ),
+          z.array(z.string()).superRefine((items, ctx) => {
+            const seen = new Map()
+            for (const [i, val] of items.entries()) {
+              const key = JSON.stringify(val)
+              if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+              else seen.set(key, i)
+            }
+          }),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: '$select',
+            in: 'query',
+            description: 'Select properties to be returned',
+            style: 'form',
+            explode: false,
+            schema: { uniqueItems: true, type: 'array', items: { type: 'string' } },
+            required: false,
+          },
+        }),
+      $expand: z
+        .preprocess(
+          (val) =>
+            val === undefined
+              ? val
+              : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+                  typeof item === 'string' ? item.split(',') : [item],
+                ),
+          z.array(z.string()).superRefine((items, ctx) => {
+            const seen = new Map()
+            for (const [i, val] of items.entries()) {
+              const key = JSON.stringify(val)
+              if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+              else seen.set(key, i)
+            }
+          }),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: '$expand',
+            in: 'query',
+            description: 'Expand related entities',
+            style: 'form',
+            explode: false,
+            schema: { uniqueItems: true, type: 'array', items: { type: 'string' } },
+            required: false,
+          },
+        }),
+    }),
+  },
+  responses: {
+    '2XX': MicrosoftGraphDistributionListMemberCollectionResponseResponse,
+    '4XX': ErrorResponse,
+    '5XX': ErrorResponse,
+  },
+})
+
+export const getMeDistributionListsDistributionListIdMembersDistributionListMemberIdRoute =
+  createRoute({
+    method: 'get',
+    path: '/me/distributionLists/{distributionList-id}/members/{distributionListMember-id}',
+    tags: ['me.distributionList'],
+    summary: 'Get members from me',
+    description:
+      'The members of the distribution list. Not returned by default; use $expand=members to include. Read-only.',
+    operationId: 'me.distributionLists.GetMembers',
+    request: {
+      params: z.object({
+        'distributionList-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'distributionList-id',
+              in: 'path',
+              description: 'The unique identifier of distributionList',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'distributionList',
+            },
+          }),
+        'distributionListMember-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'distributionListMember-id',
+              in: 'path',
+              description: 'The unique identifier of distributionListMember',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'distributionListMember',
+            },
+          }),
+      }),
+      query: z.object({
+        $select: z
+          .preprocess(
+            (val) =>
+              val === undefined
+                ? val
+                : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+                    typeof item === 'string' ? item.split(',') : [item],
+                  ),
+            z.array(z.string()).superRefine((items, ctx) => {
+              const seen = new Map()
+              for (const [i, val] of items.entries()) {
+                const key = JSON.stringify(val)
+                if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+                else seen.set(key, i)
+              }
+            }),
+          )
+          .exactOptional()
+          .openapi({
+            param: {
+              name: '$select',
+              in: 'query',
+              description: 'Select properties to be returned',
+              style: 'form',
+              explode: false,
+              schema: { uniqueItems: true, type: 'array', items: { type: 'string' } },
+              required: false,
+            },
+          }),
+        $expand: z
+          .preprocess(
+            (val) =>
+              val === undefined
+                ? val
+                : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+                    typeof item === 'string' ? item.split(',') : [item],
+                  ),
+            z.array(z.string()).superRefine((items, ctx) => {
+              const seen = new Map()
+              for (const [i, val] of items.entries()) {
+                const key = JSON.stringify(val)
+                if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+                else seen.set(key, i)
+              }
+            }),
+          )
+          .exactOptional()
+          .openapi({
+            param: {
+              name: '$expand',
+              in: 'query',
+              description: 'Expand related entities',
+              style: 'form',
+              explode: false,
+              schema: { uniqueItems: true, type: 'array', items: { type: 'string' } },
+              required: false,
+            },
+          }),
+      }),
+    },
+    responses: {
+      '2XX': {
+        description: 'Retrieved navigation property',
+        content: { 'application/json': { schema: MicrosoftGraphDistributionListMemberSchema } },
+      },
+      '4XX': ErrorResponse,
+      '5XX': ErrorResponse,
+    },
+  })
+
+export const getMeDistributionListsDistributionListIdMembersDistributionListMemberIdContactRoute =
+  createRoute({
+    method: 'get',
+    path: '/me/distributionLists/{distributionList-id}/members/{distributionListMember-id}/contact',
+    tags: ['me.distributionList'],
+    summary: 'Get contact from me',
+    description: 'The contact associated with the distribution list member. Read-only.',
+    operationId: 'me.distributionLists.members.GetContact',
+    request: {
+      params: z.object({
+        'distributionList-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'distributionList-id',
+              in: 'path',
+              description: 'The unique identifier of distributionList',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'distributionList',
+            },
+          }),
+        'distributionListMember-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'distributionListMember-id',
+              in: 'path',
+              description: 'The unique identifier of distributionListMember',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'distributionListMember',
+            },
+          }),
+      }),
+      query: z.object({
+        $select: z
+          .preprocess(
+            (val) =>
+              val === undefined
+                ? val
+                : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+                    typeof item === 'string' ? item.split(',') : [item],
+                  ),
+            z.array(z.string()).superRefine((items, ctx) => {
+              const seen = new Map()
+              for (const [i, val] of items.entries()) {
+                const key = JSON.stringify(val)
+                if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+                else seen.set(key, i)
+              }
+            }),
+          )
+          .exactOptional()
+          .openapi({
+            param: {
+              name: '$select',
+              in: 'query',
+              description: 'Select properties to be returned',
+              style: 'form',
+              explode: false,
+              schema: { uniqueItems: true, type: 'array', items: { type: 'string' } },
+              required: false,
+            },
+          }),
+        $expand: z
+          .preprocess(
+            (val) =>
+              val === undefined
+                ? val
+                : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+                    typeof item === 'string' ? item.split(',') : [item],
+                  ),
+            z.array(z.string()).superRefine((items, ctx) => {
+              const seen = new Map()
+              for (const [i, val] of items.entries()) {
+                const key = JSON.stringify(val)
+                if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+                else seen.set(key, i)
+              }
+            }),
+          )
+          .exactOptional()
+          .openapi({
+            param: {
+              name: '$expand',
+              in: 'query',
+              description: 'Expand related entities',
+              style: 'form',
+              explode: false,
+              schema: { uniqueItems: true, type: 'array', items: { type: 'string' } },
+              required: false,
+            },
+          }),
+      }),
+    },
+    responses: {
+      '2XX': {
+        description: 'Retrieved navigation property',
+        content: { 'application/json': { schema: MicrosoftGraphContactSchema } },
+      },
+      '4XX': ErrorResponse,
+      '5XX': ErrorResponse,
+    },
+  })
+
+export const getMeDistributionListsDistributionListIdMembersCountRoute = createRoute({
+  method: 'get',
+  path: '/me/distributionLists/{distributionList-id}/members/$count',
+  tags: ['me.distributionList'],
+  summary: 'Get the number of the resource',
+  operationId: 'me.distributionLists.members.GetCount-1370',
+  request: {
+    params: z.object({
+      'distributionList-id': z
+        .string()
+        .openapi({
+          param: {
+            name: 'distributionList-id',
+            in: 'path',
+            description: 'The unique identifier of distributionList',
+            required: true,
+            schema: { type: 'string' },
+            'x-ms-docs-key-type': 'distributionList',
+          },
+        }),
+    }),
+    query: z.object({ $search: SearchParamsSchema, $filter: FilterParamsSchema }),
+  },
+  responses: { '2XX': ODataCountResponseResponse, '4XX': ErrorResponse, '5XX': ErrorResponse },
+})
+
+export const postMeDistributionListsDistributionListIdAddMembersRoute = createRoute({
+  method: 'post',
+  path: '/me/distributionLists/{distributionList-id}/addMembers',
+  tags: ['me.distributionList'],
+  summary: 'Invoke action addMembers',
+  operationId: 'me.distributionLists.distributionList.addMembers',
+  request: {
+    params: z.object({
+      'distributionList-id': z
+        .string()
+        .openapi({
+          param: {
+            name: 'distributionList-id',
+            in: 'path',
+            description: 'The unique identifier of distributionList',
+            required: true,
+            schema: { type: 'string' },
+            'x-ms-docs-key-type': 'distributionList',
+          },
+        }),
+    }),
+    body: {
+      description: 'Action parameters',
+      content: {
+        'application/json': {
+          schema: z
+            .object({ Members: z.array(MicrosoftGraphMemberSchema).exactOptional() })
+            .openapi({ required: [] }),
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    '2XX': {
+      description: 'Success',
+      content: {
+        'application/json': {
+          schema: z.union([MicrosoftGraphDistributionListSchema, z.looseObject({}).nullable()]),
+        },
+      },
+    },
+    '4XX': ErrorResponse,
+    '5XX': ErrorResponse,
+  },
+})
+
+export const postMeDistributionListsDistributionListIdDeleteMembersRoute = createRoute({
+  method: 'post',
+  path: '/me/distributionLists/{distributionList-id}/deleteMembers',
+  tags: ['me.distributionList'],
+  summary: 'Invoke action deleteMembers',
+  operationId: 'me.distributionLists.distributionList.deleteMembers',
+  request: {
+    params: z.object({
+      'distributionList-id': z
+        .string()
+        .openapi({
+          param: {
+            name: 'distributionList-id',
+            in: 'path',
+            description: 'The unique identifier of distributionList',
+            required: true,
+            schema: { type: 'string' },
+            'x-ms-docs-key-type': 'distributionList',
+          },
+        }),
+    }),
+    body: {
+      description: 'Action parameters',
+      content: {
+        'application/json': {
+          schema: z
+            .object({ Members: z.array(MicrosoftGraphMemberSchema).exactOptional() })
+            .openapi({ required: [] }),
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    '2XX': {
+      description: 'Success',
+      content: {
+        'application/json': {
+          schema: z.union([MicrosoftGraphDistributionListSchema, z.looseObject({}).nullable()]),
+        },
+      },
+    },
+    '4XX': ErrorResponse,
+    '5XX': ErrorResponse,
+  },
+})
+
+export const getMeDistributionListsCountRoute = createRoute({
+  method: 'get',
+  path: '/me/distributionLists/$count',
+  tags: ['me.distributionList'],
+  summary: 'Get the number of the resource',
+  operationId: 'me.distributionLists.GetCount-33f3',
+  request: { query: z.object({ $search: SearchParamsSchema, $filter: FilterParamsSchema }) },
   responses: { '2XX': ODataCountResponseResponse, '4XX': ErrorResponse, '5XX': ErrorResponse },
 })
 
@@ -1155691,7 +1162567,7 @@ export const getRoleManagementDirectoryDeletedItemsRoleDefinitionsRoute = create
   method: 'get',
   path: '/roleManagement/directory/deletedItems/roleDefinitions',
   tags: ['roleManagement.rbacApplication'],
-  summary: 'List roleDefinitions',
+  summary: 'List deleted roleDefinitions',
   description:
     "List custom unifiedRoleDefinition objects that have been soft-deleted from Microsoft Entra directory role management. Built-in role definitions can't be deleted and aren't returned.",
   externalDocs: {
@@ -1345554,7 +1352430,7 @@ export const patchSolutionsBackupRestoreExchangeProtectionPoliciesExchangeProtec
     tags: ['solutions.backupRestoreRoot'],
     summary: 'Update exchangeProtectionPolicy',
     description:
-      'Update an Exchange protection policy. This method adds a mailboxprotectionunit to or removes it from the protection policy.',
+      'Update an Exchange protection policy. This method updates retention settings or adds a mailboxProtectionUnit to or removes it from the protection policy.',
     externalDocs: {
       description: 'Find more info here',
       url: 'https://learn.microsoft.com/graph/api/exchangeprotectionpolicy-update?view=graph-rest-1.0',
@@ -1349826,7 +1356702,7 @@ export const patchSolutionsBackupRestoreOneDriveForBusinessProtectionPoliciesOne
     tags: ['solutions.backupRestoreRoot'],
     summary: 'Update oneDriveForBusinessProtectionPolicy',
     description:
-      'Update the protection policy for the OneDrive service in Microsoft 365. This method adds a driveProtectionUnit to or removes it from a oneDriveForBusinessProtectionPolicy object.',
+      'Update the protection policy for the OneDrive service in Microsoft 365. This method updates retention settings or adds a driveProtectionUnit to or removes it from a oneDriveForBusinessProtectionPolicy object.',
     externalDocs: {
       description: 'Find more info here',
       url: 'https://learn.microsoft.com/graph/api/onedriveforbusinessprotectionpolicy-update?view=graph-rest-1.0',
@@ -1355840,7 +1362716,7 @@ export const patchSolutionsBackupRestoreSharePointProtectionPoliciesSharePointPr
     tags: ['solutions.backupRestoreRoot'],
     summary: 'Update sharePointProtectionPolicy',
     description:
-      'Update a SharePoint protection policy. This method adds a siteprotectionunit to or removes it from the protection policy.',
+      'Update a SharePoint protection policy. This method updates retention settings or adds a siteProtectionUnit to or removes it from the protection policy.',
     externalDocs: {
       description: 'Find more info here',
       url: 'https://learn.microsoft.com/graph/api/sharepointprotectionpolicy-update?view=graph-rest-1.0',
@@ -1472320,6 +1479196,928 @@ export const getUsersUserIdDirectReportsGraphUserCountRoute = createRoute({
               },
             },
             required: false,
+          },
+        }),
+    }),
+    query: z.object({ $search: SearchParamsSchema, $filter: FilterParamsSchema }),
+  },
+  responses: { '2XX': ODataCountResponseResponse, '4XX': ErrorResponse, '5XX': ErrorResponse },
+})
+
+export const getUsersUserIdDistributionListsRoute = createRoute({
+  method: 'get',
+  path: '/users/{user-id}/distributionLists',
+  tags: ['users.distributionList'],
+  summary: 'Get distributionLists from users',
+  description: "The personal distribution lists in the user's mailbox. Read-only. Nullable.",
+  operationId: 'users.ListDistributionLists',
+  request: {
+    params: z.object({
+      'user-id': z
+        .string()
+        .openapi({
+          param: {
+            name: 'user-id',
+            in: 'path',
+            description: 'The unique identifier of user',
+            required: true,
+            schema: { type: 'string' },
+            'x-ms-docs-key-type': 'user',
+          },
+        }),
+    }),
+    query: z.object({
+      $top: TopParamsSchema,
+      $skip: SkipParamsSchema,
+      $search: SearchParamsSchema,
+      $filter: FilterParamsSchema,
+      $count: CountParamsSchema,
+      $orderby: z
+        .preprocess(
+          (val) =>
+            val === undefined
+              ? val
+              : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+                  typeof item === 'string' ? item.split(',') : [item],
+                ),
+          z.array(z.string()).superRefine((items, ctx) => {
+            const seen = new Map()
+            for (const [i, val] of items.entries()) {
+              const key = JSON.stringify(val)
+              if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+              else seen.set(key, i)
+            }
+          }),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: '$orderby',
+            in: 'query',
+            description: 'Order items by property values',
+            style: 'form',
+            explode: false,
+            schema: { uniqueItems: true, type: 'array', items: { type: 'string' } },
+            required: false,
+          },
+        }),
+      $select: z
+        .preprocess(
+          (val) =>
+            val === undefined
+              ? val
+              : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+                  typeof item === 'string' ? item.split(',') : [item],
+                ),
+          z.array(z.string()).superRefine((items, ctx) => {
+            const seen = new Map()
+            for (const [i, val] of items.entries()) {
+              const key = JSON.stringify(val)
+              if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+              else seen.set(key, i)
+            }
+          }),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: '$select',
+            in: 'query',
+            description: 'Select properties to be returned',
+            style: 'form',
+            explode: false,
+            schema: { uniqueItems: true, type: 'array', items: { type: 'string' } },
+            required: false,
+          },
+        }),
+      $expand: z
+        .preprocess(
+          (val) =>
+            val === undefined
+              ? val
+              : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+                  typeof item === 'string' ? item.split(',') : [item],
+                ),
+          z.array(z.string()).superRefine((items, ctx) => {
+            const seen = new Map()
+            for (const [i, val] of items.entries()) {
+              const key = JSON.stringify(val)
+              if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+              else seen.set(key, i)
+            }
+          }),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: '$expand',
+            in: 'query',
+            description: 'Expand related entities',
+            style: 'form',
+            explode: false,
+            schema: { uniqueItems: true, type: 'array', items: { type: 'string' } },
+            required: false,
+          },
+        }),
+    }),
+  },
+  responses: {
+    '2XX': MicrosoftGraphDistributionListCollectionResponseResponse,
+    '4XX': ErrorResponse,
+    '5XX': ErrorResponse,
+  },
+})
+
+export const postUsersUserIdDistributionListsRoute = createRoute({
+  method: 'post',
+  path: '/users/{user-id}/distributionLists',
+  tags: ['users.distributionList'],
+  summary: 'Create new navigation property to distributionLists for users',
+  operationId: 'users.CreateDistributionLists',
+  request: {
+    params: z.object({
+      'user-id': z
+        .string()
+        .openapi({
+          param: {
+            name: 'user-id',
+            in: 'path',
+            description: 'The unique identifier of user',
+            required: true,
+            schema: { type: 'string' },
+            'x-ms-docs-key-type': 'user',
+          },
+        }),
+    }),
+    body: {
+      description: 'New navigation property',
+      content: { 'application/json': { schema: MicrosoftGraphDistributionListSchema } },
+      required: true,
+    },
+  },
+  responses: {
+    '2XX': {
+      description: 'Created navigation property.',
+      content: { 'application/json': { schema: MicrosoftGraphDistributionListSchema } },
+    },
+    '4XX': ErrorResponse,
+    '5XX': ErrorResponse,
+  },
+})
+
+export const getUsersUserIdDistributionListsDistributionListIdRoute = createRoute({
+  method: 'get',
+  path: '/users/{user-id}/distributionLists/{distributionList-id}',
+  tags: ['users.distributionList'],
+  summary: 'Get distributionLists from users',
+  description: "The personal distribution lists in the user's mailbox. Read-only. Nullable.",
+  operationId: 'users.GetDistributionLists',
+  request: {
+    params: z.object({
+      'user-id': z
+        .string()
+        .openapi({
+          param: {
+            name: 'user-id',
+            in: 'path',
+            description: 'The unique identifier of user',
+            required: true,
+            schema: { type: 'string' },
+            'x-ms-docs-key-type': 'user',
+          },
+        }),
+      'distributionList-id': z
+        .string()
+        .openapi({
+          param: {
+            name: 'distributionList-id',
+            in: 'path',
+            description: 'The unique identifier of distributionList',
+            required: true,
+            schema: { type: 'string' },
+            'x-ms-docs-key-type': 'distributionList',
+          },
+        }),
+    }),
+    query: z.object({
+      $select: z
+        .preprocess(
+          (val) =>
+            val === undefined
+              ? val
+              : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+                  typeof item === 'string' ? item.split(',') : [item],
+                ),
+          z.array(z.string()).superRefine((items, ctx) => {
+            const seen = new Map()
+            for (const [i, val] of items.entries()) {
+              const key = JSON.stringify(val)
+              if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+              else seen.set(key, i)
+            }
+          }),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: '$select',
+            in: 'query',
+            description: 'Select properties to be returned',
+            style: 'form',
+            explode: false,
+            schema: { uniqueItems: true, type: 'array', items: { type: 'string' } },
+            required: false,
+          },
+        }),
+      $expand: z
+        .preprocess(
+          (val) =>
+            val === undefined
+              ? val
+              : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+                  typeof item === 'string' ? item.split(',') : [item],
+                ),
+          z.array(z.string()).superRefine((items, ctx) => {
+            const seen = new Map()
+            for (const [i, val] of items.entries()) {
+              const key = JSON.stringify(val)
+              if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+              else seen.set(key, i)
+            }
+          }),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: '$expand',
+            in: 'query',
+            description: 'Expand related entities',
+            style: 'form',
+            explode: false,
+            schema: { uniqueItems: true, type: 'array', items: { type: 'string' } },
+            required: false,
+          },
+        }),
+    }),
+  },
+  responses: {
+    '2XX': {
+      description: 'Retrieved navigation property',
+      content: { 'application/json': { schema: MicrosoftGraphDistributionListSchema } },
+    },
+    '4XX': ErrorResponse,
+    '5XX': ErrorResponse,
+  },
+})
+
+export const deleteUsersUserIdDistributionListsDistributionListIdRoute = createRoute({
+  method: 'delete',
+  path: '/users/{user-id}/distributionLists/{distributionList-id}',
+  tags: ['users.distributionList'],
+  summary: 'Delete navigation property distributionLists for users',
+  operationId: 'users.DeleteDistributionLists',
+  request: {
+    params: z.object({
+      'user-id': z
+        .string()
+        .openapi({
+          param: {
+            name: 'user-id',
+            in: 'path',
+            description: 'The unique identifier of user',
+            required: true,
+            schema: { type: 'string' },
+            'x-ms-docs-key-type': 'user',
+          },
+        }),
+      'distributionList-id': z
+        .string()
+        .openapi({
+          param: {
+            name: 'distributionList-id',
+            in: 'path',
+            description: 'The unique identifier of distributionList',
+            required: true,
+            schema: { type: 'string' },
+            'x-ms-docs-key-type': 'distributionList',
+          },
+        }),
+    }),
+    headers: z.object({
+      'If-Match': z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'If-Match',
+            in: 'header',
+            description: 'ETag',
+            schema: { type: 'string' },
+            required: false,
+          },
+        }),
+    }),
+  },
+  responses: { 204: { description: 'Success' }, '4XX': ErrorResponse, '5XX': ErrorResponse },
+})
+
+export const patchUsersUserIdDistributionListsDistributionListIdRoute = createRoute({
+  method: 'patch',
+  path: '/users/{user-id}/distributionLists/{distributionList-id}',
+  tags: ['users.distributionList'],
+  summary: 'Update the navigation property distributionLists in users',
+  operationId: 'users.UpdateDistributionLists',
+  request: {
+    params: z.object({
+      'user-id': z
+        .string()
+        .openapi({
+          param: {
+            name: 'user-id',
+            in: 'path',
+            description: 'The unique identifier of user',
+            required: true,
+            schema: { type: 'string' },
+            'x-ms-docs-key-type': 'user',
+          },
+        }),
+      'distributionList-id': z
+        .string()
+        .openapi({
+          param: {
+            name: 'distributionList-id',
+            in: 'path',
+            description: 'The unique identifier of distributionList',
+            required: true,
+            schema: { type: 'string' },
+            'x-ms-docs-key-type': 'distributionList',
+          },
+        }),
+    }),
+    body: {
+      description: 'New navigation property values',
+      content: { 'application/json': { schema: MicrosoftGraphDistributionListSchema } },
+      required: true,
+    },
+  },
+  responses: {
+    '2XX': {
+      description: 'Success',
+      content: { 'application/json': { schema: MicrosoftGraphDistributionListSchema } },
+    },
+    '4XX': ErrorResponse,
+    '5XX': ErrorResponse,
+  },
+})
+
+export const getUsersUserIdDistributionListsDistributionListIdMembersRoute = createRoute({
+  method: 'get',
+  path: '/users/{user-id}/distributionLists/{distributionList-id}/members',
+  tags: ['users.distributionList'],
+  summary: 'Get members from users',
+  description:
+    'The members of the distribution list. Not returned by default; use $expand=members to include. Read-only.',
+  operationId: 'users.distributionLists.ListMembers',
+  request: {
+    params: z.object({
+      'user-id': z
+        .string()
+        .openapi({
+          param: {
+            name: 'user-id',
+            in: 'path',
+            description: 'The unique identifier of user',
+            required: true,
+            schema: { type: 'string' },
+            'x-ms-docs-key-type': 'user',
+          },
+        }),
+      'distributionList-id': z
+        .string()
+        .openapi({
+          param: {
+            name: 'distributionList-id',
+            in: 'path',
+            description: 'The unique identifier of distributionList',
+            required: true,
+            schema: { type: 'string' },
+            'x-ms-docs-key-type': 'distributionList',
+          },
+        }),
+    }),
+    query: z.object({
+      $top: TopParamsSchema,
+      $skip: SkipParamsSchema,
+      $search: SearchParamsSchema,
+      $filter: FilterParamsSchema,
+      $count: CountParamsSchema,
+      $orderby: z
+        .preprocess(
+          (val) =>
+            val === undefined
+              ? val
+              : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+                  typeof item === 'string' ? item.split(',') : [item],
+                ),
+          z.array(z.string()).superRefine((items, ctx) => {
+            const seen = new Map()
+            for (const [i, val] of items.entries()) {
+              const key = JSON.stringify(val)
+              if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+              else seen.set(key, i)
+            }
+          }),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: '$orderby',
+            in: 'query',
+            description: 'Order items by property values',
+            style: 'form',
+            explode: false,
+            schema: { uniqueItems: true, type: 'array', items: { type: 'string' } },
+            required: false,
+          },
+        }),
+      $select: z
+        .preprocess(
+          (val) =>
+            val === undefined
+              ? val
+              : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+                  typeof item === 'string' ? item.split(',') : [item],
+                ),
+          z.array(z.string()).superRefine((items, ctx) => {
+            const seen = new Map()
+            for (const [i, val] of items.entries()) {
+              const key = JSON.stringify(val)
+              if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+              else seen.set(key, i)
+            }
+          }),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: '$select',
+            in: 'query',
+            description: 'Select properties to be returned',
+            style: 'form',
+            explode: false,
+            schema: { uniqueItems: true, type: 'array', items: { type: 'string' } },
+            required: false,
+          },
+        }),
+      $expand: z
+        .preprocess(
+          (val) =>
+            val === undefined
+              ? val
+              : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+                  typeof item === 'string' ? item.split(',') : [item],
+                ),
+          z.array(z.string()).superRefine((items, ctx) => {
+            const seen = new Map()
+            for (const [i, val] of items.entries()) {
+              const key = JSON.stringify(val)
+              if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+              else seen.set(key, i)
+            }
+          }),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: '$expand',
+            in: 'query',
+            description: 'Expand related entities',
+            style: 'form',
+            explode: false,
+            schema: { uniqueItems: true, type: 'array', items: { type: 'string' } },
+            required: false,
+          },
+        }),
+    }),
+  },
+  responses: {
+    '2XX': MicrosoftGraphDistributionListMemberCollectionResponseResponse,
+    '4XX': ErrorResponse,
+    '5XX': ErrorResponse,
+  },
+})
+
+export const getUsersUserIdDistributionListsDistributionListIdMembersDistributionListMemberIdRoute =
+  createRoute({
+    method: 'get',
+    path: '/users/{user-id}/distributionLists/{distributionList-id}/members/{distributionListMember-id}',
+    tags: ['users.distributionList'],
+    summary: 'Get members from users',
+    description:
+      'The members of the distribution list. Not returned by default; use $expand=members to include. Read-only.',
+    operationId: 'users.distributionLists.GetMembers',
+    request: {
+      params: z.object({
+        'user-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'user-id',
+              in: 'path',
+              description: 'The unique identifier of user',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'user',
+            },
+          }),
+        'distributionList-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'distributionList-id',
+              in: 'path',
+              description: 'The unique identifier of distributionList',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'distributionList',
+            },
+          }),
+        'distributionListMember-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'distributionListMember-id',
+              in: 'path',
+              description: 'The unique identifier of distributionListMember',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'distributionListMember',
+            },
+          }),
+      }),
+      query: z.object({
+        $select: z
+          .preprocess(
+            (val) =>
+              val === undefined
+                ? val
+                : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+                    typeof item === 'string' ? item.split(',') : [item],
+                  ),
+            z.array(z.string()).superRefine((items, ctx) => {
+              const seen = new Map()
+              for (const [i, val] of items.entries()) {
+                const key = JSON.stringify(val)
+                if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+                else seen.set(key, i)
+              }
+            }),
+          )
+          .exactOptional()
+          .openapi({
+            param: {
+              name: '$select',
+              in: 'query',
+              description: 'Select properties to be returned',
+              style: 'form',
+              explode: false,
+              schema: { uniqueItems: true, type: 'array', items: { type: 'string' } },
+              required: false,
+            },
+          }),
+        $expand: z
+          .preprocess(
+            (val) =>
+              val === undefined
+                ? val
+                : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+                    typeof item === 'string' ? item.split(',') : [item],
+                  ),
+            z.array(z.string()).superRefine((items, ctx) => {
+              const seen = new Map()
+              for (const [i, val] of items.entries()) {
+                const key = JSON.stringify(val)
+                if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+                else seen.set(key, i)
+              }
+            }),
+          )
+          .exactOptional()
+          .openapi({
+            param: {
+              name: '$expand',
+              in: 'query',
+              description: 'Expand related entities',
+              style: 'form',
+              explode: false,
+              schema: { uniqueItems: true, type: 'array', items: { type: 'string' } },
+              required: false,
+            },
+          }),
+      }),
+    },
+    responses: {
+      '2XX': {
+        description: 'Retrieved navigation property',
+        content: { 'application/json': { schema: MicrosoftGraphDistributionListMemberSchema } },
+      },
+      '4XX': ErrorResponse,
+      '5XX': ErrorResponse,
+    },
+  })
+
+export const getUsersUserIdDistributionListsDistributionListIdMembersDistributionListMemberIdContactRoute =
+  createRoute({
+    method: 'get',
+    path: '/users/{user-id}/distributionLists/{distributionList-id}/members/{distributionListMember-id}/contact',
+    tags: ['users.distributionList'],
+    summary: 'Get contact from users',
+    description: 'The contact associated with the distribution list member. Read-only.',
+    operationId: 'users.distributionLists.members.GetContact',
+    request: {
+      params: z.object({
+        'user-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'user-id',
+              in: 'path',
+              description: 'The unique identifier of user',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'user',
+            },
+          }),
+        'distributionList-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'distributionList-id',
+              in: 'path',
+              description: 'The unique identifier of distributionList',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'distributionList',
+            },
+          }),
+        'distributionListMember-id': z
+          .string()
+          .openapi({
+            param: {
+              name: 'distributionListMember-id',
+              in: 'path',
+              description: 'The unique identifier of distributionListMember',
+              required: true,
+              schema: { type: 'string' },
+              'x-ms-docs-key-type': 'distributionListMember',
+            },
+          }),
+      }),
+      query: z.object({
+        $select: z
+          .preprocess(
+            (val) =>
+              val === undefined
+                ? val
+                : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+                    typeof item === 'string' ? item.split(',') : [item],
+                  ),
+            z.array(z.string()).superRefine((items, ctx) => {
+              const seen = new Map()
+              for (const [i, val] of items.entries()) {
+                const key = JSON.stringify(val)
+                if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+                else seen.set(key, i)
+              }
+            }),
+          )
+          .exactOptional()
+          .openapi({
+            param: {
+              name: '$select',
+              in: 'query',
+              description: 'Select properties to be returned',
+              style: 'form',
+              explode: false,
+              schema: { uniqueItems: true, type: 'array', items: { type: 'string' } },
+              required: false,
+            },
+          }),
+        $expand: z
+          .preprocess(
+            (val) =>
+              val === undefined
+                ? val
+                : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+                    typeof item === 'string' ? item.split(',') : [item],
+                  ),
+            z.array(z.string()).superRefine((items, ctx) => {
+              const seen = new Map()
+              for (const [i, val] of items.entries()) {
+                const key = JSON.stringify(val)
+                if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+                else seen.set(key, i)
+              }
+            }),
+          )
+          .exactOptional()
+          .openapi({
+            param: {
+              name: '$expand',
+              in: 'query',
+              description: 'Expand related entities',
+              style: 'form',
+              explode: false,
+              schema: { uniqueItems: true, type: 'array', items: { type: 'string' } },
+              required: false,
+            },
+          }),
+      }),
+    },
+    responses: {
+      '2XX': {
+        description: 'Retrieved navigation property',
+        content: { 'application/json': { schema: MicrosoftGraphContactSchema } },
+      },
+      '4XX': ErrorResponse,
+      '5XX': ErrorResponse,
+    },
+  })
+
+export const getUsersUserIdDistributionListsDistributionListIdMembersCountRoute = createRoute({
+  method: 'get',
+  path: '/users/{user-id}/distributionLists/{distributionList-id}/members/$count',
+  tags: ['users.distributionList'],
+  summary: 'Get the number of the resource',
+  operationId: 'users.distributionLists.members.GetCount-c758',
+  request: {
+    params: z.object({
+      'user-id': z
+        .string()
+        .openapi({
+          param: {
+            name: 'user-id',
+            in: 'path',
+            description: 'The unique identifier of user',
+            required: true,
+            schema: { type: 'string' },
+            'x-ms-docs-key-type': 'user',
+          },
+        }),
+      'distributionList-id': z
+        .string()
+        .openapi({
+          param: {
+            name: 'distributionList-id',
+            in: 'path',
+            description: 'The unique identifier of distributionList',
+            required: true,
+            schema: { type: 'string' },
+            'x-ms-docs-key-type': 'distributionList',
+          },
+        }),
+    }),
+    query: z.object({ $search: SearchParamsSchema, $filter: FilterParamsSchema }),
+  },
+  responses: { '2XX': ODataCountResponseResponse, '4XX': ErrorResponse, '5XX': ErrorResponse },
+})
+
+export const postUsersUserIdDistributionListsDistributionListIdAddMembersRoute = createRoute({
+  method: 'post',
+  path: '/users/{user-id}/distributionLists/{distributionList-id}/addMembers',
+  tags: ['users.distributionList'],
+  summary: 'Invoke action addMembers',
+  operationId: 'users.user.distributionLists.distributionList.addMembers',
+  request: {
+    params: z.object({
+      'user-id': z
+        .string()
+        .openapi({
+          param: {
+            name: 'user-id',
+            in: 'path',
+            description: 'The unique identifier of user',
+            required: true,
+            schema: { type: 'string' },
+            'x-ms-docs-key-type': 'user',
+          },
+        }),
+      'distributionList-id': z
+        .string()
+        .openapi({
+          param: {
+            name: 'distributionList-id',
+            in: 'path',
+            description: 'The unique identifier of distributionList',
+            required: true,
+            schema: { type: 'string' },
+            'x-ms-docs-key-type': 'distributionList',
+          },
+        }),
+    }),
+    body: {
+      description: 'Action parameters',
+      content: {
+        'application/json': {
+          schema: z
+            .object({ Members: z.array(MicrosoftGraphMemberSchema).exactOptional() })
+            .openapi({ required: [] }),
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    '2XX': {
+      description: 'Success',
+      content: {
+        'application/json': {
+          schema: z.union([MicrosoftGraphDistributionListSchema, z.looseObject({}).nullable()]),
+        },
+      },
+    },
+    '4XX': ErrorResponse,
+    '5XX': ErrorResponse,
+  },
+})
+
+export const postUsersUserIdDistributionListsDistributionListIdDeleteMembersRoute = createRoute({
+  method: 'post',
+  path: '/users/{user-id}/distributionLists/{distributionList-id}/deleteMembers',
+  tags: ['users.distributionList'],
+  summary: 'Invoke action deleteMembers',
+  operationId: 'users.user.distributionLists.distributionList.deleteMembers',
+  request: {
+    params: z.object({
+      'user-id': z
+        .string()
+        .openapi({
+          param: {
+            name: 'user-id',
+            in: 'path',
+            description: 'The unique identifier of user',
+            required: true,
+            schema: { type: 'string' },
+            'x-ms-docs-key-type': 'user',
+          },
+        }),
+      'distributionList-id': z
+        .string()
+        .openapi({
+          param: {
+            name: 'distributionList-id',
+            in: 'path',
+            description: 'The unique identifier of distributionList',
+            required: true,
+            schema: { type: 'string' },
+            'x-ms-docs-key-type': 'distributionList',
+          },
+        }),
+    }),
+    body: {
+      description: 'Action parameters',
+      content: {
+        'application/json': {
+          schema: z
+            .object({ Members: z.array(MicrosoftGraphMemberSchema).exactOptional() })
+            .openapi({ required: [] }),
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    '2XX': {
+      description: 'Success',
+      content: {
+        'application/json': {
+          schema: z.union([MicrosoftGraphDistributionListSchema, z.looseObject({}).nullable()]),
+        },
+      },
+    },
+    '4XX': ErrorResponse,
+    '5XX': ErrorResponse,
+  },
+})
+
+export const getUsersUserIdDistributionListsCountRoute = createRoute({
+  method: 'get',
+  path: '/users/{user-id}/distributionLists/$count',
+  tags: ['users.distributionList'],
+  summary: 'Get the number of the resource',
+  operationId: 'users.distributionLists.GetCount-9254',
+  request: {
+    params: z.object({
+      'user-id': z
+        .string()
+        .openapi({
+          param: {
+            name: 'user-id',
+            in: 'path',
+            description: 'The unique identifier of user',
+            required: true,
+            schema: { type: 'string' },
+            'x-ms-docs-key-type': 'user',
           },
         }),
     }),

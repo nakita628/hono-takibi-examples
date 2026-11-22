@@ -850,6 +850,316 @@ const DevicePairingCapabilitiesSchema = z
   })
   .openapi('DevicePairingCapabilities')
 
+const SecureSendPolicySchema = z
+  .object({
+    enabled: z
+      .boolean()
+      .openapi({ description: 'One-time view links and secure_send_api_enabled are both on' }),
+    item_send_allowed: z
+      .boolean()
+      .openapi({
+        description:
+          'enabled, and the caller is not an administrator (administrators have no item access)',
+      }),
+    note_send_allowed: z
+      .boolean()
+      .openapi({
+        description:
+          'enabled, and note sends are allowed by the administrator (every account, administrators included)',
+      }),
+    require_passphrase: z.boolean(),
+    passphrase_max_bytes: z.literal(1024),
+    note_max_bytes: z
+      .literal(16000)
+      .openapi({
+        description: 'Maximum size of a note, in UTF-8 bytes of its five members together',
+      }),
+    days: z
+      .object({ max: z.int().min(1), default: z.int().min(1) })
+      .openapi({ required: ['max', 'default'] }),
+    views: z
+      .object({ max: z.int().min(1), default: z.int().min(1) })
+      .openapi({ required: ['max', 'default'] }),
+    public_address_available: z
+      .boolean()
+      .openapi({
+        description:
+          'A valid public Secure Send address is configured (public_address can be requested)',
+      }),
+    totp_allowed: z
+      .boolean()
+      .openapi({ description: 'false for read-only accounts: include_totp is then ignored' }),
+    email: z
+      .object({ allowed: z.boolean(), configured: z.boolean() })
+      .openapi({ required: ['allowed', 'configured'] }),
+    sender_name_shown: z
+      .boolean()
+      .openapi({ description: "The recipient sees the sender's display name" }),
+  })
+  .openapi({
+    required: [
+      'enabled',
+      'item_send_allowed',
+      'note_send_allowed',
+      'require_passphrase',
+      'passphrase_max_bytes',
+      'note_max_bytes',
+      'days',
+      'views',
+      'public_address_available',
+      'totp_allowed',
+      'email',
+      'sender_name_shown',
+    ],
+  })
+  .openapi('SecureSendPolicy')
+
+const SecureSendNoteSchema = z
+  .strictObject({
+    title: z.string().exactOptional().openapi({ description: 'Shown as the label' }),
+    secret: z.string().exactOptional().openapi({ description: 'Shown as the password' }),
+    note: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Shown as the description, line breaks kept' }),
+    login: z.string().exactOptional(),
+    url: z.string().exactOptional(),
+  })
+  .openapi({
+    description:
+      'Content of a note send. Every member is an optional string (null = omitted); secret or note must be non-blank (else 400 empty_note). Together at most note_max_bytes UTF-8 bytes. title, login and url are trimmed.',
+    required: [],
+  })
+  .openapi('SecureSendNote')
+
+const SecureSendCreateBodySchema = z
+  .unknown()
+  .superRefine((val, ctx) => {
+    {
+      const ifOk = z
+        .object({ type: z.literal('note') })
+        .openapi({ required: ['type'] })
+        .safeParse(val).success
+      if (ifOk) {
+        const Schema = z
+          .unknown()
+          .superRefine((val, ctx) => {
+            if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+              if (!Object.hasOwn(val, 'note')) {
+                ctx.addIssue({ code: 'custom' })
+              }
+            }
+          })
+          .openapi({ required: ['note'] })
+        if (!Schema.safeParse(val).success) {
+          ctx.addIssue({ code: 'custom' })
+        }
+      }
+      if (!ifOk) {
+        const Schema = z
+          .unknown()
+          .superRefine((val, ctx) => {
+            if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+              if (!Object.hasOwn(val, 'item_id')) {
+                ctx.addIssue({ code: 'custom' })
+              }
+            }
+          })
+          .openapi({ required: ['item_id'] })
+        if (!Schema.safeParse(val).success) {
+          ctx.addIssue({ code: 'custom' })
+        }
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        type: z.enum(['item', 'note']).default('item').exactOptional(),
+        item_id: z
+          .int()
+          .min(1)
+          .exactOptional()
+          .openapi({ description: 'Item to share (item sends only)' }),
+        note: SecureSendNoteSchema.exactOptional(),
+        days: z
+          .int()
+          .min(1)
+          .exactOptional()
+          .openapi({
+            description: 'Validity in days, capped by policy days.max (default: the maximum)',
+          }),
+        views: z
+          .int()
+          .min(1)
+          .exactOptional()
+          .openapi({ description: 'Allowed views, capped by policy views.max (default 1)' }),
+        passphrase: z
+          .string()
+          .max(1024)
+          .exactOptional()
+          .openapi({
+            description:
+              'Optional recipient passphrase (at most 1024 bytes); required when policy require_passphrase is true',
+          }),
+        include_totp: z
+          .boolean()
+          .default(false)
+          .exactOptional()
+          .openapi({
+            description:
+              "Copy the item's enabled TOTP into the snapshot; ignored for read-only accounts (item sends only)",
+          }),
+        public_address: z
+          .boolean()
+          .default(false)
+          .exactOptional()
+          .openapi({ description: 'Build the link on the public Secure Send address' }),
+        recipient_email: z
+          .email()
+          .exactOptional()
+          .openapi({ description: 'Also send the link by email from the instance mailbox' }),
+      })
+      .openapi({ required: [] }),
+  )
+  .openapi({
+    description:
+      'Unknown members are refused (400). A null optional member counts as omitted. An item send needs item_id and refuses note; a note send needs note and refuses item_id and include_totp.',
+  })
+  .openapi('SecureSendCreateBody')
+
+const SecureSendCreatedSchema = z
+  .object({
+    id: z.int().openapi({ description: 'Link identifier, the id of DELETE /secureSend/revoke' }),
+    type: z.enum(['item', 'note']),
+    url: z
+      .url()
+      .openapi({
+        description:
+          'Bearer secret: anyone holding it (and the passphrase, if any) can open the link',
+      }),
+    item_id: z.int().nullable().openapi({ description: 'null for a note' }),
+    expires_at: z.int().openapi({ description: 'Unix timestamp' }),
+    max_views: z.int(),
+    has_passphrase: z.boolean(),
+    public_address: z.boolean(),
+    totp_included: z.boolean().openapi({ description: 'Always false for a note' }),
+    description_truncated: z
+      .boolean()
+      .openapi({
+        description:
+          'The item description was shortened to fit the link storage (always false for a note)',
+      }),
+    email_queued: z.boolean(),
+  })
+  .openapi({
+    required: [
+      'id',
+      'type',
+      'url',
+      'item_id',
+      'expires_at',
+      'max_views',
+      'has_passphrase',
+      'public_address',
+      'totp_included',
+      'description_truncated',
+      'email_queued',
+    ],
+  })
+  .openapi('SecureSendCreated')
+
+const SecureSendLinkSchema = z
+  .object({
+    id: z.int().openapi({ description: 'Link identifier, the id of DELETE /secureSend/revoke' }),
+    type: z.enum(['item', 'note']),
+    item_id: z.int().nullable().openapi({ description: 'null for a note' }),
+    folder_id: z
+      .int()
+      .nullable()
+      .openapi({ description: 'Current folder of the item; null for a note' }),
+    label: z
+      .string()
+      .nullable()
+      .openapi({
+        description:
+          'Current item label (HTML entities decoded: escape it when rendering); null for a note, whose title only exists inside the encrypted link',
+      }),
+    has_passphrase: z.boolean(),
+    expires_at: z.int().openapi({ description: 'Unix timestamp' }),
+    max_views: z.int(),
+    remaining_views: z.int().min(0),
+    suspended: z
+      .boolean()
+      .openapi({
+        description:
+          'The link cannot be opened while a policy forbids it (note sends disabled, or a passphrase now required); it still counts and can be revoked',
+      }),
+    email_status: z
+      .union([
+        z.literal(null),
+        z.literal('queued'),
+        z.literal('accepted'),
+        z.literal('failed'),
+        z.literal('not_sent'),
+        z.literal('unknown'),
+      ])
+      .nullable()
+      .openapi({
+        description:
+          'Email invitation outcome; null when the link was not emailed. accepted means accepted by the mail server, not delivered',
+      }),
+  })
+  .openapi({
+    required: [
+      'id',
+      'type',
+      'item_id',
+      'folder_id',
+      'label',
+      'has_passphrase',
+      'expires_at',
+      'max_views',
+      'remaining_views',
+      'suspended',
+      'email_status',
+    ],
+  })
+  .openapi('SecureSendLink')
+
+const SecureSendRevokedSchema = z
+  .object({ id: z.int().openapi({ description: 'Identifier of the revoked link' }) })
+  .openapi({ required: ['id'] })
+  .openapi('SecureSendRevoked')
+
+const SecureSendProblemSchema = ProblemSchema.and(
+  z
+    .object({
+      reason: z
+        .enum([
+          'secure_send_disabled',
+          'invalid_payload',
+          'invalid_email',
+          'empty_note',
+          'not_found',
+          'not_allowed',
+          'email_not_allowed',
+          'notes_not_allowed',
+          'passphrase_required',
+          'cannot_decrypt',
+          'totp_unusable',
+          'email_requires_https',
+          'email_rate_limited',
+          'email_not_configured',
+          'invalid_public_url',
+          'server_error',
+        ])
+        .exactOptional()
+        .openapi({ description: 'Stable machine-readable cause; map it, not the detail text' }),
+    })
+    .openapi({ required: [] }),
+).openapi('SecureSendProblem')
+
 const JwtTokenResponse = {
   description: 'Authentication succeeded',
   content: {
@@ -2009,6 +2319,235 @@ export const deleteWebauthnDeleteRoute = createRoute({
     405: MethodNotAllowedResponse,
     429: RateLimitedResponse,
     500: InternalErrorResponse,
+    503: ApiDisabledResponse,
+  },
+})
+
+export const getSecureSendPolicyRoute = createRoute({
+  method: 'get',
+  path: '/secureSend/policy',
+  summary: 'Secure Send policy for API clients',
+  description:
+    'Instance limits and options a client needs to build its Secure Send form. Always 200: hide the item action when enabled or item_send_allowed is false, and the note action when note_send_allowed is false. Not counted as user activity.',
+  operationId: 'secureSendPolicy',
+  responses: {
+    200: {
+      description: 'Policy',
+      content: { 'application/json': { schema: SecureSendPolicySchema } },
+    },
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    405: MethodNotAllowedResponse,
+    429: RateLimitedResponse,
+    500: InternalErrorResponse,
+    503: ApiDisabledResponse,
+  },
+})
+
+export const postSecureSendCreateRoute = createRoute({
+  method: 'post',
+  path: '/secureSend/create',
+  summary: 'Create a Secure Send link for an item or a note',
+  description:
+    'Creates a limited-view, expiring link to a snapshot of an item the caller can read (type item, the default) or to a note whose content the caller supplies (type note, requires the note sends setting), with the same policy, audit and email delivery as the web interface. Requires the read right, one-time view links and the secure_send_api_enabled setting. The returned url is a bearer secret: never log it, and send the passphrase through another channel. No Idempotency-Key support: a lost response leaves at most one unused link, which expires on its own. Error responses carry a machine-readable reason member.',
+  operationId: 'secureSendCreate',
+  request: {
+    body: {
+      content: { 'application/json': { schema: SecureSendCreateBodySchema } },
+      required: true,
+    },
+  },
+  responses: {
+    201: {
+      description: 'Link created',
+      content: { 'application/json': { schema: SecureSendCreatedSchema } },
+      headers: z.object({
+        'Cache-Control': z
+          .literal('no-store')
+          .exactOptional()
+          .openapi({ description: 'Always no-store', param: { required: false } }),
+      }),
+    },
+    400: {
+      description:
+        'Invalid request (reason invalid_payload: body, types, unknown member, member of the other send type, note above note_max_bytes, Idempotency-Key header or query-string parameters), recipient (reason invalid_email) or note without a secret nor a text (reason empty_note)',
+      content: { 'application/problem+json': { schema: SecureSendProblemSchema } },
+    },
+    401: UnauthorizedResponse,
+    403: {
+      description:
+        'Item not readable by the caller or administrator account (reason not_allowed), note sends disabled (reason notes_not_allowed), email invitations disabled (reason email_not_allowed), or read right missing (no reason member)',
+      content: { 'application/problem+json': { schema: SecureSendProblemSchema } },
+    },
+    404: {
+      description: 'Item not found or deleted (reason not_found)',
+      content: { 'application/problem+json': { schema: SecureSendProblemSchema } },
+    },
+    405: MethodNotAllowedResponse,
+    422: {
+      description:
+        'Refused on substance: passphrase_required, cannot_decrypt (retry once the background task has distributed the item keys), totp_unusable, email_requires_https',
+      content: { 'application/problem+json': { schema: SecureSendProblemSchema } },
+    },
+    429: {
+      description:
+        'Email invitation quota reached (reason email_rate_limited: 10 per sender per rolling hour), or API rate limit',
+      content: { 'application/problem+json': { schema: SecureSendProblemSchema } },
+      headers: z.object({
+        'Retry-After': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Present only when the API rate limiter answered (no reason member)',
+            param: { required: false },
+          }),
+      }),
+    },
+    500: {
+      description: 'Internal error (reason server_error); details are logged server-side only',
+      content: { 'application/problem+json': { schema: SecureSendProblemSchema } },
+    },
+    503: {
+      description:
+        'Secure Send disabled for API clients (reason secure_send_disabled), email delivery not configured (email_not_configured), public address misconfigured (invalid_public_url), or API disabled (no reason member)',
+      content: { 'application/problem+json': { schema: SecureSendProblemSchema } },
+    },
+  },
+})
+
+export const getSecureSendListRoute = createRoute({
+  method: 'get',
+  path: '/secureSend/list',
+  summary: "List the caller's Secure Send links",
+  description:
+    "The caller's links, created through the web or the API, that can still be opened or are suspended by a policy, newest first. Expired, exhausted and blocked links, and item links whose item the caller can no longer read, are left out. Never returns a link URL, which the server does not keep. Requires the read right only; does not depend on secure_send_api_enabled, so a client can find links to revoke. Empty while one-time view links are off.",
+  operationId: 'secureSendList',
+  request: {
+    query: z.object({
+      limit: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int().min(1).max(500),
+        )
+        .default(100)
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'limit',
+            in: 'query',
+            required: false,
+            schema: { type: 'integer', minimum: 1, maximum: 500, default: 100 },
+          },
+        }),
+      offset: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int().min(0),
+        )
+        .default(0)
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'offset',
+            in: 'query',
+            required: false,
+            schema: { type: 'integer', minimum: 0, default: 0 },
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: "The caller's links (empty array when none)",
+      content: { 'application/json': { schema: z.array(SecureSendLinkSchema) } },
+      headers: z.object({
+        'X-Total-Count': XTotalCountHeaderSchema,
+        'Cache-Control': z
+          .literal('no-store')
+          .exactOptional()
+          .openapi({ description: 'Always no-store', param: { required: false } }),
+      }),
+    },
+    400: {
+      description:
+        'Invalid limit or offset, or another query-string parameter (reason invalid_payload)',
+      content: { 'application/problem+json': { schema: SecureSendProblemSchema } },
+    },
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    405: MethodNotAllowedResponse,
+    429: RateLimitedResponse,
+    500: {
+      description: 'Internal error (reason server_error); details are logged server-side only',
+      content: { 'application/problem+json': { schema: SecureSendProblemSchema } },
+    },
+    503: ApiDisabledResponse,
+  },
+})
+
+export const deleteSecureSendRevokeRoute = createRoute({
+  method: 'delete',
+  path: '/secureSend/revoke',
+  summary: "Revoke one of the caller's Secure Send links",
+  description:
+    'Deletes a link the caller created, through the web or the API, and records a revoked event in the Secure Send audit journal. Requires the read right only, like create. Available whatever the Secure Send settings, like the web: removing a link only narrows exposure. A link that does not exist and a link of another user both answer 404 not_found, so a retry after a lost response also answers 404: treat it as revoked. No Idempotency-Key support.',
+  operationId: 'secureSendRevoke',
+  request: {
+    query: z.object({
+      id: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int().min(1).max(2147483647),
+        )
+        .openapi({
+          param: {
+            name: 'id',
+            in: 'query',
+            required: true,
+            description: 'Link identifier returned by create. No other parameter is accepted.',
+            schema: { type: 'integer', minimum: 1, maximum: 2147483647 },
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Link revoked',
+      content: { 'application/json': { schema: SecureSendRevokedSchema } },
+    },
+    400: {
+      description:
+        'Missing or invalid id, other query-string parameter, or Idempotency-Key header (reason invalid_payload)',
+      content: { 'application/problem+json': { schema: SecureSendProblemSchema } },
+    },
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    404: {
+      description: 'No link with this id belongs to the caller (reason not_found)',
+      content: { 'application/problem+json': { schema: SecureSendProblemSchema } },
+    },
+    405: MethodNotAllowedResponse,
+    429: RateLimitedResponse,
+    500: {
+      description:
+        'Internal error (reason server_error): the link is kept; details are logged server-side only',
+      content: { 'application/problem+json': { schema: SecureSendProblemSchema } },
+    },
     503: ApiDisabledResponse,
   },
 })

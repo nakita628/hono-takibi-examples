@@ -46,7 +46,7 @@ const AssetOnchainMetadataCip25Schema = z
   })
   .openapi('AssetOnchainMetadataCip25')
 
-type OnchainMetadataCip25Type = z.infer<typeof AssetOnchainMetadataCip25Schema>
+const OnchainMetadataCip25Schema = AssetOnchainMetadataCip25Schema.openapi('OnchainMetadataCip25')
 
 const AssetOnchainMetadataCip68Ft_333Schema = z
   .looseObject({
@@ -71,7 +71,9 @@ const AssetOnchainMetadataCip68Ft_333Schema = z
   })
   .openapi('AssetOnchainMetadataCip68Ft_333')
 
-type OnchainMetadataCip68Ft_333Type = z.infer<typeof AssetOnchainMetadataCip68Ft_333Schema>
+const OnchainMetadataCip68Ft_333Schema = AssetOnchainMetadataCip68Ft_333Schema.openapi(
+  'OnchainMetadataCip68Ft_333',
+)
 
 const AssetOnchainMetadataCip68Nft_222Schema = z
   .looseObject({
@@ -119,7 +121,9 @@ const AssetOnchainMetadataCip68Nft_222Schema = z
   })
   .openapi('AssetOnchainMetadataCip68Nft_222')
 
-type OnchainMetadataCip68Nft_222Type = z.infer<typeof AssetOnchainMetadataCip68Nft_222Schema>
+const OnchainMetadataCip68Nft_222Schema = AssetOnchainMetadataCip68Nft_222Schema.openapi(
+  'OnchainMetadataCip68Nft_222',
+)
 
 const AssetOnchainMetadataCip68Rft_444Schema = z
   .looseObject({
@@ -168,23 +172,9 @@ const AssetOnchainMetadataCip68Rft_444Schema = z
   })
   .openapi('AssetOnchainMetadataCip68Rft_444')
 
-type OnchainMetadataCip68Rft_444Type = z.infer<typeof AssetOnchainMetadataCip68Rft_444Schema>
-
-const OnchainMetadataCip25Schema: z.ZodType<OnchainMetadataCip25Type> = z
-  .lazy(() => AssetOnchainMetadataCip25Schema)
-  .openapi('OnchainMetadataCip25')
-
-const OnchainMetadataCip68Ft_333Schema: z.ZodType<OnchainMetadataCip68Ft_333Type> = z
-  .lazy(() => AssetOnchainMetadataCip68Ft_333Schema)
-  .openapi('OnchainMetadataCip68Ft_333')
-
-const OnchainMetadataCip68Nft_222Schema: z.ZodType<OnchainMetadataCip68Nft_222Type> = z
-  .lazy(() => AssetOnchainMetadataCip68Nft_222Schema)
-  .openapi('OnchainMetadataCip68Nft_222')
-
-const OnchainMetadataCip68Rft_444Schema: z.ZodType<OnchainMetadataCip68Rft_444Type> = z
-  .lazy(() => AssetOnchainMetadataCip68Rft_444Schema)
-  .openapi('OnchainMetadataCip68Rft_444')
+const OnchainMetadataCip68Rft_444Schema = AssetOnchainMetadataCip68Rft_444Schema.openapi(
+  'OnchainMetadataCip68Rft_444',
+)
 
 const BlockContentSchema = z
   .object({
@@ -4973,7 +4963,7 @@ const PoolMetadataSchema = z
   })
   .openapi('PoolMetadata')
 
-const EmptyObjectSchema = z.object({}).openapi('EmptyObject')
+const EmptyObjectSchema = z.looseObject({}).openapi('EmptyObject')
 
 const PoolRelaysSchema = z
   .array(
@@ -5383,7 +5373,7 @@ const AssetUtxoContentSchema = z
           .nullable()
           .openapi({ description: 'CBOR encoded inline datum', example: '19a6aa' }),
         inline_datum_json: z
-          .object({})
+          .looseObject({})
           .nullable()
           .openapi({ description: 'JSON representation of the inline datum' }),
         reference_script_hash: z

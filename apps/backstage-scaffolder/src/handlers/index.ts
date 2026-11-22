@@ -1,0 +1,5 @@
+export * from './templates'
+export * from './actions'
+export * from './tasks'
+export * from './autocompleteProviders'
+export * from './templatingExtensions'

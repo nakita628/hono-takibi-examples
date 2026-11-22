@@ -1,262 +1,19 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const AddCustomAttributesResponseSchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      'Represents the response from the server for the request to add custom attributes.',
+  })
+  .openapi('AddCustomAttributesResponse')
+
 const UserPoolIdTypeSchema = z
   .string()
   .regex(/[\w-]+_[0-9a-zA-Z]+/)
   .min(1)
   .max(55)
   .openapi('UserPoolIdType')
-
-const ClientIdTypeSchema = z
-  .string()
-  .regex(/[\w+]+/)
-  .min(1)
-  .max(128)
-  .openapi('ClientIdType')
-
-const EventFilterTypeSchema = z
-  .enum(['SIGN_IN', 'PASSWORD_CHANGE', 'SIGN_UP'])
-  .openapi('EventFilterType')
-
-const EventFiltersTypeSchema = z.array(EventFilterTypeSchema).openapi('EventFiltersType')
-
-const CompromisedCredentialsEventActionTypeSchema = z
-  .enum(['BLOCK', 'NO_ACTION'])
-  .openapi('CompromisedCredentialsEventActionType')
-
-const CompromisedCredentialsActionsTypeSchema = z
-  .object({
-    EventAction: CompromisedCredentialsEventActionTypeSchema.and(
-      z.any().openapi({ description: 'The event action.' }),
-    ),
-  })
-  .openapi({ required: ['EventAction'], description: 'The compromised credentials actions type.' })
-  .openapi('CompromisedCredentialsActionsType')
-
-const CompromisedCredentialsRiskConfigurationTypeSchema = z
-  .object({
-    EventFilter: EventFiltersTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Perform the action for these events. The default is to perform all events if no event filter is specified.',
-        }),
-    ).exactOptional(),
-    Actions: CompromisedCredentialsActionsTypeSchema.and(
-      z.any().openapi({ description: 'The compromised credentials risk configuration actions.' }),
-    ),
-  })
-  .openapi({
-    required: ['Actions'],
-    description: 'The compromised credentials risk configuration type.',
-  })
-  .openapi('CompromisedCredentialsRiskConfigurationType')
-
-const StringTypeSchema = z.string().min(0).max(131072).openapi('StringType')
-
-const ArnTypeSchema = z
-  .string()
-  .regex(
-    /arn:[\w+=\/,.@-]+:[\w+=\/,.@-]+:([\w+=\/,.@-]*)?:[0-9]+:[\w+=\/,.@-]+(:[\w+=\/,.@-]+)?(:[\w+=\/,.@-]+)?/,
-  )
-  .min(20)
-  .max(2048)
-  .openapi('ArnType')
-
-const EmailNotificationSubjectTypeSchema = z
-  .string()
-  .regex(/[\p{L}\p{M}\p{S}\p{N}\p{P}\s]+/u)
-  .min(1)
-  .max(140)
-  .openapi('EmailNotificationSubjectType')
-
-const EmailNotificationBodyTypeSchema = z
-  .string()
-  .regex(/[\p{L}\p{M}\p{S}\p{N}\p{P}\s*]+/u)
-  .min(6)
-  .max(20000)
-  .openapi('EmailNotificationBodyType')
-
-const NotifyEmailTypeSchema = z
-  .object({
-    Subject: EmailNotificationSubjectTypeSchema.and(
-      z.any().openapi({ description: 'The email subject.' }),
-    ),
-    HtmlBody: EmailNotificationBodyTypeSchema.and(
-      z.any().openapi({ description: 'The email HTML body.' }),
-    ).exactOptional(),
-    TextBody: EmailNotificationBodyTypeSchema.and(
-      z.any().openapi({ description: 'The email text body.' }),
-    ).exactOptional(),
-  })
-  .openapi({ required: ['Subject'], description: 'The notify email type.' })
-  .openapi('NotifyEmailType')
-
-const NotifyConfigurationTypeSchema = z
-  .object({
-    From: StringTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The email address that is sending the email. The address must be either individually verified with Amazon Simple Email Service, or from a domain that has been verified with Amazon SES.',
-        }),
-    ).exactOptional(),
-    ReplyTo: StringTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The destination to which the receiver of an email should reply to.',
-        }),
-    ).exactOptional(),
-    SourceArn: ArnTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the identity that is associated with the sending authorization policy. This identity permits Amazon Cognito to send for the email address specified in the <code>From</code> parameter.',
-        }),
-    ),
-    BlockEmail: NotifyEmailTypeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Email template used when a detected risk event is blocked.' }),
-    ).exactOptional(),
-    NoActionEmail: NotifyEmailTypeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The email template used when a detected risk event is allowed.' }),
-    ).exactOptional(),
-    MfaEmail: NotifyEmailTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The multi-factor authentication (MFA) email template used when MFA is challenged as part of a detected risk.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ required: ['SourceArn'], description: 'The notify configuration type.' })
-  .openapi('NotifyConfigurationType')
-
-const AccountTakeoverActionNotifyTypeSchema = z.boolean().openapi('AccountTakeoverActionNotifyType')
-
-const AccountTakeoverEventActionTypeSchema = z
-  .enum(['BLOCK', 'MFA_IF_CONFIGURED', 'MFA_REQUIRED', 'NO_ACTION'])
-  .openapi('AccountTakeoverEventActionType')
-
-const AccountTakeoverActionTypeSchema = z
-  .object({
-    Notify: AccountTakeoverActionNotifyTypeSchema.and(
-      z.any().openapi({ description: 'Flag specifying whether to send a notification.' }),
-    ),
-    EventAction: AccountTakeoverEventActionTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The action to take in response to the account takeover action. Valid values are as follows:</p> <ul> <li> <p> <code>BLOCK</code> Choosing this action will block the request.</p> </li> <li> <p> <code>MFA_IF_CONFIGURED</code> Present an MFA challenge if user has configured it, else allow the request.</p> </li> <li> <p> <code>MFA_REQUIRED</code> Present an MFA challenge if user has configured it, else block the request.</p> </li> <li> <p> <code>NO_ACTION</code> Allow the user to sign in.</p> </li> </ul>',
-        }),
-    ),
-  })
-  .openapi({ required: ['Notify', 'EventAction'], description: 'Account takeover action type.' })
-  .openapi('AccountTakeoverActionType')
-
-const AccountTakeoverActionsTypeSchema = z
-  .object({
-    LowAction: AccountTakeoverActionTypeSchema.and(
-      z.any().openapi({ description: 'Action to take for a low risk.' }),
-    ).exactOptional(),
-    MediumAction: AccountTakeoverActionTypeSchema.and(
-      z.any().openapi({ description: 'Action to take for a medium risk.' }),
-    ).exactOptional(),
-    HighAction: AccountTakeoverActionTypeSchema.and(
-      z.any().openapi({ description: 'Action to take for a high risk.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Account takeover actions type.', required: [] })
-  .openapi('AccountTakeoverActionsType')
-
-const AccountTakeoverRiskConfigurationTypeSchema = z
-  .object({
-    NotifyConfiguration: NotifyConfigurationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The notify configuration used to construct email notifications.',
-        }),
-    ).exactOptional(),
-    Actions: AccountTakeoverActionsTypeSchema.and(
-      z.any().openapi({ description: 'Account takeover risk configuration actions.' }),
-    ),
-  })
-  .openapi({
-    required: ['Actions'],
-    description:
-      'Configuration for mitigation actions and notification for different levels of risk detected for a potential account takeover.',
-  })
-  .openapi('AccountTakeoverRiskConfigurationType')
-
-const BlockedIPRangeListTypeSchema = z
-  .array(StringTypeSchema)
-  .max(200)
-  .openapi('BlockedIPRangeListType')
-
-const SkippedIPRangeListTypeSchema = z
-  .array(StringTypeSchema)
-  .max(200)
-  .openapi('SkippedIPRangeListType')
-
-const RiskExceptionConfigurationTypeSchema = z
-  .object({
-    BlockedIPRangeList: BlockedIPRangeListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Overrides the risk decision to always block the pre-authentication requests. The IP range is in CIDR notation, a compact representation of an IP address and its routing prefix.',
-        }),
-    ).exactOptional(),
-    SkippedIPRangeList: SkippedIPRangeListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Risk detection isn't performed on the IP addresses in this range list. The IP range is in CIDR notation.",
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'The type of the configuration to override the risk decision.',
-    required: [],
-  })
-  .openapi('RiskExceptionConfigurationType')
-
-const DateTypeSchema = z.iso.datetime({ offset: true }).openapi('DateType')
-
-type RiskConfigurationTypeType = {
-  UserPoolId?: z.infer<typeof UserPoolIdTypeSchema> & { [key: string]: unknown }
-  ClientId?: z.infer<typeof ClientIdTypeSchema> & { [key: string]: unknown }
-  CompromisedCredentialsRiskConfiguration?: z.infer<
-    typeof CompromisedCredentialsRiskConfigurationTypeSchema
-  > & { [key: string]: unknown }
-  AccountTakeoverRiskConfiguration?: z.infer<typeof AccountTakeoverRiskConfigurationTypeSchema> & {
-    [key: string]: unknown
-  }
-  RiskExceptionConfiguration?: z.infer<typeof RiskExceptionConfigurationTypeSchema> & {
-    [key: string]: unknown
-  }
-  LastModifiedDate?: z.infer<typeof DateTypeSchema> & { [key: string]: unknown }
-}
-
-const AddCustomAttributesResponseSchema = z
-  .object({})
-  .openapi({
-    description:
-      'Represents the response from the server for the request to add custom attributes.',
-  })
-  .openapi('AddCustomAttributesResponse')
 
 const CustomAttributeNameTypeSchema = z
   .string()
@@ -271,22 +28,16 @@ const AttributeDataTypeSchema = z
 
 const BooleanTypeSchema = z.boolean().openapi('BooleanType')
 
+const StringTypeSchema = z.string().min(0).max(131072).openapi('StringType')
+
 const NumberAttributeConstraintsTypeSchema = z
   .object({
-    MinValue: StringTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The minimum value of an attribute that is of the number data type.',
-        }),
-    ).exactOptional(),
-    MaxValue: StringTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The maximum value of an attribute that is of the number data type.',
-        }),
-    ).exactOptional(),
+    MinValue: StringTypeSchema.exactOptional().openapi({
+      description: 'The minimum value of an attribute that is of the number data type.',
+    }),
+    MaxValue: StringTypeSchema.exactOptional().openapi({
+      description: 'The maximum value of an attribute that is of the number data type.',
+    }),
   })
   .openapi({
     description: 'The minimum and maximum values of an attribute that is of the number data type.',
@@ -296,63 +47,39 @@ const NumberAttributeConstraintsTypeSchema = z
 
 const StringAttributeConstraintsTypeSchema = z
   .object({
-    MinLength: StringTypeSchema.and(
-      z.any().openapi({ description: 'The minimum length.' }),
-    ).exactOptional(),
-    MaxLength: StringTypeSchema.and(
-      z.any().openapi({ description: 'The maximum length.' }),
-    ).exactOptional(),
+    MinLength: StringTypeSchema.exactOptional().openapi({ description: 'The minimum length.' }),
+    MaxLength: StringTypeSchema.exactOptional().openapi({ description: 'The maximum length.' }),
   })
   .openapi({ description: 'The constraints associated with a string attribute.', required: [] })
   .openapi('StringAttributeConstraintsType')
 
 const SchemaAttributeTypeSchema = z
   .object({
-    Name: CustomAttributeNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of your user pool attribute, for example <code>username</code> or <code>custom:costcenter</code>.',
-        }),
-    ).exactOptional(),
-    AttributeDataType: AttributeDataTypeSchema.and(
-      z.any().openapi({ description: 'The data format of the values for your attribute.' }),
-    ).exactOptional(),
-    DeveloperOnlyAttribute: BooleanTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<note> <p>You should use <a href="https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UserPoolClientType.html#CognitoUserPools-Type-UserPoolClientType-WriteAttributes">WriteAttributes</a> in the user pool client to control how attributes can be mutated for new use cases instead of using <code>DeveloperOnlyAttribute</code>.</p> </note> <p>Specifies whether the attribute type is developer only. This attribute can only be modified by an administrator. Users won\'t be able to modify this attribute using their access token. For example, <code>DeveloperOnlyAttribute</code> can be modified using AdminUpdateUserAttributes but can\'t be updated using UpdateUserAttributes.</p>',
-        }),
-    ).exactOptional(),
-    Mutable: BooleanTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies whether the value of the attribute can be changed.</p> <p>Any user pool attribute whose value you map from an IdP attribute must be mutable, with a parameter value of <code>true</code>. Amazon Cognito updates mapped attributes when users sign in to your application through an IdP. If an attribute is immutable, Amazon Cognito throws an error when it attempts to update the attribute. For more information, see <a href="https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-specifying-attribute-mapping.html">Specifying Identity Provider Attribute Mappings for Your User Pool</a>.</p>',
-        }),
-    ).exactOptional(),
-    Required: BooleanTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Specifies whether a user pool attribute is required. If the attribute is required and the user doesn't provide a value, registration or sign-in will fail.",
-        }),
-    ).exactOptional(),
-    NumberAttributeConstraints: NumberAttributeConstraintsTypeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Specifies the constraints for an attribute of the number type.' }),
-    ).exactOptional(),
-    StringAttributeConstraints: StringAttributeConstraintsTypeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Specifies the constraints for an attribute of the string type.' }),
-    ).exactOptional(),
+    Name: CustomAttributeNameTypeSchema.exactOptional().openapi({
+      description:
+        'The name of your user pool attribute, for example <code>username</code> or <code>custom:costcenter</code>.',
+    }),
+    AttributeDataType: AttributeDataTypeSchema.exactOptional().openapi({
+      description: 'The data format of the values for your attribute.',
+    }),
+    DeveloperOnlyAttribute: BooleanTypeSchema.exactOptional().openapi({
+      description:
+        '<note> <p>You should use <a href="https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UserPoolClientType.html#CognitoUserPools-Type-UserPoolClientType-WriteAttributes">WriteAttributes</a> in the user pool client to control how attributes can be mutated for new use cases instead of using <code>DeveloperOnlyAttribute</code>.</p> </note> <p>Specifies whether the attribute type is developer only. This attribute can only be modified by an administrator. Users won\'t be able to modify this attribute using their access token. For example, <code>DeveloperOnlyAttribute</code> can be modified using AdminUpdateUserAttributes but can\'t be updated using UpdateUserAttributes.</p>',
+    }),
+    Mutable: BooleanTypeSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies whether the value of the attribute can be changed.</p> <p>Any user pool attribute whose value you map from an IdP attribute must be mutable, with a parameter value of <code>true</code>. Amazon Cognito updates mapped attributes when users sign in to your application through an IdP. If an attribute is immutable, Amazon Cognito throws an error when it attempts to update the attribute. For more information, see <a href="https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-specifying-attribute-mapping.html">Specifying Identity Provider Attribute Mappings for Your User Pool</a>.</p>',
+    }),
+    Required: BooleanTypeSchema.exactOptional().openapi({
+      description:
+        "Specifies whether a user pool attribute is required. If the attribute is required and the user doesn't provide a value, registration or sign-in will fail.",
+    }),
+    NumberAttributeConstraints: NumberAttributeConstraintsTypeSchema.exactOptional().openapi({
+      description: 'Specifies the constraints for an attribute of the number type.',
+    }),
+    StringAttributeConstraints: StringAttributeConstraintsTypeSchema.exactOptional().openapi({
+      description: 'Specifies the constraints for an attribute of the string type.',
+    }),
   })
   .openapi({
     description:
@@ -369,17 +96,12 @@ const CustomAttributesListTypeSchema = z
 
 const AddCustomAttributesRequestSchema = z
   .object({
-    UserPoolId: UserPoolIdTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The user pool ID for the user pool where you want to add custom attributes.',
-        }),
-    ),
-    CustomAttributes: CustomAttributesListTypeSchema.and(
-      z.any().openapi({ description: 'An array of custom attributes, such as Mutable and Name.' }),
-    ),
+    UserPoolId: UserPoolIdTypeSchema.openapi({
+      description: 'The user pool ID for the user pool where you want to add custom attributes.',
+    }),
+    CustomAttributes: CustomAttributesListTypeSchema.openapi({
+      description: 'An array of custom attributes, such as Mutable and Name.',
+    }),
   })
   .openapi({
     required: ['UserPoolId', 'CustomAttributes'],
@@ -416,13 +138,11 @@ const GroupNameTypeSchema = z
 
 const AdminAddUserToGroupRequestSchema = z
   .object({
-    UserPoolId: UserPoolIdTypeSchema.and(
-      z.any().openapi({ description: 'The user pool ID for the user pool.' }),
-    ),
-    Username: UsernameTypeSchema.and(
-      z.any().openapi({ description: 'The username for the user.' }),
-    ),
-    GroupName: GroupNameTypeSchema.and(z.any().openapi({ description: 'The group name.' })),
+    UserPoolId: UserPoolIdTypeSchema.openapi({
+      description: 'The user pool ID for the user pool.',
+    }),
+    Username: UsernameTypeSchema.openapi({ description: 'The username for the user.' }),
+    GroupName: GroupNameTypeSchema.openapi({ description: 'The group name.' }),
   })
   .openapi({
     required: ['UserPoolId', 'Username', 'GroupName'],
@@ -433,7 +153,7 @@ const AdminAddUserToGroupRequestSchema = z
 const UserNotFoundExceptionSchema = z.any().openapi('UserNotFoundException')
 
 const AdminConfirmSignUpResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description: 'Represents the response from the server for the request to confirm registration.',
   })
@@ -445,26 +165,16 @@ const ClientMetadataTypeSchema = z
 
 const AdminConfirmSignUpRequestSchema = z
   .object({
-    UserPoolId: UserPoolIdTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The user pool ID for which you want to confirm user registration.',
-        }),
-    ),
-    Username: UsernameTypeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The user name for which you want to confirm user registration.' }),
-    ),
-    ClientMetadata: ClientMetadataTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A map of custom key-value pairs that you can provide as input for any custom workflows that this action triggers.</p> <p>If your user pool configuration includes triggers, the AdminConfirmSignUp API action invokes the Lambda function that is specified for the <i>post confirmation</i> trigger. When Amazon Cognito invokes this function, it passes a JSON payload, which the function receives as input. In this payload, the <code>clientMetadata</code> attribute provides the data that you assigned to the ClientMetadata parameter in your AdminConfirmSignUp request. In your function code in Lambda, you can process the ClientMetadata value to enhance your workflow for your specific needs.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-identity-pools-working-with-aws-lambda-triggers.html\"> Customizing user pool Workflows with Lambda Triggers</a> in the <i>Amazon Cognito Developer Guide</i>.</p> <note> <p>When you use the ClientMetadata parameter, remember that Amazon Cognito won't do the following:</p> <ul> <li> <p>Store the ClientMetadata value. This data is available only to Lambda triggers that are assigned to a user pool to support custom workflows. If your user pool configuration doesn't include triggers, the ClientMetadata parameter serves no purpose.</p> </li> <li> <p>Validate the ClientMetadata value.</p> </li> <li> <p>Encrypt the ClientMetadata value. Don't use Amazon Cognito to provide sensitive information.</p> </li> </ul> </note>",
-        }),
-    ).exactOptional(),
+    UserPoolId: UserPoolIdTypeSchema.openapi({
+      description: 'The user pool ID for which you want to confirm user registration.',
+    }),
+    Username: UsernameTypeSchema.openapi({
+      description: 'The user name for which you want to confirm user registration.',
+    }),
+    ClientMetadata: ClientMetadataTypeSchema.exactOptional().openapi({
+      description:
+        "<p>A map of custom key-value pairs that you can provide as input for any custom workflows that this action triggers.</p> <p>If your user pool configuration includes triggers, the AdminConfirmSignUp API action invokes the Lambda function that is specified for the <i>post confirmation</i> trigger. When Amazon Cognito invokes this function, it passes a JSON payload, which the function receives as input. In this payload, the <code>clientMetadata</code> attribute provides the data that you assigned to the ClientMetadata parameter in your AdminConfirmSignUp request. In your function code in Lambda, you can process the ClientMetadata value to enhance your workflow for your specific needs.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-identity-pools-working-with-aws-lambda-triggers.html\"> Customizing user pool Workflows with Lambda Triggers</a> in the <i>Amazon Cognito Developer Guide</i>.</p> <note> <p>When you use the ClientMetadata parameter, remember that Amazon Cognito won't do the following:</p> <ul> <li> <p>Store the ClientMetadata value. This data is available only to Lambda triggers that are assigned to a user pool to support custom workflows. If your user pool configuration doesn't include triggers, the ClientMetadata parameter serves no purpose.</p> </li> <li> <p>Validate the ClientMetadata value.</p> </li> <li> <p>Encrypt the ClientMetadata value. Don't use Amazon Cognito to provide sensitive information.</p> </li> </ul> </note>",
+    }),
   })
   .openapi({
     required: ['UserPoolId', 'Username'],
@@ -494,12 +204,10 @@ const AttributeValueTypeSchema = z.string().max(2048).openapi('AttributeValueTyp
 
 const AttributeTypeSchema = z
   .object({
-    Name: AttributeNameTypeSchema.and(
-      z.any().openapi({ description: 'The name of the attribute.' }),
-    ),
-    Value: AttributeValueTypeSchema.and(
-      z.any().openapi({ description: 'The value of the attribute.' }),
-    ).exactOptional(),
+    Name: AttributeNameTypeSchema.openapi({ description: 'The name of the attribute.' }),
+    Value: AttributeValueTypeSchema.exactOptional().openapi({
+      description: 'The value of the attribute.',
+    }),
   })
   .openapi({
     required: ['Name'],
@@ -508,6 +216,8 @@ const AttributeTypeSchema = z
   .openapi('AttributeType')
 
 const AttributeListTypeSchema = z.array(AttributeTypeSchema).openapi('AttributeListType')
+
+const DateTypeSchema = z.iso.datetime({ offset: true }).openapi('DateType')
 
 const UserStatusTypeSchema = z
   .enum([
@@ -525,22 +235,14 @@ const DeliveryMediumTypeSchema = z.enum(['SMS', 'EMAIL']).openapi('DeliveryMediu
 
 const MFAOptionTypeSchema = z
   .object({
-    DeliveryMedium: DeliveryMediumTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The delivery medium to send the MFA code. You can use this parameter to set only the <code>SMS</code> delivery medium value.',
-        }),
-    ).exactOptional(),
-    AttributeName: AttributeNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The attribute name of the MFA option type. The only valid value is <code>phone_number</code>.',
-        }),
-    ).exactOptional(),
+    DeliveryMedium: DeliveryMediumTypeSchema.exactOptional().openapi({
+      description:
+        'The delivery medium to send the MFA code. You can use this parameter to set only the <code>SMS</code> delivery medium value.',
+    }),
+    AttributeName: AttributeNameTypeSchema.exactOptional().openapi({
+      description:
+        'The attribute name of the MFA option type. The only valid value is <code>phone_number</code>.',
+    }),
   })
   .openapi({
     description:
@@ -553,48 +255,36 @@ const MFAOptionListTypeSchema = z.array(MFAOptionTypeSchema).openapi('MFAOptionL
 
 const UserTypeSchema = z
   .object({
-    Username: UsernameTypeSchema.and(
-      z.any().openapi({ description: 'The user name of the user you want to describe.' }),
-    ).exactOptional(),
-    Attributes: AttributeListTypeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A container with information about the user type attributes.' }),
-    ).exactOptional(),
-    UserCreateDate: DateTypeSchema.and(
-      z.any().openapi({ description: 'The creation date of the user.' }),
-    ).exactOptional(),
-    UserLastModifiedDate: DateTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time, in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format, when the item was modified.',
-        }),
-    ).exactOptional(),
-    Enabled: BooleanTypeSchema.and(
-      z.any().openapi({ description: 'Specifies whether the user is enabled.' }),
-    ).exactOptional(),
-    UserStatus: UserStatusTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The user status. This can be one of the following:</p> <ul> <li> <p>UNCONFIRMED - User has been created but not confirmed.</p> </li> <li> <p>CONFIRMED - User has been confirmed.</p> </li> <li> <p>EXTERNAL_PROVIDER - User signed in with a third-party IdP.</p> </li> <li> <p>UNKNOWN - User status isn't known.</p> </li> <li> <p>RESET_REQUIRED - User is confirmed, but the user must request a code and reset their password before they can sign in.</p> </li> <li> <p>FORCE_CHANGE_PASSWORD - The user is confirmed and the user can sign in using a temporary password, but on first sign-in, the user must change their password to a new value before doing anything else. </p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    MFAOptions: MFAOptionListTypeSchema.and(
-      z.any().openapi({ description: 'The MFA options for the user.' }),
-    ).exactOptional(),
+    Username: UsernameTypeSchema.exactOptional().openapi({
+      description: 'The user name of the user you want to describe.',
+    }),
+    Attributes: AttributeListTypeSchema.exactOptional().openapi({
+      description: 'A container with information about the user type attributes.',
+    }),
+    UserCreateDate: DateTypeSchema.exactOptional().openapi({
+      description: 'The creation date of the user.',
+    }),
+    UserLastModifiedDate: DateTypeSchema.exactOptional().openapi({
+      description:
+        'The date and time, in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format, when the item was modified.',
+    }),
+    Enabled: BooleanTypeSchema.exactOptional().openapi({
+      description: 'Specifies whether the user is enabled.',
+    }),
+    UserStatus: UserStatusTypeSchema.exactOptional().openapi({
+      description:
+        "<p>The user status. This can be one of the following:</p> <ul> <li> <p>UNCONFIRMED - User has been created but not confirmed.</p> </li> <li> <p>CONFIRMED - User has been confirmed.</p> </li> <li> <p>EXTERNAL_PROVIDER - User signed in with a third-party IdP.</p> </li> <li> <p>UNKNOWN - User status isn't known.</p> </li> <li> <p>RESET_REQUIRED - User is confirmed, but the user must request a code and reset their password before they can sign in.</p> </li> <li> <p>FORCE_CHANGE_PASSWORD - The user is confirmed and the user can sign in using a temporary password, but on first sign-in, the user must change their password to a new value before doing anything else. </p> </li> </ul>",
+    }),
+    MFAOptions: MFAOptionListTypeSchema.exactOptional().openapi({
+      description: 'The MFA options for the user.',
+    }),
   })
   .openapi({ description: 'A user profile in a Amazon Cognito user pool.', required: [] })
   .openapi('UserType')
 
 const AdminCreateUserResponseSchema = z
   .object({
-    User: UserTypeSchema.and(
-      z.any().openapi({ description: 'The newly created user.' }),
-    ).exactOptional(),
+    User: UserTypeSchema.exactOptional().openapi({ description: 'The newly created user.' }),
   })
   .openapi({
     description: 'Represents the response from the server to the request to create the user.',
@@ -614,77 +304,41 @@ const DeliveryMediumListTypeSchema = z
 
 const AdminCreateUserRequestSchema = z
   .object({
-    UserPoolId: UserPoolIdTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The user pool ID for the user pool where the user will be created.',
-        }),
-    ),
-    Username: UsernameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The username for the user. Must be unique within the user pool. Must be a UTF-8 string between 1 and 128 characters. After the user is created, the username can't be changed.",
-        }),
-    ),
-    UserAttributes: AttributeListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An array of name-value pairs that contain user attributes and attribute values to be set for the user to be created. You can create a user without specifying any attributes other than <code>Username</code>. However, any attributes that you specify as required (when creating a user pool or in the <b>Attributes</b> tab of the console) either you should supply (in your call to <code>AdminCreateUser</code>) or the user should supply (when they sign up in response to your welcome message).</p> <p>For custom attributes, you must prepend the <code>custom:</code> prefix to the attribute name.</p> <p>To send a message inviting the user to sign up, you must specify the user\'s email address or phone number. You can do this in your call to AdminCreateUser or in the <b>Users</b> tab of the Amazon Cognito console for managing your user pools.</p> <p>In your call to <code>AdminCreateUser</code>, you can set the <code>email_verified</code> attribute to <code>True</code>, and you can set the <code>phone_number_verified</code> attribute to <code>True</code>. You can also do this by calling <a href="https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_AdminUpdateUserAttributes.html">AdminUpdateUserAttributes</a>.</p> <ul> <li> <p> <b>email</b>: The email address of the user to whom the message that contains the code and username will be sent. Required if the <code>email_verified</code> attribute is set to <code>True</code>, or if <code>"EMAIL"</code> is specified in the <code>DesiredDeliveryMediums</code> parameter.</p> </li> <li> <p> <b>phone_number</b>: The phone number of the user to whom the message that contains the code and username will be sent. Required if the <code>phone_number_verified</code> attribute is set to <code>True</code>, or if <code>"SMS"</code> is specified in the <code>DesiredDeliveryMediums</code> parameter.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    ValidationData: AttributeListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The user's validation data. This is an array of name-value pairs that contain user attributes and attribute values that you can use for custom validation, such as restricting the types of user accounts that can be registered. For example, you might choose to allow or disallow user sign-up based on the user's domain.</p> <p>To configure custom validation, you must create a Pre Sign-up Lambda trigger for the user pool as described in the Amazon Cognito Developer Guide. The Lambda trigger receives the validation data and uses it in the validation process.</p> <p>The user's validation data isn't persisted.</p>",
-        }),
-    ).exactOptional(),
-    TemporaryPassword: PasswordTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The user's temporary password. This password must conform to the password policy that you specified when you created the user pool.</p> <p>The temporary password is valid only once. To complete the Admin Create User flow, the user must enter the temporary password in the sign-in page, along with a new password to be used in all future sign-ins.</p> <p>This parameter isn't required. If you don't specify a value, Amazon Cognito generates one for you.</p> <p>The temporary password can only be used until the user account expiration limit that you set for your user pool. To reset the account after that time limit, you must call <code>AdminCreateUser</code> again and specify <code>RESEND</code> for the <code>MessageAction</code> parameter.</p>",
-        }),
-    ).exactOptional(),
-    ForceAliasCreation: ForceAliasCreationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>This parameter is used only if the <code>phone_number_verified</code> or <code>email_verified</code> attribute is set to <code>True</code>. Otherwise, it is ignored.</p> <p>If this parameter is set to <code>True</code> and the phone number or email address specified in the UserAttributes parameter already exists as an alias with a different user, the API call will migrate the alias from the previous user to the newly created user. The previous user will no longer be able to log in using that alias.</p> <p>If this parameter is set to <code>False</code>, the API throws an <code>AliasExistsException</code> error if the alias already exists. The default value is <code>False</code>.</p>',
-        }),
-    ).exactOptional(),
-    MessageAction: MessageActionTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Set to <code>RESEND</code> to resend the invitation message to a user that already exists and reset the expiration limit on the user's account. Set to <code>SUPPRESS</code> to suppress sending the message. You can specify only one value.",
-        }),
-    ).exactOptional(),
-    DesiredDeliveryMediums: DeliveryMediumListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specify <code>"EMAIL"</code> if email will be used to send the welcome message. Specify <code>"SMS"</code> if the phone number will be used. The default value is <code>"SMS"</code>. You can specify more than one value.',
-        }),
-    ).exactOptional(),
-    ClientMetadata: ClientMetadataTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A map of custom key-value pairs that you can provide as input for any custom workflows that this action triggers.</p> <p>You create custom workflows by assigning Lambda functions to user pool triggers. When you use the AdminCreateUser API action, Amazon Cognito invokes the function that is assigned to the <i>pre sign-up</i> trigger. When Amazon Cognito invokes this function, it passes a JSON payload, which the function receives as input. This payload contains a <code>clientMetadata</code> attribute, which provides the data that you assigned to the ClientMetadata parameter in your AdminCreateUser request. In your function code in Lambda, you can process the <code>clientMetadata</code> value to enhance your workflow for your specific needs.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-identity-pools-working-with-aws-lambda-triggers.html\"> Customizing user pool Workflows with Lambda Triggers</a> in the <i>Amazon Cognito Developer Guide</i>.</p> <note> <p>When you use the ClientMetadata parameter, remember that Amazon Cognito won't do the following:</p> <ul> <li> <p>Store the ClientMetadata value. This data is available only to Lambda triggers that are assigned to a user pool to support custom workflows. If your user pool configuration doesn't include triggers, the ClientMetadata parameter serves no purpose.</p> </li> <li> <p>Validate the ClientMetadata value.</p> </li> <li> <p>Encrypt the ClientMetadata value. Don't use Amazon Cognito to provide sensitive information.</p> </li> </ul> </note>",
-        }),
-    ).exactOptional(),
+    UserPoolId: UserPoolIdTypeSchema.openapi({
+      description: 'The user pool ID for the user pool where the user will be created.',
+    }),
+    Username: UsernameTypeSchema.openapi({
+      description:
+        "The username for the user. Must be unique within the user pool. Must be a UTF-8 string between 1 and 128 characters. After the user is created, the username can't be changed.",
+    }),
+    UserAttributes: AttributeListTypeSchema.exactOptional().openapi({
+      description:
+        '<p>An array of name-value pairs that contain user attributes and attribute values to be set for the user to be created. You can create a user without specifying any attributes other than <code>Username</code>. However, any attributes that you specify as required (when creating a user pool or in the <b>Attributes</b> tab of the console) either you should supply (in your call to <code>AdminCreateUser</code>) or the user should supply (when they sign up in response to your welcome message).</p> <p>For custom attributes, you must prepend the <code>custom:</code> prefix to the attribute name.</p> <p>To send a message inviting the user to sign up, you must specify the user\'s email address or phone number. You can do this in your call to AdminCreateUser or in the <b>Users</b> tab of the Amazon Cognito console for managing your user pools.</p> <p>In your call to <code>AdminCreateUser</code>, you can set the <code>email_verified</code> attribute to <code>True</code>, and you can set the <code>phone_number_verified</code> attribute to <code>True</code>. You can also do this by calling <a href="https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_AdminUpdateUserAttributes.html">AdminUpdateUserAttributes</a>.</p> <ul> <li> <p> <b>email</b>: The email address of the user to whom the message that contains the code and username will be sent. Required if the <code>email_verified</code> attribute is set to <code>True</code>, or if <code>"EMAIL"</code> is specified in the <code>DesiredDeliveryMediums</code> parameter.</p> </li> <li> <p> <b>phone_number</b>: The phone number of the user to whom the message that contains the code and username will be sent. Required if the <code>phone_number_verified</code> attribute is set to <code>True</code>, or if <code>"SMS"</code> is specified in the <code>DesiredDeliveryMediums</code> parameter.</p> </li> </ul>',
+    }),
+    ValidationData: AttributeListTypeSchema.exactOptional().openapi({
+      description:
+        "<p>The user's validation data. This is an array of name-value pairs that contain user attributes and attribute values that you can use for custom validation, such as restricting the types of user accounts that can be registered. For example, you might choose to allow or disallow user sign-up based on the user's domain.</p> <p>To configure custom validation, you must create a Pre Sign-up Lambda trigger for the user pool as described in the Amazon Cognito Developer Guide. The Lambda trigger receives the validation data and uses it in the validation process.</p> <p>The user's validation data isn't persisted.</p>",
+    }),
+    TemporaryPassword: PasswordTypeSchema.exactOptional().openapi({
+      description:
+        "<p>The user's temporary password. This password must conform to the password policy that you specified when you created the user pool.</p> <p>The temporary password is valid only once. To complete the Admin Create User flow, the user must enter the temporary password in the sign-in page, along with a new password to be used in all future sign-ins.</p> <p>This parameter isn't required. If you don't specify a value, Amazon Cognito generates one for you.</p> <p>The temporary password can only be used until the user account expiration limit that you set for your user pool. To reset the account after that time limit, you must call <code>AdminCreateUser</code> again and specify <code>RESEND</code> for the <code>MessageAction</code> parameter.</p>",
+    }),
+    ForceAliasCreation: ForceAliasCreationSchema.exactOptional().openapi({
+      description:
+        '<p>This parameter is used only if the <code>phone_number_verified</code> or <code>email_verified</code> attribute is set to <code>True</code>. Otherwise, it is ignored.</p> <p>If this parameter is set to <code>True</code> and the phone number or email address specified in the UserAttributes parameter already exists as an alias with a different user, the API call will migrate the alias from the previous user to the newly created user. The previous user will no longer be able to log in using that alias.</p> <p>If this parameter is set to <code>False</code>, the API throws an <code>AliasExistsException</code> error if the alias already exists. The default value is <code>False</code>.</p>',
+    }),
+    MessageAction: MessageActionTypeSchema.exactOptional().openapi({
+      description:
+        "Set to <code>RESEND</code> to resend the invitation message to a user that already exists and reset the expiration limit on the user's account. Set to <code>SUPPRESS</code> to suppress sending the message. You can specify only one value.",
+    }),
+    DesiredDeliveryMediums: DeliveryMediumListTypeSchema.exactOptional().openapi({
+      description:
+        'Specify <code>"EMAIL"</code> if email will be used to send the welcome message. Specify <code>"SMS"</code> if the phone number will be used. The default value is <code>"SMS"</code>. You can specify more than one value.',
+    }),
+    ClientMetadata: ClientMetadataTypeSchema.exactOptional().openapi({
+      description:
+        "<p>A map of custom key-value pairs that you can provide as input for any custom workflows that this action triggers.</p> <p>You create custom workflows by assigning Lambda functions to user pool triggers. When you use the AdminCreateUser API action, Amazon Cognito invokes the function that is assigned to the <i>pre sign-up</i> trigger. When Amazon Cognito invokes this function, it passes a JSON payload, which the function receives as input. This payload contains a <code>clientMetadata</code> attribute, which provides the data that you assigned to the ClientMetadata parameter in your AdminCreateUser request. In your function code in Lambda, you can process the <code>clientMetadata</code> value to enhance your workflow for your specific needs.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-identity-pools-working-with-aws-lambda-triggers.html\"> Customizing user pool Workflows with Lambda Triggers</a> in the <i>Amazon Cognito Developer Guide</i>.</p> <note> <p>When you use the ClientMetadata parameter, remember that Amazon Cognito won't do the following:</p> <ul> <li> <p>Store the ClientMetadata value. This data is available only to Lambda triggers that are assigned to a user pool to support custom workflows. If your user pool configuration doesn't include triggers, the ClientMetadata parameter serves no purpose.</p> </li> <li> <p>Validate the ClientMetadata value.</p> </li> <li> <p>Encrypt the ClientMetadata value. Don't use Amazon Cognito to provide sensitive information.</p> </li> </ul> </note>",
+    }),
   })
   .openapi({
     required: ['UserPoolId', 'Username'],
@@ -713,16 +367,12 @@ const UnsupportedUserStateExceptionSchema = z.any().openapi('UnsupportedUserStat
 
 const AdminDeleteUserRequestSchema = z
   .object({
-    UserPoolId: UserPoolIdTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The user pool ID for the user pool where you want to delete the user.',
-        }),
-    ),
-    Username: UsernameTypeSchema.and(
-      z.any().openapi({ description: 'The user name of the user you want to delete.' }),
-    ),
+    UserPoolId: UserPoolIdTypeSchema.openapi({
+      description: 'The user pool ID for the user pool where you want to delete the user.',
+    }),
+    Username: UsernameTypeSchema.openapi({
+      description: 'The user name of the user you want to delete.',
+    }),
   })
   .openapi({
     required: ['UserPoolId', 'Username'],
@@ -732,7 +382,7 @@ const AdminDeleteUserRequestSchema = z
   .openapi('AdminDeleteUserRequest')
 
 const AdminDeleteUserAttributesResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'Represents the response received from the server for a request to delete user attributes.',
@@ -745,29 +395,16 @@ const AttributeNameListTypeSchema = z
 
 const AdminDeleteUserAttributesRequestSchema = z
   .object({
-    UserPoolId: UserPoolIdTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The user pool ID for the user pool where you want to delete user attributes.',
-        }),
-    ),
-    Username: UsernameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The user name of the user from which you would like to delete attributes.',
-        }),
-    ),
-    UserAttributeNames: AttributeNameListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An array of strings representing the user attribute names you want to delete.</p> <p>For custom attributes, you must prepend the <code>custom:</code> prefix to the attribute name.</p>',
-        }),
-    ),
+    UserPoolId: UserPoolIdTypeSchema.openapi({
+      description: 'The user pool ID for the user pool where you want to delete user attributes.',
+    }),
+    Username: UsernameTypeSchema.openapi({
+      description: 'The user name of the user from which you would like to delete attributes.',
+    }),
+    UserAttributeNames: AttributeNameListTypeSchema.openapi({
+      description:
+        '<p>An array of strings representing the user attribute names you want to delete.</p> <p>For custom attributes, you must prepend the <code>custom:</code> prefix to the attribute name.</p>',
+    }),
   })
   .openapi({
     required: ['UserPoolId', 'Username', 'UserAttributeNames'],
@@ -777,7 +414,7 @@ const AdminDeleteUserAttributesRequestSchema = z
   .openapi('AdminDeleteUserAttributesRequest')
 
 const AdminDisableProviderForUserResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('AdminDisableProviderForUserResponse')
 
 const ProviderNameTypeSchema = z
@@ -789,29 +426,16 @@ const ProviderNameTypeSchema = z
 
 const ProviderUserIdentifierTypeSchema = z
   .object({
-    ProviderName: ProviderNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the provider, such as Facebook, Google, or Login with Amazon.',
-        }),
-    ).exactOptional(),
-    ProviderAttributeName: StringTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the provider attribute to link to, such as <code>NameID</code>.',
-        }),
-    ).exactOptional(),
-    ProviderAttributeValue: StringTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The value of the provider attribute to link to, such as <code>xxxxx_account</code>.',
-        }),
-    ).exactOptional(),
+    ProviderName: ProviderNameTypeSchema.exactOptional().openapi({
+      description: 'The name of the provider, such as Facebook, Google, or Login with Amazon.',
+    }),
+    ProviderAttributeName: StringTypeSchema.exactOptional().openapi({
+      description: 'The name of the provider attribute to link to, such as <code>NameID</code>.',
+    }),
+    ProviderAttributeValue: StringTypeSchema.exactOptional().openapi({
+      description:
+        'The value of the provider attribute to link to, such as <code>xxxxx_account</code>.',
+    }),
   })
   .openapi({
     description: 'A container for information about an IdP for a user pool.',
@@ -821,12 +445,8 @@ const ProviderUserIdentifierTypeSchema = z
 
 const AdminDisableProviderForUserRequestSchema = z
   .object({
-    UserPoolId: StringTypeSchema.and(
-      z.any().openapi({ description: 'The user pool ID for the user pool.' }),
-    ),
-    User: ProviderUserIdentifierTypeSchema.and(
-      z.any().openapi({ description: 'The user to be disabled.' }),
-    ),
+    UserPoolId: StringTypeSchema.openapi({ description: 'The user pool ID for the user pool.' }),
+    User: ProviderUserIdentifierTypeSchema.openapi({ description: 'The user to be disabled.' }),
   })
   .openapi({ required: ['UserPoolId', 'User'], title: 'AdminDisableProviderForUserRequest' })
   .openapi('AdminDisableProviderForUserRequest')
@@ -834,7 +454,7 @@ const AdminDisableProviderForUserRequestSchema = z
 const AliasExistsExceptionSchema = z.any().openapi('AliasExistsException')
 
 const AdminDisableUserResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'Represents the response received from the server to disable the user as an administrator.',
@@ -843,16 +463,12 @@ const AdminDisableUserResponseSchema = z
 
 const AdminDisableUserRequestSchema = z
   .object({
-    UserPoolId: UserPoolIdTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The user pool ID for the user pool where you want to disable the user.',
-        }),
-    ),
-    Username: UsernameTypeSchema.and(
-      z.any().openapi({ description: 'The user name of the user you want to disable.' }),
-    ),
+    UserPoolId: UserPoolIdTypeSchema.openapi({
+      description: 'The user pool ID for the user pool where you want to disable the user.',
+    }),
+    Username: UsernameTypeSchema.openapi({
+      description: 'The user name of the user you want to disable.',
+    }),
   })
   .openapi({
     required: ['UserPoolId', 'Username'],
@@ -862,7 +478,7 @@ const AdminDisableUserRequestSchema = z
   .openapi('AdminDisableUserRequest')
 
 const AdminEnableUserResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'Represents the response from the server for the request to enable a user as an administrator.',
@@ -871,16 +487,12 @@ const AdminEnableUserResponseSchema = z
 
 const AdminEnableUserRequestSchema = z
   .object({
-    UserPoolId: UserPoolIdTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The user pool ID for the user pool where you want to enable the user.',
-        }),
-    ),
-    Username: UsernameTypeSchema.and(
-      z.any().openapi({ description: 'The user name of the user you want to enable.' }),
-    ),
+    UserPoolId: UserPoolIdTypeSchema.openapi({
+      description: 'The user pool ID for the user pool where you want to enable the user.',
+    }),
+    Username: UsernameTypeSchema.openapi({
+      description: 'The user name of the user you want to enable.',
+    }),
   })
   .openapi({
     required: ['UserPoolId', 'Username'],
@@ -898,9 +510,9 @@ const DeviceKeyTypeSchema = z
 
 const AdminForgetDeviceRequestSchema = z
   .object({
-    UserPoolId: UserPoolIdTypeSchema.and(z.any().openapi({ description: 'The user pool ID.' })),
-    Username: UsernameTypeSchema.and(z.any().openapi({ description: 'The user name.' })),
-    DeviceKey: DeviceKeyTypeSchema.and(z.any().openapi({ description: 'The device key.' })),
+    UserPoolId: UserPoolIdTypeSchema.openapi({ description: 'The user pool ID.' }),
+    Username: UsernameTypeSchema.openapi({ description: 'The user name.' }),
+    DeviceKey: DeviceKeyTypeSchema.openapi({ description: 'The device key.' }),
   })
   .openapi({
     required: ['UserPoolId', 'Username', 'DeviceKey'],
@@ -915,40 +527,34 @@ const InvalidUserPoolConfigurationExceptionSchema = z
 
 const DeviceTypeSchema = z
   .object({
-    DeviceKey: DeviceKeyTypeSchema.and(
-      z.any().openapi({ description: 'The device key.' }),
-    ).exactOptional(),
-    DeviceAttributes: AttributeListTypeSchema.and(
-      z.any().openapi({ description: 'The device attributes.' }),
-    ).exactOptional(),
-    DeviceCreateDate: DateTypeSchema.and(
-      z.any().openapi({ description: 'The creation date of the device.' }),
-    ).exactOptional(),
-    DeviceLastModifiedDate: DateTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time, in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format, when the item was modified.',
-        }),
-    ).exactOptional(),
-    DeviceLastAuthenticatedDate: DateTypeSchema.and(
-      z.any().openapi({ description: 'The date when the device was last authenticated.' }),
-    ).exactOptional(),
+    DeviceKey: DeviceKeyTypeSchema.exactOptional().openapi({ description: 'The device key.' }),
+    DeviceAttributes: AttributeListTypeSchema.exactOptional().openapi({
+      description: 'The device attributes.',
+    }),
+    DeviceCreateDate: DateTypeSchema.exactOptional().openapi({
+      description: 'The creation date of the device.',
+    }),
+    DeviceLastModifiedDate: DateTypeSchema.exactOptional().openapi({
+      description:
+        'The date and time, in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format, when the item was modified.',
+    }),
+    DeviceLastAuthenticatedDate: DateTypeSchema.exactOptional().openapi({
+      description: 'The date when the device was last authenticated.',
+    }),
   })
   .openapi({ description: 'The device type.', required: [] })
   .openapi('DeviceType')
 
 const AdminGetDeviceResponseSchema = z
-  .object({ Device: DeviceTypeSchema.and(z.any().openapi({ description: 'The device.' })) })
+  .object({ Device: DeviceTypeSchema.openapi({ description: 'The device.' }) })
   .openapi({ required: ['Device'], description: 'Gets the device response, as an administrator.' })
   .openapi('AdminGetDeviceResponse')
 
 const AdminGetDeviceRequestSchema = z
   .object({
-    DeviceKey: DeviceKeyTypeSchema.and(z.any().openapi({ description: 'The device key.' })),
-    UserPoolId: UserPoolIdTypeSchema.and(z.any().openapi({ description: 'The user pool ID.' })),
-    Username: UsernameTypeSchema.and(z.any().openapi({ description: 'The user name.' })),
+    DeviceKey: DeviceKeyTypeSchema.openapi({ description: 'The device key.' }),
+    UserPoolId: UserPoolIdTypeSchema.openapi({ description: 'The user pool ID.' }),
+    Username: UsernameTypeSchema.openapi({ description: 'The user name.' }),
   })
   .openapi({
     required: ['DeviceKey', 'UserPoolId', 'Username'],
@@ -961,55 +567,37 @@ const UserMFASettingListTypeSchema = z.array(StringTypeSchema).openapi('UserMFAS
 
 const AdminGetUserResponseSchema = z
   .object({
-    Username: UsernameTypeSchema.and(
-      z.any().openapi({ description: 'The username of the user that you requested.' }),
-    ),
-    UserAttributes: AttributeListTypeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'An array of name-value pairs representing user attributes.' }),
-    ).exactOptional(),
-    UserCreateDate: DateTypeSchema.and(
-      z.any().openapi({ description: 'The date the user was created.' }),
-    ).exactOptional(),
-    UserLastModifiedDate: DateTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time, in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format, when the item was modified.',
-        }),
-    ).exactOptional(),
-    Enabled: BooleanTypeSchema.and(
-      z.any().openapi({ description: 'Indicates that the status is <code>enabled</code>.' }),
-    ).exactOptional(),
-    UserStatus: UserStatusTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The user status. Can be one of the following:</p> <ul> <li> <p>UNCONFIRMED - User has been created but not confirmed.</p> </li> <li> <p>CONFIRMED - User has been confirmed.</p> </li> <li> <p>UNKNOWN - User status isn't known.</p> </li> <li> <p>RESET_REQUIRED - User is confirmed, but the user must request a code and reset their password before they can sign in.</p> </li> <li> <p>FORCE_CHANGE_PASSWORD - The user is confirmed and the user can sign in using a temporary password, but on first sign-in, the user must change their password to a new value before doing anything else. </p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    MFAOptions: MFAOptionListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            " <i>This response parameter is no longer supported.</i> It provides information only about SMS MFA configurations. It doesn't provide information about time-based one-time password (TOTP) software token MFA configurations. To look up information about either type of MFA configuration, use UserMFASettingList instead.",
-        }),
-    ).exactOptional(),
-    PreferredMfaSetting: StringTypeSchema.and(
-      z.any().openapi({ description: "The user's preferred MFA setting." }),
-    ).exactOptional(),
-    UserMFASettingList: UserMFASettingListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The MFA options that are activated for the user. The possible values in this list are <code>SMS_MFA</code> and <code>SOFTWARE_TOKEN_MFA</code>.',
-        }),
-    ).exactOptional(),
+    Username: UsernameTypeSchema.openapi({
+      description: 'The username of the user that you requested.',
+    }),
+    UserAttributes: AttributeListTypeSchema.exactOptional().openapi({
+      description: 'An array of name-value pairs representing user attributes.',
+    }),
+    UserCreateDate: DateTypeSchema.exactOptional().openapi({
+      description: 'The date the user was created.',
+    }),
+    UserLastModifiedDate: DateTypeSchema.exactOptional().openapi({
+      description:
+        'The date and time, in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format, when the item was modified.',
+    }),
+    Enabled: BooleanTypeSchema.exactOptional().openapi({
+      description: 'Indicates that the status is <code>enabled</code>.',
+    }),
+    UserStatus: UserStatusTypeSchema.exactOptional().openapi({
+      description:
+        "<p>The user status. Can be one of the following:</p> <ul> <li> <p>UNCONFIRMED - User has been created but not confirmed.</p> </li> <li> <p>CONFIRMED - User has been confirmed.</p> </li> <li> <p>UNKNOWN - User status isn't known.</p> </li> <li> <p>RESET_REQUIRED - User is confirmed, but the user must request a code and reset their password before they can sign in.</p> </li> <li> <p>FORCE_CHANGE_PASSWORD - The user is confirmed and the user can sign in using a temporary password, but on first sign-in, the user must change their password to a new value before doing anything else. </p> </li> </ul>",
+    }),
+    MFAOptions: MFAOptionListTypeSchema.exactOptional().openapi({
+      description:
+        " <i>This response parameter is no longer supported.</i> It provides information only about SMS MFA configurations. It doesn't provide information about time-based one-time password (TOTP) software token MFA configurations. To look up information about either type of MFA configuration, use UserMFASettingList instead.",
+    }),
+    PreferredMfaSetting: StringTypeSchema.exactOptional().openapi({
+      description: "The user's preferred MFA setting.",
+    }),
+    UserMFASettingList: UserMFASettingListTypeSchema.exactOptional().openapi({
+      description:
+        'The MFA options that are activated for the user. The possible values in this list are <code>SMS_MFA</code> and <code>SOFTWARE_TOKEN_MFA</code>.',
+    }),
   })
   .openapi({
     required: ['Username'],
@@ -1020,17 +608,13 @@ const AdminGetUserResponseSchema = z
 
 const AdminGetUserRequestSchema = z
   .object({
-    UserPoolId: UserPoolIdTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The user pool ID for the user pool where you want to get information about the user.',
-        }),
-    ),
-    Username: UsernameTypeSchema.and(
-      z.any().openapi({ description: 'The user name of the user you want to retrieve.' }),
-    ),
+    UserPoolId: UserPoolIdTypeSchema.openapi({
+      description:
+        'The user pool ID for the user pool where you want to get information about the user.',
+    }),
+    Username: UsernameTypeSchema.openapi({
+      description: 'The user name of the user you want to retrieve.',
+    }),
   })
   .openapi({
     required: ['UserPoolId', 'Username'],
@@ -1069,87 +653,66 @@ const IntegerTypeSchema = z.int().openapi('IntegerType')
 
 const NewDeviceMetadataTypeSchema = z
   .object({
-    DeviceKey: DeviceKeyTypeSchema.and(
-      z.any().openapi({ description: 'The device key.' }),
-    ).exactOptional(),
-    DeviceGroupKey: StringTypeSchema.and(
-      z.any().openapi({ description: 'The device group key.' }),
-    ).exactOptional(),
+    DeviceKey: DeviceKeyTypeSchema.exactOptional().openapi({ description: 'The device key.' }),
+    DeviceGroupKey: StringTypeSchema.exactOptional().openapi({
+      description: 'The device group key.',
+    }),
   })
   .openapi({ description: 'The new device metadata type.', required: [] })
   .openapi('NewDeviceMetadataType')
 
 const AuthenticationResultTypeSchema = z
   .object({
-    AccessToken: TokenModelTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A valid access token that Amazon Cognito issued to the user who you want to authenticate.',
-        }),
-    ).exactOptional(),
-    ExpiresIn: IntegerTypeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The expiration period of the authentication result in seconds.' }),
-    ).exactOptional(),
-    TokenType: StringTypeSchema.and(
-      z.any().openapi({ description: 'The token type.' }),
-    ).exactOptional(),
-    RefreshToken: TokenModelTypeSchema.and(
-      z.any().openapi({ description: 'The refresh token.' }),
-    ).exactOptional(),
-    IdToken: TokenModelTypeSchema.and(
-      z.any().openapi({ description: 'The ID token.' }),
-    ).exactOptional(),
-    NewDeviceMetadata: NewDeviceMetadataTypeSchema.and(
-      z.any().openapi({ description: 'The new device metadata from an authentication result.' }),
-    ).exactOptional(),
+    AccessToken: TokenModelTypeSchema.exactOptional().openapi({
+      description:
+        'A valid access token that Amazon Cognito issued to the user who you want to authenticate.',
+    }),
+    ExpiresIn: IntegerTypeSchema.exactOptional().openapi({
+      description: 'The expiration period of the authentication result in seconds.',
+    }),
+    TokenType: StringTypeSchema.exactOptional().openapi({ description: 'The token type.' }),
+    RefreshToken: TokenModelTypeSchema.exactOptional().openapi({
+      description: 'The refresh token.',
+    }),
+    IdToken: TokenModelTypeSchema.exactOptional().openapi({ description: 'The ID token.' }),
+    NewDeviceMetadata: NewDeviceMetadataTypeSchema.exactOptional().openapi({
+      description: 'The new device metadata from an authentication result.',
+    }),
   })
   .openapi({ description: 'The authentication result.', required: [] })
   .openapi('AuthenticationResultType')
 
 const AdminInitiateAuthResponseSchema = z
   .object({
-    ChallengeName: ChallengeNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The name of the challenge that you're responding to with this call. This is returned in the <code>AdminInitiateAuth</code> response if you must pass another challenge.</p> <ul> <li> <p> <code>MFA_SETUP</code>: If MFA is required, users who don't have at least one of the MFA methods set up are presented with an <code>MFA_SETUP</code> challenge. The user must set up at least one MFA type to continue to authenticate.</p> </li> <li> <p> <code>SELECT_MFA_TYPE</code>: Selects the MFA type. Valid MFA options are <code>SMS_MFA</code> for text SMS MFA, and <code>SOFTWARE_TOKEN_MFA</code> for time-based one-time password (TOTP) software token MFA.</p> </li> <li> <p> <code>SMS_MFA</code>: Next challenge is to supply an <code>SMS_MFA_CODE</code>, delivered via SMS.</p> </li> <li> <p> <code>PASSWORD_VERIFIER</code>: Next challenge is to supply <code>PASSWORD_CLAIM_SIGNATURE</code>, <code>PASSWORD_CLAIM_SECRET_BLOCK</code>, and <code>TIMESTAMP</code> after the client-side SRP calculations.</p> </li> <li> <p> <code>CUSTOM_CHALLENGE</code>: This is returned if your custom authentication flow determines that the user should pass another challenge before tokens are issued.</p> </li> <li> <p> <code>DEVICE_SRP_AUTH</code>: If device tracking was activated in your user pool and the previous challenges were passed, this challenge is returned so that Amazon Cognito can start tracking this device.</p> </li> <li> <p> <code>DEVICE_PASSWORD_VERIFIER</code>: Similar to <code>PASSWORD_VERIFIER</code>, but for devices only.</p> </li> <li> <p> <code>ADMIN_NO_SRP_AUTH</code>: This is returned if you must authenticate with <code>USERNAME</code> and <code>PASSWORD</code> directly. An app client must be enabled to use this flow.</p> </li> <li> <p> <code>NEW_PASSWORD_REQUIRED</code>: For users who are required to change their passwords after successful first login. Respond to this challenge with <code>NEW_PASSWORD</code> and any required attributes that Amazon Cognito returned in the <code>requiredAttributes</code> parameter. You can also set values for attributes that aren't required by your user pool and that your app client can write. For more information, see <a href=\"https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_AdminRespondToAuthChallenge.html\">AdminRespondToAuthChallenge</a>.</p> <note> <p>In a <code>NEW_PASSWORD_REQUIRED</code> challenge response, you can't modify a required attribute that already has a value. In <code>AdminRespondToAuthChallenge</code>, set a value for any keys that Amazon Cognito returned in the <code>requiredAttributes</code> parameter, then use the <code>AdminUpdateUserAttributes</code> API operation to modify the value of any additional attributes.</p> </note> </li> <li> <p> <code>MFA_SETUP</code>: For users who are required to set up an MFA factor before they can sign in. The MFA types activated for the user pool will be listed in the challenge parameters <code>MFA_CAN_SETUP</code> value. </p> <p> To set up software token MFA, use the session returned here from <code>InitiateAuth</code> as an input to <code>AssociateSoftwareToken</code>, and use the session returned by <code>VerifySoftwareToken</code> as an input to <code>RespondToAuthChallenge</code> with challenge name <code>MFA_SETUP</code> to complete sign-in. To set up SMS MFA, users will need help from an administrator to add a phone number to their account and then call <code>InitiateAuth</code> again to restart sign-in.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    Session: SessionTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The session that should be passed both ways in challenge-response calls to the service. If <code>AdminInitiateAuth</code> or <code>AdminRespondToAuthChallenge</code> API call determines that the caller must pass another challenge, they return a session with other challenge parameters. This session should be passed as it is to the next <code>AdminRespondToAuthChallenge</code> API call.',
-        }),
-    ).exactOptional(),
-    ChallengeParameters: ChallengeParametersTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The challenge parameters. These are returned to you in the <code>AdminInitiateAuth</code> response if you must pass another challenge. The responses in this parameter should be used to compute inputs to the next call (<code>AdminRespondToAuthChallenge</code>).</p> <p>All challenges require <code>USERNAME</code> and <code>SECRET_HASH</code> (if applicable).</p> <p>The value of the <code>USER_ID_FOR_SRP</code> attribute is the user's actual username, not an alias (such as email address or phone number), even if you specified an alias in your call to <code>AdminInitiateAuth</code>. This happens because, in the <code>AdminRespondToAuthChallenge</code> API <code>ChallengeResponses</code>, the <code>USERNAME</code> attribute can't be an alias.</p>",
-        }),
-    ).exactOptional(),
-    AuthenticationResult: AuthenticationResultTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The result of the authentication response. This is only returned if the caller doesn't need to pass another challenge. If the caller does need to pass another challenge before it gets tokens, <code>ChallengeName</code>, <code>ChallengeParameters</code>, and <code>Session</code> are returned.",
-        }),
-    ).exactOptional(),
+    ChallengeName: ChallengeNameTypeSchema.exactOptional().openapi({
+      description:
+        "<p>The name of the challenge that you're responding to with this call. This is returned in the <code>AdminInitiateAuth</code> response if you must pass another challenge.</p> <ul> <li> <p> <code>MFA_SETUP</code>: If MFA is required, users who don't have at least one of the MFA methods set up are presented with an <code>MFA_SETUP</code> challenge. The user must set up at least one MFA type to continue to authenticate.</p> </li> <li> <p> <code>SELECT_MFA_TYPE</code>: Selects the MFA type. Valid MFA options are <code>SMS_MFA</code> for text SMS MFA, and <code>SOFTWARE_TOKEN_MFA</code> for time-based one-time password (TOTP) software token MFA.</p> </li> <li> <p> <code>SMS_MFA</code>: Next challenge is to supply an <code>SMS_MFA_CODE</code>, delivered via SMS.</p> </li> <li> <p> <code>PASSWORD_VERIFIER</code>: Next challenge is to supply <code>PASSWORD_CLAIM_SIGNATURE</code>, <code>PASSWORD_CLAIM_SECRET_BLOCK</code>, and <code>TIMESTAMP</code> after the client-side SRP calculations.</p> </li> <li> <p> <code>CUSTOM_CHALLENGE</code>: This is returned if your custom authentication flow determines that the user should pass another challenge before tokens are issued.</p> </li> <li> <p> <code>DEVICE_SRP_AUTH</code>: If device tracking was activated in your user pool and the previous challenges were passed, this challenge is returned so that Amazon Cognito can start tracking this device.</p> </li> <li> <p> <code>DEVICE_PASSWORD_VERIFIER</code>: Similar to <code>PASSWORD_VERIFIER</code>, but for devices only.</p> </li> <li> <p> <code>ADMIN_NO_SRP_AUTH</code>: This is returned if you must authenticate with <code>USERNAME</code> and <code>PASSWORD</code> directly. An app client must be enabled to use this flow.</p> </li> <li> <p> <code>NEW_PASSWORD_REQUIRED</code>: For users who are required to change their passwords after successful first login. Respond to this challenge with <code>NEW_PASSWORD</code> and any required attributes that Amazon Cognito returned in the <code>requiredAttributes</code> parameter. You can also set values for attributes that aren't required by your user pool and that your app client can write. For more information, see <a href=\"https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_AdminRespondToAuthChallenge.html\">AdminRespondToAuthChallenge</a>.</p> <note> <p>In a <code>NEW_PASSWORD_REQUIRED</code> challenge response, you can't modify a required attribute that already has a value. In <code>AdminRespondToAuthChallenge</code>, set a value for any keys that Amazon Cognito returned in the <code>requiredAttributes</code> parameter, then use the <code>AdminUpdateUserAttributes</code> API operation to modify the value of any additional attributes.</p> </note> </li> <li> <p> <code>MFA_SETUP</code>: For users who are required to set up an MFA factor before they can sign in. The MFA types activated for the user pool will be listed in the challenge parameters <code>MFA_CAN_SETUP</code> value. </p> <p> To set up software token MFA, use the session returned here from <code>InitiateAuth</code> as an input to <code>AssociateSoftwareToken</code>, and use the session returned by <code>VerifySoftwareToken</code> as an input to <code>RespondToAuthChallenge</code> with challenge name <code>MFA_SETUP</code> to complete sign-in. To set up SMS MFA, users will need help from an administrator to add a phone number to their account and then call <code>InitiateAuth</code> again to restart sign-in.</p> </li> </ul>",
+    }),
+    Session: SessionTypeSchema.exactOptional().openapi({
+      description:
+        'The session that should be passed both ways in challenge-response calls to the service. If <code>AdminInitiateAuth</code> or <code>AdminRespondToAuthChallenge</code> API call determines that the caller must pass another challenge, they return a session with other challenge parameters. This session should be passed as it is to the next <code>AdminRespondToAuthChallenge</code> API call.',
+    }),
+    ChallengeParameters: ChallengeParametersTypeSchema.exactOptional().openapi({
+      description:
+        "<p>The challenge parameters. These are returned to you in the <code>AdminInitiateAuth</code> response if you must pass another challenge. The responses in this parameter should be used to compute inputs to the next call (<code>AdminRespondToAuthChallenge</code>).</p> <p>All challenges require <code>USERNAME</code> and <code>SECRET_HASH</code> (if applicable).</p> <p>The value of the <code>USER_ID_FOR_SRP</code> attribute is the user's actual username, not an alias (such as email address or phone number), even if you specified an alias in your call to <code>AdminInitiateAuth</code>. This happens because, in the <code>AdminRespondToAuthChallenge</code> API <code>ChallengeResponses</code>, the <code>USERNAME</code> attribute can't be an alias.</p>",
+    }),
+    AuthenticationResult: AuthenticationResultTypeSchema.exactOptional().openapi({
+      description:
+        "The result of the authentication response. This is only returned if the caller doesn't need to pass another challenge. If the caller does need to pass another challenge before it gets tokens, <code>ChallengeName</code>, <code>ChallengeParameters</code>, and <code>Session</code> are returned.",
+    }),
   })
   .openapi({
     description: 'Initiates the authentication response, as an administrator.',
     required: [],
   })
   .openapi('AdminInitiateAuthResponse')
+
+const ClientIdTypeSchema = z
+  .string()
+  .regex(/[\w+]+/)
+  .min(1)
+  .max(128)
+  .openapi('ClientIdType')
 
 const AuthFlowTypeSchema = z
   .enum([
@@ -1169,9 +732,9 @@ const AuthParametersTypeSchema = z
 
 const AnalyticsMetadataTypeSchema = z
   .object({
-    AnalyticsEndpointId: StringTypeSchema.and(
-      z.any().openapi({ description: 'The endpoint ID.' }),
-    ).exactOptional(),
+    AnalyticsEndpointId: StringTypeSchema.exactOptional().openapi({
+      description: 'The endpoint ID.',
+    }),
   })
   .openapi({
     description:
@@ -1182,12 +745,8 @@ const AnalyticsMetadataTypeSchema = z
 
 const HttpHeaderSchema = z
   .object({
-    headerName: StringTypeSchema.and(
-      z.any().openapi({ description: 'The header name.' }),
-    ).exactOptional(),
-    headerValue: StringTypeSchema.and(
-      z.any().openapi({ description: 'The header value.' }),
-    ).exactOptional(),
+    headerName: StringTypeSchema.exactOptional().openapi({ description: 'The header name.' }),
+    headerValue: StringTypeSchema.exactOptional().openapi({ description: 'The header value.' }),
   })
   .openapi({ description: 'The HTTP header.', required: [] })
   .openapi('HttpHeader')
@@ -1196,26 +755,22 @@ const HttpHeaderListSchema = z.array(HttpHeaderSchema).openapi('HttpHeaderList')
 
 const ContextDataTypeSchema = z
   .object({
-    IpAddress: StringTypeSchema.and(
-      z.any().openapi({ description: "The source IP address of your user's device." }),
-    ),
-    ServerName: StringTypeSchema.and(
-      z.any().openapi({ description: 'Your server endpoint where this API is invoked.' }),
-    ),
-    ServerPath: StringTypeSchema.and(
-      z.any().openapi({ description: 'Your server path where this API is invoked.' }),
-    ),
-    HttpHeaders: HttpHeaderListSchema.and(
-      z.any().openapi({ description: 'HttpHeaders received on your server in same order.' }),
-    ),
-    EncodedData: StringTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Encoded device-fingerprint details that your app collected with the Amazon Cognito context data collection library. For more information, see <a href="https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pool-settings-adaptive-authentication.html#user-pool-settings-adaptive-authentication-device-fingerprint">Adding user device and session data to API requests</a>.',
-        }),
-    ).exactOptional(),
+    IpAddress: StringTypeSchema.openapi({
+      description: "The source IP address of your user's device.",
+    }),
+    ServerName: StringTypeSchema.openapi({
+      description: 'Your server endpoint where this API is invoked.',
+    }),
+    ServerPath: StringTypeSchema.openapi({
+      description: 'Your server path where this API is invoked.',
+    }),
+    HttpHeaders: HttpHeaderListSchema.openapi({
+      description: 'HttpHeaders received on your server in same order.',
+    }),
+    EncodedData: StringTypeSchema.exactOptional().openapi({
+      description:
+        'Encoded device-fingerprint details that your app collected with the Amazon Cognito context data collection library. For more information, see <a href="https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pool-settings-adaptive-authentication.html#user-pool-settings-adaptive-authentication-device-fingerprint">Adding user device and session data to API requests</a>.',
+    }),
   })
   .openapi({
     required: ['IpAddress', 'ServerName', 'ServerPath', 'HttpHeaders'],
@@ -1226,50 +781,30 @@ const ContextDataTypeSchema = z
 
 const AdminInitiateAuthRequestSchema = z
   .object({
-    UserPoolId: UserPoolIdTypeSchema.and(
-      z.any().openapi({ description: 'The ID of the Amazon Cognito user pool.' }),
-    ),
-    ClientId: ClientIdTypeSchema.and(z.any().openapi({ description: 'The app client ID.' })),
-    AuthFlow: AuthFlowTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The authentication flow for this call to run. The API action will depend on this value. For example:</p> <ul> <li> <p> <code>REFRESH_TOKEN_AUTH</code> will take in a valid refresh token and return new tokens.</p> </li> <li> <p> <code>USER_SRP_AUTH</code> will take in <code>USERNAME</code> and <code>SRP_A</code> and return the Secure Remote Password (SRP) protocol variables to be used for next challenge execution.</p> </li> <li> <p> <code>ADMIN_USER_PASSWORD_AUTH</code> will take in <code>USERNAME</code> and <code>PASSWORD</code> and return the next challenge or tokens.</p> </li> </ul> <p>Valid values include:</p> <ul> <li> <p> <code>USER_SRP_AUTH</code>: Authentication flow for the Secure Remote Password (SRP) protocol.</p> </li> <li> <p> <code>REFRESH_TOKEN_AUTH</code>/<code>REFRESH_TOKEN</code>: Authentication flow for refreshing the access token and ID token by supplying a valid refresh token.</p> </li> <li> <p> <code>CUSTOM_AUTH</code>: Custom authentication flow.</p> </li> <li> <p> <code>ADMIN_NO_SRP_AUTH</code>: Non-SRP authentication flow; you can pass in the USERNAME and PASSWORD directly if the flow is enabled for calling the app client.</p> </li> <li> <p> <code>ADMIN_USER_PASSWORD_AUTH</code>: Admin-based user password authentication. This replaces the <code>ADMIN_NO_SRP_AUTH</code> authentication flow. In this flow, Amazon Cognito receives the password in the request instead of using the SRP process to verify passwords.</p> </li> </ul>',
-        }),
-    ),
-    AuthParameters: AuthParametersTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The authentication parameters. These are inputs corresponding to the <code>AuthFlow</code> that you\'re invoking. The required values depend on the value of <code>AuthFlow</code>:</p> <ul> <li> <p>For <code>USER_SRP_AUTH</code>: <code>USERNAME</code> (required), <code>SRP_A</code> (required), <code>SECRET_HASH</code> (required if the app client is configured with a client secret), <code>DEVICE_KEY</code>.</p> </li> <li> <p>For <code>ADMIN_USER_PASSWORD_AUTH</code>: <code>USERNAME</code> (required), <code>PASSWORD</code> (required), <code>SECRET_HASH</code> (required if the app client is configured with a client secret), <code>DEVICE_KEY</code>.</p> </li> <li> <p>For <code>REFRESH_TOKEN_AUTH/REFRESH_TOKEN</code>: <code>REFRESH_TOKEN</code> (required), <code>SECRET_HASH</code> (required if the app client is configured with a client secret), <code>DEVICE_KEY</code>.</p> </li> <li> <p>For <code>CUSTOM_AUTH</code>: <code>USERNAME</code> (required), <code>SECRET_HASH</code> (if app client is configured with client secret), <code>DEVICE_KEY</code>. To start the authentication flow with password verification, include <code>ChallengeName: SRP_A</code> and <code>SRP_A: (The SRP_A Value)</code>.</p> </li> </ul> <p>For more information about <code>SECRET_HASH</code>, see <a href="https://docs.aws.amazon.com/cognito/latest/developerguide/signing-up-users-in-your-app.html#cognito-user-pools-computing-secret-hash">Computing secret hash values</a>. For information about <code>DEVICE_KEY</code>, see <a href="https://docs.aws.amazon.com/cognito/latest/developerguide/amazon-cognito-user-pools-device-tracking.html">Working with user devices in your user pool</a>.</p>',
-        }),
-    ).exactOptional(),
-    ClientMetadata: ClientMetadataTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A map of custom key-value pairs that you can provide as input for certain custom workflows that this action triggers.</p> <p>You create custom workflows by assigning Lambda functions to user pool triggers. When you use the AdminInitiateAuth API action, Amazon Cognito invokes the Lambda functions that are specified for various triggers. The ClientMetadata value is passed as input to the functions for only the following triggers:</p> <ul> <li> <p>Pre signup</p> </li> <li> <p>Pre authentication</p> </li> <li> <p>User migration</p> </li> </ul> <p>When Amazon Cognito invokes the functions for these triggers, it passes a JSON payload, which the function receives as input. This payload contains a <code>validationData</code> attribute, which provides the data that you assigned to the ClientMetadata parameter in your AdminInitiateAuth request. In your function code in Lambda, you can process the <code>validationData</code> value to enhance your workflow for your specific needs.</p> <p>When you use the AdminInitiateAuth API action, Amazon Cognito also invokes the functions for the following triggers, but it doesn't provide the ClientMetadata value as input:</p> <ul> <li> <p>Post authentication</p> </li> <li> <p>Custom message</p> </li> <li> <p>Pre token generation</p> </li> <li> <p>Create auth challenge</p> </li> <li> <p>Define auth challenge</p> </li> <li> <p>Verify auth challenge</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-identity-pools-working-with-aws-lambda-triggers.html\"> Customizing user pool Workflows with Lambda Triggers</a> in the <i>Amazon Cognito Developer Guide</i>.</p> <note> <p>When you use the ClientMetadata parameter, remember that Amazon Cognito won't do the following:</p> <ul> <li> <p>Store the ClientMetadata value. This data is available only to Lambda triggers that are assigned to a user pool to support custom workflows. If your user pool configuration doesn't include triggers, the ClientMetadata parameter serves no purpose.</p> </li> <li> <p>Validate the ClientMetadata value.</p> </li> <li> <p>Encrypt the ClientMetadata value. Don't use Amazon Cognito to provide sensitive information.</p> </li> </ul> </note>",
-        }),
-    ).exactOptional(),
-    AnalyticsMetadata: AnalyticsMetadataTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The analytics metadata for collecting Amazon Pinpoint metrics for <code>AdminInitiateAuth</code> calls.',
-        }),
-    ).exactOptional(),
-    ContextData: ContextDataTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contextual data about your user session, such as the device fingerprint, IP address, or location. Amazon Cognito advanced security evaluates the risk of an authentication event based on the context that your app generates and passes to Amazon Cognito when it makes API requests.',
-        }),
-    ).exactOptional(),
+    UserPoolId: UserPoolIdTypeSchema.openapi({
+      description: 'The ID of the Amazon Cognito user pool.',
+    }),
+    ClientId: ClientIdTypeSchema.openapi({ description: 'The app client ID.' }),
+    AuthFlow: AuthFlowTypeSchema.openapi({
+      description:
+        '<p>The authentication flow for this call to run. The API action will depend on this value. For example:</p> <ul> <li> <p> <code>REFRESH_TOKEN_AUTH</code> will take in a valid refresh token and return new tokens.</p> </li> <li> <p> <code>USER_SRP_AUTH</code> will take in <code>USERNAME</code> and <code>SRP_A</code> and return the Secure Remote Password (SRP) protocol variables to be used for next challenge execution.</p> </li> <li> <p> <code>ADMIN_USER_PASSWORD_AUTH</code> will take in <code>USERNAME</code> and <code>PASSWORD</code> and return the next challenge or tokens.</p> </li> </ul> <p>Valid values include:</p> <ul> <li> <p> <code>USER_SRP_AUTH</code>: Authentication flow for the Secure Remote Password (SRP) protocol.</p> </li> <li> <p> <code>REFRESH_TOKEN_AUTH</code>/<code>REFRESH_TOKEN</code>: Authentication flow for refreshing the access token and ID token by supplying a valid refresh token.</p> </li> <li> <p> <code>CUSTOM_AUTH</code>: Custom authentication flow.</p> </li> <li> <p> <code>ADMIN_NO_SRP_AUTH</code>: Non-SRP authentication flow; you can pass in the USERNAME and PASSWORD directly if the flow is enabled for calling the app client.</p> </li> <li> <p> <code>ADMIN_USER_PASSWORD_AUTH</code>: Admin-based user password authentication. This replaces the <code>ADMIN_NO_SRP_AUTH</code> authentication flow. In this flow, Amazon Cognito receives the password in the request instead of using the SRP process to verify passwords.</p> </li> </ul>',
+    }),
+    AuthParameters: AuthParametersTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The authentication parameters. These are inputs corresponding to the <code>AuthFlow</code> that you\'re invoking. The required values depend on the value of <code>AuthFlow</code>:</p> <ul> <li> <p>For <code>USER_SRP_AUTH</code>: <code>USERNAME</code> (required), <code>SRP_A</code> (required), <code>SECRET_HASH</code> (required if the app client is configured with a client secret), <code>DEVICE_KEY</code>.</p> </li> <li> <p>For <code>ADMIN_USER_PASSWORD_AUTH</code>: <code>USERNAME</code> (required), <code>PASSWORD</code> (required), <code>SECRET_HASH</code> (required if the app client is configured with a client secret), <code>DEVICE_KEY</code>.</p> </li> <li> <p>For <code>REFRESH_TOKEN_AUTH/REFRESH_TOKEN</code>: <code>REFRESH_TOKEN</code> (required), <code>SECRET_HASH</code> (required if the app client is configured with a client secret), <code>DEVICE_KEY</code>.</p> </li> <li> <p>For <code>CUSTOM_AUTH</code>: <code>USERNAME</code> (required), <code>SECRET_HASH</code> (if app client is configured with client secret), <code>DEVICE_KEY</code>. To start the authentication flow with password verification, include <code>ChallengeName: SRP_A</code> and <code>SRP_A: (The SRP_A Value)</code>.</p> </li> </ul> <p>For more information about <code>SECRET_HASH</code>, see <a href="https://docs.aws.amazon.com/cognito/latest/developerguide/signing-up-users-in-your-app.html#cognito-user-pools-computing-secret-hash">Computing secret hash values</a>. For information about <code>DEVICE_KEY</code>, see <a href="https://docs.aws.amazon.com/cognito/latest/developerguide/amazon-cognito-user-pools-device-tracking.html">Working with user devices in your user pool</a>.</p>',
+    }),
+    ClientMetadata: ClientMetadataTypeSchema.exactOptional().openapi({
+      description:
+        "<p>A map of custom key-value pairs that you can provide as input for certain custom workflows that this action triggers.</p> <p>You create custom workflows by assigning Lambda functions to user pool triggers. When you use the AdminInitiateAuth API action, Amazon Cognito invokes the Lambda functions that are specified for various triggers. The ClientMetadata value is passed as input to the functions for only the following triggers:</p> <ul> <li> <p>Pre signup</p> </li> <li> <p>Pre authentication</p> </li> <li> <p>User migration</p> </li> </ul> <p>When Amazon Cognito invokes the functions for these triggers, it passes a JSON payload, which the function receives as input. This payload contains a <code>validationData</code> attribute, which provides the data that you assigned to the ClientMetadata parameter in your AdminInitiateAuth request. In your function code in Lambda, you can process the <code>validationData</code> value to enhance your workflow for your specific needs.</p> <p>When you use the AdminInitiateAuth API action, Amazon Cognito also invokes the functions for the following triggers, but it doesn't provide the ClientMetadata value as input:</p> <ul> <li> <p>Post authentication</p> </li> <li> <p>Custom message</p> </li> <li> <p>Pre token generation</p> </li> <li> <p>Create auth challenge</p> </li> <li> <p>Define auth challenge</p> </li> <li> <p>Verify auth challenge</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-identity-pools-working-with-aws-lambda-triggers.html\"> Customizing user pool Workflows with Lambda Triggers</a> in the <i>Amazon Cognito Developer Guide</i>.</p> <note> <p>When you use the ClientMetadata parameter, remember that Amazon Cognito won't do the following:</p> <ul> <li> <p>Store the ClientMetadata value. This data is available only to Lambda triggers that are assigned to a user pool to support custom workflows. If your user pool configuration doesn't include triggers, the ClientMetadata parameter serves no purpose.</p> </li> <li> <p>Validate the ClientMetadata value.</p> </li> <li> <p>Encrypt the ClientMetadata value. Don't use Amazon Cognito to provide sensitive information.</p> </li> </ul> </note>",
+    }),
+    AnalyticsMetadata: AnalyticsMetadataTypeSchema.exactOptional().openapi({
+      description:
+        'The analytics metadata for collecting Amazon Pinpoint metrics for <code>AdminInitiateAuth</code> calls.',
+    }),
+    ContextData: ContextDataTypeSchema.exactOptional().openapi({
+      description:
+        'Contextual data about your user session, such as the device fingerprint, IP address, or location. Amazon Cognito advanced security evaluates the risk of an authentication event based on the context that your app generates and passes to Amazon Cognito when it makes API requests.',
+    }),
   })
   .openapi({
     required: ['UserPoolId', 'ClientId', 'AuthFlow'],
@@ -1285,30 +820,20 @@ const PasswordResetRequiredExceptionSchema = z.any().openapi('PasswordResetRequi
 const UserNotConfirmedExceptionSchema = z.any().openapi('UserNotConfirmedException')
 
 const AdminLinkProviderForUserResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('AdminLinkProviderForUserResponse')
 
 const AdminLinkProviderForUserRequestSchema = z
   .object({
-    UserPoolId: StringTypeSchema.and(
-      z.any().openapi({ description: 'The user pool ID for the user pool.' }),
-    ),
-    DestinationUser: ProviderUserIdentifierTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The existing user in the user pool that you want to assign to the external IdP user account. This user can be a local (Username + Password) Amazon Cognito user pools user or a federated user (for example, a SAML or Facebook user). If the user doesn't exist, Amazon Cognito generates an exception. Amazon Cognito returns this user when the new user (with the linked IdP attribute) signs in.</p> <p>For a native username + password user, the <code>ProviderAttributeValue</code> for the <code>DestinationUser</code> should be the username in the user pool. For a federated user, it should be the provider-specific <code>user_id</code>.</p> <p>The <code>ProviderAttributeName</code> of the <code>DestinationUser</code> is ignored.</p> <p>The <code>ProviderName</code> should be set to <code>Cognito</code> for users in Cognito user pools.</p> <important> <p>All attributes in the DestinationUser profile must be mutable. If you have assigned the user any immutable custom attributes, the operation won't succeed.</p> </important>",
-        }),
-    ),
-    SourceUser: ProviderUserIdentifierTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>An external IdP account for a user who doesn't exist yet in the user pool. This user must be a federated user (for example, a SAML or Facebook user), not another native user.</p> <p>If the <code>SourceUser</code> is using a federated social IdP, such as Facebook, Google, or Login with Amazon, you must set the <code>ProviderAttributeName</code> to <code>Cognito_Subject</code>. For social IdPs, the <code>ProviderName</code> will be <code>Facebook</code>, <code>Google</code>, or <code>LoginWithAmazon</code>, and Amazon Cognito will automatically parse the Facebook, Google, and Login with Amazon tokens for <code>id</code>, <code>sub</code>, and <code>user_id</code>, respectively. The <code>ProviderAttributeValue</code> for the user must be the same value as the <code>id</code>, <code>sub</code>, or <code>user_id</code> value found in the social IdP token.</p> <p/> <p>For OIDC, the <code>ProviderAttributeName</code> can be any value that matches a claim in the ID token, or that your app retrieves from the <code>userInfo</code> endpoint. You must map the claim to a user pool attribute in your IdP configuration, and set the user pool attribute name as the value of <code>ProviderAttributeName</code> in your <code>AdminLinkProviderForUser</code> request.</p> <p>For SAML, the <code>ProviderAttributeName</code> can be any value that matches a claim in the SAML assertion. To link SAML users based on the subject of the SAML assertion, map the subject to a claim through the SAML IdP and set that claim name as the value of <code>ProviderAttributeName</code> in your <code>AdminLinkProviderForUser</code> request.</p> <p>For both OIDC and SAML users, when you set <code>ProviderAttributeName</code> to <code>Cognito_Subject</code>, Amazon Cognito will automatically parse the default unique identifier found in the subject from the IdP token.</p>",
-        }),
-    ),
+    UserPoolId: StringTypeSchema.openapi({ description: 'The user pool ID for the user pool.' }),
+    DestinationUser: ProviderUserIdentifierTypeSchema.openapi({
+      description:
+        "<p>The existing user in the user pool that you want to assign to the external IdP user account. This user can be a local (Username + Password) Amazon Cognito user pools user or a federated user (for example, a SAML or Facebook user). If the user doesn't exist, Amazon Cognito generates an exception. Amazon Cognito returns this user when the new user (with the linked IdP attribute) signs in.</p> <p>For a native username + password user, the <code>ProviderAttributeValue</code> for the <code>DestinationUser</code> should be the username in the user pool. For a federated user, it should be the provider-specific <code>user_id</code>.</p> <p>The <code>ProviderAttributeName</code> of the <code>DestinationUser</code> is ignored.</p> <p>The <code>ProviderName</code> should be set to <code>Cognito</code> for users in Cognito user pools.</p> <important> <p>All attributes in the DestinationUser profile must be mutable. If you have assigned the user any immutable custom attributes, the operation won't succeed.</p> </important>",
+    }),
+    SourceUser: ProviderUserIdentifierTypeSchema.openapi({
+      description:
+        "<p>An external IdP account for a user who doesn't exist yet in the user pool. This user must be a federated user (for example, a SAML or Facebook user), not another native user.</p> <p>If the <code>SourceUser</code> is using a federated social IdP, such as Facebook, Google, or Login with Amazon, you must set the <code>ProviderAttributeName</code> to <code>Cognito_Subject</code>. For social IdPs, the <code>ProviderName</code> will be <code>Facebook</code>, <code>Google</code>, or <code>LoginWithAmazon</code>, and Amazon Cognito will automatically parse the Facebook, Google, and Login with Amazon tokens for <code>id</code>, <code>sub</code>, and <code>user_id</code>, respectively. The <code>ProviderAttributeValue</code> for the user must be the same value as the <code>id</code>, <code>sub</code>, or <code>user_id</code> value found in the social IdP token.</p> <p/> <p>For OIDC, the <code>ProviderAttributeName</code> can be any value that matches a claim in the ID token, or that your app retrieves from the <code>userInfo</code> endpoint. You must map the claim to a user pool attribute in your IdP configuration, and set the user pool attribute name as the value of <code>ProviderAttributeName</code> in your <code>AdminLinkProviderForUser</code> request.</p> <p>For SAML, the <code>ProviderAttributeName</code> can be any value that matches a claim in the SAML assertion. To link SAML users based on the subject of the SAML assertion, map the subject to a claim through the SAML IdP and set that claim name as the value of <code>ProviderAttributeName</code> in your <code>AdminLinkProviderForUser</code> request.</p> <p>For both OIDC and SAML users, when you set <code>ProviderAttributeName</code> to <code>Cognito_Subject</code>, Amazon Cognito will automatically parse the default unique identifier found in the subject from the IdP token.</p>",
+    }),
   })
   .openapi({
     required: ['UserPoolId', 'DestinationUser', 'SourceUser'],
@@ -1326,12 +851,12 @@ const SearchPaginationTokenTypeSchema = z
 
 const AdminListDevicesResponseSchema = z
   .object({
-    Devices: DeviceListTypeSchema.and(
-      z.any().openapi({ description: 'The devices in the list of devices response.' }),
-    ).exactOptional(),
-    PaginationToken: SearchPaginationTokenTypeSchema.and(
-      z.any().openapi({ description: 'The pagination token.' }),
-    ).exactOptional(),
+    Devices: DeviceListTypeSchema.exactOptional().openapi({
+      description: 'The devices in the list of devices response.',
+    }),
+    PaginationToken: SearchPaginationTokenTypeSchema.exactOptional().openapi({
+      description: 'The pagination token.',
+    }),
   })
   .openapi({ description: "Lists the device's response, as an administrator.", required: [] })
   .openapi('AdminListDevicesResponse')
@@ -1340,14 +865,14 @@ const QueryLimitTypeSchema = z.int().min(0).max(60).openapi('QueryLimitType')
 
 const AdminListDevicesRequestSchema = z
   .object({
-    UserPoolId: UserPoolIdTypeSchema.and(z.any().openapi({ description: 'The user pool ID.' })),
-    Username: UsernameTypeSchema.and(z.any().openapi({ description: 'The user name.' })),
-    Limit: QueryLimitTypeSchema.and(
-      z.any().openapi({ description: 'The limit of the devices request.' }),
-    ).exactOptional(),
-    PaginationToken: SearchPaginationTokenTypeSchema.and(
-      z.any().openapi({ description: 'The pagination token.' }),
-    ).exactOptional(),
+    UserPoolId: UserPoolIdTypeSchema.openapi({ description: 'The user pool ID.' }),
+    Username: UsernameTypeSchema.openapi({ description: 'The user name.' }),
+    Limit: QueryLimitTypeSchema.exactOptional().openapi({
+      description: 'The limit of the devices request.',
+    }),
+    PaginationToken: SearchPaginationTokenTypeSchema.exactOptional().openapi({
+      description: 'The pagination token.',
+    }),
   })
   .openapi({
     required: ['UserPoolId', 'Username'],
@@ -1358,46 +883,43 @@ const AdminListDevicesRequestSchema = z
 
 const DescriptionTypeSchema = z.string().max(2048).openapi('DescriptionType')
 
+const ArnTypeSchema = z
+  .string()
+  .regex(
+    /arn:[\w+=\/,.@-]+:[\w+=\/,.@-]+:([\w+=\/,.@-]*)?:[0-9]+:[\w+=\/,.@-]+(:[\w+=\/,.@-]+)?(:[\w+=\/,.@-]+)?/,
+  )
+  .min(20)
+  .max(2048)
+  .openapi('ArnType')
+
 const PrecedenceTypeSchema = z.int().min(0).openapi('PrecedenceType')
 
 const GroupTypeSchema = z
   .object({
-    GroupName: GroupNameTypeSchema.and(
-      z.any().openapi({ description: 'The name of the group.' }),
-    ).exactOptional(),
-    UserPoolId: UserPoolIdTypeSchema.and(
-      z.any().openapi({ description: 'The user pool ID for the user pool.' }),
-    ).exactOptional(),
-    Description: DescriptionTypeSchema.and(
-      z.any().openapi({ description: 'A string containing the description of the group.' }),
-    ).exactOptional(),
-    RoleArn: ArnTypeSchema.and(
-      z.any().openapi({ description: 'The role Amazon Resource Name (ARN) for the group.' }),
-    ).exactOptional(),
-    Precedence: PrecedenceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A non-negative integer value that specifies the precedence of this group relative to the other groups that a user can belong to in the user pool. Zero is the highest precedence value. Groups with lower <code>Precedence</code> values take precedence over groups with higher ornull <code>Precedence</code> values. If a user belongs to two or more groups, it is the group with the lowest precedence value whose role ARN is given in the user's tokens for the <code>cognito:roles</code> and <code>cognito:preferred_role</code> claims.</p> <p>Two groups can have the same <code>Precedence</code> value. If this happens, neither group takes precedence over the other. If two groups with the same <code>Precedence</code> have the same role ARN, that role is used in the <code>cognito:preferred_role</code> claim in tokens for users in each group. If the two groups have different role ARNs, the <code>cognito:preferred_role</code> claim isn't set in users' tokens.</p> <p>The default <code>Precedence</code> value is null.</p>",
-        }),
-    ).exactOptional(),
-    LastModifiedDate: DateTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time, in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format, when the item was modified.',
-        }),
-    ).exactOptional(),
-    CreationDate: DateTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time, in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format, when the item was created.',
-        }),
-    ).exactOptional(),
+    GroupName: GroupNameTypeSchema.exactOptional().openapi({
+      description: 'The name of the group.',
+    }),
+    UserPoolId: UserPoolIdTypeSchema.exactOptional().openapi({
+      description: 'The user pool ID for the user pool.',
+    }),
+    Description: DescriptionTypeSchema.exactOptional().openapi({
+      description: 'A string containing the description of the group.',
+    }),
+    RoleArn: ArnTypeSchema.exactOptional().openapi({
+      description: 'The role Amazon Resource Name (ARN) for the group.',
+    }),
+    Precedence: PrecedenceTypeSchema.exactOptional().openapi({
+      description:
+        "<p>A non-negative integer value that specifies the precedence of this group relative to the other groups that a user can belong to in the user pool. Zero is the highest precedence value. Groups with lower <code>Precedence</code> values take precedence over groups with higher ornull <code>Precedence</code> values. If a user belongs to two or more groups, it is the group with the lowest precedence value whose role ARN is given in the user's tokens for the <code>cognito:roles</code> and <code>cognito:preferred_role</code> claims.</p> <p>Two groups can have the same <code>Precedence</code> value. If this happens, neither group takes precedence over the other. If two groups with the same <code>Precedence</code> have the same role ARN, that role is used in the <code>cognito:preferred_role</code> claim in tokens for users in each group. If the two groups have different role ARNs, the <code>cognito:preferred_role</code> claim isn't set in users' tokens.</p> <p>The default <code>Precedence</code> value is null.</p>",
+    }),
+    LastModifiedDate: DateTypeSchema.exactOptional().openapi({
+      description:
+        'The date and time, in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format, when the item was modified.',
+    }),
+    CreationDate: DateTypeSchema.exactOptional().openapi({
+      description:
+        'The date and time, in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format, when the item was created.',
+    }),
   })
   .openapi({ description: 'The group type.', required: [] })
   .openapi('GroupType')
@@ -1408,40 +930,30 @@ const PaginationKeySchema = z.string().regex(/[\S]+/).min(1).openapi('Pagination
 
 const AdminListGroupsForUserResponseSchema = z
   .object({
-    Groups: GroupListTypeSchema.and(
-      z.any().openapi({ description: 'The groups that the user belongs to.' }),
-    ).exactOptional(),
-    NextToken: PaginationKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.',
-        }),
-    ).exactOptional(),
+    Groups: GroupListTypeSchema.exactOptional().openapi({
+      description: 'The groups that the user belongs to.',
+    }),
+    NextToken: PaginationKeySchema.exactOptional().openapi({
+      description:
+        'An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('AdminListGroupsForUserResponse')
 
 const AdminListGroupsForUserRequestSchema = z
   .object({
-    Username: UsernameTypeSchema.and(
-      z.any().openapi({ description: 'The username for the user.' }),
-    ),
-    UserPoolId: UserPoolIdTypeSchema.and(
-      z.any().openapi({ description: 'The user pool ID for the user pool.' }),
-    ),
-    Limit: QueryLimitTypeSchema.and(
-      z.any().openapi({ description: 'The limit of the request to list groups.' }),
-    ).exactOptional(),
-    NextToken: PaginationKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.',
-        }),
-    ).exactOptional(),
+    Username: UsernameTypeSchema.openapi({ description: 'The username for the user.' }),
+    UserPoolId: UserPoolIdTypeSchema.openapi({
+      description: 'The user pool ID for the user pool.',
+    }),
+    Limit: QueryLimitTypeSchema.exactOptional().openapi({
+      description: 'The limit of the request to list groups.',
+    }),
+    NextToken: PaginationKeySchema.exactOptional().openapi({
+      description:
+        'An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.',
+    }),
   })
   .openapi({ required: ['Username', 'UserPoolId'], title: 'AdminListGroupsForUserRequest' })
   .openapi('AdminListGroupsForUserRequest')
@@ -1462,20 +974,14 @@ const WrappedBooleanTypeSchema = z.boolean().openapi('WrappedBooleanType')
 
 const EventRiskTypeSchema = z
   .object({
-    RiskDecision: RiskDecisionTypeSchema.and(
-      z.any().openapi({ description: 'The risk decision.' }),
-    ).exactOptional(),
-    RiskLevel: RiskLevelTypeSchema.and(
-      z.any().openapi({ description: 'The risk level.' }),
-    ).exactOptional(),
-    CompromisedCredentialsDetected: WrappedBooleanTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether compromised credentials were detected during an authentication event.',
-        }),
-    ).exactOptional(),
+    RiskDecision: RiskDecisionTypeSchema.exactOptional().openapi({
+      description: 'The risk decision.',
+    }),
+    RiskLevel: RiskLevelTypeSchema.exactOptional().openapi({ description: 'The risk level.' }),
+    CompromisedCredentialsDetected: WrappedBooleanTypeSchema.exactOptional().openapi({
+      description:
+        'Indicates whether compromised credentials were detected during an authentication event.',
+    }),
   })
   .openapi({ description: 'The event risk type.', required: [] })
   .openapi('EventRiskType')
@@ -1486,12 +992,12 @@ const ChallengeResponseSchema = z.enum(['Success', 'Failure']).openapi('Challeng
 
 const ChallengeResponseTypeSchema = z
   .object({
-    ChallengeName: ChallengeNameSchema.and(
-      z.any().openapi({ description: 'The challenge name.' }),
-    ).exactOptional(),
-    ChallengeResponse: ChallengeResponseSchema.and(
-      z.any().openapi({ description: 'The challenge response.' }),
-    ).exactOptional(),
+    ChallengeName: ChallengeNameSchema.exactOptional().openapi({
+      description: 'The challenge name.',
+    }),
+    ChallengeResponse: ChallengeResponseSchema.exactOptional().openapi({
+      description: 'The challenge response.',
+    }),
   })
   .openapi({ description: 'The challenge response type.', required: [] })
   .openapi('ChallengeResponseType')
@@ -1502,21 +1008,15 @@ const ChallengeResponseListTypeSchema = z
 
 const EventContextDataTypeSchema = z
   .object({
-    IpAddress: StringTypeSchema.and(
-      z.any().openapi({ description: "The source IP address of your user's device." }),
-    ).exactOptional(),
-    DeviceName: StringTypeSchema.and(
-      z.any().openapi({ description: "The user's device name." }),
-    ).exactOptional(),
-    Timezone: StringTypeSchema.and(
-      z.any().openapi({ description: "The user's time zone." }),
-    ).exactOptional(),
-    City: StringTypeSchema.and(
-      z.any().openapi({ description: "The user's city." }),
-    ).exactOptional(),
-    Country: StringTypeSchema.and(
-      z.any().openapi({ description: "The user's country." }),
-    ).exactOptional(),
+    IpAddress: StringTypeSchema.exactOptional().openapi({
+      description: "The source IP address of your user's device.",
+    }),
+    DeviceName: StringTypeSchema.exactOptional().openapi({
+      description: "The user's device name.",
+    }),
+    Timezone: StringTypeSchema.exactOptional().openapi({ description: "The user's time zone." }),
+    City: StringTypeSchema.exactOptional().openapi({ description: "The user's city." }),
+    Country: StringTypeSchema.exactOptional().openapi({ description: "The user's country." }),
   })
   .openapi({
     description: 'Specifies the user context data captured at the time of an event request.',
@@ -1528,18 +1028,14 @@ const FeedbackValueTypeSchema = z.enum(['Valid', 'Invalid']).openapi('FeedbackVa
 
 const EventFeedbackTypeSchema = z
   .object({
-    FeedbackValue: FeedbackValueTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The authentication event feedback value. When you provide a <code>FeedbackValue</code> value of <code>valid</code>, you tell Amazon Cognito that you trust a user session where Amazon Cognito has evaluated some level of risk. When you provide a <code>FeedbackValue</code> value of <code>invalid</code>, you tell Amazon Cognito that you don't trust a user session, or you don't believe that Amazon Cognito evaluated a high-enough risk level.",
-        }),
-    ),
-    Provider: StringTypeSchema.and(z.any().openapi({ description: 'The provider.' })),
-    FeedbackDate: DateTypeSchema.and(
-      z.any().openapi({ description: 'The event feedback date.' }),
-    ).exactOptional(),
+    FeedbackValue: FeedbackValueTypeSchema.openapi({
+      description:
+        "The authentication event feedback value. When you provide a <code>FeedbackValue</code> value of <code>valid</code>, you tell Amazon Cognito that you trust a user session where Amazon Cognito has evaluated some level of risk. When you provide a <code>FeedbackValue</code> value of <code>invalid</code>, you tell Amazon Cognito that you don't trust a user session, or you don't believe that Amazon Cognito evaluated a high-enough risk level.",
+    }),
+    Provider: StringTypeSchema.openapi({ description: 'The provider.' }),
+    FeedbackDate: DateTypeSchema.exactOptional().openapi({
+      description: 'The event feedback date.',
+    }),
   })
   .openapi({
     required: ['FeedbackValue', 'Provider'],
@@ -1549,45 +1045,27 @@ const EventFeedbackTypeSchema = z
 
 const AuthEventTypeSchema = z
   .object({
-    EventId: StringTypeSchema.and(
-      z.any().openapi({ description: 'The event ID.' }),
-    ).exactOptional(),
-    EventType: EventTypeSchema.and(
-      z.any().openapi({ description: 'The event type.' }),
-    ).exactOptional(),
-    CreationDate: DateTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time, in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format, when the item was created.',
-        }),
-    ).exactOptional(),
-    EventResponse: EventResponseTypeSchema.and(
-      z.any().openapi({ description: 'The event response.' }),
-    ).exactOptional(),
-    EventRisk: EventRiskTypeSchema.and(
-      z.any().openapi({ description: 'The event risk.' }),
-    ).exactOptional(),
-    ChallengeResponses: ChallengeResponseListTypeSchema.and(
-      z.any().openapi({ description: 'The challenge responses.' }),
-    ).exactOptional(),
-    EventContextData: EventContextDataTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The user context data captured at the time of an event request. This value provides additional information about the client from which event the request is received.',
-        }),
-    ).exactOptional(),
-    EventFeedback: EventFeedbackTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A flag specifying the user feedback captured at the time of an event request is good or bad. ',
-        }),
-    ).exactOptional(),
+    EventId: StringTypeSchema.exactOptional().openapi({ description: 'The event ID.' }),
+    EventType: EventTypeSchema.exactOptional().openapi({ description: 'The event type.' }),
+    CreationDate: DateTypeSchema.exactOptional().openapi({
+      description:
+        'The date and time, in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format, when the item was created.',
+    }),
+    EventResponse: EventResponseTypeSchema.exactOptional().openapi({
+      description: 'The event response.',
+    }),
+    EventRisk: EventRiskTypeSchema.exactOptional().openapi({ description: 'The event risk.' }),
+    ChallengeResponses: ChallengeResponseListTypeSchema.exactOptional().openapi({
+      description: 'The challenge responses.',
+    }),
+    EventContextData: EventContextDataTypeSchema.exactOptional().openapi({
+      description:
+        'The user context data captured at the time of an event request. This value provides additional information about the client from which event the request is received.',
+    }),
+    EventFeedback: EventFeedbackTypeSchema.exactOptional().openapi({
+      description:
+        'A flag specifying the user feedback captured at the time of an event request is good or bad. ',
+    }),
   })
   .openapi({ description: 'The authentication event type.', required: [] })
   .openapi('AuthEventType')
@@ -1596,38 +1074,24 @@ const AuthEventsTypeSchema = z.array(AuthEventTypeSchema).openapi('AuthEventsTyp
 
 const AdminListUserAuthEventsResponseSchema = z
   .object({
-    AuthEvents: AuthEventsTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The response object. It includes the <code>EventID</code>, <code>EventType</code>, <code>CreationDate</code>, <code>EventRisk</code>, and <code>EventResponse</code>.',
-        }),
-    ).exactOptional(),
-    NextToken: PaginationKeySchema.and(
-      z.any().openapi({ description: 'A pagination token.' }),
-    ).exactOptional(),
+    AuthEvents: AuthEventsTypeSchema.exactOptional().openapi({
+      description:
+        'The response object. It includes the <code>EventID</code>, <code>EventType</code>, <code>CreationDate</code>, <code>EventRisk</code>, and <code>EventResponse</code>.',
+    }),
+    NextToken: PaginationKeySchema.exactOptional().openapi({ description: 'A pagination token.' }),
   })
   .openapi({ required: [] })
   .openapi('AdminListUserAuthEventsResponse')
 
 const AdminListUserAuthEventsRequestSchema = z
   .object({
-    UserPoolId: UserPoolIdTypeSchema.and(z.any().openapi({ description: 'The user pool ID.' })),
-    Username: UsernameTypeSchema.and(
-      z.any().openapi({ description: 'The user pool username or an alias.' }),
-    ),
-    MaxResults: QueryLimitTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The maximum number of authentication events to return. Returns 60 events if you set <code>MaxResults</code> to 0, or if you don't include a <code>MaxResults</code> parameter.",
-        }),
-    ).exactOptional(),
-    NextToken: PaginationKeySchema.and(
-      z.any().openapi({ description: 'A pagination token.' }),
-    ).exactOptional(),
+    UserPoolId: UserPoolIdTypeSchema.openapi({ description: 'The user pool ID.' }),
+    Username: UsernameTypeSchema.openapi({ description: 'The user pool username or an alias.' }),
+    MaxResults: QueryLimitTypeSchema.exactOptional().openapi({
+      description:
+        "The maximum number of authentication events to return. Returns 60 events if you set <code>MaxResults</code> to 0, or if you don't include a <code>MaxResults</code> parameter.",
+    }),
+    NextToken: PaginationKeySchema.exactOptional().openapi({ description: 'A pagination token.' }),
   })
   .openapi({ required: ['UserPoolId', 'Username'], title: 'AdminListUserAuthEventsRequest' })
   .openapi('AdminListUserAuthEventsRequest')
@@ -1636,13 +1100,11 @@ const UserPoolAddOnNotEnabledExceptionSchema = z.any().openapi('UserPoolAddOnNot
 
 const AdminRemoveUserFromGroupRequestSchema = z
   .object({
-    UserPoolId: UserPoolIdTypeSchema.and(
-      z.any().openapi({ description: 'The user pool ID for the user pool.' }),
-    ),
-    Username: UsernameTypeSchema.and(
-      z.any().openapi({ description: 'The username for the user.' }),
-    ),
-    GroupName: GroupNameTypeSchema.and(z.any().openapi({ description: 'The group name.' })),
+    UserPoolId: UserPoolIdTypeSchema.openapi({
+      description: 'The user pool ID for the user pool.',
+    }),
+    Username: UsernameTypeSchema.openapi({ description: 'The username for the user.' }),
+    GroupName: GroupNameTypeSchema.openapi({ description: 'The group name.' }),
   })
   .openapi({
     required: ['UserPoolId', 'Username', 'GroupName'],
@@ -1651,7 +1113,7 @@ const AdminRemoveUserFromGroupRequestSchema = z
   .openapi('AdminRemoveUserFromGroupRequest')
 
 const AdminResetUserPasswordResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'Represents the response from the server to reset a user password as an administrator.',
@@ -1660,27 +1122,17 @@ const AdminResetUserPasswordResponseSchema = z
 
 const AdminResetUserPasswordRequestSchema = z
   .object({
-    UserPoolId: UserPoolIdTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The user pool ID for the user pool where you want to reset the user's password.",
-        }),
-    ),
-    Username: UsernameTypeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The user name of the user whose password you want to reset.' }),
-    ),
-    ClientMetadata: ClientMetadataTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A map of custom key-value pairs that you can provide as input for any custom workflows that this action triggers.</p> <p>You create custom workflows by assigning Lambda functions to user pool triggers. When you use the AdminResetUserPassword API action, Amazon Cognito invokes the function that is assigned to the <i>custom message</i> trigger. When Amazon Cognito invokes this function, it passes a JSON payload, which the function receives as input. This payload contains a <code>clientMetadata</code> attribute, which provides the data that you assigned to the ClientMetadata parameter in your AdminResetUserPassword request. In your function code in Lambda, you can process the <code>clientMetadata</code> value to enhance your workflow for your specific needs. </p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-identity-pools-working-with-aws-lambda-triggers.html\"> Customizing user pool Workflows with Lambda Triggers</a> in the <i>Amazon Cognito Developer Guide</i>.</p> <note> <p>When you use the ClientMetadata parameter, remember that Amazon Cognito won't do the following:</p> <ul> <li> <p>Store the ClientMetadata value. This data is available only to Lambda triggers that are assigned to a user pool to support custom workflows. If your user pool configuration doesn't include triggers, the ClientMetadata parameter serves no purpose.</p> </li> <li> <p>Validate the ClientMetadata value.</p> </li> <li> <p>Encrypt the ClientMetadata value. Don't use Amazon Cognito to provide sensitive information.</p> </li> </ul> </note>",
-        }),
-    ).exactOptional(),
+    UserPoolId: UserPoolIdTypeSchema.openapi({
+      description:
+        "The user pool ID for the user pool where you want to reset the user's password.",
+    }),
+    Username: UsernameTypeSchema.openapi({
+      description: 'The user name of the user whose password you want to reset.',
+    }),
+    ClientMetadata: ClientMetadataTypeSchema.exactOptional().openapi({
+      description:
+        "<p>A map of custom key-value pairs that you can provide as input for any custom workflows that this action triggers.</p> <p>You create custom workflows by assigning Lambda functions to user pool triggers. When you use the AdminResetUserPassword API action, Amazon Cognito invokes the function that is assigned to the <i>custom message</i> trigger. When Amazon Cognito invokes this function, it passes a JSON payload, which the function receives as input. This payload contains a <code>clientMetadata</code> attribute, which provides the data that you assigned to the ClientMetadata parameter in your AdminResetUserPassword request. In your function code in Lambda, you can process the <code>clientMetadata</code> value to enhance your workflow for your specific needs. </p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-identity-pools-working-with-aws-lambda-triggers.html\"> Customizing user pool Workflows with Lambda Triggers</a> in the <i>Amazon Cognito Developer Guide</i>.</p> <note> <p>When you use the ClientMetadata parameter, remember that Amazon Cognito won't do the following:</p> <ul> <li> <p>Store the ClientMetadata value. This data is available only to Lambda triggers that are assigned to a user pool to support custom workflows. If your user pool configuration doesn't include triggers, the ClientMetadata parameter serves no purpose.</p> </li> <li> <p>Validate the ClientMetadata value.</p> </li> <li> <p>Encrypt the ClientMetadata value. Don't use Amazon Cognito to provide sensitive information.</p> </li> </ul> </note>",
+    }),
   })
   .openapi({
     required: ['UserPoolId', 'Username'],
@@ -1695,38 +1147,21 @@ const InvalidEmailRoleAccessPolicyExceptionSchema = z
 
 const AdminRespondToAuthChallengeResponseSchema = z
   .object({
-    ChallengeName: ChallengeNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the challenge. For more information, see <a href="https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_AdminInitiateAuth.html">AdminInitiateAuth</a>.',
-        }),
-    ).exactOptional(),
-    Session: SessionTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The session that should be passed both ways in challenge-response calls to the service. If the caller must pass another challenge, they return a session with other challenge parameters. This session should be passed as it is to the next <code>RespondToAuthChallenge</code> API call.',
-        }),
-    ).exactOptional(),
-    ChallengeParameters: ChallengeParametersTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The challenge parameters. For more information, see <a href="https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_AdminInitiateAuth.html">AdminInitiateAuth</a>.',
-        }),
-    ).exactOptional(),
-    AuthenticationResult: AuthenticationResultTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The result returned by the server in response to the authentication request.',
-        }),
-    ).exactOptional(),
+    ChallengeName: ChallengeNameTypeSchema.exactOptional().openapi({
+      description:
+        'The name of the challenge. For more information, see <a href="https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_AdminInitiateAuth.html">AdminInitiateAuth</a>.',
+    }),
+    Session: SessionTypeSchema.exactOptional().openapi({
+      description:
+        'The session that should be passed both ways in challenge-response calls to the service. If the caller must pass another challenge, they return a session with other challenge parameters. This session should be passed as it is to the next <code>RespondToAuthChallenge</code> API call.',
+    }),
+    ChallengeParameters: ChallengeParametersTypeSchema.exactOptional().openapi({
+      description:
+        'The challenge parameters. For more information, see <a href="https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_AdminInitiateAuth.html">AdminInitiateAuth</a>.',
+    }),
+    AuthenticationResult: AuthenticationResultTypeSchema.exactOptional().openapi({
+      description: 'The result returned by the server in response to the authentication request.',
+    }),
   })
   .openapi({
     description: 'Responds to the authentication challenge, as an administrator.',
@@ -1740,58 +1175,34 @@ const ChallengeResponsesTypeSchema = z
 
 const AdminRespondToAuthChallengeRequestSchema = z
   .object({
-    UserPoolId: UserPoolIdTypeSchema.and(
-      z.any().openapi({ description: 'The ID of the Amazon Cognito user pool.' }),
-    ),
-    ClientId: ClientIdTypeSchema.and(z.any().openapi({ description: 'The app client ID.' })),
-    ChallengeName: ChallengeNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The challenge name. For more information, see <a href="https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_AdminInitiateAuth.html">AdminInitiateAuth</a>.',
-        }),
-    ),
-    ChallengeResponses: ChallengeResponsesTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The challenge responses. These are inputs corresponding to the value of <code>ChallengeName</code>, for example:</p> <ul> <li> <p> <code>SMS_MFA</code>: <code>SMS_MFA_CODE</code>, <code>USERNAME</code>, <code>SECRET_HASH</code> (if app client is configured with client secret).</p> </li> <li> <p> <code>PASSWORD_VERIFIER</code>: <code>PASSWORD_CLAIM_SIGNATURE</code>, <code>PASSWORD_CLAIM_SECRET_BLOCK</code>, <code>TIMESTAMP</code>, <code>USERNAME</code>, <code>SECRET_HASH</code> (if app client is configured with client secret).</p> <note> <p> <code>PASSWORD_VERIFIER</code> requires <code>DEVICE_KEY</code> when signing in with a remembered device.</p> </note> </li> <li> <p> <code>ADMIN_NO_SRP_AUTH</code>: <code>PASSWORD</code>, <code>USERNAME</code>, <code>SECRET_HASH</code> (if app client is configured with client secret). </p> </li> <li> <p> <code>NEW_PASSWORD_REQUIRED</code>: <code>NEW_PASSWORD</code>, <code>USERNAME</code>, <code>SECRET_HASH</code> (if app client is configured with client secret). To set any required attributes that Amazon Cognito returned as <code>requiredAttributes</code> in the <code>AdminInitiateAuth</code> response, add a <code>userAttributes.<i>attributename</i> </code> parameter. This parameter can also set values for writable attributes that aren\'t required by your user pool.</p> <note> <p>In a <code>NEW_PASSWORD_REQUIRED</code> challenge response, you can\'t modify a required attribute that already has a value. In <code>AdminRespondToAuthChallenge</code>, set a value for any keys that Amazon Cognito returned in the <code>requiredAttributes</code> parameter, then use the <code>AdminUpdateUserAttributes</code> API operation to modify the value of any additional attributes.</p> </note> </li> <li> <p> <code>MFA_SETUP</code> requires <code>USERNAME</code>, plus you must use the session value returned by <code>VerifySoftwareToken</code> in the <code>Session</code> parameter.</p> </li> </ul> <p>The value of the <code>USERNAME</code> attribute must be the user\'s actual username, not an alias (such as an email address or phone number). To make this simpler, the <code>AdminInitiateAuth</code> response includes the actual username value in the <code>USERNAMEUSER_ID_FOR_SRP</code> attribute. This happens even if you specified an alias in your call to <code>AdminInitiateAuth</code>.</p> <p>For more information about <code>SECRET_HASH</code>, see <a href="https://docs.aws.amazon.com/cognito/latest/developerguide/signing-up-users-in-your-app.html#cognito-user-pools-computing-secret-hash">Computing secret hash values</a>. For information about <code>DEVICE_KEY</code>, see <a href="https://docs.aws.amazon.com/cognito/latest/developerguide/amazon-cognito-user-pools-device-tracking.html">Working with user devices in your user pool</a>.</p>',
-        }),
-    ).exactOptional(),
-    Session: SessionTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The session that should be passed both ways in challenge-response calls to the service. If an <code>InitiateAuth</code> or <code>RespondToAuthChallenge</code> API call determines that the caller must pass another challenge, it returns a session with other challenge parameters. This session should be passed as it is to the next <code>RespondToAuthChallenge</code> API call.',
-        }),
-    ).exactOptional(),
-    AnalyticsMetadata: AnalyticsMetadataTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The analytics metadata for collecting Amazon Pinpoint metrics for <code>AdminRespondToAuthChallenge</code> calls.',
-        }),
-    ).exactOptional(),
-    ContextData: ContextDataTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contextual data about your user session, such as the device fingerprint, IP address, or location. Amazon Cognito advanced security evaluates the risk of an authentication event based on the context that your app generates and passes to Amazon Cognito when it makes API requests.',
-        }),
-    ).exactOptional(),
-    ClientMetadata: ClientMetadataTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A map of custom key-value pairs that you can provide as input for any custom workflows that this action triggers.</p> <p>You create custom workflows by assigning Lambda functions to user pool triggers. When you use the AdminRespondToAuthChallenge API action, Amazon Cognito invokes any functions that you have assigned to the following triggers: </p> <ul> <li> <p>pre sign-up</p> </li> <li> <p>custom message</p> </li> <li> <p>post authentication</p> </li> <li> <p>user migration</p> </li> <li> <p>pre token generation</p> </li> <li> <p>define auth challenge</p> </li> <li> <p>create auth challenge</p> </li> <li> <p>verify auth challenge response</p> </li> </ul> <p>When Amazon Cognito invokes any of these functions, it passes a JSON payload, which the function receives as input. This payload contains a <code>clientMetadata</code> attribute that provides the data that you assigned to the ClientMetadata parameter in your AdminRespondToAuthChallenge request. In your function code in Lambda, you can process the <code>clientMetadata</code> value to enhance your workflow for your specific needs.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-identity-pools-working-with-aws-lambda-triggers.html\"> Customizing user pool Workflows with Lambda Triggers</a> in the <i>Amazon Cognito Developer Guide</i>.</p> <note> <p>When you use the ClientMetadata parameter, remember that Amazon Cognito won't do the following:</p> <ul> <li> <p>Store the ClientMetadata value. This data is available only to Lambda triggers that are assigned to a user pool to support custom workflows. If your user pool configuration doesn't include triggers, the ClientMetadata parameter serves no purpose.</p> </li> <li> <p>Validate the ClientMetadata value.</p> </li> <li> <p>Encrypt the ClientMetadata value. Don't use Amazon Cognito to provide sensitive information.</p> </li> </ul> </note>",
-        }),
-    ).exactOptional(),
+    UserPoolId: UserPoolIdTypeSchema.openapi({
+      description: 'The ID of the Amazon Cognito user pool.',
+    }),
+    ClientId: ClientIdTypeSchema.openapi({ description: 'The app client ID.' }),
+    ChallengeName: ChallengeNameTypeSchema.openapi({
+      description:
+        'The challenge name. For more information, see <a href="https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_AdminInitiateAuth.html">AdminInitiateAuth</a>.',
+    }),
+    ChallengeResponses: ChallengeResponsesTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The challenge responses. These are inputs corresponding to the value of <code>ChallengeName</code>, for example:</p> <ul> <li> <p> <code>SMS_MFA</code>: <code>SMS_MFA_CODE</code>, <code>USERNAME</code>, <code>SECRET_HASH</code> (if app client is configured with client secret).</p> </li> <li> <p> <code>PASSWORD_VERIFIER</code>: <code>PASSWORD_CLAIM_SIGNATURE</code>, <code>PASSWORD_CLAIM_SECRET_BLOCK</code>, <code>TIMESTAMP</code>, <code>USERNAME</code>, <code>SECRET_HASH</code> (if app client is configured with client secret).</p> <note> <p> <code>PASSWORD_VERIFIER</code> requires <code>DEVICE_KEY</code> when signing in with a remembered device.</p> </note> </li> <li> <p> <code>ADMIN_NO_SRP_AUTH</code>: <code>PASSWORD</code>, <code>USERNAME</code>, <code>SECRET_HASH</code> (if app client is configured with client secret). </p> </li> <li> <p> <code>NEW_PASSWORD_REQUIRED</code>: <code>NEW_PASSWORD</code>, <code>USERNAME</code>, <code>SECRET_HASH</code> (if app client is configured with client secret). To set any required attributes that Amazon Cognito returned as <code>requiredAttributes</code> in the <code>AdminInitiateAuth</code> response, add a <code>userAttributes.<i>attributename</i> </code> parameter. This parameter can also set values for writable attributes that aren\'t required by your user pool.</p> <note> <p>In a <code>NEW_PASSWORD_REQUIRED</code> challenge response, you can\'t modify a required attribute that already has a value. In <code>AdminRespondToAuthChallenge</code>, set a value for any keys that Amazon Cognito returned in the <code>requiredAttributes</code> parameter, then use the <code>AdminUpdateUserAttributes</code> API operation to modify the value of any additional attributes.</p> </note> </li> <li> <p> <code>MFA_SETUP</code> requires <code>USERNAME</code>, plus you must use the session value returned by <code>VerifySoftwareToken</code> in the <code>Session</code> parameter.</p> </li> </ul> <p>The value of the <code>USERNAME</code> attribute must be the user\'s actual username, not an alias (such as an email address or phone number). To make this simpler, the <code>AdminInitiateAuth</code> response includes the actual username value in the <code>USERNAMEUSER_ID_FOR_SRP</code> attribute. This happens even if you specified an alias in your call to <code>AdminInitiateAuth</code>.</p> <p>For more information about <code>SECRET_HASH</code>, see <a href="https://docs.aws.amazon.com/cognito/latest/developerguide/signing-up-users-in-your-app.html#cognito-user-pools-computing-secret-hash">Computing secret hash values</a>. For information about <code>DEVICE_KEY</code>, see <a href="https://docs.aws.amazon.com/cognito/latest/developerguide/amazon-cognito-user-pools-device-tracking.html">Working with user devices in your user pool</a>.</p>',
+    }),
+    Session: SessionTypeSchema.exactOptional().openapi({
+      description:
+        'The session that should be passed both ways in challenge-response calls to the service. If an <code>InitiateAuth</code> or <code>RespondToAuthChallenge</code> API call determines that the caller must pass another challenge, it returns a session with other challenge parameters. This session should be passed as it is to the next <code>RespondToAuthChallenge</code> API call.',
+    }),
+    AnalyticsMetadata: AnalyticsMetadataTypeSchema.exactOptional().openapi({
+      description:
+        'The analytics metadata for collecting Amazon Pinpoint metrics for <code>AdminRespondToAuthChallenge</code> calls.',
+    }),
+    ContextData: ContextDataTypeSchema.exactOptional().openapi({
+      description:
+        'Contextual data about your user session, such as the device fingerprint, IP address, or location. Amazon Cognito advanced security evaluates the risk of an authentication event based on the context that your app generates and passes to Amazon Cognito when it makes API requests.',
+    }),
+    ClientMetadata: ClientMetadataTypeSchema.exactOptional().openapi({
+      description:
+        "<p>A map of custom key-value pairs that you can provide as input for any custom workflows that this action triggers.</p> <p>You create custom workflows by assigning Lambda functions to user pool triggers. When you use the AdminRespondToAuthChallenge API action, Amazon Cognito invokes any functions that you have assigned to the following triggers: </p> <ul> <li> <p>pre sign-up</p> </li> <li> <p>custom message</p> </li> <li> <p>post authentication</p> </li> <li> <p>user migration</p> </li> <li> <p>pre token generation</p> </li> <li> <p>define auth challenge</p> </li> <li> <p>create auth challenge</p> </li> <li> <p>verify auth challenge response</p> </li> </ul> <p>When Amazon Cognito invokes any of these functions, it passes a JSON payload, which the function receives as input. This payload contains a <code>clientMetadata</code> attribute that provides the data that you assigned to the ClientMetadata parameter in your AdminRespondToAuthChallenge request. In your function code in Lambda, you can process the <code>clientMetadata</code> value to enhance your workflow for your specific needs.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-identity-pools-working-with-aws-lambda-triggers.html\"> Customizing user pool Workflows with Lambda Triggers</a> in the <i>Amazon Cognito Developer Guide</i>.</p> <note> <p>When you use the ClientMetadata parameter, remember that Amazon Cognito won't do the following:</p> <ul> <li> <p>Store the ClientMetadata value. This data is available only to Lambda triggers that are assigned to a user pool to support custom workflows. If your user pool configuration doesn't include triggers, the ClientMetadata parameter serves no purpose.</p> </li> <li> <p>Validate the ClientMetadata value.</p> </li> <li> <p>Encrypt the ClientMetadata value. Don't use Amazon Cognito to provide sensitive information.</p> </li> </ul> </note>",
+    }),
   })
   .openapi({
     required: ['UserPoolId', 'ClientId', 'ChallengeName'],
@@ -1807,22 +1218,18 @@ const ExpiredCodeExceptionSchema = z.any().openapi('ExpiredCodeException')
 const SoftwareTokenMFANotFoundExceptionSchema = z.any().openapi('SoftwareTokenMFANotFoundException')
 
 const AdminSetUserMFAPreferenceResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('AdminSetUserMFAPreferenceResponse')
 
 const SMSMfaSettingsTypeSchema = z
   .object({
-    Enabled: BooleanTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether SMS text message MFA is activated. If an MFA type is activated for a user, the user will be prompted for MFA during all sign-in attempts, unless device tracking is turned on and the device has been trusted.',
-        }),
-    ).exactOptional(),
-    PreferredMfa: BooleanTypeSchema.and(
-      z.any().openapi({ description: 'Specifies whether SMS is the preferred MFA method.' }),
-    ).exactOptional(),
+    Enabled: BooleanTypeSchema.exactOptional().openapi({
+      description:
+        'Specifies whether SMS text message MFA is activated. If an MFA type is activated for a user, the user will be prompted for MFA during all sign-in attempts, unless device tracking is turned on and the device has been trusted.',
+    }),
+    PreferredMfa: BooleanTypeSchema.exactOptional().openapi({
+      description: 'Specifies whether SMS is the preferred MFA method.',
+    }),
   })
   .openapi({
     description:
@@ -1833,21 +1240,13 @@ const SMSMfaSettingsTypeSchema = z
 
 const SoftwareTokenMfaSettingsTypeSchema = z
   .object({
-    Enabled: BooleanTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether software token MFA is activated. If an MFA type is activated for a user, the user will be prompted for MFA during all sign-in attempts, unless device tracking is turned on and the device has been trusted.',
-        }),
-    ).exactOptional(),
-    PreferredMfa: BooleanTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specifies whether software token MFA is the preferred MFA method.',
-        }),
-    ).exactOptional(),
+    Enabled: BooleanTypeSchema.exactOptional().openapi({
+      description:
+        'Specifies whether software token MFA is activated. If an MFA type is activated for a user, the user will be prompted for MFA during all sign-in attempts, unless device tracking is turned on and the device has been trusted.',
+    }),
+    PreferredMfa: BooleanTypeSchema.exactOptional().openapi({
+      description: 'Specifies whether software token MFA is the preferred MFA method.',
+    }),
   })
   .openapi({
     description:
@@ -1858,48 +1257,33 @@ const SoftwareTokenMfaSettingsTypeSchema = z
 
 const AdminSetUserMFAPreferenceRequestSchema = z
   .object({
-    SMSMfaSettings: SMSMfaSettingsTypeSchema.and(
-      z.any().openapi({ description: 'The SMS text message MFA settings.' }),
-    ).exactOptional(),
-    SoftwareTokenMfaSettings: SoftwareTokenMfaSettingsTypeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The time-based one-time password software token MFA settings.' }),
-    ).exactOptional(),
-    Username: UsernameTypeSchema.and(
-      z.any().openapi({ description: 'The user pool username or alias.' }),
-    ),
-    UserPoolId: UserPoolIdTypeSchema.and(z.any().openapi({ description: 'The user pool ID.' })),
+    SMSMfaSettings: SMSMfaSettingsTypeSchema.exactOptional().openapi({
+      description: 'The SMS text message MFA settings.',
+    }),
+    SoftwareTokenMfaSettings: SoftwareTokenMfaSettingsTypeSchema.exactOptional().openapi({
+      description: 'The time-based one-time password software token MFA settings.',
+    }),
+    Username: UsernameTypeSchema.openapi({ description: 'The user pool username or alias.' }),
+    UserPoolId: UserPoolIdTypeSchema.openapi({ description: 'The user pool ID.' }),
   })
   .openapi({ required: ['Username', 'UserPoolId'], title: 'AdminSetUserMFAPreferenceRequest' })
   .openapi('AdminSetUserMFAPreferenceRequest')
 
-const AdminSetUserPasswordResponseSchema = z.object({}).openapi('AdminSetUserPasswordResponse')
+const AdminSetUserPasswordResponseSchema = z.looseObject({}).openapi('AdminSetUserPasswordResponse')
 
 const AdminSetUserPasswordRequestSchema = z
   .object({
-    UserPoolId: UserPoolIdTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The user pool ID for the user pool where you want to set the user's password.",
-        }),
-    ),
-    Username: UsernameTypeSchema.and(
-      z.any().openapi({ description: 'The user name of the user whose password you want to set.' }),
-    ),
-    Password: PasswordTypeSchema.and(
-      z.any().openapi({ description: 'The password for the user.' }),
-    ),
-    Permanent: BooleanTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' <code>True</code> if the password is permanent, <code>False</code> if it is temporary.',
-        }),
-    ).exactOptional(),
+    UserPoolId: UserPoolIdTypeSchema.openapi({
+      description: "The user pool ID for the user pool where you want to set the user's password.",
+    }),
+    Username: UsernameTypeSchema.openapi({
+      description: 'The user name of the user whose password you want to set.',
+    }),
+    Password: PasswordTypeSchema.openapi({ description: 'The password for the user.' }),
+    Permanent: BooleanTypeSchema.exactOptional().openapi({
+      description:
+        ' <code>True</code> if the password is permanent, <code>False</code> if it is temporary.',
+    }),
   })
   .openapi({
     required: ['UserPoolId', 'Username', 'Password'],
@@ -1908,7 +1292,7 @@ const AdminSetUserPasswordRequestSchema = z
   .openapi('AdminSetUserPasswordRequest')
 
 const AdminSetUserSettingsResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'Represents the response from the server to set user settings as an administrator.',
@@ -1917,25 +1301,16 @@ const AdminSetUserSettingsResponseSchema = z
 
 const AdminSetUserSettingsRequestSchema = z
   .object({
-    UserPoolId: UserPoolIdTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The ID of the user pool that contains the user whose options you're setting.",
-        }),
-    ),
-    Username: UsernameTypeSchema.and(
-      z.any().openapi({ description: "The user name of the user whose options you're setting." }),
-    ),
-    MFAOptions: MFAOptionListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'You can use this parameter only to set an SMS configuration that uses SMS for delivery.',
-        }),
-    ),
+    UserPoolId: UserPoolIdTypeSchema.openapi({
+      description: "The ID of the user pool that contains the user whose options you're setting.",
+    }),
+    Username: UsernameTypeSchema.openapi({
+      description: "The user name of the user whose options you're setting.",
+    }),
+    MFAOptions: MFAOptionListTypeSchema.openapi({
+      description:
+        'You can use this parameter only to set an SMS configuration that uses SMS for delivery.',
+    }),
   })
   .openapi({
     required: ['UserPoolId', 'Username', 'MFAOptions'],
@@ -1946,7 +1321,7 @@ const AdminSetUserSettingsRequestSchema = z
   .openapi('AdminSetUserSettingsRequest')
 
 const AdminUpdateAuthEventFeedbackResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('AdminUpdateAuthEventFeedbackResponse')
 
 const EventIdTypeSchema = z
@@ -1958,19 +1333,13 @@ const EventIdTypeSchema = z
 
 const AdminUpdateAuthEventFeedbackRequestSchema = z
   .object({
-    UserPoolId: UserPoolIdTypeSchema.and(z.any().openapi({ description: 'The user pool ID.' })),
-    Username: UsernameTypeSchema.and(z.any().openapi({ description: 'The user pool username.' })),
-    EventId: EventIdTypeSchema.and(
-      z.any().openapi({ description: 'The authentication event ID.' }),
-    ),
-    FeedbackValue: FeedbackValueTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The authentication event feedback value. When you provide a <code>FeedbackValue</code> value of <code>valid</code>, you tell Amazon Cognito that you trust a user session where Amazon Cognito has evaluated some level of risk. When you provide a <code>FeedbackValue</code> value of <code>invalid</code>, you tell Amazon Cognito that you don't trust a user session, or you don't believe that Amazon Cognito evaluated a high-enough risk level.",
-        }),
-    ),
+    UserPoolId: UserPoolIdTypeSchema.openapi({ description: 'The user pool ID.' }),
+    Username: UsernameTypeSchema.openapi({ description: 'The user pool username.' }),
+    EventId: EventIdTypeSchema.openapi({ description: 'The authentication event ID.' }),
+    FeedbackValue: FeedbackValueTypeSchema.openapi({
+      description:
+        "The authentication event feedback value. When you provide a <code>FeedbackValue</code> value of <code>valid</code>, you tell Amazon Cognito that you trust a user session where Amazon Cognito has evaluated some level of risk. When you provide a <code>FeedbackValue</code> value of <code>invalid</code>, you tell Amazon Cognito that you don't trust a user session, or you don't believe that Amazon Cognito evaluated a high-enough risk level.",
+    }),
   })
   .openapi({
     required: ['UserPoolId', 'Username', 'EventId', 'FeedbackValue'],
@@ -1979,7 +1348,7 @@ const AdminUpdateAuthEventFeedbackRequestSchema = z
   .openapi('AdminUpdateAuthEventFeedbackRequest')
 
 const AdminUpdateDeviceStatusResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description: 'The status response to the request to update the device, as an administrator.',
   })
@@ -1991,16 +1360,12 @@ const DeviceRememberedStatusTypeSchema = z
 
 const AdminUpdateDeviceStatusRequestSchema = z
   .object({
-    UserPoolId: UserPoolIdTypeSchema.and(z.any().openapi({ description: 'The user pool ID.' })),
-    Username: UsernameTypeSchema.and(z.any().openapi({ description: 'The user name.' })),
-    DeviceKey: DeviceKeyTypeSchema.and(z.any().openapi({ description: 'The device key.' })),
-    DeviceRememberedStatus: DeviceRememberedStatusTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The status indicating whether a device has been remembered or not.',
-        }),
-    ).exactOptional(),
+    UserPoolId: UserPoolIdTypeSchema.openapi({ description: 'The user pool ID.' }),
+    Username: UsernameTypeSchema.openapi({ description: 'The user name.' }),
+    DeviceKey: DeviceKeyTypeSchema.openapi({ description: 'The device key.' }),
+    DeviceRememberedStatus: DeviceRememberedStatusTypeSchema.exactOptional().openapi({
+      description: 'The status indicating whether a device has been remembered or not.',
+    }),
   })
   .openapi({
     required: ['UserPoolId', 'Username', 'DeviceKey'],
@@ -2010,7 +1375,7 @@ const AdminUpdateDeviceStatusRequestSchema = z
   .openapi('AdminUpdateDeviceStatusRequest')
 
 const AdminUpdateUserAttributesResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'Represents the response from the server for the request to update user attributes as an administrator.',
@@ -2019,37 +1384,20 @@ const AdminUpdateUserAttributesResponseSchema = z
 
 const AdminUpdateUserAttributesRequestSchema = z
   .object({
-    UserPoolId: UserPoolIdTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The user pool ID for the user pool where you want to update user attributes.',
-        }),
-    ),
-    Username: UsernameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The user name of the user for whom you want to update user attributes.',
-        }),
-    ),
-    UserAttributes: AttributeListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An array of name-value pairs representing user attributes.</p> <p>For custom attributes, you must prepend the <code>custom:</code> prefix to the attribute name.</p> <p>If your user pool requires verification before Amazon Cognito updates an attribute value that you specify in this request, Amazon Cognito doesn’t immediately update the value of that attribute. After your user receives and responds to a verification message to verify the new value, Amazon Cognito updates the attribute value. Your user can sign in and receive messages with the original attribute value until they verify the new value.</p> <p>To update the value of an attribute that requires verification in the same API request, include the <code>email_verified</code> or <code>phone_number_verified</code> attribute, with a value of <code>true</code>. If you set the <code>email_verified</code> or <code>phone_number_verified</code> value for an <code>email</code> or <code>phone_number</code> attribute that requires verification to <code>true</code>, Amazon Cognito doesn’t send a verification message to your user.</p>',
-        }),
-    ),
-    ClientMetadata: ClientMetadataTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A map of custom key-value pairs that you can provide as input for any custom workflows that this action triggers.</p> <p>You create custom workflows by assigning Lambda functions to user pool triggers. When you use the AdminUpdateUserAttributes API action, Amazon Cognito invokes the function that is assigned to the <i>custom message</i> trigger. When Amazon Cognito invokes this function, it passes a JSON payload, which the function receives as input. This payload contains a <code>clientMetadata</code> attribute, which provides the data that you assigned to the ClientMetadata parameter in your AdminUpdateUserAttributes request. In your function code in Lambda, you can process the <code>clientMetadata</code> value to enhance your workflow for your specific needs.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-identity-pools-working-with-aws-lambda-triggers.html\"> Customizing user pool Workflows with Lambda Triggers</a> in the <i>Amazon Cognito Developer Guide</i>.</p> <note> <p>When you use the ClientMetadata parameter, remember that Amazon Cognito won't do the following:</p> <ul> <li> <p>Store the ClientMetadata value. This data is available only to Lambda triggers that are assigned to a user pool to support custom workflows. If your user pool configuration doesn't include triggers, the ClientMetadata parameter serves no purpose.</p> </li> <li> <p>Validate the ClientMetadata value.</p> </li> <li> <p>Encrypt the ClientMetadata value. Don't use Amazon Cognito to provide sensitive information.</p> </li> </ul> </note>",
-        }),
-    ).exactOptional(),
+    UserPoolId: UserPoolIdTypeSchema.openapi({
+      description: 'The user pool ID for the user pool where you want to update user attributes.',
+    }),
+    Username: UsernameTypeSchema.openapi({
+      description: 'The user name of the user for whom you want to update user attributes.',
+    }),
+    UserAttributes: AttributeListTypeSchema.openapi({
+      description:
+        '<p>An array of name-value pairs representing user attributes.</p> <p>For custom attributes, you must prepend the <code>custom:</code> prefix to the attribute name.</p> <p>If your user pool requires verification before Amazon Cognito updates an attribute value that you specify in this request, Amazon Cognito doesn’t immediately update the value of that attribute. After your user receives and responds to a verification message to verify the new value, Amazon Cognito updates the attribute value. Your user can sign in and receive messages with the original attribute value until they verify the new value.</p> <p>To update the value of an attribute that requires verification in the same API request, include the <code>email_verified</code> or <code>phone_number_verified</code> attribute, with a value of <code>true</code>. If you set the <code>email_verified</code> or <code>phone_number_verified</code> value for an <code>email</code> or <code>phone_number</code> attribute that requires verification to <code>true</code>, Amazon Cognito doesn’t send a verification message to your user.</p>',
+    }),
+    ClientMetadata: ClientMetadataTypeSchema.exactOptional().openapi({
+      description:
+        "<p>A map of custom key-value pairs that you can provide as input for any custom workflows that this action triggers.</p> <p>You create custom workflows by assigning Lambda functions to user pool triggers. When you use the AdminUpdateUserAttributes API action, Amazon Cognito invokes the function that is assigned to the <i>custom message</i> trigger. When Amazon Cognito invokes this function, it passes a JSON payload, which the function receives as input. This payload contains a <code>clientMetadata</code> attribute, which provides the data that you assigned to the ClientMetadata parameter in your AdminUpdateUserAttributes request. In your function code in Lambda, you can process the <code>clientMetadata</code> value to enhance your workflow for your specific needs.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-identity-pools-working-with-aws-lambda-triggers.html\"> Customizing user pool Workflows with Lambda Triggers</a> in the <i>Amazon Cognito Developer Guide</i>.</p> <note> <p>When you use the ClientMetadata parameter, remember that Amazon Cognito won't do the following:</p> <ul> <li> <p>Store the ClientMetadata value. This data is available only to Lambda triggers that are assigned to a user pool to support custom workflows. If your user pool configuration doesn't include triggers, the ClientMetadata parameter serves no purpose.</p> </li> <li> <p>Validate the ClientMetadata value.</p> </li> <li> <p>Encrypt the ClientMetadata value. Don't use Amazon Cognito to provide sensitive information.</p> </li> </ul> </note>",
+    }),
   })
   .openapi({
     required: ['UserPoolId', 'Username', 'UserAttributes'],
@@ -2059,14 +1407,14 @@ const AdminUpdateUserAttributesRequestSchema = z
   .openapi('AdminUpdateUserAttributesRequest')
 
 const AdminUserGlobalSignOutResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'The global sign-out response, as an administrator.' })
   .openapi('AdminUserGlobalSignOutResponse')
 
 const AdminUserGlobalSignOutRequestSchema = z
   .object({
-    UserPoolId: UserPoolIdTypeSchema.and(z.any().openapi({ description: 'The user pool ID.' })),
-    Username: UsernameTypeSchema.and(z.any().openapi({ description: 'The user name.' })),
+    UserPoolId: UserPoolIdTypeSchema.openapi({ description: 'The user pool ID.' }),
+    Username: UsernameTypeSchema.openapi({ description: 'The user name.' }),
   })
   .openapi({
     required: ['UserPoolId', 'Username'],
@@ -2083,44 +1431,28 @@ const SecretCodeTypeSchema = z
 
 const AssociateSoftwareTokenResponseSchema = z
   .object({
-    SecretCode: SecretCodeTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique generated shared secret code that is used in the TOTP algorithm to generate a one-time code.',
-        }),
-    ).exactOptional(),
-    Session: SessionTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The session that should be passed both ways in challenge-response calls to the service. This allows authentication of the user as part of the MFA setup process.',
-        }),
-    ).exactOptional(),
+    SecretCode: SecretCodeTypeSchema.exactOptional().openapi({
+      description:
+        'A unique generated shared secret code that is used in the TOTP algorithm to generate a one-time code.',
+    }),
+    Session: SessionTypeSchema.exactOptional().openapi({
+      description:
+        'The session that should be passed both ways in challenge-response calls to the service. This allows authentication of the user as part of the MFA setup process.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('AssociateSoftwareTokenResponse')
 
 const AssociateSoftwareTokenRequestSchema = z
   .object({
-    AccessToken: TokenModelTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A valid access token that Amazon Cognito issued to the user whose software token you want to generate.',
-        }),
-    ).exactOptional(),
-    Session: SessionTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The session that should be passed both ways in challenge-response calls to the service. This allows authentication of the user as part of the MFA setup process.',
-        }),
-    ).exactOptional(),
+    AccessToken: TokenModelTypeSchema.exactOptional().openapi({
+      description:
+        'A valid access token that Amazon Cognito issued to the user whose software token you want to generate.',
+    }),
+    Session: SessionTypeSchema.exactOptional().openapi({
+      description:
+        'The session that should be passed both ways in challenge-response calls to the service. This allows authentication of the user as part of the MFA setup process.',
+    }),
   })
   .openapi({ title: 'AssociateSoftwareTokenRequest', required: [] })
   .openapi('AssociateSoftwareTokenRequest')
@@ -2130,22 +1462,18 @@ const ConcurrentModificationExceptionSchema = z.any().openapi('ConcurrentModific
 const ForbiddenExceptionSchema = z.any().openapi('ForbiddenException')
 
 const ChangePasswordResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'The response from the server to the change password request.' })
   .openapi('ChangePasswordResponse')
 
 const ChangePasswordRequestSchema = z
   .object({
-    PreviousPassword: PasswordTypeSchema.and(z.any().openapi({ description: 'The old password.' })),
-    ProposedPassword: PasswordTypeSchema.and(z.any().openapi({ description: 'The new password.' })),
-    AccessToken: TokenModelTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A valid access token that Amazon Cognito issued to the user whose password you want to change.',
-        }),
-    ),
+    PreviousPassword: PasswordTypeSchema.openapi({ description: 'The old password.' }),
+    ProposedPassword: PasswordTypeSchema.openapi({ description: 'The new password.' }),
+    AccessToken: TokenModelTypeSchema.openapi({
+      description:
+        'A valid access token that Amazon Cognito issued to the user whose password you want to change.',
+    }),
   })
   .openapi({
     required: ['PreviousPassword', 'ProposedPassword', 'AccessToken'],
@@ -2156,29 +1484,21 @@ const ChangePasswordRequestSchema = z
 
 const ConfirmDeviceResponseSchema = z
   .object({
-    UserConfirmationNecessary: BooleanTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Indicates whether the user confirmation must confirm the device response.',
-        }),
-    ).exactOptional(),
+    UserConfirmationNecessary: BooleanTypeSchema.exactOptional().openapi({
+      description: 'Indicates whether the user confirmation must confirm the device response.',
+    }),
   })
   .openapi({ description: 'Confirms the device response.', required: [] })
   .openapi('ConfirmDeviceResponse')
 
 const DeviceSecretVerifierConfigTypeSchema = z
   .object({
-    PasswordVerifier: StringTypeSchema.and(
-      z.any().openapi({ description: 'The password verifier.' }),
-    ).exactOptional(),
-    Salt: StringTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The <a href="https://en.wikipedia.org/wiki/Salt_(cryptography)">salt</a> ',
-        }),
-    ).exactOptional(),
+    PasswordVerifier: StringTypeSchema.exactOptional().openapi({
+      description: 'The password verifier.',
+    }),
+    Salt: StringTypeSchema.exactOptional().openapi({
+      description: 'The <a href="https://en.wikipedia.org/wiki/Salt_(cryptography)">salt</a> ',
+    }),
   })
   .openapi({ description: 'The device verifier against which it is authenticated.', required: [] })
   .openapi('DeviceSecretVerifierConfigType')
@@ -2187,21 +1507,15 @@ const DeviceNameTypeSchema = z.string().min(1).max(1024).openapi('DeviceNameType
 
 const ConfirmDeviceRequestSchema = z
   .object({
-    AccessToken: TokenModelTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A valid access token that Amazon Cognito issued to the user whose device you want to confirm.',
-        }),
-    ),
-    DeviceKey: DeviceKeyTypeSchema.and(z.any().openapi({ description: 'The device key.' })),
-    DeviceSecretVerifierConfig: DeviceSecretVerifierConfigTypeSchema.and(
-      z.any().openapi({ description: 'The configuration of the device secret verifier.' }),
-    ).exactOptional(),
-    DeviceName: DeviceNameTypeSchema.and(
-      z.any().openapi({ description: 'The device name.' }),
-    ).exactOptional(),
+    AccessToken: TokenModelTypeSchema.openapi({
+      description:
+        'A valid access token that Amazon Cognito issued to the user whose device you want to confirm.',
+    }),
+    DeviceKey: DeviceKeyTypeSchema.openapi({ description: 'The device key.' }),
+    DeviceSecretVerifierConfig: DeviceSecretVerifierConfigTypeSchema.exactOptional().openapi({
+      description: 'The configuration of the device secret verifier.',
+    }),
+    DeviceName: DeviceNameTypeSchema.exactOptional().openapi({ description: 'The device name.' }),
   })
   .openapi({
     required: ['AccessToken', 'DeviceKey'],
@@ -2211,7 +1525,7 @@ const ConfirmDeviceRequestSchema = z
   .openapi('ConfirmDeviceRequest')
 
 const ConfirmForgotPasswordResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       "The response from the server that results from a user's request to retrieve a forgotten password.",
@@ -2234,17 +1548,13 @@ const ConfirmationCodeTypeSchema = z
 
 const UserContextDataTypeSchema = z
   .object({
-    IpAddress: StringTypeSchema.and(
-      z.any().openapi({ description: "The source IP address of your user's device." }),
-    ).exactOptional(),
-    EncodedData: StringTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Encoded device-fingerprint details that your app collected with the Amazon Cognito context data collection library. For more information, see <a href="https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pool-settings-adaptive-authentication.html#user-pool-settings-adaptive-authentication-device-fingerprint">Adding user device and session data to API requests</a>.',
-        }),
-    ).exactOptional(),
+    IpAddress: StringTypeSchema.exactOptional().openapi({
+      description: "The source IP address of your user's device.",
+    }),
+    EncodedData: StringTypeSchema.exactOptional().openapi({
+      description:
+        'Encoded device-fingerprint details that your app collected with the Amazon Cognito context data collection library. For more information, see <a href="https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pool-settings-adaptive-authentication.html#user-pool-settings-adaptive-authentication-device-fingerprint">Adding user device and session data to API requests</a>.',
+    }),
   })
   .openapi({
     description:
@@ -2255,62 +1565,36 @@ const UserContextDataTypeSchema = z
 
 const ConfirmForgotPasswordRequestSchema = z
   .object({
-    ClientId: ClientIdTypeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The app client ID of the app associated with the user pool.' }),
-    ),
-    SecretHash: SecretHashTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A keyed-hash message authentication code (HMAC) calculated using the secret key of a user pool client and username plus the client ID in the message. For more information about <code>SecretHash</code>, see <a href="https://docs.aws.amazon.com/cognito/latest/developerguide/signing-up-users-in-your-app.html#cognito-user-pools-computing-secret-hash">Computing secret hash values</a>.',
-        }),
-    ).exactOptional(),
-    Username: UsernameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The user name of the user for whom you want to enter a code to retrieve a forgotten password.',
-        }),
-    ),
-    ConfirmationCode: ConfirmationCodeTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The confirmation code from your user\'s request to reset their password. For more information, see <a href="https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_ForgotPassword.html">ForgotPassword</a>.',
-        }),
-    ),
-    Password: PasswordTypeSchema.and(
-      z.any().openapi({ description: 'The new password that your user wants to set.' }),
-    ),
-    AnalyticsMetadata: AnalyticsMetadataTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Pinpoint analytics metadata for collecting metrics for <code>ConfirmForgotPassword</code> calls.',
-        }),
-    ).exactOptional(),
-    UserContextData: UserContextDataTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contextual data about your user session, such as the device fingerprint, IP address, or location. Amazon Cognito advanced security evaluates the risk of an authentication event based on the context that your app generates and passes to Amazon Cognito when it makes API requests.',
-        }),
-    ).exactOptional(),
-    ClientMetadata: ClientMetadataTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A map of custom key-value pairs that you can provide as input for any custom workflows that this action triggers.</p> <p>You create custom workflows by assigning Lambda functions to user pool triggers. When you use the ConfirmForgotPassword API action, Amazon Cognito invokes the function that is assigned to the <i>post confirmation</i> trigger. When Amazon Cognito invokes this function, it passes a JSON payload, which the function receives as input. This payload contains a <code>clientMetadata</code> attribute, which provides the data that you assigned to the ClientMetadata parameter in your ConfirmForgotPassword request. In your function code in Lambda, you can process the <code>clientMetadata</code> value to enhance your workflow for your specific needs.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-identity-pools-working-with-aws-lambda-triggers.html\"> Customizing user pool Workflows with Lambda Triggers</a> in the <i>Amazon Cognito Developer Guide</i>.</p> <note> <p>When you use the ClientMetadata parameter, remember that Amazon Cognito won't do the following:</p> <ul> <li> <p>Store the ClientMetadata value. This data is available only to Lambda triggers that are assigned to a user pool to support custom workflows. If your user pool configuration doesn't include triggers, the ClientMetadata parameter serves no purpose.</p> </li> <li> <p>Validate the ClientMetadata value.</p> </li> <li> <p>Encrypt the ClientMetadata value. Don't use Amazon Cognito to provide sensitive information.</p> </li> </ul> </note>",
-        }),
-    ).exactOptional(),
+    ClientId: ClientIdTypeSchema.openapi({
+      description: 'The app client ID of the app associated with the user pool.',
+    }),
+    SecretHash: SecretHashTypeSchema.exactOptional().openapi({
+      description:
+        'A keyed-hash message authentication code (HMAC) calculated using the secret key of a user pool client and username plus the client ID in the message. For more information about <code>SecretHash</code>, see <a href="https://docs.aws.amazon.com/cognito/latest/developerguide/signing-up-users-in-your-app.html#cognito-user-pools-computing-secret-hash">Computing secret hash values</a>.',
+    }),
+    Username: UsernameTypeSchema.openapi({
+      description:
+        'The user name of the user for whom you want to enter a code to retrieve a forgotten password.',
+    }),
+    ConfirmationCode: ConfirmationCodeTypeSchema.openapi({
+      description:
+        'The confirmation code from your user\'s request to reset their password. For more information, see <a href="https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_ForgotPassword.html">ForgotPassword</a>.',
+    }),
+    Password: PasswordTypeSchema.openapi({
+      description: 'The new password that your user wants to set.',
+    }),
+    AnalyticsMetadata: AnalyticsMetadataTypeSchema.exactOptional().openapi({
+      description:
+        'The Amazon Pinpoint analytics metadata for collecting metrics for <code>ConfirmForgotPassword</code> calls.',
+    }),
+    UserContextData: UserContextDataTypeSchema.exactOptional().openapi({
+      description:
+        'Contextual data about your user session, such as the device fingerprint, IP address, or location. Amazon Cognito advanced security evaluates the risk of an authentication event based on the context that your app generates and passes to Amazon Cognito when it makes API requests.',
+    }),
+    ClientMetadata: ClientMetadataTypeSchema.exactOptional().openapi({
+      description:
+        "<p>A map of custom key-value pairs that you can provide as input for any custom workflows that this action triggers.</p> <p>You create custom workflows by assigning Lambda functions to user pool triggers. When you use the ConfirmForgotPassword API action, Amazon Cognito invokes the function that is assigned to the <i>post confirmation</i> trigger. When Amazon Cognito invokes this function, it passes a JSON payload, which the function receives as input. This payload contains a <code>clientMetadata</code> attribute, which provides the data that you assigned to the ClientMetadata parameter in your ConfirmForgotPassword request. In your function code in Lambda, you can process the <code>clientMetadata</code> value to enhance your workflow for your specific needs.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-identity-pools-working-with-aws-lambda-triggers.html\"> Customizing user pool Workflows with Lambda Triggers</a> in the <i>Amazon Cognito Developer Guide</i>.</p> <note> <p>When you use the ClientMetadata parameter, remember that Amazon Cognito won't do the following:</p> <ul> <li> <p>Store the ClientMetadata value. This data is available only to Lambda triggers that are assigned to a user pool to support custom workflows. If your user pool configuration doesn't include triggers, the ClientMetadata parameter serves no purpose.</p> </li> <li> <p>Validate the ClientMetadata value.</p> </li> <li> <p>Encrypt the ClientMetadata value. Don't use Amazon Cognito to provide sensitive information.</p> </li> </ul> </note>",
+    }),
   })
   .openapi({
     required: ['ClientId', 'Username', 'ConfirmationCode', 'Password'],
@@ -2320,7 +1604,7 @@ const ConfirmForgotPasswordRequestSchema = z
   .openapi('ConfirmForgotPasswordRequest')
 
 const ConfirmSignUpResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description: 'Represents the response from the server for the registration confirmation.',
   })
@@ -2328,63 +1612,35 @@ const ConfirmSignUpResponseSchema = z
 
 const ConfirmSignUpRequestSchema = z
   .object({
-    ClientId: ClientIdTypeSchema.and(
-      z.any().openapi({ description: 'The ID of the app client associated with the user pool.' }),
-    ),
-    SecretHash: SecretHashTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A keyed-hash message authentication code (HMAC) calculated using the secret key of a user pool client and username plus the client ID in the message.',
-        }),
-    ).exactOptional(),
-    Username: UsernameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The user name of the user whose registration you want to confirm.',
-        }),
-    ),
-    ConfirmationCode: ConfirmationCodeTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The confirmation code sent by a user's request to confirm registration.",
-        }),
-    ),
-    ForceAliasCreation: ForceAliasCreationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Boolean to be specified to force user confirmation irrespective of existing alias. By default set to <code>False</code>. If this parameter is set to <code>True</code> and the phone number/email used for sign up confirmation already exists as an alias with a different user, the API call will migrate the alias from the previous user to the newly created user being confirmed. If set to <code>False</code>, the API will throw an <b>AliasExistsException</b> error.',
-        }),
-    ).exactOptional(),
-    AnalyticsMetadata: AnalyticsMetadataTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Pinpoint analytics metadata for collecting metrics for <code>ConfirmSignUp</code> calls.',
-        }),
-    ).exactOptional(),
-    UserContextData: UserContextDataTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contextual data about your user session, such as the device fingerprint, IP address, or location. Amazon Cognito advanced security evaluates the risk of an authentication event based on the context that your app generates and passes to Amazon Cognito when it makes API requests.',
-        }),
-    ).exactOptional(),
-    ClientMetadata: ClientMetadataTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A map of custom key-value pairs that you can provide as input for any custom workflows that this action triggers.</p> <p>You create custom workflows by assigning Lambda functions to user pool triggers. When you use the ConfirmSignUp API action, Amazon Cognito invokes the function that is assigned to the <i>post confirmation</i> trigger. When Amazon Cognito invokes this function, it passes a JSON payload, which the function receives as input. This payload contains a <code>clientMetadata</code> attribute, which provides the data that you assigned to the ClientMetadata parameter in your ConfirmSignUp request. In your function code in Lambda, you can process the <code>clientMetadata</code> value to enhance your workflow for your specific needs.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-identity-pools-working-with-aws-lambda-triggers.html\"> Customizing user pool Workflows with Lambda Triggers</a> in the <i>Amazon Cognito Developer Guide</i>.</p> <note> <p>When you use the ClientMetadata parameter, remember that Amazon Cognito won't do the following:</p> <ul> <li> <p>Store the ClientMetadata value. This data is available only to Lambda triggers that are assigned to a user pool to support custom workflows. If your user pool configuration doesn't include triggers, the ClientMetadata parameter serves no purpose.</p> </li> <li> <p>Validate the ClientMetadata value.</p> </li> <li> <p>Encrypt the ClientMetadata value. Don't use Amazon Cognito to provide sensitive information.</p> </li> </ul> </note>",
-        }),
-    ).exactOptional(),
+    ClientId: ClientIdTypeSchema.openapi({
+      description: 'The ID of the app client associated with the user pool.',
+    }),
+    SecretHash: SecretHashTypeSchema.exactOptional().openapi({
+      description:
+        'A keyed-hash message authentication code (HMAC) calculated using the secret key of a user pool client and username plus the client ID in the message.',
+    }),
+    Username: UsernameTypeSchema.openapi({
+      description: 'The user name of the user whose registration you want to confirm.',
+    }),
+    ConfirmationCode: ConfirmationCodeTypeSchema.openapi({
+      description: "The confirmation code sent by a user's request to confirm registration.",
+    }),
+    ForceAliasCreation: ForceAliasCreationSchema.exactOptional().openapi({
+      description:
+        'Boolean to be specified to force user confirmation irrespective of existing alias. By default set to <code>False</code>. If this parameter is set to <code>True</code> and the phone number/email used for sign up confirmation already exists as an alias with a different user, the API call will migrate the alias from the previous user to the newly created user being confirmed. If set to <code>False</code>, the API will throw an <b>AliasExistsException</b> error.',
+    }),
+    AnalyticsMetadata: AnalyticsMetadataTypeSchema.exactOptional().openapi({
+      description:
+        'The Amazon Pinpoint analytics metadata for collecting metrics for <code>ConfirmSignUp</code> calls.',
+    }),
+    UserContextData: UserContextDataTypeSchema.exactOptional().openapi({
+      description:
+        'Contextual data about your user session, such as the device fingerprint, IP address, or location. Amazon Cognito advanced security evaluates the risk of an authentication event based on the context that your app generates and passes to Amazon Cognito when it makes API requests.',
+    }),
+    ClientMetadata: ClientMetadataTypeSchema.exactOptional().openapi({
+      description:
+        "<p>A map of custom key-value pairs that you can provide as input for any custom workflows that this action triggers.</p> <p>You create custom workflows by assigning Lambda functions to user pool triggers. When you use the ConfirmSignUp API action, Amazon Cognito invokes the function that is assigned to the <i>post confirmation</i> trigger. When Amazon Cognito invokes this function, it passes a JSON payload, which the function receives as input. This payload contains a <code>clientMetadata</code> attribute, which provides the data that you assigned to the ClientMetadata parameter in your ConfirmSignUp request. In your function code in Lambda, you can process the <code>clientMetadata</code> value to enhance your workflow for your specific needs.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-identity-pools-working-with-aws-lambda-triggers.html\"> Customizing user pool Workflows with Lambda Triggers</a> in the <i>Amazon Cognito Developer Guide</i>.</p> <note> <p>When you use the ClientMetadata parameter, remember that Amazon Cognito won't do the following:</p> <ul> <li> <p>Store the ClientMetadata value. This data is available only to Lambda triggers that are assigned to a user pool to support custom workflows. If your user pool configuration doesn't include triggers, the ClientMetadata parameter serves no purpose.</p> </li> <li> <p>Validate the ClientMetadata value.</p> </li> <li> <p>Encrypt the ClientMetadata value. Don't use Amazon Cognito to provide sensitive information.</p> </li> </ul> </note>",
+    }),
   })
   .openapi({
     required: ['ClientId', 'Username', 'ConfirmationCode'],
@@ -2395,35 +1651,31 @@ const ConfirmSignUpRequestSchema = z
 
 const CreateGroupResponseSchema = z
   .object({
-    Group: GroupTypeSchema.and(
-      z.any().openapi({ description: 'The group object for the group.' }),
-    ).exactOptional(),
+    Group: GroupTypeSchema.exactOptional().openapi({
+      description: 'The group object for the group.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateGroupResponse')
 
 const CreateGroupRequestSchema = z
   .object({
-    GroupName: GroupNameTypeSchema.and(
-      z.any().openapi({ description: 'The name of the group. Must be unique.' }),
-    ),
-    UserPoolId: UserPoolIdTypeSchema.and(
-      z.any().openapi({ description: 'The user pool ID for the user pool.' }),
-    ),
-    Description: DescriptionTypeSchema.and(
-      z.any().openapi({ description: 'A string containing the description of the group.' }),
-    ).exactOptional(),
-    RoleArn: ArnTypeSchema.and(
-      z.any().openapi({ description: 'The role Amazon Resource Name (ARN) for the group.' }),
-    ).exactOptional(),
-    Precedence: PrecedenceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A non-negative integer value that specifies the precedence of this group relative to the other groups that a user can belong to in the user pool. Zero is the highest precedence value. Groups with lower <code>Precedence</code> values take precedence over groups with higher or null <code>Precedence</code> values. If a user belongs to two or more groups, it is the group with the lowest precedence value whose role ARN is given in the user's tokens for the <code>cognito:roles</code> and <code>cognito:preferred_role</code> claims.</p> <p>Two groups can have the same <code>Precedence</code> value. If this happens, neither group takes precedence over the other. If two groups with the same <code>Precedence</code> have the same role ARN, that role is used in the <code>cognito:preferred_role</code> claim in tokens for users in each group. If the two groups have different role ARNs, the <code>cognito:preferred_role</code> claim isn't set in users' tokens.</p> <p>The default <code>Precedence</code> value is null. The maximum <code>Precedence</code> value is <code>2^31-1</code>.</p>",
-        }),
-    ).exactOptional(),
+    GroupName: GroupNameTypeSchema.openapi({
+      description: 'The name of the group. Must be unique.',
+    }),
+    UserPoolId: UserPoolIdTypeSchema.openapi({
+      description: 'The user pool ID for the user pool.',
+    }),
+    Description: DescriptionTypeSchema.exactOptional().openapi({
+      description: 'A string containing the description of the group.',
+    }),
+    RoleArn: ArnTypeSchema.exactOptional().openapi({
+      description: 'The role Amazon Resource Name (ARN) for the group.',
+    }),
+    Precedence: PrecedenceTypeSchema.exactOptional().openapi({
+      description:
+        "<p>A non-negative integer value that specifies the precedence of this group relative to the other groups that a user can belong to in the user pool. Zero is the highest precedence value. Groups with lower <code>Precedence</code> values take precedence over groups with higher or null <code>Precedence</code> values. If a user belongs to two or more groups, it is the group with the lowest precedence value whose role ARN is given in the user's tokens for the <code>cognito:roles</code> and <code>cognito:preferred_role</code> claims.</p> <p>Two groups can have the same <code>Precedence</code> value. If this happens, neither group takes precedence over the other. If two groups with the same <code>Precedence</code> have the same role ARN, that role is used in the <code>cognito:preferred_role</code> claim in tokens for users in each group. If the two groups have different role ARNs, the <code>cognito:preferred_role</code> claim isn't set in users' tokens.</p> <p>The default <code>Precedence</code> value is null. The maximum <code>Precedence</code> value is <code>2^31-1</code>.</p>",
+    }),
   })
   .openapi({ required: ['GroupName', 'UserPoolId'], title: 'CreateGroupRequest' })
   .openapi('CreateGroupRequest')
@@ -2457,58 +1709,38 @@ const IdpIdentifiersListTypeSchema = z
 
 const IdentityProviderTypeSchema = z
   .object({
-    UserPoolId: UserPoolIdTypeSchema.and(
-      z.any().openapi({ description: 'The user pool ID.' }),
-    ).exactOptional(),
-    ProviderName: ProviderNameTypeSchema.and(
-      z.any().openapi({ description: 'The IdP name.' }),
-    ).exactOptional(),
-    ProviderType: IdentityProviderTypeTypeSchema.and(
-      z.any().openapi({ description: 'The IdP type.' }),
-    ).exactOptional(),
-    ProviderDetails: ProviderDetailsTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The IdP details. The following list describes the provider detail keys for each IdP type.</p> <ul> <li> <p>For Google and Login with Amazon:</p> <ul> <li> <p>client_id</p> </li> <li> <p>client_secret</p> </li> <li> <p>authorize_scopes</p> </li> </ul> </li> <li> <p>For Facebook:</p> <ul> <li> <p>client_id</p> </li> <li> <p>client_secret</p> </li> <li> <p>authorize_scopes</p> </li> <li> <p>api_version</p> </li> </ul> </li> <li> <p>For Sign in with Apple:</p> <ul> <li> <p>client_id</p> </li> <li> <p>team_id</p> </li> <li> <p>key_id</p> </li> <li> <p>private_key</p> <p> <i>You can submit a private_key when you add or update an IdP. Describe operations don't return the private key.</i> </p> </li> <li> <p>authorize_scopes</p> </li> </ul> </li> <li> <p>For OIDC providers:</p> <ul> <li> <p>client_id</p> </li> <li> <p>client_secret</p> </li> <li> <p>attributes_request_method</p> </li> <li> <p>oidc_issuer</p> </li> <li> <p>authorize_scopes</p> </li> <li> <p>The following keys are only present if Amazon Cognito didn't discover them at the <code>oidc_issuer</code> URL.</p> <ul> <li> <p>authorize_url </p> </li> <li> <p>token_url </p> </li> <li> <p>attributes_url </p> </li> <li> <p>jwks_uri </p> </li> </ul> </li> <li> <p>Amazon Cognito sets the value of the following keys automatically. They are read-only.</p> <ul> <li> <p>attributes_url_add_attributes </p> </li> </ul> </li> </ul> </li> <li> <p>For SAML providers:</p> <ul> <li> <p>MetadataFile or MetadataURL</p> </li> <li> <p>IDPSignout <i>optional</i> </p> </li> </ul> </li> </ul>",
-        }),
-    ).exactOptional(),
-    AttributeMapping: AttributeMappingTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A mapping of IdP attributes to standard and custom user pool attributes.',
-        }),
-    ).exactOptional(),
-    IdpIdentifiers: IdpIdentifiersListTypeSchema.and(
-      z.any().openapi({ description: 'A list of IdP identifiers.' }),
-    ).exactOptional(),
-    LastModifiedDate: DateTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time, in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format, when the item was modified.',
-        }),
-    ).exactOptional(),
-    CreationDate: DateTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time, in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format, when the item was created.',
-        }),
-    ).exactOptional(),
+    UserPoolId: UserPoolIdTypeSchema.exactOptional().openapi({ description: 'The user pool ID.' }),
+    ProviderName: ProviderNameTypeSchema.exactOptional().openapi({ description: 'The IdP name.' }),
+    ProviderType: IdentityProviderTypeTypeSchema.exactOptional().openapi({
+      description: 'The IdP type.',
+    }),
+    ProviderDetails: ProviderDetailsTypeSchema.exactOptional().openapi({
+      description:
+        "<p>The IdP details. The following list describes the provider detail keys for each IdP type.</p> <ul> <li> <p>For Google and Login with Amazon:</p> <ul> <li> <p>client_id</p> </li> <li> <p>client_secret</p> </li> <li> <p>authorize_scopes</p> </li> </ul> </li> <li> <p>For Facebook:</p> <ul> <li> <p>client_id</p> </li> <li> <p>client_secret</p> </li> <li> <p>authorize_scopes</p> </li> <li> <p>api_version</p> </li> </ul> </li> <li> <p>For Sign in with Apple:</p> <ul> <li> <p>client_id</p> </li> <li> <p>team_id</p> </li> <li> <p>key_id</p> </li> <li> <p>private_key</p> <p> <i>You can submit a private_key when you add or update an IdP. Describe operations don't return the private key.</i> </p> </li> <li> <p>authorize_scopes</p> </li> </ul> </li> <li> <p>For OIDC providers:</p> <ul> <li> <p>client_id</p> </li> <li> <p>client_secret</p> </li> <li> <p>attributes_request_method</p> </li> <li> <p>oidc_issuer</p> </li> <li> <p>authorize_scopes</p> </li> <li> <p>The following keys are only present if Amazon Cognito didn't discover them at the <code>oidc_issuer</code> URL.</p> <ul> <li> <p>authorize_url </p> </li> <li> <p>token_url </p> </li> <li> <p>attributes_url </p> </li> <li> <p>jwks_uri </p> </li> </ul> </li> <li> <p>Amazon Cognito sets the value of the following keys automatically. They are read-only.</p> <ul> <li> <p>attributes_url_add_attributes </p> </li> </ul> </li> </ul> </li> <li> <p>For SAML providers:</p> <ul> <li> <p>MetadataFile or MetadataURL</p> </li> <li> <p>IDPSignout <i>optional</i> </p> </li> </ul> </li> </ul>",
+    }),
+    AttributeMapping: AttributeMappingTypeSchema.exactOptional().openapi({
+      description: 'A mapping of IdP attributes to standard and custom user pool attributes.',
+    }),
+    IdpIdentifiers: IdpIdentifiersListTypeSchema.exactOptional().openapi({
+      description: 'A list of IdP identifiers.',
+    }),
+    LastModifiedDate: DateTypeSchema.exactOptional().openapi({
+      description:
+        'The date and time, in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format, when the item was modified.',
+    }),
+    CreationDate: DateTypeSchema.exactOptional().openapi({
+      description:
+        'The date and time, in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format, when the item was created.',
+    }),
   })
   .openapi({ description: 'A container for information about an IdP.', required: [] })
   .openapi('IdentityProviderType')
 
 const CreateIdentityProviderResponseSchema = z
   .object({
-    IdentityProvider: IdentityProviderTypeSchema.and(
-      z.any().openapi({ description: 'The newly created IdP object.' }),
-    ),
+    IdentityProvider: IdentityProviderTypeSchema.openapi({
+      description: 'The newly created IdP object.',
+    }),
   })
   .openapi({ required: ['IdentityProvider'] })
   .openapi('CreateIdentityProviderResponse')
@@ -2522,29 +1754,19 @@ const ProviderNameTypeV1Schema = z
 
 const CreateIdentityProviderRequestSchema = z
   .object({
-    UserPoolId: UserPoolIdTypeSchema.and(z.any().openapi({ description: 'The user pool ID.' })),
-    ProviderName: ProviderNameTypeV1Schema.and(z.any().openapi({ description: 'The IdP name.' })),
-    ProviderType: IdentityProviderTypeTypeSchema.and(
-      z.any().openapi({ description: 'The IdP type.' }),
-    ),
-    ProviderDetails: ProviderDetailsTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The IdP details. The following list describes the provider detail keys for each IdP type.</p> <ul> <li> <p>For Google and Login with Amazon:</p> <ul> <li> <p>client_id</p> </li> <li> <p>client_secret</p> </li> <li> <p>authorize_scopes</p> </li> </ul> </li> <li> <p>For Facebook:</p> <ul> <li> <p>client_id</p> </li> <li> <p>client_secret</p> </li> <li> <p>authorize_scopes</p> </li> <li> <p>api_version</p> </li> </ul> </li> <li> <p>For Sign in with Apple:</p> <ul> <li> <p>client_id</p> </li> <li> <p>team_id</p> </li> <li> <p>key_id</p> </li> <li> <p>private_key</p> </li> <li> <p>authorize_scopes</p> </li> </ul> </li> <li> <p>For OpenID Connect (OIDC) providers:</p> <ul> <li> <p>client_id</p> </li> <li> <p>client_secret</p> </li> <li> <p>attributes_request_method</p> </li> <li> <p>oidc_issuer</p> </li> <li> <p>authorize_scopes</p> </li> <li> <p>The following keys are only present if Amazon Cognito didn't discover them at the <code>oidc_issuer</code> URL.</p> <ul> <li> <p>authorize_url </p> </li> <li> <p>token_url </p> </li> <li> <p>attributes_url </p> </li> <li> <p>jwks_uri </p> </li> </ul> </li> <li> <p>Amazon Cognito sets the value of the following keys automatically. They are read-only.</p> <ul> <li> <p>attributes_url_add_attributes </p> </li> </ul> </li> </ul> </li> <li> <p>For SAML providers:</p> <ul> <li> <p>MetadataFile or MetadataURL</p> </li> <li> <p>IDPSignout <i>optional</i> </p> </li> </ul> </li> </ul>",
-        }),
-    ),
-    AttributeMapping: AttributeMappingTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A mapping of IdP attributes to standard and custom user pool attributes.',
-        }),
-    ).exactOptional(),
-    IdpIdentifiers: IdpIdentifiersListTypeSchema.and(
-      z.any().openapi({ description: 'A list of IdP identifiers.' }),
-    ).exactOptional(),
+    UserPoolId: UserPoolIdTypeSchema.openapi({ description: 'The user pool ID.' }),
+    ProviderName: ProviderNameTypeV1Schema.openapi({ description: 'The IdP name.' }),
+    ProviderType: IdentityProviderTypeTypeSchema.openapi({ description: 'The IdP type.' }),
+    ProviderDetails: ProviderDetailsTypeSchema.openapi({
+      description:
+        "<p>The IdP details. The following list describes the provider detail keys for each IdP type.</p> <ul> <li> <p>For Google and Login with Amazon:</p> <ul> <li> <p>client_id</p> </li> <li> <p>client_secret</p> </li> <li> <p>authorize_scopes</p> </li> </ul> </li> <li> <p>For Facebook:</p> <ul> <li> <p>client_id</p> </li> <li> <p>client_secret</p> </li> <li> <p>authorize_scopes</p> </li> <li> <p>api_version</p> </li> </ul> </li> <li> <p>For Sign in with Apple:</p> <ul> <li> <p>client_id</p> </li> <li> <p>team_id</p> </li> <li> <p>key_id</p> </li> <li> <p>private_key</p> </li> <li> <p>authorize_scopes</p> </li> </ul> </li> <li> <p>For OpenID Connect (OIDC) providers:</p> <ul> <li> <p>client_id</p> </li> <li> <p>client_secret</p> </li> <li> <p>attributes_request_method</p> </li> <li> <p>oidc_issuer</p> </li> <li> <p>authorize_scopes</p> </li> <li> <p>The following keys are only present if Amazon Cognito didn't discover them at the <code>oidc_issuer</code> URL.</p> <ul> <li> <p>authorize_url </p> </li> <li> <p>token_url </p> </li> <li> <p>attributes_url </p> </li> <li> <p>jwks_uri </p> </li> </ul> </li> <li> <p>Amazon Cognito sets the value of the following keys automatically. They are read-only.</p> <ul> <li> <p>attributes_url_add_attributes </p> </li> </ul> </li> </ul> </li> <li> <p>For SAML providers:</p> <ul> <li> <p>MetadataFile or MetadataURL</p> </li> <li> <p>IDPSignout <i>optional</i> </p> </li> </ul> </li> </ul>",
+    }),
+    AttributeMapping: AttributeMappingTypeSchema.exactOptional().openapi({
+      description: 'A mapping of IdP attributes to standard and custom user pool attributes.',
+    }),
+    IdpIdentifiers: IdpIdentifiersListTypeSchema.exactOptional().openapi({
+      description: 'A list of IdP identifiers.',
+    }),
   })
   .openapi({
     required: ['UserPoolId', 'ProviderName', 'ProviderType', 'ProviderDetails'],
@@ -2583,12 +1805,10 @@ const ResourceServerScopeDescriptionTypeSchema = z
 
 const ResourceServerScopeTypeSchema = z
   .object({
-    ScopeName: ResourceServerScopeNameTypeSchema.and(
-      z.any().openapi({ description: 'The name of the scope.' }),
-    ),
-    ScopeDescription: ResourceServerScopeDescriptionTypeSchema.and(
-      z.any().openapi({ description: 'A description of the scope.' }),
-    ),
+    ScopeName: ResourceServerScopeNameTypeSchema.openapi({ description: 'The name of the scope.' }),
+    ScopeDescription: ResourceServerScopeDescriptionTypeSchema.openapi({
+      description: 'A description of the scope.',
+    }),
   })
   .openapi({ required: ['ScopeName', 'ScopeDescription'], description: 'A resource server scope.' })
   .openapi('ResourceServerScopeType')
@@ -2600,24 +1820,18 @@ const ResourceServerScopeListTypeSchema = z
 
 const ResourceServerTypeSchema = z
   .object({
-    UserPoolId: UserPoolIdTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The user pool ID for the user pool that hosts the resource server.',
-        }),
-    ).exactOptional(),
-    Identifier: ResourceServerIdentifierTypeSchema.and(
-      z.any().openapi({ description: 'The identifier for the resource server.' }),
-    ).exactOptional(),
-    Name: ResourceServerNameTypeSchema.and(
-      z.any().openapi({ description: 'The name of the resource server.' }),
-    ).exactOptional(),
-    Scopes: ResourceServerScopeListTypeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A list of scopes that are defined for the resource server.' }),
-    ).exactOptional(),
+    UserPoolId: UserPoolIdTypeSchema.exactOptional().openapi({
+      description: 'The user pool ID for the user pool that hosts the resource server.',
+    }),
+    Identifier: ResourceServerIdentifierTypeSchema.exactOptional().openapi({
+      description: 'The identifier for the resource server.',
+    }),
+    Name: ResourceServerNameTypeSchema.exactOptional().openapi({
+      description: 'The name of the resource server.',
+    }),
+    Scopes: ResourceServerScopeListTypeSchema.exactOptional().openapi({
+      description: 'A list of scopes that are defined for the resource server.',
+    }),
   })
   .openapi({
     description: 'A container for information about a resource server for a user pool.',
@@ -2627,37 +1841,29 @@ const ResourceServerTypeSchema = z
 
 const CreateResourceServerResponseSchema = z
   .object({
-    ResourceServer: ResourceServerTypeSchema.and(
-      z.any().openapi({ description: 'The newly created resource server.' }),
-    ),
+    ResourceServer: ResourceServerTypeSchema.openapi({
+      description: 'The newly created resource server.',
+    }),
   })
   .openapi({ required: ['ResourceServer'] })
   .openapi('CreateResourceServerResponse')
 
 const CreateResourceServerRequestSchema = z
   .object({
-    UserPoolId: UserPoolIdTypeSchema.and(
-      z.any().openapi({ description: 'The user pool ID for the user pool.' }),
-    ),
-    Identifier: ResourceServerIdentifierTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique resource server identifier for the resource server. This could be an HTTPS endpoint where the resource server is located, such as <code>https://my-weather-api.example.com</code>.',
-        }),
-    ),
-    Name: ResourceServerNameTypeSchema.and(
-      z.any().openapi({ description: 'A friendly name for the resource server.' }),
-    ),
-    Scopes: ResourceServerScopeListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of scopes. Each scope is a key-value map with the keys <code>name</code> and <code>description</code>.',
-        }),
-    ).exactOptional(),
+    UserPoolId: UserPoolIdTypeSchema.openapi({
+      description: 'The user pool ID for the user pool.',
+    }),
+    Identifier: ResourceServerIdentifierTypeSchema.openapi({
+      description:
+        'A unique resource server identifier for the resource server. This could be an HTTPS endpoint where the resource server is located, such as <code>https://my-weather-api.example.com</code>.',
+    }),
+    Name: ResourceServerNameTypeSchema.openapi({
+      description: 'A friendly name for the resource server.',
+    }),
+    Scopes: ResourceServerScopeListTypeSchema.exactOptional().openapi({
+      description:
+        'A list of scopes. Each scope is a key-value map with the keys <code>name</code> and <code>description</code>.',
+    }),
   })
   .openapi({ required: ['UserPoolId', 'Identifier', 'Name'], title: 'CreateResourceServerRequest' })
   .openapi('CreateResourceServerRequest')
@@ -2702,79 +1908,57 @@ const CompletionMessageTypeSchema = z
 
 const UserImportJobTypeSchema = z
   .object({
-    JobName: UserImportJobNameTypeSchema.and(
-      z.any().openapi({ description: 'The job name for the user import job.' }),
-    ).exactOptional(),
-    JobId: UserImportJobIdTypeSchema.and(
-      z.any().openapi({ description: 'The job ID for the user import job.' }),
-    ).exactOptional(),
-    UserPoolId: UserPoolIdTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The user pool ID for the user pool that the users are being imported into.',
-        }),
-    ).exactOptional(),
-    PreSignedUrl: PreSignedUrlTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The pre-signed URL to be used to upload the <code>.csv</code> file.',
-        }),
-    ).exactOptional(),
-    CreationDate: DateTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time, in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format, when the item was created.',
-        }),
-    ).exactOptional(),
-    StartDate: DateTypeSchema.and(
-      z.any().openapi({ description: 'The date when the user import job was started.' }),
-    ).exactOptional(),
-    CompletionDate: DateTypeSchema.and(
-      z.any().openapi({ description: 'The date when the user import job was completed.' }),
-    ).exactOptional(),
-    Status: UserImportJobStatusTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The status of the user import job. One of the following:</p> <ul> <li> <p> <code>Created</code> - The job was created but not started.</p> </li> <li> <p> <code>Pending</code> - A transition state. You have started the job, but it has not begun importing users yet.</p> </li> <li> <p> <code>InProgress</code> - The job has started, and users are being imported.</p> </li> <li> <p> <code>Stopping</code> - You have stopped the job, but the job has not stopped importing users yet.</p> </li> <li> <p> <code>Stopped</code> - You have stopped the job, and the job has stopped importing users.</p> </li> <li> <p> <code>Succeeded</code> - The job has completed successfully.</p> </li> <li> <p> <code>Failed</code> - The job has stopped due to an error.</p> </li> <li> <p> <code>Expired</code> - You created a job, but did not start the job within 24-48 hours. All data associated with the job was deleted, and the job can't be started.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    CloudWatchLogsRoleArn: ArnTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The role Amazon Resource Name (ARN) for the Amazon CloudWatch Logging role for the user import job. For more information, see "Creating the CloudWatch Logs IAM Role" in the Amazon Cognito Developer Guide.',
-        }),
-    ).exactOptional(),
-    ImportedUsers: LongTypeSchema.and(
-      z.any().openapi({ description: 'The number of users that were successfully imported.' }),
-    ).exactOptional(),
-    SkippedUsers: LongTypeSchema.and(
-      z.any().openapi({ description: 'The number of users that were skipped.' }),
-    ).exactOptional(),
-    FailedUsers: LongTypeSchema.and(
-      z.any().openapi({ description: "The number of users that couldn't be imported." }),
-    ).exactOptional(),
-    CompletionMessage: CompletionMessageTypeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The message returned when the user import job is completed.' }),
-    ).exactOptional(),
+    JobName: UserImportJobNameTypeSchema.exactOptional().openapi({
+      description: 'The job name for the user import job.',
+    }),
+    JobId: UserImportJobIdTypeSchema.exactOptional().openapi({
+      description: 'The job ID for the user import job.',
+    }),
+    UserPoolId: UserPoolIdTypeSchema.exactOptional().openapi({
+      description: 'The user pool ID for the user pool that the users are being imported into.',
+    }),
+    PreSignedUrl: PreSignedUrlTypeSchema.exactOptional().openapi({
+      description: 'The pre-signed URL to be used to upload the <code>.csv</code> file.',
+    }),
+    CreationDate: DateTypeSchema.exactOptional().openapi({
+      description:
+        'The date and time, in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format, when the item was created.',
+    }),
+    StartDate: DateTypeSchema.exactOptional().openapi({
+      description: 'The date when the user import job was started.',
+    }),
+    CompletionDate: DateTypeSchema.exactOptional().openapi({
+      description: 'The date when the user import job was completed.',
+    }),
+    Status: UserImportJobStatusTypeSchema.exactOptional().openapi({
+      description:
+        "<p>The status of the user import job. One of the following:</p> <ul> <li> <p> <code>Created</code> - The job was created but not started.</p> </li> <li> <p> <code>Pending</code> - A transition state. You have started the job, but it has not begun importing users yet.</p> </li> <li> <p> <code>InProgress</code> - The job has started, and users are being imported.</p> </li> <li> <p> <code>Stopping</code> - You have stopped the job, but the job has not stopped importing users yet.</p> </li> <li> <p> <code>Stopped</code> - You have stopped the job, and the job has stopped importing users.</p> </li> <li> <p> <code>Succeeded</code> - The job has completed successfully.</p> </li> <li> <p> <code>Failed</code> - The job has stopped due to an error.</p> </li> <li> <p> <code>Expired</code> - You created a job, but did not start the job within 24-48 hours. All data associated with the job was deleted, and the job can't be started.</p> </li> </ul>",
+    }),
+    CloudWatchLogsRoleArn: ArnTypeSchema.exactOptional().openapi({
+      description:
+        'The role Amazon Resource Name (ARN) for the Amazon CloudWatch Logging role for the user import job. For more information, see "Creating the CloudWatch Logs IAM Role" in the Amazon Cognito Developer Guide.',
+    }),
+    ImportedUsers: LongTypeSchema.exactOptional().openapi({
+      description: 'The number of users that were successfully imported.',
+    }),
+    SkippedUsers: LongTypeSchema.exactOptional().openapi({
+      description: 'The number of users that were skipped.',
+    }),
+    FailedUsers: LongTypeSchema.exactOptional().openapi({
+      description: "The number of users that couldn't be imported.",
+    }),
+    CompletionMessage: CompletionMessageTypeSchema.exactOptional().openapi({
+      description: 'The message returned when the user import job is completed.',
+    }),
   })
   .openapi({ description: 'The user import job type.', required: [] })
   .openapi('UserImportJobType')
 
 const CreateUserImportJobResponseSchema = z
   .object({
-    UserImportJob: UserImportJobTypeSchema.and(
-      z.any().openapi({ description: 'The job object that represents the user import job.' }),
-    ).exactOptional(),
+    UserImportJob: UserImportJobTypeSchema.exactOptional().openapi({
+      description: 'The job object that represents the user import job.',
+    }),
   })
   .openapi({
     description:
@@ -2785,24 +1969,16 @@ const CreateUserImportJobResponseSchema = z
 
 const CreateUserImportJobRequestSchema = z
   .object({
-    JobName: UserImportJobNameTypeSchema.and(
-      z.any().openapi({ description: 'The job name for the user import job.' }),
-    ),
-    UserPoolId: UserPoolIdTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The user pool ID for the user pool that the users are being imported into.',
-        }),
-    ),
-    CloudWatchLogsRoleArn: ArnTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The role ARN for the Amazon CloudWatch Logs Logging role for the user import job.',
-        }),
-    ),
+    JobName: UserImportJobNameTypeSchema.openapi({
+      description: 'The job name for the user import job.',
+    }),
+    UserPoolId: UserPoolIdTypeSchema.openapi({
+      description: 'The user pool ID for the user pool that the users are being imported into.',
+    }),
+    CloudWatchLogsRoleArn: ArnTypeSchema.openapi({
+      description:
+        'The role ARN for the Amazon CloudWatch Logs Logging role for the user import job.',
+    }),
   })
   .openapi({
     required: ['JobName', 'UserPoolId', 'CloudWatchLogsRoleArn'],
@@ -2832,63 +2008,39 @@ const TemporaryPasswordValidityDaysTypeSchema = z
 
 const PasswordPolicyTypeSchema = z
   .object({
-    MinimumLength: PasswordPolicyMinLengthTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The minimum length of the password in the policy that you have set. This value can't be less than 6.",
-        }),
-    ).exactOptional(),
-    RequireUppercase: BooleanTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'In the password policy that you have set, refers to whether you have required users to use at least one uppercase letter in their password.',
-        }),
-    ).exactOptional(),
-    RequireLowercase: BooleanTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'In the password policy that you have set, refers to whether you have required users to use at least one lowercase letter in their password.',
-        }),
-    ).exactOptional(),
-    RequireNumbers: BooleanTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'In the password policy that you have set, refers to whether you have required users to use at least one number in their password.',
-        }),
-    ).exactOptional(),
-    RequireSymbols: BooleanTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'In the password policy that you have set, refers to whether you have required users to use at least one symbol in their password.',
-        }),
-    ).exactOptional(),
-    TemporaryPasswordValidityDays: TemporaryPasswordValidityDaysTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The number of days a temporary password is valid in the password policy. If the user doesn't sign in during this time, an administrator must reset their password.</p> <note> <p>When you set <code>TemporaryPasswordValidityDays</code> for a user pool, you can no longer set a value for the legacy <code>UnusedAccountValidityDays</code> parameter in that user pool.</p> </note>",
-        }),
-    ).exactOptional(),
+    MinimumLength: PasswordPolicyMinLengthTypeSchema.exactOptional().openapi({
+      description:
+        "The minimum length of the password in the policy that you have set. This value can't be less than 6.",
+    }),
+    RequireUppercase: BooleanTypeSchema.exactOptional().openapi({
+      description:
+        'In the password policy that you have set, refers to whether you have required users to use at least one uppercase letter in their password.',
+    }),
+    RequireLowercase: BooleanTypeSchema.exactOptional().openapi({
+      description:
+        'In the password policy that you have set, refers to whether you have required users to use at least one lowercase letter in their password.',
+    }),
+    RequireNumbers: BooleanTypeSchema.exactOptional().openapi({
+      description:
+        'In the password policy that you have set, refers to whether you have required users to use at least one number in their password.',
+    }),
+    RequireSymbols: BooleanTypeSchema.exactOptional().openapi({
+      description:
+        'In the password policy that you have set, refers to whether you have required users to use at least one symbol in their password.',
+    }),
+    TemporaryPasswordValidityDays: TemporaryPasswordValidityDaysTypeSchema.exactOptional().openapi({
+      description:
+        "<p>The number of days a temporary password is valid in the password policy. If the user doesn't sign in during this time, an administrator must reset their password.</p> <note> <p>When you set <code>TemporaryPasswordValidityDays</code> for a user pool, you can no longer set a value for the legacy <code>UnusedAccountValidityDays</code> parameter in that user pool.</p> </note>",
+    }),
   })
   .openapi({ description: 'The password policy type.', required: [] })
   .openapi('PasswordPolicyType')
 
 const UserPoolPolicyTypeSchema = z
   .object({
-    PasswordPolicy: PasswordPolicyTypeSchema.and(
-      z.any().openapi({ description: 'The password policy.' }),
-    ).exactOptional(),
+    PasswordPolicy: PasswordPolicyTypeSchema.exactOptional().openapi({
+      description: 'The password policy.',
+    }),
   })
   .openapi({ description: 'The policy associated with a user pool.', required: [] })
   .openapi('UserPoolPolicyType')
@@ -2903,22 +2055,14 @@ const CustomSMSSenderLambdaVersionTypeSchema = z
 
 const CustomSMSLambdaVersionConfigTypeSchema = z
   .object({
-    LambdaVersion: CustomSMSSenderLambdaVersionTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Signature of the "request" attribute in the "event" information that Amazon Cognito passes to your custom SMS Lambda function. The only supported value is <code>V1_0</code>.',
-        }),
-    ),
-    LambdaArn: ArnTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the Lambda function that Amazon Cognito activates to send SMS notifications to users.',
-        }),
-    ),
+    LambdaVersion: CustomSMSSenderLambdaVersionTypeSchema.openapi({
+      description:
+        'Signature of the "request" attribute in the "event" information that Amazon Cognito passes to your custom SMS Lambda function. The only supported value is <code>V1_0</code>.',
+    }),
+    LambdaArn: ArnTypeSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the Lambda function that Amazon Cognito activates to send SMS notifications to users.',
+    }),
   })
   .openapi({
     required: ['LambdaVersion', 'LambdaArn'],
@@ -2932,22 +2076,14 @@ const CustomEmailSenderLambdaVersionTypeSchema = z
 
 const CustomEmailLambdaVersionConfigTypeSchema = z
   .object({
-    LambdaVersion: CustomEmailSenderLambdaVersionTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Signature of the "request" attribute in the "event" information Amazon Cognito passes to your custom email Lambda function. The only supported value is <code>V1_0</code>.',
-        }),
-    ),
-    LambdaArn: ArnTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the Lambda function that Amazon Cognito activates to send email notifications to users.',
-        }),
-    ),
+    LambdaVersion: CustomEmailSenderLambdaVersionTypeSchema.openapi({
+      description:
+        'Signature of the "request" attribute in the "event" information Amazon Cognito passes to your custom email Lambda function. The only supported value is <code>V1_0</code>.',
+    }),
+    LambdaArn: ArnTypeSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the Lambda function that Amazon Cognito activates to send email notifications to users.',
+    }),
   })
   .openapi({
     required: ['LambdaVersion', 'LambdaArn'],
@@ -2957,50 +2093,46 @@ const CustomEmailLambdaVersionConfigTypeSchema = z
 
 const LambdaConfigTypeSchema = z
   .object({
-    PreSignUp: ArnTypeSchema.and(
-      z.any().openapi({ description: 'A pre-registration Lambda trigger.' }),
-    ).exactOptional(),
-    CustomMessage: ArnTypeSchema.and(
-      z.any().openapi({ description: 'A custom Message Lambda trigger.' }),
-    ).exactOptional(),
-    PostConfirmation: ArnTypeSchema.and(
-      z.any().openapi({ description: 'A post-confirmation Lambda trigger.' }),
-    ).exactOptional(),
-    PreAuthentication: ArnTypeSchema.and(
-      z.any().openapi({ description: 'A pre-authentication Lambda trigger.' }),
-    ).exactOptional(),
-    PostAuthentication: ArnTypeSchema.and(
-      z.any().openapi({ description: 'A post-authentication Lambda trigger.' }),
-    ).exactOptional(),
-    DefineAuthChallenge: ArnTypeSchema.and(
-      z.any().openapi({ description: 'Defines the authentication challenge.' }),
-    ).exactOptional(),
-    CreateAuthChallenge: ArnTypeSchema.and(
-      z.any().openapi({ description: 'Creates an authentication challenge.' }),
-    ).exactOptional(),
-    VerifyAuthChallengeResponse: ArnTypeSchema.and(
-      z.any().openapi({ description: 'Verifies the authentication challenge response.' }),
-    ).exactOptional(),
-    PreTokenGeneration: ArnTypeSchema.and(
-      z.any().openapi({ description: 'A Lambda trigger that is invoked before token generation.' }),
-    ).exactOptional(),
-    UserMigration: ArnTypeSchema.and(
-      z.any().openapi({ description: 'The user migration Lambda config type.' }),
-    ).exactOptional(),
-    CustomSMSSender: CustomSMSLambdaVersionConfigTypeSchema.and(
-      z.any().openapi({ description: 'A custom SMS sender Lambda trigger.' }),
-    ).exactOptional(),
-    CustomEmailSender: CustomEmailLambdaVersionConfigTypeSchema.and(
-      z.any().openapi({ description: 'A custom email sender Lambda trigger.' }),
-    ).exactOptional(),
-    KMSKeyID: ArnTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of an <a href="/kms/latest/developerguide/concepts.html#master_keys">KMS key</a>. Amazon Cognito uses the key to encrypt codes and temporary passwords sent to <code>CustomEmailSender</code> and <code>CustomSMSSender</code>.',
-        }),
-    ).exactOptional(),
+    PreSignUp: ArnTypeSchema.exactOptional().openapi({
+      description: 'A pre-registration Lambda trigger.',
+    }),
+    CustomMessage: ArnTypeSchema.exactOptional().openapi({
+      description: 'A custom Message Lambda trigger.',
+    }),
+    PostConfirmation: ArnTypeSchema.exactOptional().openapi({
+      description: 'A post-confirmation Lambda trigger.',
+    }),
+    PreAuthentication: ArnTypeSchema.exactOptional().openapi({
+      description: 'A pre-authentication Lambda trigger.',
+    }),
+    PostAuthentication: ArnTypeSchema.exactOptional().openapi({
+      description: 'A post-authentication Lambda trigger.',
+    }),
+    DefineAuthChallenge: ArnTypeSchema.exactOptional().openapi({
+      description: 'Defines the authentication challenge.',
+    }),
+    CreateAuthChallenge: ArnTypeSchema.exactOptional().openapi({
+      description: 'Creates an authentication challenge.',
+    }),
+    VerifyAuthChallengeResponse: ArnTypeSchema.exactOptional().openapi({
+      description: 'Verifies the authentication challenge response.',
+    }),
+    PreTokenGeneration: ArnTypeSchema.exactOptional().openapi({
+      description: 'A Lambda trigger that is invoked before token generation.',
+    }),
+    UserMigration: ArnTypeSchema.exactOptional().openapi({
+      description: 'The user migration Lambda config type.',
+    }),
+    CustomSMSSender: CustomSMSLambdaVersionConfigTypeSchema.exactOptional().openapi({
+      description: 'A custom SMS sender Lambda trigger.',
+    }),
+    CustomEmailSender: CustomEmailLambdaVersionConfigTypeSchema.exactOptional().openapi({
+      description: 'A custom email sender Lambda trigger.',
+    }),
+    KMSKeyID: ArnTypeSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of an <a href="/kms/latest/developerguide/concepts.html#master_keys">KMS key</a>. Amazon Cognito uses the key to encrypt codes and temporary passwords sent to <code>CustomEmailSender</code> and <code>CustomSMSSender</code>.',
+    }),
   })
   .openapi({ description: 'Specifies the configuration for Lambda triggers.', required: [] })
   .openapi('LambdaConfigType')
@@ -3080,48 +2212,28 @@ const DefaultEmailOptionTypeSchema = z
 
 const VerificationMessageTemplateTypeSchema = z
   .object({
-    SmsMessage: SmsVerificationMessageTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The template for SMS messages that Amazon Cognito sends to your users.',
-        }),
-    ).exactOptional(),
-    EmailMessage: EmailVerificationMessageTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The template for email messages that Amazon Cognito sends to your users. You can set an <code>EmailMessage</code> template only if the value of <a href="https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_EmailConfigurationType.html#CognitoUserPools-Type-EmailConfigurationType-EmailSendingAccount"> EmailSendingAccount</a> is <code>DEVELOPER</code>. When your <a href="https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_EmailConfigurationType.html#CognitoUserPools-Type-EmailConfigurationType-EmailSendingAccount">EmailSendingAccount</a> is <code>DEVELOPER</code>, your user pool sends email messages with your own Amazon SES configuration.',
-        }),
-    ).exactOptional(),
-    EmailSubject: EmailVerificationSubjectTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The subject line for the email message template. You can set an <code>EmailSubject</code> template only if the value of <a href="https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_EmailConfigurationType.html#CognitoUserPools-Type-EmailConfigurationType-EmailSendingAccount"> EmailSendingAccount</a> is <code>DEVELOPER</code>. When your <a href="https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_EmailConfigurationType.html#CognitoUserPools-Type-EmailConfigurationType-EmailSendingAccount">EmailSendingAccount</a> is <code>DEVELOPER</code>, your user pool sends email messages with your own Amazon SES configuration.',
-        }),
-    ).exactOptional(),
-    EmailMessageByLink: EmailVerificationMessageByLinkTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The email message template for sending a confirmation link to the user. You can set an <code>EmailMessageByLink</code> template only if the value of <a href="https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_EmailConfigurationType.html#CognitoUserPools-Type-EmailConfigurationType-EmailSendingAccount"> EmailSendingAccount</a> is <code>DEVELOPER</code>. When your <a href="https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_EmailConfigurationType.html#CognitoUserPools-Type-EmailConfigurationType-EmailSendingAccount">EmailSendingAccount</a> is <code>DEVELOPER</code>, your user pool sends email messages with your own Amazon SES configuration.',
-        }),
-    ).exactOptional(),
-    EmailSubjectByLink: EmailVerificationSubjectByLinkTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The subject line for the email message template for sending a confirmation link to the user. You can set an <code>EmailSubjectByLink</code> template only if the value of <a href="https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_EmailConfigurationType.html#CognitoUserPools-Type-EmailConfigurationType-EmailSendingAccount"> EmailSendingAccount</a> is <code>DEVELOPER</code>. When your <a href="https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_EmailConfigurationType.html#CognitoUserPools-Type-EmailConfigurationType-EmailSendingAccount">EmailSendingAccount</a> is <code>DEVELOPER</code>, your user pool sends email messages with your own Amazon SES configuration.',
-        }),
-    ).exactOptional(),
-    DefaultEmailOption: DefaultEmailOptionTypeSchema.and(
-      z.any().openapi({ description: 'The default email option.' }),
-    ).exactOptional(),
+    SmsMessage: SmsVerificationMessageTypeSchema.exactOptional().openapi({
+      description: 'The template for SMS messages that Amazon Cognito sends to your users.',
+    }),
+    EmailMessage: EmailVerificationMessageTypeSchema.exactOptional().openapi({
+      description:
+        'The template for email messages that Amazon Cognito sends to your users. You can set an <code>EmailMessage</code> template only if the value of <a href="https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_EmailConfigurationType.html#CognitoUserPools-Type-EmailConfigurationType-EmailSendingAccount"> EmailSendingAccount</a> is <code>DEVELOPER</code>. When your <a href="https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_EmailConfigurationType.html#CognitoUserPools-Type-EmailConfigurationType-EmailSendingAccount">EmailSendingAccount</a> is <code>DEVELOPER</code>, your user pool sends email messages with your own Amazon SES configuration.',
+    }),
+    EmailSubject: EmailVerificationSubjectTypeSchema.exactOptional().openapi({
+      description:
+        'The subject line for the email message template. You can set an <code>EmailSubject</code> template only if the value of <a href="https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_EmailConfigurationType.html#CognitoUserPools-Type-EmailConfigurationType-EmailSendingAccount"> EmailSendingAccount</a> is <code>DEVELOPER</code>. When your <a href="https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_EmailConfigurationType.html#CognitoUserPools-Type-EmailConfigurationType-EmailSendingAccount">EmailSendingAccount</a> is <code>DEVELOPER</code>, your user pool sends email messages with your own Amazon SES configuration.',
+    }),
+    EmailMessageByLink: EmailVerificationMessageByLinkTypeSchema.exactOptional().openapi({
+      description:
+        'The email message template for sending a confirmation link to the user. You can set an <code>EmailMessageByLink</code> template only if the value of <a href="https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_EmailConfigurationType.html#CognitoUserPools-Type-EmailConfigurationType-EmailSendingAccount"> EmailSendingAccount</a> is <code>DEVELOPER</code>. When your <a href="https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_EmailConfigurationType.html#CognitoUserPools-Type-EmailConfigurationType-EmailSendingAccount">EmailSendingAccount</a> is <code>DEVELOPER</code>, your user pool sends email messages with your own Amazon SES configuration.',
+    }),
+    EmailSubjectByLink: EmailVerificationSubjectByLinkTypeSchema.exactOptional().openapi({
+      description:
+        'The subject line for the email message template for sending a confirmation link to the user. You can set an <code>EmailSubjectByLink</code> template only if the value of <a href="https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_EmailConfigurationType.html#CognitoUserPools-Type-EmailConfigurationType-EmailSendingAccount"> EmailSendingAccount</a> is <code>DEVELOPER</code>. When your <a href="https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_EmailConfigurationType.html#CognitoUserPools-Type-EmailConfigurationType-EmailSendingAccount">EmailSendingAccount</a> is <code>DEVELOPER</code>, your user pool sends email messages with your own Amazon SES configuration.',
+    }),
+    DefaultEmailOption: DefaultEmailOptionTypeSchema.exactOptional().openapi({
+      description: 'The default email option.',
+    }),
   })
   .openapi({ description: 'The template for verification messages.', required: [] })
   .openapi('VerificationMessageTemplateType')
@@ -3133,14 +2245,10 @@ const AttributesRequireVerificationBeforeUpdateTypeSchema = z
 const UserAttributeUpdateSettingsTypeSchema = z
   .object({
     AttributesRequireVerificationBeforeUpdate:
-      AttributesRequireVerificationBeforeUpdateTypeSchema.and(
-        z
-          .any()
-          .openapi({
-            description:
-              '<p>Requires that your user verifies their email address, phone number, or both before Amazon Cognito updates the value of that attribute. When you update a user attribute that has this option activated, Amazon Cognito sends a verification message to the new phone number or email address. Amazon Cognito doesn’t change the value of the attribute until your user responds to the verification message and confirms the new value.</p> <p>You can verify an updated email address or phone number with a <a href="https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_VerifyUserAttribute.html">VerifyUserAttribute</a> API request. You can also call the <a href="https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_AdminUpdateUserAttributes.html">AdminUpdateUserAttributes</a> API and set <code>email_verified</code> or <code>phone_number_verified</code> to true.</p> <p>When <code>AttributesRequireVerificationBeforeUpdate</code> is false, your user pool doesn\'t require that your users verify attribute changes before Amazon Cognito updates them. In a user pool where <code>AttributesRequireVerificationBeforeUpdate</code> is false, API operations that change attribute values can immediately update a user’s <code>email</code> or <code>phone_number</code> attribute.</p>',
-          }),
-      ).exactOptional(),
+      AttributesRequireVerificationBeforeUpdateTypeSchema.exactOptional().openapi({
+        description:
+          '<p>Requires that your user verifies their email address, phone number, or both before Amazon Cognito updates the value of that attribute. When you update a user attribute that has this option activated, Amazon Cognito sends a verification message to the new phone number or email address. Amazon Cognito doesn’t change the value of the attribute until your user responds to the verification message and confirms the new value.</p> <p>You can verify an updated email address or phone number with a <a href="https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_VerifyUserAttribute.html">VerifyUserAttribute</a> API request. You can also call the <a href="https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_AdminUpdateUserAttributes.html">AdminUpdateUserAttributes</a> API and set <code>email_verified</code> or <code>phone_number_verified</code> to true.</p> <p>When <code>AttributesRequireVerificationBeforeUpdate</code> is false, your user pool doesn\'t require that your users verify attribute changes before Amazon Cognito updates them. In a user pool where <code>AttributesRequireVerificationBeforeUpdate</code> is false, API operations that change attribute values can immediately update a user’s <code>email</code> or <code>phone_number</code> attribute.</p>',
+      }),
   })
   .openapi({
     description:
@@ -3153,22 +2261,14 @@ const UserPoolMfaTypeSchema = z.enum(['OFF', 'ON', 'OPTIONAL']).openapi('UserPoo
 
 const DeviceConfigurationTypeSchema = z
   .object({
-    ChallengeRequiredOnNewDevice: BooleanTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>When true, a remembered device can sign in with device authentication instead of SMS and time-based one-time password (TOTP) factors for multi-factor authentication (MFA).</p> <note> <p>Whether or not <code>ChallengeRequiredOnNewDevice</code> is true, users who sign in with devices that have not been confirmed or remembered must still provide a second factor in a user pool that requires MFA.</p> </note>',
-        }),
-    ).exactOptional(),
-    DeviceOnlyRememberedOnUserPrompt: BooleanTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>When true, Amazon Cognito doesn\'t automatically remember a user\'s device when your app sends a <a href="https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_ConfirmDevice.html"> ConfirmDevice</a> API request. In your app, create a prompt for your user to choose whether they want to remember their device. Return the user\'s choice in an <a href="https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UpdateDeviceStatus.html"> UpdateDeviceStatus</a> API request.</p> <p>When <code>DeviceOnlyRememberedOnUserPrompt</code> is <code>false</code>, Amazon Cognito immediately remembers devices that you register in a <code>ConfirmDevice</code> API request.</p>',
-        }),
-    ).exactOptional(),
+    ChallengeRequiredOnNewDevice: BooleanTypeSchema.exactOptional().openapi({
+      description:
+        '<p>When true, a remembered device can sign in with device authentication instead of SMS and time-based one-time password (TOTP) factors for multi-factor authentication (MFA).</p> <note> <p>Whether or not <code>ChallengeRequiredOnNewDevice</code> is true, users who sign in with devices that have not been confirmed or remembered must still provide a second factor in a user pool that requires MFA.</p> </note>',
+    }),
+    DeviceOnlyRememberedOnUserPrompt: BooleanTypeSchema.exactOptional().openapi({
+      description:
+        '<p>When true, Amazon Cognito doesn\'t automatically remember a user\'s device when your app sends a <a href="https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_ConfirmDevice.html"> ConfirmDevice</a> API request. In your app, create a prompt for your user to choose whether they want to remember their device. Return the user\'s choice in an <a href="https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UpdateDeviceStatus.html"> UpdateDeviceStatus</a> API request.</p> <p>When <code>DeviceOnlyRememberedOnUserPrompt</code> is <code>false</code>, Amazon Cognito immediately remembers devices that you register in a <code>ConfirmDevice</code> API request.</p>',
+    }),
   })
   .openapi({
     description:
@@ -3195,45 +2295,25 @@ const SESConfigurationSetSchema = z
 
 const EmailConfigurationTypeSchema = z
   .object({
-    SourceArn: ArnTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ARN of a verified email address or an address from a verified domain in Amazon SES. You can set a <code>SourceArn</code> email from a verified domain only with an API request. You can set a verified email address, but not an address in a verified domain, in the Amazon Cognito console. Amazon Cognito uses the email address that you provide in one of the following ways, depending on the value that you specify for the <code>EmailSendingAccount</code> parameter:</p> <ul> <li> <p>If you specify <code>COGNITO_DEFAULT</code>, Amazon Cognito uses this address as the custom FROM address when it emails your users using its built-in email account.</p> </li> <li> <p>If you specify <code>DEVELOPER</code>, Amazon Cognito emails your users with this address by calling Amazon SES on your behalf.</p> </li> </ul> <p>The Region value of the <code>SourceArn</code> parameter must indicate a supported Amazon Web Services Region of your user pool. Typically, the Region in the <code>SourceArn</code> and the user pool Region are the same. For more information, see <a href="https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-email.html#user-pool-email-developer-region-mapping">Amazon SES email configuration regions</a> in the <a href="https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-identity-pools.html">Amazon Cognito Developer Guide</a>.</p>',
-        }),
-    ).exactOptional(),
-    ReplyToEmailAddress: EmailAddressTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The destination to which the receiver of the email should reply.',
-        }),
-    ).exactOptional(),
-    EmailSendingAccount: EmailSendingAccountTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies whether Amazon Cognito uses its built-in functionality to send your users email messages, or uses your Amazon Simple Email Service email configuration. Specify one of the following values:</p> <dl> <dt>COGNITO_DEFAULT</dt> <dd> <p>When Amazon Cognito emails your users, it uses its built-in email functionality. When you use the default option, Amazon Cognito allows only a limited number of emails each day for your user pool. For typical production environments, the default email limit is less than the required delivery volume. To achieve a higher delivery volume, specify DEVELOPER to use your Amazon SES email configuration.</p> <p>To look up the email delivery limit for the default option, see <a href="https://docs.aws.amazon.com/cognito/latest/developerguide/limits.html">Limits</a> in the <i>Amazon Cognito Developer Guide</i>.</p> <p>The default FROM address is <code>no-reply@verificationemail.com</code>. To customize the FROM address, provide the Amazon Resource Name (ARN) of an Amazon SES verified email address for the <code>SourceArn</code> parameter.</p> </dd> <dt>DEVELOPER</dt> <dd> <p>When Amazon Cognito emails your users, it uses your Amazon SES configuration. Amazon Cognito calls Amazon SES on your behalf to send email from your verified email address. When you use this option, the email delivery limits are the same limits that apply to your Amazon SES verified email address in your Amazon Web Services account.</p> <p>If you use this option, provide the ARN of an Amazon SES verified email address for the <code>SourceArn</code> parameter.</p> <p>Before Amazon Cognito can email your users, it requires additional permissions to call Amazon SES on your behalf. When you update your user pool with this option, Amazon Cognito creates a <i>service-linked role</i>, which is a type of role in your Amazon Web Services account. This role contains the permissions that allow you to access Amazon SES and send email messages from your email address. For more information about the service-linked role that Amazon Cognito creates, see <a href="https://docs.aws.amazon.com/cognito/latest/developerguide/using-service-linked-roles.html">Using Service-Linked Roles for Amazon Cognito</a> in the <i>Amazon Cognito Developer Guide</i>.</p> </dd> </dl>',
-        }),
-    ).exactOptional(),
-    From: StringTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Either the sender’s email address or the sender’s name with their email address. For example, <code>testuser@example.com</code> or <code>Test User &lt;testuser@example.com&gt;</code>. This address appears before the body of the email.',
-        }),
-    ).exactOptional(),
-    ConfigurationSet: SESConfigurationSetSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The set of configuration rules that can be applied to emails sent using Amazon Simple Email Service. A configuration set is applied to an email by including a reference to the configuration set in the headers of the email. Once applied, all of the rules in that configuration set are applied to the email. Configuration sets can be used to apply the following types of rules to emails: </p> <dl> <dt>Event publishing</dt> <dd> <p>Amazon Simple Email Service can track the number of send, delivery, open, click, bounce, and complaint events for each email sent. Use event publishing to send information about these events to other Amazon Web Services services such as and Amazon CloudWatch</p> </dd> <dt>IP pool management</dt> <dd> <p>When leasing dedicated IP addresses with Amazon Simple Email Service, you can create groups of IP addresses, called dedicated IP pools. You can then associate the dedicated IP pools with configuration sets.</p> </dd> </dl>',
-        }),
-    ).exactOptional(),
+    SourceArn: ArnTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The ARN of a verified email address or an address from a verified domain in Amazon SES. You can set a <code>SourceArn</code> email from a verified domain only with an API request. You can set a verified email address, but not an address in a verified domain, in the Amazon Cognito console. Amazon Cognito uses the email address that you provide in one of the following ways, depending on the value that you specify for the <code>EmailSendingAccount</code> parameter:</p> <ul> <li> <p>If you specify <code>COGNITO_DEFAULT</code>, Amazon Cognito uses this address as the custom FROM address when it emails your users using its built-in email account.</p> </li> <li> <p>If you specify <code>DEVELOPER</code>, Amazon Cognito emails your users with this address by calling Amazon SES on your behalf.</p> </li> </ul> <p>The Region value of the <code>SourceArn</code> parameter must indicate a supported Amazon Web Services Region of your user pool. Typically, the Region in the <code>SourceArn</code> and the user pool Region are the same. For more information, see <a href="https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-email.html#user-pool-email-developer-region-mapping">Amazon SES email configuration regions</a> in the <a href="https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-identity-pools.html">Amazon Cognito Developer Guide</a>.</p>',
+    }),
+    ReplyToEmailAddress: EmailAddressTypeSchema.exactOptional().openapi({
+      description: 'The destination to which the receiver of the email should reply.',
+    }),
+    EmailSendingAccount: EmailSendingAccountTypeSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies whether Amazon Cognito uses its built-in functionality to send your users email messages, or uses your Amazon Simple Email Service email configuration. Specify one of the following values:</p> <dl> <dt>COGNITO_DEFAULT</dt> <dd> <p>When Amazon Cognito emails your users, it uses its built-in email functionality. When you use the default option, Amazon Cognito allows only a limited number of emails each day for your user pool. For typical production environments, the default email limit is less than the required delivery volume. To achieve a higher delivery volume, specify DEVELOPER to use your Amazon SES email configuration.</p> <p>To look up the email delivery limit for the default option, see <a href="https://docs.aws.amazon.com/cognito/latest/developerguide/limits.html">Limits</a> in the <i>Amazon Cognito Developer Guide</i>.</p> <p>The default FROM address is <code>no-reply@verificationemail.com</code>. To customize the FROM address, provide the Amazon Resource Name (ARN) of an Amazon SES verified email address for the <code>SourceArn</code> parameter.</p> </dd> <dt>DEVELOPER</dt> <dd> <p>When Amazon Cognito emails your users, it uses your Amazon SES configuration. Amazon Cognito calls Amazon SES on your behalf to send email from your verified email address. When you use this option, the email delivery limits are the same limits that apply to your Amazon SES verified email address in your Amazon Web Services account.</p> <p>If you use this option, provide the ARN of an Amazon SES verified email address for the <code>SourceArn</code> parameter.</p> <p>Before Amazon Cognito can email your users, it requires additional permissions to call Amazon SES on your behalf. When you update your user pool with this option, Amazon Cognito creates a <i>service-linked role</i>, which is a type of role in your Amazon Web Services account. This role contains the permissions that allow you to access Amazon SES and send email messages from your email address. For more information about the service-linked role that Amazon Cognito creates, see <a href="https://docs.aws.amazon.com/cognito/latest/developerguide/using-service-linked-roles.html">Using Service-Linked Roles for Amazon Cognito</a> in the <i>Amazon Cognito Developer Guide</i>.</p> </dd> </dl>',
+    }),
+    From: StringTypeSchema.exactOptional().openapi({
+      description:
+        'Either the sender’s email address or the sender’s name with their email address. For example, <code>testuser@example.com</code> or <code>Test User &lt;testuser@example.com&gt;</code>. This address appears before the body of the email.',
+    }),
+    ConfigurationSet: SESConfigurationSetSchema.exactOptional().openapi({
+      description:
+        '<p>The set of configuration rules that can be applied to emails sent using Amazon Simple Email Service. A configuration set is applied to an email by including a reference to the configuration set in the headers of the email. Once applied, all of the rules in that configuration set are applied to the email. Configuration sets can be used to apply the following types of rules to emails: </p> <dl> <dt>Event publishing</dt> <dd> <p>Amazon Simple Email Service can track the number of send, delivery, open, click, bounce, and complaint events for each email sent. Use event publishing to send information about these events to other Amazon Web Services services such as and Amazon CloudWatch</p> </dd> <dt>IP pool management</dt> <dd> <p>When leasing dedicated IP addresses with Amazon Simple Email Service, you can create groups of IP addresses, called dedicated IP pools. You can then associate the dedicated IP pools with configuration sets.</p> </dd> </dl>',
+    }),
   })
   .openapi({
     description:
@@ -3246,30 +2326,18 @@ const RegionCodeTypeSchema = z.string().min(5).max(32).openapi('RegionCodeType')
 
 const SmsConfigurationTypeSchema = z
   .object({
-    SnsCallerArn: ArnTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the Amazon SNS caller. This is the ARN of the IAM role in your Amazon Web Services account that Amazon Cognito will use to send SMS messages. SMS messages are subject to a <a href="https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-settings-email-phone-verification.html">spending limit</a>. ',
-        }),
-    ),
-    ExternalId: StringTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The external ID provides additional security for your IAM role. You can use an <code>ExternalId</code> with the IAM role that you use with Amazon SNS to send SMS messages for your user pool. If you provide an <code>ExternalId</code>, your Amazon Cognito user pool includes it in the request to assume your IAM role. You can configure the role trust policy to require that Amazon Cognito, and any principal, provide the <code>ExternalID</code>. If you use the Amazon Cognito Management Console to create a role for SMS multi-factor authentication (MFA), Amazon Cognito creates a role with the required permissions and a trust policy that demonstrates use of the <code>ExternalId</code>.</p> <p>For more information about the <code>ExternalId</code> of a role, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_create_for-user_externalid.html">How to use an external ID when granting access to your Amazon Web Services resources to a third party</a> </p>',
-        }),
-    ).exactOptional(),
-    SnsRegion: RegionCodeTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Web Services Region to use with Amazon SNS integration. You can choose the same Region as your user pool, or a supported <b>Legacy Amazon SNS alternate Region</b>. </p> <p> Amazon Cognito resources in the Asia Pacific (Seoul) Amazon Web Services Region must use your Amazon SNS configuration in the Asia Pacific (Tokyo) Region. For more information, see <a href="https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-sms-settings.html">SMS message settings for Amazon Cognito user pools</a>.</p>',
-        }),
-    ).exactOptional(),
+    SnsCallerArn: ArnTypeSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the Amazon SNS caller. This is the ARN of the IAM role in your Amazon Web Services account that Amazon Cognito will use to send SMS messages. SMS messages are subject to a <a href="https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-settings-email-phone-verification.html">spending limit</a>. ',
+    }),
+    ExternalId: StringTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The external ID provides additional security for your IAM role. You can use an <code>ExternalId</code> with the IAM role that you use with Amazon SNS to send SMS messages for your user pool. If you provide an <code>ExternalId</code>, your Amazon Cognito user pool includes it in the request to assume your IAM role. You can configure the role trust policy to require that Amazon Cognito, and any principal, provide the <code>ExternalID</code>. If you use the Amazon Cognito Management Console to create a role for SMS multi-factor authentication (MFA), Amazon Cognito creates a role with the required permissions and a trust policy that demonstrates use of the <code>ExternalId</code>.</p> <p>For more information about the <code>ExternalId</code> of a role, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_create_for-user_externalid.html">How to use an external ID when granting access to your Amazon Web Services resources to a third party</a> </p>',
+    }),
+    SnsRegion: RegionCodeTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Web Services Region to use with Amazon SNS integration. You can choose the same Region as your user pool, or a supported <b>Legacy Amazon SNS alternate Region</b>. </p> <p> Amazon Cognito resources in the Asia Pacific (Seoul) Amazon Web Services Region must use your Amazon SNS configuration in the Asia Pacific (Tokyo) Region. For more information, see <a href="https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-sms-settings.html">SMS message settings for Amazon Cognito user pools</a>.</p>',
+    }),
   })
   .openapi({
     required: ['SnsCallerArn'],
@@ -3297,55 +2365,36 @@ const AdminCreateUserUnusedAccountValidityDaysTypeSchema = z
 
 const MessageTemplateTypeSchema = z
   .object({
-    SMSMessage: SmsVerificationMessageTypeSchema.and(
-      z.any().openapi({ description: 'The message template for SMS messages.' }),
-    ).exactOptional(),
-    EmailMessage: EmailVerificationMessageTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The message template for email messages. EmailMessage is allowed only if <a href="https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_EmailConfigurationType.html#CognitoUserPools-Type-EmailConfigurationType-EmailSendingAccount">EmailSendingAccount</a> is DEVELOPER. ',
-        }),
-    ).exactOptional(),
-    EmailSubject: EmailVerificationSubjectTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The subject line for email messages. EmailSubject is allowed only if <a href="https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_EmailConfigurationType.html#CognitoUserPools-Type-EmailConfigurationType-EmailSendingAccount">EmailSendingAccount</a> is DEVELOPER. ',
-        }),
-    ).exactOptional(),
+    SMSMessage: SmsVerificationMessageTypeSchema.exactOptional().openapi({
+      description: 'The message template for SMS messages.',
+    }),
+    EmailMessage: EmailVerificationMessageTypeSchema.exactOptional().openapi({
+      description:
+        'The message template for email messages. EmailMessage is allowed only if <a href="https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_EmailConfigurationType.html#CognitoUserPools-Type-EmailConfigurationType-EmailSendingAccount">EmailSendingAccount</a> is DEVELOPER. ',
+    }),
+    EmailSubject: EmailVerificationSubjectTypeSchema.exactOptional().openapi({
+      description:
+        'The subject line for email messages. EmailSubject is allowed only if <a href="https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_EmailConfigurationType.html#CognitoUserPools-Type-EmailConfigurationType-EmailSendingAccount">EmailSendingAccount</a> is DEVELOPER. ',
+    }),
   })
   .openapi({ description: 'The message template structure.', required: [] })
   .openapi('MessageTemplateType')
 
 const AdminCreateUserConfigTypeSchema = z
   .object({
-    AllowAdminCreateUserOnly: BooleanTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Set to <code>True</code> if only the administrator is allowed to create user profiles. Set to <code>False</code> if users can sign themselves up via an app.',
-        }),
-    ).exactOptional(),
-    UnusedAccountValidityDays: AdminCreateUserUnusedAccountValidityDaysTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The user account expiration limit, in days, after which a new account that hasn\'t signed in is no longer usable. To reset the account after that time limit, you must call <code>AdminCreateUser</code> again, specifying <code>"RESEND"</code> for the <code>MessageAction</code> parameter. The default value for this parameter is 7. </p> <note> <p>If you set a value for <code>TemporaryPasswordValidityDays</code> in <code>PasswordPolicy</code>, that value will be used, and <code>UnusedAccountValidityDays</code> will be no longer be an available parameter for that user pool.</p> </note>',
-        }),
-    ).exactOptional(),
-    InviteMessageTemplate: MessageTemplateTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The message template to be used for the welcome message to new users.</p> <p>See also <a href="https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pool-settings-message-customizations.html#cognito-user-pool-settings-user-invitation-message-customization">Customizing User Invitation Messages</a>.</p>',
-        }),
-    ).exactOptional(),
+    AllowAdminCreateUserOnly: BooleanTypeSchema.exactOptional().openapi({
+      description:
+        'Set to <code>True</code> if only the administrator is allowed to create user profiles. Set to <code>False</code> if users can sign themselves up via an app.',
+    }),
+    UnusedAccountValidityDays:
+      AdminCreateUserUnusedAccountValidityDaysTypeSchema.exactOptional().openapi({
+        description:
+          '<p>The user account expiration limit, in days, after which a new account that hasn\'t signed in is no longer usable. To reset the account after that time limit, you must call <code>AdminCreateUser</code> again, specifying <code>"RESEND"</code> for the <code>MessageAction</code> parameter. The default value for this parameter is 7. </p> <note> <p>If you set a value for <code>TemporaryPasswordValidityDays</code> in <code>PasswordPolicy</code>, that value will be used, and <code>UnusedAccountValidityDays</code> will be no longer be an available parameter for that user pool.</p> </note>',
+      }),
+    InviteMessageTemplate: MessageTemplateTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The message template to be used for the welcome message to new users.</p> <p>See also <a href="https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pool-settings-message-customizations.html#cognito-user-pool-settings-user-invitation-message-customization">Customizing User Invitation Messages</a>.</p>',
+    }),
   })
   .openapi({ description: 'The configuration for creating a new user profile.', required: [] })
   .openapi('AdminCreateUserConfigType')
@@ -3356,13 +2405,9 @@ const AdvancedSecurityModeTypeSchema = z
 
 const UserPoolAddOnsTypeSchema = z
   .object({
-    AdvancedSecurityMode: AdvancedSecurityModeTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The operating mode of advanced security features in your user pool.',
-        }),
-    ),
+    AdvancedSecurityMode: AdvancedSecurityModeTypeSchema.openapi({
+      description: 'The operating mode of advanced security features in your user pool.',
+    }),
   })
   .openapi({
     required: ['AdvancedSecurityMode'],
@@ -3373,14 +2418,10 @@ const UserPoolAddOnsTypeSchema = z
 
 const UsernameConfigurationTypeSchema = z
   .object({
-    CaseSensitive: WrappedBooleanTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies whether user name case sensitivity will be applied for all users in the user pool through Amazon Cognito APIs. For most use cases, set case sensitivity to <code>False</code> (case insensitive) as a best practice. When usernames and email addresses are case insensitive, users can sign in as the same user when they enter a different capitalization of their user name.</p> <p>Valid values include:</p> <dl> <dt>True</dt> <dd> <p>Enables case sensitivity for all username input. When this option is set to <code>True</code>, users must sign in using the exact capitalization of their given username, such as “UserName”. This is the default value.</p> </dd> <dt>False</dt> <dd> <p>Enables case insensitivity for all username input. For example, when this option is set to <code>False</code>, users can sign in using <code>username</code>, <code>USERNAME</code>, or <code>UserName</code>. This option also enables both <code>preferred_username</code> and <code>email</code> alias to be case insensitive, in addition to the <code>username</code> attribute.</p> </dd> </dl>',
-        }),
-    ),
+    CaseSensitive: WrappedBooleanTypeSchema.openapi({
+      description:
+        '<p>Specifies whether user name case sensitivity will be applied for all users in the user pool through Amazon Cognito APIs. For most use cases, set case sensitivity to <code>False</code> (case insensitive) as a best practice. When usernames and email addresses are case insensitive, users can sign in as the same user when they enter a different capitalization of their user name.</p> <p>Valid values include:</p> <dl> <dt>True</dt> <dd> <p>Enables case sensitivity for all username input. When this option is set to <code>True</code>, users must sign in using the exact capitalization of their given username, such as “UserName”. This is the default value.</p> </dd> <dt>False</dt> <dd> <p>Enables case insensitivity for all username input. For example, when this option is set to <code>False</code>, users can sign in using <code>username</code>, <code>USERNAME</code>, or <code>UserName</code>. This option also enables both <code>preferred_username</code> and <code>email</code> alias to be case insensitive, in addition to the <code>username</code> attribute.</p> </dd> </dl>',
+    }),
   })
   .openapi({ required: ['CaseSensitive'], description: 'The username configuration type. ' })
   .openapi('UsernameConfigurationType')
@@ -3393,17 +2434,11 @@ const RecoveryOptionNameTypeSchema = z
 
 const RecoveryOptionTypeSchema = z
   .object({
-    Priority: PriorityTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A positive integer specifying priority of a method with 1 being the highest priority.',
-        }),
-    ),
-    Name: RecoveryOptionNameTypeSchema.and(
-      z.any().openapi({ description: 'The recovery method for a user.' }),
-    ),
+    Priority: PriorityTypeSchema.openapi({
+      description:
+        'A positive integer specifying priority of a method with 1 being the highest priority.',
+    }),
+    Name: RecoveryOptionNameTypeSchema.openapi({ description: 'The recovery method for a user.' }),
   })
   .openapi({
     required: ['Priority', 'Name'],
@@ -3419,229 +2454,139 @@ const RecoveryMechanismsTypeSchema = z
 
 const AccountRecoverySettingTypeSchema = z
   .object({
-    RecoveryMechanisms: RecoveryMechanismsTypeSchema.and(
-      z.any().openapi({ description: 'The list of <code>RecoveryOptionTypes</code>.' }),
-    ).exactOptional(),
+    RecoveryMechanisms: RecoveryMechanismsTypeSchema.exactOptional().openapi({
+      description: 'The list of <code>RecoveryOptionTypes</code>.',
+    }),
   })
   .openapi({ description: 'The data type for <code>AccountRecoverySetting</code>.', required: [] })
   .openapi('AccountRecoverySettingType')
 
 const UserPoolTypeSchema = z
   .object({
-    Id: UserPoolIdTypeSchema.and(
-      z.any().openapi({ description: 'The ID of the user pool.' }),
-    ).exactOptional(),
-    Name: UserPoolNameTypeSchema.and(
-      z.any().openapi({ description: 'The name of the user pool.' }),
-    ).exactOptional(),
-    Policies: UserPoolPolicyTypeSchema.and(
-      z.any().openapi({ description: 'The policies associated with the user pool.' }),
-    ).exactOptional(),
-    DeletionProtection: DeletionProtectionTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>When active, <code>DeletionProtection</code> prevents accidental deletion of your user pool. Before you can delete a user pool that you have protected against deletion, you must deactivate this feature.</p> <p>When you try to delete a protected user pool in a <code>DeleteUserPool</code> API request, Amazon Cognito returns an <code>InvalidParameterException</code> error. To delete a protected user pool, send a new <code>DeleteUserPool</code> request after you deactivate deletion protection in an <code>UpdateUserPool</code> API request.</p>',
-        }),
-    ).exactOptional(),
-    LambdaConfig: LambdaConfigTypeSchema.and(
-      z.any().openapi({ description: 'The Lambda triggers associated with the user pool.' }),
-    ).exactOptional(),
-    Status: StatusTypeSchema.and(
-      z.any().openapi({ description: 'The status of a user pool.' }),
-    ).exactOptional(),
-    LastModifiedDate: DateTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time, in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format, when the item was modified.',
-        }),
-    ).exactOptional(),
-    CreationDate: DateTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time, in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format, when the item was created.',
-        }),
-    ).exactOptional(),
-    SchemaAttributes: SchemaAttributesListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of the user attributes and their properties in your user pool. The attribute schema contains standard attributes, custom attributes with a <code>custom:</code> prefix, and developer attributes with a <code>dev:</code> prefix. For more information, see <a href="https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-settings-attributes.html">User pool attributes</a>.</p> <p>Developer-only attributes are a legacy feature of user pools, are read-only to all app clients. You can create and update developer-only attributes only with IAM-authenticated API operations. Use app client read/write permissions instead.</p>',
-        }),
-    ).exactOptional(),
-    AutoVerifiedAttributes: VerifiedAttributesListTypeSchema.and(
-      z.any().openapi({ description: 'The attributes that are auto-verified in a user pool.' }),
-    ).exactOptional(),
-    AliasAttributes: AliasAttributesListTypeSchema.and(
-      z.any().openapi({ description: 'The attributes that are aliased in a user pool.' }),
-    ).exactOptional(),
-    UsernameAttributes: UsernameAttributesListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether a user can use an email address or phone number as a username when they sign up.',
-        }),
-    ).exactOptional(),
-    SmsVerificationMessage: SmsVerificationMessageTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This parameter is no longer used. See <a href="https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_VerificationMessageTemplateType.html">VerificationMessageTemplateType</a>.',
-        }),
-    ).exactOptional(),
-    EmailVerificationMessage: EmailVerificationMessageTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This parameter is no longer used. See <a href="https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_VerificationMessageTemplateType.html">VerificationMessageTemplateType</a>.',
-        }),
-    ).exactOptional(),
-    EmailVerificationSubject: EmailVerificationSubjectTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This parameter is no longer used. See <a href="https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_VerificationMessageTemplateType.html">VerificationMessageTemplateType</a>.',
-        }),
-    ).exactOptional(),
-    VerificationMessageTemplate: VerificationMessageTemplateTypeSchema.and(
-      z.any().openapi({ description: 'The template for verification messages.' }),
-    ).exactOptional(),
-    SmsAuthenticationMessage: SmsVerificationMessageTypeSchema.and(
-      z.any().openapi({ description: 'The contents of the SMS authentication message.' }),
-    ).exactOptional(),
-    UserAttributeUpdateSettings: UserAttributeUpdateSettingsTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The settings for updates to user attributes. These settings include the property <code>AttributesRequireVerificationBeforeUpdate</code>, a user-pool setting that tells Amazon Cognito how to handle changes to the value of your users\' email address and phone number attributes. For more information, see <a href="https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-settings-email-phone-verification.html#user-pool-settings-verifications-verify-attribute-updates"> Verifying updates to email addresses and phone numbers</a>.',
-        }),
-    ).exactOptional(),
-    MfaConfiguration: UserPoolMfaTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Can be one of the following values:</p> <ul> <li> <p> <code>OFF</code> - MFA tokens aren't required and can't be specified during user registration.</p> </li> <li> <p> <code>ON</code> - MFA tokens are required for all user registrations. You can only specify required when you're initially creating a user pool.</p> </li> <li> <p> <code>OPTIONAL</code> - Users have the option when registering to create an MFA token.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    DeviceConfiguration: DeviceConfigurationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The device-remembering configuration for a user pool. A null value indicates that you have deactivated device remembering in your user pool.</p> <note> <p>When you provide a value for any <code>DeviceConfiguration</code> field, you activate the Amazon Cognito device-remembering feature.</p> </note>',
-        }),
-    ).exactOptional(),
-    EstimatedNumberOfUsers: IntegerTypeSchema.and(
-      z.any().openapi({ description: 'A number estimating the size of the user pool.' }),
-    ).exactOptional(),
-    EmailConfiguration: EmailConfigurationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The email configuration of your user pool. The email configuration type sets your preferred sending method, Amazon Web Services Region, and sender for messages from your user pool.',
-        }),
-    ).exactOptional(),
-    SmsConfiguration: SmsConfigurationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The SMS configuration with the settings that your Amazon Cognito user pool must use to send an SMS message from your Amazon Web Services account through Amazon Simple Notification Service. To send SMS messages with Amazon SNS in the Amazon Web Services Region that you want, the Amazon Cognito user pool uses an Identity and Access Management (IAM) role in your Amazon Web Services account.',
-        }),
-    ).exactOptional(),
-    UserPoolTags: UserPoolTagsTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tags that are assigned to the user pool. A tag is a label that you can apply to user pools to categorize and manage them in different ways, such as by purpose, owner, environment, or other criteria.',
-        }),
-    ).exactOptional(),
-    SmsConfigurationFailure: StringTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The reason why the SMS configuration can\'t send the messages to your users.</p> <p>This message might include comma-separated values to describe why your SMS configuration can\'t send messages to user pool end users.</p> <dl> <dt>InvalidSmsRoleAccessPolicyException</dt> <dd> <p>The Identity and Access Management role that Amazon Cognito uses to send SMS messages isn\'t properly configured. For more information, see <a href="https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_SmsConfigurationType.html">SmsConfigurationType</a>.</p> </dd> <dt>SNSSandbox</dt> <dd> <p>The Amazon Web Services account is in the SNS SMS Sandbox and messages will only reach verified end users. This parameter won’t get populated with SNSSandbox if the user creating the user pool doesn’t have SNS permissions. To learn how to move your Amazon Web Services account out of the sandbox, see <a href="https://docs.aws.amazon.com/sns/latest/dg/sns-sms-sandbox-moving-to-production.html">Moving out of the SMS sandbox</a>.</p> </dd> </dl>',
-        }),
-    ).exactOptional(),
-    EmailConfigurationFailure: StringTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Deprecated. Review error codes from API requests with <code>EventSource:cognito-idp.amazonaws.com</code> in CloudTrail for information about problems with user pool email configuration.',
-        }),
-    ).exactOptional(),
-    Domain: DomainTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The domain prefix, if the user pool has a domain associated with it.',
-        }),
-    ).exactOptional(),
-    CustomDomain: DomainTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A custom domain name that you provide to Amazon Cognito. This parameter applies only if you use a custom domain to host the sign-up and sign-in pages for your application. An example of a custom domain name might be <code>auth.example.com</code>.</p> <p>For more information about adding a custom domain to your user pool, see <a href="https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-add-custom-domain.html">Using Your Own Domain for the Hosted UI</a>.</p>',
-        }),
-    ).exactOptional(),
-    AdminCreateUserConfig: AdminCreateUserConfigTypeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The configuration for <code>AdminCreateUser</code> requests.' }),
-    ).exactOptional(),
-    UserPoolAddOns: UserPoolAddOnsTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>User pool add-ons. Contains settings for activation of advanced security features. To log user security information but take no action, set to <code>AUDIT</code>. To configure automatic security responses to risky traffic to your user pool, set to <code>ENFORCED</code>.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pool-settings-advanced-security.html">Adding advanced security to a user pool</a>.</p>',
-        }),
-    ).exactOptional(),
-    UsernameConfiguration: UsernameConfigurationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Case sensitivity of the username input for the selected sign-in option. For example, when case sensitivity is set to <code>False</code>, users can sign in using either "username" or "Username". This configuration is immutable once it has been set. For more information, see <a href="https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UsernameConfigurationType.html">UsernameConfigurationType</a>.',
-        }),
-    ).exactOptional(),
-    Arn: ArnTypeSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) for the user pool.' }),
-    ).exactOptional(),
-    AccountRecoverySetting: AccountRecoverySettingTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The available verified method a user can use to recover their password when they call <code>ForgotPassword</code>. You can use this setting to define a preferred method when a user has more than one method available. With this setting, SMS doesn't qualify for a valid password recovery mechanism if the user also has SMS multi-factor authentication (MFA) activated. In the absence of this setting, Amazon Cognito uses the legacy behavior to determine the recovery method where SMS is preferred through email.",
-        }),
-    ).exactOptional(),
+    Id: UserPoolIdTypeSchema.exactOptional().openapi({ description: 'The ID of the user pool.' }),
+    Name: UserPoolNameTypeSchema.exactOptional().openapi({
+      description: 'The name of the user pool.',
+    }),
+    Policies: UserPoolPolicyTypeSchema.exactOptional().openapi({
+      description: 'The policies associated with the user pool.',
+    }),
+    DeletionProtection: DeletionProtectionTypeSchema.exactOptional().openapi({
+      description:
+        '<p>When active, <code>DeletionProtection</code> prevents accidental deletion of your user pool. Before you can delete a user pool that you have protected against deletion, you must deactivate this feature.</p> <p>When you try to delete a protected user pool in a <code>DeleteUserPool</code> API request, Amazon Cognito returns an <code>InvalidParameterException</code> error. To delete a protected user pool, send a new <code>DeleteUserPool</code> request after you deactivate deletion protection in an <code>UpdateUserPool</code> API request.</p>',
+    }),
+    LambdaConfig: LambdaConfigTypeSchema.exactOptional().openapi({
+      description: 'The Lambda triggers associated with the user pool.',
+    }),
+    Status: StatusTypeSchema.exactOptional().openapi({ description: 'The status of a user pool.' }),
+    LastModifiedDate: DateTypeSchema.exactOptional().openapi({
+      description:
+        'The date and time, in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format, when the item was modified.',
+    }),
+    CreationDate: DateTypeSchema.exactOptional().openapi({
+      description:
+        'The date and time, in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format, when the item was created.',
+    }),
+    SchemaAttributes: SchemaAttributesListTypeSchema.exactOptional().openapi({
+      description:
+        '<p>A list of the user attributes and their properties in your user pool. The attribute schema contains standard attributes, custom attributes with a <code>custom:</code> prefix, and developer attributes with a <code>dev:</code> prefix. For more information, see <a href="https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-settings-attributes.html">User pool attributes</a>.</p> <p>Developer-only attributes are a legacy feature of user pools, are read-only to all app clients. You can create and update developer-only attributes only with IAM-authenticated API operations. Use app client read/write permissions instead.</p>',
+    }),
+    AutoVerifiedAttributes: VerifiedAttributesListTypeSchema.exactOptional().openapi({
+      description: 'The attributes that are auto-verified in a user pool.',
+    }),
+    AliasAttributes: AliasAttributesListTypeSchema.exactOptional().openapi({
+      description: 'The attributes that are aliased in a user pool.',
+    }),
+    UsernameAttributes: UsernameAttributesListTypeSchema.exactOptional().openapi({
+      description:
+        'Specifies whether a user can use an email address or phone number as a username when they sign up.',
+    }),
+    SmsVerificationMessage: SmsVerificationMessageTypeSchema.exactOptional().openapi({
+      description:
+        'This parameter is no longer used. See <a href="https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_VerificationMessageTemplateType.html">VerificationMessageTemplateType</a>.',
+    }),
+    EmailVerificationMessage: EmailVerificationMessageTypeSchema.exactOptional().openapi({
+      description:
+        'This parameter is no longer used. See <a href="https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_VerificationMessageTemplateType.html">VerificationMessageTemplateType</a>.',
+    }),
+    EmailVerificationSubject: EmailVerificationSubjectTypeSchema.exactOptional().openapi({
+      description:
+        'This parameter is no longer used. See <a href="https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_VerificationMessageTemplateType.html">VerificationMessageTemplateType</a>.',
+    }),
+    VerificationMessageTemplate: VerificationMessageTemplateTypeSchema.exactOptional().openapi({
+      description: 'The template for verification messages.',
+    }),
+    SmsAuthenticationMessage: SmsVerificationMessageTypeSchema.exactOptional().openapi({
+      description: 'The contents of the SMS authentication message.',
+    }),
+    UserAttributeUpdateSettings: UserAttributeUpdateSettingsTypeSchema.exactOptional().openapi({
+      description:
+        'The settings for updates to user attributes. These settings include the property <code>AttributesRequireVerificationBeforeUpdate</code>, a user-pool setting that tells Amazon Cognito how to handle changes to the value of your users\' email address and phone number attributes. For more information, see <a href="https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-settings-email-phone-verification.html#user-pool-settings-verifications-verify-attribute-updates"> Verifying updates to email addresses and phone numbers</a>.',
+    }),
+    MfaConfiguration: UserPoolMfaTypeSchema.exactOptional().openapi({
+      description:
+        "<p>Can be one of the following values:</p> <ul> <li> <p> <code>OFF</code> - MFA tokens aren't required and can't be specified during user registration.</p> </li> <li> <p> <code>ON</code> - MFA tokens are required for all user registrations. You can only specify required when you're initially creating a user pool.</p> </li> <li> <p> <code>OPTIONAL</code> - Users have the option when registering to create an MFA token.</p> </li> </ul>",
+    }),
+    DeviceConfiguration: DeviceConfigurationTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The device-remembering configuration for a user pool. A null value indicates that you have deactivated device remembering in your user pool.</p> <note> <p>When you provide a value for any <code>DeviceConfiguration</code> field, you activate the Amazon Cognito device-remembering feature.</p> </note>',
+    }),
+    EstimatedNumberOfUsers: IntegerTypeSchema.exactOptional().openapi({
+      description: 'A number estimating the size of the user pool.',
+    }),
+    EmailConfiguration: EmailConfigurationTypeSchema.exactOptional().openapi({
+      description:
+        'The email configuration of your user pool. The email configuration type sets your preferred sending method, Amazon Web Services Region, and sender for messages from your user pool.',
+    }),
+    SmsConfiguration: SmsConfigurationTypeSchema.exactOptional().openapi({
+      description:
+        'The SMS configuration with the settings that your Amazon Cognito user pool must use to send an SMS message from your Amazon Web Services account through Amazon Simple Notification Service. To send SMS messages with Amazon SNS in the Amazon Web Services Region that you want, the Amazon Cognito user pool uses an Identity and Access Management (IAM) role in your Amazon Web Services account.',
+    }),
+    UserPoolTags: UserPoolTagsTypeSchema.exactOptional().openapi({
+      description:
+        'The tags that are assigned to the user pool. A tag is a label that you can apply to user pools to categorize and manage them in different ways, such as by purpose, owner, environment, or other criteria.',
+    }),
+    SmsConfigurationFailure: StringTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The reason why the SMS configuration can\'t send the messages to your users.</p> <p>This message might include comma-separated values to describe why your SMS configuration can\'t send messages to user pool end users.</p> <dl> <dt>InvalidSmsRoleAccessPolicyException</dt> <dd> <p>The Identity and Access Management role that Amazon Cognito uses to send SMS messages isn\'t properly configured. For more information, see <a href="https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_SmsConfigurationType.html">SmsConfigurationType</a>.</p> </dd> <dt>SNSSandbox</dt> <dd> <p>The Amazon Web Services account is in the SNS SMS Sandbox and messages will only reach verified end users. This parameter won’t get populated with SNSSandbox if the user creating the user pool doesn’t have SNS permissions. To learn how to move your Amazon Web Services account out of the sandbox, see <a href="https://docs.aws.amazon.com/sns/latest/dg/sns-sms-sandbox-moving-to-production.html">Moving out of the SMS sandbox</a>.</p> </dd> </dl>',
+    }),
+    EmailConfigurationFailure: StringTypeSchema.exactOptional().openapi({
+      description:
+        'Deprecated. Review error codes from API requests with <code>EventSource:cognito-idp.amazonaws.com</code> in CloudTrail for information about problems with user pool email configuration.',
+    }),
+    Domain: DomainTypeSchema.exactOptional().openapi({
+      description: 'The domain prefix, if the user pool has a domain associated with it.',
+    }),
+    CustomDomain: DomainTypeSchema.exactOptional().openapi({
+      description:
+        '<p>A custom domain name that you provide to Amazon Cognito. This parameter applies only if you use a custom domain to host the sign-up and sign-in pages for your application. An example of a custom domain name might be <code>auth.example.com</code>.</p> <p>For more information about adding a custom domain to your user pool, see <a href="https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-add-custom-domain.html">Using Your Own Domain for the Hosted UI</a>.</p>',
+    }),
+    AdminCreateUserConfig: AdminCreateUserConfigTypeSchema.exactOptional().openapi({
+      description: 'The configuration for <code>AdminCreateUser</code> requests.',
+    }),
+    UserPoolAddOns: UserPoolAddOnsTypeSchema.exactOptional().openapi({
+      description:
+        '<p>User pool add-ons. Contains settings for activation of advanced security features. To log user security information but take no action, set to <code>AUDIT</code>. To configure automatic security responses to risky traffic to your user pool, set to <code>ENFORCED</code>.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pool-settings-advanced-security.html">Adding advanced security to a user pool</a>.</p>',
+    }),
+    UsernameConfiguration: UsernameConfigurationTypeSchema.exactOptional().openapi({
+      description:
+        'Case sensitivity of the username input for the selected sign-in option. For example, when case sensitivity is set to <code>False</code>, users can sign in using either "username" or "Username". This configuration is immutable once it has been set. For more information, see <a href="https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UsernameConfigurationType.html">UsernameConfigurationType</a>.',
+    }),
+    Arn: ArnTypeSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) for the user pool.',
+    }),
+    AccountRecoverySetting: AccountRecoverySettingTypeSchema.exactOptional().openapi({
+      description:
+        "The available verified method a user can use to recover their password when they call <code>ForgotPassword</code>. You can use this setting to define a preferred method when a user has more than one method available. With this setting, SMS doesn't qualify for a valid password recovery mechanism if the user also has SMS multi-factor authentication (MFA) activated. In the absence of this setting, Amazon Cognito uses the legacy behavior to determine the recovery method where SMS is preferred through email.",
+    }),
   })
   .openapi({ description: 'A container for information about the user pool.', required: [] })
   .openapi('UserPoolType')
 
 const CreateUserPoolResponseSchema = z
   .object({
-    UserPool: UserPoolTypeSchema.and(
-      z.any().openapi({ description: 'A container for the user pool details.' }),
-    ).exactOptional(),
+    UserPool: UserPoolTypeSchema.exactOptional().openapi({
+      description: 'A container for the user pool details.',
+    }),
   })
   .openapi({
     description: 'Represents the response from the server for the request to create a user pool.',
@@ -3651,167 +2596,93 @@ const CreateUserPoolResponseSchema = z
 
 const CreateUserPoolRequestSchema = z
   .object({
-    PoolName: UserPoolNameTypeSchema.and(
-      z.any().openapi({ description: 'A string used to name the user pool.' }),
-    ),
-    Policies: UserPoolPolicyTypeSchema.and(
-      z.any().openapi({ description: 'The policies associated with the new user pool.' }),
-    ).exactOptional(),
-    DeletionProtection: DeletionProtectionTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>When active, <code>DeletionProtection</code> prevents accidental deletion of your user pool. Before you can delete a user pool that you have protected against deletion, you must deactivate this feature.</p> <p>When you try to delete a protected user pool in a <code>DeleteUserPool</code> API request, Amazon Cognito returns an <code>InvalidParameterException</code> error. To delete a protected user pool, send a new <code>DeleteUserPool</code> request after you deactivate deletion protection in an <code>UpdateUserPool</code> API request.</p>',
-        }),
-    ).exactOptional(),
-    LambdaConfig: LambdaConfigTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Lambda trigger configuration information for the new user pool.</p> <note> <p>In a push model, event sources (such as Amazon S3 and custom applications) need permission to invoke a function. So you must make an extra call to add permission for these event sources to invoke your Lambda function.</p> <p/> <p>For more information on using the Lambda API to add permission, see<a href="https://docs.aws.amazon.com/lambda/latest/dg/API_AddPermission.html"> AddPermission </a>. </p> <p>For adding permission using the CLI, see<a href="https://docs.aws.amazon.com/cli/latest/reference/lambda/add-permission.html"> add-permission </a>.</p> </note>',
-        }),
-    ).exactOptional(),
-    AutoVerifiedAttributes: VerifiedAttributesListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The attributes to be auto-verified. Possible values: <b>email</b>, <b>phone_number</b>.',
-        }),
-    ).exactOptional(),
-    AliasAttributes: AliasAttributesListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Attributes supported as an alias for this user pool. Possible values: <b>phone_number</b>, <b>email</b>, or <b>preferred_username</b>.',
-        }),
-    ).exactOptional(),
-    UsernameAttributes: UsernameAttributesListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether a user can use an email address or phone number as a username when they sign up.',
-        }),
-    ).exactOptional(),
-    SmsVerificationMessage: SmsVerificationMessageTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This parameter is no longer used. See <a href="https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_VerificationMessageTemplateType.html">VerificationMessageTemplateType</a>.',
-        }),
-    ).exactOptional(),
-    EmailVerificationMessage: EmailVerificationMessageTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This parameter is no longer used. See <a href="https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_VerificationMessageTemplateType.html">VerificationMessageTemplateType</a>.',
-        }),
-    ).exactOptional(),
-    EmailVerificationSubject: EmailVerificationSubjectTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This parameter is no longer used. See <a href="https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_VerificationMessageTemplateType.html">VerificationMessageTemplateType</a>.',
-        }),
-    ).exactOptional(),
-    VerificationMessageTemplate: VerificationMessageTemplateTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The template for the verification message that the user sees when the app requests permission to access the user's information.",
-        }),
-    ).exactOptional(),
-    SmsAuthenticationMessage: SmsVerificationMessageTypeSchema.and(
-      z.any().openapi({ description: 'A string representing the SMS authentication message.' }),
-    ).exactOptional(),
-    MfaConfiguration: UserPoolMfaTypeSchema.and(
-      z.any().openapi({ description: 'Specifies MFA configuration details.' }),
-    ).exactOptional(),
-    UserAttributeUpdateSettings: UserAttributeUpdateSettingsTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The settings for updates to user attributes. These settings include the property <code>AttributesRequireVerificationBeforeUpdate</code>, a user-pool setting that tells Amazon Cognito how to handle changes to the value of your users\' email address and phone number attributes. For more information, see <a href="https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-settings-email-phone-verification.html#user-pool-settings-verifications-verify-attribute-updates"> Verifying updates to email addresses and phone numbers</a>.',
-        }),
-    ).exactOptional(),
-    DeviceConfiguration: DeviceConfigurationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The device-remembering configuration for a user pool. A null value indicates that you have deactivated device remembering in your user pool.</p> <note> <p>When you provide a value for any <code>DeviceConfiguration</code> field, you activate the Amazon Cognito device-remembering feature.</p> </note>',
-        }),
-    ).exactOptional(),
-    EmailConfiguration: EmailConfigurationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The email configuration of your user pool. The email configuration type sets your preferred sending method, Amazon Web Services Region, and sender for messages from your user pool.',
-        }),
-    ).exactOptional(),
-    SmsConfiguration: SmsConfigurationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The SMS configuration with the settings that your Amazon Cognito user pool must use to send an SMS message from your Amazon Web Services account through Amazon Simple Notification Service. To send SMS messages with Amazon SNS in the Amazon Web Services Region that you want, the Amazon Cognito user pool uses an Identity and Access Management (IAM) role in your Amazon Web Services account.',
-        }),
-    ).exactOptional(),
-    UserPoolTags: UserPoolTagsTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tag keys and values to assign to the user pool. A tag is a label that you can use to categorize and manage user pools in different ways, such as by purpose, owner, environment, or other criteria.',
-        }),
-    ).exactOptional(),
-    AdminCreateUserConfig: AdminCreateUserConfigTypeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The configuration for <code>AdminCreateUser</code> requests.' }),
-    ).exactOptional(),
-    Schema: SchemaAttributesListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of schema attributes for the new user pool. These attributes can be standard or custom attributes.',
-        }),
-    ).exactOptional(),
-    UserPoolAddOns: UserPoolAddOnsTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>User pool add-ons. Contains settings for activation of advanced security features. To log user security information but take no action, set to <code>AUDIT</code>. To configure automatic security responses to risky traffic to your user pool, set to <code>ENFORCED</code>.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pool-settings-advanced-security.html">Adding advanced security to a user pool</a>.</p>',
-        }),
-    ).exactOptional(),
-    UsernameConfiguration: UsernameConfigurationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Case sensitivity on the username input for the selected sign-in option. When case sensitivity is set to <code>False</code> (case insensitive), users can sign in with any combination of capital and lowercase letters. For example, <code>username</code>, <code>USERNAME</code>, or <code>UserName</code>, or for email, <code>email@example.com</code> or <code>EMaiL@eXamplE.Com</code>. For most use cases, set case sensitivity to <code>False</code> (case insensitive) as a best practice. When usernames and email addresses are case insensitive, Amazon Cognito treats any variation in case as the same user, and prevents a case variation from being assigned to the same attribute for a different user.</p> <p>This configuration is immutable after you set it. For more information, see <a href="https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UsernameConfigurationType.html">UsernameConfigurationType</a>.</p>',
-        }),
-    ).exactOptional(),
-    AccountRecoverySetting: AccountRecoverySettingTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The available verified method a user can use to recover their password when they call <code>ForgotPassword</code>. You can use this setting to define a preferred method when a user has more than one method available. With this setting, SMS doesn't qualify for a valid password recovery mechanism if the user also has SMS multi-factor authentication (MFA) activated. In the absence of this setting, Amazon Cognito uses the legacy behavior to determine the recovery method where SMS is preferred through email.",
-        }),
-    ).exactOptional(),
+    PoolName: UserPoolNameTypeSchema.openapi({
+      description: 'A string used to name the user pool.',
+    }),
+    Policies: UserPoolPolicyTypeSchema.exactOptional().openapi({
+      description: 'The policies associated with the new user pool.',
+    }),
+    DeletionProtection: DeletionProtectionTypeSchema.exactOptional().openapi({
+      description:
+        '<p>When active, <code>DeletionProtection</code> prevents accidental deletion of your user pool. Before you can delete a user pool that you have protected against deletion, you must deactivate this feature.</p> <p>When you try to delete a protected user pool in a <code>DeleteUserPool</code> API request, Amazon Cognito returns an <code>InvalidParameterException</code> error. To delete a protected user pool, send a new <code>DeleteUserPool</code> request after you deactivate deletion protection in an <code>UpdateUserPool</code> API request.</p>',
+    }),
+    LambdaConfig: LambdaConfigTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The Lambda trigger configuration information for the new user pool.</p> <note> <p>In a push model, event sources (such as Amazon S3 and custom applications) need permission to invoke a function. So you must make an extra call to add permission for these event sources to invoke your Lambda function.</p> <p/> <p>For more information on using the Lambda API to add permission, see<a href="https://docs.aws.amazon.com/lambda/latest/dg/API_AddPermission.html"> AddPermission </a>. </p> <p>For adding permission using the CLI, see<a href="https://docs.aws.amazon.com/cli/latest/reference/lambda/add-permission.html"> add-permission </a>.</p> </note>',
+    }),
+    AutoVerifiedAttributes: VerifiedAttributesListTypeSchema.exactOptional().openapi({
+      description:
+        'The attributes to be auto-verified. Possible values: <b>email</b>, <b>phone_number</b>.',
+    }),
+    AliasAttributes: AliasAttributesListTypeSchema.exactOptional().openapi({
+      description:
+        'Attributes supported as an alias for this user pool. Possible values: <b>phone_number</b>, <b>email</b>, or <b>preferred_username</b>.',
+    }),
+    UsernameAttributes: UsernameAttributesListTypeSchema.exactOptional().openapi({
+      description:
+        'Specifies whether a user can use an email address or phone number as a username when they sign up.',
+    }),
+    SmsVerificationMessage: SmsVerificationMessageTypeSchema.exactOptional().openapi({
+      description:
+        'This parameter is no longer used. See <a href="https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_VerificationMessageTemplateType.html">VerificationMessageTemplateType</a>.',
+    }),
+    EmailVerificationMessage: EmailVerificationMessageTypeSchema.exactOptional().openapi({
+      description:
+        'This parameter is no longer used. See <a href="https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_VerificationMessageTemplateType.html">VerificationMessageTemplateType</a>.',
+    }),
+    EmailVerificationSubject: EmailVerificationSubjectTypeSchema.exactOptional().openapi({
+      description:
+        'This parameter is no longer used. See <a href="https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_VerificationMessageTemplateType.html">VerificationMessageTemplateType</a>.',
+    }),
+    VerificationMessageTemplate: VerificationMessageTemplateTypeSchema.exactOptional().openapi({
+      description:
+        "The template for the verification message that the user sees when the app requests permission to access the user's information.",
+    }),
+    SmsAuthenticationMessage: SmsVerificationMessageTypeSchema.exactOptional().openapi({
+      description: 'A string representing the SMS authentication message.',
+    }),
+    MfaConfiguration: UserPoolMfaTypeSchema.exactOptional().openapi({
+      description: 'Specifies MFA configuration details.',
+    }),
+    UserAttributeUpdateSettings: UserAttributeUpdateSettingsTypeSchema.exactOptional().openapi({
+      description:
+        'The settings for updates to user attributes. These settings include the property <code>AttributesRequireVerificationBeforeUpdate</code>, a user-pool setting that tells Amazon Cognito how to handle changes to the value of your users\' email address and phone number attributes. For more information, see <a href="https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-settings-email-phone-verification.html#user-pool-settings-verifications-verify-attribute-updates"> Verifying updates to email addresses and phone numbers</a>.',
+    }),
+    DeviceConfiguration: DeviceConfigurationTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The device-remembering configuration for a user pool. A null value indicates that you have deactivated device remembering in your user pool.</p> <note> <p>When you provide a value for any <code>DeviceConfiguration</code> field, you activate the Amazon Cognito device-remembering feature.</p> </note>',
+    }),
+    EmailConfiguration: EmailConfigurationTypeSchema.exactOptional().openapi({
+      description:
+        'The email configuration of your user pool. The email configuration type sets your preferred sending method, Amazon Web Services Region, and sender for messages from your user pool.',
+    }),
+    SmsConfiguration: SmsConfigurationTypeSchema.exactOptional().openapi({
+      description:
+        'The SMS configuration with the settings that your Amazon Cognito user pool must use to send an SMS message from your Amazon Web Services account through Amazon Simple Notification Service. To send SMS messages with Amazon SNS in the Amazon Web Services Region that you want, the Amazon Cognito user pool uses an Identity and Access Management (IAM) role in your Amazon Web Services account.',
+    }),
+    UserPoolTags: UserPoolTagsTypeSchema.exactOptional().openapi({
+      description:
+        'The tag keys and values to assign to the user pool. A tag is a label that you can use to categorize and manage user pools in different ways, such as by purpose, owner, environment, or other criteria.',
+    }),
+    AdminCreateUserConfig: AdminCreateUserConfigTypeSchema.exactOptional().openapi({
+      description: 'The configuration for <code>AdminCreateUser</code> requests.',
+    }),
+    Schema: SchemaAttributesListTypeSchema.exactOptional().openapi({
+      description:
+        'An array of schema attributes for the new user pool. These attributes can be standard or custom attributes.',
+    }),
+    UserPoolAddOns: UserPoolAddOnsTypeSchema.exactOptional().openapi({
+      description:
+        '<p>User pool add-ons. Contains settings for activation of advanced security features. To log user security information but take no action, set to <code>AUDIT</code>. To configure automatic security responses to risky traffic to your user pool, set to <code>ENFORCED</code>.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pool-settings-advanced-security.html">Adding advanced security to a user pool</a>.</p>',
+    }),
+    UsernameConfiguration: UsernameConfigurationTypeSchema.exactOptional().openapi({
+      description:
+        '<p>Case sensitivity on the username input for the selected sign-in option. When case sensitivity is set to <code>False</code> (case insensitive), users can sign in with any combination of capital and lowercase letters. For example, <code>username</code>, <code>USERNAME</code>, or <code>UserName</code>, or for email, <code>email@example.com</code> or <code>EMaiL@eXamplE.Com</code>. For most use cases, set case sensitivity to <code>False</code> (case insensitive) as a best practice. When usernames and email addresses are case insensitive, Amazon Cognito treats any variation in case as the same user, and prevents a case variation from being assigned to the same attribute for a different user.</p> <p>This configuration is immutable after you set it. For more information, see <a href="https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UsernameConfigurationType.html">UsernameConfigurationType</a>.</p>',
+    }),
+    AccountRecoverySetting: AccountRecoverySettingTypeSchema.exactOptional().openapi({
+      description:
+        "The available verified method a user can use to recover their password when they call <code>ForgotPassword</code>. You can use this setting to define a preferred method when a user has more than one method available. With this setting, SMS doesn't qualify for a valid password recovery mechanism if the user also has SMS multi-factor authentication (MFA) activated. In the absence of this setting, Amazon Cognito uses the legacy behavior to determine the recovery method where SMS is preferred through email.",
+    }),
   })
   .openapi({
     required: ['PoolName'],
@@ -3850,30 +2721,18 @@ const TimeUnitsTypeSchema = z.enum(['seconds', 'minutes', 'hours', 'days']).open
 
 const TokenValidityUnitsTypeSchema = z
   .object({
-    AccessToken: TimeUnitsTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A time unit of <code>seconds</code>, <code>minutes</code>, <code>hours</code>, or <code>days</code> for the value that you set in the <code>AccessTokenValidity</code> parameter. The default <code>AccessTokenValidity</code> time unit is hours. <code>AccessTokenValidity</code> duration can range from five minutes to one day.',
-        }),
-    ).exactOptional(),
-    IdToken: TimeUnitsTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A time unit of <code>seconds</code>, <code>minutes</code>, <code>hours</code>, or <code>days</code> for the value that you set in the <code>IdTokenValidity</code> parameter. The default <code>IdTokenValidity</code> time unit is hours. <code>IdTokenValidity</code> duration can range from five minutes to one day.',
-        }),
-    ).exactOptional(),
-    RefreshToken: TimeUnitsTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A time unit of <code>seconds</code>, <code>minutes</code>, <code>hours</code>, or <code>days</code> for the value that you set in the <code>RefreshTokenValidity</code> parameter. The default <code>RefreshTokenValidity</code> time unit is days. <code>RefreshTokenValidity</code> duration can range from 60 minutes to 10 years.',
-        }),
-    ).exactOptional(),
+    AccessToken: TimeUnitsTypeSchema.exactOptional().openapi({
+      description:
+        ' A time unit of <code>seconds</code>, <code>minutes</code>, <code>hours</code>, or <code>days</code> for the value that you set in the <code>AccessTokenValidity</code> parameter. The default <code>AccessTokenValidity</code> time unit is hours. <code>AccessTokenValidity</code> duration can range from five minutes to one day.',
+    }),
+    IdToken: TimeUnitsTypeSchema.exactOptional().openapi({
+      description:
+        'A time unit of <code>seconds</code>, <code>minutes</code>, <code>hours</code>, or <code>days</code> for the value that you set in the <code>IdTokenValidity</code> parameter. The default <code>IdTokenValidity</code> time unit is hours. <code>IdTokenValidity</code> duration can range from five minutes to one day.',
+    }),
+    RefreshToken: TimeUnitsTypeSchema.exactOptional().openapi({
+      description:
+        'A time unit of <code>seconds</code>, <code>minutes</code>, <code>hours</code>, or <code>days</code> for the value that you set in the <code>RefreshTokenValidity</code> parameter. The default <code>RefreshTokenValidity</code> time unit is days. <code>RefreshTokenValidity</code> duration can range from 60 minutes to 10 years.',
+    }),
   })
   .openapi({
     description:
@@ -3950,36 +2809,22 @@ const HexStringTypeSchema = z
 
 const AnalyticsConfigurationTypeSchema = z
   .object({
-    ApplicationId: HexStringTypeSchema.and(
-      z.any().openapi({ description: 'The application ID for an Amazon Pinpoint application.' }),
-    ).exactOptional(),
-    ApplicationArn: ArnTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of an Amazon Pinpoint project. You can use the Amazon Pinpoint project to integrate with the chosen user pool Client. Amazon Cognito publishes events to the Amazon Pinpoint project that the app ARN declares.',
-        }),
-    ).exactOptional(),
-    RoleArn: ArnTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of an Identity and Access Management role that authorizes Amazon Cognito to publish events to Amazon Pinpoint analytics.',
-        }),
-    ).exactOptional(),
-    ExternalId: StringTypeSchema.and(
-      z.any().openapi({ description: 'The external ID.' }),
-    ).exactOptional(),
-    UserDataShared: BooleanTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If <code>UserDataShared</code> is <code>true</code>, Amazon Cognito includes user data in the events that it publishes to Amazon Pinpoint analytics.',
-        }),
-    ).exactOptional(),
+    ApplicationId: HexStringTypeSchema.exactOptional().openapi({
+      description: 'The application ID for an Amazon Pinpoint application.',
+    }),
+    ApplicationArn: ArnTypeSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of an Amazon Pinpoint project. You can use the Amazon Pinpoint project to integrate with the chosen user pool Client. Amazon Cognito publishes events to the Amazon Pinpoint project that the app ARN declares.',
+    }),
+    RoleArn: ArnTypeSchema.exactOptional().openapi({
+      description:
+        'The ARN of an Identity and Access Management role that authorizes Amazon Cognito to publish events to Amazon Pinpoint analytics.',
+    }),
+    ExternalId: StringTypeSchema.exactOptional().openapi({ description: 'The external ID.' }),
+    UserDataShared: BooleanTypeSchema.exactOptional().openapi({
+      description:
+        'If <code>UserDataShared</code> is <code>true</code>, Amazon Cognito includes user data in the events that it publishes to Amazon Pinpoint analytics.',
+    }),
   })
   .openapi({
     description:
@@ -3996,186 +2841,108 @@ const AuthSessionValidityTypeSchema = z.int().min(3).max(15).openapi('AuthSessio
 
 const UserPoolClientTypeSchema = z
   .object({
-    UserPoolId: UserPoolIdTypeSchema.and(
-      z.any().openapi({ description: 'The user pool ID for the user pool client.' }),
-    ).exactOptional(),
-    ClientName: ClientNameTypeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The client name from the user pool request of the client type.' }),
-    ).exactOptional(),
-    ClientId: ClientIdTypeSchema.and(
-      z.any().openapi({ description: 'The ID of the client associated with the user pool.' }),
-    ).exactOptional(),
-    ClientSecret: ClientSecretTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The client secret from the user pool request of the client type.',
-        }),
-    ).exactOptional(),
-    LastModifiedDate: DateTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time, in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format, when the item was modified.',
-        }),
-    ).exactOptional(),
-    CreationDate: DateTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time, in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format, when the item was created.',
-        }),
-    ).exactOptional(),
-    RefreshTokenValidity: RefreshTokenValidityTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The refresh token time limit. After this limit expires, your user can't use their refresh token. To specify the time unit for <code>RefreshTokenValidity</code> as <code>seconds</code>, <code>minutes</code>, <code>hours</code>, or <code>days</code>, set a <code>TokenValidityUnits</code> value in your API request.</p> <p>For example, when you set <code>RefreshTokenValidity</code> as <code>10</code> and <code>TokenValidityUnits</code> as <code>days</code>, your user can refresh their session and retrieve new access and ID tokens for 10 days.</p> <p>The default time unit for <code>RefreshTokenValidity</code> in an API request is days. You can't set <code>RefreshTokenValidity</code> to 0. If you do, Amazon Cognito overrides the value with the default value of 30 days. <i>Valid range</i> is displayed below in seconds.</p> <p>If you don't specify otherwise in the configuration of your app client, your refresh tokens are valid for 30 days.</p>",
-        }),
-    ).exactOptional(),
-    AccessTokenValidity: AccessTokenValidityTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The access token time limit. After this limit expires, your user can't use their access token. To specify the time unit for <code>AccessTokenValidity</code> as <code>seconds</code>, <code>minutes</code>, <code>hours</code>, or <code>days</code>, set a <code>TokenValidityUnits</code> value in your API request.</p> <p>For example, when you set <code>AccessTokenValidity</code> to <code>10</code> and <code>TokenValidityUnits</code> to <code>hours</code>, your user can authorize access with their access token for 10 hours.</p> <p>The default time unit for <code>AccessTokenValidity</code> in an API request is hours. <i>Valid range</i> is displayed below in seconds.</p> <p>If you don't specify otherwise in the configuration of your app client, your access tokens are valid for one hour.</p>",
-        }),
-    ).exactOptional(),
-    IdTokenValidity: IdTokenValidityTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The ID token time limit. After this limit expires, your user can't use their ID token. To specify the time unit for <code>IdTokenValidity</code> as <code>seconds</code>, <code>minutes</code>, <code>hours</code>, or <code>days</code>, set a <code>TokenValidityUnits</code> value in your API request.</p> <p>For example, when you set <code>IdTokenValidity</code> as <code>10</code> and <code>TokenValidityUnits</code> as <code>hours</code>, your user can authenticate their session with their ID token for 10 hours.</p> <p>The default time unit for <code>IdTokenValidity</code> in an API request is hours. <i>Valid range</i> is displayed below in seconds.</p> <p>If you don't specify otherwise in the configuration of your app client, your ID tokens are valid for one hour.</p>",
-        }),
-    ).exactOptional(),
-    TokenValidityUnits: TokenValidityUnitsTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time units used to specify the token validity times of each token type: ID, access, and refresh.',
-        }),
-    ).exactOptional(),
-    ReadAttributes: ClientPermissionListTypeSchema.and(
-      z.any().openapi({ description: 'The Read-only attributes.' }),
-    ).exactOptional(),
-    WriteAttributes: ClientPermissionListTypeSchema.and(
-      z.any().openapi({ description: 'The writeable attributes.' }),
-    ).exactOptional(),
-    ExplicitAuthFlows: ExplicitAuthFlowsListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The authentication flows that you want your user pool client to support. For each app client in your user pool, you can sign in your users with any combination of one or more flows, including with a user name and Secure Remote Password (SRP), a user name and password, or a custom authentication process that you define with Lambda functions.</p> <note> <p>If you don't specify a value for <code>ExplicitAuthFlows</code>, your user client supports <code>ALLOW_REFRESH_TOKEN_AUTH</code>, <code>ALLOW_USER_SRP_AUTH</code>, and <code>ALLOW_CUSTOM_AUTH</code>.</p> </note> <p>Valid values include:</p> <ul> <li> <p> <code>ALLOW_ADMIN_USER_PASSWORD_AUTH</code>: Enable admin based user password authentication flow <code>ADMIN_USER_PASSWORD_AUTH</code>. This setting replaces the <code>ADMIN_NO_SRP_AUTH</code> setting. With this authentication flow, your app passes a user name and password to Amazon Cognito in the request, instead of using the Secure Remote Password (SRP) protocol to securely transmit the password.</p> </li> <li> <p> <code>ALLOW_CUSTOM_AUTH</code>: Enable Lambda trigger based authentication.</p> </li> <li> <p> <code>ALLOW_USER_PASSWORD_AUTH</code>: Enable user password-based authentication. In this flow, Amazon Cognito receives the password in the request instead of using the SRP protocol to verify passwords.</p> </li> <li> <p> <code>ALLOW_USER_SRP_AUTH</code>: Enable SRP-based authentication.</p> </li> <li> <p> <code>ALLOW_REFRESH_TOKEN_AUTH</code>: Enable authflow to refresh tokens.</p> </li> </ul> <p>In some environments, you will see the values <code>ADMIN_NO_SRP_AUTH</code>, <code>CUSTOM_AUTH_FLOW_ONLY</code>, or <code>USER_PASSWORD_AUTH</code>. You can't assign these legacy <code>ExplicitAuthFlows</code> values to user pool clients at the same time as values that begin with <code>ALLOW_</code>, like <code>ALLOW_USER_SRP_AUTH</code>.</p>",
-        }),
-    ).exactOptional(),
-    SupportedIdentityProviders: SupportedIdentityProvidersListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of provider names for the IdPs that this client supports. The following are supported: <code>COGNITO</code>, <code>Facebook</code>, <code>Google</code>, <code>SignInWithApple</code>, <code>LoginWithAmazon</code>, and the names of your own SAML and OIDC providers.',
-        }),
-    ).exactOptional(),
-    CallbackURLs: CallbackURLsListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of allowed redirect (callback) URLs for the IdPs.</p> <p>A redirect URI must:</p> <ul> <li> <p>Be an absolute URI.</p> </li> <li> <p>Be registered with the authorization server.</p> </li> <li> <p>Not include a fragment component.</p> </li> </ul> <p>See <a href="https://tools.ietf.org/html/rfc6749#section-3.1.2">OAuth 2.0 - Redirection Endpoint</a>.</p> <p>Amazon Cognito requires HTTPS over HTTP except for http://localhost for testing purposes only.</p> <p>App callback URLs such as myapp://example are also supported.</p>',
-        }),
-    ).exactOptional(),
-    LogoutURLs: LogoutURLsListTypeSchema.and(
-      z.any().openapi({ description: 'A list of allowed logout URLs for the IdPs.' }),
-    ).exactOptional(),
-    DefaultRedirectURI: RedirectUrlTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The default redirect URI. Must be in the <code>CallbackURLs</code> list.</p> <p>A redirect URI must:</p> <ul> <li> <p>Be an absolute URI.</p> </li> <li> <p>Be registered with the authorization server.</p> </li> <li> <p>Not include a fragment component.</p> </li> </ul> <p>See <a href="https://tools.ietf.org/html/rfc6749#section-3.1.2">OAuth 2.0 - Redirection Endpoint</a>.</p> <p>Amazon Cognito requires HTTPS over HTTP except for http://localhost for testing purposes only.</p> <p>App callback URLs such as myapp://example are also supported.</p>',
-        }),
-    ).exactOptional(),
-    AllowedOAuthFlows: OAuthFlowsTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The allowed OAuth flows.</p> <dl> <dt>code</dt> <dd> <p>Use a code grant flow, which provides an authorization code as the response. This code can be exchanged for access tokens with the <code>/oauth2/token</code> endpoint.</p> </dd> <dt>implicit</dt> <dd> <p>Issue the access token (and, optionally, ID token, based on scopes) directly to your user.</p> </dd> <dt>client_credentials</dt> <dd> <p>Issue the access token from the <code>/oauth2/token</code> endpoint directly to a non-person user using a combination of the client ID and client secret.</p> </dd> </dl>',
-        }),
-    ).exactOptional(),
-    AllowedOAuthScopes: ScopeListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The OAuth scopes that your app client supports. Possible values that OAuth provides are <code>phone</code>, <code>email</code>, <code>openid</code>, and <code>profile</code>. Possible values that Amazon Web Services provides are <code>aws.cognito.signin.user.admin</code>. Amazon Cognito also supports custom scopes that you create in Resource Servers.',
-        }),
-    ).exactOptional(),
-    AllowedOAuthFlowsUserPoolClient: BooleanTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Set to <code>true</code> to use OAuth 2.0 features in your user pool app client.</p> <p> <code>AllowedOAuthFlowsUserPoolClient</code> must be <code>true</code> before you can configure the following features in your app client.</p> <ul> <li> <p> <code>CallBackURLs</code>: Callback URLs.</p> </li> <li> <p> <code>LogoutURLs</code>: Sign-out redirect URLs.</p> </li> <li> <p> <code>AllowedOAuthScopes</code>: OAuth 2.0 scopes.</p> </li> <li> <p> <code>AllowedOAuthFlows</code>: Support for authorization code, implicit, and client credentials OAuth 2.0 grants.</p> </li> </ul> <p>To use OAuth 2.0 features, configure one of these features in the Amazon Cognito console or set <code>AllowedOAuthFlowsUserPoolClient</code> to <code>true</code> in a <code>CreateUserPoolClient</code> or <code>UpdateUserPoolClient</code> API request. If you don't set a value for <code>AllowedOAuthFlowsUserPoolClient</code> in a request with the CLI or SDKs, it defaults to <code>false</code>.</p>",
-        }),
-    ).exactOptional(),
-    AnalyticsConfiguration: AnalyticsConfigurationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Pinpoint analytics configuration for the user pool client.</p> <note> <p>Amazon Cognito user pools only support sending events to Amazon Pinpoint projects in the US East (N. Virginia) us-east-1 Region, regardless of the Region where the user pool resides.</p> </note>',
-        }),
-    ).exactOptional(),
-    PreventUserExistenceErrors: PreventUserExistenceErrorTypesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Errors and responses that you want Amazon Cognito APIs to return during authentication, account confirmation, and password recovery when the user doesn't exist in the user pool. When set to <code>ENABLED</code> and the user doesn't exist, authentication returns an error indicating either the username or password was incorrect. Account confirmation and password recovery return a response indicating a code was sent to a simulated destination. When set to <code>LEGACY</code>, those APIs return a <code>UserNotFoundException</code> exception if the user doesn't exist in the user pool.</p> <p>Valid values include:</p> <ul> <li> <p> <code>ENABLED</code> - This prevents user existence-related errors.</p> </li> <li> <p> <code>LEGACY</code> - This represents the old behavior of Amazon Cognito where user existence related errors aren't prevented.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    EnableTokenRevocation: WrappedBooleanTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether token revocation is activated for the user pool client. When you create a new user pool client, token revocation is activated by default. For more information about revoking tokens, see <a href="https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_RevokeToken.html">RevokeToken</a>.',
-        }),
-    ).exactOptional(),
-    EnablePropagateAdditionalUserContextData: WrappedBooleanTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>When <code>EnablePropagateAdditionalUserContextData</code> is true, Amazon Cognito accepts an <code>IpAddress</code> value that you send in the <code>UserContextData</code> parameter. The <code>UserContextData</code> parameter sends information to Amazon Cognito advanced security for risk analysis. You can send <code>UserContextData</code> when you sign in Amazon Cognito native users with the <code>InitiateAuth</code> and <code>RespondToAuthChallenge</code> API operations.</p> <p>When <code>EnablePropagateAdditionalUserContextData</code> is false, you can't send your user's source IP address to Amazon Cognito advanced security with unauthenticated API operations. <code>EnablePropagateAdditionalUserContextData</code> doesn't affect whether you can send a source IP address in a <code>ContextData</code> parameter with the authenticated API operations <code>AdminInitiateAuth</code> and <code>AdminRespondToAuthChallenge</code>.</p> <p>You can only activate <code>EnablePropagateAdditionalUserContextData</code> in an app client that has a client secret. For more information about propagation of user context data, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pool-settings-adaptive-authentication.html#user-pool-settings-adaptive-authentication-device-fingerprint\">Adding user device and session data to API requests</a>.</p>",
-        }),
-    ).exactOptional(),
-    AuthSessionValidity: AuthSessionValidityTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Amazon Cognito creates a session token for each API request in an authentication flow. <code>AuthSessionValidity</code> is the duration, in minutes, of that session token. Your user pool native user must respond to each authentication challenge before the session expires.',
-        }),
-    ).exactOptional(),
+    UserPoolId: UserPoolIdTypeSchema.exactOptional().openapi({
+      description: 'The user pool ID for the user pool client.',
+    }),
+    ClientName: ClientNameTypeSchema.exactOptional().openapi({
+      description: 'The client name from the user pool request of the client type.',
+    }),
+    ClientId: ClientIdTypeSchema.exactOptional().openapi({
+      description: 'The ID of the client associated with the user pool.',
+    }),
+    ClientSecret: ClientSecretTypeSchema.exactOptional().openapi({
+      description: 'The client secret from the user pool request of the client type.',
+    }),
+    LastModifiedDate: DateTypeSchema.exactOptional().openapi({
+      description:
+        'The date and time, in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format, when the item was modified.',
+    }),
+    CreationDate: DateTypeSchema.exactOptional().openapi({
+      description:
+        'The date and time, in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format, when the item was created.',
+    }),
+    RefreshTokenValidity: RefreshTokenValidityTypeSchema.exactOptional().openapi({
+      description:
+        "<p>The refresh token time limit. After this limit expires, your user can't use their refresh token. To specify the time unit for <code>RefreshTokenValidity</code> as <code>seconds</code>, <code>minutes</code>, <code>hours</code>, or <code>days</code>, set a <code>TokenValidityUnits</code> value in your API request.</p> <p>For example, when you set <code>RefreshTokenValidity</code> as <code>10</code> and <code>TokenValidityUnits</code> as <code>days</code>, your user can refresh their session and retrieve new access and ID tokens for 10 days.</p> <p>The default time unit for <code>RefreshTokenValidity</code> in an API request is days. You can't set <code>RefreshTokenValidity</code> to 0. If you do, Amazon Cognito overrides the value with the default value of 30 days. <i>Valid range</i> is displayed below in seconds.</p> <p>If you don't specify otherwise in the configuration of your app client, your refresh tokens are valid for 30 days.</p>",
+    }),
+    AccessTokenValidity: AccessTokenValidityTypeSchema.exactOptional().openapi({
+      description:
+        "<p>The access token time limit. After this limit expires, your user can't use their access token. To specify the time unit for <code>AccessTokenValidity</code> as <code>seconds</code>, <code>minutes</code>, <code>hours</code>, or <code>days</code>, set a <code>TokenValidityUnits</code> value in your API request.</p> <p>For example, when you set <code>AccessTokenValidity</code> to <code>10</code> and <code>TokenValidityUnits</code> to <code>hours</code>, your user can authorize access with their access token for 10 hours.</p> <p>The default time unit for <code>AccessTokenValidity</code> in an API request is hours. <i>Valid range</i> is displayed below in seconds.</p> <p>If you don't specify otherwise in the configuration of your app client, your access tokens are valid for one hour.</p>",
+    }),
+    IdTokenValidity: IdTokenValidityTypeSchema.exactOptional().openapi({
+      description:
+        "<p>The ID token time limit. After this limit expires, your user can't use their ID token. To specify the time unit for <code>IdTokenValidity</code> as <code>seconds</code>, <code>minutes</code>, <code>hours</code>, or <code>days</code>, set a <code>TokenValidityUnits</code> value in your API request.</p> <p>For example, when you set <code>IdTokenValidity</code> as <code>10</code> and <code>TokenValidityUnits</code> as <code>hours</code>, your user can authenticate their session with their ID token for 10 hours.</p> <p>The default time unit for <code>IdTokenValidity</code> in an API request is hours. <i>Valid range</i> is displayed below in seconds.</p> <p>If you don't specify otherwise in the configuration of your app client, your ID tokens are valid for one hour.</p>",
+    }),
+    TokenValidityUnits: TokenValidityUnitsTypeSchema.exactOptional().openapi({
+      description:
+        'The time units used to specify the token validity times of each token type: ID, access, and refresh.',
+    }),
+    ReadAttributes: ClientPermissionListTypeSchema.exactOptional().openapi({
+      description: 'The Read-only attributes.',
+    }),
+    WriteAttributes: ClientPermissionListTypeSchema.exactOptional().openapi({
+      description: 'The writeable attributes.',
+    }),
+    ExplicitAuthFlows: ExplicitAuthFlowsListTypeSchema.exactOptional().openapi({
+      description:
+        "<p>The authentication flows that you want your user pool client to support. For each app client in your user pool, you can sign in your users with any combination of one or more flows, including with a user name and Secure Remote Password (SRP), a user name and password, or a custom authentication process that you define with Lambda functions.</p> <note> <p>If you don't specify a value for <code>ExplicitAuthFlows</code>, your user client supports <code>ALLOW_REFRESH_TOKEN_AUTH</code>, <code>ALLOW_USER_SRP_AUTH</code>, and <code>ALLOW_CUSTOM_AUTH</code>.</p> </note> <p>Valid values include:</p> <ul> <li> <p> <code>ALLOW_ADMIN_USER_PASSWORD_AUTH</code>: Enable admin based user password authentication flow <code>ADMIN_USER_PASSWORD_AUTH</code>. This setting replaces the <code>ADMIN_NO_SRP_AUTH</code> setting. With this authentication flow, your app passes a user name and password to Amazon Cognito in the request, instead of using the Secure Remote Password (SRP) protocol to securely transmit the password.</p> </li> <li> <p> <code>ALLOW_CUSTOM_AUTH</code>: Enable Lambda trigger based authentication.</p> </li> <li> <p> <code>ALLOW_USER_PASSWORD_AUTH</code>: Enable user password-based authentication. In this flow, Amazon Cognito receives the password in the request instead of using the SRP protocol to verify passwords.</p> </li> <li> <p> <code>ALLOW_USER_SRP_AUTH</code>: Enable SRP-based authentication.</p> </li> <li> <p> <code>ALLOW_REFRESH_TOKEN_AUTH</code>: Enable authflow to refresh tokens.</p> </li> </ul> <p>In some environments, you will see the values <code>ADMIN_NO_SRP_AUTH</code>, <code>CUSTOM_AUTH_FLOW_ONLY</code>, or <code>USER_PASSWORD_AUTH</code>. You can't assign these legacy <code>ExplicitAuthFlows</code> values to user pool clients at the same time as values that begin with <code>ALLOW_</code>, like <code>ALLOW_USER_SRP_AUTH</code>.</p>",
+    }),
+    SupportedIdentityProviders: SupportedIdentityProvidersListTypeSchema.exactOptional().openapi({
+      description:
+        'A list of provider names for the IdPs that this client supports. The following are supported: <code>COGNITO</code>, <code>Facebook</code>, <code>Google</code>, <code>SignInWithApple</code>, <code>LoginWithAmazon</code>, and the names of your own SAML and OIDC providers.',
+    }),
+    CallbackURLs: CallbackURLsListTypeSchema.exactOptional().openapi({
+      description:
+        '<p>A list of allowed redirect (callback) URLs for the IdPs.</p> <p>A redirect URI must:</p> <ul> <li> <p>Be an absolute URI.</p> </li> <li> <p>Be registered with the authorization server.</p> </li> <li> <p>Not include a fragment component.</p> </li> </ul> <p>See <a href="https://tools.ietf.org/html/rfc6749#section-3.1.2">OAuth 2.0 - Redirection Endpoint</a>.</p> <p>Amazon Cognito requires HTTPS over HTTP except for http://localhost for testing purposes only.</p> <p>App callback URLs such as myapp://example are also supported.</p>',
+    }),
+    LogoutURLs: LogoutURLsListTypeSchema.exactOptional().openapi({
+      description: 'A list of allowed logout URLs for the IdPs.',
+    }),
+    DefaultRedirectURI: RedirectUrlTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The default redirect URI. Must be in the <code>CallbackURLs</code> list.</p> <p>A redirect URI must:</p> <ul> <li> <p>Be an absolute URI.</p> </li> <li> <p>Be registered with the authorization server.</p> </li> <li> <p>Not include a fragment component.</p> </li> </ul> <p>See <a href="https://tools.ietf.org/html/rfc6749#section-3.1.2">OAuth 2.0 - Redirection Endpoint</a>.</p> <p>Amazon Cognito requires HTTPS over HTTP except for http://localhost for testing purposes only.</p> <p>App callback URLs such as myapp://example are also supported.</p>',
+    }),
+    AllowedOAuthFlows: OAuthFlowsTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The allowed OAuth flows.</p> <dl> <dt>code</dt> <dd> <p>Use a code grant flow, which provides an authorization code as the response. This code can be exchanged for access tokens with the <code>/oauth2/token</code> endpoint.</p> </dd> <dt>implicit</dt> <dd> <p>Issue the access token (and, optionally, ID token, based on scopes) directly to your user.</p> </dd> <dt>client_credentials</dt> <dd> <p>Issue the access token from the <code>/oauth2/token</code> endpoint directly to a non-person user using a combination of the client ID and client secret.</p> </dd> </dl>',
+    }),
+    AllowedOAuthScopes: ScopeListTypeSchema.exactOptional().openapi({
+      description:
+        'The OAuth scopes that your app client supports. Possible values that OAuth provides are <code>phone</code>, <code>email</code>, <code>openid</code>, and <code>profile</code>. Possible values that Amazon Web Services provides are <code>aws.cognito.signin.user.admin</code>. Amazon Cognito also supports custom scopes that you create in Resource Servers.',
+    }),
+    AllowedOAuthFlowsUserPoolClient: BooleanTypeSchema.exactOptional().openapi({
+      description:
+        "<p>Set to <code>true</code> to use OAuth 2.0 features in your user pool app client.</p> <p> <code>AllowedOAuthFlowsUserPoolClient</code> must be <code>true</code> before you can configure the following features in your app client.</p> <ul> <li> <p> <code>CallBackURLs</code>: Callback URLs.</p> </li> <li> <p> <code>LogoutURLs</code>: Sign-out redirect URLs.</p> </li> <li> <p> <code>AllowedOAuthScopes</code>: OAuth 2.0 scopes.</p> </li> <li> <p> <code>AllowedOAuthFlows</code>: Support for authorization code, implicit, and client credentials OAuth 2.0 grants.</p> </li> </ul> <p>To use OAuth 2.0 features, configure one of these features in the Amazon Cognito console or set <code>AllowedOAuthFlowsUserPoolClient</code> to <code>true</code> in a <code>CreateUserPoolClient</code> or <code>UpdateUserPoolClient</code> API request. If you don't set a value for <code>AllowedOAuthFlowsUserPoolClient</code> in a request with the CLI or SDKs, it defaults to <code>false</code>.</p>",
+    }),
+    AnalyticsConfiguration: AnalyticsConfigurationTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Pinpoint analytics configuration for the user pool client.</p> <note> <p>Amazon Cognito user pools only support sending events to Amazon Pinpoint projects in the US East (N. Virginia) us-east-1 Region, regardless of the Region where the user pool resides.</p> </note>',
+    }),
+    PreventUserExistenceErrors: PreventUserExistenceErrorTypesSchema.exactOptional().openapi({
+      description:
+        "<p>Errors and responses that you want Amazon Cognito APIs to return during authentication, account confirmation, and password recovery when the user doesn't exist in the user pool. When set to <code>ENABLED</code> and the user doesn't exist, authentication returns an error indicating either the username or password was incorrect. Account confirmation and password recovery return a response indicating a code was sent to a simulated destination. When set to <code>LEGACY</code>, those APIs return a <code>UserNotFoundException</code> exception if the user doesn't exist in the user pool.</p> <p>Valid values include:</p> <ul> <li> <p> <code>ENABLED</code> - This prevents user existence-related errors.</p> </li> <li> <p> <code>LEGACY</code> - This represents the old behavior of Amazon Cognito where user existence related errors aren't prevented.</p> </li> </ul>",
+    }),
+    EnableTokenRevocation: WrappedBooleanTypeSchema.exactOptional().openapi({
+      description:
+        'Indicates whether token revocation is activated for the user pool client. When you create a new user pool client, token revocation is activated by default. For more information about revoking tokens, see <a href="https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_RevokeToken.html">RevokeToken</a>.',
+    }),
+    EnablePropagateAdditionalUserContextData: WrappedBooleanTypeSchema.exactOptional().openapi({
+      description:
+        "<p>When <code>EnablePropagateAdditionalUserContextData</code> is true, Amazon Cognito accepts an <code>IpAddress</code> value that you send in the <code>UserContextData</code> parameter. The <code>UserContextData</code> parameter sends information to Amazon Cognito advanced security for risk analysis. You can send <code>UserContextData</code> when you sign in Amazon Cognito native users with the <code>InitiateAuth</code> and <code>RespondToAuthChallenge</code> API operations.</p> <p>When <code>EnablePropagateAdditionalUserContextData</code> is false, you can't send your user's source IP address to Amazon Cognito advanced security with unauthenticated API operations. <code>EnablePropagateAdditionalUserContextData</code> doesn't affect whether you can send a source IP address in a <code>ContextData</code> parameter with the authenticated API operations <code>AdminInitiateAuth</code> and <code>AdminRespondToAuthChallenge</code>.</p> <p>You can only activate <code>EnablePropagateAdditionalUserContextData</code> in an app client that has a client secret. For more information about propagation of user context data, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pool-settings-adaptive-authentication.html#user-pool-settings-adaptive-authentication-device-fingerprint\">Adding user device and session data to API requests</a>.</p>",
+    }),
+    AuthSessionValidity: AuthSessionValidityTypeSchema.exactOptional().openapi({
+      description:
+        'Amazon Cognito creates a session token for each API request in an authentication flow. <code>AuthSessionValidity</code> is the duration, in minutes, of that session token. Your user pool native user must respond to each authentication challenge before the session expires.',
+    }),
   })
   .openapi({ description: 'Contains information about a user pool client.', required: [] })
   .openapi('UserPoolClientType')
 
 const CreateUserPoolClientResponseSchema = z
   .object({
-    UserPoolClient: UserPoolClientTypeSchema.and(
-      z.any().openapi({ description: 'The user pool client that was just created.' }),
-    ).exactOptional(),
+    UserPoolClient: UserPoolClientTypeSchema.exactOptional().openapi({
+      description: 'The user pool client that was just created.',
+    }),
   })
   .openapi({
     description: 'Represents the response from the server to create a user pool client.',
@@ -4187,171 +2954,91 @@ const GenerateSecretSchema = z.boolean().openapi('GenerateSecret')
 
 const CreateUserPoolClientRequestSchema = z
   .object({
-    UserPoolId: UserPoolIdTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The user pool ID for the user pool where you want to create a user pool client.',
-        }),
-    ),
-    ClientName: ClientNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The client name for the user pool client you would like to create.',
-        }),
-    ),
-    GenerateSecret: GenerateSecretSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Boolean to specify whether you want to generate a secret for the user pool client being created.',
-        }),
-    ).exactOptional(),
-    RefreshTokenValidity: RefreshTokenValidityTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The refresh token time limit. After this limit expires, your user can't use their refresh token. To specify the time unit for <code>RefreshTokenValidity</code> as <code>seconds</code>, <code>minutes</code>, <code>hours</code>, or <code>days</code>, set a <code>TokenValidityUnits</code> value in your API request.</p> <p>For example, when you set <code>RefreshTokenValidity</code> as <code>10</code> and <code>TokenValidityUnits</code> as <code>days</code>, your user can refresh their session and retrieve new access and ID tokens for 10 days.</p> <p>The default time unit for <code>RefreshTokenValidity</code> in an API request is days. You can't set <code>RefreshTokenValidity</code> to 0. If you do, Amazon Cognito overrides the value with the default value of 30 days. <i>Valid range</i> is displayed below in seconds.</p> <p>If you don't specify otherwise in the configuration of your app client, your refresh tokens are valid for 30 days.</p>",
-        }),
-    ).exactOptional(),
-    AccessTokenValidity: AccessTokenValidityTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The access token time limit. After this limit expires, your user can't use their access token. To specify the time unit for <code>AccessTokenValidity</code> as <code>seconds</code>, <code>minutes</code>, <code>hours</code>, or <code>days</code>, set a <code>TokenValidityUnits</code> value in your API request.</p> <p>For example, when you set <code>AccessTokenValidity</code> to <code>10</code> and <code>TokenValidityUnits</code> to <code>hours</code>, your user can authorize access with their access token for 10 hours.</p> <p>The default time unit for <code>AccessTokenValidity</code> in an API request is hours. <i>Valid range</i> is displayed below in seconds.</p> <p>If you don't specify otherwise in the configuration of your app client, your access tokens are valid for one hour.</p>",
-        }),
-    ).exactOptional(),
-    IdTokenValidity: IdTokenValidityTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The ID token time limit. After this limit expires, your user can't use their ID token. To specify the time unit for <code>IdTokenValidity</code> as <code>seconds</code>, <code>minutes</code>, <code>hours</code>, or <code>days</code>, set a <code>TokenValidityUnits</code> value in your API request.</p> <p>For example, when you set <code>IdTokenValidity</code> as <code>10</code> and <code>TokenValidityUnits</code> as <code>hours</code>, your user can authenticate their session with their ID token for 10 hours.</p> <p>The default time unit for <code>IdTokenValidity</code> in an API request is hours. <i>Valid range</i> is displayed below in seconds.</p> <p>If you don't specify otherwise in the configuration of your app client, your ID tokens are valid for one hour.</p>",
-        }),
-    ).exactOptional(),
-    TokenValidityUnits: TokenValidityUnitsTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The units in which the validity times are represented. The default unit for RefreshToken is days, and default for ID and access tokens are hours.',
-        }),
-    ).exactOptional(),
-    ReadAttributes: ClientPermissionListTypeSchema.and(
-      z.any().openapi({ description: 'The read attributes.' }),
-    ).exactOptional(),
-    WriteAttributes: ClientPermissionListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The user pool attributes that the app client can write to.</p> <p>If your app client allows users to sign in through an IdP, this array must include all attributes that you have mapped to IdP attributes. Amazon Cognito updates mapped attributes when users sign in to your application through an IdP. If your app client does not have write access to a mapped attribute, Amazon Cognito throws an error when it tries to update the attribute. For more information, see <a href="https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-specifying-attribute-mapping.html">Specifying IdP Attribute Mappings for Your user pool</a>.</p>',
-        }),
-    ).exactOptional(),
-    ExplicitAuthFlows: ExplicitAuthFlowsListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The authentication flows that you want your user pool client to support. For each app client in your user pool, you can sign in your users with any combination of one or more flows, including with a user name and Secure Remote Password (SRP), a user name and password, or a custom authentication process that you define with Lambda functions.</p> <note> <p>If you don't specify a value for <code>ExplicitAuthFlows</code>, your user client supports <code>ALLOW_REFRESH_TOKEN_AUTH</code>, <code>ALLOW_USER_SRP_AUTH</code>, and <code>ALLOW_CUSTOM_AUTH</code>.</p> </note> <p>Valid values include:</p> <ul> <li> <p> <code>ALLOW_ADMIN_USER_PASSWORD_AUTH</code>: Enable admin based user password authentication flow <code>ADMIN_USER_PASSWORD_AUTH</code>. This setting replaces the <code>ADMIN_NO_SRP_AUTH</code> setting. With this authentication flow, your app passes a user name and password to Amazon Cognito in the request, instead of using the Secure Remote Password (SRP) protocol to securely transmit the password.</p> </li> <li> <p> <code>ALLOW_CUSTOM_AUTH</code>: Enable Lambda trigger based authentication.</p> </li> <li> <p> <code>ALLOW_USER_PASSWORD_AUTH</code>: Enable user password-based authentication. In this flow, Amazon Cognito receives the password in the request instead of using the SRP protocol to verify passwords.</p> </li> <li> <p> <code>ALLOW_USER_SRP_AUTH</code>: Enable SRP-based authentication.</p> </li> <li> <p> <code>ALLOW_REFRESH_TOKEN_AUTH</code>: Enable authflow to refresh tokens.</p> </li> </ul> <p>In some environments, you will see the values <code>ADMIN_NO_SRP_AUTH</code>, <code>CUSTOM_AUTH_FLOW_ONLY</code>, or <code>USER_PASSWORD_AUTH</code>. You can't assign these legacy <code>ExplicitAuthFlows</code> values to user pool clients at the same time as values that begin with <code>ALLOW_</code>, like <code>ALLOW_USER_SRP_AUTH</code>.</p>",
-        }),
-    ).exactOptional(),
-    SupportedIdentityProviders: SupportedIdentityProvidersListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of provider names for the identity providers (IdPs) that are supported on this client. The following are supported: <code>COGNITO</code>, <code>Facebook</code>, <code>Google</code>, <code>SignInWithApple</code>, and <code>LoginWithAmazon</code>. You can also specify the names that you configured for the SAML and OIDC IdPs in your user pool, for example <code>MySAMLIdP</code> or <code>MyOIDCIdP</code>.',
-        }),
-    ).exactOptional(),
-    CallbackURLs: CallbackURLsListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of allowed redirect (callback) URLs for the IdPs.</p> <p>A redirect URI must:</p> <ul> <li> <p>Be an absolute URI.</p> </li> <li> <p>Be registered with the authorization server.</p> </li> <li> <p>Not include a fragment component.</p> </li> </ul> <p>See <a href="https://tools.ietf.org/html/rfc6749#section-3.1.2">OAuth 2.0 - Redirection Endpoint</a>.</p> <p>Amazon Cognito requires HTTPS over HTTP except for http://localhost for testing purposes only.</p> <p>App callback URLs such as myapp://example are also supported.</p>',
-        }),
-    ).exactOptional(),
-    LogoutURLs: LogoutURLsListTypeSchema.and(
-      z.any().openapi({ description: 'A list of allowed logout URLs for the IdPs.' }),
-    ).exactOptional(),
-    DefaultRedirectURI: RedirectUrlTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The default redirect URI. Must be in the <code>CallbackURLs</code> list.</p> <p>A redirect URI must:</p> <ul> <li> <p>Be an absolute URI.</p> </li> <li> <p>Be registered with the authorization server.</p> </li> <li> <p>Not include a fragment component.</p> </li> </ul> <p>See <a href="https://tools.ietf.org/html/rfc6749#section-3.1.2">OAuth 2.0 - Redirection Endpoint</a>.</p> <p>Amazon Cognito requires HTTPS over HTTP except for http://localhost for testing purposes only.</p> <p>App callback URLs such as myapp://example are also supported.</p>',
-        }),
-    ).exactOptional(),
-    AllowedOAuthFlows: OAuthFlowsTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The allowed OAuth flows.</p> <dl> <dt>code</dt> <dd> <p>Use a code grant flow, which provides an authorization code as the response. This code can be exchanged for access tokens with the <code>/oauth2/token</code> endpoint.</p> </dd> <dt>implicit</dt> <dd> <p>Issue the access token (and, optionally, ID token, based on scopes) directly to your user.</p> </dd> <dt>client_credentials</dt> <dd> <p>Issue the access token from the <code>/oauth2/token</code> endpoint directly to a non-person user using a combination of the client ID and client secret.</p> </dd> </dl>',
-        }),
-    ).exactOptional(),
-    AllowedOAuthScopes: ScopeListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The allowed OAuth scopes. Possible values provided by OAuth are <code>phone</code>, <code>email</code>, <code>openid</code>, and <code>profile</code>. Possible values provided by Amazon Web Services are <code>aws.cognito.signin.user.admin</code>. Custom scopes created in Resource Servers are also supported.',
-        }),
-    ).exactOptional(),
-    AllowedOAuthFlowsUserPoolClient: BooleanTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Set to <code>true</code> to use OAuth 2.0 features in your user pool app client.</p> <p> <code>AllowedOAuthFlowsUserPoolClient</code> must be <code>true</code> before you can configure the following features in your app client.</p> <ul> <li> <p> <code>CallBackURLs</code>: Callback URLs.</p> </li> <li> <p> <code>LogoutURLs</code>: Sign-out redirect URLs.</p> </li> <li> <p> <code>AllowedOAuthScopes</code>: OAuth 2.0 scopes.</p> </li> <li> <p> <code>AllowedOAuthFlows</code>: Support for authorization code, implicit, and client credentials OAuth 2.0 grants.</p> </li> </ul> <p>To use OAuth 2.0 features, configure one of these features in the Amazon Cognito console or set <code>AllowedOAuthFlowsUserPoolClient</code> to <code>true</code> in a <code>CreateUserPoolClient</code> or <code>UpdateUserPoolClient</code> API request. If you don't set a value for <code>AllowedOAuthFlowsUserPoolClient</code> in a request with the CLI or SDKs, it defaults to <code>false</code>.</p>",
-        }),
-    ).exactOptional(),
-    AnalyticsConfiguration: AnalyticsConfigurationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The user pool analytics configuration for collecting metrics and sending them to your Amazon Pinpoint campaign.</p> <note> <p>In Amazon Web Services Regions where Amazon Pinpoint isn't available, user pools only support sending events to Amazon Pinpoint projects in Amazon Web Services Region us-east-1. In Regions where Amazon Pinpoint is available, user pools support sending events to Amazon Pinpoint projects within that same Region.</p> </note>",
-        }),
-    ).exactOptional(),
-    PreventUserExistenceErrors: PreventUserExistenceErrorTypesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Errors and responses that you want Amazon Cognito APIs to return during authentication, account confirmation, and password recovery when the user doesn't exist in the user pool. When set to <code>ENABLED</code> and the user doesn't exist, authentication returns an error indicating either the username or password was incorrect. Account confirmation and password recovery return a response indicating a code was sent to a simulated destination. When set to <code>LEGACY</code>, those APIs return a <code>UserNotFoundException</code> exception if the user doesn't exist in the user pool.</p> <p>Valid values include:</p> <ul> <li> <p> <code>ENABLED</code> - This prevents user existence-related errors.</p> </li> <li> <p> <code>LEGACY</code> - This represents the early behavior of Amazon Cognito where user existence related errors aren't prevented.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    EnableTokenRevocation: WrappedBooleanTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Activates or deactivates token revocation. For more information about revoking tokens, see <a href="https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_RevokeToken.html">RevokeToken</a>.</p> <p>If you don\'t include this parameter, token revocation is automatically activated for the new user pool client.</p>',
-        }),
-    ).exactOptional(),
-    EnablePropagateAdditionalUserContextData: WrappedBooleanTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Activates the propagation of additional user context data. For more information about propagation of user context data, see <a href="https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pool-settings-advanced-security.html"> Adding advanced security to a user pool</a>. If you don’t include this parameter, you can\'t send device fingerprint information, including source IP address, to Amazon Cognito advanced security. You can only activate <code>EnablePropagateAdditionalUserContextData</code> in an app client that has a client secret.',
-        }),
-    ).exactOptional(),
-    AuthSessionValidity: AuthSessionValidityTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Amazon Cognito creates a session token for each API request in an authentication flow. <code>AuthSessionValidity</code> is the duration, in minutes, of that session token. Your user pool native user must respond to each authentication challenge before the session expires.',
-        }),
-    ).exactOptional(),
+    UserPoolId: UserPoolIdTypeSchema.openapi({
+      description:
+        'The user pool ID for the user pool where you want to create a user pool client.',
+    }),
+    ClientName: ClientNameTypeSchema.openapi({
+      description: 'The client name for the user pool client you would like to create.',
+    }),
+    GenerateSecret: GenerateSecretSchema.exactOptional().openapi({
+      description:
+        'Boolean to specify whether you want to generate a secret for the user pool client being created.',
+    }),
+    RefreshTokenValidity: RefreshTokenValidityTypeSchema.exactOptional().openapi({
+      description:
+        "<p>The refresh token time limit. After this limit expires, your user can't use their refresh token. To specify the time unit for <code>RefreshTokenValidity</code> as <code>seconds</code>, <code>minutes</code>, <code>hours</code>, or <code>days</code>, set a <code>TokenValidityUnits</code> value in your API request.</p> <p>For example, when you set <code>RefreshTokenValidity</code> as <code>10</code> and <code>TokenValidityUnits</code> as <code>days</code>, your user can refresh their session and retrieve new access and ID tokens for 10 days.</p> <p>The default time unit for <code>RefreshTokenValidity</code> in an API request is days. You can't set <code>RefreshTokenValidity</code> to 0. If you do, Amazon Cognito overrides the value with the default value of 30 days. <i>Valid range</i> is displayed below in seconds.</p> <p>If you don't specify otherwise in the configuration of your app client, your refresh tokens are valid for 30 days.</p>",
+    }),
+    AccessTokenValidity: AccessTokenValidityTypeSchema.exactOptional().openapi({
+      description:
+        "<p>The access token time limit. After this limit expires, your user can't use their access token. To specify the time unit for <code>AccessTokenValidity</code> as <code>seconds</code>, <code>minutes</code>, <code>hours</code>, or <code>days</code>, set a <code>TokenValidityUnits</code> value in your API request.</p> <p>For example, when you set <code>AccessTokenValidity</code> to <code>10</code> and <code>TokenValidityUnits</code> to <code>hours</code>, your user can authorize access with their access token for 10 hours.</p> <p>The default time unit for <code>AccessTokenValidity</code> in an API request is hours. <i>Valid range</i> is displayed below in seconds.</p> <p>If you don't specify otherwise in the configuration of your app client, your access tokens are valid for one hour.</p>",
+    }),
+    IdTokenValidity: IdTokenValidityTypeSchema.exactOptional().openapi({
+      description:
+        "<p>The ID token time limit. After this limit expires, your user can't use their ID token. To specify the time unit for <code>IdTokenValidity</code> as <code>seconds</code>, <code>minutes</code>, <code>hours</code>, or <code>days</code>, set a <code>TokenValidityUnits</code> value in your API request.</p> <p>For example, when you set <code>IdTokenValidity</code> as <code>10</code> and <code>TokenValidityUnits</code> as <code>hours</code>, your user can authenticate their session with their ID token for 10 hours.</p> <p>The default time unit for <code>IdTokenValidity</code> in an API request is hours. <i>Valid range</i> is displayed below in seconds.</p> <p>If you don't specify otherwise in the configuration of your app client, your ID tokens are valid for one hour.</p>",
+    }),
+    TokenValidityUnits: TokenValidityUnitsTypeSchema.exactOptional().openapi({
+      description:
+        'The units in which the validity times are represented. The default unit for RefreshToken is days, and default for ID and access tokens are hours.',
+    }),
+    ReadAttributes: ClientPermissionListTypeSchema.exactOptional().openapi({
+      description: 'The read attributes.',
+    }),
+    WriteAttributes: ClientPermissionListTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The user pool attributes that the app client can write to.</p> <p>If your app client allows users to sign in through an IdP, this array must include all attributes that you have mapped to IdP attributes. Amazon Cognito updates mapped attributes when users sign in to your application through an IdP. If your app client does not have write access to a mapped attribute, Amazon Cognito throws an error when it tries to update the attribute. For more information, see <a href="https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-specifying-attribute-mapping.html">Specifying IdP Attribute Mappings for Your user pool</a>.</p>',
+    }),
+    ExplicitAuthFlows: ExplicitAuthFlowsListTypeSchema.exactOptional().openapi({
+      description:
+        "<p>The authentication flows that you want your user pool client to support. For each app client in your user pool, you can sign in your users with any combination of one or more flows, including with a user name and Secure Remote Password (SRP), a user name and password, or a custom authentication process that you define with Lambda functions.</p> <note> <p>If you don't specify a value for <code>ExplicitAuthFlows</code>, your user client supports <code>ALLOW_REFRESH_TOKEN_AUTH</code>, <code>ALLOW_USER_SRP_AUTH</code>, and <code>ALLOW_CUSTOM_AUTH</code>.</p> </note> <p>Valid values include:</p> <ul> <li> <p> <code>ALLOW_ADMIN_USER_PASSWORD_AUTH</code>: Enable admin based user password authentication flow <code>ADMIN_USER_PASSWORD_AUTH</code>. This setting replaces the <code>ADMIN_NO_SRP_AUTH</code> setting. With this authentication flow, your app passes a user name and password to Amazon Cognito in the request, instead of using the Secure Remote Password (SRP) protocol to securely transmit the password.</p> </li> <li> <p> <code>ALLOW_CUSTOM_AUTH</code>: Enable Lambda trigger based authentication.</p> </li> <li> <p> <code>ALLOW_USER_PASSWORD_AUTH</code>: Enable user password-based authentication. In this flow, Amazon Cognito receives the password in the request instead of using the SRP protocol to verify passwords.</p> </li> <li> <p> <code>ALLOW_USER_SRP_AUTH</code>: Enable SRP-based authentication.</p> </li> <li> <p> <code>ALLOW_REFRESH_TOKEN_AUTH</code>: Enable authflow to refresh tokens.</p> </li> </ul> <p>In some environments, you will see the values <code>ADMIN_NO_SRP_AUTH</code>, <code>CUSTOM_AUTH_FLOW_ONLY</code>, or <code>USER_PASSWORD_AUTH</code>. You can't assign these legacy <code>ExplicitAuthFlows</code> values to user pool clients at the same time as values that begin with <code>ALLOW_</code>, like <code>ALLOW_USER_SRP_AUTH</code>.</p>",
+    }),
+    SupportedIdentityProviders: SupportedIdentityProvidersListTypeSchema.exactOptional().openapi({
+      description:
+        'A list of provider names for the identity providers (IdPs) that are supported on this client. The following are supported: <code>COGNITO</code>, <code>Facebook</code>, <code>Google</code>, <code>SignInWithApple</code>, and <code>LoginWithAmazon</code>. You can also specify the names that you configured for the SAML and OIDC IdPs in your user pool, for example <code>MySAMLIdP</code> or <code>MyOIDCIdP</code>.',
+    }),
+    CallbackURLs: CallbackURLsListTypeSchema.exactOptional().openapi({
+      description:
+        '<p>A list of allowed redirect (callback) URLs for the IdPs.</p> <p>A redirect URI must:</p> <ul> <li> <p>Be an absolute URI.</p> </li> <li> <p>Be registered with the authorization server.</p> </li> <li> <p>Not include a fragment component.</p> </li> </ul> <p>See <a href="https://tools.ietf.org/html/rfc6749#section-3.1.2">OAuth 2.0 - Redirection Endpoint</a>.</p> <p>Amazon Cognito requires HTTPS over HTTP except for http://localhost for testing purposes only.</p> <p>App callback URLs such as myapp://example are also supported.</p>',
+    }),
+    LogoutURLs: LogoutURLsListTypeSchema.exactOptional().openapi({
+      description: 'A list of allowed logout URLs for the IdPs.',
+    }),
+    DefaultRedirectURI: RedirectUrlTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The default redirect URI. Must be in the <code>CallbackURLs</code> list.</p> <p>A redirect URI must:</p> <ul> <li> <p>Be an absolute URI.</p> </li> <li> <p>Be registered with the authorization server.</p> </li> <li> <p>Not include a fragment component.</p> </li> </ul> <p>See <a href="https://tools.ietf.org/html/rfc6749#section-3.1.2">OAuth 2.0 - Redirection Endpoint</a>.</p> <p>Amazon Cognito requires HTTPS over HTTP except for http://localhost for testing purposes only.</p> <p>App callback URLs such as myapp://example are also supported.</p>',
+    }),
+    AllowedOAuthFlows: OAuthFlowsTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The allowed OAuth flows.</p> <dl> <dt>code</dt> <dd> <p>Use a code grant flow, which provides an authorization code as the response. This code can be exchanged for access tokens with the <code>/oauth2/token</code> endpoint.</p> </dd> <dt>implicit</dt> <dd> <p>Issue the access token (and, optionally, ID token, based on scopes) directly to your user.</p> </dd> <dt>client_credentials</dt> <dd> <p>Issue the access token from the <code>/oauth2/token</code> endpoint directly to a non-person user using a combination of the client ID and client secret.</p> </dd> </dl>',
+    }),
+    AllowedOAuthScopes: ScopeListTypeSchema.exactOptional().openapi({
+      description:
+        'The allowed OAuth scopes. Possible values provided by OAuth are <code>phone</code>, <code>email</code>, <code>openid</code>, and <code>profile</code>. Possible values provided by Amazon Web Services are <code>aws.cognito.signin.user.admin</code>. Custom scopes created in Resource Servers are also supported.',
+    }),
+    AllowedOAuthFlowsUserPoolClient: BooleanTypeSchema.exactOptional().openapi({
+      description:
+        "<p>Set to <code>true</code> to use OAuth 2.0 features in your user pool app client.</p> <p> <code>AllowedOAuthFlowsUserPoolClient</code> must be <code>true</code> before you can configure the following features in your app client.</p> <ul> <li> <p> <code>CallBackURLs</code>: Callback URLs.</p> </li> <li> <p> <code>LogoutURLs</code>: Sign-out redirect URLs.</p> </li> <li> <p> <code>AllowedOAuthScopes</code>: OAuth 2.0 scopes.</p> </li> <li> <p> <code>AllowedOAuthFlows</code>: Support for authorization code, implicit, and client credentials OAuth 2.0 grants.</p> </li> </ul> <p>To use OAuth 2.0 features, configure one of these features in the Amazon Cognito console or set <code>AllowedOAuthFlowsUserPoolClient</code> to <code>true</code> in a <code>CreateUserPoolClient</code> or <code>UpdateUserPoolClient</code> API request. If you don't set a value for <code>AllowedOAuthFlowsUserPoolClient</code> in a request with the CLI or SDKs, it defaults to <code>false</code>.</p>",
+    }),
+    AnalyticsConfiguration: AnalyticsConfigurationTypeSchema.exactOptional().openapi({
+      description:
+        "<p>The user pool analytics configuration for collecting metrics and sending them to your Amazon Pinpoint campaign.</p> <note> <p>In Amazon Web Services Regions where Amazon Pinpoint isn't available, user pools only support sending events to Amazon Pinpoint projects in Amazon Web Services Region us-east-1. In Regions where Amazon Pinpoint is available, user pools support sending events to Amazon Pinpoint projects within that same Region.</p> </note>",
+    }),
+    PreventUserExistenceErrors: PreventUserExistenceErrorTypesSchema.exactOptional().openapi({
+      description:
+        "<p>Errors and responses that you want Amazon Cognito APIs to return during authentication, account confirmation, and password recovery when the user doesn't exist in the user pool. When set to <code>ENABLED</code> and the user doesn't exist, authentication returns an error indicating either the username or password was incorrect. Account confirmation and password recovery return a response indicating a code was sent to a simulated destination. When set to <code>LEGACY</code>, those APIs return a <code>UserNotFoundException</code> exception if the user doesn't exist in the user pool.</p> <p>Valid values include:</p> <ul> <li> <p> <code>ENABLED</code> - This prevents user existence-related errors.</p> </li> <li> <p> <code>LEGACY</code> - This represents the early behavior of Amazon Cognito where user existence related errors aren't prevented.</p> </li> </ul>",
+    }),
+    EnableTokenRevocation: WrappedBooleanTypeSchema.exactOptional().openapi({
+      description:
+        '<p>Activates or deactivates token revocation. For more information about revoking tokens, see <a href="https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_RevokeToken.html">RevokeToken</a>.</p> <p>If you don\'t include this parameter, token revocation is automatically activated for the new user pool client.</p>',
+    }),
+    EnablePropagateAdditionalUserContextData: WrappedBooleanTypeSchema.exactOptional().openapi({
+      description:
+        'Activates the propagation of additional user context data. For more information about propagation of user context data, see <a href="https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pool-settings-advanced-security.html"> Adding advanced security to a user pool</a>. If you don’t include this parameter, you can\'t send device fingerprint information, including source IP address, to Amazon Cognito advanced security. You can only activate <code>EnablePropagateAdditionalUserContextData</code> in an app client that has a client secret.',
+    }),
+    AuthSessionValidity: AuthSessionValidityTypeSchema.exactOptional().openapi({
+      description:
+        'Amazon Cognito creates a session token for each API request in an authentication flow. <code>AuthSessionValidity</code> is the duration, in minutes, of that session token. Your user pool native user must respond to each authentication challenge before the session expires.',
+    }),
   })
   .openapi({
     required: ['UserPoolId', 'ClientName'],
@@ -4366,28 +3053,20 @@ const InvalidOAuthFlowExceptionSchema = z.any().openapi('InvalidOAuthFlowExcepti
 
 const CreateUserPoolDomainResponseSchema = z
   .object({
-    CloudFrontDomain: DomainTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon CloudFront endpoint that you use as the target of the alias that you set up with your Domain Name Service (DNS) provider.',
-        }),
-    ).exactOptional(),
+    CloudFrontDomain: DomainTypeSchema.exactOptional().openapi({
+      description:
+        'The Amazon CloudFront endpoint that you use as the target of the alias that you set up with your Domain Name Service (DNS) provider.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateUserPoolDomainResponse')
 
 const CustomDomainConfigTypeSchema = z
   .object({
-    CertificateArn: ArnTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of an Certificate Manager SSL certificate. You use this certificate for the subdomain of your custom domain.',
-        }),
-    ),
+    CertificateArn: ArnTypeSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of an Certificate Manager SSL certificate. You use this certificate for the subdomain of your custom domain.',
+    }),
   })
   .openapi({
     required: ['CertificateArn'],
@@ -4398,41 +3077,33 @@ const CustomDomainConfigTypeSchema = z
 
 const CreateUserPoolDomainRequestSchema = z
   .object({
-    Domain: DomainTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The domain string. For custom domains, this is the fully-qualified domain name, such as <code>auth.example.com</code>. For Amazon Cognito prefix domains, this is the prefix alone, such as <code>auth</code>.',
-        }),
-    ),
-    UserPoolId: UserPoolIdTypeSchema.and(z.any().openapi({ description: 'The user pool ID.' })),
-    CustomDomainConfig: CustomDomainConfigTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The configuration for a custom domain that hosts the sign-up and sign-in webpages for your application.</p> <p>Provide this parameter only if you want to use a custom domain for your user pool. Otherwise, you can exclude this parameter and use the Amazon Cognito hosted domain instead.</p> <p>For more information about the hosted domain and custom domains, see <a href="https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-assign-domain.html">Configuring a User Pool Domain</a>.</p>',
-        }),
-    ).exactOptional(),
+    Domain: DomainTypeSchema.openapi({
+      description:
+        'The domain string. For custom domains, this is the fully-qualified domain name, such as <code>auth.example.com</code>. For Amazon Cognito prefix domains, this is the prefix alone, such as <code>auth</code>.',
+    }),
+    UserPoolId: UserPoolIdTypeSchema.openapi({ description: 'The user pool ID.' }),
+    CustomDomainConfig: CustomDomainConfigTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The configuration for a custom domain that hosts the sign-up and sign-in webpages for your application.</p> <p>Provide this parameter only if you want to use a custom domain for your user pool. Otherwise, you can exclude this parameter and use the Amazon Cognito hosted domain instead.</p> <p>For more information about the hosted domain and custom domains, see <a href="https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-assign-domain.html">Configuring a User Pool Domain</a>.</p>',
+    }),
   })
   .openapi({ required: ['Domain', 'UserPoolId'], title: 'CreateUserPoolDomainRequest' })
   .openapi('CreateUserPoolDomainRequest')
 
 const DeleteGroupRequestSchema = z
   .object({
-    GroupName: GroupNameTypeSchema.and(z.any().openapi({ description: 'The name of the group.' })),
-    UserPoolId: UserPoolIdTypeSchema.and(
-      z.any().openapi({ description: 'The user pool ID for the user pool.' }),
-    ),
+    GroupName: GroupNameTypeSchema.openapi({ description: 'The name of the group.' }),
+    UserPoolId: UserPoolIdTypeSchema.openapi({
+      description: 'The user pool ID for the user pool.',
+    }),
   })
   .openapi({ required: ['GroupName', 'UserPoolId'], title: 'DeleteGroupRequest' })
   .openapi('DeleteGroupRequest')
 
 const DeleteIdentityProviderRequestSchema = z
   .object({
-    UserPoolId: UserPoolIdTypeSchema.and(z.any().openapi({ description: 'The user pool ID.' })),
-    ProviderName: ProviderNameTypeSchema.and(z.any().openapi({ description: 'The IdP name.' })),
+    UserPoolId: UserPoolIdTypeSchema.openapi({ description: 'The user pool ID.' }),
+    ProviderName: ProviderNameTypeSchema.openapi({ description: 'The IdP name.' }),
   })
   .openapi({ required: ['UserPoolId', 'ProviderName'], title: 'DeleteIdentityProviderRequest' })
   .openapi('DeleteIdentityProviderRequest')
@@ -4443,30 +3114,22 @@ const UnsupportedIdentityProviderExceptionSchema = z
 
 const DeleteResourceServerRequestSchema = z
   .object({
-    UserPoolId: UserPoolIdTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The user pool ID for the user pool that hosts the resource server.',
-        }),
-    ),
-    Identifier: ResourceServerIdentifierTypeSchema.and(
-      z.any().openapi({ description: 'The identifier for the resource server.' }),
-    ),
+    UserPoolId: UserPoolIdTypeSchema.openapi({
+      description: 'The user pool ID for the user pool that hosts the resource server.',
+    }),
+    Identifier: ResourceServerIdentifierTypeSchema.openapi({
+      description: 'The identifier for the resource server.',
+    }),
   })
   .openapi({ required: ['UserPoolId', 'Identifier'], title: 'DeleteResourceServerRequest' })
   .openapi('DeleteResourceServerRequest')
 
 const DeleteUserRequestSchema = z
   .object({
-    AccessToken: TokenModelTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A valid access token that Amazon Cognito issued to the user whose user profile you want to delete.',
-        }),
-    ),
+    AccessToken: TokenModelTypeSchema.openapi({
+      description:
+        'A valid access token that Amazon Cognito issued to the user whose user profile you want to delete.',
+    }),
   })
   .openapi({
     required: ['AccessToken'],
@@ -4476,28 +3139,20 @@ const DeleteUserRequestSchema = z
   .openapi('DeleteUserRequest')
 
 const DeleteUserAttributesResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Represents the response from the server to delete user attributes.' })
   .openapi('DeleteUserAttributesResponse')
 
 const DeleteUserAttributesRequestSchema = z
   .object({
-    UserAttributeNames: AttributeNameListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An array of strings representing the user attribute names you want to delete.</p> <p>For custom attributes, you must prependattach the <code>custom:</code> prefix to the front of the attribute name.</p>',
-        }),
-    ),
-    AccessToken: TokenModelTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A valid access token that Amazon Cognito issued to the user whose attributes you want to delete.',
-        }),
-    ),
+    UserAttributeNames: AttributeNameListTypeSchema.openapi({
+      description:
+        '<p>An array of strings representing the user attribute names you want to delete.</p> <p>For custom attributes, you must prependattach the <code>custom:</code> prefix to the front of the attribute name.</p>',
+    }),
+    AccessToken: TokenModelTypeSchema.openapi({
+      description:
+        'A valid access token that Amazon Cognito issued to the user whose attributes you want to delete.',
+    }),
   })
   .openapi({
     required: ['UserAttributeNames', 'AccessToken'],
@@ -4508,9 +3163,9 @@ const DeleteUserAttributesRequestSchema = z
 
 const DeleteUserPoolRequestSchema = z
   .object({
-    UserPoolId: UserPoolIdTypeSchema.and(
-      z.any().openapi({ description: 'The user pool ID for the user pool you want to delete.' }),
-    ),
+    UserPoolId: UserPoolIdTypeSchema.openapi({
+      description: 'The user pool ID for the user pool you want to delete.',
+    }),
   })
   .openapi({
     required: ['UserPoolId'],
@@ -4521,18 +3176,12 @@ const DeleteUserPoolRequestSchema = z
 
 const DeleteUserPoolClientRequestSchema = z
   .object({
-    UserPoolId: UserPoolIdTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The user pool ID for the user pool where you want to delete the client.',
-        }),
-    ),
-    ClientId: ClientIdTypeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The app client ID of the app associated with the user pool.' }),
-    ),
+    UserPoolId: UserPoolIdTypeSchema.openapi({
+      description: 'The user pool ID for the user pool where you want to delete the client.',
+    }),
+    ClientId: ClientIdTypeSchema.openapi({
+      description: 'The app client ID of the app associated with the user pool.',
+    }),
   })
   .openapi({
     required: ['UserPoolId', 'ClientId'],
@@ -4541,132 +3190,268 @@ const DeleteUserPoolClientRequestSchema = z
   })
   .openapi('DeleteUserPoolClientRequest')
 
-const DeleteUserPoolDomainResponseSchema = z.object({}).openapi('DeleteUserPoolDomainResponse')
+const DeleteUserPoolDomainResponseSchema = z.looseObject({}).openapi('DeleteUserPoolDomainResponse')
 
 const DeleteUserPoolDomainRequestSchema = z
   .object({
-    Domain: DomainTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The domain string. For custom domains, this is the fully-qualified domain name, such as <code>auth.example.com</code>. For Amazon Cognito prefix domains, this is the prefix alone, such as <code>auth</code>.',
-        }),
-    ),
-    UserPoolId: UserPoolIdTypeSchema.and(z.any().openapi({ description: 'The user pool ID.' })),
+    Domain: DomainTypeSchema.openapi({
+      description:
+        'The domain string. For custom domains, this is the fully-qualified domain name, such as <code>auth.example.com</code>. For Amazon Cognito prefix domains, this is the prefix alone, such as <code>auth</code>.',
+    }),
+    UserPoolId: UserPoolIdTypeSchema.openapi({ description: 'The user pool ID.' }),
   })
   .openapi({ required: ['Domain', 'UserPoolId'], title: 'DeleteUserPoolDomainRequest' })
   .openapi('DeleteUserPoolDomainRequest')
 
 const DescribeIdentityProviderResponseSchema = z
   .object({
-    IdentityProvider: IdentityProviderTypeSchema.and(
-      z.any().openapi({ description: 'The identity provider details.' }),
-    ),
+    IdentityProvider: IdentityProviderTypeSchema.openapi({
+      description: 'The identity provider details.',
+    }),
   })
   .openapi({ required: ['IdentityProvider'] })
   .openapi('DescribeIdentityProviderResponse')
 
 const DescribeIdentityProviderRequestSchema = z
   .object({
-    UserPoolId: UserPoolIdTypeSchema.and(z.any().openapi({ description: 'The user pool ID.' })),
-    ProviderName: ProviderNameTypeSchema.and(z.any().openapi({ description: 'The IdP name.' })),
+    UserPoolId: UserPoolIdTypeSchema.openapi({ description: 'The user pool ID.' }),
+    ProviderName: ProviderNameTypeSchema.openapi({ description: 'The IdP name.' }),
   })
   .openapi({ required: ['UserPoolId', 'ProviderName'], title: 'DescribeIdentityProviderRequest' })
   .openapi('DescribeIdentityProviderRequest')
 
 const DescribeResourceServerResponseSchema = z
   .object({
-    ResourceServer: ResourceServerTypeSchema.and(
-      z.any().openapi({ description: 'The resource server.' }),
-    ),
+    ResourceServer: ResourceServerTypeSchema.openapi({ description: 'The resource server.' }),
   })
   .openapi({ required: ['ResourceServer'] })
   .openapi('DescribeResourceServerResponse')
 
 const DescribeResourceServerRequestSchema = z
   .object({
-    UserPoolId: UserPoolIdTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The user pool ID for the user pool that hosts the resource server.',
-        }),
-    ),
-    Identifier: ResourceServerIdentifierTypeSchema.and(
-      z.any().openapi({ description: 'The identifier for the resource server' }),
-    ),
+    UserPoolId: UserPoolIdTypeSchema.openapi({
+      description: 'The user pool ID for the user pool that hosts the resource server.',
+    }),
+    Identifier: ResourceServerIdentifierTypeSchema.openapi({
+      description: 'The identifier for the resource server',
+    }),
   })
   .openapi({ required: ['UserPoolId', 'Identifier'], title: 'DescribeResourceServerRequest' })
   .openapi('DescribeResourceServerRequest')
 
-const RiskConfigurationTypeSchema: z.ZodType<RiskConfigurationTypeType> = z
-  .lazy(() =>
-    z
-      .object({
-        UserPoolId: UserPoolIdTypeSchema.and(
-          z.any().openapi({ description: 'The user pool ID.' }),
-        ).exactOptional(),
-        ClientId: ClientIdTypeSchema.and(
-          z.any().openapi({ description: 'The app client ID.' }),
-        ).exactOptional(),
-        CompromisedCredentialsRiskConfiguration:
-          CompromisedCredentialsRiskConfigurationTypeSchema.and(
-            z
-              .any()
-              .openapi({
-                description:
-                  'The compromised credentials risk configuration object, including the <code>EventFilter</code> and the <code>EventAction</code>.',
-              }),
-          ).exactOptional(),
-        AccountTakeoverRiskConfiguration: AccountTakeoverRiskConfigurationTypeSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'The account takeover risk configuration object, including the <code>NotifyConfiguration</code> object and <code>Actions</code> to take if there is an account takeover.',
-            }),
-        ).exactOptional(),
-        RiskExceptionConfiguration: RiskExceptionConfigurationTypeSchema.and(
-          z.any().openapi({ description: 'The configuration to override the risk decision.' }),
-        ).exactOptional(),
-        LastModifiedDate: DateTypeSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'The date and time, in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format, when the item was modified.',
-            }),
-        ).exactOptional(),
-      })
-      .openapi({ description: 'The risk configuration type.', required: [] }),
-  )
+const EventFilterTypeSchema = z
+  .enum(['SIGN_IN', 'PASSWORD_CHANGE', 'SIGN_UP'])
+  .openapi('EventFilterType')
+
+const EventFiltersTypeSchema = z.array(EventFilterTypeSchema).openapi('EventFiltersType')
+
+const CompromisedCredentialsEventActionTypeSchema = z
+  .enum(['BLOCK', 'NO_ACTION'])
+  .openapi('CompromisedCredentialsEventActionType')
+
+const CompromisedCredentialsActionsTypeSchema = z
+  .object({
+    EventAction: CompromisedCredentialsEventActionTypeSchema.openapi({
+      description: 'The event action.',
+    }),
+  })
+  .openapi({ required: ['EventAction'], description: 'The compromised credentials actions type.' })
+  .openapi('CompromisedCredentialsActionsType')
+
+const CompromisedCredentialsRiskConfigurationTypeSchema = z
+  .object({
+    EventFilter: EventFiltersTypeSchema.exactOptional().openapi({
+      description:
+        'Perform the action for these events. The default is to perform all events if no event filter is specified.',
+    }),
+    Actions: CompromisedCredentialsActionsTypeSchema.openapi({
+      description: 'The compromised credentials risk configuration actions.',
+    }),
+  })
+  .openapi({
+    required: ['Actions'],
+    description: 'The compromised credentials risk configuration type.',
+  })
+  .openapi('CompromisedCredentialsRiskConfigurationType')
+
+const EmailNotificationSubjectTypeSchema = z
+  .string()
+  .regex(/[\p{L}\p{M}\p{S}\p{N}\p{P}\s]+/u)
+  .min(1)
+  .max(140)
+  .openapi('EmailNotificationSubjectType')
+
+const EmailNotificationBodyTypeSchema = z
+  .string()
+  .regex(/[\p{L}\p{M}\p{S}\p{N}\p{P}\s*]+/u)
+  .min(6)
+  .max(20000)
+  .openapi('EmailNotificationBodyType')
+
+const NotifyEmailTypeSchema = z
+  .object({
+    Subject: EmailNotificationSubjectTypeSchema.openapi({ description: 'The email subject.' }),
+    HtmlBody: EmailNotificationBodyTypeSchema.exactOptional().openapi({
+      description: 'The email HTML body.',
+    }),
+    TextBody: EmailNotificationBodyTypeSchema.exactOptional().openapi({
+      description: 'The email text body.',
+    }),
+  })
+  .openapi({ required: ['Subject'], description: 'The notify email type.' })
+  .openapi('NotifyEmailType')
+
+const NotifyConfigurationTypeSchema = z
+  .object({
+    From: StringTypeSchema.exactOptional().openapi({
+      description:
+        'The email address that is sending the email. The address must be either individually verified with Amazon Simple Email Service, or from a domain that has been verified with Amazon SES.',
+    }),
+    ReplyTo: StringTypeSchema.exactOptional().openapi({
+      description: 'The destination to which the receiver of an email should reply to.',
+    }),
+    SourceArn: ArnTypeSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the identity that is associated with the sending authorization policy. This identity permits Amazon Cognito to send for the email address specified in the <code>From</code> parameter.',
+    }),
+    BlockEmail: NotifyEmailTypeSchema.exactOptional().openapi({
+      description: 'Email template used when a detected risk event is blocked.',
+    }),
+    NoActionEmail: NotifyEmailTypeSchema.exactOptional().openapi({
+      description: 'The email template used when a detected risk event is allowed.',
+    }),
+    MfaEmail: NotifyEmailTypeSchema.exactOptional().openapi({
+      description:
+        'The multi-factor authentication (MFA) email template used when MFA is challenged as part of a detected risk.',
+    }),
+  })
+  .openapi({ required: ['SourceArn'], description: 'The notify configuration type.' })
+  .openapi('NotifyConfigurationType')
+
+const AccountTakeoverActionNotifyTypeSchema = z.boolean().openapi('AccountTakeoverActionNotifyType')
+
+const AccountTakeoverEventActionTypeSchema = z
+  .enum(['BLOCK', 'MFA_IF_CONFIGURED', 'MFA_REQUIRED', 'NO_ACTION'])
+  .openapi('AccountTakeoverEventActionType')
+
+const AccountTakeoverActionTypeSchema = z
+  .object({
+    Notify: AccountTakeoverActionNotifyTypeSchema.openapi({
+      description: 'Flag specifying whether to send a notification.',
+    }),
+    EventAction: AccountTakeoverEventActionTypeSchema.openapi({
+      description:
+        '<p>The action to take in response to the account takeover action. Valid values are as follows:</p> <ul> <li> <p> <code>BLOCK</code> Choosing this action will block the request.</p> </li> <li> <p> <code>MFA_IF_CONFIGURED</code> Present an MFA challenge if user has configured it, else allow the request.</p> </li> <li> <p> <code>MFA_REQUIRED</code> Present an MFA challenge if user has configured it, else block the request.</p> </li> <li> <p> <code>NO_ACTION</code> Allow the user to sign in.</p> </li> </ul>',
+    }),
+  })
+  .openapi({ required: ['Notify', 'EventAction'], description: 'Account takeover action type.' })
+  .openapi('AccountTakeoverActionType')
+
+const AccountTakeoverActionsTypeSchema = z
+  .object({
+    LowAction: AccountTakeoverActionTypeSchema.exactOptional().openapi({
+      description: 'Action to take for a low risk.',
+    }),
+    MediumAction: AccountTakeoverActionTypeSchema.exactOptional().openapi({
+      description: 'Action to take for a medium risk.',
+    }),
+    HighAction: AccountTakeoverActionTypeSchema.exactOptional().openapi({
+      description: 'Action to take for a high risk.',
+    }),
+  })
+  .openapi({ description: 'Account takeover actions type.', required: [] })
+  .openapi('AccountTakeoverActionsType')
+
+const AccountTakeoverRiskConfigurationTypeSchema = z
+  .object({
+    NotifyConfiguration: NotifyConfigurationTypeSchema.exactOptional().openapi({
+      description: 'The notify configuration used to construct email notifications.',
+    }),
+    Actions: AccountTakeoverActionsTypeSchema.openapi({
+      description: 'Account takeover risk configuration actions.',
+    }),
+  })
+  .openapi({
+    required: ['Actions'],
+    description:
+      'Configuration for mitigation actions and notification for different levels of risk detected for a potential account takeover.',
+  })
+  .openapi('AccountTakeoverRiskConfigurationType')
+
+const BlockedIPRangeListTypeSchema = z
+  .array(StringTypeSchema)
+  .max(200)
+  .openapi('BlockedIPRangeListType')
+
+const SkippedIPRangeListTypeSchema = z
+  .array(StringTypeSchema)
+  .max(200)
+  .openapi('SkippedIPRangeListType')
+
+const RiskExceptionConfigurationTypeSchema = z
+  .object({
+    BlockedIPRangeList: BlockedIPRangeListTypeSchema.exactOptional().openapi({
+      description:
+        'Overrides the risk decision to always block the pre-authentication requests. The IP range is in CIDR notation, a compact representation of an IP address and its routing prefix.',
+    }),
+    SkippedIPRangeList: SkippedIPRangeListTypeSchema.exactOptional().openapi({
+      description:
+        "Risk detection isn't performed on the IP addresses in this range list. The IP range is in CIDR notation.",
+    }),
+  })
+  .openapi({
+    description: 'The type of the configuration to override the risk decision.',
+    required: [],
+  })
+  .openapi('RiskExceptionConfigurationType')
+
+const RiskConfigurationTypeSchema = z
+  .object({
+    UserPoolId: UserPoolIdTypeSchema.exactOptional().openapi({ description: 'The user pool ID.' }),
+    ClientId: ClientIdTypeSchema.exactOptional().openapi({ description: 'The app client ID.' }),
+    CompromisedCredentialsRiskConfiguration:
+      CompromisedCredentialsRiskConfigurationTypeSchema.exactOptional().openapi({
+        description:
+          'The compromised credentials risk configuration object, including the <code>EventFilter</code> and the <code>EventAction</code>.',
+      }),
+    AccountTakeoverRiskConfiguration:
+      AccountTakeoverRiskConfigurationTypeSchema.exactOptional().openapi({
+        description:
+          'The account takeover risk configuration object, including the <code>NotifyConfiguration</code> object and <code>Actions</code> to take if there is an account takeover.',
+      }),
+    RiskExceptionConfiguration: RiskExceptionConfigurationTypeSchema.exactOptional().openapi({
+      description: 'The configuration to override the risk decision.',
+    }),
+    LastModifiedDate: DateTypeSchema.exactOptional().openapi({
+      description:
+        'The date and time, in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format, when the item was modified.',
+    }),
+  })
+  .openapi({ description: 'The risk configuration type.', required: [] })
   .openapi('RiskConfigurationType')
 
 const DescribeRiskConfigurationResponseSchema = z
   .object({
-    RiskConfiguration: RiskConfigurationTypeSchema.and(
-      z.any().openapi({ description: 'The risk configuration.' }),
-    ),
+    RiskConfiguration: RiskConfigurationTypeSchema.openapi({
+      description: 'The risk configuration.',
+    }),
   })
   .openapi({ required: ['RiskConfiguration'] })
   .openapi('DescribeRiskConfigurationResponse')
 
 const DescribeRiskConfigurationRequestSchema = z
   .object({
-    UserPoolId: UserPoolIdTypeSchema.and(z.any().openapi({ description: 'The user pool ID.' })),
-    ClientId: ClientIdTypeSchema.and(
-      z.any().openapi({ description: 'The app client ID.' }),
-    ).exactOptional(),
+    UserPoolId: UserPoolIdTypeSchema.openapi({ description: 'The user pool ID.' }),
+    ClientId: ClientIdTypeSchema.exactOptional().openapi({ description: 'The app client ID.' }),
   })
   .openapi({ required: ['UserPoolId'], title: 'DescribeRiskConfigurationRequest' })
   .openapi('DescribeRiskConfigurationRequest')
 
 const DescribeUserImportJobResponseSchema = z
   .object({
-    UserImportJob: UserImportJobTypeSchema.and(
-      z.any().openapi({ description: 'The job object that represents the user import job.' }),
-    ).exactOptional(),
+    UserImportJob: UserImportJobTypeSchema.exactOptional().openapi({
+      description: 'The job object that represents the user import job.',
+    }),
   })
   .openapi({
     description:
@@ -4677,16 +3462,12 @@ const DescribeUserImportJobResponseSchema = z
 
 const DescribeUserImportJobRequestSchema = z
   .object({
-    UserPoolId: UserPoolIdTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The user pool ID for the user pool that the users are being imported into.',
-        }),
-    ),
-    JobId: UserImportJobIdTypeSchema.and(
-      z.any().openapi({ description: 'The job ID for the user import job.' }),
-    ),
+    UserPoolId: UserPoolIdTypeSchema.openapi({
+      description: 'The user pool ID for the user pool that the users are being imported into.',
+    }),
+    JobId: UserImportJobIdTypeSchema.openapi({
+      description: 'The job ID for the user import job.',
+    }),
   })
   .openapi({
     required: ['UserPoolId', 'JobId'],
@@ -4697,22 +3478,18 @@ const DescribeUserImportJobRequestSchema = z
 
 const DescribeUserPoolResponseSchema = z
   .object({
-    UserPool: UserPoolTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The container of metadata returned by the server to describe the pool.',
-        }),
-    ).exactOptional(),
+    UserPool: UserPoolTypeSchema.exactOptional().openapi({
+      description: 'The container of metadata returned by the server to describe the pool.',
+    }),
   })
   .openapi({ description: 'Represents the response to describe the user pool.', required: [] })
   .openapi('DescribeUserPoolResponse')
 
 const DescribeUserPoolRequestSchema = z
   .object({
-    UserPoolId: UserPoolIdTypeSchema.and(
-      z.any().openapi({ description: 'The user pool ID for the user pool you want to describe.' }),
-    ),
+    UserPoolId: UserPoolIdTypeSchema.openapi({
+      description: 'The user pool ID for the user pool you want to describe.',
+    }),
   })
   .openapi({
     required: ['UserPoolId'],
@@ -4723,14 +3500,9 @@ const DescribeUserPoolRequestSchema = z
 
 const DescribeUserPoolClientResponseSchema = z
   .object({
-    UserPoolClient: UserPoolClientTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The user pool client from a server response to describe the user pool client.',
-        }),
-    ).exactOptional(),
+    UserPoolClient: UserPoolClientTypeSchema.exactOptional().openapi({
+      description: 'The user pool client from a server response to describe the user pool client.',
+    }),
   })
   .openapi({
     description:
@@ -4741,14 +3513,12 @@ const DescribeUserPoolClientResponseSchema = z
 
 const DescribeUserPoolClientRequestSchema = z
   .object({
-    UserPoolId: UserPoolIdTypeSchema.and(
-      z.any().openapi({ description: 'The user pool ID for the user pool you want to describe.' }),
-    ),
-    ClientId: ClientIdTypeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The app client ID of the app associated with the user pool.' }),
-    ),
+    UserPoolId: UserPoolIdTypeSchema.openapi({
+      description: 'The user pool ID for the user pool you want to describe.',
+    }),
+    ClientId: ClientIdTypeSchema.openapi({
+      description: 'The app client ID of the app associated with the user pool.',
+    }),
   })
   .openapi({
     required: ['UserPoolId', 'ClientId'],
@@ -4778,91 +3548,57 @@ const DomainStatusTypeSchema = z
 
 const DomainDescriptionTypeSchema = z
   .object({
-    UserPoolId: UserPoolIdTypeSchema.and(
-      z.any().openapi({ description: 'The user pool ID.' }),
-    ).exactOptional(),
-    AWSAccountId: AWSAccountIdTypeSchema.and(
-      z.any().openapi({ description: 'The Amazon Web Services ID for the user pool owner.' }),
-    ).exactOptional(),
-    Domain: DomainTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The domain string. For custom domains, this is the fully-qualified domain name, such as <code>auth.example.com</code>. For Amazon Cognito prefix domains, this is the prefix alone, such as <code>auth</code>.',
-        }),
-    ).exactOptional(),
-    S3Bucket: S3BucketTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon S3 bucket where the static files for this domain are stored.',
-        }),
-    ).exactOptional(),
-    CloudFrontDistribution: StringTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon CloudFront endpoint that you use as the target of the alias that you set up with your Domain Name Service (DNS) provider.',
-        }),
-    ).exactOptional(),
-    Version: DomainVersionTypeSchema.and(
-      z.any().openapi({ description: 'The app version.' }),
-    ).exactOptional(),
-    Status: DomainStatusTypeSchema.and(
-      z.any().openapi({ description: 'The domain status.' }),
-    ).exactOptional(),
-    CustomDomainConfig: CustomDomainConfigTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The configuration for a custom domain that hosts the sign-up and sign-in webpages for your application.',
-        }),
-    ).exactOptional(),
+    UserPoolId: UserPoolIdTypeSchema.exactOptional().openapi({ description: 'The user pool ID.' }),
+    AWSAccountId: AWSAccountIdTypeSchema.exactOptional().openapi({
+      description: 'The Amazon Web Services ID for the user pool owner.',
+    }),
+    Domain: DomainTypeSchema.exactOptional().openapi({
+      description:
+        'The domain string. For custom domains, this is the fully-qualified domain name, such as <code>auth.example.com</code>. For Amazon Cognito prefix domains, this is the prefix alone, such as <code>auth</code>.',
+    }),
+    S3Bucket: S3BucketTypeSchema.exactOptional().openapi({
+      description: 'The Amazon S3 bucket where the static files for this domain are stored.',
+    }),
+    CloudFrontDistribution: StringTypeSchema.exactOptional().openapi({
+      description:
+        'The Amazon CloudFront endpoint that you use as the target of the alias that you set up with your Domain Name Service (DNS) provider.',
+    }),
+    Version: DomainVersionTypeSchema.exactOptional().openapi({ description: 'The app version.' }),
+    Status: DomainStatusTypeSchema.exactOptional().openapi({ description: 'The domain status.' }),
+    CustomDomainConfig: CustomDomainConfigTypeSchema.exactOptional().openapi({
+      description:
+        'The configuration for a custom domain that hosts the sign-up and sign-in webpages for your application.',
+    }),
   })
   .openapi({ description: 'A container for information about a domain.', required: [] })
   .openapi('DomainDescriptionType')
 
 const DescribeUserPoolDomainResponseSchema = z
   .object({
-    DomainDescription: DomainDescriptionTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A domain description object containing information about the domain.',
-        }),
-    ).exactOptional(),
+    DomainDescription: DomainDescriptionTypeSchema.exactOptional().openapi({
+      description: 'A domain description object containing information about the domain.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeUserPoolDomainResponse')
 
 const DescribeUserPoolDomainRequestSchema = z
   .object({
-    Domain: DomainTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The domain string. For custom domains, this is the fully-qualified domain name, such as <code>auth.example.com</code>. For Amazon Cognito prefix domains, this is the prefix alone, such as <code>auth</code>.',
-        }),
-    ),
+    Domain: DomainTypeSchema.openapi({
+      description:
+        'The domain string. For custom domains, this is the fully-qualified domain name, such as <code>auth.example.com</code>. For Amazon Cognito prefix domains, this is the prefix alone, such as <code>auth</code>.',
+    }),
   })
   .openapi({ required: ['Domain'], title: 'DescribeUserPoolDomainRequest' })
   .openapi('DescribeUserPoolDomainRequest')
 
 const ForgetDeviceRequestSchema = z
   .object({
-    AccessToken: TokenModelTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A valid access token that Amazon Cognito issued to the user whose registered device you want to forget.',
-        }),
-    ).exactOptional(),
-    DeviceKey: DeviceKeyTypeSchema.and(z.any().openapi({ description: 'The device key.' })),
+    AccessToken: TokenModelTypeSchema.exactOptional().openapi({
+      description:
+        'A valid access token that Amazon Cognito issued to the user whose registered device you want to forget.',
+    }),
+    DeviceKey: DeviceKeyTypeSchema.openapi({ description: 'The device key.' }),
   })
   .openapi({
     required: ['DeviceKey'],
@@ -4873,24 +3609,16 @@ const ForgetDeviceRequestSchema = z
 
 const CodeDeliveryDetailsTypeSchema = z
   .object({
-    Destination: StringTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The email address or phone number destination where Amazon Cognito sent the code.',
-        }),
-    ).exactOptional(),
-    DeliveryMedium: DeliveryMediumTypeSchema.and(
-      z.any().openapi({ description: 'The method that Amazon Cognito used to send the code.' }),
-    ).exactOptional(),
-    AttributeName: AttributeNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the attribute that Amazon Cognito verifies with the code.',
-        }),
-    ).exactOptional(),
+    Destination: StringTypeSchema.exactOptional().openapi({
+      description:
+        'The email address or phone number destination where Amazon Cognito sent the code.',
+    }),
+    DeliveryMedium: DeliveryMediumTypeSchema.exactOptional().openapi({
+      description: 'The method that Amazon Cognito used to send the code.',
+    }),
+    AttributeName: AttributeNameTypeSchema.exactOptional().openapi({
+      description: 'The name of the attribute that Amazon Cognito verifies with the code.',
+    }),
   })
   .openapi({
     description:
@@ -4901,14 +3629,10 @@ const CodeDeliveryDetailsTypeSchema = z
 
 const ForgotPasswordResponseSchema = z
   .object({
-    CodeDeliveryDetails: CodeDeliveryDetailsTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The code delivery details returned by the server in response to the request to reset a password.',
-        }),
-    ).exactOptional(),
+    CodeDeliveryDetails: CodeDeliveryDetailsTypeSchema.exactOptional().openapi({
+      description:
+        'The code delivery details returned by the server in response to the request to reset a password.',
+    }),
   })
   .openapi({
     description: 'The response from Amazon Cognito to a request to reset a password.',
@@ -4918,49 +3642,29 @@ const ForgotPasswordResponseSchema = z
 
 const ForgotPasswordRequestSchema = z
   .object({
-    ClientId: ClientIdTypeSchema.and(
-      z.any().openapi({ description: 'The ID of the client associated with the user pool.' }),
-    ),
-    SecretHash: SecretHashTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A keyed-hash message authentication code (HMAC) calculated using the secret key of a user pool client and username plus the client ID in the message.',
-        }),
-    ).exactOptional(),
-    UserContextData: UserContextDataTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contextual data about your user session, such as the device fingerprint, IP address, or location. Amazon Cognito advanced security evaluates the risk of an authentication event based on the context that your app generates and passes to Amazon Cognito when it makes API requests.',
-        }),
-    ).exactOptional(),
-    Username: UsernameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The user name of the user for whom you want to enter a code to reset a forgotten password.',
-        }),
-    ),
-    AnalyticsMetadata: AnalyticsMetadataTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Pinpoint analytics metadata that contributes to your metrics for <code>ForgotPassword</code> calls.',
-        }),
-    ).exactOptional(),
-    ClientMetadata: ClientMetadataTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A map of custom key-value pairs that you can provide as input for any custom workflows that this action triggers.</p> <p>You create custom workflows by assigning Lambda functions to user pool triggers. When you use the ForgotPassword API action, Amazon Cognito invokes any functions that are assigned to the following triggers: <i>pre sign-up</i>, <i>custom message</i>, and <i>user migration</i>. When Amazon Cognito invokes any of these functions, it passes a JSON payload, which the function receives as input. This payload contains a <code>clientMetadata</code> attribute, which provides the data that you assigned to the ClientMetadata parameter in your ForgotPassword request. In your function code in Lambda, you can process the <code>clientMetadata</code> value to enhance your workflow for your specific needs.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-identity-pools-working-with-aws-lambda-triggers.html\"> Customizing user pool Workflows with Lambda Triggers</a> in the <i>Amazon Cognito Developer Guide</i>.</p> <note> <p>When you use the ClientMetadata parameter, remember that Amazon Cognito won't do the following:</p> <ul> <li> <p>Store the ClientMetadata value. This data is available only to Lambda triggers that are assigned to a user pool to support custom workflows. If your user pool configuration doesn't include triggers, the ClientMetadata parameter serves no purpose.</p> </li> <li> <p>Validate the ClientMetadata value.</p> </li> <li> <p>Encrypt the ClientMetadata value. Don't use Amazon Cognito to provide sensitive information.</p> </li> </ul> </note>",
-        }),
-    ).exactOptional(),
+    ClientId: ClientIdTypeSchema.openapi({
+      description: 'The ID of the client associated with the user pool.',
+    }),
+    SecretHash: SecretHashTypeSchema.exactOptional().openapi({
+      description:
+        'A keyed-hash message authentication code (HMAC) calculated using the secret key of a user pool client and username plus the client ID in the message.',
+    }),
+    UserContextData: UserContextDataTypeSchema.exactOptional().openapi({
+      description:
+        'Contextual data about your user session, such as the device fingerprint, IP address, or location. Amazon Cognito advanced security evaluates the risk of an authentication event based on the context that your app generates and passes to Amazon Cognito when it makes API requests.',
+    }),
+    Username: UsernameTypeSchema.openapi({
+      description:
+        'The user name of the user for whom you want to enter a code to reset a forgotten password.',
+    }),
+    AnalyticsMetadata: AnalyticsMetadataTypeSchema.exactOptional().openapi({
+      description:
+        'The Amazon Pinpoint analytics metadata that contributes to your metrics for <code>ForgotPassword</code> calls.',
+    }),
+    ClientMetadata: ClientMetadataTypeSchema.exactOptional().openapi({
+      description:
+        "<p>A map of custom key-value pairs that you can provide as input for any custom workflows that this action triggers.</p> <p>You create custom workflows by assigning Lambda functions to user pool triggers. When you use the ForgotPassword API action, Amazon Cognito invokes any functions that are assigned to the following triggers: <i>pre sign-up</i>, <i>custom message</i>, and <i>user migration</i>. When Amazon Cognito invokes any of these functions, it passes a JSON payload, which the function receives as input. This payload contains a <code>clientMetadata</code> attribute, which provides the data that you assigned to the ClientMetadata parameter in your ForgotPassword request. In your function code in Lambda, you can process the <code>clientMetadata</code> value to enhance your workflow for your specific needs.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-identity-pools-working-with-aws-lambda-triggers.html\"> Customizing user pool Workflows with Lambda Triggers</a> in the <i>Amazon Cognito Developer Guide</i>.</p> <note> <p>When you use the ClientMetadata parameter, remember that Amazon Cognito won't do the following:</p> <ul> <li> <p>Store the ClientMetadata value. This data is available only to Lambda triggers that are assigned to a user pool to support custom workflows. If your user pool configuration doesn't include triggers, the ClientMetadata parameter serves no purpose.</p> </li> <li> <p>Validate the ClientMetadata value.</p> </li> <li> <p>Encrypt the ClientMetadata value. Don't use Amazon Cognito to provide sensitive information.</p> </li> </ul> </note>",
+    }),
   })
   .openapi({
     required: ['ClientId', 'Username'],
@@ -4973,20 +3677,12 @@ const ListOfStringTypesSchema = z.array(StringTypeSchema).openapi('ListOfStringT
 
 const GetCSVHeaderResponseSchema = z
   .object({
-    UserPoolId: UserPoolIdTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The user pool ID for the user pool that the users are to be imported into.',
-        }),
-    ).exactOptional(),
-    CSVHeader: ListOfStringTypesSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The header information of the CSV file for the user import job.',
-        }),
-    ).exactOptional(),
+    UserPoolId: UserPoolIdTypeSchema.exactOptional().openapi({
+      description: 'The user pool ID for the user pool that the users are to be imported into.',
+    }),
+    CSVHeader: ListOfStringTypesSchema.exactOptional().openapi({
+      description: 'The header information of the CSV file for the user import job.',
+    }),
   })
   .openapi({
     description:
@@ -4997,13 +3693,9 @@ const GetCSVHeaderResponseSchema = z
 
 const GetCSVHeaderRequestSchema = z
   .object({
-    UserPoolId: UserPoolIdTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The user pool ID for the user pool that the users are to be imported into.',
-        }),
-    ),
+    UserPoolId: UserPoolIdTypeSchema.openapi({
+      description: 'The user pool ID for the user pool that the users are to be imported into.',
+    }),
   })
   .openapi({
     required: ['UserPoolId'],
@@ -5014,21 +3706,17 @@ const GetCSVHeaderRequestSchema = z
   .openapi('GetCSVHeaderRequest')
 
 const GetDeviceResponseSchema = z
-  .object({ Device: DeviceTypeSchema.and(z.any().openapi({ description: 'The device.' })) })
+  .object({ Device: DeviceTypeSchema.openapi({ description: 'The device.' }) })
   .openapi({ required: ['Device'], description: 'Gets the device response.' })
   .openapi('GetDeviceResponse')
 
 const GetDeviceRequestSchema = z
   .object({
-    DeviceKey: DeviceKeyTypeSchema.and(z.any().openapi({ description: 'The device key.' })),
-    AccessToken: TokenModelTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A valid access token that Amazon Cognito issued to the user whose device information you want to request.',
-        }),
-    ).exactOptional(),
+    DeviceKey: DeviceKeyTypeSchema.openapi({ description: 'The device key.' }),
+    AccessToken: TokenModelTypeSchema.exactOptional().openapi({
+      description:
+        'A valid access token that Amazon Cognito issued to the user whose device information you want to request.',
+    }),
   })
   .openapi({
     required: ['DeviceKey'],
@@ -5039,38 +3727,36 @@ const GetDeviceRequestSchema = z
 
 const GetGroupResponseSchema = z
   .object({
-    Group: GroupTypeSchema.and(
-      z.any().openapi({ description: 'The group object for the group.' }),
-    ).exactOptional(),
+    Group: GroupTypeSchema.exactOptional().openapi({
+      description: 'The group object for the group.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetGroupResponse')
 
 const GetGroupRequestSchema = z
   .object({
-    GroupName: GroupNameTypeSchema.and(z.any().openapi({ description: 'The name of the group.' })),
-    UserPoolId: UserPoolIdTypeSchema.and(
-      z.any().openapi({ description: 'The user pool ID for the user pool.' }),
-    ),
+    GroupName: GroupNameTypeSchema.openapi({ description: 'The name of the group.' }),
+    UserPoolId: UserPoolIdTypeSchema.openapi({
+      description: 'The user pool ID for the user pool.',
+    }),
   })
   .openapi({ required: ['GroupName', 'UserPoolId'], title: 'GetGroupRequest' })
   .openapi('GetGroupRequest')
 
 const GetIdentityProviderByIdentifierResponseSchema = z
   .object({
-    IdentityProvider: IdentityProviderTypeSchema.and(
-      z.any().openapi({ description: 'The identity provider details.' }),
-    ),
+    IdentityProvider: IdentityProviderTypeSchema.openapi({
+      description: 'The identity provider details.',
+    }),
   })
   .openapi({ required: ['IdentityProvider'] })
   .openapi('GetIdentityProviderByIdentifierResponse')
 
 const GetIdentityProviderByIdentifierRequestSchema = z
   .object({
-    UserPoolId: UserPoolIdTypeSchema.and(z.any().openapi({ description: 'The user pool ID.' })),
-    IdpIdentifier: IdpIdentifierTypeSchema.and(
-      z.any().openapi({ description: 'The IdP identifier.' }),
-    ),
+    UserPoolId: UserPoolIdTypeSchema.openapi({ description: 'The user pool ID.' }),
+    IdpIdentifier: IdpIdentifierTypeSchema.openapi({ description: 'The IdP identifier.' }),
   })
   .openapi({
     required: ['UserPoolId', 'IdpIdentifier'],
@@ -5084,14 +3770,10 @@ const EventSourceNameSchema = z.literal('userNotification').openapi('EventSource
 
 const CloudWatchLogsConfigurationTypeSchema = z
   .object({
-    LogGroupArn: ArnTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (arn) of a CloudWatch Logs log group where your user pool sends logs. The log group must not be encrypted with Key Management Service and must be in the same Amazon Web Services account as your user pool.',
-        }),
-    ).exactOptional(),
+    LogGroupArn: ArnTypeSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (arn) of a CloudWatch Logs log group where your user pool sends logs. The log group must not be encrypted with Key Management Service and must be in the same Amazon Web Services account as your user pool.',
+    }),
   })
   .openapi({
     description:
@@ -5102,25 +3784,16 @@ const CloudWatchLogsConfigurationTypeSchema = z
 
 const LogConfigurationTypeSchema = z
   .object({
-    LogLevel: LogLevelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>errorlevel</code> selection of logs that a user pool sends for detailed activity logging.',
-        }),
-    ),
-    EventSource: EventSourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The source of events that your user pool sends for detailed activity logging.',
-        }),
-    ),
-    CloudWatchLogsConfiguration: CloudWatchLogsConfigurationTypeSchema.and(
-      z.any().openapi({ description: 'The CloudWatch logging destination of a user pool.' }),
-    ).exactOptional(),
+    LogLevel: LogLevelSchema.openapi({
+      description:
+        'The <code>errorlevel</code> selection of logs that a user pool sends for detailed activity logging.',
+    }),
+    EventSource: EventSourceNameSchema.openapi({
+      description: 'The source of events that your user pool sends for detailed activity logging.',
+    }),
+    CloudWatchLogsConfiguration: CloudWatchLogsConfigurationTypeSchema.exactOptional().openapi({
+      description: 'The CloudWatch logging destination of a user pool.',
+    }),
   })
   .openapi({
     required: ['LogLevel', 'EventSource'],
@@ -5136,16 +3809,12 @@ const LogConfigurationListTypeSchema = z
 
 const LogDeliveryConfigurationTypeSchema = z
   .object({
-    UserPoolId: UserPoolIdTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the user pool where you configured detailed activity logging.',
-        }),
-    ),
-    LogConfigurations: LogConfigurationListTypeSchema.and(
-      z.any().openapi({ description: 'The detailed activity logging destination of a user pool.' }),
-    ),
+    UserPoolId: UserPoolIdTypeSchema.openapi({
+      description: 'The ID of the user pool where you configured detailed activity logging.',
+    }),
+    LogConfigurations: LogConfigurationListTypeSchema.openapi({
+      description: 'The detailed activity logging destination of a user pool.',
+    }),
   })
   .openapi({
     required: ['UserPoolId', 'LogConfigurations'],
@@ -5155,36 +3824,28 @@ const LogDeliveryConfigurationTypeSchema = z
 
 const GetLogDeliveryConfigurationResponseSchema = z
   .object({
-    LogDeliveryConfiguration: LogDeliveryConfigurationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The detailed activity logging configuration of the requested user pool.',
-        }),
-    ).exactOptional(),
+    LogDeliveryConfiguration: LogDeliveryConfigurationTypeSchema.exactOptional().openapi({
+      description: 'The detailed activity logging configuration of the requested user pool.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetLogDeliveryConfigurationResponse')
 
 const GetLogDeliveryConfigurationRequestSchema = z
   .object({
-    UserPoolId: UserPoolIdTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the user pool where you want to view detailed activity logging configuration.',
-        }),
-    ),
+    UserPoolId: UserPoolIdTypeSchema.openapi({
+      description:
+        'The ID of the user pool where you want to view detailed activity logging configuration.',
+    }),
   })
   .openapi({ required: ['UserPoolId'], title: 'GetLogDeliveryConfigurationRequest' })
   .openapi('GetLogDeliveryConfigurationRequest')
 
 const GetSigningCertificateResponseSchema = z
   .object({
-    Certificate: StringTypeSchema.and(
-      z.any().openapi({ description: 'The signing certificate.' }),
-    ).exactOptional(),
+    Certificate: StringTypeSchema.exactOptional().openapi({
+      description: 'The signing certificate.',
+    }),
   })
   .openapi({
     description: 'Response from Amazon Cognito for a signing certificate request.',
@@ -5193,9 +3854,7 @@ const GetSigningCertificateResponseSchema = z
   .openapi('GetSigningCertificateResponse')
 
 const GetSigningCertificateRequestSchema = z
-  .object({
-    UserPoolId: UserPoolIdTypeSchema.and(z.any().openapi({ description: 'The user pool ID.' })),
-  })
+  .object({ UserPoolId: UserPoolIdTypeSchema.openapi({ description: 'The user pool ID.' }) })
   .openapi({
     required: ['UserPoolId'],
     title: 'GetSigningCertificateRequest',
@@ -5211,37 +3870,29 @@ const CSSVersionTypeSchema = z.string().openapi('CSSVersionType')
 
 const UICustomizationTypeSchema = z
   .object({
-    UserPoolId: UserPoolIdTypeSchema.and(
-      z.any().openapi({ description: 'The user pool ID for the user pool.' }),
-    ).exactOptional(),
-    ClientId: ClientIdTypeSchema.and(
-      z.any().openapi({ description: 'The client ID for the client app.' }),
-    ).exactOptional(),
-    ImageUrl: ImageUrlTypeSchema.and(
-      z.any().openapi({ description: 'The logo image for the UI customization.' }),
-    ).exactOptional(),
-    CSS: CSSTypeSchema.and(
-      z.any().openapi({ description: 'The CSS values in the UI customization.' }),
-    ).exactOptional(),
-    CSSVersion: CSSVersionTypeSchema.and(
-      z.any().openapi({ description: 'The CSS version number.' }),
-    ).exactOptional(),
-    LastModifiedDate: DateTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time, in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format, when the item was modified.',
-        }),
-    ).exactOptional(),
-    CreationDate: DateTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time, in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format, when the item was created.',
-        }),
-    ).exactOptional(),
+    UserPoolId: UserPoolIdTypeSchema.exactOptional().openapi({
+      description: 'The user pool ID for the user pool.',
+    }),
+    ClientId: ClientIdTypeSchema.exactOptional().openapi({
+      description: 'The client ID for the client app.',
+    }),
+    ImageUrl: ImageUrlTypeSchema.exactOptional().openapi({
+      description: 'The logo image for the UI customization.',
+    }),
+    CSS: CSSTypeSchema.exactOptional().openapi({
+      description: 'The CSS values in the UI customization.',
+    }),
+    CSSVersion: CSSVersionTypeSchema.exactOptional().openapi({
+      description: 'The CSS version number.',
+    }),
+    LastModifiedDate: DateTypeSchema.exactOptional().openapi({
+      description:
+        'The date and time, in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format, when the item was modified.',
+    }),
+    CreationDate: DateTypeSchema.exactOptional().openapi({
+      description:
+        'The date and time, in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format, when the item was created.',
+    }),
   })
   .openapi({
     description:
@@ -5252,57 +3903,45 @@ const UICustomizationTypeSchema = z
 
 const GetUICustomizationResponseSchema = z
   .object({
-    UICustomization: UICustomizationTypeSchema.and(
-      z.any().openapi({ description: 'The UI customization information.' }),
-    ),
+    UICustomization: UICustomizationTypeSchema.openapi({
+      description: 'The UI customization information.',
+    }),
   })
   .openapi({ required: ['UICustomization'] })
   .openapi('GetUICustomizationResponse')
 
 const GetUICustomizationRequestSchema = z
   .object({
-    UserPoolId: UserPoolIdTypeSchema.and(
-      z.any().openapi({ description: 'The user pool ID for the user pool.' }),
-    ),
-    ClientId: ClientIdTypeSchema.and(
-      z.any().openapi({ description: 'The client ID for the client app.' }),
-    ).exactOptional(),
+    UserPoolId: UserPoolIdTypeSchema.openapi({
+      description: 'The user pool ID for the user pool.',
+    }),
+    ClientId: ClientIdTypeSchema.exactOptional().openapi({
+      description: 'The client ID for the client app.',
+    }),
   })
   .openapi({ required: ['UserPoolId'], title: 'GetUICustomizationRequest' })
   .openapi('GetUICustomizationRequest')
 
 const GetUserResponseSchema = z
   .object({
-    Username: UsernameTypeSchema.and(
-      z.any().openapi({ description: 'The username of the user that you requested.' }),
-    ),
-    UserAttributes: AttributeListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An array of name-value pairs representing user attributes.</p> <p>For custom attributes, you must prepend the <code>custom:</code> prefix to the attribute name.</p>',
-        }),
-    ),
-    MFAOptions: MFAOptionListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            " <i>This response parameter is no longer supported.</i> It provides information only about SMS MFA configurations. It doesn't provide information about time-based one-time password (TOTP) software token MFA configurations. To look up information about either type of MFA configuration, use UserMFASettingList instead.",
-        }),
-    ).exactOptional(),
-    PreferredMfaSetting: StringTypeSchema.and(
-      z.any().openapi({ description: "The user's preferred MFA setting." }),
-    ).exactOptional(),
-    UserMFASettingList: UserMFASettingListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The MFA options that are activated for the user. The possible values in this list are <code>SMS_MFA</code> and <code>SOFTWARE_TOKEN_MFA</code>.',
-        }),
-    ).exactOptional(),
+    Username: UsernameTypeSchema.openapi({
+      description: 'The username of the user that you requested.',
+    }),
+    UserAttributes: AttributeListTypeSchema.openapi({
+      description:
+        '<p>An array of name-value pairs representing user attributes.</p> <p>For custom attributes, you must prepend the <code>custom:</code> prefix to the attribute name.</p>',
+    }),
+    MFAOptions: MFAOptionListTypeSchema.exactOptional().openapi({
+      description:
+        " <i>This response parameter is no longer supported.</i> It provides information only about SMS MFA configurations. It doesn't provide information about time-based one-time password (TOTP) software token MFA configurations. To look up information about either type of MFA configuration, use UserMFASettingList instead.",
+    }),
+    PreferredMfaSetting: StringTypeSchema.exactOptional().openapi({
+      description: "The user's preferred MFA setting.",
+    }),
+    UserMFASettingList: UserMFASettingListTypeSchema.exactOptional().openapi({
+      description:
+        'The MFA options that are activated for the user. The possible values in this list are <code>SMS_MFA</code> and <code>SOFTWARE_TOKEN_MFA</code>.',
+    }),
   })
   .openapi({
     required: ['Username', 'UserAttributes'],
@@ -5313,14 +3952,9 @@ const GetUserResponseSchema = z
 
 const GetUserRequestSchema = z
   .object({
-    AccessToken: TokenModelTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A non-expired access token for the user whose information you want to query.',
-        }),
-    ),
+    AccessToken: TokenModelTypeSchema.openapi({
+      description: 'A non-expired access token for the user whose information you want to query.',
+    }),
   })
   .openapi({
     required: ['AccessToken'],
@@ -5331,14 +3965,10 @@ const GetUserRequestSchema = z
 
 const GetUserAttributeVerificationCodeResponseSchema = z
   .object({
-    CodeDeliveryDetails: CodeDeliveryDetailsTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The code delivery details returned by the server in response to the request to get the user attribute verification code.',
-        }),
-    ).exactOptional(),
+    CodeDeliveryDetails: CodeDeliveryDetailsTypeSchema.exactOptional().openapi({
+      description:
+        'The code delivery details returned by the server in response to the request to get the user attribute verification code.',
+    }),
   })
   .openapi({
     description:
@@ -5349,30 +3979,18 @@ const GetUserAttributeVerificationCodeResponseSchema = z
 
 const GetUserAttributeVerificationCodeRequestSchema = z
   .object({
-    AccessToken: TokenModelTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A non-expired access token for the user whose attribute verification code you want to generate.',
-        }),
-    ),
-    AttributeName: AttributeNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The attribute name returned by the server response to get the user attribute verification code.',
-        }),
-    ),
-    ClientMetadata: ClientMetadataTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A map of custom key-value pairs that you can provide as input for any custom workflows that this action triggers.</p> <p>You create custom workflows by assigning Lambda functions to user pool triggers. When you use the GetUserAttributeVerificationCode API action, Amazon Cognito invokes the function that is assigned to the <i>custom message</i> trigger. When Amazon Cognito invokes this function, it passes a JSON payload, which the function receives as input. This payload contains a <code>clientMetadata</code> attribute, which provides the data that you assigned to the ClientMetadata parameter in your GetUserAttributeVerificationCode request. In your function code in Lambda, you can process the <code>clientMetadata</code> value to enhance your workflow for your specific needs.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-identity-pools-working-with-aws-lambda-triggers.html\"> Customizing user pool Workflows with Lambda Triggers</a> in the <i>Amazon Cognito Developer Guide</i>.</p> <note> <p>When you use the ClientMetadata parameter, remember that Amazon Cognito won't do the following:</p> <ul> <li> <p>Store the ClientMetadata value. This data is available only to Lambda triggers that are assigned to a user pool to support custom workflows. If your user pool configuration doesn't include triggers, the ClientMetadata parameter serves no purpose.</p> </li> <li> <p>Validate the ClientMetadata value.</p> </li> <li> <p>Encrypt the ClientMetadata value. Don't use Amazon Cognito to provide sensitive information.</p> </li> </ul> </note>",
-        }),
-    ).exactOptional(),
+    AccessToken: TokenModelTypeSchema.openapi({
+      description:
+        'A non-expired access token for the user whose attribute verification code you want to generate.',
+    }),
+    AttributeName: AttributeNameTypeSchema.openapi({
+      description:
+        'The attribute name returned by the server response to get the user attribute verification code.',
+    }),
+    ClientMetadata: ClientMetadataTypeSchema.exactOptional().openapi({
+      description:
+        "<p>A map of custom key-value pairs that you can provide as input for any custom workflows that this action triggers.</p> <p>You create custom workflows by assigning Lambda functions to user pool triggers. When you use the GetUserAttributeVerificationCode API action, Amazon Cognito invokes the function that is assigned to the <i>custom message</i> trigger. When Amazon Cognito invokes this function, it passes a JSON payload, which the function receives as input. This payload contains a <code>clientMetadata</code> attribute, which provides the data that you assigned to the ClientMetadata parameter in your GetUserAttributeVerificationCode request. In your function code in Lambda, you can process the <code>clientMetadata</code> value to enhance your workflow for your specific needs.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-identity-pools-working-with-aws-lambda-triggers.html\"> Customizing user pool Workflows with Lambda Triggers</a> in the <i>Amazon Cognito Developer Guide</i>.</p> <note> <p>When you use the ClientMetadata parameter, remember that Amazon Cognito won't do the following:</p> <ul> <li> <p>Store the ClientMetadata value. This data is available only to Lambda triggers that are assigned to a user pool to support custom workflows. If your user pool configuration doesn't include triggers, the ClientMetadata parameter serves no purpose.</p> </li> <li> <p>Validate the ClientMetadata value.</p> </li> <li> <p>Encrypt the ClientMetadata value. Don't use Amazon Cognito to provide sensitive information.</p> </li> </ul> </note>",
+    }),
   })
   .openapi({
     required: ['AccessToken', 'AttributeName'],
@@ -5383,22 +4001,14 @@ const GetUserAttributeVerificationCodeRequestSchema = z
 
 const SmsMfaConfigTypeSchema = z
   .object({
-    SmsAuthenticationMessage: SmsVerificationMessageTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The SMS authentication message that will be sent to users with the code they must sign in. The message must contain the ‘{####}’ placeholder, which is replaced with the code. If the message isn't included, and default message will be used.",
-        }),
-    ).exactOptional(),
-    SmsConfiguration: SmsConfigurationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The SMS configuration with the settings that your Amazon Cognito user pool must use to send an SMS message from your Amazon Web Services account through Amazon Simple Notification Service. To request Amazon SNS in the Amazon Web Services Region that you want, the Amazon Cognito user pool uses an Identity and Access Management (IAM) role that you provide for your Amazon Web Services account.',
-        }),
-    ).exactOptional(),
+    SmsAuthenticationMessage: SmsVerificationMessageTypeSchema.exactOptional().openapi({
+      description:
+        "The SMS authentication message that will be sent to users with the code they must sign in. The message must contain the ‘{####}’ placeholder, which is replaced with the code. If the message isn't included, and default message will be used.",
+    }),
+    SmsConfiguration: SmsConfigurationTypeSchema.exactOptional().openapi({
+      description:
+        'The SMS configuration with the settings that your Amazon Cognito user pool must use to send an SMS message from your Amazon Web Services account through Amazon Simple Notification Service. To request Amazon SNS in the Amazon Web Services Region that you want, the Amazon Cognito user pool uses an Identity and Access Management (IAM) role that you provide for your Amazon Web Services account.',
+    }),
   })
   .openapi({
     description: 'The SMS text message multi-factor authentication (MFA) configuration type.',
@@ -5408,9 +4018,9 @@ const SmsMfaConfigTypeSchema = z
 
 const SoftwareTokenMfaConfigTypeSchema = z
   .object({
-    Enabled: BooleanTypeSchema.and(
-      z.any().openapi({ description: 'Specifies whether software token MFA is activated.' }),
-    ).exactOptional(),
+    Enabled: BooleanTypeSchema.exactOptional().openapi({
+      description: 'Specifies whether software token MFA is activated.',
+    }),
   })
   .openapi({
     description: 'The type used for enabling software token MFA at the user pool level.',
@@ -5420,54 +4030,36 @@ const SoftwareTokenMfaConfigTypeSchema = z
 
 const GetUserPoolMfaConfigResponseSchema = z
   .object({
-    SmsMfaConfiguration: SmsMfaConfigTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The SMS text message multi-factor authentication (MFA) configuration.',
-        }),
-    ).exactOptional(),
-    SoftwareTokenMfaConfiguration: SoftwareTokenMfaConfigTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The software token multi-factor authentication (MFA) configuration.',
-        }),
-    ).exactOptional(),
-    MfaConfiguration: UserPoolMfaTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The multi-factor authentication (MFA) configuration. Valid values include:</p> <ul> <li> <p> <code>OFF</code> MFA won't be used for any users.</p> </li> <li> <p> <code>ON</code> MFA is required for all users to sign in.</p> </li> <li> <p> <code>OPTIONAL</code> MFA will be required only for individual users who have an MFA factor activated.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
+    SmsMfaConfiguration: SmsMfaConfigTypeSchema.exactOptional().openapi({
+      description: 'The SMS text message multi-factor authentication (MFA) configuration.',
+    }),
+    SoftwareTokenMfaConfiguration: SoftwareTokenMfaConfigTypeSchema.exactOptional().openapi({
+      description: 'The software token multi-factor authentication (MFA) configuration.',
+    }),
+    MfaConfiguration: UserPoolMfaTypeSchema.exactOptional().openapi({
+      description:
+        "<p>The multi-factor authentication (MFA) configuration. Valid values include:</p> <ul> <li> <p> <code>OFF</code> MFA won't be used for any users.</p> </li> <li> <p> <code>ON</code> MFA is required for all users to sign in.</p> </li> <li> <p> <code>OPTIONAL</code> MFA will be required only for individual users who have an MFA factor activated.</p> </li> </ul>",
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetUserPoolMfaConfigResponse')
 
 const GetUserPoolMfaConfigRequestSchema = z
-  .object({
-    UserPoolId: UserPoolIdTypeSchema.and(z.any().openapi({ description: 'The user pool ID.' })),
-  })
+  .object({ UserPoolId: UserPoolIdTypeSchema.openapi({ description: 'The user pool ID.' }) })
   .openapi({ required: ['UserPoolId'], title: 'GetUserPoolMfaConfigRequest' })
   .openapi('GetUserPoolMfaConfigRequest')
 
 const GlobalSignOutResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'The response to the request to sign out all devices.' })
   .openapi('GlobalSignOutResponse')
 
 const GlobalSignOutRequestSchema = z
   .object({
-    AccessToken: TokenModelTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A valid access token that Amazon Cognito issued to the user who you want to sign out.',
-        }),
-    ),
+    AccessToken: TokenModelTypeSchema.openapi({
+      description:
+        'A valid access token that Amazon Cognito issued to the user who you want to sign out.',
+    }),
   })
   .openapi({
     required: ['AccessToken'],
@@ -5478,85 +4070,49 @@ const GlobalSignOutRequestSchema = z
 
 const InitiateAuthResponseSchema = z
   .object({
-    ChallengeName: ChallengeNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The name of the challenge that you're responding to with this call. This name is returned in the <code>AdminInitiateAuth</code> response if you must pass another challenge.</p> <p>Valid values include the following:</p> <note> <p>All of the following challenges require <code>USERNAME</code> and <code>SECRET_HASH</code> (if applicable) in the parameters.</p> </note> <ul> <li> <p> <code>SMS_MFA</code>: Next challenge is to supply an <code>SMS_MFA_CODE</code>, delivered via SMS.</p> </li> <li> <p> <code>PASSWORD_VERIFIER</code>: Next challenge is to supply <code>PASSWORD_CLAIM_SIGNATURE</code>, <code>PASSWORD_CLAIM_SECRET_BLOCK</code>, and <code>TIMESTAMP</code> after the client-side SRP calculations.</p> </li> <li> <p> <code>CUSTOM_CHALLENGE</code>: This is returned if your custom authentication flow determines that the user should pass another challenge before tokens are issued.</p> </li> <li> <p> <code>DEVICE_SRP_AUTH</code>: If device tracking was activated on your user pool and the previous challenges were passed, this challenge is returned so that Amazon Cognito can start tracking this device.</p> </li> <li> <p> <code>DEVICE_PASSWORD_VERIFIER</code>: Similar to <code>PASSWORD_VERIFIER</code>, but for devices only.</p> </li> <li> <p> <code>NEW_PASSWORD_REQUIRED</code>: For users who are required to change their passwords after successful first login. </p> <p>Respond to this challenge with <code>NEW_PASSWORD</code> and any required attributes that Amazon Cognito returned in the <code>requiredAttributes</code> parameter. You can also set values for attributes that aren't required by your user pool and that your app client can write. For more information, see <a href=\"https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_RespondToAuthChallenge.html\">RespondToAuthChallenge</a>.</p> <note> <p>In a <code>NEW_PASSWORD_REQUIRED</code> challenge response, you can't modify a required attribute that already has a value. In <code>RespondToAuthChallenge</code>, set a value for any keys that Amazon Cognito returned in the <code>requiredAttributes</code> parameter, then use the <code>UpdateUserAttributes</code> API operation to modify the value of any additional attributes.</p> </note> </li> <li> <p> <code>MFA_SETUP</code>: For users who are required to setup an MFA factor before they can sign in. The MFA types activated for the user pool will be listed in the challenge parameters <code>MFA_CAN_SETUP</code> value. </p> <p> To set up software token MFA, use the session returned here from <code>InitiateAuth</code> as an input to <code>AssociateSoftwareToken</code>. Use the session returned by <code>VerifySoftwareToken</code> as an input to <code>RespondToAuthChallenge</code> with challenge name <code>MFA_SETUP</code> to complete sign-in. To set up SMS MFA, an administrator should help the user to add a phone number to their account, and then the user should call <code>InitiateAuth</code> again to restart sign-in.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    Session: SessionTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The session that should pass both ways in challenge-response calls to the service. If the caller must pass another challenge, they return a session with other challenge parameters. This session should be passed as it is to the next <code>RespondToAuthChallenge</code> API call.',
-        }),
-    ).exactOptional(),
-    ChallengeParameters: ChallengeParametersTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The challenge parameters. These are returned in the <code>InitiateAuth</code> response if you must pass another challenge. The responses in this parameter should be used to compute inputs to the next call (<code>RespondToAuthChallenge</code>). </p> <p>All challenges require <code>USERNAME</code> and <code>SECRET_HASH</code> (if applicable).</p>',
-        }),
-    ).exactOptional(),
-    AuthenticationResult: AuthenticationResultTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The result of the authentication response. This result is only returned if the caller doesn't need to pass another challenge. If the caller does need to pass another challenge before it gets tokens, <code>ChallengeName</code>, <code>ChallengeParameters</code>, and <code>Session</code> are returned.",
-        }),
-    ).exactOptional(),
+    ChallengeName: ChallengeNameTypeSchema.exactOptional().openapi({
+      description:
+        "<p>The name of the challenge that you're responding to with this call. This name is returned in the <code>AdminInitiateAuth</code> response if you must pass another challenge.</p> <p>Valid values include the following:</p> <note> <p>All of the following challenges require <code>USERNAME</code> and <code>SECRET_HASH</code> (if applicable) in the parameters.</p> </note> <ul> <li> <p> <code>SMS_MFA</code>: Next challenge is to supply an <code>SMS_MFA_CODE</code>, delivered via SMS.</p> </li> <li> <p> <code>PASSWORD_VERIFIER</code>: Next challenge is to supply <code>PASSWORD_CLAIM_SIGNATURE</code>, <code>PASSWORD_CLAIM_SECRET_BLOCK</code>, and <code>TIMESTAMP</code> after the client-side SRP calculations.</p> </li> <li> <p> <code>CUSTOM_CHALLENGE</code>: This is returned if your custom authentication flow determines that the user should pass another challenge before tokens are issued.</p> </li> <li> <p> <code>DEVICE_SRP_AUTH</code>: If device tracking was activated on your user pool and the previous challenges were passed, this challenge is returned so that Amazon Cognito can start tracking this device.</p> </li> <li> <p> <code>DEVICE_PASSWORD_VERIFIER</code>: Similar to <code>PASSWORD_VERIFIER</code>, but for devices only.</p> </li> <li> <p> <code>NEW_PASSWORD_REQUIRED</code>: For users who are required to change their passwords after successful first login. </p> <p>Respond to this challenge with <code>NEW_PASSWORD</code> and any required attributes that Amazon Cognito returned in the <code>requiredAttributes</code> parameter. You can also set values for attributes that aren't required by your user pool and that your app client can write. For more information, see <a href=\"https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_RespondToAuthChallenge.html\">RespondToAuthChallenge</a>.</p> <note> <p>In a <code>NEW_PASSWORD_REQUIRED</code> challenge response, you can't modify a required attribute that already has a value. In <code>RespondToAuthChallenge</code>, set a value for any keys that Amazon Cognito returned in the <code>requiredAttributes</code> parameter, then use the <code>UpdateUserAttributes</code> API operation to modify the value of any additional attributes.</p> </note> </li> <li> <p> <code>MFA_SETUP</code>: For users who are required to setup an MFA factor before they can sign in. The MFA types activated for the user pool will be listed in the challenge parameters <code>MFA_CAN_SETUP</code> value. </p> <p> To set up software token MFA, use the session returned here from <code>InitiateAuth</code> as an input to <code>AssociateSoftwareToken</code>. Use the session returned by <code>VerifySoftwareToken</code> as an input to <code>RespondToAuthChallenge</code> with challenge name <code>MFA_SETUP</code> to complete sign-in. To set up SMS MFA, an administrator should help the user to add a phone number to their account, and then the user should call <code>InitiateAuth</code> again to restart sign-in.</p> </li> </ul>",
+    }),
+    Session: SessionTypeSchema.exactOptional().openapi({
+      description:
+        'The session that should pass both ways in challenge-response calls to the service. If the caller must pass another challenge, they return a session with other challenge parameters. This session should be passed as it is to the next <code>RespondToAuthChallenge</code> API call.',
+    }),
+    ChallengeParameters: ChallengeParametersTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The challenge parameters. These are returned in the <code>InitiateAuth</code> response if you must pass another challenge. The responses in this parameter should be used to compute inputs to the next call (<code>RespondToAuthChallenge</code>). </p> <p>All challenges require <code>USERNAME</code> and <code>SECRET_HASH</code> (if applicable).</p>',
+    }),
+    AuthenticationResult: AuthenticationResultTypeSchema.exactOptional().openapi({
+      description:
+        "The result of the authentication response. This result is only returned if the caller doesn't need to pass another challenge. If the caller does need to pass another challenge before it gets tokens, <code>ChallengeName</code>, <code>ChallengeParameters</code>, and <code>Session</code> are returned.",
+    }),
   })
   .openapi({ description: 'Initiates the authentication response.', required: [] })
   .openapi('InitiateAuthResponse')
 
 const InitiateAuthRequestSchema = z
   .object({
-    AuthFlow: AuthFlowTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The authentication flow for this call to run. The API action will depend on this value. For example:</p> <ul> <li> <p> <code>REFRESH_TOKEN_AUTH</code> takes in a valid refresh token and returns new tokens.</p> </li> <li> <p> <code>USER_SRP_AUTH</code> takes in <code>USERNAME</code> and <code>SRP_A</code> and returns the SRP variables to be used for next challenge execution.</p> </li> <li> <p> <code>USER_PASSWORD_AUTH</code> takes in <code>USERNAME</code> and <code>PASSWORD</code> and returns the next challenge or tokens.</p> </li> </ul> <p>Valid values include:</p> <ul> <li> <p> <code>USER_SRP_AUTH</code>: Authentication flow for the Secure Remote Password (SRP) protocol.</p> </li> <li> <p> <code>REFRESH_TOKEN_AUTH</code>/<code>REFRESH_TOKEN</code>: Authentication flow for refreshing the access token and ID token by supplying a valid refresh token.</p> </li> <li> <p> <code>CUSTOM_AUTH</code>: Custom authentication flow.</p> </li> <li> <p> <code>USER_PASSWORD_AUTH</code>: Non-SRP authentication flow; user name and password are passed directly. If a user migration Lambda trigger is set, this flow will invoke the user migration Lambda if it doesn't find the user name in the user pool. </p> </li> </ul> <p> <code>ADMIN_NO_SRP_AUTH</code> isn't a valid value.</p>",
-        }),
-    ),
-    AuthParameters: AuthParametersTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The authentication parameters. These are inputs corresponding to the <code>AuthFlow</code> that you\'re invoking. The required values depend on the value of <code>AuthFlow</code>:</p> <ul> <li> <p>For <code>USER_SRP_AUTH</code>: <code>USERNAME</code> (required), <code>SRP_A</code> (required), <code>SECRET_HASH</code> (required if the app client is configured with a client secret), <code>DEVICE_KEY</code>.</p> </li> <li> <p>For <code>USER_PASSWORD_AUTH</code>: <code>USERNAME</code> (required), <code>PASSWORD</code> (required), <code>SECRET_HASH</code> (required if the app client is configured with a client secret), <code>DEVICE_KEY</code>.</p> </li> <li> <p>For <code>REFRESH_TOKEN_AUTH/REFRESH_TOKEN</code>: <code>REFRESH_TOKEN</code> (required), <code>SECRET_HASH</code> (required if the app client is configured with a client secret), <code>DEVICE_KEY</code>.</p> </li> <li> <p>For <code>CUSTOM_AUTH</code>: <code>USERNAME</code> (required), <code>SECRET_HASH</code> (if app client is configured with client secret), <code>DEVICE_KEY</code>. To start the authentication flow with password verification, include <code>ChallengeName: SRP_A</code> and <code>SRP_A: (The SRP_A Value)</code>.</p> </li> </ul> <p>For more information about <code>SECRET_HASH</code>, see <a href="https://docs.aws.amazon.com/cognito/latest/developerguide/signing-up-users-in-your-app.html#cognito-user-pools-computing-secret-hash">Computing secret hash values</a>. For information about <code>DEVICE_KEY</code>, see <a href="https://docs.aws.amazon.com/cognito/latest/developerguide/amazon-cognito-user-pools-device-tracking.html">Working with user devices in your user pool</a>.</p>',
-        }),
-    ).exactOptional(),
-    ClientMetadata: ClientMetadataTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A map of custom key-value pairs that you can provide as input for certain custom workflows that this action triggers.</p> <p>You create custom workflows by assigning Lambda functions to user pool triggers. When you use the InitiateAuth API action, Amazon Cognito invokes the Lambda functions that are specified for various triggers. The ClientMetadata value is passed as input to the functions for only the following triggers:</p> <ul> <li> <p>Pre signup</p> </li> <li> <p>Pre authentication</p> </li> <li> <p>User migration</p> </li> </ul> <p>When Amazon Cognito invokes the functions for these triggers, it passes a JSON payload, which the function receives as input. This payload contains a <code>validationData</code> attribute, which provides the data that you assigned to the ClientMetadata parameter in your InitiateAuth request. In your function code in Lambda, you can process the <code>validationData</code> value to enhance your workflow for your specific needs.</p> <p>When you use the InitiateAuth API action, Amazon Cognito also invokes the functions for the following triggers, but it doesn't provide the ClientMetadata value as input:</p> <ul> <li> <p>Post authentication</p> </li> <li> <p>Custom message</p> </li> <li> <p>Pre token generation</p> </li> <li> <p>Create auth challenge</p> </li> <li> <p>Define auth challenge</p> </li> <li> <p>Verify auth challenge</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-identity-pools-working-with-aws-lambda-triggers.html\"> Customizing user pool Workflows with Lambda Triggers</a> in the <i>Amazon Cognito Developer Guide</i>.</p> <note> <p>When you use the ClientMetadata parameter, remember that Amazon Cognito won't do the following:</p> <ul> <li> <p>Store the ClientMetadata value. This data is available only to Lambda triggers that are assigned to a user pool to support custom workflows. If your user pool configuration doesn't include triggers, the ClientMetadata parameter serves no purpose.</p> </li> <li> <p>Validate the ClientMetadata value.</p> </li> <li> <p>Encrypt the ClientMetadata value. Don't use Amazon Cognito to provide sensitive information.</p> </li> </ul> </note>",
-        }),
-    ).exactOptional(),
-    ClientId: ClientIdTypeSchema.and(z.any().openapi({ description: 'The app client ID.' })),
-    AnalyticsMetadata: AnalyticsMetadataTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Pinpoint analytics metadata that contributes to your metrics for <code>InitiateAuth</code> calls.',
-        }),
-    ).exactOptional(),
-    UserContextData: UserContextDataTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contextual data about your user session, such as the device fingerprint, IP address, or location. Amazon Cognito advanced security evaluates the risk of an authentication event based on the context that your app generates and passes to Amazon Cognito when it makes API requests.',
-        }),
-    ).exactOptional(),
+    AuthFlow: AuthFlowTypeSchema.openapi({
+      description:
+        "<p>The authentication flow for this call to run. The API action will depend on this value. For example:</p> <ul> <li> <p> <code>REFRESH_TOKEN_AUTH</code> takes in a valid refresh token and returns new tokens.</p> </li> <li> <p> <code>USER_SRP_AUTH</code> takes in <code>USERNAME</code> and <code>SRP_A</code> and returns the SRP variables to be used for next challenge execution.</p> </li> <li> <p> <code>USER_PASSWORD_AUTH</code> takes in <code>USERNAME</code> and <code>PASSWORD</code> and returns the next challenge or tokens.</p> </li> </ul> <p>Valid values include:</p> <ul> <li> <p> <code>USER_SRP_AUTH</code>: Authentication flow for the Secure Remote Password (SRP) protocol.</p> </li> <li> <p> <code>REFRESH_TOKEN_AUTH</code>/<code>REFRESH_TOKEN</code>: Authentication flow for refreshing the access token and ID token by supplying a valid refresh token.</p> </li> <li> <p> <code>CUSTOM_AUTH</code>: Custom authentication flow.</p> </li> <li> <p> <code>USER_PASSWORD_AUTH</code>: Non-SRP authentication flow; user name and password are passed directly. If a user migration Lambda trigger is set, this flow will invoke the user migration Lambda if it doesn't find the user name in the user pool. </p> </li> </ul> <p> <code>ADMIN_NO_SRP_AUTH</code> isn't a valid value.</p>",
+    }),
+    AuthParameters: AuthParametersTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The authentication parameters. These are inputs corresponding to the <code>AuthFlow</code> that you\'re invoking. The required values depend on the value of <code>AuthFlow</code>:</p> <ul> <li> <p>For <code>USER_SRP_AUTH</code>: <code>USERNAME</code> (required), <code>SRP_A</code> (required), <code>SECRET_HASH</code> (required if the app client is configured with a client secret), <code>DEVICE_KEY</code>.</p> </li> <li> <p>For <code>USER_PASSWORD_AUTH</code>: <code>USERNAME</code> (required), <code>PASSWORD</code> (required), <code>SECRET_HASH</code> (required if the app client is configured with a client secret), <code>DEVICE_KEY</code>.</p> </li> <li> <p>For <code>REFRESH_TOKEN_AUTH/REFRESH_TOKEN</code>: <code>REFRESH_TOKEN</code> (required), <code>SECRET_HASH</code> (required if the app client is configured with a client secret), <code>DEVICE_KEY</code>.</p> </li> <li> <p>For <code>CUSTOM_AUTH</code>: <code>USERNAME</code> (required), <code>SECRET_HASH</code> (if app client is configured with client secret), <code>DEVICE_KEY</code>. To start the authentication flow with password verification, include <code>ChallengeName: SRP_A</code> and <code>SRP_A: (The SRP_A Value)</code>.</p> </li> </ul> <p>For more information about <code>SECRET_HASH</code>, see <a href="https://docs.aws.amazon.com/cognito/latest/developerguide/signing-up-users-in-your-app.html#cognito-user-pools-computing-secret-hash">Computing secret hash values</a>. For information about <code>DEVICE_KEY</code>, see <a href="https://docs.aws.amazon.com/cognito/latest/developerguide/amazon-cognito-user-pools-device-tracking.html">Working with user devices in your user pool</a>.</p>',
+    }),
+    ClientMetadata: ClientMetadataTypeSchema.exactOptional().openapi({
+      description:
+        "<p>A map of custom key-value pairs that you can provide as input for certain custom workflows that this action triggers.</p> <p>You create custom workflows by assigning Lambda functions to user pool triggers. When you use the InitiateAuth API action, Amazon Cognito invokes the Lambda functions that are specified for various triggers. The ClientMetadata value is passed as input to the functions for only the following triggers:</p> <ul> <li> <p>Pre signup</p> </li> <li> <p>Pre authentication</p> </li> <li> <p>User migration</p> </li> </ul> <p>When Amazon Cognito invokes the functions for these triggers, it passes a JSON payload, which the function receives as input. This payload contains a <code>validationData</code> attribute, which provides the data that you assigned to the ClientMetadata parameter in your InitiateAuth request. In your function code in Lambda, you can process the <code>validationData</code> value to enhance your workflow for your specific needs.</p> <p>When you use the InitiateAuth API action, Amazon Cognito also invokes the functions for the following triggers, but it doesn't provide the ClientMetadata value as input:</p> <ul> <li> <p>Post authentication</p> </li> <li> <p>Custom message</p> </li> <li> <p>Pre token generation</p> </li> <li> <p>Create auth challenge</p> </li> <li> <p>Define auth challenge</p> </li> <li> <p>Verify auth challenge</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-identity-pools-working-with-aws-lambda-triggers.html\"> Customizing user pool Workflows with Lambda Triggers</a> in the <i>Amazon Cognito Developer Guide</i>.</p> <note> <p>When you use the ClientMetadata parameter, remember that Amazon Cognito won't do the following:</p> <ul> <li> <p>Store the ClientMetadata value. This data is available only to Lambda triggers that are assigned to a user pool to support custom workflows. If your user pool configuration doesn't include triggers, the ClientMetadata parameter serves no purpose.</p> </li> <li> <p>Validate the ClientMetadata value.</p> </li> <li> <p>Encrypt the ClientMetadata value. Don't use Amazon Cognito to provide sensitive information.</p> </li> </ul> </note>",
+    }),
+    ClientId: ClientIdTypeSchema.openapi({ description: 'The app client ID.' }),
+    AnalyticsMetadata: AnalyticsMetadataTypeSchema.exactOptional().openapi({
+      description:
+        'The Amazon Pinpoint analytics metadata that contributes to your metrics for <code>InitiateAuth</code> calls.',
+    }),
+    UserContextData: UserContextDataTypeSchema.exactOptional().openapi({
+      description:
+        'Contextual data about your user session, such as the device fingerprint, IP address, or location. Amazon Cognito advanced security evaluates the risk of an authentication event based on the context that your app generates and passes to Amazon Cognito when it makes API requests.',
+    }),
   })
   .openapi({
     required: ['AuthFlow', 'ClientId'],
@@ -5567,32 +4123,28 @@ const InitiateAuthRequestSchema = z
 
 const ListDevicesResponseSchema = z
   .object({
-    Devices: DeviceListTypeSchema.and(
-      z.any().openapi({ description: 'The devices returned in the list devices response.' }),
-    ).exactOptional(),
-    PaginationToken: SearchPaginationTokenTypeSchema.and(
-      z.any().openapi({ description: 'The pagination token for the list device response.' }),
-    ).exactOptional(),
+    Devices: DeviceListTypeSchema.exactOptional().openapi({
+      description: 'The devices returned in the list devices response.',
+    }),
+    PaginationToken: SearchPaginationTokenTypeSchema.exactOptional().openapi({
+      description: 'The pagination token for the list device response.',
+    }),
   })
   .openapi({ description: 'Represents the response to list devices.', required: [] })
   .openapi('ListDevicesResponse')
 
 const ListDevicesRequestSchema = z
   .object({
-    AccessToken: TokenModelTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A valid access token that Amazon Cognito issued to the user whose list of devices you want to view.',
-        }),
-    ),
-    Limit: QueryLimitTypeSchema.and(
-      z.any().openapi({ description: 'The limit of the device request.' }),
-    ).exactOptional(),
-    PaginationToken: SearchPaginationTokenTypeSchema.and(
-      z.any().openapi({ description: 'The pagination token for the list request.' }),
-    ).exactOptional(),
+    AccessToken: TokenModelTypeSchema.openapi({
+      description:
+        'A valid access token that Amazon Cognito issued to the user whose list of devices you want to view.',
+    }),
+    Limit: QueryLimitTypeSchema.exactOptional().openapi({
+      description: 'The limit of the device request.',
+    }),
+    PaginationToken: SearchPaginationTokenTypeSchema.exactOptional().openapi({
+      description: 'The pagination token for the list request.',
+    }),
   })
   .openapi({
     required: ['AccessToken'],
@@ -5603,60 +4155,46 @@ const ListDevicesRequestSchema = z
 
 const ListGroupsResponseSchema = z
   .object({
-    Groups: GroupListTypeSchema.and(
-      z.any().openapi({ description: 'The group objects for the groups.' }),
-    ).exactOptional(),
-    NextToken: PaginationKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.',
-        }),
-    ).exactOptional(),
+    Groups: GroupListTypeSchema.exactOptional().openapi({
+      description: 'The group objects for the groups.',
+    }),
+    NextToken: PaginationKeySchema.exactOptional().openapi({
+      description:
+        'An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListGroupsResponse')
 
 const ListGroupsRequestSchema = z
   .object({
-    UserPoolId: UserPoolIdTypeSchema.and(
-      z.any().openapi({ description: 'The user pool ID for the user pool.' }),
-    ),
-    Limit: QueryLimitTypeSchema.and(
-      z.any().openapi({ description: 'The limit of the request to list groups.' }),
-    ).exactOptional(),
-    NextToken: PaginationKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.',
-        }),
-    ).exactOptional(),
+    UserPoolId: UserPoolIdTypeSchema.openapi({
+      description: 'The user pool ID for the user pool.',
+    }),
+    Limit: QueryLimitTypeSchema.exactOptional().openapi({
+      description: 'The limit of the request to list groups.',
+    }),
+    NextToken: PaginationKeySchema.exactOptional().openapi({
+      description:
+        'An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.',
+    }),
   })
   .openapi({ required: ['UserPoolId'], title: 'ListGroupsRequest' })
   .openapi('ListGroupsRequest')
 
 const ProviderDescriptionSchema = z
   .object({
-    ProviderName: ProviderNameTypeSchema.and(
-      z.any().openapi({ description: 'The IdP name.' }),
-    ).exactOptional(),
-    ProviderType: IdentityProviderTypeTypeSchema.and(
-      z.any().openapi({ description: 'The IdP type.' }),
-    ).exactOptional(),
-    LastModifiedDate: DateTypeSchema.and(
-      z.any().openapi({ description: 'The date the provider was last modified.' }),
-    ).exactOptional(),
-    CreationDate: DateTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time, in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format, when the item was created.',
-        }),
-    ).exactOptional(),
+    ProviderName: ProviderNameTypeSchema.exactOptional().openapi({ description: 'The IdP name.' }),
+    ProviderType: IdentityProviderTypeTypeSchema.exactOptional().openapi({
+      description: 'The IdP type.',
+    }),
+    LastModifiedDate: DateTypeSchema.exactOptional().openapi({
+      description: 'The date the provider was last modified.',
+    }),
+    CreationDate: DateTypeSchema.exactOptional().openapi({
+      description:
+        'The date and time, in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format, when the item was created.',
+    }),
   })
   .openapi({ description: 'A container for IdP details.', required: [] })
   .openapi('ProviderDescription')
@@ -5671,12 +4209,10 @@ const PaginationKeyTypeSchema = z.string().regex(/[\S]+/).min(1).openapi('Pagina
 
 const ListIdentityProvidersResponseSchema = z
   .object({
-    Providers: ProvidersListTypeSchema.and(
-      z.any().openapi({ description: 'A list of IdP objects.' }),
-    ),
-    NextToken: PaginationKeyTypeSchema.and(
-      z.any().openapi({ description: 'A pagination token.' }),
-    ).exactOptional(),
+    Providers: ProvidersListTypeSchema.openapi({ description: 'A list of IdP objects.' }),
+    NextToken: PaginationKeyTypeSchema.exactOptional().openapi({
+      description: 'A pagination token.',
+    }),
   })
   .openapi({ required: ['Providers'] })
   .openapi('ListIdentityProvidersResponse')
@@ -5685,13 +4221,13 @@ const ListProvidersLimitTypeSchema = z.int().min(0).max(60).openapi('ListProvide
 
 const ListIdentityProvidersRequestSchema = z
   .object({
-    UserPoolId: UserPoolIdTypeSchema.and(z.any().openapi({ description: 'The user pool ID.' })),
-    MaxResults: ListProvidersLimitTypeSchema.and(
-      z.any().openapi({ description: 'The maximum number of IdPs to return.' }),
-    ).exactOptional(),
-    NextToken: PaginationKeyTypeSchema.and(
-      z.any().openapi({ description: 'A pagination token.' }),
-    ).exactOptional(),
+    UserPoolId: UserPoolIdTypeSchema.openapi({ description: 'The user pool ID.' }),
+    MaxResults: ListProvidersLimitTypeSchema.exactOptional().openapi({
+      description: 'The maximum number of IdPs to return.',
+    }),
+    NextToken: PaginationKeyTypeSchema.exactOptional().openapi({
+      description: 'A pagination token.',
+    }),
   })
   .openapi({ required: ['UserPoolId'], title: 'ListIdentityProvidersRequest' })
   .openapi('ListIdentityProvidersRequest')
@@ -5702,12 +4238,12 @@ const ResourceServersListTypeSchema = z
 
 const ListResourceServersResponseSchema = z
   .object({
-    ResourceServers: ResourceServersListTypeSchema.and(
-      z.any().openapi({ description: 'The resource servers.' }),
-    ),
-    NextToken: PaginationKeyTypeSchema.and(
-      z.any().openapi({ description: 'A pagination token.' }),
-    ).exactOptional(),
+    ResourceServers: ResourceServersListTypeSchema.openapi({
+      description: 'The resource servers.',
+    }),
+    NextToken: PaginationKeyTypeSchema.exactOptional().openapi({
+      description: 'A pagination token.',
+    }),
   })
   .openapi({ required: ['ResourceServers'] })
   .openapi('ListResourceServersResponse')
@@ -5720,38 +4256,33 @@ const ListResourceServersLimitTypeSchema = z
 
 const ListResourceServersRequestSchema = z
   .object({
-    UserPoolId: UserPoolIdTypeSchema.and(
-      z.any().openapi({ description: 'The user pool ID for the user pool.' }),
-    ),
-    MaxResults: ListResourceServersLimitTypeSchema.and(
-      z.any().openapi({ description: 'The maximum number of resource servers to return.' }),
-    ).exactOptional(),
-    NextToken: PaginationKeyTypeSchema.and(
-      z.any().openapi({ description: 'A pagination token.' }),
-    ).exactOptional(),
+    UserPoolId: UserPoolIdTypeSchema.openapi({
+      description: 'The user pool ID for the user pool.',
+    }),
+    MaxResults: ListResourceServersLimitTypeSchema.exactOptional().openapi({
+      description: 'The maximum number of resource servers to return.',
+    }),
+    NextToken: PaginationKeyTypeSchema.exactOptional().openapi({
+      description: 'A pagination token.',
+    }),
   })
   .openapi({ required: ['UserPoolId'], title: 'ListResourceServersRequest' })
   .openapi('ListResourceServersRequest')
 
 const ListTagsForResourceResponseSchema = z
   .object({
-    Tags: UserPoolTagsTypeSchema.and(
-      z.any().openapi({ description: 'The tags that are assigned to the user pool.' }),
-    ).exactOptional(),
+    Tags: UserPoolTagsTypeSchema.exactOptional().openapi({
+      description: 'The tags that are assigned to the user pool.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTagsForResourceResponse')
 
 const ListTagsForResourceRequestSchema = z
   .object({
-    ResourceArn: ArnTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the user pool that the tags are assigned to.',
-        }),
-    ),
+    ResourceArn: ArnTypeSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the user pool that the tags are assigned to.',
+    }),
   })
   .openapi({ required: ['ResourceArn'], title: 'ListTagsForResourceRequest' })
   .openapi('ListTagsForResourceRequest')
@@ -5764,17 +4295,13 @@ const UserImportJobsListTypeSchema = z
 
 const ListUserImportJobsResponseSchema = z
   .object({
-    UserImportJobs: UserImportJobsListTypeSchema.and(
-      z.any().openapi({ description: 'The user import jobs.' }),
-    ).exactOptional(),
-    PaginationToken: PaginationKeyTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An identifier that can be used to return the next set of user import jobs in the list.',
-        }),
-    ).exactOptional(),
+    UserImportJobs: UserImportJobsListTypeSchema.exactOptional().openapi({
+      description: 'The user import jobs.',
+    }),
+    PaginationToken: PaginationKeyTypeSchema.exactOptional().openapi({
+      description:
+        'An identifier that can be used to return the next set of user import jobs in the list.',
+    }),
   })
   .openapi({
     description:
@@ -5787,28 +4314,16 @@ const PoolQueryLimitTypeSchema = z.int().min(1).max(60).openapi('PoolQueryLimitT
 
 const ListUserImportJobsRequestSchema = z
   .object({
-    UserPoolId: UserPoolIdTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The user pool ID for the user pool that the users are being imported into.',
-        }),
-    ),
-    MaxResults: PoolQueryLimitTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The maximum number of import jobs you want the request to return.',
-        }),
-    ),
-    PaginationToken: PaginationKeyTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An identifier that was returned from the previous call to <code>ListUserImportJobs</code>, which can be used to return the next set of import jobs in the list.',
-        }),
-    ).exactOptional(),
+    UserPoolId: UserPoolIdTypeSchema.openapi({
+      description: 'The user pool ID for the user pool that the users are being imported into.',
+    }),
+    MaxResults: PoolQueryLimitTypeSchema.openapi({
+      description: 'The maximum number of import jobs you want the request to return.',
+    }),
+    PaginationToken: PaginationKeyTypeSchema.exactOptional().openapi({
+      description:
+        'An identifier that was returned from the previous call to <code>ListUserImportJobs</code>, which can be used to return the next set of import jobs in the list.',
+    }),
   })
   .openapi({
     required: ['UserPoolId', 'MaxResults'],
@@ -5819,20 +4334,16 @@ const ListUserImportJobsRequestSchema = z
 
 const UserPoolClientDescriptionSchema = z
   .object({
-    ClientId: ClientIdTypeSchema.and(
-      z.any().openapi({ description: 'The ID of the client associated with the user pool.' }),
-    ).exactOptional(),
-    UserPoolId: UserPoolIdTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The user pool ID for the user pool where you want to describe the user pool client.',
-        }),
-    ).exactOptional(),
-    ClientName: ClientNameTypeSchema.and(
-      z.any().openapi({ description: 'The client name from the user pool client description.' }),
-    ).exactOptional(),
+    ClientId: ClientIdTypeSchema.exactOptional().openapi({
+      description: 'The ID of the client associated with the user pool.',
+    }),
+    UserPoolId: UserPoolIdTypeSchema.exactOptional().openapi({
+      description:
+        'The user pool ID for the user pool where you want to describe the user pool client.',
+    }),
+    ClientName: ClientNameTypeSchema.exactOptional().openapi({
+      description: 'The client name from the user pool client description.',
+    }),
   })
   .openapi({ description: 'The description of the user pool client.', required: [] })
   .openapi('UserPoolClientDescription')
@@ -5843,21 +4354,13 @@ const UserPoolClientListTypeSchema = z
 
 const ListUserPoolClientsResponseSchema = z
   .object({
-    UserPoolClients: UserPoolClientListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The user pool clients in the response that lists user pool clients.',
-        }),
-    ).exactOptional(),
-    NextToken: PaginationKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.',
-        }),
-    ).exactOptional(),
+    UserPoolClients: UserPoolClientListTypeSchema.exactOptional().openapi({
+      description: 'The user pool clients in the response that lists user pool clients.',
+    }),
+    NextToken: PaginationKeySchema.exactOptional().openapi({
+      description:
+        'An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.',
+    }),
   })
   .openapi({
     description: 'Represents the response from the server that lists user pool clients.',
@@ -5869,30 +4372,17 @@ const QueryLimitSchema = z.int().min(1).max(60).openapi('QueryLimit')
 
 const ListUserPoolClientsRequestSchema = z
   .object({
-    UserPoolId: UserPoolIdTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The user pool ID for the user pool where you want to list user pool clients.',
-        }),
-    ),
-    MaxResults: QueryLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results you want the request to return when listing the user pool clients.',
-        }),
-    ).exactOptional(),
-    NextToken: PaginationKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.',
-        }),
-    ).exactOptional(),
+    UserPoolId: UserPoolIdTypeSchema.openapi({
+      description: 'The user pool ID for the user pool where you want to list user pool clients.',
+    }),
+    MaxResults: QueryLimitSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results you want the request to return when listing the user pool clients.',
+    }),
+    NextToken: PaginationKeySchema.exactOptional().openapi({
+      description:
+        'An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.',
+    }),
   })
   .openapi({
     required: ['UserPoolId'],
@@ -5903,38 +4393,26 @@ const ListUserPoolClientsRequestSchema = z
 
 const UserPoolDescriptionTypeSchema = z
   .object({
-    Id: UserPoolIdTypeSchema.and(
-      z.any().openapi({ description: 'The ID in a user pool description.' }),
-    ).exactOptional(),
-    Name: UserPoolNameTypeSchema.and(
-      z.any().openapi({ description: 'The name in a user pool description.' }),
-    ).exactOptional(),
-    LambdaConfig: LambdaConfigTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Lambda configuration information in a user pool description.',
-        }),
-    ).exactOptional(),
-    Status: StatusTypeSchema.and(
-      z.any().openapi({ description: 'The user pool status in a user pool description.' }),
-    ).exactOptional(),
-    LastModifiedDate: DateTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time, in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format, when the item was modified.',
-        }),
-    ).exactOptional(),
-    CreationDate: DateTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time, in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format, when the item was created.',
-        }),
-    ).exactOptional(),
+    Id: UserPoolIdTypeSchema.exactOptional().openapi({
+      description: 'The ID in a user pool description.',
+    }),
+    Name: UserPoolNameTypeSchema.exactOptional().openapi({
+      description: 'The name in a user pool description.',
+    }),
+    LambdaConfig: LambdaConfigTypeSchema.exactOptional().openapi({
+      description: 'The Lambda configuration information in a user pool description.',
+    }),
+    Status: StatusTypeSchema.exactOptional().openapi({
+      description: 'The user pool status in a user pool description.',
+    }),
+    LastModifiedDate: DateTypeSchema.exactOptional().openapi({
+      description:
+        'The date and time, in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format, when the item was modified.',
+    }),
+    CreationDate: DateTypeSchema.exactOptional().openapi({
+      description:
+        'The date and time, in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format, when the item was created.',
+    }),
   })
   .openapi({ description: 'A user pool description.', required: [] })
   .openapi('UserPoolDescriptionType')
@@ -5943,39 +4421,27 @@ const UserPoolListTypeSchema = z.array(UserPoolDescriptionTypeSchema).openapi('U
 
 const ListUserPoolsResponseSchema = z
   .object({
-    UserPools: UserPoolListTypeSchema.and(
-      z.any().openapi({ description: 'The user pools from the response to list users.' }),
-    ).exactOptional(),
-    NextToken: PaginationKeyTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.',
-        }),
-    ).exactOptional(),
+    UserPools: UserPoolListTypeSchema.exactOptional().openapi({
+      description: 'The user pools from the response to list users.',
+    }),
+    NextToken: PaginationKeyTypeSchema.exactOptional().openapi({
+      description:
+        'An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.',
+    }),
   })
   .openapi({ description: 'Represents the response to list user pools.', required: [] })
   .openapi('ListUserPoolsResponse')
 
 const ListUserPoolsRequestSchema = z
   .object({
-    NextToken: PaginationKeyTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.',
-        }),
-    ).exactOptional(),
-    MaxResults: PoolQueryLimitTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results you want the request to return when listing the user pools.',
-        }),
-    ),
+    NextToken: PaginationKeyTypeSchema.exactOptional().openapi({
+      description:
+        'An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.',
+    }),
+    MaxResults: PoolQueryLimitTypeSchema.openapi({
+      description:
+        'The maximum number of results you want the request to return when listing the user pools.',
+    }),
   })
   .openapi({
     required: ['MaxResults'],
@@ -5988,22 +4454,14 @@ const UsersListTypeSchema = z.array(UserTypeSchema).openapi('UsersListType')
 
 const ListUsersResponseSchema = z
   .object({
-    Users: UsersListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of the user pool users, and their attributes, that match your query.</p> <note> <p>Amazon Cognito creates a profile in your user pool for each native user in your user pool, and each unique user ID from your third-party identity providers (IdPs). When you link users with the <a href="https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_AdminLinkProviderForUser.html">AdminLinkProviderForUser</a> API operation, the output of <code>ListUsers</code> displays both the IdP user and the native user that you linked. You can identify IdP users in the <code>Users</code> object of this API response by the IdP prefix that Amazon Cognito appends to <code>Username</code>.</p> </note>',
-        }),
-    ).exactOptional(),
-    PaginationToken: SearchPaginationTokenTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.',
-        }),
-    ).exactOptional(),
+    Users: UsersListTypeSchema.exactOptional().openapi({
+      description:
+        '<p>A list of the user pool users, and their attributes, that match your query.</p> <note> <p>Amazon Cognito creates a profile in your user pool for each native user in your user pool, and each unique user ID from your third-party identity providers (IdPs). When you link users with the <a href="https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_AdminLinkProviderForUser.html">AdminLinkProviderForUser</a> API operation, the output of <code>ListUsers</code> displays both the IdP user and the native user that you linked. You can identify IdP users in the <code>Users</code> object of this API response by the IdP prefix that Amazon Cognito appends to <code>Username</code>.</p> </note>',
+    }),
+    PaginationToken: SearchPaginationTokenTypeSchema.exactOptional().openapi({
+      description:
+        'An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.',
+    }),
   })
   .openapi({ description: 'The response from the request to list users.', required: [] })
   .openapi('ListUsersResponse')
@@ -6016,41 +4474,24 @@ const UserFilterTypeSchema = z.string().max(256).openapi('UserFilterType')
 
 const ListUsersRequestSchema = z
   .object({
-    UserPoolId: UserPoolIdTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The user pool ID for the user pool on which the search should be performed.',
-        }),
-    ),
-    AttributesToGet: SearchedAttributeNamesListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A JSON array of user attribute names, for example <code>given_name</code>, that you want Amazon Cognito to include in the response for each user. When you don't provide an <code>AttributesToGet</code> parameter, Amazon Cognito returns all attributes for each user.",
-        }),
-    ).exactOptional(),
-    Limit: QueryLimitTypeSchema.and(
-      z.any().openapi({ description: 'Maximum number of users to be returned.' }),
-    ).exactOptional(),
-    PaginationToken: SearchPaginationTokenTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.',
-        }),
-    ).exactOptional(),
-    Filter: UserFilterTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A filter string of the form "<i>AttributeName</i> <i>Filter-Type</i> "<i>AttributeValue</i>"". Quotation marks within the filter string must be escaped using the backslash (\\) character. For example, "<code>family_name</code> = \\"Reddy\\"".</p> <ul> <li> <p> <i>AttributeName</i>: The name of the attribute to search for. You can only search for one attribute at a time.</p> </li> <li> <p> <i>Filter-Type</i>: For an exact match, use =, for example, "<code>given_name</code> = \\"Jon\\"". For a prefix ("starts with") match, use ^=, for example, "<code>given_name</code> ^= \\"Jon\\"". </p> </li> <li> <p> <i>AttributeValue</i>: The attribute value that must be matched for each user.</p> </li> </ul> <p>If the filter string is empty, <code>ListUsers</code> returns all users in the user pool.</p> <p>You can only search for the following standard attributes:</p> <ul> <li> <p> <code>username</code> (case-sensitive)</p> </li> <li> <p> <code>email</code> </p> </li> <li> <p> <code>phone_number</code> </p> </li> <li> <p> <code>name</code> </p> </li> <li> <p> <code>given_name</code> </p> </li> <li> <p> <code>family_name</code> </p> </li> <li> <p> <code>preferred_username</code> </p> </li> <li> <p> <code>cognito:user_status</code> (called <b>Status</b> in the Console) (case-insensitive)</p> </li> <li> <p> <code>status (called <b>Enabled</b> in the Console) (case-sensitive)</code> </p> </li> <li> <p> <code>sub</code> </p> </li> </ul> <p>Custom attributes aren\'t searchable.</p> <note> <p>You can also list users with a client-side filter. The server-side filter matches no more than one attribute. For an advanced search, use a client-side filter with the <code>--query</code> parameter of the <code>list-users</code> action in the CLI. When you use a client-side filter, ListUsers returns a paginated list of zero or more users. You can receive multiple pages in a row with zero results. Repeat the query with each pagination token that is returned until you receive a null pagination token value, and then review the combined result. </p> <p>For more information about server-side and client-side filtering, see <a href="https://docs.aws.amazon.com/cli/latest/userguide/cli-usage-filter.html">FilteringCLI output</a> in the <a href="https://docs.aws.amazon.com/cli/latest/userguide/cli-usage-filter.html">Command Line Interface User Guide</a>. </p> </note> <p>For more information, see <a href="https://docs.aws.amazon.com/cognito/latest/developerguide/how-to-manage-user-accounts.html#cognito-user-pools-searching-for-users-using-listusers-api">Searching for Users Using the ListUsers API</a> and <a href="https://docs.aws.amazon.com/cognito/latest/developerguide/how-to-manage-user-accounts.html#cognito-user-pools-searching-for-users-listusers-api-examples">Examples of Using the ListUsers API</a> in the <i>Amazon Cognito Developer Guide</i>.</p>',
-        }),
-    ).exactOptional(),
+    UserPoolId: UserPoolIdTypeSchema.openapi({
+      description: 'The user pool ID for the user pool on which the search should be performed.',
+    }),
+    AttributesToGet: SearchedAttributeNamesListTypeSchema.exactOptional().openapi({
+      description:
+        "A JSON array of user attribute names, for example <code>given_name</code>, that you want Amazon Cognito to include in the response for each user. When you don't provide an <code>AttributesToGet</code> parameter, Amazon Cognito returns all attributes for each user.",
+    }),
+    Limit: QueryLimitTypeSchema.exactOptional().openapi({
+      description: 'Maximum number of users to be returned.',
+    }),
+    PaginationToken: SearchPaginationTokenTypeSchema.exactOptional().openapi({
+      description:
+        'An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.',
+    }),
+    Filter: UserFilterTypeSchema.exactOptional().openapi({
+      description:
+        '<p>A filter string of the form "<i>AttributeName</i> <i>Filter-Type</i> "<i>AttributeValue</i>"". Quotation marks within the filter string must be escaped using the backslash (\\) character. For example, "<code>family_name</code> = \\"Reddy\\"".</p> <ul> <li> <p> <i>AttributeName</i>: The name of the attribute to search for. You can only search for one attribute at a time.</p> </li> <li> <p> <i>Filter-Type</i>: For an exact match, use =, for example, "<code>given_name</code> = \\"Jon\\"". For a prefix ("starts with") match, use ^=, for example, "<code>given_name</code> ^= \\"Jon\\"". </p> </li> <li> <p> <i>AttributeValue</i>: The attribute value that must be matched for each user.</p> </li> </ul> <p>If the filter string is empty, <code>ListUsers</code> returns all users in the user pool.</p> <p>You can only search for the following standard attributes:</p> <ul> <li> <p> <code>username</code> (case-sensitive)</p> </li> <li> <p> <code>email</code> </p> </li> <li> <p> <code>phone_number</code> </p> </li> <li> <p> <code>name</code> </p> </li> <li> <p> <code>given_name</code> </p> </li> <li> <p> <code>family_name</code> </p> </li> <li> <p> <code>preferred_username</code> </p> </li> <li> <p> <code>cognito:user_status</code> (called <b>Status</b> in the Console) (case-insensitive)</p> </li> <li> <p> <code>status (called <b>Enabled</b> in the Console) (case-sensitive)</code> </p> </li> <li> <p> <code>sub</code> </p> </li> </ul> <p>Custom attributes aren\'t searchable.</p> <note> <p>You can also list users with a client-side filter. The server-side filter matches no more than one attribute. For an advanced search, use a client-side filter with the <code>--query</code> parameter of the <code>list-users</code> action in the CLI. When you use a client-side filter, ListUsers returns a paginated list of zero or more users. You can receive multiple pages in a row with zero results. Repeat the query with each pagination token that is returned until you receive a null pagination token value, and then review the combined result. </p> <p>For more information about server-side and client-side filtering, see <a href="https://docs.aws.amazon.com/cli/latest/userguide/cli-usage-filter.html">FilteringCLI output</a> in the <a href="https://docs.aws.amazon.com/cli/latest/userguide/cli-usage-filter.html">Command Line Interface User Guide</a>. </p> </note> <p>For more information, see <a href="https://docs.aws.amazon.com/cognito/latest/developerguide/how-to-manage-user-accounts.html#cognito-user-pools-searching-for-users-using-listusers-api">Searching for Users Using the ListUsers API</a> and <a href="https://docs.aws.amazon.com/cognito/latest/developerguide/how-to-manage-user-accounts.html#cognito-user-pools-searching-for-users-listusers-api-examples">Examples of Using the ListUsers API</a> in the <i>Amazon Cognito Developer Guide</i>.</p>',
+    }),
   })
   .openapi({
     required: ['UserPoolId'],
@@ -6061,52 +4502,40 @@ const ListUsersRequestSchema = z
 
 const ListUsersInGroupResponseSchema = z
   .object({
-    Users: UsersListTypeSchema.and(
-      z.any().openapi({ description: 'The users returned in the request to list users.' }),
-    ).exactOptional(),
-    NextToken: PaginationKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An identifier that you can use in a later request to return the next set of items in the list.',
-        }),
-    ).exactOptional(),
+    Users: UsersListTypeSchema.exactOptional().openapi({
+      description: 'The users returned in the request to list users.',
+    }),
+    NextToken: PaginationKeySchema.exactOptional().openapi({
+      description:
+        'An identifier that you can use in a later request to return the next set of items in the list.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListUsersInGroupResponse')
 
 const ListUsersInGroupRequestSchema = z
   .object({
-    UserPoolId: UserPoolIdTypeSchema.and(
-      z.any().openapi({ description: 'The user pool ID for the user pool.' }),
-    ),
-    GroupName: GroupNameTypeSchema.and(z.any().openapi({ description: 'The name of the group.' })),
-    Limit: QueryLimitTypeSchema.and(
-      z.any().openapi({ description: 'The limit of the request to list users.' }),
-    ).exactOptional(),
-    NextToken: PaginationKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.',
-        }),
-    ).exactOptional(),
+    UserPoolId: UserPoolIdTypeSchema.openapi({
+      description: 'The user pool ID for the user pool.',
+    }),
+    GroupName: GroupNameTypeSchema.openapi({ description: 'The name of the group.' }),
+    Limit: QueryLimitTypeSchema.exactOptional().openapi({
+      description: 'The limit of the request to list users.',
+    }),
+    NextToken: PaginationKeySchema.exactOptional().openapi({
+      description:
+        'An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.',
+    }),
   })
   .openapi({ required: ['UserPoolId', 'GroupName'], title: 'ListUsersInGroupRequest' })
   .openapi('ListUsersInGroupRequest')
 
 const ResendConfirmationCodeResponseSchema = z
   .object({
-    CodeDeliveryDetails: CodeDeliveryDetailsTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The code delivery details returned by the server in response to the request to resend the confirmation code.',
-        }),
-    ).exactOptional(),
+    CodeDeliveryDetails: CodeDeliveryDetailsTypeSchema.exactOptional().openapi({
+      description:
+        'The code delivery details returned by the server in response to the request to resend the confirmation code.',
+    }),
   })
   .openapi({
     description:
@@ -6117,49 +4546,29 @@ const ResendConfirmationCodeResponseSchema = z
 
 const ResendConfirmationCodeRequestSchema = z
   .object({
-    ClientId: ClientIdTypeSchema.and(
-      z.any().openapi({ description: 'The ID of the client associated with the user pool.' }),
-    ),
-    SecretHash: SecretHashTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A keyed-hash message authentication code (HMAC) calculated using the secret key of a user pool client and username plus the client ID in the message.',
-        }),
-    ).exactOptional(),
-    UserContextData: UserContextDataTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contextual data about your user session, such as the device fingerprint, IP address, or location. Amazon Cognito advanced security evaluates the risk of an authentication event based on the context that your app generates and passes to Amazon Cognito when it makes API requests.',
-        }),
-    ).exactOptional(),
-    Username: UsernameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>username</code> attribute of the user to whom you want to resend a confirmation code.',
-        }),
-    ),
-    AnalyticsMetadata: AnalyticsMetadataTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Pinpoint analytics metadata that contributes to your metrics for <code>ResendConfirmationCode</code> calls.',
-        }),
-    ).exactOptional(),
-    ClientMetadata: ClientMetadataTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A map of custom key-value pairs that you can provide as input for any custom workflows that this action triggers.</p> <p>You create custom workflows by assigning Lambda functions to user pool triggers. When you use the ResendConfirmationCode API action, Amazon Cognito invokes the function that is assigned to the <i>custom message</i> trigger. When Amazon Cognito invokes this function, it passes a JSON payload, which the function receives as input. This payload contains a <code>clientMetadata</code> attribute, which provides the data that you assigned to the ClientMetadata parameter in your ResendConfirmationCode request. In your function code in Lambda, you can process the <code>clientMetadata</code> value to enhance your workflow for your specific needs.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-identity-pools-working-with-aws-lambda-triggers.html\"> Customizing user pool Workflows with Lambda Triggers</a> in the <i>Amazon Cognito Developer Guide</i>.</p> <note> <p>When you use the ClientMetadata parameter, remember that Amazon Cognito won't do the following:</p> <ul> <li> <p>Store the ClientMetadata value. This data is available only to Lambda triggers that are assigned to a user pool to support custom workflows. If your user pool configuration doesn't include triggers, the ClientMetadata parameter serves no purpose.</p> </li> <li> <p>Validate the ClientMetadata value.</p> </li> <li> <p>Encrypt the ClientMetadata value. Don't use Amazon Cognito to provide sensitive information.</p> </li> </ul> </note>",
-        }),
-    ).exactOptional(),
+    ClientId: ClientIdTypeSchema.openapi({
+      description: 'The ID of the client associated with the user pool.',
+    }),
+    SecretHash: SecretHashTypeSchema.exactOptional().openapi({
+      description:
+        'A keyed-hash message authentication code (HMAC) calculated using the secret key of a user pool client and username plus the client ID in the message.',
+    }),
+    UserContextData: UserContextDataTypeSchema.exactOptional().openapi({
+      description:
+        'Contextual data about your user session, such as the device fingerprint, IP address, or location. Amazon Cognito advanced security evaluates the risk of an authentication event based on the context that your app generates and passes to Amazon Cognito when it makes API requests.',
+    }),
+    Username: UsernameTypeSchema.openapi({
+      description:
+        'The <code>username</code> attribute of the user to whom you want to resend a confirmation code.',
+    }),
+    AnalyticsMetadata: AnalyticsMetadataTypeSchema.exactOptional().openapi({
+      description:
+        'The Amazon Pinpoint analytics metadata that contributes to your metrics for <code>ResendConfirmationCode</code> calls.',
+    }),
+    ClientMetadata: ClientMetadataTypeSchema.exactOptional().openapi({
+      description:
+        "<p>A map of custom key-value pairs that you can provide as input for any custom workflows that this action triggers.</p> <p>You create custom workflows by assigning Lambda functions to user pool triggers. When you use the ResendConfirmationCode API action, Amazon Cognito invokes the function that is assigned to the <i>custom message</i> trigger. When Amazon Cognito invokes this function, it passes a JSON payload, which the function receives as input. This payload contains a <code>clientMetadata</code> attribute, which provides the data that you assigned to the ClientMetadata parameter in your ResendConfirmationCode request. In your function code in Lambda, you can process the <code>clientMetadata</code> value to enhance your workflow for your specific needs.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-identity-pools-working-with-aws-lambda-triggers.html\"> Customizing user pool Workflows with Lambda Triggers</a> in the <i>Amazon Cognito Developer Guide</i>.</p> <note> <p>When you use the ClientMetadata parameter, remember that Amazon Cognito won't do the following:</p> <ul> <li> <p>Store the ClientMetadata value. This data is available only to Lambda triggers that are assigned to a user pool to support custom workflows. If your user pool configuration doesn't include triggers, the ClientMetadata parameter serves no purpose.</p> </li> <li> <p>Validate the ClientMetadata value.</p> </li> <li> <p>Encrypt the ClientMetadata value. Don't use Amazon Cognito to provide sensitive information.</p> </li> </ul> </note>",
+    }),
   })
   .openapi({
     required: ['ClientId', 'Username'],
@@ -6170,38 +4579,22 @@ const ResendConfirmationCodeRequestSchema = z
 
 const RespondToAuthChallengeResponseSchema = z
   .object({
-    ChallengeName: ChallengeNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The challenge name. For more information, see <a href="https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_InitiateAuth.html">InitiateAuth</a>.',
-        }),
-    ).exactOptional(),
-    Session: SessionTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The session that should be passed both ways in challenge-response calls to the service. If the caller must pass another challenge, they return a session with other challenge parameters. This session should be passed as it is to the next <code>RespondToAuthChallenge</code> API call.',
-        }),
-    ).exactOptional(),
-    ChallengeParameters: ChallengeParametersTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The challenge parameters. For more information, see <a href="https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_InitiateAuth.html">InitiateAuth</a>.',
-        }),
-    ).exactOptional(),
-    AuthenticationResult: AuthenticationResultTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The result returned by the server in response to the request to respond to the authentication challenge.',
-        }),
-    ).exactOptional(),
+    ChallengeName: ChallengeNameTypeSchema.exactOptional().openapi({
+      description:
+        'The challenge name. For more information, see <a href="https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_InitiateAuth.html">InitiateAuth</a>.',
+    }),
+    Session: SessionTypeSchema.exactOptional().openapi({
+      description:
+        'The session that should be passed both ways in challenge-response calls to the service. If the caller must pass another challenge, they return a session with other challenge parameters. This session should be passed as it is to the next <code>RespondToAuthChallenge</code> API call.',
+    }),
+    ChallengeParameters: ChallengeParametersTypeSchema.exactOptional().openapi({
+      description:
+        'The challenge parameters. For more information, see <a href="https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_InitiateAuth.html">InitiateAuth</a>.',
+    }),
+    AuthenticationResult: AuthenticationResultTypeSchema.exactOptional().openapi({
+      description:
+        'The result returned by the server in response to the request to respond to the authentication challenge.',
+    }),
   })
   .openapi({
     description: 'The response to respond to the authentication challenge.',
@@ -6211,55 +4604,31 @@ const RespondToAuthChallengeResponseSchema = z
 
 const RespondToAuthChallengeRequestSchema = z
   .object({
-    ClientId: ClientIdTypeSchema.and(z.any().openapi({ description: 'The app client ID.' })),
-    ChallengeName: ChallengeNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The challenge name. For more information, see <a href="https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_InitiateAuth.html">InitiateAuth</a>.</p> <p> <code>ADMIN_NO_SRP_AUTH</code> isn\'t a valid value.</p>',
-        }),
-    ),
-    Session: SessionTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The session that should be passed both ways in challenge-response calls to the service. If <code>InitiateAuth</code> or <code>RespondToAuthChallenge</code> API call determines that the caller must pass another challenge, they return a session with other challenge parameters. This session should be passed as it is to the next <code>RespondToAuthChallenge</code> API call.',
-        }),
-    ).exactOptional(),
-    ChallengeResponses: ChallengeResponsesTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The challenge responses. These are inputs corresponding to the value of <code>ChallengeName</code>, for example:</p> <note> <p> <code>SECRET_HASH</code> (if app client is configured with client secret) applies to all of the inputs that follow (including <code>SOFTWARE_TOKEN_MFA</code>).</p> </note> <ul> <li> <p> <code>SMS_MFA</code>: <code>SMS_MFA_CODE</code>, <code>USERNAME</code>.</p> </li> <li> <p> <code>PASSWORD_VERIFIER</code>: <code>PASSWORD_CLAIM_SIGNATURE</code>, <code>PASSWORD_CLAIM_SECRET_BLOCK</code>, <code>TIMESTAMP</code>, <code>USERNAME</code>.</p> <note> <p> <code>PASSWORD_VERIFIER</code> requires <code>DEVICE_KEY</code> when you sign in with a remembered device.</p> </note> </li> <li> <p> <code>NEW_PASSWORD_REQUIRED</code>: <code>NEW_PASSWORD</code>, <code>USERNAME</code>, <code>SECRET_HASH</code> (if app client is configured with client secret). To set any required attributes that Amazon Cognito returned as <code>requiredAttributes</code> in the <code>InitiateAuth</code> response, add a <code>userAttributes.<i>attributename</i> </code> parameter. This parameter can also set values for writable attributes that aren\'t required by your user pool.</p> <note> <p>In a <code>NEW_PASSWORD_REQUIRED</code> challenge response, you can\'t modify a required attribute that already has a value. In <code>RespondToAuthChallenge</code>, set a value for any keys that Amazon Cognito returned in the <code>requiredAttributes</code> parameter, then use the <code>UpdateUserAttributes</code> API operation to modify the value of any additional attributes.</p> </note> </li> <li> <p> <code>SOFTWARE_TOKEN_MFA</code>: <code>USERNAME</code> and <code>SOFTWARE_TOKEN_MFA_CODE</code> are required attributes.</p> </li> <li> <p> <code>DEVICE_SRP_AUTH</code> requires <code>USERNAME</code>, <code>DEVICE_KEY</code>, <code>SRP_A</code> (and <code>SECRET_HASH</code>).</p> </li> <li> <p> <code>DEVICE_PASSWORD_VERIFIER</code> requires everything that <code>PASSWORD_VERIFIER</code> requires, plus <code>DEVICE_KEY</code>.</p> </li> <li> <p> <code>MFA_SETUP</code> requires <code>USERNAME</code>, plus you must use the session value returned by <code>VerifySoftwareToken</code> in the <code>Session</code> parameter.</p> </li> </ul> <p>For more information about <code>SECRET_HASH</code>, see <a href="https://docs.aws.amazon.com/cognito/latest/developerguide/signing-up-users-in-your-app.html#cognito-user-pools-computing-secret-hash">Computing secret hash values</a>. For information about <code>DEVICE_KEY</code>, see <a href="https://docs.aws.amazon.com/cognito/latest/developerguide/amazon-cognito-user-pools-device-tracking.html">Working with user devices in your user pool</a>.</p>',
-        }),
-    ).exactOptional(),
-    AnalyticsMetadata: AnalyticsMetadataTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Pinpoint analytics metadata that contributes to your metrics for <code>RespondToAuthChallenge</code> calls.',
-        }),
-    ).exactOptional(),
-    UserContextData: UserContextDataTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contextual data about your user session, such as the device fingerprint, IP address, or location. Amazon Cognito advanced security evaluates the risk of an authentication event based on the context that your app generates and passes to Amazon Cognito when it makes API requests.',
-        }),
-    ).exactOptional(),
-    ClientMetadata: ClientMetadataTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A map of custom key-value pairs that you can provide as input for any custom workflows that this action triggers.</p> <p>You create custom workflows by assigning Lambda functions to user pool triggers. When you use the RespondToAuthChallenge API action, Amazon Cognito invokes any functions that are assigned to the following triggers: <i>post authentication</i>, <i>pre token generation</i>, <i>define auth challenge</i>, <i>create auth challenge</i>, and <i>verify auth challenge</i>. When Amazon Cognito invokes any of these functions, it passes a JSON payload, which the function receives as input. This payload contains a <code>clientMetadata</code> attribute, which provides the data that you assigned to the ClientMetadata parameter in your RespondToAuthChallenge request. In your function code in Lambda, you can process the <code>clientMetadata</code> value to enhance your workflow for your specific needs.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-identity-pools-working-with-aws-lambda-triggers.html\"> Customizing user pool Workflows with Lambda Triggers</a> in the <i>Amazon Cognito Developer Guide</i>.</p> <note> <p>When you use the ClientMetadata parameter, remember that Amazon Cognito won't do the following:</p> <ul> <li> <p>Store the ClientMetadata value. This data is available only to Lambda triggers that are assigned to a user pool to support custom workflows. If your user pool configuration doesn't include triggers, the ClientMetadata parameter serves no purpose.</p> </li> <li> <p>Validate the ClientMetadata value.</p> </li> <li> <p>Encrypt the ClientMetadata value. Don't use Amazon Cognito to provide sensitive information.</p> </li> </ul> </note>",
-        }),
-    ).exactOptional(),
+    ClientId: ClientIdTypeSchema.openapi({ description: 'The app client ID.' }),
+    ChallengeName: ChallengeNameTypeSchema.openapi({
+      description:
+        '<p>The challenge name. For more information, see <a href="https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_InitiateAuth.html">InitiateAuth</a>.</p> <p> <code>ADMIN_NO_SRP_AUTH</code> isn\'t a valid value.</p>',
+    }),
+    Session: SessionTypeSchema.exactOptional().openapi({
+      description:
+        'The session that should be passed both ways in challenge-response calls to the service. If <code>InitiateAuth</code> or <code>RespondToAuthChallenge</code> API call determines that the caller must pass another challenge, they return a session with other challenge parameters. This session should be passed as it is to the next <code>RespondToAuthChallenge</code> API call.',
+    }),
+    ChallengeResponses: ChallengeResponsesTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The challenge responses. These are inputs corresponding to the value of <code>ChallengeName</code>, for example:</p> <note> <p> <code>SECRET_HASH</code> (if app client is configured with client secret) applies to all of the inputs that follow (including <code>SOFTWARE_TOKEN_MFA</code>).</p> </note> <ul> <li> <p> <code>SMS_MFA</code>: <code>SMS_MFA_CODE</code>, <code>USERNAME</code>.</p> </li> <li> <p> <code>PASSWORD_VERIFIER</code>: <code>PASSWORD_CLAIM_SIGNATURE</code>, <code>PASSWORD_CLAIM_SECRET_BLOCK</code>, <code>TIMESTAMP</code>, <code>USERNAME</code>.</p> <note> <p> <code>PASSWORD_VERIFIER</code> requires <code>DEVICE_KEY</code> when you sign in with a remembered device.</p> </note> </li> <li> <p> <code>NEW_PASSWORD_REQUIRED</code>: <code>NEW_PASSWORD</code>, <code>USERNAME</code>, <code>SECRET_HASH</code> (if app client is configured with client secret). To set any required attributes that Amazon Cognito returned as <code>requiredAttributes</code> in the <code>InitiateAuth</code> response, add a <code>userAttributes.<i>attributename</i> </code> parameter. This parameter can also set values for writable attributes that aren\'t required by your user pool.</p> <note> <p>In a <code>NEW_PASSWORD_REQUIRED</code> challenge response, you can\'t modify a required attribute that already has a value. In <code>RespondToAuthChallenge</code>, set a value for any keys that Amazon Cognito returned in the <code>requiredAttributes</code> parameter, then use the <code>UpdateUserAttributes</code> API operation to modify the value of any additional attributes.</p> </note> </li> <li> <p> <code>SOFTWARE_TOKEN_MFA</code>: <code>USERNAME</code> and <code>SOFTWARE_TOKEN_MFA_CODE</code> are required attributes.</p> </li> <li> <p> <code>DEVICE_SRP_AUTH</code> requires <code>USERNAME</code>, <code>DEVICE_KEY</code>, <code>SRP_A</code> (and <code>SECRET_HASH</code>).</p> </li> <li> <p> <code>DEVICE_PASSWORD_VERIFIER</code> requires everything that <code>PASSWORD_VERIFIER</code> requires, plus <code>DEVICE_KEY</code>.</p> </li> <li> <p> <code>MFA_SETUP</code> requires <code>USERNAME</code>, plus you must use the session value returned by <code>VerifySoftwareToken</code> in the <code>Session</code> parameter.</p> </li> </ul> <p>For more information about <code>SECRET_HASH</code>, see <a href="https://docs.aws.amazon.com/cognito/latest/developerguide/signing-up-users-in-your-app.html#cognito-user-pools-computing-secret-hash">Computing secret hash values</a>. For information about <code>DEVICE_KEY</code>, see <a href="https://docs.aws.amazon.com/cognito/latest/developerguide/amazon-cognito-user-pools-device-tracking.html">Working with user devices in your user pool</a>.</p>',
+    }),
+    AnalyticsMetadata: AnalyticsMetadataTypeSchema.exactOptional().openapi({
+      description:
+        'The Amazon Pinpoint analytics metadata that contributes to your metrics for <code>RespondToAuthChallenge</code> calls.',
+    }),
+    UserContextData: UserContextDataTypeSchema.exactOptional().openapi({
+      description:
+        'Contextual data about your user session, such as the device fingerprint, IP address, or location. Amazon Cognito advanced security evaluates the risk of an authentication event based on the context that your app generates and passes to Amazon Cognito when it makes API requests.',
+    }),
+    ClientMetadata: ClientMetadataTypeSchema.exactOptional().openapi({
+      description:
+        "<p>A map of custom key-value pairs that you can provide as input for any custom workflows that this action triggers.</p> <p>You create custom workflows by assigning Lambda functions to user pool triggers. When you use the RespondToAuthChallenge API action, Amazon Cognito invokes any functions that are assigned to the following triggers: <i>post authentication</i>, <i>pre token generation</i>, <i>define auth challenge</i>, <i>create auth challenge</i>, and <i>verify auth challenge</i>. When Amazon Cognito invokes any of these functions, it passes a JSON payload, which the function receives as input. This payload contains a <code>clientMetadata</code> attribute, which provides the data that you assigned to the ClientMetadata parameter in your RespondToAuthChallenge request. In your function code in Lambda, you can process the <code>clientMetadata</code> value to enhance your workflow for your specific needs.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-identity-pools-working-with-aws-lambda-triggers.html\"> Customizing user pool Workflows with Lambda Triggers</a> in the <i>Amazon Cognito Developer Guide</i>.</p> <note> <p>When you use the ClientMetadata parameter, remember that Amazon Cognito won't do the following:</p> <ul> <li> <p>Store the ClientMetadata value. This data is available only to Lambda triggers that are assigned to a user pool to support custom workflows. If your user pool configuration doesn't include triggers, the ClientMetadata parameter serves no purpose.</p> </li> <li> <p>Validate the ClientMetadata value.</p> </li> <li> <p>Encrypt the ClientMetadata value. Don't use Amazon Cognito to provide sensitive information.</p> </li> </ul> </note>",
+    }),
   })
   .openapi({
     required: ['ClientId', 'ChallengeName'],
@@ -6268,24 +4637,20 @@ const RespondToAuthChallengeRequestSchema = z
   })
   .openapi('RespondToAuthChallengeRequest')
 
-const RevokeTokenResponseSchema = z.object({}).openapi('RevokeTokenResponse')
+const RevokeTokenResponseSchema = z.looseObject({}).openapi('RevokeTokenResponse')
 
 const RevokeTokenRequestSchema = z
   .object({
-    Token: TokenModelTypeSchema.and(
-      z.any().openapi({ description: 'The refresh token that you want to revoke.' }),
-    ),
-    ClientId: ClientIdTypeSchema.and(
-      z.any().openapi({ description: 'The client ID for the token that you want to revoke.' }),
-    ),
-    ClientSecret: ClientSecretTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The secret for the client ID. This is required only if the client ID has a secret.',
-        }),
-    ).exactOptional(),
+    Token: TokenModelTypeSchema.openapi({
+      description: 'The refresh token that you want to revoke.',
+    }),
+    ClientId: ClientIdTypeSchema.openapi({
+      description: 'The client ID for the token that you want to revoke.',
+    }),
+    ClientSecret: ClientSecretTypeSchema.exactOptional().openapi({
+      description:
+        'The secret for the client ID. This is required only if the client ID has a secret.',
+    }),
   })
   .openapi({ required: ['Token', 'ClientId'], title: 'RevokeTokenRequest' })
   .openapi('RevokeTokenRequest')
@@ -6298,36 +4663,24 @@ const UnsupportedTokenTypeExceptionSchema = z.any().openapi('UnsupportedTokenTyp
 
 const SetLogDeliveryConfigurationResponseSchema = z
   .object({
-    LogDeliveryConfiguration: LogDeliveryConfigurationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The detailed activity logging configuration that you applied to the requested user pool.',
-        }),
-    ).exactOptional(),
+    LogDeliveryConfiguration: LogDeliveryConfigurationTypeSchema.exactOptional().openapi({
+      description:
+        'The detailed activity logging configuration that you applied to the requested user pool.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('SetLogDeliveryConfigurationResponse')
 
 const SetLogDeliveryConfigurationRequestSchema = z
   .object({
-    UserPoolId: UserPoolIdTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the user pool where you want to configure detailed activity logging .',
-        }),
-    ),
-    LogConfigurations: LogConfigurationListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A collection of all of the detailed activity logging configurations for a user pool.',
-        }),
-    ),
+    UserPoolId: UserPoolIdTypeSchema.openapi({
+      description:
+        'The ID of the user pool where you want to configure detailed activity logging .',
+    }),
+    LogConfigurations: LogConfigurationListTypeSchema.openapi({
+      description:
+        'A collection of all of the detailed activity logging configurations for a user pool.',
+    }),
   })
   .openapi({
     required: ['UserPoolId', 'LogConfigurations'],
@@ -6337,42 +4690,40 @@ const SetLogDeliveryConfigurationRequestSchema = z
 
 const SetRiskConfigurationResponseSchema = z
   .object({
-    RiskConfiguration: RiskConfigurationTypeSchema.and(
-      z.any().openapi({ description: 'The risk configuration.' }),
-    ),
+    RiskConfiguration: RiskConfigurationTypeSchema.openapi({
+      description: 'The risk configuration.',
+    }),
   })
   .openapi({ required: ['RiskConfiguration'] })
   .openapi('SetRiskConfigurationResponse')
 
 const SetRiskConfigurationRequestSchema = z
   .object({
-    UserPoolId: UserPoolIdTypeSchema.and(z.any().openapi({ description: 'The user pool ID. ' })),
-    ClientId: ClientIdTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The app client ID. If <code>ClientId</code> is null, then the risk configuration is mapped to <code>userPoolId</code>. When the client ID is null, the same risk configuration is applied to all the clients in the userPool.</p> <p>Otherwise, <code>ClientId</code> is mapped to the client. When the client ID isn't null, the user pool configuration is overridden and the risk configuration for the client is used instead.</p>",
-        }),
-    ).exactOptional(),
-    CompromisedCredentialsRiskConfiguration: CompromisedCredentialsRiskConfigurationTypeSchema.and(
-      z.any().openapi({ description: 'The compromised credentials risk configuration.' }),
-    ).exactOptional(),
-    AccountTakeoverRiskConfiguration: AccountTakeoverRiskConfigurationTypeSchema.and(
-      z.any().openapi({ description: 'The account takeover risk configuration.' }),
-    ).exactOptional(),
-    RiskExceptionConfiguration: RiskExceptionConfigurationTypeSchema.and(
-      z.any().openapi({ description: 'The configuration to override the risk decision.' }),
-    ).exactOptional(),
+    UserPoolId: UserPoolIdTypeSchema.openapi({ description: 'The user pool ID. ' }),
+    ClientId: ClientIdTypeSchema.exactOptional().openapi({
+      description:
+        "<p>The app client ID. If <code>ClientId</code> is null, then the risk configuration is mapped to <code>userPoolId</code>. When the client ID is null, the same risk configuration is applied to all the clients in the userPool.</p> <p>Otherwise, <code>ClientId</code> is mapped to the client. When the client ID isn't null, the user pool configuration is overridden and the risk configuration for the client is used instead.</p>",
+    }),
+    CompromisedCredentialsRiskConfiguration:
+      CompromisedCredentialsRiskConfigurationTypeSchema.exactOptional().openapi({
+        description: 'The compromised credentials risk configuration.',
+      }),
+    AccountTakeoverRiskConfiguration:
+      AccountTakeoverRiskConfigurationTypeSchema.exactOptional().openapi({
+        description: 'The account takeover risk configuration.',
+      }),
+    RiskExceptionConfiguration: RiskExceptionConfigurationTypeSchema.exactOptional().openapi({
+      description: 'The configuration to override the risk decision.',
+    }),
   })
   .openapi({ required: ['UserPoolId'], title: 'SetRiskConfigurationRequest' })
   .openapi('SetRiskConfigurationRequest')
 
 const SetUICustomizationResponseSchema = z
   .object({
-    UICustomization: UICustomizationTypeSchema.and(
-      z.any().openapi({ description: 'The UI customization information.' }),
-    ),
+    UICustomization: UICustomizationTypeSchema.openapi({
+      description: 'The UI customization information.',
+    }),
   })
   .openapi({ required: ['UICustomization'] })
   .openapi('SetUICustomizationResponse')
@@ -6381,116 +4732,88 @@ const ImageFileTypeSchema = z.string().min(0).max(131072).openapi('ImageFileType
 
 const SetUICustomizationRequestSchema = z
   .object({
-    UserPoolId: UserPoolIdTypeSchema.and(
-      z.any().openapi({ description: 'The user pool ID for the user pool.' }),
-    ),
-    ClientId: ClientIdTypeSchema.and(
-      z.any().openapi({ description: 'The client ID for the client app.' }),
-    ).exactOptional(),
-    CSS: CSSTypeSchema.and(
-      z.any().openapi({ description: 'The CSS values in the UI customization.' }),
-    ).exactOptional(),
-    ImageFile: ImageFileTypeSchema.and(
-      z.any().openapi({ description: 'The uploaded logo image for the UI customization.' }),
-    ).exactOptional(),
+    UserPoolId: UserPoolIdTypeSchema.openapi({
+      description: 'The user pool ID for the user pool.',
+    }),
+    ClientId: ClientIdTypeSchema.exactOptional().openapi({
+      description: 'The client ID for the client app.',
+    }),
+    CSS: CSSTypeSchema.exactOptional().openapi({
+      description: 'The CSS values in the UI customization.',
+    }),
+    ImageFile: ImageFileTypeSchema.exactOptional().openapi({
+      description: 'The uploaded logo image for the UI customization.',
+    }),
   })
   .openapi({ required: ['UserPoolId'], title: 'SetUICustomizationRequest' })
   .openapi('SetUICustomizationRequest')
 
-const SetUserMFAPreferenceResponseSchema = z.object({}).openapi('SetUserMFAPreferenceResponse')
+const SetUserMFAPreferenceResponseSchema = z.looseObject({}).openapi('SetUserMFAPreferenceResponse')
 
 const SetUserMFAPreferenceRequestSchema = z
   .object({
-    SMSMfaSettings: SMSMfaSettingsTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The SMS text message multi-factor authentication (MFA) settings.',
-        }),
-    ).exactOptional(),
-    SoftwareTokenMfaSettings: SoftwareTokenMfaSettingsTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time-based one-time password (TOTP) software token MFA settings.',
-        }),
-    ).exactOptional(),
-    AccessToken: TokenModelTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A valid access token that Amazon Cognito issued to the user whose MFA preference you want to set.',
-        }),
-    ),
+    SMSMfaSettings: SMSMfaSettingsTypeSchema.exactOptional().openapi({
+      description: 'The SMS text message multi-factor authentication (MFA) settings.',
+    }),
+    SoftwareTokenMfaSettings: SoftwareTokenMfaSettingsTypeSchema.exactOptional().openapi({
+      description: 'The time-based one-time password (TOTP) software token MFA settings.',
+    }),
+    AccessToken: TokenModelTypeSchema.openapi({
+      description:
+        'A valid access token that Amazon Cognito issued to the user whose MFA preference you want to set.',
+    }),
   })
   .openapi({ required: ['AccessToken'], title: 'SetUserMFAPreferenceRequest' })
   .openapi('SetUserMFAPreferenceRequest')
 
 const SetUserPoolMfaConfigResponseSchema = z
   .object({
-    SmsMfaConfiguration: SmsMfaConfigTypeSchema.and(
-      z.any().openapi({ description: 'The SMS text message MFA configuration.' }),
-    ).exactOptional(),
-    SoftwareTokenMfaConfiguration: SoftwareTokenMfaConfigTypeSchema.and(
-      z.any().openapi({ description: 'The software token MFA configuration.' }),
-    ).exactOptional(),
-    MfaConfiguration: UserPoolMfaTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The MFA configuration. Valid values include:</p> <ul> <li> <p> <code>OFF</code> MFA won't be used for any users.</p> </li> <li> <p> <code>ON</code> MFA is required for all users to sign in.</p> </li> <li> <p> <code>OPTIONAL</code> MFA will be required only for individual users who have an MFA factor enabled.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
+    SmsMfaConfiguration: SmsMfaConfigTypeSchema.exactOptional().openapi({
+      description: 'The SMS text message MFA configuration.',
+    }),
+    SoftwareTokenMfaConfiguration: SoftwareTokenMfaConfigTypeSchema.exactOptional().openapi({
+      description: 'The software token MFA configuration.',
+    }),
+    MfaConfiguration: UserPoolMfaTypeSchema.exactOptional().openapi({
+      description:
+        "<p>The MFA configuration. Valid values include:</p> <ul> <li> <p> <code>OFF</code> MFA won't be used for any users.</p> </li> <li> <p> <code>ON</code> MFA is required for all users to sign in.</p> </li> <li> <p> <code>OPTIONAL</code> MFA will be required only for individual users who have an MFA factor enabled.</p> </li> </ul>",
+    }),
   })
   .openapi({ required: [] })
   .openapi('SetUserPoolMfaConfigResponse')
 
 const SetUserPoolMfaConfigRequestSchema = z
   .object({
-    UserPoolId: UserPoolIdTypeSchema.and(z.any().openapi({ description: 'The user pool ID.' })),
-    SmsMfaConfiguration: SmsMfaConfigTypeSchema.and(
-      z.any().openapi({ description: 'The SMS text message MFA configuration.' }),
-    ).exactOptional(),
-    SoftwareTokenMfaConfiguration: SoftwareTokenMfaConfigTypeSchema.and(
-      z.any().openapi({ description: 'The software token MFA configuration.' }),
-    ).exactOptional(),
-    MfaConfiguration: UserPoolMfaTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The MFA configuration. If you set the MfaConfiguration value to ‘ON’, only users who have set up an MFA factor can sign in. To learn more, see <a href="https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-settings-mfa.html">Adding Multi-Factor Authentication (MFA) to a user pool</a>. Valid values include:</p> <ul> <li> <p> <code>OFF</code> MFA won\'t be used for any users.</p> </li> <li> <p> <code>ON</code> MFA is required for all users to sign in.</p> </li> <li> <p> <code>OPTIONAL</code> MFA will be required only for individual users who have an MFA factor activated.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    UserPoolId: UserPoolIdTypeSchema.openapi({ description: 'The user pool ID.' }),
+    SmsMfaConfiguration: SmsMfaConfigTypeSchema.exactOptional().openapi({
+      description: 'The SMS text message MFA configuration.',
+    }),
+    SoftwareTokenMfaConfiguration: SoftwareTokenMfaConfigTypeSchema.exactOptional().openapi({
+      description: 'The software token MFA configuration.',
+    }),
+    MfaConfiguration: UserPoolMfaTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The MFA configuration. If you set the MfaConfiguration value to ‘ON’, only users who have set up an MFA factor can sign in. To learn more, see <a href="https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-settings-mfa.html">Adding Multi-Factor Authentication (MFA) to a user pool</a>. Valid values include:</p> <ul> <li> <p> <code>OFF</code> MFA won\'t be used for any users.</p> </li> <li> <p> <code>ON</code> MFA is required for all users to sign in.</p> </li> <li> <p> <code>OPTIONAL</code> MFA will be required only for individual users who have an MFA factor activated.</p> </li> </ul>',
+    }),
   })
   .openapi({ required: ['UserPoolId'], title: 'SetUserPoolMfaConfigRequest' })
   .openapi('SetUserPoolMfaConfigRequest')
 
 const SetUserSettingsResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'The response from the server for a set user settings request.' })
   .openapi('SetUserSettingsResponse')
 
 const SetUserSettingsRequestSchema = z
   .object({
-    AccessToken: TokenModelTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A valid access token that Amazon Cognito issued to the user whose user settings you want to configure.',
-        }),
-    ),
-    MFAOptions: MFAOptionListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'You can use this parameter only to set an SMS configuration that uses SMS for delivery.',
-        }),
-    ),
+    AccessToken: TokenModelTypeSchema.openapi({
+      description:
+        'A valid access token that Amazon Cognito issued to the user whose user settings you want to configure.',
+    }),
+    MFAOptions: MFAOptionListTypeSchema.openapi({
+      description:
+        'You can use this parameter only to set an SMS configuration that uses SMS for delivery.',
+    }),
   })
   .openapi({
     required: ['AccessToken', 'MFAOptions'],
@@ -6501,30 +4824,18 @@ const SetUserSettingsRequestSchema = z
 
 const SignUpResponseSchema = z
   .object({
-    UserConfirmed: BooleanTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A response from the server indicating that a user registration has been confirmed.',
-        }),
-    ),
-    CodeDeliveryDetails: CodeDeliveryDetailsTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The code delivery details returned by the server response to the user registration request.',
-        }),
-    ).exactOptional(),
-    UserSub: StringTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The UUID of the authenticated user. This isn't the same as <code>username</code>.",
-        }),
-    ),
+    UserConfirmed: BooleanTypeSchema.openapi({
+      description:
+        'A response from the server indicating that a user registration has been confirmed.',
+    }),
+    CodeDeliveryDetails: CodeDeliveryDetailsTypeSchema.exactOptional().openapi({
+      description:
+        'The code delivery details returned by the server response to the user registration request.',
+    }),
+    UserSub: StringTypeSchema.openapi({
+      description:
+        "The UUID of the authenticated user. This isn't the same as <code>username</code>.",
+    }),
   })
   .openapi({
     required: ['UserConfirmed', 'UserSub'],
@@ -6534,58 +4845,38 @@ const SignUpResponseSchema = z
 
 const SignUpRequestSchema = z
   .object({
-    ClientId: ClientIdTypeSchema.and(
-      z.any().openapi({ description: 'The ID of the client associated with the user pool.' }),
-    ),
-    SecretHash: SecretHashTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A keyed-hash message authentication code (HMAC) calculated using the secret key of a user pool client and username plus the client ID in the message.',
-        }),
-    ).exactOptional(),
-    Username: UsernameTypeSchema.and(
-      z.any().openapi({ description: 'The user name of the user you want to register.' }),
-    ),
-    Password: PasswordTypeSchema.and(
-      z.any().openapi({ description: 'The password of the user you want to register.' }),
-    ),
-    UserAttributes: AttributeListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An array of name-value pairs representing user attributes.</p> <p>For custom attributes, you must prepend the <code>custom:</code> prefix to the attribute name.</p>',
-        }),
-    ).exactOptional(),
-    ValidationData: AttributeListTypeSchema.and(
-      z.any().openapi({ description: 'The validation data in the request to register a user.' }),
-    ).exactOptional(),
-    AnalyticsMetadata: AnalyticsMetadataTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Pinpoint analytics metadata that contributes to your metrics for <code>SignUp</code> calls.',
-        }),
-    ).exactOptional(),
-    UserContextData: UserContextDataTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contextual data about your user session, such as the device fingerprint, IP address, or location. Amazon Cognito advanced security evaluates the risk of an authentication event based on the context that your app generates and passes to Amazon Cognito when it makes API requests.',
-        }),
-    ).exactOptional(),
-    ClientMetadata: ClientMetadataTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A map of custom key-value pairs that you can provide as input for any custom workflows that this action triggers.</p> <p>You create custom workflows by assigning Lambda functions to user pool triggers. When you use the SignUp API action, Amazon Cognito invokes any functions that are assigned to the following triggers: <i>pre sign-up</i>, <i>custom message</i>, and <i>post confirmation</i>. When Amazon Cognito invokes any of these functions, it passes a JSON payload, which the function receives as input. This payload contains a <code>clientMetadata</code> attribute, which provides the data that you assigned to the ClientMetadata parameter in your SignUp request. In your function code in Lambda, you can process the <code>clientMetadata</code> value to enhance your workflow for your specific needs.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-identity-pools-working-with-aws-lambda-triggers.html\"> Customizing user pool Workflows with Lambda Triggers</a> in the <i>Amazon Cognito Developer Guide</i>.</p> <note> <p>When you use the ClientMetadata parameter, remember that Amazon Cognito won't do the following:</p> <ul> <li> <p>Store the ClientMetadata value. This data is available only to Lambda triggers that are assigned to a user pool to support custom workflows. If your user pool configuration doesn't include triggers, the ClientMetadata parameter serves no purpose.</p> </li> <li> <p>Validate the ClientMetadata value.</p> </li> <li> <p>Encrypt the ClientMetadata value. Don't use Amazon Cognito to provide sensitive information.</p> </li> </ul> </note>",
-        }),
-    ).exactOptional(),
+    ClientId: ClientIdTypeSchema.openapi({
+      description: 'The ID of the client associated with the user pool.',
+    }),
+    SecretHash: SecretHashTypeSchema.exactOptional().openapi({
+      description:
+        'A keyed-hash message authentication code (HMAC) calculated using the secret key of a user pool client and username plus the client ID in the message.',
+    }),
+    Username: UsernameTypeSchema.openapi({
+      description: 'The user name of the user you want to register.',
+    }),
+    Password: PasswordTypeSchema.openapi({
+      description: 'The password of the user you want to register.',
+    }),
+    UserAttributes: AttributeListTypeSchema.exactOptional().openapi({
+      description:
+        '<p>An array of name-value pairs representing user attributes.</p> <p>For custom attributes, you must prepend the <code>custom:</code> prefix to the attribute name.</p>',
+    }),
+    ValidationData: AttributeListTypeSchema.exactOptional().openapi({
+      description: 'The validation data in the request to register a user.',
+    }),
+    AnalyticsMetadata: AnalyticsMetadataTypeSchema.exactOptional().openapi({
+      description:
+        'The Amazon Pinpoint analytics metadata that contributes to your metrics for <code>SignUp</code> calls.',
+    }),
+    UserContextData: UserContextDataTypeSchema.exactOptional().openapi({
+      description:
+        'Contextual data about your user session, such as the device fingerprint, IP address, or location. Amazon Cognito advanced security evaluates the risk of an authentication event based on the context that your app generates and passes to Amazon Cognito when it makes API requests.',
+    }),
+    ClientMetadata: ClientMetadataTypeSchema.exactOptional().openapi({
+      description:
+        "<p>A map of custom key-value pairs that you can provide as input for any custom workflows that this action triggers.</p> <p>You create custom workflows by assigning Lambda functions to user pool triggers. When you use the SignUp API action, Amazon Cognito invokes any functions that are assigned to the following triggers: <i>pre sign-up</i>, <i>custom message</i>, and <i>post confirmation</i>. When Amazon Cognito invokes any of these functions, it passes a JSON payload, which the function receives as input. This payload contains a <code>clientMetadata</code> attribute, which provides the data that you assigned to the ClientMetadata parameter in your SignUp request. In your function code in Lambda, you can process the <code>clientMetadata</code> value to enhance your workflow for your specific needs.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-identity-pools-working-with-aws-lambda-triggers.html\"> Customizing user pool Workflows with Lambda Triggers</a> in the <i>Amazon Cognito Developer Guide</i>.</p> <note> <p>When you use the ClientMetadata parameter, remember that Amazon Cognito won't do the following:</p> <ul> <li> <p>Store the ClientMetadata value. This data is available only to Lambda triggers that are assigned to a user pool to support custom workflows. If your user pool configuration doesn't include triggers, the ClientMetadata parameter serves no purpose.</p> </li> <li> <p>Validate the ClientMetadata value.</p> </li> <li> <p>Encrypt the ClientMetadata value. Don't use Amazon Cognito to provide sensitive information.</p> </li> </ul> </note>",
+    }),
   })
   .openapi({
     required: ['ClientId', 'Username', 'Password'],
@@ -6596,9 +4887,9 @@ const SignUpRequestSchema = z
 
 const StartUserImportJobResponseSchema = z
   .object({
-    UserImportJob: UserImportJobTypeSchema.and(
-      z.any().openapi({ description: 'The job object that represents the user import job.' }),
-    ).exactOptional(),
+    UserImportJob: UserImportJobTypeSchema.exactOptional().openapi({
+      description: 'The job object that represents the user import job.',
+    }),
   })
   .openapi({
     description:
@@ -6609,16 +4900,12 @@ const StartUserImportJobResponseSchema = z
 
 const StartUserImportJobRequestSchema = z
   .object({
-    UserPoolId: UserPoolIdTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The user pool ID for the user pool that the users are being imported into.',
-        }),
-    ),
-    JobId: UserImportJobIdTypeSchema.and(
-      z.any().openapi({ description: 'The job ID for the user import job.' }),
-    ),
+    UserPoolId: UserPoolIdTypeSchema.openapi({
+      description: 'The user pool ID for the user pool that the users are being imported into.',
+    }),
+    JobId: UserImportJobIdTypeSchema.openapi({
+      description: 'The job ID for the user import job.',
+    }),
   })
   .openapi({
     required: ['UserPoolId', 'JobId'],
@@ -6629,9 +4916,9 @@ const StartUserImportJobRequestSchema = z
 
 const StopUserImportJobResponseSchema = z
   .object({
-    UserImportJob: UserImportJobTypeSchema.and(
-      z.any().openapi({ description: 'The job object that represents the user import job.' }),
-    ).exactOptional(),
+    UserImportJob: UserImportJobTypeSchema.exactOptional().openapi({
+      description: 'The job object that represents the user import job.',
+    }),
   })
   .openapi({
     description:
@@ -6642,16 +4929,12 @@ const StopUserImportJobResponseSchema = z
 
 const StopUserImportJobRequestSchema = z
   .object({
-    UserPoolId: UserPoolIdTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The user pool ID for the user pool that the users are being imported into.',
-        }),
-    ),
-    JobId: UserImportJobIdTypeSchema.and(
-      z.any().openapi({ description: 'The job ID for the user import job.' }),
-    ),
+    UserPoolId: UserPoolIdTypeSchema.openapi({
+      description: 'The user pool ID for the user pool that the users are being imported into.',
+    }),
+    JobId: UserImportJobIdTypeSchema.openapi({
+      description: 'The job ID for the user import job.',
+    }),
   })
   .openapi({
     required: ['UserPoolId', 'JobId'],
@@ -6660,25 +4943,19 @@ const StopUserImportJobRequestSchema = z
   })
   .openapi('StopUserImportJobRequest')
 
-const TagResourceResponseSchema = z.object({}).openapi('TagResourceResponse')
+const TagResourceResponseSchema = z.looseObject({}).openapi('TagResourceResponse')
 
 const TagResourceRequestSchema = z
   .object({
-    ResourceArn: ArnTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the user pool to assign the tags to.',
-        }),
-    ),
-    Tags: UserPoolTagsTypeSchema.and(
-      z.any().openapi({ description: 'The tags to assign to the user pool.' }),
-    ),
+    ResourceArn: ArnTypeSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the user pool to assign the tags to.',
+    }),
+    Tags: UserPoolTagsTypeSchema.openapi({ description: 'The tags to assign to the user pool.' }),
   })
   .openapi({ required: ['ResourceArn', 'Tags'], title: 'TagResourceRequest' })
   .openapi('TagResourceRequest')
 
-const UntagResourceResponseSchema = z.object({}).openapi('UntagResourceResponse')
+const UntagResourceResponseSchema = z.looseObject({}).openapi('UntagResourceResponse')
 
 const TagKeysTypeSchema = z.string().min(1).max(128).openapi('TagKeysType')
 
@@ -6686,41 +4963,30 @@ const UserPoolTagsListTypeSchema = z.array(TagKeysTypeSchema).openapi('UserPoolT
 
 const UntagResourceRequestSchema = z
   .object({
-    ResourceArn: ArnTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the user pool that the tags are assigned to.',
-        }),
-    ),
-    TagKeys: UserPoolTagsListTypeSchema.and(
-      z.any().openapi({ description: 'The keys of the tags to remove from the user pool.' }),
-    ),
+    ResourceArn: ArnTypeSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the user pool that the tags are assigned to.',
+    }),
+    TagKeys: UserPoolTagsListTypeSchema.openapi({
+      description: 'The keys of the tags to remove from the user pool.',
+    }),
   })
   .openapi({ required: ['ResourceArn', 'TagKeys'], title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')
 
 const UpdateAuthEventFeedbackResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('UpdateAuthEventFeedbackResponse')
 
 const UpdateAuthEventFeedbackRequestSchema = z
   .object({
-    UserPoolId: UserPoolIdTypeSchema.and(z.any().openapi({ description: 'The user pool ID.' })),
-    Username: UsernameTypeSchema.and(z.any().openapi({ description: 'The user pool username.' })),
-    EventId: EventIdTypeSchema.and(z.any().openapi({ description: 'The event ID.' })),
-    FeedbackToken: TokenModelTypeSchema.and(
-      z.any().openapi({ description: 'The feedback token.' }),
-    ),
-    FeedbackValue: FeedbackValueTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The authentication event feedback value. When you provide a <code>FeedbackValue</code> value of <code>valid</code>, you tell Amazon Cognito that you trust a user session where Amazon Cognito has evaluated some level of risk. When you provide a <code>FeedbackValue</code> value of <code>invalid</code>, you tell Amazon Cognito that you don't trust a user session, or you don't believe that Amazon Cognito evaluated a high-enough risk level.",
-        }),
-    ),
+    UserPoolId: UserPoolIdTypeSchema.openapi({ description: 'The user pool ID.' }),
+    Username: UsernameTypeSchema.openapi({ description: 'The user pool username.' }),
+    EventId: EventIdTypeSchema.openapi({ description: 'The event ID.' }),
+    FeedbackToken: TokenModelTypeSchema.openapi({ description: 'The feedback token.' }),
+    FeedbackValue: FeedbackValueTypeSchema.openapi({
+      description:
+        "The authentication event feedback value. When you provide a <code>FeedbackValue</code> value of <code>valid</code>, you tell Amazon Cognito that you trust a user session where Amazon Cognito has evaluated some level of risk. When you provide a <code>FeedbackValue</code> value of <code>invalid</code>, you tell Amazon Cognito that you don't trust a user session, or you don't believe that Amazon Cognito evaluated a high-enough risk level.",
+    }),
   })
   .openapi({
     required: ['UserPoolId', 'Username', 'EventId', 'FeedbackToken', 'FeedbackValue'],
@@ -6729,24 +4995,20 @@ const UpdateAuthEventFeedbackRequestSchema = z
   .openapi('UpdateAuthEventFeedbackRequest')
 
 const UpdateDeviceStatusResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'The response to the request to update the device status.' })
   .openapi('UpdateDeviceStatusResponse')
 
 const UpdateDeviceStatusRequestSchema = z
   .object({
-    AccessToken: TokenModelTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A valid access token that Amazon Cognito issued to the user whose device status you want to update.',
-        }),
-    ),
-    DeviceKey: DeviceKeyTypeSchema.and(z.any().openapi({ description: 'The device key.' })),
-    DeviceRememberedStatus: DeviceRememberedStatusTypeSchema.and(
-      z.any().openapi({ description: 'The status of whether a device is remembered.' }),
-    ).exactOptional(),
+    AccessToken: TokenModelTypeSchema.openapi({
+      description:
+        'A valid access token that Amazon Cognito issued to the user whose device status you want to update.',
+    }),
+    DeviceKey: DeviceKeyTypeSchema.openapi({ description: 'The device key.' }),
+    DeviceRememberedStatus: DeviceRememberedStatusTypeSchema.exactOptional().openapi({
+      description: 'The status of whether a device is remembered.',
+    }),
   })
   .openapi({
     required: ['AccessToken', 'DeviceKey'],
@@ -6757,96 +5019,80 @@ const UpdateDeviceStatusRequestSchema = z
 
 const UpdateGroupResponseSchema = z
   .object({
-    Group: GroupTypeSchema.and(
-      z.any().openapi({ description: 'The group object for the group.' }),
-    ).exactOptional(),
+    Group: GroupTypeSchema.exactOptional().openapi({
+      description: 'The group object for the group.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateGroupResponse')
 
 const UpdateGroupRequestSchema = z
   .object({
-    GroupName: GroupNameTypeSchema.and(z.any().openapi({ description: 'The name of the group.' })),
-    UserPoolId: UserPoolIdTypeSchema.and(
-      z.any().openapi({ description: 'The user pool ID for the user pool.' }),
-    ),
-    Description: DescriptionTypeSchema.and(
-      z.any().openapi({ description: 'A string containing the new description of the group.' }),
-    ).exactOptional(),
-    RoleArn: ArnTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The new role Amazon Resource Name (ARN) for the group. This is used for setting the <code>cognito:roles</code> and <code>cognito:preferred_role</code> claims in the token.',
-        }),
-    ).exactOptional(),
-    Precedence: PrecedenceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The new precedence value for the group. For more information about this parameter, see <a href="https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_CreateGroup.html">CreateGroup</a>.',
-        }),
-    ).exactOptional(),
+    GroupName: GroupNameTypeSchema.openapi({ description: 'The name of the group.' }),
+    UserPoolId: UserPoolIdTypeSchema.openapi({
+      description: 'The user pool ID for the user pool.',
+    }),
+    Description: DescriptionTypeSchema.exactOptional().openapi({
+      description: 'A string containing the new description of the group.',
+    }),
+    RoleArn: ArnTypeSchema.exactOptional().openapi({
+      description:
+        'The new role Amazon Resource Name (ARN) for the group. This is used for setting the <code>cognito:roles</code> and <code>cognito:preferred_role</code> claims in the token.',
+    }),
+    Precedence: PrecedenceTypeSchema.exactOptional().openapi({
+      description:
+        'The new precedence value for the group. For more information about this parameter, see <a href="https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_CreateGroup.html">CreateGroup</a>.',
+    }),
   })
   .openapi({ required: ['GroupName', 'UserPoolId'], title: 'UpdateGroupRequest' })
   .openapi('UpdateGroupRequest')
 
 const UpdateIdentityProviderResponseSchema = z
   .object({
-    IdentityProvider: IdentityProviderTypeSchema.and(
-      z.any().openapi({ description: 'The identity provider details.' }),
-    ),
+    IdentityProvider: IdentityProviderTypeSchema.openapi({
+      description: 'The identity provider details.',
+    }),
   })
   .openapi({ required: ['IdentityProvider'] })
   .openapi('UpdateIdentityProviderResponse')
 
 const UpdateIdentityProviderRequestSchema = z
   .object({
-    UserPoolId: UserPoolIdTypeSchema.and(z.any().openapi({ description: 'The user pool ID.' })),
-    ProviderName: ProviderNameTypeSchema.and(z.any().openapi({ description: 'The IdP name.' })),
-    ProviderDetails: ProviderDetailsTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The IdP details to be updated, such as <code>MetadataURL</code> and <code>MetadataFile</code>.',
-        }),
-    ).exactOptional(),
-    AttributeMapping: AttributeMappingTypeSchema.and(
-      z.any().openapi({ description: 'The IdP attribute mapping to be changed.' }),
-    ).exactOptional(),
-    IdpIdentifiers: IdpIdentifiersListTypeSchema.and(
-      z.any().openapi({ description: 'A list of IdP identifiers.' }),
-    ).exactOptional(),
+    UserPoolId: UserPoolIdTypeSchema.openapi({ description: 'The user pool ID.' }),
+    ProviderName: ProviderNameTypeSchema.openapi({ description: 'The IdP name.' }),
+    ProviderDetails: ProviderDetailsTypeSchema.exactOptional().openapi({
+      description:
+        'The IdP details to be updated, such as <code>MetadataURL</code> and <code>MetadataFile</code>.',
+    }),
+    AttributeMapping: AttributeMappingTypeSchema.exactOptional().openapi({
+      description: 'The IdP attribute mapping to be changed.',
+    }),
+    IdpIdentifiers: IdpIdentifiersListTypeSchema.exactOptional().openapi({
+      description: 'A list of IdP identifiers.',
+    }),
   })
   .openapi({ required: ['UserPoolId', 'ProviderName'], title: 'UpdateIdentityProviderRequest' })
   .openapi('UpdateIdentityProviderRequest')
 
 const UpdateResourceServerResponseSchema = z
   .object({
-    ResourceServer: ResourceServerTypeSchema.and(
-      z.any().openapi({ description: 'The resource server.' }),
-    ),
+    ResourceServer: ResourceServerTypeSchema.openapi({ description: 'The resource server.' }),
   })
   .openapi({ required: ['ResourceServer'] })
   .openapi('UpdateResourceServerResponse')
 
 const UpdateResourceServerRequestSchema = z
   .object({
-    UserPoolId: UserPoolIdTypeSchema.and(
-      z.any().openapi({ description: 'The user pool ID for the user pool.' }),
-    ),
-    Identifier: ResourceServerIdentifierTypeSchema.and(
-      z.any().openapi({ description: 'The identifier for the resource server.' }),
-    ),
-    Name: ResourceServerNameTypeSchema.and(
-      z.any().openapi({ description: 'The name of the resource server.' }),
-    ),
-    Scopes: ResourceServerScopeListTypeSchema.and(
-      z.any().openapi({ description: 'The scope values to be set for the resource server.' }),
-    ).exactOptional(),
+    UserPoolId: UserPoolIdTypeSchema.openapi({
+      description: 'The user pool ID for the user pool.',
+    }),
+    Identifier: ResourceServerIdentifierTypeSchema.openapi({
+      description: 'The identifier for the resource server.',
+    }),
+    Name: ResourceServerNameTypeSchema.openapi({ description: 'The name of the resource server.' }),
+    Scopes: ResourceServerScopeListTypeSchema.exactOptional().openapi({
+      description: 'The scope values to be set for the resource server.',
+    }),
   })
   .openapi({ required: ['UserPoolId', 'Identifier', 'Name'], title: 'UpdateResourceServerRequest' })
   .openapi('UpdateResourceServerRequest')
@@ -6857,14 +5103,10 @@ const CodeDeliveryDetailsListTypeSchema = z
 
 const UpdateUserAttributesResponseSchema = z
   .object({
-    CodeDeliveryDetailsList: CodeDeliveryDetailsListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The code delivery details list from the server for the request to update user attributes.',
-        }),
-    ).exactOptional(),
+    CodeDeliveryDetailsList: CodeDeliveryDetailsListTypeSchema.exactOptional().openapi({
+      description:
+        'The code delivery details list from the server for the request to update user attributes.',
+    }),
   })
   .openapi({
     description:
@@ -6875,30 +5117,18 @@ const UpdateUserAttributesResponseSchema = z
 
 const UpdateUserAttributesRequestSchema = z
   .object({
-    UserAttributes: AttributeListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An array of name-value pairs representing user attributes.</p> <p>For custom attributes, you must prepend the <code>custom:</code> prefix to the attribute name.</p> <p>If you have set an attribute to require verification before Amazon Cognito updates its value, this request doesn’t immediately update the value of that attribute. After your user receives and responds to a verification message to verify the new value, Amazon Cognito updates the attribute value. Your user can sign in and receive messages with the original attribute value until they verify the new value.</p>',
-        }),
-    ),
-    AccessToken: TokenModelTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A valid access token that Amazon Cognito issued to the user whose user attributes you want to update.',
-        }),
-    ),
-    ClientMetadata: ClientMetadataTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A map of custom key-value pairs that you can provide as input for any custom workflows that this action initiates. </p> <p>You create custom workflows by assigning Lambda functions to user pool triggers. When you use the UpdateUserAttributes API action, Amazon Cognito invokes the function that is assigned to the <i>custom message</i> trigger. When Amazon Cognito invokes this function, it passes a JSON payload, which the function receives as input. This payload contains a <code>clientMetadata</code> attribute, which provides the data that you assigned to the ClientMetadata parameter in your UpdateUserAttributes request. In your function code in Lambda, you can process the <code>clientMetadata</code> value to enhance your workflow for your specific needs.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-identity-pools-working-with-aws-lambda-triggers.html\"> Customizing user pool Workflows with Lambda Triggers</a> in the <i>Amazon Cognito Developer Guide</i>.</p> <note> <p>When you use the ClientMetadata parameter, remember that Amazon Cognito won't do the following:</p> <ul> <li> <p>Store the ClientMetadata value. This data is available only to Lambda triggers that are assigned to a user pool to support custom workflows. If your user pool configuration doesn't include triggers, the ClientMetadata parameter serves no purpose.</p> </li> <li> <p>Validate the ClientMetadata value.</p> </li> <li> <p>Encrypt the ClientMetadata value. Don't use Amazon Cognito to provide sensitive information.</p> </li> </ul> </note>",
-        }),
-    ).exactOptional(),
+    UserAttributes: AttributeListTypeSchema.openapi({
+      description:
+        '<p>An array of name-value pairs representing user attributes.</p> <p>For custom attributes, you must prepend the <code>custom:</code> prefix to the attribute name.</p> <p>If you have set an attribute to require verification before Amazon Cognito updates its value, this request doesn’t immediately update the value of that attribute. After your user receives and responds to a verification message to verify the new value, Amazon Cognito updates the attribute value. Your user can sign in and receive messages with the original attribute value until they verify the new value.</p>',
+    }),
+    AccessToken: TokenModelTypeSchema.openapi({
+      description:
+        'A valid access token that Amazon Cognito issued to the user whose user attributes you want to update.',
+    }),
+    ClientMetadata: ClientMetadataTypeSchema.exactOptional().openapi({
+      description:
+        "<p>A map of custom key-value pairs that you can provide as input for any custom workflows that this action initiates. </p> <p>You create custom workflows by assigning Lambda functions to user pool triggers. When you use the UpdateUserAttributes API action, Amazon Cognito invokes the function that is assigned to the <i>custom message</i> trigger. When Amazon Cognito invokes this function, it passes a JSON payload, which the function receives as input. This payload contains a <code>clientMetadata</code> attribute, which provides the data that you assigned to the ClientMetadata parameter in your UpdateUserAttributes request. In your function code in Lambda, you can process the <code>clientMetadata</code> value to enhance your workflow for your specific needs.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-identity-pools-working-with-aws-lambda-triggers.html\"> Customizing user pool Workflows with Lambda Triggers</a> in the <i>Amazon Cognito Developer Guide</i>.</p> <note> <p>When you use the ClientMetadata parameter, remember that Amazon Cognito won't do the following:</p> <ul> <li> <p>Store the ClientMetadata value. This data is available only to Lambda triggers that are assigned to a user pool to support custom workflows. If your user pool configuration doesn't include triggers, the ClientMetadata parameter serves no purpose.</p> </li> <li> <p>Validate the ClientMetadata value.</p> </li> <li> <p>Encrypt the ClientMetadata value. Don't use Amazon Cognito to provide sensitive information.</p> </li> </ul> </note>",
+    }),
   })
   .openapi({
     required: ['UserAttributes', 'AccessToken'],
@@ -6908,7 +5138,7 @@ const UpdateUserAttributesRequestSchema = z
   .openapi('UpdateUserAttributesRequest')
 
 const UpdateUserPoolResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'Represents the response from the server when you make a request to update the user pool.',
@@ -6917,139 +5147,76 @@ const UpdateUserPoolResponseSchema = z
 
 const UpdateUserPoolRequestSchema = z
   .object({
-    UserPoolId: UserPoolIdTypeSchema.and(
-      z.any().openapi({ description: 'The user pool ID for the user pool you want to update.' }),
-    ),
-    Policies: UserPoolPolicyTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A container with the policies you want to update in a user pool.',
-        }),
-    ).exactOptional(),
-    DeletionProtection: DeletionProtectionTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>When active, <code>DeletionProtection</code> prevents accidental deletion of your user pool. Before you can delete a user pool that you have protected against deletion, you must deactivate this feature.</p> <p>When you try to delete a protected user pool in a <code>DeleteUserPool</code> API request, Amazon Cognito returns an <code>InvalidParameterException</code> error. To delete a protected user pool, send a new <code>DeleteUserPool</code> request after you deactivate deletion protection in an <code>UpdateUserPool</code> API request.</p>',
-        }),
-    ).exactOptional(),
-    LambdaConfig: LambdaConfigTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Lambda configuration information from the request to update the user pool.',
-        }),
-    ).exactOptional(),
-    AutoVerifiedAttributes: VerifiedAttributesListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The attributes that are automatically verified when Amazon Cognito requests to update user pools.',
-        }),
-    ).exactOptional(),
-    SmsVerificationMessage: SmsVerificationMessageTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This parameter is no longer used. See <a href="https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_VerificationMessageTemplateType.html">VerificationMessageTemplateType</a>.',
-        }),
-    ).exactOptional(),
-    EmailVerificationMessage: EmailVerificationMessageTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This parameter is no longer used. See <a href="https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_VerificationMessageTemplateType.html">VerificationMessageTemplateType</a>.',
-        }),
-    ).exactOptional(),
-    EmailVerificationSubject: EmailVerificationSubjectTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This parameter is no longer used. See <a href="https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_VerificationMessageTemplateType.html">VerificationMessageTemplateType</a>.',
-        }),
-    ).exactOptional(),
-    VerificationMessageTemplate: VerificationMessageTemplateTypeSchema.and(
-      z.any().openapi({ description: 'The template for verification messages.' }),
-    ).exactOptional(),
-    SmsAuthenticationMessage: SmsVerificationMessageTypeSchema.and(
-      z.any().openapi({ description: 'The contents of the SMS authentication message.' }),
-    ).exactOptional(),
-    UserAttributeUpdateSettings: UserAttributeUpdateSettingsTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The settings for updates to user attributes. These settings include the property <code>AttributesRequireVerificationBeforeUpdate</code>, a user-pool setting that tells Amazon Cognito how to handle changes to the value of your users\' email address and phone number attributes. For more information, see <a href="https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-settings-email-phone-verification.html#user-pool-settings-verifications-verify-attribute-updates"> Verifying updates to email addresses and phone numbers</a>.',
-        }),
-    ).exactOptional(),
-    MfaConfiguration: UserPoolMfaTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Possible values include:</p> <ul> <li> <p> <code>OFF</code> - MFA tokens aren\'t required and can\'t be specified during user registration.</p> </li> <li> <p> <code>ON</code> - MFA tokens are required for all user registrations. You can only specify ON when you\'re initially creating a user pool. You can use the <a href="https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_SetUserPoolMfaConfig.html">SetUserPoolMfaConfig</a> API operation to turn MFA "ON" for existing user pools. </p> </li> <li> <p> <code>OPTIONAL</code> - Users have the option when registering to create an MFA token.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    DeviceConfiguration: DeviceConfigurationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The device-remembering configuration for a user pool. A null value indicates that you have deactivated device remembering in your user pool.</p> <note> <p>When you provide a value for any <code>DeviceConfiguration</code> field, you activate the Amazon Cognito device-remembering feature.</p> </note>',
-        }),
-    ).exactOptional(),
-    EmailConfiguration: EmailConfigurationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The email configuration of your user pool. The email configuration type sets your preferred sending method, Amazon Web Services Region, and sender for email invitation and verification messages from your user pool.',
-        }),
-    ).exactOptional(),
-    SmsConfiguration: SmsConfigurationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The SMS configuration with the settings that your Amazon Cognito user pool must use to send an SMS message from your Amazon Web Services account through Amazon Simple Notification Service. To send SMS messages with Amazon SNS in the Amazon Web Services Region that you want, the Amazon Cognito user pool uses an Identity and Access Management (IAM) role in your Amazon Web Services account.',
-        }),
-    ).exactOptional(),
-    UserPoolTags: UserPoolTagsTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tag keys and values to assign to the user pool. A tag is a label that you can use to categorize and manage user pools in different ways, such as by purpose, owner, environment, or other criteria.',
-        }),
-    ).exactOptional(),
-    AdminCreateUserConfig: AdminCreateUserConfigTypeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The configuration for <code>AdminCreateUser</code> requests.' }),
-    ).exactOptional(),
-    UserPoolAddOns: UserPoolAddOnsTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>User pool add-ons. Contains settings for activation of advanced security features. To log user security information but take no action, set to <code>AUDIT</code>. To configure automatic security responses to risky traffic to your user pool, set to <code>ENFORCED</code>.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pool-settings-advanced-security.html">Adding advanced security to a user pool</a>.</p>',
-        }),
-    ).exactOptional(),
-    AccountRecoverySetting: AccountRecoverySettingTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The available verified method a user can use to recover their password when they call <code>ForgotPassword</code>. You can use this setting to define a preferred method when a user has more than one method available. With this setting, SMS doesn't qualify for a valid password recovery mechanism if the user also has SMS multi-factor authentication (MFA) activated. In the absence of this setting, Amazon Cognito uses the legacy behavior to determine the recovery method where SMS is preferred through email.",
-        }),
-    ).exactOptional(),
+    UserPoolId: UserPoolIdTypeSchema.openapi({
+      description: 'The user pool ID for the user pool you want to update.',
+    }),
+    Policies: UserPoolPolicyTypeSchema.exactOptional().openapi({
+      description: 'A container with the policies you want to update in a user pool.',
+    }),
+    DeletionProtection: DeletionProtectionTypeSchema.exactOptional().openapi({
+      description:
+        '<p>When active, <code>DeletionProtection</code> prevents accidental deletion of your user pool. Before you can delete a user pool that you have protected against deletion, you must deactivate this feature.</p> <p>When you try to delete a protected user pool in a <code>DeleteUserPool</code> API request, Amazon Cognito returns an <code>InvalidParameterException</code> error. To delete a protected user pool, send a new <code>DeleteUserPool</code> request after you deactivate deletion protection in an <code>UpdateUserPool</code> API request.</p>',
+    }),
+    LambdaConfig: LambdaConfigTypeSchema.exactOptional().openapi({
+      description: 'The Lambda configuration information from the request to update the user pool.',
+    }),
+    AutoVerifiedAttributes: VerifiedAttributesListTypeSchema.exactOptional().openapi({
+      description:
+        'The attributes that are automatically verified when Amazon Cognito requests to update user pools.',
+    }),
+    SmsVerificationMessage: SmsVerificationMessageTypeSchema.exactOptional().openapi({
+      description:
+        'This parameter is no longer used. See <a href="https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_VerificationMessageTemplateType.html">VerificationMessageTemplateType</a>.',
+    }),
+    EmailVerificationMessage: EmailVerificationMessageTypeSchema.exactOptional().openapi({
+      description:
+        'This parameter is no longer used. See <a href="https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_VerificationMessageTemplateType.html">VerificationMessageTemplateType</a>.',
+    }),
+    EmailVerificationSubject: EmailVerificationSubjectTypeSchema.exactOptional().openapi({
+      description:
+        'This parameter is no longer used. See <a href="https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_VerificationMessageTemplateType.html">VerificationMessageTemplateType</a>.',
+    }),
+    VerificationMessageTemplate: VerificationMessageTemplateTypeSchema.exactOptional().openapi({
+      description: 'The template for verification messages.',
+    }),
+    SmsAuthenticationMessage: SmsVerificationMessageTypeSchema.exactOptional().openapi({
+      description: 'The contents of the SMS authentication message.',
+    }),
+    UserAttributeUpdateSettings: UserAttributeUpdateSettingsTypeSchema.exactOptional().openapi({
+      description:
+        'The settings for updates to user attributes. These settings include the property <code>AttributesRequireVerificationBeforeUpdate</code>, a user-pool setting that tells Amazon Cognito how to handle changes to the value of your users\' email address and phone number attributes. For more information, see <a href="https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-settings-email-phone-verification.html#user-pool-settings-verifications-verify-attribute-updates"> Verifying updates to email addresses and phone numbers</a>.',
+    }),
+    MfaConfiguration: UserPoolMfaTypeSchema.exactOptional().openapi({
+      description:
+        '<p>Possible values include:</p> <ul> <li> <p> <code>OFF</code> - MFA tokens aren\'t required and can\'t be specified during user registration.</p> </li> <li> <p> <code>ON</code> - MFA tokens are required for all user registrations. You can only specify ON when you\'re initially creating a user pool. You can use the <a href="https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_SetUserPoolMfaConfig.html">SetUserPoolMfaConfig</a> API operation to turn MFA "ON" for existing user pools. </p> </li> <li> <p> <code>OPTIONAL</code> - Users have the option when registering to create an MFA token.</p> </li> </ul>',
+    }),
+    DeviceConfiguration: DeviceConfigurationTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The device-remembering configuration for a user pool. A null value indicates that you have deactivated device remembering in your user pool.</p> <note> <p>When you provide a value for any <code>DeviceConfiguration</code> field, you activate the Amazon Cognito device-remembering feature.</p> </note>',
+    }),
+    EmailConfiguration: EmailConfigurationTypeSchema.exactOptional().openapi({
+      description:
+        'The email configuration of your user pool. The email configuration type sets your preferred sending method, Amazon Web Services Region, and sender for email invitation and verification messages from your user pool.',
+    }),
+    SmsConfiguration: SmsConfigurationTypeSchema.exactOptional().openapi({
+      description:
+        'The SMS configuration with the settings that your Amazon Cognito user pool must use to send an SMS message from your Amazon Web Services account through Amazon Simple Notification Service. To send SMS messages with Amazon SNS in the Amazon Web Services Region that you want, the Amazon Cognito user pool uses an Identity and Access Management (IAM) role in your Amazon Web Services account.',
+    }),
+    UserPoolTags: UserPoolTagsTypeSchema.exactOptional().openapi({
+      description:
+        'The tag keys and values to assign to the user pool. A tag is a label that you can use to categorize and manage user pools in different ways, such as by purpose, owner, environment, or other criteria.',
+    }),
+    AdminCreateUserConfig: AdminCreateUserConfigTypeSchema.exactOptional().openapi({
+      description: 'The configuration for <code>AdminCreateUser</code> requests.',
+    }),
+    UserPoolAddOns: UserPoolAddOnsTypeSchema.exactOptional().openapi({
+      description:
+        '<p>User pool add-ons. Contains settings for activation of advanced security features. To log user security information but take no action, set to <code>AUDIT</code>. To configure automatic security responses to risky traffic to your user pool, set to <code>ENFORCED</code>.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pool-settings-advanced-security.html">Adding advanced security to a user pool</a>.</p>',
+    }),
+    AccountRecoverySetting: AccountRecoverySettingTypeSchema.exactOptional().openapi({
+      description:
+        "The available verified method a user can use to recover their password when they call <code>ForgotPassword</code>. You can use this setting to define a preferred method when a user has more than one method available. With this setting, SMS doesn't qualify for a valid password recovery mechanism if the user also has SMS multi-factor authentication (MFA) activated. In the absence of this setting, Amazon Cognito uses the legacy behavior to determine the recovery method where SMS is preferred through email.",
+    }),
   })
   .openapi({
     required: ['UserPoolId'],
@@ -7060,14 +5227,10 @@ const UpdateUserPoolRequestSchema = z
 
 const UpdateUserPoolClientResponseSchema = z
   .object({
-    UserPoolClient: UserPoolClientTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The user pool client value from the response from the server when you request to update the user pool client.',
-        }),
-    ).exactOptional(),
+    UserPoolClient: UserPoolClientTypeSchema.exactOptional().openapi({
+      description:
+        'The user pool client value from the response from the server when you request to update the user pool client.',
+    }),
   })
   .openapi({
     description:
@@ -7078,157 +5241,89 @@ const UpdateUserPoolClientResponseSchema = z
 
 const UpdateUserPoolClientRequestSchema = z
   .object({
-    UserPoolId: UserPoolIdTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The user pool ID for the user pool where you want to update the user pool client.',
-        }),
-    ),
-    ClientId: ClientIdTypeSchema.and(
-      z.any().openapi({ description: 'The ID of the client associated with the user pool.' }),
-    ),
-    ClientName: ClientNameTypeSchema.and(
-      z.any().openapi({ description: 'The client name from the update user pool client request.' }),
-    ).exactOptional(),
-    RefreshTokenValidity: RefreshTokenValidityTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The refresh token time limit. After this limit expires, your user can't use their refresh token. To specify the time unit for <code>RefreshTokenValidity</code> as <code>seconds</code>, <code>minutes</code>, <code>hours</code>, or <code>days</code>, set a <code>TokenValidityUnits</code> value in your API request.</p> <p>For example, when you set <code>RefreshTokenValidity</code> as <code>10</code> and <code>TokenValidityUnits</code> as <code>days</code>, your user can refresh their session and retrieve new access and ID tokens for 10 days.</p> <p>The default time unit for <code>RefreshTokenValidity</code> in an API request is days. You can't set <code>RefreshTokenValidity</code> to 0. If you do, Amazon Cognito overrides the value with the default value of 30 days. <i>Valid range</i> is displayed below in seconds.</p> <p>If you don't specify otherwise in the configuration of your app client, your refresh tokens are valid for 30 days.</p>",
-        }),
-    ).exactOptional(),
-    AccessTokenValidity: AccessTokenValidityTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The access token time limit. After this limit expires, your user can't use their access token. To specify the time unit for <code>AccessTokenValidity</code> as <code>seconds</code>, <code>minutes</code>, <code>hours</code>, or <code>days</code>, set a <code>TokenValidityUnits</code> value in your API request.</p> <p>For example, when you set <code>AccessTokenValidity</code> to <code>10</code> and <code>TokenValidityUnits</code> to <code>hours</code>, your user can authorize access with their access token for 10 hours.</p> <p>The default time unit for <code>AccessTokenValidity</code> in an API request is hours. <i>Valid range</i> is displayed below in seconds.</p> <p>If you don't specify otherwise in the configuration of your app client, your access tokens are valid for one hour.</p>",
-        }),
-    ).exactOptional(),
-    IdTokenValidity: IdTokenValidityTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The ID token time limit. After this limit expires, your user can't use their ID token. To specify the time unit for <code>IdTokenValidity</code> as <code>seconds</code>, <code>minutes</code>, <code>hours</code>, or <code>days</code>, set a <code>TokenValidityUnits</code> value in your API request.</p> <p>For example, when you set <code>IdTokenValidity</code> as <code>10</code> and <code>TokenValidityUnits</code> as <code>hours</code>, your user can authenticate their session with their ID token for 10 hours.</p> <p>The default time unit for <code>IdTokenValidity</code> in an API request is hours. <i>Valid range</i> is displayed below in seconds.</p> <p>If you don't specify otherwise in the configuration of your app client, your ID tokens are valid for one hour.</p>",
-        }),
-    ).exactOptional(),
-    TokenValidityUnits: TokenValidityUnitsTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time units you use when you set the duration of ID, access, and refresh tokens. The default unit for RefreshToken is days, and the default for ID and access tokens is hours.',
-        }),
-    ).exactOptional(),
-    ReadAttributes: ClientPermissionListTypeSchema.and(
-      z.any().openapi({ description: 'The read-only attributes of the user pool.' }),
-    ).exactOptional(),
-    WriteAttributes: ClientPermissionListTypeSchema.and(
-      z.any().openapi({ description: 'The writeable attributes of the user pool.' }),
-    ).exactOptional(),
-    ExplicitAuthFlows: ExplicitAuthFlowsListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The authentication flows that you want your user pool client to support. For each app client in your user pool, you can sign in your users with any combination of one or more flows, including with a user name and Secure Remote Password (SRP), a user name and password, or a custom authentication process that you define with Lambda functions.</p> <note> <p>If you don't specify a value for <code>ExplicitAuthFlows</code>, your user client supports <code>ALLOW_REFRESH_TOKEN_AUTH</code>, <code>ALLOW_USER_SRP_AUTH</code>, and <code>ALLOW_CUSTOM_AUTH</code>.</p> </note> <p>Valid values include:</p> <ul> <li> <p> <code>ALLOW_ADMIN_USER_PASSWORD_AUTH</code>: Enable admin based user password authentication flow <code>ADMIN_USER_PASSWORD_AUTH</code>. This setting replaces the <code>ADMIN_NO_SRP_AUTH</code> setting. With this authentication flow, your app passes a user name and password to Amazon Cognito in the request, instead of using the Secure Remote Password (SRP) protocol to securely transmit the password.</p> </li> <li> <p> <code>ALLOW_CUSTOM_AUTH</code>: Enable Lambda trigger based authentication.</p> </li> <li> <p> <code>ALLOW_USER_PASSWORD_AUTH</code>: Enable user password-based authentication. In this flow, Amazon Cognito receives the password in the request instead of using the SRP protocol to verify passwords.</p> </li> <li> <p> <code>ALLOW_USER_SRP_AUTH</code>: Enable SRP-based authentication.</p> </li> <li> <p> <code>ALLOW_REFRESH_TOKEN_AUTH</code>: Enable authflow to refresh tokens.</p> </li> </ul> <p>In some environments, you will see the values <code>ADMIN_NO_SRP_AUTH</code>, <code>CUSTOM_AUTH_FLOW_ONLY</code>, or <code>USER_PASSWORD_AUTH</code>. You can't assign these legacy <code>ExplicitAuthFlows</code> values to user pool clients at the same time as values that begin with <code>ALLOW_</code>, like <code>ALLOW_USER_SRP_AUTH</code>.</p>",
-        }),
-    ).exactOptional(),
-    SupportedIdentityProviders: SupportedIdentityProvidersListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of provider names for the IdPs that this client supports. The following are supported: <code>COGNITO</code>, <code>Facebook</code>, <code>Google</code>, <code>SignInWithApple</code>, <code>LoginWithAmazon</code>, and the names of your own SAML and OIDC providers.',
-        }),
-    ).exactOptional(),
-    CallbackURLs: CallbackURLsListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of allowed redirect (callback) URLs for the IdPs.</p> <p>A redirect URI must:</p> <ul> <li> <p>Be an absolute URI.</p> </li> <li> <p>Be registered with the authorization server.</p> </li> <li> <p>Not include a fragment component.</p> </li> </ul> <p>See <a href="https://tools.ietf.org/html/rfc6749#section-3.1.2">OAuth 2.0 - Redirection Endpoint</a>.</p> <p>Amazon Cognito requires HTTPS over HTTP except for http://localhost for testing purposes only.</p> <p>App callback URLs such as <code>myapp://example</code> are also supported.</p>',
-        }),
-    ).exactOptional(),
-    LogoutURLs: LogoutURLsListTypeSchema.and(
-      z.any().openapi({ description: 'A list of allowed logout URLs for the IdPs.' }),
-    ).exactOptional(),
-    DefaultRedirectURI: RedirectUrlTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The default redirect URI. Must be in the <code>CallbackURLs</code> list.</p> <p>A redirect URI must:</p> <ul> <li> <p>Be an absolute URI.</p> </li> <li> <p>Be registered with the authorization server.</p> </li> <li> <p>Not include a fragment component.</p> </li> </ul> <p>See <a href="https://tools.ietf.org/html/rfc6749#section-3.1.2">OAuth 2.0 - Redirection Endpoint</a>.</p> <p>Amazon Cognito requires HTTPS over HTTP except for <code>http://localhost</code> for testing purposes only.</p> <p>App callback URLs such as <code>myapp://example</code> are also supported.</p>',
-        }),
-    ).exactOptional(),
-    AllowedOAuthFlows: OAuthFlowsTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The allowed OAuth flows.</p> <dl> <dt>code</dt> <dd> <p>Use a code grant flow, which provides an authorization code as the response. This code can be exchanged for access tokens with the <code>/oauth2/token</code> endpoint.</p> </dd> <dt>implicit</dt> <dd> <p>Issue the access token (and, optionally, ID token, based on scopes) directly to your user.</p> </dd> <dt>client_credentials</dt> <dd> <p>Issue the access token from the <code>/oauth2/token</code> endpoint directly to a non-person user using a combination of the client ID and client secret.</p> </dd> </dl>',
-        }),
-    ).exactOptional(),
-    AllowedOAuthScopes: ScopeListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The allowed OAuth scopes. Possible values provided by OAuth are <code>phone</code>, <code>email</code>, <code>openid</code>, and <code>profile</code>. Possible values provided by Amazon Web Services are <code>aws.cognito.signin.user.admin</code>. Custom scopes created in Resource Servers are also supported.',
-        }),
-    ).exactOptional(),
-    AllowedOAuthFlowsUserPoolClient: BooleanTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Set to <code>true</code> to use OAuth 2.0 features in your user pool app client.</p> <p> <code>AllowedOAuthFlowsUserPoolClient</code> must be <code>true</code> before you can configure the following features in your app client.</p> <ul> <li> <p> <code>CallBackURLs</code>: Callback URLs.</p> </li> <li> <p> <code>LogoutURLs</code>: Sign-out redirect URLs.</p> </li> <li> <p> <code>AllowedOAuthScopes</code>: OAuth 2.0 scopes.</p> </li> <li> <p> <code>AllowedOAuthFlows</code>: Support for authorization code, implicit, and client credentials OAuth 2.0 grants.</p> </li> </ul> <p>To use OAuth 2.0 features, configure one of these features in the Amazon Cognito console or set <code>AllowedOAuthFlowsUserPoolClient</code> to <code>true</code> in a <code>CreateUserPoolClient</code> or <code>UpdateUserPoolClient</code> API request. If you don't set a value for <code>AllowedOAuthFlowsUserPoolClient</code> in a request with the CLI or SDKs, it defaults to <code>false</code>.</p>",
-        }),
-    ).exactOptional(),
-    AnalyticsConfiguration: AnalyticsConfigurationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The Amazon Pinpoint analytics configuration necessary to collect metrics for this user pool.</p> <note> <p>In Amazon Web Services Regions where Amazon Pinpoint isn't available, user pools only support sending events to Amazon Pinpoint projects in us-east-1. In Regions where Amazon Pinpoint is available, user pools support sending events to Amazon Pinpoint projects within that same Region.</p> </note>",
-        }),
-    ).exactOptional(),
-    PreventUserExistenceErrors: PreventUserExistenceErrorTypesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Errors and responses that you want Amazon Cognito APIs to return during authentication, account confirmation, and password recovery when the user doesn't exist in the user pool. When set to <code>ENABLED</code> and the user doesn't exist, authentication returns an error indicating either the username or password was incorrect. Account confirmation and password recovery return a response indicating a code was sent to a simulated destination. When set to <code>LEGACY</code>, those APIs return a <code>UserNotFoundException</code> exception if the user doesn't exist in the user pool.</p> <p>Valid values include:</p> <ul> <li> <p> <code>ENABLED</code> - This prevents user existence-related errors.</p> </li> <li> <p> <code>LEGACY</code> - This represents the early behavior of Amazon Cognito where user existence related errors aren't prevented.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    EnableTokenRevocation: WrappedBooleanTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Activates or deactivates token revocation. For more information about revoking tokens, see <a href="https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_RevokeToken.html">RevokeToken</a>.',
-        }),
-    ).exactOptional(),
-    EnablePropagateAdditionalUserContextData: WrappedBooleanTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Activates the propagation of additional user context data. For more information about propagation of user context data, see <a href="https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pool-settings-advanced-security.html"> Adding advanced security to a user pool</a>. If you don’t include this parameter, you can\'t send device fingerprint information, including source IP address, to Amazon Cognito advanced security. You can only activate <code>EnablePropagateAdditionalUserContextData</code> in an app client that has a client secret.',
-        }),
-    ).exactOptional(),
-    AuthSessionValidity: AuthSessionValidityTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Amazon Cognito creates a session token for each API request in an authentication flow. <code>AuthSessionValidity</code> is the duration, in minutes, of that session token. Your user pool native user must respond to each authentication challenge before the session expires.',
-        }),
-    ).exactOptional(),
+    UserPoolId: UserPoolIdTypeSchema.openapi({
+      description:
+        'The user pool ID for the user pool where you want to update the user pool client.',
+    }),
+    ClientId: ClientIdTypeSchema.openapi({
+      description: 'The ID of the client associated with the user pool.',
+    }),
+    ClientName: ClientNameTypeSchema.exactOptional().openapi({
+      description: 'The client name from the update user pool client request.',
+    }),
+    RefreshTokenValidity: RefreshTokenValidityTypeSchema.exactOptional().openapi({
+      description:
+        "<p>The refresh token time limit. After this limit expires, your user can't use their refresh token. To specify the time unit for <code>RefreshTokenValidity</code> as <code>seconds</code>, <code>minutes</code>, <code>hours</code>, or <code>days</code>, set a <code>TokenValidityUnits</code> value in your API request.</p> <p>For example, when you set <code>RefreshTokenValidity</code> as <code>10</code> and <code>TokenValidityUnits</code> as <code>days</code>, your user can refresh their session and retrieve new access and ID tokens for 10 days.</p> <p>The default time unit for <code>RefreshTokenValidity</code> in an API request is days. You can't set <code>RefreshTokenValidity</code> to 0. If you do, Amazon Cognito overrides the value with the default value of 30 days. <i>Valid range</i> is displayed below in seconds.</p> <p>If you don't specify otherwise in the configuration of your app client, your refresh tokens are valid for 30 days.</p>",
+    }),
+    AccessTokenValidity: AccessTokenValidityTypeSchema.exactOptional().openapi({
+      description:
+        "<p>The access token time limit. After this limit expires, your user can't use their access token. To specify the time unit for <code>AccessTokenValidity</code> as <code>seconds</code>, <code>minutes</code>, <code>hours</code>, or <code>days</code>, set a <code>TokenValidityUnits</code> value in your API request.</p> <p>For example, when you set <code>AccessTokenValidity</code> to <code>10</code> and <code>TokenValidityUnits</code> to <code>hours</code>, your user can authorize access with their access token for 10 hours.</p> <p>The default time unit for <code>AccessTokenValidity</code> in an API request is hours. <i>Valid range</i> is displayed below in seconds.</p> <p>If you don't specify otherwise in the configuration of your app client, your access tokens are valid for one hour.</p>",
+    }),
+    IdTokenValidity: IdTokenValidityTypeSchema.exactOptional().openapi({
+      description:
+        "<p>The ID token time limit. After this limit expires, your user can't use their ID token. To specify the time unit for <code>IdTokenValidity</code> as <code>seconds</code>, <code>minutes</code>, <code>hours</code>, or <code>days</code>, set a <code>TokenValidityUnits</code> value in your API request.</p> <p>For example, when you set <code>IdTokenValidity</code> as <code>10</code> and <code>TokenValidityUnits</code> as <code>hours</code>, your user can authenticate their session with their ID token for 10 hours.</p> <p>The default time unit for <code>IdTokenValidity</code> in an API request is hours. <i>Valid range</i> is displayed below in seconds.</p> <p>If you don't specify otherwise in the configuration of your app client, your ID tokens are valid for one hour.</p>",
+    }),
+    TokenValidityUnits: TokenValidityUnitsTypeSchema.exactOptional().openapi({
+      description:
+        'The time units you use when you set the duration of ID, access, and refresh tokens. The default unit for RefreshToken is days, and the default for ID and access tokens is hours.',
+    }),
+    ReadAttributes: ClientPermissionListTypeSchema.exactOptional().openapi({
+      description: 'The read-only attributes of the user pool.',
+    }),
+    WriteAttributes: ClientPermissionListTypeSchema.exactOptional().openapi({
+      description: 'The writeable attributes of the user pool.',
+    }),
+    ExplicitAuthFlows: ExplicitAuthFlowsListTypeSchema.exactOptional().openapi({
+      description:
+        "<p>The authentication flows that you want your user pool client to support. For each app client in your user pool, you can sign in your users with any combination of one or more flows, including with a user name and Secure Remote Password (SRP), a user name and password, or a custom authentication process that you define with Lambda functions.</p> <note> <p>If you don't specify a value for <code>ExplicitAuthFlows</code>, your user client supports <code>ALLOW_REFRESH_TOKEN_AUTH</code>, <code>ALLOW_USER_SRP_AUTH</code>, and <code>ALLOW_CUSTOM_AUTH</code>.</p> </note> <p>Valid values include:</p> <ul> <li> <p> <code>ALLOW_ADMIN_USER_PASSWORD_AUTH</code>: Enable admin based user password authentication flow <code>ADMIN_USER_PASSWORD_AUTH</code>. This setting replaces the <code>ADMIN_NO_SRP_AUTH</code> setting. With this authentication flow, your app passes a user name and password to Amazon Cognito in the request, instead of using the Secure Remote Password (SRP) protocol to securely transmit the password.</p> </li> <li> <p> <code>ALLOW_CUSTOM_AUTH</code>: Enable Lambda trigger based authentication.</p> </li> <li> <p> <code>ALLOW_USER_PASSWORD_AUTH</code>: Enable user password-based authentication. In this flow, Amazon Cognito receives the password in the request instead of using the SRP protocol to verify passwords.</p> </li> <li> <p> <code>ALLOW_USER_SRP_AUTH</code>: Enable SRP-based authentication.</p> </li> <li> <p> <code>ALLOW_REFRESH_TOKEN_AUTH</code>: Enable authflow to refresh tokens.</p> </li> </ul> <p>In some environments, you will see the values <code>ADMIN_NO_SRP_AUTH</code>, <code>CUSTOM_AUTH_FLOW_ONLY</code>, or <code>USER_PASSWORD_AUTH</code>. You can't assign these legacy <code>ExplicitAuthFlows</code> values to user pool clients at the same time as values that begin with <code>ALLOW_</code>, like <code>ALLOW_USER_SRP_AUTH</code>.</p>",
+    }),
+    SupportedIdentityProviders: SupportedIdentityProvidersListTypeSchema.exactOptional().openapi({
+      description:
+        'A list of provider names for the IdPs that this client supports. The following are supported: <code>COGNITO</code>, <code>Facebook</code>, <code>Google</code>, <code>SignInWithApple</code>, <code>LoginWithAmazon</code>, and the names of your own SAML and OIDC providers.',
+    }),
+    CallbackURLs: CallbackURLsListTypeSchema.exactOptional().openapi({
+      description:
+        '<p>A list of allowed redirect (callback) URLs for the IdPs.</p> <p>A redirect URI must:</p> <ul> <li> <p>Be an absolute URI.</p> </li> <li> <p>Be registered with the authorization server.</p> </li> <li> <p>Not include a fragment component.</p> </li> </ul> <p>See <a href="https://tools.ietf.org/html/rfc6749#section-3.1.2">OAuth 2.0 - Redirection Endpoint</a>.</p> <p>Amazon Cognito requires HTTPS over HTTP except for http://localhost for testing purposes only.</p> <p>App callback URLs such as <code>myapp://example</code> are also supported.</p>',
+    }),
+    LogoutURLs: LogoutURLsListTypeSchema.exactOptional().openapi({
+      description: 'A list of allowed logout URLs for the IdPs.',
+    }),
+    DefaultRedirectURI: RedirectUrlTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The default redirect URI. Must be in the <code>CallbackURLs</code> list.</p> <p>A redirect URI must:</p> <ul> <li> <p>Be an absolute URI.</p> </li> <li> <p>Be registered with the authorization server.</p> </li> <li> <p>Not include a fragment component.</p> </li> </ul> <p>See <a href="https://tools.ietf.org/html/rfc6749#section-3.1.2">OAuth 2.0 - Redirection Endpoint</a>.</p> <p>Amazon Cognito requires HTTPS over HTTP except for <code>http://localhost</code> for testing purposes only.</p> <p>App callback URLs such as <code>myapp://example</code> are also supported.</p>',
+    }),
+    AllowedOAuthFlows: OAuthFlowsTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The allowed OAuth flows.</p> <dl> <dt>code</dt> <dd> <p>Use a code grant flow, which provides an authorization code as the response. This code can be exchanged for access tokens with the <code>/oauth2/token</code> endpoint.</p> </dd> <dt>implicit</dt> <dd> <p>Issue the access token (and, optionally, ID token, based on scopes) directly to your user.</p> </dd> <dt>client_credentials</dt> <dd> <p>Issue the access token from the <code>/oauth2/token</code> endpoint directly to a non-person user using a combination of the client ID and client secret.</p> </dd> </dl>',
+    }),
+    AllowedOAuthScopes: ScopeListTypeSchema.exactOptional().openapi({
+      description:
+        'The allowed OAuth scopes. Possible values provided by OAuth are <code>phone</code>, <code>email</code>, <code>openid</code>, and <code>profile</code>. Possible values provided by Amazon Web Services are <code>aws.cognito.signin.user.admin</code>. Custom scopes created in Resource Servers are also supported.',
+    }),
+    AllowedOAuthFlowsUserPoolClient: BooleanTypeSchema.exactOptional().openapi({
+      description:
+        "<p>Set to <code>true</code> to use OAuth 2.0 features in your user pool app client.</p> <p> <code>AllowedOAuthFlowsUserPoolClient</code> must be <code>true</code> before you can configure the following features in your app client.</p> <ul> <li> <p> <code>CallBackURLs</code>: Callback URLs.</p> </li> <li> <p> <code>LogoutURLs</code>: Sign-out redirect URLs.</p> </li> <li> <p> <code>AllowedOAuthScopes</code>: OAuth 2.0 scopes.</p> </li> <li> <p> <code>AllowedOAuthFlows</code>: Support for authorization code, implicit, and client credentials OAuth 2.0 grants.</p> </li> </ul> <p>To use OAuth 2.0 features, configure one of these features in the Amazon Cognito console or set <code>AllowedOAuthFlowsUserPoolClient</code> to <code>true</code> in a <code>CreateUserPoolClient</code> or <code>UpdateUserPoolClient</code> API request. If you don't set a value for <code>AllowedOAuthFlowsUserPoolClient</code> in a request with the CLI or SDKs, it defaults to <code>false</code>.</p>",
+    }),
+    AnalyticsConfiguration: AnalyticsConfigurationTypeSchema.exactOptional().openapi({
+      description:
+        "<p>The Amazon Pinpoint analytics configuration necessary to collect metrics for this user pool.</p> <note> <p>In Amazon Web Services Regions where Amazon Pinpoint isn't available, user pools only support sending events to Amazon Pinpoint projects in us-east-1. In Regions where Amazon Pinpoint is available, user pools support sending events to Amazon Pinpoint projects within that same Region.</p> </note>",
+    }),
+    PreventUserExistenceErrors: PreventUserExistenceErrorTypesSchema.exactOptional().openapi({
+      description:
+        "<p>Errors and responses that you want Amazon Cognito APIs to return during authentication, account confirmation, and password recovery when the user doesn't exist in the user pool. When set to <code>ENABLED</code> and the user doesn't exist, authentication returns an error indicating either the username or password was incorrect. Account confirmation and password recovery return a response indicating a code was sent to a simulated destination. When set to <code>LEGACY</code>, those APIs return a <code>UserNotFoundException</code> exception if the user doesn't exist in the user pool.</p> <p>Valid values include:</p> <ul> <li> <p> <code>ENABLED</code> - This prevents user existence-related errors.</p> </li> <li> <p> <code>LEGACY</code> - This represents the early behavior of Amazon Cognito where user existence related errors aren't prevented.</p> </li> </ul>",
+    }),
+    EnableTokenRevocation: WrappedBooleanTypeSchema.exactOptional().openapi({
+      description:
+        'Activates or deactivates token revocation. For more information about revoking tokens, see <a href="https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_RevokeToken.html">RevokeToken</a>.',
+    }),
+    EnablePropagateAdditionalUserContextData: WrappedBooleanTypeSchema.exactOptional().openapi({
+      description:
+        'Activates the propagation of additional user context data. For more information about propagation of user context data, see <a href="https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pool-settings-advanced-security.html"> Adding advanced security to a user pool</a>. If you don’t include this parameter, you can\'t send device fingerprint information, including source IP address, to Amazon Cognito advanced security. You can only activate <code>EnablePropagateAdditionalUserContextData</code> in an app client that has a client secret.',
+    }),
+    AuthSessionValidity: AuthSessionValidityTypeSchema.exactOptional().openapi({
+      description:
+        'Amazon Cognito creates a session token for each API request in an authentication flow. <code>AuthSessionValidity</code> is the duration, in minutes, of that session token. Your user pool native user must respond to each authentication challenge before the session expires.',
+    }),
   })
   .openapi({
     required: ['UserPoolId', 'ClientId'],
@@ -7239,44 +5334,28 @@ const UpdateUserPoolClientRequestSchema = z
 
 const UpdateUserPoolDomainResponseSchema = z
   .object({
-    CloudFrontDomain: DomainTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon CloudFront endpoint that Amazon Cognito set up when you added the custom domain to your user pool.',
-        }),
-    ).exactOptional(),
+    CloudFrontDomain: DomainTypeSchema.exactOptional().openapi({
+      description:
+        'The Amazon CloudFront endpoint that Amazon Cognito set up when you added the custom domain to your user pool.',
+    }),
   })
   .openapi({ description: 'The UpdateUserPoolDomain response output.', required: [] })
   .openapi('UpdateUserPoolDomainResponse')
 
 const UpdateUserPoolDomainRequestSchema = z
   .object({
-    Domain: DomainTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The domain name for the custom domain that hosts the sign-up and sign-in pages for your application. One example might be <code>auth.example.com</code>. </p> <p>This string can include only lowercase letters, numbers, and hyphens. Don't use a hyphen for the first or last character. Use periods to separate subdomain names.</p>",
-        }),
-    ),
-    UserPoolId: UserPoolIdTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The ID of the user pool that is associated with the custom domain whose certificate you're updating.",
-        }),
-    ),
-    CustomDomainConfig: CustomDomainConfigTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The configuration for a custom domain that hosts the sign-up and sign-in pages for your application. Use this object to specify an SSL certificate that is managed by ACM.',
-        }),
-    ),
+    Domain: DomainTypeSchema.openapi({
+      description:
+        "<p>The domain name for the custom domain that hosts the sign-up and sign-in pages for your application. One example might be <code>auth.example.com</code>. </p> <p>This string can include only lowercase letters, numbers, and hyphens. Don't use a hyphen for the first or last character. Use periods to separate subdomain names.</p>",
+    }),
+    UserPoolId: UserPoolIdTypeSchema.openapi({
+      description:
+        "The ID of the user pool that is associated with the custom domain whose certificate you're updating.",
+    }),
+    CustomDomainConfig: CustomDomainConfigTypeSchema.openapi({
+      description:
+        'The configuration for a custom domain that hosts the sign-up and sign-in pages for your application. Use this object to specify an SSL certificate that is managed by ACM.',
+    }),
   })
   .openapi({
     required: ['Domain', 'UserPoolId', 'CustomDomainConfig'],
@@ -7291,17 +5370,13 @@ const VerifySoftwareTokenResponseTypeSchema = z
 
 const VerifySoftwareTokenResponseSchema = z
   .object({
-    Status: VerifySoftwareTokenResponseTypeSchema.and(
-      z.any().openapi({ description: 'The status of the verify software token.' }),
-    ).exactOptional(),
-    Session: SessionTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The session that should be passed both ways in challenge-response calls to the service.',
-        }),
-    ).exactOptional(),
+    Status: VerifySoftwareTokenResponseTypeSchema.exactOptional().openapi({
+      description: 'The status of the verify software token.',
+    }),
+    Session: SessionTypeSchema.exactOptional().openapi({
+      description:
+        'The session that should be passed both ways in challenge-response calls to the service.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('VerifySoftwareTokenResponse')
@@ -7314,33 +5389,21 @@ const SoftwareTokenMFAUserCodeTypeSchema = z
 
 const VerifySoftwareTokenRequestSchema = z
   .object({
-    AccessToken: TokenModelTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A valid access token that Amazon Cognito issued to the user whose software token you want to verify.',
-        }),
-    ).exactOptional(),
-    Session: SessionTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The session that should be passed both ways in challenge-response calls to the service.',
-        }),
-    ).exactOptional(),
-    UserCode: SoftwareTokenMFAUserCodeTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The one- time password computed using the secret code returned by <a href="https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_AssociateSoftwareToken.html">AssociateSoftwareToken</a>.',
-        }),
-    ),
-    FriendlyDeviceName: StringTypeSchema.and(
-      z.any().openapi({ description: 'The friendly device name.' }),
-    ).exactOptional(),
+    AccessToken: TokenModelTypeSchema.exactOptional().openapi({
+      description:
+        'A valid access token that Amazon Cognito issued to the user whose software token you want to verify.',
+    }),
+    Session: SessionTypeSchema.exactOptional().openapi({
+      description:
+        'The session that should be passed both ways in challenge-response calls to the service.',
+    }),
+    UserCode: SoftwareTokenMFAUserCodeTypeSchema.openapi({
+      description:
+        'The one- time password computed using the secret code returned by <a href="https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_AssociateSoftwareToken.html">AssociateSoftwareToken</a>.',
+    }),
+    FriendlyDeviceName: StringTypeSchema.exactOptional().openapi({
+      description: 'The friendly device name.',
+    }),
   })
   .openapi({ required: ['UserCode'], title: 'VerifySoftwareTokenRequest' })
   .openapi('VerifySoftwareTokenRequest')
@@ -7348,7 +5411,7 @@ const VerifySoftwareTokenRequestSchema = z
 const EnableSoftwareTokenMFAExceptionSchema = z.any().openapi('EnableSoftwareTokenMFAException')
 
 const VerifyUserAttributeResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A container representing the response from the server from the request to verify user attributes.',
@@ -7357,26 +5420,16 @@ const VerifyUserAttributeResponseSchema = z
 
 const VerifyUserAttributeRequestSchema = z
   .object({
-    AccessToken: TokenModelTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A valid access token that Amazon Cognito issued to the user whose user attributes you want to verify.',
-        }),
-    ),
-    AttributeName: AttributeNameTypeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The attribute name in the request to verify user attributes.' }),
-    ),
-    Code: ConfirmationCodeTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The verification code in the request to verify user attributes.',
-        }),
-    ),
+    AccessToken: TokenModelTypeSchema.openapi({
+      description:
+        'A valid access token that Amazon Cognito issued to the user whose user attributes you want to verify.',
+    }),
+    AttributeName: AttributeNameTypeSchema.openapi({
+      description: 'The attribute name in the request to verify user attributes.',
+    }),
+    Code: ConfirmationCodeTypeSchema.openapi({
+      description: 'The verification code in the request to verify user attributes.',
+    }),
   })
   .openapi({
     required: ['AccessToken', 'AttributeName', 'Code'],

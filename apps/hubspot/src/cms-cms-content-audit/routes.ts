@@ -166,7 +166,7 @@ const PublicAuditLogSchema = z
       .string()
       .openapi({ description: 'The name of the user who caused the event.', example: null }),
     meta: z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'Supplementary metadata associated with the audit log entry. It provides additional context about the audited event (ex: rows deleted/updated for a HubDB event, the specific fields that were changed for a Content Settings event).',
@@ -359,11 +359,8 @@ const Oauth2SecurityScheme = {
       scopes: { content: '' },
     },
   },
+  'x-hubspot-app-availability': { content: { portal: ['public', 'private'], developer: false } },
 }
-
-const PrivateAppsSecurityScheme = { type: 'apiKey', name: 'private-app', in: 'header' }
-
-const PrivateAppsLegacySecurityScheme = { type: 'apiKey', name: 'private-app-legacy', in: 'header' }
 
 export const getCmsAuditLogs202609Route = createRoute({
   method: 'get',

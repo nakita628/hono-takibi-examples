@@ -1,1032 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const DayOfWeekSchema = z
-  .enum(['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'])
-  .openapi('DayOfWeek')
-
-const NameGuidPairSchema = z
-  .strictObject({ Id: z.uuid().exactOptional(), Name: z.string().nullable().exactOptional() })
-  .openapi({ required: [] })
-  .openapi('NameGuidPair')
-
-const ProgramAudioSchema = z
-  .enum(['Mono', 'Stereo', 'Dolby', 'DolbyDigital', 'Thx', 'Atmos'])
-  .openapi('ProgramAudio')
-
-const ChannelTypeSchema = z
-  .enum(['TV', 'Radio'])
-  .openapi({ description: 'Enum ChannelType.' })
-  .openapi('ChannelType')
-
-const ChapterInfoSchema = z
-  .strictObject({
-    ImageDateModified: z.iso.datetime({ offset: true }).exactOptional(),
-    ImagePath: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the image path.' }),
-    ImageTag: z.string().nullable().exactOptional(),
-    Name: z.string().nullable().exactOptional().openapi({ description: 'Gets or sets the name.' }),
-    StartPositionTicks: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'Gets or sets the start position ticks.',
-      }),
-  })
-  .openapi({ description: 'Class ChapterInfo.', required: [] })
-  .openapi('ChapterInfo')
-
-const ExternalUrlSchema = z
-  .strictObject({
-    Name: z.string().nullable().exactOptional().openapi({ description: 'Gets or sets the name.' }),
-    Url: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the type of the item.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('ExternalUrl')
-
-const ImageOrientationSchema = z
-  .enum([
-    'TopLeft',
-    'TopRight',
-    'BottomRight',
-    'BottomLeft',
-    'LeftTop',
-    'RightTop',
-    'RightBottom',
-    'LeftBottom',
-  ])
-  .openapi('ImageOrientation')
-
-const IsoTypeSchema = z
-  .enum(['Dvd', 'BluRay'])
-  .openapi({ description: 'Enum IsoType.' })
-  .openapi('IsoType')
-
-const LocationTypeSchema = z
-  .enum(['FileSystem', 'Remote', 'Virtual', 'Offline'])
-  .openapi({ description: 'Enum LocationType.' })
-  .openapi('LocationType')
-
-const MetadataFieldSchema = z
-  .enum([
-    'Cast',
-    'Genres',
-    'ProductionLocations',
-    'Studios',
-    'Tags',
-    'Name',
-    'Overview',
-    'Runtime',
-    'OfficialRating',
-  ])
-  .openapi({ description: 'Enum MetadataFields.' })
-  .openapi('MetadataField')
-
-const MediaProtocolSchema = z
-  .enum(['File', 'Http', 'Rtmp', 'Rtsp', 'Udp', 'Rtp', 'Ftp'])
-  .openapi('MediaProtocol')
-
-const MediaAttachmentSchema = z
-  .strictObject({
-    Codec: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the codec.' }),
-    CodecTag: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the codec tag.' }),
-    Comment: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the comment.' }),
-    DeliveryUrl: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the delivery URL.' }),
-    FileName: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the filename.' }),
-    Index: z.int32().exactOptional().openapi({ description: 'Gets or sets the index.' }),
-    MimeType: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the MIME type.' }),
-  })
-  .openapi({ description: 'Class MediaAttachment.', required: [] })
-  .openapi('MediaAttachment')
-
-const SubtitleDeliveryMethodSchema = z
-  .enum(['Encode', 'Embed', 'External', 'Hls'])
-  .openapi('SubtitleDeliveryMethod')
-
-const MediaStreamTypeSchema = z
-  .enum(['Audio', 'Video', 'Subtitle', 'EmbeddedImage'])
-  .openapi({ description: 'Enum MediaStreamType.' })
-  .openapi('MediaStreamType')
-
-const MediaStreamSchema = z
-  .strictObject({
-    AspectRatio: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the aspect ratio.' }),
-    AverageFrameRate: z
-      .float32()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the average frame rate.' }),
-    BitDepth: z
-      .int32()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the bit depth.' }),
-    BitRate: z
-      .int32()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the bit rate.' }),
-    ChannelLayout: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the channel layout.' }),
-    Channels: z
-      .int32()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the channels.' }),
-    Codec: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the codec.' }),
-    CodecTag: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the codec tag.' }),
-    CodecTimeBase: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the codec time base.' }),
-    ColorPrimaries: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the color primaries.' }),
-    ColorRange: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the color range.' }),
-    ColorSpace: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the color space.' }),
-    ColorTransfer: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the color transfer.' }),
-    Comment: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the comment.' }),
-    DeliveryMethod: SubtitleDeliveryMethodSchema.exactOptional(),
-    DeliveryUrl: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the delivery URL.' }),
-    DisplayTitle: z.string().nullable().exactOptional().openapi({ readOnly: true }),
-    Height: z
-      .int32()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the height.' }),
-    Index: z.int32().exactOptional().openapi({ description: 'Gets or sets the index.' }),
-    IsAVC: z.boolean().nullable().exactOptional(),
-    IsAnamorphic: z
-      .boolean()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets a value indicating whether this instance is anamorphic.' }),
-    IsDefault: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Gets or sets a value indicating whether this instance is default.',
-      }),
-    IsExternal: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Gets or sets a value indicating whether this instance is external.',
-      }),
-    IsExternalUrl: z
-      .boolean()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Gets or sets a value indicating whether this instance is external URL.',
-      }),
-    IsForced: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets a value indicating whether this instance is forced.' }),
-    IsInterlaced: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Gets or sets a value indicating whether this instance is interlaced.',
-      }),
-    IsTextSubtitleStream: z.boolean().exactOptional().openapi({ readOnly: true }),
-    Language: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the language.' }),
-    Level: z
-      .float64()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the level.' }),
-    NalLengthSize: z.string().nullable().exactOptional(),
-    PacketLength: z
-      .int32()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the length of the packet.' }),
-    Path: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the filename.' }),
-    PixelFormat: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the pixel format.' }),
-    Profile: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the profile.' }),
-    RealFrameRate: z
-      .float32()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the real frame rate.' }),
-    RefFrames: z
-      .int32()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the reference frames.' }),
-    SampleRate: z
-      .int32()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the sample rate.' }),
-    Score: z.int32().nullable().exactOptional().openapi({ description: 'Gets or sets the score.' }),
-    SupportsExternalStream: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Gets or sets a value indicating whether [supports external stream].',
-      }),
-    TimeBase: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the time base.' }),
-    Title: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the title.' }),
-    Type: MediaStreamTypeSchema.exactOptional(),
-    VideoRange: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the video range.', readOnly: true }),
-    Width: z.int32().nullable().exactOptional().openapi({ description: 'Gets or sets the width.' }),
-    localizedDefault: z.string().nullable().exactOptional(),
-    localizedForced: z.string().nullable().exactOptional(),
-    localizedUndefined: z.string().nullable().exactOptional(),
-  })
-  .openapi({ description: 'Class MediaStream.', required: [] })
-  .openapi('MediaStream')
-
-const TransportStreamTimestampSchema = z
-  .enum(['None', 'Zero', 'Valid'])
-  .openapi('TransportStreamTimestamp')
-
-const MediaSourceTypeSchema = z
-  .enum(['Default', 'Grouping', 'Placeholder'])
-  .openapi('MediaSourceType')
-
-const Video3DFormatSchema = z
-  .enum(['HalfSideBySide', 'FullSideBySide', 'FullTopAndBottom', 'HalfTopAndBottom', 'MVC'])
-  .openapi('Video3DFormat')
-
-const VideoTypeSchema = z
-  .enum(['VideoFile', 'Iso', 'Dvd', 'BluRay'])
-  .openapi({ description: 'Enum VideoType.' })
-  .openapi('VideoType')
-
-const MediaSourceInfoSchema = z
-  .strictObject({
-    AnalyzeDurationMs: z.int32().nullable().exactOptional(),
-    Bitrate: z.int32().nullable().exactOptional(),
-    BufferMs: z.int32().nullable().exactOptional(),
-    Container: z.string().nullable().exactOptional(),
-    DefaultAudioStreamIndex: z.int32().nullable().exactOptional(),
-    DefaultSubtitleStreamIndex: z.int32().nullable().exactOptional(),
-    ETag: z.string().nullable().exactOptional(),
-    EncoderPath: z.string().nullable().exactOptional(),
-    EncoderProtocol: MediaProtocolSchema.exactOptional(),
-    Formats: z.array(z.string()).nullable().exactOptional(),
-    GenPtsInput: z.boolean().exactOptional(),
-    Id: z.string().nullable().exactOptional(),
-    IgnoreDts: z.boolean().exactOptional(),
-    IgnoreIndex: z.boolean().exactOptional(),
-    IsInfiniteStream: z.boolean().exactOptional(),
-    IsRemote: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Differentiate internet url vs local network.' }),
-    IsoType: IsoTypeSchema.exactOptional(),
-    LiveStreamId: z.string().nullable().exactOptional(),
-    MediaAttachments: z.array(MediaAttachmentSchema).nullable().exactOptional(),
-    MediaStreams: z.array(MediaStreamSchema).nullable().exactOptional(),
-    Name: z.string().nullable().exactOptional(),
-    OpenToken: z.string().nullable().exactOptional(),
-    Path: z.string().nullable().exactOptional(),
-    Protocol: MediaProtocolSchema.exactOptional(),
-    ReadAtNativeFramerate: z.boolean().exactOptional(),
-    RequiredHttpHeaders: z.record(z.string(), z.string()).nullable().exactOptional(),
-    RequiresClosing: z.boolean().exactOptional(),
-    RequiresLooping: z.boolean().exactOptional(),
-    RequiresOpening: z.boolean().exactOptional(),
-    RunTimeTicks: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .nullable()
-      .exactOptional()
-      .openapi({ type: ['integer', 'null'], format: 'int64' }),
-    Size: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .nullable()
-      .exactOptional()
-      .openapi({ type: ['integer', 'null'], format: 'int64' }),
-    SupportsDirectPlay: z.boolean().exactOptional(),
-    SupportsDirectStream: z.boolean().exactOptional(),
-    SupportsProbing: z.boolean().exactOptional(),
-    SupportsTranscoding: z.boolean().exactOptional(),
-    Timestamp: TransportStreamTimestampSchema.exactOptional(),
-    TranscodingContainer: z.string().nullable().exactOptional(),
-    TranscodingSubProtocol: z.string().nullable().exactOptional(),
-    TranscodingUrl: z.string().nullable().exactOptional(),
-    Type: MediaSourceTypeSchema.exactOptional(),
-    Video3DFormat: Video3DFormatSchema.exactOptional(),
-    VideoType: VideoTypeSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('MediaSourceInfo')
-
-const BaseItemPersonSchema = z
-  .strictObject({
-    Id: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the identifier.' }),
-    ImageBlurHashes: z
-      .object({
-        Art: z.record(z.string(), z.string()).exactOptional(),
-        Backdrop: z.record(z.string(), z.string()).exactOptional(),
-        Banner: z.record(z.string(), z.string()).exactOptional(),
-        Box: z.record(z.string(), z.string()).exactOptional(),
-        BoxRear: z.record(z.string(), z.string()).exactOptional(),
-        Chapter: z.record(z.string(), z.string()).exactOptional(),
-        Disc: z.record(z.string(), z.string()).exactOptional(),
-        Logo: z.record(z.string(), z.string()).exactOptional(),
-        Menu: z.record(z.string(), z.string()).exactOptional(),
-        Primary: z.record(z.string(), z.string()).exactOptional(),
-        Profile: z.record(z.string(), z.string()).exactOptional(),
-        Screenshot: z.record(z.string(), z.string()).exactOptional(),
-        Thumb: z.record(z.string(), z.string()).exactOptional(),
-      })
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the primary image blurhash.', required: [] }),
-    Name: z.string().nullable().exactOptional().openapi({ description: 'Gets or sets the name.' }),
-    PrimaryImageTag: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the primary image tag.' }),
-    Role: z.string().nullable().exactOptional().openapi({ description: 'Gets or sets the role.' }),
-    Type: z.string().nullable().exactOptional().openapi({ description: 'Gets or sets the type.' }),
-  })
-  .openapi({
-    description: 'This is used by the api to get information about a Person within a BaseItem.',
-    required: [],
-  })
-  .openapi('BaseItemPerson')
-
-const PlayAccessSchema = z.enum(['Full', 'None']).openapi('PlayAccess')
-
-const MediaUrlSchema = z
-  .strictObject({
-    Name: z.string().nullable().exactOptional(),
-    Url: z.string().nullable().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('MediaUrl')
-
-const UserItemDataDtoSchema = z
-  .strictObject({
-    IsFavorite: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Gets or sets a value indicating whether this instance is favorite.',
-      }),
-    ItemId: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the item identifier.' }),
-    Key: z.string().nullable().exactOptional().openapi({ description: 'Gets or sets the key.' }),
-    LastPlayedDate: z.iso
-      .datetime({ offset: true })
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the last played date.' }),
-    Likes: z
-      .boolean()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Gets or sets a value indicating whether this MediaBrowser.Model.Dto.UserItemDataDto is likes.',
-      }),
-    PlayCount: z.int32().exactOptional().openapi({ description: 'Gets or sets the play count.' }),
-    PlaybackPositionTicks: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'Gets or sets the playback position ticks.',
-      }),
-    Played: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Gets or sets a value indicating whether this MediaBrowser.Model.Dto.UserItemDataDto is played.',
-      }),
-    PlayedPercentage: z
-      .float64()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the played percentage.' }),
-    Rating: z
-      .float64()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the rating.' }),
-    UnplayedItemCount: z
-      .int32()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the unplayed item count.' }),
-  })
-  .openapi({ description: 'Class UserItemDataDto.', required: [] })
-  .openapi('UserItemDataDto')
-
-type BaseItemDtoType = {
-  AirDays?: z.infer<typeof DayOfWeekSchema>[] | null
-  AirTime?: string | null
-  AirsAfterSeasonNumber?: number | null
-  AirsBeforeEpisodeNumber?: number | null
-  AirsBeforeSeasonNumber?: number | null
-  Album?: string | null
-  AlbumArtist?: string | null
-  AlbumArtists?: z.infer<typeof NameGuidPairSchema>[] | null
-  AlbumCount?: number | null
-  AlbumId?: string | null
-  AlbumPrimaryImageTag?: string | null
-  Altitude?: number | null
-  Aperture?: number | null
-  ArtistCount?: number | null
-  ArtistItems?: z.infer<typeof NameGuidPairSchema>[] | null
-  Artists?: string[] | null
-  AspectRatio?: string | null
-  Audio?: z.infer<typeof ProgramAudioSchema>
-  BackdropImageTags?: string[] | null
-  CameraMake?: string | null
-  CameraModel?: string | null
-  CanDelete?: boolean | null
-  CanDownload?: boolean | null
-  ChannelId?: string | null
-  ChannelName?: string | null
-  ChannelNumber?: string | null
-  ChannelPrimaryImageTag?: string | null
-  ChannelType?: z.infer<typeof ChannelTypeSchema>
-  Chapters?: z.infer<typeof ChapterInfoSchema>[] | null
-  ChildCount?: number | null
-  CollectionType?: string | null
-  CommunityRating?: number | null
-  CompletionPercentage?: number | null
-  Container?: string | null
-  CriticRating?: number | null
-  CumulativeRunTimeTicks?: bigint | null
-  CurrentProgram?: BaseItemDtoType
-  CustomRating?: string | null
-  DateCreated?: string | null
-  DateLastMediaAdded?: string | null
-  DisplayOrder?: string | null
-  DisplayPreferencesId?: string | null
-  EnableMediaSourceDisplay?: boolean | null
-  EndDate?: string | null
-  EpisodeCount?: number | null
-  EpisodeTitle?: string | null
-  Etag?: string | null
-  ExposureTime?: number | null
-  ExternalUrls?: z.infer<typeof ExternalUrlSchema>[] | null
-  ExtraType?: string | null
-  FocalLength?: number | null
-  ForcedSortName?: string | null
-  GenreItems?: z.infer<typeof NameGuidPairSchema>[] | null
-  Genres?: string[] | null
-  HasSubtitles?: boolean | null
-  Height?: number | null
-  Id?: string
-  ImageBlurHashes?: {
-    Art?: { [key: string]: string }
-    Backdrop?: { [key: string]: string }
-    Banner?: { [key: string]: string }
-    Box?: { [key: string]: string }
-    BoxRear?: { [key: string]: string }
-    Chapter?: { [key: string]: string }
-    Disc?: { [key: string]: string }
-    Logo?: { [key: string]: string }
-    Menu?: { [key: string]: string }
-    Primary?: { [key: string]: string }
-    Profile?: { [key: string]: string }
-    Screenshot?: { [key: string]: string }
-    Thumb?: { [key: string]: string }
-  } | null
-  ImageOrientation?: z.infer<typeof ImageOrientationSchema>
-  ImageTags?: { [key: string]: string } | null
-  IndexNumber?: number | null
-  IndexNumberEnd?: number | null
-  IsFolder?: boolean | null
-  IsHD?: boolean | null
-  IsKids?: boolean | null
-  IsLive?: boolean | null
-  IsMovie?: boolean | null
-  IsNews?: boolean | null
-  IsPlaceHolder?: boolean | null
-  IsPremiere?: boolean | null
-  IsRepeat?: boolean | null
-  IsSeries?: boolean | null
-  IsSports?: boolean | null
-  IsoSpeedRating?: number | null
-  IsoType?: z.infer<typeof IsoTypeSchema>
-  Latitude?: number | null
-  LocalTrailerCount?: number | null
-  LocationType?: z.infer<typeof LocationTypeSchema>
-  LockData?: boolean | null
-  LockedFields?: z.infer<typeof MetadataFieldSchema>[] | null
-  Longitude?: number | null
-  MediaSourceCount?: number | null
-  MediaSources?: z.infer<typeof MediaSourceInfoSchema>[] | null
-  MediaStreams?: z.infer<typeof MediaStreamSchema>[] | null
-  MediaType?: string | null
-  MovieCount?: number | null
-  MusicVideoCount?: number | null
-  Name?: string | null
-  Number?: string | null
-  OfficialRating?: string | null
-  OriginalTitle?: string | null
-  Overview?: string | null
-  ParentArtImageTag?: string | null
-  ParentArtItemId?: string | null
-  ParentBackdropImageTags?: string[] | null
-  ParentBackdropItemId?: string | null
-  ParentId?: string | null
-  ParentIndexNumber?: number | null
-  ParentLogoImageTag?: string | null
-  ParentLogoItemId?: string | null
-  ParentPrimaryImageItemId?: string | null
-  ParentPrimaryImageTag?: string | null
-  ParentThumbImageTag?: string | null
-  ParentThumbItemId?: string | null
-  PartCount?: number | null
-  Path?: string | null
-  People?: z.infer<typeof BaseItemPersonSchema>[] | null
-  PlayAccess?: z.infer<typeof PlayAccessSchema>
-  PlaylistItemId?: string | null
-  PreferredMetadataCountryCode?: string | null
-  PreferredMetadataLanguage?: string | null
-  PremiereDate?: string | null
-  PrimaryImageAspectRatio?: number | null
-  ProductionLocations?: string[] | null
-  ProductionYear?: number | null
-  ProgramCount?: number | null
-  ProgramId?: string | null
-  ProviderIds?: { [key: string]: string } | null
-  RecursiveItemCount?: number | null
-  RemoteTrailers?: z.infer<typeof MediaUrlSchema>[] | null
-  RunTimeTicks?: bigint | null
-  ScreenshotImageTags?: string[] | null
-  SeasonId?: string | null
-  SeasonName?: string | null
-  SeriesCount?: number | null
-  SeriesId?: string | null
-  SeriesName?: string | null
-  SeriesPrimaryImageTag?: string | null
-  SeriesStudio?: string | null
-  SeriesThumbImageTag?: string | null
-  SeriesTimerId?: string | null
-  ServerId?: string | null
-  ShutterSpeed?: number | null
-  Software?: string | null
-  SongCount?: number | null
-  SortName?: string | null
-  SourceType?: string | null
-  SpecialFeatureCount?: number | null
-  StartDate?: string | null
-  Status?: string | null
-  Studios?: z.infer<typeof NameGuidPairSchema>[] | null
-  SupportsSync?: boolean | null
-  Taglines?: string[] | null
-  Tags?: string[] | null
-  TimerId?: string | null
-  TrailerCount?: number | null
-  Type?: string | null
-  UserData?: z.infer<typeof UserItemDataDtoSchema>
-  Video3DFormat?: z.infer<typeof Video3DFormatSchema>
-  VideoType?: z.infer<typeof VideoTypeSchema>
-  Width?: number | null
-}
-
-type RemoteSearchResultType = {
-  AlbumArtist?: RemoteSearchResultType
-  Artists?: RemoteSearchResultType[] | null
-  ImageUrl?: string | null
-  IndexNumber?: number | null
-  IndexNumberEnd?: number | null
-  Name?: string | null
-  Overview?: string | null
-  ParentIndexNumber?: number | null
-  PremiereDate?: string | null
-  ProductionYear?: number | null
-  ProviderIds?: { [key: string]: string } | null
-  SearchProviderName?: string | null
-}
-
-const DynamicDayOfWeekSchema = z
-  .enum([
-    'Sunday',
-    'Monday',
-    'Tuesday',
-    'Wednesday',
-    'Thursday',
-    'Friday',
-    'Saturday',
-    'Everyday',
-    'Weekday',
-    'Weekend',
-  ])
-  .openapi({
-    description: 'An enum that represents a day of the week, weekdays, weekends, or all days.',
-  })
-  .openapi('DynamicDayOfWeek')
-
-const AccessScheduleSchema = z
-  .strictObject({
-    DayOfWeek: DynamicDayOfWeekSchema,
-    EndHour: z.float64().openapi({ description: 'Gets or sets the end hour.' }),
-    Id: z.int32().openapi({ description: 'Gets or sets the id of this instance.', readOnly: true }),
-    StartHour: z.float64().openapi({ description: 'Gets or sets the start hour.' }),
-    UserId: z
-      .uuid()
-      .openapi({ description: 'Gets or sets the id of the associated user.', readOnly: true }),
-  })
-  .openapi({
-    description: "An entity representing a user's access schedule.",
-    required: ['DayOfWeek', 'EndHour', 'Id', 'StartHour', 'UserId'],
-  })
-  .openapi('AccessSchedule')
-
-const LogLevelSchema = z
-  .enum(['Trace', 'Debug', 'Information', 'Warning', 'Error', 'Critical', 'None'])
-  .openapi('LogLevel')
-
-const ActivityLogEntrySchema = z
-  .strictObject({
-    Date: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the date.' }),
-    Id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64', description: 'Gets or sets the identifier.' }),
-    ItemId: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the item identifier.' }),
-    Name: z.string().nullable().exactOptional().openapi({ description: 'Gets or sets the name.' }),
-    Overview: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the overview.' }),
-    Severity: LogLevelSchema.exactOptional(),
-    ShortOverview: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the short overview.' }),
-    Type: z.string().nullable().exactOptional().openapi({ description: 'Gets or sets the type.' }),
-    UserId: z.uuid().exactOptional().openapi({ description: 'Gets or sets the user identifier.' }),
-    UserPrimaryImageTag: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ deprecated: true, description: 'Gets or sets the user primary image tag.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('ActivityLogEntry')
-
-const ActivityLogEntryQueryResultSchema = z
-  .strictObject({
-    Items: z
-      .array(ActivityLogEntrySchema)
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the items.' }),
-    StartIndex: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'The index of the first record in Items.' }),
-    TotalRecordCount: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'The total number of records available.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('ActivityLogEntryQueryResult')
-
-const MediaPathInfoSchema = z
-  .strictObject({
-    NetworkPath: z.string().nullable().exactOptional(),
-    Path: z.string().nullable().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('MediaPathInfo')
-
-const ImageTypeSchema = z
-  .enum([
-    'Primary',
-    'Art',
-    'Backdrop',
-    'Banner',
-    'Logo',
-    'Thumb',
-    'Disc',
-    'Box',
-    'Screenshot',
-    'Menu',
-    'Chapter',
-    'BoxRear',
-    'Profile',
-  ])
-  .openapi({ description: 'Enum ImageType.' })
-  .openapi('ImageType')
-
-const ImageOptionSchema = z
-  .strictObject({
-    Limit: z.int32().exactOptional().openapi({ description: 'Gets or sets the limit.' }),
-    MinWidth: z.int32().exactOptional().openapi({ description: 'Gets or sets the minimum width.' }),
-    Type: ImageTypeSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ImageOption')
-
-const TypeOptionsSchema = z
-  .strictObject({
-    ImageFetcherOrder: z.array(z.string()).nullable().exactOptional(),
-    ImageFetchers: z.array(z.string()).nullable().exactOptional(),
-    ImageOptions: z.array(ImageOptionSchema).nullable().exactOptional(),
-    MetadataFetcherOrder: z.array(z.string()).nullable().exactOptional(),
-    MetadataFetchers: z.array(z.string()).nullable().exactOptional(),
-    Type: z.string().nullable().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('TypeOptions')
-
-const LibraryOptionsSchema = z
-  .strictObject({
-    AutomaticRefreshIntervalDays: z.int32().exactOptional(),
-    DisabledLocalMetadataReaders: z.array(z.string()).nullable().exactOptional(),
-    DisabledSubtitleFetchers: z.array(z.string()).nullable().exactOptional(),
-    EnableAutomaticSeriesGrouping: z.boolean().exactOptional(),
-    EnableChapterImageExtraction: z.boolean().exactOptional(),
-    EnableEmbeddedEpisodeInfos: z.boolean().exactOptional(),
-    EnableEmbeddedTitles: z.boolean().exactOptional(),
-    EnableInternetProviders: z.boolean().exactOptional(),
-    EnablePhotos: z.boolean().exactOptional(),
-    EnableRealtimeMonitor: z.boolean().exactOptional(),
-    ExtractChapterImagesDuringLibraryScan: z.boolean().exactOptional(),
-    LocalMetadataReaderOrder: z.array(z.string()).nullable().exactOptional(),
-    MetadataCountryCode: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the metadata country code.' }),
-    MetadataSavers: z.array(z.string()).nullable().exactOptional(),
-    PathInfos: z.array(MediaPathInfoSchema).nullable().exactOptional(),
-    PreferredMetadataLanguage: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the preferred metadata language.' }),
-    RequirePerfectSubtitleMatch: z.boolean().exactOptional(),
-    SaveLocalMetadata: z.boolean().exactOptional(),
-    SaveSubtitlesWithMedia: z.boolean().exactOptional(),
-    SeasonZeroDisplayName: z.string().nullable().exactOptional(),
-    SkipSubtitlesIfAudioTrackMatches: z.boolean().exactOptional(),
-    SkipSubtitlesIfEmbeddedSubtitlesPresent: z.boolean().exactOptional(),
-    SubtitleDownloadLanguages: z.array(z.string()).nullable().exactOptional(),
-    SubtitleFetcherOrder: z.array(z.string()).nullable().exactOptional(),
-    TypeOptions: z.array(TypeOptionsSchema).nullable().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('LibraryOptions')
-
-const AddVirtualFolderDtoSchema = z
-  .strictObject({ LibraryOptions: LibraryOptionsSchema.exactOptional() })
-  .openapi({ description: 'Add virtual folder dto.', required: [] })
-  .openapi('AddVirtualFolderDto')
-
-const SongInfoSchema = z
-  .strictObject({
-    Album: z.string().nullable().exactOptional(),
-    AlbumArtists: z.array(z.string()).nullable().exactOptional(),
-    Artists: z.array(z.string()).nullable().exactOptional(),
-    IndexNumber: z.int32().nullable().exactOptional(),
-    IsAutomated: z.boolean().exactOptional(),
-    MetadataCountryCode: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the metadata country code.' }),
-    MetadataLanguage: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the metadata language.' }),
-    Name: z.string().nullable().exactOptional().openapi({ description: 'Gets or sets the name.' }),
-    ParentIndexNumber: z.int32().nullable().exactOptional(),
-    Path: z.string().nullable().exactOptional().openapi({ description: 'Gets or sets the path.' }),
-    PremiereDate: z.iso.datetime({ offset: true }).nullable().exactOptional(),
-    ProviderIds: z
-      .record(z.string(), z.string())
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the provider ids.' }),
-    Year: z.int32().nullable().exactOptional().openapi({ description: 'Gets or sets the year.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('SongInfo')
-
-const AlbumInfoSchema = z
-  .strictObject({
-    AlbumArtists: z
-      .array(z.string())
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the album artist.' }),
-    ArtistProviderIds: z
-      .record(z.string(), z.string())
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the artist provider ids.' }),
-    IndexNumber: z.int32().nullable().exactOptional(),
-    IsAutomated: z.boolean().exactOptional(),
-    MetadataCountryCode: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the metadata country code.' }),
-    MetadataLanguage: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the metadata language.' }),
-    Name: z.string().nullable().exactOptional().openapi({ description: 'Gets or sets the name.' }),
-    ParentIndexNumber: z.int32().nullable().exactOptional(),
-    Path: z.string().nullable().exactOptional().openapi({ description: 'Gets or sets the path.' }),
-    PremiereDate: z.iso.datetime({ offset: true }).nullable().exactOptional(),
-    ProviderIds: z
-      .record(z.string(), z.string())
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the provider ids.' }),
-    SongInfos: z.array(SongInfoSchema).nullable().exactOptional(),
-    Year: z.int32().nullable().exactOptional().openapi({ description: 'Gets or sets the year.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('AlbumInfo')
-
-const AlbumInfoRemoteSearchQuerySchema = z
-  .strictObject({
-    IncludeDisabledProviders: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Gets or sets a value indicating whether disabled providers should be included.',
-      }),
-    ItemId: z.uuid().exactOptional(),
-    SearchInfo: AlbumInfoSchema.exactOptional(),
-    SearchProviderName: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Will only search within the given provider when set.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('AlbumInfoRemoteSearchQuery')
-
 const BaseItemDtoSchema: z.ZodType<BaseItemDtoType> = z
   .lazy(() =>
     z
@@ -1712,164 +685,11 @@ const ThemeMediaResultSchema = z
   .openapi({ description: 'Class ThemeMediaResult.', required: [] })
   .openapi('ThemeMediaResult')
 
-const AllThemeMediaResultSchema = z
-  .strictObject({
-    SoundtrackSongsResult: ThemeMediaResultSchema.exactOptional(),
-    ThemeSongsResult: ThemeMediaResultSchema.exactOptional(),
-    ThemeVideosResult: ThemeMediaResultSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('AllThemeMediaResult')
-
-const ArchitectureSchema = z.enum(['X86', 'X64', 'Arm', 'Arm64', 'Wasm']).openapi('Architecture')
-
-const ArtistInfoSchema = z
-  .strictObject({
-    IndexNumber: z.int32().nullable().exactOptional(),
-    IsAutomated: z.boolean().exactOptional(),
-    MetadataCountryCode: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the metadata country code.' }),
-    MetadataLanguage: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the metadata language.' }),
-    Name: z.string().nullable().exactOptional().openapi({ description: 'Gets or sets the name.' }),
-    ParentIndexNumber: z.int32().nullable().exactOptional(),
-    Path: z.string().nullable().exactOptional().openapi({ description: 'Gets or sets the path.' }),
-    PremiereDate: z.iso.datetime({ offset: true }).nullable().exactOptional(),
-    ProviderIds: z
-      .record(z.string(), z.string())
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the provider ids.' }),
-    SongInfos: z.array(SongInfoSchema).nullable().exactOptional(),
-    Year: z.int32().nullable().exactOptional().openapi({ description: 'Gets or sets the year.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('ArtistInfo')
-
-const ArtistInfoRemoteSearchQuerySchema = z
-  .strictObject({
-    IncludeDisabledProviders: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Gets or sets a value indicating whether disabled providers should be included.',
-      }),
-    ItemId: z.uuid().exactOptional(),
-    SearchInfo: ArtistInfoSchema.exactOptional(),
-    SearchProviderName: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Will only search within the given provider when set.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('ArtistInfoRemoteSearchQuery')
-
-const AuthenticateUserByNameSchema = z
-  .strictObject({
-    Password: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the sha1-hashed password.' }),
-    Pw: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the plain text password.' }),
-    Username: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the username.' }),
-  })
-  .openapi({ description: 'The authenticate user by name request body.', required: [] })
-  .openapi('AuthenticateUserByName')
-
-const AuthenticationInfoSchema = z
-  .strictObject({
-    AccessToken: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the access token.' }),
-    AppName: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the name of the application.' }),
-    AppVersion: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the application version.' }),
-    DateCreated: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the date created.' }),
-    DateLastActivity: z.iso.datetime({ offset: true }).exactOptional(),
-    DateRevoked: z.iso
-      .datetime({ offset: true })
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the date revoked.' }),
-    DeviceId: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the device identifier.' }),
-    DeviceName: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the name of the device.' }),
-    Id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64', description: 'Gets or sets the identifier.' }),
-    IsActive: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets a value indicating whether this instance is active.' }),
-    UserId: z.uuid().exactOptional().openapi({ description: 'Gets or sets the user identifier.' }),
-    UserName: z.string().nullable().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('AuthenticationInfo')
-
-const AuthenticationInfoQueryResultSchema = z
-  .strictObject({
-    Items: z
-      .array(AuthenticationInfoSchema)
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the items.' }),
-    StartIndex: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'The index of the first record in Items.' }),
-    TotalRecordCount: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'The total number of records available.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('AuthenticationInfoQueryResult')
+type AllThemeMediaResultType = {
+  SoundtrackSongsResult?: z.infer<typeof ThemeMediaResultSchema>
+  ThemeSongsResult?: z.infer<typeof ThemeMediaResultSchema>
+  ThemeVideosResult?: z.infer<typeof ThemeMediaResultSchema>
+}
 
 const SessionUserInfoSchema = z
   .strictObject({
@@ -2033,6 +853,10 @@ const ResponseProfileSchema = z
   })
   .openapi({ required: [] })
   .openapi('ResponseProfile')
+
+const SubtitleDeliveryMethodSchema = z
+  .enum(['Encode', 'Embed', 'External', 'Hls'])
+  .openapi('SubtitleDeliveryMethod')
 
 const SubtitleProfileSchema = z
   .strictObject({
@@ -2339,6 +1163,14 @@ const ClientCapabilitiesSchema = z
   .openapi({ required: [] })
   .openapi('ClientCapabilities')
 
+const MediaUrlSchema = z
+  .strictObject({
+    Name: z.string().nullable().exactOptional(),
+    Url: z.string().nullable().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('MediaUrl')
+
 const BaseItemSchema = z
   .strictObject({
     Container: z.string().nullable().exactOptional(),
@@ -2608,6 +1440,40 @@ const UserConfigurationSchema = z
   .openapi({ description: 'Class UserConfiguration.', required: [] })
   .openapi('UserConfiguration')
 
+const DynamicDayOfWeekSchema = z
+  .enum([
+    'Sunday',
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday',
+    'Everyday',
+    'Weekday',
+    'Weekend',
+  ])
+  .openapi({
+    description: 'An enum that represents a day of the week, weekdays, weekends, or all days.',
+  })
+  .openapi('DynamicDayOfWeek')
+
+const AccessScheduleSchema = z
+  .strictObject({
+    DayOfWeek: DynamicDayOfWeekSchema,
+    EndHour: z.float64().openapi({ description: 'Gets or sets the end hour.' }),
+    Id: z.int32().openapi({ description: 'Gets or sets the id of this instance.', readOnly: true }),
+    StartHour: z.float64().openapi({ description: 'Gets or sets the start hour.' }),
+    UserId: z
+      .uuid()
+      .openapi({ description: 'Gets or sets the id of the associated user.', readOnly: true }),
+  })
+  .openapi({
+    description: "An entity representing a user's access schedule.",
+    required: ['DayOfWeek', 'EndHour', 'Id', 'StartHour', 'UserId'],
+  })
+  .openapi('AccessSchedule')
+
 const UnratedItemSchema = z
   .enum([
     'Movie',
@@ -2761,7 +1627,1336 @@ const UserDtoSchema = z
   .openapi({ description: 'Class UserDto.', required: [] })
   .openapi('UserDto')
 
-const AuthenticationResultSchema = z
+type AuthenticationResultType = {
+  AccessToken?: string | null
+  ServerId?: string | null
+  SessionInfo?: z.infer<typeof SessionInfoSchema>
+  User?: z.infer<typeof UserDtoSchema>
+}
+
+const DayOfWeekSchema = z
+  .enum(['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'])
+  .openapi('DayOfWeek')
+
+const NameGuidPairSchema = z
+  .strictObject({ Id: z.uuid().exactOptional(), Name: z.string().nullable().exactOptional() })
+  .openapi({ required: [] })
+  .openapi('NameGuidPair')
+
+const ProgramAudioSchema = z
+  .enum(['Mono', 'Stereo', 'Dolby', 'DolbyDigital', 'Thx', 'Atmos'])
+  .openapi('ProgramAudio')
+
+const ChannelTypeSchema = z
+  .enum(['TV', 'Radio'])
+  .openapi({ description: 'Enum ChannelType.' })
+  .openapi('ChannelType')
+
+const ChapterInfoSchema = z
+  .strictObject({
+    ImageDateModified: z.iso.datetime({ offset: true }).exactOptional(),
+    ImagePath: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the image path.' }),
+    ImageTag: z.string().nullable().exactOptional(),
+    Name: z.string().nullable().exactOptional().openapi({ description: 'Gets or sets the name.' }),
+    StartPositionTicks: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Gets or sets the start position ticks.',
+      }),
+  })
+  .openapi({ description: 'Class ChapterInfo.', required: [] })
+  .openapi('ChapterInfo')
+
+const ExternalUrlSchema = z
+  .strictObject({
+    Name: z.string().nullable().exactOptional().openapi({ description: 'Gets or sets the name.' }),
+    Url: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the type of the item.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('ExternalUrl')
+
+const ImageOrientationSchema = z
+  .enum([
+    'TopLeft',
+    'TopRight',
+    'BottomRight',
+    'BottomLeft',
+    'LeftTop',
+    'RightTop',
+    'RightBottom',
+    'LeftBottom',
+  ])
+  .openapi('ImageOrientation')
+
+const IsoTypeSchema = z
+  .enum(['Dvd', 'BluRay'])
+  .openapi({ description: 'Enum IsoType.' })
+  .openapi('IsoType')
+
+const LocationTypeSchema = z
+  .enum(['FileSystem', 'Remote', 'Virtual', 'Offline'])
+  .openapi({ description: 'Enum LocationType.' })
+  .openapi('LocationType')
+
+const MetadataFieldSchema = z
+  .enum([
+    'Cast',
+    'Genres',
+    'ProductionLocations',
+    'Studios',
+    'Tags',
+    'Name',
+    'Overview',
+    'Runtime',
+    'OfficialRating',
+  ])
+  .openapi({ description: 'Enum MetadataFields.' })
+  .openapi('MetadataField')
+
+const MediaProtocolSchema = z
+  .enum(['File', 'Http', 'Rtmp', 'Rtsp', 'Udp', 'Rtp', 'Ftp'])
+  .openapi('MediaProtocol')
+
+const MediaAttachmentSchema = z
+  .strictObject({
+    Codec: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the codec.' }),
+    CodecTag: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the codec tag.' }),
+    Comment: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the comment.' }),
+    DeliveryUrl: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the delivery URL.' }),
+    FileName: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the filename.' }),
+    Index: z.int32().exactOptional().openapi({ description: 'Gets or sets the index.' }),
+    MimeType: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the MIME type.' }),
+  })
+  .openapi({ description: 'Class MediaAttachment.', required: [] })
+  .openapi('MediaAttachment')
+
+const MediaStreamTypeSchema = z
+  .enum(['Audio', 'Video', 'Subtitle', 'EmbeddedImage'])
+  .openapi({ description: 'Enum MediaStreamType.' })
+  .openapi('MediaStreamType')
+
+const MediaStreamSchema = z
+  .strictObject({
+    AspectRatio: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the aspect ratio.' }),
+    AverageFrameRate: z
+      .float32()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the average frame rate.' }),
+    BitDepth: z
+      .int32()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the bit depth.' }),
+    BitRate: z
+      .int32()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the bit rate.' }),
+    ChannelLayout: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the channel layout.' }),
+    Channels: z
+      .int32()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the channels.' }),
+    Codec: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the codec.' }),
+    CodecTag: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the codec tag.' }),
+    CodecTimeBase: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the codec time base.' }),
+    ColorPrimaries: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the color primaries.' }),
+    ColorRange: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the color range.' }),
+    ColorSpace: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the color space.' }),
+    ColorTransfer: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the color transfer.' }),
+    Comment: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the comment.' }),
+    DeliveryMethod: SubtitleDeliveryMethodSchema.exactOptional(),
+    DeliveryUrl: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the delivery URL.' }),
+    DisplayTitle: z.string().nullable().exactOptional().openapi({ readOnly: true }),
+    Height: z
+      .int32()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the height.' }),
+    Index: z.int32().exactOptional().openapi({ description: 'Gets or sets the index.' }),
+    IsAVC: z.boolean().nullable().exactOptional(),
+    IsAnamorphic: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets a value indicating whether this instance is anamorphic.' }),
+    IsDefault: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Gets or sets a value indicating whether this instance is default.',
+      }),
+    IsExternal: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Gets or sets a value indicating whether this instance is external.',
+      }),
+    IsExternalUrl: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Gets or sets a value indicating whether this instance is external URL.',
+      }),
+    IsForced: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets a value indicating whether this instance is forced.' }),
+    IsInterlaced: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Gets or sets a value indicating whether this instance is interlaced.',
+      }),
+    IsTextSubtitleStream: z.boolean().exactOptional().openapi({ readOnly: true }),
+    Language: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the language.' }),
+    Level: z
+      .float64()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the level.' }),
+    NalLengthSize: z.string().nullable().exactOptional(),
+    PacketLength: z
+      .int32()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the length of the packet.' }),
+    Path: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the filename.' }),
+    PixelFormat: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the pixel format.' }),
+    Profile: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the profile.' }),
+    RealFrameRate: z
+      .float32()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the real frame rate.' }),
+    RefFrames: z
+      .int32()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the reference frames.' }),
+    SampleRate: z
+      .int32()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the sample rate.' }),
+    Score: z.int32().nullable().exactOptional().openapi({ description: 'Gets or sets the score.' }),
+    SupportsExternalStream: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Gets or sets a value indicating whether [supports external stream].',
+      }),
+    TimeBase: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the time base.' }),
+    Title: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the title.' }),
+    Type: MediaStreamTypeSchema.exactOptional(),
+    VideoRange: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the video range.', readOnly: true }),
+    Width: z.int32().nullable().exactOptional().openapi({ description: 'Gets or sets the width.' }),
+    localizedDefault: z.string().nullable().exactOptional(),
+    localizedForced: z.string().nullable().exactOptional(),
+    localizedUndefined: z.string().nullable().exactOptional(),
+  })
+  .openapi({ description: 'Class MediaStream.', required: [] })
+  .openapi('MediaStream')
+
+const TransportStreamTimestampSchema = z
+  .enum(['None', 'Zero', 'Valid'])
+  .openapi('TransportStreamTimestamp')
+
+const MediaSourceTypeSchema = z
+  .enum(['Default', 'Grouping', 'Placeholder'])
+  .openapi('MediaSourceType')
+
+const Video3DFormatSchema = z
+  .enum(['HalfSideBySide', 'FullSideBySide', 'FullTopAndBottom', 'HalfTopAndBottom', 'MVC'])
+  .openapi('Video3DFormat')
+
+const VideoTypeSchema = z
+  .enum(['VideoFile', 'Iso', 'Dvd', 'BluRay'])
+  .openapi({ description: 'Enum VideoType.' })
+  .openapi('VideoType')
+
+const MediaSourceInfoSchema = z
+  .strictObject({
+    AnalyzeDurationMs: z.int32().nullable().exactOptional(),
+    Bitrate: z.int32().nullable().exactOptional(),
+    BufferMs: z.int32().nullable().exactOptional(),
+    Container: z.string().nullable().exactOptional(),
+    DefaultAudioStreamIndex: z.int32().nullable().exactOptional(),
+    DefaultSubtitleStreamIndex: z.int32().nullable().exactOptional(),
+    ETag: z.string().nullable().exactOptional(),
+    EncoderPath: z.string().nullable().exactOptional(),
+    EncoderProtocol: MediaProtocolSchema.exactOptional(),
+    Formats: z.array(z.string()).nullable().exactOptional(),
+    GenPtsInput: z.boolean().exactOptional(),
+    Id: z.string().nullable().exactOptional(),
+    IgnoreDts: z.boolean().exactOptional(),
+    IgnoreIndex: z.boolean().exactOptional(),
+    IsInfiniteStream: z.boolean().exactOptional(),
+    IsRemote: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Differentiate internet url vs local network.' }),
+    IsoType: IsoTypeSchema.exactOptional(),
+    LiveStreamId: z.string().nullable().exactOptional(),
+    MediaAttachments: z.array(MediaAttachmentSchema).nullable().exactOptional(),
+    MediaStreams: z.array(MediaStreamSchema).nullable().exactOptional(),
+    Name: z.string().nullable().exactOptional(),
+    OpenToken: z.string().nullable().exactOptional(),
+    Path: z.string().nullable().exactOptional(),
+    Protocol: MediaProtocolSchema.exactOptional(),
+    ReadAtNativeFramerate: z.boolean().exactOptional(),
+    RequiredHttpHeaders: z.record(z.string(), z.string()).nullable().exactOptional(),
+    RequiresClosing: z.boolean().exactOptional(),
+    RequiresLooping: z.boolean().exactOptional(),
+    RequiresOpening: z.boolean().exactOptional(),
+    RunTimeTicks: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({ type: ['integer', 'null'], format: 'int64' }),
+    Size: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({ type: ['integer', 'null'], format: 'int64' }),
+    SupportsDirectPlay: z.boolean().exactOptional(),
+    SupportsDirectStream: z.boolean().exactOptional(),
+    SupportsProbing: z.boolean().exactOptional(),
+    SupportsTranscoding: z.boolean().exactOptional(),
+    Timestamp: TransportStreamTimestampSchema.exactOptional(),
+    TranscodingContainer: z.string().nullable().exactOptional(),
+    TranscodingSubProtocol: z.string().nullable().exactOptional(),
+    TranscodingUrl: z.string().nullable().exactOptional(),
+    Type: MediaSourceTypeSchema.exactOptional(),
+    Video3DFormat: Video3DFormatSchema.exactOptional(),
+    VideoType: VideoTypeSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('MediaSourceInfo')
+
+const BaseItemPersonSchema = z
+  .strictObject({
+    Id: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the identifier.' }),
+    ImageBlurHashes: z
+      .object({
+        Art: z.record(z.string(), z.string()).exactOptional(),
+        Backdrop: z.record(z.string(), z.string()).exactOptional(),
+        Banner: z.record(z.string(), z.string()).exactOptional(),
+        Box: z.record(z.string(), z.string()).exactOptional(),
+        BoxRear: z.record(z.string(), z.string()).exactOptional(),
+        Chapter: z.record(z.string(), z.string()).exactOptional(),
+        Disc: z.record(z.string(), z.string()).exactOptional(),
+        Logo: z.record(z.string(), z.string()).exactOptional(),
+        Menu: z.record(z.string(), z.string()).exactOptional(),
+        Primary: z.record(z.string(), z.string()).exactOptional(),
+        Profile: z.record(z.string(), z.string()).exactOptional(),
+        Screenshot: z.record(z.string(), z.string()).exactOptional(),
+        Thumb: z.record(z.string(), z.string()).exactOptional(),
+      })
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the primary image blurhash.', required: [] }),
+    Name: z.string().nullable().exactOptional().openapi({ description: 'Gets or sets the name.' }),
+    PrimaryImageTag: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the primary image tag.' }),
+    Role: z.string().nullable().exactOptional().openapi({ description: 'Gets or sets the role.' }),
+    Type: z.string().nullable().exactOptional().openapi({ description: 'Gets or sets the type.' }),
+  })
+  .openapi({
+    description: 'This is used by the api to get information about a Person within a BaseItem.',
+    required: [],
+  })
+  .openapi('BaseItemPerson')
+
+const PlayAccessSchema = z.enum(['Full', 'None']).openapi('PlayAccess')
+
+const UserItemDataDtoSchema = z
+  .strictObject({
+    IsFavorite: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Gets or sets a value indicating whether this instance is favorite.',
+      }),
+    ItemId: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the item identifier.' }),
+    Key: z.string().nullable().exactOptional().openapi({ description: 'Gets or sets the key.' }),
+    LastPlayedDate: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the last played date.' }),
+    Likes: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Gets or sets a value indicating whether this MediaBrowser.Model.Dto.UserItemDataDto is likes.',
+      }),
+    PlayCount: z.int32().exactOptional().openapi({ description: 'Gets or sets the play count.' }),
+    PlaybackPositionTicks: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Gets or sets the playback position ticks.',
+      }),
+    Played: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Gets or sets a value indicating whether this MediaBrowser.Model.Dto.UserItemDataDto is played.',
+      }),
+    PlayedPercentage: z
+      .float64()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the played percentage.' }),
+    Rating: z
+      .float64()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the rating.' }),
+    UnplayedItemCount: z
+      .int32()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the unplayed item count.' }),
+  })
+  .openapi({ description: 'Class UserItemDataDto.', required: [] })
+  .openapi('UserItemDataDto')
+
+type BaseItemDtoType = {
+  AirDays?: z.infer<typeof DayOfWeekSchema>[] | null
+  AirTime?: string | null
+  AirsAfterSeasonNumber?: number | null
+  AirsBeforeEpisodeNumber?: number | null
+  AirsBeforeSeasonNumber?: number | null
+  Album?: string | null
+  AlbumArtist?: string | null
+  AlbumArtists?: z.infer<typeof NameGuidPairSchema>[] | null
+  AlbumCount?: number | null
+  AlbumId?: string | null
+  AlbumPrimaryImageTag?: string | null
+  Altitude?: number | null
+  Aperture?: number | null
+  ArtistCount?: number | null
+  ArtistItems?: z.infer<typeof NameGuidPairSchema>[] | null
+  Artists?: string[] | null
+  AspectRatio?: string | null
+  Audio?: z.infer<typeof ProgramAudioSchema>
+  BackdropImageTags?: string[] | null
+  CameraMake?: string | null
+  CameraModel?: string | null
+  CanDelete?: boolean | null
+  CanDownload?: boolean | null
+  ChannelId?: string | null
+  ChannelName?: string | null
+  ChannelNumber?: string | null
+  ChannelPrimaryImageTag?: string | null
+  ChannelType?: z.infer<typeof ChannelTypeSchema>
+  Chapters?: z.infer<typeof ChapterInfoSchema>[] | null
+  ChildCount?: number | null
+  CollectionType?: string | null
+  CommunityRating?: number | null
+  CompletionPercentage?: number | null
+  Container?: string | null
+  CriticRating?: number | null
+  CumulativeRunTimeTicks?: bigint | null
+  CurrentProgram?: BaseItemDtoType
+  CustomRating?: string | null
+  DateCreated?: string | null
+  DateLastMediaAdded?: string | null
+  DisplayOrder?: string | null
+  DisplayPreferencesId?: string | null
+  EnableMediaSourceDisplay?: boolean | null
+  EndDate?: string | null
+  EpisodeCount?: number | null
+  EpisodeTitle?: string | null
+  Etag?: string | null
+  ExposureTime?: number | null
+  ExternalUrls?: z.infer<typeof ExternalUrlSchema>[] | null
+  ExtraType?: string | null
+  FocalLength?: number | null
+  ForcedSortName?: string | null
+  GenreItems?: z.infer<typeof NameGuidPairSchema>[] | null
+  Genres?: string[] | null
+  HasSubtitles?: boolean | null
+  Height?: number | null
+  Id?: string
+  ImageBlurHashes?: {
+    Art?: { [key: string]: string }
+    Backdrop?: { [key: string]: string }
+    Banner?: { [key: string]: string }
+    Box?: { [key: string]: string }
+    BoxRear?: { [key: string]: string }
+    Chapter?: { [key: string]: string }
+    Disc?: { [key: string]: string }
+    Logo?: { [key: string]: string }
+    Menu?: { [key: string]: string }
+    Primary?: { [key: string]: string }
+    Profile?: { [key: string]: string }
+    Screenshot?: { [key: string]: string }
+    Thumb?: { [key: string]: string }
+  } | null
+  ImageOrientation?: z.infer<typeof ImageOrientationSchema>
+  ImageTags?: { [key: string]: string } | null
+  IndexNumber?: number | null
+  IndexNumberEnd?: number | null
+  IsFolder?: boolean | null
+  IsHD?: boolean | null
+  IsKids?: boolean | null
+  IsLive?: boolean | null
+  IsMovie?: boolean | null
+  IsNews?: boolean | null
+  IsPlaceHolder?: boolean | null
+  IsPremiere?: boolean | null
+  IsRepeat?: boolean | null
+  IsSeries?: boolean | null
+  IsSports?: boolean | null
+  IsoSpeedRating?: number | null
+  IsoType?: z.infer<typeof IsoTypeSchema>
+  Latitude?: number | null
+  LocalTrailerCount?: number | null
+  LocationType?: z.infer<typeof LocationTypeSchema>
+  LockData?: boolean | null
+  LockedFields?: z.infer<typeof MetadataFieldSchema>[] | null
+  Longitude?: number | null
+  MediaSourceCount?: number | null
+  MediaSources?: z.infer<typeof MediaSourceInfoSchema>[] | null
+  MediaStreams?: z.infer<typeof MediaStreamSchema>[] | null
+  MediaType?: string | null
+  MovieCount?: number | null
+  MusicVideoCount?: number | null
+  Name?: string | null
+  Number?: string | null
+  OfficialRating?: string | null
+  OriginalTitle?: string | null
+  Overview?: string | null
+  ParentArtImageTag?: string | null
+  ParentArtItemId?: string | null
+  ParentBackdropImageTags?: string[] | null
+  ParentBackdropItemId?: string | null
+  ParentId?: string | null
+  ParentIndexNumber?: number | null
+  ParentLogoImageTag?: string | null
+  ParentLogoItemId?: string | null
+  ParentPrimaryImageItemId?: string | null
+  ParentPrimaryImageTag?: string | null
+  ParentThumbImageTag?: string | null
+  ParentThumbItemId?: string | null
+  PartCount?: number | null
+  Path?: string | null
+  People?: z.infer<typeof BaseItemPersonSchema>[] | null
+  PlayAccess?: z.infer<typeof PlayAccessSchema>
+  PlaylistItemId?: string | null
+  PreferredMetadataCountryCode?: string | null
+  PreferredMetadataLanguage?: string | null
+  PremiereDate?: string | null
+  PrimaryImageAspectRatio?: number | null
+  ProductionLocations?: string[] | null
+  ProductionYear?: number | null
+  ProgramCount?: number | null
+  ProgramId?: string | null
+  ProviderIds?: { [key: string]: string } | null
+  RecursiveItemCount?: number | null
+  RemoteTrailers?: z.infer<typeof MediaUrlSchema>[] | null
+  RunTimeTicks?: bigint | null
+  ScreenshotImageTags?: string[] | null
+  SeasonId?: string | null
+  SeasonName?: string | null
+  SeriesCount?: number | null
+  SeriesId?: string | null
+  SeriesName?: string | null
+  SeriesPrimaryImageTag?: string | null
+  SeriesStudio?: string | null
+  SeriesThumbImageTag?: string | null
+  SeriesTimerId?: string | null
+  ServerId?: string | null
+  ShutterSpeed?: number | null
+  Software?: string | null
+  SongCount?: number | null
+  SortName?: string | null
+  SourceType?: string | null
+  SpecialFeatureCount?: number | null
+  StartDate?: string | null
+  Status?: string | null
+  Studios?: z.infer<typeof NameGuidPairSchema>[] | null
+  SupportsSync?: boolean | null
+  Taglines?: string[] | null
+  Tags?: string[] | null
+  TimerId?: string | null
+  TrailerCount?: number | null
+  Type?: string | null
+  UserData?: z.infer<typeof UserItemDataDtoSchema>
+  Video3DFormat?: z.infer<typeof Video3DFormatSchema>
+  VideoType?: z.infer<typeof VideoTypeSchema>
+  Width?: number | null
+}
+
+const DeviceInfoSchema = z
+  .strictObject({
+    AppName: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the name of the application.' }),
+    AppVersion: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the application version.' }),
+    Capabilities: ClientCapabilitiesSchema.exactOptional(),
+    DateLastActivity: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the date last modified.' }),
+    IconUrl: z.string().nullable().exactOptional(),
+    Id: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the identifier.' }),
+    LastUserId: z
+      .uuid()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the last user identifier.' }),
+    LastUserName: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the last name of the user.' }),
+    Name: z.string().nullable().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('DeviceInfo')
+
+type DeviceInfoQueryResultType = {
+  Items?: z.infer<typeof DeviceInfoSchema>[] | null
+  StartIndex?: number
+  TotalRecordCount?: number
+}
+
+type RemoteSearchResultType = {
+  AlbumArtist?: RemoteSearchResultType
+  Artists?: RemoteSearchResultType[] | null
+  ImageUrl?: string | null
+  IndexNumber?: number | null
+  IndexNumberEnd?: number | null
+  Name?: string | null
+  Overview?: string | null
+  ParentIndexNumber?: number | null
+  PremiereDate?: string | null
+  ProductionYear?: number | null
+  ProviderIds?: { [key: string]: string } | null
+  SearchProviderName?: string | null
+}
+
+const KeepUntilSchema = z
+  .enum(['UntilDeleted', 'UntilSpaceNeeded', 'UntilWatched', 'UntilDate'])
+  .openapi('KeepUntil')
+
+const RecordingStatusSchema = z
+  .enum(['New', 'InProgress', 'Completed', 'Cancelled', 'ConflictedOk', 'ConflictedNotOk', 'Error'])
+  .openapi('RecordingStatus')
+
+const TimerInfoDtoSchema = z
+  .strictObject({
+    ChannelId: z.uuid().exactOptional().openapi({ description: 'ChannelId of the recording.' }),
+    ChannelName: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'ChannelName of the recording.' }),
+    ChannelPrimaryImageTag: z.string().nullable().exactOptional(),
+    EndDate: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'The end date of the recording, in UTC.' }),
+    ExternalChannelId: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the external channel identifier.' }),
+    ExternalId: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the external identifier.' }),
+    ExternalProgramId: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the external program identifier.' }),
+    ExternalSeriesTimerId: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the external series timer identifier.' }),
+    Id: z.string().nullable().exactOptional().openapi({ description: 'Id of the recording.' }),
+    IsPostPaddingRequired: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Gets or sets a value indicating whether this instance is post padding required.',
+      }),
+    IsPrePaddingRequired: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Gets or sets a value indicating whether this instance is pre padding required.',
+      }),
+    KeepUntil: KeepUntilSchema.exactOptional(),
+    Name: z.string().nullable().exactOptional().openapi({ description: 'Name of the recording.' }),
+    Overview: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Description of the recording.' }),
+    ParentBackdropImageTags: z
+      .array(z.string())
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the parent backdrop image tags.' }),
+    ParentBackdropItemId: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'If the item does not have any backdrops, this will hold the Id of the Parent that has one.',
+      }),
+    PostPaddingSeconds: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the post padding seconds.' }),
+    PrePaddingSeconds: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the pre padding seconds.' }),
+    Priority: z.int32().exactOptional().openapi({ description: 'Gets or sets the priority.' }),
+    ProgramId: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the program identifier.' }),
+    ProgramInfo: BaseItemDtoSchema.exactOptional(),
+    RunTimeTicks: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description: 'Gets or sets the run time ticks.',
+      }),
+    SeriesTimerId: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the series timer identifier.' }),
+    ServerId: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the server identifier.' }),
+    ServiceName: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the name of the service.' }),
+    StartDate: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'The start date of the recording, in UTC.' }),
+    Status: RecordingStatusSchema.exactOptional(),
+    Type: z.string().nullable().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('TimerInfoDto')
+
+type TimerInfoDtoQueryResultType = {
+  Items?: z.infer<typeof TimerInfoDtoSchema>[] | null
+  StartIndex?: number
+  TotalRecordCount?: number
+}
+
+const LogLevelSchema = z
+  .enum(['Trace', 'Debug', 'Information', 'Warning', 'Error', 'Critical', 'None'])
+  .openapi('LogLevel')
+
+const ActivityLogEntrySchema = z
+  .strictObject({
+    Date: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the date.' }),
+    Id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64', description: 'Gets or sets the identifier.' }),
+    ItemId: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the item identifier.' }),
+    Name: z.string().nullable().exactOptional().openapi({ description: 'Gets or sets the name.' }),
+    Overview: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the overview.' }),
+    Severity: LogLevelSchema.exactOptional(),
+    ShortOverview: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the short overview.' }),
+    Type: z.string().nullable().exactOptional().openapi({ description: 'Gets or sets the type.' }),
+    UserId: z.uuid().exactOptional().openapi({ description: 'Gets or sets the user identifier.' }),
+    UserPrimaryImageTag: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ deprecated: true, description: 'Gets or sets the user primary image tag.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('ActivityLogEntry')
+
+const ActivityLogEntryQueryResultSchema = z
+  .strictObject({
+    Items: z
+      .array(ActivityLogEntrySchema)
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the items.' }),
+    StartIndex: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'The index of the first record in Items.' }),
+    TotalRecordCount: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'The total number of records available.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('ActivityLogEntryQueryResult')
+
+const MediaPathInfoSchema = z
+  .strictObject({
+    NetworkPath: z.string().nullable().exactOptional(),
+    Path: z.string().nullable().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('MediaPathInfo')
+
+const ImageTypeSchema = z
+  .enum([
+    'Primary',
+    'Art',
+    'Backdrop',
+    'Banner',
+    'Logo',
+    'Thumb',
+    'Disc',
+    'Box',
+    'Screenshot',
+    'Menu',
+    'Chapter',
+    'BoxRear',
+    'Profile',
+  ])
+  .openapi({ description: 'Enum ImageType.' })
+  .openapi('ImageType')
+
+const ImageOptionSchema = z
+  .strictObject({
+    Limit: z.int32().exactOptional().openapi({ description: 'Gets or sets the limit.' }),
+    MinWidth: z.int32().exactOptional().openapi({ description: 'Gets or sets the minimum width.' }),
+    Type: ImageTypeSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ImageOption')
+
+const TypeOptionsSchema = z
+  .strictObject({
+    ImageFetcherOrder: z.array(z.string()).nullable().exactOptional(),
+    ImageFetchers: z.array(z.string()).nullable().exactOptional(),
+    ImageOptions: z.array(ImageOptionSchema).nullable().exactOptional(),
+    MetadataFetcherOrder: z.array(z.string()).nullable().exactOptional(),
+    MetadataFetchers: z.array(z.string()).nullable().exactOptional(),
+    Type: z.string().nullable().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('TypeOptions')
+
+const LibraryOptionsSchema = z
+  .strictObject({
+    AutomaticRefreshIntervalDays: z.int32().exactOptional(),
+    DisabledLocalMetadataReaders: z.array(z.string()).nullable().exactOptional(),
+    DisabledSubtitleFetchers: z.array(z.string()).nullable().exactOptional(),
+    EnableAutomaticSeriesGrouping: z.boolean().exactOptional(),
+    EnableChapterImageExtraction: z.boolean().exactOptional(),
+    EnableEmbeddedEpisodeInfos: z.boolean().exactOptional(),
+    EnableEmbeddedTitles: z.boolean().exactOptional(),
+    EnableInternetProviders: z.boolean().exactOptional(),
+    EnablePhotos: z.boolean().exactOptional(),
+    EnableRealtimeMonitor: z.boolean().exactOptional(),
+    ExtractChapterImagesDuringLibraryScan: z.boolean().exactOptional(),
+    LocalMetadataReaderOrder: z.array(z.string()).nullable().exactOptional(),
+    MetadataCountryCode: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the metadata country code.' }),
+    MetadataSavers: z.array(z.string()).nullable().exactOptional(),
+    PathInfos: z.array(MediaPathInfoSchema).nullable().exactOptional(),
+    PreferredMetadataLanguage: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the preferred metadata language.' }),
+    RequirePerfectSubtitleMatch: z.boolean().exactOptional(),
+    SaveLocalMetadata: z.boolean().exactOptional(),
+    SaveSubtitlesWithMedia: z.boolean().exactOptional(),
+    SeasonZeroDisplayName: z.string().nullable().exactOptional(),
+    SkipSubtitlesIfAudioTrackMatches: z.boolean().exactOptional(),
+    SkipSubtitlesIfEmbeddedSubtitlesPresent: z.boolean().exactOptional(),
+    SubtitleDownloadLanguages: z.array(z.string()).nullable().exactOptional(),
+    SubtitleFetcherOrder: z.array(z.string()).nullable().exactOptional(),
+    TypeOptions: z.array(TypeOptionsSchema).nullable().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('LibraryOptions')
+
+const AddVirtualFolderDtoSchema = z
+  .strictObject({ LibraryOptions: LibraryOptionsSchema.exactOptional() })
+  .openapi({ description: 'Add virtual folder dto.', required: [] })
+  .openapi('AddVirtualFolderDto')
+
+const SongInfoSchema = z
+  .strictObject({
+    Album: z.string().nullable().exactOptional(),
+    AlbumArtists: z.array(z.string()).nullable().exactOptional(),
+    Artists: z.array(z.string()).nullable().exactOptional(),
+    IndexNumber: z.int32().nullable().exactOptional(),
+    IsAutomated: z.boolean().exactOptional(),
+    MetadataCountryCode: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the metadata country code.' }),
+    MetadataLanguage: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the metadata language.' }),
+    Name: z.string().nullable().exactOptional().openapi({ description: 'Gets or sets the name.' }),
+    ParentIndexNumber: z.int32().nullable().exactOptional(),
+    Path: z.string().nullable().exactOptional().openapi({ description: 'Gets or sets the path.' }),
+    PremiereDate: z.iso.datetime({ offset: true }).nullable().exactOptional(),
+    ProviderIds: z
+      .record(z.string(), z.string())
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the provider ids.' }),
+    Year: z.int32().nullable().exactOptional().openapi({ description: 'Gets or sets the year.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('SongInfo')
+
+const AlbumInfoSchema = z
+  .strictObject({
+    AlbumArtists: z
+      .array(z.string())
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the album artist.' }),
+    ArtistProviderIds: z
+      .record(z.string(), z.string())
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the artist provider ids.' }),
+    IndexNumber: z.int32().nullable().exactOptional(),
+    IsAutomated: z.boolean().exactOptional(),
+    MetadataCountryCode: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the metadata country code.' }),
+    MetadataLanguage: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the metadata language.' }),
+    Name: z.string().nullable().exactOptional().openapi({ description: 'Gets or sets the name.' }),
+    ParentIndexNumber: z.int32().nullable().exactOptional(),
+    Path: z.string().nullable().exactOptional().openapi({ description: 'Gets or sets the path.' }),
+    PremiereDate: z.iso.datetime({ offset: true }).nullable().exactOptional(),
+    ProviderIds: z
+      .record(z.string(), z.string())
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the provider ids.' }),
+    SongInfos: z.array(SongInfoSchema).nullable().exactOptional(),
+    Year: z.int32().nullable().exactOptional().openapi({ description: 'Gets or sets the year.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('AlbumInfo')
+
+const AlbumInfoRemoteSearchQuerySchema = z
+  .strictObject({
+    IncludeDisabledProviders: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Gets or sets a value indicating whether disabled providers should be included.',
+      }),
+    ItemId: z.uuid().exactOptional(),
+    SearchInfo: AlbumInfoSchema.exactOptional(),
+    SearchProviderName: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Will only search within the given provider when set.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('AlbumInfoRemoteSearchQuery')
+
+const AllThemeMediaResultSchema: z.ZodType<AllThemeMediaResultType> = z
+  .strictObject({
+    SoundtrackSongsResult: ThemeMediaResultSchema.exactOptional(),
+    ThemeSongsResult: ThemeMediaResultSchema.exactOptional(),
+    ThemeVideosResult: ThemeMediaResultSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('AllThemeMediaResult')
+
+const ArchitectureSchema = z.enum(['X86', 'X64', 'Arm', 'Arm64', 'Wasm']).openapi('Architecture')
+
+const ArtistInfoSchema = z
+  .strictObject({
+    IndexNumber: z.int32().nullable().exactOptional(),
+    IsAutomated: z.boolean().exactOptional(),
+    MetadataCountryCode: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the metadata country code.' }),
+    MetadataLanguage: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the metadata language.' }),
+    Name: z.string().nullable().exactOptional().openapi({ description: 'Gets or sets the name.' }),
+    ParentIndexNumber: z.int32().nullable().exactOptional(),
+    Path: z.string().nullable().exactOptional().openapi({ description: 'Gets or sets the path.' }),
+    PremiereDate: z.iso.datetime({ offset: true }).nullable().exactOptional(),
+    ProviderIds: z
+      .record(z.string(), z.string())
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the provider ids.' }),
+    SongInfos: z.array(SongInfoSchema).nullable().exactOptional(),
+    Year: z.int32().nullable().exactOptional().openapi({ description: 'Gets or sets the year.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('ArtistInfo')
+
+const ArtistInfoRemoteSearchQuerySchema = z
+  .strictObject({
+    IncludeDisabledProviders: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Gets or sets a value indicating whether disabled providers should be included.',
+      }),
+    ItemId: z.uuid().exactOptional(),
+    SearchInfo: ArtistInfoSchema.exactOptional(),
+    SearchProviderName: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Will only search within the given provider when set.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('ArtistInfoRemoteSearchQuery')
+
+const AuthenticateUserByNameSchema = z
+  .strictObject({
+    Password: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the sha1-hashed password.' }),
+    Pw: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the plain text password.' }),
+    Username: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the username.' }),
+  })
+  .openapi({ description: 'The authenticate user by name request body.', required: [] })
+  .openapi('AuthenticateUserByName')
+
+const AuthenticationInfoSchema = z
+  .strictObject({
+    AccessToken: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the access token.' }),
+    AppName: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the name of the application.' }),
+    AppVersion: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the application version.' }),
+    DateCreated: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the date created.' }),
+    DateLastActivity: z.iso.datetime({ offset: true }).exactOptional(),
+    DateRevoked: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the date revoked.' }),
+    DeviceId: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the device identifier.' }),
+    DeviceName: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the name of the device.' }),
+    Id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64', description: 'Gets or sets the identifier.' }),
+    IsActive: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets a value indicating whether this instance is active.' }),
+    UserId: z.uuid().exactOptional().openapi({ description: 'Gets or sets the user identifier.' }),
+    UserName: z.string().nullable().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('AuthenticationInfo')
+
+const AuthenticationInfoQueryResultSchema = z
+  .strictObject({
+    Items: z
+      .array(AuthenticationInfoSchema)
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the items.' }),
+    StartIndex: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'The index of the first record in Items.' }),
+    TotalRecordCount: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'The total number of records available.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('AuthenticationInfoQueryResult')
+
+const AuthenticationResultSchema: z.ZodType<AuthenticationResultType> = z
   .strictObject({
     AccessToken: z.string().nullable().exactOptional(),
     ServerId: z.string().nullable().exactOptional(),
@@ -3302,44 +3497,7 @@ const DefaultDirectoryBrowserInfoDtoSchema = z
   .openapi({ description: 'Default directory browser info.', required: [] })
   .openapi('DefaultDirectoryBrowserInfoDto')
 
-const DeviceInfoSchema = z
-  .strictObject({
-    AppName: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the name of the application.' }),
-    AppVersion: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the application version.' }),
-    Capabilities: ClientCapabilitiesSchema.exactOptional(),
-    DateLastActivity: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the date last modified.' }),
-    IconUrl: z.string().nullable().exactOptional(),
-    Id: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the identifier.' }),
-    LastUserId: z
-      .uuid()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the last user identifier.' }),
-    LastUserName: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the last name of the user.' }),
-    Name: z.string().nullable().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('DeviceInfo')
-
-const DeviceInfoQueryResultSchema = z
+const DeviceInfoQueryResultSchema: z.ZodType<DeviceInfoQueryResultType> = z
   .strictObject({
     Items: z
       .array(DeviceInfoSchema)
@@ -4160,10 +4318,6 @@ const JoinGroupRequestDtoSchema = z
   })
   .openapi({ description: 'Class JoinGroupRequestDto.', required: [] })
   .openapi('JoinGroupRequestDto')
-
-const KeepUntilSchema = z
-  .enum(['UntilDeleted', 'UntilSpaceNeeded', 'UntilWatched', 'UntilDate'])
-  .openapi('KeepUntil')
 
 const LibraryOptionInfoDtoSchema = z
   .strictObject({
@@ -5533,6 +5687,7 @@ const ProblemDetailsSchema = z
     type: z.string().nullable().exactOptional(),
   })
   .catchall(z.any())
+  .openapi({ required: [] })
   .openapi('ProblemDetails')
 
 const PublicSystemInfoSchema = z
@@ -5718,10 +5873,6 @@ const RecommendationDtoSchema = z
   })
   .openapi({ required: [] })
   .openapi('RecommendationDto')
-
-const RecordingStatusSchema = z
-  .enum(['New', 'InProgress', 'Completed', 'Cancelled', 'ConflictedOk', 'ConflictedNotOk', 'Error'])
-  .openapi('RecordingStatus')
 
 const RemoteImageInfoSchema = z
   .strictObject({
@@ -7067,132 +7218,7 @@ const TimerEventInfoSchema = z
   .openapi({ required: [] })
   .openapi('TimerEventInfo')
 
-const TimerInfoDtoSchema = z
-  .strictObject({
-    ChannelId: z.uuid().exactOptional().openapi({ description: 'ChannelId of the recording.' }),
-    ChannelName: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'ChannelName of the recording.' }),
-    ChannelPrimaryImageTag: z.string().nullable().exactOptional(),
-    EndDate: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'The end date of the recording, in UTC.' }),
-    ExternalChannelId: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the external channel identifier.' }),
-    ExternalId: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the external identifier.' }),
-    ExternalProgramId: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the external program identifier.' }),
-    ExternalSeriesTimerId: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the external series timer identifier.' }),
-    Id: z.string().nullable().exactOptional().openapi({ description: 'Id of the recording.' }),
-    IsPostPaddingRequired: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Gets or sets a value indicating whether this instance is post padding required.',
-      }),
-    IsPrePaddingRequired: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Gets or sets a value indicating whether this instance is pre padding required.',
-      }),
-    KeepUntil: KeepUntilSchema.exactOptional(),
-    Name: z.string().nullable().exactOptional().openapi({ description: 'Name of the recording.' }),
-    Overview: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Description of the recording.' }),
-    ParentBackdropImageTags: z
-      .array(z.string())
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the parent backdrop image tags.' }),
-    ParentBackdropItemId: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'If the item does not have any backdrops, this will hold the Id of the Parent that has one.',
-      }),
-    PostPaddingSeconds: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the post padding seconds.' }),
-    PrePaddingSeconds: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the pre padding seconds.' }),
-    Priority: z.int32().exactOptional().openapi({ description: 'Gets or sets the priority.' }),
-    ProgramId: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the program identifier.' }),
-    ProgramInfo: BaseItemDtoSchema.exactOptional(),
-    RunTimeTicks: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .nullable()
-      .exactOptional()
-      .openapi({
-        type: ['integer', 'null'],
-        format: 'int64',
-        description: 'Gets or sets the run time ticks.',
-      }),
-    SeriesTimerId: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the series timer identifier.' }),
-    ServerId: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the server identifier.' }),
-    ServiceName: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the name of the service.' }),
-    StartDate: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'The start date of the recording, in UTC.' }),
-    Status: RecordingStatusSchema.exactOptional(),
-    Type: z.string().nullable().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('TimerInfoDto')
-
-const TimerInfoDtoQueryResultSchema = z
+const TimerInfoDtoQueryResultSchema: z.ZodType<TimerInfoDtoQueryResultType> = z
   .strictObject({
     Items: z
       .array(TimerInfoDtoSchema)

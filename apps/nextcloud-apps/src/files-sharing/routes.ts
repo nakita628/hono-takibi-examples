@@ -722,7 +722,7 @@ const ShareInfoSchema = z
     ]),
     type: z.string(),
     etag: z.string(),
-    children: z.array(z.record(z.string(), z.object({}))).exactOptional(),
+    children: z.array(z.record(z.string(), z.looseObject({}))).exactOptional(),
   })
   .openapi({
     required: [
@@ -1116,12 +1116,10 @@ export const getIndexPhpAppsFilesSharingPublicpreviewTokenRoute = createRoute({
     303: {
       description: 'Redirect to the mime icon url if mimeFallback is true',
       headers: z.object({
-        Location: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
@@ -2598,12 +2596,10 @@ export const getOcsV2PhpAppsFilesSharingApiV1ShareesRoute = createRoute({
         },
       },
       headers: z.object({
-        Link: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        Link: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {

@@ -150,7 +150,7 @@ export const getOcsV2PhpAppsUserLdapApiV1ConfigConfigIDRoute = createRoute({
           schema: z
             .object({
               ocs: z
-                .object({ meta: OCSMetaSchema, data: z.record(z.string(), z.object({})) })
+                .object({ meta: OCSMetaSchema, data: z.record(z.string(), z.looseObject({})) })
                 .openapi({ required: ['meta', 'data'] }),
             })
             .openapi({ required: ['ocs'] }),
@@ -245,7 +245,9 @@ export const putOcsV2PhpAppsUserLdapApiV1ConfigConfigIDRoute = createRoute({
         'application/json': {
           schema: z
             .object({
-              configData: z.record(z.string(), z.object({})).openapi({ description: 'New config' }),
+              configData: z
+                .record(z.string(), z.looseObject({}))
+                .openapi({ description: 'New config' }),
             })
             .openapi({ required: ['configData'] }),
         },
@@ -261,7 +263,7 @@ export const putOcsV2PhpAppsUserLdapApiV1ConfigConfigIDRoute = createRoute({
           schema: z
             .object({
               ocs: z
-                .object({ meta: OCSMetaSchema, data: z.record(z.string(), z.object({})) })
+                .object({ meta: OCSMetaSchema, data: z.record(z.string(), z.looseObject({})) })
                 .openapi({ required: ['meta', 'data'] }),
             })
             .openapi({ required: ['ocs'] }),

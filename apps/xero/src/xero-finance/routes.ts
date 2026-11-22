@@ -1,5 +1,322 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const ContactResponseSchema = z
+  .strictObject({
+    contactId: z.uuid().exactOptional().openapi({ description: 'Xero Identifier of contact' }),
+    contactName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Full name of contact/organisation' }),
+  })
+  .openapi({ required: [] })
+  .openapi('ContactResponse')
+
+const LineItemResponseSchema = z
+  .strictObject({
+    accountId: z.uuid().exactOptional().openapi({ description: 'Xero Identifier of account' }),
+    reportingCode: z.string().exactOptional().openapi({ description: 'Shown if set' }),
+    lineAmount: z
+      .float64()
+      .exactOptional()
+      .openapi({ description: 'Amount of line item', 'x-is-money': true }),
+    accountType: z.string().exactOptional().openapi({ description: 'Account type' }),
+  })
+  .openapi({ required: [] })
+  .openapi('LineItemResponse')
+
+const InvoiceResponseSchema = z
+  .strictObject({
+    invoiceId: z.uuid().exactOptional().openapi({ description: 'Xero Identifier of invoice' }),
+    contact: ContactResponseSchema.exactOptional(),
+    total: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description:
+          'Total of Invoice tax inclusive (i.e. SubTotal + TotalTax); Not included in summary mode',
+        'x-is-money': true,
+      }),
+    lineItems: z
+      .array(LineItemResponseSchema)
+      .exactOptional()
+      .openapi({ description: 'Not included in summary mode' }),
+  })
+  .openapi({ required: [] })
+  .openapi('InvoiceResponse')
+
+const CreditNoteResponseSchema = z
+  .strictObject({
+    creditNoteId: z
+      .uuid()
+      .exactOptional()
+      .openapi({ description: 'Xero Identifier of credit note' }),
+    contact: ContactResponseSchema.exactOptional(),
+    total: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description:
+          'Total of Invoice tax inclusive (i.e. SubTotal + TotalTax); Not included in summary mode',
+        'x-is-money': true,
+      }),
+    lineItems: z
+      .array(LineItemResponseSchema)
+      .exactOptional()
+      .openapi({ description: 'Not included in summary mode' }),
+  })
+  .openapi({ required: [] })
+  .openapi('CreditNoteResponse')
+
+const PrepaymentResponseSchema = z
+  .strictObject({
+    prepaymentId: z
+      .uuid()
+      .exactOptional()
+      .openapi({ description: 'Xero Identifier of prepayment' }),
+    contact: ContactResponseSchema.exactOptional(),
+    total: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description:
+          'Total of Invoice tax inclusive (i.e. SubTotal + TotalTax); Not included in summary mode',
+        'x-is-money': true,
+      }),
+    lineItems: z
+      .array(LineItemResponseSchema)
+      .exactOptional()
+      .openapi({ description: 'Not included in summary mode' }),
+  })
+  .openapi({ required: [] })
+  .openapi('PrepaymentResponse')
+
+const OverpaymentResponseSchema = z
+  .strictObject({
+    overpaymentId: z
+      .uuid()
+      .exactOptional()
+      .openapi({ description: 'Xero Identifier of overpayment' }),
+    contact: ContactResponseSchema.exactOptional(),
+    total: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description:
+          'Total of Invoice tax inclusive (i.e. SubTotal + TotalTax); Not included in summary mode',
+        'x-is-money': true,
+      }),
+    lineItems: z
+      .array(LineItemResponseSchema)
+      .exactOptional()
+      .openapi({ description: 'Not included in summary mode' }),
+  })
+  .openapi({ required: [] })
+  .openapi('OverpaymentResponse')
+
+const PaymentResponseSchema = z
+  .strictObject({
+    paymentId: z.uuid().exactOptional().openapi({ description: 'Xero Identifier of payment' }),
+    batchPaymentId: z
+      .uuid()
+      .exactOptional()
+      .openapi({
+        description:
+          'Xero Identifier of batch payment. Present if the payment was created as part of a batch.',
+      }),
+    date: z.iso
+      .date()
+      .exactOptional()
+      .openapi({ description: 'Date the payment is being made (YYYY-MM-DD) e.g. 2009-09-06' }),
+    amount: z
+      .float64()
+      .exactOptional()
+      .openapi({ description: 'The amount of the payment', 'x-is-money': true }),
+    bankAmount: z
+      .float64()
+      .exactOptional()
+      .openapi({ description: 'The bank amount of the payment', 'x-is-money': true }),
+    currencyRate: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description:
+          'Exchange rate when payment is received. Only used for non base currency invoices and credit notes e.g. 0.7500',
+      }),
+    invoice: InvoiceResponseSchema.exactOptional(),
+    creditNote: CreditNoteResponseSchema.exactOptional(),
+    prepayment: PrepaymentResponseSchema.exactOptional(),
+    overpayment: OverpaymentResponseSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('PaymentResponse')
+
+const BankTransactionResponseSchema = z
+  .strictObject({
+    bankTransactionId: z
+      .uuid()
+      .exactOptional()
+      .openapi({ description: 'Xero Identifier of transaction' }),
+    batchPaymentId: z
+      .uuid()
+      .exactOptional()
+      .openapi({
+        description:
+          'Xero Identifier of batch payment. Present if the transaction is part of a batch.',
+      }),
+    contact: ContactResponseSchema.exactOptional(),
+    date: z.iso.date().exactOptional().openapi({ description: 'Date of transaction - YYYY-MM-DD' }),
+    amount: z
+      .float64()
+      .exactOptional()
+      .openapi({ description: 'Amount of transaction', 'x-is-money': true }),
+    lineItems: z
+      .array(LineItemResponseSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The LineItems element can contain any number of individual LineItem sub-elements. Not included in summary mode',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('BankTransactionResponse')
+
+const StatementLineResponseSchema = z
+  .strictObject({
+    statementLineId: z
+      .uuid()
+      .exactOptional()
+      .openapi({ description: 'Xero Identifier of statement line' }),
+    postedDate: z.iso
+      .date()
+      .exactOptional()
+      .openapi({ description: 'Date of when statement line was posted' }),
+    payee: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Payee description of statement line' }),
+    reference: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Reference description of statement line' }),
+    notes: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Notes description of statement line' }),
+    chequeNo: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Cheque number of statement line' }),
+    amount: z
+      .float64()
+      .exactOptional()
+      .openapi({ description: 'Amount of statement line', 'x-is-money': true }),
+    transactionDate: z.iso
+      .date()
+      .exactOptional()
+      .openapi({ description: 'Transaction date of statement line' }),
+    type: z.string().exactOptional().openapi({ description: 'Type of statement line' }),
+    isReconciled: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Boolean to show if statement line is reconciled' }),
+    isDuplicate: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Boolean to show if statement line is duplicate' }),
+    isDeleted: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Boolean to show if statement line is deleted' }),
+    payments: z
+      .array(PaymentResponseSchema)
+      .exactOptional()
+      .openapi({ description: 'List of payments associated with reconciled statement lines' }),
+    bankTransactions: z
+      .array(BankTransactionResponseSchema)
+      .exactOptional()
+      .openapi({
+        description: 'List of bank transactions associated with reconciled statement lines',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('StatementLineResponse')
+
+type StatementResponseType = {
+  statementId?: string
+  startDate?: string
+  endDate?: string
+  importedDateTimeUtc?: string
+  importSource?: string
+  startBalance?: number
+  endBalance?: number
+  indicativeStartBalance?: number
+  indicativeEndBalance?: number
+  statementLines?: z.infer<typeof StatementLineResponseSchema>[]
+}
+
+const StatementResponseSchema: z.ZodType<StatementResponseType> = z
+  .strictObject({
+    statementId: z.uuid().exactOptional().openapi({ description: 'Xero Identifier of statement' }),
+    startDate: z.iso.date().exactOptional().openapi({ description: 'Start date of statement' }),
+    endDate: z.iso.date().exactOptional().openapi({ description: 'End date of statement' }),
+    importedDateTimeUtc: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'Utc date time of when the statement was imported in Xero' }),
+    importSource: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Identifies where the statement data in Xero was sourced, 1) direct bank feed, automatically loaded from the bank (eg STMTIMPORTSRC/CBAFEED); 2) indirect bank feed, automatically loaded from a 3rd party provider (eg STMTIMPORTSRC/YODLEE); 3) manually uploaded bank feed (eg STMTIMPORTSRC/CSV) or 4) manually entered statement data (STMTIMPORTSRC/MANUAL).',
+      }),
+    startBalance: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description:
+          'Opening balance sourced from imported bank statements (if supplied). Note, for manually uploaded statements, this balance is also manual and usually not supplied. Where not supplied, the value will be 0.',
+        'x-is-money': true,
+      }),
+    endBalance: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description:
+          'Closing balance sourced from imported bank statements (if supplied). Note, for manually uploaded statements, this balance is also manual and usually not supplied. Where not supplied, the value will be 0.',
+        'x-is-money': true,
+      }),
+    indicativeStartBalance: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description:
+          "Opening statement balance calculated in Xero (= bank account conversion balance plus sum of imported bank statement lines). Note: If indicative statement balance doesn't match imported statement balance for the same date, either the conversion (opening at inception) balance in Xero is wrong or there's an error in the bank statement lines in Xero. Ref: https://central.xero.com/s/article/Compare-the-statement-balance-in-Xero-to-your-actual-bank-balance?userregion=true\n",
+        'x-is-money': true,
+      }),
+    indicativeEndBalance: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description:
+          "Closing statement balance calculated in Xero (= bank account conversion balance plus sum of imported bank statement lines). Note: If indicative statement balance doesn't match imported statement balance for the same date, either the conversion (opening at inception) balance in Xero is wrong or there's an error in the bank statement lines in Xero. Ref: https://central.xero.com/s/article/Compare-the-statement-balance-in-Xero-to-your-actual-bank-balance?userregion=true \n",
+        'x-is-money': true,
+      }),
+    statementLines: z
+      .array(StatementLineResponseSchema)
+      .exactOptional()
+      .openapi({ description: 'List of statement lines' }),
+  })
+  .openapi({ required: [] })
+  .openapi('StatementResponse')
+
+type BankStatementAccountingResponseType = {
+  bankAccountId?: string
+  bankAccountName?: string
+  bankAccountCurrencyCode?: string
+  statements?: z.infer<typeof StatementResponseSchema>[]
+}
+
 const ProblemTypeSchema = z
   .enum([
     'NotSet',
@@ -884,304 +1201,7 @@ const IncomeByContactResponseSchema = z
   .openapi({ required: [] })
   .openapi('IncomeByContactResponse')
 
-const ContactResponseSchema = z
-  .strictObject({
-    contactId: z.uuid().exactOptional().openapi({ description: 'Xero Identifier of contact' }),
-    contactName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Full name of contact/organisation' }),
-  })
-  .openapi({ required: [] })
-  .openapi('ContactResponse')
-
-const LineItemResponseSchema = z
-  .strictObject({
-    accountId: z.uuid().exactOptional().openapi({ description: 'Xero Identifier of account' }),
-    reportingCode: z.string().exactOptional().openapi({ description: 'Shown if set' }),
-    lineAmount: z
-      .float64()
-      .exactOptional()
-      .openapi({ description: 'Amount of line item', 'x-is-money': true }),
-    accountType: z.string().exactOptional().openapi({ description: 'Account type' }),
-  })
-  .openapi({ required: [] })
-  .openapi('LineItemResponse')
-
-const InvoiceResponseSchema = z
-  .strictObject({
-    invoiceId: z.uuid().exactOptional().openapi({ description: 'Xero Identifier of invoice' }),
-    contact: ContactResponseSchema.exactOptional(),
-    total: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description:
-          'Total of Invoice tax inclusive (i.e. SubTotal + TotalTax); Not included in summary mode',
-        'x-is-money': true,
-      }),
-    lineItems: z
-      .array(LineItemResponseSchema)
-      .exactOptional()
-      .openapi({ description: 'Not included in summary mode' }),
-  })
-  .openapi({ required: [] })
-  .openapi('InvoiceResponse')
-
-const CreditNoteResponseSchema = z
-  .strictObject({
-    creditNoteId: z
-      .uuid()
-      .exactOptional()
-      .openapi({ description: 'Xero Identifier of credit note' }),
-    contact: ContactResponseSchema.exactOptional(),
-    total: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description:
-          'Total of Invoice tax inclusive (i.e. SubTotal + TotalTax); Not included in summary mode',
-        'x-is-money': true,
-      }),
-    lineItems: z
-      .array(LineItemResponseSchema)
-      .exactOptional()
-      .openapi({ description: 'Not included in summary mode' }),
-  })
-  .openapi({ required: [] })
-  .openapi('CreditNoteResponse')
-
-const PrepaymentResponseSchema = z
-  .strictObject({
-    prepaymentId: z
-      .uuid()
-      .exactOptional()
-      .openapi({ description: 'Xero Identifier of prepayment' }),
-    contact: ContactResponseSchema.exactOptional(),
-    total: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description:
-          'Total of Invoice tax inclusive (i.e. SubTotal + TotalTax); Not included in summary mode',
-        'x-is-money': true,
-      }),
-    lineItems: z
-      .array(LineItemResponseSchema)
-      .exactOptional()
-      .openapi({ description: 'Not included in summary mode' }),
-  })
-  .openapi({ required: [] })
-  .openapi('PrepaymentResponse')
-
-const OverpaymentResponseSchema = z
-  .strictObject({
-    overpaymentId: z
-      .uuid()
-      .exactOptional()
-      .openapi({ description: 'Xero Identifier of overpayment' }),
-    contact: ContactResponseSchema.exactOptional(),
-    total: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description:
-          'Total of Invoice tax inclusive (i.e. SubTotal + TotalTax); Not included in summary mode',
-        'x-is-money': true,
-      }),
-    lineItems: z
-      .array(LineItemResponseSchema)
-      .exactOptional()
-      .openapi({ description: 'Not included in summary mode' }),
-  })
-  .openapi({ required: [] })
-  .openapi('OverpaymentResponse')
-
-const PaymentResponseSchema = z
-  .strictObject({
-    paymentId: z.uuid().exactOptional().openapi({ description: 'Xero Identifier of payment' }),
-    batchPaymentId: z
-      .uuid()
-      .exactOptional()
-      .openapi({
-        description:
-          'Xero Identifier of batch payment. Present if the payment was created as part of a batch.',
-      }),
-    date: z.iso
-      .date()
-      .exactOptional()
-      .openapi({ description: 'Date the payment is being made (YYYY-MM-DD) e.g. 2009-09-06' }),
-    amount: z
-      .float64()
-      .exactOptional()
-      .openapi({ description: 'The amount of the payment', 'x-is-money': true }),
-    bankAmount: z
-      .float64()
-      .exactOptional()
-      .openapi({ description: 'The bank amount of the payment', 'x-is-money': true }),
-    currencyRate: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description:
-          'Exchange rate when payment is received. Only used for non base currency invoices and credit notes e.g. 0.7500',
-      }),
-    invoice: InvoiceResponseSchema.exactOptional(),
-    creditNote: CreditNoteResponseSchema.exactOptional(),
-    prepayment: PrepaymentResponseSchema.exactOptional(),
-    overpayment: OverpaymentResponseSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('PaymentResponse')
-
-const BankTransactionResponseSchema = z
-  .strictObject({
-    bankTransactionId: z
-      .uuid()
-      .exactOptional()
-      .openapi({ description: 'Xero Identifier of transaction' }),
-    batchPaymentId: z
-      .uuid()
-      .exactOptional()
-      .openapi({
-        description:
-          'Xero Identifier of batch payment. Present if the transaction is part of a batch.',
-      }),
-    contact: ContactResponseSchema.exactOptional(),
-    date: z.iso.date().exactOptional().openapi({ description: 'Date of transaction - YYYY-MM-DD' }),
-    amount: z
-      .float64()
-      .exactOptional()
-      .openapi({ description: 'Amount of transaction', 'x-is-money': true }),
-    lineItems: z
-      .array(LineItemResponseSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The LineItems element can contain any number of individual LineItem sub-elements. Not included in summary mode',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('BankTransactionResponse')
-
-const StatementLineResponseSchema = z
-  .strictObject({
-    statementLineId: z
-      .uuid()
-      .exactOptional()
-      .openapi({ description: 'Xero Identifier of statement line' }),
-    postedDate: z.iso
-      .date()
-      .exactOptional()
-      .openapi({ description: 'Date of when statement line was posted' }),
-    payee: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Payee description of statement line' }),
-    reference: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Reference description of statement line' }),
-    notes: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Notes description of statement line' }),
-    chequeNo: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Cheque number of statement line' }),
-    amount: z
-      .float64()
-      .exactOptional()
-      .openapi({ description: 'Amount of statement line', 'x-is-money': true }),
-    transactionDate: z.iso
-      .date()
-      .exactOptional()
-      .openapi({ description: 'Transaction date of statement line' }),
-    type: z.string().exactOptional().openapi({ description: 'Type of statement line' }),
-    isReconciled: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Boolean to show if statement line is reconciled' }),
-    isDuplicate: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Boolean to show if statement line is duplicate' }),
-    isDeleted: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Boolean to show if statement line is deleted' }),
-    payments: z
-      .array(PaymentResponseSchema)
-      .exactOptional()
-      .openapi({ description: 'List of payments associated with reconciled statement lines' }),
-    bankTransactions: z
-      .array(BankTransactionResponseSchema)
-      .exactOptional()
-      .openapi({
-        description: 'List of bank transactions associated with reconciled statement lines',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('StatementLineResponse')
-
-const StatementResponseSchema = z
-  .strictObject({
-    statementId: z.uuid().exactOptional().openapi({ description: 'Xero Identifier of statement' }),
-    startDate: z.iso.date().exactOptional().openapi({ description: 'Start date of statement' }),
-    endDate: z.iso.date().exactOptional().openapi({ description: 'End date of statement' }),
-    importedDateTimeUtc: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'Utc date time of when the statement was imported in Xero' }),
-    importSource: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Identifies where the statement data in Xero was sourced, 1) direct bank feed, automatically loaded from the bank (eg STMTIMPORTSRC/CBAFEED); 2) indirect bank feed, automatically loaded from a 3rd party provider (eg STMTIMPORTSRC/YODLEE); 3) manually uploaded bank feed (eg STMTIMPORTSRC/CSV) or 4) manually entered statement data (STMTIMPORTSRC/MANUAL).',
-      }),
-    startBalance: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description:
-          'Opening balance sourced from imported bank statements (if supplied). Note, for manually uploaded statements, this balance is also manual and usually not supplied. Where not supplied, the value will be 0.',
-        'x-is-money': true,
-      }),
-    endBalance: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description:
-          'Closing balance sourced from imported bank statements (if supplied). Note, for manually uploaded statements, this balance is also manual and usually not supplied. Where not supplied, the value will be 0.',
-        'x-is-money': true,
-      }),
-    indicativeStartBalance: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description:
-          "Opening statement balance calculated in Xero (= bank account conversion balance plus sum of imported bank statement lines). Note: If indicative statement balance doesn't match imported statement balance for the same date, either the conversion (opening at inception) balance in Xero is wrong or there's an error in the bank statement lines in Xero. Ref: https://central.xero.com/s/article/Compare-the-statement-balance-in-Xero-to-your-actual-bank-balance?userregion=true\n",
-        'x-is-money': true,
-      }),
-    indicativeEndBalance: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description:
-          "Closing statement balance calculated in Xero (= bank account conversion balance plus sum of imported bank statement lines). Note: If indicative statement balance doesn't match imported statement balance for the same date, either the conversion (opening at inception) balance in Xero is wrong or there's an error in the bank statement lines in Xero. Ref: https://central.xero.com/s/article/Compare-the-statement-balance-in-Xero-to-your-actual-bank-balance?userregion=true \n",
-        'x-is-money': true,
-      }),
-    statementLines: z
-      .array(StatementLineResponseSchema)
-      .exactOptional()
-      .openapi({ description: 'List of statement lines' }),
-  })
-  .openapi({ required: [] })
-  .openapi('StatementResponse')
-
-const BankStatementAccountingResponseSchema = z
+const BankStatementAccountingResponseSchema: z.ZodType<BankStatementAccountingResponseType> = z
   .strictObject({
     bankAccountId: z
       .uuid()

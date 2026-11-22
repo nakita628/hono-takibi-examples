@@ -234,14 +234,13 @@ const Oauth2SecurityScheme = {
     authorizationCode: {
       authorizationUrl: 'https://app.hubspot.com/oauth/authorize',
       tokenUrl: 'https://api.hubapi.com/oauth/v1/token',
-      scopes: {},
+      scopes: { oauth: '' },
     },
   },
+  'x-hubspot-app-availability': {
+    oauth: { portal: ['public', 'private'], user: ['public', 'private'], developer: false },
+  },
 }
-
-const PrivateAppsSecurityScheme = { type: 'apiKey', name: 'private-app', in: 'header' }
-
-const PrivateAppsLegacySecurityScheme = { type: 'apiKey', name: 'private-app-legacy', in: 'header' }
 
 export const getEventsEventOccurrences202609Route = createRoute({
   method: 'get',
@@ -363,7 +362,7 @@ export const getEventsEventOccurrences202609Route = createRoute({
           example: null,
         }),
       'objectProperty.{propname}': z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -441,7 +440,7 @@ export const getEventsEventOccurrences202609Route = createRoute({
           example: null,
         }),
       'property.{propname}': z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -484,7 +483,7 @@ export const getEventsEventOccurrences202609Route = createRoute({
     },
     default: ErrorResponse,
   },
-  security: [],
+  security: [{ oauth2: ['oauth'] }],
 })
 
 export const getEventsEventOccurrences202609EventTypesRoute = createRoute({
@@ -505,5 +504,5 @@ export const getEventsEventOccurrences202609EventTypesRoute = createRoute({
     },
     default: ErrorResponse,
   },
-  security: [],
+  security: [{ oauth2: ['oauth'] }],
 })

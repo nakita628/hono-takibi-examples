@@ -3480,11 +3480,11 @@ const WorkflowConditionSchema: z.ZodType<WorkflowConditionType> = z
       .openapi({
         description: 'The workflow transition rule conditions tree.',
         discriminator: {
+          propertyName: 'nodeType',
           mapping: {
             compound: '#/components/schemas/WorkflowCompoundCondition',
             simple: '#/components/schemas/WorkflowSimpleCondition',
           },
-          propertyName: 'nodeType',
         },
       }),
   )
@@ -6662,14 +6662,19 @@ const JsonContextVariableSchema = z
 
 const CustomContextVariableSchema = z
   .xor([UserContextVariableSchema, IssueContextVariableSchema, JsonContextVariableSchema])
+  .and(
+    z
+      .object({ type: z.string().openapi({ description: 'Type of custom context variable.' }) })
+      .openapi({ required: ['type'] }),
+  )
   .openapi({
     discriminator: {
+      propertyName: 'type',
       mapping: {
         issue: '#/components/schemas/IssueContextVariable',
         json: '#/components/schemas/JsonContextVariable',
         user: '#/components/schemas/UserContextVariable',
       },
-      propertyName: 'type',
     },
     required: ['type'],
   })
@@ -7217,6 +7222,7 @@ const CustomFieldContextDefaultValueSchema = z
   ])
   .openapi({
     discriminator: {
+      propertyName: 'type',
       mapping: {
         datepicker: '#/components/schemas/CustomFieldContextDefaultValueDate',
         datetimepicker: '#/components/schemas/CustomFieldContextDefaultValueDateTime',
@@ -7251,7 +7257,6 @@ const CustomFieldContextDefaultValueSchema = z
           '#/components/schemas/CustomFieldContextDefaultValueMultipleVersionPicker',
         'version.single': '#/components/schemas/CustomFieldContextDefaultValueSingleVersionPicker',
       },
-      propertyName: 'type',
     },
   })
   .openapi('CustomFieldContextDefaultValue')

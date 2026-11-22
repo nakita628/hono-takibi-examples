@@ -160,6 +160,7 @@ curl http://localhost:8000/api/v1/workspaces/create \
     "dataplaneGroupId": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
     "webhookConfigs": [
       {
+        "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
         "name": "string",
         "authToken": "string",
         "validationUrl": "string",
@@ -279,6 +280,7 @@ curl http://localhost:8000/api/v1/workspaces/create \
   "dataplaneGroupId": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
   "webhookConfigs": [
     {
+      "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
       "name": "string",
       "authToken": "string",
       "validationUrl": "string",
@@ -591,6 +593,7 @@ curl http://localhost:8000/api/v1/workspaces/create_if_not_exist \
     "dataplaneGroupId": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
     "webhookConfigs": [
       {
+        "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
         "name": "string",
         "authToken": "string",
         "validationUrl": "string",
@@ -711,6 +714,7 @@ curl http://localhost:8000/api/v1/workspaces/create_if_not_exist \
   "dataplaneGroupId": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
   "webhookConfigs": [
     {
+      "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
       "name": "string",
       "authToken": "string",
       "validationUrl": "string",
@@ -2638,7 +2642,8 @@ curl http://localhost:8000/api/v1/workspaces/get_organization_info \
     "accountType": "free",
     "gracePeriodEndsAt": 0
   },
-  "organizationPlanId": "string"
+  "organizationPlanId": "string",
+  "onboardingStatus": "survey"
 }
 ```
 
@@ -2864,6 +2869,7 @@ curl http://localhost:8000/api/v1/workspaces/update \
     "dataplaneGroupId": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
     "webhookConfigs": [
       {
+        "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
         "name": "string",
         "authToken": "string",
         "validationUrl": "string",
@@ -3040,6 +3046,7 @@ curl http://localhost:8000/api/v1/workspaces/update \
   "dataplaneGroupId": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
   "webhookConfigs": [
     {
+      "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
       "name": "string",
       "authToken": "string",
       "validationUrl": "string",
@@ -3066,7 +3073,7 @@ curl http://localhost:8000/api/v1/workspaces/update \
 |» notificationSettings|body|[NotificationSettings](#schemanotificationsettings)|false|none|
 |» notificationsConfig|body|[NotificationsConfig](#schemanotificationsconfig)|false|Configures workspace notifications.|
 |» dataplaneGroupId|body|string(uuid)|false|none|
-|» webhookConfigs|body|[[WebhookConfigWrite](#schemawebhookconfigwrite)]|false|none|
+|» webhookConfigs|body|[[WebhookConfigWrite](#schemawebhookconfigwrite)]|false|Omit or set to null to preserve current webhook configurations. An empty list removes all configurations.|
 
 > Example responses
 
@@ -26869,6 +26876,133 @@ curl http://localhost:8000/api/v1/organizations/get \
 This operation does not require authentication
 </aside>
 
+## Update the onboarding status of an organization
+
+<a id="opIdupdateOrganizationOnboardingStatus"></a>
+
+> Code samples
+
+```bash
+curl http://localhost:8000/api/v1/organizations/onboarding/update \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -d '{
+    "organizationId": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+    "status": "survey"
+  }'
+```
+
+`POST /v1/organizations/onboarding/update`
+
+Requires the organization editor role.
+
+> Body parameter
+
+```json
+{
+  "organizationId": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "status": "survey"
+}
+```
+
+<h3 id="update-the-onboarding-status-of-an-organization-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|body|body|[OrganizationOnboardingStatusUpdateRequestBody](#schemaorganizationonboardingstatusupdaterequestbody)|true|none|
+|» organizationId|body|string(uuid)|true|none|
+|» status|body|[OrganizationOnboardingStatus](#schemaorganizationonboardingstatus)|true|The step of the Cloud onboarding flow that the organization is on, or how the organization left the flow.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|» status|survey|
+|» status|choose_method|
+|» status|create_source|
+|» status|create_destination|
+|» status|create_connection|
+|» status|run_first_sync|
+|» status|completed|
+|» status|skipped|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "status": "survey"
+}
+```
+
+<h3 id="update-the-onboarding-status-of-an-organization-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|The updated onboarding status.|[OrganizationOnboardingStatusRead](#schemaorganizationonboardingstatusread)|
+|400|Bad Request|Required request fields are missing or null, organizationId is invalid, or status is not a known value.|None|
+|401|Unauthorized|Authentication required.|None|
+|403|Forbidden|The caller does not have the organization editor role.|None|
+|404|Not Found|The organization does not exist or has been deleted.|None|
+
+<aside class="success">
+This operation does not require authentication
+</aside>
+
+## Email the current user a link to continue onboarding on a computer
+
+<a id="opIdsendOnboardingMobileHandoffEmail"></a>
+
+> Code samples
+
+```bash
+curl http://localhost:8000/api/v1/organizations/onboarding/send_mobile_handoff_email \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "organizationId": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+    "workspaceId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+  }'
+```
+
+`POST /v1/organizations/onboarding/send_mobile_handoff_email`
+
+Requires the organization editor role. Sends on every call.
+
+> Body parameter
+
+```json
+{
+  "organizationId": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "workspaceId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+}
+```
+
+<h3 id="email-the-current-user-a-link-to-continue-onboarding-on-a-computer-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|body|body|[OrganizationOnboardingMobileHandoffEmailRequestBody](#schemaorganizationonboardingmobilehandoffemailrequestbody)|true|none|
+|» organizationId|body|string(uuid)|true|none|
+|» workspaceId|body|string(uuid)|true|The workspace that the email link opens.|
+
+<h3 id="email-the-current-user-a-link-to-continue-onboarding-on-a-computer-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|204|No Content|The email was accepted by the email provider.|None|
+|400|Bad Request|Required request fields are missing or null, or an id is invalid.|None|
+|401|Unauthorized|Authentication required.|None|
+|403|Forbidden|The caller does not have the organization editor role.|None|
+|404|Not Found|The organization does not exist or has been deleted.|None|
+|500|Internal Server Error|The email provider rejected the email or could not be reached.|None|
+
+<aside class="success">
+This operation does not require authentication
+</aside>
+
 ## Create an organization
 
 <a id="opIdcreateOrganization"></a>
@@ -26908,7 +27042,7 @@ curl http://localhost:8000/api/v1/organizations/create \
 |body|body|[OrganizationCreateRequestBody](#schemaorganizationcreaterequestbody)|false|none|
 |» userId|body|string(uuid)|true|none|
 |» organizationName|body|string|true|none|
-|» email|body|string|false|none|
+|» email|body|string|true|none|
 |» isAgentic|body|boolean|false|none|
 
 > Example responses
@@ -27811,7 +27945,8 @@ curl http://localhost:8000/api/v1/organizations/get_organization_info \
     "accountType": "free",
     "gracePeriodEndsAt": 0
   },
-  "organizationPlanId": "string"
+  "organizationPlanId": "string",
+  "onboardingStatus": "survey"
 }
 ```
 
@@ -29443,7 +29578,35 @@ curl http://localhost:8000/api/v1/dataplanes/health \
         }
       ],
       "control_plane_version": "string",
-      "dataplane_version": "string"
+      "dataplane_version": "string",
+      "dataplane_version_support": {
+        "status": "SUPPORTED",
+        "published_at": 0,
+        "supported_until": 0
+      },
+      "enabled": true,
+      "health_history": [
+        {
+          "bucket_start": 0,
+          "status": "HEALTHY"
+        }
+      ],
+      "diagnostics": [
+        {
+          "kind": "SECRET_STORAGE",
+          "target_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+          "target_name": "string",
+          "status": "PASSED",
+          "checked_at": 0,
+          "updated_at": 0,
+          "error_code": "string",
+          "error_message": "string",
+          "observation": {}
+        }
+      ],
+      "unsupported_diagnostic_kinds": [
+        "SECRET_STORAGE"
+      ]
     }
   ]
 }
@@ -30669,6 +30832,95 @@ curl http://localhost:8000/api/v1/domain_verifications/reset \
 |200|OK|Domain verification reset successfully|[DomainVerificationResponse](#schemadomainverificationresponse)|
 |404|Not Found|Object with given id was not found.|[NotFoundKnownExceptionInfo](#schemanotfoundknownexceptioninfo)|
 |422|Unprocessable Entity|Input failed validation|[InvalidInputExceptionInfo](#schemainvalidinputexceptioninfo)|
+
+<aside class="success">
+This operation does not require authentication
+</aside>
+
+<h1 id="airbyte-configuration-api-airbytereleases">airbyte_releases</h1>
+
+Catalog of published Airbyte releases.
+
+## Create a published Airbyte release
+
+<a id="opIdcreateAirbyteRelease"></a>
+
+> Code samples
+
+```bash
+curl http://localhost:8000/api/v1/airbyte_releases/create \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -d '{
+    "version": "string",
+    "sourceCommit": "string",
+    "publishedAt": "1970-01-01T00:00:00Z"
+  }'
+```
+
+`POST /v1/airbyte_releases/create`
+
+Instance admin endpoint called after both Helm charts publish. Only Airbyte Cloud stores releases; other editions return 501. Each version is created once and never changes. Creating the same version and source commit again is safe to retry and returns the stored release with its original publication time; a different source commit for a stored version is a conflict.
+
+> Body parameter
+
+```json
+{
+  "version": "string",
+  "sourceCommit": "string",
+  "publishedAt": "1970-01-01T00:00:00Z"
+}
+```
+
+<h3 id="create-a-published-airbyte-release-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|body|body|[AirbyteReleaseCreateRequestBody](#schemaairbytereleasecreaterequestbody)|true|none|
+|» version|body|string|true|Published application version, such as 2.1.0.|
+|» sourceCommit|body|string|true|Full commit SHA the release was built from.|
+|» publishedAt|body|string(date-time)|true|When chart publication completed.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "version": "string",
+  "sourceCommit": "string",
+  "publishedAt": "1970-01-01T00:00:00Z"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "message": "string",
+  "exceptionClassName": "string",
+  "exceptionStack": [
+    "string"
+  ],
+  "rootCauseExceptionClassName": "string",
+  "rootCauseExceptionStack": [
+    "string"
+  ],
+  "details": {},
+  "errorId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+}
+```
+
+<h3 id="create-a-published-airbyte-release-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|The stored release.|[AirbyteReleaseRead](#schemaairbytereleaseread)|
+|400|Bad Request|Invalid version or source commit|None|
+|403|Forbidden|Operation forbidden|[KnownExceptionInfo](#schemaknownexceptioninfo)|
+|409|Conflict|The version is already recorded with a different source commit|None|
+|501|Not Implemented|Not implemented outside Airbyte Cloud|None|
 
 <aside class="success">
 This operation does not require authentication
@@ -36613,7 +36865,7 @@ This operation does not require authentication
 
 <h1 id="airbyte-configuration-api-jobs">jobs</h1>
 
-## Creates a new job for a given connection. If a job is already running for the connection, it will be stopped and a new job will be created.
+## Creates a new job for a given connection. If the connection already has a non-terminal job, that job is returned and no new job is created.
 
 <a id="opIdcreateJob"></a>
 
@@ -36641,7 +36893,7 @@ curl http://localhost:8000/api/v1/jobs/create \
 }
 ```
 
-<h3 id="creates-a-new-job-for-a-given-connection-if-a-job-is-already-running-for-the-connection-it-will-be-stopped-and-a-new-job-will-be-created-parameters">Parameters</h3>
+<h3 id="creates-a-new-job-for-a-given-connection-if-the-connection-already-has-a-non-terminal-job-that-job-is-returned-and-no-new-job-is-created-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -36831,7 +37083,7 @@ curl http://localhost:8000/api/v1/jobs/create \
 }
 ```
 
-<h3 id="creates-a-new-job-for-a-given-connection-if-a-job-is-already-running-for-the-connection-it-will-be-stopped-and-a-new-job-will-be-created-responses">Responses</h3>
+<h3 id="creates-a-new-job-for-a-given-connection-if-the-connection-already-has-a-non-terminal-job-that-job-is-returned-and-no-new-job-is-created-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -39899,6 +40151,7 @@ curl http://localhost:8000/api/v1/secret_storage/create \
 ```json
 {
   "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "descriptor": "string",
   "secretStorageType": "local_testing",
   "isConfiguredFromEnvironment": true,
   "scopeType": "workspace",
@@ -39989,6 +40242,7 @@ curl http://localhost:8000/api/v1/secret_storage/list \
   "secretStorages": [
     {
       "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "descriptor": "string",
       "secretStorageType": "local_testing",
       "isConfiguredFromEnvironment": true,
       "scopeType": "workspace",
@@ -40153,6 +40407,7 @@ curl http://localhost:8000/api/v1/secret_storage/get \
 ```json
 {
   "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "descriptor": "string",
   "secretStorageType": "local_testing",
   "isConfiguredFromEnvironment": true,
   "scopeType": "workspace",
@@ -48447,6 +48702,7 @@ curl http://localhost:8000/api/v1/dataplanes/token \
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
+|X-Airbyte-Diagnostics-Dataplane-Id|header|string|false|The data plane ID the installation was configured with. It is used only to attribute a rejected exchange and never authenticates the caller. A plain string, so a malformed value cannot change the response.|
 |body|body|[DataplaneTokenRequestBody](#schemadataplanetokenrequestbody)|true|none|
 |» client_id|body|string|true|none|
 |» client_secret|body|string|true|none|
@@ -48503,7 +48759,18 @@ curl http://localhost:8000/api/v1/dataplanes/heartbeat \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
   -d '{
-    "client_id": "string"
+    "client_id": "string",
+    "diagnostics": [
+      {
+        "kind": "string",
+        "target_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+        "status": "PASSED",
+        "checked_at": 0,
+        "error_code": "string",
+        "error_message": "string",
+        "observation": {}
+      }
+    ]
   }'
 ```
 
@@ -48513,7 +48780,18 @@ curl http://localhost:8000/api/v1/dataplanes/heartbeat \
 
 ```json
 {
-  "client_id": "string"
+  "client_id": "string",
+  "diagnostics": [
+    {
+      "kind": "string",
+      "target_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "status": "PASSED",
+      "checked_at": 0,
+      "error_code": "string",
+      "error_message": "string",
+      "observation": {}
+    }
+  ]
 }
 ```
 
@@ -48524,6 +48802,7 @@ curl http://localhost:8000/api/v1/dataplanes/heartbeat \
 |X-Airbyte-Version|header|string|false|Airbyte application version|
 |body|body|[DataplaneHeartbeatRequestBody](#schemadataplaneheartbeatrequestbody)|true|none|
 |» client_id|body|string|true|none|
+|» diagnostics|body|[[DataplaneDiagnosticResult](#schemadataplanediagnosticresult)]|false|Latest completed result of each diagnostic check. A check left out keeps its saved result.|
 
 > Example responses
 
@@ -48564,6 +48843,85 @@ curl http://localhost:8000/api/v1/dataplanes/heartbeat \
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Successfully retrieved dataplane heartbeat information|[DataplaneHeartbeatResponse](#schemadataplaneheartbeatresponse)|
+|422|Unprocessable Entity|Input failed validation|[InvalidInputExceptionInfo](#schemainvalidinputexceptioninfo)|
+
+<aside class="success">
+This operation does not require authentication
+</aside>
+
+## For a dataplane to get the secret storages its workloads use
+
+<a id="opIdlistDataplaneSecretStorages"></a>
+
+> Code samples
+
+```bash
+curl http://localhost:8000/api/v1/dataplanes/secret_storages/list \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -d '{
+    "client_id": "string"
+  }'
+```
+
+`POST /v1/dataplanes/secret_storages/list`
+
+> Body parameter
+
+```json
+{
+  "client_id": "string"
+}
+```
+
+<h3 id="for-a-dataplane-to-get-the-secret-storages-its-workloads-use-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|body|body|[DataplaneSecretStoragesRequestBody](#schemadataplanesecretstoragesrequestbody)|true|none|
+|» client_id|body|string|true|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "secret_storages": [
+    {
+      "secret_storage_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "scope_type": "workspace",
+      "scope_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+    }
+  ]
+}
+```
+
+> 422 Response
+
+```json
+{
+  "message": "string",
+  "exceptionClassName": "string",
+  "exceptionStack": [
+    "string"
+  ],
+  "validationErrors": [
+    {
+      "propertyPath": "string",
+      "invalidValue": "string",
+      "message": "string"
+    }
+  ]
+}
+```
+
+<h3 id="for-a-dataplane-to-get-the-secret-storages-its-workloads-use-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|The distinct secret storages used by the workspaces in the dataplane's region|[DataplaneSecretStoragesResponse](#schemadataplanesecretstoragesresponse)|
 |422|Unprocessable Entity|Input failed validation|[InvalidInputExceptionInfo](#schemainvalidinputexceptioninfo)|
 
 <aside class="success">
@@ -52430,6 +52788,7 @@ curl http://localhost:8000/api/public/v1/connections \
 |» namespaceFormat|body|string|false|Used when namespaceDefinition is 'custom_format'. If blank then behaves like namespaceDefinition = 'destination'. If "${SOURCE_NAMESPACE}" then behaves like namespaceDefinition = 'source'.|
 |» prefix|body|string|false|Prefix that will be prepended to the name of each stream when it is written to the destination (ex. “airbyte_” causes “projects” => “airbyte_projects”).|
 |» nonBreakingSchemaUpdatesBehavior|body|[NonBreakingSchemaUpdatesBehaviorEnum](#schemanonbreakingschemaupdatesbehaviorenum)|false|Set how Airbyte handles syncs when it detects a non-breaking schema change in the source|
+|» notifySchemaChanges|body|boolean|false|Turns schema change notifications on or off for this connection. The workspace's notification settings decide where they are sent. Breaking changes use `connectionUpdateActionRequired`. Other schema changes use `connectionUpdate`. If omitted, it is true when the workspace's `connectionUpdate` settings have email or webhook enabled. Otherwise it is false.|
 |» status|body|[ConnectionStatusEnum](#schemaconnectionstatusenum)|false|none|
 |» tags|body|[[Tag](#schematag)]|false|none|
 
@@ -52590,6 +52949,7 @@ curl http://localhost:8000/api/public/v1/connections/string \
 |» namespaceFormat|body|string|false|Used when namespaceDefinition is 'custom_format'. If blank then behaves like namespaceDefinition = 'destination'. If "${SOURCE_NAMESPACE}" then behaves like namespaceDefinition = 'source'.|
 |» prefix|body|string|false|Prefix that will be prepended to the name of each stream when it is written to the destination (ex. “airbyte_” causes “projects” => “airbyte_projects”).|
 |» nonBreakingSchemaUpdatesBehavior|body|[NonBreakingSchemaUpdatesBehaviorEnumNoDefault](#schemanonbreakingschemaupdatesbehaviorenumnodefault)|false|Set how Airbyte handles syncs when it detects a non-breaking schema change in the source|
+|» notifySchemaChanges|body|boolean|false|Turns schema change notifications on or off for this connection. The workspace's notification settings decide where they are sent. Breaking changes use `connectionUpdateActionRequired`. Other schema changes use `connectionUpdate`.|
 |» status|body|[ConnectionStatusEnum](#schemaconnectionstatusenum)|false|none|
 |» tags|body|[[Tag](#schematag)]|false|none|
 
@@ -57739,6 +58099,52 @@ Variant config selected by the `type` field (endpoint or storage).
 |---|---|---|---|---|
 |domainVerifications|[[DomainVerificationResponse](#schemadomainverificationresponse)]|true|none|none|
 
+<h2 id="tocS_AirbyteReleaseCreateRequestBody">AirbyteReleaseCreateRequestBody</h2>
+<!-- backwards compatibility -->
+<a id="schemaairbytereleasecreaterequestbody"></a>
+<a id="schema_AirbyteReleaseCreateRequestBody"></a>
+<a id="tocSairbytereleasecreaterequestbody"></a>
+<a id="tocsairbytereleasecreaterequestbody"></a>
+
+```json
+{
+  "version": "string",
+  "sourceCommit": "string",
+  "publishedAt": "1970-01-01T00:00:00Z"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|version|string|true|none|Published application version, such as 2.1.0.|
+|sourceCommit|string|true|none|Full commit SHA the release was built from.|
+|publishedAt|string(date-time)|true|none|When chart publication completed.|
+
+<h2 id="tocS_AirbyteReleaseRead">AirbyteReleaseRead</h2>
+<!-- backwards compatibility -->
+<a id="schemaairbytereleaseread"></a>
+<a id="schema_AirbyteReleaseRead"></a>
+<a id="tocSairbytereleaseread"></a>
+<a id="tocsairbytereleaseread"></a>
+
+```json
+{
+  "version": "string",
+  "sourceCommit": "string",
+  "publishedAt": "1970-01-01T00:00:00Z"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|version|string|true|none|Published application version, such as 2.1.0.|
+|sourceCommit|string|true|none|Full commit SHA the release was built from.|
+|publishedAt|string(date-time)|true|none|When chart publication completed.|
+
 <h2 id="tocS_WorkspaceId">WorkspaceId</h2>
 <!-- backwards compatibility -->
 <a id="schemaworkspaceid"></a>
@@ -57873,6 +58279,7 @@ Variant config selected by the `type` field (endpoint or storage).
   "dataplaneGroupId": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
   "webhookConfigs": [
     {
+      "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
       "name": "string",
       "authToken": "string",
       "validationUrl": "string",
@@ -58012,6 +58419,7 @@ Variant config selected by the `type` field (endpoint or storage).
   "dataplaneGroupId": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
   "webhookConfigs": [
     {
+      "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
       "name": "string",
       "authToken": "string",
       "validationUrl": "string",
@@ -58048,6 +58456,7 @@ Variant config selected by the `type` field (endpoint or storage).
 
 ```json
 {
+  "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
   "name": "string",
   "authToken": "string",
   "validationUrl": "string",
@@ -58059,8 +58468,9 @@ Variant config selected by the `type` field (endpoint or storage).
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
+|id|string(uuid)|false|none|ID of an existing webhook configuration in this workspace. Omit when creating a configuration.|
 |name|string|false|none|human readable name for this webhook e.g. for UI display.|
-|authToken|string|false|none|an auth token, to be passed as the value for an HTTP Authorization header.|
+|authToken|string|false|none|an auth token, to be passed as the value for an HTTP Authorization header. Omit when updating to preserve the existing token.|
 |validationUrl|string|false|none|if supplied, the webhook config will be validated by checking that this URL returns a 2xx response.|
 |customDbtHost|string|false|none|if the webhook is of type DBT_CLOUD, this value will be used to construct the execution URL|
 
@@ -59062,6 +59472,7 @@ the readable info for a webhook config; omits sensitive info e.g. auth token
   "dataplaneGroupId": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
   "webhookConfigs": [
     {
+      "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
       "name": "string",
       "authToken": "string",
       "validationUrl": "string",
@@ -59089,7 +59500,7 @@ Used to apply a patch-style update to a workspace, which means that null propert
 |notificationSettings|[NotificationSettings](#schemanotificationsettings)|false|none|none|
 |notificationsConfig|[NotificationsConfig](#schemanotificationsconfig)|false|none|Configures workspace notifications.|
 |dataplaneGroupId|string(uuid)|false|none|none|
-|webhookConfigs|[[WebhookConfigWrite](#schemawebhookconfigwrite)]|false|none|none|
+|webhookConfigs|[[WebhookConfigWrite](#schemawebhookconfigwrite)]|false|none|Omit or set to null to preserve current webhook configurations. An empty list removes all configurations.|
 
 <h2 id="tocS_WorkspaceGetDbtJobsRequest">WorkspaceGetDbtJobsRequest</h2>
 <!-- backwards compatibility -->
@@ -69427,6 +69838,106 @@ Free-form JSON summary of an audit log entry's request or response, as produced 
 |organizationId|string(uuid)|true|none|none|
 |semanticSearchEnabled|boolean|true|none|none|
 
+<h2 id="tocS_OrganizationOnboardingStatus">OrganizationOnboardingStatus</h2>
+<!-- backwards compatibility -->
+<a id="schemaorganizationonboardingstatus"></a>
+<a id="schema_OrganizationOnboardingStatus"></a>
+<a id="tocSorganizationonboardingstatus"></a>
+<a id="tocsorganizationonboardingstatus"></a>
+
+```json
+"survey"
+```
+
+The step of the Cloud onboarding flow that the organization is on, or how the organization left the flow.
+
+<h2 id="tocS_OrganizationOnboardingStatusRead">OrganizationOnboardingStatusRead</h2>
+<!-- backwards compatibility -->
+<a id="schemaorganizationonboardingstatusread"></a>
+<a id="schema_OrganizationOnboardingStatusRead"></a>
+<a id="tocSorganizationonboardingstatusread"></a>
+<a id="tocsorganizationonboardingstatusread"></a>
+
+```json
+{
+  "status": "survey"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|status|[OrganizationOnboardingStatus](#schemaorganizationonboardingstatus)|true|none|The step of the Cloud onboarding flow that the organization is on, or how the organization left the flow.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|status|survey|
+|status|choose_method|
+|status|create_source|
+|status|create_destination|
+|status|create_connection|
+|status|run_first_sync|
+|status|completed|
+|status|skipped|
+
+<h2 id="tocS_OrganizationOnboardingStatusUpdateRequestBody">OrganizationOnboardingStatusUpdateRequestBody</h2>
+<!-- backwards compatibility -->
+<a id="schemaorganizationonboardingstatusupdaterequestbody"></a>
+<a id="schema_OrganizationOnboardingStatusUpdateRequestBody"></a>
+<a id="tocSorganizationonboardingstatusupdaterequestbody"></a>
+<a id="tocsorganizationonboardingstatusupdaterequestbody"></a>
+
+```json
+{
+  "organizationId": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "status": "survey"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|organizationId|string(uuid)|true|none|none|
+|status|[OrganizationOnboardingStatus](#schemaorganizationonboardingstatus)|true|none|The step of the Cloud onboarding flow that the organization is on, or how the organization left the flow.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|status|survey|
+|status|choose_method|
+|status|create_source|
+|status|create_destination|
+|status|create_connection|
+|status|run_first_sync|
+|status|completed|
+|status|skipped|
+
+<h2 id="tocS_OrganizationOnboardingMobileHandoffEmailRequestBody">OrganizationOnboardingMobileHandoffEmailRequestBody</h2>
+<!-- backwards compatibility -->
+<a id="schemaorganizationonboardingmobilehandoffemailrequestbody"></a>
+<a id="schema_OrganizationOnboardingMobileHandoffEmailRequestBody"></a>
+<a id="tocSorganizationonboardingmobilehandoffemailrequestbody"></a>
+<a id="tocsorganizationonboardingmobilehandoffemailrequestbody"></a>
+
+```json
+{
+  "organizationId": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "workspaceId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|organizationId|string(uuid)|true|none|none|
+|workspaceId|string(uuid)|true|none|The workspace that the email link opens.|
+
 <h2 id="tocS_OrganizationUpdateRequestBody">OrganizationUpdateRequestBody</h2>
 <!-- backwards compatibility -->
 <a id="schemaorganizationupdaterequestbody"></a>
@@ -69493,7 +70004,7 @@ Free-form JSON summary of an audit log entry's request or response, as produced 
 |---|---|---|---|---|
 |userId|string(uuid)|true|none|none|
 |organizationName|string|true|none|none|
-|email|string|false|none|none|
+|email|string|true|none|none|
 |isAgentic|boolean|false|none|none|
 
 <h2 id="tocS_OrganizationRead">OrganizationRead</h2>
@@ -69553,11 +70064,12 @@ Free-form JSON summary of an audit log entry's request or response, as produced 
     "accountType": "free",
     "gracePeriodEndsAt": 0
   },
-  "organizationPlanId": "string"
+  "organizationPlanId": "string",
+  "onboardingStatus": "survey"
 }
 ```
 
-Limited info about an organization that is safe to expose to organization members.
+Limited info about an organization that is safe to expose to organization members. /v1/organizations/get_organization_info sets onboardingStatus, and /v1/workspaces/get_organization_info does not. onboardingStatus is absent when the organization is not enrolled in the onboarding flow.
 
 ### Properties
 
@@ -69569,6 +70081,20 @@ Limited info about an organization that is safe to expose to organization member
 |scim|boolean|true|none|True when SCIM provisioning is currently enabled for the organization.|
 |billing|object|false|none|none|
 |organizationPlanId|string|false|none|none|
+|onboardingStatus|[OrganizationOnboardingStatus](#schemaorganizationonboardingstatus)|false|none|The step of the Cloud onboarding flow that the organization is on, or how the organization left the flow.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|onboardingStatus|survey|
+|onboardingStatus|choose_method|
+|onboardingStatus|create_source|
+|onboardingStatus|create_destination|
+|onboardingStatus|create_connection|
+|onboardingStatus|run_first_sync|
+|onboardingStatus|completed|
+|onboardingStatus|skipped|
 
 <h2 id="tocS_OrganizationLimits">OrganizationLimits</h2>
 <!-- backwards compatibility -->
@@ -78976,6 +79502,7 @@ Request body for migrating secret storage
   "secretStorages": [
     {
       "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "descriptor": "string",
       "secretStorageType": "local_testing",
       "isConfiguredFromEnvironment": true,
       "scopeType": "workspace",
@@ -79004,6 +79531,7 @@ Object representing a list of secret storages
 ```json
 {
   "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "descriptor": "string",
   "secretStorageType": "local_testing",
   "isConfiguredFromEnvironment": true,
   "scopeType": "workspace",
@@ -79019,6 +79547,7 @@ Object representing a secret storage
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |id|[SecretStorageId](#schemasecretstorageid)|true|none|none|
+|descriptor|string|false|none|none|
 |secretStorageType|[SecretStorageType](#schemasecretstoragetype)|true|none|none|
 |isConfiguredFromEnvironment|boolean|true|none|none|
 |scopeType|[ScopeType](#schemascopetype)|true|none|none|
@@ -79660,6 +80189,7 @@ Provides details of a single job.
   "namespaceFormat": "${SOURCE_NAMESPACE}",
   "prefix": "",
   "nonBreakingSchemaUpdatesBehavior": "ignore",
+  "notifySchemaChanges": true,
   "status": "active",
   "tags": [
     {
@@ -79686,6 +80216,7 @@ Provides details of a single job.
 |namespaceFormat|string|false|none|Used when namespaceDefinition is 'custom_format'. If blank then behaves like namespaceDefinition = 'destination'. If "${SOURCE_NAMESPACE}" then behaves like namespaceDefinition = 'source'.|
 |prefix|string|false|none|Prefix that will be prepended to the name of each stream when it is written to the destination (ex. “airbyte_” causes “projects” => “airbyte_projects”).|
 |nonBreakingSchemaUpdatesBehavior|[NonBreakingSchemaUpdatesBehaviorEnum](#schemanonbreakingschemaupdatesbehaviorenum)|false|none|Set how Airbyte handles syncs when it detects a non-breaking schema change in the source|
+|notifySchemaChanges|boolean|false|none|Turns schema change notifications on or off for this connection. The workspace's notification settings decide where they are sent. Breaking changes use `connectionUpdateActionRequired`. Other schema changes use `connectionUpdate`. If omitted, it is true when the workspace's `connectionUpdate` settings have email or webhook enabled. Otherwise it is false.|
 |status|[ConnectionStatusEnum](#schemaconnectionstatusenum)|false|none|none|
 |tags|[[Tag](#schematag)]|false|none|none|
 
@@ -79762,6 +80293,7 @@ Provides details of a single job.
   "namespaceFormat": "${SOURCE_NAMESPACE}",
   "prefix": "string",
   "nonBreakingSchemaUpdatesBehavior": "ignore",
+  "notifySchemaChanges": true,
   "status": "active",
   "tags": [
     {
@@ -79786,6 +80318,7 @@ Provides details of a single job.
 |namespaceFormat|string|false|none|Used when namespaceDefinition is 'custom_format'. If blank then behaves like namespaceDefinition = 'destination'. If "${SOURCE_NAMESPACE}" then behaves like namespaceDefinition = 'source'.|
 |prefix|string|false|none|Prefix that will be prepended to the name of each stream when it is written to the destination (ex. “airbyte_” causes “projects” => “airbyte_projects”).|
 |nonBreakingSchemaUpdatesBehavior|[NonBreakingSchemaUpdatesBehaviorEnumNoDefault](#schemanonbreakingschemaupdatesbehaviorenumnodefault)|false|none|Set how Airbyte handles syncs when it detects a non-breaking schema change in the source|
+|notifySchemaChanges|boolean|false|none|Turns schema change notifications on or off for this connection. The workspace's notification settings decide where they are sent. Breaking changes use `connectionUpdateActionRequired`. Other schema changes use `connectionUpdate`.|
 |status|[ConnectionStatusEnum](#schemaconnectionstatusenum)|false|none|none|
 |tags|[[Tag](#schematag)]|false|none|none|
 
@@ -81254,6 +81787,7 @@ The configuration for this source/destination based on the OAuth section of the 
     "basicTiming": "string"
   },
   "nonBreakingSchemaUpdatesBehavior": "ignore",
+  "notifySchemaChanges": true,
   "namespaceDefinition": "destination",
   "namespaceFormat": "string",
   "prefix": "string",
@@ -81321,6 +81855,7 @@ Provides details of a single connection.
 |status|[ConnectionStatusEnum](#schemaconnectionstatusenum)|true|none|none|
 |schedule|[ConnectionScheduleResponse](#schemaconnectionscheduleresponse)|true|none|schedule for when the the connection should run, per the schedule type|
 |nonBreakingSchemaUpdatesBehavior|[NonBreakingSchemaUpdatesBehaviorEnum](#schemanonbreakingschemaupdatesbehaviorenum)|false|none|Set how Airbyte handles syncs when it detects a non-breaking schema change in the source|
+|notifySchemaChanges|boolean|false|none|Turns schema change notifications on or off for this connection. The workspace's notification settings decide where they are sent. Breaking changes use `connectionUpdateActionRequired`. Other schema changes use `connectionUpdate`.|
 |namespaceDefinition|[NamespaceDefinitionEnum](#schemanamespacedefinitionenum)|false|none|Define the location where the data will be stored in the destination|
 |namespaceFormat|string|false|none|none|
 |prefix|string|false|none|none|
@@ -84329,12 +84864,12 @@ Whether you're setting this override for a source or destination
 |client_id|string|true|none|none|
 |client_secret|string|true|none|none|
 
-<h2 id="tocS_DataplaneHeartbeatRequestBody">DataplaneHeartbeatRequestBody</h2>
+<h2 id="tocS_DataplaneSecretStoragesRequestBody">DataplaneSecretStoragesRequestBody</h2>
 <!-- backwards compatibility -->
-<a id="schemadataplaneheartbeatrequestbody"></a>
-<a id="schema_DataplaneHeartbeatRequestBody"></a>
-<a id="tocSdataplaneheartbeatrequestbody"></a>
-<a id="tocsdataplaneheartbeatrequestbody"></a>
+<a id="schemadataplanesecretstoragesrequestbody"></a>
+<a id="schema_DataplaneSecretStoragesRequestBody"></a>
+<a id="tocSdataplanesecretstoragesrequestbody"></a>
+<a id="tocsdataplanesecretstoragesrequestbody"></a>
 
 ```json
 {
@@ -84347,6 +84882,94 @@ Whether you're setting this override for a source or destination
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |client_id|string|true|none|none|
+
+<h2 id="tocS_DataplaneSecretStoragesResponse">DataplaneSecretStoragesResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemadataplanesecretstoragesresponse"></a>
+<a id="schema_DataplaneSecretStoragesResponse"></a>
+<a id="tocSdataplanesecretstoragesresponse"></a>
+<a id="tocsdataplanesecretstoragesresponse"></a>
+
+```json
+{
+  "secret_storages": [
+    {
+      "secret_storage_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "scope_type": "workspace",
+      "scope_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|secret_storages|[[DataplaneSecretStorage](#schemadataplanesecretstorage)]|true|none|none|
+
+<h2 id="tocS_DataplaneSecretStorage">DataplaneSecretStorage</h2>
+<!-- backwards compatibility -->
+<a id="schemadataplanesecretstorage"></a>
+<a id="schema_DataplaneSecretStorage"></a>
+<a id="tocSdataplanesecretstorage"></a>
+<a id="tocsdataplanesecretstorage"></a>
+
+```json
+{
+  "secret_storage_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "scope_type": "workspace",
+  "scope_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+}
+```
+
+A secret storage, and the workspace or organization it is configured for.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|secret_storage_id|string(uuid)|true|none|none|
+|scope_type|[ScopeType](#schemascopetype)|true|none|none|
+|scope_id|string(uuid)|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|scope_type|workspace|
+|scope_type|organization|
+
+<h2 id="tocS_DataplaneHeartbeatRequestBody">DataplaneHeartbeatRequestBody</h2>
+<!-- backwards compatibility -->
+<a id="schemadataplaneheartbeatrequestbody"></a>
+<a id="schema_DataplaneHeartbeatRequestBody"></a>
+<a id="tocSdataplaneheartbeatrequestbody"></a>
+<a id="tocsdataplaneheartbeatrequestbody"></a>
+
+```json
+{
+  "client_id": "string",
+  "diagnostics": [
+    {
+      "kind": "string",
+      "target_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "status": "PASSED",
+      "checked_at": 0,
+      "error_code": "string",
+      "error_message": "string",
+      "observation": {}
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|client_id|string|true|none|none|
+|diagnostics|[[DataplaneDiagnosticResult](#schemadataplanediagnosticresult)]|false|none|Latest completed result of each diagnostic check. A check left out keeps its saved result.|
 
 <h2 id="tocS_DataplaneHeartbeatResponse">DataplaneHeartbeatResponse</h2>
 <!-- backwards compatibility -->
@@ -84400,7 +85023,35 @@ Whether you're setting this override for a source or destination
         }
       ],
       "control_plane_version": "string",
-      "dataplane_version": "string"
+      "dataplane_version": "string",
+      "dataplane_version_support": {
+        "status": "SUPPORTED",
+        "published_at": 0,
+        "supported_until": 0
+      },
+      "enabled": true,
+      "health_history": [
+        {
+          "bucket_start": 0,
+          "status": "HEALTHY"
+        }
+      ],
+      "diagnostics": [
+        {
+          "kind": "SECRET_STORAGE",
+          "target_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+          "target_name": "string",
+          "status": "PASSED",
+          "checked_at": 0,
+          "updated_at": 0,
+          "error_code": "string",
+          "error_message": "string",
+          "observation": {}
+        }
+      ],
+      "unsupported_diagnostic_kinds": [
+        "SECRET_STORAGE"
+      ]
     }
   ]
 }
@@ -84433,7 +85084,35 @@ Whether you're setting this override for a source or destination
     }
   ],
   "control_plane_version": "string",
-  "dataplane_version": "string"
+  "dataplane_version": "string",
+  "dataplane_version_support": {
+    "status": "SUPPORTED",
+    "published_at": 0,
+    "supported_until": 0
+  },
+  "enabled": true,
+  "health_history": [
+    {
+      "bucket_start": 0,
+      "status": "HEALTHY"
+    }
+  ],
+  "diagnostics": [
+    {
+      "kind": "SECRET_STORAGE",
+      "target_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "target_name": "string",
+      "status": "PASSED",
+      "checked_at": 0,
+      "updated_at": 0,
+      "error_code": "string",
+      "error_message": "string",
+      "observation": {}
+    }
+  ],
+  "unsupported_diagnostic_kinds": [
+    "SECRET_STORAGE"
+  ]
 }
 ```
 
@@ -84450,6 +85129,11 @@ Whether you're setting this override for a source or destination
 |recent_heartbeats|[[HeartbeatRecord](#schemaheartbeatrecord)]|false|none|none|
 |control_plane_version|string|false|none|none|
 |dataplane_version|string|false|none|none|
+|dataplane_version_support|[DataplaneVersionSupport](#schemadataplaneversionsupport)|false|none|Whether the release in dataplane_version is still inside its support period, evaluated on every request. This is the age of the release, not its compatibility. Present only when the data plane health UI is enabled for the organization.|
+|enabled|boolean|false|none|True when both the dataplane and its dataplane group are enabled.|
+|health_history|[[DataplaneHealthHistoryBucket](#schemadataplanehealthhistorybucket)]|false|none|48 periods of 15 minutes aligned to the clock (:00, :15, :30, :45 UTC), oldest first. The last period is the current one, graded on the check-ins so far. Present only when the data plane health UI is enabled for the organization.|
+|diagnostics|[[DataplaneDiagnosticRead](#schemadataplanediagnosticread)]|false|none|Saved result of each diagnostic check the data plane has reported.|
+|unsupported_diagnostic_kinds|[[DataplaneDiagnosticKind](#schemadataplanediagnostickind)]|false|none|Checks this data plane's version is too old to run. A check with a saved result is never listed.|
 
 #### Enumerated Values
 
@@ -84458,6 +85142,43 @@ Whether you're setting this override for a source or destination
 |status|HEALTHY|
 |status|DEGRADED|
 |status|UNHEALTHY|
+|status|UNKNOWN|
+|unsupported_diagnostic_kinds|SECRET_STORAGE|
+|unsupported_diagnostic_kinds|STORAGE_REACHABILITY|
+|unsupported_diagnostic_kinds|WORKLOAD_SCHEDULING|
+|unsupported_diagnostic_kinds|AUTHENTICATION|
+
+<h2 id="tocS_DataplaneVersionSupport">DataplaneVersionSupport</h2>
+<!-- backwards compatibility -->
+<a id="schemadataplaneversionsupport"></a>
+<a id="schema_DataplaneVersionSupport"></a>
+<a id="tocSdataplaneversionsupport"></a>
+<a id="tocsdataplaneversionsupport"></a>
+
+```json
+{
+  "status": "SUPPORTED",
+  "published_at": 0,
+  "supported_until": 0
+}
+```
+
+Whether the release in dataplane_version is still inside its support period, evaluated on every request. This is the age of the release, not its compatibility. Present only when the data plane health UI is enabled for the organization.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|status|string|true|none|UNKNOWN when the data plane reported no version, or reported one that is not a published release, such as a custom build.|
+|published_at|integer(int64)|false|none|When the release was published, in epoch milliseconds. Absent when status is UNKNOWN.|
+|supported_until|integer(int64)|false|none|First moment the release is no longer supported, in epoch milliseconds. Absent when status is UNKNOWN.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|status|SUPPORTED|
+|status|SUPPORT_ENDED|
 |status|UNKNOWN|
 
 <h2 id="tocS_HeartbeatRecord">HeartbeatRecord</h2>
@@ -84478,6 +85199,154 @@ Whether you're setting this override for a source or destination
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |timestamp|integer(int64)|true|none|none|
+
+<h2 id="tocS_DataplaneHealthHistoryBucket">DataplaneHealthHistoryBucket</h2>
+<!-- backwards compatibility -->
+<a id="schemadataplanehealthhistorybucket"></a>
+<a id="schema_DataplaneHealthHistoryBucket"></a>
+<a id="tocSdataplanehealthhistorybucket"></a>
+<a id="tocsdataplanehealthhistorybucket"></a>
+
+```json
+{
+  "bucket_start": 0,
+  "status": "HEALTHY"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|bucket_start|integer(int64)|true|none|Start of the period in epoch milliseconds.|
+|status|string|true|none|Worst check-in state reached inside the period. UNKNOWN when the period ends before the first known check-in.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|status|HEALTHY|
+|status|DEGRADED|
+|status|UNHEALTHY|
+|status|UNKNOWN|
+
+<h2 id="tocS_DataplaneDiagnosticKind">DataplaneDiagnosticKind</h2>
+<!-- backwards compatibility -->
+<a id="schemadataplanediagnostickind"></a>
+<a id="schema_DataplaneDiagnosticKind"></a>
+<a id="tocSdataplanediagnostickind"></a>
+<a id="tocsdataplanediagnostickind"></a>
+
+```json
+"SECRET_STORAGE"
+```
+
+Which diagnostic check produced the result.
+
+<h2 id="tocS_DataplaneDiagnosticStatus">DataplaneDiagnosticStatus</h2>
+<!-- backwards compatibility -->
+<a id="schemadataplanediagnosticstatus"></a>
+<a id="schema_DataplaneDiagnosticStatus"></a>
+<a id="tocSdataplanediagnosticstatus"></a>
+<a id="tocsdataplanediagnosticstatus"></a>
+
+```json
+"PASSED"
+```
+
+Outcome of one check. UNABLE_TO_COMPLETE means the result is unknown; NOT_CONFIGURED means there was nothing to check.
+
+<h2 id="tocS_DataplaneDiagnosticResult">DataplaneDiagnosticResult</h2>
+<!-- backwards compatibility -->
+<a id="schemadataplanediagnosticresult"></a>
+<a id="schema_DataplaneDiagnosticResult"></a>
+<a id="tocSdataplanediagnosticresult"></a>
+<a id="tocsdataplanediagnosticresult"></a>
+
+```json
+{
+  "kind": "string",
+  "target_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "status": "PASSED",
+  "checked_at": 0,
+  "error_code": "string",
+  "error_message": "string",
+  "observation": {}
+}
+```
+
+One completed check, as reported by the data plane.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|kind|string|true|none|A DataplaneDiagnosticKind value. It is a plain string so that a server that does not know a newer kind skips that result and still records the rest of the heartbeat.|
+|target_id|string(uuid)|true|none|What was checked, such as a secret store ID. The data plane ID for checks on the whole data plane.|
+|status|[DataplaneDiagnosticStatus](#schemadataplanediagnosticstatus)|true|none|Outcome of one check. UNABLE_TO_COMPLETE means the result is unknown; NOT_CONFIGURED means there was nothing to check.|
+|checked_at|integer(int64)|true|none|When the check finished, in epoch milliseconds.|
+|error_code|string|false|none|Short failure code. Required unless status is PASSED.|
+|error_message|string|false|none|Failure explanation that is safe to show the customer. Required unless status is PASSED.|
+|observation|object|false|none|Details specific to the kind of check. SECRET_STORAGE sends scope_type and scope_id. WORKLOAD_SCHEDULING sends blocked_count, longest_blocked_since, longest_blocked_workload_type, last_scheduled {scheduled_at, workload_type} and last_problem {observed_at, reason, message}, with the data plane ID as target_id. Its times are epoch milliseconds, and its workload types are SYNC, CHECK or DISCOVER. A field left out reads as null: longest_blocked_since and longest_blocked_workload_type, which describe the pod that has waited longest, are left out when nothing is blocked, and last_scheduled and last_problem until observed. An UNABLE_TO_COMPLETE result leaves out blocked_count, longest_blocked_since and longest_blocked_workload_type, because the scan measured nothing; its last_scheduled and last_problem come from earlier scans.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|status|PASSED|
+|status|FAILED|
+|status|UNABLE_TO_COMPLETE|
+|status|NOT_CONFIGURED|
+
+<h2 id="tocS_DataplaneDiagnosticRead">DataplaneDiagnosticRead</h2>
+<!-- backwards compatibility -->
+<a id="schemadataplanediagnosticread"></a>
+<a id="schema_DataplaneDiagnosticRead"></a>
+<a id="tocSdataplanediagnosticread"></a>
+<a id="tocsdataplanediagnosticread"></a>
+
+```json
+{
+  "kind": "SECRET_STORAGE",
+  "target_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "target_name": "string",
+  "status": "PASSED",
+  "checked_at": 0,
+  "updated_at": 0,
+  "error_code": "string",
+  "error_message": "string",
+  "observation": {}
+}
+```
+
+The saved result of one check.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|kind|[DataplaneDiagnosticKind](#schemadataplanediagnostickind)|true|none|Which diagnostic check produced the result.|
+|target_id|string(uuid)|true|none|none|
+|target_name|string|false|none|Name of the target when Airbyte knows it, such as a secret store's name.|
+|status|[DataplaneDiagnosticStatus](#schemadataplanediagnosticstatus)|true|none|Outcome of one check. UNABLE_TO_COMPLETE means the result is unknown; NOT_CONFIGURED means there was nothing to check.|
+|checked_at|integer(int64)|true|none|When the check finished, in epoch milliseconds.|
+|updated_at|integer(int64)|true|none|When Airbyte last received this result, in epoch milliseconds.|
+|error_code|string|false|none|none|
+|error_message|string|false|none|none|
+|observation|object|false|none|Details specific to the kind of check, as saved. AUTHENTICATION has association: REGISTERED_CLIENT_ID when the rejected client ID belongs to the data plane, or CLAIMED_DIAGNOSTIC_ID when the client ID matched no data plane and the unauthenticated X-Airbyte-Diagnostics-Dataplane-Id header named this one.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|kind|SECRET_STORAGE|
+|kind|STORAGE_REACHABILITY|
+|kind|WORKLOAD_SCHEDULING|
+|kind|AUTHENTICATION|
+|status|PASSED|
+|status|FAILED|
+|status|UNABLE_TO_COMPLETE|
+|status|NOT_CONFIGURED|
 
 <h2 id="tocS_DataplaneInitRequestBody">DataplaneInitRequestBody</h2>
 <!-- backwards compatibility -->

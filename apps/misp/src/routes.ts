@@ -639,7 +639,7 @@ const GalaxySchema = z
     icon: IconSchema.exactOptional(),
     namespace: GalaxyNamespaceSchema.exactOptional(),
     kill_chain_order: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({
@@ -786,135 +786,58 @@ type ExtendedEventType = z.infer<typeof EventSchema> & {
   Tag?: z.infer<typeof TagListSchema>
 }
 
-const UserSettingIdSchema = z
-  .string()
-  .regex(/^\d+$/)
-  .max(10)
-  .openapi({ example: '12345' })
-  .openapi('UserSettingId')
+const ExtendedEventSchema: z.ZodType<ExtendedEventType> = z
+  .lazy(() =>
+    EventSchema.and(
+      z
+        .object({
+          Feed: FeedSchema.exactOptional(),
+          Org: EventOrganisationSchema.exactOptional(),
+          Orgc: EventOrganisationSchema.exactOptional(),
+          Attribute: AttributeListSchema.exactOptional(),
+          ShadowAttribute: AttributeListSchema.exactOptional(),
+          RelatedEvent: z
+            .array(
+              z.object({ Event: ExtendedEventSchema.exactOptional() }).openapi({ required: [] }),
+            )
+            .exactOptional(),
+          Galaxy: z.array(GalaxySchema).exactOptional(),
+          Object: z.array(ObjectSchema).exactOptional(),
+          EventReport: z.array(EventReportSchema).exactOptional(),
+          Tag: TagListSchema.exactOptional(),
+        })
+        .openapi({ required: [] }),
+    ),
+  )
+  .openapi('ExtendedEvent')
 
-const UserSettingNameSchema = z
-  .enum([
-    'publish_alert_filter',
-    'dashboard_access',
-    'dashboard',
-    'homepage',
-    'default_restsearch_parameters',
-    'tag_numerical_value_override',
-    'event_index_hide_columns',
-  ])
-  .openapi('UserSettingName')
-
-const DashboardUserSettingSchema = z
-  .object({
-    widget: z.string().exactOptional().openapi({ example: 'MispStatusWidget' }),
-    position: z
-      .object({
-        x: z.string().regex(/^\d+$/).exactOptional().openapi({ example: '0' }),
-        y: z.string().regex(/^\d+$/).exactOptional().openapi({ example: '0' }),
-        width: z.string().regex(/^\d+$/).exactOptional().openapi({ example: '2' }),
-        height: z.string().regex(/^\d+$/).exactOptional().openapi({ example: '2' }),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-  })
-  .openapi({ required: [] })
-  .openapi('DashboardUserSetting')
-
-const PublishAlertFilterUserSettingSchema = z
-  .object({})
-  .openapi({
-    example: [
-      {
-        AND: [
-          { NOT: [{ 'EventTag.name': ['%osint%'] }] },
-          { OR: [{ 'Tag.name': ['tlp:green', 'tlp:amber', 'tlp:red', '%privint%'] }] },
-        ],
-      },
-    ],
-  })
-  .openapi('PublishAlertFilterUserSetting')
-
-const DashboardAccessUserSettingSchema = z.boolean().openapi('DashboardAccessUserSetting')
-
-const HomepageUserSettingSchema = z
-  .object({ path: z.string().exactOptional().openapi({ example: '/events/index' }) })
-  .openapi({ required: [] })
-  .openapi('HomepageUserSetting')
-
-const DefaultRestSearchParametersUserSettingSchema = z
-  .object({})
-  .openapi({
-    example: [
-      {
-        AND: [
-          { NOT: [{ 'EventTag.name': ['%osint%'] }] },
-          { OR: [{ 'Tag.name': ['tlp:green', 'tlp:amber', 'tlp:red', '%privint%'] }] },
-        ],
-      },
-    ],
-  })
-  .openapi('DefaultRestSearchParametersUserSetting')
-
-const TagNumericalValueOverrideUserSettingSchema = z
-  .object({})
-  .openapi({ example: [{ "false-positive:risk='medium'": 99 }] })
-  .openapi('TagNumericalValueOverrideUserSetting')
-
-const EventIndexHideColumnsUserSettingSchema = z
-  .array(z.string().openapi({ example: 'clusters' }))
-  .openapi('EventIndexHideColumnsUserSetting')
-
-type UserSettingType = {
-  id?: z.infer<typeof UserSettingIdSchema>
-  setting?: z.infer<typeof UserSettingNameSchema>
-  value?:
-    | z.infer<typeof DashboardUserSettingSchema>
-    | z.infer<typeof PublishAlertFilterUserSettingSchema>
-    | z.infer<typeof DashboardAccessUserSettingSchema>
-    | z.infer<typeof HomepageUserSettingSchema>
-    | z.infer<typeof DefaultRestSearchParametersUserSettingSchema>
-    | z.infer<typeof TagNumericalValueOverrideUserSettingSchema>
-    | z.infer<typeof EventIndexHideColumnsUserSettingSchema>
-  user_id?: z.infer<typeof UserIdSchema>
-  timestamp?: z.infer<typeof TimestampSchema>
+type EditedEventType = {
+  Event?: z.infer<typeof ExtendedEventSchema> & {
+    event_creator_email?: string
+    Galaxy?: z.infer<typeof GalaxySchema>[]
+    Object?: z.infer<typeof ObjectSchema>[]
+    EventReport?: z.infer<typeof EventReportSchema>[]
+    Tag?: z.infer<typeof TagSchema>[]
+  }
 }
 
-const SharingGroupNameSchema = z
-  .string()
-  .max(255)
-  .openapi({ example: 'Banking Sharing Group' })
-  .openapi('SharingGroupName')
+type ExtendedEventListType = z.infer<typeof ExtendedEventSchema>[]
 
-const SharingGroupDescriptionSchema = z
-  .string()
-  .max(65535)
-  .openapi({ example: 'Banking Institutions of X Sharing Group' })
-  .openapi('SharingGroupDescription')
-
-const SharingGroupReleasabilitySchema = z.string().max(65535).openapi('SharingGroupReleasability')
-
-const SlimSharingGroupNoIdSchema = z
+const SlimEventSchema = z
   .object({
-    uuid: UUIDSchema.exactOptional(),
-    name: SharingGroupNameSchema.exactOptional(),
-    description: SharingGroupDescriptionSchema.exactOptional(),
-    releasability: SharingGroupReleasabilitySchema.exactOptional(),
-    local: z.boolean().exactOptional(),
-    active: z.boolean().exactOptional(),
-    org_count: z.string().regex(/^\d+$/).exactOptional().openapi({ example: '6' }),
+    id: EventIdSchema,
+    timestamp: TimestampSchema,
+    sighting_timestamp: TimestampSchema,
+    published: PublishedFlagSchema,
+    uuid: UUIDSchema,
+    orgc_uuid: UUIDSchema.exactOptional(),
   })
-  .openapi({ required: [] })
-  .openapi('SlimSharingGroupNoId')
+  .openapi({ required: ['id', 'timestamp', 'sighting_timestamp', 'published', 'uuid'] })
+  .openapi('SlimEvent')
 
-type SharingGroupNoIdType = z.infer<typeof SlimSharingGroupNoIdSchema> & {
-  organisation_uuid?: z.infer<typeof UUIDSchema>
-  org_id?: z.infer<typeof OrganisationIdSchema>
-  sync_user_id?: z.infer<typeof UserIdSchema>
-  created?: string
-  modified?: string
-  roaming?: boolean
-}
+type EventRestSearchListType = {
+  Event?: z.infer<typeof ExtendedEventSchema> & z.infer<typeof SlimEventSchema>
+}[]
 
 const AnalystDataIDSchema = z
   .string()
@@ -1028,7 +951,7 @@ const MinimalAnalystDataSchema = z
   .openapi('MinimalAnalystData')
 
 const MinimalAnalystDataEmptySchema = z
-  .array(z.object({}))
+  .array(z.looseObject({}))
   .max(0)
   .openapi({ description: 'Minimal Analyst Data' })
   .openapi('MinimalAnalystDataEmpty')
@@ -1055,7 +978,7 @@ const DecayingModelParametersSchema = z
     threshold: z.float32().exactOptional().openapi({ example: 30 }),
     default_base_score: z.float32().exactOptional().openapi({ example: 80 }),
     base_score_config: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         example: {
@@ -1136,7 +1059,7 @@ const AttributeRestSearchListSchema = z
   .openapi('AttributeRestSearchList')
 
 const AttributeStatisticsResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'Dictionary of attribute types/categories showing the amount of occurrences/percentage.',
@@ -1147,7 +1070,7 @@ const AttributeStatisticsResponseSchema = z
 const DescribeAttributeTypesResponseSchema = z
   .object({
     sane_defaults: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         example: {
@@ -1158,7 +1081,7 @@ const DescribeAttributeTypesResponseSchema = z
     types: z.array(AttributeTypeSchema).exactOptional(),
     categories: z.array(AttributeCategorySchema).exactOptional(),
     category_type_mappings: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         example: {
@@ -1468,32 +1391,7 @@ const EventTagSchema = z
 
 const EventTagListSchema = z.array(EventTagSchema).openapi('EventTagList')
 
-const ExtendedEventSchema: z.ZodType<ExtendedEventType> = z
-  .lazy(() =>
-    EventSchema.and(
-      z
-        .object({
-          Feed: FeedSchema.exactOptional(),
-          Org: EventOrganisationSchema.exactOptional(),
-          Orgc: EventOrganisationSchema.exactOptional(),
-          Attribute: AttributeListSchema.exactOptional(),
-          ShadowAttribute: AttributeListSchema.exactOptional(),
-          RelatedEvent: z
-            .array(
-              z.object({ Event: ExtendedEventSchema.exactOptional() }).openapi({ required: [] }),
-            )
-            .exactOptional(),
-          Galaxy: z.array(GalaxySchema).exactOptional(),
-          Object: z.array(ObjectSchema).exactOptional(),
-          EventReport: z.array(EventReportSchema).exactOptional(),
-          Tag: TagListSchema.exactOptional(),
-        })
-        .openapi({ required: [] }),
-    ),
-  )
-  .openapi('ExtendedEvent')
-
-const EditedEventSchema = z
+const EditedEventSchema: z.ZodType<EditedEventType> = z
   .object({
     Event: ExtendedEventSchema.and(
       z
@@ -1510,25 +1408,15 @@ const EditedEventSchema = z
   .openapi({ required: [] })
   .openapi('EditedEvent')
 
-const SlimEventSchema = z
-  .object({
-    id: EventIdSchema,
-    timestamp: TimestampSchema,
-    sighting_timestamp: TimestampSchema,
-    published: PublishedFlagSchema,
-    uuid: UUIDSchema,
-    orgc_uuid: UUIDSchema.exactOptional(),
-  })
-  .openapi({ required: ['id', 'timestamp', 'sighting_timestamp', 'published', 'uuid'] })
-  .openapi('SlimEvent')
-
 const EventListSchema = z.array(EventSchema).openapi('EventList')
 
-const ExtendedEventListSchema = z.array(ExtendedEventSchema).openapi('ExtendedEventList')
+const ExtendedEventListSchema: z.ZodType<ExtendedEventListType> = z
+  .array(ExtendedEventSchema)
+  .openapi('ExtendedEventList')
 
 const SlimEventListSchema = z.array(SlimEventSchema).openapi('SlimEventList')
 
-const EventRestSearchListSchema = z
+const EventRestSearchListSchema: z.ZodType<EventRestSearchListType> = z
   .array(
     z
       .object({ Event: ExtendedEventSchema.and(SlimEventSchema).exactOptional() })
@@ -1898,7 +1786,7 @@ const GalaxyMispFormatSchema = z
             extends_uuid: ExtendsUUIDSchema.exactOptional(),
             extends_Version: GalaxyClusterVersionSchema.exactOptional(),
             meta: z
-              .object({})
+              .looseObject({})
               .exactOptional()
               .openapi({
                 description:
@@ -2125,28 +2013,104 @@ const ExtendedTaxonomyEntrySchema = UserNoIdSchema.and(
     .openapi({ required: [] }),
 ).openapi('ExtendedTaxonomyEntry')
 
-const UserSettingSchema: z.ZodType<UserSettingType> = z
-  .lazy(() =>
-    z
+const DashboardUserSettingSchema = z
+  .object({
+    widget: z.string().exactOptional().openapi({ example: 'MispStatusWidget' }),
+    position: z
       .object({
-        id: UserSettingIdSchema.exactOptional(),
-        setting: UserSettingNameSchema.exactOptional(),
-        value: z
-          .union([
-            DashboardUserSettingSchema,
-            PublishAlertFilterUserSettingSchema,
-            DashboardAccessUserSettingSchema,
-            HomepageUserSettingSchema,
-            DefaultRestSearchParametersUserSettingSchema,
-            TagNumericalValueOverrideUserSettingSchema,
-            EventIndexHideColumnsUserSettingSchema,
-          ])
-          .exactOptional(),
-        user_id: UserIdSchema.exactOptional(),
-        timestamp: TimestampSchema.exactOptional(),
+        x: z.string().regex(/^\d+$/).exactOptional().openapi({ example: '0' }),
+        y: z.string().regex(/^\d+$/).exactOptional().openapi({ example: '0' }),
+        width: z.string().regex(/^\d+$/).exactOptional().openapi({ example: '2' }),
+        height: z.string().regex(/^\d+$/).exactOptional().openapi({ example: '2' }),
       })
+      .exactOptional()
       .openapi({ required: [] }),
-  )
+  })
+  .openapi({ required: [] })
+  .openapi('DashboardUserSetting')
+
+const PublishAlertFilterUserSettingSchema = z
+  .looseObject({})
+  .openapi({
+    example: [
+      {
+        AND: [
+          { NOT: [{ 'EventTag.name': ['%osint%'] }] },
+          { OR: [{ 'Tag.name': ['tlp:green', 'tlp:amber', 'tlp:red', '%privint%'] }] },
+        ],
+      },
+    ],
+  })
+  .openapi('PublishAlertFilterUserSetting')
+
+const DashboardAccessUserSettingSchema = z.boolean().openapi('DashboardAccessUserSetting')
+
+const HomepageUserSettingSchema = z
+  .object({ path: z.string().exactOptional().openapi({ example: '/events/index' }) })
+  .openapi({ required: [] })
+  .openapi('HomepageUserSetting')
+
+const DefaultRestSearchParametersUserSettingSchema = z
+  .looseObject({})
+  .openapi({
+    example: [
+      {
+        AND: [
+          { NOT: [{ 'EventTag.name': ['%osint%'] }] },
+          { OR: [{ 'Tag.name': ['tlp:green', 'tlp:amber', 'tlp:red', '%privint%'] }] },
+        ],
+      },
+    ],
+  })
+  .openapi('DefaultRestSearchParametersUserSetting')
+
+const TagNumericalValueOverrideUserSettingSchema = z
+  .looseObject({})
+  .openapi({ example: [{ "false-positive:risk='medium'": 99 }] })
+  .openapi('TagNumericalValueOverrideUserSetting')
+
+const EventIndexHideColumnsUserSettingSchema = z
+  .array(z.string().openapi({ example: 'clusters' }))
+  .openapi('EventIndexHideColumnsUserSetting')
+
+const UserSettingIdSchema = z
+  .string()
+  .regex(/^\d+$/)
+  .max(10)
+  .openapi({ example: '12345' })
+  .openapi('UserSettingId')
+
+const UserSettingNameSchema = z
+  .enum([
+    'publish_alert_filter',
+    'dashboard_access',
+    'dashboard',
+    'homepage',
+    'default_restsearch_parameters',
+    'tag_numerical_value_override',
+    'event_index_hide_columns',
+  ])
+  .openapi('UserSettingName')
+
+const UserSettingSchema = z
+  .object({
+    id: UserSettingIdSchema.exactOptional(),
+    setting: UserSettingNameSchema.exactOptional(),
+    value: z
+      .union([
+        DashboardUserSettingSchema,
+        PublishAlertFilterUserSettingSchema,
+        DashboardAccessUserSettingSchema,
+        HomepageUserSettingSchema,
+        DefaultRestSearchParametersUserSettingSchema,
+        TagNumericalValueOverrideUserSettingSchema,
+        EventIndexHideColumnsUserSettingSchema,
+      ])
+      .exactOptional(),
+    user_id: UserIdSchema.exactOptional(),
+    timestamp: TimestampSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
   .openapi('UserSetting')
 
 const ViewUserSettingsSchema = z
@@ -2403,13 +2367,13 @@ const MispSettingSchema = z
     subGroup: z.string().nullable().exactOptional().openapi({ example: 'Enrichment' }),
     cli_only: z.int().nullable().exactOptional().openapi({ example: 1 }),
     redacted: z.boolean().nullable().exactOptional(),
-    optionsSource: z.object({}).nullable().exactOptional(),
+    optionsSource: z.looseObject({}).nullable().exactOptional(),
     afterHook: z.string().nullable().exactOptional().openapi({ example: 'cleanCacheFiles' }),
     error: z.int().nullable().exactOptional().openapi({ example: 1 }),
     tab: z.string().exactOptional().openapi({ example: 'MISP' }),
     setting: z.string().exactOptional().openapi({ example: 'MISP.baseurl' }),
     options: z
-      .union([z.object({}), z.string(), z.array(z.string()), z.array(z.object({}))])
+      .union([z.looseObject({}), z.string(), z.array(z.string()), z.array(z.looseObject({}))])
       .nullable()
       .exactOptional(),
   })
@@ -2585,6 +2549,20 @@ const SharingGroupOrganisationIdSchema = z
   .openapi({ example: '1' })
   .openapi('SharingGroupOrganisationId')
 
+const SharingGroupNameSchema = z
+  .string()
+  .max(255)
+  .openapi({ example: 'Banking Sharing Group' })
+  .openapi('SharingGroupName')
+
+const SharingGroupDescriptionSchema = z
+  .string()
+  .max(65535)
+  .openapi({ example: 'Banking Institutions of X Sharing Group' })
+  .openapi('SharingGroupDescription')
+
+const SharingGroupReleasabilitySchema = z.string().max(65535).openapi('SharingGroupReleasability')
+
 const SharingGroupBlueprintIdSchema = z
   .string()
   .regex(/^\d+$|^$/)
@@ -2593,28 +2571,37 @@ const SharingGroupBlueprintIdSchema = z
   .openapi({ example: '1' })
   .openapi('SharingGroupBlueprintId')
 
+const SlimSharingGroupNoIdSchema = z
+  .object({
+    uuid: UUIDSchema.exactOptional(),
+    name: SharingGroupNameSchema.exactOptional(),
+    description: SharingGroupDescriptionSchema.exactOptional(),
+    releasability: SharingGroupReleasabilitySchema.exactOptional(),
+    local: z.boolean().exactOptional(),
+    active: z.boolean().exactOptional(),
+    org_count: z.string().regex(/^\d+$/).exactOptional().openapi({ example: '6' }),
+  })
+  .openapi({ required: [] })
+  .openapi('SlimSharingGroupNoId')
+
 const SlimSharingGroupSchema = z
   .object({ id: SharingGroupIdSchema.exactOptional() })
   .openapi({ required: [] })
   .and(SlimSharingGroupNoIdSchema)
   .openapi('SlimSharingGroup')
 
-const SharingGroupNoIdSchema: z.ZodType<SharingGroupNoIdType> = z
-  .lazy(() =>
-    SlimSharingGroupNoIdSchema.and(
-      z
-        .object({
-          organisation_uuid: UUIDSchema.exactOptional(),
-          org_id: OrganisationIdSchema.exactOptional(),
-          sync_user_id: UserIdSchema.exactOptional(),
-          created: z.iso.datetime({ offset: true }).exactOptional(),
-          modified: z.iso.datetime({ offset: true }).exactOptional(),
-          roaming: z.boolean().exactOptional(),
-        })
-        .openapi({ required: [] }),
-    ),
-  )
-  .openapi('SharingGroupNoId')
+const SharingGroupNoIdSchema = SlimSharingGroupNoIdSchema.and(
+  z
+    .object({
+      organisation_uuid: UUIDSchema.exactOptional(),
+      org_id: OrganisationIdSchema.exactOptional(),
+      sync_user_id: UserIdSchema.exactOptional(),
+      created: z.iso.datetime({ offset: true }).exactOptional(),
+      modified: z.iso.datetime({ offset: true }).exactOptional(),
+      roaming: z.boolean().exactOptional(),
+    })
+    .openapi({ required: [] }),
+).openapi('SharingGroupNoId')
 
 const SharingGroupSchema = z
   .object({ id: SharingGroupIdSchema.exactOptional() })
@@ -4343,7 +4330,7 @@ const ServerSettingsResponseResponse = {
             .exactOptional()
             .openapi({ required: [] }),
           writeableDirs: z
-            .object({})
+            .looseObject({})
             .exactOptional()
             .openapi({
               example: {
@@ -4354,7 +4341,7 @@ const ServerSettingsResponseResponse = {
               },
             }),
           writeableFiles: z
-            .object({})
+            .looseObject({})
             .exactOptional()
             .openapi({
               example: {
@@ -4363,11 +4350,11 @@ const ServerSettingsResponseResponse = {
               },
             }),
           readableFiles: z
-            .object({})
+            .looseObject({})
             .exactOptional()
             .openapi({ example: { '/var/www/MISP/app/files/scripts/stixtest.py': 0 } }),
           dbDiagnostics: z
-            .object({})
+            .looseObject({})
             .exactOptional()
             .openapi({
               example: {
@@ -4392,11 +4379,11 @@ const ServerSettingsResponseResponse = {
               checked_table_column: z
                 .array(z.string().openapi({ example: 'column_name' }))
                 .exactOptional(),
-              diagnostic: z.object({}).exactOptional(),
+              diagnostic: z.looseObject({}).exactOptional(),
               diagnostic_index: z
                 .union([
                   z
-                    .object({})
+                    .looseObject({})
                     .openapi({
                       example: {
                         event_reports: {
@@ -4407,7 +4394,7 @@ const ServerSettingsResponseResponse = {
                         },
                       },
                     }),
-                  z.array(z.object({})).openapi({ example: [] }),
+                  z.array(z.looseObject({})).openapi({ example: [] }),
                 ])
                 .exactOptional(),
               expected_db_version: z
@@ -4420,18 +4407,18 @@ const ServerSettingsResponseResponse = {
               remaining_lock_time: z.number().exactOptional().openapi({ example: 0 }),
               update_fail_number_reached: z.boolean().exactOptional(),
               indexes: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({ example: { admin_settings: { id: true, setting: false } } }),
               columnPerTable: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({ example: { admin_settings: ['id', 'setting', 'value'] } }),
             })
             .exactOptional()
             .openapi({ required: [] }),
           redisInfo: z
-            .object({})
+            .looseObject({})
             .exactOptional()
             .openapi({
               example: {
@@ -4570,7 +4557,7 @@ const ServerSettingsResponseResponse = {
                 .exactOptional()
                 .openapi({ required: [] }),
               extensions: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   example: {
@@ -4739,12 +4726,12 @@ const UpdateServerJSONResponseResponse = {
       schema: z.xor([
         z
           .object({
-            Galaxy: z.object({}).nullable().exactOptional(),
-            Noticelist: z.object({}).nullable().exactOptional(),
-            Warninglist: z.object({}).nullable().exactOptional(),
-            Taxonomy: z.object({}).nullable().exactOptional(),
-            ObjectTemplate: z.object({}).nullable().exactOptional(),
-            ObjectRelationship: z.object({}).nullable().exactOptional(),
+            Galaxy: z.looseObject({}).nullable().exactOptional(),
+            Noticelist: z.looseObject({}).nullable().exactOptional(),
+            Warninglist: z.looseObject({}).nullable().exactOptional(),
+            Taxonomy: z.looseObject({}).nullable().exactOptional(),
+            ObjectTemplate: z.looseObject({}).nullable().exactOptional(),
+            ObjectRelationship: z.looseObject({}).nullable().exactOptional(),
           })
           .openapi({ required: [] }),
         z
@@ -5262,7 +5249,7 @@ const WarninglistMatchListResponseResponse = {
   content: {
     'application/json': {
       schema: z
-        .object({})
+        .looseObject({})
         .openapi({
           example: { '10.128.0.2': [{ id: '10', name: 'List of known Wikimedia address ranges' }] },
         }),
@@ -6783,7 +6770,7 @@ const EditServerSettingRequestRequestBody = {
     'application/json': {
       schema: z
         .object({
-          value: z.union([z.string(), z.boolean(), z.number(), z.object({})]).exactOptional(),
+          value: z.union([z.string(), z.boolean(), z.number(), z.looseObject({})]).exactOptional(),
         })
         .openapi({ required: [] }),
     },

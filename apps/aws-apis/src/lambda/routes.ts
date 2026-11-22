@@ -4,14 +4,10 @@ const StringSchema = z.string().openapi('String')
 
 const AddLayerVersionPermissionResponseSchema = z
   .object({
-    Statement: StringSchema.and(
-      z.any().openapi({ description: 'The permission statement.' }),
-    ).exactOptional(),
-    RevisionId: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A unique identifier for the current revision of the policy.' }),
-    ).exactOptional(),
+    Statement: StringSchema.exactOptional().openapi({ description: 'The permission statement.' }),
+    RevisionId: StringSchema.exactOptional().openapi({
+      description: 'A unique identifier for the current revision of the policy.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('AddLayerVersionPermissionResponse')
@@ -32,11 +28,9 @@ const PreconditionFailedExceptionSchema = z.any().openapi('PreconditionFailedExc
 
 const AddPermissionResponseSchema = z
   .object({
-    Statement: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: "The permission statement that's added to the function policy." }),
-    ).exactOptional(),
+    Statement: StringSchema.exactOptional().openapi({
+      description: "The permission statement that's added to the function policy.",
+    }),
   })
   .openapi({ required: [] })
   .openapi('AddPermissionResponse')
@@ -72,13 +66,9 @@ const AdditionalVersionWeightsSchema = z
 
 const AliasRoutingConfigurationSchema = z
   .object({
-    AdditionalVersionWeights: AdditionalVersionWeightsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The second version, and the percentage of traffic that's routed to it.",
-        }),
-    ).exactOptional(),
+    AdditionalVersionWeights: AdditionalVersionWeightsSchema.exactOptional().openapi({
+      description: "The second version, and the percentage of traffic that's routed to it.",
+    }),
   })
   .openapi({
     description:
@@ -89,31 +79,23 @@ const AliasRoutingConfigurationSchema = z
 
 const AliasConfigurationSchema = z
   .object({
-    AliasArn: FunctionArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the alias.' }),
-    ).exactOptional(),
-    Name: AliasSchema.and(
-      z.any().openapi({ description: 'The name of the alias.' }),
-    ).exactOptional(),
-    FunctionVersion: VersionSchema.and(
-      z.any().openapi({ description: 'The function version that the alias invokes.' }),
-    ).exactOptional(),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'A description of the alias.' }),
-    ).exactOptional(),
-    RoutingConfig: AliasRoutingConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <a href="https://docs.aws.amazon.com/lambda/latest/dg/lambda-traffic-shifting-using-aliases.html">routing configuration</a> of the alias.',
-        }),
-    ).exactOptional(),
-    RevisionId: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A unique identifier that changes when you update the alias.' }),
-    ).exactOptional(),
+    AliasArn: FunctionArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the alias.',
+    }),
+    Name: AliasSchema.exactOptional().openapi({ description: 'The name of the alias.' }),
+    FunctionVersion: VersionSchema.exactOptional().openapi({
+      description: 'The function version that the alias invokes.',
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'A description of the alias.',
+    }),
+    RoutingConfig: AliasRoutingConfigurationSchema.exactOptional().openapi({
+      description:
+        'The <a href="https://docs.aws.amazon.com/lambda/latest/dg/lambda-traffic-shifting-using-aliases.html">routing configuration</a> of the alias.',
+    }),
+    RevisionId: StringSchema.exactOptional().openapi({
+      description: 'A unique identifier that changes when you update the alias.',
+    }),
   })
   .openapi({
     description:
@@ -148,14 +130,10 @@ const SigningProfileVersionArnsSchema = z
 
 const AllowedPublishersSchema = z
   .object({
-    SigningProfileVersionArns: SigningProfileVersionArnsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) for each of the signing profiles. A signing profile defines a trusted user who can sign a code package. ',
-        }),
-    ),
+    SigningProfileVersionArns: SigningProfileVersionArnsSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) for each of the signing profiles. A signing profile defines a trusted user who can sign a code package. ',
+    }),
   })
   .openapi({
     required: ['SigningProfileVersionArns'],
@@ -167,14 +145,10 @@ const CodeSigningPolicySchema = z.enum(['Warn', 'Enforce']).openapi('CodeSigning
 
 const CodeSigningPoliciesSchema = z
   .object({
-    UntrustedArtifactOnDeployment: CodeSigningPolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Code signing configuration policy for deployment validation failure. If you set the policy to <code>Enforce</code>, Lambda blocks the deployment request if signature validation checks fail. If you set the policy to <code>Warn</code>, Lambda allows the deployment and creates a CloudWatch log. </p> <p>Default value: <code>Warn</code> </p>',
-        }),
-    ).exactOptional(),
+    UntrustedArtifactOnDeployment: CodeSigningPolicySchema.exactOptional().openapi({
+      description:
+        '<p>Code signing configuration policy for deployment validation failure. If you set the policy to <code>Enforce</code>, Lambda blocks the deployment request if signature validation checks fail. If you set the policy to <code>Warn</code>, Lambda allows the deployment and creates a CloudWatch log. </p> <p>Default value: <code>Warn</code> </p>',
+    }),
   })
   .openapi({
     description:
@@ -187,38 +161,26 @@ const TimestampSchema = z.string().openapi('Timestamp')
 
 const CodeSigningConfigSchema = z
   .object({
-    CodeSigningConfigId: CodeSigningConfigIdSchema.and(
-      z.any().openapi({ description: 'Unique identifer for the Code signing configuration.' }),
-    ),
-    CodeSigningConfigArn: CodeSigningConfigArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the Code signing configuration.',
-        }),
-    ),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'Code signing configuration description.' }),
-    ).exactOptional(),
-    AllowedPublishers: AllowedPublishersSchema.and(
-      z.any().openapi({ description: 'List of allowed publishers.' }),
-    ),
-    CodeSigningPolicies: CodeSigningPoliciesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The code signing policy controls the validation failure action for signature mismatch or expiry.',
-        }),
-    ),
-    LastModified: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time that the Code signing configuration was last modified, in ISO-8601 format (YYYY-MM-DDThh:mm:ss.sTZD). ',
-        }),
-    ),
+    CodeSigningConfigId: CodeSigningConfigIdSchema.openapi({
+      description: 'Unique identifer for the Code signing configuration.',
+    }),
+    CodeSigningConfigArn: CodeSigningConfigArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the Code signing configuration.',
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'Code signing configuration description.',
+    }),
+    AllowedPublishers: AllowedPublishersSchema.openapi({
+      description: 'List of allowed publishers.',
+    }),
+    CodeSigningPolicies: CodeSigningPoliciesSchema.openapi({
+      description:
+        'The code signing policy controls the validation failure action for signature mismatch or expiry.',
+    }),
+    LastModified: TimestampSchema.openapi({
+      description:
+        'The date and time that the Code signing configuration was last modified, in ISO-8601 format (YYYY-MM-DDThh:mm:ss.sTZD). ',
+    }),
   })
   .openapi({
     required: [
@@ -235,9 +197,9 @@ const CodeSigningConfigSchema = z
 
 const CreateCodeSigningConfigResponseSchema = z
   .object({
-    CodeSigningConfig: CodeSigningConfigSchema.and(
-      z.any().openapi({ description: 'The code signing configuration.' }),
-    ),
+    CodeSigningConfig: CodeSigningConfigSchema.openapi({
+      description: 'The code signing configuration.',
+    }),
   })
   .openapi({ required: ['CodeSigningConfig'] })
   .openapi('CreateCodeSigningConfigResponse')
@@ -262,14 +224,10 @@ const PatternSchema = z.string().regex(/.*/).min(0).max(4096).openapi('Pattern')
 
 const FilterSchema = z
   .object({
-    Pattern: PatternSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A filter pattern. For more information on the syntax of a filter pattern, see <a href="https://docs.aws.amazon.com/lambda/latest/dg/invocation-eventfiltering.html#filtering-syntax"> Filter rule syntax</a>. ',
-        }),
-    ).exactOptional(),
+    Pattern: PatternSchema.exactOptional().openapi({
+      description:
+        ' A filter pattern. For more information on the syntax of a filter pattern, see <a href="https://docs.aws.amazon.com/lambda/latest/dg/invocation-eventfiltering.html#filtering-syntax"> Filter rule syntax</a>. ',
+    }),
   })
   .openapi({
     description:
@@ -282,9 +240,7 @@ const FilterListSchema = z.array(FilterSchema).openapi('FilterList')
 
 const FilterCriteriaSchema = z
   .object({
-    Filters: FilterListSchema.and(
-      z.any().openapi({ description: ' A list of filters. ' }),
-    ).exactOptional(),
+    Filters: FilterListSchema.exactOptional().openapi({ description: ' A list of filters. ' }),
   })
   .openapi({
     description: ' An object that contains the filters for an event source. ',
@@ -303,11 +259,9 @@ const DestinationArnSchema = z
 
 const OnSuccessSchema = z
   .object({
-    Destination: DestinationArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) of the destination resource.' }),
-    ).exactOptional(),
+    Destination: DestinationArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the destination resource.',
+    }),
   })
   .openapi({
     description: 'A destination for events that were processed successfully.',
@@ -317,23 +271,21 @@ const OnSuccessSchema = z
 
 const OnFailureSchema = z
   .object({
-    Destination: DestinationArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) of the destination resource.' }),
-    ).exactOptional(),
+    Destination: DestinationArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the destination resource.',
+    }),
   })
   .openapi({ description: 'A destination for events that failed processing.', required: [] })
   .openapi('OnFailure')
 
 const DestinationConfigSchema = z
   .object({
-    OnSuccess: OnSuccessSchema.and(
-      z.any().openapi({ description: 'The destination configuration for successful invocations.' }),
-    ).exactOptional(),
-    OnFailure: OnFailureSchema.and(
-      z.any().openapi({ description: 'The destination configuration for failed invocations.' }),
-    ).exactOptional(),
+    OnSuccess: OnSuccessSchema.exactOptional().openapi({
+      description: 'The destination configuration for successful invocations.',
+    }),
+    OnFailure: OnFailureSchema.exactOptional().openapi({
+      description: 'The destination configuration for failed invocations.',
+    }),
   })
   .openapi({
     description:
@@ -382,22 +334,14 @@ const URISchema = z
 
 const SourceAccessConfigurationSchema = z
   .object({
-    Type: SourceAccessTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The type of authentication protocol, VPC components, or virtual host for your event source. For example: <code>"Type":"SASL_SCRAM_512_AUTH"</code>.</p> <ul> <li> <p> <code>BASIC_AUTH</code> – (Amazon MQ) The Secrets Manager secret that stores your broker credentials.</p> </li> <li> <p> <code>BASIC_AUTH</code> – (Self-managed Apache Kafka) The Secrets Manager ARN of your secret key used for SASL/PLAIN authentication of your Apache Kafka brokers.</p> </li> <li> <p> <code>VPC_SUBNET</code> – (Self-managed Apache Kafka) The subnets associated with your VPC. Lambda connects to these subnets to fetch data from your self-managed Apache Kafka cluster.</p> </li> <li> <p> <code>VPC_SECURITY_GROUP</code> – (Self-managed Apache Kafka) The VPC security group used to manage access to your self-managed Apache Kafka brokers.</p> </li> <li> <p> <code>SASL_SCRAM_256_AUTH</code> – (Self-managed Apache Kafka) The Secrets Manager ARN of your secret key used for SASL SCRAM-256 authentication of your self-managed Apache Kafka brokers.</p> </li> <li> <p> <code>SASL_SCRAM_512_AUTH</code> – (Amazon MSK, Self-managed Apache Kafka) The Secrets Manager ARN of your secret key used for SASL SCRAM-512 authentication of your self-managed Apache Kafka brokers.</p> </li> <li> <p> <code>VIRTUAL_HOST</code> –- (RabbitMQ) The name of the virtual host in your RabbitMQ broker. Lambda uses this RabbitMQ host as the event source. This property cannot be specified in an UpdateEventSourceMapping API call.</p> </li> <li> <p> <code>CLIENT_CERTIFICATE_TLS_AUTH</code> – (Amazon MSK, self-managed Apache Kafka) The Secrets Manager ARN of your secret key containing the certificate chain (X.509 PEM), private key (PKCS#8 PEM), and private key password (optional) used for mutual TLS authentication of your MSK/Apache Kafka brokers.</p> </li> <li> <p> <code>SERVER_ROOT_CA_CERTIFICATE</code> – (Self-managed Apache Kafka) The Secrets Manager ARN of your secret key containing the root CA certificate (X.509 PEM) used for TLS encryption of your Apache Kafka brokers. </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    URI: URISchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The value for your chosen configuration in <code>Type</code>. For example: <code>"URI": "arn:aws:secretsmanager:us-east-1:01234567890:secret:MyBrokerSecretName"</code>.',
-        }),
-    ).exactOptional(),
+    Type: SourceAccessTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The type of authentication protocol, VPC components, or virtual host for your event source. For example: <code>"Type":"SASL_SCRAM_512_AUTH"</code>.</p> <ul> <li> <p> <code>BASIC_AUTH</code> – (Amazon MQ) The Secrets Manager secret that stores your broker credentials.</p> </li> <li> <p> <code>BASIC_AUTH</code> – (Self-managed Apache Kafka) The Secrets Manager ARN of your secret key used for SASL/PLAIN authentication of your Apache Kafka brokers.</p> </li> <li> <p> <code>VPC_SUBNET</code> – (Self-managed Apache Kafka) The subnets associated with your VPC. Lambda connects to these subnets to fetch data from your self-managed Apache Kafka cluster.</p> </li> <li> <p> <code>VPC_SECURITY_GROUP</code> – (Self-managed Apache Kafka) The VPC security group used to manage access to your self-managed Apache Kafka brokers.</p> </li> <li> <p> <code>SASL_SCRAM_256_AUTH</code> – (Self-managed Apache Kafka) The Secrets Manager ARN of your secret key used for SASL SCRAM-256 authentication of your self-managed Apache Kafka brokers.</p> </li> <li> <p> <code>SASL_SCRAM_512_AUTH</code> – (Amazon MSK, Self-managed Apache Kafka) The Secrets Manager ARN of your secret key used for SASL SCRAM-512 authentication of your self-managed Apache Kafka brokers.</p> </li> <li> <p> <code>VIRTUAL_HOST</code> –- (RabbitMQ) The name of the virtual host in your RabbitMQ broker. Lambda uses this RabbitMQ host as the event source. This property cannot be specified in an UpdateEventSourceMapping API call.</p> </li> <li> <p> <code>CLIENT_CERTIFICATE_TLS_AUTH</code> – (Amazon MSK, self-managed Apache Kafka) The Secrets Manager ARN of your secret key containing the certificate chain (X.509 PEM), private key (PKCS#8 PEM), and private key password (optional) used for mutual TLS authentication of your MSK/Apache Kafka brokers.</p> </li> <li> <p> <code>SERVER_ROOT_CA_CERTIFICATE</code> – (Self-managed Apache Kafka) The Secrets Manager ARN of your secret key containing the root CA certificate (X.509 PEM) used for TLS encryption of your Apache Kafka brokers. </p> </li> </ul>',
+    }),
+    URI: URISchema.exactOptional().openapi({
+      description:
+        'The value for your chosen configuration in <code>Type</code>. For example: <code>"URI": "arn:aws:secretsmanager:us-east-1:01234567890:secret:MyBrokerSecretName"</code>.',
+    }),
   })
   .openapi({
     description:
@@ -431,14 +375,10 @@ const EndpointsSchema = z
 
 const SelfManagedEventSourceSchema = z
   .object({
-    Endpoints: EndpointsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of bootstrap servers for your Kafka brokers in the following format: <code>"KAFKA_BOOTSTRAP_SERVERS": ["abc.xyz.com:xxxx","abc2.xyz.com:xxxx"]</code>.',
-        }),
-    ).exactOptional(),
+    Endpoints: EndpointsSchema.exactOptional().openapi({
+      description:
+        'The list of bootstrap servers for your Kafka brokers in the following format: <code>"KAFKA_BOOTSTRAP_SERVERS": ["abc.xyz.com:xxxx","abc2.xyz.com:xxxx"]</code>.',
+    }),
   })
   .openapi({
     description: 'The self-managed Apache Kafka cluster for your event source.',
@@ -474,14 +414,10 @@ const FunctionResponseTypeListSchema = z
 
 const AmazonManagedKafkaEventSourceConfigSchema = z
   .object({
-    ConsumerGroupId: URISchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier for the Kafka consumer group to join. The consumer group ID must be unique among all your Kafka event sources. After creating a Kafka event source mapping with the consumer group ID specified, you cannot update this value. For more information, see <a href="https://docs.aws.amazon.com/lambda/latest/dg/with-msk.html#services-msk-consumer-group-id">Customizable consumer group ID</a>.',
-        }),
-    ).exactOptional(),
+    ConsumerGroupId: URISchema.exactOptional().openapi({
+      description:
+        'The identifier for the Kafka consumer group to join. The consumer group ID must be unique among all your Kafka event sources. After creating a Kafka event source mapping with the consumer group ID specified, you cannot update this value. For more information, see <a href="https://docs.aws.amazon.com/lambda/latest/dg/with-msk.html#services-msk-consumer-group-id">Customizable consumer group ID</a>.',
+    }),
   })
   .openapi({
     description:
@@ -492,14 +428,10 @@ const AmazonManagedKafkaEventSourceConfigSchema = z
 
 const SelfManagedKafkaEventSourceConfigSchema = z
   .object({
-    ConsumerGroupId: URISchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier for the Kafka consumer group to join. The consumer group ID must be unique among all your Kafka event sources. After creating a Kafka event source mapping with the consumer group ID specified, you cannot update this value. For more information, see <a href="https://docs.aws.amazon.com/lambda/latest/dg/with-msk.html#services-msk-consumer-group-id">Customizable consumer group ID</a>.',
-        }),
-    ).exactOptional(),
+    ConsumerGroupId: URISchema.exactOptional().openapi({
+      description:
+        'The identifier for the Kafka consumer group to join. The consumer group ID must be unique among all your Kafka event sources. After creating a Kafka event source mapping with the consumer group ID specified, you cannot update this value. For more information, see <a href="https://docs.aws.amazon.com/lambda/latest/dg/with-msk.html#services-msk-consumer-group-id">Customizable consumer group ID</a>.',
+    }),
   })
   .openapi({
     description: 'Specific configuration settings for a self-managed Apache Kafka event source.',
@@ -511,14 +443,10 @@ const MaximumConcurrencySchema = z.int().min(2).max(1000).openapi('MaximumConcur
 
 const ScalingConfigSchema = z
   .object({
-    MaximumConcurrency: MaximumConcurrencySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Limits the number of concurrent instances that the Amazon SQS event source can invoke.',
-        }),
-    ).exactOptional(),
+    MaximumConcurrency: MaximumConcurrencySchema.exactOptional().openapi({
+      description:
+        'Limits the number of concurrent instances that the Amazon SQS event source can invoke.',
+    }),
   })
   .openapi({
     description:
@@ -545,29 +473,17 @@ const FullDocumentSchema = z.enum(['UpdateLookup', 'Default']).openapi('FullDocu
 
 const DocumentDBEventSourceConfigSchema = z
   .object({
-    DatabaseName: DatabaseNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The name of the database to consume within the DocumentDB cluster. ',
-        }),
-    ).exactOptional(),
-    CollectionName: CollectionNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The name of the collection to consume within the database. If you do not specify a collection, Lambda consumes all collections. ',
-        }),
-    ).exactOptional(),
-    FullDocument: FullDocumentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Determines what DocumentDB sends to your event stream during document update operations. If set to UpdateLookup, DocumentDB sends a delta describing the changes, along with a copy of the entire document. Otherwise, DocumentDB sends only a partial document that contains the changes. ',
-        }),
-    ).exactOptional(),
+    DatabaseName: DatabaseNameSchema.exactOptional().openapi({
+      description: ' The name of the database to consume within the DocumentDB cluster. ',
+    }),
+    CollectionName: CollectionNameSchema.exactOptional().openapi({
+      description:
+        ' The name of the collection to consume within the database. If you do not specify a collection, Lambda consumes all collections. ',
+    }),
+    FullDocument: FullDocumentSchema.exactOptional().openapi({
+      description:
+        ' Determines what DocumentDB sends to your event stream during document update operations. If set to UpdateLookup, DocumentDB sends a delta describing the changes, along with a copy of the entire document. Otherwise, DocumentDB sends only a partial document that contains the changes. ',
+    }),
   })
   .openapi({
     description: ' Specific configuration settings for a DocumentDB event source. ',
@@ -577,193 +493,106 @@ const DocumentDBEventSourceConfigSchema = z
 
 const EventSourceMappingConfigurationSchema = z
   .object({
-    UUID: StringSchema.and(
-      z.any().openapi({ description: 'The identifier of the event source mapping.' }),
-    ).exactOptional(),
-    StartingPosition: EventSourcePositionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The position in a stream from which to start reading. Required for Amazon Kinesis and Amazon DynamoDB Stream event sources. <code>AT_TIMESTAMP</code> is supported only for Amazon Kinesis streams, Amazon DocumentDB, Amazon MSK, and self-managed Apache Kafka.',
-        }),
-    ).exactOptional(),
-    StartingPositionTimestamp: DateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'With <code>StartingPosition</code> set to <code>AT_TIMESTAMP</code>, the time from which to start reading. <code>StartingPositionTimestamp</code> cannot be in the future.',
-        }),
-    ).exactOptional(),
-    BatchSize: BatchSizeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum number of records in each batch that Lambda pulls from your stream or queue and sends to your function. Lambda passes all of the records in the batch to the function in a single call, up to the payload limit for synchronous invocation (6 MB).</p> <p>Default value: Varies by service. For Amazon SQS, the default is 10. For all other services, the default is 100.</p> <p>Related setting: When you set <code>BatchSize</code> to a value greater than 10, you must set <code>MaximumBatchingWindowInSeconds</code> to at least 1.</p>',
-        }),
-    ).exactOptional(),
-    MaximumBatchingWindowInSeconds: MaximumBatchingWindowInSecondsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum amount of time, in seconds, that Lambda spends gathering records before invoking the function. You can configure <code>MaximumBatchingWindowInSeconds</code> to any value from 0 seconds to 300 seconds in increments of seconds.</p> <p>For streams and Amazon SQS event sources, the default batching window is 0 seconds. For Amazon MSK, Self-managed Apache Kafka, Amazon MQ, and DocumentDB event sources, the default batching window is 500 ms. Note that because you can only change <code>MaximumBatchingWindowInSeconds</code> in increments of seconds, you cannot revert back to the 500 ms default batching window after you have changed it. To restore the default batching window, you must create a new event source mapping.</p> <p>Related setting: For streams and Amazon SQS event sources, when you set <code>BatchSize</code> to a value greater than 10, you must set <code>MaximumBatchingWindowInSeconds</code> to at least 1.</p>',
-        }),
-    ).exactOptional(),
-    ParallelizationFactor: ParallelizationFactorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '(Kinesis and DynamoDB Streams only) The number of batches to process concurrently from each shard. The default value is 1.',
-        }),
-    ).exactOptional(),
-    EventSourceArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the event source.' }),
-    ).exactOptional(),
-    FilterCriteria: FilterCriteriaSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that defines the filter criteria that determine whether Lambda should process an event. For more information, see <a href="https://docs.aws.amazon.com/lambda/latest/dg/invocation-eventfiltering.html">Lambda event filtering</a>.',
-        }),
-    ).exactOptional(),
-    FunctionArn: FunctionArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the Lambda function.' }),
-    ).exactOptional(),
-    LastModified: DateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date that the event source mapping was last updated or that its state changed.',
-        }),
-    ).exactOptional(),
-    LastProcessingResult: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The result of the last Lambda invocation of your function.' }),
-    ).exactOptional(),
-    State: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The state of the event source mapping. It can be one of the following: <code>Creating</code>, <code>Enabling</code>, <code>Enabled</code>, <code>Disabling</code>, <code>Disabled</code>, <code>Updating</code>, or <code>Deleting</code>.',
-        }),
-    ).exactOptional(),
-    StateTransitionReason: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether a user or Lambda made the last change to the event source mapping.',
-        }),
-    ).exactOptional(),
-    DestinationConfig: DestinationConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '(Kinesis and DynamoDB Streams only) An Amazon SQS queue or Amazon SNS topic destination for discarded records.',
-        }),
-    ).exactOptional(),
-    Topics: TopicsSchema.and(
-      z.any().openapi({ description: 'The name of the Kafka topic.' }),
-    ).exactOptional(),
-    Queues: QueuesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' (Amazon MQ) The name of the Amazon MQ broker destination queue to consume.',
-        }),
-    ).exactOptional(),
-    SourceAccessConfigurations: SourceAccessConfigurationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of the authentication protocol, VPC components, or virtual host to secure and define your event source.',
-        }),
-    ).exactOptional(),
-    SelfManagedEventSource: SelfManagedEventSourceSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The self-managed Apache Kafka cluster for your event source.' }),
-    ).exactOptional(),
-    MaximumRecordAgeInSeconds: MaximumRecordAgeInSecondsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>(Kinesis and DynamoDB Streams only) Discard records older than the specified age. The default value is -1, which sets the maximum age to infinite. When the value is set to infinite, Lambda never discards old records.</p> <note> <p>The minimum valid value for maximum record age is 60s. Although values less than 60 and greater than -1 fall within the parameter's absolute range, they are not allowed</p> </note>",
-        }),
-    ).exactOptional(),
-    BisectBatchOnFunctionError: BisectBatchOnFunctionErrorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '(Kinesis and DynamoDB Streams only) If the function returns an error, split the batch in two and retry. The default value is false.',
-        }),
-    ).exactOptional(),
-    MaximumRetryAttempts: MaximumRetryAttemptsEventSourceMappingSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '(Kinesis and DynamoDB Streams only) Discard records after the specified number of retries. The default value is -1, which sets the maximum number of retries to infinite. When MaximumRetryAttempts is infinite, Lambda retries failed records until the record expires in the event source.',
-        }),
-    ).exactOptional(),
-    TumblingWindowInSeconds: TumblingWindowInSecondsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '(Kinesis and DynamoDB Streams only) The duration in seconds of a processing window for DynamoDB and Kinesis Streams event sources. A value of 0 seconds indicates no tumbling window.',
-        }),
-    ).exactOptional(),
-    FunctionResponseTypes: FunctionResponseTypeListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '(Kinesis, DynamoDB Streams, and Amazon SQS) A list of current response type enums applied to the event source mapping.',
-        }),
-    ).exactOptional(),
-    AmazonManagedKafkaEventSourceConfig: AmazonManagedKafkaEventSourceConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specific configuration settings for an Amazon Managed Streaming for Apache Kafka (Amazon MSK) event source.',
-        }),
-    ).exactOptional(),
-    SelfManagedKafkaEventSourceConfig: SelfManagedKafkaEventSourceConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specific configuration settings for a self-managed Apache Kafka event source.',
-        }),
-    ).exactOptional(),
-    ScalingConfig: ScalingConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '(Amazon SQS only) The scaling configuration for the event source. For more information, see <a href="https://docs.aws.amazon.com/lambda/latest/dg/with-sqs.html#events-sqs-max-concurrency">Configuring maximum concurrency for Amazon SQS event sources</a>.',
-        }),
-    ).exactOptional(),
-    DocumentDBEventSourceConfig: DocumentDBEventSourceConfigSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Specific configuration settings for a DocumentDB event source.' }),
-    ).exactOptional(),
+    UUID: StringSchema.exactOptional().openapi({
+      description: 'The identifier of the event source mapping.',
+    }),
+    StartingPosition: EventSourcePositionSchema.exactOptional().openapi({
+      description:
+        'The position in a stream from which to start reading. Required for Amazon Kinesis and Amazon DynamoDB Stream event sources. <code>AT_TIMESTAMP</code> is supported only for Amazon Kinesis streams, Amazon DocumentDB, Amazon MSK, and self-managed Apache Kafka.',
+    }),
+    StartingPositionTimestamp: DateSchema.exactOptional().openapi({
+      description:
+        'With <code>StartingPosition</code> set to <code>AT_TIMESTAMP</code>, the time from which to start reading. <code>StartingPositionTimestamp</code> cannot be in the future.',
+    }),
+    BatchSize: BatchSizeSchema.exactOptional().openapi({
+      description:
+        '<p>The maximum number of records in each batch that Lambda pulls from your stream or queue and sends to your function. Lambda passes all of the records in the batch to the function in a single call, up to the payload limit for synchronous invocation (6 MB).</p> <p>Default value: Varies by service. For Amazon SQS, the default is 10. For all other services, the default is 100.</p> <p>Related setting: When you set <code>BatchSize</code> to a value greater than 10, you must set <code>MaximumBatchingWindowInSeconds</code> to at least 1.</p>',
+    }),
+    MaximumBatchingWindowInSeconds: MaximumBatchingWindowInSecondsSchema.exactOptional().openapi({
+      description:
+        '<p>The maximum amount of time, in seconds, that Lambda spends gathering records before invoking the function. You can configure <code>MaximumBatchingWindowInSeconds</code> to any value from 0 seconds to 300 seconds in increments of seconds.</p> <p>For streams and Amazon SQS event sources, the default batching window is 0 seconds. For Amazon MSK, Self-managed Apache Kafka, Amazon MQ, and DocumentDB event sources, the default batching window is 500 ms. Note that because you can only change <code>MaximumBatchingWindowInSeconds</code> in increments of seconds, you cannot revert back to the 500 ms default batching window after you have changed it. To restore the default batching window, you must create a new event source mapping.</p> <p>Related setting: For streams and Amazon SQS event sources, when you set <code>BatchSize</code> to a value greater than 10, you must set <code>MaximumBatchingWindowInSeconds</code> to at least 1.</p>',
+    }),
+    ParallelizationFactor: ParallelizationFactorSchema.exactOptional().openapi({
+      description:
+        '(Kinesis and DynamoDB Streams only) The number of batches to process concurrently from each shard. The default value is 1.',
+    }),
+    EventSourceArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the event source.',
+    }),
+    FilterCriteria: FilterCriteriaSchema.exactOptional().openapi({
+      description:
+        'An object that defines the filter criteria that determine whether Lambda should process an event. For more information, see <a href="https://docs.aws.amazon.com/lambda/latest/dg/invocation-eventfiltering.html">Lambda event filtering</a>.',
+    }),
+    FunctionArn: FunctionArnSchema.exactOptional().openapi({
+      description: 'The ARN of the Lambda function.',
+    }),
+    LastModified: DateSchema.exactOptional().openapi({
+      description:
+        'The date that the event source mapping was last updated or that its state changed.',
+    }),
+    LastProcessingResult: StringSchema.exactOptional().openapi({
+      description: 'The result of the last Lambda invocation of your function.',
+    }),
+    State: StringSchema.exactOptional().openapi({
+      description:
+        'The state of the event source mapping. It can be one of the following: <code>Creating</code>, <code>Enabling</code>, <code>Enabled</code>, <code>Disabling</code>, <code>Disabled</code>, <code>Updating</code>, or <code>Deleting</code>.',
+    }),
+    StateTransitionReason: StringSchema.exactOptional().openapi({
+      description:
+        'Indicates whether a user or Lambda made the last change to the event source mapping.',
+    }),
+    DestinationConfig: DestinationConfigSchema.exactOptional().openapi({
+      description:
+        '(Kinesis and DynamoDB Streams only) An Amazon SQS queue or Amazon SNS topic destination for discarded records.',
+    }),
+    Topics: TopicsSchema.exactOptional().openapi({ description: 'The name of the Kafka topic.' }),
+    Queues: QueuesSchema.exactOptional().openapi({
+      description: ' (Amazon MQ) The name of the Amazon MQ broker destination queue to consume.',
+    }),
+    SourceAccessConfigurations: SourceAccessConfigurationsSchema.exactOptional().openapi({
+      description:
+        'An array of the authentication protocol, VPC components, or virtual host to secure and define your event source.',
+    }),
+    SelfManagedEventSource: SelfManagedEventSourceSchema.exactOptional().openapi({
+      description: 'The self-managed Apache Kafka cluster for your event source.',
+    }),
+    MaximumRecordAgeInSeconds: MaximumRecordAgeInSecondsSchema.exactOptional().openapi({
+      description:
+        "<p>(Kinesis and DynamoDB Streams only) Discard records older than the specified age. The default value is -1, which sets the maximum age to infinite. When the value is set to infinite, Lambda never discards old records.</p> <note> <p>The minimum valid value for maximum record age is 60s. Although values less than 60 and greater than -1 fall within the parameter's absolute range, they are not allowed</p> </note>",
+    }),
+    BisectBatchOnFunctionError: BisectBatchOnFunctionErrorSchema.exactOptional().openapi({
+      description:
+        '(Kinesis and DynamoDB Streams only) If the function returns an error, split the batch in two and retry. The default value is false.',
+    }),
+    MaximumRetryAttempts: MaximumRetryAttemptsEventSourceMappingSchema.exactOptional().openapi({
+      description:
+        '(Kinesis and DynamoDB Streams only) Discard records after the specified number of retries. The default value is -1, which sets the maximum number of retries to infinite. When MaximumRetryAttempts is infinite, Lambda retries failed records until the record expires in the event source.',
+    }),
+    TumblingWindowInSeconds: TumblingWindowInSecondsSchema.exactOptional().openapi({
+      description:
+        '(Kinesis and DynamoDB Streams only) The duration in seconds of a processing window for DynamoDB and Kinesis Streams event sources. A value of 0 seconds indicates no tumbling window.',
+    }),
+    FunctionResponseTypes: FunctionResponseTypeListSchema.exactOptional().openapi({
+      description:
+        '(Kinesis, DynamoDB Streams, and Amazon SQS) A list of current response type enums applied to the event source mapping.',
+    }),
+    AmazonManagedKafkaEventSourceConfig:
+      AmazonManagedKafkaEventSourceConfigSchema.exactOptional().openapi({
+        description:
+          'Specific configuration settings for an Amazon Managed Streaming for Apache Kafka (Amazon MSK) event source.',
+      }),
+    SelfManagedKafkaEventSourceConfig:
+      SelfManagedKafkaEventSourceConfigSchema.exactOptional().openapi({
+        description:
+          'Specific configuration settings for a self-managed Apache Kafka event source.',
+      }),
+    ScalingConfig: ScalingConfigSchema.exactOptional().openapi({
+      description:
+        '(Amazon SQS only) The scaling configuration for the event source. For more information, see <a href="https://docs.aws.amazon.com/lambda/latest/dg/with-sqs.html#events-sqs-max-concurrency">Configuring maximum concurrency for Amazon SQS event sources</a>.',
+    }),
+    DocumentDBEventSourceConfig: DocumentDBEventSourceConfigSchema.exactOptional().openapi({
+      description: 'Specific configuration settings for a DocumentDB event source.',
+    }),
   })
   .openapi({
     description:
@@ -854,13 +683,13 @@ const VpcIdSchema = z.string().openapi('VpcId')
 
 const VpcConfigResponseSchema = z
   .object({
-    SubnetIds: SubnetIdsSchema.and(
-      z.any().openapi({ description: 'A list of VPC subnet IDs.' }),
-    ).exactOptional(),
-    SecurityGroupIds: SecurityGroupIdsSchema.and(
-      z.any().openapi({ description: 'A list of VPC security group IDs.' }),
-    ).exactOptional(),
-    VpcId: VpcIdSchema.and(z.any().openapi({ description: 'The ID of the VPC.' })).exactOptional(),
+    SubnetIds: SubnetIdsSchema.exactOptional().openapi({
+      description: 'A list of VPC subnet IDs.',
+    }),
+    SecurityGroupIds: SecurityGroupIdsSchema.exactOptional().openapi({
+      description: 'A list of VPC security group IDs.',
+    }),
+    VpcId: VpcIdSchema.exactOptional().openapi({ description: 'The ID of the VPC.' }),
   })
   .openapi({
     description: 'The VPC security groups and subnets that are attached to a Lambda function.',
@@ -875,13 +704,9 @@ const ResourceArnSchema = z
 
 const DeadLetterConfigSchema = z
   .object({
-    TargetArn: ResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of an Amazon SQS queue or Amazon SNS topic.',
-        }),
-    ).exactOptional(),
+    TargetArn: ResourceArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of an Amazon SQS queue or Amazon SNS topic.',
+    }),
   })
   .openapi({
     description:
@@ -900,12 +725,8 @@ const SensitiveStringSchema = z.string().openapi('SensitiveString')
 
 const EnvironmentErrorSchema = z
   .object({
-    ErrorCode: StringSchema.and(
-      z.any().openapi({ description: 'The error code.' }),
-    ).exactOptional(),
-    Message: SensitiveStringSchema.and(
-      z.any().openapi({ description: 'The error message.' }),
-    ).exactOptional(),
+    ErrorCode: StringSchema.exactOptional().openapi({ description: 'The error code.' }),
+    Message: SensitiveStringSchema.exactOptional().openapi({ description: 'The error message.' }),
   })
   .openapi({
     description: "Error messages for environment variables that couldn't be applied.",
@@ -915,20 +736,12 @@ const EnvironmentErrorSchema = z
 
 const EnvironmentResponseSchema = z
   .object({
-    Variables: EnvironmentVariablesSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Environment variable key-value pairs. Omitted from CloudTrail logs.',
-        }),
-    ).exactOptional(),
-    Error: EnvironmentErrorSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "Error messages for environment variables that couldn't be applied.",
-        }),
-    ).exactOptional(),
+    Variables: EnvironmentVariablesSchema.exactOptional().openapi({
+      description: 'Environment variable key-value pairs. Omitted from CloudTrail logs.',
+    }),
+    Error: EnvironmentErrorSchema.exactOptional().openapi({
+      description: "Error messages for environment variables that couldn't be applied.",
+    }),
   })
   .openapi({
     description:
@@ -945,11 +758,7 @@ const KMSKeyArnSchema = z
 const TracingModeSchema = z.enum(['Active', 'PassThrough']).openapi('TracingMode')
 
 const TracingConfigResponseSchema = z
-  .object({
-    Mode: TracingModeSchema.and(
-      z.any().openapi({ description: 'The tracing mode.' }),
-    ).exactOptional(),
-  })
+  .object({ Mode: TracingModeSchema.exactOptional().openapi({ description: 'The tracing mode.' }) })
   .openapi({ description: "The function's X-Ray tracing configuration.", required: [] })
   .openapi('TracingConfigResponse')
 
@@ -962,20 +771,18 @@ const LayerVersionArnSchema = z
 
 const LayerSchema = z
   .object({
-    Arn: LayerVersionArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the function layer.' }),
-    ).exactOptional(),
-    CodeSize: LongSchema.and(
-      z.any().openapi({ description: 'The size of the layer archive in bytes.' }),
-    ).exactOptional(),
-    SigningProfileVersionArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) for a signing profile version.' }),
-    ).exactOptional(),
-    SigningJobArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of a signing job.' }),
-    ).exactOptional(),
+    Arn: LayerVersionArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the function layer.',
+    }),
+    CodeSize: LongSchema.exactOptional().openapi({
+      description: 'The size of the layer archive in bytes.',
+    }),
+    SigningProfileVersionArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) for a signing profile version.',
+    }),
+    SigningJobArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of a signing job.',
+    }),
   })
   .openapi({
     description:
@@ -1067,22 +874,14 @@ const LocalMountPathSchema = z
 
 const FileSystemConfigSchema = z
   .object({
-    Arn: FileSystemArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the Amazon EFS access point that provides access to the file system.',
-        }),
-    ),
-    LocalMountPath: LocalMountPathSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The path where the function can access the file system, starting with <code>/mnt/</code>.',
-        }),
-    ),
+    Arn: FileSystemArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the Amazon EFS access point that provides access to the file system.',
+    }),
+    LocalMountPath: LocalMountPathSchema.openapi({
+      description:
+        'The path where the function can access the file system, starting with <code>/mnt/</code>.',
+    }),
   })
   .openapi({
     required: ['Arn', 'LocalMountPath'],
@@ -1104,22 +903,16 @@ const WorkingDirectorySchema = z.string().max(1000).openapi('WorkingDirectory')
 
 const ImageConfigSchema = z
   .object({
-    EntryPoint: StringListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the entry point to their application, which is typically the location of the runtime executable.',
-        }),
-    ).exactOptional(),
-    Command: StringListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Specifies parameters that you want to pass in with ENTRYPOINT.' }),
-    ).exactOptional(),
-    WorkingDirectory: WorkingDirectorySchema.and(
-      z.any().openapi({ description: 'Specifies the working directory.' }),
-    ).exactOptional(),
+    EntryPoint: StringListSchema.exactOptional().openapi({
+      description:
+        'Specifies the entry point to their application, which is typically the location of the runtime executable.',
+    }),
+    Command: StringListSchema.exactOptional().openapi({
+      description: 'Specifies parameters that you want to pass in with ENTRYPOINT.',
+    }),
+    WorkingDirectory: WorkingDirectorySchema.exactOptional().openapi({
+      description: 'Specifies the working directory.',
+    }),
   })
   .openapi({
     description:
@@ -1130,10 +923,8 @@ const ImageConfigSchema = z
 
 const ImageConfigErrorSchema = z
   .object({
-    ErrorCode: StringSchema.and(z.any().openapi({ description: 'Error code.' })).exactOptional(),
-    Message: SensitiveStringSchema.and(
-      z.any().openapi({ description: 'Error message.' }),
-    ).exactOptional(),
+    ErrorCode: StringSchema.exactOptional().openapi({ description: 'Error code.' }),
+    Message: SensitiveStringSchema.exactOptional().openapi({ description: 'Error message.' }),
   })
   .openapi({
     description: 'Error response to <code>GetFunctionConfiguration</code>.',
@@ -1143,16 +934,12 @@ const ImageConfigErrorSchema = z
 
 const ImageConfigResponseSchema = z
   .object({
-    ImageConfig: ImageConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Configuration values that override the container image Dockerfile.',
-        }),
-    ).exactOptional(),
-    Error: ImageConfigErrorSchema.and(
-      z.any().openapi({ description: 'Error response to <code>GetFunctionConfiguration</code>.' }),
-    ).exactOptional(),
+    ImageConfig: ImageConfigSchema.exactOptional().openapi({
+      description: 'Configuration values that override the container image Dockerfile.',
+    }),
+    Error: ImageConfigErrorSchema.exactOptional().openapi({
+      description: 'Error response to <code>GetFunctionConfiguration</code>.',
+    }),
   })
   .openapi({
     description: 'Response to a <code>GetFunctionConfiguration</code> request.',
@@ -1168,9 +955,9 @@ const EphemeralStorageSizeSchema = z.int().min(512).max(10240).openapi('Ephemera
 
 const EphemeralStorageSchema = z
   .object({
-    Size: EphemeralStorageSizeSchema.and(
-      z.any().openapi({ description: "The size of the function's <code>/tmp</code> directory." }),
-    ),
+    Size: EphemeralStorageSizeSchema.openapi({
+      description: "The size of the function's <code>/tmp</code> directory.",
+    }),
   })
   .openapi({
     required: ['Size'],
@@ -1187,22 +974,14 @@ const SnapStartOptimizationStatusSchema = z
 
 const SnapStartResponseSchema = z
   .object({
-    ApplyOn: SnapStartApplyOnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When set to <code>PublishedVersions</code>, Lambda creates a snapshot of the execution environment when you publish a function version.',
-        }),
-    ).exactOptional(),
-    OptimizationStatus: SnapStartOptimizationStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When you provide a <a href="https://docs.aws.amazon.com/lambda/latest/dg/configuration-versions.html#versioning-versions-using">qualified Amazon Resource Name (ARN)</a>, this response element indicates whether SnapStart is activated for the specified function version.',
-        }),
-    ).exactOptional(),
+    ApplyOn: SnapStartApplyOnSchema.exactOptional().openapi({
+      description:
+        'When set to <code>PublishedVersions</code>, Lambda creates a snapshot of the execution environment when you publish a function version.',
+    }),
+    OptimizationStatus: SnapStartOptimizationStatusSchema.exactOptional().openapi({
+      description:
+        'When you provide a <a href="https://docs.aws.amazon.com/lambda/latest/dg/configuration-versions.html#versioning-versions-using">qualified Amazon Resource Name (ARN)</a>, this response element indicates whether SnapStart is activated for the specified function version.',
+    }),
   })
   .openapi({
     description:
@@ -1220,12 +999,8 @@ const RuntimeVersionArnSchema = z
 
 const RuntimeVersionErrorSchema = z
   .object({
-    ErrorCode: StringSchema.and(
-      z.any().openapi({ description: 'The error code.' }),
-    ).exactOptional(),
-    Message: SensitiveStringSchema.and(
-      z.any().openapi({ description: 'The error message.' }),
-    ).exactOptional(),
+    ErrorCode: StringSchema.exactOptional().openapi({ description: 'The error code.' }),
+    Message: SensitiveStringSchema.exactOptional().openapi({ description: 'The error message.' }),
   })
   .openapi({
     description:
@@ -1236,212 +1011,136 @@ const RuntimeVersionErrorSchema = z
 
 const RuntimeVersionConfigSchema = z
   .object({
-    RuntimeVersionArn: RuntimeVersionArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ARN of the runtime version you want the function to use.' }),
-    ).exactOptional(),
-    Error: RuntimeVersionErrorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Error response when Lambda is unable to retrieve the runtime version for a function.',
-        }),
-    ).exactOptional(),
+    RuntimeVersionArn: RuntimeVersionArnSchema.exactOptional().openapi({
+      description: 'The ARN of the runtime version you want the function to use.',
+    }),
+    Error: RuntimeVersionErrorSchema.exactOptional().openapi({
+      description:
+        'Error response when Lambda is unable to retrieve the runtime version for a function.',
+    }),
   })
   .openapi({ description: 'The ARN of the runtime and any errors that occured.', required: [] })
   .openapi('RuntimeVersionConfig')
 
 const FunctionConfigurationSchema = z
   .object({
-    FunctionName: NamespacedFunctionNameSchema.and(
-      z.any().openapi({ description: 'The name of the function.' }),
-    ).exactOptional(),
-    FunctionArn: NameSpacedFunctionArnSchema.and(
-      z.any().openapi({ description: "The function's Amazon Resource Name (ARN)." }),
-    ).exactOptional(),
-    Runtime: RuntimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The identifier of the function\'s <a href="https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html">runtime</a>. Runtime is required if the deployment package is a .zip file archive.</p> <p>The following list includes deprecated runtimes. For more information, see <a href="https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html#runtime-support-policy">Runtime deprecation policy</a>.</p>',
-        }),
-    ).exactOptional(),
-    Role: RoleArnSchema.and(
-      z.any().openapi({ description: "The function's execution role." }),
-    ).exactOptional(),
-    Handler: HandlerSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The function that Lambda calls to begin running your function.' }),
-    ).exactOptional(),
-    CodeSize: LongSchema.and(
-      z.any().openapi({ description: "The size of the function's deployment package, in bytes." }),
-    ).exactOptional(),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: "The function's description." }),
-    ).exactOptional(),
-    Timeout: TimeoutSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The amount of time in seconds that Lambda allows a function to run before stopping it.',
-        }),
-    ).exactOptional(),
-    MemorySize: MemorySizeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The amount of memory available to the function at runtime.' }),
-    ).exactOptional(),
-    LastModified: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time that the function was last updated, in <a href="https://www.w3.org/TR/NOTE-datetime">ISO-8601 format</a> (YYYY-MM-DDThh:mm:ss.sTZD).',
-        }),
-    ).exactOptional(),
-    CodeSha256: StringSchema.and(
-      z.any().openapi({ description: "The SHA256 hash of the function's deployment package." }),
-    ).exactOptional(),
-    Version: VersionSchema.and(
-      z.any().openapi({ description: 'The version of the Lambda function.' }),
-    ).exactOptional(),
-    VpcConfig: VpcConfigResponseSchema.and(
-      z.any().openapi({ description: "The function's networking configuration." }),
-    ).exactOptional(),
-    DeadLetterConfig: DeadLetterConfigSchema.and(
-      z.any().openapi({ description: "The function's dead letter queue." }),
-    ).exactOptional(),
-    Environment: EnvironmentResponseSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The function\'s <a href="https://docs.aws.amazon.com/lambda/latest/dg/configuration-envvars.html">environment variables</a>. Omitted from CloudTrail logs.',
-        }),
-    ).exactOptional(),
-    KMSKeyArn: KMSKeyArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The KMS key that\'s used to encrypt the function\'s <a href="https://docs.aws.amazon.com/lambda/latest/dg/configuration-envvars.html#configuration-envvars-encryption">environment variables</a>. When <a href="https://docs.aws.amazon.com/lambda/latest/dg/snapstart-security.html">Lambda SnapStart</a> is activated, this key is also used to encrypt the function\'s snapshot. This key is returned only if you\'ve configured a customer managed key.',
-        }),
-    ).exactOptional(),
-    TracingConfig: TracingConfigResponseSchema.and(
-      z.any().openapi({ description: "The function's X-Ray tracing configuration." }),
-    ).exactOptional(),
-    MasterArn: FunctionArnSchema.and(
-      z.any().openapi({ description: 'For Lambda@Edge functions, the ARN of the main function.' }),
-    ).exactOptional(),
-    RevisionId: StringSchema.and(
-      z.any().openapi({ description: 'The latest updated revision of the function or alias.' }),
-    ).exactOptional(),
-    Layers: LayersReferenceListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The function\'s <a href="https://docs.aws.amazon.com/lambda/latest/dg/configuration-layers.html">layers</a>.',
-        }),
-    ).exactOptional(),
-    State: StateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The current state of the function. When the state is <code>Inactive</code>, you can reactivate the function by invoking it.',
-        }),
-    ).exactOptional(),
-    StateReason: StateReasonSchema.and(
-      z.any().openapi({ description: "The reason for the function's current state." }),
-    ).exactOptional(),
-    StateReasonCode: StateReasonCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The reason code for the function's current state. When the code is <code>Creating</code>, you can't invoke or modify the function.",
-        }),
-    ).exactOptional(),
-    LastUpdateStatus: LastUpdateStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status of the last update that was performed on the function. This is first set to <code>Successful</code> after function creation completes.',
-        }),
-    ).exactOptional(),
-    LastUpdateStatusReason: LastUpdateStatusReasonSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The reason for the last update that was performed on the function.',
-        }),
-    ).exactOptional(),
-    LastUpdateStatusReasonCode: LastUpdateStatusReasonCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The reason code for the last update that was performed on the function.',
-        }),
-    ).exactOptional(),
-    FileSystemConfigs: FileSystemConfigListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Connection settings for an <a href="https://docs.aws.amazon.com/lambda/latest/dg/configuration-filesystem.html">Amazon EFS file system</a>.',
-        }),
-    ).exactOptional(),
-    PackageType: PackageTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of deployment package. Set to <code>Image</code> for container image and set <code>Zip</code> for .zip file archive.',
-        }),
-    ).exactOptional(),
-    ImageConfigResponse: ImageConfigResponseSchema.and(
-      z.any().openapi({ description: "The function's image configuration values." }),
-    ).exactOptional(),
-    SigningProfileVersionArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the signing profile version.' }),
-    ).exactOptional(),
-    SigningJobArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the signing job.' }),
-    ).exactOptional(),
-    Architectures: ArchitecturesListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The instruction set architecture that the function supports. Architecture is a string array with one of the valid values. The default architecture value is <code>x86_64</code>.',
-        }),
-    ).exactOptional(),
-    EphemeralStorage: EphemeralStorageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The size of the function’s <code>/tmp</code> directory in MB. The default value is 512, but it can be any whole number between 512 and 10,240 MB.',
-        }),
-    ).exactOptional(),
-    SnapStart: SnapStartResponseSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Set <code>ApplyOn</code> to <code>PublishedVersions</code> to create a snapshot of the initialized execution environment when you publish a function version. For more information, see <a href="https://docs.aws.amazon.com/lambda/latest/dg/snapstart.html">Improving startup performance with Lambda SnapStart</a>.',
-        }),
-    ).exactOptional(),
-    RuntimeVersionConfig: RuntimeVersionConfigSchema.and(
-      z.any().openapi({ description: 'The ARN of the runtime and any errors that occured.' }),
-    ).exactOptional(),
+    FunctionName: NamespacedFunctionNameSchema.exactOptional().openapi({
+      description: 'The name of the function.',
+    }),
+    FunctionArn: NameSpacedFunctionArnSchema.exactOptional().openapi({
+      description: "The function's Amazon Resource Name (ARN).",
+    }),
+    Runtime: RuntimeSchema.exactOptional().openapi({
+      description:
+        '<p>The identifier of the function\'s <a href="https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html">runtime</a>. Runtime is required if the deployment package is a .zip file archive.</p> <p>The following list includes deprecated runtimes. For more information, see <a href="https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html#runtime-support-policy">Runtime deprecation policy</a>.</p>',
+    }),
+    Role: RoleArnSchema.exactOptional().openapi({ description: "The function's execution role." }),
+    Handler: HandlerSchema.exactOptional().openapi({
+      description: 'The function that Lambda calls to begin running your function.',
+    }),
+    CodeSize: LongSchema.exactOptional().openapi({
+      description: "The size of the function's deployment package, in bytes.",
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: "The function's description.",
+    }),
+    Timeout: TimeoutSchema.exactOptional().openapi({
+      description:
+        'The amount of time in seconds that Lambda allows a function to run before stopping it.',
+    }),
+    MemorySize: MemorySizeSchema.exactOptional().openapi({
+      description: 'The amount of memory available to the function at runtime.',
+    }),
+    LastModified: TimestampSchema.exactOptional().openapi({
+      description:
+        'The date and time that the function was last updated, in <a href="https://www.w3.org/TR/NOTE-datetime">ISO-8601 format</a> (YYYY-MM-DDThh:mm:ss.sTZD).',
+    }),
+    CodeSha256: StringSchema.exactOptional().openapi({
+      description: "The SHA256 hash of the function's deployment package.",
+    }),
+    Version: VersionSchema.exactOptional().openapi({
+      description: 'The version of the Lambda function.',
+    }),
+    VpcConfig: VpcConfigResponseSchema.exactOptional().openapi({
+      description: "The function's networking configuration.",
+    }),
+    DeadLetterConfig: DeadLetterConfigSchema.exactOptional().openapi({
+      description: "The function's dead letter queue.",
+    }),
+    Environment: EnvironmentResponseSchema.exactOptional().openapi({
+      description:
+        'The function\'s <a href="https://docs.aws.amazon.com/lambda/latest/dg/configuration-envvars.html">environment variables</a>. Omitted from CloudTrail logs.',
+    }),
+    KMSKeyArn: KMSKeyArnSchema.exactOptional().openapi({
+      description:
+        'The KMS key that\'s used to encrypt the function\'s <a href="https://docs.aws.amazon.com/lambda/latest/dg/configuration-envvars.html#configuration-envvars-encryption">environment variables</a>. When <a href="https://docs.aws.amazon.com/lambda/latest/dg/snapstart-security.html">Lambda SnapStart</a> is activated, this key is also used to encrypt the function\'s snapshot. This key is returned only if you\'ve configured a customer managed key.',
+    }),
+    TracingConfig: TracingConfigResponseSchema.exactOptional().openapi({
+      description: "The function's X-Ray tracing configuration.",
+    }),
+    MasterArn: FunctionArnSchema.exactOptional().openapi({
+      description: 'For Lambda@Edge functions, the ARN of the main function.',
+    }),
+    RevisionId: StringSchema.exactOptional().openapi({
+      description: 'The latest updated revision of the function or alias.',
+    }),
+    Layers: LayersReferenceListSchema.exactOptional().openapi({
+      description:
+        'The function\'s <a href="https://docs.aws.amazon.com/lambda/latest/dg/configuration-layers.html">layers</a>.',
+    }),
+    State: StateSchema.exactOptional().openapi({
+      description:
+        'The current state of the function. When the state is <code>Inactive</code>, you can reactivate the function by invoking it.',
+    }),
+    StateReason: StateReasonSchema.exactOptional().openapi({
+      description: "The reason for the function's current state.",
+    }),
+    StateReasonCode: StateReasonCodeSchema.exactOptional().openapi({
+      description:
+        "The reason code for the function's current state. When the code is <code>Creating</code>, you can't invoke or modify the function.",
+    }),
+    LastUpdateStatus: LastUpdateStatusSchema.exactOptional().openapi({
+      description:
+        'The status of the last update that was performed on the function. This is first set to <code>Successful</code> after function creation completes.',
+    }),
+    LastUpdateStatusReason: LastUpdateStatusReasonSchema.exactOptional().openapi({
+      description: 'The reason for the last update that was performed on the function.',
+    }),
+    LastUpdateStatusReasonCode: LastUpdateStatusReasonCodeSchema.exactOptional().openapi({
+      description: 'The reason code for the last update that was performed on the function.',
+    }),
+    FileSystemConfigs: FileSystemConfigListSchema.exactOptional().openapi({
+      description:
+        'Connection settings for an <a href="https://docs.aws.amazon.com/lambda/latest/dg/configuration-filesystem.html">Amazon EFS file system</a>.',
+    }),
+    PackageType: PackageTypeSchema.exactOptional().openapi({
+      description:
+        'The type of deployment package. Set to <code>Image</code> for container image and set <code>Zip</code> for .zip file archive.',
+    }),
+    ImageConfigResponse: ImageConfigResponseSchema.exactOptional().openapi({
+      description: "The function's image configuration values.",
+    }),
+    SigningProfileVersionArn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN of the signing profile version.',
+    }),
+    SigningJobArn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN of the signing job.',
+    }),
+    Architectures: ArchitecturesListSchema.exactOptional().openapi({
+      description:
+        'The instruction set architecture that the function supports. Architecture is a string array with one of the valid values. The default architecture value is <code>x86_64</code>.',
+    }),
+    EphemeralStorage: EphemeralStorageSchema.exactOptional().openapi({
+      description:
+        'The size of the function’s <code>/tmp</code> directory in MB. The default value is 512, but it can be any whole number between 512 and 10,240 MB.',
+    }),
+    SnapStart: SnapStartResponseSchema.exactOptional().openapi({
+      description:
+        'Set <code>ApplyOn</code> to <code>PublishedVersions</code> to create a snapshot of the initialized execution environment when you publish a function version. For more information, see <a href="https://docs.aws.amazon.com/lambda/latest/dg/snapstart.html">Improving startup performance with Lambda SnapStart</a>.',
+    }),
+    RuntimeVersionConfig: RuntimeVersionConfigSchema.exactOptional().openapi({
+      description: 'The ARN of the runtime and any errors that occured.',
+    }),
   })
   .openapi({ description: "Details about a function's configuration.", required: [] })
   .openapi('FunctionConfiguration')
@@ -1493,54 +1192,30 @@ const MaxAgeSchema = z.int().min(0).max(86400).openapi('MaxAge')
 
 const CorsSchema = z
   .object({
-    AllowCredentials: AllowCredentialsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Whether to allow cookies or other credentials in requests to your function URL. The default is <code>false</code>.',
-        }),
-    ).exactOptional(),
-    AllowHeaders: HeadersListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The HTTP headers that origins can include in requests to your function URL. For example: <code>Date</code>, <code>Keep-Alive</code>, <code>X-Custom-Header</code>.',
-        }),
-    ).exactOptional(),
-    AllowMethods: AllowMethodsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The HTTP methods that are allowed when calling your function URL. For example: <code>GET</code>, <code>POST</code>, <code>DELETE</code>, or the wildcard character (<code>*</code>).',
-        }),
-    ).exactOptional(),
-    AllowOrigins: AllowOriginsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The origins that can access your function URL. You can list any number of specific origins, separated by a comma. For example: <code>https://www.example.com</code>, <code>http://localhost:60905</code>.</p> <p>Alternatively, you can grant access to all origins using the wildcard character (<code>*</code>).</p>',
-        }),
-    ).exactOptional(),
-    ExposeHeaders: HeadersListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The HTTP headers in your function response that you want to expose to origins that call your function URL. For example: <code>Date</code>, <code>Keep-Alive</code>, <code>X-Custom-Header</code>.',
-        }),
-    ).exactOptional(),
-    MaxAge: MaxAgeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The maximum amount of time, in seconds, that web browsers can cache results of a preflight request. By default, this is set to <code>0</code>, which means that the browser doesn't cache results.",
-        }),
-    ).exactOptional(),
+    AllowCredentials: AllowCredentialsSchema.exactOptional().openapi({
+      description:
+        'Whether to allow cookies or other credentials in requests to your function URL. The default is <code>false</code>.',
+    }),
+    AllowHeaders: HeadersListSchema.exactOptional().openapi({
+      description:
+        'The HTTP headers that origins can include in requests to your function URL. For example: <code>Date</code>, <code>Keep-Alive</code>, <code>X-Custom-Header</code>.',
+    }),
+    AllowMethods: AllowMethodsListSchema.exactOptional().openapi({
+      description:
+        'The HTTP methods that are allowed when calling your function URL. For example: <code>GET</code>, <code>POST</code>, <code>DELETE</code>, or the wildcard character (<code>*</code>).',
+    }),
+    AllowOrigins: AllowOriginsListSchema.exactOptional().openapi({
+      description:
+        '<p>The origins that can access your function URL. You can list any number of specific origins, separated by a comma. For example: <code>https://www.example.com</code>, <code>http://localhost:60905</code>.</p> <p>Alternatively, you can grant access to all origins using the wildcard character (<code>*</code>).</p>',
+    }),
+    ExposeHeaders: HeadersListSchema.exactOptional().openapi({
+      description:
+        'The HTTP headers in your function response that you want to expose to origins that call your function URL. For example: <code>Date</code>, <code>Keep-Alive</code>, <code>X-Custom-Header</code>.',
+    }),
+    MaxAge: MaxAgeSchema.exactOptional().openapi({
+      description:
+        "The maximum amount of time, in seconds, that web browsers can cache results of a preflight request. By default, this is set to <code>0</code>, which means that the browser doesn't cache results.",
+    }),
   })
   .openapi({
     description:
@@ -1553,50 +1228,34 @@ const InvokeModeSchema = z.enum(['BUFFERED', 'RESPONSE_STREAM']).openapi('Invoke
 
 const CreateFunctionUrlConfigResponseSchema = z
   .object({
-    FunctionUrl: FunctionUrlSchema.and(
-      z.any().openapi({ description: 'The HTTP URL endpoint for your function.' }),
-    ),
-    FunctionArn: FunctionArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of your function.' }),
-    ),
-    AuthType: FunctionUrlAuthTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of authentication that your function URL uses. Set to <code>AWS_IAM</code> if you want to restrict access to authenticated users only. Set to <code>NONE</code> if you want to bypass IAM authentication to create a public endpoint. For more information, see <a href="https://docs.aws.amazon.com/lambda/latest/dg/urls-auth.html">Security and auth model for Lambda function URLs</a>.',
-        }),
-    ),
-    Cors: CorsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS">cross-origin resource sharing (CORS)</a> settings for your function URL.',
-        }),
-    ).exactOptional(),
-    CreationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When the function URL was created, in <a href="https://www.w3.org/TR/NOTE-datetime">ISO-8601 format</a> (YYYY-MM-DDThh:mm:ss.sTZD).',
-        }),
-    ),
-    InvokeMode: InvokeModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Use one of the following options:</p> <ul> <li> <p> <code>BUFFERED</code> – This is the default option. Lambda invokes your function using the <code>Invoke</code> API operation. Invocation results are available when the payload is complete. The maximum payload size is 6 MB.</p> </li> <li> <p> <code>RESPONSE_STREAM</code> – Your function streams payload results as they become available. Lambda invokes your function using the <code>InvokeWithResponseStream</code> API operation. The maximum response payload size is 20 MB, however, you can <a href="https://docs.aws.amazon.com/servicequotas/latest/userguide/request-quota-increase.html">request a quota increase</a>.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    FunctionUrl: FunctionUrlSchema.openapi({
+      description: 'The HTTP URL endpoint for your function.',
+    }),
+    FunctionArn: FunctionArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of your function.',
+    }),
+    AuthType: FunctionUrlAuthTypeSchema.openapi({
+      description:
+        'The type of authentication that your function URL uses. Set to <code>AWS_IAM</code> if you want to restrict access to authenticated users only. Set to <code>NONE</code> if you want to bypass IAM authentication to create a public endpoint. For more information, see <a href="https://docs.aws.amazon.com/lambda/latest/dg/urls-auth.html">Security and auth model for Lambda function URLs</a>.',
+    }),
+    Cors: CorsSchema.exactOptional().openapi({
+      description:
+        'The <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS">cross-origin resource sharing (CORS)</a> settings for your function URL.',
+    }),
+    CreationTime: TimestampSchema.openapi({
+      description:
+        'When the function URL was created, in <a href="https://www.w3.org/TR/NOTE-datetime">ISO-8601 format</a> (YYYY-MM-DDThh:mm:ss.sTZD).',
+    }),
+    InvokeMode: InvokeModeSchema.exactOptional().openapi({
+      description:
+        '<p>Use one of the following options:</p> <ul> <li> <p> <code>BUFFERED</code> – This is the default option. Lambda invokes your function using the <code>Invoke</code> API operation. Invocation results are available when the payload is complete. The maximum payload size is 6 MB.</p> </li> <li> <p> <code>RESPONSE_STREAM</code> – Your function streams payload results as they become available. Lambda invokes your function using the <code>InvokeWithResponseStream</code> API operation. The maximum response payload size is 20 MB, however, you can <a href="https://docs.aws.amazon.com/servicequotas/latest/userguide/request-quota-increase.html">request a quota increase</a>.</p> </li> </ul>',
+    }),
   })
   .openapi({ required: ['FunctionUrl', 'FunctionArn', 'AuthType', 'CreationTime'] })
   .openapi('CreateFunctionUrlConfigResponse')
 
 const DeleteCodeSigningConfigResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DeleteCodeSigningConfigResponse')
 
 const ResourceInUseExceptionSchema = z.any().openapi('ResourceInUseException')
@@ -1610,41 +1269,25 @@ const UnreservedConcurrentExecutionsSchema = z
 
 const AccountLimitSchema = z
   .object({
-    TotalCodeSize: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The amount of storage space that you can use for all deployment packages and layer archives.',
-        }),
-    ).exactOptional(),
-    CodeSizeUnzipped: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The maximum size of a function's deployment package and layers when they're extracted.",
-        }),
-    ).exactOptional(),
-    CodeSizeZipped: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The maximum size of a deployment package when it's uploaded directly to Lambda. Use Amazon S3 for larger files.",
-        }),
-    ).exactOptional(),
-    ConcurrentExecutions: IntegerSchema.and(
-      z.any().openapi({ description: 'The maximum number of simultaneous function executions.' }),
-    ).exactOptional(),
-    UnreservedConcurrentExecutions: UnreservedConcurrentExecutionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The maximum number of simultaneous function executions, minus the capacity that's reserved for individual functions with <a>PutFunctionConcurrency</a>.",
-        }),
-    ).exactOptional(),
+    TotalCodeSize: LongSchema.exactOptional().openapi({
+      description:
+        'The amount of storage space that you can use for all deployment packages and layer archives.',
+    }),
+    CodeSizeUnzipped: LongSchema.exactOptional().openapi({
+      description:
+        "The maximum size of a function's deployment package and layers when they're extracted.",
+    }),
+    CodeSizeZipped: LongSchema.exactOptional().openapi({
+      description:
+        "The maximum size of a deployment package when it's uploaded directly to Lambda. Use Amazon S3 for larger files.",
+    }),
+    ConcurrentExecutions: IntegerSchema.exactOptional().openapi({
+      description: 'The maximum number of simultaneous function executions.',
+    }),
+    UnreservedConcurrentExecutions: UnreservedConcurrentExecutionsSchema.exactOptional().openapi({
+      description:
+        "The maximum number of simultaneous function executions, minus the capacity that's reserved for individual functions with <a>PutFunctionConcurrency</a>.",
+    }),
   })
   .openapi({
     description:
@@ -1655,60 +1298,52 @@ const AccountLimitSchema = z
 
 const AccountUsageSchema = z
   .object({
-    TotalCodeSize: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The amount of storage space, in bytes, that's being used by deployment packages and layer archives.",
-        }),
-    ).exactOptional(),
-    FunctionCount: LongSchema.and(
-      z.any().openapi({ description: 'The number of Lambda functions.' }),
-    ).exactOptional(),
+    TotalCodeSize: LongSchema.exactOptional().openapi({
+      description:
+        "The amount of storage space, in bytes, that's being used by deployment packages and layer archives.",
+    }),
+    FunctionCount: LongSchema.exactOptional().openapi({
+      description: 'The number of Lambda functions.',
+    }),
   })
   .openapi({ description: 'The number of functions and amount of storage in use.', required: [] })
   .openapi('AccountUsage')
 
 const GetAccountSettingsResponseSchema = z
   .object({
-    AccountLimit: AccountLimitSchema.and(
-      z.any().openapi({ description: 'Limits that are related to concurrency and code storage.' }),
-    ).exactOptional(),
-    AccountUsage: AccountUsageSchema.and(
-      z.any().openapi({ description: 'The number of functions and amount of storage in use.' }),
-    ).exactOptional(),
+    AccountLimit: AccountLimitSchema.exactOptional().openapi({
+      description: 'Limits that are related to concurrency and code storage.',
+    }),
+    AccountUsage: AccountUsageSchema.exactOptional().openapi({
+      description: 'The number of functions and amount of storage in use.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetAccountSettingsResponse')
 
 const GetCodeSigningConfigResponseSchema = z
   .object({
-    CodeSigningConfig: CodeSigningConfigSchema.and(
-      z.any().openapi({ description: 'The code signing configuration' }),
-    ),
+    CodeSigningConfig: CodeSigningConfigSchema.openapi({
+      description: 'The code signing configuration',
+    }),
   })
   .openapi({ required: ['CodeSigningConfig'] })
   .openapi('GetCodeSigningConfigResponse')
 
 const FunctionCodeLocationSchema = z
   .object({
-    RepositoryType: StringSchema.and(
-      z.any().openapi({ description: "The service that's hosting the file." }),
-    ).exactOptional(),
-    Location: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A presigned URL that you can use to download the deployment package.',
-        }),
-    ).exactOptional(),
-    ImageUri: StringSchema.and(
-      z.any().openapi({ description: 'URI of a container image in the Amazon ECR registry.' }),
-    ).exactOptional(),
-    ResolvedImageUri: StringSchema.and(
-      z.any().openapi({ description: 'The resolved URI for the image.' }),
-    ).exactOptional(),
+    RepositoryType: StringSchema.exactOptional().openapi({
+      description: "The service that's hosting the file.",
+    }),
+    Location: StringSchema.exactOptional().openapi({
+      description: 'A presigned URL that you can use to download the deployment package.',
+    }),
+    ImageUri: StringSchema.exactOptional().openapi({
+      description: 'URI of a container image in the Amazon ECR registry.',
+    }),
+    ResolvedImageUri: StringSchema.exactOptional().openapi({
+      description: 'The resolved URI for the image.',
+    }),
   })
   .openapi({ description: "Details about a function's deployment package.", required: [] })
   .openapi('FunctionCodeLocation')
@@ -1719,42 +1354,30 @@ const ReservedConcurrentExecutionsSchema = z.int().min(0).openapi('ReservedConcu
 
 const ConcurrencySchema = z
   .object({
-    ReservedConcurrentExecutions: ReservedConcurrentExecutionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of concurrent executions that are reserved for this function. For more information, see <a href="https://docs.aws.amazon.com/lambda/latest/dg/configuration-concurrency.html">Managing Lambda reserved concurrency</a>.',
-        }),
-    ).exactOptional(),
+    ReservedConcurrentExecutions: ReservedConcurrentExecutionsSchema.exactOptional().openapi({
+      description:
+        'The number of concurrent executions that are reserved for this function. For more information, see <a href="https://docs.aws.amazon.com/lambda/latest/dg/configuration-concurrency.html">Managing Lambda reserved concurrency</a>.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('Concurrency')
 
 const GetFunctionResponseSchema = z
   .object({
-    Configuration: FunctionConfigurationSchema.and(
-      z.any().openapi({ description: 'The configuration of the function or version.' }),
-    ).exactOptional(),
-    Code: FunctionCodeLocationSchema.and(
-      z.any().openapi({ description: 'The deployment package of the function or version.' }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The function\'s <a href="https://docs.aws.amazon.com/lambda/latest/dg/tagging.html">tags</a>.',
-        }),
-    ).exactOptional(),
-    Concurrency: ConcurrencySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The function\'s <a href="https://docs.aws.amazon.com/lambda/latest/dg/concurrent-executions.html">reserved concurrency</a>.',
-        }),
-    ).exactOptional(),
+    Configuration: FunctionConfigurationSchema.exactOptional().openapi({
+      description: 'The configuration of the function or version.',
+    }),
+    Code: FunctionCodeLocationSchema.exactOptional().openapi({
+      description: 'The deployment package of the function or version.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      description:
+        'The function\'s <a href="https://docs.aws.amazon.com/lambda/latest/dg/tagging.html">tags</a>.',
+    }),
+    Concurrency: ConcurrencySchema.exactOptional().openapi({
+      description:
+        'The function\'s <a href="https://docs.aws.amazon.com/lambda/latest/dg/concurrent-executions.html">reserved concurrency</a>.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetFunctionResponse')
@@ -1770,34 +1393,22 @@ const FunctionNameSchema = z
 
 const GetFunctionCodeSigningConfigResponseSchema = z
   .object({
-    CodeSigningConfigArn: CodeSigningConfigArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The The Amazon Resource Name (ARN) of the code signing configuration.',
-        }),
-    ),
-    FunctionName: FunctionNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the Lambda function.</p> <p class="title"> <b>Name formats</b> </p> <ul> <li> <p> <b>Function name</b> - <code>MyFunction</code>.</p> </li> <li> <p> <b>Function ARN</b> - <code>arn:aws:lambda:us-west-2:123456789012:function:MyFunction</code>.</p> </li> <li> <p> <b>Partial ARN</b> - <code>123456789012:function:MyFunction</code>.</p> </li> </ul> <p>The length constraint applies only to the full ARN. If you specify only the function name, it is limited to 64 characters in length.</p>',
-        }),
-    ),
+    CodeSigningConfigArn: CodeSigningConfigArnSchema.openapi({
+      description: 'The The Amazon Resource Name (ARN) of the code signing configuration.',
+    }),
+    FunctionName: FunctionNameSchema.openapi({
+      description:
+        '<p>The name of the Lambda function.</p> <p class="title"> <b>Name formats</b> </p> <ul> <li> <p> <b>Function name</b> - <code>MyFunction</code>.</p> </li> <li> <p> <b>Function ARN</b> - <code>arn:aws:lambda:us-west-2:123456789012:function:MyFunction</code>.</p> </li> <li> <p> <b>Partial ARN</b> - <code>123456789012:function:MyFunction</code>.</p> </li> </ul> <p>The length constraint applies only to the full ARN. If you specify only the function name, it is limited to 64 characters in length.</p>',
+    }),
   })
   .openapi({ required: ['CodeSigningConfigArn', 'FunctionName'] })
   .openapi('GetFunctionCodeSigningConfigResponse')
 
 const GetFunctionConcurrencyResponseSchema = z
   .object({
-    ReservedConcurrentExecutions: ReservedConcurrentExecutionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The number of simultaneous executions that are reserved for the function.',
-        }),
-    ).exactOptional(),
+    ReservedConcurrentExecutions: ReservedConcurrentExecutionsSchema.exactOptional().openapi({
+      description: 'The number of simultaneous executions that are reserved for the function.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetFunctionConcurrencyResponse')
@@ -1812,89 +1423,54 @@ const MaximumEventAgeInSecondsSchema = z
 
 const FunctionEventInvokeConfigSchema = z
   .object({
-    LastModified: DateSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The date and time that the configuration was last updated.' }),
-    ).exactOptional(),
-    FunctionArn: FunctionArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the function.' }),
-    ).exactOptional(),
-    MaximumRetryAttempts: MaximumRetryAttemptsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The maximum number of times to retry when the function returns an error.',
-        }),
-    ).exactOptional(),
-    MaximumEventAgeInSeconds: MaximumEventAgeInSecondsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum age of a request that Lambda sends to a function for processing.',
-        }),
-    ).exactOptional(),
-    DestinationConfig: DestinationConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A destination for events after they have been sent to a function for processing.</p> <p class="title"> <b>Destinations</b> </p> <ul> <li> <p> <b>Function</b> - The Amazon Resource Name (ARN) of a Lambda function.</p> </li> <li> <p> <b>Queue</b> - The ARN of a standard SQS queue.</p> </li> <li> <p> <b>Topic</b> - The ARN of a standard SNS topic.</p> </li> <li> <p> <b>Event Bus</b> - The ARN of an Amazon EventBridge event bus.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    LastModified: DateSchema.exactOptional().openapi({
+      description: 'The date and time that the configuration was last updated.',
+    }),
+    FunctionArn: FunctionArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the function.',
+    }),
+    MaximumRetryAttempts: MaximumRetryAttemptsSchema.exactOptional().openapi({
+      description: 'The maximum number of times to retry when the function returns an error.',
+    }),
+    MaximumEventAgeInSeconds: MaximumEventAgeInSecondsSchema.exactOptional().openapi({
+      description: 'The maximum age of a request that Lambda sends to a function for processing.',
+    }),
+    DestinationConfig: DestinationConfigSchema.exactOptional().openapi({
+      description:
+        '<p>A destination for events after they have been sent to a function for processing.</p> <p class="title"> <b>Destinations</b> </p> <ul> <li> <p> <b>Function</b> - The Amazon Resource Name (ARN) of a Lambda function.</p> </li> <li> <p> <b>Queue</b> - The ARN of a standard SQS queue.</p> </li> <li> <p> <b>Topic</b> - The ARN of a standard SNS topic.</p> </li> <li> <p> <b>Event Bus</b> - The ARN of an Amazon EventBridge event bus.</p> </li> </ul>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('FunctionEventInvokeConfig')
 
 const GetFunctionUrlConfigResponseSchema = z
   .object({
-    FunctionUrl: FunctionUrlSchema.and(
-      z.any().openapi({ description: 'The HTTP URL endpoint for your function.' }),
-    ),
-    FunctionArn: FunctionArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of your function.' }),
-    ),
-    AuthType: FunctionUrlAuthTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of authentication that your function URL uses. Set to <code>AWS_IAM</code> if you want to restrict access to authenticated users only. Set to <code>NONE</code> if you want to bypass IAM authentication to create a public endpoint. For more information, see <a href="https://docs.aws.amazon.com/lambda/latest/dg/urls-auth.html">Security and auth model for Lambda function URLs</a>.',
-        }),
-    ),
-    Cors: CorsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS">cross-origin resource sharing (CORS)</a> settings for your function URL.',
-        }),
-    ).exactOptional(),
-    CreationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When the function URL was created, in <a href="https://www.w3.org/TR/NOTE-datetime">ISO-8601 format</a> (YYYY-MM-DDThh:mm:ss.sTZD).',
-        }),
-    ),
-    LastModifiedTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When the function URL configuration was last updated, in <a href="https://www.w3.org/TR/NOTE-datetime">ISO-8601 format</a> (YYYY-MM-DDThh:mm:ss.sTZD).',
-        }),
-    ),
-    InvokeMode: InvokeModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Use one of the following options:</p> <ul> <li> <p> <code>BUFFERED</code> – This is the default option. Lambda invokes your function using the <code>Invoke</code> API operation. Invocation results are available when the payload is complete. The maximum payload size is 6 MB.</p> </li> <li> <p> <code>RESPONSE_STREAM</code> – Your function streams payload results as they become available. Lambda invokes your function using the <code>InvokeWithResponseStream</code> API operation. The maximum response payload size is 20 MB, however, you can <a href="https://docs.aws.amazon.com/servicequotas/latest/userguide/request-quota-increase.html">request a quota increase</a>.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    FunctionUrl: FunctionUrlSchema.openapi({
+      description: 'The HTTP URL endpoint for your function.',
+    }),
+    FunctionArn: FunctionArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of your function.',
+    }),
+    AuthType: FunctionUrlAuthTypeSchema.openapi({
+      description:
+        'The type of authentication that your function URL uses. Set to <code>AWS_IAM</code> if you want to restrict access to authenticated users only. Set to <code>NONE</code> if you want to bypass IAM authentication to create a public endpoint. For more information, see <a href="https://docs.aws.amazon.com/lambda/latest/dg/urls-auth.html">Security and auth model for Lambda function URLs</a>.',
+    }),
+    Cors: CorsSchema.exactOptional().openapi({
+      description:
+        'The <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS">cross-origin resource sharing (CORS)</a> settings for your function URL.',
+    }),
+    CreationTime: TimestampSchema.openapi({
+      description:
+        'When the function URL was created, in <a href="https://www.w3.org/TR/NOTE-datetime">ISO-8601 format</a> (YYYY-MM-DDThh:mm:ss.sTZD).',
+    }),
+    LastModifiedTime: TimestampSchema.openapi({
+      description:
+        'When the function URL configuration was last updated, in <a href="https://www.w3.org/TR/NOTE-datetime">ISO-8601 format</a> (YYYY-MM-DDThh:mm:ss.sTZD).',
+    }),
+    InvokeMode: InvokeModeSchema.exactOptional().openapi({
+      description:
+        '<p>Use one of the following options:</p> <ul> <li> <p> <code>BUFFERED</code> – This is the default option. Lambda invokes your function using the <code>Invoke</code> API operation. Invocation results are available when the payload is complete. The maximum payload size is 6 MB.</p> </li> <li> <p> <code>RESPONSE_STREAM</code> – Your function streams payload results as they become available. Lambda invokes your function using the <code>InvokeWithResponseStream</code> API operation. The maximum response payload size is 20 MB, however, you can <a href="https://docs.aws.amazon.com/servicequotas/latest/userguide/request-quota-increase.html">request a quota increase</a>.</p> </li> </ul>',
+    }),
   })
   .openapi({
     required: ['FunctionUrl', 'FunctionArn', 'AuthType', 'CreationTime', 'LastModifiedTime'],
@@ -1903,27 +1479,21 @@ const GetFunctionUrlConfigResponseSchema = z
 
 const LayerVersionContentOutputSchema = z
   .object({
-    Location: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A link to the layer archive in Amazon S3 that is valid for 10 minutes.',
-        }),
-    ).exactOptional(),
-    CodeSha256: StringSchema.and(
-      z.any().openapi({ description: 'The SHA-256 hash of the layer archive.' }),
-    ).exactOptional(),
-    CodeSize: LongSchema.and(
-      z.any().openapi({ description: 'The size of the layer archive in bytes.' }),
-    ).exactOptional(),
-    SigningProfileVersionArn: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) for a signing profile version.' }),
-    ).exactOptional(),
-    SigningJobArn: StringSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of a signing job.' }),
-    ).exactOptional(),
+    Location: StringSchema.exactOptional().openapi({
+      description: 'A link to the layer archive in Amazon S3 that is valid for 10 minutes.',
+    }),
+    CodeSha256: StringSchema.exactOptional().openapi({
+      description: 'The SHA-256 hash of the layer archive.',
+    }),
+    CodeSize: LongSchema.exactOptional().openapi({
+      description: 'The size of the layer archive in bytes.',
+    }),
+    SigningProfileVersionArn: StringSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) for a signing profile version.',
+    }),
+    SigningJobArn: StringSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of a signing job.',
+    }),
   })
   .openapi({
     description:
@@ -1952,76 +1522,54 @@ const CompatibleArchitecturesSchema = z
 
 const GetLayerVersionResponseSchema = z
   .object({
-    Content: LayerVersionContentOutputSchema.and(
-      z.any().openapi({ description: 'Details about the layer version.' }),
-    ).exactOptional(),
-    LayerArn: LayerArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the layer.' }),
-    ).exactOptional(),
-    LayerVersionArn: LayerVersionArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the layer version.' }),
-    ).exactOptional(),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the version.' }),
-    ).exactOptional(),
-    CreatedDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date that the layer version was created, in <a href="https://www.w3.org/TR/NOTE-datetime">ISO-8601 format</a> (YYYY-MM-DDThh:mm:ss.sTZD).',
-        }),
-    ).exactOptional(),
-    Version: LayerVersionNumberSchema.and(
-      z.any().openapi({ description: 'The version number.' }),
-    ).exactOptional(),
-    CompatibleRuntimes: CompatibleRuntimesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The layer\'s compatible runtimes.</p> <p>The following list includes deprecated runtimes. For more information, see <a href="https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html#runtime-support-policy">Runtime deprecation policy</a>.</p>',
-        }),
-    ).exactOptional(),
-    LicenseInfo: LicenseInfoSchema.and(
-      z.any().openapi({ description: "The layer's software license." }),
-    ).exactOptional(),
-    CompatibleArchitectures: CompatibleArchitecturesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of compatible <a href="https://docs.aws.amazon.com/lambda/latest/dg/foundation-arch.html">instruction set architectures</a>.',
-        }),
-    ).exactOptional(),
+    Content: LayerVersionContentOutputSchema.exactOptional().openapi({
+      description: 'Details about the layer version.',
+    }),
+    LayerArn: LayerArnSchema.exactOptional().openapi({ description: 'The ARN of the layer.' }),
+    LayerVersionArn: LayerVersionArnSchema.exactOptional().openapi({
+      description: 'The ARN of the layer version.',
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'The description of the version.',
+    }),
+    CreatedDate: TimestampSchema.exactOptional().openapi({
+      description:
+        'The date that the layer version was created, in <a href="https://www.w3.org/TR/NOTE-datetime">ISO-8601 format</a> (YYYY-MM-DDThh:mm:ss.sTZD).',
+    }),
+    Version: LayerVersionNumberSchema.exactOptional().openapi({
+      description: 'The version number.',
+    }),
+    CompatibleRuntimes: CompatibleRuntimesSchema.exactOptional().openapi({
+      description:
+        '<p>The layer\'s compatible runtimes.</p> <p>The following list includes deprecated runtimes. For more information, see <a href="https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html#runtime-support-policy">Runtime deprecation policy</a>.</p>',
+    }),
+    LicenseInfo: LicenseInfoSchema.exactOptional().openapi({
+      description: "The layer's software license.",
+    }),
+    CompatibleArchitectures: CompatibleArchitecturesSchema.exactOptional().openapi({
+      description:
+        'A list of compatible <a href="https://docs.aws.amazon.com/lambda/latest/dg/foundation-arch.html">instruction set architectures</a>.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetLayerVersionResponse')
 
 const GetLayerVersionPolicyResponseSchema = z
   .object({
-    Policy: StringSchema.and(
-      z.any().openapi({ description: 'The policy document.' }),
-    ).exactOptional(),
-    RevisionId: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A unique identifier for the current revision of the policy.' }),
-    ).exactOptional(),
+    Policy: StringSchema.exactOptional().openapi({ description: 'The policy document.' }),
+    RevisionId: StringSchema.exactOptional().openapi({
+      description: 'A unique identifier for the current revision of the policy.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetLayerVersionPolicyResponse')
 
 const GetPolicyResponseSchema = z
   .object({
-    Policy: StringSchema.and(
-      z.any().openapi({ description: 'The resource-based policy.' }),
-    ).exactOptional(),
-    RevisionId: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A unique identifier for the current revision of the policy.' }),
-    ).exactOptional(),
+    Policy: StringSchema.exactOptional().openapi({ description: 'The resource-based policy.' }),
+    RevisionId: StringSchema.exactOptional().openapi({
+      description: 'A unique identifier for the current revision of the policy.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetPolicyResponse')
@@ -2036,39 +1584,27 @@ const ProvisionedConcurrencyStatusEnumSchema = z
 
 const GetProvisionedConcurrencyConfigResponseSchema = z
   .object({
-    RequestedProvisionedConcurrentExecutions: PositiveIntegerSchema.and(
-      z.any().openapi({ description: 'The amount of provisioned concurrency requested.' }),
-    ).exactOptional(),
-    AvailableProvisionedConcurrentExecutions: NonNegativeIntegerSchema.and(
-      z.any().openapi({ description: 'The amount of provisioned concurrency available.' }),
-    ).exactOptional(),
-    AllocatedProvisionedConcurrentExecutions: NonNegativeIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The amount of provisioned concurrency allocated. When a weighted alias is used during linear and canary deployments, this value fluctuates depending on the amount of concurrency that is provisioned for the function versions.',
-        }),
-    ).exactOptional(),
-    Status: ProvisionedConcurrencyStatusEnumSchema.and(
-      z.any().openapi({ description: 'The status of the allocation process.' }),
-    ).exactOptional(),
-    StatusReason: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'For failed allocations, the reason that provisioned concurrency could not be allocated.',
-        }),
-    ).exactOptional(),
-    LastModified: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time that a user last updated the configuration, in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601 format</a>.',
-        }),
-    ).exactOptional(),
+    RequestedProvisionedConcurrentExecutions: PositiveIntegerSchema.exactOptional().openapi({
+      description: 'The amount of provisioned concurrency requested.',
+    }),
+    AvailableProvisionedConcurrentExecutions: NonNegativeIntegerSchema.exactOptional().openapi({
+      description: 'The amount of provisioned concurrency available.',
+    }),
+    AllocatedProvisionedConcurrentExecutions: NonNegativeIntegerSchema.exactOptional().openapi({
+      description:
+        'The amount of provisioned concurrency allocated. When a weighted alias is used during linear and canary deployments, this value fluctuates depending on the amount of concurrency that is provisioned for the function versions.',
+    }),
+    Status: ProvisionedConcurrencyStatusEnumSchema.exactOptional().openapi({
+      description: 'The status of the allocation process.',
+    }),
+    StatusReason: StringSchema.exactOptional().openapi({
+      description:
+        'For failed allocations, the reason that provisioned concurrency could not be allocated.',
+    }),
+    LastModified: TimestampSchema.exactOptional().openapi({
+      description:
+        'The date and time that a user last updated the configuration, in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601 format</a>.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetProvisionedConcurrencyConfigResponse')
@@ -2083,37 +1619,29 @@ const UpdateRuntimeOnSchema = z
 
 const GetRuntimeManagementConfigResponseSchema = z
   .object({
-    UpdateRuntimeOn: UpdateRuntimeOnSchema.and(
-      z.any().openapi({ description: 'The current runtime update mode of the function.' }),
-    ).exactOptional(),
-    RuntimeVersionArn: RuntimeVersionArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the runtime the function is configured to use. If the runtime update mode is <b>Manual</b>, the ARN is returned, otherwise <code>null</code> is returned.',
-        }),
-    ).exactOptional(),
-    FunctionArn: NameSpacedFunctionArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of your function.' }),
-    ).exactOptional(),
+    UpdateRuntimeOn: UpdateRuntimeOnSchema.exactOptional().openapi({
+      description: 'The current runtime update mode of the function.',
+    }),
+    RuntimeVersionArn: RuntimeVersionArnSchema.exactOptional().openapi({
+      description:
+        'The ARN of the runtime the function is configured to use. If the runtime update mode is <b>Manual</b>, the ARN is returned, otherwise <code>null</code> is returned.',
+    }),
+    FunctionArn: NameSpacedFunctionArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of your function.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetRuntimeManagementConfigResponse')
 
 const InvocationResponseSchema = z
   .object({
-    StatusCode: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The HTTP status code is in the 200 range for a successful request. For the <code>RequestResponse</code> invocation type, this status code is 200. For the <code>Event</code> invocation type, this status code is 202. For the <code>DryRun</code> invocation type, the status code is 204.',
-        }),
-    ).exactOptional(),
-    Payload: BlobSchema.and(
-      z.any().openapi({ description: 'The response from the function, or an error object.' }),
-    ).exactOptional(),
+    StatusCode: IntegerSchema.exactOptional().openapi({
+      description:
+        'The HTTP status code is in the 200 range for a successful request. For the <code>RequestResponse</code> invocation type, this status code is 200. For the <code>Event</code> invocation type, this status code is 202. For the <code>DryRun</code> invocation type, the status code is 204.',
+    }),
+    Payload: BlobSchema.exactOptional().openapi({
+      description: 'The response from the function, or an error object.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('InvocationResponse')
@@ -2173,11 +1701,7 @@ const RecursiveInvocationExceptionSchema = z.any().openapi('RecursiveInvocationE
 const HttpStatusSchema = z.int().openapi('HttpStatus')
 
 const InvokeAsyncResponseSchema = z
-  .object({
-    Status: HttpStatusSchema.and(
-      z.any().openapi({ description: 'The status code.' }),
-    ).exactOptional(),
-  })
+  .object({ Status: HttpStatusSchema.exactOptional().openapi({ description: 'The status code.' }) })
   .openapi({
     deprecated: true,
     description:
@@ -2188,24 +1712,22 @@ const InvokeAsyncResponseSchema = z
 
 const InvokeResponseStreamUpdateSchema = z
   .object({
-    Payload: BlobSchema.and(
-      z.any().openapi({ description: 'Data returned by your Lambda function.' }),
-    ).exactOptional(),
+    Payload: BlobSchema.exactOptional().openapi({
+      description: 'Data returned by your Lambda function.',
+    }),
   })
   .openapi({ description: 'A chunk of the streamed response payload.', required: [] })
   .openapi('InvokeResponseStreamUpdate')
 
 const InvokeWithResponseStreamCompleteEventSchema = z
   .object({
-    ErrorCode: StringSchema.and(z.any().openapi({ description: 'An error code.' })).exactOptional(),
-    ErrorDetails: StringSchema.and(
-      z.any().openapi({ description: 'The details of any returned error.' }),
-    ).exactOptional(),
-    LogResult: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The last 4 KB of the execution log, which is base64-encoded.' }),
-    ).exactOptional(),
+    ErrorCode: StringSchema.exactOptional().openapi({ description: 'An error code.' }),
+    ErrorDetails: StringSchema.exactOptional().openapi({
+      description: 'The details of any returned error.',
+    }),
+    LogResult: StringSchema.exactOptional().openapi({
+      description: 'The last 4 KB of the execution log, which is base64-encoded.',
+    }),
   })
   .openapi({
     description: 'A response confirming that the event stream is complete.',
@@ -2215,17 +1737,13 @@ const InvokeWithResponseStreamCompleteEventSchema = z
 
 const InvokeWithResponseStreamResponseEventSchema = z
   .object({
-    PayloadChunk: InvokeResponseStreamUpdateSchema.and(
-      z.any().openapi({ description: 'A chunk of the streamed response payload.' }),
-    ).exactOptional(),
-    InvokeComplete: InvokeWithResponseStreamCompleteEventSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "An object that's returned when the stream has ended and all the payload chunks have been returned.",
-        }),
-    ).exactOptional(),
+    PayloadChunk: InvokeResponseStreamUpdateSchema.exactOptional().openapi({
+      description: 'A chunk of the streamed response payload.',
+    }),
+    InvokeComplete: InvokeWithResponseStreamCompleteEventSchema.exactOptional().openapi({
+      description:
+        "An object that's returned when the stream has ended and all the payload chunks have been returned.",
+    }),
   })
   .openapi({
     description:
@@ -2236,17 +1754,13 @@ const InvokeWithResponseStreamResponseEventSchema = z
 
 const InvokeWithResponseStreamResponseSchema = z
   .object({
-    StatusCode: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'For a successful request, the HTTP status code is in the 200 range. For the <code>RequestResponse</code> invocation type, this status code is 200. For the <code>DryRun</code> invocation type, this status code is 204.',
-        }),
-    ).exactOptional(),
-    EventStream: InvokeWithResponseStreamResponseEventSchema.and(
-      z.any().openapi({ description: 'The stream of response payloads.' }),
-    ).exactOptional(),
+    StatusCode: IntegerSchema.exactOptional().openapi({
+      description:
+        'For a successful request, the HTTP status code is in the 200 range. For the <code>RequestResponse</code> invocation type, this status code is 200. For the <code>DryRun</code> invocation type, this status code is 204.',
+    }),
+    EventStream: InvokeWithResponseStreamResponseEventSchema.exactOptional().openapi({
+      description: 'The stream of response payloads.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('InvokeWithResponseStreamResponse')
@@ -2255,16 +1769,10 @@ const AliasListSchema = z.array(AliasConfigurationSchema).openapi('AliasList')
 
 const ListAliasesResponseSchema = z
   .object({
-    NextMarker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The pagination token that's included if more results are available.",
-        }),
-    ).exactOptional(),
-    Aliases: AliasListSchema.and(
-      z.any().openapi({ description: 'A list of aliases.' }),
-    ).exactOptional(),
+    NextMarker: StringSchema.exactOptional().openapi({
+      description: "The pagination token that's included if more results are available.",
+    }),
+    Aliases: AliasListSchema.exactOptional().openapi({ description: 'A list of aliases.' }),
   })
   .openapi({ required: [] })
   .openapi('ListAliasesResponse')
@@ -2275,16 +1783,12 @@ const CodeSigningConfigListSchema = z
 
 const ListCodeSigningConfigsResponseSchema = z
   .object({
-    NextMarker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The pagination token that's included if more results are available.",
-        }),
-    ).exactOptional(),
-    CodeSigningConfigs: CodeSigningConfigListSchema.and(
-      z.any().openapi({ description: 'The code signing configurations' }),
-    ).exactOptional(),
+    NextMarker: StringSchema.exactOptional().openapi({
+      description: "The pagination token that's included if more results are available.",
+    }),
+    CodeSigningConfigs: CodeSigningConfigListSchema.exactOptional().openapi({
+      description: 'The code signing configurations',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListCodeSigningConfigsResponse')
@@ -2295,17 +1799,13 @@ const EventSourceMappingsListSchema = z
 
 const ListEventSourceMappingsResponseSchema = z
   .object({
-    NextMarker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A pagination token that's returned when the response doesn't contain all event source mappings.",
-        }),
-    ).exactOptional(),
-    EventSourceMappings: EventSourceMappingsListSchema.and(
-      z.any().openapi({ description: 'A list of event source mappings.' }),
-    ).exactOptional(),
+    NextMarker: StringSchema.exactOptional().openapi({
+      description:
+        "A pagination token that's returned when the response doesn't contain all event source mappings.",
+    }),
+    EventSourceMappings: EventSourceMappingsListSchema.exactOptional().openapi({
+      description: 'A list of event source mappings.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListEventSourceMappingsResponse')
@@ -2316,68 +1816,44 @@ const FunctionEventInvokeConfigListSchema = z
 
 const ListFunctionEventInvokeConfigsResponseSchema = z
   .object({
-    FunctionEventInvokeConfigs: FunctionEventInvokeConfigListSchema.and(
-      z.any().openapi({ description: 'A list of configurations.' }),
-    ).exactOptional(),
-    NextMarker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The pagination token that's included if more results are available.",
-        }),
-    ).exactOptional(),
+    FunctionEventInvokeConfigs: FunctionEventInvokeConfigListSchema.exactOptional().openapi({
+      description: 'A list of configurations.',
+    }),
+    NextMarker: StringSchema.exactOptional().openapi({
+      description: "The pagination token that's included if more results are available.",
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListFunctionEventInvokeConfigsResponse')
 
 const FunctionUrlConfigSchema = z
   .object({
-    FunctionUrl: FunctionUrlSchema.and(
-      z.any().openapi({ description: 'The HTTP URL endpoint for your function.' }),
-    ),
-    FunctionArn: FunctionArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of your function.' }),
-    ),
-    CreationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When the function URL was created, in <a href="https://www.w3.org/TR/NOTE-datetime">ISO-8601 format</a> (YYYY-MM-DDThh:mm:ss.sTZD).',
-        }),
-    ),
-    LastModifiedTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When the function URL configuration was last updated, in <a href="https://www.w3.org/TR/NOTE-datetime">ISO-8601 format</a> (YYYY-MM-DDThh:mm:ss.sTZD).',
-        }),
-    ),
-    Cors: CorsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS">cross-origin resource sharing (CORS)</a> settings for your function URL.',
-        }),
-    ).exactOptional(),
-    AuthType: FunctionUrlAuthTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of authentication that your function URL uses. Set to <code>AWS_IAM</code> if you want to restrict access to authenticated users only. Set to <code>NONE</code> if you want to bypass IAM authentication to create a public endpoint. For more information, see <a href="https://docs.aws.amazon.com/lambda/latest/dg/urls-auth.html">Security and auth model for Lambda function URLs</a>.',
-        }),
-    ),
-    InvokeMode: InvokeModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Use one of the following options:</p> <ul> <li> <p> <code>BUFFERED</code> – This is the default option. Lambda invokes your function using the <code>Invoke</code> API operation. Invocation results are available when the payload is complete. The maximum payload size is 6 MB.</p> </li> <li> <p> <code>RESPONSE_STREAM</code> – Your function streams payload results as they become available. Lambda invokes your function using the <code>InvokeWithResponseStream</code> API operation. The maximum response payload size is 20 MB, however, you can <a href="https://docs.aws.amazon.com/servicequotas/latest/userguide/request-quota-increase.html">request a quota increase</a>.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    FunctionUrl: FunctionUrlSchema.openapi({
+      description: 'The HTTP URL endpoint for your function.',
+    }),
+    FunctionArn: FunctionArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of your function.',
+    }),
+    CreationTime: TimestampSchema.openapi({
+      description:
+        'When the function URL was created, in <a href="https://www.w3.org/TR/NOTE-datetime">ISO-8601 format</a> (YYYY-MM-DDThh:mm:ss.sTZD).',
+    }),
+    LastModifiedTime: TimestampSchema.openapi({
+      description:
+        'When the function URL configuration was last updated, in <a href="https://www.w3.org/TR/NOTE-datetime">ISO-8601 format</a> (YYYY-MM-DDThh:mm:ss.sTZD).',
+    }),
+    Cors: CorsSchema.exactOptional().openapi({
+      description:
+        'The <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS">cross-origin resource sharing (CORS)</a> settings for your function URL.',
+    }),
+    AuthType: FunctionUrlAuthTypeSchema.openapi({
+      description:
+        'The type of authentication that your function URL uses. Set to <code>AWS_IAM</code> if you want to restrict access to authenticated users only. Set to <code>NONE</code> if you want to bypass IAM authentication to create a public endpoint. For more information, see <a href="https://docs.aws.amazon.com/lambda/latest/dg/urls-auth.html">Security and auth model for Lambda function URLs</a>.',
+    }),
+    InvokeMode: InvokeModeSchema.exactOptional().openapi({
+      description:
+        '<p>Use one of the following options:</p> <ul> <li> <p> <code>BUFFERED</code> – This is the default option. Lambda invokes your function using the <code>Invoke</code> API operation. Invocation results are available when the payload is complete. The maximum payload size is 6 MB.</p> </li> <li> <p> <code>RESPONSE_STREAM</code> – Your function streams payload results as they become available. Lambda invokes your function using the <code>InvokeWithResponseStream</code> API operation. The maximum response payload size is 20 MB, however, you can <a href="https://docs.aws.amazon.com/servicequotas/latest/userguide/request-quota-increase.html">request a quota increase</a>.</p> </li> </ul>',
+    }),
   })
   .openapi({
     required: ['FunctionUrl', 'FunctionArn', 'CreationTime', 'LastModifiedTime', 'AuthType'],
@@ -2391,16 +1867,12 @@ const FunctionUrlConfigListSchema = z
 
 const ListFunctionUrlConfigsResponseSchema = z
   .object({
-    FunctionUrlConfigs: FunctionUrlConfigListSchema.and(
-      z.any().openapi({ description: 'A list of function URL configurations.' }),
-    ),
-    NextMarker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The pagination token that's included if more results are available.",
-        }),
-    ).exactOptional(),
+    FunctionUrlConfigs: FunctionUrlConfigListSchema.openapi({
+      description: 'A list of function URL configurations.',
+    }),
+    NextMarker: StringSchema.exactOptional().openapi({
+      description: "The pagination token that's included if more results are available.",
+    }),
   })
   .openapi({ required: ['FunctionUrlConfigs'] })
   .openapi('ListFunctionUrlConfigsResponse')
@@ -2409,16 +1881,12 @@ const FunctionListSchema = z.array(FunctionConfigurationSchema).openapi('Functio
 
 const ListFunctionsResponseSchema = z
   .object({
-    NextMarker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The pagination token that's included if more results are available.",
-        }),
-    ).exactOptional(),
-    Functions: FunctionListSchema.and(
-      z.any().openapi({ description: 'A list of Lambda functions.' }),
-    ).exactOptional(),
+    NextMarker: StringSchema.exactOptional().openapi({
+      description: "The pagination token that's included if more results are available.",
+    }),
+    Functions: FunctionListSchema.exactOptional().openapi({
+      description: 'A list of Lambda functions.',
+    }),
   })
   .openapi({ description: 'A list of Lambda functions.', required: [] })
   .openapi('ListFunctionsResponse')
@@ -2427,58 +1895,42 @@ const FunctionArnListSchema = z.array(FunctionArnSchema).openapi('FunctionArnLis
 
 const ListFunctionsByCodeSigningConfigResponseSchema = z
   .object({
-    NextMarker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The pagination token that's included if more results are available.",
-        }),
-    ).exactOptional(),
-    FunctionArns: FunctionArnListSchema.and(
-      z.any().openapi({ description: 'The function ARNs. ' }),
-    ).exactOptional(),
+    NextMarker: StringSchema.exactOptional().openapi({
+      description: "The pagination token that's included if more results are available.",
+    }),
+    FunctionArns: FunctionArnListSchema.exactOptional().openapi({
+      description: 'The function ARNs. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListFunctionsByCodeSigningConfigResponse')
 
 const LayerVersionsListItemSchema = z
   .object({
-    LayerVersionArn: LayerVersionArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the layer version.' }),
-    ).exactOptional(),
-    Version: LayerVersionNumberSchema.and(
-      z.any().openapi({ description: 'The version number.' }),
-    ).exactOptional(),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the version.' }),
-    ).exactOptional(),
-    CreatedDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date that the version was created, in ISO 8601 format. For example, <code>2018-11-27T15:10:45.123+0000</code>.',
-        }),
-    ).exactOptional(),
-    CompatibleRuntimes: CompatibleRuntimesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The layer\'s compatible runtimes.</p> <p>The following list includes deprecated runtimes. For more information, see <a href="https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html#runtime-support-policy">Runtime deprecation policy</a>.</p>',
-        }),
-    ).exactOptional(),
-    LicenseInfo: LicenseInfoSchema.and(
-      z.any().openapi({ description: "The layer's open-source license." }),
-    ).exactOptional(),
-    CompatibleArchitectures: CompatibleArchitecturesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of compatible <a href="https://docs.aws.amazon.com/lambda/latest/dg/foundation-arch.html">instruction set architectures</a>.',
-        }),
-    ).exactOptional(),
+    LayerVersionArn: LayerVersionArnSchema.exactOptional().openapi({
+      description: 'The ARN of the layer version.',
+    }),
+    Version: LayerVersionNumberSchema.exactOptional().openapi({
+      description: 'The version number.',
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'The description of the version.',
+    }),
+    CreatedDate: TimestampSchema.exactOptional().openapi({
+      description:
+        'The date that the version was created, in ISO 8601 format. For example, <code>2018-11-27T15:10:45.123+0000</code>.',
+    }),
+    CompatibleRuntimes: CompatibleRuntimesSchema.exactOptional().openapi({
+      description:
+        '<p>The layer\'s compatible runtimes.</p> <p>The following list includes deprecated runtimes. For more information, see <a href="https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html#runtime-support-policy">Runtime deprecation policy</a>.</p>',
+    }),
+    LicenseInfo: LicenseInfoSchema.exactOptional().openapi({
+      description: "The layer's open-source license.",
+    }),
+    CompatibleArchitectures: CompatibleArchitecturesSchema.exactOptional().openapi({
+      description:
+        'A list of compatible <a href="https://docs.aws.amazon.com/lambda/latest/dg/foundation-arch.html">instruction set architectures</a>.',
+    }),
   })
   .openapi({
     description:
@@ -2491,17 +1943,12 @@ const LayerVersionsListSchema = z.array(LayerVersionsListItemSchema).openapi('La
 
 const ListLayerVersionsResponseSchema = z
   .object({
-    NextMarker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A pagination token returned when the response doesn't contain all versions.",
-        }),
-    ).exactOptional(),
-    LayerVersions: LayerVersionsListSchema.and(
-      z.any().openapi({ description: 'A list of versions.' }),
-    ).exactOptional(),
+    NextMarker: StringSchema.exactOptional().openapi({
+      description: "A pagination token returned when the response doesn't contain all versions.",
+    }),
+    LayerVersions: LayerVersionsListSchema.exactOptional().openapi({
+      description: 'A list of versions.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListLayerVersionsResponse')
@@ -2515,15 +1962,13 @@ const LayerNameSchema = z
 
 const LayersListItemSchema = z
   .object({
-    LayerName: LayerNameSchema.and(
-      z.any().openapi({ description: 'The name of the layer.' }),
-    ).exactOptional(),
-    LayerArn: LayerArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the function layer.' }),
-    ).exactOptional(),
-    LatestMatchingVersion: LayerVersionsListItemSchema.and(
-      z.any().openapi({ description: 'The newest version of the layer.' }),
-    ).exactOptional(),
+    LayerName: LayerNameSchema.exactOptional().openapi({ description: 'The name of the layer.' }),
+    LayerArn: LayerArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the function layer.',
+    }),
+    LatestMatchingVersion: LayerVersionsListItemSchema.exactOptional().openapi({
+      description: 'The newest version of the layer.',
+    }),
   })
   .openapi({
     description:
@@ -2536,58 +1981,40 @@ const LayersListSchema = z.array(LayersListItemSchema).openapi('LayersList')
 
 const ListLayersResponseSchema = z
   .object({
-    NextMarker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "A pagination token returned when the response doesn't contain all layers.",
-        }),
-    ).exactOptional(),
-    Layers: LayersListSchema.and(
-      z.any().openapi({ description: 'A list of function layers.' }),
-    ).exactOptional(),
+    NextMarker: StringSchema.exactOptional().openapi({
+      description: "A pagination token returned when the response doesn't contain all layers.",
+    }),
+    Layers: LayersListSchema.exactOptional().openapi({ description: 'A list of function layers.' }),
   })
   .openapi({ required: [] })
   .openapi('ListLayersResponse')
 
 const ProvisionedConcurrencyConfigListItemSchema = z
   .object({
-    FunctionArn: FunctionArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the alias or version.' }),
-    ).exactOptional(),
-    RequestedProvisionedConcurrentExecutions: PositiveIntegerSchema.and(
-      z.any().openapi({ description: 'The amount of provisioned concurrency requested.' }),
-    ).exactOptional(),
-    AvailableProvisionedConcurrentExecutions: NonNegativeIntegerSchema.and(
-      z.any().openapi({ description: 'The amount of provisioned concurrency available.' }),
-    ).exactOptional(),
-    AllocatedProvisionedConcurrentExecutions: NonNegativeIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The amount of provisioned concurrency allocated. When a weighted alias is used during linear and canary deployments, this value fluctuates depending on the amount of concurrency that is provisioned for the function versions.',
-        }),
-    ).exactOptional(),
-    Status: ProvisionedConcurrencyStatusEnumSchema.and(
-      z.any().openapi({ description: 'The status of the allocation process.' }),
-    ).exactOptional(),
-    StatusReason: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'For failed allocations, the reason that provisioned concurrency could not be allocated.',
-        }),
-    ).exactOptional(),
-    LastModified: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time that a user last updated the configuration, in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601 format</a>.',
-        }),
-    ).exactOptional(),
+    FunctionArn: FunctionArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the alias or version.',
+    }),
+    RequestedProvisionedConcurrentExecutions: PositiveIntegerSchema.exactOptional().openapi({
+      description: 'The amount of provisioned concurrency requested.',
+    }),
+    AvailableProvisionedConcurrentExecutions: NonNegativeIntegerSchema.exactOptional().openapi({
+      description: 'The amount of provisioned concurrency available.',
+    }),
+    AllocatedProvisionedConcurrentExecutions: NonNegativeIntegerSchema.exactOptional().openapi({
+      description:
+        'The amount of provisioned concurrency allocated. When a weighted alias is used during linear and canary deployments, this value fluctuates depending on the amount of concurrency that is provisioned for the function versions.',
+    }),
+    Status: ProvisionedConcurrencyStatusEnumSchema.exactOptional().openapi({
+      description: 'The status of the allocation process.',
+    }),
+    StatusReason: StringSchema.exactOptional().openapi({
+      description:
+        'For failed allocations, the reason that provisioned concurrency could not be allocated.',
+    }),
+    LastModified: TimestampSchema.exactOptional().openapi({
+      description:
+        'The date and time that a user last updated the configuration, in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601 format</a>.',
+    }),
   })
   .openapi({
     description:
@@ -2602,165 +2029,115 @@ const ProvisionedConcurrencyConfigListSchema = z
 
 const ListProvisionedConcurrencyConfigsResponseSchema = z
   .object({
-    ProvisionedConcurrencyConfigs: ProvisionedConcurrencyConfigListSchema.and(
-      z.any().openapi({ description: 'A list of provisioned concurrency configurations.' }),
-    ).exactOptional(),
-    NextMarker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The pagination token that's included if more results are available.",
-        }),
-    ).exactOptional(),
+    ProvisionedConcurrencyConfigs: ProvisionedConcurrencyConfigListSchema.exactOptional().openapi({
+      description: 'A list of provisioned concurrency configurations.',
+    }),
+    NextMarker: StringSchema.exactOptional().openapi({
+      description: "The pagination token that's included if more results are available.",
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListProvisionedConcurrencyConfigsResponse')
 
 const ListTagsResponseSchema = z
-  .object({
-    Tags: TagsSchema.and(z.any().openapi({ description: "The function's tags." })).exactOptional(),
-  })
+  .object({ Tags: TagsSchema.exactOptional().openapi({ description: "The function's tags." }) })
   .openapi({ required: [] })
   .openapi('ListTagsResponse')
 
 const ListVersionsByFunctionResponseSchema = z
   .object({
-    NextMarker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The pagination token that's included if more results are available.",
-        }),
-    ).exactOptional(),
-    Versions: FunctionListSchema.and(
-      z.any().openapi({ description: 'A list of Lambda function versions.' }),
-    ).exactOptional(),
+    NextMarker: StringSchema.exactOptional().openapi({
+      description: "The pagination token that's included if more results are available.",
+    }),
+    Versions: FunctionListSchema.exactOptional().openapi({
+      description: 'A list of Lambda function versions.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListVersionsByFunctionResponse')
 
 const PublishLayerVersionResponseSchema = z
   .object({
-    Content: LayerVersionContentOutputSchema.and(
-      z.any().openapi({ description: 'Details about the layer version.' }),
-    ).exactOptional(),
-    LayerArn: LayerArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the layer.' }),
-    ).exactOptional(),
-    LayerVersionArn: LayerVersionArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the layer version.' }),
-    ).exactOptional(),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the version.' }),
-    ).exactOptional(),
-    CreatedDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date that the layer version was created, in <a href="https://www.w3.org/TR/NOTE-datetime">ISO-8601 format</a> (YYYY-MM-DDThh:mm:ss.sTZD).',
-        }),
-    ).exactOptional(),
-    Version: LayerVersionNumberSchema.and(
-      z.any().openapi({ description: 'The version number.' }),
-    ).exactOptional(),
-    CompatibleRuntimes: CompatibleRuntimesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The layer\'s compatible runtimes.</p> <p>The following list includes deprecated runtimes. For more information, see <a href="https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html#runtime-support-policy">Runtime deprecation policy</a>.</p>',
-        }),
-    ).exactOptional(),
-    LicenseInfo: LicenseInfoSchema.and(
-      z.any().openapi({ description: "The layer's software license." }),
-    ).exactOptional(),
-    CompatibleArchitectures: CompatibleArchitecturesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of compatible <a href="https://docs.aws.amazon.com/lambda/latest/dg/foundation-arch.html">instruction set architectures</a>.',
-        }),
-    ).exactOptional(),
+    Content: LayerVersionContentOutputSchema.exactOptional().openapi({
+      description: 'Details about the layer version.',
+    }),
+    LayerArn: LayerArnSchema.exactOptional().openapi({ description: 'The ARN of the layer.' }),
+    LayerVersionArn: LayerVersionArnSchema.exactOptional().openapi({
+      description: 'The ARN of the layer version.',
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'The description of the version.',
+    }),
+    CreatedDate: TimestampSchema.exactOptional().openapi({
+      description:
+        'The date that the layer version was created, in <a href="https://www.w3.org/TR/NOTE-datetime">ISO-8601 format</a> (YYYY-MM-DDThh:mm:ss.sTZD).',
+    }),
+    Version: LayerVersionNumberSchema.exactOptional().openapi({
+      description: 'The version number.',
+    }),
+    CompatibleRuntimes: CompatibleRuntimesSchema.exactOptional().openapi({
+      description:
+        '<p>The layer\'s compatible runtimes.</p> <p>The following list includes deprecated runtimes. For more information, see <a href="https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html#runtime-support-policy">Runtime deprecation policy</a>.</p>',
+    }),
+    LicenseInfo: LicenseInfoSchema.exactOptional().openapi({
+      description: "The layer's software license.",
+    }),
+    CompatibleArchitectures: CompatibleArchitecturesSchema.exactOptional().openapi({
+      description:
+        'A list of compatible <a href="https://docs.aws.amazon.com/lambda/latest/dg/foundation-arch.html">instruction set architectures</a>.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('PublishLayerVersionResponse')
 
 const PutFunctionCodeSigningConfigResponseSchema = z
   .object({
-    CodeSigningConfigArn: CodeSigningConfigArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The The Amazon Resource Name (ARN) of the code signing configuration.',
-        }),
-    ),
-    FunctionName: FunctionNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the Lambda function.</p> <p class="title"> <b>Name formats</b> </p> <ul> <li> <p> <b>Function name</b> - <code>MyFunction</code>.</p> </li> <li> <p> <b>Function ARN</b> - <code>arn:aws:lambda:us-west-2:123456789012:function:MyFunction</code>.</p> </li> <li> <p> <b>Partial ARN</b> - <code>123456789012:function:MyFunction</code>.</p> </li> </ul> <p>The length constraint applies only to the full ARN. If you specify only the function name, it is limited to 64 characters in length.</p>',
-        }),
-    ),
+    CodeSigningConfigArn: CodeSigningConfigArnSchema.openapi({
+      description: 'The The Amazon Resource Name (ARN) of the code signing configuration.',
+    }),
+    FunctionName: FunctionNameSchema.openapi({
+      description:
+        '<p>The name of the Lambda function.</p> <p class="title"> <b>Name formats</b> </p> <ul> <li> <p> <b>Function name</b> - <code>MyFunction</code>.</p> </li> <li> <p> <b>Function ARN</b> - <code>arn:aws:lambda:us-west-2:123456789012:function:MyFunction</code>.</p> </li> <li> <p> <b>Partial ARN</b> - <code>123456789012:function:MyFunction</code>.</p> </li> </ul> <p>The length constraint applies only to the full ARN. If you specify only the function name, it is limited to 64 characters in length.</p>',
+    }),
   })
   .openapi({ required: ['CodeSigningConfigArn', 'FunctionName'] })
   .openapi('PutFunctionCodeSigningConfigResponse')
 
 const PutProvisionedConcurrencyConfigResponseSchema = z
   .object({
-    RequestedProvisionedConcurrentExecutions: PositiveIntegerSchema.and(
-      z.any().openapi({ description: 'The amount of provisioned concurrency requested.' }),
-    ).exactOptional(),
-    AvailableProvisionedConcurrentExecutions: NonNegativeIntegerSchema.and(
-      z.any().openapi({ description: 'The amount of provisioned concurrency available.' }),
-    ).exactOptional(),
-    AllocatedProvisionedConcurrentExecutions: NonNegativeIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The amount of provisioned concurrency allocated. When a weighted alias is used during linear and canary deployments, this value fluctuates depending on the amount of concurrency that is provisioned for the function versions.',
-        }),
-    ).exactOptional(),
-    Status: ProvisionedConcurrencyStatusEnumSchema.and(
-      z.any().openapi({ description: 'The status of the allocation process.' }),
-    ).exactOptional(),
-    StatusReason: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'For failed allocations, the reason that provisioned concurrency could not be allocated.',
-        }),
-    ).exactOptional(),
-    LastModified: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time that a user last updated the configuration, in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601 format</a>.',
-        }),
-    ).exactOptional(),
+    RequestedProvisionedConcurrentExecutions: PositiveIntegerSchema.exactOptional().openapi({
+      description: 'The amount of provisioned concurrency requested.',
+    }),
+    AvailableProvisionedConcurrentExecutions: NonNegativeIntegerSchema.exactOptional().openapi({
+      description: 'The amount of provisioned concurrency available.',
+    }),
+    AllocatedProvisionedConcurrentExecutions: NonNegativeIntegerSchema.exactOptional().openapi({
+      description:
+        'The amount of provisioned concurrency allocated. When a weighted alias is used during linear and canary deployments, this value fluctuates depending on the amount of concurrency that is provisioned for the function versions.',
+    }),
+    Status: ProvisionedConcurrencyStatusEnumSchema.exactOptional().openapi({
+      description: 'The status of the allocation process.',
+    }),
+    StatusReason: StringSchema.exactOptional().openapi({
+      description:
+        'For failed allocations, the reason that provisioned concurrency could not be allocated.',
+    }),
+    LastModified: TimestampSchema.exactOptional().openapi({
+      description:
+        'The date and time that a user last updated the configuration, in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601 format</a>.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('PutProvisionedConcurrencyConfigResponse')
 
 const PutRuntimeManagementConfigResponseSchema = z
   .object({
-    UpdateRuntimeOn: UpdateRuntimeOnSchema.and(
-      z.any().openapi({ description: 'The runtime update mode.' }),
-    ),
-    FunctionArn: FunctionArnSchema.and(z.any().openapi({ description: 'The ARN of the function' })),
-    RuntimeVersionArn: RuntimeVersionArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the runtime the function is configured to use. If the runtime update mode is <b>manual</b>, the ARN is returned, otherwise <code>null</code> is returned.',
-        }),
-    ).exactOptional(),
+    UpdateRuntimeOn: UpdateRuntimeOnSchema.openapi({ description: 'The runtime update mode.' }),
+    FunctionArn: FunctionArnSchema.openapi({ description: 'The ARN of the function' }),
+    RuntimeVersionArn: RuntimeVersionArnSchema.exactOptional().openapi({
+      description:
+        'The ARN of the runtime the function is configured to use. If the runtime update mode is <b>manual</b>, the ARN is returned, otherwise <code>null</code> is returned.',
+    }),
   })
   .openapi({ required: ['UpdateRuntimeOn', 'FunctionArn'] })
   .openapi('PutRuntimeManagementConfigResponse')
@@ -2769,61 +2146,41 @@ const TagKeySchema = z.string().openapi('TagKey')
 
 const UpdateCodeSigningConfigResponseSchema = z
   .object({
-    CodeSigningConfig: CodeSigningConfigSchema.and(
-      z.any().openapi({ description: 'The code signing configuration' }),
-    ),
+    CodeSigningConfig: CodeSigningConfigSchema.openapi({
+      description: 'The code signing configuration',
+    }),
   })
   .openapi({ required: ['CodeSigningConfig'] })
   .openapi('UpdateCodeSigningConfigResponse')
 
 const UpdateFunctionUrlConfigResponseSchema = z
   .object({
-    FunctionUrl: FunctionUrlSchema.and(
-      z.any().openapi({ description: 'The HTTP URL endpoint for your function.' }),
-    ),
-    FunctionArn: FunctionArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of your function.' }),
-    ),
-    AuthType: FunctionUrlAuthTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of authentication that your function URL uses. Set to <code>AWS_IAM</code> if you want to restrict access to authenticated users only. Set to <code>NONE</code> if you want to bypass IAM authentication to create a public endpoint. For more information, see <a href="https://docs.aws.amazon.com/lambda/latest/dg/urls-auth.html">Security and auth model for Lambda function URLs</a>.',
-        }),
-    ),
-    Cors: CorsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS">cross-origin resource sharing (CORS)</a> settings for your function URL.',
-        }),
-    ).exactOptional(),
-    CreationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When the function URL was created, in <a href="https://www.w3.org/TR/NOTE-datetime">ISO-8601 format</a> (YYYY-MM-DDThh:mm:ss.sTZD).',
-        }),
-    ),
-    LastModifiedTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When the function URL configuration was last updated, in <a href="https://www.w3.org/TR/NOTE-datetime">ISO-8601 format</a> (YYYY-MM-DDThh:mm:ss.sTZD).',
-        }),
-    ),
-    InvokeMode: InvokeModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Use one of the following options:</p> <ul> <li> <p> <code>BUFFERED</code> – This is the default option. Lambda invokes your function using the <code>Invoke</code> API operation. Invocation results are available when the payload is complete. The maximum payload size is 6 MB.</p> </li> <li> <p> <code>RESPONSE_STREAM</code> – Your function streams payload results as they become available. Lambda invokes your function using the <code>InvokeWithResponseStream</code> API operation. The maximum response payload size is 20 MB, however, you can <a href="https://docs.aws.amazon.com/servicequotas/latest/userguide/request-quota-increase.html">request a quota increase</a>.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    FunctionUrl: FunctionUrlSchema.openapi({
+      description: 'The HTTP URL endpoint for your function.',
+    }),
+    FunctionArn: FunctionArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of your function.',
+    }),
+    AuthType: FunctionUrlAuthTypeSchema.openapi({
+      description:
+        'The type of authentication that your function URL uses. Set to <code>AWS_IAM</code> if you want to restrict access to authenticated users only. Set to <code>NONE</code> if you want to bypass IAM authentication to create a public endpoint. For more information, see <a href="https://docs.aws.amazon.com/lambda/latest/dg/urls-auth.html">Security and auth model for Lambda function URLs</a>.',
+    }),
+    Cors: CorsSchema.exactOptional().openapi({
+      description:
+        'The <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS">cross-origin resource sharing (CORS)</a> settings for your function URL.',
+    }),
+    CreationTime: TimestampSchema.openapi({
+      description:
+        'When the function URL was created, in <a href="https://www.w3.org/TR/NOTE-datetime">ISO-8601 format</a> (YYYY-MM-DDThh:mm:ss.sTZD).',
+    }),
+    LastModifiedTime: TimestampSchema.openapi({
+      description:
+        'When the function URL configuration was last updated, in <a href="https://www.w3.org/TR/NOTE-datetime">ISO-8601 format</a> (YYYY-MM-DDThh:mm:ss.sTZD).',
+    }),
+    InvokeMode: InvokeModeSchema.exactOptional().openapi({
+      description:
+        '<p>Use one of the following options:</p> <ul> <li> <p> <code>BUFFERED</code> – This is the default option. Lambda invokes your function using the <code>Invoke</code> API operation. Invocation results are available when the payload is complete. The maximum payload size is 6 MB.</p> </li> <li> <p> <code>RESPONSE_STREAM</code> – Your function streams payload results as they become available. Lambda invokes your function using the <code>InvokeWithResponseStream</code> API operation. The maximum response payload size is 20 MB, however, you can <a href="https://docs.aws.amazon.com/servicequotas/latest/userguide/request-quota-increase.html">request a quota increase</a>.</p> </li> </ul>',
+    }),
   })
   .openapi({
     required: ['FunctionUrl', 'FunctionArn', 'AuthType', 'CreationTime', 'LastModifiedTime'],
@@ -2861,38 +2218,22 @@ const OrganizationIdSchema = z
 
 const AddLayerVersionPermissionRequestSchema = z
   .object({
-    StatementId: StatementIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An identifier that distinguishes the policy from others on the same layer version.',
-        }),
-    ),
-    Action: LayerPermissionAllowedActionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The API action that grants access to the layer. For example, <code>lambda:GetLayerVersion</code>.',
-        }),
-    ),
-    Principal: LayerPermissionAllowedPrincipalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An account ID, or <code>*</code> to grant layer usage permission to all accounts in an organization, or all Amazon Web Services accounts (if <code>organizationId</code> is not specified). For the last case, make sure that you really do want all Amazon Web Services accounts to have usage permission to this layer. ',
-        }),
-    ),
-    OrganizationId: OrganizationIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'With the principal set to <code>*</code>, grant permission to all accounts in the specified organization.',
-        }),
-    ).exactOptional(),
+    StatementId: StatementIdSchema.openapi({
+      description:
+        'An identifier that distinguishes the policy from others on the same layer version.',
+    }),
+    Action: LayerPermissionAllowedActionSchema.openapi({
+      description:
+        'The API action that grants access to the layer. For example, <code>lambda:GetLayerVersion</code>.',
+    }),
+    Principal: LayerPermissionAllowedPrincipalSchema.openapi({
+      description:
+        'An account ID, or <code>*</code> to grant layer usage permission to all accounts in an organization, or all Amazon Web Services accounts (if <code>organizationId</code> is not specified). For the last case, make sure that you really do want all Amazon Web Services accounts to have usage permission to this layer. ',
+    }),
+    OrganizationId: OrganizationIdSchema.exactOptional().openapi({
+      description:
+        'With the principal set to <code>*</code>, grant permission to all accounts in the specified organization.',
+    }),
   })
   .openapi({
     required: ['StatementId', 'Action', 'Principal'],
@@ -2934,77 +2275,41 @@ const PrincipalOrgIDSchema = z
 
 const AddPermissionRequestSchema = z
   .object({
-    StatementId: StatementIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A statement identifier that differentiates the statement from others in the same policy.',
-        }),
-    ),
-    Action: ActionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The action that the principal can use on the function. For example, <code>lambda:InvokeFunction</code> or <code>lambda:GetFunction</code>.',
-        }),
-    ),
-    Principal: PrincipalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Service or Amazon Web Services account that invokes the function. If you specify a service, use <code>SourceArn</code> or <code>SourceAccount</code> to limit who can invoke the function through that service.',
-        }),
-    ),
-    SourceArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>For Amazon Web Services, the ARN of the Amazon Web Services resource that invokes the function. For example, an Amazon S3 bucket or Amazon SNS topic.</p> <p>Note that Lambda configures the comparison using the <code>StringLike</code> operator.</p>',
-        }),
-    ).exactOptional(),
-    SourceAccount: SourceOwnerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'For Amazon Web Service, the ID of the Amazon Web Services account that owns the resource. Use this together with <code>SourceArn</code> to ensure that the specified account owns the resource. It is possible for an Amazon S3 bucket to be deleted by its owner and recreated by another account.',
-        }),
-    ).exactOptional(),
-    EventSourceToken: EventSourceTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'For Alexa Smart Home functions, a token that the invoker must supply.',
-        }),
-    ).exactOptional(),
-    RevisionId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Update the policy only if the revision ID matches the ID that's specified. Use this option to avoid modifying a policy that has changed since you last read it.",
-        }),
-    ).exactOptional(),
-    PrincipalOrgID: PrincipalOrgIDSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier for your organization in Organizations. Use this to grant permissions to all the Amazon Web Services accounts under this organization.',
-        }),
-    ).exactOptional(),
-    FunctionUrlAuthType: FunctionUrlAuthTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of authentication that your function URL uses. Set to <code>AWS_IAM</code> if you want to restrict access to authenticated users only. Set to <code>NONE</code> if you want to bypass IAM authentication to create a public endpoint. For more information, see <a href="https://docs.aws.amazon.com/lambda/latest/dg/urls-auth.html">Security and auth model for Lambda function URLs</a>.',
-        }),
-    ).exactOptional(),
+    StatementId: StatementIdSchema.openapi({
+      description:
+        'A statement identifier that differentiates the statement from others in the same policy.',
+    }),
+    Action: ActionSchema.openapi({
+      description:
+        'The action that the principal can use on the function. For example, <code>lambda:InvokeFunction</code> or <code>lambda:GetFunction</code>.',
+    }),
+    Principal: PrincipalSchema.openapi({
+      description:
+        'The Amazon Web Service or Amazon Web Services account that invokes the function. If you specify a service, use <code>SourceArn</code> or <code>SourceAccount</code> to limit who can invoke the function through that service.',
+    }),
+    SourceArn: ArnSchema.exactOptional().openapi({
+      description:
+        '<p>For Amazon Web Services, the ARN of the Amazon Web Services resource that invokes the function. For example, an Amazon S3 bucket or Amazon SNS topic.</p> <p>Note that Lambda configures the comparison using the <code>StringLike</code> operator.</p>',
+    }),
+    SourceAccount: SourceOwnerSchema.exactOptional().openapi({
+      description:
+        'For Amazon Web Service, the ID of the Amazon Web Services account that owns the resource. Use this together with <code>SourceArn</code> to ensure that the specified account owns the resource. It is possible for an Amazon S3 bucket to be deleted by its owner and recreated by another account.',
+    }),
+    EventSourceToken: EventSourceTokenSchema.exactOptional().openapi({
+      description: 'For Alexa Smart Home functions, a token that the invoker must supply.',
+    }),
+    RevisionId: StringSchema.exactOptional().openapi({
+      description:
+        "Update the policy only if the revision ID matches the ID that's specified. Use this option to avoid modifying a policy that has changed since you last read it.",
+    }),
+    PrincipalOrgID: PrincipalOrgIDSchema.exactOptional().openapi({
+      description:
+        'The identifier for your organization in Organizations. Use this to grant permissions to all the Amazon Web Services accounts under this organization.',
+    }),
+    FunctionUrlAuthType: FunctionUrlAuthTypeSchema.exactOptional().openapi({
+      description:
+        'The type of authentication that your function URL uses. Set to <code>AWS_IAM</code> if you want to restrict access to authenticated users only. Set to <code>NONE</code> if you want to bypass IAM authentication to create a public endpoint. For more information, see <a href="https://docs.aws.amazon.com/lambda/latest/dg/urls-auth.html">Security and auth model for Lambda function URLs</a>.',
+    }),
   })
   .openapi({ required: ['StatementId', 'Action', 'Principal'], title: 'AddPermissionRequest' })
   .openapi('AddPermissionRequest')
@@ -3022,41 +2327,33 @@ const BooleanSchema = z.boolean().openapi('Boolean')
 
 const CreateAliasRequestSchema = z
   .object({
-    Name: AliasSchema.and(z.any().openapi({ description: 'The name of the alias.' })),
-    FunctionVersion: VersionSchema.and(
-      z.any().openapi({ description: 'The function version that the alias invokes.' }),
-    ),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'A description of the alias.' }),
-    ).exactOptional(),
-    RoutingConfig: AliasRoutingConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <a href="https://docs.aws.amazon.com/lambda/latest/dg/configuration-aliases.html#configuring-alias-routing">routing configuration</a> of the alias.',
-        }),
-    ).exactOptional(),
+    Name: AliasSchema.openapi({ description: 'The name of the alias.' }),
+    FunctionVersion: VersionSchema.openapi({
+      description: 'The function version that the alias invokes.',
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'A description of the alias.',
+    }),
+    RoutingConfig: AliasRoutingConfigurationSchema.exactOptional().openapi({
+      description:
+        'The <a href="https://docs.aws.amazon.com/lambda/latest/dg/configuration-aliases.html#configuring-alias-routing">routing configuration</a> of the alias.',
+    }),
   })
   .openapi({ required: ['Name', 'FunctionVersion'], title: 'CreateAliasRequest' })
   .openapi('CreateAliasRequest')
 
 const CreateCodeSigningConfigRequestSchema = z
   .object({
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'Descriptive name for this code signing configuration.' }),
-    ).exactOptional(),
-    AllowedPublishers: AllowedPublishersSchema.and(
-      z.any().openapi({ description: 'Signing profiles for this code signing configuration.' }),
-    ),
-    CodeSigningPolicies: CodeSigningPoliciesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The code signing policies define the actions to take if the validation checks fail. ',
-        }),
-    ).exactOptional(),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'Descriptive name for this code signing configuration.',
+    }),
+    AllowedPublishers: AllowedPublishersSchema.openapi({
+      description: 'Signing profiles for this code signing configuration.',
+    }),
+    CodeSigningPolicies: CodeSigningPoliciesSchema.exactOptional().openapi({
+      description:
+        'The code signing policies define the actions to take if the validation checks fail. ',
+    }),
   })
   .openapi({ required: ['AllowedPublishers'], title: 'CreateCodeSigningConfigRequest' })
   .openapi('CreateCodeSigningConfigRequest')
@@ -3065,219 +2362,118 @@ const EnabledSchema = z.boolean().openapi('Enabled')
 
 const CreateEventSourceMappingRequestSchema = z
   .object({
-    EventSourceArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the event source.</p> <ul> <li> <p> <b>Amazon Kinesis</b> – The ARN of the data stream or a stream consumer.</p> </li> <li> <p> <b>Amazon DynamoDB Streams</b> – The ARN of the stream.</p> </li> <li> <p> <b>Amazon Simple Queue Service</b> – The ARN of the queue.</p> </li> <li> <p> <b>Amazon Managed Streaming for Apache Kafka</b> – The ARN of the cluster.</p> </li> <li> <p> <b>Amazon MQ</b> – The ARN of the broker.</p> </li> <li> <p> <b>Amazon DocumentDB</b> – The ARN of the DocumentDB change stream.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    FunctionName: FunctionNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the Lambda function.</p> <p class="title"> <b>Name formats</b> </p> <ul> <li> <p> <b>Function name</b> – <code>MyFunction</code>.</p> </li> <li> <p> <b>Function ARN</b> – <code>arn:aws:lambda:us-west-2:123456789012:function:MyFunction</code>.</p> </li> <li> <p> <b>Version or Alias ARN</b> – <code>arn:aws:lambda:us-west-2:123456789012:function:MyFunction:PROD</code>.</p> </li> <li> <p> <b>Partial ARN</b> – <code>123456789012:function:MyFunction</code>.</p> </li> </ul> <p>The length constraint applies only to the full ARN. If you specify only the function name, it\'s limited to 64 characters in length.</p>',
-        }),
-    ),
-    Enabled: EnabledSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>When true, the event source mapping is active. When false, Lambda pauses polling and invocation.</p> <p>Default: True</p>',
-        }),
-    ).exactOptional(),
-    BatchSize: BatchSizeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum number of records in each batch that Lambda pulls from your stream or queue and sends to your function. Lambda passes all of the records in the batch to the function in a single call, up to the payload limit for synchronous invocation (6 MB).</p> <ul> <li> <p> <b>Amazon Kinesis</b> – Default 100. Max 10,000.</p> </li> <li> <p> <b>Amazon DynamoDB Streams</b> – Default 100. Max 10,000.</p> </li> <li> <p> <b>Amazon Simple Queue Service</b> – Default 10. For standard queues the max is 10,000. For FIFO queues the max is 10.</p> </li> <li> <p> <b>Amazon Managed Streaming for Apache Kafka</b> – Default 100. Max 10,000.</p> </li> <li> <p> <b>Self-managed Apache Kafka</b> – Default 100. Max 10,000.</p> </li> <li> <p> <b>Amazon MQ (ActiveMQ and RabbitMQ)</b> – Default 100. Max 10,000.</p> </li> <li> <p> <b>DocumentDB</b> – Default 100. Max 10,000.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    FilterCriteria: FilterCriteriaSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that defines the filter criteria that determine whether Lambda should process an event. For more information, see <a href="https://docs.aws.amazon.com/lambda/latest/dg/invocation-eventfiltering.html">Lambda event filtering</a>.',
-        }),
-    ).exactOptional(),
-    MaximumBatchingWindowInSeconds: MaximumBatchingWindowInSecondsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum amount of time, in seconds, that Lambda spends gathering records before invoking the function. You can configure <code>MaximumBatchingWindowInSeconds</code> to any value from 0 seconds to 300 seconds in increments of seconds.</p> <p>For streams and Amazon SQS event sources, the default batching window is 0 seconds. For Amazon MSK, Self-managed Apache Kafka, Amazon MQ, and DocumentDB event sources, the default batching window is 500 ms. Note that because you can only change <code>MaximumBatchingWindowInSeconds</code> in increments of seconds, you cannot revert back to the 500 ms default batching window after you have changed it. To restore the default batching window, you must create a new event source mapping.</p> <p>Related setting: For streams and Amazon SQS event sources, when you set <code>BatchSize</code> to a value greater than 10, you must set <code>MaximumBatchingWindowInSeconds</code> to at least 1.</p>',
-        }),
-    ).exactOptional(),
-    ParallelizationFactor: ParallelizationFactorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '(Kinesis and DynamoDB Streams only) The number of batches to process from each shard concurrently.',
-        }),
-    ).exactOptional(),
-    StartingPosition: EventSourcePositionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The position in a stream from which to start reading. Required for Amazon Kinesis and Amazon DynamoDB Stream event sources. <code>AT_TIMESTAMP</code> is supported only for Amazon Kinesis streams, Amazon DocumentDB, Amazon MSK, and self-managed Apache Kafka.',
-        }),
-    ).exactOptional(),
-    StartingPositionTimestamp: DateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'With <code>StartingPosition</code> set to <code>AT_TIMESTAMP</code>, the time from which to start reading. <code>StartingPositionTimestamp</code> cannot be in the future.',
-        }),
-    ).exactOptional(),
-    DestinationConfig: DestinationConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '(Kinesis and DynamoDB Streams only) A standard Amazon SQS queue or standard Amazon SNS topic destination for discarded records.',
-        }),
-    ).exactOptional(),
-    MaximumRecordAgeInSeconds: MaximumRecordAgeInSecondsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '(Kinesis and DynamoDB Streams only) Discard records older than the specified age. The default value is infinite (-1).',
-        }),
-    ).exactOptional(),
-    BisectBatchOnFunctionError: BisectBatchOnFunctionErrorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '(Kinesis and DynamoDB Streams only) If the function returns an error, split the batch in two and retry.',
-        }),
-    ).exactOptional(),
-    MaximumRetryAttempts: MaximumRetryAttemptsEventSourceMappingSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '(Kinesis and DynamoDB Streams only) Discard records after the specified number of retries. The default value is infinite (-1). When set to infinite (-1), failed records are retried until the record expires.',
-        }),
-    ).exactOptional(),
-    TumblingWindowInSeconds: TumblingWindowInSecondsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '(Kinesis and DynamoDB Streams only) The duration in seconds of a processing window for DynamoDB and Kinesis Streams event sources. A value of 0 seconds indicates no tumbling window.',
-        }),
-    ).exactOptional(),
-    Topics: TopicsSchema.and(
-      z.any().openapi({ description: 'The name of the Kafka topic.' }),
-    ).exactOptional(),
-    Queues: QueuesSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' (MQ) The name of the Amazon MQ broker destination queue to consume. ',
-        }),
-    ).exactOptional(),
-    SourceAccessConfigurations: SourceAccessConfigurationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of authentication protocols or VPC components required to secure your event source.',
-        }),
-    ).exactOptional(),
-    SelfManagedEventSource: SelfManagedEventSourceSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The self-managed Apache Kafka cluster to receive records from.' }),
-    ).exactOptional(),
-    FunctionResponseTypes: FunctionResponseTypeListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '(Kinesis, DynamoDB Streams, and Amazon SQS) A list of current response type enums applied to the event source mapping.',
-        }),
-    ).exactOptional(),
-    AmazonManagedKafkaEventSourceConfig: AmazonManagedKafkaEventSourceConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specific configuration settings for an Amazon Managed Streaming for Apache Kafka (Amazon MSK) event source.',
-        }),
-    ).exactOptional(),
-    SelfManagedKafkaEventSourceConfig: SelfManagedKafkaEventSourceConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specific configuration settings for a self-managed Apache Kafka event source.',
-        }),
-    ).exactOptional(),
-    ScalingConfig: ScalingConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '(Amazon SQS only) The scaling configuration for the event source. For more information, see <a href="https://docs.aws.amazon.com/lambda/latest/dg/with-sqs.html#events-sqs-max-concurrency">Configuring maximum concurrency for Amazon SQS event sources</a>.',
-        }),
-    ).exactOptional(),
-    DocumentDBEventSourceConfig: DocumentDBEventSourceConfigSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Specific configuration settings for a DocumentDB event source.' }),
-    ).exactOptional(),
+    EventSourceArn: ArnSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the event source.</p> <ul> <li> <p> <b>Amazon Kinesis</b> – The ARN of the data stream or a stream consumer.</p> </li> <li> <p> <b>Amazon DynamoDB Streams</b> – The ARN of the stream.</p> </li> <li> <p> <b>Amazon Simple Queue Service</b> – The ARN of the queue.</p> </li> <li> <p> <b>Amazon Managed Streaming for Apache Kafka</b> – The ARN of the cluster.</p> </li> <li> <p> <b>Amazon MQ</b> – The ARN of the broker.</p> </li> <li> <p> <b>Amazon DocumentDB</b> – The ARN of the DocumentDB change stream.</p> </li> </ul>',
+    }),
+    FunctionName: FunctionNameSchema.openapi({
+      description:
+        '<p>The name of the Lambda function.</p> <p class="title"> <b>Name formats</b> </p> <ul> <li> <p> <b>Function name</b> – <code>MyFunction</code>.</p> </li> <li> <p> <b>Function ARN</b> – <code>arn:aws:lambda:us-west-2:123456789012:function:MyFunction</code>.</p> </li> <li> <p> <b>Version or Alias ARN</b> – <code>arn:aws:lambda:us-west-2:123456789012:function:MyFunction:PROD</code>.</p> </li> <li> <p> <b>Partial ARN</b> – <code>123456789012:function:MyFunction</code>.</p> </li> </ul> <p>The length constraint applies only to the full ARN. If you specify only the function name, it\'s limited to 64 characters in length.</p>',
+    }),
+    Enabled: EnabledSchema.exactOptional().openapi({
+      description:
+        '<p>When true, the event source mapping is active. When false, Lambda pauses polling and invocation.</p> <p>Default: True</p>',
+    }),
+    BatchSize: BatchSizeSchema.exactOptional().openapi({
+      description:
+        '<p>The maximum number of records in each batch that Lambda pulls from your stream or queue and sends to your function. Lambda passes all of the records in the batch to the function in a single call, up to the payload limit for synchronous invocation (6 MB).</p> <ul> <li> <p> <b>Amazon Kinesis</b> – Default 100. Max 10,000.</p> </li> <li> <p> <b>Amazon DynamoDB Streams</b> – Default 100. Max 10,000.</p> </li> <li> <p> <b>Amazon Simple Queue Service</b> – Default 10. For standard queues the max is 10,000. For FIFO queues the max is 10.</p> </li> <li> <p> <b>Amazon Managed Streaming for Apache Kafka</b> – Default 100. Max 10,000.</p> </li> <li> <p> <b>Self-managed Apache Kafka</b> – Default 100. Max 10,000.</p> </li> <li> <p> <b>Amazon MQ (ActiveMQ and RabbitMQ)</b> – Default 100. Max 10,000.</p> </li> <li> <p> <b>DocumentDB</b> – Default 100. Max 10,000.</p> </li> </ul>',
+    }),
+    FilterCriteria: FilterCriteriaSchema.exactOptional().openapi({
+      description:
+        'An object that defines the filter criteria that determine whether Lambda should process an event. For more information, see <a href="https://docs.aws.amazon.com/lambda/latest/dg/invocation-eventfiltering.html">Lambda event filtering</a>.',
+    }),
+    MaximumBatchingWindowInSeconds: MaximumBatchingWindowInSecondsSchema.exactOptional().openapi({
+      description:
+        '<p>The maximum amount of time, in seconds, that Lambda spends gathering records before invoking the function. You can configure <code>MaximumBatchingWindowInSeconds</code> to any value from 0 seconds to 300 seconds in increments of seconds.</p> <p>For streams and Amazon SQS event sources, the default batching window is 0 seconds. For Amazon MSK, Self-managed Apache Kafka, Amazon MQ, and DocumentDB event sources, the default batching window is 500 ms. Note that because you can only change <code>MaximumBatchingWindowInSeconds</code> in increments of seconds, you cannot revert back to the 500 ms default batching window after you have changed it. To restore the default batching window, you must create a new event source mapping.</p> <p>Related setting: For streams and Amazon SQS event sources, when you set <code>BatchSize</code> to a value greater than 10, you must set <code>MaximumBatchingWindowInSeconds</code> to at least 1.</p>',
+    }),
+    ParallelizationFactor: ParallelizationFactorSchema.exactOptional().openapi({
+      description:
+        '(Kinesis and DynamoDB Streams only) The number of batches to process from each shard concurrently.',
+    }),
+    StartingPosition: EventSourcePositionSchema.exactOptional().openapi({
+      description:
+        'The position in a stream from which to start reading. Required for Amazon Kinesis and Amazon DynamoDB Stream event sources. <code>AT_TIMESTAMP</code> is supported only for Amazon Kinesis streams, Amazon DocumentDB, Amazon MSK, and self-managed Apache Kafka.',
+    }),
+    StartingPositionTimestamp: DateSchema.exactOptional().openapi({
+      description:
+        'With <code>StartingPosition</code> set to <code>AT_TIMESTAMP</code>, the time from which to start reading. <code>StartingPositionTimestamp</code> cannot be in the future.',
+    }),
+    DestinationConfig: DestinationConfigSchema.exactOptional().openapi({
+      description:
+        '(Kinesis and DynamoDB Streams only) A standard Amazon SQS queue or standard Amazon SNS topic destination for discarded records.',
+    }),
+    MaximumRecordAgeInSeconds: MaximumRecordAgeInSecondsSchema.exactOptional().openapi({
+      description:
+        '(Kinesis and DynamoDB Streams only) Discard records older than the specified age. The default value is infinite (-1).',
+    }),
+    BisectBatchOnFunctionError: BisectBatchOnFunctionErrorSchema.exactOptional().openapi({
+      description:
+        '(Kinesis and DynamoDB Streams only) If the function returns an error, split the batch in two and retry.',
+    }),
+    MaximumRetryAttempts: MaximumRetryAttemptsEventSourceMappingSchema.exactOptional().openapi({
+      description:
+        '(Kinesis and DynamoDB Streams only) Discard records after the specified number of retries. The default value is infinite (-1). When set to infinite (-1), failed records are retried until the record expires.',
+    }),
+    TumblingWindowInSeconds: TumblingWindowInSecondsSchema.exactOptional().openapi({
+      description:
+        '(Kinesis and DynamoDB Streams only) The duration in seconds of a processing window for DynamoDB and Kinesis Streams event sources. A value of 0 seconds indicates no tumbling window.',
+    }),
+    Topics: TopicsSchema.exactOptional().openapi({ description: 'The name of the Kafka topic.' }),
+    Queues: QueuesSchema.exactOptional().openapi({
+      description: ' (MQ) The name of the Amazon MQ broker destination queue to consume. ',
+    }),
+    SourceAccessConfigurations: SourceAccessConfigurationsSchema.exactOptional().openapi({
+      description:
+        'An array of authentication protocols or VPC components required to secure your event source.',
+    }),
+    SelfManagedEventSource: SelfManagedEventSourceSchema.exactOptional().openapi({
+      description: 'The self-managed Apache Kafka cluster to receive records from.',
+    }),
+    FunctionResponseTypes: FunctionResponseTypeListSchema.exactOptional().openapi({
+      description:
+        '(Kinesis, DynamoDB Streams, and Amazon SQS) A list of current response type enums applied to the event source mapping.',
+    }),
+    AmazonManagedKafkaEventSourceConfig:
+      AmazonManagedKafkaEventSourceConfigSchema.exactOptional().openapi({
+        description:
+          'Specific configuration settings for an Amazon Managed Streaming for Apache Kafka (Amazon MSK) event source.',
+      }),
+    SelfManagedKafkaEventSourceConfig:
+      SelfManagedKafkaEventSourceConfigSchema.exactOptional().openapi({
+        description:
+          'Specific configuration settings for a self-managed Apache Kafka event source.',
+      }),
+    ScalingConfig: ScalingConfigSchema.exactOptional().openapi({
+      description:
+        '(Amazon SQS only) The scaling configuration for the event source. For more information, see <a href="https://docs.aws.amazon.com/lambda/latest/dg/with-sqs.html#events-sqs-max-concurrency">Configuring maximum concurrency for Amazon SQS event sources</a>.',
+    }),
+    DocumentDBEventSourceConfig: DocumentDBEventSourceConfigSchema.exactOptional().openapi({
+      description: 'Specific configuration settings for a DocumentDB event source.',
+    }),
   })
   .openapi({ required: ['FunctionName'], title: 'CreateEventSourceMappingRequest' })
   .openapi('CreateEventSourceMappingRequest')
 
 const FunctionCodeSchema = z
   .object({
-    ZipFile: BlobSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The base64-encoded contents of the deployment package. Amazon Web Services SDK and CLI clients handle the encoding for you.',
-        }),
-    ).exactOptional(),
-    S3Bucket: S3BucketSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An Amazon S3 bucket in the same Amazon Web Services Region as your function. The bucket can be in a different Amazon Web Services account.',
-        }),
-    ).exactOptional(),
-    S3Key: S3KeySchema.and(
-      z.any().openapi({ description: 'The Amazon S3 key of the deployment package.' }),
-    ).exactOptional(),
-    S3ObjectVersion: S3ObjectVersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'For versioned objects, the version of the deployment package object to use.',
-        }),
-    ).exactOptional(),
-    ImageUri: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'URI of a <a href="https://docs.aws.amazon.com/lambda/latest/dg/lambda-images.html">container image</a> in the Amazon ECR registry.',
-        }),
-    ).exactOptional(),
+    ZipFile: BlobSchema.exactOptional().openapi({
+      description:
+        'The base64-encoded contents of the deployment package. Amazon Web Services SDK and CLI clients handle the encoding for you.',
+    }),
+    S3Bucket: S3BucketSchema.exactOptional().openapi({
+      description:
+        'An Amazon S3 bucket in the same Amazon Web Services Region as your function. The bucket can be in a different Amazon Web Services account.',
+    }),
+    S3Key: S3KeySchema.exactOptional().openapi({
+      description: 'The Amazon S3 key of the deployment package.',
+    }),
+    S3ObjectVersion: S3ObjectVersionSchema.exactOptional().openapi({
+      description: 'For versioned objects, the version of the deployment package object to use.',
+    }),
+    ImageUri: StringSchema.exactOptional().openapi({
+      description:
+        'URI of a <a href="https://docs.aws.amazon.com/lambda/latest/dg/lambda-images.html">container image</a> in the Amazon ECR registry.',
+    }),
   })
   .openapi({
     description:
@@ -3288,12 +2484,12 @@ const FunctionCodeSchema = z
 
 const VpcConfigSchema = z
   .object({
-    SubnetIds: SubnetIdsSchema.and(
-      z.any().openapi({ description: 'A list of VPC subnet IDs.' }),
-    ).exactOptional(),
-    SecurityGroupIds: SecurityGroupIdsSchema.and(
-      z.any().openapi({ description: 'A list of VPC security group IDs.' }),
-    ).exactOptional(),
+    SubnetIds: SubnetIdsSchema.exactOptional().openapi({
+      description: 'A list of VPC subnet IDs.',
+    }),
+    SecurityGroupIds: SecurityGroupIdsSchema.exactOptional().openapi({
+      description: 'A list of VPC security group IDs.',
+    }),
   })
   .openapi({
     description:
@@ -3304,14 +2500,10 @@ const VpcConfigSchema = z
 
 const EnvironmentSchema = z
   .object({
-    Variables: EnvironmentVariablesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Environment variable key-value pairs. For more information, see <a href="https://docs.aws.amazon.com/lambda/latest/dg/configuration-envvars.html">Using Lambda environment variables</a>.',
-        }),
-    ).exactOptional(),
+    Variables: EnvironmentVariablesSchema.exactOptional().openapi({
+      description:
+        'Environment variable key-value pairs. For more information, see <a href="https://docs.aws.amazon.com/lambda/latest/dg/configuration-envvars.html">Using Lambda environment variables</a>.',
+    }),
   })
   .openapi({
     description:
@@ -3321,11 +2513,7 @@ const EnvironmentSchema = z
   .openapi('Environment')
 
 const TracingConfigSchema = z
-  .object({
-    Mode: TracingModeSchema.and(
-      z.any().openapi({ description: 'The tracing mode.' }),
-    ).exactOptional(),
-  })
+  .object({ Mode: TracingModeSchema.exactOptional().openapi({ description: 'The tracing mode.' }) })
   .openapi({
     description:
       'The function\'s <a href="https://docs.aws.amazon.com/lambda/latest/dg/services-xray.html">X-Ray</a> tracing configuration. To sample and record incoming requests, set <code>Mode</code> to <code>Active</code>.',
@@ -3337,14 +2525,10 @@ const LayerListSchema = z.array(LayerVersionArnSchema).openapi('LayerList')
 
 const SnapStartSchema = z
   .object({
-    ApplyOn: SnapStartApplyOnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Set to <code>PublishedVersions</code> to create a snapshot of the initialized execution environment when you publish a function version.',
-        }),
-    ).exactOptional(),
+    ApplyOn: SnapStartApplyOnSchema.exactOptional().openapi({
+      description:
+        'Set to <code>PublishedVersions</code> to create a snapshot of the initialized execution environment when you publish a function version.',
+    }),
   })
   .openapi({
     description:
@@ -3355,171 +2539,90 @@ const SnapStartSchema = z
 
 const CreateFunctionRequestSchema = z
   .object({
-    FunctionName: FunctionNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the Lambda function.</p> <p class="title"> <b>Name formats</b> </p> <ul> <li> <p> <b>Function name</b> – <code>my-function</code>.</p> </li> <li> <p> <b>Function ARN</b> – <code>arn:aws:lambda:us-west-2:123456789012:function:my-function</code>.</p> </li> <li> <p> <b>Partial ARN</b> – <code>123456789012:function:my-function</code>.</p> </li> </ul> <p>The length constraint applies only to the full ARN. If you specify only the function name, it is limited to 64 characters in length.</p>',
-        }),
-    ),
-    Runtime: RuntimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The identifier of the function\'s <a href="https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html">runtime</a>. Runtime is required if the deployment package is a .zip file archive.</p> <p>The following list includes deprecated runtimes. For more information, see <a href="https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html#runtime-support-policy">Runtime deprecation policy</a>.</p>',
-        }),
-    ).exactOptional(),
-    Role: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The Amazon Resource Name (ARN) of the function's execution role.",
-        }),
-    ),
-    Handler: HandlerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the method within your code that Lambda calls to run your function. Handler is required if the deployment package is a .zip file archive. The format includes the file name. It can also include namespaces and other qualifiers, depending on the runtime. For more information, see <a href="https://docs.aws.amazon.com/lambda/latest/dg/foundation-progmodel.html">Lambda programming model</a>.',
-        }),
-    ).exactOptional(),
-    Code: FunctionCodeSchema.and(z.any().openapi({ description: 'The code for the function.' })),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'A description of the function.' }),
-    ).exactOptional(),
-    Timeout: TimeoutSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The amount of time (in seconds) that Lambda allows a function to run before stopping it. The default is 3 seconds. The maximum allowed value is 900 seconds. For more information, see <a href="https://docs.aws.amazon.com/lambda/latest/dg/runtimes-context.html">Lambda execution environment</a>.',
-        }),
-    ).exactOptional(),
-    MemorySize: MemorySizeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The amount of <a href="https://docs.aws.amazon.com/lambda/latest/dg/configuration-function-common.html#configuration-memory-console">memory available to the function</a> at runtime. Increasing the function memory also increases its CPU allocation. The default value is 128 MB. The value can be any multiple of 1 MB.',
-        }),
-    ).exactOptional(),
-    Publish: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Set to true to publish the first version of the function during creation.',
-        }),
-    ).exactOptional(),
-    VpcConfig: VpcConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'For network connectivity to Amazon Web Services resources in a VPC, specify a list of security groups and subnets in the VPC. When you connect a function to a VPC, it can access resources and the internet only through that VPC. For more information, see <a href="https://docs.aws.amazon.com/lambda/latest/dg/configuration-vpc.html">Configuring a Lambda function to access resources in a VPC</a>.',
-        }),
-    ).exactOptional(),
-    PackageType: PackageTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of deployment package. Set to <code>Image</code> for container image and set to <code>Zip</code> for .zip file archive.',
-        }),
-    ).exactOptional(),
-    DeadLetterConfig: DeadLetterConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A dead-letter queue configuration that specifies the queue or topic where Lambda sends asynchronous events when they fail processing. For more information, see <a href="https://docs.aws.amazon.com/lambda/latest/dg/invocation-async.html#invocation-dlq">Dead-letter queues</a>.',
-        }),
-    ).exactOptional(),
-    Environment: EnvironmentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Environment variables that are accessible from function code during execution.',
-        }),
-    ).exactOptional(),
-    KMSKeyArn: KMSKeyArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The ARN of the Key Management Service (KMS) customer managed key that's used to encrypt your function's <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/configuration-envvars.html#configuration-envvars-encryption\">environment variables</a>. When <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/snapstart-security.html\">Lambda SnapStart</a> is activated, Lambda also uses this key is to encrypt your function's snapshot. If you deploy your function using a container image, Lambda also uses this key to encrypt your function when it's deployed. Note that this is not the same key that's used to protect your container image in the Amazon Elastic Container Registry (Amazon ECR). If you don't provide a customer managed key, Lambda uses a default service key.",
-        }),
-    ).exactOptional(),
-    TracingConfig: TracingConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Set <code>Mode</code> to <code>Active</code> to sample and trace a subset of incoming requests with <a href="https://docs.aws.amazon.com/lambda/latest/dg/services-xray.html">X-Ray</a>.',
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of <a href="https://docs.aws.amazon.com/lambda/latest/dg/tagging.html">tags</a> to apply to the function.',
-        }),
-    ).exactOptional(),
-    Layers: LayerListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of <a href="https://docs.aws.amazon.com/lambda/latest/dg/configuration-layers.html">function layers</a> to add to the function\'s execution environment. Specify each layer by its ARN, including the version.',
-        }),
-    ).exactOptional(),
-    FileSystemConfigs: FileSystemConfigListSchema.and(
-      z.any().openapi({ description: 'Connection settings for an Amazon EFS file system.' }),
-    ).exactOptional(),
-    ImageConfig: ImageConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Container image <a href="https://docs.aws.amazon.com/lambda/latest/dg/configuration-images.html#configuration-images-settings">configuration values</a> that override the values in the container image Dockerfile.',
-        }),
-    ).exactOptional(),
-    CodeSigningConfigArn: CodeSigningConfigArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'To enable code signing for this function, specify the ARN of a code-signing configuration. A code-signing configuration includes a set of signing profiles, which define the trusted publishers for this function.',
-        }),
-    ).exactOptional(),
-    Architectures: ArchitecturesListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The instruction set architecture that the function supports. Enter a string array with one of the valid values (arm64 or x86_64). The default value is <code>x86_64</code>.',
-        }),
-    ).exactOptional(),
-    EphemeralStorage: EphemeralStorageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The size of the function's <code>/tmp</code> directory in MB. The default value is 512, but can be any whole number between 512 and 10,240 MB.",
-        }),
-    ).exactOptional(),
-    SnapStart: SnapStartSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The function\'s <a href="https://docs.aws.amazon.com/lambda/latest/dg/snapstart.html">SnapStart</a> setting.',
-        }),
-    ).exactOptional(),
+    FunctionName: FunctionNameSchema.openapi({
+      description:
+        '<p>The name of the Lambda function.</p> <p class="title"> <b>Name formats</b> </p> <ul> <li> <p> <b>Function name</b> – <code>my-function</code>.</p> </li> <li> <p> <b>Function ARN</b> – <code>arn:aws:lambda:us-west-2:123456789012:function:my-function</code>.</p> </li> <li> <p> <b>Partial ARN</b> – <code>123456789012:function:my-function</code>.</p> </li> </ul> <p>The length constraint applies only to the full ARN. If you specify only the function name, it is limited to 64 characters in length.</p>',
+    }),
+    Runtime: RuntimeSchema.exactOptional().openapi({
+      description:
+        '<p>The identifier of the function\'s <a href="https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html">runtime</a>. Runtime is required if the deployment package is a .zip file archive.</p> <p>The following list includes deprecated runtimes. For more information, see <a href="https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html#runtime-support-policy">Runtime deprecation policy</a>.</p>',
+    }),
+    Role: RoleArnSchema.openapi({
+      description: "The Amazon Resource Name (ARN) of the function's execution role.",
+    }),
+    Handler: HandlerSchema.exactOptional().openapi({
+      description:
+        'The name of the method within your code that Lambda calls to run your function. Handler is required if the deployment package is a .zip file archive. The format includes the file name. It can also include namespaces and other qualifiers, depending on the runtime. For more information, see <a href="https://docs.aws.amazon.com/lambda/latest/dg/foundation-progmodel.html">Lambda programming model</a>.',
+    }),
+    Code: FunctionCodeSchema.openapi({ description: 'The code for the function.' }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'A description of the function.',
+    }),
+    Timeout: TimeoutSchema.exactOptional().openapi({
+      description:
+        'The amount of time (in seconds) that Lambda allows a function to run before stopping it. The default is 3 seconds. The maximum allowed value is 900 seconds. For more information, see <a href="https://docs.aws.amazon.com/lambda/latest/dg/runtimes-context.html">Lambda execution environment</a>.',
+    }),
+    MemorySize: MemorySizeSchema.exactOptional().openapi({
+      description:
+        'The amount of <a href="https://docs.aws.amazon.com/lambda/latest/dg/configuration-function-common.html#configuration-memory-console">memory available to the function</a> at runtime. Increasing the function memory also increases its CPU allocation. The default value is 128 MB. The value can be any multiple of 1 MB.',
+    }),
+    Publish: BooleanSchema.exactOptional().openapi({
+      description: 'Set to true to publish the first version of the function during creation.',
+    }),
+    VpcConfig: VpcConfigSchema.exactOptional().openapi({
+      description:
+        'For network connectivity to Amazon Web Services resources in a VPC, specify a list of security groups and subnets in the VPC. When you connect a function to a VPC, it can access resources and the internet only through that VPC. For more information, see <a href="https://docs.aws.amazon.com/lambda/latest/dg/configuration-vpc.html">Configuring a Lambda function to access resources in a VPC</a>.',
+    }),
+    PackageType: PackageTypeSchema.exactOptional().openapi({
+      description:
+        'The type of deployment package. Set to <code>Image</code> for container image and set to <code>Zip</code> for .zip file archive.',
+    }),
+    DeadLetterConfig: DeadLetterConfigSchema.exactOptional().openapi({
+      description:
+        'A dead-letter queue configuration that specifies the queue or topic where Lambda sends asynchronous events when they fail processing. For more information, see <a href="https://docs.aws.amazon.com/lambda/latest/dg/invocation-async.html#invocation-dlq">Dead-letter queues</a>.',
+    }),
+    Environment: EnvironmentSchema.exactOptional().openapi({
+      description: 'Environment variables that are accessible from function code during execution.',
+    }),
+    KMSKeyArn: KMSKeyArnSchema.exactOptional().openapi({
+      description:
+        "The ARN of the Key Management Service (KMS) customer managed key that's used to encrypt your function's <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/configuration-envvars.html#configuration-envvars-encryption\">environment variables</a>. When <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/snapstart-security.html\">Lambda SnapStart</a> is activated, Lambda also uses this key is to encrypt your function's snapshot. If you deploy your function using a container image, Lambda also uses this key to encrypt your function when it's deployed. Note that this is not the same key that's used to protect your container image in the Amazon Elastic Container Registry (Amazon ECR). If you don't provide a customer managed key, Lambda uses a default service key.",
+    }),
+    TracingConfig: TracingConfigSchema.exactOptional().openapi({
+      description:
+        'Set <code>Mode</code> to <code>Active</code> to sample and trace a subset of incoming requests with <a href="https://docs.aws.amazon.com/lambda/latest/dg/services-xray.html">X-Ray</a>.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      description:
+        'A list of <a href="https://docs.aws.amazon.com/lambda/latest/dg/tagging.html">tags</a> to apply to the function.',
+    }),
+    Layers: LayerListSchema.exactOptional().openapi({
+      description:
+        'A list of <a href="https://docs.aws.amazon.com/lambda/latest/dg/configuration-layers.html">function layers</a> to add to the function\'s execution environment. Specify each layer by its ARN, including the version.',
+    }),
+    FileSystemConfigs: FileSystemConfigListSchema.exactOptional().openapi({
+      description: 'Connection settings for an Amazon EFS file system.',
+    }),
+    ImageConfig: ImageConfigSchema.exactOptional().openapi({
+      description:
+        'Container image <a href="https://docs.aws.amazon.com/lambda/latest/dg/configuration-images.html#configuration-images-settings">configuration values</a> that override the values in the container image Dockerfile.',
+    }),
+    CodeSigningConfigArn: CodeSigningConfigArnSchema.exactOptional().openapi({
+      description:
+        'To enable code signing for this function, specify the ARN of a code-signing configuration. A code-signing configuration includes a set of signing profiles, which define the trusted publishers for this function.',
+    }),
+    Architectures: ArchitecturesListSchema.exactOptional().openapi({
+      description:
+        'The instruction set architecture that the function supports. Enter a string array with one of the valid values (arm64 or x86_64). The default value is <code>x86_64</code>.',
+    }),
+    EphemeralStorage: EphemeralStorageSchema.exactOptional().openapi({
+      description:
+        "The size of the function's <code>/tmp</code> directory in MB. The default value is 512, but can be any whole number between 512 and 10,240 MB.",
+    }),
+    SnapStart: SnapStartSchema.exactOptional().openapi({
+      description:
+        'The function\'s <a href="https://docs.aws.amazon.com/lambda/latest/dg/snapstart.html">SnapStart</a> setting.',
+    }),
   })
   .openapi({ required: ['FunctionName', 'Role', 'Code'], title: 'CreateFunctionRequest' })
   .openapi('CreateFunctionRequest')
@@ -3533,81 +2636,69 @@ const FunctionUrlQualifierSchema = z
 
 const CreateFunctionUrlConfigRequestSchema = z
   .object({
-    AuthType: FunctionUrlAuthTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of authentication that your function URL uses. Set to <code>AWS_IAM</code> if you want to restrict access to authenticated users only. Set to <code>NONE</code> if you want to bypass IAM authentication to create a public endpoint. For more information, see <a href="https://docs.aws.amazon.com/lambda/latest/dg/urls-auth.html">Security and auth model for Lambda function URLs</a>.',
-        }),
-    ),
-    Cors: CorsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS">cross-origin resource sharing (CORS)</a> settings for your function URL.',
-        }),
-    ).exactOptional(),
-    InvokeMode: InvokeModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Use one of the following options:</p> <ul> <li> <p> <code>BUFFERED</code> – This is the default option. Lambda invokes your function using the <code>Invoke</code> API operation. Invocation results are available when the payload is complete. The maximum payload size is 6 MB.</p> </li> <li> <p> <code>RESPONSE_STREAM</code> – Your function streams payload results as they become available. Lambda invokes your function using the <code>InvokeWithResponseStream</code> API operation. The maximum response payload size is 20 MB, however, you can <a href="https://docs.aws.amazon.com/servicequotas/latest/userguide/request-quota-increase.html">request a quota increase</a>.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    AuthType: FunctionUrlAuthTypeSchema.openapi({
+      description:
+        'The type of authentication that your function URL uses. Set to <code>AWS_IAM</code> if you want to restrict access to authenticated users only. Set to <code>NONE</code> if you want to bypass IAM authentication to create a public endpoint. For more information, see <a href="https://docs.aws.amazon.com/lambda/latest/dg/urls-auth.html">Security and auth model for Lambda function URLs</a>.',
+    }),
+    Cors: CorsSchema.exactOptional().openapi({
+      description:
+        'The <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS">cross-origin resource sharing (CORS)</a> settings for your function URL.',
+    }),
+    InvokeMode: InvokeModeSchema.exactOptional().openapi({
+      description:
+        '<p>Use one of the following options:</p> <ul> <li> <p> <code>BUFFERED</code> – This is the default option. Lambda invokes your function using the <code>Invoke</code> API operation. Invocation results are available when the payload is complete. The maximum payload size is 6 MB.</p> </li> <li> <p> <code>RESPONSE_STREAM</code> – Your function streams payload results as they become available. Lambda invokes your function using the <code>InvokeWithResponseStream</code> API operation. The maximum response payload size is 20 MB, however, you can <a href="https://docs.aws.amazon.com/servicequotas/latest/userguide/request-quota-increase.html">request a quota increase</a>.</p> </li> </ul>',
+    }),
   })
   .openapi({ required: ['AuthType'], title: 'CreateFunctionUrlConfigRequest' })
   .openapi('CreateFunctionUrlConfigRequest')
 
 const DeleteAliasRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteAliasRequest' })
   .openapi('DeleteAliasRequest')
 
 const DeleteCodeSigningConfigRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteCodeSigningConfigRequest' })
   .openapi('DeleteCodeSigningConfigRequest')
 
 const DeleteEventSourceMappingRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteEventSourceMappingRequest' })
   .openapi('DeleteEventSourceMappingRequest')
 
 const DeleteFunctionCodeSigningConfigRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteFunctionCodeSigningConfigRequest' })
   .openapi('DeleteFunctionCodeSigningConfigRequest')
 
 const DeleteFunctionConcurrencyRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteFunctionConcurrencyRequest' })
   .openapi('DeleteFunctionConcurrencyRequest')
 
 const DeleteFunctionEventInvokeConfigRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteFunctionEventInvokeConfigRequest' })
   .openapi('DeleteFunctionEventInvokeConfigRequest')
 
 const DeleteFunctionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteFunctionRequest' })
   .openapi('DeleteFunctionRequest')
 
 const DeleteFunctionUrlConfigRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteFunctionUrlConfigRequest' })
   .openapi('DeleteFunctionUrlConfigRequest')
 
 const DeleteLayerVersionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteLayerVersionRequest' })
   .openapi('DeleteLayerVersionRequest')
 
 const DeleteProvisionedConcurrencyConfigRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteProvisionedConcurrencyConfigRequest' })
   .openapi('DeleteProvisionedConcurrencyConfigRequest')
 
@@ -3621,82 +2712,82 @@ const EnvironmentVariableNameSchema = z
 const FunctionVersionSchema = z.literal('ALL').openapi('FunctionVersion')
 
 const GetAccountSettingsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetAccountSettingsRequest' })
   .openapi('GetAccountSettingsRequest')
 
 const GetAliasRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetAliasRequest' })
   .openapi('GetAliasRequest')
 
 const GetCodeSigningConfigRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetCodeSigningConfigRequest' })
   .openapi('GetCodeSigningConfigRequest')
 
 const GetEventSourceMappingRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetEventSourceMappingRequest' })
   .openapi('GetEventSourceMappingRequest')
 
 const GetFunctionCodeSigningConfigRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetFunctionCodeSigningConfigRequest' })
   .openapi('GetFunctionCodeSigningConfigRequest')
 
 const GetFunctionConcurrencyRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetFunctionConcurrencyRequest' })
   .openapi('GetFunctionConcurrencyRequest')
 
 const GetFunctionConfigurationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetFunctionConfigurationRequest' })
   .openapi('GetFunctionConfigurationRequest')
 
 const GetFunctionEventInvokeConfigRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetFunctionEventInvokeConfigRequest' })
   .openapi('GetFunctionEventInvokeConfigRequest')
 
 const GetFunctionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetFunctionRequest' })
   .openapi('GetFunctionRequest')
 
 const GetFunctionUrlConfigRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetFunctionUrlConfigRequest' })
   .openapi('GetFunctionUrlConfigRequest')
 
 const GetLayerVersionByArnRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetLayerVersionByArnRequest' })
   .openapi('GetLayerVersionByArnRequest')
 
 const GetLayerVersionPolicyRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetLayerVersionPolicyRequest' })
   .openapi('GetLayerVersionPolicyRequest')
 
 const GetLayerVersionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetLayerVersionRequest' })
   .openapi('GetLayerVersionRequest')
 
 const GetPolicyRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetPolicyRequest' })
   .openapi('GetPolicyRequest')
 
 const GetProvisionedConcurrencyConfigRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetProvisionedConcurrencyConfigRequest' })
   .openapi('GetProvisionedConcurrencyConfigRequest')
 
 const GetRuntimeManagementConfigRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetRuntimeManagementConfigRequest' })
   .openapi('GetRuntimeManagementConfigRequest')
 
@@ -3708,27 +2799,19 @@ const LogTypeSchema = z.enum(['None', 'Tail']).openapi('LogType')
 
 const InvocationRequestSchema = z
   .object({
-    Payload: BlobSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The JSON that you want to provide to your Lambda function as input.</p> <p>You can enter the JSON directly. For example, <code>--payload \'{ "key": "value" }\'</code>. You can also specify a file path. For example, <code>--payload file://payload.json</code>.</p>',
-        }),
-    ).exactOptional(),
+    Payload: BlobSchema.exactOptional().openapi({
+      description:
+        '<p>The JSON that you want to provide to your Lambda function as input.</p> <p>You can enter the JSON directly. For example, <code>--payload \'{ "key": "value" }\'</code>. You can also specify a file path. For example, <code>--payload file://payload.json</code>.</p>',
+    }),
   })
   .openapi({ title: 'InvocationRequest', required: [] })
   .openapi('InvocationRequest')
 
 const InvokeAsyncRequestSchema = z
   .object({
-    InvokeArgs: BlobStreamSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The JSON that you want to provide to your Lambda function as input.',
-        }),
-    ),
+    InvokeArgs: BlobStreamSchema.openapi({
+      description: 'The JSON that you want to provide to your Lambda function as input.',
+    }),
   })
   .openapi({ required: ['InvokeArgs'], deprecated: true, title: 'InvokeAsyncRequest' })
   .openapi('InvokeAsyncRequest')
@@ -3739,41 +2822,29 @@ const ResponseStreamingInvocationTypeSchema = z
 
 const InvokeWithResponseStreamRequestSchema = z
   .object({
-    Payload: BlobSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The JSON that you want to provide to your Lambda function as input.</p> <p>You can enter the JSON directly. For example, <code>--payload \'{ "key": "value" }\'</code>. You can also specify a file path. For example, <code>--payload file://payload.json</code>.</p>',
-        }),
-    ).exactOptional(),
+    Payload: BlobSchema.exactOptional().openapi({
+      description:
+        '<p>The JSON that you want to provide to your Lambda function as input.</p> <p>You can enter the JSON directly. For example, <code>--payload \'{ "key": "value" }\'</code>. You can also specify a file path. For example, <code>--payload file://payload.json</code>.</p>',
+    }),
   })
   .openapi({ title: 'InvokeWithResponseStreamRequest', required: [] })
   .openapi('InvokeWithResponseStreamRequest')
 
 const LayerVersionContentInputSchema = z
   .object({
-    S3Bucket: S3BucketSchema.and(
-      z.any().openapi({ description: 'The Amazon S3 bucket of the layer archive.' }),
-    ).exactOptional(),
-    S3Key: S3KeySchema.and(
-      z.any().openapi({ description: 'The Amazon S3 key of the layer archive.' }),
-    ).exactOptional(),
-    S3ObjectVersion: S3ObjectVersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'For versioned objects, the version of the layer archive object to use.',
-        }),
-    ).exactOptional(),
-    ZipFile: BlobSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The base64-encoded contents of the layer archive. Amazon Web Services SDK and Amazon Web Services CLI clients handle the encoding for you.',
-        }),
-    ).exactOptional(),
+    S3Bucket: S3BucketSchema.exactOptional().openapi({
+      description: 'The Amazon S3 bucket of the layer archive.',
+    }),
+    S3Key: S3KeySchema.exactOptional().openapi({
+      description: 'The Amazon S3 key of the layer archive.',
+    }),
+    S3ObjectVersion: S3ObjectVersionSchema.exactOptional().openapi({
+      description: 'For versioned objects, the version of the layer archive object to use.',
+    }),
+    ZipFile: BlobSchema.exactOptional().openapi({
+      description:
+        'The base64-encoded contents of the layer archive. Amazon Web Services SDK and Amazon Web Services CLI clients handle the encoding for you.',
+    }),
   })
   .openapi({
     description:
@@ -3785,17 +2856,17 @@ const LayerVersionContentInputSchema = z
 const MaxListItemsSchema = z.int().min(1).max(10000).openapi('MaxListItems')
 
 const ListAliasesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListAliasesRequest' })
   .openapi('ListAliasesRequest')
 
 const ListCodeSigningConfigsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListCodeSigningConfigsRequest' })
   .openapi('ListCodeSigningConfigsRequest')
 
 const ListEventSourceMappingsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListEventSourceMappingsRequest' })
   .openapi('ListEventSourceMappingsRequest')
 
@@ -3806,19 +2877,19 @@ const MaxFunctionEventInvokeConfigListItemsSchema = z
   .openapi('MaxFunctionEventInvokeConfigListItems')
 
 const ListFunctionEventInvokeConfigsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListFunctionEventInvokeConfigsRequest' })
   .openapi('ListFunctionEventInvokeConfigsRequest')
 
 const MaxItemsSchema = z.int().min(1).max(50).openapi('MaxItems')
 
 const ListFunctionUrlConfigsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListFunctionUrlConfigsRequest' })
   .openapi('ListFunctionUrlConfigsRequest')
 
 const ListFunctionsByCodeSigningConfigRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListFunctionsByCodeSigningConfigRequest' })
   .openapi('ListFunctionsByCodeSigningConfigRequest')
 
@@ -3828,19 +2899,19 @@ const MasterRegionSchema = z
   .openapi('MasterRegion')
 
 const ListFunctionsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListFunctionsRequest' })
   .openapi('ListFunctionsRequest')
 
 const MaxLayerListItemsSchema = z.int().min(1).max(50).openapi('MaxLayerListItems')
 
 const ListLayerVersionsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListLayerVersionsRequest' })
   .openapi('ListLayerVersionsRequest')
 
 const ListLayersRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListLayersRequest' })
   .openapi('ListLayersRequest')
 
@@ -3851,17 +2922,17 @@ const MaxProvisionedConcurrencyConfigListItemsSchema = z
   .openapi('MaxProvisionedConcurrencyConfigListItems')
 
 const ListProvisionedConcurrencyConfigsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListProvisionedConcurrencyConfigsRequest' })
   .openapi('ListProvisionedConcurrencyConfigsRequest')
 
 const ListTagsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListTagsRequest' })
   .openapi('ListTagsRequest')
 
 const ListVersionsByFunctionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListVersionsByFunctionRequest' })
   .openapi('ListVersionsByFunctionRequest')
 
@@ -3874,135 +2945,83 @@ const NamespacedStatementIdSchema = z
 
 const PublishLayerVersionRequestSchema = z
   .object({
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the version.' }),
-    ).exactOptional(),
-    Content: LayerVersionContentInputSchema.and(
-      z.any().openapi({ description: 'The function layer archive.' }),
-    ),
-    CompatibleRuntimes: CompatibleRuntimesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of compatible <a href="https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html">function runtimes</a>. Used for filtering with <a>ListLayers</a> and <a>ListLayerVersions</a>.</p> <p>The following list includes deprecated runtimes. For more information, see <a href="https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html#runtime-support-policy">Runtime deprecation policy</a>.</p>',
-        }),
-    ).exactOptional(),
-    LicenseInfo: LicenseInfoSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The layer\'s software license. It can be any of the following:</p> <ul> <li> <p>An <a href="https://spdx.org/licenses/">SPDX license identifier</a>. For example, <code>MIT</code>.</p> </li> <li> <p>The URL of a license hosted on the internet. For example, <code>https://opensource.org/licenses/MIT</code>.</p> </li> <li> <p>The full text of the license.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    CompatibleArchitectures: CompatibleArchitecturesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of compatible <a href="https://docs.aws.amazon.com/lambda/latest/dg/foundation-arch.html">instruction set architectures</a>.',
-        }),
-    ).exactOptional(),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'The description of the version.',
+    }),
+    Content: LayerVersionContentInputSchema.openapi({ description: 'The function layer archive.' }),
+    CompatibleRuntimes: CompatibleRuntimesSchema.exactOptional().openapi({
+      description:
+        '<p>A list of compatible <a href="https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html">function runtimes</a>. Used for filtering with <a>ListLayers</a> and <a>ListLayerVersions</a>.</p> <p>The following list includes deprecated runtimes. For more information, see <a href="https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html#runtime-support-policy">Runtime deprecation policy</a>.</p>',
+    }),
+    LicenseInfo: LicenseInfoSchema.exactOptional().openapi({
+      description:
+        '<p>The layer\'s software license. It can be any of the following:</p> <ul> <li> <p>An <a href="https://spdx.org/licenses/">SPDX license identifier</a>. For example, <code>MIT</code>.</p> </li> <li> <p>The URL of a license hosted on the internet. For example, <code>https://opensource.org/licenses/MIT</code>.</p> </li> <li> <p>The full text of the license.</p> </li> </ul>',
+    }),
+    CompatibleArchitectures: CompatibleArchitecturesSchema.exactOptional().openapi({
+      description:
+        'A list of compatible <a href="https://docs.aws.amazon.com/lambda/latest/dg/foundation-arch.html">instruction set architectures</a>.',
+    }),
   })
   .openapi({ required: ['Content'], title: 'PublishLayerVersionRequest' })
   .openapi('PublishLayerVersionRequest')
 
 const PublishVersionRequestSchema = z
   .object({
-    CodeSha256: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Only publish a version if the hash value matches the value that's specified. Use this option to avoid publishing a version if the function code has changed since you last updated it. You can get the hash for the version that you uploaded from the output of <a>UpdateFunctionCode</a>.",
-        }),
-    ).exactOptional(),
-    Description: DescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A description for the version to override the description in the function configuration.',
-        }),
-    ).exactOptional(),
-    RevisionId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Only update the function if the revision ID matches the ID that's specified. Use this option to avoid publishing a version if the function configuration has changed since you last updated it.",
-        }),
-    ).exactOptional(),
+    CodeSha256: StringSchema.exactOptional().openapi({
+      description:
+        "Only publish a version if the hash value matches the value that's specified. Use this option to avoid publishing a version if the function code has changed since you last updated it. You can get the hash for the version that you uploaded from the output of <a>UpdateFunctionCode</a>.",
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description:
+        'A description for the version to override the description in the function configuration.',
+    }),
+    RevisionId: StringSchema.exactOptional().openapi({
+      description:
+        "Only update the function if the revision ID matches the ID that's specified. Use this option to avoid publishing a version if the function configuration has changed since you last updated it.",
+    }),
   })
   .openapi({ title: 'PublishVersionRequest', required: [] })
   .openapi('PublishVersionRequest')
 
 const PutFunctionCodeSigningConfigRequestSchema = z
   .object({
-    CodeSigningConfigArn: CodeSigningConfigArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The The Amazon Resource Name (ARN) of the code signing configuration.',
-        }),
-    ),
+    CodeSigningConfigArn: CodeSigningConfigArnSchema.openapi({
+      description: 'The The Amazon Resource Name (ARN) of the code signing configuration.',
+    }),
   })
   .openapi({ required: ['CodeSigningConfigArn'], title: 'PutFunctionCodeSigningConfigRequest' })
   .openapi('PutFunctionCodeSigningConfigRequest')
 
 const PutFunctionConcurrencyRequestSchema = z
   .object({
-    ReservedConcurrentExecutions: ReservedConcurrentExecutionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The number of simultaneous executions to reserve for the function.',
-        }),
-    ),
+    ReservedConcurrentExecutions: ReservedConcurrentExecutionsSchema.openapi({
+      description: 'The number of simultaneous executions to reserve for the function.',
+    }),
   })
   .openapi({ required: ['ReservedConcurrentExecutions'], title: 'PutFunctionConcurrencyRequest' })
   .openapi('PutFunctionConcurrencyRequest')
 
 const PutFunctionEventInvokeConfigRequestSchema = z
   .object({
-    MaximumRetryAttempts: MaximumRetryAttemptsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The maximum number of times to retry when the function returns an error.',
-        }),
-    ).exactOptional(),
-    MaximumEventAgeInSeconds: MaximumEventAgeInSecondsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum age of a request that Lambda sends to a function for processing.',
-        }),
-    ).exactOptional(),
-    DestinationConfig: DestinationConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A destination for events after they have been sent to a function for processing.</p> <p class="title"> <b>Destinations</b> </p> <ul> <li> <p> <b>Function</b> - The Amazon Resource Name (ARN) of a Lambda function.</p> </li> <li> <p> <b>Queue</b> - The ARN of a standard SQS queue.</p> </li> <li> <p> <b>Topic</b> - The ARN of a standard SNS topic.</p> </li> <li> <p> <b>Event Bus</b> - The ARN of an Amazon EventBridge event bus.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    MaximumRetryAttempts: MaximumRetryAttemptsSchema.exactOptional().openapi({
+      description: 'The maximum number of times to retry when the function returns an error.',
+    }),
+    MaximumEventAgeInSeconds: MaximumEventAgeInSecondsSchema.exactOptional().openapi({
+      description: 'The maximum age of a request that Lambda sends to a function for processing.',
+    }),
+    DestinationConfig: DestinationConfigSchema.exactOptional().openapi({
+      description:
+        '<p>A destination for events after they have been sent to a function for processing.</p> <p class="title"> <b>Destinations</b> </p> <ul> <li> <p> <b>Function</b> - The Amazon Resource Name (ARN) of a Lambda function.</p> </li> <li> <p> <b>Queue</b> - The ARN of a standard SQS queue.</p> </li> <li> <p> <b>Topic</b> - The ARN of a standard SNS topic.</p> </li> <li> <p> <b>Event Bus</b> - The ARN of an Amazon EventBridge event bus.</p> </li> </ul>',
+    }),
   })
   .openapi({ title: 'PutFunctionEventInvokeConfigRequest', required: [] })
   .openapi('PutFunctionEventInvokeConfigRequest')
 
 const PutProvisionedConcurrencyConfigRequestSchema = z
   .object({
-    ProvisionedConcurrentExecutions: PositiveIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The amount of provisioned concurrency to allocate for the version or alias.',
-        }),
-    ),
+    ProvisionedConcurrentExecutions: PositiveIntegerSchema.openapi({
+      description: 'The amount of provisioned concurrency to allocate for the version or alias.',
+    }),
   })
   .openapi({
     required: ['ProvisionedConcurrentExecutions'],
@@ -4012,482 +3031,281 @@ const PutProvisionedConcurrencyConfigRequestSchema = z
 
 const PutRuntimeManagementConfigRequestSchema = z
   .object({
-    UpdateRuntimeOn: UpdateRuntimeOnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specify the runtime update mode.</p> <ul> <li> <p> <b>Auto (default)</b> - Automatically update to the most recent and secure runtime version using a <a href="https://docs.aws.amazon.com/lambda/latest/dg/runtimes-update.html#runtime-management-two-phase">Two-phase runtime version rollout</a>. This is the best choice for most customers to ensure they always benefit from runtime updates.</p> </li> <li> <p> <b>Function update</b> - Lambda updates the runtime of your function to the most recent and secure runtime version when you update your function. This approach synchronizes runtime updates with function deployments, giving you control over when runtime updates are applied and allowing you to detect and mitigate rare runtime update incompatibilities early. When using this setting, you need to regularly update your functions to keep their runtime up-to-date.</p> </li> <li> <p> <b>Manual</b> - You specify a runtime version in your function configuration. The function will use this runtime version indefinitely. In the rare case where a new runtime version is incompatible with an existing function, this allows you to roll back your function to an earlier runtime version. For more information, see <a href="https://docs.aws.amazon.com/lambda/latest/dg/runtimes-update.html#runtime-management-rollback">Roll back a runtime version</a>.</p> </li> </ul>',
-        }),
-    ),
-    RuntimeVersionArn: RuntimeVersionArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The ARN of the runtime version you want the function to use.</p> <note> <p>This is only required if you're using the <b>Manual</b> runtime update mode.</p> </note>",
-        }),
-    ).exactOptional(),
+    UpdateRuntimeOn: UpdateRuntimeOnSchema.openapi({
+      description:
+        '<p>Specify the runtime update mode.</p> <ul> <li> <p> <b>Auto (default)</b> - Automatically update to the most recent and secure runtime version using a <a href="https://docs.aws.amazon.com/lambda/latest/dg/runtimes-update.html#runtime-management-two-phase">Two-phase runtime version rollout</a>. This is the best choice for most customers to ensure they always benefit from runtime updates.</p> </li> <li> <p> <b>Function update</b> - Lambda updates the runtime of your function to the most recent and secure runtime version when you update your function. This approach synchronizes runtime updates with function deployments, giving you control over when runtime updates are applied and allowing you to detect and mitigate rare runtime update incompatibilities early. When using this setting, you need to regularly update your functions to keep their runtime up-to-date.</p> </li> <li> <p> <b>Manual</b> - You specify a runtime version in your function configuration. The function will use this runtime version indefinitely. In the rare case where a new runtime version is incompatible with an existing function, this allows you to roll back your function to an earlier runtime version. For more information, see <a href="https://docs.aws.amazon.com/lambda/latest/dg/runtimes-update.html#runtime-management-rollback">Roll back a runtime version</a>.</p> </li> </ul>',
+    }),
+    RuntimeVersionArn: RuntimeVersionArnSchema.exactOptional().openapi({
+      description:
+        "<p>The ARN of the runtime version you want the function to use.</p> <note> <p>This is only required if you're using the <b>Manual</b> runtime update mode.</p> </note>",
+    }),
   })
   .openapi({ required: ['UpdateRuntimeOn'], title: 'PutRuntimeManagementConfigRequest' })
   .openapi('PutRuntimeManagementConfigRequest')
 
 const RemoveLayerVersionPermissionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'RemoveLayerVersionPermissionRequest' })
   .openapi('RemoveLayerVersionPermissionRequest')
 
 const RemovePermissionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'RemovePermissionRequest' })
   .openapi('RemovePermissionRequest')
 
 const TagKeyListSchema = z.array(TagKeySchema).openapi('TagKeyList')
 
 const TagResourceRequestSchema = z
-  .object({
-    Tags: TagsSchema.and(
-      z.any().openapi({ description: 'A list of tags to apply to the function.' }),
-    ),
-  })
+  .object({ Tags: TagsSchema.openapi({ description: 'A list of tags to apply to the function.' }) })
   .openapi({ required: ['Tags'], title: 'TagResourceRequest' })
   .openapi('TagResourceRequest')
 
 const UntagResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')
 
 const UpdateAliasRequestSchema = z
   .object({
-    FunctionVersion: VersionSchema.and(
-      z.any().openapi({ description: 'The function version that the alias invokes.' }),
-    ).exactOptional(),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'A description of the alias.' }),
-    ).exactOptional(),
-    RoutingConfig: AliasRoutingConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <a href="https://docs.aws.amazon.com/lambda/latest/dg/configuration-aliases.html#configuring-alias-routing">routing configuration</a> of the alias.',
-        }),
-    ).exactOptional(),
-    RevisionId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Only update the alias if the revision ID matches the ID that's specified. Use this option to avoid modifying an alias that has changed since you last read it.",
-        }),
-    ).exactOptional(),
+    FunctionVersion: VersionSchema.exactOptional().openapi({
+      description: 'The function version that the alias invokes.',
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'A description of the alias.',
+    }),
+    RoutingConfig: AliasRoutingConfigurationSchema.exactOptional().openapi({
+      description:
+        'The <a href="https://docs.aws.amazon.com/lambda/latest/dg/configuration-aliases.html#configuring-alias-routing">routing configuration</a> of the alias.',
+    }),
+    RevisionId: StringSchema.exactOptional().openapi({
+      description:
+        "Only update the alias if the revision ID matches the ID that's specified. Use this option to avoid modifying an alias that has changed since you last read it.",
+    }),
   })
   .openapi({ title: 'UpdateAliasRequest', required: [] })
   .openapi('UpdateAliasRequest')
 
 const UpdateCodeSigningConfigRequestSchema = z
   .object({
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'Descriptive name for this code signing configuration.' }),
-    ).exactOptional(),
-    AllowedPublishers: AllowedPublishersSchema.and(
-      z.any().openapi({ description: 'Signing profiles for this code signing configuration.' }),
-    ).exactOptional(),
-    CodeSigningPolicies: CodeSigningPoliciesSchema.and(
-      z.any().openapi({ description: 'The code signing policy.' }),
-    ).exactOptional(),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'Descriptive name for this code signing configuration.',
+    }),
+    AllowedPublishers: AllowedPublishersSchema.exactOptional().openapi({
+      description: 'Signing profiles for this code signing configuration.',
+    }),
+    CodeSigningPolicies: CodeSigningPoliciesSchema.exactOptional().openapi({
+      description: 'The code signing policy.',
+    }),
   })
   .openapi({ title: 'UpdateCodeSigningConfigRequest', required: [] })
   .openapi('UpdateCodeSigningConfigRequest')
 
 const UpdateEventSourceMappingRequestSchema = z
   .object({
-    FunctionName: FunctionNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the Lambda function.</p> <p class="title"> <b>Name formats</b> </p> <ul> <li> <p> <b>Function name</b> – <code>MyFunction</code>.</p> </li> <li> <p> <b>Function ARN</b> – <code>arn:aws:lambda:us-west-2:123456789012:function:MyFunction</code>.</p> </li> <li> <p> <b>Version or Alias ARN</b> – <code>arn:aws:lambda:us-west-2:123456789012:function:MyFunction:PROD</code>.</p> </li> <li> <p> <b>Partial ARN</b> – <code>123456789012:function:MyFunction</code>.</p> </li> </ul> <p>The length constraint applies only to the full ARN. If you specify only the function name, it\'s limited to 64 characters in length.</p>',
-        }),
-    ).exactOptional(),
-    Enabled: EnabledSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>When true, the event source mapping is active. When false, Lambda pauses polling and invocation.</p> <p>Default: True</p>',
-        }),
-    ).exactOptional(),
-    BatchSize: BatchSizeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum number of records in each batch that Lambda pulls from your stream or queue and sends to your function. Lambda passes all of the records in the batch to the function in a single call, up to the payload limit for synchronous invocation (6 MB).</p> <ul> <li> <p> <b>Amazon Kinesis</b> – Default 100. Max 10,000.</p> </li> <li> <p> <b>Amazon DynamoDB Streams</b> – Default 100. Max 10,000.</p> </li> <li> <p> <b>Amazon Simple Queue Service</b> – Default 10. For standard queues the max is 10,000. For FIFO queues the max is 10.</p> </li> <li> <p> <b>Amazon Managed Streaming for Apache Kafka</b> – Default 100. Max 10,000.</p> </li> <li> <p> <b>Self-managed Apache Kafka</b> – Default 100. Max 10,000.</p> </li> <li> <p> <b>Amazon MQ (ActiveMQ and RabbitMQ)</b> – Default 100. Max 10,000.</p> </li> <li> <p> <b>DocumentDB</b> – Default 100. Max 10,000.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    FilterCriteria: FilterCriteriaSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that defines the filter criteria that determine whether Lambda should process an event. For more information, see <a href="https://docs.aws.amazon.com/lambda/latest/dg/invocation-eventfiltering.html">Lambda event filtering</a>.',
-        }),
-    ).exactOptional(),
-    MaximumBatchingWindowInSeconds: MaximumBatchingWindowInSecondsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum amount of time, in seconds, that Lambda spends gathering records before invoking the function. You can configure <code>MaximumBatchingWindowInSeconds</code> to any value from 0 seconds to 300 seconds in increments of seconds.</p> <p>For streams and Amazon SQS event sources, the default batching window is 0 seconds. For Amazon MSK, Self-managed Apache Kafka, Amazon MQ, and DocumentDB event sources, the default batching window is 500 ms. Note that because you can only change <code>MaximumBatchingWindowInSeconds</code> in increments of seconds, you cannot revert back to the 500 ms default batching window after you have changed it. To restore the default batching window, you must create a new event source mapping.</p> <p>Related setting: For streams and Amazon SQS event sources, when you set <code>BatchSize</code> to a value greater than 10, you must set <code>MaximumBatchingWindowInSeconds</code> to at least 1.</p>',
-        }),
-    ).exactOptional(),
-    DestinationConfig: DestinationConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '(Kinesis and DynamoDB Streams only) A standard Amazon SQS queue or standard Amazon SNS topic destination for discarded records.',
-        }),
-    ).exactOptional(),
-    MaximumRecordAgeInSeconds: MaximumRecordAgeInSecondsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '(Kinesis and DynamoDB Streams only) Discard records older than the specified age. The default value is infinite (-1).',
-        }),
-    ).exactOptional(),
-    BisectBatchOnFunctionError: BisectBatchOnFunctionErrorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '(Kinesis and DynamoDB Streams only) If the function returns an error, split the batch in two and retry.',
-        }),
-    ).exactOptional(),
-    MaximumRetryAttempts: MaximumRetryAttemptsEventSourceMappingSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '(Kinesis and DynamoDB Streams only) Discard records after the specified number of retries. The default value is infinite (-1). When set to infinite (-1), failed records are retried until the record expires.',
-        }),
-    ).exactOptional(),
-    ParallelizationFactor: ParallelizationFactorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '(Kinesis and DynamoDB Streams only) The number of batches to process from each shard concurrently.',
-        }),
-    ).exactOptional(),
-    SourceAccessConfigurations: SourceAccessConfigurationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of authentication protocols or VPC components required to secure your event source.',
-        }),
-    ).exactOptional(),
-    TumblingWindowInSeconds: TumblingWindowInSecondsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '(Kinesis and DynamoDB Streams only) The duration in seconds of a processing window for DynamoDB and Kinesis Streams event sources. A value of 0 seconds indicates no tumbling window.',
-        }),
-    ).exactOptional(),
-    FunctionResponseTypes: FunctionResponseTypeListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '(Kinesis, DynamoDB Streams, and Amazon SQS) A list of current response type enums applied to the event source mapping.',
-        }),
-    ).exactOptional(),
-    ScalingConfig: ScalingConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '(Amazon SQS only) The scaling configuration for the event source. For more information, see <a href="https://docs.aws.amazon.com/lambda/latest/dg/with-sqs.html#events-sqs-max-concurrency">Configuring maximum concurrency for Amazon SQS event sources</a>.',
-        }),
-    ).exactOptional(),
-    DocumentDBEventSourceConfig: DocumentDBEventSourceConfigSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Specific configuration settings for a DocumentDB event source.' }),
-    ).exactOptional(),
+    FunctionName: FunctionNameSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the Lambda function.</p> <p class="title"> <b>Name formats</b> </p> <ul> <li> <p> <b>Function name</b> – <code>MyFunction</code>.</p> </li> <li> <p> <b>Function ARN</b> – <code>arn:aws:lambda:us-west-2:123456789012:function:MyFunction</code>.</p> </li> <li> <p> <b>Version or Alias ARN</b> – <code>arn:aws:lambda:us-west-2:123456789012:function:MyFunction:PROD</code>.</p> </li> <li> <p> <b>Partial ARN</b> – <code>123456789012:function:MyFunction</code>.</p> </li> </ul> <p>The length constraint applies only to the full ARN. If you specify only the function name, it\'s limited to 64 characters in length.</p>',
+    }),
+    Enabled: EnabledSchema.exactOptional().openapi({
+      description:
+        '<p>When true, the event source mapping is active. When false, Lambda pauses polling and invocation.</p> <p>Default: True</p>',
+    }),
+    BatchSize: BatchSizeSchema.exactOptional().openapi({
+      description:
+        '<p>The maximum number of records in each batch that Lambda pulls from your stream or queue and sends to your function. Lambda passes all of the records in the batch to the function in a single call, up to the payload limit for synchronous invocation (6 MB).</p> <ul> <li> <p> <b>Amazon Kinesis</b> – Default 100. Max 10,000.</p> </li> <li> <p> <b>Amazon DynamoDB Streams</b> – Default 100. Max 10,000.</p> </li> <li> <p> <b>Amazon Simple Queue Service</b> – Default 10. For standard queues the max is 10,000. For FIFO queues the max is 10.</p> </li> <li> <p> <b>Amazon Managed Streaming for Apache Kafka</b> – Default 100. Max 10,000.</p> </li> <li> <p> <b>Self-managed Apache Kafka</b> – Default 100. Max 10,000.</p> </li> <li> <p> <b>Amazon MQ (ActiveMQ and RabbitMQ)</b> – Default 100. Max 10,000.</p> </li> <li> <p> <b>DocumentDB</b> – Default 100. Max 10,000.</p> </li> </ul>',
+    }),
+    FilterCriteria: FilterCriteriaSchema.exactOptional().openapi({
+      description:
+        'An object that defines the filter criteria that determine whether Lambda should process an event. For more information, see <a href="https://docs.aws.amazon.com/lambda/latest/dg/invocation-eventfiltering.html">Lambda event filtering</a>.',
+    }),
+    MaximumBatchingWindowInSeconds: MaximumBatchingWindowInSecondsSchema.exactOptional().openapi({
+      description:
+        '<p>The maximum amount of time, in seconds, that Lambda spends gathering records before invoking the function. You can configure <code>MaximumBatchingWindowInSeconds</code> to any value from 0 seconds to 300 seconds in increments of seconds.</p> <p>For streams and Amazon SQS event sources, the default batching window is 0 seconds. For Amazon MSK, Self-managed Apache Kafka, Amazon MQ, and DocumentDB event sources, the default batching window is 500 ms. Note that because you can only change <code>MaximumBatchingWindowInSeconds</code> in increments of seconds, you cannot revert back to the 500 ms default batching window after you have changed it. To restore the default batching window, you must create a new event source mapping.</p> <p>Related setting: For streams and Amazon SQS event sources, when you set <code>BatchSize</code> to a value greater than 10, you must set <code>MaximumBatchingWindowInSeconds</code> to at least 1.</p>',
+    }),
+    DestinationConfig: DestinationConfigSchema.exactOptional().openapi({
+      description:
+        '(Kinesis and DynamoDB Streams only) A standard Amazon SQS queue or standard Amazon SNS topic destination for discarded records.',
+    }),
+    MaximumRecordAgeInSeconds: MaximumRecordAgeInSecondsSchema.exactOptional().openapi({
+      description:
+        '(Kinesis and DynamoDB Streams only) Discard records older than the specified age. The default value is infinite (-1).',
+    }),
+    BisectBatchOnFunctionError: BisectBatchOnFunctionErrorSchema.exactOptional().openapi({
+      description:
+        '(Kinesis and DynamoDB Streams only) If the function returns an error, split the batch in two and retry.',
+    }),
+    MaximumRetryAttempts: MaximumRetryAttemptsEventSourceMappingSchema.exactOptional().openapi({
+      description:
+        '(Kinesis and DynamoDB Streams only) Discard records after the specified number of retries. The default value is infinite (-1). When set to infinite (-1), failed records are retried until the record expires.',
+    }),
+    ParallelizationFactor: ParallelizationFactorSchema.exactOptional().openapi({
+      description:
+        '(Kinesis and DynamoDB Streams only) The number of batches to process from each shard concurrently.',
+    }),
+    SourceAccessConfigurations: SourceAccessConfigurationsSchema.exactOptional().openapi({
+      description:
+        'An array of authentication protocols or VPC components required to secure your event source.',
+    }),
+    TumblingWindowInSeconds: TumblingWindowInSecondsSchema.exactOptional().openapi({
+      description:
+        '(Kinesis and DynamoDB Streams only) The duration in seconds of a processing window for DynamoDB and Kinesis Streams event sources. A value of 0 seconds indicates no tumbling window.',
+    }),
+    FunctionResponseTypes: FunctionResponseTypeListSchema.exactOptional().openapi({
+      description:
+        '(Kinesis, DynamoDB Streams, and Amazon SQS) A list of current response type enums applied to the event source mapping.',
+    }),
+    ScalingConfig: ScalingConfigSchema.exactOptional().openapi({
+      description:
+        '(Amazon SQS only) The scaling configuration for the event source. For more information, see <a href="https://docs.aws.amazon.com/lambda/latest/dg/with-sqs.html#events-sqs-max-concurrency">Configuring maximum concurrency for Amazon SQS event sources</a>.',
+    }),
+    DocumentDBEventSourceConfig: DocumentDBEventSourceConfigSchema.exactOptional().openapi({
+      description: 'Specific configuration settings for a DocumentDB event source.',
+    }),
   })
   .openapi({ title: 'UpdateEventSourceMappingRequest', required: [] })
   .openapi('UpdateEventSourceMappingRequest')
 
 const UpdateFunctionCodeRequestSchema = z
   .object({
-    ZipFile: BlobSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The base64-encoded contents of the deployment package. Amazon Web Services SDK and CLI clients handle the encoding for you. Use only with a function defined with a .zip file archive deployment package.',
-        }),
-    ).exactOptional(),
-    S3Bucket: S3BucketSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An Amazon S3 bucket in the same Amazon Web Services Region as your function. The bucket can be in a different Amazon Web Services account. Use only with a function defined with a .zip file archive deployment package.',
-        }),
-    ).exactOptional(),
-    S3Key: S3KeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon S3 key of the deployment package. Use only with a function defined with a .zip file archive deployment package.',
-        }),
-    ).exactOptional(),
-    S3ObjectVersion: S3ObjectVersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'For versioned objects, the version of the deployment package object to use.',
-        }),
-    ).exactOptional(),
-    ImageUri: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'URI of a container image in the Amazon ECR registry. Do not use for a function defined with a .zip file archive.',
-        }),
-    ).exactOptional(),
-    Publish: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Set to true to publish a new version of the function after updating the code. This has the same effect as calling <a>PublishVersion</a> separately.',
-        }),
-    ).exactOptional(),
-    DryRun: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Set to true to validate the request parameters and access permissions without modifying the function code.',
-        }),
-    ).exactOptional(),
-    RevisionId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Update the function only if the revision ID matches the ID that's specified. Use this option to avoid modifying a function that has changed since you last read it.",
-        }),
-    ).exactOptional(),
-    Architectures: ArchitecturesListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The instruction set architecture that the function supports. Enter a string array with one of the valid values (arm64 or x86_64). The default value is <code>x86_64</code>.',
-        }),
-    ).exactOptional(),
+    ZipFile: BlobSchema.exactOptional().openapi({
+      description:
+        'The base64-encoded contents of the deployment package. Amazon Web Services SDK and CLI clients handle the encoding for you. Use only with a function defined with a .zip file archive deployment package.',
+    }),
+    S3Bucket: S3BucketSchema.exactOptional().openapi({
+      description:
+        'An Amazon S3 bucket in the same Amazon Web Services Region as your function. The bucket can be in a different Amazon Web Services account. Use only with a function defined with a .zip file archive deployment package.',
+    }),
+    S3Key: S3KeySchema.exactOptional().openapi({
+      description:
+        'The Amazon S3 key of the deployment package. Use only with a function defined with a .zip file archive deployment package.',
+    }),
+    S3ObjectVersion: S3ObjectVersionSchema.exactOptional().openapi({
+      description: 'For versioned objects, the version of the deployment package object to use.',
+    }),
+    ImageUri: StringSchema.exactOptional().openapi({
+      description:
+        'URI of a container image in the Amazon ECR registry. Do not use for a function defined with a .zip file archive.',
+    }),
+    Publish: BooleanSchema.exactOptional().openapi({
+      description:
+        'Set to true to publish a new version of the function after updating the code. This has the same effect as calling <a>PublishVersion</a> separately.',
+    }),
+    DryRun: BooleanSchema.exactOptional().openapi({
+      description:
+        'Set to true to validate the request parameters and access permissions without modifying the function code.',
+    }),
+    RevisionId: StringSchema.exactOptional().openapi({
+      description:
+        "Update the function only if the revision ID matches the ID that's specified. Use this option to avoid modifying a function that has changed since you last read it.",
+    }),
+    Architectures: ArchitecturesListSchema.exactOptional().openapi({
+      description:
+        'The instruction set architecture that the function supports. Enter a string array with one of the valid values (arm64 or x86_64). The default value is <code>x86_64</code>.',
+    }),
   })
   .openapi({ title: 'UpdateFunctionCodeRequest', required: [] })
   .openapi('UpdateFunctionCodeRequest')
 
 const UpdateFunctionConfigurationRequestSchema = z
   .object({
-    Role: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The Amazon Resource Name (ARN) of the function's execution role.",
-        }),
-    ).exactOptional(),
-    Handler: HandlerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the method within your code that Lambda calls to run your function. Handler is required if the deployment package is a .zip file archive. The format includes the file name. It can also include namespaces and other qualifiers, depending on the runtime. For more information, see <a href="https://docs.aws.amazon.com/lambda/latest/dg/foundation-progmodel.html">Lambda programming model</a>.',
-        }),
-    ).exactOptional(),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'A description of the function.' }),
-    ).exactOptional(),
-    Timeout: TimeoutSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The amount of time (in seconds) that Lambda allows a function to run before stopping it. The default is 3 seconds. The maximum allowed value is 900 seconds. For more information, see <a href="https://docs.aws.amazon.com/lambda/latest/dg/runtimes-context.html">Lambda execution environment</a>.',
-        }),
-    ).exactOptional(),
-    MemorySize: MemorySizeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The amount of <a href="https://docs.aws.amazon.com/lambda/latest/dg/configuration-function-common.html#configuration-memory-console">memory available to the function</a> at runtime. Increasing the function memory also increases its CPU allocation. The default value is 128 MB. The value can be any multiple of 1 MB.',
-        }),
-    ).exactOptional(),
-    VpcConfig: VpcConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'For network connectivity to Amazon Web Services resources in a VPC, specify a list of security groups and subnets in the VPC. When you connect a function to a VPC, it can access resources and the internet only through that VPC. For more information, see <a href="https://docs.aws.amazon.com/lambda/latest/dg/configuration-vpc.html">Configuring a Lambda function to access resources in a VPC</a>.',
-        }),
-    ).exactOptional(),
-    Environment: EnvironmentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Environment variables that are accessible from function code during execution.',
-        }),
-    ).exactOptional(),
-    Runtime: RuntimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The identifier of the function\'s <a href="https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html">runtime</a>. Runtime is required if the deployment package is a .zip file archive.</p> <p>The following list includes deprecated runtimes. For more information, see <a href="https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html#runtime-support-policy">Runtime deprecation policy</a>.</p>',
-        }),
-    ).exactOptional(),
-    DeadLetterConfig: DeadLetterConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A dead-letter queue configuration that specifies the queue or topic where Lambda sends asynchronous events when they fail processing. For more information, see <a href="https://docs.aws.amazon.com/lambda/latest/dg/invocation-async.html#invocation-dlq">Dead-letter queues</a>.',
-        }),
-    ).exactOptional(),
-    KMSKeyArn: KMSKeyArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The ARN of the Key Management Service (KMS) customer managed key that's used to encrypt your function's <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/configuration-envvars.html#configuration-envvars-encryption\">environment variables</a>. When <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/snapstart-security.html\">Lambda SnapStart</a> is activated, Lambda also uses this key is to encrypt your function's snapshot. If you deploy your function using a container image, Lambda also uses this key to encrypt your function when it's deployed. Note that this is not the same key that's used to protect your container image in the Amazon Elastic Container Registry (Amazon ECR). If you don't provide a customer managed key, Lambda uses a default service key.",
-        }),
-    ).exactOptional(),
-    TracingConfig: TracingConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Set <code>Mode</code> to <code>Active</code> to sample and trace a subset of incoming requests with <a href="https://docs.aws.amazon.com/lambda/latest/dg/services-xray.html">X-Ray</a>.',
-        }),
-    ).exactOptional(),
-    RevisionId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Update the function only if the revision ID matches the ID that's specified. Use this option to avoid modifying a function that has changed since you last read it.",
-        }),
-    ).exactOptional(),
-    Layers: LayerListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of <a href="https://docs.aws.amazon.com/lambda/latest/dg/configuration-layers.html">function layers</a> to add to the function\'s execution environment. Specify each layer by its ARN, including the version.',
-        }),
-    ).exactOptional(),
-    FileSystemConfigs: FileSystemConfigListSchema.and(
-      z.any().openapi({ description: 'Connection settings for an Amazon EFS file system.' }),
-    ).exactOptional(),
-    ImageConfig: ImageConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' <a href="https://docs.aws.amazon.com/lambda/latest/dg/images-parms.html">Container image configuration values</a> that override the values in the container image Docker file.',
-        }),
-    ).exactOptional(),
-    EphemeralStorage: EphemeralStorageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The size of the function's <code>/tmp</code> directory in MB. The default value is 512, but can be any whole number between 512 and 10,240 MB.",
-        }),
-    ).exactOptional(),
-    SnapStart: SnapStartSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The function\'s <a href="https://docs.aws.amazon.com/lambda/latest/dg/snapstart.html">SnapStart</a> setting.',
-        }),
-    ).exactOptional(),
+    Role: RoleArnSchema.exactOptional().openapi({
+      description: "The Amazon Resource Name (ARN) of the function's execution role.",
+    }),
+    Handler: HandlerSchema.exactOptional().openapi({
+      description:
+        'The name of the method within your code that Lambda calls to run your function. Handler is required if the deployment package is a .zip file archive. The format includes the file name. It can also include namespaces and other qualifiers, depending on the runtime. For more information, see <a href="https://docs.aws.amazon.com/lambda/latest/dg/foundation-progmodel.html">Lambda programming model</a>.',
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'A description of the function.',
+    }),
+    Timeout: TimeoutSchema.exactOptional().openapi({
+      description:
+        'The amount of time (in seconds) that Lambda allows a function to run before stopping it. The default is 3 seconds. The maximum allowed value is 900 seconds. For more information, see <a href="https://docs.aws.amazon.com/lambda/latest/dg/runtimes-context.html">Lambda execution environment</a>.',
+    }),
+    MemorySize: MemorySizeSchema.exactOptional().openapi({
+      description:
+        'The amount of <a href="https://docs.aws.amazon.com/lambda/latest/dg/configuration-function-common.html#configuration-memory-console">memory available to the function</a> at runtime. Increasing the function memory also increases its CPU allocation. The default value is 128 MB. The value can be any multiple of 1 MB.',
+    }),
+    VpcConfig: VpcConfigSchema.exactOptional().openapi({
+      description:
+        'For network connectivity to Amazon Web Services resources in a VPC, specify a list of security groups and subnets in the VPC. When you connect a function to a VPC, it can access resources and the internet only through that VPC. For more information, see <a href="https://docs.aws.amazon.com/lambda/latest/dg/configuration-vpc.html">Configuring a Lambda function to access resources in a VPC</a>.',
+    }),
+    Environment: EnvironmentSchema.exactOptional().openapi({
+      description: 'Environment variables that are accessible from function code during execution.',
+    }),
+    Runtime: RuntimeSchema.exactOptional().openapi({
+      description:
+        '<p>The identifier of the function\'s <a href="https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html">runtime</a>. Runtime is required if the deployment package is a .zip file archive.</p> <p>The following list includes deprecated runtimes. For more information, see <a href="https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html#runtime-support-policy">Runtime deprecation policy</a>.</p>',
+    }),
+    DeadLetterConfig: DeadLetterConfigSchema.exactOptional().openapi({
+      description:
+        'A dead-letter queue configuration that specifies the queue or topic where Lambda sends asynchronous events when they fail processing. For more information, see <a href="https://docs.aws.amazon.com/lambda/latest/dg/invocation-async.html#invocation-dlq">Dead-letter queues</a>.',
+    }),
+    KMSKeyArn: KMSKeyArnSchema.exactOptional().openapi({
+      description:
+        "The ARN of the Key Management Service (KMS) customer managed key that's used to encrypt your function's <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/configuration-envvars.html#configuration-envvars-encryption\">environment variables</a>. When <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/snapstart-security.html\">Lambda SnapStart</a> is activated, Lambda also uses this key is to encrypt your function's snapshot. If you deploy your function using a container image, Lambda also uses this key to encrypt your function when it's deployed. Note that this is not the same key that's used to protect your container image in the Amazon Elastic Container Registry (Amazon ECR). If you don't provide a customer managed key, Lambda uses a default service key.",
+    }),
+    TracingConfig: TracingConfigSchema.exactOptional().openapi({
+      description:
+        'Set <code>Mode</code> to <code>Active</code> to sample and trace a subset of incoming requests with <a href="https://docs.aws.amazon.com/lambda/latest/dg/services-xray.html">X-Ray</a>.',
+    }),
+    RevisionId: StringSchema.exactOptional().openapi({
+      description:
+        "Update the function only if the revision ID matches the ID that's specified. Use this option to avoid modifying a function that has changed since you last read it.",
+    }),
+    Layers: LayerListSchema.exactOptional().openapi({
+      description:
+        'A list of <a href="https://docs.aws.amazon.com/lambda/latest/dg/configuration-layers.html">function layers</a> to add to the function\'s execution environment. Specify each layer by its ARN, including the version.',
+    }),
+    FileSystemConfigs: FileSystemConfigListSchema.exactOptional().openapi({
+      description: 'Connection settings for an Amazon EFS file system.',
+    }),
+    ImageConfig: ImageConfigSchema.exactOptional().openapi({
+      description:
+        ' <a href="https://docs.aws.amazon.com/lambda/latest/dg/images-parms.html">Container image configuration values</a> that override the values in the container image Docker file.',
+    }),
+    EphemeralStorage: EphemeralStorageSchema.exactOptional().openapi({
+      description:
+        "The size of the function's <code>/tmp</code> directory in MB. The default value is 512, but can be any whole number between 512 and 10,240 MB.",
+    }),
+    SnapStart: SnapStartSchema.exactOptional().openapi({
+      description:
+        'The function\'s <a href="https://docs.aws.amazon.com/lambda/latest/dg/snapstart.html">SnapStart</a> setting.',
+    }),
   })
   .openapi({ title: 'UpdateFunctionConfigurationRequest', required: [] })
   .openapi('UpdateFunctionConfigurationRequest')
 
 const UpdateFunctionEventInvokeConfigRequestSchema = z
   .object({
-    MaximumRetryAttempts: MaximumRetryAttemptsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The maximum number of times to retry when the function returns an error.',
-        }),
-    ).exactOptional(),
-    MaximumEventAgeInSeconds: MaximumEventAgeInSecondsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum age of a request that Lambda sends to a function for processing.',
-        }),
-    ).exactOptional(),
-    DestinationConfig: DestinationConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A destination for events after they have been sent to a function for processing.</p> <p class="title"> <b>Destinations</b> </p> <ul> <li> <p> <b>Function</b> - The Amazon Resource Name (ARN) of a Lambda function.</p> </li> <li> <p> <b>Queue</b> - The ARN of a standard SQS queue.</p> </li> <li> <p> <b>Topic</b> - The ARN of a standard SNS topic.</p> </li> <li> <p> <b>Event Bus</b> - The ARN of an Amazon EventBridge event bus.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    MaximumRetryAttempts: MaximumRetryAttemptsSchema.exactOptional().openapi({
+      description: 'The maximum number of times to retry when the function returns an error.',
+    }),
+    MaximumEventAgeInSeconds: MaximumEventAgeInSecondsSchema.exactOptional().openapi({
+      description: 'The maximum age of a request that Lambda sends to a function for processing.',
+    }),
+    DestinationConfig: DestinationConfigSchema.exactOptional().openapi({
+      description:
+        '<p>A destination for events after they have been sent to a function for processing.</p> <p class="title"> <b>Destinations</b> </p> <ul> <li> <p> <b>Function</b> - The Amazon Resource Name (ARN) of a Lambda function.</p> </li> <li> <p> <b>Queue</b> - The ARN of a standard SQS queue.</p> </li> <li> <p> <b>Topic</b> - The ARN of a standard SNS topic.</p> </li> <li> <p> <b>Event Bus</b> - The ARN of an Amazon EventBridge event bus.</p> </li> </ul>',
+    }),
   })
   .openapi({ title: 'UpdateFunctionEventInvokeConfigRequest', required: [] })
   .openapi('UpdateFunctionEventInvokeConfigRequest')
 
 const UpdateFunctionUrlConfigRequestSchema = z
   .object({
-    AuthType: FunctionUrlAuthTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of authentication that your function URL uses. Set to <code>AWS_IAM</code> if you want to restrict access to authenticated users only. Set to <code>NONE</code> if you want to bypass IAM authentication to create a public endpoint. For more information, see <a href="https://docs.aws.amazon.com/lambda/latest/dg/urls-auth.html">Security and auth model for Lambda function URLs</a>.',
-        }),
-    ).exactOptional(),
-    Cors: CorsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS">cross-origin resource sharing (CORS)</a> settings for your function URL.',
-        }),
-    ).exactOptional(),
-    InvokeMode: InvokeModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Use one of the following options:</p> <ul> <li> <p> <code>BUFFERED</code> – This is the default option. Lambda invokes your function using the <code>Invoke</code> API operation. Invocation results are available when the payload is complete. The maximum payload size is 6 MB.</p> </li> <li> <p> <code>RESPONSE_STREAM</code> – Your function streams payload results as they become available. Lambda invokes your function using the <code>InvokeWithResponseStream</code> API operation. The maximum response payload size is 20 MB, however, you can <a href="https://docs.aws.amazon.com/servicequotas/latest/userguide/request-quota-increase.html">request a quota increase</a>.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    AuthType: FunctionUrlAuthTypeSchema.exactOptional().openapi({
+      description:
+        'The type of authentication that your function URL uses. Set to <code>AWS_IAM</code> if you want to restrict access to authenticated users only. Set to <code>NONE</code> if you want to bypass IAM authentication to create a public endpoint. For more information, see <a href="https://docs.aws.amazon.com/lambda/latest/dg/urls-auth.html">Security and auth model for Lambda function URLs</a>.',
+    }),
+    Cors: CorsSchema.exactOptional().openapi({
+      description:
+        'The <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS">cross-origin resource sharing (CORS)</a> settings for your function URL.',
+    }),
+    InvokeMode: InvokeModeSchema.exactOptional().openapi({
+      description:
+        '<p>Use one of the following options:</p> <ul> <li> <p> <code>BUFFERED</code> – This is the default option. Lambda invokes your function using the <code>Invoke</code> API operation. Invocation results are available when the payload is complete. The maximum payload size is 6 MB.</p> </li> <li> <p> <code>RESPONSE_STREAM</code> – Your function streams payload results as they become available. Lambda invokes your function using the <code>InvokeWithResponseStream</code> API operation. The maximum response payload size is 20 MB, however, you can <a href="https://docs.aws.amazon.com/servicequotas/latest/userguide/request-quota-increase.html">request a quota increase</a>.</p> </li> </ul>',
+    }),
   })
   .openapi({ title: 'UpdateFunctionUrlConfigRequest', required: [] })
   .openapi('UpdateFunctionUrlConfigRequest')
@@ -5257,14 +4075,10 @@ export const post20150331FunctionsFunctionNameAliasesRoute = createRoute({
                 .openapi({ description: 'A description of the alias.' }),
               RoutingConfig: z
                 .object({
-                  AdditionalVersionWeights: AdditionalVersionWeightsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          "The second version, and the percentage of traffic that's routed to it.",
-                      }),
-                  ).exactOptional(),
+                  AdditionalVersionWeights: AdditionalVersionWeightsSchema.exactOptional().openapi({
+                    description:
+                      "The second version, and the percentage of traffic that's routed to it.",
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -5404,14 +4218,11 @@ export const post20200422CodeSigningConfigsIndexRoute = createRoute({
                 .openapi({ description: 'Descriptive name for this code signing configuration.' }),
               AllowedPublishers: z
                 .object({
-                  SigningProfileVersionArns: SigningProfileVersionArnsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The Amazon Resource Name (ARN) for each of the signing profiles. A signing profile defines a trusted user who can sign a code package. ',
-                      }),
-                  ).exactOptional(),
+                  SigningProfileVersionArns:
+                    SigningProfileVersionArnsSchema.exactOptional().openapi({
+                      description:
+                        'The Amazon Resource Name (ARN) for each of the signing profiles. A signing profile defines a trusted user who can sign a code package. ',
+                    }),
                 })
                 .openapi({
                   description: 'List of signing profiles that can sign a code package. ',
@@ -5419,14 +4230,10 @@ export const post20200422CodeSigningConfigsIndexRoute = createRoute({
                 }),
               CodeSigningPolicies: z
                 .object({
-                  UntrustedArtifactOnDeployment: CodeSigningPolicySchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>Code signing configuration policy for deployment validation failure. If you set the policy to <code>Enforce</code>, Lambda blocks the deployment request if signature validation checks fail. If you set the policy to <code>Warn</code>, Lambda allows the deployment and creates a CloudWatch log. </p> <p>Default value: <code>Warn</code> </p>',
-                      }),
-                  ).exactOptional(),
+                  UntrustedArtifactOnDeployment: CodeSigningPolicySchema.exactOptional().openapi({
+                    description:
+                      '<p>Code signing configuration policy for deployment validation failure. If you set the policy to <code>Enforce</code>, Lambda blocks the deployment request if signature validation checks fail. If you set the policy to <code>Warn</code>, Lambda allows the deployment and creates a CloudWatch log. </p> <p>Default value: <code>Warn</code> </p>',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -5637,9 +4444,9 @@ export const post20150331EventSourceMappingsIndexRoute = createRoute({
                 }),
               FilterCriteria: z
                 .object({
-                  Filters: FilterListSchema.and(
-                    z.any().openapi({ description: ' A list of filters. ' }),
-                  ).exactOptional(),
+                  Filters: FilterListSchema.exactOptional().openapi({
+                    description: ' A list of filters. ',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -5680,20 +4487,12 @@ export const post20150331EventSourceMappingsIndexRoute = createRoute({
                 }),
               DestinationConfig: z
                 .object({
-                  OnSuccess: OnSuccessSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The destination configuration for successful invocations.',
-                      }),
-                  ).exactOptional(),
-                  OnFailure: OnFailureSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The destination configuration for failed invocations.',
-                      }),
-                  ).exactOptional(),
+                  OnSuccess: OnSuccessSchema.exactOptional().openapi({
+                    description: 'The destination configuration for successful invocations.',
+                  }),
+                  OnFailure: OnFailureSchema.exactOptional().openapi({
+                    description: 'The destination configuration for failed invocations.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -5759,14 +4558,10 @@ export const post20150331EventSourceMappingsIndexRoute = createRoute({
                 }),
               SelfManagedEventSource: z
                 .object({
-                  Endpoints: EndpointsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The list of bootstrap servers for your Kafka brokers in the following format: <code>"KAFKA_BOOTSTRAP_SERVERS": ["abc.xyz.com:xxxx","abc2.xyz.com:xxxx"]</code>.',
-                      }),
-                  ).exactOptional(),
+                  Endpoints: EndpointsSchema.exactOptional().openapi({
+                    description:
+                      'The list of bootstrap servers for your Kafka brokers in the following format: <code>"KAFKA_BOOTSTRAP_SERVERS": ["abc.xyz.com:xxxx","abc2.xyz.com:xxxx"]</code>.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -5784,14 +4579,10 @@ export const post20150331EventSourceMappingsIndexRoute = createRoute({
                 }),
               AmazonManagedKafkaEventSourceConfig: z
                 .object({
-                  ConsumerGroupId: URISchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The identifier for the Kafka consumer group to join. The consumer group ID must be unique among all your Kafka event sources. After creating a Kafka event source mapping with the consumer group ID specified, you cannot update this value. For more information, see <a href="https://docs.aws.amazon.com/lambda/latest/dg/with-msk.html#services-msk-consumer-group-id">Customizable consumer group ID</a>.',
-                      }),
-                  ).exactOptional(),
+                  ConsumerGroupId: URISchema.exactOptional().openapi({
+                    description:
+                      'The identifier for the Kafka consumer group to join. The consumer group ID must be unique among all your Kafka event sources. After creating a Kafka event source mapping with the consumer group ID specified, you cannot update this value. For more information, see <a href="https://docs.aws.amazon.com/lambda/latest/dg/with-msk.html#services-msk-consumer-group-id">Customizable consumer group ID</a>.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -5801,14 +4592,10 @@ export const post20150331EventSourceMappingsIndexRoute = createRoute({
                 }),
               SelfManagedKafkaEventSourceConfig: z
                 .object({
-                  ConsumerGroupId: URISchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The identifier for the Kafka consumer group to join. The consumer group ID must be unique among all your Kafka event sources. After creating a Kafka event source mapping with the consumer group ID specified, you cannot update this value. For more information, see <a href="https://docs.aws.amazon.com/lambda/latest/dg/with-msk.html#services-msk-consumer-group-id">Customizable consumer group ID</a>.',
-                      }),
-                  ).exactOptional(),
+                  ConsumerGroupId: URISchema.exactOptional().openapi({
+                    description:
+                      'The identifier for the Kafka consumer group to join. The consumer group ID must be unique among all your Kafka event sources. After creating a Kafka event source mapping with the consumer group ID specified, you cannot update this value. For more information, see <a href="https://docs.aws.amazon.com/lambda/latest/dg/with-msk.html#services-msk-consumer-group-id">Customizable consumer group ID</a>.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -5818,14 +4605,10 @@ export const post20150331EventSourceMappingsIndexRoute = createRoute({
                 }),
               ScalingConfig: z
                 .object({
-                  MaximumConcurrency: MaximumConcurrencySchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Limits the number of concurrent instances that the Amazon SQS event source can invoke.',
-                      }),
-                  ).exactOptional(),
+                  MaximumConcurrency: MaximumConcurrencySchema.exactOptional().openapi({
+                    description:
+                      'Limits the number of concurrent instances that the Amazon SQS event source can invoke.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -5835,30 +4618,18 @@ export const post20150331EventSourceMappingsIndexRoute = createRoute({
                 }),
               DocumentDBEventSourceConfig: z
                 .object({
-                  DatabaseName: DatabaseNameSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          ' The name of the database to consume within the DocumentDB cluster. ',
-                      }),
-                  ).exactOptional(),
-                  CollectionName: CollectionNameSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          ' The name of the collection to consume within the database. If you do not specify a collection, Lambda consumes all collections. ',
-                      }),
-                  ).exactOptional(),
-                  FullDocument: FullDocumentSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          ' Determines what DocumentDB sends to your event stream during document update operations. If set to UpdateLookup, DocumentDB sends a delta describing the changes, along with a copy of the entire document. Otherwise, DocumentDB sends only a partial document that contains the changes. ',
-                      }),
-                  ).exactOptional(),
+                  DatabaseName: DatabaseNameSchema.exactOptional().openapi({
+                    description:
+                      ' The name of the database to consume within the DocumentDB cluster. ',
+                  }),
+                  CollectionName: CollectionNameSchema.exactOptional().openapi({
+                    description:
+                      ' The name of the collection to consume within the database. If you do not specify a collection, Lambda consumes all collections. ',
+                  }),
+                  FullDocument: FullDocumentSchema.exactOptional().openapi({
+                    description:
+                      ' Determines what DocumentDB sends to your event stream during document update operations. If set to UpdateLookup, DocumentDB sends a delta describing the changes, along with a copy of the entire document. Otherwise, DocumentDB sends only a partial document that contains the changes. ',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -5989,43 +4760,25 @@ export const post20150331FunctionsRoute = createRoute({
                 }),
               Code: z
                 .object({
-                  ZipFile: BlobSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The base64-encoded contents of the deployment package. Amazon Web Services SDK and CLI clients handle the encoding for you.',
-                      }),
-                  ).exactOptional(),
-                  S3Bucket: S3BucketSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'An Amazon S3 bucket in the same Amazon Web Services Region as your function. The bucket can be in a different Amazon Web Services account.',
-                      }),
-                  ).exactOptional(),
-                  S3Key: S3KeySchema.and(
-                    z
-                      .any()
-                      .openapi({ description: 'The Amazon S3 key of the deployment package.' }),
-                  ).exactOptional(),
-                  S3ObjectVersion: S3ObjectVersionSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'For versioned objects, the version of the deployment package object to use.',
-                      }),
-                  ).exactOptional(),
-                  ImageUri: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'URI of a <a href="https://docs.aws.amazon.com/lambda/latest/dg/lambda-images.html">container image</a> in the Amazon ECR registry.',
-                      }),
-                  ).exactOptional(),
+                  ZipFile: BlobSchema.exactOptional().openapi({
+                    description:
+                      'The base64-encoded contents of the deployment package. Amazon Web Services SDK and CLI clients handle the encoding for you.',
+                  }),
+                  S3Bucket: S3BucketSchema.exactOptional().openapi({
+                    description:
+                      'An Amazon S3 bucket in the same Amazon Web Services Region as your function. The bucket can be in a different Amazon Web Services account.',
+                  }),
+                  S3Key: S3KeySchema.exactOptional().openapi({
+                    description: 'The Amazon S3 key of the deployment package.',
+                  }),
+                  S3ObjectVersion: S3ObjectVersionSchema.exactOptional().openapi({
+                    description:
+                      'For versioned objects, the version of the deployment package object to use.',
+                  }),
+                  ImageUri: StringSchema.exactOptional().openapi({
+                    description:
+                      'URI of a <a href="https://docs.aws.amazon.com/lambda/latest/dg/lambda-images.html">container image</a> in the Amazon ECR registry.',
+                  }),
                 })
                 .openapi({
                   description:
@@ -6064,12 +4817,12 @@ export const post20150331FunctionsRoute = createRoute({
                 }),
               VpcConfig: z
                 .object({
-                  SubnetIds: SubnetIdsSchema.and(
-                    z.any().openapi({ description: 'A list of VPC subnet IDs.' }),
-                  ).exactOptional(),
-                  SecurityGroupIds: SecurityGroupIdsSchema.and(
-                    z.any().openapi({ description: 'A list of VPC security group IDs.' }),
-                  ).exactOptional(),
+                  SubnetIds: SubnetIdsSchema.exactOptional().openapi({
+                    description: 'A list of VPC subnet IDs.',
+                  }),
+                  SecurityGroupIds: SecurityGroupIdsSchema.exactOptional().openapi({
+                    description: 'A list of VPC security group IDs.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -6086,14 +4839,10 @@ export const post20150331FunctionsRoute = createRoute({
                 }),
               DeadLetterConfig: z
                 .object({
-                  TargetArn: ResourceArnSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The Amazon Resource Name (ARN) of an Amazon SQS queue or Amazon SNS topic.',
-                      }),
-                  ).exactOptional(),
+                  TargetArn: ResourceArnSchema.exactOptional().openapi({
+                    description:
+                      'The Amazon Resource Name (ARN) of an Amazon SQS queue or Amazon SNS topic.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -6103,14 +4852,10 @@ export const post20150331FunctionsRoute = createRoute({
                 }),
               Environment: z
                 .object({
-                  Variables: EnvironmentVariablesSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Environment variable key-value pairs. For more information, see <a href="https://docs.aws.amazon.com/lambda/latest/dg/configuration-envvars.html">Using Lambda environment variables</a>.',
-                      }),
-                  ).exactOptional(),
+                  Variables: EnvironmentVariablesSchema.exactOptional().openapi({
+                    description:
+                      'Environment variable key-value pairs. For more information, see <a href="https://docs.aws.amazon.com/lambda/latest/dg/configuration-envvars.html">Using Lambda environment variables</a>.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -6128,9 +4873,9 @@ export const post20150331FunctionsRoute = createRoute({
                 }),
               TracingConfig: z
                 .object({
-                  Mode: TracingModeSchema.and(
-                    z.any().openapi({ description: 'The tracing mode.' }),
-                  ).exactOptional(),
+                  Mode: TracingModeSchema.exactOptional().openapi({
+                    description: 'The tracing mode.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -6159,25 +4904,16 @@ export const post20150331FunctionsRoute = createRoute({
                 .openapi({ description: 'Connection settings for an Amazon EFS file system.' }),
               ImageConfig: z
                 .object({
-                  EntryPoint: StringListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Specifies the entry point to their application, which is typically the location of the runtime executable.',
-                      }),
-                  ).exactOptional(),
-                  Command: StringListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Specifies parameters that you want to pass in with ENTRYPOINT.',
-                      }),
-                  ).exactOptional(),
-                  WorkingDirectory: WorkingDirectorySchema.and(
-                    z.any().openapi({ description: 'Specifies the working directory.' }),
-                  ).exactOptional(),
+                  EntryPoint: StringListSchema.exactOptional().openapi({
+                    description:
+                      'Specifies the entry point to their application, which is typically the location of the runtime executable.',
+                  }),
+                  Command: StringListSchema.exactOptional().openapi({
+                    description: 'Specifies parameters that you want to pass in with ENTRYPOINT.',
+                  }),
+                  WorkingDirectory: WorkingDirectorySchema.exactOptional().openapi({
+                    description: 'Specifies the working directory.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -6206,13 +4942,9 @@ export const post20150331FunctionsRoute = createRoute({
                 }),
               EphemeralStorage: z
                 .object({
-                  Size: EphemeralStorageSizeSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: "The size of the function's <code>/tmp</code> directory.",
-                      }),
-                  ).exactOptional(),
+                  Size: EphemeralStorageSizeSchema.exactOptional().openapi({
+                    description: "The size of the function's <code>/tmp</code> directory.",
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -6222,14 +4954,10 @@ export const post20150331FunctionsRoute = createRoute({
                 }),
               SnapStart: z
                 .object({
-                  ApplyOn: SnapStartApplyOnSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Set to <code>PublishedVersions</code> to create a snapshot of the initialized execution environment when you publish a function version.',
-                      }),
-                  ).exactOptional(),
+                  ApplyOn: SnapStartApplyOnSchema.exactOptional().openapi({
+                    description:
+                      'Set to <code>PublishedVersions</code> to create a snapshot of the initialized execution environment when you publish a function version.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -6451,54 +5179,30 @@ export const put20211031FunctionsFunctionNameUrlRoute = createRoute({
                 }),
               Cors: z
                 .object({
-                  AllowCredentials: AllowCredentialsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Whether to allow cookies or other credentials in requests to your function URL. The default is <code>false</code>.',
-                      }),
-                  ).exactOptional(),
-                  AllowHeaders: HeadersListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The HTTP headers that origins can include in requests to your function URL. For example: <code>Date</code>, <code>Keep-Alive</code>, <code>X-Custom-Header</code>.',
-                      }),
-                  ).exactOptional(),
-                  AllowMethods: AllowMethodsListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The HTTP methods that are allowed when calling your function URL. For example: <code>GET</code>, <code>POST</code>, <code>DELETE</code>, or the wildcard character (<code>*</code>).',
-                      }),
-                  ).exactOptional(),
-                  AllowOrigins: AllowOriginsListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>The origins that can access your function URL. You can list any number of specific origins, separated by a comma. For example: <code>https://www.example.com</code>, <code>http://localhost:60905</code>.</p> <p>Alternatively, you can grant access to all origins using the wildcard character (<code>*</code>).</p>',
-                      }),
-                  ).exactOptional(),
-                  ExposeHeaders: HeadersListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The HTTP headers in your function response that you want to expose to origins that call your function URL. For example: <code>Date</code>, <code>Keep-Alive</code>, <code>X-Custom-Header</code>.',
-                      }),
-                  ).exactOptional(),
-                  MaxAge: MaxAgeSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          "The maximum amount of time, in seconds, that web browsers can cache results of a preflight request. By default, this is set to <code>0</code>, which means that the browser doesn't cache results.",
-                      }),
-                  ).exactOptional(),
+                  AllowCredentials: AllowCredentialsSchema.exactOptional().openapi({
+                    description:
+                      'Whether to allow cookies or other credentials in requests to your function URL. The default is <code>false</code>.',
+                  }),
+                  AllowHeaders: HeadersListSchema.exactOptional().openapi({
+                    description:
+                      'The HTTP headers that origins can include in requests to your function URL. For example: <code>Date</code>, <code>Keep-Alive</code>, <code>X-Custom-Header</code>.',
+                  }),
+                  AllowMethods: AllowMethodsListSchema.exactOptional().openapi({
+                    description:
+                      'The HTTP methods that are allowed when calling your function URL. For example: <code>GET</code>, <code>POST</code>, <code>DELETE</code>, or the wildcard character (<code>*</code>).',
+                  }),
+                  AllowOrigins: AllowOriginsListSchema.exactOptional().openapi({
+                    description:
+                      '<p>The origins that can access your function URL. You can list any number of specific origins, separated by a comma. For example: <code>https://www.example.com</code>, <code>http://localhost:60905</code>.</p> <p>Alternatively, you can grant access to all origins using the wildcard character (<code>*</code>).</p>',
+                  }),
+                  ExposeHeaders: HeadersListSchema.exactOptional().openapi({
+                    description:
+                      'The HTTP headers in your function response that you want to expose to origins that call your function URL. For example: <code>Date</code>, <code>Keep-Alive</code>, <code>X-Custom-Header</code>.',
+                  }),
+                  MaxAge: MaxAgeSchema.exactOptional().openapi({
+                    description:
+                      "The maximum amount of time, in seconds, that web browsers can cache results of a preflight request. By default, this is set to <code>0</code>, which means that the browser doesn't cache results.",
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -6624,54 +5328,30 @@ export const post20211031FunctionsFunctionNameUrlRoute = createRoute({
                 }),
               Cors: z
                 .object({
-                  AllowCredentials: AllowCredentialsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Whether to allow cookies or other credentials in requests to your function URL. The default is <code>false</code>.',
-                      }),
-                  ).exactOptional(),
-                  AllowHeaders: HeadersListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The HTTP headers that origins can include in requests to your function URL. For example: <code>Date</code>, <code>Keep-Alive</code>, <code>X-Custom-Header</code>.',
-                      }),
-                  ).exactOptional(),
-                  AllowMethods: AllowMethodsListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The HTTP methods that are allowed when calling your function URL. For example: <code>GET</code>, <code>POST</code>, <code>DELETE</code>, or the wildcard character (<code>*</code>).',
-                      }),
-                  ).exactOptional(),
-                  AllowOrigins: AllowOriginsListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>The origins that can access your function URL. You can list any number of specific origins, separated by a comma. For example: <code>https://www.example.com</code>, <code>http://localhost:60905</code>.</p> <p>Alternatively, you can grant access to all origins using the wildcard character (<code>*</code>).</p>',
-                      }),
-                  ).exactOptional(),
-                  ExposeHeaders: HeadersListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The HTTP headers in your function response that you want to expose to origins that call your function URL. For example: <code>Date</code>, <code>Keep-Alive</code>, <code>X-Custom-Header</code>.',
-                      }),
-                  ).exactOptional(),
-                  MaxAge: MaxAgeSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          "The maximum amount of time, in seconds, that web browsers can cache results of a preflight request. By default, this is set to <code>0</code>, which means that the browser doesn't cache results.",
-                      }),
-                  ).exactOptional(),
+                  AllowCredentials: AllowCredentialsSchema.exactOptional().openapi({
+                    description:
+                      'Whether to allow cookies or other credentials in requests to your function URL. The default is <code>false</code>.',
+                  }),
+                  AllowHeaders: HeadersListSchema.exactOptional().openapi({
+                    description:
+                      'The HTTP headers that origins can include in requests to your function URL. For example: <code>Date</code>, <code>Keep-Alive</code>, <code>X-Custom-Header</code>.',
+                  }),
+                  AllowMethods: AllowMethodsListSchema.exactOptional().openapi({
+                    description:
+                      'The HTTP methods that are allowed when calling your function URL. For example: <code>GET</code>, <code>POST</code>, <code>DELETE</code>, or the wildcard character (<code>*</code>).',
+                  }),
+                  AllowOrigins: AllowOriginsListSchema.exactOptional().openapi({
+                    description:
+                      '<p>The origins that can access your function URL. You can list any number of specific origins, separated by a comma. For example: <code>https://www.example.com</code>, <code>http://localhost:60905</code>.</p> <p>Alternatively, you can grant access to all origins using the wildcard character (<code>*</code>).</p>',
+                  }),
+                  ExposeHeaders: HeadersListSchema.exactOptional().openapi({
+                    description:
+                      'The HTTP headers in your function response that you want to expose to origins that call your function URL. For example: <code>Date</code>, <code>Keep-Alive</code>, <code>X-Custom-Header</code>.',
+                  }),
+                  MaxAge: MaxAgeSchema.exactOptional().openapi({
+                    description:
+                      "The maximum amount of time, in seconds, that web browsers can cache results of a preflight request. By default, this is set to <code>0</code>, which means that the browser doesn't cache results.",
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -6971,14 +5651,10 @@ export const put20150331FunctionsFunctionNameAliasesNameRoute = createRoute({
                 .openapi({ description: 'A description of the alias.' }),
               RoutingConfig: z
                 .object({
-                  AdditionalVersionWeights: AdditionalVersionWeightsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          "The second version, and the percentage of traffic that's routed to it.",
-                      }),
-                  ).exactOptional(),
+                  AdditionalVersionWeights: AdditionalVersionWeightsSchema.exactOptional().openapi({
+                    description:
+                      "The second version, and the percentage of traffic that's routed to it.",
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -7223,14 +5899,11 @@ export const put20200422CodeSigningConfigsCodeSigningConfigArnRoute = createRout
                 .openapi({ description: 'Descriptive name for this code signing configuration.' }),
               AllowedPublishers: z
                 .object({
-                  SigningProfileVersionArns: SigningProfileVersionArnsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The Amazon Resource Name (ARN) for each of the signing profiles. A signing profile defines a trusted user who can sign a code package. ',
-                      }),
-                  ).exactOptional(),
+                  SigningProfileVersionArns:
+                    SigningProfileVersionArnsSchema.exactOptional().openapi({
+                      description:
+                        'The Amazon Resource Name (ARN) for each of the signing profiles. A signing profile defines a trusted user who can sign a code package. ',
+                    }),
                 })
                 .exactOptional()
                 .openapi({
@@ -7239,14 +5912,10 @@ export const put20200422CodeSigningConfigsCodeSigningConfigArnRoute = createRout
                 }),
               CodeSigningPolicies: z
                 .object({
-                  UntrustedArtifactOnDeployment: CodeSigningPolicySchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>Code signing configuration policy for deployment validation failure. If you set the policy to <code>Enforce</code>, Lambda blocks the deployment request if signature validation checks fail. If you set the policy to <code>Warn</code>, Lambda allows the deployment and creates a CloudWatch log. </p> <p>Default value: <code>Warn</code> </p>',
-                      }),
-                  ).exactOptional(),
+                  UntrustedArtifactOnDeployment: CodeSigningPolicySchema.exactOptional().openapi({
+                    description:
+                      '<p>Code signing configuration policy for deployment validation failure. If you set the policy to <code>Enforce</code>, Lambda blocks the deployment request if signature validation checks fail. If you set the policy to <code>Warn</code>, Lambda allows the deployment and creates a CloudWatch log. </p> <p>Default value: <code>Warn</code> </p>',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -7462,9 +6131,9 @@ export const put20150331EventSourceMappingsUUIDRoute = createRoute({
                 }),
               FilterCriteria: z
                 .object({
-                  Filters: FilterListSchema.and(
-                    z.any().openapi({ description: ' A list of filters. ' }),
-                  ).exactOptional(),
+                  Filters: FilterListSchema.exactOptional().openapi({
+                    description: ' A list of filters. ',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -7482,20 +6151,12 @@ export const put20150331EventSourceMappingsUUIDRoute = createRoute({
                 }),
               DestinationConfig: z
                 .object({
-                  OnSuccess: OnSuccessSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The destination configuration for successful invocations.',
-                      }),
-                  ).exactOptional(),
-                  OnFailure: OnFailureSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The destination configuration for failed invocations.',
-                      }),
-                  ).exactOptional(),
+                  OnSuccess: OnSuccessSchema.exactOptional().openapi({
+                    description: 'The destination configuration for successful invocations.',
+                  }),
+                  OnFailure: OnFailureSchema.exactOptional().openapi({
+                    description: 'The destination configuration for failed invocations.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -7566,14 +6227,10 @@ export const put20150331EventSourceMappingsUUIDRoute = createRoute({
                 }),
               ScalingConfig: z
                 .object({
-                  MaximumConcurrency: MaximumConcurrencySchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Limits the number of concurrent instances that the Amazon SQS event source can invoke.',
-                      }),
-                  ).exactOptional(),
+                  MaximumConcurrency: MaximumConcurrencySchema.exactOptional().openapi({
+                    description:
+                      'Limits the number of concurrent instances that the Amazon SQS event source can invoke.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -7583,30 +6240,18 @@ export const put20150331EventSourceMappingsUUIDRoute = createRoute({
                 }),
               DocumentDBEventSourceConfig: z
                 .object({
-                  DatabaseName: DatabaseNameSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          ' The name of the database to consume within the DocumentDB cluster. ',
-                      }),
-                  ).exactOptional(),
-                  CollectionName: CollectionNameSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          ' The name of the collection to consume within the database. If you do not specify a collection, Lambda consumes all collections. ',
-                      }),
-                  ).exactOptional(),
-                  FullDocument: FullDocumentSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          ' Determines what DocumentDB sends to your event stream during document update operations. If set to UpdateLookup, DocumentDB sends a delta describing the changes, along with a copy of the entire document. Otherwise, DocumentDB sends only a partial document that contains the changes. ',
-                      }),
-                  ).exactOptional(),
+                  DatabaseName: DatabaseNameSchema.exactOptional().openapi({
+                    description:
+                      ' The name of the database to consume within the DocumentDB cluster. ',
+                  }),
+                  CollectionName: CollectionNameSchema.exactOptional().openapi({
+                    description:
+                      ' The name of the collection to consume within the database. If you do not specify a collection, Lambda consumes all collections. ',
+                  }),
+                  FullDocument: FullDocumentSchema.exactOptional().openapi({
+                    description:
+                      ' Determines what DocumentDB sends to your event stream during document update operations. If set to UpdateLookup, DocumentDB sends a delta describing the changes, along with a copy of the entire document. Otherwise, DocumentDB sends only a partial document that contains the changes. ',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -8429,20 +7074,12 @@ export const put20190925FunctionsFunctionNameEventInvokeConfigRoute = createRout
                 }),
               DestinationConfig: z
                 .object({
-                  OnSuccess: OnSuccessSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The destination configuration for successful invocations.',
-                      }),
-                  ).exactOptional(),
-                  OnFailure: OnFailureSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The destination configuration for failed invocations.',
-                      }),
-                  ).exactOptional(),
+                  OnSuccess: OnSuccessSchema.exactOptional().openapi({
+                    description: 'The destination configuration for successful invocations.',
+                  }),
+                  OnFailure: OnFailureSchema.exactOptional().openapi({
+                    description: 'The destination configuration for failed invocations.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -8568,20 +7205,12 @@ export const post20190925FunctionsFunctionNameEventInvokeConfigRoute = createRou
                 }),
               DestinationConfig: z
                 .object({
-                  OnSuccess: OnSuccessSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The destination configuration for successful invocations.',
-                      }),
-                  ).exactOptional(),
-                  OnFailure: OnFailureSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The destination configuration for failed invocations.',
-                      }),
-                  ).exactOptional(),
+                  OnSuccess: OnSuccessSchema.exactOptional().openapi({
+                    description: 'The destination configuration for successful invocations.',
+                  }),
+                  OnFailure: OnFailureSchema.exactOptional().openapi({
+                    description: 'The destination configuration for failed invocations.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -9408,12 +8037,12 @@ export const put20150331FunctionsFunctionNameConfigurationRoute = createRoute({
                 }),
               VpcConfig: z
                 .object({
-                  SubnetIds: SubnetIdsSchema.and(
-                    z.any().openapi({ description: 'A list of VPC subnet IDs.' }),
-                  ).exactOptional(),
-                  SecurityGroupIds: SecurityGroupIdsSchema.and(
-                    z.any().openapi({ description: 'A list of VPC security group IDs.' }),
-                  ).exactOptional(),
+                  SubnetIds: SubnetIdsSchema.exactOptional().openapi({
+                    description: 'A list of VPC subnet IDs.',
+                  }),
+                  SecurityGroupIds: SecurityGroupIdsSchema.exactOptional().openapi({
+                    description: 'A list of VPC security group IDs.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -9423,14 +8052,10 @@ export const put20150331FunctionsFunctionNameConfigurationRoute = createRoute({
                 }),
               Environment: z
                 .object({
-                  Variables: EnvironmentVariablesSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Environment variable key-value pairs. For more information, see <a href="https://docs.aws.amazon.com/lambda/latest/dg/configuration-envvars.html">Using Lambda environment variables</a>.',
-                      }),
-                  ).exactOptional(),
+                  Variables: EnvironmentVariablesSchema.exactOptional().openapi({
+                    description:
+                      'Environment variable key-value pairs. For more information, see <a href="https://docs.aws.amazon.com/lambda/latest/dg/configuration-envvars.html">Using Lambda environment variables</a>.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -9480,14 +8105,10 @@ export const put20150331FunctionsFunctionNameConfigurationRoute = createRoute({
                 }),
               DeadLetterConfig: z
                 .object({
-                  TargetArn: ResourceArnSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The Amazon Resource Name (ARN) of an Amazon SQS queue or Amazon SNS topic.',
-                      }),
-                  ).exactOptional(),
+                  TargetArn: ResourceArnSchema.exactOptional().openapi({
+                    description:
+                      'The Amazon Resource Name (ARN) of an Amazon SQS queue or Amazon SNS topic.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -9505,9 +8126,9 @@ export const put20150331FunctionsFunctionNameConfigurationRoute = createRoute({
                 }),
               TracingConfig: z
                 .object({
-                  Mode: TracingModeSchema.and(
-                    z.any().openapi({ description: 'The tracing mode.' }),
-                  ).exactOptional(),
+                  Mode: TracingModeSchema.exactOptional().openapi({
+                    description: 'The tracing mode.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -9536,25 +8157,16 @@ export const put20150331FunctionsFunctionNameConfigurationRoute = createRoute({
                 .openapi({ description: 'Connection settings for an Amazon EFS file system.' }),
               ImageConfig: z
                 .object({
-                  EntryPoint: StringListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Specifies the entry point to their application, which is typically the location of the runtime executable.',
-                      }),
-                  ).exactOptional(),
-                  Command: StringListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Specifies parameters that you want to pass in with ENTRYPOINT.',
-                      }),
-                  ).exactOptional(),
-                  WorkingDirectory: WorkingDirectorySchema.and(
-                    z.any().openapi({ description: 'Specifies the working directory.' }),
-                  ).exactOptional(),
+                  EntryPoint: StringListSchema.exactOptional().openapi({
+                    description:
+                      'Specifies the entry point to their application, which is typically the location of the runtime executable.',
+                  }),
+                  Command: StringListSchema.exactOptional().openapi({
+                    description: 'Specifies parameters that you want to pass in with ENTRYPOINT.',
+                  }),
+                  WorkingDirectory: WorkingDirectorySchema.exactOptional().openapi({
+                    description: 'Specifies the working directory.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -9564,13 +8176,9 @@ export const put20150331FunctionsFunctionNameConfigurationRoute = createRoute({
                 }),
               EphemeralStorage: z
                 .object({
-                  Size: EphemeralStorageSizeSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: "The size of the function's <code>/tmp</code> directory.",
-                      }),
-                  ).exactOptional(),
+                  Size: EphemeralStorageSizeSchema.exactOptional().openapi({
+                    description: "The size of the function's <code>/tmp</code> directory.",
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -9580,14 +8188,10 @@ export const put20150331FunctionsFunctionNameConfigurationRoute = createRoute({
                 }),
               SnapStart: z
                 .object({
-                  ApplyOn: SnapStartApplyOnSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Set to <code>PublishedVersions</code> to create a snapshot of the initialized execution environment when you publish a function version.',
-                      }),
-                  ).exactOptional(),
+                  ApplyOn: SnapStartApplyOnSchema.exactOptional().openapi({
+                    description:
+                      'Set to <code>PublishedVersions</code> to create a snapshot of the initialized execution environment when you publish a function version.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -11139,28 +9743,20 @@ export const post20181031LayersLayerNameVersionsRoute = createRoute({
                 .openapi({ description: 'The description of the version.' }),
               Content: z
                 .object({
-                  S3Bucket: S3BucketSchema.and(
-                    z.any().openapi({ description: 'The Amazon S3 bucket of the layer archive.' }),
-                  ).exactOptional(),
-                  S3Key: S3KeySchema.and(
-                    z.any().openapi({ description: 'The Amazon S3 key of the layer archive.' }),
-                  ).exactOptional(),
-                  S3ObjectVersion: S3ObjectVersionSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'For versioned objects, the version of the layer archive object to use.',
-                      }),
-                  ).exactOptional(),
-                  ZipFile: BlobSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The base64-encoded contents of the layer archive. Amazon Web Services SDK and Amazon Web Services CLI clients handle the encoding for you.',
-                      }),
-                  ).exactOptional(),
+                  S3Bucket: S3BucketSchema.exactOptional().openapi({
+                    description: 'The Amazon S3 bucket of the layer archive.',
+                  }),
+                  S3Key: S3KeySchema.exactOptional().openapi({
+                    description: 'The Amazon S3 key of the layer archive.',
+                  }),
+                  S3ObjectVersion: S3ObjectVersionSchema.exactOptional().openapi({
+                    description:
+                      'For versioned objects, the version of the layer archive object to use.',
+                  }),
+                  ZipFile: BlobSchema.exactOptional().openapi({
+                    description:
+                      'The base64-encoded contents of the layer archive. Amazon Web Services SDK and Amazon Web Services CLI clients handle the encoding for you.',
+                  }),
                 })
                 .openapi({
                   description:

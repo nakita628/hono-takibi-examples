@@ -1060,7 +1060,7 @@ const ValidationErrorSchema = z
     msg: z.string().openapi({ title: 'Message' }),
     type: z.string().openapi({ title: 'Error Type' }),
     input: z.any().exactOptional().openapi({ title: 'Input' }),
-    ctx: z.object({}).exactOptional().openapi({ title: 'Context' }),
+    ctx: z.looseObject({}).exactOptional().openapi({ title: 'Context' }),
   })
   .openapi({ required: ['loc', 'msg', 'type'], title: 'ValidationError' })
   .openapi('ValidationError')
@@ -1507,6 +1507,23 @@ const FrigateUserAuthSecurityScheme = {
     "Any authenticated session (role 'viewer' or higher), established via the JWT cookie issued by POST /login, or via proxy auth headers when Frigate runs behind an authenticating reverse proxy.",
 }
 
+export const getAnalyticsPreviewRoute = createRoute({
+  method: 'get',
+  path: '/analytics/preview',
+  tags: ['Analytics'],
+  summary: 'Get Analytics Preview',
+  description:
+    '**Access:** Admin role required.\n\nGet the analytics report Frigate would send next, without sending it.',
+  operationId: 'get_analytics_preview_analytics_preview_get',
+  responses: {
+    200: {
+      description: 'Successful Response',
+      content: { 'application/json': { schema: z.any() } },
+    },
+  },
+  security: [{ frigateAdminAuth: [] }],
+})
+
 export const getAuthFirstTimeLoginRoute = createRoute({
   method: 'get',
   path: '/auth/first_time_login',
@@ -1537,36 +1554,27 @@ export const getAuthRoute = createRoute({
       description: 'Authentication Accepted (no response body)',
       content: { 'application/json': { schema: z.any() } },
       headers: z.object({
-        'remote-user': {
-          description: 'Authenticated username or "viewer" in proxy-only mode',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Authenticated username or "viewer" in proxy-only mode',
-              param: { required: false },
-            }),
-        },
-        'remote-role': {
-          description: 'Resolved role (e.g., admin, viewer, or custom)',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Resolved role (e.g., admin, viewer, or custom)',
-              param: { required: false },
-            }),
-        },
-        'Set-Cookie': {
-          description: 'May include refreshed JWT cookie when applicable',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'May include refreshed JWT cookie when applicable',
-              param: { required: false },
-            }),
-        },
+        'remote-user': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Authenticated username or "viewer" in proxy-only mode',
+            param: { required: false },
+          }),
+        'remote-role': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Resolved role (e.g., admin, viewer, or custom)',
+            param: { required: false },
+          }),
+        'Set-Cookie': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'May include refreshed JWT cookie when applicable',
+            param: { required: false },
+          }),
       }),
     },
     401: { description: 'Authentication Failed' },
@@ -4885,6 +4893,23 @@ export const getPlusModelsRoute = createRoute({
     },
   },
   security: [{ frigateUserAuth: [] }],
+})
+
+export const postPlusValidateRoute = createRoute({
+  method: 'post',
+  path: '/plus/validate',
+  tags: ['App'],
+  summary: 'Validate Plus Key',
+  description:
+    '**Access:** Admin role required.\n\nValidate the configured Frigate+ API key with the Frigate+ server.',
+  operationId: 'validate_plus_key_plus_validate_post',
+  responses: {
+    200: {
+      description: 'Successful Response',
+      content: { 'application/json': { schema: z.any() } },
+    },
+  },
+  security: [{ frigateAdminAuth: [] }],
 })
 
 export const getRecognizedLicensePlatesRoute = createRoute({
@@ -8761,7 +8786,8 @@ export const getCameraNameRoute = createRoute({
   path: '/{camera_name}',
   tags: ['Media'],
   summary: 'Mjpeg Feed',
-  description: '**Access:** Authenticated user with access to the referenced camera.',
+  description:
+    "**Access:** Authenticated user with access to the referenced camera.\n\nAn MJPEG stream of the camera's latest processed frame, intended for debugging only. Every frame of every open stream is color converted, annotated, resized, and JPEG encoded in Frigate's main process, which adds load to the system and can slow down Frigate's processing. It is strictly not recommended to view this stream continuously, such as on a dashboard. For live viewing, use a go2rtc restream instead. The frame rate and resolution can be raised with the fps and height parameters, for example ?fps=10&height=1080, at the cost of additional load.",
   operationId: 'mjpeg_feed__camera_name__get',
   request: {
     params: z.object({
@@ -9834,7 +9860,7 @@ export const getVodEventEventIdRoute = createRoute({
             (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
               ? Number(val)
               : val,
-          z.int(),
+          z.int().min(0),
         )
         .default(0)
         .exactOptional()
@@ -9845,6 +9871,7 @@ export const getVodEventEventIdRoute = createRoute({
             required: false,
             schema: {
               type: 'integer',
+              minimum: 0,
               description: 'Padding to apply to the vod.',
               default: 0,
               title: 'Padding',
@@ -11703,7 +11730,7 @@ export const getRecordingsUnavailableRoute = createRoute({
             (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
               ? Number(val)
               : val,
-          z.int(),
+          z.int().min(1),
         )
         .default(30)
         .exactOptional()
@@ -11712,7 +11739,7 @@ export const getRecordingsUnavailableRoute = createRoute({
             name: 'scale',
             in: 'query',
             required: false,
-            schema: { type: 'integer', default: 30, title: 'Scale' },
+            schema: { type: 'integer', minimum: 1, default: 30, title: 'Scale' },
           },
           title: 'Scale',
         }),

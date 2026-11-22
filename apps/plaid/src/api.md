@@ -1,4 +1,4 @@
-<h1 id="the-plaid-api">The Plaid API v2020-09-14_1.778.0</h1>
+<h1 id="the-plaid-api">The Plaid API v2020-09-14_1.822.2</h1>
 
 > Scroll down for code samples, example requests and responses. Select a language for code samples from the tabs above or the mobile navigation menu.
 
@@ -34,12 +34,15 @@ Web: <a href="https://plaid.com">Plaid Developer Team</a>
 |cra:read|Read CRA report data.|
 |user:write|Write user data.|
 |item:read|Read Item data.|
+|link:read|Read Link session results.|
 |link:write|Create Link tokens.|
 |item:write|Exchange a public token for an access token.|
 |auth:read|Read Auth data.|
 |accounts:read|Read account data.|
 |identity:read|Read Identity data.|
 |transactions:read|Read Transactions data.|
+|identity_verification:read|Read Identity Verification data.|
+|identity_verification:write|Create and retry Identity Verifications.|
 |issues:read|Read institution issue data.|
 |issues:write|Manage institution issue subscriptions.|
 
@@ -258,8 +261,8 @@ For latency-sensitive applications, you can optionally call `/asset_report/creat
 |» secret|body|[APISecret](#schemaapisecret)|false|Your Plaid API `secret`. The `secret` is required and may be provided either in the `PLAID-SECRET` header or as part of a request body.|
 |» asset_report_token|body|[AssetReportTokenNullable](#schemaassetreporttokennullable)|false|A token that can be provided to endpoints such as `/asset_report/get` or `/asset_report/pdf/get` to fetch or update an Asset Report.|
 |» user_token|body|string|false|The user token associated with the User for which to create an asset report for. The latest asset report associated with the User will be returned|
-|» include_insights|body|boolean|false|`true` if you would like to retrieve the Asset Report with Insights, `false` otherwise. This field defaults to `false` if omitted.|
-|» fast_report|body|boolean|false|`true` to fetch "fast" version of asset report. Defaults to false if omitted. Can only be used if `/asset_report/create` was called with `options.add_ons` set to `["fast_assets"]`.|
+|» include_insights|body|boolean|false|If `true`, retrieves the Asset Report with Insights.|
+|» fast_report|body|boolean|false|If `true`, retrieves the Fast Asset Report. If `false`, retrieves the Full Asset Report. To set this field to `true`, you must call `/asset_report/create` with `options.add_ons` set to `["fast_assets"]`.|
 |» options|body|[AssetReportGetRequestOptions](#schemaassetreportgetrequestoptions)|false|An optional object to filter or add data to `/asset_report/get` results. If provided, must be non-`null`.|
 
 > Example responses
@@ -1372,7 +1375,12 @@ curl https://example.com/asset_report/audit_copy/get \
           "cash_flow": {
             "amount": 0,
             "iso_currency_code": "string",
-            "unofficial_currency_code": "string"
+            "unofficial_currency_code": "string",
+            "monthly_average": {
+              "amount": 0,
+              "iso_currency_code": "string",
+              "unofficial_currency_code": "string"
+            }
           },
           "total_expenditure": {
             "amount": 0,
@@ -1393,6 +1401,17 @@ curl https://example.com/asset_report/audit_copy/get \
                 "iso_currency_code": "string",
                 "unofficial_currency_code": "string",
                 "monthly_average": {
+                  "amount": 0,
+                  "iso_currency_code": "string",
+                  "unofficial_currency_code": "string"
+                }
+              }
+            ],
+            "monthly_summaries": [
+              {
+                "start_date": "1970-01-01",
+                "end_date": "1970-01-01",
+                "total_amount": {
                   "amount": 0,
                   "iso_currency_code": "string",
                   "unofficial_currency_code": "string"
@@ -1424,6 +1443,17 @@ curl https://example.com/asset_report/audit_copy/get \
                   "unofficial_currency_code": "string"
                 }
               }
+            ],
+            "monthly_summaries": [
+              {
+                "start_date": "1970-01-01",
+                "end_date": "1970-01-01",
+                "total_amount": {
+                  "amount": 0,
+                  "iso_currency_code": "string",
+                  "unofficial_currency_code": "string"
+                }
+              }
             ]
           },
           "non_essential_expenditure": {
@@ -1450,9 +1480,20 @@ curl https://example.com/asset_report/audit_copy/get \
                   "unofficial_currency_code": "string"
                 }
               }
+            ],
+            "monthly_summaries": [
+              {
+                "start_date": "1970-01-01",
+                "end_date": "1970-01-01",
+                "total_amount": {
+                  "amount": 0,
+                  "iso_currency_code": "string",
+                  "unofficial_currency_code": "string"
+                }
+              }
             ]
           },
-          "other": {
+          "other_expenditure": {
             "amount": 0,
             "iso_currency_code": "string",
             "unofficial_currency_code": "string",
@@ -1471,6 +1512,17 @@ curl https://example.com/asset_report/audit_copy/get \
                 "iso_currency_code": "string",
                 "unofficial_currency_code": "string",
                 "monthly_average": {
+                  "amount": 0,
+                  "iso_currency_code": "string",
+                  "unofficial_currency_code": "string"
+                }
+              }
+            ],
+            "monthly_summaries": [
+              {
+                "start_date": "1970-01-01",
+                "end_date": "1970-01-01",
+                "total_amount": {
                   "amount": 0,
                   "iso_currency_code": "string",
                   "unofficial_currency_code": "string"
@@ -1497,6 +1549,17 @@ curl https://example.com/asset_report/audit_copy/get \
                 "iso_currency_code": "string",
                 "unofficial_currency_code": "string",
                 "monthly_average": {
+                  "amount": 0,
+                  "iso_currency_code": "string",
+                  "unofficial_currency_code": "string"
+                }
+              }
+            ],
+            "monthly_summaries": [
+              {
+                "start_date": "1970-01-01",
+                "end_date": "1970-01-01",
+                "total_amount": {
                   "amount": 0,
                   "iso_currency_code": "string",
                   "unofficial_currency_code": "string"
@@ -1531,17 +1594,32 @@ curl https://example.com/asset_report/audit_copy/get \
           "total_income": {
             "amount": 0,
             "iso_currency_code": "string",
-            "unofficial_currency_code": "string"
+            "unofficial_currency_code": "string",
+            "monthly_average": {
+              "amount": 0,
+              "iso_currency_code": "string",
+              "unofficial_currency_code": "string"
+            }
           },
           "income_excluding_transfers": {
             "amount": 0,
             "iso_currency_code": "string",
-            "unofficial_currency_code": "string"
+            "unofficial_currency_code": "string",
+            "monthly_average": {
+              "amount": 0,
+              "iso_currency_code": "string",
+              "unofficial_currency_code": "string"
+            }
           },
           "transfers_in": {
             "amount": 0,
             "iso_currency_code": "string",
-            "unofficial_currency_code": "string"
+            "unofficial_currency_code": "string",
+            "monthly_average": {
+              "amount": 0,
+              "iso_currency_code": "string",
+              "unofficial_currency_code": "string"
+            }
           }
         }
       }
@@ -1628,7 +1706,7 @@ curl https://example.com/asset_report/audit_copy/get \
                 "pending_transaction_id": "string",
                 "account_owner": "string",
                 "transaction_id": "string",
-                "transaction_type": "digital",
+                "transaction_type": {},
                 "income_source_id": "string"
               }
             ],
@@ -1638,6 +1716,7 @@ curl https://example.com/asset_report/audit_copy/get \
                   "account_id": "string",
                   "security_id": "string",
                   "ticker_symbol": "string",
+                  "name": "string",
                   "institution_price": 0,
                   "institution_price_as_of": "1970-01-01",
                   "institution_value": 0,
@@ -1678,8 +1757,8 @@ curl https://example.com/asset_report/audit_copy/get \
                   "amount": 0,
                   "price": 0,
                   "fees": 0,
-                  "type": "buy",
-                  "subtype": "account fee",
+                  "type": {},
+                  "subtype": {},
                   "iso_currency_code": "string",
                   "unofficial_currency_code": "string"
                 }
@@ -1902,7 +1981,12 @@ curl https://example.com/asset_report/audit_copy/get \
                   "cash_flow": {
                     "amount": 0,
                     "iso_currency_code": "string",
-                    "unofficial_currency_code": "string"
+                    "unofficial_currency_code": "string",
+                    "monthly_average": {
+                      "amount": 0,
+                      "iso_currency_code": "string",
+                      "unofficial_currency_code": "string"
+                    }
                   },
                   "total_expenditure": {
                     "amount": 0,
@@ -1923,6 +2007,17 @@ curl https://example.com/asset_report/audit_copy/get \
                         "iso_currency_code": "string",
                         "unofficial_currency_code": "string",
                         "monthly_average": {
+                          "amount": 0,
+                          "iso_currency_code": "string",
+                          "unofficial_currency_code": "string"
+                        }
+                      }
+                    ],
+                    "monthly_summaries": [
+                      {
+                        "start_date": "1970-01-01",
+                        "end_date": "1970-01-01",
+                        "total_amount": {
                           "amount": 0,
                           "iso_currency_code": "string",
                           "unofficial_currency_code": "string"
@@ -1954,6 +2049,17 @@ curl https://example.com/asset_report/audit_copy/get \
                           "unofficial_currency_code": "string"
                         }
                       }
+                    ],
+                    "monthly_summaries": [
+                      {
+                        "start_date": "1970-01-01",
+                        "end_date": "1970-01-01",
+                        "total_amount": {
+                          "amount": 0,
+                          "iso_currency_code": "string",
+                          "unofficial_currency_code": "string"
+                        }
+                      }
                     ]
                   },
                   "non_essential_expenditure": {
@@ -1980,9 +2086,20 @@ curl https://example.com/asset_report/audit_copy/get \
                           "unofficial_currency_code": "string"
                         }
                       }
+                    ],
+                    "monthly_summaries": [
+                      {
+                        "start_date": "1970-01-01",
+                        "end_date": "1970-01-01",
+                        "total_amount": {
+                          "amount": 0,
+                          "iso_currency_code": "string",
+                          "unofficial_currency_code": "string"
+                        }
+                      }
                     ]
                   },
-                  "other": {
+                  "other_expenditure": {
                     "amount": 0,
                     "iso_currency_code": "string",
                     "unofficial_currency_code": "string",
@@ -2001,6 +2118,17 @@ curl https://example.com/asset_report/audit_copy/get \
                         "iso_currency_code": "string",
                         "unofficial_currency_code": "string",
                         "monthly_average": {
+                          "amount": 0,
+                          "iso_currency_code": "string",
+                          "unofficial_currency_code": "string"
+                        }
+                      }
+                    ],
+                    "monthly_summaries": [
+                      {
+                        "start_date": "1970-01-01",
+                        "end_date": "1970-01-01",
+                        "total_amount": {
                           "amount": 0,
                           "iso_currency_code": "string",
                           "unofficial_currency_code": "string"
@@ -2027,6 +2155,17 @@ curl https://example.com/asset_report/audit_copy/get \
                         "iso_currency_code": "string",
                         "unofficial_currency_code": "string",
                         "monthly_average": {
+                          "amount": 0,
+                          "iso_currency_code": "string",
+                          "unofficial_currency_code": "string"
+                        }
+                      }
+                    ],
+                    "monthly_summaries": [
+                      {
+                        "start_date": "1970-01-01",
+                        "end_date": "1970-01-01",
+                        "total_amount": {
                           "amount": 0,
                           "iso_currency_code": "string",
                           "unofficial_currency_code": "string"
@@ -2061,17 +2200,32 @@ curl https://example.com/asset_report/audit_copy/get \
                   "total_income": {
                     "amount": 0,
                     "iso_currency_code": "string",
-                    "unofficial_currency_code": "string"
+                    "unofficial_currency_code": "string",
+                    "monthly_average": {
+                      "amount": 0,
+                      "iso_currency_code": "string",
+                      "unofficial_currency_code": "string"
+                    }
                   },
                   "income_excluding_transfers": {
                     "amount": 0,
                     "iso_currency_code": "string",
-                    "unofficial_currency_code": "string"
+                    "unofficial_currency_code": "string",
+                    "monthly_average": {
+                      "amount": 0,
+                      "iso_currency_code": "string",
+                      "unofficial_currency_code": "string"
+                    }
                   },
                   "transfers_in": {
                     "amount": 0,
                     "iso_currency_code": "string",
-                    "unofficial_currency_code": "string"
+                    "unofficial_currency_code": "string",
+                    "monthly_average": {
+                      "amount": 0,
+                      "iso_currency_code": "string",
+                      "unofficial_currency_code": "string"
+                    }
                   }
                 }
               }
@@ -2629,7 +2783,7 @@ This endpoint allows you to retrieve a Cash Flow Updates report by passing in th
 |» client_id|body|[APIClientID](#schemaapiclientid)|false|Your Plaid API `client_id`. The `client_id` is required and may be provided either in the `PLAID-CLIENT-ID` header or as part of a request body.|
 |» secret|body|[APISecret](#schemaapisecret)|false|Your Plaid API `secret`. The `secret` is required and may be provided either in the `PLAID-SECRET` header or as part of a request body.|
 |» user_id|body|[NewUserID](#schemanewuserid)|false|A unique user identifier, created by `/user/create`. Integrations that began using `/user/create` after December 10, 2025 use this field to identify a user instead of the `user_token`. For more details, see [New User APIs](https://plaid.com/docs/api/users/user-apis).|
-|» consumer_report_permissible_purpose|body|[MonitoringConsumerReportPermissiblePurpose](#schemamonitoringconsumerreportpermissiblepurpose)|true|Describes the reason you are generating a Consumer Report for this user.<br><br>`ACCOUNT_REVIEW_CREDIT`: In connection with a consumer credit transaction for the review or collection of an account pursuant to FCRA Section 604(a)(3)(A).<br><br>`WRITTEN_INSTRUCTION_OTHER`: In accordance with the written instructions of the consumer pursuant to FCRA Section 604(a)(2), such as when an individual agrees to act as a guarantor or assumes personal liability for a consumer, business, or commercial loan.|
+|» consumer_report_permissible_purpose|body|[MonitoringConsumerReportPermissiblePurpose](#schemamonitoringconsumerreportpermissiblepurpose)|true|Describes the reason you are generating a Consumer Report for this user.<br><br>`ACCOUNT_REVIEW_CREDIT`: In connection with a consumer credit transaction for the review or collection of an account pursuant to FCRA Section 604(a)(3)(A).<br><br>`ACCOUNT_REVIEW_NON_CREDIT`: For a legitimate business need of the information to review a non-credit account provided primarily for personal, family, or household purposes to determine whether the consumer continues to meet the terms of the account pursuant to FCRA Section 604(a)(3)(F)(ii).<br><br>`WRITTEN_INSTRUCTION_OTHER`: In accordance with the written instructions of the consumer pursuant to FCRA Section 604(a)(2), such as when an individual agrees to act as a guarantor or assumes personal liability for a consumer, business, or commercial loan.<br><br>`SECONDARY_INVESTOR`: As a potential investor or servicer, or current insurer, in connection with a valuation of, or an assessment of the credit or prepayment risks associated with, an existing credit obligation pursuant to FCRA Section 604(a)(3)(E).|
 |» user_token|body|[UserToken](#schemausertoken)|false|The user token associated with the user for which data is being requested. This field is used only by customers with pre-existing integrations that already use the `user_token` field. All other customers should use the `user_id` instead. For more details, see [New User APIs](https://plaid.com/docs/api/users/user-apis).|
 
 #### Enumerated Values
@@ -2637,7 +2791,9 @@ This endpoint allows you to retrieve a Cash Flow Updates report by passing in th
 |Parameter|Value|
 |---|---|
 |» consumer_report_permissible_purpose|ACCOUNT_REVIEW_CREDIT|
+|» consumer_report_permissible_purpose|ACCOUNT_REVIEW_NON_CREDIT|
 |» consumer_report_permissible_purpose|WRITTEN_INSTRUCTION_OTHER|
+|» consumer_report_permissible_purpose|SECONDARY_INVESTOR|
 
 > Example responses
 
@@ -2755,6 +2911,7 @@ This endpoint allows you to retrieve a Cash Flow Updates report by passing in th
           },
           "consumer_disputes": [],
           "days_available": 365,
+          "holder_category": "personal",
           "mask": "1208",
           "metadata": {
             "start_date": "2024-01-01",
@@ -4316,6 +4473,7 @@ NOTE: The following schema was updated in April 2026 to reflect the response whe
             "name": "Plaid Checking Account",
             "official_name": "Plaid Checking Account",
             "subtype": "checking",
+            "consumer_disputes": [],
             "type": "depository",
             "owners": []
           }
@@ -4620,6 +4778,7 @@ This endpoint allows you to retrieve the Base Report for your user, allowing you
             },
             "consumer_disputes": [],
             "days_available": 365,
+            "holder_category": "personal",
             "mask": "1208",
             "metadata": {
               "start_date": "2024-01-01",
@@ -5768,7 +5927,9 @@ curl https://example.com/cra/check_report/create \
         "employment_refresh_options": {
           "days_requested": 0
         }
-      }
+      },
+      "exclude_transactions": false,
+      "base_report_version": {}
     },
     "cashflow_insights": {
       "attributes_version": "v1.0"
@@ -5807,7 +5968,7 @@ curl https://example.com/cra/check_report/create \
       }
     },
     "lend_score": {
-      "lend_score_version": "v1.0"
+      "lend_score_version": "v2.0"
     },
     "network_insights": {
       "network_insights_version": "NI1"
@@ -5866,7 +6027,9 @@ Each call to `/cra/check_report/create` creates a new, independent report. `/get
       "employment_refresh_options": {
         "days_requested": 0
       }
-    }
+    },
+    "exclude_transactions": false,
+    "base_report_version": {}
   },
   "cashflow_insights": {
     "attributes_version": "v1.0"
@@ -5905,7 +6068,7 @@ Each call to `/cra/check_report/create` creates a new, independent report. `/get
     }
   },
   "lend_score": {
-    "lend_score_version": "v1.0"
+    "lend_score_version": "v2.0"
   },
   "network_insights": {
     "network_insights_version": "NI1"
@@ -5947,7 +6110,7 @@ Each call to `/cra/check_report/create` creates a new, independent report. `/get
 |» network_insights|body|[CraCheckReportCreateNetworkInsightsOptions](#schemacracheckreportcreatenetworkinsightsoptions)|false|Defines configuration options to generate Network Insights|
 |» include_investments|body|boolean \| null|false|Indicates that investment data should be extracted from the linked account(s).|
 |» income_insights|body|[CraCheckReportCreateIncomeInsightsOptions](#schemacracheckreportcreateincomeinsightsoptions)|false|Defines configuration options to generate Income Insights.|
-|» consumer_report_permissible_purpose|body|[ConsumerReportPermissiblePurpose](#schemaconsumerreportpermissiblepurpose)|true|Describes the reason you are generating a Consumer Report for this user. When calling `/link/token/create`, this field is required when using Plaid Check (CRA) products; invalid if not using Plaid Check (CRA) products.<br><br>`ACCOUNT_REVIEW_CREDIT`: In connection with a consumer credit transaction for the review or collection of an account pursuant to FCRA Section 604(a)(3)(A).<br><br>`ACCOUNT_REVIEW_NON_CREDIT`: For a legitimate business need of the information to review a non-credit account provided primarily for personal, family, or household purposes to determine whether the consumer continues to meet the terms of the account pursuant to FCRA Section 604(a)(3)(F)(2).<br><br>`EXTENSION_OF_CREDIT`: In connection with a credit transaction initiated by and involving the consumer pursuant to FCRA Section 604(a)(3)(A).<br><br>`LEGITIMATE_BUSINESS_NEED_TENANT_SCREENING`: For a legitimate business need in connection with a business transaction initiated by the consumer primarily for personal, family, or household purposes in connection with a property rental assessment pursuant to FCRA Section 604(a)(3)(F)(i).<br><br>`LEGITIMATE_BUSINESS_NEED_OTHER`: For a legitimate business need in connection with a business transaction made primarily for personal, family, or household initiated by the consumer pursuant to FCRA Section 604(a)(3)(F)(i).<br><br>`WRITTEN_INSTRUCTION_PREQUALIFICATION`: In accordance with the written instructions of the consumer pursuant to FCRA Section 604(a)(2), to evaluate an application's profile to make an offer to the consumer.<br><br>`WRITTEN_INSTRUCTION_OTHER`: In accordance with the written instructions of the consumer pursuant to FCRA Section 604(a)(2), such as when an individual agrees to act as a guarantor or assumes personal liability for a consumer, business, or commercial loan.<br><br>`ELIGIBILITY_FOR_GOVT_BENEFITS`:  In connection with an eligibility determination for a government benefit where the entity is required to consider an applicant's financial status pursuant to FCRA Section 604(a)(3)(D).|
+|» consumer_report_permissible_purpose|body|[ConsumerReportPermissiblePurpose](#schemaconsumerreportpermissiblepurpose)|true|Describes the reason you are generating a Consumer Report for this user. When calling `/link/token/create`, this field is required when using Plaid Check (CRA) products; invalid if not using Plaid Check (CRA) products.<br><br>`ACCOUNT_REVIEW_CREDIT`: In connection with a consumer credit transaction for the review or collection of an account pursuant to FCRA Section 604(a)(3)(A).<br><br>`ACCOUNT_REVIEW_NON_CREDIT`: For a legitimate business need of the information to review a non-credit account provided primarily for personal, family, or household purposes to determine whether the consumer continues to meet the terms of the account pursuant to FCRA Section 604(a)(3)(F)(ii).<br><br>`EXTENSION_OF_CREDIT`: In connection with a credit transaction initiated by and involving the consumer pursuant to FCRA Section 604(a)(3)(A).<br><br>`LEGITIMATE_BUSINESS_NEED_TENANT_SCREENING`: For a legitimate business need in connection with a business transaction initiated by the consumer primarily for personal, family, or household purposes in connection with a property rental assessment pursuant to FCRA Section 604(a)(3)(F)(i).<br><br>`LEGITIMATE_BUSINESS_NEED_OTHER`: For a legitimate business need in connection with a business transaction made primarily for personal, family, or household initiated by the consumer pursuant to FCRA Section 604(a)(3)(F)(i).<br><br>`WRITTEN_INSTRUCTION_PREQUALIFICATION`: In accordance with the written instructions of the consumer pursuant to FCRA Section 604(a)(2), to evaluate an application's profile to make an offer to the consumer.<br><br>`WRITTEN_INSTRUCTION_OTHER`: In accordance with the written instructions of the consumer pursuant to FCRA Section 604(a)(2), such as when an individual agrees to act as a guarantor or assumes personal liability for a consumer, business, or commercial loan.<br><br>`ELIGIBILITY_FOR_GOVT_BENEFITS`:  In connection with an eligibility determination for a government benefit where the entity is required to consider an applicant's financial status pursuant to FCRA Section 604(a)(3)(D).<br><br>`INSURANCE_UNDERWRITING`: In connection with the underwriting of insurance involving the consumer pursuant to FCRA Section 604(a)(3)(C).<br><br>`SECONDARY_INVESTOR`: As a potential investor or servicer, or current insurer, in connection with a valuation of, or an assessment of the credit or prepayment risks associated with, an existing credit obligation pursuant to FCRA Section 604(a)(3)(E).|
 
 #### Enumerated Values
 
@@ -5989,6 +6152,9 @@ Each call to `/cra/check_report/create` creates a new, independent report. `/get
 |» products|cra_plaid_credit_score|
 |» products|cra_qualify|
 |» products|cra_home_lending|
+|» products|cra_lend_score_complete|
+|» products|cra_income_complete|
+|» products|cra_home_lending_voa|
 |» products|layer|
 |» products|pay_by_bank|
 |» products|protect_linked_bank|
@@ -6001,6 +6167,8 @@ Each call to `/cra/check_report/create` creates a new, independent report. `/get
 |» consumer_report_permissible_purpose|WRITTEN_INSTRUCTION_PREQUALIFICATION|
 |» consumer_report_permissible_purpose|WRITTEN_INSTRUCTION_OTHER|
 |» consumer_report_permissible_purpose|ELIGIBILITY_FOR_GOVT_BENEFITS|
+|» consumer_report_permissible_purpose|INSURANCE_UNDERWRITING|
+|» consumer_report_permissible_purpose|SECONDARY_INVESTOR|
 
 > Example responses
 
@@ -6455,7 +6623,7 @@ curl https://example.com/cra/check_report/lend_score/get \
     "third_party_user_token": "string",
     "user_token": "string",
     "options": {
-      "lend_score_version": "v1.0"
+      "lend_score_version": "v2.0"
     }
   }'
 ```
@@ -6476,7 +6644,7 @@ This endpoint allows you to retrieve the LendScore report for your user. You sho
   "third_party_user_token": "string",
   "user_token": "string",
   "options": {
-    "lend_score_version": "v1.0"
+    "lend_score_version": "v2.0"
   }
 }
 ```
@@ -8212,7 +8380,8 @@ curl https://example.com/cra/report/create \
         "product": "cra_base_report",
         "version": "string",
         "options": {
-          "require_identity": true
+          "require_identity": true,
+          "exclude_transactions": false
         }
       }
     ],
@@ -8248,7 +8417,8 @@ Each requested product is generated asynchronously. Use the returned `report_id`
       "product": "cra_base_report",
       "version": "string",
       "options": {
-        "require_identity": true
+        "require_identity": true,
+        "exclude_transactions": false
       }
     }
   ],
@@ -8274,7 +8444,7 @@ Each requested product is generated asynchronously. Use the returned `report_id`
 |» user_id|body|[NewUserID](#schemanewuserid)|true|A unique user identifier, created by `/user/create`. Integrations that began using `/user/create` after December 10, 2025 use this field to identify a user instead of the `user_token`. For more details, see [New User APIs](https://plaid.com/docs/api/users/user-apis).|
 |» products|body|[[CraReportProduct](#schemacrareportproduct)]|true|The Plaid Check products, versions, and options to generate for the report.|
 |» scope|body|object|true|none|
-|» decision_stage|body|[CraReportDecisionStage](#schemacrareportdecisionstage)|true|The stage in the credit or other eligibility decisioning lifecycle for which a given report will be utilized.<br><br>Allowable permissible purposes for `PREQUALIFICATION`:<br><br>- `WRITTEN_INSTRUCTION_PREQUALIFICATION`<br><br>Allowable permissible purposes for `DECISIONING`:<br><br>- `ELIGIBILITY_FOR_GOVT_BENEFITS`<br>- `EXTENSION_OF_CREDIT`<br>- `LEGITIMATE_BUSINESS_NEED_OTHER`<br>- `LEGITIMATE_BUSINESS_NEED_TENANT_SCREENING`<br>- `WRITTEN_INSTRUCTION_OTHER`<br><br>If an incompatible `decision_stage` and `consumer_report_permissible_purpose` pairing is requested, an `INVALID_FIELD` error is returned. If your client isn't yet enabled for a given `decision_stage` on a product, a `DECISION_STAGE_NOT_ENABLED` error is returned instead (contact your Plaid account manager to enable it).|
+|» decision_stage|body|[CraReportDecisionStage](#schemacrareportdecisionstage)|true|The stage in the credit or other eligibility decisioning lifecycle for which a given report will be utilized.<br><br>Allowable permissible purposes for `PREQUALIFICATION`:<br><br>- `WRITTEN_INSTRUCTION_PREQUALIFICATION`<br><br>Allowable permissible purposes for `DECISIONING`:<br><br>- `ELIGIBILITY_FOR_GOVT_BENEFITS`<br>- `EXTENSION_OF_CREDIT`<br>- `INSURANCE_UNDERWRITING`<br>- `LEGITIMATE_BUSINESS_NEED_OTHER`<br>- `LEGITIMATE_BUSINESS_NEED_TENANT_SCREENING`<br>- `WRITTEN_INSTRUCTION_OTHER`<br><br>If an incompatible `decision_stage` and `consumer_report_permissible_purpose` pairing is requested, an `INVALID_FIELD` error is returned. If your client isn't yet enabled for a given `decision_stage` on a product, a `DECISION_STAGE_NOT_ENABLED` error is returned instead (contact your Plaid account manager to enable it).|
 |» consumer_report_permissible_purpose|body|object|true|none|
 |» client_report_id|body|string \| null|false|Client-generated identifier, which can be used by lenders to track loan applications.|
 |» days_requested|body|integer \| null|false|The number of days of history to include in Plaid Check products. Maximum is 731. If a value lower than 180 is provided, a minimum of 180 days of history will be requested.|
@@ -8406,7 +8576,7 @@ curl https://example.com/cra/report/get \
 |» user_id|body|[NewUserID](#schemanewuserid)|true|A unique user identifier, created by `/user/create`. Integrations that began using `/user/create` after December 10, 2025 use this field to identify a user instead of the `user_token`. For more details, see [New User APIs](https://plaid.com/docs/api/users/user-apis).|
 |» products|body|[[CraReportGetRequestProduct](#schemacrareportgetrequestproduct)]|true|The requested products and their versions, e.g. `[{"product":"cra_income_insights","version":"V2"}]`.|
 |» scope|body|[CraReportScope](#schemacrareportscope)|false|Determines whose items are used. `PLAID_NETWORK` (default) uses the Plaid Network view of the user's profile. `CLIENT_USER` uses only the items linked by this client.|
-|» decision_stage|body|[CraReportDecisionStage](#schemacrareportdecisionstage)|true|The stage in the credit or other eligibility decisioning lifecycle for which a given report will be utilized.<br><br>Allowable permissible purposes for `PREQUALIFICATION`:<br><br>- `WRITTEN_INSTRUCTION_PREQUALIFICATION`<br><br>Allowable permissible purposes for `DECISIONING`:<br><br>- `ELIGIBILITY_FOR_GOVT_BENEFITS`<br>- `EXTENSION_OF_CREDIT`<br>- `LEGITIMATE_BUSINESS_NEED_OTHER`<br>- `LEGITIMATE_BUSINESS_NEED_TENANT_SCREENING`<br>- `WRITTEN_INSTRUCTION_OTHER`<br><br>If an incompatible `decision_stage` and `consumer_report_permissible_purpose` pairing is requested, an `INVALID_FIELD` error is returned. If your client isn't yet enabled for a given `decision_stage` on a product, a `DECISION_STAGE_NOT_ENABLED` error is returned instead (contact your Plaid account manager to enable it).|
+|» decision_stage|body|[CraReportDecisionStage](#schemacrareportdecisionstage)|true|The stage in the credit or other eligibility decisioning lifecycle for which a given report will be utilized.<br><br>Allowable permissible purposes for `PREQUALIFICATION`:<br><br>- `WRITTEN_INSTRUCTION_PREQUALIFICATION`<br><br>Allowable permissible purposes for `DECISIONING`:<br><br>- `ELIGIBILITY_FOR_GOVT_BENEFITS`<br>- `EXTENSION_OF_CREDIT`<br>- `INSURANCE_UNDERWRITING`<br>- `LEGITIMATE_BUSINESS_NEED_OTHER`<br>- `LEGITIMATE_BUSINESS_NEED_TENANT_SCREENING`<br>- `WRITTEN_INSTRUCTION_OTHER`<br><br>If an incompatible `decision_stage` and `consumer_report_permissible_purpose` pairing is requested, an `INVALID_FIELD` error is returned. If your client isn't yet enabled for a given `decision_stage` on a product, a `DECISION_STAGE_NOT_ENABLED` error is returned instead (contact your Plaid account manager to enable it).|
 |» consumer_report_permissible_purpose|body|object|true|none|
 |» report_id|body|object|false|none|
 
@@ -8538,7 +8708,8 @@ curl https://example.com/cra/report/get \
                 "official_name": "Plaid Checking Account",
                 "mask": "8888",
                 "type": "depository",
-                "subtype": "checking"
+                "subtype": "checking",
+                "consumer_disputes": []
               }
             ]
           }
@@ -8671,7 +8842,7 @@ curl https://example.com/cra/credit_profile/report/get \
 |» client_id|body|[APIClientID](#schemaapiclientid)|false|Your Plaid API `client_id`. The `client_id` is required and may be provided either in the `PLAID-CLIENT-ID` header or as part of a request body.|
 |» secret|body|[APISecret](#schemaapisecret)|false|Your Plaid API `secret`. The `secret` is required and may be provided either in the `PLAID-SECRET` header or as part of a request body.|
 |» user_id|body|[NewUserID](#schemanewuserid)|true|A unique user identifier, created by `/user/create`. Integrations that began using `/user/create` after December 10, 2025 use this field to identify a user instead of the `user_token`. For more details, see [New User APIs](https://plaid.com/docs/api/users/user-apis).|
-|» consumer_report_permissible_purpose|body|[ConsumerReportPermissiblePurpose](#schemaconsumerreportpermissiblepurpose)|true|Describes the reason you are generating a Consumer Report for this user. When calling `/link/token/create`, this field is required when using Plaid Check (CRA) products; invalid if not using Plaid Check (CRA) products.<br><br>`ACCOUNT_REVIEW_CREDIT`: In connection with a consumer credit transaction for the review or collection of an account pursuant to FCRA Section 604(a)(3)(A).<br><br>`ACCOUNT_REVIEW_NON_CREDIT`: For a legitimate business need of the information to review a non-credit account provided primarily for personal, family, or household purposes to determine whether the consumer continues to meet the terms of the account pursuant to FCRA Section 604(a)(3)(F)(2).<br><br>`EXTENSION_OF_CREDIT`: In connection with a credit transaction initiated by and involving the consumer pursuant to FCRA Section 604(a)(3)(A).<br><br>`LEGITIMATE_BUSINESS_NEED_TENANT_SCREENING`: For a legitimate business need in connection with a business transaction initiated by the consumer primarily for personal, family, or household purposes in connection with a property rental assessment pursuant to FCRA Section 604(a)(3)(F)(i).<br><br>`LEGITIMATE_BUSINESS_NEED_OTHER`: For a legitimate business need in connection with a business transaction made primarily for personal, family, or household initiated by the consumer pursuant to FCRA Section 604(a)(3)(F)(i).<br><br>`WRITTEN_INSTRUCTION_PREQUALIFICATION`: In accordance with the written instructions of the consumer pursuant to FCRA Section 604(a)(2), to evaluate an application's profile to make an offer to the consumer.<br><br>`WRITTEN_INSTRUCTION_OTHER`: In accordance with the written instructions of the consumer pursuant to FCRA Section 604(a)(2), such as when an individual agrees to act as a guarantor or assumes personal liability for a consumer, business, or commercial loan.<br><br>`ELIGIBILITY_FOR_GOVT_BENEFITS`:  In connection with an eligibility determination for a government benefit where the entity is required to consider an applicant's financial status pursuant to FCRA Section 604(a)(3)(D).|
+|» consumer_report_permissible_purpose|body|[ConsumerReportPermissiblePurpose](#schemaconsumerreportpermissiblepurpose)|true|Describes the reason you are generating a Consumer Report for this user. When calling `/link/token/create`, this field is required when using Plaid Check (CRA) products; invalid if not using Plaid Check (CRA) products.<br><br>`ACCOUNT_REVIEW_CREDIT`: In connection with a consumer credit transaction for the review or collection of an account pursuant to FCRA Section 604(a)(3)(A).<br><br>`ACCOUNT_REVIEW_NON_CREDIT`: For a legitimate business need of the information to review a non-credit account provided primarily for personal, family, or household purposes to determine whether the consumer continues to meet the terms of the account pursuant to FCRA Section 604(a)(3)(F)(ii).<br><br>`EXTENSION_OF_CREDIT`: In connection with a credit transaction initiated by and involving the consumer pursuant to FCRA Section 604(a)(3)(A).<br><br>`LEGITIMATE_BUSINESS_NEED_TENANT_SCREENING`: For a legitimate business need in connection with a business transaction initiated by the consumer primarily for personal, family, or household purposes in connection with a property rental assessment pursuant to FCRA Section 604(a)(3)(F)(i).<br><br>`LEGITIMATE_BUSINESS_NEED_OTHER`: For a legitimate business need in connection with a business transaction made primarily for personal, family, or household initiated by the consumer pursuant to FCRA Section 604(a)(3)(F)(i).<br><br>`WRITTEN_INSTRUCTION_PREQUALIFICATION`: In accordance with the written instructions of the consumer pursuant to FCRA Section 604(a)(2), to evaluate an application's profile to make an offer to the consumer.<br><br>`WRITTEN_INSTRUCTION_OTHER`: In accordance with the written instructions of the consumer pursuant to FCRA Section 604(a)(2), such as when an individual agrees to act as a guarantor or assumes personal liability for a consumer, business, or commercial loan.<br><br>`ELIGIBILITY_FOR_GOVT_BENEFITS`:  In connection with an eligibility determination for a government benefit where the entity is required to consider an applicant's financial status pursuant to FCRA Section 604(a)(3)(D).<br><br>`INSURANCE_UNDERWRITING`: In connection with the underwriting of insurance involving the consumer pursuant to FCRA Section 604(a)(3)(C).<br><br>`SECONDARY_INVESTOR`: As a potential investor or servicer, or current insurer, in connection with a valuation of, or an assessment of the credit or prepayment risks associated with, an existing credit obligation pursuant to FCRA Section 604(a)(3)(E).|
 |» client_report_id|body|string|true|Client-generated identifier, which can be used by lenders to track loan applications.|
 |» report_type|body|[CraCreditProfileReportType](#schemacracreditprofilereporttype)|true|The product type for the credit profile report request.|
 |» inquiry_type|body|[CraCreditProfileInquiryType](#schemacracreditprofileinquirytype)|true|The inquiry type of credit profile report.|
@@ -8689,6 +8860,8 @@ curl https://example.com/cra/credit_profile/report/get \
 |» consumer_report_permissible_purpose|WRITTEN_INSTRUCTION_PREQUALIFICATION|
 |» consumer_report_permissible_purpose|WRITTEN_INSTRUCTION_OTHER|
 |» consumer_report_permissible_purpose|ELIGIBILITY_FOR_GOVT_BENEFITS|
+|» consumer_report_permissible_purpose|INSURANCE_UNDERWRITING|
+|» consumer_report_permissible_purpose|SECONDARY_INVESTOR|
 |» report_type|QUALIFY|
 |» inquiry_type|SOFT_INQUIRY|
 |» inquiry_type|STANDARD_INQUIRY|
@@ -10919,6 +11092,10 @@ Versioning note: In API version 2017-03-08, the schema of the `numbers` object r
       "assets",
       "auth"
     ],
+    "products": [
+      "assets",
+      "auth"
+    ],
     "consent_expiration_time": null,
     "error": null,
     "institution_id": "ins_117650",
@@ -11338,6 +11515,12 @@ Note that data may not be immediately available to `/transactions/get`. Plaid wi
       "investments"
     ],
     "billed_products": [
+      "assets",
+      "auth",
+      "liabilities",
+      "transactions"
+    ],
+    "products": [
       "assets",
       "auth",
       "liabilities",
@@ -12028,6 +12211,12 @@ Note that data isn't likely to be immediately available to `/cashflow_report/get
       "liabilities",
       "transactions"
     ],
+    "products": [
+      "assets",
+      "auth",
+      "liabilities",
+      "transactions"
+    ],
     "consent_expiration_time": null,
     "error": null,
     "institution_id": "ins_56",
@@ -12377,6 +12566,12 @@ Note that data isn't likely to be immediately available to `/cashflow_report/tra
       "liabilities",
       "transactions"
     ],
+    "products": [
+      "assets",
+      "auth",
+      "liabilities",
+      "transactions"
+    ],
     "consent_expiration_time": null,
     "error": null,
     "institution_id": "ins_56",
@@ -12488,6 +12683,12 @@ The `/cashflow_report/insights/get` endpoint retrieves insights data associated 
       "investments"
     ],
     "billed_products": [
+      "assets",
+      "auth",
+      "liabilities",
+      "transactions"
+    ],
+    "products": [
       "assets",
       "auth",
       "liabilities",
@@ -13988,6 +14189,9 @@ Versioning note: API versions 2019-05-29 and earlier allow use of the `public_ke
 |» products|cra_plaid_credit_score|
 |» products|cra_qualify|
 |» products|cra_home_lending|
+|» products|cra_lend_score_complete|
+|» products|cra_income_complete|
+|» products|cra_home_lending_voa|
 |» products|layer|
 |» products|pay_by_bank|
 |» products|protect_linked_bank|
@@ -14708,6 +14912,10 @@ For real-time balance information, use the paid endpoints `/accounts/balance/get
       "assets",
       "auth"
     ],
+    "products": [
+      "assets",
+      "auth"
+    ],
     "consent_expiration_time": null,
     "error": null,
     "institution_id": "ins_117650",
@@ -15114,6 +15322,9 @@ Use the `/sandbox/public_token/create` endpoint to create a valid `public_token`
 |» initial_products|cra_plaid_credit_score|
 |» initial_products|cra_qualify|
 |» initial_products|cra_home_lending|
+|» initial_products|cra_lend_score_complete|
+|» initial_products|cra_income_complete|
+|» initial_products|cra_home_lending_voa|
 |» initial_products|layer|
 |» initial_products|pay_by_bank|
 |» initial_products|protect_linked_bank|
@@ -15207,6 +15418,8 @@ The `/sandbox/item/fire_webhook` endpoint is used to test that code correctly ha
 
 `PENDING_DISCONNECT`: Fired when an Item will stop working in the near future (e.g. due to a planned bank migration) and must be sent through update mode to continue working.
 
+`CONSENT_UPDATED`: Fired when the user changes the consent duration at their institution and the Item's `consent_expiration_time` changes. Sandbox Items have no stored consent expiration, so the payload's `consent_expiration_time` is one year from the time the webhook is fired.
+
 `RECURRING_TRANSACTIONS_UPDATE`: Recurring Transactions webhook to be fired for a given Sandbox Item. If your client is not enabled for Recurring Transactions, a `SANDBOX_PRODUCT_NOT_ENABLED` error will result.
 
 `SYNC_UPDATES_AVAILABLE`: Transactions webhook to be fired for a given Sandbox Item.  If your client is not enabled for Transactions, a `SANDBOX_PRODUCT_NOT_ENABLED` error will result.
@@ -15269,6 +15482,7 @@ Note that this endpoint is provided for developer ease-of-use and is not require
 |» webhook_code|USER_PERMISSION_REVOKED|
 |» webhook_code|USER_ACCOUNT_REVOKED|
 |» webhook_code|PENDING_DISCONNECT|
+|» webhook_code|CONSENT_UPDATED|
 |» webhook_code|RECURRING_TRANSACTIONS_UPDATE|
 |» webhook_code|LOGIN_REPAIRED|
 |» webhook_code|SYNC_UPDATES_AVAILABLE|
@@ -15575,6 +15789,12 @@ Note: If you are getting real-time balance for the purpose of assessing the retu
       "liabilities",
       "transactions"
     ],
+    "products": [
+      "assets",
+      "auth",
+      "liabilities",
+      "transactions"
+    ],
     "consent_expiration_time": null,
     "error": null,
     "institution_id": "ins_56",
@@ -15856,6 +16076,13 @@ Note: In API versions 2018-05-22 and earlier, the `owners` object is not returne
       "investments"
     ],
     "billed_products": [
+      "assets",
+      "auth",
+      "identity",
+      "liabilities",
+      "transactions"
+    ],
+    "products": [
       "assets",
       "auth",
       "identity",
@@ -16264,6 +16491,13 @@ Fields within the `balances` object will always be null when retrieved by `/iden
       "investments"
     ],
     "billed_products": [
+      "assets",
+      "auth",
+      "identity",
+      "liabilities",
+      "transactions"
+    ],
+    "products": [
       "assets",
       "auth",
       "identity",
@@ -17120,7 +17354,7 @@ If `user_id` is not provided, you can also use this endpoint to supply informati
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-clientId & secret & plaidVersion
+clientId & secret & plaidVersion, oauth2 ( Scopes: identity_verification:write )
 </aside>
 
 ## Retrieve Identity Verification
@@ -17453,7 +17687,7 @@ Retrieve a previously created Identity Verification.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-clientId & secret & plaidVersion
+clientId & secret & plaidVersion, oauth2 ( Scopes: identity_verification:read )
 </aside>
 
 ## List Identity Verifications
@@ -17800,7 +18034,7 @@ Filter and list Identity Verifications created by your account
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-clientId & secret & plaidVersion
+clientId & secret & plaidVersion, oauth2 ( Scopes: identity_verification:read )
 </aside>
 
 ## Retry an Identity Verification
@@ -18207,7 +18441,7 @@ Allow a customer to retry their Identity Verification
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-clientId & secret & plaidVersion
+clientId & secret & plaidVersion, oauth2 ( Scopes: identity_verification:write )
 </aside>
 
 ## Create a watchlist screening for an entity
@@ -20327,7 +20561,7 @@ Use `/beacon/account_risk/v1/evaluate` to get risk insights for a linked account
 |» client_user_id|body|string|false|A unique ID that identifies the end user in your system. This ID is used to correlate requests by a user with multiple evaluations and/or multiple linked accounts. Personally identifiable information, such as an email address or phone number, should not be used in the `client_user_id`.|
 |» client_evaluation_id|body|string|false|Unique identifier of what you are looking to evaluate (account add, information change, etc.) to allow us to tie the activity to the decisions and possible fraud outcome sent via our feedback endpoints. You can use your internal request ID or similar.|
 |» evaluation_reason|body|[BeaconAccountRiskEvaluateEvaluationReason](#schemabeaconaccountriskevaluateevaluationreason)|false|Description of the reason you want to evaluate risk.<br><br>`ONBOARDING`: user links a first bank account as part of the onboarding flow of your platform.<br><br>`NEW_ACCOUNT`: user links another bank account or replaces the currently linked bank account on your platform.<br><br>`INFORMATION_CHANGE`: user changes their information on your platform, e.g., updating their phone number.<br><br>`DORMANT_USER`:  you decide to re-evaluate a user that becomes active after a period of inactivity.<br><br>`OTHER`: any other reasons not listed here<br><br>Possible values:  `ONBOARDING`, `NEW_ACCOUNT`, `INFORMATION_CHANGE`, `DORMANT_USER`, `OTHER`<br>|
-|» device|body|[SignalDevice](#schemasignaldevice)|false|Details about the end user's device. These fields are optional, but strongly recommended to increase the accuracy of results when using Signal Transaction Scores. When using a Balance-only Ruleset, these fields are ignored if the Signal Addendum has been signed; if it has not been signed, using these fields will result in an error.|
+|» device|body|[SignalDevice](#schemasignaldevice)|false|Details about the end user's device. These fields are optional, but strongly recommended to increase the accuracy of results when using Signal Transaction Scores. When using a Balance-only ruleset, these fields are ignored.|
 |» evaluate_time|body|string|false|The time the event for evaluation has occurred. Populate this field for backfilling data. If you don't populate this field, we'll use the timestamp at the time of receipt. Use ISO 8601 format (YYYY-MM-DDTHH:mm:ssZ).|
 
 #### Enumerated Values
@@ -22064,6 +22298,7 @@ curl https://example.com/protect/report/create \
     "client_id": "string",
     "secret": "string",
     "user_id": "string",
+    "client_user_id": "string",
     "incident_event": {
       "protect_event_id": "string",
       "link_session_id": "string",
@@ -22095,7 +22330,7 @@ curl https://example.com/protect/report/create \
 
 Use this endpoint to create a Protect report to document fraud incidents, investigation outcomes, or other risk events. This endpoint allows you to report various types of incidents including account takeovers, identity fraud, unauthorized transactions, and other security events. The reported data helps improve fraud detection models and provides valuable feedback to enhance the overall security of the Plaid network.
 
-Reports can be created for confirmed incidents that have been fully investigated, or for suspected incidents that require further review. You can associate reports with specific users, sessions, or transactions to provide comprehensive context about the incident. Each report must include `user_id`, or an `incident_event` with at least one supported identifier: `link_session_id`, `idv_session_id`, `protect_event_id`, `signal_client_transaction_id`, or `access_token`. Context fields such as `internal_reference`, `time`, `amount`, and `bank_account` do not satisfy this identifier requirement.
+Reports can be created for confirmed incidents that have been fully investigated, or for suspected incidents that require further review. You can associate reports with specific users, sessions, or transactions to provide comprehensive context about the incident. Each report must include `user_id`, `client_user_id`, or an `incident_event` with at least one supported identifier: `link_session_id`, `idv_session_id`, `protect_event_id`, `signal_client_transaction_id`, or `access_token`. Context fields such as `internal_reference`, `time`, `amount`, and `bank_account` do not satisfy this identifier requirement.
 
 <a href="/api/products/protect/#protectreportcreate">External documentation</a>
 
@@ -22106,6 +22341,7 @@ Reports can be created for confirmed incidents that have been fully investigated
   "client_id": "string",
   "secret": "string",
   "user_id": "string",
+  "client_user_id": "string",
   "incident_event": {
     "protect_event_id": "string",
     "link_session_id": "string",
@@ -22140,7 +22376,8 @@ Reports can be created for confirmed incidents that have been fully investigated
 |body|body|[ProtectReportCreateRequest](#schemaprotectreportcreaterequest)|true|none|
 |» client_id|body|[APIClientID](#schemaapiclientid)|false|Your Plaid API `client_id`. The `client_id` is required and may be provided either in the `PLAID-CLIENT-ID` header or as part of a request body.|
 |» secret|body|[APISecret](#schemaapisecret)|false|Your Plaid API `secret`. The `secret` is required and may be provided either in the `PLAID-SECRET` header or as part of a request body.|
-|» user_id|body|string|false|The Plaid User ID associated with the report.|
+|» user_id|body|string \| null|false|The Plaid User ID associated with the report. This or `client_user_id` can be provided, not both.|
+|» client_user_id|body|string \| null|false|A unique ID representing the end user. Maximum of 128 characters. Typically this will be a user ID number from your application. Personally identifiable information, such as an email address or phone number, should not be used in the `client_user_id`. This or `user_id` can be provided, not both. If a Plaid User does not already exist for this `client_user_id` within your client account, one will be created.|
 |» incident_event|body|[ProtectIncidentEvent](#schemaprotectincidentevent)|false|Details about the incident event.|
 |» report_confidence|body|[ProtectReportConfidence](#schemaprotectreportconfidence)|true|The confidence level of the incident report.<br>`CONFIRMED` indicates the incident has been verified and definitively occurred.<br><br>`SUSPECTED` indicates the incident is believed to have occurred but has not been fully verified.|
 |» report_type|body|[ProtectReportType](#schemaprotectreporttype)|true|The type of incident being reported.<br><br>`USER_ACCOUNT_TAKEOVER` - Indicates that a legitimate user's account was accessed or controlled by an unauthorized party.<br><br>`FALSE_IDENTITY` - Indicates that a user created an account using stolen or fabricated identity information.<br><br>`STOLEN_IDENTITY` - Indicates that a user created an account using identity information belonging to a real individual without their consent.<br><br>`SYNTHETIC_IDENTITY` - Indicates that a user created an account using a fake or partially fabricated identity (e.g., combining real and fake information to form a new persona).<br><br>`MULTIPLE_USER_ACCOUNTS` - Indicates that the same individual is operating multiple accounts in violation of policy.<br><br>`SCAM_VICTIM` - Indicates that the user was tricked into authorizing or sending funds as part of a scam.<br><br>`BANK_ACCOUNT_TAKEOVER` - Indicates that a user's linked bank account was accessed or misused by an unauthorized party.<br><br>`BANK_CONNECTION_REVOKED` - Indicates that a linked bank account connection was revoked by the financial institution, often due to suspected misuse, fraud, or security concerns.<br><br>`CARD_TESTING` - Indicates that a card was used in small or repeated transactions to test its validity.<br><br>`UNAUTHORIZED_TRANSACTION` - Indicates that a transaction was made without the user's consent or authorization.<br><br>`CARD_CHARGEBACK` - Indicates that a card transaction was reversed via a chargeback claim.<br><br>`ACH_RETURN` - Indicates that an ACH transaction was returned or reversed by the bank.<br><br>`DISPUTE` - Indicates that a user filed a dispute regarding a transaction or account activity.<br><br>`FIRST_PARTY_FRAUD` - Indicates that a user intentionally misrepresented themselves or their actions for financial gain.<br><br>`MISSED_PAYMENT` - Indicates that a user failed to make a required payment on time.<br><br>`LOAN_STACKING` - Indicates that a user applied for or took out multiple loans simultaneously beyond their ability to repay.<br><br>`MONEY_LAUNDERING` - Indicates that funds are being moved through accounts to obscure their illicit origin.<br><br>`NO_FRAUD` - Indicates that an investigation determined no fraudulent activity occurred on user/event (positive label).<br><br>`OTHER` - Indicates that the case involves fraud or financial risk not covered by other report types.|
@@ -22891,100 +23128,298 @@ Retrieve the current state of a specific business verification.
 ```json
 {
   "id": "busver_52xR9LKo77r1Np",
-  "client_user_id": "your-db-id-3b24110",
-  "created_at": "2020-07-24T03:26:02Z",
-  "completed_at": "2020-07-24T03:26:02Z",
-  "redacted_at": "2020-07-24T03:26:02Z",
+  "client_user_id": "acme-widgets-sandbox-enriched-001",
+  "created_at": "2026-01-15T15:00:00Z",
+  "completed_at": "2026-01-15T15:00:10Z",
+  "redacted_at": null,
   "status": "success",
+  "requested_checks": {
+    "include_website_analysis": true,
+    "include_industry_classification": true
+  },
   "search_terms": {
-    "name": "Acme Corporation",
-    "alternative_names": [
-      "Acme Widgets"
-    ],
+    "name": "ACME WIDGETS, LLC",
+    "alternative_names": [],
     "address": {
-      "street": "123 Main St.",
-      "street2": "Unit 42",
-      "city": "Pawnee",
-      "region": "IN",
-      "postal_code": "46001",
+      "street": "123 Main St",
+      "street2": null,
+      "city": "Anytown",
+      "region": "CA",
+      "postal_code": "90210",
       "country": "US"
     },
-    "website": "https://example.com",
-    "phone_number": "+14025671234",
-    "email_address": "user@example.com"
+    "website": "https://acme.example.com",
+    "phone_number": null,
+    "email_address": null,
+    "tin": "123456789",
+    "officers": [
+      {
+        "name": "John Smith"
+      },
+      {
+        "name": "Jane Doe"
+      }
+    ]
   },
-  "kyb_check": {
+  "business_verification": {
     "status": "success",
-    "score": 85,
+    "score": 95,
     "name": {
       "summary": "match"
     },
     "address": {
-      "summary": "match"
+      "summary": "match",
+      "validation": {
+        "level": "full",
+        "standardized_address": {
+          "street": "123 Main St",
+          "street2": null,
+          "city": "Anytown",
+          "region": "CA",
+          "postal_code": "90210",
+          "country": "US",
+          "lat": 34.09031,
+          "lon": -118.40606
+        },
+        "deliverability": {
+          "is_deliverable": true,
+          "is_cmra": false,
+          "residential_indicator": "commercial",
+          "delivery_type": "street"
+        }
+      }
     },
     "website": {
+      "summary": "no_data"
+    },
+    "tin": {
+      "summary": "match",
+      "tin_type": "ein"
+    },
+    "officers": {
       "summary": "match"
     },
-    "match_details": {
-      "names": [
+    "registered_agent": {
+      "summary": "no_data"
+    },
+    "business_details": {
+      "name": "ACME WIDGETS, LLC",
+      "alternative_names": [
+        "ACME WIDGETS, INC"
+      ],
+      "entity_type": "llc",
+      "incorporation_date": "2010-01-01",
+      "incorporation_jurisdiction": "CA",
+      "addresses": [
+        {
+          "is_primary": false,
+          "street": "456 Oak Ave",
+          "street2": null,
+          "city": "Anytown",
+          "region": "CA",
+          "postal_code": "90211",
+          "country": "US",
+          "lat": 34.08031,
+          "lon": -118.41606,
+          "deliverability": {
+            "is_deliverable": true,
+            "is_cmra": false,
+            "residential_indicator": "commercial",
+            "delivery_type": "street"
+          },
+          "sources": [
+            "secretary_of_state"
+          ]
+        },
         {
           "is_primary": true,
-          "name": "Acme Corporation"
+          "street": "123 Main St",
+          "street2": null,
+          "city": "Anytown",
+          "region": "CA",
+          "postal_code": "90210",
+          "country": "US",
+          "lat": 34.07031,
+          "lon": -118.42606,
+          "deliverability": {
+            "is_deliverable": true,
+            "is_cmra": false,
+            "residential_indicator": "commercial",
+            "delivery_type": "street"
+          },
+          "sources": [
+            "secretary_of_state"
+          ]
         },
         {
           "is_primary": false,
-          "name": "Acme Widgets"
-        }
-      ],
-      "entity_type": "llc",
-      "addresses": [
-        {
-          "street": "123 Main St.",
-          "street2": "Unit 42",
-          "city": "Pawnee",
-          "region": "IN",
-          "postal_code": "46001",
+          "street": "789 Pine St",
+          "street2": null,
+          "city": "Anytown",
+          "region": "CA",
+          "postal_code": "90210",
           "country": "US",
-          "is_primary": true
+          "lat": 34.10031,
+          "lon": -118.39606,
+          "deliverability": {
+            "is_deliverable": false,
+            "is_cmra": false,
+            "residential_indicator": "residential",
+            "delivery_type": "street"
+          },
+          "sources": [
+            "secretary_of_state"
+          ]
         }
       ],
       "phone_numbers": [
         {
-          "number": "+12345678909"
+          "number": "+13105550123"
         }
       ],
       "email_addresses": [
         {
-          "email_address": "business@example.com"
+          "email_address": "contact@acme.example.com"
         }
       ],
       "websites": [
         {
-          "url": "https://example.com"
+          "url": "https://acme.example.com/"
         }
       ],
-      "formation_date": "1990-05-29"
+      "officers": [
+        {
+          "name": "John Smith",
+          "titles": [
+            "MANAGER"
+          ],
+          "jurisdictions": [
+            "CA"
+          ],
+          "sources": [
+            "secretary_of_state"
+          ]
+        },
+        {
+          "name": "Jane Doe",
+          "titles": [
+            "MANAGER"
+          ],
+          "jurisdictions": [
+            "CA"
+          ],
+          "sources": [
+            "secretary_of_state"
+          ]
+        }
+      ],
+      "registrations": [
+        {
+          "name": "ACME WIDGETS, LLC",
+          "file_number": "12345678",
+          "jurisdiction": "CA",
+          "type": "domestic",
+          "status": "active",
+          "standing": "Good",
+          "issue_date": "2010-01-01",
+          "inactive_date": null,
+          "dissolution_date": null,
+          "address": {
+            "street": "123 Main St",
+            "street2": null,
+            "city": "Anytown",
+            "region": "CA",
+            "postal_code": "90210",
+            "country": "US",
+            "lat": 34.09031,
+            "lon": -118.40606,
+            "deliverability": {
+              "is_deliverable": true,
+              "is_cmra": false,
+              "residential_indicator": "commercial",
+              "delivery_type": "street"
+            }
+          },
+          "registered_agent": {
+            "name": "REGISTERED AGENT SERVICES, INC",
+            "address": {
+              "street": "456 Oak Ave",
+              "street2": null,
+              "city": "Anytown",
+              "region": "CA",
+              "postal_code": "90211",
+              "country": "US",
+              "lat": 34.08031,
+              "lon": -118.41606,
+              "deliverability": {
+                "is_deliverable": true,
+                "is_cmra": false,
+                "residential_indicator": "commercial",
+                "delivery_type": "street"
+              }
+            }
+          },
+          "officers": [
+            {
+              "name": "JOHN SMITH",
+              "titles": [
+                "MANAGER"
+              ]
+            },
+            {
+              "name": "JANE DOE",
+              "titles": [
+                "MANAGER"
+              ]
+            }
+          ]
+        }
+      ],
+      "industry": {
+        "classification": {
+          "code": "332119",
+          "description": "Metal Manufacturing",
+          "confidence": "high",
+          "mcc_codes": [
+            {
+              "code": "5251",
+              "description": "Hardware Stores"
+            },
+            {
+              "code": "5072",
+              "description": "Hardware Equipment and Supplies"
+            }
+          ],
+          "sic_codes": [
+            {
+              "code": "3469",
+              "description": "Metal Stampings, Nec"
+            },
+            {
+              "code": "5072",
+              "description": "Hardware"
+            }
+          ]
+        }
+      },
+      "sec_registrations": []
     }
   },
   "risk_check": {
     "status": "success",
-    "score": 92,
-    "industry_prediction": {
-      "code": 518210,
-      "title": "Data Processing, Hosting, and Related Services"
-    }
+    "score": 84
   },
   "digital_presence_check": {
     "status": "success",
-    "score": 55,
+    "score": 85,
     "address": {
       "summary": "match"
     },
     "phone_number": {
-      "summary": "match"
+      "summary": "no_input"
     },
     "email_address": {
-      "summary": "match"
+      "summary": "no_input"
     },
     "website": {
       "summary": "match"
@@ -22994,17 +23429,17 @@ Retrieve the current state of a specific business verification.
       "email_is_deliverable": "yes",
       "website_build_status": "active",
       "whois_record": {
-        "domain_created_at": "1995-08-16T00:00:00Z",
-        "domain_updated_at": "2025-07-11T00:00:00Z",
-        "domain_expires_at": "2026-08-15T00:00:00Z",
-        "registrar": "GANDI SAS"
+        "domain_created_at": "2000-01-15T00:00:00Z",
+        "domain_updated_at": "2025-06-10T00:00:00Z",
+        "domain_expires_at": "2026-06-15T00:00:00Z",
+        "registrar": "Example Registrar Inc"
       },
       "ssl": {
         "is_valid": "yes"
       }
     }
   },
-  "shareable_url": "https://verify.plaid.com/busver_4FrXJvfQU3zGUR?key=e004115db797f7cc3083bff3167cba30644ef630fb46f5b086cde6cc3b86a36f",
+  "shareable_url": "https://verify.plaid.com/verify/busver_52xR9LKo77r1Np?key=e004115db797f7cc3083bff3167cba30644ef630fb46f5b086cde6cc3b86a36f",
   "request_id": "saKrIBuEB9qJZng"
 }
 ```
@@ -23049,7 +23484,17 @@ curl https://example.com/business_verification/create \
       },
       "website": "https://example.com",
       "phone_number": "+14025671234",
-      "email_address": "user@example.com"
+      "email_address": "user@example.com",
+      "tin": "12-3456789",
+      "officers": [
+        {
+          "name": "Leslie Knope"
+        }
+      ]
+    },
+    "options": {
+      "include_website_analysis": false,
+      "include_industry_classification": false
     },
     "client_id": "string",
     "secret": "string"
@@ -23080,7 +23525,17 @@ Create a new business verification to check a business's identity and risk profi
     },
     "website": "https://example.com",
     "phone_number": "+14025671234",
-    "email_address": "user@example.com"
+    "email_address": "user@example.com",
+    "tin": "12-3456789",
+    "officers": [
+      {
+        "name": "Leslie Knope"
+      }
+    ]
+  },
+  "options": {
+    "include_website_analysis": false,
+    "include_industry_classification": false
   },
   "client_id": "string",
   "secret": "string"
@@ -23093,7 +23548,8 @@ Create a new business verification to check a business's identity and risk profi
 |---|---|---|---|---|
 |body|body|[BusinessVerificationCreateRequest](#schemabusinessverificationcreaterequest)|true|none|
 |» client_user_id|body|[ClientUserID](#schemaclientuserid)|true|A unique ID that identifies the end user in your system. Either a `user_id` or the `client_user_id` must be provided. This ID can also be used to associate user-specific data from other Plaid products. Financial Account Matching requires this field and the `/link/token/create` `client_user_id` to be consistent. Personally identifiable information, such as an email address or phone number, should not be used in the `client_user_id`.|
-|» business|body|[BusinessVerificationCreateRequestBusiness](#schemabusinessverificationcreaterequestbusiness)|false|Business information provided in the verification request|
+|» business|body|[BusinessVerificationCreateRequestBusiness](#schemabusinessverificationcreaterequestbusiness)|true|Business information provided in the verification request|
+|» options|body|[BusinessVerificationCreateRequestOptions](#schemabusinessverificationcreaterequestoptions)|false|Optional checks to run for this verification. Omit or set to null to run Business Search only.|
 |» client_id|body|[APIClientID](#schemaapiclientid)|false|Your Plaid API `client_id`. The `client_id` is required and may be provided either in the `PLAID-CLIENT-ID` header or as part of a request body.|
 |» secret|body|[APISecret](#schemaapisecret)|false|Your Plaid API `secret`. The `secret` is required and may be provided either in the `PLAID-SECRET` header or as part of a request body.|
 
@@ -23104,121 +23560,44 @@ Create a new business verification to check a business's identity and risk profi
 ```json
 {
   "id": "busver_52xR9LKo77r1Np",
-  "client_user_id": "your-db-id-3b24110",
-  "created_at": "2020-07-24T03:26:02Z",
-  "completed_at": "2020-07-24T03:26:02Z",
-  "redacted_at": "2020-07-24T03:26:02Z",
-  "status": "success",
+  "client_user_id": "acme-widgets-sandbox-enriched-001",
+  "created_at": "2026-01-15T15:00:00Z",
+  "completed_at": null,
+  "redacted_at": null,
+  "status": "active",
+  "requested_checks": {
+    "include_website_analysis": true,
+    "include_industry_classification": true
+  },
   "search_terms": {
-    "name": "Acme Corporation",
-    "alternative_names": [
-      "Acme Widgets"
-    ],
+    "name": "ACME WIDGETS, LLC",
+    "alternative_names": [],
     "address": {
-      "street": "123 Main St.",
-      "street2": "Unit 42",
-      "city": "Pawnee",
-      "region": "IN",
-      "postal_code": "46001",
+      "street": "123 Main St",
+      "street2": null,
+      "city": "Anytown",
+      "region": "CA",
+      "postal_code": "90210",
       "country": "US"
     },
-    "website": "https://example.com",
-    "phone_number": "+14025671234",
-    "email_address": "user@example.com"
-  },
-  "kyb_check": {
-    "status": "success",
-    "score": 85,
-    "name": {
-      "summary": "match"
-    },
-    "address": {
-      "summary": "match"
-    },
-    "website": {
-      "summary": "match"
-    },
-    "match_details": {
-      "names": [
-        {
-          "is_primary": true,
-          "name": "Acme Corporation"
-        },
-        {
-          "is_primary": false,
-          "name": "Acme Widgets"
-        }
-      ],
-      "entity_type": "llc",
-      "addresses": [
-        {
-          "street": "123 Main St.",
-          "street2": "Unit 42",
-          "city": "Pawnee",
-          "region": "IN",
-          "postal_code": "46001",
-          "country": "US",
-          "is_primary": true
-        }
-      ],
-      "phone_numbers": [
-        {
-          "number": "+12345678909"
-        }
-      ],
-      "email_addresses": [
-        {
-          "email_address": "business@example.com"
-        }
-      ],
-      "websites": [
-        {
-          "url": "https://example.com"
-        }
-      ],
-      "formation_date": "1990-05-29"
-    }
-  },
-  "risk_check": {
-    "status": "success",
-    "score": 92,
-    "industry_prediction": {
-      "code": 518210,
-      "title": "Data Processing, Hosting, and Related Services"
-    }
-  },
-  "digital_presence_check": {
-    "status": "success",
-    "score": 55,
-    "address": {
-      "summary": "match"
-    },
-    "phone_number": {
-      "summary": "match"
-    },
-    "email_address": {
-      "summary": "match"
-    },
-    "website": {
-      "summary": "match"
-    },
-    "website_analysis": {
-      "is_parked": "no",
-      "email_is_deliverable": "yes",
-      "website_build_status": "active",
-      "whois_record": {
-        "domain_created_at": "1995-08-16T00:00:00Z",
-        "domain_updated_at": "2025-07-11T00:00:00Z",
-        "domain_expires_at": "2026-08-15T00:00:00Z",
-        "registrar": "GANDI SAS"
+    "website": "https://acme.example.com",
+    "phone_number": null,
+    "email_address": null,
+    "tin": "123456789",
+    "officers": [
+      {
+        "name": "John Smith"
       },
-      "ssl": {
-        "is_valid": "yes"
+      {
+        "name": "Jane Doe"
       }
-    }
+    ]
   },
-  "shareable_url": "https://verify.plaid.com/busver_4FrXJvfQU3zGUR?key=e004115db797f7cc3083bff3167cba30644ef630fb46f5b086cde6cc3b86a36f",
-  "request_id": "saKrIBuEB9qJZng"
+  "business_verification": null,
+  "risk_check": null,
+  "digital_presence_check": null,
+  "shareable_url": "https://verify.plaid.com/verify/busver_52xR9LKo77r1Np?key=e004115db797f7cc3083bff3167cba30644ef630fb46f5b086cde6cc3b86a36f",
+  "request_id": "IhYw3R9KsL2f8Pq"
 }
 ```
 
@@ -23308,6 +23687,7 @@ Versioning note: API versions 2019-05-29 and earlier use a different schema for 
     "ach": {
       "account": "9900009606",
       "account_id": "vzeNDwK7KQIm4yEog683uElbp9GRLEFXGK98D",
+      "is_tokenized_account_number": false,
       "routing": "011401533",
       "wire_routing": "021000021"
     },
@@ -25139,8 +25519,8 @@ Note: This request may have higher latency if Signal Transaction Scores is being
 |» client_user_id|body|string|false|A unique ID that identifies the end user in your system. This ID is used to correlate requests by a user with multiple Items. Personally identifiable information, such as an email address or phone number, should not be used in the `client_user_id`.|
 |» is_recurring|body|boolean \| null|false|**true** if the ACH transaction is a recurring transaction; **false** otherwise.|
 |» default_payment_method|body|string \| null|false|The default ACH payment method to complete the transaction.<br><br>`SAME_DAY_ACH`: Same Day ACH by Nacha. The debit transaction is processed and settled on the same day.<br><br>`STANDARD_ACH`: Standard ACH by Nacha.<br><br>`MULTIPLE_PAYMENT_METHODS`: If there is no default debit rail or there are multiple payment methods.<br><br>Possible values:  `SAME_DAY_ACH`, `STANDARD_ACH`, `MULTIPLE_PAYMENT_METHODS`|
-|» user|body|[SignalUser](#schemasignaluser)|false|Details about the end user initiating the transaction (i.e., the account holder). These fields are optional, but strongly recommended to increase the accuracy of results when using Signal Transaction Scores. When using a Balance-only ruleset, if the Signal Addendum has been signed, these fields are ignored; if the Addendum has not been signed, using these fields will result in an error.|
-|» device|body|[SignalDevice](#schemasignaldevice)|false|Details about the end user's device. These fields are optional, but strongly recommended to increase the accuracy of results when using Signal Transaction Scores. When using a Balance-only Ruleset, these fields are ignored if the Signal Addendum has been signed; if it has not been signed, using these fields will result in an error.|
+|» user|body|[SignalUser](#schemasignaluser)|false|Details about the end user initiating the transaction (i.e., the account holder). These fields are optional, but strongly recommended to increase the accuracy of results when using Signal Transaction Scores. When using a Balance-only ruleset, these fields are ignored.|
+|» device|body|[SignalDevice](#schemasignaldevice)|false|Details about the end user's device. These fields are optional, but strongly recommended to increase the accuracy of results when using Signal Transaction Scores. When using a Balance-only ruleset, these fields are ignored.|
 |» ruleset_key|body|string \| null|false|The key of the ruleset to use for this transaction. You can configure a ruleset using the Plaid Dashboard, under [Signal->Rules](https://dashboard.plaid.com/signal/risk-profiles). If not provided, for customers who began using Signal Transaction Scores before October 15, 2025, by default, no ruleset will be used; for customers who began using Signal Transaction Scores after that date, or for Balance customers, the `default` ruleset will be used. For more details, or to opt out of using a ruleset, see [Signal Rules](https://plaid.com/docs/signal/signal-rules/).|
 
 > Example responses
@@ -26381,6 +26761,10 @@ The POST `/item/webhook/update` allows you to update the webhook URL associated 
       "assets",
       "auth"
     ],
+    "products": [
+      "assets",
+      "auth"
+    ],
     "consent_expiration_time": null,
     "error": null,
     "institution_id": "ins_117650",
@@ -26930,6 +27314,13 @@ The types of information returned by Liabilities can include balances and due da
       "investments"
     ],
     "billed_products": [
+      "assets",
+      "auth",
+      "identity",
+      "liabilities",
+      "transactions"
+    ],
+    "products": [
       "assets",
       "auth",
       "identity",
@@ -29984,6 +30375,8 @@ If the user has at least one associated Item and every associated Item contains 
 
 For Plaid Protect, this endpoint terminates Protect products. For Servicing, it cancels the subscription and preserves CRA Items and historical data for future report requests.
 
+To learn how terminating products affects billing, see [Billing](https://plaid.com/docs/account/billing/#subscription-fee).
+
 <a href="/api/users/#userproductsterminate">External documentation</a>
 
 > Body parameter
@@ -30072,6 +30465,114 @@ To perform this operation, you must be authenticated by means of one of the foll
 clientId & secret & plaidVersion
 </aside>
 
+## Retrieve a user's transfer limits
+
+<a id="opIduserTransferLimitsGet"></a>
+
+> Code samples
+
+```bash
+curl https://example.com/user/transfer/limits/get \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "PLAID-CLIENT-ID: ${API_KEY}" \
+  -H "PLAID-SECRET: ${API_KEY}" \
+  -H "Plaid-Version: ${API_KEY}" \
+  -d '{
+    "client_id": "string",
+    "secret": "string",
+    "user_id": "string"
+  }'
+```
+
+`POST /user/transfer/limits/get`
+
+Retrieve the user's current Guaranteed ACH per-transaction limit and configured daily, weekly, and monthly ceilings. Amounts are returned as decimal strings in dollars with two decimal places and an ISO currency code. Access to this endpoint must be enabled for your client.
+
+<a href="/api/users/#usertransferlimitsget">External documentation</a>
+
+> Body parameter
+
+```json
+{
+  "client_id": "string",
+  "secret": "string",
+  "user_id": "string"
+}
+```
+
+<h3 id="retrieve-a-users-transfer-limits-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|body|body|[UserTransferLimitsGetRequest](#schemausertransferlimitsgetrequest)|true|none|
+|» client_id|body|[APIClientID](#schemaapiclientid)|false|Your Plaid API `client_id`. The `client_id` is required and may be provided either in the `PLAID-CLIENT-ID` header or as part of a request body.|
+|» secret|body|[APISecret](#schemaapisecret)|false|Your Plaid API `secret`. The `secret` is required and may be provided either in the `PLAID-SECRET` header or as part of a request body.|
+|» user_id|body|[NewUserID](#schemanewuserid)|true|A unique user identifier, created by `/user/create`. Integrations that began using `/user/create` after December 10, 2025 use this field to identify a user instead of the `user_token`. For more details, see [New User APIs](https://plaid.com/docs/api/users/user-apis).|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "guarantee_limits": {
+    "transaction_limit": {
+      "value": "150.25",
+      "iso_currency_code": "USD"
+    },
+    "daily_limit": {
+      "value": "5000.00",
+      "iso_currency_code": "USD"
+    },
+    "weekly_limit": {
+      "value": "10000.00",
+      "iso_currency_code": "USD"
+    },
+    "monthly_limit": null
+  },
+  "request_id": "mdqfuVxeoza6mhu"
+}
+```
+
+> default Response
+
+```json
+{
+  "error_type": "INVALID_REQUEST",
+  "error_code": "string",
+  "error_code_reason": "string",
+  "error_message": "string",
+  "display_message": "string",
+  "request_id": "string",
+  "causes": [
+    null
+  ],
+  "status": 0,
+  "documentation_url": "string",
+  "suggested_action": "string",
+  "required_account_subtypes": [
+    "string"
+  ],
+  "provided_account_subtypes": [
+    "string"
+  ]
+}
+```
+
+<h3 id="retrieve-a-users-transfer-limits-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|[UserTransferLimitsGetResponse](#schemausertransferlimitsgetresponse)|
+|default|Default|Error response|[PlaidError](#schemaplaiderror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+clientId & secret & plaidVersion
+</aside>
+
 ## Get Items associated with a User
 
 <a id="opIduserItemsGet"></a>
@@ -30137,6 +30638,10 @@ Returns Items associated with a `user_id`, along with their corresponding status
         "identity",
         "transactions"
       ],
+      "products": [
+        "identity",
+        "transactions"
+      ],
       "error": null,
       "institution_id": "ins_109508",
       "institution_name": "First Platypus Bank",
@@ -30153,6 +30658,10 @@ Returns Items associated with a `user_id`, along with their corresponding status
         "transactions"
       ],
       "billed_products": [
+        "assets",
+        "auth"
+      ],
+      "products": [
         "assets",
         "auth"
       ],
@@ -30813,6 +31322,7 @@ Polling for status updates in Production is highly discouraged. Repeatedly calli
   },
   "end_to_end_id": "sptch8cde8390bfd363888",
   "iban": null,
+  "institution_id": null,
   "request_id": "aEAQmewMzlVa1k6"
 }
 ```
@@ -31270,6 +31780,11 @@ The `/investments/holdings/get` endpoint allows developers to receive user-autho
       "transactions"
     ],
     "billed_products": [
+      "assets",
+      "auth",
+      "investments"
+    ],
+    "products": [
       "assets",
       "auth",
       "investments"
@@ -31744,6 +32259,10 @@ Data returned by the asynchronous investments extraction flow (when `async_updat
       "transactions"
     ],
     "billed_products": [
+      "auth",
+      "investments"
+    ],
+    "products": [
       "auth",
       "investments"
     ],
@@ -32403,7 +32922,7 @@ curl https://example.com/processor/token/create \
 
 `POST /processor/token/create`
 
-Used to create a token suitable for sending to one of Plaid's partners to enable integrations. Note that Stripe partnerships use bank account tokens instead; see `/processor/stripe/bank_account_token/create` for creating tokens for use with Stripe integrations. If using multiple processors, multiple different processor tokens can be created for a single access token. Once created, a processor token for a given Item can be modified by calling `/processor/token/permissions/set`. To revoke the processor's access, the entire Item must be deleted by calling `/item/remove`.
+Used to create a token suitable for sending to one of Plaid's partners to enable integrations. To create a Stripe bank account token (`btok_...`), use `/processor/stripe/bank_account_token/create`. If using multiple processors, multiple different processor tokens can be created for a single access token. Once created, a processor token for a given Item can be modified by calling `/processor/token/permissions/set`. To revoke the processor's access, the entire Item must be deleted by calling `/item/remove`.
 
 <a href="/api/processors/#processortokencreate">External documentation</a>
 
@@ -32438,6 +32957,7 @@ Used to create a token suitable for sending to one of Plaid's partners to enable
 |» processor|galileo|
 |» processor|modern_treasury|
 |» processor|ocrolus|
+|» processor|stripe|
 |» processor|vesta|
 |» processor|drivewealth|
 |» processor|vopay|
@@ -32522,6 +33042,8 @@ Used to create a token suitable for sending to one of Plaid's partners to enable
 |» processor|adyen_ca|
 |» processor|bitgo|
 |» processor|anchorage|
+|» processor|affina|
+|» processor|whop|
 
 > Example responses
 
@@ -32664,6 +33186,9 @@ Used to control a processor's access to products on the given processor token. B
 |» products|cra_plaid_credit_score|
 |» products|cra_qualify|
 |» products|cra_home_lending|
+|» products|cra_lend_score_complete|
+|» products|cra_income_complete|
+|» products|cra_home_lending_voa|
 |» products|layer|
 |» products|pay_by_bank|
 |» products|protect_linked_bank|
@@ -33220,6 +33745,9 @@ Upon creating an Item via `/item/import`, Plaid will automatically begin an extr
 |» products|cra_plaid_credit_score|
 |» products|cra_qualify|
 |» products|cra_home_lending|
+|» products|cra_lend_score_complete|
+|» products|cra_income_complete|
+|» products|cra_home_lending_voa|
 |» products|layer|
 |» products|pay_by_bank|
 |» products|protect_linked_bank|
@@ -33493,13 +34021,15 @@ curl https://example.com/link/token/create \
           "employment_refresh_options": {
             "days_requested": 0
           }
-        }
+        },
+        "exclude_transactions": false,
+        "base_report_version": {}
       },
       "cashflow_insights": {
         "attributes_version": "v1.0"
       },
       "lend_score": {
-        "lend_score_version": "v1.0"
+        "lend_score_version": "v2.0"
       },
       "network_insights": {
         "network_insights_version": "NI1"
@@ -33530,7 +34060,8 @@ curl https://example.com/link/token/create \
           "product": "cra_base_report",
           "version": "string",
           "options": {
-            "require_identity": true
+            "require_identity": true,
+            "exclude_transactions": false
           }
         }
       ]
@@ -33573,12 +34104,13 @@ curl https://example.com/link/token/create \
     "third_party_user_token": "string",
     "investments": {
       "allow_unverified_crypto_wallets": true,
-      "allow_manual_entry": true
+      "allow_manual_entry": true,
+      "async_update": true
     },
     "investments_auth": {
       "manual_entry_enabled": false,
-      "masked_number_match_enabled": false,
-      "stated_account_number_enabled": false,
+      "masked_number_match_enabled": true,
+      "stated_account_number_enabled": true,
       "rollover_401k_enabled": false
     },
     "hosted_link": {
@@ -33826,13 +34358,15 @@ A `link_token` generated by `/link/token/create` is also used to initialize othe
         "employment_refresh_options": {
           "days_requested": 0
         }
-      }
+      },
+      "exclude_transactions": false,
+      "base_report_version": {}
     },
     "cashflow_insights": {
       "attributes_version": "v1.0"
     },
     "lend_score": {
-      "lend_score_version": "v1.0"
+      "lend_score_version": "v2.0"
     },
     "network_insights": {
       "network_insights_version": "NI1"
@@ -33863,7 +34397,8 @@ A `link_token` generated by `/link/token/create` is also used to initialize othe
         "product": "cra_base_report",
         "version": "string",
         "options": {
-          "require_identity": true
+          "require_identity": true,
+          "exclude_transactions": false
         }
       }
     ]
@@ -33906,12 +34441,13 @@ A `link_token` generated by `/link/token/create` is also used to initialize othe
   "third_party_user_token": "string",
   "investments": {
     "allow_unverified_crypto_wallets": true,
-    "allow_manual_entry": true
+    "allow_manual_entry": true,
+    "async_update": true
   },
   "investments_auth": {
     "manual_entry_enabled": false,
-    "masked_number_match_enabled": false,
-    "stated_account_number_enabled": false,
+    "masked_number_match_enabled": true,
+    "stated_account_number_enabled": true,
     "rollover_401k_enabled": false
   },
   "hosted_link": {
@@ -33951,10 +34487,10 @@ A `link_token` generated by `/link/token/create` is also used to initialize othe
 |» secret|body|[APISecret](#schemaapisecret)|false|Your Plaid API `secret`. The `secret` is required and may be provided either in the `PLAID-SECRET` header or as part of a request body.|
 |» client_name|body|string|true|The name of your application, as it should be displayed in Link. Maximum length of 30 characters. If a value longer than 30 characters is provided, Link will display "This Application" instead.|
 |» language|body|string|true|The language that Link should be displayed in. When initializing with Identity Verification, this field is not used; for more details, see [Identity Verification supported languages](https://plaid.com/docs/identity-verification/#supported-languages).<br><br>Supported languages are:<br>- Danish (`'da'`)<br>- Dutch (`'nl'`)<br>- English (`'en'`)<br>- Estonian (`'et'`)<br>- French (`'fr'`)<br>- German (`'de'`)<br>- Haitian Creole (`'ht'`)<br>- Hindi (`'hi'`)<br>- Italian (`'it'`)<br>- Latvian (`'lv'`)<br>- Lithuanian (`'lt'`)<br>- Norwegian Bokmål (`'nb'`)<br>- Polish (`'pl'`)<br>- Portuguese (`'pt'`)<br>- Romanian (`'ro'`)<br>- Spanish (`'es'`)<br>- Swedish (`'sv'`)<br>- Vietnamese (`'vi'`)<br><br>When using a Link customization, the language configured here must match the setting in the customization, or the customization will not be applied.|
-|» country_codes|body|[[CountryCode](#schemacountrycode)]|true|Specify an array of Plaid-supported country codes using the ISO-3166-1 alpha-2 country code standard. Institutions from all listed countries will be shown. For a complete mapping of supported products by country, see [What Plaid products are supported in each country and region?](https://support.plaid.com/hc/en-us/articles/27895826947735-What-Plaid-products-are-supported-in-each-country-and-region). For access to additional countries beyond what you have been approved for, [contact sales](https://plaid.com/contact/), your account manager, or support.<br><br>If using Identity Verification, `country_codes` should be set to the country where your company is based, not the country where your user is located. For all other products, `country_codes` represents the location of your user's financial institution.<br><br>If Link is launched with multiple country codes, only products that you are enabled for in all countries will be used by Link. While all countries are enabled by default in Sandbox, in Production only the countries you have requested access for are shown. To request access to additional countries, [file a product access Support ticket](https://dashboard.plaid.com/support/new/product-and-development/product-troubleshooting/request-product-access) via the Plaid dashboard.<br><br>If using a Link customization, make sure the country codes in the customization match those specified in `country_codes`, or the customization may not be applied.<br><br>If using the Auth features Instant Match, Instant Micro-deposits, Same-Day Micro-deposits, or Automated Micro-deposits, `country_codes` must be set to `['US']`. If using Database Auth, `country_codes` must be set to `['US']` or `['CA']`.|
+|» country_codes|body|[[CountryCode](#schemacountrycode)]|true|Specify an array of Plaid-supported country codes using the ISO-3166-1 alpha-2 country code standard. Institutions from all listed countries will be shown. For a complete mapping of supported products by country, see [What Plaid products are supported in each country and region?](https://support.plaid.com/hc/en-us/articles/27895826947735-What-Plaid-products-are-supported-in-each-country-and-region). For access to additional countries beyond what you have been approved for, [contact sales](https://plaid.com/contact/), your account manager, or support.<br><br>If using Identity Verification, `country_codes` should be set to the country where your company is based, not the country where your user is located. For all other products, `country_codes` represents the location of your user's financial institution.<br><br>If Link is launched with multiple country codes, every product you specify, in any product array, must be enabled for your account in all of the listed countries; otherwise, the request fails with an `INVALID_PRODUCT` error. While all countries are enabled by default in Sandbox, in Production only the countries you have requested access for are shown. To request access to additional countries, [file a product access Support ticket](https://dashboard.plaid.com/support/new/product-and-development/product-troubleshooting/request-product-access) via the Plaid dashboard.<br><br>If using a Link customization, make sure the country codes in the customization match those specified in `country_codes`, or the customization may not be applied.<br><br>If using the Auth features Instant Match, Instant Micro-deposits, Same-Day Micro-deposits, or Automated Micro-deposits, `country_codes` must be set to `['US']`. If using Database Auth, `country_codes` must be set to `['US']` or `['CA']`.|
 |» user|body|[LinkTokenCreateRequestUser](#schemalinktokencreaterequestuser)|false|An object specifying information about the end user who will be linking their account. **Required** if `user_id` isn't included.|
 |» user_id|body|string|false|A `user_id` generated using `/user/create`. Required for integrations that began using Plaid Protect, Multi-Item Link, or Plaid Check Consumer Report after December 10, 2025. Required for new integrations that use Payment Initiation, Variable Recurring Payments, or Virtual Accounts. For more details, see [New User APIs](https://plaid.com/docs/api/users/user-apis). One of either the `user_id` or the `user` field is required.|
-|» products|body|[[Products](#schemaproducts)]|false|List of Plaid product(s) that the linked Item must support. If launching Link in update mode, should be omitted (unless you are using update mode to add a credit product, such as Assets, Statements, Income, or Plaid Check Consumer Report, to an existing Item); at least one `product` is required otherwise.<br><br>To maximize the number of institutions and accounts available, initialize Link with the minimal product set required for your use case, as the products specified will limit which institutions and account types will be available to your users in Link. Only institutions that support *all* requested products can be selected; if a user attempts to select an institution that does not support a listed product, a "Connectivity not supported" error message will appear in Link. For each specified product, the Item connected by the user must contain at least one compatible account. For details on compatible product / account type combinations, see [the account type/product support matrix](https://plaid.com/docs/api/accounts/#account-type--product-support-matrix).<br><br>To add products without limiting the institution list or account types, use the [`optional_products`](https://plaid.com/docs/api/link/#link-token-create-request-optional-products) or  [`required_if_supported_products`](https://plaid.com/docs/api/link/#link-token-create-request-required-if-supported-products) fields. Products can also be added to an Item by calling the product endpoint after obtaining an access token; this may require the product to be listed in the [`additional_consented_products`](https://plaid.com/docs/api/link/#link-token-create-request-additional-consented-products) array. For details, see [Choosing when to initialize products](https://plaid.com/docs/link/initializing-products/).<br><br>`balance` is *not* a valid value, the Balance product does not require explicit initialization and will automatically be initialized when any other product is initialized.<br><br>If launching Link with CRA products, `cra_base_report` is required and must be included in the `products` array.<br><br>Note that, unless you have opted to disable Instant Match support, institutions that support Instant Match will also be shown in Link if `auth` is specified as a product, even though these institutions do not contain `auth` in their product array.<br><br>In Production, you will be billed for each product that you specify when initializing Link. Note that a product cannot be removed from an Item once the Item has been initialized with that product. To stop billing on an Item for subscription-based products, such as Liabilities, Investments, and Transactions, remove the Item via `/item/remove`.|
+|» products|body|[[Products](#schemaproducts)]|false|List of Plaid product(s) that the linked Item must support. If launching Link in update mode, should be omitted (unless you are using update mode to add a credit product, such as Assets, Statements, Income, or Plaid Check Consumer Report, to an existing Item); at least one `product` is required otherwise.<br><br>To maximize the number of institutions and accounts available, initialize Link with the minimal product set required for your use case, as the products specified will limit which institutions and account types will be available to your users in Link. Only institutions that support *all* requested products can be selected; if a user attempts to select an institution that does not support a listed product, a "Connectivity not supported" error message will appear in Link. For each specified product, the Item connected by the user must contain at least one compatible account. For details on compatible product / account type combinations, see [the account type/product support matrix](https://plaid.com/docs/api/accounts/#account-type--product-support-matrix).<br><br>To add products without limiting the institution list or account types, use the [`optional_products`](https://plaid.com/docs/api/link/#link-token-create-request-optional-products) or  [`required_if_supported_products`](https://plaid.com/docs/api/link/#link-token-create-request-required-if-supported-products) fields. Products can also be added to an Item by calling the product endpoint after obtaining an access token; this may require the product to be listed in the [`additional_consented_products`](https://plaid.com/docs/api/link/#link-token-create-request-additional-consented-products) array. For details, see [Choosing when to initialize products](https://plaid.com/docs/link/initializing-products/).<br><br>`balance` is *not* a valid value, the Balance product does not require explicit initialization and will automatically be initialized when any other product is initialized.<br><br>Note that, unless you have opted to disable Instant Match support, institutions that support Instant Match will also be shown in Link if `auth` is specified as a product, even though these institutions do not contain `auth` in their product array.<br><br>In Production, you will be billed for each product that you specify when initializing Link. Note that a product cannot be removed from an Item once the Item has been initialized with that product. To stop billing on an Item for subscription-based products, such as Liabilities, Investments, and Transactions, remove the Item via `/item/remove`.|
 |» required_if_supported_products|body|[[Products](#schemaproducts)]|false|List of Plaid product(s) you wish to use only if the institution and account(s) selected by the user support the product. Institutions that do not support these products will still be shown in Link. The products will only be extracted and billed if the user selects an institution and account type that supports them.<br><br>There should be no overlap between this array and the `products`, `optional_products`, or `additional_consented_products` arrays. The `products` array must have at least one product.<br><br>For more details on using this feature, see [Required if Supported Products](https://plaid.com/docs/link/initializing-products/#required-if-supported-products).|
 |» optional_products|body|[[Products](#schemaproducts)]|false|List of Plaid product(s) that will enhance the consumer's use case, but that your app can function without. Plaid will attempt to fetch data for these products on a best-effort basis, and failure to support these products will not affect Item creation.<br><br>There should be no overlap between this array and the `products`, `required_if_supported_products`, or `additional_consented_products` arrays. The `products` array must have at least one product.<br><br>For more details on using this feature, see [Optional Products](https://plaid.com/docs/link/initializing-products/#optional-products).|
 |» additional_consented_products|body|[[Products](#schemaproducts)]|false|List of additional Plaid product(s) you wish to collect consent for to support your use case. These products will not be billed until you start using them by calling the relevant endpoints.<br><br>`balance` is *not* a valid value, the Balance product does not require explicit initialization and will automatically have consent collected.<br><br>Institutions that do not support these products will still be shown in Link.<br><br>There should be no overlap between this array and the `products`, `required_if_supported_products`, or `optional_products` arrays.<br><br>If you include `signal` in `additional_consented_products`, you will need to call [`/signal/prepare`](https://plaid.com/docs/api/products/signal/#signalprepare) before calling `/signal/evaluate` for the first time on an Item in order to get the most accurate results. For more details, see [`/signal/prepare`](https://plaid.com/docs/api/products/signal/#signalprepare).|
@@ -33978,7 +34514,7 @@ A `link_token` generated by `/link/token/create` is also used to initialize othe
 |» credit_partner_insights|body|[LinkTokenCreateRequestCreditPartnerInsights](#schemalinktokencreaterequestcreditpartnerinsights)|false|Specifies options for initializing Link for use with the Credit Partner Insights product.|
 |» cra_options|body|[LinkTokenCreateRequestCraOptions](#schemalinktokencreaterequestcraoptions)|false|Specifies options for initializing Link for use with Plaid Check products|
 |» cra_report_parameter|body|[LinkTokenCreateRequestCraReportParameter](#schemalinktokencreaterequestcrareportparameter)|false|Specifies the report parameters for Plaid Check products, mirroring the parameters accepted on `/cra/report/create`.|
-|» consumer_report_permissible_purpose|body|[ConsumerReportPermissiblePurpose](#schemaconsumerreportpermissiblepurpose)|false|Describes the reason you are generating a Consumer Report for this user. When calling `/link/token/create`, this field is required when using Plaid Check (CRA) products; invalid if not using Plaid Check (CRA) products.<br><br>`ACCOUNT_REVIEW_CREDIT`: In connection with a consumer credit transaction for the review or collection of an account pursuant to FCRA Section 604(a)(3)(A).<br><br>`ACCOUNT_REVIEW_NON_CREDIT`: For a legitimate business need of the information to review a non-credit account provided primarily for personal, family, or household purposes to determine whether the consumer continues to meet the terms of the account pursuant to FCRA Section 604(a)(3)(F)(2).<br><br>`EXTENSION_OF_CREDIT`: In connection with a credit transaction initiated by and involving the consumer pursuant to FCRA Section 604(a)(3)(A).<br><br>`LEGITIMATE_BUSINESS_NEED_TENANT_SCREENING`: For a legitimate business need in connection with a business transaction initiated by the consumer primarily for personal, family, or household purposes in connection with a property rental assessment pursuant to FCRA Section 604(a)(3)(F)(i).<br><br>`LEGITIMATE_BUSINESS_NEED_OTHER`: For a legitimate business need in connection with a business transaction made primarily for personal, family, or household initiated by the consumer pursuant to FCRA Section 604(a)(3)(F)(i).<br><br>`WRITTEN_INSTRUCTION_PREQUALIFICATION`: In accordance with the written instructions of the consumer pursuant to FCRA Section 604(a)(2), to evaluate an application's profile to make an offer to the consumer.<br><br>`WRITTEN_INSTRUCTION_OTHER`: In accordance with the written instructions of the consumer pursuant to FCRA Section 604(a)(2), such as when an individual agrees to act as a guarantor or assumes personal liability for a consumer, business, or commercial loan.<br><br>`ELIGIBILITY_FOR_GOVT_BENEFITS`:  In connection with an eligibility determination for a government benefit where the entity is required to consider an applicant's financial status pursuant to FCRA Section 604(a)(3)(D).|
+|» consumer_report_permissible_purpose|body|[ConsumerReportPermissiblePurpose](#schemaconsumerreportpermissiblepurpose)|false|Describes the reason you are generating a Consumer Report for this user. When calling `/link/token/create`, this field is required when using Plaid Check (CRA) products; invalid if not using Plaid Check (CRA) products.<br><br>`ACCOUNT_REVIEW_CREDIT`: In connection with a consumer credit transaction for the review or collection of an account pursuant to FCRA Section 604(a)(3)(A).<br><br>`ACCOUNT_REVIEW_NON_CREDIT`: For a legitimate business need of the information to review a non-credit account provided primarily for personal, family, or household purposes to determine whether the consumer continues to meet the terms of the account pursuant to FCRA Section 604(a)(3)(F)(ii).<br><br>`EXTENSION_OF_CREDIT`: In connection with a credit transaction initiated by and involving the consumer pursuant to FCRA Section 604(a)(3)(A).<br><br>`LEGITIMATE_BUSINESS_NEED_TENANT_SCREENING`: For a legitimate business need in connection with a business transaction initiated by the consumer primarily for personal, family, or household purposes in connection with a property rental assessment pursuant to FCRA Section 604(a)(3)(F)(i).<br><br>`LEGITIMATE_BUSINESS_NEED_OTHER`: For a legitimate business need in connection with a business transaction made primarily for personal, family, or household initiated by the consumer pursuant to FCRA Section 604(a)(3)(F)(i).<br><br>`WRITTEN_INSTRUCTION_PREQUALIFICATION`: In accordance with the written instructions of the consumer pursuant to FCRA Section 604(a)(2), to evaluate an application's profile to make an offer to the consumer.<br><br>`WRITTEN_INSTRUCTION_OTHER`: In accordance with the written instructions of the consumer pursuant to FCRA Section 604(a)(2), such as when an individual agrees to act as a guarantor or assumes personal liability for a consumer, business, or commercial loan.<br><br>`ELIGIBILITY_FOR_GOVT_BENEFITS`:  In connection with an eligibility determination for a government benefit where the entity is required to consider an applicant's financial status pursuant to FCRA Section 604(a)(3)(D).<br><br>`INSURANCE_UNDERWRITING`: In connection with the underwriting of insurance involving the consumer pursuant to FCRA Section 604(a)(3)(C).<br><br>`SECONDARY_INVESTOR`: As a potential investor or servicer, or current insurer, in connection with a valuation of, or an assessment of the credit or prepayment risks associated with, an existing credit obligation pursuant to FCRA Section 604(a)(3)(E).|
 |» auth|body|[LinkTokenCreateRequestAuth](#schemalinktokencreaterequestauth)|false|Specifies options for initializing Link for use with the Auth product. This field can be used to enable or disable extended Auth flows for the resulting Link session. Omitting any field will result in a default that can be configured by your account manager. The default behavior described in the documentation is the default behavior that will apply if you have not requested your account manager to apply a different default. If you have enabled the [Dashboard Account Verification pane](https://dashboard.plaid.com/account-verification), the settings enabled there will override any settings in this object.|
 |» transfer|body|[LinkTokenCreateRequestTransfer](#schemalinktokencreaterequesttransfer)|false|Specifies options for initializing Link for use with the Transfer product.|
 |» update|body|[LinkTokenCreateRequestUpdate](#schemalinktokencreaterequestupdate)|false|Specifies options for initializing Link for [update mode](https://plaid.com/docs/link/update-mode).|
@@ -33986,7 +34522,7 @@ A `link_token` generated by `/link/token/create` is also used to initialize othe
 |» statements|body|[LinkTokenCreateRequestStatements](#schemalinktokencreaterequeststatements)|false|Specifies options for initializing Link for use with the Statements product. This field is required for the statements product.|
 |» third_party_user_token|body|string|false|A third party user token associated with the current user.|
 |» investments|body|[LinkTokenInvestments](#schemalinktokeninvestments)|false|Configuration parameters for the Investments product|
-|» investments_auth|body|[LinkTokenInvestmentsAuth](#schemalinktokeninvestmentsauth)|false|Configuration parameters for the Investments Move product|
+|» investments_auth|body|[LinkTokenInvestmentsAuth](#schemalinktokeninvestmentsauth)|false|Configuration parameters for the Investments Move product. Masked Number Match and Stated Account Number default to `true` when omitted. Manual Entry defaults to `false`.|
 |» hosted_link|body|[LinkTokenCreateHostedLink](#schemalinktokencreatehostedlink)|false|Configuration parameters for Hosted Link. To enable the session for Hosted Link, send this object in the request. It can be empty.|
 |» transactions|body|[LinkTokenTransactions](#schemalinktokentransactions)|false|Configuration parameters for the Transactions product|
 |» cashflow_report|body|[LinkTokenCashflowReport](#schemalinktokencashflowreport)|false|Configuration parameters for the Cashflow Report product. Currently in closed beta.|
@@ -34056,6 +34592,9 @@ A `link_token` generated by `/link/token/create` is also used to initialize othe
 |» products|cra_plaid_credit_score|
 |» products|cra_qualify|
 |» products|cra_home_lending|
+|» products|cra_lend_score_complete|
+|» products|cra_income_complete|
+|» products|cra_home_lending_voa|
 |» products|layer|
 |» products|pay_by_bank|
 |» products|protect_linked_bank|
@@ -34096,6 +34635,9 @@ A `link_token` generated by `/link/token/create` is also used to initialize othe
 |» required_if_supported_products|cra_plaid_credit_score|
 |» required_if_supported_products|cra_qualify|
 |» required_if_supported_products|cra_home_lending|
+|» required_if_supported_products|cra_lend_score_complete|
+|» required_if_supported_products|cra_income_complete|
+|» required_if_supported_products|cra_home_lending_voa|
 |» required_if_supported_products|layer|
 |» required_if_supported_products|pay_by_bank|
 |» required_if_supported_products|protect_linked_bank|
@@ -34136,6 +34678,9 @@ A `link_token` generated by `/link/token/create` is also used to initialize othe
 |» optional_products|cra_plaid_credit_score|
 |» optional_products|cra_qualify|
 |» optional_products|cra_home_lending|
+|» optional_products|cra_lend_score_complete|
+|» optional_products|cra_income_complete|
+|» optional_products|cra_home_lending_voa|
 |» optional_products|layer|
 |» optional_products|pay_by_bank|
 |» optional_products|protect_linked_bank|
@@ -34176,6 +34721,9 @@ A `link_token` generated by `/link/token/create` is also used to initialize othe
 |» additional_consented_products|cra_plaid_credit_score|
 |» additional_consented_products|cra_qualify|
 |» additional_consented_products|cra_home_lending|
+|» additional_consented_products|cra_lend_score_complete|
+|» additional_consented_products|cra_income_complete|
+|» additional_consented_products|cra_home_lending_voa|
 |» additional_consented_products|layer|
 |» additional_consented_products|pay_by_bank|
 |» additional_consented_products|protect_linked_bank|
@@ -34192,6 +34740,8 @@ A `link_token` generated by `/link/token/create` is also used to initialize othe
 |» consumer_report_permissible_purpose|WRITTEN_INSTRUCTION_PREQUALIFICATION|
 |» consumer_report_permissible_purpose|WRITTEN_INSTRUCTION_OTHER|
 |» consumer_report_permissible_purpose|ELIGIBILITY_FOR_GOVT_BENEFITS|
+|» consumer_report_permissible_purpose|INSURANCE_UNDERWRITING|
+|» consumer_report_permissible_purpose|SECONDARY_INVESTOR|
 
 > Example responses
 
@@ -34268,6 +34818,8 @@ curl https://example.com/link/token/get \
 The `/link/token/get` endpoint gets information about a Link session, including all callbacks fired during the session along with their metadata, including the public token. This endpoint is used with Link flows that don't provide a public token via frontend callbacks, such as the [Hosted Link flow](https://plaid.com/docs/link/hosted-link/) and the [Multi-Item Link flow](https://plaid.com/docs/link/multi-item-link/). It also can be useful for debugging purposes.
 
 By default, this endpoint will only return complete event data for Hosted Link sessions. To use `/link/token/get` to retrieve event data for non-Hosted-Link sessions, contact your account manager to request that your account be enabled for Link events. If you do not have an account manager, you can submit this request via a support ticket. Enablement for Link events will also cause you to receive additional webhooks related to Link events, such as the `SESSION_FINISHED` and `EVENTS` webhook.
+
+When called with a delegated OAuth access token, this endpoint returns a reduced view of the session for the delegate. Only `link_token`, `created_at`, `expiration`, and each session's `link_session_id`, `started_at`, `finished_at`, and `results.item_add_results[].public_token` are populated; `public_token` holds the delegate's own `delegated-public-` token, never the customer's public token. All other fields are withheld and carry no information about the session: arrays such as `metadata.initial_products` and `item_add_results[].accounts` are empty, fields such as `metadata.webhook` and `item_add_results[].institution` are `null`, and `user_id`, `events`, `on_success`, `on_exit`, and `exit` are omitted. A delegated public token can be retrieved for 30 minutes after it is created. Item adds whose delegated public token is no longer available are omitted from `item_add_results`, and if none remain the request fails with `INVALID_LINK_TOKEN`; start a new Link session to continue.
 
 <a href="/api/link/#linktokenget">External documentation</a>
 
@@ -34561,7 +35113,8 @@ By default, this endpoint will only return complete event data for Hosted Link s
         "cra_update_results": [],
         "bank_income_results": [],
         "payroll_income_results": [],
-        "document_income_results": null
+        "document_income_results": null,
+        "cra_report_results": null
       },
       "started_at": "2024-07-29T20:22:36.522196741Z"
     }
@@ -34618,7 +35171,7 @@ By default, this endpoint will only return complete event data for Hosted Link s
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-clientId & secret & plaidVersion
+clientId & secret & plaidVersion, oauth2 ( Scopes: link:read )
 </aside>
 
 ## Exchange the Link Correlation ID for a Link Token
@@ -35274,6 +35827,7 @@ curl https://example.com/transfer/authorization/create \
         "country": "string"
       }
     },
+    "user_id": "usr_9nSp2KuZ2x4JDw",
     "device": {
       "ip_address": "string",
       "user_agent": "string"
@@ -35359,6 +35913,7 @@ In Plaid's Sandbox environment the decisions will be returned as follows:
       "country": "string"
     }
   },
+  "user_id": "usr_9nSp2KuZ2x4JDw",
   "device": {
     "ip_address": "string",
     "user_agent": "string"
@@ -35402,7 +35957,8 @@ In Plaid's Sandbox environment the decisions will be returned as follows:
 |» amount|body|[TransferAmount](#schematransferamount)|true|The amount of the transfer (decimal string with two digits of precision e.g. "10.00"). When calling `/transfer/authorization/create`, specify the maximum amount to authorize. When calling `/transfer/create`, specify the exact amount of the transfer, up to a maximum of the amount authorized. If this field is left blank when calling `/transfer/create`, the maximum amount authorized in the `authorization_id` will be sent. If the authorization's `guarantee_details.outcome` is `PARTIAL_INSTANT_ONLY`, this field is required when calling `/transfer/create`.|
 |» ach_class|body|[ACHClass](#schemaachclass)|false|Specifies the use case of the transfer. Required for transfers on an ACH network. For more details, see [ACH SEC codes](https://plaid.com/docs/transfer/creating-transfers/#ach-sec-codes).<br><br>Codes supported for credits: `ccd`, `ppd`<br>Codes supported for debits: `ccd`, `ppd`, `tel`, `web`<br><br>`"ccd"` - Corporate Credit or Debit - fund transfer between two corporate bank accounts<br><br>`"ppd"` - Prearranged Payment or Deposit - The transfer is part of a pre-existing relationship with a consumer. Authorization was obtained in writing either in person or via an electronic document signing, e.g. Docusign, by the consumer. Can be used for credits or debits.<br><br>`"web"` - Internet-Initiated Entry. The transfer debits a consumer's bank account. Authorization from the consumer is obtained over the Internet (e.g. a web or mobile application). Can be used for single debits or recurring debits.<br><br>`"tel"` - Telephone-Initiated Entry. The transfer debits a consumer. Debit authorization has been received orally over the telephone via a recorded call.|
 |» wire_details|body|[TransferWireDetails](#schematransferwiredetails)|false|Information specific to wire transfers.|
-|» user|body|[TransferAuthorizationUserInRequest](#schematransferauthorizationuserinrequest)|true|The legal name and other information for the account holder.  If the account has multiple account holders, provide the information for the account holder on whose behalf the authorization is being requested. The `user.legal_name` field is required. Other fields are not currently used and are present to support planned future functionality.|
+|» user|body|[TransferAuthorizationUserInRequest](#schematransferauthorizationuserinrequest)|true|The legal name and other information for the account holder.  If the account has multiple account holders, provide the information for the account holder on whose behalf the authorization is being requested. The `user.legal_name` field is required. Other fields are optional (for `rfp` transfers, `address` is required, including `street`, `city`, `region`, `postal_code`, and `country`), but if provided, they must be validly formatted and may be used in Plaid's risk evaluation.|
+|» user_id|body|object|false|The Plaid-generated user ID returned by `/user/create` for the end user associated with this transfer's Item. This identifier is separate from the account-holder details in `user`. Omit or set to `null` if unavailable; otherwise, provide a non-empty string. This field does not currently affect authorization decisions.|
 |» device|body|[TransferAuthorizationDevice](#schematransferauthorizationdevice)|false|Information about the device being used to initiate the authorization. These fields are not currently incorporated into the risk check.|
 |» origination_account_id|body|string|false|**Deprecated.** Plaid's unique identifier for the origination account for this authorization. If not specified, the default account will be used.|
 |» iso_currency_code|body|string|false|The currency of the transfer amount. The default value is "USD".|
@@ -36293,7 +36849,7 @@ curl https://example.com/transfer/ledger/withdraw \
     "amount": "string",
     "description": "string",
     "idempotency_key": "string",
-    "network": "ach"
+    "network": {}
   }'
 ```
 
@@ -36315,7 +36871,7 @@ Use the `/transfer/ledger/withdraw` endpoint to withdraw funds from a Plaid Ledg
   "amount": "string",
   "description": "string",
   "idempotency_key": "string",
-  "network": "ach"
+  "network": {}
 }
 ```
 
@@ -36332,17 +36888,7 @@ Use the `/transfer/ledger/withdraw` endpoint to withdraw funds from a Plaid Ledg
 |» amount|body|string|true|A positive amount of how much will be withdrawn from the ledger balance (decimal string with two digits of precision e.g. "5.50").|
 |» description|body|[SweepDescription](#schemasweepdescription)|false|The description of the deposit that will be passed to the receiving bank (up to 10 characters). Note that banks utilize this field differently, and may or may not show it on the bank statement.|
 |» idempotency_key|body|[LedgerWithdrawIdempotencyKey](#schemaledgerwithdrawidempotencykey)|true|A unique key provided by the client, per unique ledger withdraw. Maximum of 50 characters.<br><br>The API supports idempotency for safely retrying the request without accidentally performing the same operation twice. For example, if a request to create a ledger withdraw fails due to a network connection error, you can retry the request with the same idempotency key to guarantee that only a single withdraw is created.|
-|» network|body|[TransferNetwork](#schematransfernetwork)|true|The network or rails used for the transfer.<br><br>For transfers submitted as `ach` or `same-day-ach`, the Standard ACH cutoff is 8:30 PM Eastern Time.<br><br>For transfers submitted as `same-day-ach`, the Same Day ACH cutoff is 3:00 PM Eastern Time.  It is recommended to send the request 15 minutes prior to the cutoff to ensure that it will be processed in time for submission before the cutoff. If the transfer is processed after this cutoff but before the Standard ACH cutoff, it will be sent over Standard ACH rails and will not incur same-day charges; this will apply to both legs of the transfer if applicable. The transaction limit for a Same Day ACH transfer is $1,000,000. Authorization requests sent with an amount greater than $1,000,000 will fail.<br><br>For transfers submitted as `rtp`, Plaid will automatically route between the Real-Time Payments (RTP) rail by TCH or FedNow rails as necessary. If a transfer is submitted as `rtp` and the counterparty account is not eligible for RTP, the `/transfer/authorization/create` request will fail with an `INVALID_FIELD` error code. To pre-check to determine whether a counterparty account can support RTP, call `/transfer/capabilities/get` before calling `/transfer/authorization/create`.<br><br>Wire transfers are currently in early availability. To request access to `wire` as a payment network, contact your account manager. For transfers submitted as `wire`, the `type` must be `credit`; wire debits are not supported. The cutoff to submit a wire payment is 6:30 PM Eastern Time on a business day; wires submitted after that time will be processed on the next business day. The transaction limit for a wire is $999,999.99. Authorization requests sent with an amount greater than $999,999.99 will fail.<br><br>Support for `rfp` (request for payment) is currently in closed beta. To learn more, contact your Plaid account manager. For transfers submitted as `rfp`, the `type` must be `debit`.|
-
-#### Enumerated Values
-
-|Parameter|Value|
-|---|---|
-|» network|ach|
-|» network|same-day-ach|
-|» network|rtp|
-|» network|wire|
-|» network|rfp|
+|» network|body|object|true|The network or rails used for the withdrawal: `ach` for Standard ACH or `same-day-ach` for Same Day ACH. The limit for a single Standard ACH withdrawal is $10,000,000, and the limit for a single Same Day ACH withdrawal is $1,000,000; withdrawals above the limit for their network will fail.<br><br>The Same Day ACH cutoff is 3:00 PM Eastern Time and the Standard ACH cutoff is 8:30 PM Eastern Time. If a `same-day-ach` withdrawal is submitted on a banking day after the Same Day ACH cutoff and before the Standard ACH cutoff, it may be downgraded to Standard ACH. Withdrawals submitted after the Standard ACH cutoff, or on a weekend or bank holiday, stay Same Day ACH and are submitted in the first Same Day ACH window of the next banking day. See [ACH processing windows](https://plaid.com/docs/transfer/creating-transfers/#ach-processing-windows).|
 
 > Example responses
 
@@ -48524,8 +49070,8 @@ Note: This request may have higher latency when using a Balance-only ruleset. Th
 |» client_user_id|body|string|false|A unique ID that identifies the end user in your system. This ID is used to correlate requests by a user with multiple Items. Personally identifiable information, such as an email address or phone number, should not be used in the `client_user_id`.|
 |» is_recurring|body|boolean \| null|false|Use `true` if the ACH transaction is a part of recurring schedule (for example, a monthly repayment); `false` otherwise. When using a Balance-only ruleset, this field is ignored.|
 |» default_payment_method|body|string \| null|false|The default ACH payment method to complete the transaction. When using a Balance-only ruleset, this field is ignored.<br><br>`SAME_DAY_ACH`: Same Day ACH by Nacha. The debit transaction is processed and settled on the same day.<br><br>`STANDARD_ACH`: Standard ACH by Nacha.<br><br>`MULTIPLE_PAYMENT_METHODS`: If there is no default debit rail or there are multiple payment methods.<br><br>Possible values:  `SAME_DAY_ACH`, `STANDARD_ACH`, `MULTIPLE_PAYMENT_METHODS`|
-|» user|body|[SignalUser](#schemasignaluser)|false|Details about the end user initiating the transaction (i.e., the account holder). These fields are optional, but strongly recommended to increase the accuracy of results when using Signal Transaction Scores. When using a Balance-only ruleset, if the Signal Addendum has been signed, these fields are ignored; if the Addendum has not been signed, using these fields will result in an error.|
-|» device|body|[SignalDevice](#schemasignaldevice)|false|Details about the end user's device. These fields are optional, but strongly recommended to increase the accuracy of results when using Signal Transaction Scores. When using a Balance-only Ruleset, these fields are ignored if the Signal Addendum has been signed; if it has not been signed, using these fields will result in an error.|
+|» user|body|[SignalUser](#schemasignaluser)|false|Details about the end user initiating the transaction (i.e., the account holder). These fields are optional, but strongly recommended to increase the accuracy of results when using Signal Transaction Scores. When using a Balance-only ruleset, these fields are ignored.|
+|» device|body|[SignalDevice](#schemasignaldevice)|false|Details about the end user's device. These fields are optional, but strongly recommended to increase the accuracy of results when using Signal Transaction Scores. When using a Balance-only ruleset, these fields are ignored.|
 |» risk_profile_key|body|string \| null|false|**Deprecated.** Specifying `risk_profile_key` is deprecated. Please provide `ruleset` instead.|
 |» ruleset_key|body|string \| null|false|The key of the ruleset to use for evaluating this transaction. You can create a ruleset using the Plaid Dashboard, under [Signal->Rules](https://dashboard.plaid.com/signal/risk-profiles). If not provided, for all new customers as of October 15, 2025, the `default` ruleset will be used. For existing Signal Transaction Scores customers as of October 15, 2025, by default, no ruleset will be used if the `ruleset_key` is not provided. For more information, or to opt out of using rulesets, see [Signal Rules](https://plaid.com/docs/signal/signal-rules/).|
 
@@ -52079,6 +52625,9 @@ The `/partner/customer/create` endpoint is used by reseller partners to create e
 |» products|cra_plaid_credit_score|
 |» products|cra_qualify|
 |» products|cra_home_lending|
+|» products|cra_lend_score_complete|
+|» products|cra_income_complete|
+|» products|cra_home_lending_voa|
 |» products|layer|
 |» products|pay_by_bank|
 |» products|protect_linked_bank|
@@ -52728,6 +53277,9 @@ The `/beta/partner/customer/v1/create` endpoint creates a new end customer recor
 |» products|cra_plaid_credit_score|
 |» products|cra_qualify|
 |» products|cra_home_lending|
+|» products|cra_lend_score_complete|
+|» products|cra_income_complete|
+|» products|cra_home_lending_voa|
 |» products|layer|
 |» products|pay_by_bank|
 |» products|protect_linked_bank|
@@ -53139,6 +53691,9 @@ The `/beta/partner/customer/v1/enable` endpoint is used by reseller partners to 
 |» products|cra_plaid_credit_score|
 |» products|cra_qualify|
 |» products|cra_home_lending|
+|» products|cra_lend_score_complete|
+|» products|cra_income_complete|
+|» products|cra_home_lending_voa|
 |» products|layer|
 |» products|pay_by_bank|
 |» products|protect_linked_bank|
@@ -56524,19 +57079,19 @@ Business identity information about an account
 |mask|string \| null|true|none|The last 2-4 alphanumeric characters of either the account's displayed mask or the account's official account number. Note that the mask may be non-unique between an Item's accounts.|
 |name|string|true|none|The name of the account, either assigned by the user or by the financial institution itself|
 |official_name|string \| null|true|none|The official name of the account as given by the financial institution|
-|type|[AccountType](#schemaaccounttype)|true|none|`investment:` Investment account. In API versions 2018-05-22 and earlier, this type is called `brokerage` instead.<br><br>`credit:` Credit card<br><br>`depository:` Depository account<br><br>`loan:` Loan account<br><br>`other:` Non-specified account type<br><br>See the [Account type schema](https://plaid.com/docs/api/accounts#account-type-schema) for a full listing of account types and corresponding subtypes.|
+|type|[AccountType](#schemaaccounttype)|true|none|`investment:` Investment account. In API versions 2018-05-22 and earlier, this type is called `brokerage` instead.<br><br>`credit:` Credit card<br><br>`depository:` Depository account<br><br>`loan:` Loan account<br><br>`payroll:` Payroll account<br><br>`other:` Non-specified account type<br><br>See the [Account type schema](https://plaid.com/docs/api/accounts#account-type-schema) for a full listing of account types and corresponding subtypes.|
 |subtype|[AccountSubtype](#schemaaccountsubtype)|true|none|See the [Account type schema](https://plaid.com/docs/api/accounts/#account-type-schema) for a full listing of account types and corresponding subtypes.|
 |verification_status|string|false|none|Indicates an Item's micro-deposit-based verification or database verification status. This field is only populated when using Auth and falling back to micro-deposit or database verification. Possible values are:<br><br>`pending_automatic_verification`: The Item is pending automatic verification.<br><br>`pending_manual_verification`: The Item is pending manual micro-deposit verification. Items remain in this state until the user successfully verifies the code.<br><br>`automatically_verified`: The Item has successfully been automatically verified.<br><br>`manually_verified`: The Item has successfully been manually verified.<br><br>`verification_expired`: Plaid was unable to automatically verify the deposit within 7 calendar days and will no longer attempt to validate the Item. Users may retry by submitting their information again through Link.<br><br>`verification_failed`: The Item failed manual micro-deposit verification because the user exhausted all 3 verification attempts. Users may retry by submitting their information again through Link.<br><br>`unsent`: The Item is pending micro-deposit verification, but Plaid has not yet sent the micro-deposit.<br><br>`database_insights_fail`: The Item's numbers have been verified using Plaid's data sources and have signal for being invalid and/or have no signal for being valid. Typically this indicates that the routing number is invalid, the account number does not match the account number format associated with the routing number, or the account has been reported as closed or frozen. Only returned for Auth Items created via Database Auth.<br><br>`database_insights_pass`: The Item's numbers have been verified using Plaid's data sources: the routing and account number match a routing and account number of an account recognized on the Plaid network, and the account is not known by Plaid to be frozen or closed. Only returned for Auth Items created via Database Auth.<br><br>`database_insights_pass_with_caution`: The Item's numbers have been verified using Plaid's data sources and have some signal for being valid: the routing and account number were not recognized on the Plaid network, but the routing number is valid and the account number is a potential valid account number for that routing number. Only returned for Auth Items created via Database Auth.<br><br>`database_matched`: (deprecated) The Item has successfully been verified using Plaid's data sources. Only returned for Auth Items created via Database Match.<br><br>Omitted or empty string: Neither micro-deposit-based verification nor database verification are being used for the Item.|
 |verification_name|string|false|none|The account holder name that was used for micro-deposit and/or database verification. Only returned for Auth Items created via micro-deposit or database verification. This name was manually-entered by the user during Link, unless it was otherwise provided via the `user.legal_name` request field in `/link/token/create` for the Link session that created the Item.|
-|verification_insights|[AccountVerificationInsights](#schemaaccountverificationinsights)|false|none|Insights from performing database verification for the account. Only returned for Auth Items using Database Auth.|
+|verification_insights|object \| null|false|none|none|
 |persistent_account_id|string|false|none|A unique and persistent identifier for accounts that can be used to trace multiple instances of the same account across different Items for depository accounts. This field is currently supported only for Items at institutions that use Tokenized Account Numbers (i.e., Chase, PNC, and US Bank). Because these accounts have a different account number each time they are linked, this field may be used instead of the account number to uniquely identify an account across multiple Items for payments use cases, helping to reduce duplicate Items or attempted fraud. In Sandbox, this field is populated for TAN-based institutions (`ins_56`, `ins_13`, `ins_127990`) as well as the OAuth Sandbox institution (`ins_127287`); in Production, it will only be populated for accounts at applicable institutions.|
 |apy|number(double) \| null|false|none|The annual percentage yield (APY) on an interest-bearing deposit account, expressed as a percentage (e.g. `4.25` means 4.25%). In the event that the APY is not provided by the financial institution, Plaid will return a value of `null`.|
 |holder_category|[AccountHolderCategory](#schemaaccountholdercategory)|false|none|Indicates the account's categorization as either a personal or a business account. This field is currently in beta; to request access, contact your account manager. Coverage varies by institution, with approximately 70% of accounts populated overall.|
 |paired_account_id|string \| null|false|none|The `account_id` of the account on the paired Item (see `paired_item_id`) that represents the same bank account as this one. For an account on a Plaid Inc Item, this is the matching account on its paired Plaid Check Item, and the reverse for an account on a Plaid Check Item. Only returned for accounts on an Item that has a paired Item. `null` means the Item has a paired Item but Plaid could not confidently match this account to an account on it. Like `account_id`, this value can change if Plaid re-creates the paired account.|
-|name|string|true|none|none|
-|official_name|string \| null|true|none|none|
-|mask|string \| null|true|none|none|
-|verification_name|string|false|none|none|
+|name|string|true|none|The name of the account, either assigned by the user or by the financial institution itself|
+|official_name|string \| null|true|none|The official name of the account as given by the financial institution|
+|mask|string \| null|true|none|The last 2-4 alphanumeric characters of either the account's displayed mask or the account's official account number. Note that the mask may be non-unique between an Item's accounts.|
+|verification_name|string|false|none|The account holder name that was used for micro-deposit and/or database verification. Only returned for Auth Items created via micro-deposit or database verification. This name was manually-entered by the user during Link, unless it was otherwise provided via the `user.legal_name` request field in `/link/token/create` for the Link session that created the Item.|
 |owners|[[Owner](#schemaowner)]|false|none|Data returned by the financial institution about the account owner or owners. For business accounts, the name reported may be either the name of the individual or the name of the business, depending on the institution. Multiple owners on a single account will be represented in the same owner object, not in multiple owner objects within the array.|
 
 #### Enumerated Values
@@ -56548,12 +57103,14 @@ Business identity information about an account
 |type|depository|
 |type|loan|
 |type|brokerage|
+|type|payroll|
 |type|other|
 |subtype|401a|
 |subtype|401k|
 |subtype|403B|
 |subtype|457b|
 |subtype|529|
+|subtype|530a|
 |subtype|auto|
 |subtype|brokerage|
 |subtype|business|
@@ -57876,6 +58433,9 @@ An optional object to filter `/institutions/get` results.
 |products|cra_plaid_credit_score|
 |products|cra_qualify|
 |products|cra_home_lending|
+|products|cra_lend_score_complete|
+|products|cra_income_complete|
+|products|cra_home_lending_voa|
 |products|layer|
 |products|pay_by_bank|
 |products|protect_linked_bank|
@@ -58134,6 +58694,9 @@ InstitutionsSearchRequest defines the request schema for `/institutions/search`
 |products|cra_plaid_credit_score|
 |products|cra_qualify|
 |products|cra_home_lending|
+|products|cra_lend_score_complete|
+|products|cra_income_complete|
+|products|cra_home_lending_voa|
 |products|layer|
 |products|pay_by_bank|
 |products|protect_linked_bank|
@@ -59030,6 +59593,9 @@ SandboxPublicTokenCreateRequest defines the request schema for `/sandbox/public_
 |initial_products|cra_plaid_credit_score|
 |initial_products|cra_qualify|
 |initial_products|cra_home_lending|
+|initial_products|cra_lend_score_complete|
+|initial_products|cra_income_complete|
+|initial_products|cra_home_lending_voa|
 |initial_products|layer|
 |initial_products|pay_by_bank|
 |initial_products|protect_linked_bank|
@@ -59258,6 +59824,7 @@ SandboxItemFireWebhookRequest defines the request schema for `/sandbox/item/fire
 |webhook_code|USER_PERMISSION_REVOKED|
 |webhook_code|USER_ACCOUNT_REVOKED|
 |webhook_code|PENDING_DISCONNECT|
+|webhook_code|CONSENT_UPDATED|
 |webhook_code|RECURRING_TRANSACTIONS_UPDATE|
 |webhook_code|LOGIN_REPAIRED|
 |webhook_code|SYNC_UPDATES_AVAILABLE|
@@ -59770,7 +60337,7 @@ The user's legal name, phone number, email address and address used to perform f
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |legal_name|string \| null|false|none|The user's full legal name.|
-|phone_number|string \| null|false|none|The user's phone number, in E.164 format: +{countrycode}{number}. For example: "+14157452130". Phone numbers provided in other formats will be parsed on a best-effort basis. Phone number input is validated against valid number ranges; number strings that do not match a real-world phone numbering scheme may cause the request to fail, even in the Sandbox test environment.|
+|phone_number|string \| null|false|none|The user's phone number, in E.164 format: +{countrycode}{number}. For example: "+14157452130". Phone numbers provided in other formats will be parsed on a best-effort basis.|
 |email_address|string \| null|false|none|The user's email address.|
 |address|[AddressDataNullableNoRequiredFields](#schemaaddressdatanullablenorequiredfields)|false|none|Data about the components comprising an address.|
 
@@ -60685,8 +61252,8 @@ ProcessorInvestmentsAuthGetRequest defines the request schema for `/processor/in
             "amount": 0,
             "price": 0,
             "fees": 0,
-            "type": "buy",
-            "subtype": "account fee",
+            "type": {},
+            "subtype": {},
             "iso_currency_code": "string",
             "unofficial_currency_code": "string"
           }
@@ -61576,10 +62143,10 @@ An object containing identifying numbers used for making electronic transfers to
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|ach|[NumbersACHNullable](#schemanumbersachnullable)|false|none|Identifying information for transferring money to or from a US account via ACH or wire transfer.|
-|eft|[NumbersEFTNullable](#schemanumberseftnullable)|false|none|Identifying information for transferring money to or from a Canadian bank account via EFT.|
-|international|[NumbersInternationalNullable](#schemanumbersinternationalnullable)|false|none|Identifying information for transferring money to or from an international bank account via wire transfer.|
-|bacs|[NumbersBACSNullable](#schemanumbersbacsnullable)|false|none|Identifying information for transferring money to or from a UK bank account via Bacs.|
+|ach|[NumbersACHNullable](#schemanumbersachnullable)|true|none|Identifying information for transferring money to or from a US account via ACH or wire transfer.|
+|eft|[NumbersEFTNullable](#schemanumberseftnullable)|true|none|Identifying information for transferring money to or from a Canadian bank account via EFT.|
+|international|[NumbersInternationalNullable](#schemanumbersinternationalnullable)|true|none|Identifying information for transferring money to or from an international bank account via wire transfer.|
+|bacs|[NumbersBACSNullable](#schemanumbersbacsnullable)|true|none|Identifying information for transferring money to or from a UK bank account via Bacs.|
 
 <h2 id="tocS_ProcessorLiabilitiesGetRequest">ProcessorLiabilitiesGetRequest</h2>
 <!-- backwards compatibility -->
@@ -62907,7 +63474,7 @@ PaymentInitiationRecipientGetResponse defines the response schema for `/payment_
 |name|string|true|none|The name of the recipient.|
 |address|[PaymentInitiationAddress](#schemapaymentinitiationaddress)|false|none|The optional address of the payment recipient's bank account. Required by most institutions outside of the UK.|
 |iban|string \| null|false|none|The International Bank Account Number (IBAN) for the recipient.|
-|bacs|[RecipientBACSNullable](#schemarecipientbacsnullable)|false|none|An object containing a Bacs account number and sort code. If an IBAN is not provided or if this recipient needs to accept domestic GBP-denominated payments, Bacs data is required.|
+|bacs|[RecipientBACSNullableInResponse](#schemarecipientbacsnullableinresponse)|false|none|An object containing a Bacs account number and sort code. If either value isn't available, it's returned as an empty string.|
 |request_id|[RequestID](#schemarequestid)|true|none|A unique identifier for the request, which can be used for troubleshooting. This identifier, like all Plaid identifiers, is case sensitive.|
 
 <h2 id="tocS_PaymentInitiationRecipient">PaymentInitiationRecipient</h2>
@@ -62947,7 +63514,7 @@ PaymentInitiationRecipient defines a payment initiation recipient
 |name|string|true|none|The name of the recipient.|
 |address|[PaymentInitiationAddress](#schemapaymentinitiationaddress)|false|none|The optional address of the payment recipient's bank account. Required by most institutions outside of the UK.|
 |iban|string \| null|false|none|The International Bank Account Number (IBAN) for the recipient.|
-|bacs|[RecipientBACSNullable](#schemarecipientbacsnullable)|false|none|An object containing a Bacs account number and sort code. If an IBAN is not provided or if this recipient needs to accept domestic GBP-denominated payments, Bacs data is required.|
+|bacs|[RecipientBACSNullableInResponse](#schemarecipientbacsnullableinresponse)|false|none|An object containing a Bacs account number and sort code. If either value isn't available, it's returned as an empty string.|
 
 <h2 id="tocS_PaymentInitiationRecipientListRequest">PaymentInitiationRecipientListRequest</h2>
 <!-- backwards compatibility -->
@@ -64042,6 +64609,156 @@ UserThirdPartyTokenRemoveResponse defines the response schema for `/user/third_p
 |removed|boolean|true|none|`true` if the third-party user token was successfully removed.|
 |request_id|[RequestID](#schemarequestid)|true|none|A unique identifier for the request, which can be used for troubleshooting. This identifier, like all Plaid identifiers, is case sensitive.|
 
+<h2 id="tocS_UserTransferLimitsGetRequest">UserTransferLimitsGetRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemausertransferlimitsgetrequest"></a>
+<a id="schema_UserTransferLimitsGetRequest"></a>
+<a id="tocSusertransferlimitsgetrequest"></a>
+<a id="tocsusertransferlimitsgetrequest"></a>
+
+```json
+{
+  "client_id": "string",
+  "secret": "string",
+  "user_id": "string"
+}
+```
+
+UserTransferLimitsGetRequest defines the request schema for `/user/transfer/limits/get`.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|client_id|[APIClientID](#schemaapiclientid)|false|none|Your Plaid API `client_id`. The `client_id` is required and may be provided either in the `PLAID-CLIENT-ID` header or as part of a request body.|
+|secret|[APISecret](#schemaapisecret)|false|none|Your Plaid API `secret`. The `secret` is required and may be provided either in the `PLAID-SECRET` header or as part of a request body.|
+|user_id|[NewUserID](#schemanewuserid)|true|none|A unique user identifier, created by `/user/create`. Integrations that began using `/user/create` after December 10, 2025 use this field to identify a user instead of the `user_token`. For more details, see [New User APIs](https://plaid.com/docs/api/users/user-apis).|
+
+<h2 id="tocS_UserTransferLimitsGetResponse">UserTransferLimitsGetResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemausertransferlimitsgetresponse"></a>
+<a id="schema_UserTransferLimitsGetResponse"></a>
+<a id="tocSusertransferlimitsgetresponse"></a>
+<a id="tocsusertransferlimitsgetresponse"></a>
+
+```json
+{
+  "guarantee_limits": {
+    "transaction_limit": {
+      "value": "150.25",
+      "iso_currency_code": "USD"
+    },
+    "daily_limit": {
+      "value": "150.25",
+      "iso_currency_code": "USD"
+    },
+    "weekly_limit": {
+      "value": "150.25",
+      "iso_currency_code": "USD"
+    },
+    "monthly_limit": {
+      "value": "150.25",
+      "iso_currency_code": "USD"
+    }
+  },
+  "request_id": "string"
+}
+```
+
+UserTransferLimitsGetResponse defines the response schema for `/user/transfer/limits/get`.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|guarantee_limits|[UserGuaranteeLimits](#schemauserguaranteelimits)|true|none|The user's Guaranteed ACH debit limits. Daily, weekly, and monthly limits are configured ceilings, not remaining capacity. Each rolling limit is `null` when no ceiling is enabled for that window.|
+|request_id|[RequestID](#schemarequestid)|true|none|A unique identifier for the request, which can be used for troubleshooting. This identifier, like all Plaid identifiers, is case sensitive.|
+
+<h2 id="tocS_UserGuaranteeLimits">UserGuaranteeLimits</h2>
+<!-- backwards compatibility -->
+<a id="schemauserguaranteelimits"></a>
+<a id="schema_UserGuaranteeLimits"></a>
+<a id="tocSuserguaranteelimits"></a>
+<a id="tocsuserguaranteelimits"></a>
+
+```json
+{
+  "transaction_limit": {
+    "value": "150.25",
+    "iso_currency_code": "USD"
+  },
+  "daily_limit": {
+    "value": "150.25",
+    "iso_currency_code": "USD"
+  },
+  "weekly_limit": {
+    "value": "150.25",
+    "iso_currency_code": "USD"
+  },
+  "monthly_limit": {
+    "value": "150.25",
+    "iso_currency_code": "USD"
+  }
+}
+```
+
+The user's Guaranteed ACH debit limits. Daily, weekly, and monthly limits are configured ceilings, not remaining capacity. Each rolling limit is `null` when no ceiling is enabled for that window.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|transaction_limit|object|true|none|none|
+|daily_limit|[UserTransferLimitAmountNullable](#schemausertransferlimitamountnullable)|true|none|A transfer limit amount and its currency, or `null` when the limit is not configured.|
+|weekly_limit|[UserTransferLimitAmountNullable](#schemausertransferlimitamountnullable)|true|none|A transfer limit amount and its currency, or `null` when the limit is not configured.|
+|monthly_limit|[UserTransferLimitAmountNullable](#schemausertransferlimitamountnullable)|true|none|A transfer limit amount and its currency, or `null` when the limit is not configured.|
+
+<h2 id="tocS_UserTransferLimitAmount">UserTransferLimitAmount</h2>
+<!-- backwards compatibility -->
+<a id="schemausertransferlimitamount"></a>
+<a id="schema_UserTransferLimitAmount"></a>
+<a id="tocSusertransferlimitamount"></a>
+<a id="tocsusertransferlimitamount"></a>
+
+```json
+{
+  "value": "150.25",
+  "iso_currency_code": "USD"
+}
+```
+
+A transfer limit amount and its currency.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|value|string|true|none|The limit in dollars, formatted as a decimal string with two digits of precision (for example, `"150.25"` represents $150.25).|
+|iso_currency_code|string|true|none|The ISO-4217 currency code of the limit. Currently always `USD`.|
+
+<h2 id="tocS_UserTransferLimitAmountNullable">UserTransferLimitAmountNullable</h2>
+<!-- backwards compatibility -->
+<a id="schemausertransferlimitamountnullable"></a>
+<a id="schema_UserTransferLimitAmountNullable"></a>
+<a id="tocSusertransferlimitamountnullable"></a>
+<a id="tocsusertransferlimitamountnullable"></a>
+
+```json
+{
+  "value": "150.25",
+  "iso_currency_code": "USD"
+}
+```
+
+A transfer limit amount and its currency, or `null` when the limit is not configured.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|value|string|true|none|The limit in dollars, formatted as a decimal string with two digits of precision (for example, `"150.25"` represents $150.25).|
+|iso_currency_code|string|true|none|The ISO-4217 currency code of the limit. Currently always `USD`.|
+
 <h2 id="tocS_UserItemsGetRequest">UserItemsGetRequest</h2>
 <!-- backwards compatibility -->
 <a id="schemauseritemsgetrequest"></a>
@@ -65104,13 +65821,34 @@ The details of a document income verification in Link
 }
 ```
 
-The details of a document upload CRA session in Link
+Deprecated. The details of a document upload CRA session in Link. The CRA document upload flow was never released, so this field is always `null`.
 
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |num_bank_statements_uploaded|integer|true|none|The number of bank statements uploaded by the user.|
+
+<h2 id="tocS_LinkSessionCraReportResult">LinkSessionCraReportResult</h2>
+<!-- backwards compatibility -->
+<a id="schemalinksessioncrareportresult"></a>
+<a id="schema_LinkSessionCraReportResult"></a>
+<a id="tocSlinksessioncrareportresult"></a>
+<a id="tocslinksessioncrareportresult"></a>
+
+```json
+{
+  "report_id": {}
+}
+```
+
+Plaid Check report details for the Link session.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|report_id|object \| null|true|none|none|
 
 <h2 id="tocS_CreditSessionBankIncomeStatus">CreditSessionBankIncomeStatus</h2>
 <!-- backwards compatibility -->
@@ -65268,6 +66006,7 @@ PaymentInitiationPaymentGetRequest defines the request schema for `/payment_init
       "string"
     ]
   },
+  "institution_id": "string",
   "request_id": "string"
 }
 ```
@@ -65298,6 +66037,7 @@ PaymentInitiationPaymentGetResponse defines the response schema for `/payment_in
 |transaction_id|string \| null|false|none|The transaction ID that this payment is associated with, if any. This is present only when a payment was initiated using virtual accounts.|
 |end_to_end_id|string \| null|false|none|A unique identifier assigned by Plaid to each payment for tracking and reconciliation purposes.<br><br>Note: Not all banks handle `end_to_end_id` consistently. To ensure accurate matching, clients should convert both the incoming `end_to_end_id` and the one provided by Plaid to the same case (either lower or upper) before comparison. For virtual account payments, Plaid manages this field automatically.|
 |error|[PlaidError](#schemaplaiderror)|false|none|Errors are identified by `error_code` and categorized by `error_type`. Use these in preference to HTTP status codes to identify and handle specific errors. HTTP status codes are set and provide the broadest categorization of errors: 4xx codes are for developer- or user-related errors, and 5xx codes are for Plaid-related errors, and the status will be 2xx in non-error cases. An Item with a non-`null` error object will only be part of an API response when calling `/item/get` to view Item status. Otherwise, error fields will be `null` if no error has occurred; if an error has occurred, an error code will be returned instead.|
+|institution_id|string \| null|true|none|The Plaid institution ID of the end user's financial institution from which the payment was initiated, such as `ins_61`. `null` if the institution is not known, for example when the end user has not linked an account. A later request may return a value.|
 |request_id|[RequestID](#schemarequestid)|true|none|A unique identifier for the request, which can be used for troubleshooting. This identifier, like all Plaid identifiers, is case sensitive.|
 
 #### Enumerated Values
@@ -66630,8 +67370,8 @@ An optional object to filter `/investments/auth/get` results.
             "amount": 0,
             "price": 0,
             "fees": 0,
-            "type": "buy",
-            "subtype": "account fee",
+            "type": {},
+            "subtype": {},
             "iso_currency_code": "string",
             "unofficial_currency_code": "string"
           }
@@ -66801,8 +67541,8 @@ ProcessorInvestmentsTransactionsGetRequest defines the request schema for `/proc
       "amount": 0,
       "price": 0,
       "fees": 0,
-      "type": "buy",
-      "subtype": "account fee",
+      "type": {},
+      "subtype": {},
       "iso_currency_code": "string",
       "unofficial_currency_code": "string"
     }
@@ -66863,7 +67603,7 @@ ProcessorInvestmentsTransactionsGetResponse defines the response schema for `/pr
 |account|[InvestmentAccount](#schemainvestmentaccount)|true|none|A single account at a financial institution, with additional investment-specific balance information.|
 |investment_transactions|[[InvestmentTransaction](#schemainvestmenttransaction)]|true|none|An array containing investment transactions from the account. Investments transactions are returned in reverse chronological order, with the most recent at the beginning of the array. The maximum number of transactions returned is determined by the `count` parameter.|
 |securities|[[Security](#schemasecurity)]|true|none|All securities for which there is a corresponding transaction being fetched.|
-|total_investment_transactions|integer|true|none|The total number of transactions available within the date range specified. If `total_investment_transactions` is larger than the size of the `transactions` array, more transactions are available and can be fetched via manipulating the `offset` parameter.|
+|total_investment_transactions|integer|true|none|The total number of transactions available within the date range specified. If `total_investment_transactions` is larger than the size of the `investment_transactions` array, more transactions are available and can be fetched via manipulating the `offset` parameter.|
 |request_id|[RequestID](#schemarequestid)|true|none|A unique identifier for the request, which can be used for troubleshooting. This identifier, like all Plaid identifiers, is case sensitive.|
 |is_investments_fallback_item|boolean|false|none|When true, this field indicates that the Item's portfolio was manually created with the Investments Fallback flow.|
 
@@ -67075,8 +67815,8 @@ An optional object to filter `/investments/transactions/get` results. If provide
       "amount": 0,
       "price": 0,
       "fees": 0,
-      "type": "buy",
-      "subtype": "account fee",
+      "type": {},
+      "subtype": {},
       "iso_currency_code": "string",
       "unofficial_currency_code": "string"
     }
@@ -67097,7 +67837,7 @@ InvestmentsTransactionsGetResponse defines the response schema for `/investments
 |accounts|[[InvestmentAccount](#schemainvestmentaccount)]|true|none|The accounts for which transaction history is being fetched.|
 |securities|[[Security](#schemasecurity)]|true|none|All securities for which there is a corresponding transaction being fetched.|
 |investment_transactions|[[InvestmentTransaction](#schemainvestmenttransaction)]|true|none|The transactions being fetched|
-|total_investment_transactions|integer|true|none|The total number of transactions available within the date range specified. If `total_investment_transactions` is larger than the size of the `transactions` array, more transactions are available and can be fetched via manipulating the `offset` parameter.|
+|total_investment_transactions|integer|true|none|The total number of transactions available within the date range specified. If `total_investment_transactions` is larger than the size of the `investment_transactions` array, more transactions are available and can be fetched via manipulating the `offset` parameter.|
 |request_id|[RequestID](#schemarequestid)|true|none|A unique identifier for the request, which can be used for troubleshooting. This identifier, like all Plaid identifiers, is case sensitive.|
 |is_investments_fallback_item|boolean|false|none|When true, this field indicates that the Item's portfolio was manually created with the Investments Fallback flow.|
 
@@ -67184,6 +67924,7 @@ ProcessorTokenCreateRequest defines the request schema for `/processor/token/cre
 |processor|galileo|
 |processor|modern_treasury|
 |processor|ocrolus|
+|processor|stripe|
 |processor|vesta|
 |processor|drivewealth|
 |processor|vopay|
@@ -67268,6 +68009,8 @@ ProcessorTokenCreateRequest defines the request schema for `/processor/token/cre
 |processor|adyen_ca|
 |processor|bitgo|
 |processor|anchorage|
+|processor|affina|
+|processor|whop|
 
 <h2 id="tocS_ProcessorTokenCreateResponse">ProcessorTokenCreateResponse</h2>
 <!-- backwards compatibility -->
@@ -67361,6 +68104,9 @@ ProcessorTokenPermissionsSetRequest defines the request schema for `/processor/t
 |products|cra_plaid_credit_score|
 |products|cra_qualify|
 |products|cra_home_lending|
+|products|cra_lend_score_complete|
+|products|cra_income_complete|
+|products|cra_home_lending_voa|
 |products|layer|
 |products|pay_by_bank|
 |products|protect_linked_bank|
@@ -67477,6 +68223,9 @@ ProcessorTokenPermissionsGetResponse defines the response schema for `/processor
 |products|cra_plaid_credit_score|
 |products|cra_qualify|
 |products|cra_home_lending|
+|products|cra_lend_score_complete|
+|products|cra_income_complete|
+|products|cra_home_lending_voa|
 |products|layer|
 |products|pay_by_bank|
 |products|protect_linked_bank|
@@ -67859,13 +68608,15 @@ Enum representing the desired appearance mode for Link, used to force light or d
         "employment_refresh_options": {
           "days_requested": 0
         }
-      }
+      },
+      "exclude_transactions": false,
+      "base_report_version": {}
     },
     "cashflow_insights": {
       "attributes_version": "v1.0"
     },
     "lend_score": {
-      "lend_score_version": "v1.0"
+      "lend_score_version": "v2.0"
     },
     "network_insights": {
       "network_insights_version": "NI1"
@@ -67896,7 +68647,8 @@ Enum representing the desired appearance mode for Link, used to force light or d
         "product": "cra_base_report",
         "version": "string",
         "options": {
-          "require_identity": true
+          "require_identity": true,
+          "exclude_transactions": false
         }
       }
     ]
@@ -67939,12 +68691,13 @@ Enum representing the desired appearance mode for Link, used to force light or d
   "third_party_user_token": "string",
   "investments": {
     "allow_unverified_crypto_wallets": true,
-    "allow_manual_entry": true
+    "allow_manual_entry": true,
+    "async_update": true
   },
   "investments_auth": {
     "manual_entry_enabled": false,
-    "masked_number_match_enabled": false,
-    "stated_account_number_enabled": false,
+    "masked_number_match_enabled": true,
+    "stated_account_number_enabled": true,
     "rollover_401k_enabled": false
   },
   "hosted_link": {
@@ -67985,10 +68738,10 @@ LinkTokenCreateRequest defines the request schema for `/link/token/create`
 |secret|[APISecret](#schemaapisecret)|false|none|Your Plaid API `secret`. The `secret` is required and may be provided either in the `PLAID-SECRET` header or as part of a request body.|
 |client_name|string|true|none|The name of your application, as it should be displayed in Link. Maximum length of 30 characters. If a value longer than 30 characters is provided, Link will display "This Application" instead.|
 |language|string|true|none|The language that Link should be displayed in. When initializing with Identity Verification, this field is not used; for more details, see [Identity Verification supported languages](https://plaid.com/docs/identity-verification/#supported-languages).<br><br>Supported languages are:<br>- Danish (`'da'`)<br>- Dutch (`'nl'`)<br>- English (`'en'`)<br>- Estonian (`'et'`)<br>- French (`'fr'`)<br>- German (`'de'`)<br>- Haitian Creole (`'ht'`)<br>- Hindi (`'hi'`)<br>- Italian (`'it'`)<br>- Latvian (`'lv'`)<br>- Lithuanian (`'lt'`)<br>- Norwegian Bokmål (`'nb'`)<br>- Polish (`'pl'`)<br>- Portuguese (`'pt'`)<br>- Romanian (`'ro'`)<br>- Spanish (`'es'`)<br>- Swedish (`'sv'`)<br>- Vietnamese (`'vi'`)<br><br>When using a Link customization, the language configured here must match the setting in the customization, or the customization will not be applied.|
-|country_codes|[[CountryCode](#schemacountrycode)]|true|none|Specify an array of Plaid-supported country codes using the ISO-3166-1 alpha-2 country code standard. Institutions from all listed countries will be shown. For a complete mapping of supported products by country, see [What Plaid products are supported in each country and region?](https://support.plaid.com/hc/en-us/articles/27895826947735-What-Plaid-products-are-supported-in-each-country-and-region). For access to additional countries beyond what you have been approved for, [contact sales](https://plaid.com/contact/), your account manager, or support.<br><br>If using Identity Verification, `country_codes` should be set to the country where your company is based, not the country where your user is located. For all other products, `country_codes` represents the location of your user's financial institution.<br><br>If Link is launched with multiple country codes, only products that you are enabled for in all countries will be used by Link. While all countries are enabled by default in Sandbox, in Production only the countries you have requested access for are shown. To request access to additional countries, [file a product access Support ticket](https://dashboard.plaid.com/support/new/product-and-development/product-troubleshooting/request-product-access) via the Plaid dashboard.<br><br>If using a Link customization, make sure the country codes in the customization match those specified in `country_codes`, or the customization may not be applied.<br><br>If using the Auth features Instant Match, Instant Micro-deposits, Same-Day Micro-deposits, or Automated Micro-deposits, `country_codes` must be set to `['US']`. If using Database Auth, `country_codes` must be set to `['US']` or `['CA']`.|
+|country_codes|[[CountryCode](#schemacountrycode)]|true|none|Specify an array of Plaid-supported country codes using the ISO-3166-1 alpha-2 country code standard. Institutions from all listed countries will be shown. For a complete mapping of supported products by country, see [What Plaid products are supported in each country and region?](https://support.plaid.com/hc/en-us/articles/27895826947735-What-Plaid-products-are-supported-in-each-country-and-region). For access to additional countries beyond what you have been approved for, [contact sales](https://plaid.com/contact/), your account manager, or support.<br><br>If using Identity Verification, `country_codes` should be set to the country where your company is based, not the country where your user is located. For all other products, `country_codes` represents the location of your user's financial institution.<br><br>If Link is launched with multiple country codes, every product you specify, in any product array, must be enabled for your account in all of the listed countries; otherwise, the request fails with an `INVALID_PRODUCT` error. While all countries are enabled by default in Sandbox, in Production only the countries you have requested access for are shown. To request access to additional countries, [file a product access Support ticket](https://dashboard.plaid.com/support/new/product-and-development/product-troubleshooting/request-product-access) via the Plaid dashboard.<br><br>If using a Link customization, make sure the country codes in the customization match those specified in `country_codes`, or the customization may not be applied.<br><br>If using the Auth features Instant Match, Instant Micro-deposits, Same-Day Micro-deposits, or Automated Micro-deposits, `country_codes` must be set to `['US']`. If using Database Auth, `country_codes` must be set to `['US']` or `['CA']`.|
 |user|[LinkTokenCreateRequestUser](#schemalinktokencreaterequestuser)|false|none|An object specifying information about the end user who will be linking their account. **Required** if `user_id` isn't included.|
 |user_id|string|false|none|A `user_id` generated using `/user/create`. Required for integrations that began using Plaid Protect, Multi-Item Link, or Plaid Check Consumer Report after December 10, 2025. Required for new integrations that use Payment Initiation, Variable Recurring Payments, or Virtual Accounts. For more details, see [New User APIs](https://plaid.com/docs/api/users/user-apis). One of either the `user_id` or the `user` field is required.|
-|products|[[Products](#schemaproducts)]|false|none|List of Plaid product(s) that the linked Item must support. If launching Link in update mode, should be omitted (unless you are using update mode to add a credit product, such as Assets, Statements, Income, or Plaid Check Consumer Report, to an existing Item); at least one `product` is required otherwise.<br><br>To maximize the number of institutions and accounts available, initialize Link with the minimal product set required for your use case, as the products specified will limit which institutions and account types will be available to your users in Link. Only institutions that support *all* requested products can be selected; if a user attempts to select an institution that does not support a listed product, a "Connectivity not supported" error message will appear in Link. For each specified product, the Item connected by the user must contain at least one compatible account. For details on compatible product / account type combinations, see [the account type/product support matrix](https://plaid.com/docs/api/accounts/#account-type--product-support-matrix).<br><br>To add products without limiting the institution list or account types, use the [`optional_products`](https://plaid.com/docs/api/link/#link-token-create-request-optional-products) or  [`required_if_supported_products`](https://plaid.com/docs/api/link/#link-token-create-request-required-if-supported-products) fields. Products can also be added to an Item by calling the product endpoint after obtaining an access token; this may require the product to be listed in the [`additional_consented_products`](https://plaid.com/docs/api/link/#link-token-create-request-additional-consented-products) array. For details, see [Choosing when to initialize products](https://plaid.com/docs/link/initializing-products/).<br><br>`balance` is *not* a valid value, the Balance product does not require explicit initialization and will automatically be initialized when any other product is initialized.<br><br>If launching Link with CRA products, `cra_base_report` is required and must be included in the `products` array.<br><br>Note that, unless you have opted to disable Instant Match support, institutions that support Instant Match will also be shown in Link if `auth` is specified as a product, even though these institutions do not contain `auth` in their product array.<br><br>In Production, you will be billed for each product that you specify when initializing Link. Note that a product cannot be removed from an Item once the Item has been initialized with that product. To stop billing on an Item for subscription-based products, such as Liabilities, Investments, and Transactions, remove the Item via `/item/remove`.|
+|products|[[Products](#schemaproducts)]|false|none|List of Plaid product(s) that the linked Item must support. If launching Link in update mode, should be omitted (unless you are using update mode to add a credit product, such as Assets, Statements, Income, or Plaid Check Consumer Report, to an existing Item); at least one `product` is required otherwise.<br><br>To maximize the number of institutions and accounts available, initialize Link with the minimal product set required for your use case, as the products specified will limit which institutions and account types will be available to your users in Link. Only institutions that support *all* requested products can be selected; if a user attempts to select an institution that does not support a listed product, a "Connectivity not supported" error message will appear in Link. For each specified product, the Item connected by the user must contain at least one compatible account. For details on compatible product / account type combinations, see [the account type/product support matrix](https://plaid.com/docs/api/accounts/#account-type--product-support-matrix).<br><br>To add products without limiting the institution list or account types, use the [`optional_products`](https://plaid.com/docs/api/link/#link-token-create-request-optional-products) or  [`required_if_supported_products`](https://plaid.com/docs/api/link/#link-token-create-request-required-if-supported-products) fields. Products can also be added to an Item by calling the product endpoint after obtaining an access token; this may require the product to be listed in the [`additional_consented_products`](https://plaid.com/docs/api/link/#link-token-create-request-additional-consented-products) array. For details, see [Choosing when to initialize products](https://plaid.com/docs/link/initializing-products/).<br><br>`balance` is *not* a valid value, the Balance product does not require explicit initialization and will automatically be initialized when any other product is initialized.<br><br>Note that, unless you have opted to disable Instant Match support, institutions that support Instant Match will also be shown in Link if `auth` is specified as a product, even though these institutions do not contain `auth` in their product array.<br><br>In Production, you will be billed for each product that you specify when initializing Link. Note that a product cannot be removed from an Item once the Item has been initialized with that product. To stop billing on an Item for subscription-based products, such as Liabilities, Investments, and Transactions, remove the Item via `/item/remove`.|
 |required_if_supported_products|[[Products](#schemaproducts)]|false|none|List of Plaid product(s) you wish to use only if the institution and account(s) selected by the user support the product. Institutions that do not support these products will still be shown in Link. The products will only be extracted and billed if the user selects an institution and account type that supports them.<br><br>There should be no overlap between this array and the `products`, `optional_products`, or `additional_consented_products` arrays. The `products` array must have at least one product.<br><br>For more details on using this feature, see [Required if Supported Products](https://plaid.com/docs/link/initializing-products/#required-if-supported-products).|
 |optional_products|[[Products](#schemaproducts)]|false|none|List of Plaid product(s) that will enhance the consumer's use case, but that your app can function without. Plaid will attempt to fetch data for these products on a best-effort basis, and failure to support these products will not affect Item creation.<br><br>There should be no overlap between this array and the `products`, `required_if_supported_products`, or `additional_consented_products` arrays. The `products` array must have at least one product.<br><br>For more details on using this feature, see [Optional Products](https://plaid.com/docs/link/initializing-products/#optional-products).|
 |additional_consented_products|[[Products](#schemaproducts)]|false|none|List of additional Plaid product(s) you wish to collect consent for to support your use case. These products will not be billed until you start using them by calling the relevant endpoints.<br><br>`balance` is *not* a valid value, the Balance product does not require explicit initialization and will automatically have consent collected.<br><br>Institutions that do not support these products will still be shown in Link.<br><br>There should be no overlap between this array and the `products`, `required_if_supported_products`, or `optional_products` arrays.<br><br>If you include `signal` in `additional_consented_products`, you will need to call [`/signal/prepare`](https://plaid.com/docs/api/products/signal/#signalprepare) before calling `/signal/evaluate` for the first time on an Item in order to get the most accurate results. For more details, see [`/signal/prepare`](https://plaid.com/docs/api/products/signal/#signalprepare).|
@@ -68012,7 +68765,7 @@ LinkTokenCreateRequest defines the request schema for `/link/token/create`
 |credit_partner_insights|[LinkTokenCreateRequestCreditPartnerInsights](#schemalinktokencreaterequestcreditpartnerinsights)|false|none|Specifies options for initializing Link for use with the Credit Partner Insights product.|
 |cra_options|[LinkTokenCreateRequestCraOptions](#schemalinktokencreaterequestcraoptions)|false|none|Specifies options for initializing Link for use with Plaid Check products|
 |cra_report_parameter|[LinkTokenCreateRequestCraReportParameter](#schemalinktokencreaterequestcrareportparameter)|false|none|Specifies the report parameters for Plaid Check products, mirroring the parameters accepted on `/cra/report/create`.|
-|consumer_report_permissible_purpose|[ConsumerReportPermissiblePurpose](#schemaconsumerreportpermissiblepurpose)|false|none|Describes the reason you are generating a Consumer Report for this user. When calling `/link/token/create`, this field is required when using Plaid Check (CRA) products; invalid if not using Plaid Check (CRA) products.<br><br>`ACCOUNT_REVIEW_CREDIT`: In connection with a consumer credit transaction for the review or collection of an account pursuant to FCRA Section 604(a)(3)(A).<br><br>`ACCOUNT_REVIEW_NON_CREDIT`: For a legitimate business need of the information to review a non-credit account provided primarily for personal, family, or household purposes to determine whether the consumer continues to meet the terms of the account pursuant to FCRA Section 604(a)(3)(F)(2).<br><br>`EXTENSION_OF_CREDIT`: In connection with a credit transaction initiated by and involving the consumer pursuant to FCRA Section 604(a)(3)(A).<br><br>`LEGITIMATE_BUSINESS_NEED_TENANT_SCREENING`: For a legitimate business need in connection with a business transaction initiated by the consumer primarily for personal, family, or household purposes in connection with a property rental assessment pursuant to FCRA Section 604(a)(3)(F)(i).<br><br>`LEGITIMATE_BUSINESS_NEED_OTHER`: For a legitimate business need in connection with a business transaction made primarily for personal, family, or household initiated by the consumer pursuant to FCRA Section 604(a)(3)(F)(i).<br><br>`WRITTEN_INSTRUCTION_PREQUALIFICATION`: In accordance with the written instructions of the consumer pursuant to FCRA Section 604(a)(2), to evaluate an application's profile to make an offer to the consumer.<br><br>`WRITTEN_INSTRUCTION_OTHER`: In accordance with the written instructions of the consumer pursuant to FCRA Section 604(a)(2), such as when an individual agrees to act as a guarantor or assumes personal liability for a consumer, business, or commercial loan.<br><br>`ELIGIBILITY_FOR_GOVT_BENEFITS`:  In connection with an eligibility determination for a government benefit where the entity is required to consider an applicant's financial status pursuant to FCRA Section 604(a)(3)(D).|
+|consumer_report_permissible_purpose|[ConsumerReportPermissiblePurpose](#schemaconsumerreportpermissiblepurpose)|false|none|Describes the reason you are generating a Consumer Report for this user. When calling `/link/token/create`, this field is required when using Plaid Check (CRA) products; invalid if not using Plaid Check (CRA) products.<br><br>`ACCOUNT_REVIEW_CREDIT`: In connection with a consumer credit transaction for the review or collection of an account pursuant to FCRA Section 604(a)(3)(A).<br><br>`ACCOUNT_REVIEW_NON_CREDIT`: For a legitimate business need of the information to review a non-credit account provided primarily for personal, family, or household purposes to determine whether the consumer continues to meet the terms of the account pursuant to FCRA Section 604(a)(3)(F)(ii).<br><br>`EXTENSION_OF_CREDIT`: In connection with a credit transaction initiated by and involving the consumer pursuant to FCRA Section 604(a)(3)(A).<br><br>`LEGITIMATE_BUSINESS_NEED_TENANT_SCREENING`: For a legitimate business need in connection with a business transaction initiated by the consumer primarily for personal, family, or household purposes in connection with a property rental assessment pursuant to FCRA Section 604(a)(3)(F)(i).<br><br>`LEGITIMATE_BUSINESS_NEED_OTHER`: For a legitimate business need in connection with a business transaction made primarily for personal, family, or household initiated by the consumer pursuant to FCRA Section 604(a)(3)(F)(i).<br><br>`WRITTEN_INSTRUCTION_PREQUALIFICATION`: In accordance with the written instructions of the consumer pursuant to FCRA Section 604(a)(2), to evaluate an application's profile to make an offer to the consumer.<br><br>`WRITTEN_INSTRUCTION_OTHER`: In accordance with the written instructions of the consumer pursuant to FCRA Section 604(a)(2), such as when an individual agrees to act as a guarantor or assumes personal liability for a consumer, business, or commercial loan.<br><br>`ELIGIBILITY_FOR_GOVT_BENEFITS`:  In connection with an eligibility determination for a government benefit where the entity is required to consider an applicant's financial status pursuant to FCRA Section 604(a)(3)(D).<br><br>`INSURANCE_UNDERWRITING`: In connection with the underwriting of insurance involving the consumer pursuant to FCRA Section 604(a)(3)(C).<br><br>`SECONDARY_INVESTOR`: As a potential investor or servicer, or current insurer, in connection with a valuation of, or an assessment of the credit or prepayment risks associated with, an existing credit obligation pursuant to FCRA Section 604(a)(3)(E).|
 |auth|[LinkTokenCreateRequestAuth](#schemalinktokencreaterequestauth)|false|none|Specifies options for initializing Link for use with the Auth product. This field can be used to enable or disable extended Auth flows for the resulting Link session. Omitting any field will result in a default that can be configured by your account manager. The default behavior described in the documentation is the default behavior that will apply if you have not requested your account manager to apply a different default. If you have enabled the [Dashboard Account Verification pane](https://dashboard.plaid.com/account-verification), the settings enabled there will override any settings in this object.|
 |transfer|[LinkTokenCreateRequestTransfer](#schemalinktokencreaterequesttransfer)|false|none|Specifies options for initializing Link for use with the Transfer product.|
 |update|[LinkTokenCreateRequestUpdate](#schemalinktokencreaterequestupdate)|false|none|Specifies options for initializing Link for [update mode](https://plaid.com/docs/link/update-mode).|
@@ -68020,7 +68773,7 @@ LinkTokenCreateRequest defines the request schema for `/link/token/create`
 |statements|[LinkTokenCreateRequestStatements](#schemalinktokencreaterequeststatements)|false|none|Specifies options for initializing Link for use with the Statements product. This field is required for the statements product.|
 |third_party_user_token|string|false|none|A third party user token associated with the current user.|
 |investments|[LinkTokenInvestments](#schemalinktokeninvestments)|false|none|Configuration parameters for the Investments product|
-|investments_auth|[LinkTokenInvestmentsAuth](#schemalinktokeninvestmentsauth)|false|none|Configuration parameters for the Investments Move product|
+|investments_auth|[LinkTokenInvestmentsAuth](#schemalinktokeninvestmentsauth)|false|none|Configuration parameters for the Investments Move product. Masked Number Match and Stated Account Number default to `true` when omitted. Manual Entry defaults to `false`.|
 |hosted_link|[LinkTokenCreateHostedLink](#schemalinktokencreatehostedlink)|false|none|Configuration parameters for Hosted Link. To enable the session for Hosted Link, send this object in the request. It can be empty.|
 |transactions|[LinkTokenTransactions](#schemalinktokentransactions)|false|none|Configuration parameters for the Transactions product|
 |cashflow_report|[LinkTokenCashflowReport](#schemalinktokencashflowreport)|false|none|Configuration parameters for the Cashflow Report product. Currently in closed beta.|
@@ -68090,6 +68843,9 @@ LinkTokenCreateRequest defines the request schema for `/link/token/create`
 |products|cra_plaid_credit_score|
 |products|cra_qualify|
 |products|cra_home_lending|
+|products|cra_lend_score_complete|
+|products|cra_income_complete|
+|products|cra_home_lending_voa|
 |products|layer|
 |products|pay_by_bank|
 |products|protect_linked_bank|
@@ -68130,6 +68886,9 @@ LinkTokenCreateRequest defines the request schema for `/link/token/create`
 |required_if_supported_products|cra_plaid_credit_score|
 |required_if_supported_products|cra_qualify|
 |required_if_supported_products|cra_home_lending|
+|required_if_supported_products|cra_lend_score_complete|
+|required_if_supported_products|cra_income_complete|
+|required_if_supported_products|cra_home_lending_voa|
 |required_if_supported_products|layer|
 |required_if_supported_products|pay_by_bank|
 |required_if_supported_products|protect_linked_bank|
@@ -68170,6 +68929,9 @@ LinkTokenCreateRequest defines the request schema for `/link/token/create`
 |optional_products|cra_plaid_credit_score|
 |optional_products|cra_qualify|
 |optional_products|cra_home_lending|
+|optional_products|cra_lend_score_complete|
+|optional_products|cra_income_complete|
+|optional_products|cra_home_lending_voa|
 |optional_products|layer|
 |optional_products|pay_by_bank|
 |optional_products|protect_linked_bank|
@@ -68210,6 +68972,9 @@ LinkTokenCreateRequest defines the request schema for `/link/token/create`
 |additional_consented_products|cra_plaid_credit_score|
 |additional_consented_products|cra_qualify|
 |additional_consented_products|cra_home_lending|
+|additional_consented_products|cra_lend_score_complete|
+|additional_consented_products|cra_income_complete|
+|additional_consented_products|cra_home_lending_voa|
 |additional_consented_products|layer|
 |additional_consented_products|pay_by_bank|
 |additional_consented_products|protect_linked_bank|
@@ -68226,6 +68991,8 @@ LinkTokenCreateRequest defines the request schema for `/link/token/create`
 |consumer_report_permissible_purpose|WRITTEN_INSTRUCTION_PREQUALIFICATION|
 |consumer_report_permissible_purpose|WRITTEN_INSTRUCTION_OTHER|
 |consumer_report_permissible_purpose|ELIGIBILITY_FOR_GOVT_BENEFITS|
+|consumer_report_permissible_purpose|INSURANCE_UNDERWRITING|
+|consumer_report_permissible_purpose|SECONDARY_INVESTOR|
 
 <h2 id="tocS_LinkTokenAccountFilters">LinkTokenAccountFilters</h2>
 <!-- backwards compatibility -->
@@ -68312,7 +69079,8 @@ Configuration parameters for EU flows
 ```json
 {
   "allow_unverified_crypto_wallets": true,
-  "allow_manual_entry": true
+  "allow_manual_entry": true,
+  "async_update": true
 }
 ```
 
@@ -68324,6 +69092,7 @@ Configuration parameters for the Investments product
 |---|---|---|---|---|
 |allow_unverified_crypto_wallets|boolean|false|none|If `true`, allow self-custody crypto wallets to be added without requiring signature verification. Defaults to `false`.|
 |allow_manual_entry|boolean|false|none|If `true`, allow users to manually enter Investments account and holdings information. Defaults to `false`.|
+|async_update|boolean \| null|false|none|If `true`, only a 30-day initial history of investment transactions is pulled synchronously before the Link session completes, with the full history being pulled asynchronously after Link. When the full history is available, an `INVESTMENTS_TRANSACTIONS: HISTORICAL_UPDATE` webhook will be sent. If `false`, Link pulls the full history before the session completes. Only applies when `investments` is initialized in the `products` array. This field is configurable only for clients created before November 30, 2026, and will default to `false` if omitted. For newer clients created on or after that date, this field is ignored and is automatically `true`.|
 
 <h2 id="tocS_LinkTokenInvestmentsAuth">LinkTokenInvestmentsAuth</h2>
 <!-- backwards compatibility -->
@@ -68335,21 +69104,21 @@ Configuration parameters for the Investments product
 ```json
 {
   "manual_entry_enabled": false,
-  "masked_number_match_enabled": false,
-  "stated_account_number_enabled": false,
+  "masked_number_match_enabled": true,
+  "stated_account_number_enabled": true,
   "rollover_401k_enabled": false
 }
 ```
 
-Configuration parameters for the Investments Move product
+Configuration parameters for the Investments Move product. Masked Number Match and Stated Account Number default to `true` when omitted. Manual Entry defaults to `false`.
 
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|manual_entry_enabled|boolean \| null|false|none|If `true`, show institutions that use the manual entry fallback flow.|
-|masked_number_match_enabled|boolean \| null|false|none|If `true`, show institutions that use the masked number match fallback flow.|
-|stated_account_number_enabled|boolean \| null|false|none|If `true`, show institutions that use the stated account number fallback flow.|
+|manual_entry_enabled|boolean \| null|false|none|If `true`, show institutions that use the manual entry fallback flow. If omitted, this defaults to `false`.|
+|masked_number_match_enabled|boolean \| null|false|none|If `true`, show institutions that use the masked number match fallback flow. If omitted, this defaults to `true`.|
+|stated_account_number_enabled|boolean \| null|false|none|If `true`, show institutions that use the stated account number fallback flow. If omitted, this defaults to `true`.|
 |rollover_401k_enabled|boolean \| null|false|none|If `true`, the fee and contribution details for 401k accounts will be returned.|
 
 <h2 id="tocS_LinkTokenTransactions">LinkTokenTransactions</h2>
@@ -69129,7 +69898,7 @@ A filter to apply to `depository`-type accounts
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |account_subtypes|[DepositoryAccountSubtypes](#schemadepositoryaccountsubtypes)|false|none|An array of account subtypes to display in Link. If not specified, all account subtypes will be shown. For a full list of valid types and subtypes, see the [Account schema](https://plaid.com/docs/api/accounts#account-type-schema). |
-|limited_purpose_types|[LimitedPurposeTypes](#schemalimitedpurposetypes)|false|none|An array of limited purpose types. Restricts which kinds of limited purpose checking accounts may be connected in Link to prevent users from connecting them for unsupported use cases. Required when 'limited purpose checking' is in the subtypes filter.|
+|limited_purpose_types|[LimitedPurposeTypes](#schemalimitedpurposetypes)|false|none|An array of limited purpose types. Restricts which kinds of limited purpose checking accounts may be connected in Link to prevent users from connecting them for unsupported use cases. Only allowed when `limited purpose checking` is in `account_subtypes`. If omitted or empty while `limited purpose checking` is in `account_subtypes`, only `GENERAL_PURPOSE` limited purpose checking accounts may be connected. `GENERAL_PURPOSE` accounts may be connected with any `limited_purpose_types` value.|
 
 #### Enumerated Values
 
@@ -69147,6 +69916,8 @@ A filter to apply to `depository`-type accounts
 |account_subtypes|limited purpose checking|
 |account_subtypes|all|
 |limited_purpose_types|RENT_MORTGAGE|
+|limited_purpose_types|AUTO_LOAN|
+|limited_purpose_types|GENERAL_PURPOSE|
 
 <h2 id="tocS_LinkTokenCreateCreditFilter">LinkTokenCreateCreditFilter</h2>
 <!-- backwards compatibility -->
@@ -69250,6 +70021,7 @@ A filter to apply to `investment`-type accounts (or `brokerage`-type accounts fo
 |Property|Value|
 |---|---|
 |account_subtypes|529|
+|account_subtypes|530a|
 |account_subtypes|401a|
 |account_subtypes|401k|
 |account_subtypes|403B|
@@ -69573,6 +70345,9 @@ LinkOAuthCorrelationIdExchangeResponse defines the response schema for `/link/oa
         },
         "cra_document_upload_results": {
           "num_bank_statements_uploaded": 0
+        },
+        "cra_report_results": {
+          "report_id": {}
         }
       }
     }
@@ -69848,6 +70623,9 @@ LinkTokenGetResponse defines the response schema for `/link/token/get`
     },
     "cra_document_upload_results": {
       "num_bank_statements_uploaded": 0
+    },
+    "cra_report_results": {
+      "report_id": {}
     }
   }
 }
@@ -69966,6 +70744,9 @@ An object containing information about a link session. Session data will be prov
   },
   "cra_document_upload_results": {
     "num_bank_statements_uploaded": 0
+  },
+  "cra_report_results": {
+    "report_id": {}
   }
 }
 ```
@@ -69982,7 +70763,8 @@ The set of results for a Link session.
 |bank_income_results|[[LinkSessionBankIncomeResult](#schemalinksessionbankincomeresult)]|true|none|The set of bank income verifications for the Link session.|
 |payroll_income_results|[[LinkSessionPayrollIncomeResult](#schemalinksessionpayrollincomeresult)]|true|none|The set of payroll income verifications for the Link session.|
 |document_income_results|[CreditSessionDocumentIncomeResult](#schemacreditsessiondocumentincomeresult)|true|none|The details of a document income verification in Link|
-|cra_document_upload_results|[LinkSessionCraDocumentUploadResult](#schemalinksessioncradocumentuploadresult)|false|none|The details of a document upload CRA session in Link|
+|cra_document_upload_results|object|false|none|**Deprecated.**|
+|cra_report_results|[LinkSessionCraReportResult](#schemalinksessioncrareportresult)|true|none|Plaid Check report details for the Link session.|
 
 <h2 id="tocS_LinkSessionItemAddResult">LinkSessionItemAddResult</h2>
 <!-- backwards compatibility -->
@@ -70580,8 +71362,8 @@ An object specifying the arguments originally provided to the `/link/token/creat
 |webhook|string(url) \| null|true|none|The `webhook` specified in the `/link/token/create` call.|
 |country_codes|[[CountryCode](#schemacountrycode)]|true|none|The `country_codes` specified in the `/link/token/create` call.|
 |language|string \| null|true|none|The `language` specified in the `/link/token/create` call.|
-|institution_data|[LinkTokenCreateInstitutionData](#schemalinktokencreateinstitutiondata)|false|none|A map containing data used to highlight institutions in Link.|
-|account_filters|[AccountFiltersResponse](#schemaaccountfiltersresponse)|false|none|The `account_filters` specified in the original call to `/link/token/create`.<br>|
+|institution_data|object \| null|false|none|none|
+|account_filters|object \| null|false|none|none|
 |redirect_uri|string \| null|true|none|The `redirect_uri` specified in the `/link/token/create` call.|
 |client_name|string \| null|true|none|The `client_name` specified in the `/link/token/create` call.|
 
@@ -70625,6 +71407,9 @@ An object specifying the arguments originally provided to the `/link/token/creat
 |initial_products|cra_plaid_credit_score|
 |initial_products|cra_qualify|
 |initial_products|cra_home_lending|
+|initial_products|cra_lend_score_complete|
+|initial_products|cra_income_complete|
+|initial_products|cra_home_lending_voa|
 |initial_products|layer|
 |initial_products|pay_by_bank|
 |initial_products|protect_linked_bank|
@@ -70769,7 +71554,7 @@ Errors are identified by `error_code` and categorized by `error_type`. Use these
 |---|---|---|---|---|
 |error_type|[PlaidErrorType](#schemaplaiderrortype)|true|none|A broad categorization of the error. Safe for programmatic use.|
 |error_code|string|true|none|The particular error code. Safe for programmatic use.|
-|error_code_reason|string \| null|false|none|The specific reason for the error code. Currently, reasons are only supported for OAuth-based item errors; the field is omitted otherwise. Safe for programmatic use.<br><br>Possible values:<br><br>`OAUTH_INVALID_TOKEN`: The user's OAuth connection to this institution has been invalidated.<br><br>`OAUTH_CONSENT_EXPIRED`: The user's access consent for this OAuth connection to this institution has expired.<br><br>`OAUTH_USER_REVOKED`: The user's OAuth connection to this institution is invalid because the user revoked their connection.|
+|error_code_reason|string \| null|false|none|The specific reason for the error code. Currently, reasons are only supported for OAuth-based item errors and expired Sandbox Items; the field is omitted otherwise. Safe for programmatic use.<br><br>Possible values:<br><br>`OAUTH_INVALID_TOKEN`: The user's OAuth connection to this institution has been invalidated.<br><br>`OAUTH_CONSENT_EXPIRED`: The user's access consent for this OAuth connection to this institution has expired.<br><br>`OAUTH_USER_REVOKED`: The user's OAuth connection to this institution is invalid because the user revoked their connection.<br><br>`SANDBOX_ITEM_EXPIRED`: The Sandbox Item reached the end of its 30-day lifetime. Sandbox only.|
 |error_message|string|true|none|A developer-friendly representation of the error code. This may change over time and is not safe for programmatic use.|
 |display_message|string \| null|true|none|A user-friendly representation of the error code. `null` if the error is not related to user action.<br><br>This may change over time and is not safe for programmatic use.|
 |request_id|string|false|none|A unique ID identifying the request, to be used for troubleshooting purposes. This field will be omitted in errors provided by webhooks.|
@@ -70857,6 +71642,8 @@ A broad categorization of the error. Safe for programmatic use.
 
 `loan:` Loan account
 
+`payroll:` Payroll account
+
 `other:` Non-specified account type
 
 See the [Account type schema](https://plaid.com/docs/api/accounts#account-type-schema) for a full listing of account types and corresponding subtypes.
@@ -70940,11 +71727,11 @@ A single account at a financial institution.
 |mask|string \| null|true|none|The last 2-4 alphanumeric characters of either the account's displayed mask or the account's official account number. Note that the mask may be non-unique between an Item's accounts.|
 |name|string|true|none|The name of the account, either assigned by the user or by the financial institution itself|
 |official_name|string \| null|true|none|The official name of the account as given by the financial institution|
-|type|[AccountType](#schemaaccounttype)|true|none|`investment:` Investment account. In API versions 2018-05-22 and earlier, this type is called `brokerage` instead.<br><br>`credit:` Credit card<br><br>`depository:` Depository account<br><br>`loan:` Loan account<br><br>`other:` Non-specified account type<br><br>See the [Account type schema](https://plaid.com/docs/api/accounts#account-type-schema) for a full listing of account types and corresponding subtypes.|
+|type|[AccountType](#schemaaccounttype)|true|none|`investment:` Investment account. In API versions 2018-05-22 and earlier, this type is called `brokerage` instead.<br><br>`credit:` Credit card<br><br>`depository:` Depository account<br><br>`loan:` Loan account<br><br>`payroll:` Payroll account<br><br>`other:` Non-specified account type<br><br>See the [Account type schema](https://plaid.com/docs/api/accounts#account-type-schema) for a full listing of account types and corresponding subtypes.|
 |subtype|[AccountSubtype](#schemaaccountsubtype)|true|none|See the [Account type schema](https://plaid.com/docs/api/accounts/#account-type-schema) for a full listing of account types and corresponding subtypes.|
 |verification_status|string|false|none|Indicates an Item's micro-deposit-based verification or database verification status. This field is only populated when using Auth and falling back to micro-deposit or database verification. Possible values are:<br><br>`pending_automatic_verification`: The Item is pending automatic verification.<br><br>`pending_manual_verification`: The Item is pending manual micro-deposit verification. Items remain in this state until the user successfully verifies the code.<br><br>`automatically_verified`: The Item has successfully been automatically verified.<br><br>`manually_verified`: The Item has successfully been manually verified.<br><br>`verification_expired`: Plaid was unable to automatically verify the deposit within 7 calendar days and will no longer attempt to validate the Item. Users may retry by submitting their information again through Link.<br><br>`verification_failed`: The Item failed manual micro-deposit verification because the user exhausted all 3 verification attempts. Users may retry by submitting their information again through Link.<br><br>`unsent`: The Item is pending micro-deposit verification, but Plaid has not yet sent the micro-deposit.<br><br>`database_insights_fail`: The Item's numbers have been verified using Plaid's data sources and have signal for being invalid and/or have no signal for being valid. Typically this indicates that the routing number is invalid, the account number does not match the account number format associated with the routing number, or the account has been reported as closed or frozen. Only returned for Auth Items created via Database Auth.<br><br>`database_insights_pass`: The Item's numbers have been verified using Plaid's data sources: the routing and account number match a routing and account number of an account recognized on the Plaid network, and the account is not known by Plaid to be frozen or closed. Only returned for Auth Items created via Database Auth.<br><br>`database_insights_pass_with_caution`: The Item's numbers have been verified using Plaid's data sources and have some signal for being valid: the routing and account number were not recognized on the Plaid network, but the routing number is valid and the account number is a potential valid account number for that routing number. Only returned for Auth Items created via Database Auth.<br><br>`database_matched`: (deprecated) The Item has successfully been verified using Plaid's data sources. Only returned for Auth Items created via Database Match.<br><br>Omitted or empty string: Neither micro-deposit-based verification nor database verification are being used for the Item.|
 |verification_name|string|false|none|The account holder name that was used for micro-deposit and/or database verification. Only returned for Auth Items created via micro-deposit or database verification. This name was manually-entered by the user during Link, unless it was otherwise provided via the `user.legal_name` request field in `/link/token/create` for the Link session that created the Item.|
-|verification_insights|[AccountVerificationInsights](#schemaaccountverificationinsights)|false|none|Insights from performing database verification for the account. Only returned for Auth Items using Database Auth.|
+|verification_insights|object \| null|false|none|none|
 |persistent_account_id|string|false|none|A unique and persistent identifier for accounts that can be used to trace multiple instances of the same account across different Items for depository accounts. This field is currently supported only for Items at institutions that use Tokenized Account Numbers (i.e., Chase, PNC, and US Bank). Because these accounts have a different account number each time they are linked, this field may be used instead of the account number to uniquely identify an account across multiple Items for payments use cases, helping to reduce duplicate Items or attempted fraud. In Sandbox, this field is populated for TAN-based institutions (`ins_56`, `ins_13`, `ins_127990`) as well as the OAuth Sandbox institution (`ins_127287`); in Production, it will only be populated for accounts at applicable institutions.|
 |apy|number(double) \| null|false|none|The annual percentage yield (APY) on an interest-bearing deposit account, expressed as a percentage (e.g. `4.25` means 4.25%). In the event that the APY is not provided by the financial institution, Plaid will return a value of `null`.|
 |holder_category|[AccountHolderCategory](#schemaaccountholdercategory)|false|none|Indicates the account's categorization as either a personal or a business account. This field is currently in beta; to request access, contact your account manager. Coverage varies by institution, with approximately 70% of accounts populated overall.|
@@ -70959,12 +71746,14 @@ A single account at a financial institution.
 |type|depository|
 |type|loan|
 |type|brokerage|
+|type|payroll|
 |type|other|
 |subtype|401a|
 |subtype|401k|
 |subtype|403B|
 |subtype|457b|
 |subtype|529|
+|subtype|530a|
 |subtype|auto|
 |subtype|brokerage|
 |subtype|business|
@@ -71110,11 +71899,11 @@ A single account at a financial institution.
 |mask|string \| null|true|none|The last 2-4 alphanumeric characters of either the account's displayed mask or the account's official account number. Note that the mask may be non-unique between an Item's accounts.|
 |name|string|true|none|The name of the account, either assigned by the user or by the financial institution itself|
 |official_name|string \| null|true|none|The official name of the account as given by the financial institution|
-|type|[AccountType](#schemaaccounttype)|true|none|`investment:` Investment account. In API versions 2018-05-22 and earlier, this type is called `brokerage` instead.<br><br>`credit:` Credit card<br><br>`depository:` Depository account<br><br>`loan:` Loan account<br><br>`other:` Non-specified account type<br><br>See the [Account type schema](https://plaid.com/docs/api/accounts#account-type-schema) for a full listing of account types and corresponding subtypes.|
+|type|[AccountType](#schemaaccounttype)|true|none|`investment:` Investment account. In API versions 2018-05-22 and earlier, this type is called `brokerage` instead.<br><br>`credit:` Credit card<br><br>`depository:` Depository account<br><br>`loan:` Loan account<br><br>`payroll:` Payroll account<br><br>`other:` Non-specified account type<br><br>See the [Account type schema](https://plaid.com/docs/api/accounts#account-type-schema) for a full listing of account types and corresponding subtypes.|
 |subtype|[AccountSubtype](#schemaaccountsubtype)|true|none|See the [Account type schema](https://plaid.com/docs/api/accounts/#account-type-schema) for a full listing of account types and corresponding subtypes.|
 |verification_status|string|false|none|Indicates an Item's micro-deposit-based verification or database verification status. This field is only populated when using Auth and falling back to micro-deposit or database verification. Possible values are:<br><br>`pending_automatic_verification`: The Item is pending automatic verification.<br><br>`pending_manual_verification`: The Item is pending manual micro-deposit verification. Items remain in this state until the user successfully verifies the code.<br><br>`automatically_verified`: The Item has successfully been automatically verified.<br><br>`manually_verified`: The Item has successfully been manually verified.<br><br>`verification_expired`: Plaid was unable to automatically verify the deposit within 7 calendar days and will no longer attempt to validate the Item. Users may retry by submitting their information again through Link.<br><br>`verification_failed`: The Item failed manual micro-deposit verification because the user exhausted all 3 verification attempts. Users may retry by submitting their information again through Link.<br><br>`unsent`: The Item is pending micro-deposit verification, but Plaid has not yet sent the micro-deposit.<br><br>`database_insights_fail`: The Item's numbers have been verified using Plaid's data sources and have signal for being invalid and/or have no signal for being valid. Typically this indicates that the routing number is invalid, the account number does not match the account number format associated with the routing number, or the account has been reported as closed or frozen. Only returned for Auth Items created via Database Auth.<br><br>`database_insights_pass`: The Item's numbers have been verified using Plaid's data sources: the routing and account number match a routing and account number of an account recognized on the Plaid network, and the account is not known by Plaid to be frozen or closed. Only returned for Auth Items created via Database Auth.<br><br>`database_insights_pass_with_caution`: The Item's numbers have been verified using Plaid's data sources and have some signal for being valid: the routing and account number were not recognized on the Plaid network, but the routing number is valid and the account number is a potential valid account number for that routing number. Only returned for Auth Items created via Database Auth.<br><br>`database_matched`: (deprecated) The Item has successfully been verified using Plaid's data sources. Only returned for Auth Items created via Database Match.<br><br>Omitted or empty string: Neither micro-deposit-based verification nor database verification are being used for the Item.|
 |verification_name|string|false|none|The account holder name that was used for micro-deposit and/or database verification. Only returned for Auth Items created via micro-deposit or database verification. This name was manually-entered by the user during Link, unless it was otherwise provided via the `user.legal_name` request field in `/link/token/create` for the Link session that created the Item.|
-|verification_insights|[AccountVerificationInsights](#schemaaccountverificationinsights)|false|none|Insights from performing database verification for the account. Only returned for Auth Items using Database Auth.|
+|verification_insights|object \| null|false|none|none|
 |persistent_account_id|string|false|none|A unique and persistent identifier for accounts that can be used to trace multiple instances of the same account across different Items for depository accounts. This field is currently supported only for Items at institutions that use Tokenized Account Numbers (i.e., Chase, PNC, and US Bank). Because these accounts have a different account number each time they are linked, this field may be used instead of the account number to uniquely identify an account across multiple Items for payments use cases, helping to reduce duplicate Items or attempted fraud. In Sandbox, this field is populated for TAN-based institutions (`ins_56`, `ins_13`, `ins_127990`) as well as the OAuth Sandbox institution (`ins_127287`); in Production, it will only be populated for accounts at applicable institutions.|
 |apy|number(double) \| null|false|none|The annual percentage yield (APY) on an interest-bearing deposit account, expressed as a percentage (e.g. `4.25` means 4.25%). In the event that the APY is not provided by the financial institution, Plaid will return a value of `null`.|
 |holder_category|[AccountHolderCategory](#schemaaccountholdercategory)|false|none|Indicates the account's categorization as either a personal or a business account. This field is currently in beta; to request access, contact your account manager. Coverage varies by institution, with approximately 70% of accounts populated overall.|
@@ -71129,12 +71918,14 @@ A single account at a financial institution.
 |type|depository|
 |type|loan|
 |type|brokerage|
+|type|payroll|
 |type|other|
 |subtype|401a|
 |subtype|401k|
 |subtype|403B|
 |subtype|457b|
 |subtype|529|
+|subtype|530a|
 |subtype|auto|
 |subtype|brokerage|
 |subtype|business|
@@ -71251,8 +72042,8 @@ A set of fields describing the balance for an account, including margin loan inf
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|available|number(double) \| null|true|none|The amount of funds available to be withdrawn from the account, as determined by the financial institution.<br><br>For `credit`-type accounts, the `available` balance typically equals the `limit` less the `current` balance, less any pending outflows plus any pending inflows.<br><br>For `depository`-type accounts, the `available` balance typically equals the `current` balance less any pending outflows plus any pending inflows. For `depository`-type accounts, the `available` balance does not include the overdraft limit.<br><br>For `investment`-type accounts (or `brokerage`-type accounts for API versions 2018-05-22 and earlier), the `available` balance is the total cash available to withdraw as presented by the institution.<br><br>Note that not all institutions calculate the `available`  balance. In the event that `available` balance is unavailable, Plaid will return an `available` balance value of `null`.<br><br>Available balance may be cached and is not guaranteed to be up-to-date in real-time unless the value was returned by `/accounts/balance/get`, or by `/signal/evaluate` with a Balance-only ruleset.<br><br>If `current` is `null` this field is guaranteed not to be `null`, unless you have opted into enabling [limited-purpose checking accounts](https://plaid.com/docs/auth/#enabling-limited-purpose-checking-accounts-for-rent-or-mortgage), which always have `null` values for both `available` and `current` balance.|
-|current|number(double) \| null|true|none|The total amount of funds in or owed by the account.<br><br>For `credit`-type accounts, a positive balance indicates the amount owed; a negative amount indicates the lender owing the account holder.<br><br>For `loan`-type accounts, the current balance is the principal remaining on the loan, except in the case of student loan accounts at Sallie Mae (`ins_116944`). For Sallie Mae student loans, the account's balance includes both principal and any outstanding interest. Similar to `credit`-type accounts, a positive balance is typically expected, while a negative amount indicates the lender owing the account holder.<br><br>For `investment`-type accounts (or `brokerage`-type accounts for API versions 2018-05-22 and earlier), the current balance is the total value of assets as presented by the institution.<br><br>Note that balance information may be cached unless the value was returned by `/accounts/balance/get` or by `/signal/evaluate` with a Balance-only ruleset; if the Item is enabled for Transactions, the balance will be at least as recent as the most recent Transaction update. If you require real-time balance information, use the `available` balance as provided by `/accounts/balance/get` or `/signal/evaluate` called with a Balance-only `ruleset_key`.<br><br>When returned by `/accounts/balance/get`, this field may be `null`. When this happens, `available` is guaranteed not to be `null`, unless you have opted into enabling [limited-purpose checking accounts](https://plaid.com/docs/auth/#enabling-limited-purpose-checking-accounts-for-rent-or-mortgage), which always have `null` values for both `available` and `current` balance.|
+|available|number(double) \| null|true|none|The amount of funds available to be withdrawn from the account, as determined by the financial institution.<br><br>For `credit`-type accounts, the `available` balance typically equals the `limit` less the `current` balance, less any pending outflows plus any pending inflows.<br><br>For `depository`-type accounts, the `available` balance typically equals the `current` balance less any pending outflows plus any pending inflows. For `depository`-type accounts, the `available` balance does not include the overdraft limit.<br><br>For `investment`-type accounts (or `brokerage`-type accounts for API versions 2018-05-22 and earlier), the `available` balance is the total cash available to withdraw as presented by the institution.<br><br>Note that not all institutions calculate the `available`  balance. In the event that `available` balance is unavailable, Plaid will return an `available` balance value of `null`.<br><br>Available balance may be cached and is not guaranteed to be up-to-date in real-time unless the value was returned by `/accounts/balance/get`, or by `/signal/evaluate` with a Balance-only ruleset.<br><br>If `current` is `null` this field is guaranteed not to be `null`, unless you have opted into enabling [limited-purpose checking accounts](https://plaid.com/docs/auth/#enabling-limited-purpose-checking-accounts), which always have `null` values for both `available` and `current` balance.|
+|current|number(double) \| null|true|none|The total amount of funds in or owed by the account.<br><br>For `credit`-type accounts, a positive balance indicates the amount owed; a negative amount indicates the lender owing the account holder.<br><br>For `loan`-type accounts, the current balance is the principal remaining on the loan, except in the case of student loan accounts at Sallie Mae (`ins_116944`). For Sallie Mae student loans, the account's balance includes both principal and any outstanding interest. Similar to `credit`-type accounts, a positive balance is typically expected, while a negative amount indicates the lender owing the account holder.<br><br>For `investment`-type accounts (or `brokerage`-type accounts for API versions 2018-05-22 and earlier), the current balance is the total value of assets as presented by the institution.<br><br>Note that balance information may be cached unless the value was returned by `/accounts/balance/get` or by `/signal/evaluate` with a Balance-only ruleset; if the Item is enabled for Transactions, the balance will be at least as recent as the most recent Transaction update. If you require real-time balance information, use the `available` balance as provided by `/accounts/balance/get` or `/signal/evaluate` called with a Balance-only `ruleset_key`.<br><br>When returned by `/accounts/balance/get`, this field may be `null`. When this happens, `available` is guaranteed not to be `null`, unless you have opted into enabling [limited-purpose checking accounts](https://plaid.com/docs/auth/#enabling-limited-purpose-checking-accounts), which always have `null` values for both `available` and `current` balance.|
 |limit|number(double) \| null|true|none|For `credit`-type accounts, this represents the credit limit.<br><br>For `depository`-type accounts, this represents the pre-arranged overdraft limit, which is common for current (checking) accounts in Europe.<br><br>In North America, this field is typically only available for `credit`-type accounts.|
 |iso_currency_code|string \| null|true|none|The ISO-4217 currency code of the balance. Always null if `unofficial_currency_code` is non-null.|
 |unofficial_currency_code|string \| null|true|none|The unofficial currency code associated with the balance. Always null if `iso_currency_code` is non-null. Unofficial currency codes are used for currencies that do not have official ISO currency codes, such as cryptocurrencies and the currencies of certain countries.<br><br>See the [currency code schema](https://plaid.com/docs/api/accounts#currency-code-schema) for a full listing of supported `unofficial_currency_code`s.|
@@ -71314,19 +72105,19 @@ A single account at a financial institution, with additional investment-specific
 |mask|string \| null|true|none|The last 2-4 alphanumeric characters of either the account's displayed mask or the account's official account number. Note that the mask may be non-unique between an Item's accounts.|
 |name|string|true|none|The name of the account, either assigned by the user or by the financial institution itself|
 |official_name|string \| null|true|none|The official name of the account as given by the financial institution|
-|type|[AccountType](#schemaaccounttype)|true|none|`investment:` Investment account. In API versions 2018-05-22 and earlier, this type is called `brokerage` instead.<br><br>`credit:` Credit card<br><br>`depository:` Depository account<br><br>`loan:` Loan account<br><br>`other:` Non-specified account type<br><br>See the [Account type schema](https://plaid.com/docs/api/accounts#account-type-schema) for a full listing of account types and corresponding subtypes.|
+|type|[AccountType](#schemaaccounttype)|true|none|`investment:` Investment account. In API versions 2018-05-22 and earlier, this type is called `brokerage` instead.<br><br>`credit:` Credit card<br><br>`depository:` Depository account<br><br>`loan:` Loan account<br><br>`payroll:` Payroll account<br><br>`other:` Non-specified account type<br><br>See the [Account type schema](https://plaid.com/docs/api/accounts#account-type-schema) for a full listing of account types and corresponding subtypes.|
 |subtype|[AccountSubtype](#schemaaccountsubtype)|true|none|See the [Account type schema](https://plaid.com/docs/api/accounts/#account-type-schema) for a full listing of account types and corresponding subtypes.|
 |verification_status|string|false|none|Indicates an Item's micro-deposit-based verification or database verification status. This field is only populated when using Auth and falling back to micro-deposit or database verification. Possible values are:<br><br>`pending_automatic_verification`: The Item is pending automatic verification.<br><br>`pending_manual_verification`: The Item is pending manual micro-deposit verification. Items remain in this state until the user successfully verifies the code.<br><br>`automatically_verified`: The Item has successfully been automatically verified.<br><br>`manually_verified`: The Item has successfully been manually verified.<br><br>`verification_expired`: Plaid was unable to automatically verify the deposit within 7 calendar days and will no longer attempt to validate the Item. Users may retry by submitting their information again through Link.<br><br>`verification_failed`: The Item failed manual micro-deposit verification because the user exhausted all 3 verification attempts. Users may retry by submitting their information again through Link.<br><br>`unsent`: The Item is pending micro-deposit verification, but Plaid has not yet sent the micro-deposit.<br><br>`database_insights_fail`: The Item's numbers have been verified using Plaid's data sources and have signal for being invalid and/or have no signal for being valid. Typically this indicates that the routing number is invalid, the account number does not match the account number format associated with the routing number, or the account has been reported as closed or frozen. Only returned for Auth Items created via Database Auth.<br><br>`database_insights_pass`: The Item's numbers have been verified using Plaid's data sources: the routing and account number match a routing and account number of an account recognized on the Plaid network, and the account is not known by Plaid to be frozen or closed. Only returned for Auth Items created via Database Auth.<br><br>`database_insights_pass_with_caution`: The Item's numbers have been verified using Plaid's data sources and have some signal for being valid: the routing and account number were not recognized on the Plaid network, but the routing number is valid and the account number is a potential valid account number for that routing number. Only returned for Auth Items created via Database Auth.<br><br>`database_matched`: (deprecated) The Item has successfully been verified using Plaid's data sources. Only returned for Auth Items created via Database Match.<br><br>Omitted or empty string: Neither micro-deposit-based verification nor database verification are being used for the Item.|
 |verification_name|string|false|none|The account holder name that was used for micro-deposit and/or database verification. Only returned for Auth Items created via micro-deposit or database verification. This name was manually-entered by the user during Link, unless it was otherwise provided via the `user.legal_name` request field in `/link/token/create` for the Link session that created the Item.|
-|verification_insights|[AccountVerificationInsights](#schemaaccountverificationinsights)|false|none|Insights from performing database verification for the account. Only returned for Auth Items using Database Auth.|
+|verification_insights|object \| null|false|none|none|
 |persistent_account_id|string|false|none|A unique and persistent identifier for accounts that can be used to trace multiple instances of the same account across different Items for depository accounts. This field is currently supported only for Items at institutions that use Tokenized Account Numbers (i.e., Chase, PNC, and US Bank). Because these accounts have a different account number each time they are linked, this field may be used instead of the account number to uniquely identify an account across multiple Items for payments use cases, helping to reduce duplicate Items or attempted fraud. In Sandbox, this field is populated for TAN-based institutions (`ins_56`, `ins_13`, `ins_127990`) as well as the OAuth Sandbox institution (`ins_127287`); in Production, it will only be populated for accounts at applicable institutions.|
 |apy|number(double) \| null|false|none|The annual percentage yield (APY) on an interest-bearing deposit account, expressed as a percentage (e.g. `4.25` means 4.25%). In the event that the APY is not provided by the financial institution, Plaid will return a value of `null`.|
 |holder_category|[AccountHolderCategory](#schemaaccountholdercategory)|false|none|Indicates the account's categorization as either a personal or a business account. This field is currently in beta; to request access, contact your account manager. Coverage varies by institution, with approximately 70% of accounts populated overall.|
 |paired_account_id|string \| null|false|none|The `account_id` of the account on the paired Item (see `paired_item_id`) that represents the same bank account as this one. For an account on a Plaid Inc Item, this is the matching account on its paired Plaid Check Item, and the reverse for an account on a Plaid Check Item. Only returned for accounts on an Item that has a paired Item. `null` means the Item has a paired Item but Plaid could not confidently match this account to an account on it. Like `account_id`, this value can change if Plaid re-creates the paired account.|
-|name|string|true|none|none|
-|official_name|string \| null|true|none|none|
-|mask|string \| null|true|none|none|
-|verification_name|string|false|none|none|
+|name|string|true|none|The name of the account, either assigned by the user or by the financial institution itself|
+|official_name|string \| null|true|none|The official name of the account as given by the financial institution|
+|mask|string \| null|true|none|The last 2-4 alphanumeric characters of either the account's displayed mask or the account's official account number. Note that the mask may be non-unique between an Item's accounts.|
+|verification_name|string|false|none|The account holder name that was used for micro-deposit and/or database verification. Only returned for Auth Items created via micro-deposit or database verification. This name was manually-entered by the user during Link, unless it was otherwise provided via the `user.legal_name` request field in `/link/token/create` for the Link session that created the Item.|
 |balances|[InvestmentAccountBalance](#schemainvestmentaccountbalance)|true|none|A set of fields describing the balance for an account, including margin loan information for investment accounts.|
 
 #### Enumerated Values
@@ -71338,12 +72129,14 @@ A single account at a financial institution, with additional investment-specific
 |type|depository|
 |type|loan|
 |type|brokerage|
+|type|payroll|
 |type|other|
 |subtype|401a|
 |subtype|401k|
 |subtype|403B|
 |subtype|457b|
 |subtype|529|
+|subtype|530a|
 |subtype|auto|
 |subtype|brokerage|
 |subtype|business|
@@ -71459,8 +72252,8 @@ A set of fields describing the balance for an account. For real-time values, use
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|available|number(double) \| null|true|none|The amount of funds available to be withdrawn from the account, as determined by the financial institution.<br><br>For `credit`-type accounts, the `available` balance typically equals the `limit` less the `current` balance, less any pending outflows plus any pending inflows.<br><br>For `depository`-type accounts, the `available` balance typically equals the `current` balance less any pending outflows plus any pending inflows. For `depository`-type accounts, the `available` balance does not include the overdraft limit.<br><br>For `investment`-type accounts (or `brokerage`-type accounts for API versions 2018-05-22 and earlier), the `available` balance is the total cash available to withdraw as presented by the institution.<br><br>Note that not all institutions calculate the `available`  balance. In the event that `available` balance is unavailable, Plaid will return an `available` balance value of `null`.<br><br>Available balance may be cached and is not guaranteed to be up-to-date in real-time unless the value was returned by `/accounts/balance/get`, or by `/signal/evaluate` with a Balance-only ruleset.<br><br>If `current` is `null` this field is guaranteed not to be `null`, unless you have opted into enabling [limited-purpose checking accounts](https://plaid.com/docs/auth/#enabling-limited-purpose-checking-accounts-for-rent-or-mortgage), which always have `null` values for both `available` and `current` balance.|
-|current|number(double) \| null|true|none|The total amount of funds in or owed by the account.<br><br>For `credit`-type accounts, a positive balance indicates the amount owed; a negative amount indicates the lender owing the account holder.<br><br>For `loan`-type accounts, the current balance is the principal remaining on the loan, except in the case of student loan accounts at Sallie Mae (`ins_116944`). For Sallie Mae student loans, the account's balance includes both principal and any outstanding interest. Similar to `credit`-type accounts, a positive balance is typically expected, while a negative amount indicates the lender owing the account holder.<br><br>For `investment`-type accounts (or `brokerage`-type accounts for API versions 2018-05-22 and earlier), the current balance is the total value of assets as presented by the institution.<br><br>Note that balance information may be cached unless the value was returned by `/accounts/balance/get` or by `/signal/evaluate` with a Balance-only ruleset; if the Item is enabled for Transactions, the balance will be at least as recent as the most recent Transaction update. If you require real-time balance information, use the `available` balance as provided by `/accounts/balance/get` or `/signal/evaluate` called with a Balance-only `ruleset_key`.<br><br>When returned by `/accounts/balance/get`, this field may be `null`. When this happens, `available` is guaranteed not to be `null`, unless you have opted into enabling [limited-purpose checking accounts](https://plaid.com/docs/auth/#enabling-limited-purpose-checking-accounts-for-rent-or-mortgage), which always have `null` values for both `available` and `current` balance.|
+|available|number(double) \| null|true|none|The amount of funds available to be withdrawn from the account, as determined by the financial institution.<br><br>For `credit`-type accounts, the `available` balance typically equals the `limit` less the `current` balance, less any pending outflows plus any pending inflows.<br><br>For `depository`-type accounts, the `available` balance typically equals the `current` balance less any pending outflows plus any pending inflows. For `depository`-type accounts, the `available` balance does not include the overdraft limit.<br><br>For `investment`-type accounts (or `brokerage`-type accounts for API versions 2018-05-22 and earlier), the `available` balance is the total cash available to withdraw as presented by the institution.<br><br>Note that not all institutions calculate the `available`  balance. In the event that `available` balance is unavailable, Plaid will return an `available` balance value of `null`.<br><br>Available balance may be cached and is not guaranteed to be up-to-date in real-time unless the value was returned by `/accounts/balance/get`, or by `/signal/evaluate` with a Balance-only ruleset.<br><br>If `current` is `null` this field is guaranteed not to be `null`, unless you have opted into enabling [limited-purpose checking accounts](https://plaid.com/docs/auth/#enabling-limited-purpose-checking-accounts), which always have `null` values for both `available` and `current` balance.|
+|current|number(double) \| null|true|none|The total amount of funds in or owed by the account.<br><br>For `credit`-type accounts, a positive balance indicates the amount owed; a negative amount indicates the lender owing the account holder.<br><br>For `loan`-type accounts, the current balance is the principal remaining on the loan, except in the case of student loan accounts at Sallie Mae (`ins_116944`). For Sallie Mae student loans, the account's balance includes both principal and any outstanding interest. Similar to `credit`-type accounts, a positive balance is typically expected, while a negative amount indicates the lender owing the account holder.<br><br>For `investment`-type accounts (or `brokerage`-type accounts for API versions 2018-05-22 and earlier), the current balance is the total value of assets as presented by the institution.<br><br>Note that balance information may be cached unless the value was returned by `/accounts/balance/get` or by `/signal/evaluate` with a Balance-only ruleset; if the Item is enabled for Transactions, the balance will be at least as recent as the most recent Transaction update. If you require real-time balance information, use the `available` balance as provided by `/accounts/balance/get` or `/signal/evaluate` called with a Balance-only `ruleset_key`.<br><br>When returned by `/accounts/balance/get`, this field may be `null`. When this happens, `available` is guaranteed not to be `null`, unless you have opted into enabling [limited-purpose checking accounts](https://plaid.com/docs/auth/#enabling-limited-purpose-checking-accounts), which always have `null` values for both `available` and `current` balance.|
 |limit|number(double) \| null|true|none|For `credit`-type accounts, this represents the credit limit.<br><br>For `depository`-type accounts, this represents the pre-arranged overdraft limit, which is common for current (checking) accounts in Europe.<br><br>In North America, this field is typically only available for `credit`-type accounts.|
 |iso_currency_code|string \| null|true|none|The ISO-4217 currency code of the balance. Always null if `unofficial_currency_code` is non-null.|
 |unofficial_currency_code|string \| null|true|none|The unofficial currency code associated with the balance. Always null if `iso_currency_code` is non-null. Unofficial currency codes are used for currencies that do not have official ISO currency codes, such as cryptocurrencies and the currencies of certain countries.<br><br>See the [currency code schema](https://plaid.com/docs/api/accounts#currency-code-schema) for a full listing of supported `unofficial_currency_code`s.|
@@ -71520,8 +72313,8 @@ Insights from performing database verification for the account. Only returned fo
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |name_match_score|integer \| null|false|none|Indicates the score of the name match between the given name provided during database verification (available in the [`verification_name`](https://plaid.com/docs/api/products/auth/#auth-get-response-accounts-verification-name) field if using standard Database Auth, or provided in the request if using `/auth/verify`) and matched Plaid network accounts. If defined, will be a value between 0 and 100. Will be undefined if name matching was not enabled for the database verification session or if there were no eligible Plaid network matches to compare the given name with. For Items at Canadian institutions, name matching is not currently supported, so this field will always be omitted.|
-|network_status|[AccountVerificationInsightsNetworkStatus](#schemaaccountverificationinsightsnetworkstatus)|true|none|Status information about the account and routing number in the Plaid network.|
-|previous_returns|[AccountVerificationInsightsPreviousReturns](#schemaaccountverificationinsightspreviousreturns)|false|none|Information about known ACH returns for the account and routing number.|
+|network_status|object \| null|false|none|none|
+|previous_returns|object \| null|false|none|none|
 |account_number_format|[AccountVerificationInsightsAccountNumberFormat](#schemaaccountverificationinsightsaccountnumberformat)|true|none|Indicator of account number format validity for institution.<br><br>`valid`: indicates that the account number has a correct format for the institution.<br><br>`invalid`: indicates that the account number has an incorrect format for the institution.<br><br>`unknown`: indicates that there was not enough information to determine whether the format is correct for the institution.|
 
 #### Enumerated Values
@@ -71868,9 +72661,9 @@ Identifying information for transferring money to or from a US account via ACH o
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |account_id|string|true|none|The Plaid account ID associated with the account numbers|
-|account|string|true|none|The ACH account number for the account.<br><br>At certain institutions, including Chase, PNC, and US Bank, you will receive a "tokenized" account number, which is not the user's actual account number. For important details on how this may impact your integration and on how to avoid fraud, user confusion, and ACH returns, see [Tokenized account numbers](https://plaid.com/docs/auth/#tokenized-account-numbers).|
-|is_tokenized_account_number|boolean|false|none|Indicates whether the account number is tokenized by the institution. For important details on how tokenized account numbers may impact your integration, see [Tokenized account numbers](https://plaid.com/docs/auth/#tokenized-account-numbers).|
-|routing|string|true|none|The ACH routing number for the account. For more information, see [Tokenized account numbers](https://plaid.com/docs/auth/#tokenized-account-numbers).|
+|account|string \| null|true|none|The ACH account number for the account. May be `null` for some non-depository accounts, but is never `null` for depository accounts.<br><br>At certain institutions, including Chase, PNC, and US Bank, you will receive a "tokenized" account number, which is not the user's actual account number. For important details on how this may impact your integration and on how to avoid fraud, user confusion, and ACH returns, see [Tokenized account numbers](https://plaid.com/docs/auth/#tokenized-account-numbers).|
+|is_tokenized_account_number|boolean|true|none|Indicates whether the account number is tokenized by the institution. For important details on how tokenized account numbers may impact your integration, see [Tokenized account numbers](https://plaid.com/docs/auth/#tokenized-account-numbers).|
+|routing|string \| null|true|none|The ACH routing number for the account. May be `null` for some non-depository accounts, but is never `null` for depository accounts. For more information, see [Tokenized account numbers](https://plaid.com/docs/auth/#tokenized-account-numbers).|
 |wire_routing|string \| null|true|none|The wire transfer routing number for the account. This field is only populated if the institution is known to use a separate wire transfer routing number. Many institutions do not have a separate wire routing number and use the ACH routing number for wires instead. It is recommended to have the end user manually confirm their wire routing number before sending any wires to their account, especially if this field is `null`.|
 |can_transfer_in|boolean \| null|false|none|Whether the account supports ACH transfers into the account|
 |can_transfer_out|boolean \| null|false|none|Whether the account supports ACH transfers out of the account|
@@ -71901,9 +72694,9 @@ Identifying information for transferring money to or from a US account via ACH o
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |account_id|string|true|none|The Plaid account ID associated with the account numbers|
-|account|string|true|none|The ACH account number for the account.<br><br>At certain institutions, including Chase, PNC, and US Bank, you will receive a "tokenized" account number, which is not the user's actual account number. For important details on how this may impact your integration and on how to avoid fraud, user confusion, and ACH returns, see [Tokenized account numbers](https://plaid.com/docs/auth/#tokenized-account-numbers).|
-|is_tokenized_account_number|boolean|false|none|Indicates whether the account number is tokenized by the institution. For important details on how tokenized account numbers may impact your integration, see [Tokenized account numbers](https://plaid.com/docs/auth/#tokenized-account-numbers).|
-|routing|string|true|none|The ACH routing number for the account. For more information, see [Tokenized account numbers](https://plaid.com/docs/auth/#tokenized-account-numbers).|
+|account|string \| null|true|none|The ACH account number for the account. May be `null` for some non-depository accounts, but is never `null` for depository accounts.<br><br>At certain institutions, including Chase, PNC, and US Bank, you will receive a "tokenized" account number, which is not the user's actual account number. For important details on how this may impact your integration and on how to avoid fraud, user confusion, and ACH returns, see [Tokenized account numbers](https://plaid.com/docs/auth/#tokenized-account-numbers).|
+|is_tokenized_account_number|boolean|true|none|Indicates whether the account number is tokenized by the institution. For important details on how tokenized account numbers may impact your integration, see [Tokenized account numbers](https://plaid.com/docs/auth/#tokenized-account-numbers).|
+|routing|string \| null|true|none|The ACH routing number for the account. May be `null` for some non-depository accounts, but is never `null` for depository accounts. For more information, see [Tokenized account numbers](https://plaid.com/docs/auth/#tokenized-account-numbers).|
 |wire_routing|string \| null|true|none|The wire transfer routing number for the account. This field is only populated if the institution is known to use a separate wire transfer routing number. Many institutions do not have a separate wire routing number and use the ACH routing number for wires instead. It is recommended to have the end user manually confirm their wire routing number before sending any wires to their account, especially if this field is `null`.|
 |can_transfer_in|boolean \| null|false|none|Whether the account supports ACH transfers into the account|
 |can_transfer_out|boolean \| null|false|none|Whether the account supports ACH transfers out of the account|
@@ -71931,7 +72724,7 @@ Identifying information for transferring money to or from a Canadian bank accoun
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |account_id|string|true|none|The Plaid account ID associated with the account numbers|
-|account|string|true|none|The EFT account number for the account|
+|account|string \| null|true|none|The EFT account number for the account. May be `null` for some non-depository accounts, but is never `null` for depository accounts.|
 |institution|string|true|none|The EFT institution number for the account|
 |branch|string|true|none|The EFT branch number for the account|
 
@@ -71958,7 +72751,7 @@ Identifying information for transferring money to or from a Canadian bank accoun
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |account_id|string|true|none|The Plaid account ID associated with the account numbers|
-|account|string|true|none|The EFT account number for the account|
+|account|string \| null|true|none|The EFT account number for the account. May be `null` for some non-depository accounts, but is never `null` for depository accounts.|
 |institution|string|true|none|The EFT institution number for the account|
 |branch|string|true|none|The EFT branch number for the account|
 
@@ -71984,8 +72777,8 @@ Identifying information for transferring money to or from an international bank 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |account_id|string|true|none|The Plaid account ID associated with the account numbers|
-|iban|string|true|none|The International Bank Account Number (IBAN) for the account|
-|bic|string|true|none|The Business Identifier Code (BIC) for the account|
+|iban|string \| null|true|none|The International Bank Account Number (IBAN) for the account. May be `null` if only the BIC is available.|
+|bic|string \| null|true|none|The Business Identifier Code (BIC) for the account. May be `null` if only the IBAN is available.|
 
 <h2 id="tocS_NumbersInternationalNullable">NumbersInternationalNullable</h2>
 <!-- backwards compatibility -->
@@ -72009,8 +72802,8 @@ Identifying information for transferring money to or from an international bank 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |account_id|string|true|none|The Plaid account ID associated with the account numbers|
-|iban|string|true|none|The International Bank Account Number (IBAN) for the account|
-|bic|string|true|none|The Business Identifier Code (BIC) for the account|
+|iban|string \| null|true|none|The International Bank Account Number (IBAN) for the account. May be `null` if only the BIC is available.|
+|bic|string \| null|true|none|The Business Identifier Code (BIC) for the account. May be `null` if only the IBAN is available.|
 
 <h2 id="tocS_NumbersBACS">NumbersBACS</h2>
 <!-- backwards compatibility -->
@@ -72253,6 +73046,29 @@ An object containing a Bacs account number and sort code. If an IBAN is not prov
 |account|string|false|none|The account number of the account. Maximum of 10 characters.|
 |sort_code|string|false|none|The 6-character sort code of the account.|
 
+<h2 id="tocS_RecipientBACSInResponse">RecipientBACSInResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemarecipientbacsinresponse"></a>
+<a id="schema_RecipientBACSInResponse"></a>
+<a id="tocSrecipientbacsinresponse"></a>
+<a id="tocsrecipientbacsinresponse"></a>
+
+```json
+{
+  "account": "string",
+  "sort_code": "string"
+}
+```
+
+An object containing a Bacs account number and sort code. If either value isn't available, it's returned as an empty string.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|account|string|true|none|The account number of the account. Maximum of 10 characters.|
+|sort_code|string|true|none|The 6-character sort code of the account.|
+
 <h2 id="tocS_RecipientBACSNullable">RecipientBACSNullable</h2>
 <!-- backwards compatibility -->
 <a id="schemarecipientbacsnullable"></a>
@@ -72276,6 +73092,29 @@ An object containing a Bacs account number and sort code. If an IBAN is not prov
 |account|string|false|none|The account number of the account. Maximum of 10 characters.|
 |sort_code|string|false|none|The 6-character sort code of the account.|
 
+<h2 id="tocS_RecipientBACSNullableInResponse">RecipientBACSNullableInResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemarecipientbacsnullableinresponse"></a>
+<a id="schema_RecipientBACSNullableInResponse"></a>
+<a id="tocSrecipientbacsnullableinresponse"></a>
+<a id="tocsrecipientbacsnullableinresponse"></a>
+
+```json
+{
+  "account": "string",
+  "sort_code": "string"
+}
+```
+
+An object containing a Bacs account number and sort code. If either value isn't available, it's returned as an empty string.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|account|string|true|none|The account number of the account. Maximum of 10 characters.|
+|sort_code|string|true|none|The 6-character sort code of the account.|
+
 <h2 id="tocS_SenderBACSNullable">SenderBACSNullable</h2>
 <!-- backwards compatibility -->
 <a id="schemasenderbacsnullable"></a>
@@ -72296,8 +73135,8 @@ An object containing a Bacs account number and sort code. If an IBAN is not prov
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|account|string|false|none|The account number of the account. Maximum of 10 characters.|
-|sort_code|string|false|none|The 6-character sort code of the account.|
+|account|string|true|none|The account number of the account. Maximum of 10 characters.|
+|sort_code|string|true|none|The 6-character sort code of the account.|
 
 <h2 id="tocS_PaymentInitiationOptionalRestrictionBacs">PaymentInitiationOptionalRestrictionBacs</h2>
 <!-- backwards compatibility -->
@@ -73149,8 +73988,8 @@ Information on the ownership of an investment account
         "amount": 0,
         "price": 0,
         "fees": 0,
-        "type": "buy",
-        "subtype": "account fee",
+        "type": {},
+        "subtype": {},
         "iso_currency_code": "string",
         "unofficial_currency_code": "string"
       }
@@ -73220,8 +74059,8 @@ Object containing information on account fee transactions for the 401k account.
       "amount": 0,
       "price": 0,
       "fees": 0,
-      "type": "buy",
-      "subtype": "account fee",
+      "type": {},
+      "subtype": {},
       "iso_currency_code": "string",
       "unofficial_currency_code": "string"
     }
@@ -73521,6 +74360,9 @@ Details relating to a specific financial institution
 |products|cra_plaid_credit_score|
 |products|cra_qualify|
 |products|cra_home_lending|
+|products|cra_lend_score_complete|
+|products|cra_income_complete|
+|products|cra_home_lending_voa|
 |products|layer|
 |products|pay_by_bank|
 |products|protect_linked_bank|
@@ -73679,7 +74521,7 @@ Institution status is accessible in the Dashboard and via the API using the `/in
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|item_logins|[ProductStatus](#schemaproductstatus)|false|none|A representation of the status health of a request type. Auth requests, Balance requests, Identity requests, Investments requests, Liabilities requests, Transactions updates, Investments updates, Liabilities updates, and Item logins each have their own status object.|
+|item_logins|[ProductStatus](#schemaproductstatus)|true|none|A representation of the status health of a request type. Auth requests, Balance requests, Identity requests, Investments requests, Liabilities requests, Transactions updates, Investments updates, Liabilities updates, and Item logins each have their own status object.|
 |transactions_updates|[ProductStatus](#schemaproductstatus)|false|none|A representation of the status health of a request type. Auth requests, Balance requests, Identity requests, Investments requests, Liabilities requests, Transactions updates, Investments updates, Liabilities updates, and Item logins each have their own status object.|
 |auth|[ProductStatus](#schemaproductstatus)|false|none|A representation of the status health of a request type. Auth requests, Balance requests, Identity requests, Investments requests, Liabilities requests, Transactions updates, Investments updates, Liabilities updates, and Item logins each have their own status object.|
 |identity|[ProductStatus](#schemaproductstatus)|false|none|A representation of the status health of a request type. Auth requests, Balance requests, Identity requests, Investments requests, Liabilities requests, Transactions updates, Investments updates, Liabilities updates, and Item logins each have their own status object.|
@@ -73717,7 +74559,7 @@ Describes the reason you are generating a Consumer Report for this user. When ca
 
 `ACCOUNT_REVIEW_CREDIT`: In connection with a consumer credit transaction for the review or collection of an account pursuant to FCRA Section 604(a)(3)(A).
 
-`ACCOUNT_REVIEW_NON_CREDIT`: For a legitimate business need of the information to review a non-credit account provided primarily for personal, family, or household purposes to determine whether the consumer continues to meet the terms of the account pursuant to FCRA Section 604(a)(3)(F)(2).
+`ACCOUNT_REVIEW_NON_CREDIT`: For a legitimate business need of the information to review a non-credit account provided primarily for personal, family, or household purposes to determine whether the consumer continues to meet the terms of the account pursuant to FCRA Section 604(a)(3)(F)(ii).
 
 `EXTENSION_OF_CREDIT`: In connection with a credit transaction initiated by and involving the consumer pursuant to FCRA Section 604(a)(3)(A).
 
@@ -73730,6 +74572,10 @@ Describes the reason you are generating a Consumer Report for this user. When ca
 `WRITTEN_INSTRUCTION_OTHER`: In accordance with the written instructions of the consumer pursuant to FCRA Section 604(a)(2), such as when an individual agrees to act as a guarantor or assumes personal liability for a consumer, business, or commercial loan.
 
 `ELIGIBILITY_FOR_GOVT_BENEFITS`:  In connection with an eligibility determination for a government benefit where the entity is required to consider an applicant's financial status pursuant to FCRA Section 604(a)(3)(D).
+
+`INSURANCE_UNDERWRITING`: In connection with the underwriting of insurance involving the consumer pursuant to FCRA Section 604(a)(3)(C).
+
+`SECONDARY_INVESTOR`: As a potential investor or servicer, or current insurer, in connection with a valuation of, or an assessment of the credit or prepayment risks associated with, an existing credit obligation pursuant to FCRA Section 604(a)(3)(E).
 
 <h2 id="tocS_PaymentMeta">PaymentMeta</h2>
 <!-- backwards compatibility -->
@@ -76874,7 +77720,7 @@ Metadata that captures what specific payment configurations an institution suppo
 |supports_sepa_instant|boolean|true|none|Indicates whether the institution supports SEPA Instant payments.|
 |maximum_payment_amount|[PaymentInitiationMaximumPaymentAmount](#schemapaymentinitiationmaximumpaymentamount)|false|none|A mapping of currency to maximum payment amount (denominated in the smallest unit of currency) supported by the institution.<br><br>Example: `{"GBP": "10000"}`<br>|
 |supports_refund_details|boolean|true|none|Indicates whether the institution supports returning refund details when initiating a payment.|
-|standing_order_metadata|[PaymentInitiationStandingOrderMetadata](#schemapaymentinitiationstandingordermetadata)|true|none|Metadata specifically related to valid Payment Initiation standing order configurations for the institution.|
+|standing_order_metadata|[PaymentInitiationStandingOrderMetadata](#schemapaymentinitiationstandingordermetadata)|false|none|Metadata specifically related to valid Payment Initiation standing order configurations for the institution.|
 |supports_payment_consents|boolean|true|none|Indicates whether the institution supports payment consents.|
 |supports_commercial_payment_consents|boolean|true|none|Indicates whether the institution supports commercial variable recurring payment (cVRP) consents.|
 
@@ -77401,7 +78247,7 @@ Details about external payment refund
 |---|---|---|---|---|
 |name|string|true|none|The name of the account holder.|
 |iban|string \| null|true|none|The International Bank Account Number (IBAN) for the account.|
-|bacs|[RecipientBACSNullable](#schemarecipientbacsnullable)|true|none|An object containing a Bacs account number and sort code. If an IBAN is not provided or if this recipient needs to accept domestic GBP-denominated payments, Bacs data is required.|
+|bacs|[RecipientBACSNullableInResponse](#schemarecipientbacsnullableinresponse)|true|none|An object containing a Bacs account number and sort code. If either value isn't available, it's returned as an empty string.|
 
 <h2 id="tocS_ExternalPaymentScheduleGet">ExternalPaymentScheduleGet</h2>
 <!-- backwards compatibility -->
@@ -77550,6 +78396,7 @@ A detailed breakdown of the institution's performance for a request type. The va
   "version": 1,
   "seed": "string",
   "roll_dates_forward": false,
+  "has_perpetual_otp": false,
   "override_accounts": [
     {
       "type": "investment",
@@ -77573,7 +78420,8 @@ A detailed breakdown of the institution's performance for a request type. The va
         "eft_branch": "string",
         "international_bic": "string",
         "international_iban": "string",
-        "bacs_sort_code": "string"
+        "bacs_sort_code": "string",
+        "acats_dtc_number": "string"
       },
       "transactions": [
         {
@@ -77914,6 +78762,7 @@ Custom test accounts are configured with a JSON configuration object formulated 
 |version|integer \| null|false|none|The version of the password schema to use, sent as a number. Possible values are `1` or `2`. The default value is `2`. You should only specify `1` if you know it is necessary for your test suite.|
 |seed|string|false|none|A seed, in the form of a string, that will be used to randomly generate account and transaction data, if this data is not specified using the `override_accounts` argument. If no seed is specified, the randomly generated data will be different each time.<br><br>Note that transactions data is generated relative to the Item's creation date. Different Items created on different dates with the same seed for transactions data will have different dates for the transactions. The number of days between each transaction and the Item creation will remain constant. For example, an Item created on December 15 might show a transaction on December 14. An Item created on December 20, using the same seed, would show that same transaction occurring on December 19.|
 |roll_dates_forward|boolean|false|none|When `true`, every date in this configuration is shifted at Item creation so that the most recent activity date falls on the day the Item is created, keeping the spacing between dates. Activity dates are transaction and investment transaction dates, pay period end dates and pay days, holding `institution_price_as_of` dates, and a loan's `last_payment_date` or `last_statement_issue_date`. Scheduled loan dates such as `origination_date`, `maturity_date`, and `next_payment_due_date` move by the same amount but are never the anchor. This lets a saved configuration keep producing recent data without being edited.<br><br>A `date_posted` later than its `date_transacted` stays later, so the most recent transaction can still be pending. Dates are UTC calendar dates. The shift happens once, when the Item is created; the Item keeps the shifted dates afterwards. Defaults to `false`.|
+|has_perpetual_otp|boolean|false|none|When `true`, the Item behaves like an Item at an institution that requires a one-time passcode (OTP) or other multi-factor authentication at every login, so it can be updated only while the user is present. `/item/get` returns an `update_type` of `user_present_required`. Endpoints that fetch new data from the institution, such as `/transactions/refresh` and `/accounts/balance/get`, return `ITEM_LOGIN_REQUIRED`. If your integration isn't enabled for this kind of institution, they return [`MFA_NOT_SUPPORTED`](https://plaid.com/docs/errors/item/#mfa_not_supported) instead. Endpoints that return data Plaid already has, such as `/transactions/sync` and `/accounts/get`, still work. Defaults to `false`.|
 |override_accounts|[[OverrideAccounts](#schemaoverrideaccounts)]|false|none|An array of account overrides to configure the accounts for the Item. By default, if no override is specified, transactions and account data will be randomly generated based on the account type and subtype, and other products will have fixed or empty data.|
 |mfa|[MFA](#schemamfa)|false|none|Specifies the multi-factor authentication settings to use with this test account|
 |recaptcha|string|false|none|You may trigger a reCAPTCHA in Plaid Link in the Sandbox environment by using the recaptcha field. Possible values are `good` or `bad`. A value of `good` will result in successful Item creation and `bad` will result in a `RECAPTCHA_BAD` error to simulate a failed reCAPTCHA. Both values require the reCAPTCHA to be manually solved within Plaid Link.|
@@ -77978,7 +78827,8 @@ Specifies the multi-factor authentication settings to use with this test account
     "eft_branch": "string",
     "international_bic": "string",
     "international_iban": "string",
-    "bacs_sort_code": "string"
+    "bacs_sort_code": "string",
+    "acats_dtc_number": "string"
   },
   "transactions": [
     {
@@ -78336,6 +79186,7 @@ Data to use to set values of test accounts. Some values cannot be specified in t
 |subtype|403B|
 |subtype|457b|
 |subtype|529|
+|subtype|530a|
 |subtype|auto|
 |subtype|brokerage|
 |subtype|business|
@@ -78440,7 +79291,7 @@ Allows specifying the metadata of the test account
 |official_name|string|false|none|The account's official name|
 |limit|number(double)|false|none|The account's limit|
 |mask|string|false|none|The account's mask. Should be an empty string or a string of 2-4 alphanumeric characters. This allows you to model a mask which does not match the account number (such as with a virtual account number).|
-|apy|number(double)|false|none|The annual percentage yield (APY) to report on the account, expressed as a percentage (e.g. `4.25` means 4.25%). Applies to interest-bearing depository accounts; if omitted, the account reports no APY.|
+|apy|number(double)|false|none|The annual percentage yield (APY) to report on the account, expressed as a percentage (e.g. `4.25` means 4.25%). Applies to interest-bearing depository accounts. If omitted, savings, money market, CD, cash management, and HSA accounts report a generated APY, and other accounts report none.|
 
 <h2 id="tocS_Numbers">Numbers</h2>
 <!-- backwards compatibility -->
@@ -78458,7 +79309,8 @@ Allows specifying the metadata of the test account
   "eft_branch": "string",
   "international_bic": "string",
   "international_iban": "string",
-  "bacs_sort_code": "string"
+  "bacs_sort_code": "string",
+  "acats_dtc_number": "string"
 }
 ```
 
@@ -78476,6 +79328,7 @@ Account and bank identifier number data used to configure the test account. All 
 |international_bic|string|false|none|Business Identifier Code (BIC). Must be specified alongside `international_iban`.|
 |international_iban|string|false|none|International Bank Account Number (IBAN). If no account number is specified via `account`, will also be used as the account number by default. Must be specified alongside `international_bic`.|
 |bacs_sort_code|string|false|none|Bacs sort code|
+|acats_dtc_number|string|false|none|4-digit DTC participant number returned in `numbers.acats[].dtc_numbers` for a brokerage account. If not specified, Sandbox generates one from the `seed`.|
 
 <h2 id="tocS_TransactionOverride">TransactionOverride</h2>
 <!-- backwards compatibility -->
@@ -78929,9 +79782,9 @@ The `inflow_model` allows you to model a test account that receives regular inco
 |---|---|---|---|---|
 |type|string|true|none|Inflow model. One of the following:<br><br>`none`: No income<br><br>`monthly-income`: Income occurs once per month<br><br>`monthly-balance-payment`: Pays off the balance on a liability account at the given statement day of month.<br><br>`monthly-interest-only-payment`: Makes an interest-only payment on a liability account at the given statement day of month.<br><br>Note that account types supported by Liabilities will accrue interest in the Sandbox. The types impacted are account type `credit` with subtype `credit` or `paypal`, and account type `loan` with subtype `student` or `mortgage`.|
 |income_amount|number(double)|false|none|Amount of income per month. This value is required if `type` is `monthly-income`.|
-|payment_day_of_month|object|false|none|Either a whole number between 1 and 28 or the string `last`, meaning the last day of the month. The day of the month on which the income transaction will appear. This field is required if `type` is `monthly-income`, `monthly-balance-payment` or `monthly-interest-only-payment`.|
+|payment_day_of_month|object|false|none|The day of the month on which the income transaction will appear: a whole number between 1 and 28, or the string `last` for the last day of the month. This field is required if `type` is `monthly-income`, `monthly-balance-payment` or `monthly-interest-only-payment`.|
 |transaction_name|string|false|none|The name of the income transaction. This field is required if `type` is `monthly-income`, `monthly-balance-payment` or `monthly-interest-only-payment`.|
-|statement_day_of_month|object|false|none|Either a whole number between 1 and 28 or the string `last`, meaning the last day of the month. The day of the month on which the balance is calculated for the next payment. This field is required if `type` is `monthly-balance-payment` or `monthly-interest-only-payment`.|
+|statement_day_of_month|object|false|none|The day of the month on which the balance is calculated for the next payment: a whole number between 1 and 28, or the string `last` for the last day of the month. For compatibility with client libraries generated before 1.776.0, which typed this field as a string, a quoted number such as `"15"` is also accepted. This field is required if `type` is `monthly-balance-payment` or `monthly-interest-only-payment`.|
 
 <h2 id="tocS_IncomeOverride">IncomeOverride</h2>
 <!-- backwards compatibility -->
@@ -79859,6 +80712,19 @@ The Plaid `user_id` of the User associated with this webhook, warning, or error.
 
 A unique user identifier, created by `/user/create`. Integrations that began using `/user/create` after December 10, 2025 use this field to identify a user instead of the `user_token`. For more details, see [New User APIs](https://plaid.com/docs/api/users/user-apis).
 
+<h2 id="tocS_NewUserIDNullable">NewUserIDNullable</h2>
+<!-- backwards compatibility -->
+<a id="schemanewuseridnullable"></a>
+<a id="schema_NewUserIDNullable"></a>
+<a id="tocSnewuseridnullable"></a>
+<a id="tocsnewuseridnullable"></a>
+
+```json
+"string"
+```
+
+A unique user identifier, created by `/user/create`. Integrations that began using `/user/create` after December 10, 2025 use this field to identify a user instead of the `user_token`. For more details, see [New User APIs](https://plaid.com/docs/api/users/user-apis).
+
 <h2 id="tocS_AuthDefaultUpdateWebhook">AuthDefaultUpdateWebhook</h2>
 <!-- backwards compatibility -->
 <a id="schemaauthdefaultupdatewebhook"></a>
@@ -80700,7 +81566,7 @@ Fired when Plaid is unable to originate a new ACH transaction of the recurring t
 |webhook_code|string|true|none|`RECURRING_TRANSFER_SKIPPED`|
 |recurring_transfer_id|[RecurringTransferID](#schemarecurringtransferid)|true|none|Plaid's unique identifier for a recurring transfer.|
 |authorization_decision|[TransferAuthorizationDecision](#schematransferauthorizationdecision)|true|none|<br>A decision regarding the proposed transfer.<br><br>`approved` - The proposed transfer has received the end user's consent and has been approved for processing by Plaid. The `decision_rationale` field is set if Plaid was unable to fetch the account information. You may proceed with the transfer, but further review is recommended. Refer to the `code` field in the `decision_rationale` object for details.<br><br>`declined` - Plaid reviewed the proposed transfer and declined processing. Refer to the `code` field in the `decision_rationale` object for details.<br><br>`user_action_required` - An action is required before Plaid can assess the transfer risk and make a decision. The most common scenario is to update authentication for an Item. To complete the required action, initialize Link by setting `transfer.authorization_id` in the request of `/link/token/create`. After Link flow is completed, you may re-attempt the authorization request.<br><br>For `guarantee` requests, `approved` indicates the transfer is eligible for Plaid's guarantee, and `declined` indicates Plaid will not provide guarantee coverage for the transfer. `user_action_required` indicates you should follow the above guidance before re-attempting.|
-|authorization_decision_rationale_code|[TransferAuthorizationDecisionRationaleCode](#schematransferauthorizationdecisionrationalecode)|false|none|A code representing the rationale for approving or declining the proposed transfer.<br><br>If the `rationale_code` is `null`, the transfer passed the authorization check.<br><br>Any non-`null` value for an `approved` transfer indicates that the authorization check could not be run and that you should perform your own risk assessment on the transfer. The code will indicate why the check could not be run. Possible values for an `approved` transfer are:<br><br>`MANUALLY_VERIFIED_ITEM` - Item created via a manual entry flow (i.e. Same-Day Micro-deposit, Instant Micro-deposit, or database-based verification), limited information available.<br><br>`ITEM_LOGIN_REQUIRED` - Unable to collect the account information due to Item staleness. Can be resolved by using Link and setting [`transfer.authorization_id`](https://plaid.com/docs/api/link/#link-token-create-request-transfer-authorization-id) in the request to `/link/token/create`.<br><br>`PAYMENT_PROFILE_LOGIN_REQUIRED` - The Payment Profile associated with the call to `/transfer/authorization/create` is in a state that requires the end user to re-authenticate. Can be resolved by using Link to refresh the Payment Profile.<br><br>`MIGRATED_ACCOUNT_ITEM` - Item created via `/transfer/migrate_account` endpoint, limited information available.<br><br>`ERROR` - Unable to collect the account information due to an unspecified error.<br><br>These codes can also accompany a `declined` decision, for example when your Signal Rules decline the transfer.<br><br>The following codes indicate that the authorization decision was `declined`:<br><br>`NSF` - Transaction has an elevated risk of resulting in a return due to insufficient funds.<br><br>`RISK` - Transaction is high-risk.<br><br>`TRANSFER_LIMIT_REACHED` - One or several transfer limits are reached, e.g. monthly transfer limit. Check the accompanying `description` field to understand which limit has been reached.<br><br>`ADMIN` - Transaction has an elevated risk of resulting in an administrative return (for example a closed, invalid, or unauthorized account).<br><br>`FRAUD` - Transaction has an elevated risk of being fraudulent.|
+|authorization_decision_rationale_code|[TransferAuthorizationDecisionRationaleCode](#schematransferauthorizationdecisionrationalecode)|false|none|A code representing the rationale for approving or declining the proposed transfer.<br><br>If the `rationale_code` is `null`, the transfer passed the authorization check.<br><br>Any non-`null` value for an `approved` transfer indicates that the authorization check could not be run and that you should perform your own risk assessment on the transfer. The code will indicate why the check could not be run. Possible values for an `approved` transfer are:<br><br>`MANUALLY_VERIFIED_ITEM` - Item created via a manual entry flow (i.e. Same-Day Micro-deposit, Instant Micro-deposit, or database-based verification), limited information available.<br><br>`ITEM_LOGIN_REQUIRED` - Unable to collect the account information due to Item staleness. Can be resolved by using Link and setting [`transfer.authorization_id`](https://plaid.com/docs/api/link/#link-token-create-request-transfer-authorization-id) in the request to `/link/token/create`.<br><br>`PAYMENT_PROFILE_LOGIN_REQUIRED` - The Payment Profile associated with the call to `/transfer/authorization/create` is in a state that requires the end user to re-authenticate. Can be resolved by using Link to refresh the Payment Profile.<br><br>`MIGRATED_ACCOUNT_ITEM` - Item created via `/transfer/migrate_account` endpoint, limited information available.<br><br>`ERROR` - Unable to collect the account information due to an unspecified error.<br><br>These codes can also accompany a `declined` decision, for example when your Signal Rules decline the transfer.<br><br>The following codes indicate that the authorization decision was `declined`:<br><br>`NSF` - Transaction has an elevated risk of resulting in a return due to insufficient funds, or, for credit transfers, your available balance (in your Plaid Ledger or prefunded account) is insufficient to cover the transfer.<br><br>`RISK` - Transaction is high-risk.<br><br>`TRANSFER_LIMIT_REACHED` - One or several transfer limits are reached, e.g. monthly transfer limit. Check the accompanying `description` field to understand which limit has been reached.<br><br>`ADMIN` - Transaction has an elevated risk of resulting in an administrative return (for example a closed, invalid, or unauthorized account).<br><br>`FRAUD` - Transaction has an elevated risk of being fraudulent.|
 |skipped_origination_date|string(date)|true|none|The planned date on which Plaid is unable to originate a new ACH transaction of the recurring transfer. This will be of the form YYYY-MM-DD.|
 |environment|[WebhookEnvironmentValues](#schemawebhookenvironmentvalues)|true|none|The Plaid environment the webhook was sent from|
 
@@ -81116,6 +81982,44 @@ Fired when an Item is expected to be disconnected. The webhook will currently be
 |environment|sandbox|
 |environment|production|
 
+<h2 id="tocS_ConsentUpdatedWebhook">ConsentUpdatedWebhook</h2>
+<!-- backwards compatibility -->
+<a id="schemaconsentupdatedwebhook"></a>
+<a id="schema_ConsentUpdatedWebhook"></a>
+<a id="tocSconsentupdatedwebhook"></a>
+<a id="tocsconsentupdatedwebhook"></a>
+
+```json
+{
+  "webhook_type": "string",
+  "webhook_code": "string",
+  "item_id": "string",
+  "user_id": "string",
+  "consent_expiration_time": "1970-01-01T00:00:00Z",
+  "environment": "sandbox"
+}
+```
+
+Fired when the user changes the consent duration at their institution, and the change updates the Item's `consent_expiration_time`. The payload carries the new `consent_expiration_time` value. The `consent_expiration_time` can still be sourced from `/item/get`. `PENDING_DISCONNECT` will still be fired 7 days before the Item is scheduled to disconnect. This webhook is in beta. Currently, it is fired only for Chase items.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|webhook_type|string|true|none|`ITEM`|
+|webhook_code|string|true|none|`CONSENT_UPDATED`|
+|item_id|[ItemId](#schemaitemid)|true|none|The `item_id` of the Item associated with this webhook, warning, or error|
+|user_id|[UserId](#schemauserid)|false|none|The Plaid `user_id` of the User associated with this webhook, warning, or error.|
+|consent_expiration_time|string(date-time) \| null|true|none|The date and time at which the Item's access consent will expire, in [ISO 8601](https://wikipedia.org/wiki/ISO_8601) format. `null` if the Item's consent no longer expires.|
+|environment|[WebhookEnvironmentValues](#schemawebhookenvironmentvalues)|true|none|The Plaid environment the webhook was sent from|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|environment|sandbox|
+|environment|production|
+
 <h2 id="tocS_LiabilitiesAccountIdsWithUpdatedLiabilities">LiabilitiesAccountIdsWithUpdatedLiabilities</h2>
 <!-- backwards compatibility -->
 <a id="schemaliabilitiesaccountidswithupdatedliabilities"></a>
@@ -81183,7 +82087,7 @@ An error object and associated `item_id` used to identify a specific Item and er
 |---|---|---|---|---|
 |error_type|[PlaidErrorType](#schemaplaiderrortype)|true|none|A broad categorization of the error. Safe for programmatic use.|
 |error_code|string|true|none|The particular error code. Safe for programmatic use.|
-|error_code_reason|string \| null|false|none|The specific reason for the error code. Currently, reasons are only supported for OAuth-based item errors; the field is omitted otherwise. Safe for programmatic use.<br><br>Possible values:<br><br>`OAUTH_INVALID_TOKEN`: The user's OAuth connection to this institution has been invalidated.<br><br>`OAUTH_CONSENT_EXPIRED`: The user's access consent for this OAuth connection to this institution has expired.<br><br>`OAUTH_USER_REVOKED`: The user's OAuth connection to this institution is invalid because the user revoked their connection.|
+|error_code_reason|string \| null|false|none|The specific reason for the error code. Currently, reasons are only supported for OAuth-based item errors and expired Sandbox Items; the field is omitted otherwise. Safe for programmatic use.<br><br>Possible values:<br><br>`OAUTH_INVALID_TOKEN`: The user's OAuth connection to this institution has been invalidated.<br><br>`OAUTH_CONSENT_EXPIRED`: The user's access consent for this OAuth connection to this institution has expired.<br><br>`OAUTH_USER_REVOKED`: The user's OAuth connection to this institution is invalid because the user revoked their connection.<br><br>`SANDBOX_ITEM_EXPIRED`: The Sandbox Item reached the end of its 30-day lifetime. Sandbox only.|
 |error_message|string|true|none|A developer-friendly representation of the error code. This may change over time and is not safe for programmatic use.|
 |display_message|string \| null|true|none|A user-friendly representation of the error code. `null` if the error is not related to user action.<br><br>This may change over time and is not safe for programmatic use.|
 |request_id|string|false|none|A unique ID identifying the request, to be used for troubleshooting purposes. This field will be omitted in errors provided by webhooks.|
@@ -81950,17 +82854,17 @@ A securities holding at an institution.
 |---|---|---|---|---|
 |account_id|string|true|none|The Plaid `account_id` associated with the holding.|
 |security_id|string|true|none|The Plaid `security_id` associated with the holding. Security data is not specific to a user's account; any user who held the same security at the same financial institution at the same time would have identical security data. The `security_id` for the same security will typically be the same across different institutions, but this is not guaranteed. The `security_id` does not typically change, but may change if inherent details of the security change due to a corporate action, for example, in the event of a ticker symbol change or CUSIP change.|
-|institution_price|number(double)|true|none|The last price given by the institution for this security.|
+|institution_price|number(double) \| null|true|none|The last price given by the institution for this security.|
 |institution_price_as_of|string(date) \| null|false|none|The date at which `institution_price` was current.|
 |institution_price_datetime|string(date-time) \| null|false|none|Date and time at which `institution_price` was current, in ISO 8601 format (YYYY-MM-DDTHH:mm:ssZ).<br><br>This field is returned for select financial institutions and comes as provided by the institution. It may contain default time values (such as 00:00:00).<br>|
-|institution_value|number(double)|true|none|The value of the holding, as reported by the institution.|
+|institution_value|number(double) \| null|true|none|The value of the holding, as reported by the institution.|
 |cost_basis|number(double) \| null|true|none|The total cost basis of the holding (e.g., the total amount spent to acquire all assets currently in the holding).|
-|quantity|number(double)|true|none|The total quantity of the asset held, as reported by the financial institution. If the security is an option, `quantity` will reflect the total number of options (typically the number of contracts multiplied by 100), not the number of contracts.|
+|quantity|number(double) \| null|true|none|The total quantity of the asset held, as reported by the financial institution. If the security is an option, `quantity` will reflect the total number of options (typically the number of contracts multiplied by 100), not the number of contracts.|
 |iso_currency_code|string \| null|true|none|The ISO-4217 currency code of the holding. Always `null` if `unofficial_currency_code` is non-`null`.|
 |unofficial_currency_code|string \| null|true|none|The unofficial currency code associated with the holding. Always `null` if `iso_currency_code` is non-`null`. Unofficial currency codes are used for currencies that do not have official ISO currency codes, such as cryptocurrencies and the currencies of certain countries.<br><br>See the [currency code schema](https://plaid.com/docs/api/accounts#currency-code-schema) for a full listing of supported `unofficial_currency_code`s.<br>|
 |vested_quantity|number(double) \| null|false|none|The total quantity of vested assets held, as reported by the financial institution. Vested assets are only associated with [equities](https://plaid.com/docs/api/products/investments/#investments-holdings-get-response-securities-type).|
 |vested_value|number(double) \| null|false|none|The value of the vested holdings as reported by the institution.|
-|tax_lots|[[HoldingTaxLot](#schemaholdingtaxlot)]|false|none|Per-lot acquisition data for this holding. An empty array indicates the institution does not provide lot-level data.|
+|tax_lots|[[HoldingTaxLot](#schemaholdingtaxlot)]|true|none|Per-lot acquisition data for this holding. An empty array indicates that lot-level data is unavailable for this response.|
 
 <h2 id="tocS_HoldingTaxLot">HoldingTaxLot</h2>
 <!-- backwards compatibility -->
@@ -81988,7 +82892,7 @@ A single acquisition lot within a holding.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |institution_lot_id|string \| null|true|none|The financial institution's identifier for this lot. Null if the institution does not provide a lot identifier.|
-|original_purchase_datetime|string(date-time) \| null|true|none|The date and time this lot was acquired, in ISO 8601 format. Null if the institution does not provide acquisition datetime data.|
+|original_purchase_datetime|string(date-time) \| null|true|none|The date and time this lot was acquired, in ISO 8601 format. Null if the institution does not provide acquisition datetime data. When the institution only provides a date, the time defaults to `T00:00:00Z`; this does not mean the lot was acquired at midnight UTC.|
 |quantity|number(double) \| null|true|none|The number of units of the security in this lot.|
 |purchase_price|number(double) \| null|true|none|The price per unit of the security at the time this lot was acquired.|
 |cost_basis|number(double) \| null|true|none|The total cost basis of this lot, inclusive of any fees.|
@@ -82081,7 +82985,7 @@ Contains details about a security
 |ticker_symbol|string \| null|true|none|The security's trading symbol for publicly traded securities, and otherwise a short identifier if available.|
 |is_cash_equivalent|boolean \| null|true|none|Indicates that a security is a highly liquid asset and can be treated like cash.|
 |type|string \| null|true|none|The security type of the holding.<br><br>In rare instances, a null value is returned when institutional data is insufficient to determine the security type.<br><br>Valid security types are:<br><br>`cash`: Cash, currency, and money market funds<br><br>`cryptocurrency`: Digital or virtual currencies<br><br>`derivative`: Options, warrants, and other derivative instruments<br><br>`equity`: Domestic and foreign equities<br><br>`etf`: Multi-asset exchange-traded investment funds<br><br>`fixed income`: Bonds and certificates of deposit (CDs)<br><br>`loan`: Loans and loan receivables<br><br>`mutual fund`: Open- and closed-end vehicles pooling funds of multiple investors<br><br>`other`: Unknown or other investment types|
-|subtype|string \| null|false|none|The security subtype of the holding.<br><br>In rare instances, a null value is returned when institutional data is insufficient to determine the security subtype.<br><br>Possible values: `asset backed security`, `bill`, `bond`, `bond with warrants`, `cash`, `cash management bill`, `common stock`, `convertible bond`, `convertible equity`, `cryptocurrency`, `depositary receipt`, `depositary receipt on debt`, `etf`, `float rating note`, `fund of funds`, `hedge fund`, `limited partnership unit`, `medium term note`, `money market debt`, `mortgage backed security`, `municipal bond`, `mutual fund`, `note`, `option`, `other`, `preferred convertible`, `preferred equity`, `private equity fund`, `real estate investment trust`, `structured equity product`, `treasury inflation protected securities`, `unit`, `warrant`.|
+|subtype|string \| null|false|none|The security subtype of the holding.<br><br>In rare instances, a null value is returned when institutional data is insufficient to determine the security subtype.<br><br>Possible values: `asset backed security`, `bill`, `bond`, `bond with warrants`, `cash`, `cash management bill`, `common stock`, `convertible bond`, `convertible equity`, `cryptocurrency`, `depositary receipt`, `depositary receipt on debt`, `etf`, `float rating note`, `fund of funds`, `hedge fund`, `limited partnership unit`, `medium term note`, `money market debt`, `money market fund`, `mortgage backed security`, `municipal bond`, `mutual fund`, `note`, `option`, `other`, `preferred convertible`, `preferred equity`, `private equity fund`, `real estate investment trust`, `structured equity product`, `treasury inflation protected securities`, `unit`, `warrant`.|
 |close_price|number(double) \| null|true|none|Price of the security at the close of the previous trading session. Null for non-public securities.<br><br>If the security is a foreign currency this field will be updated daily and will be priced in USD.<br><br>If the security is a cryptocurrency, this field will be updated multiple times a day. As crypto prices can fluctuate quickly and data may become stale sooner than other asset classes, refer to `update_datetime` with the time when the price was last updated.<br>|
 |close_price_as_of|string(date) \| null|true|none|Date for which `close_price` is accurate. Always `null` if `close_price` is `null`.|
 |update_datetime|string(date-time) \| null|false|none|Date and time at which `close_price` is accurate, in ISO 8601 format (YYYY-MM-DDTHH:mm:ssZ). Always `null` if `close_price` is `null`.|
@@ -82268,8 +83172,8 @@ The type of rate which indicates how the predicted yield was calculated. It is o
   "amount": 0,
   "price": 0,
   "fees": 0,
-  "type": "buy",
-  "subtype": "account fee",
+  "type": {},
+  "subtype": {},
   "iso_currency_code": "string",
   "unofficial_currency_code": "string"
 }
@@ -82287,71 +83191,15 @@ A transaction within an investment account.
 |security_id|string \| null|true|none|The `security_id` to which this transaction is related.|
 |date|string(date)|true|none|The [ISO 8601](https://wikipedia.org/wiki/ISO_8601) posting date for the transaction. This is typically the settlement date.|
 |transaction_datetime|string(date-time) \| null|false|none|Timestamp in [ISO 8601](https://wikipedia.org/wiki/ISO_8601) format (`YYYY-MM-DDTHH:mm:ssZ`) representing when the order was initiated. This field is returned for select financial institutions and reflects the value provided by the institution. When the institution only provides a date without time-of-day information, this field will reflect the date that the order was initiated with a time component that defaults to `T00:00:00Z`. This does not indicate that the order was initiated at midnight UTC.|
-|name|string|true|none|The institution's description of the transaction.|
-|quantity|number(double)|true|none|The number of units of the security involved in this transaction. Positive for buy transactions; negative for sell transactions.|
-|amount|number(double)|true|none|The complete value of the transaction. Positive values when cash is debited, e.g. purchases of stock; negative values when cash is credited, e.g. sales of stock. Treatment remains the same for cash-only movements unassociated with securities. For transactions representing a simultaneous cash contribution and purchase of a security, the portion of the transaction representing the purchase takes precedence, and the `amount` is represented as positive.|
-|price|number(double)|true|none|The price of the security at which this transaction occurred.|
+|name|string \| null|true|none|The institution's description of the transaction. `null` if the institution does not provide a description.|
+|quantity|number(double) \| null|true|none|The number of units of the security involved in this transaction. Positive for buy transactions; negative for sell transactions. `null` if the institution does not provide the quantity.|
+|amount|number(double) \| null|true|none|The complete value of the transaction. Positive values when cash is debited, e.g. purchases of stock; negative values when cash is credited, e.g. sales of stock. Treatment remains the same for cash-only movements unassociated with securities. For transactions representing a simultaneous cash contribution and purchase of a security, the portion of the transaction representing the purchase takes precedence, and the `amount` is represented as positive. `null` if the institution does not provide the amount.|
+|price|number(double) \| null|true|none|The price of the security at which this transaction occurred. `null` if the institution does not provide the price.|
 |fees|number(double) \| null|true|none|The combined value of all fees applied to this transaction|
-|type|[InvestmentTransactionType](#schemainvestmenttransactiontype)|true|none|Value is one of the following:<br><br>`buy`: Buying an investment<br><br>`sell`: Selling an investment<br><br>`cancel`: A cancellation of a pending transaction<br><br>`cash`: Activity that modifies a cash position<br><br>`fee`: A fee on the account<br><br>`transfer`: Activity which modifies a position, but not through buy/sell activity e.g. options exercise, portfolio transfer<br><br>For descriptions of possible transaction types and subtypes, see the [Investment transaction types schema](https://plaid.com/docs/api/accounts/#investment-transaction-types-schema).|
-|subtype|[InvestmentTransactionSubtype](#schemainvestmenttransactionsubtype)|true|none|For descriptions of possible transaction types and subtypes, see the [Investment transaction types schema](https://plaid.com/docs/api/accounts/#investment-transaction-types-schema).|
+|type|object \| null|true|none|Value is one of the following:<br><br>`buy`: Buying an investment<br><br>`sell`: Selling an investment<br><br>`cancel`: A cancellation of a pending transaction<br><br>`cash`: Activity that modifies a cash position<br><br>`fee`: A fee on the account<br><br>`transfer`: Activity which modifies a position, but not through buy/sell activity e.g. options exercise, portfolio transfer<br><br>For descriptions of possible transaction types and subtypes, see the [Investment transaction types schema](https://plaid.com/docs/api/accounts/#investment-transaction-types-schema).<br><br>`null` if the institution does not provide the transaction type.|
+|subtype|object \| null|true|none|For descriptions of possible transaction types and subtypes, see the [Investment transaction types schema](https://plaid.com/docs/api/accounts/#investment-transaction-types-schema). `null` if the institution does not provide the transaction subtype.|
 |iso_currency_code|string \| null|true|none|The ISO-4217 currency code of the transaction. Always `null` if `unofficial_currency_code` is non-`null`.|
 |unofficial_currency_code|string \| null|true|none|The unofficial currency code associated with the transaction. Always `null` if `iso_currency_code` is non-`null`. Unofficial currency codes are used for currencies that do not have official ISO currency codes, such as cryptocurrencies and the currencies of certain countries.<br><br>See the [currency code schema](https://plaid.com/docs/api/accounts#currency-code-schema) for a full listing of supported `unofficial_currency_code`s.|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|buy|
-|type|sell|
-|type|cancel|
-|type|cash|
-|type|fee|
-|type|transfer|
-|subtype|account fee|
-|subtype|adjustment|
-|subtype|assignment|
-|subtype|buy|
-|subtype|buy to cover|
-|subtype|contribution|
-|subtype|deposit|
-|subtype|distribution|
-|subtype|dividend|
-|subtype|dividend reinvestment|
-|subtype|exercise|
-|subtype|expire|
-|subtype|interest|
-|subtype|interest receivable|
-|subtype|interest reinvestment|
-|subtype|legal fee|
-|subtype|long-term capital gain|
-|subtype|long-term capital gain reinvestment|
-|subtype|management fee|
-|subtype|margin expense|
-|subtype|merger|
-|subtype|miscellaneous fee|
-|subtype|non-qualified dividend|
-|subtype|non-resident tax|
-|subtype|pending credit|
-|subtype|pending debit|
-|subtype|qualified dividend|
-|subtype|return of principal|
-|subtype|request|
-|subtype|sell|
-|subtype|sell short|
-|subtype|send|
-|subtype|short-term capital gain|
-|subtype|short-term capital gain reinvestment|
-|subtype|spin off|
-|subtype|split|
-|subtype|stock distribution|
-|subtype|tax|
-|subtype|tax withheld|
-|subtype|trade|
-|subtype|transfer|
-|subtype|transfer fee|
-|subtype|trust fee|
-|subtype|unqualified gain|
-|subtype|withdrawal|
 
 <h2 id="tocS_StandaloneInvestmentTransactionType">StandaloneInvestmentTransactionType</h2>
 <!-- backwards compatibility -->
@@ -83170,7 +84018,7 @@ Represents a transfer within the Transfers API.
 |description|string|true|none|The description of the transfer.|
 |created|string(date-time)|true|none|The datetime when this transfer was created. This will be of the form `2006-01-02T15:04:05Z`|
 |status|[TransferStatus](#schematransferstatus)|true|none|The status of the transfer.<br><br>`pending`: A new transfer was created; it is in the pending state.<br><br>`posted`: The transfer has been successfully submitted to the payment network.<br><br>`settled`: The transfer was successfully completed by the payment network. Note that funds from received debits are not available to be moved out of the Ledger until the transfer reaches `funds_available` status. For credit transactions, `settled` means the funds have been delivered to the receiving bank account. This is the terminal state of a successful credit transfer.<br><br>`funds_available`: Funds from the transfer have been released from hold and applied to the ledger's available balance. (Only applicable to ACH debits.) This is the terminal state of a successful debit transfer.<br><br>`cancelled`: The transfer was cancelled by the client. This is the terminal state of a cancelled transfer.<br><br>`failed`: The transfer failed, no funds were moved. This is the terminal state of a failed transfer.<br><br>`returned`: A posted transfer was returned. This is the terminal state of a returned transfer.|
-|sweep_status|[TransferSweepStatus](#schematransfersweepstatus)|false|none|The status of the sweep for the transfer.<br><br>`unswept`: The transfer hasn't been swept yet.<br><br>`swept`: The transfer was swept to the sweep account.<br><br>`swept_settled`: Credits are available to be withdrawn or debits have been deducted from the customer's business checking account.<br><br>`return_swept`: The transfer was returned, funds were pulled back or pushed back to the sweep account.<br><br>`null`: The transfer will never be swept (e.g. if the transfer is cancelled or returned before being swept)|
+|sweep_status|[TransferSweepStatus](#schematransfersweepstatus)|false|none|The status of the sweep for the transfer.<br><br>`unswept`: The transfer hasn't been swept yet. Transfers that are cancelled, fail, or are returned before being swept remain `unswept`.<br><br>`swept`: The transfer was swept to the sweep account.<br><br>`swept_settled`: Credits are available to be withdrawn or debits have been deducted from the customer's business checking account.<br><br>`return_swept`: The transfer was returned, funds were pulled back or pushed back to the sweep account.<br><br>`null`: The transfer will never be swept because it is a credit funded from a prefunded balance.|
 |network|[TransferNetwork](#schematransfernetwork)|true|none|The network or rails used for the transfer.<br><br>For transfers submitted as `ach` or `same-day-ach`, the Standard ACH cutoff is 8:30 PM Eastern Time.<br><br>For transfers submitted as `same-day-ach`, the Same Day ACH cutoff is 3:00 PM Eastern Time.  It is recommended to send the request 15 minutes prior to the cutoff to ensure that it will be processed in time for submission before the cutoff. If the transfer is processed after this cutoff but before the Standard ACH cutoff, it will be sent over Standard ACH rails and will not incur same-day charges; this will apply to both legs of the transfer if applicable. The transaction limit for a Same Day ACH transfer is $1,000,000. Authorization requests sent with an amount greater than $1,000,000 will fail.<br><br>For transfers submitted as `rtp`, Plaid will automatically route between the Real-Time Payments (RTP) rail by TCH or FedNow rails as necessary. If a transfer is submitted as `rtp` and the counterparty account is not eligible for RTP, the `/transfer/authorization/create` request will fail with an `INVALID_FIELD` error code. To pre-check to determine whether a counterparty account can support RTP, call `/transfer/capabilities/get` before calling `/transfer/authorization/create`.<br><br>Wire transfers are currently in early availability. To request access to `wire` as a payment network, contact your account manager. For transfers submitted as `wire`, the `type` must be `credit`; wire debits are not supported. The cutoff to submit a wire payment is 6:30 PM Eastern Time on a business day; wires submitted after that time will be processed on the next business day. The transaction limit for a wire is $999,999.99. Authorization requests sent with an amount greater than $999,999.99 will fail.<br><br>Support for `rfp` (request for payment) is currently in closed beta. To learn more, contact your Plaid account manager. For transfers submitted as `rfp`, the `type` must be `debit`.|
 |wire_details|[TransferWireDetails](#schematransferwiredetails)|false|none|Information specific to wire transfers.|
 |cancellable|boolean|true|none|When `true`, you can still cancel this transfer.|
@@ -83495,7 +84343,7 @@ Represents a bank transfer within the Bank Transfers API.
 |failure_reason|[BankTransferFailure](#schemabanktransferfailure)|true|none|The failure reason if the type of this transfer is `"failed"` or `"reversed"`. Null value otherwise.|
 |custom_tag|string \| null|true|none|A string containing the custom tag provided by the client in the create request. Will be null if not provided.|
 |metadata|[BankTransferMetadata](#schemabanktransfermetadata)|true|none|The Metadata object is a mapping of client-provided string fields to any string value. The following limitations apply:<br>The JSON values must be Strings (no nested JSON objects allowed)<br>Only ASCII characters may be used<br>Maximum of 50 key/value pairs<br>Maximum key length of 40 characters<br>Maximum value length of 500 characters<br>|
-|origination_account_id|string|true|none|Plaid's unique identifier for the origination account that was used for this transfer.|
+|origination_account_id|string \| null|true|none|Plaid's unique identifier for the origination account that was used for this transfer.|
 |direction|[BankTransferDirection](#schemabanktransferdirection)|true|none|Indicates the direction of the transfer: `outbound` for API-initiated transfers, or `inbound` for payments received by the FBO account.|
 
 #### Enumerated Values
@@ -83912,7 +84760,7 @@ The API supports idempotency for safely retrying requests without accidentally p
 }
 ```
 
-The legal name and other information for the account holder.  If the account has multiple account holders, provide the information for the account holder on whose behalf the authorization is being requested. The `user.legal_name` field is required. Other fields are not currently used and are present to support planned future functionality.
+The legal name and other information for the account holder.  If the account has multiple account holders, provide the information for the account holder on whose behalf the authorization is being requested. The `user.legal_name` field is required. Other fields are optional (for `rfp` transfers, `address` is required, including `street`, `city`, `region`, `postal_code`, and `country`), but if provided, they must be validly formatted and may be used in Plaid's risk evaluation.
 
 ### Properties
 
@@ -83943,7 +84791,7 @@ Information specific to wire transfers.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|message_to_beneficiary|string \| null|false|none|Additional information from the wire originator to the beneficiary. Max 140 characters.|
+|message_to_beneficiary|string \| null|false|none|Additional information from the wire originator to the beneficiary. Max 140 characters; no single word may exceed 35 characters.|
 |wire_return_fee|string \| null|false|none|The fee amount deducted from the original transfer during a wire return, if applicable.|
 
 <h2 id="tocS_TransferUserInRequest">TransferUserInRequest</h2>
@@ -84159,7 +85007,7 @@ These codes can also accompany a `declined` decision, for example when your Sign
 
 The following codes indicate that the authorization decision was `declined`:
 
-`NSF` - Transaction has an elevated risk of resulting in a return due to insufficient funds.
+`NSF` - Transaction has an elevated risk of resulting in a return due to insufficient funds, or, for credit transfers, your available balance (in your Plaid Ledger or prefunded account) is insufficient to cover the transfer.
 
 `RISK` - Transaction is high-risk.
 
@@ -84189,7 +85037,7 @@ The rationale for Plaid's decision regarding a proposed transfer. It is always s
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|code|[TransferAuthorizationDecisionRationaleCode](#schematransferauthorizationdecisionrationalecode)|true|none|A code representing the rationale for approving or declining the proposed transfer.<br><br>If the `rationale_code` is `null`, the transfer passed the authorization check.<br><br>Any non-`null` value for an `approved` transfer indicates that the authorization check could not be run and that you should perform your own risk assessment on the transfer. The code will indicate why the check could not be run. Possible values for an `approved` transfer are:<br><br>`MANUALLY_VERIFIED_ITEM` - Item created via a manual entry flow (i.e. Same-Day Micro-deposit, Instant Micro-deposit, or database-based verification), limited information available.<br><br>`ITEM_LOGIN_REQUIRED` - Unable to collect the account information due to Item staleness. Can be resolved by using Link and setting [`transfer.authorization_id`](https://plaid.com/docs/api/link/#link-token-create-request-transfer-authorization-id) in the request to `/link/token/create`.<br><br>`PAYMENT_PROFILE_LOGIN_REQUIRED` - The Payment Profile associated with the call to `/transfer/authorization/create` is in a state that requires the end user to re-authenticate. Can be resolved by using Link to refresh the Payment Profile.<br><br>`MIGRATED_ACCOUNT_ITEM` - Item created via `/transfer/migrate_account` endpoint, limited information available.<br><br>`ERROR` - Unable to collect the account information due to an unspecified error.<br><br>These codes can also accompany a `declined` decision, for example when your Signal Rules decline the transfer.<br><br>The following codes indicate that the authorization decision was `declined`:<br><br>`NSF` - Transaction has an elevated risk of resulting in a return due to insufficient funds.<br><br>`RISK` - Transaction is high-risk.<br><br>`TRANSFER_LIMIT_REACHED` - One or several transfer limits are reached, e.g. monthly transfer limit. Check the accompanying `description` field to understand which limit has been reached.<br><br>`ADMIN` - Transaction has an elevated risk of resulting in an administrative return (for example a closed, invalid, or unauthorized account).<br><br>`FRAUD` - Transaction has an elevated risk of being fraudulent.|
+|code|[TransferAuthorizationDecisionRationaleCode](#schematransferauthorizationdecisionrationalecode)|true|none|A code representing the rationale for approving or declining the proposed transfer.<br><br>If the `rationale_code` is `null`, the transfer passed the authorization check.<br><br>Any non-`null` value for an `approved` transfer indicates that the authorization check could not be run and that you should perform your own risk assessment on the transfer. The code will indicate why the check could not be run. Possible values for an `approved` transfer are:<br><br>`MANUALLY_VERIFIED_ITEM` - Item created via a manual entry flow (i.e. Same-Day Micro-deposit, Instant Micro-deposit, or database-based verification), limited information available.<br><br>`ITEM_LOGIN_REQUIRED` - Unable to collect the account information due to Item staleness. Can be resolved by using Link and setting [`transfer.authorization_id`](https://plaid.com/docs/api/link/#link-token-create-request-transfer-authorization-id) in the request to `/link/token/create`.<br><br>`PAYMENT_PROFILE_LOGIN_REQUIRED` - The Payment Profile associated with the call to `/transfer/authorization/create` is in a state that requires the end user to re-authenticate. Can be resolved by using Link to refresh the Payment Profile.<br><br>`MIGRATED_ACCOUNT_ITEM` - Item created via `/transfer/migrate_account` endpoint, limited information available.<br><br>`ERROR` - Unable to collect the account information due to an unspecified error.<br><br>These codes can also accompany a `declined` decision, for example when your Signal Rules decline the transfer.<br><br>The following codes indicate that the authorization decision was `declined`:<br><br>`NSF` - Transaction has an elevated risk of resulting in a return due to insufficient funds, or, for credit transfers, your available balance (in your Plaid Ledger or prefunded account) is insufficient to cover the transfer.<br><br>`RISK` - Transaction is high-risk.<br><br>`TRANSFER_LIMIT_REACHED` - One or several transfer limits are reached, e.g. monthly transfer limit. Check the accompanying `description` field to understand which limit has been reached.<br><br>`ADMIN` - Transaction has an elevated risk of resulting in an administrative return (for example a closed, invalid, or unauthorized account).<br><br>`FRAUD` - Transaction has an elevated risk of being fraudulent.|
 |description|string|true|none|A human-readable description of the code associated with a transfer approval or transfer decline.|
 
 #### Enumerated Values
@@ -84225,7 +85073,7 @@ The adaptive guarantee outcome for a transfer.
 
 `PARTIAL_INSTANT_ONLY`: A partial amount is guaranteed and available instantly; the remainder is not guaranteed.
 
-`PARTIAL_INSTANT_WITH_OBSERVATION_WINDOW`: A partial amount is guaranteed instantly; an additional amount is conditionally guaranteed subject to an observation window.
+`PARTIAL_INSTANT_WITH_OBSERVATION_WINDOW`: None of the amount is guaranteed instantly. The full amount becomes guaranteed after an observation window if the transfer has not returned before the window expires.
 
 `NOT_GUARANTEED`: Plaid did not provide a guarantee for this transfer.
 
@@ -84302,7 +85150,7 @@ Adaptive guarantee details for a transfer authorization, including the guarantee
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|outcome|[TransferGuaranteeOutcome](#schematransferguaranteeoutcome)|true|none|The adaptive guarantee outcome for a transfer.<br><br>`FULL_INSTANT`: The full transfer amount is guaranteed and funds are available instantly.<br><br>`PARTIAL_INSTANT_ONLY`: A partial amount is guaranteed and available instantly; the remainder is not guaranteed.<br><br>`PARTIAL_INSTANT_WITH_OBSERVATION_WINDOW`: A partial amount is guaranteed instantly; an additional amount is conditionally guaranteed subject to an observation window.<br><br>`NOT_GUARANTEED`: Plaid did not provide a guarantee for this transfer.|
+|outcome|[TransferGuaranteeOutcome](#schematransferguaranteeoutcome)|true|none|The adaptive guarantee outcome for a transfer.<br><br>`FULL_INSTANT`: The full transfer amount is guaranteed and funds are available instantly.<br><br>`PARTIAL_INSTANT_ONLY`: A partial amount is guaranteed and available instantly; the remainder is not guaranteed.<br><br>`PARTIAL_INSTANT_WITH_OBSERVATION_WINDOW`: None of the amount is guaranteed instantly. The full amount becomes guaranteed after an observation window if the transfer has not returned before the window expires.<br><br>`NOT_GUARANTEED`: Plaid did not provide a guarantee for this transfer.|
 |schedule|[[AuthorizationGuaranteeScheduleItem](#schemaauthorizationguaranteescheduleitem)]|true|none|The adaptive guarantee settlement schedule for this authorization.|
 
 #### Enumerated Values
@@ -84834,7 +85682,7 @@ null
 
 The status of the sweep for the transfer.
 
-`unswept`: The transfer hasn't been swept yet.
+`unswept`: The transfer hasn't been swept yet. Transfers that are cancelled, fail, or are returned before being swept remain `unswept`.
 
 `swept`: The transfer was swept to the sweep account.
 
@@ -84842,7 +85690,7 @@ The status of the sweep for the transfer.
 
 `return_swept`: The transfer was returned, funds were pulled back or pushed back to the sweep account.
 
-`null`: The transfer will never be swept (e.g. if the transfer is cancelled or returned before being swept)
+`null`: The transfer will never be swept because it is a credit funded from a prefunded balance.
 
 <h2 id="tocS_TransferRefundStatus">TransferRefundStatus</h2>
 <!-- backwards compatibility -->
@@ -85011,7 +85859,7 @@ The failure reason if the type of this transfer is `"failed"` or `"reversed"`. N
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |ach_return_code|string \| null|false|none|The ACH return code, e.g. `R01`.  A return code will be provided if and only if the transfer status is `reversed`. For a full listing of ACH return codes, see [Bank Transfers errors](https://plaid.com/docs/errors/bank-transfers/#ach-return-codes).|
-|description|string|false|none|A human-readable description of the reason for the failure or reversal.|
+|description|string \| null|false|none|A human-readable description of the reason for the failure or reversal.|
 
 <h2 id="tocS_TransferAuthorizationCreateRequest">TransferAuthorizationCreateRequest</h2>
 <!-- backwards compatibility -->
@@ -85049,6 +85897,7 @@ The failure reason if the type of this transfer is `"failed"` or `"reversed"`. N
       "country": "string"
     }
   },
+  "user_id": "usr_9nSp2KuZ2x4JDw",
   "device": {
     "ip_address": "string",
     "user_agent": "string"
@@ -85093,7 +85942,8 @@ Defines the request schema for `/transfer/authorization/create`
 |amount|[TransferAmount](#schematransferamount)|true|none|The amount of the transfer (decimal string with two digits of precision e.g. "10.00"). When calling `/transfer/authorization/create`, specify the maximum amount to authorize. When calling `/transfer/create`, specify the exact amount of the transfer, up to a maximum of the amount authorized. If this field is left blank when calling `/transfer/create`, the maximum amount authorized in the `authorization_id` will be sent. If the authorization's `guarantee_details.outcome` is `PARTIAL_INSTANT_ONLY`, this field is required when calling `/transfer/create`.|
 |ach_class|[ACHClass](#schemaachclass)|false|none|Specifies the use case of the transfer. Required for transfers on an ACH network. For more details, see [ACH SEC codes](https://plaid.com/docs/transfer/creating-transfers/#ach-sec-codes).<br><br>Codes supported for credits: `ccd`, `ppd`<br>Codes supported for debits: `ccd`, `ppd`, `tel`, `web`<br><br>`"ccd"` - Corporate Credit or Debit - fund transfer between two corporate bank accounts<br><br>`"ppd"` - Prearranged Payment or Deposit - The transfer is part of a pre-existing relationship with a consumer. Authorization was obtained in writing either in person or via an electronic document signing, e.g. Docusign, by the consumer. Can be used for credits or debits.<br><br>`"web"` - Internet-Initiated Entry. The transfer debits a consumer's bank account. Authorization from the consumer is obtained over the Internet (e.g. a web or mobile application). Can be used for single debits or recurring debits.<br><br>`"tel"` - Telephone-Initiated Entry. The transfer debits a consumer. Debit authorization has been received orally over the telephone via a recorded call.|
 |wire_details|[TransferWireDetails](#schematransferwiredetails)|false|none|Information specific to wire transfers.|
-|user|[TransferAuthorizationUserInRequest](#schematransferauthorizationuserinrequest)|true|none|The legal name and other information for the account holder.  If the account has multiple account holders, provide the information for the account holder on whose behalf the authorization is being requested. The `user.legal_name` field is required. Other fields are not currently used and are present to support planned future functionality.|
+|user|[TransferAuthorizationUserInRequest](#schematransferauthorizationuserinrequest)|true|none|The legal name and other information for the account holder.  If the account has multiple account holders, provide the information for the account holder on whose behalf the authorization is being requested. The `user.legal_name` field is required. Other fields are optional (for `rfp` transfers, `address` is required, including `street`, `city`, `region`, `postal_code`, and `country`), but if provided, they must be validly formatted and may be used in Plaid's risk evaluation.|
+|user_id|object|false|none|The Plaid-generated user ID returned by `/user/create` for the end user associated with this transfer's Item. This identifier is separate from the account-holder details in `user`. Omit or set to `null` if unavailable; otherwise, provide a non-empty string. This field does not currently affect authorization decisions.|
 |device|[TransferAuthorizationDevice](#schematransferauthorizationdevice)|false|none|Information about the device being used to initiate the authorization. These fields are not currently incorporated into the risk check.|
 |origination_account_id|string|false|none|**Deprecated.** Plaid's unique identifier for the origination account for this authorization. If not specified, the default account will be used.|
 |iso_currency_code|string|false|none|The currency of the transfer amount. The default value is "USD".|
@@ -87062,7 +87912,7 @@ The type of event that this transfer represents. Event types with prefix `sweep`
 
 `client_return_recovered`: The client reported recovering the loss on a returned transfer, and Plaid debited the recovered amount from the client's ledger. The `event_amount` is the recovered amount.
 
-`plaid_return_recovered`: Plaid recovered the loss on a returned transfer by successfully reinitiating it. The `event_amount` is the recovered amount. Client should stop their return recovery effort.
+`plaid_return_recovered`: Plaid recovered the loss on a returned transfer by successfully reinitiating it. The `event_amount` is the original transfer amount. Plaid credits the client's ledger with the total of the recoveries the client had reported. Client should stop their return recovery effort.
 
 `swept`: The transfer was swept to / from the sweep account.
 
@@ -87188,14 +88038,14 @@ Represents an event in the Transfers API.
 |---|---|---|---|---|
 |event_id|integer|true|none|Plaid's unique identifier for this event. IDs are sequential unsigned 64-bit integers.|
 |timestamp|string(date-time)|true|none|The datetime when this event occurred. This will be of the form `2006-01-02T15:04:05Z`.|
-|event_type|[TransferEventType](#schematransfereventtype)|true|none|The type of event that this transfer represents. Event types with prefix `sweep` represent events for Plaid Ledger sweeps.<br><br>`pending`: A new transfer was created; it is in the pending state.<br><br>`cancelled`: The transfer was cancelled by the client.<br><br>`failed`: The transfer failed, no funds were moved.<br><br>`posted`: The transfer has been successfully submitted to the payment network.<br><br>`settled`: The transfer has been successfully completed by the payment network.<br><br>`funds_available`: Funds from the transfer have been released from hold and applied to the ledger's available balance. (Only applicable to ACH debits.)<br><br>`guaranteed`: The transfer has been fully guaranteed by Plaid.<br><br>`returned`: A posted transfer was returned.<br><br>`adjustment`: An adjustment was made to the transfer due to rare activity, such as a dishonor. Refer to `event_amount` for the amount adjusted: a positive amount means funds are credited to the ledger, and a negative amount means funds are debited from the ledger. `failure_reason.description` describes the reason for the adjustment.<br><br>`guarantee_reimbursed`: Plaid reimbursed the client for the loss on a returned guaranteed transfer. The `event_amount` is the reimbursed amount.<br><br>`client_return_recovered`: The client reported recovering the loss on a returned transfer, and Plaid debited the recovered amount from the client's ledger. The `event_amount` is the recovered amount.<br><br>`plaid_return_recovered`: Plaid recovered the loss on a returned transfer by successfully reinitiating it. The `event_amount` is the recovered amount. Client should stop their return recovery effort.<br><br>`swept`: The transfer was swept to / from the sweep account.<br><br>`swept_settled`: Credits are available to be withdrawn or debits have been deducted from the customer's business checking account.<br><br>`return_swept`: Due to the transfer being returned, funds were pulled from or pushed back to the sweep account.<br><br>`sweep.pending`: A new ledger sweep was created; it is in the pending state.<br><br>`sweep.posted`: The ledger sweep has been successfully submitted to the payment network.<br><br>`sweep.settled`: The transaction has settled in the funding account. This means that funds withdrawn from Plaid Ledger balance have reached the funding account, or funds to be deposited into the Plaid Ledger Balance have been pulled, and the hold period has begun.<br><br>`sweep.returned`: A posted ledger sweep was returned.<br><br>`sweep.failed`: The ledger sweep failed, no funds were moved.<br><br>`sweep.funds_available`: Funds from the ledger sweep have been released from hold and applied to the ledger's available balance. This is only applicable to debits.<br><br>`refund.pending`: A new refund was created; it is in the pending state.<br><br>`refund.cancelled`: The refund was cancelled.<br><br>`refund.failed`: The refund failed, no funds were moved.<br><br>`refund.posted`: The refund has been successfully submitted to the payment network.<br><br>`refund.settled`: The refund transaction has settled in the Plaid linked account.<br><br>`refund.returned`: A posted refund was returned.<br><br>`refund.swept`: The refund was swept from the sweep account.<br><br>`refund.return_swept`: Due to the refund being returned, funds were pushed back to the sweep account.|
+|event_type|[TransferEventType](#schematransfereventtype)|true|none|The type of event that this transfer represents. Event types with prefix `sweep` represent events for Plaid Ledger sweeps.<br><br>`pending`: A new transfer was created; it is in the pending state.<br><br>`cancelled`: The transfer was cancelled by the client.<br><br>`failed`: The transfer failed, no funds were moved.<br><br>`posted`: The transfer has been successfully submitted to the payment network.<br><br>`settled`: The transfer has been successfully completed by the payment network.<br><br>`funds_available`: Funds from the transfer have been released from hold and applied to the ledger's available balance. (Only applicable to ACH debits.)<br><br>`guaranteed`: The transfer has been fully guaranteed by Plaid.<br><br>`returned`: A posted transfer was returned.<br><br>`adjustment`: An adjustment was made to the transfer due to rare activity, such as a dishonor. Refer to `event_amount` for the amount adjusted: a positive amount means funds are credited to the ledger, and a negative amount means funds are debited from the ledger. `failure_reason.description` describes the reason for the adjustment.<br><br>`guarantee_reimbursed`: Plaid reimbursed the client for the loss on a returned guaranteed transfer. The `event_amount` is the reimbursed amount.<br><br>`client_return_recovered`: The client reported recovering the loss on a returned transfer, and Plaid debited the recovered amount from the client's ledger. The `event_amount` is the recovered amount.<br><br>`plaid_return_recovered`: Plaid recovered the loss on a returned transfer by successfully reinitiating it. The `event_amount` is the original transfer amount. Plaid credits the client's ledger with the total of the recoveries the client had reported. Client should stop their return recovery effort.<br><br>`swept`: The transfer was swept to / from the sweep account.<br><br>`swept_settled`: Credits are available to be withdrawn or debits have been deducted from the customer's business checking account.<br><br>`return_swept`: Due to the transfer being returned, funds were pulled from or pushed back to the sweep account.<br><br>`sweep.pending`: A new ledger sweep was created; it is in the pending state.<br><br>`sweep.posted`: The ledger sweep has been successfully submitted to the payment network.<br><br>`sweep.settled`: The transaction has settled in the funding account. This means that funds withdrawn from Plaid Ledger balance have reached the funding account, or funds to be deposited into the Plaid Ledger Balance have been pulled, and the hold period has begun.<br><br>`sweep.returned`: A posted ledger sweep was returned.<br><br>`sweep.failed`: The ledger sweep failed, no funds were moved.<br><br>`sweep.funds_available`: Funds from the ledger sweep have been released from hold and applied to the ledger's available balance. This is only applicable to debits.<br><br>`refund.pending`: A new refund was created; it is in the pending state.<br><br>`refund.cancelled`: The refund was cancelled.<br><br>`refund.failed`: The refund failed, no funds were moved.<br><br>`refund.posted`: The refund has been successfully submitted to the payment network.<br><br>`refund.settled`: The refund transaction has settled in the Plaid linked account.<br><br>`refund.returned`: A posted refund was returned.<br><br>`refund.swept`: The refund was swept from the sweep account.<br><br>`refund.return_swept`: Due to the refund being returned, funds were pushed back to the sweep account.|
 |account_id|string|false|none|The account ID associated with the transfer. This field is omitted for Plaid Ledger Sweep events.|
 |funding_account_id|[TransferFundingAccountIDResponseNullable](#schematransferfundingaccountidresponsenullable)|true|none|The id of the associated funding account, available in the Plaid Dashboard. If present, this indicates which of your business checking accounts will be credited or debited.|
 |ledger_id|[TransferLedgerID](#schematransferledgerid)|false|none|Plaid's unique identifier for a Plaid Ledger Balance.|
 |transfer_id|string|true|none|Plaid's unique identifier for a transfer. This field is an empty string for Plaid Ledger Sweep events.|
 |origination_account_id|string \| null|true|none|**Deprecated.** The ID of the origination account that this balance belongs to.|
 |transfer_type|[OmittableTransferType](#schemaomittabletransfertype)|false|none|The type of transfer. Valid values are `debit` or `credit`.  A `debit` indicates a transfer of money into the origination account; a `credit` indicates a transfer of money out of the origination account. This field is omitted for Plaid Ledger Sweep events.|
-|transfer_amount|string|false|none|The amount of the transfer (decimal string with two digits of precision e.g. "10.00"). This field is omitted for Plaid Ledger Sweep events.|
+|transfer_amount|string|false|none|The amount of the transfer (decimal string with two digits of precision e.g. "10.00"). For refund events and `funds_available` events, this is the amount associated with the event, such as the refund amount, rather than the original transfer amount. This field is omitted for Plaid Ledger Sweep events.|
 |failure_reason|[TransferFailure](#schematransferfailure)|true|none|The failure reason if the event type for a transfer is `"failed"` or `"returned"`, or the adjustment reason if the event type is `"adjustment"`. Null value otherwise.|
 |sweep_id|[TransferSweepIDNullable](#schematransfersweepidnullable)|true|none|Plaid's unique identifier for a sweep.|
 |sweep_amount|[TransferSweepAmount](#schematransfersweepamount)|true|none|A signed amount of how much was `swept` or `return_swept` for this transfer (decimal string with two digits of precision e.g. "-5.50").|
@@ -88515,7 +89365,7 @@ Defines the request schema for `/transfer/ledger/deposit`
   "amount": "string",
   "description": "string",
   "idempotency_key": "string",
-  "network": "ach"
+  "network": {}
 }
 ```
 
@@ -88533,17 +89383,7 @@ Defines the request schema for `/transfer/ledger/withdraw`
 |amount|string|true|none|A positive amount of how much will be withdrawn from the ledger balance (decimal string with two digits of precision e.g. "5.50").|
 |description|[SweepDescription](#schemasweepdescription)|false|none|The description of the deposit that will be passed to the receiving bank (up to 10 characters). Note that banks utilize this field differently, and may or may not show it on the bank statement.|
 |idempotency_key|[LedgerWithdrawIdempotencyKey](#schemaledgerwithdrawidempotencykey)|true|none|A unique key provided by the client, per unique ledger withdraw. Maximum of 50 characters.<br><br>The API supports idempotency for safely retrying the request without accidentally performing the same operation twice. For example, if a request to create a ledger withdraw fails due to a network connection error, you can retry the request with the same idempotency key to guarantee that only a single withdraw is created.|
-|network|[TransferNetwork](#schematransfernetwork)|true|none|The network or rails used for the transfer.<br><br>For transfers submitted as `ach` or `same-day-ach`, the Standard ACH cutoff is 8:30 PM Eastern Time.<br><br>For transfers submitted as `same-day-ach`, the Same Day ACH cutoff is 3:00 PM Eastern Time.  It is recommended to send the request 15 minutes prior to the cutoff to ensure that it will be processed in time for submission before the cutoff. If the transfer is processed after this cutoff but before the Standard ACH cutoff, it will be sent over Standard ACH rails and will not incur same-day charges; this will apply to both legs of the transfer if applicable. The transaction limit for a Same Day ACH transfer is $1,000,000. Authorization requests sent with an amount greater than $1,000,000 will fail.<br><br>For transfers submitted as `rtp`, Plaid will automatically route between the Real-Time Payments (RTP) rail by TCH or FedNow rails as necessary. If a transfer is submitted as `rtp` and the counterparty account is not eligible for RTP, the `/transfer/authorization/create` request will fail with an `INVALID_FIELD` error code. To pre-check to determine whether a counterparty account can support RTP, call `/transfer/capabilities/get` before calling `/transfer/authorization/create`.<br><br>Wire transfers are currently in early availability. To request access to `wire` as a payment network, contact your account manager. For transfers submitted as `wire`, the `type` must be `credit`; wire debits are not supported. The cutoff to submit a wire payment is 6:30 PM Eastern Time on a business day; wires submitted after that time will be processed on the next business day. The transaction limit for a wire is $999,999.99. Authorization requests sent with an amount greater than $999,999.99 will fail.<br><br>Support for `rfp` (request for payment) is currently in closed beta. To learn more, contact your Plaid account manager. For transfers submitted as `rfp`, the `type` must be `debit`.|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|network|ach|
-|network|same-day-ach|
-|network|rtp|
-|network|wire|
-|network|rfp|
+|network|object|true|none|The network or rails used for the withdrawal: `ach` for Standard ACH or `same-day-ach` for Same Day ACH. The limit for a single Standard ACH withdrawal is $10,000,000, and the limit for a single Same Day ACH withdrawal is $1,000,000; withdrawals above the limit for their network will fail.<br><br>The Same Day ACH cutoff is 3:00 PM Eastern Time and the Standard ACH cutoff is 8:30 PM Eastern Time. If a `same-day-ach` withdrawal is submitted on a banking day after the Same Day ACH cutoff and before the Standard ACH cutoff, it may be downgraded to Standard ACH. Withdrawals submitted after the Standard ACH cutoff, or on a weekend or bank holiday, stay Same Day ACH and are submitted in the first Same Day ACH window of the next banking day. See [ACH processing windows](https://plaid.com/docs/transfer/creating-transfers/#ach-processing-windows).|
 
 <h2 id="tocS_TransferLedgerDepositResponse">TransferLedgerDepositResponse</h2>
 <!-- backwards compatibility -->
@@ -91577,10 +92417,10 @@ The `account_filters` specified in the original call to `/link/token/create`.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|depository|[DepositoryFilter](#schemadepositoryfilter)|false|none|A filter to apply to `depository`-type accounts|
-|credit|[CreditFilter](#schemacreditfilter)|false|none|A filter to apply to `credit`-type accounts|
-|loan|[LoanFilter](#schemaloanfilter)|false|none|A filter to apply to `loan`-type accounts|
-|investment|[InvestmentFilter](#schemainvestmentfilter)|false|none|A filter to apply to `investment`-type accounts (or `brokerage`-type accounts for API versions 2018-05-22 and earlier).|
+|depository|object \| null|false|none|none|
+|credit|object \| null|false|none|none|
+|loan|object \| null|false|none|none|
+|investment|object \| null|false|none|none|
 
 <h2 id="tocS_InstitutionsSearchAccountFilter">InstitutionsSearchAccountFilter</h2>
 <!-- backwards compatibility -->
@@ -91626,6 +92466,7 @@ An account filter to apply to institutions search requests
 |loan|403B|
 |loan|457b|
 |loan|529|
+|loan|530a|
 |loan|auto|
 |loan|brokerage|
 |loan|business|
@@ -91707,6 +92548,7 @@ An account filter to apply to institutions search requests
 |depository|403B|
 |depository|457b|
 |depository|529|
+|depository|530a|
 |depository|auto|
 |depository|brokerage|
 |depository|business|
@@ -91788,6 +92630,7 @@ An account filter to apply to institutions search requests
 |credit|403B|
 |credit|457b|
 |credit|529|
+|credit|530a|
 |credit|auto|
 |credit|brokerage|
 |credit|business|
@@ -91869,6 +92712,7 @@ An account filter to apply to institutions search requests
 |investment|403B|
 |investment|457b|
 |investment|529|
+|investment|530a|
 |investment|auto|
 |investment|brokerage|
 |investment|business|
@@ -92033,19 +92877,19 @@ Identity information about an account
 |mask|string \| null|true|none|The last 2-4 alphanumeric characters of either the account's displayed mask or the account's official account number. Note that the mask may be non-unique between an Item's accounts.|
 |name|string|true|none|The name of the account, either assigned by the user or by the financial institution itself|
 |official_name|string \| null|true|none|The official name of the account as given by the financial institution|
-|type|[AccountType](#schemaaccounttype)|true|none|`investment:` Investment account. In API versions 2018-05-22 and earlier, this type is called `brokerage` instead.<br><br>`credit:` Credit card<br><br>`depository:` Depository account<br><br>`loan:` Loan account<br><br>`other:` Non-specified account type<br><br>See the [Account type schema](https://plaid.com/docs/api/accounts#account-type-schema) for a full listing of account types and corresponding subtypes.|
+|type|[AccountType](#schemaaccounttype)|true|none|`investment:` Investment account. In API versions 2018-05-22 and earlier, this type is called `brokerage` instead.<br><br>`credit:` Credit card<br><br>`depository:` Depository account<br><br>`loan:` Loan account<br><br>`payroll:` Payroll account<br><br>`other:` Non-specified account type<br><br>See the [Account type schema](https://plaid.com/docs/api/accounts#account-type-schema) for a full listing of account types and corresponding subtypes.|
 |subtype|[AccountSubtype](#schemaaccountsubtype)|true|none|See the [Account type schema](https://plaid.com/docs/api/accounts/#account-type-schema) for a full listing of account types and corresponding subtypes.|
 |verification_status|string|false|none|Indicates an Item's micro-deposit-based verification or database verification status. This field is only populated when using Auth and falling back to micro-deposit or database verification. Possible values are:<br><br>`pending_automatic_verification`: The Item is pending automatic verification.<br><br>`pending_manual_verification`: The Item is pending manual micro-deposit verification. Items remain in this state until the user successfully verifies the code.<br><br>`automatically_verified`: The Item has successfully been automatically verified.<br><br>`manually_verified`: The Item has successfully been manually verified.<br><br>`verification_expired`: Plaid was unable to automatically verify the deposit within 7 calendar days and will no longer attempt to validate the Item. Users may retry by submitting their information again through Link.<br><br>`verification_failed`: The Item failed manual micro-deposit verification because the user exhausted all 3 verification attempts. Users may retry by submitting their information again through Link.<br><br>`unsent`: The Item is pending micro-deposit verification, but Plaid has not yet sent the micro-deposit.<br><br>`database_insights_fail`: The Item's numbers have been verified using Plaid's data sources and have signal for being invalid and/or have no signal for being valid. Typically this indicates that the routing number is invalid, the account number does not match the account number format associated with the routing number, or the account has been reported as closed or frozen. Only returned for Auth Items created via Database Auth.<br><br>`database_insights_pass`: The Item's numbers have been verified using Plaid's data sources: the routing and account number match a routing and account number of an account recognized on the Plaid network, and the account is not known by Plaid to be frozen or closed. Only returned for Auth Items created via Database Auth.<br><br>`database_insights_pass_with_caution`: The Item's numbers have been verified using Plaid's data sources and have some signal for being valid: the routing and account number were not recognized on the Plaid network, but the routing number is valid and the account number is a potential valid account number for that routing number. Only returned for Auth Items created via Database Auth.<br><br>`database_matched`: (deprecated) The Item has successfully been verified using Plaid's data sources. Only returned for Auth Items created via Database Match.<br><br>Omitted or empty string: Neither micro-deposit-based verification nor database verification are being used for the Item.|
 |verification_name|string|false|none|The account holder name that was used for micro-deposit and/or database verification. Only returned for Auth Items created via micro-deposit or database verification. This name was manually-entered by the user during Link, unless it was otherwise provided via the `user.legal_name` request field in `/link/token/create` for the Link session that created the Item.|
-|verification_insights|[AccountVerificationInsights](#schemaaccountverificationinsights)|false|none|Insights from performing database verification for the account. Only returned for Auth Items using Database Auth.|
+|verification_insights|object \| null|false|none|none|
 |persistent_account_id|string|false|none|A unique and persistent identifier for accounts that can be used to trace multiple instances of the same account across different Items for depository accounts. This field is currently supported only for Items at institutions that use Tokenized Account Numbers (i.e., Chase, PNC, and US Bank). Because these accounts have a different account number each time they are linked, this field may be used instead of the account number to uniquely identify an account across multiple Items for payments use cases, helping to reduce duplicate Items or attempted fraud. In Sandbox, this field is populated for TAN-based institutions (`ins_56`, `ins_13`, `ins_127990`) as well as the OAuth Sandbox institution (`ins_127287`); in Production, it will only be populated for accounts at applicable institutions.|
 |apy|number(double) \| null|false|none|The annual percentage yield (APY) on an interest-bearing deposit account, expressed as a percentage (e.g. `4.25` means 4.25%). In the event that the APY is not provided by the financial institution, Plaid will return a value of `null`.|
 |holder_category|[AccountHolderCategory](#schemaaccountholdercategory)|false|none|Indicates the account's categorization as either a personal or a business account. This field is currently in beta; to request access, contact your account manager. Coverage varies by institution, with approximately 70% of accounts populated overall.|
 |paired_account_id|string \| null|false|none|The `account_id` of the account on the paired Item (see `paired_item_id`) that represents the same bank account as this one. For an account on a Plaid Inc Item, this is the matching account on its paired Plaid Check Item, and the reverse for an account on a Plaid Check Item. Only returned for accounts on an Item that has a paired Item. `null` means the Item has a paired Item but Plaid could not confidently match this account to an account on it. Like `account_id`, this value can change if Plaid re-creates the paired account.|
-|name|string|true|none|none|
-|official_name|string \| null|true|none|none|
-|mask|string \| null|true|none|none|
-|verification_name|string|false|none|none|
+|name|string|true|none|The name of the account, either assigned by the user or by the financial institution itself|
+|official_name|string \| null|true|none|The official name of the account as given by the financial institution|
+|mask|string \| null|true|none|The last 2-4 alphanumeric characters of either the account's displayed mask or the account's official account number. Note that the mask may be non-unique between an Item's accounts.|
+|verification_name|string|false|none|The account holder name that was used for micro-deposit and/or database verification. Only returned for Auth Items created via micro-deposit or database verification. This name was manually-entered by the user during Link, unless it was otherwise provided via the `user.legal_name` request field in `/link/token/create` for the Link session that created the Item.|
 |owners|[[Owner](#schemaowner)]|true|none|Data returned by the financial institution about the account owner or owners. Only returned by Identity or Assets endpoints. For business accounts, the name reported may be either the name of the individual or the name of the business, depending on the institution. To determine whether the linked account is a business account, use the `holder_category` field on the account object. Multiple owners on a single account will be represented in the same `owner` object, not in multiple owner objects within the array. In API versions 2018-05-22 and earlier, the `owners` object is not returned, and instead identity information is returned in the top level `identity` object. For more details, see [Plaid API versioning](https://plaid.com/docs/api/versioning/#version-2019-05-29)|
 
 #### Enumerated Values
@@ -92057,12 +92901,14 @@ Identity information about an account
 |type|depository|
 |type|loan|
 |type|brokerage|
+|type|payroll|
 |type|other|
 |subtype|401a|
 |subtype|401k|
 |subtype|403B|
 |subtype|457b|
 |subtype|529|
+|subtype|530a|
 |subtype|auto|
 |subtype|brokerage|
 |subtype|business|
@@ -92224,19 +93070,19 @@ Identity match scores for an account
 |mask|string \| null|true|none|The last 2-4 alphanumeric characters of either the account's displayed mask or the account's official account number. Note that the mask may be non-unique between an Item's accounts.|
 |name|string|true|none|The name of the account, either assigned by the user or by the financial institution itself|
 |official_name|string \| null|true|none|The official name of the account as given by the financial institution|
-|type|[AccountType](#schemaaccounttype)|true|none|`investment:` Investment account. In API versions 2018-05-22 and earlier, this type is called `brokerage` instead.<br><br>`credit:` Credit card<br><br>`depository:` Depository account<br><br>`loan:` Loan account<br><br>`other:` Non-specified account type<br><br>See the [Account type schema](https://plaid.com/docs/api/accounts#account-type-schema) for a full listing of account types and corresponding subtypes.|
+|type|[AccountType](#schemaaccounttype)|true|none|`investment:` Investment account. In API versions 2018-05-22 and earlier, this type is called `brokerage` instead.<br><br>`credit:` Credit card<br><br>`depository:` Depository account<br><br>`loan:` Loan account<br><br>`payroll:` Payroll account<br><br>`other:` Non-specified account type<br><br>See the [Account type schema](https://plaid.com/docs/api/accounts#account-type-schema) for a full listing of account types and corresponding subtypes.|
 |subtype|[AccountSubtype](#schemaaccountsubtype)|true|none|See the [Account type schema](https://plaid.com/docs/api/accounts/#account-type-schema) for a full listing of account types and corresponding subtypes.|
 |verification_status|string|false|none|Indicates an Item's micro-deposit-based verification or database verification status. This field is only populated when using Auth and falling back to micro-deposit or database verification. Possible values are:<br><br>`pending_automatic_verification`: The Item is pending automatic verification.<br><br>`pending_manual_verification`: The Item is pending manual micro-deposit verification. Items remain in this state until the user successfully verifies the code.<br><br>`automatically_verified`: The Item has successfully been automatically verified.<br><br>`manually_verified`: The Item has successfully been manually verified.<br><br>`verification_expired`: Plaid was unable to automatically verify the deposit within 7 calendar days and will no longer attempt to validate the Item. Users may retry by submitting their information again through Link.<br><br>`verification_failed`: The Item failed manual micro-deposit verification because the user exhausted all 3 verification attempts. Users may retry by submitting their information again through Link.<br><br>`unsent`: The Item is pending micro-deposit verification, but Plaid has not yet sent the micro-deposit.<br><br>`database_insights_fail`: The Item's numbers have been verified using Plaid's data sources and have signal for being invalid and/or have no signal for being valid. Typically this indicates that the routing number is invalid, the account number does not match the account number format associated with the routing number, or the account has been reported as closed or frozen. Only returned for Auth Items created via Database Auth.<br><br>`database_insights_pass`: The Item's numbers have been verified using Plaid's data sources: the routing and account number match a routing and account number of an account recognized on the Plaid network, and the account is not known by Plaid to be frozen or closed. Only returned for Auth Items created via Database Auth.<br><br>`database_insights_pass_with_caution`: The Item's numbers have been verified using Plaid's data sources and have some signal for being valid: the routing and account number were not recognized on the Plaid network, but the routing number is valid and the account number is a potential valid account number for that routing number. Only returned for Auth Items created via Database Auth.<br><br>`database_matched`: (deprecated) The Item has successfully been verified using Plaid's data sources. Only returned for Auth Items created via Database Match.<br><br>Omitted or empty string: Neither micro-deposit-based verification nor database verification are being used for the Item.|
 |verification_name|string|false|none|The account holder name that was used for micro-deposit and/or database verification. Only returned for Auth Items created via micro-deposit or database verification. This name was manually-entered by the user during Link, unless it was otherwise provided via the `user.legal_name` request field in `/link/token/create` for the Link session that created the Item.|
-|verification_insights|[AccountVerificationInsights](#schemaaccountverificationinsights)|false|none|Insights from performing database verification for the account. Only returned for Auth Items using Database Auth.|
+|verification_insights|object \| null|false|none|none|
 |persistent_account_id|string|false|none|A unique and persistent identifier for accounts that can be used to trace multiple instances of the same account across different Items for depository accounts. This field is currently supported only for Items at institutions that use Tokenized Account Numbers (i.e., Chase, PNC, and US Bank). Because these accounts have a different account number each time they are linked, this field may be used instead of the account number to uniquely identify an account across multiple Items for payments use cases, helping to reduce duplicate Items or attempted fraud. In Sandbox, this field is populated for TAN-based institutions (`ins_56`, `ins_13`, `ins_127990`) as well as the OAuth Sandbox institution (`ins_127287`); in Production, it will only be populated for accounts at applicable institutions.|
 |apy|number(double) \| null|false|none|The annual percentage yield (APY) on an interest-bearing deposit account, expressed as a percentage (e.g. `4.25` means 4.25%). In the event that the APY is not provided by the financial institution, Plaid will return a value of `null`.|
 |holder_category|[AccountHolderCategory](#schemaaccountholdercategory)|false|none|Indicates the account's categorization as either a personal or a business account. This field is currently in beta; to request access, contact your account manager. Coverage varies by institution, with approximately 70% of accounts populated overall.|
 |paired_account_id|string \| null|false|none|The `account_id` of the account on the paired Item (see `paired_item_id`) that represents the same bank account as this one. For an account on a Plaid Inc Item, this is the matching account on its paired Plaid Check Item, and the reverse for an account on a Plaid Check Item. Only returned for accounts on an Item that has a paired Item. `null` means the Item has a paired Item but Plaid could not confidently match this account to an account on it. Like `account_id`, this value can change if Plaid re-creates the paired account.|
-|name|string|true|none|none|
-|official_name|string \| null|true|none|none|
-|mask|string \| null|true|none|none|
-|verification_name|string|false|none|none|
+|name|string|true|none|The name of the account, either assigned by the user or by the financial institution itself|
+|official_name|string \| null|true|none|The official name of the account as given by the financial institution|
+|mask|string \| null|true|none|The last 2-4 alphanumeric characters of either the account's displayed mask or the account's official account number. Note that the mask may be non-unique between an Item's accounts.|
+|verification_name|string|false|none|The account holder name that was used for micro-deposit and/or database verification. Only returned for Auth Items created via micro-deposit or database verification. This name was manually-entered by the user during Link, unless it was otherwise provided via the `user.legal_name` request field in `/link/token/create` for the Link session that created the Item.|
 |legal_name|[NameMatchScore](#schemanamematchscore)|true|none|Score found by matching name provided by the API with the name on the account at the financial institution. If the account contains multiple owners, the maximum match score is filled.|
 |phone_number|[PhoneNumberMatchScore](#schemaphonenumbermatchscore)|true|none|Score found by matching phone number provided by the API with the phone number on the account at the financial institution. 100 is a perfect match and 0 is a no match. If the account contains multiple owners, the maximum match score is filled.|
 |email_address|[EmailAddressMatchScore](#schemaemailaddressmatchscore)|true|none|Score found by matching email provided by the API with the email on the account at the financial institution. 100 is a perfect match and 0 is a no match. If the account contains multiple owners, the maximum match score is filled.|
@@ -92251,12 +93097,14 @@ Identity match scores for an account
 |type|depository|
 |type|loan|
 |type|brokerage|
+|type|payroll|
 |type|other|
 |subtype|401a|
 |subtype|401k|
 |subtype|403B|
 |subtype|457b|
 |subtype|529|
+|subtype|530a|
 |subtype|auto|
 |subtype|brokerage|
 |subtype|business|
@@ -92465,7 +93313,7 @@ A filter to apply to `depository`-type accounts
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |account_subtypes|[DepositoryAccountSubtypes](#schemadepositoryaccountsubtypes)|true|none|An array of account subtypes to display in Link. If not specified, all account subtypes will be shown. For a full list of valid types and subtypes, see the [Account schema](https://plaid.com/docs/api/accounts#account-type-schema). |
-|limited_purpose_types|[LimitedPurposeTypes](#schemalimitedpurposetypes)|false|none|An array of limited purpose types. Restricts which kinds of limited purpose checking accounts may be connected in Link to prevent users from connecting them for unsupported use cases. Required when 'limited purpose checking' is in the subtypes filter.|
+|limited_purpose_types|[LimitedPurposeTypes](#schemalimitedpurposetypes)|false|none|An array of limited purpose types. Restricts which kinds of limited purpose checking accounts may be connected in Link to prevent users from connecting them for unsupported use cases. Only allowed when `limited purpose checking` is in `account_subtypes`. If omitted or empty while `limited purpose checking` is in `account_subtypes`, only `GENERAL_PURPOSE` limited purpose checking accounts may be connected. `GENERAL_PURPOSE` accounts may be connected with any `limited_purpose_types` value.|
 
 #### Enumerated Values
 
@@ -92483,6 +93331,8 @@ A filter to apply to `depository`-type accounts
 |account_subtypes|limited purpose checking|
 |account_subtypes|all|
 |limited_purpose_types|RENT_MORTGAGE|
+|limited_purpose_types|AUTO_LOAN|
+|limited_purpose_types|GENERAL_PURPOSE|
 
 <h2 id="tocS_CreditFilter">CreditFilter</h2>
 <!-- backwards compatibility -->
@@ -92586,6 +93436,7 @@ A filter to apply to `investment`-type accounts (or `brokerage`-type accounts fo
 |Property|Value|
 |---|---|
 |account_subtypes|529|
+|account_subtypes|530a|
 |account_subtypes|401a|
 |account_subtypes|401k|
 |account_subtypes|403B|
@@ -92776,7 +93627,7 @@ Valid account subtypes for depository accounts. For a list containing descriptio
 ]
 ```
 
-An array of limited purpose types. Restricts which kinds of limited purpose checking accounts may be connected in Link to prevent users from connecting them for unsupported use cases. Required when 'limited purpose checking' is in the subtypes filter.
+An array of limited purpose types. Restricts which kinds of limited purpose checking accounts may be connected in Link to prevent users from connecting them for unsupported use cases. Only allowed when `limited purpose checking` is in `account_subtypes`. If omitted or empty while `limited purpose checking` is in `account_subtypes`, only `GENERAL_PURPOSE` limited purpose checking accounts may be connected. `GENERAL_PURPOSE` accounts may be connected with any `limited_purpose_types` value.
 
 <h2 id="tocS_LimitedPurposeType">LimitedPurposeType</h2>
 <!-- backwards compatibility -->
@@ -92789,7 +93640,7 @@ An array of limited purpose types. Restricts which kinds of limited purpose chec
 "RENT_MORTGAGE"
 ```
 
-A specific use case for a limited purpose checking account. Limited purpose checking accounts will reject or return ACH transactions that aren't for eligible use cases. For example, a `RENT_MORTGAGE` limited purpose checking account will reject ACH transactions that are not specifically rent or mortgage payments.
+A specific use case for a limited purpose checking account. Limited purpose checking accounts will reject or return ACH transactions that aren't for eligible use cases. For example, a `RENT_MORTGAGE` limited purpose checking account will reject ACH transactions that are not specifically rent or mortgage payments, and an `AUTO_LOAN` account will reject ACH transactions that are not auto loan payments. A `GENERAL_PURPOSE` limited purpose checking account accepts any ACH transaction within the limit the institution allows for the account.
 
 <h2 id="tocS_CreditAccountSubtype">CreditAccountSubtype</h2>
 <!-- backwards compatibility -->
@@ -93706,13 +94557,15 @@ Specifies options for initializing Link for use with the Base Report product. Th
       "employment_refresh_options": {
         "days_requested": 0
       }
-    }
+    },
+    "exclude_transactions": false,
+    "base_report_version": {}
   },
   "cashflow_insights": {
     "attributes_version": "v1.0"
   },
   "lend_score": {
-    "lend_score_version": "v1.0"
+    "lend_score_version": "v2.0"
   },
   "network_insights": {
     "network_insights_version": "NI1"
@@ -93824,7 +94677,9 @@ Specifies options for initializing Link for use with the Credit Partner Insights
     "employment_refresh_options": {
       "days_requested": 0
     }
-  }
+  },
+  "exclude_transactions": false,
+  "base_report_version": {}
 }
 ```
 
@@ -93838,6 +94693,8 @@ Specifies options for initializing Link for use with the Base Report product, sp
 |gse_options|[LinkTokenCreateRequestCraOptionsBaseReportGSEOptions](#schemalinktokencreaterequestcraoptionsbasereportgseoptions)|false|none|Specifies options for initializing Link to create reports that can be shared with GSEs for mortgage verification.|
 |require_identity|boolean \| null|false|none|Indicates that the report must include identity information. If identity information is not available, the report will fail.|
 |home_lending_report_options|[CraCheckReportHomeLendingReportOptions](#schemacracheckreporthomelendingreportoptions)|false|none|Options for configuring Home Lending Report (Verification Report) generation.|
+|exclude_transactions|boolean \| null|false|none|When set to `true`, this option excludes account transaction records from the Base Report before it is stored. In the `/cra/check_report/base_report/get` response, each account's `transactions` field remains present as an empty array. This option does not affect insight calculations.<br><br>Omitting this option or setting it to `null` or `false` preserves existing behavior. These values do not override any client configuration that excludes transactions.<br><br>Requests with `exclude_transactions` set to `true` are rejected with an `INVALID_FIELD` error if they also request GSE or Home Lending reports. A Base Report created with this option set to `true` cannot be used to generate those reports later.|
+|base_report_version|object|false|none|none|
 
 <h2 id="tocS_LinkTokenCreateRequestCraOptionsBaseReportGSEOptions">LinkTokenCreateRequestCraOptionsBaseReportGSEOptions</h2>
 <!-- backwards compatibility -->
@@ -93926,7 +94783,7 @@ Specifies options for initializing Link for use with the CRA Income Insights pro
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |income_insights_filter|[IncomeInsightsFilter](#schemaincomeinsightsfilter)|false|none|Filters the returned income streams based on the specified income categories. If no filters are requested, streams from the following default set of categories are returned:<br>- `EARNED_INCOME.*` (`EARNED_INCOME.SALARY`, `EARNED_INCOME.GIG_ECONOMY`, `EARNED_INCOME.SELF_EMPLOYED`)<br>- `BENEFITS.DISABILITY`<br>- `RETIREMENT.*` (`RETIREMENT.GOVERNMENT_DERIVED`, `RETIREMENT.PRIVATE_RETIREMENT`, `RETIREMENT.PLAN_DISTRIBUTION`)<br><br>The final list of income categories is generated by adding the `included_categories`, then removing the `excluded_categories`. Priority is given to `excluded_categories` in the case of collisions.<br><br>Filter patterns supported:<br>- `*`: All categories<br>- `PRIMARY.*`: All categories within the specified primary category<br>- `PRIMARY.SECONDARY`: A specific income category<br><br>For a list of income categories, see the [Income V2 Category Taxonomy](https://plaid.com/documents/income-v2-category-taxonomy.csv).|
-|income_insights_version|[IncomeInsightsVersion](#schemaincomeinsightsversion)|true|none|The version of Income Insights to use. This value is not shared across API calls for the same resource. If it is omitted from a request, the default version is used, even if a version was set in an earlier call such as `/link/token/create` or `/cra/check_report/create`.|
+|income_insights_version|[IncomeInsightsVersion](#schemaincomeinsightsversion)|true|none|The version of Income Insights to generate. `II2` is the only value you can set. If your integration has a default Income Insights version configured (integrations that started on Income Insights V1 keep V1 by default), omit this field to keep receiving that version, and set `II2` only when you are ready to migrate. If no default version is configured for your integration, this field is required and must be `II2`. The version is fixed when Income Insights is generated: if Income Insights is generated from `/link/token/create` or `/cra/check_report/create`, `/cra/check_report/income_insights/get` returns it at the version used in that call.|
 
 #### Enumerated Values
 
@@ -93943,7 +94800,7 @@ Specifies options for initializing Link for use with the CRA Income Insights pro
 
 ```json
 {
-  "lend_score_version": "v1.0"
+  "lend_score_version": "v2.0"
 }
 ```
 
@@ -93959,7 +94816,6 @@ Specifies options for initializing Link for use with the CRA LendScore product.
 
 |Property|Value|
 |---|---|
-|lend_score_version|v1.0|
 |lend_score_version|v2.0|
 |lend_score_version|LS1|
 
@@ -94011,7 +94867,8 @@ Specifies options for initializing Link for use with the CRA Network Insights pr
       "product": "cra_base_report",
       "version": "string",
       "options": {
-        "require_identity": true
+        "require_identity": true,
+        "exclude_transactions": false
       }
     }
   ]
@@ -94025,7 +94882,7 @@ Specifies the report parameters for Plaid Check products, mirroring the paramete
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |scope|object|true|none|none|
-|decision_stage|[CraReportDecisionStage](#schemacrareportdecisionstage)|true|none|The stage in the credit or other eligibility decisioning lifecycle for which a given report will be utilized.<br><br>Allowable permissible purposes for `PREQUALIFICATION`:<br><br>- `WRITTEN_INSTRUCTION_PREQUALIFICATION`<br><br>Allowable permissible purposes for `DECISIONING`:<br><br>- `ELIGIBILITY_FOR_GOVT_BENEFITS`<br>- `EXTENSION_OF_CREDIT`<br>- `LEGITIMATE_BUSINESS_NEED_OTHER`<br>- `LEGITIMATE_BUSINESS_NEED_TENANT_SCREENING`<br>- `WRITTEN_INSTRUCTION_OTHER`<br><br>If an incompatible `decision_stage` and `consumer_report_permissible_purpose` pairing is requested, an `INVALID_FIELD` error is returned. If your client isn't yet enabled for a given `decision_stage` on a product, a `DECISION_STAGE_NOT_ENABLED` error is returned instead (contact your Plaid account manager to enable it).|
+|decision_stage|[CraReportDecisionStage](#schemacrareportdecisionstage)|true|none|The stage in the credit or other eligibility decisioning lifecycle for which a given report will be utilized.<br><br>Allowable permissible purposes for `PREQUALIFICATION`:<br><br>- `WRITTEN_INSTRUCTION_PREQUALIFICATION`<br><br>Allowable permissible purposes for `DECISIONING`:<br><br>- `ELIGIBILITY_FOR_GOVT_BENEFITS`<br>- `EXTENSION_OF_CREDIT`<br>- `INSURANCE_UNDERWRITING`<br>- `LEGITIMATE_BUSINESS_NEED_OTHER`<br>- `LEGITIMATE_BUSINESS_NEED_TENANT_SCREENING`<br>- `WRITTEN_INSTRUCTION_OTHER`<br><br>If an incompatible `decision_stage` and `consumer_report_permissible_purpose` pairing is requested, an `INVALID_FIELD` error is returned. If your client isn't yet enabled for a given `decision_stage` on a product, a `DECISION_STAGE_NOT_ENABLED` error is returned instead (contact your Plaid account manager to enable it).|
 |client_report_id|string \| null|false|none|Client-generated identifier, which can be used by lenders to track loan applications.|
 |days_requested|integer \| null|false|none|The number of days of history to include in Plaid Check products. Maximum is 731. If a value lower than 180 is provided, a minimum of 180 days of history will be requested.|
 |days_required|integer \| null|false|none|The minimum number of days of data required for the report to be successfully generated.|
@@ -94597,7 +95454,7 @@ IncomeVerificationPaystubsGetRequest defines the request schema for `/income/ver
       "name": "string",
       "status": "string",
       "doc_id": "string",
-      "doc_type": "UNKNOWN"
+      "doc_type": "DOCUMENT_TYPE_UNKNOWN"
     }
   ],
   "paystubs": [
@@ -94861,7 +95718,7 @@ IncomeVerificationPaystubsGetResponse defines the response schema for `/income/v
   "name": "string",
   "status": "string",
   "doc_id": "string",
-  "doc_type": "UNKNOWN"
+  "doc_type": "DOCUMENT_TYPE_UNKNOWN"
 }
 ```
 
@@ -94871,15 +95728,16 @@ An object representing metadata from the end user's uploaded document.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|name|string|false|none|The name of the document.|
+|name|string|true|none|The name of the document.|
 |status|string \| null|false|none|The processing status of the document.<br><br>`PROCESSING_COMPLETE`: The document was successfully processed.<br><br>`DOCUMENT_ERROR`: The document could not be processed. Possible causes include: The document was an unacceptable document type such as an offer letter or bank statement, the document image was cropped or blurry, or the document was corrupted.<br><br>`UNKNOWN` or `null`: An internal error occurred. If this happens repeatedly, contact support or your Plaid account manager.|
-|doc_id|string|false|none|An identifier of the document that is also present in the paystub response.|
-|doc_type|[DocType](#schemadoctype)|false|none|The type of document.<br><br>`DOCUMENT_TYPE_PAYSTUB`: A paystub.<br><br>`DOCUMENT_TYPE_BANK_STATEMENT`: A bank statement.<br><br>`DOCUMENT_TYPE_US_TAX_W2`: A W-2 wage and tax statement provided by a US employer reflecting wages earned by the employee.<br><br>`DOCUMENT_TYPE_US_MILITARY_ERAS`: An electronic Retirement Account Statement (eRAS) issued by the US military.<br><br>`DOCUMENT_TYPE_US_MILITARY_LES`: A Leave and Earnings Statement (LES) issued by the US military.<br><br>`DOCUMENT_TYPE_US_MILITARY_CLES`: A Civilian Leave and Earnings Statement (CLES) issued by the US military.<br><br>`DOCUMENT_TYPE_GIG`: Used to indicate that the income is related to gig work. Does not necessarily correspond to a specific document type.<br><br>`DOCUMENT_TYPE_NONE`: Used to indicate that there is no underlying document for the data.<br><br>`DOCUMENT_TYPE_US_TAX_1099_MISC`: A Form 1099-MISC information return reporting miscellaneous income.<br><br>`DOCUMENT_TYPE_US_TAX_1099_K`: A Form 1099-K information return reporting payment card and third-party network transactions.<br><br>`DOCUMENT_TYPE_PLAID_GENERATED_PAYSTUB_PDF`: Used to indicate that the PDF for the paystub was generated by Plaid.<br><br>`DOCUMENT_TYPE_US_STUDENT_I20`: A Form I-20 Certificate of Eligibility for Nonimmigrant Student Status.<br><br>`UNKNOWN`: Document type could not be determined.|
+|doc_id|string|true|none|An identifier of the document that is also present in the paystub response.|
+|doc_type|[DocType](#schemadoctype)|true|none|The type of document.<br><br>`DOCUMENT_TYPE_UNKNOWN`: Document type could not be determined.<br><br>`DOCUMENT_TYPE_PAYSTUB`: A paystub.<br><br>`DOCUMENT_TYPE_BANK_STATEMENT`: A bank statement.<br><br>`DOCUMENT_TYPE_US_TAX_W2`: A W-2 wage and tax statement provided by a US employer reflecting wages earned by the employee.<br><br>`DOCUMENT_TYPE_US_MILITARY_ERAS`: An electronic Retirement Account Statement (eRAS) issued by the US military.<br><br>`DOCUMENT_TYPE_US_MILITARY_LES`: A Leave and Earnings Statement (LES) issued by the US military.<br><br>`DOCUMENT_TYPE_US_MILITARY_CLES`: A Civilian Leave and Earnings Statement (CLES) issued by the US military.<br><br>`DOCUMENT_TYPE_GIG`: Used to indicate that the income is related to gig work. Does not necessarily correspond to a specific document type.<br><br>`DOCUMENT_TYPE_NONE`: Used to indicate that there is no underlying document for the data.<br><br>`DOCUMENT_TYPE_US_TAX_1099_MISC`: A Form 1099-MISC information return reporting miscellaneous income.<br><br>`DOCUMENT_TYPE_US_TAX_1099_K`: A Form 1099-K information return reporting payment card and third-party network transactions.<br><br>`DOCUMENT_TYPE_PLAID_GENERATED_PAYSTUB_PDF`: Used to indicate that the PDF for the paystub was generated by Plaid.<br><br>`DOCUMENT_TYPE_US_STUDENT_I20`: A Form I-20 Certificate of Eligibility for Nonimmigrant Student Status.<br><br>`UNKNOWN`: Document type could not be determined.|
 
 #### Enumerated Values
 
 |Property|Value|
 |---|---|
+|doc_type|DOCUMENT_TYPE_UNKNOWN|
 |doc_type|UNKNOWN|
 |doc_type|DOCUMENT_TYPE_PAYSTUB|
 |doc_type|DOCUMENT_TYPE_BANK_STATEMENT|
@@ -94902,10 +95760,12 @@ An object representing metadata from the end user's uploaded document.
 <a id="tocsdoctype"></a>
 
 ```json
-"UNKNOWN"
+"DOCUMENT_TYPE_UNKNOWN"
 ```
 
 The type of document.
+
+`DOCUMENT_TYPE_UNKNOWN`: Document type could not be determined.
 
 `DOCUMENT_TYPE_PAYSTUB`: A paystub.
 
@@ -96106,7 +96966,7 @@ IncomeVerificationTaxformsGetRequest defines the request schema for `/income/ver
       "name": "string",
       "status": "string",
       "doc_id": "string",
-      "doc_type": "UNKNOWN"
+      "doc_type": "DOCUMENT_TYPE_UNKNOWN"
     }
   ],
   "taxforms": [
@@ -103780,7 +104640,7 @@ A financial institution account.
 |mask|string|false|none|The last 2-4 alphanumeric characters of an account's official account number|
 |name|string|false|none|The name of the account, either assigned by the user or by the financial institution itself|
 |official_name|string|false|none|The official name of the account as given by the financial institution|
-|type|[AccountType](#schemaaccounttype)|false|none|`investment:` Investment account. In API versions 2018-05-22 and earlier, this type is called `brokerage` instead.<br><br>`credit:` Credit card<br><br>`depository:` Depository account<br><br>`loan:` Loan account<br><br>`other:` Non-specified account type<br><br>See the [Account type schema](https://plaid.com/docs/api/accounts#account-type-schema) for a full listing of account types and corresponding subtypes.|
+|type|[AccountType](#schemaaccounttype)|false|none|`investment:` Investment account. In API versions 2018-05-22 and earlier, this type is called `brokerage` instead.<br><br>`credit:` Credit card<br><br>`depository:` Depository account<br><br>`loan:` Loan account<br><br>`payroll:` Payroll account<br><br>`other:` Non-specified account type<br><br>See the [Account type schema](https://plaid.com/docs/api/accounts#account-type-schema) for a full listing of account types and corresponding subtypes.|
 |subtype|[AccountSubtype](#schemaaccountsubtype)|false|none|See the [Account type schema](https://plaid.com/docs/api/accounts/#account-type-schema) for a full listing of account types and corresponding subtypes.|
 
 #### Enumerated Values
@@ -103792,12 +104652,14 @@ A financial institution account.
 |type|depository|
 |type|loan|
 |type|brokerage|
+|type|payroll|
 |type|other|
 |subtype|401a|
 |subtype|401k|
 |subtype|403B|
 |subtype|457b|
 |subtype|529|
+|subtype|530a|
 |subtype|auto|
 |subtype|brokerage|
 |subtype|business|
@@ -104859,7 +105721,7 @@ An object representing the e-wallet account numbers
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|bacs|[RecipientBACS](#schemarecipientbacs)|false|none|An object containing a Bacs account number and sort code. If an IBAN is not provided or if you need to accept domestic GBP-denominated payments, Bacs data is required.|
+|bacs|[RecipientBACSInResponse](#schemarecipientbacsinresponse)|false|none|An object containing a Bacs account number and sort code. If either value isn't available, it's returned as an empty string.|
 |international|[NumbersInternationalIBAN](#schemanumbersinternationaliban)|false|none|Account numbers using the International Bank Account Number and BIC/SWIFT code format.|
 
 <h2 id="tocS_WalletBalance">WalletBalance</h2>
@@ -105125,6 +105987,99 @@ The account number and sort code of the counterparty's account. The account numb
 |---|---|---|---|---|
 |account|string|false|none|The account number of the account. Maximum of 10 characters.|
 |sort_code|string|false|none|The 6-character sort code of the account.|
+
+<h2 id="tocS_WalletTransactionCounterpartyInResponse">WalletTransactionCounterpartyInResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemawallettransactioncounterpartyinresponse"></a>
+<a id="schema_WalletTransactionCounterpartyInResponse"></a>
+<a id="tocSwallettransactioncounterpartyinresponse"></a>
+<a id="tocswallettransactioncounterpartyinresponse"></a>
+
+```json
+{
+  "name": "string",
+  "numbers": {
+    "bacs": {
+      "account": "string",
+      "sort_code": "string"
+    },
+    "international": {
+      "iban": "stringstringstr"
+    }
+  },
+  "address": {
+    "street": [
+      "string"
+    ],
+    "city": "string",
+    "postal_code": "string",
+    "country": "st"
+  },
+  "date_of_birth": "1970-01-01"
+}
+```
+
+An object representing the e-wallet transaction's counterparty
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|name|string|true|none|The name of the counterparty|
+|numbers|[WalletTransactionCounterpartyNumbersInResponse](#schemawallettransactioncounterpartynumbersinresponse)|true|none|The counterparty's bank account numbers.|
+|address|[PaymentInitiationAddress](#schemapaymentinitiationaddress)|false|none|The optional address of the payment recipient's bank account. Required by most institutions outside of the UK.|
+|date_of_birth|string(date) \| null|false|none|The counterparty's birthdate, in [ISO 8601](https://wikipedia.org/wiki/ISO_8601) (YYYY-MM-DD) format.|
+
+<h2 id="tocS_WalletTransactionCounterpartyNumbersInResponse">WalletTransactionCounterpartyNumbersInResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemawallettransactioncounterpartynumbersinresponse"></a>
+<a id="schema_WalletTransactionCounterpartyNumbersInResponse"></a>
+<a id="tocSwallettransactioncounterpartynumbersinresponse"></a>
+<a id="tocswallettransactioncounterpartynumbersinresponse"></a>
+
+```json
+{
+  "bacs": {
+    "account": "string",
+    "sort_code": "string"
+  },
+  "international": {
+    "iban": "stringstringstr"
+  }
+}
+```
+
+The counterparty's bank account numbers.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|bacs|[WalletTransactionCounterpartyBACSInResponse](#schemawallettransactioncounterpartybacsinresponse)|false|none|The account number and sort code of the counterparty's account.|
+|international|[WalletTransactionCounterpartyInternational](#schemawallettransactioncounterpartyinternational)|false|none|International Bank Account Number for a Wallet Transaction|
+
+<h2 id="tocS_WalletTransactionCounterpartyBACSInResponse">WalletTransactionCounterpartyBACSInResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemawallettransactioncounterpartybacsinresponse"></a>
+<a id="schema_WalletTransactionCounterpartyBACSInResponse"></a>
+<a id="tocSwallettransactioncounterpartybacsinresponse"></a>
+<a id="tocswallettransactioncounterpartybacsinresponse"></a>
+
+```json
+{
+  "account": "string",
+  "sort_code": "string"
+}
+```
+
+The account number and sort code of the counterparty's account.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|account|string|true|none|The account number of the account. Maximum of 10 characters.|
+|sort_code|string|true|none|The 6-character sort code of the account.|
 
 <h2 id="tocS_WalletTransactionCounterpartyInternational">WalletTransactionCounterpartyInternational</h2>
 <!-- backwards compatibility -->
@@ -105426,9 +106381,7 @@ WalletTransactionGetRequest defines the request schema for `/wallet/transaction/
       "postal_code": "string",
       "country": "st"
     },
-    "date_of_birth": "1970-01-01",
-    "holder_category": {},
-    "is_verified": true
+    "date_of_birth": "1970-01-01"
   },
   "status": "AUTHORISING",
   "created_at": "1970-01-01T00:00:00Z",
@@ -105478,7 +106431,7 @@ WalletTransactionGetResponse defines the response schema for `/wallet/transactio
 |type|string|true|none|The type of the transaction. The supported transaction types that are returned are:<br>`BANK_TRANSFER:` a transaction which credits an e-wallet through an external bank transfer.<br><br>`PAYOUT:` a transaction which debits an e-wallet by disbursing funds to a counterparty.<br><br>`PIS_PAY_IN:` a payment which credits an e-wallet through Plaid's Payment Initiation Services (PIS) APIs. For more information see the [Payment Initiation endpoints](https://plaid.com/docs/api/products/payment-initiation/).<br><br>`REFUND:` a transaction which debits an e-wallet by refunding a previously initiated payment made through Plaid's [PIS APIs](https://plaid.com/docs/api/products/payment-initiation/).<br><br>`FUNDS_SWEEP`: an automated transaction which debits funds from an e-wallet to a designated client-owned account.<br><br>`RETURN`: an automated transaction where a debit transaction was reversed and money moved back to originating account.<br><br>`RECALL`: a transaction where the sending bank has requested the return of funds due to a fraud claim, technical error, or other issue associated with the payment.<br><br>`ACCOUNT_FUNDING`: an incoming transfer from an allowlisted account. Not automatically refunded.<br><br>`AUTO_REFUND`: an outgoing refund automatically initiated by Plaid in response to an unexpected `BANK_TRANSFER`.<br><br>`TRANSFER_OUT`: a transaction that debits an e-wallet and cannot be classified under another category, typically initiated by a non-Plaid flow due to technical errors, FPS timeouts, or other payment-related issues.|
 |scheme|[WalletPaymentScheme](#schemawalletpaymentscheme)|false|none|The payment scheme used to execute this transaction. This is present only for transaction types `PAYOUT` and `REFUND`.<br><br>`FASTER_PAYMENTS`: The standard payment scheme within the UK.<br><br>`SEPA_CREDIT_TRANSFER`: The standard payment to a beneficiary within the SEPA area.<br><br>`SEPA_CREDIT_TRANSFER_INSTANT`: Instant payment to a beneficiary within the SEPA area.|
 |amount|[WalletTransactionAmount](#schemawallettransactionamount)|true|none|The amount and currency of a transaction|
-|counterparty|[WalletTransactionCounterparty](#schemawallettransactioncounterparty)|true|none|An object representing the e-wallet transaction's counterparty|
+|counterparty|[WalletTransactionCounterpartyInResponse](#schemawallettransactioncounterpartyinresponse)|true|none|An object representing the e-wallet transaction's counterparty|
 |status|[WalletTransactionStatus](#schemawallettransactionstatus)|true|none|The status of the transaction.<br><br>`AUTHORISING`: The transaction is being processed for validation and compliance.<br><br>`INITIATED`: The transaction has been initiated and is currently being processed.<br><br>`EXECUTED`: The transaction has been successfully executed and is considered complete. This is only applicable for debit transactions.<br><br>`SETTLED`: The transaction has settled and funds are available for use. This is only applicable for credit transactions. A transaction will typically settle within seconds to several days, depending on which payment rail is used.<br><br>`FAILED`: The transaction failed to process successfully. This is a terminal status.<br><br>`BLOCKED`: The transaction has been blocked for violating compliance rules. This is a terminal status.|
 |created_at|string(date-time)|true|none|Timestamp when the transaction was created, in [ISO 8601](https://wikipedia.org/wiki/ISO_8601) format.|
 |last_status_update|string(date-time)|true|none|The date and time of the last time the `status` was updated, in ISO 8601 format|
@@ -105656,9 +106609,7 @@ Additional wallet transaction options
           "postal_code": "string",
           "country": "st"
         },
-        "date_of_birth": "1970-01-01",
-        "holder_category": {},
-        "is_verified": true
+        "date_of_birth": "1970-01-01"
       },
       "status": "AUTHORISING",
       "created_at": "1970-01-01T00:00:00Z",
@@ -105746,9 +106697,7 @@ WalletTransactionListResponse defines the response schema for `/wallet/transacti
       "postal_code": "string",
       "country": "st"
     },
-    "date_of_birth": "1970-01-01",
-    "holder_category": {},
-    "is_verified": true
+    "date_of_birth": "1970-01-01"
   },
   "status": "AUTHORISING",
   "created_at": "1970-01-01T00:00:00Z",
@@ -105797,7 +106746,7 @@ The transaction details
 |type|string|true|none|The type of the transaction. The supported transaction types that are returned are:<br>`BANK_TRANSFER:` a transaction which credits an e-wallet through an external bank transfer.<br><br>`PAYOUT:` a transaction which debits an e-wallet by disbursing funds to a counterparty.<br><br>`PIS_PAY_IN:` a payment which credits an e-wallet through Plaid's Payment Initiation Services (PIS) APIs. For more information see the [Payment Initiation endpoints](https://plaid.com/docs/api/products/payment-initiation/).<br><br>`REFUND:` a transaction which debits an e-wallet by refunding a previously initiated payment made through Plaid's [PIS APIs](https://plaid.com/docs/api/products/payment-initiation/).<br><br>`FUNDS_SWEEP`: an automated transaction which debits funds from an e-wallet to a designated client-owned account.<br><br>`RETURN`: an automated transaction where a debit transaction was reversed and money moved back to originating account.<br><br>`RECALL`: a transaction where the sending bank has requested the return of funds due to a fraud claim, technical error, or other issue associated with the payment.<br><br>`ACCOUNT_FUNDING`: an incoming transfer from an allowlisted account. Not automatically refunded.<br><br>`AUTO_REFUND`: an outgoing refund automatically initiated by Plaid in response to an unexpected `BANK_TRANSFER`.<br><br>`TRANSFER_OUT`: a transaction that debits an e-wallet and cannot be classified under another category, typically initiated by a non-Plaid flow due to technical errors, FPS timeouts, or other payment-related issues.|
 |scheme|[WalletPaymentScheme](#schemawalletpaymentscheme)|false|none|The payment scheme used to execute this transaction. This is present only for transaction types `PAYOUT` and `REFUND`.<br><br>`FASTER_PAYMENTS`: The standard payment scheme within the UK.<br><br>`SEPA_CREDIT_TRANSFER`: The standard payment to a beneficiary within the SEPA area.<br><br>`SEPA_CREDIT_TRANSFER_INSTANT`: Instant payment to a beneficiary within the SEPA area.|
 |amount|[WalletTransactionAmount](#schemawallettransactionamount)|true|none|The amount and currency of a transaction|
-|counterparty|[WalletTransactionCounterparty](#schemawallettransactioncounterparty)|true|none|An object representing the e-wallet transaction's counterparty|
+|counterparty|[WalletTransactionCounterpartyInResponse](#schemawallettransactioncounterpartyinresponse)|true|none|An object representing the e-wallet transaction's counterparty|
 |status|[WalletTransactionStatus](#schemawallettransactionstatus)|true|none|The status of the transaction.<br><br>`AUTHORISING`: The transaction is being processed for validation and compliance.<br><br>`INITIATED`: The transaction has been initiated and is currently being processed.<br><br>`EXECUTED`: The transaction has been successfully executed and is considered complete. This is only applicable for debit transactions.<br><br>`SETTLED`: The transaction has settled and funds are available for use. This is only applicable for credit transactions. A transaction will typically settle within seconds to several days, depending on which payment rail is used.<br><br>`FAILED`: The transaction failed to process successfully. This is a terminal status.<br><br>`BLOCKED`: The transaction has been blocked for violating compliance rules. This is a terminal status.|
 |created_at|string(date-time)|true|none|Timestamp when the transaction was created, in [ISO 8601](https://wikipedia.org/wiki/ISO_8601) format.|
 |last_status_update|string(date-time)|true|none|The date and time of the last time the `status` was updated, in ISO 8601 format|
@@ -107276,6 +108225,9 @@ BetaIssuesV1GetResponse defines the response schema for `/beta/issues/v1/get`.
 |affected_products|cra_plaid_credit_score|
 |affected_products|cra_qualify|
 |affected_products|cra_home_lending|
+|affected_products|cra_lend_score_complete|
+|affected_products|cra_income_complete|
+|affected_products|cra_home_lending_voa|
 |affected_products|layer|
 |affected_products|pay_by_bank|
 |affected_products|protect_linked_bank|
@@ -107689,6 +108641,9 @@ A customer-facing institution issue.
 |affected_products|cra_plaid_credit_score|
 |affected_products|cra_qualify|
 |affected_products|cra_home_lending|
+|affected_products|cra_lend_score_complete|
+|affected_products|cra_income_complete|
+|affected_products|cra_home_lending_voa|
 |affected_products|layer|
 |affected_products|pay_by_bank|
 |affected_products|protect_linked_bank|
@@ -108608,6 +109563,9 @@ Request schema for `/partner/customer/create`.
 |products|cra_plaid_credit_score|
 |products|cra_qualify|
 |products|cra_home_lending|
+|products|cra_lend_score_complete|
+|products|cra_income_complete|
+|products|cra_home_lending_voa|
 |products|layer|
 |products|pay_by_bank|
 |products|protect_linked_bank|
@@ -109438,6 +110396,9 @@ Request schema for `/beta/partner/customer/v1/create`.
 |products|cra_plaid_credit_score|
 |products|cra_qualify|
 |products|cra_home_lending|
+|products|cra_lend_score_complete|
+|products|cra_income_complete|
+|products|cra_home_lending_voa|
 |products|layer|
 |products|pay_by_bank|
 |products|protect_linked_bank|
@@ -109456,7 +110417,10 @@ Request schema for `/beta/partner/customer/v1/create`.
     "client_id": "string",
     "company_name": "string",
     "status": "UNDER_REVIEW",
-    "product_statuses": {},
+    "product_statuses": {
+      "property1": null,
+      "property2": null
+    },
     "requirements_due": [
       "legal_entity_name"
     ],
@@ -109491,7 +110455,10 @@ Response schema for `/beta/partner/customer/v1/create`.
   "client_id": "string",
   "company_name": "string",
   "status": "UNDER_REVIEW",
-  "product_statuses": {},
+  "product_statuses": {
+    "property1": null,
+    "property2": null
+  },
   "requirements_due": [
     "legal_entity_name"
   ],
@@ -109547,7 +110514,10 @@ The details for the newly created end customer, including secrets for non-Produc
   "client_id": "string",
   "company_name": "string",
   "status": "UNDER_REVIEW",
-  "product_statuses": {},
+  "product_statuses": {
+    "property1": null,
+    "property2": null
+  },
   "requirements_due": [
     "legal_entity_name"
   ]
@@ -109593,10 +110563,19 @@ The details for an end customer.
 <a id="tocspartnerendcustomerproductstatuses"></a>
 
 ```json
-{}
+{
+  "property1": null,
+  "property2": null
+}
 ```
 
 Mapping of product names to their current status.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|**additionalProperties**|object|false|none|none|
 
 <h2 id="tocS_PartnerEndCustomerRequirementsDue">PartnerEndCustomerRequirementsDue</h2>
 <!-- backwards compatibility -->
@@ -109936,7 +110915,10 @@ Request schema for `/beta/partner/customer/v1/get`.
     "client_id": "string",
     "company_name": "string",
     "status": "UNDER_REVIEW",
-    "product_statuses": {},
+    "product_statuses": {
+      "property1": null,
+      "property2": null
+    },
     "requirements_due": [
       "legal_entity_name"
     ]
@@ -110053,7 +111035,10 @@ Request schema for `/beta/partner/customer/v1/update`.
     "client_id": "string",
     "company_name": "string",
     "status": "UNDER_REVIEW",
-    "product_statuses": {},
+    "product_statuses": {
+      "property1": null,
+      "property2": null
+    },
     "requirements_due": [
       "legal_entity_name"
     ]
@@ -110140,6 +111125,9 @@ Request schema for `/beta/partner/customer/v1/enable`.
 |products|cra_plaid_credit_score|
 |products|cra_qualify|
 |products|cra_home_lending|
+|products|cra_lend_score_complete|
+|products|cra_income_complete|
+|products|cra_home_lending_voa|
 |products|layer|
 |products|pay_by_bank|
 |products|protect_linked_bank|
@@ -110156,7 +111144,10 @@ Request schema for `/beta/partner/customer/v1/enable`.
 {
   "end_customer_client_id": "string",
   "status": "UNDER_REVIEW",
-  "product_statuses": {},
+  "product_statuses": {
+    "property1": null,
+    "property2": null
+  },
   "production_secret": "string",
   "request_id": "string"
 }
@@ -110309,8 +111300,8 @@ See the [`taxonomy csv file`](https://plaid.com/documents/credit-category-taxono
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|primary|string|true|none|A high level category that communicates the broad category of the transaction.|
-|detailed|string|true|none|A granular category conveying the transaction's intent. This field can also be used as a unique identifier for the category.|
+|primary|string \| null|true|none|A high level category that communicates the broad category of the transaction. Can be `null` when no credit category is available.|
+|detailed|string \| null|true|none|A granular category conveying the transaction's intent. This field can also be used as a unique identifier for the category. Can be `null` when no credit category is available.|
 
 <h2 id="tocS_UserAccountRevokedWebhook">UserAccountRevokedWebhook</h2>
 <!-- backwards compatibility -->
@@ -111101,6 +112092,9 @@ Fired when the Check Report is ready to be retrieved. The report expires 24 hour
 |successful_products|cra_plaid_credit_score|
 |successful_products|cra_qualify|
 |successful_products|cra_home_lending|
+|successful_products|cra_lend_score_complete|
+|successful_products|cra_income_complete|
+|successful_products|cra_home_lending_voa|
 |successful_products|layer|
 |successful_products|pay_by_bank|
 |successful_products|protect_linked_bank|
@@ -111141,6 +112135,9 @@ Fired when the Check Report is ready to be retrieved. The report expires 24 hour
 |failed_products|cra_plaid_credit_score|
 |failed_products|cra_qualify|
 |failed_products|cra_home_lending|
+|failed_products|cra_lend_score_complete|
+|failed_products|cra_income_complete|
+|failed_products|cra_home_lending_voa|
 |failed_products|layer|
 |failed_products|pay_by_bank|
 |failed_products|protect_linked_bank|
@@ -111254,6 +112251,9 @@ Fired when a Check Report has failed to generate. To get more details, call `/us
 |failed_products|cra_plaid_credit_score|
 |failed_products|cra_qualify|
 |failed_products|cra_home_lending|
+|failed_products|cra_lend_score_complete|
+|failed_products|cra_income_complete|
+|failed_products|cra_home_lending_voa|
 |failed_products|layer|
 |failed_products|pay_by_bank|
 |failed_products|protect_linked_bank|
@@ -111378,6 +112378,9 @@ Fired when the Check Report is ready to be retrieved. The report expires 24 hour
 |successful_products|cra_plaid_credit_score|
 |successful_products|cra_qualify|
 |successful_products|cra_home_lending|
+|successful_products|cra_lend_score_complete|
+|successful_products|cra_income_complete|
+|successful_products|cra_home_lending_voa|
 |successful_products|layer|
 |successful_products|pay_by_bank|
 |successful_products|protect_linked_bank|
@@ -111418,6 +112421,9 @@ Fired when the Check Report is ready to be retrieved. The report expires 24 hour
 |failed_products|cra_plaid_credit_score|
 |failed_products|cra_qualify|
 |failed_products|cra_home_lending|
+|failed_products|cra_lend_score_complete|
+|failed_products|cra_income_complete|
+|failed_products|cra_home_lending_voa|
 |failed_products|layer|
 |failed_products|pay_by_bank|
 |failed_products|protect_linked_bank|
@@ -111531,6 +112537,9 @@ Fired when a Check Report has failed to generate. To get more details, call `/us
 |failed_products|cra_plaid_credit_score|
 |failed_products|cra_qualify|
 |failed_products|cra_home_lending|
+|failed_products|cra_lend_score_complete|
+|failed_products|cra_income_complete|
+|failed_products|cra_home_lending_voa|
 |failed_products|layer|
 |failed_products|pay_by_bank|
 |failed_products|protect_linked_bank|
@@ -112650,8 +113659,8 @@ AssetReportGetRequest defines the request schema for `/asset_report/get`
 |secret|[APISecret](#schemaapisecret)|false|none|Your Plaid API `secret`. The `secret` is required and may be provided either in the `PLAID-SECRET` header or as part of a request body.|
 |asset_report_token|[AssetReportTokenNullable](#schemaassetreporttokennullable)|false|none|A token that can be provided to endpoints such as `/asset_report/get` or `/asset_report/pdf/get` to fetch or update an Asset Report.|
 |user_token|string|false|none|The user token associated with the User for which to create an asset report for. The latest asset report associated with the User will be returned|
-|include_insights|boolean|false|none|`true` if you would like to retrieve the Asset Report with Insights, `false` otherwise. This field defaults to `false` if omitted.|
-|fast_report|boolean|false|none|`true` to fetch "fast" version of asset report. Defaults to false if omitted. Can only be used if `/asset_report/create` was called with `options.add_ons` set to `["fast_assets"]`.|
+|include_insights|boolean|false|none|If `true`, retrieves the Asset Report with Insights.|
+|fast_report|boolean|false|none|If `true`, retrieves the Fast Asset Report. If `false`, retrieves the Full Asset Report. To set this field to `true`, you must call `/asset_report/create` with `options.add_ons` set to `["fast_assets"]`.|
 |options|[AssetReportGetRequestOptions](#schemaassetreportgetrequestoptions)|false|none|An optional object to filter or add data to `/asset_report/get` results. If provided, must be non-`null`.|
 
 <h2 id="tocS_AssetReportGetRequestOptions">AssetReportGetRequestOptions</h2>
@@ -112861,7 +113870,12 @@ An optional object to filter or add data to `/asset_report/get` results. If prov
           "cash_flow": {
             "amount": 0,
             "iso_currency_code": "string",
-            "unofficial_currency_code": "string"
+            "unofficial_currency_code": "string",
+            "monthly_average": {
+              "amount": 0,
+              "iso_currency_code": "string",
+              "unofficial_currency_code": "string"
+            }
           },
           "total_expenditure": {
             "amount": 0,
@@ -112882,6 +113896,17 @@ An optional object to filter or add data to `/asset_report/get` results. If prov
                 "iso_currency_code": "string",
                 "unofficial_currency_code": "string",
                 "monthly_average": {
+                  "amount": 0,
+                  "iso_currency_code": "string",
+                  "unofficial_currency_code": "string"
+                }
+              }
+            ],
+            "monthly_summaries": [
+              {
+                "start_date": "1970-01-01",
+                "end_date": "1970-01-01",
+                "total_amount": {
                   "amount": 0,
                   "iso_currency_code": "string",
                   "unofficial_currency_code": "string"
@@ -112913,6 +113938,17 @@ An optional object to filter or add data to `/asset_report/get` results. If prov
                   "unofficial_currency_code": "string"
                 }
               }
+            ],
+            "monthly_summaries": [
+              {
+                "start_date": "1970-01-01",
+                "end_date": "1970-01-01",
+                "total_amount": {
+                  "amount": 0,
+                  "iso_currency_code": "string",
+                  "unofficial_currency_code": "string"
+                }
+              }
             ]
           },
           "non_essential_expenditure": {
@@ -112939,9 +113975,20 @@ An optional object to filter or add data to `/asset_report/get` results. If prov
                   "unofficial_currency_code": "string"
                 }
               }
+            ],
+            "monthly_summaries": [
+              {
+                "start_date": "1970-01-01",
+                "end_date": "1970-01-01",
+                "total_amount": {
+                  "amount": 0,
+                  "iso_currency_code": "string",
+                  "unofficial_currency_code": "string"
+                }
+              }
             ]
           },
-          "other": {
+          "other_expenditure": {
             "amount": 0,
             "iso_currency_code": "string",
             "unofficial_currency_code": "string",
@@ -112960,6 +114007,17 @@ An optional object to filter or add data to `/asset_report/get` results. If prov
                 "iso_currency_code": "string",
                 "unofficial_currency_code": "string",
                 "monthly_average": {
+                  "amount": 0,
+                  "iso_currency_code": "string",
+                  "unofficial_currency_code": "string"
+                }
+              }
+            ],
+            "monthly_summaries": [
+              {
+                "start_date": "1970-01-01",
+                "end_date": "1970-01-01",
+                "total_amount": {
                   "amount": 0,
                   "iso_currency_code": "string",
                   "unofficial_currency_code": "string"
@@ -112986,6 +114044,17 @@ An optional object to filter or add data to `/asset_report/get` results. If prov
                 "iso_currency_code": "string",
                 "unofficial_currency_code": "string",
                 "monthly_average": {
+                  "amount": 0,
+                  "iso_currency_code": "string",
+                  "unofficial_currency_code": "string"
+                }
+              }
+            ],
+            "monthly_summaries": [
+              {
+                "start_date": "1970-01-01",
+                "end_date": "1970-01-01",
+                "total_amount": {
                   "amount": 0,
                   "iso_currency_code": "string",
                   "unofficial_currency_code": "string"
@@ -113020,17 +114089,32 @@ An optional object to filter or add data to `/asset_report/get` results. If prov
           "total_income": {
             "amount": 0,
             "iso_currency_code": "string",
-            "unofficial_currency_code": "string"
+            "unofficial_currency_code": "string",
+            "monthly_average": {
+              "amount": 0,
+              "iso_currency_code": "string",
+              "unofficial_currency_code": "string"
+            }
           },
           "income_excluding_transfers": {
             "amount": 0,
             "iso_currency_code": "string",
-            "unofficial_currency_code": "string"
+            "unofficial_currency_code": "string",
+            "monthly_average": {
+              "amount": 0,
+              "iso_currency_code": "string",
+              "unofficial_currency_code": "string"
+            }
           },
           "transfers_in": {
             "amount": 0,
             "iso_currency_code": "string",
-            "unofficial_currency_code": "string"
+            "unofficial_currency_code": "string",
+            "monthly_average": {
+              "amount": 0,
+              "iso_currency_code": "string",
+              "unofficial_currency_code": "string"
+            }
           }
         }
       }
@@ -113117,7 +114201,7 @@ An optional object to filter or add data to `/asset_report/get` results. If prov
                 "pending_transaction_id": "string",
                 "account_owner": "string",
                 "transaction_id": "string",
-                "transaction_type": "digital",
+                "transaction_type": {},
                 "income_source_id": "string"
               }
             ],
@@ -113127,6 +114211,7 @@ An optional object to filter or add data to `/asset_report/get` results. If prov
                   "account_id": "string",
                   "security_id": "string",
                   "ticker_symbol": "string",
+                  "name": "string",
                   "institution_price": 0,
                   "institution_price_as_of": "1970-01-01",
                   "institution_value": 0,
@@ -113167,8 +114252,8 @@ An optional object to filter or add data to `/asset_report/get` results. If prov
                   "amount": 0,
                   "price": 0,
                   "fees": 0,
-                  "type": "buy",
-                  "subtype": "account fee",
+                  "type": {},
+                  "subtype": {},
                   "iso_currency_code": "string",
                   "unofficial_currency_code": "string"
                 }
@@ -113391,7 +114476,12 @@ An optional object to filter or add data to `/asset_report/get` results. If prov
                   "cash_flow": {
                     "amount": 0,
                     "iso_currency_code": "string",
-                    "unofficial_currency_code": "string"
+                    "unofficial_currency_code": "string",
+                    "monthly_average": {
+                      "amount": 0,
+                      "iso_currency_code": "string",
+                      "unofficial_currency_code": "string"
+                    }
                   },
                   "total_expenditure": {
                     "amount": 0,
@@ -113412,6 +114502,17 @@ An optional object to filter or add data to `/asset_report/get` results. If prov
                         "iso_currency_code": "string",
                         "unofficial_currency_code": "string",
                         "monthly_average": {
+                          "amount": 0,
+                          "iso_currency_code": "string",
+                          "unofficial_currency_code": "string"
+                        }
+                      }
+                    ],
+                    "monthly_summaries": [
+                      {
+                        "start_date": "1970-01-01",
+                        "end_date": "1970-01-01",
+                        "total_amount": {
                           "amount": 0,
                           "iso_currency_code": "string",
                           "unofficial_currency_code": "string"
@@ -113443,6 +114544,17 @@ An optional object to filter or add data to `/asset_report/get` results. If prov
                           "unofficial_currency_code": "string"
                         }
                       }
+                    ],
+                    "monthly_summaries": [
+                      {
+                        "start_date": "1970-01-01",
+                        "end_date": "1970-01-01",
+                        "total_amount": {
+                          "amount": 0,
+                          "iso_currency_code": "string",
+                          "unofficial_currency_code": "string"
+                        }
+                      }
                     ]
                   },
                   "non_essential_expenditure": {
@@ -113469,9 +114581,20 @@ An optional object to filter or add data to `/asset_report/get` results. If prov
                           "unofficial_currency_code": "string"
                         }
                       }
+                    ],
+                    "monthly_summaries": [
+                      {
+                        "start_date": "1970-01-01",
+                        "end_date": "1970-01-01",
+                        "total_amount": {
+                          "amount": 0,
+                          "iso_currency_code": "string",
+                          "unofficial_currency_code": "string"
+                        }
+                      }
                     ]
                   },
-                  "other": {
+                  "other_expenditure": {
                     "amount": 0,
                     "iso_currency_code": "string",
                     "unofficial_currency_code": "string",
@@ -113490,6 +114613,17 @@ An optional object to filter or add data to `/asset_report/get` results. If prov
                         "iso_currency_code": "string",
                         "unofficial_currency_code": "string",
                         "monthly_average": {
+                          "amount": 0,
+                          "iso_currency_code": "string",
+                          "unofficial_currency_code": "string"
+                        }
+                      }
+                    ],
+                    "monthly_summaries": [
+                      {
+                        "start_date": "1970-01-01",
+                        "end_date": "1970-01-01",
+                        "total_amount": {
                           "amount": 0,
                           "iso_currency_code": "string",
                           "unofficial_currency_code": "string"
@@ -113516,6 +114650,17 @@ An optional object to filter or add data to `/asset_report/get` results. If prov
                         "iso_currency_code": "string",
                         "unofficial_currency_code": "string",
                         "monthly_average": {
+                          "amount": 0,
+                          "iso_currency_code": "string",
+                          "unofficial_currency_code": "string"
+                        }
+                      }
+                    ],
+                    "monthly_summaries": [
+                      {
+                        "start_date": "1970-01-01",
+                        "end_date": "1970-01-01",
+                        "total_amount": {
                           "amount": 0,
                           "iso_currency_code": "string",
                           "unofficial_currency_code": "string"
@@ -113550,17 +114695,32 @@ An optional object to filter or add data to `/asset_report/get` results. If prov
                   "total_income": {
                     "amount": 0,
                     "iso_currency_code": "string",
-                    "unofficial_currency_code": "string"
+                    "unofficial_currency_code": "string",
+                    "monthly_average": {
+                      "amount": 0,
+                      "iso_currency_code": "string",
+                      "unofficial_currency_code": "string"
+                    }
                   },
                   "income_excluding_transfers": {
                     "amount": 0,
                     "iso_currency_code": "string",
-                    "unofficial_currency_code": "string"
+                    "unofficial_currency_code": "string",
+                    "monthly_average": {
+                      "amount": 0,
+                      "iso_currency_code": "string",
+                      "unofficial_currency_code": "string"
+                    }
                   },
                   "transfers_in": {
                     "amount": 0,
                     "iso_currency_code": "string",
-                    "unofficial_currency_code": "string"
+                    "unofficial_currency_code": "string",
+                    "monthly_average": {
+                      "amount": 0,
+                      "iso_currency_code": "string",
+                      "unofficial_currency_code": "string"
+                    }
                   }
                 }
               }
@@ -114002,7 +115162,7 @@ CraMonitoringInsightsGetRequest defines the request schema for `/cra/monitoring_
 |client_id|[APIClientID](#schemaapiclientid)|false|none|Your Plaid API `client_id`. The `client_id` is required and may be provided either in the `PLAID-CLIENT-ID` header or as part of a request body.|
 |secret|[APISecret](#schemaapisecret)|false|none|Your Plaid API `secret`. The `secret` is required and may be provided either in the `PLAID-SECRET` header or as part of a request body.|
 |user_id|[NewUserID](#schemanewuserid)|false|none|A unique user identifier, created by `/user/create`. Integrations that began using `/user/create` after December 10, 2025 use this field to identify a user instead of the `user_token`. For more details, see [New User APIs](https://plaid.com/docs/api/users/user-apis).|
-|consumer_report_permissible_purpose|[MonitoringConsumerReportPermissiblePurpose](#schemamonitoringconsumerreportpermissiblepurpose)|true|none|Describes the reason you are generating a Consumer Report for this user.<br><br>`ACCOUNT_REVIEW_CREDIT`: In connection with a consumer credit transaction for the review or collection of an account pursuant to FCRA Section 604(a)(3)(A).<br><br>`WRITTEN_INSTRUCTION_OTHER`: In accordance with the written instructions of the consumer pursuant to FCRA Section 604(a)(2), such as when an individual agrees to act as a guarantor or assumes personal liability for a consumer, business, or commercial loan.|
+|consumer_report_permissible_purpose|[MonitoringConsumerReportPermissiblePurpose](#schemamonitoringconsumerreportpermissiblepurpose)|true|none|Describes the reason you are generating a Consumer Report for this user.<br><br>`ACCOUNT_REVIEW_CREDIT`: In connection with a consumer credit transaction for the review or collection of an account pursuant to FCRA Section 604(a)(3)(A).<br><br>`ACCOUNT_REVIEW_NON_CREDIT`: For a legitimate business need of the information to review a non-credit account provided primarily for personal, family, or household purposes to determine whether the consumer continues to meet the terms of the account pursuant to FCRA Section 604(a)(3)(F)(ii).<br><br>`WRITTEN_INSTRUCTION_OTHER`: In accordance with the written instructions of the consumer pursuant to FCRA Section 604(a)(2), such as when an individual agrees to act as a guarantor or assumes personal liability for a consumer, business, or commercial loan.<br><br>`SECONDARY_INVESTOR`: As a potential investor or servicer, or current insurer, in connection with a valuation of, or an assessment of the credit or prepayment risks associated with, an existing credit obligation pursuant to FCRA Section 604(a)(3)(E).|
 |user_token|[UserToken](#schemausertoken)|false|none|The user token associated with the user for which data is being requested. This field is used only by customers with pre-existing integrations that already use the `user_token` field. All other customers should use the `user_id` instead. For more details, see [New User APIs](https://plaid.com/docs/api/users/user-apis).|
 
 #### Enumerated Values
@@ -114010,7 +115170,9 @@ CraMonitoringInsightsGetRequest defines the request schema for `/cra/monitoring_
 |Property|Value|
 |---|---|
 |consumer_report_permissible_purpose|ACCOUNT_REVIEW_CREDIT|
+|consumer_report_permissible_purpose|ACCOUNT_REVIEW_NON_CREDIT|
 |consumer_report_permissible_purpose|WRITTEN_INSTRUCTION_OTHER|
+|consumer_report_permissible_purpose|SECONDARY_INVESTOR|
 
 <h2 id="tocS_CraMonitoringInsightsGetResponse">CraMonitoringInsightsGetResponse</h2>
 <!-- backwards compatibility -->
@@ -114189,7 +115351,63 @@ CraMonitoringInsightsGetRequest defines the request schema for `/cra/monitoring_
               ]
             }
           ],
+          "holder_category": {},
           "ownership_type": null,
+          "investments": {
+            "holdings": [
+              {
+                "account_id": "string",
+                "security_id": "string",
+                "institution_price": 0,
+                "institution_price_as_of": "1970-01-01",
+                "institution_value": 0,
+                "cost_basis": 0,
+                "quantity": 0,
+                "iso_currency_code": "string",
+                "unofficial_currency_code": "string",
+                "tax_lots": [
+                  {
+                    "institution_lot_id": "string",
+                    "original_purchase_datetime": "1970-01-01T00:00:00Z",
+                    "quantity": 0,
+                    "purchase_price": 0,
+                    "cost_basis": 0,
+                    "current_value": 0,
+                    "position_type": "LONG"
+                  }
+                ]
+              }
+            ],
+            "securities": [
+              {
+                "security_id": "string",
+                "name": "string",
+                "isin": "string",
+                "cusip": "string",
+                "institution_security_id": "string",
+                "institution_id": "string",
+                "ticker_symbol": "string",
+                "type": "string"
+              }
+            ],
+            "investment_transactions": [
+              {
+                "investment_transaction_id": "string",
+                "account_id": "string",
+                "security_id": "string",
+                "date": "1970-01-01",
+                "name": "string",
+                "quantity": 0,
+                "amount": 0,
+                "price": 0,
+                "fees": 0,
+                "type": "buy",
+                "subtype": "account fee",
+                "iso_currency_code": "string",
+                "unofficial_currency_code": "string"
+              }
+            ]
+          },
           "historical_balances": [
             {
               "date": "1970-01-01",
@@ -114499,7 +115717,63 @@ A unique ID identifying a User Monitoring Insights Report. Like all Plaid identi
           ]
         }
       ],
+      "holder_category": {},
       "ownership_type": null,
+      "investments": {
+        "holdings": [
+          {
+            "account_id": "string",
+            "security_id": "string",
+            "institution_price": 0,
+            "institution_price_as_of": "1970-01-01",
+            "institution_value": 0,
+            "cost_basis": 0,
+            "quantity": 0,
+            "iso_currency_code": "string",
+            "unofficial_currency_code": "string",
+            "tax_lots": [
+              {
+                "institution_lot_id": "string",
+                "original_purchase_datetime": "1970-01-01T00:00:00Z",
+                "quantity": 0,
+                "purchase_price": 0,
+                "cost_basis": 0,
+                "current_value": 0,
+                "position_type": "LONG"
+              }
+            ]
+          }
+        ],
+        "securities": [
+          {
+            "security_id": "string",
+            "name": "string",
+            "isin": "string",
+            "cusip": "string",
+            "institution_security_id": "string",
+            "institution_id": "string",
+            "ticker_symbol": "string",
+            "type": "string"
+          }
+        ],
+        "investment_transactions": [
+          {
+            "investment_transaction_id": "string",
+            "account_id": "string",
+            "security_id": "string",
+            "date": "1970-01-01",
+            "name": "string",
+            "quantity": 0,
+            "amount": 0,
+            "price": 0,
+            "fees": 0,
+            "type": "buy",
+            "subtype": "account fee",
+            "iso_currency_code": "string",
+            "unofficial_currency_code": "string"
+          }
+        ]
+      },
       "historical_balances": [
         {
           "date": "1970-01-01",
@@ -114710,7 +115984,11 @@ Describes the reason you are generating a Consumer Report for this user.
 
 `ACCOUNT_REVIEW_CREDIT`: In connection with a consumer credit transaction for the review or collection of an account pursuant to FCRA Section 604(a)(3)(A).
 
+`ACCOUNT_REVIEW_NON_CREDIT`: For a legitimate business need of the information to review a non-credit account provided primarily for personal, family, or household purposes to determine whether the consumer continues to meet the terms of the account pursuant to FCRA Section 604(a)(3)(F)(ii).
+
 `WRITTEN_INSTRUCTION_OTHER`: In accordance with the written instructions of the consumer pursuant to FCRA Section 604(a)(2), such as when an individual agrees to act as a guarantor or assumes personal liability for a consumer, business, or commercial loan.
+
+`SECONDARY_INVESTOR`: As a potential investor or servicer, or current insurer, in connection with a valuation of, or an assessment of the credit or prepayment risks associated with, an existing credit obligation pursuant to FCRA Section 604(a)(3)(E).
 
 <h2 id="tocS_MonitoringInsights">MonitoringInsights</h2>
 <!-- backwards compatibility -->
@@ -115291,7 +116569,63 @@ CraCheckReportBaseReportGetRequest defines the request schema for `/cra/check_re
                 ]
               }
             ],
+            "holder_category": {},
             "ownership_type": null,
+            "investments": {
+              "holdings": [
+                {
+                  "account_id": "string",
+                  "security_id": "string",
+                  "institution_price": 0,
+                  "institution_price_as_of": "1970-01-01",
+                  "institution_value": 0,
+                  "cost_basis": 0,
+                  "quantity": 0,
+                  "iso_currency_code": "string",
+                  "unofficial_currency_code": "string",
+                  "tax_lots": [
+                    {
+                      "institution_lot_id": "string",
+                      "original_purchase_datetime": "1970-01-01T00:00:00Z",
+                      "quantity": 0,
+                      "purchase_price": 0,
+                      "cost_basis": 0,
+                      "current_value": 0,
+                      "position_type": "LONG"
+                    }
+                  ]
+                }
+              ],
+              "securities": [
+                {
+                  "security_id": "string",
+                  "name": "string",
+                  "isin": "string",
+                  "cusip": "string",
+                  "institution_security_id": "string",
+                  "institution_id": "string",
+                  "ticker_symbol": "string",
+                  "type": "string"
+                }
+              ],
+              "investment_transactions": [
+                {
+                  "investment_transaction_id": "string",
+                  "account_id": "string",
+                  "security_id": "string",
+                  "date": "1970-01-01",
+                  "name": "string",
+                  "quantity": 0,
+                  "amount": 0,
+                  "price": 0,
+                  "fees": 0,
+                  "type": "buy",
+                  "subtype": "account fee",
+                  "iso_currency_code": "string",
+                  "unofficial_currency_code": "string"
+                }
+              ]
+            },
             "historical_balances": [
               {
                 "date": "1970-01-01",
@@ -116071,7 +117405,12 @@ The `asset_report_token` returned by the original call to `/asset_report/create`
         "cash_flow": {
           "amount": 0,
           "iso_currency_code": "string",
-          "unofficial_currency_code": "string"
+          "unofficial_currency_code": "string",
+          "monthly_average": {
+            "amount": 0,
+            "iso_currency_code": "string",
+            "unofficial_currency_code": "string"
+          }
         },
         "total_expenditure": {
           "amount": 0,
@@ -116092,6 +117431,17 @@ The `asset_report_token` returned by the original call to `/asset_report/create`
               "iso_currency_code": "string",
               "unofficial_currency_code": "string",
               "monthly_average": {
+                "amount": 0,
+                "iso_currency_code": "string",
+                "unofficial_currency_code": "string"
+              }
+            }
+          ],
+          "monthly_summaries": [
+            {
+              "start_date": "1970-01-01",
+              "end_date": "1970-01-01",
+              "total_amount": {
                 "amount": 0,
                 "iso_currency_code": "string",
                 "unofficial_currency_code": "string"
@@ -116123,6 +117473,17 @@ The `asset_report_token` returned by the original call to `/asset_report/create`
                 "unofficial_currency_code": "string"
               }
             }
+          ],
+          "monthly_summaries": [
+            {
+              "start_date": "1970-01-01",
+              "end_date": "1970-01-01",
+              "total_amount": {
+                "amount": 0,
+                "iso_currency_code": "string",
+                "unofficial_currency_code": "string"
+              }
+            }
           ]
         },
         "non_essential_expenditure": {
@@ -116149,9 +117510,20 @@ The `asset_report_token` returned by the original call to `/asset_report/create`
                 "unofficial_currency_code": "string"
               }
             }
+          ],
+          "monthly_summaries": [
+            {
+              "start_date": "1970-01-01",
+              "end_date": "1970-01-01",
+              "total_amount": {
+                "amount": 0,
+                "iso_currency_code": "string",
+                "unofficial_currency_code": "string"
+              }
+            }
           ]
         },
-        "other": {
+        "other_expenditure": {
           "amount": 0,
           "iso_currency_code": "string",
           "unofficial_currency_code": "string",
@@ -116170,6 +117542,17 @@ The `asset_report_token` returned by the original call to `/asset_report/create`
               "iso_currency_code": "string",
               "unofficial_currency_code": "string",
               "monthly_average": {
+                "amount": 0,
+                "iso_currency_code": "string",
+                "unofficial_currency_code": "string"
+              }
+            }
+          ],
+          "monthly_summaries": [
+            {
+              "start_date": "1970-01-01",
+              "end_date": "1970-01-01",
+              "total_amount": {
                 "amount": 0,
                 "iso_currency_code": "string",
                 "unofficial_currency_code": "string"
@@ -116196,6 +117579,17 @@ The `asset_report_token` returned by the original call to `/asset_report/create`
               "iso_currency_code": "string",
               "unofficial_currency_code": "string",
               "monthly_average": {
+                "amount": 0,
+                "iso_currency_code": "string",
+                "unofficial_currency_code": "string"
+              }
+            }
+          ],
+          "monthly_summaries": [
+            {
+              "start_date": "1970-01-01",
+              "end_date": "1970-01-01",
+              "total_amount": {
                 "amount": 0,
                 "iso_currency_code": "string",
                 "unofficial_currency_code": "string"
@@ -116230,17 +117624,32 @@ The `asset_report_token` returned by the original call to `/asset_report/create`
         "total_income": {
           "amount": 0,
           "iso_currency_code": "string",
-          "unofficial_currency_code": "string"
+          "unofficial_currency_code": "string",
+          "monthly_average": {
+            "amount": 0,
+            "iso_currency_code": "string",
+            "unofficial_currency_code": "string"
+          }
         },
         "income_excluding_transfers": {
           "amount": 0,
           "iso_currency_code": "string",
-          "unofficial_currency_code": "string"
+          "unofficial_currency_code": "string",
+          "monthly_average": {
+            "amount": 0,
+            "iso_currency_code": "string",
+            "unofficial_currency_code": "string"
+          }
         },
         "transfers_in": {
           "amount": 0,
           "iso_currency_code": "string",
-          "unofficial_currency_code": "string"
+          "unofficial_currency_code": "string",
+          "monthly_average": {
+            "amount": 0,
+            "iso_currency_code": "string",
+            "unofficial_currency_code": "string"
+          }
         }
       }
     }
@@ -116327,7 +117736,7 @@ The `asset_report_token` returned by the original call to `/asset_report/create`
               "pending_transaction_id": "string",
               "account_owner": "string",
               "transaction_id": "string",
-              "transaction_type": "digital",
+              "transaction_type": {},
               "income_source_id": "string"
             }
           ],
@@ -116337,6 +117746,7 @@ The `asset_report_token` returned by the original call to `/asset_report/create`
                 "account_id": "string",
                 "security_id": "string",
                 "ticker_symbol": "string",
+                "name": "string",
                 "institution_price": 0,
                 "institution_price_as_of": "1970-01-01",
                 "institution_value": 0,
@@ -116377,8 +117787,8 @@ The `asset_report_token` returned by the original call to `/asset_report/create`
                 "amount": 0,
                 "price": 0,
                 "fees": 0,
-                "type": "buy",
-                "subtype": "account fee",
+                "type": {},
+                "subtype": {},
                 "iso_currency_code": "string",
                 "unofficial_currency_code": "string"
               }
@@ -116601,7 +118011,12 @@ The `asset_report_token` returned by the original call to `/asset_report/create`
                 "cash_flow": {
                   "amount": 0,
                   "iso_currency_code": "string",
-                  "unofficial_currency_code": "string"
+                  "unofficial_currency_code": "string",
+                  "monthly_average": {
+                    "amount": 0,
+                    "iso_currency_code": "string",
+                    "unofficial_currency_code": "string"
+                  }
                 },
                 "total_expenditure": {
                   "amount": 0,
@@ -116622,6 +118037,17 @@ The `asset_report_token` returned by the original call to `/asset_report/create`
                       "iso_currency_code": "string",
                       "unofficial_currency_code": "string",
                       "monthly_average": {
+                        "amount": 0,
+                        "iso_currency_code": "string",
+                        "unofficial_currency_code": "string"
+                      }
+                    }
+                  ],
+                  "monthly_summaries": [
+                    {
+                      "start_date": "1970-01-01",
+                      "end_date": "1970-01-01",
+                      "total_amount": {
                         "amount": 0,
                         "iso_currency_code": "string",
                         "unofficial_currency_code": "string"
@@ -116653,6 +118079,17 @@ The `asset_report_token` returned by the original call to `/asset_report/create`
                         "unofficial_currency_code": "string"
                       }
                     }
+                  ],
+                  "monthly_summaries": [
+                    {
+                      "start_date": "1970-01-01",
+                      "end_date": "1970-01-01",
+                      "total_amount": {
+                        "amount": 0,
+                        "iso_currency_code": "string",
+                        "unofficial_currency_code": "string"
+                      }
+                    }
                   ]
                 },
                 "non_essential_expenditure": {
@@ -116679,9 +118116,20 @@ The `asset_report_token` returned by the original call to `/asset_report/create`
                         "unofficial_currency_code": "string"
                       }
                     }
+                  ],
+                  "monthly_summaries": [
+                    {
+                      "start_date": "1970-01-01",
+                      "end_date": "1970-01-01",
+                      "total_amount": {
+                        "amount": 0,
+                        "iso_currency_code": "string",
+                        "unofficial_currency_code": "string"
+                      }
+                    }
                   ]
                 },
-                "other": {
+                "other_expenditure": {
                   "amount": 0,
                   "iso_currency_code": "string",
                   "unofficial_currency_code": "string",
@@ -116700,6 +118148,17 @@ The `asset_report_token` returned by the original call to `/asset_report/create`
                       "iso_currency_code": "string",
                       "unofficial_currency_code": "string",
                       "monthly_average": {
+                        "amount": 0,
+                        "iso_currency_code": "string",
+                        "unofficial_currency_code": "string"
+                      }
+                    }
+                  ],
+                  "monthly_summaries": [
+                    {
+                      "start_date": "1970-01-01",
+                      "end_date": "1970-01-01",
+                      "total_amount": {
                         "amount": 0,
                         "iso_currency_code": "string",
                         "unofficial_currency_code": "string"
@@ -116726,6 +118185,17 @@ The `asset_report_token` returned by the original call to `/asset_report/create`
                       "iso_currency_code": "string",
                       "unofficial_currency_code": "string",
                       "monthly_average": {
+                        "amount": 0,
+                        "iso_currency_code": "string",
+                        "unofficial_currency_code": "string"
+                      }
+                    }
+                  ],
+                  "monthly_summaries": [
+                    {
+                      "start_date": "1970-01-01",
+                      "end_date": "1970-01-01",
+                      "total_amount": {
                         "amount": 0,
                         "iso_currency_code": "string",
                         "unofficial_currency_code": "string"
@@ -116760,17 +118230,32 @@ The `asset_report_token` returned by the original call to `/asset_report/create`
                 "total_income": {
                   "amount": 0,
                   "iso_currency_code": "string",
-                  "unofficial_currency_code": "string"
+                  "unofficial_currency_code": "string",
+                  "monthly_average": {
+                    "amount": 0,
+                    "iso_currency_code": "string",
+                    "unofficial_currency_code": "string"
+                  }
                 },
                 "income_excluding_transfers": {
                   "amount": 0,
                   "iso_currency_code": "string",
-                  "unofficial_currency_code": "string"
+                  "unofficial_currency_code": "string",
+                  "monthly_average": {
+                    "amount": 0,
+                    "iso_currency_code": "string",
+                    "unofficial_currency_code": "string"
+                  }
                 },
                 "transfers_in": {
                   "amount": 0,
                   "iso_currency_code": "string",
-                  "unofficial_currency_code": "string"
+                  "unofficial_currency_code": "string",
+                  "monthly_average": {
+                    "amount": 0,
+                    "iso_currency_code": "string",
+                    "unofficial_currency_code": "string"
+                  }
                 }
               }
             }
@@ -116873,7 +118358,7 @@ An object representing an Asset Report
           "pending_transaction_id": "string",
           "account_owner": "string",
           "transaction_id": "string",
-          "transaction_type": "digital",
+          "transaction_type": {},
           "income_source_id": "string"
         }
       ],
@@ -116883,6 +118368,7 @@ An object representing an Asset Report
             "account_id": "string",
             "security_id": "string",
             "ticker_symbol": "string",
+            "name": "string",
             "institution_price": 0,
             "institution_price_as_of": "1970-01-01",
             "institution_value": 0,
@@ -116923,8 +118409,8 @@ An object representing an Asset Report
             "amount": 0,
             "price": 0,
             "fees": 0,
-            "type": "buy",
-            "subtype": "account fee",
+            "type": {},
+            "subtype": {},
             "iso_currency_code": "string",
             "unofficial_currency_code": "string"
           }
@@ -117147,7 +118633,12 @@ An object representing an Asset Report
             "cash_flow": {
               "amount": 0,
               "iso_currency_code": "string",
-              "unofficial_currency_code": "string"
+              "unofficial_currency_code": "string",
+              "monthly_average": {
+                "amount": 0,
+                "iso_currency_code": "string",
+                "unofficial_currency_code": "string"
+              }
             },
             "total_expenditure": {
               "amount": 0,
@@ -117168,6 +118659,17 @@ An object representing an Asset Report
                   "iso_currency_code": "string",
                   "unofficial_currency_code": "string",
                   "monthly_average": {
+                    "amount": 0,
+                    "iso_currency_code": "string",
+                    "unofficial_currency_code": "string"
+                  }
+                }
+              ],
+              "monthly_summaries": [
+                {
+                  "start_date": "1970-01-01",
+                  "end_date": "1970-01-01",
+                  "total_amount": {
                     "amount": 0,
                     "iso_currency_code": "string",
                     "unofficial_currency_code": "string"
@@ -117199,6 +118701,17 @@ An object representing an Asset Report
                     "unofficial_currency_code": "string"
                   }
                 }
+              ],
+              "monthly_summaries": [
+                {
+                  "start_date": "1970-01-01",
+                  "end_date": "1970-01-01",
+                  "total_amount": {
+                    "amount": 0,
+                    "iso_currency_code": "string",
+                    "unofficial_currency_code": "string"
+                  }
+                }
               ]
             },
             "non_essential_expenditure": {
@@ -117225,9 +118738,20 @@ An object representing an Asset Report
                     "unofficial_currency_code": "string"
                   }
                 }
+              ],
+              "monthly_summaries": [
+                {
+                  "start_date": "1970-01-01",
+                  "end_date": "1970-01-01",
+                  "total_amount": {
+                    "amount": 0,
+                    "iso_currency_code": "string",
+                    "unofficial_currency_code": "string"
+                  }
+                }
               ]
             },
-            "other": {
+            "other_expenditure": {
               "amount": 0,
               "iso_currency_code": "string",
               "unofficial_currency_code": "string",
@@ -117246,6 +118770,17 @@ An object representing an Asset Report
                   "iso_currency_code": "string",
                   "unofficial_currency_code": "string",
                   "monthly_average": {
+                    "amount": 0,
+                    "iso_currency_code": "string",
+                    "unofficial_currency_code": "string"
+                  }
+                }
+              ],
+              "monthly_summaries": [
+                {
+                  "start_date": "1970-01-01",
+                  "end_date": "1970-01-01",
+                  "total_amount": {
                     "amount": 0,
                     "iso_currency_code": "string",
                     "unofficial_currency_code": "string"
@@ -117272,6 +118807,17 @@ An object representing an Asset Report
                   "iso_currency_code": "string",
                   "unofficial_currency_code": "string",
                   "monthly_average": {
+                    "amount": 0,
+                    "iso_currency_code": "string",
+                    "unofficial_currency_code": "string"
+                  }
+                }
+              ],
+              "monthly_summaries": [
+                {
+                  "start_date": "1970-01-01",
+                  "end_date": "1970-01-01",
+                  "total_amount": {
                     "amount": 0,
                     "iso_currency_code": "string",
                     "unofficial_currency_code": "string"
@@ -117306,17 +118852,32 @@ An object representing an Asset Report
             "total_income": {
               "amount": 0,
               "iso_currency_code": "string",
-              "unofficial_currency_code": "string"
+              "unofficial_currency_code": "string",
+              "monthly_average": {
+                "amount": 0,
+                "iso_currency_code": "string",
+                "unofficial_currency_code": "string"
+              }
             },
             "income_excluding_transfers": {
               "amount": 0,
               "iso_currency_code": "string",
-              "unofficial_currency_code": "string"
+              "unofficial_currency_code": "string",
+              "monthly_average": {
+                "amount": 0,
+                "iso_currency_code": "string",
+                "unofficial_currency_code": "string"
+              }
             },
             "transfers_in": {
               "amount": 0,
               "iso_currency_code": "string",
-              "unofficial_currency_code": "string"
+              "unofficial_currency_code": "string",
+              "monthly_average": {
+                "amount": 0,
+                "iso_currency_code": "string",
+                "unofficial_currency_code": "string"
+              }
             }
           }
         }
@@ -117409,7 +118970,7 @@ A representation of an Item within an Asset Report.
       "pending_transaction_id": "string",
       "account_owner": "string",
       "transaction_id": "string",
-      "transaction_type": "digital",
+      "transaction_type": {},
       "income_source_id": "string"
     }
   ],
@@ -117419,6 +118980,7 @@ A representation of an Item within an Asset Report.
         "account_id": "string",
         "security_id": "string",
         "ticker_symbol": "string",
+        "name": "string",
         "institution_price": 0,
         "institution_price_as_of": "1970-01-01",
         "institution_value": 0,
@@ -117459,8 +119021,8 @@ A representation of an Item within an Asset Report.
         "amount": 0,
         "price": 0,
         "fees": 0,
-        "type": "buy",
-        "subtype": "account fee",
+        "type": {},
+        "subtype": {},
         "iso_currency_code": "string",
         "unofficial_currency_code": "string"
       }
@@ -117683,7 +119245,12 @@ A representation of an Item within an Asset Report.
         "cash_flow": {
           "amount": 0,
           "iso_currency_code": "string",
-          "unofficial_currency_code": "string"
+          "unofficial_currency_code": "string",
+          "monthly_average": {
+            "amount": 0,
+            "iso_currency_code": "string",
+            "unofficial_currency_code": "string"
+          }
         },
         "total_expenditure": {
           "amount": 0,
@@ -117704,6 +119271,17 @@ A representation of an Item within an Asset Report.
               "iso_currency_code": "string",
               "unofficial_currency_code": "string",
               "monthly_average": {
+                "amount": 0,
+                "iso_currency_code": "string",
+                "unofficial_currency_code": "string"
+              }
+            }
+          ],
+          "monthly_summaries": [
+            {
+              "start_date": "1970-01-01",
+              "end_date": "1970-01-01",
+              "total_amount": {
                 "amount": 0,
                 "iso_currency_code": "string",
                 "unofficial_currency_code": "string"
@@ -117735,6 +119313,17 @@ A representation of an Item within an Asset Report.
                 "unofficial_currency_code": "string"
               }
             }
+          ],
+          "monthly_summaries": [
+            {
+              "start_date": "1970-01-01",
+              "end_date": "1970-01-01",
+              "total_amount": {
+                "amount": 0,
+                "iso_currency_code": "string",
+                "unofficial_currency_code": "string"
+              }
+            }
           ]
         },
         "non_essential_expenditure": {
@@ -117761,9 +119350,20 @@ A representation of an Item within an Asset Report.
                 "unofficial_currency_code": "string"
               }
             }
+          ],
+          "monthly_summaries": [
+            {
+              "start_date": "1970-01-01",
+              "end_date": "1970-01-01",
+              "total_amount": {
+                "amount": 0,
+                "iso_currency_code": "string",
+                "unofficial_currency_code": "string"
+              }
+            }
           ]
         },
-        "other": {
+        "other_expenditure": {
           "amount": 0,
           "iso_currency_code": "string",
           "unofficial_currency_code": "string",
@@ -117782,6 +119382,17 @@ A representation of an Item within an Asset Report.
               "iso_currency_code": "string",
               "unofficial_currency_code": "string",
               "monthly_average": {
+                "amount": 0,
+                "iso_currency_code": "string",
+                "unofficial_currency_code": "string"
+              }
+            }
+          ],
+          "monthly_summaries": [
+            {
+              "start_date": "1970-01-01",
+              "end_date": "1970-01-01",
+              "total_amount": {
                 "amount": 0,
                 "iso_currency_code": "string",
                 "unofficial_currency_code": "string"
@@ -117808,6 +119419,17 @@ A representation of an Item within an Asset Report.
               "iso_currency_code": "string",
               "unofficial_currency_code": "string",
               "monthly_average": {
+                "amount": 0,
+                "iso_currency_code": "string",
+                "unofficial_currency_code": "string"
+              }
+            }
+          ],
+          "monthly_summaries": [
+            {
+              "start_date": "1970-01-01",
+              "end_date": "1970-01-01",
+              "total_amount": {
                 "amount": 0,
                 "iso_currency_code": "string",
                 "unofficial_currency_code": "string"
@@ -117842,17 +119464,32 @@ A representation of an Item within an Asset Report.
         "total_income": {
           "amount": 0,
           "iso_currency_code": "string",
-          "unofficial_currency_code": "string"
+          "unofficial_currency_code": "string",
+          "monthly_average": {
+            "amount": 0,
+            "iso_currency_code": "string",
+            "unofficial_currency_code": "string"
+          }
         },
         "income_excluding_transfers": {
           "amount": 0,
           "iso_currency_code": "string",
-          "unofficial_currency_code": "string"
+          "unofficial_currency_code": "string",
+          "monthly_average": {
+            "amount": 0,
+            "iso_currency_code": "string",
+            "unofficial_currency_code": "string"
+          }
         },
         "transfers_in": {
           "amount": 0,
           "iso_currency_code": "string",
-          "unofficial_currency_code": "string"
+          "unofficial_currency_code": "string",
+          "monthly_average": {
+            "amount": 0,
+            "iso_currency_code": "string",
+            "unofficial_currency_code": "string"
+          }
         }
       }
     }
@@ -117871,13 +119508,13 @@ Asset information about an account
 |mask|string \| null|true|none|The last 2-4 alphanumeric characters of an account's official account number. Note that the mask may be non-unique between an Item's accounts, and it may also not match the mask that the bank displays to the user.|
 |name|string|true|none|The name of the account, either assigned by the user or by the financial institution itself|
 |official_name|string \| null|true|none|The official name of the account as given by the financial institution|
-|type|[AccountType](#schemaaccounttype)|true|none|`investment:` Investment account. In API versions 2018-05-22 and earlier, this type is called `brokerage` instead.<br><br>`credit:` Credit card<br><br>`depository:` Depository account<br><br>`loan:` Loan account<br><br>`other:` Non-specified account type<br><br>See the [Account type schema](https://plaid.com/docs/api/accounts#account-type-schema) for a full listing of account types and corresponding subtypes.|
+|type|[AccountType](#schemaaccounttype)|true|none|`investment:` Investment account. In API versions 2018-05-22 and earlier, this type is called `brokerage` instead.<br><br>`credit:` Credit card<br><br>`depository:` Depository account<br><br>`loan:` Loan account<br><br>`payroll:` Payroll account<br><br>`other:` Non-specified account type<br><br>See the [Account type schema](https://plaid.com/docs/api/accounts#account-type-schema) for a full listing of account types and corresponding subtypes.|
 |subtype|[AccountSubtype](#schemaaccountsubtype)|true|none|See the [Account type schema](https://plaid.com/docs/api/accounts/#account-type-schema) for a full listing of account types and corresponding subtypes.|
 |verification_status|string|false|none|The current verification status of an Auth Item initiated through Automated or Manual micro-deposits.  Returned for Auth Items only.<br><br>`pending_automatic_verification`: The Item is pending automatic verification.<br><br>`pending_manual_verification`: The Item is pending manual micro-deposit verification. Items remain in this state until the user successfully verifies the micro-deposit.<br><br>`automatically_verified`: The Item has successfully been automatically verified.<br><br>`manually_verified`: The Item has successfully been manually verified.<br><br>`verification_expired`: Plaid was unable to automatically verify the deposit within 7 calendar days and will no longer attempt to validate the Item. Users may retry by submitting their information again through Link.<br><br>`verification_failed`: The Item failed manual micro-deposit verification because the user exhausted all 3 verification attempts. Users may retry by submitting their information again through Link.<br><br>`database_matched`: (deprecated) The Item has successfully been verified using Plaid's data sources. Only returned for Auth Items created via Database Match.|
 |persistent_account_id|string|false|none|A unique and persistent identifier for accounts that can be used to trace multiple instances of the same account across different Items for depository accounts. This is currently an opt-in field and only supported for Chase Items.|
 |days_available|number|true|none|The duration of transaction history available within this report for this Item, typically defined as the time since the date of the earliest transaction in that account.|
 |transactions|[[AssetReportTransaction](#schemaassetreporttransaction)]|true|none|Transaction history associated with the account.|
-|investments|[AssetReportInvestments](#schemaassetreportinvestments)|false|none|A set of fields describing the investments data on an account.|
+|investments|object \| null|false|none|none|
 |owners|[[Owner](#schemaowner)]|true|none|Data returned by the financial institution about the account owner or owners. For business accounts, the name reported may be either the name of the individual or the name of the business, depending on the institution. Multiple owners on a single account will be represented in the same `owner` object, not in multiple owner objects within the array. In API versions 2018-05-22 and earlier, the `owners` object is not returned, and instead identity information is returned in the top level `identity` object. For more details, see [Plaid API versioning](https://plaid.com/docs/api/versioning/#version-2019-05-29)|
 |ownership_type|[OwnershipType](#schemaownershiptype)|false|none|How an asset is owned.<br><br>`association`: Ownership by a corporation, partnership, or unincorporated association, including for-profit and not-for-profit organizations.<br><br>`individual`: Ownership by an individual.<br><br>`joint`: Joint ownership by multiple parties.<br><br>`trust`: Ownership by a revocable or irrevocable trust.|
 |historical_balances|[[HistoricalBalance](#schemahistoricalbalance)]|true|none|Calculated data about the historical balances on the account.<br><br>Available for `credit` and `depository` type accounts.|
@@ -117892,12 +119529,14 @@ Asset information about an account
 |type|depository|
 |type|loan|
 |type|brokerage|
+|type|payroll|
 |type|other|
 |subtype|401a|
 |subtype|401k|
 |subtype|403B|
 |subtype|457b|
 |subtype|529|
+|subtype|530a|
 |subtype|auto|
 |subtype|brokerage|
 |subtype|business|
@@ -118001,6 +119640,7 @@ Asset information about an account
       "account_id": "string",
       "security_id": "string",
       "ticker_symbol": "string",
+      "name": "string",
       "institution_price": 0,
       "institution_price_as_of": "1970-01-01",
       "institution_value": 0,
@@ -118041,8 +119681,8 @@ Asset information about an account
       "amount": 0,
       "price": 0,
       "fees": 0,
-      "type": "buy",
-      "subtype": "account fee",
+      "type": {},
+      "subtype": {},
       "iso_currency_code": "string",
       "unofficial_currency_code": "string"
     }
@@ -118056,9 +119696,9 @@ A set of fields describing the investments data on an account.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|holdings|[[AssetReportInvestmentHolding](#schemaassetreportinvestmentholding)]|false|none|Quantities and values of securities held in the investment account. Map to the `securities` array for security details.|
-|securities|[[AssetReportInvestmentSecurity](#schemaassetreportinvestmentsecurity)]|false|none|Details of specific securities held in on the investment account.|
-|transactions|[[AssetReportInvestmentTransaction](#schemaassetreportinvestmenttransaction)]|false|none|Transaction history on the investment account.|
+|holdings|[[AssetReportInvestmentHolding](#schemaassetreportinvestmentholding)]|true|none|Quantities and values of securities held in the investment account. Map to the `securities` array for security details.|
+|securities|[[AssetReportInvestmentSecurity](#schemaassetreportinvestmentsecurity)]|true|none|Details of specific securities held in on the investment account.|
+|transactions|[[AssetReportInvestmentTransaction](#schemaassetreportinvestmenttransaction)]|true|none|Transaction history on the investment account.|
 
 <h2 id="tocS_AssetReportAccountBalance">AssetReportAccountBalance</h2>
 <!-- backwards compatibility -->
@@ -118111,8 +119751,8 @@ A set of fields describing the balance for an account. Balance information may b
   "amount": 0,
   "price": 0,
   "fees": 0,
-  "type": "buy",
-  "subtype": "account fee",
+  "type": {},
+  "subtype": {},
   "iso_currency_code": "string",
   "unofficial_currency_code": "string"
 }
@@ -118128,71 +119768,15 @@ A transaction within an investment account.
 |account_id|string|true|none|The `account_id` of the account against which this transaction posted.|
 |security_id|string \| null|true|none|The `security_id` to which this transaction is related.|
 |date|string(date)|true|none|The [ISO 8601](https://wikipedia.org/wiki/ISO_8601) posting date for the transaction.|
-|name|string|true|none|The institution's description of the transaction.|
-|quantity|number(double)|true|none|The number of units of the security involved in this transaction. Positive for buy transactions; negative for sell transactions.|
-|amount|number(double)|true|none|The complete value of the transaction. Positive values when cash is debited, e.g. purchases of stock; negative values when cash is credited, e.g. sales of stock. Treatment remains the same for cash-only movements unassociated with securities. For transactions representing a simultaneous cash contribution and purchase of a security, the portion of the transaction representing the purchase takes precedence, and the `amount` is represented as positive.|
-|price|number(double)|true|none|The price of the security at which this transaction occurred.|
+|name|string \| null|true|none|The institution's description of the transaction.|
+|quantity|number(double) \| null|true|none|The number of units of the security involved in this transaction. Positive for buy transactions; negative for sell transactions.|
+|amount|number(double) \| null|true|none|The complete value of the transaction. Positive values when cash is debited, e.g. purchases of stock; negative values when cash is credited, e.g. sales of stock. Treatment remains the same for cash-only movements unassociated with securities. For transactions representing a simultaneous cash contribution and purchase of a security, the portion of the transaction representing the purchase takes precedence, and the `amount` is represented as positive.|
+|price|number(double) \| null|true|none|The price of the security at which this transaction occurred.|
 |fees|number(double) \| null|true|none|The combined value of all fees applied to this transaction|
-|type|[InvestmentTransactionType](#schemainvestmenttransactiontype)|true|none|Value is one of the following:<br><br>`buy`: Buying an investment<br><br>`sell`: Selling an investment<br><br>`cancel`: A cancellation of a pending transaction<br><br>`cash`: Activity that modifies a cash position<br><br>`fee`: A fee on the account<br><br>`transfer`: Activity which modifies a position, but not through buy/sell activity e.g. options exercise, portfolio transfer<br><br>For descriptions of possible transaction types and subtypes, see the [Investment transaction types schema](https://plaid.com/docs/api/accounts/#investment-transaction-types-schema).|
-|subtype|[InvestmentTransactionSubtype](#schemainvestmenttransactionsubtype)|true|none|For descriptions of possible transaction types and subtypes, see the [Investment transaction types schema](https://plaid.com/docs/api/accounts/#investment-transaction-types-schema).|
+|type|object \| null|true|none|none|
+|subtype|object \| null|true|none|none|
 |iso_currency_code|string \| null|true|none|The ISO-4217 currency code of the transaction. Always `null` if `unofficial_currency_code` is non-`null`.|
 |unofficial_currency_code|string \| null|true|none|The unofficial currency code associated with the transaction. Always `null` if `iso_currency_code` is non-`null`. Unofficial currency codes are used for currencies that do not have official ISO currency codes, such as cryptocurrencies and the currencies of certain countries.<br><br>See the [currency code schema](https://plaid.com/docs/api/accounts#currency-code-schema) for a full listing of supported `unofficial_currency_code`s.|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|buy|
-|type|sell|
-|type|cancel|
-|type|cash|
-|type|fee|
-|type|transfer|
-|subtype|account fee|
-|subtype|adjustment|
-|subtype|assignment|
-|subtype|buy|
-|subtype|buy to cover|
-|subtype|contribution|
-|subtype|deposit|
-|subtype|distribution|
-|subtype|dividend|
-|subtype|dividend reinvestment|
-|subtype|exercise|
-|subtype|expire|
-|subtype|interest|
-|subtype|interest receivable|
-|subtype|interest reinvestment|
-|subtype|legal fee|
-|subtype|long-term capital gain|
-|subtype|long-term capital gain reinvestment|
-|subtype|management fee|
-|subtype|margin expense|
-|subtype|merger|
-|subtype|miscellaneous fee|
-|subtype|non-qualified dividend|
-|subtype|non-resident tax|
-|subtype|pending credit|
-|subtype|pending debit|
-|subtype|qualified dividend|
-|subtype|return of principal|
-|subtype|request|
-|subtype|sell|
-|subtype|sell short|
-|subtype|send|
-|subtype|short-term capital gain|
-|subtype|short-term capital gain reinvestment|
-|subtype|spin off|
-|subtype|split|
-|subtype|stock distribution|
-|subtype|tax|
-|subtype|tax withheld|
-|subtype|trade|
-|subtype|transfer|
-|subtype|transfer fee|
-|subtype|trust fee|
-|subtype|unqualified gain|
-|subtype|withdrawal|
 
 <h2 id="tocS_AssetReportInvestmentHolding">AssetReportInvestmentHolding</h2>
 <!-- backwards compatibility -->
@@ -118206,6 +119790,7 @@ A transaction within an investment account.
   "account_id": "string",
   "security_id": "string",
   "ticker_symbol": "string",
+  "name": "string",
   "institution_price": 0,
   "institution_price_as_of": "1970-01-01",
   "institution_value": 0,
@@ -118237,10 +119822,11 @@ A securities holding at an institution.
 |account_id|string|true|none|The Plaid `account_id` associated with the holding.|
 |security_id|string|true|none|The Plaid `security_id` associated with the holding. Security data is not specific to a user's account; any user who held the same security at the same financial institution at the same time would have identical security data. The `security_id` for the same security will typically be the same across different institutions, but this is not guaranteed. The `security_id` does not typically change, but may change if inherent details of the security change due to a corporate action, for example, in the event of a ticker symbol change or CUSIP change.|
 |ticker_symbol|string \| null|true|none|The holding's trading symbol for publicly traded holdings, and otherwise a short identifier if available.|
-|institution_price|number(double)|true|none|The last price given by the institution for this security.|
+|name|string \| null|true|none|The name of the security.|
+|institution_price|number(double) \| null|true|none|The last price given by the institution for this security.|
 |institution_price_as_of|string(date) \| null|false|none|The date at which `institution_price` was current.|
-|institution_value|number(double)|true|none|The value of the holding, as reported by the institution.|
-|quantity|number(double)|true|none|The total quantity of the asset held, as reported by the financial institution. If the security is an option, `quantity` will reflect the total number of options (typically the number of contracts multiplied by 100), not the number of contracts.|
+|institution_value|number(double) \| null|true|none|The value of the holding, as reported by the institution.|
+|quantity|number(double) \| null|true|none|The total quantity of the asset held, as reported by the financial institution. If the security is an option, `quantity` will reflect the total number of options (typically the number of contracts multiplied by 100), not the number of contracts.|
 |vested_quantity|number(double) \| null|false|none|The total quantity of vested assets held, as reported by the financial institution. Vested assets are only associated with [equities](https://plaid.com/docs/api/products/investments/#investments-holdings-get-response-securities-type).|
 |vested_value|number(double) \| null|false|none|The value of the vested holdings as reported by the institution.|
 |iso_currency_code|string \| null|true|none|The ISO-4217 currency code of the holding. Always `null` if `unofficial_currency_code` is non-`null`.|
@@ -118346,7 +119932,7 @@ How an asset is owned.
   "pending_transaction_id": "string",
   "account_owner": "string",
   "transaction_id": "string",
-  "transaction_type": "digital",
+  "transaction_type": {},
   "income_source_id": "string"
 }
 ```
@@ -118368,25 +119954,16 @@ A transaction on the asset report
 |check_number|string \| null|false|none|The check number of the transaction. This field is only populated for check transactions.|
 |date|string(date)|true|none|For pending transactions, the date that the transaction occurred; for posted transactions, the date that the transaction posted. Both dates are returned in an [ISO 8601](https://wikipedia.org/wiki/ISO_8601) format ( `YYYY-MM-DD` ).|
 |date_transacted|string \| null|false|none|The date on which the transaction took place, in ISO 8601 format.|
-|location|[Location](#schemalocation)|false|none|A representation of where a transaction took place. Location data is provided only for transactions at physical locations, not for online transactions. Location data availability depends primarily on the merchant and is most likely to be populated for transactions at large retail chains; small, local businesses are less likely to have location data available.|
-|name|string|false|none|**Deprecated.** The merchant name or transaction description. This is a legacy field that is no longer maintained. For merchant name, use the `merchant_name` field. For description, use the `original_description` field.<br><br>This field will only appear in an Asset Report with Insights.|
+|location|object \| null|false|none|none|
+|name|string \| null|false|none|**Deprecated.** The merchant name or transaction description. This is a legacy field that is no longer maintained. For merchant name, use the `merchant_name` field. For description, use the `original_description` field.<br><br>This field will only appear in an Asset Report with Insights.|
 |merchant_name|string \| null|false|none|The merchant name, as enriched by Plaid. This is typically a more human-readable version of the merchant counterparty in the transaction. For some bank transactions (such as checks or account transfers) where there is no meaningful merchant name, this value will be `null`.|
-|payment_meta|[PaymentMeta](#schemapaymentmeta)|false|none|Transaction information specific to inter-bank transfers. If the transaction was not an inter-bank transfer, all fields will be `null`.<br><br>If the `transactions` object was returned by a Transactions endpoint such as `/transactions/sync` or `/transactions/get`, the `payment_meta` key will always appear, but no data elements are guaranteed. If the `transactions` object was returned by an Assets endpoint such as `/asset_report/get` or `/asset_report/pdf/get`, this field will only appear in an Asset Report with Insights.|
+|payment_meta|object \| null|false|none|none|
 |pending|boolean|true|none|When `true`, identifies the transaction as pending or unsettled. Pending transaction details (name, type, amount, category ID) may change before they are settled.|
 |pending_transaction_id|string \| null|false|none|The ID of a posted transaction's associated pending transaction, where applicable.|
 |account_owner|string \| null|false|none|The name of the account owner. This field is not typically populated and only relevant when dealing with sub-accounts.|
 |transaction_id|string|true|none|The unique ID of the transaction. Like all Plaid identifiers, the `transaction_id` is case sensitive.|
-|transaction_type|[AssetReportTransactionType](#schemaassetreporttransactiontype)|false|none|`digital:` transactions that took place online.<br><br>`place:` transactions that were made at a physical location.<br><br>`special:` transactions that relate to banks, e.g. fees or deposits.<br><br>`unresolved:` transactions that do not fit into the other three types.<br>|
+|transaction_type|object \| null|false|none|none|
 |income_source_id|string|false|none|A unique identifier for an income source.|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|transaction_type|digital|
-|transaction_type|place|
-|transaction_type|special|
-|transaction_type|unresolved|
 
 <h2 id="tocS_AssetReportTransactionType">AssetReportTransactionType</h2>
 <!-- backwards compatibility -->
@@ -118590,7 +120167,12 @@ A transaction on the asset report
       "cash_flow": {
         "amount": 0,
         "iso_currency_code": "string",
-        "unofficial_currency_code": "string"
+        "unofficial_currency_code": "string",
+        "monthly_average": {
+          "amount": 0,
+          "iso_currency_code": "string",
+          "unofficial_currency_code": "string"
+        }
       },
       "total_expenditure": {
         "amount": 0,
@@ -118611,6 +120193,17 @@ A transaction on the asset report
             "iso_currency_code": "string",
             "unofficial_currency_code": "string",
             "monthly_average": {
+              "amount": 0,
+              "iso_currency_code": "string",
+              "unofficial_currency_code": "string"
+            }
+          }
+        ],
+        "monthly_summaries": [
+          {
+            "start_date": "1970-01-01",
+            "end_date": "1970-01-01",
+            "total_amount": {
               "amount": 0,
               "iso_currency_code": "string",
               "unofficial_currency_code": "string"
@@ -118642,6 +120235,17 @@ A transaction on the asset report
               "unofficial_currency_code": "string"
             }
           }
+        ],
+        "monthly_summaries": [
+          {
+            "start_date": "1970-01-01",
+            "end_date": "1970-01-01",
+            "total_amount": {
+              "amount": 0,
+              "iso_currency_code": "string",
+              "unofficial_currency_code": "string"
+            }
+          }
         ]
       },
       "non_essential_expenditure": {
@@ -118668,9 +120272,20 @@ A transaction on the asset report
               "unofficial_currency_code": "string"
             }
           }
+        ],
+        "monthly_summaries": [
+          {
+            "start_date": "1970-01-01",
+            "end_date": "1970-01-01",
+            "total_amount": {
+              "amount": 0,
+              "iso_currency_code": "string",
+              "unofficial_currency_code": "string"
+            }
+          }
         ]
       },
-      "other": {
+      "other_expenditure": {
         "amount": 0,
         "iso_currency_code": "string",
         "unofficial_currency_code": "string",
@@ -118689,6 +120304,17 @@ A transaction on the asset report
             "iso_currency_code": "string",
             "unofficial_currency_code": "string",
             "monthly_average": {
+              "amount": 0,
+              "iso_currency_code": "string",
+              "unofficial_currency_code": "string"
+            }
+          }
+        ],
+        "monthly_summaries": [
+          {
+            "start_date": "1970-01-01",
+            "end_date": "1970-01-01",
+            "total_amount": {
               "amount": 0,
               "iso_currency_code": "string",
               "unofficial_currency_code": "string"
@@ -118715,6 +120341,17 @@ A transaction on the asset report
             "iso_currency_code": "string",
             "unofficial_currency_code": "string",
             "monthly_average": {
+              "amount": 0,
+              "iso_currency_code": "string",
+              "unofficial_currency_code": "string"
+            }
+          }
+        ],
+        "monthly_summaries": [
+          {
+            "start_date": "1970-01-01",
+            "end_date": "1970-01-01",
+            "total_amount": {
               "amount": 0,
               "iso_currency_code": "string",
               "unofficial_currency_code": "string"
@@ -118749,17 +120386,32 @@ A transaction on the asset report
       "total_income": {
         "amount": 0,
         "iso_currency_code": "string",
-        "unofficial_currency_code": "string"
+        "unofficial_currency_code": "string",
+        "monthly_average": {
+          "amount": 0,
+          "iso_currency_code": "string",
+          "unofficial_currency_code": "string"
+        }
       },
       "income_excluding_transfers": {
         "amount": 0,
         "iso_currency_code": "string",
-        "unofficial_currency_code": "string"
+        "unofficial_currency_code": "string",
+        "monthly_average": {
+          "amount": 0,
+          "iso_currency_code": "string",
+          "unofficial_currency_code": "string"
+        }
       },
       "transfers_in": {
         "amount": 0,
         "iso_currency_code": "string",
-        "unofficial_currency_code": "string"
+        "unofficial_currency_code": "string",
+        "monthly_average": {
+          "amount": 0,
+          "iso_currency_code": "string",
+          "unofficial_currency_code": "string"
+        }
       }
     }
   }
@@ -118788,7 +120440,12 @@ This is a container object for all lending-related insights. This field will be 
     "cash_flow": {
       "amount": 0,
       "iso_currency_code": "string",
-      "unofficial_currency_code": "string"
+      "unofficial_currency_code": "string",
+      "monthly_average": {
+        "amount": 0,
+        "iso_currency_code": "string",
+        "unofficial_currency_code": "string"
+      }
     },
     "total_expenditure": {
       "amount": 0,
@@ -118809,6 +120466,17 @@ This is a container object for all lending-related insights. This field will be 
           "iso_currency_code": "string",
           "unofficial_currency_code": "string",
           "monthly_average": {
+            "amount": 0,
+            "iso_currency_code": "string",
+            "unofficial_currency_code": "string"
+          }
+        }
+      ],
+      "monthly_summaries": [
+        {
+          "start_date": "1970-01-01",
+          "end_date": "1970-01-01",
+          "total_amount": {
             "amount": 0,
             "iso_currency_code": "string",
             "unofficial_currency_code": "string"
@@ -118840,6 +120508,17 @@ This is a container object for all lending-related insights. This field will be 
             "unofficial_currency_code": "string"
           }
         }
+      ],
+      "monthly_summaries": [
+        {
+          "start_date": "1970-01-01",
+          "end_date": "1970-01-01",
+          "total_amount": {
+            "amount": 0,
+            "iso_currency_code": "string",
+            "unofficial_currency_code": "string"
+          }
+        }
       ]
     },
     "non_essential_expenditure": {
@@ -118866,9 +120545,20 @@ This is a container object for all lending-related insights. This field will be 
             "unofficial_currency_code": "string"
           }
         }
+      ],
+      "monthly_summaries": [
+        {
+          "start_date": "1970-01-01",
+          "end_date": "1970-01-01",
+          "total_amount": {
+            "amount": 0,
+            "iso_currency_code": "string",
+            "unofficial_currency_code": "string"
+          }
+        }
       ]
     },
-    "other": {
+    "other_expenditure": {
       "amount": 0,
       "iso_currency_code": "string",
       "unofficial_currency_code": "string",
@@ -118887,6 +120577,17 @@ This is a container object for all lending-related insights. This field will be 
           "iso_currency_code": "string",
           "unofficial_currency_code": "string",
           "monthly_average": {
+            "amount": 0,
+            "iso_currency_code": "string",
+            "unofficial_currency_code": "string"
+          }
+        }
+      ],
+      "monthly_summaries": [
+        {
+          "start_date": "1970-01-01",
+          "end_date": "1970-01-01",
+          "total_amount": {
             "amount": 0,
             "iso_currency_code": "string",
             "unofficial_currency_code": "string"
@@ -118913,6 +120614,17 @@ This is a container object for all lending-related insights. This field will be 
           "iso_currency_code": "string",
           "unofficial_currency_code": "string",
           "monthly_average": {
+            "amount": 0,
+            "iso_currency_code": "string",
+            "unofficial_currency_code": "string"
+          }
+        }
+      ],
+      "monthly_summaries": [
+        {
+          "start_date": "1970-01-01",
+          "end_date": "1970-01-01",
+          "total_amount": {
             "amount": 0,
             "iso_currency_code": "string",
             "unofficial_currency_code": "string"
@@ -118947,17 +120659,32 @@ This is a container object for all lending-related insights. This field will be 
     "total_income": {
       "amount": 0,
       "iso_currency_code": "string",
-      "unofficial_currency_code": "string"
+      "unofficial_currency_code": "string",
+      "monthly_average": {
+        "amount": 0,
+        "iso_currency_code": "string",
+        "unofficial_currency_code": "string"
+      }
     },
     "income_excluding_transfers": {
       "amount": 0,
       "iso_currency_code": "string",
-      "unofficial_currency_code": "string"
+      "unofficial_currency_code": "string",
+      "monthly_average": {
+        "amount": 0,
+        "iso_currency_code": "string",
+        "unofficial_currency_code": "string"
+      }
     },
     "transfers_in": {
       "amount": 0,
       "iso_currency_code": "string",
-      "unofficial_currency_code": "string"
+      "unofficial_currency_code": "string",
+      "monthly_average": {
+        "amount": 0,
+        "iso_currency_code": "string",
+        "unofficial_currency_code": "string"
+      }
     }
   }
 }
@@ -119221,9 +120948,9 @@ Insights into bank penalties and fees, including overdraft fees, NSF fees, and o
 |iso_currency_code|string \| null|false|none|The ISO-4217 currency code of the amount. Always `null` if `unofficial_currency_code` is non-`null`.|
 |unofficial_currency_code|string \| null|false|none|The unofficial currency code associated with the amount. Always `null` if `iso_currency_code` is non-`null`.<br><br>See the [currency code schema](https://plaid.com/docs/api/accounts#currency-code-schema) for a full listing of supported `unofficial_currency_code`s.|
 |monthly_average|[MonthlyAverage](#schemamonthlyaverage)|false|none|The monthly average amount calculated by dividing the total by the number of calendar months in the time period.|
-|category_details|[[CategoryExpenses](#schemacategoryexpenses)]|false|none|Detailed categories view of all the transactions that fall into the `BANK_PENALTIES` credit category within the given time window, across all the accounts in the report.|
+|category_details|[[CategoryExpenses](#schemacategoryexpenses)]|true|none|Detailed categories view of all the transactions that fall into the `BANK_PENALTIES` credit category within the given time window, across all the accounts in the report.|
 |transactions_count|integer \| null|false|none|The total number of transactions that fall into the `BANK_PENALTIES` credit category, across all the accounts in the report.|
-|monthly_summaries|[[MonthlySummary](#schemamonthlysummary)]|false|none|The monthly summaries of the transactions that fall into the `BANK_PENALTIES` credit category within the given time window, across all the accounts in the report.|
+|monthly_summaries|[[MonthlySummary](#schemamonthlysummary)]|true|none|The monthly summaries of the transactions that fall into the `BANK_PENALTIES` credit category within the given time window, across all the accounts in the report.|
 |days_since_last_occurrence|integer \| null|false|none|The number of days since the last transaction that falls into the `BANK_PENALTIES` credit category, across all the accounts in the report.|
 |percentage_of_income|number(double) \| null|false|none|The percentage of the user's monthly inflows that was spent on transactions that fall into the `BANK_PENALTIES` credit category within the given time window, across all the accounts in the report. For example, a value of 100 represents that 100% of the inflows were spent on transactions that fall into the `BANK_PENALTIES` credit category.<br>If there's no available income for the given time period, this field value will be `-1`.|
 
@@ -119274,9 +121001,9 @@ Insights into gambling-related transactions, including frequency, amounts, and t
 |iso_currency_code|string \| null|false|none|The ISO-4217 currency code of the amount. Always `null` if `unofficial_currency_code` is non-`null`.|
 |unofficial_currency_code|string \| null|false|none|The unofficial currency code associated with the amount. Always `null` if `iso_currency_code` is non-`null`.<br><br>See the [currency code schema](https://plaid.com/docs/api/accounts#currency-code-schema) for a full listing of supported `unofficial_currency_code`s.|
 |monthly_average|[MonthlyAverage](#schemamonthlyaverage)|false|none|The monthly average amount calculated by dividing the total by the number of calendar months in the time period.|
-|top_merchants|[string]|false|none|Up to 3 top merchants that the user had the most transactions for in the given time window, in descending order of total spend.<br><br>If the user has not spent money on any merchants in the given time window, this list will be empty.|
+|top_merchants|[string]|true|none|Up to 3 top merchants that the user had the most transactions for in the given time window, in descending order of total spend.<br><br>If the user has not spent money on any merchants in the given time window, this list will be empty.|
 |transactions_count|integer \| null|false|none|The total number of transactions that fall into the `GAMBLING` credit category, across all the accounts in the report.|
-|monthly_summaries|[[MonthlySummary](#schemamonthlysummary)]|false|none|The monthly summaries of the transactions that fall into the `GAMBLING` category within the given time window, across all the accounts in the report.|
+|monthly_summaries|[[MonthlySummary](#schemamonthlysummary)]|true|none|The monthly summaries of the transactions that fall into the `GAMBLING` category within the given time window, across all the accounts in the report.|
 |days_since_last_occurrence|integer \| null|false|none|The number of days since the last transaction that falls into the `GAMBLING` category, across all the accounts in the report.|
 |percentage_of_income|number(double) \| null|false|none|The percentage of the user's monthly inflows that was spent on transactions that fall into the `GAMBLING` category within the given time window, across all the accounts in the report. For example, a value of 100 indicates that 100% of the inflows were spent on transactions that fall into the `GAMBLING` credit category.<br>If there's no available income for the given time period, this field value will be `-1`|
 
@@ -119340,11 +121067,11 @@ Insights into loan disbursement transactions received by the user, tracking inco
 |amount|number(double) \| null|false|none|The total value of inflow transactions categorized as `LOAN_DISBURSEMENTS`, across all the accounts in the report within the requested time window.|
 |iso_currency_code|string \| null|false|none|The ISO-4217 currency code of the amount. Always `null` if `unofficial_currency_code` is non-`null`.|
 |unofficial_currency_code|string \| null|false|none|The unofficial currency code associated with the amount. Always `null` if `iso_currency_code` is non-`null`.<br><br>See the [currency code schema](https://plaid.com/docs/api/accounts#currency-code-schema) for a full listing of supported `unofficial_currency_code`s.|
-|category_details|[[CategoryExpenses](#schemacategoryexpenses)]|false|none|Detailed categories view of all the transactions that fall into the `LOAN_DISBURSEMENTS` credit category within the given time window, across all the accounts in the report.|
+|category_details|[[CategoryExpenses](#schemacategoryexpenses)]|true|none|Detailed categories view of all the transactions that fall into the `LOAN_DISBURSEMENTS` credit category within the given time window, across all the accounts in the report.|
 |monthly_average|[MonthlyAverage](#schemamonthlyaverage)|false|none|The monthly average amount calculated by dividing the total by the number of calendar months in the time period.|
-|top_providers|[string]|false|none|Up to 3 top service providers that the user had the most transactions for in the given time window, in descending order of total spend.<br><br>If the user has not received money from any provider in the given time window, this list will be empty.|
+|top_providers|[string]|true|none|Up to 3 top service providers that the user had the most transactions for in the given time window, in descending order of total spend.<br><br>If the user has not received money from any provider in the given time window, this list will be empty.|
 |transactions_count|integer \| null|false|none|The total number of transactions that fall into the `LOAN_DISBURSEMENTS` credit category, across all the accounts in the report.|
-|monthly_summaries|[[MonthlySummary](#schemamonthlysummary)]|false|none|The monthly summaries of the transactions that fall into the `LOAN_DISBURSEMENTS` category within the given time window, across all the accounts in the report.|
+|monthly_summaries|[[MonthlySummary](#schemamonthlysummary)]|true|none|The monthly summaries of the transactions that fall into the `LOAN_DISBURSEMENTS` category within the given time window, across all the accounts in the report.|
 |days_since_last_occurrence|integer \| null|false|none|The number of days since the last transaction that falls into the `LOAN_DISBURSEMENTS` credit category, across all the accounts in the report.|
 |percentage_of_income|number(double) \| null|false|none|The percentage of the user's monthly inflows that was received on transactions that fall into the `LOAN_DISBURSEMENTS` credit category within the given time window, across all the accounts in the report. For example, a value of 100 indicates that 100% of the inflows were spent on transactions that fall into the `LOAN_DISBURSEMENTS` credit category.<br>If there's no available income for the given time period, this field value will be `-1`.|
 
@@ -119409,10 +121136,10 @@ Insights into loan payment transactions made by the user, tracking outgoing paym
 |iso_currency_code|string \| null|false|none|The ISO-4217 currency code of the amount. Always `null` if `unofficial_currency_code` is non-`null`.|
 |unofficial_currency_code|string \| null|false|none|The unofficial currency code associated with the amount. Always `null` if `iso_currency_code` is non-`null`.<br><br>See the [currency code schema](https://plaid.com/docs/api/accounts#currency-code-schema) for a full listing of supported `unofficial_currency_code`s.|
 |monthly_average|[MonthlyAverage](#schemamonthlyaverage)|false|none|The monthly average amount calculated by dividing the total by the number of calendar months in the time period.|
-|category_details|[[CategoryExpenses](#schemacategoryexpenses)]|false|none|Detailed categories view of all the transactions that fall into the `LOAN_PAYMENTS` credit category within the given time window, across all the accounts in the report.|
-|top_providers|[string]|false|none|Up to 3 top service providers that the user had the most transactions for in the given time window, in descending order of total spend.<br><br>If the user has not spent money on any provider in the given time window, this list will be empty.|
+|category_details|[[CategoryExpenses](#schemacategoryexpenses)]|true|none|Detailed categories view of all the transactions that fall into the `LOAN_PAYMENTS` credit category within the given time window, across all the accounts in the report.|
+|top_providers|[string]|true|none|Up to 3 top service providers that the user had the most transactions for in the given time window, in descending order of total spend.<br><br>If the user has not spent money on any provider in the given time window, this list will be empty.|
 |transactions_count|integer \| null|false|none|The total number of transactions that fall into the `LOAN_PAYMENTS` credit category, across all the accounts in the report.|
-|monthly_summaries|[[MonthlySummary](#schemamonthlysummary)]|false|none|The monthly summaries of the transactions that fall into the `LOAN_PAYMENTS` credit category within the given time window, across all the accounts in the report.|
+|monthly_summaries|[[MonthlySummary](#schemamonthlysummary)]|true|none|The monthly summaries of the transactions that fall into the `LOAN_PAYMENTS` credit category within the given time window, across all the accounts in the report.|
 |days_since_last_occurrence|integer \| null|false|none|The number of days since the last transaction that falls into the `LOAN_PAYMENTS` credit category, across all the accounts in the report.|
 |percentage_of_income|number(double) \| null|false|none|The percentage of the user's monthly inflows that was spent on transactions that fall into the `LOAN_PAYMENTS` credit category within the given time window, across all the accounts in the report. For example, a value of 100 indicates that 100% of the inflows were spent on transactions that fall into the `LOAN_PAYMENTS` credit category.<br>If there's no available income for the given time period, this field value will be `-1`|
 
@@ -119526,7 +121253,7 @@ Insights into unusually large transactions that exceed typical spending patterns
 |---|---|---|---|---|
 |transactions_count|integer \| null|false|none|The total number of transactions whose value is above the threshold of normal amounts for a given account.|
 |total_amount|[AmountWithCurrency](#schemaamountwithcurrency)|false|none|A monetary amount with its associated currency information, supporting both official and unofficial currency codes.|
-|top_categories|[[CategoryExpenses](#schemacategoryexpenses)]|false|none|Up to 3 top categories of expenses in this group.|
+|top_categories|[[CategoryExpenses](#schemacategoryexpenses)]|true|none|Up to 3 top categories of expenses in this group.|
 
 <h2 id="tocS_AmountWithCurrencyWithMonthlyAverage">AmountWithCurrencyWithMonthlyAverage</h2>
 <!-- backwards compatibility -->
@@ -119539,7 +121266,12 @@ Insights into unusually large transactions that exceed typical spending patterns
 {
   "amount": 0,
   "iso_currency_code": "string",
-  "unofficial_currency_code": "string"
+  "unofficial_currency_code": "string",
+  "monthly_average": {
+    "amount": 0,
+    "iso_currency_code": "string",
+    "unofficial_currency_code": "string"
+  }
 }
 ```
 
@@ -119552,9 +121284,7 @@ Represents an amount and a monthly average
 |amount|number(double) \| null|false|none|If the parent object represents a category of transactions, such as `total_amount`, `transfers_in`, `total_income`, etc. the `amount` represents the sum of all of the transactions in the group.<br><br>If the parent object is `cash_flow`, the `amount` represents the total value of all the inflows minus all the outflows across all the accounts in the report in the given time window.<br><br>If the parent object is `minimum_balance`, the `amount` represents the lowest balance of the account during the given time window.|
 |iso_currency_code|string \| null|false|none|The ISO-4217 currency code of the amount. Always `null` if `unofficial_currency_code` is non-`null`.|
 |unofficial_currency_code|string \| null|false|none|The unofficial currency code associated with the amount. Always `null` if `iso_currency_code` is non-`null`.<br><br>See the [currency code schema](https://plaid.com/docs/api/accounts#currency-code-schema) for a full listing of supported `unofficial_currency_code`s.|
-|amount|number(double) \| null|false|none|The monthly average amount of all the aggregated transactions of the given category, across all the accounts for the given time window.<br><br>The average is calculated by dividing the total amount of the transactions by the number of calendar months in the given time window.|
-|iso_currency_code|string \| null|false|none|The ISO-4217 currency code of the amount. Always `null` if `unofficial_currency_code` is non-`null`.|
-|unofficial_currency_code|string \| null|false|none|The unofficial currency code associated with the amount. Always `null` if `iso_currency_code` is non-`null`.<br><br>See the [currency code schema](https://plaid.com/docs/api/accounts#currency-code-schema) for a full listing of supported `unofficial_currency_code`s.|
+|monthly_average|[MonthlyAverage](#schemamonthlyaverage)|false|none|The monthly average amount calculated by dividing the total by the number of calendar months in the time period.|
 
 <h2 id="tocS_IncomeInsights">IncomeInsights</h2>
 <!-- backwards compatibility -->
@@ -119568,17 +121298,32 @@ Represents an amount and a monthly average
   "total_income": {
     "amount": 0,
     "iso_currency_code": "string",
-    "unofficial_currency_code": "string"
+    "unofficial_currency_code": "string",
+    "monthly_average": {
+      "amount": 0,
+      "iso_currency_code": "string",
+      "unofficial_currency_code": "string"
+    }
   },
   "income_excluding_transfers": {
     "amount": 0,
     "iso_currency_code": "string",
-    "unofficial_currency_code": "string"
+    "unofficial_currency_code": "string",
+    "monthly_average": {
+      "amount": 0,
+      "iso_currency_code": "string",
+      "unofficial_currency_code": "string"
+    }
   },
   "transfers_in": {
     "amount": 0,
     "iso_currency_code": "string",
-    "unofficial_currency_code": "string"
+    "unofficial_currency_code": "string",
+    "monthly_average": {
+      "amount": 0,
+      "iso_currency_code": "string",
+      "unofficial_currency_code": "string"
+    }
   }
 }
 ```
@@ -119589,7 +121334,7 @@ Comprehensive income analysis including total income, income excluding transfers
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|total_income|object|false|none|The total amount of all income transactions in the given time period.|
+|total_income|object|false|none|The total amount of all income transactions in the given time period, including a monthly average.|
 |income_excluding_transfers|object|false|none|Income excluding account transfer transactions for the period, including a monthly average.|
 |transfers_in|object|false|none|Sum of inbound transfer transactions for the period, including a monthly average.|
 
@@ -119605,7 +121350,12 @@ Comprehensive income analysis including total income, income excluding transfers
   "cash_flow": {
     "amount": 0,
     "iso_currency_code": "string",
-    "unofficial_currency_code": "string"
+    "unofficial_currency_code": "string",
+    "monthly_average": {
+      "amount": 0,
+      "iso_currency_code": "string",
+      "unofficial_currency_code": "string"
+    }
   },
   "total_expenditure": {
     "amount": 0,
@@ -119626,6 +121376,17 @@ Comprehensive income analysis including total income, income excluding transfers
         "iso_currency_code": "string",
         "unofficial_currency_code": "string",
         "monthly_average": {
+          "amount": 0,
+          "iso_currency_code": "string",
+          "unofficial_currency_code": "string"
+        }
+      }
+    ],
+    "monthly_summaries": [
+      {
+        "start_date": "1970-01-01",
+        "end_date": "1970-01-01",
+        "total_amount": {
           "amount": 0,
           "iso_currency_code": "string",
           "unofficial_currency_code": "string"
@@ -119657,6 +121418,17 @@ Comprehensive income analysis including total income, income excluding transfers
           "unofficial_currency_code": "string"
         }
       }
+    ],
+    "monthly_summaries": [
+      {
+        "start_date": "1970-01-01",
+        "end_date": "1970-01-01",
+        "total_amount": {
+          "amount": 0,
+          "iso_currency_code": "string",
+          "unofficial_currency_code": "string"
+        }
+      }
     ]
   },
   "non_essential_expenditure": {
@@ -119683,9 +121455,20 @@ Comprehensive income analysis including total income, income excluding transfers
           "unofficial_currency_code": "string"
         }
       }
+    ],
+    "monthly_summaries": [
+      {
+        "start_date": "1970-01-01",
+        "end_date": "1970-01-01",
+        "total_amount": {
+          "amount": 0,
+          "iso_currency_code": "string",
+          "unofficial_currency_code": "string"
+        }
+      }
     ]
   },
-  "other": {
+  "other_expenditure": {
     "amount": 0,
     "iso_currency_code": "string",
     "unofficial_currency_code": "string",
@@ -119704,6 +121487,17 @@ Comprehensive income analysis including total income, income excluding transfers
         "iso_currency_code": "string",
         "unofficial_currency_code": "string",
         "monthly_average": {
+          "amount": 0,
+          "iso_currency_code": "string",
+          "unofficial_currency_code": "string"
+        }
+      }
+    ],
+    "monthly_summaries": [
+      {
+        "start_date": "1970-01-01",
+        "end_date": "1970-01-01",
+        "total_amount": {
           "amount": 0,
           "iso_currency_code": "string",
           "unofficial_currency_code": "string"
@@ -119730,6 +121524,17 @@ Comprehensive income analysis including total income, income excluding transfers
         "iso_currency_code": "string",
         "unofficial_currency_code": "string",
         "monthly_average": {
+          "amount": 0,
+          "iso_currency_code": "string",
+          "unofficial_currency_code": "string"
+        }
+      }
+    ],
+    "monthly_summaries": [
+      {
+        "start_date": "1970-01-01",
+        "end_date": "1970-01-01",
+        "total_amount": {
           "amount": 0,
           "iso_currency_code": "string",
           "unofficial_currency_code": "string"
@@ -119772,7 +121577,7 @@ Comprehensive analysis of spending patterns, categorizing expenses into essentia
 |total_expenditure|[ExpenditureSummary](#schemaexpendituresummary)|false|none|Summary statistics for a specific expenditure category, including total amount, monthly average, and percentage of income.|
 |essential_expenditure|[ExpenditureSummary](#schemaexpendituresummary)|false|none|Summary statistics for a specific expenditure category, including total amount, monthly average, and percentage of income.|
 |non_essential_expenditure|[ExpenditureSummary](#schemaexpendituresummary)|false|none|Summary statistics for a specific expenditure category, including total amount, monthly average, and percentage of income.|
-|other|[ExpenditureSummary](#schemaexpendituresummary)|false|none|Summary statistics for a specific expenditure category, including total amount, monthly average, and percentage of income.|
+|other_expenditure|[ExpenditureSummary](#schemaexpendituresummary)|false|none|Summary statistics for a specific expenditure category, including total amount, monthly average, and percentage of income.|
 |transfers_out|[ExpenditureSummary](#schemaexpendituresummary)|false|none|Summary statistics for a specific expenditure category, including total amount, monthly average, and percentage of income.|
 |outlier_transactions|[OutlierTransactionsInsights](#schemaoutliertransactionsinsights)|false|none|Insights into unusually large transactions that exceed typical spending patterns for the account.|
 
@@ -119808,6 +121613,17 @@ Comprehensive analysis of spending patterns, categorizing expenses into essentia
         "unofficial_currency_code": "string"
       }
     }
+  ],
+  "monthly_summaries": [
+    {
+      "start_date": "1970-01-01",
+      "end_date": "1970-01-01",
+      "total_amount": {
+        "amount": 0,
+        "iso_currency_code": "string",
+        "unofficial_currency_code": "string"
+      }
+    }
   ]
 }
 ```
@@ -119824,7 +121640,8 @@ Summary statistics for a specific expenditure category, including total amount, 
 |monthly_average|[MonthlyAverage](#schemamonthlyaverage)|false|none|The monthly average amount calculated by dividing the total by the number of calendar months in the time period.|
 |transactions_count|integer \| null|false|none|The total number of outflow transactions in this expenses group, within the given time window across all the accounts in the report.|
 |percentage_of_income|number(double) \| null|false|none|The percentage of the total inflows that was spent in this expenses group, within the given time window across all the accounts in the report.<br>For example, a value of 100 represents that 100% of the inflows were spent on transactions that fall into this expenditure group.<br>If there's no available income for the given time period, this field value will be `-1`.|
-|top_categories|[[CategoryExpenses](#schemacategoryexpenses)]|false|none|The primary credit categories of the expenses within the given time window, across all the accounts in the report.<br><br>The categories are sorted in descending order by the total value spent.<br>See the [category taxonomy](https://plaid.com/documents/credit-category-taxonomy.csv) for a full listing of category IDs.|
+|top_categories|[[CategoryExpenses](#schemacategoryexpenses)]|true|none|The primary credit categories of the expenses within the given time window, across all the accounts in the report.<br><br>The categories are sorted in descending order by the total value spent.<br>See the [category taxonomy](https://plaid.com/documents/credit-category-taxonomy.csv) for a full listing of category IDs.|
+|monthly_summaries|[[MonthlySummary](#schemamonthlysummary)]|true|none|The monthly summaries of transactions in this expenditure group.|
 
 <h2 id="tocS_MonthlySummary">MonthlySummary</h2>
 <!-- backwards compatibility -->
@@ -120076,7 +121893,63 @@ The monthly average amount calculated by dividing the total by the number of cal
               ]
             }
           ],
+          "holder_category": {},
           "ownership_type": null,
+          "investments": {
+            "holdings": [
+              {
+                "account_id": "string",
+                "security_id": "string",
+                "institution_price": 0,
+                "institution_price_as_of": "1970-01-01",
+                "institution_value": 0,
+                "cost_basis": 0,
+                "quantity": 0,
+                "iso_currency_code": "string",
+                "unofficial_currency_code": "string",
+                "tax_lots": [
+                  {
+                    "institution_lot_id": "string",
+                    "original_purchase_datetime": "1970-01-01T00:00:00Z",
+                    "quantity": 0,
+                    "purchase_price": 0,
+                    "cost_basis": 0,
+                    "current_value": 0,
+                    "position_type": "LONG"
+                  }
+                ]
+              }
+            ],
+            "securities": [
+              {
+                "security_id": "string",
+                "name": "string",
+                "isin": "string",
+                "cusip": "string",
+                "institution_security_id": "string",
+                "institution_id": "string",
+                "ticker_symbol": "string",
+                "type": "string"
+              }
+            ],
+            "investment_transactions": [
+              {
+                "investment_transaction_id": "string",
+                "account_id": "string",
+                "security_id": "string",
+                "date": "1970-01-01",
+                "name": "string",
+                "quantity": 0,
+                "amount": 0,
+                "price": 0,
+                "fees": 0,
+                "type": "buy",
+                "subtype": "account fee",
+                "iso_currency_code": "string",
+                "unofficial_currency_code": "string"
+              }
+            ]
+          },
           "historical_balances": [
             {
               "date": "1970-01-01",
@@ -120311,10 +122184,10 @@ Calculated attributes derived from transaction-level data, aggregated across acc
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|nsf_overdraft_transactions_count|integer|false|none|The number of net NSF fee transactions in the time range for the report (not counting any fees that were reversed within that time range).|
-|nsf_overdraft_transactions_count_30d|integer|false|none|The number of net NSF fee transactions in the last 30 days in the report (not counting any fees that were reversed within that time range).|
-|nsf_overdraft_transactions_count_60d|integer|false|none|The number of net NSF fee transactions in the last 60 days in the report (not counting any fees that were reversed within that time range).|
-|nsf_overdraft_transactions_count_90d|integer|false|none|The number of net NSF fee transactions in the last 90 days in the report (not counting any fees that were reversed within that time range).|
+|nsf_overdraft_transactions_count|integer \| null|false|none|The number of net NSF fee transactions in the time range for the report (not counting any fees that were reversed within that time range).|
+|nsf_overdraft_transactions_count_30d|integer \| null|false|none|The number of net NSF fee transactions in the last 30 days in the report (not counting any fees that were reversed within that time range).|
+|nsf_overdraft_transactions_count_60d|integer \| null|false|none|The number of net NSF fee transactions in the last 60 days in the report (not counting any fees that were reversed within that time range).|
+|nsf_overdraft_transactions_count_90d|integer \| null|false|none|The number of net NSF fee transactions in the last 90 days in the report (not counting any fees that were reversed within that time range).|
 |total_inflow_amount|[TotalReportInflowAmount](#schematotalreportinflowamount)|false|none|Total amount of money into the report's accounts in the time period of the report. This field only takes into account USD transactions from the accounts.|
 |total_inflow_amount_30d|[TotalReportInflowAmount30d](#schematotalreportinflowamount30d)|false|none|Total amount of money into the report's accounts in the last 30 days. This field only takes into account USD transactions from the accounts.|
 |total_inflow_amount_60d|[TotalReportInflowAmount60d](#schematotalreportinflowamount60d)|false|none|Total amount of money into the report's accounts in the last 60 days. This field only takes into account USD transactions from the accounts.|
@@ -120654,7 +122527,63 @@ Total amount of money out of the report's accounts in the last 90 days. This fie
           ]
         }
       ],
+      "holder_category": {},
       "ownership_type": null,
+      "investments": {
+        "holdings": [
+          {
+            "account_id": "string",
+            "security_id": "string",
+            "institution_price": 0,
+            "institution_price_as_of": "1970-01-01",
+            "institution_value": 0,
+            "cost_basis": 0,
+            "quantity": 0,
+            "iso_currency_code": "string",
+            "unofficial_currency_code": "string",
+            "tax_lots": [
+              {
+                "institution_lot_id": "string",
+                "original_purchase_datetime": "1970-01-01T00:00:00Z",
+                "quantity": 0,
+                "purchase_price": 0,
+                "cost_basis": 0,
+                "current_value": 0,
+                "position_type": "LONG"
+              }
+            ]
+          }
+        ],
+        "securities": [
+          {
+            "security_id": "string",
+            "name": "string",
+            "isin": "string",
+            "cusip": "string",
+            "institution_security_id": "string",
+            "institution_id": "string",
+            "ticker_symbol": "string",
+            "type": "string"
+          }
+        ],
+        "investment_transactions": [
+          {
+            "investment_transaction_id": "string",
+            "account_id": "string",
+            "security_id": "string",
+            "date": "1970-01-01",
+            "name": "string",
+            "quantity": 0,
+            "amount": 0,
+            "price": 0,
+            "fees": 0,
+            "type": "buy",
+            "subtype": "account fee",
+            "iso_currency_code": "string",
+            "unofficial_currency_code": "string"
+          }
+        ]
+      },
       "historical_balances": [
         {
           "date": "1970-01-01",
@@ -120902,7 +122831,63 @@ A representation of an Item within a Base Report.
       ]
     }
   ],
+  "holder_category": {},
   "ownership_type": null,
+  "investments": {
+    "holdings": [
+      {
+        "account_id": "string",
+        "security_id": "string",
+        "institution_price": 0,
+        "institution_price_as_of": "1970-01-01",
+        "institution_value": 0,
+        "cost_basis": 0,
+        "quantity": 0,
+        "iso_currency_code": "string",
+        "unofficial_currency_code": "string",
+        "tax_lots": [
+          {
+            "institution_lot_id": "string",
+            "original_purchase_datetime": "1970-01-01T00:00:00Z",
+            "quantity": 0,
+            "purchase_price": 0,
+            "cost_basis": 0,
+            "current_value": 0,
+            "position_type": "LONG"
+          }
+        ]
+      }
+    ],
+    "securities": [
+      {
+        "security_id": "string",
+        "name": "string",
+        "isin": "string",
+        "cusip": "string",
+        "institution_security_id": "string",
+        "institution_id": "string",
+        "ticker_symbol": "string",
+        "type": "string"
+      }
+    ],
+    "investment_transactions": [
+      {
+        "investment_transaction_id": "string",
+        "account_id": "string",
+        "security_id": "string",
+        "date": "1970-01-01",
+        "name": "string",
+        "quantity": 0,
+        "amount": 0,
+        "price": 0,
+        "fees": 0,
+        "type": "buy",
+        "subtype": "account fee",
+        "iso_currency_code": "string",
+        "unofficial_currency_code": "string"
+      }
+    ]
+  },
   "historical_balances": [
     {
       "date": "1970-01-01",
@@ -121025,12 +123010,14 @@ Base Report information about an account
 |metadata|[BaseReportAccountMetadata](#schemabasereportaccountmetadata)|true|none|Metadata about the extracted account.|
 |name|string|true|none|The name of the account, either assigned by the user or by the financial institution itself|
 |official_name|string \| null|true|none|The official name of the account as given by the financial institution|
-|type|[AccountType](#schemaaccounttype)|true|none|`investment:` Investment account. In API versions 2018-05-22 and earlier, this type is called `brokerage` instead.<br><br>`credit:` Credit card<br><br>`depository:` Depository account<br><br>`loan:` Loan account<br><br>`other:` Non-specified account type<br><br>See the [Account type schema](https://plaid.com/docs/api/accounts#account-type-schema) for a full listing of account types and corresponding subtypes.|
+|type|[AccountType](#schemaaccounttype)|true|none|`investment:` Investment account. In API versions 2018-05-22 and earlier, this type is called `brokerage` instead.<br><br>`credit:` Credit card<br><br>`depository:` Depository account<br><br>`loan:` Loan account<br><br>`payroll:` Payroll account<br><br>`other:` Non-specified account type<br><br>See the [Account type schema](https://plaid.com/docs/api/accounts#account-type-schema) for a full listing of account types and corresponding subtypes.|
 |subtype|[AccountSubtype](#schemaaccountsubtype)|true|none|See the [Account type schema](https://plaid.com/docs/api/accounts/#account-type-schema) for a full listing of account types and corresponding subtypes.|
 |days_available|number|true|none|The duration of transaction history available within this report for this Item, typically defined as the time since the date of the earliest transaction in that account.|
 |transactions|[[BaseReportTransaction](#schemabasereporttransaction)]|true|none|Transaction history associated with the account. Transaction history returned by endpoints such as `/transactions/get` or `/investments/transactions/get` will be returned in the top-level `transactions` field instead. Some transactions may have their details masked in accordance with the FCRA. These will appear with a `credit_category` of `MASKED_TRANSACTION_CATEGORY`.|
 |owners|[[Owner](#schemaowner)]|true|none|Data returned by the financial institution about the account owner or owners. For business accounts, the name reported may be either the name of the individual or the name of the business, depending on the institution. Multiple owners on a single account will be represented in the same `owner` object, not in multiple owner objects within the array. This array can also be empty if no owners are found.|
+|holder_category|object \| null|true|none|none|
 |ownership_type|[OwnershipType](#schemaownershiptype)|true|none|How an asset is owned.<br><br>`association`: Ownership by a corporation, partnership, or unincorporated association, including for-profit and not-for-profit organizations.<br><br>`individual`: Ownership by an individual.<br><br>`joint`: Joint ownership by multiple parties.<br><br>`trust`: Ownership by a revocable or irrevocable trust.|
+|investments|object|false|none|This field contains investment data only for investment accounts when `include_investments` in `/cra/check_report/create` or `cra_options.include_investments` in `/link/token/create` is set to `true`. This field may be omitted if recent investment data was unavailable at report generation. The account remains in the report when this field is omitted.|
 |historical_balances|[[BaseReportHistoricalBalance](#schemabasereporthistoricalbalance)]|false|none|Calculated data about the historical balances on the account. Currently not supported by `brokerage` or `investment` accounts.|
 |account_insights|[BaseReportAccountInsights](#schemabasereportaccountinsights)|false|none|**Deprecated.** Calculated insights derived from transaction-level data. This field has been deprecated in favor of [Base Report attributes aggregated across accounts](https://plaid.com/docs/api/products/check-legacy/#cra-check_report-base_report-get-response-report-attributes) and will be removed in a future release.|
 |attributes|[BaseReportAttributes](#schemabasereportattributes)|false|none|Calculated attributes derived from transaction-level data.|
@@ -121044,12 +123031,14 @@ Base Report information about an account
 |type|depository|
 |type|loan|
 |type|brokerage|
+|type|payroll|
 |type|other|
 |subtype|401a|
 |subtype|401k|
 |subtype|403B|
 |subtype|457b|
 |subtype|529|
+|subtype|530a|
 |subtype|auto|
 |subtype|brokerage|
 |subtype|business|
@@ -121330,7 +123319,7 @@ A transaction on the Base Report
 |check_number|string \| null|false|none|The check number of the transaction. This field is only populated for check transactions.|
 |date|string(date)|true|none|For pending transactions, the date that the transaction occurred; for posted transactions, the date that the transaction posted. Both dates are returned in an [ISO 8601](https://wikipedia.org/wiki/ISO_8601) format ( `YYYY-MM-DD` ).|
 |date_transacted|string \| null|false|none|The date on which the transaction took place, in ISO 8601 format.|
-|location|[Location](#schemalocation)|false|none|A representation of where a transaction took place. Location data is provided only for transactions at physical locations, not for online transactions. Location data availability depends primarily on the merchant and is most likely to be populated for transactions at large retail chains; small, local businesses are less likely to have location data available.|
+|location|object \| null|false|none|none|
 |merchant_name|string \| null|false|none|The merchant name, as enriched by Plaid from the `name` field. This is typically a more human-readable version of the merchant counterparty in the transaction. For some bank transactions (such as checks or account transfers) where there is no meaningful merchant name, this value will be `null`.|
 |pending|boolean|true|none|When `true`, identifies the transaction as pending or unsettled. Pending transaction details (name, type, amount, category ID) may change before they are settled.|
 |account_owner|string \| null|false|none|The name of the account owner. This field is not typically populated and only relevant when dealing with sub-accounts.|
@@ -121511,10 +123500,10 @@ Calculated attributes derived from transaction-level data.
 |---|---|---|---|---|
 |is_primary_account|boolean \| null|false|none|Prediction indicator of whether the account is a primary account. Only one account per account type across the items connected will have a value of true.|
 |primary_account_score|number \| null|false|none|Value ranging from 0-1. The higher the score, the more confident we are of the account being the primary account.|
-|nsf_overdraft_transactions_count|integer|false|none|The number of net NSF fee transactions for a given account within the report time range (not counting any fees that were reversed within the time range).|
-|nsf_overdraft_transactions_count_30d|integer|false|none|The number of net NSF fee transactions within the last 30 days for a given account (not counting any fees that were reversed within the time range).|
-|nsf_overdraft_transactions_count_60d|integer|false|none|The number of net NSF fee transactions within the last 60 days for a given account (not counting any fees that were reversed within the time range).|
-|nsf_overdraft_transactions_count_90d|integer|false|none|The number of net NSF fee transactions within the last 90 days for a given account (not counting any fees that were reversed within the time range).|
+|nsf_overdraft_transactions_count|integer \| null|false|none|The number of net NSF fee transactions for a given account within the report time range (not counting any fees that were reversed within the time range).|
+|nsf_overdraft_transactions_count_30d|integer \| null|false|none|The number of net NSF fee transactions within the last 30 days for a given account (not counting any fees that were reversed within the time range).|
+|nsf_overdraft_transactions_count_60d|integer \| null|false|none|The number of net NSF fee transactions within the last 60 days for a given account (not counting any fees that were reversed within the time range).|
+|nsf_overdraft_transactions_count_90d|integer \| null|false|none|The number of net NSF fee transactions within the last 90 days for a given account (not counting any fees that were reversed within the time range).|
 |total_inflow_amount|[TotalInflowAmount](#schematotalinflowamount)|false|none|Total amount of money into the account in the time period of the report. For non-depository accounts, or accounts with no transactions, `amount` is `0` and both currency codes are `null`. This field only takes into account USD transactions from the account.|
 |total_inflow_amount_30d|[TotalInflowAmount30d](#schematotalinflowamount30d)|false|none|Total amount of money into the account in the last 30 days. For non-depository accounts, or accounts with no transactions, `amount` is `0` and both currency codes are `null`. This field only takes into account USD transactions from the account.|
 |total_inflow_amount_60d|[TotalInflowAmount60d](#schematotalinflowamount60d)|false|none|Total amount of money into the account in the last 60 days. For non-depository accounts, or accounts with no transactions, `amount` is `0` and both currency codes are `null`. This field only takes into account USD transactions from the account.|
@@ -121897,7 +123886,7 @@ Average balance in dollar amount per month
 }
 ```
 
-A set of fields describing the investments data on an account.
+A set of fields describing the investments data on an account. Its arrays may be empty.
 
 ### Properties
 
@@ -122133,7 +124122,7 @@ BeaconAccountRiskEvaluateRequest defines the request schema for `/beacon/account
 |client_user_id|string|false|none|A unique ID that identifies the end user in your system. This ID is used to correlate requests by a user with multiple evaluations and/or multiple linked accounts. Personally identifiable information, such as an email address or phone number, should not be used in the `client_user_id`.|
 |client_evaluation_id|string|false|none|Unique identifier of what you are looking to evaluate (account add, information change, etc.) to allow us to tie the activity to the decisions and possible fraud outcome sent via our feedback endpoints. You can use your internal request ID or similar.|
 |evaluation_reason|[BeaconAccountRiskEvaluateEvaluationReason](#schemabeaconaccountriskevaluateevaluationreason)|false|none|Description of the reason you want to evaluate risk.<br><br>`ONBOARDING`: user links a first bank account as part of the onboarding flow of your platform.<br><br>`NEW_ACCOUNT`: user links another bank account or replaces the currently linked bank account on your platform.<br><br>`INFORMATION_CHANGE`: user changes their information on your platform, e.g., updating their phone number.<br><br>`DORMANT_USER`:  you decide to re-evaluate a user that becomes active after a period of inactivity.<br><br>`OTHER`: any other reasons not listed here<br><br>Possible values:  `ONBOARDING`, `NEW_ACCOUNT`, `INFORMATION_CHANGE`, `DORMANT_USER`, `OTHER`<br>|
-|device|[SignalDevice](#schemasignaldevice)|false|none|Details about the end user's device. These fields are optional, but strongly recommended to increase the accuracy of results when using Signal Transaction Scores. When using a Balance-only Ruleset, these fields are ignored if the Signal Addendum has been signed; if it has not been signed, using these fields will result in an error.|
+|device|[SignalDevice](#schemasignaldevice)|false|none|Details about the end user's device. These fields are optional, but strongly recommended to increase the accuracy of results when using Signal Transaction Scores. When using a Balance-only ruleset, these fields are ignored.|
 |evaluate_time|string|false|none|The time the event for evaluation has occurred. Populate this field for backfilling data. If you don't populate this field, we'll use the timestamp at the time of receipt. Use ISO 8601 format (YYYY-MM-DDTHH:mm:ssZ).|
 
 #### Enumerated Values
@@ -122305,7 +124294,7 @@ An account in the `/beacon/account_risk/v1/evaluate` response.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |account_id|string|false|none|The account ID.|
-|type|[AccountType](#schemaaccounttype)|false|none|`investment:` Investment account. In API versions 2018-05-22 and earlier, this type is called `brokerage` instead.<br><br>`credit:` Credit card<br><br>`depository:` Depository account<br><br>`loan:` Loan account<br><br>`other:` Non-specified account type<br><br>See the [Account type schema](https://plaid.com/docs/api/accounts#account-type-schema) for a full listing of account types and corresponding subtypes.|
+|type|[AccountType](#schemaaccounttype)|false|none|`investment:` Investment account. In API versions 2018-05-22 and earlier, this type is called `brokerage` instead.<br><br>`credit:` Credit card<br><br>`depository:` Depository account<br><br>`loan:` Loan account<br><br>`payroll:` Payroll account<br><br>`other:` Non-specified account type<br><br>See the [Account type schema](https://plaid.com/docs/api/accounts#account-type-schema) for a full listing of account types and corresponding subtypes.|
 |subtype|[AccountSubtype](#schemaaccountsubtype)|false|none|See the [Account type schema](https://plaid.com/docs/api/accounts/#account-type-schema) for a full listing of account types and corresponding subtypes.|
 |attributes|[BeaconAccountRiskEvaluateAccountAttributes](#schemabeaconaccountriskevaluateaccountattributes)|false|none|The attributes object contains data that can be used to assess account risk. Examples of data include:<br><br>`days_since_first_plaid_connection`: The number of days since the first time the Item was connected to an application via Plaid<br><br>`plaid_connections_count_7d`: The number of times the Item has been connected to applications via Plaid over the past 7 days<br><br>`plaid_connections_count_30d`: The number of times the Item has been connected to applications via Plaid over the past 30 days<br><br>`total_plaid_connections_count`: The number of times the Item has been connected to applications via Plaid<br><br>For the full list and detailed documentation of core attributes available, or to request that core attributes not be returned, contact sales or your Plaid account manager|
 
@@ -122318,12 +124307,14 @@ An account in the `/beacon/account_risk/v1/evaluate` response.
 |type|depository|
 |type|loan|
 |type|brokerage|
+|type|payroll|
 |type|other|
 |subtype|401a|
 |subtype|401k|
 |subtype|403B|
 |subtype|457b|
 |subtype|529|
+|subtype|530a|
 |subtype|auto|
 |subtype|brokerage|
 |subtype|business|
@@ -122847,7 +124838,7 @@ Bank Account Insights encapsulate the risk insights for a single Bank Account li
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |account_id|string|true|none|The Plaid `account_id`|
-|type|[AccountType](#schemaaccounttype)|true|none|`investment:` Investment account. In API versions 2018-05-22 and earlier, this type is called `brokerage` instead.<br><br>`credit:` Credit card<br><br>`depository:` Depository account<br><br>`loan:` Loan account<br><br>`other:` Non-specified account type<br><br>See the [Account type schema](https://plaid.com/docs/api/accounts#account-type-schema) for a full listing of account types and corresponding subtypes.|
+|type|[AccountType](#schemaaccounttype)|true|none|`investment:` Investment account. In API versions 2018-05-22 and earlier, this type is called `brokerage` instead.<br><br>`credit:` Credit card<br><br>`depository:` Depository account<br><br>`loan:` Loan account<br><br>`payroll:` Payroll account<br><br>`other:` Non-specified account type<br><br>See the [Account type schema](https://plaid.com/docs/api/accounts#account-type-schema) for a full listing of account types and corresponding subtypes.|
 |subtype|[AccountSubtype](#schemaaccountsubtype)|true|none|See the [Account type schema](https://plaid.com/docs/api/accounts/#account-type-schema) for a full listing of account types and corresponding subtypes.|
 |attributes|[BeaconAccountRiskAttributes](#schemabeaconaccountriskattributes)|true|none|The attributes object contains data that can be used to assess account risk. Examples of data include:<br><br>`days_since_first_plaid_connection`: The number of days since the first time the Item was connected to an application via Plaid<br><br>`plaid_connections_count_7d`: The number of times the Item has been connected to applications via Plaid over the past 7 days<br><br>`plaid_connections_count_30d`: The number of times the Item has been connected to applications via Plaid over the past 30 days<br><br>`total_plaid_connections_count`: The number of times the Item has been connected to applications via Plaid<br><br>For the full list and detailed documentation of core attributes available, or to request that core attributes not be returned, contact sales or your Plaid account manager|
 
@@ -122860,12 +124851,14 @@ Bank Account Insights encapsulate the risk insights for a single Bank Account li
 |type|depository|
 |type|loan|
 |type|brokerage|
+|type|payroll|
 |type|other|
 |subtype|401a|
 |subtype|401k|
 |subtype|403B|
 |subtype|457b|
 |subtype|529|
+|subtype|530a|
 |subtype|auto|
 |subtype|brokerage|
 |subtype|business|
@@ -125222,12 +127215,12 @@ Summary of how a specific business field matched against data provider results
 |summary|no_data|
 |summary|no_input|
 
-<h2 id="tocS_BusinessKYBCheck">BusinessKYBCheck</h2>
+<h2 id="tocS_BusinessVerificationCheck">BusinessVerificationCheck</h2>
 <!-- backwards compatibility -->
-<a id="schemabusinesskybcheck"></a>
-<a id="schema_BusinessKYBCheck"></a>
-<a id="tocSbusinesskybcheck"></a>
-<a id="tocsbusinesskybcheck"></a>
+<a id="schemabusinessverificationcheck"></a>
+<a id="schema_BusinessVerificationCheck"></a>
+<a id="tocSbusinessverificationcheck"></a>
+<a id="tocsbusinessverificationcheck"></a>
 
 ```json
 {
@@ -125237,28 +127230,68 @@ Summary of how a specific business field matched against data provider results
     "summary": "match"
   },
   "address": {
-    "summary": "match"
-  },
-  "website": {
-    "summary": "match"
-  },
-  "match_details": {
-    "names": [
-      {
-        "is_primary": true,
-        "name": "Acme Corporation"
-      }
-    ],
-    "entity_type": "llc",
-    "addresses": [
-      {
+    "summary": "match",
+    "validation": {
+      "level": "full",
+      "standardized_address": {
         "street": "123 Main St.",
         "street2": "Unit 42",
         "city": "Pawnee",
         "region": "IN",
         "postal_code": "46001",
         "country": "US",
-        "is_primary": true
+        "lat": 40.65,
+        "lon": -86.25
+      },
+      "deliverability": {
+        "is_deliverable": true,
+        "is_cmra": false,
+        "residential_indicator": "commercial",
+        "delivery_type": "street"
+      }
+    }
+  },
+  "website": {
+    "summary": "match"
+  },
+  "tin": {
+    "summary": "match",
+    "tin_type": "ein"
+  },
+  "officers": {
+    "summary": "match"
+  },
+  "registered_agent": {
+    "summary": "match"
+  },
+  "business_details": {
+    "name": "Acme Corporation",
+    "alternative_names": [
+      "Acme Widgets"
+    ],
+    "entity_type": "llc",
+    "incorporation_date": "1990-05-29",
+    "incorporation_jurisdiction": "IN",
+    "addresses": [
+      {
+        "is_primary": true,
+        "street": "123 Main St.",
+        "street2": "Unit 42",
+        "city": "Pawnee",
+        "region": "IN",
+        "postal_code": "46001",
+        "country": "US",
+        "lat": 40.65,
+        "lon": -86.25,
+        "deliverability": {
+          "is_deliverable": true,
+          "is_cmra": false,
+          "residential_indicator": "commercial",
+          "delivery_type": "street"
+        },
+        "sources": [
+          "secretary_of_state"
+        ]
       }
     ],
     "phone_numbers": [
@@ -125276,23 +127309,126 @@ Summary of how a specific business field matched against data provider results
         "url": "https://example.com"
       }
     ],
-    "formation_date": "1990-05-29"
+    "officers": [
+      {
+        "name": "Leslie Knope",
+        "titles": [
+          "President"
+        ],
+        "jurisdictions": [
+          "IN"
+        ],
+        "sources": [
+          "secretary_of_state"
+        ]
+      }
+    ],
+    "registrations": [
+      {
+        "name": "Acme Corporation",
+        "file_number": "199005290001",
+        "jurisdiction": "IN",
+        "type": "domestic",
+        "status": "active",
+        "standing": "In Good Standing",
+        "issue_date": "1990-05-29",
+        "inactive_date": "1990-05-29",
+        "dissolution_date": "1990-05-29",
+        "address": {
+          "street": "123 Main St.",
+          "street2": "Unit 42",
+          "city": "Pawnee",
+          "region": "IN",
+          "postal_code": "46001",
+          "country": "US",
+          "lat": 40.65,
+          "lon": -86.25,
+          "deliverability": {
+            "is_deliverable": true,
+            "is_cmra": false,
+            "residential_indicator": "commercial",
+            "delivery_type": "street"
+          }
+        },
+        "registered_agent": {
+          "name": "Ron Swanson",
+          "address": {
+            "street": "123 Main St.",
+            "street2": "Unit 42",
+            "city": "Pawnee",
+            "region": "IN",
+            "postal_code": "46001",
+            "country": "US",
+            "lat": 40.65,
+            "lon": -86.25,
+            "deliverability": {
+              "is_deliverable": true,
+              "is_cmra": false,
+              "residential_indicator": "commercial",
+              "delivery_type": "street"
+            }
+          }
+        },
+        "officers": [
+          {
+            "name": "Leslie Knope",
+            "titles": [
+              "President"
+            ]
+          }
+        ]
+      }
+    ],
+    "industry": {
+      "classification": {
+        "code": "722511",
+        "description": "Full-Service Restaurants",
+        "confidence": "high",
+        "mcc_codes": [
+          {
+            "code": "5812",
+            "description": "Eating Places and Restaurants"
+          }
+        ],
+        "sic_codes": [
+          {
+            "code": "5812",
+            "description": "Eating Places"
+          }
+        ]
+      }
+    },
+    "sec_registrations": [
+      {
+        "cik": "1234567",
+        "tickers": [
+          "ACME"
+        ],
+        "exchanges": [
+          "NYSE"
+        ],
+        "edgar_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001234567"
+      }
+    ]
   }
 }
 ```
 
-Results from the KYB (Know Your Business) identity verification check
+Results from the business identity verification check, which matches the submitted business information against data provider records. `officers` is one result for all submitted officers, as reported by the data provider. `registered_agent` compares the submitted officer names against the business's registered agent. Both are `no_input` when no officers were submitted.
 
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|status|[BusinessVerificationStatus__KYBCheck](#schemabusinessverificationstatus__kybcheck)|true|none|Status of the KYB (Know Your Business) identity assessment check|
-|score|integer|true|none|A score from 0 to 100 indicating the confidence in KYB (Know Your Business) identity assessment for the business|
+|status|[BusinessVerificationStatus__BusinessVerificationCheck](#schemabusinessverificationstatus__businessverificationcheck)|true|none|Status of the business identity verification check|
+|score|integer \| null|true|none|A score from 0 to 100 indicating confidence in the business identity assessment. `null` when no score is available, including when industry classification succeeds without a business search result.|
 |name|[BusinessFieldMatchSummary](#schemabusinessfieldmatchsummary)|true|none|Summary of how a specific business field matched against data provider results|
-|address|[BusinessFieldMatchSummary](#schemabusinessfieldmatchsummary)|true|none|Summary of how a specific business field matched against data provider results|
+|address|[BusinessAddressMatch](#schemabusinessaddressmatch)|true|none|How the submitted address matched data provider records, and how the provider validated it.|
 |website|[BusinessFieldMatchSummary](#schemabusinessfieldmatchsummary)|true|none|Summary of how a specific business field matched against data provider results|
-|match_details|[BusinessKYBMatchDetails](#schemabusinesskybmatchdetails)|true|none|Detailed information about the business from data provider results|
+|tin|[BusinessTINMatch](#schemabusinesstinmatch)|true|none|How the submitted TIN matched IRS records.|
+|officers|[BusinessFieldMatchSummary](#schemabusinessfieldmatchsummary)|true|none|Summary of how a specific business field matched against data provider results|
+|registered_agent|[BusinessFieldMatchSummary](#schemabusinessfieldmatchsummary)|true|none|Summary of how a specific business field matched against data provider results|
+|business_details|[BusinessDetails](#schemabusinessdetails)|true|none|The business the data provider matched, and the records it holds for it. When there is no business search result, for example when only industry classification ran, every scalar is `null` and every list is empty. `incorporation_date` is the date the business was incorporated, or `null` when not available.|
 
 #### Enumerated Values
 
@@ -125302,31 +127438,328 @@ Results from the KYB (Know Your Business) identity verification check
 |status|success|
 |status|failed|
 
-<h2 id="tocS_BusinessKYBMatchDetails">BusinessKYBMatchDetails</h2>
+<h2 id="tocS_BusinessAddressMatch">BusinessAddressMatch</h2>
 <!-- backwards compatibility -->
-<a id="schemabusinesskybmatchdetails"></a>
-<a id="schema_BusinessKYBMatchDetails"></a>
-<a id="tocSbusinesskybmatchdetails"></a>
-<a id="tocsbusinesskybmatchdetails"></a>
+<a id="schemabusinessaddressmatch"></a>
+<a id="schema_BusinessAddressMatch"></a>
+<a id="tocSbusinessaddressmatch"></a>
+<a id="tocsbusinessaddressmatch"></a>
 
 ```json
 {
-  "names": [
-    {
-      "is_primary": true,
-      "name": "Acme Corporation"
-    }
-  ],
-  "entity_type": "llc",
-  "addresses": [
-    {
+  "summary": "match",
+  "validation": {
+    "level": "full",
+    "standardized_address": {
       "street": "123 Main St.",
       "street2": "Unit 42",
       "city": "Pawnee",
       "region": "IN",
       "postal_code": "46001",
       "country": "US",
-      "is_primary": true
+      "lat": 40.65,
+      "lon": -86.25
+    },
+    "deliverability": {
+      "is_deliverable": true,
+      "is_cmra": false,
+      "residential_indicator": "commercial",
+      "delivery_type": "street"
+    }
+  }
+}
+```
+
+How the submitted address matched data provider records, and how the provider validated it.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|summary|[MatchSummaryCode](#schemamatchsummarycode)|true|none|An enum indicating the match type between data provided by user and data checked against an external data source.<br><br><br>`match` indicates that the provided input data was a strong match against external data.<br><br>`partial_match` indicates the data approximately matched against external data. For example, "Knope" vs. "Knope-Wyatt" for last name.<br><br>`no_match` indicates that Plaid was able to perform a check against an external data source and it did not match the provided input data.<br><br>`no_data` indicates that Plaid was unable to find external data to compare against the provided input data.<br><br>`no_input` indicates that Plaid was unable to perform a check because no information was provided for this field by the end user.|
+|validation|[BusinessAddressValidation](#schemabusinessaddressvalidation)|true|none|How the data provider standardized and validated the submitted address. `null` when the provider returned neither a validation level nor a standardized address. Only US addresses are validated, so this is always `null` when the submitted address is outside the US.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|summary|match|
+|summary|partial_match|
+|summary|no_match|
+|summary|no_data|
+|summary|no_input|
+
+<h2 id="tocS_BusinessAddressValidation">BusinessAddressValidation</h2>
+<!-- backwards compatibility -->
+<a id="schemabusinessaddressvalidation"></a>
+<a id="schema_BusinessAddressValidation"></a>
+<a id="tocSbusinessaddressvalidation"></a>
+<a id="tocsbusinessaddressvalidation"></a>
+
+```json
+{
+  "level": "full",
+  "standardized_address": {
+    "street": "123 Main St.",
+    "street2": "Unit 42",
+    "city": "Pawnee",
+    "region": "IN",
+    "postal_code": "46001",
+    "country": "US",
+    "lat": 40.65,
+    "lon": -86.25
+  },
+  "deliverability": {
+    "is_deliverable": true,
+    "is_cmra": false,
+    "residential_indicator": "commercial",
+    "delivery_type": "street"
+  }
+}
+```
+
+How the data provider standardized and validated the submitted address. `null` when the provider returned neither a validation level nor a standardized address. Only US addresses are validated, so this is always `null` when the submitted address is outside the US.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|level|[BusinessAddressValidationLevel](#schemabusinessaddressvalidationlevel)|true|none|How completely the data provider validated the submitted address against postal records. `full`: the whole address, including any unit, matched a known deliverable address. `partial`: only part of the address matched, for example the building but not the suite. `invalid`: the address could not be matched to a known address. `null` when the provider returned a standardized address without a validation level.|
+|standardized_address|[BusinessStandardizedAddress](#schemabusinessstandardizedaddress)|true|none|The submitted address as the data provider standardized it. `null` when the provider returned a validation level without a standardized address. The provider returns a single street line, so `street2` is always `null`. `country` is always `US`.|
+|deliverability|[BusinessAddressDeliverabilityNullable](#schemabusinessaddressdeliverabilitynullable)|true|none|Delivery details for the standardized address, as reported by the data provider. `null` when `standardized_address` is `null`.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|level|full|
+|level|partial|
+|level|invalid|
+|level|null|
+
+<h2 id="tocS_BusinessAddressValidationLevel">BusinessAddressValidationLevel</h2>
+<!-- backwards compatibility -->
+<a id="schemabusinessaddressvalidationlevel"></a>
+<a id="schema_BusinessAddressValidationLevel"></a>
+<a id="tocSbusinessaddressvalidationlevel"></a>
+<a id="tocsbusinessaddressvalidationlevel"></a>
+
+```json
+"full"
+```
+
+How completely the data provider validated the submitted address against postal records. `full`: the whole address, including any unit, matched a known deliverable address. `partial`: only part of the address matched, for example the building but not the suite. `invalid`: the address could not be matched to a known address. `null` when the provider returned a standardized address without a validation level.
+
+<h2 id="tocS_BusinessStandardizedAddress">BusinessStandardizedAddress</h2>
+<!-- backwards compatibility -->
+<a id="schemabusinessstandardizedaddress"></a>
+<a id="schema_BusinessStandardizedAddress"></a>
+<a id="tocSbusinessstandardizedaddress"></a>
+<a id="tocsbusinessstandardizedaddress"></a>
+
+```json
+{
+  "street": "123 Main St.",
+  "street2": "Unit 42",
+  "city": "Pawnee",
+  "region": "IN",
+  "postal_code": "46001",
+  "country": "US",
+  "lat": 40.65,
+  "lon": -86.25
+}
+```
+
+The submitted address as the data provider standardized it. `null` when the provider returned a validation level without a standardized address. The provider returns a single street line, so `street2` is always `null`. `country` is always `US`.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|street|[StreetNullable](#schemastreetnullable)|true|none|The primary street portion of an address. If an address is provided, this field will always be filled. A string with at least one non-whitespace alphabetical character, with a max length of 80 characters.|
+|street2|[Street2](#schemastreet2)|true|none|Extra street information, like an apartment or suite number. If provided, a string with at least one non-whitespace character, with a max length of 50 characters.|
+|city|[CityNullable](#schemacitynullable)|true|none|City from the address. A string with at least one non-whitespace alphabetical character, with a max length of 100 characters.|
+|region|[Region](#schemaregion)|true|none|A subdivision code. "Subdivision" is a generic term for "state", "province", "prefecture", "zone", etc. For the list of valid codes, see [country subdivision codes](https://plaid.com/documents/country_subdivision_codes.json). Country prefixes are omitted, since they are inferred from the `country` field.|
+|postal_code|[PostalCode](#schemapostalcode)|true|none|The postal code for the associated address. Between 2 and 10 alphanumeric characters. For US-based addresses this must be 5 numeric digits.|
+|country|[GenericCountryCode](#schemagenericcountrycode)|true|none|Valid, capitalized, two-letter ISO code representing the country of this object. Must be in ISO 3166-1 alpha-2 form.|
+|lat|number(double) \| null|true|none|The latitude of the standardized address.|
+|lon|number(double) \| null|true|none|The longitude of the standardized address.|
+
+<h2 id="tocS_BusinessAddressDeliverabilityNullable">BusinessAddressDeliverabilityNullable</h2>
+<!-- backwards compatibility -->
+<a id="schemabusinessaddressdeliverabilitynullable"></a>
+<a id="schema_BusinessAddressDeliverabilityNullable"></a>
+<a id="tocSbusinessaddressdeliverabilitynullable"></a>
+<a id="tocsbusinessaddressdeliverabilitynullable"></a>
+
+```json
+{
+  "is_deliverable": true,
+  "is_cmra": false,
+  "residential_indicator": "commercial",
+  "delivery_type": "street"
+}
+```
+
+Delivery details for the standardized address, as reported by the data provider. `null` when `standardized_address` is `null`.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|is_deliverable|boolean \| null|true|none|Whether the data provider reported the address as deliverable. `null` when the provider did not report it.|
+|is_cmra|boolean \| null|true|none|Whether the address is a Commercial Mail Receiving Agency (CMRA), such as a mailbox rental store. `null` when the provider did not report it.|
+|residential_indicator|[BusinessResidentialIndicator](#schemabusinessresidentialindicator)|true|none|Whether the data provider classified the address as `residential` or `commercial`. `null` when the provider did not classify it.|
+|delivery_type|[BusinessDeliveryType](#schemabusinessdeliverytype)|true|none|The USPS record type of the delivery point at the address, as reported by the data provider. `street`: a street address. `firm`: an address assigned to a specific business. `general_delivery`: mail held at a post office for pickup. `high_rise`: a building with many units, such as an apartment or office building. `post_office`: a PO box. `rural_route`: a rural route or highway contract address. `null` when the provider did not report one.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|residential_indicator|residential|
+|residential_indicator|commercial|
+|residential_indicator|null|
+|delivery_type|street|
+|delivery_type|firm|
+|delivery_type|general_delivery|
+|delivery_type|high_rise|
+|delivery_type|post_office|
+|delivery_type|rural_route|
+|delivery_type|null|
+
+<h2 id="tocS_BusinessResidentialIndicator">BusinessResidentialIndicator</h2>
+<!-- backwards compatibility -->
+<a id="schemabusinessresidentialindicator"></a>
+<a id="schema_BusinessResidentialIndicator"></a>
+<a id="tocSbusinessresidentialindicator"></a>
+<a id="tocsbusinessresidentialindicator"></a>
+
+```json
+"commercial"
+```
+
+Whether the data provider classified the address as `residential` or `commercial`. `null` when the provider did not classify it.
+
+<h2 id="tocS_BusinessDeliveryType">BusinessDeliveryType</h2>
+<!-- backwards compatibility -->
+<a id="schemabusinessdeliverytype"></a>
+<a id="schema_BusinessDeliveryType"></a>
+<a id="tocSbusinessdeliverytype"></a>
+<a id="tocsbusinessdeliverytype"></a>
+
+```json
+"street"
+```
+
+The USPS record type of the delivery point at the address, as reported by the data provider. `street`: a street address. `firm`: an address assigned to a specific business. `general_delivery`: mail held at a post office for pickup. `high_rise`: a building with many units, such as an apartment or office building. `post_office`: a PO box. `rural_route`: a rural route or highway contract address. `null` when the provider did not report one.
+
+<h2 id="tocS_BusinessTINMatch">BusinessTINMatch</h2>
+<!-- backwards compatibility -->
+<a id="schemabusinesstinmatch"></a>
+<a id="schema_BusinessTINMatch"></a>
+<a id="tocSbusinesstinmatch"></a>
+<a id="tocsbusinesstinmatch"></a>
+
+```json
+{
+  "summary": "match",
+  "tin_type": "ein"
+}
+```
+
+How the submitted TIN matched IRS records.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|summary|[MatchSummaryCode](#schemamatchsummarycode)|true|none|An enum indicating the match type between data provided by user and data checked against an external data source.<br><br><br>`match` indicates that the provided input data was a strong match against external data.<br><br>`partial_match` indicates the data approximately matched against external data. For example, "Knope" vs. "Knope-Wyatt" for last name.<br><br>`no_match` indicates that Plaid was able to perform a check against an external data source and it did not match the provided input data.<br><br>`no_data` indicates that Plaid was unable to find external data to compare against the provided input data.<br><br>`no_input` indicates that Plaid was unable to perform a check because no information was provided for this field by the end user.|
+|tin_type|[BusinessTINType](#schemabusinesstintype)|true|none|The kind of TIN the IRS reported. `unknown` means the IRS did not say which kind it is. `null` when no TIN was submitted (`summary` is `no_input`) or the IRS did not report a type, as when the check could not run (`summary` is `no_data`). A non-null `tin_type` does not mean the TIN matched; read `summary` for that.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|summary|match|
+|summary|partial_match|
+|summary|no_match|
+|summary|no_data|
+|summary|no_input|
+|tin_type|ein|
+|tin_type|ssn|
+|tin_type|unknown|
+|tin_type|null|
+
+<h2 id="tocS_BusinessTINType">BusinessTINType</h2>
+<!-- backwards compatibility -->
+<a id="schemabusinesstintype"></a>
+<a id="schema_BusinessTINType"></a>
+<a id="tocSbusinesstintype"></a>
+<a id="tocsbusinesstintype"></a>
+
+```json
+"ein"
+```
+
+The kind of TIN the IRS reported. `unknown` means the IRS did not say which kind it is. `null` when no TIN was submitted (`summary` is `no_input`) or the IRS did not report a type, as when the check could not run (`summary` is `no_data`). A non-null `tin_type` does not mean the TIN matched; read `summary` for that.
+
+<h2 id="tocS_BusinessOfficer">BusinessOfficer</h2>
+<!-- backwards compatibility -->
+<a id="schemabusinessofficer"></a>
+<a id="schema_BusinessOfficer"></a>
+<a id="tocSbusinessofficer"></a>
+<a id="tocsbusinessofficer"></a>
+
+```json
+{
+  "name": "Leslie Knope"
+}
+```
+
+An officer of the business.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|name|string|true|none|The officer's full name. Must have at least one character and a maximum length of 500 characters.|
+
+<h2 id="tocS_BusinessDetails">BusinessDetails</h2>
+<!-- backwards compatibility -->
+<a id="schemabusinessdetails"></a>
+<a id="schema_BusinessDetails"></a>
+<a id="tocSbusinessdetails"></a>
+<a id="tocsbusinessdetails"></a>
+
+```json
+{
+  "name": "Acme Corporation",
+  "alternative_names": [
+    "Acme Widgets"
+  ],
+  "entity_type": "llc",
+  "incorporation_date": "1990-05-29",
+  "incorporation_jurisdiction": "IN",
+  "addresses": [
+    {
+      "is_primary": true,
+      "street": "123 Main St.",
+      "street2": "Unit 42",
+      "city": "Pawnee",
+      "region": "IN",
+      "postal_code": "46001",
+      "country": "US",
+      "lat": 40.65,
+      "lon": -86.25,
+      "deliverability": {
+        "is_deliverable": true,
+        "is_cmra": false,
+        "residential_indicator": "commercial",
+        "delivery_type": "street"
+      },
+      "sources": [
+        "secretary_of_state"
+      ]
     }
   ],
   "phone_numbers": [
@@ -125344,23 +127777,129 @@ Results from the KYB (Know Your Business) identity verification check
       "url": "https://example.com"
     }
   ],
-  "formation_date": "1990-05-29"
+  "officers": [
+    {
+      "name": "Leslie Knope",
+      "titles": [
+        "President"
+      ],
+      "jurisdictions": [
+        "IN"
+      ],
+      "sources": [
+        "secretary_of_state"
+      ]
+    }
+  ],
+  "registrations": [
+    {
+      "name": "Acme Corporation",
+      "file_number": "199005290001",
+      "jurisdiction": "IN",
+      "type": "domestic",
+      "status": "active",
+      "standing": "In Good Standing",
+      "issue_date": "1990-05-29",
+      "inactive_date": "1990-05-29",
+      "dissolution_date": "1990-05-29",
+      "address": {
+        "street": "123 Main St.",
+        "street2": "Unit 42",
+        "city": "Pawnee",
+        "region": "IN",
+        "postal_code": "46001",
+        "country": "US",
+        "lat": 40.65,
+        "lon": -86.25,
+        "deliverability": {
+          "is_deliverable": true,
+          "is_cmra": false,
+          "residential_indicator": "commercial",
+          "delivery_type": "street"
+        }
+      },
+      "registered_agent": {
+        "name": "Ron Swanson",
+        "address": {
+          "street": "123 Main St.",
+          "street2": "Unit 42",
+          "city": "Pawnee",
+          "region": "IN",
+          "postal_code": "46001",
+          "country": "US",
+          "lat": 40.65,
+          "lon": -86.25,
+          "deliverability": {
+            "is_deliverable": true,
+            "is_cmra": false,
+            "residential_indicator": "commercial",
+            "delivery_type": "street"
+          }
+        }
+      },
+      "officers": [
+        {
+          "name": "Leslie Knope",
+          "titles": [
+            "President"
+          ]
+        }
+      ]
+    }
+  ],
+  "industry": {
+    "classification": {
+      "code": "722511",
+      "description": "Full-Service Restaurants",
+      "confidence": "high",
+      "mcc_codes": [
+        {
+          "code": "5812",
+          "description": "Eating Places and Restaurants"
+        }
+      ],
+      "sic_codes": [
+        {
+          "code": "5812",
+          "description": "Eating Places"
+        }
+      ]
+    }
+  },
+  "sec_registrations": [
+    {
+      "cik": "1234567",
+      "tickers": [
+        "ACME"
+      ],
+      "exchanges": [
+        "NYSE"
+      ],
+      "edgar_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001234567"
+    }
+  ]
 }
 ```
 
-Detailed information about the business from data provider results
+The business the data provider matched, and the records it holds for it. When there is no business search result, for example when only industry classification ran, every scalar is `null` and every list is empty. `incorporation_date` is the date the business was incorporated, or `null` when not available.
 
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|names|[[ProviderBusinessName](#schemaproviderbusinessname)]|true|none|Names associated with the business.|
+|name|string \| null|true|none|The name of the business, as the data provider reported it. `null` when not available.|
+|alternative_names|[string]|true|none|Other names the data provider holds for the business.|
 |entity_type|[BusinessEntityType](#schemabusinessentitytype)|true|none|The legal structure or type of business entity|
-|addresses|[[ProviderBusinessAddress](#schemaproviderbusinessaddress)]|true|none|Addresses associated with the business|
-|phone_numbers|[[BusinessPhoneNumber](#schemabusinessphonenumber)]|true|none|Phone numbers associated with the business|
-|email_addresses|[[BusinessEmailAddress](#schemabusinessemailaddress)]|true|none|Email addresses associated with the business|
-|websites|[[BusinessWebsite](#schemabusinesswebsite)]|true|none|Websites associated with the business|
-|formation_date|[ISO8601DateNullable](#schemaiso8601datenullable)|true|none|A date in the format YYYY-MM-DD (RFC 3339 Section 5.6).|
+|incorporation_date|[ISO8601DateNullable](#schemaiso8601datenullable)|true|none|A date in the format YYYY-MM-DD (RFC 3339 Section 5.6).|
+|incorporation_jurisdiction|string \| null|true|none|The US state the business was incorporated in, as a subdivision code such as `IN`. `null` when not available.|
+|addresses|[[BusinessDetailAddress](#schemabusinessdetailaddress)]|true|none|Addresses the data provider attributes to the business. Addresses listed on a registration are under `registrations` instead.|
+|phone_numbers|[[BusinessPhoneNumber](#schemabusinessphonenumber)]|true|none|Phone numbers the data provider holds for the business.|
+|email_addresses|[[BusinessEmailAddress](#schemabusinessemailaddress)]|true|none|Email addresses the data provider holds for the business.|
+|websites|[[BusinessWebsite](#schemabusinesswebsite)]|true|none|The business's website, as the data provider reported it. Holds at most one entry.|
+|officers|[[BusinessDetailOfficer](#schemabusinessdetailofficer)]|true|none|Officers the data provider attributes to the business. Officers listed on a registration are under `registrations` instead.|
+|registrations|[[BusinessRegistration](#schemabusinessregistration)]|true|none|The business's state registrations, as the data provider reported them.|
+|industry|[BusinessIndustry](#schemabusinessindustry)|true|none|Industry classifications for the business.|
+|sec_registrations|[[BusinessSECRegistration](#schemabusinesssecregistration)]|true|none|SEC EDGAR registrations the data provider linked to the business.|
 
 #### Enumerated Values
 
@@ -125386,6 +127925,562 @@ Detailed information about the business from data provider results
 |entity_type|insurance|
 |entity_type|other|
 |entity_type|unknown|
+
+<h2 id="tocS_BusinessAddressDeliverability">BusinessAddressDeliverability</h2>
+<!-- backwards compatibility -->
+<a id="schemabusinessaddressdeliverability"></a>
+<a id="schema_BusinessAddressDeliverability"></a>
+<a id="tocSbusinessaddressdeliverability"></a>
+<a id="tocsbusinessaddressdeliverability"></a>
+
+```json
+{
+  "is_deliverable": true,
+  "is_cmra": false,
+  "residential_indicator": "commercial",
+  "delivery_type": "street"
+}
+```
+
+Delivery details for the address, as reported by the data provider.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|is_deliverable|boolean \| null|true|none|Whether the data provider reported the address as deliverable. `null` when not available.|
+|is_cmra|boolean \| null|true|none|Whether the address is a Commercial Mail Receiving Agency (CMRA), such as a mailbox rental store. `null` when not available.|
+|residential_indicator|[BusinessResidentialIndicator](#schemabusinessresidentialindicator)|true|none|Whether the data provider classified the address as `residential` or `commercial`. `null` when the provider did not classify it.|
+|delivery_type|[BusinessDeliveryType](#schemabusinessdeliverytype)|true|none|The USPS record type of the delivery point at the address, as reported by the data provider. `street`: a street address. `firm`: an address assigned to a specific business. `general_delivery`: mail held at a post office for pickup. `high_rise`: a building with many units, such as an apartment or office building. `post_office`: a PO box. `rural_route`: a rural route or highway contract address. `null` when the provider did not report one.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|residential_indicator|residential|
+|residential_indicator|commercial|
+|residential_indicator|null|
+|delivery_type|street|
+|delivery_type|firm|
+|delivery_type|general_delivery|
+|delivery_type|high_rise|
+|delivery_type|post_office|
+|delivery_type|rural_route|
+|delivery_type|null|
+
+<h2 id="tocS_BusinessDetailAddress">BusinessDetailAddress</h2>
+<!-- backwards compatibility -->
+<a id="schemabusinessdetailaddress"></a>
+<a id="schema_BusinessDetailAddress"></a>
+<a id="tocSbusinessdetailaddress"></a>
+<a id="tocsbusinessdetailaddress"></a>
+
+```json
+{
+  "is_primary": true,
+  "street": "123 Main St.",
+  "street2": "Unit 42",
+  "city": "Pawnee",
+  "region": "IN",
+  "postal_code": "46001",
+  "country": "US",
+  "lat": 40.65,
+  "lon": -86.25,
+  "deliverability": {
+    "is_deliverable": true,
+    "is_cmra": false,
+    "residential_indicator": "commercial",
+    "delivery_type": "street"
+  },
+  "sources": [
+    "secretary_of_state"
+  ]
+}
+```
+
+An address the data provider attributes to the business. The provider returns a single street line, so `street2` is always `null`. `country` is always `US`.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|is_primary|boolean|true|none|Whether the data provider reported this as the business's primary address.|
+|street|[StreetNullable](#schemastreetnullable)|true|none|The primary street portion of an address. If an address is provided, this field will always be filled. A string with at least one non-whitespace alphabetical character, with a max length of 80 characters.|
+|street2|[Street2](#schemastreet2)|true|none|Extra street information, like an apartment or suite number. If provided, a string with at least one non-whitespace character, with a max length of 50 characters.|
+|city|[CityNullable](#schemacitynullable)|true|none|City from the address. A string with at least one non-whitespace alphabetical character, with a max length of 100 characters.|
+|region|[Region](#schemaregion)|true|none|A subdivision code. "Subdivision" is a generic term for "state", "province", "prefecture", "zone", etc. For the list of valid codes, see [country subdivision codes](https://plaid.com/documents/country_subdivision_codes.json). Country prefixes are omitted, since they are inferred from the `country` field.|
+|postal_code|[PostalCode](#schemapostalcode)|true|none|The postal code for the associated address. Between 2 and 10 alphanumeric characters. For US-based addresses this must be 5 numeric digits.|
+|country|[GenericCountryCode](#schemagenericcountrycode)|true|none|Valid, capitalized, two-letter ISO code representing the country of this object. Must be in ISO 3166-1 alpha-2 form.|
+|lat|number(double) \| null|true|none|The latitude of the address. `null` when not available.|
+|lon|number(double) \| null|true|none|The longitude of the address. `null` when not available.|
+|deliverability|[BusinessAddressDeliverability](#schemabusinessaddressdeliverability)|true|none|Delivery details for the address, as reported by the data provider.|
+|sources|[[BusinessEntitySource](#schemabusinessentitysource)]|true|none|Where the data provider found the address. Empty when the provider did not say.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|sources|secretary_of_state|
+|sources|online|
+
+<h2 id="tocS_BusinessRegistrationAddressNullable">BusinessRegistrationAddressNullable</h2>
+<!-- backwards compatibility -->
+<a id="schemabusinessregistrationaddressnullable"></a>
+<a id="schema_BusinessRegistrationAddressNullable"></a>
+<a id="tocSbusinessregistrationaddressnullable"></a>
+<a id="tocsbusinessregistrationaddressnullable"></a>
+
+```json
+{
+  "street": "123 Main St.",
+  "street2": "Unit 42",
+  "city": "Pawnee",
+  "region": "IN",
+  "postal_code": "46001",
+  "country": "US",
+  "lat": 40.65,
+  "lon": -86.25,
+  "deliverability": {
+    "is_deliverable": true,
+    "is_cmra": false,
+    "residential_indicator": "commercial",
+    "delivery_type": "street"
+  }
+}
+```
+
+An address the data provider listed on a registration, for the registration itself or for its registered agent. `null` when the provider listed none. The provider returns a single street line, so `street2` is always `null`. `country` is always `US`.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|street|[StreetNullable](#schemastreetnullable)|true|none|The primary street portion of an address. If an address is provided, this field will always be filled. A string with at least one non-whitespace alphabetical character, with a max length of 80 characters.|
+|street2|[Street2](#schemastreet2)|true|none|Extra street information, like an apartment or suite number. If provided, a string with at least one non-whitespace character, with a max length of 50 characters.|
+|city|[CityNullable](#schemacitynullable)|true|none|City from the address. A string with at least one non-whitespace alphabetical character, with a max length of 100 characters.|
+|region|[Region](#schemaregion)|true|none|A subdivision code. "Subdivision" is a generic term for "state", "province", "prefecture", "zone", etc. For the list of valid codes, see [country subdivision codes](https://plaid.com/documents/country_subdivision_codes.json). Country prefixes are omitted, since they are inferred from the `country` field.|
+|postal_code|[PostalCode](#schemapostalcode)|true|none|The postal code for the associated address. Between 2 and 10 alphanumeric characters. For US-based addresses this must be 5 numeric digits.|
+|country|[GenericCountryCode](#schemagenericcountrycode)|true|none|Valid, capitalized, two-letter ISO code representing the country of this object. Must be in ISO 3166-1 alpha-2 form.|
+|lat|number(double) \| null|true|none|The latitude of the address. `null` when not available.|
+|lon|number(double) \| null|true|none|The longitude of the address. `null` when not available.|
+|deliverability|[BusinessAddressDeliverability](#schemabusinessaddressdeliverability)|true|none|Delivery details for the address, as reported by the data provider.|
+
+<h2 id="tocS_BusinessEntitySource">BusinessEntitySource</h2>
+<!-- backwards compatibility -->
+<a id="schemabusinessentitysource"></a>
+<a id="schema_BusinessEntitySource"></a>
+<a id="tocSbusinessentitysource"></a>
+<a id="tocsbusinessentitysource"></a>
+
+```json
+"secretary_of_state"
+```
+
+Where the data provider found the record: `secretary_of_state` for a Secretary of State filing, or `online` for an online source.
+
+<h2 id="tocS_BusinessDetailOfficer">BusinessDetailOfficer</h2>
+<!-- backwards compatibility -->
+<a id="schemabusinessdetailofficer"></a>
+<a id="schema_BusinessDetailOfficer"></a>
+<a id="tocSbusinessdetailofficer"></a>
+<a id="tocsbusinessdetailofficer"></a>
+
+```json
+{
+  "name": "Leslie Knope",
+  "titles": [
+    "President"
+  ],
+  "jurisdictions": [
+    "IN"
+  ],
+  "sources": [
+    "secretary_of_state"
+  ]
+}
+```
+
+An officer the data provider attributes to the business.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|name|string \| null|true|none|The officer's name, as the data provider reported it. `null` when not available.|
+|titles|[string]|true|none|The officer's titles, as the data provider reported them.|
+|jurisdictions|[string]|true|none|The US states the officer is registered in, as subdivision codes such as `IN`.|
+|sources|[[BusinessEntitySource](#schemabusinessentitysource)]|true|none|Where the data provider found the officer. Empty when the provider did not say.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|sources|secretary_of_state|
+|sources|online|
+
+<h2 id="tocS_BusinessRegistration">BusinessRegistration</h2>
+<!-- backwards compatibility -->
+<a id="schemabusinessregistration"></a>
+<a id="schema_BusinessRegistration"></a>
+<a id="tocSbusinessregistration"></a>
+<a id="tocsbusinessregistration"></a>
+
+```json
+{
+  "name": "Acme Corporation",
+  "file_number": "199005290001",
+  "jurisdiction": "IN",
+  "type": "domestic",
+  "status": "active",
+  "standing": "In Good Standing",
+  "issue_date": "1990-05-29",
+  "inactive_date": "1990-05-29",
+  "dissolution_date": "1990-05-29",
+  "address": {
+    "street": "123 Main St.",
+    "street2": "Unit 42",
+    "city": "Pawnee",
+    "region": "IN",
+    "postal_code": "46001",
+    "country": "US",
+    "lat": 40.65,
+    "lon": -86.25,
+    "deliverability": {
+      "is_deliverable": true,
+      "is_cmra": false,
+      "residential_indicator": "commercial",
+      "delivery_type": "street"
+    }
+  },
+  "registered_agent": {
+    "name": "Ron Swanson",
+    "address": {
+      "street": "123 Main St.",
+      "street2": "Unit 42",
+      "city": "Pawnee",
+      "region": "IN",
+      "postal_code": "46001",
+      "country": "US",
+      "lat": 40.65,
+      "lon": -86.25,
+      "deliverability": {
+        "is_deliverable": true,
+        "is_cmra": false,
+        "residential_indicator": "commercial",
+        "delivery_type": "street"
+      }
+    }
+  },
+  "officers": [
+    {
+      "name": "Leslie Knope",
+      "titles": [
+        "President"
+      ]
+    }
+  ]
+}
+```
+
+A registration of the business with a US state, as the data provider reported it. `issue_date`, `inactive_date`, and `dissolution_date` are each `null` when not available.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|name|string \| null|true|none|The business name on the registration. `null` when not available.|
+|file_number|string \| null|true|none|The file number the state assigned to the registration. `null` when not available.|
+|jurisdiction|string \| null|true|none|The US state of the registration, as a subdivision code such as `IN`. `null` when not available.|
+|type|[BusinessRegistrationType](#schemabusinessregistrationtype)|true|none|Whether the registration is `domestic`, in the state where the business was first registered, or `foreign`, in another state where it registered to operate. `unknown` means the data provider could not tell. `null` when not available.|
+|status|[BusinessRegistrationStatus](#schemabusinessregistrationstatus)|true|none|Whether the registration is `active` or `inactive`, as the data provider normalized the state's standing. `unknown` means the provider could not tell. `null` when not available.|
+|standing|string \| null|true|none|The registration's standing in the state's own words, such as `In Good Standing`. The wording varies by state; read `status` for a normalized value. `null` when not available.|
+|issue_date|[ISO8601DateNullable](#schemaiso8601datenullable)|true|none|A date in the format YYYY-MM-DD (RFC 3339 Section 5.6).|
+|inactive_date|[ISO8601DateNullable](#schemaiso8601datenullable)|true|none|A date in the format YYYY-MM-DD (RFC 3339 Section 5.6).|
+|dissolution_date|[ISO8601DateNullable](#schemaiso8601datenullable)|true|none|A date in the format YYYY-MM-DD (RFC 3339 Section 5.6).|
+|address|[BusinessRegistrationAddressNullable](#schemabusinessregistrationaddressnullable)|true|none|An address the data provider listed on a registration, for the registration itself or for its registered agent. `null` when the provider listed none. The provider returns a single street line, so `street2` is always `null`. `country` is always `US`.|
+|registered_agent|[BusinessRegisteredAgent](#schemabusinessregisteredagent)|true|none|The registered agent the data provider listed on the registration. `null` when the provider listed none.|
+|officers|[[BusinessRegistrationOfficer](#schemabusinessregistrationofficer)]|true|none|The officers listed on the registration.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|domestic|
+|type|foreign|
+|type|unknown|
+|type|null|
+|status|active|
+|status|inactive|
+|status|unknown|
+|status|null|
+
+<h2 id="tocS_BusinessRegistrationType">BusinessRegistrationType</h2>
+<!-- backwards compatibility -->
+<a id="schemabusinessregistrationtype"></a>
+<a id="schema_BusinessRegistrationType"></a>
+<a id="tocSbusinessregistrationtype"></a>
+<a id="tocsbusinessregistrationtype"></a>
+
+```json
+"domestic"
+```
+
+Whether the registration is `domestic`, in the state where the business was first registered, or `foreign`, in another state where it registered to operate. `unknown` means the data provider could not tell. `null` when not available.
+
+<h2 id="tocS_BusinessRegistrationStatus">BusinessRegistrationStatus</h2>
+<!-- backwards compatibility -->
+<a id="schemabusinessregistrationstatus"></a>
+<a id="schema_BusinessRegistrationStatus"></a>
+<a id="tocSbusinessregistrationstatus"></a>
+<a id="tocsbusinessregistrationstatus"></a>
+
+```json
+"active"
+```
+
+Whether the registration is `active` or `inactive`, as the data provider normalized the state's standing. `unknown` means the provider could not tell. `null` when not available.
+
+<h2 id="tocS_BusinessRegisteredAgent">BusinessRegisteredAgent</h2>
+<!-- backwards compatibility -->
+<a id="schemabusinessregisteredagent"></a>
+<a id="schema_BusinessRegisteredAgent"></a>
+<a id="tocSbusinessregisteredagent"></a>
+<a id="tocsbusinessregisteredagent"></a>
+
+```json
+{
+  "name": "Ron Swanson",
+  "address": {
+    "street": "123 Main St.",
+    "street2": "Unit 42",
+    "city": "Pawnee",
+    "region": "IN",
+    "postal_code": "46001",
+    "country": "US",
+    "lat": 40.65,
+    "lon": -86.25,
+    "deliverability": {
+      "is_deliverable": true,
+      "is_cmra": false,
+      "residential_indicator": "commercial",
+      "delivery_type": "street"
+    }
+  }
+}
+```
+
+The registered agent the data provider listed on the registration. `null` when the provider listed none.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|name|string \| null|true|none|The registered agent's name. `null` when not available.|
+|address|[BusinessRegistrationAddressNullable](#schemabusinessregistrationaddressnullable)|true|none|An address the data provider listed on a registration, for the registration itself or for its registered agent. `null` when the provider listed none. The provider returns a single street line, so `street2` is always `null`. `country` is always `US`.|
+
+<h2 id="tocS_BusinessRegistrationOfficer">BusinessRegistrationOfficer</h2>
+<!-- backwards compatibility -->
+<a id="schemabusinessregistrationofficer"></a>
+<a id="schema_BusinessRegistrationOfficer"></a>
+<a id="tocSbusinessregistrationofficer"></a>
+<a id="tocsbusinessregistrationofficer"></a>
+
+```json
+{
+  "name": "Leslie Knope",
+  "titles": [
+    "President"
+  ]
+}
+```
+
+An officer listed on a registration.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|name|string \| null|true|none|The officer's name. `null` when not available.|
+|titles|[string]|true|none|The officer's titles on the registration.|
+
+<h2 id="tocS_BusinessSECRegistration">BusinessSECRegistration</h2>
+<!-- backwards compatibility -->
+<a id="schemabusinesssecregistration"></a>
+<a id="schema_BusinessSECRegistration"></a>
+<a id="tocSbusinesssecregistration"></a>
+<a id="tocsbusinesssecregistration"></a>
+
+```json
+{
+  "cik": "1234567",
+  "tickers": [
+    "ACME"
+  ],
+  "exchanges": [
+    "NYSE"
+  ],
+  "edgar_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001234567"
+}
+```
+
+An SEC EDGAR registration the data provider linked to the business.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|cik|string \| null|true|none|The registrant's SEC Central Index Key (CIK). `null` when not available.|
+|tickers|[string]|true|none|The registrant's ticker symbols. Empty when the registrant has no listed securities.|
+|exchanges|[string]|true|none|The exchanges the registrant's securities trade on. Empty when the registrant has no listed securities.|
+|edgar_url|string(uri) \| null|true|none|The registrant's page on SEC EDGAR. `null` when not available.|
+
+<h2 id="tocS_BusinessIndustry">BusinessIndustry</h2>
+<!-- backwards compatibility -->
+<a id="schemabusinessindustry"></a>
+<a id="schema_BusinessIndustry"></a>
+<a id="tocSbusinessindustry"></a>
+<a id="tocsbusinessindustry"></a>
+
+```json
+{
+  "classification": {
+    "code": "722511",
+    "description": "Full-Service Restaurants",
+    "confidence": "high",
+    "mcc_codes": [
+      {
+        "code": "5812",
+        "description": "Eating Places and Restaurants"
+      }
+    ],
+    "sic_codes": [
+      {
+        "code": "5812",
+        "description": "Eating Places"
+      }
+    ]
+  }
+}
+```
+
+Industry classifications for the business.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|classification|[IndustryClassification](#schemaindustryclassification)|true|none|A predicted NAICS industry classification. Null when classification was not requested or no prediction is available.|
+
+<h2 id="tocS_IndustryClassification">IndustryClassification</h2>
+<!-- backwards compatibility -->
+<a id="schemaindustryclassification"></a>
+<a id="schema_IndustryClassification"></a>
+<a id="tocSindustryclassification"></a>
+<a id="tocsindustryclassification"></a>
+
+```json
+{
+  "code": "722511",
+  "description": "Full-Service Restaurants",
+  "confidence": "high",
+  "mcc_codes": [
+    {
+      "code": "5812",
+      "description": "Eating Places and Restaurants"
+    }
+  ],
+  "sic_codes": [
+    {
+      "code": "5812",
+      "description": "Eating Places"
+    }
+  ]
+}
+```
+
+A predicted NAICS industry classification. Null when classification was not requested or no prediction is available.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|code|string|true|none|NAICS industry code.|
+|description|string|true|none|Description of the NAICS industry.|
+|confidence|[BusinessIndustryConfidence](#schemabusinessindustryconfidence)|true|none|Confidence in the business's industry classification.<br>`high`: High confidence in the classification.<br>`medium`: Moderate confidence in the classification.<br>`low`: Low confidence in the classification.<br>`null`: Confidence is unavailable.|
+|mcc_codes|[[BusinessMerchantCategoryCode](#schemabusinessmerchantcategorycode)]|true|none|Related Merchant Category Codes. Empty when no codes are available.|
+|sic_codes|[[BusinessStandardIndustrialClassificationCode](#schemabusinessstandardindustrialclassificationcode)]|true|none|Related Standard Industrial Classification codes. Empty when no codes are available.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|confidence|low|
+|confidence|medium|
+|confidence|high|
+|confidence|null|
+
+<h2 id="tocS_BusinessIndustryConfidence">BusinessIndustryConfidence</h2>
+<!-- backwards compatibility -->
+<a id="schemabusinessindustryconfidence"></a>
+<a id="schema_BusinessIndustryConfidence"></a>
+<a id="tocSbusinessindustryconfidence"></a>
+<a id="tocsbusinessindustryconfidence"></a>
+
+```json
+"high"
+```
+
+Confidence in the business's industry classification.
+`high`: High confidence in the classification.
+`medium`: Moderate confidence in the classification.
+`low`: Low confidence in the classification.
+`null`: Confidence is unavailable.
+
+<h2 id="tocS_BusinessMerchantCategoryCode">BusinessMerchantCategoryCode</h2>
+<!-- backwards compatibility -->
+<a id="schemabusinessmerchantcategorycode"></a>
+<a id="schema_BusinessMerchantCategoryCode"></a>
+<a id="tocSbusinessmerchantcategorycode"></a>
+<a id="tocsbusinessmerchantcategorycode"></a>
+
+```json
+{
+  "code": "5812",
+  "description": "Eating Places and Restaurants"
+}
+```
+
+A related Merchant Category Code (MCC) and its description.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|code|string|true|none|A four-digit Merchant Category Code (MCC).|
+|description|string \| null|true|none|Description of the MCC code. `null` when unavailable.|
+
+<h2 id="tocS_BusinessStandardIndustrialClassificationCode">BusinessStandardIndustrialClassificationCode</h2>
+<!-- backwards compatibility -->
+<a id="schemabusinessstandardindustrialclassificationcode"></a>
+<a id="schema_BusinessStandardIndustrialClassificationCode"></a>
+<a id="tocSbusinessstandardindustrialclassificationcode"></a>
+<a id="tocsbusinessstandardindustrialclassificationcode"></a>
+
+```json
+{
+  "code": "5812",
+  "description": "Eating Places"
+}
+```
+
+A related Standard Industrial Classification (SIC) code and its description.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|code|string|true|none|A four-digit Standard Industrial Classification (SIC) code.|
+|description|string \| null|true|none|Description of the SIC code. `null` when unavailable.|
 
 <h2 id="tocS_BusinessName">BusinessName</h2>
 <!-- backwards compatibility -->
@@ -125439,29 +128534,6 @@ A phone number in E.164 format.
 
 A phone number in E.164 format.
 
-<h2 id="tocS_ProviderBusinessName">ProviderBusinessName</h2>
-<!-- backwards compatibility -->
-<a id="schemaproviderbusinessname"></a>
-<a id="schema_ProviderBusinessName"></a>
-<a id="tocSproviderbusinessname"></a>
-<a id="tocsproviderbusinessname"></a>
-
-```json
-{
-  "is_primary": true,
-  "name": "Acme Corporation"
-}
-```
-
-Name associated with a business
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|is_primary|boolean|true|none|Indicates whether this is the primary name for the business.|
-|name|[BusinessNameNullable](#schemabusinessnamenullable)|true|none|The name of the business. Must have at least one character and a maximum length of 500 characters.|
-
 <h2 id="tocS_BusinessPhoneNumber">BusinessPhoneNumber</h2>
 <!-- backwards compatibility -->
 <a id="schemabusinessphonenumber"></a>
@@ -125493,11 +128565,7 @@ Phone number associated with a business
 ```json
 {
   "status": "success",
-  "score": 92,
-  "industry_prediction": {
-    "code": 518210,
-    "title": "Data Processing, Hosting, and Related Services"
-  }
+  "score": 92
 }
 ```
 
@@ -125508,8 +128576,7 @@ Results from the business risk assessment check
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |status|[BusinessVerificationStatus__RiskCheck](#schemabusinessverificationstatus__riskcheck)|true|none|Status of the business risk assessment check|
-|score|integer|true|none|A score from 0 to 100 indicating the risk assessment for the business|
-|industry_prediction|[BusinessIndustryPredictionNullable](#schemabusinessindustrypredictionnullable)|true|none|Nullable industry prediction details.|
+|score|integer \| null|true|none|A score from 0 to 100 indicating the risk assessment for the business. `null` if no risk score is available for this verification. Industry classification may still be available when the risk score is `null`. A completed check can have `status: failed` and a `null` score when the risk assessment could not be completed; this does not represent a score of zero or a high-risk assessment. Read `status` separately to determine the check outcome; `null` does not mean the check is still running.|
 
 #### Enumerated Values
 
@@ -125518,52 +128585,6 @@ Results from the business risk assessment check
 |status|active|
 |status|success|
 |status|failed|
-
-<h2 id="tocS_BusinessIndustryPrediction">BusinessIndustryPrediction</h2>
-<!-- backwards compatibility -->
-<a id="schemabusinessindustryprediction"></a>
-<a id="schema_BusinessIndustryPrediction"></a>
-<a id="tocSbusinessindustryprediction"></a>
-<a id="tocsbusinessindustryprediction"></a>
-
-```json
-{
-  "code": 518210,
-  "title": "Data Processing, Hosting, and Related Services"
-}
-```
-
-The predicted industry classification for the business, based on digital presence assessments.
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|code|integer|true|none|NAICS code for the predicted business industry.|
-|title|string|true|none|The business industry classification of the predicted NAICS code.|
-
-<h2 id="tocS_BusinessIndustryPredictionNullable">BusinessIndustryPredictionNullable</h2>
-<!-- backwards compatibility -->
-<a id="schemabusinessindustrypredictionnullable"></a>
-<a id="schema_BusinessIndustryPredictionNullable"></a>
-<a id="tocSbusinessindustrypredictionnullable"></a>
-<a id="tocsbusinessindustrypredictionnullable"></a>
-
-```json
-{
-  "code": 518210,
-  "title": "Data Processing, Hosting, and Related Services"
-}
-```
-
-Nullable industry prediction details.
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|code|integer|true|none|NAICS code for the predicted business industry.|
-|title|string|true|none|The business industry classification of the predicted NAICS code.|
 
 <h2 id="tocS_BusinessSearchTerms">BusinessSearchTerms</h2>
 <!-- backwards compatibility -->
@@ -125588,7 +128609,13 @@ Nullable industry prediction details.
   },
   "website": "https://example.com",
   "phone_number": "+14025671234",
-  "email_address": "user@example.com"
+  "email_address": "user@example.com",
+  "tin": "123456789",
+  "officers": [
+    {
+      "name": "Leslie Knope"
+    }
+  ]
 }
 ```
 
@@ -125604,6 +128631,8 @@ The business information that was used to perform the verification search
 |website|[URLNullable](#schemaurlnullable)|true|none|An 'http' or 'https' URL (must begin with either of those).|
 |phone_number|[BusinessVerificationPhoneNumberNullable](#schemabusinessverificationphonenumbernullable)|true|none|A phone number in E.164 format.|
 |email_address|[EmailAddressNullable](#schemaemailaddressnullable)|true|none|A valid email address. Must not have leading or trailing spaces and address must be RFC compliant. For more information, see [RFC 3696](https://datatracker.ietf.org/doc/html/rfc3696).|
+|tin|string \| null|true|none|The TIN that was submitted, as 9 digits without a dash. `null` if no TIN was submitted.|
+|officers|[[BusinessOfficer](#schemabusinessofficer)]|true|none|The officers that were submitted.|
 
 <h2 id="tocS_BusinessVerificationCreateRequest">BusinessVerificationCreateRequest</h2>
 <!-- backwards compatibility -->
@@ -125628,7 +128657,17 @@ The business information that was used to perform the verification search
     },
     "website": "https://example.com",
     "phone_number": "+14025671234",
-    "email_address": "user@example.com"
+    "email_address": "user@example.com",
+    "tin": "12-3456789",
+    "officers": [
+      {
+        "name": "Leslie Knope"
+      }
+    ]
+  },
+  "options": {
+    "include_website_analysis": false,
+    "include_industry_classification": false
   },
   "client_id": "string",
   "secret": "string"
@@ -125642,7 +128681,8 @@ Request input for creating a business verification
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |client_user_id|[ClientUserID](#schemaclientuserid)|true|none|A unique ID that identifies the end user in your system. Either a `user_id` or the `client_user_id` must be provided. This ID can also be used to associate user-specific data from other Plaid products. Financial Account Matching requires this field and the `/link/token/create` `client_user_id` to be consistent. Personally identifiable information, such as an email address or phone number, should not be used in the `client_user_id`.|
-|business|[BusinessVerificationCreateRequestBusiness](#schemabusinessverificationcreaterequestbusiness)|false|none|Business information provided in the verification request|
+|business|[BusinessVerificationCreateRequestBusiness](#schemabusinessverificationcreaterequestbusiness)|true|none|Business information provided in the verification request|
+|options|[BusinessVerificationCreateRequestOptions](#schemabusinessverificationcreaterequestoptions)|false|none|Optional checks to run for this verification. Omit or set to null to run Business Search only.|
 |client_id|[APIClientID](#schemaapiclientid)|false|none|Your Plaid API `client_id`. The `client_id` is required and may be provided either in the `PLAID-CLIENT-ID` header or as part of a request body.|
 |secret|[APISecret](#schemaapisecret)|false|none|Your Plaid API `secret`. The `secret` is required and may be provided either in the `PLAID-SECRET` header or as part of a request body.|
 
@@ -125667,7 +128707,13 @@ Request input for creating a business verification
   },
   "website": "https://example.com",
   "phone_number": "+14025671234",
-  "email_address": "user@example.com"
+  "email_address": "user@example.com",
+  "tin": "12-3456789",
+  "officers": [
+    {
+      "name": "Leslie Knope"
+    }
+  ]
 }
 ```
 
@@ -125677,12 +128723,37 @@ Business information provided in the verification request
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|name|[BusinessName](#schemabusinessname)|false|none|The name of the business. Must have at least one character and a maximum length of 500 characters.|
+|name|[BusinessName](#schemabusinessname)|true|none|The name of the business. Must have at least one character and a maximum length of 500 characters.|
 |alternative_name|[BusinessNameNullable](#schemabusinessnamenullable)|false|none|The name of the business. Must have at least one character and a maximum length of 500 characters.|
-|address|[RequestBusinessAddress](#schemarequestbusinessaddress)|false|none|Physical address of a business. Used for input requests.|
+|address|[RequestBusinessAddress](#schemarequestbusinessaddress)|true|none|Physical address of a business. Used for input requests.|
 |website|[URL](#schemaurl)|false|none|An 'http' or 'https' URL (must begin with either of those).|
 |phone_number|[BusinessVerificationPhoneNumber](#schemabusinessverificationphonenumber)|false|none|A phone number in E.164 format.|
 |email_address|[EmailAddress](#schemaemailaddress)|false|none|A valid email address. Must not have leading or trailing spaces and address must be RFC compliant. For more information, see [RFC 3696](https://datatracker.ietf.org/doc/html/rfc3696).|
+|tin|string \| null|false|none|The business's Taxpayer Identification Number (TIN), such as an Employer Identification Number (EIN), as 9 digits. An EIN may include a dash after the first two digits, such as `12-3456789`.|
+|officers|[[BusinessOfficer](#schemabusinessofficer)]|false|none|Officers of the business, used to check that the people listed match public records. At most 10.|
+
+<h2 id="tocS_BusinessVerificationCreateRequestOptions">BusinessVerificationCreateRequestOptions</h2>
+<!-- backwards compatibility -->
+<a id="schemabusinessverificationcreaterequestoptions"></a>
+<a id="schema_BusinessVerificationCreateRequestOptions"></a>
+<a id="tocSbusinessverificationcreaterequestoptions"></a>
+<a id="tocsbusinessverificationcreaterequestoptions"></a>
+
+```json
+{
+  "include_website_analysis": false,
+  "include_industry_classification": false
+}
+```
+
+Optional checks to run for this verification. Omit or set to null to run Business Search only.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|include_website_analysis|boolean \| null|false|none|Whether to run website analysis. Defaults to `false` when omitted or `null`. When `true`, `business.website` is required.|
+|include_industry_classification|boolean \| null|false|none|Whether to run industry classification. Defaults to `false` when omitted or `null`.|
 
 <h2 id="tocS_BusinessVerificationCreateResponse">BusinessVerificationCreateResponse</h2>
 <!-- backwards compatibility -->
@@ -125699,6 +128770,10 @@ Business information provided in the verification request
   "completed_at": "2020-07-24T03:26:02Z",
   "redacted_at": "2020-07-24T03:26:02Z",
   "status": "success",
+  "requested_checks": {
+    "include_website_analysis": true,
+    "include_industry_classification": false
+  },
   "search_terms": {
     "name": "Acme Corporation",
     "alternative_names": [
@@ -125714,37 +128789,83 @@ Business information provided in the verification request
     },
     "website": "https://example.com",
     "phone_number": "+14025671234",
-    "email_address": "user@example.com"
+    "email_address": "user@example.com",
+    "tin": "123456789",
+    "officers": [
+      {
+        "name": "Leslie Knope"
+      }
+    ]
   },
-  "kyb_check": {
+  "business_verification": {
     "status": "success",
     "score": 85,
     "name": {
       "summary": "match"
     },
     "address": {
-      "summary": "match"
-    },
-    "website": {
-      "summary": "match"
-    },
-    "match_details": {
-      "names": [
-        {
-          "is_primary": true,
-          "name": "Acme Corporation"
-        }
-      ],
-      "entity_type": "llc",
-      "addresses": [
-        {
+      "summary": "match",
+      "validation": {
+        "level": "full",
+        "standardized_address": {
           "street": "123 Main St.",
           "street2": "Unit 42",
           "city": "Pawnee",
           "region": "IN",
           "postal_code": "46001",
           "country": "US",
-          "is_primary": true
+          "lat": 40.65,
+          "lon": -86.25
+        },
+        "deliverability": {
+          "is_deliverable": true,
+          "is_cmra": false,
+          "residential_indicator": "commercial",
+          "delivery_type": "street"
+        }
+      }
+    },
+    "website": {
+      "summary": "match"
+    },
+    "tin": {
+      "summary": "match",
+      "tin_type": "ein"
+    },
+    "officers": {
+      "summary": "match"
+    },
+    "registered_agent": {
+      "summary": "match"
+    },
+    "business_details": {
+      "name": "Acme Corporation",
+      "alternative_names": [
+        "Acme Widgets"
+      ],
+      "entity_type": "llc",
+      "incorporation_date": "1990-05-29",
+      "incorporation_jurisdiction": "IN",
+      "addresses": [
+        {
+          "is_primary": true,
+          "street": "123 Main St.",
+          "street2": "Unit 42",
+          "city": "Pawnee",
+          "region": "IN",
+          "postal_code": "46001",
+          "country": "US",
+          "lat": 40.65,
+          "lon": -86.25,
+          "deliverability": {
+            "is_deliverable": true,
+            "is_cmra": false,
+            "residential_indicator": "commercial",
+            "delivery_type": "street"
+          },
+          "sources": [
+            "secretary_of_state"
+          ]
         }
       ],
       "phone_numbers": [
@@ -125762,16 +128883,112 @@ Business information provided in the verification request
           "url": "https://example.com"
         }
       ],
-      "formation_date": "1990-05-29"
+      "officers": [
+        {
+          "name": "Leslie Knope",
+          "titles": [
+            "President"
+          ],
+          "jurisdictions": [
+            "IN"
+          ],
+          "sources": [
+            "secretary_of_state"
+          ]
+        }
+      ],
+      "registrations": [
+        {
+          "name": "Acme Corporation",
+          "file_number": "199005290001",
+          "jurisdiction": "IN",
+          "type": "domestic",
+          "status": "active",
+          "standing": "In Good Standing",
+          "issue_date": "1990-05-29",
+          "inactive_date": "1990-05-29",
+          "dissolution_date": "1990-05-29",
+          "address": {
+            "street": "123 Main St.",
+            "street2": "Unit 42",
+            "city": "Pawnee",
+            "region": "IN",
+            "postal_code": "46001",
+            "country": "US",
+            "lat": 40.65,
+            "lon": -86.25,
+            "deliverability": {
+              "is_deliverable": true,
+              "is_cmra": false,
+              "residential_indicator": "commercial",
+              "delivery_type": "street"
+            }
+          },
+          "registered_agent": {
+            "name": "Ron Swanson",
+            "address": {
+              "street": "123 Main St.",
+              "street2": "Unit 42",
+              "city": "Pawnee",
+              "region": "IN",
+              "postal_code": "46001",
+              "country": "US",
+              "lat": 40.65,
+              "lon": -86.25,
+              "deliverability": {
+                "is_deliverable": true,
+                "is_cmra": false,
+                "residential_indicator": "commercial",
+                "delivery_type": "street"
+              }
+            }
+          },
+          "officers": [
+            {
+              "name": "Leslie Knope",
+              "titles": [
+                "President"
+              ]
+            }
+          ]
+        }
+      ],
+      "industry": {
+        "classification": {
+          "code": "722511",
+          "description": "Full-Service Restaurants",
+          "confidence": "high",
+          "mcc_codes": [
+            {
+              "code": "5812",
+              "description": "Eating Places and Restaurants"
+            }
+          ],
+          "sic_codes": [
+            {
+              "code": "5812",
+              "description": "Eating Places"
+            }
+          ]
+        }
+      },
+      "sec_registrations": [
+        {
+          "cik": "1234567",
+          "tickers": [
+            "ACME"
+          ],
+          "exchanges": [
+            "NYSE"
+          ],
+          "edgar_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001234567"
+        }
+      ]
     }
   },
   "risk_check": {
     "status": "success",
-    "score": 92,
-    "industry_prediction": {
-      "code": 518210,
-      "title": "Data Processing, Hosting, and Related Services"
-    }
+    "score": 92
   },
   "digital_presence_check": {
     "status": "success",
@@ -125804,7 +129021,7 @@ Business information provided in the verification request
     }
   },
   "request_id": "string",
-  "shareable_url": "https://verify.plaid.com/busver_4FrXJvfQU3zGUR?key=e004115db797f7cc3083bff3167cba30644ef630fb46f5b086cde6cc3b86a36f"
+  "shareable_url": "https://verify.plaid.com/verify/busver_52xR9LKo77r1Np?key=e004115db797f7cc3083bff3167cba30644ef630fb46f5b086cde6cc3b86a36f"
 }
 ```
 
@@ -125820,8 +129037,9 @@ A business verification represents a check of a business's identity and risk pro
 |completed_at|[TimestampNullable](#schematimestampnullable)|true|none|An ISO8601 formatted timestamp.|
 |redacted_at|[TimestampNullable](#schematimestampnullable)|true|none|An ISO8601 formatted timestamp.|
 |status|[BusinessVerificationStatus__Overall](#schemabusinessverificationstatus__overall)|true|none|Status of the overall business verification|
+|requested_checks|[BusinessVerificationRequestedChecks](#schemabusinessverificationrequestedchecks)|true|none|The optional checks requested for this business verification.|
 |search_terms|[BusinessSearchTerms](#schemabusinesssearchterms)|true|none|The business information that was used to perform the verification search|
-|kyb_check|[BusinessKYBCheck](#schemabusinesskybcheck)|true|none|Results from the KYB (Know Your Business) identity verification check|
+|business_verification|[BusinessVerificationCheck](#schemabusinessverificationcheck)|true|none|Results from the business identity verification check, which matches the submitted business information against data provider records. `officers` is one result for all submitted officers, as reported by the data provider. `registered_agent` compares the submitted officer names against the business's registered agent. Both are `no_input` when no officers were submitted.|
 |risk_check|[BusinessRiskCheck](#schemabusinessriskcheck)|true|none|Results from the business risk assessment check|
 |digital_presence_check|[BusinessDigitalPresenceCheck](#schemabusinessdigitalpresencecheck)|true|none|Results from the digital presence check.|
 |request_id|[RequestID](#schemarequestid)|true|none|A unique identifier for the request, which can be used for troubleshooting. This identifier, like all Plaid identifiers, is case sensitive.|
@@ -125875,6 +129093,10 @@ Request input for fetching a business verification
   "completed_at": "2020-07-24T03:26:02Z",
   "redacted_at": "2020-07-24T03:26:02Z",
   "status": "success",
+  "requested_checks": {
+    "include_website_analysis": true,
+    "include_industry_classification": false
+  },
   "search_terms": {
     "name": "Acme Corporation",
     "alternative_names": [
@@ -125890,37 +129112,83 @@ Request input for fetching a business verification
     },
     "website": "https://example.com",
     "phone_number": "+14025671234",
-    "email_address": "user@example.com"
+    "email_address": "user@example.com",
+    "tin": "123456789",
+    "officers": [
+      {
+        "name": "Leslie Knope"
+      }
+    ]
   },
-  "kyb_check": {
+  "business_verification": {
     "status": "success",
     "score": 85,
     "name": {
       "summary": "match"
     },
     "address": {
-      "summary": "match"
-    },
-    "website": {
-      "summary": "match"
-    },
-    "match_details": {
-      "names": [
-        {
-          "is_primary": true,
-          "name": "Acme Corporation"
-        }
-      ],
-      "entity_type": "llc",
-      "addresses": [
-        {
+      "summary": "match",
+      "validation": {
+        "level": "full",
+        "standardized_address": {
           "street": "123 Main St.",
           "street2": "Unit 42",
           "city": "Pawnee",
           "region": "IN",
           "postal_code": "46001",
           "country": "US",
-          "is_primary": true
+          "lat": 40.65,
+          "lon": -86.25
+        },
+        "deliverability": {
+          "is_deliverable": true,
+          "is_cmra": false,
+          "residential_indicator": "commercial",
+          "delivery_type": "street"
+        }
+      }
+    },
+    "website": {
+      "summary": "match"
+    },
+    "tin": {
+      "summary": "match",
+      "tin_type": "ein"
+    },
+    "officers": {
+      "summary": "match"
+    },
+    "registered_agent": {
+      "summary": "match"
+    },
+    "business_details": {
+      "name": "Acme Corporation",
+      "alternative_names": [
+        "Acme Widgets"
+      ],
+      "entity_type": "llc",
+      "incorporation_date": "1990-05-29",
+      "incorporation_jurisdiction": "IN",
+      "addresses": [
+        {
+          "is_primary": true,
+          "street": "123 Main St.",
+          "street2": "Unit 42",
+          "city": "Pawnee",
+          "region": "IN",
+          "postal_code": "46001",
+          "country": "US",
+          "lat": 40.65,
+          "lon": -86.25,
+          "deliverability": {
+            "is_deliverable": true,
+            "is_cmra": false,
+            "residential_indicator": "commercial",
+            "delivery_type": "street"
+          },
+          "sources": [
+            "secretary_of_state"
+          ]
         }
       ],
       "phone_numbers": [
@@ -125938,16 +129206,112 @@ Request input for fetching a business verification
           "url": "https://example.com"
         }
       ],
-      "formation_date": "1990-05-29"
+      "officers": [
+        {
+          "name": "Leslie Knope",
+          "titles": [
+            "President"
+          ],
+          "jurisdictions": [
+            "IN"
+          ],
+          "sources": [
+            "secretary_of_state"
+          ]
+        }
+      ],
+      "registrations": [
+        {
+          "name": "Acme Corporation",
+          "file_number": "199005290001",
+          "jurisdiction": "IN",
+          "type": "domestic",
+          "status": "active",
+          "standing": "In Good Standing",
+          "issue_date": "1990-05-29",
+          "inactive_date": "1990-05-29",
+          "dissolution_date": "1990-05-29",
+          "address": {
+            "street": "123 Main St.",
+            "street2": "Unit 42",
+            "city": "Pawnee",
+            "region": "IN",
+            "postal_code": "46001",
+            "country": "US",
+            "lat": 40.65,
+            "lon": -86.25,
+            "deliverability": {
+              "is_deliverable": true,
+              "is_cmra": false,
+              "residential_indicator": "commercial",
+              "delivery_type": "street"
+            }
+          },
+          "registered_agent": {
+            "name": "Ron Swanson",
+            "address": {
+              "street": "123 Main St.",
+              "street2": "Unit 42",
+              "city": "Pawnee",
+              "region": "IN",
+              "postal_code": "46001",
+              "country": "US",
+              "lat": 40.65,
+              "lon": -86.25,
+              "deliverability": {
+                "is_deliverable": true,
+                "is_cmra": false,
+                "residential_indicator": "commercial",
+                "delivery_type": "street"
+              }
+            }
+          },
+          "officers": [
+            {
+              "name": "Leslie Knope",
+              "titles": [
+                "President"
+              ]
+            }
+          ]
+        }
+      ],
+      "industry": {
+        "classification": {
+          "code": "722511",
+          "description": "Full-Service Restaurants",
+          "confidence": "high",
+          "mcc_codes": [
+            {
+              "code": "5812",
+              "description": "Eating Places and Restaurants"
+            }
+          ],
+          "sic_codes": [
+            {
+              "code": "5812",
+              "description": "Eating Places"
+            }
+          ]
+        }
+      },
+      "sec_registrations": [
+        {
+          "cik": "1234567",
+          "tickers": [
+            "ACME"
+          ],
+          "exchanges": [
+            "NYSE"
+          ],
+          "edgar_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001234567"
+        }
+      ]
     }
   },
   "risk_check": {
     "status": "success",
-    "score": 92,
-    "industry_prediction": {
-      "code": 518210,
-      "title": "Data Processing, Hosting, and Related Services"
-    }
+    "score": 92
   },
   "digital_presence_check": {
     "status": "success",
@@ -125980,7 +129344,7 @@ Request input for fetching a business verification
     }
   },
   "request_id": "string",
-  "shareable_url": "https://verify.plaid.com/busver_4FrXJvfQU3zGUR?key=e004115db797f7cc3083bff3167cba30644ef630fb46f5b086cde6cc3b86a36f"
+  "shareable_url": "https://verify.plaid.com/verify/busver_52xR9LKo77r1Np?key=e004115db797f7cc3083bff3167cba30644ef630fb46f5b086cde6cc3b86a36f"
 }
 ```
 
@@ -125996,8 +129360,9 @@ A business verification represents a check of a business's identity and risk pro
 |completed_at|[TimestampNullable](#schematimestampnullable)|true|none|An ISO8601 formatted timestamp.|
 |redacted_at|[TimestampNullable](#schematimestampnullable)|true|none|An ISO8601 formatted timestamp.|
 |status|[BusinessVerificationStatus__Overall](#schemabusinessverificationstatus__overall)|true|none|Status of the overall business verification|
+|requested_checks|[BusinessVerificationRequestedChecks](#schemabusinessverificationrequestedchecks)|true|none|The optional checks requested for this business verification.|
 |search_terms|[BusinessSearchTerms](#schemabusinesssearchterms)|true|none|The business information that was used to perform the verification search|
-|kyb_check|[BusinessKYBCheck](#schemabusinesskybcheck)|true|none|Results from the KYB (Know Your Business) identity verification check|
+|business_verification|[BusinessVerificationCheck](#schemabusinessverificationcheck)|true|none|Results from the business identity verification check, which matches the submitted business information against data provider records. `officers` is one result for all submitted officers, as reported by the data provider. `registered_agent` compares the submitted officer names against the business's registered agent. Both are `no_input` when no officers were submitted.|
 |risk_check|[BusinessRiskCheck](#schemabusinessriskcheck)|true|none|Results from the business risk assessment check|
 |digital_presence_check|[BusinessDigitalPresenceCheck](#schemabusinessdigitalpresencecheck)|true|none|Results from the digital presence check.|
 |request_id|[RequestID](#schemarequestid)|true|none|A unique identifier for the request, which can be used for troubleshooting. This identifier, like all Plaid identifiers, is case sensitive.|
@@ -126010,6 +129375,29 @@ A business verification represents a check of a business's identity and risk pro
 |status|active|
 |status|success|
 |status|failed|
+
+<h2 id="tocS_BusinessVerificationRequestedChecks">BusinessVerificationRequestedChecks</h2>
+<!-- backwards compatibility -->
+<a id="schemabusinessverificationrequestedchecks"></a>
+<a id="schema_BusinessVerificationRequestedChecks"></a>
+<a id="tocSbusinessverificationrequestedchecks"></a>
+<a id="tocsbusinessverificationrequestedchecks"></a>
+
+```json
+{
+  "include_website_analysis": true,
+  "include_industry_classification": false
+}
+```
+
+The optional checks requested for this business verification.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|include_website_analysis|boolean|true|none|Whether website analysis was requested.|
+|include_industry_classification|boolean|true|none|Whether industry classification was requested.|
 
 <h2 id="tocS_BusinessVerificationID">BusinessVerificationID</h2>
 <!-- backwards compatibility -->
@@ -126024,18 +129412,18 @@ A business verification represents a check of a business's identity and risk pro
 
 ID of the associated business verification.
 
-<h2 id="tocS_BusinessVerificationStatus__KYBCheck">BusinessVerificationStatus__KYBCheck</h2>
+<h2 id="tocS_BusinessVerificationStatus__BusinessVerificationCheck">BusinessVerificationStatus__BusinessVerificationCheck</h2>
 <!-- backwards compatibility -->
-<a id="schemabusinessverificationstatus__kybcheck"></a>
-<a id="schema_BusinessVerificationStatus__KYBCheck"></a>
-<a id="tocSbusinessverificationstatus__kybcheck"></a>
-<a id="tocsbusinessverificationstatus__kybcheck"></a>
+<a id="schemabusinessverificationstatus__businessverificationcheck"></a>
+<a id="schema_BusinessVerificationStatus__BusinessVerificationCheck"></a>
+<a id="tocSbusinessverificationstatus__businessverificationcheck"></a>
+<a id="tocsbusinessverificationstatus__businessverificationcheck"></a>
 
 ```json
 "success"
 ```
 
-Status of the KYB (Know Your Business) identity assessment check
+Status of the business identity verification check
 
 <h2 id="tocS_BusinessVerificationStatus__Overall">BusinessVerificationStatus__Overall</h2>
 <!-- backwards compatibility -->
@@ -126084,7 +129472,7 @@ Status of the digital presence check
 <a id="tocsbusinessverificationshareableurl"></a>
 
 ```json
-"https://verify.plaid.com/busver_4FrXJvfQU3zGUR?key=e004115db797f7cc3083bff3167cba30644ef630fb46f5b086cde6cc3b86a36f"
+"https://verify.plaid.com/verify/busver_52xR9LKo77r1Np?key=e004115db797f7cc3083bff3167cba30644ef630fb46f5b086cde6cc3b86a36f"
 ```
 
 A shareable URL that can be sent directly to the user to complete verification
@@ -126149,7 +129537,7 @@ Results from the digital presence check.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |status|[BusinessVerificationStatus__WebPresenceCheck](#schemabusinessverificationstatus__webpresencecheck)|true|none|Status of the digital presence check|
-|score|integer|true|none|A score from 0 to 100 indicating digital presence confidence.|
+|score|integer \| null|true|none|A score from 0 to 100 indicating digital presence confidence. `null` if no digital presence score is available for this verification. A completed check can have `status: failed` and a `null` score when website analysis could not produce a score; this does not represent a score of zero. Read `status` separately to determine the check outcome; `null` does not mean the check is still running. When website analysis was not requested, the entire `digital_presence_check` object is `null`.|
 |address|[BusinessFieldMatchSummary](#schemabusinessfieldmatchsummary)|true|none|Summary of how a specific business field matched against data provider results|
 |phone_number|[BusinessFieldMatchSummary](#schemabusinessfieldmatchsummary)|true|none|Summary of how a specific business field matched against data provider results|
 |email_address|[BusinessFieldMatchSummary](#schemabusinessfieldmatchsummary)|true|none|Summary of how a specific business field matched against data provider results|
@@ -126197,7 +129585,7 @@ Website analysis details if a website is found for the provided website in the s
 |---|---|---|---|---|
 |is_parked|[BusinessCheckBooleanStatus](#schemabusinesscheckbooleanstatus)|true|none|Tri-state boolean status, where `no_data` indicates the check could not determine a value.|
 |email_is_deliverable|[BusinessCheckBooleanStatus](#schemabusinesscheckbooleanstatus)|true|none|Tri-state boolean status, where `no_data` indicates the check could not determine a value.|
-|website_build_status|[BusinessWebsiteBuildStatus](#schemabusinesswebsitebuildstatus)|true|none|Build status of the business website.|
+|website_build_status|[BusinessWebsiteBuildStatus](#schemabusinesswebsitebuildstatus)|true|none|Build status of the business website. `null` if the build status could not be determined.|
 |whois_record|[BusinessWhoisRecord](#schemabusinesswhoisrecord)|true|none|WHOIS metadata for the business website domain.|
 |ssl|[BusinessWebsiteSSL](#schemabusinesswebsitessl)|true|none|SSL status for the business website.|
 
@@ -126214,6 +129602,7 @@ Website analysis details if a website is found for the provided website in the s
 |website_build_status|coming_soon|
 |website_build_status|active|
 |website_build_status|inactive|
+|website_build_status|null|
 
 <h2 id="tocS_BusinessWebsiteBuildStatus">BusinessWebsiteBuildStatus</h2>
 <!-- backwards compatibility -->
@@ -126226,7 +129615,7 @@ Website analysis details if a website is found for the provided website in the s
 "active"
 ```
 
-Build status of the business website.
+Build status of the business website. `null` if the build status could not be determined.
 
 <h2 id="tocS_BusinessWhoisRecord">BusinessWhoisRecord</h2>
 <!-- backwards compatibility -->
@@ -128331,7 +131720,10 @@ Value of the identity document typed in by the user. Alpha-numeric, with all for
       }
     }
   },
-  "fraud_attributes": {}
+  "fraud_attributes": {
+    "property1": null,
+    "property2": null
+  }
 }
 ```
 
@@ -128614,7 +132006,11 @@ If idempotency is enabled, Plaid will return the existing Identity Verification.
       "summary": "match",
       "ssa_verification": {
         "match": "match",
-        "is_deceased": false
+        "is_deceased": false,
+        "name_match": {},
+        "date_of_birth_match": {},
+        "ssn_match": {},
+        "other_match": {}
       }
     },
     "phone_number": {
@@ -128736,7 +132132,10 @@ If idempotency is enabled, Plaid will return the existing Identity Verification.
         }
       }
     },
-    "fraud_attributes": {}
+    "fraud_attributes": {
+      "property1": null,
+      "property2": null
+    }
   }
 }
 ```
@@ -129317,7 +132716,11 @@ The `ip_address` field is optional. Provide the end user's IP address to enable 
       "summary": "match",
       "ssa_verification": {
         "match": "match",
-        "is_deceased": false
+        "is_deceased": false,
+        "name_match": {},
+        "date_of_birth_match": {},
+        "ssn_match": {},
+        "other_match": {}
       }
     },
     "phone_number": {
@@ -129439,7 +132842,10 @@ The `ip_address` field is optional. Provide the end user's IP address to enable 
         }
       }
     },
-    "fraud_attributes": {}
+    "fraud_attributes": {
+      "property1": null,
+      "property2": null
+    }
   },
   "request_id": "string"
 }
@@ -129875,7 +133281,11 @@ Request input for fetching an Identity Verification
       "summary": "match",
       "ssa_verification": {
         "match": "match",
-        "is_deceased": false
+        "is_deceased": false,
+        "name_match": {},
+        "date_of_birth_match": {},
+        "ssn_match": {},
+        "other_match": {}
       }
     },
     "phone_number": {
@@ -129997,7 +133407,10 @@ Request input for fetching an Identity Verification
         }
       }
     },
-    "fraud_attributes": {}
+    "fraud_attributes": {
+      "property1": null,
+      "property2": null
+    }
   },
   "request_id": "string"
 }
@@ -130305,7 +133718,11 @@ Request input for listing Identity Verifications
           "summary": "match",
           "ssa_verification": {
             "match": "match",
-            "is_deceased": false
+            "is_deceased": false,
+            "name_match": {},
+            "date_of_birth_match": {},
+            "ssn_match": {},
+            "other_match": {}
           }
         },
         "phone_number": {
@@ -130427,7 +133844,10 @@ Request input for listing Identity Verifications
             }
           }
         },
-        "fraud_attributes": {}
+        "fraud_attributes": {
+          "property1": null,
+          "property2": null
+        }
       }
     }
   ],
@@ -130861,7 +134281,11 @@ The `selfie_check` step is currently not supported on the sandbox server. Sandbo
       "summary": "match",
       "ssa_verification": {
         "match": "match",
-        "is_deceased": false
+        "is_deceased": false,
+        "name_match": {},
+        "date_of_birth_match": {},
+        "ssn_match": {},
+        "other_match": {}
       }
     },
     "phone_number": {
@@ -130983,7 +134407,10 @@ The `selfie_check` step is currently not supported on the sandbox server. Sandbo
         }
       }
     },
-    "fraud_attributes": {}
+    "fraud_attributes": {
+      "property1": null,
+      "property2": null
+    }
   },
   "request_id": "string"
 }
@@ -131792,7 +135219,11 @@ Result summary object specifying how the `date_of_birth` field matched.
     "summary": "match",
     "ssa_verification": {
       "match": "match",
-      "is_deceased": false
+      "is_deceased": false,
+      "name_match": {},
+      "date_of_birth_match": {},
+      "ssn_match": {},
+      "other_match": {}
     }
   },
   "phone_number": {
@@ -131893,7 +135324,11 @@ Result summary object specifying how the `address` field matched for fields that
   "summary": "match",
   "ssa_verification": {
     "match": "match",
-    "is_deceased": false
+    "is_deceased": false,
+    "name_match": {},
+    "date_of_birth_match": {},
+    "ssn_match": {},
+    "other_match": {}
   }
 }
 ```
@@ -131927,7 +135362,11 @@ Result summary object specifying how the `id_number` field matched.
 ```json
 {
   "match": "match",
-  "is_deceased": false
+  "is_deceased": false,
+  "name_match": {},
+  "date_of_birth_match": {},
+  "ssn_match": {},
+  "other_match": {}
 }
 ```
 
@@ -131944,6 +135383,10 @@ If SSA returns `no_data` without a deceased result, the summary keeps the propri
 |---|---|---|---|---|
 |match|[KYCCheckSSAMatchStatus](#schemakyccheckssamatchstatus)|true|none|The Social Security Administration (SSA) match result for the person's name, date of birth, and Social Security number.<br><br>`match` indicates that the provided information matches SSA records.<br><br>`no_match` indicates that the provided information does not match SSA records.<br><br>`no_data` indicates that no SSA match result is available.|
 |is_deceased|boolean \| null|true|none|Whether the Social Security Administration reported the person as deceased. Null when the status is unavailable.|
+|name_match|object|false|none|Whether the person's name matches SSA records. `no_data` indicates that this field result is unavailable.|
+|date_of_birth_match|object|false|none|Whether the person's date of birth matches SSA records. `no_data` indicates that this field result is unavailable.|
+|ssn_match|object|false|none|Whether the person's Social Security number matches SSA records. `no_data` indicates that this field result is unavailable.|
+|other_match|object|false|none|The match result when SSA does not disclose individual field results. `no_data` indicates that this field result is unavailable.|
 
 #### Enumerated Values
 
@@ -132392,39 +135835,6 @@ The valid name matching sensitivity configurations for a screening program. Note
 `strict` - Aggressive false positive reduction. This sensitivity will require names to be more similar than `coarse` and `balanced` settings, relying less on phonetics, while still accounting for character transpositions, missing tokens, and other common permutations.
 
 `exact` - Matches must be nearly exact. This sensitivity will only show hits with exact or nearly exact name matches with only basic correction such as extraneous symbols and capitalization. This setting is generally not recommended unless you have a very specific use case.
-
-<h2 id="tocS_ProviderBusinessAddress">ProviderBusinessAddress</h2>
-<!-- backwards compatibility -->
-<a id="schemaproviderbusinessaddress"></a>
-<a id="schema_ProviderBusinessAddress"></a>
-<a id="tocSproviderbusinessaddress"></a>
-<a id="tocsproviderbusinessaddress"></a>
-
-```json
-{
-  "street": "123 Main St.",
-  "street2": "Unit 42",
-  "city": "Pawnee",
-  "region": "IN",
-  "postal_code": "46001",
-  "country": "US",
-  "is_primary": true
-}
-```
-
-Detailed address information for a business from data provider
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|street|[StreetNullable](#schemastreetnullable)|true|none|The primary street portion of an address. If an address is provided, this field will always be filled. A string with at least one non-whitespace alphabetical character, with a max length of 80 characters.|
-|street2|[Street2](#schemastreet2)|true|none|Extra street information, like an apartment or suite number. If provided, a string with at least one non-whitespace character, with a max length of 50 characters.|
-|city|[CityNullable](#schemacitynullable)|true|none|City from the address. A string with at least one non-whitespace alphabetical character, with a max length of 100 characters.|
-|region|[Region](#schemaregion)|true|none|A subdivision code. "Subdivision" is a generic term for "state", "province", "prefecture", "zone", etc. For the list of valid codes, see [country subdivision codes](https://plaid.com/documents/country_subdivision_codes.json). Country prefixes are omitted, since they are inferred from the `country` field.|
-|postal_code|[PostalCode](#schemapostalcode)|true|none|The postal code for the associated address. Between 2 and 10 alphanumeric characters. For US-based addresses this must be 5 numeric digits.|
-|country|[GenericCountryCode](#schemagenericcountrycode)|true|none|Valid, capitalized, two-letter ISO code representing the country of this object. Must be in ISO 3166-1 alpha-2 form.|
-|is_primary|boolean|true|none|Whether this is the primary address for the business|
 
 <h2 id="tocS_ProxyType">ProxyType</h2>
 <!-- backwards compatibility -->
@@ -137117,6 +140527,14 @@ Defines the request schema for `/cra/check_report/income_insights/get`.
                   }
                 ]
               }
+            ],
+            "consumer_disputes": [
+              {
+                "consumer_dispute_id": "string",
+                "dispute_field_create_date": "1970-01-01",
+                "category": "TRANSACTION",
+                "statement": "string"
+              }
             ]
           }
         ],
@@ -137163,6 +140581,14 @@ Defines the request schema for `/cra/check_report/income_insights/get`.
                     "primary": true
                   }
                 ]
+              }
+            ],
+            "consumer_disputes": [
+              {
+                "consumer_dispute_id": "string",
+                "dispute_field_create_date": "1970-01-01",
+                "category": "TRANSACTION",
+                "statement": "string"
               }
             ]
           }
@@ -137631,6 +141057,14 @@ ConsumerReportPDFGetResponse defines the response schema for `/consumer_report/p
                 }
               ]
             }
+          ],
+          "consumer_disputes": [
+            {
+              "consumer_dispute_id": "string",
+              "dispute_field_create_date": "1970-01-01",
+              "category": "TRANSACTION",
+              "statement": "string"
+            }
           ]
         }
       ],
@@ -137677,6 +141111,14 @@ ConsumerReportPDFGetResponse defines the response schema for `/consumer_report/p
                   "primary": true
                 }
               ]
+            }
+          ],
+          "consumer_disputes": [
+            {
+              "consumer_dispute_id": "string",
+              "dispute_field_create_date": "1970-01-01",
+              "category": "TRANSACTION",
+              "statement": "string"
             }
           ]
         }
@@ -138006,6 +141448,14 @@ The Check Income Insights Report for an end user.
             }
           ]
         }
+      ],
+      "consumer_disputes": [
+        {
+          "consumer_dispute_id": "string",
+          "dispute_field_create_date": "1970-01-01",
+          "category": "TRANSACTION",
+          "statement": "string"
+        }
       ]
     }
   ],
@@ -138052,6 +141502,14 @@ The Check Income Insights Report for an end user.
               "primary": true
             }
           ]
+        }
+      ],
+      "consumer_disputes": [
+        {
+          "consumer_dispute_id": "string",
+          "dispute_field_create_date": "1970-01-01",
+          "category": "TRANSACTION",
+          "statement": "string"
         }
       ]
     }
@@ -138188,6 +141646,14 @@ The details and metadata for an end user's Item.
         }
       ]
     }
+  ],
+  "consumer_disputes": [
+    {
+      "consumer_dispute_id": "string",
+      "dispute_field_create_date": "1970-01-01",
+      "category": "TRANSACTION",
+      "statement": "string"
+    }
   ]
 }
 ```
@@ -138206,6 +141672,7 @@ The Item's bank accounts that have the selected data.
 |subtype|[DepositoryAccountSubtype](#schemadepositoryaccountsubtype)|true|none|Valid account subtypes for depository accounts. For a list containing descriptions of each subtype, see [Account schemas](https://plaid.com/docs/api/accounts/#StandaloneAccountType-depository).|
 |type|[CreditBankIncomeAccountType](#schemacreditbankincomeaccounttype)|true|none|The account type. This will always be `depository`.|
 |owners|[[Owner](#schemaowner)]|true|none|Data returned by the financial institution about the account owner or owners. Identity information is optional, so field may return an empty array.|
+|consumer_disputes|[[ConsumerDispute](#schemaconsumerdispute)]|true|none|The valid dispute statements previously submitted by the consumer for this account.|
 
 #### Enumerated Values
 
@@ -139151,7 +142618,7 @@ Deprecated. This field is no longer accepted for new clients (created on or afte
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |income_insights_filter|[IncomeInsightsFilter](#schemaincomeinsightsfilter)|false|none|Filters the returned income streams based on the specified income categories. If no filters are requested, streams from the following default set of categories are returned:<br>- `EARNED_INCOME.*` (`EARNED_INCOME.SALARY`, `EARNED_INCOME.GIG_ECONOMY`, `EARNED_INCOME.SELF_EMPLOYED`)<br>- `BENEFITS.DISABILITY`<br>- `RETIREMENT.*` (`RETIREMENT.GOVERNMENT_DERIVED`, `RETIREMENT.PRIVATE_RETIREMENT`, `RETIREMENT.PLAN_DISTRIBUTION`)<br><br>The final list of income categories is generated by adding the `included_categories`, then removing the `excluded_categories`. Priority is given to `excluded_categories` in the case of collisions.<br><br>Filter patterns supported:<br>- `*`: All categories<br>- `PRIMARY.*`: All categories within the specified primary category<br>- `PRIMARY.SECONDARY`: A specific income category<br><br>For a list of income categories, see the [Income V2 Category Taxonomy](https://plaid.com/documents/income-v2-category-taxonomy.csv).|
-|income_insights_version|[IncomeInsightsVersion](#schemaincomeinsightsversion)|true|none|The version of Income Insights to use. This value is not shared across API calls for the same resource. If it is omitted from a request, the default version is used, even if a version was set in an earlier call such as `/link/token/create` or `/cra/check_report/create`.|
+|income_insights_version|[IncomeInsightsVersion](#schemaincomeinsightsversion)|true|none|The version of Income Insights to generate. `II2` is the only value you can set. If your integration has a default Income Insights version configured (integrations that started on Income Insights V1 keep V1 by default), omit this field to keep receiving that version, and set `II2` only when you are ready to migrate. If no default version is configured for your integration, this field is required and must be `II2`. The version is fixed when Income Insights is generated: if Income Insights is generated from `/link/token/create` or `/cra/check_report/create`, `/cra/check_report/income_insights/get` returns it at the version used in that call.|
 
 #### Enumerated Values
 
@@ -139306,7 +142773,7 @@ Defines configuration options to generate Cashflow Insights
 
 ```json
 {
-  "lend_score_version": "v1.0"
+  "lend_score_version": "v2.0"
 }
 ```
 
@@ -139322,7 +142789,6 @@ Defines configuration options to generate the LendScore
 
 |Property|Value|
 |---|---|
-|lend_score_version|v1.0|
 |lend_score_version|v2.0|
 |lend_score_version|LS1|
 
@@ -139381,7 +142847,7 @@ Defines configuration options to generate Income Insights.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |income_insights_filter|[IncomeInsightsFilter](#schemaincomeinsightsfilter)|false|none|Filters the returned income streams based on the specified income categories. If no filters are requested, streams from the following default set of categories are returned:<br>- `EARNED_INCOME.*` (`EARNED_INCOME.SALARY`, `EARNED_INCOME.GIG_ECONOMY`, `EARNED_INCOME.SELF_EMPLOYED`)<br>- `BENEFITS.DISABILITY`<br>- `RETIREMENT.*` (`RETIREMENT.GOVERNMENT_DERIVED`, `RETIREMENT.PRIVATE_RETIREMENT`, `RETIREMENT.PLAN_DISTRIBUTION`)<br><br>The final list of income categories is generated by adding the `included_categories`, then removing the `excluded_categories`. Priority is given to `excluded_categories` in the case of collisions.<br><br>Filter patterns supported:<br>- `*`: All categories<br>- `PRIMARY.*`: All categories within the specified primary category<br>- `PRIMARY.SECONDARY`: A specific income category<br><br>For a list of income categories, see the [Income V2 Category Taxonomy](https://plaid.com/documents/income-v2-category-taxonomy.csv).|
-|income_insights_version|[IncomeInsightsVersion](#schemaincomeinsightsversion)|true|none|The version of Income Insights to use. This value is not shared across API calls for the same resource. If it is omitted from a request, the default version is used, even if a version was set in an earlier call such as `/link/token/create` or `/cra/check_report/create`.|
+|income_insights_version|[IncomeInsightsVersion](#schemaincomeinsightsversion)|true|none|The version of Income Insights to generate. `II2` is the only value you can set. If your integration has a default Income Insights version configured (integrations that started on Income Insights V1 keep V1 by default), omit this field to keep receiving that version, and set `II2` only when you are ready to migrate. If no default version is configured for your integration, this field is required and must be `II2`. The version is fixed when Income Insights is generated: if Income Insights is generated from `/link/token/create` or `/cra/check_report/create`, `/cra/check_report/income_insights/get` returns it at the version used in that call.|
 
 #### Enumerated Values
 
@@ -139445,7 +142911,9 @@ Defines configuration options for the Employment Refresh Report.
       "employment_refresh_options": {
         "days_requested": 0
       }
-    }
+    },
+    "exclude_transactions": false,
+    "base_report_version": {}
   },
   "cashflow_insights": {
     "attributes_version": "v1.0"
@@ -139484,7 +142952,7 @@ Defines configuration options for the Employment Refresh Report.
     }
   },
   "lend_score": {
-    "lend_score_version": "v1.0"
+    "lend_score_version": "v2.0"
   },
   "network_insights": {
     "network_insights_version": "NI1"
@@ -139527,7 +142995,7 @@ CraCheckReportCreateRequest defines the request schema for `/cra/check_report/cr
 |network_insights|[CraCheckReportCreateNetworkInsightsOptions](#schemacracheckreportcreatenetworkinsightsoptions)|false|none|Defines configuration options to generate Network Insights|
 |include_investments|boolean \| null|false|none|Indicates that investment data should be extracted from the linked account(s).|
 |income_insights|[CraCheckReportCreateIncomeInsightsOptions](#schemacracheckreportcreateincomeinsightsoptions)|false|none|Defines configuration options to generate Income Insights.|
-|consumer_report_permissible_purpose|[ConsumerReportPermissiblePurpose](#schemaconsumerreportpermissiblepurpose)|true|none|Describes the reason you are generating a Consumer Report for this user. When calling `/link/token/create`, this field is required when using Plaid Check (CRA) products; invalid if not using Plaid Check (CRA) products.<br><br>`ACCOUNT_REVIEW_CREDIT`: In connection with a consumer credit transaction for the review or collection of an account pursuant to FCRA Section 604(a)(3)(A).<br><br>`ACCOUNT_REVIEW_NON_CREDIT`: For a legitimate business need of the information to review a non-credit account provided primarily for personal, family, or household purposes to determine whether the consumer continues to meet the terms of the account pursuant to FCRA Section 604(a)(3)(F)(2).<br><br>`EXTENSION_OF_CREDIT`: In connection with a credit transaction initiated by and involving the consumer pursuant to FCRA Section 604(a)(3)(A).<br><br>`LEGITIMATE_BUSINESS_NEED_TENANT_SCREENING`: For a legitimate business need in connection with a business transaction initiated by the consumer primarily for personal, family, or household purposes in connection with a property rental assessment pursuant to FCRA Section 604(a)(3)(F)(i).<br><br>`LEGITIMATE_BUSINESS_NEED_OTHER`: For a legitimate business need in connection with a business transaction made primarily for personal, family, or household initiated by the consumer pursuant to FCRA Section 604(a)(3)(F)(i).<br><br>`WRITTEN_INSTRUCTION_PREQUALIFICATION`: In accordance with the written instructions of the consumer pursuant to FCRA Section 604(a)(2), to evaluate an application's profile to make an offer to the consumer.<br><br>`WRITTEN_INSTRUCTION_OTHER`: In accordance with the written instructions of the consumer pursuant to FCRA Section 604(a)(2), such as when an individual agrees to act as a guarantor or assumes personal liability for a consumer, business, or commercial loan.<br><br>`ELIGIBILITY_FOR_GOVT_BENEFITS`:  In connection with an eligibility determination for a government benefit where the entity is required to consider an applicant's financial status pursuant to FCRA Section 604(a)(3)(D).|
+|consumer_report_permissible_purpose|[ConsumerReportPermissiblePurpose](#schemaconsumerreportpermissiblepurpose)|true|none|Describes the reason you are generating a Consumer Report for this user. When calling `/link/token/create`, this field is required when using Plaid Check (CRA) products; invalid if not using Plaid Check (CRA) products.<br><br>`ACCOUNT_REVIEW_CREDIT`: In connection with a consumer credit transaction for the review or collection of an account pursuant to FCRA Section 604(a)(3)(A).<br><br>`ACCOUNT_REVIEW_NON_CREDIT`: For a legitimate business need of the information to review a non-credit account provided primarily for personal, family, or household purposes to determine whether the consumer continues to meet the terms of the account pursuant to FCRA Section 604(a)(3)(F)(ii).<br><br>`EXTENSION_OF_CREDIT`: In connection with a credit transaction initiated by and involving the consumer pursuant to FCRA Section 604(a)(3)(A).<br><br>`LEGITIMATE_BUSINESS_NEED_TENANT_SCREENING`: For a legitimate business need in connection with a business transaction initiated by the consumer primarily for personal, family, or household purposes in connection with a property rental assessment pursuant to FCRA Section 604(a)(3)(F)(i).<br><br>`LEGITIMATE_BUSINESS_NEED_OTHER`: For a legitimate business need in connection with a business transaction made primarily for personal, family, or household initiated by the consumer pursuant to FCRA Section 604(a)(3)(F)(i).<br><br>`WRITTEN_INSTRUCTION_PREQUALIFICATION`: In accordance with the written instructions of the consumer pursuant to FCRA Section 604(a)(2), to evaluate an application's profile to make an offer to the consumer.<br><br>`WRITTEN_INSTRUCTION_OTHER`: In accordance with the written instructions of the consumer pursuant to FCRA Section 604(a)(2), such as when an individual agrees to act as a guarantor or assumes personal liability for a consumer, business, or commercial loan.<br><br>`ELIGIBILITY_FOR_GOVT_BENEFITS`:  In connection with an eligibility determination for a government benefit where the entity is required to consider an applicant's financial status pursuant to FCRA Section 604(a)(3)(D).<br><br>`INSURANCE_UNDERWRITING`: In connection with the underwriting of insurance involving the consumer pursuant to FCRA Section 604(a)(3)(C).<br><br>`SECONDARY_INVESTOR`: As a potential investor or servicer, or current insurer, in connection with a valuation of, or an assessment of the credit or prepayment risks associated with, an existing credit obligation pursuant to FCRA Section 604(a)(3)(E).|
 
 #### Enumerated Values
 
@@ -139569,6 +143037,9 @@ CraCheckReportCreateRequest defines the request schema for `/cra/check_report/cr
 |products|cra_plaid_credit_score|
 |products|cra_qualify|
 |products|cra_home_lending|
+|products|cra_lend_score_complete|
+|products|cra_income_complete|
+|products|cra_home_lending_voa|
 |products|layer|
 |products|pay_by_bank|
 |products|protect_linked_bank|
@@ -139581,6 +143052,8 @@ CraCheckReportCreateRequest defines the request schema for `/cra/check_report/cr
 |consumer_report_permissible_purpose|WRITTEN_INSTRUCTION_PREQUALIFICATION|
 |consumer_report_permissible_purpose|WRITTEN_INSTRUCTION_OTHER|
 |consumer_report_permissible_purpose|ELIGIBILITY_FOR_GOVT_BENEFITS|
+|consumer_report_permissible_purpose|INSURANCE_UNDERWRITING|
+|consumer_report_permissible_purpose|SECONDARY_INVESTOR|
 
 <h2 id="tocS_CraCheckReportCreateResponse">CraCheckReportCreateResponse</h2>
 <!-- backwards compatibility -->
@@ -141749,7 +145222,7 @@ CraCheckReportCashflowInsightsGetRequest defines the request schema for `/cra/ch
   "third_party_user_token": "string",
   "user_token": "string",
   "options": {
-    "lend_score_version": "v1.0"
+    "lend_score_version": "v2.0"
   }
 }
 ```
@@ -141790,7 +145263,9 @@ CraCheckReportLendScoreGetRequest defines the request schema for `/cra/check_rep
     "employment_refresh_options": {
       "days_requested": 0
     }
-  }
+  },
+  "exclude_transactions": false,
+  "base_report_version": {}
 }
 ```
 
@@ -141804,6 +145279,8 @@ Defines configuration options to generate a Base Report
 |gse_options|[CraCheckReportGSEOptions](#schemacracheckreportgseoptions)|false|none|Specifies options for creating reports that can be shared with GSEs for mortgage verification.|
 |require_identity|boolean \| null|false|none|Indicates that the report must include identity information. If identity information is not available, the report will fail.|
 |home_lending_report_options|[CraCheckReportHomeLendingReportOptions](#schemacracheckreporthomelendingreportoptions)|false|none|Options for configuring Home Lending Report (Verification Report) generation.|
+|exclude_transactions|boolean \| null|false|none|When set to `true`, this option excludes account transaction records from the Base Report before it is stored. In the `/cra/check_report/base_report/get` response, each account's `transactions` field remains present as an empty array. This option does not affect insight calculations.<br><br>Omitting this option or setting it to `null` or `false` preserves existing behavior. These values do not override any client configuration that excludes transactions.<br><br>Requests with `exclude_transactions` set to `true` are rejected with an `INVALID_FIELD` error if they also request GSE or Home Lending reports. A Base Report created with this option set to `true` cannot be used to generate those reports later.|
+|base_report_version|object|false|none|none|
 
 <h2 id="tocS_CraCheckReportHomeLendingReportOptions">CraCheckReportHomeLendingReportOptions</h2>
 <!-- backwards compatibility -->
@@ -141908,7 +145385,7 @@ Deprecated. This field is no longer accepted for new clients (created on or afte
 
 ```json
 {
-  "lend_score_version": "v1.0"
+  "lend_score_version": "v2.0"
 }
 ```
 
@@ -141924,7 +145401,6 @@ Deprecated. This field is no longer accepted for new clients (created on or afte
 
 |Property|Value|
 |---|---|
-|lend_score_version|v1.0|
 |lend_score_version|v2.0|
 |lend_score_version|LS1|
 
@@ -141963,10 +145439,23 @@ Deprecated. This field is no longer accepted for new clients (created on or afte
 <a id="tocsplaidlendscoreversion"></a>
 
 ```json
-"v1.0"
+"v2.0"
 ```
 
 The version of the LendScore to use. Required if using LendScore.
+
+<h2 id="tocS_BaseReportVersion">BaseReportVersion</h2>
+<!-- backwards compatibility -->
+<a id="schemabasereportversion"></a>
+<a id="schema_BaseReportVersion"></a>
+<a id="tocSbasereportversion"></a>
+<a id="tocsbasereportversion"></a>
+
+```json
+"V1"
+```
+
+The version of the Base Report to use. `V1` and `V2` are supported. Defaults to `V1`.
 
 <h2 id="tocS_GSEReportType">GSEReportType</h2>
 <!-- backwards compatibility -->
@@ -142057,7 +145546,7 @@ For a list of income categories, see the [Income V2 Category Taxonomy](https://p
 "II2"
 ```
 
-The version of Income Insights to use. This value is not shared across API calls for the same resource. If it is omitted from a request, the default version is used, even if a version was set in an earlier call such as `/link/token/create` or `/cra/check_report/create`.
+The version of Income Insights to generate. `II2` is the only value you can set. If your integration has a default Income Insights version configured (integrations that started on Income Insights V1 keep V1 by default), omit this field to keep receiving that version, and set `II2` only when you are ready to migrate. If no default version is configured for your integration, this field is required and must be `II2`. The version is fixed when Income Insights is generated: if Income Insights is generated from `/link/token/create` or `/cra/check_report/create`, `/cra/check_report/income_insights/get` returns it at the version used in that call.
 
 <h2 id="tocS_CraCheckReportCashflowInsightsGetResponse">CraCheckReportCashflowInsightsGetResponse</h2>
 <!-- backwards compatibility -->
@@ -143033,7 +146522,7 @@ CraCheckReportVerificationPdfGetRequest defines the request schema for `/cra/che
 "string"
 ```
 
-CraCheckReportVerificationPdfGetResponse defines the response schema for `/cra/check_report/verification/pdf/get`
+The verification report in PDF format. Investment account pages may be excluded when recent investment data was unavailable at report generation.
 
 <h2 id="tocS_CraVerificationReport">CraVerificationReport</h2>
 <!-- backwards compatibility -->
@@ -143825,7 +147314,7 @@ A representation of an Item within a VOA report.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|accounts|[[CraVoaReportAccount](#schemacravoareportaccount)]|true|none|Data about each of the accounts open on the Item.|
+|accounts|[[CraVoaReportAccount](#schemacravoareportaccount)]|true|none|Data about each of the accounts open on the Item. Investment accounts are included only when `include_investments` in `/cra/check_report/create` or `cra_options.include_investments` in `/link/token/create` was `true`. They are excluded if recent investment data was unavailable at report generation.|
 |institution_name|string|true|none|The full financial institution name associated with the Item.|
 |institution_id|string|true|none|The id of the financial institution associated with the Item.|
 |item_id|[ItemId](#schemaitemid)|true|none|The `item_id` of the Item associated with this webhook, warning, or error|
@@ -144022,13 +147511,13 @@ VOA Report information about an account.
 |mask|string \| null|true|none|The last 2-4 alphanumeric characters of an account's official account number. Note that the mask may be non-unique between an Item's accounts, and it may also not match the mask that the bank displays to the user.|
 |name|string|true|none|The name of the account, either assigned by the user or by the financial institution itself.|
 |official_name|string \| null|true|none|The official name of the account as given by the financial institution.|
-|type|[AccountType](#schemaaccounttype)|true|none|`investment:` Investment account. In API versions 2018-05-22 and earlier, this type is called `brokerage` instead.<br><br>`credit:` Credit card<br><br>`depository:` Depository account<br><br>`loan:` Loan account<br><br>`other:` Non-specified account type<br><br>See the [Account type schema](https://plaid.com/docs/api/accounts#account-type-schema) for a full listing of account types and corresponding subtypes.|
+|type|[AccountType](#schemaaccounttype)|true|none|`investment:` Investment account. In API versions 2018-05-22 and earlier, this type is called `brokerage` instead.<br><br>`credit:` Credit card<br><br>`depository:` Depository account<br><br>`loan:` Loan account<br><br>`payroll:` Payroll account<br><br>`other:` Non-specified account type<br><br>See the [Account type schema](https://plaid.com/docs/api/accounts#account-type-schema) for a full listing of account types and corresponding subtypes.|
 |subtype|[AccountSubtype](#schemaaccountsubtype)|true|none|See the [Account type schema](https://plaid.com/docs/api/accounts/#account-type-schema) for a full listing of account types and corresponding subtypes.|
 |days_available|number|true|none|The duration of transaction history available within this report for this Item, typically defined as the time since the date of the earliest transaction in that account.|
 |transactions_insights|[CraVoaReportTransactionsInsights](#schemacravoareporttransactionsinsights)|true|none|Transaction data associated with the account.|
 |owners|[[Owner](#schemaowner)]|true|none|Data returned by the financial institution about the account owner or owners.|
 |ownership_type|[OwnershipType](#schemaownershiptype)|true|none|How an asset is owned.<br><br>`association`: Ownership by a corporation, partnership, or unincorporated association, including for-profit and not-for-profit organizations.<br><br>`individual`: Ownership by an individual.<br><br>`joint`: Joint ownership by multiple parties.<br><br>`trust`: Ownership by a revocable or irrevocable trust.|
-|investments|[BaseReportInvestments](#schemabasereportinvestments)|false|none|A set of fields describing the investments data on an account.|
+|investments|[BaseReportInvestments](#schemabasereportinvestments)|false|none|A set of fields describing the investments data on an account. Its arrays may be empty.|
 
 #### Enumerated Values
 
@@ -144039,12 +147528,14 @@ VOA Report information about an account.
 |type|depository|
 |type|loan|
 |type|brokerage|
+|type|payroll|
 |type|other|
 |subtype|401a|
 |subtype|401k|
 |subtype|403B|
 |subtype|457b|
 |subtype|529|
+|subtype|530a|
 |subtype|auto|
 |subtype|brokerage|
 |subtype|business|
@@ -144393,7 +147884,7 @@ Employment Refresh Report information about an account.
 |account_id|string|true|none|Plaid's unique identifier for the account. This value will not change unless Plaid can't reconcile the account with the data returned by the financial institution. This may occur, for example, when the name of the account changes. If this happens a new `account_id` will be assigned to the account.<br><br>If an account with a specific `account_id` disappears instead of changing, the account is likely closed. Closed accounts are not returned by the Plaid API.<br><br>Like all Plaid identifiers, the `account_id` is case sensitive.|
 |name|string|true|none|The name of the account, either assigned by the user or by the financial institution itself.|
 |official_name|string \| null|true|none|The official name of the account as given by the financial institution.|
-|type|[AccountType](#schemaaccounttype)|true|none|`investment:` Investment account. In API versions 2018-05-22 and earlier, this type is called `brokerage` instead.<br><br>`credit:` Credit card<br><br>`depository:` Depository account<br><br>`loan:` Loan account<br><br>`other:` Non-specified account type<br><br>See the [Account type schema](https://plaid.com/docs/api/accounts#account-type-schema) for a full listing of account types and corresponding subtypes.|
+|type|[AccountType](#schemaaccounttype)|true|none|`investment:` Investment account. In API versions 2018-05-22 and earlier, this type is called `brokerage` instead.<br><br>`credit:` Credit card<br><br>`depository:` Depository account<br><br>`loan:` Loan account<br><br>`payroll:` Payroll account<br><br>`other:` Non-specified account type<br><br>See the [Account type schema](https://plaid.com/docs/api/accounts#account-type-schema) for a full listing of account types and corresponding subtypes.|
 |subtype|[AccountSubtype](#schemaaccountsubtype)|true|none|See the [Account type schema](https://plaid.com/docs/api/accounts/#account-type-schema) for a full listing of account types and corresponding subtypes.|
 |transactions|[[CraEmploymentRefreshReportTransaction](#schemacraemploymentrefreshreporttransaction)]|true|none|Transaction history associated with the account for the Employment Refresh Report. Note that this transaction differs from a Base Report transaction in that it will only be deposits, and the amounts will be omitted.|
 
@@ -144406,12 +147897,14 @@ Employment Refresh Report information about an account.
 |type|depository|
 |type|loan|
 |type|brokerage|
+|type|payroll|
 |type|other|
 |subtype|401a|
 |subtype|401k|
 |subtype|403B|
 |subtype|457b|
 |subtype|529|
+|subtype|530a|
 |subtype|auto|
 |subtype|brokerage|
 |subtype|business|
@@ -145137,7 +148630,7 @@ Account information within the Home Lending Income Report.
 |name|string|true|none|The name of the account, either assigned by the user or by the financial institution itself.|
 |official_name|string \| null|true|none|The official name of the account as given by the financial institution.|
 |subtype|[AccountSubtype](#schemaaccountsubtype)|true|none|See the [Account type schema](https://plaid.com/docs/api/accounts/#account-type-schema) for a full listing of account types and corresponding subtypes.|
-|type|[AccountType](#schemaaccounttype)|true|none|`investment:` Investment account. In API versions 2018-05-22 and earlier, this type is called `brokerage` instead.<br><br>`credit:` Credit card<br><br>`depository:` Depository account<br><br>`loan:` Loan account<br><br>`other:` Non-specified account type<br><br>See the [Account type schema](https://plaid.com/docs/api/accounts#account-type-schema) for a full listing of account types and corresponding subtypes.|
+|type|[AccountType](#schemaaccounttype)|true|none|`investment:` Investment account. In API versions 2018-05-22 and earlier, this type is called `brokerage` instead.<br><br>`credit:` Credit card<br><br>`depository:` Depository account<br><br>`loan:` Loan account<br><br>`payroll:` Payroll account<br><br>`other:` Non-specified account type<br><br>See the [Account type schema](https://plaid.com/docs/api/accounts#account-type-schema) for a full listing of account types and corresponding subtypes.|
 
 #### Enumerated Values
 
@@ -145148,6 +148641,7 @@ Account information within the Home Lending Income Report.
 |subtype|403B|
 |subtype|457b|
 |subtype|529|
+|subtype|530a|
 |subtype|auto|
 |subtype|brokerage|
 |subtype|business|
@@ -145229,6 +148723,7 @@ Account information within the Home Lending Income Report.
 |type|depository|
 |type|loan|
 |type|brokerage|
+|type|payroll|
 |type|other|
 
 <h2 id="tocS_CraLoansApplicationsRegisterRequest">CraLoansApplicationsRegisterRequest</h2>
@@ -145957,7 +149452,7 @@ CraCreditProfileReportGetRequest defines the request schema for `/cra/credit_pro
 |client_id|[APIClientID](#schemaapiclientid)|false|none|Your Plaid API `client_id`. The `client_id` is required and may be provided either in the `PLAID-CLIENT-ID` header or as part of a request body.|
 |secret|[APISecret](#schemaapisecret)|false|none|Your Plaid API `secret`. The `secret` is required and may be provided either in the `PLAID-SECRET` header or as part of a request body.|
 |user_id|[NewUserID](#schemanewuserid)|true|none|A unique user identifier, created by `/user/create`. Integrations that began using `/user/create` after December 10, 2025 use this field to identify a user instead of the `user_token`. For more details, see [New User APIs](https://plaid.com/docs/api/users/user-apis).|
-|consumer_report_permissible_purpose|[ConsumerReportPermissiblePurpose](#schemaconsumerreportpermissiblepurpose)|true|none|Describes the reason you are generating a Consumer Report for this user. When calling `/link/token/create`, this field is required when using Plaid Check (CRA) products; invalid if not using Plaid Check (CRA) products.<br><br>`ACCOUNT_REVIEW_CREDIT`: In connection with a consumer credit transaction for the review or collection of an account pursuant to FCRA Section 604(a)(3)(A).<br><br>`ACCOUNT_REVIEW_NON_CREDIT`: For a legitimate business need of the information to review a non-credit account provided primarily for personal, family, or household purposes to determine whether the consumer continues to meet the terms of the account pursuant to FCRA Section 604(a)(3)(F)(2).<br><br>`EXTENSION_OF_CREDIT`: In connection with a credit transaction initiated by and involving the consumer pursuant to FCRA Section 604(a)(3)(A).<br><br>`LEGITIMATE_BUSINESS_NEED_TENANT_SCREENING`: For a legitimate business need in connection with a business transaction initiated by the consumer primarily for personal, family, or household purposes in connection with a property rental assessment pursuant to FCRA Section 604(a)(3)(F)(i).<br><br>`LEGITIMATE_BUSINESS_NEED_OTHER`: For a legitimate business need in connection with a business transaction made primarily for personal, family, or household initiated by the consumer pursuant to FCRA Section 604(a)(3)(F)(i).<br><br>`WRITTEN_INSTRUCTION_PREQUALIFICATION`: In accordance with the written instructions of the consumer pursuant to FCRA Section 604(a)(2), to evaluate an application's profile to make an offer to the consumer.<br><br>`WRITTEN_INSTRUCTION_OTHER`: In accordance with the written instructions of the consumer pursuant to FCRA Section 604(a)(2), such as when an individual agrees to act as a guarantor or assumes personal liability for a consumer, business, or commercial loan.<br><br>`ELIGIBILITY_FOR_GOVT_BENEFITS`:  In connection with an eligibility determination for a government benefit where the entity is required to consider an applicant's financial status pursuant to FCRA Section 604(a)(3)(D).|
+|consumer_report_permissible_purpose|[ConsumerReportPermissiblePurpose](#schemaconsumerreportpermissiblepurpose)|true|none|Describes the reason you are generating a Consumer Report for this user. When calling `/link/token/create`, this field is required when using Plaid Check (CRA) products; invalid if not using Plaid Check (CRA) products.<br><br>`ACCOUNT_REVIEW_CREDIT`: In connection with a consumer credit transaction for the review or collection of an account pursuant to FCRA Section 604(a)(3)(A).<br><br>`ACCOUNT_REVIEW_NON_CREDIT`: For a legitimate business need of the information to review a non-credit account provided primarily for personal, family, or household purposes to determine whether the consumer continues to meet the terms of the account pursuant to FCRA Section 604(a)(3)(F)(ii).<br><br>`EXTENSION_OF_CREDIT`: In connection with a credit transaction initiated by and involving the consumer pursuant to FCRA Section 604(a)(3)(A).<br><br>`LEGITIMATE_BUSINESS_NEED_TENANT_SCREENING`: For a legitimate business need in connection with a business transaction initiated by the consumer primarily for personal, family, or household purposes in connection with a property rental assessment pursuant to FCRA Section 604(a)(3)(F)(i).<br><br>`LEGITIMATE_BUSINESS_NEED_OTHER`: For a legitimate business need in connection with a business transaction made primarily for personal, family, or household initiated by the consumer pursuant to FCRA Section 604(a)(3)(F)(i).<br><br>`WRITTEN_INSTRUCTION_PREQUALIFICATION`: In accordance with the written instructions of the consumer pursuant to FCRA Section 604(a)(2), to evaluate an application's profile to make an offer to the consumer.<br><br>`WRITTEN_INSTRUCTION_OTHER`: In accordance with the written instructions of the consumer pursuant to FCRA Section 604(a)(2), such as when an individual agrees to act as a guarantor or assumes personal liability for a consumer, business, or commercial loan.<br><br>`ELIGIBILITY_FOR_GOVT_BENEFITS`:  In connection with an eligibility determination for a government benefit where the entity is required to consider an applicant's financial status pursuant to FCRA Section 604(a)(3)(D).<br><br>`INSURANCE_UNDERWRITING`: In connection with the underwriting of insurance involving the consumer pursuant to FCRA Section 604(a)(3)(C).<br><br>`SECONDARY_INVESTOR`: As a potential investor or servicer, or current insurer, in connection with a valuation of, or an assessment of the credit or prepayment risks associated with, an existing credit obligation pursuant to FCRA Section 604(a)(3)(E).|
 |client_report_id|string|true|none|Client-generated identifier, which can be used by lenders to track loan applications.|
 |report_type|[CraCreditProfileReportType](#schemacracreditprofilereporttype)|true|none|The product type for the credit profile report request.|
 |inquiry_type|[CraCreditProfileInquiryType](#schemacracreditprofileinquirytype)|true|none|The inquiry type of credit profile report.|
@@ -145975,6 +149470,8 @@ CraCreditProfileReportGetRequest defines the request schema for `/cra/credit_pro
 |consumer_report_permissible_purpose|WRITTEN_INSTRUCTION_PREQUALIFICATION|
 |consumer_report_permissible_purpose|WRITTEN_INSTRUCTION_OTHER|
 |consumer_report_permissible_purpose|ELIGIBILITY_FOR_GOVT_BENEFITS|
+|consumer_report_permissible_purpose|INSURANCE_UNDERWRITING|
+|consumer_report_permissible_purpose|SECONDARY_INVESTOR|
 |report_type|QUALIFY|
 |inquiry_type|SOFT_INQUIRY|
 |inquiry_type|STANDARD_INQUIRY|
@@ -146411,6 +149908,60 @@ Names the Home Lending product at a given version.
 |---|---|
 |product|cra_home_lending|
 
+<h2 id="tocS_CraReportGetHomeLendingVoaOptions">CraReportGetHomeLendingVoaOptions</h2>
+<!-- backwards compatibility -->
+<a id="schemacrareportgethomelendingvoaoptions"></a>
+<a id="schema_CraReportGetHomeLendingVoaOptions"></a>
+<a id="tocScrareportgethomelendingvoaoptions"></a>
+<a id="tocscrareportgethomelendingvoaoptions"></a>
+
+```json
+{
+  "report_format": {}
+}
+```
+
+Configures which Home Lending VOA report format is retrieved. Omit when retrieving a report generated by `/cra/report/create` or `/link/token/create`; the report is returned with the options it was generated with.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|report_format|object|false|none|The requested report format. Defaults to `VOA` when omitted.|
+
+<h2 id="tocS_CraHomeLendingVoaProduct">CraHomeLendingVoaProduct</h2>
+<!-- backwards compatibility -->
+<a id="schemacrahomelendingvoaproduct"></a>
+<a id="schema_CraHomeLendingVoaProduct"></a>
+<a id="tocScrahomelendingvoaproduct"></a>
+<a id="tocscrahomelendingvoaproduct"></a>
+
+```json
+{
+  "product": "cra_home_lending_voa",
+  "version": "string",
+  "options": {
+    "report_format": {}
+  }
+}
+```
+
+Names the Home Lending VOA product at a given version, with options for selecting the report format.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|product|string|true|none|The Home Lending VOA product discriminator.|
+|version|[CraProductVersion](#schemacraproductversion)|true|none|A string that specifies a particular version of a CRA product.|
+|options|[CraReportGetHomeLendingVoaOptions](#schemacrareportgethomelendingvoaoptions)|false|none|Configures which Home Lending VOA report format is retrieved. Omit when retrieving a report generated by `/cra/report/create` or `/link/token/create`; the report is returned with the options it was generated with.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|product|cra_home_lending_voa|
+
 <h2 id="tocS_CraBaseReportProduct">CraBaseReportProduct</h2>
 <!-- backwards compatibility -->
 <a id="schemacrabasereportproduct"></a>
@@ -146699,12 +150250,15 @@ CraReportGetRequestProduct specifies one product and version requested from `/cr
 |*oneOf*|[CraQualifyProduct](#schemacraqualifyproduct)|false|none|Names the Qualify product at a given version.|
 |*oneOf*|[CraIncomeInsightsProduct](#schemacraincomeinsightsproduct)|false|none|Names the Income Insights product at a given version.|
 |*oneOf*|[CraHomeLendingProduct](#schemacrahomelendingproduct)|false|none|Names the Home Lending product at a given version.|
+|*oneOf*|[CraHomeLendingVoaProduct](#schemacrahomelendingvoaproduct)|false|none|Names the Home Lending VOA product at a given version, with options for selecting the report format.|
 |*oneOf*|[CraBaseReportProduct](#schemacrabasereportproduct)|false|none|Names the Base Report product at a given version.|
 |*oneOf*|[CraLendScoreProduct](#schemacralendscoreproduct)|false|none|Names the LendScore product at a given version, with options for selecting variants.|
 |*oneOf*|[CraCashflowInsightsProduct](#schemacracashflowinsightsproduct)|false|none|Names the Cashflow Insights product at a given version.|
 |*oneOf*|[CraNetworkInsightsProduct](#schemacranetworkinsightsproduct)|false|none|Names the Network Insights product at a given version.|
 |*oneOf*|[CraLendScoreCompleteBundleProduct](#schemacralendscorecompletebundleproduct)|false|none|Names the LendScore Complete product bundle at a given version, with options for selecting LendScore variants.|
 |*oneOf*|[CraIncomeCompleteBundleProduct](#schemacraincomecompletebundleproduct)|false|none|Names the Income Complete product bundle at a given version.|
+|*oneOf*|[CraPrismProduct](#schemacraprismproduct)|false|none|Names the Prism product at a given version.|
+|*oneOf*|[CraUltraFicoProduct](#schemacraultraficoproduct)|false|none|Names the UltraFICO product at a given version.|
 
 <h2 id="tocS_CraReportCreateBaseReportOptions">CraReportCreateBaseReportOptions</h2>
 <!-- backwards compatibility -->
@@ -146715,7 +150269,8 @@ CraReportGetRequestProduct specifies one product and version requested from `/cr
 
 ```json
 {
-  "require_identity": true
+  "require_identity": true,
+  "exclude_transactions": false
 }
 ```
 
@@ -146726,6 +150281,28 @@ Configures how the Base Report product is generated.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |require_identity|boolean \| null|false|none|Require the report to include identity information. If identity information is not available, report generation fails.|
+|exclude_transactions|boolean \| null|false|none|Exclude transactions from the Base Report. Each account's `transactions` field is returned as an empty array. Insights and other products in the report are not affected.|
+
+<h2 id="tocS_CraReportCreateHomeLendingVoaOptions">CraReportCreateHomeLendingVoaOptions</h2>
+<!-- backwards compatibility -->
+<a id="schemacrareportcreatehomelendingvoaoptions"></a>
+<a id="schema_CraReportCreateHomeLendingVoaOptions"></a>
+<a id="tocScrareportcreatehomelendingvoaoptions"></a>
+<a id="tocscrareportcreatehomelendingvoaoptions"></a>
+
+```json
+{
+  "report_format": {}
+}
+```
+
+Configures how the Home Lending VOA product is generated.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|report_format|object|false|none|The requested report format. Defaults to `VOA` when omitted.|
 
 <h2 id="tocS_CraReportCreateIncomeInsightsOptions">CraReportCreateIncomeInsightsOptions</h2>
 <!-- backwards compatibility -->
@@ -146800,7 +150377,8 @@ Configures how the LendScore product is generated.
   "product": "cra_base_report",
   "version": "string",
   "options": {
-    "require_identity": true
+    "require_identity": true,
+    "exclude_transactions": false
   }
 }
 ```
@@ -146878,6 +150456,39 @@ Requests the given version of the Home Lending product. Home Lending accepts no 
 |Property|Value|
 |---|---|
 |product|cra_home_lending|
+
+<h2 id="tocS_CraReportCreateHomeLendingVoaProductConfig">CraReportCreateHomeLendingVoaProductConfig</h2>
+<!-- backwards compatibility -->
+<a id="schemacrareportcreatehomelendingvoaproductconfig"></a>
+<a id="schema_CraReportCreateHomeLendingVoaProductConfig"></a>
+<a id="tocScrareportcreatehomelendingvoaproductconfig"></a>
+<a id="tocscrareportcreatehomelendingvoaproductconfig"></a>
+
+```json
+{
+  "product": "cra_home_lending_voa",
+  "version": "string",
+  "options": {
+    "report_format": {}
+  }
+}
+```
+
+Requests the given version of the Home Lending VOA product, optionally configuring how it is generated.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|product|string|true|none|Set to `cra_home_lending_voa` to request the Home Lending VOA product.|
+|version|[CraProductVersion](#schemacraproductversion)|true|none|A string that specifies a particular version of a CRA product.|
+|options|[CraReportCreateHomeLendingVoaOptions](#schemacrareportcreatehomelendingvoaoptions)|false|none|Configures how the Home Lending VOA product is generated.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|product|cra_home_lending_voa|
 
 <h2 id="tocS_CraReportCreateIncomeInsightsProductConfig">CraReportCreateIncomeInsightsProductConfig</h2>
 <!-- backwards compatibility -->
@@ -147160,7 +150771,8 @@ Requests the given version of the Income Complete product bundle, optionally con
   "product": "cra_base_report",
   "version": "string",
   "options": {
-    "require_identity": true
+    "require_identity": true,
+    "exclude_transactions": false
   }
 }
 ```
@@ -147174,9 +150786,12 @@ A Plaid Check product and version to generate for the report, with the options t
 |*oneOf*|[CraReportCreateBaseReportProductConfig](#schemacrareportcreatebasereportproductconfig)|false|none|Requests the given version of the Base Report product, optionally configuring how it is generated.|
 |*oneOf*|[CraReportCreateCashflowInsightsProductConfig](#schemacrareportcreatecashflowinsightsproductconfig)|false|none|Requests the given version of the Cashflow Insights product. Cashflow Insights accepts no additional configuration today.|
 |*oneOf*|[CraReportCreateHomeLendingProductConfig](#schemacrareportcreatehomelendingproductconfig)|false|none|Requests the given version of the Home Lending product. Home Lending accepts no additional configuration today.|
+|*oneOf*|[CraReportCreateHomeLendingVoaProductConfig](#schemacrareportcreatehomelendingvoaproductconfig)|false|none|Requests the given version of the Home Lending VOA product, optionally configuring how it is generated.|
 |*oneOf*|[CraReportCreateIncomeInsightsProductConfig](#schemacrareportcreateincomeinsightsproductconfig)|false|none|Requests the given version of the Income Insights product, optionally configuring how it is generated.|
 |*oneOf*|[CraReportCreateLendScoreProductConfig](#schemacrareportcreatelendscoreproductconfig)|false|none|Requests the given version of the LendScore product, optionally configuring how it is generated.|
 |*oneOf*|[CraReportCreateNetworkInsightsProductConfig](#schemacrareportcreatenetworkinsightsproductconfig)|false|none|Requests the given version of the Network Insights product. Network Insights accepts no additional configuration today.|
+|*oneOf*|[CraReportCreatePrismProductConfig](#schemacrareportcreateprismproductconfig)|false|none|Requests the given version of the Prism product and selects which Prism products to evaluate.|
+|*oneOf*|[CraReportCreateUltraFicoProductConfig](#schemacrareportcreateultraficoproductconfig)|false|none|Requests the given version of the UltraFICO product and configures the scores to generate.|
 |*oneOf*|[CraReportCreateQualifyProductConfig](#schemacrareportcreatequalifyproductconfig)|false|none|Requests the given version of the Qualify product. Qualify accepts no additional configuration today.|
 |*oneOf*|[CraReportCreateLendScoreCompleteBundleProductConfig](#schemacrareportcreatelendscorecompletebundleproductconfig)|false|none|Requests the given version of the LendScore Complete product bundle, which combines LendScore with the Cashflow Insights and Network Insights attributes it was computed from. The Items and accounts used to generate it are returned only when the report's `scope` is `CLIENT_USER`.|
 |*oneOf*|[CraReportCreateIncomeCompleteBundleProductConfig](#schemacrareportcreateincomecompletebundleproductconfig)|false|none|Requests the given version of the Income Complete product bundle, optionally configuring how it is generated. Income Complete bundles Income Insights with the Items and accounts used to generate it, which are returned only when the report's `scope` is `CLIENT_USER`.|
@@ -147211,7 +150826,8 @@ A unique ID identifying a Consumer Report. Like all Plaid identifiers, this ID i
       "product": "cra_base_report",
       "version": "string",
       "options": {
-        "require_identity": true
+        "require_identity": true,
+        "exclude_transactions": false
       }
     }
   ],
@@ -147238,7 +150854,7 @@ CraReportCreateRequest defines the request schema for `/cra/report/create`.
 |user_id|[NewUserID](#schemanewuserid)|true|none|A unique user identifier, created by `/user/create`. Integrations that began using `/user/create` after December 10, 2025 use this field to identify a user instead of the `user_token`. For more details, see [New User APIs](https://plaid.com/docs/api/users/user-apis).|
 |products|[[CraReportProduct](#schemacrareportproduct)]|true|none|The Plaid Check products, versions, and options to generate for the report.|
 |scope|object|true|none|none|
-|decision_stage|[CraReportDecisionStage](#schemacrareportdecisionstage)|true|none|The stage in the credit or other eligibility decisioning lifecycle for which a given report will be utilized.<br><br>Allowable permissible purposes for `PREQUALIFICATION`:<br><br>- `WRITTEN_INSTRUCTION_PREQUALIFICATION`<br><br>Allowable permissible purposes for `DECISIONING`:<br><br>- `ELIGIBILITY_FOR_GOVT_BENEFITS`<br>- `EXTENSION_OF_CREDIT`<br>- `LEGITIMATE_BUSINESS_NEED_OTHER`<br>- `LEGITIMATE_BUSINESS_NEED_TENANT_SCREENING`<br>- `WRITTEN_INSTRUCTION_OTHER`<br><br>If an incompatible `decision_stage` and `consumer_report_permissible_purpose` pairing is requested, an `INVALID_FIELD` error is returned. If your client isn't yet enabled for a given `decision_stage` on a product, a `DECISION_STAGE_NOT_ENABLED` error is returned instead (contact your Plaid account manager to enable it).|
+|decision_stage|[CraReportDecisionStage](#schemacrareportdecisionstage)|true|none|The stage in the credit or other eligibility decisioning lifecycle for which a given report will be utilized.<br><br>Allowable permissible purposes for `PREQUALIFICATION`:<br><br>- `WRITTEN_INSTRUCTION_PREQUALIFICATION`<br><br>Allowable permissible purposes for `DECISIONING`:<br><br>- `ELIGIBILITY_FOR_GOVT_BENEFITS`<br>- `EXTENSION_OF_CREDIT`<br>- `INSURANCE_UNDERWRITING`<br>- `LEGITIMATE_BUSINESS_NEED_OTHER`<br>- `LEGITIMATE_BUSINESS_NEED_TENANT_SCREENING`<br>- `WRITTEN_INSTRUCTION_OTHER`<br><br>If an incompatible `decision_stage` and `consumer_report_permissible_purpose` pairing is requested, an `INVALID_FIELD` error is returned. If your client isn't yet enabled for a given `decision_stage` on a product, a `DECISION_STAGE_NOT_ENABLED` error is returned instead (contact your Plaid account manager to enable it).|
 |consumer_report_permissible_purpose|object|true|none|none|
 |client_report_id|string \| null|false|none|Client-generated identifier, which can be used by lenders to track loan applications.|
 |days_requested|integer \| null|false|none|The number of days of history to include in Plaid Check products. Maximum is 731. If a value lower than 180 is provided, a minimum of 180 days of history will be requested.|
@@ -147314,7 +150930,7 @@ CraReportGetRequest defines the request schema for `/cra/report/get`.
 |user_id|[NewUserID](#schemanewuserid)|true|none|A unique user identifier, created by `/user/create`. Integrations that began using `/user/create` after December 10, 2025 use this field to identify a user instead of the `user_token`. For more details, see [New User APIs](https://plaid.com/docs/api/users/user-apis).|
 |products|[[CraReportGetRequestProduct](#schemacrareportgetrequestproduct)]|true|none|The requested products and their versions, e.g. `[{"product":"cra_income_insights","version":"V2"}]`.|
 |scope|[CraReportScope](#schemacrareportscope)|false|none|Determines whose items are used. `PLAID_NETWORK` (default) uses the Plaid Network view of the user's profile. `CLIENT_USER` uses only the items linked by this client.|
-|decision_stage|[CraReportDecisionStage](#schemacrareportdecisionstage)|true|none|The stage in the credit or other eligibility decisioning lifecycle for which a given report will be utilized.<br><br>Allowable permissible purposes for `PREQUALIFICATION`:<br><br>- `WRITTEN_INSTRUCTION_PREQUALIFICATION`<br><br>Allowable permissible purposes for `DECISIONING`:<br><br>- `ELIGIBILITY_FOR_GOVT_BENEFITS`<br>- `EXTENSION_OF_CREDIT`<br>- `LEGITIMATE_BUSINESS_NEED_OTHER`<br>- `LEGITIMATE_BUSINESS_NEED_TENANT_SCREENING`<br>- `WRITTEN_INSTRUCTION_OTHER`<br><br>If an incompatible `decision_stage` and `consumer_report_permissible_purpose` pairing is requested, an `INVALID_FIELD` error is returned. If your client isn't yet enabled for a given `decision_stage` on a product, a `DECISION_STAGE_NOT_ENABLED` error is returned instead (contact your Plaid account manager to enable it).|
+|decision_stage|[CraReportDecisionStage](#schemacrareportdecisionstage)|true|none|The stage in the credit or other eligibility decisioning lifecycle for which a given report will be utilized.<br><br>Allowable permissible purposes for `PREQUALIFICATION`:<br><br>- `WRITTEN_INSTRUCTION_PREQUALIFICATION`<br><br>Allowable permissible purposes for `DECISIONING`:<br><br>- `ELIGIBILITY_FOR_GOVT_BENEFITS`<br>- `EXTENSION_OF_CREDIT`<br>- `INSURANCE_UNDERWRITING`<br>- `LEGITIMATE_BUSINESS_NEED_OTHER`<br>- `LEGITIMATE_BUSINESS_NEED_TENANT_SCREENING`<br>- `WRITTEN_INSTRUCTION_OTHER`<br><br>If an incompatible `decision_stage` and `consumer_report_permissible_purpose` pairing is requested, an `INVALID_FIELD` error is returned. If your client isn't yet enabled for a given `decision_stage` on a product, a `DECISION_STAGE_NOT_ENABLED` error is returned instead (contact your Plaid account manager to enable it).|
 |consumer_report_permissible_purpose|object|true|none|none|
 |report_id|object|false|none|none|
 
@@ -147392,7 +151008,7 @@ The Consumer Report returned by `/cra/report/get`.
 |client_report_id|string \| null|true|none|Client-generated identifier, which can be used by lenders to track loan applications.|
 |retrieved_time|string(date-time)|true|none|The date and time the report was retrieved.|
 |scope|[CraReportScope](#schemacrareportscope)|true|none|Determines whose items are used. `PLAID_NETWORK` (default) uses the Plaid Network view of the user's profile. `CLIENT_USER` uses only the items linked by this client.|
-|decision_stage|[CraReportDecisionStage](#schemacrareportdecisionstage)|true|none|The stage in the credit or other eligibility decisioning lifecycle for which a given report will be utilized.<br><br>Allowable permissible purposes for `PREQUALIFICATION`:<br><br>- `WRITTEN_INSTRUCTION_PREQUALIFICATION`<br><br>Allowable permissible purposes for `DECISIONING`:<br><br>- `ELIGIBILITY_FOR_GOVT_BENEFITS`<br>- `EXTENSION_OF_CREDIT`<br>- `LEGITIMATE_BUSINESS_NEED_OTHER`<br>- `LEGITIMATE_BUSINESS_NEED_TENANT_SCREENING`<br>- `WRITTEN_INSTRUCTION_OTHER`<br><br>If an incompatible `decision_stage` and `consumer_report_permissible_purpose` pairing is requested, an `INVALID_FIELD` error is returned. If your client isn't yet enabled for a given `decision_stage` on a product, a `DECISION_STAGE_NOT_ENABLED` error is returned instead (contact your Plaid account manager to enable it).|
+|decision_stage|[CraReportDecisionStage](#schemacrareportdecisionstage)|true|none|The stage in the credit or other eligibility decisioning lifecycle for which a given report will be utilized.<br><br>Allowable permissible purposes for `PREQUALIFICATION`:<br><br>- `WRITTEN_INSTRUCTION_PREQUALIFICATION`<br><br>Allowable permissible purposes for `DECISIONING`:<br><br>- `ELIGIBILITY_FOR_GOVT_BENEFITS`<br>- `EXTENSION_OF_CREDIT`<br>- `INSURANCE_UNDERWRITING`<br>- `LEGITIMATE_BUSINESS_NEED_OTHER`<br>- `LEGITIMATE_BUSINESS_NEED_TENANT_SCREENING`<br>- `WRITTEN_INSTRUCTION_OTHER`<br><br>If an incompatible `decision_stage` and `consumer_report_permissible_purpose` pairing is requested, an `INVALID_FIELD` error is returned. If your client isn't yet enabled for a given `decision_stage` on a product, a `DECISION_STAGE_NOT_ENABLED` error is returned instead (contact your Plaid account manager to enable it).|
 |consumer_report_permissible_purpose|object|true|none|none|
 |products|[[CraReportGetResponseProduct](#schemacrareportgetresponseproduct)]|true|none|Per-product report data. Each entry corresponds to one requested product.|
 
@@ -147906,6 +151522,7 @@ Allowable permissible purposes for `DECISIONING`:
 
 - `ELIGIBILITY_FOR_GOVT_BENEFITS`
 - `EXTENSION_OF_CREDIT`
+- `INSURANCE_UNDERWRITING`
 - `LEGITIMATE_BUSINESS_NEED_OTHER`
 - `LEGITIMATE_BUSINESS_NEED_TENANT_SCREENING`
 - `WRITTEN_INSTRUCTION_OTHER`
@@ -147978,12 +151595,2191 @@ Per-product report data, selected by the `product` discriminator.
 |*oneOf*|[CraReportGetQualifyResponseProduct](#schemacrareportgetqualifyresponseproduct)|false|none|Qualify data returned by `/cra/report/get`.|
 |*oneOf*|[CraReportGetIncomeInsightsResponseProduct](#schemacrareportgetincomeinsightsresponseproduct)|false|none|Income Insights data returned by `/cra/report/get`.|
 |*oneOf*|[CraReportGetHomeLendingResponseProduct](#schemacrareportgethomelendingresponseproduct)|false|none|Home Lending data returned by `/cra/report/get`.|
+|*oneOf*|[CraReportGetHomeLendingVoaResponseProduct](#schemacrareportgethomelendingvoaresponseproduct)|false|none|Home Lending VOA data returned by `/cra/report/get`.|
 |*oneOf*|[CraReportGetCashflowInsightsResponseProduct](#schemacrareportgetcashflowinsightsresponseproduct)|false|none|Cashflow Insights data returned by `/cra/report/get`.|
 |*oneOf*|[CraReportGetNetworkInsightsResponseProduct](#schemacrareportgetnetworkinsightsresponseproduct)|false|none|Network Insights data returned by `/cra/report/get`.|
 |*oneOf*|[CraReportGetLendScoreResponseProduct](#schemacrareportgetlendscoreresponseproduct)|false|none|LendScore data returned by `/cra/report/get`.|
 |*oneOf*|[CraReportGetBaseReportResponseProduct](#schemacrareportgetbasereportresponseproduct)|false|none|Base Report data returned by `/cra/report/get`.|
 |*oneOf*|[CraReportGetLendScoreCompleteResponseProduct](#schemacrareportgetlendscorecompleteresponseproduct)|false|none|LendScore Complete data returned by `/cra/report/get`.|
 |*oneOf*|[CraReportGetIncomeCompleteResponseProduct](#schemacrareportgetincomecompleteresponseproduct)|false|none|Income Complete data returned by `/cra/report/get`.|
+|*oneOf*|[CraReportGetPrismResponseProduct](#schemacrareportgetprismresponseproduct)|false|none|Prism data returned by `/cra/report/get`.|
+|*oneOf*|[CraReportGetUltraFicoResponseProduct](#schemacrareportgetultraficoresponseproduct)|false|none|UltraFICO data returned by `/cra/report/get`.|
+
+<h2 id="tocS_CraReportGetHomeLendingVoaResponseProduct">CraReportGetHomeLendingVoaResponseProduct</h2>
+<!-- backwards compatibility -->
+<a id="schemacrareportgethomelendingvoaresponseproduct"></a>
+<a id="schema_CraReportGetHomeLendingVoaResponseProduct"></a>
+<a id="tocScrareportgethomelendingvoaresponseproduct"></a>
+<a id="tocscrareportgethomelendingvoaresponseproduct"></a>
+
+```json
+{
+  "product": "cra_home_lending_voa",
+  "version": "string",
+  "metadata": {
+    "generated_time": "1970-01-01T00:00:00Z",
+    "item_count": 0,
+    "account_count": 0,
+    "institution_ids": [
+      "string"
+    ],
+    "report_format": "VOA",
+    "days_requested": 0,
+    "primary_account_count": 0,
+    "depository_account_type_count": 0,
+    "credit_account_type_count": 0,
+    "investment_account_type_count": 0,
+    "other_account_type_count": 0,
+    "multiple_owner_account_count": 0,
+    "oldest_transaction_date": "1970-01-01",
+    "most_recent_transaction_date": "1970-01-01"
+  },
+  "gse_reference_id": "string",
+  "items": [
+    {
+      "accounts": [
+        {
+          "account_id": "string",
+          "name": "string",
+          "official_name": "string",
+          "type": "investment",
+          "subtype": "401a",
+          "balances": {
+            "available": 0,
+            "current": 0,
+            "iso_currency_code": "string",
+            "unofficial_currency_code": "string",
+            "most_recent_thirty_day_average_balance": 0,
+            "most_recent_sixty_day_average_balance": 0
+          },
+          "mask": "string",
+          "days_available": 0,
+          "metadata": {
+            "start_date": "1970-01-01",
+            "end_date": "1970-01-01"
+          },
+          "owners": [
+            {
+              "names": [
+                "string"
+              ],
+              "phone_numbers": [
+                {
+                  "data": "string",
+                  "primary": true,
+                  "type": "home"
+                }
+              ],
+              "emails": [
+                {
+                  "data": "string",
+                  "primary": true,
+                  "type": "primary"
+                }
+              ],
+              "addresses": [
+                {
+                  "data": {
+                    "city": "string",
+                    "region": "string",
+                    "street": "string",
+                    "postal_code": "string",
+                    "country": "string"
+                  },
+                  "primary": true
+                }
+              ]
+            }
+          ],
+          "attributes": {
+            "is_primary_account": true,
+            "primary_account_score": 0
+          },
+          "identity_match": {
+            "legal_name": {
+              "score": 0,
+              "is_first_name_or_last_name_match": true,
+              "is_nickname_match": true,
+              "is_business_name_detected": true
+            },
+            "phone_number": {
+              "score": 0
+            },
+            "email_address": {
+              "score": 0
+            },
+            "address": {
+              "score": 0,
+              "is_postal_code_match": true
+            }
+          },
+          "ownership_type": null,
+          "historical_balances": [
+            {
+              "current": 0,
+              "date": "1970-01-01",
+              "iso_currency_code": "string",
+              "unofficial_currency_code": "string"
+            }
+          ],
+          "transactions": [
+            {
+              "transaction_id": "string",
+              "account_id": "string",
+              "amount": 0,
+              "iso_currency_code": "string",
+              "unofficial_currency_code": "string",
+              "original_description": "string",
+              "merchant_name": "string",
+              "credit_category": {
+                "primary": "string",
+                "detailed": "string"
+              },
+              "check_number": "string",
+              "date": "1970-01-01",
+              "date_transacted": "1970-01-01",
+              "pending": true,
+              "account_owner": "string",
+              "location": {
+                "address": "string",
+                "city": "string",
+                "region": "string",
+                "postal_code": "string",
+                "country": "string",
+                "lat": 0,
+                "lon": 0,
+                "store_number": "string"
+              }
+            }
+          ]
+        }
+      ],
+      "institution_name": "string",
+      "institution_id": "string",
+      "item_id": "string",
+      "date_last_updated": "1970-01-01T00:00:00Z"
+    }
+  ],
+  "attributes": {
+    "total_inflow_amount": {
+      "amount": -2500,
+      "iso_currency_code": "USD",
+      "unofficial_currency_code": null
+    },
+    "total_outflow_amount": {
+      "amount": 2500,
+      "iso_currency_code": "USD",
+      "unofficial_currency_code": null
+    }
+  },
+  "errors": [
+    {
+      "error_type": "INVALID_REQUEST",
+      "error_code": "string",
+      "error_code_reason": "string",
+      "error_message": "string",
+      "display_message": "string",
+      "request_id": "string",
+      "causes": [
+        null
+      ],
+      "status": 0,
+      "documentation_url": "string",
+      "suggested_action": "string",
+      "required_account_subtypes": [
+        "string"
+      ],
+      "provided_account_subtypes": [
+        "string"
+      ]
+    }
+  ]
+}
+```
+
+Home Lending VOA data returned by `/cra/report/get`.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|product|string|true|none|The Home Lending VOA product.|
+|version|[CraProductVersion](#schemacraproductversion)|true|none|A string that specifies a particular version of a CRA product.|
+|metadata|[CraReportGetHomeLendingVoaMetadata](#schemacrareportgethomelendingvoametadata)|true|none|Home Lending VOA report metadata returned by `/cra/report/get`. `null` when the product failed to generate.|
+|gse_reference_id|string \| null|true|none|A unique token that can be shared with government-sponsored enterprises to provide access to this product's report. Automatically created when the report's `decision_stage` is `DECISIONING`; `null` for other stages or if the product failed to generate.|
+|items|[[CraReportGetHomeLendingVoaItem](#schemacrareportgethomelendingvoaitem)]|true|none|The Items included in the Home Lending VOA report.|
+|attributes|[CraReportGetHomeLendingVoaAttributes](#schemacrareportgethomelendingvoaattributes)|false|none|Attributes derived from transaction-level data, aggregated across all accounts in the report. Returned for successfully generated VOA reports; omitted when `metadata.report_format` is `EMPLOYMENT_REFRESH` or if the product failed to generate.|
+|errors|[[PlaidError](#schemaplaiderror)]|true|none|Product-level errors. Non-empty when this product failed to generate; empty on success.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|product|cra_home_lending_voa|
+
+<h2 id="tocS_CraReportGetHomeLendingVoaAttributes">CraReportGetHomeLendingVoaAttributes</h2>
+<!-- backwards compatibility -->
+<a id="schemacrareportgethomelendingvoaattributes"></a>
+<a id="schema_CraReportGetHomeLendingVoaAttributes"></a>
+<a id="tocScrareportgethomelendingvoaattributes"></a>
+<a id="tocscrareportgethomelendingvoaattributes"></a>
+
+```json
+{
+  "total_inflow_amount": {
+    "amount": -2500,
+    "iso_currency_code": "USD",
+    "unofficial_currency_code": null
+  },
+  "total_outflow_amount": {
+    "amount": 2500,
+    "iso_currency_code": "USD",
+    "unofficial_currency_code": null
+  }
+}
+```
+
+Attributes derived from transaction-level data, aggregated across all accounts in the report. Returned for successfully generated VOA reports; omitted when `metadata.report_format` is `EMPLOYMENT_REFRESH` or if the product failed to generate.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|total_inflow_amount|[TotalReportInflowAmount](#schematotalreportinflowamount)|true|none|Total amount of money into the report's accounts in the time period of the report. This field only takes into account USD transactions from the accounts.|
+|total_outflow_amount|[TotalReportOutflowAmount](#schematotalreportoutflowamount)|true|none|Total amount of money out of the report's accounts in the time period of the report. This field only takes into account USD transactions from the accounts.|
+
+<h2 id="tocS_CraReportGetHomeLendingVoaMetadata">CraReportGetHomeLendingVoaMetadata</h2>
+<!-- backwards compatibility -->
+<a id="schemacrareportgethomelendingvoametadata"></a>
+<a id="schema_CraReportGetHomeLendingVoaMetadata"></a>
+<a id="tocScrareportgethomelendingvoametadata"></a>
+<a id="tocscrareportgethomelendingvoametadata"></a>
+
+```json
+{
+  "generated_time": "1970-01-01T00:00:00Z",
+  "item_count": 0,
+  "account_count": 0,
+  "institution_ids": [
+    "string"
+  ],
+  "report_format": "VOA",
+  "days_requested": 0,
+  "primary_account_count": 0,
+  "depository_account_type_count": 0,
+  "credit_account_type_count": 0,
+  "investment_account_type_count": 0,
+  "other_account_type_count": 0,
+  "multiple_owner_account_count": 0,
+  "oldest_transaction_date": "1970-01-01",
+  "most_recent_transaction_date": "1970-01-01"
+}
+```
+
+Home Lending VOA report metadata returned by `/cra/report/get`. `null` when the product failed to generate.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|generated_time|string(date-time) \| null|true|none|The time the report was generated. May be `null` if unavailable.|
+|item_count|integer|true|none|The number of Items used to generate the report.|
+|account_count|integer|true|none|The number of accounts used to generate the report.|
+|institution_ids|[string]|true|none|The institution IDs of the Items used to generate the report.|
+|report_format|[CraHomeLendingVoaReportFormat](#schemacrahomelendingvoareportformat)|true|none|The Home Lending VOA report format.<br><br>`VOA`: A Verification of Assets report that includes balances, historical balances, owners, transaction history, and report-level attributes.<br>`EMPLOYMENT_REFRESH`: An Employment Refresh report that contains only deposit transactions and basic account information.|
+|days_requested|integer|true|none|The number of days of transaction history requested.|
+|primary_account_count|integer|true|none|The number of accounts carrying Plaid's primary account indicator, based on a report-level view of the user's transaction history.|
+|depository_account_type_count|integer|true|none|The number of depository accounts used to generate the report.|
+|credit_account_type_count|integer|true|none|The number of credit accounts used to generate the report.|
+|investment_account_type_count|integer|true|none|The number of investment accounts used to generate the report.|
+|other_account_type_count|integer|true|none|The number of accounts that are neither depository, credit, nor investment.|
+|multiple_owner_account_count|integer|true|none|The number of accounts with multiple owners.|
+|oldest_transaction_date|string(date) \| null|true|none|The earliest date among transactions included in the report. `null` if the report includes no transactions.|
+|most_recent_transaction_date|string(date) \| null|true|none|The latest date among transactions included in the report. `null` if the report includes no transactions.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|report_format|VOA|
+|report_format|EMPLOYMENT_REFRESH|
+
+<h2 id="tocS_CraHomeLendingVoaReportFormat">CraHomeLendingVoaReportFormat</h2>
+<!-- backwards compatibility -->
+<a id="schemacrahomelendingvoareportformat"></a>
+<a id="schema_CraHomeLendingVoaReportFormat"></a>
+<a id="tocScrahomelendingvoareportformat"></a>
+<a id="tocscrahomelendingvoareportformat"></a>
+
+```json
+"VOA"
+```
+
+The Home Lending VOA report format.
+
+`VOA`: A Verification of Assets report that includes balances, historical balances, owners, transaction history, and report-level attributes.
+`EMPLOYMENT_REFRESH`: An Employment Refresh report that contains only deposit transactions and basic account information.
+
+<h2 id="tocS_CraReportGetHomeLendingVoaTransaction">CraReportGetHomeLendingVoaTransaction</h2>
+<!-- backwards compatibility -->
+<a id="schemacrareportgethomelendingvoatransaction"></a>
+<a id="schema_CraReportGetHomeLendingVoaTransaction"></a>
+<a id="tocScrareportgethomelendingvoatransaction"></a>
+<a id="tocscrareportgethomelendingvoatransaction"></a>
+
+```json
+{
+  "transaction_id": "string",
+  "account_id": "string",
+  "amount": 0,
+  "iso_currency_code": "string",
+  "unofficial_currency_code": "string",
+  "original_description": "string",
+  "merchant_name": "string",
+  "credit_category": {
+    "primary": "string",
+    "detailed": "string"
+  },
+  "check_number": "string",
+  "date": "1970-01-01",
+  "date_transacted": "1970-01-01",
+  "pending": true,
+  "account_owner": "string",
+  "location": {
+    "address": "string",
+    "city": "string",
+    "region": "string",
+    "postal_code": "string",
+    "country": "string",
+    "lat": 0,
+    "lon": 0,
+    "store_number": "string"
+  }
+}
+```
+
+A transaction in a Home Lending VOA report returned by `/cra/report/get`. Employment Refresh contains only deposits and omits VOA-only fields.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|transaction_id|string|true|none|The unique ID of the transaction. Like all Plaid identifiers, the `transaction_id` is case sensitive.|
+|account_id|string|true|none|The ID of the account in which this transaction occurred.|
+|amount|number(double) \| null|false|none|The settled value of the transaction, denominated in the transaction's currency, as stated in `iso_currency_code` or `unofficial_currency_code`. Positive values when money moves out of the account; negative values when money moves in. For example, debit card purchases are positive; credit card payments, direct deposits, and refunds are negative. Omitted in the Employment Refresh format.|
+|iso_currency_code|[CreditIsoCurrencyCode](#schemacreditisocurrencycode)|false|none|The ISO 4217 currency code of the amount or balance.|
+|unofficial_currency_code|[CreditUnofficialCurrencyCode](#schemacreditunofficialcurrencycode)|false|none|The unofficial currency code associated with the amount or balance. Always `null` if `iso_currency_code` is non-null.<br>Unofficial currency codes are used for currencies that do not have official ISO currency codes, such as cryptocurrencies and the currencies of certain countries.|
+|original_description|string \| null|true|none|The string returned by the financial institution to describe the transaction.|
+|merchant_name|string \| null|false|none|The merchant name, as enriched by Plaid. `null` for transactions with no meaningful merchant, such as checks or account transfers.|
+|credit_category|[CreditCategory](#schemacreditcategory)|false|none|Information describing the intent of the transaction. Most relevant for credit use cases, but not limited to such use cases.<br><br>See the [`taxonomy csv file`](https://plaid.com/documents/credit-category-taxonomy.csv) for a full list of credit categories.|
+|check_number|string \| null|false|none|The check number of the transaction. Only populated for check transactions.|
+|date|string(date)|true|none|For pending transactions, the date that the transaction occurred; for posted transactions, the date that the transaction posted. Returned in [ISO 8601](https://wikipedia.org/wiki/ISO_8601) format (YYYY-MM-DD).|
+|date_transacted|string(date) \| null|false|none|The date on which the transaction took place, in [ISO 8601](https://wikipedia.org/wiki/ISO_8601) format (YYYY-MM-DD). `null` if the financial institution did not provide it.|
+|pending|boolean|true|none|When `true`, identifies the transaction as pending or unsettled. Pending transaction details (`amount`, `merchant_name`, `credit_category`) may change before they are settled.|
+|account_owner|string \| null|false|none|The name of the account owner. This field is not typically populated and only relevant when dealing with sub-accounts.|
+|location|object \| null|false|none|A representation of where the transaction took place. Omitted in the Employment Refresh format and when location data is unavailable.|
+
+<h2 id="tocS_CraReportGetHomeLendingVoaItem">CraReportGetHomeLendingVoaItem</h2>
+<!-- backwards compatibility -->
+<a id="schemacrareportgethomelendingvoaitem"></a>
+<a id="schema_CraReportGetHomeLendingVoaItem"></a>
+<a id="tocScrareportgethomelendingvoaitem"></a>
+<a id="tocscrareportgethomelendingvoaitem"></a>
+
+```json
+{
+  "accounts": [
+    {
+      "account_id": "string",
+      "name": "string",
+      "official_name": "string",
+      "type": "investment",
+      "subtype": "401a",
+      "balances": {
+        "available": 0,
+        "current": 0,
+        "iso_currency_code": "string",
+        "unofficial_currency_code": "string",
+        "most_recent_thirty_day_average_balance": 0,
+        "most_recent_sixty_day_average_balance": 0
+      },
+      "mask": "string",
+      "days_available": 0,
+      "metadata": {
+        "start_date": "1970-01-01",
+        "end_date": "1970-01-01"
+      },
+      "owners": [
+        {
+          "names": [
+            "string"
+          ],
+          "phone_numbers": [
+            {
+              "data": "string",
+              "primary": true,
+              "type": "home"
+            }
+          ],
+          "emails": [
+            {
+              "data": "string",
+              "primary": true,
+              "type": "primary"
+            }
+          ],
+          "addresses": [
+            {
+              "data": {
+                "city": "string",
+                "region": "string",
+                "street": "string",
+                "postal_code": "string",
+                "country": "string"
+              },
+              "primary": true
+            }
+          ]
+        }
+      ],
+      "attributes": {
+        "is_primary_account": true,
+        "primary_account_score": 0
+      },
+      "identity_match": {
+        "legal_name": {
+          "score": 0,
+          "is_first_name_or_last_name_match": true,
+          "is_nickname_match": true,
+          "is_business_name_detected": true
+        },
+        "phone_number": {
+          "score": 0
+        },
+        "email_address": {
+          "score": 0
+        },
+        "address": {
+          "score": 0,
+          "is_postal_code_match": true
+        }
+      },
+      "ownership_type": null,
+      "historical_balances": [
+        {
+          "current": 0,
+          "date": "1970-01-01",
+          "iso_currency_code": "string",
+          "unofficial_currency_code": "string"
+        }
+      ],
+      "transactions": [
+        {
+          "transaction_id": "string",
+          "account_id": "string",
+          "amount": 0,
+          "iso_currency_code": "string",
+          "unofficial_currency_code": "string",
+          "original_description": "string",
+          "merchant_name": "string",
+          "credit_category": {
+            "primary": "string",
+            "detailed": "string"
+          },
+          "check_number": "string",
+          "date": "1970-01-01",
+          "date_transacted": "1970-01-01",
+          "pending": true,
+          "account_owner": "string",
+          "location": {
+            "address": "string",
+            "city": "string",
+            "region": "string",
+            "postal_code": "string",
+            "country": "string",
+            "lat": 0,
+            "lon": 0,
+            "store_number": "string"
+          }
+        }
+      ]
+    }
+  ],
+  "institution_name": "string",
+  "institution_id": "string",
+  "item_id": "string",
+  "date_last_updated": "1970-01-01T00:00:00Z"
+}
+```
+
+An Item included in a Home Lending VOA report returned by `/cra/report/get`.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|accounts|[[CraReportGetHomeLendingVoaAccount](#schemacrareportgethomelendingvoaaccount)]|true|none|The accounts on the Item included in the Home Lending VOA report.|
+|institution_name|string|true|none|The full financial institution name associated with the Item.|
+|institution_id|string|true|none|The ID of the financial institution associated with the Item.|
+|item_id|[ItemId](#schemaitemid)|true|none|The `item_id` of the Item associated with this webhook, warning, or error|
+|date_last_updated|string(date-time)|true|none|The date and time when this Item's data was last retrieved from the financial institution, in [ISO 8601](https://wikipedia.org/wiki/ISO_8601) format.|
+
+<h2 id="tocS_CraReportGetHomeLendingVoaAccount">CraReportGetHomeLendingVoaAccount</h2>
+<!-- backwards compatibility -->
+<a id="schemacrareportgethomelendingvoaaccount"></a>
+<a id="schema_CraReportGetHomeLendingVoaAccount"></a>
+<a id="tocScrareportgethomelendingvoaaccount"></a>
+<a id="tocscrareportgethomelendingvoaaccount"></a>
+
+```json
+{
+  "account_id": "string",
+  "name": "string",
+  "official_name": "string",
+  "type": "investment",
+  "subtype": "401a",
+  "balances": {
+    "available": 0,
+    "current": 0,
+    "iso_currency_code": "string",
+    "unofficial_currency_code": "string",
+    "most_recent_thirty_day_average_balance": 0,
+    "most_recent_sixty_day_average_balance": 0
+  },
+  "mask": "string",
+  "days_available": 0,
+  "metadata": {
+    "start_date": "1970-01-01",
+    "end_date": "1970-01-01"
+  },
+  "owners": [
+    {
+      "names": [
+        "string"
+      ],
+      "phone_numbers": [
+        {
+          "data": "string",
+          "primary": true,
+          "type": "home"
+        }
+      ],
+      "emails": [
+        {
+          "data": "string",
+          "primary": true,
+          "type": "primary"
+        }
+      ],
+      "addresses": [
+        {
+          "data": {
+            "city": "string",
+            "region": "string",
+            "street": "string",
+            "postal_code": "string",
+            "country": "string"
+          },
+          "primary": true
+        }
+      ]
+    }
+  ],
+  "attributes": {
+    "is_primary_account": true,
+    "primary_account_score": 0
+  },
+  "identity_match": {
+    "legal_name": {
+      "score": 0,
+      "is_first_name_or_last_name_match": true,
+      "is_nickname_match": true,
+      "is_business_name_detected": true
+    },
+    "phone_number": {
+      "score": 0
+    },
+    "email_address": {
+      "score": 0
+    },
+    "address": {
+      "score": 0,
+      "is_postal_code_match": true
+    }
+  },
+  "ownership_type": null,
+  "historical_balances": [
+    {
+      "current": 0,
+      "date": "1970-01-01",
+      "iso_currency_code": "string",
+      "unofficial_currency_code": "string"
+    }
+  ],
+  "transactions": [
+    {
+      "transaction_id": "string",
+      "account_id": "string",
+      "amount": 0,
+      "iso_currency_code": "string",
+      "unofficial_currency_code": "string",
+      "original_description": "string",
+      "merchant_name": "string",
+      "credit_category": {
+        "primary": "string",
+        "detailed": "string"
+      },
+      "check_number": "string",
+      "date": "1970-01-01",
+      "date_transacted": "1970-01-01",
+      "pending": true,
+      "account_owner": "string",
+      "location": {
+        "address": "string",
+        "city": "string",
+        "region": "string",
+        "postal_code": "string",
+        "country": "string",
+        "lat": 0,
+        "lon": 0,
+        "store_number": "string"
+      }
+    }
+  ]
+}
+```
+
+Account data included in a Home Lending VOA report. Fields not supported by the selected report format are omitted.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|account_id|string|true|none|Plaid's unique identifier for the account. This value will not change unless Plaid can't reconcile the account with the data returned by the financial institution. This may occur, for example, when the name of the account changes. If this happens a new `account_id` will be assigned to the account.<br><br>Like all Plaid identifiers, the `account_id` is case sensitive.|
+|name|string|true|none|The name of the account, either assigned by the user or by the financial institution itself.|
+|official_name|string \| null|true|none|The official name of the account as given by the financial institution.|
+|type|[AccountType](#schemaaccounttype)|true|none|`investment:` Investment account. In API versions 2018-05-22 and earlier, this type is called `brokerage` instead.<br><br>`credit:` Credit card<br><br>`depository:` Depository account<br><br>`loan:` Loan account<br><br>`payroll:` Payroll account<br><br>`other:` Non-specified account type<br><br>See the [Account type schema](https://plaid.com/docs/api/accounts#account-type-schema) for a full listing of account types and corresponding subtypes.|
+|subtype|[AccountSubtype](#schemaaccountsubtype)|true|none|See the [Account type schema](https://plaid.com/docs/api/accounts/#account-type-schema) for a full listing of account types and corresponding subtypes.|
+|balances|[CraReportGetHomeLendingVoaAccountBalances](#schemacrareportgethomelendingvoaaccountbalances)|false|none|Balance data for an account in a Home Lending VOA report. Omitted in the Employment Refresh format.|
+|mask|string \| null|false|none|The last 2-4 alphanumeric characters of an account's official account number. The mask may be non-unique between an Item's accounts and may not match the mask displayed by the financial institution. Omitted in the Employment Refresh format and `null` in the VOA format if unavailable.|
+|days_available|integer \| null|false|none|The number of days of transaction history available for the account, typically the time since the date of its earliest transaction. `null` in the VOA format if unavailable and omitted in the Employment Refresh format.|
+|metadata|[CraReportGetHomeLendingVoaAccountMetadata](#schemacrareportgethomelendingvoaaccountmetadata)|false|none|Metadata about the financial institution data available for an account in a Home Lending VOA report. Omitted in the Employment Refresh format.|
+|owners|[[Owner](#schemaowner)]|true|none|Data returned by the financial institution about the account owner or owners. Multiple owners on a single account are represented in the same `owner` object, not in multiple owner objects within the array. Empty in the Employment Refresh format and when the VOA format has no owner data.|
+|attributes|[CraReportGetHomeLendingVoaAccountAttributes](#schemacrareportgethomelendingvoaaccountattributes)|true|none|Attributes derived for an account. May be `null` if attributes were not available.|
+|identity_match|object|false|none|Identity match scores for the account. Omitted in the Employment Refresh format, when identity matching was not requested, or when the account could not be scored.|
+|ownership_type|[OwnershipType](#schemaownershiptype)|false|none|How an asset is owned.<br><br>`association`: Ownership by a corporation, partnership, or unincorporated association, including for-profit and not-for-profit organizations.<br><br>`individual`: Ownership by an individual.<br><br>`joint`: Joint ownership by multiple parties.<br><br>`trust`: Ownership by a revocable or irrevocable trust.|
+|historical_balances|[[CraReportGetHomeLendingVoaAccountHistoricalBalance](#schemacrareportgethomelendingvoaaccounthistoricalbalance)]|true|none|Calculated daily historical balances for the account. Empty in the Employment Refresh format and when the VOA format has no historical balances.|
+|transactions|[[CraReportGetHomeLendingVoaTransaction](#schemacrareportgethomelendingvoatransaction)]|true|none|The transaction history of the account. Some transactions may have their details masked in accordance with the FCRA; these have a `credit_category` of `MASKED_TRANSACTION_CATEGORY`. Employment Refresh contains only deposits and omits VOA-only fields.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|investment|
+|type|credit|
+|type|depository|
+|type|loan|
+|type|brokerage|
+|type|payroll|
+|type|other|
+|subtype|401a|
+|subtype|401k|
+|subtype|403B|
+|subtype|457b|
+|subtype|529|
+|subtype|530a|
+|subtype|auto|
+|subtype|brokerage|
+|subtype|business|
+|subtype|cash isa|
+|subtype|cash management|
+|subtype|cd|
+|subtype|checking|
+|subtype|commercial|
+|subtype|commercial line of credit|
+|subtype|construction|
+|subtype|consumer|
+|subtype|credit card|
+|subtype|crypto exchange|
+|subtype|ebt|
+|subtype|education savings account|
+|subtype|fhsa|
+|subtype|fixed annuity|
+|subtype|gic|
+|subtype|health reimbursement arrangement|
+|subtype|home equity|
+|subtype|home equity loan|
+|subtype|hsa|
+|subtype|isa|
+|subtype|ira|
+|subtype|keogh|
+|subtype|lif|
+|subtype|life insurance|
+|subtype|limited purpose checking|
+|subtype|line of credit|
+|subtype|lira|
+|subtype|loan|
+|subtype|lrif|
+|subtype|lrsp|
+|subtype|money market|
+|subtype|mortgage|
+|subtype|mutual fund|
+|subtype|non-custodial wallet|
+|subtype|non-taxable brokerage account|
+|subtype|other|
+|subtype|other insurance|
+|subtype|other annuity|
+|subtype|overdraft|
+|subtype|paypal|
+|subtype|payroll|
+|subtype|pension|
+|subtype|prediction market|
+|subtype|prepaid|
+|subtype|prif|
+|subtype|profit sharing plan|
+|subtype|qshr|
+|subtype|rdsp|
+|subtype|resp|
+|subtype|retirement|
+|subtype|rlif|
+|subtype|roth|
+|subtype|roth 401k|
+|subtype|roth 403B|
+|subtype|roth 457b|
+|subtype|roth pension|
+|subtype|roth profit sharing plan|
+|subtype|roth thrift savings plan|
+|subtype|rrif|
+|subtype|rrsp|
+|subtype|sarsep|
+|subtype|savings|
+|subtype|sep ira|
+|subtype|simple ira|
+|subtype|sipp|
+|subtype|stock plan|
+|subtype|student|
+|subtype|thrift savings plan|
+|subtype|tfsa|
+|subtype|trust|
+|subtype|ugma|
+|subtype|utma|
+|subtype|variable annuity|
+|ownership_type|null|
+|ownership_type|individual|
+|ownership_type|joint|
+|ownership_type|association|
+|ownership_type|trust|
+
+<h2 id="tocS_CraReportGetHomeLendingVoaAccountMetadata">CraReportGetHomeLendingVoaAccountMetadata</h2>
+<!-- backwards compatibility -->
+<a id="schemacrareportgethomelendingvoaaccountmetadata"></a>
+<a id="schema_CraReportGetHomeLendingVoaAccountMetadata"></a>
+<a id="tocScrareportgethomelendingvoaaccountmetadata"></a>
+<a id="tocscrareportgethomelendingvoaaccountmetadata"></a>
+
+```json
+{
+  "start_date": "1970-01-01",
+  "end_date": "1970-01-01"
+}
+```
+
+Metadata about the financial institution data available for an account in a Home Lending VOA report. Omitted in the Employment Refresh format.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|start_date|string(date) \| null|true|none|The beginning of the range of financial institution-provided data for the account, in [ISO 8601](https://wikipedia.org/wiki/ISO_8601) format (YYYY-MM-DD).|
+|end_date|string(date) \| null|true|none|The end of the range of financial institution-provided data for the account, in [ISO 8601](https://wikipedia.org/wiki/ISO_8601) format (YYYY-MM-DD).|
+
+<h2 id="tocS_CraReportGetHomeLendingVoaAccountAttributes">CraReportGetHomeLendingVoaAccountAttributes</h2>
+<!-- backwards compatibility -->
+<a id="schemacrareportgethomelendingvoaaccountattributes"></a>
+<a id="schema_CraReportGetHomeLendingVoaAccountAttributes"></a>
+<a id="tocScrareportgethomelendingvoaaccountattributes"></a>
+<a id="tocscrareportgethomelendingvoaaccountattributes"></a>
+
+```json
+{
+  "is_primary_account": true,
+  "primary_account_score": 0
+}
+```
+
+Attributes derived for an account. May be `null` if attributes were not available.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|is_primary_account|boolean \| null|true|none|Whether the account is predicted to be the user's primary account, based on an Item-level view of the user's transaction history. At most one account per account type across the user's Items is `true`. `null` if the prediction could not be computed.|
+|primary_account_score|number(double) \| null|true|none|A value from 0 to 1 expressing confidence that the account is the user's primary account; higher is more confident. `null` if the score could not be computed.|
+
+<h2 id="tocS_CraReportGetHomeLendingVoaAccountBalances">CraReportGetHomeLendingVoaAccountBalances</h2>
+<!-- backwards compatibility -->
+<a id="schemacrareportgethomelendingvoaaccountbalances"></a>
+<a id="schema_CraReportGetHomeLendingVoaAccountBalances"></a>
+<a id="tocScrareportgethomelendingvoaaccountbalances"></a>
+<a id="tocscrareportgethomelendingvoaaccountbalances"></a>
+
+```json
+{
+  "available": 0,
+  "current": 0,
+  "iso_currency_code": "string",
+  "unofficial_currency_code": "string",
+  "most_recent_thirty_day_average_balance": 0,
+  "most_recent_sixty_day_average_balance": 0
+}
+```
+
+Balance data for an account in a Home Lending VOA report. Omitted in the Employment Refresh format.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|available|number(double) \| null|true|none|The amount of funds available to be withdrawn from the account, as determined by the financial institution. `null` if the institution does not provide an `available` balance. If `current` is `null`, this field is guaranteed not to be `null`.|
+|current|number(double) \| null|true|none|The total amount of funds in or owed by the account. If `available` is `null`, this field is guaranteed not to be `null`.|
+|iso_currency_code|[CreditIsoCurrencyCode](#schemacreditisocurrencycode)|true|none|The ISO 4217 currency code of the amount or balance.|
+|unofficial_currency_code|[CreditUnofficialCurrencyCode](#schemacreditunofficialcurrencycode)|true|none|The unofficial currency code associated with the amount or balance. Always `null` if `iso_currency_code` is non-null.<br>Unofficial currency codes are used for currencies that do not have official ISO currency codes, such as cryptocurrencies and the currencies of certain countries.|
+|most_recent_thirty_day_average_balance|number(double) \| null|true|none|The average historical balance over the most recent 30 days. `null` if it could not be computed.|
+|most_recent_sixty_day_average_balance|number(double) \| null|true|none|The average historical balance over the most recent 60 days. `null` if it could not be computed.|
+
+<h2 id="tocS_CraReportGetHomeLendingVoaAccountHistoricalBalance">CraReportGetHomeLendingVoaAccountHistoricalBalance</h2>
+<!-- backwards compatibility -->
+<a id="schemacrareportgethomelendingvoaaccounthistoricalbalance"></a>
+<a id="schema_CraReportGetHomeLendingVoaAccountHistoricalBalance"></a>
+<a id="tocScrareportgethomelendingvoaaccounthistoricalbalance"></a>
+<a id="tocscrareportgethomelendingvoaaccounthistoricalbalance"></a>
+
+```json
+{
+  "current": 0,
+  "date": "1970-01-01",
+  "iso_currency_code": "string",
+  "unofficial_currency_code": "string"
+}
+```
+
+A calculated historical balance for an account in a Home Lending VOA report.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|current|number(double)|true|none|The total amount of funds in the account, calculated from the `current` balance in the `balances` object by subtracting inflows and adding back outflows according to the posted date of each transaction.<br><br>If the account has any pending transactions, historical balance amounts on or before the date of the earliest pending transaction may differ if retrieved in subsequent reports as a result of those pending transactions posting.|
+|date|string(date)|true|none|The date of the calculated historical balance, in [ISO 8601](https://wikipedia.org/wiki/ISO_8601) format (YYYY-MM-DD).|
+|iso_currency_code|[CreditIsoCurrencyCode](#schemacreditisocurrencycode)|true|none|The ISO 4217 currency code of the amount or balance.|
+|unofficial_currency_code|[CreditUnofficialCurrencyCode](#schemacreditunofficialcurrencycode)|true|none|The unofficial currency code associated with the amount or balance. Always `null` if `iso_currency_code` is non-null.<br>Unofficial currency codes are used for currencies that do not have official ISO currency codes, such as cryptocurrencies and the currencies of certain countries.|
+
+<h2 id="tocS_CraPrismProduct">CraPrismProduct</h2>
+<!-- backwards compatibility -->
+<a id="schemacraprismproduct"></a>
+<a id="schema_CraPrismProduct"></a>
+<a id="tocScraprismproduct"></a>
+<a id="tocscraprismproduct"></a>
+
+```json
+{
+  "product": "cra_prism",
+  "version": "string"
+}
+```
+
+Names the Prism product at a given version.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|product|string|true|none|The Prism product discriminator.|
+|version|[CraProductVersion](#schemacraproductversion)|true|none|A string that specifies a particular version of a CRA product.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|product|cra_prism|
+
+<h2 id="tocS_CraReportCreatePrismCashScoreVersion">CraReportCreatePrismCashScoreVersion</h2>
+<!-- backwards compatibility -->
+<a id="schemacrareportcreateprismcashscoreversion"></a>
+<a id="schema_CraReportCreatePrismCashScoreVersion"></a>
+<a id="tocScrareportcreateprismcashscoreversion"></a>
+<a id="tocscrareportcreateprismcashscoreversion"></a>
+
+```json
+"4.1"
+```
+
+The version of Prism CashScore to evaluate. Omit to not evaluate CashScore.
+
+<h2 id="tocS_CraReportCreatePrismInsightsVersion">CraReportCreatePrismInsightsVersion</h2>
+<!-- backwards compatibility -->
+<a id="schemacrareportcreateprisminsightsversion"></a>
+<a id="schema_CraReportCreatePrismInsightsVersion"></a>
+<a id="tocScrareportcreateprisminsightsversion"></a>
+<a id="tocscrareportcreateprisminsightsversion"></a>
+
+```json
+"4.1"
+```
+
+The version of Prism Insights to evaluate. Omit to not evaluate Insights.
+
+<h2 id="tocS_CraReportCreatePrismDetectVersion">CraReportCreatePrismDetectVersion</h2>
+<!-- backwards compatibility -->
+<a id="schemacrareportcreateprismdetectversion"></a>
+<a id="schema_CraReportCreatePrismDetectVersion"></a>
+<a id="tocScrareportcreateprismdetectversion"></a>
+<a id="tocscrareportcreateprismdetectversion"></a>
+
+```json
+"4.1"
+```
+
+The version of Prism Detect to evaluate. Omit to not evaluate Detect.
+
+<h2 id="tocS_CraReportCreatePrismExtendVersion">CraReportCreatePrismExtendVersion</h2>
+<!-- backwards compatibility -->
+<a id="schemacrareportcreateprismextendversion"></a>
+<a id="schema_CraReportCreatePrismExtendVersion"></a>
+<a id="tocScrareportcreateprismextendversion"></a>
+<a id="tocscrareportcreateprismextendversion"></a>
+
+```json
+"4.1"
+```
+
+The version of Prism Extend to evaluate. Omit to not evaluate Extend.
+
+<h2 id="tocS_CraReportCreatePrismOptions">CraReportCreatePrismOptions</h2>
+<!-- backwards compatibility -->
+<a id="schemacrareportcreateprismoptions"></a>
+<a id="schema_CraReportCreatePrismOptions"></a>
+<a id="tocScrareportcreateprismoptions"></a>
+<a id="tocscrareportcreateprismoptions"></a>
+
+```json
+{
+  "cashscore": "4.1",
+  "insights": "4.1",
+  "detect": "4.1",
+  "extend": "4.1"
+}
+```
+
+Selects which Prism products to evaluate and at which version. A product whose version is omitted is not evaluated, so at least one version must be set.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|cashscore|[CraReportCreatePrismCashScoreVersion](#schemacrareportcreateprismcashscoreversion)|false|none|The version of Prism CashScore to evaluate. Omit to not evaluate CashScore.|
+|insights|[CraReportCreatePrismInsightsVersion](#schemacrareportcreateprisminsightsversion)|false|none|The version of Prism Insights to evaluate. Omit to not evaluate Insights.|
+|detect|[CraReportCreatePrismDetectVersion](#schemacrareportcreateprismdetectversion)|false|none|The version of Prism Detect to evaluate. Omit to not evaluate Detect.|
+|extend|[CraReportCreatePrismExtendVersion](#schemacrareportcreateprismextendversion)|false|none|The version of Prism Extend to evaluate. Omit to not evaluate Extend.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|cashscore|4.1|
+|cashscore|4|
+|cashscore|3|
+|cashscore|null|
+|insights|4.1|
+|insights|4|
+|insights|3|
+|insights|null|
+|detect|4.1|
+|detect|4|
+|detect|null|
+|extend|4.1|
+|extend|4|
+|extend|null|
+
+<h2 id="tocS_CraReportCreatePrismProductConfig">CraReportCreatePrismProductConfig</h2>
+<!-- backwards compatibility -->
+<a id="schemacrareportcreateprismproductconfig"></a>
+<a id="schema_CraReportCreatePrismProductConfig"></a>
+<a id="tocScrareportcreateprismproductconfig"></a>
+<a id="tocscrareportcreateprismproductconfig"></a>
+
+```json
+{
+  "product": "cra_prism",
+  "version": "string",
+  "options": {
+    "cashscore": "4.1",
+    "insights": "4.1",
+    "detect": "4.1",
+    "extend": "4.1"
+  }
+}
+```
+
+Requests the given version of the Prism product and selects which Prism products to evaluate.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|product|string|true|none|Set to `cra_prism` to request the Prism product.|
+|version|[CraProductVersion](#schemacraproductversion)|true|none|A string that specifies a particular version of a CRA product.|
+|options|[CraReportCreatePrismOptions](#schemacrareportcreateprismoptions)|true|none|Selects which Prism products to evaluate and at which version. A product whose version is omitted is not evaluated, so at least one version must be set.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|product|cra_prism|
+
+<h2 id="tocS_CraReportGetPrismResponseProduct">CraReportGetPrismResponseProduct</h2>
+<!-- backwards compatibility -->
+<a id="schemacrareportgetprismresponseproduct"></a>
+<a id="schema_CraReportGetPrismResponseProduct"></a>
+<a id="tocScrareportgetprismresponseproduct"></a>
+<a id="tocscrareportgetprismresponseproduct"></a>
+
+```json
+{
+  "product": "cra_prism",
+  "version": "string",
+  "metadata": {
+    "generated_time": "1970-01-01T00:00:00Z",
+    "item_count": 0,
+    "account_count": 0,
+    "institution_ids": [
+      "string"
+    ],
+    "primary_account_count": 0,
+    "depository_account_type_count": 0,
+    "credit_account_type_count": 0,
+    "investment_account_type_count": 0,
+    "other_account_type_count": 0,
+    "multiple_owner_account_count": 0,
+    "oldest_transaction_date": "1970-01-01",
+    "most_recent_transaction_date": "1970-01-01"
+  },
+  "prism": {
+    "insights": {
+      "model_version": "string",
+      "result": {},
+      "error_reason": "string"
+    },
+    "cashscore": {
+      "model_version": "string",
+      "score": 0,
+      "reason_codes": [
+        "string"
+      ],
+      "metadata": {
+        "max_age": 0,
+        "min_age": 0,
+        "min_age_credit": 0,
+        "min_age_debit": 0,
+        "max_age_debit": 0,
+        "max_age_credit": 0,
+        "num_trxn_credit": 0,
+        "num_trxn_debit": 0,
+        "l1m_credit_value_cnt": 0,
+        "l1m_debit_value_cnt": 0
+      },
+      "error_reason": "string"
+    },
+    "detect": {
+      "model_version": "string",
+      "score": 0,
+      "reason_codes": [
+        "string"
+      ],
+      "metadata": {
+        "max_age": 0,
+        "min_age": 0,
+        "min_age_credit": 0,
+        "min_age_debit": 0,
+        "max_age_debit": 0,
+        "max_age_credit": 0,
+        "num_trxn_credit": 0,
+        "num_trxn_debit": 0,
+        "l1m_credit_value_cnt": 0,
+        "l1m_debit_value_cnt": 0
+      },
+      "error_reason": "string"
+    },
+    "extend": {
+      "model_version": "string",
+      "score": 0,
+      "reason_codes": [
+        "string"
+      ],
+      "metadata": {
+        "max_age": 0,
+        "min_age": 0,
+        "min_age_credit": 0,
+        "min_age_debit": 0,
+        "max_age_debit": 0,
+        "max_age_credit": 0,
+        "num_trxn_credit": 0,
+        "num_trxn_debit": 0,
+        "l1m_credit_value_cnt": 0,
+        "l1m_debit_value_cnt": 0
+      },
+      "error_reason": "string"
+    },
+    "status": "SUCCESS"
+  },
+  "items": [
+    {
+      "institution_id": "string",
+      "institution_name": "string",
+      "item_id": "string",
+      "last_updated_time": "1970-01-01T00:00:00Z",
+      "accounts": [
+        {
+          "account_id": "string",
+          "name": "string",
+          "official_name": "string",
+          "mask": "string",
+          "type": "investment",
+          "subtype": "401a"
+        }
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "error_type": "INVALID_REQUEST",
+      "error_code": "string",
+      "error_code_reason": "string",
+      "error_message": "string",
+      "display_message": "string",
+      "request_id": "string",
+      "causes": [
+        null
+      ],
+      "status": 0,
+      "documentation_url": "string",
+      "suggested_action": "string",
+      "required_account_subtypes": [
+        "string"
+      ],
+      "provided_account_subtypes": [
+        "string"
+      ]
+    }
+  ]
+}
+```
+
+Prism data returned by `/cra/report/get`.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|product|string|true|none|The Prism product.|
+|version|[CraProductVersion](#schemacraproductversion)|true|none|A string that specifies a particular version of a CRA product.|
+|metadata|[CraReportGetPrismMetadata](#schemacrareportgetprismmetadata)|true|none|Prism report metadata returned by `/cra/report/get`.|
+|prism|[CraReportGetPrism](#schemacrareportgetprism)|true|none|The Prism Data scores and insights for the user. Each field is present only when the corresponding version was requested.|
+|items|[[CraReportGetPrismItem](#schemacrareportgetprismitem)]|true|none|The Items, and their accounts, used to generate this product. Empty if this product failed to generate.|
+|errors|[[PlaidError](#schemaplaiderror)]|true|none|Product-level errors. Non-empty when this product failed to generate; empty on success.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|product|cra_prism|
+
+<h2 id="tocS_CraReportGetPrismMetadata">CraReportGetPrismMetadata</h2>
+<!-- backwards compatibility -->
+<a id="schemacrareportgetprismmetadata"></a>
+<a id="schema_CraReportGetPrismMetadata"></a>
+<a id="tocScrareportgetprismmetadata"></a>
+<a id="tocscrareportgetprismmetadata"></a>
+
+```json
+{
+  "generated_time": "1970-01-01T00:00:00Z",
+  "item_count": 0,
+  "account_count": 0,
+  "institution_ids": [
+    "string"
+  ],
+  "primary_account_count": 0,
+  "depository_account_type_count": 0,
+  "credit_account_type_count": 0,
+  "investment_account_type_count": 0,
+  "other_account_type_count": 0,
+  "multiple_owner_account_count": 0,
+  "oldest_transaction_date": "1970-01-01",
+  "most_recent_transaction_date": "1970-01-01"
+}
+```
+
+Prism report metadata returned by `/cra/report/get`.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|generated_time|string(date-time) \| null|true|none|The time the report was generated. May be `null` if unavailable.|
+|item_count|integer|true|none|The number of Items used to generate the report.|
+|account_count|integer|true|none|The number of accounts used to generate the report.|
+|institution_ids|[string]|true|none|The institution IDs of the Items used to generate the report.|
+|primary_account_count|integer|true|none|The number of accounts carrying Plaid's primary account indicator.|
+|depository_account_type_count|integer|true|none|The number of depository accounts used to generate the report.|
+|credit_account_type_count|integer|true|none|The number of credit accounts used to generate the report.|
+|investment_account_type_count|integer|true|none|The number of investment accounts used to generate the report.|
+|other_account_type_count|integer|true|none|The number of accounts that are neither depository, credit, nor investment.|
+|multiple_owner_account_count|integer|true|none|The number of accounts with multiple owners.|
+|oldest_transaction_date|string(date) \| null|true|none|The earliest transaction date across the accounts the report was generated from. May be `null` if the producer could not compute a transaction range.|
+|most_recent_transaction_date|string(date) \| null|true|none|The latest transaction date across the accounts the report was generated from. May be `null` if the producer could not compute a transaction range.|
+
+<h2 id="tocS_CraReportGetPrismCashScore">CraReportGetPrismCashScore</h2>
+<!-- backwards compatibility -->
+<a id="schemacrareportgetprismcashscore"></a>
+<a id="schema_CraReportGetPrismCashScore"></a>
+<a id="tocScrareportgetprismcashscore"></a>
+<a id="tocscrareportgetprismcashscore"></a>
+
+```json
+{
+  "model_version": "string",
+  "score": 0,
+  "reason_codes": [
+    "string"
+  ],
+  "metadata": {
+    "max_age": 0,
+    "min_age": 0,
+    "min_age_credit": 0,
+    "min_age_debit": 0,
+    "max_age_debit": 0,
+    "max_age_credit": 0,
+    "num_trxn_credit": 0,
+    "num_trxn_debit": 0,
+    "l1m_credit_value_cnt": 0,
+    "l1m_debit_value_cnt": 0
+  },
+  "error_reason": "string"
+}
+```
+
+The data from the CashScore® product returned by Prism Data.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|model_version|string|true|none|The version of Prism Data's cash score model used.|
+|score|integer \| null|true|none|The score returned by Prism Data. Ranges from 1-999, with higher score indicating lower risk.|
+|reason_codes|[string]|false|none|The reasons for an individual having risk according to the cash score.|
+|metadata|[PrismCashScoreMetadata](#schemaprismcashscoremetadata)|false|none|An object containing metadata about the provided transactions.|
+|error_reason|[PrismErrorReason](#schemaprismerrorreason)|false|none|The error returned by Prism for this product.|
+
+<h2 id="tocS_CraReportGetPrismInsights">CraReportGetPrismInsights</h2>
+<!-- backwards compatibility -->
+<a id="schemacrareportgetprisminsights"></a>
+<a id="schema_CraReportGetPrismInsights"></a>
+<a id="tocScrareportgetprisminsights"></a>
+<a id="tocscrareportgetprisminsights"></a>
+
+```json
+{
+  "model_version": "string",
+  "result": {},
+  "error_reason": "string"
+}
+```
+
+The data from the Insights product returned by Prism Data.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|model_version|string|true|none|The version of Prism Data's insights model used.|
+|result|[PrismInsightsResult](#schemaprisminsightsresult)|false|none|The Insights Result object is a map of cash flow attributes, where the key is a string, and the value is a float or string. For a full list of all ~2,000 attributes, contact your account manager. The attributes may vary depending on the Prism version used.|
+|error_reason|[PrismErrorReason](#schemaprismerrorreason)|false|none|The error returned by Prism for this product.|
+
+<h2 id="tocS_CraReportGetPrismDetect">CraReportGetPrismDetect</h2>
+<!-- backwards compatibility -->
+<a id="schemacrareportgetprismdetect"></a>
+<a id="schema_CraReportGetPrismDetect"></a>
+<a id="tocScrareportgetprismdetect"></a>
+<a id="tocscrareportgetprismdetect"></a>
+
+```json
+{
+  "model_version": "string",
+  "score": 0,
+  "reason_codes": [
+    "string"
+  ],
+  "metadata": {
+    "max_age": 0,
+    "min_age": 0,
+    "min_age_credit": 0,
+    "min_age_debit": 0,
+    "max_age_debit": 0,
+    "max_age_credit": 0,
+    "num_trxn_credit": 0,
+    "num_trxn_debit": 0,
+    "l1m_credit_value_cnt": 0,
+    "l1m_debit_value_cnt": 0
+  },
+  "error_reason": "string"
+}
+```
+
+The data from the CashScore® Detect product returned by Prism Data.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|model_version|string|true|none|The version of Prism Data's CashScore® Detect model used.|
+|score|integer \| null|true|none|The score returned by Prism Data. Ranges from 1-999, with higher score indicating lower risk.|
+|reason_codes|[string]|false|none|The reasons for an individual having risk according to the CashScore® Detect score.|
+|metadata|[PrismCashScoreMetadata](#schemaprismcashscoremetadata)|false|none|An object containing metadata about the provided transactions.|
+|error_reason|[PrismErrorReason](#schemaprismerrorreason)|false|none|The error returned by Prism for this product.|
+
+<h2 id="tocS_CraReportGetPrismExtend">CraReportGetPrismExtend</h2>
+<!-- backwards compatibility -->
+<a id="schemacrareportgetprismextend"></a>
+<a id="schema_CraReportGetPrismExtend"></a>
+<a id="tocScrareportgetprismextend"></a>
+<a id="tocscrareportgetprismextend"></a>
+
+```json
+{
+  "model_version": "string",
+  "score": 0,
+  "reason_codes": [
+    "string"
+  ],
+  "metadata": {
+    "max_age": 0,
+    "min_age": 0,
+    "min_age_credit": 0,
+    "min_age_debit": 0,
+    "max_age_debit": 0,
+    "max_age_credit": 0,
+    "num_trxn_credit": 0,
+    "num_trxn_debit": 0,
+    "l1m_credit_value_cnt": 0,
+    "l1m_debit_value_cnt": 0
+  },
+  "error_reason": "string"
+}
+```
+
+The data from the CashScore® Extend product returned by Prism Data.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|model_version|string|true|none|The version of Prism Data's CashScore® Extend model used.|
+|score|integer \| null|true|none|The score returned by Prism Data. Ranges from 1-999, with higher score indicating lower risk.|
+|reason_codes|[string]|false|none|The reasons for an individual having risk according to the CashScore® Extend score.|
+|metadata|[PrismCashScoreMetadata](#schemaprismcashscoremetadata)|false|none|An object containing metadata about the provided transactions.|
+|error_reason|[PrismErrorReason](#schemaprismerrorreason)|false|none|The error returned by Prism for this product.|
+
+<h2 id="tocS_CraReportGetPrismStatus">CraReportGetPrismStatus</h2>
+<!-- backwards compatibility -->
+<a id="schemacrareportgetprismstatus"></a>
+<a id="schema_CraReportGetPrismStatus"></a>
+<a id="tocScrareportgetprismstatus"></a>
+<a id="tocscrareportgetprismstatus"></a>
+
+```json
+"SUCCESS"
+```
+
+Whether every requested Prism product was generated. `PARTIAL_SUCCESS` means at least one succeeded and at least one did not; the ones that did not carry their own `error_reason`.
+
+<h2 id="tocS_CraReportGetPrism">CraReportGetPrism</h2>
+<!-- backwards compatibility -->
+<a id="schemacrareportgetprism"></a>
+<a id="schema_CraReportGetPrism"></a>
+<a id="tocScrareportgetprism"></a>
+<a id="tocscrareportgetprism"></a>
+
+```json
+{
+  "insights": {
+    "model_version": "string",
+    "result": {},
+    "error_reason": "string"
+  },
+  "cashscore": {
+    "model_version": "string",
+    "score": 0,
+    "reason_codes": [
+      "string"
+    ],
+    "metadata": {
+      "max_age": 0,
+      "min_age": 0,
+      "min_age_credit": 0,
+      "min_age_debit": 0,
+      "max_age_debit": 0,
+      "max_age_credit": 0,
+      "num_trxn_credit": 0,
+      "num_trxn_debit": 0,
+      "l1m_credit_value_cnt": 0,
+      "l1m_debit_value_cnt": 0
+    },
+    "error_reason": "string"
+  },
+  "detect": {
+    "model_version": "string",
+    "score": 0,
+    "reason_codes": [
+      "string"
+    ],
+    "metadata": {
+      "max_age": 0,
+      "min_age": 0,
+      "min_age_credit": 0,
+      "min_age_debit": 0,
+      "max_age_debit": 0,
+      "max_age_credit": 0,
+      "num_trxn_credit": 0,
+      "num_trxn_debit": 0,
+      "l1m_credit_value_cnt": 0,
+      "l1m_debit_value_cnt": 0
+    },
+    "error_reason": "string"
+  },
+  "extend": {
+    "model_version": "string",
+    "score": 0,
+    "reason_codes": [
+      "string"
+    ],
+    "metadata": {
+      "max_age": 0,
+      "min_age": 0,
+      "min_age_credit": 0,
+      "min_age_debit": 0,
+      "max_age_debit": 0,
+      "max_age_credit": 0,
+      "num_trxn_credit": 0,
+      "num_trxn_debit": 0,
+      "l1m_credit_value_cnt": 0,
+      "l1m_debit_value_cnt": 0
+    },
+    "error_reason": "string"
+  },
+  "status": "SUCCESS"
+}
+```
+
+The Prism Data scores and insights for the user. Each field is present only when the corresponding version was requested.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|insights|[CraReportGetPrismInsights](#schemacrareportgetprisminsights)|false|none|The data from the Insights product returned by Prism Data.|
+|cashscore|[CraReportGetPrismCashScore](#schemacrareportgetprismcashscore)|false|none|The data from the CashScore® product returned by Prism Data.|
+|detect|[CraReportGetPrismDetect](#schemacrareportgetprismdetect)|false|none|The data from the CashScore® Detect product returned by Prism Data.|
+|extend|[CraReportGetPrismExtend](#schemacrareportgetprismextend)|false|none|The data from the CashScore® Extend product returned by Prism Data.|
+|status|[CraReportGetPrismStatus](#schemacrareportgetprismstatus)|true|none|Whether every requested Prism product was generated. `PARTIAL_SUCCESS` means at least one succeeded and at least one did not; the ones that did not carry their own `error_reason`.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|status|SUCCESS|
+|status|PARTIAL_SUCCESS|
+|status|ERROR|
+
+<h2 id="tocS_CraUltraFicoProduct">CraUltraFicoProduct</h2>
+<!-- backwards compatibility -->
+<a id="schemacraultraficoproduct"></a>
+<a id="schema_CraUltraFicoProduct"></a>
+<a id="tocScraultraficoproduct"></a>
+<a id="tocscraultraficoproduct"></a>
+
+```json
+{
+  "product": "cra_ultrafico",
+  "version": "string"
+}
+```
+
+Names the UltraFICO product at a given version.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|product|string|true|none|The UltraFICO product discriminator.|
+|version|[CraProductVersion](#schemacraproductversion)|true|none|A string that specifies a particular version of a CRA product.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|product|cra_ultrafico|
+
+<h2 id="tocS_CraUltraFicoScoreVersion">CraUltraFicoScoreVersion</h2>
+<!-- backwards compatibility -->
+<a id="schemacraultraficoscoreversion"></a>
+<a id="schema_CraUltraFicoScoreVersion"></a>
+<a id="tocScraultraficoscoreversion"></a>
+<a id="tocscraultraficoscoreversion"></a>
+
+```json
+"1.0"
+```
+
+The version of the UltraFICO score.
+
+<h2 id="tocS_CraUltraFicoBureau">CraUltraFicoBureau</h2>
+<!-- backwards compatibility -->
+<a id="schemacraultraficobureau"></a>
+<a id="schema_CraUltraFicoBureau"></a>
+<a id="tocScraultraficobureau"></a>
+<a id="tocscraultraficobureau"></a>
+
+```json
+"EQUIFAX"
+```
+
+The credit bureau that provided the base FICO score.
+
+<h2 id="tocS_CraUltraFicoBaseFicoScoreVersion">CraUltraFicoBaseFicoScoreVersion</h2>
+<!-- backwards compatibility -->
+<a id="schemacraultraficobaseficoscoreversion"></a>
+<a id="schema_CraUltraFicoBaseFicoScoreVersion"></a>
+<a id="tocScraultraficobaseficoscoreversion"></a>
+<a id="tocscraultraficobaseficoscoreversion"></a>
+
+```json
+"8"
+```
+
+The version of the base FICO score model.
+
+<h2 id="tocS_CraReportCreateUltraFicoBaseFicoScore">CraReportCreateUltraFicoBaseFicoScore</h2>
+<!-- backwards compatibility -->
+<a id="schemacrareportcreateultraficobaseficoscore"></a>
+<a id="schema_CraReportCreateUltraFicoBaseFicoScore"></a>
+<a id="tocScrareportcreateultraficobaseficoscore"></a>
+<a id="tocscrareportcreateultraficobaseficoscore"></a>
+
+```json
+{
+  "bureau": "EQUIFAX",
+  "score": 300,
+  "reason_codes": [
+    "str"
+  ],
+  "did_inquiries_adversely_affect_score": true,
+  "base_fico_score_version": "8"
+}
+```
+
+The base FICO score used for an UltraFICO scoring request.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|bureau|[CraUltraFicoBureau](#schemacraultraficobureau)|true|none|The credit bureau that provided the base FICO score.|
+|score|integer|true|none|The numeric base FICO score.|
+|reason_codes|[string]|true|none|The reason codes associated with the score, in priority order.|
+|did_inquiries_adversely_affect_score|boolean \| null|false|none|Whether inquiries adversely affected the score but were not represented in the reason codes. Sometimes referred to as the FACTA Flag.|
+|base_fico_score_version|[CraUltraFicoBaseFicoScoreVersion](#schemacraultraficobaseficoscoreversion)|true|none|The version of the base FICO score model.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|bureau|EQUIFAX|
+|bureau|EXPERIAN|
+|bureau|TRANSUNION|
+|base_fico_score_version|8|
+|base_fico_score_version|9|
+|base_fico_score_version|10|
+|base_fico_score_version|10T|
+
+<h2 id="tocS_CraReportCreateUltraFicoScoreRequest">CraReportCreateUltraFicoScoreRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemacrareportcreateultraficoscorerequest"></a>
+<a id="schema_CraReportCreateUltraFicoScoreRequest"></a>
+<a id="tocScrareportcreateultraficoscorerequest"></a>
+<a id="tocscrareportcreateultraficoscorerequest"></a>
+
+```json
+{
+  "ultrafico_score_version": "1.0",
+  "request_correlation_id": "string",
+  "fico_scoring_request_id": "string",
+  "base_fico_score": {
+    "bureau": "EQUIFAX",
+    "score": 300,
+    "reason_codes": [
+      "str"
+    ],
+    "did_inquiries_adversely_affect_score": true,
+    "base_fico_score_version": "8"
+  }
+}
+```
+
+Configuration for one UltraFICO scoring request.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|ultrafico_score_version|[CraUltraFicoScoreVersion](#schemacraultraficoscoreversion)|true|none|The version of the UltraFICO score.|
+|request_correlation_id|string|false|none|Client-generated identifier used to correlate a scoring request with its result.|
+|fico_scoring_request_id|string|false|none|FICO-provided identifier for a scoring request. Only provide this for a FICO-led flow.|
+|base_fico_score|[CraReportCreateUltraFicoBaseFicoScore](#schemacrareportcreateultraficobaseficoscore)|true|none|The base FICO score used for an UltraFICO scoring request.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|ultrafico_score_version|1.0|
+
+<h2 id="tocS_CraReportCreateUltraFicoOptions">CraReportCreateUltraFicoOptions</h2>
+<!-- backwards compatibility -->
+<a id="schemacrareportcreateultraficooptions"></a>
+<a id="schema_CraReportCreateUltraFicoOptions"></a>
+<a id="tocScrareportcreateultraficooptions"></a>
+<a id="tocscrareportcreateultraficooptions"></a>
+
+```json
+{
+  "fico_lender_id": "string",
+  "lender_application_id": "string",
+  "ultrafico_score_requests": [
+    {
+      "ultrafico_score_version": "1.0",
+      "request_correlation_id": "string",
+      "fico_scoring_request_id": "string",
+      "base_fico_score": {
+        "bureau": "EQUIFAX",
+        "score": 300,
+        "reason_codes": [
+          "str"
+        ],
+        "did_inquiries_adversely_affect_score": true,
+        "base_fico_score_version": "8"
+      }
+    }
+  ]
+}
+```
+
+Configures the UltraFICO scores to generate.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|fico_lender_id|string|true|none|The FICO-provided identifier for the lender, sometimes called the Lender Org ID.|
+|lender_application_id|string|true|none|Client-generated identifier for the application across FICO systems.|
+|ultrafico_score_requests|[[CraReportCreateUltraFicoScoreRequest](#schemacrareportcreateultraficoscorerequest)]|true|none|The UltraFICO scoring requests to evaluate.|
+
+<h2 id="tocS_CraReportCreateUltraFicoProductConfig">CraReportCreateUltraFicoProductConfig</h2>
+<!-- backwards compatibility -->
+<a id="schemacrareportcreateultraficoproductconfig"></a>
+<a id="schema_CraReportCreateUltraFicoProductConfig"></a>
+<a id="tocScrareportcreateultraficoproductconfig"></a>
+<a id="tocscrareportcreateultraficoproductconfig"></a>
+
+```json
+{
+  "product": "cra_ultrafico",
+  "version": "string",
+  "options": {
+    "fico_lender_id": "string",
+    "lender_application_id": "string",
+    "ultrafico_score_requests": [
+      {
+        "ultrafico_score_version": "1.0",
+        "request_correlation_id": "string",
+        "fico_scoring_request_id": "string",
+        "base_fico_score": {
+          "bureau": "EQUIFAX",
+          "score": 300,
+          "reason_codes": [
+            "str"
+          ],
+          "did_inquiries_adversely_affect_score": true,
+          "base_fico_score_version": "8"
+        }
+      }
+    ]
+  }
+}
+```
+
+Requests the given version of the UltraFICO product and configures the scores to generate.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|product|string|true|none|Set to `cra_ultrafico` to request UltraFICO.|
+|version|[CraProductVersion](#schemacraproductversion)|true|none|A string that specifies a particular version of a CRA product.|
+|options|[CraReportCreateUltraFicoOptions](#schemacrareportcreateultraficooptions)|true|none|Configures the UltraFICO scores to generate.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|product|cra_ultrafico|
+
+<h2 id="tocS_CraReportGetUltraFicoResponseProduct">CraReportGetUltraFicoResponseProduct</h2>
+<!-- backwards compatibility -->
+<a id="schemacrareportgetultraficoresponseproduct"></a>
+<a id="schema_CraReportGetUltraFicoResponseProduct"></a>
+<a id="tocScrareportgetultraficoresponseproduct"></a>
+<a id="tocscrareportgetultraficoresponseproduct"></a>
+
+```json
+{
+  "product": "cra_ultrafico",
+  "version": "string",
+  "metadata": {
+    "generated_time": "1970-01-01T00:00:00Z",
+    "item_count": 0,
+    "account_count": 0,
+    "institution_ids": [
+      "string"
+    ],
+    "primary_account_count": 0,
+    "depository_account_type_count": 0,
+    "credit_account_type_count": 0,
+    "investment_account_type_count": 0,
+    "other_account_type_count": 0,
+    "multiple_owner_account_count": 0,
+    "oldest_transaction_date": "1970-01-01",
+    "most_recent_transaction_date": "1970-01-01"
+  },
+  "ultrafico": {
+    "lender_application_id": "string",
+    "ultrafico_score_results": [
+      {
+        "request_correlation_id": "string",
+        "fico_scoring_request_id": "string",
+        "ultrafico_score": {
+          "ultrafico_score_version": "1.0",
+          "score": 0,
+          "negative_reason_codes": [
+            "string"
+          ],
+          "positive_reason_codes": [
+            "string"
+          ],
+          "did_inquiries_adversely_affect_score": true
+        },
+        "error_reason": "string",
+        "exclusion_code": "string"
+      }
+    ],
+    "report_characteristics": {
+      "num_accounts": 0,
+      "avg_daily_balance_over_1_month": 0,
+      "avg_daily_balance_over_3_months": 0,
+      "avg_daily_balance_over_6_months": 0,
+      "avg_daily_balance_over_12_months": 0,
+      "days_since_earliest_tx": 0,
+      "days_since_most_recent_negative_ending_balance": 0,
+      "days_since_most_recent_insufficient_funds_fee_debit_tx": 0,
+      "tot_number_days_with_negative_balance_over_1_month": 0,
+      "tot_number_days_with_negative_balance_over_3_months": 0,
+      "tot_number_days_with_negative_balance_over_6_months": 0,
+      "tot_number_days_with_negative_balance_over_12_months": 0,
+      "days_since_most_recent_tx": 0,
+      "days_with_tx_over_1_month": 0,
+      "days_with_tx_over_3_months": 0,
+      "days_with_tx_over_6_months": 0,
+      "days_with_tx_over_12_months": 0,
+      "tot_current_balances": 0,
+      "num_checking_accounts": 0,
+      "num_money_market_accounts": 0,
+      "num_savings_accounts": 0
+    }
+  },
+  "items": [
+    {
+      "institution_id": "string",
+      "institution_name": "string",
+      "item_id": "string",
+      "last_updated_time": "1970-01-01T00:00:00Z",
+      "accounts": [
+        {
+          "account_id": "string",
+          "name": "string",
+          "official_name": "string",
+          "mask": "string",
+          "type": "investment",
+          "subtype": "401a",
+          "primary_account": {
+            "is_primary": true,
+            "score": 0
+          },
+          "identity_match": {
+            "legal_name": {
+              "score": 0,
+              "is_first_name_or_last_name_match": true,
+              "is_nickname_match": true,
+              "is_business_name_detected": true
+            },
+            "phone_number": {
+              "score": 0
+            },
+            "email_address": {
+              "score": 0
+            },
+            "address": {
+              "score": 0,
+              "is_postal_code_match": true
+            }
+          },
+          "owners": [
+            {
+              "names": [
+                "string"
+              ],
+              "phone_numbers": [
+                {
+                  "data": "string",
+                  "primary": true,
+                  "type": "home"
+                }
+              ],
+              "emails": [
+                {
+                  "data": "string",
+                  "primary": true,
+                  "type": "primary"
+                }
+              ],
+              "addresses": [
+                {
+                  "data": {
+                    "city": "string",
+                    "region": "string",
+                    "street": "string",
+                    "postal_code": "string",
+                    "country": "string"
+                  },
+                  "primary": true
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "error_type": "INVALID_REQUEST",
+      "error_code": "string",
+      "error_code_reason": "string",
+      "error_message": "string",
+      "display_message": "string",
+      "request_id": "string",
+      "causes": [
+        null
+      ],
+      "status": 0,
+      "documentation_url": "string",
+      "suggested_action": "string",
+      "required_account_subtypes": [
+        "string"
+      ],
+      "provided_account_subtypes": [
+        "string"
+      ]
+    }
+  ]
+}
+```
+
+UltraFICO data returned by `/cra/report/get`.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|product|string|true|none|The UltraFICO product.|
+|version|[CraProductVersion](#schemacraproductversion)|true|none|A string that specifies a particular version of a CRA product.|
+|metadata|[CraReportGetUltraFicoMetadata](#schemacrareportgetultraficometadata)|true|none|UltraFICO report metadata returned by `/cra/report/get`. `null` when the product failed to generate.|
+|ultrafico|[CraReportGetUltraFico](#schemacrareportgetultrafico)|true|none|The UltraFICO scores generated for the user. `null` when the product failed to generate.|
+|items|[[CraReportGetUltraFicoItem](#schemacrareportgetultraficoitem)]|true|none|The Items and eligible checking, savings, and money market accounts used to generate this product. Empty if the product failed to generate.|
+|errors|[[PlaidError](#schemaplaiderror)]|true|none|Product-level errors. Non-empty when this product failed to generate; empty on success.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|product|cra_ultrafico|
+
+<h2 id="tocS_CraReportGetUltraFicoMetadata">CraReportGetUltraFicoMetadata</h2>
+<!-- backwards compatibility -->
+<a id="schemacrareportgetultraficometadata"></a>
+<a id="schema_CraReportGetUltraFicoMetadata"></a>
+<a id="tocScrareportgetultraficometadata"></a>
+<a id="tocscrareportgetultraficometadata"></a>
+
+```json
+{
+  "generated_time": "1970-01-01T00:00:00Z",
+  "item_count": 0,
+  "account_count": 0,
+  "institution_ids": [
+    "string"
+  ],
+  "primary_account_count": 0,
+  "depository_account_type_count": 0,
+  "credit_account_type_count": 0,
+  "investment_account_type_count": 0,
+  "other_account_type_count": 0,
+  "multiple_owner_account_count": 0,
+  "oldest_transaction_date": "1970-01-01",
+  "most_recent_transaction_date": "1970-01-01"
+}
+```
+
+UltraFICO report metadata returned by `/cra/report/get`. `null` when the product failed to generate.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|generated_time|string(date-time) \| null|true|none|The time the report was generated. May be `null` if unavailable.|
+|item_count|integer|true|none|The number of Items used to generate the report.|
+|account_count|integer|true|none|The number of accounts used to generate the report.|
+|institution_ids|[string]|true|none|The institution IDs of the Items used to generate the report.|
+|primary_account_count|integer|true|none|The number of accounts carrying Plaid's primary account indicator.|
+|depository_account_type_count|integer|true|none|The number of depository accounts used to generate the report.|
+|credit_account_type_count|integer|true|none|The number of credit accounts used to generate the report.|
+|investment_account_type_count|integer|true|none|The number of investment accounts used to generate the report.|
+|other_account_type_count|integer|true|none|The number of accounts that are neither depository, credit, nor investment.|
+|multiple_owner_account_count|integer|true|none|The number of accounts with multiple owners.|
+|oldest_transaction_date|string(date) \| null|true|none|The earliest transaction date across the accounts used to generate the report. `null` if none have posted transactions.|
+|most_recent_transaction_date|string(date) \| null|true|none|The latest transaction date across the accounts used to generate the report. `null` if none have posted transactions.|
+
+<h2 id="tocS_CraReportGetUltraFico">CraReportGetUltraFico</h2>
+<!-- backwards compatibility -->
+<a id="schemacrareportgetultrafico"></a>
+<a id="schema_CraReportGetUltraFico"></a>
+<a id="tocScrareportgetultrafico"></a>
+<a id="tocscrareportgetultrafico"></a>
+
+```json
+{
+  "lender_application_id": "string",
+  "ultrafico_score_results": [
+    {
+      "request_correlation_id": "string",
+      "fico_scoring_request_id": "string",
+      "ultrafico_score": {
+        "ultrafico_score_version": "1.0",
+        "score": 0,
+        "negative_reason_codes": [
+          "string"
+        ],
+        "positive_reason_codes": [
+          "string"
+        ],
+        "did_inquiries_adversely_affect_score": true
+      },
+      "error_reason": "string",
+      "exclusion_code": "string"
+    }
+  ],
+  "report_characteristics": {
+    "num_accounts": 0,
+    "avg_daily_balance_over_1_month": 0,
+    "avg_daily_balance_over_3_months": 0,
+    "avg_daily_balance_over_6_months": 0,
+    "avg_daily_balance_over_12_months": 0,
+    "days_since_earliest_tx": 0,
+    "days_since_most_recent_negative_ending_balance": 0,
+    "days_since_most_recent_insufficient_funds_fee_debit_tx": 0,
+    "tot_number_days_with_negative_balance_over_1_month": 0,
+    "tot_number_days_with_negative_balance_over_3_months": 0,
+    "tot_number_days_with_negative_balance_over_6_months": 0,
+    "tot_number_days_with_negative_balance_over_12_months": 0,
+    "days_since_most_recent_tx": 0,
+    "days_with_tx_over_1_month": 0,
+    "days_with_tx_over_3_months": 0,
+    "days_with_tx_over_6_months": 0,
+    "days_with_tx_over_12_months": 0,
+    "tot_current_balances": 0,
+    "num_checking_accounts": 0,
+    "num_money_market_accounts": 0,
+    "num_savings_accounts": 0
+  }
+}
+```
+
+The UltraFICO scores generated for the user. `null` when the product failed to generate.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|lender_application_id|string|true|none|Client-generated identifier for the application across FICO systems.|
+|ultrafico_score_results|[[CraReportGetUltraFicoScoreResult](#schemacrareportgetultraficoscoreresult)]|true|none|The UltraFICO scoring results, one per requested score.|
+|report_characteristics|[CraReportGetUltraFicoReportCharacteristics](#schemacrareportgetultraficoreportcharacteristics)|true|none|Characteristics of the banking data used to generate the UltraFICO scores.|
+
+<h2 id="tocS_CraReportGetUltraFicoScoreResult">CraReportGetUltraFicoScoreResult</h2>
+<!-- backwards compatibility -->
+<a id="schemacrareportgetultraficoscoreresult"></a>
+<a id="schema_CraReportGetUltraFicoScoreResult"></a>
+<a id="tocScrareportgetultraficoscoreresult"></a>
+<a id="tocscrareportgetultraficoscoreresult"></a>
+
+```json
+{
+  "request_correlation_id": "string",
+  "fico_scoring_request_id": "string",
+  "ultrafico_score": {
+    "ultrafico_score_version": "1.0",
+    "score": 0,
+    "negative_reason_codes": [
+      "string"
+    ],
+    "positive_reason_codes": [
+      "string"
+    ],
+    "did_inquiries_adversely_affect_score": true
+  },
+  "error_reason": "string",
+  "exclusion_code": "string"
+}
+```
+
+The result of one UltraFICO scoring request.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|request_correlation_id|string \| null|true|none|The client-generated identifier supplied with the scoring request. `null` if none was supplied.|
+|fico_scoring_request_id|string \| null|true|none|The FICO-provided identifier for the scoring request.|
+|ultrafico_score|[CraReportGetUltraFicoScore](#schemacrareportgetultraficoscore)|true|none|A calculated UltraFICO score. `null` when the individual scoring request did not produce a score.|
+|error_reason|string \| null|true|none|Why the UltraFICO score could not be computed. `null` when a score was produced.|
+|exclusion_code|string \| null|true|none|FICO exclusion code indicating why the score could not be computed from the consumer's data. `null` when unset and `"0"` when a score was produced.|
+
+<h2 id="tocS_CraReportGetUltraFicoScore">CraReportGetUltraFicoScore</h2>
+<!-- backwards compatibility -->
+<a id="schemacrareportgetultraficoscore"></a>
+<a id="schema_CraReportGetUltraFicoScore"></a>
+<a id="tocScrareportgetultraficoscore"></a>
+<a id="tocscrareportgetultraficoscore"></a>
+
+```json
+{
+  "ultrafico_score_version": "1.0",
+  "score": 0,
+  "negative_reason_codes": [
+    "string"
+  ],
+  "positive_reason_codes": [
+    "string"
+  ],
+  "did_inquiries_adversely_affect_score": true
+}
+```
+
+A calculated UltraFICO score. `null` when the individual scoring request did not produce a score.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|ultrafico_score_version|[CraUltraFicoScoreVersion](#schemacraultraficoscoreversion)|true|none|The version of the UltraFICO score.|
+|score|integer|true|none|The numeric UltraFICO score.|
+|negative_reason_codes|[string]|true|none|Reasons the score moved downward, in priority order.|
+|positive_reason_codes|[string]|true|none|Reasons the score moved upward, in priority order.|
+|did_inquiries_adversely_affect_score|boolean \| null|false|none|Whether inquiries adversely affected the score but were not represented in the reason codes. Sometimes referred to as the FACTA Flag.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|ultrafico_score_version|1.0|
+
+<h2 id="tocS_CraReportGetUltraFicoReportCharacteristics">CraReportGetUltraFicoReportCharacteristics</h2>
+<!-- backwards compatibility -->
+<a id="schemacrareportgetultraficoreportcharacteristics"></a>
+<a id="schema_CraReportGetUltraFicoReportCharacteristics"></a>
+<a id="tocScrareportgetultraficoreportcharacteristics"></a>
+<a id="tocscrareportgetultraficoreportcharacteristics"></a>
+
+```json
+{
+  "num_accounts": 0,
+  "avg_daily_balance_over_1_month": 0,
+  "avg_daily_balance_over_3_months": 0,
+  "avg_daily_balance_over_6_months": 0,
+  "avg_daily_balance_over_12_months": 0,
+  "days_since_earliest_tx": 0,
+  "days_since_most_recent_negative_ending_balance": 0,
+  "days_since_most_recent_insufficient_funds_fee_debit_tx": 0,
+  "tot_number_days_with_negative_balance_over_1_month": 0,
+  "tot_number_days_with_negative_balance_over_3_months": 0,
+  "tot_number_days_with_negative_balance_over_6_months": 0,
+  "tot_number_days_with_negative_balance_over_12_months": 0,
+  "days_since_most_recent_tx": 0,
+  "days_with_tx_over_1_month": 0,
+  "days_with_tx_over_3_months": 0,
+  "days_with_tx_over_6_months": 0,
+  "days_with_tx_over_12_months": 0,
+  "tot_current_balances": 0,
+  "num_checking_accounts": 0,
+  "num_money_market_accounts": 0,
+  "num_savings_accounts": 0
+}
+```
+
+Characteristics of the banking data used to generate the UltraFICO scores.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|num_accounts|integer \| null|false|none|The number of checking, savings, and money market accounts included in the report.|
+|avg_daily_balance_over_1_month|number(double) \| null|false|none|Average daily balance over the past 1 month.|
+|avg_daily_balance_over_3_months|number(double) \| null|false|none|Average daily balance over the past 3 months.|
+|avg_daily_balance_over_6_months|number(double) \| null|false|none|Average daily balance over the past 6 months.|
+|avg_daily_balance_over_12_months|number(double) \| null|false|none|Average daily balance over the past 12 months.|
+|days_since_earliest_tx|integer \| null|false|none|Number of days since the earliest transaction in the report.|
+|days_since_most_recent_negative_ending_balance|integer \| null|false|none|Number of days since the most recent day with a negative ending balance.|
+|days_since_most_recent_insufficient_funds_fee_debit_tx|integer \| null|false|none|Number of days since the most recent insufficient funds fee debit transaction.|
+|tot_number_days_with_negative_balance_over_1_month|integer \| null|false|none|Total number of days with a negative balance over the past 1 month.|
+|tot_number_days_with_negative_balance_over_3_months|integer \| null|false|none|Total number of days with a negative balance over the past 3 months.|
+|tot_number_days_with_negative_balance_over_6_months|integer \| null|false|none|Total number of days with a negative balance over the past 6 months.|
+|tot_number_days_with_negative_balance_over_12_months|integer \| null|false|none|Total number of days with a negative balance over the past 12 months.|
+|days_since_most_recent_tx|integer \| null|false|none|Number of days since the most recent transaction.|
+|days_with_tx_over_1_month|integer \| null|false|none|Number of days with at least one transaction over the past 1 month.|
+|days_with_tx_over_3_months|integer \| null|false|none|Number of days with at least one transaction over the past 3 months.|
+|days_with_tx_over_6_months|integer \| null|false|none|Number of days with at least one transaction over the past 6 months.|
+|days_with_tx_over_12_months|integer \| null|false|none|Number of days with at least one transaction over the past 12 months.|
+|tot_current_balances|number(double) \| null|false|none|Sum of current balances across all accounts in the report.|
+|num_checking_accounts|integer \| null|false|none|Number of checking accounts included in the report.|
+|num_money_market_accounts|integer \| null|false|none|Number of money market accounts included in the report.|
+|num_savings_accounts|integer \| null|false|none|Number of savings accounts included in the report.|
 
 <h2 id="tocS_CraReportGetCashflowInsightsResponseProduct">CraReportGetCashflowInsightsResponseProduct</h2>
 <!-- backwards compatibility -->
@@ -148293,7 +154089,7 @@ LendScore report metadata returned by `/cra/report/get`.
 |item_count|integer|true|none|The number of Items used to generate the report.|
 |account_count|integer|true|none|The number of accounts used to generate the report.|
 |institution_ids|[string]|true|none|The institution IDs of the Items used to generate the report.|
-|primary_account_count|integer|true|none|The number of accounts carrying Plaid's primary account indicator.|
+|primary_account_count|integer|true|none|The number of accounts carrying Plaid's primary account indicator, based on a report-level view of the user's transaction history.|
 |depository_account_type_count|integer|true|none|The number of depository accounts used to generate the report.|
 |credit_account_type_count|integer|true|none|The number of credit accounts used to generate the report.|
 |investment_account_type_count|integer|true|none|The number of investment accounts used to generate the report.|
@@ -148329,7 +154125,7 @@ An individual LendScore variant result returned by `/cra/report/get`.
 |variant|[CraLendScoreVariant](#schemacralendscorevariant)|true|none|The variant identifier for a LendScore result.|
 |score|integer \| null|true|none|The score returned by the LendScore model for this variant.|
 |reason_codes|[string]|true|none|The reasons for an individual having risk according to this LendScore variant. For a full list of possible reason codes and a mapping of reason codes to human-readable reasons, contact your Plaid account manager. Empty if the variant could not be computed.|
-|error_code|string \| null|true|none|The error code explaining why this LendScore variant could not be computed, such as `INSUFFICIENT_TRANSACTION_DATA` or `NO_ACCOUNTS`. `null` on success. New codes may be added over time, so treat an unrecognized value as a generic failure.|
+|error_code|string \| null|true|none|The error code explaining why this LendScore variant could not be computed. `null` on success. Possible values:<br><br>`INSUFFICIENT_TRANSACTION_HISTORY_30D`: User must have at least 30 days of transaction history<br><br>`INSUFFICIENT_TRANSACTIONS_30D`: User must have at least 1 transaction in the past 30 days<br><br>`INSUFFICIENT_INFLOW_TRANSACTIONS_30D`: User must have at least 1 inflow transaction in the past 30 days<br><br>`INSUFFICIENT_INFLOW_TRANSACTIONS_180D`: User must have at least 2 inflow transactions in the past 180 days<br><br>`INSUFFICIENT_OUTFLOW_TRANSACTIONS_30D`: User must have at least 2 outflow transactions in the past 30 days<br><br>`INSUFFICIENT_OUTFLOW_TRANSACTIONS_180D`: User must have at least 4 outflow transactions in the past 180 days<br><br>`BALANCE_UNAVAILABLE`: Balance unavailable for one or more of the user's accounts<br><br>Other failures return `PRODUCT_GENERATION_FAILED`. New codes may be added over time, so treat an unrecognized value as a generic failure.|
 
 #### Enumerated Values
 
@@ -148613,6 +154409,62 @@ An individual LendScore variant result returned by `/cra/report/get`.
               "score": 0,
               "is_postal_code_match": true
             }
+          },
+          "holder_category": {},
+          "investments": {
+            "holdings": [
+              {
+                "account_id": "string",
+                "security_id": "string",
+                "institution_price": 0,
+                "institution_price_as_of": "1970-01-01",
+                "institution_value": 0,
+                "cost_basis": 0,
+                "quantity": 0,
+                "iso_currency_code": "string",
+                "unofficial_currency_code": "string",
+                "tax_lots": [
+                  {
+                    "institution_lot_id": "string",
+                    "original_purchase_datetime": "1970-01-01T00:00:00Z",
+                    "quantity": 0,
+                    "purchase_price": 0,
+                    "cost_basis": 0,
+                    "current_value": 0,
+                    "position_type": "LONG"
+                  }
+                ]
+              }
+            ],
+            "securities": [
+              {
+                "security_id": "string",
+                "name": "string",
+                "isin": "string",
+                "cusip": "string",
+                "institution_security_id": "string",
+                "institution_id": "string",
+                "ticker_symbol": "string",
+                "type": "string"
+              }
+            ],
+            "investment_transactions": [
+              {
+                "investment_transaction_id": "string",
+                "account_id": "string",
+                "security_id": "string",
+                "date": "1970-01-01",
+                "name": "string",
+                "quantity": 0,
+                "amount": 0,
+                "price": 0,
+                "fees": 0,
+                "type": "buy",
+                "subtype": "account fee",
+                "iso_currency_code": "string",
+                "unofficial_currency_code": "string"
+              }
+            ]
           }
         }
       ]
@@ -148746,7 +154598,7 @@ Base Report metadata returned by `/cra/report/get`.
 |account_count|integer|true|none|The number of accounts used to generate the report.|
 |institution_ids|[string]|true|none|The institution IDs of the Items used to generate the report.|
 |days_requested|integer|true|none|The number of days of transaction history requested.|
-|primary_account_count|integer|true|none|The number of accounts carrying Plaid's primary account indicator.|
+|primary_account_count|integer|true|none|The number of accounts carrying Plaid's primary account indicator, based on a report-level view of the user's transaction history.|
 |depository_account_type_count|integer|true|none|The number of depository accounts used to generate the report.|
 |credit_account_type_count|integer|true|none|The number of credit accounts used to generate the report.|
 |investment_account_type_count|integer|true|none|The number of investment accounts used to generate the report.|
@@ -149081,6 +154933,62 @@ Attributes derived from transaction-level data, aggregated across all accounts i
           "score": 0,
           "is_postal_code_match": true
         }
+      },
+      "holder_category": {},
+      "investments": {
+        "holdings": [
+          {
+            "account_id": "string",
+            "security_id": "string",
+            "institution_price": 0,
+            "institution_price_as_of": "1970-01-01",
+            "institution_value": 0,
+            "cost_basis": 0,
+            "quantity": 0,
+            "iso_currency_code": "string",
+            "unofficial_currency_code": "string",
+            "tax_lots": [
+              {
+                "institution_lot_id": "string",
+                "original_purchase_datetime": "1970-01-01T00:00:00Z",
+                "quantity": 0,
+                "purchase_price": 0,
+                "cost_basis": 0,
+                "current_value": 0,
+                "position_type": "LONG"
+              }
+            ]
+          }
+        ],
+        "securities": [
+          {
+            "security_id": "string",
+            "name": "string",
+            "isin": "string",
+            "cusip": "string",
+            "institution_security_id": "string",
+            "institution_id": "string",
+            "ticker_symbol": "string",
+            "type": "string"
+          }
+        ],
+        "investment_transactions": [
+          {
+            "investment_transaction_id": "string",
+            "account_id": "string",
+            "security_id": "string",
+            "date": "1970-01-01",
+            "name": "string",
+            "quantity": 0,
+            "amount": 0,
+            "price": 0,
+            "fees": 0,
+            "type": "buy",
+            "subtype": "account fee",
+            "iso_currency_code": "string",
+            "unofficial_currency_code": "string"
+          }
+        ]
       }
     }
   ]
@@ -149344,6 +155252,62 @@ An Item included in a Base Report returned by `/cra/report/get`.
       "score": 0,
       "is_postal_code_match": true
     }
+  },
+  "holder_category": {},
+  "investments": {
+    "holdings": [
+      {
+        "account_id": "string",
+        "security_id": "string",
+        "institution_price": 0,
+        "institution_price_as_of": "1970-01-01",
+        "institution_value": 0,
+        "cost_basis": 0,
+        "quantity": 0,
+        "iso_currency_code": "string",
+        "unofficial_currency_code": "string",
+        "tax_lots": [
+          {
+            "institution_lot_id": "string",
+            "original_purchase_datetime": "1970-01-01T00:00:00Z",
+            "quantity": 0,
+            "purchase_price": 0,
+            "cost_basis": 0,
+            "current_value": 0,
+            "position_type": "LONG"
+          }
+        ]
+      }
+    ],
+    "securities": [
+      {
+        "security_id": "string",
+        "name": "string",
+        "isin": "string",
+        "cusip": "string",
+        "institution_security_id": "string",
+        "institution_id": "string",
+        "ticker_symbol": "string",
+        "type": "string"
+      }
+    ],
+    "investment_transactions": [
+      {
+        "investment_transaction_id": "string",
+        "account_id": "string",
+        "security_id": "string",
+        "date": "1970-01-01",
+        "name": "string",
+        "quantity": 0,
+        "amount": 0,
+        "price": 0,
+        "fees": 0,
+        "type": "buy",
+        "subtype": "account fee",
+        "iso_currency_code": "string",
+        "unofficial_currency_code": "string"
+      }
+    ]
   }
 }
 ```
@@ -149358,7 +155322,7 @@ An account included in a Base Report returned by `/cra/report/get`.
 |name|string|true|none|The name of the account, either assigned by the user or by the financial institution itself.|
 |official_name|string \| null|true|none|The official name of the account as given by the financial institution.|
 |mask|string \| null|true|none|The last 2-4 alphanumeric characters of an account's official account number. Note that the mask may be non-unique between an Item's accounts, and it may also not match the mask that the bank displays to the user.|
-|type|[AccountType](#schemaaccounttype)|true|none|`investment:` Investment account. In API versions 2018-05-22 and earlier, this type is called `brokerage` instead.<br><br>`credit:` Credit card<br><br>`depository:` Depository account<br><br>`loan:` Loan account<br><br>`other:` Non-specified account type<br><br>See the [Account type schema](https://plaid.com/docs/api/accounts#account-type-schema) for a full listing of account types and corresponding subtypes.|
+|type|[AccountType](#schemaaccounttype)|true|none|`investment:` Investment account. In API versions 2018-05-22 and earlier, this type is called `brokerage` instead.<br><br>`credit:` Credit card<br><br>`depository:` Depository account<br><br>`loan:` Loan account<br><br>`payroll:` Payroll account<br><br>`other:` Non-specified account type<br><br>See the [Account type schema](https://plaid.com/docs/api/accounts#account-type-schema) for a full listing of account types and corresponding subtypes.|
 |subtype|[AccountSubtype](#schemaaccountsubtype)|true|none|See the [Account type schema](https://plaid.com/docs/api/accounts/#account-type-schema) for a full listing of account types and corresponding subtypes.|
 |days_available|integer|true|none|The number of days of transaction history available for the account, typically the time since the date of its earliest transaction.|
 |metadata|[BaseReportAccountMetadata](#schemabasereportaccountmetadata)|true|none|Metadata about the extracted account.|
@@ -149371,6 +155335,8 @@ An account included in a Base Report returned by `/cra/report/get`.
 |account_insights|object|false|none|none|
 |attributes|[CraReportGetBaseReportAccountAttributes](#schemacrareportgetbasereportaccountattributes)|true|none|Attributes derived from the account's transaction-level data. May be `null` if attributes were not available.|
 |identity_match|[CraReportGetBaseReportAccountIdentityMatch](#schemacrareportgetbasereportaccountidentitymatch)|false|none|Scores for how closely the user's identity, as provided via `/user/create` or `/user/update`, matches the account owner information reported by the financial institution. Only present if the report was created with `include_identity_match` set to `true`, and omitted for accounts that were not scored. Within each score object, `score` is `null` when either the user or the financial institution did not provide that field.|
+|holder_category|object \| null|true|none|none|
+|investments|object|false|none|This field contains investment data only for investment accounts when `include_investments` in `/cra/report/create` or `cra_report_parameter.include_investments` in `/link/token/create` is set to `true`. This field may be omitted if recent investment data was unavailable at report generation. The account remains in the report when this field is omitted.|
 
 #### Enumerated Values
 
@@ -149381,12 +155347,14 @@ An account included in a Base Report returned by `/cra/report/get`.
 |type|depository|
 |type|loan|
 |type|brokerage|
+|type|payroll|
 |type|other|
 |subtype|401a|
 |subtype|401k|
 |subtype|403B|
 |subtype|457b|
 |subtype|529|
+|subtype|530a|
 |subtype|auto|
 |subtype|brokerage|
 |subtype|business|
@@ -149707,7 +155675,7 @@ Attributes derived from the account's transaction-level data. May be `null` if a
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|is_primary_account|boolean \| null|true|none|Whether the account is predicted to be the user's primary account. At most one account per account type across the user's Items is `true`. `null` if the prediction could not be computed.|
+|is_primary_account|boolean \| null|true|none|Whether the account is predicted to be the user's primary account, based on an Item-level view of the user's transaction history. At most one account per account type across the user's Items is `true`. `null` if the prediction could not be computed.|
 |primary_account_score|number(double) \| null|true|none|A value from 0 to 1 expressing confidence that the account is the user's primary account; higher is more confident. `null` if the score could not be computed.|
 |nsf_overdraft_transactions_count|integer \| null|false|none|The number of net NSF fee transactions on the account in the time range of the report, not counting fees reversed within that time range. Deprecated in `V1` and not supported beginning in `V2`.|
 |nsf_overdraft_transactions_count_30d|integer \| null|false|none|The number of net NSF fee transactions on the account in the last 30 days, not counting fees reversed within that time range. Deprecated in `V1` and not supported beginning in `V2`.|
@@ -150030,7 +155998,15 @@ Qualify data returned by `/cra/report/get`.
           "official_name": "string",
           "mask": "string",
           "type": "investment",
-          "subtype": "401a"
+          "subtype": "401a",
+          "consumer_disputes": [
+            {
+              "consumer_dispute_id": "string",
+              "dispute_field_create_date": "1970-01-01",
+              "category": "TRANSACTION",
+              "statement": "string"
+            }
+          ]
         }
       ]
     }
@@ -150070,7 +156046,7 @@ Income Insights data returned by `/cra/report/get`.
 |version|[CraProductVersion](#schemacraproductversion)|true|none|A string that specifies a particular version of a CRA product.|
 |metadata|[CraReportGetIncomeInsightsMetadata](#schemacrareportgetincomeinsightsmetadata)|true|none|Income Insights report metadata returned by `/cra/report/get`.|
 |attributes|[CraReportGetIncomeInsightsAttributes](#schemacrareportgetincomeinsightsattributes)|true|none|Income Insights attribute data returned by `/cra/report/get`.|
-|items|[[CraReportGetBaseItem](#schemacrareportgetbaseitem)]|true|none|The Items, and their accounts, used to generate this product. Always empty when `scope` is `PLAID_NETWORK`, or if this product failed to generate.|
+|items|[[CraReportGetIncomeInsightsItem](#schemacrareportgetincomeinsightsitem)]|true|none|The Items, and their accounts, used to generate this product. Always empty when `scope` is `PLAID_NETWORK`, or if this product failed to generate.|
 |errors|[[PlaidError](#schemaplaiderror)]|true|none|Product-level errors. Non-empty when this product failed to generate; empty on success.|
 
 #### Enumerated Values
@@ -150431,7 +156407,7 @@ LendScore Complete data returned by `/cra/report/get`.
 |version|[CraProductVersion](#schemacraproductversion)|true|none|A string that specifies a particular version of a CRA product.|
 |metadata|[CraReportGetLendScoreCompleteMetadata](#schemacrareportgetlendscorecompletemetadata)|true|none|LendScore Complete report metadata returned by `/cra/report/get`.|
 |attributes|[CraReportGetLendScoreCompleteAttributes](#schemacrareportgetlendscorecompleteattributes)|true|none|LendScore Complete attribute data returned by `/cra/report/get`.|
-|items|[[CraReportGetEnrichedItem](#schemacrareportgetenricheditem)]|true|none|The Items, and their accounts, used to generate this product. Always empty when `scope` is `PLAID_NETWORK`, or if this product failed to generate.|
+|items|[[CraReportGetLendScoreCompleteItem](#schemacrareportgetlendscorecompleteitem)]|true|none|The Items, and their accounts, used to generate this product. Always empty when `scope` is `PLAID_NETWORK`, or if this product failed to generate.|
 |errors|[[PlaidError](#schemaplaiderror)]|true|none|Product-level errors. Non-empty when this product failed to generate; empty on success.|
 
 #### Enumerated Values
@@ -150516,7 +156492,7 @@ LendScore Complete report metadata returned by `/cra/report/get`.
 |item_count|integer|true|none|The number of Items used to generate the report.|
 |account_count|integer|true|none|The number of accounts used to generate the report.|
 |institution_ids|[string]|true|none|The institution IDs of the Items used to generate the report.|
-|primary_account_count|integer|true|none|The number of accounts carrying Plaid's primary account indicator.|
+|primary_account_count|integer|true|none|The number of accounts carrying Plaid's primary account indicator, based on a report-level view of the user's transaction history.|
 |depository_account_type_count|integer|true|none|The number of depository accounts used to generate the report.|
 |credit_account_type_count|integer|true|none|The number of credit accounts used to generate the report.|
 |investment_account_type_count|integer|true|none|The number of investment accounts used to generate the report.|
@@ -150715,6 +156691,14 @@ LendScore Complete report metadata returned by `/cra/report/get`.
                 }
               ]
             }
+          ],
+          "consumer_disputes": [
+            {
+              "consumer_dispute_id": "string",
+              "dispute_field_create_date": "1970-01-01",
+              "category": "TRANSACTION",
+              "statement": "string"
+            }
           ]
         }
       ]
@@ -150755,7 +156739,7 @@ Income Complete data returned by `/cra/report/get`.
 |version|[CraProductVersion](#schemacraproductversion)|true|none|A string that specifies a particular version of a CRA product.|
 |metadata|[CraReportGetIncomeCompleteMetadata](#schemacrareportgetincomecompletemetadata)|true|none|Income Complete report metadata returned by `/cra/report/get`.|
 |attributes|[CraReportGetIncomeCompleteAttributes](#schemacrareportgetincomecompleteattributes)|true|none|Income Complete attribute data returned by `/cra/report/get`.|
-|items|[[CraReportGetEnrichedItem](#schemacrareportgetenricheditem)]|true|none|The Items, and their accounts, used to generate this product. Always empty when `scope` is `PLAID_NETWORK`, or if this product failed to generate.|
+|items|[[CraReportGetIncomeCompleteItem](#schemacrareportgetincomecompleteitem)]|true|none|The Items, and their accounts, used to generate this product. Always empty when `scope` is `PLAID_NETWORK`, or if this product failed to generate.|
 |errors|[[PlaidError](#schemaplaiderror)]|true|none|Product-level errors. Non-empty when this product failed to generate; empty on success.|
 
 #### Enumerated Values
@@ -150913,7 +156897,7 @@ Income Complete report metadata returned by `/cra/report/get`.
 |item_count|integer|true|none|The number of Items used to generate the report.|
 |account_count|integer|true|none|The number of accounts used to generate the report.|
 |institution_ids|[string]|true|none|The institution IDs of the Items used to generate the report.|
-|primary_account_count|integer|true|none|The number of accounts carrying Plaid's primary account indicator.|
+|primary_account_count|integer|true|none|The number of accounts carrying Plaid's primary account indicator, based on a report-level view of the user's transaction history.|
 |depository_account_type_count|integer|true|none|The number of depository accounts used to generate the report.|
 |credit_account_type_count|integer|true|none|The number of credit accounts used to generate the report.|
 |investment_account_type_count|integer|true|none|The number of investment accounts used to generate the report.|
@@ -150922,12 +156906,12 @@ Income Complete report metadata returned by `/cra/report/get`.
 |oldest_transaction_date|string(date) \| null|true|none|The earliest transaction date across the accounts the report was generated from. May be `null` if the producer could not compute a transaction range.|
 |most_recent_transaction_date|string(date) \| null|true|none|The latest transaction date across the accounts the report was generated from. May be `null` if the producer could not compute a transaction range.|
 
-<h2 id="tocS_CraReportGetBaseItem">CraReportGetBaseItem</h2>
+<h2 id="tocS_CraReportGetPrismItem">CraReportGetPrismItem</h2>
 <!-- backwards compatibility -->
-<a id="schemacrareportgetbaseitem"></a>
-<a id="schema_CraReportGetBaseItem"></a>
-<a id="tocScrareportgetbaseitem"></a>
-<a id="tocscrareportgetbaseitem"></a>
+<a id="schemacrareportgetprismitem"></a>
+<a id="schema_CraReportGetPrismItem"></a>
+<a id="tocScrareportgetprismitem"></a>
+<a id="tocscrareportgetprismitem"></a>
 
 ```json
 {
@@ -150948,7 +156932,7 @@ Income Complete report metadata returned by `/cra/report/get`.
 }
 ```
 
-An Item used to generate a `/cra/report/get` product.
+An Item used to generate `cra_prism`.
 
 ### Properties
 
@@ -150958,14 +156942,14 @@ An Item used to generate a `/cra/report/get` product.
 |institution_name|string|true|none|The full financial institution name associated with the Item.|
 |item_id|[ItemId](#schemaitemid)|true|none|The `item_id` of the Item associated with this webhook, warning, or error|
 |last_updated_time|string(date-time)|true|none|The time when this Item's data was last retrieved from the financial institution prior to report generation.|
-|accounts|[[CraReportGetBaseAccount](#schemacrareportgetbaseaccount)]|true|none|The accounts on the Item used to generate the product.|
+|accounts|[[CraReportGetPrismAccount](#schemacrareportgetprismaccount)]|true|none|The accounts on the Item used to generate the product.|
 
-<h2 id="tocS_CraReportGetBaseAccount">CraReportGetBaseAccount</h2>
+<h2 id="tocS_CraReportGetPrismAccount">CraReportGetPrismAccount</h2>
 <!-- backwards compatibility -->
-<a id="schemacrareportgetbaseaccount"></a>
-<a id="schema_CraReportGetBaseAccount"></a>
-<a id="tocScrareportgetbaseaccount"></a>
-<a id="tocscrareportgetbaseaccount"></a>
+<a id="schemacrareportgetprismaccount"></a>
+<a id="schema_CraReportGetPrismAccount"></a>
+<a id="tocScrareportgetprismaccount"></a>
+<a id="tocscrareportgetprismaccount"></a>
 
 ```json
 {
@@ -150978,7 +156962,7 @@ An Item used to generate a `/cra/report/get` product.
 }
 ```
 
-An account used to generate a `/cra/report/get` product.
+An account used to generate `cra_prism`.
 
 ### Properties
 
@@ -150988,7 +156972,7 @@ An account used to generate a `/cra/report/get` product.
 |name|string|true|none|The name of the account, either assigned by the user or by the financial institution itself.|
 |official_name|string \| null|true|none|The official name of the account as given by the financial institution.|
 |mask|string \| null|true|none|The last 2-4 alphanumeric characters of an account's official account number. Note that the mask may be non-unique between an Item's accounts, and it may also not match the mask that the bank displays to the user.|
-|type|[AccountType](#schemaaccounttype)|true|none|`investment:` Investment account. In API versions 2018-05-22 and earlier, this type is called `brokerage` instead.<br><br>`credit:` Credit card<br><br>`depository:` Depository account<br><br>`loan:` Loan account<br><br>`other:` Non-specified account type<br><br>See the [Account type schema](https://plaid.com/docs/api/accounts#account-type-schema) for a full listing of account types and corresponding subtypes.|
+|type|[AccountType](#schemaaccounttype)|true|none|`investment:` Investment account. In API versions 2018-05-22 and earlier, this type is called `brokerage` instead.<br><br>`credit:` Credit card<br><br>`depository:` Depository account<br><br>`loan:` Loan account<br><br>`payroll:` Payroll account<br><br>`other:` Non-specified account type<br><br>See the [Account type schema](https://plaid.com/docs/api/accounts#account-type-schema) for a full listing of account types and corresponding subtypes.|
 |subtype|[AccountSubtype](#schemaaccountsubtype)|true|none|See the [Account type schema](https://plaid.com/docs/api/accounts/#account-type-schema) for a full listing of account types and corresponding subtypes.|
 
 #### Enumerated Values
@@ -151000,12 +156984,14 @@ An account used to generate a `/cra/report/get` product.
 |type|depository|
 |type|loan|
 |type|brokerage|
+|type|payroll|
 |type|other|
 |subtype|401a|
 |subtype|401k|
 |subtype|403B|
 |subtype|457b|
 |subtype|529|
+|subtype|530a|
 |subtype|auto|
 |subtype|brokerage|
 |subtype|business|
@@ -151083,12 +157069,12 @@ An account used to generate a `/cra/report/get` product.
 |subtype|utma|
 |subtype|variable annuity|
 
-<h2 id="tocS_CraReportGetEnrichedItem">CraReportGetEnrichedItem</h2>
+<h2 id="tocS_CraReportGetUltraFicoItem">CraReportGetUltraFicoItem</h2>
 <!-- backwards compatibility -->
-<a id="schemacrareportgetenricheditem"></a>
-<a id="schema_CraReportGetEnrichedItem"></a>
-<a id="tocScrareportgetenricheditem"></a>
-<a id="tocscrareportgetenricheditem"></a>
+<a id="schemacrareportgetultraficoitem"></a>
+<a id="schema_CraReportGetUltraFicoItem"></a>
+<a id="tocScrareportgetultraficoitem"></a>
+<a id="tocscrareportgetultraficoitem"></a>
 
 ```json
 {
@@ -151164,7 +157150,7 @@ An account used to generate a `/cra/report/get` product.
 }
 ```
 
-An Item used to generate a `/cra/report/get` product, with each account's owners, identity match scores, and primary account prediction.
+An Item used to generate `cra_ultrafico`, with each eligible account's owners, identity match scores, and primary account prediction.
 
 ### Properties
 
@@ -151174,16 +157160,14 @@ An Item used to generate a `/cra/report/get` product, with each account's owners
 |institution_name|string|true|none|The full financial institution name associated with the Item.|
 |item_id|[ItemId](#schemaitemid)|true|none|The `item_id` of the Item associated with this webhook, warning, or error|
 |last_updated_time|string(date-time)|true|none|The time when this Item's data was last retrieved from the financial institution prior to report generation.|
-|accounts|[[CraReportGetBaseAccount](#schemacrareportgetbaseaccount)]|true|none|The accounts on the Item used to generate the product.|
-|institution_name|string|true|none|The full financial institution name associated with the Item.|
-|accounts|[[CraReportGetEnrichedAccount](#schemacrareportgetenrichedaccount)]|true|none|The accounts on the Item used to generate the product.|
+|accounts|[[CraReportGetUltraFicoAccount](#schemacrareportgetultraficoaccount)]|true|none|The checking, savings, and money market accounts on the Item used to generate UltraFICO.|
 
-<h2 id="tocS_CraReportGetEnrichedAccount">CraReportGetEnrichedAccount</h2>
+<h2 id="tocS_CraReportGetUltraFicoAccount">CraReportGetUltraFicoAccount</h2>
 <!-- backwards compatibility -->
-<a id="schemacrareportgetenrichedaccount"></a>
-<a id="schema_CraReportGetEnrichedAccount"></a>
-<a id="tocScrareportgetenrichedaccount"></a>
-<a id="tocscrareportgetenrichedaccount"></a>
+<a id="schemacrareportgetultraficoaccount"></a>
+<a id="schema_CraReportGetUltraFicoAccount"></a>
+<a id="tocScrareportgetultraficoaccount"></a>
+<a id="tocscrareportgetultraficoaccount"></a>
 
 ```json
 {
@@ -151251,7 +157235,7 @@ An Item used to generate a `/cra/report/get` product, with each account's owners
 }
 ```
 
-An account used to generate a `/cra/report/get` product, with its owners, identity match scores, and primary account prediction.
+A checking, savings, or money market account used to generate `cra_ultrafico`, with its owners, identity match scores, and primary account prediction.
 
 ### Properties
 
@@ -151261,11 +157245,284 @@ An account used to generate a `/cra/report/get` product, with its owners, identi
 |name|string|true|none|The name of the account, either assigned by the user or by the financial institution itself.|
 |official_name|string \| null|true|none|The official name of the account as given by the financial institution.|
 |mask|string \| null|true|none|The last 2-4 alphanumeric characters of an account's official account number. Note that the mask may be non-unique between an Item's accounts, and it may also not match the mask that the bank displays to the user.|
-|type|[AccountType](#schemaaccounttype)|true|none|`investment:` Investment account. In API versions 2018-05-22 and earlier, this type is called `brokerage` instead.<br><br>`credit:` Credit card<br><br>`depository:` Depository account<br><br>`loan:` Loan account<br><br>`other:` Non-specified account type<br><br>See the [Account type schema](https://plaid.com/docs/api/accounts#account-type-schema) for a full listing of account types and corresponding subtypes.|
+|type|[AccountType](#schemaaccounttype)|true|none|`investment:` Investment account. In API versions 2018-05-22 and earlier, this type is called `brokerage` instead.<br><br>`credit:` Credit card<br><br>`depository:` Depository account<br><br>`loan:` Loan account<br><br>`payroll:` Payroll account<br><br>`other:` Non-specified account type<br><br>See the [Account type schema](https://plaid.com/docs/api/accounts#account-type-schema) for a full listing of account types and corresponding subtypes.|
 |subtype|[AccountSubtype](#schemaaccountsubtype)|true|none|See the [Account type schema](https://plaid.com/docs/api/accounts/#account-type-schema) for a full listing of account types and corresponding subtypes.|
+|primary_account|[CraReportGetAccountPrimaryAccount](#schemacrareportgetaccountprimaryaccount)|true|none|Plaid's prediction of whether the account is the user's primary account. `null` if the account could not be scored or if scoring is not supported by the product.|
+|identity_match|[CraReportGetAccountIdentityMatch](#schemacrareportgetaccountidentitymatch)|true|none|Scores for how closely the user's identity, as provided via `/user/create` or `/user/update`, matches the account owner information reported by the financial institution. `null` if the account was not scored or if identity matching is not supported by the product. Within each score object, `score` is `null` when either the user or the financial institution did not provide that field.|
+|owners|[[Owner](#schemaowner)]|true|none|Data returned by the financial institution about the account owner or owners. Multiple owners on a single account will be represented in the same `owner` object, not in multiple owner objects within the array. Empty if no owners are found.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|investment|
+|type|credit|
+|type|depository|
+|type|loan|
+|type|brokerage|
+|type|payroll|
+|type|other|
+|subtype|401a|
+|subtype|401k|
+|subtype|403B|
+|subtype|457b|
+|subtype|529|
+|subtype|530a|
+|subtype|auto|
+|subtype|brokerage|
+|subtype|business|
+|subtype|cash isa|
+|subtype|cash management|
+|subtype|cd|
+|subtype|checking|
+|subtype|commercial|
+|subtype|commercial line of credit|
+|subtype|construction|
+|subtype|consumer|
+|subtype|credit card|
+|subtype|crypto exchange|
+|subtype|ebt|
+|subtype|education savings account|
+|subtype|fhsa|
+|subtype|fixed annuity|
+|subtype|gic|
+|subtype|health reimbursement arrangement|
+|subtype|home equity|
+|subtype|home equity loan|
+|subtype|hsa|
+|subtype|isa|
+|subtype|ira|
+|subtype|keogh|
+|subtype|lif|
+|subtype|life insurance|
+|subtype|limited purpose checking|
+|subtype|line of credit|
+|subtype|lira|
+|subtype|loan|
+|subtype|lrif|
+|subtype|lrsp|
+|subtype|money market|
+|subtype|mortgage|
+|subtype|mutual fund|
+|subtype|non-custodial wallet|
+|subtype|non-taxable brokerage account|
+|subtype|other|
+|subtype|other insurance|
+|subtype|other annuity|
+|subtype|overdraft|
+|subtype|paypal|
+|subtype|payroll|
+|subtype|pension|
+|subtype|prediction market|
+|subtype|prepaid|
+|subtype|prif|
+|subtype|profit sharing plan|
+|subtype|qshr|
+|subtype|rdsp|
+|subtype|resp|
+|subtype|retirement|
+|subtype|rlif|
+|subtype|roth|
+|subtype|roth 401k|
+|subtype|roth 403B|
+|subtype|roth 457b|
+|subtype|roth pension|
+|subtype|roth profit sharing plan|
+|subtype|roth thrift savings plan|
+|subtype|rrif|
+|subtype|rrsp|
+|subtype|sarsep|
+|subtype|savings|
+|subtype|sep ira|
+|subtype|simple ira|
+|subtype|sipp|
+|subtype|stock plan|
+|subtype|student|
+|subtype|thrift savings plan|
+|subtype|tfsa|
+|subtype|trust|
+|subtype|ugma|
+|subtype|utma|
+|subtype|variable annuity|
+
+<h2 id="tocS_CraReportGetLendScoreCompleteItem">CraReportGetLendScoreCompleteItem</h2>
+<!-- backwards compatibility -->
+<a id="schemacrareportgetlendscorecompleteitem"></a>
+<a id="schema_CraReportGetLendScoreCompleteItem"></a>
+<a id="tocScrareportgetlendscorecompleteitem"></a>
+<a id="tocscrareportgetlendscorecompleteitem"></a>
+
+```json
+{
+  "institution_id": "string",
+  "institution_name": "string",
+  "item_id": "string",
+  "last_updated_time": "1970-01-01T00:00:00Z",
+  "accounts": [
+    {
+      "account_id": "string",
+      "name": "string",
+      "official_name": "string",
+      "mask": "string",
+      "type": "investment",
+      "subtype": "401a",
+      "primary_account": {
+        "is_primary": true,
+        "score": 0
+      },
+      "identity_match": {
+        "legal_name": {
+          "score": 0,
+          "is_first_name_or_last_name_match": true,
+          "is_nickname_match": true,
+          "is_business_name_detected": true
+        },
+        "phone_number": {
+          "score": 0
+        },
+        "email_address": {
+          "score": 0
+        },
+        "address": {
+          "score": 0,
+          "is_postal_code_match": true
+        }
+      },
+      "owners": [
+        {
+          "names": [
+            "string"
+          ],
+          "phone_numbers": [
+            {
+              "data": "string",
+              "primary": true,
+              "type": "home"
+            }
+          ],
+          "emails": [
+            {
+              "data": "string",
+              "primary": true,
+              "type": "primary"
+            }
+          ],
+          "addresses": [
+            {
+              "data": {
+                "city": "string",
+                "region": "string",
+                "street": "string",
+                "postal_code": "string",
+                "country": "string"
+              },
+              "primary": true
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+```
+
+An Item used to generate `cra_lend_score_complete`, with each account's owners, identity match scores, and primary account prediction.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|institution_id|string|true|none|The ID of the financial institution associated with the Item.|
+|institution_name|string|true|none|The full financial institution name associated with the Item.|
+|item_id|[ItemId](#schemaitemid)|true|none|The `item_id` of the Item associated with this webhook, warning, or error|
+|last_updated_time|string(date-time)|true|none|The time when this Item's data was last retrieved from the financial institution prior to report generation.|
+|accounts|[[CraReportGetLendScoreCompleteAccount](#schemacrareportgetlendscorecompleteaccount)]|true|none|The accounts on the Item used to generate the product.|
+
+<h2 id="tocS_CraReportGetLendScoreCompleteAccount">CraReportGetLendScoreCompleteAccount</h2>
+<!-- backwards compatibility -->
+<a id="schemacrareportgetlendscorecompleteaccount"></a>
+<a id="schema_CraReportGetLendScoreCompleteAccount"></a>
+<a id="tocScrareportgetlendscorecompleteaccount"></a>
+<a id="tocscrareportgetlendscorecompleteaccount"></a>
+
+```json
+{
+  "account_id": "string",
+  "name": "string",
+  "official_name": "string",
+  "mask": "string",
+  "type": "investment",
+  "subtype": "401a",
+  "primary_account": {
+    "is_primary": true,
+    "score": 0
+  },
+  "identity_match": {
+    "legal_name": {
+      "score": 0,
+      "is_first_name_or_last_name_match": true,
+      "is_nickname_match": true,
+      "is_business_name_detected": true
+    },
+    "phone_number": {
+      "score": 0
+    },
+    "email_address": {
+      "score": 0
+    },
+    "address": {
+      "score": 0,
+      "is_postal_code_match": true
+    }
+  },
+  "owners": [
+    {
+      "names": [
+        "string"
+      ],
+      "phone_numbers": [
+        {
+          "data": "string",
+          "primary": true,
+          "type": "home"
+        }
+      ],
+      "emails": [
+        {
+          "data": "string",
+          "primary": true,
+          "type": "primary"
+        }
+      ],
+      "addresses": [
+        {
+          "data": {
+            "city": "string",
+            "region": "string",
+            "street": "string",
+            "postal_code": "string",
+            "country": "string"
+          },
+          "primary": true
+        }
+      ]
+    }
+  ]
+}
+```
+
+An account used to generate `cra_lend_score_complete`, with its owners, identity match scores, and primary account prediction.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|account_id|string|true|none|Plaid's unique identifier for the account. This value will not change unless Plaid can't reconcile the account with the data returned by the financial institution. If this happens a new `account_id` will be assigned to the account.<br><br>Like all Plaid identifiers, the `account_id` is case sensitive.|
 |name|string|true|none|The name of the account, either assigned by the user or by the financial institution itself.|
 |official_name|string \| null|true|none|The official name of the account as given by the financial institution.|
 |mask|string \| null|true|none|The last 2-4 alphanumeric characters of an account's official account number. Note that the mask may be non-unique between an Item's accounts, and it may also not match the mask that the bank displays to the user.|
+|type|[AccountType](#schemaaccounttype)|true|none|`investment:` Investment account. In API versions 2018-05-22 and earlier, this type is called `brokerage` instead.<br><br>`credit:` Credit card<br><br>`depository:` Depository account<br><br>`loan:` Loan account<br><br>`payroll:` Payroll account<br><br>`other:` Non-specified account type<br><br>See the [Account type schema](https://plaid.com/docs/api/accounts#account-type-schema) for a full listing of account types and corresponding subtypes.|
+|subtype|[AccountSubtype](#schemaaccountsubtype)|true|none|See the [Account type schema](https://plaid.com/docs/api/accounts/#account-type-schema) for a full listing of account types and corresponding subtypes.|
 |primary_account|[CraReportGetAccountPrimaryAccount](#schemacrareportgetaccountprimaryaccount)|true|none|Plaid's prediction of whether the account is the user's primary account. `null` if the account could not be scored or if scoring is not supported by the product.|
 |identity_match|[CraReportGetAccountIdentityMatch](#schemacrareportgetaccountidentitymatch)|true|none|Scores for how closely the user's identity, as provided via `/user/create` or `/user/update`, matches the account owner information reported by the financial institution. `null` if the account was not scored or if identity matching is not supported by the product. Within each score object, `score` is `null` when either the user or the financial institution did not provide that field.|
 |owners|[[Owner](#schemaowner)]|true|none|Data returned by the financial institution about the account owner or owners. Multiple owners on a single account will be represented in the same `owner` object, not in multiple owner objects within the array. Empty if no owners are found, or if data is not supported by the product and/or scope.|
@@ -151279,12 +157536,763 @@ An account used to generate a `/cra/report/get` product, with its owners, identi
 |type|depository|
 |type|loan|
 |type|brokerage|
+|type|payroll|
 |type|other|
 |subtype|401a|
 |subtype|401k|
 |subtype|403B|
 |subtype|457b|
 |subtype|529|
+|subtype|530a|
+|subtype|auto|
+|subtype|brokerage|
+|subtype|business|
+|subtype|cash isa|
+|subtype|cash management|
+|subtype|cd|
+|subtype|checking|
+|subtype|commercial|
+|subtype|commercial line of credit|
+|subtype|construction|
+|subtype|consumer|
+|subtype|credit card|
+|subtype|crypto exchange|
+|subtype|ebt|
+|subtype|education savings account|
+|subtype|fhsa|
+|subtype|fixed annuity|
+|subtype|gic|
+|subtype|health reimbursement arrangement|
+|subtype|home equity|
+|subtype|home equity loan|
+|subtype|hsa|
+|subtype|isa|
+|subtype|ira|
+|subtype|keogh|
+|subtype|lif|
+|subtype|life insurance|
+|subtype|limited purpose checking|
+|subtype|line of credit|
+|subtype|lira|
+|subtype|loan|
+|subtype|lrif|
+|subtype|lrsp|
+|subtype|money market|
+|subtype|mortgage|
+|subtype|mutual fund|
+|subtype|non-custodial wallet|
+|subtype|non-taxable brokerage account|
+|subtype|other|
+|subtype|other insurance|
+|subtype|other annuity|
+|subtype|overdraft|
+|subtype|paypal|
+|subtype|payroll|
+|subtype|pension|
+|subtype|prediction market|
+|subtype|prepaid|
+|subtype|prif|
+|subtype|profit sharing plan|
+|subtype|qshr|
+|subtype|rdsp|
+|subtype|resp|
+|subtype|retirement|
+|subtype|rlif|
+|subtype|roth|
+|subtype|roth 401k|
+|subtype|roth 403B|
+|subtype|roth 457b|
+|subtype|roth pension|
+|subtype|roth profit sharing plan|
+|subtype|roth thrift savings plan|
+|subtype|rrif|
+|subtype|rrsp|
+|subtype|sarsep|
+|subtype|savings|
+|subtype|sep ira|
+|subtype|simple ira|
+|subtype|sipp|
+|subtype|stock plan|
+|subtype|student|
+|subtype|thrift savings plan|
+|subtype|tfsa|
+|subtype|trust|
+|subtype|ugma|
+|subtype|utma|
+|subtype|variable annuity|
+
+<h2 id="tocS_CraReportGetHomeLendingItem">CraReportGetHomeLendingItem</h2>
+<!-- backwards compatibility -->
+<a id="schemacrareportgethomelendingitem"></a>
+<a id="schema_CraReportGetHomeLendingItem"></a>
+<a id="tocScrareportgethomelendingitem"></a>
+<a id="tocscrareportgethomelendingitem"></a>
+
+```json
+{
+  "institution_id": "string",
+  "institution_name": "string",
+  "item_id": "string",
+  "last_updated_time": "1970-01-01T00:00:00Z",
+  "accounts": [
+    {
+      "account_id": "string",
+      "name": "string",
+      "official_name": "string",
+      "mask": "string",
+      "type": "investment",
+      "subtype": "401a",
+      "primary_account": {
+        "is_primary": true,
+        "score": 0
+      },
+      "identity_match": {
+        "legal_name": {
+          "score": 0,
+          "is_first_name_or_last_name_match": true,
+          "is_nickname_match": true,
+          "is_business_name_detected": true
+        },
+        "phone_number": {
+          "score": 0
+        },
+        "email_address": {
+          "score": 0
+        },
+        "address": {
+          "score": 0,
+          "is_postal_code_match": true
+        }
+      },
+      "owners": [
+        {
+          "names": [
+            "string"
+          ],
+          "phone_numbers": [
+            {
+              "data": "string",
+              "primary": true,
+              "type": "home"
+            }
+          ],
+          "emails": [
+            {
+              "data": "string",
+              "primary": true,
+              "type": "primary"
+            }
+          ],
+          "addresses": [
+            {
+              "data": {
+                "city": "string",
+                "region": "string",
+                "street": "string",
+                "postal_code": "string",
+                "country": "string"
+              },
+              "primary": true
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+```
+
+An Item used to generate `cra_home_lending`, with each account's owners, identity match scores, and primary account prediction.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|institution_id|string|true|none|The ID of the financial institution associated with the Item.|
+|institution_name|string|true|none|The full financial institution name associated with the Item.|
+|item_id|[ItemId](#schemaitemid)|true|none|The `item_id` of the Item associated with this webhook, warning, or error|
+|last_updated_time|string(date-time)|true|none|The time when this Item's data was last retrieved from the financial institution prior to report generation.|
+|accounts|[[CraReportGetHomeLendingAccount](#schemacrareportgethomelendingaccount)]|true|none|The accounts on the Item used to generate the product.|
+
+<h2 id="tocS_CraReportGetHomeLendingAccount">CraReportGetHomeLendingAccount</h2>
+<!-- backwards compatibility -->
+<a id="schemacrareportgethomelendingaccount"></a>
+<a id="schema_CraReportGetHomeLendingAccount"></a>
+<a id="tocScrareportgethomelendingaccount"></a>
+<a id="tocscrareportgethomelendingaccount"></a>
+
+```json
+{
+  "account_id": "string",
+  "name": "string",
+  "official_name": "string",
+  "mask": "string",
+  "type": "investment",
+  "subtype": "401a",
+  "primary_account": {
+    "is_primary": true,
+    "score": 0
+  },
+  "identity_match": {
+    "legal_name": {
+      "score": 0,
+      "is_first_name_or_last_name_match": true,
+      "is_nickname_match": true,
+      "is_business_name_detected": true
+    },
+    "phone_number": {
+      "score": 0
+    },
+    "email_address": {
+      "score": 0
+    },
+    "address": {
+      "score": 0,
+      "is_postal_code_match": true
+    }
+  },
+  "owners": [
+    {
+      "names": [
+        "string"
+      ],
+      "phone_numbers": [
+        {
+          "data": "string",
+          "primary": true,
+          "type": "home"
+        }
+      ],
+      "emails": [
+        {
+          "data": "string",
+          "primary": true,
+          "type": "primary"
+        }
+      ],
+      "addresses": [
+        {
+          "data": {
+            "city": "string",
+            "region": "string",
+            "street": "string",
+            "postal_code": "string",
+            "country": "string"
+          },
+          "primary": true
+        }
+      ]
+    }
+  ]
+}
+```
+
+An account used to generate `cra_home_lending`, with its owners, identity match scores, and primary account prediction.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|account_id|string|true|none|Plaid's unique identifier for the account. This value will not change unless Plaid can't reconcile the account with the data returned by the financial institution. If this happens a new `account_id` will be assigned to the account.<br><br>Like all Plaid identifiers, the `account_id` is case sensitive.|
+|name|string|true|none|The name of the account, either assigned by the user or by the financial institution itself.|
+|official_name|string \| null|true|none|The official name of the account as given by the financial institution.|
+|mask|string \| null|true|none|The last 2-4 alphanumeric characters of an account's official account number. Note that the mask may be non-unique between an Item's accounts, and it may also not match the mask that the bank displays to the user.|
+|type|[AccountType](#schemaaccounttype)|true|none|`investment:` Investment account. In API versions 2018-05-22 and earlier, this type is called `brokerage` instead.<br><br>`credit:` Credit card<br><br>`depository:` Depository account<br><br>`loan:` Loan account<br><br>`payroll:` Payroll account<br><br>`other:` Non-specified account type<br><br>See the [Account type schema](https://plaid.com/docs/api/accounts#account-type-schema) for a full listing of account types and corresponding subtypes.|
+|subtype|[AccountSubtype](#schemaaccountsubtype)|true|none|See the [Account type schema](https://plaid.com/docs/api/accounts/#account-type-schema) for a full listing of account types and corresponding subtypes.|
+|primary_account|[CraReportGetAccountPrimaryAccount](#schemacrareportgetaccountprimaryaccount)|true|none|Plaid's prediction of whether the account is the user's primary account. `null` if the account could not be scored or if scoring is not supported by the product.|
+|identity_match|[CraReportGetAccountIdentityMatch](#schemacrareportgetaccountidentitymatch)|true|none|Scores for how closely the user's identity, as provided via `/user/create` or `/user/update`, matches the account owner information reported by the financial institution. `null` if the account was not scored or if identity matching is not supported by the product. Within each score object, `score` is `null` when either the user or the financial institution did not provide that field.|
+|owners|[[Owner](#schemaowner)]|true|none|Data returned by the financial institution about the account owner or owners. Multiple owners on a single account will be represented in the same `owner` object, not in multiple owner objects within the array. Empty if no owners are found, or if data is not supported by the product and/or scope.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|investment|
+|type|credit|
+|type|depository|
+|type|loan|
+|type|brokerage|
+|type|payroll|
+|type|other|
+|subtype|401a|
+|subtype|401k|
+|subtype|403B|
+|subtype|457b|
+|subtype|529|
+|subtype|530a|
+|subtype|auto|
+|subtype|brokerage|
+|subtype|business|
+|subtype|cash isa|
+|subtype|cash management|
+|subtype|cd|
+|subtype|checking|
+|subtype|commercial|
+|subtype|commercial line of credit|
+|subtype|construction|
+|subtype|consumer|
+|subtype|credit card|
+|subtype|crypto exchange|
+|subtype|ebt|
+|subtype|education savings account|
+|subtype|fhsa|
+|subtype|fixed annuity|
+|subtype|gic|
+|subtype|health reimbursement arrangement|
+|subtype|home equity|
+|subtype|home equity loan|
+|subtype|hsa|
+|subtype|isa|
+|subtype|ira|
+|subtype|keogh|
+|subtype|lif|
+|subtype|life insurance|
+|subtype|limited purpose checking|
+|subtype|line of credit|
+|subtype|lira|
+|subtype|loan|
+|subtype|lrif|
+|subtype|lrsp|
+|subtype|money market|
+|subtype|mortgage|
+|subtype|mutual fund|
+|subtype|non-custodial wallet|
+|subtype|non-taxable brokerage account|
+|subtype|other|
+|subtype|other insurance|
+|subtype|other annuity|
+|subtype|overdraft|
+|subtype|paypal|
+|subtype|payroll|
+|subtype|pension|
+|subtype|prediction market|
+|subtype|prepaid|
+|subtype|prif|
+|subtype|profit sharing plan|
+|subtype|qshr|
+|subtype|rdsp|
+|subtype|resp|
+|subtype|retirement|
+|subtype|rlif|
+|subtype|roth|
+|subtype|roth 401k|
+|subtype|roth 403B|
+|subtype|roth 457b|
+|subtype|roth pension|
+|subtype|roth profit sharing plan|
+|subtype|roth thrift savings plan|
+|subtype|rrif|
+|subtype|rrsp|
+|subtype|sarsep|
+|subtype|savings|
+|subtype|sep ira|
+|subtype|simple ira|
+|subtype|sipp|
+|subtype|stock plan|
+|subtype|student|
+|subtype|thrift savings plan|
+|subtype|tfsa|
+|subtype|trust|
+|subtype|ugma|
+|subtype|utma|
+|subtype|variable annuity|
+
+<h2 id="tocS_CraReportGetIncomeInsightsItem">CraReportGetIncomeInsightsItem</h2>
+<!-- backwards compatibility -->
+<a id="schemacrareportgetincomeinsightsitem"></a>
+<a id="schema_CraReportGetIncomeInsightsItem"></a>
+<a id="tocScrareportgetincomeinsightsitem"></a>
+<a id="tocscrareportgetincomeinsightsitem"></a>
+
+```json
+{
+  "institution_id": "string",
+  "institution_name": "string",
+  "item_id": "string",
+  "last_updated_time": "1970-01-01T00:00:00Z",
+  "accounts": [
+    {
+      "account_id": "string",
+      "name": "string",
+      "official_name": "string",
+      "mask": "string",
+      "type": "investment",
+      "subtype": "401a",
+      "consumer_disputes": [
+        {
+          "consumer_dispute_id": "string",
+          "dispute_field_create_date": "1970-01-01",
+          "category": "TRANSACTION",
+          "statement": "string"
+        }
+      ]
+    }
+  ]
+}
+```
+
+An Item used to generate `cra_income_insights`, with the consumer's dispute statements on each account.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|institution_id|string|true|none|The ID of the financial institution associated with the Item.|
+|institution_name|string|true|none|The full financial institution name associated with the Item.|
+|item_id|[ItemId](#schemaitemid)|true|none|The `item_id` of the Item associated with this webhook, warning, or error|
+|last_updated_time|string(date-time)|true|none|The time when this Item's data was last retrieved from the financial institution prior to report generation.|
+|accounts|[[CraReportGetIncomeInsightsAccount](#schemacrareportgetincomeinsightsaccount)]|true|none|The accounts on the Item used to generate the product.|
+
+<h2 id="tocS_CraReportGetIncomeInsightsAccount">CraReportGetIncomeInsightsAccount</h2>
+<!-- backwards compatibility -->
+<a id="schemacrareportgetincomeinsightsaccount"></a>
+<a id="schema_CraReportGetIncomeInsightsAccount"></a>
+<a id="tocScrareportgetincomeinsightsaccount"></a>
+<a id="tocscrareportgetincomeinsightsaccount"></a>
+
+```json
+{
+  "account_id": "string",
+  "name": "string",
+  "official_name": "string",
+  "mask": "string",
+  "type": "investment",
+  "subtype": "401a",
+  "consumer_disputes": [
+    {
+      "consumer_dispute_id": "string",
+      "dispute_field_create_date": "1970-01-01",
+      "category": "TRANSACTION",
+      "statement": "string"
+    }
+  ]
+}
+```
+
+An account used to generate `cra_income_insights`, with the consumer's dispute statements for it.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|account_id|string|true|none|Plaid's unique identifier for the account. This value will not change unless Plaid can't reconcile the account with the data returned by the financial institution. If this happens a new `account_id` will be assigned to the account.<br><br>Like all Plaid identifiers, the `account_id` is case sensitive.|
+|name|string|true|none|The name of the account, either assigned by the user or by the financial institution itself.|
+|official_name|string \| null|true|none|The official name of the account as given by the financial institution.|
+|mask|string \| null|true|none|The last 2-4 alphanumeric characters of an account's official account number. Note that the mask may be non-unique between an Item's accounts, and it may also not match the mask that the bank displays to the user.|
+|type|[AccountType](#schemaaccounttype)|true|none|`investment:` Investment account. In API versions 2018-05-22 and earlier, this type is called `brokerage` instead.<br><br>`credit:` Credit card<br><br>`depository:` Depository account<br><br>`loan:` Loan account<br><br>`payroll:` Payroll account<br><br>`other:` Non-specified account type<br><br>See the [Account type schema](https://plaid.com/docs/api/accounts#account-type-schema) for a full listing of account types and corresponding subtypes.|
+|subtype|[AccountSubtype](#schemaaccountsubtype)|true|none|See the [Account type schema](https://plaid.com/docs/api/accounts/#account-type-schema) for a full listing of account types and corresponding subtypes.|
+|consumer_disputes|[[ConsumerDispute](#schemaconsumerdispute)]|true|none|The valid dispute statements previously submitted by the consumer for this account.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|investment|
+|type|credit|
+|type|depository|
+|type|loan|
+|type|brokerage|
+|type|payroll|
+|type|other|
+|subtype|401a|
+|subtype|401k|
+|subtype|403B|
+|subtype|457b|
+|subtype|529|
+|subtype|530a|
+|subtype|auto|
+|subtype|brokerage|
+|subtype|business|
+|subtype|cash isa|
+|subtype|cash management|
+|subtype|cd|
+|subtype|checking|
+|subtype|commercial|
+|subtype|commercial line of credit|
+|subtype|construction|
+|subtype|consumer|
+|subtype|credit card|
+|subtype|crypto exchange|
+|subtype|ebt|
+|subtype|education savings account|
+|subtype|fhsa|
+|subtype|fixed annuity|
+|subtype|gic|
+|subtype|health reimbursement arrangement|
+|subtype|home equity|
+|subtype|home equity loan|
+|subtype|hsa|
+|subtype|isa|
+|subtype|ira|
+|subtype|keogh|
+|subtype|lif|
+|subtype|life insurance|
+|subtype|limited purpose checking|
+|subtype|line of credit|
+|subtype|lira|
+|subtype|loan|
+|subtype|lrif|
+|subtype|lrsp|
+|subtype|money market|
+|subtype|mortgage|
+|subtype|mutual fund|
+|subtype|non-custodial wallet|
+|subtype|non-taxable brokerage account|
+|subtype|other|
+|subtype|other insurance|
+|subtype|other annuity|
+|subtype|overdraft|
+|subtype|paypal|
+|subtype|payroll|
+|subtype|pension|
+|subtype|prediction market|
+|subtype|prepaid|
+|subtype|prif|
+|subtype|profit sharing plan|
+|subtype|qshr|
+|subtype|rdsp|
+|subtype|resp|
+|subtype|retirement|
+|subtype|rlif|
+|subtype|roth|
+|subtype|roth 401k|
+|subtype|roth 403B|
+|subtype|roth 457b|
+|subtype|roth pension|
+|subtype|roth profit sharing plan|
+|subtype|roth thrift savings plan|
+|subtype|rrif|
+|subtype|rrsp|
+|subtype|sarsep|
+|subtype|savings|
+|subtype|sep ira|
+|subtype|simple ira|
+|subtype|sipp|
+|subtype|stock plan|
+|subtype|student|
+|subtype|thrift savings plan|
+|subtype|tfsa|
+|subtype|trust|
+|subtype|ugma|
+|subtype|utma|
+|subtype|variable annuity|
+
+<h2 id="tocS_CraReportGetIncomeCompleteItem">CraReportGetIncomeCompleteItem</h2>
+<!-- backwards compatibility -->
+<a id="schemacrareportgetincomecompleteitem"></a>
+<a id="schema_CraReportGetIncomeCompleteItem"></a>
+<a id="tocScrareportgetincomecompleteitem"></a>
+<a id="tocscrareportgetincomecompleteitem"></a>
+
+```json
+{
+  "institution_id": "string",
+  "institution_name": "string",
+  "item_id": "string",
+  "last_updated_time": "1970-01-01T00:00:00Z",
+  "accounts": [
+    {
+      "account_id": "string",
+      "name": "string",
+      "official_name": "string",
+      "mask": "string",
+      "type": "investment",
+      "subtype": "401a",
+      "primary_account": {
+        "is_primary": true,
+        "score": 0
+      },
+      "identity_match": {
+        "legal_name": {
+          "score": 0,
+          "is_first_name_or_last_name_match": true,
+          "is_nickname_match": true,
+          "is_business_name_detected": true
+        },
+        "phone_number": {
+          "score": 0
+        },
+        "email_address": {
+          "score": 0
+        },
+        "address": {
+          "score": 0,
+          "is_postal_code_match": true
+        }
+      },
+      "owners": [
+        {
+          "names": [
+            "string"
+          ],
+          "phone_numbers": [
+            {
+              "data": "string",
+              "primary": true,
+              "type": "home"
+            }
+          ],
+          "emails": [
+            {
+              "data": "string",
+              "primary": true,
+              "type": "primary"
+            }
+          ],
+          "addresses": [
+            {
+              "data": {
+                "city": "string",
+                "region": "string",
+                "street": "string",
+                "postal_code": "string",
+                "country": "string"
+              },
+              "primary": true
+            }
+          ]
+        }
+      ],
+      "consumer_disputes": [
+        {
+          "consumer_dispute_id": "string",
+          "dispute_field_create_date": "1970-01-01",
+          "category": "TRANSACTION",
+          "statement": "string"
+        }
+      ]
+    }
+  ]
+}
+```
+
+An Item used to generate `cra_income_complete`, with each account's owners, identity match scores, primary account prediction, and the consumer's dispute statements.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|institution_id|string|true|none|The ID of the financial institution associated with the Item.|
+|institution_name|string|true|none|The full financial institution name associated with the Item.|
+|item_id|[ItemId](#schemaitemid)|true|none|The `item_id` of the Item associated with this webhook, warning, or error|
+|last_updated_time|string(date-time)|true|none|The time when this Item's data was last retrieved from the financial institution prior to report generation.|
+|accounts|[[CraReportGetIncomeCompleteAccount](#schemacrareportgetincomecompleteaccount)]|true|none|The accounts on the Item used to generate the product.|
+
+<h2 id="tocS_CraReportGetIncomeCompleteAccount">CraReportGetIncomeCompleteAccount</h2>
+<!-- backwards compatibility -->
+<a id="schemacrareportgetincomecompleteaccount"></a>
+<a id="schema_CraReportGetIncomeCompleteAccount"></a>
+<a id="tocScrareportgetincomecompleteaccount"></a>
+<a id="tocscrareportgetincomecompleteaccount"></a>
+
+```json
+{
+  "account_id": "string",
+  "name": "string",
+  "official_name": "string",
+  "mask": "string",
+  "type": "investment",
+  "subtype": "401a",
+  "primary_account": {
+    "is_primary": true,
+    "score": 0
+  },
+  "identity_match": {
+    "legal_name": {
+      "score": 0,
+      "is_first_name_or_last_name_match": true,
+      "is_nickname_match": true,
+      "is_business_name_detected": true
+    },
+    "phone_number": {
+      "score": 0
+    },
+    "email_address": {
+      "score": 0
+    },
+    "address": {
+      "score": 0,
+      "is_postal_code_match": true
+    }
+  },
+  "owners": [
+    {
+      "names": [
+        "string"
+      ],
+      "phone_numbers": [
+        {
+          "data": "string",
+          "primary": true,
+          "type": "home"
+        }
+      ],
+      "emails": [
+        {
+          "data": "string",
+          "primary": true,
+          "type": "primary"
+        }
+      ],
+      "addresses": [
+        {
+          "data": {
+            "city": "string",
+            "region": "string",
+            "street": "string",
+            "postal_code": "string",
+            "country": "string"
+          },
+          "primary": true
+        }
+      ]
+    }
+  ],
+  "consumer_disputes": [
+    {
+      "consumer_dispute_id": "string",
+      "dispute_field_create_date": "1970-01-01",
+      "category": "TRANSACTION",
+      "statement": "string"
+    }
+  ]
+}
+```
+
+An account used to generate `cra_income_complete`, with its owners, identity match scores, primary account prediction, and the consumer's dispute statements for it.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|account_id|string|true|none|Plaid's unique identifier for the account. This value will not change unless Plaid can't reconcile the account with the data returned by the financial institution. If this happens a new `account_id` will be assigned to the account.<br><br>Like all Plaid identifiers, the `account_id` is case sensitive.|
+|name|string|true|none|The name of the account, either assigned by the user or by the financial institution itself.|
+|official_name|string \| null|true|none|The official name of the account as given by the financial institution.|
+|mask|string \| null|true|none|The last 2-4 alphanumeric characters of an account's official account number. Note that the mask may be non-unique between an Item's accounts, and it may also not match the mask that the bank displays to the user.|
+|type|[AccountType](#schemaaccounttype)|true|none|`investment:` Investment account. In API versions 2018-05-22 and earlier, this type is called `brokerage` instead.<br><br>`credit:` Credit card<br><br>`depository:` Depository account<br><br>`loan:` Loan account<br><br>`payroll:` Payroll account<br><br>`other:` Non-specified account type<br><br>See the [Account type schema](https://plaid.com/docs/api/accounts#account-type-schema) for a full listing of account types and corresponding subtypes.|
+|subtype|[AccountSubtype](#schemaaccountsubtype)|true|none|See the [Account type schema](https://plaid.com/docs/api/accounts/#account-type-schema) for a full listing of account types and corresponding subtypes.|
+|primary_account|[CraReportGetAccountPrimaryAccount](#schemacrareportgetaccountprimaryaccount)|true|none|Plaid's prediction of whether the account is the user's primary account. `null` if the account could not be scored or if scoring is not supported by the product.|
+|identity_match|[CraReportGetAccountIdentityMatch](#schemacrareportgetaccountidentitymatch)|true|none|Scores for how closely the user's identity, as provided via `/user/create` or `/user/update`, matches the account owner information reported by the financial institution. `null` if the account was not scored or if identity matching is not supported by the product. Within each score object, `score` is `null` when either the user or the financial institution did not provide that field.|
+|owners|[[Owner](#schemaowner)]|true|none|Data returned by the financial institution about the account owner or owners. Multiple owners on a single account will be represented in the same `owner` object, not in multiple owner objects within the array. Empty if no owners are found, or if data is not supported by the product and/or scope.|
+|consumer_disputes|[[ConsumerDispute](#schemaconsumerdispute)]|true|none|The valid dispute statements previously submitted by the consumer for this account.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|investment|
+|type|credit|
+|type|depository|
+|type|loan|
+|type|brokerage|
+|type|payroll|
+|type|other|
+|subtype|401a|
+|subtype|401k|
+|subtype|403B|
+|subtype|457b|
+|subtype|529|
+|subtype|530a|
 |subtype|auto|
 |subtype|brokerage|
 |subtype|business|
@@ -151489,7 +158497,7 @@ Cashflow Insights report metadata returned by `/cra/report/get`.
 |item_count|integer|true|none|The number of Items used to generate the report.|
 |account_count|integer|true|none|The number of accounts used to generate the report.|
 |institution_ids|[string]|true|none|The institution IDs of the Items used to generate the report.|
-|primary_account_count|integer|true|none|The number of accounts carrying Plaid's primary account indicator.|
+|primary_account_count|integer|true|none|The number of accounts carrying Plaid's primary account indicator, based on a report-level view of the user's transaction history.|
 |depository_account_type_count|integer|true|none|The number of depository accounts used to generate the report.|
 |credit_account_type_count|integer|true|none|The number of credit accounts used to generate the report.|
 |investment_account_type_count|integer|true|none|The number of investment accounts used to generate the report.|
@@ -151534,7 +158542,7 @@ Network Insights report metadata returned by `/cra/report/get`.
 |item_count|integer|true|none|The number of Items used to generate the report.|
 |account_count|integer|true|none|The number of accounts used to generate the report.|
 |institution_ids|[string]|true|none|The institution IDs of the Items used to generate the report.|
-|primary_account_count|integer|true|none|The number of accounts carrying Plaid's primary account indicator.|
+|primary_account_count|integer|true|none|The number of accounts carrying Plaid's primary account indicator, based on a report-level view of the user's transaction history.|
 |depository_account_type_count|integer|true|none|The number of depository accounts used to generate the report.|
 |credit_account_type_count|integer|true|none|The number of credit accounts used to generate the report.|
 |investment_account_type_count|integer|true|none|The number of investment accounts used to generate the report.|
@@ -151579,7 +158587,7 @@ Income Insights report metadata returned by `/cra/report/get`.
 |item_count|integer|true|none|The number of Items used to generate the report.|
 |account_count|integer|true|none|The number of accounts used to generate the report.|
 |institution_ids|[string]|true|none|The institution IDs of the Items used to generate the report.|
-|primary_account_count|integer|true|none|The number of accounts carrying Plaid's primary account indicator.|
+|primary_account_count|integer|true|none|The number of accounts carrying Plaid's primary account indicator, based on a report-level view of the user's transaction history.|
 |depository_account_type_count|integer|true|none|The number of depository accounts used to generate the report.|
 |credit_account_type_count|integer|true|none|The number of credit accounts used to generate the report.|
 |investment_account_type_count|integer|true|none|The number of investment accounts used to generate the report.|
@@ -151769,7 +158777,7 @@ Home Lending data returned by `/cra/report/get`.
 |version|[CraProductVersion](#schemacraproductversion)|true|none|A string that specifies a particular version of a CRA product.|
 |metadata|[CraReportGetHomeLendingMetadata](#schemacrareportgethomelendingmetadata)|true|none|Home Lending report metadata returned by `/cra/report/get`.|
 |attributes|[CraReportGetHomeLendingAttributes](#schemacrareportgethomelendingattributes)|true|none|Home Lending attribute data returned by `/cra/report/get`.|
-|items|[[CraReportGetEnrichedItem](#schemacrareportgetenricheditem)]|true|none|The Items, and their accounts, used to generate this product. Always empty when `scope` is `PLAID_NETWORK`, or if this product failed to generate.|
+|items|[[CraReportGetHomeLendingItem](#schemacrareportgethomelendingitem)]|true|none|The Items, and their accounts, used to generate this product. Always empty when `scope` is `PLAID_NETWORK`, or if this product failed to generate.|
 |errors|[[PlaidError](#schemaplaiderror)]|true|none|Product-level errors. Non-empty when this product failed to generate; empty on success.|
 
 #### Enumerated Values
@@ -153605,7 +160613,7 @@ Documentation not found in the MISMO model viewer and not provided by Freddie Ma
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|ASSET_DETAIL|[AssetDetail](#schemaassetdetail)|true|none|Details about an asset.|
+|ASSET_DETAIL|[AssetDetail](#schemaassetdetail)|true|none|Details about an asset. In CRA reports, holdings-derived balances, `AssetRetirementIndicator`, and `AssetEmployerSponsoredIndicator` may be omitted when recent investment data was unavailable at report generation. The account's current and available balances remain included.|
 |ASSET_OWNERS|[AssetOwners](#schemaassetowners)|true|none|Documentation not found in the MISMO model viewer and not provided by Freddie Mac.|
 |ASSET_HOLDER|[AssetHolder](#schemaassetholder)|true|none|Documentation not found in the MISMO model viewer and not provided by Freddie Mac.|
 |ASSET_TRANSACTIONS|[AssetTransactions](#schemaassettransactions)|true|none|Documentation not found in the MISMO model viewer and not provided by Freddie Mac.|
@@ -153644,7 +160652,7 @@ Documentation not found in the MISMO model viewer and not provided by Freddie Ma
 }
 ```
 
-Details about an asset.
+Details about an asset. In CRA reports, holdings-derived balances, `AssetRetirementIndicator`, and `AssetEmployerSponsoredIndicator` may be omitted when recent investment data was unavailable at report generation. The account's current and available balances remain included.
 
 ### Properties
 
@@ -153822,7 +160830,7 @@ Documentation not found in the MISMO model viewer and not provided by Freddie Ma
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|ASSET_HOLDING|[[AssetHolding](#schemaassetholding)]|true|none|none|
+|ASSET_HOLDING|[[AssetHolding](#schemaassetholding)]|true|none|The holdings associated with the account. In CRA reports, this array may be empty when recent investment data was unavailable at report generation.|
 
 <h2 id="tocS_AssetHolding">AssetHolding</h2>
 <!-- backwards compatibility -->
@@ -155506,7 +162514,7 @@ Documentation not found in the MISMO model viewer and not provided by Freddie Ma
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|ASSET_DETAIL|[AssetDetail](#schemaassetdetail)|true|none|Details about an asset.|
+|ASSET_DETAIL|[AssetDetail](#schemaassetdetail)|true|none|Details about an asset. In CRA reports, holdings-derived balances, `AssetRetirementIndicator`, and `AssetEmployerSponsoredIndicator` may be omitted when recent investment data was unavailable at report generation. The account's current and available balances remain included.|
 |ASSET_OWNERS|[AssetOwners](#schemaassetowners)|true|none|Documentation not found in the MISMO model viewer and not provided by Freddie Mac.|
 |ASSET_HOLDER|[AssetHolder](#schemaassetholder)|true|none|Documentation not found in the MISMO model viewer and not provided by Freddie Mac.|
 |ASSET_HOLDINGS|[AssetHoldings](#schemaassetholdings)|false|none|Documentation not found in the MISMO model viewer and not provided by Freddie Mac.|
@@ -155554,7 +162562,7 @@ Documentation not found in the MISMO model viewer and not provided by Freddie Ma
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|ASSET_TRANSACTION|[[CreditFreddieMacAssetTransaction](#schemacreditfreddiemacassettransaction)]|true|none|none|
+|ASSET_TRANSACTION|[[CreditFreddieMacAssetTransaction](#schemacreditfreddiemacassettransaction)]|true|none|The transactions associated with the account. In CRA reports, investment transactions may be excluded when recent investment data was unavailable at report generation. Other account transactions remain included.|
 
 <h2 id="tocS_CreditFreddieMacAssetTransaction">CreditFreddieMacAssetTransaction</h2>
 <!-- backwards compatibility -->
@@ -156445,11 +163453,11 @@ Identity information about an account
 |mask|string \| null|true|none|The last 2-4 alphanumeric characters of either the account's displayed mask or the account's official account number. Note that the mask may be non-unique between an Item's accounts.|
 |name|string|true|none|The name of the account, either assigned by the user or by the financial institution itself|
 |official_name|string \| null|true|none|The official name of the account as given by the financial institution|
-|type|[AccountType](#schemaaccounttype)|true|none|`investment:` Investment account. In API versions 2018-05-22 and earlier, this type is called `brokerage` instead.<br><br>`credit:` Credit card<br><br>`depository:` Depository account<br><br>`loan:` Loan account<br><br>`other:` Non-specified account type<br><br>See the [Account type schema](https://plaid.com/docs/api/accounts#account-type-schema) for a full listing of account types and corresponding subtypes.|
+|type|[AccountType](#schemaaccounttype)|true|none|`investment:` Investment account. In API versions 2018-05-22 and earlier, this type is called `brokerage` instead.<br><br>`credit:` Credit card<br><br>`depository:` Depository account<br><br>`loan:` Loan account<br><br>`payroll:` Payroll account<br><br>`other:` Non-specified account type<br><br>See the [Account type schema](https://plaid.com/docs/api/accounts#account-type-schema) for a full listing of account types and corresponding subtypes.|
 |subtype|[AccountSubtype](#schemaaccountsubtype)|true|none|See the [Account type schema](https://plaid.com/docs/api/accounts/#account-type-schema) for a full listing of account types and corresponding subtypes.|
 |verification_status|string|false|none|Indicates an Item's micro-deposit-based verification or database verification status. This field is only populated when using Auth and falling back to micro-deposit or database verification. Possible values are:<br><br>`pending_automatic_verification`: The Item is pending automatic verification.<br><br>`pending_manual_verification`: The Item is pending manual micro-deposit verification. Items remain in this state until the user successfully verifies the code.<br><br>`automatically_verified`: The Item has successfully been automatically verified.<br><br>`manually_verified`: The Item has successfully been manually verified.<br><br>`verification_expired`: Plaid was unable to automatically verify the deposit within 7 calendar days and will no longer attempt to validate the Item. Users may retry by submitting their information again through Link.<br><br>`verification_failed`: The Item failed manual micro-deposit verification because the user exhausted all 3 verification attempts. Users may retry by submitting their information again through Link.<br><br>`unsent`: The Item is pending micro-deposit verification, but Plaid has not yet sent the micro-deposit.<br><br>`database_insights_fail`: The Item's numbers have been verified using Plaid's data sources and have signal for being invalid and/or have no signal for being valid. Typically this indicates that the routing number is invalid, the account number does not match the account number format associated with the routing number, or the account has been reported as closed or frozen. Only returned for Auth Items created via Database Auth.<br><br>`database_insights_pass`: The Item's numbers have been verified using Plaid's data sources: the routing and account number match a routing and account number of an account recognized on the Plaid network, and the account is not known by Plaid to be frozen or closed. Only returned for Auth Items created via Database Auth.<br><br>`database_insights_pass_with_caution`: The Item's numbers have been verified using Plaid's data sources and have some signal for being valid: the routing and account number were not recognized on the Plaid network, but the routing number is valid and the account number is a potential valid account number for that routing number. Only returned for Auth Items created via Database Auth.<br><br>`database_matched`: (deprecated) The Item has successfully been verified using Plaid's data sources. Only returned for Auth Items created via Database Match.<br><br>Omitted or empty string: Neither micro-deposit-based verification nor database verification are being used for the Item.|
 |verification_name|string|false|none|The account holder name that was used for micro-deposit and/or database verification. Only returned for Auth Items created via micro-deposit or database verification. This name was manually-entered by the user during Link, unless it was otherwise provided via the `user.legal_name` request field in `/link/token/create` for the Link session that created the Item.|
-|verification_insights|[AccountVerificationInsights](#schemaaccountverificationinsights)|false|none|Insights from performing database verification for the account. Only returned for Auth Items using Database Auth.|
+|verification_insights|object \| null|false|none|none|
 |persistent_account_id|string|false|none|A unique and persistent identifier for accounts that can be used to trace multiple instances of the same account across different Items for depository accounts. This field is currently supported only for Items at institutions that use Tokenized Account Numbers (i.e., Chase, PNC, and US Bank). Because these accounts have a different account number each time they are linked, this field may be used instead of the account number to uniquely identify an account across multiple Items for payments use cases, helping to reduce duplicate Items or attempted fraud. In Sandbox, this field is populated for TAN-based institutions (`ins_56`, `ins_13`, `ins_127990`) as well as the OAuth Sandbox institution (`ins_127287`); in Production, it will only be populated for accounts at applicable institutions.|
 |apy|number(double) \| null|false|none|The annual percentage yield (APY) on an interest-bearing deposit account, expressed as a percentage (e.g. `4.25` means 4.25%). In the event that the APY is not provided by the financial institution, Plaid will return a value of `null`.|
 |holder_category|[AccountHolderCategory](#schemaaccountholdercategory)|false|none|Indicates the account's categorization as either a personal or a business account. This field is currently in beta; to request access, contact your account manager. Coverage varies by institution, with approximately 70% of accounts populated overall.|
@@ -156466,12 +163474,14 @@ Identity information about an account
 |type|depository|
 |type|loan|
 |type|brokerage|
+|type|payroll|
 |type|other|
 |subtype|401a|
 |subtype|401k|
 |subtype|403B|
 |subtype|457b|
 |subtype|529|
+|subtype|530a|
 |subtype|auto|
 |subtype|brokerage|
 |subtype|business|
@@ -157229,6 +164239,9 @@ ItemImportRequest defines the request schema for `/item/import`
 |products|cra_plaid_credit_score|
 |products|cra_qualify|
 |products|cra_home_lending|
+|products|cra_lend_score_complete|
+|products|cra_income_complete|
+|products|cra_home_lending_voa|
 |products|layer|
 |products|pay_by_bank|
 |products|protect_linked_bank|
@@ -157273,6 +164286,8 @@ The method used to populate Auth data for the Item. This field is only populated
 `DATABASE_MATCH`: The Item's Auth data was provided via the Database Match flow.
 
 `DATABASE_INSIGHTS`: The Item's Auth data was provided via the Database Insights flow.
+
+`DATABASE_INSIGHTS_API`: The Item's Auth data was provided via [`/auth/verify`](https://plaid.com/docs/api/products/auth/#authverify).
 
 `TRANSFER_MIGRATED`: The Item's Auth data was provided via [`/transfer/migrate_account`](https://plaid.com/docs/api/products/transfer/account-linking/#migrate-account-into-transfers).
 
@@ -157407,15 +164422,15 @@ Metadata about the Item.
 |institution_id|string \| null|false|none|The Plaid Institution ID associated with the Item. Field is omitted for Items created without an institution connection, such as Items created via Same-Day Micro-deposits.|
 |institution_name|string \| null|false|none|The name of the institution associated with the Item. Field is omitted for Items created without an institution connection, such as Items created via Same-Day Micro-deposits.|
 |webhook|string \| null|true|none|The URL registered to receive webhooks for the Item. Empty string if no webhook is set.|
-|auth_method|[ItemAuthMethod](#schemaitemauthmethod)|false|none|The method used to populate Auth data for the Item. This field is only populated for Items that have had Auth numbers data set on at least one of their accounts, and will be omitted otherwise. For info about the various flows, see our [Auth coverage documentation](https://plaid.com/docs/auth/coverage/).<br><br>`INSTANT_AUTH`: The Item's Auth data was provided directly by the user's institution connection.<br><br>`INSTANT_MATCH`: The Item's Auth data was provided via the Instant Match fallback flow.<br><br>`AUTOMATED_MICRODEPOSITS`: The Item's Auth data was provided via the Automated Micro-deposits flow.<br><br>`SAME_DAY_MICRODEPOSITS`: The Item's Auth data was provided via the Same-Day Micro-deposits flow.<br><br>`INSTANT_MICRODEPOSITS`: The Item's Auth data was provided via the Instant Micro-deposits flow.<br><br>`DATABASE_MATCH`: The Item's Auth data was provided via the Database Match flow.<br><br>`DATABASE_INSIGHTS`: The Item's Auth data was provided via the Database Insights flow.<br><br>`TRANSFER_MIGRATED`: The Item's Auth data was provided via [`/transfer/migrate_account`](https://plaid.com/docs/api/products/transfer/account-linking/#migrate-account-into-transfers).<br><br>`INVESTMENTS_FALLBACK`: The Item's Auth data for Investments Move was provided via a [fallback flow](https://plaid.com/docs/investments-move/#fallback-flows).|
+|auth_method|[ItemAuthMethod](#schemaitemauthmethod)|false|none|The method used to populate Auth data for the Item. This field is only populated for Items that have had Auth numbers data set on at least one of their accounts, and will be omitted otherwise. For info about the various flows, see our [Auth coverage documentation](https://plaid.com/docs/auth/coverage/).<br><br>`INSTANT_AUTH`: The Item's Auth data was provided directly by the user's institution connection.<br><br>`INSTANT_MATCH`: The Item's Auth data was provided via the Instant Match fallback flow.<br><br>`AUTOMATED_MICRODEPOSITS`: The Item's Auth data was provided via the Automated Micro-deposits flow.<br><br>`SAME_DAY_MICRODEPOSITS`: The Item's Auth data was provided via the Same-Day Micro-deposits flow.<br><br>`INSTANT_MICRODEPOSITS`: The Item's Auth data was provided via the Instant Micro-deposits flow.<br><br>`DATABASE_MATCH`: The Item's Auth data was provided via the Database Match flow.<br><br>`DATABASE_INSIGHTS`: The Item's Auth data was provided via the Database Insights flow.<br><br>`DATABASE_INSIGHTS_API`: The Item's Auth data was provided via [`/auth/verify`](https://plaid.com/docs/api/products/auth/#authverify).<br><br>`TRANSFER_MIGRATED`: The Item's Auth data was provided via [`/transfer/migrate_account`](https://plaid.com/docs/api/products/transfer/account-linking/#migrate-account-into-transfers).<br><br>`INVESTMENTS_FALLBACK`: The Item's Auth data for Investments Move was provided via a [fallback flow](https://plaid.com/docs/investments-move/#fallback-flows).|
 |error|[PlaidError](#schemaplaiderror)|true|none|Errors are identified by `error_code` and categorized by `error_type`. Use these in preference to HTTP status codes to identify and handle specific errors. HTTP status codes are set and provide the broadest categorization of errors: 4xx codes are for developer- or user-related errors, and 5xx codes are for Plaid-related errors, and the status will be 2xx in non-error cases. An Item with a non-`null` error object will only be part of an API response when calling `/item/get` to view Item status. Otherwise, error fields will be `null` if no error has occurred; if an error has occurred, an error code will be returned instead.|
 |available_products|[[Products](#schemaproducts)]|true|none|A list of products available for the Item that have not yet been accessed. The contents of this array will be mutually exclusive with `billed_products`.|
 |billed_products|[[Products](#schemaproducts)]|true|none|A list of products that have been billed for the Item. The contents of this array will be mutually exclusive with `available_products`. Note - `billed_products` is populated in all environments but only requests in Production are billed. Also note that products that are billed on a pay-per-call basis rather than a pay-per-Item basis, such as `balance`, will not appear here.<br>|
-|products|[[Products](#schemaproducts)]|false|none|A list of products added to the Item. In almost all cases, this will be the same as the `billed_products` field. For some products, it is possible for the product to be added to an Item but not yet billed (e.g. Assets, before `/asset_report/create` has been called, or Auth or Identity when added as Optional Products but before their endpoints have been called), in which case the product may appear in `products` but not in `billed_products`.<br>|
+|products|[[Products](#schemaproducts)]|true|none|A list of products added to the Item. In almost all cases, this will be the same as the `billed_products` field. For some products, it is possible for the product to be added to an Item but not yet billed (e.g. Assets, before `/asset_report/create` has been called, or Auth or Identity when added as Optional Products but before their endpoints have been called), in which case the product may appear in `products` but not in `billed_products`.<br>|
 |consented_products|[[Products](#schemaproducts)]|false|none|A list of products that the user has consented to for the Item via [Data Transparency Messaging](https://plaid.com/docs/link/data-transparency-messaging-migration-guide). This will consist of all products where both of the following are true: the user has consented to the required data scopes for that product and you have Production access for that product.<br>|
 |consent_expiration_time|string(date-time) \| null|true|none|The date and time at which the Item's access consent will expire, in [ISO 8601](https://wikipedia.org/wiki/ISO_8601) format. If the Item does not have consent expiration scheduled, this field will be `null`. Currently, only institutions in Europe and a small number of institutions in the US have expiring consent. For a list of US institutions that currently expire consent, see the [OAuth Guide](https://plaid.com/docs/link/oauth/#refreshing-item-consent).|
 |update_type|string|true|none|Indicates whether an Item requires user interaction to be updated, which can be the case for Items with some forms of two-factor authentication.<br><br>`background` - Item can be updated in the background<br><br>`user_present_required` - Item requires user interaction to be updated|
-|paired_item_id|string \| null|false|none|The `item_id` of the Item that was created alongside this one in a single Link session. Only present for Items created in a hybrid Link flow that produces separate Plaid Inc and Plaid Check items; `null` for every other Item.|
+|paired_item_id|string \| null|false|none|The `item_id` of the Item paired with this one. This is either the Item created alongside it when a single Link session used both Plaid Inc and Plaid Check products, or the Plaid Check Item created when Plaid Check products were added to an existing Plaid Inc Item through update mode (see [Using Plaid Check products alongside Plaid products](https://plaid.com/docs/check/add-to-app/#using-plaid-check-products-alongside-plaid-products)). For a Plaid Inc Item, this is the paired Plaid Check Item, and the reverse for a Plaid Check Item. The field is omitted for Items that have no paired Item. It is also omitted if Plaid cannot look up the paired Item at request time, so do not treat its absence as proof that an Item is unpaired.|
 
 #### Enumerated Values
 
@@ -157430,6 +164445,7 @@ Metadata about the Item.
 |auth_method|DATABASE_INSIGHTS|
 |auth_method|TRANSFER_MIGRATED|
 |auth_method|INVESTMENTS_FALLBACK|
+|auth_method|DATABASE_INSIGHTS_API|
 |auth_method|null|
 |available_products|assets|
 |available_products|auth|
@@ -157467,6 +164483,9 @@ Metadata about the Item.
 |available_products|cra_plaid_credit_score|
 |available_products|cra_qualify|
 |available_products|cra_home_lending|
+|available_products|cra_lend_score_complete|
+|available_products|cra_income_complete|
+|available_products|cra_home_lending_voa|
 |available_products|layer|
 |available_products|pay_by_bank|
 |available_products|protect_linked_bank|
@@ -157507,6 +164526,9 @@ Metadata about the Item.
 |billed_products|cra_plaid_credit_score|
 |billed_products|cra_qualify|
 |billed_products|cra_home_lending|
+|billed_products|cra_lend_score_complete|
+|billed_products|cra_income_complete|
+|billed_products|cra_home_lending_voa|
 |billed_products|layer|
 |billed_products|pay_by_bank|
 |billed_products|protect_linked_bank|
@@ -157547,6 +164569,9 @@ Metadata about the Item.
 |products|cra_plaid_credit_score|
 |products|cra_qualify|
 |products|cra_home_lending|
+|products|cra_lend_score_complete|
+|products|cra_income_complete|
+|products|cra_home_lending_voa|
 |products|layer|
 |products|pay_by_bank|
 |products|protect_linked_bank|
@@ -157587,6 +164612,9 @@ Metadata about the Item.
 |consented_products|cra_plaid_credit_score|
 |consented_products|cra_qualify|
 |consented_products|cra_home_lending|
+|consented_products|cra_lend_score_complete|
+|consented_products|cra_income_complete|
+|consented_products|cra_home_lending_voa|
 |consented_products|layer|
 |consented_products|pay_by_bank|
 |consented_products|protect_linked_bank|
@@ -157663,16 +164691,16 @@ Metadata about the Item
 |institution_id|string \| null|false|none|The Plaid Institution ID associated with the Item. Field is omitted for Items created without an institution connection, such as Items created via Same-Day Micro-deposits.|
 |institution_name|string \| null|false|none|The name of the institution associated with the Item. Field is omitted for Items created without an institution connection, such as Items created via Same-Day Micro-deposits.|
 |webhook|string \| null|true|none|The URL registered to receive webhooks for the Item. Empty string if no webhook is set.|
-|auth_method|[ItemAuthMethod](#schemaitemauthmethod)|false|none|The method used to populate Auth data for the Item. This field is only populated for Items that have had Auth numbers data set on at least one of their accounts, and will be omitted otherwise. For info about the various flows, see our [Auth coverage documentation](https://plaid.com/docs/auth/coverage/).<br><br>`INSTANT_AUTH`: The Item's Auth data was provided directly by the user's institution connection.<br><br>`INSTANT_MATCH`: The Item's Auth data was provided via the Instant Match fallback flow.<br><br>`AUTOMATED_MICRODEPOSITS`: The Item's Auth data was provided via the Automated Micro-deposits flow.<br><br>`SAME_DAY_MICRODEPOSITS`: The Item's Auth data was provided via the Same-Day Micro-deposits flow.<br><br>`INSTANT_MICRODEPOSITS`: The Item's Auth data was provided via the Instant Micro-deposits flow.<br><br>`DATABASE_MATCH`: The Item's Auth data was provided via the Database Match flow.<br><br>`DATABASE_INSIGHTS`: The Item's Auth data was provided via the Database Insights flow.<br><br>`TRANSFER_MIGRATED`: The Item's Auth data was provided via [`/transfer/migrate_account`](https://plaid.com/docs/api/products/transfer/account-linking/#migrate-account-into-transfers).<br><br>`INVESTMENTS_FALLBACK`: The Item's Auth data for Investments Move was provided via a [fallback flow](https://plaid.com/docs/investments-move/#fallback-flows).|
+|auth_method|[ItemAuthMethod](#schemaitemauthmethod)|false|none|The method used to populate Auth data for the Item. This field is only populated for Items that have had Auth numbers data set on at least one of their accounts, and will be omitted otherwise. For info about the various flows, see our [Auth coverage documentation](https://plaid.com/docs/auth/coverage/).<br><br>`INSTANT_AUTH`: The Item's Auth data was provided directly by the user's institution connection.<br><br>`INSTANT_MATCH`: The Item's Auth data was provided via the Instant Match fallback flow.<br><br>`AUTOMATED_MICRODEPOSITS`: The Item's Auth data was provided via the Automated Micro-deposits flow.<br><br>`SAME_DAY_MICRODEPOSITS`: The Item's Auth data was provided via the Same-Day Micro-deposits flow.<br><br>`INSTANT_MICRODEPOSITS`: The Item's Auth data was provided via the Instant Micro-deposits flow.<br><br>`DATABASE_MATCH`: The Item's Auth data was provided via the Database Match flow.<br><br>`DATABASE_INSIGHTS`: The Item's Auth data was provided via the Database Insights flow.<br><br>`DATABASE_INSIGHTS_API`: The Item's Auth data was provided via [`/auth/verify`](https://plaid.com/docs/api/products/auth/#authverify).<br><br>`TRANSFER_MIGRATED`: The Item's Auth data was provided via [`/transfer/migrate_account`](https://plaid.com/docs/api/products/transfer/account-linking/#migrate-account-into-transfers).<br><br>`INVESTMENTS_FALLBACK`: The Item's Auth data for Investments Move was provided via a [fallback flow](https://plaid.com/docs/investments-move/#fallback-flows).|
 |error|[PlaidError](#schemaplaiderror)|true|none|Errors are identified by `error_code` and categorized by `error_type`. Use these in preference to HTTP status codes to identify and handle specific errors. HTTP status codes are set and provide the broadest categorization of errors: 4xx codes are for developer- or user-related errors, and 5xx codes are for Plaid-related errors, and the status will be 2xx in non-error cases. An Item with a non-`null` error object will only be part of an API response when calling `/item/get` to view Item status. Otherwise, error fields will be `null` if no error has occurred; if an error has occurred, an error code will be returned instead.|
 |available_products|[[Products](#schemaproducts)]|true|none|A list of products available for the Item that have not yet been accessed. The contents of this array will be mutually exclusive with `billed_products`.|
 |billed_products|[[Products](#schemaproducts)]|true|none|A list of products that have been billed for the Item. The contents of this array will be mutually exclusive with `available_products`. Note - `billed_products` is populated in all environments but only requests in Production are billed. Also note that products that are billed on a pay-per-call basis rather than a pay-per-Item basis, such as `balance`, will not appear here.<br>|
-|products|[[Products](#schemaproducts)]|false|none|A list of products added to the Item. In almost all cases, this will be the same as the `billed_products` field. For some products, it is possible for the product to be added to an Item but not yet billed (e.g. Assets, before `/asset_report/create` has been called, or Auth or Identity when added as Optional Products but before their endpoints have been called), in which case the product may appear in `products` but not in `billed_products`.<br>|
+|products|[[Products](#schemaproducts)]|true|none|A list of products added to the Item. In almost all cases, this will be the same as the `billed_products` field. For some products, it is possible for the product to be added to an Item but not yet billed (e.g. Assets, before `/asset_report/create` has been called, or Auth or Identity when added as Optional Products but before their endpoints have been called), in which case the product may appear in `products` but not in `billed_products`.<br>|
 |consented_products|[[Products](#schemaproducts)]|false|none|A list of products that the user has consented to for the Item via [Data Transparency Messaging](https://plaid.com/docs/link/data-transparency-messaging-migration-guide). This will consist of all products where both of the following are true: the user has consented to the required data scopes for that product and you have Production access for that product.<br>|
 |consent_expiration_time|string(date-time) \| null|true|none|The date and time at which the Item's access consent will expire, in [ISO 8601](https://wikipedia.org/wiki/ISO_8601) format. If the Item does not have consent expiration scheduled, this field will be `null`. Currently, only institutions in Europe and a small number of institutions in the US have expiring consent. For a list of US institutions that currently expire consent, see the [OAuth Guide](https://plaid.com/docs/link/oauth/#refreshing-item-consent).|
 |update_type|string|true|none|Indicates whether an Item requires user interaction to be updated, which can be the case for Items with some forms of two-factor authentication.<br><br>`background` - Item can be updated in the background<br><br>`user_present_required` - Item requires user interaction to be updated|
-|paired_item_id|string \| null|false|none|The `item_id` of the Item that was created alongside this one in a single Link session. Only present for Items created in a hybrid Link flow that produces separate Plaid Inc and Plaid Check items; `null` for every other Item.|
-|created_at|string(date-time)|false|none|The date and time when the Item was created, in [ISO 8601](https://wikipedia.org/wiki/ISO_8601) format.|
+|paired_item_id|string \| null|false|none|The `item_id` of the Item paired with this one. This is either the Item created alongside it when a single Link session used both Plaid Inc and Plaid Check products, or the Plaid Check Item created when Plaid Check products were added to an existing Plaid Inc Item through update mode (see [Using Plaid Check products alongside Plaid products](https://plaid.com/docs/check/add-to-app/#using-plaid-check-products-alongside-plaid-products)). For a Plaid Inc Item, this is the paired Plaid Check Item, and the reverse for a Plaid Check Item. The field is omitted for Items that have no paired Item. It is also omitted if Plaid cannot look up the paired Item at request time, so do not treat its absence as proof that an Item is unpaired.|
+|created_at|string(date-time) \| null|false|none|The date and time when the Item was created, in [ISO 8601](https://wikipedia.org/wiki/ISO_8601) format. This field is omitted if your Plaid client is not enabled to receive the `consented_use_cases` and `consented_data_scopes` fields on `/item/get`.|
 |consented_use_cases|[string]|false|none|A list of use cases that the user has consented to for the Item via [Data Transparency Messaging](https://plaid.com/docs/link/data-transparency-messaging-migration-guide).<br><br>You can see the full list of use cases or update the list of use cases to request at any time via the Link Customization section of the [Plaid Dashboard](https://dashboard.plaid.com/link/data-transparency-v5).|
 |consented_data_scopes|[[ItemConsentedDataScope](#schemaitemconsenteddatascope)]|false|none|A list of data scopes that the user has consented to for the Item via [Data Transparency Messaging](https://plaid.com/docs/link/data-transparency-messaging-migration-guide). These are based on the `consented_products`; see the [full mapping](https://plaid.com/docs/link/data-transparency-messaging-migration-guide/#data-scopes-by-product) of data scopes and products.|
 
@@ -157689,6 +164717,7 @@ Metadata about the Item
 |auth_method|DATABASE_INSIGHTS|
 |auth_method|TRANSFER_MIGRATED|
 |auth_method|INVESTMENTS_FALLBACK|
+|auth_method|DATABASE_INSIGHTS_API|
 |auth_method|null|
 |available_products|assets|
 |available_products|auth|
@@ -157726,6 +164755,9 @@ Metadata about the Item
 |available_products|cra_plaid_credit_score|
 |available_products|cra_qualify|
 |available_products|cra_home_lending|
+|available_products|cra_lend_score_complete|
+|available_products|cra_income_complete|
+|available_products|cra_home_lending_voa|
 |available_products|layer|
 |available_products|pay_by_bank|
 |available_products|protect_linked_bank|
@@ -157766,6 +164798,9 @@ Metadata about the Item
 |billed_products|cra_plaid_credit_score|
 |billed_products|cra_qualify|
 |billed_products|cra_home_lending|
+|billed_products|cra_lend_score_complete|
+|billed_products|cra_income_complete|
+|billed_products|cra_home_lending_voa|
 |billed_products|layer|
 |billed_products|pay_by_bank|
 |billed_products|protect_linked_bank|
@@ -157806,6 +164841,9 @@ Metadata about the Item
 |products|cra_plaid_credit_score|
 |products|cra_qualify|
 |products|cra_home_lending|
+|products|cra_lend_score_complete|
+|products|cra_income_complete|
+|products|cra_home_lending_voa|
 |products|layer|
 |products|pay_by_bank|
 |products|protect_linked_bank|
@@ -157846,6 +164884,9 @@ Metadata about the Item
 |consented_products|cra_plaid_credit_score|
 |consented_products|cra_qualify|
 |consented_products|cra_home_lending|
+|consented_products|cra_lend_score_complete|
+|consented_products|cra_income_complete|
+|consented_products|cra_home_lending_voa|
 |consented_products|layer|
 |consented_products|pay_by_bank|
 |consented_products|protect_linked_bank|
@@ -157913,7 +164954,7 @@ An object with information about the status of the Item.
 |---|---|---|---|---|
 |investments|[ItemStatusInvestments](#schemaitemstatusinvestments)|false|none|Information about the last successful and failed investments update for the Item.|
 |transactions|[ItemStatusTransactions](#schemaitemstatustransactions)|false|none|Information about the last successful and failed transactions update for the Item.|
-|last_webhook|[ItemStatusLastWebhook](#schemaitemstatuslastwebhook)|false|none|Information about the last webhook fired for the Item.|
+|last_webhook|[ItemStatusLastWebhook](#schemaitemstatuslastwebhook)|true|none|Information about the last webhook fired for the Item.|
 
 <h2 id="tocS_ItemStatusNullable">ItemStatusNullable</h2>
 <!-- backwards compatibility -->
@@ -157947,7 +164988,7 @@ An object with information about the status of the Item.
 |---|---|---|---|---|
 |investments|[ItemStatusInvestments](#schemaitemstatusinvestments)|false|none|Information about the last successful and failed investments update for the Item.|
 |transactions|[ItemStatusTransactions](#schemaitemstatustransactions)|false|none|Information about the last successful and failed transactions update for the Item.|
-|last_webhook|[ItemStatusLastWebhook](#schemaitemstatuslastwebhook)|false|none|Information about the last webhook fired for the Item.|
+|last_webhook|[ItemStatusLastWebhook](#schemaitemstatuslastwebhook)|true|none|Information about the last webhook fired for the Item.|
 
 <h2 id="tocS_ItemStatusTransactions">ItemStatusTransactions</h2>
 <!-- backwards compatibility -->
@@ -159523,8 +166564,8 @@ SignalEvaluateRequest defines the request schema for `/signal/evaluate`
 |client_user_id|string|false|none|A unique ID that identifies the end user in your system. This ID is used to correlate requests by a user with multiple Items. Personally identifiable information, such as an email address or phone number, should not be used in the `client_user_id`.|
 |is_recurring|boolean \| null|false|none|Use `true` if the ACH transaction is a part of recurring schedule (for example, a monthly repayment); `false` otherwise. When using a Balance-only ruleset, this field is ignored.|
 |default_payment_method|string \| null|false|none|The default ACH payment method to complete the transaction. When using a Balance-only ruleset, this field is ignored.<br><br>`SAME_DAY_ACH`: Same Day ACH by Nacha. The debit transaction is processed and settled on the same day.<br><br>`STANDARD_ACH`: Standard ACH by Nacha.<br><br>`MULTIPLE_PAYMENT_METHODS`: If there is no default debit rail or there are multiple payment methods.<br><br>Possible values:  `SAME_DAY_ACH`, `STANDARD_ACH`, `MULTIPLE_PAYMENT_METHODS`|
-|user|[SignalUser](#schemasignaluser)|false|none|Details about the end user initiating the transaction (i.e., the account holder). These fields are optional, but strongly recommended to increase the accuracy of results when using Signal Transaction Scores. When using a Balance-only ruleset, if the Signal Addendum has been signed, these fields are ignored; if the Addendum has not been signed, using these fields will result in an error.|
-|device|[SignalDevice](#schemasignaldevice)|false|none|Details about the end user's device. These fields are optional, but strongly recommended to increase the accuracy of results when using Signal Transaction Scores. When using a Balance-only Ruleset, these fields are ignored if the Signal Addendum has been signed; if it has not been signed, using these fields will result in an error.|
+|user|[SignalUser](#schemasignaluser)|false|none|Details about the end user initiating the transaction (i.e., the account holder). These fields are optional, but strongly recommended to increase the accuracy of results when using Signal Transaction Scores. When using a Balance-only ruleset, these fields are ignored.|
+|device|[SignalDevice](#schemasignaldevice)|false|none|Details about the end user's device. These fields are optional, but strongly recommended to increase the accuracy of results when using Signal Transaction Scores. When using a Balance-only ruleset, these fields are ignored.|
 |risk_profile_key|string \| null|false|none|**Deprecated.** Specifying `risk_profile_key` is deprecated. Please provide `ruleset` instead.|
 |ruleset_key|string \| null|false|none|The key of the ruleset to use for evaluating this transaction. You can create a ruleset using the Plaid Dashboard, under [Signal->Rules](https://dashboard.plaid.com/signal/risk-profiles). If not provided, for all new customers as of October 15, 2025, the `default` ruleset will be used. For existing Signal Transaction Scores customers as of October 15, 2025, by default, no ruleset will be used if the `ruleset_key` is not provided. For more information, or to opt out of using rulesets, see [Signal Rules](https://plaid.com/docs/signal/signal-rules/).|
 
@@ -159975,8 +167016,8 @@ ProcessorSignalEvaluateRequest defines the request schema for `/processor/signal
 |client_user_id|string|false|none|A unique ID that identifies the end user in your system. This ID is used to correlate requests by a user with multiple Items. Personally identifiable information, such as an email address or phone number, should not be used in the `client_user_id`.|
 |is_recurring|boolean \| null|false|none|**true** if the ACH transaction is a recurring transaction; **false** otherwise.|
 |default_payment_method|string \| null|false|none|The default ACH payment method to complete the transaction.<br><br>`SAME_DAY_ACH`: Same Day ACH by Nacha. The debit transaction is processed and settled on the same day.<br><br>`STANDARD_ACH`: Standard ACH by Nacha.<br><br>`MULTIPLE_PAYMENT_METHODS`: If there is no default debit rail or there are multiple payment methods.<br><br>Possible values:  `SAME_DAY_ACH`, `STANDARD_ACH`, `MULTIPLE_PAYMENT_METHODS`|
-|user|[SignalUser](#schemasignaluser)|false|none|Details about the end user initiating the transaction (i.e., the account holder). These fields are optional, but strongly recommended to increase the accuracy of results when using Signal Transaction Scores. When using a Balance-only ruleset, if the Signal Addendum has been signed, these fields are ignored; if the Addendum has not been signed, using these fields will result in an error.|
-|device|[SignalDevice](#schemasignaldevice)|false|none|Details about the end user's device. These fields are optional, but strongly recommended to increase the accuracy of results when using Signal Transaction Scores. When using a Balance-only Ruleset, these fields are ignored if the Signal Addendum has been signed; if it has not been signed, using these fields will result in an error.|
+|user|[SignalUser](#schemasignaluser)|false|none|Details about the end user initiating the transaction (i.e., the account holder). These fields are optional, but strongly recommended to increase the accuracy of results when using Signal Transaction Scores. When using a Balance-only ruleset, these fields are ignored.|
+|device|[SignalDevice](#schemasignaldevice)|false|none|Details about the end user's device. These fields are optional, but strongly recommended to increase the accuracy of results when using Signal Transaction Scores. When using a Balance-only ruleset, these fields are ignored.|
 |ruleset_key|string \| null|false|none|The key of the ruleset to use for this transaction. You can configure a ruleset using the Plaid Dashboard, under [Signal->Rules](https://dashboard.plaid.com/signal/risk-profiles). If not provided, for customers who began using Signal Transaction Scores before October 15, 2025, by default, no ruleset will be used; for customers who began using Signal Transaction Scores after that date, or for Balance customers, the `default` ruleset will be used. For more details, or to opt out of using a ruleset, see [Signal Rules](https://plaid.com/docs/signal/signal-rules/).|
 
 <h2 id="tocS_ProcessorSignalEvaluateResponse">ProcessorSignalEvaluateResponse</h2>
@@ -160535,7 +167576,7 @@ Conveys information about the errors causing missing or stale bank data used to 
 }
 ```
 
-Details about the end user initiating the transaction (i.e., the account holder). These fields are optional, but strongly recommended to increase the accuracy of results when using Signal Transaction Scores. When using a Balance-only ruleset, if the Signal Addendum has been signed, these fields are ignored; if the Addendum has not been signed, using these fields will result in an error.
+Details about the end user initiating the transaction (i.e., the account holder). These fields are optional, but strongly recommended to increase the accuracy of results when using Signal Transaction Scores. When using a Balance-only ruleset, these fields are ignored.
 
 ### Properties
 
@@ -160618,7 +167659,7 @@ Data about the components comprising an address.
 }
 ```
 
-Details about the end user's device. These fields are optional, but strongly recommended to increase the accuracy of results when using Signal Transaction Scores. When using a Balance-only Ruleset, these fields are ignored if the Signal Addendum has been signed; if it has not been signed, using these fields will result in an error.
+Details about the end user's device. These fields are optional, but strongly recommended to increase the accuracy of results when using Signal Transaction Scores. When using a Balance-only ruleset, these fields are ignored.
 
 ### Properties
 
@@ -161320,7 +168361,10 @@ Inputs for device Trust Index models.
 {
   "score": 0,
   "model": "string",
-  "attributes": {},
+  "attributes": {
+    "property1": null,
+    "property2": null
+  },
   "subscores": {
     "cash_advance_bucket_0_25": 0,
     "cash_advance_bucket_25_50": 0,
@@ -161419,6 +168463,7 @@ Deprecated. This field remains accepted for backward compatibility with existing
   "client_id": "string",
   "secret": "string",
   "user_id": "string",
+  "client_user_id": "string",
   "incident_event": {
     "protect_event_id": "string",
     "link_session_id": "string",
@@ -161447,7 +168492,7 @@ Deprecated. This field remains accepted for backward compatibility with existing
 ```
 
 Request object for `/protect/report/create`.
-You must provide either `user_id`, or an `incident_event` with at least one supported identifier: `link_session_id`, `idv_session_id`, `protect_event_id`, `signal_client_transaction_id`, or `access_token`. Context fields such as `internal_reference`, `time`, `amount`, and `bank_account` do not satisfy this identifier requirement.
+You must provide either `user_id`, `client_user_id`, or an `incident_event` with at least one supported identifier: `link_session_id`, `idv_session_id`, `protect_event_id`, `signal_client_transaction_id`, or `access_token`. Context fields such as `internal_reference`, `time`, `amount`, and `bank_account` do not satisfy this identifier requirement.
 
 ### Properties
 
@@ -161455,7 +168500,8 @@ You must provide either `user_id`, or an `incident_event` with at least one supp
 |---|---|---|---|---|
 |client_id|[APIClientID](#schemaapiclientid)|false|none|Your Plaid API `client_id`. The `client_id` is required and may be provided either in the `PLAID-CLIENT-ID` header or as part of a request body.|
 |secret|[APISecret](#schemaapisecret)|false|none|Your Plaid API `secret`. The `secret` is required and may be provided either in the `PLAID-SECRET` header or as part of a request body.|
-|user_id|string|false|none|The Plaid User ID associated with the report.|
+|user_id|string \| null|false|none|The Plaid User ID associated with the report. This or `client_user_id` can be provided, not both.|
+|client_user_id|string \| null|false|none|A unique ID representing the end user. Maximum of 128 characters. Typically this will be a user ID number from your application. Personally identifiable information, such as an email address or phone number, should not be used in the `client_user_id`. This or `user_id` can be provided, not both. If a Plaid User does not already exist for this `client_user_id` within your client account, one will be created.|
 |incident_event|[ProtectIncidentEvent](#schemaprotectincidentevent)|false|none|Details about the incident event.|
 |report_confidence|[ProtectReportConfidence](#schemaprotectreportconfidence)|true|none|The confidence level of the incident report.<br>`CONFIRMED` indicates the incident has been verified and definitively occurred.<br><br>`SUSPECTED` indicates the incident is believed to have occurred but has not been fully verified.|
 |report_type|[ProtectReportType](#schemaprotectreporttype)|true|none|The type of incident being reported.<br><br>`USER_ACCOUNT_TAKEOVER` - Indicates that a legitimate user's account was accessed or controlled by an unauthorized party.<br><br>`FALSE_IDENTITY` - Indicates that a user created an account using stolen or fabricated identity information.<br><br>`STOLEN_IDENTITY` - Indicates that a user created an account using identity information belonging to a real individual without their consent.<br><br>`SYNTHETIC_IDENTITY` - Indicates that a user created an account using a fake or partially fabricated identity (e.g., combining real and fake information to form a new persona).<br><br>`MULTIPLE_USER_ACCOUNTS` - Indicates that the same individual is operating multiple accounts in violation of policy.<br><br>`SCAM_VICTIM` - Indicates that the user was tricked into authorizing or sending funds as part of a scam.<br><br>`BANK_ACCOUNT_TAKEOVER` - Indicates that a user's linked bank account was accessed or misused by an unauthorized party.<br><br>`BANK_CONNECTION_REVOKED` - Indicates that a linked bank account connection was revoked by the financial institution, often due to suspected misuse, fraud, or security concerns.<br><br>`CARD_TESTING` - Indicates that a card was used in small or repeated transactions to test its validity.<br><br>`UNAUTHORIZED_TRANSACTION` - Indicates that a transaction was made without the user's consent or authorization.<br><br>`CARD_CHARGEBACK` - Indicates that a card transaction was reversed via a chargeback claim.<br><br>`ACH_RETURN` - Indicates that an ACH transaction was returned or reversed by the bank.<br><br>`DISPUTE` - Indicates that a user filed a dispute regarding a transaction or account activity.<br><br>`FIRST_PARTY_FRAUD` - Indicates that a user intentionally misrepresented themselves or their actions for financial gain.<br><br>`MISSED_PAYMENT` - Indicates that a user failed to make a required payment on time.<br><br>`LOAN_STACKING` - Indicates that a user applied for or took out multiple loans simultaneously beyond their ability to repay.<br><br>`MONEY_LAUNDERING` - Indicates that funds are being moved through accounts to obscure their illicit origin.<br><br>`NO_FRAUD` - Indicates that an investigation determined no fraudulent activity occurred on user/event (positive label).<br><br>`OTHER` - Indicates that the case involves fraud or financial risk not covered by other report types.|
@@ -162004,7 +169050,10 @@ A Protect report associated with a user. Contains details about documented incid
         }
       }
     },
-    "fraud_attributes": {}
+    "fraud_attributes": {
+      "property1": null,
+      "property2": null
+    }
   },
   "reports": [
     {
@@ -162109,7 +169158,10 @@ Request object for /protect/event/send
       }
     }
   },
-  "fraud_attributes": {},
+  "fraud_attributes": {
+    "property1": null,
+    "property2": null
+  },
   "request_id": "string"
 }
 ```
@@ -162174,7 +169226,10 @@ Request object for /protect/event/get
       }
     }
   },
-  "fraud_attributes": {},
+  "fraud_attributes": {
+    "property1": null,
+    "property2": null
+  },
   "request_id": "string"
 }
 ```
@@ -162216,7 +169271,10 @@ Response object for /protect/event/get
       }
     }
   },
-  "fraud_attributes": {}
+  "fraud_attributes": {
+    "property1": null,
+    "property2": null
+  }
 }
 ```
 
@@ -162308,10 +169366,19 @@ This event type represents a user signing up for the application.
 <a id="tocsfraudattributes"></a>
 
 ```json
-{}
+{
+  "property1": null,
+  "property2": null
+}
 ```
 
 Event fraud attributes as an arbitrary set of key-value pairs. The set of attributes returned varies by model.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|**additionalProperties**|object|false|none|none|
 
 <h2 id="tocS_ProtectIncidentEvent">ProtectIncidentEvent</h2>
 <!-- backwards compatibility -->

@@ -1981,11 +1981,13 @@ const Oauth2SecurityScheme = {
         'crm.objects.goals.write': '',
         'crm.objects.line_items.write': '',
         'crm.objects.listings.write': '',
+        'crm.objects.meetings.write': '',
         'crm.objects.products.write': '',
         'crm.objects.projects.highly_sensitive.write': '',
         'crm.objects.projects.sensitive.write': '',
         'crm.objects.projects.write': '',
         'crm.objects.services.write': '',
+        'crm.objects.tickets.write': '',
         'crm.schemas.meetings.write': '',
         'scheduler.meetings.meeting-link.read': '',
         'tickets.highly_sensitive.v2': '',
@@ -1993,11 +1995,92 @@ const Oauth2SecurityScheme = {
       },
     },
   },
+  'x-hubspot-app-availability': {
+    'crm.objects.appointments.sensitive.write.v2': { portal: ['private'], developer: false },
+    'crm.objects.appointments.write': {
+      portal: ['public', 'private'],
+      user: ['public', 'private'],
+      developer: false,
+    },
+    'crm.objects.commercepayments.write': {
+      portal: ['public', 'private'],
+      user: ['public', 'private'],
+      developer: false,
+    },
+    'crm.objects.companies.highly_sensitive.write.v2': { portal: ['private'], developer: false },
+    'crm.objects.companies.sensitive.write.v2': { portal: ['private'], developer: false },
+    'crm.objects.companies.write': {
+      portal: ['public', 'private'],
+      user: ['public', 'private'],
+      developer: false,
+    },
+    'crm.objects.contacts.highly_sensitive.write.v2': { portal: ['private'], developer: false },
+    'crm.objects.contacts.sensitive.write.v2': { portal: ['private'], developer: false },
+    'crm.objects.contacts.write': {
+      portal: ['public', 'private'],
+      user: ['public', 'private'],
+      developer: false,
+    },
+    'crm.objects.courses.write': {
+      portal: ['public', 'private'],
+      user: ['public', 'private'],
+      developer: false,
+    },
+    'crm.objects.deals.highly_sensitive.write.v2': { portal: ['private'], developer: false },
+    'crm.objects.deals.sensitive.write.v2': { portal: ['private'], developer: false },
+    'crm.objects.deals.write': {
+      portal: ['public', 'private'],
+      user: ['public', 'private'],
+      developer: false,
+    },
+    'crm.objects.goals.write': {
+      portal: ['public', 'private'],
+      user: ['public', 'private'],
+      developer: false,
+    },
+    'crm.objects.line_items.write': {
+      portal: ['public', 'private'],
+      user: ['public', 'private'],
+      developer: false,
+    },
+    'crm.objects.listings.write': {
+      portal: ['public', 'private'],
+      user: ['public', 'private'],
+      developer: false,
+    },
+    'crm.objects.meetings.write': { user: ['public', 'private'], developer: false },
+    'crm.objects.products.write': {
+      portal: ['public', 'private'],
+      user: ['public', 'private'],
+      developer: false,
+    },
+    'crm.objects.projects.highly_sensitive.write': { portal: ['private'], developer: false },
+    'crm.objects.projects.sensitive.write': { portal: ['private'], developer: false },
+    'crm.objects.projects.write': {
+      portal: ['public', 'private'],
+      user: ['public', 'private'],
+      developer: false,
+    },
+    'crm.objects.services.write': {
+      portal: ['public', 'private'],
+      user: ['public', 'private'],
+      developer: false,
+    },
+    'crm.objects.tickets.write': {
+      portal: ['public', 'private'],
+      user: ['public', 'private'],
+      developer: false,
+    },
+    'crm.schemas.meetings.write': { user: ['public', 'private'], developer: false },
+    'scheduler.meetings.meeting-link.read': {
+      portal: ['public', 'private'],
+      user: ['public', 'private'],
+      developer: false,
+    },
+    'tickets.highly_sensitive.v2': { portal: ['private'], developer: false },
+    'tickets.sensitive.v2': { portal: ['private'], developer: false },
+  },
 }
-
-const PrivateAppsSecurityScheme = { type: 'apiKey', name: 'private-app', in: 'header' }
-
-const PrivateAppsLegacySecurityScheme = { type: 'apiKey', name: 'private-app-legacy', in: 'header' }
 
 export const postScheduler202609MeetingsCalendarRoute = createRoute({
   method: 'post',
@@ -2045,14 +2128,15 @@ export const postScheduler202609MeetingsCalendarRoute = createRoute({
   },
   security: [
     { oauth2: ['crm.objects.contacts.highly_sensitive.write.v2'] },
+    { oauth2: ['crm.objects.tickets.write'] },
     { oauth2: ['crm.objects.commercepayments.write'] },
     { oauth2: ['crm.objects.goals.write'] },
     { oauth2: ['crm.objects.line_items.write'] },
     { oauth2: ['crm.objects.contacts.write'] },
     { oauth2: ['crm.objects.products.write'] },
     { oauth2: ['crm.objects.projects.write'] },
-    { oauth2: ['crm.objects.projects.sensitive.write'] },
     { oauth2: ['crm.objects.contacts.sensitive.write.v2'] },
+    { oauth2: ['crm.objects.projects.sensitive.write'] },
     { oauth2: ['crm.objects.services.write'] },
     { oauth2: ['crm.objects.deals.sensitive.write.v2'] },
     { oauth2: ['tickets.highly_sensitive.v2'] },
@@ -2067,6 +2151,7 @@ export const postScheduler202609MeetingsCalendarRoute = createRoute({
     { oauth2: ['crm.objects.companies.sensitive.write.v2'] },
     { oauth2: ['crm.objects.companies.highly_sensitive.write.v2'] },
     { oauth2: ['crm.objects.deals.highly_sensitive.write.v2'] },
+    { oauth2: ['crm.objects.meetings.write'] },
     { oauth2: ['crm.schemas.meetings.write'] },
   ],
 })
@@ -2211,14 +2296,15 @@ export const postScheduler202609MeetingsMeetingLinksBookRoute = createRoute({
   },
   security: [
     { oauth2: ['crm.objects.contacts.highly_sensitive.write.v2'] },
+    { oauth2: ['crm.objects.tickets.write'] },
     { oauth2: ['crm.objects.commercepayments.write'] },
     { oauth2: ['crm.objects.goals.write'] },
     { oauth2: ['crm.objects.line_items.write'] },
     { oauth2: ['crm.objects.contacts.write'] },
     { oauth2: ['crm.objects.products.write'] },
     { oauth2: ['crm.objects.projects.write'] },
-    { oauth2: ['crm.objects.projects.sensitive.write'] },
     { oauth2: ['crm.objects.contacts.sensitive.write.v2'] },
+    { oauth2: ['crm.objects.projects.sensitive.write'] },
     { oauth2: ['crm.objects.services.write'] },
     { oauth2: ['crm.objects.deals.sensitive.write.v2'] },
     { oauth2: ['tickets.highly_sensitive.v2'] },
@@ -2233,6 +2319,7 @@ export const postScheduler202609MeetingsMeetingLinksBookRoute = createRoute({
     { oauth2: ['crm.objects.companies.sensitive.write.v2'] },
     { oauth2: ['crm.objects.companies.highly_sensitive.write.v2'] },
     { oauth2: ['crm.objects.deals.highly_sensitive.write.v2'] },
+    { oauth2: ['crm.objects.meetings.write'] },
     { oauth2: ['crm.schemas.meetings.write'] },
   ],
 })

@@ -392,17 +392,34 @@ returns settings from DB
     "bounce.webhooks_enabled": true,
     "bounce.count": 0,
     "bounce.action": "string",
-    "bounce.ses_enabled": true,
-    "bounce.azure.enabled": true,
-    "bounce.azure.shared_secret": "string",
-    "bounce.azure.shared_secret_header": "string",
-    "bounce.sendgrid_enabled": true,
-    "bounce.sendgrid_key": "string",
-    "bounce.forwardemail_enabled": true,
-    "bounce.forwardemail_key": "string",
-    "bounce.postmark_enabled": true,
-    "bounce.postmark_username": "string",
-    "bounce.postmark_password": "string",
+    "bounce.ses": {
+      "enabled": true,
+      "topic_arns": [
+        "string"
+      ]
+    },
+    "bounce.azure": {
+      "enabled": true,
+      "shared_secret": "string",
+      "shared_secret_header": "string"
+    },
+    "bounce.sendgrid": {
+      "enabled": true,
+      "key": "string"
+    },
+    "bounce.forwardemail": {
+      "enabled": true,
+      "key": "string"
+    },
+    "bounce.postmark": {
+      "enabled": true,
+      "username": "string",
+      "password": "string"
+    },
+    "bounce.lettermint": {
+      "enabled": true,
+      "key": "string"
+    },
     "bounce.mailboxes": [
       {
         "uuid": "string",
@@ -529,17 +546,34 @@ curl http://localhost:9000/api/settings \
     "bounce.webhooks_enabled": true,
     "bounce.count": 0,
     "bounce.action": "string",
-    "bounce.ses_enabled": true,
-    "bounce.azure.enabled": true,
-    "bounce.azure.shared_secret": "string",
-    "bounce.azure.shared_secret_header": "string",
-    "bounce.sendgrid_enabled": true,
-    "bounce.sendgrid_key": "string",
-    "bounce.forwardemail_enabled": true,
-    "bounce.forwardemail_key": "string",
-    "bounce.postmark_enabled": true,
-    "bounce.postmark_username": "string",
-    "bounce.postmark_password": "string",
+    "bounce.ses": {
+      "enabled": true,
+      "topic_arns": [
+        "string"
+      ]
+    },
+    "bounce.azure": {
+      "enabled": true,
+      "shared_secret": "string",
+      "shared_secret_header": "string"
+    },
+    "bounce.sendgrid": {
+      "enabled": true,
+      "key": "string"
+    },
+    "bounce.forwardemail": {
+      "enabled": true,
+      "key": "string"
+    },
+    "bounce.postmark": {
+      "enabled": true,
+      "username": "string",
+      "password": "string"
+    },
+    "bounce.lettermint": {
+      "enabled": true,
+      "key": "string"
+    },
     "bounce.mailboxes": [
       {
         "uuid": "string",
@@ -643,17 +677,34 @@ returns updated settings from the DB.
   "bounce.webhooks_enabled": true,
   "bounce.count": 0,
   "bounce.action": "string",
-  "bounce.ses_enabled": true,
-  "bounce.azure.enabled": true,
-  "bounce.azure.shared_secret": "string",
-  "bounce.azure.shared_secret_header": "string",
-  "bounce.sendgrid_enabled": true,
-  "bounce.sendgrid_key": "string",
-  "bounce.forwardemail_enabled": true,
-  "bounce.forwardemail_key": "string",
-  "bounce.postmark_enabled": true,
-  "bounce.postmark_username": "string",
-  "bounce.postmark_password": "string",
+  "bounce.ses": {
+    "enabled": true,
+    "topic_arns": [
+      "string"
+    ]
+  },
+  "bounce.azure": {
+    "enabled": true,
+    "shared_secret": "string",
+    "shared_secret_header": "string"
+  },
+  "bounce.sendgrid": {
+    "enabled": true,
+    "key": "string"
+  },
+  "bounce.forwardemail": {
+    "enabled": true,
+    "key": "string"
+  },
+  "bounce.postmark": {
+    "enabled": true,
+    "username": "string",
+    "password": "string"
+  },
+  "bounce.lettermint": {
+    "enabled": true,
+    "key": "string"
+  },
   "bounce.mailboxes": [
     {
       "uuid": "string",
@@ -725,17 +776,26 @@ returns updated settings from the DB.
 |» bounce.webhooks_enabled|body|boolean|false|none|
 |» bounce.count|body|integer|false|none|
 |» bounce.action|body|string|false|none|
-|» bounce.ses_enabled|body|boolean|false|none|
-|» bounce.azure.enabled|body|boolean|false|none|
-|» bounce.azure.shared_secret|body|string|false|none|
-|» bounce.azure.shared_secret_header|body|string|false|none|
-|» bounce.sendgrid_enabled|body|boolean|false|none|
-|» bounce.sendgrid_key|body|string|false|none|
-|» bounce.forwardemail_enabled|body|boolean|false|none|
-|» bounce.forwardemail_key|body|string|false|none|
-|» bounce.postmark_enabled|body|boolean|false|none|
-|» bounce.postmark_username|body|string|false|none|
-|» bounce.postmark_password|body|string|false|none|
+|» bounce.ses|body|object|false|none|
+|» » enabled|body|boolean|false|none|
+|» » topic_arns|body|[string]|false|none|
+|» bounce.azure|body|object|false|none|
+|» » enabled|body|boolean|false|none|
+|» » shared_secret|body|string|false|none|
+|» » shared_secret_header|body|string|false|none|
+|» bounce.sendgrid|body|object|false|none|
+|» » enabled|body|boolean|false|none|
+|» » key|body|string|false|none|
+|» bounce.forwardemail|body|object|false|none|
+|» » enabled|body|boolean|false|none|
+|» » key|body|string|false|none|
+|» bounce.postmark|body|object|false|none|
+|» » enabled|body|boolean|false|none|
+|» » username|body|string|false|none|
+|» » password|body|string|false|none|
+|» bounce.lettermint|body|object|false|none|
+|» » enabled|body|boolean|false|none|
+|» » key|body|string|false|none|
 |» bounce.mailboxes|body|[[MailBoxBounces](#schemamailboxbounces)]|false|none|
 |» appearance.admin.custom_css|body|string|false|none|
 |» appearance.admin.custom_js|body|string|false|none|
@@ -5960,17 +6020,34 @@ This operation does not require authentication
   "bounce.webhooks_enabled": true,
   "bounce.count": 0,
   "bounce.action": "string",
-  "bounce.ses_enabled": true,
-  "bounce.azure.enabled": true,
-  "bounce.azure.shared_secret": "string",
-  "bounce.azure.shared_secret_header": "string",
-  "bounce.sendgrid_enabled": true,
-  "bounce.sendgrid_key": "string",
-  "bounce.forwardemail_enabled": true,
-  "bounce.forwardemail_key": "string",
-  "bounce.postmark_enabled": true,
-  "bounce.postmark_username": "string",
-  "bounce.postmark_password": "string",
+  "bounce.ses": {
+    "enabled": true,
+    "topic_arns": [
+      "string"
+    ]
+  },
+  "bounce.azure": {
+    "enabled": true,
+    "shared_secret": "string",
+    "shared_secret_header": "string"
+  },
+  "bounce.sendgrid": {
+    "enabled": true,
+    "key": "string"
+  },
+  "bounce.forwardemail": {
+    "enabled": true,
+    "key": "string"
+  },
+  "bounce.postmark": {
+    "enabled": true,
+    "username": "string",
+    "password": "string"
+  },
+  "bounce.lettermint": {
+    "enabled": true,
+    "key": "string"
+  },
   "bounce.mailboxes": [
     {
       "uuid": "string",
@@ -6041,17 +6118,12 @@ This operation does not require authentication
 |bounce.webhooks_enabled|boolean|false|none|none|
 |bounce.count|integer|false|none|none|
 |bounce.action|string|false|none|none|
-|bounce.ses_enabled|boolean|false|none|none|
-|bounce.azure.enabled|boolean|false|none|none|
-|bounce.azure.shared_secret|string|false|none|none|
-|bounce.azure.shared_secret_header|string|false|none|none|
-|bounce.sendgrid_enabled|boolean|false|none|none|
-|bounce.sendgrid_key|string|false|none|none|
-|bounce.forwardemail_enabled|boolean|false|none|none|
-|bounce.forwardemail_key|string|false|none|none|
-|bounce.postmark_enabled|boolean|false|none|none|
-|bounce.postmark_username|string|false|none|none|
-|bounce.postmark_password|string|false|none|none|
+|bounce.ses|object|false|none|none|
+|bounce.azure|object|false|none|none|
+|bounce.sendgrid|object|false|none|none|
+|bounce.forwardemail|object|false|none|none|
+|bounce.postmark|object|false|none|none|
+|bounce.lettermint|object|false|none|none|
 |bounce.mailboxes|[[MailBoxBounces](#schemamailboxbounces)]|false|none|none|
 |appearance.admin.custom_css|string|false|none|none|
 |appearance.admin.custom_js|string|false|none|none|

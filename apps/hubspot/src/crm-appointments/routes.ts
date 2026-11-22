@@ -70,7 +70,7 @@ const StandardErrorSchema = z
       .string()
       .openapi({ description: 'The HTTP status code associated with the error.', example: null }),
     subCategory: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'A more specific error category within each main category.',

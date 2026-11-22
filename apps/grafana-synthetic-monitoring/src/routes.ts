@@ -54,7 +54,7 @@ const SecretMetadataSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854776000n),
+        z.int64().min(1n).max(9223372036854775807n),
       )
       .openapi({
         type: 'integer',
@@ -73,7 +73,7 @@ const SecretMetadataSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854776000n),
+        z.int64().min(1n).max(9223372036854775807n),
       )
       .openapi({
         type: 'integer',
@@ -99,7 +99,7 @@ const SecretMetadataSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(0n).max(9223372036854776000n),
+        z.int64().min(0n).max(9223372036854775807n),
       )
       .openapi({
         type: 'integer',
@@ -118,7 +118,7 @@ const SecretMetadataSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(0n).max(9223372036854776000n),
+        z.int64().min(0n).max(9223372036854775807n),
       )
       .openapi({
         type: 'integer',

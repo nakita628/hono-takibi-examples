@@ -79,7 +79,7 @@ type VcsIntegrationRepositoryFileScanResponseType = {
             port: number
             protocol: 'HTTP'
             security?: {
-              authentication_method: 'oidc' | 'aiven_platform'
+              authentication_method: 'oidc' | 'aiven_platform' | 'okta'
               oidc?: { client_id: string; client_secret: string; issuer_url: string; name: string }
             }
           }[]
@@ -130,12 +130,15 @@ type ServiceListResponseType = {
       host: string
       kafka_authentication_method?: 'certificate' | 'sasl'
       kafka_ssl_ca?: 'project_ca' | 'letsencrypt'
+      node_position?: number
       path?: string
       port: number
       privatelink_connection_id?: string
       route: 'dynamic' | 'public' | 'private' | 'privatelink'
+      security_redirect_uris?: string[]
+      shard_position?: number
       ssl?: boolean
-      usage: 'disaster_recovery' | 'primary' | 'replica' | 'ha_replica'
+      usage: 'disaster_recovery' | 'primary' | 'replica' | 'ha_replica' | 'shard' | 'node'
     }[]
     connection_info?: { [key: string]: unknown }
     connection_pools?: {
@@ -226,7 +229,7 @@ type ServiceListResponseType = {
         }
         unit?: 'binlogs' | 'bytes_compressed' | 'bytes_uncompressed' | 'prepare_percent' | 'wal_lsn'
       }[]
-      role?: 'master' | 'standby' | 'read-replica'
+      role?: 'master' | 'standby' | 'standby-leader' | 'read-replica'
       roles?: string
       shard?: { name?: string; position?: number }
       state: 'leaving' | 'running' | 'setting_up_vm' | 'syncing_data' | 'timing_out' | 'unknown'
@@ -312,6 +315,7 @@ type ServiceListResponseType = {
         valkey_acl_categories?: string[]
         valkey_acl_channels?: string[]
         valkey_acl_commands?: string[]
+        valkey_acl_databases?: string[]
         valkey_acl_keys?: string[]
       }
       access_key?: string
@@ -328,6 +332,10 @@ type ServiceListResponseType = {
 
 const AIGatewayKeyCreateRequestBodySchema = z
   .object({
+    budget: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({ description: "Caps on the key's spend, unless left as they are" }),
     description: z
       .string()
       .max(1000)
@@ -343,12 +351,19 @@ const AIGatewayKeyCreateRequestBodySchema = z
       .min(1)
       .max(30)
       .openapi({ description: 'Short human readable identifier for the key' }),
+    owner_user_id: z
+      .string()
+      .min(4)
+      .max(20)
+      .exactOptional()
+      .openapi({ description: 'User ID of the key owner; defaults to the calling user' }),
   })
   .openapi({ description: 'AIGatewayKeyCreateRequestBody', required: ['name'] })
   .openapi('AIGatewayKeyCreateRequestBody')
 
 const AIGatewayKeyCreateResponseSchema = z
   .object({
+    budget: z.looseObject({}).exactOptional().openapi({ description: "Caps on the key's spend" }),
     create_time: z.string().max(36).openapi({ description: 'Time the key was created' }),
     description: z
       .string()
@@ -368,15 +383,61 @@ const AIGatewayKeyCreateResponseSchema = z
       .min(1)
       .max(30)
       .openapi({ description: 'Short human readable identifier for the key' }),
+    owner: z
+      .object({
+        is_application_user: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description:
+              'Whether the key owner is an application user, or null if the user was deleted',
+          }),
+        real_name: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Owner name, or null if unavailable or the caller cannot list project members',
+          }),
+        user_email: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Owner email, or null if unavailable or the caller cannot list project members',
+          }),
+        user_id: z.string().min(1).max(20).openapi({ description: 'User ID of the key owner' }),
+      })
+      .openapi({ description: 'Owner of the key', required: ['user_id'] }),
+    owner_user_id: z.string().min(1).max(20).openapi({ description: 'User ID of the key owner' }),
     revocation_time: z
       .string()
       .max(36)
       .exactOptional()
       .openapi({ description: 'Time the key was revoked' }),
+    spend: z
+      .object({
+        daily_spent_usd: z
+          .string()
+          .openapi({ description: 'USD spent since the start of the UTC day' }),
+        metered_until: z
+          .string()
+          .max(36)
+          .exactOptional()
+          .openapi({ description: 'Time up to which spend is counted' }),
+        monthly_spent_usd: z
+          .string()
+          .openapi({ description: 'USD spent since the start of the UTC month' }),
+      })
+      .exactOptional()
+      .openapi({
+        description: 'Spend of the key',
+        required: ['daily_spent_usd', 'monthly_spent_usd'],
+      }),
   })
   .openapi({
     description: 'AIGatewayKeyCreateResponse',
-    required: ['create_time', 'key', 'key_id', 'key_suffix', 'name'],
+    required: ['create_time', 'key', 'key_id', 'key_suffix', 'name', 'owner', 'owner_user_id'],
   })
   .openapi('AIGatewayKeyCreateResponse')
 
@@ -384,6 +445,10 @@ const AIGatewayKeyGetResponseSchema = z
   .object({
     key: z
       .object({
+        budget: z
+          .looseObject({})
+          .exactOptional()
+          .openapi({ description: "Caps on the key's spend" }),
         create_time: z.string().max(36).openapi({ description: 'Time the key was created' }),
         description: z
           .string()
@@ -402,15 +467,65 @@ const AIGatewayKeyGetResponseSchema = z
           .min(1)
           .max(30)
           .openapi({ description: 'Short human readable identifier for the key' }),
+        owner: z
+          .object({
+            is_application_user: z
+              .boolean()
+              .exactOptional()
+              .openapi({
+                description:
+                  'Whether the key owner is an application user, or null if the user was deleted',
+              }),
+            real_name: z
+              .string()
+              .exactOptional()
+              .openapi({
+                description:
+                  'Owner name, or null if unavailable or the caller cannot list project members',
+              }),
+            user_email: z
+              .string()
+              .exactOptional()
+              .openapi({
+                description:
+                  'Owner email, or null if unavailable or the caller cannot list project members',
+              }),
+            user_id: z.string().min(1).max(20).openapi({ description: 'User ID of the key owner' }),
+          })
+          .openapi({ description: 'Owner of the key', required: ['user_id'] }),
+        owner_user_id: z
+          .string()
+          .min(1)
+          .max(20)
+          .openapi({ description: 'User ID of the key owner' }),
         revocation_time: z
           .string()
           .max(36)
           .exactOptional()
           .openapi({ description: 'Time the key was revoked' }),
+        spend: z
+          .object({
+            daily_spent_usd: z
+              .string()
+              .openapi({ description: 'USD spent since the start of the UTC day' }),
+            metered_until: z
+              .string()
+              .max(36)
+              .exactOptional()
+              .openapi({ description: 'Time up to which spend is counted' }),
+            monthly_spent_usd: z
+              .string()
+              .openapi({ description: 'USD spent since the start of the UTC month' }),
+          })
+          .exactOptional()
+          .openapi({
+            description: 'Spend of the key',
+            required: ['daily_spent_usd', 'monthly_spent_usd'],
+          }),
       })
       .openapi({
         description: 'AI Gateway key',
-        required: ['create_time', 'key_id', 'key_suffix', 'name'],
+        required: ['create_time', 'key_id', 'key_suffix', 'name', 'owner', 'owner_user_id'],
       }),
   })
   .openapi({ description: 'AIGatewayKeyGetResponse', required: ['key'] })
@@ -418,11 +533,80 @@ const AIGatewayKeyGetResponseSchema = z
 
 const AIGatewayKeyListResponseSchema = z
   .object({
+    default_key_budget: z
+      .object({
+        daily: z
+          .object({
+            amount_usd: z
+              .string()
+              .openapi({ description: "The scope's own cap in USD, or null for none" }),
+            effective_usd: z
+              .string()
+              .openapi({
+                description:
+                  'The cap that applies in USD, or null for none or when it is unavailable',
+              }),
+            mode: z
+              .enum(['limit', 'inherit', 'ordinary', 'exception', 'unlimited'])
+              .openapi({
+                description:
+                  "The stored policy: limit or unlimited on a scope without a default (or a project on an older gateway); inherit, ordinary (a key's own cap, bound by the default), exception (an organization admin's own cap) or unlimited on a key, owner, or project. Null only when the source is unavailable",
+              }),
+            source: z
+              .enum(['own', 'default', 'none', 'unavailable'])
+              .openapi({
+                description:
+                  "Where the cap that applies comes from: the scope's own policy, the default, none (no default exists), or unavailable (a required default cannot be read)",
+              }),
+          })
+          .openapi({
+            description: 'Daily policy, in UTC days',
+            required: ['amount_usd', 'effective_usd', 'mode', 'source'],
+          }),
+        monthly: z
+          .object({
+            amount_usd: z
+              .string()
+              .openapi({ description: "The scope's own cap in USD, or null for none" }),
+            effective_usd: z
+              .string()
+              .openapi({
+                description:
+                  'The cap that applies in USD, or null for none or when it is unavailable',
+              }),
+            mode: z
+              .enum(['limit', 'inherit', 'ordinary', 'exception', 'unlimited'])
+              .openapi({
+                description:
+                  "The stored policy: limit or unlimited on a scope without a default (or a project on an older gateway); inherit, ordinary (a key's own cap, bound by the default), exception (an organization admin's own cap) or unlimited on a key, owner, or project. Null only when the source is unavailable",
+              }),
+            source: z
+              .enum(['own', 'default', 'none', 'unavailable'])
+              .openapi({
+                description:
+                  "Where the cap that applies comes from: the scope's own policy, the default, none (no default exists), or unavailable (a required default cannot be read)",
+              }),
+          })
+          .openapi({
+            description: 'Monthly policy, in UTC months',
+            required: ['amount_usd', 'effective_usd', 'mode', 'source'],
+          }),
+      })
+      .exactOptional()
+      .openapi({
+        description:
+          "The organization's default key budget, or null if its budgets were never set up",
+        required: ['daily', 'monthly'],
+      }),
     first: z.string().exactOptional().openapi({ description: 'First page' }),
     keys: z
       .array(
         z
           .object({
+            budget: z
+              .looseObject({})
+              .exactOptional()
+              .openapi({ description: "Caps on the key's spend" }),
             create_time: z.string().max(36).openapi({ description: 'Time the key was created' }),
             description: z
               .string()
@@ -441,13 +625,69 @@ const AIGatewayKeyListResponseSchema = z
               .min(1)
               .max(30)
               .openapi({ description: 'Short human readable identifier for the key' }),
+            owner: z
+              .object({
+                is_application_user: z
+                  .boolean()
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      'Whether the key owner is an application user, or null if the user was deleted',
+                  }),
+                real_name: z
+                  .string()
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      'Owner name, or null if unavailable or the caller cannot list project members',
+                  }),
+                user_email: z
+                  .string()
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      'Owner email, or null if unavailable or the caller cannot list project members',
+                  }),
+                user_id: z
+                  .string()
+                  .min(1)
+                  .max(20)
+                  .openapi({ description: 'User ID of the key owner' }),
+              })
+              .openapi({ description: 'Owner of the key', required: ['user_id'] }),
+            owner_user_id: z
+              .string()
+              .min(1)
+              .max(20)
+              .openapi({ description: 'User ID of the key owner' }),
             revocation_time: z
               .string()
               .max(36)
               .exactOptional()
               .openapi({ description: 'Time the key was revoked' }),
+            spend: z
+              .object({
+                daily_spent_usd: z
+                  .string()
+                  .openapi({ description: 'USD spent since the start of the UTC day' }),
+                metered_until: z
+                  .string()
+                  .max(36)
+                  .exactOptional()
+                  .openapi({ description: 'Time up to which spend is counted' }),
+                monthly_spent_usd: z
+                  .string()
+                  .openapi({ description: 'USD spent since the start of the UTC month' }),
+              })
+              .exactOptional()
+              .openapi({
+                description: 'Spend of the key',
+                required: ['daily_spent_usd', 'monthly_spent_usd'],
+              }),
           })
-          .openapi({ required: ['create_time', 'key_id', 'key_suffix', 'name'] }),
+          .openapi({
+            required: ['create_time', 'key_id', 'key_suffix', 'name', 'owner', 'owner_user_id'],
+          }),
       )
       .openapi({ description: 'List of AI Gateway keys' }),
     last: z.string().exactOptional().openapi({ description: 'Last page' }),
@@ -457,8 +697,52 @@ const AIGatewayKeyListResponseSchema = z
   .openapi({ description: 'AIGatewayKeyListResponse', required: ['keys'] })
   .openapi('AIGatewayKeyListResponse')
 
+const AIGatewayKeyOwnerListResponseSchema = z
+  .object({
+    first: z.string().exactOptional().openapi({ description: 'First page' }),
+    last: z.string().exactOptional().openapi({ description: 'Last page' }),
+    next: z.string().exactOptional().openapi({ description: 'Next page' }),
+    owners: z
+      .array(
+        z
+          .object({
+            is_application_user: z
+              .boolean()
+              .exactOptional()
+              .openapi({
+                description:
+                  'Whether the key owner is an application user, or null if the user was deleted',
+              }),
+            real_name: z
+              .string()
+              .exactOptional()
+              .openapi({
+                description:
+                  'Owner name, or null if unavailable or the caller cannot list project members',
+              }),
+            user_email: z
+              .string()
+              .exactOptional()
+              .openapi({
+                description:
+                  'Owner email, or null if unavailable or the caller cannot list project members',
+              }),
+            user_id: z.string().min(1).max(20).openapi({ description: 'User ID of the key owner' }),
+          })
+          .openapi({ required: ['user_id'] }),
+      )
+      .openapi({ description: 'Eligible AI Gateway key owners' }),
+    prev: z.string().exactOptional().openapi({ description: 'Previous page' }),
+  })
+  .openapi({ description: 'AIGatewayKeyOwnerListResponse', required: ['owners'] })
+  .openapi('AIGatewayKeyOwnerListResponse')
+
 const AIGatewayKeyUpdateRequestBodySchema = z
   .object({
+    budget: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({ description: "Caps on the key's spend, unless left as they are" }),
     description: z
       .string()
       .max(1000)
@@ -470,12 +754,19 @@ const AIGatewayKeyUpdateRequestBodySchema = z
       .max(30)
       .exactOptional()
       .openapi({ description: 'Short human readable identifier for the key' }),
+    owner_user_id: z
+      .string()
+      .min(4)
+      .max(20)
+      .exactOptional()
+      .openapi({ description: 'User ID of the new key owner' }),
   })
   .openapi({ description: 'AIGatewayKeyUpdateRequestBody', required: [] })
   .openapi('AIGatewayKeyUpdateRequestBody')
 
 const AIGatewayKeyUpdateResponseSchema = z
   .object({
+    budget: z.looseObject({}).exactOptional().openapi({ description: "Caps on the key's spend" }),
     create_time: z.string().max(36).openapi({ description: 'Time the key was created' }),
     description: z
       .string()
@@ -494,15 +785,61 @@ const AIGatewayKeyUpdateResponseSchema = z
       .min(1)
       .max(30)
       .openapi({ description: 'Short human readable identifier for the key' }),
+    owner: z
+      .object({
+        is_application_user: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description:
+              'Whether the key owner is an application user, or null if the user was deleted',
+          }),
+        real_name: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Owner name, or null if unavailable or the caller cannot list project members',
+          }),
+        user_email: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Owner email, or null if unavailable or the caller cannot list project members',
+          }),
+        user_id: z.string().min(1).max(20).openapi({ description: 'User ID of the key owner' }),
+      })
+      .openapi({ description: 'Owner of the key', required: ['user_id'] }),
+    owner_user_id: z.string().min(1).max(20).openapi({ description: 'User ID of the key owner' }),
     revocation_time: z
       .string()
       .max(36)
       .exactOptional()
       .openapi({ description: 'Time the key was revoked' }),
+    spend: z
+      .object({
+        daily_spent_usd: z
+          .string()
+          .openapi({ description: 'USD spent since the start of the UTC day' }),
+        metered_until: z
+          .string()
+          .max(36)
+          .exactOptional()
+          .openapi({ description: 'Time up to which spend is counted' }),
+        monthly_spent_usd: z
+          .string()
+          .openapi({ description: 'USD spent since the start of the UTC month' }),
+      })
+      .exactOptional()
+      .openapi({
+        description: 'Spend of the key',
+        required: ['daily_spent_usd', 'monthly_spent_usd'],
+      }),
   })
   .openapi({
     description: 'AIGatewayKeyUpdateResponse',
-    required: ['create_time', 'key_id', 'key_suffix', 'name'],
+    required: ['create_time', 'key_id', 'key_suffix', 'name', 'owner', 'owner_user_id'],
   })
   .openapi('AIGatewayKeyUpdateResponse')
 
@@ -553,6 +890,849 @@ const AIGatewayModelListResponseSchema = z
   })
   .openapi({ description: 'AIGatewayModelListResponse', required: ['models'] })
   .openapi('AIGatewayModelListResponse')
+
+const AIGatewayOrganizationBudgetSetRequestBodySchema = z
+  .object({
+    default_key_budget: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({ description: 'Caps on each key without its own, unless left as they are' }),
+    default_owner_budget: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({
+        description: 'Caps on each key owner without their own, unless left as they are',
+      }),
+    default_project_budget: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({ description: 'Caps on each project without its own, unless left as they are' }),
+    organization_budget: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({ description: "Caps on the whole organization's spend, unless left as they are" }),
+  })
+  .openapi({ description: 'AIGatewayOrganizationBudgetSetRequestBody', required: [] })
+  .openapi('AIGatewayOrganizationBudgetSetRequestBody')
+
+const AIGatewayOrganizationBudgetSetResponseSchema = z
+  .object({
+    configured: z
+      .boolean()
+      .openapi({
+        description:
+          "Whether the organization's budgets are set up, by setting a monthly default key budget. Until then no cap is enforced",
+      }),
+    default_key_budget: z
+      .object({
+        daily: z
+          .object({
+            amount_usd: z
+              .string()
+              .openapi({ description: "The scope's own cap in USD, or null for none" }),
+            effective_usd: z
+              .string()
+              .openapi({
+                description:
+                  'The cap that applies in USD, or null for none or when it is unavailable',
+              }),
+            mode: z
+              .enum(['limit', 'inherit', 'ordinary', 'exception', 'unlimited'])
+              .openapi({
+                description:
+                  "The stored policy: limit or unlimited on a scope without a default (or a project on an older gateway); inherit, ordinary (a key's own cap, bound by the default), exception (an organization admin's own cap) or unlimited on a key, owner, or project. Null only when the source is unavailable",
+              }),
+            source: z
+              .enum(['own', 'default', 'none', 'unavailable'])
+              .openapi({
+                description:
+                  "Where the cap that applies comes from: the scope's own policy, the default, none (no default exists), or unavailable (a required default cannot be read)",
+              }),
+          })
+          .openapi({
+            description: 'Daily policy, in UTC days',
+            required: ['amount_usd', 'effective_usd', 'mode', 'source'],
+          }),
+        monthly: z
+          .object({
+            amount_usd: z
+              .string()
+              .openapi({ description: "The scope's own cap in USD, or null for none" }),
+            effective_usd: z
+              .string()
+              .openapi({
+                description:
+                  'The cap that applies in USD, or null for none or when it is unavailable',
+              }),
+            mode: z
+              .enum(['limit', 'inherit', 'ordinary', 'exception', 'unlimited'])
+              .openapi({
+                description:
+                  "The stored policy: limit or unlimited on a scope without a default (or a project on an older gateway); inherit, ordinary (a key's own cap, bound by the default), exception (an organization admin's own cap) or unlimited on a key, owner, or project. Null only when the source is unavailable",
+              }),
+            source: z
+              .enum(['own', 'default', 'none', 'unavailable'])
+              .openapi({
+                description:
+                  "Where the cap that applies comes from: the scope's own policy, the default, none (no default exists), or unavailable (a required default cannot be read)",
+              }),
+          })
+          .openapi({
+            description: 'Monthly policy, in UTC months',
+            required: ['amount_usd', 'effective_usd', 'mode', 'source'],
+          }),
+      })
+      .openapi({ description: 'Caps on each key without its own', required: ['daily', 'monthly'] }),
+    default_owner_budget: z
+      .looseObject({})
+      .openapi({ description: 'Caps on each key owner without their own' }),
+    default_project_budget: z
+      .looseObject({})
+      .openapi({ description: 'Caps on each project without its own' }),
+    organization_budget: z
+      .looseObject({})
+      .openapi({ description: "Caps on the whole organization's spend" }),
+  })
+  .openapi({
+    description: 'AIGatewayOrganizationBudgetSetResponse',
+    required: [
+      'configured',
+      'default_key_budget',
+      'default_owner_budget',
+      'default_project_budget',
+      'organization_budget',
+    ],
+  })
+  .openapi('AIGatewayOrganizationBudgetSetResponse')
+
+const AIGatewayOrganizationBudgetsGetResponseSchema = z
+  .object({
+    configured: z
+      .boolean()
+      .openapi({
+        description:
+          "Whether the organization's budgets are set up, by setting a monthly default key budget. Until then no cap is enforced",
+      }),
+    credits: z
+      .object({
+        charged_usd: z.string().openapi({ description: 'USD of AI Gateway credits used' }),
+        granted_usd: z.string().openapi({ description: 'USD of AI Gateway credits granted' }),
+        remaining_usd: z.string().openapi({ description: 'USD of AI Gateway credits left' }),
+      })
+      .exactOptional()
+      .openapi({
+        description: 'AI Gateway credits, or null if none were granted',
+        required: ['charged_usd', 'granted_usd', 'remaining_usd'],
+      }),
+    default_key_budget: z
+      .object({
+        daily: z
+          .object({
+            amount_usd: z
+              .string()
+              .openapi({ description: "The scope's own cap in USD, or null for none" }),
+            effective_usd: z
+              .string()
+              .openapi({
+                description:
+                  'The cap that applies in USD, or null for none or when it is unavailable',
+              }),
+            mode: z
+              .enum(['limit', 'inherit', 'ordinary', 'exception', 'unlimited'])
+              .openapi({
+                description:
+                  "The stored policy: limit or unlimited on a scope without a default (or a project on an older gateway); inherit, ordinary (a key's own cap, bound by the default), exception (an organization admin's own cap) or unlimited on a key, owner, or project. Null only when the source is unavailable",
+              }),
+            source: z
+              .enum(['own', 'default', 'none', 'unavailable'])
+              .openapi({
+                description:
+                  "Where the cap that applies comes from: the scope's own policy, the default, none (no default exists), or unavailable (a required default cannot be read)",
+              }),
+          })
+          .openapi({
+            description: 'Daily policy, in UTC days',
+            required: ['amount_usd', 'effective_usd', 'mode', 'source'],
+          }),
+        monthly: z
+          .object({
+            amount_usd: z
+              .string()
+              .openapi({ description: "The scope's own cap in USD, or null for none" }),
+            effective_usd: z
+              .string()
+              .openapi({
+                description:
+                  'The cap that applies in USD, or null for none or when it is unavailable',
+              }),
+            mode: z
+              .enum(['limit', 'inherit', 'ordinary', 'exception', 'unlimited'])
+              .openapi({
+                description:
+                  "The stored policy: limit or unlimited on a scope without a default (or a project on an older gateway); inherit, ordinary (a key's own cap, bound by the default), exception (an organization admin's own cap) or unlimited on a key, owner, or project. Null only when the source is unavailable",
+              }),
+            source: z
+              .enum(['own', 'default', 'none', 'unavailable'])
+              .openapi({
+                description:
+                  "Where the cap that applies comes from: the scope's own policy, the default, none (no default exists), or unavailable (a required default cannot be read)",
+              }),
+          })
+          .openapi({
+            description: 'Monthly policy, in UTC months',
+            required: ['amount_usd', 'effective_usd', 'mode', 'source'],
+          }),
+      })
+      .openapi({ description: 'Caps on each key without its own', required: ['daily', 'monthly'] }),
+    default_owner_budget: z
+      .looseObject({})
+      .openapi({ description: 'Caps on each key owner without their own' }),
+    default_project_budget: z
+      .looseObject({})
+      .openapi({ description: 'Caps on each project without its own' }),
+    metered_until: z
+      .string()
+      .max(36)
+      .exactOptional()
+      .openapi({ description: 'Time up to which spend is counted' }),
+    organization_budget: z
+      .object({
+        daily: z
+          .object({
+            amount_usd: z
+              .string()
+              .openapi({ description: "The scope's own cap in USD, or null for none" }),
+            effective_usd: z
+              .string()
+              .openapi({
+                description:
+                  'The cap that applies in USD, or null for none or when it is unavailable',
+              }),
+            mode: z
+              .enum(['limit', 'inherit', 'ordinary', 'exception', 'unlimited'])
+              .openapi({
+                description:
+                  "The stored policy: limit or unlimited on a scope without a default (or a project on an older gateway); inherit, ordinary (a key's own cap, bound by the default), exception (an organization admin's own cap) or unlimited on a key, owner, or project. Null only when the source is unavailable",
+              }),
+            source: z
+              .enum(['own', 'default', 'none', 'unavailable'])
+              .openapi({
+                description:
+                  "Where the cap that applies comes from: the scope's own policy, the default, none (no default exists), or unavailable (a required default cannot be read)",
+              }),
+          })
+          .openapi({
+            description: 'Daily policy, in UTC days',
+            required: ['amount_usd', 'effective_usd', 'mode', 'source'],
+          }),
+        daily_spent_usd: z
+          .string()
+          .openapi({ description: 'USD spent since the start of the UTC day' }),
+        monthly: z
+          .object({
+            amount_usd: z
+              .string()
+              .openapi({ description: "The scope's own cap in USD, or null for none" }),
+            effective_usd: z
+              .string()
+              .openapi({
+                description:
+                  'The cap that applies in USD, or null for none or when it is unavailable',
+              }),
+            mode: z
+              .enum(['limit', 'inherit', 'ordinary', 'exception', 'unlimited'])
+              .openapi({
+                description:
+                  "The stored policy: limit or unlimited on a scope without a default (or a project on an older gateway); inherit, ordinary (a key's own cap, bound by the default), exception (an organization admin's own cap) or unlimited on a key, owner, or project. Null only when the source is unavailable",
+              }),
+            source: z
+              .enum(['own', 'default', 'none', 'unavailable'])
+              .openapi({
+                description:
+                  "Where the cap that applies comes from: the scope's own policy, the default, none (no default exists), or unavailable (a required default cannot be read)",
+              }),
+          })
+          .openapi({
+            description: 'Monthly policy, in UTC months',
+            required: ['amount_usd', 'effective_usd', 'mode', 'source'],
+          }),
+        monthly_spent_usd: z
+          .string()
+          .openapi({ description: 'USD spent since the start of the UTC month' }),
+      })
+      .openapi({
+        description: 'Caps on and spend of the whole organization',
+        required: ['daily', 'daily_spent_usd', 'monthly', 'monthly_spent_usd'],
+      }),
+    owners: z
+      .array(
+        z
+          .object({
+            active_key_count: z
+              .int()
+              .min(0)
+              .openapi({ description: 'Number of usable keys the owner has' }),
+            daily: z
+              .object({
+                amount_usd: z
+                  .string()
+                  .openapi({ description: "The scope's own cap in USD, or null for none" }),
+                effective_usd: z
+                  .string()
+                  .openapi({
+                    description:
+                      'The cap that applies in USD, or null for none or when it is unavailable',
+                  }),
+                mode: z
+                  .enum(['limit', 'inherit', 'ordinary', 'exception', 'unlimited'])
+                  .openapi({
+                    description:
+                      "The stored policy: limit or unlimited on a scope without a default (or a project on an older gateway); inherit, ordinary (a key's own cap, bound by the default), exception (an organization admin's own cap) or unlimited on a key, owner, or project. Null only when the source is unavailable",
+                  }),
+                source: z
+                  .enum(['own', 'default', 'none', 'unavailable'])
+                  .openapi({
+                    description:
+                      "Where the cap that applies comes from: the scope's own policy, the default, none (no default exists), or unavailable (a required default cannot be read)",
+                  }),
+              })
+              .openapi({
+                description: 'Daily policy, in UTC days',
+                required: ['amount_usd', 'effective_usd', 'mode', 'source'],
+              }),
+            daily_spent_usd: z
+              .string()
+              .openapi({ description: 'USD spent since the start of the UTC day' }),
+            monthly: z
+              .object({
+                amount_usd: z
+                  .string()
+                  .openapi({ description: "The scope's own cap in USD, or null for none" }),
+                effective_usd: z
+                  .string()
+                  .openapi({
+                    description:
+                      'The cap that applies in USD, or null for none or when it is unavailable',
+                  }),
+                mode: z
+                  .enum(['limit', 'inherit', 'ordinary', 'exception', 'unlimited'])
+                  .openapi({
+                    description:
+                      "The stored policy: limit or unlimited on a scope without a default (or a project on an older gateway); inherit, ordinary (a key's own cap, bound by the default), exception (an organization admin's own cap) or unlimited on a key, owner, or project. Null only when the source is unavailable",
+                  }),
+                source: z
+                  .enum(['own', 'default', 'none', 'unavailable'])
+                  .openapi({
+                    description:
+                      "Where the cap that applies comes from: the scope's own policy, the default, none (no default exists), or unavailable (a required default cannot be read)",
+                  }),
+              })
+              .openapi({
+                description: 'Monthly policy, in UTC months',
+                required: ['amount_usd', 'effective_usd', 'mode', 'source'],
+              }),
+            monthly_spent_usd: z
+              .string()
+              .openapi({ description: 'USD spent since the start of the UTC month' }),
+            owner: z
+              .object({
+                is_application_user: z
+                  .boolean()
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      'Whether the key owner is an application user, or null if the user was deleted',
+                  }),
+                real_name: z
+                  .string()
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      'Owner name, or null if unavailable or the caller cannot list project members',
+                  }),
+                user_email: z
+                  .string()
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      'Owner email, or null if unavailable or the caller cannot list project members',
+                  }),
+                user_id: z
+                  .string()
+                  .min(1)
+                  .max(20)
+                  .openapi({ description: 'User ID of the key owner' }),
+              })
+              .openapi({ description: 'Owner of the keys', required: ['user_id'] }),
+            owner_user_id: z
+              .string()
+              .min(1)
+              .max(20)
+              .openapi({ description: 'User ID of the key owner' }),
+            project_ids: z
+              .array(z.string())
+              .openapi({ description: 'Projects the owner has keys in' }),
+          })
+          .openapi({
+            required: [
+              'active_key_count',
+              'daily',
+              'daily_spent_usd',
+              'monthly',
+              'monthly_spent_usd',
+              'owner',
+              'owner_user_id',
+              'project_ids',
+            ],
+          }),
+      )
+      .openapi({
+        description: 'Caps on and spend of each human organization member and existing key owner',
+      }),
+    projects: z
+      .array(
+        z
+          .object({
+            active_key_count: z
+              .int()
+              .min(0)
+              .openapi({ description: 'Number of usable keys in the project' }),
+            billing_group_id: z
+              .string()
+              .exactOptional()
+              .openapi({ description: 'Billing group of the project' }),
+            daily: z
+              .object({
+                amount_usd: z
+                  .string()
+                  .openapi({ description: "The scope's own cap in USD, or null for none" }),
+                effective_usd: z
+                  .string()
+                  .openapi({
+                    description:
+                      'The cap that applies in USD, or null for none or when it is unavailable',
+                  }),
+                mode: z
+                  .enum(['limit', 'inherit', 'ordinary', 'exception', 'unlimited'])
+                  .openapi({
+                    description:
+                      "The stored policy: limit or unlimited on a scope without a default (or a project on an older gateway); inherit, ordinary (a key's own cap, bound by the default), exception (an organization admin's own cap) or unlimited on a key, owner, or project. Null only when the source is unavailable",
+                  }),
+                source: z
+                  .enum(['own', 'default', 'none', 'unavailable'])
+                  .openapi({
+                    description:
+                      "Where the cap that applies comes from: the scope's own policy, the default, none (no default exists), or unavailable (a required default cannot be read)",
+                  }),
+              })
+              .openapi({
+                description: 'Daily policy, in UTC days',
+                required: ['amount_usd', 'effective_usd', 'mode', 'source'],
+              }),
+            daily_spent_usd: z
+              .string()
+              .openapi({ description: 'USD spent since the start of the UTC day' }),
+            monthly: z
+              .object({
+                amount_usd: z
+                  .string()
+                  .openapi({ description: "The scope's own cap in USD, or null for none" }),
+                effective_usd: z
+                  .string()
+                  .openapi({
+                    description:
+                      'The cap that applies in USD, or null for none or when it is unavailable',
+                  }),
+                mode: z
+                  .enum(['limit', 'inherit', 'ordinary', 'exception', 'unlimited'])
+                  .openapi({
+                    description:
+                      "The stored policy: limit or unlimited on a scope without a default (or a project on an older gateway); inherit, ordinary (a key's own cap, bound by the default), exception (an organization admin's own cap) or unlimited on a key, owner, or project. Null only when the source is unavailable",
+                  }),
+                source: z
+                  .enum(['own', 'default', 'none', 'unavailable'])
+                  .openapi({
+                    description:
+                      "Where the cap that applies comes from: the scope's own policy, the default, none (no default exists), or unavailable (a required default cannot be read)",
+                  }),
+              })
+              .openapi({
+                description: 'Monthly policy, in UTC months',
+                required: ['amount_usd', 'effective_usd', 'mode', 'source'],
+              }),
+            monthly_spent_usd: z
+              .string()
+              .openapi({ description: 'USD spent since the start of the UTC month' }),
+            project_id: z.string().length(36).openapi({ description: 'Project ID' }),
+            project_name: z
+              .string()
+              .exactOptional()
+              .openapi({
+                description:
+                  'Project name, or null if the project was deleted or moved to another organization',
+              }),
+          })
+          .openapi({
+            required: [
+              'active_key_count',
+              'daily',
+              'daily_spent_usd',
+              'monthly',
+              'monthly_spent_usd',
+              'project_id',
+            ],
+          }),
+      )
+      .openapi({ description: 'Caps on and spend of each project' }),
+  })
+  .openapi({
+    description: 'AIGatewayOrganizationBudgetsGetResponse',
+    required: [
+      'configured',
+      'default_key_budget',
+      'default_owner_budget',
+      'default_project_budget',
+      'organization_budget',
+      'owners',
+      'projects',
+    ],
+  })
+  .openapi('AIGatewayOrganizationBudgetsGetResponse')
+
+const AIGatewayOrganizationKeyBudgetsUpdateRequestBodySchema = z
+  .object({
+    key_ids: z
+      .array(z.string())
+      .min(1)
+      .max(500)
+      .exactOptional()
+      .openapi({ description: 'Keys to update, unless owner_user_id is given' }),
+    owner_user_id: z
+      .string()
+      .min(1)
+      .max(20)
+      .exactOptional()
+      .openapi({ description: 'Update every key of this owner instead' }),
+  })
+  .openapi({ description: 'AIGatewayOrganizationKeyBudgetsUpdateRequestBody', required: [] })
+  .openapi('AIGatewayOrganizationKeyBudgetsUpdateRequestBody')
+
+const AIGatewayOrganizationKeyBudgetsUpdateResponseSchema = z
+  .object({
+    key_ids: z.array(z.string()).openapi({ description: 'Keys whose budget was updated' }),
+  })
+  .openapi({ description: 'AIGatewayOrganizationKeyBudgetsUpdateResponse', required: ['key_ids'] })
+  .openapi('AIGatewayOrganizationKeyBudgetsUpdateResponse')
+
+const AIGatewayOrganizationKeyListResponseSchema = z
+  .object({
+    keys: z
+      .array(
+        z
+          .object({
+            budget: z
+              .looseObject({})
+              .exactOptional()
+              .openapi({ description: "Caps on the key's spend" }),
+            create_time: z.string().max(36).openapi({ description: 'Time the key was created' }),
+            description: z
+              .string()
+              .max(1000)
+              .exactOptional()
+              .openapi({ description: 'Longer description on how the key is used' }),
+            expiry_time: z
+              .string()
+              .max(36)
+              .exactOptional()
+              .openapi({ description: 'Time the key expires' }),
+            key_id: z.string().length(36).openapi({ description: 'Key ID' }),
+            key_suffix: z.string().max(5).openapi({ description: 'Last characters of the key' }),
+            name: z
+              .string()
+              .min(1)
+              .max(30)
+              .openapi({ description: 'Short human readable identifier for the key' }),
+            owner: z
+              .object({
+                is_application_user: z
+                  .boolean()
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      'Whether the key owner is an application user, or null if the user was deleted',
+                  }),
+                real_name: z
+                  .string()
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      'Owner name, or null if unavailable or the caller cannot list project members',
+                  }),
+                user_email: z
+                  .string()
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      'Owner email, or null if unavailable or the caller cannot list project members',
+                  }),
+                user_id: z
+                  .string()
+                  .min(1)
+                  .max(20)
+                  .openapi({ description: 'User ID of the key owner' }),
+              })
+              .openapi({ description: 'Owner of the key', required: ['user_id'] }),
+            owner_user_id: z
+              .string()
+              .min(1)
+              .max(20)
+              .openapi({ description: 'User ID of the key owner' }),
+            project_id: z.string().length(36).openapi({ description: 'Project ID' }),
+            project_name: z.string().openapi({ description: 'Project name' }),
+            revocation_time: z
+              .string()
+              .max(36)
+              .exactOptional()
+              .openapi({ description: 'Time the key was revoked' }),
+            spend: z
+              .object({
+                daily_spent_usd: z
+                  .string()
+                  .openapi({ description: 'USD spent since the start of the UTC day' }),
+                metered_until: z
+                  .string()
+                  .max(36)
+                  .exactOptional()
+                  .openapi({ description: 'Time up to which spend is counted' }),
+                monthly_spent_usd: z
+                  .string()
+                  .openapi({ description: 'USD spent since the start of the UTC month' }),
+              })
+              .exactOptional()
+              .openapi({
+                description: 'Spend of the key',
+                required: ['daily_spent_usd', 'monthly_spent_usd'],
+              }),
+          })
+          .openapi({
+            required: [
+              'create_time',
+              'key_id',
+              'key_suffix',
+              'name',
+              'owner',
+              'owner_user_id',
+              'project_id',
+              'project_name',
+            ],
+          }),
+      )
+      .openapi({ description: 'List of AI Gateway keys of the organization' }),
+  })
+  .openapi({ description: 'AIGatewayOrganizationKeyListResponse', required: ['keys'] })
+  .openapi('AIGatewayOrganizationKeyListResponse')
+
+const AIGatewayOrganizationOwnerBudgetSetResponseSchema = z
+  .object({
+    daily: z
+      .object({
+        amount_usd: z
+          .string()
+          .openapi({ description: "The scope's own cap in USD, or null for none" }),
+        effective_usd: z
+          .string()
+          .openapi({
+            description: 'The cap that applies in USD, or null for none or when it is unavailable',
+          }),
+        mode: z
+          .enum(['limit', 'inherit', 'ordinary', 'exception', 'unlimited'])
+          .openapi({
+            description:
+              "The stored policy: limit or unlimited on a scope without a default (or a project on an older gateway); inherit, ordinary (a key's own cap, bound by the default), exception (an organization admin's own cap) or unlimited on a key, owner, or project. Null only when the source is unavailable",
+          }),
+        source: z
+          .enum(['own', 'default', 'none', 'unavailable'])
+          .openapi({
+            description:
+              "Where the cap that applies comes from: the scope's own policy, the default, none (no default exists), or unavailable (a required default cannot be read)",
+          }),
+      })
+      .openapi({
+        description: 'Daily policy, in UTC days',
+        required: ['amount_usd', 'effective_usd', 'mode', 'source'],
+      }),
+    monthly: z
+      .object({
+        amount_usd: z
+          .string()
+          .openapi({ description: "The scope's own cap in USD, or null for none" }),
+        effective_usd: z
+          .string()
+          .openapi({
+            description: 'The cap that applies in USD, or null for none or when it is unavailable',
+          }),
+        mode: z
+          .enum(['limit', 'inherit', 'ordinary', 'exception', 'unlimited'])
+          .openapi({
+            description:
+              "The stored policy: limit or unlimited on a scope without a default (or a project on an older gateway); inherit, ordinary (a key's own cap, bound by the default), exception (an organization admin's own cap) or unlimited on a key, owner, or project. Null only when the source is unavailable",
+          }),
+        source: z
+          .enum(['own', 'default', 'none', 'unavailable'])
+          .openapi({
+            description:
+              "Where the cap that applies comes from: the scope's own policy, the default, none (no default exists), or unavailable (a required default cannot be read)",
+          }),
+      })
+      .openapi({
+        description: 'Monthly policy, in UTC months',
+        required: ['amount_usd', 'effective_usd', 'mode', 'source'],
+      }),
+    owner_user_id: z.string().min(1).max(20).openapi({ description: 'User ID of the key owner' }),
+  })
+  .openapi({
+    description: 'AIGatewayOrganizationOwnerBudgetSetResponse',
+    required: ['daily', 'monthly', 'owner_user_id'],
+  })
+  .openapi('AIGatewayOrganizationOwnerBudgetSetResponse')
+
+const AIGatewayProjectBudgetGetResponseSchema = z
+  .object({
+    daily: z
+      .object({
+        amount_usd: z
+          .string()
+          .openapi({ description: "The scope's own cap in USD, or null for none" }),
+        effective_usd: z
+          .string()
+          .openapi({
+            description: 'The cap that applies in USD, or null for none or when it is unavailable',
+          }),
+        mode: z
+          .enum(['limit', 'inherit', 'ordinary', 'exception', 'unlimited'])
+          .openapi({
+            description:
+              "The stored policy: limit or unlimited on a scope without a default (or a project on an older gateway); inherit, ordinary (a key's own cap, bound by the default), exception (an organization admin's own cap) or unlimited on a key, owner, or project. Null only when the source is unavailable",
+          }),
+        source: z
+          .enum(['own', 'default', 'none', 'unavailable'])
+          .openapi({
+            description:
+              "Where the cap that applies comes from: the scope's own policy, the default, none (no default exists), or unavailable (a required default cannot be read)",
+          }),
+      })
+      .openapi({
+        description: 'Daily policy, in UTC days',
+        required: ['amount_usd', 'effective_usd', 'mode', 'source'],
+      }),
+    daily_spent_usd: z
+      .string()
+      .openapi({ description: 'USD spent since the start of the UTC day' }),
+    monthly: z
+      .object({
+        amount_usd: z
+          .string()
+          .openapi({ description: "The scope's own cap in USD, or null for none" }),
+        effective_usd: z
+          .string()
+          .openapi({
+            description: 'The cap that applies in USD, or null for none or when it is unavailable',
+          }),
+        mode: z
+          .enum(['limit', 'inherit', 'ordinary', 'exception', 'unlimited'])
+          .openapi({
+            description:
+              "The stored policy: limit or unlimited on a scope without a default (or a project on an older gateway); inherit, ordinary (a key's own cap, bound by the default), exception (an organization admin's own cap) or unlimited on a key, owner, or project. Null only when the source is unavailable",
+          }),
+        source: z
+          .enum(['own', 'default', 'none', 'unavailable'])
+          .openapi({
+            description:
+              "Where the cap that applies comes from: the scope's own policy, the default, none (no default exists), or unavailable (a required default cannot be read)",
+          }),
+      })
+      .openapi({
+        description: 'Monthly policy, in UTC months',
+        required: ['amount_usd', 'effective_usd', 'mode', 'source'],
+      }),
+    monthly_spent_usd: z
+      .string()
+      .openapi({ description: 'USD spent since the start of the UTC month' }),
+  })
+  .openapi({
+    description: 'AIGatewayProjectBudgetGetResponse',
+    required: ['daily', 'daily_spent_usd', 'monthly', 'monthly_spent_usd'],
+  })
+  .openapi('AIGatewayProjectBudgetGetResponse')
+
+const AIGatewayProjectBudgetSetResponseSchema = z
+  .object({
+    daily: z
+      .object({
+        amount_usd: z
+          .string()
+          .openapi({ description: "The scope's own cap in USD, or null for none" }),
+        effective_usd: z
+          .string()
+          .openapi({
+            description: 'The cap that applies in USD, or null for none or when it is unavailable',
+          }),
+        mode: z
+          .enum(['limit', 'inherit', 'ordinary', 'exception', 'unlimited'])
+          .openapi({
+            description:
+              "The stored policy: limit or unlimited on a scope without a default (or a project on an older gateway); inherit, ordinary (a key's own cap, bound by the default), exception (an organization admin's own cap) or unlimited on a key, owner, or project. Null only when the source is unavailable",
+          }),
+        source: z
+          .enum(['own', 'default', 'none', 'unavailable'])
+          .openapi({
+            description:
+              "Where the cap that applies comes from: the scope's own policy, the default, none (no default exists), or unavailable (a required default cannot be read)",
+          }),
+      })
+      .openapi({
+        description: 'Daily policy, in UTC days',
+        required: ['amount_usd', 'effective_usd', 'mode', 'source'],
+      }),
+    daily_spent_usd: z
+      .string()
+      .openapi({ description: 'USD spent since the start of the UTC day' }),
+    monthly: z
+      .object({
+        amount_usd: z
+          .string()
+          .openapi({ description: "The scope's own cap in USD, or null for none" }),
+        effective_usd: z
+          .string()
+          .openapi({
+            description: 'The cap that applies in USD, or null for none or when it is unavailable',
+          }),
+        mode: z
+          .enum(['limit', 'inherit', 'ordinary', 'exception', 'unlimited'])
+          .openapi({
+            description:
+              "The stored policy: limit or unlimited on a scope without a default (or a project on an older gateway); inherit, ordinary (a key's own cap, bound by the default), exception (an organization admin's own cap) or unlimited on a key, owner, or project. Null only when the source is unavailable",
+          }),
+        source: z
+          .enum(['own', 'default', 'none', 'unavailable'])
+          .openapi({
+            description:
+              "Where the cap that applies comes from: the scope's own policy, the default, none (no default exists), or unavailable (a required default cannot be read)",
+          }),
+      })
+      .openapi({
+        description: 'Monthly policy, in UTC months',
+        required: ['amount_usd', 'effective_usd', 'mode', 'source'],
+      }),
+    monthly_spent_usd: z
+      .string()
+      .openapi({ description: 'USD spent since the start of the UTC month' }),
+  })
+  .openapi({
+    description: 'AIGatewayProjectBudgetSetResponse',
+    required: ['daily', 'daily_spent_usd', 'monthly', 'monthly_spent_usd'],
+  })
+  .openapi('AIGatewayProjectBudgetSetResponse')
 
 const AIGatewayUsageGetResponseSchema = z
   .object({
@@ -4483,6 +5663,11 @@ const BillingGroupFeeBreakdownAggregateResponseSchema = z
                 'pro_platform_fee',
                 'minimum_pro_platform_fee',
                 'ai_gateway',
+                'btar_write_transfer',
+                'btar_backup_storage',
+                'btar_byoc_fee',
+                'ccr_replication_transfer',
+                'ccr_byoc_fee',
               ])
               .openapi({
                 description:
@@ -4586,6 +5771,11 @@ const BillingGroupFeeBreakdownAggregateResponseSchema = z
                         'pro_platform_fee',
                         'minimum_pro_platform_fee',
                         'ai_gateway',
+                        'btar_write_transfer',
+                        'btar_backup_storage',
+                        'btar_byoc_fee',
+                        'ccr_replication_transfer',
+                        'ccr_byoc_fee',
                       ])
                       .openapi({
                         description:
@@ -5009,8 +6199,9 @@ const BillingGroupInvoiceLinesListResponseSchema = z
                 'alertmanager',
                 'application',
                 'clickhouse',
+                'context_catalog',
+                'copepod',
                 'datahub',
-                'dragonfly',
                 'elasticsearch',
                 'flink',
                 'grafana',
@@ -9855,6 +11046,20 @@ const OrganizationBillingGroupListResponseSchema = z
           }),
       )
       .openapi({ description: 'A list of all billing groups belonging to the organization' }),
+    next: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Cursor for the next page. Only set when limit or cursor was given and more results exist',
+      }),
+    prev: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Cursor for the previous page. Only set when limit or cursor was given and an earlier page exists',
+      }),
   })
   .openapi({ description: 'OrganizationBillingGroupListResponse', required: ['billing_groups'] })
   .openapi('OrganizationBillingGroupListResponse')
@@ -14001,12 +15206,37 @@ const OrganizationProjectsUpdateResponseSchema = z
 
 const OrganizationServiceLogCountsGetRequestBodySchema = z
   .object({
+    build_id: z
+      .string()
+      .length(36)
+      .exactOptional()
+      .openapi({
+        description:
+          'Filter to entries of a specific application build. Only supported for application services. Only build logs carry a build ID, so when log_type is omitted, the filter alone selects build logs. Cannot be combined with log_type application-run.',
+      }),
+    component: z
+      .string()
+      .min(1)
+      .max(256)
+      .exactOptional()
+      .openapi({
+        description: "Filter to entries from this component, as in the entries' 'component'.",
+      }),
     from_time: z
       .string()
       .exactOptional()
       .openapi({
         description:
           "Start of the time window (ISO 8601 UTC). Cannot be in the future. Defaults to one hour before 'to_time' when set, otherwise one hour before now.",
+      }),
+    hostname: z
+      .string()
+      .min(1)
+      .max(256)
+      .exactOptional()
+      .openapi({
+        description:
+          "Filter to entries from the node with this hostname, as in the entries' 'hostname'.",
       }),
     interval_seconds: z
       .int()
@@ -14016,6 +15246,24 @@ const OrganizationServiceLogCountsGetRequestBodySchema = z
       .openapi({
         description:
           'Width of each time bucket in seconds, from 1 to 86400. Defaults to the time window split into 24 buckets, rounded up to whole seconds. A time window needing more than 300 buckets is rejected.',
+      }),
+    log_type: z
+      .enum(['application-build', 'application-run'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Values of the log_type filter on the project-level and organization-level service logs APIs.',
+        title:
+          "Filter application service logs by type: build logs or run logs. Only supported for application services, where it defaults to 'application-run'.",
+      }),
+    node_role: z
+      .string()
+      .min(1)
+      .max(256)
+      .exactOptional()
+      .openapi({
+        description:
+          "Filter to entries from nodes with this role, as in the entries' 'metadata.node_role'.",
       }),
     severity: z
       .enum(['emergency', 'alert', 'critical', 'error', 'warning', 'notice', 'info', 'debug'])
@@ -14147,12 +15395,28 @@ const OrganizationServiceLogCountsGetResponseSchema = z
 
 const OrganizationServiceLogsGetRequestBodySchema = z
   .object({
+    build_id: z
+      .string()
+      .length(36)
+      .exactOptional()
+      .openapi({
+        description:
+          'Filter to entries of a specific application build. Only supported for application services. Only build logs carry a build ID, so when log_type is omitted, the filter alone selects build logs. Cannot be combined with log_type application-run.',
+      }),
+    component: z
+      .string()
+      .min(1)
+      .max(256)
+      .exactOptional()
+      .openapi({
+        description: "Filter to entries from this component, as in the entries' 'component'.",
+      }),
     cursor: z
       .string()
       .exactOptional()
       .openapi({
         description:
-          "Pagination cursor from a previous response. The cursor already encodes the time range, severity and sort order, so it is mutually exclusive with 'from_time', 'to_time', 'severity' and 'order_by' ('limit' may still be supplied).",
+          "Pagination cursor from a previous response. The cursor already encodes the time range, filters and sort order, so it is mutually exclusive with 'from_time', 'to_time', 'severity', 'log_type', 'build_id', 'hostname', 'node_role', 'component' and 'order_by' ('limit' may still be supplied).",
       }),
     from_time: z
       .string()
@@ -14161,6 +15425,15 @@ const OrganizationServiceLogsGetRequestBodySchema = z
         description:
           "Start of the time window (ISO 8601 UTC). Cannot be in the future. Defaults to one hour before 'to_time' when set, otherwise one hour before now.",
       }),
+    hostname: z
+      .string()
+      .min(1)
+      .max(256)
+      .exactOptional()
+      .openapi({
+        description:
+          "Filter to entries from the node with this hostname, as in the entries' 'hostname'.",
+      }),
     limit: z
       .int()
       .min(30)
@@ -14168,6 +15441,24 @@ const OrganizationServiceLogsGetRequestBodySchema = z
       .default(100)
       .exactOptional()
       .openapi({ description: 'Number of entries per page.' }),
+    log_type: z
+      .enum(['application-build', 'application-run'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Values of the log_type filter on the project-level and organization-level service logs APIs.',
+        title:
+          "Filter application service logs by type: build logs or run logs. Only supported for application services, where it defaults to 'application-run'.",
+      }),
+    node_role: z
+      .string()
+      .min(1)
+      .max(256)
+      .exactOptional()
+      .openapi({
+        description:
+          "Filter to entries from nodes with this role, as in the entries' 'metadata.node_role'.",
+      }),
     order_by: z
       .enum(['log_time:asc', 'log_time:desc'])
       .exactOptional()
@@ -14856,10 +16147,10 @@ const VcsIntegrationRepositoryFileScanResponseSchema: z.ZodType<VcsIntegrationRe
                                   security: z
                                     .object({
                                       authentication_method: z
-                                        .enum(['oidc', 'aiven_platform'])
+                                        .enum(['oidc', 'aiven_platform', 'okta'])
                                         .openapi({
                                           description:
-                                            'Which of the authentication configurations below applies to this port.',
+                                            'Which authentication method protects this port. The oidc and okta methods both use the oidc configuration; aiven_platform takes none.',
                                           title: 'Authentication method',
                                         }),
                                       oidc: z
@@ -20035,7 +21326,7 @@ const ServiceClickHouseQueryRequestBodySchema = z
 
 const ServiceClickHouseQueryResponseSchema = z
   .object({
-    data: z.array(z.looseObject({})).openapi({ description: 'Data' }),
+    data: z.array(z.array(z.any())).openapi({ description: 'Data' }),
     errors: z
       .array(
         z
@@ -31612,6 +32903,14 @@ const ManagedAgentsAgentScheduleCreateResponseSchema = z
     agent_id: z.string().openapi({ description: 'Agent ID the schedule runs against' }),
     created_at: z.string().max(36).exactOptional().openapi({ description: 'Created At' }),
     cron_expr: z.string().openapi({ description: 'Cron expression (5-field)' }),
+    disabled_reason: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Set when the runtime turned the schedule off itself, e.g. daily_run_limit while the free tier's daily run limit is spent. It stays disabled until the user enables it again. Not set for schedules a user disabled.",
+        title: 'Why the runtime disabled the schedule',
+      }),
     enabled: z
       .boolean()
       .default(true)
@@ -31657,6 +32956,14 @@ const ManagedAgentsAgentScheduleUpdateResponseSchema = z
     agent_id: z.string().openapi({ description: 'Agent ID the schedule runs against' }),
     created_at: z.string().max(36).exactOptional().openapi({ description: 'Created At' }),
     cron_expr: z.string().openapi({ description: 'Cron expression (5-field)' }),
+    disabled_reason: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Set when the runtime turned the schedule off itself, e.g. daily_run_limit while the free tier's daily run limit is spent. It stays disabled until the user enables it again. Not set for schedules a user disabled.",
+        title: 'Why the runtime disabled the schedule',
+      }),
     enabled: z
       .boolean()
       .default(true)
@@ -38371,6 +39678,14 @@ const PgAvailableExtensionsResponseSchema = z
 
 const ProjectGetServiceLogsRequestBodySchema = z
   .object({
+    build_id: z
+      .string()
+      .max(36)
+      .exactOptional()
+      .openapi({
+        description:
+          'Filter to entries of a specific application build. Only supported for application services. Only build logs carry a build ID, so when log_type is omitted, the filter alone selects build logs. Cannot be combined with log_type application-run.',
+      }),
     limit: z
       .int()
       .min(1)
@@ -39148,6 +40463,14 @@ const ServiceCreateResponseSchema = z
                     description:
                       "Specifies if this port uses Project CA or Letsencrypt. If not specified, the default is using Project CA.This is a value specific to the 'kafka' service component.",
                   }),
+                node_position: z
+                  .int()
+                  .min(1)
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      '1-based node position this component routes to. Set for components with usage node (ClickHouse per-node DNS names), null otherwise.',
+                  }),
                 path: z
                   .string()
                   .exactOptional()
@@ -39167,6 +40490,21 @@ const ServiceCreateResponseSchema = z
                 route: z
                   .enum(['dynamic', 'public', 'private', 'privatelink'])
                   .openapi({ description: 'Network access route' }),
+                security_redirect_uris: z
+                  .array(z.string())
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      "Redirect URIs to register with an OIDC provider to protect this port. This is a value specific to the 'application' service component. One per hostname of the port, the primary hostname's first. Present for HTTP ports once the platform has reported them, whether or not protection is configured.",
+                  }),
+                shard_position: z
+                  .int()
+                  .min(1)
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      '1-based shard position this component routes to. Set for components with usage shard or node (ClickHouse per-shard and per-node DNS names), null otherwise.',
+                  }),
                 ssl: z
                   .boolean()
                   .exactOptional()
@@ -39175,7 +40513,7 @@ const ServiceCreateResponseSchema = z
                       'Whether the endpoint is encrypted or accepts plaintext. By default endpoints are always encrypted andthis property is only included for service components that may disable encryption.',
                   }),
                 usage: z
-                  .enum(['disaster_recovery', 'primary', 'replica', 'ha_replica'])
+                  .enum(['disaster_recovery', 'primary', 'replica', 'ha_replica', 'shard', 'node'])
                   .openapi({ description: 'DNS usage name' }),
               })
               .openapi({ required: ['component', 'host', 'port', 'route', 'usage'] }),
@@ -39542,7 +40880,7 @@ const ServiceCreateResponseSchema = z
                     description: 'Extra information regarding the progress for current state',
                   }),
                 role: z
-                  .enum(['master', 'standby', 'read-replica'])
+                  .enum(['master', 'standby', 'standby-leader', 'read-replica'])
                   .exactOptional()
                   .openapi({
                     description: 'Role of this node. Only returned for a subset of service types',
@@ -39907,6 +41245,15 @@ const ServiceCreateResponseSchema = z
                       .max(256)
                       .exactOptional()
                       .openapi({ description: 'Rules for individual commands' }),
+                    valkey_acl_databases: z
+                      .array(z.string())
+                      .max(1024)
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          "Database ids the user can access, Valkey 9.1 and later only. An empty array or 'alldbs' grants all databases, 'resetdbs' grants none. If array is not defined, all databases are permitted.",
+                        title: 'Permitted databases',
+                      }),
                     valkey_acl_keys: z
                       .array(z.string())
                       .max(256)
@@ -40351,6 +41698,14 @@ const ServiceGetResponseSchema = z
                     description:
                       "Specifies if this port uses Project CA or Letsencrypt. If not specified, the default is using Project CA.This is a value specific to the 'kafka' service component.",
                   }),
+                node_position: z
+                  .int()
+                  .min(1)
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      '1-based node position this component routes to. Set for components with usage node (ClickHouse per-node DNS names), null otherwise.',
+                  }),
                 path: z
                   .string()
                   .exactOptional()
@@ -40370,6 +41725,21 @@ const ServiceGetResponseSchema = z
                 route: z
                   .enum(['dynamic', 'public', 'private', 'privatelink'])
                   .openapi({ description: 'Network access route' }),
+                security_redirect_uris: z
+                  .array(z.string())
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      "Redirect URIs to register with an OIDC provider to protect this port. This is a value specific to the 'application' service component. One per hostname of the port, the primary hostname's first. Present for HTTP ports once the platform has reported them, whether or not protection is configured.",
+                  }),
+                shard_position: z
+                  .int()
+                  .min(1)
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      '1-based shard position this component routes to. Set for components with usage shard or node (ClickHouse per-shard and per-node DNS names), null otherwise.',
+                  }),
                 ssl: z
                   .boolean()
                   .exactOptional()
@@ -40378,7 +41748,7 @@ const ServiceGetResponseSchema = z
                       'Whether the endpoint is encrypted or accepts plaintext. By default endpoints are always encrypted andthis property is only included for service components that may disable encryption.',
                   }),
                 usage: z
-                  .enum(['disaster_recovery', 'primary', 'replica', 'ha_replica'])
+                  .enum(['disaster_recovery', 'primary', 'replica', 'ha_replica', 'shard', 'node'])
                   .openapi({ description: 'DNS usage name' }),
               })
               .openapi({ required: ['component', 'host', 'port', 'route', 'usage'] }),
@@ -40745,7 +42115,7 @@ const ServiceGetResponseSchema = z
                     description: 'Extra information regarding the progress for current state',
                   }),
                 role: z
-                  .enum(['master', 'standby', 'read-replica'])
+                  .enum(['master', 'standby', 'standby-leader', 'read-replica'])
                   .exactOptional()
                   .openapi({
                     description: 'Role of this node. Only returned for a subset of service types',
@@ -41110,6 +42480,15 @@ const ServiceGetResponseSchema = z
                       .max(256)
                       .exactOptional()
                       .openapi({ description: 'Rules for individual commands' }),
+                    valkey_acl_databases: z
+                      .array(z.string())
+                      .max(1024)
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          "Database ids the user can access, Valkey 9.1 and later only. An empty array or 'alldbs' grants all databases, 'resetdbs' grants none. If array is not defined, all databases are permitted.",
+                        title: 'Permitted databases',
+                      }),
                     valkey_acl_keys: z
                       .array(z.string())
                       .max(256)
@@ -41231,7 +42610,7 @@ const ServiceGetMigrationStatusResponseSchema = z
           .enum(['', 'dump', 'mysqldump', 'pg_dump', 'replication', 'scan'])
           .openapi({
             description:
-              'The migration method to be used (currently supported only by Redis, Dragonfly, MySQL and PostgreSQL service types)',
+              'The migration method to be used (currently supported only by Redis, MySQL and PostgreSQL service types)',
           }),
         status: z
           .enum(['done', 'failed', 'running', 'syncing', 'waiting'])
@@ -41244,9 +42623,7 @@ const ServiceGetMigrationStatusResponseSchema = z
           .object({
             dbname: z
               .string()
-              .openapi({
-                description: 'Migrated db name (PG, MySQL) or number (Redis, Dragonfly)',
-              }),
+              .openapi({ description: 'Migrated db name (PG, MySQL) or number (Redis)' }),
             dump_tool: z
               .enum(['mysqldump', 'mydumper'])
               .exactOptional()
@@ -41262,7 +42639,7 @@ const ServiceGetMigrationStatusResponseSchema = z
               .enum(['', 'dump', 'mysqldump', 'pg_dump', 'replication', 'scan'])
               .openapi({
                 description:
-                  'The migration method to be used (currently supported only by Redis, Dragonfly, MySQL and PostgreSQL service types)',
+                  'The migration method to be used (currently supported only by Redis, MySQL and PostgreSQL service types)',
               }),
             status: z
               .enum(['done', 'failed', 'running', 'syncing', 'waiting'])
@@ -41419,6 +42796,14 @@ const ServiceListResponseSchema: z.ZodType<ServiceListResponseType> = z
                         description:
                           "Specifies if this port uses Project CA or Letsencrypt. If not specified, the default is using Project CA.This is a value specific to the 'kafka' service component.",
                       }),
+                    node_position: z
+                      .int()
+                      .min(1)
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          '1-based node position this component routes to. Set for components with usage node (ClickHouse per-node DNS names), null otherwise.',
+                      }),
                     path: z
                       .string()
                       .exactOptional()
@@ -41440,6 +42825,21 @@ const ServiceListResponseSchema: z.ZodType<ServiceListResponseType> = z
                     route: z
                       .enum(['dynamic', 'public', 'private', 'privatelink'])
                       .openapi({ description: 'Network access route' }),
+                    security_redirect_uris: z
+                      .array(z.string())
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          "Redirect URIs to register with an OIDC provider to protect this port. This is a value specific to the 'application' service component. One per hostname of the port, the primary hostname's first. Present for HTTP ports once the platform has reported them, whether or not protection is configured.",
+                      }),
+                    shard_position: z
+                      .int()
+                      .min(1)
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          '1-based shard position this component routes to. Set for components with usage shard or node (ClickHouse per-shard and per-node DNS names), null otherwise.',
+                      }),
                     ssl: z
                       .boolean()
                       .exactOptional()
@@ -41448,7 +42848,14 @@ const ServiceListResponseSchema: z.ZodType<ServiceListResponseType> = z
                           'Whether the endpoint is encrypted or accepts plaintext. By default endpoints are always encrypted andthis property is only included for service components that may disable encryption.',
                       }),
                     usage: z
-                      .enum(['disaster_recovery', 'primary', 'replica', 'ha_replica'])
+                      .enum([
+                        'disaster_recovery',
+                        'primary',
+                        'replica',
+                        'ha_replica',
+                        'shard',
+                        'node',
+                      ])
                       .openapi({ description: 'DNS usage name' }),
                   })
                   .openapi({ required: ['component', 'host', 'port', 'route', 'usage'] }),
@@ -41832,7 +43239,7 @@ const ServiceListResponseSchema: z.ZodType<ServiceListResponseType> = z
                         description: 'Extra information regarding the progress for current state',
                       }),
                     role: z
-                      .enum(['master', 'standby', 'read-replica'])
+                      .enum(['master', 'standby', 'standby-leader', 'read-replica'])
                       .exactOptional()
                       .openapi({
                         description:
@@ -42223,6 +43630,15 @@ const ServiceListResponseSchema: z.ZodType<ServiceListResponseType> = z
                           .max(256)
                           .exactOptional()
                           .openapi({ description: 'Rules for individual commands' }),
+                        valkey_acl_databases: z
+                          .array(z.string())
+                          .max(1024)
+                          .exactOptional()
+                          .openapi({
+                            description:
+                              "Database ids the user can access, Valkey 9.1 and later only. An empty array or 'alldbs' grants all databases, 'resetdbs' grants none. If array is not defined, all databases are permitted.",
+                            title: 'Permitted databases',
+                          }),
                         valkey_acl_keys: z
                           .array(z.string())
                           .max(256)
@@ -42691,10 +44107,7 @@ const ServicePrivatelinkAzureConnectionApprovalResponseSchema = z
       .openapi({ description: 'List of errors occurred during request processing' }),
     message: z.string().exactOptional().openapi({ description: 'Printable result of the request' }),
     private_endpoint_id: z.string().openapi({ description: 'Azure private endpoint ID' }),
-    privatelink_connection_id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Privatelink connection ID' }),
+    privatelink_connection_id: z.string().openapi({ description: 'Privatelink connection ID' }),
     state: z
       .enum(['pending-user-approval', 'user-approved', 'connected', 'active'])
       .openapi({
@@ -42708,7 +44121,7 @@ const ServicePrivatelinkAzureConnectionApprovalResponseSchema = z
   })
   .openapi({
     description: 'ServicePrivatelinkAzureConnectionApprovalResponse',
-    required: ['private_endpoint_id', 'state', 'user_ip_address'],
+    required: ['private_endpoint_id', 'privatelink_connection_id', 'state', 'user_ip_address'],
   })
   .openapi('ServicePrivatelinkAzureConnectionApprovalResponse')
 
@@ -42721,7 +44134,6 @@ const ServicePrivatelinkAzureConnectionListResponseSchema = z
             private_endpoint_id: z.string().openapi({ description: 'Azure private endpoint ID' }),
             privatelink_connection_id: z
               .string()
-              .exactOptional()
               .openapi({ description: 'Privatelink connection ID' }),
             state: z
               .enum(['pending-user-approval', 'user-approved', 'connected', 'active'])
@@ -42735,7 +44147,14 @@ const ServicePrivatelinkAzureConnectionListResponseSchema = z
               .max(15)
               .openapi({ description: '(Private) IP address of Privatelink endpoint' }),
           })
-          .openapi({ required: ['private_endpoint_id', 'state', 'user_ip_address'] }),
+          .openapi({
+            required: [
+              'private_endpoint_id',
+              'privatelink_connection_id',
+              'state',
+              'user_ip_address',
+            ],
+          }),
       )
       .openapi({ description: 'Private endpoint connection list' }),
     errors: z
@@ -42793,10 +44212,7 @@ const ServicePrivatelinkAzureConnectionUpdateResponseSchema = z
       .openapi({ description: 'List of errors occurred during request processing' }),
     message: z.string().exactOptional().openapi({ description: 'Printable result of the request' }),
     private_endpoint_id: z.string().openapi({ description: 'Azure private endpoint ID' }),
-    privatelink_connection_id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Privatelink connection ID' }),
+    privatelink_connection_id: z.string().openapi({ description: 'Privatelink connection ID' }),
     state: z
       .enum(['pending-user-approval', 'user-approved', 'connected', 'active'])
       .openapi({
@@ -42810,7 +44226,7 @@ const ServicePrivatelinkAzureConnectionUpdateResponseSchema = z
   })
   .openapi({
     description: 'ServicePrivatelinkAzureConnectionUpdateResponse',
-    required: ['private_endpoint_id', 'state', 'user_ip_address'],
+    required: ['private_endpoint_id', 'privatelink_connection_id', 'state', 'user_ip_address'],
   })
   .openapi('ServicePrivatelinkAzureConnectionUpdateResponse')
 
@@ -42958,6 +44374,28 @@ const ServicePrivatelinkAzureGetResponseSchema = z
     required: ['state', 'user_subscription_ids'],
   })
   .openapi('ServicePrivatelinkAzureGetResponse')
+
+const ServicePrivatelinkAzureRefreshResponseSchema = z
+  .object({
+    errors: z
+      .array(
+        z
+          .object({
+            message: z.string().openapi({ description: 'Printable error message' }),
+            more_info: z
+              .string()
+              .exactOptional()
+              .openapi({ description: 'URL to the documentation of the error' }),
+            status: z.int().openapi({ description: 'HTTP error status code' }),
+          })
+          .openapi({ required: ['message', 'status'] }),
+      )
+      .exactOptional()
+      .openapi({ description: 'List of errors occurred during request processing' }),
+    message: z.string().exactOptional().openapi({ description: 'Printable result of the request' }),
+  })
+  .openapi({ description: 'ServicePrivatelinkAzureRefreshResponse', required: [] })
+  .openapi('ServicePrivatelinkAzureRefreshResponse')
 
 const ServicePrivatelinkAzureUpdateRequestBodySchema = z
   .object({
@@ -43607,6 +45045,14 @@ const ServiceServiceTypeUpdateResponseSchema = z
                     description:
                       "Specifies if this port uses Project CA or Letsencrypt. If not specified, the default is using Project CA.This is a value specific to the 'kafka' service component.",
                   }),
+                node_position: z
+                  .int()
+                  .min(1)
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      '1-based node position this component routes to. Set for components with usage node (ClickHouse per-node DNS names), null otherwise.',
+                  }),
                 path: z
                   .string()
                   .exactOptional()
@@ -43626,6 +45072,21 @@ const ServiceServiceTypeUpdateResponseSchema = z
                 route: z
                   .enum(['dynamic', 'public', 'private', 'privatelink'])
                   .openapi({ description: 'Network access route' }),
+                security_redirect_uris: z
+                  .array(z.string())
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      "Redirect URIs to register with an OIDC provider to protect this port. This is a value specific to the 'application' service component. One per hostname of the port, the primary hostname's first. Present for HTTP ports once the platform has reported them, whether or not protection is configured.",
+                  }),
+                shard_position: z
+                  .int()
+                  .min(1)
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      '1-based shard position this component routes to. Set for components with usage shard or node (ClickHouse per-shard and per-node DNS names), null otherwise.',
+                  }),
                 ssl: z
                   .boolean()
                   .exactOptional()
@@ -43634,7 +45095,7 @@ const ServiceServiceTypeUpdateResponseSchema = z
                       'Whether the endpoint is encrypted or accepts plaintext. By default endpoints are always encrypted andthis property is only included for service components that may disable encryption.',
                   }),
                 usage: z
-                  .enum(['disaster_recovery', 'primary', 'replica', 'ha_replica'])
+                  .enum(['disaster_recovery', 'primary', 'replica', 'ha_replica', 'shard', 'node'])
                   .openapi({ description: 'DNS usage name' }),
               })
               .openapi({ required: ['component', 'host', 'port', 'route', 'usage'] }),
@@ -44001,7 +45462,7 @@ const ServiceServiceTypeUpdateResponseSchema = z
                     description: 'Extra information regarding the progress for current state',
                   }),
                 role: z
-                  .enum(['master', 'standby', 'read-replica'])
+                  .enum(['master', 'standby', 'standby-leader', 'read-replica'])
                   .exactOptional()
                   .openapi({
                     description: 'Role of this node. Only returned for a subset of service types',
@@ -44366,6 +45827,15 @@ const ServiceServiceTypeUpdateResponseSchema = z
                       .max(256)
                       .exactOptional()
                       .openapi({ description: 'Rules for individual commands' }),
+                    valkey_acl_databases: z
+                      .array(z.string())
+                      .max(1024)
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          "Database ids the user can access, Valkey 9.1 and later only. An empty array or 'alldbs' grants all databases, 'resetdbs' grants none. If array is not defined, all databases are permitted.",
+                        title: 'Permitted databases',
+                      }),
                     valkey_acl_keys: z
                       .array(z.string())
                       .max(256)
@@ -44509,7 +45979,7 @@ const ServiceTaskCreateRequestBodySchema = z
           .exactOptional()
           .openapi({
             description:
-              'The migration method to be used (currently supported only by Redis, Dragonfly, MySQL and PostgreSQL service types)',
+              'The migration method to be used (currently supported only by Redis, MySQL and PostgreSQL service types)',
           }),
         source_project_name: z
           .string()
@@ -44890,6 +46360,14 @@ const ServiceUpdateResponseSchema = z
                     description:
                       "Specifies if this port uses Project CA or Letsencrypt. If not specified, the default is using Project CA.This is a value specific to the 'kafka' service component.",
                   }),
+                node_position: z
+                  .int()
+                  .min(1)
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      '1-based node position this component routes to. Set for components with usage node (ClickHouse per-node DNS names), null otherwise.',
+                  }),
                 path: z
                   .string()
                   .exactOptional()
@@ -44909,6 +46387,21 @@ const ServiceUpdateResponseSchema = z
                 route: z
                   .enum(['dynamic', 'public', 'private', 'privatelink'])
                   .openapi({ description: 'Network access route' }),
+                security_redirect_uris: z
+                  .array(z.string())
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      "Redirect URIs to register with an OIDC provider to protect this port. This is a value specific to the 'application' service component. One per hostname of the port, the primary hostname's first. Present for HTTP ports once the platform has reported them, whether or not protection is configured.",
+                  }),
+                shard_position: z
+                  .int()
+                  .min(1)
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      '1-based shard position this component routes to. Set for components with usage shard or node (ClickHouse per-shard and per-node DNS names), null otherwise.',
+                  }),
                 ssl: z
                   .boolean()
                   .exactOptional()
@@ -44917,7 +46410,7 @@ const ServiceUpdateResponseSchema = z
                       'Whether the endpoint is encrypted or accepts plaintext. By default endpoints are always encrypted andthis property is only included for service components that may disable encryption.',
                   }),
                 usage: z
-                  .enum(['disaster_recovery', 'primary', 'replica', 'ha_replica'])
+                  .enum(['disaster_recovery', 'primary', 'replica', 'ha_replica', 'shard', 'node'])
                   .openapi({ description: 'DNS usage name' }),
               })
               .openapi({ required: ['component', 'host', 'port', 'route', 'usage'] }),
@@ -45284,7 +46777,7 @@ const ServiceUpdateResponseSchema = z
                     description: 'Extra information regarding the progress for current state',
                   }),
                 role: z
-                  .enum(['master', 'standby', 'read-replica'])
+                  .enum(['master', 'standby', 'standby-leader', 'read-replica'])
                   .exactOptional()
                   .openapi({
                     description: 'Role of this node. Only returned for a subset of service types',
@@ -45649,6 +47142,15 @@ const ServiceUpdateResponseSchema = z
                       .max(256)
                       .exactOptional()
                       .openapi({ description: 'Rules for individual commands' }),
+                    valkey_acl_databases: z
+                      .array(z.string())
+                      .max(1024)
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          "Database ids the user can access, Valkey 9.1 and later only. An empty array or 'alldbs' grants all databases, 'resetdbs' grants none. If array is not defined, all databases are permitted.",
+                        title: 'Permitted databases',
+                      }),
                     valkey_acl_keys: z
                       .array(z.string())
                       .max(256)
@@ -45783,6 +47285,15 @@ const ServiceUserCreateRequestBodySchema = z
           .max(256)
           .exactOptional()
           .openapi({ description: 'Rules for individual commands' }),
+        valkey_acl_databases: z
+          .array(z.string())
+          .max(1024)
+          .exactOptional()
+          .openapi({
+            description:
+              "Database ids the user can access, Valkey 9.1 and later only. An empty array or 'alldbs' grants all databases, 'resetdbs' grants none. If array is not defined, all databases are permitted.",
+            title: 'Permitted databases',
+          }),
         valkey_acl_keys: z
           .array(z.string())
           .max(256)
@@ -45893,6 +47404,15 @@ const ServiceUserCreateResponseSchema = z
               .max(256)
               .exactOptional()
               .openapi({ description: 'Rules for individual commands' }),
+            valkey_acl_databases: z
+              .array(z.string())
+              .max(1024)
+              .exactOptional()
+              .openapi({
+                description:
+                  "Database ids the user can access, Valkey 9.1 and later only. An empty array or 'alldbs' grants all databases, 'resetdbs' grants none. If array is not defined, all databases are permitted.",
+                title: 'Permitted databases',
+              }),
             valkey_acl_keys: z
               .array(z.string())
               .max(256)
@@ -46002,6 +47522,15 @@ const ServiceUserCredentialsModifyRequestBodySchema = z
           .max(256)
           .exactOptional()
           .openapi({ description: 'Rules for individual commands' }),
+        valkey_acl_databases: z
+          .array(z.string())
+          .max(1024)
+          .exactOptional()
+          .openapi({
+            description:
+              "Database ids the user can access, Valkey 9.1 and later only. An empty array or 'alldbs' grants all databases, 'resetdbs' grants none. If array is not defined, all databases are permitted.",
+            title: 'Permitted databases',
+          }),
         valkey_acl_keys: z
           .array(z.string())
           .max(256)
@@ -46170,6 +47699,14 @@ const ServiceUserCredentialsModifyResponseSchema = z
                     description:
                       "Specifies if this port uses Project CA or Letsencrypt. If not specified, the default is using Project CA.This is a value specific to the 'kafka' service component.",
                   }),
+                node_position: z
+                  .int()
+                  .min(1)
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      '1-based node position this component routes to. Set for components with usage node (ClickHouse per-node DNS names), null otherwise.',
+                  }),
                 path: z
                   .string()
                   .exactOptional()
@@ -46189,6 +47726,21 @@ const ServiceUserCredentialsModifyResponseSchema = z
                 route: z
                   .enum(['dynamic', 'public', 'private', 'privatelink'])
                   .openapi({ description: 'Network access route' }),
+                security_redirect_uris: z
+                  .array(z.string())
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      "Redirect URIs to register with an OIDC provider to protect this port. This is a value specific to the 'application' service component. One per hostname of the port, the primary hostname's first. Present for HTTP ports once the platform has reported them, whether or not protection is configured.",
+                  }),
+                shard_position: z
+                  .int()
+                  .min(1)
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      '1-based shard position this component routes to. Set for components with usage shard or node (ClickHouse per-shard and per-node DNS names), null otherwise.',
+                  }),
                 ssl: z
                   .boolean()
                   .exactOptional()
@@ -46197,7 +47749,7 @@ const ServiceUserCredentialsModifyResponseSchema = z
                       'Whether the endpoint is encrypted or accepts plaintext. By default endpoints are always encrypted andthis property is only included for service components that may disable encryption.',
                   }),
                 usage: z
-                  .enum(['disaster_recovery', 'primary', 'replica', 'ha_replica'])
+                  .enum(['disaster_recovery', 'primary', 'replica', 'ha_replica', 'shard', 'node'])
                   .openapi({ description: 'DNS usage name' }),
               })
               .openapi({ required: ['component', 'host', 'port', 'route', 'usage'] }),
@@ -46564,7 +48116,7 @@ const ServiceUserCredentialsModifyResponseSchema = z
                     description: 'Extra information regarding the progress for current state',
                   }),
                 role: z
-                  .enum(['master', 'standby', 'read-replica'])
+                  .enum(['master', 'standby', 'standby-leader', 'read-replica'])
                   .exactOptional()
                   .openapi({
                     description: 'Role of this node. Only returned for a subset of service types',
@@ -46929,6 +48481,15 @@ const ServiceUserCredentialsModifyResponseSchema = z
                       .max(256)
                       .exactOptional()
                       .openapi({ description: 'Rules for individual commands' }),
+                    valkey_acl_databases: z
+                      .array(z.string())
+                      .max(1024)
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          "Database ids the user can access, Valkey 9.1 and later only. An empty array or 'alldbs' grants all databases, 'resetdbs' grants none. If array is not defined, all databases are permitted.",
+                        title: 'Permitted databases',
+                      }),
                     valkey_acl_keys: z
                       .array(z.string())
                       .max(256)
@@ -47146,6 +48707,14 @@ const ServiceUserCredentialsResetResponseSchema = z
                     description:
                       "Specifies if this port uses Project CA or Letsencrypt. If not specified, the default is using Project CA.This is a value specific to the 'kafka' service component.",
                   }),
+                node_position: z
+                  .int()
+                  .min(1)
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      '1-based node position this component routes to. Set for components with usage node (ClickHouse per-node DNS names), null otherwise.',
+                  }),
                 path: z
                   .string()
                   .exactOptional()
@@ -47165,6 +48734,21 @@ const ServiceUserCredentialsResetResponseSchema = z
                 route: z
                   .enum(['dynamic', 'public', 'private', 'privatelink'])
                   .openapi({ description: 'Network access route' }),
+                security_redirect_uris: z
+                  .array(z.string())
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      "Redirect URIs to register with an OIDC provider to protect this port. This is a value specific to the 'application' service component. One per hostname of the port, the primary hostname's first. Present for HTTP ports once the platform has reported them, whether or not protection is configured.",
+                  }),
+                shard_position: z
+                  .int()
+                  .min(1)
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      '1-based shard position this component routes to. Set for components with usage shard or node (ClickHouse per-shard and per-node DNS names), null otherwise.',
+                  }),
                 ssl: z
                   .boolean()
                   .exactOptional()
@@ -47173,7 +48757,7 @@ const ServiceUserCredentialsResetResponseSchema = z
                       'Whether the endpoint is encrypted or accepts plaintext. By default endpoints are always encrypted andthis property is only included for service components that may disable encryption.',
                   }),
                 usage: z
-                  .enum(['disaster_recovery', 'primary', 'replica', 'ha_replica'])
+                  .enum(['disaster_recovery', 'primary', 'replica', 'ha_replica', 'shard', 'node'])
                   .openapi({ description: 'DNS usage name' }),
               })
               .openapi({ required: ['component', 'host', 'port', 'route', 'usage'] }),
@@ -47540,7 +49124,7 @@ const ServiceUserCredentialsResetResponseSchema = z
                     description: 'Extra information regarding the progress for current state',
                   }),
                 role: z
-                  .enum(['master', 'standby', 'read-replica'])
+                  .enum(['master', 'standby', 'standby-leader', 'read-replica'])
                   .exactOptional()
                   .openapi({
                     description: 'Role of this node. Only returned for a subset of service types',
@@ -47905,6 +49489,15 @@ const ServiceUserCredentialsResetResponseSchema = z
                       .max(256)
                       .exactOptional()
                       .openapi({ description: 'Rules for individual commands' }),
+                    valkey_acl_databases: z
+                      .array(z.string())
+                      .max(1024)
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          "Database ids the user can access, Valkey 9.1 and later only. An empty array or 'alldbs' grants all databases, 'resetdbs' grants none. If array is not defined, all databases are permitted.",
+                        title: 'Permitted databases',
+                      }),
                     valkey_acl_keys: z
                       .array(z.string())
                       .max(256)
@@ -48089,6 +49682,15 @@ const ServiceUserGetResponseSchema = z
               .max(256)
               .exactOptional()
               .openapi({ description: 'Rules for individual commands' }),
+            valkey_acl_databases: z
+              .array(z.string())
+              .max(1024)
+              .exactOptional()
+              .openapi({
+                description:
+                  "Database ids the user can access, Valkey 9.1 and later only. An empty array or 'alldbs' grants all databases, 'resetdbs' grants none. If array is not defined, all databases are permitted.",
+                title: 'Permitted databases',
+              }),
             valkey_acl_keys: z
               .array(z.string())
               .max(256)
@@ -50300,6 +51902,9 @@ const OrganizationUserGetResponseSchema = z
       .openapi({ description: 'Super admin state of the organization user' }),
     join_time: z.string().max(36).openapi({ description: 'Join time' }),
     last_activity_time: z.string().max(36).openapi({ description: 'Last activity time' }),
+    state: z
+      .enum(['active', 'deactivated', 'deleted'])
+      .openapi({ description: 'An enumeration.', title: 'State of the user in the organization' }),
     user_id: z.string().openapi({ description: 'User ID' }),
     user_info: z
       .object({
@@ -50333,7 +51938,14 @@ const OrganizationUserGetResponseSchema = z
   })
   .openapi({
     description: 'OrganizationUserGetResponse',
-    required: ['is_super_admin', 'join_time', 'last_activity_time', 'user_id', 'user_info'],
+    required: [
+      'is_super_admin',
+      'join_time',
+      'last_activity_time',
+      'state',
+      'user_id',
+      'user_info',
+    ],
   })
   .openapi('OrganizationUserGetResponse')
 
@@ -50348,6 +51960,12 @@ const OrganizationUserListResponseSchema = z
               .openapi({ description: 'Super admin state of the organization user' }),
             join_time: z.string().max(36).openapi({ description: 'Join time' }),
             last_activity_time: z.string().max(36).openapi({ description: 'Last activity time' }),
+            state: z
+              .enum(['active', 'deactivated', 'deleted'])
+              .openapi({
+                description: 'An enumeration.',
+                title: 'State of the user in the organization',
+              }),
             user_id: z.string().openapi({ description: 'User ID' }),
             user_info: z
               .object({
@@ -50380,7 +51998,14 @@ const OrganizationUserListResponseSchema = z
               }),
           })
           .openapi({
-            required: ['is_super_admin', 'join_time', 'last_activity_time', 'user_id', 'user_info'],
+            required: [
+              'is_super_admin',
+              'join_time',
+              'last_activity_time',
+              'state',
+              'user_id',
+              'user_info',
+            ],
           }),
       )
       .openapi({ description: 'List of users of the organization' }),
@@ -50445,6 +52070,9 @@ const OrganizationUserUpdateResponseSchema = z
       .openapi({ description: 'Super admin state of the organization user' }),
     join_time: z.string().max(36).openapi({ description: 'Join time' }),
     last_activity_time: z.string().max(36).openapi({ description: 'Last activity time' }),
+    state: z
+      .enum(['active', 'deactivated', 'deleted'])
+      .openapi({ description: 'An enumeration.', title: 'State of the user in the organization' }),
     user_id: z.string().openapi({ description: 'User ID' }),
     user_info: z
       .object({
@@ -50478,7 +52106,14 @@ const OrganizationUserUpdateResponseSchema = z
   })
   .openapi({
     description: 'OrganizationUserUpdateResponse',
-    required: ['is_super_admin', 'join_time', 'last_activity_time', 'user_id', 'user_info'],
+    required: [
+      'is_super_admin',
+      'join_time',
+      'last_activity_time',
+      'state',
+      'user_id',
+      'user_info',
+    ],
   })
   .openapi('OrganizationUserUpdateResponse')
 
@@ -51542,6 +53177,168 @@ const AigatewaykeylistOrderByParamsSchema = z
     },
   })
 
+const AigatewaykeylistOwnerUserIdParamsSchema = z
+  .string()
+  .exactOptional()
+  .openapi({
+    param: {
+      in: 'query',
+      name: 'owner_user_id',
+      description: 'Filter keys by owner user ID',
+      schema: { type: 'string' },
+      required: false,
+    },
+  })
+
+const AigatewaykeylistOwnerTypeParamsSchema = z
+  .enum(['human', 'application_user'])
+  .exactOptional()
+  .openapi({
+    param: {
+      in: 'query',
+      name: 'owner_type',
+      description: 'Filter keys by owner type; deleted owners match neither type',
+      schema: { type: 'string', enum: ['human', 'application_user'] },
+      required: false,
+    },
+  })
+
+const AigatewaykeyownerlistCursorParamsSchema = z
+  .string()
+  .exactOptional()
+  .openapi({
+    param: {
+      in: 'query',
+      name: 'cursor',
+      description: 'Pagination cursor',
+      schema: { type: 'string' },
+      required: false,
+    },
+  })
+
+const AigatewaykeyownerlistLimitParamsSchema = z
+  .preprocess(
+    (val) =>
+      typeof val === 'string' &&
+      /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+      (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+        ? Number(val)
+        : val,
+    z.int().min(30).max(999),
+  )
+  .exactOptional()
+  .openapi({
+    param: {
+      in: 'query',
+      name: 'limit',
+      description: 'Maximum owners to return',
+      schema: { type: 'integer', minimum: 30, maximum: 999 },
+      required: false,
+    },
+  })
+
+const AigatewaykeyownerlistOrderByParamsSchema = z
+  .enum(['asc', 'desc'])
+  .exactOptional()
+  .openapi({
+    param: {
+      in: 'query',
+      name: 'order_by',
+      description: 'Order by user ID',
+      schema: { type: 'string', enum: ['asc', 'desc'] },
+      required: false,
+    },
+  })
+
+const OrganizationIdParamsSchema = z
+  .string()
+  .openapi({
+    param: {
+      in: 'path',
+      name: 'organization_id',
+      description: 'ID of an organization',
+      schema: { type: 'string' },
+      required: true,
+    },
+  })
+
+const AigatewayorganizationkeylistProjectNameParamsSchema = z
+  .string()
+  .exactOptional()
+  .openapi({
+    param: {
+      in: 'query',
+      name: 'project_name',
+      description: 'Filter keys by project name',
+      schema: { type: 'string' },
+      required: false,
+    },
+  })
+
+const AigatewayorganizationkeylistOwnerUserIdParamsSchema = z
+  .string()
+  .exactOptional()
+  .openapi({
+    param: {
+      in: 'query',
+      name: 'owner_user_id',
+      description: 'Filter keys by owner user ID',
+      schema: { type: 'string' },
+      required: false,
+    },
+  })
+
+const AigatewayorganizationkeylistOwnerTypeParamsSchema = z
+  .enum(['human', 'application_user'])
+  .exactOptional()
+  .openapi({
+    param: {
+      in: 'query',
+      name: 'owner_type',
+      description: 'Filter keys by owner type; deleted owners match neither type',
+      schema: { type: 'string', enum: ['human', 'application_user'] },
+      required: false,
+    },
+  })
+
+const AigatewayorganizationkeylistIncludeRevokedParamsSchema = z
+  .stringbool()
+  .exactOptional()
+  .openapi({
+    param: {
+      in: 'query',
+      name: 'include_revoked',
+      description: 'Also list revoked keys',
+      schema: { type: 'boolean' },
+      required: false,
+    },
+  })
+
+const AigatewayorganizationkeylistIncludeExpiredParamsSchema = z
+  .stringbool()
+  .exactOptional()
+  .openapi({
+    param: {
+      in: 'query',
+      name: 'include_expired',
+      description: 'Also list expired keys',
+      schema: { type: 'boolean' },
+      required: false,
+    },
+  })
+
+const OwnerUserIdParamsSchema = z
+  .string()
+  .openapi({
+    param: {
+      in: 'path',
+      name: 'owner_user_id',
+      description: 'User ID of the key owner',
+      schema: { type: 'string' },
+      required: true,
+    },
+  })
+
 const AigatewayusagegetKeyIdParamsSchema = z
   .string()
   .exactOptional()
@@ -51689,18 +53486,6 @@ const UserIdParamsSchema = z
       in: 'path',
       name: 'user_id',
       description: 'User ID',
-      schema: { type: 'string' },
-      required: true,
-    },
-  })
-
-const OrganizationIdParamsSchema = z
-  .string()
-  .openapi({
-    param: {
-      in: 'path',
-      name: 'organization_id',
-      description: 'ID of an organization',
       schema: { type: 'string' },
       required: true,
     },
@@ -51940,6 +53725,40 @@ const PluginFileIdParamsSchema = z
       description: 'ID of the custom plugin file',
       schema: { type: 'string' },
       required: true,
+    },
+  })
+
+const OrganizationbillinggrouplistCursorParamsSchema = z
+  .string()
+  .exactOptional()
+  .openapi({
+    param: {
+      in: 'query',
+      name: 'cursor',
+      description: 'Pagination cursor',
+      schema: { type: 'string' },
+      required: false,
+    },
+  })
+
+const OrganizationbillinggrouplistLimitParamsSchema = z
+  .preprocess(
+    (val) =>
+      typeof val === 'string' &&
+      /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+      (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+        ? Number(val)
+        : val,
+    z.int().min(30).max(999),
+  )
+  .exactOptional()
+  .openapi({
+    param: {
+      in: 'query',
+      name: 'limit',
+      description: 'Limit results to this number',
+      schema: { type: 'integer', minimum: 30, maximum: 999 },
+      required: false,
     },
   })
 
@@ -53183,13 +55002,14 @@ const StaticIpAddressIdParamsSchema = z
   })
 
 const StepIdParamsSchema = z
-  .literal('550e8400-e29b-41d4-a716-446655440000')
+  .string()
+  .length(36)
   .openapi({
     param: {
       in: 'path',
       name: 'step_id',
-      description: 'Upgrade step ID',
-      schema: { type: 'string', enum: ['550e8400-e29b-41d4-a716-446655440000'] },
+      description: 'Upgrade step ID (UUIDv4, e.g. 550e8400-e29b-41d4-a716-446655440000)',
+      schema: { type: 'string', minLength: 36, maxLength: 36 },
       required: true,
     },
   })
@@ -53416,7 +55236,7 @@ export const getProjectProjectAiGatewayKeysRoute = createRoute({
   tags: ['AIGateway'],
   summary: 'List the AI Gateway keys of a project',
   description:
-    "<p><blockquote>This endpoint <b>may be changed or removed at any time</b>. Don't use it in production environments.</blockquote><p>\n\n<p>Expired keys are not listed, unless <code>include_expired</code> is set. Revoked keys are not listed, unless <code>include_revoked</code> is set. Keys are listed newest first and one page at a time; follow <code>next</code> until it comes back null to read the whole list.</p>",
+    "<p><blockquote>This endpoint <b>may be changed or removed at any time</b>. Don't use it in production environments.</blockquote><p>\n\n<p>Expired keys are not listed, unless <code>include_expired</code> is set. Revoked keys are not listed, unless <code>include_revoked</code> is set. Keys are listed newest first and one page at a time; follow <code>next</code> until it comes back null to read the whole list. With an owner-type filter, a page may be empty while <code>next</code> is set; keep following that cursor.</p>",
   operationId: 'AIGatewayKeyList',
   request: {
     params: z.object({ project: ProjectParamsSchema }),
@@ -53426,6 +55246,8 @@ export const getProjectProjectAiGatewayKeysRoute = createRoute({
       cursor: AigatewaykeylistCursorParamsSchema,
       limit: AigatewaykeylistLimitParamsSchema,
       order_by: AigatewaykeylistOrderByParamsSchema,
+      owner_user_id: AigatewaykeylistOwnerUserIdParamsSchema,
+      owner_type: AigatewaykeylistOwnerTypeParamsSchema,
     }),
   },
   responses: {
@@ -53434,7 +55256,7 @@ export const getProjectProjectAiGatewayKeysRoute = createRoute({
       content: { 'application/json': { schema: AIGatewayKeyListResponseSchema } },
     },
     400: {
-      description: 'The cursor, limit or order_by is not valid',
+      description: 'The cursor, limit, order_by, owner_user_id or owner_type is not valid',
       content: {
         'application/json': {
           schema: z
@@ -53507,7 +55329,7 @@ export const getProjectProjectAiGatewayKeysRoute = createRoute({
       },
     },
     503: {
-      description: 'AI Gateway keys are unavailable',
+      description: 'AI Gateway is unavailable',
       content: {
         'application/json': {
           schema: z
@@ -53562,9 +55384,11 @@ export const postProjectProjectAiGatewayKeysRoute = createRoute({
         'application/json': {
           schema: AIGatewayKeyCreateRequestBodySchema,
           example: {
+            budget: { daily: null, monthly: null },
             description: 'Support chatbot',
             expiry_time: '2026-12-31T23:59:59Z',
             name: 'chatbot',
+            owner_user_id: 'u123456',
           },
         },
       },
@@ -53577,7 +55401,7 @@ export const postProjectProjectAiGatewayKeysRoute = createRoute({
     },
     400: {
       description:
-        'The name is blank, the expiry time is unreadable or in the past, or the project has reached its AI Gateway key limit',
+        'The name is blank, the expiry time is unreadable or in the past, a budget period is not valid, the project has reached its AI Gateway key limit, or the owner lacks an active account, active organization membership or effective access to this project',
       content: {
         'application/json': {
           schema: z
@@ -53595,12 +55419,13 @@ export const postProjectProjectAiGatewayKeysRoute = createRoute({
                         .exactOptional()
                         .openapi({ title: 'Human readable error message' }),
                       error_code: z
-                        .literal('bad_request')
+                        .enum(['bad_request', 'ai_gateway_invalid_key_owner'])
                         .exactOptional()
                         .openapi({
                           title:
                             'Machine processable error code. Clients must be prepared to handle new codes.',
-                          description: 'bad_request: Bad request',
+                          description:
+                            'bad_request: Bad request. ai_gateway_invalid_key_owner: The user is not an active member of this organization',
                         }),
                     })
                     .openapi({ required: [] }),
@@ -53613,7 +55438,8 @@ export const postProjectProjectAiGatewayKeysRoute = createRoute({
       },
     },
     403: {
-      description: 'AI Gateway is not enabled for this organization',
+      description:
+        'Administrator access is required to assign another owner, AI Gateway is not enabled for this organization, or the budget needs an organization admin',
       content: {
         'application/json': {
           schema: z
@@ -53631,13 +55457,58 @@ export const postProjectProjectAiGatewayKeysRoute = createRoute({
                         .exactOptional()
                         .openapi({ title: 'Human readable error message' }),
                       error_code: z
-                        .literal('feature_not_enabled')
+                        .enum([
+                          'request_forbidden',
+                          'feature_not_enabled',
+                          'ai_gateway_key_budget_above_default',
+                          'ai_gateway_key_budget_unlimited_needs_organization_admin',
+                          'ai_gateway_key_budget_exception_needs_organization_admin',
+                          'ai_gateway_key_budget_reset_needs_organization_admin',
+                        ])
                         .exactOptional()
                         .openapi({
                           title:
                             'Machine processable error code. Clients must be prepared to handle new codes.',
                           description:
-                            'feature_not_enabled: This feature is not enabled in your context, please contact support to enable it',
+                            "request_forbidden: Not authorized to view the request. feature_not_enabled: This feature is not enabled in your context, please contact support to enable it. ai_gateway_key_budget_above_default: Only an organization admin can set an AI Gateway key budget above the organization's default key budget. ai_gateway_key_budget_unlimited_needs_organization_admin: Only an organization admin can exempt an AI Gateway key from the organization's default key budget. ai_gateway_key_budget_exception_needs_organization_admin: Only an organization admin can change an AI Gateway key budget that an organization admin set. ai_gateway_key_budget_reset_needs_organization_admin: Only an organization admin can reset an AI Gateway key budget to the organization's default",
+                        }),
+                    })
+                    .openapi({ required: [] }),
+                )
+                .exactOptional()
+                .openapi({ title: 'List of error details. Typically there is only one element' }),
+            })
+            .openapi({ required: [] }),
+        },
+      },
+    },
+    409: {
+      description:
+        "The budget sets a limit only an organization admin may set before the organization's AI Gateway budgets are set up",
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              message: z
+                .string()
+                .exactOptional()
+                .openapi({ title: 'Human readable error message' }),
+              errors: z
+                .array(
+                  z
+                    .object({
+                      message: z
+                        .string()
+                        .exactOptional()
+                        .openapi({ title: 'Human readable error message' }),
+                      error_code: z
+                        .literal('ai_gateway_budget_setup_required')
+                        .exactOptional()
+                        .openapi({
+                          title:
+                            'Machine processable error code. Clients must be prepared to handle new codes.',
+                          description:
+                            "ai_gateway_budget_setup_required: The organization's AI Gateway budgets are not set up: an organization admin must set a monthly default key budget first",
                         }),
                     })
                     .openapi({ required: [] }),
@@ -53650,7 +55521,7 @@ export const postProjectProjectAiGatewayKeysRoute = createRoute({
       },
     },
     503: {
-      description: 'AI Gateway keys are unavailable',
+      description: 'AI Gateway is unavailable',
       content: {
         'application/json': {
           schema: z
@@ -53779,7 +55650,7 @@ export const getProjectProjectAiGatewayKeysKeyIdRoute = createRoute({
       },
     },
     503: {
-      description: 'AI Gateway keys are unavailable',
+      description: 'AI Gateway is unavailable',
       content: {
         'application/json': {
           schema: z
@@ -53942,7 +55813,7 @@ export const deleteProjectProjectAiGatewayKeysKeyIdRoute = createRoute({
       },
     },
     503: {
-      description: 'AI Gateway keys are unavailable',
+      description: 'AI Gateway is unavailable',
       content: {
         'application/json': {
           schema: z
@@ -53988,7 +55859,7 @@ export const patchProjectProjectAiGatewayKeysKeyIdRoute = createRoute({
   tags: ['AIGateway'],
   summary: 'Update an AI Gateway key',
   description:
-    "<p><blockquote>This endpoint <b>may be changed or removed at any time</b>. Don't use it in production environments.</blockquote><p>\n\n<p>Only the description can be changed, and only while the key is usable. A key's expiry time cannot be extended; mint a new key instead.</p>",
+    "<p><blockquote>This endpoint <b>may be changed or removed at any time</b>. Don't use it in production environments.</blockquote><p>\n\n<p>Only the name, description, owner and budget can be changed, and only while the key is usable. A key's expiry time cannot be extended; mint a new key instead. Only project or organization administrators may supply an owner field. Owners require an active account, active organization membership and effective access to this project. Usage attribution can retain the former owner until a cached key verdict expires; the delay depends on the frontend cache configuration. A successful assignment confirms eligibility, while refusals hide its reason.</p>",
   operationId: 'AIGatewayKeyUpdate',
   request: {
     params: z.object({ project: ProjectParamsSchema, key_id: KeyIdParamsSchema }),
@@ -53996,7 +55867,12 @@ export const patchProjectProjectAiGatewayKeysKeyIdRoute = createRoute({
       content: {
         'application/json': {
           schema: AIGatewayKeyUpdateRequestBodySchema,
-          example: { description: 'Support chatbot', name: 'chatbot' },
+          example: {
+            budget: { daily: null, monthly: null },
+            description: 'Support chatbot',
+            name: 'chatbot',
+            owner_user_id: 'u123456',
+          },
         },
       },
     },
@@ -54007,7 +55883,8 @@ export const patchProjectProjectAiGatewayKeysKeyIdRoute = createRoute({
       content: { 'application/json': { schema: AIGatewayKeyUpdateResponseSchema } },
     },
     400: {
-      description: 'The name is blank',
+      description:
+        'The name is blank, a budget period is not valid, or the owner lacks an active account, active organization membership or effective access to this project',
       content: {
         'application/json': {
           schema: z
@@ -54025,12 +55902,13 @@ export const patchProjectProjectAiGatewayKeysKeyIdRoute = createRoute({
                         .exactOptional()
                         .openapi({ title: 'Human readable error message' }),
                       error_code: z
-                        .literal('bad_request')
+                        .enum(['bad_request', 'ai_gateway_invalid_key_owner'])
                         .exactOptional()
                         .openapi({
                           title:
                             'Machine processable error code. Clients must be prepared to handle new codes.',
-                          description: 'bad_request: Bad request',
+                          description:
+                            'bad_request: Bad request. ai_gateway_invalid_key_owner: The user is not an active member of this organization',
                         }),
                     })
                     .openapi({ required: [] }),
@@ -54043,7 +55921,8 @@ export const patchProjectProjectAiGatewayKeysKeyIdRoute = createRoute({
       },
     },
     403: {
-      description: 'AI Gateway is not enabled for this organization',
+      description:
+        'Administrator access is required to supply an owner field, AI Gateway is not enabled for this organization, or the budget needs an organization admin',
       content: {
         'application/json': {
           schema: z
@@ -54061,13 +55940,20 @@ export const patchProjectProjectAiGatewayKeysKeyIdRoute = createRoute({
                         .exactOptional()
                         .openapi({ title: 'Human readable error message' }),
                       error_code: z
-                        .literal('feature_not_enabled')
+                        .enum([
+                          'request_forbidden',
+                          'feature_not_enabled',
+                          'ai_gateway_key_budget_above_default',
+                          'ai_gateway_key_budget_unlimited_needs_organization_admin',
+                          'ai_gateway_key_budget_exception_needs_organization_admin',
+                          'ai_gateway_key_budget_reset_needs_organization_admin',
+                        ])
                         .exactOptional()
                         .openapi({
                           title:
                             'Machine processable error code. Clients must be prepared to handle new codes.',
                           description:
-                            'feature_not_enabled: This feature is not enabled in your context, please contact support to enable it',
+                            "request_forbidden: Not authorized to view the request. feature_not_enabled: This feature is not enabled in your context, please contact support to enable it. ai_gateway_key_budget_above_default: Only an organization admin can set an AI Gateway key budget above the organization's default key budget. ai_gateway_key_budget_unlimited_needs_organization_admin: Only an organization admin can exempt an AI Gateway key from the organization's default key budget. ai_gateway_key_budget_exception_needs_organization_admin: Only an organization admin can change an AI Gateway key budget that an organization admin set. ai_gateway_key_budget_reset_needs_organization_admin: Only an organization admin can reset an AI Gateway key budget to the organization's default",
                         }),
                     })
                     .openapi({ required: [] }),
@@ -54117,7 +56003,8 @@ export const patchProjectProjectAiGatewayKeysKeyIdRoute = createRoute({
       },
     },
     409: {
-      description: 'The key has expired or has been revoked',
+      description:
+        "The key has expired or has been revoked, or the budget sets a limit only an organization admin may set before the organization's AI Gateway budgets are set up",
       content: {
         'application/json': {
           schema: z
@@ -54135,13 +56022,13 @@ export const patchProjectProjectAiGatewayKeysKeyIdRoute = createRoute({
                         .exactOptional()
                         .openapi({ title: 'Human readable error message' }),
                       error_code: z
-                        .literal('ai_gateway_key_not_active')
+                        .enum(['ai_gateway_key_not_active', 'ai_gateway_budget_setup_required'])
                         .exactOptional()
                         .openapi({
                           title:
                             'Machine processable error code. Clients must be prepared to handle new codes.',
                           description:
-                            'ai_gateway_key_not_active: The AI Gateway key has expired or has been revoked',
+                            "ai_gateway_key_not_active: The AI Gateway key has expired or has been revoked. ai_gateway_budget_setup_required: The organization's AI Gateway budgets are not set up: an organization admin must set a monthly default key budget first",
                         }),
                     })
                     .openapi({ required: [] }),
@@ -54154,7 +56041,7 @@ export const patchProjectProjectAiGatewayKeysKeyIdRoute = createRoute({
       },
     },
     503: {
-      description: 'AI Gateway keys are unavailable',
+      description: 'AI Gateway is unavailable',
       content: {
         'application/json': {
           schema: z
@@ -54192,6 +56079,104 @@ export const patchProjectProjectAiGatewayKeysKeyIdRoute = createRoute({
     },
   },
   security: [{ tokenAuth: [], oauth2: ['projects:write'] }],
+})
+
+export const getProjectProjectAiGatewayKeyOwnersRoute = createRoute({
+  method: 'get',
+  path: '/project/{project}/ai-gateway/key-owners',
+  tags: ['AIGateway'],
+  summary: 'List eligible AI Gateway key owners',
+  description:
+    "<p><blockquote>This endpoint <b>may be changed or removed at any time</b>. Don't use it in production environments.</blockquote><p>\n\n<p>Active organization members with effective project access. Only project and organization administrators may select an owner other than themselves.</p>",
+  operationId: 'AIGatewayKeyOwnerList',
+  request: {
+    params: z.object({ project: ProjectParamsSchema }),
+    query: z.object({
+      cursor: AigatewaykeyownerlistCursorParamsSchema,
+      limit: AigatewaykeyownerlistLimitParamsSchema,
+      order_by: AigatewaykeyownerlistOrderByParamsSchema,
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Response',
+      content: { 'application/json': { schema: AIGatewayKeyOwnerListResponseSchema } },
+    },
+    400: {
+      description: 'Invalid pagination',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              message: z
+                .string()
+                .exactOptional()
+                .openapi({ title: 'Human readable error message' }),
+              errors: z
+                .array(
+                  z
+                    .object({
+                      message: z
+                        .string()
+                        .exactOptional()
+                        .openapi({ title: 'Human readable error message' }),
+                      error_code: z
+                        .literal('bad_request')
+                        .exactOptional()
+                        .openapi({
+                          title:
+                            'Machine processable error code. Clients must be prepared to handle new codes.',
+                          description: 'bad_request: Bad request',
+                        }),
+                    })
+                    .openapi({ required: [] }),
+                )
+                .exactOptional()
+                .openapi({ title: 'List of error details. Typically there is only one element' }),
+            })
+            .openapi({ required: [] }),
+        },
+      },
+    },
+    403: {
+      description: 'Administrator access is required or AI Gateway is disabled',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              message: z
+                .string()
+                .exactOptional()
+                .openapi({ title: 'Human readable error message' }),
+              errors: z
+                .array(
+                  z
+                    .object({
+                      message: z
+                        .string()
+                        .exactOptional()
+                        .openapi({ title: 'Human readable error message' }),
+                      error_code: z
+                        .enum(['request_forbidden', 'feature_not_enabled'])
+                        .exactOptional()
+                        .openapi({
+                          title:
+                            'Machine processable error code. Clients must be prepared to handle new codes.',
+                          description:
+                            'request_forbidden: Not authorized to view the request. feature_not_enabled: This feature is not enabled in your context, please contact support to enable it',
+                        }),
+                    })
+                    .openapi({ required: [] }),
+                )
+                .exactOptional()
+                .openapi({ title: 'List of error details. Typically there is only one element' }),
+            })
+            .openapi({ required: [] }),
+        },
+      },
+    },
+  },
+  security: [{ tokenAuth: [], oauth2: ['projects:read'] }],
 })
 
 export const getProjectProjectAiGatewayModelsRoute = createRoute({
@@ -54284,6 +56269,968 @@ export const getProjectProjectAiGatewayModelsRoute = createRoute({
     },
   },
   security: [{ tokenAuth: [], oauth2: ['projects:read'] }],
+})
+
+export const putOrganizationOrganizationIdAiGatewayBudgetRoute = createRoute({
+  method: 'put',
+  path: '/organization/{organization_id}/ai-gateway/budget',
+  tags: ['AIGateway'],
+  summary: 'Set the AI Gateway budget of an organization',
+  description:
+    "<p><blockquote>This endpoint <b>may be changed or removed at any time</b>. Don't use it in production environments.</blockquote><p>\n\n<p>The caps on the whole organization, and the defaults for keys, key owners and projects that have none of their own. A scope or period left out stays as it is. Each period is a <code>limit</code>, where 0 refuses every request, or <code>unlimited</code>. The first update must give the default key budget a monthly limit, which sets the organization's budgets up; that limit can never be removed.</p>",
+  operationId: 'AIGatewayOrganizationBudgetSet',
+  request: {
+    params: z.object({ organization_id: OrganizationIdParamsSchema }),
+    body: {
+      content: {
+        'application/json': {
+          schema: AIGatewayOrganizationBudgetSetRequestBodySchema,
+          example: {
+            default_key_budget: { daily: null, monthly: null },
+            default_owner_budget: { daily: null, monthly: null },
+            default_project_budget: { daily: null, monthly: null },
+            organization_budget: { daily: null, monthly: null },
+          },
+        },
+      },
+    },
+  },
+  responses: {
+    200: {
+      description: 'Response',
+      content: { 'application/json': { schema: AIGatewayOrganizationBudgetSetResponseSchema } },
+    },
+    400: {
+      description: 'A period is not valid',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              message: z
+                .string()
+                .exactOptional()
+                .openapi({ title: 'Human readable error message' }),
+              errors: z
+                .array(
+                  z
+                    .object({
+                      message: z
+                        .string()
+                        .exactOptional()
+                        .openapi({ title: 'Human readable error message' }),
+                      error_code: z
+                        .literal('bad_request')
+                        .exactOptional()
+                        .openapi({
+                          title:
+                            'Machine processable error code. Clients must be prepared to handle new codes.',
+                          description: 'bad_request: Bad request',
+                        }),
+                    })
+                    .openapi({ required: [] }),
+                )
+                .exactOptional()
+                .openapi({ title: 'List of error details. Typically there is only one element' }),
+            })
+            .openapi({ required: [] }),
+        },
+      },
+    },
+    403: {
+      description:
+        'AI Gateway is not enabled for this organization, or the user is not an organization admin',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              message: z
+                .string()
+                .exactOptional()
+                .openapi({ title: 'Human readable error message' }),
+              errors: z
+                .array(
+                  z
+                    .object({
+                      message: z
+                        .string()
+                        .exactOptional()
+                        .openapi({ title: 'Human readable error message' }),
+                      error_code: z
+                        .enum(['feature_not_enabled', 'user_not_organization_admin'])
+                        .exactOptional()
+                        .openapi({
+                          title:
+                            'Machine processable error code. Clients must be prepared to handle new codes.',
+                          description:
+                            'feature_not_enabled: This feature is not enabled in your context, please contact support to enable it. user_not_organization_admin: User is not organization administrator.',
+                        }),
+                    })
+                    .openapi({ required: [] }),
+                )
+                .exactOptional()
+                .openapi({ title: 'List of error details. Typically there is only one element' }),
+            })
+            .openapi({ required: [] }),
+        },
+      },
+    },
+    422: {
+      description:
+        "The default key budget's monthly cap is left out on the first update, or set unlimited",
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              message: z
+                .string()
+                .exactOptional()
+                .openapi({ title: 'Human readable error message' }),
+              errors: z
+                .array(
+                  z
+                    .object({
+                      message: z
+                        .string()
+                        .exactOptional()
+                        .openapi({ title: 'Human readable error message' }),
+                      error_code: z
+                        .literal('ai_gateway_key_default_monthly_required')
+                        .exactOptional()
+                        .openapi({
+                          title:
+                            'Machine processable error code. Clients must be prepared to handle new codes.',
+                          description:
+                            'ai_gateway_key_default_monthly_required: The default AI Gateway key budget needs a finite monthly cap',
+                        }),
+                    })
+                    .openapi({ required: [] }),
+                )
+                .exactOptional()
+                .openapi({ title: 'List of error details. Typically there is only one element' }),
+            })
+            .openapi({ required: [] }),
+        },
+      },
+    },
+    503: {
+      description: 'AI Gateway is unavailable',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              message: z
+                .string()
+                .exactOptional()
+                .openapi({ title: 'Human readable error message' }),
+              errors: z
+                .array(
+                  z
+                    .object({
+                      message: z
+                        .string()
+                        .exactOptional()
+                        .openapi({ title: 'Human readable error message' }),
+                      error_code: z
+                        .literal('ai_gateway_unavailable')
+                        .exactOptional()
+                        .openapi({
+                          title:
+                            'Machine processable error code. Clients must be prepared to handle new codes.',
+                          description:
+                            'ai_gateway_unavailable: The AI Gateway cannot answer right now, try again later',
+                        }),
+                    })
+                    .openapi({ required: [] }),
+                )
+                .exactOptional()
+                .openapi({ title: 'List of error details. Typically there is only one element' }),
+            })
+            .openapi({ required: [] }),
+        },
+      },
+    },
+  },
+  security: [{ tokenAuth: [], oauth2: ['accounts:write'] }],
+})
+
+export const getOrganizationOrganizationIdAiGatewayBudgetsRoute = createRoute({
+  method: 'get',
+  path: '/organization/{organization_id}/ai-gateway/budgets',
+  tags: ['AIGateway'],
+  summary: 'Get the AI Gateway budgets of an organization',
+  description:
+    "<p><blockquote>This endpoint <b>may be changed or removed at any time</b>. Don't use it in production environments.</blockquote><p>\n\n<p>The caps on the organization, its projects, and its human members and existing key owners, and what each has spent in the current UTC day and month.</p>",
+  operationId: 'AIGatewayOrganizationBudgetsGet',
+  request: { params: z.object({ organization_id: OrganizationIdParamsSchema }) },
+  responses: {
+    200: {
+      description: 'Response',
+      content: { 'application/json': { schema: AIGatewayOrganizationBudgetsGetResponseSchema } },
+    },
+    403: {
+      description:
+        'AI Gateway is not enabled for this organization, or the user is not an organization admin',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              message: z
+                .string()
+                .exactOptional()
+                .openapi({ title: 'Human readable error message' }),
+              errors: z
+                .array(
+                  z
+                    .object({
+                      message: z
+                        .string()
+                        .exactOptional()
+                        .openapi({ title: 'Human readable error message' }),
+                      error_code: z
+                        .enum(['feature_not_enabled', 'user_not_organization_admin'])
+                        .exactOptional()
+                        .openapi({
+                          title:
+                            'Machine processable error code. Clients must be prepared to handle new codes.',
+                          description:
+                            'feature_not_enabled: This feature is not enabled in your context, please contact support to enable it. user_not_organization_admin: User is not organization administrator.',
+                        }),
+                    })
+                    .openapi({ required: [] }),
+                )
+                .exactOptional()
+                .openapi({ title: 'List of error details. Typically there is only one element' }),
+            })
+            .openapi({ required: [] }),
+        },
+      },
+    },
+    503: {
+      description: 'AI Gateway is unavailable',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              message: z
+                .string()
+                .exactOptional()
+                .openapi({ title: 'Human readable error message' }),
+              errors: z
+                .array(
+                  z
+                    .object({
+                      message: z
+                        .string()
+                        .exactOptional()
+                        .openapi({ title: 'Human readable error message' }),
+                      error_code: z
+                        .literal('ai_gateway_unavailable')
+                        .exactOptional()
+                        .openapi({
+                          title:
+                            'Machine processable error code. Clients must be prepared to handle new codes.',
+                          description:
+                            'ai_gateway_unavailable: The AI Gateway cannot answer right now, try again later',
+                        }),
+                    })
+                    .openapi({ required: [] }),
+                )
+                .exactOptional()
+                .openapi({ title: 'List of error details. Typically there is only one element' }),
+            })
+            .openapi({ required: [] }),
+        },
+      },
+    },
+  },
+  security: [{ tokenAuth: [], oauth2: ['accounts:read'] }],
+})
+
+export const patchOrganizationOrganizationIdAiGatewayKeysBudgetsRoute = createRoute({
+  method: 'patch',
+  path: '/organization/{organization_id}/ai-gateway/keys/budgets',
+  tags: ['AIGateway'],
+  summary: 'Set the AI Gateway budget of many keys',
+  description:
+    "<p><blockquote>This endpoint <b>may be changed or removed at any time</b>. Don't use it in production environments.</blockquote><p>\n\n<p>Sets the same periods on each of <code>key_ids</code>, or on each key of <code>owner_user_id</code>, in one go. A period left out stays as it is; one that inherits uses the default key budget. An organization admin's <code>limit</code> is an exception that a lower default does not clip.</p>",
+  operationId: 'AIGatewayOrganizationKeyBudgetsUpdate',
+  request: {
+    params: z.object({ organization_id: OrganizationIdParamsSchema }),
+    body: {
+      content: {
+        'application/json': {
+          schema: AIGatewayOrganizationKeyBudgetsUpdateRequestBodySchema,
+          example: {
+            daily: null,
+            key_ids: ['adcf7194-d877-4505-a47a-91fefd96e3b8'],
+            monthly: null,
+            owner_user_id: 'u123456',
+          },
+        },
+      },
+    },
+  },
+  responses: {
+    200: {
+      description: 'Response',
+      content: {
+        'application/json': { schema: AIGatewayOrganizationKeyBudgetsUpdateResponseSchema },
+      },
+    },
+    400: {
+      description:
+        'Neither or both of key_ids and owner_user_id are given, or a period is not valid',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              message: z
+                .string()
+                .exactOptional()
+                .openapi({ title: 'Human readable error message' }),
+              errors: z
+                .array(
+                  z
+                    .object({
+                      message: z
+                        .string()
+                        .exactOptional()
+                        .openapi({ title: 'Human readable error message' }),
+                      error_code: z
+                        .literal('bad_request')
+                        .exactOptional()
+                        .openapi({
+                          title:
+                            'Machine processable error code. Clients must be prepared to handle new codes.',
+                          description: 'bad_request: Bad request',
+                        }),
+                    })
+                    .openapi({ required: [] }),
+                )
+                .exactOptional()
+                .openapi({ title: 'List of error details. Typically there is only one element' }),
+            })
+            .openapi({ required: [] }),
+        },
+      },
+    },
+    403: {
+      description:
+        'AI Gateway is not enabled for this organization, or the user is not an organization admin',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              message: z
+                .string()
+                .exactOptional()
+                .openapi({ title: 'Human readable error message' }),
+              errors: z
+                .array(
+                  z
+                    .object({
+                      message: z
+                        .string()
+                        .exactOptional()
+                        .openapi({ title: 'Human readable error message' }),
+                      error_code: z
+                        .enum(['feature_not_enabled', 'user_not_organization_admin'])
+                        .exactOptional()
+                        .openapi({
+                          title:
+                            'Machine processable error code. Clients must be prepared to handle new codes.',
+                          description:
+                            'feature_not_enabled: This feature is not enabled in your context, please contact support to enable it. user_not_organization_admin: User is not organization administrator.',
+                        }),
+                    })
+                    .openapi({ required: [] }),
+                )
+                .exactOptional()
+                .openapi({ title: 'List of error details. Typically there is only one element' }),
+            })
+            .openapi({ required: [] }),
+        },
+      },
+    },
+    503: {
+      description: 'AI Gateway is unavailable',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              message: z
+                .string()
+                .exactOptional()
+                .openapi({ title: 'Human readable error message' }),
+              errors: z
+                .array(
+                  z
+                    .object({
+                      message: z
+                        .string()
+                        .exactOptional()
+                        .openapi({ title: 'Human readable error message' }),
+                      error_code: z
+                        .literal('ai_gateway_unavailable')
+                        .exactOptional()
+                        .openapi({
+                          title:
+                            'Machine processable error code. Clients must be prepared to handle new codes.',
+                          description:
+                            'ai_gateway_unavailable: The AI Gateway cannot answer right now, try again later',
+                        }),
+                    })
+                    .openapi({ required: [] }),
+                )
+                .exactOptional()
+                .openapi({ title: 'List of error details. Typically there is only one element' }),
+            })
+            .openapi({ required: [] }),
+        },
+      },
+    },
+  },
+  security: [{ tokenAuth: [], oauth2: ['accounts:write'] }],
+})
+
+export const getOrganizationOrganizationIdAiGatewayKeysRoute = createRoute({
+  method: 'get',
+  path: '/organization/{organization_id}/ai-gateway/keys',
+  tags: ['AIGateway'],
+  summary: 'List the AI Gateway keys of an organization',
+  description:
+    "<p><blockquote>This endpoint <b>may be changed or removed at any time</b>. Don't use it in production environments.</blockquote><p>\n\n<p>The keys of every project in the organization, with their caps and spend, newest first. Expired keys are not listed, unless <code>include_expired</code> is set. Revoked keys are not listed, unless <code>include_revoked</code> is set. The answer is not paginated and holds every matching key, so it grows with the organization's keys.</p>",
+  operationId: 'AIGatewayOrganizationKeyList',
+  request: {
+    params: z.object({ organization_id: OrganizationIdParamsSchema }),
+    query: z.object({
+      project_name: AigatewayorganizationkeylistProjectNameParamsSchema,
+      owner_user_id: AigatewayorganizationkeylistOwnerUserIdParamsSchema,
+      owner_type: AigatewayorganizationkeylistOwnerTypeParamsSchema,
+      include_revoked: AigatewayorganizationkeylistIncludeRevokedParamsSchema,
+      include_expired: AigatewayorganizationkeylistIncludeExpiredParamsSchema,
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Response',
+      content: { 'application/json': { schema: AIGatewayOrganizationKeyListResponseSchema } },
+    },
+    400: {
+      description: 'A filter is not valid',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              message: z
+                .string()
+                .exactOptional()
+                .openapi({ title: 'Human readable error message' }),
+              errors: z
+                .array(
+                  z
+                    .object({
+                      message: z
+                        .string()
+                        .exactOptional()
+                        .openapi({ title: 'Human readable error message' }),
+                      error_code: z
+                        .literal('bad_request')
+                        .exactOptional()
+                        .openapi({
+                          title:
+                            'Machine processable error code. Clients must be prepared to handle new codes.',
+                          description: 'bad_request: Bad request',
+                        }),
+                    })
+                    .openapi({ required: [] }),
+                )
+                .exactOptional()
+                .openapi({ title: 'List of error details. Typically there is only one element' }),
+            })
+            .openapi({ required: [] }),
+        },
+      },
+    },
+    403: {
+      description:
+        'AI Gateway is not enabled for this organization, or the user is not an organization admin',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              message: z
+                .string()
+                .exactOptional()
+                .openapi({ title: 'Human readable error message' }),
+              errors: z
+                .array(
+                  z
+                    .object({
+                      message: z
+                        .string()
+                        .exactOptional()
+                        .openapi({ title: 'Human readable error message' }),
+                      error_code: z
+                        .enum(['feature_not_enabled', 'user_not_organization_admin'])
+                        .exactOptional()
+                        .openapi({
+                          title:
+                            'Machine processable error code. Clients must be prepared to handle new codes.',
+                          description:
+                            'feature_not_enabled: This feature is not enabled in your context, please contact support to enable it. user_not_organization_admin: User is not organization administrator.',
+                        }),
+                    })
+                    .openapi({ required: [] }),
+                )
+                .exactOptional()
+                .openapi({ title: 'List of error details. Typically there is only one element' }),
+            })
+            .openapi({ required: [] }),
+        },
+      },
+    },
+    503: {
+      description: 'AI Gateway is unavailable',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              message: z
+                .string()
+                .exactOptional()
+                .openapi({ title: 'Human readable error message' }),
+              errors: z
+                .array(
+                  z
+                    .object({
+                      message: z
+                        .string()
+                        .exactOptional()
+                        .openapi({ title: 'Human readable error message' }),
+                      error_code: z
+                        .literal('ai_gateway_unavailable')
+                        .exactOptional()
+                        .openapi({
+                          title:
+                            'Machine processable error code. Clients must be prepared to handle new codes.',
+                          description:
+                            'ai_gateway_unavailable: The AI Gateway cannot answer right now, try again later',
+                        }),
+                    })
+                    .openapi({ required: [] }),
+                )
+                .exactOptional()
+                .openapi({ title: 'List of error details. Typically there is only one element' }),
+            })
+            .openapi({ required: [] }),
+        },
+      },
+    },
+  },
+  security: [{ tokenAuth: [], oauth2: ['accounts:read'] }],
+})
+
+export const putOrganizationOrganizationIdAiGatewayOwnerOwnerUserIdBudgetRoute = createRoute({
+  method: 'put',
+  path: '/organization/{organization_id}/ai-gateway/owner/{owner_user_id}/budget',
+  tags: ['AIGateway'],
+  summary: 'Set the AI Gateway budget of a key owner',
+  description:
+    "<p><blockquote>This endpoint <b>may be changed or removed at any time</b>. Don't use it in production environments.</blockquote><p>\n\n<p>Caps the spend of all the owner's keys together. A period left out stays as it is; one that inherits uses the default owner budget. Both periods inheriting drop the owner's own budget.</p>",
+  operationId: 'AIGatewayOrganizationOwnerBudgetSet',
+  request: {
+    params: z.object({
+      organization_id: OrganizationIdParamsSchema,
+      owner_user_id: OwnerUserIdParamsSchema,
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Response',
+      content: {
+        'application/json': { schema: AIGatewayOrganizationOwnerBudgetSetResponseSchema },
+      },
+    },
+    400: {
+      description: 'A period is not valid, or the owner is not a member of this organization',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              message: z
+                .string()
+                .exactOptional()
+                .openapi({ title: 'Human readable error message' }),
+              errors: z
+                .array(
+                  z
+                    .object({
+                      message: z
+                        .string()
+                        .exactOptional()
+                        .openapi({ title: 'Human readable error message' }),
+                      error_code: z
+                        .enum(['bad_request', 'ai_gateway_invalid_key_owner'])
+                        .exactOptional()
+                        .openapi({
+                          title:
+                            'Machine processable error code. Clients must be prepared to handle new codes.',
+                          description:
+                            'bad_request: Bad request. ai_gateway_invalid_key_owner: The user is not an active member of this organization',
+                        }),
+                    })
+                    .openapi({ required: [] }),
+                )
+                .exactOptional()
+                .openapi({ title: 'List of error details. Typically there is only one element' }),
+            })
+            .openapi({ required: [] }),
+        },
+      },
+    },
+    403: {
+      description:
+        'AI Gateway is not enabled for this organization, or the user is not an organization admin',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              message: z
+                .string()
+                .exactOptional()
+                .openapi({ title: 'Human readable error message' }),
+              errors: z
+                .array(
+                  z
+                    .object({
+                      message: z
+                        .string()
+                        .exactOptional()
+                        .openapi({ title: 'Human readable error message' }),
+                      error_code: z
+                        .enum(['feature_not_enabled', 'user_not_organization_admin'])
+                        .exactOptional()
+                        .openapi({
+                          title:
+                            'Machine processable error code. Clients must be prepared to handle new codes.',
+                          description:
+                            'feature_not_enabled: This feature is not enabled in your context, please contact support to enable it. user_not_organization_admin: User is not organization administrator.',
+                        }),
+                    })
+                    .openapi({ required: [] }),
+                )
+                .exactOptional()
+                .openapi({ title: 'List of error details. Typically there is only one element' }),
+            })
+            .openapi({ required: [] }),
+        },
+      },
+    },
+    503: {
+      description: 'AI Gateway is unavailable',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              message: z
+                .string()
+                .exactOptional()
+                .openapi({ title: 'Human readable error message' }),
+              errors: z
+                .array(
+                  z
+                    .object({
+                      message: z
+                        .string()
+                        .exactOptional()
+                        .openapi({ title: 'Human readable error message' }),
+                      error_code: z
+                        .literal('ai_gateway_unavailable')
+                        .exactOptional()
+                        .openapi({
+                          title:
+                            'Machine processable error code. Clients must be prepared to handle new codes.',
+                          description:
+                            'ai_gateway_unavailable: The AI Gateway cannot answer right now, try again later',
+                        }),
+                    })
+                    .openapi({ required: [] }),
+                )
+                .exactOptional()
+                .openapi({ title: 'List of error details. Typically there is only one element' }),
+            })
+            .openapi({ required: [] }),
+        },
+      },
+    },
+  },
+  security: [{ tokenAuth: [], oauth2: ['accounts:write'] }],
+})
+
+export const getProjectProjectAiGatewayBudgetRoute = createRoute({
+  method: 'get',
+  path: '/project/{project}/ai-gateway/budget',
+  tags: ['AIGateway'],
+  summary: 'Get the AI Gateway budget of a project',
+  description:
+    "<p><blockquote>This endpoint <b>may be changed or removed at any time</b>. Don't use it in production environments.</blockquote><p>\n\n<p>The project's daily and monthly caps, and what it has spent in the current UTC day and month.</p>",
+  operationId: 'AIGatewayProjectBudgetGet',
+  request: { params: z.object({ project: ProjectParamsSchema }) },
+  responses: {
+    200: {
+      description: 'Response',
+      content: { 'application/json': { schema: AIGatewayProjectBudgetGetResponseSchema } },
+    },
+    403: {
+      description: 'AI Gateway is not enabled for this organization',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              message: z
+                .string()
+                .exactOptional()
+                .openapi({ title: 'Human readable error message' }),
+              errors: z
+                .array(
+                  z
+                    .object({
+                      message: z
+                        .string()
+                        .exactOptional()
+                        .openapi({ title: 'Human readable error message' }),
+                      error_code: z
+                        .literal('feature_not_enabled')
+                        .exactOptional()
+                        .openapi({
+                          title:
+                            'Machine processable error code. Clients must be prepared to handle new codes.',
+                          description:
+                            'feature_not_enabled: This feature is not enabled in your context, please contact support to enable it',
+                        }),
+                    })
+                    .openapi({ required: [] }),
+                )
+                .exactOptional()
+                .openapi({ title: 'List of error details. Typically there is only one element' }),
+            })
+            .openapi({ required: [] }),
+        },
+      },
+    },
+    503: {
+      description: 'AI Gateway is unavailable',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              message: z
+                .string()
+                .exactOptional()
+                .openapi({ title: 'Human readable error message' }),
+              errors: z
+                .array(
+                  z
+                    .object({
+                      message: z
+                        .string()
+                        .exactOptional()
+                        .openapi({ title: 'Human readable error message' }),
+                      error_code: z
+                        .literal('ai_gateway_unavailable')
+                        .exactOptional()
+                        .openapi({
+                          title:
+                            'Machine processable error code. Clients must be prepared to handle new codes.',
+                          description:
+                            'ai_gateway_unavailable: The AI Gateway cannot answer right now, try again later',
+                        }),
+                    })
+                    .openapi({ required: [] }),
+                )
+                .exactOptional()
+                .openapi({ title: 'List of error details. Typically there is only one element' }),
+            })
+            .openapi({ required: [] }),
+        },
+      },
+    },
+  },
+  security: [{ tokenAuth: [], oauth2: ['projects:read'] }],
+})
+
+export const putProjectProjectAiGatewayBudgetRoute = createRoute({
+  method: 'put',
+  path: '/project/{project}/ai-gateway/budget',
+  tags: ['AIGateway'],
+  summary: 'Set the AI Gateway budget of a project',
+  description:
+    "<p><blockquote>This endpoint <b>may be changed or removed at any time</b>. Don't use it in production environments.</blockquote><p>\n\n<p>Only an organization admin sets a project's caps, and only once the organization's budgets are set up. A period left out stays as it is. Each period is <code>inherit</code> (uses the default project budget), <code>unlimited</code> (exempts the project from the default), or <code>limit</code> (an exception that a lower default does not reduce, where 0 refuses every request). Both periods inheriting drop the project's own budget.</p>",
+  operationId: 'AIGatewayProjectBudgetSet',
+  request: { params: z.object({ project: ProjectParamsSchema }) },
+  responses: {
+    200: {
+      description: 'Response',
+      content: { 'application/json': { schema: AIGatewayProjectBudgetSetResponseSchema } },
+    },
+    400: {
+      description: 'A period is not valid',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              message: z
+                .string()
+                .exactOptional()
+                .openapi({ title: 'Human readable error message' }),
+              errors: z
+                .array(
+                  z
+                    .object({
+                      message: z
+                        .string()
+                        .exactOptional()
+                        .openapi({ title: 'Human readable error message' }),
+                      error_code: z
+                        .literal('bad_request')
+                        .exactOptional()
+                        .openapi({
+                          title:
+                            'Machine processable error code. Clients must be prepared to handle new codes.',
+                          description: 'bad_request: Bad request',
+                        }),
+                    })
+                    .openapi({ required: [] }),
+                )
+                .exactOptional()
+                .openapi({ title: 'List of error details. Typically there is only one element' }),
+            })
+            .openapi({ required: [] }),
+        },
+      },
+    },
+    403: {
+      description:
+        'AI Gateway is not enabled for this organization, or the user is not an organization admin',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              message: z
+                .string()
+                .exactOptional()
+                .openapi({ title: 'Human readable error message' }),
+              errors: z
+                .array(
+                  z
+                    .object({
+                      message: z
+                        .string()
+                        .exactOptional()
+                        .openapi({ title: 'Human readable error message' }),
+                      error_code: z
+                        .enum([
+                          'feature_not_enabled',
+                          'ai_gateway_project_budget_needs_organization_admin',
+                        ])
+                        .exactOptional()
+                        .openapi({
+                          title:
+                            'Machine processable error code. Clients must be prepared to handle new codes.',
+                          description:
+                            'feature_not_enabled: This feature is not enabled in your context, please contact support to enable it. ai_gateway_project_budget_needs_organization_admin: Only an organization admin can set an AI Gateway project budget',
+                        }),
+                    })
+                    .openapi({ required: [] }),
+                )
+                .exactOptional()
+                .openapi({ title: 'List of error details. Typically there is only one element' }),
+            })
+            .openapi({ required: [] }),
+        },
+      },
+    },
+    409: {
+      description:
+        "The organization's AI Gateway budgets are not set up, or the project still has an AI Gateway budget in the organization it belonged to before",
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              message: z
+                .string()
+                .exactOptional()
+                .openapi({ title: 'Human readable error message' }),
+              errors: z
+                .array(
+                  z
+                    .object({
+                      message: z
+                        .string()
+                        .exactOptional()
+                        .openapi({ title: 'Human readable error message' }),
+                      error_code: z
+                        .enum([
+                          'ai_gateway_budget_setup_required',
+                          'ai_gateway_project_in_other_organization',
+                        ])
+                        .exactOptional()
+                        .openapi({
+                          title:
+                            'Machine processable error code. Clients must be prepared to handle new codes.',
+                          description:
+                            "ai_gateway_budget_setup_required: The organization's AI Gateway budgets are not set up: an organization admin must set a monthly default key budget first. ai_gateway_project_in_other_organization: The project still has an AI Gateway budget in the organization it belonged to before",
+                        }),
+                    })
+                    .openapi({ required: [] }),
+                )
+                .exactOptional()
+                .openapi({ title: 'List of error details. Typically there is only one element' }),
+            })
+            .openapi({ required: [] }),
+        },
+      },
+    },
+    503: {
+      description: 'AI Gateway is unavailable',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              message: z
+                .string()
+                .exactOptional()
+                .openapi({ title: 'Human readable error message' }),
+              errors: z
+                .array(
+                  z
+                    .object({
+                      message: z
+                        .string()
+                        .exactOptional()
+                        .openapi({ title: 'Human readable error message' }),
+                      error_code: z
+                        .literal('ai_gateway_unavailable')
+                        .exactOptional()
+                        .openapi({
+                          title:
+                            'Machine processable error code. Clients must be prepared to handle new codes.',
+                          description:
+                            'ai_gateway_unavailable: The AI Gateway cannot answer right now, try again later',
+                        }),
+                    })
+                    .openapi({ required: [] }),
+                )
+                .exactOptional()
+                .openapi({ title: 'List of error details. Typically there is only one element' }),
+            })
+            .openapi({ required: [] }),
+        },
+      },
+    },
+  },
+  security: [{ tokenAuth: [], oauth2: ['projects:write'] }],
 })
 
 export const getProjectProjectAiGatewayUsageRoute = createRoute({
@@ -59695,12 +62642,56 @@ export const getOrganizationOrganizationIdBillingGroupsRoute = createRoute({
   path: '/organization/{organization_id}/billing-groups',
   tags: ['OrganizationBillingGroup'],
   summary: 'List billing groups in an organization',
+  description:
+    '<p>Without <code>limit</code> or <code>cursor</code> all billing groups are returned in a single response. Billing groups are ordered by <code>billing_group_id</code> when paginating; follow <code>next</code> until it is absent.</p>',
   operationId: 'OrganizationBillingGroupList',
-  request: { params: z.object({ organization_id: OrganizationIdParamsSchema }) },
+  request: {
+    params: z.object({ organization_id: OrganizationIdParamsSchema }),
+    query: z.object({
+      cursor: OrganizationbillinggrouplistCursorParamsSchema,
+      limit: OrganizationbillinggrouplistLimitParamsSchema,
+    }),
+  },
   responses: {
     200: {
       description: 'Response',
       content: { 'application/json': { schema: OrganizationBillingGroupListResponseSchema } },
+    },
+    400: {
+      description: 'The cursor or limit is not valid',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              message: z
+                .string()
+                .exactOptional()
+                .openapi({ title: 'Human readable error message' }),
+              errors: z
+                .array(
+                  z
+                    .object({
+                      message: z
+                        .string()
+                        .exactOptional()
+                        .openapi({ title: 'Human readable error message' }),
+                      error_code: z
+                        .literal('bad_request')
+                        .exactOptional()
+                        .openapi({
+                          title:
+                            'Machine processable error code. Clients must be prepared to handle new codes.',
+                          description: 'bad_request: Bad request',
+                        }),
+                    })
+                    .openapi({ required: [] }),
+                )
+                .exactOptional()
+                .openapi({ title: 'List of error details. Typically there is only one element' }),
+            })
+            .openapi({ required: [] }),
+        },
+      },
     },
     404: {
       description: 'Resource not found',
@@ -62104,8 +65095,6 @@ export const postOrganizationOrganizationIdEventLogsDownloadRoute = createRoute(
   path: '/organization/{organization_id}/event-logs/download',
   tags: ['Organizations'],
   summary: 'Download platform event log entries as CSV',
-  description:
-    "<p><blockquote>This endpoint <b>may be changed or removed at any time</b>. Don't use it in production environments.</blockquote><p>",
   operationId: 'OrganizationEventLogsDownload',
   request: {
     params: z.object({ organization_id: OrganizationIdParamsSchema }),
@@ -62291,8 +65280,6 @@ export const postOrganizationOrganizationIdEventLogsRoute = createRoute({
   path: '/organization/{organization_id}/event-logs',
   tags: ['Organizations'],
   summary: 'Get platform event log entries',
-  description:
-    "<p><blockquote>This endpoint <b>may be changed or removed at any time</b>. Don't use it in production environments.</blockquote><p>",
   operationId: 'OrganizationEventLogsGet',
   request: {
     params: z.object({ organization_id: OrganizationIdParamsSchema }),
@@ -63619,8 +66606,13 @@ export const postOrganizationOrganizationIdProjectProjectIdServiceServiceIdLogsC
           'application/json': {
             schema: OrganizationServiceLogCountsGetRequestBodySchema,
             example: {
+              build_id: '01984214-5ea7-7573-9229-f62c10f68b4e',
+              component: 'postgresql-16.service',
               from_time: '2026-04-23T10:00:00Z',
+              hostname: 'my-pg-service-1',
               interval_seconds: 150,
+              log_type: 'application-build',
+              node_role: 'master',
               severity: 'warning',
               to_time: '2026-04-23T11:00:00Z',
             },
@@ -63839,10 +66831,15 @@ export const postOrganizationOrganizationIdProjectProjectIdServiceServiceIdLogsR
         'application/json': {
           schema: OrganizationServiceLogsGetRequestBodySchema,
           example: {
+            build_id: '01984214-5ea7-7573-9229-f62c10f68b4e',
+            component: 'postgresql-16.service',
             cursor:
               'dhx9xu6vwDjcknJVkK76pyEIgNbDVQhqaSaYTypojfGT8op0PttdBQgSCbSijatNLCKY2rzJeEzC208dUluuVQga7JSgF0DviWXv8Rl00vWEtqEvsUytsj1x4KqWbQcSGst3tZMvXxASsukIVteLJpCIp75jZO8BVdwSUTTkhXjzUgOlliZxHatnEaxxc5Uyp6iubvhFuHzT0w==',
             from_time: '2026-04-23T10:00:00Z',
+            hostname: 'my-pg-service-1',
             limit: 100,
+            log_type: 'application-build',
+            node_role: 'master',
             order_by: 'log_time:desc',
             severity: 'warning',
             to_time: '2026-04-23T11:00:00Z',
@@ -64125,8 +67122,6 @@ export const postOrganizationOrganizationIdProjectProjectIdEventLogsDownloadRout
   path: '/organization/{organization_id}/project/{project_id}/event-logs/download',
   tags: ['Organizations'],
   summary: 'Download platform event log entries for a project as CSV',
-  description:
-    "<p><blockquote>This endpoint <b>may be changed or removed at any time</b>. Don't use it in production environments.</blockquote><p>",
   operationId: 'ProjectEventLogsDownload',
   request: {
     params: z.object({
@@ -64312,8 +67307,6 @@ export const postOrganizationOrganizationIdProjectProjectIdEventLogsRoute = crea
   path: '/organization/{organization_id}/project/{project_id}/event-logs',
   tags: ['Organizations'],
   summary: 'Get platform event log entries for a project',
-  description:
-    "<p><blockquote>This endpoint <b>may be changed or removed at any time</b>. Don't use it in production environments.</blockquote><p>",
   operationId: 'ProjectEventLogsGet',
   request: {
     params: z.object({
@@ -76138,6 +79131,7 @@ export const postProjectProjectServiceServiceNameLogsRoute = createRoute({
         'application/json': {
           schema: ProjectGetServiceLogsRequestBodySchema,
           example: {
+            build_id: '01984214-5ea7-7573-9229-f62c10f68b4e',
             limit: 100,
             log_type: 'application-run',
             offset: '23425325',
@@ -77174,6 +80168,26 @@ export const deleteProjectProjectServiceServiceNamePrivatelinkAzureRoute = creat
   security: [{ tokenAuth: [], oauth2: ['privatelink:write'] }],
 })
 
+export const postProjectProjectServiceServiceNamePrivatelinkAzureRefreshRoute = createRoute({
+  method: 'post',
+  path: '/project/{project}/service/{service_name}/privatelink/azure/refresh',
+  tags: ['Service'],
+  summary: 'Refresh the list of Azure private endpoint connections',
+  description:
+    '<p>Updates the connection list with the private endpoints currently connected to the Private Link service. Call this after creating a private endpoint, then list the connections to get its connection ID. The update runs in the background, so a new connection may take a moment to appear in the list.</p>',
+  operationId: 'ServicePrivatelinkAzureRefresh',
+  request: {
+    params: z.object({ project: ProjectParamsSchema, service_name: ServiceNameParamsSchema }),
+  },
+  responses: {
+    200: {
+      description: 'Response',
+      content: { 'application/json': { schema: ServicePrivatelinkAzureRefreshResponseSchema } },
+    },
+  },
+  security: [{ tokenAuth: [], oauth2: ['privatelink:write'] }],
+})
+
 export const postProjectProjectServiceServiceNamePrivatelinkGoogleConnectionsPrivatelinkConnectionIdApproveRoute =
   createRoute({
     method: 'post',
@@ -77348,6 +80362,8 @@ export const patchProjectProjectServiceServiceNameServiceTypeRoute = createRoute
   path: '/project/{project}/service/{service_name}/service_type',
   tags: ['Service'],
   summary: 'Update the service type of a service',
+  description:
+    '<p>The API endpoint /v1/project/{project}/service/{service_name}/service_type is deprecated and will be removed on 2026-11-05.</p>',
   operationId: 'ServiceServiceTypeUpdate',
   request: {
     params: z.object({ project: ProjectParamsSchema, service_name: ServiceNameParamsSchema }),
@@ -77474,7 +80490,44 @@ export const patchProjectProjectServiceServiceNameServiceTypeRoute = createRoute
         },
       },
     },
+    410: {
+      description: 'URI no longer exists and has been permanently removed',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              message: z
+                .string()
+                .exactOptional()
+                .openapi({ title: 'Human readable error message' }),
+              errors: z
+                .array(
+                  z
+                    .object({
+                      message: z
+                        .string()
+                        .exactOptional()
+                        .openapi({ title: 'Human readable error message' }),
+                      error_code: z
+                        .literal('retired_api_endpoint')
+                        .exactOptional()
+                        .openapi({
+                          title:
+                            'Machine processable error code. Clients must be prepared to handle new codes.',
+                          description: 'retired_api_endpoint: This endpoint has been removed.',
+                        }),
+                    })
+                    .openapi({ required: [] }),
+                )
+                .exactOptional()
+                .openapi({ title: 'List of error details. Typically there is only one element' }),
+            })
+            .openapi({ required: [] }),
+        },
+      },
+    },
   },
+  deprecated: true,
   security: [{ tokenAuth: [], oauth2: ['services:write'] }],
 })
 
@@ -77563,6 +80616,7 @@ export const postProjectProjectServiceServiceNameUserRoute = createRoute({
               valkey_acl_categories: ['+@all'],
               valkey_acl_channels: ['some*chan'],
               valkey_acl_commands: ['-acl'],
+              valkey_acl_databases: ['0'],
               valkey_acl_keys: ['prefix_*'],
             },
             authentication: 'caching_sha2_password',
@@ -77631,6 +80685,7 @@ export const putProjectProjectServiceServiceNameUserServiceUsernameRoute = creat
               valkey_acl_categories: ['+@all'],
               valkey_acl_channels: ['some*chan'],
               valkey_acl_commands: ['-acl'],
+              valkey_acl_databases: ['0'],
               valkey_acl_keys: ['prefix_*'],
             },
             authentication: 'caching_sha2_password',

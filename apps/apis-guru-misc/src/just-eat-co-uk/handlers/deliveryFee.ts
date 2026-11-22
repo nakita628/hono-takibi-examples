@@ -1,0 +1,6 @@
+import { OpenAPIHono } from '@hono/zod-openapi'
+import { getDeliveryFeesTenantRoute } from '../routes'
+
+const app = new OpenAPIHono()
+
+export const deliveryFeeHandler = app.openapi(getDeliveryFeesTenantRoute, (c) => {})

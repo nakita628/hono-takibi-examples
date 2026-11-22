@@ -1,465 +1,198 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const KeywordSkillCardSchema = z
+const UserBaseSchema = z
   .object({
-    created_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'The optional date and time this card was created at.',
-        example: '2018-04-13T13:53:23-07:00',
-      }),
+    id: z
+      .string()
+      .openapi({ description: 'The unique identifier for this user.', example: '11446498' }),
     type: z
-      .literal('skill_card')
-      .openapi({ description: 'The value will always be `skill_card`.', example: 'skill_card' }),
-    skill_card_type: z
-      .literal('keyword')
-      .openapi({ description: 'The value will always be `keyword`.', example: 'keyword' }),
-    skill_card_title: z
-      .object({
-        code: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'An optional identifier for the title.', example: 'labels' }),
-        message: z
-          .string()
-          .openapi({ description: 'The actual title to show in the UI.', example: 'Labels' }),
-      })
-      .exactOptional()
-      .openapi({ description: 'The title of the card.', required: ['message'] }),
-    skill: z
-      .object({
-        type: z
-          .literal('service')
-          .openapi({ description: 'The value will always be `service`.', example: 'service' }),
-        id: z
-          .string()
-          .openapi({
-            description:
-              'A custom identifier that represent the service that\napplied this metadata.',
-            example: 'image-recognition-service',
-          }),
-      })
-      .openapi({
-        description: 'The service that applied this metadata.',
-        required: ['type', 'id'],
-      }),
-    invocation: z
-      .object({
-        type: z
-          .literal('skill_invocation')
-          .openapi({
-            description: 'The value will always be `skill_invocation`.',
-            example: 'skill_invocation',
-          }),
-        id: z
-          .string()
-          .openapi({
-            description:
-              'A custom identifier that represent the instance of\nthe service that applied this metadata. For example,\nif your `image-recognition-service` runs on multiple\nnodes, this field can be used to identify the ID of\nthe node that was used to apply the metadata.',
-            example: 'image-recognition-service-123',
-          }),
-      })
-      .openapi({
-        description:
-          'The invocation of this service, used to track\nwhich instance of a service applied the metadata.',
-        required: ['type', 'id'],
-      }),
-    entries: z
-      .array(
-        z
-          .object({
-            text: z
-              .string()
-              .exactOptional()
-              .openapi({ description: 'The text of the keyword.', example: 'keyword1' }),
-          })
-          .openapi({
-            description: 'An entry in the `entries` attribute of a metadata card.',
-            required: [],
-          }),
-      )
-      .openapi({ description: 'A list of entries in the metadata card.' }),
+      .literal('user')
+      .openapi({ description: 'The value will always be `user`.', example: 'user' }),
   })
   .openapi({
-    description: 'A skill card that contains a set of keywords.',
-    required: ['type', 'skill_card_type', 'skill', 'invocation', 'entries'],
-    title: 'Keyword Skill Card',
-    'x-box-resource-id': 'keyword_skill_card',
-    'x-box-tag': 'skills',
+    description: 'A mini representation of a user, used when\nnested within another resource.',
+    required: ['type', 'id'],
+    title: 'User (Base)',
+    'x-box-resource-id': 'user--base',
+    'x-box-tag': 'users',
+    'x-box-variant': 'base',
+    'x-box-variants': ['base', 'mini', 'standard', 'full'],
   })
-  .openapi('KeywordSkillCard')
+  .openapi('UserBase')
 
-const TimelineSkillCardSchema = z
-  .object({
-    created_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'The optional date and time this card was created at.',
-        example: '2018-04-13T13:53:23-07:00',
-      }),
-    type: z
-      .literal('skill_card')
-      .openapi({ description: 'The value will always be `skill_card`.', example: 'skill_card' }),
-    skill_card_type: z
-      .literal('timeline')
-      .openapi({ description: 'The value will always be `timeline`.', example: 'timeline' }),
-    skill_card_title: z
-      .object({
-        code: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'An optional identifier for the title.', example: 'Faces' }),
-        message: z
-          .string()
-          .openapi({ description: 'The actual title to show in the UI.', example: 'Faces' }),
-      })
-      .exactOptional()
-      .openapi({ description: 'The title of the card.', required: ['message'] }),
-    skill: z
-      .object({
-        type: z
-          .literal('service')
-          .openapi({ description: 'The value will always be `service`.', example: 'service' }),
-        id: z
-          .string()
-          .openapi({
-            description:
-              'A custom identifier that represent the service that\napplied this metadata.',
-            example: 'image-recognition-service',
-          }),
-      })
-      .openapi({
-        description: 'The service that applied this metadata.',
-        required: ['type', 'id'],
-      }),
-    invocation: z
-      .object({
-        type: z
-          .literal('skill_invocation')
-          .openapi({
-            description: 'The value will always be `skill_invocation`.',
-            example: 'skill_invocation',
-          }),
-        id: z
-          .string()
-          .openapi({
-            description:
-              'A custom identifier that represent the instance of\nthe service that applied this metadata. For example,\nif your `image-recognition-service` runs on multiple\nnodes, this field can be used to identify the ID of\nthe node that was used to apply the metadata.',
-            example: 'image-recognition-service-123',
-          }),
-      })
-      .openapi({
-        description:
-          'The invocation of this service, used to track\nwhich instance of a service applied the metadata.',
-        required: ['type', 'id'],
-      }),
-    duration: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'An total duration in seconds of the timeline.', example: 1000 }),
-    entries: z
-      .array(
-        z
-          .object({
-            text: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description:
-                  'The text of the entry. This would be the display\nname for an item being placed on the timeline, for example the name\nof the person who was detected in a video.',
-                example: 'John',
-              }),
-            appears: z
-              .array(
-                z
-                  .object({
-                    start: z
-                      .int()
-                      .exactOptional()
-                      .openapi({
-                        description:
-                          'The time in seconds when an\nentry should start appearing on a timeline.',
-                        example: 1,
-                      }),
-                    end: z
-                      .int()
-                      .exactOptional()
-                      .openapi({
-                        description:
-                          'The time in seconds when an\nentry should stop appearing on a timeline.',
-                        example: 20,
-                      }),
-                  })
-                  .openapi({ description: 'The timestamp for an entry.', required: [] }),
-              )
-              .exactOptional()
-              .openapi({
-                description:
-                  'Defines a list of timestamps for when this item should appear on the\ntimeline.',
-                required: ['start', 'end'],
-              }),
-            image_url: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description:
-                  'The image to show on a for an entry that appears\non a timeline. This image URL is required for every entry.\n\nThe image will be shown in a\nlist of items (for example faces), and clicking\nthe image will show the user where that entry\nappears during the duration of this entry.',
-                example: 'https://example.com/image1.jpg',
-              }),
-          })
-          .openapi({
-            description: "An single item that's placed on multiple items on the timeline.",
-            required: [],
-          }),
-      )
-      .openapi({ description: 'A list of entries on the timeline.' }),
-  })
+const UserMiniSchema = UserBaseSchema.and(
+  z
+    .object({
+      name: z
+        .string()
+        .max(50)
+        .exactOptional()
+        .openapi({ description: 'The display name of this user.', example: 'Aaron Levie' }),
+      login: z
+        .email()
+        .exactOptional()
+        .openapi({
+          description: 'The primary email address of this user.',
+          example: 'ceo@example.com',
+        }),
+    })
+    .openapi({ required: [] }),
+)
   .openapi({
-    description: 'A Box Skill metadata card that places a list of images on a\ntimeline.',
-    required: ['type', 'skill_card_type', 'skill', 'invocation', 'entries'],
-    title: 'Timeline Skill Card',
-    'x-box-resource-id': 'timeline_skill_card',
-    'x-box-tag': 'skills',
+    description:
+      'A mini representation of a user, as can be returned when nested within other\nresources.',
+    title: 'User (Mini)',
+    'x-box-resource-id': 'user--mini',
+    'x-box-tag': 'users',
+    'x-box-variant': 'mini',
   })
-  .openapi('TimelineSkillCard')
+  .openapi('UserMini')
 
-const TranscriptSkillCardSchema = z
-  .object({
-    created_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'The optional date and time this card was created at.',
-        example: '2018-04-13T13:53:23-07:00',
-      }),
-    type: z
-      .literal('skill_card')
-      .openapi({ description: 'The value will always be `skill_card`.', example: 'skill_card' }),
-    skill_card_type: z
-      .literal('transcript')
-      .openapi({ description: 'The value will always be `transcript`.', example: 'transcript' }),
-    skill_card_title: z
-      .object({
-        code: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'An optional identifier for the title.',
-            example: 'my_transcripts',
-          }),
-        message: z
-          .string()
-          .openapi({
-            description: 'The actual title to show in the UI.',
-            example: 'My Transcripts',
-          }),
-      })
-      .exactOptional()
-      .openapi({ description: 'The title of the card.', required: ['message'] }),
-    skill: z
-      .object({
-        type: z
-          .literal('service')
-          .openapi({ description: 'The value will always be `service`.', example: 'service' }),
-        id: z
-          .string()
-          .openapi({
-            description:
-              'A custom identifier that represent the service that\napplied this metadata.',
-            example: 'transciption-service',
-          }),
-      })
-      .openapi({
-        description: 'The service that applied this metadata.',
-        required: ['type', 'id'],
-      }),
-    invocation: z
-      .object({
-        type: z
-          .literal('skill_invocation')
-          .openapi({
-            description: 'The value will always be `skill_invocation`.',
-            example: 'skill_invocation',
-          }),
-        id: z
-          .string()
-          .openapi({
-            description:
-              'A custom identifier that represent the instance of\nthe service that applied this metadata. For example,\nif your `image-recognition-service` runs on multiple\nnodes, this field can be used to identify the ID of\nthe node that was used to apply the metadata.',
-            example: 'transciption-service-123',
-          }),
-      })
-      .openapi({
-        description:
-          'The invocation of this service, used to track\nwhich instance of a service applied the metadata.',
-        required: ['type', 'id'],
-      }),
-    duration: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description:
-          'An optional total duration in seconds.\n\nUsed with a `skill_card_type` of `transcript` or\n`timeline`.',
-        example: 1000,
-      }),
-    entries: z
-      .array(
-        z
-          .object({
-            text: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description:
-                  'The text of the entry. This would be the transcribed text assigned\nto the entry on the timeline.',
-                example: 'Hi, and welcome to this video...',
-              }),
-            appears: z
-              .array(
-                z
-                  .object({
-                    start: z
-                      .int()
-                      .exactOptional()
-                      .openapi({
-                        description:
-                          'The time in seconds when an\nentry should start appearing on a timeline.',
-                        example: 1,
-                      }),
-                  })
-                  .openapi({ description: 'The timestamp for an entry.', required: [] }),
-              )
-              .exactOptional()
-              .openapi({
-                description:
-                  'Defines when a transcribed bit of text appears. This only includes a\nstart time and no end time.',
-                required: ['start'],
-              }),
-          })
-          .openapi({
-            description: 'An entry in the `entries` attribute of a metadata card.',
-            required: [],
-          }),
-      )
-      .openapi({
-        description:
-          'A list of entries for the card. This represents the individual entries of\nthe transcription.',
-      }),
-  })
+const UserSchema = UserMiniSchema.and(
+  z
+    .object({
+      created_at: z.iso
+        .datetime({ offset: true })
+        .exactOptional()
+        .openapi({
+          description: 'When the user object was created.',
+          example: '2012-12-12T10:53:43-08:00',
+        }),
+      modified_at: z.iso
+        .datetime({ offset: true })
+        .exactOptional()
+        .openapi({
+          description: 'When the user object was last modified.',
+          example: '2012-12-12T10:53:43-08:00',
+        }),
+      language: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'The language of the user, formatted in modified version of the\n[ISO 639-1](https://developer.box.com/guides/api-calls/language-codes) format.',
+          example: 'en',
+        }),
+      timezone: z
+        .string()
+        .exactOptional()
+        .openapi({ description: "The user's timezone.", example: 'Africa/Bujumbura' }),
+      space_amount: z
+        .preprocess(
+          (val) =>
+            typeof val === 'number' && Number.isSafeInteger(val)
+              ? BigInt(val)
+              : typeof val === 'string' && /^-?\d+$/.test(val)
+                ? BigInt(val)
+                : val,
+          z.int64(),
+        )
+        .exactOptional()
+        .openapi({
+          type: 'integer',
+          format: 'int64',
+          description: 'The user’s total available space amount in bytes.',
+          example: 11345156112,
+        }),
+      space_used: z
+        .preprocess(
+          (val) =>
+            typeof val === 'number' && Number.isSafeInteger(val)
+              ? BigInt(val)
+              : typeof val === 'string' && /^-?\d+$/.test(val)
+                ? BigInt(val)
+                : val,
+          z.int64(),
+        )
+        .exactOptional()
+        .openapi({
+          type: 'integer',
+          format: 'int64',
+          description: 'The amount of space in use by the user.',
+          example: 1237009912,
+        }),
+      max_upload_size: z
+        .preprocess(
+          (val) =>
+            typeof val === 'number' && Number.isSafeInteger(val)
+              ? BigInt(val)
+              : typeof val === 'string' && /^-?\d+$/.test(val)
+                ? BigInt(val)
+                : val,
+          z.int64(),
+        )
+        .exactOptional()
+        .openapi({
+          type: 'integer',
+          format: 'int64',
+          description: 'The maximum individual file size in bytes the user can have.',
+          example: 2147483648,
+        }),
+      status: z
+        .enum(['active', 'inactive', 'cannot_delete_edit', 'cannot_delete_edit_upload'])
+        .exactOptional()
+        .openapi({ description: "The user's account status.", example: 'active' }),
+      job_title: z
+        .string()
+        .max(100)
+        .exactOptional()
+        .openapi({ description: 'The user’s job title.', example: 'CEO' }),
+      phone: z
+        .string()
+        .max(100)
+        .exactOptional()
+        .openapi({ description: 'The user’s phone number.', example: '6509241374' }),
+      address: z
+        .string()
+        .max(255)
+        .exactOptional()
+        .openapi({
+          description: 'The user’s address.',
+          example: '900 Jefferson Ave, Redwood City, CA 94063',
+        }),
+      avatar_url: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description: 'URL of the user’s avatar image.',
+          example: 'https://www.box.com/api/avatar/large/181216415',
+        }),
+      notification_email: z
+        .object({
+          email: z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'The email address to send the notifications to.',
+              example: 'notifications@example.com',
+            }),
+          is_confirmed: z
+            .boolean()
+            .exactOptional()
+            .openapi({
+              description: 'Specifies if this email address has been confirmed.',
+              example: true,
+            }),
+        })
+        .nullable()
+        .exactOptional()
+        .openapi({
+          description:
+            "An alternate notification email address to which email\nnotifications are sent. When it's confirmed, this will be\nthe email address to which notifications are sent instead of\nto the primary email address.",
+          required: [],
+        }),
+    })
+    .openapi({ required: [] }),
+)
   .openapi({
-    description: 'A Box Skill metadata card that adds a transcript to a file.',
-    required: ['type', 'skill_card_type', 'skill', 'invocation', 'entries'],
-    title: 'Transcript Skill Card.',
-    'x-box-resource-id': 'transcript_skill_card',
-    'x-box-tag': 'skills',
+    description:
+      'A standard representation of a user, as returned from any\nuser API endpoints by default.',
+    title: 'User',
+    'x-box-resource-id': 'user',
+    'x-box-tag': 'users',
+    'x-box-variant': 'standard',
   })
-  .openapi('TranscriptSkillCard')
-
-const StatusSkillCardSchema = z
-  .object({
-    created_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'The optional date and time this card was created at.',
-        example: '2018-04-13T13:53:23-07:00',
-      }),
-    type: z
-      .literal('skill_card')
-      .openapi({ description: 'The value will always be `skill_card`.', example: 'skill_card' }),
-    skill_card_type: z
-      .literal('status')
-      .openapi({ description: 'The value will always be `status`.', example: 'status' }),
-    skill_card_title: z
-      .object({
-        code: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'An optional identifier for the title.', example: 'status' }),
-        message: z
-          .string()
-          .openapi({ description: 'The actual title to show in the UI.', example: 'Status' }),
-      })
-      .exactOptional()
-      .openapi({ description: 'The title of the card.', required: ['message'] }),
-    status: z
-      .object({
-        code: z
-          .enum(['invoked', 'processing', 'success', 'transient_failure', 'permanent_failure'])
-          .openapi({
-            description:
-              'A code for the status of this Skill invocation. By\ndefault each of these will have their own accompanied\nmessages. These can be adjusted by setting the `message`\nvalue on this object.',
-            example: 'success',
-          }),
-        message: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'A custom message that can be provided with this status.\nThis will be shown in the web app to the end user.',
-            example: "We're preparing to process your file. Please hold on!",
-          }),
-      })
-      .openapi({
-        description:
-          'Sets the status of the skill. This can be used to show a message to the user while the Skill is processing the data, or if it was not able to process the file.',
-        required: ['code'],
-      }),
-    skill: z
-      .object({
-        type: z
-          .literal('service')
-          .openapi({ description: 'The value will always be `service`.', example: 'service' }),
-        id: z
-          .string()
-          .openapi({
-            description:
-              'A custom identifier that represent the service that\napplied this metadata.',
-            example: 'image-recognition-service',
-          }),
-      })
-      .openapi({
-        description: 'The service that applied this metadata.',
-        required: ['type', 'id'],
-      }),
-    invocation: z
-      .object({
-        type: z
-          .literal('skill_invocation')
-          .openapi({
-            description: 'The value will always be `skill_invocation`.',
-            example: 'skill_invocation',
-          }),
-        id: z
-          .string()
-          .openapi({
-            description:
-              'A custom identifier that represent the instance of\nthe service that applied this metadata. For example,\nif your `image-recognition-service` runs on multiple\nnodes, this field can be used to identify the ID of\nthe node that was used to apply the metadata.',
-            example: 'image-recognition-service-123',
-          }),
-      })
-      .openapi({
-        description:
-          'The invocation of this service, used to track\nwhich instance of a service applied the metadata.',
-        required: ['type', 'id'],
-      }),
-  })
-  .openapi({
-    description: 'A Box Skill metadata card that puts a status message in the metadata sidebar.',
-    required: ['type', 'skill_card_type', 'skill', 'invocation', 'status'],
-    title: 'Status Skill Card',
-    'x-box-resource-id': 'status_skill_card',
-    'x-box-tag': 'skills',
-  })
-  .openapi('StatusSkillCard')
-
-type SkillCardType =
-  | z.infer<typeof KeywordSkillCardSchema>
-  | z.infer<typeof TimelineSkillCardSchema>
-  | z.infer<typeof TranscriptSkillCardSchema>
-  | z.infer<typeof StatusSkillCardSchema>
+  .openapi('User')
 
 const FolderBaseSchema = z
   .object({
@@ -506,7 +239,6 @@ const FolderMiniSchema = FolderBaseSchema.and(
           description:
             'A numeric identifier that represents the most recent user event\nthat has been applied to this item.\n\nThis can be used in combination with the `GET /events`-endpoint\nto filter out user events that would have occurred before this\nidentifier was read.\n\nAn example would be where a Box Drive-like application\nwould fetch an item via the API, and then listen to incoming\nuser events for changes to the item. The application would\nignore any user events where the `sequence_id` in the event\nis smaller than or equal to the `sequence_id` in the originally\nfetched resource.',
         })
-        .and(z.any())
         .exactOptional(),
       name: z
         .string()
@@ -524,6 +256,52 @@ const FolderMiniSchema = FolderBaseSchema.and(
     'x-box-variant': 'mini',
   })
   .openapi('FolderMini')
+
+const EventSourceSchema = z
+  .object({
+    item_type: z
+      .enum(['file', 'folder'])
+      .openapi({
+        description: 'The type of the item that the event\nrepresents. Can be `file` or `folder`.',
+        example: 'file',
+      }),
+    item_id: z
+      .string()
+      .openapi({
+        description: 'The unique identifier that represents the\nitem.',
+        example: '560284318361',
+      }),
+    item_name: z.string().openapi({ description: 'The name of the item.', example: 'report.pdf' }),
+    classification: z
+      .object({
+        name: z
+          .string()
+          .exactOptional()
+          .openapi({ description: "The classification's name.", example: 'Top Secret' }),
+      })
+      .exactOptional()
+      .openapi({
+        description:
+          'The object containing classification information for the item that\ntriggered the event. This field will not appear if the item does not\nhave a classification set.',
+        required: [],
+      }),
+    parent: FolderMiniSchema.nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The optional folder that this folder is located within.\n\nThis value may be `null` for some folders such as the\nroot folder or the trash folder.',
+      }),
+    owned_by: UserMiniSchema.exactOptional().openapi({
+      description: 'The user who owns this item.',
+    }),
+  })
+  .openapi({
+    description: 'The source file or folder that triggered an event in\nthe event stream.',
+    required: ['item_type', 'item_id', 'item_name'],
+    title: 'Event source',
+    'x-box-resource-id': 'event_source',
+  })
+  .openapi('EventSource')
 
 const FileBaseSchema = z
   .object({
@@ -619,7 +397,6 @@ const FileMiniSchema = FileBaseSchema.and(
           description:
             'A numeric identifier that represents the most recent user event\nthat has been applied to this item.\n\nThis can be used in combination with the `GET /events`-endpoint\nto filter out user events that would have occurred before this\nidentifier was read.\n\nAn example would be where a Box Drive-like application\nwould fetch an item via the API, and then listen to incoming\nuser events for changes to the item. The application would\nignore any user events where the `sequence_id` in the event\nis smaller than or equal to the `sequence_id` in the originally\nfetched resource.',
         })
-        .and(z.any())
         .exactOptional(),
       name: z
         .string()
@@ -633,9 +410,9 @@ const FileMiniSchema = FileBaseSchema.and(
             'The SHA1 hash of the file. This can be used to compare the contents\nof a file on Box with a local file.',
           example: '85136C79CBF9FE36BB9D05D0639C70C265C18D37',
         }),
-      file_version: FileVersionMiniSchema.and(
-        z.any().openapi({ description: 'The information about the current version of the file.' }),
-      ).exactOptional(),
+      file_version: FileVersionMiniSchema.exactOptional().openapi({
+        description: 'The information about the current version of the file.',
+      }),
     })
     .openapi({ required: [] }),
 )
@@ -648,6 +425,352 @@ const FileMiniSchema = FileBaseSchema.and(
     'x-box-variant': 'mini',
   })
   .openapi('FileMini')
+
+const SharedLinkOtpAllowlistEntrySchema = z
+  .object({
+    type: z
+      .enum(['email', 'domain'])
+      .openapi({
+        description:
+          'The kind of allowlist entry.\n\n* `email` - The entry matches a single email address.\n* `domain` - The entry matches every email address under the\n  given domain.',
+        example: 'email',
+      }),
+    value: z
+      .string()
+      .openapi({
+        description:
+          'The value of the allowlist entry.\n\n* For `email` entries, the full email address (must contain `@`).\n* For `domain` entries, the bare domain (e.g. `example.com`).',
+        example: 'alice@example.com',
+      }),
+    created_at: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'The date and time when the allowlist entry was added.',
+        example: '2026-05-19T12:00:00Z',
+      }),
+    created_by: UserBaseSchema.openapi({ description: 'User who added this entry.' }),
+  })
+  .openapi({
+    description:
+      'An entry on the OTP allowlist for a shared link. The entry can match\neither a specific email address or every email address that belongs to\na domain.',
+    required: ['type', 'value', 'created_at', 'created_by'],
+    title: 'Shared link OTP allowlist entry',
+  })
+  .openapi('SharedLinkOtpAllowlistEntry')
+
+const FileSchema = FileMiniSchema.and(
+  z
+    .object({
+      description: z
+        .string()
+        .max(255)
+        .exactOptional()
+        .openapi({
+          description:
+            'The optional description of this file.\nIf the description exceeds 255 characters, the first 255 characters\nare set as a file description and the rest of it is ignored.',
+          example: 'Contract for Q1 renewal',
+        }),
+      size: z
+        .int()
+        .exactOptional()
+        .openapi({
+          description:
+            'The file size in bytes. Be careful parsing this integer as it can\nget very large and cause an integer overflow.',
+          example: 629644,
+        }),
+      path_collection: z
+        .object({
+          total_count: z
+            .preprocess(
+              (val) =>
+                typeof val === 'number' && Number.isSafeInteger(val)
+                  ? BigInt(val)
+                  : typeof val === 'string' && /^-?\d+$/.test(val)
+                    ? BigInt(val)
+                    : val,
+              z.int64(),
+            )
+            .openapi({
+              type: 'integer',
+              format: 'int64',
+              description: 'The number of folders in this list.',
+              example: 1,
+            }),
+          entries: z
+            .array(FolderMiniSchema)
+            .openapi({ description: 'The parent folders for this item.' }),
+        })
+        .openapi({
+          title: 'Path collection',
+          description: 'A list of parent folders for an item.',
+          required: ['total_count', 'entries'],
+        })
+        .exactOptional()
+        .openapi({
+          description: 'The tree of folders that this file is contained in,\nstarting at the root.',
+        }),
+      created_at: z.iso
+        .datetime({ offset: true })
+        .exactOptional()
+        .openapi({
+          description: 'The date and time when the file was created on Box.',
+          example: '2012-12-12T10:53:43-08:00',
+        }),
+      modified_at: z.iso
+        .datetime({ offset: true })
+        .exactOptional()
+        .openapi({
+          description: 'The date and time when the file was last updated on Box.',
+          example: '2012-12-12T10:53:43-08:00',
+        }),
+      trashed_at: z.iso
+        .datetime({ offset: true })
+        .nullable()
+        .exactOptional()
+        .openapi({
+          description: 'The time at which this file was put in the trash.',
+          example: '2012-12-12T10:53:43-08:00',
+        }),
+      purged_at: z.iso
+        .datetime({ offset: true })
+        .nullable()
+        .exactOptional()
+        .openapi({
+          description: 'The time at which this file is expected to be purged\nfrom the trash.',
+          example: '2012-12-12T10:53:43-08:00',
+        }),
+      content_created_at: z.iso
+        .datetime({ offset: true })
+        .nullable()
+        .exactOptional()
+        .openapi({
+          description:
+            'The date and time at which this file was originally\ncreated, which might be before it was uploaded to Box.',
+          example: '2012-12-12T10:53:43-08:00',
+        }),
+      content_modified_at: z.iso
+        .datetime({ offset: true })
+        .nullable()
+        .exactOptional()
+        .openapi({
+          description:
+            'The date and time at which this file was last updated,\nwhich might be before it was uploaded to Box.',
+          example: '2012-12-12T10:53:43-08:00',
+        }),
+      created_by: UserMiniSchema.exactOptional().openapi({
+        description: 'The user who created this file.',
+      }),
+      modified_by: UserMiniSchema.exactOptional().openapi({
+        description: 'The user who last modified this file.',
+      }),
+      owned_by: UserMiniSchema.exactOptional().openapi({
+        description: 'The user who owns this file.',
+      }),
+      shared_link: z
+        .object({
+          url: z
+            .url()
+            .openapi({
+              description:
+                "The URL that can be used to access the item on Box.\n\nThis URL will display the item in Box's preview UI where the file\ncan be downloaded if allowed.\n\nThis URL will continue to work even when a custom `vanity_url`\nhas been set for this shared link.",
+              example: 'https://www.box.com/s/vspke7y05sb214wjokpk',
+            }),
+          download_url: z
+            .url()
+            .nullable()
+            .exactOptional()
+            .openapi({
+              description:
+                'A URL that can be used to download the file. This URL can be used in\na browser to download the file. This URL includes the file\nextension so that the file will be saved with the right file type.\n\nThis property will be `null` for folders.',
+              example: 'https://www.box.com/shared/static/rh935iit6ewrmw0unyul.jpeg',
+              'x-box-premium-feature': true,
+            }),
+          vanity_url: z
+            .url()
+            .nullable()
+            .exactOptional()
+            .openapi({
+              description:
+                'The "Custom URL" that can also be used to preview the item on Box.  Custom\nURLs can only be created or modified in the Box Web application.',
+              example: 'https://acme.app.box.com/v/my_url/',
+            }),
+          vanity_name: z
+            .string()
+            .nullable()
+            .exactOptional()
+            .openapi({
+              description: 'The custom name of a shared link, as used in the `vanity_url` field.',
+              example: 'my_url',
+            }),
+          access: z
+            .enum(['open', 'company', 'collaborators'])
+            .exactOptional()
+            .openapi({
+              description:
+                'The access level for this shared link.\n\n* `open` - provides access to this item to anyone with this link\n* `company` - only provides access to this item to people the same company\n* `collaborators` - only provides access to this item to people who are\n   collaborators on this item\n\nIf this field is omitted when creating the shared link, the access level\nwill be set to the default access level specified by the enterprise admin.',
+              example: 'open',
+            }),
+          effective_access: z
+            .enum(['open', 'company', 'collaborators'])
+            .openapi({
+              description:
+                'The effective access level for the shared link. This can be a more\nrestrictive access level than the value in the `access` field when the\nenterprise settings restrict the allowed access levels.',
+              example: 'company',
+            }),
+          effective_permission: z
+            .enum(['can_edit', 'can_download', 'can_preview', 'no_access'])
+            .openapi({
+              description:
+                'The effective permissions for this shared link.\nThese result in the more restrictive combination of\nthe share link permissions and the item permissions set\nby the administrator, the owner, and any ancestor item\nsuch as a folder.',
+              example: 'can_download',
+            }),
+          unshared_at: z.iso
+            .datetime({ offset: true })
+            .nullable()
+            .exactOptional()
+            .openapi({
+              description:
+                'The date and time when this link will be unshared. This field can only be\nset by users with paid accounts.',
+              example: '2018-04-13T13:53:23-07:00',
+            }),
+          is_password_enabled: z
+            .boolean()
+            .openapi({
+              description: 'Defines if the shared link requires a password to access the item.',
+              example: true,
+            }),
+          permissions: z
+            .object({
+              can_download: z
+                .boolean()
+                .openapi({
+                  description:
+                    'Defines if the shared link allows for the item to be downloaded. For\nshared links on folders, this also applies to any items in the folder.\n\nThis value can be set to `true` when the effective access level is\nset to `open` or `company`, not `collaborators`.',
+                  example: true,
+                }),
+              can_preview: z
+                .boolean()
+                .openapi({
+                  description:
+                    'Defines if the shared link allows for the item to be previewed.\n\nThis value is always `true`. For shared links on folders this also\napplies to any items in the folder.',
+                  example: true,
+                }),
+              can_edit: z
+                .boolean()
+                .openapi({
+                  description:
+                    'Defines if the shared link allows for the item to be edited.\n\nThis value can only be `true` if `can_download` is also `true` and if\nthe item has a type of `file`.',
+                  example: false,
+                }),
+            })
+            .exactOptional()
+            .openapi({
+              description:
+                'Defines if this link allows a user to preview, edit, and download an item.\nThese permissions refer to the shared link only and\ndo not supersede permissions applied to the item itself.',
+              required: ['can_download', 'can_preview', 'can_edit'],
+            }),
+          download_count: z
+            .int()
+            .openapi({
+              description: 'The number of times this item has been downloaded.',
+              example: 3,
+            }),
+          preview_count: z
+            .int()
+            .openapi({
+              description: 'The number of times this item has been previewed.',
+              example: 3,
+            }),
+          one_time_passcode: z
+            .object({
+              mode: z
+                .string()
+                .openapi({
+                  description:
+                    'The current OTP enforcement mode for the shared link.\n\n* `none` - OTP enforcement is turned off. The shared link is accessible\n  without any one-time-passcode verification.\n* `open` - Any anonymous recipient can request a one-time-passcode to\n  any email address and access the shared link after verifying it.\n  Collaborators and registered Box users access the link without\n  being prompted.\n* `allowlist` - Anonymous recipients can request a one-time-passcode\n  only when they enter an email that matches an entry on the\n  `allowlist`.',
+                  example: 'allowlist',
+                }),
+              allowlist: z
+                .array(SharedLinkOtpAllowlistEntrySchema)
+                .max(1000)
+                .exactOptional()
+                .openapi({
+                  description:
+                    'The list of email and domain entries that are permitted to access the\nshared link when `mode` is `allowlist`. Anonymous users whose\nemail matches an entry can request and verify a one-time-passcode.\n\nBecause the entries carry recipient email addresses and the identity\nof the user who added them, this field is only returned to users\nwith owner, co-owner, or editor access on the item. For viewer\ncollaborators and below the field is omitted.\n\nAn allowlist contains at most 1000 entries, matching the limit\nenforced when setting the allowlist on a shared link.',
+                  example: [
+                    {
+                      type: 'email',
+                      value: 'alice@example.com',
+                      created_at: '2026-05-19T12:00:00Z',
+                      created_by: { id: '11446498', type: 'user' },
+                    },
+                    {
+                      type: 'domain',
+                      value: 'example.com',
+                      created_at: '2026-05-19T12:00:00Z',
+                      created_by: { id: '11446498', type: 'user' },
+                    },
+                  ],
+                }),
+            })
+            .openapi({
+              title: 'Shared link OTP settings',
+              description:
+                'One-time-passcode (OTP) settings for a shared link. When OTP enforcement\nis enabled, anonymous users must verify their identity via a\none-time-passcode emailed to them before the shared link will grant\naccess.\n\nOTP can only be used with shared links that have an `access` level of\n`open`. Password protection and OTP cannot be enabled at the same time.',
+              required: ['mode'],
+            })
+            .openapi({
+              description:
+                'The one-time-passcode (OTP) settings for this shared link.\n\nThis field is always present. For links where OTP does not\napply (for example, shared links whose `access` is not `open`),\nthe object is returned with `mode` set to `none`.',
+            }),
+        })
+        .openapi({
+          title: 'Shared link',
+          description:
+            'Shared links provide direct, read-only access to files or folder on Box.\n\nShared links with open access level allow anyone with the URL\nto access the item, while shared links with company or collaborators access\nlevels can only be accessed by appropriately authenticated Box users.',
+          required: [
+            'url',
+            'accessed',
+            'effective_access',
+            'effective_permission',
+            'is_password_enabled',
+            'download_count',
+            'preview_count',
+            'one_time_passcode',
+          ],
+        })
+        .nullable()
+        .exactOptional()
+        .openapi({
+          description:
+            'The shared link for this file. This value will be\n`null` if no shared link has been created for this\nfile.',
+        }),
+      parent: FolderMiniSchema.nullable()
+        .exactOptional()
+        .openapi({
+          description:
+            'The folder that this file is located within.\nThis value may be `null` for some folders such as\nthe root folder or the trash folder.',
+        }),
+      item_status: z
+        .enum(['active', 'trashed', 'deleted'])
+        .exactOptional()
+        .openapi({
+          description:
+            'Defines if this item has been deleted or not.\n\n* `active` when the item has is not in the trash\n* `trashed` when the item has been moved to the trash but not deleted\n* `deleted` when the item has been permanently deleted.',
+          example: 'active',
+        }),
+    })
+    .openapi({ required: [] }),
+)
+  .openapi({
+    description:
+      'A standard representation of a file, as returned from any\nfile API endpoints by default.',
+    title: 'File',
+    'x-box-resource-id': 'file',
+    'x-box-tag': 'files',
+    'x-box-variant': 'standard',
+  })
+  .openapi('File')
 
 const ResourceSchema = z
   .xor([FolderMiniSchema, FileMiniSchema])
@@ -684,6 +807,5067 @@ const ResourceScopeSchema = z
     required: [],
   })
   .openapi('ResourceScope')
+
+const MetadataBaseSchema = z
+  .object({
+    $parent: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The identifier of the item that this metadata instance\nhas been attached to. This combines the `type` and the `id`\nof the parent in the form `{type}_{id}`.',
+        example: 'folder_59449484661,',
+      }),
+    $template: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the template.', example: 'marketingCollateral' }),
+    $scope: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'An ID for the scope in which this template\nhas been applied. This will be `enterprise_{enterprise_id}` for templates\ndefined for use in this enterprise, and `global` for general templates\nthat are available to all enterprises using Box.',
+        example: 'enterprise_27335',
+      }),
+    $version: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          'The version of the metadata instance. This version starts at 0 and\nincreases every time a user-defined property is modified.',
+        example: 1,
+      }),
+  })
+  .openapi({
+    description: 'The base representation of a metadata instance.',
+    title: 'Metadata instance (Base)',
+    'x-box-resource-id': 'metadata--base',
+    'x-box-tag': 'file_metadata',
+    'x-box-variant': 'base',
+    'x-box-variants': ['base', 'standard', 'full'],
+    required: [],
+  })
+  .openapi('MetadataBase')
+
+const MetadataSchema = MetadataBaseSchema.openapi({
+  description: 'An instance of a metadata template, which has been applied to a file or\nfolder.',
+  title: 'Metadata instance',
+  'x-box-resource-id': 'metadata',
+  'x-box-tag': 'file_metadata',
+  'x-box-variant': 'standard',
+}).openapi('Metadata')
+
+const MetadataFullSchema = MetadataSchema.and(
+  z
+    .object({
+      $canEdit: z
+        .boolean()
+        .exactOptional()
+        .openapi({
+          description: 'Whether the user can edit this metadata instance.',
+          example: true,
+        }),
+      $id: z
+        .uuid()
+        .max(36)
+        .exactOptional()
+        .openapi({
+          description: 'A UUID to identify the metadata instance.',
+          example: '01234500-12f1-1234-aa12-b1d234cb567e',
+        }),
+      $type: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'A unique identifier for the "type" of this instance. This is an\ninternal system property and should not be used by a client\napplication.',
+          example: 'properties-6bcba49f-ca6d-4d2a-a758-57fe6edf44d0',
+        }),
+      $typeVersion: z
+        .int()
+        .exactOptional()
+        .openapi({
+          description:
+            'The last-known version of the template of the object. This is an\ninternal system property and should not be used by a client\napplication.',
+          example: 2,
+        }),
+    })
+    .openapi({ required: [] }),
+)
+  .and(
+    z.record(
+      z.string(),
+      z
+        .any()
+        .openapi({
+          example: 'Aaron Levie',
+          description:
+            'A value for each of the fields that are present\non the metadata template.\nFor the `global.properties` template this can be\na list of zero or more fields,\nas this template allows for any generic key-value pairs\nto be stored stored in the template.',
+          'x-box-example-key': 'name',
+        }),
+    ),
+  )
+  .openapi({
+    description: 'An instance of a metadata template, which has been applied to a file or\nfolder.',
+    title: 'Metadata instance (Full)',
+    'x-box-resource-id': 'metadata--full',
+    'x-box-tag': 'file_metadata',
+    'x-box-variant': 'full',
+  })
+  .openapi('MetadataFull')
+
+const CollectionSchema = z
+  .object({
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The unique identifier for this collection.', example: '11446498' }),
+    type: z
+      .literal('collection')
+      .exactOptional()
+      .openapi({ description: 'The value will always be `collection`.', example: 'collection' }),
+    name: z
+      .literal('Favorites')
+      .exactOptional()
+      .openapi({ description: 'The name of the collection.', example: 'Favorites' }),
+    collection_type: z
+      .literal('favorites')
+      .exactOptional()
+      .openapi({
+        description:
+          'The type of the collection. This is used to\ndetermine the proper visual treatment for\ncollections.',
+        example: 'favorites',
+      }),
+  })
+  .openapi({
+    description:
+      'A collection of items, including files and folders.\n\nCurrently, the only collection available\nis the `favorites` collection.\n\nThe contents of a collection can be explored in a\nsimilar way to which the contents of a folder is\nexplored.',
+    title: 'Collection',
+    'x-box-resource-id': 'collection',
+    'x-box-tag': 'collections',
+    required: [],
+  })
+  .openapi('Collection')
+
+const FileFullSchema = FileSchema.and(
+  z
+    .object({
+      version_number: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'The version number of this file.', example: '1' }),
+      comment_count: z
+        .int()
+        .exactOptional()
+        .openapi({ description: 'The number of comments on this file.', example: 10 }),
+      permissions: z
+        .object({
+          can_delete: z
+            .boolean()
+            .openapi({
+              description: 'Specifies if the current user can delete this item.',
+              example: true,
+            }),
+          can_download: z
+            .boolean()
+            .openapi({
+              description: 'Specifies if the current user can download this item.',
+              example: true,
+            }),
+          can_invite_collaborator: z
+            .boolean()
+            .openapi({
+              description:
+                'Specifies if the current user can invite new\nusers to collaborate on this item, and if the user can\nupdate the role of a user already collaborated on this\nitem.',
+              example: true,
+            }),
+          can_rename: z
+            .boolean()
+            .openapi({ description: 'Specifies if the user can rename this item.', example: true }),
+          can_set_share_access: z
+            .boolean()
+            .openapi({
+              description:
+                'Specifies if the user can change the access level of an\nexisting shared link on this item.',
+              example: true,
+            }),
+          can_share: z
+            .boolean()
+            .openapi({
+              description: 'Specifies if the user can create a shared link for this item.',
+              example: true,
+            }),
+        })
+        .openapi({
+          description: 'The permissions that the authenticated user has for an item.',
+          required: [
+            'can_delete',
+            'can_download',
+            'can_invite_collaborator',
+            'can_rename',
+            'can_set_share_access',
+            'can_share',
+          ],
+        })
+        .and(
+          z
+            .looseObject({})
+            .openapi({
+              required: [
+                'can_annotate',
+                'can_comment',
+                'can_preview',
+                'can_upload',
+                'can_view_annotations_all',
+                'can_view_annotations_self',
+              ],
+            }),
+        )
+        .superRefine((val, ctx) => {
+          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+            if (!Object.hasOwn(val, 'can_annotate')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+            if (!Object.hasOwn(val, 'can_comment')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+            if (!Object.hasOwn(val, 'can_preview')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+            if (!Object.hasOwn(val, 'can_upload')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+            if (!Object.hasOwn(val, 'can_view_annotations_all')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+            if (!Object.hasOwn(val, 'can_view_annotations_self')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+          }
+        })
+        .and(
+          z
+            .object({
+              can_annotate: z
+                .boolean()
+                .exactOptional()
+                .openapi({
+                  description: 'Specifies if the user can place annotations on this file.',
+                  example: true,
+                }),
+              can_comment: z
+                .boolean()
+                .exactOptional()
+                .openapi({
+                  description: 'Specifies if the user can place comments on this file.',
+                  example: true,
+                }),
+              can_preview: z
+                .boolean()
+                .exactOptional()
+                .openapi({
+                  description: 'Specifies if the user can preview this file.',
+                  example: true,
+                }),
+              can_upload: z
+                .boolean()
+                .exactOptional()
+                .openapi({
+                  description: 'Specifies if the user can upload a new version of this file.',
+                  example: true,
+                }),
+              can_view_annotations_all: z
+                .boolean()
+                .exactOptional()
+                .openapi({
+                  description: 'Specifies if the user view all annotations placed on this file.',
+                  example: true,
+                }),
+              can_view_annotations_self: z
+                .boolean()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'Specifies if the user view annotations placed by themselves\non this file.',
+                  example: true,
+                }),
+              can_apply_watermark: z
+                .boolean()
+                .exactOptional()
+                .openapi({
+                  description: 'Specifies if the user can apply a watermark to this file.',
+                  example: true,
+                }),
+            })
+            .openapi({ required: [] }),
+        )
+        .openapi({
+          description: 'The permissions that the authenticated user has for a file.',
+          required: [
+            'can_annotate',
+            'can_comment',
+            'can_preview',
+            'can_upload',
+            'can_view_annotations_all',
+            'can_view_annotations_self',
+          ],
+        })
+        .exactOptional()
+        .openapi({
+          description: 'Describes the permissions that the current user has\nfor this file.',
+        }),
+      tags: z
+        .array(z.string())
+        .min(1)
+        .max(100)
+        .openapi({
+          example: ['approved'],
+          description:
+            "The tags for this item. These tags are shown in\nthe Box web app and mobile apps next to an item.\n\nTo add or remove a tag, retrieve the item's current tags,\nmodify them, and then update this field.\n\nThere is a limit of 100 tags per item, and 10,000\nunique tags per enterprise.",
+        })
+        .exactOptional(),
+      lock: z
+        .object({
+          id: z
+            .string()
+            .exactOptional()
+            .openapi({ description: 'The unique identifier for this lock.', example: '11446498' }),
+          type: z
+            .literal('lock')
+            .exactOptional()
+            .openapi({ description: 'The value will always be `lock`.', example: 'lock' }),
+          created_by: UserMiniSchema.exactOptional().openapi({
+            description: 'The user who created the lock.',
+          }),
+          created_at: z.iso
+            .datetime({ offset: true })
+            .exactOptional()
+            .openapi({
+              description: 'The time this lock was created at.',
+              example: '2012-12-12T10:53:43-08:00',
+            }),
+          expired_at: z.iso
+            .datetime({ offset: true })
+            .exactOptional()
+            .openapi({
+              description: 'The time this lock is to expire at, which might be in the past.',
+              example: '2012-12-12T10:53:43-08:00',
+            }),
+          is_download_prevented: z
+            .boolean()
+            .exactOptional()
+            .openapi({
+              description: 'Whether or not the file can be downloaded while locked.',
+              example: true,
+            }),
+          app_type: z
+            .enum(['gsuite', 'office_wopi', 'office_wopiplus', 'other'])
+            .nullable()
+            .exactOptional()
+            .openapi({
+              description:
+                'If the lock is managed by an application rather than a user, this\nfield identifies the type of the application that holds the lock.\nThis is an open enum and may be extended with additional values in\nthe future.',
+              example: 'office_wopiplus',
+            }),
+        })
+        .openapi({
+          title: 'Lock',
+          description:
+            'The lock held on a file. A lock prevents a file from being moved,\nrenamed, or otherwise changed by anyone else than the user who created the\nlock.',
+          required: [],
+        })
+        .nullable()
+        .exactOptional()
+        .openapi({
+          description:
+            'The lock held on this file. If there is no lock, this can either\nbe `null` or have a timestamp in the past.',
+        }),
+      extension: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Indicates the (optional) file extension for this file. By default,\nthis is set to an empty string.',
+          example: 'pdf',
+        }),
+      is_package: z
+        .boolean()
+        .exactOptional()
+        .openapi({
+          description:
+            'Indicates if the file is a package. Packages are commonly used\nby Mac Applications and can include iWork files.',
+          example: true,
+        }),
+      expiring_embed_link: z
+        .object({
+          access_token: z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'The requested access token.',
+              example: 'c3FIOG9vSGV4VHo4QzAyg5T1JvNnJoZ3ExaVNyQWw6WjRsanRKZG5lQk9qUE1BVQ',
+            }),
+          expires_in: z
+            .preprocess(
+              (val) =>
+                typeof val === 'number' && Number.isSafeInteger(val)
+                  ? BigInt(val)
+                  : typeof val === 'string' && /^-?\d+$/.test(val)
+                    ? BigInt(val)
+                    : val,
+              z.int64(),
+            )
+            .exactOptional()
+            .openapi({
+              type: 'integer',
+              format: 'int64',
+              description: 'The time in seconds by which this token will expire.',
+              example: 3600,
+            }),
+          token_type: z
+            .literal('bearer')
+            .exactOptional()
+            .openapi({ description: 'The type of access token returned.', example: 'bearer' }),
+          restricted_to: z
+            .array(ResourceScopeSchema)
+            .exactOptional()
+            .openapi({
+              description:
+                'The permissions that this access token permits,\nproviding a list of resources (files, folders, etc)\nand the scopes permitted for each of those resources.',
+            }),
+        })
+        .openapi({ description: 'The basics of an access token.', required: [] })
+        .and(
+          z
+            .object({
+              url: z
+                .url()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'The actual expiring embed URL for this file, constructed\nfrom the file ID and access tokens specified in this object.',
+                  example: 'https://cloud.app.box.com/preview/expiring_embed/...',
+                }),
+            })
+            .openapi({ required: [] }),
+        )
+        .openapi({ title: 'Expiring embed link', description: 'An expiring Box Embed Link.' })
+        .exactOptional()
+        .openapi({
+          description:
+            'Requesting this field creates an expiring Box Embed URL for an\nembedded preview session in an `iframe`.\n\nThis URL will expire after 60 seconds and the session will\nexpire after 60 minutes.\n\nNot all file types are supported for these embed URLs. Box Embed\nis not optimized for mobile browsers and should not be used in web\nexperiences designed for mobile devices. Many UI elements, like\nthe **download** and **print** options might not show in mobile\nbrowsers.',
+        }),
+      watermark_info: z
+        .object({
+          is_watermarked: z
+            .boolean()
+            .exactOptional()
+            .openapi({
+              description: 'Specifies if this item has a watermark applied.',
+              example: true,
+            }),
+          is_watermark_inherited: z
+            .boolean()
+            .exactOptional()
+            .openapi({
+              description:
+                'Specifies if the watermark is inherited from any parent folder in the hierarchy.',
+              example: false,
+            }),
+          is_watermarked_by_access_policy: z
+            .boolean()
+            .exactOptional()
+            .openapi({
+              description: 'Specifies if the watermark is enforced by an access policy.',
+              example: false,
+            }),
+        })
+        .openapi({ description: 'Details about the watermark applied to this item.', required: [] })
+        .exactOptional()
+        .openapi({ description: 'Details about the watermark applied to this file.' }),
+      is_accessible_via_shared_link: z
+        .boolean()
+        .exactOptional()
+        .openapi({
+          description:
+            'Specifies if the file can be accessed\nvia the direct shared link or a shared link\nto a parent folder.',
+          example: true,
+        }),
+      allowed_invitee_roles: z
+        .array(
+          z.enum([
+            'editor',
+            'viewer',
+            'previewer',
+            'uploader',
+            'previewer uploader',
+            'viewer uploader',
+            'co-owner',
+          ]),
+        )
+        .exactOptional()
+        .openapi({
+          description:
+            'A list of the types of roles that user can be invited at\nwhen sharing this file.',
+          example: ['editor'],
+        }),
+      is_externally_owned: z
+        .boolean()
+        .exactOptional()
+        .openapi({
+          description:
+            'Specifies if this file is owned by a user outside of the\nauthenticated enterprise.',
+          example: true,
+        }),
+      has_collaborations: z
+        .boolean()
+        .exactOptional()
+        .openapi({
+          description: 'Specifies if this file has any other collaborators.',
+          example: true,
+        }),
+      metadata: z
+        .record(
+          z.string(),
+          z
+            .record(z.string(), MetadataFullSchema)
+            .openapi({
+              description:
+                'A list of metadata instances, nested within key-value pairs of their `scope`\nand `templateKey`.',
+              example: {
+                marketingCollateral: {
+                  $canEdit: true,
+                  $id: '01234500-12f1-1234-aa12-b1d234cb567e',
+                  $parent: 'folder_59449484661',
+                  $scope: 'enterprise_27335',
+                  $template: 'marketingCollateral',
+                  $type: 'properties-6bcba49f-ca6d-4d2a-a758-57fe6edf44d0',
+                  $typeVersion: 2,
+                  $version: 1,
+                },
+              },
+            }),
+        )
+        .openapi({
+          title: 'Item metadata instances',
+          description:
+            'A list of metadata instances, nested within key-value pairs of their `scope`\nand `templateKey`.\n\nTo access the metadata for a file or folder, first use the\nmetadata endpoints to determine the metadata templates available to your\nenterprise.\n\nThen use the `GET /files/:id` or `GET /folder/:id`\nendpoint with the `fields` query parameter to get\nthe metadata by ID.\n\nTo request a metadata instance for a particular `scope` and `templateKey`\nuse the following format for the `fields` parameter:\n`metadata.<scope>.<templateKey>`\n\nFor example, `?fields=metadata.enterprise_27335.marketingCollateral`.',
+          example: {
+            enterprise_27335: {
+              marketingCollateral: {
+                $canEdit: true,
+                $id: '01234500-12f1-1234-aa12-b1d234cb567e',
+                $parent: 'folder_59449484661',
+                $scope: 'enterprise_27335',
+                $template: 'marketingCollateral',
+                $type: 'properties-6bcba49f-ca6d-4d2a-a758-57fe6edf44d0',
+                $typeVersion: 2,
+                $version: 1,
+              },
+            },
+          },
+        })
+        .exactOptional()
+        .openapi({
+          description:
+            'An object containing the metadata instances that have been\nattached to this file.\n\nEach metadata instance is uniquely identified by its `scope` and\n`templateKey`. There can only be one instance of any metadata\ntemplate attached to each file. Each metadata instance is nested\nwithin an object with the `templateKey` as the key, which again\nitself is nested in an object with the `scope` as the key.',
+        }),
+      expires_at: z.iso
+        .datetime({ offset: true })
+        .nullable()
+        .exactOptional()
+        .openapi({
+          description: 'When the file will automatically be deleted.',
+          example: '2012-12-12T10:53:43-08:00',
+        }),
+      representations: z
+        .object({
+          entries: z
+            .array(
+              z
+                .object({
+                  content: z
+                    .object({
+                      url_template: z
+                        .string()
+                        .exactOptional()
+                        .openapi({
+                          description:
+                            "The download URL that can be used to fetch the representation.\nMake sure to make an authenticated API call to this endpoint.\n\nThis URL is a template and will require the `{+asset_path}` to\nbe replaced by a path. In general, for unpaged representations\nit can be replaced by an empty string.\n\nFor paged representations, replace the `{+asset_path}` with the\npage to request plus the extension for the file, for example\n`1.pdf`.\n\nWhen requesting the download URL the following additional\nquery params can be passed along.\n\n* `set_content_disposition_type` - Sets the\n`Content-Disposition` header in the API response with the\nspecified disposition type of either `inline` or `attachment`.\nIf not supplied, the `Content-Disposition` header is not\nincluded in the response.\n\n* `set_content_disposition_filename` - Allows the application to\n  define the representation's file name used in the\n  `Content-Disposition` header.  If not defined, the filename\n  is derived from the source file name in Box combined with the\n  extension of the representation.",
+                          example:
+                            'https://dl.boxcloud.com/api/2.0/internal_files/123/versions/345/representations/png_paged_2048x2048/content/{+asset_path}?watermark_content=4567',
+                        }),
+                    })
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'An object containing the URL that can be used to actually fetch\nthe representation.',
+                      required: [],
+                    }),
+                  info: z
+                    .object({
+                      url: z
+                        .string()
+                        .exactOptional()
+                        .openapi({
+                          description:
+                            'The API URL that can be used to get more info on this file\nrepresentation. Make sure to make an authenticated API call\nto this endpoint.',
+                          example:
+                            'https://api.box.com/2.0/internal_files/123/versions/345/representations/png_paged_2048x2048',
+                        }),
+                    })
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'An object containing the URL that can be used to fetch more info\non this representation.',
+                      required: [],
+                    }),
+                  properties: z
+                    .object({
+                      dimensions: z
+                        .string()
+                        .exactOptional()
+                        .openapi({
+                          example: '2048x2048',
+                          description: 'The width by height size of this representation in pixels.',
+                        }),
+                      paged: z
+                        .string()
+                        .exactOptional()
+                        .openapi({
+                          example: 'true',
+                          description:
+                            'Indicates if the representation is build up out of multiple\npages.',
+                        }),
+                      thumb: z
+                        .string()
+                        .exactOptional()
+                        .openapi({
+                          example: 'true',
+                          description:
+                            'Indicates if the representation can be used as a thumbnail of\nthe file.',
+                        }),
+                    })
+                    .exactOptional()
+                    .openapi({
+                      description: 'An object containing the size and type of this presentation.',
+                      required: [],
+                    }),
+                  representation: z
+                    .string()
+                    .exactOptional()
+                    .openapi({
+                      description: 'Indicates the file type of the returned representation.',
+                      example: 'png',
+                    }),
+                  status: z
+                    .object({
+                      state: z
+                        .enum(['success', 'viewable', 'pending', 'none'])
+                        .exactOptional()
+                        .openapi({
+                          description:
+                            'The status of the representation.\n\n* `success` defines the representation as ready to be viewed.\n* `viewable` defines a video to be ready for viewing.\n* `pending` defines the representation as to be generated. Retry\n  this endpoint to re-check the status.\n* `none` defines that the representation will be created when\n  requested. Request the URL defined in the `info` object to\n  trigger this generation.',
+                          example: 'success',
+                        }),
+                    })
+                    .exactOptional()
+                    .openapi({
+                      description: 'An object containing the status of this representation.',
+                      required: [],
+                    }),
+                })
+                .openapi({ description: 'A file representation.', required: [] }),
+            )
+            .exactOptional()
+            .openapi({ description: 'A list of files.' }),
+        })
+        .openapi({
+          title: 'Representations',
+          description: 'A list of file representations.',
+          required: [],
+        })
+        .exactOptional()
+        .openapi({
+          description:
+            'A list of representations for a file that can be used to\ndisplay a placeholder of the file in your application. By default\nthis returns all representations and we recommend using the\n`x-rep-hints` header to further customize the desired\nrepresentations.',
+        }),
+      classification: z
+        .object({
+          name: z
+            .string()
+            .exactOptional()
+            .openapi({ description: 'The name of the classification.', example: 'Top Secret' }),
+          definition: z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'An explanation of the meaning of this classification.',
+              example: 'Content that should not be shared outside the company.',
+            }),
+          color: z
+            .string()
+            .exactOptional()
+            .openapi({
+              description:
+                'The color that is used to display the\nclassification label in a user-interface. Colors are defined by the admin\nor co-admin who created the classification in the Box web app.',
+              example: '#FF0000',
+            }),
+        })
+        .openapi({ description: 'The classification applied to an item.', required: [] })
+        .nullable()
+        .exactOptional()
+        .openapi({ description: 'Details about the classification applied to this file.' }),
+      uploader_display_name: z
+        .string()
+        .openapi({
+          title: 'Uploader display name',
+          example: 'Ellis Wiggins',
+          description:
+            'The display name of the user that uploaded the file. In most cases this is the\nname of the user logged in at the time of the upload.\n\nIf the file was uploaded using a File Request form that requires the user to\nprovide an email address, this field is populated with that email address. If\nan email address was not required in the File Request form, this field is set\nto return a value of `File Request`.\n\nIn all other anonymous cases where no email was provided this field\nwill default to a value of `Someone`.',
+        })
+        .exactOptional(),
+      disposition_at: z.iso
+        .datetime({ offset: true })
+        .nullable()
+        .exactOptional()
+        .openapi({
+          description: 'The retention expiration timestamp for the given file.',
+          example: '2012-12-12T10:53:43-08:00',
+        }),
+      shared_link_permission_options: z
+        .array(z.enum(['can_preview', 'can_download', 'can_edit']))
+        .nullable()
+        .exactOptional()
+        .openapi({
+          description:
+            'A list of the types of roles that user can be invited at\nwhen sharing this file.',
+          example: ['can_preview'],
+        }),
+      is_associated_with_app_item: z
+        .boolean()
+        .exactOptional()
+        .openapi({
+          description:
+            'This field will return true if the file or any ancestor of the file\nis associated with at least one app item. Note that this will return\ntrue even if the context user does not have access to the app item(s)\nassociated with the file.',
+          example: true,
+        }),
+      collections: z
+        .array(CollectionSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'The collections that this file belongs to.\n\nFor more information, see the\n[collections guide](https://developer.box.com/guides/collections).',
+        }),
+      is_download_available: z
+        .boolean()
+        .exactOptional()
+        .openapi({
+          description:
+            "Whether the file's binary content is eligible to be downloaded.\n\nThis is a content-level flag and does not reflect whether the\ncurrent user is authorized to download the file. Use\n`permissions.can_download`, when available, for that.",
+          example: true,
+        }),
+      download_url: z
+        .url()
+        .exactOptional()
+        .openapi({
+          description:
+            "A pre-authorized, expiring URL for directly downloading the file's\ncontent. Requires authentication and is valid only for the current\nsession.\n\nThis field is only returned for files, not folders or web links.",
+          example: 'https://dl.boxcloud.com/d/1/example_token/download',
+        }),
+      authenticated_download_url: z
+        .url()
+        .exactOptional()
+        .openapi({
+          description:
+            'A stable API URL for the file content endpoint,\n`/2.0/files/{id}/content`. Unlike `download_url`, authorization is\nevaluated when the URL is requested with a valid access token.\n\nThis field is only returned for files, not folders or web links.',
+          example: 'https://api.box.com/2.0/files/12345/content',
+        }),
+      allowed_shared_link_access_levels: z
+        .array(
+          z
+            .enum(['open', 'company', 'collaborators'])
+            .openapi({
+              title: 'Shared link access level',
+              description: 'The access level for a shared link.',
+              example: 'open',
+            }),
+        )
+        .exactOptional()
+        .openapi({
+          description:
+            'The shared link access levels the authenticated user is allowed to\nuse when creating or updating a shared link for this file.\n\nThe list depends on item policy and user authorization, so it may be\nnarrower than the levels available to the owner. An empty array means\nno access level is available to this user.',
+          example: ['open'],
+        }),
+    })
+    .openapi({ required: [] }),
+)
+  .openapi({
+    description:
+      'A full representation of a file, as can be returned from any\nfile API endpoints by default.',
+    title: 'File (Full)',
+    'x-box-resource-id': 'file--full',
+    'x-box-tag': 'files',
+    'x-box-variant': 'full',
+  })
+  .openapi('FileFull')
+
+const WebLinkBaseSchema = z
+  .object({
+    id: z
+      .string()
+      .openapi({ description: 'The unique identifier for this web link.', example: '11446498' }),
+    type: z
+      .literal('web_link')
+      .openapi({ description: 'The value will always be `web_link`.', example: 'web_link' }),
+    etag: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The entity tag of this web link. Used with `If-Match`\nheaders.',
+        example: '1',
+      }),
+  })
+  .openapi({
+    description:
+      'Web links are objects that point to URLs. These objects\nare also known as bookmarks within the Box web application.\n\nWeb link objects are treated similarly to file objects,\nthey will also support most actions that apply to regular files.',
+    required: ['id', 'type'],
+    title: 'Web link (Base)',
+    'x-box-resource-id': 'web_link--base',
+    'x-box-tag': 'web_links',
+    'x-box-variant': 'base',
+    'x-box-variants': ['base', 'mini', 'standard'],
+  })
+  .openapi('WebLinkBase')
+
+const WebLinkMiniSchema = WebLinkBaseSchema.and(
+  z
+    .object({
+      url: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description: 'The URL this web link points to.',
+          example: 'https://www.example.com/example/1234',
+        }),
+      sequence_id: z
+        .string()
+        .nullable()
+        .openapi({
+          example: '3',
+          description:
+            'A numeric identifier that represents the most recent user event\nthat has been applied to this item.\n\nThis can be used in combination with the `GET /events`-endpoint\nto filter out user events that would have occurred before this\nidentifier was read.\n\nAn example would be where a Box Drive-like application\nwould fetch an item via the API, and then listen to incoming\nuser events for changes to the item. The application would\nignore any user events where the `sequence_id` in the event\nis smaller than or equal to the `sequence_id` in the originally\nfetched resource.',
+        })
+        .exactOptional(),
+      name: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'The name of the web link.', example: 'My Bookmark' }),
+    })
+    .openapi({ required: [] }),
+)
+  .openapi({
+    description:
+      'Web links are objects that point to URLs. These objects\nare also known as bookmarks within the Box web application.\n\nWeb link objects are treated similarly to file objects,\nthey will also support most actions that apply to regular files.',
+    title: 'Web link (Mini)',
+    'x-box-resource-id': 'web_link--mini',
+    'x-box-tag': 'web_links',
+    'x-box-variant': 'mini',
+  })
+  .openapi('WebLinkMini')
+
+const WebLinkSchema = WebLinkMiniSchema.and(
+  z
+    .object({
+      parent: FolderMiniSchema.exactOptional().openapi({
+        description: 'The parent object the web link belongs to.',
+      }),
+      description: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'The description accompanying the web link. This is\nvisible within the Box web application.',
+          example: 'Example page',
+        }),
+      path_collection: z
+        .object({
+          total_count: z
+            .preprocess(
+              (val) =>
+                typeof val === 'number' && Number.isSafeInteger(val)
+                  ? BigInt(val)
+                  : typeof val === 'string' && /^-?\d+$/.test(val)
+                    ? BigInt(val)
+                    : val,
+              z.int64(),
+            )
+            .openapi({
+              type: 'integer',
+              format: 'int64',
+              description: 'The number of folders in this list.',
+              example: 1,
+            }),
+          entries: z
+            .array(FolderMiniSchema)
+            .openapi({ description: 'The parent folders for this item.' }),
+        })
+        .openapi({
+          title: 'Path collection',
+          description: 'A list of parent folders for an item.',
+          required: ['total_count', 'entries'],
+        })
+        .exactOptional()
+        .openapi({
+          description:
+            'The tree of folders that this web link is contained in,\nstarting at the root.',
+        }),
+      created_at: z.iso
+        .datetime({ offset: true })
+        .exactOptional()
+        .openapi({
+          description: 'When this file was created on Box’s servers.',
+          example: '2012-12-12T10:53:43-08:00',
+        }),
+      modified_at: z.iso
+        .datetime({ offset: true })
+        .exactOptional()
+        .openapi({
+          description: 'When this file was last updated on the Box\nservers.',
+          example: '2012-12-12T10:53:43-08:00',
+        }),
+      trashed_at: z.iso
+        .datetime({ offset: true })
+        .nullable()
+        .exactOptional()
+        .openapi({
+          description: 'When this file was moved to the trash.',
+          example: '2012-12-12T10:53:43-08:00',
+        }),
+      purged_at: z.iso
+        .datetime({ offset: true })
+        .nullable()
+        .exactOptional()
+        .openapi({
+          description: 'When this file will be permanently deleted.',
+          example: '2012-12-12T10:53:43-08:00',
+        }),
+      created_by: UserMiniSchema.exactOptional().openapi({
+        description: 'The user who created this web link.',
+      }),
+      modified_by: UserMiniSchema.exactOptional().openapi({
+        description: 'The user who last modified this web link.',
+      }),
+      owned_by: UserMiniSchema.exactOptional().openapi({
+        description: 'The user who owns this web link.',
+      }),
+      shared_link: z
+        .object({
+          url: z
+            .url()
+            .openapi({
+              description:
+                "The URL that can be used to access the item on Box.\n\nThis URL will display the item in Box's preview UI where the file\ncan be downloaded if allowed.\n\nThis URL will continue to work even when a custom `vanity_url`\nhas been set for this shared link.",
+              example: 'https://www.box.com/s/vspke7y05sb214wjokpk',
+            }),
+          download_url: z
+            .url()
+            .nullable()
+            .exactOptional()
+            .openapi({
+              description:
+                'A URL that can be used to download the file. This URL can be used in\na browser to download the file. This URL includes the file\nextension so that the file will be saved with the right file type.\n\nThis property will be `null` for folders.',
+              example: 'https://www.box.com/shared/static/rh935iit6ewrmw0unyul.jpeg',
+              'x-box-premium-feature': true,
+            }),
+          vanity_url: z
+            .url()
+            .nullable()
+            .exactOptional()
+            .openapi({
+              description:
+                'The "Custom URL" that can also be used to preview the item on Box.  Custom\nURLs can only be created or modified in the Box Web application.',
+              example: 'https://acme.app.box.com/v/my_url/',
+            }),
+          vanity_name: z
+            .string()
+            .nullable()
+            .exactOptional()
+            .openapi({
+              description: 'The custom name of a shared link, as used in the `vanity_url` field.',
+              example: 'my_url',
+            }),
+          access: z
+            .enum(['open', 'company', 'collaborators'])
+            .exactOptional()
+            .openapi({
+              description:
+                'The access level for this shared link.\n\n* `open` - provides access to this item to anyone with this link\n* `company` - only provides access to this item to people the same company\n* `collaborators` - only provides access to this item to people who are\n   collaborators on this item\n\nIf this field is omitted when creating the shared link, the access level\nwill be set to the default access level specified by the enterprise admin.',
+              example: 'open',
+            }),
+          effective_access: z
+            .enum(['open', 'company', 'collaborators'])
+            .openapi({
+              description:
+                'The effective access level for the shared link. This can be a more\nrestrictive access level than the value in the `access` field when the\nenterprise settings restrict the allowed access levels.',
+              example: 'company',
+            }),
+          effective_permission: z
+            .enum(['can_edit', 'can_download', 'can_preview', 'no_access'])
+            .openapi({
+              description:
+                'The effective permissions for this shared link.\nThese result in the more restrictive combination of\nthe share link permissions and the item permissions set\nby the administrator, the owner, and any ancestor item\nsuch as a folder.',
+              example: 'can_download',
+            }),
+          unshared_at: z.iso
+            .datetime({ offset: true })
+            .nullable()
+            .exactOptional()
+            .openapi({
+              description:
+                'The date and time when this link will be unshared. This field can only be\nset by users with paid accounts.',
+              example: '2018-04-13T13:53:23-07:00',
+            }),
+          is_password_enabled: z
+            .boolean()
+            .openapi({
+              description: 'Defines if the shared link requires a password to access the item.',
+              example: true,
+            }),
+          permissions: z
+            .object({
+              can_download: z
+                .boolean()
+                .openapi({
+                  description:
+                    'Defines if the shared link allows for the item to be downloaded. For\nshared links on folders, this also applies to any items in the folder.\n\nThis value can be set to `true` when the effective access level is\nset to `open` or `company`, not `collaborators`.',
+                  example: true,
+                }),
+              can_preview: z
+                .boolean()
+                .openapi({
+                  description:
+                    'Defines if the shared link allows for the item to be previewed.\n\nThis value is always `true`. For shared links on folders this also\napplies to any items in the folder.',
+                  example: true,
+                }),
+              can_edit: z
+                .boolean()
+                .openapi({
+                  description:
+                    'Defines if the shared link allows for the item to be edited.\n\nThis value can only be `true` if `can_download` is also `true` and if\nthe item has a type of `file`.',
+                  example: false,
+                }),
+            })
+            .exactOptional()
+            .openapi({
+              description:
+                'Defines if this link allows a user to preview, edit, and download an item.\nThese permissions refer to the shared link only and\ndo not supersede permissions applied to the item itself.',
+              required: ['can_download', 'can_preview', 'can_edit'],
+            }),
+          download_count: z
+            .int()
+            .openapi({
+              description: 'The number of times this item has been downloaded.',
+              example: 3,
+            }),
+          preview_count: z
+            .int()
+            .openapi({
+              description: 'The number of times this item has been previewed.',
+              example: 3,
+            }),
+          one_time_passcode: z
+            .object({
+              mode: z
+                .string()
+                .openapi({
+                  description:
+                    'The current OTP enforcement mode for the shared link.\n\n* `none` - OTP enforcement is turned off. The shared link is accessible\n  without any one-time-passcode verification.\n* `open` - Any anonymous recipient can request a one-time-passcode to\n  any email address and access the shared link after verifying it.\n  Collaborators and registered Box users access the link without\n  being prompted.\n* `allowlist` - Anonymous recipients can request a one-time-passcode\n  only when they enter an email that matches an entry on the\n  `allowlist`.',
+                  example: 'allowlist',
+                }),
+              allowlist: z
+                .array(SharedLinkOtpAllowlistEntrySchema)
+                .max(1000)
+                .exactOptional()
+                .openapi({
+                  description:
+                    'The list of email and domain entries that are permitted to access the\nshared link when `mode` is `allowlist`. Anonymous users whose\nemail matches an entry can request and verify a one-time-passcode.\n\nBecause the entries carry recipient email addresses and the identity\nof the user who added them, this field is only returned to users\nwith owner, co-owner, or editor access on the item. For viewer\ncollaborators and below the field is omitted.\n\nAn allowlist contains at most 1000 entries, matching the limit\nenforced when setting the allowlist on a shared link.',
+                  example: [
+                    {
+                      type: 'email',
+                      value: 'alice@example.com',
+                      created_at: '2026-05-19T12:00:00Z',
+                      created_by: { id: '11446498', type: 'user' },
+                    },
+                    {
+                      type: 'domain',
+                      value: 'example.com',
+                      created_at: '2026-05-19T12:00:00Z',
+                      created_by: { id: '11446498', type: 'user' },
+                    },
+                  ],
+                }),
+            })
+            .openapi({
+              title: 'Shared link OTP settings',
+              description:
+                'One-time-passcode (OTP) settings for a shared link. When OTP enforcement\nis enabled, anonymous users must verify their identity via a\none-time-passcode emailed to them before the shared link will grant\naccess.\n\nOTP can only be used with shared links that have an `access` level of\n`open`. Password protection and OTP cannot be enabled at the same time.',
+              required: ['mode'],
+            })
+            .openapi({
+              description:
+                'The one-time-passcode (OTP) settings for this shared link.\n\nThis field is always present. For links where OTP does not\napply (for example, shared links whose `access` is not `open`),\nthe object is returned with `mode` set to `none`.',
+            }),
+        })
+        .openapi({
+          title: 'Shared link',
+          description:
+            'Shared links provide direct, read-only access to files or folder on Box.\n\nShared links with open access level allow anyone with the URL\nto access the item, while shared links with company or collaborators access\nlevels can only be accessed by appropriately authenticated Box users.',
+          required: [
+            'url',
+            'accessed',
+            'effective_access',
+            'effective_permission',
+            'is_password_enabled',
+            'download_count',
+            'preview_count',
+            'one_time_passcode',
+          ],
+        })
+        .nullable()
+        .exactOptional()
+        .openapi({
+          description:
+            'The shared link object for this item. Will be\n`null` if no shared link has been created.',
+        }),
+      item_status: z
+        .enum(['active', 'trashed', 'deleted'])
+        .exactOptional()
+        .openapi({
+          description:
+            'Whether this item is deleted or not. Values include `active`,\n`trashed` if the file has been moved to the trash, and `deleted` if\nthe file has been permanently deleted.',
+          example: 'active',
+        }),
+      collections: z
+        .array(CollectionSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'The collections that this web link belongs to.\n\nFor more information, see the\n[collections guide](https://developer.box.com/guides/collections).',
+        }),
+      allowed_shared_link_access_levels: z
+        .array(
+          z
+            .enum(['open', 'company', 'collaborators'])
+            .openapi({
+              title: 'Shared link access level',
+              description: 'The access level for a shared link.',
+              example: 'open',
+            }),
+        )
+        .exactOptional()
+        .openapi({
+          description:
+            'The shared link access levels the authenticated user is allowed to\nuse when creating or updating a shared link for this web link.\n\nThe list depends on item policy and user authorization, so it may be\nnarrower than the levels available to the owner. An empty array means\nno access level is available to this user.',
+          example: ['open'],
+        }),
+    })
+    .openapi({ required: [] }),
+)
+  .openapi({
+    description:
+      'Web links are objects that point to URLs. These objects\nare also known as bookmarks within the Box web application.\n\nWeb link objects are treated similarly to file objects,\nthey will also support most actions that apply to regular files.',
+    title: 'Web link',
+    'x-box-resource-id': 'web_link',
+    'x-box-tag': 'web_links',
+    'x-box-variant': 'standard',
+  })
+  .openapi('WebLink')
+
+const ItemSchema = z
+  .xor([FileFullSchema, FolderMiniSchema, WebLinkSchema])
+  .openapi({ description: 'An item represents a file, folder, or web link.', title: 'Item' })
+  .openapi('Item')
+
+type ItemsType = { limit?: bigint; next_marker?: string | null; prev_marker?: string | null } & {
+  total_count?: bigint
+  limit?: bigint
+  offset?: bigint
+  order?: { by?: string; direction?: 'ASC' | 'DESC' }[]
+} & { entries?: z.infer<typeof ItemSchema>[] }
+
+const ItemsSchema: z.ZodType<ItemsType> = z
+  .object({
+    limit: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'The limit that was used for these entries. This will be the same as the\n`limit` query parameter unless that value exceeded the maximum value\nallowed. The maximum value varies by API.',
+        example: 1000,
+      }),
+    next_marker: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'The marker for the start of the next page of results.',
+        example: 'JV9IRGZmieiBasejOG9yDCRNgd2ymoZIbjsxbJMjIs3kioVii',
+      }),
+    prev_marker: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'The marker for the start of the previous page of results.',
+        example: 'JV9IRGZmieiBasejOG9yDCRNgd2ymoZIbjsxbJMjIs3kioVih',
+      }),
+  })
+  .openapi({
+    description: 'The part of an API response that describes marker\nbased pagination.',
+    required: [],
+  })
+  .and(
+    z
+      .object({
+        total_count: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .exactOptional()
+          .openapi({
+            type: 'integer',
+            format: 'int64',
+            description:
+              'One greater than the offset of the last entry in the entire collection.\nThe total number of entries in the collection may be less than\n`total_count`.\n\nThis field is only returned for calls that use offset-based pagination.\nFor marker-based paginated APIs, this field will be omitted.',
+            example: 5000,
+          }),
+        limit: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .exactOptional()
+          .openapi({
+            type: 'integer',
+            format: 'int64',
+            description:
+              'The limit that was used for these entries. This will be the same as the\n`limit` query parameter unless that value exceeded the maximum value\nallowed. The maximum value varies by API.',
+            example: 1000,
+          }),
+        offset: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .exactOptional()
+          .openapi({
+            type: 'integer',
+            format: 'int64',
+            description:
+              'The 0-based offset of the first entry in this set. This will be the same\nas the `offset` query parameter.\n\nThis field is only returned for calls that use offset-based pagination.\nFor marker-based paginated APIs, this field will be omitted.',
+            example: 2000,
+          }),
+        order: z
+          .array(
+            z
+              .object({
+                by: z
+                  .string()
+                  .exactOptional()
+                  .openapi({ description: 'The field to order by.', example: 'type' }),
+                direction: z
+                  .enum(['ASC', 'DESC'])
+                  .exactOptional()
+                  .openapi({
+                    description: 'The direction to order by, either ascending or descending.',
+                    example: 'ASC',
+                  }),
+              })
+              .openapi({
+                description: 'The order in which a pagination is ordered.',
+                required: [],
+              }),
+          )
+          .exactOptional()
+          .openapi({
+            description:
+              'The order by which items are returned.\n\nThis field is only returned for calls that use offset-based pagination.\nFor marker-based paginated APIs, this field will be omitted.',
+          }),
+      })
+      .openapi({
+        description: 'The part of an API response that describes pagination.',
+        required: [],
+      }),
+  )
+  .and(
+    z
+      .object({
+        entries: z
+          .array(ItemSchema)
+          .exactOptional()
+          .openapi({ description: 'The items in this collection.' }),
+      })
+      .openapi({ required: [] }),
+  )
+  .openapi({
+    description: 'A list of files, folders, and web links in\ntheir mini representation.',
+    title: 'Items',
+    'x-box-resource-id': 'items',
+    'x-box-tag': 'folders',
+  })
+  .openapi('Items')
+
+type FolderType = z.infer<typeof FolderMiniSchema> & {
+  created_at?: string | null
+  modified_at?: string | null
+  description?: string & unknown
+  size?: bigint
+  path_collection?: { total_count: bigint; entries: z.infer<typeof FolderMiniSchema>[] } & unknown &
+    unknown
+  created_by?: z.infer<typeof UserMiniSchema> & unknown & unknown
+  modified_by?: z.infer<typeof UserMiniSchema> & unknown & unknown
+  trashed_at?: string | null
+  purged_at?: string | null
+  content_created_at?: string | null
+  content_modified_at?: string | null
+  owned_by?: z.infer<typeof UserMiniSchema> & unknown & unknown
+  shared_link?:
+    | ({
+        url: string
+        download_url?: string | null
+        vanity_url?: string | null
+        vanity_name?: string | null
+        access?: 'open' | 'company' | 'collaborators'
+        effective_access: 'open' | 'company' | 'collaborators'
+        effective_permission: 'can_edit' | 'can_download' | 'can_preview' | 'no_access'
+        unshared_at?: string | null
+        is_password_enabled: boolean
+        permissions?: { can_download: boolean; can_preview: boolean; can_edit: boolean }
+        download_count: number
+        preview_count: number
+        one_time_passcode: {
+          mode: string
+          allowlist?: z.infer<typeof SharedLinkOtpAllowlistEntrySchema>[]
+        } & unknown
+      } & unknown)
+    | null
+  folder_upload_email?: { access?: 'open' | 'collaborators'; email?: string } | null
+  parent?: (z.infer<typeof FolderMiniSchema> & unknown) | null
+  item_status?: 'active' | 'trashed' | 'deleted'
+  item_collection?: z.infer<typeof ItemsSchema> & unknown & unknown
+}
+
+const FolderSchema: z.ZodType<FolderType> = FolderMiniSchema.and(
+  z
+    .object({
+      created_at: z.iso
+        .datetime({ offset: true })
+        .nullable()
+        .exactOptional()
+        .openapi({
+          description:
+            'The date and time when the folder was created. This value may\nbe `null` for some folders such as the root folder or the trash\nfolder.',
+          example: '2012-12-12T10:53:43-08:00',
+        }),
+      modified_at: z.iso
+        .datetime({ offset: true })
+        .nullable()
+        .exactOptional()
+        .openapi({
+          description:
+            'The date and time when the folder was last updated. This value may\nbe `null` for some folders such as the root folder or the trash\nfolder.',
+          example: '2012-12-12T10:53:43-08:00',
+        }),
+      description: z
+        .string()
+        .max(256)
+        .openapi({
+          description: 'The optional description of this folder.',
+          example: 'Legal contracts for the new ACME deal',
+        })
+        .exactOptional(),
+      size: z
+        .preprocess(
+          (val) =>
+            typeof val === 'number' && Number.isSafeInteger(val)
+              ? BigInt(val)
+              : typeof val === 'string' && /^-?\d+$/.test(val)
+                ? BigInt(val)
+                : val,
+          z.int64(),
+        )
+        .exactOptional()
+        .openapi({
+          type: 'integer',
+          format: 'int64',
+          description:
+            'The folder size in bytes.\n\nThis includes the files in the folder and its subfolders, along with\ntheir previous versions. Files in Trash are not included. After a file\nwith many versions is moved to Trash, the value can take several days\nto reflect the change.\n\nBe careful parsing this integer as its\nvalue can get very large.',
+          example: 629644,
+        }),
+      path_collection: z
+        .object({
+          total_count: z
+            .preprocess(
+              (val) =>
+                typeof val === 'number' && Number.isSafeInteger(val)
+                  ? BigInt(val)
+                  : typeof val === 'string' && /^-?\d+$/.test(val)
+                    ? BigInt(val)
+                    : val,
+              z.int64(),
+            )
+            .openapi({
+              type: 'integer',
+              format: 'int64',
+              description: 'The number of folders in this list.',
+              example: 1,
+            }),
+          entries: z
+            .array(FolderMiniSchema)
+            .openapi({ description: 'The parent folders for this item.' }),
+        })
+        .openapi({
+          title: 'Path collection',
+          description: 'A list of parent folders for an item.',
+          required: ['total_count', 'entries'],
+        })
+        .exactOptional()
+        .openapi({
+          description:
+            'The tree of folders that this folder is contained in,\nstarting at the root.',
+        }),
+      created_by: UserMiniSchema.exactOptional().openapi({
+        description: 'The user who created this folder.',
+      }),
+      modified_by: UserMiniSchema.exactOptional().openapi({
+        description: 'The user who last modified this folder.',
+      }),
+      trashed_at: z.iso
+        .datetime({ offset: true })
+        .nullable()
+        .exactOptional()
+        .openapi({
+          description: 'The time at which this folder was put in the trash.',
+          example: '2012-12-12T10:53:43-08:00',
+        }),
+      purged_at: z.iso
+        .datetime({ offset: true })
+        .nullable()
+        .exactOptional()
+        .openapi({
+          description: 'The time at which this folder is expected to be purged\nfrom the trash.',
+          example: '2012-12-12T10:53:43-08:00',
+        }),
+      content_created_at: z.iso
+        .datetime({ offset: true })
+        .nullable()
+        .exactOptional()
+        .openapi({
+          description: 'The date and time at which this folder was originally\ncreated.',
+          example: '2012-12-12T10:53:43-08:00',
+        }),
+      content_modified_at: z.iso
+        .datetime({ offset: true })
+        .nullable()
+        .exactOptional()
+        .openapi({
+          description: 'The date and time at which this folder was last updated.',
+          example: '2012-12-12T10:53:43-08:00',
+        }),
+      owned_by: UserMiniSchema.exactOptional().openapi({
+        description: 'The user who owns this folder.',
+      }),
+      shared_link: z
+        .object({
+          url: z
+            .url()
+            .openapi({
+              description:
+                "The URL that can be used to access the item on Box.\n\nThis URL will display the item in Box's preview UI where the file\ncan be downloaded if allowed.\n\nThis URL will continue to work even when a custom `vanity_url`\nhas been set for this shared link.",
+              example: 'https://www.box.com/s/vspke7y05sb214wjokpk',
+            }),
+          download_url: z
+            .url()
+            .nullable()
+            .exactOptional()
+            .openapi({
+              description:
+                'A URL that can be used to download the file. This URL can be used in\na browser to download the file. This URL includes the file\nextension so that the file will be saved with the right file type.\n\nThis property will be `null` for folders.',
+              example: 'https://www.box.com/shared/static/rh935iit6ewrmw0unyul.jpeg',
+              'x-box-premium-feature': true,
+            }),
+          vanity_url: z
+            .url()
+            .nullable()
+            .exactOptional()
+            .openapi({
+              description:
+                'The "Custom URL" that can also be used to preview the item on Box.  Custom\nURLs can only be created or modified in the Box Web application.',
+              example: 'https://acme.app.box.com/v/my_url/',
+            }),
+          vanity_name: z
+            .string()
+            .nullable()
+            .exactOptional()
+            .openapi({
+              description: 'The custom name of a shared link, as used in the `vanity_url` field.',
+              example: 'my_url',
+            }),
+          access: z
+            .enum(['open', 'company', 'collaborators'])
+            .exactOptional()
+            .openapi({
+              description:
+                'The access level for this shared link.\n\n* `open` - provides access to this item to anyone with this link\n* `company` - only provides access to this item to people the same company\n* `collaborators` - only provides access to this item to people who are\n   collaborators on this item\n\nIf this field is omitted when creating the shared link, the access level\nwill be set to the default access level specified by the enterprise admin.',
+              example: 'open',
+            }),
+          effective_access: z
+            .enum(['open', 'company', 'collaborators'])
+            .openapi({
+              description:
+                'The effective access level for the shared link. This can be a more\nrestrictive access level than the value in the `access` field when the\nenterprise settings restrict the allowed access levels.',
+              example: 'company',
+            }),
+          effective_permission: z
+            .enum(['can_edit', 'can_download', 'can_preview', 'no_access'])
+            .openapi({
+              description:
+                'The effective permissions for this shared link.\nThese result in the more restrictive combination of\nthe share link permissions and the item permissions set\nby the administrator, the owner, and any ancestor item\nsuch as a folder.',
+              example: 'can_download',
+            }),
+          unshared_at: z.iso
+            .datetime({ offset: true })
+            .nullable()
+            .exactOptional()
+            .openapi({
+              description:
+                'The date and time when this link will be unshared. This field can only be\nset by users with paid accounts.',
+              example: '2018-04-13T13:53:23-07:00',
+            }),
+          is_password_enabled: z
+            .boolean()
+            .openapi({
+              description: 'Defines if the shared link requires a password to access the item.',
+              example: true,
+            }),
+          permissions: z
+            .object({
+              can_download: z
+                .boolean()
+                .openapi({
+                  description:
+                    'Defines if the shared link allows for the item to be downloaded. For\nshared links on folders, this also applies to any items in the folder.\n\nThis value can be set to `true` when the effective access level is\nset to `open` or `company`, not `collaborators`.',
+                  example: true,
+                }),
+              can_preview: z
+                .boolean()
+                .openapi({
+                  description:
+                    'Defines if the shared link allows for the item to be previewed.\n\nThis value is always `true`. For shared links on folders this also\napplies to any items in the folder.',
+                  example: true,
+                }),
+              can_edit: z
+                .boolean()
+                .openapi({
+                  description:
+                    'Defines if the shared link allows for the item to be edited.\n\nThis value can only be `true` if `can_download` is also `true` and if\nthe item has a type of `file`.',
+                  example: false,
+                }),
+            })
+            .exactOptional()
+            .openapi({
+              description:
+                'Defines if this link allows a user to preview, edit, and download an item.\nThese permissions refer to the shared link only and\ndo not supersede permissions applied to the item itself.',
+              required: ['can_download', 'can_preview', 'can_edit'],
+            }),
+          download_count: z
+            .int()
+            .openapi({
+              description: 'The number of times this item has been downloaded.',
+              example: 3,
+            }),
+          preview_count: z
+            .int()
+            .openapi({
+              description: 'The number of times this item has been previewed.',
+              example: 3,
+            }),
+          one_time_passcode: z
+            .object({
+              mode: z
+                .string()
+                .openapi({
+                  description:
+                    'The current OTP enforcement mode for the shared link.\n\n* `none` - OTP enforcement is turned off. The shared link is accessible\n  without any one-time-passcode verification.\n* `open` - Any anonymous recipient can request a one-time-passcode to\n  any email address and access the shared link after verifying it.\n  Collaborators and registered Box users access the link without\n  being prompted.\n* `allowlist` - Anonymous recipients can request a one-time-passcode\n  only when they enter an email that matches an entry on the\n  `allowlist`.',
+                  example: 'allowlist',
+                }),
+              allowlist: z
+                .array(SharedLinkOtpAllowlistEntrySchema)
+                .max(1000)
+                .exactOptional()
+                .openapi({
+                  description:
+                    'The list of email and domain entries that are permitted to access the\nshared link when `mode` is `allowlist`. Anonymous users whose\nemail matches an entry can request and verify a one-time-passcode.\n\nBecause the entries carry recipient email addresses and the identity\nof the user who added them, this field is only returned to users\nwith owner, co-owner, or editor access on the item. For viewer\ncollaborators and below the field is omitted.\n\nAn allowlist contains at most 1000 entries, matching the limit\nenforced when setting the allowlist on a shared link.',
+                  example: [
+                    {
+                      type: 'email',
+                      value: 'alice@example.com',
+                      created_at: '2026-05-19T12:00:00Z',
+                      created_by: { id: '11446498', type: 'user' },
+                    },
+                    {
+                      type: 'domain',
+                      value: 'example.com',
+                      created_at: '2026-05-19T12:00:00Z',
+                      created_by: { id: '11446498', type: 'user' },
+                    },
+                  ],
+                }),
+            })
+            .openapi({
+              title: 'Shared link OTP settings',
+              description:
+                'One-time-passcode (OTP) settings for a shared link. When OTP enforcement\nis enabled, anonymous users must verify their identity via a\none-time-passcode emailed to them before the shared link will grant\naccess.\n\nOTP can only be used with shared links that have an `access` level of\n`open`. Password protection and OTP cannot be enabled at the same time.',
+              required: ['mode'],
+            })
+            .openapi({
+              description:
+                'The one-time-passcode (OTP) settings for this shared link.\n\nThis field is always present. For links where OTP does not\napply (for example, shared links whose `access` is not `open`),\nthe object is returned with `mode` set to `none`.',
+            }),
+        })
+        .openapi({
+          title: 'Shared link',
+          description:
+            'Shared links provide direct, read-only access to files or folder on Box.\n\nShared links with open access level allow anyone with the URL\nto access the item, while shared links with company or collaborators access\nlevels can only be accessed by appropriately authenticated Box users.',
+          required: [
+            'url',
+            'accessed',
+            'effective_access',
+            'effective_permission',
+            'is_password_enabled',
+            'download_count',
+            'preview_count',
+            'one_time_passcode',
+          ],
+        })
+        .nullable()
+        .exactOptional()
+        .openapi({
+          description:
+            'The shared link for this folder. This will be\n`null` if no shared link has been created for this\nfolder.',
+        }),
+      folder_upload_email: z
+        .object({
+          access: z
+            .enum(['open', 'collaborators'])
+            .exactOptional()
+            .openapi({
+              description:
+                'When this parameter has been set, users can email files\nto the email address that has been automatically\ncreated for this folder.\n\nTo create an email address, set this property either when\ncreating or updating the folder.\n\nWhen set to `collaborators`, only emails from registered email\naddresses for collaborators will be accepted. This includes\nany email aliases a user might have registered.\n\nWhen set to `open` it will accept emails from any email\naddress.',
+              example: 'open',
+            }),
+          email: z
+            .email()
+            .exactOptional()
+            .openapi({
+              description: 'The optional upload email address for this folder.',
+              example: 'upload.Contracts.asd7asd@u.box.com',
+            }),
+        })
+        .nullable()
+        .exactOptional()
+        .openapi({
+          description:
+            'The `folder_upload_email` parameter is not `null` if one of the following options is **true**:\n\n  * The **Allow uploads to this folder via email** and the **Only allow email uploads from collaborators in this folder** are [enabled for a folder in the Admin Console](https://support.box.com/hc/en-us/articles/360043697534-Upload-to-Box-Through-Email), and the user has at least **Upload** permissions granted.\n\n  * The **Allow uploads to this folder via email** setting is enabled for a folder in the Admin Console, and the **Only allow email uploads from collaborators in this folder** setting is deactivated (unchecked).\n\nIf the conditions are not met, the parameter will have the following value: `folder_upload_email: null`.',
+          required: [],
+        }),
+      parent: FolderMiniSchema.nullable()
+        .exactOptional()
+        .openapi({
+          description:
+            'The optional folder that this folder is located within.\n\nThis value may be `null` for some folders such as the\nroot folder or the trash folder.',
+        }),
+      item_status: z
+        .enum(['active', 'trashed', 'deleted'])
+        .exactOptional()
+        .openapi({
+          description:
+            'Defines if this item has been deleted or not.\n\n* `active` when the item has is not in the trash\n* `trashed` when the item has been moved to the trash but not deleted\n* `deleted` when the item has been permanently deleted.',
+          example: 'active',
+        }),
+      item_collection: ItemsSchema.exactOptional().openapi({
+        description:
+          "A page of the items that are in the folder.\n\nThis field can only be requested when querying a folder's\ninformation, not when querying a folder's items.",
+      }),
+    })
+    .openapi({ required: [] }),
+)
+  .openapi({
+    description:
+      'A standard representation of a folder, as returned from any\nfolder API endpoints by default.',
+    title: 'Folder',
+    'x-box-resource-id': 'folder',
+    'x-box-tag': 'folders',
+    'x-box-variant': 'standard',
+  })
+  .openapi('Folder')
+
+const GenericSourceSchema = z
+  .record(
+    z.string(),
+    z
+      .any()
+      .openapi({
+        description:
+          'A definition of a generic\nevent source object. The set of\nparameters depends on the\nobject type. For example, a Box Shield\nevent source would have the following\nset of parameters:\n```yaml\n{\n"barrier_id": 123456,\n"barrier_status": "ENABLED",\n"barrier_segments": [\n  {\n      "name": "8",\n      "member_count": 1\n    },\n  {\n      "name": "9",\n      "member_count": 1\n           }\n       ]\n}   \n```.',
+      }),
+  )
+  .openapi({
+    description: 'A generic event source type.',
+    title: 'Generic source',
+    'x-box-resource-id': 'generic_source',
+  })
+  .openapi('GenericSource')
+
+const GroupBaseSchema = z
+  .object({
+    id: z
+      .string()
+      .openapi({ description: 'The unique identifier for this object.', example: '11446498' }),
+    type: z
+      .literal('group')
+      .openapi({ description: 'The value will always be `group`.', example: 'group' }),
+  })
+  .openapi({
+    description: 'A base representation of a group.',
+    required: ['id', 'type'],
+    title: 'Group (Base)',
+    'x-box-resource-id': 'group--base',
+    'x-box-tag': 'groups',
+    'x-box-variant': 'base',
+    'x-box-variants': ['base', 'mini', 'standard', 'full'],
+  })
+  .openapi('GroupBase')
+
+const GroupMiniSchema = GroupBaseSchema.and(
+  z
+    .object({
+      name: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'The name of the group.', example: 'Support' }),
+      group_type: z
+        .enum(['managed_group', 'all_users_group'])
+        .exactOptional()
+        .openapi({ description: 'The type of the group.', example: 'managed_group' }),
+    })
+    .openapi({ required: [] }),
+)
+  .openapi({
+    description: 'Mini representation of a group, including id and name of\ngroup.',
+    title: 'Group (Mini)',
+    'x-box-resource-id': 'group--mini',
+    'x-box-tag': 'groups',
+    'x-box-variant': 'mini',
+  })
+  .openapi('GroupMini')
+
+const AppItemEventSourceSchema = z
+  .object({
+    id: z.string().openapi({ description: 'The id of the `AppItem`.', example: '6374669741' }),
+    type: z
+      .literal('app_item')
+      .openapi({
+        description: 'The type of the source that this event represents. Can only be `app_item`.',
+        example: 'app_item',
+      }),
+    app_item_type: z
+      .string()
+      .openapi({ description: 'The type of the `AppItem`.', example: 'hubs' }),
+    user: UserMiniSchema.exactOptional().openapi({
+      description: 'The user that triggered the event.',
+    }),
+    group: GroupMiniSchema.exactOptional().openapi({
+      description: 'The group that triggered the event.',
+    }),
+  })
+  .openapi({
+    description: 'The AppItem that triggered an event in the event stream.',
+    required: ['id', 'type', 'app_item_type'],
+    title: 'AppItem event source',
+    'x-box-resource-id': 'app_item_event_source',
+  })
+  .openapi('AppItemEventSource')
+
+type EventSourceResourceType =
+  | z.infer<typeof UserSchema>
+  | z.infer<typeof EventSourceSchema>
+  | z.infer<typeof FileSchema>
+  | z.infer<typeof FolderSchema>
+  | z.infer<typeof GenericSourceSchema>
+  | z.infer<typeof AppItemEventSourceSchema>
+
+const EventSourceResourceSchema: z.ZodType<EventSourceResourceType> = z
+  .xor([
+    UserSchema,
+    EventSourceSchema,
+    FileSchema,
+    FolderSchema,
+    GenericSourceSchema,
+    AppItemEventSourceSchema,
+  ])
+  .openapi({ description: 'The resource that triggered an event.', title: 'Event source resource' })
+  .openapi('EventSourceResource')
+
+type EventType = {
+  type?: string
+  created_at?: string
+  recorded_at?: string
+  event_id?: string
+  created_by?: z.infer<typeof UserMiniSchema> & unknown
+  event_type?:
+    | 'ACCESS_GRANTED'
+    | 'ACCESS_REVOKED'
+    | 'ADD_DEVICE_ASSOCIATION'
+    | 'ADD_LOGIN_ACTIVITY_DEVICE'
+    | 'ADMIN_LOGIN'
+    | 'ADVANCED_FOLDER_SETTINGS_UPDATE'
+    | 'AI_SECURITY_DETECTION'
+    | 'ANNOTATIONV2_CREATE'
+    | 'ANNOTATIONV2_DELETE'
+    | 'ANNOTATIONV2_EDIT'
+    | 'APPLICATION_CREATED'
+    | 'APPLICATION_PUBLIC_KEY_ADDED'
+    | 'APPLICATION_PUBLIC_KEY_DELETED'
+    | 'BOX_AI_USER_FAILED_REQUEST'
+    | 'BOX_AI_USER_REQUEST'
+    | 'CHANGE_ADMIN_ROLE'
+    | 'CHANGE_FOLDER_PERMISSION'
+    | 'COLLABORATION_ACCEPT'
+    | 'COLLABORATION_EXPIRATION'
+    | 'COLLABORATION_INVITE'
+    | 'COLLABORATION_REMOVE'
+    | 'COLLABORATION_ROLE_CHANGE'
+    | 'COLLAB_ADD_COLLABORATOR'
+    | 'COLLAB_INVITE_COLLABORATOR'
+    | 'COLLAB_REMOVE_COLLABORATOR'
+    | 'COLLAB_ROLE_CHANGE'
+    | 'COLLECTION_CREATE'
+    | 'COLLECTION_DELETE'
+    | 'COLLECTION_ITEM_CREATE'
+    | 'COLLECTION_ITEM_DELETE'
+    | 'COLLECTION_ITEM_UPDATE'
+    | 'COLLECTION_UPDATE'
+    | 'COMMENT_CREATE'
+    | 'COMMENT_DELETE'
+    | 'COMMENT_EDIT'
+    | 'CONTENT_ACCESS'
+    | 'CONTENT_RECOVERY_REPORT_CREATE'
+    | 'CONTENT_RECOVERY_REPORT_DELETE'
+    | 'CONTENT_RECOVERY_REPORT_INITIATE'
+    | 'CONTENT_WORKFLOW_ABNORMAL_DOWNLOAD_ACTIVITY'
+    | 'CONTENT_WORKFLOW_AUTOMATION_ADD'
+    | 'CONTENT_WORKFLOW_AUTOMATION_DELETE'
+    | 'CONTENT_WORKFLOW_POLICY_ADD'
+    | 'CONTENT_WORKFLOW_SHARING_POLICY_VIOLATION'
+    | 'CONTENT_WORKFLOW_UPLOAD_POLICY_VIOLATION'
+    | 'COPY'
+    | 'DATA_RETENTION_CREATE_RETENTION'
+    | 'DATA_RETENTION_REMOVE_RETENTION'
+    | 'DELETE'
+    | 'DELETE_USER'
+    | 'DEVICE_TRUST_CHECK_FAILED'
+    | 'DISABLE_MULTI_FACTOR_AUTH'
+    | 'DOWNLOAD'
+    | 'EDIT'
+    | 'EDIT_USER'
+    | 'EDR_CROWDSTRIKE_ACCESS_ALLOWED_NO_CROWDSTRIKE_DEVICE'
+    | 'EDR_CROWDSTRIKE_ACCESS_REVOKED'
+    | 'EDR_CROWDSTRIKE_BOX_TOOLS_OUTDATED'
+    | 'EDR_CROWDSTRIKE_DEVICE_DETECTED'
+    | 'EDR_CROWDSTRIKE_DRIVE_OUTDATED'
+    | 'EDR_CROWDSTRIKE_NO_BOX_TOOLS'
+    | 'EMAIL_ALIAS_CONFIRM'
+    | 'EMAIL_ALIAS_PRIMARY'
+    | 'EMAIL_ALIAS_REMOVE'
+    | 'EMAIL_UPLOAD_DISABLED'
+    | 'EMAIL_UPLOAD_ENABLED'
+    | 'ENABLE_MULTI_FACTOR_AUTH'
+    | 'ENABLE_TWO_FACTOR_AUTH'
+    | 'ENTERPRISE_APP_AUTHORIZATION_UPDATE'
+    | 'EXTERNAL_COLLAB_SECURITY_SETTINGS'
+    | 'FAILED_LOGIN'
+    | 'FAVORITE'
+    | 'FILE_MARKED_MALICIOUS'
+    | 'FILE_REQUEST_CREATE'
+    | 'FILE_REQUEST_DELETE'
+    | 'FILE_REQUEST_UPDATE'
+    | 'FILE_VERSION_RESTORE'
+    | 'FILE_WATERMARKED_DOWNLOAD'
+    | 'GROUP_ADD_ITEM'
+    | 'GROUP_ADD_USER'
+    | 'GROUP_ADMIN_CREATED'
+    | 'GROUP_ADMIN_DELETED'
+    | 'GROUP_ADMIN_PERMISSIONS_UPDATED'
+    | 'GROUP_CREATION'
+    | 'GROUP_DELETION'
+    | 'GROUP_EDITED'
+    | 'GROUP_REMOVE_ITEM'
+    | 'GROUP_REMOVE_USER'
+    | 'ILLEGAL_ITEM_OWNERSHIP_TRANSFER_BY_USER'
+    | 'ITEM_ASSOCIATION_CREATED'
+    | 'ITEM_ASSOCIATION_DELETED'
+    | 'ITEM_ASSOCIATION_UPDATED'
+    | 'ITEM_COPY'
+    | 'ITEM_CREATE'
+    | 'ITEM_DOWNLOAD'
+    | 'ITEM_EMAIL_SEND'
+    | 'ITEM_MAKE_CURRENT_VERSION'
+    | 'ITEM_MODIFY'
+    | 'ITEM_MOVE'
+    | 'ITEM_OPEN'
+    | 'ITEM_PREVIEW'
+    | 'ITEM_RENAME'
+    | 'ITEM_SHARED'
+    | 'ITEM_SHARED_CREATE'
+    | 'ITEM_SHARED_UNSHARE'
+    | 'ITEM_SHARED_UPDATE'
+    | 'ITEM_SYNC'
+    | 'ITEM_TRASH'
+    | 'ITEM_UNDELETE_VIA_TRASH'
+    | 'ITEM_UNSYNC'
+    | 'ITEM_UPLOAD'
+    | 'LEGAL_HOLD_ASSIGNMENT_CREATE'
+    | 'LEGAL_HOLD_ASSIGNMENT_DELETE'
+    | 'LEGAL_HOLD_POLICY_CREATE'
+    | 'LEGAL_HOLD_POLICY_DELETE'
+    | 'LEGAL_HOLD_POLICY_UPDATE'
+    | 'LOCK'
+    | 'LOCK_CREATE'
+    | 'LOCK_DESTROY'
+    | 'LOGIN'
+    | 'MASTER_INVITE_ACCEPT'
+    | 'MASTER_INVITE_REJECT'
+    | 'METADATA_CASCADE_POLICY_APPLY'
+    | 'METADATA_CASCADE_POLICY_CREATE'
+    | 'METADATA_INSTANCE_COPY'
+    | 'METADATA_INSTANCE_CREATE'
+    | 'METADATA_INSTANCE_DELETE'
+    | 'METADATA_INSTANCE_UPDATE'
+    | 'METADATA_TEMPLATE_CREATE'
+    | 'METADATA_TEMPLATE_DELETE'
+    | 'METADATA_TEMPLATE_UPDATE'
+    | 'MOVE'
+    | 'NEW_USER'
+    | 'OAUTH2_ACCESS_TOKEN_REVOKE'
+    | 'OAUTH2_REFRESH_TOKEN_REVOKE'
+    | 'PREVIEW'
+    | 'REMOVE_DEVICE_ASSOCIATION'
+    | 'REMOVE_LOGIN_ACTIVITY_DEVICE'
+    | 'RENAME'
+    | 'RETENTION_POLICY_ASSIGNMENT_ADD'
+    | 'SHARE'
+    | 'SHARED_LINK_ONE_TIME_PASSCODE_ACCESS'
+    | 'SHARED_LINK_ONE_TIME_PASSCODE_CHALLENGE'
+    | 'SHARED_LINK_REDIRECT_OUT_OF_SHARED_CONTEXT'
+    | 'SHARED_LINK_SEND'
+    | 'SHARE_EXPIRATION'
+    | 'SHIELD_ACCESS_POLICY_CREATED'
+    | 'SHIELD_ACCESS_POLICY_DELETED'
+    | 'SHIELD_ACCESS_POLICY_UPDATED'
+    | 'SHIELD_ALERT'
+    | 'SHIELD_DOWNLOAD_BLOCKED'
+    | 'SHIELD_EXTERNAL_COLLAB_ACCESS_BLOCKED'
+    | 'SHIELD_EXTERNAL_COLLAB_ACCESS_BLOCKED_MISSING_JUSTIFICATION'
+    | 'SHIELD_EXTERNAL_COLLAB_ACCESS_JUSTIFIED'
+    | 'SHIELD_EXTERNAL_COLLAB_INVITE_BLOCKED'
+    | 'SHIELD_EXTERNAL_COLLAB_INVITE_BLOCKED_MISSING_JUSTIFICATION'
+    | 'SHIELD_EXTERNAL_COLLAB_INVITE_JUSTIFIED'
+    | 'SHIELD_INFORMATION_BARRIER_COLLAB_BLOCKED'
+    | 'SHIELD_INFORMATION_BARRIER_DISABLED'
+    | 'SHIELD_INFORMATION_BARRIER_ENABLED'
+    | 'SHIELD_INFORMATION_BARRIER_GROUP_ADD_USER_BLOCKED'
+    | 'SHIELD_INFORMATION_BARRIER_ITEM_COPY_BLOCKED'
+    | 'SHIELD_INFORMATION_BARRIER_ITEM_MOVE_BLOCKED'
+    | 'SHIELD_INFORMATION_BARRIER_ITEM_OWNER_TRANSFER_BLOCKED'
+    | 'SHIELD_INFORMATION_BARRIER_PENDING'
+    | 'SHIELD_INFORMATION_BARRIER_SHARED_ITEM_ACCESS_BLOCKED'
+    | 'SHIELD_JUSTIFICATION_APPROVAL'
+    | 'SHIELD_PREVIEW_BLOCKED'
+    | 'SHIELD_SHARED_LINK_ACCESS_BLOCKED'
+    | 'SHIELD_SHARED_LINK_STATUS_RESTRICTED_ON_CREATE'
+    | 'SHIELD_SHARED_LINK_STATUS_RESTRICTED_ON_UPDATE'
+    | 'SIGN_DOCUMENT_ASSIGNED'
+    | 'SIGN_DOCUMENT_CANCELLED'
+    | 'SIGN_DOCUMENT_COMPLETED'
+    | 'SIGN_DOCUMENT_CONVERTED'
+    | 'SIGN_DOCUMENT_CREATED'
+    | 'SIGN_DOCUMENT_DECLINED'
+    | 'SIGN_DOCUMENT_EXPIRED'
+    | 'SIGN_DOCUMENT_SIGNED'
+    | 'SIGN_DOCUMENT_VIEWED_BY_SIGNED'
+    | 'SIGN_DOCUMENT_VIEWED_BY_SIGNER'
+    | 'SIGNER_DOWNLOADED'
+    | 'SIGNER_FORWARDED'
+    | 'STORAGE_EXPIRATION'
+    | 'TAG_ITEM_CREATE'
+    | 'TASK_ASSIGNMENT_CREATE'
+    | 'TASK_ASSIGNMENT_DELETE'
+    | 'TASK_ASSIGNMENT_UPDATE'
+    | 'TASK_CREATE'
+    | 'TASK_UPDATE'
+    | 'TERMS_OF_SERVICE_ACCEPT'
+    | 'TERMS_OF_SERVICE_REJECT'
+    | 'UNDELETE'
+    | 'UNFAVORITE'
+    | 'UNLOCK'
+    | 'UNSHARE'
+    | 'UPDATE_COLLABORATION_EXPIRATION'
+    | 'UPDATE_SHARE_EXPIRATION'
+    | 'UPLOAD'
+    | 'USER_AUTHENTICATE_OAUTH2_ACCESS_TOKEN_CREATE'
+    | 'WATERMARK_LABEL_CREATE'
+    | 'WATERMARK_LABEL_DELETE'
+    | 'WORKFLOW_AUTOMATION_CREATE'
+    | 'WORKFLOW_AUTOMATION_DELETE'
+    | ('WORKFLOW_AUTOMATION_UPDATE' & unknown)
+  session_id?: string
+  source?: z.infer<typeof EventSourceResourceSchema> & unknown
+  additional_details?: { [key: string]: unknown }
+}
+
+const EventSchema: z.ZodType<EventType> = z
+  .object({
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The value will always be `event`.', example: 'event' }),
+    created_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'When the event object was created.',
+        example: '2022-12-12T10:53:43-08:00',
+      }),
+    recorded_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'When the event object was recorded in database.',
+        example: '2022-12-12T10:54:43-08:00',
+      }),
+    event_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The ID of the event object. You can use this to detect duplicate events.',
+        example: 'f82c3ba03e41f7e8a7608363cc6c0390183c3f83',
+      }),
+    created_by: UserMiniSchema.exactOptional().openapi({
+      description:
+        'The user that performed the action represented by the event.\nSome events may be performed by users not logged into Box.\nIn that case, not all attributes of the object are populated and the\nevent is attributed to a unknown user (`user_id = 2`).',
+    }),
+    event_type: z
+      .enum([
+        'ACCESS_GRANTED',
+        'ACCESS_REVOKED',
+        'ADD_DEVICE_ASSOCIATION',
+        'ADD_LOGIN_ACTIVITY_DEVICE',
+        'ADMIN_LOGIN',
+        'ADVANCED_FOLDER_SETTINGS_UPDATE',
+        'AI_SECURITY_DETECTION',
+        'ANNOTATIONV2_CREATE',
+        'ANNOTATIONV2_DELETE',
+        'ANNOTATIONV2_EDIT',
+        'APPLICATION_CREATED',
+        'APPLICATION_PUBLIC_KEY_ADDED',
+        'APPLICATION_PUBLIC_KEY_DELETED',
+        'BOX_AI_USER_FAILED_REQUEST',
+        'BOX_AI_USER_REQUEST',
+        'CHANGE_ADMIN_ROLE',
+        'CHANGE_FOLDER_PERMISSION',
+        'COLLABORATION_ACCEPT',
+        'COLLABORATION_EXPIRATION',
+        'COLLABORATION_INVITE',
+        'COLLABORATION_REMOVE',
+        'COLLABORATION_ROLE_CHANGE',
+        'COLLAB_ADD_COLLABORATOR',
+        'COLLAB_INVITE_COLLABORATOR',
+        'COLLAB_REMOVE_COLLABORATOR',
+        'COLLAB_ROLE_CHANGE',
+        'COLLECTION_CREATE',
+        'COLLECTION_DELETE',
+        'COLLECTION_ITEM_CREATE',
+        'COLLECTION_ITEM_DELETE',
+        'COLLECTION_ITEM_UPDATE',
+        'COLLECTION_UPDATE',
+        'COMMENT_CREATE',
+        'COMMENT_DELETE',
+        'COMMENT_EDIT',
+        'CONTENT_ACCESS',
+        'CONTENT_RECOVERY_REPORT_CREATE',
+        'CONTENT_RECOVERY_REPORT_DELETE',
+        'CONTENT_RECOVERY_REPORT_INITIATE',
+        'CONTENT_WORKFLOW_ABNORMAL_DOWNLOAD_ACTIVITY',
+        'CONTENT_WORKFLOW_AUTOMATION_ADD',
+        'CONTENT_WORKFLOW_AUTOMATION_DELETE',
+        'CONTENT_WORKFLOW_POLICY_ADD',
+        'CONTENT_WORKFLOW_SHARING_POLICY_VIOLATION',
+        'CONTENT_WORKFLOW_UPLOAD_POLICY_VIOLATION',
+        'COPY',
+        'DATA_RETENTION_CREATE_RETENTION',
+        'DATA_RETENTION_REMOVE_RETENTION',
+        'DELETE',
+        'DELETE_USER',
+        'DEVICE_TRUST_CHECK_FAILED',
+        'DISABLE_MULTI_FACTOR_AUTH',
+        'DOWNLOAD',
+        'EDIT',
+        'EDIT_USER',
+        'EDR_CROWDSTRIKE_ACCESS_ALLOWED_NO_CROWDSTRIKE_DEVICE',
+        'EDR_CROWDSTRIKE_ACCESS_REVOKED',
+        'EDR_CROWDSTRIKE_BOX_TOOLS_OUTDATED',
+        'EDR_CROWDSTRIKE_DEVICE_DETECTED',
+        'EDR_CROWDSTRIKE_DRIVE_OUTDATED',
+        'EDR_CROWDSTRIKE_NO_BOX_TOOLS',
+        'EMAIL_ALIAS_CONFIRM',
+        'EMAIL_ALIAS_PRIMARY',
+        'EMAIL_ALIAS_REMOVE',
+        'EMAIL_UPLOAD_DISABLED',
+        'EMAIL_UPLOAD_ENABLED',
+        'ENABLE_MULTI_FACTOR_AUTH',
+        'ENABLE_TWO_FACTOR_AUTH',
+        'ENTERPRISE_APP_AUTHORIZATION_UPDATE',
+        'EXTERNAL_COLLAB_SECURITY_SETTINGS',
+        'FAILED_LOGIN',
+        'FAVORITE',
+        'FILE_MARKED_MALICIOUS',
+        'FILE_REQUEST_CREATE',
+        'FILE_REQUEST_DELETE',
+        'FILE_REQUEST_UPDATE',
+        'FILE_VERSION_RESTORE',
+        'FILE_WATERMARKED_DOWNLOAD',
+        'GROUP_ADD_ITEM',
+        'GROUP_ADD_USER',
+        'GROUP_ADMIN_CREATED',
+        'GROUP_ADMIN_DELETED',
+        'GROUP_ADMIN_PERMISSIONS_UPDATED',
+        'GROUP_CREATION',
+        'GROUP_DELETION',
+        'GROUP_EDITED',
+        'GROUP_REMOVE_ITEM',
+        'GROUP_REMOVE_USER',
+        'ILLEGAL_ITEM_OWNERSHIP_TRANSFER_BY_USER',
+        'ITEM_ASSOCIATION_CREATED',
+        'ITEM_ASSOCIATION_DELETED',
+        'ITEM_ASSOCIATION_UPDATED',
+        'ITEM_COPY',
+        'ITEM_CREATE',
+        'ITEM_DOWNLOAD',
+        'ITEM_EMAIL_SEND',
+        'ITEM_MAKE_CURRENT_VERSION',
+        'ITEM_MODIFY',
+        'ITEM_MOVE',
+        'ITEM_OPEN',
+        'ITEM_PREVIEW',
+        'ITEM_RENAME',
+        'ITEM_SHARED',
+        'ITEM_SHARED_CREATE',
+        'ITEM_SHARED_UNSHARE',
+        'ITEM_SHARED_UPDATE',
+        'ITEM_SYNC',
+        'ITEM_TRASH',
+        'ITEM_UNDELETE_VIA_TRASH',
+        'ITEM_UNSYNC',
+        'ITEM_UPLOAD',
+        'LEGAL_HOLD_ASSIGNMENT_CREATE',
+        'LEGAL_HOLD_ASSIGNMENT_DELETE',
+        'LEGAL_HOLD_POLICY_CREATE',
+        'LEGAL_HOLD_POLICY_DELETE',
+        'LEGAL_HOLD_POLICY_UPDATE',
+        'LOCK',
+        'LOCK_CREATE',
+        'LOCK_DESTROY',
+        'LOGIN',
+        'MASTER_INVITE_ACCEPT',
+        'MASTER_INVITE_REJECT',
+        'METADATA_CASCADE_POLICY_APPLY',
+        'METADATA_CASCADE_POLICY_CREATE',
+        'METADATA_INSTANCE_COPY',
+        'METADATA_INSTANCE_CREATE',
+        'METADATA_INSTANCE_DELETE',
+        'METADATA_INSTANCE_UPDATE',
+        'METADATA_TEMPLATE_CREATE',
+        'METADATA_TEMPLATE_DELETE',
+        'METADATA_TEMPLATE_UPDATE',
+        'MOVE',
+        'NEW_USER',
+        'OAUTH2_ACCESS_TOKEN_REVOKE',
+        'OAUTH2_REFRESH_TOKEN_REVOKE',
+        'PREVIEW',
+        'REMOVE_DEVICE_ASSOCIATION',
+        'REMOVE_LOGIN_ACTIVITY_DEVICE',
+        'RENAME',
+        'RETENTION_POLICY_ASSIGNMENT_ADD',
+        'SHARE',
+        'SHARED_LINK_ONE_TIME_PASSCODE_ACCESS',
+        'SHARED_LINK_ONE_TIME_PASSCODE_CHALLENGE',
+        'SHARED_LINK_REDIRECT_OUT_OF_SHARED_CONTEXT',
+        'SHARED_LINK_SEND',
+        'SHARE_EXPIRATION',
+        'SHIELD_ACCESS_POLICY_CREATED',
+        'SHIELD_ACCESS_POLICY_DELETED',
+        'SHIELD_ACCESS_POLICY_UPDATED',
+        'SHIELD_ALERT',
+        'SHIELD_DOWNLOAD_BLOCKED',
+        'SHIELD_EXTERNAL_COLLAB_ACCESS_BLOCKED',
+        'SHIELD_EXTERNAL_COLLAB_ACCESS_BLOCKED_MISSING_JUSTIFICATION',
+        'SHIELD_EXTERNAL_COLLAB_ACCESS_JUSTIFIED',
+        'SHIELD_EXTERNAL_COLLAB_INVITE_BLOCKED',
+        'SHIELD_EXTERNAL_COLLAB_INVITE_BLOCKED_MISSING_JUSTIFICATION',
+        'SHIELD_EXTERNAL_COLLAB_INVITE_JUSTIFIED',
+        'SHIELD_INFORMATION_BARRIER_COLLAB_BLOCKED',
+        'SHIELD_INFORMATION_BARRIER_DISABLED',
+        'SHIELD_INFORMATION_BARRIER_ENABLED',
+        'SHIELD_INFORMATION_BARRIER_GROUP_ADD_USER_BLOCKED',
+        'SHIELD_INFORMATION_BARRIER_ITEM_COPY_BLOCKED',
+        'SHIELD_INFORMATION_BARRIER_ITEM_MOVE_BLOCKED',
+        'SHIELD_INFORMATION_BARRIER_ITEM_OWNER_TRANSFER_BLOCKED',
+        'SHIELD_INFORMATION_BARRIER_PENDING',
+        'SHIELD_INFORMATION_BARRIER_SHARED_ITEM_ACCESS_BLOCKED',
+        'SHIELD_JUSTIFICATION_APPROVAL',
+        'SHIELD_PREVIEW_BLOCKED',
+        'SHIELD_SHARED_LINK_ACCESS_BLOCKED',
+        'SHIELD_SHARED_LINK_STATUS_RESTRICTED_ON_CREATE',
+        'SHIELD_SHARED_LINK_STATUS_RESTRICTED_ON_UPDATE',
+        'SIGN_DOCUMENT_ASSIGNED',
+        'SIGN_DOCUMENT_CANCELLED',
+        'SIGN_DOCUMENT_COMPLETED',
+        'SIGN_DOCUMENT_CONVERTED',
+        'SIGN_DOCUMENT_CREATED',
+        'SIGN_DOCUMENT_DECLINED',
+        'SIGN_DOCUMENT_EXPIRED',
+        'SIGN_DOCUMENT_SIGNED',
+        'SIGN_DOCUMENT_VIEWED_BY_SIGNED',
+        'SIGN_DOCUMENT_VIEWED_BY_SIGNER',
+        'SIGNER_DOWNLOADED',
+        'SIGNER_FORWARDED',
+        'STORAGE_EXPIRATION',
+        'TAG_ITEM_CREATE',
+        'TASK_ASSIGNMENT_CREATE',
+        'TASK_ASSIGNMENT_DELETE',
+        'TASK_ASSIGNMENT_UPDATE',
+        'TASK_CREATE',
+        'TASK_UPDATE',
+        'TERMS_OF_SERVICE_ACCEPT',
+        'TERMS_OF_SERVICE_REJECT',
+        'UNDELETE',
+        'UNFAVORITE',
+        'UNLOCK',
+        'UNSHARE',
+        'UPDATE_COLLABORATION_EXPIRATION',
+        'UPDATE_SHARE_EXPIRATION',
+        'UPLOAD',
+        'USER_AUTHENTICATE_OAUTH2_ACCESS_TOKEN_CREATE',
+        'WATERMARK_LABEL_CREATE',
+        'WATERMARK_LABEL_DELETE',
+        'WORKFLOW_AUTOMATION_CREATE',
+        'WORKFLOW_AUTOMATION_DELETE',
+        'WORKFLOW_AUTOMATION_UPDATE',
+      ])
+      .openapi({
+        title: 'Event Type',
+        example: 'FILE_MARKED_MALICIOUS',
+        description: 'An event type that can trigger an event.',
+      })
+      .exactOptional()
+      .openapi({ description: 'The event type that triggered this event.' }),
+    session_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The session of the user that performed the action. Not all events will\npopulate this attribute.',
+        example: '70090280850c8d2a1933c1',
+      }),
+    source: EventSourceResourceSchema.exactOptional().openapi({
+      description:
+        'The resource that triggered this event. For more information,\ncheck out the guide on event triggers.',
+    }),
+    additional_details: z
+      .record(z.string(), z.any())
+      .exactOptional()
+      .openapi({
+        description:
+          'This object provides additional information about the event if available.\n\nThis can include how a user performed an event as well as additional\ninformation to correlate an event to external KeySafe logs. Not all events\nhave an `additional_details` object.  This object is only available in the\nEnterprise Events.',
+        example: { key: 'value' },
+      }),
+  })
+  .openapi({
+    description: 'The description of an event that happened within Box.',
+    title: 'Event',
+    'x-box-resource-id': 'event',
+    'x-box-tag': 'events',
+    required: [],
+  })
+  .openapi('Event')
+
+type EventsType = {
+  chunk_size?: bigint
+  next_stream_position?: string | bigint
+  entries?: z.infer<typeof EventSchema>[]
+}
+
+type FilesType = { total_count?: bigint; entries?: z.infer<typeof FileFullSchema>[] }
+
+type FolderFullType = z.infer<typeof FolderSchema> & {
+  sync_state?: 'synced' | 'not_synced' | 'partially_synced'
+  has_collaborations?: boolean
+  permissions?: ({
+    can_delete: boolean
+    can_download: boolean
+    can_invite_collaborator: boolean
+    can_rename: boolean
+    can_set_share_access: boolean
+    can_share: boolean
+  } & { can_upload?: boolean; can_apply_watermark?: boolean }) &
+    unknown &
+    unknown
+  tags?: string[] & unknown
+  can_non_owners_invite?: boolean & unknown
+  is_externally_owned?: boolean
+  metadata?: { [key: string]: { [key: string]: z.infer<typeof MetadataFullSchema> } } & unknown
+  is_collaboration_restricted_to_enterprise?: boolean & unknown
+  allowed_shared_link_access_levels?: ('open' | 'company' | 'collaborators')[]
+  allowed_invitee_roles?: (
+    | 'editor'
+    | 'viewer'
+    | 'previewer'
+    | 'uploader'
+    | 'previewer uploader'
+    | 'viewer uploader'
+    | 'co-owner'
+  )[]
+  watermark_info?: {
+    is_watermarked?: boolean
+    is_watermark_inherited?: boolean
+    is_watermarked_by_access_policy?: boolean
+  } & unknown &
+    unknown
+  is_accessible_via_shared_link?: boolean
+  can_non_owners_view_collaborators?: boolean
+  classification?: { name?: string; definition?: string; color?: string } & unknown &
+    (unknown | null)
+  is_associated_with_app_item?: boolean
+  collections?: z.infer<typeof CollectionSchema>[]
+}
+
+type ItemsOffsetPaginatedType = {
+  total_count?: bigint
+  limit?: bigint
+  offset?: bigint
+  order?: { by?: string; direction?: 'ASC' | 'DESC' }[]
+} & { entries?: z.infer<typeof ItemSchema>[] }
+
+const FolderFullSchema: z.ZodType<FolderFullType> = FolderSchema.and(
+  z
+    .object({
+      sync_state: z
+        .enum(['synced', 'not_synced', 'partially_synced'])
+        .openapi({
+          example: 'synced',
+          description:
+            "Specifies whether a folder should be synced to a\nuser's device or not. This is used by Box Sync\n(discontinued) and is not used by Box Drive.",
+        })
+        .exactOptional(),
+      has_collaborations: z
+        .boolean()
+        .exactOptional()
+        .openapi({
+          description: 'Specifies if this folder has any other collaborators.',
+          example: true,
+        }),
+      permissions: z
+        .object({
+          can_delete: z
+            .boolean()
+            .openapi({
+              description: 'Specifies if the current user can delete this item.',
+              example: true,
+            }),
+          can_download: z
+            .boolean()
+            .openapi({
+              description: 'Specifies if the current user can download this item.',
+              example: true,
+            }),
+          can_invite_collaborator: z
+            .boolean()
+            .openapi({
+              description:
+                'Specifies if the current user can invite new\nusers to collaborate on this item, and if the user can\nupdate the role of a user already collaborated on this\nitem.',
+              example: true,
+            }),
+          can_rename: z
+            .boolean()
+            .openapi({ description: 'Specifies if the user can rename this item.', example: true }),
+          can_set_share_access: z
+            .boolean()
+            .openapi({
+              description:
+                'Specifies if the user can change the access level of an\nexisting shared link on this item.',
+              example: true,
+            }),
+          can_share: z
+            .boolean()
+            .openapi({
+              description: 'Specifies if the user can create a shared link for this item.',
+              example: true,
+            }),
+        })
+        .openapi({
+          description: 'The permissions that the authenticated user has for an item.',
+          required: [
+            'can_delete',
+            'can_download',
+            'can_invite_collaborator',
+            'can_rename',
+            'can_set_share_access',
+            'can_share',
+          ],
+        })
+        .and(z.looseObject({}).openapi({ required: ['can_upload'] }))
+        .superRefine((val, ctx) => {
+          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+            if (!Object.hasOwn(val, 'can_upload')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+          }
+        })
+        .and(
+          z
+            .object({
+              can_upload: z
+                .boolean()
+                .exactOptional()
+                .openapi({
+                  description: 'Specifies if the user can upload into this folder.',
+                  example: true,
+                }),
+              can_apply_watermark: z
+                .boolean()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'Specifies if the user can apply a watermark to this folder and its contents.',
+                  example: true,
+                }),
+            })
+            .openapi({ required: [] }),
+        )
+        .openapi({
+          description: 'The permissions that the authenticated user has for a folder.',
+          required: ['can_upload'],
+        })
+        .exactOptional()
+        .openapi({
+          description: 'Describes the permissions that the current user has\nfor this folder.',
+        }),
+      tags: z
+        .array(z.string())
+        .min(1)
+        .max(100)
+        .openapi({
+          example: ['approved'],
+          description:
+            "The tags for this item. These tags are shown in\nthe Box web app and mobile apps next to an item.\n\nTo add or remove a tag, retrieve the item's current tags,\nmodify them, and then update this field.\n\nThere is a limit of 100 tags per item, and 10,000\nunique tags per enterprise.",
+        })
+        .exactOptional(),
+      can_non_owners_invite: z
+        .boolean()
+        .openapi({
+          example: true,
+          description:
+            'Specifies if users who are not the owner\nof the folder can invite new collaborators to the folder.',
+        })
+        .exactOptional(),
+      is_externally_owned: z
+        .boolean()
+        .exactOptional()
+        .openapi({
+          description:
+            'Specifies if this folder is owned by a user outside of the\nauthenticated enterprise.',
+          example: true,
+        }),
+      metadata: z
+        .record(
+          z.string(),
+          z
+            .record(z.string(), MetadataFullSchema)
+            .openapi({
+              description:
+                'A list of metadata instances, nested within key-value pairs of their `scope`\nand `templateKey`.',
+              example: {
+                marketingCollateral: {
+                  $canEdit: true,
+                  $id: '01234500-12f1-1234-aa12-b1d234cb567e',
+                  $parent: 'folder_59449484661',
+                  $scope: 'enterprise_27335',
+                  $template: 'marketingCollateral',
+                  $type: 'properties-6bcba49f-ca6d-4d2a-a758-57fe6edf44d0',
+                  $typeVersion: 2,
+                  $version: 1,
+                },
+              },
+            }),
+        )
+        .openapi({
+          title: 'Item metadata instances',
+          description:
+            'A list of metadata instances, nested within key-value pairs of their `scope`\nand `templateKey`.\n\nTo access the metadata for a file or folder, first use the\nmetadata endpoints to determine the metadata templates available to your\nenterprise.\n\nThen use the `GET /files/:id` or `GET /folder/:id`\nendpoint with the `fields` query parameter to get\nthe metadata by ID.\n\nTo request a metadata instance for a particular `scope` and `templateKey`\nuse the following format for the `fields` parameter:\n`metadata.<scope>.<templateKey>`\n\nFor example, `?fields=metadata.enterprise_27335.marketingCollateral`.',
+          example: {
+            enterprise_27335: {
+              marketingCollateral: {
+                $canEdit: true,
+                $id: '01234500-12f1-1234-aa12-b1d234cb567e',
+                $parent: 'folder_59449484661',
+                $scope: 'enterprise_27335',
+                $template: 'marketingCollateral',
+                $type: 'properties-6bcba49f-ca6d-4d2a-a758-57fe6edf44d0',
+                $typeVersion: 2,
+                $version: 1,
+              },
+            },
+          },
+        })
+        .exactOptional()
+        .openapi({
+          description:
+            'An object containing the metadata instances that have been\nattached to this folder.\n\nEach metadata instance is uniquely identified by its `scope` and\n`templateKey`. There can only be one instance of any metadata\ntemplate attached to each folder. Each metadata instance is nested\nwithin an object with the `templateKey` as the key, which again\nitself is nested in an object with the `scope` as the key.',
+        }),
+      is_collaboration_restricted_to_enterprise: z
+        .boolean()
+        .openapi({
+          example: true,
+          description:
+            'Specifies if new invites to this folder are restricted to users\nwithin the enterprise. This does not affect existing\ncollaborations.',
+        })
+        .exactOptional(),
+      allowed_shared_link_access_levels: z
+        .array(
+          z
+            .enum(['open', 'company', 'collaborators'])
+            .openapi({
+              title: 'Shared link access level',
+              description: 'The access level for a shared link.',
+              example: 'open',
+            }),
+        )
+        .exactOptional()
+        .openapi({
+          description:
+            'The shared link access levels the authenticated user is allowed to\nuse when creating or updating a shared link for this folder.\n\nThe list depends on item policy and user authorization. For some\nfolders, like the root folder, this is always empty as sharing is\nnot allowed at that level.',
+          example: ['open'],
+        }),
+      allowed_invitee_roles: z
+        .array(
+          z.enum([
+            'editor',
+            'viewer',
+            'previewer',
+            'uploader',
+            'previewer uploader',
+            'viewer uploader',
+            'co-owner',
+          ]),
+        )
+        .exactOptional()
+        .openapi({
+          description:
+            'A list of the types of roles that user can be invited at\nwhen sharing this folder.',
+          example: ['editor'],
+        }),
+      watermark_info: z
+        .object({
+          is_watermarked: z
+            .boolean()
+            .exactOptional()
+            .openapi({
+              description: 'Specifies if this item has a watermark applied.',
+              example: true,
+            }),
+          is_watermark_inherited: z
+            .boolean()
+            .exactOptional()
+            .openapi({
+              description:
+                'Specifies if the watermark is inherited from any parent folder in the hierarchy.',
+              example: false,
+            }),
+          is_watermarked_by_access_policy: z
+            .boolean()
+            .exactOptional()
+            .openapi({
+              description: 'Specifies if the watermark is enforced by an access policy.',
+              example: false,
+            }),
+        })
+        .openapi({ description: 'Details about the watermark applied to this item.', required: [] })
+        .exactOptional()
+        .openapi({ description: 'Details about the watermark applied to this folder.' }),
+      is_accessible_via_shared_link: z
+        .boolean()
+        .exactOptional()
+        .openapi({
+          description:
+            'Specifies if the folder can be accessed\nwith the direct shared link or a shared link\nto a parent folder.',
+          example: true,
+        }),
+      can_non_owners_view_collaborators: z
+        .boolean()
+        .exactOptional()
+        .openapi({
+          description:
+            'Specifies if collaborators who are not owners\nof this folder are restricted from viewing other\ncollaborations on this folder.\n\nIt also restricts non-owners from inviting new\ncollaborators.',
+          example: true,
+        }),
+      classification: z
+        .object({
+          name: z
+            .string()
+            .exactOptional()
+            .openapi({ description: 'The name of the classification.', example: 'Top Secret' }),
+          definition: z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'An explanation of the meaning of this classification.',
+              example: 'Content that should not be shared outside the company.',
+            }),
+          color: z
+            .string()
+            .exactOptional()
+            .openapi({
+              description:
+                'The color that is used to display the\nclassification label in a user-interface. Colors are defined by the admin\nor co-admin who created the classification in the Box web app.',
+              example: '#FF0000',
+            }),
+        })
+        .openapi({ description: 'The classification applied to an item.', required: [] })
+        .nullable()
+        .exactOptional()
+        .openapi({ description: 'Details about the classification applied to this folder.' }),
+      is_associated_with_app_item: z
+        .boolean()
+        .exactOptional()
+        .openapi({
+          description:
+            'This field will return true if the folder or any ancestor of the\nfolder is associated with at least one app item. Note that this will\nreturn true even if the context user does not have access to the\napp item(s) associated with the folder.',
+          example: true,
+        }),
+      collections: z
+        .array(CollectionSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'The collections that this folder belongs to.\n\nFor more information, see the\n[collections guide](https://developer.box.com/guides/collections).',
+        }),
+    })
+    .openapi({ required: [] }),
+)
+  .openapi({
+    description:
+      'A full representation of a folder, as can be returned from any\nfolder API endpoints by default.',
+    title: 'Folder (Full)',
+    'x-box-resource-id': 'folder--full',
+    'x-box-tag': 'folders',
+    'x-box-variant': 'full',
+  })
+  .openapi('FolderFull')
+
+type MetadataQueryResultItemType = z.infer<typeof FileFullSchema> | z.infer<typeof FolderFullSchema>
+
+const MetadataQueryResultItemSchema: z.ZodType<MetadataQueryResultItemType> = z
+  .xor([FileFullSchema, FolderFullSchema])
+  .openapi({
+    description: 'The mini representation of a file or folder.',
+    title: 'Metadata query search result item',
+  })
+  .openapi('MetadataQueryResultItem')
+
+type MetadataQueryResultsType = {
+  entries?: z.infer<typeof MetadataQueryResultItemSchema>[]
+  limit?: bigint
+  next_marker?: string
+}
+
+type RecentItemResourceType =
+  | z.infer<typeof FileFullSchema>
+  | z.infer<typeof FolderFullSchema>
+  | z.infer<typeof WebLinkSchema>
+
+const RecentItemResourceSchema: z.ZodType<RecentItemResourceType> = z
+  .xor([FileFullSchema, FolderFullSchema, WebLinkSchema])
+  .openapi({
+    description: 'A recently accessed item resource. This can be a file, folder, or web link.',
+    title: 'Recent item resource',
+  })
+  .openapi('RecentItemResource')
+
+type RecentItemType = {
+  type?: string
+  item?: z.infer<typeof RecentItemResourceSchema> & unknown
+  interaction_type?: 'item_preview' | 'item_upload' | 'item_comment' | 'item_open' | 'item_modify'
+  interacted_at?: string
+  interaction_shared_link?: string
+}
+
+const RecentItemSchema: z.ZodType<RecentItemType> = z
+  .object({
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The value will always be `recent_item`.', example: 'recent_item' }),
+    item: RecentItemResourceSchema.exactOptional().openapi({
+      description: 'The item that was recently accessed.',
+    }),
+    interaction_type: z
+      .enum(['item_preview', 'item_upload', 'item_comment', 'item_open', 'item_modify'])
+      .exactOptional()
+      .openapi({
+        description: 'The most recent type of access the user performed on\nthe item.',
+        example: 'item_preview',
+      }),
+    interacted_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'The time of the most recent interaction.',
+        example: '2018-04-13T13:53:23-07:00',
+      }),
+    interaction_shared_link: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'If the item was accessed through a shared link it will appear here,\notherwise this will be null.',
+        example: 'https://www.box.com/shared/static/rh935iit6ewrmw0unyul.jpeg',
+      }),
+  })
+  .openapi({
+    description: 'A recent item accessed by a user.',
+    title: 'Recent item',
+    'x-box-resource-id': 'recent_item',
+    'x-box-tag': 'recent_items',
+    required: [],
+  })
+  .openapi('RecentItem')
+
+type RecentItemsType = {
+  limit?: bigint
+  next_marker?: string | null
+  prev_marker?: string | null
+} & { entries?: z.infer<typeof RecentItemSchema>[] }
+
+type SearchResultItemType =
+  | z.infer<typeof FileFullSchema>
+  | z.infer<typeof FolderFullSchema>
+  | z.infer<typeof WebLinkSchema>
+
+const SearchResultItemSchema: z.ZodType<SearchResultItemType> = z
+  .xor([FileFullSchema, FolderFullSchema, WebLinkSchema])
+  .openapi({
+    description: 'An item in search results. This can be a file, folder, or web link.',
+    title: 'Search results item',
+  })
+  .openapi('SearchResultItem')
+
+type SearchResultsType = { total_count?: bigint; limit?: bigint; offset?: bigint } & {
+  type?: 'search_results_items'
+  entries?: z.infer<typeof SearchResultItemSchema>[]
+}
+
+const SearchResultsSchema: z.ZodType<SearchResultsType> = z
+  .object({
+    total_count: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'One greater than the offset of the last entry in the search results.\nThe total number of entries in the collection may be less than\n`total_count`.',
+        example: 5000,
+      }),
+    limit: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'The limit that was used for this search. This will be the same as the\n`limit` query parameter unless that value exceeded the maximum value\nallowed.',
+        example: 1000,
+      }),
+    offset: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'The 0-based offset of the first entry in this set. This will be the same\nas the `offset` query parameter used.',
+        example: 2000,
+      }),
+  })
+  .openapi({ required: [] })
+  .and(z.looseObject({}).openapi({ required: ['type'] }))
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        type: z
+          .literal('search_results_items')
+          .exactOptional()
+          .openapi({
+            description: 'Specifies the response as search result items without shared links.',
+            example: 'search_results_items',
+          }),
+        entries: z
+          .array(SearchResultItemSchema)
+          .exactOptional()
+          .openapi({ description: 'The search results for the query provided.' }),
+      })
+      .openapi({ required: [] }),
+  )
+  .openapi({
+    description: 'A list of files, folders and web links that matched the search query.',
+    required: ['type'],
+    title: 'Search Results',
+    'x-box-resource-id': 'search_results',
+    'x-box-tag': 'search',
+  })
+  .openapi('SearchResults')
+
+type SearchResultWithSharedLinkItemType =
+  | z.infer<typeof FileFullSchema>
+  | z.infer<typeof FolderFullSchema>
+  | z.infer<typeof WebLinkSchema>
+
+const SearchResultWithSharedLinkItemSchema: z.ZodType<SearchResultWithSharedLinkItemType> = z
+  .xor([FileFullSchema, FolderFullSchema, WebLinkSchema])
+  .openapi({
+    description:
+      'An item in search results with a shared link. This can be a file, folder, or web link.',
+    title: 'Search result item',
+  })
+  .openapi('SearchResultWithSharedLinkItem')
+
+type SearchResultWithSharedLinkType = {
+  accessible_via_shared_link?: string
+  item?: z.infer<typeof SearchResultWithSharedLinkItemSchema> & unknown
+  type?: string
+}
+
+const SearchResultWithSharedLinkSchema: z.ZodType<SearchResultWithSharedLinkType> = z
+  .object({
+    accessible_via_shared_link: z
+      .url()
+      .exactOptional()
+      .openapi({
+        description:
+          'The optional shared link through which the user has access to this\nitem. This value is only returned for items for which the user has\nrecently accessed the file through a shared link. For all other\nitems this value will return `null`.',
+        example: 'https://www.box.com/s/vspke7y05sb214wjokpk',
+      }),
+    item: SearchResultWithSharedLinkItemSchema.exactOptional().openapi({
+      description: 'The file, folder or web link that matched the\nsearch query.',
+    }),
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The result type. The value is always `search_result`.',
+        example: 'search_result',
+      }),
+  })
+  .openapi({
+    description:
+      'A single of files, folder or web link that matched the search query,\nincluding the additional information about the shared link through\nwhich the item has been shared with the user.\n\nThis response format is only returned when the\n`include_recent_shared_links` query parameter has been set to `true`.',
+    title: 'Search Result (including Shared Link)',
+    'x-box-resource-id': 'search_result_with_shared_link',
+    'x-box-tag': 'search',
+    required: [],
+  })
+  .openapi('SearchResultWithSharedLink')
+
+type SearchResultsWithSharedLinksType = {
+  total_count?: bigint
+  limit?: bigint
+  offset?: bigint
+} & {
+  type?: 'search_results_with_shared_links'
+  entries?: z.infer<typeof SearchResultWithSharedLinkSchema>[]
+}
+
+const SearchResultsWithSharedLinksSchema: z.ZodType<SearchResultsWithSharedLinksType> = z
+  .object({
+    total_count: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'One greater than the offset of the last entry in the search results.\nThe total number of entries in the collection may be less than\n`total_count`.',
+        example: 5000,
+      }),
+    limit: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'The limit that was used for this search. This will be the same as the\n`limit` query parameter unless that value exceeded the maximum value\nallowed.',
+        example: 1000,
+      }),
+    offset: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'The 0-based offset of the first entry in this set. This will be the same\nas the `offset` query parameter used.',
+        example: 2000,
+      }),
+  })
+  .openapi({ required: [] })
+  .and(z.looseObject({}).openapi({ required: ['type'] }))
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        type: z
+          .literal('search_results_with_shared_links')
+          .exactOptional()
+          .openapi({
+            description: 'Specifies the response as search result items with shared links.',
+            example: 'search_results_with_shared_links',
+          }),
+        entries: z
+          .array(SearchResultWithSharedLinkSchema)
+          .exactOptional()
+          .openapi({
+            description:
+              'The search results for the query provided, including the\nadditional information about any shared links through\nwhich the item has been shared with the user.',
+          }),
+      })
+      .openapi({ required: [] }),
+  )
+  .openapi({
+    description:
+      'A list of files, folders and web links that matched the search query,\nincluding the additional information about any shared links through\nwhich the item has been shared with the user.\n\nThis response format is only returned when the `include_recent_shared_links`\nquery parameter has been set to `true`.',
+    required: ['type'],
+    title: 'Search Results (including Shared Links)',
+    'x-box-resource-id': 'search_results_with_shared_links',
+    'x-box-tag': 'search',
+  })
+  .openapi('SearchResultsWithSharedLinks')
+
+type SearchResultsResponseType =
+  | z.infer<typeof SearchResultsSchema>
+  | z.infer<typeof SearchResultsWithSharedLinksSchema>
+
+const SignRequestPrefillTagSchema = z
+  .object({
+    document_tag_id: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'This references the ID of a specific tag contained in a file of the signature request.',
+        example: '1234',
+      }),
+    text_value: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Text prefill value.', example: 'text' }),
+    checkbox_value: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Checkbox prefill value.', example: true }),
+    date_value: z.iso
+      .date()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Date prefill value.', example: '2021-04-26' }),
+  })
+  .openapi({
+    description:
+      'Prefill tags are used to prefill placeholders with signer input data. Only\none value field can be included.',
+    title: 'Sign request prefill tag',
+    required: [],
+  })
+  .openapi('SignRequestPrefillTag')
+
+const SignRequestBaseSchema = z
+  .object({
+    is_document_preparation_needed: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates if the sender should receive a `prepare_url` in the response to complete document preparation using the UI.',
+        example: true,
+      }),
+    redirect_url: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'When specified, the signature request will be redirected to this url when a document is signed.',
+        example: 'https://www.example.com',
+      }),
+    declined_redirect_url: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The uri that a signer will be redirected to after declining to sign a document.',
+        example: 'https://declined-redirect.com',
+      }),
+    are_text_signatures_enabled: z
+      .boolean()
+      .default(true)
+      .exactOptional()
+      .openapi({
+        description: 'Disables the usage of signatures generated by typing (text).',
+        example: true,
+      }),
+    email_subject: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Subject of sign request email. This is cleaned by sign request. If this field is not passed, a default subject will be used.',
+        example: 'Sign Request from Acme',
+      }),
+    email_message: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Message to include in sign request email. The field is cleaned through sanitization of specific characters. However, some html tags are allowed. Links included in the message are also converted to hyperlinks in the email. The message may contain the following html tags including `a`, `abbr`, `b`, `blockquote`, `code`, `em`, `i`, `ul`, `li`, `ol`, and `strong`. Be aware that when the text to html ratio is too high, the email may end up in spam filters. Custom styles on these tags are not allowed. If this field is not passed, a default message will be used.',
+        example: 'Hello! Please sign the document below',
+      }),
+    are_reminders_enabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Reminds signers to sign a document on day 3, 8, 13 and 18. Reminders are only sent to outstanding signers.',
+        example: true,
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Name of the signature request.', example: 'name' }),
+    prefill_tags: z
+      .array(SignRequestPrefillTagSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          "When a document contains sign-related tags in the content, you can prefill them using this `prefill_tags` by referencing the 'id' of the tag as the `external_id` field of the prefill tag.",
+      }),
+    days_valid: z
+      .int()
+      .min(0)
+      .max(730)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Set the number of days after which the created signature request will automatically expire if not completed. By default, we do not apply any expiration date on signature requests, and the signature request does not expire.',
+        example: 2,
+      }),
+    external_id: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'This can be used to reference an ID in an external system that the sign request is related to.',
+        example: '123',
+      }),
+    template_id: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'When a signature request is created from a template this field will indicate the id of that template.',
+        example: '123075213-af2c8822-3ef2-4952-8557-52d69c2fe9cb',
+      }),
+    external_system_name: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Used as an optional system name to appear in the signature log next to the signers who have been assigned the `embed_url_external_id`.',
+        example: 'Box',
+      }),
+    request_flow: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The flow type of the sign request. Values can include `standard` or `cfr11`.\nWhen not specified during creation, a default is chosen based on admin settings.',
+        example: 'standard',
+      }),
+  })
+  .openapi({
+    description: 'A standard representation of a signature request object.',
+    title: 'Box Sign request (Base)',
+    'x-box-tag': 'sign_requests',
+    required: [],
+  })
+  .openapi('SignRequestBase')
+
+const SignRequestSignerVerificationMethodLoginSchema = z
+  .object({
+    type: z
+      .literal('login')
+      .openapi({ description: 'The type of verification method.', example: 'login' }),
+  })
+  .openapi({
+    description:
+      'When used as a verification method the signer will need to \nlog in to a Box account before signing the request. If the \nsigner does not have an existing account, they will have the \noption to create a free Box account.',
+    required: ['type'],
+    title: 'Login Signer Verification Method',
+  })
+  .openapi('SignRequestSignerVerificationMethodLogin')
+
+const SignRequestSignerVerificationMethodPhoneSMSSchema = z
+  .object({
+    type: z
+      .literal('phone')
+      .openapi({ description: 'The type of verification method.', example: 'phone' }),
+    phone_number: z
+      .string()
+      .openapi({
+        description: 'The phone number to where the message will be sent.',
+        example: '+316314578901',
+      }),
+  })
+  .openapi({
+    description:
+      'When used as a verification method, prior to signing the document, \nthe signer will have to verify themselves using two-factor \nauthentication by receiving an SMS message on their phone.',
+    required: ['type', 'phone_number'],
+    title: 'Phone SMS Signer Verification Method',
+  })
+  .openapi('SignRequestSignerVerificationMethodPhoneSMS')
+
+const SignRequestSignerVerificationMethodCacPivSchema = z
+  .object({
+    type: z
+      .literal('cac_piv')
+      .openapi({ description: 'The type of verification method.', example: 'cac_piv' }),
+  })
+  .openapi({
+    description:
+      'The verification method to be used when user has to verify themselves using a CAC/PIV smart-card.',
+    required: ['type'],
+    title: 'CAC/PIV Signer Verification Method',
+  })
+  .openapi('SignRequestSignerVerificationMethodCacPiv')
+
+const SignRequestSignerVerificationMethodSchema = z
+  .xor([
+    SignRequestSignerVerificationMethodLoginSchema,
+    SignRequestSignerVerificationMethodPhoneSMSSchema,
+    SignRequestSignerVerificationMethodCacPivSchema,
+  ])
+  .openapi({
+    description:
+      'A verification method for a signer in a Sign Request. \nThis property can be used instead of the `login_required` and `verification_phone_number` properties.\nIf this property is used, the `login_required` and `verification_phone_number` properties will be ignored.',
+    title: 'Verification method for Sign Request Signer',
+  })
+  .openapi('SignRequestSignerVerificationMethod')
+
+const SignRequestCreateSignerSchema = z
+  .object({
+    email: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Email address of the signer.\nThe email address of the signer is required when making signature requests, except when using templates that are configured to include emails.',
+        example: 'example@gmail.com',
+      }),
+    role: z
+      .enum(['signer', 'approver', 'final_copy_reader'])
+      .default('signer')
+      .exactOptional()
+      .openapi({
+        description:
+          'Defines the role of the signer in the signature request. A `signer`\nmust sign the document and an `approver` must approve the document. A\n`final_copy_reader` only receives the final signed document and signing\nlog.',
+        example: 'signer',
+      }),
+    is_in_person: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Used in combination with an embed URL for a sender. After the\nsender signs, they are redirected to the next `in_person` signer.',
+        example: true,
+      }),
+    order: z
+      .int()
+      .min(0)
+      .exactOptional()
+      .openapi({ description: 'Order of the signer.', example: 2 }),
+    embed_url_external_user_id: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'User ID for the signer in an external application responsible\nfor authentication when accessing the embed URL.',
+        example: '1234',
+      }),
+    redirect_url: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The URL that a signer will be redirected\nto after signing a document. Defining this URL\noverrides default or global redirect URL\nsettings for a specific signer.\nIf no declined redirect URL is specified,\nthis URL will be used for decline actions as well.',
+        example: 'https://example.com',
+      }),
+    declined_redirect_url: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The URL that a signer will be redirect\nto after declining to sign a document.\nDefining this URL overrides default or global\ndeclined redirect URL settings for a specific signer.',
+        example: 'https://declined-example.com',
+      }),
+    login_required: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'If set to true, the signer will need to log in to a Box account\nbefore signing the request. If the signer does not have\nan existing account, they will have the option to create\na free Box account.',
+        example: true,
+      }),
+    verification_phone_number: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'If set, this phone number will be used to verify the signer\nvia two-factor authentication before they are able to sign the document.\nCannot be selected in combination with `login_required`.',
+        example: '6314578901',
+      }),
+    password: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'If set, the signer is required to enter the password before they are able\nto sign a document. This field is write only.',
+        example: 'SecretPassword123',
+        writeOnly: true,
+      }),
+    signer_group_id: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'If set, signers who have the same value will be assigned to the same input and to the same signer group.\nA signer group is not a Box Group. It is an entity that belongs to a Sign Request and can only be\nused/accessed within this Sign Request. A signer group is expected to have more than one signer.\nIf the provided value is only used for one signer, this value will be ignored and request will be handled\nas it was intended for an individual signer. The value provided can be any string and only used to\ndetermine which signers belongs to same group. A successful response will provide a generated UUID value\ninstead for signers in the same signer group.',
+        example: 'cd4ff89-8fc1-42cf-8b29-1890dedd26d7',
+      }),
+    suppress_notifications: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'If true, no emails about the sign request are sent.\nThe `embed_url_external_user_id` parameter is required when using\n`suppress_notifications` for a signer.',
+        example: false,
+      }),
+    language: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The language of the user, formatted in modified version of the\n[ISO 639-1](https://developer.box.com/guides/api-calls/language-codes) format.',
+        example: 'en',
+      }),
+    verification_method: z
+      .union([
+        SignRequestSignerVerificationMethodSchema,
+        z
+          .strictObject({})
+          .nullable()
+          .openapi({
+            title: 'OpenAPI 3.0 null schema type',
+            description: 'The definition for a null schema type in OpenAPI `3.0`.',
+          }),
+      ])
+      .exactOptional()
+      .openapi({
+        description: 'The verification method for the signer.',
+        example: { type: 'login' },
+      }),
+  })
+  .openapi({
+    description: 'The schema for a Signer object used in\nfor creating a Box Sign request object.',
+    title: 'Signer fields used to create a Box Sign request object.',
+    required: [],
+  })
+  .openapi('SignRequestCreateSigner')
+
+const SignRequestSignerInputEmailValidationSchema = z
+  .object({
+    validation_type: z
+      .literal('email')
+      .openapi({
+        description: 'Validates that the text input is an email address.',
+        example: 'email',
+      }),
+  })
+  .openapi({
+    description:
+      'Specifies the formatting rules that signers must follow for text field inputs.\nIf set, this validation is mandatory.',
+    required: ['validation_type'],
+    title: 'Sign Request Signer Input Email Validation',
+  })
+  .openapi('SignRequestSignerInputEmailValidation')
+
+const SignRequestSignerInputCustomValidationSchema = z
+  .object({
+    validation_type: z
+      .literal('custom')
+      .openapi({
+        description:
+          'Defines the validation format for the text input as custom.\nA custom regular expression is used for validation.',
+        example: 'custom',
+      }),
+    custom_regex: z
+      .string()
+      .nullable()
+      .openapi({
+        description: 'Regular expression used for validation.',
+        example: '(^[a-zA-Z0-9._%+-]+)',
+      }),
+    custom_error_message: z
+      .string()
+      .nullable()
+      .openapi({
+        description: 'Error message shown if input fails custom regular expression validation.',
+        example: 'Please enter a valid value.',
+      }),
+  })
+  .openapi({
+    description:
+      'Specifies the custom validation rules for a text field input by the signer.\nIf set, this validation is mandatory.',
+    required: ['validation_type', 'custom_regex', 'custom_error_message'],
+    title: 'Sign Request Signer Input Custom Validation',
+  })
+  .openapi('SignRequestSignerInputCustomValidation')
+
+const SignRequestSignerInputZIPValidationSchema = z
+  .object({
+    validation_type: z
+      .literal('zip')
+      .openapi({ description: 'Validates that the text input is a ZIP code.', example: 'zip' }),
+  })
+  .openapi({
+    description:
+      'Specifies the validation rules for a text field input by the signer.\nIf set, this validation is mandatory.',
+    required: ['validation_type'],
+    title: 'Sign Request Signer Input ZIP Validation',
+  })
+  .openapi('SignRequestSignerInputZIPValidation')
+
+const SignRequestSignerInputZIP4ValidationSchema = z
+  .object({
+    validation_type: z
+      .literal('zip_4')
+      .openapi({ description: 'Validates that the text input is a ZIP+4 code.', example: 'zip_4' }),
+  })
+  .openapi({
+    description:
+      'Specifies the validation rules for a text field input by the signer.\nIf set, this validation is mandatory.',
+    required: ['validation_type'],
+    title: 'Sign Request Signer Input ZIP 4 Validation',
+  })
+  .openapi('SignRequestSignerInputZIP4Validation')
+
+const SignRequestSignerInputZIPJPValidationSchema = z
+  .object({
+    validation_type: z
+      .literal('zip_jp')
+      .openapi({
+        description: 'Validates that the text input is a Japanese ZIP code.',
+        example: 'zip_jp',
+      }),
+  })
+  .openapi({
+    description:
+      'Specifies the validation rules for a text field input by the signer.\nIf set, this validation is mandatory.',
+    required: ['validation_type'],
+    title: 'Sign Request Signer Input ZIP JP Validation',
+  })
+  .openapi('SignRequestSignerInputZIPJPValidation')
+
+const SignRequestSignerInputSSNValidationSchema = z
+  .object({
+    validation_type: z
+      .literal('ssn')
+      .openapi({
+        description: 'Validates that the text input is a Social Security Number (SSN).',
+        example: 'ssn',
+      }),
+  })
+  .openapi({
+    description:
+      'Specifies the validation rules for a text field input by the signer.\nIf set, this validation is mandatory.',
+    required: ['validation_type'],
+    title: 'Sign Request Signer Input SSN Validation',
+  })
+  .openapi('SignRequestSignerInputSSNValidation')
+
+const SignRequestSignerInputNumberWithPeriodValidationSchema = z
+  .object({
+    validation_type: z
+      .literal('number_with_period')
+      .exactOptional()
+      .openapi({
+        description:
+          'Validates that the text input uses a number format with a period as the decimal separator (for example, 1.23).',
+        example: 'number_with_period',
+      }),
+  })
+  .openapi({
+    description:
+      'Specifies the number with period formatting rules for a text field input by the signer.\nIf set, this validation is mandatory.',
+    title: 'Sign Request Signer Input Number With Period Validation',
+    required: [],
+  })
+  .openapi('SignRequestSignerInputNumberWithPeriodValidation')
+
+const SignRequestSignerInputNumberWithCommaValidationSchema = z
+  .object({
+    validation_type: z
+      .literal('number_with_comma')
+      .exactOptional()
+      .openapi({
+        description:
+          'Validates that the text input uses a number format with a comma as the decimal separator (for example, 1,23).',
+        example: 'number_with_comma',
+      }),
+  })
+  .openapi({
+    description:
+      'Specifies the number with comma formatting rules for a text field input by the signer.\nIf set, this validation is mandatory.',
+    title: 'Sign Request Signer Input Number With Comma Validation',
+    required: [],
+  })
+  .openapi('SignRequestSignerInputNumberWithCommaValidation')
+
+const SignRequestSignerInputDateISOValidationSchema = z
+  .object({
+    validation_type: z
+      .literal('date_iso')
+      .exactOptional()
+      .openapi({
+        description: 'Validates that the text input uses the ISO date format `YYYY-MM-DD`.',
+        example: 'date_iso',
+      }),
+  })
+  .openapi({
+    description:
+      'Specifies the ISO date formatting rules for a text field input by the signer. \nIf set, this validation is mandatory. \nThe date format follows `YYYY-MM-DD` pattern.',
+    title: 'Sign Request Signer Input Date ISO Validation',
+    required: [],
+  })
+  .openapi('SignRequestSignerInputDateISOValidation')
+
+const SignRequestSignerInputDateUSValidationSchema = z
+  .object({
+    validation_type: z
+      .literal('date_us')
+      .exactOptional()
+      .openapi({
+        description: 'Validates that the text input uses the US date format `MM/DD/YYYY`.',
+        example: 'date_us',
+      }),
+  })
+  .openapi({
+    description:
+      'Specifies the US date formatting rules for a text field input by the signer. \nIf set, this validation is mandatory. \nThe date format follows `MM/DD/YYYY` pattern.',
+    title: 'Sign Request Signer Input Date US Validation',
+    required: [],
+  })
+  .openapi('SignRequestSignerInputDateUSValidation')
+
+const SignRequestSignerInputDateEUValidationSchema = z
+  .object({
+    validation_type: z
+      .literal('date_eu')
+      .exactOptional()
+      .openapi({
+        description: 'Validates that the text input uses the European date format `DD/MM/YYYY`.',
+        example: 'date_eu',
+      }),
+  })
+  .openapi({
+    description:
+      'Specifies the date formatting rules used in Europe for a text field input by the signer. \nIf set, this validation is mandatory. \nThe date format follows `DD/MM/YYYY` pattern.',
+    title: 'Sign Request Signer Input Date EU Validation',
+    required: [],
+  })
+  .openapi('SignRequestSignerInputDateEUValidation')
+
+const SignRequestSignerInputDateAsiaValidationSchema = z
+  .object({
+    validation_type: z
+      .literal('date_asia')
+      .exactOptional()
+      .openapi({
+        description: 'Validates that the text input uses the Asian date format `YYYY/MM/DD`.',
+        example: 'date_asia',
+      }),
+  })
+  .openapi({
+    description:
+      'Specifies the date formatting rules used in Asia for a text field input by the signer. \nIf set, this validation is mandatory. \nThe date format follows `YYYY/MM/DD` pattern.',
+    title: 'Sign Request Signer Input Date Asia Validation',
+    required: [],
+  })
+  .openapi('SignRequestSignerInputDateAsiaValidation')
+
+const SignRequestSignerInputValidationSchema = z
+  .xor([
+    SignRequestSignerInputEmailValidationSchema,
+    SignRequestSignerInputCustomValidationSchema,
+    SignRequestSignerInputZIPValidationSchema,
+    SignRequestSignerInputZIP4ValidationSchema,
+    SignRequestSignerInputZIPJPValidationSchema,
+    SignRequestSignerInputSSNValidationSchema,
+    SignRequestSignerInputNumberWithPeriodValidationSchema,
+    SignRequestSignerInputNumberWithCommaValidationSchema,
+    SignRequestSignerInputDateISOValidationSchema,
+    SignRequestSignerInputDateUSValidationSchema,
+    SignRequestSignerInputDateEUValidationSchema,
+    SignRequestSignerInputDateAsiaValidationSchema,
+  ])
+  .openapi({
+    description:
+      'Specifies the formatting rules that signers must follow for text field inputs.\nIf set, this validation is mandatory. \nThe format can be selected from a predefined list of options (e.g., email, phone number, date) or\ndefined using a custom regular expression.',
+    title: 'Sign Request Signer Input Validation',
+  })
+  .openapi('SignRequestSignerInputValidation')
+
+const SignRequestSignerInputSchema = SignRequestPrefillTagSchema.and(
+  z.looseObject({}).openapi({ required: ['page_index'] }),
+)
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'page_index')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        type: z
+          .enum(['signature', 'date', 'text', 'checkbox', 'radio', 'dropdown'])
+          .exactOptional()
+          .openapi({ description: 'Type of input.', example: 'text' }),
+        content_type: z
+          .enum([
+            'signature',
+            'initial',
+            'stamp',
+            'date',
+            'checkbox',
+            'text',
+            'full_name',
+            'first_name',
+            'last_name',
+            'company',
+            'title',
+            'email',
+            'attachment',
+            'radio',
+            'dropdown',
+          ])
+          .exactOptional()
+          .openapi({ description: 'Content type of input.', example: 'signature' }),
+        page_index: z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Index of page that the input is on.', example: 4 }),
+        read_only: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description:
+              'Indicates whether this input is read-only (cannot be modified by signers).',
+            example: true,
+          }),
+        validation: z
+          .union([
+            SignRequestSignerInputValidationSchema,
+            z
+              .strictObject({})
+              .nullable()
+              .openapi({
+                title: 'OpenAPI 3.0 null schema type',
+                description: 'The definition for a null schema type in OpenAPI `3.0`.',
+              }),
+          ])
+          .exactOptional()
+          .openapi({
+            description:
+              'Specifies the formatting rules that signers must follow for text field inputs.\nIf set, this validation is mandatory.',
+            example: { validation_type: 'email' },
+          }),
+        reason: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              "The reason for the signer's input, applicable to signature or initial content types\nin a `cfr11` request flow. The value is `null` when not applicable.",
+            example: 'I read and approve this document',
+          }),
+        is_validated: z
+          .boolean()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              "Indicates whether the signer's input has been validated through re-authentication.\nApplicable only for signature or initial content types in a `cfr11` request flow.\nThe value is `null` for standard request flows or non-applicable input types.",
+            example: true,
+          }),
+      })
+      .openapi({ required: [] }),
+  )
+  .openapi({
+    description: 'Input created by a Signer on a Sign Request.',
+    required: ['page_index'],
+    title: 'Sign Request Signer Input',
+  })
+  .openapi('SignRequestSignerInput')
+
+const SignRequestSignerAttachmentSchema = z
+  .object({
+    id: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Identifier of the attachment file.', example: '12345' }),
+    name: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Display name of the attachment file.',
+        example: 'proof_of_identity.pdf',
+      }),
+  })
+  .openapi({
+    description: 'Metadata describing a file uploaded by a signer as an attachment.',
+    title: 'Signer Attachment',
+    required: [],
+  })
+  .openapi('SignRequestSignerAttachment')
+
+const SignRequestSignerSchema = SignRequestCreateSignerSchema.and(
+  z.looseObject({}).openapi({ required: ['email'] }),
+)
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'email')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        has_viewed_document: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Set to `true` if the signer views the document.',
+            example: true,
+            readOnly: true,
+          }),
+        signer_decision: z
+          .object({
+            type: z
+              .enum(['signed', 'declined'])
+              .exactOptional()
+              .openapi({ description: 'Type of decision made by the signer.', example: 'signed' }),
+            finalized_at: z.iso
+              .datetime({ offset: true })
+              .exactOptional()
+              .openapi({
+                description: 'Date and Time that the decision was made.',
+                example: '2021-04-26T08:12:13.982Z',
+              }),
+            additional_info: z
+              .string()
+              .nullable()
+              .exactOptional()
+              .openapi({
+                description:
+                  'Additional info about the decision, such as the decline reason from the signer.',
+                example: 'Requesting changes before signing.',
+              }),
+          })
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Final decision made by the signer.', required: [] }),
+        inputs: z.array(SignRequestSignerInputSchema).exactOptional().openapi({ readOnly: true }),
+        embed_url: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: 'URL to direct a signer to for signing.',
+            example: 'https://example.com',
+            readOnly: true,
+          }),
+        iframeable_embed_url: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'This URL is specifically designed for\nsigning documents within an HTML `iframe` tag.\nIt will be returned in the response\nonly if the `embed_url_external_user_id`\nparameter was passed in the\n`create Box Sign request` call.',
+            example:
+              'https://app.box.com/embed/sign/document/gfhr4222-a331-494b-808b-79bc7f3992a3/f14d7098-a331-494b-808b-79bc7f3992a4',
+          }),
+        attachments: z
+          .array(SignRequestSignerAttachmentSchema)
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Attachments that the signer uploaded.' }),
+      })
+      .openapi({ required: [] }),
+  )
+  .openapi({
+    description: 'The schema for a Signer object used\non the body of a Box Sign request object.',
+    required: ['email'],
+    title: 'Signer fields for Box Sign request response',
+  })
+  .openapi('SignRequestSigner')
+
+const SignRequestSchema = SignRequestBaseSchema.and(
+  z
+    .object({
+      type: z
+        .literal('sign-request')
+        .exactOptional()
+        .openapi({
+          description: 'The value will always be `sign-request`.',
+          example: 'sign-request',
+        }),
+      source_files: z
+        .array(FileBaseSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'List of files to create a signing document from. This is currently limited to ten files. Only the ID and type fields are required for each file.',
+        }),
+      signers: z
+        .array(SignRequestSignerSchema)
+        .exactOptional()
+        .openapi({ description: 'Array of signers for the signature request.' }),
+      signature_color: z
+        .string()
+        .nullable()
+        .exactOptional()
+        .openapi({
+          description: 'Force a specific color for the signature (blue, black, or red).',
+          example: 'blue',
+        }),
+      id: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'Box Sign request ID.', example: '12345' }),
+      prepare_url: z
+        .string()
+        .nullable()
+        .exactOptional()
+        .openapi({
+          description:
+            'This URL is returned if `is_document_preparation_needed` is\nset to `true` in the request. The parameter is used to prepare\nthe signature request\nusing the UI. The signature request is not\nsent until the preparation\nphase is complete.',
+          example: 'https://prepareurl.com',
+        }),
+      signing_log: FileMiniSchema.exactOptional().openapi({
+        description:
+          'Reference to a file that holds a log of all signer activity for\nthe request.',
+      }),
+      status: z
+        .enum([
+          'converting',
+          'created',
+          'sent',
+          'viewed',
+          'signed',
+          'cancelled',
+          'declined',
+          'error',
+          'error_converting',
+          'error_sending',
+          'expired',
+          'finalizing',
+          'error_finalizing',
+        ])
+        .exactOptional()
+        .openapi({
+          description: 'Describes the status of the signature request.',
+          example: 'converting',
+        }),
+      sign_files: z
+        .object({
+          files: z.array(FileMiniSchema).exactOptional(),
+          is_ready_for_download: z
+            .boolean()
+            .exactOptional()
+            .openapi({
+              description:
+                'Indicates whether the `sign_files` documents are processing\nand the PDFs may be out of date. A change to any document\nrequires processing on all `sign_files`. We\nrecommended waiting until processing is finished\n(and this value is true) before downloading the PDFs.',
+              example: true,
+            }),
+        })
+        .exactOptional()
+        .openapi({
+          description:
+            'List of files that will be signed, which are copies of the original\nsource files. A new version of these files are created as signers sign\nand can be downloaded at any point in the signing process.',
+          required: [],
+        }),
+      auto_expire_at: z.iso
+        .datetime({ offset: true })
+        .nullable()
+        .exactOptional()
+        .openapi({
+          description:
+            'Uses `days_valid` to calculate the date and time, in GMT, the sign request will expire if unsigned.',
+          example: '2021-04-26T08:12:13.982Z',
+        }),
+      parent_folder: FolderMiniSchema.exactOptional().openapi({
+        description:
+          'The destination folder to place final, signed document and signing\nlog.\n\nWhen this value was not passed in when the signature request was\ncreated, then we will use a default folder which is either the parent\nfolder of the first source file in the payload if we have the permission\nto upload to that folder or a folder called "My Sign Requests".',
+      }),
+      collaborator_level: z
+        .string()
+        .nullable()
+        .exactOptional()
+        .openapi({
+          description:
+            'The collaborator level of the user to the sign request. Values can include "owner", "editor", and "viewer".',
+          example: 'owner',
+        }),
+      short_id: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'Short identifier for the sign request.', example: 'SR-12345' }),
+      created_at: z.iso
+        .datetime({ offset: true })
+        .exactOptional()
+        .openapi({
+          description: 'Timestamp marking when the sign request was created.',
+          example: '2025-02-01T12:00:00Z',
+        }),
+      finished_at: z.iso
+        .datetime({ offset: true })
+        .nullable()
+        .exactOptional()
+        .openapi({
+          description: 'Timestamp indicating when all signing actions completed.',
+          example: '2025-02-02T12:00:00Z',
+        }),
+      error_code: z
+        .string()
+        .nullable()
+        .exactOptional()
+        .openapi({
+          description:
+            'When the sign request is in an error state, identifies the specific\nreason. Null when no error code applies.',
+          example: 'cfr11_validation_failed',
+          readOnly: true,
+        }),
+      sender_email: z
+        .string()
+        .nullable()
+        .exactOptional()
+        .openapi({
+          description: 'The email address of the sender of the sign request.',
+          example: 'sender@box.com',
+        }),
+      sender_id: z
+        .int()
+        .nullable()
+        .exactOptional()
+        .openapi({ description: 'The user ID of the sender of the sign request.', example: 12345 }),
+    })
+    .openapi({ required: [] }),
+)
+  .openapi({
+    description: 'A Box Sign request object.',
+    title: 'Box Sign request',
+    'x-box-resource-id': 'sign_request',
+    'x-box-tag': 'sign_requests',
+  })
+  .openapi('SignRequest')
+
+type SignRequestsType = { limit?: bigint; next_marker?: string | null } & {
+  entries?: z.infer<typeof SignRequestSchema>[]
+}
+
+const TemplateSignerInputSchema = SignRequestPrefillTagSchema.and(
+  z.looseObject({}).openapi({ required: ['page_index'] }),
+)
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'page_index')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        type: z
+          .enum(['signature', 'date', 'text', 'checkbox', 'attachment', 'radio', 'dropdown'])
+          .exactOptional()
+          .openapi({ description: 'Type of input.', example: 'text' }),
+        content_type: z
+          .enum([
+            'signature',
+            'initial',
+            'stamp',
+            'date',
+            'checkbox',
+            'text',
+            'full_name',
+            'first_name',
+            'last_name',
+            'company',
+            'title',
+            'email',
+            'attachment',
+            'radio',
+            'dropdown',
+          ])
+          .exactOptional()
+          .openapi({ description: 'Content type of input.', example: 'text' }),
+        is_required: z
+          .boolean()
+          .exactOptional()
+          .openapi({ description: 'Whether or not the input is required.', example: true }),
+        page_index: z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Index of page that the input is on.', example: 4 }),
+        document_id: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: 'Document identifier.',
+            example: '123075213-eb54b537-8b25-445e-87c1-5a1c67d8cbd7',
+          }),
+        dropdown_choices: z
+          .array(z.string())
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'When the input is of the type `dropdown` this\nvalues will be filled with all the\ndropdown options.',
+            example: ['Yes', 'No', 'Maybe'],
+          }),
+        group_id: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'When the input is of type `radio` they can be\ngrouped to gather with this identifier.',
+            example: 'da317330-225a-4c72-89ad-0d6dcaaf4df6',
+          }),
+        coordinates: z
+          .object({
+            x: z
+              .number()
+              .exactOptional()
+              .openapi({
+                description:
+                  'Relative x coordinate to the page the input is on, ranging from 0 to 1.',
+                example: 0.672258592471358,
+              }),
+            y: z
+              .number()
+              .exactOptional()
+              .openapi({
+                description:
+                  'Relative y coordinate to the page the input is on, ranging from 0 to 1.',
+                example: 0.18654283173599448,
+              }),
+          })
+          .exactOptional()
+          .openapi({ description: 'Where the input is located on a page.', required: [] }),
+        dimensions: z
+          .object({
+            width: z
+              .number()
+              .exactOptional()
+              .openapi({
+                description: 'Relative width to the page the input is on, ranging from 0 to 1.',
+                example: 0.2618657937806874,
+              }),
+            height: z
+              .number()
+              .exactOptional()
+              .openapi({
+                description: 'Relative height to the page the input is on, ranging from 0 to 1.',
+                example: 0.05311728090109673,
+              }),
+          })
+          .exactOptional()
+          .openapi({ description: 'The size of the input.', required: [] }),
+        label: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'The label field is used especially for text, attachment, radio, and checkbox type inputs.',
+            example: 'Legal name',
+          }),
+        read_only: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description:
+              'Indicates whether this input is read-only (cannot be modified by signers).',
+            example: true,
+          }),
+        validation: z
+          .union([
+            SignRequestSignerInputValidationSchema,
+            z
+              .strictObject({})
+              .nullable()
+              .openapi({
+                title: 'OpenAPI 3.0 null schema type',
+                description: 'The definition for a null schema type in OpenAPI `3.0`.',
+              }),
+          ])
+          .exactOptional()
+          .openapi({
+            description:
+              'Specifies the formatting rules that signers must follow for text field inputs.\nIf set, this validation is mandatory.',
+            example: { validation_type: 'email' },
+          }),
+      })
+      .openapi({ required: [] }),
+  )
+  .openapi({
+    description: 'Input created by a Signer on a Template.',
+    required: ['page_index'],
+    title: 'Template Signer Input',
+  })
+  .openapi('TemplateSignerInput')
+
+const TemplateSignerVerificationMethodLoginSchema = z
+  .object({
+    type: z
+      .literal('login')
+      .openapi({ description: 'The type of verification method.', example: 'login' }),
+  })
+  .openapi({
+    description:
+      'When used as a verification method the signer will need to \nlog in to a Box account before signing the request. If the \nsigner does not have an existing account, they will have the \noption to create a free Box account.',
+    required: ['type'],
+    title: 'Template Signer Login Verification Method',
+  })
+  .openapi('TemplateSignerVerificationMethodLogin')
+
+const TemplateSignerVerificationMethodPhoneSMSSchema = z
+  .object({
+    type: z
+      .literal('phone')
+      .openapi({ description: 'The type of verification method.', example: 'phone' }),
+  })
+  .openapi({
+    description:
+      'When used as a verification method, prior to signing the document, \nthe signer will have to verify themselves using two-factor \nauthentication by receiving an SMS message on their phone.',
+    required: ['type'],
+    title: 'Template Signer Phone SMS Verification Method',
+  })
+  .openapi('TemplateSignerVerificationMethodPhoneSMS')
+
+const TemplateSignerVerificationMethodCacPivSchema = z
+  .object({
+    type: z
+      .literal('cac_piv')
+      .openapi({ description: 'The type of verification method.', example: 'cac_piv' }),
+  })
+  .openapi({
+    description:
+      'The verification method to be used when user has to verify themselves using a CAC/PIV smart-card.',
+    required: ['type'],
+    title: 'Template Signer CAC/PIV Verification Method',
+  })
+  .openapi('TemplateSignerVerificationMethodCacPiv')
+
+const TemplateSignerVerificationMethodSchema = z
+  .xor([
+    TemplateSignerVerificationMethodLoginSchema,
+    TemplateSignerVerificationMethodPhoneSMSSchema,
+    TemplateSignerVerificationMethodCacPivSchema,
+  ])
+  .openapi({
+    description:
+      'A verification method for a signer in a Sign Request Template.\nThis property can be used instead of the `login_required`, `is_phone_number_required` properties.\nIf this property is used, the `login_required` and `is_phone_number_required` properties will be ignored.',
+    title: 'Verification method for Sign Request Template Signer',
+  })
+  .openapi('TemplateSignerVerificationMethod')
+
+const TemplateSignerSchema = z
+  .object({
+    inputs: z.array(TemplateSignerInputSchema).exactOptional().openapi({ readOnly: true }),
+    email: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Email address of the signer.', example: 'example@mail.com' }),
+    role: z
+      .enum(['signer', 'approver', 'final_copy_reader'])
+      .default('signer')
+      .exactOptional()
+      .openapi({
+        description:
+          'Defines the role of the signer in the signature request. A role of\n`signer` needs to sign the document, a role `approver`\napproves the document and\na `final_copy_reader` role only\nreceives the final signed document and signing log.',
+        example: 'signer',
+      }),
+    is_in_person: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Used in combination with an embed URL for a sender.\nAfter the sender signs, they will be\nredirected to the next `in_person` signer.',
+        example: true,
+      }),
+    order: z
+      .int()
+      .min(0)
+      .exactOptional()
+      .openapi({ description: 'Order of the signer.', example: 2 }),
+    signer_group_id: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'If provided, this value points signers that are assigned the same inputs and belongs to same signer group.\nA signer group is not a Box Group. It is an entity that belongs to the template itself and can only be used\nwithin Box Sign requests created from it.',
+        example: 'cd4ff89-8fc1-42cf-8b29-1890dedd26d7',
+      }),
+    label: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'A placeholder label for the signer set by the template creator to differentiate between signers.',
+        example: 'Jane Doe',
+      }),
+    public_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'An identifier for the signer. This can be used to identify a signer within the template.',
+        example: 'RJZYYVPR',
+      }),
+    is_password_required: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'If true for signers with a defined email, the password provided when the template was created is used by default. \nIf true for signers without a specified / defined email, the creator needs to provide a password when using the template.',
+        example: true,
+      }),
+    is_phone_number_required: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'If true for signers with a defined email, the phone number provided when the template was created is used by default. \nIf true for signers without a specified / defined email, the template creator needs to provide a phone number when creating a request.',
+        example: true,
+      }),
+    login_required: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'If true, the signer is required to login to access the document.',
+        example: true,
+      }),
+    verification_method: z
+      .union([
+        TemplateSignerVerificationMethodSchema,
+        z
+          .strictObject({})
+          .nullable()
+          .openapi({
+            title: 'OpenAPI 3.0 null schema type',
+            description: 'The definition for a null schema type in OpenAPI `3.0`.',
+          }),
+      ])
+      .exactOptional()
+      .openapi({
+        description: 'The verification method for the signer.',
+        example: { type: 'login' },
+      }),
+  })
+  .openapi({
+    description: 'The schema for a Signer for Templates.',
+    title: 'Signer fields for Templates',
+    required: [],
+  })
+  .openapi('TemplateSigner')
+
+const SignTemplateSchema = z
+  .object({
+    type: z
+      .literal('sign-template')
+      .exactOptional()
+      .openapi({
+        description: 'The value will always be `sign-template`.',
+        example: 'sign-template',
+      }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Template identifier.',
+        example: '4206996024-14944f75-c34b-478a-95a1-264b1ff80d35',
+      }),
+    name: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The name of the template.', example: 'Official contract' }),
+    email_subject: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Subject of signature request email. This is cleaned by sign\nrequest. If this field is not passed, a default subject will be used.',
+        example: 'Sign Request from Acme',
+      }),
+    email_message: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Message to include in signature request email. The field\nis cleaned through sanitization of specific characters. However,\nsome html tags are allowed. Links included in the\nmessage are also converted to hyperlinks in the email. The\nmessage may contain the following html tags including `a`, `abbr`,\n`acronym`, `b`, `blockquote`, `code`, `em`, `i`, `ul`, `li`, `ol`, and\n`strong`. Be aware that when the text\nto html ratio is too high, the email\nmay end up in spam filters. Custom styles on\nthese tags are not allowed.\nIf this field is not passed, a default message will be used.',
+        example: 'Hello! Please sign the document below',
+      }),
+    days_valid: z
+      .int()
+      .min(0)
+      .max(730)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Set the number of days after which the\ncreated signature request will automatically\nexpire if not completed. By default, we do\nnot apply any expiration date on signature\nrequests, and the signature request does not expire.',
+        example: 2,
+      }),
+    parent_folder: FolderMiniSchema.exactOptional().openapi({
+      description:
+        'The destination folder to place final, signed document and signing\nlog. Only `ID` and `type` fields are required. The root folder,\nfolder ID `0`, cannot be used.',
+    }),
+    source_files: z
+      .array(FileMiniSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'List of files to create a signing document from.\nOnly the ID and type fields are required\nfor each file.',
+      }),
+    are_fields_locked: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Indicates if the template input\nfields are editable or not.',
+        example: false,
+      }),
+    are_options_locked: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates if the template document options\nare editable or not,\nfor example renaming the document.',
+        example: true,
+      }),
+    are_recipients_locked: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Indicates if the template signers are editable or not.',
+        example: false,
+      }),
+    are_email_settings_locked: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Indicates if the template email settings are editable or not.',
+        example: true,
+      }),
+    are_files_locked: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates if the template files are editable or not.\nThis includes deleting or renaming template files.',
+        example: true,
+      }),
+    signers: z
+      .array(TemplateSignerSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Array of signers for the template.\n\n**Note**: It may happen that some signers specified in the template belong to conflicting [segments](https://developer.box.com/reference/resources/shield-information-barrier-segment-member) (user groups).\nThis means that due to the security policies, users are assigned to segments to prevent exchanges or communication that could lead to ethical conflicts.\nIn such a case, an attempt to send a sign request based on a template that lists signers in conflicting segments will result in an error.\n\nRead more about [segments and ethical walls](https://support.box.com/hc/en-us/articles/9920431507603-Understanding-Information-Barriers#h_01GFVJEHQA06N7XEZ4GCZ9GFAQ).',
+      }),
+    additional_info: z
+      .object({
+        non_editable: z
+          .array(
+            z.enum([
+              'email_subject',
+              'email_message',
+              'name',
+              'days_valid',
+              'signers',
+              'source_files',
+            ]),
+          )
+          .exactOptional()
+          .openapi({ description: 'Non editable fields.', example: ['email_subject', 'name'] }),
+        required: z
+          .object({
+            signers: z
+              .array(z.array(z.literal('email')).openapi({ example: ['email'] }))
+              .exactOptional()
+              .openapi({ description: 'Required signer fields.', example: [['email'], ['email']] }),
+          })
+          .exactOptional()
+          .openapi({ description: 'Required fields.', required: [] }),
+      })
+      .exactOptional()
+      .openapi({
+        description:
+          'Additional information on which fields are\nrequired and which fields are not editable.',
+        required: [],
+      }),
+    ready_sign_link: z
+      .object({
+        url: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'The URL that can be sent to signers.',
+            example:
+              '"https://app.box.com/sign/\nready-sign-link/a1cdf2c7-fa81-4a67-8163-1e5f4dbe5178"',
+          }),
+        name: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Request name.', example: 'Official contract' }),
+        instructions: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: 'Extra instructions for all signers.',
+            example: 'Hello! Please sign the document below',
+          }),
+        folder_id: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'The destination folder to place final,\nsigned document and signing\nlog. Only `ID` and `type` fields are required.\nThe root folder,\nfolder ID `0`, cannot be used.',
+            example: '12345',
+          }),
+        is_notification_disabled: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Whether to disable notifications when\na signer has signed.',
+            example: true,
+          }),
+        is_active: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Whether the ready sign link is enabled or not.',
+            example: false,
+          }),
+      })
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          "Box's ready-sign link feature enables you to create a\nlink to a signature request that\nyou've created from a template. Use this link\nwhen you want to post a signature request\non a public form — such as an email, social media post,\nor web page — without knowing who the signers will be.\nNote: The ready-sign link feature is\nlimited to Enterprise Plus customers and not\navailable to Box Verified Enterprises.",
+        required: [],
+      }),
+    custom_branding: z
+      .object({
+        company_name: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Name of the company.', example: 'Corporation inc.' }),
+        logo_uri: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: 'Custom branding logo URI in the form of a base64 image.',
+            example:
+              'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA\nAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A\n8AAQUBAScY42YAAAAASUVORK5CYII=',
+          }),
+        branding_color: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Custom branding color in hex.', example: '9E5E6F' }),
+        email_footer_text: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: 'Content of the email footer.',
+            example: 'Contact email email@mail.com',
+          }),
+      })
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Custom branding applied to notifications\nand signature requests.',
+        required: [],
+      }),
+    request_flow: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The sign flow of sign requests created from the template. Values can include `standard` or `cfr11`.',
+        example: 'standard',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi({
+    description: 'A Box Sign template object.',
+    title: 'Box Sign template',
+    'x-box-resource-id': 'sign_template',
+    'x-box-tag': 'sign_templates',
+  })
+  .openapi('SignTemplate')
+
+type SignTemplatesType = {
+  limit?: bigint
+  next_marker?: string | null
+  prev_marker?: string | null
+} & { entries?: z.infer<typeof SignTemplateSchema>[] }
+
+const TaskAssignmentSchema = z
+  .object({
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The unique identifier for this task assignment.',
+        example: '11446498',
+      }),
+    type: z
+      .literal('task_assignment')
+      .exactOptional()
+      .openapi({
+        description: 'The value will always be `task_assignment`.',
+        example: 'task_assignment',
+      }),
+    item: FileMiniSchema.exactOptional().openapi({
+      description: 'The file that the task has been assigned to.',
+    }),
+    assigned_to: UserMiniSchema.exactOptional().openapi({
+      description: 'The user that the task has been assigned to.',
+    }),
+    message: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A message that will is included with the task\nassignment. This is visible to the assigned user in the web and mobile\nUI.',
+        example: 'Please review',
+      }),
+    completed_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'The date at which this task assignment was\ncompleted. This will be `null` if the task is not completed yet.',
+        example: '2012-12-12T10:53:43-08:00',
+      }),
+    assigned_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'The date at which this task was assigned to the user.',
+        example: '2012-12-12T10:53:43-08:00',
+      }),
+    reminded_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'The date at which the assigned user was reminded of this task\nassignment.',
+        example: '2012-12-12T10:53:43-08:00',
+      }),
+    resolution_state: z
+      .enum(['completed', 'incomplete', 'approved', 'rejected'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The current state of the assignment. The available states depend on\nthe `action` value of the task object.',
+        example: 'incomplete',
+      }),
+    assigned_by: UserMiniSchema.exactOptional().openapi({
+      description: 'The user who assigned this task.',
+    }),
+  })
+  .openapi({
+    description: 'A task assignment defines which task is assigned to which user to complete.',
+    title: 'Task assignment',
+    'x-box-resource-id': 'task_assignment',
+    'x-box-tag': 'task_assignments',
+    required: [],
+  })
+  .openapi('TaskAssignment')
+
+const TaskAssignmentsSchema = z
+  .object({
+    total_count: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The total number of items in this collection.',
+        example: 100,
+      }),
+    entries: z
+      .array(TaskAssignmentSchema)
+      .exactOptional()
+      .openapi({ description: 'A list of task assignments.' }),
+  })
+  .openapi({
+    description: 'A list of task assignments.',
+    title: 'Task assignments',
+    'x-box-resource-id': 'task_assignments',
+    'x-box-tag': 'task_assignments',
+    required: [],
+  })
+  .openapi('TaskAssignments')
+
+const TaskSchema = z
+  .object({
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The unique identifier for this task.', example: '11446498' }),
+    type: z
+      .literal('task')
+      .exactOptional()
+      .openapi({ description: 'The value will always be `task`.', example: 'task' }),
+    item: FileMiniSchema.exactOptional().openapi({
+      description: 'The file associated with the task.',
+    }),
+    due_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'When the task is due.', example: '2012-12-12T10:53:43-08:00' }),
+    action: z
+      .enum(['review', 'complete'])
+      .exactOptional()
+      .openapi({
+        description: 'The type of task the task assignee will be prompted to\nperform.',
+        example: 'review',
+      }),
+    message: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'A message that will be included with the task.',
+        example: 'Legal review',
+      }),
+    task_assignment_collection: TaskAssignmentsSchema.exactOptional().openapi({
+      description: 'A collection of task assignment objects\nassociated with the task.',
+    }),
+    is_completed: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether the task has been completed.', example: true }),
+    created_by: UserMiniSchema.exactOptional().openapi({
+      description: 'The user who created the task.',
+    }),
+    created_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'When the task object was created.',
+        example: '2012-12-12T10:53:43-08:00',
+      }),
+    completion_rule: z
+      .enum(['all_assignees', 'any_assignee'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Defines which assignees need to complete this task before the task\nis considered completed.\n\n* `all_assignees` requires all assignees to review or\napprove the task in order for it to be considered completed.\n* `any_assignee` accepts any one assignee to review or\napprove the task in order for it to be considered completed.',
+        example: 'all_assignees',
+      }),
+  })
+  .openapi({
+    description:
+      'A task allows for file-centric workflows within Box. Users can\ncreate tasks on files and assign them to other users for them to complete the\ntasks.',
+    title: 'Task',
+    'x-box-resource-id': 'task',
+    'x-box-tag': 'tasks',
+    required: [],
+  })
+  .openapi('Task')
+
+type TasksType = { total_count?: bigint; entries?: z.infer<typeof TaskSchema>[] }
+
+const WorkflowMiniSchema = z
+  .object({
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The unique identifier for the workflow.', example: '11446498' }),
+    type: z
+      .literal('workflow')
+      .exactOptional()
+      .openapi({ description: 'The value will always be `workflow`.', example: 'workflow' }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the workflow.', example: 'New Hire Workflow' }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The description for a workflow.',
+        example: 'This workflow sets off a new hire approval flow',
+      }),
+    is_enabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Specifies if this workflow is enabled.', example: true }),
+  })
+  .openapi({
+    description:
+      'Box Relay Workflows are objects that represent a named collection of flows.\n\nYou application must be authorized to use the `Manage Box Relay` application\nscope within the developer console in order to use this resource.',
+    title: 'Workflow (Mini)',
+    'x-box-resource-id': 'workflow--mini',
+    'x-box-tag': 'workflows',
+    'x-box-variant': 'mini',
+    'x-box-variants': ['mini', 'standard'],
+    required: [],
+  })
+  .openapi('WorkflowMini')
+
+const WorkflowSchema = WorkflowMiniSchema.and(
+  z
+    .object({
+      flows: z
+        .array(
+          z
+            .object({
+              id: z
+                .string()
+                .exactOptional()
+                .openapi({ description: 'The identifier of the flow.', example: '12345' }),
+              type: z
+                .literal('flow')
+                .exactOptional()
+                .openapi({ description: "The flow's resource type.", example: 'flow' }),
+              trigger: z
+                .object({
+                  type: z
+                    .literal('trigger')
+                    .exactOptional()
+                    .openapi({ description: "The trigger's resource type.", example: 'trigger' }),
+                  trigger_type: z
+                    .literal('WORKFLOW_MANUAL_START')
+                    .exactOptional()
+                    .openapi({
+                      description: 'The type of trigger selected for this flow.',
+                      example: 'WORKFLOW_MANUAL_START',
+                    }),
+                  scope: z
+                    .array(
+                      z
+                        .object({
+                          type: z
+                            .literal('trigger_scope')
+                            .exactOptional()
+                            .openapi({
+                              description: "The trigger scope's resource type.",
+                              example: 'trigger_scope',
+                            }),
+                          ref: z
+                            .string()
+                            .exactOptional()
+                            .openapi({
+                              description: 'Indicates the path of the condition value to check.',
+                              example: '/event/source/parameters/folder',
+                            }),
+                          object: z
+                            .object({
+                              type: z
+                                .literal('folder')
+                                .exactOptional()
+                                .openapi({
+                                  description: 'The type of the object.',
+                                  example: 'folder',
+                                }),
+                              id: z
+                                .string()
+                                .exactOptional()
+                                .openapi({
+                                  description: 'The id of the object.',
+                                  example: '12345',
+                                }),
+                            })
+                            .exactOptional()
+                            .openapi({
+                              description: 'The object the `ref` points to.',
+                              required: [],
+                            }),
+                        })
+                        .openapi({
+                          description:
+                            'Object that describes where and how a Trigger condition is met.',
+                          required: [],
+                        }),
+                    )
+                    .exactOptional()
+                    .openapi({ description: 'List of trigger scopes.' }),
+                })
+                .openapi({ required: [] })
+                .exactOptional()
+                .openapi({ description: 'Trigger that initiates flow.' }),
+              outcomes: z
+                .array(
+                  z
+                    .object({
+                      id: z
+                        .string()
+                        .exactOptional()
+                        .openapi({
+                          description: 'The identifier of the outcome.',
+                          example: '12345',
+                        }),
+                      type: z
+                        .literal('outcome')
+                        .exactOptional()
+                        .openapi({
+                          description: 'The outcomes resource type.',
+                          example: 'outcome',
+                        }),
+                      name: z
+                        .string()
+                        .exactOptional()
+                        .openapi({
+                          description: 'The name of the outcome.',
+                          example: 'Task Approval Outcome',
+                        }),
+                      action_type: z
+                        .enum([
+                          'add_metadata',
+                          'assign_task',
+                          'copy_file',
+                          'copy_folder',
+                          'create_folder',
+                          'delete_file',
+                          'delete_folder',
+                          'lock_file',
+                          'move_file',
+                          'move_folder',
+                          'remove_watermark_file',
+                          'rename_folder',
+                          'restore_folder',
+                          'share_file',
+                          'share_folder',
+                          'unlock_file',
+                          'upload_file',
+                          'wait_for_task',
+                          'watermark_file',
+                          'go_back_to_step',
+                          'apply_file_classification',
+                          'apply_folder_classification',
+                          'send_notification',
+                        ])
+                        .openapi({
+                          title: 'Action Type',
+                          example: 'assign_task',
+                          description: 'The type of outcome.',
+                        })
+                        .exactOptional()
+                        .openapi({ description: 'The type of outcome.' }),
+                      if_rejected: z
+                        .array(
+                          z
+                            .object({
+                              id: z
+                                .string()
+                                .exactOptional()
+                                .openapi({
+                                  description: 'The identifier of the outcome.',
+                                  example: '12345',
+                                }),
+                              type: z
+                                .literal('outcome')
+                                .exactOptional()
+                                .openapi({
+                                  description: 'The outcomes resource type.',
+                                  example: 'outcome',
+                                }),
+                              name: z
+                                .string()
+                                .exactOptional()
+                                .openapi({
+                                  description: 'The name of the outcome.',
+                                  example: 'Approval Rejection Outcome',
+                                }),
+                              action_type: z
+                                .enum([
+                                  'add_metadata',
+                                  'assign_task',
+                                  'copy_file',
+                                  'copy_folder',
+                                  'create_folder',
+                                  'delete_file',
+                                  'delete_folder',
+                                  'lock_file',
+                                  'move_file',
+                                  'move_folder',
+                                  'remove_watermark_file',
+                                  'rename_folder',
+                                  'restore_folder',
+                                  'share_file',
+                                  'share_folder',
+                                  'unlock_file',
+                                  'upload_file',
+                                  'wait_for_task',
+                                  'watermark_file',
+                                  'go_back_to_step',
+                                  'apply_file_classification',
+                                  'apply_folder_classification',
+                                  'send_notification',
+                                ])
+                                .openapi({
+                                  title: 'Action Type',
+                                  example: 'assign_task',
+                                  description: 'The type of outcome.',
+                                })
+                                .exactOptional()
+                                .openapi({ description: 'The type of outcome.' }),
+                            })
+                            .openapi({ required: [] }),
+                        )
+                        .exactOptional()
+                        .openapi({
+                          description:
+                            'If `action_type` is `assign_task` and the task is rejected, returns a\nlist of outcomes to complete.',
+                        }),
+                    })
+                    .openapi({
+                      description:
+                        'List of outcomes to perform once the conditions of trigger are met.',
+                      required: [],
+                    }),
+                )
+                .exactOptional()
+                .openapi({ description: 'Actions that are completed once the flow is triggered.' }),
+              created_at: z.iso
+                .datetime({ offset: true })
+                .exactOptional()
+                .openapi({
+                  description: 'When this flow was created.',
+                  example: '2012-12-12T10:53:43-08:00',
+                }),
+              created_by: UserBaseSchema.exactOptional().openapi({
+                description: 'The user who created this flow.',
+              }),
+            })
+            .openapi({
+              description:
+                'A step in a Box Relay Workflow. Each flow contains a `Trigger` and\na collection of Outcomes to perform once the conditions of a\n`Trigger` are met.',
+              required: [],
+            }),
+        )
+        .exactOptional()
+        .openapi({ description: 'A list of flows assigned to a workflow.' }),
+    })
+    .openapi({ required: [] }),
+)
+  .openapi({
+    description:
+      'Box Relay Workflows are objects that represent a named collection of flows.\n\nYour application must be authorized to use the `Manage Box Relay` application\nscope within the developer console in order to use this resource.',
+    title: 'Workflow',
+    'x-box-resource-id': 'workflow',
+    'x-box-tag': 'workflows',
+    'x-box-variant': 'standard',
+  })
+  .openapi('Workflow')
+
+type WorkflowsType = {
+  limit?: bigint
+  next_marker?: string | null
+  prev_marker?: string | null
+} & { entries?: z.infer<typeof WorkflowSchema>[] }
 
 const AccessTokenSchema = z
   .object({
@@ -1290,46 +6474,6 @@ const AiAgentSchema = z
   })
   .openapi('AiAgent')
 
-const UserBaseSchema = z
-  .object({
-    id: z
-      .string()
-      .openapi({ description: 'The unique identifier for this user.', example: '11446498' }),
-    type: z
-      .literal('user')
-      .openapi({ description: 'The value will always be `user`.', example: 'user' }),
-  })
-  .openapi({
-    description: 'A mini representation of a user, used when\nnested within another resource.',
-    required: ['type', 'id'],
-    title: 'User (Base)',
-    'x-box-resource-id': 'user--base',
-    'x-box-tag': 'users',
-    'x-box-variant': 'base',
-    'x-box-variants': ['base', 'mini', 'standard', 'full'],
-  })
-  .openapi('UserBase')
-
-const GroupBaseSchema = z
-  .object({
-    id: z
-      .string()
-      .openapi({ description: 'The unique identifier for this object.', example: '11446498' }),
-    type: z
-      .literal('group')
-      .openapi({ description: 'The value will always be `group`.', example: 'group' }),
-  })
-  .openapi({
-    description: 'A base representation of a group.',
-    required: ['id', 'type'],
-    title: 'Group (Base)',
-    'x-box-resource-id': 'group--base',
-    'x-box-tag': 'groups',
-    'x-box-variant': 'base',
-    'x-box-variants': ['base', 'mini', 'standard', 'full'],
-  })
-  .openapi('GroupBase')
-
 const AiAgentAllowedEntitySchema = z
   .xor([UserBaseSchema, GroupBaseSchema])
   .openapi({
@@ -1524,9 +6668,9 @@ const AiAskSchema = z
         description: 'A flag to indicate whether citations should be returned.',
         example: true,
       }),
-    ai_agent: AiAskAgentSchema.and(
-      z.any().openapi({ description: 'The AI agent to be used to handle the request.' }),
-    ).exactOptional(),
+    ai_agent: AiAskAgentSchema.exactOptional().openapi({
+      description: 'The AI agent to be used to handle the request.',
+    }),
   })
   .openapi({
     description: 'AI ask request object.',
@@ -1624,9 +6768,9 @@ const AiExtractSchema = z
       .openapi({
         description: 'The items that LLM will process. Currently, you can use files only.',
       }),
-    ai_agent: AiExtractAgentSchema.and(
-      z.any().openapi({ description: 'The AI agent to be used for the extraction.' }),
-    ).exactOptional(),
+    ai_agent: AiExtractAgentSchema.exactOptional().openapi({
+      description: 'The AI agent to be used for the extraction.',
+    }),
   })
   .openapi({
     description: 'AI metadata freeform extraction request object.',
@@ -1964,14 +7108,10 @@ const AiExtractStructuredSchema = z
         description:
           'The fields to be extracted from the provided items.\nFor your request to work, you must provide either `metadata_template` or `fields`, but not both.',
       }),
-    ai_agent: AiExtractStructuredAgentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The AI agent to be used for the structured extraction. Defaults to the Standard Agent if not specified. If you want to use Enhanced Extract Agent, see [Enhanced Extract Agent](https://developer.box.com/guides/box-ai/ai-tutorials/extract-metadata-structured#enhanced-extract-agent) for details.',
-        }),
-    ).exactOptional(),
+    ai_agent: AiExtractStructuredAgentSchema.exactOptional().openapi({
+      description:
+        'The AI agent to be used for the structured extraction. Defaults to the Standard Agent if not specified. If you want to use Enhanced Extract Agent, see [Enhanced Extract Agent](https://developer.box.com/guides/box-ai/ai-tutorials/extract-metadata-structured#enhanced-extract-agent) for details.',
+    }),
     include_confidence_score: z
       .boolean()
       .exactOptional()
@@ -2198,7 +7338,7 @@ const AiStudioAgentBasicTextToolResponseSchema = AiStudioAgentBasicTextToolSchem
   })
   .openapi('AiStudioAgentBasicTextToolResponse')
 
-const AiStudioAgentSpreadsheetToolSchema = AiAgentSpreadsheetToolSchema.and(z.object({}))
+const AiStudioAgentSpreadsheetToolSchema = AiAgentSpreadsheetToolSchema.and(z.looseObject({}))
   .openapi({
     description: 'The AI agent tool used to handle spreadsheets and tabular data.',
     title: 'AI agent spreadsheet tool',
@@ -2405,14 +7545,33 @@ const AiStudioAgentExtractResponseSchema = z
   .openapi('AiStudioAgentExtractResponse')
 
 const AiSingleAgentResponseFullSchema = AiSingleAgentResponseSchema.and(
-  z
-    .object({
-      ask: AiStudioAgentAskResponseSchema.exactOptional(),
-      text_gen: AiStudioAgentTextGenResponseSchema.exactOptional(),
-      extract: AiStudioAgentExtractResponseSchema.exactOptional(),
-    })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['id', 'origin', 'name', 'access_state'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'origin')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'name')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'access_state')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        ask: AiStudioAgentAskResponseSchema.exactOptional(),
+        text_gen: AiStudioAgentTextGenResponseSchema.exactOptional(),
+        extract: AiStudioAgentExtractResponseSchema.exactOptional(),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Full representation of an AI Agent instance.',
     required: ['id', 'origin', 'name', 'access_state'],
@@ -2464,6 +7623,14 @@ const AiMultipleAgentResponseSchema = z
   .openapi({
     description: 'The part of an API response that describes marker\nbased pagination.',
     required: [],
+  })
+  .and(z.looseObject({}).openapi({ required: ['entries'] }))
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'entries')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
   })
   .and(
     z
@@ -2517,15 +7684,28 @@ const AiResponseSchema = z
   .openapi('AiResponse')
 
 const AiResponseFullSchema = AiResponseSchema.and(
-  z
-    .object({
-      citations: z
-        .array(AiCitationSchema)
-        .exactOptional()
-        .openapi({ description: "The citations of the LLM's answer reference." }),
-    })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['answer', 'created_at'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'answer')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'created_at')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        citations: z
+          .array(AiCitationSchema)
+          .exactOptional()
+          .openapi({ description: "The citations of the LLM's answer reference." }),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'AI ask response.',
     required: ['answer', 'created_at'],
@@ -2739,9 +7919,9 @@ const AiTextGenSchema = z
         description:
           'The history of prompts and answers previously passed to the LLM. This parameter provides the additional context to the LLM when generating the response.',
       }),
-    ai_agent: AiTextGenAgentSchema.and(
-      z.any().openapi({ description: 'The AI agent to be used for generating text.' }),
-    ).exactOptional(),
+    ai_agent: AiTextGenAgentSchema.exactOptional().openapi({
+      description: 'The AI agent to be used for generating text.',
+    }),
   })
   .openapi({
     description: 'AI text gen request object.',
@@ -2773,34 +7953,6 @@ const AppItemSchema = z
   })
   .openapi('AppItem')
 
-const WebLinkBaseSchema = z
-  .object({
-    id: z
-      .string()
-      .openapi({ description: 'The unique identifier for this web link.', example: '11446498' }),
-    type: z
-      .literal('web_link')
-      .openapi({ description: 'The value will always be `web_link`.', example: 'web_link' }),
-    etag: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The entity tag of this web link. Used with `If-Match`\nheaders.',
-        example: '1',
-      }),
-  })
-  .openapi({
-    description:
-      'Web links are objects that point to URLs. These objects\nare also known as bookmarks within the Box web application.\n\nWeb link objects are treated similarly to file objects,\nthey will also support most actions that apply to regular files.',
-    required: ['id', 'type'],
-    title: 'Web link (Base)',
-    'x-box-resource-id': 'web_link--base',
-    'x-box-tag': 'web_links',
-    'x-box-variant': 'base',
-    'x-box-variants': ['base', 'mini', 'standard'],
-  })
-  .openapi('WebLinkBase')
-
 const AppItemAssociatedItemSchema = z
   .xor([FileBaseSchema, FolderBaseSchema, WebLinkBaseSchema])
   .openapi({
@@ -2823,9 +7975,9 @@ const AppItemAssociationSchema = z
         description: 'The value will always be `app_item_association`.',
         example: 'app_item_association',
       }),
-    app_item: AppItemSchema.and(
-      z.any().openapi({ description: 'The app item which is associated with the file or folder.' }),
-    ),
+    app_item: AppItemSchema.openapi({
+      description: 'The app item which is associated with the file or folder.',
+    }),
     item: AppItemAssociatedItemSchema,
   })
   .openapi({
@@ -2891,84 +8043,6 @@ const AppItemAssociationsSchema = z
     'x-box-tag': 'app_item_associations',
   })
   .openapi('AppItemAssociations')
-
-const UserMiniSchema = UserBaseSchema.and(
-  z
-    .object({
-      name: z
-        .string()
-        .max(50)
-        .exactOptional()
-        .openapi({ description: 'The display name of this user.', example: 'Aaron Levie' }),
-      login: z
-        .email()
-        .exactOptional()
-        .openapi({
-          description: 'The primary email address of this user.',
-          example: 'ceo@example.com',
-        }),
-    })
-    .openapi({ required: [] }),
-)
-  .openapi({
-    description:
-      'A mini representation of a user, as can be returned when nested within other\nresources.',
-    title: 'User (Mini)',
-    'x-box-resource-id': 'user--mini',
-    'x-box-tag': 'users',
-    'x-box-variant': 'mini',
-  })
-  .openapi('UserMini')
-
-const GroupMiniSchema = GroupBaseSchema.and(
-  z
-    .object({
-      name: z
-        .string()
-        .exactOptional()
-        .openapi({ description: 'The name of the group.', example: 'Support' }),
-      group_type: z
-        .enum(['managed_group', 'all_users_group'])
-        .exactOptional()
-        .openapi({ description: 'The type of the group.', example: 'managed_group' }),
-    })
-    .openapi({ required: [] }),
-)
-  .openapi({
-    description: 'Mini representation of a group, including id and name of\ngroup.',
-    title: 'Group (Mini)',
-    'x-box-resource-id': 'group--mini',
-    'x-box-tag': 'groups',
-    'x-box-variant': 'mini',
-  })
-  .openapi('GroupMini')
-
-const AppItemEventSourceSchema = z
-  .object({
-    id: z.string().openapi({ description: 'The id of the `AppItem`.', example: '6374669741' }),
-    type: z
-      .literal('app_item')
-      .openapi({
-        description: 'The type of the source that this event represents. Can only be `app_item`.',
-        example: 'app_item',
-      }),
-    app_item_type: z
-      .string()
-      .openapi({ description: 'The type of the `AppItem`.', example: 'hubs' }),
-    user: UserMiniSchema.and(
-      z.any().openapi({ description: 'The user that triggered the event.' }),
-    ).exactOptional(),
-    group: GroupMiniSchema.and(
-      z.any().openapi({ description: 'The group that triggered the event.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'The AppItem that triggered an event in the event stream.',
-    required: ['id', 'type', 'app_item_type'],
-    title: 'AppItem event source',
-    'x-box-resource-id': 'app_item_event_source',
-  })
-  .openapi('AppItemEventSource')
 
 const ClassificationSchema = z
   .object({
@@ -3287,43 +8361,6 @@ const ClientErrorSchema = z
   })
   .openapi('ClientError')
 
-const WebLinkMiniSchema = WebLinkBaseSchema.and(
-  z
-    .object({
-      url: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'The URL this web link points to.',
-          example: 'https://www.example.com/example/1234',
-        }),
-      sequence_id: z
-        .string()
-        .nullable()
-        .openapi({
-          example: '3',
-          description:
-            'A numeric identifier that represents the most recent user event\nthat has been applied to this item.\n\nThis can be used in combination with the `GET /events`-endpoint\nto filter out user events that would have occurred before this\nidentifier was read.\n\nAn example would be where a Box Drive-like application\nwould fetch an item via the API, and then listen to incoming\nuser events for changes to the item. The application would\nignore any user events where the `sequence_id` in the event\nis smaller than or equal to the `sequence_id` in the originally\nfetched resource.',
-        })
-        .and(z.any())
-        .exactOptional(),
-      name: z
-        .string()
-        .exactOptional()
-        .openapi({ description: 'The name of the web link.', example: 'My Bookmark' }),
-    })
-    .openapi({ required: [] }),
-)
-  .openapi({
-    description:
-      'Web links are objects that point to URLs. These objects\nare also known as bookmarks within the Box web application.\n\nWeb link objects are treated similarly to file objects,\nthey will also support most actions that apply to regular files.',
-    title: 'Web link (Mini)',
-    'x-box-resource-id': 'web_link--mini',
-    'x-box-tag': 'web_links',
-    'x-box-variant': 'mini',
-  })
-  .openapi('WebLinkMini')
-
 const CollaborationItemSchema = z
   .xor([FileMiniSchema, FolderMiniSchema, WebLinkMiniSchema])
   .openapi({
@@ -3420,26 +8457,18 @@ const CollaborationSchema = z
         description: 'The value will always be `collaboration`.',
         example: 'collaboration',
       }),
-    item: CollaborationItemSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The file or folder to which access is granted. The field is\n`null` when the collaboration `status` is `pending` or the\ncollaboration is created on an app item (see `app_item` field).',
-        }),
-    )
-      .nullable()
-      .exactOptional(),
-    app_item: AppItemSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An `app_item` to which access is granted. The field is `null`\nwhen the collaboration is created on an item (see `item`\nfield), or the `app_item` is inaccessible. The role cascades\nto all items associated with the `app_item`.',
-        }),
-    )
-      .nullable()
-      .exactOptional(),
+    item: CollaborationItemSchema.nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The file or folder to which access is granted. The field is\n`null` when the collaboration `status` is `pending` or the\ncollaboration is created on an app item (see `app_item` field).',
+      }),
+    app_item: AppItemSchema.nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'An `app_item` to which access is granted. The field is `null`\nwhen the collaboration is created on an item (see `item`\nfield), or the `app_item` is inaccessible. The role cascades\nto all items associated with the `app_item`.',
+      }),
     accessible_by: CollaborationAccessGranteeSchema.exactOptional(),
     invite_email: z
       .string()
@@ -3495,22 +8524,15 @@ const CollaborationSchema = z
           'When the `status` of the collaboration object changed to\n`accepted` or `rejected`.',
         example: '2012-12-12T10:55:20-08:00',
       }),
-    created_by: UserCollaborationsSchema.and(
-      z.any().openapi({ description: 'The user who created the collaboration object.' }),
-    )
-      .and(
-        z
-          .any()
-          .openapi({
-            example: [
-              { id: 33224412 },
-              { type: 'user' },
-              { login: 'dylan@example.com' },
-              { name: 'Dylan Smith' },
-            ],
-          }),
-      )
-      .exactOptional(),
+    created_by: UserCollaborationsSchema.exactOptional().openapi({
+      description: 'The user who created the collaboration object.',
+      example: [
+        { id: 33224412 },
+        { type: 'user' },
+        { login: 'dylan@example.com' },
+        { name: 'Dylan Smith' },
+      ],
+    }),
     created_at: z.iso
       .datetime({ offset: true })
       .exactOptional()
@@ -3538,14 +8560,10 @@ const CollaborationSchema = z
                   'Whether or not the terms of service have been accepted.  The\nfield is `null` when there is no terms of service required.',
                 example: true,
               }),
-            terms_of_service: TermsOfServiceBaseSchema.and(
-              z
-                .any()
-                .openapi({
-                  description:
-                    'The terms of service that must be accepted before the\ncollaboration can be accepted. The field is `null` when\nthere is no terms of service required.',
-                }),
-            ).exactOptional(),
+            terms_of_service: TermsOfServiceBaseSchema.exactOptional().openapi({
+              description:
+                'The terms of service that must be accepted before the\ncollaboration can be accepted. The field is `null` when\nthere is no terms of service required.',
+            }),
           })
           .exactOptional()
           .openapi({ required: [] }),
@@ -3654,8 +8672,8 @@ const CollaborationAllowlistEntrySchema = z
         description: 'A representation of a Box enterprise.',
         required: [],
       })
-      .and(z.any().openapi({ description: 'The enterprise this list is applied to.' }))
-      .exactOptional(),
+      .exactOptional()
+      .openapi({ description: 'The enterprise this list is applied to.' }),
     created_at: z.iso
       .datetime({ offset: true })
       .exactOptional()
@@ -3772,11 +8790,9 @@ const CollaborationAllowlistExemptTargetSchema = z
         description: 'A representation of a Box enterprise.',
         required: [],
       })
-      .and(z.any().openapi({ description: 'The enterprise this entry belongs to.' }))
-      .exactOptional(),
-    user: UserMiniSchema.and(
-      z.any().openapi({ description: 'The user that has been exempt.' }),
-    ).exactOptional(),
+      .exactOptional()
+      .openapi({ description: 'The enterprise this entry belongs to.' }),
+    user: UserMiniSchema.exactOptional().openapi({ description: 'The user that has been exempt.' }),
     created_at: z.iso
       .datetime({ offset: true })
       .exactOptional()
@@ -4033,39 +9049,6 @@ const CollaboratorVariableSchema = z
   })
   .openapi('CollaboratorVariable')
 
-const CollectionSchema = z
-  .object({
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The unique identifier for this collection.', example: '11446498' }),
-    type: z
-      .literal('collection')
-      .exactOptional()
-      .openapi({ description: 'The value will always be `collection`.', example: 'collection' }),
-    name: z
-      .literal('Favorites')
-      .exactOptional()
-      .openapi({ description: 'The name of the collection.', example: 'Favorites' }),
-    collection_type: z
-      .literal('favorites')
-      .exactOptional()
-      .openapi({
-        description:
-          'The type of the collection. This is used to\ndetermine the proper visual treatment for\ncollections.',
-        example: 'favorites',
-      }),
-  })
-  .openapi({
-    description:
-      'A collection of items, including files and folders.\n\nCurrently, the only collection available\nis the `favorites` collection.\n\nThe contents of a collection can be explored in a\nsimilar way to which the contents of a folder is\nexplored.',
-    title: 'Collection',
-    'x-box-resource-id': 'collection',
-    'x-box-tag': 'collections',
-    required: [],
-  })
-  .openapi('Collection')
-
 const CollectionsSchema = z
   .object({
     total_count: z
@@ -4204,11 +9187,9 @@ const CommentSchema = CommentBaseSchema.and(
           description: 'The text of the comment, as provided by the user.',
           example: '@Aaron Levie these tigers are cool!',
         }),
-      created_by: UserMiniSchema.and(
-        z
-          .any()
-          .openapi({ description: 'A mini user object representing the author of the\ncomment.' }),
-      ).exactOptional(),
+      created_by: UserMiniSchema.exactOptional().openapi({
+        description: 'A mini user object representing the author of the\ncomment.',
+      }),
       created_at: z.iso
         .datetime({ offset: true })
         .exactOptional()
@@ -4242,8 +9223,8 @@ const CommentSchema = CommentBaseSchema.and(
           description: 'The bare basic reference for an object.',
           required: [],
         })
-        .and(z.any().openapi({ description: 'The file this comment was placed on.' }))
-        .exactOptional(),
+        .exactOptional()
+        .openapi({ description: 'The file this comment was placed on.' }),
     })
     .openapi({ required: [] }),
 )
@@ -4503,9 +9484,9 @@ const DevicePinnerSchema = z
         description: 'The value will always be `device_pinner`.',
         example: 'device_pinner',
       }),
-    owned_by: UserMiniSchema.and(
-      z.any().openapi({ description: 'The user that the device pin belongs to.' }),
-    ).exactOptional(),
+    owned_by: UserMiniSchema.exactOptional().openapi({
+      description: 'The user that the device pin belongs to.',
+    }),
     product_name: z
       .string()
       .exactOptional()
@@ -4674,2511 +9655,7 @@ const EnterpriseBaseSchema = z
   })
   .openapi('EnterpriseBase')
 
-const UserSchema = UserMiniSchema.and(
-  z
-    .object({
-      created_at: z.iso
-        .datetime({ offset: true })
-        .exactOptional()
-        .openapi({
-          description: 'When the user object was created.',
-          example: '2012-12-12T10:53:43-08:00',
-        }),
-      modified_at: z.iso
-        .datetime({ offset: true })
-        .exactOptional()
-        .openapi({
-          description: 'When the user object was last modified.',
-          example: '2012-12-12T10:53:43-08:00',
-        }),
-      language: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description:
-            'The language of the user, formatted in modified version of the\n[ISO 639-1](https://developer.box.com/guides/api-calls/language-codes) format.',
-          example: 'en',
-        }),
-      timezone: z
-        .string()
-        .exactOptional()
-        .openapi({ description: "The user's timezone.", example: 'Africa/Bujumbura' }),
-      space_amount: z
-        .preprocess(
-          (val) =>
-            typeof val === 'number' && Number.isSafeInteger(val)
-              ? BigInt(val)
-              : typeof val === 'string' && /^-?\d+$/.test(val)
-                ? BigInt(val)
-                : val,
-          z.int64(),
-        )
-        .exactOptional()
-        .openapi({
-          type: 'integer',
-          format: 'int64',
-          description: 'The user’s total available space amount in bytes.',
-          example: 11345156112,
-        }),
-      space_used: z
-        .preprocess(
-          (val) =>
-            typeof val === 'number' && Number.isSafeInteger(val)
-              ? BigInt(val)
-              : typeof val === 'string' && /^-?\d+$/.test(val)
-                ? BigInt(val)
-                : val,
-          z.int64(),
-        )
-        .exactOptional()
-        .openapi({
-          type: 'integer',
-          format: 'int64',
-          description: 'The amount of space in use by the user.',
-          example: 1237009912,
-        }),
-      max_upload_size: z
-        .preprocess(
-          (val) =>
-            typeof val === 'number' && Number.isSafeInteger(val)
-              ? BigInt(val)
-              : typeof val === 'string' && /^-?\d+$/.test(val)
-                ? BigInt(val)
-                : val,
-          z.int64(),
-        )
-        .exactOptional()
-        .openapi({
-          type: 'integer',
-          format: 'int64',
-          description: 'The maximum individual file size in bytes the user can have.',
-          example: 2147483648,
-        }),
-      status: z
-        .enum(['active', 'inactive', 'cannot_delete_edit', 'cannot_delete_edit_upload'])
-        .exactOptional()
-        .openapi({ description: "The user's account status.", example: 'active' }),
-      job_title: z
-        .string()
-        .max(100)
-        .exactOptional()
-        .openapi({ description: 'The user’s job title.', example: 'CEO' }),
-      phone: z
-        .string()
-        .max(100)
-        .exactOptional()
-        .openapi({ description: 'The user’s phone number.', example: '6509241374' }),
-      address: z
-        .string()
-        .max(255)
-        .exactOptional()
-        .openapi({
-          description: 'The user’s address.',
-          example: '900 Jefferson Ave, Redwood City, CA 94063',
-        }),
-      avatar_url: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'URL of the user’s avatar image.',
-          example: 'https://www.box.com/api/avatar/large/181216415',
-        }),
-      notification_email: z
-        .object({
-          email: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'The email address to send the notifications to.',
-              example: 'notifications@example.com',
-            }),
-          is_confirmed: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Specifies if this email address has been confirmed.',
-              example: true,
-            }),
-        })
-        .nullable()
-        .exactOptional()
-        .openapi({
-          description:
-            "An alternate notification email address to which email\nnotifications are sent. When it's confirmed, this will be\nthe email address to which notifications are sent instead of\nto the primary email address.",
-          required: [],
-        }),
-    })
-    .openapi({ required: [] }),
-)
-  .openapi({
-    description:
-      'A standard representation of a user, as returned from any\nuser API endpoints by default.',
-    title: 'User',
-    'x-box-resource-id': 'user',
-    'x-box-tag': 'users',
-    'x-box-variant': 'standard',
-  })
-  .openapi('User')
-
-const EventSourceSchema = z
-  .object({
-    item_type: z
-      .enum(['file', 'folder'])
-      .openapi({
-        description: 'The type of the item that the event\nrepresents. Can be `file` or `folder`.',
-        example: 'file',
-      }),
-    item_id: z
-      .string()
-      .openapi({
-        description: 'The unique identifier that represents the\nitem.',
-        example: '560284318361',
-      }),
-    item_name: z.string().openapi({ description: 'The name of the item.', example: 'report.pdf' }),
-    classification: z
-      .object({
-        name: z
-          .string()
-          .exactOptional()
-          .openapi({ description: "The classification's name.", example: 'Top Secret' }),
-      })
-      .exactOptional()
-      .openapi({
-        description:
-          'The object containing classification information for the item that\ntriggered the event. This field will not appear if the item does not\nhave a classification set.',
-        required: [],
-      }),
-    parent: FolderMiniSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The optional folder that this folder is located within.\n\nThis value may be `null` for some folders such as the\nroot folder or the trash folder.',
-        }),
-    )
-      .nullable()
-      .exactOptional(),
-    owned_by: UserMiniSchema.and(z.any().openapi({ description: 'The user who owns this item.' }))
-      .and(z.any())
-      .exactOptional(),
-  })
-  .openapi({
-    description: 'The source file or folder that triggered an event in\nthe event stream.',
-    required: ['item_type', 'item_id', 'item_name'],
-    title: 'Event source',
-    'x-box-resource-id': 'event_source',
-  })
-  .openapi('EventSource')
-
-const SharedLinkOtpAllowlistEntrySchema = z
-  .object({
-    type: z
-      .enum(['email', 'domain'])
-      .openapi({
-        description:
-          'The kind of allowlist entry.\n\n* `email` - The entry matches a single email address.\n* `domain` - The entry matches every email address under the\n  given domain.',
-        example: 'email',
-      }),
-    value: z
-      .string()
-      .openapi({
-        description:
-          'The value of the allowlist entry.\n\n* For `email` entries, the full email address (must contain `@`).\n* For `domain` entries, the bare domain (e.g. `example.com`).',
-        example: 'alice@example.com',
-      }),
-    created_at: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'The date and time when the allowlist entry was added.',
-        example: '2026-05-19T12:00:00Z',
-      }),
-    created_by: UserBaseSchema.and(z.any().openapi({ description: 'User who added this entry.' })),
-  })
-  .openapi({
-    description:
-      'An entry on the OTP allowlist for a shared link. The entry can match\neither a specific email address or every email address that belongs to\na domain.',
-    required: ['type', 'value', 'created_at', 'created_by'],
-    title: 'Shared link OTP allowlist entry',
-  })
-  .openapi('SharedLinkOtpAllowlistEntry')
-
-const FileSchema = FileMiniSchema.and(
-  z
-    .object({
-      description: z
-        .string()
-        .max(255)
-        .exactOptional()
-        .openapi({
-          description:
-            'The optional description of this file.\nIf the description exceeds 255 characters, the first 255 characters\nare set as a file description and the rest of it is ignored.',
-          example: 'Contract for Q1 renewal',
-        }),
-      size: z
-        .int()
-        .exactOptional()
-        .openapi({
-          description:
-            'The file size in bytes. Be careful parsing this integer as it can\nget very large and cause an integer overflow.',
-          example: 629644,
-        }),
-      path_collection: z
-        .object({
-          total_count: z
-            .preprocess(
-              (val) =>
-                typeof val === 'number' && Number.isSafeInteger(val)
-                  ? BigInt(val)
-                  : typeof val === 'string' && /^-?\d+$/.test(val)
-                    ? BigInt(val)
-                    : val,
-              z.int64(),
-            )
-            .openapi({
-              type: 'integer',
-              format: 'int64',
-              description: 'The number of folders in this list.',
-              example: 1,
-            }),
-          entries: z
-            .array(FolderMiniSchema)
-            .openapi({ description: 'The parent folders for this item.' }),
-        })
-        .openapi({
-          title: 'Path collection',
-          description: 'A list of parent folders for an item.',
-          required: ['total_count', 'entries'],
-        })
-        .and(
-          z
-            .any()
-            .openapi({
-              description:
-                'The tree of folders that this file is contained in,\nstarting at the root.',
-            }),
-        )
-        .and(z.any())
-        .exactOptional(),
-      created_at: z.iso
-        .datetime({ offset: true })
-        .exactOptional()
-        .openapi({
-          description: 'The date and time when the file was created on Box.',
-          example: '2012-12-12T10:53:43-08:00',
-        }),
-      modified_at: z.iso
-        .datetime({ offset: true })
-        .exactOptional()
-        .openapi({
-          description: 'The date and time when the file was last updated on Box.',
-          example: '2012-12-12T10:53:43-08:00',
-        }),
-      trashed_at: z.iso
-        .datetime({ offset: true })
-        .nullable()
-        .exactOptional()
-        .openapi({
-          description: 'The time at which this file was put in the trash.',
-          example: '2012-12-12T10:53:43-08:00',
-        }),
-      purged_at: z.iso
-        .datetime({ offset: true })
-        .nullable()
-        .exactOptional()
-        .openapi({
-          description: 'The time at which this file is expected to be purged\nfrom the trash.',
-          example: '2012-12-12T10:53:43-08:00',
-        }),
-      content_created_at: z.iso
-        .datetime({ offset: true })
-        .nullable()
-        .exactOptional()
-        .openapi({
-          description:
-            'The date and time at which this file was originally\ncreated, which might be before it was uploaded to Box.',
-          example: '2012-12-12T10:53:43-08:00',
-        }),
-      content_modified_at: z.iso
-        .datetime({ offset: true })
-        .nullable()
-        .exactOptional()
-        .openapi({
-          description:
-            'The date and time at which this file was last updated,\nwhich might be before it was uploaded to Box.',
-          example: '2012-12-12T10:53:43-08:00',
-        }),
-      created_by: UserMiniSchema.and(
-        z.any().openapi({ description: 'The user who created this file.' }),
-      ).exactOptional(),
-      modified_by: UserMiniSchema.and(
-        z.any().openapi({ description: 'The user who last modified this file.' }),
-      )
-        .and(z.any())
-        .exactOptional(),
-      owned_by: UserMiniSchema.and(z.any().openapi({ description: 'The user who owns this file.' }))
-        .and(z.any())
-        .exactOptional(),
-      shared_link: z
-        .object({
-          url: z
-            .url()
-            .openapi({
-              description:
-                "The URL that can be used to access the item on Box.\n\nThis URL will display the item in Box's preview UI where the file\ncan be downloaded if allowed.\n\nThis URL will continue to work even when a custom `vanity_url`\nhas been set for this shared link.",
-              example: 'https://www.box.com/s/vspke7y05sb214wjokpk',
-            }),
-          download_url: z
-            .url()
-            .nullable()
-            .exactOptional()
-            .openapi({
-              description:
-                'A URL that can be used to download the file. This URL can be used in\na browser to download the file. This URL includes the file\nextension so that the file will be saved with the right file type.\n\nThis property will be `null` for folders.',
-              example: 'https://www.box.com/shared/static/rh935iit6ewrmw0unyul.jpeg',
-              'x-box-premium-feature': true,
-            }),
-          vanity_url: z
-            .url()
-            .nullable()
-            .exactOptional()
-            .openapi({
-              description:
-                'The "Custom URL" that can also be used to preview the item on Box.  Custom\nURLs can only be created or modified in the Box Web application.',
-              example: 'https://acme.app.box.com/v/my_url/',
-            }),
-          vanity_name: z
-            .string()
-            .nullable()
-            .exactOptional()
-            .openapi({
-              description: 'The custom name of a shared link, as used in the `vanity_url` field.',
-              example: 'my_url',
-            }),
-          access: z
-            .enum(['open', 'company', 'collaborators'])
-            .exactOptional()
-            .openapi({
-              description:
-                'The access level for this shared link.\n\n* `open` - provides access to this item to anyone with this link\n* `company` - only provides access to this item to people the same company\n* `collaborators` - only provides access to this item to people who are\n   collaborators on this item\n\nIf this field is omitted when creating the shared link, the access level\nwill be set to the default access level specified by the enterprise admin.',
-              example: 'open',
-            }),
-          effective_access: z
-            .enum(['open', 'company', 'collaborators'])
-            .openapi({
-              description:
-                'The effective access level for the shared link. This can be a more\nrestrictive access level than the value in the `access` field when the\nenterprise settings restrict the allowed access levels.',
-              example: 'company',
-            }),
-          effective_permission: z
-            .enum(['can_edit', 'can_download', 'can_preview', 'no_access'])
-            .openapi({
-              description:
-                'The effective permissions for this shared link.\nThese result in the more restrictive combination of\nthe share link permissions and the item permissions set\nby the administrator, the owner, and any ancestor item\nsuch as a folder.',
-              example: 'can_download',
-            }),
-          unshared_at: z.iso
-            .datetime({ offset: true })
-            .nullable()
-            .exactOptional()
-            .openapi({
-              description:
-                'The date and time when this link will be unshared. This field can only be\nset by users with paid accounts.',
-              example: '2018-04-13T13:53:23-07:00',
-            }),
-          is_password_enabled: z
-            .boolean()
-            .openapi({
-              description: 'Defines if the shared link requires a password to access the item.',
-              example: true,
-            }),
-          permissions: z
-            .object({
-              can_download: z
-                .boolean()
-                .openapi({
-                  description:
-                    'Defines if the shared link allows for the item to be downloaded. For\nshared links on folders, this also applies to any items in the folder.\n\nThis value can be set to `true` when the effective access level is\nset to `open` or `company`, not `collaborators`.',
-                  example: true,
-                }),
-              can_preview: z
-                .boolean()
-                .openapi({
-                  description:
-                    'Defines if the shared link allows for the item to be previewed.\n\nThis value is always `true`. For shared links on folders this also\napplies to any items in the folder.',
-                  example: true,
-                }),
-              can_edit: z
-                .boolean()
-                .openapi({
-                  description:
-                    'Defines if the shared link allows for the item to be edited.\n\nThis value can only be `true` if `can_download` is also `true` and if\nthe item has a type of `file`.',
-                  example: false,
-                }),
-            })
-            .exactOptional()
-            .openapi({
-              description:
-                'Defines if this link allows a user to preview, edit, and download an item.\nThese permissions refer to the shared link only and\ndo not supersede permissions applied to the item itself.',
-              required: ['can_download', 'can_preview', 'can_edit'],
-            }),
-          download_count: z
-            .int()
-            .openapi({
-              description: 'The number of times this item has been downloaded.',
-              example: 3,
-            }),
-          preview_count: z
-            .int()
-            .openapi({
-              description: 'The number of times this item has been previewed.',
-              example: 3,
-            }),
-          one_time_passcode: z
-            .object({
-              mode: z
-                .string()
-                .openapi({
-                  description:
-                    'The current OTP enforcement mode for the shared link.\n\n* `none` - OTP enforcement is turned off. The shared link is accessible\n  without any one-time-passcode verification.\n* `open` - Any anonymous recipient can request a one-time-passcode to\n  any email address and access the shared link after verifying it.\n  Collaborators and registered Box users access the link without\n  being prompted.\n* `allowlist` - Anonymous recipients can request a one-time-passcode\n  only when they enter an email that matches an entry on the\n  `allowlist`.',
-                  example: 'allowlist',
-                }),
-              allowlist: z
-                .array(SharedLinkOtpAllowlistEntrySchema)
-                .max(1000)
-                .exactOptional()
-                .openapi({
-                  description:
-                    'The list of email and domain entries that are permitted to access the\nshared link when `mode` is `allowlist`. Anonymous users whose\nemail matches an entry can request and verify a one-time-passcode.\n\nBecause the entries carry recipient email addresses and the identity\nof the user who added them, this field is only returned to users\nwith owner, co-owner, or editor access on the item. For viewer\ncollaborators and below the field is omitted.\n\nAn allowlist contains at most 1000 entries, matching the limit\nenforced when setting the allowlist on a shared link.',
-                  example: [
-                    {
-                      type: 'email',
-                      value: 'alice@example.com',
-                      created_at: '2026-05-19T12:00:00Z',
-                      created_by: { id: '11446498', type: 'user' },
-                    },
-                    {
-                      type: 'domain',
-                      value: 'example.com',
-                      created_at: '2026-05-19T12:00:00Z',
-                      created_by: { id: '11446498', type: 'user' },
-                    },
-                  ],
-                }),
-            })
-            .openapi({
-              title: 'Shared link OTP settings',
-              description:
-                'One-time-passcode (OTP) settings for a shared link. When OTP enforcement\nis enabled, anonymous users must verify their identity via a\none-time-passcode emailed to them before the shared link will grant\naccess.\n\nOTP can only be used with shared links that have an `access` level of\n`open`. Password protection and OTP cannot be enabled at the same time.',
-              required: ['mode'],
-            })
-            .and(
-              z
-                .any()
-                .openapi({
-                  description:
-                    'The one-time-passcode (OTP) settings for this shared link.\n\nThis field is always present. For links where OTP does not\napply (for example, shared links whose `access` is not `open`),\nthe object is returned with `mode` set to `none`.',
-                }),
-            ),
-        })
-        .openapi({
-          title: 'Shared link',
-          description:
-            'Shared links provide direct, read-only access to files or folder on Box.\n\nShared links with open access level allow anyone with the URL\nto access the item, while shared links with company or collaborators access\nlevels can only be accessed by appropriately authenticated Box users.',
-          required: [
-            'url',
-            'accessed',
-            'effective_access',
-            'effective_permission',
-            'is_password_enabled',
-            'download_count',
-            'preview_count',
-            'one_time_passcode',
-          ],
-        })
-        .and(
-          z
-            .any()
-            .openapi({
-              description:
-                'The shared link for this file. This value will be\n`null` if no shared link has been created for this\nfile.',
-            }),
-        )
-        .nullable()
-        .exactOptional(),
-      parent: FolderMiniSchema.and(
-        z
-          .any()
-          .openapi({
-            description:
-              'The folder that this file is located within.\nThis value may be `null` for some folders such as\nthe root folder or the trash folder.',
-          }),
-      )
-        .nullable()
-        .exactOptional(),
-      item_status: z
-        .enum(['active', 'trashed', 'deleted'])
-        .exactOptional()
-        .openapi({
-          description:
-            'Defines if this item has been deleted or not.\n\n* `active` when the item has is not in the trash\n* `trashed` when the item has been moved to the trash but not deleted\n* `deleted` when the item has been permanently deleted.',
-          example: 'active',
-        }),
-    })
-    .openapi({ required: [] }),
-)
-  .openapi({
-    description:
-      'A standard representation of a file, as returned from any\nfile API endpoints by default.',
-    title: 'File',
-    'x-box-resource-id': 'file',
-    'x-box-tag': 'files',
-    'x-box-variant': 'standard',
-  })
-  .openapi('File')
-
-const MetadataBaseSchema = z
-  .object({
-    $parent: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The identifier of the item that this metadata instance\nhas been attached to. This combines the `type` and the `id`\nof the parent in the form `{type}_{id}`.',
-        example: 'folder_59449484661,',
-      }),
-    $template: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The name of the template.', example: 'marketingCollateral' }),
-    $scope: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'An ID for the scope in which this template\nhas been applied. This will be `enterprise_{enterprise_id}` for templates\ndefined for use in this enterprise, and `global` for general templates\nthat are available to all enterprises using Box.',
-        example: 'enterprise_27335',
-      }),
-    $version: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description:
-          'The version of the metadata instance. This version starts at 0 and\nincreases every time a user-defined property is modified.',
-        example: 1,
-      }),
-  })
-  .openapi({
-    description: 'The base representation of a metadata instance.',
-    title: 'Metadata instance (Base)',
-    'x-box-resource-id': 'metadata--base',
-    'x-box-tag': 'file_metadata',
-    'x-box-variant': 'base',
-    'x-box-variants': ['base', 'standard', 'full'],
-    required: [],
-  })
-  .openapi('MetadataBase')
-
-const MetadataSchema = MetadataBaseSchema.openapi({
-  description: 'An instance of a metadata template, which has been applied to a file or\nfolder.',
-  title: 'Metadata instance',
-  'x-box-resource-id': 'metadata',
-  'x-box-tag': 'file_metadata',
-  'x-box-variant': 'standard',
-}).openapi('Metadata')
-
-const MetadataFullSchema = MetadataSchema.and(
-  z
-    .object({
-      $canEdit: z
-        .boolean()
-        .exactOptional()
-        .openapi({
-          description: 'Whether the user can edit this metadata instance.',
-          example: true,
-        }),
-      $id: z
-        .uuid()
-        .max(36)
-        .exactOptional()
-        .openapi({
-          description: 'A UUID to identify the metadata instance.',
-          example: '01234500-12f1-1234-aa12-b1d234cb567e',
-        }),
-      $type: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description:
-            'A unique identifier for the "type" of this instance. This is an\ninternal system property and should not be used by a client\napplication.',
-          example: 'properties-6bcba49f-ca6d-4d2a-a758-57fe6edf44d0',
-        }),
-      $typeVersion: z
-        .int()
-        .exactOptional()
-        .openapi({
-          description:
-            'The last-known version of the template of the object. This is an\ninternal system property and should not be used by a client\napplication.',
-          example: 2,
-        }),
-    })
-    .openapi({ required: [] }),
-)
-  .and(
-    z.record(
-      z.string(),
-      z
-        .any()
-        .and(z.any().openapi({ example: 'Aaron Levie' }))
-        .and(
-          z
-            .any()
-            .openapi({
-              description:
-                'A value for each of the fields that are present\non the metadata template.\nFor the `global.properties` template this can be\na list of zero or more fields,\nas this template allows for any generic key-value pairs\nto be stored stored in the template.',
-            }),
-        )
-        .openapi({ 'x-box-example-key': 'name' }),
-    ),
-  )
-  .openapi({
-    description: 'An instance of a metadata template, which has been applied to a file or\nfolder.',
-    title: 'Metadata instance (Full)',
-    'x-box-resource-id': 'metadata--full',
-    'x-box-tag': 'file_metadata',
-    'x-box-variant': 'full',
-  })
-  .openapi('MetadataFull')
-
-const FileFullSchema = FileSchema.and(
-  z
-    .object({
-      version_number: z
-        .string()
-        .exactOptional()
-        .openapi({ description: 'The version number of this file.', example: '1' }),
-      comment_count: z
-        .int()
-        .exactOptional()
-        .openapi({ description: 'The number of comments on this file.', example: 10 }),
-      permissions: z
-        .object({
-          can_delete: z
-            .boolean()
-            .openapi({
-              description: 'Specifies if the current user can delete this item.',
-              example: true,
-            }),
-          can_download: z
-            .boolean()
-            .openapi({
-              description: 'Specifies if the current user can download this item.',
-              example: true,
-            }),
-          can_invite_collaborator: z
-            .boolean()
-            .openapi({
-              description:
-                'Specifies if the current user can invite new\nusers to collaborate on this item, and if the user can\nupdate the role of a user already collaborated on this\nitem.',
-              example: true,
-            }),
-          can_rename: z
-            .boolean()
-            .openapi({ description: 'Specifies if the user can rename this item.', example: true }),
-          can_set_share_access: z
-            .boolean()
-            .openapi({
-              description:
-                'Specifies if the user can change the access level of an\nexisting shared link on this item.',
-              example: true,
-            }),
-          can_share: z
-            .boolean()
-            .openapi({
-              description: 'Specifies if the user can create a shared link for this item.',
-              example: true,
-            }),
-        })
-        .openapi({
-          description: 'The permissions that the authenticated user has for an item.',
-          required: [
-            'can_delete',
-            'can_download',
-            'can_invite_collaborator',
-            'can_rename',
-            'can_set_share_access',
-            'can_share',
-          ],
-        })
-        .and(
-          z
-            .object({
-              can_annotate: z
-                .boolean()
-                .exactOptional()
-                .openapi({
-                  description: 'Specifies if the user can place annotations on this file.',
-                  example: true,
-                }),
-              can_comment: z
-                .boolean()
-                .exactOptional()
-                .openapi({
-                  description: 'Specifies if the user can place comments on this file.',
-                  example: true,
-                }),
-              can_preview: z
-                .boolean()
-                .exactOptional()
-                .openapi({
-                  description: 'Specifies if the user can preview this file.',
-                  example: true,
-                }),
-              can_upload: z
-                .boolean()
-                .exactOptional()
-                .openapi({
-                  description: 'Specifies if the user can upload a new version of this file.',
-                  example: true,
-                }),
-              can_view_annotations_all: z
-                .boolean()
-                .exactOptional()
-                .openapi({
-                  description: 'Specifies if the user view all annotations placed on this file.',
-                  example: true,
-                }),
-              can_view_annotations_self: z
-                .boolean()
-                .exactOptional()
-                .openapi({
-                  description:
-                    'Specifies if the user view annotations placed by themselves\non this file.',
-                  example: true,
-                }),
-              can_apply_watermark: z
-                .boolean()
-                .exactOptional()
-                .openapi({
-                  description: 'Specifies if the user can apply a watermark to this file.',
-                  example: true,
-                }),
-            })
-            .openapi({ required: [] }),
-        )
-        .openapi({
-          description: 'The permissions that the authenticated user has for a file.',
-          required: [
-            'can_annotate',
-            'can_comment',
-            'can_preview',
-            'can_upload',
-            'can_view_annotations_all',
-            'can_view_annotations_self',
-          ],
-        })
-        .and(
-          z
-            .any()
-            .openapi({
-              description: 'Describes the permissions that the current user has\nfor this file.',
-            }),
-        )
-        .and(z.any())
-        .exactOptional(),
-      tags: z
-        .array(z.string())
-        .min(1)
-        .max(100)
-        .openapi({
-          example: ['approved'],
-          description:
-            "The tags for this item. These tags are shown in\nthe Box web app and mobile apps next to an item.\n\nTo add or remove a tag, retrieve the item's current tags,\nmodify them, and then update this field.\n\nThere is a limit of 100 tags per item, and 10,000\nunique tags per enterprise.",
-        })
-        .and(z.any())
-        .exactOptional(),
-      lock: z
-        .object({
-          id: z
-            .string()
-            .exactOptional()
-            .openapi({ description: 'The unique identifier for this lock.', example: '11446498' }),
-          type: z
-            .literal('lock')
-            .exactOptional()
-            .openapi({ description: 'The value will always be `lock`.', example: 'lock' }),
-          created_by: UserMiniSchema.and(
-            z.any().openapi({ description: 'The user who created the lock.' }),
-          ).exactOptional(),
-          created_at: z.iso
-            .datetime({ offset: true })
-            .exactOptional()
-            .openapi({
-              description: 'The time this lock was created at.',
-              example: '2012-12-12T10:53:43-08:00',
-            }),
-          expired_at: z.iso
-            .datetime({ offset: true })
-            .exactOptional()
-            .openapi({
-              description: 'The time this lock is to expire at, which might be in the past.',
-              example: '2012-12-12T10:53:43-08:00',
-            }),
-          is_download_prevented: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Whether or not the file can be downloaded while locked.',
-              example: true,
-            }),
-          app_type: z
-            .enum(['gsuite', 'office_wopi', 'office_wopiplus', 'other'])
-            .nullable()
-            .exactOptional()
-            .openapi({
-              description:
-                'If the lock is managed by an application rather than a user, this\nfield identifies the type of the application that holds the lock.\nThis is an open enum and may be extended with additional values in\nthe future.',
-              example: 'office_wopiplus',
-            }),
-        })
-        .openapi({
-          title: 'Lock',
-          description:
-            'The lock held on a file. A lock prevents a file from being moved,\nrenamed, or otherwise changed by anyone else than the user who created the\nlock.',
-          required: [],
-        })
-        .and(
-          z
-            .any()
-            .openapi({
-              description:
-                'The lock held on this file. If there is no lock, this can either\nbe `null` or have a timestamp in the past.',
-            }),
-        )
-        .nullable()
-        .exactOptional(),
-      extension: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description:
-            'Indicates the (optional) file extension for this file. By default,\nthis is set to an empty string.',
-          example: 'pdf',
-        }),
-      is_package: z
-        .boolean()
-        .exactOptional()
-        .openapi({
-          description:
-            'Indicates if the file is a package. Packages are commonly used\nby Mac Applications and can include iWork files.',
-          example: true,
-        }),
-      expiring_embed_link: z
-        .object({
-          access_token: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'The requested access token.',
-              example: 'c3FIOG9vSGV4VHo4QzAyg5T1JvNnJoZ3ExaVNyQWw6WjRsanRKZG5lQk9qUE1BVQ',
-            }),
-          expires_in: z
-            .preprocess(
-              (val) =>
-                typeof val === 'number' && Number.isSafeInteger(val)
-                  ? BigInt(val)
-                  : typeof val === 'string' && /^-?\d+$/.test(val)
-                    ? BigInt(val)
-                    : val,
-              z.int64(),
-            )
-            .exactOptional()
-            .openapi({
-              type: 'integer',
-              format: 'int64',
-              description: 'The time in seconds by which this token will expire.',
-              example: 3600,
-            }),
-          token_type: z
-            .literal('bearer')
-            .exactOptional()
-            .openapi({ description: 'The type of access token returned.', example: 'bearer' }),
-          restricted_to: z
-            .array(ResourceScopeSchema)
-            .exactOptional()
-            .openapi({
-              description:
-                'The permissions that this access token permits,\nproviding a list of resources (files, folders, etc)\nand the scopes permitted for each of those resources.',
-            }),
-        })
-        .openapi({ description: 'The basics of an access token.', required: [] })
-        .and(
-          z
-            .object({
-              url: z
-                .url()
-                .exactOptional()
-                .openapi({
-                  description:
-                    'The actual expiring embed URL for this file, constructed\nfrom the file ID and access tokens specified in this object.',
-                  example: 'https://cloud.app.box.com/preview/expiring_embed/...',
-                }),
-            })
-            .openapi({ required: [] }),
-        )
-        .openapi({ title: 'Expiring embed link', description: 'An expiring Box Embed Link.' })
-        .and(
-          z
-            .any()
-            .openapi({
-              description:
-                'Requesting this field creates an expiring Box Embed URL for an\nembedded preview session in an `iframe`.\n\nThis URL will expire after 60 seconds and the session will\nexpire after 60 minutes.\n\nNot all file types are supported for these embed URLs. Box Embed\nis not optimized for mobile browsers and should not be used in web\nexperiences designed for mobile devices. Many UI elements, like\nthe **download** and **print** options might not show in mobile\nbrowsers.',
-            }),
-        )
-        .exactOptional(),
-      watermark_info: z
-        .object({
-          is_watermarked: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Specifies if this item has a watermark applied.',
-              example: true,
-            }),
-          is_watermark_inherited: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description:
-                'Specifies if the watermark is inherited from any parent folder in the hierarchy.',
-              example: false,
-            }),
-          is_watermarked_by_access_policy: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Specifies if the watermark is enforced by an access policy.',
-              example: false,
-            }),
-        })
-        .openapi({ description: 'Details about the watermark applied to this item.', required: [] })
-        .and(z.any().openapi({ description: 'Details about the watermark applied to this file.' }))
-        .exactOptional(),
-      is_accessible_via_shared_link: z
-        .boolean()
-        .exactOptional()
-        .openapi({
-          description:
-            'Specifies if the file can be accessed\nvia the direct shared link or a shared link\nto a parent folder.',
-          example: true,
-        }),
-      allowed_invitee_roles: z
-        .array(
-          z.enum([
-            'editor',
-            'viewer',
-            'previewer',
-            'uploader',
-            'previewer uploader',
-            'viewer uploader',
-            'co-owner',
-          ]),
-        )
-        .exactOptional()
-        .openapi({
-          description:
-            'A list of the types of roles that user can be invited at\nwhen sharing this file.',
-          example: ['editor'],
-        }),
-      is_externally_owned: z
-        .boolean()
-        .exactOptional()
-        .openapi({
-          description:
-            'Specifies if this file is owned by a user outside of the\nauthenticated enterprise.',
-          example: true,
-        }),
-      has_collaborations: z
-        .boolean()
-        .exactOptional()
-        .openapi({
-          description: 'Specifies if this file has any other collaborators.',
-          example: true,
-        }),
-      metadata: z
-        .record(
-          z.string(),
-          z
-            .record(z.string(), MetadataFullSchema)
-            .openapi({
-              description:
-                'A list of metadata instances, nested within key-value pairs of their `scope`\nand `templateKey`.',
-              example: {
-                marketingCollateral: {
-                  $canEdit: true,
-                  $id: '01234500-12f1-1234-aa12-b1d234cb567e',
-                  $parent: 'folder_59449484661',
-                  $scope: 'enterprise_27335',
-                  $template: 'marketingCollateral',
-                  $type: 'properties-6bcba49f-ca6d-4d2a-a758-57fe6edf44d0',
-                  $typeVersion: 2,
-                  $version: 1,
-                },
-              },
-            }),
-        )
-        .openapi({
-          title: 'Item metadata instances',
-          description:
-            'A list of metadata instances, nested within key-value pairs of their `scope`\nand `templateKey`.\n\nTo access the metadata for a file or folder, first use the\nmetadata endpoints to determine the metadata templates available to your\nenterprise.\n\nThen use the `GET /files/:id` or `GET /folder/:id`\nendpoint with the `fields` query parameter to get\nthe metadata by ID.\n\nTo request a metadata instance for a particular `scope` and `templateKey`\nuse the following format for the `fields` parameter:\n`metadata.<scope>.<templateKey>`\n\nFor example, `?fields=metadata.enterprise_27335.marketingCollateral`.',
-          example: {
-            enterprise_27335: {
-              marketingCollateral: {
-                $canEdit: true,
-                $id: '01234500-12f1-1234-aa12-b1d234cb567e',
-                $parent: 'folder_59449484661',
-                $scope: 'enterprise_27335',
-                $template: 'marketingCollateral',
-                $type: 'properties-6bcba49f-ca6d-4d2a-a758-57fe6edf44d0',
-                $typeVersion: 2,
-                $version: 1,
-              },
-            },
-          },
-        })
-        .and(
-          z
-            .any()
-            .openapi({
-              description:
-                'An object containing the metadata instances that have been\nattached to this file.\n\nEach metadata instance is uniquely identified by its `scope` and\n`templateKey`. There can only be one instance of any metadata\ntemplate attached to each file. Each metadata instance is nested\nwithin an object with the `templateKey` as the key, which again\nitself is nested in an object with the `scope` as the key.',
-            }),
-        )
-        .exactOptional(),
-      expires_at: z.iso
-        .datetime({ offset: true })
-        .nullable()
-        .exactOptional()
-        .openapi({
-          description: 'When the file will automatically be deleted.',
-          example: '2012-12-12T10:53:43-08:00',
-        }),
-      representations: z
-        .object({
-          entries: z
-            .array(
-              z
-                .object({
-                  content: z
-                    .object({
-                      url_template: z
-                        .string()
-                        .exactOptional()
-                        .openapi({
-                          description:
-                            "The download URL that can be used to fetch the representation.\nMake sure to make an authenticated API call to this endpoint.\n\nThis URL is a template and will require the `{+asset_path}` to\nbe replaced by a path. In general, for unpaged representations\nit can be replaced by an empty string.\n\nFor paged representations, replace the `{+asset_path}` with the\npage to request plus the extension for the file, for example\n`1.pdf`.\n\nWhen requesting the download URL the following additional\nquery params can be passed along.\n\n* `set_content_disposition_type` - Sets the\n`Content-Disposition` header in the API response with the\nspecified disposition type of either `inline` or `attachment`.\nIf not supplied, the `Content-Disposition` header is not\nincluded in the response.\n\n* `set_content_disposition_filename` - Allows the application to\n  define the representation's file name used in the\n  `Content-Disposition` header.  If not defined, the filename\n  is derived from the source file name in Box combined with the\n  extension of the representation.",
-                          example:
-                            'https://dl.boxcloud.com/api/2.0/internal_files/123/versions/345/representations/png_paged_2048x2048/content/{+asset_path}?watermark_content=4567',
-                        }),
-                    })
-                    .exactOptional()
-                    .openapi({
-                      description:
-                        'An object containing the URL that can be used to actually fetch\nthe representation.',
-                      required: [],
-                    }),
-                  info: z
-                    .object({
-                      url: z
-                        .string()
-                        .exactOptional()
-                        .openapi({
-                          description:
-                            'The API URL that can be used to get more info on this file\nrepresentation. Make sure to make an authenticated API call\nto this endpoint.',
-                          example:
-                            'https://api.box.com/2.0/internal_files/123/versions/345/representations/png_paged_2048x2048',
-                        }),
-                    })
-                    .exactOptional()
-                    .openapi({
-                      description:
-                        'An object containing the URL that can be used to fetch more info\non this representation.',
-                      required: [],
-                    }),
-                  properties: z
-                    .object({
-                      dimensions: z
-                        .string()
-                        .exactOptional()
-                        .openapi({
-                          example: '2048x2048',
-                          description: 'The width by height size of this representation in pixels.',
-                        }),
-                      paged: z
-                        .string()
-                        .exactOptional()
-                        .openapi({
-                          example: 'true',
-                          description:
-                            'Indicates if the representation is build up out of multiple\npages.',
-                        }),
-                      thumb: z
-                        .string()
-                        .exactOptional()
-                        .openapi({
-                          example: 'true',
-                          description:
-                            'Indicates if the representation can be used as a thumbnail of\nthe file.',
-                        }),
-                    })
-                    .exactOptional()
-                    .openapi({
-                      description: 'An object containing the size and type of this presentation.',
-                      required: [],
-                    }),
-                  representation: z
-                    .string()
-                    .exactOptional()
-                    .openapi({
-                      description: 'Indicates the file type of the returned representation.',
-                      example: 'png',
-                    }),
-                  status: z
-                    .object({
-                      state: z
-                        .enum(['success', 'viewable', 'pending', 'none'])
-                        .exactOptional()
-                        .openapi({
-                          description:
-                            'The status of the representation.\n\n* `success` defines the representation as ready to be viewed.\n* `viewable` defines a video to be ready for viewing.\n* `pending` defines the representation as to be generated. Retry\n  this endpoint to re-check the status.\n* `none` defines that the representation will be created when\n  requested. Request the URL defined in the `info` object to\n  trigger this generation.',
-                          example: 'success',
-                        }),
-                    })
-                    .exactOptional()
-                    .openapi({
-                      description: 'An object containing the status of this representation.',
-                      required: [],
-                    }),
-                })
-                .openapi({ description: 'A file representation.', required: [] }),
-            )
-            .exactOptional()
-            .openapi({ description: 'A list of files.' }),
-        })
-        .openapi({
-          title: 'Representations',
-          description: 'A list of file representations.',
-          required: [],
-        })
-        .and(
-          z
-            .any()
-            .openapi({
-              description:
-                'A list of representations for a file that can be used to\ndisplay a placeholder of the file in your application. By default\nthis returns all representations and we recommend using the\n`x-rep-hints` header to further customize the desired\nrepresentations.',
-            }),
-        )
-        .exactOptional(),
-      classification: z
-        .object({
-          name: z
-            .string()
-            .exactOptional()
-            .openapi({ description: 'The name of the classification.', example: 'Top Secret' }),
-          definition: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'An explanation of the meaning of this classification.',
-              example: 'Content that should not be shared outside the company.',
-            }),
-          color: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The color that is used to display the\nclassification label in a user-interface. Colors are defined by the admin\nor co-admin who created the classification in the Box web app.',
-              example: '#FF0000',
-            }),
-        })
-        .openapi({ description: 'The classification applied to an item.', required: [] })
-        .and(
-          z
-            .any()
-            .openapi({ description: 'Details about the classification applied to this file.' }),
-        )
-        .nullable()
-        .exactOptional(),
-      uploader_display_name: z
-        .string()
-        .openapi({
-          title: 'Uploader display name',
-          example: 'Ellis Wiggins',
-          description:
-            'The display name of the user that uploaded the file. In most cases this is the\nname of the user logged in at the time of the upload.\n\nIf the file was uploaded using a File Request form that requires the user to\nprovide an email address, this field is populated with that email address. If\nan email address was not required in the File Request form, this field is set\nto return a value of `File Request`.\n\nIn all other anonymous cases where no email was provided this field\nwill default to a value of `Someone`.',
-        })
-        .exactOptional(),
-      disposition_at: z.iso
-        .datetime({ offset: true })
-        .nullable()
-        .exactOptional()
-        .openapi({
-          description: 'The retention expiration timestamp for the given file.',
-          example: '2012-12-12T10:53:43-08:00',
-        }),
-      shared_link_permission_options: z
-        .array(z.enum(['can_preview', 'can_download', 'can_edit']))
-        .nullable()
-        .exactOptional()
-        .openapi({
-          description:
-            'A list of the types of roles that user can be invited at\nwhen sharing this file.',
-          example: ['can_preview'],
-        }),
-      is_associated_with_app_item: z
-        .boolean()
-        .exactOptional()
-        .openapi({
-          description:
-            'This field will return true if the file or any ancestor of the file\nis associated with at least one app item. Note that this will return\ntrue even if the context user does not have access to the app item(s)\nassociated with the file.',
-          example: true,
-        }),
-      collections: z
-        .array(CollectionSchema)
-        .exactOptional()
-        .openapi({
-          description:
-            'The collections that this file belongs to.\n\nFor more information, see the\n[collections guide](https://developer.box.com/guides/collections).',
-        }),
-      is_download_available: z
-        .boolean()
-        .exactOptional()
-        .openapi({
-          description:
-            "Whether the file's binary content is eligible to be downloaded.\n\nThis is a content-level flag and does not reflect whether the\ncurrent user is authorized to download the file. Use\n`permissions.can_download`, when available, for that.",
-          example: true,
-        }),
-      download_url: z
-        .url()
-        .exactOptional()
-        .openapi({
-          description:
-            "A pre-authorized, expiring URL for directly downloading the file's\ncontent. Requires authentication and is valid only for the current\nsession.\n\nThis field is only returned for files, not folders or web links.",
-          example: 'https://dl.boxcloud.com/d/1/example_token/download',
-        }),
-      authenticated_download_url: z
-        .url()
-        .exactOptional()
-        .openapi({
-          description:
-            'A stable API URL for the file content endpoint,\n`/2.0/files/{id}/content`. Unlike `download_url`, authorization is\nevaluated when the URL is requested with a valid access token.\n\nThis field is only returned for files, not folders or web links.',
-          example: 'https://api.box.com/2.0/files/12345/content',
-        }),
-      allowed_shared_link_access_levels: z
-        .array(
-          z
-            .enum(['open', 'company', 'collaborators'])
-            .openapi({
-              title: 'Shared link access level',
-              description: 'The access level for a shared link.',
-              example: 'open',
-            }),
-        )
-        .exactOptional()
-        .openapi({
-          description:
-            'The shared link access levels the authenticated user is allowed to\nuse when creating or updating a shared link for this file.\n\nThe list depends on item policy and user authorization, so it may be\nnarrower than the levels available to the owner. An empty array means\nno access level is available to this user.',
-          example: ['open'],
-        }),
-    })
-    .openapi({ required: [] }),
-)
-  .openapi({
-    description:
-      'A full representation of a file, as can be returned from any\nfile API endpoints by default.',
-    title: 'File (Full)',
-    'x-box-resource-id': 'file--full',
-    'x-box-tag': 'files',
-    'x-box-variant': 'full',
-  })
-  .openapi('FileFull')
-
-const WebLinkSchema = WebLinkMiniSchema.and(
-  z
-    .object({
-      parent: FolderMiniSchema.and(
-        z.any().openapi({ description: 'The parent object the web link belongs to.' }),
-      ).exactOptional(),
-      description: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description:
-            'The description accompanying the web link. This is\nvisible within the Box web application.',
-          example: 'Example page',
-        }),
-      path_collection: z
-        .object({
-          total_count: z
-            .preprocess(
-              (val) =>
-                typeof val === 'number' && Number.isSafeInteger(val)
-                  ? BigInt(val)
-                  : typeof val === 'string' && /^-?\d+$/.test(val)
-                    ? BigInt(val)
-                    : val,
-              z.int64(),
-            )
-            .openapi({
-              type: 'integer',
-              format: 'int64',
-              description: 'The number of folders in this list.',
-              example: 1,
-            }),
-          entries: z
-            .array(FolderMiniSchema)
-            .openapi({ description: 'The parent folders for this item.' }),
-        })
-        .openapi({
-          title: 'Path collection',
-          description: 'A list of parent folders for an item.',
-          required: ['total_count', 'entries'],
-        })
-        .and(
-          z
-            .any()
-            .openapi({
-              description:
-                'The tree of folders that this web link is contained in,\nstarting at the root.',
-            }),
-        )
-        .and(z.any())
-        .exactOptional(),
-      created_at: z.iso
-        .datetime({ offset: true })
-        .exactOptional()
-        .openapi({
-          description: 'When this file was created on Box’s servers.',
-          example: '2012-12-12T10:53:43-08:00',
-        }),
-      modified_at: z.iso
-        .datetime({ offset: true })
-        .exactOptional()
-        .openapi({
-          description: 'When this file was last updated on the Box\nservers.',
-          example: '2012-12-12T10:53:43-08:00',
-        }),
-      trashed_at: z.iso
-        .datetime({ offset: true })
-        .nullable()
-        .exactOptional()
-        .openapi({
-          description: 'When this file was moved to the trash.',
-          example: '2012-12-12T10:53:43-08:00',
-        }),
-      purged_at: z.iso
-        .datetime({ offset: true })
-        .nullable()
-        .exactOptional()
-        .openapi({
-          description: 'When this file will be permanently deleted.',
-          example: '2012-12-12T10:53:43-08:00',
-        }),
-      created_by: UserMiniSchema.and(
-        z.any().openapi({ description: 'The user who created this web link.' }),
-      ).exactOptional(),
-      modified_by: UserMiniSchema.and(
-        z.any().openapi({ description: 'The user who last modified this web link.' }),
-      ).exactOptional(),
-      owned_by: UserMiniSchema.and(
-        z.any().openapi({ description: 'The user who owns this web link.' }),
-      ).exactOptional(),
-      shared_link: z
-        .object({
-          url: z
-            .url()
-            .openapi({
-              description:
-                "The URL that can be used to access the item on Box.\n\nThis URL will display the item in Box's preview UI where the file\ncan be downloaded if allowed.\n\nThis URL will continue to work even when a custom `vanity_url`\nhas been set for this shared link.",
-              example: 'https://www.box.com/s/vspke7y05sb214wjokpk',
-            }),
-          download_url: z
-            .url()
-            .nullable()
-            .exactOptional()
-            .openapi({
-              description:
-                'A URL that can be used to download the file. This URL can be used in\na browser to download the file. This URL includes the file\nextension so that the file will be saved with the right file type.\n\nThis property will be `null` for folders.',
-              example: 'https://www.box.com/shared/static/rh935iit6ewrmw0unyul.jpeg',
-              'x-box-premium-feature': true,
-            }),
-          vanity_url: z
-            .url()
-            .nullable()
-            .exactOptional()
-            .openapi({
-              description:
-                'The "Custom URL" that can also be used to preview the item on Box.  Custom\nURLs can only be created or modified in the Box Web application.',
-              example: 'https://acme.app.box.com/v/my_url/',
-            }),
-          vanity_name: z
-            .string()
-            .nullable()
-            .exactOptional()
-            .openapi({
-              description: 'The custom name of a shared link, as used in the `vanity_url` field.',
-              example: 'my_url',
-            }),
-          access: z
-            .enum(['open', 'company', 'collaborators'])
-            .exactOptional()
-            .openapi({
-              description:
-                'The access level for this shared link.\n\n* `open` - provides access to this item to anyone with this link\n* `company` - only provides access to this item to people the same company\n* `collaborators` - only provides access to this item to people who are\n   collaborators on this item\n\nIf this field is omitted when creating the shared link, the access level\nwill be set to the default access level specified by the enterprise admin.',
-              example: 'open',
-            }),
-          effective_access: z
-            .enum(['open', 'company', 'collaborators'])
-            .openapi({
-              description:
-                'The effective access level for the shared link. This can be a more\nrestrictive access level than the value in the `access` field when the\nenterprise settings restrict the allowed access levels.',
-              example: 'company',
-            }),
-          effective_permission: z
-            .enum(['can_edit', 'can_download', 'can_preview', 'no_access'])
-            .openapi({
-              description:
-                'The effective permissions for this shared link.\nThese result in the more restrictive combination of\nthe share link permissions and the item permissions set\nby the administrator, the owner, and any ancestor item\nsuch as a folder.',
-              example: 'can_download',
-            }),
-          unshared_at: z.iso
-            .datetime({ offset: true })
-            .nullable()
-            .exactOptional()
-            .openapi({
-              description:
-                'The date and time when this link will be unshared. This field can only be\nset by users with paid accounts.',
-              example: '2018-04-13T13:53:23-07:00',
-            }),
-          is_password_enabled: z
-            .boolean()
-            .openapi({
-              description: 'Defines if the shared link requires a password to access the item.',
-              example: true,
-            }),
-          permissions: z
-            .object({
-              can_download: z
-                .boolean()
-                .openapi({
-                  description:
-                    'Defines if the shared link allows for the item to be downloaded. For\nshared links on folders, this also applies to any items in the folder.\n\nThis value can be set to `true` when the effective access level is\nset to `open` or `company`, not `collaborators`.',
-                  example: true,
-                }),
-              can_preview: z
-                .boolean()
-                .openapi({
-                  description:
-                    'Defines if the shared link allows for the item to be previewed.\n\nThis value is always `true`. For shared links on folders this also\napplies to any items in the folder.',
-                  example: true,
-                }),
-              can_edit: z
-                .boolean()
-                .openapi({
-                  description:
-                    'Defines if the shared link allows for the item to be edited.\n\nThis value can only be `true` if `can_download` is also `true` and if\nthe item has a type of `file`.',
-                  example: false,
-                }),
-            })
-            .exactOptional()
-            .openapi({
-              description:
-                'Defines if this link allows a user to preview, edit, and download an item.\nThese permissions refer to the shared link only and\ndo not supersede permissions applied to the item itself.',
-              required: ['can_download', 'can_preview', 'can_edit'],
-            }),
-          download_count: z
-            .int()
-            .openapi({
-              description: 'The number of times this item has been downloaded.',
-              example: 3,
-            }),
-          preview_count: z
-            .int()
-            .openapi({
-              description: 'The number of times this item has been previewed.',
-              example: 3,
-            }),
-          one_time_passcode: z
-            .object({
-              mode: z
-                .string()
-                .openapi({
-                  description:
-                    'The current OTP enforcement mode for the shared link.\n\n* `none` - OTP enforcement is turned off. The shared link is accessible\n  without any one-time-passcode verification.\n* `open` - Any anonymous recipient can request a one-time-passcode to\n  any email address and access the shared link after verifying it.\n  Collaborators and registered Box users access the link without\n  being prompted.\n* `allowlist` - Anonymous recipients can request a one-time-passcode\n  only when they enter an email that matches an entry on the\n  `allowlist`.',
-                  example: 'allowlist',
-                }),
-              allowlist: z
-                .array(SharedLinkOtpAllowlistEntrySchema)
-                .max(1000)
-                .exactOptional()
-                .openapi({
-                  description:
-                    'The list of email and domain entries that are permitted to access the\nshared link when `mode` is `allowlist`. Anonymous users whose\nemail matches an entry can request and verify a one-time-passcode.\n\nBecause the entries carry recipient email addresses and the identity\nof the user who added them, this field is only returned to users\nwith owner, co-owner, or editor access on the item. For viewer\ncollaborators and below the field is omitted.\n\nAn allowlist contains at most 1000 entries, matching the limit\nenforced when setting the allowlist on a shared link.',
-                  example: [
-                    {
-                      type: 'email',
-                      value: 'alice@example.com',
-                      created_at: '2026-05-19T12:00:00Z',
-                      created_by: { id: '11446498', type: 'user' },
-                    },
-                    {
-                      type: 'domain',
-                      value: 'example.com',
-                      created_at: '2026-05-19T12:00:00Z',
-                      created_by: { id: '11446498', type: 'user' },
-                    },
-                  ],
-                }),
-            })
-            .openapi({
-              title: 'Shared link OTP settings',
-              description:
-                'One-time-passcode (OTP) settings for a shared link. When OTP enforcement\nis enabled, anonymous users must verify their identity via a\none-time-passcode emailed to them before the shared link will grant\naccess.\n\nOTP can only be used with shared links that have an `access` level of\n`open`. Password protection and OTP cannot be enabled at the same time.',
-              required: ['mode'],
-            })
-            .and(
-              z
-                .any()
-                .openapi({
-                  description:
-                    'The one-time-passcode (OTP) settings for this shared link.\n\nThis field is always present. For links where OTP does not\napply (for example, shared links whose `access` is not `open`),\nthe object is returned with `mode` set to `none`.',
-                }),
-            ),
-        })
-        .openapi({
-          title: 'Shared link',
-          description:
-            'Shared links provide direct, read-only access to files or folder on Box.\n\nShared links with open access level allow anyone with the URL\nto access the item, while shared links with company or collaborators access\nlevels can only be accessed by appropriately authenticated Box users.',
-          required: [
-            'url',
-            'accessed',
-            'effective_access',
-            'effective_permission',
-            'is_password_enabled',
-            'download_count',
-            'preview_count',
-            'one_time_passcode',
-          ],
-        })
-        .and(
-          z
-            .any()
-            .openapi({
-              description:
-                'The shared link object for this item. Will be\n`null` if no shared link has been created.',
-            }),
-        )
-        .nullable()
-        .exactOptional(),
-      item_status: z
-        .enum(['active', 'trashed', 'deleted'])
-        .exactOptional()
-        .openapi({
-          description:
-            'Whether this item is deleted or not. Values include `active`,\n`trashed` if the file has been moved to the trash, and `deleted` if\nthe file has been permanently deleted.',
-          example: 'active',
-        }),
-      collections: z
-        .array(CollectionSchema)
-        .exactOptional()
-        .openapi({
-          description:
-            'The collections that this web link belongs to.\n\nFor more information, see the\n[collections guide](https://developer.box.com/guides/collections).',
-        }),
-      allowed_shared_link_access_levels: z
-        .array(
-          z
-            .enum(['open', 'company', 'collaborators'])
-            .openapi({
-              title: 'Shared link access level',
-              description: 'The access level for a shared link.',
-              example: 'open',
-            }),
-        )
-        .exactOptional()
-        .openapi({
-          description:
-            'The shared link access levels the authenticated user is allowed to\nuse when creating or updating a shared link for this web link.\n\nThe list depends on item policy and user authorization, so it may be\nnarrower than the levels available to the owner. An empty array means\nno access level is available to this user.',
-          example: ['open'],
-        }),
-    })
-    .openapi({ required: [] }),
-)
-  .openapi({
-    description:
-      'Web links are objects that point to URLs. These objects\nare also known as bookmarks within the Box web application.\n\nWeb link objects are treated similarly to file objects,\nthey will also support most actions that apply to regular files.',
-    title: 'Web link',
-    'x-box-resource-id': 'web_link',
-    'x-box-tag': 'web_links',
-    'x-box-variant': 'standard',
-  })
-  .openapi('WebLink')
-
-const ItemSchema = z
-  .xor([FileFullSchema, FolderMiniSchema, WebLinkSchema])
-  .openapi({ description: 'An item represents a file, folder, or web link.', title: 'Item' })
-  .openapi('Item')
-
-const ItemsSchema = z
-  .object({
-    limit: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'The limit that was used for these entries. This will be the same as the\n`limit` query parameter unless that value exceeded the maximum value\nallowed. The maximum value varies by API.',
-        example: 1000,
-      }),
-    next_marker: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'The marker for the start of the next page of results.',
-        example: 'JV9IRGZmieiBasejOG9yDCRNgd2ymoZIbjsxbJMjIs3kioVii',
-      }),
-    prev_marker: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'The marker for the start of the previous page of results.',
-        example: 'JV9IRGZmieiBasejOG9yDCRNgd2ymoZIbjsxbJMjIs3kioVih',
-      }),
-  })
-  .openapi({
-    description: 'The part of an API response that describes marker\nbased pagination.',
-    required: [],
-  })
-  .and(
-    z
-      .object({
-        total_count: z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .exactOptional()
-          .openapi({
-            type: 'integer',
-            format: 'int64',
-            description:
-              'One greater than the offset of the last entry in the entire collection.\nThe total number of entries in the collection may be less than\n`total_count`.\n\nThis field is only returned for calls that use offset-based pagination.\nFor marker-based paginated APIs, this field will be omitted.',
-            example: 5000,
-          }),
-        limit: z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .exactOptional()
-          .openapi({
-            type: 'integer',
-            format: 'int64',
-            description:
-              'The limit that was used for these entries. This will be the same as the\n`limit` query parameter unless that value exceeded the maximum value\nallowed. The maximum value varies by API.',
-            example: 1000,
-          }),
-        offset: z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .exactOptional()
-          .openapi({
-            type: 'integer',
-            format: 'int64',
-            description:
-              'The 0-based offset of the first entry in this set. This will be the same\nas the `offset` query parameter.\n\nThis field is only returned for calls that use offset-based pagination.\nFor marker-based paginated APIs, this field will be omitted.',
-            example: 2000,
-          }),
-        order: z
-          .array(
-            z
-              .object({
-                by: z
-                  .string()
-                  .exactOptional()
-                  .openapi({ description: 'The field to order by.', example: 'type' }),
-                direction: z
-                  .enum(['ASC', 'DESC'])
-                  .exactOptional()
-                  .openapi({
-                    description: 'The direction to order by, either ascending or descending.',
-                    example: 'ASC',
-                  }),
-              })
-              .openapi({
-                description: 'The order in which a pagination is ordered.',
-                required: [],
-              }),
-          )
-          .exactOptional()
-          .openapi({
-            description:
-              'The order by which items are returned.\n\nThis field is only returned for calls that use offset-based pagination.\nFor marker-based paginated APIs, this field will be omitted.',
-          }),
-      })
-      .openapi({
-        description: 'The part of an API response that describes pagination.',
-        required: [],
-      }),
-  )
-  .and(
-    z
-      .object({
-        entries: z
-          .array(ItemSchema)
-          .exactOptional()
-          .openapi({ description: 'The items in this collection.' }),
-      })
-      .openapi({ required: [] }),
-  )
-  .openapi({
-    description: 'A list of files, folders, and web links in\ntheir mini representation.',
-    title: 'Items',
-    'x-box-resource-id': 'items',
-    'x-box-tag': 'folders',
-  })
-  .openapi('Items')
-
-const FolderSchema = FolderMiniSchema.and(
-  z
-    .object({
-      created_at: z.iso
-        .datetime({ offset: true })
-        .nullable()
-        .exactOptional()
-        .openapi({
-          description:
-            'The date and time when the folder was created. This value may\nbe `null` for some folders such as the root folder or the trash\nfolder.',
-          example: '2012-12-12T10:53:43-08:00',
-        }),
-      modified_at: z.iso
-        .datetime({ offset: true })
-        .nullable()
-        .exactOptional()
-        .openapi({
-          description:
-            'The date and time when the folder was last updated. This value may\nbe `null` for some folders such as the root folder or the trash\nfolder.',
-          example: '2012-12-12T10:53:43-08:00',
-        }),
-      description: z
-        .string()
-        .max(256)
-        .openapi({
-          description: 'The optional description of this folder.',
-          example: 'Legal contracts for the new ACME deal',
-        })
-        .and(z.any())
-        .exactOptional(),
-      size: z
-        .preprocess(
-          (val) =>
-            typeof val === 'number' && Number.isSafeInteger(val)
-              ? BigInt(val)
-              : typeof val === 'string' && /^-?\d+$/.test(val)
-                ? BigInt(val)
-                : val,
-          z.int64(),
-        )
-        .exactOptional()
-        .openapi({
-          type: 'integer',
-          format: 'int64',
-          description:
-            'The folder size in bytes.\n\nBe careful parsing this integer as its\nvalue can get very large.',
-          example: 629644,
-        }),
-      path_collection: z
-        .object({
-          total_count: z
-            .preprocess(
-              (val) =>
-                typeof val === 'number' && Number.isSafeInteger(val)
-                  ? BigInt(val)
-                  : typeof val === 'string' && /^-?\d+$/.test(val)
-                    ? BigInt(val)
-                    : val,
-              z.int64(),
-            )
-            .openapi({
-              type: 'integer',
-              format: 'int64',
-              description: 'The number of folders in this list.',
-              example: 1,
-            }),
-          entries: z
-            .array(FolderMiniSchema)
-            .openapi({ description: 'The parent folders for this item.' }),
-        })
-        .openapi({
-          title: 'Path collection',
-          description: 'A list of parent folders for an item.',
-          required: ['total_count', 'entries'],
-        })
-        .and(
-          z
-            .any()
-            .openapi({
-              description:
-                'The tree of folders that this folder is contained in,\nstarting at the root.',
-            }),
-        )
-        .and(z.any())
-        .exactOptional(),
-      created_by: UserMiniSchema.and(
-        z.any().openapi({ description: 'The user who created this folder.' }),
-      )
-        .and(z.any())
-        .exactOptional(),
-      modified_by: UserMiniSchema.and(
-        z.any().openapi({ description: 'The user who last modified this folder.' }),
-      )
-        .and(z.any())
-        .exactOptional(),
-      trashed_at: z.iso
-        .datetime({ offset: true })
-        .nullable()
-        .exactOptional()
-        .openapi({
-          description: 'The time at which this folder was put in the trash.',
-          example: '2012-12-12T10:53:43-08:00',
-        }),
-      purged_at: z.iso
-        .datetime({ offset: true })
-        .nullable()
-        .exactOptional()
-        .openapi({
-          description: 'The time at which this folder is expected to be purged\nfrom the trash.',
-          example: '2012-12-12T10:53:43-08:00',
-        }),
-      content_created_at: z.iso
-        .datetime({ offset: true })
-        .nullable()
-        .exactOptional()
-        .openapi({
-          description: 'The date and time at which this folder was originally\ncreated.',
-          example: '2012-12-12T10:53:43-08:00',
-        }),
-      content_modified_at: z.iso
-        .datetime({ offset: true })
-        .nullable()
-        .exactOptional()
-        .openapi({
-          description: 'The date and time at which this folder was last updated.',
-          example: '2012-12-12T10:53:43-08:00',
-        }),
-      owned_by: UserMiniSchema.and(
-        z.any().openapi({ description: 'The user who owns this folder.' }),
-      )
-        .and(z.any())
-        .exactOptional(),
-      shared_link: z
-        .object({
-          url: z
-            .url()
-            .openapi({
-              description:
-                "The URL that can be used to access the item on Box.\n\nThis URL will display the item in Box's preview UI where the file\ncan be downloaded if allowed.\n\nThis URL will continue to work even when a custom `vanity_url`\nhas been set for this shared link.",
-              example: 'https://www.box.com/s/vspke7y05sb214wjokpk',
-            }),
-          download_url: z
-            .url()
-            .nullable()
-            .exactOptional()
-            .openapi({
-              description:
-                'A URL that can be used to download the file. This URL can be used in\na browser to download the file. This URL includes the file\nextension so that the file will be saved with the right file type.\n\nThis property will be `null` for folders.',
-              example: 'https://www.box.com/shared/static/rh935iit6ewrmw0unyul.jpeg',
-              'x-box-premium-feature': true,
-            }),
-          vanity_url: z
-            .url()
-            .nullable()
-            .exactOptional()
-            .openapi({
-              description:
-                'The "Custom URL" that can also be used to preview the item on Box.  Custom\nURLs can only be created or modified in the Box Web application.',
-              example: 'https://acme.app.box.com/v/my_url/',
-            }),
-          vanity_name: z
-            .string()
-            .nullable()
-            .exactOptional()
-            .openapi({
-              description: 'The custom name of a shared link, as used in the `vanity_url` field.',
-              example: 'my_url',
-            }),
-          access: z
-            .enum(['open', 'company', 'collaborators'])
-            .exactOptional()
-            .openapi({
-              description:
-                'The access level for this shared link.\n\n* `open` - provides access to this item to anyone with this link\n* `company` - only provides access to this item to people the same company\n* `collaborators` - only provides access to this item to people who are\n   collaborators on this item\n\nIf this field is omitted when creating the shared link, the access level\nwill be set to the default access level specified by the enterprise admin.',
-              example: 'open',
-            }),
-          effective_access: z
-            .enum(['open', 'company', 'collaborators'])
-            .openapi({
-              description:
-                'The effective access level for the shared link. This can be a more\nrestrictive access level than the value in the `access` field when the\nenterprise settings restrict the allowed access levels.',
-              example: 'company',
-            }),
-          effective_permission: z
-            .enum(['can_edit', 'can_download', 'can_preview', 'no_access'])
-            .openapi({
-              description:
-                'The effective permissions for this shared link.\nThese result in the more restrictive combination of\nthe share link permissions and the item permissions set\nby the administrator, the owner, and any ancestor item\nsuch as a folder.',
-              example: 'can_download',
-            }),
-          unshared_at: z.iso
-            .datetime({ offset: true })
-            .nullable()
-            .exactOptional()
-            .openapi({
-              description:
-                'The date and time when this link will be unshared. This field can only be\nset by users with paid accounts.',
-              example: '2018-04-13T13:53:23-07:00',
-            }),
-          is_password_enabled: z
-            .boolean()
-            .openapi({
-              description: 'Defines if the shared link requires a password to access the item.',
-              example: true,
-            }),
-          permissions: z
-            .object({
-              can_download: z
-                .boolean()
-                .openapi({
-                  description:
-                    'Defines if the shared link allows for the item to be downloaded. For\nshared links on folders, this also applies to any items in the folder.\n\nThis value can be set to `true` when the effective access level is\nset to `open` or `company`, not `collaborators`.',
-                  example: true,
-                }),
-              can_preview: z
-                .boolean()
-                .openapi({
-                  description:
-                    'Defines if the shared link allows for the item to be previewed.\n\nThis value is always `true`. For shared links on folders this also\napplies to any items in the folder.',
-                  example: true,
-                }),
-              can_edit: z
-                .boolean()
-                .openapi({
-                  description:
-                    'Defines if the shared link allows for the item to be edited.\n\nThis value can only be `true` if `can_download` is also `true` and if\nthe item has a type of `file`.',
-                  example: false,
-                }),
-            })
-            .exactOptional()
-            .openapi({
-              description:
-                'Defines if this link allows a user to preview, edit, and download an item.\nThese permissions refer to the shared link only and\ndo not supersede permissions applied to the item itself.',
-              required: ['can_download', 'can_preview', 'can_edit'],
-            }),
-          download_count: z
-            .int()
-            .openapi({
-              description: 'The number of times this item has been downloaded.',
-              example: 3,
-            }),
-          preview_count: z
-            .int()
-            .openapi({
-              description: 'The number of times this item has been previewed.',
-              example: 3,
-            }),
-          one_time_passcode: z
-            .object({
-              mode: z
-                .string()
-                .openapi({
-                  description:
-                    'The current OTP enforcement mode for the shared link.\n\n* `none` - OTP enforcement is turned off. The shared link is accessible\n  without any one-time-passcode verification.\n* `open` - Any anonymous recipient can request a one-time-passcode to\n  any email address and access the shared link after verifying it.\n  Collaborators and registered Box users access the link without\n  being prompted.\n* `allowlist` - Anonymous recipients can request a one-time-passcode\n  only when they enter an email that matches an entry on the\n  `allowlist`.',
-                  example: 'allowlist',
-                }),
-              allowlist: z
-                .array(SharedLinkOtpAllowlistEntrySchema)
-                .max(1000)
-                .exactOptional()
-                .openapi({
-                  description:
-                    'The list of email and domain entries that are permitted to access the\nshared link when `mode` is `allowlist`. Anonymous users whose\nemail matches an entry can request and verify a one-time-passcode.\n\nBecause the entries carry recipient email addresses and the identity\nof the user who added them, this field is only returned to users\nwith owner, co-owner, or editor access on the item. For viewer\ncollaborators and below the field is omitted.\n\nAn allowlist contains at most 1000 entries, matching the limit\nenforced when setting the allowlist on a shared link.',
-                  example: [
-                    {
-                      type: 'email',
-                      value: 'alice@example.com',
-                      created_at: '2026-05-19T12:00:00Z',
-                      created_by: { id: '11446498', type: 'user' },
-                    },
-                    {
-                      type: 'domain',
-                      value: 'example.com',
-                      created_at: '2026-05-19T12:00:00Z',
-                      created_by: { id: '11446498', type: 'user' },
-                    },
-                  ],
-                }),
-            })
-            .openapi({
-              title: 'Shared link OTP settings',
-              description:
-                'One-time-passcode (OTP) settings for a shared link. When OTP enforcement\nis enabled, anonymous users must verify their identity via a\none-time-passcode emailed to them before the shared link will grant\naccess.\n\nOTP can only be used with shared links that have an `access` level of\n`open`. Password protection and OTP cannot be enabled at the same time.',
-              required: ['mode'],
-            })
-            .and(
-              z
-                .any()
-                .openapi({
-                  description:
-                    'The one-time-passcode (OTP) settings for this shared link.\n\nThis field is always present. For links where OTP does not\napply (for example, shared links whose `access` is not `open`),\nthe object is returned with `mode` set to `none`.',
-                }),
-            ),
-        })
-        .openapi({
-          title: 'Shared link',
-          description:
-            'Shared links provide direct, read-only access to files or folder on Box.\n\nShared links with open access level allow anyone with the URL\nto access the item, while shared links with company or collaborators access\nlevels can only be accessed by appropriately authenticated Box users.',
-          required: [
-            'url',
-            'accessed',
-            'effective_access',
-            'effective_permission',
-            'is_password_enabled',
-            'download_count',
-            'preview_count',
-            'one_time_passcode',
-          ],
-        })
-        .and(
-          z
-            .any()
-            .openapi({
-              description:
-                'The shared link for this folder. This will be\n`null` if no shared link has been created for this\nfolder.',
-            }),
-        )
-        .nullable()
-        .exactOptional(),
-      folder_upload_email: z
-        .object({
-          access: z
-            .enum(['open', 'collaborators'])
-            .exactOptional()
-            .openapi({
-              description:
-                'When this parameter has been set, users can email files\nto the email address that has been automatically\ncreated for this folder.\n\nTo create an email address, set this property either when\ncreating or updating the folder.\n\nWhen set to `collaborators`, only emails from registered email\naddresses for collaborators will be accepted. This includes\nany email aliases a user might have registered.\n\nWhen set to `open` it will accept emails from any email\naddress.',
-              example: 'open',
-            }),
-          email: z
-            .email()
-            .exactOptional()
-            .openapi({
-              description: 'The optional upload email address for this folder.',
-              example: 'upload.Contracts.asd7asd@u.box.com',
-            }),
-        })
-        .nullable()
-        .exactOptional()
-        .openapi({
-          description:
-            'The `folder_upload_email` parameter is not `null` if one of the following options is **true**:\n\n  * The **Allow uploads to this folder via email** and the **Only allow email uploads from collaborators in this folder** are [enabled for a folder in the Admin Console](https://support.box.com/hc/en-us/articles/360043697534-Upload-to-Box-Through-Email), and the user has at least **Upload** permissions granted.\n\n  * The **Allow uploads to this folder via email** setting is enabled for a folder in the Admin Console, and the **Only allow email uploads from collaborators in this folder** setting is deactivated (unchecked).\n\nIf the conditions are not met, the parameter will have the following value: `folder_upload_email: null`.',
-          required: [],
-        }),
-      parent: FolderMiniSchema.and(
-        z
-          .any()
-          .openapi({
-            description:
-              'The optional folder that this folder is located within.\n\nThis value may be `null` for some folders such as the\nroot folder or the trash folder.',
-          }),
-      )
-        .nullable()
-        .exactOptional(),
-      item_status: z
-        .enum(['active', 'trashed', 'deleted'])
-        .exactOptional()
-        .openapi({
-          description:
-            'Defines if this item has been deleted or not.\n\n* `active` when the item has is not in the trash\n* `trashed` when the item has been moved to the trash but not deleted\n* `deleted` when the item has been permanently deleted.',
-          example: 'active',
-        }),
-      item_collection: ItemsSchema.and(
-        z
-          .any()
-          .openapi({
-            description:
-              "A page of the items that are in the folder.\n\nThis field can only be requested when querying a folder's\ninformation, not when querying a folder's items.",
-          }),
-      )
-        .and(z.any())
-        .exactOptional(),
-    })
-    .openapi({ required: [] }),
-)
-  .openapi({
-    description:
-      'A standard representation of a folder, as returned from any\nfolder API endpoints by default.',
-    title: 'Folder',
-    'x-box-resource-id': 'folder',
-    'x-box-tag': 'folders',
-    'x-box-variant': 'standard',
-  })
-  .openapi('Folder')
-
-const GenericSourceSchema = z
-  .record(
-    z.string(),
-    z
-      .any()
-      .and(
-        z
-          .any()
-          .openapi({
-            description:
-              'A definition of a generic\nevent source object. The set of\nparameters depends on the\nobject type. For example, a Box Shield\nevent source would have the following\nset of parameters:\n```yaml\n{\n"barrier_id": 123456,\n"barrier_status": "ENABLED",\n"barrier_segments": [\n  {\n      "name": "8",\n      "member_count": 1\n    },\n  {\n      "name": "9",\n      "member_count": 1\n           }\n       ]\n}   \n```.',
-          }),
-      ),
-  )
-  .openapi({
-    description: 'A generic event source type.',
-    title: 'Generic source',
-    'x-box-resource-id': 'generic_source',
-  })
-  .openapi('GenericSource')
-
-const EventSourceResourceSchema = z
-  .xor([
-    UserSchema,
-    EventSourceSchema,
-    FileSchema,
-    FolderSchema,
-    GenericSourceSchema,
-    AppItemEventSourceSchema,
-  ])
-  .openapi({ description: 'The resource that triggered an event.', title: 'Event source resource' })
-  .openapi('EventSourceResource')
-
-const EventSchema = z
-  .object({
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The value will always be `event`.', example: 'event' }),
-    created_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'When the event object was created.',
-        example: '2022-12-12T10:53:43-08:00',
-      }),
-    recorded_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'When the event object was recorded in database.',
-        example: '2022-12-12T10:54:43-08:00',
-      }),
-    event_id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The ID of the event object. You can use this to detect duplicate events.',
-        example: 'f82c3ba03e41f7e8a7608363cc6c0390183c3f83',
-      }),
-    created_by: UserMiniSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The user that performed the action represented by the event.\nSome events may be performed by users not logged into Box.\nIn that case, not all attributes of the object are populated and the\nevent is attributed to a unknown user (`user_id = 2`).',
-        }),
-    ).exactOptional(),
-    event_type: z
-      .enum([
-        'ACCESS_GRANTED',
-        'ACCESS_REVOKED',
-        'ADD_DEVICE_ASSOCIATION',
-        'ADD_LOGIN_ACTIVITY_DEVICE',
-        'ADMIN_LOGIN',
-        'ADVANCED_FOLDER_SETTINGS_UPDATE',
-        'AI_SECURITY_DETECTION',
-        'ANNOTATIONV2_CREATE',
-        'ANNOTATIONV2_DELETE',
-        'ANNOTATIONV2_EDIT',
-        'APPLICATION_CREATED',
-        'APPLICATION_PUBLIC_KEY_ADDED',
-        'APPLICATION_PUBLIC_KEY_DELETED',
-        'BOX_AI_USER_FAILED_REQUEST',
-        'BOX_AI_USER_REQUEST',
-        'CHANGE_ADMIN_ROLE',
-        'CHANGE_FOLDER_PERMISSION',
-        'COLLABORATION_ACCEPT',
-        'COLLABORATION_EXPIRATION',
-        'COLLABORATION_INVITE',
-        'COLLABORATION_REMOVE',
-        'COLLABORATION_ROLE_CHANGE',
-        'COLLAB_ADD_COLLABORATOR',
-        'COLLAB_INVITE_COLLABORATOR',
-        'COLLAB_REMOVE_COLLABORATOR',
-        'COLLAB_ROLE_CHANGE',
-        'COLLECTION_CREATE',
-        'COLLECTION_DELETE',
-        'COLLECTION_ITEM_CREATE',
-        'COLLECTION_ITEM_DELETE',
-        'COLLECTION_ITEM_UPDATE',
-        'COLLECTION_UPDATE',
-        'COMMENT_CREATE',
-        'COMMENT_DELETE',
-        'COMMENT_EDIT',
-        'CONTENT_ACCESS',
-        'CONTENT_RECOVERY_REPORT_CREATE',
-        'CONTENT_RECOVERY_REPORT_DELETE',
-        'CONTENT_RECOVERY_REPORT_INITIATE',
-        'CONTENT_WORKFLOW_ABNORMAL_DOWNLOAD_ACTIVITY',
-        'CONTENT_WORKFLOW_AUTOMATION_ADD',
-        'CONTENT_WORKFLOW_AUTOMATION_DELETE',
-        'CONTENT_WORKFLOW_POLICY_ADD',
-        'CONTENT_WORKFLOW_SHARING_POLICY_VIOLATION',
-        'CONTENT_WORKFLOW_UPLOAD_POLICY_VIOLATION',
-        'COPY',
-        'DATA_RETENTION_CREATE_RETENTION',
-        'DATA_RETENTION_REMOVE_RETENTION',
-        'DELETE',
-        'DELETE_USER',
-        'DEVICE_TRUST_CHECK_FAILED',
-        'DISABLE_MULTI_FACTOR_AUTH',
-        'DOWNLOAD',
-        'EDIT',
-        'EDIT_USER',
-        'EDR_CROWDSTRIKE_ACCESS_ALLOWED_NO_CROWDSTRIKE_DEVICE',
-        'EDR_CROWDSTRIKE_ACCESS_REVOKED',
-        'EDR_CROWDSTRIKE_BOX_TOOLS_OUTDATED',
-        'EDR_CROWDSTRIKE_DEVICE_DETECTED',
-        'EDR_CROWDSTRIKE_DRIVE_OUTDATED',
-        'EDR_CROWDSTRIKE_NO_BOX_TOOLS',
-        'EMAIL_ALIAS_CONFIRM',
-        'EMAIL_ALIAS_PRIMARY',
-        'EMAIL_ALIAS_REMOVE',
-        'EMAIL_UPLOAD_DISABLED',
-        'EMAIL_UPLOAD_ENABLED',
-        'ENABLE_MULTI_FACTOR_AUTH',
-        'ENABLE_TWO_FACTOR_AUTH',
-        'ENTERPRISE_APP_AUTHORIZATION_UPDATE',
-        'EXTERNAL_COLLAB_SECURITY_SETTINGS',
-        'FAILED_LOGIN',
-        'FAVORITE',
-        'FILE_MARKED_MALICIOUS',
-        'FILE_REQUEST_CREATE',
-        'FILE_REQUEST_DELETE',
-        'FILE_REQUEST_UPDATE',
-        'FILE_VERSION_RESTORE',
-        'FILE_WATERMARKED_DOWNLOAD',
-        'GROUP_ADD_ITEM',
-        'GROUP_ADD_USER',
-        'GROUP_ADMIN_CREATED',
-        'GROUP_ADMIN_DELETED',
-        'GROUP_ADMIN_PERMISSIONS_UPDATED',
-        'GROUP_CREATION',
-        'GROUP_DELETION',
-        'GROUP_EDITED',
-        'GROUP_REMOVE_ITEM',
-        'GROUP_REMOVE_USER',
-        'ILLEGAL_ITEM_OWNERSHIP_TRANSFER_BY_USER',
-        'ITEM_ASSOCIATION_CREATED',
-        'ITEM_ASSOCIATION_DELETED',
-        'ITEM_ASSOCIATION_UPDATED',
-        'ITEM_COPY',
-        'ITEM_CREATE',
-        'ITEM_DOWNLOAD',
-        'ITEM_EMAIL_SEND',
-        'ITEM_MAKE_CURRENT_VERSION',
-        'ITEM_MODIFY',
-        'ITEM_MOVE',
-        'ITEM_OPEN',
-        'ITEM_PREVIEW',
-        'ITEM_RENAME',
-        'ITEM_SHARED',
-        'ITEM_SHARED_CREATE',
-        'ITEM_SHARED_UNSHARE',
-        'ITEM_SHARED_UPDATE',
-        'ITEM_SYNC',
-        'ITEM_TRASH',
-        'ITEM_UNDELETE_VIA_TRASH',
-        'ITEM_UNSYNC',
-        'ITEM_UPLOAD',
-        'LEGAL_HOLD_ASSIGNMENT_CREATE',
-        'LEGAL_HOLD_ASSIGNMENT_DELETE',
-        'LEGAL_HOLD_POLICY_CREATE',
-        'LEGAL_HOLD_POLICY_DELETE',
-        'LEGAL_HOLD_POLICY_UPDATE',
-        'LOCK',
-        'LOCK_CREATE',
-        'LOCK_DESTROY',
-        'LOGIN',
-        'MASTER_INVITE_ACCEPT',
-        'MASTER_INVITE_REJECT',
-        'METADATA_CASCADE_POLICY_APPLY',
-        'METADATA_CASCADE_POLICY_CREATE',
-        'METADATA_INSTANCE_COPY',
-        'METADATA_INSTANCE_CREATE',
-        'METADATA_INSTANCE_DELETE',
-        'METADATA_INSTANCE_UPDATE',
-        'METADATA_TEMPLATE_CREATE',
-        'METADATA_TEMPLATE_DELETE',
-        'METADATA_TEMPLATE_UPDATE',
-        'MOVE',
-        'NEW_USER',
-        'OAUTH2_ACCESS_TOKEN_REVOKE',
-        'OAUTH2_REFRESH_TOKEN_REVOKE',
-        'PREVIEW',
-        'REMOVE_DEVICE_ASSOCIATION',
-        'REMOVE_LOGIN_ACTIVITY_DEVICE',
-        'RENAME',
-        'RETENTION_POLICY_ASSIGNMENT_ADD',
-        'SHARE',
-        'SHARED_LINK_ONE_TIME_PASSCODE_ACCESS',
-        'SHARED_LINK_ONE_TIME_PASSCODE_CHALLENGE',
-        'SHARED_LINK_REDIRECT_OUT_OF_SHARED_CONTEXT',
-        'SHARED_LINK_SEND',
-        'SHARE_EXPIRATION',
-        'SHIELD_ACCESS_POLICY_CREATED',
-        'SHIELD_ACCESS_POLICY_DELETED',
-        'SHIELD_ACCESS_POLICY_UPDATED',
-        'SHIELD_ALERT',
-        'SHIELD_DOWNLOAD_BLOCKED',
-        'SHIELD_EXTERNAL_COLLAB_ACCESS_BLOCKED',
-        'SHIELD_EXTERNAL_COLLAB_ACCESS_BLOCKED_MISSING_JUSTIFICATION',
-        'SHIELD_EXTERNAL_COLLAB_ACCESS_JUSTIFIED',
-        'SHIELD_EXTERNAL_COLLAB_INVITE_BLOCKED',
-        'SHIELD_EXTERNAL_COLLAB_INVITE_BLOCKED_MISSING_JUSTIFICATION',
-        'SHIELD_EXTERNAL_COLLAB_INVITE_JUSTIFIED',
-        'SHIELD_INFORMATION_BARRIER_COLLAB_BLOCKED',
-        'SHIELD_INFORMATION_BARRIER_DISABLED',
-        'SHIELD_INFORMATION_BARRIER_ENABLED',
-        'SHIELD_INFORMATION_BARRIER_GROUP_ADD_USER_BLOCKED',
-        'SHIELD_INFORMATION_BARRIER_ITEM_COPY_BLOCKED',
-        'SHIELD_INFORMATION_BARRIER_ITEM_MOVE_BLOCKED',
-        'SHIELD_INFORMATION_BARRIER_ITEM_OWNER_TRANSFER_BLOCKED',
-        'SHIELD_INFORMATION_BARRIER_PENDING',
-        'SHIELD_INFORMATION_BARRIER_SHARED_ITEM_ACCESS_BLOCKED',
-        'SHIELD_JUSTIFICATION_APPROVAL',
-        'SHIELD_PREVIEW_BLOCKED',
-        'SHIELD_SHARED_LINK_ACCESS_BLOCKED',
-        'SHIELD_SHARED_LINK_STATUS_RESTRICTED_ON_CREATE',
-        'SHIELD_SHARED_LINK_STATUS_RESTRICTED_ON_UPDATE',
-        'SIGN_DOCUMENT_ASSIGNED',
-        'SIGN_DOCUMENT_CANCELLED',
-        'SIGN_DOCUMENT_COMPLETED',
-        'SIGN_DOCUMENT_CONVERTED',
-        'SIGN_DOCUMENT_CREATED',
-        'SIGN_DOCUMENT_DECLINED',
-        'SIGN_DOCUMENT_EXPIRED',
-        'SIGN_DOCUMENT_SIGNED',
-        'SIGN_DOCUMENT_VIEWED_BY_SIGNED',
-        'SIGN_DOCUMENT_VIEWED_BY_SIGNER',
-        'SIGNER_DOWNLOADED',
-        'SIGNER_FORWARDED',
-        'STORAGE_EXPIRATION',
-        'TAG_ITEM_CREATE',
-        'TASK_ASSIGNMENT_CREATE',
-        'TASK_ASSIGNMENT_DELETE',
-        'TASK_ASSIGNMENT_UPDATE',
-        'TASK_CREATE',
-        'TASK_UPDATE',
-        'TERMS_OF_SERVICE_ACCEPT',
-        'TERMS_OF_SERVICE_REJECT',
-        'UNDELETE',
-        'UNFAVORITE',
-        'UNLOCK',
-        'UNSHARE',
-        'UPDATE_COLLABORATION_EXPIRATION',
-        'UPDATE_SHARE_EXPIRATION',
-        'UPLOAD',
-        'USER_AUTHENTICATE_OAUTH2_ACCESS_TOKEN_CREATE',
-        'WATERMARK_LABEL_CREATE',
-        'WATERMARK_LABEL_DELETE',
-        'WORKFLOW_AUTOMATION_CREATE',
-        'WORKFLOW_AUTOMATION_DELETE',
-        'WORKFLOW_AUTOMATION_UPDATE',
-      ])
-      .openapi({
-        title: 'Event Type',
-        example: 'FILE_MARKED_MALICIOUS',
-        description: 'An event type that can trigger an event.',
-      })
-      .and(z.any().openapi({ description: 'The event type that triggered this event.' }))
-      .exactOptional(),
-    session_id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The session of the user that performed the action. Not all events will\npopulate this attribute.',
-        example: '70090280850c8d2a1933c1',
-      }),
-    source: EventSourceResourceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The resource that triggered this event. For more information,\ncheck out the guide on event triggers.',
-        }),
-    ).exactOptional(),
-    additional_details: z
-      .record(z.string(), z.any())
-      .exactOptional()
-      .openapi({
-        description:
-          'This object provides additional information about the event if available.\n\nThis can include how a user performed an event as well as additional\ninformation to correlate an event to external KeySafe logs. Not all events\nhave an `additional_details` object.  This object is only available in the\nEnterprise Events.',
-        example: { key: 'value' },
-      }),
-  })
-  .openapi({
-    description: 'The description of an event that happened within Box.',
-    title: 'Event',
-    'x-box-resource-id': 'event',
-    'x-box-tag': 'events',
-    required: [],
-  })
-  .openapi('Event')
-
-const EventsSchema = z
+const EventsSchema: z.ZodType<EventsType> = z
   .object({
     chunk_size: z
       .preprocess(
@@ -7293,14 +9770,10 @@ const FileRequestSchema = z
           'The date after which a file request will no longer accept new\nsubmissions.\n\nAfter this date, the `status` will automatically be set to\n`inactive`.',
         example: '2020-09-28T10:53:43-08:00',
       }),
-    folder: FolderMiniSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The folder that this file request is associated with.\n\nFiles submitted through the file request form will be\nuploaded to this folder.',
-        }),
-    ),
+    folder: FolderMiniSchema.openapi({
+      description:
+        'The folder that this file request is associated with.\n\nFiles submitted through the file request form will be\nuploaded to this folder.',
+    }),
     url: z
       .string()
       .exactOptional()
@@ -7319,20 +9792,18 @@ const FileRequestSchema = z
           'The HTTP `etag` of this file. This can be used in combination with\nthe `If-Match` header when updating a file request. By providing that\nheader, a change will only be performed on the  file request if the `etag`\non the file request still matches the `etag` provided in the `If-Match`\nheader.',
         example: '1',
       }),
-    created_by: UserMiniSchema.and(
-      z.any().openapi({ description: 'The user who created this file request.' }),
-    ).exactOptional(),
+    created_by: UserMiniSchema.exactOptional().openapi({
+      description: 'The user who created this file request.',
+    }),
     created_at: z.iso
       .datetime({ offset: true })
       .openapi({
         description: 'The date and time when the file request was created.',
         example: '2020-09-28T10:53:43-08:00',
       }),
-    updated_by: UserMiniSchema.and(
-      z.any().openapi({ description: 'The user who last modified this file request.' }),
-    )
-      .and(z.any())
-      .exactOptional(),
+    updated_by: UserMiniSchema.exactOptional().openapi({
+      description: 'The user who last modified this file request.',
+    }),
     updated_at: z.iso
       .datetime({ offset: true })
       .openapi({
@@ -7409,29 +9880,39 @@ const FileRequestUpdateRequestSchema = z
   .openapi('FileRequestUpdateRequest')
 
 const FileRequestCopyRequestSchema = FileRequestUpdateRequestSchema.and(
-  z
-    .object({
-      folder: z
-        .object({
-          type: z
-            .literal('folder')
-            .exactOptional()
-            .openapi({ description: 'The value will always be `folder`.', example: 'folder' }),
-          id: z
-            .string()
-            .openapi({
-              description: 'The ID of the folder to associate the new\nfile request to.',
-              example: '42037322',
-            }),
-        })
-        .exactOptional()
-        .openapi({
-          description: 'The folder to associate the new file request to.',
-          required: ['id'],
-        }),
-    })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['folder'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'folder')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        folder: z
+          .object({
+            type: z
+              .literal('folder')
+              .exactOptional()
+              .openapi({ description: 'The value will always be `folder`.', example: 'folder' }),
+            id: z
+              .string()
+              .openapi({
+                description: 'The ID of the folder to associate the new\nfile request to.',
+                example: '42037322',
+              }),
+          })
+          .exactOptional()
+          .openapi({
+            description: 'The folder to associate the new file request to.',
+            required: ['id'],
+          }),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'The request body to copy a file request.',
     required: ['folder'],
@@ -7439,7 +9920,7 @@ const FileRequestCopyRequestSchema = FileRequestUpdateRequestSchema.and(
   })
   .openapi('FileRequestCopyRequest')
 
-const FilesSchema = z
+const FilesSchema: z.ZodType<FilesType> = z
   .object({
     total_count: z
       .preprocess(
@@ -7625,9 +10106,9 @@ const FileVersionSchema = FileVersionMiniSchema.and(
           description: 'When the file version object was last updated.',
           example: '2012-12-12T10:53:43-08:00',
         }),
-      modified_by: UserMiniSchema.and(
-        z.any().openapi({ description: 'The user who last updated the file version.' }),
-      ).exactOptional(),
+      modified_by: UserMiniSchema.exactOptional().openapi({
+        description: 'The user who last updated the file version.',
+      }),
       trashed_at: z.iso
         .datetime({ offset: true })
         .nullable()
@@ -7636,9 +10117,9 @@ const FileVersionSchema = FileVersionMiniSchema.and(
           description: 'When the file version object was trashed.',
           example: '2012-12-12T10:53:43-08:00',
         }),
-      trashed_by: UserMiniSchema.and(
-        z.any().openapi({ description: 'The user who trashed the file version.' }),
-      ).exactOptional(),
+      trashed_by: UserMiniSchema.exactOptional().openapi({
+        description: 'The user who trashed the file version.',
+      }),
       restored_at: z.iso
         .datetime({ offset: true })
         .nullable()
@@ -7647,9 +10128,9 @@ const FileVersionSchema = FileVersionMiniSchema.and(
           description: 'When the file version was restored from the trash.',
           example: '2012-12-12T10:53:43-08:00',
         }),
-      restored_by: UserMiniSchema.and(
-        z.any().openapi({ description: 'The user who restored the file version from the trash.' }),
-      ).exactOptional(),
+      restored_by: UserMiniSchema.exactOptional().openapi({
+        description: 'The user who restored the file version from the trash.',
+      }),
       purged_at: z.iso
         .datetime({ offset: true })
         .nullable()
@@ -7755,7 +10236,15 @@ const LegalHoldPolicyMiniSchema = z
 const LegalHoldPolicyAssignedItemSchema = z
   .object({
     type: z
-      .enum(['file', 'file_version', 'folder', 'user', 'ownership', 'interactions'])
+      .enum([
+        'file',
+        'file_version',
+        'folder',
+        'user',
+        'ownership',
+        'interactions',
+        'metadata_template',
+      ])
       .openapi({ description: 'The type of item the policy is assigned to.', example: 'folder' }),
     id: z
       .string()
@@ -7771,27 +10260,40 @@ const LegalHoldPolicyAssignedItemSchema = z
   })
   .openapi('LegalHoldPolicyAssignedItem')
 
+const LegalHoldPolicyAssignmentFilterFieldSchema = z
+  .object({
+    field: z
+      .string()
+      .openapi({
+        description: 'The ID of the metadata template field to filter on.',
+        example: 'a0f4ee4e-1dc1-4h90-a8a9-aef55fc681d4',
+      }),
+    value: z
+      .string()
+      .openapi({
+        description: 'The value of the metadata template field to filter on.',
+        example: '0c27b756-0p87-4fe0-a43a-59fb661ccc4e',
+      }),
+  })
+  .openapi({
+    description: 'A metadata template field filter for a legal hold policy assignment.',
+    required: ['field', 'value'],
+    title: 'Legal hold policy assignment filter field',
+  })
+  .openapi('LegalHoldPolicyAssignmentFilterField')
+
 const LegalHoldPolicyAssignmentSchema = LegalHoldPolicyAssignmentBaseSchema.and(
   z
     .object({
-      legal_hold_policy: LegalHoldPolicyMiniSchema.and(
-        z
-          .any()
-          .openapi({
-            description: 'The policy that the legal hold policy assignment\nis part of.',
-          }),
-      ).exactOptional(),
-      assigned_to: LegalHoldPolicyAssignedItemSchema.and(
-        z
-          .any()
-          .openapi({
-            description:
-              'The item that the legal hold policy\nis assigned to. Includes type and ID.',
-          }),
-      ).exactOptional(),
-      assigned_by: UserMiniSchema.and(
-        z.any().openapi({ description: 'The user who created the legal hold policy\nassignment.' }),
-      ).exactOptional(),
+      legal_hold_policy: LegalHoldPolicyMiniSchema.exactOptional().openapi({
+        description: 'The policy that the legal hold policy assignment\nis part of.',
+      }),
+      assigned_to: LegalHoldPolicyAssignedItemSchema.exactOptional().openapi({
+        description: 'The item that the legal hold policy\nis assigned to. Includes type and ID.',
+      }),
+      assigned_by: UserMiniSchema.exactOptional().openapi({
+        description: 'The user who created the legal hold policy\nassignment.',
+      }),
       assigned_at: z.iso
         .datetime({ offset: true })
         .exactOptional()
@@ -7807,12 +10309,19 @@ const LegalHoldPolicyAssignmentSchema = LegalHoldPolicyAssignmentBaseSchema.and(
             "When the assignment release request was sent.\n(Because it can take time for an assignment to fully\ndelete, this isn't quite the same time that the\nassignment is fully deleted). If null, Assignment\nwas not deleted.",
           example: '2012-12-12T10:53:43-08:00',
         }),
+      filter_fields: z
+        .array(LegalHoldPolicyAssignmentFilterFieldSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'List of metadata template field filters. Only present when `assigned_to.type` is `metadata_template`.',
+        }),
     })
     .openapi({ required: [] }),
 )
   .openapi({
     description:
-      "Legal Hold Assignments are used to assign Legal Hold\nPolicies to an item type of: Users, Folders, Files, File Versions, Ownership, or Interactions.\n\nCreating a Legal Hold Assignment puts a hold\non the File-Versions that belong to the Assignment's\n'apply-to' entity.",
+      "Legal Hold Assignments are used to assign Legal Hold\nPolicies to an item type of: Users, Folders, Files, File Versions, Ownership, Interactions, or Metadata Templates.\n\nCreating a Legal Hold Assignment puts a hold\non the File-Versions that belong to the Assignment's\n'apply-to' entity.",
     title: 'Legal hold policy assignment',
     'x-box-resource-id': 'legal_hold_policy_assignment',
     'x-box-tag': 'legal_hold_policy_assignments',
@@ -7835,17 +10344,13 @@ const FileVersionLegalHoldSchema = z
         description: 'The value will always be `file_version_legal_hold`.',
         example: 'file_version_legal_hold',
       }),
-    file_version: FileVersionMiniSchema.and(
-      z.any().openapi({ description: 'The file version that is held.' }),
-    ).exactOptional(),
-    file: FileMiniSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The file for the file version held.\nNote that there is no guarantee that the current\nversion of this file is held.',
-        }),
-    ).exactOptional(),
+    file_version: FileVersionMiniSchema.exactOptional().openapi({
+      description: 'The file version that is held.',
+    }),
+    file: FileMiniSchema.exactOptional().openapi({
+      description:
+        'The file for the file version held.\nNote that there is no guarantee that the current\nversion of this file is held.',
+    }),
     legal_hold_policy_assignments: z
       .array(LegalHoldPolicyAssignmentSchema)
       .exactOptional()
@@ -8018,14 +10523,12 @@ const FileVersionRetentionSchema = z
         description: 'The value will always be `file_version_retention`.',
         example: 'file_version_retention',
       }),
-    file_version: FileVersionMiniSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The file version this file version retention was\napplied to.' }),
-    ).exactOptional(),
-    file: FileMiniSchema.and(
-      z.any().openapi({ description: 'The file this file version retention was applied to.' }),
-    ).exactOptional(),
+    file_version: FileVersionMiniSchema.exactOptional().openapi({
+      description: 'The file version this file version retention was\napplied to.',
+    }),
+    file: FileMiniSchema.exactOptional().openapi({
+      description: 'The file this file version retention was applied to.',
+    }),
     applied_at: z.iso
       .datetime({ offset: true })
       .exactOptional()
@@ -8040,14 +10543,10 @@ const FileVersionRetentionSchema = z
         description: 'When the retention expires on this file\nversion retention.',
         example: '2012-12-12T10:53:43-08:00',
       }),
-    winning_retention_policy: RetentionPolicyMiniSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The winning retention policy applied to this file\nversion retention. A file version can have multiple\nretention policies applied.',
-        }),
-    ).exactOptional(),
+    winning_retention_policy: RetentionPolicyMiniSchema.exactOptional().openapi({
+      description:
+        'The winning retention policy applied to this file\nversion retention. A file version can have multiple\nretention policies applied.',
+    }),
   })
   .openapi({
     description:
@@ -8277,338 +10776,11 @@ const FileVersionsOnHoldSchema = z
   })
   .openapi('FileVersionsOnHold')
 
-const FolderFullSchema = FolderSchema.and(
-  z
-    .object({
-      sync_state: z
-        .enum(['synced', 'not_synced', 'partially_synced'])
-        .openapi({
-          example: 'synced',
-          description:
-            "Specifies whether a folder should be synced to a\nuser's device or not. This is used by Box Sync\n(discontinued) and is not used by Box Drive.",
-        })
-        .exactOptional(),
-      has_collaborations: z
-        .boolean()
-        .exactOptional()
-        .openapi({
-          description: 'Specifies if this folder has any other collaborators.',
-          example: true,
-        }),
-      permissions: z
-        .object({
-          can_delete: z
-            .boolean()
-            .openapi({
-              description: 'Specifies if the current user can delete this item.',
-              example: true,
-            }),
-          can_download: z
-            .boolean()
-            .openapi({
-              description: 'Specifies if the current user can download this item.',
-              example: true,
-            }),
-          can_invite_collaborator: z
-            .boolean()
-            .openapi({
-              description:
-                'Specifies if the current user can invite new\nusers to collaborate on this item, and if the user can\nupdate the role of a user already collaborated on this\nitem.',
-              example: true,
-            }),
-          can_rename: z
-            .boolean()
-            .openapi({ description: 'Specifies if the user can rename this item.', example: true }),
-          can_set_share_access: z
-            .boolean()
-            .openapi({
-              description:
-                'Specifies if the user can change the access level of an\nexisting shared link on this item.',
-              example: true,
-            }),
-          can_share: z
-            .boolean()
-            .openapi({
-              description: 'Specifies if the user can create a shared link for this item.',
-              example: true,
-            }),
-        })
-        .openapi({
-          description: 'The permissions that the authenticated user has for an item.',
-          required: [
-            'can_delete',
-            'can_download',
-            'can_invite_collaborator',
-            'can_rename',
-            'can_set_share_access',
-            'can_share',
-          ],
-        })
-        .and(
-          z
-            .object({
-              can_upload: z
-                .boolean()
-                .exactOptional()
-                .openapi({
-                  description: 'Specifies if the user can upload into this folder.',
-                  example: true,
-                }),
-              can_apply_watermark: z
-                .boolean()
-                .exactOptional()
-                .openapi({
-                  description:
-                    'Specifies if the user can apply a watermark to this folder and its contents.',
-                  example: true,
-                }),
-            })
-            .openapi({ required: [] }),
-        )
-        .openapi({
-          description: 'The permissions that the authenticated user has for a folder.',
-          required: ['can_upload'],
-        })
-        .and(
-          z
-            .any()
-            .openapi({
-              description: 'Describes the permissions that the current user has\nfor this folder.',
-            }),
-        )
-        .and(z.any())
-        .exactOptional(),
-      tags: z
-        .array(z.string())
-        .min(1)
-        .max(100)
-        .openapi({
-          example: ['approved'],
-          description:
-            "The tags for this item. These tags are shown in\nthe Box web app and mobile apps next to an item.\n\nTo add or remove a tag, retrieve the item's current tags,\nmodify them, and then update this field.\n\nThere is a limit of 100 tags per item, and 10,000\nunique tags per enterprise.",
-        })
-        .and(z.any())
-        .exactOptional(),
-      can_non_owners_invite: z
-        .boolean()
-        .openapi({
-          example: true,
-          description:
-            'Specifies if users who are not the owner\nof the folder can invite new collaborators to the folder.',
-        })
-        .and(z.any())
-        .exactOptional(),
-      is_externally_owned: z
-        .boolean()
-        .exactOptional()
-        .openapi({
-          description:
-            'Specifies if this folder is owned by a user outside of the\nauthenticated enterprise.',
-          example: true,
-        }),
-      metadata: z
-        .record(
-          z.string(),
-          z
-            .record(z.string(), MetadataFullSchema)
-            .openapi({
-              description:
-                'A list of metadata instances, nested within key-value pairs of their `scope`\nand `templateKey`.',
-              example: {
-                marketingCollateral: {
-                  $canEdit: true,
-                  $id: '01234500-12f1-1234-aa12-b1d234cb567e',
-                  $parent: 'folder_59449484661',
-                  $scope: 'enterprise_27335',
-                  $template: 'marketingCollateral',
-                  $type: 'properties-6bcba49f-ca6d-4d2a-a758-57fe6edf44d0',
-                  $typeVersion: 2,
-                  $version: 1,
-                },
-              },
-            }),
-        )
-        .openapi({
-          title: 'Item metadata instances',
-          description:
-            'A list of metadata instances, nested within key-value pairs of their `scope`\nand `templateKey`.\n\nTo access the metadata for a file or folder, first use the\nmetadata endpoints to determine the metadata templates available to your\nenterprise.\n\nThen use the `GET /files/:id` or `GET /folder/:id`\nendpoint with the `fields` query parameter to get\nthe metadata by ID.\n\nTo request a metadata instance for a particular `scope` and `templateKey`\nuse the following format for the `fields` parameter:\n`metadata.<scope>.<templateKey>`\n\nFor example, `?fields=metadata.enterprise_27335.marketingCollateral`.',
-          example: {
-            enterprise_27335: {
-              marketingCollateral: {
-                $canEdit: true,
-                $id: '01234500-12f1-1234-aa12-b1d234cb567e',
-                $parent: 'folder_59449484661',
-                $scope: 'enterprise_27335',
-                $template: 'marketingCollateral',
-                $type: 'properties-6bcba49f-ca6d-4d2a-a758-57fe6edf44d0',
-                $typeVersion: 2,
-                $version: 1,
-              },
-            },
-          },
-        })
-        .and(
-          z
-            .any()
-            .openapi({
-              description:
-                'An object containing the metadata instances that have been\nattached to this folder.\n\nEach metadata instance is uniquely identified by its `scope` and\n`templateKey`. There can only be one instance of any metadata\ntemplate attached to each folder. Each metadata instance is nested\nwithin an object with the `templateKey` as the key, which again\nitself is nested in an object with the `scope` as the key.',
-            }),
-        )
-        .exactOptional(),
-      is_collaboration_restricted_to_enterprise: z
-        .boolean()
-        .openapi({
-          example: true,
-          description:
-            'Specifies if new invites to this folder are restricted to users\nwithin the enterprise. This does not affect existing\ncollaborations.',
-        })
-        .and(z.any())
-        .exactOptional(),
-      allowed_shared_link_access_levels: z
-        .array(
-          z
-            .enum(['open', 'company', 'collaborators'])
-            .openapi({
-              title: 'Shared link access level',
-              description: 'The access level for a shared link.',
-              example: 'open',
-            }),
-        )
-        .exactOptional()
-        .openapi({
-          description:
-            'The shared link access levels the authenticated user is allowed to\nuse when creating or updating a shared link for this folder.\n\nThe list depends on item policy and user authorization. For some\nfolders, like the root folder, this is always empty as sharing is\nnot allowed at that level.',
-          example: ['open'],
-        }),
-      allowed_invitee_roles: z
-        .array(
-          z.enum([
-            'editor',
-            'viewer',
-            'previewer',
-            'uploader',
-            'previewer uploader',
-            'viewer uploader',
-            'co-owner',
-          ]),
-        )
-        .exactOptional()
-        .openapi({
-          description:
-            'A list of the types of roles that user can be invited at\nwhen sharing this folder.',
-          example: ['editor'],
-        }),
-      watermark_info: z
-        .object({
-          is_watermarked: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Specifies if this item has a watermark applied.',
-              example: true,
-            }),
-          is_watermark_inherited: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description:
-                'Specifies if the watermark is inherited from any parent folder in the hierarchy.',
-              example: false,
-            }),
-          is_watermarked_by_access_policy: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description: 'Specifies if the watermark is enforced by an access policy.',
-              example: false,
-            }),
-        })
-        .openapi({ description: 'Details about the watermark applied to this item.', required: [] })
-        .and(
-          z.any().openapi({ description: 'Details about the watermark applied to this folder.' }),
-        )
-        .and(z.any())
-        .exactOptional(),
-      is_accessible_via_shared_link: z
-        .boolean()
-        .exactOptional()
-        .openapi({
-          description:
-            'Specifies if the folder can be accessed\nwith the direct shared link or a shared link\nto a parent folder.',
-          example: true,
-        }),
-      can_non_owners_view_collaborators: z
-        .boolean()
-        .exactOptional()
-        .openapi({
-          description:
-            'Specifies if collaborators who are not owners\nof this folder are restricted from viewing other\ncollaborations on this folder.\n\nIt also restricts non-owners from inviting new\ncollaborators.',
-          example: true,
-        }),
-      classification: z
-        .object({
-          name: z
-            .string()
-            .exactOptional()
-            .openapi({ description: 'The name of the classification.', example: 'Top Secret' }),
-          definition: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'An explanation of the meaning of this classification.',
-              example: 'Content that should not be shared outside the company.',
-            }),
-          color: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The color that is used to display the\nclassification label in a user-interface. Colors are defined by the admin\nor co-admin who created the classification in the Box web app.',
-              example: '#FF0000',
-            }),
-        })
-        .openapi({ description: 'The classification applied to an item.', required: [] })
-        .and(
-          z
-            .any()
-            .openapi({ description: 'Details about the classification applied to this folder.' }),
-        )
-        .nullable()
-        .exactOptional(),
-      is_associated_with_app_item: z
-        .boolean()
-        .exactOptional()
-        .openapi({
-          description:
-            'This field will return true if the folder or any ancestor of the\nfolder is associated with at least one app item. Note that this will\nreturn true even if the context user does not have access to the\napp item(s) associated with the folder.',
-          example: true,
-        }),
-      collections: z
-        .array(CollectionSchema)
-        .exactOptional()
-        .openapi({
-          description:
-            'The collections that this folder belongs to.\n\nFor more information, see the\n[collections guide](https://developer.box.com/guides/collections).',
-        }),
-    })
-    .openapi({ required: [] }),
-)
-  .openapi({
-    description:
-      'A full representation of a folder, as can be returned from any\nfolder API endpoints by default.',
-    title: 'Folder (Full)',
-    'x-box-resource-id': 'folder--full',
-    'x-box-tag': 'folders',
-    'x-box-variant': 'full',
-  })
-  .openapi('FolderFull')
-
 const FolderLockSchema = z
   .object({
-    folder: FolderMiniSchema.and(
-      z.any().openapi({ description: 'The folder that the lock applies to.' }),
-    ).exactOptional(),
+    folder: FolderMiniSchema.exactOptional().openapi({
+      description: 'The folder that the lock applies to.',
+    }),
     id: z
       .string()
       .exactOptional()
@@ -8617,9 +10789,9 @@ const FolderLockSchema = z
       .string()
       .exactOptional()
       .openapi({ description: 'The object type, always `folder_lock`.', example: 'folder_lock' }),
-    created_by: UserBaseSchema.and(
-      z.any().openapi({ description: 'The user or group that created the lock.' }),
-    ).exactOptional(),
+    created_by: UserBaseSchema.exactOptional().openapi({
+      description: 'The user or group that created the lock.',
+    }),
     created_at: z.iso
       .datetime({ offset: true })
       .exactOptional()
@@ -8792,14 +10964,10 @@ const GroupFullSchema = GroupSchema.and(
           description: 'The permissions that the authenticated user has for a group.',
           required: [],
         })
-        .and(
-          z
-            .any()
-            .openapi({
-              description: 'Describes the permissions that the current user has\nfor this group.',
-            }),
-        )
-        .exactOptional(),
+        .exactOptional()
+        .openapi({
+          description: 'Describes the permissions that the current user has\nfor this group.',
+        }),
     })
     .openapi({ required: [] }),
 )
@@ -8829,12 +10997,12 @@ const GroupMembershipSchema = z
         description: 'The value will always be `group_membership`.',
         example: 'group_membership',
       }),
-    user: UserMiniSchema.and(
-      z.any().openapi({ description: 'The user that the membership applies to.' }),
-    ).exactOptional(),
-    group: GroupMiniSchema.and(
-      z.any().openapi({ description: 'The group that the membership applies to.' }),
-    ).exactOptional(),
+    user: UserMiniSchema.exactOptional().openapi({
+      description: 'The user that the membership applies to.',
+    }),
+    group: GroupMiniSchema.exactOptional().openapi({
+      description: 'The group that the membership applies to.',
+    }),
     role: z
       .enum(['member', 'admin'])
       .exactOptional()
@@ -9165,56 +11333,69 @@ const IntegrationMappingPartnerItemSlackSchema = z
   .openapi('IntegrationMappingPartnerItemSlack')
 
 const IntegrationMappingSchema = IntegrationMappingBaseSchema.and(
-  z
-    .object({
-      integration_type: z
-        .literal('slack')
-        .exactOptional()
-        .openapi({
-          description:
-            'Identifies the Box partner app,\nwith which the mapping is associated.\nCurrently only supports Slack.\n(part of the composite key together with `id`).',
-          example: 'slack',
-        }),
-      is_manually_created: z
-        .boolean()
-        .exactOptional()
-        .openapi({
-          description:
-            'Identifies whether the mapping has\nbeen manually set\n(as opposed to being automatically created).',
-          example: true,
-        }),
-      options: IntegrationMappingSlackOptionsSchema.exactOptional(),
-      created_by: UserIntegrationMappingsSchema.exactOptional().openapi({
-        description: 'An object representing the user who\ncreated the integration mapping.',
-      }),
-      modified_by: UserIntegrationMappingsSchema.exactOptional().openapi({
-        description: 'The user who\nlast modified the integration mapping.',
-      }),
-      partner_item: IntegrationMappingPartnerItemSlackSchema.exactOptional().openapi({
-        description: 'Mapped item object for Slack.',
-        example: { id: 'C12378991223', type: 'channel', slack_org_id: 'E1234567' },
-      }),
-      box_item: FolderMiniSchema.exactOptional().openapi({
-        description:
-          'The Box folder, to which the object from the\npartner app domain (referenced in `partner_item_id`) is mapped.',
-      }),
-      created_at: z.iso
-        .datetime({ offset: true })
-        .exactOptional()
-        .openapi({
-          description: 'When the integration mapping object was created.',
-          example: '2012-12-12T10:53:43-08:00',
-        }),
-      modified_at: z.iso
-        .datetime({ offset: true })
-        .exactOptional()
-        .openapi({
-          description: 'When the integration mapping object was last modified.',
-          example: '2012-12-12T10:53:43-08:00',
-        }),
-    })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['partner_item', 'box_item'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'partner_item')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'box_item')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        integration_type: z
+          .literal('slack')
+          .exactOptional()
+          .openapi({
+            description:
+              'Identifies the Box partner app,\nwith which the mapping is associated.\nCurrently only supports Slack.\n(part of the composite key together with `id`).',
+            example: 'slack',
+          }),
+        is_manually_created: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description:
+              'Identifies whether the mapping has\nbeen manually set\n(as opposed to being automatically created).',
+            example: true,
+          }),
+        options: IntegrationMappingSlackOptionsSchema.exactOptional(),
+        created_by: UserIntegrationMappingsSchema.exactOptional().openapi({
+          description: 'An object representing the user who\ncreated the integration mapping.',
+        }),
+        modified_by: UserIntegrationMappingsSchema.exactOptional().openapi({
+          description: 'The user who\nlast modified the integration mapping.',
+        }),
+        partner_item: IntegrationMappingPartnerItemSlackSchema.exactOptional().openapi({
+          description: 'Mapped item object for Slack.',
+          example: { id: 'C12378991223', type: 'channel', slack_org_id: 'E1234567' },
+        }),
+        box_item: FolderMiniSchema.exactOptional().openapi({
+          description:
+            'The Box folder, to which the object from the\npartner app domain (referenced in `partner_item_id`) is mapped.',
+        }),
+        created_at: z.iso
+          .datetime({ offset: true })
+          .exactOptional()
+          .openapi({
+            description: 'When the integration mapping object was created.',
+            example: '2012-12-12T10:53:43-08:00',
+          }),
+        modified_at: z.iso
+          .datetime({ offset: true })
+          .exactOptional()
+          .openapi({
+            description: 'When the integration mapping object was last modified.',
+            example: '2012-12-12T10:53:43-08:00',
+          }),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'A Slack specific representation of an integration\nmapping object.',
     required: ['partner_item', 'box_item'],
@@ -9365,58 +11546,67 @@ const IntegrationMappingSlackCreateRequestSchema = z
   .openapi('IntegrationMappingSlackCreateRequest')
 
 const IntegrationMappingTeamsSchema = IntegrationMappingBaseSchema.and(
-  z
-    .object({
-      integration_type: z
-        .literal('teams')
-        .exactOptional()
-        .openapi({
-          description:
-            'Identifies the Box partner app,\nwith which the mapping is associated.\nSupports Slack and Teams.\n(part of the composite key together with `id`).',
-          example: 'teams',
-        }),
-      is_overridden_by_manual_mapping: z
-        .boolean()
-        .exactOptional()
-        .openapi({
-          description:
-            'Identifies whether the mapping has\nbeen manually set by the team owner from UI for channels\n(as opposed to being automatically created).',
-          example: true,
-        }),
-      partner_item: IntegrationMappingPartnerItemTeamsSchema.exactOptional().openapi({
-        description: 'Mapped item object for Teams.',
-        example: {
-          id: '19%3ABCD-Avgfggkggyftdtfgghjhkhkhh%40thread:tacv2',
-          type: 'channel',
-          tenant_id: 'E1234567',
-          team_id: 'hjgjgjg-bhhj-564a-b643-hghgj685u',
-        },
-      }),
-      box_item: FolderReferenceSchema.and(
-        z
-          .any()
+  z.looseObject({}).openapi({ required: ['partner_item', 'box_item'] }),
+)
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'partner_item')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'box_item')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        integration_type: z
+          .literal('teams')
+          .exactOptional()
           .openapi({
             description:
-              'The Box folder, to which the object from the\npartner app domain (referenced in `partner_item_id`) is mapped.',
+              'Identifies the Box partner app,\nwith which the mapping is associated.\nSupports Slack and Teams.\n(part of the composite key together with `id`).',
+            example: 'teams',
           }),
-      ).exactOptional(),
-      created_at: z.iso
-        .datetime({ offset: true })
-        .exactOptional()
-        .openapi({
-          description: 'When the integration mapping object was created.',
-          example: '2012-12-12T10:53:43-08:00',
+        is_overridden_by_manual_mapping: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description:
+              'Identifies whether the mapping has\nbeen manually set by the team owner from UI for channels\n(as opposed to being automatically created).',
+            example: true,
+          }),
+        partner_item: IntegrationMappingPartnerItemTeamsSchema.exactOptional().openapi({
+          description: 'Mapped item object for Teams.',
+          example: {
+            id: '19%3ABCD-Avgfggkggyftdtfgghjhkhkhh%40thread:tacv2',
+            type: 'channel',
+            tenant_id: 'E1234567',
+            team_id: 'hjgjgjg-bhhj-564a-b643-hghgj685u',
+          },
         }),
-      modified_at: z.iso
-        .datetime({ offset: true })
-        .exactOptional()
-        .openapi({
-          description: 'When the integration mapping object was last modified.',
-          example: '2012-12-12T10:53:43-08:00',
+        box_item: FolderReferenceSchema.exactOptional().openapi({
+          description:
+            'The Box folder, to which the object from the\npartner app domain (referenced in `partner_item_id`) is mapped.',
         }),
-    })
-    .openapi({ required: [] }),
-)
+        created_at: z.iso
+          .datetime({ offset: true })
+          .exactOptional()
+          .openapi({
+            description: 'When the integration mapping object was created.',
+            example: '2012-12-12T10:53:43-08:00',
+          }),
+        modified_at: z.iso
+          .datetime({ offset: true })
+          .exactOptional()
+          .openapi({
+            description: 'When the integration mapping object was last modified.',
+            example: '2012-12-12T10:53:43-08:00',
+          }),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'A Microsoft Teams specific representation of an integration\nmapping object.',
     required: ['partner_item', 'box_item'],
@@ -9446,14 +11636,10 @@ const IntegrationMappingsTeamsSchema = z
 const IntegrationMappingTeamsCreateRequestSchema = z
   .object({
     partner_item: IntegrationMappingPartnerItemTeamsCreateRequestSchema,
-    box_item: FolderReferenceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Box folder, to which the object from the\npartner app domain (referenced in `partner_item_id`) is mapped.',
-        }),
-    ),
+    box_item: FolderReferenceSchema.openapi({
+      description:
+        'The Box folder, to which the object from the\npartner app domain (referenced in `partner_item_id`) is mapped.',
+    }),
   })
   .openapi({
     description: 'A request to create a Teams Integration Mapping object.',
@@ -9518,6 +11704,23 @@ const InviteSchema = z
         description: 'When the invite was modified.',
         example: '2012-12-12T10:53:43-08:00',
       }),
+    auto_roll_in_at: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The date and time when the user is added to the enterprise\nautomatically, or `null` if the user has to accept the invite.',
+        example: '2012-12-26T00:00:00-08:00',
+      }),
+    is_auto_roll_in: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether the user is added to the enterprise automatically, without\nhaving to accept the invite. When `true`, `auto_roll_in_at` contains\nthe date and time of the roll-in.',
+        example: true,
+      }),
   })
   .openapi({
     description: 'An invite for a user to an enterprise.',
@@ -9528,7 +11731,7 @@ const InviteSchema = z
   })
   .openapi('Invite')
 
-const ItemsOffsetPaginatedSchema = z
+const ItemsOffsetPaginatedSchema: z.ZodType<ItemsOffsetPaginatedType> = z
   .object({
     total_count: z
       .preprocess(
@@ -9626,6 +11829,96 @@ const ItemsOffsetPaginatedSchema = z
     'x-box-tag': 'folders',
   })
   .openapi('ItemsOffsetPaginated')
+
+const KeywordSkillCardSchema = z
+  .object({
+    created_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'The optional date and time this card was created at.',
+        example: '2018-04-13T13:53:23-07:00',
+      }),
+    type: z
+      .literal('skill_card')
+      .openapi({ description: 'The value will always be `skill_card`.', example: 'skill_card' }),
+    skill_card_type: z
+      .literal('keyword')
+      .openapi({ description: 'The value will always be `keyword`.', example: 'keyword' }),
+    skill_card_title: z
+      .object({
+        code: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'An optional identifier for the title.', example: 'labels' }),
+        message: z
+          .string()
+          .openapi({ description: 'The actual title to show in the UI.', example: 'Labels' }),
+      })
+      .exactOptional()
+      .openapi({ description: 'The title of the card.', required: ['message'] }),
+    skill: z
+      .object({
+        type: z
+          .literal('service')
+          .openapi({ description: 'The value will always be `service`.', example: 'service' }),
+        id: z
+          .string()
+          .openapi({
+            description:
+              'A custom identifier that represent the service that\napplied this metadata.',
+            example: 'image-recognition-service',
+          }),
+      })
+      .openapi({
+        description: 'The service that applied this metadata.',
+        required: ['type', 'id'],
+      }),
+    invocation: z
+      .object({
+        type: z
+          .literal('skill_invocation')
+          .openapi({
+            description: 'The value will always be `skill_invocation`.',
+            example: 'skill_invocation',
+          }),
+        id: z
+          .string()
+          .openapi({
+            description:
+              'A custom identifier that represent the instance of\nthe service that applied this metadata. For example,\nif your `image-recognition-service` runs on multiple\nnodes, this field can be used to identify the ID of\nthe node that was used to apply the metadata.',
+            example: 'image-recognition-service-123',
+          }),
+      })
+      .openapi({
+        description:
+          'The invocation of this service, used to track\nwhich instance of a service applied the metadata.',
+        required: ['type', 'id'],
+      }),
+    entries: z
+      .array(
+        z
+          .object({
+            text: z
+              .string()
+              .exactOptional()
+              .openapi({ description: 'The text of the keyword.', example: 'keyword1' }),
+          })
+          .openapi({
+            description: 'An entry in the `entries` attribute of a metadata card.',
+            required: [],
+          }),
+      )
+      .openapi({ description: 'A list of entries in the metadata card.' }),
+  })
+  .openapi({
+    description: 'A skill card that contains a set of keywords.',
+    required: ['type', 'skill_card_type', 'skill', 'invocation', 'entries'],
+    title: 'Keyword Skill Card',
+    'x-box-resource-id': 'keyword_skill_card',
+    'x-box-tag': 'skills',
+  })
+  .openapi('KeywordSkillCard')
 
 const LegalHoldPolicySchema = LegalHoldPolicyMiniSchema.and(
   z
@@ -9759,15 +12052,32 @@ const LegalHoldPolicySchema = LegalHoldPolicyMiniSchema.and(
                 'The number of users this policy is applied to with the `interactions` type assignment.',
               example: 6,
             }),
+          metadata_template: z
+            .preprocess(
+              (val) =>
+                typeof val === 'number' && Number.isSafeInteger(val)
+                  ? BigInt(val)
+                  : typeof val === 'string' && /^-?\d+$/.test(val)
+                    ? BigInt(val)
+                    : val,
+              z.int64(),
+            )
+            .exactOptional()
+            .openapi({
+              type: 'integer',
+              format: 'int64',
+              description: 'The number of metadata templates this policy is applied to.',
+              example: 1,
+            }),
         })
         .exactOptional()
         .openapi({
           description: 'Counts of assignments within a legal hold policy by item type.',
           required: [],
         }),
-      created_by: UserMiniSchema.and(
-        z.any().openapi({ description: 'The user who created the legal hold policy object.' }),
-      ).exactOptional(),
+      created_by: UserMiniSchema.exactOptional().openapi({
+        description: 'The user who created the legal hold policy object.',
+      }),
       created_at: z.iso
         .datetime({ offset: true })
         .exactOptional()
@@ -10206,8 +12516,8 @@ const MetadataFilterSchema = z
     filters: z
       .record(
         z.string(),
-        MetadataFilterValueSchema.and(z.any().openapi({ example: 'online' })).and(
-          z.any().openapi({ 'x-box-example-key': 'category' }),
+        MetadataFilterValueSchema.and(z.any().openapi({ 'x-box-example-key': 'category' })).openapi(
+          { example: 'online' },
         ),
       )
       .exactOptional()
@@ -10258,16 +12568,12 @@ const MetadataQuerySchema = z
         z.string(),
         z
           .any()
-          .and(
-            z
-              .any()
-              .openapi({
-                description:
-                  'The value for the argument being used in the metadata search.\n\nThe type of this parameter must match the type of the corresponding\nmetadata template field.',
-              }),
-          )
-          .and(z.any().openapi({ example: '100' }))
-          .openapi({ 'x-box-example-key': 'amount' }),
+          .openapi({
+            description:
+              'The value for the argument being used in the metadata search.\n\nThe type of this parameter must match the type of the corresponding\nmetadata template field.',
+            example: '100',
+            'x-box-example-key': 'amount',
+          }),
       )
       .exactOptional()
       .openapi({
@@ -10356,15 +12662,7 @@ const MetadataQuerySchema = z
   })
   .openapi('MetadataQuery')
 
-const MetadataQueryResultItemSchema = z
-  .xor([FileFullSchema, FolderFullSchema])
-  .openapi({
-    description: 'The mini representation of a file or folder.',
-    title: 'Metadata query search result item',
-  })
-  .openapi('MetadataQueryResultItem')
-
-const MetadataQueryResultsSchema = z
+const MetadataQueryResultsSchema: z.ZodType<MetadataQueryResultsType> = z
   .object({
     entries: z
       .array(MetadataQueryResultItemSchema)
@@ -11077,9 +13375,7 @@ const RoleVariableSchema = z
         'co-owner',
       ])
       .openapi({ description: 'The level of access granted.', example: 'editor' })
-      .and(
-        z.any().openapi({ description: 'Variable values you can use\nfor the role parameter.' }),
-      ),
+      .openapi({ description: 'Variable values you can use\nfor the role parameter.' }),
   })
   .openapi({
     description: 'Determines if the\nworkflow outcome\naffects a specific\ncollaborator role.',
@@ -11091,37 +13387,22 @@ const RoleVariableSchema = z
 const OutcomeSchema = z
   .object({
     id: z.string().openapi({ description: 'ID of a specific outcome.', example: '17363629' }),
-    collaborators: CollaboratorVariableSchema.and(
-      z.any().openapi({ description: 'Lists collaborators\naffected by the workflow\nresult.' }),
-    ).exactOptional(),
-    completion_rule: CompletionRuleVariableSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Determines\nif an action should be completed\nby all or any assignees.',
-        }),
-    ).exactOptional(),
-    file_collaborator_role: RoleVariableSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Determines if the\nworkflow outcome for\na file\naffects a specific\ncollaborator role.',
-        }),
-    ).exactOptional(),
-    task_collaborators: CollaboratorVariableSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Lists collaborators\naffected by the task workflow\nresult.' }),
-    ).exactOptional(),
-    role: RoleVariableSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Determines if the\nworkflow outcome\naffects a specific\ncollaborator role.',
-        }),
-    ).exactOptional(),
+    collaborators: CollaboratorVariableSchema.exactOptional().openapi({
+      description: 'Lists collaborators\naffected by the workflow\nresult.',
+    }),
+    completion_rule: CompletionRuleVariableSchema.exactOptional().openapi({
+      description: 'Determines\nif an action should be completed\nby all or any assignees.',
+    }),
+    file_collaborator_role: RoleVariableSchema.exactOptional().openapi({
+      description:
+        'Determines if the\nworkflow outcome for\na file\naffects a specific\ncollaborator role.',
+    }),
+    task_collaborators: CollaboratorVariableSchema.exactOptional().openapi({
+      description: 'Lists collaborators\naffected by the task workflow\nresult.',
+    }),
+    role: RoleVariableSchema.exactOptional().openapi({
+      description: 'Determines if the\nworkflow outcome\naffects a specific\ncollaborator role.',
+    }),
   })
   .openapi({ description: 'An instance of an outcome.', required: ['id'], title: 'Outcome' })
   .openapi('Outcome')
@@ -11407,56 +13688,7 @@ const RealtimeServersSchema = z
   })
   .openapi('RealtimeServers')
 
-const RecentItemResourceSchema = z
-  .xor([FileFullSchema, FolderFullSchema, WebLinkSchema])
-  .openapi({
-    description: 'A recently accessed item resource. This can be a file, folder, or web link.',
-    title: 'Recent item resource',
-  })
-  .openapi('RecentItemResource')
-
-const RecentItemSchema = z
-  .object({
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The value will always be `recent_item`.', example: 'recent_item' }),
-    item: RecentItemResourceSchema.and(
-      z.any().openapi({ description: 'The item that was recently accessed.' }),
-    ).exactOptional(),
-    interaction_type: z
-      .enum(['item_preview', 'item_upload', 'item_comment', 'item_open', 'item_modify'])
-      .exactOptional()
-      .openapi({
-        description: 'The most recent type of access the user performed on\nthe item.',
-        example: 'item_preview',
-      }),
-    interacted_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'The time of the most recent interaction.',
-        example: '2018-04-13T13:53:23-07:00',
-      }),
-    interaction_shared_link: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'If the item was accessed through a shared link it will appear here,\notherwise this will be null.',
-        example: 'https://www.box.com/shared/static/rh935iit6ewrmw0unyul.jpeg',
-      }),
-  })
-  .openapi({
-    description: 'A recent item accessed by a user.',
-    title: 'Recent item',
-    'x-box-resource-id': 'recent_item',
-    'x-box-tag': 'recent_items',
-    required: [],
-  })
-  .openapi('RecentItem')
-
-const RecentItemsSchema = z
+const RecentItemsSchema: z.ZodType<RecentItemsType> = z
   .object({
     limit: z
       .preprocess(
@@ -11548,14 +13780,9 @@ const RetentionPolicySchema = RetentionPolicyMiniSchema.and(
             'The status of the retention policy. The status of\na policy will be `active`, unless explicitly retired by an\nadministrator, in which case the status will be `retired`.\nOnce a policy has been retired, it cannot become\nactive again.',
           example: 'active',
         }),
-      created_by: UserMiniSchema.and(
-        z
-          .any()
-          .openapi({
-            description:
-              'A mini user object representing the user that\ncreated the retention policy.',
-          }),
-      ).exactOptional(),
+      created_by: UserMiniSchema.exactOptional().openapi({
+        description: 'A mini user object representing the user that\ncreated the retention policy.',
+      }),
       created_at: z.iso
         .datetime({ offset: true })
         .exactOptional()
@@ -11731,14 +13958,10 @@ const RetentionPolicyAssignmentSchema = z
         description: 'The value will always be `retention_policy_assignment`.',
         example: 'retention_policy_assignment',
       }),
-    retention_policy: RetentionPolicyMiniSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A mini representation of a retention policy object\nthat has been assigned to the content.',
-        }),
-    ).exactOptional(),
+    retention_policy: RetentionPolicyMiniSchema.exactOptional().openapi({
+      description:
+        'A mini representation of a retention policy object\nthat has been assigned to the content.',
+    }),
     assigned_to: z
       .object({
         id: z
@@ -11795,14 +14018,10 @@ const RetentionPolicyAssignmentSchema = z
         description:
           'An array of field objects. Values are only returned if the `assigned_to`\ntype is `metadata_template`. Otherwise, the array is blank.',
       }),
-    assigned_by: UserMiniSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A mini user object representing the user that\ncreated the retention policy assignment.',
-        }),
-    ).exactOptional(),
+    assigned_by: UserMiniSchema.exactOptional().openapi({
+      description:
+        'A mini user object representing the user that\ncreated the retention policy assignment.',
+    }),
     assigned_at: z.iso
       .datetime({ offset: true })
       .exactOptional()
@@ -11890,229 +14109,7 @@ const RetentionPolicyMaxExtensionLengthRequestSchema = z
   })
   .openapi('RetentionPolicyMaxExtensionLengthRequest')
 
-const SearchResultItemSchema = z
-  .xor([FileFullSchema, FolderFullSchema, WebLinkSchema])
-  .openapi({
-    description: 'An item in search results. This can be a file, folder, or web link.',
-    title: 'Search results item',
-  })
-  .openapi('SearchResultItem')
-
-const SearchResultsSchema = z
-  .object({
-    total_count: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'One greater than the offset of the last entry in the search results.\nThe total number of entries in the collection may be less than\n`total_count`.',
-        example: 5000,
-      }),
-    limit: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'The limit that was used for this search. This will be the same as the\n`limit` query parameter unless that value exceeded the maximum value\nallowed.',
-        example: 1000,
-      }),
-    offset: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'The 0-based offset of the first entry in this set. This will be the same\nas the `offset` query parameter used.',
-        example: 2000,
-      }),
-  })
-  .openapi({ required: [] })
-  .and(
-    z
-      .object({
-        type: z
-          .literal('search_results_items')
-          .exactOptional()
-          .openapi({
-            description: 'Specifies the response as search result items without shared links.',
-            example: 'search_results_items',
-          }),
-        entries: z
-          .array(SearchResultItemSchema)
-          .exactOptional()
-          .openapi({ description: 'The search results for the query provided.' }),
-      })
-      .openapi({ required: [] }),
-  )
-  .openapi({
-    description: 'A list of files, folders and web links that matched the search query.',
-    required: ['type'],
-    title: 'Search Results',
-    'x-box-resource-id': 'search_results',
-    'x-box-tag': 'search',
-  })
-  .openapi('SearchResults')
-
-const SearchResultWithSharedLinkItemSchema = z
-  .xor([FileFullSchema, FolderFullSchema, WebLinkSchema])
-  .openapi({
-    description:
-      'An item in search results with a shared link. This can be a file, folder, or web link.',
-    title: 'Search result item',
-  })
-  .openapi('SearchResultWithSharedLinkItem')
-
-const SearchResultWithSharedLinkSchema = z
-  .object({
-    accessible_via_shared_link: z
-      .url()
-      .exactOptional()
-      .openapi({
-        description:
-          'The optional shared link through which the user has access to this\nitem. This value is only returned for items for which the user has\nrecently accessed the file through a shared link. For all other\nitems this value will return `null`.',
-        example: 'https://www.box.com/s/vspke7y05sb214wjokpk',
-      }),
-    item: SearchResultWithSharedLinkItemSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The file, folder or web link that matched the\nsearch query.' }),
-    ).exactOptional(),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The result type. The value is always `search_result`.',
-        example: 'search_result',
-      }),
-  })
-  .openapi({
-    description:
-      'A single of files, folder or web link that matched the search query,\nincluding the additional information about the shared link through\nwhich the item has been shared with the user.\n\nThis response format is only returned when the\n`include_recent_shared_links` query parameter has been set to `true`.',
-    title: 'Search Result (including Shared Link)',
-    'x-box-resource-id': 'search_result_with_shared_link',
-    'x-box-tag': 'search',
-    required: [],
-  })
-  .openapi('SearchResultWithSharedLink')
-
-const SearchResultsWithSharedLinksSchema = z
-  .object({
-    total_count: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'One greater than the offset of the last entry in the search results.\nThe total number of entries in the collection may be less than\n`total_count`.',
-        example: 5000,
-      }),
-    limit: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'The limit that was used for this search. This will be the same as the\n`limit` query parameter unless that value exceeded the maximum value\nallowed.',
-        example: 1000,
-      }),
-    offset: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'The 0-based offset of the first entry in this set. This will be the same\nas the `offset` query parameter used.',
-        example: 2000,
-      }),
-  })
-  .openapi({ required: [] })
-  .and(
-    z
-      .object({
-        type: z
-          .literal('search_results_with_shared_links')
-          .exactOptional()
-          .openapi({
-            description: 'Specifies the response as search result items with shared links.',
-            example: 'search_results_with_shared_links',
-          }),
-        entries: z
-          .array(SearchResultWithSharedLinkSchema)
-          .exactOptional()
-          .openapi({
-            description:
-              'The search results for the query provided, including the\nadditional information about any shared links through\nwhich the item has been shared with the user.',
-          }),
-      })
-      .openapi({ required: [] }),
-  )
-  .openapi({
-    description:
-      'A list of files, folders and web links that matched the search query,\nincluding the additional information about any shared links through\nwhich the item has been shared with the user.\n\nThis response format is only returned when the `include_recent_shared_links`\nquery parameter has been set to `true`.',
-    required: ['type'],
-    title: 'Search Results (including Shared Links)',
-    'x-box-resource-id': 'search_results_with_shared_links',
-    'x-box-tag': 'search',
-  })
-  .openapi('SearchResultsWithSharedLinks')
-
-const SearchResultsResponseSchema = z
+const SearchResultsResponseSchema: z.ZodType<SearchResultsResponseType> = z
   .xor([SearchResultsSchema, SearchResultsWithSharedLinksSchema])
   .openapi({
     description: 'Search result from the content search endpoint.',
@@ -12292,9 +14289,9 @@ const ShieldInformationBarrierSchema = z
         description: 'ISO date time string when this shield information barrier was enabled.',
         example: '2020-07-26T18:44:45.869Z',
       }),
-    enabled_by: UserBaseSchema.and(
-      z.any().openapi({ description: 'The user that enabled this shield information barrier.' }),
-    ).exactOptional(),
+    enabled_by: UserBaseSchema.exactOptional().openapi({
+      description: 'The user that enabled this shield information barrier.',
+    }),
   })
   .openapi({
     description: 'A standard representation of a\nshield information barrier object.',
@@ -12413,11 +14410,9 @@ const ShieldInformationBarrierReportSchema = ShieldInformationBarrierReportBaseS
             'ISO date time string when this\nshield information barrier report object was created.',
           example: '2020-06-26T18:44:45.869Z',
         }),
-      created_by: UserBaseSchema.and(
-        z
-          .any()
-          .openapi({ description: 'The user who created this shield information barrier report.' }),
-      ).exactOptional(),
+      created_by: UserBaseSchema.exactOptional().openapi({
+        description: 'The user who created this shield information barrier report.',
+      }),
       updated_at: z.iso
         .datetime({ offset: true })
         .exactOptional()
@@ -12581,11 +14576,9 @@ const ShieldInformationBarrierSegmentSchema = z
           'ISO date time string when this shield information\nbarrier object was created.',
         example: '2020-06-26T18:44:45.869Z',
       }),
-    created_by: UserBaseSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The user who created this shield information barrier segment.' }),
-    ).exactOptional(),
+    created_by: UserBaseSchema.exactOptional().openapi({
+      description: 'The user who created this shield information barrier segment.',
+    }),
     updated_at: z.iso
       .datetime({ offset: true })
       .exactOptional()
@@ -12594,11 +14587,9 @@ const ShieldInformationBarrierSegmentSchema = z
           'ISO date time string when this\nshield information barrier segment was updated.',
         example: '2020-07-26T18:44:45.869Z',
       }),
-    updated_by: UserBaseSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The user that updated this shield information barrier segment.' }),
-    ).exactOptional(),
+    updated_by: UserBaseSchema.exactOptional().openapi({
+      description: 'The user that updated this shield information barrier segment.',
+    }),
   })
   .openapi({
     description: 'A shield information barrier segment object.',
@@ -12641,14 +14632,10 @@ const ShieldInformationBarrierSegmentMemberMiniSchema =
   ShieldInformationBarrierSegmentMemberBaseSchema.and(
     z
       .object({
-        user: UserBaseSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'The `type` and `id` of the requested shield information barrier segment member.',
-            }),
-        ).exactOptional(),
+        user: UserBaseSchema.exactOptional().openapi({
+          description:
+            'The `type` and `id` of the requested shield information barrier segment member.',
+        }),
       })
       .openapi({ required: [] }),
   )
@@ -12691,14 +14678,10 @@ const ShieldInformationBarrierSegmentMemberSchema =
               'The `type` and `id` of the requested\nshield information barrier segment.',
             required: [],
           }),
-        user: UserBaseSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'The `type` and `id` of the requested shield information barrier segment member.',
-            }),
-        ).exactOptional(),
+        user: UserBaseSchema.exactOptional().openapi({
+          description:
+            'The `type` and `id` of the requested shield information barrier segment member.',
+        }),
         created_at: z.iso
           .datetime({ offset: true })
           .exactOptional()
@@ -12707,13 +14690,9 @@ const ShieldInformationBarrierSegmentMemberSchema =
               'ISO date time string when this shield\ninformation barrier object was created.',
             example: '2020-06-26T18:44:45.869Z',
           }),
-        created_by: UserBaseSchema.and(
-          z
-            .any()
-            .openapi({
-              description: 'The user who created this shield information barrier segment member.',
-            }),
-        ).exactOptional(),
+        created_by: UserBaseSchema.exactOptional().openapi({
+          description: 'The user who created this shield information barrier segment member.',
+        }),
         updated_at: z.iso
           .datetime({ offset: true })
           .exactOptional()
@@ -12722,13 +14701,9 @@ const ShieldInformationBarrierSegmentMemberSchema =
               'ISO date time string when this\nshield information barrier segment Member was updated.',
             example: '2020-07-26T18:44:45.869Z',
           }),
-        updated_by: UserBaseSchema.and(
-          z
-            .any()
-            .openapi({
-              description: 'The user that updated this shield information barrier segment Member.',
-            }),
-        ).exactOptional(),
+        updated_by: UserBaseSchema.exactOptional().openapi({
+          description: 'The user that updated this shield information barrier segment Member.',
+        }),
       })
       .openapi({ required: [] }),
   )
@@ -12827,58 +14802,73 @@ const ShieldInformationBarrierSegmentRestrictionBaseSchema = z
 const ShieldInformationBarrierSegmentRestrictionMiniSchema =
   ShieldInformationBarrierSegmentRestrictionBaseSchema.and(
     z
-      .object({
-        shield_information_barrier_segment: z
-          .object({
-            id: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description:
-                  'The ID reference of the\nrequesting shield information barrier segment.',
-                example: '1910967',
-              }),
-            type: z
-              .literal('shield_information_barrier_segment')
-              .exactOptional()
-              .openapi({
-                description: 'The type of the shield information barrier segment.',
-                example: 'shield_information_barrier_segment',
-              }),
-          })
-          .exactOptional()
-          .openapi({
-            description:
-              'The `type` and `id` of the\nrequested shield information barrier segment.',
-            required: [],
-          }),
-        restricted_segment: z
-          .object({
-            id: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description:
-                  'The ID reference of the\nrestricted shield information barrier segment.',
-                example: '1910967',
-              }),
-            type: z
-              .literal('shield_information_barrier_segment')
-              .exactOptional()
-              .openapi({
-                description: 'The type of the shield information segment.',
-                example: 'shield_information_barrier_segment',
-              }),
-          })
-          .exactOptional()
-          .openapi({
-            description:
-              'The `type` and `id` of the\nrestricted shield information barrier segment.',
-            required: [],
-          }),
-      })
-      .openapi({ required: [] }),
+      .looseObject({})
+      .openapi({ required: ['shield_information_barrier_segment', 'restricted_segment'] }),
   )
+    .superRefine((val, ctx) => {
+      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+        if (!Object.hasOwn(val, 'shield_information_barrier_segment')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+        if (!Object.hasOwn(val, 'restricted_segment')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+      }
+    })
+    .and(
+      z
+        .object({
+          shield_information_barrier_segment: z
+            .object({
+              id: z
+                .string()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'The ID reference of the\nrequesting shield information barrier segment.',
+                  example: '1910967',
+                }),
+              type: z
+                .literal('shield_information_barrier_segment')
+                .exactOptional()
+                .openapi({
+                  description: 'The type of the shield information barrier segment.',
+                  example: 'shield_information_barrier_segment',
+                }),
+            })
+            .exactOptional()
+            .openapi({
+              description:
+                'The `type` and `id` of the\nrequested shield information barrier segment.',
+              required: [],
+            }),
+          restricted_segment: z
+            .object({
+              id: z
+                .string()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'The ID reference of the\nrestricted shield information barrier segment.',
+                  example: '1910967',
+                }),
+              type: z
+                .literal('shield_information_barrier_segment')
+                .exactOptional()
+                .openapi({
+                  description: 'The type of the shield information segment.',
+                  example: 'shield_information_barrier_segment',
+                }),
+            })
+            .exactOptional()
+            .openapi({
+              description:
+                'The `type` and `id` of the\nrestricted shield information barrier segment.',
+              required: [],
+            }),
+        })
+        .openapi({ required: [] }),
+    )
     .openapi({
       description:
         'A mini representation of\na segment restriction object for\nthe shield information barrier.',
@@ -12894,43 +14884,50 @@ const ShieldInformationBarrierSegmentRestrictionMiniSchema =
 const ShieldInformationBarrierSegmentRestrictionSchema =
   ShieldInformationBarrierSegmentRestrictionMiniSchema.and(
     z
-      .object({
-        shield_information_barrier: ShieldInformationBarrierBaseSchema.exactOptional(),
-        created_at: z.iso
-          .datetime({ offset: true })
-          .exactOptional()
-          .openapi({
-            description:
-              'ISO date time string when this\nshield information barrier\nSegment Restriction object was created.',
-            example: '2020-06-26T18:44:45.869Z',
-          }),
-        created_by: UserBaseSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'The user who created this shield information barrier segment Restriction.',
-            }),
-        ).exactOptional(),
-        updated_at: z.iso
-          .datetime({ offset: true })
-          .exactOptional()
-          .openapi({
-            description:
-              'ISO date time string when this\nshield information barrier segment\nRestriction was updated.',
-            example: '2020-07-26T18:44:45.869Z',
-          }),
-        updated_by: UserBaseSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'The user that updated this shield information barrier segment Restriction.',
-            }),
-        ).exactOptional(),
-      })
-      .openapi({ required: [] }),
+      .looseObject({})
+      .openapi({ required: ['shield_information_barrier_segment', 'restricted_segment'] }),
   )
+    .superRefine((val, ctx) => {
+      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+        if (!Object.hasOwn(val, 'shield_information_barrier_segment')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+        if (!Object.hasOwn(val, 'restricted_segment')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+      }
+    })
+    .and(
+      z
+        .object({
+          shield_information_barrier: ShieldInformationBarrierBaseSchema.exactOptional(),
+          created_at: z.iso
+            .datetime({ offset: true })
+            .exactOptional()
+            .openapi({
+              description:
+                'ISO date time string when this\nshield information barrier\nSegment Restriction object was created.',
+              example: '2020-06-26T18:44:45.869Z',
+            }),
+          created_by: UserBaseSchema.exactOptional().openapi({
+            description:
+              'The user who created this shield information barrier segment Restriction.',
+          }),
+          updated_at: z.iso
+            .datetime({ offset: true })
+            .exactOptional()
+            .openapi({
+              description:
+                'ISO date time string when this\nshield information barrier segment\nRestriction was updated.',
+              example: '2020-07-26T18:44:45.869Z',
+            }),
+          updated_by: UserBaseSchema.exactOptional().openapi({
+            description:
+              'The user that updated this shield information barrier segment Restriction.',
+          }),
+        })
+        .openapi({ required: [] }),
+    )
     .openapi({
       description:
         'A standard representation of a\nsegment restriction of a shield information barrier\nobject.',
@@ -13047,882 +15044,6 @@ const ShieldInformationBarrierSegmentsSchema = z
   })
   .openapi('ShieldInformationBarrierSegments')
 
-const SignRequestPrefillTagSchema = z
-  .object({
-    document_tag_id: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'This references the ID of a specific tag contained in a file of the signature request.',
-        example: '1234',
-      }),
-    text_value: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Text prefill value.', example: 'text' }),
-    checkbox_value: z
-      .boolean()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Checkbox prefill value.', example: true }),
-    date_value: z.iso
-      .date()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Date prefill value.', example: '2021-04-26' }),
-  })
-  .openapi({
-    description:
-      'Prefill tags are used to prefill placeholders with signer input data. Only\none value field can be included.',
-    title: 'Sign request prefill tag',
-    required: [],
-  })
-  .openapi('SignRequestPrefillTag')
-
-const SignRequestBaseSchema = z
-  .object({
-    is_document_preparation_needed: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates if the sender should receive a `prepare_url` in the response to complete document preparation using the UI.',
-        example: true,
-      }),
-    redirect_url: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'When specified, the signature request will be redirected to this url when a document is signed.',
-        example: 'https://www.example.com',
-      }),
-    declined_redirect_url: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The uri that a signer will be redirected to after declining to sign a document.',
-        example: 'https://declined-redirect.com',
-      }),
-    are_text_signatures_enabled: z
-      .boolean()
-      .default(true)
-      .exactOptional()
-      .openapi({
-        description: 'Disables the usage of signatures generated by typing (text).',
-        example: true,
-      }),
-    email_subject: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Subject of sign request email. This is cleaned by sign request. If this field is not passed, a default subject will be used.',
-        example: 'Sign Request from Acme',
-      }),
-    email_message: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Message to include in sign request email. The field is cleaned through sanitization of specific characters. However, some html tags are allowed. Links included in the message are also converted to hyperlinks in the email. The message may contain the following html tags including `a`, `abbr`, `acronym`, `b`, `blockquote`, `code`, `em`, `i`, `ul`, `li`, `ol`, and `strong`. Be aware that when the text to html ratio is too high, the email may end up in spam filters. Custom styles on these tags are not allowed. If this field is not passed, a default message will be used.',
-        example: 'Hello! Please sign the document below',
-      }),
-    are_reminders_enabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Reminds signers to sign a document on day 3, 8, 13 and 18. Reminders are only sent to outstanding signers.',
-        example: true,
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Name of the signature request.', example: 'name' }),
-    prefill_tags: z
-      .array(SignRequestPrefillTagSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          "When a document contains sign-related tags in the content, you can prefill them using this `prefill_tags` by referencing the 'id' of the tag as the `external_id` field of the prefill tag.",
-      }),
-    days_valid: z
-      .int()
-      .min(0)
-      .max(730)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Set the number of days after which the created signature request will automatically expire if not completed. By default, we do not apply any expiration date on signature requests, and the signature request does not expire.',
-        example: 2,
-      }),
-    external_id: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'This can be used to reference an ID in an external system that the sign request is related to.',
-        example: '123',
-      }),
-    template_id: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'When a signature request is created from a template this field will indicate the id of that template.',
-        example: '123075213-af2c8822-3ef2-4952-8557-52d69c2fe9cb',
-      }),
-    external_system_name: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Used as an optional system name to appear in the signature log next to the signers who have been assigned the `embed_url_external_id`.',
-        example: 'Box',
-      }),
-    request_flow: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The flow type of the sign request. Values can include `standard` or `cfr11`.\nWhen not specified during creation, a default is chosen based on admin settings.',
-        example: 'standard',
-      }),
-  })
-  .openapi({
-    description: 'A standard representation of a signature request object.',
-    title: 'Box Sign request (Base)',
-    'x-box-tag': 'sign_requests',
-    required: [],
-  })
-  .openapi('SignRequestBase')
-
-const SignRequestCreateSignerSchema = z
-  .object({
-    email: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Email address of the signer.\nThe email address of the signer is required when making signature requests, except when using templates that are configured to include emails.',
-        example: 'example@gmail.com',
-      }),
-    role: z
-      .enum(['signer', 'approver', 'final_copy_reader'])
-      .default('signer')
-      .exactOptional()
-      .openapi({
-        description:
-          'Defines the role of the signer in the signature request. A `signer`\nmust sign the document and an `approver` must approve the document. A\n`final_copy_reader` only receives the final signed document and signing\nlog.',
-        example: 'signer',
-      }),
-    is_in_person: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Used in combination with an embed URL for a sender. After the\nsender signs, they are redirected to the next `in_person` signer.',
-        example: true,
-      }),
-    order: z
-      .int()
-      .min(0)
-      .exactOptional()
-      .openapi({ description: 'Order of the signer.', example: 2 }),
-    embed_url_external_user_id: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'User ID for the signer in an external application responsible\nfor authentication when accessing the embed URL.',
-        example: '1234',
-      }),
-    redirect_url: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The URL that a signer will be redirected\nto after signing a document. Defining this URL\noverrides default or global redirect URL\nsettings for a specific signer.\nIf no declined redirect URL is specified,\nthis URL will be used for decline actions as well.',
-        example: 'https://example.com',
-      }),
-    declined_redirect_url: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The URL that a signer will be redirect\nto after declining to sign a document.\nDefining this URL overrides default or global\ndeclined redirect URL settings for a specific signer.',
-        example: 'https://declined-example.com',
-      }),
-    login_required: z
-      .boolean()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'If set to true, the signer will need to log in to a Box account\nbefore signing the request. If the signer does not have\nan existing account, they will have the option to create\na free Box account.',
-        example: true,
-      }),
-    verification_phone_number: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'If set, this phone number will be used to verify the signer\nvia two-factor authentication before they are able to sign the document.\nCannot be selected in combination with `login_required`.',
-        example: '6314578901',
-      }),
-    password: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'If set, the signer is required to enter the password before they are able\nto sign a document. This field is write only.',
-        example: 'SecretPassword123',
-        writeOnly: true,
-      }),
-    signer_group_id: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'If set, signers who have the same value will be assigned to the same input and to the same signer group.\nA signer group is not a Box Group. It is an entity that belongs to a Sign Request and can only be\nused/accessed within this Sign Request. A signer group is expected to have more than one signer.\nIf the provided value is only used for one signer, this value will be ignored and request will be handled\nas it was intended for an individual signer. The value provided can be any string and only used to\ndetermine which signers belongs to same group. A successful response will provide a generated UUID value\ninstead for signers in the same signer group.',
-        example: 'cd4ff89-8fc1-42cf-8b29-1890dedd26d7',
-      }),
-    suppress_notifications: z
-      .boolean()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'If true, no emails about the sign request are sent.\nThe `embed_url_external_user_id` parameter is required when using\n`suppress_notifications` for a signer.',
-        example: false,
-      }),
-    language: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The language of the user, formatted in modified version of the\n[ISO 639-1](https://developer.box.com/guides/api-calls/language-codes) format.',
-        example: 'en',
-      }),
-  })
-  .openapi({
-    description: 'The schema for a Signer object used in\nfor creating a Box Sign request object.',
-    title: 'Signer fields used to create a Box Sign request object.',
-    required: [],
-  })
-  .openapi('SignRequestCreateSigner')
-
-const SignRequestSignerInputEmailValidationSchema = z
-  .object({
-    validation_type: z
-      .literal('email')
-      .openapi({
-        description: 'Validates that the text input is an email address.',
-        example: 'email',
-      }),
-  })
-  .openapi({
-    description:
-      'Specifies the formatting rules that signers must follow for text field inputs.\nIf set, this validation is mandatory.',
-    required: ['validation_type'],
-    title: 'Sign Request Signer Input Email Validation',
-  })
-  .openapi('SignRequestSignerInputEmailValidation')
-
-const SignRequestSignerInputCustomValidationSchema = z
-  .object({
-    validation_type: z
-      .literal('custom')
-      .openapi({
-        description:
-          'Defines the validation format for the text input as custom.\nA custom regular expression is used for validation.',
-        example: 'custom',
-      }),
-    custom_regex: z
-      .string()
-      .nullable()
-      .openapi({
-        description: 'Regular expression used for validation.',
-        example: '(^[a-zA-Z0-9._%+-]+)',
-      }),
-    custom_error_message: z
-      .string()
-      .nullable()
-      .openapi({
-        description: 'Error message shown if input fails custom regular expression validation.',
-        example: 'Please enter a valid value.',
-      }),
-  })
-  .openapi({
-    description:
-      'Specifies the custom validation rules for a text field input by the signer.\nIf set, this validation is mandatory.',
-    required: ['validation_type', 'custom_regex', 'custom_error_message'],
-    title: 'Sign Request Signer Input Custom Validation',
-  })
-  .openapi('SignRequestSignerInputCustomValidation')
-
-const SignRequestSignerInputZIPValidationSchema = z
-  .object({
-    validation_type: z
-      .literal('zip')
-      .openapi({ description: 'Validates that the text input is a ZIP code.', example: 'zip' }),
-  })
-  .openapi({
-    description:
-      'Specifies the validation rules for a text field input by the signer.\nIf set, this validation is mandatory.',
-    required: ['validation_type'],
-    title: 'Sign Request Signer Input ZIP Validation',
-  })
-  .openapi('SignRequestSignerInputZIPValidation')
-
-const SignRequestSignerInputZIP4ValidationSchema = z
-  .object({
-    validation_type: z
-      .literal('zip_4')
-      .openapi({ description: 'Validates that the text input is a ZIP+4 code.', example: 'zip_4' }),
-  })
-  .openapi({
-    description:
-      'Specifies the validation rules for a text field input by the signer.\nIf set, this validation is mandatory.',
-    required: ['validation_type'],
-    title: 'Sign Request Signer Input ZIP 4 Validation',
-  })
-  .openapi('SignRequestSignerInputZIP4Validation')
-
-const SignRequestSignerInputZIPJPValidationSchema = z
-  .object({
-    validation_type: z
-      .literal('zip_jp')
-      .openapi({
-        description: 'Validates that the text input is a Japanese ZIP code.',
-        example: 'zip_jp',
-      }),
-  })
-  .openapi({
-    description:
-      'Specifies the validation rules for a text field input by the signer.\nIf set, this validation is mandatory.',
-    required: ['validation_type'],
-    title: 'Sign Request Signer Input ZIP JP Validation',
-  })
-  .openapi('SignRequestSignerInputZIPJPValidation')
-
-const SignRequestSignerInputSSNValidationSchema = z
-  .object({
-    validation_type: z
-      .literal('ssn')
-      .openapi({
-        description: 'Validates that the text input is a Social Security Number (SSN).',
-        example: 'ssn',
-      }),
-  })
-  .openapi({
-    description:
-      'Specifies the validation rules for a text field input by the signer.\nIf set, this validation is mandatory.',
-    required: ['validation_type'],
-    title: 'Sign Request Signer Input SSN Validation',
-  })
-  .openapi('SignRequestSignerInputSSNValidation')
-
-const SignRequestSignerInputNumberWithPeriodValidationSchema = z
-  .object({
-    validation_type: z
-      .literal('number_with_period')
-      .exactOptional()
-      .openapi({
-        description:
-          'Validates that the text input uses a number format with a period as the decimal separator (for example, 1.23).',
-        example: 'number_with_period',
-      }),
-  })
-  .openapi({
-    description:
-      'Specifies the number with period formatting rules for a text field input by the signer.\nIf set, this validation is mandatory.',
-    title: 'Sign Request Signer Input Number With Period Validation',
-    required: [],
-  })
-  .openapi('SignRequestSignerInputNumberWithPeriodValidation')
-
-const SignRequestSignerInputNumberWithCommaValidationSchema = z
-  .object({
-    validation_type: z
-      .literal('number_with_comma')
-      .exactOptional()
-      .openapi({
-        description:
-          'Validates that the text input uses a number format with a comma as the decimal separator (for example, 1,23).',
-        example: 'number_with_comma',
-      }),
-  })
-  .openapi({
-    description:
-      'Specifies the number with comma formatting rules for a text field input by the signer.\nIf set, this validation is mandatory.',
-    title: 'Sign Request Signer Input Number With Comma Validation',
-    required: [],
-  })
-  .openapi('SignRequestSignerInputNumberWithCommaValidation')
-
-const SignRequestSignerInputDateISOValidationSchema = z
-  .object({
-    validation_type: z
-      .literal('date_iso')
-      .exactOptional()
-      .openapi({
-        description: 'Validates that the text input uses the ISO date format `YYYY-MM-DD`.',
-        example: 'date_iso',
-      }),
-  })
-  .openapi({
-    description:
-      'Specifies the ISO date formatting rules for a text field input by the signer. \nIf set, this validation is mandatory. \nThe date format follows `YYYY-MM-DD` pattern.',
-    title: 'Sign Request Signer Input Date ISO Validation',
-    required: [],
-  })
-  .openapi('SignRequestSignerInputDateISOValidation')
-
-const SignRequestSignerInputDateUSValidationSchema = z
-  .object({
-    validation_type: z
-      .literal('date_us')
-      .exactOptional()
-      .openapi({
-        description: 'Validates that the text input uses the US date format `MM/DD/YYYY`.',
-        example: 'date_us',
-      }),
-  })
-  .openapi({
-    description:
-      'Specifies the US date formatting rules for a text field input by the signer. \nIf set, this validation is mandatory. \nThe date format follows `MM/DD/YYYY` pattern.',
-    title: 'Sign Request Signer Input Date US Validation',
-    required: [],
-  })
-  .openapi('SignRequestSignerInputDateUSValidation')
-
-const SignRequestSignerInputDateEUValidationSchema = z
-  .object({
-    validation_type: z
-      .literal('date_eu')
-      .exactOptional()
-      .openapi({
-        description: 'Validates that the text input uses the European date format `DD/MM/YYYY`.',
-        example: 'date_eu',
-      }),
-  })
-  .openapi({
-    description:
-      'Specifies the date formatting rules used in Europe for a text field input by the signer. \nIf set, this validation is mandatory. \nThe date format follows `DD/MM/YYYY` pattern.',
-    title: 'Sign Request Signer Input Date EU Validation',
-    required: [],
-  })
-  .openapi('SignRequestSignerInputDateEUValidation')
-
-const SignRequestSignerInputDateAsiaValidationSchema = z
-  .object({
-    validation_type: z
-      .literal('date_asia')
-      .exactOptional()
-      .openapi({
-        description: 'Validates that the text input uses the Asian date format `YYYY/MM/DD`.',
-        example: 'date_asia',
-      }),
-  })
-  .openapi({
-    description:
-      'Specifies the date formatting rules used in Asia for a text field input by the signer. \nIf set, this validation is mandatory. \nThe date format follows `YYYY/MM/DD` pattern.',
-    title: 'Sign Request Signer Input Date Asia Validation',
-    required: [],
-  })
-  .openapi('SignRequestSignerInputDateAsiaValidation')
-
-const SignRequestSignerInputValidationSchema = z
-  .xor([
-    SignRequestSignerInputEmailValidationSchema,
-    SignRequestSignerInputCustomValidationSchema,
-    SignRequestSignerInputZIPValidationSchema,
-    SignRequestSignerInputZIP4ValidationSchema,
-    SignRequestSignerInputZIPJPValidationSchema,
-    SignRequestSignerInputSSNValidationSchema,
-    SignRequestSignerInputNumberWithPeriodValidationSchema,
-    SignRequestSignerInputNumberWithCommaValidationSchema,
-    SignRequestSignerInputDateISOValidationSchema,
-    SignRequestSignerInputDateUSValidationSchema,
-    SignRequestSignerInputDateEUValidationSchema,
-    SignRequestSignerInputDateAsiaValidationSchema,
-  ])
-  .openapi({
-    description:
-      'Specifies the formatting rules that signers must follow for text field inputs.\nIf set, this validation is mandatory. \nThe format can be selected from a predefined list of options (e.g., email, phone number, date) or\ndefined using a custom regular expression.',
-    title: 'Sign Request Signer Input Validation',
-  })
-  .openapi('SignRequestSignerInputValidation')
-
-const SignRequestSignerInputSchema = SignRequestPrefillTagSchema.and(
-  z
-    .object({
-      type: z
-        .enum(['signature', 'date', 'text', 'checkbox', 'radio', 'dropdown'])
-        .exactOptional()
-        .openapi({ description: 'Type of input.', example: 'text' }),
-      content_type: z
-        .enum([
-          'signature',
-          'initial',
-          'stamp',
-          'date',
-          'checkbox',
-          'text',
-          'full_name',
-          'first_name',
-          'last_name',
-          'company',
-          'title',
-          'email',
-          'attachment',
-          'radio',
-          'dropdown',
-        ])
-        .exactOptional()
-        .openapi({ description: 'Content type of input.', example: 'signature' }),
-      page_index: z
-        .int()
-        .exactOptional()
-        .openapi({ description: 'Index of page that the input is on.', example: 4 }),
-      read_only: z
-        .boolean()
-        .exactOptional()
-        .openapi({
-          description: 'Indicates whether this input is read-only (cannot be modified by signers).',
-          example: true,
-        }),
-      validation: z
-        .union([
-          SignRequestSignerInputValidationSchema,
-          z
-            .strictObject({})
-            .nullable()
-            .openapi({
-              title: 'OpenAPI 3.0 null schema type',
-              description: 'The definition for a null schema type in OpenAPI `3.0`.',
-            }),
-        ])
-        .exactOptional()
-        .openapi({
-          description:
-            'Specifies the formatting rules that signers must follow for text field inputs.\nIf set, this validation is mandatory.',
-          example: { validation_type: 'email' },
-        }),
-      reason: z
-        .string()
-        .nullable()
-        .exactOptional()
-        .openapi({
-          description:
-            "The reason for the signer's input, applicable to signature or initial content types\nin a `cfr11` request flow. The value is `null` when not applicable.",
-          example: 'I read and approve this document',
-        }),
-      is_validated: z
-        .boolean()
-        .nullable()
-        .exactOptional()
-        .openapi({
-          description:
-            "Indicates whether the signer's input has been validated through re-authentication.\nApplicable only for signature or initial content types in a `cfr11` request flow.\nThe value is `null` for standard request flows or non-applicable input types.",
-          example: true,
-        }),
-    })
-    .openapi({ required: [] }),
-)
-  .openapi({
-    description: 'Input created by a Signer on a Sign Request.',
-    required: ['page_index'],
-    title: 'Sign Request Signer Input',
-  })
-  .openapi('SignRequestSignerInput')
-
-const SignRequestSignerAttachmentSchema = z
-  .object({
-    id: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Identifier of the attachment file.', example: '12345' }),
-    name: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Display name of the attachment file.',
-        example: 'proof_of_identity.pdf',
-      }),
-  })
-  .openapi({
-    description: 'Metadata describing a file uploaded by a signer as an attachment.',
-    title: 'Signer Attachment',
-    required: [],
-  })
-  .openapi('SignRequestSignerAttachment')
-
-const SignRequestSignerSchema = SignRequestCreateSignerSchema.and(
-  z
-    .object({
-      has_viewed_document: z
-        .boolean()
-        .exactOptional()
-        .openapi({
-          description: 'Set to `true` if the signer views the document.',
-          example: true,
-          readOnly: true,
-        }),
-      signer_decision: z
-        .object({
-          type: z
-            .enum(['signed', 'declined'])
-            .exactOptional()
-            .openapi({ description: 'Type of decision made by the signer.', example: 'signed' }),
-          finalized_at: z.iso
-            .datetime({ offset: true })
-            .exactOptional()
-            .openapi({
-              description: 'Date and Time that the decision was made.',
-              example: '2021-04-26T08:12:13.982Z',
-            }),
-          additional_info: z
-            .string()
-            .nullable()
-            .exactOptional()
-            .openapi({
-              description:
-                'Additional info about the decision, such as the decline reason from the signer.',
-              example: 'Requesting changes before signing.',
-            }),
-        })
-        .nullable()
-        .exactOptional()
-        .openapi({ description: 'Final decision made by the signer.', required: [] }),
-      inputs: z.array(SignRequestSignerInputSchema).exactOptional().openapi({ readOnly: true }),
-      embed_url: z
-        .string()
-        .nullable()
-        .exactOptional()
-        .openapi({
-          description: 'URL to direct a signer to for signing.',
-          example: 'https://example.com',
-          readOnly: true,
-        }),
-      iframeable_embed_url: z
-        .string()
-        .nullable()
-        .exactOptional()
-        .openapi({
-          description:
-            'This URL is specifically designed for\nsigning documents within an HTML `iframe` tag.\nIt will be returned in the response\nonly if the `embed_url_external_user_id`\nparameter was passed in the\n`create Box Sign request` call.',
-          example:
-            'https://app.box.com/embed/sign/document/gfhr4222-a331-494b-808b-79bc7f3992a3/f14d7098-a331-494b-808b-79bc7f3992a4',
-        }),
-      attachments: z
-        .array(SignRequestSignerAttachmentSchema)
-        .nullable()
-        .exactOptional()
-        .openapi({ description: 'Attachments that the signer uploaded.' }),
-    })
-    .openapi({ required: [] }),
-)
-  .openapi({
-    description: 'The schema for a Signer object used\non the body of a Box Sign request object.',
-    required: ['email'],
-    title: 'Signer fields for Box Sign request response',
-  })
-  .openapi('SignRequestSigner')
-
-const SignRequestSchema = SignRequestBaseSchema.and(
-  z
-    .object({
-      type: z
-        .literal('sign-request')
-        .exactOptional()
-        .openapi({
-          description: 'The value will always be `sign-request`.',
-          example: 'sign-request',
-        }),
-      source_files: z
-        .array(FileBaseSchema)
-        .exactOptional()
-        .openapi({
-          description:
-            'List of files to create a signing document from. This is currently limited to ten files. Only the ID and type fields are required for each file.',
-        }),
-      signers: z
-        .array(SignRequestSignerSchema)
-        .exactOptional()
-        .openapi({ description: 'Array of signers for the signature request.' }),
-      signature_color: z
-        .string()
-        .nullable()
-        .exactOptional()
-        .openapi({
-          description: 'Force a specific color for the signature (blue, black, or red).',
-          example: 'blue',
-        }),
-      id: z
-        .string()
-        .exactOptional()
-        .openapi({ description: 'Box Sign request ID.', example: '12345' }),
-      prepare_url: z
-        .string()
-        .nullable()
-        .exactOptional()
-        .openapi({
-          description:
-            'This URL is returned if `is_document_preparation_needed` is\nset to `true` in the request. The parameter is used to prepare\nthe signature request\nusing the UI. The signature request is not\nsent until the preparation\nphase is complete.',
-          example: 'https://prepareurl.com',
-        }),
-      signing_log: FileMiniSchema.and(
-        z
-          .any()
-          .openapi({
-            description:
-              'Reference to a file that holds a log of all signer activity for\nthe request.',
-          }),
-      ).exactOptional(),
-      status: z
-        .enum([
-          'converting',
-          'created',
-          'sent',
-          'viewed',
-          'signed',
-          'cancelled',
-          'declined',
-          'error',
-          'error_converting',
-          'error_sending',
-          'expired',
-          'finalizing',
-          'error_finalizing',
-        ])
-        .exactOptional()
-        .openapi({
-          description: 'Describes the status of the signature request.',
-          example: 'converting',
-        }),
-      sign_files: z
-        .object({
-          files: z.array(FileMiniSchema).exactOptional(),
-          is_ready_for_download: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description:
-                'Indicates whether the `sign_files` documents are processing\nand the PDFs may be out of date. A change to any document\nrequires processing on all `sign_files`. We\nrecommended waiting until processing is finished\n(and this value is true) before downloading the PDFs.',
-              example: true,
-            }),
-        })
-        .exactOptional()
-        .openapi({
-          description:
-            'List of files that will be signed, which are copies of the original\nsource files. A new version of these files are created as signers sign\nand can be downloaded at any point in the signing process.',
-          required: [],
-        }),
-      auto_expire_at: z.iso
-        .datetime({ offset: true })
-        .nullable()
-        .exactOptional()
-        .openapi({
-          description:
-            'Uses `days_valid` to calculate the date and time, in GMT, the sign request will expire if unsigned.',
-          example: '2021-04-26T08:12:13.982Z',
-        }),
-      parent_folder: FolderMiniSchema.and(
-        z
-          .any()
-          .openapi({
-            description:
-              'The destination folder to place final, signed document and signing\nlog.\n\nWhen this value was not passed in when the signature request was\ncreated, then we will use a default folder which is either the parent\nfolder of the first source file in the payload if we have the permission\nto upload to that folder or a folder called "My Sign Requests".',
-          }),
-      ).exactOptional(),
-      collaborator_level: z
-        .string()
-        .nullable()
-        .exactOptional()
-        .openapi({
-          description:
-            'The collaborator level of the user to the sign request. Values can include "owner", "editor", and "viewer".',
-          example: 'owner',
-        }),
-      short_id: z
-        .string()
-        .exactOptional()
-        .openapi({ description: 'Short identifier for the sign request.', example: 'SR-12345' }),
-      created_at: z.iso
-        .datetime({ offset: true })
-        .exactOptional()
-        .openapi({
-          description: 'Timestamp marking when the sign request was created.',
-          example: '2025-02-01T12:00:00Z',
-        }),
-      finished_at: z.iso
-        .datetime({ offset: true })
-        .nullable()
-        .exactOptional()
-        .openapi({
-          description: 'Timestamp indicating when all signing actions completed.',
-          example: '2025-02-02T12:00:00Z',
-        }),
-      error_code: z
-        .string()
-        .nullable()
-        .exactOptional()
-        .openapi({
-          description:
-            'When the sign request is in an error state, identifies the specific\nreason. Null when no error code applies.',
-          example: 'cfr11_validation_failed',
-          readOnly: true,
-        }),
-      sender_email: z
-        .string()
-        .nullable()
-        .exactOptional()
-        .openapi({
-          description: 'The email address of the sender of the sign request.',
-          example: 'sender@box.com',
-        }),
-      sender_id: z
-        .int()
-        .nullable()
-        .exactOptional()
-        .openapi({ description: 'The user ID of the sender of the sign request.', example: 12345 }),
-    })
-    .openapi({ required: [] }),
-)
-  .openapi({
-    description: 'A Box Sign request object.',
-    title: 'Box Sign request',
-    'x-box-resource-id': 'sign_request',
-    'x-box-tag': 'sign_requests',
-  })
-  .openapi('SignRequest')
-
 const SignRequestCancelRequestSchema = z
   .object({
     reason: z
@@ -13941,43 +15062,49 @@ const SignRequestCancelRequestSchema = z
   .openapi('SignRequestCancelRequest')
 
 const SignRequestCreateRequestSchema = SignRequestBaseSchema.and(
-  z
-    .object({
-      source_files: z
-        .array(FileBaseSchema)
-        .max(10)
-        .nullable()
-        .exactOptional()
-        .openapi({
-          description:
-            'List of files to create a signing document from. This is currently limited to ten files. Only the ID and type fields are required for each file.',
-        }),
-      signature_color: z
-        .enum(['blue', 'black', 'red'])
-        .nullable()
-        .exactOptional()
-        .openapi({
-          description: 'Force a specific color for the signature (blue, black, or red).',
-          example: 'blue',
-        }),
-      signers: z
-        .array(SignRequestCreateSignerSchema)
-        .exactOptional()
-        .openapi({
-          description:
-            'Array of signers for the signature request. 35 is the\nmax number of signers permitted.\n\n**Note**: It may happen that some signers belong to conflicting [segments](https://developer.box.com/reference/resources/shield-information-barrier-segment-member) (user groups).\nThis means that due to the security policies, users are assigned to segments to prevent exchanges or communication that could lead to ethical conflicts.\nIn such a case, an attempt to send the sign request will result in an error.\n\nRead more about [segments and ethical walls](https://support.box.com/hc/en-us/articles/9920431507603-Understanding-Information-Barriers#h_01GFVJEHQA06N7XEZ4GCZ9GFAQ).',
-        }),
-      parent_folder: FolderMiniSchema.and(
-        z
-          .any()
+  z.looseObject({}).openapi({ required: ['signers'] }),
+)
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'signers')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        source_files: z
+          .array(FileBaseSchema)
+          .max(10)
+          .nullable()
+          .exactOptional()
           .openapi({
             description:
-              'The destination folder to place final, signed document and signing\nlog. Only `ID` and `type` fields are required. The root folder,\nfolder ID `0`, cannot be used and can also not be null.\n\nWhen this value is not passed in when the signature request, then\nwe will use a default folder which is either the parent folder of\nthe first source file in the payload if we have the permission to\nupload to that folder or a folder called "My Sign Requests".',
+              'List of files to create a signing document from. This is currently limited to ten files. Only the ID and type fields are required for each file.',
           }),
-      ).exactOptional(),
-    })
-    .openapi({ required: [] }),
-)
+        signature_color: z
+          .enum(['blue', 'black', 'red'])
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: 'Force a specific color for the signature (blue, black, or red).',
+            example: 'blue',
+          }),
+        signers: z
+          .array(SignRequestCreateSignerSchema)
+          .exactOptional()
+          .openapi({
+            description:
+              'Array of signers for the signature request. 35 is the\nmax number of signers permitted.\n\n**Note**: It may happen that some signers belong to conflicting [segments](https://developer.box.com/reference/resources/shield-information-barrier-segment-member) (user groups).\nThis means that due to the security policies, users are assigned to segments to prevent exchanges or communication that could lead to ethical conflicts.\nIn such a case, an attempt to send the sign request will result in an error.\n\nRead more about [segments and ethical walls](https://support.box.com/hc/en-us/articles/9920431507603-Understanding-Information-Barriers#h_01GFVJEHQA06N7XEZ4GCZ9GFAQ).',
+          }),
+        parent_folder: FolderMiniSchema.exactOptional().openapi({
+          description:
+            'The destination folder to place final, signed document and signing\nlog. Only `ID` and `type` fields are required. The root folder,\nfolder ID `0`, cannot be used and can also not be null.\n\nWhen this value is not passed in when the signature request, then\nwe will use a default folder which is either the parent folder of\nthe first source file in the payload if we have the permission to\nupload to that folder or a folder called "My Sign Requests".',
+        }),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Creates a Box Sign request object.',
     required: ['signers'],
@@ -13986,7 +15113,7 @@ const SignRequestCreateRequestSchema = SignRequestBaseSchema.and(
   })
   .openapi('SignRequestCreateRequest')
 
-const SignRequestsSchema = z
+const SignRequestsSchema: z.ZodType<SignRequestsType> = z
   .object({
     limit: z
       .preprocess(
@@ -14038,490 +15165,7 @@ const SignRequestsSchema = z
   })
   .openapi('SignRequests')
 
-const TemplateSignerInputSchema = SignRequestPrefillTagSchema.and(
-  z
-    .object({
-      type: z
-        .enum(['signature', 'date', 'text', 'checkbox', 'attachment', 'radio', 'dropdown'])
-        .exactOptional()
-        .openapi({ description: 'Type of input.', example: 'text' }),
-      content_type: z
-        .enum([
-          'signature',
-          'initial',
-          'stamp',
-          'date',
-          'checkbox',
-          'text',
-          'full_name',
-          'first_name',
-          'last_name',
-          'company',
-          'title',
-          'email',
-          'attachment',
-          'radio',
-          'dropdown',
-        ])
-        .exactOptional()
-        .openapi({ description: 'Content type of input.', example: 'text' }),
-      is_required: z
-        .boolean()
-        .exactOptional()
-        .openapi({ description: 'Whether or not the input is required.', example: true }),
-      page_index: z
-        .int()
-        .exactOptional()
-        .openapi({ description: 'Index of page that the input is on.', example: 4 }),
-      document_id: z
-        .string()
-        .nullable()
-        .exactOptional()
-        .openapi({
-          description: 'Document identifier.',
-          example: '123075213-eb54b537-8b25-445e-87c1-5a1c67d8cbd7',
-        }),
-      dropdown_choices: z
-        .array(z.string())
-        .nullable()
-        .exactOptional()
-        .openapi({
-          description:
-            'When the input is of the type `dropdown` this\nvalues will be filled with all the\ndropdown options.',
-          example: ['Yes', 'No', 'Maybe'],
-        }),
-      group_id: z
-        .string()
-        .nullable()
-        .exactOptional()
-        .openapi({
-          description:
-            'When the input is of type `radio` they can be\ngrouped to gather with this identifier.',
-          example: 'da317330-225a-4c72-89ad-0d6dcaaf4df6',
-        }),
-      coordinates: z
-        .object({
-          x: z
-            .number()
-            .exactOptional()
-            .openapi({
-              description:
-                'Relative x coordinate to the page the input is on, ranging from 0 to 1.',
-              example: 0.672258592471358,
-            }),
-          y: z
-            .number()
-            .exactOptional()
-            .openapi({
-              description:
-                'Relative y coordinate to the page the input is on, ranging from 0 to 1.',
-              example: 0.18654283173599448,
-            }),
-        })
-        .exactOptional()
-        .openapi({ description: 'Where the input is located on a page.', required: [] }),
-      dimensions: z
-        .object({
-          width: z
-            .number()
-            .exactOptional()
-            .openapi({
-              description: 'Relative width to the page the input is on, ranging from 0 to 1.',
-              example: 0.2618657937806874,
-            }),
-          height: z
-            .number()
-            .exactOptional()
-            .openapi({
-              description: 'Relative height to the page the input is on, ranging from 0 to 1.',
-              example: 0.05311728090109673,
-            }),
-        })
-        .exactOptional()
-        .openapi({ description: 'The size of the input.', required: [] }),
-      label: z
-        .string()
-        .nullable()
-        .exactOptional()
-        .openapi({
-          description:
-            'The label field is used especially for text, attachment, radio, and checkbox type inputs.',
-          example: 'Legal name',
-        }),
-      read_only: z
-        .boolean()
-        .exactOptional()
-        .openapi({
-          description: 'Indicates whether this input is read-only (cannot be modified by signers).',
-          example: true,
-        }),
-      validation: z
-        .union([
-          SignRequestSignerInputValidationSchema,
-          z
-            .strictObject({})
-            .nullable()
-            .openapi({
-              title: 'OpenAPI 3.0 null schema type',
-              description: 'The definition for a null schema type in OpenAPI `3.0`.',
-            }),
-        ])
-        .exactOptional()
-        .openapi({
-          description:
-            'Specifies the formatting rules that signers must follow for text field inputs.\nIf set, this validation is mandatory.',
-          example: { validation_type: 'email' },
-        }),
-    })
-    .openapi({ required: [] }),
-)
-  .openapi({
-    description: 'Input created by a Signer on a Template.',
-    required: ['page_index'],
-    title: 'Template Signer Input',
-  })
-  .openapi('TemplateSignerInput')
-
-const TemplateSignerSchema = z
-  .object({
-    inputs: z.array(TemplateSignerInputSchema).exactOptional().openapi({ readOnly: true }),
-    email: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Email address of the signer.', example: 'example@mail.com' }),
-    role: z
-      .enum(['signer', 'approver', 'final_copy_reader'])
-      .default('signer')
-      .exactOptional()
-      .openapi({
-        description:
-          'Defines the role of the signer in the signature request. A role of\n`signer` needs to sign the document, a role `approver`\napproves the document and\na `final_copy_reader` role only\nreceives the final signed document and signing log.',
-        example: 'signer',
-      }),
-    is_in_person: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Used in combination with an embed URL for a sender.\nAfter the sender signs, they will be\nredirected to the next `in_person` signer.',
-        example: true,
-      }),
-    order: z
-      .int()
-      .min(0)
-      .exactOptional()
-      .openapi({ description: 'Order of the signer.', example: 2 }),
-    signer_group_id: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'If provided, this value points signers that are assigned the same inputs and belongs to same signer group.\nA signer group is not a Box Group. It is an entity that belongs to the template itself and can only be used\nwithin Box Sign requests created from it.',
-        example: 'cd4ff89-8fc1-42cf-8b29-1890dedd26d7',
-      }),
-    label: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'A placeholder label for the signer set by the template creator to differentiate between signers.',
-        example: 'Jane Doe',
-      }),
-    public_id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'An identifier for the signer. This can be used to identify a signer within the template.',
-        example: 'RJZYYVPR',
-      }),
-    is_password_required: z
-      .boolean()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'If true for signers with a defined email, the password provided when the template was created is used by default. \nIf true for signers without a specified / defined email, the creator needs to provide a password when using the template.',
-        example: true,
-      }),
-    is_phone_number_required: z
-      .boolean()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'If true for signers with a defined email, the phone number provided when the template was created is used by default. \nIf true for signers without a specified / defined email, the template creator needs to provide a phone number when creating a request.',
-        example: true,
-      }),
-    login_required: z
-      .boolean()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'If true, the signer is required to login to access the document.',
-        example: true,
-      }),
-  })
-  .openapi({
-    description: 'The schema for a Signer for Templates.',
-    title: 'Signer fields for Templates',
-    required: [],
-  })
-  .openapi('TemplateSigner')
-
-const SignTemplateSchema = z
-  .object({
-    type: z
-      .literal('sign-template')
-      .exactOptional()
-      .openapi({
-        description: 'The value will always be `sign-template`.',
-        example: 'sign-template',
-      }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Template identifier.',
-        example: '4206996024-14944f75-c34b-478a-95a1-264b1ff80d35',
-      }),
-    name: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The name of the template.', example: 'Official contract' }),
-    email_subject: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Subject of signature request email. This is cleaned by sign\nrequest. If this field is not passed, a default subject will be used.',
-        example: 'Sign Request from Acme',
-      }),
-    email_message: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Message to include in signature request email. The field\nis cleaned through sanitization of specific characters. However,\nsome html tags are allowed. Links included in the\nmessage are also converted to hyperlinks in the email. The\nmessage may contain the following html tags including `a`, `abbr`,\n`acronym`, `b`, `blockquote`, `code`, `em`, `i`, `ul`, `li`, `ol`, and\n`strong`. Be aware that when the text\nto html ratio is too high, the email\nmay end up in spam filters. Custom styles on\nthese tags are not allowed.\nIf this field is not passed, a default message will be used.',
-        example: 'Hello! Please sign the document below',
-      }),
-    days_valid: z
-      .int()
-      .min(0)
-      .max(730)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Set the number of days after which the\ncreated signature request will automatically\nexpire if not completed. By default, we do\nnot apply any expiration date on signature\nrequests, and the signature request does not expire.',
-        example: 2,
-      }),
-    parent_folder: FolderMiniSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The destination folder to place final, signed document and signing\nlog. Only `ID` and `type` fields are required. The root folder,\nfolder ID `0`, cannot be used.',
-        }),
-    ).exactOptional(),
-    source_files: z
-      .array(FileMiniSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'List of files to create a signing document from.\nOnly the ID and type fields are required\nfor each file.',
-      }),
-    are_fields_locked: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Indicates if the template input\nfields are editable or not.',
-        example: false,
-      }),
-    are_options_locked: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates if the template document options\nare editable or not,\nfor example renaming the document.',
-        example: true,
-      }),
-    are_recipients_locked: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Indicates if the template signers are editable or not.',
-        example: false,
-      }),
-    are_email_settings_locked: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Indicates if the template email settings are editable or not.',
-        example: true,
-      }),
-    are_files_locked: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates if the template files are editable or not.\nThis includes deleting or renaming template files.',
-        example: true,
-      }),
-    signers: z
-      .array(TemplateSignerSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Array of signers for the template.\n\n**Note**: It may happen that some signers specified in the template belong to conflicting [segments](https://developer.box.com/reference/resources/shield-information-barrier-segment-member) (user groups).\nThis means that due to the security policies, users are assigned to segments to prevent exchanges or communication that could lead to ethical conflicts.\nIn such a case, an attempt to send a sign request based on a template that lists signers in conflicting segments will result in an error.\n\nRead more about [segments and ethical walls](https://support.box.com/hc/en-us/articles/9920431507603-Understanding-Information-Barriers#h_01GFVJEHQA06N7XEZ4GCZ9GFAQ).',
-      }),
-    additional_info: z
-      .object({
-        non_editable: z
-          .array(
-            z.enum([
-              'email_subject',
-              'email_message',
-              'name',
-              'days_valid',
-              'signers',
-              'source_files',
-            ]),
-          )
-          .exactOptional()
-          .openapi({ description: 'Non editable fields.', example: ['email_subject', 'name'] }),
-        required: z
-          .object({
-            signers: z
-              .array(z.array(z.literal('email')).openapi({ example: ['email'] }))
-              .exactOptional()
-              .openapi({ description: 'Required signer fields.', example: [['email'], ['email']] }),
-          })
-          .exactOptional()
-          .openapi({ description: 'Required fields.', required: [] }),
-      })
-      .exactOptional()
-      .openapi({
-        description:
-          'Additional information on which fields are\nrequired and which fields are not editable.',
-        required: [],
-      }),
-    ready_sign_link: z
-      .object({
-        url: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'The URL that can be sent to signers.',
-            example:
-              '"https://app.box.com/sign/\nready-sign-link/a1cdf2c7-fa81-4a67-8163-1e5f4dbe5178"',
-          }),
-        name: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Request name.', example: 'Official contract' }),
-        instructions: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description: 'Extra instructions for all signers.',
-            example: 'Hello! Please sign the document below',
-          }),
-        folder_id: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'The destination folder to place final,\nsigned document and signing\nlog. Only `ID` and `type` fields are required.\nThe root folder,\nfolder ID `0`, cannot be used.',
-            example: '12345',
-          }),
-        is_notification_disabled: z
-          .boolean()
-          .exactOptional()
-          .openapi({
-            description: 'Whether to disable notifications when\na signer has signed.',
-            example: true,
-          }),
-        is_active: z
-          .boolean()
-          .exactOptional()
-          .openapi({
-            description: 'Whether the ready sign link is enabled or not.',
-            example: false,
-          }),
-      })
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          "Box's ready-sign link feature enables you to create a\nlink to a signature request that\nyou've created from a template. Use this link\nwhen you want to post a signature request\non a public form — such as an email, social media post,\nor web page — without knowing who the signers will be.\nNote: The ready-sign link feature is\nlimited to Enterprise Plus customers and not\navailable to Box Verified Enterprises.",
-        required: [],
-      }),
-    custom_branding: z
-      .object({
-        company_name: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Name of the company.', example: 'Corporation inc.' }),
-        logo_uri: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description: 'Custom branding logo URI in the form of a base64 image.',
-            example:
-              'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA\nAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A\n8AAQUBAScY42YAAAAASUVORK5CYII=',
-          }),
-        branding_color: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Custom branding color in hex.', example: '9E5E6F' }),
-        email_footer_text: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description: 'Content of the email footer.',
-            example: 'Contact email email@mail.com',
-          }),
-      })
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Custom branding applied to notifications\nand signature requests.',
-        required: [],
-      }),
-    request_flow: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The sign flow of sign requests created from the template. Values can include `standard` or `cfr11`.',
-        example: 'standard',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi({
-    description: 'A Box Sign template object.',
-    title: 'Box Sign template',
-    'x-box-resource-id': 'sign_template',
-    'x-box-tag': 'sign_templates',
-  })
-  .openapi('SignTemplate')
-
-const SignTemplatesSchema = z
+const SignTemplatesSchema: z.ZodType<SignTemplatesType> = z
   .object({
     limit: z
       .preprocess(
@@ -14580,17 +15224,379 @@ const SignTemplatesSchema = z
   })
   .openapi('SignTemplates')
 
-const SkillCardSchema: z.ZodType<SkillCardType> = z
-  .lazy(() =>
-    z
-      .xor([
-        KeywordSkillCardSchema,
-        TimelineSkillCardSchema,
-        TranscriptSkillCardSchema,
-        StatusSkillCardSchema,
-      ])
-      .openapi({ description: 'Box Skill card.', title: 'Box Skill card' }),
-  )
+const TimelineSkillCardSchema = z
+  .object({
+    created_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'The optional date and time this card was created at.',
+        example: '2018-04-13T13:53:23-07:00',
+      }),
+    type: z
+      .literal('skill_card')
+      .openapi({ description: 'The value will always be `skill_card`.', example: 'skill_card' }),
+    skill_card_type: z
+      .literal('timeline')
+      .openapi({ description: 'The value will always be `timeline`.', example: 'timeline' }),
+    skill_card_title: z
+      .object({
+        code: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'An optional identifier for the title.', example: 'Faces' }),
+        message: z
+          .string()
+          .openapi({ description: 'The actual title to show in the UI.', example: 'Faces' }),
+      })
+      .exactOptional()
+      .openapi({ description: 'The title of the card.', required: ['message'] }),
+    skill: z
+      .object({
+        type: z
+          .literal('service')
+          .openapi({ description: 'The value will always be `service`.', example: 'service' }),
+        id: z
+          .string()
+          .openapi({
+            description:
+              'A custom identifier that represent the service that\napplied this metadata.',
+            example: 'image-recognition-service',
+          }),
+      })
+      .openapi({
+        description: 'The service that applied this metadata.',
+        required: ['type', 'id'],
+      }),
+    invocation: z
+      .object({
+        type: z
+          .literal('skill_invocation')
+          .openapi({
+            description: 'The value will always be `skill_invocation`.',
+            example: 'skill_invocation',
+          }),
+        id: z
+          .string()
+          .openapi({
+            description:
+              'A custom identifier that represent the instance of\nthe service that applied this metadata. For example,\nif your `image-recognition-service` runs on multiple\nnodes, this field can be used to identify the ID of\nthe node that was used to apply the metadata.',
+            example: 'image-recognition-service-123',
+          }),
+      })
+      .openapi({
+        description:
+          'The invocation of this service, used to track\nwhich instance of a service applied the metadata.',
+        required: ['type', 'id'],
+      }),
+    duration: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'An total duration in seconds of the timeline.', example: 1000 }),
+    entries: z
+      .array(
+        z
+          .object({
+            text: z
+              .string()
+              .exactOptional()
+              .openapi({
+                description:
+                  'The text of the entry. This would be the display\nname for an item being placed on the timeline, for example the name\nof the person who was detected in a video.',
+                example: 'John',
+              }),
+            appears: z
+              .array(
+                z
+                  .object({
+                    start: z
+                      .int()
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          'The time in seconds when an\nentry should start appearing on a timeline.',
+                        example: 1,
+                      }),
+                    end: z
+                      .int()
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          'The time in seconds when an\nentry should stop appearing on a timeline.',
+                        example: 20,
+                      }),
+                  })
+                  .openapi({ description: 'The timestamp for an entry.', required: [] }),
+              )
+              .exactOptional()
+              .openapi({
+                description:
+                  'Defines a list of timestamps for when this item should appear on the\ntimeline.',
+                required: ['start', 'end'],
+              }),
+            image_url: z
+              .string()
+              .exactOptional()
+              .openapi({
+                description:
+                  'The image to show on a for an entry that appears\non a timeline. This image URL is required for every entry.\n\nThe image will be shown in a\nlist of items (for example faces), and clicking\nthe image will show the user where that entry\nappears during the duration of this entry.',
+                example: 'https://example.com/image1.jpg',
+              }),
+          })
+          .openapi({
+            description: "An single item that's placed on multiple items on the timeline.",
+            required: [],
+          }),
+      )
+      .openapi({ description: 'A list of entries on the timeline.' }),
+  })
+  .openapi({
+    description: 'A Box Skill metadata card that places a list of images on a\ntimeline.',
+    required: ['type', 'skill_card_type', 'skill', 'invocation', 'entries'],
+    title: 'Timeline Skill Card',
+    'x-box-resource-id': 'timeline_skill_card',
+    'x-box-tag': 'skills',
+  })
+  .openapi('TimelineSkillCard')
+
+const TranscriptSkillCardSchema = z
+  .object({
+    created_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'The optional date and time this card was created at.',
+        example: '2018-04-13T13:53:23-07:00',
+      }),
+    type: z
+      .literal('skill_card')
+      .openapi({ description: 'The value will always be `skill_card`.', example: 'skill_card' }),
+    skill_card_type: z
+      .literal('transcript')
+      .openapi({ description: 'The value will always be `transcript`.', example: 'transcript' }),
+    skill_card_title: z
+      .object({
+        code: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'An optional identifier for the title.',
+            example: 'my_transcripts',
+          }),
+        message: z
+          .string()
+          .openapi({
+            description: 'The actual title to show in the UI.',
+            example: 'My Transcripts',
+          }),
+      })
+      .exactOptional()
+      .openapi({ description: 'The title of the card.', required: ['message'] }),
+    skill: z
+      .object({
+        type: z
+          .literal('service')
+          .openapi({ description: 'The value will always be `service`.', example: 'service' }),
+        id: z
+          .string()
+          .openapi({
+            description:
+              'A custom identifier that represent the service that\napplied this metadata.',
+            example: 'transciption-service',
+          }),
+      })
+      .openapi({
+        description: 'The service that applied this metadata.',
+        required: ['type', 'id'],
+      }),
+    invocation: z
+      .object({
+        type: z
+          .literal('skill_invocation')
+          .openapi({
+            description: 'The value will always be `skill_invocation`.',
+            example: 'skill_invocation',
+          }),
+        id: z
+          .string()
+          .openapi({
+            description:
+              'A custom identifier that represent the instance of\nthe service that applied this metadata. For example,\nif your `image-recognition-service` runs on multiple\nnodes, this field can be used to identify the ID of\nthe node that was used to apply the metadata.',
+            example: 'transciption-service-123',
+          }),
+      })
+      .openapi({
+        description:
+          'The invocation of this service, used to track\nwhich instance of a service applied the metadata.',
+        required: ['type', 'id'],
+      }),
+    duration: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          'An optional total duration in seconds.\n\nUsed with a `skill_card_type` of `transcript` or\n`timeline`.',
+        example: 1000,
+      }),
+    entries: z
+      .array(
+        z
+          .object({
+            text: z
+              .string()
+              .exactOptional()
+              .openapi({
+                description:
+                  'The text of the entry. This would be the transcribed text assigned\nto the entry on the timeline.',
+                example: 'Hi, and welcome to this video...',
+              }),
+            appears: z
+              .array(
+                z
+                  .object({
+                    start: z
+                      .int()
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          'The time in seconds when an\nentry should start appearing on a timeline.',
+                        example: 1,
+                      }),
+                  })
+                  .openapi({ description: 'The timestamp for an entry.', required: [] }),
+              )
+              .exactOptional()
+              .openapi({
+                description:
+                  'Defines when a transcribed bit of text appears. This only includes a\nstart time and no end time.',
+                required: ['start'],
+              }),
+          })
+          .openapi({
+            description: 'An entry in the `entries` attribute of a metadata card.',
+            required: [],
+          }),
+      )
+      .openapi({
+        description:
+          'A list of entries for the card. This represents the individual entries of\nthe transcription.',
+      }),
+  })
+  .openapi({
+    description: 'A Box Skill metadata card that adds a transcript to a file.',
+    required: ['type', 'skill_card_type', 'skill', 'invocation', 'entries'],
+    title: 'Transcript Skill Card.',
+    'x-box-resource-id': 'transcript_skill_card',
+    'x-box-tag': 'skills',
+  })
+  .openapi('TranscriptSkillCard')
+
+const StatusSkillCardSchema = z
+  .object({
+    created_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'The optional date and time this card was created at.',
+        example: '2018-04-13T13:53:23-07:00',
+      }),
+    type: z
+      .literal('skill_card')
+      .openapi({ description: 'The value will always be `skill_card`.', example: 'skill_card' }),
+    skill_card_type: z
+      .literal('status')
+      .openapi({ description: 'The value will always be `status`.', example: 'status' }),
+    skill_card_title: z
+      .object({
+        code: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'An optional identifier for the title.', example: 'status' }),
+        message: z
+          .string()
+          .openapi({ description: 'The actual title to show in the UI.', example: 'Status' }),
+      })
+      .exactOptional()
+      .openapi({ description: 'The title of the card.', required: ['message'] }),
+    status: z
+      .object({
+        code: z
+          .enum(['invoked', 'processing', 'success', 'transient_failure', 'permanent_failure'])
+          .openapi({
+            description:
+              'A code for the status of this Skill invocation. By\ndefault each of these will have their own accompanied\nmessages. These can be adjusted by setting the `message`\nvalue on this object.',
+            example: 'success',
+          }),
+        message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'A custom message that can be provided with this status.\nThis will be shown in the web app to the end user.',
+            example: "We're preparing to process your file. Please hold on!",
+          }),
+      })
+      .openapi({
+        description:
+          'Sets the status of the skill. This can be used to show a message to the user while the Skill is processing the data, or if it was not able to process the file.',
+        required: ['code'],
+      }),
+    skill: z
+      .object({
+        type: z
+          .literal('service')
+          .openapi({ description: 'The value will always be `service`.', example: 'service' }),
+        id: z
+          .string()
+          .openapi({
+            description:
+              'A custom identifier that represent the service that\napplied this metadata.',
+            example: 'image-recognition-service',
+          }),
+      })
+      .openapi({
+        description: 'The service that applied this metadata.',
+        required: ['type', 'id'],
+      }),
+    invocation: z
+      .object({
+        type: z
+          .literal('skill_invocation')
+          .openapi({
+            description: 'The value will always be `skill_invocation`.',
+            example: 'skill_invocation',
+          }),
+        id: z
+          .string()
+          .openapi({
+            description:
+              'A custom identifier that represent the instance of\nthe service that applied this metadata. For example,\nif your `image-recognition-service` runs on multiple\nnodes, this field can be used to identify the ID of\nthe node that was used to apply the metadata.',
+            example: 'image-recognition-service-123',
+          }),
+      })
+      .openapi({
+        description:
+          'The invocation of this service, used to track\nwhich instance of a service applied the metadata.',
+        required: ['type', 'id'],
+      }),
+  })
+  .openapi({
+    description: 'A Box Skill metadata card that puts a status message in the metadata sidebar.',
+    required: ['type', 'skill_card_type', 'skill', 'invocation', 'status'],
+    title: 'Status Skill Card',
+    'x-box-resource-id': 'status_skill_card',
+    'x-box-tag': 'skills',
+  })
+  .openapi('StatusSkillCard')
+
+const SkillCardSchema = z
+  .xor([
+    KeywordSkillCardSchema,
+    TimelineSkillCardSchema,
+    TranscriptSkillCardSchema,
+    StatusSkillCardSchema,
+  ])
+  .openapi({ description: 'Box Skill card.', title: 'Box Skill card' })
   .openapi('SkillCard')
 
 const SkillCardsMetadataSchema = z
@@ -14781,9 +15787,9 @@ const StoragePolicyAssignmentSchema = z
         description: 'The value will always be `storage_policy_assignment`.',
         example: 'storage_policy_assignment',
       }),
-    storage_policy: StoragePolicyMiniSchema.and(
-      z.any().openapi({ description: 'The assigned storage policy.' }),
-    ).exactOptional(),
+    storage_policy: StoragePolicyMiniSchema.exactOptional().openapi({
+      description: 'The assigned storage policy.',
+    }),
     assigned_to: z
       .object({
         id: z
@@ -14800,8 +15806,8 @@ const StoragePolicyAssignmentSchema = z
         description: 'The bare basic reference for an object.',
         required: [],
       })
-      .and(z.any().openapi({ description: 'The enterprise or use the policy is assigned to.' }))
-      .exactOptional(),
+      .exactOptional()
+      .openapi({ description: 'The enterprise or use the policy is assigned to.' }),
   })
   .openapi({
     description: 'The assignment of a storage policy to a user or enterprise.',
@@ -14871,184 +15877,7 @@ const StoragePolicyAssignmentsSchema = z
   })
   .openapi('StoragePolicyAssignments')
 
-const TaskAssignmentSchema = z
-  .object({
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The unique identifier for this task assignment.',
-        example: '11446498',
-      }),
-    type: z
-      .literal('task_assignment')
-      .exactOptional()
-      .openapi({
-        description: 'The value will always be `task_assignment`.',
-        example: 'task_assignment',
-      }),
-    item: FileMiniSchema.and(
-      z.any().openapi({ description: 'The file that the task has been assigned to.' }),
-    ).exactOptional(),
-    assigned_to: UserMiniSchema.and(
-      z.any().openapi({ description: 'The user that the task has been assigned to.' }),
-    ).exactOptional(),
-    message: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A message that will is included with the task\nassignment. This is visible to the assigned user in the web and mobile\nUI.',
-        example: 'Please review',
-      }),
-    completed_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description:
-          'The date at which this task assignment was\ncompleted. This will be `null` if the task is not completed yet.',
-        example: '2012-12-12T10:53:43-08:00',
-      }),
-    assigned_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'The date at which this task was assigned to the user.',
-        example: '2012-12-12T10:53:43-08:00',
-      }),
-    reminded_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'The date at which the assigned user was reminded of this task\nassignment.',
-        example: '2012-12-12T10:53:43-08:00',
-      }),
-    resolution_state: z
-      .enum(['completed', 'incomplete', 'approved', 'rejected'])
-      .exactOptional()
-      .openapi({
-        description:
-          'The current state of the assignment. The available states depend on\nthe `action` value of the task object.',
-        example: 'incomplete',
-      }),
-    assigned_by: UserMiniSchema.and(
-      z.any().openapi({ description: 'The user who assigned this task.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'A task assignment defines which task is assigned to which user to complete.',
-    title: 'Task assignment',
-    'x-box-resource-id': 'task_assignment',
-    'x-box-tag': 'task_assignments',
-    required: [],
-  })
-  .openapi('TaskAssignment')
-
-const TaskAssignmentsSchema = z
-  .object({
-    total_count: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'The total number of items in this collection.',
-        example: 100,
-      }),
-    entries: z
-      .array(TaskAssignmentSchema)
-      .exactOptional()
-      .openapi({ description: 'A list of task assignments.' }),
-  })
-  .openapi({
-    description: 'A list of task assignments.',
-    title: 'Task assignments',
-    'x-box-resource-id': 'task_assignments',
-    'x-box-tag': 'task_assignments',
-    required: [],
-  })
-  .openapi('TaskAssignments')
-
-const TaskSchema = z
-  .object({
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The unique identifier for this task.', example: '11446498' }),
-    type: z
-      .literal('task')
-      .exactOptional()
-      .openapi({ description: 'The value will always be `task`.', example: 'task' }),
-    item: FileMiniSchema.and(
-      z.any().openapi({ description: 'The file associated with the task.' }),
-    ).exactOptional(),
-    due_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'When the task is due.', example: '2012-12-12T10:53:43-08:00' }),
-    action: z
-      .enum(['review', 'complete'])
-      .exactOptional()
-      .openapi({
-        description: 'The type of task the task assignee will be prompted to\nperform.',
-        example: 'review',
-      }),
-    message: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'A message that will be included with the task.',
-        example: 'Legal review',
-      }),
-    task_assignment_collection: TaskAssignmentsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A collection of task assignment objects\nassociated with the task.',
-        }),
-    ).exactOptional(),
-    is_completed: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether the task has been completed.', example: true }),
-    created_by: UserMiniSchema.and(
-      z.any().openapi({ description: 'The user who created the task.' }),
-    ).exactOptional(),
-    created_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'When the task object was created.',
-        example: '2012-12-12T10:53:43-08:00',
-      }),
-    completion_rule: z
-      .enum(['all_assignees', 'any_assignee'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Defines which assignees need to complete this task before the task\nis considered completed.\n\n* `all_assignees` requires all assignees to review or\napprove the task in order for it to be considered completed.\n* `any_assignee` accepts any one assignee to review or\napprove the task in order for it to be considered completed.',
-        example: 'all_assignees',
-      }),
-  })
-  .openapi({
-    description:
-      'A task allows for file-centric workflows within Box. Users can\ncreate tasks on files and assign them to other users for them to complete the\ntasks.',
-    title: 'Task',
-    'x-box-resource-id': 'task',
-    'x-box-tag': 'tasks',
-    required: [],
-  })
-  .openapi('Task')
-
-const TasksSchema = z
+const TasksSchema: z.ZodType<TasksType> = z
   .object({
     total_count: z
       .preprocess(
@@ -15112,8 +15941,8 @@ const TermsOfServiceSchema = TermsOfServiceBaseSchema.and(
           description: 'A representation of a Box enterprise.',
           required: [],
         })
-        .and(z.any().openapi({ description: 'The enterprise these terms apply to.' }))
-        .exactOptional(),
+        .exactOptional()
+        .openapi({ description: 'The enterprise these terms apply to.' }),
       tos_type: z
         .enum(['managed', 'external'])
         .exactOptional()
@@ -15202,10 +16031,8 @@ const TermsOfServiceUserStatusSchema = z
         description: 'The value will always be `terms_of_service_user_status`.',
         example: 'terms_of_service_user_status',
       }),
-    tos: TermsOfServiceBaseSchema.and(
-      z.any().openapi({ description: 'The terms of service.' }),
-    ).exactOptional(),
-    user: UserMiniSchema.and(z.any().openapi({ description: 'The user.' })).exactOptional(),
+    tos: TermsOfServiceBaseSchema.exactOptional().openapi({ description: 'The terms of service.' }),
+    user: UserMiniSchema.exactOptional().openapi({ description: 'The user.' }),
     is_accepted: z
       .boolean()
       .exactOptional()
@@ -15325,8 +16152,7 @@ const TrashFileSchema = z
         example: '3',
         description:
           'A numeric identifier that represents the most recent user event\nthat has been applied to this item.\n\nThis can be used in combination with the `GET /events`-endpoint\nto filter out user events that would have occurred before this\nidentifier was read.\n\nAn example would be where a Box Drive-like application\nwould fetch an item via the API, and then listen to incoming\nuser events for changes to the item. The application would\nignore any user events where the `sequence_id` in the event\nis smaller than or equal to the `sequence_id` in the originally\nfetched resource.',
-      })
-      .and(z.any()),
+      }),
     name: z
       .string()
       .exactOptional()
@@ -15338,9 +16164,9 @@ const TrashFileSchema = z
           'The SHA1 hash of the file. This can be used to compare the contents\nof a file on Box with a local file.',
         example: '85136C79CBF9FE36BB9D05D0639C70C265C18D37',
       }),
-    file_version: FileVersionMiniSchema.and(
-      z.any().openapi({ description: 'The information about the current version of the file.' }),
-    ).exactOptional(),
+    file_version: FileVersionMiniSchema.exactOptional().openapi({
+      description: 'The information about the current version of the file.',
+    }),
     description: z
       .string()
       .max(256)
@@ -15421,15 +16247,9 @@ const TrashFileSchema = z
         description: 'A list of parent folders for an item in the trash.',
         required: ['total_count', 'entries'],
       })
-      .and(
-        z
-          .any()
-          .openapi({
-            description:
-              'The tree of folders that this file is contained in,\nstarting at the root.',
-          }),
-      )
-      .and(z.any()),
+      .openapi({
+        description: 'The tree of folders that this file is contained in,\nstarting at the root.',
+      }),
     created_at: z.iso
       .datetime({ offset: true })
       .openapi({
@@ -15476,15 +16296,11 @@ const TrashFileSchema = z
           'The date and time at which this file was last updated,\nwhich might be before it was uploaded to Box.',
         example: '2012-12-12T10:53:43-08:00',
       }),
-    created_by: UserMiniSchema.and(
-      z.any().openapi({ description: 'The user who created this file.' }),
-    ).exactOptional(),
-    modified_by: UserMiniSchema.and(
-      z.any().openapi({ description: 'The user who last modified this file.' }),
-    ).and(z.any()),
-    owned_by: UserMiniSchema.and(
-      z.any().openapi({ description: 'The user who owns this file.' }),
-    ).and(z.any()),
+    created_by: UserMiniSchema.exactOptional().openapi({
+      description: 'The user who created this file.',
+    }),
+    modified_by: UserMiniSchema.openapi({ description: 'The user who last modified this file.' }),
+    owned_by: UserMiniSchema.openapi({ description: 'The user who owns this file.' }),
     shared_link: z
       .string()
       .nullable()
@@ -15494,11 +16310,9 @@ const TrashFileSchema = z
           'The shared link for this file. This will\nbe `null` if a file has been trashed, since the link will no longer\nbe active.',
         example: null,
       }),
-    parent: FolderMiniSchema.and(
-      z.any().openapi({ description: 'The folder that this file is located within.' }),
-    )
-      .nullable()
-      .exactOptional(),
+    parent: FolderMiniSchema.nullable()
+      .exactOptional()
+      .openapi({ description: 'The folder that this file is located within.' }),
     item_status: z
       .enum(['active', 'trashed', 'deleted'])
       .openapi({
@@ -15557,8 +16371,7 @@ const TrashFileRestoredSchema = z
         example: '3',
         description:
           'A numeric identifier that represents the most recent user event\nthat has been applied to this item.\n\nThis can be used in combination with the `GET /events`-endpoint\nto filter out user events that would have occurred before this\nidentifier was read.\n\nAn example would be where a Box Drive-like application\nwould fetch an item via the API, and then listen to incoming\nuser events for changes to the item. The application would\nignore any user events where the `sequence_id` in the event\nis smaller than or equal to the `sequence_id` in the originally\nfetched resource.',
-      })
-      .and(z.any()),
+      }),
     name: z
       .string()
       .exactOptional()
@@ -15570,9 +16383,9 @@ const TrashFileRestoredSchema = z
           'The SHA1 hash of the file. This can be used to compare the contents\nof a file on Box with a local file.',
         example: '85136C79CBF9FE36BB9D05D0639C70C265C18D37',
       }),
-    file_version: FileVersionMiniSchema.and(
-      z.any().openapi({ description: 'The information about the current version of the file.' }),
-    ).exactOptional(),
+    file_version: FileVersionMiniSchema.exactOptional().openapi({
+      description: 'The information about the current version of the file.',
+    }),
     description: z
       .string()
       .max(256)
@@ -15614,15 +16427,9 @@ const TrashFileRestoredSchema = z
         description: 'A list of parent folders for an item.',
         required: ['total_count', 'entries'],
       })
-      .and(
-        z
-          .any()
-          .openapi({
-            description:
-              'The tree of folders that this file is contained in,\nstarting at the root.',
-          }),
-      )
-      .and(z.any()),
+      .openapi({
+        description: 'The tree of folders that this file is contained in,\nstarting at the root.',
+      }),
     created_at: z.iso
       .datetime({ offset: true })
       .openapi({
@@ -15671,15 +16478,11 @@ const TrashFileRestoredSchema = z
           'The date and time at which this file was last updated,\nwhich might be before it was uploaded to Box.',
         example: '2012-12-12T10:53:43-08:00',
       }),
-    created_by: UserMiniSchema.and(
-      z.any().openapi({ description: 'The user who created this file.' }),
-    ).exactOptional(),
-    modified_by: UserMiniSchema.and(
-      z.any().openapi({ description: 'The user who last modified this file.' }),
-    ).and(z.any()),
-    owned_by: UserMiniSchema.and(
-      z.any().openapi({ description: 'The user who owns this file.' }),
-    ).and(z.any()),
+    created_by: UserMiniSchema.exactOptional().openapi({
+      description: 'The user who created this file.',
+    }),
+    modified_by: UserMiniSchema.openapi({ description: 'The user who last modified this file.' }),
+    owned_by: UserMiniSchema.openapi({ description: 'The user who owns this file.' }),
     shared_link: z
       .string()
       .nullable()
@@ -15689,11 +16492,9 @@ const TrashFileRestoredSchema = z
           'The shared link for this file. This will\nbe `null` if a file had been trashed, even though the original shared\nlink does become active again.',
         example: null,
       }),
-    parent: FolderMiniSchema.and(
-      z.any().openapi({ description: 'The folder that this file is located within.' }),
-    )
-      .nullable()
-      .exactOptional(),
+    parent: FolderMiniSchema.nullable()
+      .exactOptional()
+      .openapi({ description: 'The folder that this file is located within.' }),
     item_status: z
       .enum(['active', 'trashed', 'deleted'])
       .openapi({
@@ -15753,7 +16554,6 @@ const TrashFolderSchema = z
         description:
           'A numeric identifier that represents the most recent user event\nthat has been applied to this item.\n\nThis can be used in combination with the `GET /events`-endpoint\nto filter out user events that would have occurred before this\nidentifier was read.\n\nAn example would be where a Box Drive-like application\nwould fetch an item via the API, and then listen to incoming\nuser events for changes to the item. The application would\nignore any user events where the `sequence_id` in the event\nis smaller than or equal to the `sequence_id` in the originally\nfetched resource.',
       })
-      .and(z.any())
       .exactOptional(),
     name: z.string().openapi({ description: 'The name of the folder.', example: 'Contracts' }),
     created_at: z.iso
@@ -15780,8 +16580,7 @@ const TrashFolderSchema = z
       .openapi({
         description: 'The optional description of this folder.',
         example: 'Legal contracts for the new ACME deal',
-      })
-      .and(z.any()),
+      }),
     size: z
       .preprocess(
         (val) =>
@@ -15865,21 +16664,11 @@ const TrashFolderSchema = z
         description: 'A list of parent folders for an item in the trash.',
         required: ['total_count', 'entries'],
       })
-      .and(
-        z
-          .any()
-          .openapi({
-            description:
-              'The tree of folders that this file is contained in,\nstarting at the root.',
-          }),
-      )
-      .and(z.any()),
-    created_by: UserMiniSchema.and(
-      z.any().openapi({ description: 'The user who created this folder.' }),
-    ).and(z.any()),
-    modified_by: UserMiniSchema.and(
-      z.any().openapi({ description: 'The user who last modified this folder.' }),
-    ).and(z.any()),
+      .openapi({
+        description: 'The tree of folders that this file is contained in,\nstarting at the root.',
+      }),
+    created_by: UserMiniSchema.openapi({ description: 'The user who created this folder.' }),
+    modified_by: UserMiniSchema.openapi({ description: 'The user who last modified this folder.' }),
     trashed_at: z.iso
       .datetime({ offset: true })
       .nullable()
@@ -15912,9 +16701,7 @@ const TrashFolderSchema = z
         description: 'The date and time at which this folder was last updated.',
         example: '2012-12-12T10:53:43-08:00',
       }),
-    owned_by: UserMiniSchema.and(
-      z.any().openapi({ description: 'The user who owns this folder.' }),
-    ).and(z.any()),
+    owned_by: UserMiniSchema.openapi({ description: 'The user who owns this folder.' }),
     shared_link: z
       .string()
       .nullable()
@@ -15933,16 +16720,12 @@ const TrashFolderSchema = z
           'The folder upload email for this folder. This will\nbe `null` if a folder has been trashed, since the upload will no longer\nwork.',
         example: null,
       }),
-    parent: FolderMiniSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The optional folder that this folder is located within.\n\nThis value may be `null` for some folders such as the\nroot folder or the trash folder.',
-        }),
-    )
-      .nullable()
-      .exactOptional(),
+    parent: FolderMiniSchema.nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The optional folder that this folder is located within.\n\nThis value may be `null` for some folders such as the\nroot folder or the trash folder.',
+      }),
     item_status: z
       .enum(['active', 'trashed', 'deleted'])
       .openapi({
@@ -16002,7 +16785,6 @@ const TrashFolderRestoredSchema = z
         description:
           'A numeric identifier that represents the most recent user event\nthat has been applied to this item.\n\nThis can be used in combination with the `GET /events`-endpoint\nto filter out user events that would have occurred before this\nidentifier was read.\n\nAn example would be where a Box Drive-like application\nwould fetch an item via the API, and then listen to incoming\nuser events for changes to the item. The application would\nignore any user events where the `sequence_id` in the event\nis smaller than or equal to the `sequence_id` in the originally\nfetched resource.',
       })
-      .and(z.any())
       .exactOptional(),
     name: z
       .string()
@@ -16033,7 +16815,6 @@ const TrashFolderRestoredSchema = z
         description: 'The optional description of this folder.',
         example: 'Legal contracts for the new ACME deal',
       })
-      .and(z.any())
       .exactOptional(),
     size: z
       .preprocess(
@@ -16080,26 +16861,16 @@ const TrashFolderRestoredSchema = z
         description: 'A list of parent folders for an item.',
         required: ['total_count', 'entries'],
       })
-      .and(
-        z
-          .any()
-          .openapi({
-            description:
-              'The tree of folders that this file is contained in,\nstarting at the root.',
-          }),
-      )
-      .and(z.any())
-      .exactOptional(),
-    created_by: UserMiniSchema.and(
-      z.any().openapi({ description: 'The user who created this folder.' }),
-    )
-      .and(z.any())
-      .exactOptional(),
-    modified_by: UserMiniSchema.and(
-      z.any().openapi({ description: 'The user who last modified this folder.' }),
-    )
-      .and(z.any())
-      .exactOptional(),
+      .exactOptional()
+      .openapi({
+        description: 'The tree of folders that this file is contained in,\nstarting at the root.',
+      }),
+    created_by: UserMiniSchema.exactOptional().openapi({
+      description: 'The user who created this folder.',
+    }),
+    modified_by: UserMiniSchema.exactOptional().openapi({
+      description: 'The user who last modified this folder.',
+    }),
     trashed_at: z
       .string()
       .nullable()
@@ -16134,9 +16905,9 @@ const TrashFolderRestoredSchema = z
         description: 'The date and time at which this folder was last updated.',
         example: '2012-12-12T10:53:43-08:00',
       }),
-    owned_by: UserMiniSchema.and(z.any().openapi({ description: 'The user who owns this folder.' }))
-      .and(z.any())
-      .exactOptional(),
+    owned_by: UserMiniSchema.exactOptional().openapi({
+      description: 'The user who owns this folder.',
+    }),
     shared_link: z
       .string()
       .nullable()
@@ -16155,16 +16926,12 @@ const TrashFolderRestoredSchema = z
           'The folder upload email for this folder. This will\nbe `null` if a folder has been trashed, even though the original upload\nemail does become active again.',
         example: null,
       }),
-    parent: FolderMiniSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The optional folder that this folder is located within.\n\nThis value may be `null` for some folders such as the\nroot folder or the trash folder.',
-        }),
-    )
-      .nullable()
-      .exactOptional(),
+    parent: FolderMiniSchema.nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The optional folder that this folder is located within.\n\nThis value may be `null` for some folders such as the\nroot folder or the trash folder.',
+      }),
     item_status: z
       .enum(['active', 'trashed', 'deleted'])
       .exactOptional()
@@ -16201,7 +16968,6 @@ const TrashWebLinkSchema = z
         description:
           'A numeric identifier that represents the most recent user event\nthat has been applied to this item.\n\nThis can be used in combination with the `GET /events`-endpoint\nto filter out user events that would have occurred before this\nidentifier was read.\n\nAn example would be where a Box Drive-like application\nwould fetch an item via the API, and then listen to incoming\nuser events for changes to the item. The application would\nignore any user events where the `sequence_id` in the event\nis smaller than or equal to the `sequence_id` in the originally\nfetched resource.',
       })
-      .and(z.any())
       .exactOptional(),
     etag: z
       .string()
@@ -16221,9 +16987,9 @@ const TrashWebLinkSchema = z
         description: 'The URL this web link points to.',
         example: 'https://www.example.com/example/1234',
       }),
-    parent: FolderMiniSchema.and(
-      z.any().openapi({ description: 'The parent object the web link belongs to.' }),
-    ).exactOptional(),
+    parent: FolderMiniSchema.exactOptional().openapi({
+      description: 'The parent object the web link belongs to.',
+    }),
     description: z
       .string()
       .exactOptional()
@@ -16298,16 +17064,11 @@ const TrashWebLinkSchema = z
         description: 'A list of parent folders for an item in the trash.',
         required: ['total_count', 'entries'],
       })
-      .and(
-        z
-          .any()
-          .openapi({
-            description:
-              'The tree of folders that this web link is contained in,\nstarting at the root.',
-          }),
-      )
-      .and(z.any())
-      .exactOptional(),
+      .exactOptional()
+      .openapi({
+        description:
+          'The tree of folders that this web link is contained in,\nstarting at the root.',
+      }),
     created_at: z.iso
       .datetime({ offset: true })
       .exactOptional()
@@ -16338,15 +17099,15 @@ const TrashWebLinkSchema = z
         description: 'When this file will be permanently deleted.',
         example: '2012-12-12T10:53:43-08:00',
       }),
-    created_by: UserMiniSchema.and(
-      z.any().openapi({ description: 'The user who created this web link.' }),
-    ).exactOptional(),
-    modified_by: UserMiniSchema.and(
-      z.any().openapi({ description: 'The user who last modified this web link.' }),
-    ).exactOptional(),
-    owned_by: UserMiniSchema.and(
-      z.any().openapi({ description: 'The user who owns this web link.' }),
-    ).exactOptional(),
+    created_by: UserMiniSchema.exactOptional().openapi({
+      description: 'The user who created this web link.',
+    }),
+    modified_by: UserMiniSchema.exactOptional().openapi({
+      description: 'The user who last modified this web link.',
+    }),
+    owned_by: UserMiniSchema.exactOptional().openapi({
+      description: 'The user who owns this web link.',
+    }),
     shared_link: z
       .string()
       .nullable()
@@ -16391,8 +17152,7 @@ const TrashWebLinkRestoredSchema = z
         example: '3',
         description:
           'A numeric identifier that represents the most recent user event\nthat has been applied to this item.\n\nThis can be used in combination with the `GET /events`-endpoint\nto filter out user events that would have occurred before this\nidentifier was read.\n\nAn example would be where a Box Drive-like application\nwould fetch an item via the API, and then listen to incoming\nuser events for changes to the item. The application would\nignore any user events where the `sequence_id` in the event\nis smaller than or equal to the `sequence_id` in the originally\nfetched resource.',
-      })
-      .and(z.any()),
+      }),
     etag: z
       .string()
       .exactOptional()
@@ -16411,9 +17171,9 @@ const TrashWebLinkRestoredSchema = z
         description: 'The URL this web link points to.',
         example: 'https://www.example.com/example/1234',
       }),
-    parent: FolderMiniSchema.and(
-      z.any().openapi({ description: 'The parent object the web link belongs to.' }),
-    ).exactOptional(),
+    parent: FolderMiniSchema.exactOptional().openapi({
+      description: 'The parent object the web link belongs to.',
+    }),
     description: z
       .string()
       .exactOptional()
@@ -16449,15 +17209,10 @@ const TrashWebLinkRestoredSchema = z
         description: 'A list of parent folders for an item.',
         required: ['total_count', 'entries'],
       })
-      .and(
-        z
-          .any()
-          .openapi({
-            description:
-              'The tree of folders that this web link is contained in,\nstarting at the root.',
-          }),
-      )
-      .and(z.any()),
+      .openapi({
+        description:
+          'The tree of folders that this web link is contained in,\nstarting at the root.',
+      }),
     created_at: z.iso
       .datetime({ offset: true })
       .exactOptional()
@@ -16490,15 +17245,15 @@ const TrashWebLinkRestoredSchema = z
           'The time at which this bookmark will be permanently\ndeleted - becomes `null` after restore.',
         example: null,
       }),
-    created_by: UserMiniSchema.and(
-      z.any().openapi({ description: 'The user who created this web link.' }),
-    ).exactOptional(),
-    modified_by: UserMiniSchema.and(
-      z.any().openapi({ description: 'The user who last modified this web link.' }),
-    ).exactOptional(),
-    owned_by: UserMiniSchema.and(
-      z.any().openapi({ description: 'The user who owns this web link.' }),
-    ).exactOptional(),
+    created_by: UserMiniSchema.exactOptional().openapi({
+      description: 'The user who created this web link.',
+    }),
+    modified_by: UserMiniSchema.exactOptional().openapi({
+      description: 'The user who last modified this web link.',
+    }),
+    owned_by: UserMiniSchema.exactOptional().openapi({
+      description: 'The user who owns this web link.',
+    }),
     shared_link: z
       .string()
       .nullable()
@@ -16953,8 +17708,8 @@ const UploadSessionSchema = z
         description: 'A list of endpoints for a chunked upload session.',
         required: [],
       })
-      .and(z.any().openapi({ description: 'A list of endpoints for this session.' }))
-      .exactOptional(),
+      .exactOptional()
+      .openapi({ description: 'A list of endpoints for this session.' }),
   })
   .openapi({
     description: 'An upload session for chunk uploading a file.',
@@ -17152,8 +17907,8 @@ const UserFullSchema = UserSchema.and(
           description: 'A representation of a Box enterprise.',
           required: [],
         })
-        .and(z.any().openapi({ description: 'Representation of the user’s enterprise.' }))
-        .exactOptional(),
+        .exactOptional()
+        .openapi({ description: 'Representation of the user’s enterprise.' }),
       my_tags: z
         .array(z.string())
         .exactOptional()
@@ -17453,9 +18208,9 @@ const WebhookMiniSchema = z
 const WebhookSchema = WebhookMiniSchema.and(
   z
     .object({
-      created_by: UserMiniSchema.and(
-        z.any().openapi({ description: 'The user who created the webhook.' }),
-      ).exactOptional(),
+      created_by: UserMiniSchema.exactOptional().openapi({
+        description: 'The user who created the webhook.',
+      }),
       created_at: z.iso
         .datetime({ offset: true })
         .exactOptional()
@@ -17600,297 +18355,7 @@ const WebhooksSchema = z
   })
   .openapi('Webhooks')
 
-const WorkflowMiniSchema = z
-  .object({
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The unique identifier for the workflow.', example: '11446498' }),
-    type: z
-      .literal('workflow')
-      .exactOptional()
-      .openapi({ description: 'The value will always be `workflow`.', example: 'workflow' }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The name of the workflow.', example: 'New Hire Workflow' }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The description for a workflow.',
-        example: 'This workflow sets off a new hire approval flow',
-      }),
-    is_enabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Specifies if this workflow is enabled.', example: true }),
-  })
-  .openapi({
-    description:
-      'Box Relay Workflows are objects that represent a named collection of flows.\n\nYou application must be authorized to use the `Manage Box Relay` application\nscope within the developer console in order to use this resource.',
-    title: 'Workflow (Mini)',
-    'x-box-resource-id': 'workflow--mini',
-    'x-box-tag': 'workflows',
-    'x-box-variant': 'mini',
-    'x-box-variants': ['mini', 'standard'],
-    required: [],
-  })
-  .openapi('WorkflowMini')
-
-const WorkflowSchema = WorkflowMiniSchema.and(
-  z
-    .object({
-      flows: z
-        .array(
-          z
-            .object({
-              id: z
-                .string()
-                .exactOptional()
-                .openapi({ description: 'The identifier of the flow.', example: '12345' }),
-              type: z
-                .literal('flow')
-                .exactOptional()
-                .openapi({ description: "The flow's resource type.", example: 'flow' }),
-              trigger: z
-                .object({
-                  type: z
-                    .literal('trigger')
-                    .exactOptional()
-                    .openapi({ description: "The trigger's resource type.", example: 'trigger' }),
-                  trigger_type: z
-                    .literal('WORKFLOW_MANUAL_START')
-                    .exactOptional()
-                    .openapi({
-                      description: 'The type of trigger selected for this flow.',
-                      example: 'WORKFLOW_MANUAL_START',
-                    }),
-                  scope: z
-                    .array(
-                      z
-                        .object({
-                          type: z
-                            .literal('trigger_scope')
-                            .exactOptional()
-                            .openapi({
-                              description: "The trigger scope's resource type.",
-                              example: 'trigger_scope',
-                            }),
-                          ref: z
-                            .string()
-                            .exactOptional()
-                            .openapi({
-                              description: 'Indicates the path of the condition value to check.',
-                              example: '/event/source/parameters/folder',
-                            }),
-                          object: z
-                            .object({
-                              type: z
-                                .literal('folder')
-                                .exactOptional()
-                                .openapi({
-                                  description: 'The type of the object.',
-                                  example: 'folder',
-                                }),
-                              id: z
-                                .string()
-                                .exactOptional()
-                                .openapi({
-                                  description: 'The id of the object.',
-                                  example: '12345',
-                                }),
-                            })
-                            .exactOptional()
-                            .openapi({
-                              description: 'The object the `ref` points to.',
-                              required: [],
-                            }),
-                        })
-                        .openapi({
-                          description:
-                            'Object that describes where and how a Trigger condition is met.',
-                          required: [],
-                        }),
-                    )
-                    .exactOptional()
-                    .openapi({ description: 'List of trigger scopes.' }),
-                })
-                .openapi({ required: [] })
-                .and(z.any().openapi({ description: 'Trigger that initiates flow.' }))
-                .exactOptional(),
-              outcomes: z
-                .array(
-                  z
-                    .object({
-                      id: z
-                        .string()
-                        .exactOptional()
-                        .openapi({
-                          description: 'The identifier of the outcome.',
-                          example: '12345',
-                        }),
-                      type: z
-                        .literal('outcome')
-                        .exactOptional()
-                        .openapi({
-                          description: 'The outcomes resource type.',
-                          example: 'outcome',
-                        }),
-                      name: z
-                        .string()
-                        .exactOptional()
-                        .openapi({
-                          description: 'The name of the outcome.',
-                          example: 'Task Approval Outcome',
-                        }),
-                      action_type: z
-                        .enum([
-                          'add_metadata',
-                          'assign_task',
-                          'copy_file',
-                          'copy_folder',
-                          'create_folder',
-                          'delete_file',
-                          'delete_folder',
-                          'lock_file',
-                          'move_file',
-                          'move_folder',
-                          'remove_watermark_file',
-                          'rename_folder',
-                          'restore_folder',
-                          'share_file',
-                          'share_folder',
-                          'unlock_file',
-                          'upload_file',
-                          'wait_for_task',
-                          'watermark_file',
-                          'go_back_to_step',
-                          'apply_file_classification',
-                          'apply_folder_classification',
-                          'send_notification',
-                        ])
-                        .openapi({
-                          title: 'Action Type',
-                          example: 'assign_task',
-                          description: 'The type of outcome.',
-                        })
-                        .and(z.any().openapi({ description: 'The type of outcome.' }))
-                        .exactOptional(),
-                      if_rejected: z
-                        .array(
-                          z
-                            .object({
-                              id: z
-                                .string()
-                                .exactOptional()
-                                .openapi({
-                                  description: 'The identifier of the outcome.',
-                                  example: '12345',
-                                }),
-                              type: z
-                                .literal('outcome')
-                                .exactOptional()
-                                .openapi({
-                                  description: 'The outcomes resource type.',
-                                  example: 'outcome',
-                                }),
-                              name: z
-                                .string()
-                                .exactOptional()
-                                .openapi({
-                                  description: 'The name of the outcome.',
-                                  example: 'Approval Rejection Outcome',
-                                }),
-                              action_type: z
-                                .enum([
-                                  'add_metadata',
-                                  'assign_task',
-                                  'copy_file',
-                                  'copy_folder',
-                                  'create_folder',
-                                  'delete_file',
-                                  'delete_folder',
-                                  'lock_file',
-                                  'move_file',
-                                  'move_folder',
-                                  'remove_watermark_file',
-                                  'rename_folder',
-                                  'restore_folder',
-                                  'share_file',
-                                  'share_folder',
-                                  'unlock_file',
-                                  'upload_file',
-                                  'wait_for_task',
-                                  'watermark_file',
-                                  'go_back_to_step',
-                                  'apply_file_classification',
-                                  'apply_folder_classification',
-                                  'send_notification',
-                                ])
-                                .openapi({
-                                  title: 'Action Type',
-                                  example: 'assign_task',
-                                  description: 'The type of outcome.',
-                                })
-                                .and(z.any().openapi({ description: 'The type of outcome.' }))
-                                .exactOptional(),
-                            })
-                            .openapi({ required: [] }),
-                        )
-                        .exactOptional()
-                        .openapi({
-                          description:
-                            'If `action_type` is `assign_task` and the task is rejected, returns a\nlist of outcomes to complete.',
-                        }),
-                    })
-                    .openapi({
-                      description:
-                        'List of outcomes to perform once the conditions of trigger are met.',
-                      required: [],
-                    }),
-                )
-                .and(
-                  z
-                    .any()
-                    .openapi({
-                      description: 'Actions that are completed once the flow is triggered.',
-                    }),
-                )
-                .exactOptional(),
-              created_at: z.iso
-                .datetime({ offset: true })
-                .exactOptional()
-                .openapi({
-                  description: 'When this flow was created.',
-                  example: '2012-12-12T10:53:43-08:00',
-                }),
-              created_by: UserBaseSchema.and(
-                z.any().openapi({ description: 'The user who created this flow.' }),
-              ).exactOptional(),
-            })
-            .openapi({
-              description:
-                'A step in a Box Relay Workflow. Each flow contains a `Trigger` and\na collection of Outcomes to perform once the conditions of a\n`Trigger` are met.',
-              required: [],
-            }),
-        )
-        .exactOptional()
-        .openapi({ description: 'A list of flows assigned to a workflow.' }),
-    })
-    .openapi({ required: [] }),
-)
-  .openapi({
-    description:
-      'Box Relay Workflows are objects that represent a named collection of flows.\n\nYour application must be authorized to use the `Manage Box Relay` application\nscope within the developer console in order to use this resource.',
-    title: 'Workflow',
-    'x-box-resource-id': 'workflow',
-    'x-box-tag': 'workflows',
-    'x-box-variant': 'standard',
-  })
-  .openapi('Workflow')
-
-const WorkflowsSchema = z
+const WorkflowsSchema: z.ZodType<WorkflowsType> = z
   .object({
     limit: z
       .preprocess(
@@ -18582,15 +19047,11 @@ export const putFilesFileIdRoute = createRoute({
                     }),
                 })
                 .openapi({ description: 'The parent for this item.', required: [] })
-                .and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        'An optional new parent folder for the file. This can be used\nto move the file to a new folder.',
-                    }),
-                )
-                .exactOptional(),
+                .exactOptional()
+                .openapi({
+                  description:
+                    'An optional new parent folder for the file. This can be used\nto move the file to a new folder.',
+                }),
               shared_link: z
                 .object({
                   access: z
@@ -18639,29 +19100,21 @@ export const putFilesFileIdRoute = createRoute({
                     })
                     .exactOptional()
                     .openapi({ required: [] }),
-                  one_time_passcode: SharedLinkOtpWritableSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'One-time-passcode (OTP) settings for the shared link.',
-                      }),
-                  ).exactOptional(),
+                  one_time_passcode: SharedLinkOtpWritableSchema.exactOptional().openapi({
+                    description: 'One-time-passcode (OTP) settings for the shared link.',
+                  }),
                 })
                 .openapi({
                   description:
                     'Defines a shared link for an item. Set this to `null` to remove\nthe shared link.',
                   required: [],
                 })
-                .and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        'Defines a shared link for a file. Set this to `null` to remove\nthe shared link.',
-                    }),
-                )
                 .nullable()
-                .exactOptional(),
+                .exactOptional()
+                .openapi({
+                  description:
+                    'Defines a shared link for a file. Set this to `null` to remove\nthe shared link.',
+                }),
               lock: z
                 .object({
                   access: z
@@ -18865,15 +19318,11 @@ export const postFilesFileIdRoute = createRoute({
                     .openapi({ description: 'The ID of parent item.', example: '123' }),
                 })
                 .openapi({ description: 'The parent for this item.', required: [] })
-                .and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        'Specifies an optional ID of a folder to restore the file to\nwhen the original folder no longer exists.\n\nPlease be aware that this ID will only be used if the original\nfolder no longer exists. Use this ID to provide a fallback\nlocation to restore the file to if the original location\nhas been deleted.',
-                    }),
-                )
-                .exactOptional(),
+                .exactOptional()
+                .openapi({
+                  description:
+                    'Specifies an optional ID of a folder to restore the file to\nwhen the original folder no longer exists.\n\nPlease be aware that this ID will only be used if the original\nfolder no longer exists. Use this ID to provide a fallback\nlocation to restore the file to if the original location\nhas been deleted.',
+                }),
             })
             .openapi({ required: [] }),
         },
@@ -19169,29 +19618,23 @@ export const getFilesFileIdContentRoute = createRoute({
       description:
         'If the file is not ready to be downloaded yet `Retry-After` header will\nbe returned indicating the time in seconds after which the file will\nbe available for the client to download.\n\nThis response can occur when the file was uploaded immediately before the\ndownload request.',
       headers: z.object({
-        'Retry-After': {
-          description: 'The time in seconds after which to retry the download.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The time in seconds after which to retry the download.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The time in seconds after which to retry the download.',
+            param: { required: false },
+          }),
       }),
     },
     302: {
       description:
         'If the file is available for download the response will include a\n`Location` header for the file on `dl.boxcloud.com`.\n\nThe `dl.boxcloud.com` URL is not persistent and clients will need\nto follow the redirect to actually download the file.',
       headers: z.object({
-        Location: {
-          description: 'A pointer to the download URL.',
-          schema: z
-            .url()
-            .exactOptional()
-            .openapi({ description: 'A pointer to the download URL.', param: { required: false } }),
-        },
+        Location: z
+          .url()
+          .exactOptional()
+          .openapi({ description: 'A pointer to the download URL.', param: { required: false } }),
       }),
     },
     default: {
@@ -19512,8 +19955,8 @@ export const optionsFilesContentRoute = createRoute({
                     .openapi({ description: 'The ID of parent item.', example: '123' }),
                 })
                 .openapi({ description: 'The parent for this item.', required: [] })
-                .and(z.any().openapi({ description: 'The parent folder to upload the file to.' }))
-                .exactOptional(),
+                .exactOptional()
+                .openapi({ description: 'The parent folder to upload the file to.' }),
             })
             .openapi({ required: [] }),
         },
@@ -19931,6 +20374,7 @@ export const getFilesUploadSessionsUploadSessionIdPartsRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 0 },
             example: 1000,
           },
+          default: 0,
         }),
       limit: z
         .preprocess((val) => {
@@ -20124,18 +20568,14 @@ export const postFilesUploadSessionsUploadSessionIdCommitRoute = createRoute({
       description:
         'Returns when all chunks have been uploaded but not yet processed.\n\nInspect the upload session to get more information about the\nprogress of processing the chunks, then retry committing the file\nwhen all chunks have processed.',
       headers: z.object({
-        'Retry-After': {
-          description:
-            'Indicates the number of seconds the client should wait before\nattempting their commit request again.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description:
-                'Indicates the number of seconds the client should wait before\nattempting their commit request again.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description:
+              'Indicates the number of seconds the client should wait before\nattempting their commit request again.',
+            param: { required: false },
+          }),
       }),
     },
     400: {
@@ -20440,57 +20880,45 @@ export const getFilesFileIdThumbnailExtensionRoute = createRoute({
       description:
         'Sometimes generating a thumbnail can take a few seconds. In these\nsituations the API returns a `Location`-header pointing to a\nplaceholder graphic for this file type.\n\nThe placeholder graphic can be used in a user interface until the\nthumbnail generation has completed. The `Retry-After`-header indicates\nwhen to the thumbnail will be ready. At that time, retry this endpoint\nto retrieve the thumbnail.',
       headers: z.object({
-        'Retry-After': {
-          description:
-            'The time in seconds after which the thumbnail will be available.\n\nYour application  only attempt to get the thumbnail again after\nthis time.',
-          schema: z
-            .preprocess(
-              (val) =>
-                typeof val === 'number' && Number.isSafeInteger(val)
+        'Retry-After': z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
                   ? BigInt(val)
-                  : typeof val === 'string' && /^-?\d+$/.test(val)
-                    ? BigInt(val)
-                    : val,
-              z.int64(),
-            )
-            .exactOptional()
-            .openapi({
-              description:
-                'The time in seconds after which the thumbnail will be available.\n\nYour application  only attempt to get the thumbnail again after\nthis time.',
-              param: { required: false },
-              type: 'integer',
-              format: 'int64',
-            }),
-        },
-        Location: {
-          description:
-            'A pointer to a placeholder graphic that can be used until the\nthumbnail has been generated.',
-          schema: z
-            .url()
-            .exactOptional()
-            .openapi({
-              description:
-                'A pointer to a placeholder graphic that can be used until the\nthumbnail has been generated.',
-              param: { required: false },
-            }),
-        },
+                  : val,
+            z.int64(),
+          )
+          .exactOptional()
+          .openapi({
+            description:
+              'The time in seconds after which the thumbnail will be available.\n\nYour application  only attempt to get the thumbnail again after\nthis time.',
+            param: { required: false },
+            type: 'integer',
+            format: 'int64',
+          }),
+        Location: z
+          .url()
+          .exactOptional()
+          .openapi({
+            description:
+              'A pointer to a placeholder graphic that can be used until the\nthumbnail has been generated.',
+            param: { required: false },
+          }),
       }),
     },
     302: {
       description:
         'Returns an error when Box is not able to create a thumbnail for this\nfile type.\n\nInstead, a `Location`-header pointing to a placeholder graphic for\nthis file type will be returned.',
       headers: z.object({
-        Location: {
-          description: 'A pointer to a placeholder graphic that can be used for this\nfile type.',
-          schema: z
-            .url()
-            .exactOptional()
-            .openapi({
-              description:
-                'A pointer to a placeholder graphic that can be used for this\nfile type.',
-              param: { required: false },
-            }),
-        },
+        Location: z
+          .url()
+          .exactOptional()
+          .openapi({
+            description: 'A pointer to a placeholder graphic that can be used for this\nfile type.',
+            param: { required: false },
+          }),
       }),
     },
     400: {
@@ -20697,6 +21125,7 @@ export const getFilesFileIdCommentsRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 0 },
             example: 1000,
           },
+          default: 0,
         }),
     }),
   },
@@ -20957,6 +21386,7 @@ export const getFilesFileIdVersionsRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 0 },
             example: 1000,
           },
+          default: 0,
         }),
     }),
   },
@@ -21841,15 +22271,11 @@ export const postFilesFileIdMetadataScopeTemplateKeyRoute = createRoute({
               z.string(),
               z
                 .any()
-                .and(z.any().openapi({ example: 'Aaron Levie' }))
-                .and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        'A value for each of the fields that are present\non the metadata template.\nFor the `global.properties` template this can be\na list of zero or more fields,\nas this template allows for any generic key-value pairs \nto be stored stored in the template.\nFor a taxonomy field, the value should be a list of the node identifiers\nof the selected taxonomy nodes, since taxonomy fields support multi-select.\nIf a single select taxonomy field is being set, the list should contain a \nsingle node identifier.',
-                    }),
-                ),
+                .openapi({
+                  example: 'Aaron Levie',
+                  description:
+                    'A value for each of the fields that are present\non the metadata template.\nFor the `global.properties` template this can be\na list of zero or more fields,\nas this template allows for any generic key-value pairs \nto be stored stored in the template.\nFor a taxonomy field, the value should be a list of the node identifiers\nof the selected taxonomy nodes, since taxonomy fields support multi-select.\nIf a single select taxonomy field is being set, the list should contain a \nsingle node identifier.',
+                }),
             )
             .openapi({ example: { name: 'Aaron Levie' }, 'x-box-example-key': 'name' }),
         },
@@ -22037,14 +22463,10 @@ export const putFilesFileIdMetadataGlobalBoxSkillsCardsRoute = createRoute({
                         'The JSON Path that represents the card to replace. In most cases\nthis will be in the format `/cards/{index}` where `index` is the\nzero-indexed position of the card in the list of cards.',
                       example: '/cards/0',
                     }),
-                  value: SkillCardSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The card to insert into the list of cards at the\nposition defined by `path`.',
-                      }),
-                  ).exactOptional(),
+                  value: SkillCardSchema.exactOptional().openapi({
+                    description:
+                      'The card to insert into the list of cards at the\nposition defined by `path`.',
+                  }),
                 })
                 .openapi({
                   description: 'An operation that replaces an existing card.',
@@ -22656,6 +23078,7 @@ export const getFoldersFolderIdRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 0 },
             example: 1000,
           },
+          default: 0,
         }),
       limit: z
         .preprocess((val) => {
@@ -22857,15 +23280,11 @@ export const putFoldersFolderIdRoute = createRoute({
                     }),
                 })
                 .openapi({ description: 'The parent for this item.', required: [] })
-                .and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        'The parent folder for this folder. Use this to move\nthe folder or to restore it out of the trash.',
-                    }),
-                )
-                .exactOptional(),
+                .exactOptional()
+                .openapi({
+                  description:
+                    'The parent folder for this folder. Use this to move\nthe folder or to restore it out of the trash.',
+                }),
               shared_link: z
                 .object({
                   access: z
@@ -22914,27 +23333,17 @@ export const putFoldersFolderIdRoute = createRoute({
                     })
                     .exactOptional()
                     .openapi({ required: [] }),
-                  one_time_passcode: SharedLinkOtpWritableSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'One-time-passcode (OTP) settings for the shared link.',
-                      }),
-                  ).exactOptional(),
+                  one_time_passcode: SharedLinkOtpWritableSchema.exactOptional().openapi({
+                    description: 'One-time-passcode (OTP) settings for the shared link.',
+                  }),
                 })
                 .openapi({
                   description:
                     'Defines a shared link for an item. Set this to `null` to remove\nthe shared link.',
                   required: [],
                 })
-                .and(
-                  z
-                    .any()
-                    .openapi({
-                      description: 'Enables the creation of a shared link for a folder.',
-                    }),
-                )
-                .exactOptional(),
+                .exactOptional()
+                .openapi({ description: 'Enables the creation of a shared link for a folder.' }),
               folder_upload_email: z
                 .object({
                   access: z
@@ -22951,16 +23360,12 @@ export const putFoldersFolderIdRoute = createRoute({
                   description: 'The Write Folder Upload Email object.',
                   required: [],
                 })
-                .and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        'Setting this object enables the upload email address.\n\nThis email address can be used by users to directly\nupload files directly to the folder via email.\n\nSetting the value to `null` will disable the email address.',
-                    }),
-                )
                 .nullable()
-                .exactOptional(),
+                .exactOptional()
+                .openapi({
+                  description:
+                    'Setting this object enables the upload email address.\n\nThis email address can be used by users to directly\nupload files directly to the folder via email.\n\nSetting the value to `null` will disable the email address.',
+                }),
               tags: z
                 .array(z.string())
                 .min(1)
@@ -23133,15 +23538,11 @@ export const postFoldersFolderIdRoute = createRoute({
                     .openapi({ description: 'The ID of parent item.', example: '123' }),
                 })
                 .openapi({ description: 'The parent for this item.', required: [] })
-                .and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        'Specifies an optional ID of a folder to restore the folder\nto when the original folder no longer exists.\n\nPlease be aware that this ID will only be used if the original\nfolder no longer exists. Use this ID to provide a fallback\nlocation to restore the folder to if the original location\nhas been deleted.',
-                    }),
-                )
-                .exactOptional(),
+                .exactOptional()
+                .openapi({
+                  description:
+                    'Specifies an optional ID of a folder to restore the folder\nto when the original folder no longer exists.\n\nPlease be aware that this ID will only be used if the original\nfolder no longer exists. Use this ID to provide a fallback\nlocation to restore the folder to if the original location\nhas been deleted.',
+                }),
             })
             .openapi({ required: [] }),
         },
@@ -23459,6 +23860,7 @@ export const getFoldersFolderIdItemsRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 0 },
             example: 1000,
           },
+          default: 0,
         }),
       limit: z
         .preprocess((val) => {
@@ -23622,15 +24024,11 @@ export const postFoldersRoute = createRoute({
                   description: 'The Write Folder Upload Email object.',
                   required: [],
                 })
-                .and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        'Setting this object enables the upload email address.\n\nThis email address can be used by users to directly\nupload files directly to the folder via email.',
-                    }),
-                )
-                .exactOptional(),
+                .exactOptional()
+                .openapi({
+                  description:
+                    'Setting this object enables the upload email address.\n\nThis email address can be used by users to directly\nupload files directly to the folder via email.',
+                }),
               sync_state: z
                 .enum(['synced', 'not_synced', 'partially_synced'])
                 .exactOptional()
@@ -24575,15 +24973,11 @@ export const postFoldersFolderIdMetadataScopeTemplateKeyRoute = createRoute({
               z.string(),
               z
                 .any()
-                .and(z.any().openapi({ example: 'Aaron Levie' }))
-                .and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        'A value for each of the fields that are present on the metadata\ntemplate.\nFor the `global.properties` template this can be a list of zero\nor more fields, as this template allows for any generic key-value\npairs to be stored in the template.\nFor a taxonomy field, the value should be a list of the node identifiers\nof the selected taxonomy nodes, since taxonomy fields support multi-select.\nIf a single select taxonomy field is being set, the list should contain a\nsingle node identifier.',
-                    }),
-                ),
+                .openapi({
+                  example: 'Aaron Levie',
+                  description:
+                    'A value for each of the fields that are present on the metadata\ntemplate.\nFor the `global.properties` template this can be a list of zero\nor more fields, as this template allows for any generic key-value\npairs to be stored in the template.\nFor a taxonomy field, the value should be a list of the node identifiers\nof the selected taxonomy nodes, since taxonomy fields support multi-select.\nIf a single select taxonomy field is being set, the list should contain a\nsingle node identifier.',
+                }),
             )
             .openapi({ example: { name: 'Aaron Levie' }, 'x-box-example-key': 'name' }),
         },
@@ -24762,6 +25156,7 @@ export const getFoldersTrashItemsRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 0 },
             example: 1000,
           },
+          default: 0,
         }),
       usemarker: z
         .stringbool()
@@ -25637,16 +26032,12 @@ export const putMetadataTemplatesScopeTemplateKeySchemaRoute = createRoute({
                       z.string(),
                       z
                         .any()
-                        .and(z.any().openapi({ example: 'Aaron Levie' }))
-                        .and(
-                          z
-                            .any()
-                            .openapi({
-                              description:
-                                'A value for each of the fields that are present\non the metadata template.\nFor the `global.properties` template this can be\na list of zero or more fields,\nas this template allows for any generic key-value pairs \nto be stored stored in the template.',
-                            }),
-                        )
-                        .openapi({ 'x-box-example-key': 'name' }),
+                        .openapi({
+                          example: 'Aaron Levie',
+                          description:
+                            'A value for each of the fields that are present\non the metadata template.\nFor the `global.properties` template this can be\na list of zero or more fields,\nas this template allows for any generic key-value pairs \nto be stored stored in the template.',
+                          'x-box-example-key': 'name',
+                        }),
                     )
                     .exactOptional()
                     .openapi({
@@ -26428,6 +26819,7 @@ export const getMetadataCascadePoliciesRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 0 },
             example: 1000,
           },
+          default: 0,
         }),
     }),
   },
@@ -27204,6 +27596,7 @@ export const getCollaborationsRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 0 },
             example: 1000,
           },
+          default: 0,
         }),
       limit: z
         .preprocess((val) => {
@@ -27768,14 +28161,14 @@ export const getSearchRoute = createRoute({
                           description: 'A value of metadata filter.',
                           title: 'Metadata filter value',
                         })
-                        .and(z.any().openapi({ example: 'online' }))
                         .and(
                           ((schema) =>
                             z.union([
                               schema,
                               z.preprocess((val) => (val === 'null' ? null : val), schema),
                             ]))(z.any()).openapi({ 'x-box-example-key': 'category' }),
-                        ),
+                        )
+                        .openapi({ example: 'online' }),
                     )
                     .exactOptional()
                     .openapi({
@@ -27938,6 +28331,7 @@ export const getSearchRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 30, maximum: 200 },
             example: 100,
           },
+          default: 30,
         }),
       include_recent_shared_links: z
         .stringbool()
@@ -27997,6 +28391,7 @@ export const getSearchRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 0 },
             example: 1000,
           },
+          default: 0,
         }),
       deleted_user_ids: z
         .preprocess(
@@ -28880,13 +29275,9 @@ export const putFilesFileIdAddSharedLinkRoute = createRoute({
                     })
                     .exactOptional()
                     .openapi({ required: [] }),
-                  one_time_passcode: SharedLinkOtpWritableSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'One-time-passcode (OTP) settings for the shared link.',
-                      }),
-                  ).exactOptional(),
+                  one_time_passcode: SharedLinkOtpWritableSchema.exactOptional().openapi({
+                    description: 'One-time-passcode (OTP) settings for the shared link.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -29076,13 +29467,9 @@ export const putFilesFileIdUpdateSharedLinkRoute = createRoute({
                     })
                     .exactOptional()
                     .openapi({ required: [] }),
-                  one_time_passcode: SharedLinkOtpWritableSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'One-time-passcode (OTP) settings for the shared link.',
-                      }),
-                  ).exactOptional(),
+                  one_time_passcode: SharedLinkOtpWritableSchema.exactOptional().openapi({
+                    description: 'One-time-passcode (OTP) settings for the shared link.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -29208,7 +29595,7 @@ export const putFilesFileIdRemoveSharedLinkRoute = createRoute({
           schema: z
             .object({
               shared_link: z
-                .object({})
+                .looseObject({})
                 .nullable()
                 .exactOptional()
                 .openapi({
@@ -29548,13 +29935,9 @@ export const putFoldersFolderIdAddSharedLinkRoute = createRoute({
                     })
                     .exactOptional()
                     .openapi({ required: [] }),
-                  one_time_passcode: SharedLinkOtpWritableSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'One-time-passcode (OTP) settings for the shared link.',
-                      }),
-                  ).exactOptional(),
+                  one_time_passcode: SharedLinkOtpWritableSchema.exactOptional().openapi({
+                    description: 'One-time-passcode (OTP) settings for the shared link.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -29743,13 +30126,9 @@ export const putFoldersFolderIdUpdateSharedLinkRoute = createRoute({
                     })
                     .exactOptional()
                     .openapi({ required: [] }),
-                  one_time_passcode: SharedLinkOtpWritableSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'One-time-passcode (OTP) settings for the shared link.',
-                      }),
-                  ).exactOptional(),
+                  one_time_passcode: SharedLinkOtpWritableSchema.exactOptional().openapi({
+                    description: 'One-time-passcode (OTP) settings for the shared link.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -29875,7 +30254,7 @@ export const putFoldersFolderIdRemoveSharedLinkRoute = createRoute({
           schema: z
             .object({
               shared_link: z
-                .object({})
+                .looseObject({})
                 .nullable()
                 .exactOptional()
                 .openapi({
@@ -30094,15 +30473,11 @@ export const putWebLinksWebLinkIdRoute = createRoute({
                     }),
                 })
                 .openapi({ description: 'The parent for this item.', required: [] })
-                .and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        'The new parent folder to put the web link in.\nUse this to move the web link to a different folder.',
-                    }),
-                )
-                .exactOptional(),
+                .exactOptional()
+                .openapi({
+                  description:
+                    'The new parent folder to put the web link in.\nUse this to move the web link to a different folder.',
+                }),
               name: z
                 .string()
                 .exactOptional()
@@ -30153,13 +30528,9 @@ export const putWebLinksWebLinkIdRoute = createRoute({
                         'The timestamp at which this shared link will\nexpire. This field can only be set by\nusers with paid accounts. The value must be greater than the\ncurrent date and time.',
                       example: '2012-12-12T10:53:43-08:00',
                     }),
-                  one_time_passcode: SharedLinkOtpWritableSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'One-time-passcode (OTP) settings for the shared link.',
-                      }),
-                  ).exactOptional(),
+                  one_time_passcode: SharedLinkOtpWritableSchema.exactOptional().openapi({
+                    description: 'One-time-passcode (OTP) settings for the shared link.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -30252,15 +30623,11 @@ export const postWebLinksWebLinkIdRoute = createRoute({
                     .openapi({ description: 'The ID of parent item.', example: '123' }),
                 })
                 .openapi({ description: 'The parent for this item.', required: [] })
-                .and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        'Specifies an optional ID of a folder to restore the web link\nto when the original folder no longer exists.\n\nPlease be aware that this ID will only be used if the original\nfolder no longer exists. Use this ID to provide a fallback\nlocation to restore the web link to if the original location\nhas been deleted.',
-                    }),
-                )
-                .exactOptional(),
+                .exactOptional()
+                .openapi({
+                  description:
+                    'Specifies an optional ID of a folder to restore the web link\nto when the original folder no longer exists.\n\nPlease be aware that this ID will only be used if the original\nfolder no longer exists. Use this ID to provide a fallback\nlocation to restore the web link to if the original location\nhas been deleted.',
+                }),
             })
             .openapi({ required: [] }),
         },
@@ -30710,13 +31077,9 @@ export const putWebLinksWebLinkIdAddSharedLinkRoute = createRoute({
                     })
                     .exactOptional()
                     .openapi({ required: [] }),
-                  one_time_passcode: SharedLinkOtpWritableSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'One-time-passcode (OTP) settings for the shared link.',
-                      }),
-                  ).exactOptional(),
+                  one_time_passcode: SharedLinkOtpWritableSchema.exactOptional().openapi({
+                    description: 'One-time-passcode (OTP) settings for the shared link.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -30905,13 +31268,9 @@ export const putWebLinksWebLinkIdUpdateSharedLinkRoute = createRoute({
                     })
                     .exactOptional()
                     .openapi({ required: [] }),
-                  one_time_passcode: SharedLinkOtpWritableSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'One-time-passcode (OTP) settings for the shared link.',
-                      }),
-                  ).exactOptional(),
+                  one_time_passcode: SharedLinkOtpWritableSchema.exactOptional().openapi({
+                    description: 'One-time-passcode (OTP) settings for the shared link.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -31036,7 +31395,7 @@ export const putWebLinksWebLinkIdRemoveSharedLinkRoute = createRoute({
           schema: z
             .object({
               shared_link: z
-                .object({})
+                .looseObject({})
                 .nullable()
                 .exactOptional()
                 .openapi({
@@ -31226,6 +31585,7 @@ export const getUsersRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 0 },
             example: 1000,
           },
+          default: 0,
         }),
       limit: z
         .preprocess((val) => {
@@ -32411,6 +32771,7 @@ export const getUsersUserIdMembershipsRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 0 },
             example: 1000,
           },
+          default: 0,
         }),
     }),
   },
@@ -32433,7 +32794,7 @@ export const postInvitesRoute = createRoute({
   tags: ['Invites'],
   summary: 'Create user invite',
   description:
-    'Invites an existing external user to join an enterprise.\n\nThe existing user can not be part of another enterprise and\nmust already have a Box account. Once invited, the user will receive an\nemail and are prompted to accept the invitation within the\nBox web application.\n\nThis method requires the "Manage An Enterprise" scope enabled for\nthe application, which can be enabled within the developer console.',
+    'Invites an existing external user to join an enterprise.\n\nThe user must already have a Box account and cannot be\npart of another enterprise. Once invited, the user receives\nan email and is prompted to accept the invitation in\nthe Box web application.\n\nIf `is_auto_roll_in_enabled` is set to `true`, the user does not have to\naccept the invitation and is added to the enterprise automatically after\n14 days. Only unmanaged users can be invited this way. An unmanaged user\nis a free user whose email domain matches one of the enterprise\'s\ndomains. Availability depends on the enterprise\'s plan.\n\nThis method requires the "Manage An Enterprise" scope enabled for\nthe application, which can be enabled within the developer console.',
   operationId: 'post_invites',
   request: {
     query: z.object({
@@ -32487,6 +32848,15 @@ export const postInvitesRoute = createRoute({
                     }),
                 })
                 .openapi({ description: 'The user to invite.', required: ['id'] }),
+              is_auto_roll_in_enabled: z
+                .boolean()
+                .default(false)
+                .exactOptional()
+                .openapi({
+                  description:
+                    "If set to `true`, the user is added to the enterprise\nautomatically after 14 days instead of having to accept the\ninvite. Only unmanaged users can be invited this way.\nAvailability depends on the enterprise's plan.",
+                  example: true,
+                }),
             })
             .openapi({ required: ['enterprise', 'actionable_by'] }),
         },
@@ -32497,6 +32867,11 @@ export const postInvitesRoute = createRoute({
     200: {
       description: 'Returns a new invite object.',
       content: { 'application/json': { schema: InviteSchema } },
+    },
+    400: {
+      description:
+        'Returns `bad_request` when `is_auto_roll_in_enabled` is not a boolean,\nor when it is `true` and the user does not qualify for automatic\nroll-in.',
+      content: { 'application/json': { schema: ClientErrorSchema } },
     },
     404: {
       description: 'Returns `not_found` when user was not found.',
@@ -32655,6 +33030,7 @@ export const getGroupsRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 0 },
             example: 1000,
           },
+          default: 0,
         }),
     }),
   },
@@ -33123,6 +33499,7 @@ export const getGroupsGroupIdMembershipsRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 0 },
             example: 1000,
           },
+          default: 0,
         }),
     }),
   },
@@ -33202,6 +33579,7 @@ export const getGroupsGroupIdCollaborationsRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 0 },
             example: 1000,
           },
+          default: 0,
         }),
     }),
   },
@@ -34131,6 +34509,7 @@ export const getEventsRoute = createRoute({
             example: 50,
             required: false,
           },
+          default: 100,
         }),
       event_type: z
         .preprocess(
@@ -34561,6 +34940,7 @@ export const getCollectionsRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 0 },
             example: 1000,
           },
+          default: 0,
         }),
       limit: z
         .preprocess((val) => {
@@ -34661,6 +35041,7 @@ export const getCollectionsCollectionIdItemsRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 0 },
             example: 1000,
           },
+          default: 0,
         }),
       limit: z
         .preprocess((val) => {
@@ -36094,7 +36475,15 @@ export const getLegalHoldPolicyAssignmentsRoute = createRoute({
           },
         }),
       assign_to_type: z
-        .enum(['file', 'file_version', 'folder', 'user', 'ownership', 'interactions'])
+        .enum([
+          'file',
+          'file_version',
+          'folder',
+          'user',
+          'ownership',
+          'interactions',
+          'metadata_template',
+        ])
         .exactOptional()
         .openapi({
           param: {
@@ -36103,7 +36492,15 @@ export const getLegalHoldPolicyAssignmentsRoute = createRoute({
             description: 'Filters the results by the type of item the\npolicy was applied to.',
             schema: {
               type: 'string',
-              enum: ['file', 'file_version', 'folder', 'user', 'ownership', 'interactions'],
+              enum: [
+                'file',
+                'file_version',
+                'folder',
+                'user',
+                'ownership',
+                'interactions',
+                'metadata_template',
+              ],
             },
             example: 'file',
             required: false,
@@ -36198,7 +36595,7 @@ export const postLegalHoldPolicyAssignmentsRoute = createRoute({
   tags: ['Legal hold policy assignments'],
   summary: 'Assign legal hold policy',
   description:
-    'Assign a legal hold to an item type of: file, file version, folder, user, ownership, or interactions.',
+    'Assign a legal hold to an item type of: file, file version, folder, user, ownership, interactions, or metadata template.',
   operationId: 'post_legal_hold_policy_assignments',
   request: {
     body: {
@@ -36212,7 +36609,15 @@ export const postLegalHoldPolicyAssignmentsRoute = createRoute({
               assign_to: z
                 .object({
                   type: z
-                    .enum(['file', 'file_version', 'folder', 'user', 'ownership', 'interactions'])
+                    .enum([
+                      'file',
+                      'file_version',
+                      'folder',
+                      'user',
+                      'ownership',
+                      'interactions',
+                      'metadata_template',
+                    ])
                     .openapi({
                       description: 'The type of item to assign the policy to.',
                       example: 'folder',
@@ -36227,6 +36632,13 @@ export const postLegalHoldPolicyAssignmentsRoute = createRoute({
                 .openapi({
                   description: 'The item to assign the policy to.',
                   required: ['type', 'id'],
+                }),
+              filter_fields: z
+                .array(LegalHoldPolicyAssignmentFilterFieldSchema)
+                .exactOptional()
+                .openapi({
+                  description:
+                    'List of metadata template field filters. Only required when `assign_to.type` is `metadata_template`.',
                 }),
             })
             .openapi({ required: ['policy_id', 'assign_to'] }),
@@ -39193,17 +39605,14 @@ export const getZipDownloadsZipDownloadIdContentRoute = createRoute({
         },
       },
       headers: z.object({
-        'Content-Disposition': {
-          description: 'The name of the archive to be downloaded.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'The name of the archive to be downloaded.',
-              param: { required: false },
-              example: 'attachment;filename="Avatars.zip";filename*=UTF-8\'\'Avatars.zip',
-            }),
-        },
+        'Content-Disposition': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'The name of the archive to be downloaded.',
+            param: { required: false },
+            example: 'attachment;filename="Avatars.zip";filename*=UTF-8\'\'Avatars.zip',
+          }),
       }),
     },
     404: {
@@ -40240,14 +40649,10 @@ export const putIntegrationMappingsTeamsIntegrationMappingIdRoute = createRoute(
         'application/json': {
           schema: z
             .object({
-              box_item: FolderReferenceSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      'The Box folder, to which the object from the partner app domain is mapped.',
-                  }),
-              ).exactOptional(),
+              box_item: FolderReferenceSchema.exactOptional().openapi({
+                description:
+                  'The Box folder, to which the object from the partner app domain is mapped.',
+              }),
             })
             .openapi({ required: [] }),
         },

@@ -22,12 +22,7 @@ Base URLs:
 |Scope|Scope Description|
 |---|---|
 |account-info.security.read||
-
-* API Key (private_apps)
-    - Parameter Name: **private-app**, in: header.
-
-* API Key (private_apps_legacy)
-    - Parameter Name: **private-app-legacy**, in: header.
+|oauth||
 
 <h1 id="account-account-info-basic">Basic</h1>
 
@@ -39,7 +34,8 @@ Base URLs:
 
 ```bash
 curl https://api.hubapi.com/account-info/2026-09/api-usage/daily/private-apps \
-  -H 'Accept: application/json'
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /account-info/2026-09/api-usage/daily/private-apps`
@@ -67,8 +63,9 @@ null
 |200|OK|successful operation|[CollectionResponseApiUsageNoPaging](#schemacollectionresponseapiusagenopaging)|
 |default|Default|An error occurred.|[Error](#schemaerror)|
 
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+oauth2 ( Scopes: oauth )
 </aside>
 
 ## Retrieve details
@@ -79,7 +76,8 @@ This operation does not require authentication
 
 ```bash
 curl https://api.hubapi.com/account-info/2026-09/details \
-  -H 'Accept: application/json'
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /account-info/2026-09/details`
@@ -107,8 +105,9 @@ null
 |200|OK|successful operation|[PortalInformationResponseSeptember2026](#schemaportalinformationresponseseptember2026)|
 |default|Default|An error occurred.|[Error](#schemaerror)|
 
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+oauth2 ( Scopes: oauth )
 </aside>
 
 # Schemas

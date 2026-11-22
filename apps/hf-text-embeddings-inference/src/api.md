@@ -145,7 +145,7 @@ curl http://localhost:8080/embed \
 |» inputs|body|[Input](#schemainput)|true|none|
 |» normalize|body|boolean|false|none|
 |» prompt_name|body|string \| null|false|The name of the prompt that should be used by for encoding. If not set, no prompt<br>will be applied.<br><br>Must be a key in the `sentence-transformers` configuration `prompts` dictionary.<br><br>For example if ``prompt_name`` is "query" and the ``prompts`` is {"query": "query: ", ...},<br>then the sentence "What is the capital of France?" will be encoded as<br>"query: What is the capital of France?" because the prompt text will be prepended before<br>any text to encode.|
-|» truncate|body|boolean \| null|false|none|
+|» truncate|body|boolean \| null|false|Whether to truncate inputs that are longer than the maximum supported size. Defaults to<br>the `--auto-truncate` value of the server, which is `true` unless changed.|
 |» truncation_direction|body|object|false|none|
 
 > Example responses
@@ -263,7 +263,7 @@ Returns a 424 status code if the model is not an embedding model.
 |body|body|[EmbedAllRequest](#schemaembedallrequest)|true|none|
 |» inputs|body|[Input](#schemainput)|true|none|
 |» prompt_name|body|string \| null|false|The name of the prompt that should be used by for encoding. If not set, no prompt<br>will be applied.<br><br>Must be a key in the `sentence-transformers` configuration `prompts` dictionary.<br><br>For example if ``prompt_name`` is "query" and the ``prompts`` is {"query": "query: ", ...},<br>then the sentence "What is the capital of France?" will be encoded as<br>"query: What is the capital of France?" because the prompt text will be prepended before<br>any text to encode.|
-|» truncate|body|boolean \| null|false|none|
+|» truncate|body|boolean \| null|false|Whether to truncate inputs that are longer than the maximum supported size. Defaults to<br>the `--auto-truncate` value of the server, which is `true` unless changed.|
 |» truncation_direction|body|object|false|none|
 
 > Example responses
@@ -381,7 +381,7 @@ curl http://localhost:8080/embed_sparse \
 |body|body|[EmbedSparseRequest](#schemaembedsparserequest)|true|none|
 |» inputs|body|[Input](#schemainput)|true|none|
 |» prompt_name|body|string \| null|false|The name of the prompt that should be used by for encoding. If not set, no prompt<br>will be applied.<br><br>Must be a key in the `sentence-transformers` configuration `prompts` dictionary.<br><br>For example if ``prompt_name`` is "query" and the ``prompts`` is {"query": "query: ", ...},<br>then the sentence "What is the capital of France?" will be encoded as<br>"query: What is the capital of France?" because the prompt text will be prepended before<br>any text to encode.|
-|» truncate|body|boolean \| null|false|none|
+|» truncate|body|boolean \| null|false|Whether to truncate inputs that are longer than the maximum supported size. Defaults to<br>the `--auto-truncate` value of the server, which is `true` unless changed.|
 |» truncation_direction|body|object|false|none|
 
 > Example responses
@@ -611,7 +611,7 @@ curl http://localhost:8080/predict \
 |body|body|[PredictRequest](#schemapredictrequest)|true|none|
 |» inputs|body|[PredictInput](#schemapredictinput)|true|Model input. Can be either a single string, a pair of strings or a batch of mixed single and pairs of strings.|
 |» raw_scores|body|boolean|false|none|
-|» truncate|body|boolean \| null|false|none|
+|» truncate|body|boolean \| null|false|Whether to truncate inputs that are longer than the maximum supported size. Defaults to<br>the `--auto-truncate` value of the server, which is `true` unless changed.|
 |» truncation_direction|body|object|false|none|
 
 > Example responses
@@ -738,7 +738,7 @@ a single class.
 |» raw_scores|body|boolean|false|none|
 |» return_text|body|boolean|false|none|
 |» texts|body|[string]|true|none|
-|» truncate|body|boolean \| null|false|none|
+|» truncate|body|boolean \| null|false|Whether to truncate inputs that are longer than the maximum supported size. Defaults to<br>the `--auto-truncate` value of the server, which is `true` unless changed.|
 |» truncation_direction|body|object|false|none|
 
 > Example responses
@@ -861,7 +861,7 @@ curl http://localhost:8080/similarity \
 |» inputs|body|[SimilarityInput](#schemasimilarityinput)|true|none|
 |» parameters|body|object \| null|false|none|
 |» » prompt_name|body|string \| null|false|The name of the prompt that should be used by for encoding. If not set, no prompt<br>will be applied.<br><br>Must be a key in the `sentence-transformers` configuration `prompts` dictionary.<br><br>For example if ``prompt_name`` is "query" and the ``prompts`` is {"query": "query: ", ...},<br>then the sentence "What is the capital of France?" will be encoded as<br>"query: What is the capital of France?" because the prompt text will be prepended before<br>any text to encode.|
-|» » truncate|body|boolean \| null|false|none|
+|» » truncate|body|boolean \| null|false|Whether to truncate inputs that are longer than the maximum supported size. Defaults to<br>the `--auto-truncate` value of the server, which is `true` unless changed.|
 |» » truncation_direction|body|object|false|none|
 
 > Example responses
@@ -1247,7 +1247,7 @@ This operation does not require authentication
 |---|---|---|---|---|
 |inputs|[Input](#schemainput)|true|none|none|
 |prompt_name|string \| null|false|none|The name of the prompt that should be used by for encoding. If not set, no prompt<br>will be applied.<br><br>Must be a key in the `sentence-transformers` configuration `prompts` dictionary.<br><br>For example if ``prompt_name`` is "query" and the ``prompts`` is {"query": "query: ", ...},<br>then the sentence "What is the capital of France?" will be encoded as<br>"query: What is the capital of France?" because the prompt text will be prepended before<br>any text to encode.|
-|truncate|boolean \| null|false|none|none|
+|truncate|boolean \| null|false|none|Whether to truncate inputs that are longer than the maximum supported size. Defaults to<br>the `--auto-truncate` value of the server, which is `true` unless changed.|
 |truncation_direction|object|false|none|none|
 
 <h2 id="tocS_EmbedAllResponse">EmbedAllResponse</h2>
@@ -1295,7 +1295,7 @@ This operation does not require authentication
 |inputs|[Input](#schemainput)|true|none|none|
 |normalize|boolean|false|none|none|
 |prompt_name|string \| null|false|none|The name of the prompt that should be used by for encoding. If not set, no prompt<br>will be applied.<br><br>Must be a key in the `sentence-transformers` configuration `prompts` dictionary.<br><br>For example if ``prompt_name`` is "query" and the ``prompts`` is {"query": "query: ", ...},<br>then the sentence "What is the capital of France?" will be encoded as<br>"query: What is the capital of France?" because the prompt text will be prepended before<br>any text to encode.|
-|truncate|boolean \| null|false|none|none|
+|truncate|boolean \| null|false|none|Whether to truncate inputs that are longer than the maximum supported size. Defaults to<br>the `--auto-truncate` value of the server, which is `true` unless changed.|
 |truncation_direction|object|false|none|none|
 
 <h2 id="tocS_EmbedResponse">EmbedResponse</h2>
@@ -1337,7 +1337,7 @@ This operation does not require authentication
 |---|---|---|---|---|
 |inputs|[Input](#schemainput)|true|none|none|
 |prompt_name|string \| null|false|none|The name of the prompt that should be used by for encoding. If not set, no prompt<br>will be applied.<br><br>Must be a key in the `sentence-transformers` configuration `prompts` dictionary.<br><br>For example if ``prompt_name`` is "query" and the ``prompts`` is {"query": "query: ", ...},<br>then the sentence "What is the capital of France?" will be encoded as<br>"query: What is the capital of France?" because the prompt text will be prepended before<br>any text to encode.|
-|truncate|boolean \| null|false|none|none|
+|truncate|boolean \| null|false|none|Whether to truncate inputs that are longer than the maximum supported size. Defaults to<br>the `--auto-truncate` value of the server, which is `true` unless changed.|
 |truncation_direction|object|false|none|none|
 
 <h2 id="tocS_EmbedSparseResponse">EmbedSparseResponse</h2>
@@ -1780,7 +1780,7 @@ Model input. Can be either a single string, a pair of strings or a batch of mixe
 |---|---|---|---|---|
 |inputs|[PredictInput](#schemapredictinput)|true|none|Model input. Can be either a single string, a pair of strings or a batch of mixed single and pairs of strings.|
 |raw_scores|boolean|false|none|none|
-|truncate|boolean \| null|false|none|none|
+|truncate|boolean \| null|false|none|Whether to truncate inputs that are longer than the maximum supported size. Defaults to<br>the `--auto-truncate` value of the server, which is `true` unless changed.|
 |truncation_direction|object|false|none|none|
 
 <h2 id="tocS_PredictResponse">PredictResponse</h2>
@@ -1878,7 +1878,7 @@ Model input. Can be either a single string, a pair of strings or a batch of mixe
 |raw_scores|boolean|false|none|none|
 |return_text|boolean|false|none|none|
 |texts|[string]|true|none|none|
-|truncate|boolean \| null|false|none|none|
+|truncate|boolean \| null|false|none|Whether to truncate inputs that are longer than the maximum supported size. Defaults to<br>the `--auto-truncate` value of the server, which is `true` unless changed.|
 |truncation_direction|object|false|none|none|
 
 <h2 id="tocS_RerankResponse">RerankResponse</h2>
@@ -1941,7 +1941,7 @@ Model input. Can be either a single string, a pair of strings or a batch of mixe
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |prompt_name|string \| null|false|none|The name of the prompt that should be used by for encoding. If not set, no prompt<br>will be applied.<br><br>Must be a key in the `sentence-transformers` configuration `prompts` dictionary.<br><br>For example if ``prompt_name`` is "query" and the ``prompts`` is {"query": "query: ", ...},<br>then the sentence "What is the capital of France?" will be encoded as<br>"query: What is the capital of France?" because the prompt text will be prepended before<br>any text to encode.|
-|truncate|boolean \| null|false|none|none|
+|truncate|boolean \| null|false|none|Whether to truncate inputs that are longer than the maximum supported size. Defaults to<br>the `--auto-truncate` value of the server, which is `true` unless changed.|
 |truncation_direction|object|false|none|none|
 
 <h2 id="tocS_SimilarityRequest">SimilarityRequest</h2>

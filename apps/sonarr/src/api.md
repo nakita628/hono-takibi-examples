@@ -8311,6 +8311,7 @@ curl http://localhost:8989/api/v3/episodefile/string \
 |» releaseType|singleEpisode|
 |» releaseType|multiEpisode|
 |» releaseType|seasonPack|
+|» releaseType|multiSeasonPack|
 
 > Example responses
 
@@ -11506,6 +11507,7 @@ curl http://localhost:8989/api/v3/importlist \
 |» listType|plex|
 |» listType|trakt|
 |» listType|simkl|
+|» listType|tmdb|
 |» listType|other|
 |» listType|advanced|
 |» tagExisting|none|
@@ -11892,6 +11894,7 @@ curl http://localhost:8989/api/v3/importlist/0 \
 |» listType|plex|
 |» listType|trakt|
 |» listType|simkl|
+|» listType|tmdb|
 |» listType|other|
 |» listType|advanced|
 |» tagExisting|none|
@@ -12536,6 +12539,7 @@ curl http://localhost:8989/api/v3/importlist/test \
 |» listType|plex|
 |» listType|trakt|
 |» listType|simkl|
+|» listType|tmdb|
 |» listType|other|
 |» listType|advanced|
 |» tagExisting|none|
@@ -12775,6 +12779,7 @@ curl http://localhost:8989/api/v3/importlist/action/string \
 |» listType|plex|
 |» listType|trakt|
 |» listType|simkl|
+|» listType|tmdb|
 |» listType|other|
 |» listType|advanced|
 |» tagExisting|none|
@@ -30880,6 +30885,7 @@ X-Api-Key, apikey
 |releaseType|singleEpisode|
 |releaseType|multiEpisode|
 |releaseType|seasonPack|
+|releaseType|multiSeasonPack|
 
 <h2 id="tocS_EpisodeHistoryEventType">EpisodeHistoryEventType</h2>
 <!-- backwards compatibility -->
@@ -33274,6 +33280,7 @@ X-Api-Key, apikey
 |listType|plex|
 |listType|trakt|
 |listType|simkl|
+|listType|tmdb|
 |listType|other|
 |listType|advanced|
 |tagExisting|none|
@@ -34243,6 +34250,7 @@ X-Api-Key, apikey
 |releaseType|singleEpisode|
 |releaseType|multiEpisode|
 |releaseType|seasonPack|
+|releaseType|multiSeasonPack|
 
 <h2 id="tocS_ManualImportResource">ManualImportResource</h2>
 <!-- backwards compatibility -->
@@ -34807,6 +34815,7 @@ X-Api-Key, apikey
 |releaseType|singleEpisode|
 |releaseType|multiEpisode|
 |releaseType|seasonPack|
+|releaseType|multiSeasonPack|
 
 <h2 id="tocS_MediaCover">MediaCover</h2>
 <!-- backwards compatibility -->
@@ -36105,6 +36114,7 @@ X-Api-Key, apikey
 |releaseType|singleEpisode|
 |releaseType|multiEpisode|
 |releaseType|seasonPack|
+|releaseType|multiSeasonPack|
 
 <h2 id="tocS_PingResource">PingResource</h2>
 <!-- backwards compatibility -->

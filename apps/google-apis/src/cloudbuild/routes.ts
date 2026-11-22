@@ -1,128 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const RepoSourceSchema = z
-  .object({
-    branchName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Regex matching branches to build. The syntax of the regular expressions accepted is the syntax accepted by RE2 and described at https://github.com/google/re2/wiki/Syntax',
-      }),
-    commitSha: z.string().exactOptional().openapi({ description: 'Explicit commit SHA to build.' }),
-    dir: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Directory, relative to the source root, in which to run the build. This must be a relative path. If a step's `dir` is specified and is an absolute path, this value is ignored for that step's execution.",
-      }),
-    invertRegex: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Only trigger a build if the revision regex does NOT match the revision regex.',
-      }),
-    projectId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'ID of the project that owns the Cloud Source Repository. If omitted, the project ID requesting the build is assumed.',
-      }),
-    repoName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Name of the Cloud Source Repository.' }),
-    substitutions: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Substitutions to use in a triggered build. Should only be used with RunBuildTrigger',
-      }),
-    tagName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Regex matching tags to build. The syntax of the regular expressions accepted is the syntax accepted by RE2 and described at https://github.com/google/re2/wiki/Syntax',
-      }),
-  })
-  .openapi({
-    description: 'Location of the source in a Google Cloud Source Repository.',
-    required: [],
-  })
-  .openapi('RepoSource')
-
-const StorageSourceSchema = z
-  .object({
-    bucket: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Google Cloud Storage bucket containing the source (see [Bucket Name Requirements](https://cloud.google.com/storage/docs/bucket-naming#requirements)).',
-      }),
-    generation: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Google Cloud Storage generation for the object. If the generation is omitted, the latest generation will be used.',
-      }),
-    object: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Google Cloud Storage object containing the source. This object must be a zipped (`.zip`) or gzipped archive file (`.tar.gz`) containing source to build.',
-      }),
-  })
-  .openapi({
-    description: 'Location of the source in an archive file in Google Cloud Storage.',
-    required: [],
-  })
-  .openapi('StorageSource')
-
-const StorageSourceManifestSchema = z
-  .object({
-    bucket: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Google Cloud Storage bucket containing the source manifest (see [Bucket Name Requirements](https://cloud.google.com/storage/docs/bucket-naming#requirements)).',
-      }),
-    generation: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Google Cloud Storage generation for the object. If the generation is omitted, the latest generation will be used.',
-      }),
-    object: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Google Cloud Storage object containing the source manifest. This object must be a JSON file.',
-      }),
-  })
-  .openapi({
-    description:
-      'Location of the source manifest in Google Cloud Storage. This feature is in Preview; see description [here](https://github.com/GoogleCloudPlatform/cloud-builders/tree/master/gcs-fetcher).',
-    required: [],
-  })
-  .openapi('StorageSourceManifest')
-
-type SourceType = {
-  repoSource?: z.infer<typeof RepoSourceSchema>
-  storageSource?: z.infer<typeof StorageSourceSchema>
-  storageSourceManifest?: z.infer<typeof StorageSourceManifestSchema>
-}
-
 const ApprovalConfigSchema = z
   .object({
     approvalRequired: z
@@ -179,84 +56,26 @@ const ApprovalResultSchema = z
   })
   .openapi('ApprovalResult')
 
-const TimeSpanSchema = z
+const BuildApprovalSchema = z
   .object({
-    endTime: z.string().exactOptional().openapi({ description: 'End of time span.' }),
-    startTime: z.string().exactOptional().openapi({ description: 'Start of time span.' }),
-  })
-  .openapi({ description: 'Start and end times for a build execution phase.', required: [] })
-  .openapi('TimeSpan')
-
-const ArtifactObjectsSchema = z
-  .object({
-    location: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Cloud Storage bucket and optional object path, in the form "gs://bucket/path/to/somewhere/". (see [Bucket Name Requirements](https://cloud.google.com/storage/docs/bucket-naming#requirements)). Files in the workspace matching any path pattern will be uploaded to Cloud Storage with this location as a prefix.',
-      }),
-    paths: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: "Path globs used to match files in the build's workspace." }),
-    timing: TimeSpanSchema.exactOptional().openapi({
-      description: 'Output only. Stores timing information for pushing all artifact objects.',
+    config: ApprovalConfigSchema.exactOptional().openapi({
+      description: 'Output only. Configuration for manual approval of this build.',
       readOnly: true,
     }),
+    result: ApprovalResultSchema.exactOptional().openapi({
+      description: 'Output only. Result of manual approval for this Build.',
+      readOnly: true,
+    }),
+    state: z
+      .enum(['STATE_UNSPECIFIED', 'PENDING', 'APPROVED', 'REJECTED', 'CANCELLED'])
+      .exactOptional()
+      .openapi({ description: "Output only. The state of this build's approval.", readOnly: true }),
   })
   .openapi({
-    description:
-      'Files in the workspace to upload to Cloud Storage upon successful completion of all build steps.',
+    description: "BuildApproval describes a build's approval configuration, state, and result.",
     required: [],
   })
-  .openapi('ArtifactObjects')
-
-const HashSchema = z
-  .object({
-    type: z
-      .enum(['NONE', 'SHA256', 'MD5'])
-      .exactOptional()
-      .openapi({ description: 'The type of hash that was performed.' }),
-    value: z.string().exactOptional().openapi({ description: 'The hash value.' }),
-  })
-  .openapi({ description: 'Container message for hash values.', required: [] })
-  .openapi('Hash')
-
-const FileHashesSchema = z
-  .object({
-    fileHash: z
-      .array(HashSchema)
-      .exactOptional()
-      .openapi({ description: 'Collection of file hashes.' }),
-  })
-  .openapi({
-    description:
-      'Container message for hashes of byte content of files, used in SourceProvenance messages to verify integrity of source input to the build.',
-    required: [],
-  })
-  .openapi('FileHashes')
-
-const ArtifactResultSchema = z
-  .object({
-    fileHash: z
-      .array(FileHashesSchema)
-      .exactOptional()
-      .openapi({ description: 'The file hash of the artifact.' }),
-    location: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The path of an artifact in a Google Cloud Storage bucket, with the generation number. For example, `gs://mybucket/path/to/output.jar#generation`.',
-      }),
-  })
-  .openapi({
-    description:
-      'An artifact that was uploaded during a build. This is a single record in the artifact manifest JSON file.',
-    required: [],
-  })
-  .openapi('ArtifactResult')
+  .openapi('BuildApproval')
 
 const MavenArtifactSchema = z
   .object({
@@ -300,6 +119,39 @@ const MavenArtifactSchema = z
     required: [],
   })
   .openapi('MavenArtifact')
+
+const TimeSpanSchema = z
+  .object({
+    endTime: z.string().exactOptional().openapi({ description: 'End of time span.' }),
+    startTime: z.string().exactOptional().openapi({ description: 'Start of time span.' }),
+  })
+  .openapi({ description: 'Start and end times for a build execution phase.', required: [] })
+  .openapi('TimeSpan')
+
+const ArtifactObjectsSchema = z
+  .object({
+    location: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Cloud Storage bucket and optional object path, in the form "gs://bucket/path/to/somewhere/". (see [Bucket Name Requirements](https://cloud.google.com/storage/docs/bucket-naming#requirements)). Files in the workspace matching any path pattern will be uploaded to Cloud Storage with this location as a prefix.',
+      }),
+    paths: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: "Path globs used to match files in the build's workspace." }),
+    timing: TimeSpanSchema.exactOptional().openapi({
+      description: 'Output only. Stores timing information for pushing all artifact objects.',
+      readOnly: true,
+    }),
+  })
+  .openapi({
+    description:
+      'Files in the workspace to upload to Cloud Storage upon successful completion of all build steps.',
+    required: [],
+  })
+  .openapi('ArtifactObjects')
 
 const PythonPackageSchema = z
   .object({
@@ -359,292 +211,6 @@ const ArtifactsSchema = z
     required: [],
   })
   .openapi('Artifacts')
-
-const BitbucketServerRepositoryIdSchema = z
-  .object({
-    projectKey: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Required. Identifier for the project storing the repository.' }),
-    repoSlug: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Required. Identifier for the repository.' }),
-    webhookId: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The ID of the webhook that was created for receiving events from this repo. We only create and manage a single webhook for each repo.',
-        readOnly: true,
-      }),
-  })
-  .openapi({
-    description:
-      'BitbucketServerRepositoryId identifies a specific repository hosted on a Bitbucket Server.',
-    required: [],
-  })
-  .openapi('BitbucketServerRepositoryId')
-
-const StatusSchema = z
-  .object({
-    code: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'The status code, which should be an enum value of google.rpc.Code.',
-      }),
-    details: z
-      .array(
-        z.record(
-          z.string(),
-          z
-            .any()
-            .openapi({
-              description: 'Properties of the object. Contains field @type with type URL.',
-            }),
-        ),
-      )
-      .exactOptional()
-      .openapi({
-        description:
-          'A list of messages that carry the error details. There is a common set of message types for APIs to use.',
-      }),
-    message: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the google.rpc.Status.details field, or localized by the client.',
-      }),
-  })
-  .openapi({
-    description:
-      'The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors).',
-    required: [],
-  })
-  .openapi('Status')
-
-const BitbucketServerConnectedRepositorySchema = z
-  .object({
-    parent: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The name of the `BitbucketServerConfig` that added connected repository. Format: `projects/{project}/locations/{location}/bitbucketServerConfigs/{config}`',
-      }),
-    repo: BitbucketServerRepositoryIdSchema.exactOptional().openapi({
-      description: 'The Bitbucket Server repositories to connect.',
-    }),
-    status: StatusSchema.exactOptional().openapi({
-      description: 'Output only. The status of the repo connection request.',
-      readOnly: true,
-    }),
-  })
-  .openapi({
-    description:
-      '/ BitbucketServerConnectedRepository represents a connected Bitbucket Server / repository.',
-    required: [],
-  })
-  .openapi('BitbucketServerConnectedRepository')
-
-const BatchCreateBitbucketServerConnectedRepositoriesResponseSchema = z
-  .object({
-    bitbucketServerConnectedRepositories: z
-      .array(BitbucketServerConnectedRepositorySchema)
-      .exactOptional()
-      .openapi({ description: 'The connected Bitbucket Server repositories.' }),
-  })
-  .openapi({
-    description:
-      'Response of BatchCreateBitbucketServerConnectedRepositories RPC method including all successfully connected Bitbucket Server repositories.',
-    required: [],
-  })
-  .openapi('BatchCreateBitbucketServerConnectedRepositoriesResponse')
-
-const BatchCreateBitbucketServerConnectedRepositoriesResponseMetadataSchema = z
-  .object({
-    completeTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Time the operation was completed.' }),
-    config: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The name of the `BitbucketServerConfig` that added connected repositories. Format: `projects/{project}/locations/{location}/bitbucketServerConfigs/{config}`',
-      }),
-    createTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Time the operation was created.' }),
-  })
-  .openapi({
-    description: 'Metadata for `BatchCreateBitbucketServerConnectedRepositories` operation.',
-    required: [],
-  })
-  .openapi('BatchCreateBitbucketServerConnectedRepositoriesResponseMetadata')
-
-const GitLabRepositoryIdSchema = z
-  .object({
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. Identifier for the repository. example: "namespace/project-slug", namespace is usually the username or group ID',
-      }),
-    webhookId: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The ID of the webhook that was created for receiving events from this repo. We only create and manage a single webhook for each repo.',
-        readOnly: true,
-      }),
-  })
-  .openapi({
-    description:
-      'GitLabRepositoryId identifies a specific repository hosted on GitLab.com or GitLabEnterprise',
-    required: [],
-  })
-  .openapi('GitLabRepositoryId')
-
-const GitLabConnectedRepositorySchema = z
-  .object({
-    parent: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The name of the `GitLabConfig` that added connected repository. Format: `projects/{project}/locations/{location}/gitLabConfigs/{config}`',
-      }),
-    repo: GitLabRepositoryIdSchema.exactOptional().openapi({
-      description: 'The GitLab repositories to connect.',
-    }),
-    status: StatusSchema.exactOptional().openapi({
-      description: 'Output only. The status of the repo connection request.',
-      readOnly: true,
-    }),
-  })
-  .openapi({
-    description:
-      'GitLabConnectedRepository represents a GitLab connected repository request response.',
-    required: [],
-  })
-  .openapi('GitLabConnectedRepository')
-
-const BatchCreateGitLabConnectedRepositoriesResponseSchema = z
-  .object({
-    gitlabConnectedRepositories: z
-      .array(GitLabConnectedRepositorySchema)
-      .exactOptional()
-      .openapi({ description: "The GitLab connected repository requests' responses." }),
-  })
-  .openapi({
-    description: 'Response of BatchCreateGitLabConnectedRepositories RPC method.',
-    required: [],
-  })
-  .openapi('BatchCreateGitLabConnectedRepositoriesResponse')
-
-const BatchCreateGitLabConnectedRepositoriesResponseMetadataSchema = z
-  .object({
-    completeTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Time the operation was completed.' }),
-    config: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The name of the `GitLabConfig` that added connected repositories. Format: `projects/{project}/locations/{location}/gitLabConfigs/{config}`',
-      }),
-    createTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Time the operation was created.' }),
-  })
-  .openapi({
-    description: 'Metadata for `BatchCreateGitLabConnectedRepositories` operation.',
-    required: [],
-  })
-  .openapi('BatchCreateGitLabConnectedRepositoriesResponseMetadata')
-
-const RepositorySchema = z
-  .object({
-    annotations: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({ description: 'Allows clients to store small amounts of arbitrary data.' }),
-    createTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Server assigned timestamp for when the connection was created.',
-        readOnly: true,
-      }),
-    etag: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'This checksum is computed by the server based on the value of other fields, and may be sent on update and delete requests to ensure the client has an up-to-date value before proceeding.',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Immutable. Resource name of the repository, in the format `projects/*/locations/*/connections/*/repositories/*`.',
-      }),
-    remoteUri: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Required. Git Clone HTTPS URI.' }),
-    updateTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Server assigned timestamp for when the connection was updated.',
-        readOnly: true,
-      }),
-  })
-  .openapi({ description: 'A repository associated to a parent connection.', required: [] })
-  .openapi('Repository')
-
-const BatchCreateRepositoriesResponseSchema = z
-  .object({
-    repositories: z
-      .array(RepositorySchema)
-      .exactOptional()
-      .openapi({ description: 'Repository resources created.' }),
-  })
-  .openapi({ description: 'Message for response of creating repositories in batch.', required: [] })
-  .openapi('BatchCreateRepositoriesResponse')
-
-const BuildApprovalSchema = z
-  .object({
-    config: ApprovalConfigSchema.exactOptional().openapi({
-      description: 'Output only. Configuration for manual approval of this build.',
-      readOnly: true,
-    }),
-    result: ApprovalResultSchema.exactOptional().openapi({
-      description: 'Output only. Result of manual approval for this Build.',
-      readOnly: true,
-    }),
-    state: z
-      .enum(['STATE_UNSPECIFIED', 'PENDING', 'APPROVED', 'REJECTED', 'CANCELLED'])
-      .exactOptional()
-      .openapi({ description: "Output only. The state of this build's approval.", readOnly: true }),
-  })
-  .openapi({
-    description: "BuildApproval describes a build's approval configuration, state, and result.",
-    required: [],
-  })
-  .openapi('BuildApproval')
 
 const InlineSecretSchema = z
   .object({
@@ -887,6 +453,31 @@ const BuiltImageSchema = z
   .openapi({ description: 'An image built by the pipeline.', required: [] })
   .openapi('BuiltImage')
 
+const HashSchema = z
+  .object({
+    type: z
+      .enum(['NONE', 'SHA256', 'MD5'])
+      .exactOptional()
+      .openapi({ description: 'The type of hash that was performed.' }),
+    value: z.string().exactOptional().openapi({ description: 'The hash value.' }),
+  })
+  .openapi({ description: 'Container message for hash values.', required: [] })
+  .openapi('Hash')
+
+const FileHashesSchema = z
+  .object({
+    fileHash: z
+      .array(HashSchema)
+      .exactOptional()
+      .openapi({ description: 'Collection of file hashes.' }),
+  })
+  .openapi({
+    description:
+      'Container message for hashes of byte content of files, used in SourceProvenance messages to verify integrity of source input to the build.',
+    required: [],
+  })
+  .openapi('FileHashes')
+
 const UploadedMavenArtifactSchema = z
   .object({
     fileHashes: FileHashesSchema.exactOptional().openapi({
@@ -992,27 +583,137 @@ const SecretSchema = z
   })
   .openapi('Secret')
 
-const SourceSchema: z.ZodType<SourceType> = z
-  .lazy(() =>
-    z
-      .object({
-        repoSource: RepoSourceSchema.exactOptional().openapi({
-          description:
-            'If provided, get the source from this location in a Cloud Source Repository.',
-        }),
-        storageSource: StorageSourceSchema.exactOptional().openapi({
-          description: 'If provided, get the source from this location in Google Cloud Storage.',
-        }),
-        storageSourceManifest: StorageSourceManifestSchema.exactOptional().openapi({
-          description:
-            'If provided, get the source from this manifest in Google Cloud Storage. This feature is in Preview; see description [here](https://github.com/GoogleCloudPlatform/cloud-builders/tree/master/gcs-fetcher).',
-        }),
-      })
+const RepoSourceSchema = z
+  .object({
+    branchName: z
+      .string()
+      .exactOptional()
       .openapi({
-        description: 'Location of the source in a supported storage service.',
-        required: [],
+        description:
+          'Regex matching branches to build. The syntax of the regular expressions accepted is the syntax accepted by RE2 and described at https://github.com/google/re2/wiki/Syntax',
       }),
-  )
+    commitSha: z.string().exactOptional().openapi({ description: 'Explicit commit SHA to build.' }),
+    dir: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Directory, relative to the source root, in which to run the build. This must be a relative path. If a step's `dir` is specified and is an absolute path, this value is ignored for that step's execution.",
+      }),
+    invertRegex: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Only trigger a build if the revision regex does NOT match the revision regex.',
+      }),
+    projectId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'ID of the project that owns the Cloud Source Repository. If omitted, the project ID requesting the build is assumed.',
+      }),
+    repoName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Name of the Cloud Source Repository.' }),
+    substitutions: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Substitutions to use in a triggered build. Should only be used with RunBuildTrigger',
+      }),
+    tagName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Regex matching tags to build. The syntax of the regular expressions accepted is the syntax accepted by RE2 and described at https://github.com/google/re2/wiki/Syntax',
+      }),
+  })
+  .openapi({
+    description: 'Location of the source in a Google Cloud Source Repository.',
+    required: [],
+  })
+  .openapi('RepoSource')
+
+const StorageSourceSchema = z
+  .object({
+    bucket: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Google Cloud Storage bucket containing the source (see [Bucket Name Requirements](https://cloud.google.com/storage/docs/bucket-naming#requirements)).',
+      }),
+    generation: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Google Cloud Storage generation for the object. If the generation is omitted, the latest generation will be used.',
+      }),
+    object: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Google Cloud Storage object containing the source. This object must be a zipped (`.zip`) or gzipped archive file (`.tar.gz`) containing source to build.',
+      }),
+  })
+  .openapi({
+    description: 'Location of the source in an archive file in Google Cloud Storage.',
+    required: [],
+  })
+  .openapi('StorageSource')
+
+const StorageSourceManifestSchema = z
+  .object({
+    bucket: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Google Cloud Storage bucket containing the source manifest (see [Bucket Name Requirements](https://cloud.google.com/storage/docs/bucket-naming#requirements)).',
+      }),
+    generation: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Google Cloud Storage generation for the object. If the generation is omitted, the latest generation will be used.',
+      }),
+    object: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Google Cloud Storage object containing the source manifest. This object must be a JSON file.',
+      }),
+  })
+  .openapi({
+    description:
+      'Location of the source manifest in Google Cloud Storage. This feature is in Preview; see description [here](https://github.com/GoogleCloudPlatform/cloud-builders/tree/master/gcs-fetcher).',
+    required: [],
+  })
+  .openapi('StorageSourceManifest')
+
+const SourceSchema = z
+  .object({
+    repoSource: RepoSourceSchema.exactOptional().openapi({
+      description: 'If provided, get the source from this location in a Cloud Source Repository.',
+    }),
+    storageSource: StorageSourceSchema.exactOptional().openapi({
+      description: 'If provided, get the source from this location in Google Cloud Storage.',
+    }),
+    storageSourceManifest: StorageSourceManifestSchema.exactOptional().openapi({
+      description:
+        'If provided, get the source from this manifest in Google Cloud Storage. This feature is in Preview; see description [here](https://github.com/GoogleCloudPlatform/cloud-builders/tree/master/gcs-fetcher).',
+    }),
+  })
+  .openapi({ description: 'Location of the source in a supported storage service.', required: [] })
   .openapi('Source')
 
 const SourceProvenanceSchema = z
@@ -1376,7 +1077,295 @@ const BuildSchema = z
   })
   .openapi('Build')
 
-const BuildOperationMetadataSchema = z
+type BuildOperationMetadataType = { build?: z.infer<typeof BuildSchema> }
+
+const ArtifactResultSchema = z
+  .object({
+    fileHash: z
+      .array(FileHashesSchema)
+      .exactOptional()
+      .openapi({ description: 'The file hash of the artifact.' }),
+    location: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The path of an artifact in a Google Cloud Storage bucket, with the generation number. For example, `gs://mybucket/path/to/output.jar#generation`.',
+      }),
+  })
+  .openapi({
+    description:
+      'An artifact that was uploaded during a build. This is a single record in the artifact manifest JSON file.',
+    required: [],
+  })
+  .openapi('ArtifactResult')
+
+const BitbucketServerRepositoryIdSchema = z
+  .object({
+    projectKey: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Required. Identifier for the project storing the repository.' }),
+    repoSlug: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Required. Identifier for the repository.' }),
+    webhookId: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The ID of the webhook that was created for receiving events from this repo. We only create and manage a single webhook for each repo.',
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    description:
+      'BitbucketServerRepositoryId identifies a specific repository hosted on a Bitbucket Server.',
+    required: [],
+  })
+  .openapi('BitbucketServerRepositoryId')
+
+const StatusSchema = z
+  .object({
+    code: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'The status code, which should be an enum value of google.rpc.Code.',
+      }),
+    details: z
+      .array(
+        z.record(
+          z.string(),
+          z
+            .any()
+            .openapi({
+              description: 'Properties of the object. Contains field @type with type URL.',
+            }),
+        ),
+      )
+      .exactOptional()
+      .openapi({
+        description:
+          'A list of messages that carry the error details. There is a common set of message types for APIs to use.',
+      }),
+    message: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the google.rpc.Status.details field, or localized by the client.',
+      }),
+  })
+  .openapi({
+    description:
+      'The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors).',
+    required: [],
+  })
+  .openapi('Status')
+
+const BitbucketServerConnectedRepositorySchema = z
+  .object({
+    parent: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The name of the `BitbucketServerConfig` that added connected repository. Format: `projects/{project}/locations/{location}/bitbucketServerConfigs/{config}`',
+      }),
+    repo: BitbucketServerRepositoryIdSchema.exactOptional().openapi({
+      description: 'The Bitbucket Server repositories to connect.',
+    }),
+    status: StatusSchema.exactOptional().openapi({
+      description: 'Output only. The status of the repo connection request.',
+      readOnly: true,
+    }),
+  })
+  .openapi({
+    description:
+      '/ BitbucketServerConnectedRepository represents a connected Bitbucket Server / repository.',
+    required: [],
+  })
+  .openapi('BitbucketServerConnectedRepository')
+
+const BatchCreateBitbucketServerConnectedRepositoriesResponseSchema = z
+  .object({
+    bitbucketServerConnectedRepositories: z
+      .array(BitbucketServerConnectedRepositorySchema)
+      .exactOptional()
+      .openapi({ description: 'The connected Bitbucket Server repositories.' }),
+  })
+  .openapi({
+    description:
+      'Response of BatchCreateBitbucketServerConnectedRepositories RPC method including all successfully connected Bitbucket Server repositories.',
+    required: [],
+  })
+  .openapi('BatchCreateBitbucketServerConnectedRepositoriesResponse')
+
+const BatchCreateBitbucketServerConnectedRepositoriesResponseMetadataSchema = z
+  .object({
+    completeTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Time the operation was completed.' }),
+    config: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The name of the `BitbucketServerConfig` that added connected repositories. Format: `projects/{project}/locations/{location}/bitbucketServerConfigs/{config}`',
+      }),
+    createTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Time the operation was created.' }),
+  })
+  .openapi({
+    description: 'Metadata for `BatchCreateBitbucketServerConnectedRepositories` operation.',
+    required: [],
+  })
+  .openapi('BatchCreateBitbucketServerConnectedRepositoriesResponseMetadata')
+
+const GitLabRepositoryIdSchema = z
+  .object({
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. Identifier for the repository. example: "namespace/project-slug", namespace is usually the username or group ID',
+      }),
+    webhookId: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The ID of the webhook that was created for receiving events from this repo. We only create and manage a single webhook for each repo.',
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    description:
+      'GitLabRepositoryId identifies a specific repository hosted on GitLab.com or GitLabEnterprise',
+    required: [],
+  })
+  .openapi('GitLabRepositoryId')
+
+const GitLabConnectedRepositorySchema = z
+  .object({
+    parent: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The name of the `GitLabConfig` that added connected repository. Format: `projects/{project}/locations/{location}/gitLabConfigs/{config}`',
+      }),
+    repo: GitLabRepositoryIdSchema.exactOptional().openapi({
+      description: 'The GitLab repositories to connect.',
+    }),
+    status: StatusSchema.exactOptional().openapi({
+      description: 'Output only. The status of the repo connection request.',
+      readOnly: true,
+    }),
+  })
+  .openapi({
+    description:
+      'GitLabConnectedRepository represents a GitLab connected repository request response.',
+    required: [],
+  })
+  .openapi('GitLabConnectedRepository')
+
+const BatchCreateGitLabConnectedRepositoriesResponseSchema = z
+  .object({
+    gitlabConnectedRepositories: z
+      .array(GitLabConnectedRepositorySchema)
+      .exactOptional()
+      .openapi({ description: "The GitLab connected repository requests' responses." }),
+  })
+  .openapi({
+    description: 'Response of BatchCreateGitLabConnectedRepositories RPC method.',
+    required: [],
+  })
+  .openapi('BatchCreateGitLabConnectedRepositoriesResponse')
+
+const BatchCreateGitLabConnectedRepositoriesResponseMetadataSchema = z
+  .object({
+    completeTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Time the operation was completed.' }),
+    config: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The name of the `GitLabConfig` that added connected repositories. Format: `projects/{project}/locations/{location}/gitLabConfigs/{config}`',
+      }),
+    createTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Time the operation was created.' }),
+  })
+  .openapi({
+    description: 'Metadata for `BatchCreateGitLabConnectedRepositories` operation.',
+    required: [],
+  })
+  .openapi('BatchCreateGitLabConnectedRepositoriesResponseMetadata')
+
+const RepositorySchema = z
+  .object({
+    annotations: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({ description: 'Allows clients to store small amounts of arbitrary data.' }),
+    createTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Server assigned timestamp for when the connection was created.',
+        readOnly: true,
+      }),
+    etag: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'This checksum is computed by the server based on the value of other fields, and may be sent on update and delete requests to ensure the client has an up-to-date value before proceeding.',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Immutable. Resource name of the repository, in the format `projects/*/locations/*/connections/*/repositories/*`.',
+      }),
+    remoteUri: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Required. Git Clone HTTPS URI.' }),
+    updateTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Server assigned timestamp for when the connection was updated.',
+        readOnly: true,
+      }),
+  })
+  .openapi({ description: 'A repository associated to a parent connection.', required: [] })
+  .openapi('Repository')
+
+const BatchCreateRepositoriesResponseSchema = z
+  .object({
+    repositories: z
+      .array(RepositorySchema)
+      .exactOptional()
+      .openapi({ description: 'Repository resources created.' }),
+  })
+  .openapi({ description: 'Message for response of creating repositories in batch.', required: [] })
+  .openapi('BatchCreateRepositoriesResponse')
+
+const BuildOperationMetadataSchema: z.ZodType<BuildOperationMetadataType> = z
   .object({
     build: BuildSchema.exactOptional().openapi({
       description: 'The build that the operation is tracking.',
@@ -1386,7 +1375,7 @@ const BuildOperationMetadataSchema = z
   .openapi('BuildOperationMetadata')
 
 const CancelOperationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'The request message for Operations.CancelOperation.' })
   .openapi('CancelOperationRequest')
 
@@ -1559,7 +1548,7 @@ const DeleteWorkerPoolOperationMetadataSchema = z
   .openapi('DeleteWorkerPoolOperationMetadata')
 
 const EmptySchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',

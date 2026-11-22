@@ -8,89 +8,1810 @@ type ByocInfrastructureProgressStageType = {
   subStages?: ByocInfrastructureProgressStageType[]
 }
 
-const AwsBackupBucketSchema = z
+const ClickPipeScalingSchema = z
   .object({
-    id: z.uuid().exactOptional().openapi({ description: 'Unique backup bucket ID' }),
-    bucketProvider: z.literal('AWS').exactOptional().openapi({ description: 'Bucket provider' }),
-    bucketPath: z.string().exactOptional().openapi({ description: 'Bucket path' }),
-    iamRoleArn: z.string().exactOptional().openapi({ description: 'AWS Role ARN' }),
-    iamRoleSessionName: z
-      .string()
+    replicas: z
+      .int()
+      .min(1)
+      .max(40)
       .exactOptional()
-      .openapi({ description: 'AWS  Role session name' }),
-    iamRoleExternalId: z
+      .openapi({ description: 'Desired number of replicas. Only for scalable pipes.' }),
+    concurrency: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          'Desired number of concurrency. Only for S3 pipes. If set to 0, concurrency is auto-scaled based on the cluster memory.',
+        deprecated: true,
+      }),
+    replicaCpuMillicores: z
+      .int()
+      .min(125)
+      .max(2000)
+      .exactOptional()
+      .openapi({ description: 'CPU in millicores for each replica. Only for streaming pipes.' }),
+    replicaMemoryGb: z
+      .number()
+      .min(0.5)
+      .max(8)
+      .exactOptional()
+      .openapi({ description: 'Memory in GB for each replica. Only for streaming pipes.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('ClickPipeScaling')
+
+const ClickPipeKafkaOffsetSchema = z
+  .object({
+    strategy: z
+      .enum(['from_beginning', 'from_latest', 'from_timestamp'])
+      .exactOptional()
+      .openapi({ description: 'Offset strategy.' }),
+    timestamp: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'A minute precision UTC timestamp to start from. Required for "from_timestamp" strategy.',
+        example: '2021-01-01T00:00',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('ClickPipeKafkaOffset')
+
+const ClickPipeKafkaConfluentSchemaRegistrySchema = z
+  .object({
+    type: z
+      .literal('confluent')
+      .exactOptional()
+      .openapi({
+        description:
+          "Type of the schema registry. Defaults to 'confluent' (a Confluent-compatible REST registry).",
+      }),
+    url: z
+      .string()
+      .openapi({
+        description: 'Schema URL. HTTPS required.',
+        example: 'https://psrc-aa00.us-east-2.aws.confluent.cloud/schemas/ids/100004',
+      }),
+    authentication: z
       .string()
       .exactOptional()
       .openapi({
         description:
-          'External ID the IAM role trust policy requires when the data plane assumes the role',
+          "Authentication type of the schema registry. One of 'PLAIN', 'CLIENT_CREDENTIALS'. PLAIN uses a username and password. CLIENT_CREDENTIALS uses the OAuth2 client credentials flow.",
+        example: 'PLAIN',
+      }),
+    caCertificate: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: "PEM encoded CA certificates to validate the schema registry's certificate.",
+      }),
+    tokenUrl: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'OAuth2 token endpoint. HTTPS required. Required when authentication is CLIENT_CREDENTIALS.',
+        example: 'https://auth.example.com/oauth2/v1/token',
+      }),
+    scope: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Space-separated OAuth2 scopes to request. Only used when authentication is CLIENT_CREDENTIALS.',
+        example: 'schema_registry',
+      }),
+    audience: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'OAuth2 audience to request. Only used when authentication is CLIENT_CREDENTIALS.',
+        example: 'https://schema-registry.example.com',
       }),
   })
-  .openapi({ required: [] })
-  .openapi('AwsBackupBucket')
+  .openapi({ required: ['url'] })
+  .openapi('ClickPipeKafkaConfluentSchemaRegistry')
 
-const GcpBackupBucketSchema = z
+const ClickPipeKafkaGlueSchemaRegistrySchema = z
   .object({
-    id: z.uuid().exactOptional().openapi({ description: 'Unique backup bucket ID' }),
-    bucketProvider: z.literal('GCP').exactOptional().openapi({ description: 'Bucket provider' }),
-    bucketPath: z.string().exactOptional().openapi({ description: 'Bucket path' }),
-    accessKeyId: z.string().exactOptional().openapi({ description: 'Access Key ID (HMAC key)' }),
-  })
-  .openapi({ required: [] })
-  .openapi('GcpBackupBucket')
-
-const AzureBackupBucketSchema = z
-  .object({
-    id: z.uuid().exactOptional().openapi({ description: 'Unique backup bucket ID.' }),
-    bucketProvider: z.literal('AZURE').exactOptional().openapi({ description: 'Bucket provider' }),
-    containerName: z.string().exactOptional().openapi({ description: 'Container Name' }),
-  })
-  .openapi({ required: [] })
-  .openapi('AzureBackupBucket')
-
-type BackupBucketType =
-  | z.infer<typeof AwsBackupBucketSchema>
-  | z.infer<typeof GcpBackupBucketSchema>
-  | z.infer<typeof AzureBackupBucketSchema>
-
-const AwsBackupBucketPropertiesSchema = z
-  .object({
-    bucketProvider: z.literal('AWS').exactOptional().openapi({ description: 'Bucket provider' }),
-    bucketPath: z.string().exactOptional().openapi({ description: 'Bucket path' }),
-    iamRoleArn: z.string().exactOptional().openapi({ description: 'AWS IAM Role' }),
-    iamRoleSessionName: z.string().exactOptional().openapi({ description: 'AWS IAM Role' }),
-    iamRoleExternalId: z
+    type: z
+      .literal('glue')
+      .openapi({
+        description:
+          "Type of the schema registry. Use 'glue' for the AWS Glue Schema Registry, which authenticates with IAM instead of credentials.",
+      }),
+    glueRegion: z
+      .string()
+      .openapi({ description: 'AWS region of the Glue Schema Registry.', example: 'us-east-1' }),
+    glueRegistryName: z
+      .string()
+      .openapi({ description: 'Name of the Glue Schema Registry.', example: 'my-registry' }),
+    glueRoleArn: z
       .string()
       .exactOptional()
       .openapi({
         description:
-          'External ID the IAM role trust policy requires when the data plane assumes the role',
+          'IAM role to assume for Glue Schema Registry access. Defaults to the iamRole of the Kafka source, so it is required when the source does not authenticate with IAM. Read more in ClickPipes documentation: https://clickhouse.com/docs/en/integrations/clickpipes/kafka#iam',
+        example: 'arn:aws:iam::123456789012:role/MyGlueRegistryRole',
+      }),
+  })
+  .openapi({ required: ['type', 'glueRegion', 'glueRegistryName'] })
+  .openapi('ClickPipeKafkaGlueSchemaRegistry')
+
+const ClickPipeKafkaSchemaRegistrySchema = z
+  .xor([ClickPipeKafkaConfluentSchemaRegistrySchema, ClickPipeKafkaGlueSchemaRegistrySchema])
+  .openapi('ClickPipeKafkaSchemaRegistry')
+
+const ClickPipeKafkaSourceSchema = z
+  .object({
+    type: z
+      .enum([
+        'kafka',
+        'redpanda',
+        'msk',
+        'gcmk',
+        'confluent',
+        'warpstream',
+        'azureeventhub',
+        'dokafka',
+      ])
+      .exactOptional()
+      .openapi({ description: 'Type of the Kafka source.' }),
+    format: z
+      .enum(['JSONEachRow', 'Avro', 'AvroConfluent', 'Protobuf'])
+      .exactOptional()
+      .openapi({ description: 'Format of the Kafka source.' }),
+    brokers: z.string().exactOptional().openapi({ description: 'Brokers of the Kafka source.' }),
+    topics: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'One or more Kafka topics as a comma-separated string. All topics must have the same schema and are ingested into the same destination table by a single ClickPipe.',
+        example: 'topic1,topic2',
+      }),
+    consumerGroup: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Consumer group of the Kafka source. If not provided "clickpipes-<<ID>>" will be used.',
+        example: 'my-clickpipe-consumer-group',
+      }),
+    authentication: z
+      .enum([
+        'PLAIN',
+        'SCRAM-SHA-256',
+        'SCRAM-SHA-512',
+        'IAM_ROLE',
+        'IAM_USER',
+        'MUTUAL_TLS',
+        'SERVICE_ACCOUNT_WORKLOAD_IDENTITY',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'Authentication method of the Kafka source. SERVICE_ACCOUNT_WORKLOAD_IDENTITY is in Beta. ClickPipes uses the GCP service account returned in gcpWorkloadIdentity.principal by the operation with operationId clickPipesServiceContextGet; grant it access to the source resources. Supported authentication methods: kafka: PLAIN, SCRAM-SHA-256, SCRAM-SHA-512, MUTUAL_TLS, msk: SCRAM-SHA-512, IAM_ROLE, IAM_USER, MUTUAL_TLS, gcmk: PLAIN, MUTUAL_TLS, SERVICE_ACCOUNT_WORKLOAD_IDENTITY, confluent: PLAIN, SCRAM-SHA-512, MUTUAL_TLS, warpstream: PLAIN, azureeventhub: PLAIN, redpanda: SCRAM-SHA-256, SCRAM-SHA-512, MUTUAL_TLS, dokafka: SCRAM-SHA-256, MUTUAL_TLS',
+      }),
+    iamRole: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'IAM role for the Kafka source. Use with IAM role authentication. Read more in ClickPipes documentation: https://clickhouse.com/docs/en/integrations/clickpipes/kafka#iam',
+        example: 'arn:aws:iam::123456789012:role/MyRole',
+      }),
+    offset: z.xor([ClickPipeKafkaOffsetSchema, z.null().nullable()]).exactOptional(),
+    schemaRegistry: z
+      .xor([ClickPipeKafkaSchemaRegistrySchema, z.null().nullable()])
+      .exactOptional(),
+    caCertificate: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: "PEM encoded CA certificates to validate the broker's certificate.",
+      }),
+    reversePrivateEndpointIds: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Reverse private endpoint UUIDs used for a secure private connection to the Kafka source.',
+      }),
+    exactlyOnce: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Enable exactly-once delivery. Guarantees every Kafka record is inserted exactly once across restarts and rebalances. Can only be set at pipe creation.',
+      }),
+    tombstoneMode: z
+      .enum(['delete', 'soft_delete'])
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'How Kafka tombstone records are handled. Set to "delete" to delete the matching destination row; this requires exactly-once delivery. Set to "soft_delete" to write a row with the _is_deleted virtual column set to true; exactly-once delivery is not required. Can only be set at pipe creation.',
+        example: 'soft_delete',
       }),
   })
   .openapi({ required: [] })
-  .openapi('AwsBackupBucketProperties')
+  .openapi('ClickPipeKafkaSource')
 
-const GcpBackupBucketPropertiesSchema = z
+const ClickPipeObjectStorageSourceSchema = z
   .object({
-    bucketProvider: z.literal('GCP').exactOptional().openapi({ description: 'Bucket provider' }),
-    bucketPath: z.string().exactOptional().openapi({ description: 'Bucket path' }),
-    accessKeyId: z.string().exactOptional().openapi({ description: 'Access Key ID (HMAC key)' }),
+    type: z
+      .enum(['s3', 'gcs', 'dospaces', 'azureblobstorage', 'cloudflarer2', 'ovhobjectstorage'])
+      .exactOptional()
+      .openapi({ description: 'Type of the ObjectStorage source.' }),
+    format: z
+      .enum([
+        'JSONEachRow',
+        'JSONAsObject',
+        'CSV',
+        'CSVWithNames',
+        'TabSeparated',
+        'TabSeparatedWithNames',
+        'Parquet',
+        'Avro',
+      ])
+      .exactOptional()
+      .openapi({ description: 'Format of the files.' }),
+    url: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Provide a path to the file(s) you want to ingest. You can specify multiple files using bash-like wildcards. For more information, see the documentation on using wildcards in path: https://clickhouse.com/docs/en/integrations/clickpipes/object-storage#limitations',
+        example: 'https://datasets-documentation.s3.eu-west-3.amazonaws.com/http/**.ndjson.gz',
+      }),
+    delimiter: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Delimiter used in the files.', example: ',' }),
+    skipFirstLines: z
+      .int()
+      .min(0)
+      .max(100)
+      .exactOptional()
+      .openapi({
+        description:
+          'Number of lines to skip at the start of each file. Only for TabSeparated and TabSeparatedWithNames formats. Can only be set at pipe creation.',
+        example: 1,
+      }),
+    compression: z
+      .enum(['none', 'gzip', 'gz', 'brotli', 'br', 'xz', 'LZMA', 'zstd', 'auto'])
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Compression algorithm used for the files.', example: 'auto' }),
+    isContinuous: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'If set to true, the pipe will continuously read new files from the source. If set to false, the pipe will read the files only once. New files have to be uploaded lexically order.',
+      }),
+    queueUrl: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Queue URL for event-based continuous ingestion. For S3, provide an SQS queue URL. For GCS, provide a Pub/Sub subscription (e.g. projects/{project}/subscriptions/{name}). When provided, files are ingested based on event notifications rather than lexicographical order. Only applicable when isContinuous is true and authentication is not public.',
+        example: 'https://sqs.us-east-1.amazonaws.com/123456789012/MyQueue',
+      }),
+    skipInitialLoad: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'If set to true, skips the initial load and only ingests files delivered by queue notifications. Only applicable when queueUrl is provided.',
+      }),
+    startAfter: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Skip all files up to and including this object key during the initial load. Cannot be provided when skipInitialLoad is true.',
+        example: 'events/2026-06-01/',
+      }),
+    authentication: z
+      .enum([
+        'IAM_ROLE',
+        'IAM_USER',
+        'CONNECTION_STRING',
+        'SERVICE_ACCOUNT',
+        'SERVICE_ACCOUNT_WORKLOAD_IDENTITY',
+      ])
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Authentication method. IAM_USER is for S3, GCS, and DigitalOcean Spaces. IAM_ROLE is for S3 only. SERVICE_ACCOUNT is for GCS only. For GCS, SERVICE_ACCOUNT_WORKLOAD_IDENTITY is in Beta. ClickPipes uses the GCP service account returned in gcpWorkloadIdentity.principal by the operation with operationId clickPipesServiceContextGet; grant it access to the source resources. CONNECTION_STRING is for Azure Blob Storage. PUBLIC uses no authentication.',
+      }),
+    iamRole: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'IAM role to be used with IAM role authentication. Read more in ClickPipes documentation: https://clickhouse.com/docs/en/integrations/clickpipes/object-storage#authentication',
+        example: 'arn:aws:iam::123456789012:role/MyRole',
+      }),
+    connectionString: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Connection string for Azure Blob Storage authentication. Required when authentication is CONNECTION_STRING.',
+        example:
+          'DefaultEndpointsProtocol=https;AccountName=myaccount;AccountKey=mykey;EndpointSuffix=core.windows.net',
+      }),
+    path: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Path to the file(s) within the Azure container. Used for Azure Blob Storage sources. You can specify multiple files using bash-like wildcards. For more information, see the documentation on using wildcards in path: https://clickhouse.com/docs/en/integrations/clickpipes/object-storage#limitations',
+        example: 'data/logs/*.json',
+      }),
+    azureContainerName: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Container name for Azure Blob Storage. Required when type is azureblobstorage.',
+        example: 'mycontainer',
+      }),
   })
   .openapi({ required: [] })
-  .openapi('GcpBackupBucketProperties')
+  .openapi('ClickPipeObjectStorageSource')
 
-const AzureBackupBucketPropertiesSchema = z
+const ClickPipeKinesisSchemaRegistrySchema = z
   .object({
-    bucketProvider: z.literal('AZURE').exactOptional().openapi({ description: 'Bucket provider' }),
-    containerName: z.string().exactOptional().openapi({ description: 'Container Name' }),
+    type: z
+      .literal('glue')
+      .openapi({
+        description:
+          'Type of the schema registry. Kinesis ClickPipes support the AWS Glue Schema Registry, which authenticates with IAM instead of credentials.',
+      }),
+    glueRegion: z
+      .string()
+      .openapi({ description: 'AWS region of the Glue Schema Registry.', example: 'us-east-1' }),
+    glueRegistryName: z
+      .string()
+      .openapi({ description: 'Name of the Glue Schema Registry.', example: 'my-registry' }),
+    glueRoleArn: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'IAM role to assume for Glue Schema Registry access. Defaults to the IAM identity of the Kinesis source.',
+        example: 'arn:aws:iam::123456789012:role/MyGlueRegistryRole',
+      }),
+  })
+  .openapi({ required: ['type', 'glueRegion', 'glueRegistryName'] })
+  .openapi('ClickPipeKinesisSchemaRegistry')
+
+const ClickPipeKinesisSourceSchema = z
+  .object({
+    format: z
+      .enum(['JSONEachRow', 'Avro', 'AvroConfluent', 'Protobuf'])
+      .exactOptional()
+      .openapi({ description: 'Format of the Kinesis stream.' }),
+    streamName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Name of the Kinesis stream.', example: 'my-stream' }),
+    region: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'AWS region of the Kinesis stream.', example: 'us-east-1' }),
+    useEnhancedFanOut: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Use enhanced fan-out for the Kinesis stream.' }),
+    iteratorType: z
+      .enum(['TRIM_HORIZON', 'LATEST', 'AT_TIMESTAMP'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Type of iterator to use when reading from the Kinesis stream. If AT_TIMESTAMP is used, the timestamp field must be provided.',
+      }),
+    timestamp: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'UNIX timestamp to start reading from the Kinesis stream. Required if iteratorType is AT_TIMESTAMP.',
+        example: 1615766400,
+      }),
+    authentication: z
+      .enum(['IAM_ROLE', 'IAM_USER'])
+      .exactOptional()
+      .openapi({ description: 'Authentication method to use with the Kinesis stream.' }),
+    iamRole: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'IAM role to use for authentication. Required if IAM_ROLE is used.',
+        example: 'arn:aws:iam::123456789012:role/MyRole',
+      }),
+    schemaRegistry: z
+      .xor([ClickPipeKinesisSchemaRegistrySchema, z.null().nullable()])
+      .exactOptional(),
   })
   .openapi({ required: [] })
-  .openapi('AzureBackupBucketProperties')
+  .openapi('ClickPipeKinesisSource')
 
-type BackupBucketPropertiesType =
-  | z.infer<typeof AwsBackupBucketPropertiesSchema>
-  | z.infer<typeof GcpBackupBucketPropertiesSchema>
-  | z.infer<typeof AzureBackupBucketPropertiesSchema>
+const ClickPipePubSubSourceSchema = z
+  .object({
+    format: z
+      .enum(['JSONEachRow', 'Avro', 'Protobuf'])
+      .openapi({
+        description:
+          'Format of messages in the Pub/Sub topic. GCP Pub/Sub ClickPipes are in private preview — contact support to enable this feature for your organization.',
+        example: 'JSONEachRow',
+      }),
+    projectId: z
+      .string()
+      .openapi({
+        description: 'GCP project ID that owns the Pub/Sub topic.',
+        example: 'my-gcp-project',
+      }),
+    topic: z
+      .string()
+      .openapi({
+        description: 'Pub/Sub topic name (not the fully-qualified path).',
+        example: 'my-topic',
+      }),
+    authentication: z
+      .enum(['SERVICE_ACCOUNT', 'SERVICE_ACCOUNT_WORKLOAD_IDENTITY'])
+      .openapi({
+        description:
+          'Authentication method to use with GCP Pub/Sub. SERVICE_ACCOUNT_WORKLOAD_IDENTITY is in Beta. ClickPipes uses the GCP service account returned in gcpWorkloadIdentity.principal by the operation with operationId clickPipesServiceContextGet; grant it access to the source resources.',
+        example: 'SERVICE_ACCOUNT',
+      }),
+    seekType: z
+      .enum(['latest', 'earliest', 'timestamp'])
+      .openapi({
+        description:
+          'Starting position strategy for consuming the subscription. The seekTimestamp companion is required only when seekType is "timestamp"; setting it for a mismatched seek type is rejected.',
+        example: 'earliest',
+      }),
+    seekTimestamp: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'RFC 3339 / ISO 8601 timestamp to seek to. Required when seekType is "timestamp"; must be omitted otherwise.',
+        example: '2026-04-10T12:00:00Z',
+      }),
+    filter: z
+      .string()
+      .max(256)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional Pub/Sub subscription filter expression (CEL). Maximum 256 characters.',
+      }),
+    enableOrdering: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether to enable ordered delivery of messages (requires messages to be published with ordering keys).',
+      }),
+    ackDeadline: z
+      .int()
+      .min(10)
+      .max(600)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Acknowledgement deadline for messages, in seconds. Must be between 10 and 600.',
+      }),
+  })
+  .openapi({ required: ['format', 'projectId', 'topic', 'authentication', 'seekType'] })
+  .openapi('ClickPipePubSubSource')
+
+const ClickPipePostgresPipeSettingsSchema = z
+  .object({
+    syncIntervalSeconds: z
+      .int()
+      .min(1)
+      .exactOptional()
+      .openapi({
+        description: 'Interval in seconds to sync data from Postgres during CDC replication.',
+        example: 60,
+      }),
+    pullBatchSize: z
+      .int()
+      .min(1)
+      .exactOptional()
+      .openapi({
+        description: 'Number of rows to pull in each batch during CDC replication.',
+        example: 1000,
+      }),
+    publicationName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'PostgreSQL publication name to use for CDC replication. If not provided, ClickPipes will create one automatically.',
+        example: 'clickpipes_publication',
+      }),
+    replicationMode: z
+      .enum(['cdc', 'snapshot', 'cdc_only'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Replication mode: "cdc" (change data capture with initial snapshot), "snapshot" (one-time snapshot only), or "cdc_only" (CDC without initial snapshot).',
+        example: 'cdc',
+      }),
+    replicationSlotName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'PostgreSQL replication slot name. Only valid for "cdc_only" mode. For "cdc" mode, ClickPipes creates the slot automatically.',
+        example: 'clickpipes_slot',
+      }),
+    allowNullableColumns: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Preserve nullability from Postgres in the destination ClickHouse table. When true, columns without NOT NULL constraints are created as Nullable(...). When false, all columns are non-nullable and NULL values are replaced with the default value for the type. Note: Nullable types have performance overhead in ClickHouse.',
+        example: false,
+      }),
+    initialLoadParallelism: z
+      .int()
+      .min(1)
+      .max(64)
+      .exactOptional()
+      .openapi({
+        description: 'Number of parallel workers to use per table in the initial snapshot phase.',
+        example: 4,
+      }),
+    snapshotNumRowsPerPartition: z
+      .int()
+      .min(1000)
+      .exactOptional()
+      .openapi({
+        description: 'Number of rows per partition during the snapshot phase.',
+        example: 100000,
+      }),
+    snapshotNumberOfParallelTables: z
+      .int()
+      .min(1)
+      .max(64)
+      .exactOptional()
+      .openapi({
+        description: 'Number of tables to snapshot in parallel during the initial load phase.',
+        example: 1,
+      }),
+    enableFailoverSlots: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Enable failover support for the replication slot on PG17 and newer. Only applicable when ClickPipes creates the replication slot (i.e., replicationSlotName is NOT provided).',
+        example: false,
+      }),
+    deleteOnMerge: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Enable hard delete behavior in ReplacingMergeTree for PostgreSQL DELETE operations.',
+        example: false,
+      }),
+    useJsonNativeFormat: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Store json and jsonb columns in native ClickHouse JSON format (requires ClickHouse 25.3+). Non-object values are wrapped as {"_value": ...}, and json[]/jsonb[] become Array(JSON). When disabled, JSON data is stored as String. Can only be set at creation. Must be enabled for your organization.',
+        example: false,
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('ClickPipePostgresPipeSettings')
+
+const ClickPipePostgresPipeTableMappingSchema = z
+  .object({
+    sourceSchemaName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'PostgreSQL source schema name.', example: 'public' }),
+    sourceTable: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'PostgreSQL source table name.', example: 'users' }),
+    targetTable: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'ClickHouse target table name, optionally prefixed with schema name (e.g., "my_schema_my_table"). The table will be created automatically if it does not exist. For snapshot mode, the target table must be empty.',
+        example: 'public_users',
+      }),
+    excludedColumns: z
+      .array(z.string())
+      .superRefine((items, ctx) => {
+        const seen = new Map()
+        for (const [i, val] of items.entries()) {
+          const key = JSON.stringify(val)
+          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+          else seen.set(key, i)
+        }
+      })
+      .exactOptional()
+      .openapi({
+        description:
+          'List of column names to exclude from replication. Column names must be unique within this list.',
+        example: ['internal_id', 'temp_data'],
+      }),
+    useCustomSortingKey: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether to use a custom sorting key. If true, sortingKeys must be provided. If false or omitted, the default sorting key is the PostgreSQL primary key.',
+        example: false,
+      }),
+    sortingKeys: z
+      .array(z.string())
+      .superRefine((items, ctx) => {
+        const seen = new Map()
+        for (const [i, val] of items.entries()) {
+          const key = JSON.stringify(val)
+          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+          else seen.set(key, i)
+        }
+      })
+      .exactOptional()
+      .openapi({
+        description:
+          'Ordered list of column names to use as the sorting (ORDER BY) key in ClickHouse. Only used when useCustomSortingKey is true. Column names must be unique within this list.',
+        example: ['created_at_date', 'event_id'],
+      }),
+    tableEngine: z
+      .enum(['MergeTree', 'ReplacingMergeTree', 'Null'])
+      .exactOptional()
+      .openapi({
+        description:
+          'ClickHouse table engine: "ReplacingMergeTree" (handles updates/deletes), "MergeTree" (append-only), or "Null" (forward data to materialized views without storing it).',
+        example: 'ReplacingMergeTree',
+      }),
+    partitionKey: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Custom partitioning column used for parallel snapshotting. Only beneficial for PostgreSQL 13 (no benefit for PG14+, which supports indexed ctid scans). Must be an indexed column of type: `smallint`, `integer`, `bigint`, `timestamp without time zone`, or `timestamp with time zone`. Unrelated to ClickHouse partitioning.',
+        example: 'id',
+      }),
+    partitionByExpr: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'ClickHouse PARTITION BY expression applied to the destination table when ClickPipes creates it.',
+        example: 'toYYYYMM(created_at)',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('ClickPipePostgresPipeTableMapping')
+
+const ClickPipePostgresSourceSchema = z
+  .object({
+    type: z
+      .enum([
+        'postgres',
+        'supabase',
+        'neon',
+        'alloydb',
+        'planetscale',
+        'rdspostgres',
+        'aurorapostgres',
+        'cloudsqlpostgres',
+        'azurepostgres',
+        'crunchybridge',
+        'tigerdata',
+      ])
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Type of the Postgres source. Defaults to "postgres" if not specified.',
+      }),
+    host: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'PostgreSQL server hostname or IP address. To use a reverse private endpoint, pass the endpoint hostname here. For Cloud SQL with SERVICE_ACCOUNT_WORKLOAD_IDENTITY authentication, pass the instance connection name (project:region:instance).',
+        example: 'my-postgres-server.example.com',
+      }),
+    port: z
+      .int()
+      .min(1)
+      .max(65535)
+      .exactOptional()
+      .openapi({ description: 'PostgreSQL server port.', example: 5432 }),
+    database: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'PostgreSQL database name to replicate from.',
+        example: 'production_db',
+      }),
+    authentication: z
+      .enum(['basic', 'IAM_ROLE', 'SERVICE_ACCOUNT_WORKLOAD_IDENTITY'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Authentication method for Postgres connection. IAM_ROLE is only available for services on AWS.',
+        example: 'IAM_ROLE',
+      }),
+    iamRole: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'IAM role ARN for IAM authentication (required for IAM_ROLE authentication, services on AWS only).',
+        example: 'arn:aws:iam::123456789012:role/MyApplicationRole',
+      }),
+    tlsHost: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'TLS/SSL host for secure connections.',
+        example: 'my-postgres-server.example.com',
+      }),
+    caCertificate: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'PEM encoded CA certificate to validate the Postgres server certificate.',
+        example: '-----BEGIN CERTIFICATE-----\n...',
+      }),
+    disableTls: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Disable TLS for the Postgres connection. Use with caution in production environments.',
+        example: false,
+      }),
+    skipCertVerification: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Skip TLS certificate verification for the Postgres connection. Use with caution in production environments.',
+        example: false,
+      }),
+    settings: ClickPipePostgresPipeSettingsSchema.exactOptional(),
+    tableMappings: z
+      .array(ClickPipePostgresPipeTableMappingSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'List of table mappings defining which PostgreSQL tables to replicate and how they map to ClickHouse tables.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('ClickPipePostgresSource')
+
+const ClickPipeMySQLPipeSettingsSchema = z
+  .object({
+    syncIntervalSeconds: z
+      .int()
+      .min(1)
+      .exactOptional()
+      .openapi({
+        description: 'Interval in seconds to sync data from MySQL during CDC replication.',
+        example: 60,
+      }),
+    pullBatchSize: z
+      .int()
+      .min(1)
+      .exactOptional()
+      .openapi({
+        description: 'Number of rows to pull in each batch during CDC replication.',
+        example: 1000,
+      }),
+    replicationMode: z
+      .enum(['cdc', 'snapshot', 'cdc_only'])
+      .openapi({
+        description:
+          'Replication mode: "cdc" (change data capture with initial snapshot), "snapshot" (one-time snapshot only), or "cdc_only" (CDC without initial snapshot).',
+        example: 'cdc',
+      }),
+    replicationMechanism: z
+      .enum(['GTID', 'FILE_POS'])
+      .exactOptional()
+      .openapi({
+        description:
+          'MySQL replication mechanism: "GTID" (Global Transaction Identifier) or "FILE_POS" (binary log file and position). Defaults to "GTID" if not specified. MariaDB supports "GTID" only. For "FILE_POS" on MySQL, contact support.',
+        example: 'GTID',
+      }),
+    useCompression: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Enable compression for the MySQL connection.', example: false }),
+    allowNullableColumns: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Preserve nullability from MySQL in the destination ClickHouse table. When true, columns without NOT NULL constraints are created as Nullable(...). When false, all columns are non-nullable and NULL values are replaced with the default value for the type. Note: Nullable types have performance overhead in ClickHouse.',
+        example: false,
+      }),
+    initialLoadParallelism: z
+      .int()
+      .min(1)
+      .max(64)
+      .exactOptional()
+      .openapi({
+        description: 'Number of parallel workers to use per table in the initial snapshot phase.',
+        example: 4,
+      }),
+    snapshotNumRowsPerPartition: z
+      .int()
+      .min(1000)
+      .exactOptional()
+      .openapi({
+        description: 'Number of rows per partition during the snapshot phase.',
+        example: 100000,
+      }),
+    snapshotNumberOfParallelTables: z
+      .int()
+      .min(1)
+      .max(64)
+      .exactOptional()
+      .openapi({
+        description: 'Number of tables to snapshot in parallel during the initial load phase.',
+        example: 1,
+      }),
+    deleteOnMerge: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Enable hard delete behavior in ReplacingMergeTree for MySQL DELETE operations.',
+        example: false,
+      }),
+    useJsonNativeFormat: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Store JSON columns in native ClickHouse JSON format (requires ClickHouse 25.3+). Non-object values are wrapped as {"_value": ...}. When disabled, JSON data is stored as String. Can only be set at creation. Must be enabled for your organization.',
+        example: false,
+      }),
+  })
+  .openapi({ required: ['replicationMode'] })
+  .openapi('ClickPipeMySQLPipeSettings')
+
+const ClickPipeMySQLPipeTableMappingSchema = z
+  .object({
+    sourceSchemaName: z
+      .string()
+      .openapi({ description: 'MySQL source database name.', example: 'my_database' }),
+    sourceTable: z.string().openapi({ description: 'MySQL source table name.', example: 'users' }),
+    targetTable: z
+      .string()
+      .openapi({
+        description:
+          'ClickHouse target table name, optionally prefixed with schema name (e.g., "my_database_my_table"). The table will be created automatically if it does not exist. For snapshot mode, the target table must be empty.',
+        example: 'my_database_users',
+      }),
+    excludedColumns: z
+      .array(z.string())
+      .superRefine((items, ctx) => {
+        const seen = new Map()
+        for (const [i, val] of items.entries()) {
+          const key = JSON.stringify(val)
+          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+          else seen.set(key, i)
+        }
+      })
+      .exactOptional()
+      .openapi({
+        description:
+          'List of column names to exclude from replication. Column names must be unique within this list.',
+        example: ['internal_id', 'temp_data'],
+      }),
+    useCustomSortingKey: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether to use a custom sorting key. If true, sortingKeys must be provided. If false or omitted, the default sorting key is the MySQL primary key.',
+        example: false,
+      }),
+    sortingKeys: z
+      .array(z.string())
+      .superRefine((items, ctx) => {
+        const seen = new Map()
+        for (const [i, val] of items.entries()) {
+          const key = JSON.stringify(val)
+          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+          else seen.set(key, i)
+        }
+      })
+      .exactOptional()
+      .openapi({
+        description:
+          'Ordered list of column names to use as the sorting (ORDER BY) key in ClickHouse. Only used when useCustomSortingKey is true. Column names must be unique within this list.',
+        example: ['created_at_date', 'event_id'],
+      }),
+    tableEngine: z
+      .enum(['MergeTree', 'ReplacingMergeTree', 'Null'])
+      .exactOptional()
+      .openapi({
+        description:
+          'ClickHouse table engine: "ReplacingMergeTree" (handles updates/deletes), "MergeTree" (append-only), or "Null" (forward data to materialized views without storing it).',
+        example: 'ReplacingMergeTree',
+      }),
+    partitionKey: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Custom partitioning column used for parallel snapshotting. Must be an indexed column of an integer, date, datetime or timestamp type. Unrelated to ClickHouse partitioning.',
+        example: 'id',
+      }),
+    partitionByExpr: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'ClickHouse PARTITION BY expression applied to the destination table when ClickPipes creates it.',
+        example: 'toYYYYMM(created_at)',
+      }),
+  })
+  .openapi({ required: ['sourceSchemaName', 'sourceTable', 'targetTable'] })
+  .openapi('ClickPipeMySQLPipeTableMapping')
+
+const ClickPipeMySQLSourceSchema = z
+  .object({
+    type: z
+      .enum(['mysql', 'rdsmysql', 'auroramysql', 'cloudsqlmysql', 'mariadb', 'rdsmariadb'])
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Type of the MySQL source. Defaults to "mysql" if not specified.' }),
+    host: z
+      .string()
+      .openapi({
+        description:
+          'MySQL server hostname or IP address. To use a reverse private endpoint, pass the endpoint hostname here. For Cloud SQL with SERVICE_ACCOUNT_WORKLOAD_IDENTITY authentication, pass the instance connection name (project:region:instance).',
+        example: 'my-mysql-server.example.com',
+      }),
+    port: z.int().min(1).max(65535).openapi({ description: 'MySQL server port.', example: 3306 }),
+    authentication: z
+      .enum(['basic', 'IAM_ROLE', 'SERVICE_ACCOUNT_WORKLOAD_IDENTITY'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Authentication method for MySQL connection. IAM_ROLE is only available for services on AWS.',
+        example: 'basic',
+      }),
+    iamRole: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'IAM role ARN for IAM authentication (required for IAM_ROLE authentication, services on AWS only).',
+        example: 'arn:aws:iam::123456789012:role/MyApplicationRole',
+      }),
+    tlsHost: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'TLS/SSL host for secure connections.',
+        example: 'my-mysql-server.example.com',
+      }),
+    caCertificate: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'PEM encoded CA certificate to validate the MySQL server certificate.',
+        example: '-----BEGIN CERTIFICATE-----\n...',
+      }),
+    disableTls: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Disable TLS for the MySQL connection. Use with caution in production environments.',
+        example: false,
+      }),
+    skipCertVerification: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Skip TLS certificate verification for the MySQL connection. Use with caution in production environments.',
+        example: false,
+      }),
+    serverId: z
+      .int()
+      .min(1)
+      .max(4294967295)
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional MySQL server_id the pipe declares itself as in the MySQL replication topology. Must be unique across replicas connected to the source. If omitted, one is assigned automatically.',
+        example: 4242,
+      }),
+    settings: ClickPipeMySQLPipeSettingsSchema,
+    tableMappings: z
+      .array(ClickPipeMySQLPipeTableMappingSchema)
+      .openapi({
+        description:
+          'List of table mappings defining which MySQL tables to replicate and how they map to ClickHouse tables.',
+      }),
+  })
+  .openapi({ required: ['host', 'port', 'settings', 'tableMappings'] })
+  .openapi('ClickPipeMySQLSource')
+
+const ClickPipeBigQueryPipeSettingsSchema = z
+  .object({
+    replicationMode: z
+      .string()
+      .openapi({
+        description:
+          'Replication mode: "cdc" (change data capture with initial snapshot), "snapshot" (one-time snapshot only), or "cdc_only" (CDC without initial snapshot).',
+        example: 'cdc',
+      }),
+    replicationMethod: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'How changes are captured from BigQuery. "query_based" polls each table using a watermark timestamp column, "events_based" reads the BigQuery change history using the APPENDS or CHANGES table function. Required for "cdc" and "cdc_only" replication modes and not allowed for "snapshot".',
+        example: 'query_based',
+      }),
+    syncIntervalSeconds: z
+      .int()
+      .min(1)
+      .exactOptional()
+      .openapi({
+        description:
+          'Interval in seconds between CDC syncs. Not allowed for "snapshot" replication mode.',
+        example: 60,
+      }),
+    queryCdcPullSyncParallelism: z
+      .int()
+      .min(1)
+      .exactOptional()
+      .openapi({
+        description:
+          'Number of tables pulled in parallel during a CDC sync. Not allowed for "snapshot" replication mode.',
+        example: 4,
+      }),
+    syncDelaySeconds: z
+      .int()
+      .min(0)
+      .exactOptional()
+      .openapi({
+        description:
+          'Each CDC sync reads data only up to now minus this delay, giving recently written rows time to become visible in BigQuery. Increase it if your tables are loaded via batch jobs or Google Cloud Dataflow; if set too low, late-visible rows may be skipped. Not allowed for "snapshot" replication mode.',
+        example: 60,
+      }),
+    pullWindowSizeSeconds: z
+      .int()
+      .min(1)
+      .exactOptional()
+      .openapi({
+        description:
+          'Maximum amount of time one pull (query) can cover. Applies when the pipe has fallen behind, e.g. on the first CDC sync or when resuming after a pause: with a 6 hour limit, a pipe that is 3 days behind catches up in 12 smaller pulls instead of one large query. If a pull fails, only that pull is retried. Not allowed for "snapshot" replication mode.',
+        example: 86400,
+      }),
+    syncCron: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Standard 5-field cron expression (or a descriptor such as "@hourly") that schedules CDC syncs, e.g. "0 * * * *" to sync every hour sharp. Evaluated in UTC unless prefixed with "CRON_TZ=<zone>". Must not fire more than once a minute. Syncs run on this schedule instead of every syncIntervalSeconds, so the two cannot both be set. Not allowed for "snapshot" replication mode.',
+        example: '0 * * * *',
+      }),
+    allowNullableColumns: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Allow nullable columns in the destination table.' }),
+    initialLoadParallelism: z
+      .int()
+      .min(1)
+      .max(64)
+      .exactOptional()
+      .openapi({ description: 'Number of parallel workers during initial load.' }),
+    snapshotNumRowsPerPartition: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Number of rows to snapshot per partition.' }),
+    snapshotNumberOfParallelTables: z
+      .int()
+      .min(1)
+      .max(64)
+      .exactOptional()
+      .openapi({ description: 'Number of parallel tables to snapshot.' }),
+  })
+  .openapi({ required: ['replicationMode'] })
+  .openapi('ClickPipeBigQueryPipeSettings')
+
+const ClickPipeBigQueryPipeTableMappingSchema = z
+  .object({
+    sourceDatasetName: z.string().openapi({ description: 'Source BigQuery dataset name.' }),
+    sourceTable: z.string().openapi({ description: 'Source table name.' }),
+    targetTable: z.string().openapi({ description: 'Target ClickHouse table name.' }),
+    excludedColumns: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'Columns to exclude from the target table.' }),
+    useCustomSortingKey: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether to use a custom sorting key for the target table.' }),
+    sortingKeys: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description: 'Ordered list of columns to use as sorting key for the target table.',
+      }),
+    tableEngine: z
+      .enum(['MergeTree', 'ReplacingMergeTree', 'Null'])
+      .exactOptional()
+      .openapi({ description: 'Table engine to use for the target table.' }),
+    queryCdcWatermarkColumn: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Source column of type TIMESTAMP used as the CDC watermark. Required for every table when replicationMethod is "query_based"; not allowed otherwise.',
+      }),
+    eventsFunction: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'BigQuery table function used to read changes: "appends" (newly appended rows) or "changes" (all row changes). Required for every table when replicationMethod is "events_based"; not allowed otherwise.',
+        example: 'appends',
+      }),
+  })
+  .openapi({ required: ['sourceDatasetName', 'sourceTable', 'targetTable'] })
+  .openapi('ClickPipeBigQueryPipeTableMapping')
+
+const ClickPipeBigQueryServiceAccountSourceSchema = z
+  .object({
+    snapshotStagingPath: z
+      .string()
+      .openapi({
+        description:
+          'GCS bucket path for staging snapshot data (e.g., gs://my-bucket/staging/). Data will be automatically cleaned up after initial load.',
+      }),
+    settings: ClickPipeBigQueryPipeSettingsSchema,
+    tableMappings: z
+      .array(ClickPipeBigQueryPipeTableMappingSchema)
+      .openapi({ description: 'Table mappings for BigQuery pipe.' }),
+    authentication: z
+      .literal('SERVICE_ACCOUNT')
+      .openapi({ description: 'Authenticated with a Google Cloud service account JSON key.' }),
+    projectId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'GCP project ID that owns the BigQuery resources.',
+        example: 'my-gcp-project',
+      }),
+  })
+  .openapi({ required: ['snapshotStagingPath', 'settings', 'tableMappings', 'authentication'] })
+  .openapi('ClickPipeBigQueryServiceAccountSource')
+
+const ClickPipeBigQueryWorkloadIdentitySourceSchema = z
+  .object({
+    snapshotStagingPath: z
+      .string()
+      .openapi({
+        description:
+          'GCS bucket path for staging snapshot data (e.g., gs://my-bucket/staging/). Data will be automatically cleaned up after initial load.',
+      }),
+    settings: ClickPipeBigQueryPipeSettingsSchema,
+    tableMappings: z
+      .array(ClickPipeBigQueryPipeTableMappingSchema)
+      .openapi({ description: 'Table mappings for BigQuery pipe.' }),
+    authentication: z
+      .literal('SERVICE_ACCOUNT_WORKLOAD_IDENTITY')
+      .openapi({
+        description:
+          'Authenticated with the ClickPipes service tenant identity. SERVICE_ACCOUNT_WORKLOAD_IDENTITY is in Beta. ClickPipes uses the GCP service account returned in gcpWorkloadIdentity.principal by the operation with operationId clickPipesServiceContextGet; grant it access to the source resources.',
+      }),
+    projectId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'GCP project ID that owns the BigQuery resources. Older pipes created outside OpenAPI may omit this field.',
+        example: 'my-gcp-project',
+      }),
+  })
+  .openapi({ required: ['snapshotStagingPath', 'settings', 'tableMappings', 'authentication'] })
+  .openapi('ClickPipeBigQueryWorkloadIdentitySource')
+
+const ClickPipeBigQuerySourceSchema = z
+  .xor([ClickPipeBigQueryServiceAccountSourceSchema, ClickPipeBigQueryWorkloadIdentitySourceSchema])
+  .openapi('ClickPipeBigQuerySource')
+
+const ClickPipeMongoDBPipeSettingsSchema = z
+  .object({
+    syncIntervalSeconds: z
+      .int()
+      .min(1)
+      .exactOptional()
+      .openapi({
+        description: 'Interval in seconds to sync data from MongoDB during CDC replication.',
+        example: 60,
+      }),
+    pullBatchSize: z
+      .int()
+      .min(1)
+      .exactOptional()
+      .openapi({
+        description: 'Number of rows to pull in each batch during CDC replication.',
+        example: 100000,
+      }),
+    replicationMode: z
+      .enum(['cdc', 'snapshot', 'cdc_only'])
+      .openapi({
+        description:
+          'Replication mode: "cdc" (change data capture with initial snapshot), "snapshot" (one-time snapshot only), or "cdc_only" (CDC without initial snapshot).',
+        example: 'cdc',
+      }),
+    initialLoadParallelism: z
+      .int()
+      .min(1)
+      .max(64)
+      .exactOptional()
+      .openapi({
+        description:
+          'Number of parallel workers to use per collection in the initial snapshot phase.',
+        example: 4,
+      }),
+    snapshotNumRowsPerPartition: z
+      .int()
+      .min(1000)
+      .exactOptional()
+      .openapi({
+        description: 'Number of rows per partition during the snapshot phase.',
+        example: 100000,
+      }),
+    snapshotNumberOfParallelTables: z
+      .int()
+      .min(1)
+      .max(64)
+      .exactOptional()
+      .openapi({
+        description: 'Number of collections to snapshot in parallel during the initial load phase.',
+        example: 1,
+      }),
+    deleteOnMerge: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Enable hard delete behavior in ReplacingMergeTree for MongoDB DELETE operations.',
+        example: false,
+      }),
+    useJsonNativeFormat: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Store JSON values in native ClickHouse JSON format. When disabled, JSON data is stored as String.',
+        example: true,
+      }),
+  })
+  .openapi({ required: ['replicationMode'] })
+  .openapi('ClickPipeMongoDBPipeSettings')
+
+const ClickPipeMongoDBPipeColumnSchema = z
+  .object({
+    name: z.string().openapi({ description: 'Top-level document field name.', example: 'amount' }),
+    type: z
+      .string()
+      .openapi({
+        description:
+          'ClickHouse type the field is replicated as. Must be a valid ClickHouse column type supported by structured ingestion.',
+        example: 'Float64',
+      }),
+  })
+  .openapi({ required: ['name', 'type'] })
+  .openapi('ClickPipeMongoDBPipeColumn')
+
+const ClickPipeMongoDBStructuredIngestionSchema = z
+  .object({
+    enabled: z
+      .boolean()
+      .openapi({
+        description:
+          'Replicate the collection into typed ClickHouse columns instead of a single JSON document column.',
+        example: true,
+      }),
+    dropUnexpectedValues: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description:
+          "When true, values that don't fit their column are reported with only the field name and reason, without the value.",
+        example: false,
+      }),
+    columns: z
+      .array(ClickPipeMongoDBPipeColumnSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Typed columns of the collection, taken as provided. When omitted, the columns are inferred from a sample of the collection documents. The _id document is always replicated and uses String type.',
+      }),
+    excludedColumns: z
+      .array(z.string())
+      .superRefine((items, ctx) => {
+        const seen = new Map()
+        for (const [i, val] of items.entries()) {
+          const key = JSON.stringify(val)
+          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+          else seen.set(key, i)
+        }
+      })
+      .exactOptional()
+      .openapi({
+        description:
+          'Names of columns, provided or inferred, to leave out of replication. Names that match no column are ignored. Column names must be unique within this list.',
+        example: ['internal_notes'],
+      }),
+    sortingKeys: z
+      .array(z.string())
+      .superRefine((items, ctx) => {
+        const seen = new Map()
+        for (const [i, val] of items.entries()) {
+          const key = JSON.stringify(val)
+          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+          else seen.set(key, i)
+        }
+      })
+      .exactOptional()
+      .openapi({
+        description:
+          'Ordered list of column names to use as the sorting (ORDER BY) key in ClickHouse. When omitted, the sorting key is the _id document key.',
+        example: ['_id', 'created_at'],
+      }),
+    partitionByExpr: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'ClickHouse PARTITION BY expression applied to the destination table when ClickPipes creates it.',
+        example: 'toYYYYMM(created_at)',
+      }),
+  })
+  .openapi({ required: ['enabled'] })
+  .openapi('ClickPipeMongoDBStructuredIngestion')
+
+const ClickPipeMongoDBTableConfigSchema = z
+  .object({
+    persistDeletedDocuments: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description:
+          'Persist the full document as it was right before it was deleted, instead of only its _id. Requires changeStreamPreAndPostImages to be enabled on the source collection.',
+        example: false,
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('ClickPipeMongoDBTableConfig')
+
+const ClickPipeMongoDBPipeTableMappingSchema = z
+  .object({
+    sourceDatabaseName: z
+      .string()
+      .openapi({ description: 'MongoDB source database name.', example: 'mydb' }),
+    sourceCollection: z
+      .string()
+      .openapi({ description: 'MongoDB source collection name.', example: 'users' }),
+    targetTable: z
+      .string()
+      .openapi({
+        description:
+          'ClickHouse target table name. The table will be created automatically if it does not exist.',
+        example: 'mydb_users',
+      }),
+    tableEngine: z
+      .enum(['MergeTree', 'ReplacingMergeTree', 'Null'])
+      .exactOptional()
+      .openapi({
+        description:
+          'ClickHouse table engine: "ReplacingMergeTree" (handles updates/deletes), "MergeTree" (append-only), or "Null" (forward data to materialized views without storing it).',
+        example: 'ReplacingMergeTree',
+      }),
+    structuredIngestion: ClickPipeMongoDBStructuredIngestionSchema.exactOptional(),
+    mongoConfig: ClickPipeMongoDBTableConfigSchema.exactOptional(),
+  })
+  .openapi({ required: ['sourceDatabaseName', 'sourceCollection', 'targetTable'] })
+  .openapi('ClickPipeMongoDBPipeTableMapping')
+
+const ClickPipeMongoDBSourceSchema = z
+  .object({
+    uri: z
+      .string()
+      .openapi({
+        description:
+          'MongoDB connection URI. Supports both standard URIs (mongodb://...) and SRV URIs (mongodb+srv://...). Embedded credentials are redacted from API responses, so the returned value can differ from what was submitted.',
+        example: 'mongodb+srv://cluster0.example.mongodb.net/mydb',
+      }),
+    readPreference: z
+      .enum(['primary', 'primaryPreferred', 'secondary', 'secondaryPreferred', 'nearest'])
+      .openapi({
+        description: 'MongoDB read preference for replica set reads.',
+        example: 'secondaryPreferred',
+      }),
+    tlsHost: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'TLS/SSL host for secure connections.',
+        example: 'cluster0.example.mongodb.net',
+      }),
+    disableTls: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Disable TLS for the MongoDB connection. Defaults to false (TLS enabled).',
+        example: false,
+      }),
+    skipCertVerification: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Skip TLS certificate verification for the MongoDB connection. Use with caution in production environments.',
+        example: false,
+      }),
+    caCertificate: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'PEM encoded CA certificate to validate the MongoDB server certificate.',
+        example: '-----BEGIN CERTIFICATE-----\n...',
+      }),
+    settings: ClickPipeMongoDBPipeSettingsSchema.exactOptional(),
+    tableMappings: z
+      .array(ClickPipeMongoDBPipeTableMappingSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'List of collection mappings defining which MongoDB collections to replicate and how they map to ClickHouse tables.',
+      }),
+  })
+  .openapi({ required: ['uri', 'readPreference'] })
+  .openapi('ClickPipeMongoDBSource')
+
+const ClickPipeSourceSchema = z
+  .object({
+    kafka: z.xor([ClickPipeKafkaSourceSchema, z.null().nullable()]).exactOptional(),
+    objectStorage: z.xor([ClickPipeObjectStorageSourceSchema, z.null().nullable()]).exactOptional(),
+    kinesis: z.xor([ClickPipeKinesisSourceSchema, z.null().nullable()]).exactOptional(),
+    pubsub: z.xor([ClickPipePubSubSourceSchema, z.null().nullable()]).exactOptional(),
+    postgres: z.xor([ClickPipePostgresSourceSchema, z.null().nullable()]).exactOptional(),
+    mysql: z.xor([ClickPipeMySQLSourceSchema, z.null().nullable()]).exactOptional(),
+    bigquery: z.xor([ClickPipeBigQuerySourceSchema, z.null().nullable()]).exactOptional(),
+    mongodb: z.xor([ClickPipeMongoDBSourceSchema, z.null().nullable()]).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ClickPipeSource')
+
+const ClickPipeDestinationTableEngineSchema = z
+  .object({
+    type: z
+      .enum(['MergeTree', 'ReplacingMergeTree', 'SummingMergeTree', 'Null'])
+      .exactOptional()
+      .openapi({ description: 'Engine type of the destination table.' }),
+    versionColumnId: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Column name to use as version for ReplacingMergeTree engine.' }),
+    columnIds: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'Column names to sum for SummingMergeTree engine.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('ClickPipeDestinationTableEngine')
+
+const ClickPipeDestinationTableDefinitionSchema = z
+  .object({
+    engine: ClickPipeDestinationTableEngineSchema.exactOptional(),
+    sortingKey: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Sorting key of the destination table. An entry that matches the name of a column declared in `columns` is used as that column. Any other entry is used as a SQL expression, for example a JSON sub-path such as `payload.workspace_id`. Entries must not contain commas, and every component must be non-Nullable.',
+      }),
+    partitionBy: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Partition key SQL expression.' }),
+    primaryKey: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Primary key of SQL expression.' }),
+    ttl: z
+      .string()
+      .min(1)
+      .exactOptional()
+      .openapi({
+        description: 'TTL SQL expression of the destination table.',
+        example: 'toDateTime(event_time) + INTERVAL 30 DAY',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('ClickPipeDestinationTableDefinition')
+
+const ClickPipeDestinationColumnSchema = z
+  .object({
+    name: z.string().exactOptional().openapi({ description: 'Name of the column.' }),
+    type: z.string().exactOptional().openapi({ description: 'Type of the column.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('ClickPipeDestinationColumn')
+
+const ClickPipeDestinationSchema = z
+  .object({
+    database: z.string().exactOptional().openapi({ description: 'Destination database.' }),
+    table: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Destination table. Required field for all pipe types except database pipes (Postgres, MySQL, BigQuery).',
+      }),
+    managedTable: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Is the table managed by ClickPipes? Required field for all pipe types except database pipes (Postgres, MySQL, BigQuery).',
+      }),
+    tableDefinition: ClickPipeDestinationTableDefinitionSchema.exactOptional(),
+    columns: z
+      .array(ClickPipeDestinationColumnSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Columns of the destination table. Required field for all pipe types except database pipes (Postgres, MySQL, BigQuery).',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('ClickPipeDestination')
+
+const ClickPipeFieldMappingSchema = z
+  .object({
+    sourceField: z.string().exactOptional().openapi({ description: 'Source field name.' }),
+    destinationField: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Destination field name.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('ClickPipeFieldMapping')
+
+const ClickPipeSettingsSchema = z
+  .object({
+    streaming_max_insert_wait_ms: z
+      .int()
+      .min(500)
+      .max(60000)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Streaming max insert wait time. Configures the max wait period before inserting data into the ClickHouse.',
+        example: 5000,
+      }),
+    object_storage_concurrency: z
+      .int()
+      .min(1)
+      .max(35)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Object storage concurrency. Number of concurrent file processing threads',
+        example: 1,
+      }),
+    object_storage_polling_interval_ms: z
+      .int()
+      .min(100)
+      .max(3600000)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Object storage polling interval. Configures the refresh interval for querying continuous ingest for new object storage data',
+        example: 30000,
+      }),
+    object_storage_max_insert_bytes: z
+      .int()
+      .min(524288000)
+      .max(10737418240)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Max insert bytes. Number of bytes to process in a single insert batch',
+        example: 10737418240,
+      }),
+    object_storage_max_file_count: z
+      .int()
+      .min(1)
+      .max(10000)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Max file count. Maximum number of files to process in a single insert batch',
+        example: 100,
+      }),
+    object_storage_max_file_size: z
+      .int()
+      .min(1048576)
+      .max(536870912000)
+      .exactOptional()
+      .openapi({
+        description:
+          'Max file size. Files larger than this are skipped and not retried. Can only lower the limit. Private preview. Contact support to enable it for your organization.',
+        example: 10737418240,
+      }),
+    clickhouse_max_threads: z
+      .int()
+      .min(0)
+      .max(64)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Max threads. Maximum number of concurrent threads for file processing',
+        example: 8,
+      }),
+    clickhouse_max_insert_threads: z
+      .int()
+      .min(0)
+      .max(16)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Max insert threads. Maximum number of concurrent insert threads',
+        example: 1,
+      }),
+    clickhouse_min_insert_block_size_bytes: z
+      .int()
+      .min(0)
+      .max(10737418240)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Min insert block size bytes. Minimum size of data block for insert (in bytes)',
+        example: 1073741824,
+      }),
+    clickhouse_max_download_threads: z
+      .int()
+      .min(0)
+      .max(32)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Max download threads. Maximum number of concurrent download threads',
+        example: 4,
+      }),
+    clickhouse_parallel_distributed_insert_select: z
+      .int()
+      .min(0)
+      .max(2)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Parallel distributed insert select. Only applies when object_storage_use_cluster_function is enabled. When disabled, this setting is ignored and the effective value is 0.',
+        example: 2,
+      }),
+    kafka_read_committed: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Kafka Read Committed. Whether Kafka consumers read only committed messages',
+        example: false,
+      }),
+    object_storage_use_cluster_function: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'use cluster function. Whether to use ClickHouse cluster function for distributed processing',
+        example: true,
+      }),
+    clickhouse_parallel_view_processing: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'parallel view processing. Whether to enable pushing to attached views concurrently instead of sequentially',
+        example: false,
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('ClickPipeSettings')
+
+type ClickPipeType = {
+  id?: string
+  serviceId?: string
+  name?: string
+  state?:
+    | 'Unknown'
+    | 'Provisioning'
+    | 'Running'
+    | 'Degraded'
+    | 'Stopping'
+    | 'Stopped'
+    | 'Failed'
+    | 'Completed'
+    | 'InternalError'
+    | 'Setup'
+    | 'Snapshot'
+    | 'Paused'
+    | 'Pausing'
+    | 'Modifying'
+    | 'Resync'
+  scaling?: z.infer<typeof ClickPipeScalingSchema>
+  source?: z.infer<typeof ClickPipeSourceSchema>
+  destination?: z.infer<typeof ClickPipeDestinationSchema>
+  fieldMappings?: z.infer<typeof ClickPipeFieldMappingSchema>[]
+  settings?: z.infer<typeof ClickPipeSettingsSchema>
+  createdAt?: string
+  updatedAt?: string
+}
 
 type ScimSchemaAttributeType = {
   name: string
@@ -105,6 +1826,1835 @@ type ScimSchemaAttributeType = {
   uniqueness?: string
   referenceTypes?: string[]
   canonicalValues?: string[]
+}
+
+const ClickPipeKafkaSchemaRegistryCredentialsSchema = z
+  .object({
+    username: z.string().openapi({ description: 'Username for the schema registry.' }),
+    password: z.string().openapi({ description: 'Password for the schema registry.' }),
+  })
+  .openapi({ required: ['username', 'password'] })
+  .openapi('ClickPipeKafkaSchemaRegistryCredentials')
+
+const ClickPipeKafkaSchemaRegistryClientCredentialsSchema = z
+  .object({
+    clientId: z.string().openapi({ description: 'OAuth2 client ID for the schema registry.' }),
+    clientSecret: z
+      .string()
+      .openapi({ description: 'OAuth2 client secret for the schema registry.' }),
+  })
+  .openapi({ required: ['clientId', 'clientSecret'] })
+  .openapi('ClickPipeKafkaSchemaRegistryClientCredentials')
+
+const ClickPipeMutateKafkaConfluentSchemaRegistrySchema = z
+  .object({
+    type: z
+      .literal('confluent')
+      .exactOptional()
+      .openapi({
+        description:
+          "Type of the schema registry. Defaults to 'confluent' (a Confluent-compatible REST registry).",
+      }),
+    url: z
+      .string()
+      .openapi({
+        description: 'Schema URL. HTTPS required.',
+        example: 'https://psrc-aa00.us-east-2.aws.confluent.cloud/schemas/ids/100004',
+      }),
+    authentication: z
+      .string()
+      .openapi({
+        description:
+          "Authentication type of the schema registry. One of 'PLAIN', 'CLIENT_CREDENTIALS'. PLAIN uses a username and password. CLIENT_CREDENTIALS uses the OAuth2 client credentials flow.",
+        example: 'PLAIN',
+      }),
+    caCertificate: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: "PEM encoded CA certificates to validate the schema registry's certificate.",
+      }),
+    tokenUrl: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'OAuth2 token endpoint. HTTPS required. Required when authentication is CLIENT_CREDENTIALS.',
+        example: 'https://auth.example.com/oauth2/v1/token',
+      }),
+    scope: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Space-separated OAuth2 scopes to request. Only used when authentication is CLIENT_CREDENTIALS.',
+        example: 'schema_registry',
+      }),
+    audience: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'OAuth2 audience to request. Only used when authentication is CLIENT_CREDENTIALS.',
+        example: 'https://schema-registry.example.com',
+      }),
+    credentials: z
+      .xor([
+        ClickPipeKafkaSchemaRegistryCredentialsSchema,
+        ClickPipeKafkaSchemaRegistryClientCredentialsSchema,
+      ])
+      .openapi({
+        description:
+          'Credentials for the schema registry. Use a username and password for PLAIN, or a client ID and secret for CLIENT_CREDENTIALS.',
+      }),
+  })
+  .openapi({ required: ['url', 'authentication', 'credentials'] })
+  .openapi('ClickPipeMutateKafkaConfluentSchemaRegistry')
+
+const ClickPipeMutateKafkaSchemaRegistrySchema = z
+  .xor([ClickPipeMutateKafkaConfluentSchemaRegistrySchema, ClickPipeKafkaGlueSchemaRegistrySchema])
+  .openapi('ClickPipeMutateKafkaSchemaRegistry')
+
+const PLAINSchema = z
+  .object({
+    username: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Database username.', example: 'postgres_user' }),
+    password: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Database password.', example: 'your_secure_password' }),
+  })
+  .openapi({ required: [] })
+  .openapi('PLAIN')
+
+const MskIamUserSchema = z
+  .object({
+    accessKeyId: z.string().exactOptional().openapi({ description: 'IAM access key ID.' }),
+    secretKey: z.string().exactOptional().openapi({ description: 'IAM secret key.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('MskIamUser')
+
+const AzureEventHubSchema = z
+  .object({
+    connectionString: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Connection string for Azure EventHub source.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('AzureEventHub')
+
+const MutualTLSSchema = z
+  .object({
+    certificate: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'PEM encoded client certificate for mTLS authentication.' }),
+    privateKey: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'PEM encoded client private key for mTLS authentication.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('MutualTLS')
+
+const ClickPipePostKafkaSourceSchema = z
+  .object({
+    type: z
+      .enum([
+        'kafka',
+        'redpanda',
+        'msk',
+        'gcmk',
+        'confluent',
+        'warpstream',
+        'azureeventhub',
+        'dokafka',
+      ])
+      .openapi({ description: 'Type of the Kafka source.' }),
+    format: z
+      .enum(['JSONEachRow', 'Avro', 'AvroConfluent', 'Protobuf'])
+      .openapi({ description: 'Format of the Kafka source.' }),
+    brokers: z.string().openapi({ description: 'Brokers of the Kafka source.' }),
+    topics: z
+      .string()
+      .openapi({
+        description:
+          'One or more Kafka topics as a comma-separated string. All topics must have the same schema and are ingested into the same destination table by a single ClickPipe.',
+        example: 'topic1,topic2',
+      }),
+    consumerGroup: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Consumer group of the Kafka source. If not provided "clickpipes-<<ID>>" will be used.',
+        example: 'my-clickpipe-consumer-group',
+      }),
+    authentication: z
+      .enum([
+        'PLAIN',
+        'SCRAM-SHA-256',
+        'SCRAM-SHA-512',
+        'IAM_ROLE',
+        'IAM_USER',
+        'MUTUAL_TLS',
+        'SERVICE_ACCOUNT_WORKLOAD_IDENTITY',
+      ])
+      .openapi({
+        description:
+          'Authentication method of the Kafka source. SERVICE_ACCOUNT_WORKLOAD_IDENTITY is in Beta. ClickPipes uses the GCP service account returned in gcpWorkloadIdentity.principal by the operation with operationId clickPipesServiceContextGet; grant it access to the source resources. Supported authentication methods: kafka: PLAIN, SCRAM-SHA-256, SCRAM-SHA-512, MUTUAL_TLS, msk: SCRAM-SHA-512, IAM_ROLE, IAM_USER, MUTUAL_TLS, gcmk: PLAIN, MUTUAL_TLS, SERVICE_ACCOUNT_WORKLOAD_IDENTITY, confluent: PLAIN, SCRAM-SHA-512, MUTUAL_TLS, warpstream: PLAIN, azureeventhub: PLAIN, redpanda: SCRAM-SHA-256, SCRAM-SHA-512, MUTUAL_TLS, dokafka: SCRAM-SHA-256, MUTUAL_TLS',
+      }),
+    iamRole: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'IAM role for the Kafka source. Use with IAM role authentication. Read more in ClickPipes documentation: https://clickhouse.com/docs/en/integrations/clickpipes/kafka#iam',
+        example: 'arn:aws:iam::123456789012:role/MyRole',
+      }),
+    offset: z.xor([ClickPipeKafkaOffsetSchema, z.null().nullable()]).exactOptional(),
+    schemaRegistry: z
+      .xor([ClickPipeMutateKafkaSchemaRegistrySchema, z.null().nullable()])
+      .exactOptional(),
+    caCertificate: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: "PEM encoded CA certificates to validate the broker's certificate.",
+      }),
+    reversePrivateEndpointIds: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Reverse private endpoint UUIDs used for a secure private connection to the Kafka source.',
+      }),
+    exactlyOnce: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Enable exactly-once delivery. Guarantees every Kafka record is inserted exactly once across restarts and rebalances. Can only be set at pipe creation.',
+      }),
+    tombstoneMode: z
+      .enum(['delete', 'soft_delete'])
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'How Kafka tombstone records are handled. Set to "delete" to delete the matching destination row; this requires exactly-once delivery. Set to "soft_delete" to write a row with the _is_deleted virtual column set to true; exactly-once delivery is not required. Can only be set at pipe creation.',
+        example: 'soft_delete',
+      }),
+    credentials: z
+      .xor([PLAINSchema, MskIamUserSchema, AzureEventHubSchema, MutualTLSSchema])
+      .exactOptional()
+      .openapi({
+        description:
+          'Credentials for Kafka source. Choose one that is supported by the authentication method.',
+      }),
+    protobufSchema: z
+      .string()
+      .min(1)
+      .max(1048576)
+      .exactOptional()
+      .openapi({
+        description:
+          'Base64-encoded .proto source or serialized FileDescriptorSet. Supported only with Protobuf format and cannot be combined with schemaRegistry.',
+        example: 'c3ludGF4ID0gInByb3RvMyI7IG1lc3NhZ2UgRXZlbnQge30=',
+        writeOnly: true,
+      }),
+  })
+  .openapi({ required: ['type', 'format', 'brokers', 'topics', 'authentication'] })
+  .openapi('ClickPipePostKafkaSource')
+
+const ClickPipePostObjectStorageSourceSchema = z
+  .object({
+    type: z
+      .enum(['s3', 'gcs', 'dospaces', 'azureblobstorage', 'cloudflarer2', 'ovhobjectstorage'])
+      .exactOptional()
+      .openapi({ description: 'Type of the ObjectStorage source.' }),
+    format: z
+      .enum([
+        'JSONEachRow',
+        'JSONAsObject',
+        'CSV',
+        'CSVWithNames',
+        'TabSeparated',
+        'TabSeparatedWithNames',
+        'Parquet',
+        'Avro',
+      ])
+      .exactOptional()
+      .openapi({ description: 'Format of the files.' }),
+    url: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Provide a path to the file(s) you want to ingest. You can specify multiple files using bash-like wildcards. For more information, see the documentation on using wildcards in path: https://clickhouse.com/docs/en/integrations/clickpipes/object-storage#limitations',
+        example: 'https://datasets-documentation.s3.eu-west-3.amazonaws.com/http/**.ndjson.gz',
+      }),
+    delimiter: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Delimiter used in the files.', example: ',' }),
+    skipFirstLines: z
+      .int()
+      .min(0)
+      .max(100)
+      .exactOptional()
+      .openapi({
+        description:
+          'Number of lines to skip at the start of each file. Only for TabSeparated and TabSeparatedWithNames formats. Can only be set at pipe creation.',
+        example: 1,
+      }),
+    compression: z
+      .enum(['none', 'gzip', 'gz', 'brotli', 'br', 'xz', 'LZMA', 'zstd', 'auto'])
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Compression algorithm used for the files.', example: 'auto' }),
+    isContinuous: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'If set to true, the pipe will continuously read new files from the source. If set to false, the pipe will read the files only once. New files have to be uploaded lexically order.',
+      }),
+    queueUrl: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Queue URL for event-based continuous ingestion. For S3, provide an SQS queue URL. For GCS, provide a Pub/Sub subscription (e.g. projects/{project}/subscriptions/{name}). When provided, files are ingested based on event notifications rather than lexicographical order. Only applicable when isContinuous is true and authentication is not public.',
+        example: 'https://sqs.us-east-1.amazonaws.com/123456789012/MyQueue',
+      }),
+    skipInitialLoad: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'If set to true, skips the initial load and only ingests files delivered by queue notifications. Only applicable when queueUrl is provided.',
+      }),
+    startAfter: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Skip all files up to and including this object key during the initial load. Cannot be provided when skipInitialLoad is true.',
+        example: 'events/2026-06-01/',
+      }),
+    authentication: z
+      .enum([
+        'IAM_ROLE',
+        'IAM_USER',
+        'CONNECTION_STRING',
+        'SERVICE_ACCOUNT',
+        'SERVICE_ACCOUNT_WORKLOAD_IDENTITY',
+      ])
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Authentication method. IAM_USER is for S3, GCS, and DigitalOcean Spaces. IAM_ROLE is for S3 only. SERVICE_ACCOUNT is for GCS only. For GCS, SERVICE_ACCOUNT_WORKLOAD_IDENTITY is in Beta. ClickPipes uses the GCP service account returned in gcpWorkloadIdentity.principal by the operation with operationId clickPipesServiceContextGet; grant it access to the source resources. CONNECTION_STRING is for Azure Blob Storage. PUBLIC uses no authentication.',
+      }),
+    iamRole: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'IAM role to be used with IAM role authentication. Read more in ClickPipes documentation: https://clickhouse.com/docs/en/integrations/clickpipes/object-storage#authentication',
+        example: 'arn:aws:iam::123456789012:role/MyRole',
+      }),
+    connectionString: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Connection string for Azure Blob Storage authentication. Required when authentication is CONNECTION_STRING.',
+        example:
+          'DefaultEndpointsProtocol=https;AccountName=myaccount;AccountKey=mykey;EndpointSuffix=core.windows.net',
+      }),
+    path: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Path to the file(s) within the Azure container. Used for Azure Blob Storage sources. You can specify multiple files using bash-like wildcards. For more information, see the documentation on using wildcards in path: https://clickhouse.com/docs/en/integrations/clickpipes/object-storage#limitations',
+        example: 'data/logs/*.json',
+      }),
+    azureContainerName: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Container name for Azure Blob Storage. Required when type is azureblobstorage.',
+        example: 'mycontainer',
+      }),
+    accessKey: z.xor([MskIamUserSchema, z.null().nullable()]).exactOptional(),
+    serviceAccountKey: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Base64-encoded GCP service account JSON key. Required when authentication is SERVICE_ACCOUNT.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('ClickPipePostObjectStorageSource')
+
+const ClickPipePostKinesisSourceSchema = z
+  .object({
+    format: z
+      .enum(['JSONEachRow', 'Avro', 'AvroConfluent', 'Protobuf'])
+      .exactOptional()
+      .openapi({ description: 'Format of the Kinesis stream.' }),
+    streamName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Name of the Kinesis stream.', example: 'my-stream' }),
+    region: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'AWS region of the Kinesis stream.', example: 'us-east-1' }),
+    useEnhancedFanOut: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Use enhanced fan-out for the Kinesis stream.' }),
+    iteratorType: z
+      .enum(['TRIM_HORIZON', 'LATEST', 'AT_TIMESTAMP'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Type of iterator to use when reading from the Kinesis stream. If AT_TIMESTAMP is used, the timestamp field must be provided.',
+      }),
+    timestamp: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'UNIX timestamp to start reading from the Kinesis stream. Required if iteratorType is AT_TIMESTAMP.',
+        example: 1615766400,
+      }),
+    authentication: z
+      .enum(['IAM_ROLE', 'IAM_USER'])
+      .exactOptional()
+      .openapi({ description: 'Authentication method to use with the Kinesis stream.' }),
+    iamRole: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'IAM role to use for authentication. Required if IAM_ROLE is used.',
+        example: 'arn:aws:iam::123456789012:role/MyRole',
+      }),
+    schemaRegistry: z
+      .xor([ClickPipeKinesisSchemaRegistrySchema, z.null().nullable()])
+      .exactOptional(),
+    accessKey: z.xor([MskIamUserSchema, z.null().nullable()]).exactOptional(),
+    protobufSchema: z
+      .string()
+      .min(1)
+      .max(1048576)
+      .exactOptional()
+      .openapi({
+        description:
+          'Base64-encoded .proto source or serialized FileDescriptorSet. Required with Protobuf format unless a schema registry is configured, and not supported with other formats.',
+        example: 'c3ludGF4ID0gInByb3RvMyI7IG1lc3NhZ2UgRXZlbnQge30=',
+        writeOnly: true,
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('ClickPipePostKinesisSource')
+
+const ServiceAccountSchema = z
+  .object({
+    serviceAccountFile: z
+      .string()
+      .openapi({
+        description: 'Google Cloud service account JSON key file content, base64 encoded.',
+      }),
+  })
+  .openapi({ required: ['serviceAccountFile'] })
+  .openapi('ServiceAccount')
+
+const ClickPipePostPubSubServiceAccountSourceSchema = z
+  .strictObject({
+    format: z
+      .enum(['JSONEachRow', 'Avro', 'Protobuf'])
+      .openapi({
+        description:
+          'Format of messages in the Pub/Sub topic. GCP Pub/Sub ClickPipes are in private preview — contact support to enable this feature for your organization.',
+        example: 'JSONEachRow',
+      }),
+    projectId: z
+      .string()
+      .openapi({
+        description: 'GCP project ID that owns the Pub/Sub topic.',
+        example: 'my-gcp-project',
+      }),
+    topic: z
+      .string()
+      .openapi({
+        description: 'Pub/Sub topic name (not the fully-qualified path).',
+        example: 'my-topic',
+      }),
+    authentication: z
+      .literal('SERVICE_ACCOUNT')
+      .openapi({
+        description: 'Authenticate with a GCP service account JSON key.',
+        example: 'SERVICE_ACCOUNT',
+      }),
+    seekType: z
+      .enum(['latest', 'earliest', 'timestamp'])
+      .openapi({
+        description:
+          'Starting position strategy for consuming the subscription. The seekTimestamp companion is required only when seekType is "timestamp"; setting it for a mismatched seek type is rejected.',
+        example: 'earliest',
+      }),
+    seekTimestamp: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'RFC 3339 / ISO 8601 timestamp to seek to. Required when seekType is "timestamp"; must be omitted otherwise.',
+        example: '2026-04-10T12:00:00Z',
+      }),
+    filter: z
+      .string()
+      .max(256)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional Pub/Sub subscription filter expression (CEL). Maximum 256 characters.',
+      }),
+    enableOrdering: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether to enable ordered delivery of messages (requires messages to be published with ordering keys).',
+      }),
+    ackDeadline: z
+      .int()
+      .min(10)
+      .max(600)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Acknowledgement deadline for messages, in seconds. Must be between 10 and 600.',
+      }),
+    serviceAccountKey: ServiceAccountSchema,
+  })
+  .openapi({
+    required: ['format', 'projectId', 'topic', 'authentication', 'seekType', 'serviceAccountKey'],
+  })
+  .openapi('ClickPipePostPubSubServiceAccountSource')
+
+const ClickPipePostPubSubWorkloadIdentitySourceSchema = z
+  .strictObject({
+    format: z
+      .enum(['JSONEachRow', 'Avro', 'Protobuf'])
+      .openapi({
+        description:
+          'Format of messages in the Pub/Sub topic. GCP Pub/Sub ClickPipes are in private preview — contact support to enable this feature for your organization.',
+        example: 'JSONEachRow',
+      }),
+    projectId: z
+      .string()
+      .openapi({
+        description: 'GCP project ID that owns the Pub/Sub topic.',
+        example: 'my-gcp-project',
+      }),
+    topic: z
+      .string()
+      .openapi({
+        description: 'Pub/Sub topic name (not the fully-qualified path).',
+        example: 'my-topic',
+      }),
+    authentication: z
+      .literal('SERVICE_ACCOUNT_WORKLOAD_IDENTITY')
+      .openapi({
+        description:
+          'SERVICE_ACCOUNT_WORKLOAD_IDENTITY is in Beta. ClickPipes uses the GCP service account returned in gcpWorkloadIdentity.principal by the operation with operationId clickPipesServiceContextGet; grant it access to the source resources.',
+        example: 'SERVICE_ACCOUNT_WORKLOAD_IDENTITY',
+      }),
+    seekType: z
+      .enum(['latest', 'earliest', 'timestamp'])
+      .openapi({
+        description:
+          'Starting position strategy for consuming the subscription. The seekTimestamp companion is required only when seekType is "timestamp"; setting it for a mismatched seek type is rejected.',
+        example: 'earliest',
+      }),
+    seekTimestamp: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'RFC 3339 / ISO 8601 timestamp to seek to. Required when seekType is "timestamp"; must be omitted otherwise.',
+        example: '2026-04-10T12:00:00Z',
+      }),
+    filter: z
+      .string()
+      .max(256)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional Pub/Sub subscription filter expression (CEL). Maximum 256 characters.',
+      }),
+    enableOrdering: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether to enable ordered delivery of messages (requires messages to be published with ordering keys).',
+      }),
+    ackDeadline: z
+      .int()
+      .min(10)
+      .max(600)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Acknowledgement deadline for messages, in seconds. Must be between 10 and 600.',
+      }),
+  })
+  .openapi({ required: ['format', 'projectId', 'topic', 'authentication', 'seekType'] })
+  .openapi('ClickPipePostPubSubWorkloadIdentitySource')
+
+const ClickPipePostPubSubSourceSchema = z
+  .xor([
+    ClickPipePostPubSubServiceAccountSourceSchema,
+    ClickPipePostPubSubWorkloadIdentitySourceSchema,
+  ])
+  .openapi('ClickPipePostPubSubSource')
+
+const ClickPipeMutatePostgresSourceSchema = z
+  .object({
+    type: z
+      .enum([
+        'postgres',
+        'supabase',
+        'neon',
+        'alloydb',
+        'planetscale',
+        'rdspostgres',
+        'aurorapostgres',
+        'cloudsqlpostgres',
+        'azurepostgres',
+        'crunchybridge',
+        'tigerdata',
+      ])
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Type of the Postgres source. Defaults to "postgres" if not specified.',
+      }),
+    credentials: PLAINSchema.exactOptional(),
+    host: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'PostgreSQL server hostname or IP address. To use a reverse private endpoint, pass the endpoint hostname here. For Cloud SQL with SERVICE_ACCOUNT_WORKLOAD_IDENTITY authentication, pass the instance connection name (project:region:instance).',
+        example: 'my-postgres-server.example.com',
+      }),
+    port: z
+      .int()
+      .min(1)
+      .max(65535)
+      .exactOptional()
+      .openapi({ description: 'PostgreSQL server port.', example: 5432 }),
+    database: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'PostgreSQL database name to replicate from.',
+        example: 'production_db',
+      }),
+    settings: ClickPipePostgresPipeSettingsSchema.exactOptional(),
+    authentication: z
+      .enum(['basic', 'IAM_ROLE', 'SERVICE_ACCOUNT_WORKLOAD_IDENTITY'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Authentication method for Postgres connection. IAM_ROLE is only available for services on AWS.',
+        example: 'IAM_ROLE',
+      }),
+    iamRole: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'IAM role ARN for IAM authentication (required for IAM_ROLE authentication, services on AWS only).',
+        example: 'arn:aws:iam::123456789012:role/MyApplicationRole',
+      }),
+    tlsHost: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'TLS/SSL host for secure connections.',
+        example: 'my-postgres-server.example.com',
+      }),
+    caCertificate: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'PEM encoded CA certificate to validate the Postgres server certificate.',
+        example: '-----BEGIN CERTIFICATE-----\n...',
+      }),
+    disableTls: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description:
+          'Disable TLS for the Postgres connection. Use with caution in production environments. Defaults to false when omitted.',
+        example: false,
+      }),
+    skipCertVerification: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Skip TLS certificate verification for the Postgres connection. Use with caution in production environments.',
+        example: false,
+      }),
+    tableMappings: z
+      .array(ClickPipePostgresPipeTableMappingSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'List of table mappings defining which PostgreSQL tables to replicate and how they map to ClickHouse tables.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('ClickPipeMutatePostgresSource')
+
+const ClickPipeMutateMySQLSourceSchema = z
+  .object({
+    type: z
+      .enum(['mysql', 'rdsmysql', 'auroramysql', 'cloudsqlmysql', 'mariadb', 'rdsmariadb'])
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Type of the MySQL source. Defaults to "mysql" if not specified.' }),
+    credentials: PLAINSchema.exactOptional(),
+    host: z
+      .string()
+      .openapi({
+        description:
+          'MySQL server hostname or IP address. To use a reverse private endpoint, pass the endpoint hostname here. For Cloud SQL with SERVICE_ACCOUNT_WORKLOAD_IDENTITY authentication, pass the instance connection name (project:region:instance).',
+        example: 'my-mysql-server.example.com',
+      }),
+    port: z.int().min(1).max(65535).openapi({ description: 'MySQL server port.', example: 3306 }),
+    settings: ClickPipeMySQLPipeSettingsSchema,
+    authentication: z
+      .enum(['basic', 'IAM_ROLE', 'SERVICE_ACCOUNT_WORKLOAD_IDENTITY'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Authentication method for MySQL connection. IAM_ROLE is only available for services on AWS.',
+        example: 'basic',
+      }),
+    iamRole: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'IAM role ARN for IAM authentication (required for IAM_ROLE authentication, services on AWS only).',
+        example: 'arn:aws:iam::123456789012:role/MyApplicationRole',
+      }),
+    tlsHost: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'TLS/SSL host for secure connections.',
+        example: 'my-mysql-server.example.com',
+      }),
+    caCertificate: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'PEM encoded CA certificate to validate the MySQL server certificate.',
+        example: '-----BEGIN CERTIFICATE-----\n...',
+      }),
+    disableTls: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description:
+          'Disable TLS for the MySQL connection. Use with caution in production environments. Defaults to false when omitted.',
+        example: false,
+      }),
+    skipCertVerification: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Skip TLS certificate verification for the MySQL connection. Use with caution in production environments.',
+        example: false,
+      }),
+    serverId: z
+      .int()
+      .min(1)
+      .max(4294967295)
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional MySQL server_id the pipe declares itself as in the MySQL replication topology. Must be unique across replicas connected to the source. If omitted, one is assigned automatically.',
+        example: 4242,
+      }),
+    tableMappings: z
+      .array(ClickPipeMySQLPipeTableMappingSchema)
+      .openapi({
+        description:
+          'List of table mappings defining which MySQL tables to replicate and how they map to ClickHouse tables.',
+      }),
+  })
+  .openapi({ required: ['host', 'port', 'settings', 'tableMappings'] })
+  .openapi('ClickPipeMutateMySQLSource')
+
+const ClickPipePostBigQueryServiceAccountSourceSchema = z
+  .strictObject({
+    snapshotStagingPath: z
+      .string()
+      .openapi({
+        description:
+          'GCS bucket path for staging snapshot data (e.g., gs://my-bucket/staging/). Data will be automatically cleaned up after initial load.',
+      }),
+    settings: ClickPipeBigQueryPipeSettingsSchema,
+    tableMappings: z
+      .array(ClickPipeBigQueryPipeTableMappingSchema)
+      .openapi({ description: 'Table mappings for BigQuery pipe.' }),
+    authentication: z
+      .literal('SERVICE_ACCOUNT')
+      .exactOptional()
+      .openapi({
+        description:
+          'Authenticate with a Google Cloud service account JSON key. Defaults to SERVICE_ACCOUNT when omitted.',
+      }),
+    projectId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'GCP project ID that owns the BigQuery resources.',
+        example: 'my-gcp-project',
+      }),
+    credentials: ServiceAccountSchema,
+  })
+  .openapi({ required: ['snapshotStagingPath', 'settings', 'tableMappings', 'credentials'] })
+  .openapi('ClickPipePostBigQueryServiceAccountSource')
+
+const ClickPipePostBigQueryWorkloadIdentitySourceSchema = z
+  .strictObject({
+    snapshotStagingPath: z
+      .string()
+      .openapi({
+        description:
+          'GCS bucket path for staging snapshot data (e.g., gs://my-bucket/staging/). Data will be automatically cleaned up after initial load.',
+      }),
+    settings: ClickPipeBigQueryPipeSettingsSchema,
+    tableMappings: z
+      .array(ClickPipeBigQueryPipeTableMappingSchema)
+      .openapi({ description: 'Table mappings for BigQuery pipe.' }),
+    authentication: z
+      .literal('SERVICE_ACCOUNT_WORKLOAD_IDENTITY')
+      .openapi({
+        description:
+          'Authenticate with the ClickPipes service tenant identity. Customer credentials must not be provided. SERVICE_ACCOUNT_WORKLOAD_IDENTITY is in Beta. ClickPipes uses the GCP service account returned in gcpWorkloadIdentity.principal by the operation with operationId clickPipesServiceContextGet; grant it access to the source resources.',
+        example: 'SERVICE_ACCOUNT_WORKLOAD_IDENTITY',
+      }),
+    projectId: z
+      .string()
+      .openapi({
+        description: 'GCP project ID that owns the BigQuery resources.',
+        example: 'my-gcp-project',
+      }),
+  })
+  .openapi({
+    required: ['snapshotStagingPath', 'settings', 'tableMappings', 'authentication', 'projectId'],
+  })
+  .openapi('ClickPipePostBigQueryWorkloadIdentitySource')
+
+const ClickPipeMutateBigQuerySourceSchema = z
+  .xor([
+    ClickPipePostBigQueryServiceAccountSourceSchema,
+    ClickPipePostBigQueryWorkloadIdentitySourceSchema,
+  ])
+  .openapi('ClickPipeMutateBigQuerySource')
+
+const ClickPipeMutateMongoDBSourceSchema = z
+  .object({
+    credentials: PLAINSchema.exactOptional(),
+    uri: z
+      .string()
+      .openapi({
+        description:
+          'MongoDB connection URI. Supports both standard URIs (mongodb://...) and SRV URIs (mongodb+srv://...). Embedded credentials are redacted from API responses, so the returned value can differ from what was submitted.',
+        example: 'mongodb+srv://cluster0.example.mongodb.net/mydb',
+      }),
+    readPreference: z
+      .enum(['primary', 'primaryPreferred', 'secondary', 'secondaryPreferred', 'nearest'])
+      .openapi({
+        description: 'MongoDB read preference for replica set reads.',
+        example: 'secondaryPreferred',
+      }),
+    tlsHost: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'TLS/SSL host for secure connections.',
+        example: 'cluster0.example.mongodb.net',
+      }),
+    disableTls: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description: 'Disable TLS for the MongoDB connection. Defaults to false (TLS enabled).',
+        example: false,
+      }),
+    skipCertVerification: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Skip TLS certificate verification for the MongoDB connection. Use with caution in production environments.',
+        example: false,
+      }),
+    caCertificate: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'PEM encoded CA certificate to validate the MongoDB server certificate.',
+        example: '-----BEGIN CERTIFICATE-----\n...',
+      }),
+    settings: ClickPipeMongoDBPipeSettingsSchema,
+    tableMappings: z
+      .array(ClickPipeMongoDBPipeTableMappingSchema)
+      .openapi({
+        description:
+          'List of collection mappings defining which MongoDB collections to replicate and how they map to ClickHouse tables.',
+      }),
+  })
+  .openapi({ required: ['uri', 'readPreference', 'settings', 'tableMappings'] })
+  .openapi('ClickPipeMutateMongoDBSource')
+
+const ClickPipePostSourceSchema = z
+  .object({
+    kafka: ClickPipePostKafkaSourceSchema.exactOptional(),
+    objectStorage: ClickPipePostObjectStorageSourceSchema.exactOptional(),
+    kinesis: ClickPipePostKinesisSourceSchema.exactOptional(),
+    pubsub: ClickPipePostPubSubSourceSchema.exactOptional(),
+    postgres: ClickPipeMutatePostgresSourceSchema.exactOptional(),
+    mysql: ClickPipeMutateMySQLSourceSchema.exactOptional(),
+    bigquery: ClickPipeMutateBigQuerySourceSchema.exactOptional(),
+    mongodb: ClickPipeMutateMongoDBSourceSchema.exactOptional(),
+    validateSamples: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Validate data samples received from data source. It will validate the connection and data availability and correctness. If not enabled, only connection will be validated. This has no effect on Postgres or MySQL pipes, they always only validate the connection and table definitions. This is experimental and can be removed in the future.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('ClickPipePostSource')
+
+const ClickPipeMutateDestinationSchema = z
+  .object({
+    database: z.string().openapi({ description: 'Destination database.' }),
+    table: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Destination table. Required field for all pipe types except database pipes (Postgres, MySQL, BigQuery).',
+      }),
+    managedTable: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Is the table managed by ClickPipes? Required field for all pipe types except database pipes (Postgres, MySQL, BigQuery).',
+      }),
+    tableDefinition: ClickPipeDestinationTableDefinitionSchema.exactOptional(),
+    columns: z
+      .array(ClickPipeDestinationColumnSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Columns of the destination table. Required field for all pipe types except database pipes (Postgres, MySQL, BigQuery).',
+      }),
+    roles: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Roles to grant to the ClickHouse user that ClickPipe creates. If omitted, the user is granted the default role (`default_role`). Add your custom roles here if required. The role names `clickpipes` and `clickpipes_system` are reserved for internal use and cannot be assigned.',
+      }),
+  })
+  .openapi({ required: ['database'] })
+  .openapi('ClickPipeMutateDestination')
+
+const ClickPipeSettingsPutRequestSchema = z
+  .object({
+    streaming_max_insert_wait_ms: z
+      .int()
+      .min(500)
+      .max(60000)
+      .exactOptional()
+      .openapi({
+        description:
+          'Streaming max insert wait time. Configures the max wait period before inserting data into the ClickHouse.',
+        example: 5000,
+      }),
+    object_storage_concurrency: z
+      .int()
+      .min(1)
+      .max(35)
+      .exactOptional()
+      .openapi({
+        description: 'Object storage concurrency. Number of concurrent file processing threads',
+        example: 1,
+      }),
+    object_storage_polling_interval_ms: z
+      .int()
+      .min(100)
+      .max(3600000)
+      .exactOptional()
+      .openapi({
+        description:
+          'Object storage polling interval. Configures the refresh interval for querying continuous ingest for new object storage data',
+        example: 30000,
+      }),
+    object_storage_max_insert_bytes: z
+      .int()
+      .min(524288000)
+      .max(10737418240)
+      .exactOptional()
+      .openapi({
+        description: 'Max insert bytes. Number of bytes to process in a single insert batch',
+        example: 10737418240,
+      }),
+    object_storage_max_file_count: z
+      .int()
+      .min(1)
+      .max(10000)
+      .exactOptional()
+      .openapi({
+        description: 'Max file count. Maximum number of files to process in a single insert batch',
+        example: 100,
+      }),
+    object_storage_max_file_size: z
+      .int()
+      .min(1048576)
+      .max(536870912000)
+      .exactOptional()
+      .openapi({
+        description:
+          'Max file size. Files larger than this are skipped and not retried. Can only lower the limit. Private preview. Contact support to enable it for your organization.',
+        example: 10737418240,
+      }),
+    clickhouse_max_threads: z
+      .int()
+      .min(0)
+      .max(64)
+      .exactOptional()
+      .openapi({
+        description: 'Max threads. Maximum number of concurrent threads for file processing',
+        example: 8,
+      }),
+    clickhouse_max_insert_threads: z
+      .int()
+      .min(0)
+      .max(16)
+      .exactOptional()
+      .openapi({
+        description: 'Max insert threads. Maximum number of concurrent insert threads',
+        example: 1,
+      }),
+    clickhouse_min_insert_block_size_bytes: z
+      .int()
+      .min(0)
+      .max(10737418240)
+      .exactOptional()
+      .openapi({
+        description:
+          'Min insert block size bytes. Minimum size of data block for insert (in bytes)',
+        example: 1073741824,
+      }),
+    clickhouse_max_download_threads: z
+      .int()
+      .min(0)
+      .max(32)
+      .exactOptional()
+      .openapi({
+        description: 'Max download threads. Maximum number of concurrent download threads',
+        example: 4,
+      }),
+    clickhouse_parallel_distributed_insert_select: z
+      .int()
+      .min(0)
+      .max(2)
+      .exactOptional()
+      .openapi({
+        description:
+          'Parallel distributed insert select. Only applies when object_storage_use_cluster_function is enabled. When disabled, this setting is ignored and the effective value is 0.',
+        example: 2,
+      }),
+    kafka_read_committed: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Kafka Read Committed. Whether Kafka consumers read only committed messages',
+        example: false,
+      }),
+    object_storage_use_cluster_function: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'use cluster function. Whether to use ClickHouse cluster function for distributed processing',
+        example: true,
+      }),
+    clickhouse_parallel_view_processing: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'parallel view processing. Whether to enable pushing to attached views concurrently instead of sequentially',
+        example: false,
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('ClickPipeSettingsPutRequest')
+
+type ClickPipePostRequestType = {
+  name: string
+  source: z.infer<typeof ClickPipePostSourceSchema>
+  destination: z.infer<typeof ClickPipeMutateDestinationSchema>
+  fieldMappings?: z.infer<typeof ClickPipeFieldMappingSchema>[]
+  scaling?: z.infer<typeof ClickPipeScalingSchema>
+  settings?: z.infer<typeof ClickPipeSettingsPutRequestSchema>
+  startPaused?: boolean
+}
+
+const ClickPipePatchKafkaSourceSchema = z
+  .object({
+    authentication: z
+      .enum([
+        'PLAIN',
+        'SCRAM-SHA-256',
+        'SCRAM-SHA-512',
+        'IAM_ROLE',
+        'IAM_USER',
+        'MUTUAL_TLS',
+        'SERVICE_ACCOUNT_WORKLOAD_IDENTITY',
+      ])
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Authentication method of the Kafka source. SERVICE_ACCOUNT_WORKLOAD_IDENTITY is in Beta. ClickPipes uses the GCP service account returned in gcpWorkloadIdentity.principal by the operation with operationId clickPipesServiceContextGet; grant it access to the source resources. Supported authentication methods: kafka: PLAIN, SCRAM-SHA-256, SCRAM-SHA-512, MUTUAL_TLS, msk: SCRAM-SHA-512, IAM_ROLE, IAM_USER, MUTUAL_TLS, gcmk: PLAIN, MUTUAL_TLS, SERVICE_ACCOUNT_WORKLOAD_IDENTITY, confluent: PLAIN, SCRAM-SHA-512, MUTUAL_TLS, warpstream: PLAIN, azureeventhub: PLAIN, redpanda: SCRAM-SHA-256, SCRAM-SHA-512, MUTUAL_TLS, dokafka: SCRAM-SHA-256, MUTUAL_TLS',
+      }),
+    iamRole: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'IAM role for the Kafka source. Use with IAM role authentication. Read more in ClickPipes documentation: https://clickhouse.com/docs/en/integrations/clickpipes/kafka#iam',
+        example: 'arn:aws:iam::123456789012:role/MyRole',
+      }),
+    caCertificate: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: "PEM encoded CA certificates to validate the broker's certificate.",
+      }),
+    reversePrivateEndpointIds: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Reverse private endpoint UUIDs used for a secure private connection to the Kafka source.',
+      }),
+    credentials: z
+      .xor([PLAINSchema, MskIamUserSchema, AzureEventHubSchema, MutualTLSSchema])
+      .exactOptional()
+      .openapi({
+        description:
+          'Credentials for Kafka source. Choose one that is supported by the authentication method.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('ClickPipePatchKafkaSource')
+
+const ClickPipePatchObjectStorageSourceSchema = z
+  .object({
+    skipInitialLoad: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'If set to true, skips the initial load and only ingests files delivered by queue notifications. Only applicable when queueUrl is provided.',
+      }),
+    startAfter: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Skip all files up to and including this object key during the initial load. Cannot be provided when skipInitialLoad is true.',
+        example: 'events/2026-06-01/',
+      }),
+    authentication: z
+      .enum([
+        'IAM_ROLE',
+        'IAM_USER',
+        'CONNECTION_STRING',
+        'SERVICE_ACCOUNT',
+        'SERVICE_ACCOUNT_WORKLOAD_IDENTITY',
+      ])
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Authentication method. IAM_USER is for S3, GCS, and DigitalOcean Spaces. IAM_ROLE is for S3 only. SERVICE_ACCOUNT is for GCS only. For GCS, SERVICE_ACCOUNT_WORKLOAD_IDENTITY is in Beta. ClickPipes uses the GCP service account returned in gcpWorkloadIdentity.principal by the operation with operationId clickPipesServiceContextGet; grant it access to the source resources. CONNECTION_STRING is for Azure Blob Storage. PUBLIC uses no authentication.',
+      }),
+    iamRole: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'IAM role to be used with IAM role authentication. Read more in ClickPipes documentation: https://clickhouse.com/docs/en/integrations/clickpipes/object-storage#authentication',
+        example: 'arn:aws:iam::123456789012:role/MyRole',
+      }),
+    connectionString: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Connection string for Azure Blob Storage authentication. Required when authentication is CONNECTION_STRING.',
+        example:
+          'DefaultEndpointsProtocol=https;AccountName=myaccount;AccountKey=mykey;EndpointSuffix=core.windows.net',
+      }),
+    path: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Path to the file(s) within the Azure container. Used for Azure Blob Storage sources. You can specify multiple files using bash-like wildcards. For more information, see the documentation on using wildcards in path: https://clickhouse.com/docs/en/integrations/clickpipes/object-storage#limitations',
+        example: 'data/logs/*.json',
+      }),
+    azureContainerName: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Container name for Azure Blob Storage. Required when type is azureblobstorage.',
+        example: 'mycontainer',
+      }),
+    accessKey: z.xor([MskIamUserSchema, z.null().nullable()]).exactOptional(),
+    serviceAccountKey: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Base64-encoded GCP service account JSON key. Required when authentication is SERVICE_ACCOUNT.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('ClickPipePatchObjectStorageSource')
+
+const ClickPipePatchKinesisSourceSchema = z
+  .object({
+    authentication: z
+      .enum(['IAM_ROLE', 'IAM_USER'])
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Authentication method to use with the Kinesis stream.' }),
+    iamRole: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'IAM role to use for authentication. Required if IAM_ROLE is used.',
+        example: 'arn:aws:iam::123456789012:role/MyRole',
+      }),
+    accessKey: z.xor([MskIamUserSchema, z.null().nullable()]).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ClickPipePatchKinesisSource')
+
+const ClickPipePatchPubSubSourceSchema = z
+  .object({
+    authentication: z
+      .enum(['SERVICE_ACCOUNT', 'SERVICE_ACCOUNT_WORKLOAD_IDENTITY'])
+      .nullable()
+      .openapi({
+        description:
+          'Authentication method to use with GCP Pub/Sub. SERVICE_ACCOUNT_WORKLOAD_IDENTITY is in Beta. ClickPipes uses the GCP service account returned in gcpWorkloadIdentity.principal by the operation with operationId clickPipesServiceContextGet; grant it access to the source resources.',
+        example: 'SERVICE_ACCOUNT',
+      }),
+    ackDeadline: z
+      .int()
+      .min(10)
+      .max(600)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Acknowledgement deadline for messages, in seconds. Must be between 10 and 600.',
+      }),
+    serviceAccountKey: z.xor([ServiceAccountSchema, z.null().nullable()]).exactOptional(),
+  })
+  .openapi({ required: ['authentication'] })
+  .openapi('ClickPipePatchPubSubSource')
+
+const ClickPipePatchPostgresPipeSettingsSchema = z
+  .object({
+    syncIntervalSeconds: z
+      .int()
+      .min(1)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Interval in seconds to sync data from Postgres during CDC replication.',
+        example: 60,
+      }),
+    pullBatchSize: z
+      .int()
+      .min(1)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Number of rows to pull in each batch during CDC replication.',
+        example: 1000,
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('ClickPipePatchPostgresPipeSettings')
+
+const ClickPipePatchPostgresPipeRemoveTableMappingSchema = z
+  .object({
+    sourceSchemaName: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'PostgreSQL source schema name.', example: 'public' }),
+    sourceTable: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'PostgreSQL source table name.', example: 'users' }),
+    targetTable: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'ClickHouse target table name, optionally prefixed with schema name (e.g., "my_schema_my_table"). The table will be created automatically if it does not exist. For snapshot mode, the target table must be empty.',
+        example: 'public_users',
+      }),
+    tableEngine: z
+      .enum(['MergeTree', 'ReplacingMergeTree', 'Null'])
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'ClickHouse table engine: "ReplacingMergeTree" (handles updates/deletes), "MergeTree" (append-only), or "Null" (forward data to materialized views without storing it).',
+        example: 'ReplacingMergeTree',
+      }),
+    partitionKey: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Custom partitioning column used for parallel snapshotting. Only beneficial for PostgreSQL 13 (no benefit for PG14+, which supports indexed ctid scans). Must be an indexed column of type: `smallint`, `integer`, `bigint`, `timestamp without time zone`, or `timestamp with time zone`. Unrelated to ClickHouse partitioning.',
+        example: 'id',
+      }),
+    partitionByExpr: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'ClickHouse PARTITION BY expression applied to the destination table when ClickPipes creates it.',
+        example: 'toYYYYMM(created_at)',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('ClickPipePatchPostgresPipeRemoveTableMapping')
+
+const ClickPipePatchPostgresSourceSchema = z
+  .object({
+    credentials: PLAINSchema.exactOptional(),
+    host: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'PostgreSQL server hostname or IP address. To use a reverse private endpoint, pass the endpoint hostname here. For Cloud SQL with SERVICE_ACCOUNT_WORKLOAD_IDENTITY authentication, pass the instance connection name (project:region:instance).',
+        example: 'my-postgres-server.example.com',
+      }),
+    port: z
+      .int()
+      .min(1)
+      .max(65535)
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'PostgreSQL server port.', example: 5432 }),
+    database: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'PostgreSQL database name to replicate from.',
+        example: 'production_db',
+      }),
+    tlsHost: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'TLS/SSL host for secure connections.',
+        example: 'my-postgres-server.example.com',
+      }),
+    caCertificate: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'PEM encoded CA certificate to validate the Postgres server certificate.',
+        example: '-----BEGIN CERTIFICATE-----\n...',
+      }),
+    disableTls: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Disable TLS for the Postgres connection. Use with caution in production environments.',
+        example: false,
+      }),
+    skipCertVerification: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Skip TLS certificate verification for the Postgres connection. Use with caution in production environments.',
+        example: false,
+      }),
+    settings: ClickPipePatchPostgresPipeSettingsSchema.exactOptional(),
+    tableMappingsToAdd: z
+      .array(ClickPipePostgresPipeTableMappingSchema)
+      .min(0)
+      .exactOptional()
+      .openapi({
+        description:
+          'Table mappings to add to the pipe. Can be an empty array if no tables are being added.',
+      }),
+    tableMappingsToRemove: z
+      .array(ClickPipePatchPostgresPipeRemoveTableMappingSchema)
+      .min(0)
+      .exactOptional()
+      .openapi({
+        description:
+          'Table mappings to remove from the pipe. Only sourceSchemaName, sourceTable, and targetTable are required for removal.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('ClickPipePatchPostgresSource')
+
+const ClickPipePatchMySQLPipeSettingsSchema = z
+  .object({
+    syncIntervalSeconds: z
+      .int()
+      .min(1)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Interval in seconds to sync data from MySQL during CDC replication.',
+        example: 60,
+      }),
+    pullBatchSize: z
+      .int()
+      .min(1)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Number of rows to pull in each batch during CDC replication.',
+        example: 1000,
+      }),
+    useCompression: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Enable compression for the MySQL connection.', example: false }),
+  })
+  .openapi({ required: [] })
+  .openapi('ClickPipePatchMySQLPipeSettings')
+
+const ClickPipePatchMySQLPipeRemoveTableMappingSchema = z
+  .object({
+    sourceSchemaName: z
+      .string()
+      .nullable()
+      .openapi({ description: 'MySQL source database name.', example: 'my_database' }),
+    sourceTable: z
+      .string()
+      .nullable()
+      .openapi({ description: 'MySQL source table name.', example: 'users' }),
+    targetTable: z
+      .string()
+      .nullable()
+      .openapi({
+        description:
+          'ClickHouse target table name, optionally prefixed with schema name (e.g., "my_database_my_table"). The table will be created automatically if it does not exist. For snapshot mode, the target table must be empty.',
+        example: 'my_database_users',
+      }),
+    tableEngine: z
+      .enum(['MergeTree', 'ReplacingMergeTree', 'Null'])
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'ClickHouse table engine: "ReplacingMergeTree" (handles updates/deletes), "MergeTree" (append-only), or "Null" (forward data to materialized views without storing it).',
+        example: 'ReplacingMergeTree',
+      }),
+    partitionKey: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Custom partitioning column used for parallel snapshotting. Must be an indexed column of an integer, date, datetime or timestamp type. Unrelated to ClickHouse partitioning.',
+        example: 'id',
+      }),
+    partitionByExpr: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'ClickHouse PARTITION BY expression applied to the destination table when ClickPipes creates it.',
+        example: 'toYYYYMM(created_at)',
+      }),
+  })
+  .openapi({ required: ['sourceSchemaName', 'sourceTable', 'targetTable'] })
+  .openapi('ClickPipePatchMySQLPipeRemoveTableMapping')
+
+const ClickPipePatchMySQLSourceSchema = z
+  .object({
+    credentials: PLAINSchema.exactOptional(),
+    host: z
+      .string()
+      .nullable()
+      .openapi({
+        description:
+          'MySQL server hostname or IP address. To use a reverse private endpoint, pass the endpoint hostname here. For Cloud SQL with SERVICE_ACCOUNT_WORKLOAD_IDENTITY authentication, pass the instance connection name (project:region:instance).',
+        example: 'my-mysql-server.example.com',
+      }),
+    port: z
+      .int()
+      .min(1)
+      .max(65535)
+      .nullable()
+      .openapi({ description: 'MySQL server port.', example: 3306 }),
+    authentication: z
+      .enum(['basic', 'IAM_ROLE', 'SERVICE_ACCOUNT_WORKLOAD_IDENTITY'])
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Authentication method for MySQL connection. IAM_ROLE is only available for services on AWS.',
+        example: 'basic',
+      }),
+    iamRole: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'IAM role ARN for IAM authentication (required for IAM_ROLE authentication, services on AWS only).',
+        example: 'arn:aws:iam::123456789012:role/MyApplicationRole',
+      }),
+    tlsHost: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'TLS/SSL host for secure connections.',
+        example: 'my-mysql-server.example.com',
+      }),
+    caCertificate: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'PEM encoded CA certificate to validate the MySQL server certificate.',
+        example: '-----BEGIN CERTIFICATE-----\n...',
+      }),
+    disableTls: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Disable TLS for the MySQL connection. Use with caution in production environments.',
+        example: false,
+      }),
+    skipCertVerification: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Skip TLS certificate verification for the MySQL connection. Use with caution in production environments.',
+        example: false,
+      }),
+    serverId: z
+      .int()
+      .min(1)
+      .max(4294967295)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional MySQL server_id the pipe declares itself as in the MySQL replication topology. Must be unique across replicas connected to the source. If omitted, one is assigned automatically.',
+        example: 4242,
+      }),
+    settings: ClickPipePatchMySQLPipeSettingsSchema.exactOptional(),
+    tableMappingsToAdd: z
+      .array(ClickPipeMySQLPipeTableMappingSchema)
+      .min(0)
+      .exactOptional()
+      .openapi({
+        description:
+          'Table mappings to add to the pipe. Can be an empty array if no tables are being added.',
+      }),
+    tableMappingsToRemove: z
+      .array(ClickPipePatchMySQLPipeRemoveTableMappingSchema)
+      .min(0)
+      .exactOptional()
+      .openapi({
+        description:
+          'Table mappings to remove from the pipe. Only sourceSchemaName, sourceTable, and targetTable are required for removal.',
+      }),
+  })
+  .openapi({ required: ['host', 'port'] })
+  .openapi('ClickPipePatchMySQLSource')
+
+const ClickPipePatchMongoDBPipeSettingsSchema = z
+  .object({
+    syncIntervalSeconds: z
+      .int()
+      .min(1)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Interval in seconds to sync data from MongoDB during CDC replication.',
+        example: 60,
+      }),
+    pullBatchSize: z
+      .int()
+      .min(1)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Number of rows to pull in each batch during CDC replication.',
+        example: 100000,
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('ClickPipePatchMongoDBPipeSettings')
+
+const ClickPipePatchMongoDBPipeRemoveTableMappingSchema = z
+  .object({
+    sourceDatabaseName: z
+      .string()
+      .nullable()
+      .openapi({ description: 'MongoDB source database name.', example: 'mydb' }),
+    sourceCollection: z
+      .string()
+      .nullable()
+      .openapi({ description: 'MongoDB source collection name.', example: 'users' }),
+    targetTable: z
+      .string()
+      .nullable()
+      .openapi({
+        description:
+          'ClickHouse target table name. The table will be created automatically if it does not exist.',
+        example: 'mydb_users',
+      }),
+    tableEngine: z
+      .enum(['MergeTree', 'ReplacingMergeTree', 'Null'])
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'ClickHouse table engine: "ReplacingMergeTree" (handles updates/deletes), "MergeTree" (append-only), or "Null" (forward data to materialized views without storing it).',
+        example: 'ReplacingMergeTree',
+      }),
+  })
+  .openapi({ required: ['sourceDatabaseName', 'sourceCollection', 'targetTable'] })
+  .openapi('ClickPipePatchMongoDBPipeRemoveTableMapping')
+
+const ClickPipePatchMongoDBSourceSchema = z
+  .object({
+    credentials: PLAINSchema.exactOptional(),
+    uri: z
+      .string()
+      .nullable()
+      .openapi({
+        description:
+          'MongoDB connection URI (mongodb:// or mongodb+srv://). Credentials are redacted in responses; a masked value is never saved as a credential, so a real credential equal to [REDACTED] cannot be set. To change the connection, send the full URI with real credentials; omit this field or resend the redacted value to leave it unchanged.',
+        example: 'mongodb+srv://cluster0.example.mongodb.net/mydb',
+      }),
+    readPreference: z
+      .enum(['primary', 'primaryPreferred', 'secondary', 'secondaryPreferred', 'nearest'])
+      .nullable()
+      .openapi({
+        description: 'MongoDB read preference for replica set reads.',
+        example: 'secondaryPreferred',
+      }),
+    tlsHost: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'TLS/SSL host for secure connections.',
+        example: 'cluster0.example.mongodb.net',
+      }),
+    disableTls: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Disable TLS for the MongoDB connection. Defaults to false (TLS enabled).',
+        example: false,
+      }),
+    skipCertVerification: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Skip TLS certificate verification for the MongoDB connection. Use with caution in production environments.',
+        example: false,
+      }),
+    caCertificate: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'PEM encoded CA certificate to validate the MongoDB server certificate.',
+        example: '-----BEGIN CERTIFICATE-----\n...',
+      }),
+    settings: ClickPipePatchMongoDBPipeSettingsSchema.exactOptional(),
+    tableMappingsToAdd: z
+      .array(ClickPipeMongoDBPipeTableMappingSchema)
+      .min(0)
+      .exactOptional()
+      .openapi({
+        description:
+          'Collection mappings to add to the pipe. Can be an empty array if no collections are being added.',
+      }),
+    tableMappingsToRemove: z
+      .array(ClickPipePatchMongoDBPipeRemoveTableMappingSchema)
+      .min(0)
+      .exactOptional()
+      .openapi({
+        description:
+          'Collection mappings to remove from the pipe. Only sourceDatabaseName, sourceCollection, and targetTable are required for removal.',
+      }),
+  })
+  .openapi({ required: ['uri', 'readPreference'] })
+  .openapi('ClickPipePatchMongoDBSource')
+
+const ClickPipePatchSourceSchema = z
+  .object({
+    kafka: ClickPipePatchKafkaSourceSchema.exactOptional(),
+    objectStorage: ClickPipePatchObjectStorageSourceSchema.exactOptional(),
+    kinesis: ClickPipePatchKinesisSourceSchema.exactOptional(),
+    pubsub: ClickPipePatchPubSubSourceSchema.exactOptional(),
+    postgres: ClickPipePatchPostgresSourceSchema.exactOptional(),
+    mysql: ClickPipePatchMySQLSourceSchema.exactOptional(),
+    mongodb: ClickPipePatchMongoDBSourceSchema.exactOptional(),
+    validateSamples: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Validate data samples received from data source. It will validate the connection and data availability and correctness. If not enabled, only connection will be validated. This has no effect on Postgres or MySQL pipes, they always only validate the connection and table definitions. This is experimental and can be removed in the future.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('ClickPipePatchSource')
+
+const ClickPipePatchDestinationSchema = z
+  .object({
+    columns: z
+      .array(ClickPipeDestinationColumnSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Columns of the destination table. This will not update the table schema, only the ClickPipe configuration.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('ClickPipePatchDestination')
+
+type ClickPipePatchRequestType = {
+  name?: string
+  source?: z.infer<typeof ClickPipePatchSourceSchema>
+  destination?: z.infer<typeof ClickPipePatchDestinationSchema>
+  fieldMappings?: z.infer<typeof ClickPipeFieldMappingSchema>[]
+  settings?: z.infer<typeof ClickPipeSettingsPutRequestSchema>
 }
 
 const ResourceTagsV1Schema = z
@@ -188,7 +3738,10 @@ const ScalingScheduleEntrySchema = z
     idleScaling: z
       .boolean()
       .exactOptional()
-      .openapi({ description: 'Whether idle scaling is enabled during this window.' }),
+      .openapi({
+        description:
+          'Whether idle scaling is enabled during this window. Never true on a Gen 2 (v2-default) service.',
+      }),
     idleTimeoutMinutes: z
       .int()
       .exactOptional()
@@ -368,7 +3921,10 @@ const ScalingScheduleEntryRequestSchema = z
     idleScaling: z
       .boolean()
       .exactOptional()
-      .openapi({ description: 'Whether idle scaling is enabled during this window.' }),
+      .openapi({
+        description:
+          'Whether idle scaling is enabled during this window. Cannot be true on a Gen 2 (v2-default) service.',
+      }),
     idleTimeoutMinutes: z
       .int()
       .exactOptional()
@@ -628,7 +4184,7 @@ const ServiceSchema = z
       .exactOptional()
       .openapi({
         description:
-          "Number of replicas for the service. The number of replicas must be between 2 and 50 for the first service in a warehouse. Services that are created in an existing warehouse can have a number of replicas as low as 1. Further restrictions may apply based on your organization's tier and its per-warehouse replica limit. It defaults to 1 for the BASIC tier and 3 for the SCALE and ENTERPRISE tiers. Present only when the service uses vertical autoscaling. For horizontal autoscaling, use minReplicas and maxReplicas instead.",
+          "Number of replicas for the service. The number of replicas must be between 1 and 50. Further restrictions may apply based on your organization's tier and its per-warehouse replica limit. It defaults to 1 for the BASIC tier and 3 for the SCALE and ENTERPRISE tiers. Present only when the service uses vertical autoscaling. For horizontal autoscaling, use minReplicas and maxReplicas instead.",
         example: 3,
       }),
     minReplicas: z
@@ -739,7 +4295,7 @@ const ServiceSchema = z
       .exactOptional()
       .openapi({
         description:
-          'This is the ID returned after setting up a region for Bring Your Own Cloud (BYOC). When the byocId parameter is specified, the minReplicaMemoryGb and the maxReplicaGb parameters are required too, with values included among the following sizes: 48, 116, 172, 232.',
+          "This is the ID returned after setting up a region for Bring Your Own Cloud (BYOC). When the byocId parameter is specified, the minReplicaMemoryGb and maxReplicaMemoryGb parameters are required too. With a BYOC profile, both must equal that profile's memory size. Without a profile, equal values must be one of the following sizes: 48, 116, 172, 232. When BYOC vertical autoscaling is enabled for the organization (contact support), a minReplicaMemoryGb lower than maxReplicaMemoryGb, without a profile, creates a service that scales vertically between the two. Both values must be memory sizes listed by the serviceProfiles endpoint, and the service reports the profile 'v1-default'.",
       }),
     hasTransparentDataEncryption: z
       .boolean()
@@ -753,7 +4309,7 @@ const ServiceSchema = z
       .exactOptional()
       .openapi({
         description:
-          "Custom instance profile. Only available for ENTERPRISE and BYOC organization tiers. Standard values: 'v1-default', 'v1-highmem-xs', 'v1-highmem-s', 'v1-highmem-m', 'v1-highmem-l', 'v1-highmem-xl'. BYOC services may instead use a dynamic BYOC profile configured for their infrastructure (e.g. 'v1-standard-byoc-4'); it requires byocId, and minReplicaMemoryGb and maxReplicaMemoryGb must both equal the profile's memory size. Use the serviceProfiles endpoint to list the profiles available to the organization.",
+          "Custom instance profile. Profiles other than v1-default and v2-default are only available for ENTERPRISE and BYOC organization tiers. Standard values: 'v1-default', 'v2-default', 'v1-highmem-xs', 'v1-highmem-s', 'v1-highmem-m', 'v1-highmem-l', 'v1-highmem-xl'. 'v2-default' is Gen 2 hardware. BYOC services may instead use a dynamic BYOC profile configured for their infrastructure (e.g. 'v1-standard-byoc-4'); it requires byocId, and minReplicaMemoryGb and maxReplicaMemoryGb must both equal the profile's memory size. A BYOC service that scales vertically within a memory range has no BYOC profile and reports 'v1-default'. Use the serviceProfiles endpoint to list the profiles available to the organization.",
       }),
     transparentDataEncryptionKeyId: z
       .string()
@@ -784,6 +4340,13 @@ const ServiceSchema = z
       .openapi({
         description:
           "True if the service's underline infra is enabled for collecting core dumps. This is an experimental feature",
+      }),
+    deletionProtection: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'When true, the service cannot be deleted: the delete endpoint returns 409 until deletion protection is turned off.',
       }),
     scalingSchedule: ScalingScheduleSchema.exactOptional(),
     currentScaling: CurrentScalingSchema,
@@ -997,16 +4560,13 @@ const ByocConfigSchema = z
       .exactOptional()
       .openapi({ description: 'Unique identifier of the BYOC configuration' }),
     state: z
-      .enum([
-        'infra-provisioning',
-        'infra-terminated',
-        'infra-terminating',
-        'infra-ready',
-        'infra-degraded',
-        'infra-upgrading',
-      ])
+      .string()
       .exactOptional()
-      .openapi({ description: 'State of the infrastructure', example: 'infra-ready' }),
+      .openapi({
+        description:
+          "State of the infrastructure. Current values: 'infra-provisioning', 'infra-terminated', 'infra-terminating', 'infra-ready', 'infra-degraded', 'infra-upgrading', 'infra-awaiting-connector'. New states may be added; treat an unknown state as not ready",
+        example: 'infra-ready',
+      }),
     accountId: z
       .string()
       .exactOptional()
@@ -1063,9 +4623,161 @@ const ByocConfigSchema = z
       .string()
       .exactOptional()
       .openapi({ description: 'Human readable name for infrastructure' }),
+    accessModel: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'How ClickHouse reaches the infrastructure: `standard` through a management role in your account, or `restricted` through a connector you install in a cluster you own',
+        example: 'standard',
+      }),
   })
   .openapi({ required: [] })
   .openapi('ByocConfig')
+
+const ByocRestrictedFactsSchema = z
+  .object({
+    clusterName: z
+      .string()
+      .openapi({ description: 'Name of the EKS cluster the connector runs in' }),
+    platformNodeGroup: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Node group the platform components run on. Omitted: `system`' }),
+    availabilityZones: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'At least three distinct availability zones of the region. Omitted: the region default',
+      }),
+    namespacePrefix: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Prefix of the namespace each service runs in. Must match the executor configuration. Omitted: `ns-`',
+      }),
+    executorRoleArn: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Direct image mode only (required there): IAM role of the connector executor, in `accountId`',
+      }),
+    nodeRoleArns: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Direct image mode only (required there): IAM roles of the cluster nodes, in `accountId`',
+      }),
+    imageMode: z
+      .string()
+      .openapi({
+        description:
+          'How the connector pulls platform images: `direct` from the ClickHouse registry, or `bundle` from `imageRegistry`',
+        example: 'bundle',
+      }),
+    imageRegistry: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Bundle image mode only (required there): OCI repository root holding the platform images',
+      }),
+    dataBucket: z.string().openapi({ description: 'S3 bucket services store data in' }),
+    backupBucket: z.string().openapi({ description: 'S3 bucket services store backups in' }),
+    storageRoleArn: z
+      .string()
+      .openapi({ description: 'IAM role services assume to reach the buckets, in `accountId`' }),
+    scraperEndpoint: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Remote-write URL of the connector scraper. Required unless `enableMonitoring` is false',
+        example: 'http://clicklink-connector-scraper.clicklink.svc.cluster.local:9093/api/v1/write',
+      }),
+    enableMonitoring: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Install the monitoring components. Default true' }),
+    enableSnapshotController: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Install the volume snapshot controller. Default true' }),
+    enableAutoscaler: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Install the ClickHouse autoscaler. Default false' }),
+  })
+  .openapi({
+    required: ['clusterName', 'imageMode', 'dataBucket', 'backupBucket', 'storageRoleArn'],
+  })
+  .openapi('ByocRestrictedFacts')
+
+const ByocConnectorComponentSchema = z
+  .object({
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Connector component, e.g. scraper, executor or troubleshooter',
+        example: 'scraper',
+      }),
+    state: z.string().exactOptional().openapi({ description: 'State the component last reported' }),
+    version: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Version the component last reported' }),
+    lastHeartbeatAt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'Last heartbeat of the component. ISO-8601' }),
+  })
+  .openapi({ required: [] })
+  .openapi('ByocConnectorComponent')
+
+const ByocConnectorSchema = z
+  .object({
+    lastHeartbeatAt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'Last heartbeat of the connector. ISO-8601. Absent until the connector first reports',
+      }),
+    components: z
+      .array(ByocConnectorComponentSchema)
+      .exactOptional()
+      .openapi({ description: 'Components the connector reports on' }),
+    platformState: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'State of the platform layer the connector installs' }),
+    platformDetail: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'What you need to do when the platform layer waits on you' }),
+  })
+  .openapi({ required: [] })
+  .openapi('ByocConnector')
+
+const ByocInfrastructureEnrollmentTokenSchema = z
+  .object({
+    token: z
+      .string()
+      .openapi({
+        description:
+          'One-time token the connector enrolls with. It cannot be read again after this response',
+      }),
+    expiresAt: z.iso
+      .datetime({ offset: true })
+      .openapi({ description: 'When the token expires. ISO-8601' }),
+  })
+  .openapi({ required: ['token', 'expiresAt'] })
+  .openapi('ByocInfrastructureEnrollmentToken')
 
 const OrganizationCapabilitiesSchema = z
   .object({
@@ -1104,6 +4816,22 @@ const OrganizationSchema = z
           'Whether crash reports (core dumps) collection is enabled for services in the organization. When disabled at the organization level, individual services cannot enable crash reports.',
       }),
     capabilities: OrganizationCapabilitiesSchema.exactOptional(),
+    knowledgeBasedAiSupportEnabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          "Whether knowledge-based AI support, which answers support questions with an AI model trained on public documentation, is turned on in the organization's settings. Read-only.",
+        readOnly: true,
+      }),
+    aiDataUseForProductImprovementEnabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          "Whether the organization's settings allow AI inputs, outputs and related metadata to be used for product improvement and support. Read-only.",
+        readOnly: true,
+      }),
   })
   .openapi({ required: [] })
   .openapi('Organization')
@@ -1156,6 +4884,7 @@ const PrometheusDiscoveryLabelsSchema = z
       .openapi({ description: 'Cloud provider, for example `aws`.' }),
   })
   .catchall(z.string())
+  .openapi({ required: [] })
   .openapi('PrometheusDiscoveryLabels')
 
 const PrometheusDiscoveryTargetGroupSchema = z
@@ -1327,16 +5056,13 @@ const ByocInfrastructureDetailsSchema = z
       .exactOptional()
       .openapi({ description: 'Unique identifier of the BYOC infrastructure' }),
     state: z
-      .enum([
-        'infra-provisioning',
-        'infra-terminated',
-        'infra-terminating',
-        'infra-ready',
-        'infra-degraded',
-        'infra-upgrading',
-      ])
+      .string()
       .exactOptional()
-      .openapi({ description: 'State of the infrastructure', example: 'infra-ready' }),
+      .openapi({
+        description:
+          "State of the infrastructure. Current values: 'infra-provisioning', 'infra-terminated', 'infra-terminating', 'infra-ready', 'infra-degraded', 'infra-upgrading', 'infra-awaiting-connector'. New states may be added; treat an unknown state as not ready",
+        example: 'infra-ready',
+      }),
     accountId: z
       .string()
       .exactOptional()
@@ -1456,6 +5182,16 @@ const ByocInfrastructureDetailsSchema = z
         description:
           'Customer-provided Private Service Connect NAT subnet name configured for private link (GCP BYO-VPC only)',
       }),
+    accessModel: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Access model of the infrastructure: `standard` or `restricted`. With `restricted`, private link, load balancer and VPC fields are false or absent',
+        example: 'standard',
+      }),
+    restrictedFacts: ByocRestrictedFactsSchema.exactOptional(),
+    connector: ByocConnectorSchema.exactOptional(),
   })
   .openapi({ required: [] })
   .openapi('ByocInfrastructureDetails')
@@ -1800,7 +5536,7 @@ const CustomPrivateDnsMappingSchema = z
       .exactOptional()
       .openapi({
         description:
-          'Optional DNS target ID. Supported only for VPC_RESOURCE, where it is the CHILD resource configuration ID (rcfg-…), or the configuration ID for a single resource. Set it at create time to route a custom DNS name to that resource. If the target is not reported in dnsTargets yet, the mapping is not served until it appears; it does not fall back to the default target. If omitted, the default target is used. Once dnsTargets is non-empty, adding or changing a targetId requires an ID in that list; unchanged target IDs are not re-checked.',
+          'Optional DNS target ID. For VPC_RESOURCE, it is the CHILD resource configuration ID (rcfg-…), or the configuration ID for a single resource. For VPC_ENDPOINT_SERVICE, it is an AWS availability zone ID (for example use1-az1, not the zone name us-east-1a) that the endpoint service offers and ClickPipes supports in the region; if the endpoint is not in that zone yet, ClickPipes adds the zone to the endpoint. Cross-region VPC endpoint services reject targetId. Not supported for other endpoint types. Set it at create time to route a custom DNS name to that target. If the target is not reported in dnsTargets yet, the mapping is not served until it appears; it does not fall back to the default target. If omitted, the default target is used. For VPC_RESOURCE, once dnsTargets is non-empty, adding or changing a targetId requires an ID in that list; unchanged target IDs are not re-checked.',
         example: 'rcfg-097648d8068504966',
       }),
   })
@@ -1835,13 +5571,17 @@ const ReversePrivateEndpointDnsTargetSchema = z
       .exactOptional()
       .openapi({
         description:
-          'DNS target ID. For VPC_RESOURCE, the associated CHILD resource configuration ID, or the configuration ID for a single resource.',
+          'DNS target ID. For VPC_RESOURCE, the associated CHILD resource configuration ID, or the configuration ID for a single resource. For VPC_ENDPOINT_SERVICE, the AWS availability zone ID of the zonal endpoint DNS name.',
         example: 'rcfg-097648d8068504966',
       }),
     kind: z
-      .literal('RESOURCE_CONFIGURATION')
+      .string()
       .exactOptional()
-      .openapi({ description: 'DNS target kind.', example: 'RESOURCE_CONFIGURATION' }),
+      .openapi({
+        description:
+          "DNS target kind. Current values: 'RESOURCE_CONFIGURATION', 'AVAILABILITY_ZONE'. RESOURCE_CONFIGURATION is used for VPC_RESOURCE targets and AVAILABILITY_ZONE for VPC_ENDPOINT_SERVICE zonal targets. New kinds may be added, so clients must accept unknown values.",
+        example: 'RESOURCE_CONFIGURATION',
+      }),
     internalDnsName: z
       .string()
       .exactOptional()
@@ -2066,7 +5806,7 @@ const ReversePrivateEndpointSchema = z
       .exactOptional()
       .openapi({
         description:
-          'Read-only DNS targets the Reverse Private Endpoint currently reports. For VPC_RESOURCE, there is one RESOURCE_CONFIGURATION target per resource configuration association, identified by its CHILD resource configuration ID, or the configuration ID for a single resource. Other endpoint types report an empty list. Targets can appear over time; a custom mapping with a targetId that is not reported yet is not served until it appears.',
+          'Read-only DNS targets the Reverse Private Endpoint currently reports. For VPC_RESOURCE, there is one RESOURCE_CONFIGURATION target per resource configuration association, identified by its CHILD resource configuration ID, or the configuration ID for a single resource. For VPC_ENDPOINT_SERVICE, there is one AVAILABILITY_ZONE target per zonal endpoint DNS name, identified by its AWS availability zone ID; the regional DNS name is the default target and is not listed. Cross-region VPC endpoint services report no AVAILABILITY_ZONE targets. Other endpoint types report an empty list. Targets can appear over time; a custom mapping with a targetId that is not reported yet is not served until it appears.',
         example: [
           {
             id: 'rcfg-097648d8068504966',
@@ -2092,2966 +5832,6 @@ const ReversePrivateEndpointSchema = z
   .openapi({ required: [] })
   .openapi('ReversePrivateEndpoint')
 
-const PLAINSchema = z
-  .object({
-    username: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Database username.', example: 'postgres_user' }),
-    password: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Database password.', example: 'your_secure_password' }),
-  })
-  .openapi({ required: [] })
-  .openapi('PLAIN')
-
-const MskIamUserSchema = z
-  .object({
-    accessKeyId: z.string().exactOptional().openapi({ description: 'IAM access key ID.' }),
-    secretKey: z.string().exactOptional().openapi({ description: 'IAM secret key.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('MskIamUser')
-
-const ServiceAccountSchema = z
-  .object({
-    serviceAccountFile: z
-      .string()
-      .openapi({
-        description: 'Google Cloud service account JSON key file content, base64 encoded.',
-      }),
-  })
-  .openapi({ required: ['serviceAccountFile'] })
-  .openapi('ServiceAccount')
-
-const ClickPipeKafkaOffsetSchema = z
-  .object({
-    strategy: z
-      .enum(['from_beginning', 'from_latest', 'from_timestamp'])
-      .exactOptional()
-      .openapi({ description: 'Offset strategy.' }),
-    timestamp: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'A minute precision UTC timestamp to start from. Required for "from_timestamp" strategy.',
-        example: '2021-01-01T00:00',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('ClickPipeKafkaOffset')
-
-const ClickPipeKafkaConfluentSchemaRegistrySchema = z
-  .object({
-    type: z
-      .literal('confluent')
-      .exactOptional()
-      .openapi({
-        description:
-          "Type of the schema registry. Defaults to 'confluent' (a Confluent-compatible REST registry).",
-      }),
-    url: z
-      .string()
-      .openapi({
-        description: 'Schema URL. HTTPS required.',
-        example: 'https://psrc-aa00.us-east-2.aws.confluent.cloud/schemas/ids/100004',
-      }),
-    authentication: z
-      .literal('PLAIN')
-      .exactOptional()
-      .openapi({ description: 'Authentication type of the schema registry.' }),
-    caCertificate: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: "PEM encoded CA certificates to validate the schema registry's certificate.",
-      }),
-  })
-  .openapi({ required: ['url'] })
-  .openapi('ClickPipeKafkaConfluentSchemaRegistry')
-
-const ClickPipeKafkaGlueSchemaRegistrySchema = z
-  .object({
-    type: z
-      .literal('glue')
-      .openapi({
-        description:
-          "Type of the schema registry. Use 'glue' for the AWS Glue Schema Registry, which authenticates with IAM instead of credentials.",
-      }),
-    glueRegion: z
-      .string()
-      .openapi({ description: 'AWS region of the Glue Schema Registry.', example: 'us-east-1' }),
-    glueRegistryName: z
-      .string()
-      .openapi({ description: 'Name of the Glue Schema Registry.', example: 'my-registry' }),
-    glueRoleArn: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'IAM role to assume for Glue Schema Registry access. Defaults to the iamRole of the Kafka source, so it is required when the source does not authenticate with IAM. Read more in ClickPipes documentation: https://clickhouse.com/docs/en/integrations/clickpipes/kafka#iam',
-        example: 'arn:aws:iam::123456789012:role/MyGlueRegistryRole',
-      }),
-  })
-  .openapi({ required: ['type', 'glueRegion', 'glueRegistryName'] })
-  .openapi('ClickPipeKafkaGlueSchemaRegistry')
-
-const ClickPipeKafkaSchemaRegistrySchema = z
-  .xor([ClickPipeKafkaConfluentSchemaRegistrySchema, ClickPipeKafkaGlueSchemaRegistrySchema])
-  .openapi('ClickPipeKafkaSchemaRegistry')
-
-const ClickPipeKafkaSchemaRegistryCredentialsSchema = z
-  .object({
-    username: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Username for the schema registry.' }),
-    password: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Password for the schema registry.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('ClickPipeKafkaSchemaRegistryCredentials')
-
-const ClickPipeMutateKafkaConfluentSchemaRegistrySchema = z
-  .object({
-    type: z
-      .literal('confluent')
-      .exactOptional()
-      .openapi({
-        description:
-          "Type of the schema registry. Defaults to 'confluent' (a Confluent-compatible REST registry).",
-      }),
-    url: z
-      .string()
-      .openapi({
-        description: 'Schema URL. HTTPS required.',
-        example: 'https://psrc-aa00.us-east-2.aws.confluent.cloud/schemas/ids/100004',
-      }),
-    authentication: z
-      .literal('PLAIN')
-      .openapi({ description: 'Authentication type of the schema registry.' }),
-    caCertificate: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: "PEM encoded CA certificates to validate the schema registry's certificate.",
-      }),
-    credentials: ClickPipeKafkaSchemaRegistryCredentialsSchema,
-  })
-  .openapi({ required: ['url', 'authentication', 'credentials'] })
-  .openapi('ClickPipeMutateKafkaConfluentSchemaRegistry')
-
-const ClickPipeMutateKafkaSchemaRegistrySchema = z
-  .xor([ClickPipeMutateKafkaConfluentSchemaRegistrySchema, ClickPipeKafkaGlueSchemaRegistrySchema])
-  .openapi('ClickPipeMutateKafkaSchemaRegistry')
-
-const AzureEventHubSchema = z
-  .object({
-    connectionString: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Connection string for Azure EventHub source.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('AzureEventHub')
-
-const MutualTLSSchema = z
-  .object({
-    certificate: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'PEM encoded client certificate for mTLS authentication.' }),
-    privateKey: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'PEM encoded client private key for mTLS authentication.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('MutualTLS')
-
-const ClickPipeKafkaSourceSchema = z
-  .object({
-    type: z
-      .enum([
-        'kafka',
-        'redpanda',
-        'msk',
-        'gcmk',
-        'confluent',
-        'warpstream',
-        'azureeventhub',
-        'dokafka',
-      ])
-      .exactOptional()
-      .openapi({ description: 'Type of the Kafka source.' }),
-    format: z
-      .enum(['JSONEachRow', 'Avro', 'AvroConfluent', 'Protobuf'])
-      .exactOptional()
-      .openapi({ description: 'Format of the Kafka source.' }),
-    brokers: z.string().exactOptional().openapi({ description: 'Brokers of the Kafka source.' }),
-    topics: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'One or more Kafka topics as a comma-separated string. All topics must have the same schema and are ingested into the same destination table by a single ClickPipe.',
-        example: 'topic1,topic2',
-      }),
-    consumerGroup: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Consumer group of the Kafka source. If not provided "clickpipes-<<ID>>" will be used.',
-        example: 'my-clickpipe-consumer-group',
-      }),
-    authentication: z
-      .enum([
-        'PLAIN',
-        'SCRAM-SHA-256',
-        'SCRAM-SHA-512',
-        'IAM_ROLE',
-        'IAM_USER',
-        'MUTUAL_TLS',
-        'SERVICE_ACCOUNT_WORKLOAD_IDENTITY',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'Authentication method of the Kafka source. SERVICE_ACCOUNT_WORKLOAD_IDENTITY is in Private Preview. ClickPipes uses the GCP service account returned in gcpWorkloadIdentity.principal by the operation with operationId clickPipesServiceContextGet; grant it access to the source resources. Supported authentication methods: kafka: PLAIN, SCRAM-SHA-256, SCRAM-SHA-512, MUTUAL_TLS, msk: SCRAM-SHA-512, IAM_ROLE, IAM_USER, MUTUAL_TLS, gcmk: PLAIN, MUTUAL_TLS, SERVICE_ACCOUNT_WORKLOAD_IDENTITY, confluent: PLAIN, MUTUAL_TLS, warpstream: PLAIN, azureeventhub: PLAIN, redpanda: SCRAM-SHA-256, SCRAM-SHA-512, MUTUAL_TLS, dokafka: SCRAM-SHA-256, MUTUAL_TLS',
-      }),
-    iamRole: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'IAM role for the Kafka source. Use with IAM role authentication. Read more in ClickPipes documentation: https://clickhouse.com/docs/en/integrations/clickpipes/kafka#iam',
-        example: 'arn:aws:iam::123456789012:role/MyRole',
-      }),
-    offset: z.xor([ClickPipeKafkaOffsetSchema, z.null().nullable()]).exactOptional(),
-    schemaRegistry: z
-      .xor([ClickPipeKafkaSchemaRegistrySchema, z.null().nullable()])
-      .exactOptional(),
-    caCertificate: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: "PEM encoded CA certificates to validate the broker's certificate.",
-      }),
-    reversePrivateEndpointIds: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Reverse private endpoint UUIDs used for a secure private connection to the Kafka source.',
-      }),
-    exactlyOnce: z
-      .boolean()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Enable exactly-once delivery. Guarantees every Kafka record is inserted exactly once across restarts and rebalances. Can only be set at pipe creation.',
-      }),
-    tombstoneMode: z
-      .enum(['delete', 'soft_delete'])
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'How Kafka tombstone records are handled. Set to "delete" to delete the matching destination row; this requires exactly-once delivery. Set to "soft_delete" to write a row with the _is_deleted virtual column set to true; exactly-once delivery is not required. Can only be set at pipe creation.',
-        example: 'soft_delete',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('ClickPipeKafkaSource')
-
-const ClickPipePostKafkaSourceSchema = z
-  .object({
-    type: z
-      .enum([
-        'kafka',
-        'redpanda',
-        'msk',
-        'gcmk',
-        'confluent',
-        'warpstream',
-        'azureeventhub',
-        'dokafka',
-      ])
-      .exactOptional()
-      .openapi({ description: 'Type of the Kafka source.' }),
-    format: z
-      .enum(['JSONEachRow', 'Avro', 'AvroConfluent', 'Protobuf'])
-      .exactOptional()
-      .openapi({ description: 'Format of the Kafka source.' }),
-    brokers: z.string().exactOptional().openapi({ description: 'Brokers of the Kafka source.' }),
-    topics: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'One or more Kafka topics as a comma-separated string. All topics must have the same schema and are ingested into the same destination table by a single ClickPipe.',
-        example: 'topic1,topic2',
-      }),
-    consumerGroup: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Consumer group of the Kafka source. If not provided "clickpipes-<<ID>>" will be used.',
-        example: 'my-clickpipe-consumer-group',
-      }),
-    authentication: z
-      .enum([
-        'PLAIN',
-        'SCRAM-SHA-256',
-        'SCRAM-SHA-512',
-        'IAM_ROLE',
-        'IAM_USER',
-        'MUTUAL_TLS',
-        'SERVICE_ACCOUNT_WORKLOAD_IDENTITY',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'Authentication method of the Kafka source. SERVICE_ACCOUNT_WORKLOAD_IDENTITY is in Private Preview. ClickPipes uses the GCP service account returned in gcpWorkloadIdentity.principal by the operation with operationId clickPipesServiceContextGet; grant it access to the source resources. Supported authentication methods: kafka: PLAIN, SCRAM-SHA-256, SCRAM-SHA-512, MUTUAL_TLS, msk: SCRAM-SHA-512, IAM_ROLE, IAM_USER, MUTUAL_TLS, gcmk: PLAIN, MUTUAL_TLS, SERVICE_ACCOUNT_WORKLOAD_IDENTITY, confluent: PLAIN, MUTUAL_TLS, warpstream: PLAIN, azureeventhub: PLAIN, redpanda: SCRAM-SHA-256, SCRAM-SHA-512, MUTUAL_TLS, dokafka: SCRAM-SHA-256, MUTUAL_TLS',
-      }),
-    iamRole: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'IAM role for the Kafka source. Use with IAM role authentication. Read more in ClickPipes documentation: https://clickhouse.com/docs/en/integrations/clickpipes/kafka#iam',
-        example: 'arn:aws:iam::123456789012:role/MyRole',
-      }),
-    offset: z.xor([ClickPipeKafkaOffsetSchema, z.null().nullable()]).exactOptional(),
-    schemaRegistry: z
-      .xor([ClickPipeMutateKafkaSchemaRegistrySchema, z.null().nullable()])
-      .exactOptional(),
-    caCertificate: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: "PEM encoded CA certificates to validate the broker's certificate.",
-      }),
-    reversePrivateEndpointIds: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Reverse private endpoint UUIDs used for a secure private connection to the Kafka source.',
-      }),
-    exactlyOnce: z
-      .boolean()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Enable exactly-once delivery. Guarantees every Kafka record is inserted exactly once across restarts and rebalances. Can only be set at pipe creation.',
-      }),
-    tombstoneMode: z
-      .enum(['delete', 'soft_delete'])
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'How Kafka tombstone records are handled. Set to "delete" to delete the matching destination row; this requires exactly-once delivery. Set to "soft_delete" to write a row with the _is_deleted virtual column set to true; exactly-once delivery is not required. Can only be set at pipe creation.',
-        example: 'soft_delete',
-      }),
-    credentials: z
-      .xor([PLAINSchema, MskIamUserSchema, AzureEventHubSchema, MutualTLSSchema])
-      .exactOptional()
-      .openapi({
-        description:
-          'Credentials for Kafka source. Choose one that is supported by the authentication method.',
-      }),
-    protobufSchema: z
-      .string()
-      .min(1)
-      .max(1048576)
-      .exactOptional()
-      .openapi({
-        description:
-          'Base64-encoded .proto source or serialized FileDescriptorSet. Supported only with Protobuf format and cannot be combined with schemaRegistry.',
-        example: 'c3ludGF4ID0gInByb3RvMyI7IG1lc3NhZ2UgRXZlbnQge30=',
-        writeOnly: true,
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('ClickPipePostKafkaSource')
-
-const ClickPipePatchKafkaSourceSchema = z
-  .object({
-    authentication: z
-      .enum([
-        'PLAIN',
-        'SCRAM-SHA-256',
-        'SCRAM-SHA-512',
-        'IAM_ROLE',
-        'IAM_USER',
-        'MUTUAL_TLS',
-        'SERVICE_ACCOUNT_WORKLOAD_IDENTITY',
-      ])
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Authentication method of the Kafka source. SERVICE_ACCOUNT_WORKLOAD_IDENTITY is in Private Preview. ClickPipes uses the GCP service account returned in gcpWorkloadIdentity.principal by the operation with operationId clickPipesServiceContextGet; grant it access to the source resources. Supported authentication methods: kafka: PLAIN, SCRAM-SHA-256, SCRAM-SHA-512, MUTUAL_TLS, msk: SCRAM-SHA-512, IAM_ROLE, IAM_USER, MUTUAL_TLS, gcmk: PLAIN, MUTUAL_TLS, SERVICE_ACCOUNT_WORKLOAD_IDENTITY, confluent: PLAIN, MUTUAL_TLS, warpstream: PLAIN, azureeventhub: PLAIN, redpanda: SCRAM-SHA-256, SCRAM-SHA-512, MUTUAL_TLS, dokafka: SCRAM-SHA-256, MUTUAL_TLS',
-      }),
-    iamRole: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'IAM role for the Kafka source. Use with IAM role authentication. Read more in ClickPipes documentation: https://clickhouse.com/docs/en/integrations/clickpipes/kafka#iam',
-        example: 'arn:aws:iam::123456789012:role/MyRole',
-      }),
-    caCertificate: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: "PEM encoded CA certificates to validate the broker's certificate.",
-      }),
-    reversePrivateEndpointIds: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Reverse private endpoint UUIDs used for a secure private connection to the Kafka source.',
-      }),
-    credentials: z
-      .xor([PLAINSchema, MskIamUserSchema, AzureEventHubSchema, MutualTLSSchema])
-      .exactOptional()
-      .openapi({
-        description:
-          'Credentials for Kafka source. Choose one that is supported by the authentication method.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('ClickPipePatchKafkaSource')
-
-const ClickPipeKinesisSchemaRegistrySchema = z
-  .object({
-    type: z
-      .literal('glue')
-      .openapi({
-        description:
-          'Type of the schema registry. Kinesis ClickPipes support the AWS Glue Schema Registry, which authenticates with IAM instead of credentials.',
-      }),
-    glueRegion: z
-      .string()
-      .openapi({ description: 'AWS region of the Glue Schema Registry.', example: 'us-east-1' }),
-    glueRegistryName: z
-      .string()
-      .openapi({ description: 'Name of the Glue Schema Registry.', example: 'my-registry' }),
-    glueRoleArn: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'IAM role to assume for Glue Schema Registry access. Defaults to the IAM identity of the Kinesis source.',
-        example: 'arn:aws:iam::123456789012:role/MyGlueRegistryRole',
-      }),
-  })
-  .openapi({ required: ['type', 'glueRegion', 'glueRegistryName'] })
-  .openapi('ClickPipeKinesisSchemaRegistry')
-
-const ClickPipeKinesisSourceSchema = z
-  .object({
-    format: z
-      .enum(['JSONEachRow', 'Avro', 'AvroConfluent', 'Protobuf'])
-      .exactOptional()
-      .openapi({ description: 'Format of the Kinesis stream.' }),
-    streamName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Name of the Kinesis stream.', example: 'my-stream' }),
-    region: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'AWS region of the Kinesis stream.', example: 'us-east-1' }),
-    useEnhancedFanOut: z
-      .boolean()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Use enhanced fan-out for the Kinesis stream.' }),
-    iteratorType: z
-      .enum(['TRIM_HORIZON', 'LATEST', 'AT_TIMESTAMP'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Type of iterator to use when reading from the Kinesis stream. If AT_TIMESTAMP is used, the timestamp field must be provided.',
-      }),
-    timestamp: z
-      .int()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'UNIX timestamp to start reading from the Kinesis stream. Required if iteratorType is AT_TIMESTAMP.',
-        example: 1615766400,
-      }),
-    authentication: z
-      .enum(['IAM_ROLE', 'IAM_USER'])
-      .exactOptional()
-      .openapi({ description: 'Authentication method to use with the Kinesis stream.' }),
-    iamRole: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'IAM role to use for authentication. Required if IAM_ROLE is used.',
-        example: 'arn:aws:iam::123456789012:role/MyRole',
-      }),
-    schemaRegistry: z
-      .xor([ClickPipeKinesisSchemaRegistrySchema, z.null().nullable()])
-      .exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ClickPipeKinesisSource')
-
-const ClickPipePostKinesisSourceSchema = z
-  .object({
-    format: z
-      .enum(['JSONEachRow', 'Avro', 'AvroConfluent', 'Protobuf'])
-      .exactOptional()
-      .openapi({ description: 'Format of the Kinesis stream.' }),
-    streamName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Name of the Kinesis stream.', example: 'my-stream' }),
-    region: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'AWS region of the Kinesis stream.', example: 'us-east-1' }),
-    useEnhancedFanOut: z
-      .boolean()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Use enhanced fan-out for the Kinesis stream.' }),
-    iteratorType: z
-      .enum(['TRIM_HORIZON', 'LATEST', 'AT_TIMESTAMP'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Type of iterator to use when reading from the Kinesis stream. If AT_TIMESTAMP is used, the timestamp field must be provided.',
-      }),
-    timestamp: z
-      .int()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'UNIX timestamp to start reading from the Kinesis stream. Required if iteratorType is AT_TIMESTAMP.',
-        example: 1615766400,
-      }),
-    authentication: z
-      .enum(['IAM_ROLE', 'IAM_USER'])
-      .exactOptional()
-      .openapi({ description: 'Authentication method to use with the Kinesis stream.' }),
-    iamRole: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'IAM role to use for authentication. Required if IAM_ROLE is used.',
-        example: 'arn:aws:iam::123456789012:role/MyRole',
-      }),
-    schemaRegistry: z
-      .xor([ClickPipeKinesisSchemaRegistrySchema, z.null().nullable()])
-      .exactOptional(),
-    accessKey: z.xor([MskIamUserSchema, z.null().nullable()]).exactOptional(),
-    protobufSchema: z
-      .string()
-      .min(1)
-      .max(1048576)
-      .exactOptional()
-      .openapi({
-        description:
-          'Base64-encoded .proto source or serialized FileDescriptorSet. Required with Protobuf format unless a schema registry is configured, and not supported with other formats.',
-        example: 'c3ludGF4ID0gInByb3RvMyI7IG1lc3NhZ2UgRXZlbnQge30=',
-        writeOnly: true,
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('ClickPipePostKinesisSource')
-
-const ClickPipePatchKinesisSourceSchema = z
-  .object({
-    authentication: z
-      .enum(['IAM_ROLE', 'IAM_USER'])
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Authentication method to use with the Kinesis stream.' }),
-    iamRole: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'IAM role to use for authentication. Required if IAM_ROLE is used.',
-        example: 'arn:aws:iam::123456789012:role/MyRole',
-      }),
-    accessKey: z.xor([MskIamUserSchema, z.null().nullable()]).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ClickPipePatchKinesisSource')
-
-const ClickPipeObjectStorageSourceSchema = z
-  .object({
-    type: z
-      .enum(['s3', 'gcs', 'dospaces', 'azureblobstorage', 'cloudflarer2', 'ovhobjectstorage'])
-      .exactOptional()
-      .openapi({ description: 'Type of the ObjectStorage source.' }),
-    format: z
-      .enum([
-        'JSONEachRow',
-        'JSONAsObject',
-        'CSV',
-        'CSVWithNames',
-        'TabSeparated',
-        'TabSeparatedWithNames',
-        'Parquet',
-        'Avro',
-      ])
-      .exactOptional()
-      .openapi({ description: 'Format of the files.' }),
-    url: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Provide a path to the file(s) you want to ingest. You can specify multiple files using bash-like wildcards. For more information, see the documentation on using wildcards in path: https://clickhouse.com/docs/en/integrations/clickpipes/object-storage#limitations',
-        example: 'https://datasets-documentation.s3.eu-west-3.amazonaws.com/http/**.ndjson.gz',
-      }),
-    delimiter: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Delimiter used in the files.', example: ',' }),
-    compression: z
-      .enum(['none', 'gzip', 'gz', 'brotli', 'br', 'xz', 'LZMA', 'zstd', 'auto'])
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Compression algorithm used for the files.', example: 'auto' }),
-    isContinuous: z
-      .boolean()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'If set to true, the pipe will continuously read new files from the source. If set to false, the pipe will read the files only once. New files have to be uploaded lexically order.',
-      }),
-    queueUrl: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Queue URL for event-based continuous ingestion. For S3, provide an SQS queue URL. For GCS, provide a Pub/Sub subscription (e.g. projects/{project}/subscriptions/{name}). When provided, files are ingested based on event notifications rather than lexicographical order. Only applicable when isContinuous is true and authentication is not public.',
-        example: 'https://sqs.us-east-1.amazonaws.com/123456789012/MyQueue',
-      }),
-    skipInitialLoad: z
-      .boolean()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'If set to true, skips the initial load and only ingests files delivered by queue notifications. Only applicable when queueUrl is provided.',
-      }),
-    startAfter: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Skip all files up to and including this object key during the initial load. Cannot be provided when skipInitialLoad is true.',
-        example: 'events/2026-06-01/',
-      }),
-    authentication: z
-      .enum([
-        'IAM_ROLE',
-        'IAM_USER',
-        'CONNECTION_STRING',
-        'SERVICE_ACCOUNT',
-        'SERVICE_ACCOUNT_WORKLOAD_IDENTITY',
-      ])
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Authentication method. IAM_USER is for S3, GCS, and DigitalOcean Spaces. IAM_ROLE is for S3 only. SERVICE_ACCOUNT is for GCS only. For GCS, SERVICE_ACCOUNT_WORKLOAD_IDENTITY is in Private Preview. ClickPipes uses the GCP service account returned in gcpWorkloadIdentity.principal by the operation with operationId clickPipesServiceContextGet; grant it access to the source resources. CONNECTION_STRING is for Azure Blob Storage. PUBLIC uses no authentication.',
-      }),
-    iamRole: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'IAM role to be used with IAM role authentication. Read more in ClickPipes documentation: https://clickhouse.com/docs/en/integrations/clickpipes/object-storage#authentication',
-        example: 'arn:aws:iam::123456789012:role/MyRole',
-      }),
-    connectionString: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Connection string for Azure Blob Storage authentication. Required when authentication is CONNECTION_STRING.',
-        example:
-          'DefaultEndpointsProtocol=https;AccountName=myaccount;AccountKey=mykey;EndpointSuffix=core.windows.net',
-      }),
-    path: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Path to the file(s) within the Azure container. Used for Azure Blob Storage sources. You can specify multiple files using bash-like wildcards. For more information, see the documentation on using wildcards in path: https://clickhouse.com/docs/en/integrations/clickpipes/object-storage#limitations',
-        example: 'data/logs/*.json',
-      }),
-    azureContainerName: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Container name for Azure Blob Storage. Required when type is azureblobstorage.',
-        example: 'mycontainer',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('ClickPipeObjectStorageSource')
-
-const ClickPipePostObjectStorageSourceSchema = z
-  .object({
-    type: z
-      .enum(['s3', 'gcs', 'dospaces', 'azureblobstorage', 'cloudflarer2', 'ovhobjectstorage'])
-      .exactOptional()
-      .openapi({ description: 'Type of the ObjectStorage source.' }),
-    format: z
-      .enum([
-        'JSONEachRow',
-        'JSONAsObject',
-        'CSV',
-        'CSVWithNames',
-        'TabSeparated',
-        'TabSeparatedWithNames',
-        'Parquet',
-        'Avro',
-      ])
-      .exactOptional()
-      .openapi({ description: 'Format of the files.' }),
-    url: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Provide a path to the file(s) you want to ingest. You can specify multiple files using bash-like wildcards. For more information, see the documentation on using wildcards in path: https://clickhouse.com/docs/en/integrations/clickpipes/object-storage#limitations',
-        example: 'https://datasets-documentation.s3.eu-west-3.amazonaws.com/http/**.ndjson.gz',
-      }),
-    delimiter: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Delimiter used in the files.', example: ',' }),
-    compression: z
-      .enum(['none', 'gzip', 'gz', 'brotli', 'br', 'xz', 'LZMA', 'zstd', 'auto'])
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Compression algorithm used for the files.', example: 'auto' }),
-    isContinuous: z
-      .boolean()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'If set to true, the pipe will continuously read new files from the source. If set to false, the pipe will read the files only once. New files have to be uploaded lexically order.',
-      }),
-    queueUrl: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Queue URL for event-based continuous ingestion. For S3, provide an SQS queue URL. For GCS, provide a Pub/Sub subscription (e.g. projects/{project}/subscriptions/{name}). When provided, files are ingested based on event notifications rather than lexicographical order. Only applicable when isContinuous is true and authentication is not public.',
-        example: 'https://sqs.us-east-1.amazonaws.com/123456789012/MyQueue',
-      }),
-    skipInitialLoad: z
-      .boolean()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'If set to true, skips the initial load and only ingests files delivered by queue notifications. Only applicable when queueUrl is provided.',
-      }),
-    startAfter: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Skip all files up to and including this object key during the initial load. Cannot be provided when skipInitialLoad is true.',
-        example: 'events/2026-06-01/',
-      }),
-    authentication: z
-      .enum([
-        'IAM_ROLE',
-        'IAM_USER',
-        'CONNECTION_STRING',
-        'SERVICE_ACCOUNT',
-        'SERVICE_ACCOUNT_WORKLOAD_IDENTITY',
-      ])
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Authentication method. IAM_USER is for S3, GCS, and DigitalOcean Spaces. IAM_ROLE is for S3 only. SERVICE_ACCOUNT is for GCS only. For GCS, SERVICE_ACCOUNT_WORKLOAD_IDENTITY is in Private Preview. ClickPipes uses the GCP service account returned in gcpWorkloadIdentity.principal by the operation with operationId clickPipesServiceContextGet; grant it access to the source resources. CONNECTION_STRING is for Azure Blob Storage. PUBLIC uses no authentication.',
-      }),
-    iamRole: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'IAM role to be used with IAM role authentication. Read more in ClickPipes documentation: https://clickhouse.com/docs/en/integrations/clickpipes/object-storage#authentication',
-        example: 'arn:aws:iam::123456789012:role/MyRole',
-      }),
-    connectionString: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Connection string for Azure Blob Storage authentication. Required when authentication is CONNECTION_STRING.',
-        example:
-          'DefaultEndpointsProtocol=https;AccountName=myaccount;AccountKey=mykey;EndpointSuffix=core.windows.net',
-      }),
-    path: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Path to the file(s) within the Azure container. Used for Azure Blob Storage sources. You can specify multiple files using bash-like wildcards. For more information, see the documentation on using wildcards in path: https://clickhouse.com/docs/en/integrations/clickpipes/object-storage#limitations',
-        example: 'data/logs/*.json',
-      }),
-    azureContainerName: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Container name for Azure Blob Storage. Required when type is azureblobstorage.',
-        example: 'mycontainer',
-      }),
-    accessKey: z.xor([MskIamUserSchema, z.null().nullable()]).exactOptional(),
-    serviceAccountKey: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Base64-encoded GCP service account JSON key. Required when authentication is SERVICE_ACCOUNT.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('ClickPipePostObjectStorageSource')
-
-const ClickPipePatchObjectStorageSourceSchema = z
-  .object({
-    skipInitialLoad: z
-      .boolean()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'If set to true, skips the initial load and only ingests files delivered by queue notifications. Only applicable when queueUrl is provided.',
-      }),
-    startAfter: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Skip all files up to and including this object key during the initial load. Cannot be provided when skipInitialLoad is true.',
-        example: 'events/2026-06-01/',
-      }),
-    authentication: z
-      .enum([
-        'IAM_ROLE',
-        'IAM_USER',
-        'CONNECTION_STRING',
-        'SERVICE_ACCOUNT',
-        'SERVICE_ACCOUNT_WORKLOAD_IDENTITY',
-      ])
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Authentication method. IAM_USER is for S3, GCS, and DigitalOcean Spaces. IAM_ROLE is for S3 only. SERVICE_ACCOUNT is for GCS only. For GCS, SERVICE_ACCOUNT_WORKLOAD_IDENTITY is in Private Preview. ClickPipes uses the GCP service account returned in gcpWorkloadIdentity.principal by the operation with operationId clickPipesServiceContextGet; grant it access to the source resources. CONNECTION_STRING is for Azure Blob Storage. PUBLIC uses no authentication.',
-      }),
-    iamRole: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'IAM role to be used with IAM role authentication. Read more in ClickPipes documentation: https://clickhouse.com/docs/en/integrations/clickpipes/object-storage#authentication',
-        example: 'arn:aws:iam::123456789012:role/MyRole',
-      }),
-    connectionString: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Connection string for Azure Blob Storage authentication. Required when authentication is CONNECTION_STRING.',
-        example:
-          'DefaultEndpointsProtocol=https;AccountName=myaccount;AccountKey=mykey;EndpointSuffix=core.windows.net',
-      }),
-    path: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Path to the file(s) within the Azure container. Used for Azure Blob Storage sources. You can specify multiple files using bash-like wildcards. For more information, see the documentation on using wildcards in path: https://clickhouse.com/docs/en/integrations/clickpipes/object-storage#limitations',
-        example: 'data/logs/*.json',
-      }),
-    azureContainerName: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Container name for Azure Blob Storage. Required when type is azureblobstorage.',
-        example: 'mycontainer',
-      }),
-    accessKey: z.xor([MskIamUserSchema, z.null().nullable()]).exactOptional(),
-    serviceAccountKey: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Base64-encoded GCP service account JSON key. Required when authentication is SERVICE_ACCOUNT.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('ClickPipePatchObjectStorageSource')
-
-const ClickPipePostgresPipeSettingsSchema = z
-  .object({
-    syncIntervalSeconds: z
-      .int()
-      .min(1)
-      .exactOptional()
-      .openapi({
-        description: 'Interval in seconds to sync data from Postgres during CDC replication.',
-        example: 60,
-      }),
-    pullBatchSize: z
-      .int()
-      .min(1)
-      .exactOptional()
-      .openapi({
-        description: 'Number of rows to pull in each batch during CDC replication.',
-        example: 1000,
-      }),
-    publicationName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'PostgreSQL publication name to use for CDC replication. If not provided, ClickPipes will create one automatically.',
-        example: 'clickpipes_publication',
-      }),
-    replicationMode: z
-      .enum(['cdc', 'snapshot', 'cdc_only'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Replication mode: "cdc" (change data capture with initial snapshot), "snapshot" (one-time snapshot only), or "cdc_only" (CDC without initial snapshot).',
-        example: 'cdc',
-      }),
-    replicationSlotName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'PostgreSQL replication slot name. Only valid for "cdc_only" mode. For "cdc" mode, ClickPipes creates the slot automatically.',
-        example: 'clickpipes_slot',
-      }),
-    allowNullableColumns: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Preserve nullability from Postgres in the destination ClickHouse table. When true, columns without NOT NULL constraints are created as Nullable(...). When false, all columns are non-nullable and NULL values are replaced with the default value for the type. Note: Nullable types have performance overhead in ClickHouse.',
-        example: false,
-      }),
-    initialLoadParallelism: z
-      .int()
-      .min(1)
-      .exactOptional()
-      .openapi({
-        description: 'Number of parallel workers to use per table in the initial snapshot phase.',
-        example: 1,
-      }),
-    snapshotNumRowsPerPartition: z
-      .int()
-      .min(1000)
-      .exactOptional()
-      .openapi({
-        description: 'Number of rows per partition during the snapshot phase.',
-        example: 100000,
-      }),
-    snapshotNumberOfParallelTables: z
-      .int()
-      .min(1)
-      .exactOptional()
-      .openapi({
-        description: 'Number of tables to snapshot in parallel during the initial load phase.',
-        example: 1,
-      }),
-    enableFailoverSlots: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Enable failover support for the replication slot on PG17 and newer. Only applicable when ClickPipes creates the replication slot (i.e., replicationSlotName is NOT provided).',
-        example: false,
-      }),
-    deleteOnMerge: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Enable hard delete behavior in ReplacingMergeTree for PostgreSQL DELETE operations.',
-        example: false,
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('ClickPipePostgresPipeSettings')
-
-const ClickPipePatchPostgresPipeSettingsSchema = z
-  .object({
-    syncIntervalSeconds: z
-      .int()
-      .min(1)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Interval in seconds to sync data from Postgres during CDC replication.',
-        example: 60,
-      }),
-    pullBatchSize: z
-      .int()
-      .min(1)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Number of rows to pull in each batch during CDC replication.',
-        example: 1000,
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('ClickPipePatchPostgresPipeSettings')
-
-const ClickPipePostgresPipeTableMappingSchema = z
-  .object({
-    sourceSchemaName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'PostgreSQL source schema name.', example: 'public' }),
-    sourceTable: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'PostgreSQL source table name.', example: 'users' }),
-    targetTable: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'ClickHouse target table name, optionally prefixed with schema name (e.g., "my_schema_my_table"). The table will be created automatically if it does not exist. For snapshot mode, the target table must be empty.',
-        example: 'public_users',
-      }),
-    excludedColumns: z
-      .array(z.string())
-      .superRefine((items, ctx) => {
-        const seen = new Map()
-        for (const [i, val] of items.entries()) {
-          const key = JSON.stringify(val)
-          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-          else seen.set(key, i)
-        }
-      })
-      .exactOptional()
-      .openapi({
-        description:
-          'List of column names to exclude from replication. Column names must be unique within this list.',
-        example: ['internal_id', 'temp_data'],
-      }),
-    useCustomSortingKey: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether to use a custom sorting key. If true, sortingKeys must be provided. If false or omitted, the default sorting key is the PostgreSQL primary key.',
-        example: false,
-      }),
-    sortingKeys: z
-      .array(z.string())
-      .superRefine((items, ctx) => {
-        const seen = new Map()
-        for (const [i, val] of items.entries()) {
-          const key = JSON.stringify(val)
-          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-          else seen.set(key, i)
-        }
-      })
-      .exactOptional()
-      .openapi({
-        description:
-          'Ordered list of column names to use as the sorting (ORDER BY) key in ClickHouse. Only used when useCustomSortingKey is true. Column names must be unique within this list.',
-        example: ['created_at_date', 'event_id'],
-      }),
-    tableEngine: z
-      .enum(['MergeTree', 'ReplacingMergeTree', 'Null'])
-      .exactOptional()
-      .openapi({
-        description:
-          'ClickHouse table engine: "ReplacingMergeTree" (handles updates/deletes), "MergeTree" (append-only), or "Null" (forward data to materialized views without storing it).',
-        example: 'ReplacingMergeTree',
-      }),
-    partitionKey: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Custom partitioning column used for parallel snapshotting. Only beneficial for PostgreSQL 13 (no benefit for PG14+, which supports indexed ctid scans). Must be an indexed column of type: `smallint`, `integer`, `bigint`, `timestamp without time zone`, or `timestamp with time zone`. Unrelated to ClickHouse partitioning.',
-        example: 'id',
-      }),
-    partitionByExpr: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'ClickHouse PARTITION BY expression applied to the destination table when ClickPipes creates it.',
-        example: 'toYYYYMM(created_at)',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('ClickPipePostgresPipeTableMapping')
-
-const ClickPipePatchPostgresPipeRemoveTableMappingSchema = z
-  .object({
-    sourceSchemaName: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'PostgreSQL source schema name.', example: 'public' }),
-    sourceTable: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'PostgreSQL source table name.', example: 'users' }),
-    targetTable: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'ClickHouse target table name, optionally prefixed with schema name (e.g., "my_schema_my_table"). The table will be created automatically if it does not exist. For snapshot mode, the target table must be empty.',
-        example: 'public_users',
-      }),
-    tableEngine: z
-      .enum(['MergeTree', 'ReplacingMergeTree', 'Null'])
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'ClickHouse table engine: "ReplacingMergeTree" (handles updates/deletes), "MergeTree" (append-only), or "Null" (forward data to materialized views without storing it).',
-        example: 'ReplacingMergeTree',
-      }),
-    partitionKey: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Custom partitioning column used for parallel snapshotting. Only beneficial for PostgreSQL 13 (no benefit for PG14+, which supports indexed ctid scans). Must be an indexed column of type: `smallint`, `integer`, `bigint`, `timestamp without time zone`, or `timestamp with time zone`. Unrelated to ClickHouse partitioning.',
-        example: 'id',
-      }),
-    partitionByExpr: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'ClickHouse PARTITION BY expression applied to the destination table when ClickPipes creates it.',
-        example: 'toYYYYMM(created_at)',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('ClickPipePatchPostgresPipeRemoveTableMapping')
-
-const ClickPipePostgresSourceSchema = z
-  .object({
-    type: z
-      .enum([
-        'postgres',
-        'supabase',
-        'neon',
-        'alloydb',
-        'planetscale',
-        'rdspostgres',
-        'aurorapostgres',
-        'cloudsqlpostgres',
-        'azurepostgres',
-        'crunchybridge',
-        'tigerdata',
-      ])
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Type of the Postgres source. Defaults to "postgres" if not specified.',
-      }),
-    host: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'PostgreSQL server hostname or IP address. To use a reverse private endpoint, pass the endpoint hostname here. For Cloud SQL with SERVICE_ACCOUNT_WORKLOAD_IDENTITY authentication, pass the instance connection name (project:region:instance).',
-        example: 'my-postgres-server.example.com',
-      }),
-    port: z
-      .int()
-      .min(1)
-      .max(65535)
-      .exactOptional()
-      .openapi({ description: 'PostgreSQL server port.', example: 5432 }),
-    database: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'PostgreSQL database name to replicate from.',
-        example: 'production_db',
-      }),
-    authentication: z
-      .enum(['basic', 'IAM_ROLE', 'SERVICE_ACCOUNT_WORKLOAD_IDENTITY'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Authentication method for Postgres connection. IAM_ROLE is only available for services on AWS.',
-        example: 'IAM_ROLE',
-      }),
-    iamRole: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'IAM role ARN for IAM authentication (required for IAM_ROLE authentication, services on AWS only).',
-        example: 'arn:aws:iam::123456789012:role/MyApplicationRole',
-      }),
-    tlsHost: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'TLS/SSL host for secure connections.',
-        example: 'my-postgres-server.example.com',
-      }),
-    caCertificate: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'PEM encoded CA certificate to validate the Postgres server certificate.',
-        example: '-----BEGIN CERTIFICATE-----\n...',
-      }),
-    disableTls: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Disable TLS for the Postgres connection. Use with caution in production environments.',
-        example: false,
-      }),
-    skipCertVerification: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Skip TLS certificate verification for the Postgres connection. Use with caution in production environments.',
-        example: false,
-      }),
-    settings: ClickPipePostgresPipeSettingsSchema.exactOptional(),
-    tableMappings: z
-      .array(ClickPipePostgresPipeTableMappingSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'List of table mappings defining which PostgreSQL tables to replicate and how they map to ClickHouse tables.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('ClickPipePostgresSource')
-
-const ClickPipeMutatePostgresSourceSchema = z
-  .object({
-    type: z
-      .enum([
-        'postgres',
-        'supabase',
-        'neon',
-        'alloydb',
-        'planetscale',
-        'rdspostgres',
-        'aurorapostgres',
-        'cloudsqlpostgres',
-        'azurepostgres',
-        'crunchybridge',
-        'tigerdata',
-      ])
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Type of the Postgres source. Defaults to "postgres" if not specified.',
-      }),
-    credentials: PLAINSchema.exactOptional(),
-    host: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'PostgreSQL server hostname or IP address. To use a reverse private endpoint, pass the endpoint hostname here. For Cloud SQL with SERVICE_ACCOUNT_WORKLOAD_IDENTITY authentication, pass the instance connection name (project:region:instance).',
-        example: 'my-postgres-server.example.com',
-      }),
-    port: z
-      .int()
-      .min(1)
-      .max(65535)
-      .exactOptional()
-      .openapi({ description: 'PostgreSQL server port.', example: 5432 }),
-    database: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'PostgreSQL database name to replicate from.',
-        example: 'production_db',
-      }),
-    settings: ClickPipePostgresPipeSettingsSchema.exactOptional(),
-    authentication: z
-      .enum(['basic', 'IAM_ROLE', 'SERVICE_ACCOUNT_WORKLOAD_IDENTITY'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Authentication method for Postgres connection. IAM_ROLE is only available for services on AWS.',
-        example: 'IAM_ROLE',
-      }),
-    iamRole: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'IAM role ARN for IAM authentication (required for IAM_ROLE authentication, services on AWS only).',
-        example: 'arn:aws:iam::123456789012:role/MyApplicationRole',
-      }),
-    tlsHost: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'TLS/SSL host for secure connections.',
-        example: 'my-postgres-server.example.com',
-      }),
-    caCertificate: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'PEM encoded CA certificate to validate the Postgres server certificate.',
-        example: '-----BEGIN CERTIFICATE-----\n...',
-      }),
-    disableTls: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({
-        description:
-          'Disable TLS for the Postgres connection. Use with caution in production environments. Defaults to false when omitted.',
-        example: false,
-      }),
-    skipCertVerification: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Skip TLS certificate verification for the Postgres connection. Use with caution in production environments.',
-        example: false,
-      }),
-    tableMappings: z
-      .array(ClickPipePostgresPipeTableMappingSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'List of table mappings defining which PostgreSQL tables to replicate and how they map to ClickHouse tables.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('ClickPipeMutatePostgresSource')
-
-const ClickPipePatchPostgresSourceSchema = z
-  .object({
-    credentials: PLAINSchema.exactOptional(),
-    host: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'PostgreSQL server hostname or IP address. To use a reverse private endpoint, pass the endpoint hostname here. For Cloud SQL with SERVICE_ACCOUNT_WORKLOAD_IDENTITY authentication, pass the instance connection name (project:region:instance).',
-        example: 'my-postgres-server.example.com',
-      }),
-    port: z
-      .int()
-      .min(1)
-      .max(65535)
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'PostgreSQL server port.', example: 5432 }),
-    database: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'PostgreSQL database name to replicate from.',
-        example: 'production_db',
-      }),
-    tlsHost: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'TLS/SSL host for secure connections.',
-        example: 'my-postgres-server.example.com',
-      }),
-    caCertificate: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'PEM encoded CA certificate to validate the Postgres server certificate.',
-        example: '-----BEGIN CERTIFICATE-----\n...',
-      }),
-    disableTls: z
-      .boolean()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Disable TLS for the Postgres connection. Use with caution in production environments.',
-        example: false,
-      }),
-    skipCertVerification: z
-      .boolean()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Skip TLS certificate verification for the Postgres connection. Use with caution in production environments.',
-        example: false,
-      }),
-    settings: ClickPipePatchPostgresPipeSettingsSchema.exactOptional(),
-    tableMappingsToAdd: z
-      .array(ClickPipePostgresPipeTableMappingSchema)
-      .min(0)
-      .exactOptional()
-      .openapi({
-        description:
-          'Table mappings to add to the pipe. Can be an empty array if no tables are being added.',
-      }),
-    tableMappingsToRemove: z
-      .array(ClickPipePatchPostgresPipeRemoveTableMappingSchema)
-      .min(0)
-      .exactOptional()
-      .openapi({
-        description:
-          'Table mappings to remove from the pipe. Only sourceSchemaName, sourceTable, and targetTable are required for removal.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('ClickPipePatchPostgresSource')
-
-const ClickPipeMySQLPipeSettingsSchema = z
-  .object({
-    syncIntervalSeconds: z
-      .int()
-      .min(1)
-      .exactOptional()
-      .openapi({
-        description: 'Interval in seconds to sync data from MySQL during CDC replication.',
-        example: 60,
-      }),
-    pullBatchSize: z
-      .int()
-      .min(1)
-      .exactOptional()
-      .openapi({
-        description: 'Number of rows to pull in each batch during CDC replication.',
-        example: 1000,
-      }),
-    replicationMode: z
-      .enum(['cdc', 'snapshot', 'cdc_only'])
-      .openapi({
-        description:
-          'Replication mode: "cdc" (change data capture with initial snapshot), "snapshot" (one-time snapshot only), or "cdc_only" (CDC without initial snapshot).',
-        example: 'cdc',
-      }),
-    replicationMechanism: z
-      .enum(['GTID', 'FILE_POS'])
-      .exactOptional()
-      .openapi({
-        description:
-          'MySQL replication mechanism: "GTID" (Global Transaction Identifier) or "FILE_POS" (binary log file and position). Defaults to "GTID" if not specified. MariaDB supports "GTID" only. For "FILE_POS" on MySQL, contact support.',
-        example: 'GTID',
-      }),
-    useCompression: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Enable compression for the MySQL connection.', example: false }),
-    allowNullableColumns: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Preserve nullability from MySQL in the destination ClickHouse table. When true, columns without NOT NULL constraints are created as Nullable(...). When false, all columns are non-nullable and NULL values are replaced with the default value for the type. Note: Nullable types have performance overhead in ClickHouse.',
-        example: false,
-      }),
-    initialLoadParallelism: z
-      .int()
-      .min(1)
-      .exactOptional()
-      .openapi({
-        description: 'Number of parallel workers to use per table in the initial snapshot phase.',
-        example: 1,
-      }),
-    snapshotNumRowsPerPartition: z
-      .int()
-      .min(1000)
-      .exactOptional()
-      .openapi({
-        description: 'Number of rows per partition during the snapshot phase.',
-        example: 100000,
-      }),
-    snapshotNumberOfParallelTables: z
-      .int()
-      .min(1)
-      .exactOptional()
-      .openapi({
-        description: 'Number of tables to snapshot in parallel during the initial load phase.',
-        example: 1,
-      }),
-    deleteOnMerge: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Enable hard delete behavior in ReplacingMergeTree for MySQL DELETE operations.',
-        example: false,
-      }),
-  })
-  .openapi({ required: ['replicationMode'] })
-  .openapi('ClickPipeMySQLPipeSettings')
-
-const ClickPipePatchMySQLPipeSettingsSchema = z
-  .object({
-    syncIntervalSeconds: z
-      .int()
-      .min(1)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Interval in seconds to sync data from MySQL during CDC replication.',
-        example: 60,
-      }),
-    pullBatchSize: z
-      .int()
-      .min(1)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Number of rows to pull in each batch during CDC replication.',
-        example: 1000,
-      }),
-    useCompression: z
-      .boolean()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Enable compression for the MySQL connection.', example: false }),
-  })
-  .openapi({ required: [] })
-  .openapi('ClickPipePatchMySQLPipeSettings')
-
-const ClickPipeMySQLPipeTableMappingSchema = z
-  .object({
-    sourceSchemaName: z
-      .string()
-      .openapi({ description: 'MySQL source database name.', example: 'my_database' }),
-    sourceTable: z.string().openapi({ description: 'MySQL source table name.', example: 'users' }),
-    targetTable: z
-      .string()
-      .openapi({
-        description:
-          'ClickHouse target table name, optionally prefixed with schema name (e.g., "my_database_my_table"). The table will be created automatically if it does not exist. For snapshot mode, the target table must be empty.',
-        example: 'my_database_users',
-      }),
-    excludedColumns: z
-      .array(z.string())
-      .superRefine((items, ctx) => {
-        const seen = new Map()
-        for (const [i, val] of items.entries()) {
-          const key = JSON.stringify(val)
-          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-          else seen.set(key, i)
-        }
-      })
-      .exactOptional()
-      .openapi({
-        description:
-          'List of column names to exclude from replication. Column names must be unique within this list.',
-        example: ['internal_id', 'temp_data'],
-      }),
-    useCustomSortingKey: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether to use a custom sorting key. If true, sortingKeys must be provided. If false or omitted, the default sorting key is the MySQL primary key.',
-        example: false,
-      }),
-    sortingKeys: z
-      .array(z.string())
-      .superRefine((items, ctx) => {
-        const seen = new Map()
-        for (const [i, val] of items.entries()) {
-          const key = JSON.stringify(val)
-          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-          else seen.set(key, i)
-        }
-      })
-      .exactOptional()
-      .openapi({
-        description:
-          'Ordered list of column names to use as the sorting (ORDER BY) key in ClickHouse. Only used when useCustomSortingKey is true. Column names must be unique within this list.',
-        example: ['created_at_date', 'event_id'],
-      }),
-    tableEngine: z
-      .enum(['MergeTree', 'ReplacingMergeTree', 'Null'])
-      .exactOptional()
-      .openapi({
-        description:
-          'ClickHouse table engine: "ReplacingMergeTree" (handles updates/deletes), "MergeTree" (append-only), or "Null" (forward data to materialized views without storing it).',
-        example: 'ReplacingMergeTree',
-      }),
-    partitionKey: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Custom partitioning column used for parallel snapshotting. Must be an indexed column of an integer, date, datetime or timestamp type. Unrelated to ClickHouse partitioning.',
-        example: 'id',
-      }),
-    partitionByExpr: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'ClickHouse PARTITION BY expression applied to the destination table when ClickPipes creates it.',
-        example: 'toYYYYMM(created_at)',
-      }),
-  })
-  .openapi({ required: ['sourceSchemaName', 'sourceTable', 'targetTable'] })
-  .openapi('ClickPipeMySQLPipeTableMapping')
-
-const ClickPipePatchMySQLPipeRemoveTableMappingSchema = z
-  .object({
-    sourceSchemaName: z
-      .string()
-      .nullable()
-      .openapi({ description: 'MySQL source database name.', example: 'my_database' }),
-    sourceTable: z
-      .string()
-      .nullable()
-      .openapi({ description: 'MySQL source table name.', example: 'users' }),
-    targetTable: z
-      .string()
-      .nullable()
-      .openapi({
-        description:
-          'ClickHouse target table name, optionally prefixed with schema name (e.g., "my_database_my_table"). The table will be created automatically if it does not exist. For snapshot mode, the target table must be empty.',
-        example: 'my_database_users',
-      }),
-    tableEngine: z
-      .enum(['MergeTree', 'ReplacingMergeTree', 'Null'])
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'ClickHouse table engine: "ReplacingMergeTree" (handles updates/deletes), "MergeTree" (append-only), or "Null" (forward data to materialized views without storing it).',
-        example: 'ReplacingMergeTree',
-      }),
-    partitionKey: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Custom partitioning column used for parallel snapshotting. Must be an indexed column of an integer, date, datetime or timestamp type. Unrelated to ClickHouse partitioning.',
-        example: 'id',
-      }),
-    partitionByExpr: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'ClickHouse PARTITION BY expression applied to the destination table when ClickPipes creates it.',
-        example: 'toYYYYMM(created_at)',
-      }),
-  })
-  .openapi({ required: ['sourceSchemaName', 'sourceTable', 'targetTable'] })
-  .openapi('ClickPipePatchMySQLPipeRemoveTableMapping')
-
-const ClickPipeMySQLSourceSchema = z
-  .object({
-    type: z
-      .enum(['mysql', 'rdsmysql', 'auroramysql', 'cloudsqlmysql', 'mariadb', 'rdsmariadb'])
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Type of the MySQL source. Defaults to "mysql" if not specified.' }),
-    host: z
-      .string()
-      .openapi({
-        description:
-          'MySQL server hostname or IP address. To use a reverse private endpoint, pass the endpoint hostname here. For Cloud SQL with SERVICE_ACCOUNT_WORKLOAD_IDENTITY authentication, pass the instance connection name (project:region:instance).',
-        example: 'my-mysql-server.example.com',
-      }),
-    port: z.int().min(1).max(65535).openapi({ description: 'MySQL server port.', example: 3306 }),
-    authentication: z
-      .enum(['basic', 'IAM_ROLE', 'SERVICE_ACCOUNT_WORKLOAD_IDENTITY'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Authentication method for MySQL connection. IAM_ROLE is only available for services on AWS.',
-        example: 'basic',
-      }),
-    iamRole: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'IAM role ARN for IAM authentication (required for IAM_ROLE authentication, services on AWS only).',
-        example: 'arn:aws:iam::123456789012:role/MyApplicationRole',
-      }),
-    tlsHost: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'TLS/SSL host for secure connections.',
-        example: 'my-mysql-server.example.com',
-      }),
-    caCertificate: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'PEM encoded CA certificate to validate the MySQL server certificate.',
-        example: '-----BEGIN CERTIFICATE-----\n...',
-      }),
-    disableTls: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Disable TLS for the MySQL connection. Use with caution in production environments.',
-        example: false,
-      }),
-    skipCertVerification: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Skip TLS certificate verification for the MySQL connection. Use with caution in production environments.',
-        example: false,
-      }),
-    serverId: z
-      .int()
-      .min(1)
-      .max(4294967295)
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional MySQL server_id the pipe declares itself as in the MySQL replication topology. Must be unique across replicas connected to the source. If omitted, one is assigned automatically.',
-        example: 4242,
-      }),
-    settings: ClickPipeMySQLPipeSettingsSchema,
-    tableMappings: z
-      .array(ClickPipeMySQLPipeTableMappingSchema)
-      .openapi({
-        description:
-          'List of table mappings defining which MySQL tables to replicate and how they map to ClickHouse tables.',
-      }),
-  })
-  .openapi({ required: ['host', 'port', 'settings', 'tableMappings'] })
-  .openapi('ClickPipeMySQLSource')
-
-const ClickPipeMutateMySQLSourceSchema = z
-  .object({
-    type: z
-      .enum(['mysql', 'rdsmysql', 'auroramysql', 'cloudsqlmysql', 'mariadb', 'rdsmariadb'])
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Type of the MySQL source. Defaults to "mysql" if not specified.' }),
-    credentials: PLAINSchema.exactOptional(),
-    host: z
-      .string()
-      .openapi({
-        description:
-          'MySQL server hostname or IP address. To use a reverse private endpoint, pass the endpoint hostname here. For Cloud SQL with SERVICE_ACCOUNT_WORKLOAD_IDENTITY authentication, pass the instance connection name (project:region:instance).',
-        example: 'my-mysql-server.example.com',
-      }),
-    port: z.int().min(1).max(65535).openapi({ description: 'MySQL server port.', example: 3306 }),
-    settings: ClickPipeMySQLPipeSettingsSchema,
-    authentication: z
-      .enum(['basic', 'IAM_ROLE', 'SERVICE_ACCOUNT_WORKLOAD_IDENTITY'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Authentication method for MySQL connection. IAM_ROLE is only available for services on AWS.',
-        example: 'basic',
-      }),
-    iamRole: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'IAM role ARN for IAM authentication (required for IAM_ROLE authentication, services on AWS only).',
-        example: 'arn:aws:iam::123456789012:role/MyApplicationRole',
-      }),
-    tlsHost: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'TLS/SSL host for secure connections.',
-        example: 'my-mysql-server.example.com',
-      }),
-    caCertificate: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'PEM encoded CA certificate to validate the MySQL server certificate.',
-        example: '-----BEGIN CERTIFICATE-----\n...',
-      }),
-    disableTls: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({
-        description:
-          'Disable TLS for the MySQL connection. Use with caution in production environments. Defaults to false when omitted.',
-        example: false,
-      }),
-    skipCertVerification: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Skip TLS certificate verification for the MySQL connection. Use with caution in production environments.',
-        example: false,
-      }),
-    serverId: z
-      .int()
-      .min(1)
-      .max(4294967295)
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional MySQL server_id the pipe declares itself as in the MySQL replication topology. Must be unique across replicas connected to the source. If omitted, one is assigned automatically.',
-        example: 4242,
-      }),
-    tableMappings: z
-      .array(ClickPipeMySQLPipeTableMappingSchema)
-      .openapi({
-        description:
-          'List of table mappings defining which MySQL tables to replicate and how they map to ClickHouse tables.',
-      }),
-  })
-  .openapi({ required: ['host', 'port', 'settings', 'tableMappings'] })
-  .openapi('ClickPipeMutateMySQLSource')
-
-const ClickPipePatchMySQLSourceSchema = z
-  .object({
-    credentials: PLAINSchema.exactOptional(),
-    host: z
-      .string()
-      .nullable()
-      .openapi({
-        description:
-          'MySQL server hostname or IP address. To use a reverse private endpoint, pass the endpoint hostname here. For Cloud SQL with SERVICE_ACCOUNT_WORKLOAD_IDENTITY authentication, pass the instance connection name (project:region:instance).',
-        example: 'my-mysql-server.example.com',
-      }),
-    port: z
-      .int()
-      .min(1)
-      .max(65535)
-      .nullable()
-      .openapi({ description: 'MySQL server port.', example: 3306 }),
-    authentication: z
-      .enum(['basic', 'IAM_ROLE', 'SERVICE_ACCOUNT_WORKLOAD_IDENTITY'])
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Authentication method for MySQL connection. IAM_ROLE is only available for services on AWS.',
-        example: 'basic',
-      }),
-    iamRole: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'IAM role ARN for IAM authentication (required for IAM_ROLE authentication, services on AWS only).',
-        example: 'arn:aws:iam::123456789012:role/MyApplicationRole',
-      }),
-    tlsHost: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'TLS/SSL host for secure connections.',
-        example: 'my-mysql-server.example.com',
-      }),
-    caCertificate: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'PEM encoded CA certificate to validate the MySQL server certificate.',
-        example: '-----BEGIN CERTIFICATE-----\n...',
-      }),
-    disableTls: z
-      .boolean()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Disable TLS for the MySQL connection. Use with caution in production environments.',
-        example: false,
-      }),
-    skipCertVerification: z
-      .boolean()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Skip TLS certificate verification for the MySQL connection. Use with caution in production environments.',
-        example: false,
-      }),
-    serverId: z
-      .int()
-      .min(1)
-      .max(4294967295)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional MySQL server_id the pipe declares itself as in the MySQL replication topology. Must be unique across replicas connected to the source. If omitted, one is assigned automatically.',
-        example: 4242,
-      }),
-    settings: ClickPipePatchMySQLPipeSettingsSchema.exactOptional(),
-    tableMappingsToAdd: z
-      .array(ClickPipeMySQLPipeTableMappingSchema)
-      .min(0)
-      .exactOptional()
-      .openapi({
-        description:
-          'Table mappings to add to the pipe. Can be an empty array if no tables are being added.',
-      }),
-    tableMappingsToRemove: z
-      .array(ClickPipePatchMySQLPipeRemoveTableMappingSchema)
-      .min(0)
-      .exactOptional()
-      .openapi({
-        description:
-          'Table mappings to remove from the pipe. Only sourceSchemaName, sourceTable, and targetTable are required for removal.',
-      }),
-  })
-  .openapi({ required: ['host', 'port'] })
-  .openapi('ClickPipePatchMySQLSource')
-
-const ClickPipeBigQueryPipeSettingsSchema = z
-  .object({
-    replicationMode: z
-      .string()
-      .openapi({
-        description:
-          'Replication mode: "cdc" (change data capture with initial snapshot), "snapshot" (one-time snapshot only), or "cdc_only" (CDC without initial snapshot).',
-        example: 'cdc',
-      }),
-    replicationMethod: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'How changes are captured from BigQuery. "query_based" polls each table using a watermark timestamp column, "events_based" reads the BigQuery change history using the APPENDS or CHANGES table function. Required for "cdc" and "cdc_only" replication modes and not allowed for "snapshot".',
-        example: 'query_based',
-      }),
-    syncIntervalSeconds: z
-      .int()
-      .min(1)
-      .exactOptional()
-      .openapi({
-        description:
-          'Interval in seconds between CDC syncs. Not allowed for "snapshot" replication mode.',
-        example: 60,
-      }),
-    queryCdcPullSyncParallelism: z
-      .int()
-      .min(1)
-      .exactOptional()
-      .openapi({
-        description:
-          'Number of tables pulled in parallel during a CDC sync. Not allowed for "snapshot" replication mode.',
-        example: 4,
-      }),
-    syncDelaySeconds: z
-      .int()
-      .min(0)
-      .exactOptional()
-      .openapi({
-        description:
-          'Each CDC sync reads data only up to now minus this delay, giving recently written rows time to become visible in BigQuery. Increase it if your tables are loaded via batch jobs or Google Cloud Dataflow; if set too low, late-visible rows may be skipped. Not allowed for "snapshot" replication mode.',
-        example: 60,
-      }),
-    pullWindowSizeSeconds: z
-      .int()
-      .min(1)
-      .exactOptional()
-      .openapi({
-        description:
-          'Maximum amount of time one pull (query) can cover. Applies when the pipe has fallen behind, e.g. on the first CDC sync or when resuming after a pause: with a 6 hour limit, a pipe that is 3 days behind catches up in 12 smaller pulls instead of one large query. If a pull fails, only that pull is retried. Not allowed for "snapshot" replication mode.',
-        example: 86400,
-      }),
-    syncCron: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Standard 5-field cron expression (or a descriptor such as "@hourly") that schedules CDC syncs, e.g. "0 * * * *" to sync every hour sharp. Evaluated in UTC unless prefixed with "CRON_TZ=<zone>". Must not fire more than once a minute. Syncs run on this schedule instead of every syncIntervalSeconds, so the two cannot both be set. Not allowed for "snapshot" replication mode.',
-        example: '0 * * * *',
-      }),
-    allowNullableColumns: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Allow nullable columns in the destination table.' }),
-    initialLoadParallelism: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Number of parallel workers during initial load.' }),
-    snapshotNumRowsPerPartition: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Number of rows to snapshot per partition.' }),
-    snapshotNumberOfParallelTables: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Number of parallel tables to snapshot.' }),
-  })
-  .openapi({ required: ['replicationMode'] })
-  .openapi('ClickPipeBigQueryPipeSettings')
-
-const ClickPipeBigQueryPipeTableMappingSchema = z
-  .object({
-    sourceDatasetName: z.string().openapi({ description: 'Source BigQuery dataset name.' }),
-    sourceTable: z.string().openapi({ description: 'Source table name.' }),
-    targetTable: z.string().openapi({ description: 'Target ClickHouse table name.' }),
-    excludedColumns: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'Columns to exclude from the target table.' }),
-    useCustomSortingKey: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether to use a custom sorting key for the target table.' }),
-    sortingKeys: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description: 'Ordered list of columns to use as sorting key for the target table.',
-      }),
-    tableEngine: z
-      .enum(['MergeTree', 'ReplacingMergeTree', 'Null'])
-      .exactOptional()
-      .openapi({ description: 'Table engine to use for the target table.' }),
-    queryCdcWatermarkColumn: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Source column of type TIMESTAMP used as the CDC watermark. Required for every table when replicationMethod is "query_based"; not allowed otherwise.',
-      }),
-    eventsFunction: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'BigQuery table function used to read changes: "appends" (newly appended rows) or "changes" (all row changes). Required for every table when replicationMethod is "events_based"; not allowed otherwise.',
-        example: 'appends',
-      }),
-  })
-  .openapi({ required: ['sourceDatasetName', 'sourceTable', 'targetTable'] })
-  .openapi('ClickPipeBigQueryPipeTableMapping')
-
-const ClickPipeBigQueryServiceAccountSourceSchema = z
-  .object({
-    snapshotStagingPath: z
-      .string()
-      .openapi({
-        description:
-          'GCS bucket path for staging snapshot data (e.g., gs://my-bucket/staging/). Data will be automatically cleaned up after initial load.',
-      }),
-    settings: ClickPipeBigQueryPipeSettingsSchema,
-    tableMappings: z
-      .array(ClickPipeBigQueryPipeTableMappingSchema)
-      .openapi({ description: 'Table mappings for BigQuery pipe.' }),
-    authentication: z
-      .literal('SERVICE_ACCOUNT')
-      .openapi({ description: 'Authenticated with a Google Cloud service account JSON key.' }),
-    projectId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'GCP project ID that owns the BigQuery resources.',
-        example: 'my-gcp-project',
-      }),
-  })
-  .openapi({ required: ['snapshotStagingPath', 'settings', 'tableMappings', 'authentication'] })
-  .openapi('ClickPipeBigQueryServiceAccountSource')
-
-const ClickPipeBigQueryWorkloadIdentitySourceSchema = z
-  .object({
-    snapshotStagingPath: z
-      .string()
-      .openapi({
-        description:
-          'GCS bucket path for staging snapshot data (e.g., gs://my-bucket/staging/). Data will be automatically cleaned up after initial load.',
-      }),
-    settings: ClickPipeBigQueryPipeSettingsSchema,
-    tableMappings: z
-      .array(ClickPipeBigQueryPipeTableMappingSchema)
-      .openapi({ description: 'Table mappings for BigQuery pipe.' }),
-    authentication: z
-      .literal('SERVICE_ACCOUNT_WORKLOAD_IDENTITY')
-      .openapi({
-        description:
-          'Authenticated with the ClickPipes service tenant identity. SERVICE_ACCOUNT_WORKLOAD_IDENTITY is in Private Preview. ClickPipes uses the GCP service account returned in gcpWorkloadIdentity.principal by the operation with operationId clickPipesServiceContextGet; grant it access to the source resources.',
-      }),
-    projectId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'GCP project ID that owns the BigQuery resources. Older pipes created outside OpenAPI may omit this field.',
-        example: 'my-gcp-project',
-      }),
-  })
-  .openapi({ required: ['snapshotStagingPath', 'settings', 'tableMappings', 'authentication'] })
-  .openapi('ClickPipeBigQueryWorkloadIdentitySource')
-
-const ClickPipeBigQuerySourceSchema = z
-  .xor([ClickPipeBigQueryServiceAccountSourceSchema, ClickPipeBigQueryWorkloadIdentitySourceSchema])
-  .openapi('ClickPipeBigQuerySource')
-
-const ClickPipePostBigQueryServiceAccountSourceSchema = z
-  .strictObject({
-    snapshotStagingPath: z
-      .string()
-      .openapi({
-        description:
-          'GCS bucket path for staging snapshot data (e.g., gs://my-bucket/staging/). Data will be automatically cleaned up after initial load.',
-      }),
-    settings: ClickPipeBigQueryPipeSettingsSchema,
-    tableMappings: z
-      .array(ClickPipeBigQueryPipeTableMappingSchema)
-      .openapi({ description: 'Table mappings for BigQuery pipe.' }),
-    authentication: z
-      .literal('SERVICE_ACCOUNT')
-      .exactOptional()
-      .openapi({
-        description:
-          'Authenticate with a Google Cloud service account JSON key. Defaults to SERVICE_ACCOUNT when omitted.',
-      }),
-    projectId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'GCP project ID that owns the BigQuery resources.',
-        example: 'my-gcp-project',
-      }),
-    credentials: ServiceAccountSchema,
-  })
-  .openapi({ required: ['snapshotStagingPath', 'settings', 'tableMappings', 'credentials'] })
-  .openapi('ClickPipePostBigQueryServiceAccountSource')
-
-const ClickPipePostBigQueryWorkloadIdentitySourceSchema = z
-  .strictObject({
-    snapshotStagingPath: z
-      .string()
-      .openapi({
-        description:
-          'GCS bucket path for staging snapshot data (e.g., gs://my-bucket/staging/). Data will be automatically cleaned up after initial load.',
-      }),
-    settings: ClickPipeBigQueryPipeSettingsSchema,
-    tableMappings: z
-      .array(ClickPipeBigQueryPipeTableMappingSchema)
-      .openapi({ description: 'Table mappings for BigQuery pipe.' }),
-    authentication: z
-      .literal('SERVICE_ACCOUNT_WORKLOAD_IDENTITY')
-      .openapi({
-        description:
-          'Authenticate with the ClickPipes service tenant identity. Customer credentials must not be provided. SERVICE_ACCOUNT_WORKLOAD_IDENTITY is in Private Preview. ClickPipes uses the GCP service account returned in gcpWorkloadIdentity.principal by the operation with operationId clickPipesServiceContextGet; grant it access to the source resources.',
-        example: 'SERVICE_ACCOUNT_WORKLOAD_IDENTITY',
-      }),
-    projectId: z
-      .string()
-      .openapi({
-        description: 'GCP project ID that owns the BigQuery resources.',
-        example: 'my-gcp-project',
-      }),
-  })
-  .openapi({
-    required: ['snapshotStagingPath', 'settings', 'tableMappings', 'authentication', 'projectId'],
-  })
-  .openapi('ClickPipePostBigQueryWorkloadIdentitySource')
-
-const ClickPipeMutateBigQuerySourceSchema = z
-  .xor([
-    ClickPipePostBigQueryServiceAccountSourceSchema,
-    ClickPipePostBigQueryWorkloadIdentitySourceSchema,
-  ])
-  .openapi('ClickPipeMutateBigQuerySource')
-
-const ClickPipeMongoDBPipeSettingsSchema = z
-  .object({
-    syncIntervalSeconds: z
-      .int()
-      .min(1)
-      .exactOptional()
-      .openapi({
-        description: 'Interval in seconds to sync data from MongoDB during CDC replication.',
-        example: 60,
-      }),
-    pullBatchSize: z
-      .int()
-      .min(1)
-      .exactOptional()
-      .openapi({
-        description: 'Number of rows to pull in each batch during CDC replication.',
-        example: 100000,
-      }),
-    replicationMode: z
-      .enum(['cdc', 'snapshot', 'cdc_only'])
-      .openapi({
-        description:
-          'Replication mode: "cdc" (change data capture with initial snapshot), "snapshot" (one-time snapshot only), or "cdc_only" (CDC without initial snapshot).',
-        example: 'cdc',
-      }),
-    initialLoadParallelism: z
-      .int()
-      .min(1)
-      .exactOptional()
-      .openapi({
-        description:
-          'Number of parallel workers to use per collection in the initial snapshot phase.',
-        example: 1,
-      }),
-    snapshotNumRowsPerPartition: z
-      .int()
-      .min(1000)
-      .exactOptional()
-      .openapi({
-        description: 'Number of rows per partition during the snapshot phase.',
-        example: 100000,
-      }),
-    snapshotNumberOfParallelTables: z
-      .int()
-      .min(1)
-      .exactOptional()
-      .openapi({
-        description: 'Number of collections to snapshot in parallel during the initial load phase.',
-        example: 1,
-      }),
-    deleteOnMerge: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Enable hard delete behavior in ReplacingMergeTree for MongoDB DELETE operations.',
-        example: false,
-      }),
-    useJsonNativeFormat: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Store JSON values in native ClickHouse JSON format. When disabled, JSON data is stored as String.',
-        example: true,
-      }),
-  })
-  .openapi({ required: ['replicationMode'] })
-  .openapi('ClickPipeMongoDBPipeSettings')
-
-const ClickPipePatchMongoDBPipeSettingsSchema = z
-  .object({
-    syncIntervalSeconds: z
-      .int()
-      .min(1)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Interval in seconds to sync data from MongoDB during CDC replication.',
-        example: 60,
-      }),
-    pullBatchSize: z
-      .int()
-      .min(1)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Number of rows to pull in each batch during CDC replication.',
-        example: 100000,
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('ClickPipePatchMongoDBPipeSettings')
-
-const ClickPipeMongoDBPipeColumnSchema = z
-  .object({
-    name: z.string().openapi({ description: 'Top-level document field name.', example: 'amount' }),
-    type: z
-      .string()
-      .openapi({
-        description:
-          'ClickHouse type the field is replicated as. Must be a valid ClickHouse column type supported by structured ingestion.',
-        example: 'Float64',
-      }),
-  })
-  .openapi({ required: ['name', 'type'] })
-  .openapi('ClickPipeMongoDBPipeColumn')
-
-const ClickPipeMongoDBStructuredIngestionSchema = z
-  .object({
-    enabled: z
-      .boolean()
-      .openapi({
-        description:
-          'Replicate the collection into typed ClickHouse columns instead of a single JSON document column.',
-        example: true,
-      }),
-    dropUnexpectedValues: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({
-        description:
-          "When true, values that don't fit their column are reported with only the field name and reason, without the value.",
-        example: false,
-      }),
-    columns: z
-      .array(ClickPipeMongoDBPipeColumnSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Typed columns of the collection, taken as provided. When omitted, the columns are inferred from a sample of the collection documents. The _id document is always replicated and uses String type.',
-      }),
-    excludedColumns: z
-      .array(z.string())
-      .superRefine((items, ctx) => {
-        const seen = new Map()
-        for (const [i, val] of items.entries()) {
-          const key = JSON.stringify(val)
-          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-          else seen.set(key, i)
-        }
-      })
-      .exactOptional()
-      .openapi({
-        description:
-          'Names of columns, provided or inferred, to leave out of replication. Names that match no column are ignored. Column names must be unique within this list.',
-        example: ['internal_notes'],
-      }),
-    sortingKeys: z
-      .array(z.string())
-      .superRefine((items, ctx) => {
-        const seen = new Map()
-        for (const [i, val] of items.entries()) {
-          const key = JSON.stringify(val)
-          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-          else seen.set(key, i)
-        }
-      })
-      .exactOptional()
-      .openapi({
-        description:
-          'Ordered list of column names to use as the sorting (ORDER BY) key in ClickHouse. When omitted, the sorting key is the _id document key.',
-        example: ['_id', 'created_at'],
-      }),
-    partitionByExpr: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'ClickHouse PARTITION BY expression applied to the destination table when ClickPipes creates it.',
-        example: 'toYYYYMM(created_at)',
-      }),
-  })
-  .openapi({ required: ['enabled'] })
-  .openapi('ClickPipeMongoDBStructuredIngestion')
-
-const ClickPipeMongoDBTableConfigSchema = z
-  .object({
-    persistDeletedDocuments: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({
-        description:
-          'Persist the full document as it was right before it was deleted, instead of only its _id. Requires changeStreamPreAndPostImages to be enabled on the source collection.',
-        example: false,
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('ClickPipeMongoDBTableConfig')
-
-const ClickPipeMongoDBPipeTableMappingSchema = z
-  .object({
-    sourceDatabaseName: z
-      .string()
-      .openapi({ description: 'MongoDB source database name.', example: 'mydb' }),
-    sourceCollection: z
-      .string()
-      .openapi({ description: 'MongoDB source collection name.', example: 'users' }),
-    targetTable: z
-      .string()
-      .openapi({
-        description:
-          'ClickHouse target table name. The table will be created automatically if it does not exist.',
-        example: 'mydb_users',
-      }),
-    tableEngine: z
-      .enum(['MergeTree', 'ReplacingMergeTree', 'Null'])
-      .exactOptional()
-      .openapi({
-        description:
-          'ClickHouse table engine: "ReplacingMergeTree" (handles updates/deletes), "MergeTree" (append-only), or "Null" (forward data to materialized views without storing it).',
-        example: 'ReplacingMergeTree',
-      }),
-    structuredIngestion: ClickPipeMongoDBStructuredIngestionSchema.exactOptional(),
-    mongoConfig: ClickPipeMongoDBTableConfigSchema.exactOptional(),
-  })
-  .openapi({ required: ['sourceDatabaseName', 'sourceCollection', 'targetTable'] })
-  .openapi('ClickPipeMongoDBPipeTableMapping')
-
-const ClickPipePatchMongoDBPipeRemoveTableMappingSchema = z
-  .object({
-    sourceDatabaseName: z
-      .string()
-      .nullable()
-      .openapi({ description: 'MongoDB source database name.', example: 'mydb' }),
-    sourceCollection: z
-      .string()
-      .nullable()
-      .openapi({ description: 'MongoDB source collection name.', example: 'users' }),
-    targetTable: z
-      .string()
-      .nullable()
-      .openapi({
-        description:
-          'ClickHouse target table name. The table will be created automatically if it does not exist.',
-        example: 'mydb_users',
-      }),
-    tableEngine: z
-      .enum(['MergeTree', 'ReplacingMergeTree', 'Null'])
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'ClickHouse table engine: "ReplacingMergeTree" (handles updates/deletes), "MergeTree" (append-only), or "Null" (forward data to materialized views without storing it).',
-        example: 'ReplacingMergeTree',
-      }),
-  })
-  .openapi({ required: ['sourceDatabaseName', 'sourceCollection', 'targetTable'] })
-  .openapi('ClickPipePatchMongoDBPipeRemoveTableMapping')
-
-const ClickPipeMongoDBSourceSchema = z
-  .object({
-    uri: z
-      .string()
-      .openapi({
-        description:
-          'MongoDB connection URI. Supports both standard URIs (mongodb://...) and SRV URIs (mongodb+srv://...). Embedded credentials are redacted from API responses, so the returned value can differ from what was submitted.',
-        example: 'mongodb+srv://cluster0.example.mongodb.net/mydb',
-      }),
-    readPreference: z
-      .enum(['primary', 'primaryPreferred', 'secondary', 'secondaryPreferred', 'nearest'])
-      .openapi({
-        description: 'MongoDB read preference for replica set reads.',
-        example: 'secondaryPreferred',
-      }),
-    tlsHost: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'TLS/SSL host for secure connections.',
-        example: 'cluster0.example.mongodb.net',
-      }),
-    disableTls: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Disable TLS for the MongoDB connection. Defaults to false (TLS enabled).',
-        example: false,
-      }),
-    skipCertVerification: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Skip TLS certificate verification for the MongoDB connection. Use with caution in production environments.',
-        example: false,
-      }),
-    caCertificate: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'PEM encoded CA certificate to validate the MongoDB server certificate.',
-        example: '-----BEGIN CERTIFICATE-----\n...',
-      }),
-    settings: ClickPipeMongoDBPipeSettingsSchema.exactOptional(),
-    tableMappings: z
-      .array(ClickPipeMongoDBPipeTableMappingSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'List of collection mappings defining which MongoDB collections to replicate and how they map to ClickHouse tables.',
-      }),
-  })
-  .openapi({ required: ['uri', 'readPreference'] })
-  .openapi('ClickPipeMongoDBSource')
-
-const ClickPipeMutateMongoDBSourceSchema = z
-  .object({
-    credentials: PLAINSchema.exactOptional(),
-    uri: z
-      .string()
-      .openapi({
-        description:
-          'MongoDB connection URI. Supports both standard URIs (mongodb://...) and SRV URIs (mongodb+srv://...). Embedded credentials are redacted from API responses, so the returned value can differ from what was submitted.',
-        example: 'mongodb+srv://cluster0.example.mongodb.net/mydb',
-      }),
-    readPreference: z
-      .enum(['primary', 'primaryPreferred', 'secondary', 'secondaryPreferred', 'nearest'])
-      .openapi({
-        description: 'MongoDB read preference for replica set reads.',
-        example: 'secondaryPreferred',
-      }),
-    tlsHost: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'TLS/SSL host for secure connections.',
-        example: 'cluster0.example.mongodb.net',
-      }),
-    disableTls: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({
-        description: 'Disable TLS for the MongoDB connection. Defaults to false (TLS enabled).',
-        example: false,
-      }),
-    skipCertVerification: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Skip TLS certificate verification for the MongoDB connection. Use with caution in production environments.',
-        example: false,
-      }),
-    caCertificate: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'PEM encoded CA certificate to validate the MongoDB server certificate.',
-        example: '-----BEGIN CERTIFICATE-----\n...',
-      }),
-    settings: ClickPipeMongoDBPipeSettingsSchema,
-    tableMappings: z
-      .array(ClickPipeMongoDBPipeTableMappingSchema)
-      .openapi({
-        description:
-          'List of collection mappings defining which MongoDB collections to replicate and how they map to ClickHouse tables.',
-      }),
-  })
-  .openapi({ required: ['uri', 'readPreference', 'settings', 'tableMappings'] })
-  .openapi('ClickPipeMutateMongoDBSource')
-
-const ClickPipePatchMongoDBSourceSchema = z
-  .object({
-    credentials: PLAINSchema.exactOptional(),
-    uri: z
-      .string()
-      .nullable()
-      .openapi({
-        description:
-          'MongoDB connection URI (mongodb:// or mongodb+srv://). Credentials are redacted in responses; a masked value is never saved as a credential, so a real credential equal to [REDACTED] cannot be set. To change the connection, send the full URI with real credentials; omit this field or resend the redacted value to leave it unchanged.',
-        example: 'mongodb+srv://cluster0.example.mongodb.net/mydb',
-      }),
-    readPreference: z
-      .enum(['primary', 'primaryPreferred', 'secondary', 'secondaryPreferred', 'nearest'])
-      .nullable()
-      .openapi({
-        description: 'MongoDB read preference for replica set reads.',
-        example: 'secondaryPreferred',
-      }),
-    tlsHost: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'TLS/SSL host for secure connections.',
-        example: 'cluster0.example.mongodb.net',
-      }),
-    disableTls: z
-      .boolean()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Disable TLS for the MongoDB connection. Defaults to false (TLS enabled).',
-        example: false,
-      }),
-    skipCertVerification: z
-      .boolean()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Skip TLS certificate verification for the MongoDB connection. Use with caution in production environments.',
-        example: false,
-      }),
-    caCertificate: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'PEM encoded CA certificate to validate the MongoDB server certificate.',
-        example: '-----BEGIN CERTIFICATE-----\n...',
-      }),
-    settings: ClickPipePatchMongoDBPipeSettingsSchema.exactOptional(),
-    tableMappingsToAdd: z
-      .array(ClickPipeMongoDBPipeTableMappingSchema)
-      .min(0)
-      .exactOptional()
-      .openapi({
-        description:
-          'Collection mappings to add to the pipe. Can be an empty array if no collections are being added.',
-      }),
-    tableMappingsToRemove: z
-      .array(ClickPipePatchMongoDBPipeRemoveTableMappingSchema)
-      .min(0)
-      .exactOptional()
-      .openapi({
-        description:
-          'Collection mappings to remove from the pipe. Only sourceDatabaseName, sourceCollection, and targetTable are required for removal.',
-      }),
-  })
-  .openapi({ required: ['uri', 'readPreference'] })
-  .openapi('ClickPipePatchMongoDBSource')
-
-const ClickPipePubSubSourceSchema = z
-  .object({
-    format: z
-      .enum(['JSONEachRow', 'Avro', 'Protobuf'])
-      .openapi({
-        description:
-          'Format of messages in the Pub/Sub topic. GCP Pub/Sub ClickPipes are in private preview — contact support to enable this feature for your organization.',
-        example: 'JSONEachRow',
-      }),
-    projectId: z
-      .string()
-      .openapi({
-        description: 'GCP project ID that owns the Pub/Sub topic.',
-        example: 'my-gcp-project',
-      }),
-    topic: z
-      .string()
-      .openapi({
-        description: 'Pub/Sub topic name (not the fully-qualified path).',
-        example: 'my-topic',
-      }),
-    authentication: z
-      .enum(['SERVICE_ACCOUNT', 'SERVICE_ACCOUNT_WORKLOAD_IDENTITY'])
-      .openapi({
-        description:
-          'Authentication method to use with GCP Pub/Sub. SERVICE_ACCOUNT_WORKLOAD_IDENTITY is in Private Preview. ClickPipes uses the GCP service account returned in gcpWorkloadIdentity.principal by the operation with operationId clickPipesServiceContextGet; grant it access to the source resources.',
-        example: 'SERVICE_ACCOUNT',
-      }),
-    seekType: z
-      .enum(['latest', 'earliest', 'timestamp'])
-      .openapi({
-        description:
-          'Starting position strategy for consuming the subscription. The seekTimestamp companion is required only when seekType is "timestamp"; setting it for a mismatched seek type is rejected.',
-        example: 'earliest',
-      }),
-    seekTimestamp: z.iso
-      .datetime({ offset: true })
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'RFC 3339 / ISO 8601 timestamp to seek to. Required when seekType is "timestamp"; must be omitted otherwise.',
-        example: '2026-04-10T12:00:00Z',
-      }),
-    filter: z
-      .string()
-      .max(256)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional Pub/Sub subscription filter expression (CEL). Maximum 256 characters.',
-      }),
-    enableOrdering: z
-      .boolean()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether to enable ordered delivery of messages (requires messages to be published with ordering keys).',
-      }),
-    ackDeadline: z
-      .int()
-      .min(10)
-      .max(600)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Acknowledgement deadline for messages, in seconds. Must be between 10 and 600.',
-      }),
-  })
-  .openapi({ required: ['format', 'projectId', 'topic', 'authentication', 'seekType'] })
-  .openapi('ClickPipePubSubSource')
-
-const ClickPipePostPubSubServiceAccountSourceSchema = z
-  .strictObject({
-    format: z
-      .enum(['JSONEachRow', 'Avro', 'Protobuf'])
-      .openapi({
-        description:
-          'Format of messages in the Pub/Sub topic. GCP Pub/Sub ClickPipes are in private preview — contact support to enable this feature for your organization.',
-        example: 'JSONEachRow',
-      }),
-    projectId: z
-      .string()
-      .openapi({
-        description: 'GCP project ID that owns the Pub/Sub topic.',
-        example: 'my-gcp-project',
-      }),
-    topic: z
-      .string()
-      .openapi({
-        description: 'Pub/Sub topic name (not the fully-qualified path).',
-        example: 'my-topic',
-      }),
-    authentication: z
-      .literal('SERVICE_ACCOUNT')
-      .openapi({
-        description: 'Authenticate with a GCP service account JSON key.',
-        example: 'SERVICE_ACCOUNT',
-      }),
-    seekType: z
-      .enum(['latest', 'earliest', 'timestamp'])
-      .openapi({
-        description:
-          'Starting position strategy for consuming the subscription. The seekTimestamp companion is required only when seekType is "timestamp"; setting it for a mismatched seek type is rejected.',
-        example: 'earliest',
-      }),
-    seekTimestamp: z.iso
-      .datetime({ offset: true })
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'RFC 3339 / ISO 8601 timestamp to seek to. Required when seekType is "timestamp"; must be omitted otherwise.',
-        example: '2026-04-10T12:00:00Z',
-      }),
-    filter: z
-      .string()
-      .max(256)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional Pub/Sub subscription filter expression (CEL). Maximum 256 characters.',
-      }),
-    enableOrdering: z
-      .boolean()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether to enable ordered delivery of messages (requires messages to be published with ordering keys).',
-      }),
-    ackDeadline: z
-      .int()
-      .min(10)
-      .max(600)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Acknowledgement deadline for messages, in seconds. Must be between 10 and 600.',
-      }),
-    serviceAccountKey: ServiceAccountSchema,
-  })
-  .openapi({
-    required: ['format', 'projectId', 'topic', 'authentication', 'seekType', 'serviceAccountKey'],
-  })
-  .openapi('ClickPipePostPubSubServiceAccountSource')
-
-const ClickPipePostPubSubWorkloadIdentitySourceSchema = z
-  .strictObject({
-    format: z
-      .enum(['JSONEachRow', 'Avro', 'Protobuf'])
-      .openapi({
-        description:
-          'Format of messages in the Pub/Sub topic. GCP Pub/Sub ClickPipes are in private preview — contact support to enable this feature for your organization.',
-        example: 'JSONEachRow',
-      }),
-    projectId: z
-      .string()
-      .openapi({
-        description: 'GCP project ID that owns the Pub/Sub topic.',
-        example: 'my-gcp-project',
-      }),
-    topic: z
-      .string()
-      .openapi({
-        description: 'Pub/Sub topic name (not the fully-qualified path).',
-        example: 'my-topic',
-      }),
-    authentication: z
-      .literal('SERVICE_ACCOUNT_WORKLOAD_IDENTITY')
-      .openapi({
-        description:
-          'SERVICE_ACCOUNT_WORKLOAD_IDENTITY is in Private Preview. ClickPipes uses the GCP service account returned in gcpWorkloadIdentity.principal by the operation with operationId clickPipesServiceContextGet; grant it access to the source resources.',
-        example: 'SERVICE_ACCOUNT_WORKLOAD_IDENTITY',
-      }),
-    seekType: z
-      .enum(['latest', 'earliest', 'timestamp'])
-      .openapi({
-        description:
-          'Starting position strategy for consuming the subscription. The seekTimestamp companion is required only when seekType is "timestamp"; setting it for a mismatched seek type is rejected.',
-        example: 'earliest',
-      }),
-    seekTimestamp: z.iso
-      .datetime({ offset: true })
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'RFC 3339 / ISO 8601 timestamp to seek to. Required when seekType is "timestamp"; must be omitted otherwise.',
-        example: '2026-04-10T12:00:00Z',
-      }),
-    filter: z
-      .string()
-      .max(256)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional Pub/Sub subscription filter expression (CEL). Maximum 256 characters.',
-      }),
-    enableOrdering: z
-      .boolean()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether to enable ordered delivery of messages (requires messages to be published with ordering keys).',
-      }),
-    ackDeadline: z
-      .int()
-      .min(10)
-      .max(600)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Acknowledgement deadline for messages, in seconds. Must be between 10 and 600.',
-      }),
-  })
-  .openapi({ required: ['format', 'projectId', 'topic', 'authentication', 'seekType'] })
-  .openapi('ClickPipePostPubSubWorkloadIdentitySource')
-
-const ClickPipePostPubSubSourceSchema = z
-  .xor([
-    ClickPipePostPubSubServiceAccountSourceSchema,
-    ClickPipePostPubSubWorkloadIdentitySourceSchema,
-  ])
-  .openapi('ClickPipePostPubSubSource')
-
-const ClickPipePatchPubSubSourceSchema = z
-  .object({
-    authentication: z
-      .enum(['SERVICE_ACCOUNT', 'SERVICE_ACCOUNT_WORKLOAD_IDENTITY'])
-      .nullable()
-      .openapi({
-        description:
-          'Authentication method to use with GCP Pub/Sub. SERVICE_ACCOUNT_WORKLOAD_IDENTITY is in Private Preview. ClickPipes uses the GCP service account returned in gcpWorkloadIdentity.principal by the operation with operationId clickPipesServiceContextGet; grant it access to the source resources.',
-        example: 'SERVICE_ACCOUNT',
-      }),
-    ackDeadline: z
-      .int()
-      .min(10)
-      .max(600)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Acknowledgement deadline for messages, in seconds. Must be between 10 and 600.',
-      }),
-    serviceAccountKey: z.xor([ServiceAccountSchema, z.null().nullable()]).exactOptional(),
-  })
-  .openapi({ required: ['authentication'] })
-  .openapi('ClickPipePatchPubSubSource')
-
 const ClickPipesGcpWorkloadIdentityContextSchema = z
   .object({
     supported: z
@@ -5059,7 +5839,7 @@ const ClickPipesGcpWorkloadIdentityContextSchema = z
       .exactOptional()
       .openapi({
         description:
-          'Whether the ClickPipes deployment supports GCP workload identity, which is in Private Preview. The principal field identifies the GCP service account used for source access.',
+          'Whether the ClickPipes deployment supports GCP workload identity, which is in Beta. The principal field identifies the GCP service account used for source access.',
       }),
     ready: z
       .boolean()
@@ -5087,285 +5867,7 @@ const ClickPipesServiceContextSchema = z
   .openapi({ required: [] })
   .openapi('ClickPipesServiceContext')
 
-const ClickPipeScalingSchema = z
-  .object({
-    replicas: z
-      .int()
-      .min(1)
-      .max(40)
-      .exactOptional()
-      .openapi({ description: 'Desired number of replicas. Only for scalable pipes.' }),
-    concurrency: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description:
-          'Desired number of concurrency. Only for S3 pipes. If set to 0, concurrency is auto-scaled based on the cluster memory.',
-        deprecated: true,
-      }),
-    replicaCpuMillicores: z
-      .int()
-      .min(125)
-      .max(2000)
-      .exactOptional()
-      .openapi({ description: 'CPU in millicores for each replica. Only for streaming pipes.' }),
-    replicaMemoryGb: z
-      .number()
-      .min(0.5)
-      .max(8)
-      .exactOptional()
-      .openapi({ description: 'Memory in GB for each replica. Only for streaming pipes.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('ClickPipeScaling')
-
-const ClickPipeSourceSchema = z
-  .object({
-    kafka: z.xor([ClickPipeKafkaSourceSchema, z.null().nullable()]).exactOptional(),
-    objectStorage: z.xor([ClickPipeObjectStorageSourceSchema, z.null().nullable()]).exactOptional(),
-    kinesis: z.xor([ClickPipeKinesisSourceSchema, z.null().nullable()]).exactOptional(),
-    pubsub: z.xor([ClickPipePubSubSourceSchema, z.null().nullable()]).exactOptional(),
-    postgres: z.xor([ClickPipePostgresSourceSchema, z.null().nullable()]).exactOptional(),
-    mysql: z.xor([ClickPipeMySQLSourceSchema, z.null().nullable()]).exactOptional(),
-    bigquery: z.xor([ClickPipeBigQuerySourceSchema, z.null().nullable()]).exactOptional(),
-    mongodb: z.xor([ClickPipeMongoDBSourceSchema, z.null().nullable()]).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ClickPipeSource')
-
-const ClickPipeDestinationColumnSchema = z
-  .object({
-    name: z.string().exactOptional().openapi({ description: 'Name of the column.' }),
-    type: z.string().exactOptional().openapi({ description: 'Type of the column.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('ClickPipeDestinationColumn')
-
-const ClickPipeDestinationTableEngineSchema = z
-  .object({
-    type: z
-      .enum(['MergeTree', 'ReplacingMergeTree', 'SummingMergeTree', 'Null'])
-      .exactOptional()
-      .openapi({ description: 'Engine type of the destination table.' }),
-    versionColumnId: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Column name to use as version for ReplacingMergeTree engine.' }),
-    columnIds: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'Column names to sum for SummingMergeTree engine.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('ClickPipeDestinationTableEngine')
-
-const ClickPipeDestinationTableDefinitionSchema = z
-  .object({
-    engine: ClickPipeDestinationTableEngineSchema.exactOptional(),
-    sortingKey: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Sorting key of the destination table. An entry that matches the name of a column declared in `columns` is used as that column. Any other entry is used as a SQL expression, for example a JSON sub-path such as `payload.workspace_id`. Entries must not contain commas, and every component must be non-Nullable.',
-      }),
-    partitionBy: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Partition key SQL expression.' }),
-    primaryKey: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Primary key of SQL expression.' }),
-    ttl: z
-      .string()
-      .min(1)
-      .exactOptional()
-      .openapi({
-        description: 'TTL SQL expression of the destination table.',
-        example: 'toDateTime(event_time) + INTERVAL 30 DAY',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('ClickPipeDestinationTableDefinition')
-
-const ClickPipeDestinationSchema = z
-  .object({
-    database: z.string().exactOptional().openapi({ description: 'Destination database.' }),
-    table: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Destination table. Required field for all pipe types except database pipes (Postgres, MySQL, BigQuery).',
-      }),
-    managedTable: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Is the table managed by ClickPipes? Required field for all pipe types except database pipes (Postgres, MySQL, BigQuery).',
-      }),
-    tableDefinition: ClickPipeDestinationTableDefinitionSchema.exactOptional(),
-    columns: z
-      .array(ClickPipeDestinationColumnSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Columns of the destination table. Required field for all pipe types except database pipes (Postgres, MySQL, BigQuery).',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('ClickPipeDestination')
-
-const ClickPipeFieldMappingSchema = z
-  .object({
-    sourceField: z.string().exactOptional().openapi({ description: 'Source field name.' }),
-    destinationField: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Destination field name.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('ClickPipeFieldMapping')
-
-const ClickPipeSettingsSchema = z
-  .object({
-    streaming_max_insert_wait_ms: z
-      .int()
-      .min(500)
-      .max(60000)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Streaming max insert wait time. Configures the max wait period before inserting data into the ClickHouse.',
-        example: 5000,
-      }),
-    object_storage_concurrency: z
-      .int()
-      .min(1)
-      .max(35)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Object storage concurrency. Number of concurrent file processing threads',
-        example: 1,
-      }),
-    object_storage_polling_interval_ms: z
-      .int()
-      .min(100)
-      .max(3600000)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Object storage polling interval. Configures the refresh interval for querying continuous ingest for new object storage data',
-        example: 30000,
-      }),
-    object_storage_max_insert_bytes: z
-      .int()
-      .min(524288000)
-      .max(10737418240)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Max insert bytes. Number of bytes to process in a single insert batch',
-        example: 10737418240,
-      }),
-    object_storage_max_file_count: z
-      .int()
-      .min(1)
-      .max(10000)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Max file count. Maximum number of files to process in a single insert batch',
-        example: 100,
-      }),
-    clickhouse_max_threads: z
-      .int()
-      .min(0)
-      .max(64)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Max threads. Maximum number of concurrent threads for file processing',
-        example: 8,
-      }),
-    clickhouse_max_insert_threads: z
-      .int()
-      .min(0)
-      .max(16)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Max insert threads. Maximum number of concurrent insert threads',
-        example: 1,
-      }),
-    clickhouse_min_insert_block_size_bytes: z
-      .int()
-      .min(0)
-      .max(10737418240)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Min insert block size bytes. Minimum size of data block for insert (in bytes)',
-        example: 1073741824,
-      }),
-    clickhouse_max_download_threads: z
-      .int()
-      .min(0)
-      .max(32)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Max download threads. Maximum number of concurrent download threads',
-        example: 4,
-      }),
-    clickhouse_parallel_distributed_insert_select: z
-      .int()
-      .min(0)
-      .max(2)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Parallel distributed insert select. Only applies when object_storage_use_cluster_function is enabled. When disabled, this setting is ignored and the effective value is 0.',
-        example: 2,
-      }),
-    kafka_read_committed: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Kafka Read Committed. Whether Kafka consumers read only committed messages',
-        example: false,
-      }),
-    object_storage_use_cluster_function: z
-      .boolean()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'use cluster function. Whether to use ClickHouse cluster function for distributed processing',
-        example: true,
-      }),
-    clickhouse_parallel_view_processing: z
-      .boolean()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'parallel view processing. Whether to enable pushing to attached views concurrently instead of sequentially',
-        example: false,
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('ClickPipeSettings')
-
-const ClickPipeSchema = z
+const ClickPipeSchema: z.ZodType<ClickPipeType> = z
   .object({
     id: z.uuid().exactOptional().openapi({ description: 'Unique ClickPipe ID.' }),
     serviceId: z
@@ -5425,96 +5927,6 @@ const ClickPipeSchema = z
   .openapi({ required: [] })
   .openapi('ClickPipe')
 
-const ClickPipePostSourceSchema = z
-  .object({
-    kafka: ClickPipePostKafkaSourceSchema.exactOptional(),
-    objectStorage: ClickPipePostObjectStorageSourceSchema.exactOptional(),
-    kinesis: ClickPipePostKinesisSourceSchema.exactOptional(),
-    pubsub: ClickPipePostPubSubSourceSchema.exactOptional(),
-    postgres: ClickPipeMutatePostgresSourceSchema.exactOptional(),
-    mysql: ClickPipeMutateMySQLSourceSchema.exactOptional(),
-    bigquery: ClickPipeMutateBigQuerySourceSchema.exactOptional(),
-    mongodb: ClickPipeMutateMongoDBSourceSchema.exactOptional(),
-    validateSamples: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Validate data samples received from data source. It will validate the connection and data availability and correctness. If not enabled, only connection will be validated. This has no effect on Postgres or MySQL pipes, they always only validate the connection and table definitions. This is experimental and can be removed in the future.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('ClickPipePostSource')
-
-const ClickPipePatchSourceSchema = z
-  .object({
-    kafka: ClickPipePatchKafkaSourceSchema.exactOptional(),
-    objectStorage: ClickPipePatchObjectStorageSourceSchema.exactOptional(),
-    kinesis: ClickPipePatchKinesisSourceSchema.exactOptional(),
-    pubsub: ClickPipePatchPubSubSourceSchema.exactOptional(),
-    postgres: ClickPipePatchPostgresSourceSchema.exactOptional(),
-    mysql: ClickPipePatchMySQLSourceSchema.exactOptional(),
-    mongodb: ClickPipePatchMongoDBSourceSchema.exactOptional(),
-    validateSamples: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Validate data samples received from data source. It will validate the connection and data availability and correctness. If not enabled, only connection will be validated. This has no effect on Postgres or MySQL pipes, they always only validate the connection and table definitions. This is experimental and can be removed in the future.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('ClickPipePatchSource')
-
-const ClickPipeMutateDestinationSchema = z
-  .object({
-    database: z.string().openapi({ description: 'Destination database.' }),
-    table: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Destination table. Required field for all pipe types except database pipes (Postgres, MySQL, BigQuery).',
-      }),
-    managedTable: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Is the table managed by ClickPipes? Required field for all pipe types except database pipes (Postgres, MySQL, BigQuery).',
-      }),
-    tableDefinition: ClickPipeDestinationTableDefinitionSchema.exactOptional(),
-    columns: z
-      .array(ClickPipeDestinationColumnSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Columns of the destination table. Required field for all pipe types except database pipes (Postgres, MySQL, BigQuery).',
-      }),
-    roles: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Roles to grant to the ClickHouse user that ClickPipe creates. If omitted, the user is granted the default role (`default_role`). Add your custom roles here if required. The role names `clickpipes` and `clickpipes_system` are reserved for internal use and cannot be assigned.',
-      }),
-  })
-  .openapi({ required: ['database'] })
-  .openapi('ClickPipeMutateDestination')
-
-const ClickPipePatchDestinationSchema = z
-  .object({
-    columns: z
-      .array(ClickPipeDestinationColumnSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Columns of the destination table. This will not update the table schema, only the ClickPipe configuration.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('ClickPipePatchDestination')
-
 const ClickPipesCdcScalingSchema = z
   .object({
     replicaCpuMillicores: z
@@ -5537,129 +5949,6 @@ const ClickPipesCdcScalingSchema = z
   })
   .openapi({ required: [] })
   .openapi('ClickPipesCdcScaling')
-
-const ClickPipeSettingsPutRequestSchema = z
-  .object({
-    streaming_max_insert_wait_ms: z
-      .int()
-      .min(500)
-      .max(60000)
-      .exactOptional()
-      .openapi({
-        description:
-          'Streaming max insert wait time. Configures the max wait period before inserting data into the ClickHouse.',
-        example: 5000,
-      }),
-    object_storage_concurrency: z
-      .int()
-      .min(1)
-      .max(35)
-      .exactOptional()
-      .openapi({
-        description: 'Object storage concurrency. Number of concurrent file processing threads',
-        example: 1,
-      }),
-    object_storage_polling_interval_ms: z
-      .int()
-      .min(100)
-      .max(3600000)
-      .exactOptional()
-      .openapi({
-        description:
-          'Object storage polling interval. Configures the refresh interval for querying continuous ingest for new object storage data',
-        example: 30000,
-      }),
-    object_storage_max_insert_bytes: z
-      .int()
-      .min(524288000)
-      .max(10737418240)
-      .exactOptional()
-      .openapi({
-        description: 'Max insert bytes. Number of bytes to process in a single insert batch',
-        example: 10737418240,
-      }),
-    object_storage_max_file_count: z
-      .int()
-      .min(1)
-      .max(10000)
-      .exactOptional()
-      .openapi({
-        description: 'Max file count. Maximum number of files to process in a single insert batch',
-        example: 100,
-      }),
-    clickhouse_max_threads: z
-      .int()
-      .min(0)
-      .max(64)
-      .exactOptional()
-      .openapi({
-        description: 'Max threads. Maximum number of concurrent threads for file processing',
-        example: 8,
-      }),
-    clickhouse_max_insert_threads: z
-      .int()
-      .min(0)
-      .max(16)
-      .exactOptional()
-      .openapi({
-        description: 'Max insert threads. Maximum number of concurrent insert threads',
-        example: 1,
-      }),
-    clickhouse_min_insert_block_size_bytes: z
-      .int()
-      .min(0)
-      .max(10737418240)
-      .exactOptional()
-      .openapi({
-        description:
-          'Min insert block size bytes. Minimum size of data block for insert (in bytes)',
-        example: 1073741824,
-      }),
-    clickhouse_max_download_threads: z
-      .int()
-      .min(0)
-      .max(32)
-      .exactOptional()
-      .openapi({
-        description: 'Max download threads. Maximum number of concurrent download threads',
-        example: 4,
-      }),
-    clickhouse_parallel_distributed_insert_select: z
-      .int()
-      .min(0)
-      .max(2)
-      .exactOptional()
-      .openapi({
-        description:
-          'Parallel distributed insert select. Only applies when object_storage_use_cluster_function is enabled. When disabled, this setting is ignored and the effective value is 0.',
-        example: 2,
-      }),
-    kafka_read_committed: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Kafka Read Committed. Whether Kafka consumers read only committed messages',
-        example: false,
-      }),
-    object_storage_use_cluster_function: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'use cluster function. Whether to use ClickHouse cluster function for distributed processing',
-        example: true,
-      }),
-    clickhouse_parallel_view_processing: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'parallel view processing. Whether to enable pushing to attached views concurrently instead of sequentially',
-        example: false,
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('ClickPipeSettingsPutRequest')
 
 const ClickPipeSchemaDiscoverySourceSchema = z
   .object({
@@ -5686,6 +5975,22 @@ const ClickPipeSchemaDiscoveryFieldSchema = z
       .nullable()
       .exactOptional()
       .openapi({ description: 'Whether the field is optional (nullable) in the source.' }),
+    isVirtual: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether the field is metadata added by ClickPipes (for example `_topic` or `_path`) rather than part of the source data.',
+      }),
+    isVirtualDisabledDefault: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether this metadata field is left unselected by default when building destination columns.',
+      }),
   })
   .openapi({ required: [] })
   .openapi('ClickPipeSchemaDiscoveryField')
@@ -5714,139 +6019,13 @@ const ActivitySchema = z
       .exactOptional()
       .openapi({ description: 'Timestamp of the activity. ISO-8601.' }),
     type: z
-      .enum([
-        'create_organization',
-        'delete_organization',
-        'organization_update_name',
-        'transfer_service_in',
-        'transfer_service_out',
-        'save_payment_method',
-        'marketplace_subscription',
-        'migrate_marketplace_billing_details_in',
-        'migrate_marketplace_billing_details_out',
-        'organization_update_tier',
-        'organization_invite_create',
-        'organization_invite_delete',
-        'organization_member_join',
-        'organization_member_add',
-        'organization_member_leave',
-        'organization_member_delete',
-        'organization_member_update_role',
-        'organization_member_update_roles',
-        'organization_member_update_mfa_method',
-        'organization_saml_connection_create',
-        'organization_saml_connection_update',
-        'user_login',
-        'user_login_failed',
-        'user_logout',
-        'key_create',
-        'key_delete',
-        'openapi_key_update',
-        'service_create',
-        'service_start',
-        'service_stop',
-        'service_awaken',
-        'service_idle',
-        'service_running',
-        'service_partially_running',
-        'service_delete',
-        'service_update_name',
-        'service_update_ip_access_list',
-        'service_update_autoscaling_memory',
-        'service_update_autoscaling_idling',
-        'service_update_password',
-        'service_update_autoscaling_replicas',
-        'service_update_max_allowable_replicas',
-        'service_update_backup_configuration',
-        'service_restore_backup',
-        'service_update_release_channel',
-        'service_update_gpt_usage_consent',
-        'service_update_private_endpoints',
-        'service_import_to_organization',
-        'service_export_from_organization',
-        'service_maintenance_start',
-        'service_maintenance_end',
-        'service_update_core_dump',
-        'service_update_autoscaling_schedule',
-        'service_update_query_endpoints',
-        'service_update_direct_connection',
-        'service_update_sql_console_jwt_auth',
-        'service_update_snapshot_configuration',
-        'service_update_collector_ip_access_list',
-        'service_update_mysql_interface',
-        'service_update_upgrade_window',
-        'service_delete_upgrade_window',
-        'service_trigger_failover',
-        'service_trigger_recovery',
-        'service_mcp_enabled',
-        'service_mcp_disabled',
-        'service_upgrade',
-        'service_scaled_down_for_tier_change',
-        'service_encryption_key_check_failed',
-        'service_encryption_key_rotation_failed',
-        'service_encryption_key_rotated',
-        'service_stop_encryption_key_inaccessible',
-        'service_restart_encryption_key_rotation',
-        'backup_delete',
-        'backup_bucket_create',
-        'backup_bucket_update',
-        'backup_bucket_delete',
-        'backup_bucket_archive',
-        'warehouse_update_name',
-        'warehouse_update_release_channel',
-        'role_create',
-        'role_update',
-        'role_delete',
-        'role_resources_delete',
-        'organization_member_remove_roles',
-        'scim_user_profile_update',
-        'scim_group_create',
-        'scim_group_update',
-        'scim_group_delete',
-        'organization_saml_connection_delete',
-        'organization_update_saml_query_ownership_migration',
-        'organization_approved_domain_verify',
-        'organization_approved_domain_update',
-        'organization_approved_domain_delete',
-        'organization_approved_domain_auto_join',
-        'organization_approved_domain_auto_invite',
-        'datadog_integration_create',
-        'datadog_integration_delete',
-        'organization_update_spend_alert',
-        'organization_update_core_dumps',
-        'organization_update_private_endpoints',
-        'organization_update_pci_compliance',
-        'organization_update_hipaa_status',
-        'organization_security_contact_add',
-        'organization_security_contact_remove',
-        'organization_security_contact_replace',
-        'organization_update_public_preview',
-        'transfer_credits_in',
-        'transfer_credits_out',
-        'promo_code_claim',
-        'schema_advisor_seed',
-        'schema_advisor_generate_plan',
-        'schema_advisor_approve_plan',
-        'schema_advisor_start_deployment',
-        'schema_advisor_start_benchmark',
-        'schema_advisor_run_benchmark',
-        'schema_advisor_start_promotion',
-        'schema_advisor_exchange_tables',
-        'schema_advisor_drop_sandbox',
-        'udf_create',
-        'udf_update',
-        'udf_delete',
-        'udf_version_create',
-        'udf_version_delete',
-        'udf_attach',
-        'udf_detach',
-        'udf_update_services',
-        'udf_redeploy',
-        'udf_rebuild',
-        'postgres_action',
-      ])
+      .string()
       .exactOptional()
-      .openapi({ description: 'Type of the activity.' }),
+      .openapi({
+        description:
+          "Type of the activity. One of 'create_organization', 'delete_organization', 'organization_update_name', 'transfer_service_in', 'transfer_service_out', 'save_payment_method', 'marketplace_subscription', 'migrate_marketplace_billing_details_in', 'migrate_marketplace_billing_details_out', 'organization_update_tier', 'organization_invite_create', 'organization_invite_delete', 'organization_member_join', 'organization_member_add', 'organization_member_leave', 'organization_member_delete', 'organization_member_update_role', 'organization_member_update_roles', 'organization_member_update_mfa_method', 'organization_saml_connection_create', 'organization_saml_connection_update', 'user_login', 'user_login_failed', 'user_logout', 'key_create', 'key_delete', 'openapi_key_update', 'service_create', 'service_start', 'service_stop', 'service_awaken', 'service_idle', 'service_running', 'service_partially_running', 'service_delete', 'service_update_name', 'service_update_ip_access_list', 'service_update_autoscaling_memory', 'service_update_autoscaling_idling', 'service_update_password', 'service_update_autoscaling_replicas', 'service_update_max_allowable_replicas', 'service_update_backup_configuration', 'service_restore_backup', 'service_update_release_channel', 'service_update_gpt_usage_consent', 'service_update_private_endpoints', 'service_import_to_organization', 'service_export_from_organization', 'service_maintenance_start', 'service_maintenance_end', 'service_update_core_dump', 'service_update_deletion_protection', 'service_update_autoscaling_schedule', 'service_update_query_endpoints', 'service_update_direct_connection', 'service_update_sql_console_jwt_auth', 'service_update_snapshot_configuration', 'service_update_collector_ip_access_list', 'service_update_mysql_interface', 'service_update_upgrade_window', 'service_delete_upgrade_window', 'service_trigger_failover', 'service_trigger_recovery', 'service_mcp_enabled', 'service_mcp_disabled', 'service_upgrade', 'service_scaled_down_for_tier_change', 'service_encryption_key_check_failed', 'service_encryption_key_rotation_failed', 'service_encryption_key_rotated', 'service_stop_encryption_key_inaccessible', 'service_restart_encryption_key_rotation', 'backup_delete', 'backup_bucket_create', 'backup_bucket_update', 'backup_bucket_delete', 'backup_bucket_archive', 'warehouse_update_name', 'warehouse_update_release_channel', 'role_create', 'role_update', 'role_delete', 'role_resources_delete', 'organization_member_remove_roles', 'scim_user_profile_update', 'scim_group_create', 'scim_group_update', 'scim_group_delete', 'organization_saml_connection_delete', 'organization_update_saml_query_ownership_migration', 'organization_approved_domain_verify', 'organization_approved_domain_update', 'organization_approved_domain_delete', 'organization_approved_domain_auto_join', 'organization_approved_domain_auto_invite', 'datadog_integration_create', 'datadog_integration_delete', 'organization_update_spend_alert', 'organization_update_core_dumps', 'organization_update_ai_support', 'organization_update_ai_data_sharing', 'organization_update_private_endpoints', 'organization_update_pci_compliance', 'organization_update_hipaa_status', 'organization_security_contact_add', 'organization_security_contact_remove', 'organization_security_contact_replace', 'organization_update_public_preview', 'byoc_infrastructure_update_customer_authorized_access', 'transfer_credits_in', 'transfer_credits_out', 'promo_code_claim', 'schema_advisor_seed', 'schema_advisor_generate_plan', 'schema_advisor_approve_plan', 'schema_advisor_start_deployment', 'schema_advisor_start_benchmark', 'schema_advisor_run_benchmark', 'schema_advisor_start_promotion', 'schema_advisor_exchange_tables', 'schema_advisor_drop_sandbox', 'udf_create', 'udf_update', 'udf_delete', 'udf_version_create', 'udf_version_delete', 'udf_attach', 'udf_detach', 'udf_update_services', 'udf_redeploy', 'udf_rebuild', 'postgres_action'. New values may be added; treat unknown values as valid.",
+        example: 'service_create',
+      }),
     actorType: z
       .enum(['user', 'support', 'system', 'api'])
       .exactOptional()
@@ -5922,22 +6101,101 @@ const ActivitySchema = z
         description:
           "For 'role_resources_delete' activities: IDs of the deleted resources the roles referenced.",
       }),
+    deletionProtectionBypassed: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          "For 'service_delete' activities: true when a deletion protection override was recorded for the delete. Omitted when none was recorded.",
+      }),
   })
   .openapi({ required: [] })
   .openapi('Activity')
 
-const BackupBucketSchema: z.ZodType<BackupBucketType> = z
-  .lazy(() => z.xor([AwsBackupBucketSchema, GcpBackupBucketSchema, AzureBackupBucketSchema]))
+const AwsBackupBucketSchema = z
+  .object({
+    id: z.uuid().exactOptional().openapi({ description: 'Unique backup bucket ID' }),
+    bucketProvider: z.literal('AWS').exactOptional().openapi({ description: 'Bucket provider' }),
+    bucketPath: z.string().exactOptional().openapi({ description: 'Bucket path' }),
+    iamRoleArn: z.string().exactOptional().openapi({ description: 'AWS Role ARN' }),
+    iamRoleSessionName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'AWS  Role session name' }),
+    iamRoleExternalId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'External ID the IAM role trust policy requires when the data plane assumes the role',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('AwsBackupBucket')
+
+const GcpBackupBucketSchema = z
+  .object({
+    id: z.uuid().exactOptional().openapi({ description: 'Unique backup bucket ID' }),
+    bucketProvider: z.literal('GCP').exactOptional().openapi({ description: 'Bucket provider' }),
+    bucketPath: z.string().exactOptional().openapi({ description: 'Bucket path' }),
+    accessKeyId: z.string().exactOptional().openapi({ description: 'Access Key ID (HMAC key)' }),
+  })
+  .openapi({ required: [] })
+  .openapi('GcpBackupBucket')
+
+const AzureBackupBucketSchema = z
+  .object({
+    id: z.uuid().exactOptional().openapi({ description: 'Unique backup bucket ID.' }),
+    bucketProvider: z.literal('AZURE').exactOptional().openapi({ description: 'Bucket provider' }),
+    containerName: z.string().exactOptional().openapi({ description: 'Container Name' }),
+  })
+  .openapi({ required: [] })
+  .openapi('AzureBackupBucket')
+
+const BackupBucketSchema = z
+  .xor([AwsBackupBucketSchema, GcpBackupBucketSchema, AzureBackupBucketSchema])
   .openapi('BackupBucket')
 
-const BackupBucketPropertiesSchema: z.ZodType<BackupBucketPropertiesType> = z
-  .lazy(() =>
-    z.xor([
-      AwsBackupBucketPropertiesSchema,
-      GcpBackupBucketPropertiesSchema,
-      AzureBackupBucketPropertiesSchema,
-    ]),
-  )
+const AwsBackupBucketPropertiesSchema = z
+  .object({
+    bucketProvider: z.literal('AWS').exactOptional().openapi({ description: 'Bucket provider' }),
+    bucketPath: z.string().exactOptional().openapi({ description: 'Bucket path' }),
+    iamRoleArn: z.string().exactOptional().openapi({ description: 'AWS IAM Role' }),
+    iamRoleSessionName: z.string().exactOptional().openapi({ description: 'AWS IAM Role' }),
+    iamRoleExternalId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'External ID the IAM role trust policy requires when the data plane assumes the role',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('AwsBackupBucketProperties')
+
+const GcpBackupBucketPropertiesSchema = z
+  .object({
+    bucketProvider: z.literal('GCP').exactOptional().openapi({ description: 'Bucket provider' }),
+    bucketPath: z.string().exactOptional().openapi({ description: 'Bucket path' }),
+    accessKeyId: z.string().exactOptional().openapi({ description: 'Access Key ID (HMAC key)' }),
+  })
+  .openapi({ required: [] })
+  .openapi('GcpBackupBucketProperties')
+
+const AzureBackupBucketPropertiesSchema = z
+  .object({
+    bucketProvider: z.literal('AZURE').exactOptional().openapi({ description: 'Bucket provider' }),
+    containerName: z.string().exactOptional().openapi({ description: 'Container Name' }),
+  })
+  .openapi({ required: [] })
+  .openapi('AzureBackupBucketProperties')
+
+const BackupBucketPropertiesSchema = z
+  .xor([
+    AwsBackupBucketPropertiesSchema,
+    GcpBackupBucketPropertiesSchema,
+    AzureBackupBucketPropertiesSchema,
+  ])
   .openapi('BackupBucketProperties')
 
 const AwsBackupBucketPostRequestV1Schema = z
@@ -6255,14 +6513,14 @@ const SnapshotConfigurationSchema = z
       .exactOptional()
       .openapi({
         description:
-          'Interval between snapshots, in minutes. Set together with timeFrame; only supported preset pairs are accepted.',
+          'Interval between snapshots, in minutes. One of 10, 20, 30, 60. Validated when an enabled configuration is saved; stored values are not re-validated on read.',
       }),
     timeFrame: z
       .number()
       .exactOptional()
       .openapi({
         description:
-          'Retention window the snapshots cover, in minutes. Set together with gap; only supported preset pairs are accepted.',
+          'Retention window the snapshots cover, in minutes. A whole number of days (a multiple of 1440), at least 1440; timeFrame / gap must not exceed 300 snapshots. Validated when an enabled configuration is saved; stored values are not re-validated on read.',
       }),
   })
   .openapi({ required: [] })
@@ -6545,7 +6803,8 @@ const ClickStackLineBuilderChartConfigSchema = z
     sourceId: z
       .string()
       .openapi({
-        description: 'ID of the data source to query.',
+        description:
+          'ID of the data source to query, or `$sourceVariable` of a DATA_SOURCE filter on the dashboard.',
         example: '65f5e4a3b9e77c001a111111',
       }),
     select: z
@@ -6632,7 +6891,8 @@ const ClickStackLineRawSqlChartConfigSchema = z
     connectionId: z
       .string()
       .openapi({
-        description: 'ID of the ClickHouse connection to execute the query against.',
+        description:
+          'ID of the ClickHouse connection to execute the query against, or `$connectionVariable` of a CONNECTION filter on the dashboard.',
         example: '65f5e4a3b9e77c001a567890',
       }),
     sqlTemplate: z
@@ -6646,7 +6906,7 @@ const ClickStackLineRawSqlChartConfigSchema = z
       .exactOptional()
       .openapi({
         description:
-          'Optional ID of the data source associated with this Raw SQL chart. Used for applying dashboard filters.',
+          'Optional ID of the data source associated with this Raw SQL chart, or `$sourceVariable` of a DATA_SOURCE filter on the dashboard. Used for applying dashboard filters.',
         example: '65f5e4a3b9e77c001a567890',
       }),
     numberFormat: ClickStackNumberFormatSchema.exactOptional(),
@@ -6683,8 +6943,100 @@ const ClickStackLineRawSqlChartConfigSchema = z
   .openapi({ required: ['configType', 'connectionId', 'sqlTemplate', 'displayType'] })
   .openapi('ClickStackLineRawSqlChartConfig')
 
+const ClickStackPromqlRangeExpressionSchema = z
+  .object({
+    expression: z
+      .string()
+      .openapi({
+        description:
+          'PromQL expression. Supports dashboard variables and the $__interval, $__rate_interval, and $__range macros.',
+        example: 'sum by (job) (rate(http_requests_total[$__rate_interval]))',
+      }),
+    alias: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Prefixed to every series name this expression produces.',
+        example: 'Requests',
+      }),
+  })
+  .openapi({ required: ['expression'] })
+  .openapi('ClickStackPromqlRangeExpression')
+
+const ClickStackLinePromqlChartConfigSchema = z
+  .object({
+    configType: z
+      .literal('promql')
+      .openapi({
+        description: 'Must be "promql" to use the PromQL chart config variant.',
+        example: 'promql',
+      }),
+    sourceId: z
+      .string()
+      .openapi({
+        description: 'ID of the PromQL source to query. Must be a source of kind "promql".',
+        example: '65f5e4a3b9e77c001a333333',
+      }),
+    granularity: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Resolution of range queries, used as the Prometheus step and the $__interval macro. Defaults to "auto", which picks one from the time range.',
+        example: '5 minute',
+      }),
+    numberFormat: ClickStackNumberFormatSchema.exactOptional(),
+    expressions: z
+      .array(ClickStackPromqlRangeExpressionSchema)
+      .openapi({ description: 'PromQL expressions to plot.' }),
+    legendTemplate: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Template for series names, using the series' Prometheus labels in double braces.",
+        example: '{{job}} - {{instance}}',
+      }),
+    fillNulls: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Fill missing time buckets with zero instead of leaving gaps.' }),
+    alignDateRangeToGranularity: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Expand date range boundaries to the query granularity interval.' }),
+    seriesLimit: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          'Maximum number of series rendered (top-N by value). Omit to use the default render cap, set 0 for unlimited, or a positive N to keep the top N series.',
+        example: 5,
+      }),
+    displayType: z
+      .literal('line')
+      .openapi({ description: 'Display as a line time-series chart.', example: 'line' }),
+    compareToPreviousPeriod: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Overlay the equivalent previous time period for comparison.' }),
+    lineInterpolation: z
+      .enum(['smooth', 'linear', 'step'])
+      .exactOptional()
+      .openapi({
+        description: 'How points are connected. Defaults to "smooth" when omitted.',
+        example: 'step',
+      }),
+  })
+  .openapi({ required: ['configType', 'sourceId', 'expressions', 'displayType'] })
+  .openapi('ClickStackLinePromqlChartConfig')
+
 const ClickStackLineChartConfigSchema = z
-  .xor([ClickStackLineBuilderChartConfigSchema, ClickStackLineRawSqlChartConfigSchema])
+  .xor([
+    ClickStackLineBuilderChartConfigSchema,
+    ClickStackLineRawSqlChartConfigSchema,
+    ClickStackLinePromqlChartConfigSchema,
+  ])
   .openapi('ClickStackLineChartConfig')
 
 const ClickStackAlertLineBuilderChartConfigSchema = ClickStackLineBuilderChartConfigSchema.and(
@@ -6695,8 +7047,16 @@ const ClickStackAlertLineRawSqlChartConfigSchema = ClickStackLineRawSqlChartConf
   ClickStackAlertChartConfigOverlaySchema,
 ).openapi('ClickStackAlertLineRawSqlChartConfig')
 
+const ClickStackAlertLinePromqlChartConfigSchema = ClickStackLinePromqlChartConfigSchema.and(
+  ClickStackAlertChartConfigOverlaySchema,
+).openapi('ClickStackAlertLinePromqlChartConfig')
+
 const ClickStackAlertLineChartConfigSchema = z
-  .xor([ClickStackAlertLineBuilderChartConfigSchema, ClickStackAlertLineRawSqlChartConfigSchema])
+  .xor([
+    ClickStackAlertLineBuilderChartConfigSchema,
+    ClickStackAlertLineRawSqlChartConfigSchema,
+    ClickStackAlertLinePromqlChartConfigSchema,
+  ])
   .openapi('ClickStackAlertLineChartConfig')
 
 const ClickStackBarBuilderChartConfigSchema = z
@@ -6710,7 +7070,8 @@ const ClickStackBarBuilderChartConfigSchema = z
     sourceId: z
       .string()
       .openapi({
-        description: 'ID of the data source to query.',
+        description:
+          'ID of the data source to query, or `$sourceVariable` of a DATA_SOURCE filter on the dashboard.',
         example: '65f5e4a3b9e77c001a111111',
       }),
     select: z
@@ -6781,7 +7142,8 @@ const ClickStackBarRawSqlChartConfigSchema = z
     connectionId: z
       .string()
       .openapi({
-        description: 'ID of the ClickHouse connection to execute the query against.',
+        description:
+          'ID of the ClickHouse connection to execute the query against, or `$connectionVariable` of a CONNECTION filter on the dashboard.',
         example: '65f5e4a3b9e77c001a567890',
       }),
     sqlTemplate: z
@@ -6795,7 +7157,7 @@ const ClickStackBarRawSqlChartConfigSchema = z
       .exactOptional()
       .openapi({
         description:
-          'Optional ID of the data source associated with this Raw SQL chart. Used for applying dashboard filters.',
+          'Optional ID of the data source associated with this Raw SQL chart, or `$sourceVariable` of a DATA_SOURCE filter on the dashboard. Used for applying dashboard filters.',
         example: '65f5e4a3b9e77c001a567890',
       }),
     numberFormat: ClickStackNumberFormatSchema.exactOptional(),
@@ -6817,8 +7179,72 @@ const ClickStackBarRawSqlChartConfigSchema = z
   .openapi({ required: ['configType', 'connectionId', 'sqlTemplate', 'displayType'] })
   .openapi('ClickStackBarRawSqlChartConfig')
 
+const ClickStackBarPromqlChartConfigSchema = z
+  .object({
+    configType: z
+      .literal('promql')
+      .openapi({
+        description: 'Must be "promql" to use the PromQL chart config variant.',
+        example: 'promql',
+      }),
+    sourceId: z
+      .string()
+      .openapi({
+        description: 'ID of the PromQL source to query. Must be a source of kind "promql".',
+        example: '65f5e4a3b9e77c001a333333',
+      }),
+    granularity: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Resolution of range queries, used as the Prometheus step and the $__interval macro. Defaults to "auto", which picks one from the time range.',
+        example: '5 minute',
+      }),
+    numberFormat: ClickStackNumberFormatSchema.exactOptional(),
+    expressions: z
+      .array(ClickStackPromqlRangeExpressionSchema)
+      .openapi({ description: 'PromQL expressions to plot.' }),
+    legendTemplate: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Template for series names, using the series' Prometheus labels in double braces.",
+        example: '{{job}} - {{instance}}',
+      }),
+    fillNulls: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Fill missing time buckets with zero instead of leaving gaps.' }),
+    alignDateRangeToGranularity: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Expand date range boundaries to the query granularity interval.' }),
+    seriesLimit: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          'Maximum number of series rendered (top-N by value). Omit to use the default render cap, set 0 for unlimited, or a positive N to keep the top N series.',
+        example: 5,
+      }),
+    displayType: z
+      .literal('stacked_bar')
+      .openapi({
+        description: 'Display as a stacked-bar time-series chart.',
+        example: 'stacked_bar',
+      }),
+  })
+  .openapi({ required: ['configType', 'sourceId', 'expressions', 'displayType'] })
+  .openapi('ClickStackBarPromqlChartConfig')
+
 const ClickStackBarChartConfigSchema = z
-  .xor([ClickStackBarBuilderChartConfigSchema, ClickStackBarRawSqlChartConfigSchema])
+  .xor([
+    ClickStackBarBuilderChartConfigSchema,
+    ClickStackBarRawSqlChartConfigSchema,
+    ClickStackBarPromqlChartConfigSchema,
+  ])
   .openapi('ClickStackBarChartConfig')
 
 const ClickStackAlertBarBuilderChartConfigSchema = ClickStackBarBuilderChartConfigSchema.and(
@@ -6829,8 +7255,16 @@ const ClickStackAlertBarRawSqlChartConfigSchema = ClickStackBarRawSqlChartConfig
   ClickStackAlertChartConfigOverlaySchema,
 ).openapi('ClickStackAlertBarRawSqlChartConfig')
 
+const ClickStackAlertBarPromqlChartConfigSchema = ClickStackBarPromqlChartConfigSchema.and(
+  ClickStackAlertChartConfigOverlaySchema,
+).openapi('ClickStackAlertBarPromqlChartConfig')
+
 const ClickStackAlertBarChartConfigSchema = z
-  .xor([ClickStackAlertBarBuilderChartConfigSchema, ClickStackAlertBarRawSqlChartConfigSchema])
+  .xor([
+    ClickStackAlertBarBuilderChartConfigSchema,
+    ClickStackAlertBarRawSqlChartConfigSchema,
+    ClickStackAlertBarPromqlChartConfigSchema,
+  ])
   .openapi('ClickStackAlertBarChartConfig')
 
 const ClickStackStackedLineBuilderChartConfigSchema = z
@@ -6844,7 +7278,8 @@ const ClickStackStackedLineBuilderChartConfigSchema = z
     sourceId: z
       .string()
       .openapi({
-        description: 'ID of the data source to query.',
+        description:
+          'ID of the data source to query, or `$sourceVariable` of a DATA_SOURCE filter on the dashboard.',
         example: '65f5e4a3b9e77c001a111111',
       }),
     select: z
@@ -6922,7 +7357,8 @@ const ClickStackStackedLineRawSqlChartConfigSchema = z
     connectionId: z
       .string()
       .openapi({
-        description: 'ID of the ClickHouse connection to execute the query against.',
+        description:
+          'ID of the ClickHouse connection to execute the query against, or `$connectionVariable` of a CONNECTION filter on the dashboard.',
         example: '65f5e4a3b9e77c001a567890',
       }),
     sqlTemplate: z
@@ -6936,7 +7372,7 @@ const ClickStackStackedLineRawSqlChartConfigSchema = z
       .exactOptional()
       .openapi({
         description:
-          'Optional ID of the data source associated with this Raw SQL chart. Used for applying dashboard filters.',
+          'Optional ID of the data source associated with this Raw SQL chart, or `$sourceVariable` of a DATA_SOURCE filter on the dashboard. Used for applying dashboard filters.',
         example: '65f5e4a3b9e77c001a567890',
       }),
     numberFormat: ClickStackNumberFormatSchema.exactOptional(),
@@ -6965,10 +7401,78 @@ const ClickStackStackedLineRawSqlChartConfigSchema = z
   .openapi({ required: ['configType', 'connectionId', 'sqlTemplate', 'displayType'] })
   .openapi('ClickStackStackedLineRawSqlChartConfig')
 
+const ClickStackStackedLinePromqlChartConfigSchema = z
+  .object({
+    configType: z
+      .literal('promql')
+      .openapi({
+        description: 'Must be "promql" to use the PromQL chart config variant.',
+        example: 'promql',
+      }),
+    sourceId: z
+      .string()
+      .openapi({
+        description: 'ID of the PromQL source to query. Must be a source of kind "promql".',
+        example: '65f5e4a3b9e77c001a333333',
+      }),
+    granularity: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Resolution of range queries, used as the Prometheus step and the $__interval macro. Defaults to "auto", which picks one from the time range.',
+        example: '5 minute',
+      }),
+    numberFormat: ClickStackNumberFormatSchema.exactOptional(),
+    expressions: z
+      .array(ClickStackPromqlRangeExpressionSchema)
+      .openapi({ description: 'PromQL expressions to plot.' }),
+    legendTemplate: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Template for series names, using the series' Prometheus labels in double braces.",
+        example: '{{job}} - {{instance}}',
+      }),
+    fillNulls: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Fill missing time buckets with zero instead of leaving gaps.' }),
+    alignDateRangeToGranularity: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Expand date range boundaries to the query granularity interval.' }),
+    seriesLimit: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          'Maximum number of series rendered (top-N by value). Omit to use the default render cap, set 0 for unlimited, or a positive N to keep the top N series.',
+        example: 5,
+      }),
+    displayType: z
+      .literal('stacked_line')
+      .openapi({
+        description: 'Display as a stacked-line time-series chart.',
+        example: 'stacked_line',
+      }),
+    lineInterpolation: z
+      .enum(['smooth', 'linear', 'step'])
+      .exactOptional()
+      .openapi({
+        description: 'How points are connected. Defaults to "linear" when omitted.',
+        example: 'step',
+      }),
+  })
+  .openapi({ required: ['configType', 'sourceId', 'expressions', 'displayType'] })
+  .openapi('ClickStackStackedLinePromqlChartConfig')
+
 const ClickStackStackedLineChartConfigSchema = z
   .xor([
     ClickStackStackedLineBuilderChartConfigSchema,
     ClickStackStackedLineRawSqlChartConfigSchema,
+    ClickStackStackedLinePromqlChartConfigSchema,
   ])
   .openapi('ClickStackStackedLineChartConfig')
 
@@ -6982,10 +7486,16 @@ const ClickStackAlertStackedLineRawSqlChartConfigSchema =
     'ClickStackAlertStackedLineRawSqlChartConfig',
   )
 
+const ClickStackAlertStackedLinePromqlChartConfigSchema =
+  ClickStackStackedLinePromqlChartConfigSchema.and(ClickStackAlertChartConfigOverlaySchema).openapi(
+    'ClickStackAlertStackedLinePromqlChartConfig',
+  )
+
 const ClickStackAlertStackedLineChartConfigSchema = z
   .xor([
     ClickStackAlertStackedLineBuilderChartConfigSchema,
     ClickStackAlertStackedLineRawSqlChartConfigSchema,
+    ClickStackAlertStackedLinePromqlChartConfigSchema,
   ])
   .openapi('ClickStackAlertStackedLineChartConfig')
 
@@ -7144,7 +7654,8 @@ const ClickStackNumberBuilderChartConfigSchema = z
     sourceId: z
       .string()
       .openapi({
-        description: 'ID of the data source to query.',
+        description:
+          'ID of the data source to query, or `$sourceVariable` of a DATA_SOURCE filter on the dashboard.',
         example: '65f5e4a3b9e77c001a111111',
       }),
     select: z
@@ -7202,7 +7713,8 @@ const ClickStackNumberRawSqlChartConfigSchema = z
     connectionId: z
       .string()
       .openapi({
-        description: 'ID of the ClickHouse connection to execute the query against.',
+        description:
+          'ID of the ClickHouse connection to execute the query against, or `$connectionVariable` of a CONNECTION filter on the dashboard.',
         example: '65f5e4a3b9e77c001a567890',
       }),
     sqlTemplate: z
@@ -7216,7 +7728,7 @@ const ClickStackNumberRawSqlChartConfigSchema = z
       .exactOptional()
       .openapi({
         description:
-          'Optional ID of the data source associated with this Raw SQL chart. Used for applying dashboard filters.',
+          'Optional ID of the data source associated with this Raw SQL chart, or `$sourceVariable` of a DATA_SOURCE filter on the dashboard. Used for applying dashboard filters.',
         example: '65f5e4a3b9e77c001a567890',
       }),
     numberFormat: ClickStackNumberFormatSchema.exactOptional(),
@@ -7252,8 +7764,138 @@ const ClickStackNumberRawSqlChartConfigSchema = z
   .openapi({ required: ['configType', 'connectionId', 'sqlTemplate', 'displayType'] })
   .openapi('ClickStackNumberRawSqlChartConfig')
 
+const ClickStackPromqlInstantExpressionSchema = z
+  .object({
+    expression: z
+      .string()
+      .openapi({
+        description:
+          'PromQL expression. Supports dashboard variables and the $__interval, $__rate_interval, and $__range macros.',
+        example: 'sum by (job) (rate(http_requests_total[$__rate_interval]))',
+      }),
+    alias: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Prefixed to every series name this expression produces.',
+        example: 'Requests',
+      }),
+    queryType: z
+      .enum(['range', 'instant'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether to evaluate over the time range or at its end. Defaults to "range" when omitted.',
+        example: 'instant',
+      }),
+  })
+  .openapi({ required: ['expression'] })
+  .openapi('ClickStackPromqlInstantExpression')
+
+const ClickStackPromqlReducibleExpressionSchema = z
+  .object({
+    expression: z
+      .string()
+      .openapi({
+        description:
+          'PromQL expression. Supports dashboard variables and the $__interval, $__rate_interval, and $__range macros.',
+        example: 'sum by (job) (rate(http_requests_total[$__rate_interval]))',
+      }),
+    alias: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Prefixed to every series name this expression produces.',
+        example: 'Requests',
+      }),
+    queryType: z
+      .enum(['range', 'instant'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether to evaluate over the time range or at its end. Defaults to "range" when omitted.',
+        example: 'instant',
+      }),
+    reducer: z
+      .enum(['lastNotNull', 'min', 'max', 'mean', 'sum', 'count'])
+      .exactOptional()
+      .openapi({
+        description:
+          'How each series\' samples are reduced to one value. Defaults to "lastNotNull" when omitted. It also applies to instant queries, where each series has a single sample, so e.g. "count" turns every value into 1.',
+        example: 'max',
+      }),
+  })
+  .openapi({ required: ['expression'] })
+  .openapi('ClickStackPromqlReducibleExpression')
+
+const ClickStackNumberPromqlChartConfigSchema = z
+  .object({
+    configType: z
+      .literal('promql')
+      .openapi({
+        description: 'Must be "promql" to use the PromQL chart config variant.',
+        example: 'promql',
+      }),
+    sourceId: z
+      .string()
+      .openapi({
+        description: 'ID of the PromQL source to query. Must be a source of kind "promql".',
+        example: '65f5e4a3b9e77c001a333333',
+      }),
+    granularity: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Resolution of range queries, used as the Prometheus step and the $__interval macro. Defaults to "auto", which picks one from the time range.',
+        example: '5 minute',
+      }),
+    numberFormat: ClickStackNumberFormatSchema.exactOptional(),
+    displayType: z
+      .literal('number')
+      .openapi({ description: 'Display as a single big-number chart.', example: 'number' }),
+    expressions: z
+      .array(ClickStackPromqlReducibleExpressionSchema)
+      .openapi({
+        description:
+          'PromQL expressions. Only the first is queried; the rest are kept but ignored. The tile displays the first value.',
+      }),
+    color: z
+      .enum([
+        'chart-blue',
+        'chart-orange',
+        'chart-red',
+        'chart-cyan',
+        'chart-green',
+        'chart-pink',
+        'chart-purple',
+        'chart-light-blue',
+        'chart-brown',
+        'chart-gray',
+        'chart-success',
+        'chart-warning',
+        'chart-error',
+      ])
+      .exactOptional()
+      .openapi({ description: 'Optional static color applied to the displayed number.' }),
+    colorRules: z
+      .array(ClickStackNumberTileColorConditionSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Ordered conditional color rules evaluated against the displayed value (last match wins). Falls back to color, then the default text color when no rule matches.',
+      }),
+    backgroundChart: ClickStackBackgroundChartSchema.exactOptional(),
+  })
+  .openapi({ required: ['configType', 'sourceId', 'displayType', 'expressions'] })
+  .openapi('ClickStackNumberPromqlChartConfig')
+
 const ClickStackNumberChartConfigSchema = z
-  .xor([ClickStackNumberBuilderChartConfigSchema, ClickStackNumberRawSqlChartConfigSchema])
+  .xor([
+    ClickStackNumberBuilderChartConfigSchema,
+    ClickStackNumberRawSqlChartConfigSchema,
+    ClickStackNumberPromqlChartConfigSchema,
+  ])
   .openapi('ClickStackNumberChartConfig')
 
 const ClickStackAlertNumberBuilderChartConfigSchema = ClickStackNumberBuilderChartConfigSchema.and(
@@ -7264,10 +7906,15 @@ const ClickStackAlertNumberRawSqlChartConfigSchema = ClickStackNumberRawSqlChart
   ClickStackAlertChartConfigOverlaySchema,
 ).openapi('ClickStackAlertNumberRawSqlChartConfig')
 
+const ClickStackAlertNumberPromqlChartConfigSchema = ClickStackNumberPromqlChartConfigSchema.and(
+  ClickStackAlertChartConfigOverlaySchema,
+).openapi('ClickStackAlertNumberPromqlChartConfig')
+
 const ClickStackAlertNumberChartConfigSchema = z
   .xor([
     ClickStackAlertNumberBuilderChartConfigSchema,
     ClickStackAlertNumberRawSqlChartConfigSchema,
+    ClickStackAlertNumberPromqlChartConfigSchema,
   ])
   .openapi('ClickStackAlertNumberChartConfig')
 
@@ -7877,8 +8524,54 @@ const ClickStackVariableSavedFilterValueSchema = z
   .openapi({ required: ['type', 'name', 'values'] })
   .openapi('ClickStackVariableSavedFilterValue')
 
+const ClickStackAdhocFilterConditionSchema = z
+  .object({
+    key: z
+      .string()
+      .openapi({
+        description:
+          'A SQL expression (column or map access) for sql filters, or a label name for promql filters.',
+        example: 'ServiceName',
+      }),
+    operator: z
+      .string()
+      .openapi({
+        description:
+          "Comparison operator. =~ and !~ match a regular expression. IN takes one value per condition. LIKE and NOT LIKE apply to sql filters only; a condition its filter's sourceType can't express is not applied. Allowed values: '=', '!=', '=~', '!~', 'LIKE', 'NOT LIKE', 'IN'.",
+        example: '=',
+      }),
+    value: z
+      .string()
+      .openapi({
+        description: 'Value, pattern, or regular expression to compare against.',
+        example: 'api',
+      }),
+  })
+  .openapi({ required: ['key', 'operator', 'value'] })
+  .openapi('ClickStackAdhocFilterCondition')
+
+const ClickStackAdhocSavedFilterValueSchema = z
+  .object({
+    type: z.literal('adhoc').openapi({ description: 'Filter type.', example: 'adhoc' }),
+    name: z
+      .string()
+      .openapi({
+        description: 'The variableName of the ADHOC filter these conditions belong to.',
+        example: 'conditions',
+      }),
+    conditions: z
+      .array(ClickStackAdhocFilterConditionSchema)
+      .openapi({ description: "The filter's conditions." }),
+  })
+  .openapi({ required: ['type', 'name', 'conditions'] })
+  .openapi('ClickStackAdhocSavedFilterValue')
+
 const ClickStackSavedFilterValueSchema = z
-  .xor([ClickStackSqlSavedFilterValueSchema, ClickStackVariableSavedFilterValueSchema])
+  .xor([
+    ClickStackSqlSavedFilterValueSchema,
+    ClickStackVariableSavedFilterValueSchema,
+    ClickStackAdhocSavedFilterValueSchema,
+  ])
   .openapi('ClickStackSavedFilterValue')
 
 const ClickStackTimeChartSeriesSchema = z
@@ -8354,7 +9047,8 @@ const ClickStackTableBuilderChartConfigSchema = z
     sourceId: z
       .string()
       .openapi({
-        description: 'ID of the data source to query.',
+        description:
+          'ID of the data source to query, or `$sourceVariable` of a DATA_SOURCE filter on the dashboard.',
         example: '65f5e4a3b9e77c001a111111',
       }),
     select: z
@@ -8427,7 +9121,8 @@ const ClickStackPieBuilderChartConfigSchema = z
     sourceId: z
       .string()
       .openapi({
-        description: 'ID of the data source to query.',
+        description:
+          'ID of the data source to query, or `$sourceVariable` of a DATA_SOURCE filter on the dashboard.',
         example: '65f5e4a3b9e77c001a111111',
       }),
     select: z
@@ -8472,7 +9167,8 @@ const ClickStackCategoricalBarBuilderChartConfigSchema = z
     sourceId: z
       .string()
       .openapi({
-        description: 'ID of the data source to query.',
+        description:
+          'ID of the data source to query, or `$sourceVariable` of a DATA_SOURCE filter on the dashboard.',
         example: '65f5e4a3b9e77c001a111111',
       }),
     select: z
@@ -8549,7 +9245,8 @@ const ClickStackHeatmapDistributionChartConfigSchema = z
     sourceId: z
       .string()
       .openapi({
-        description: 'ID of the data source to query.',
+        description:
+          'ID of the data source to query, or `$sourceVariable` of a DATA_SOURCE filter on the dashboard.',
         example: '65f5e4a3b9e77c001a111111',
       }),
     select: z
@@ -8588,7 +9285,8 @@ const ClickStackHeatmapSeriesChartConfigSchema = z
     sourceId: z
       .string()
       .openapi({
-        description: 'ID of the data source to query.',
+        description:
+          'ID of the data source to query, or `$sourceVariable` of a DATA_SOURCE filter on the dashboard.',
         example: '65f5e4a3b9e77c001a111111',
       }),
     select: z
@@ -8606,8 +9304,68 @@ const ClickStackHeatmapSeriesChartConfigSchema = z
   .openapi({ required: ['displayType', 'heatmapMode', 'sourceId', 'select'] })
   .openapi('ClickStackHeatmapSeriesChartConfig')
 
+const ClickStackHeatmapPromqlChartConfigSchema = z
+  .object({
+    configType: z
+      .literal('promql')
+      .openapi({
+        description: 'Must be "promql" to use the PromQL chart config variant.',
+        example: 'promql',
+      }),
+    sourceId: z
+      .string()
+      .openapi({
+        description: 'ID of the PromQL source to query. Must be a source of kind "promql".',
+        example: '65f5e4a3b9e77c001a333333',
+      }),
+    granularity: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Resolution of range queries, used as the Prometheus step and the $__interval macro. Defaults to "auto", which picks one from the time range.',
+        example: '5 minute',
+      }),
+    numberFormat: ClickStackNumberFormatSchema.exactOptional(),
+    displayType: z
+      .literal('heatmap')
+      .openapi({ description: 'Display as a heatmap.', example: 'heatmap' }),
+    expressions: z
+      .array(ClickStackPromqlRangeExpressionSchema)
+      .openapi({
+        description:
+          'PromQL expressions. Only the first is queried; the rest are kept but ignored.',
+      }),
+    heatmapMode: z
+      .enum(['distribution', 'series', 'histogram'])
+      .exactOptional()
+      .openapi({
+        description:
+          '"distribution" buckets the values of all series over time, "series" draws one row per series, and "histogram" draws one row per Prometheus histogram bucket (series need an "le" label). Defaults to "distribution" when omitted.',
+        example: 'histogram',
+      }),
+    heatmapScaleType: z
+      .enum(['log', 'linear'])
+      .exactOptional()
+      .openapi({ description: 'Y-axis scale of a distribution heatmap.', example: 'log' }),
+    legendTemplate: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Template for row names of a series heatmap, using the series' Prometheus labels in double braces.",
+        example: '{{job}}',
+      }),
+  })
+  .openapi({ required: ['configType', 'sourceId', 'displayType', 'expressions'] })
+  .openapi('ClickStackHeatmapPromqlChartConfig')
+
 const ClickStackHeatmapChartConfigSchema = z
-  .xor([ClickStackHeatmapDistributionChartConfigSchema, ClickStackHeatmapSeriesChartConfigSchema])
+  .xor([
+    ClickStackHeatmapDistributionChartConfigSchema,
+    ClickStackHeatmapSeriesChartConfigSchema,
+    ClickStackHeatmapPromqlChartConfigSchema,
+  ])
   .openapi('ClickStackHeatmapChartConfig')
 
 const ClickStackSearchChartConfigSchema = z
@@ -8621,7 +9379,8 @@ const ClickStackSearchChartConfigSchema = z
     sourceId: z
       .string()
       .openapi({
-        description: 'ID of the data source to query.',
+        description:
+          'ID of the data source to query, or `$sourceVariable` of a DATA_SOURCE filter on the dashboard.',
         example: '65f5e4a3b9e77c001a111111',
       }),
     select: z
@@ -8656,7 +9415,8 @@ const ClickStackEventPatternsChartConfigSchema = z
     sourceId: z
       .string()
       .openapi({
-        description: 'ID of the data source to mine patterns from.',
+        description:
+          'ID of the data source to mine patterns from, or `$sourceVariable` of a DATA_SOURCE filter on the dashboard.',
         example: '65f5e4a3b9e77c001a111111',
       }),
     select: z
@@ -8713,7 +9473,8 @@ const ClickStackTableRawSqlChartConfigSchema = z
     connectionId: z
       .string()
       .openapi({
-        description: 'ID of the ClickHouse connection to execute the query against.',
+        description:
+          'ID of the ClickHouse connection to execute the query against, or `$connectionVariable` of a CONNECTION filter on the dashboard.',
         example: '65f5e4a3b9e77c001a567890',
       }),
     sqlTemplate: z
@@ -8727,7 +9488,7 @@ const ClickStackTableRawSqlChartConfigSchema = z
       .exactOptional()
       .openapi({
         description:
-          'Optional ID of the data source associated with this Raw SQL chart. Used for applying dashboard filters.',
+          'Optional ID of the data source associated with this Raw SQL chart, or `$sourceVariable` of a DATA_SOURCE filter on the dashboard. Used for applying dashboard filters.',
         example: '65f5e4a3b9e77c001a567890',
       }),
     numberFormat: ClickStackNumberFormatSchema.exactOptional(),
@@ -8750,7 +9511,8 @@ const ClickStackPieRawSqlChartConfigSchema = z
     connectionId: z
       .string()
       .openapi({
-        description: 'ID of the ClickHouse connection to execute the query against.',
+        description:
+          'ID of the ClickHouse connection to execute the query against, or `$connectionVariable` of a CONNECTION filter on the dashboard.',
         example: '65f5e4a3b9e77c001a567890',
       }),
     sqlTemplate: z
@@ -8764,7 +9526,7 @@ const ClickStackPieRawSqlChartConfigSchema = z
       .exactOptional()
       .openapi({
         description:
-          'Optional ID of the data source associated with this Raw SQL chart. Used for applying dashboard filters.',
+          'Optional ID of the data source associated with this Raw SQL chart, or `$sourceVariable` of a DATA_SOURCE filter on the dashboard. Used for applying dashboard filters.',
         example: '65f5e4a3b9e77c001a567890',
       }),
     numberFormat: ClickStackNumberFormatSchema.exactOptional(),
@@ -8786,7 +9548,8 @@ const ClickStackCategoricalBarRawSqlChartConfigSchema = z
     connectionId: z
       .string()
       .openapi({
-        description: 'ID of the ClickHouse connection to execute the query against.',
+        description:
+          'ID of the ClickHouse connection to execute the query against, or `$connectionVariable` of a CONNECTION filter on the dashboard.',
         example: '65f5e4a3b9e77c001a567890',
       }),
     sqlTemplate: z
@@ -8800,7 +9563,7 @@ const ClickStackCategoricalBarRawSqlChartConfigSchema = z
       .exactOptional()
       .openapi({
         description:
-          'Optional ID of the data source associated with this Raw SQL chart. Used for applying dashboard filters.',
+          'Optional ID of the data source associated with this Raw SQL chart, or `$sourceVariable` of a DATA_SOURCE filter on the dashboard. Used for applying dashboard filters.',
         example: '65f5e4a3b9e77c001a567890',
       }),
     numberFormat: ClickStackNumberFormatSchema.exactOptional(),
@@ -8811,18 +9574,167 @@ const ClickStackCategoricalBarRawSqlChartConfigSchema = z
   .openapi({ required: ['configType', 'connectionId', 'sqlTemplate', 'displayType'] })
   .openapi('ClickStackCategoricalBarRawSqlChartConfig')
 
+const ClickStackTablePromqlChartConfigSchema = z
+  .object({
+    configType: z
+      .literal('promql')
+      .openapi({
+        description: 'Must be "promql" to use the PromQL chart config variant.',
+        example: 'promql',
+      }),
+    sourceId: z
+      .string()
+      .openapi({
+        description: 'ID of the PromQL source to query. Must be a source of kind "promql".',
+        example: '65f5e4a3b9e77c001a333333',
+      }),
+    granularity: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Resolution of range queries, used as the Prometheus step and the $__interval macro. Defaults to "auto", which picks one from the time range.',
+        example: '5 minute',
+      }),
+    numberFormat: ClickStackNumberFormatSchema.exactOptional(),
+    displayType: z
+      .literal('table')
+      .openapi({ description: 'Display as a table chart.', example: 'table' }),
+    expressions: z
+      .array(ClickStackPromqlInstantExpressionSchema)
+      .openapi({
+        description:
+          'PromQL expressions. Only the first is queried; the rest are kept but ignored.',
+      }),
+  })
+  .openapi({ required: ['configType', 'sourceId', 'displayType', 'expressions'] })
+  .openapi('ClickStackTablePromqlChartConfig')
+
+const ClickStackPiePromqlChartConfigSchema = z
+  .object({
+    configType: z
+      .literal('promql')
+      .openapi({
+        description: 'Must be "promql" to use the PromQL chart config variant.',
+        example: 'promql',
+      }),
+    sourceId: z
+      .string()
+      .openapi({
+        description: 'ID of the PromQL source to query. Must be a source of kind "promql".',
+        example: '65f5e4a3b9e77c001a333333',
+      }),
+    granularity: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Resolution of range queries, used as the Prometheus step and the $__interval macro. Defaults to "auto", which picks one from the time range.',
+        example: '5 minute',
+      }),
+    numberFormat: ClickStackNumberFormatSchema.exactOptional(),
+    displayType: z
+      .literal('pie')
+      .openapi({ description: 'Display as a pie chart.', example: 'pie' }),
+    expressions: z
+      .array(ClickStackPromqlReducibleExpressionSchema)
+      .openapi({
+        description:
+          'PromQL expressions. Only the first is queried; the rest are kept but ignored.',
+      }),
+    legendTemplate: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Template for slice names, using the series' Prometheus labels in double braces.",
+        example: '{{job}}',
+      }),
+    limit: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          'Maximum number of slices (top-N by value), at most 500. Omit or set 0 to show up to 500.',
+        example: 10,
+      }),
+  })
+  .openapi({ required: ['configType', 'sourceId', 'displayType', 'expressions'] })
+  .openapi('ClickStackPiePromqlChartConfig')
+
+const ClickStackCategoricalBarPromqlChartConfigSchema = z
+  .object({
+    configType: z
+      .literal('promql')
+      .openapi({
+        description: 'Must be "promql" to use the PromQL chart config variant.',
+        example: 'promql',
+      }),
+    sourceId: z
+      .string()
+      .openapi({
+        description: 'ID of the PromQL source to query. Must be a source of kind "promql".',
+        example: '65f5e4a3b9e77c001a333333',
+      }),
+    granularity: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Resolution of range queries, used as the Prometheus step and the $__interval macro. Defaults to "auto", which picks one from the time range.',
+        example: '5 minute',
+      }),
+    numberFormat: ClickStackNumberFormatSchema.exactOptional(),
+    displayType: z
+      .literal('bar')
+      .openapi({ description: 'Display as a categorical bar chart.', example: 'bar' }),
+    expressions: z
+      .array(ClickStackPromqlReducibleExpressionSchema)
+      .openapi({
+        description:
+          'PromQL expressions. Only the first is queried; the rest are kept but ignored.',
+      }),
+    legendTemplate: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Template for bar names, using the series' Prometheus labels in double braces.",
+        example: '{{job}}',
+      }),
+    limit: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          'Maximum number of bars (top-N by value), at most 500. Omit or set 0 to show up to 500.',
+        example: 10,
+      }),
+  })
+  .openapi({ required: ['configType', 'sourceId', 'displayType', 'expressions'] })
+  .openapi('ClickStackCategoricalBarPromqlChartConfig')
+
 const ClickStackTableChartConfigSchema = z
-  .xor([ClickStackTableBuilderChartConfigSchema, ClickStackTableRawSqlChartConfigSchema])
+  .xor([
+    ClickStackTableBuilderChartConfigSchema,
+    ClickStackTableRawSqlChartConfigSchema,
+    ClickStackTablePromqlChartConfigSchema,
+  ])
   .openapi('ClickStackTableChartConfig')
 
 const ClickStackPieChartConfigSchema = z
-  .xor([ClickStackPieBuilderChartConfigSchema, ClickStackPieRawSqlChartConfigSchema])
+  .xor([
+    ClickStackPieBuilderChartConfigSchema,
+    ClickStackPieRawSqlChartConfigSchema,
+    ClickStackPiePromqlChartConfigSchema,
+  ])
   .openapi('ClickStackPieChartConfig')
 
 const ClickStackCategoricalBarChartConfigSchema = z
   .xor([
     ClickStackCategoricalBarBuilderChartConfigSchema,
     ClickStackCategoricalBarRawSqlChartConfigSchema,
+    ClickStackCategoricalBarPromqlChartConfigSchema,
   ])
   .openapi('ClickStackCategoricalBarChartConfig')
 
@@ -9015,7 +9927,8 @@ const ClickStackQueryExpressionFilterInputSchema = z
     sourceId: z
       .string()
       .openapi({
-        description: 'Source ID this dashboard filter key applies to',
+        description:
+          'Source ID this dashboard filter key applies to, or `$name` of a DATA_SOURCE filter on the dashboard',
         example: '65f5e4a3b9e77c001a111111',
       }),
     sourceMetricType: z
@@ -9328,12 +10241,279 @@ const ClickStackSourceFilterInputSchema = z
   .openapi({ required: ['type', 'name', 'sourceId', 'expression', 'variableName'] })
   .openapi('ClickStackSourceFilterInput')
 
+const ClickStackDataSourceFilterInputSchema = z
+  .object({
+    type: z
+      .literal('DATA_SOURCE')
+      .openapi({
+        description: 'Filter type discriminator. Must be "DATA_SOURCE".',
+        example: 'DATA_SOURCE',
+      }),
+    name: z
+      .string()
+      .openapi({ description: "Display name of the variable's dropdown", example: 'Logs source' }),
+    variableName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Token tiles and filters reference the selected source by, as `$variableName`.',
+        example: 'logs',
+      }),
+    isGlobalRequirement: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Blocks every tile on the dashboard until a value is selected. False (the default) blocks only the tiles that reference the variable.',
+        example: true,
+      }),
+    minSelections: z
+      .literal(1)
+      .exactOptional()
+      .openapi({
+        description: 'Must be 1 if provided. The variable always requires a selection.',
+        example: 1,
+      }),
+    maxSelections: z
+      .literal(1)
+      .exactOptional()
+      .openapi({
+        description: 'Must be 1 if provided. The variable is always single-select.',
+        example: 1,
+      }),
+    isBroadcastEnabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Must be false or omitted. Allowed values: false.', example: false }),
+    isVariableEnabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Must be true if provided, and is true when omitted. Allowed values: true.',
+        example: true,
+      }),
+    allowedSourceKinds: z
+      .array(z.string())
+      .openapi({
+        description:
+          'Kinds of sources offered. A field can reference the variable if it accepts at least one listed kind. A tile whose selected source is a kind it cannot use shows an error instead of running.',
+        example: ['log'],
+      }),
+    connectionId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional connection the offered sources are limited to: a connection ID, or `$name` of a CONNECTION filter on the dashboard.',
+        example: '$conn',
+      }),
+  })
+  .openapi({ required: ['type', 'name', 'allowedSourceKinds'] })
+  .openapi('ClickStackDataSourceFilterInput')
+
+const ClickStackConnectionFilterInputSchema = z
+  .object({
+    type: z
+      .literal('CONNECTION')
+      .openapi({
+        description: 'Filter type discriminator. Must be "CONNECTION".',
+        example: 'CONNECTION',
+      }),
+    name: z
+      .string()
+      .openapi({ description: "Display name of the variable's dropdown", example: 'Connection' }),
+    variableName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Token raw SQL tiles reference the selected connection by, as `$variableName`.',
+        example: 'conn',
+      }),
+    isGlobalRequirement: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Blocks every tile on the dashboard until a value is selected. False (the default) blocks only the tiles that reference the variable.',
+        example: true,
+      }),
+    minSelections: z
+      .literal(1)
+      .exactOptional()
+      .openapi({
+        description: 'Must be 1 if provided. The variable always requires a selection.',
+        example: 1,
+      }),
+    maxSelections: z
+      .literal(1)
+      .exactOptional()
+      .openapi({
+        description: 'Must be 1 if provided. The variable is always single-select.',
+        example: 1,
+      }),
+    isBroadcastEnabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Must be false or omitted. Allowed values: false.', example: false }),
+    isVariableEnabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Must be true if provided, and is true when omitted. Allowed values: true.',
+        example: true,
+      }),
+  })
+  .openapi({ required: ['type', 'name'] })
+  .openapi('ClickStackConnectionFilterInput')
+
+const ClickStackSqlQueryFilterInputSchema = z
+  .object({
+    type: z
+      .literal('SQL_QUERY')
+      .openapi({ description: 'Discriminator. Must be "SQL_QUERY".', example: 'SQL_QUERY' }),
+    name: z
+      .string()
+      .openapi({ description: 'Display name for the dashboard filter', example: 'Environment' }),
+    connectionId: z
+      .string()
+      .openapi({
+        description:
+          'ClickHouse connection the query runs on: a connection ID, or `$name` of a CONNECTION filter on the dashboard.',
+        example: '65f5e4a3b9e77c001a567890',
+      }),
+    sourceId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional Log, Trace, Session, or Metric source on the same connection, or `$name` of a DATA_SOURCE filter on this dashboard. Lets `sqlTemplate` use `$__sourceTable` and `$__filters`.',
+        example: '65f5e4a3b9e77c001a345678',
+      }),
+    sqlTemplate: z
+      .string()
+      .openapi({
+        description:
+          "Query whose first column populates the dropdown. May use the time macros and other filters' variables. `$__sourceTable` and `$__filters` need a `sourceId`; `$__filters` expands to the dashboard's broadcast filter selections for that source.",
+        example: 'SELECT DISTINCT env FROM default.envs ORDER BY env',
+      }),
+    isBroadcastEnabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Must be false or omitted. Allowed values: false.', example: false }),
+    isVariableEnabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Must be true if provided, and is true when omitted. Tiles reference the selection as `$variableName`. Allowed values: true.',
+        example: true,
+      }),
+    variableName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Token that tiles reference this filter's selected value by, as `$variableName`. Defaults to the display name with whitespace replaced by underscores and remaining illegal characters removed. Must be unique across a dashboard's variable-enabled filters.",
+        example: 'env',
+      }),
+    minSelections: z
+      .union([z.literal(0), z.literal(1)])
+      .exactOptional()
+      .openapi({ description: 'Set to 1 to make the filter required.', example: 1 }),
+    isGlobalRequirement: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          "Widens a required filter's block to every tile on the dashboard. Ignored unless minSelections is 1.",
+        example: true,
+      }),
+    maxSelections: z
+      .literal(1)
+      .exactOptional()
+      .openapi({ description: 'Set to 1 to make the filter single-select.', example: 1 }),
+  })
+  .openapi({ required: ['type', 'name', 'connectionId', 'sqlTemplate'] })
+  .openapi('ClickStackSqlQueryFilterInput')
+
+const ClickStackAdhocFilterInputSchema = z
+  .object({
+    type: z
+      .literal('ADHOC')
+      .openapi({ description: 'Discriminator. Must be "ADHOC".', example: 'ADHOC' }),
+    name: z
+      .string()
+      .openapi({ description: 'Display name for the dashboard filter', example: 'Conditions' }),
+    sourceType: z
+      .string()
+      .openapi({
+        description:
+          "The kind of sources the filter reads keys from and applies to: Log, Trace, or Session sources for sql, PromQL sources for promql. Allowed values: 'sql', 'promql'.",
+        example: 'sql',
+      }),
+    sources: z
+      .array(z.string())
+      .openapi({
+        description:
+          'IDs of the sources whose keys and values the filter suggests, all of sourceType, or `$name` of data source variables.',
+        example: ['65f5e4a3b9e77c001a111111'],
+      }),
+    where: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Optional condition narrowing the rows keys and values are suggested from. Never applied to tiles. May reference the dashboard's variables. sql filters only: rejected when sourceType is promql.",
+        example: 'ServiceName:api',
+      }),
+    whereLanguage: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Language of the where condition. Rejected when sourceType is promql. Allowed values: 'sql', 'lucene'.",
+        example: 'lucene',
+      }),
+    appliesToSourceIds: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          "IDs of the sources whose tiles the conditions apply to, all of sourceType, or `$name` of data source variables. Omit or send an empty array to apply to the tiles of the filter's sources.",
+        example: ['65f5e4a3b9e77c001a111111'],
+      }),
+    isBroadcastEnabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Must be true or omitted. Allowed values: true.', example: true }),
+    isVariableEnabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Must be true or omitted. Allowed values: true.', example: true }),
+    variableName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Unique name the filter's conditions are saved under, in savedFilterValues and the dashboard URL. Tiles can't reference it as a variable. Defaults to the display name with whitespace replaced by underscores and remaining illegal characters removed. Must be unique across a dashboard's variable-enabled filters.",
+        example: 'conditions',
+      }),
+  })
+  .openapi({ required: ['type', 'name', 'sourceType', 'sources'] })
+  .openapi('ClickStackAdhocFilterInput')
+
 const ClickStackFilterInputSchema = z
   .xor([
     ClickStackQueryExpressionFilterInputSchema,
     ClickStackStaticListFilterInputSchema,
     ClickStackPrometheusLabelFilterInputSchema,
     ClickStackSourceFilterInputSchema,
+    ClickStackDataSourceFilterInputSchema,
+    ClickStackConnectionFilterInputSchema,
+    ClickStackSqlQueryFilterInputSchema,
+    ClickStackAdhocFilterInputSchema,
   ])
   .openapi('ClickStackFilterInput')
 
@@ -9361,12 +10541,40 @@ const ClickStackSourceFilterSchema = ClickStackSourceFilterInputSchema.and(
     .openapi({ required: ['id'] }),
 ).openapi('ClickStackSourceFilter')
 
+const ClickStackDataSourceFilterSchema = ClickStackDataSourceFilterInputSchema.and(
+  z
+    .object({ id: z.string().openapi({ description: 'Unique dashboard filter key ID' }) })
+    .openapi({ required: ['id'] }),
+).openapi('ClickStackDataSourceFilter')
+
+const ClickStackConnectionFilterSchema = ClickStackConnectionFilterInputSchema.and(
+  z
+    .object({ id: z.string().openapi({ description: 'Unique dashboard filter key ID' }) })
+    .openapi({ required: ['id'] }),
+).openapi('ClickStackConnectionFilter')
+
+const ClickStackSqlQueryFilterSchema = ClickStackSqlQueryFilterInputSchema.and(
+  z
+    .object({ id: z.string().openapi({ description: 'Unique dashboard filter key ID' }) })
+    .openapi({ required: ['id'] }),
+).openapi('ClickStackSqlQueryFilter')
+
+const ClickStackAdhocFilterSchema = ClickStackAdhocFilterInputSchema.and(
+  z
+    .object({ id: z.string().openapi({ description: 'Unique dashboard filter key ID' }) })
+    .openapi({ required: ['id'] }),
+).openapi('ClickStackAdhocFilter')
+
 const ClickStackFilterSchema = z
   .xor([
     ClickStackQueryExpressionFilterSchema,
     ClickStackStaticListFilterSchema,
     ClickStackPrometheusLabelFilterSchema,
     ClickStackSourceFilterSchema,
+    ClickStackDataSourceFilterSchema,
+    ClickStackConnectionFilterSchema,
+    ClickStackSqlQueryFilterSchema,
+    ClickStackAdhocFilterSchema,
   ])
   .openapi('ClickStackFilter')
 
@@ -9436,7 +10644,7 @@ const ClickStackValidateDashboardErrorSchema = z
   .openapi('ClickStackValidateDashboardError')
 
 const ClickStackValidateDashboardResponseNormalizedSchema = z
-  .object({})
+  .looseObject({})
   .openapi('ClickStackValidateDashboardResponseNormalized')
 
 const ClickStackValidateDashboardResponseSchema = z
@@ -9592,6 +10800,7 @@ const ClickStackMongoDBCASLPermissionSchema = z
         'Role',
         'Notebook',
         'SchemaMigration',
+        'App',
         'all',
       ])
       .openapi({ description: 'The resource the action applies to.', example: 'Dashboard' }),
@@ -9665,6 +10874,7 @@ const ClickStackClickHouseCASLPermissionSchema = z
         'Role',
         'Notebook',
         'SchemaMigration',
+        'App',
         'all',
       ])
       .openapi({ description: 'The resource the action applies to.', example: 'Dashboard' }),
@@ -10346,6 +11556,15 @@ const ClickStackLogSourceSchema = z
           'For Distributed table sources whose target tables have non-matching column sets. A list of columns supported across all target tables, used instead of SELECT * when fetching full row data. Leave blank to select all columns.',
         example: 'Timestamp, Body, ServiceName',
       }),
+    rowKeyExpression: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Comma-separated expressions that together identify one row, e.g. the partition key, primary key, _block_number and _block_offset. When set, row details are looked up by these columns only. Leave blank to detect keys from table metadata.',
+        example: 'toDate(Timestamp), ServiceName, Timestamp, _block_number, _block_offset',
+      }),
     useTextIndexForImplicitColumn: z
       .enum(['auto', 'enabled', 'disabled'])
       .nullable()
@@ -10354,6 +11573,24 @@ const ClickStackLogSourceSchema = z
         description:
           'Controls whether lucene rendering uses ClickHouse text indices via hasAllTokens() against the implicit column. "auto" detects a covering index at query time, "enabled" forces text index usage, "disabled" forces a LIKE/hasToken fallback.',
         example: 'auto',
+      }),
+    mapKeyIndexMaxParts: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'How many data parts are read from text indexes to discover attribute keys and filter values, chosen by mapKeyIndexPartSelection. Raise it if keys or values are missing from filters; lower it if they load slowly. Defaults to 20.',
+        example: 20,
+      }),
+    mapKeyIndexPartSelection: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Which data parts, by row count, are read from text indexes to discover attribute keys and filter values. "median" (the default) balances coverage and cost, "smallest" reads the newest unmerged parts, "largest" reads the most merged data. Allowed values: \'median\', \'smallest\', \'largest\'.',
+        example: 'median',
       }),
     highlightedTraceAttributeExpressions: z
       .array(ClickStackHighlightedAttributeExpressionSchema)
@@ -10625,6 +11862,15 @@ const ClickStackTraceSourceSchema = z
           'For Distributed table sources whose target tables have non-matching column sets. A list of columns supported across all target tables, used instead of SELECT * when fetching full row data. Leave blank to select all columns.',
         example: 'Timestamp, Body, ServiceName',
       }),
+    rowKeyExpression: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Comma-separated expressions that together identify one row, e.g. the partition key, primary key, _block_number and _block_offset. When set, row details are looked up by these columns only. Leave blank to detect keys from table metadata.',
+        example: 'toDate(Timestamp), SpanName, Timestamp, _block_number, _block_offset',
+      }),
     useTextIndexForImplicitColumn: z
       .enum(['auto', 'enabled', 'disabled'])
       .nullable()
@@ -10633,6 +11879,24 @@ const ClickStackTraceSourceSchema = z
         description:
           'Controls whether lucene rendering uses ClickHouse text indices via hasAllTokens() against the implicit column. "auto" detects a covering index at query time, "enabled" forces text index usage, "disabled" forces a LIKE/hasToken fallback.',
         example: 'auto',
+      }),
+    mapKeyIndexMaxParts: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'How many data parts are read from text indexes to discover attribute keys and filter values, chosen by mapKeyIndexPartSelection. Raise it if keys or values are missing from filters; lower it if they load slowly. Defaults to 20.',
+        example: 20,
+      }),
+    mapKeyIndexPartSelection: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Which data parts, by row count, are read from text indexes to discover attribute keys and filter values. "median" (the default) balances coverage and cost, "smallest" reads the newest unmerged parts, "largest" reads the most merged data. Allowed values: \'median\', \'smallest\', \'largest\'.',
+        example: 'median',
       }),
     highlightedTraceAttributeExpressions: z
       .array(ClickStackHighlightedAttributeExpressionSchema)
@@ -10761,6 +12025,14 @@ const ClickStackMetricSourceSchema = z
         description: 'HyperDX Source for logs associated with metrics. Optional',
         example: '507f1f77bcf86cd799439011',
       }),
+    minAutoGranularity: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Floor for the auto-inferred chart granularity. Set it to the scrape/report interval of the metrics so a short time range does not produce buckets smaller than that interval (sparse, steppy series). Only constrains "Auto" granularity; an explicit granularity picked on a tile is never overridden. Omit for no minimum. Uses the SQL interval format (a positive integer followed by second, minute, hour, or day), not the short form of the materialized view granularity fields.',
+        example: '1 minute',
+      }),
   })
   .openapi({
     required: [
@@ -10887,7 +12159,7 @@ const ClickStackPromqlSourceSchema = z
       .string()
       .openapi({
         description:
-          'ID of the connection used by this source. Should reference a Prometheus-compatible connection.',
+          'ID of the connection used by this source. Either a ClickHouse connection holding the TimeSeries table, or a Prometheus-compatible connection.',
         example: '507f1f77bcf86cd799439012',
       }),
     from: ClickStackSourceFromSchema,
@@ -10900,9 +12172,24 @@ const ClickStackPromqlSourceSchema = z
     timestampValueExpression: z
       .string()
       .openapi({
-        description:
-          'Required by the API for all source kinds; not used when querying a Prometheus endpoint.',
+        description: 'Required by the API for all source kinds; not used by PromQL queries.',
         example: 'timestamp',
+      }),
+    minAutoGranularity: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Floor for the auto-inferred chart granularity, and the scrape interval that `$__rate_interval` is computed from. Set it to the Prometheus scrape interval so a short time range does not produce buckets smaller than that interval. Only constrains "Auto" granularity; an explicit granularity picked on a tile is never overridden. Omit for no minimum. Uses the SQL interval format (a positive integer followed by second, minute, hour, or day), not the short form of the materialized view granularity fields.',
+        example: '1 minute',
+      }),
+    promqlBackend: z
+      .enum(['auto', 'clickhouse-http', 'table-function'])
+      .exactOptional()
+      .openapi({
+        description:
+          'How PromQL is evaluated on a ClickHouse connection. "clickhouse-http" uses ClickHouse\'s Prometheus HTTP API, which needs ClickHouse 26.6+ with the prometheus_api_v1 handler configured; queries fail with an error when the server does not serve it. "table-function" uses the prometheusQuery table functions. "auto" (the default when omitted) checks the server and prefers the HTTP API. Ignored when the connection is a Prometheus-compatible endpoint.',
+        example: 'auto',
       }),
   })
   .openapi({ required: ['name', 'kind', 'connection', 'from', 'timestampValueExpression'] })
@@ -11134,6 +12421,18 @@ const ClickStackWebhookInputSchema = z
   .openapi({ required: ['name', 'service', 'url'] })
   .openapi('ClickStackWebhookInput')
 
+const ClickStackSilenceAlertRequestSchema = z
+  .object({
+    mutedUntil: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'ISO 8601 timestamp, in the future, until which the alert is silenced.',
+        example: '2026-01-01T00:00:00.000Z',
+      }),
+  })
+  .openapi({ required: ['mutedUntil'] })
+  .openapi('ClickStackSilenceAlertRequest')
+
 const ClickStackValidateWebhookResponseErrorsItemSchema = z
   .object({
     path: z
@@ -11145,7 +12444,7 @@ const ClickStackValidateWebhookResponseErrorsItemSchema = z
   .openapi('ClickStackValidateWebhookResponseErrorsItem')
 
 const ClickStackValidateWebhookResponseNormalizedSchema = z
-  .object({})
+  .looseObject({})
   .openapi('ClickStackValidateWebhookResponseNormalized')
 
 const ClickStackValidateWebhookResponseSchema = z
@@ -12443,6 +13742,74 @@ const ApiKeyHashDataSchema = z
   .openapi({ required: [] })
   .openapi('ApiKeyHashData')
 
+const ByocCustomerAuthorizedAccessSchema = z
+  .object({
+    mode: z
+      .string()
+      .openapi({
+        description:
+          'When ClickHouse personnel may access the infrastructure. Current values: always, never, window. New values may be added over time. When the setting has never been configured this is `always`, the data plane default',
+        example: 'window',
+      }),
+    startTimestamp: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'Start of the access window. ISO-8601. Present only when `mode` is `window`',
+      }),
+    durationSeconds: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          'Length of the access window in seconds, counted from `startTimestamp`. Present only when `mode` is `window`',
+        example: 14400,
+      }),
+    allowed: z
+      .boolean()
+      .openapi({
+        description:
+          'Whether the data plane currently allows ClickHouse personnel access, evaluated at the time of the request',
+      }),
+    windowEndTimestamp: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'End of the current access window. ISO-8601. Present only while access is allowed until a deadline',
+      }),
+  })
+  .openapi({ required: ['mode', 'allowed'] })
+  .openapi('ByocCustomerAuthorizedAccess')
+
+const ByocCustomerAuthorizedAccessPatchRequestSchema = z
+  .object({
+    mode: z
+      .string()
+      .openapi({
+        description:
+          'When ClickHouse personnel may access the infrastructure. Current values: always, never, window. New values may be added over time. `always` allows access, `never` denies it, and `window` allows it during a single time window described by `startTimestamp` and `durationSeconds`',
+        example: 'window',
+      }),
+    startTimestamp: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'Start of the access window. ISO-8601. Required when `mode` is `window`, not allowed otherwise',
+      }),
+    durationSeconds: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          'Length of the access window in seconds, from 1 to 172800 (48 hours). Required when `mode` is `window`, not allowed otherwise',
+        example: 14400,
+      }),
+  })
+  .openapi({ required: ['mode'] })
+  .openapi('ByocCustomerAuthorizedAccessPatchRequest')
+
 const WhoamiOrganizationSchema = z
   .object({
     organizationId: z
@@ -12485,6 +13852,93 @@ const WhoamiApiKeySchema = z
   .openapi('WhoamiApiKey')
 
 const WhoamiSchema = z.xor([WhoamiUserSchema, WhoamiApiKeySchema]).openapi('Whoami')
+
+const NotificationSettingSchema = z
+  .object({
+    type: z
+      .string()
+      .openapi({
+        description:
+          'Notification type the setting applies to, named as in [List notification types](#tag/Notifications/operation/notificationTypesGetList). New types are added over time, so treat this as an open set.',
+        example: 'service_backup_failed',
+      }),
+    resourceType: z
+      .string()
+      .openapi({
+        description:
+          'Kind of resource `resourceId` identifies. Current values: service, organization, clickpipe, postgres. New values may be added over time. [List notification types](#tag/Notifications/operation/notificationTypesGetList) reports the same value for every notification of a given type.',
+        example: 'service',
+      }),
+    resourceId: z
+      .string()
+      .openapi({
+        description:
+          'ID of the resource the setting applies to, of the kind `resourceType` gives. Settings that apply to the organization itself, such as billing notifications, carry the organization ID.',
+      }),
+    channelType: z
+      .string()
+      .openapi({
+        description: "Delivery channel the setting applies to. One of 'ui', 'email'.",
+        example: 'email',
+      }),
+    effect: z
+      .string()
+      .openapi({
+        description:
+          "Whether the member receives this notification on this channel for this resource. One of 'enabled', 'disabled'.",
+        example: 'disabled',
+      }),
+  })
+  .openapi({ required: ['type', 'resourceType', 'resourceId', 'channelType', 'effect'] })
+  .openapi('NotificationSetting')
+
+const NotificationSettingRuleSchema = z
+  .object({
+    effect: z
+      .string()
+      .openapi({
+        description:
+          "What the rule does to the settings it names. One of 'enabled', 'disabled', 'inherit'. 'inherit' removes the setting, so the notification follows the platform default for the member's role again, whoever set it.",
+        example: 'enabled',
+      }),
+    notifications: z
+      .array(z.string())
+      .min(1)
+      .openapi({
+        description:
+          'Notification types the rule applies to, named as in [List notification types](#tag/Notifications/operation/notificationTypesGetList).',
+        example: ['service_backup_failed'],
+      }),
+    resources: z
+      .array(z.string())
+      .min(1)
+      .openapi({
+        description:
+          'IDs of the resources the rule applies to, of the kind each notification type reports as its `resourceType`. Name every ID: there are no wildcards, and a rule covers no resource created afterwards. Notification types that apply to the organization itself, such as billing, take the organization ID.',
+      }),
+    channels: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          "Delivery channels the rule applies to. One of 'ui', 'email'. Omit to apply the rule to every channel.",
+        example: ['ui', 'email'],
+      }),
+  })
+  .openapi({ required: ['effect', 'notifications', 'resources'] })
+  .openapi('NotificationSettingRule')
+
+const MemberNotificationSettingsPatchResponseSchema = z
+  .object({
+    settings: z
+      .array(NotificationSettingSchema)
+      .openapi({
+        description:
+          "The member's settings for what the request addressed, after the change. A setting the request set to 'inherit' is absent, because it no longer exists.",
+      }),
+  })
+  .openapi({ required: ['settings'] })
+  .openapi('MemberNotificationSettingsPatchResponse')
 
 const NotificationTypeSchema = z
   .object({
@@ -12553,6 +14007,29 @@ const NotificationTypeSchema = z
   })
   .openapi('NotificationType')
 
+const PublicPreviewSchema = z
+  .object({
+    id: z
+      .string()
+      .openapi({ description: 'Stable identifier of the preview feature.', example: 'preview-id' }),
+    name: z.string().openapi({ description: 'Name of the preview feature.' }),
+    description: z.string().openapi({ description: 'What the preview feature does.' }),
+    docsUrl: z
+      .string()
+      .openapi({
+        description: 'Link to the documentation of the preview feature.',
+        example: 'https://clickhouse.com/docs',
+      }),
+    enabled: z
+      .boolean()
+      .openapi({ description: 'Whether the preview feature is on for the organization.' }),
+    canToggle: z
+      .boolean()
+      .openapi({ description: 'Whether the caller may switch the preview feature on or off.' }),
+  })
+  .openapi({ required: ['id', 'name', 'description', 'docsUrl', 'enabled', 'canToggle'] })
+  .openapi('PublicPreview')
+
 const OrganizationQuotaSchema = z
   .object({
     quotaCode: z
@@ -12620,13 +14097,19 @@ const ServiceProfileSchema = z
         description:
           "Profile name to pass as `profile` when creating a service (e.g. 'v1-standard-byoc-4').",
       }),
-    cpuCores: z.number().exactOptional().openapi({ description: 'Number of vCPUs per replica.' }),
+    cpuCores: z
+      .number()
+      .exactOptional()
+      .openapi({
+        description:
+          "Number of vCPUs per replica. For v2-default, ignore this value: a Gen 2 service's size is set by the minReplicaMemoryGb and maxReplicaMemoryGb you send when creating or scaling it, not by the profile.",
+      }),
     memoryGi: z
       .number()
       .exactOptional()
       .openapi({
         description:
-          'Memory per replica in GiB. When creating a BYOC service with this profile, minReplicaMemoryGb and maxReplicaMemoryGb must both equal this value.',
+          "Memory per replica in GiB. A BYOC service pinned to this profile must send minReplicaMemoryGb and maxReplicaMemoryGb equal to this value. A BYOC service that scales vertically (no profile, minReplicaMemoryGb lower than maxReplicaMemoryGb) takes both bounds from the memoryGi values in this list. For v2-default, ignore this value: a Gen 2 service's size is set by the minReplicaMemoryGb and maxReplicaMemoryGb you send when creating or scaling it, not by the profile.",
       }),
   })
   .openapi({ required: [] })
@@ -12739,6 +14222,109 @@ const CreditBalancesSchema = z
   .openapi({ required: [] })
   .openapi('CreditBalances')
 
+const InferenceUsageCostMetricSchema = z
+  .object({
+    metric: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Name of the metric: `input`, `output`, `cache_read`, `cache_write_5m`, `cache_write_30m` or `cache_write_1h`. New values can appear.',
+        example: 'cache_write_5m',
+      }),
+    tokensMillions: z
+      .number()
+      .exactOptional()
+      .openapi({
+        description: 'Number of tokens used, in millions. For example, 1.5 means 1,500,000 tokens.',
+      }),
+    pricePerMillionTokensCHC: z
+      .number()
+      .exactOptional()
+      .openapi({
+        description:
+          'Average price per million tokens in ClickHouse Credits (CHCs): `totalCHC` divided by `tokensMillions`. It is an average because one model can have more than one price. Zero when no tokens were used.',
+      }),
+    totalCHC: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Cost of the tokens used in ClickHouse Credits (CHCs).' }),
+  })
+  .openapi({ required: [] })
+  .openapi('InferenceUsageCostMetric')
+
+const InferenceUsageCostRecordSchema = z
+  .object({
+    date: z.iso
+      .date()
+      .exactOptional()
+      .openapi({
+        description: 'Date of the usage. ISO-8601 date, based on the UTC timezone.',
+        example: '2026-10-01',
+      }),
+    provider: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Provider of the model.', example: 'anthropic' }),
+    model: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'ID of the model. This is the raw model ID; `modelName` has the display name.',
+        example: 'claude-opus-4-8',
+      }),
+    modelName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Display name of the model, as the usage page and the usage statement CSV show it.',
+        example: 'Claude Opus 4.8',
+      }),
+    metrics: z
+      .array(InferenceUsageCostMetricSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Usage and cost for each metric that has usage. The costs add up to `totalCHC`.',
+      }),
+    totalCHC: z
+      .number()
+      .exactOptional()
+      .openapi({
+        description:
+          'Total cost of usage in ClickHouse Credits (CHCs) for this model on this date.',
+      }),
+    locked: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'When true, the record is immutable. Unlocked records are subject to change until locked.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('InferenceUsageCostRecord')
+
+const InferenceUsageCostSchema = z
+  .object({
+    grandTotalCHC: z
+      .number()
+      .exactOptional()
+      .openapi({
+        description: 'Grand total cost of AI inference usage in ClickHouse Credits (CHCs).',
+      }),
+    costs: z
+      .array(InferenceUsageCostRecordSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'List of AI inference usage cost records, one per day, provider and model. Empty when the organization has no usage.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('InferenceUsageCost')
+
 const ServiceClickhouseSettingValueSchema = z
   .xor([z.string(), z.int()])
   .openapi({
@@ -12811,6 +14397,19 @@ const ServiceClickhouseSettingsPatchResponseSchema = z
   .openapi({ required: [] })
   .openapi('ServiceClickhouseSettingsPatchResponse')
 
+const ServiceClickhouseSettingDeleteResponseSchema = z
+  .object({
+    warnings: z
+      .array(ServiceClickhouseSettingWarningSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Warnings about how the reset takes effect, such as a ClickHouse server rollout restart. Omitted when the setting was not configured.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('ServiceClickhouseSettingDeleteResponse')
+
 const ServiceClickhouseSettingSchemaEntrySchema = z
   .object({
     name: z
@@ -12839,7 +14438,8 @@ const ServiceClickhouseSettingSchemaEntrySchema = z
       .string()
       .exactOptional()
       .openapi({
-        description: 'Warning message about potential disruptive effects of changing this setting.',
+        description:
+          'Warning message about potential disruptive effects of changing or resetting this setting.',
         example: 'Changing this setting without comprehensive testing can cause instability.',
       }),
     deprecationNotice: z
@@ -13090,7 +14690,7 @@ const PgConfigSchema = z
       .enum(['sync', 'worker', 'io_uring'])
       .exactOptional()
       .openapi({
-        description: 'Selects the method used to perform asynchronous I/O.',
+        description: 'Selects the method used to perform asynchronous I/O. Postgres 18 and later.',
         externalDocs: { url: 'https://postgresqlco.nf/doc/en/param/io_method/' },
         example: 'worker',
       }),
@@ -13098,9 +14698,28 @@ const PgConfigSchema = z
       .union([z.string(), z.int().min(1).max(32)])
       .exactOptional()
       .openapi({
-        description: 'Number of I/O worker processes used when io_method is worker.',
+        description:
+          'Number of I/O worker processes used when io_method is worker. Postgres 18 only.',
         externalDocs: { url: 'https://postgresqlco.nf/doc/en/param/io_workers/' },
         example: 3,
+      }),
+    io_min_workers: z
+      .union([z.string(), z.int().min(1).max(32)])
+      .exactOptional()
+      .openapi({
+        description:
+          'Minimum number of I/O worker processes kept running when io_method is worker. Postgres 19 and later.',
+        externalDocs: { url: 'https://postgresqlco.nf/doc/en/param/io_min_workers/' },
+        example: 2,
+      }),
+    io_max_workers: z
+      .union([z.string(), z.int().min(1).max(32)])
+      .exactOptional()
+      .openapi({
+        description:
+          'Maximum number of I/O worker processes started when io_method is worker. Postgres 19 and later.',
+        externalDocs: { url: 'https://postgresqlco.nf/doc/en/param/io_max_workers/' },
+        example: 8,
       }),
     bgwriter_delay: z
       .union([z.string(), z.int().min(10).max(10000)])
@@ -13282,6 +14901,15 @@ const PgConfigSchema = z
         },
         example: 4,
       }),
+    max_repack_replication_slots: z
+      .union([z.string(), z.int().min(0).max(262143)])
+      .exactOptional()
+      .openapi({
+        description:
+          'Replication slots reserved for REPACK CONCURRENTLY, separate from max_replication_slots. Postgres 19 and later.',
+        externalDocs: { url: 'https://postgresqlco.nf/doc/en/param/max_repack_replication_slots/' },
+        example: 5,
+      }),
     max_sync_workers_per_subscription: z
       .union([z.string(), z.int().min(0).max(262143)])
       .exactOptional()
@@ -13308,6 +14936,17 @@ const PgConfigSchema = z
           'Maximum number of autovacuum worker processes that can run at the same time. Workers share a single cost-limit budget, so raising this alone may not speed up vacuuming.',
         externalDocs: { url: 'https://postgresqlco.nf/doc/en/param/autovacuum_max_workers/' },
         example: 8,
+      }),
+    autovacuum_max_parallel_workers: z
+      .union([z.string(), z.int().min(0).max(1024)])
+      .exactOptional()
+      .openapi({
+        description:
+          'Maximum number of parallel workers a single autovacuum worker can use. 0 (the default) turns parallel autovacuum off. Postgres 19 and later.',
+        externalDocs: {
+          url: 'https://postgresqlco.nf/doc/en/param/autovacuum_max_parallel_workers/',
+        },
+        example: 2,
       }),
     autovacuum_naptime: z
       .union([z.string(), z.int().min(1)])
@@ -13632,6 +15271,26 @@ const PgSizeSchema = z
     'c4d-standard-lssd-96',
     'c4d-standard-lssd-192',
     'c4d-standard-lssd-384',
+    'c3-standard-lssd-4',
+    'c3-standard-lssd-8',
+    'c3-standard-lssd-22',
+    'c3-standard-lssd-44',
+    'c3-standard-lssd-88',
+    'c3-standard-lssd-176',
+    'c3d-highmem-lssd-8',
+    'c3d-highmem-lssd-16',
+    'c3d-highmem-lssd-30',
+    'c3d-highmem-lssd-60',
+    'c3d-highmem-lssd-90',
+    'c3d-highmem-lssd-180',
+    'c3d-highmem-lssd-360',
+    'c3d-standard-lssd-8',
+    'c3d-standard-lssd-16',
+    'c3d-standard-lssd-30',
+    'c3d-standard-lssd-60',
+    'c3d-standard-lssd-90',
+    'c3d-standard-lssd-180',
+    'c3d-standard-lssd-360',
     'z3-highmem-highlssd-8',
     'z3-highmem-highlssd-16',
     'z3-highmem-highlssd-22',
@@ -13643,6 +15302,35 @@ const PgSizeSchema = z
     'z3-highmem-standardlssd-44',
     'z3-highmem-standardlssd-88',
     'z3-highmem-standardlssd-176',
+    'n2-highmem-2xlssd-4',
+    'n2-highmem-2xlssd-8',
+    'n2-highmem-2xlssd-16',
+    'n2-highmem-2xlssd-32',
+    'n2-highmem-2xlssd-48',
+    'n2-highmem-2xlssd-64',
+    'n2-highmem-2xlssd-96',
+    'n2-standard-2xlssd-4',
+    'n2-standard-2xlssd-8',
+    'n2-standard-2xlssd-16',
+    'n2-standard-2xlssd-32',
+    'n2-standard-2xlssd-48',
+    'n2-standard-2xlssd-64',
+    'n2-standard-2xlssd-96',
+    'n2-highmem-4xlssd-2',
+    'n2-highmem-4xlssd-4',
+    'n2-highmem-4xlssd-8',
+    'n2-highmem-4xlssd-16',
+    'n2-highmem-4xlssd-32',
+    'n2-highmem-4xlssd-48',
+    'n2-highmem-8xlssd-2',
+    'n2-highmem-8xlssd-4',
+    'n2-highmem-8xlssd-8',
+    'n2-highmem-8xlssd-16',
+    'n2-highmem-8xlssd-32',
+    'n2-highmem-16xlssd-2',
+    'n2-highmem-16xlssd-4',
+    'n2-highmem-16xlssd-8',
+    'n2-highmem-16xlssd-16',
   ])
   .openapi({ title: 'VM size', description: 'The VM size for a Postgres service.' })
   .openapi('PgSize')
@@ -13651,9 +15339,17 @@ const PgHaTypeSchema = z
   .enum(['none', 'async', 'sync'])
   .openapi({
     description:
-      'Type of high availability: “none” for no replication, “async” for asynchronous replication to a single standby, and “sync” for synchronous replication to two standbys.',
+      'Type of high availability: “none” for no replication, “async” for asynchronous replication to a single standby, and “sync” for synchronous replication to the number of standbys in `standbyCount` (two by default).',
   })
   .openapi('PgHaType')
+
+const PgStandbyCountSchema = z
+  .union([z.literal(0), z.literal(1), z.literal(2)])
+  .openapi({
+    description:
+      'Number of hot standby instances. Accepted values and defaults depend on `haType`:\n- “none”: 0 (default)\n- “async”: 1 (default)\n- “sync”: 1, or 2 (default)\n\nWhen `haType` is updated without `standbyCount`, the default for the new `haType` applies.',
+  })
+  .openapi('PgStandbyCount')
 
 const PgProviderSchema = z
   .enum(['aws', 'gcp'])
@@ -13666,7 +15362,7 @@ const PgRegionSchema = z
   .openapi('PgRegion')
 
 const PgVersionSchema = z
-  .enum(['18', '17'])
+  .enum(['19', '18', '17'])
   .openapi({ title: 'Postgres major version' })
   .openapi('PgVersion')
 
@@ -13679,6 +15375,15 @@ const PgTagsSchema = z
       'Tags associated with the Postgres service. Tag keys starting with “chc_” are reserved for internal use.',
   })
   .openapi('PgTags')
+
+const PgDeletionProtectionPropertySchema = z
+  .boolean()
+  .openapi({
+    title: 'Postgres Service Deletion Protection',
+    description:
+      'When true, the service cannot be deleted until deletion protection is turned off. Only available for organizations with deletion protection enabled.',
+  })
+  .openapi('PgDeletionProtectionProperty')
 
 const PgNamePropertySchema = z
   .string()
@@ -13733,6 +15438,7 @@ const BasePostgresServiceSchema = z
     postgresVersion: PgVersionSchema.exactOptional(),
     size: PgSizeSchema.exactOptional(),
     haType: PgHaTypeSchema.exactOptional(),
+    standbyCount: PgStandbyCountSchema.exactOptional(),
     tags: PgTagsSchema.exactOptional(),
   })
   .openapi({ required: [] })
@@ -13746,6 +15452,7 @@ const PostgresServiceSchema = z
     postgresVersion: PgVersionSchema.exactOptional(),
     size: PgSizeSchema.exactOptional(),
     haType: PgHaTypeSchema.exactOptional(),
+    standbyCount: PgStandbyCountSchema.exactOptional(),
     tags: PgTagsSchema.exactOptional(),
     ipAccessList: z
       .array(PostgresIpAccessListEntrySchema)
@@ -13781,6 +15488,7 @@ const PostgresServiceSchema = z
       .string()
       .exactOptional()
       .openapi({ description: 'Hostname for the Postgres service' }),
+    deletionProtection: PgDeletionProtectionPropertySchema.exactOptional(),
     earliestRestoreTime: z.iso
       .datetime({ offset: true })
       .exactOptional()
@@ -13800,6 +15508,7 @@ const PostgresServicePostRequestSchema = z
     postgresVersion: PgVersionSchema.exactOptional(),
     size: PgSizeSchema,
     haType: PgHaTypeSchema.exactOptional(),
+    standbyCount: PgStandbyCountSchema.exactOptional(),
     tags: PgTagsSchema.exactOptional(),
     ipAccessList: z
       .array(PostgresIpAccessListEntrySchema)
@@ -13820,7 +15529,9 @@ const PostgresServicePatchRequestSchema = z
     name: PgNamePropertySchema.exactOptional(),
     size: PgSizeSchema.exactOptional(),
     haType: PgHaTypeSchema.exactOptional(),
+    standbyCount: PgStandbyCountSchema.exactOptional(),
     tags: PgTagsSchema.exactOptional(),
+    deletionProtection: PgDeletionProtectionPropertySchema.exactOptional(),
   })
   .openapi({ required: [] })
   .openapi('PostgresServicePatchRequest')
@@ -13906,11 +15617,13 @@ const PostgresServiceListItemSchema = z
     postgresVersion: PgVersionSchema.exactOptional(),
     size: PgSizeSchema.exactOptional(),
     haType: PgHaTypeSchema.exactOptional(),
+    standbyCount: PgStandbyCountSchema.exactOptional(),
     tags: PgTagsSchema.exactOptional(),
     id: PgIdPropertySchema.exactOptional(),
     state: PgStatePropertySchema.exactOptional(),
     createdAt: PgCreatedAtPropertySchema.exactOptional(),
     isPrimary: PgIsPrimaryPropertySchema.exactOptional(),
+    deletionProtection: PgDeletionProtectionPropertySchema.exactOptional(),
   })
   .openapi({ required: [] })
   .openapi('PostgresServiceListItem')
@@ -13954,6 +15667,155 @@ const PostgresInstanceUpdateConfigResponseSchema = z
   })
   .openapi({ required: ['pgConfig', 'pgBouncerConfig'] })
   .openapi('PostgresInstanceUpdateConfigResponse')
+
+const PostgresPrivateEndpointVpcEndpointSchema = z
+  .object({
+    vpcEndpointId: z
+      .string()
+      .regex(/^vpce-[0-9a-f]{17}$/)
+      .openapi({
+        description: 'ID of the AWS VPC endpoint that is allowed to connect.',
+        example: 'vpce-0123456789abcdef0',
+      }),
+    description: z
+      .string()
+      .max(255)
+      .exactOptional()
+      .openapi({
+        description: 'Optional description of the VPC endpoint.',
+        example: 'Production VPC',
+      }),
+  })
+  .openapi({ required: ['vpcEndpointId'] })
+  .openapi('PostgresPrivateEndpointVpcEndpoint')
+
+const PostgresPrivateEndpointPortSchema = z
+  .object({
+    port: z.int().openapi({ description: 'Port exposed by the endpoint service.', example: 5432 }),
+    targetPort: z
+      .int()
+      .openapi({ description: 'Port on the Postgres service it forwards to.', example: 5432 }),
+  })
+  .openapi({ required: ['port', 'targetPort'] })
+  .openapi('PostgresPrivateEndpointPort')
+
+const PostgresPrivateEndpointSchema = z
+  .object({
+    state: z
+      .string()
+      .openapi({
+        description:
+          "State of the private endpoint service: one of 'creating', 'available', 'deleting'. More states may be added. It is `creating` for about 5 to 10 minutes after creation, then `available`.",
+        example: 'available',
+      }),
+    endpointServiceName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Name of the AWS endpoint service. Use it as the service name when creating a VPC endpoint. Omitted until the service is created.',
+        example: 'com.amazonaws.vpce.us-east-1.vpce-svc-0123456789abcdef0',
+      }),
+    endpointServiceId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'ID of the AWS endpoint service. Omitted until the service is created.',
+        example: 'vpce-svc-0123456789abcdef0',
+      }),
+    privateHostname: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Hostname that resolves to the Postgres service from an approved VPC endpoint. Omitted until the service is available.',
+      }),
+    privateDnsName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Private DNS name of the endpoint service. Omitted until it is assigned.',
+      }),
+    privateDnsVerificationState: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Verification state of the private DNS name. Omitted until it is assigned.',
+      }),
+    ipAddressType: z
+      .string()
+      .openapi({ description: 'IP address type of the endpoint service.', example: 'dual' }),
+    ports: z
+      .array(PostgresPrivateEndpointPortSchema)
+      .openapi({ description: 'Ports the endpoint service forwards.' }),
+    supportedRegions: z
+      .array(z.string())
+      .openapi({
+        description:
+          'AWS region IDs, other than the service region, from which VPC endpoints can connect, such as `us-west-2`. The service region is always supported and must not be listed. Requires cross-region private endpoints to be enabled for the organization.',
+        example: ['us-west-2'],
+      }),
+    allowedVpcEndpoints: z
+      .array(PostgresPrivateEndpointVpcEndpointSchema)
+      .openapi({ description: 'VPC endpoints approved to connect.' }),
+  })
+  .openapi({
+    required: ['state', 'ipAddressType', 'ports', 'supportedRegions', 'allowedVpcEndpoints'],
+  })
+  .openapi('PostgresPrivateEndpoint')
+
+const PostgresPrivateEndpointPostRequestSchema = z
+  .object({
+    supportedRegions: z
+      .array(z.string())
+      .superRefine((items, ctx) => {
+        const seen = new Map()
+        for (const [i, val] of items.entries()) {
+          const key = JSON.stringify(val)
+          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+          else seen.set(key, i)
+        }
+      })
+      .exactOptional()
+      .openapi({
+        description:
+          'AWS region IDs, other than the service region, from which VPC endpoints can connect, such as `us-west-2`. The service region is always supported and must not be listed. Requires cross-region private endpoints to be enabled for the organization.',
+        example: ['us-west-2'],
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('PostgresPrivateEndpointPostRequest')
+
+const PostgresPrivateEndpointPatchRequestSchema = z
+  .object({
+    allowedVpcEndpoints: z
+      .array(PostgresPrivateEndpointVpcEndpointSchema)
+      .max(50)
+      .exactOptional()
+      .openapi({
+        description:
+          'Full replacement of the approved VPC endpoints: endpoints not listed are no longer allowed to connect. Each endpoint ID must be unique.',
+        example: [{ vpcEndpointId: 'vpce-0123456789abcdef0', description: 'Production VPC' }],
+      }),
+    supportedRegions: z
+      .array(z.string())
+      .superRefine((items, ctx) => {
+        const seen = new Map()
+        for (const [i, val] of items.entries()) {
+          const key = JSON.stringify(val)
+          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+          else seen.set(key, i)
+        }
+      })
+      .exactOptional()
+      .openapi({
+        description:
+          'Full replacement of the supported regions. AWS region IDs, other than the service region, from which VPC endpoints can connect, such as `us-west-2`. The service region is always supported and must not be listed. Requires cross-region private endpoints to be enabled for the organization.',
+        example: ['us-west-2'],
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('PostgresPrivateEndpointPatchRequest')
 
 const PostgresBackupSchema = z
   .object({
@@ -14068,19 +15930,19 @@ const PostgresSlowQueryPatternSchema = z
       .int()
       .openapi({ description: 'Total execution time across all calls, in microseconds.' }),
     avgDurationUs: z
-      .int()
+      .number()
       .openapi({ description: 'Average execution time per call, in microseconds.' }),
     maxDurationUs: z
       .int()
       .openapi({ description: 'Maximum execution time of any call, in microseconds.' }),
     p50DurationUs: z
-      .int()
+      .number()
       .openapi({ description: '50th percentile execution time, in microseconds.' }),
     p95DurationUs: z
-      .int()
+      .number()
       .openapi({ description: '95th percentile execution time, in microseconds.' }),
     p99DurationUs: z
-      .int()
+      .number()
       .openapi({ description: '99th percentile execution time, in microseconds.' }),
     totalRows: z
       .int()
@@ -14294,6 +16156,162 @@ const PostgresLogEntrySchema = z
   .openapi({ required: ['timestamp', 'severity', 'body'] })
   .openapi('PostgresLogEntry')
 
+const PostgresBlockingQuerySchema = z
+  .object({
+    database: z.string().openapi({ description: 'Database of the waiting sessions.' }),
+    blockedQueryId: z
+      .string()
+      .openapi({
+        description:
+          'Query ID of the waiting statement, as in slow query patterns. Empty when Postgres had none yet; the group is then a single waiting session.',
+      }),
+    blockedQuery: z
+      .string()
+      .openapi({
+        description:
+          'Normalized text of the waiting statement from Query Insights. Empty when no text is available.',
+      }),
+    blockedUsers: z
+      .array(z.string())
+      .openapi({ description: 'Database users of the waiting sessions (up to 10).' }),
+    blockedApps: z
+      .array(z.string())
+      .openapi({
+        description: 'Non-empty `application_name` values of the waiting sessions (up to 10).',
+      }),
+    blockedPids: z
+      .array(z.int())
+      .openapi({
+        description: 'Process IDs of the waiting sessions, most recently seen first (up to 10).',
+      }),
+    lockType: z
+      .string()
+      .openapi({
+        description:
+          'Postgres lock type waited on at the latest sample (for example, relation, tuple, transactionid, advisory).',
+        example: 'transactionid',
+      }),
+    blockedMode: z
+      .string()
+      .openapi({
+        description:
+          'Lock mode requested by the waiting session at the latest sample (for example, ShareLock).',
+        example: 'ShareLock',
+      }),
+    blockingDatabase: z
+      .string()
+      .openapi({
+        description: 'Database of the blocking session. Empty for a prepared transaction.',
+      }),
+    blockingQueryId: z
+      .string()
+      .openapi({
+        description:
+          'Query ID of the blocking statement. Empty when the blocker had none; the group is then a single blocking session.',
+      }),
+    blockingQuery: z
+      .string()
+      .openapi({
+        description:
+          'Normalized text of the blocking statement from Query Insights. Empty when no text is available.',
+      }),
+    blockingUsers: z
+      .array(z.string())
+      .openapi({ description: 'Database users of the blocking sessions (up to 10).' }),
+    blockingApps: z
+      .array(z.string())
+      .openapi({
+        description: 'Non-empty `application_name` values of the blocking sessions (up to 10).',
+      }),
+    blockingPids: z
+      .array(z.int())
+      .openapi({
+        description:
+          'Process IDs of the blocking sessions, most recently seen first (up to 10). A prepared transaction reports 0.',
+      }),
+    blockingPrepared: z
+      .boolean()
+      .openapi({
+        description: 'True when the blocker is a prepared transaction, which has no session.',
+      }),
+    blockingInternal: z
+      .boolean()
+      .openapi({
+        description:
+          'True when the blocker is a session the service uses internally, for example for monitoring or replication. Its query text is not returned.',
+      }),
+    latestBlockingState: z
+      .string()
+      .openapi({
+        description:
+          'State of the blocking session at the latest sample (for example, active, idle in transaction).',
+        example: 'idle in transaction',
+      }),
+    latestBlockingXactSeconds: z
+      .number()
+      .nullable()
+      .openapi({
+        description:
+          'Age of the blocking transaction at the latest sample, in seconds. `null` when not reported, as for a prepared transaction.',
+      }),
+    latestBlockingBackendType: z
+      .string()
+      .openapi({
+        description:
+          'Postgres backend type of the blocker at the latest sample (for example, client backend, autovacuum worker).',
+        example: 'client backend',
+      }),
+    blockingSeenWaiting: z
+      .boolean()
+      .openapi({
+        description: 'True when the blocker was itself waiting on a lock in at least one sample.',
+      }),
+    sessions: z.int().openapi({ description: 'Number of distinct waiting sessions in the group.' }),
+    samples: z.int().openapi({ description: 'Number of samples in which the group was seen.' }),
+    longestWaitSeconds: z
+      .number()
+      .nullable()
+      .openapi({
+        description:
+          'Longest observed wait of a waiting session, in seconds. `null` when no sample reported how long the session had waited.',
+      }),
+    lastSeen: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'Time of the latest sample (RFC 3339).',
+        example: '2026-04-22T14:06:00Z',
+      }),
+  })
+  .openapi({
+    required: [
+      'database',
+      'blockedQueryId',
+      'blockedQuery',
+      'blockedUsers',
+      'blockedApps',
+      'blockedPids',
+      'lockType',
+      'blockedMode',
+      'blockingDatabase',
+      'blockingQueryId',
+      'blockingQuery',
+      'blockingUsers',
+      'blockingApps',
+      'blockingPids',
+      'blockingPrepared',
+      'blockingInternal',
+      'latestBlockingState',
+      'latestBlockingXactSeconds',
+      'latestBlockingBackendType',
+      'blockingSeenWaiting',
+      'sessions',
+      'samples',
+      'longestWaitSeconds',
+      'lastSeen',
+    ],
+  })
+  .openapi('PostgresBlockingQuery')
+
 const UpgradeWindowSchema = z
   .object({
     weekday: z
@@ -14344,6 +16362,138 @@ const UpgradeWindowPutRequestSchema = z
   .openapi({ required: ['weekday', 'startHourUtc'] })
   .openapi('UpgradeWindowPutRequest')
 
+const JwtProviderSchema = z
+  .object({
+    name: z
+      .string()
+      .regex(/^[a-z0-9-]{1,59}$/)
+      .max(59)
+      .openapi({
+        description:
+          'Name of the JWT provider, unique within the service. Lowercase letters, digits and hyphens, at most 59 characters. Cannot be one of, or start with one of followed by a hyphen: `cloud`, `clickhouse`, `ch`, `internal`, `system`, `default`.',
+        example: 'my-oidc-provider',
+      }),
+    issuer: z
+      .string()
+      .max(256)
+      .openapi({
+        description:
+          'Expected `iss` claim of the tokens. Printable ASCII without whitespace, at most 256 characters.',
+        example: 'https://auth.example.com',
+      }),
+    audience: z
+      .string()
+      .max(256)
+      .openapi({
+        description:
+          'Expected `aud` claim of the tokens. Printable ASCII without whitespace, at most 256 characters.',
+        example: 'my-clickhouse-service',
+      }),
+    jwksUrl: z
+      .string()
+      .max(256)
+      .openapi({
+        description:
+          'Public `https://` URL of the JSON Web Key Set used to verify token signatures, at most 256 characters. The key set must contain at least one supported signing key: RS256 (RSA), or on ClickHouse 26.8 and later also ES256, ES384 or ES512 (EC); it is fetched and validated when the provider is created or updated.',
+        example: 'https://auth.example.com/.well-known/jwks.json',
+      }),
+    rolesClaim: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Name of the token claim that lists the ClickHouse roles to grant the user. Printable ASCII without whitespace, at most 256 characters, and not a registered JWT claim (`iss`, `sub`, `aud`, `exp`, `nbf`, `iat`, `jti`). Absent when no roles claim is configured.',
+        example: 'clickhouse:roles',
+      }),
+  })
+  .openapi({ required: ['name', 'issuer', 'audience', 'jwksUrl'] })
+  .openapi('JwtProvider')
+
+const JwtProviderPostRequestSchema = z
+  .object({
+    name: z
+      .string()
+      .regex(/^[a-z0-9-]{1,59}$/)
+      .max(59)
+      .openapi({
+        description:
+          'Name of the JWT provider, unique within the service. Lowercase letters, digits and hyphens, at most 59 characters. Cannot be one of, or start with one of followed by a hyphen: `cloud`, `clickhouse`, `ch`, `internal`, `system`, `default`.',
+        example: 'my-oidc-provider',
+      }),
+    issuer: z
+      .string()
+      .max(256)
+      .openapi({
+        description:
+          'Expected `iss` claim of the tokens. Printable ASCII without whitespace, at most 256 characters.',
+        example: 'https://auth.example.com',
+      }),
+    audience: z
+      .string()
+      .max(256)
+      .openapi({
+        description:
+          'Expected `aud` claim of the tokens. Printable ASCII without whitespace, at most 256 characters.',
+        example: 'my-clickhouse-service',
+      }),
+    jwksUrl: z
+      .string()
+      .max(256)
+      .openapi({
+        description:
+          'Public `https://` URL of the JSON Web Key Set used to verify token signatures, at most 256 characters. The key set must contain at least one supported signing key: RS256 (RSA), or on ClickHouse 26.8 and later also ES256, ES384 or ES512 (EC); it is fetched and validated when the provider is created or updated.',
+        example: 'https://auth.example.com/.well-known/jwks.json',
+      }),
+    rolesClaim: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Name of the token claim that lists the ClickHouse roles to grant the user. Printable ASCII without whitespace, at most 256 characters, and not a registered JWT claim (`iss`, `sub`, `aud`, `exp`, `nbf`, `iat`, `jti`). Omit to configure no roles claim.',
+        example: 'clickhouse:roles',
+      }),
+  })
+  .openapi({ required: ['name', 'issuer', 'audience', 'jwksUrl'] })
+  .openapi('JwtProviderPostRequest')
+
+const JwtProviderPutRequestSchema = z
+  .object({
+    issuer: z
+      .string()
+      .max(256)
+      .openapi({
+        description:
+          'Expected `iss` claim of the tokens. Printable ASCII without whitespace, at most 256 characters.',
+        example: 'https://auth.example.com',
+      }),
+    audience: z
+      .string()
+      .max(256)
+      .openapi({
+        description:
+          'Expected `aud` claim of the tokens. Printable ASCII without whitespace, at most 256 characters.',
+        example: 'my-clickhouse-service',
+      }),
+    jwksUrl: z
+      .string()
+      .max(256)
+      .openapi({
+        description:
+          'Public `https://` URL of the JSON Web Key Set used to verify token signatures, at most 256 characters. The key set must contain at least one supported signing key: RS256 (RSA), or on ClickHouse 26.8 and later also ES256, ES384 or ES512 (EC); it is fetched and validated when the provider is created or updated.',
+        example: 'https://auth.example.com/.well-known/jwks.json',
+      }),
+    rolesClaim: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Name of the token claim that lists the ClickHouse roles to grant the user. Printable ASCII without whitespace, at most 256 characters, and not a registered JWT claim (`iss`, `sub`, `aud`, `exp`, `nbf`, `iat`, `jti`). The request replaces the whole provider configuration, so omitting this field removes an existing roles claim.',
+        example: 'clickhouse:roles',
+      }),
+  })
+  .openapi({ required: ['issuer', 'audience', 'jwksUrl'] })
+  .openapi('JwtProviderPutRequest')
+
 const OrganizationPatchRequestSchema = z
   .object({
     name: z.string().exactOptional().openapi({ description: 'Name of the organization.' }),
@@ -14358,6 +16508,13 @@ const OrganizationPatchRequestSchema = z
   })
   .openapi({ required: [] })
   .openapi('OrganizationPatchRequest')
+
+const PublicPreviewPatchRequestSchema = z
+  .object({
+    enabled: z.boolean().openapi({ description: 'Whether the preview feature should be on.' }),
+  })
+  .openapi({ required: ['enabled'] })
+  .openapi('PublicPreviewPatchRequest')
 
 const InstanceServiceQueryApiEndpointsPostRequestSchema = z
   .object({
@@ -14577,7 +16734,7 @@ const ServicePostRequestSchema = z
       .exactOptional()
       .openapi({
         description:
-          'This is the ID returned after setting up a region for Bring Your Own Cloud (BYOC). When the byocId parameter is specified, the minReplicaMemoryGb and the maxReplicaGb parameters are required too, with values included among the following sizes: 48, 116, 172, 232.',
+          "This is the ID returned after setting up a region for Bring Your Own Cloud (BYOC). When the byocId parameter is specified, the minReplicaMemoryGb and maxReplicaMemoryGb parameters are required too. With a BYOC profile, both must equal that profile's memory size. Without a profile, equal values must be one of the following sizes: 48, 116, 172, 232. When BYOC vertical autoscaling is enabled for the organization (contact support), a minReplicaMemoryGb lower than maxReplicaMemoryGb, without a profile, creates a service that scales vertically between the two. Both values must be memory sizes listed by the serviceProfiles endpoint, and the service reports the profile 'v1-default'.",
       }),
     hasTransparentDataEncryption: z
       .boolean()
@@ -14595,7 +16752,7 @@ const ServicePostRequestSchema = z
       .exactOptional()
       .openapi({
         description:
-          "Custom instance profile. Only available for ENTERPRISE and BYOC organization tiers. Standard values: 'v1-default', 'v1-highmem-xs', 'v1-highmem-s', 'v1-highmem-m', 'v1-highmem-l', 'v1-highmem-xl'. BYOC services may instead use a dynamic BYOC profile configured for their infrastructure (e.g. 'v1-standard-byoc-4'); it requires byocId, and minReplicaMemoryGb and maxReplicaMemoryGb must both equal the profile's memory size. Use the serviceProfiles endpoint to list the profiles available to the organization.",
+          "Custom instance profile. Profiles other than v1-default and v2-default are only available for ENTERPRISE and BYOC organization tiers. Standard values: 'v1-default', 'v2-default', 'v1-highmem-xs', 'v1-highmem-s', 'v1-highmem-m', 'v1-highmem-l', 'v1-highmem-xl'. 'v2-default' is Gen 2 hardware. BYOC services may instead use a dynamic BYOC profile configured for their infrastructure (e.g. 'v1-standard-byoc-4'); it requires byocId, and minReplicaMemoryGb and maxReplicaMemoryGb must both equal the profile's memory size. A BYOC service that scales vertically within a memory range has no BYOC profile and reports 'v1-default'. Use the serviceProfiles endpoint to list the profiles available to the organization. Creating a 'v2-default' service needs Gen 2 enabled for the organization and included in its plan (SCALE or ENTERPRISE) or settings, an AWS region where Gen 2 is available, and no byocId (BYOC infrastructure is not supported). Gen 2 services use a fixed size: minReplicaMemoryGb must equal maxReplicaMemoryGb and the replica count is fixed (numReplicas, or equal minReplicas and maxReplicas). Gen 2 services cannot idle: send idleScaling as false, since it defaults to true.",
       }),
     complianceType: z
       .enum(['hipaa', 'pci'])
@@ -14611,6 +16768,13 @@ const ServicePostRequestSchema = z
       .exactOptional()
       .openapi({
         description: 'Enables the underlying infra for collecting core dumps. Default is enabled.',
+      }),
+    deletionProtection: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'When true, the service cannot be deleted: the delete endpoint returns 409 until deletion protection is turned off. Default is false. Setting it to true requires the `control-plane:service:delete` permission granted for all services in the organization (not service by service), in addition to `control-plane:organization:create-service`.',
       }),
   })
   .openapi({ required: ['name', 'provider', 'region', 'ipAccessList'] })
@@ -14650,6 +16814,13 @@ const ServicePatchRequestSchema = z
       .exactOptional()
       .openapi({
         description: 'If true, the underlying infra is enabled for collecting core dumps.',
+      }),
+    deletionProtection: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          "When true, the service cannot be deleted: the delete endpoint returns 409 until deletion protection is turned off. Changing it in either direction requires the `control-plane:service:delete` permission on the service, in addition to `control-plane:service:manage`; sending the current value changes nothing and needs no extra permission. ClickStack services can't be updated through the API; manage their deletion protection in the console.",
       }),
   })
   .openapi({ required: [] })
@@ -14697,7 +16868,7 @@ const ServiceScalingPatchRequestSchema = z
       .exactOptional()
       .openapi({
         description:
-          "Number of replicas for the service. The number of replicas must be between 2 and 50 for the first service in a warehouse. Services that are created in an existing warehouse can have a number of replicas as low as 1. Further restrictions may apply based on your organization's tier and its per-warehouse replica limit. It defaults to 1 for the BASIC tier and 3 for the SCALE and ENTERPRISE tiers.",
+          "Number of replicas for the service. The number of replicas must be between 1 and 50. Further restrictions may apply based on your organization's tier and its per-warehouse replica limit. It defaults to 1 for the BASIC tier and 3 for the SCALE and ENTERPRISE tiers.",
         example: 3,
       }),
     idleScaling: z
@@ -14860,7 +17031,7 @@ const ServiceScalingPatchResponseSchema = z
       .exactOptional()
       .openapi({
         description:
-          "Number of replicas for the service. The number of replicas must be between 2 and 50 for the first service in a warehouse. Services that are created in an existing warehouse can have a number of replicas as low as 1. Further restrictions may apply based on your organization's tier and its per-warehouse replica limit. It defaults to 1 for the BASIC tier and 3 for the SCALE and ENTERPRISE tiers. Present only when the service uses vertical autoscaling. For horizontal autoscaling, use minReplicas and maxReplicas instead.",
+          "Number of replicas for the service. The number of replicas must be between 1 and 50. Further restrictions may apply based on your organization's tier and its per-warehouse replica limit. It defaults to 1 for the BASIC tier and 3 for the SCALE and ENTERPRISE tiers. Present only when the service uses vertical autoscaling. For horizontal autoscaling, use minReplicas and maxReplicas instead.",
         example: 3,
       }),
     minReplicas: z
@@ -14971,7 +17142,7 @@ const ServiceScalingPatchResponseSchema = z
       .exactOptional()
       .openapi({
         description:
-          'This is the ID returned after setting up a region for Bring Your Own Cloud (BYOC). When the byocId parameter is specified, the minReplicaMemoryGb and the maxReplicaGb parameters are required too, with values included among the following sizes: 48, 116, 172, 232.',
+          "This is the ID returned after setting up a region for Bring Your Own Cloud (BYOC). When the byocId parameter is specified, the minReplicaMemoryGb and maxReplicaMemoryGb parameters are required too. With a BYOC profile, both must equal that profile's memory size. Without a profile, equal values must be one of the following sizes: 48, 116, 172, 232. When BYOC vertical autoscaling is enabled for the organization (contact support), a minReplicaMemoryGb lower than maxReplicaMemoryGb, without a profile, creates a service that scales vertically between the two. Both values must be memory sizes listed by the serviceProfiles endpoint, and the service reports the profile 'v1-default'.",
       }),
     hasTransparentDataEncryption: z
       .boolean()
@@ -14985,7 +17156,7 @@ const ServiceScalingPatchResponseSchema = z
       .exactOptional()
       .openapi({
         description:
-          "Custom instance profile. Only available for ENTERPRISE and BYOC organization tiers. Standard values: 'v1-default', 'v1-highmem-xs', 'v1-highmem-s', 'v1-highmem-m', 'v1-highmem-l', 'v1-highmem-xl'. BYOC services may instead use a dynamic BYOC profile configured for their infrastructure (e.g. 'v1-standard-byoc-4'); it requires byocId, and minReplicaMemoryGb and maxReplicaMemoryGb must both equal the profile's memory size. Use the serviceProfiles endpoint to list the profiles available to the organization.",
+          "Custom instance profile. Profiles other than v1-default and v2-default are only available for ENTERPRISE and BYOC organization tiers. Standard values: 'v1-default', 'v2-default', 'v1-highmem-xs', 'v1-highmem-s', 'v1-highmem-m', 'v1-highmem-l', 'v1-highmem-xl'. 'v2-default' is Gen 2 hardware. BYOC services may instead use a dynamic BYOC profile configured for their infrastructure (e.g. 'v1-standard-byoc-4'); it requires byocId, and minReplicaMemoryGb and maxReplicaMemoryGb must both equal the profile's memory size. A BYOC service that scales vertically within a memory range has no BYOC profile and reports 'v1-default'. Use the serviceProfiles endpoint to list the profiles available to the organization.",
       }),
     transparentDataEncryptionKeyId: z
       .string()
@@ -15016,6 +17187,13 @@ const ServiceScalingPatchResponseSchema = z
       .openapi({
         description:
           "True if the service's underline infra is enabled for collecting core dumps. This is an experimental feature",
+      }),
+    deletionProtection: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'When true, the service cannot be deleted: the delete endpoint returns 409 until deletion protection is turned off.',
       }),
     scalingSchedule: ScalingScheduleSchema.exactOptional(),
     currentScaling: CurrentScalingSchema,
@@ -15062,7 +17240,7 @@ const ServiceReplicaScalingPatchRequestSchema = z
       .exactOptional()
       .openapi({
         description:
-          'Fixed replica count for vertical autoscaling (autoscalingMode "vertical"). Mutually exclusive with minReplicas/maxReplicas. When switching to vertical (autoscalingMode "vertical") with numReplicas and no memory, the service\'s stored baseline per-replica memory is kept as the new vertical range. Please contact support to enable adjustment of numReplicas.',
+          'Fixed replica count for vertical autoscaling (autoscalingMode "vertical"). Mutually exclusive with minReplicas/maxReplicas. When switching to vertical (autoscalingMode "vertical") with numReplicas and no memory, the service\'s stored baseline per-replica memory is kept as the new vertical range.',
         example: 3,
       }),
     minReplicas: z
@@ -15096,6 +17274,13 @@ const ServiceReplicaScalingPatchRequestSchema = z
       .number()
       .exactOptional()
       .openapi({ description: 'Set minimum idling timeout (in minutes). Must be >= 5 minutes.' }),
+    profile: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Custom instance profile. Omit to leave the current profile unchanged. Profiles other than v1-default and v2-default are only available for ENTERPRISE and BYOC organization tiers. Standard values: 'v1-default', 'v2-default', 'v1-highmem-xs', 'v1-highmem-s', 'v1-highmem-m', 'v1-highmem-l', 'v1-highmem-xl'. A BYOC profile (e.g. 'v1-standard-byoc-16') is a pin: minReplicaMemoryGb and maxReplicaMemoryGb must both be sent and equal that profile's memory size, and a memory range cannot be combined with it. To move a pinned BYOC service to a memory range, send the range without a profile, or with 'v1-default'. A non-BYOC custom profile other than v2-default cannot be combined with a memory change; send the profile alone to change only the name. The profile cannot switch a service between Gen 1 and Gen 2 hardware (to or from 'v2-default'): the request is rejected with a 400 error; contact support to move it. While a schedule entry is active the new profile is stored on the schedule base config and the running service keeps the entry profile until the window ends. Use the serviceProfiles endpoint to list the profiles available to the organization.",
+      }),
   })
   .openapi({ required: [] })
   .openapi('ServiceReplicaScalingPatchRequest')
@@ -15187,14 +17372,14 @@ const SnapshotConfigurationPatchRequestSchema = z
       .exactOptional()
       .openapi({
         description:
-          'Interval between snapshots, in minutes. Set together with timeFrame; only supported preset pairs are accepted.',
+          'Interval between snapshots, in minutes. One of 10, 20, 30, 60. Validated when an enabled configuration is saved; stored values are not re-validated on read.',
       }),
     timeFrame: z
       .number()
       .exactOptional()
       .openapi({
         description:
-          'Retention window the snapshots cover, in minutes. Set together with gap; only supported preset pairs are accepted.',
+          'Retention window the snapshots cover, in minutes. A whole number of days (a multiple of 1440), at least 1440; timeFrame / gap must not exceed 300 snapshots. Validated when an enabled configuration is saved; stored values are not re-validated on read.',
       }),
   })
   .openapi({ required: [] })
@@ -15339,7 +17524,18 @@ const InvitationPostRequestSchema = z
   .openapi({ required: ['email'] })
   .openapi('InvitationPostRequest')
 
-const ClickPipePostRequestSchema = z
+const MemberNotificationSettingsPatchRequestSchema = z
+  .object({
+    rules: z
+      .array(NotificationSettingRuleSchema)
+      .min(1)
+      .max(100)
+      .openapi({ description: 'Rules to apply. Every rule is applied, in the order given.' }),
+  })
+  .openapi({ required: ['rules'] })
+  .openapi('MemberNotificationSettingsPatchRequest')
+
+const ClickPipePostRequestSchema: z.ZodType<ClickPipePostRequestType> = z
   .object({
     name: z.string().openapi({ description: 'Name of the ClickPipe.' }),
     source: ClickPipePostSourceSchema,
@@ -15352,7 +17548,7 @@ const ClickPipePostRequestSchema = z
           'Field mappings of the ClickPipe. Note that all destination columns must be included in the mappings.',
       }),
     scaling: ClickPipeScalingSchema.exactOptional(),
-    settings: ClickPipeSettingsSchema.exactOptional(),
+    settings: ClickPipeSettingsPutRequestSchema.exactOptional(),
     startPaused: z
       .boolean()
       .exactOptional()
@@ -15369,7 +17565,7 @@ const ClickPipeSchemaDiscoveryRequestSchema = z
   .openapi({ required: ['source'] })
   .openapi('ClickPipeSchemaDiscoveryRequest')
 
-const ClickPipePatchRequestSchema = z
+const ClickPipePatchRequestSchema: z.ZodType<ClickPipePatchRequestType> = z
   .object({
     name: z.string().exactOptional().openapi({ description: 'Name of the ClickPipe.' }),
     source: ClickPipePatchSourceSchema.exactOptional(),
@@ -15381,7 +17577,7 @@ const ClickPipePatchRequestSchema = z
         description:
           'Field mappings of the ClickPipe. This will not update the table schema, only the ClickPipe configuration.',
       }),
-    settings: ClickPipeSettingsSchema.exactOptional(),
+    settings: ClickPipeSettingsPutRequestSchema.exactOptional(),
   })
   .openapi({ required: [] })
   .openapi('ClickPipePatchRequest')
@@ -15557,6 +17753,14 @@ const ByocInfrastructurePostRequestSchema = z
           'GCP BYO-VPC only: Shared VPC host project owning the VPC and subnet, when different from `accountId`',
       }),
     tags: ByocInfrastructureTagsSchema.exactOptional(),
+    accessModel: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'How ClickHouse reaches the infrastructure. `standard` (default) provisions it through a management role in your account; `restricted` registers a cluster you own, reached only through the connector you install. `restricted` is AWS only and requires `restrictedFacts`',
+      }),
+    restrictedFacts: ByocRestrictedFactsSchema.exactOptional(),
     displayName: z
       .string()
       .exactOptional()
@@ -15669,9 +17873,32 @@ const ByocInfrastructureValidatePostRequestSchema = z
           'GCP BYO-VPC only: Shared VPC host project owning the VPC and subnet, when different from `accountId`',
       }),
     tags: ByocInfrastructureTagsSchema.exactOptional(),
+    accessModel: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'How ClickHouse reaches the infrastructure. `standard` (default) provisions it through a management role in your account; `restricted` registers a cluster you own, reached only through the connector you install. `restricted` is AWS only and requires `restrictedFacts`',
+      }),
+    restrictedFacts: ByocRestrictedFactsSchema.exactOptional(),
   })
   .openapi({ required: ['regionId', 'accountId'] })
   .openapi('ByocInfrastructureValidatePostRequest')
+
+const ByocInfrastructureEnrollmentTokenPostRequestSchema = z
+  .object({
+    ttlSeconds: z
+      .int()
+      .min(3600)
+      .max(86400)
+      .exactOptional()
+      .openapi({
+        description:
+          'Lifetime of the token in seconds: whole minutes between 3600 and 86400. Omitted: four hours',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('ByocInfrastructureEnrollmentTokenPostRequest')
 
 const ByocInfrastructurePatchRequestSchema = z
   .object({
@@ -16249,6 +18476,14 @@ const BasicAuthSecurityScheme = {
     'Use key ID and key secret obtained in ClickHouse Cloud console: https://clickhouse.com/docs/cloud/manage/openapi',
   'x-permission-scopes':
     'The scope list of a `security` requirement holds ClickHouse Cloud API key permission ids (for example `control-plane:organization:view`), not OAuth scopes. OpenAPI has no field for API key permissions, so this is the closest available place. A key must hold every permission listed on an operation to call it; an operation with no scopes needs none beyond a valid key. Every operation declares at most one requirement object, always for this scheme, so the list is only ever conjunctive — alternative sets of permissions are never expressed.',
+}
+
+const BearerJwtSecurityScheme = {
+  type: 'http',
+  scheme: 'bearer',
+  bearerFormat: 'JWT',
+  description:
+    'ClickHouse Cloud user access token, sent as `Authorization: Bearer <JWT>`. API keys are rejected. The token audience must be one of the `x-jwt-audiences` listed on the operation.',
 }
 
 export const getV1WhoamiRoute = createRoute({
@@ -16844,7 +19079,8 @@ export const getV1OrganizationsOrganizationIdRolesRoute = createRoute({
   path: '/v1/organizations/{organizationId}/roles',
   tags: ['Role Management'],
   summary: 'List all available roles for an organization',
-  description: 'Returns all available roles (system + custom) for an organization.',
+  description:
+    'Returns available roles (system + custom) for an organization, ordered by unique role ID ascending. Results are capped at `limit` (default and maximum 250) per page. Pass `nextCursor` as the `cursor` query parameter to fetch the next page until it is null.',
   operationId: 'organizationRolesGetList',
   request: {
     params: z.object({
@@ -16857,6 +19093,42 @@ export const getV1OrganizationsOrganizationIdRolesRoute = createRoute({
             description: 'ID of the requested organization.',
             required: true,
             schema: { type: 'string', format: 'uuid' },
+          },
+        }),
+    }),
+    query: z.object({
+      limit: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int().min(1),
+        )
+        .default(250)
+        .exactOptional()
+        .openapi({
+          param: {
+            in: 'query',
+            name: 'limit',
+            description: 'Maximum number of results to return.',
+            schema: { type: 'integer', minimum: 1, default: 250 },
+            required: false,
+          },
+        }),
+      cursor: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            in: 'query',
+            name: 'cursor',
+            description:
+              "Opaque cursor from a previous response's `nextCursor`, marking where to resume the list.",
+            schema: { type: 'string' },
+            required: false,
           },
         }),
     }),
@@ -16877,6 +19149,18 @@ export const getV1OrganizationsOrganizationIdRolesRoute = createRoute({
                 .exactOptional()
                 .openapi({ description: 'Unique id assigned to every request. UUIDv4' }),
               result: z.array(RBACRoleSchema).exactOptional(),
+              limit: z
+                .int()
+                .exactOptional()
+                .openapi({ description: 'Maximum number of results returned in this page.' }),
+              nextCursor: z
+                .string()
+                .nullable()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'Cursor for the next page, to be sent as the `cursor` query parameter. Null on the last page.',
+                }),
             })
             .openapi({ required: [] }),
         },
@@ -17559,7 +19843,7 @@ export const getV1OrganizationsOrganizationIdServiceProfilesRoute = createRoute(
   tags: ['Service'],
   summary: 'List available service profiles',
   description:
-    'Returns the custom instance profiles the organization can use in a region. Pass byoc_id to list the profiles configured for a BYOC infrastructure; the region is then taken from the infrastructure and region_id may be omitted. The list is empty when the organization tier does not include custom hardware profiles.',
+    'Returns the custom instance profiles the organization can use in a region. Pass byoc_id to list the profiles configured for a BYOC infrastructure; the region is then taken from the infrastructure and region_id may be omitted. v2-default (Gen 2 hardware) is listed for organizations with Gen 2 enabled and included in their plan (SCALE or ENTERPRISE) or settings, in AWS regions where Gen 2 is available, and never for BYOC infrastructure. Some other profiles have their own availability rules; every other profile, v1-default included, is listed only when the organization has custom hardware profiles (through its plan or a per-organization override).',
   operationId: 'serviceProfilesList',
   request: {
     params: z.object({
@@ -17675,6 +19959,210 @@ export const getV1OrganizationsOrganizationIdServiceProfilesRoute = createRoute(
     },
   },
   security: [{ basicAuth: ['control-plane:organization:view'] }],
+})
+
+export const getV1OrganizationsOrganizationIdPreviewsRoute = createRoute({
+  method: 'get',
+  path: '/v1/organizations/{organizationId}/previews',
+  tags: ['Organization'],
+  summary: 'Get list of organization preview features',
+  description:
+    '**Disclaimer:** This beta endpoint is evolving; the API contract may change. <br /><br /> Returns the preview features offered to the organization, with whether each one is on and whether the caller can switch it.',
+  operationId: 'organizationPublicPreviewsGetList',
+  request: {
+    params: z.object({
+      organizationId: z
+        .uuid()
+        .openapi({
+          param: {
+            in: 'path',
+            name: 'organizationId',
+            description: 'ID of the requested organization.',
+            required: true,
+            schema: { type: 'string', format: 'uuid' },
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Successful response',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              status: z
+                .number()
+                .exactOptional()
+                .openapi({ description: 'HTTP status code.', example: 200 }),
+              requestId: z
+                .uuid()
+                .exactOptional()
+                .openapi({ description: 'Unique id assigned to every request. UUIDv4' }),
+              result: z.array(PublicPreviewSchema).exactOptional(),
+            })
+            .openapi({ required: [] }),
+        },
+      },
+    },
+    400: {
+      description:
+        'The request cannot be processed due to a client error. Please verify your request parameters and try again.',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              status: z
+                .number()
+                .exactOptional()
+                .openapi({ description: 'HTTP status code.', example: 400 }),
+              error: z
+                .string()
+                .exactOptional()
+                .openapi({ description: 'Detailed error description.' }),
+              requestId: z
+                .uuid()
+                .exactOptional()
+                .openapi({ description: 'Unique id assigned to every request. UUIDv4' }),
+            })
+            .openapi({ required: [] }),
+        },
+      },
+    },
+    500: {
+      description:
+        'An internal server error has occurred. If this issue persists, please contact ClickHouse Cloud support for assistance.',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              status: z
+                .int()
+                .exactOptional()
+                .openapi({ description: 'HTTP status code.', example: 500 }),
+              error: z
+                .string()
+                .exactOptional()
+                .openapi({ description: 'Detailed error description.' }),
+              requestId: z
+                .uuid()
+                .exactOptional()
+                .openapi({ description: 'Unique id assigned to every request. UUIDv4' }),
+            })
+            .openapi({ required: [] }),
+        },
+      },
+    },
+  },
+  security: [{ basicAuth: ['control-plane:organization:view'] }],
+})
+
+export const patchV1OrganizationsOrganizationIdPreviewsPreviewIdRoute = createRoute({
+  method: 'patch',
+  path: '/v1/organizations/{organizationId}/previews/{previewId}',
+  tags: ['Organization'],
+  summary: 'Update organization preview feature',
+  description:
+    '**Disclaimer:** This beta endpoint is evolving; the API contract may change. <br /><br /> Switches a preview feature on or off for the organization. Use an ID returned by the list endpoint; an unknown ID returns 404. Only previews offered to the organization can be switched on, otherwise the request returns 403; switching off is always allowed.',
+  operationId: 'organizationPublicPreviewPatch',
+  request: {
+    params: z.object({
+      organizationId: z
+        .uuid()
+        .openapi({
+          param: {
+            in: 'path',
+            name: 'organizationId',
+            description: 'ID of the requested organization.',
+            required: true,
+            schema: { type: 'string', format: 'uuid' },
+          },
+        }),
+      previewId: z
+        .string()
+        .openapi({
+          param: {
+            in: 'path',
+            name: 'previewId',
+            description: 'ID of the requested preview feature.',
+            required: true,
+            schema: { type: 'string' },
+          },
+        }),
+    }),
+    body: { content: { 'application/json': { schema: PublicPreviewPatchRequestSchema } } },
+  },
+  responses: {
+    200: {
+      description: 'Successful response',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              status: z
+                .number()
+                .exactOptional()
+                .openapi({ description: 'HTTP status code.', example: 200 }),
+              requestId: z
+                .uuid()
+                .exactOptional()
+                .openapi({ description: 'Unique id assigned to every request. UUIDv4' }),
+              result: PublicPreviewSchema.exactOptional(),
+            })
+            .openapi({ required: [] }),
+        },
+      },
+    },
+    400: {
+      description:
+        'The request cannot be processed due to a client error. Please verify your request parameters and try again.',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              status: z
+                .number()
+                .exactOptional()
+                .openapi({ description: 'HTTP status code.', example: 400 }),
+              error: z
+                .string()
+                .exactOptional()
+                .openapi({ description: 'Detailed error description.' }),
+              requestId: z
+                .uuid()
+                .exactOptional()
+                .openapi({ description: 'Unique id assigned to every request. UUIDv4' }),
+            })
+            .openapi({ required: [] }),
+        },
+      },
+    },
+    500: {
+      description:
+        'An internal server error has occurred. If this issue persists, please contact ClickHouse Cloud support for assistance.',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              status: z
+                .int()
+                .exactOptional()
+                .openapi({ description: 'HTTP status code.', example: 500 }),
+              error: z
+                .string()
+                .exactOptional()
+                .openapi({ description: 'Detailed error description.' }),
+              requestId: z
+                .uuid()
+                .exactOptional()
+                .openapi({ description: 'Unique id assigned to every request. UUIDv4' }),
+            })
+            .openapi({ required: [] }),
+        },
+      },
+    },
+  },
+  security: [{ basicAuth: ['control-plane:organization:manage'] }],
 })
 
 export const getV1OrganizationsOrganizationIdServicesRoute = createRoute({
@@ -18001,7 +20489,7 @@ export const deleteV1OrganizationsOrganizationIdServicesServiceIdRoute = createR
   tags: ['Service'],
   summary: 'Delete service',
   description:
-    'Deletes the service. The service must be in stopped state and is deleted asynchronously after this method call.',
+    'Deletes the service. The service must be in stopped state and is deleted asynchronously after this method call. Returns 409 if deletion protection is enabled for the service.',
   operationId: 'instanceDelete',
   request: {
     params: z.object({
@@ -18754,7 +21242,7 @@ export const patchV1OrganizationsOrganizationIdServicesServiceIdScalingRoute = c
   tags: ['Service'],
   summary: 'Update service auto scaling settings',
   description:
-    'Updates minimum and maximum total memory limits and idle mode scaling behavior for the service. The memory settings are available only for "production" services and must be a multiple of 12 starting from 24GB. Please contact support to enable adjustment of numReplicas.',
+    'Updates minimum and maximum total memory limits and idle mode scaling behavior for the service. The memory settings are available only for "production" services and must be a multiple of 12 starting from 24GB. Gen 2 (v2-default) services use a fixed size and cannot idle: minTotalMemoryGb must equal maxTotalMemoryGb and idleScaling cannot be true.',
   operationId: 'instanceScalingUpdate',
   request: {
     params: z.object({
@@ -18863,7 +21351,7 @@ export const patchV1OrganizationsOrganizationIdServicesServiceIdReplicaScalingRo
   tags: ['Service'],
   summary: 'Update service auto scaling settings',
   description:
-    'Updates minimum and maximum memory limits per replica and idle mode scaling behavior for the service. Supports both vertical autoscaling (fixed replica count, variable memory) and horizontal autoscaling (variable replica count, fixed memory). The memory settings are available only for "production" services and must be a multiple of 4 starting from 8GB. For vertical autoscaling, please contact support to enable adjustment of numReplicas. For horizontal autoscaling (autoscalingMode "horizontal" with minReplicas/maxReplicas), contact support to enable the feature for your organization.',
+    'Updates minimum and maximum memory limits per replica and idle mode scaling behavior for the service. Supports both vertical autoscaling (fixed replica count, variable memory) and horizontal autoscaling (variable replica count, fixed memory). The memory settings are available only for "production" services and must be a multiple of 4 starting from 8GB. For horizontal autoscaling (autoscalingMode "horizontal" with minReplicas/maxReplicas), contact support to enable the feature for your organization. An optional profile changes the custom instance profile in place. Omit it to keep the current profile. On a BYOC service, equal memory values without a profile must be one of the following sizes: 48, 116, 172, 232; send a BYOC profile to pin a size from the infrastructure\'s catalogue. When BYOC vertical autoscaling is enabled for the organization (contact support), a minReplicaMemoryGb lower than maxReplicaMemoryGb scales the service vertically between sizes listed by the serviceProfiles endpoint; this unpins any BYOC profile, and the service then reports \'v1-default\'. Gen 2 (v2-default) services use a fixed size and cannot idle: minReplicaMemoryGb must equal maxReplicaMemoryGb, the replica count is fixed (numReplicas, or equal minReplicas and maxReplicas in either mode), and idleScaling cannot be true.',
   operationId: 'instanceReplicaScalingUpdate',
   request: {
     params: z.object({
@@ -19287,7 +21775,7 @@ export const getV1OrganizationsOrganizationIdServicesServiceIdScalingScheduleRou
   tags: ['Service'],
   summary: 'Get service autoscaling schedule',
   description:
-    'Returns the autoscaling schedule for a service. Returns 404 if no schedule has been configured or if the schedule was cleared. Requires the scheduled autoscaling feature to be enabled for the organization.',
+    'Returns the autoscaling schedule for a service. Returns 404 if no schedule has been configured or if the schedule was cleared. Requires the scheduled autoscaling feature to be enabled for the organization. On a Gen 2 (v2-default) service, no entry has a memory range, a replica range or idling on; fields an entry leaves to the base config are omitted.',
   operationId: 'scalingScheduleGet',
   request: {
     params: z.object({
@@ -19394,7 +21882,7 @@ export const postV1OrganizationsOrganizationIdServicesServiceIdScalingScheduleRo
   tags: ['Service'],
   summary: 'Create or replace service autoscaling schedule',
   description:
-    'Creates or fully replaces the autoscaling schedule for a service. Pass an empty `entries` array to clear the schedule — a subsequent GET will return 404, and the response will contain an empty `baseConfig` (all fields absent). The base scaling config (applied when no entry is active) is managed separately via the `replicaScaling` endpoint. Requires the scheduled autoscaling feature to be enabled for the organization.',
+    'Creates or fully replaces the autoscaling schedule for a service. Pass an empty `entries` array to clear the schedule — a subsequent GET will return 404, and the response will contain an empty `baseConfig` (all fields absent). The base scaling config (applied when no entry is active) is managed separately via the `replicaScaling` endpoint. Requires the scheduled autoscaling feature to be enabled for the organization. Gen 2 (v2-default) services use a fixed size and cannot idle. An entry may leave out fields it takes from the base config, but each entry combined with those fields must have equal minReplicaMemoryGb and maxReplicaMemoryGb, a fixed replica count (numReplicas, or equal minReplicas and maxReplicas), and idling off; otherwise the request is rejected.',
   operationId: 'scalingScheduleUpsert',
   request: {
     params: z.object({
@@ -19925,6 +22413,578 @@ export const deleteV1OrganizationsOrganizationIdServicesServiceIdUpgradeWindowRo
   security: [{ basicAuth: ['control-plane:service:manage'] }],
 })
 
+export const getV1OrganizationsOrganizationIdServicesServiceIdJwtProvidersRoute = createRoute({
+  method: 'get',
+  path: '/v1/organizations/{organizationId}/services/{serviceId}/jwtProviders',
+  tags: ['Service'],
+  summary: 'List service JWT providers',
+  description:
+    '**This endpoint is in beta.** API contract is stable, and no breaking changes are expected in the future. <br /><br /> Returns the JWT authentication providers configured on the service. A service has at most 5 providers.\n\nErrors:\n- 401: missing, invalid, or disabled API key.\n- 403: caller lacks `control-plane:service:manage` on the service, or the organization does not have the JWT authentication providers feature (Enterprise tier).\n- 404: service does not exist or is not visible to the caller.',
+  operationId: 'jwtProviderGetList',
+  request: {
+    params: z.object({
+      organizationId: z
+        .uuid()
+        .openapi({
+          param: {
+            in: 'path',
+            name: 'organizationId',
+            description: 'ID of the organization that owns the service.',
+            required: true,
+            schema: { type: 'string', format: 'uuid' },
+          },
+        }),
+      serviceId: z
+        .uuid()
+        .openapi({
+          param: {
+            in: 'path',
+            name: 'serviceId',
+            description: 'ID of the service.',
+            required: true,
+            schema: { type: 'string', format: 'uuid' },
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Successful response',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              status: z
+                .number()
+                .exactOptional()
+                .openapi({ description: 'HTTP status code.', example: 200 }),
+              requestId: z
+                .uuid()
+                .exactOptional()
+                .openapi({ description: 'Unique id assigned to every request. UUIDv4' }),
+              result: z.array(JwtProviderSchema).exactOptional(),
+            })
+            .openapi({ required: [] }),
+        },
+      },
+    },
+    400: {
+      description:
+        'The request cannot be processed due to a client error. Please verify your request parameters and try again.',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              status: z
+                .number()
+                .exactOptional()
+                .openapi({ description: 'HTTP status code.', example: 400 }),
+              error: z
+                .string()
+                .exactOptional()
+                .openapi({ description: 'Detailed error description.' }),
+              requestId: z
+                .uuid()
+                .exactOptional()
+                .openapi({ description: 'Unique id assigned to every request. UUIDv4' }),
+            })
+            .openapi({ required: [] }),
+        },
+      },
+    },
+    500: {
+      description:
+        'An internal server error has occurred. If this issue persists, please contact ClickHouse Cloud support for assistance.',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              status: z
+                .int()
+                .exactOptional()
+                .openapi({ description: 'HTTP status code.', example: 500 }),
+              error: z
+                .string()
+                .exactOptional()
+                .openapi({ description: 'Detailed error description.' }),
+              requestId: z
+                .uuid()
+                .exactOptional()
+                .openapi({ description: 'Unique id assigned to every request. UUIDv4' }),
+            })
+            .openapi({ required: [] }),
+        },
+      },
+    },
+  },
+  security: [{ basicAuth: ['control-plane:service:manage'] }],
+})
+
+export const postV1OrganizationsOrganizationIdServicesServiceIdJwtProvidersRoute = createRoute({
+  method: 'post',
+  path: '/v1/organizations/{organizationId}/services/{serviceId}/jwtProviders',
+  tags: ['Service'],
+  summary: 'Create service JWT provider',
+  description:
+    '**This endpoint is in beta.** API contract is stable, and no breaking changes are expected in the future. <br /><br /> Adds a JWT authentication provider to the service. Users can then connect to the service with a JWT issued by the provider; they are signed in as the `default` user and receive the roles listed in the roles claim. The JWKS URL is fetched and validated before the provider is saved. If the service already has a provider with this name and the same configuration, the request succeeds without changing it, so it is safe to retry.\n\nErrors:\n- 400: invalid field values, the JWKS URL is unreachable or does not return a key set with a supported signing key, or the service already has 5 providers.\n- 401: missing, invalid, or disabled API key.\n- 403: caller lacks `control-plane:service:manage` on the service, or the organization does not have the JWT authentication providers feature (Enterprise tier).\n- 404: service does not exist or is not visible to the caller.\n- 409: the service already has a provider with this name and a different configuration.',
+  operationId: 'jwtProviderCreate',
+  request: {
+    params: z.object({
+      organizationId: z
+        .uuid()
+        .openapi({
+          param: {
+            in: 'path',
+            name: 'organizationId',
+            description: 'ID of the organization that owns the service.',
+            required: true,
+            schema: { type: 'string', format: 'uuid' },
+          },
+        }),
+      serviceId: z
+        .uuid()
+        .openapi({
+          param: {
+            in: 'path',
+            name: 'serviceId',
+            description: 'ID of the service.',
+            required: true,
+            schema: { type: 'string', format: 'uuid' },
+          },
+        }),
+    }),
+    body: { content: { 'application/json': { schema: JwtProviderPostRequestSchema } } },
+  },
+  responses: {
+    200: {
+      description: 'Successful response',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              status: z
+                .number()
+                .exactOptional()
+                .openapi({ description: 'HTTP status code.', example: 200 }),
+              requestId: z
+                .uuid()
+                .exactOptional()
+                .openapi({ description: 'Unique id assigned to every request. UUIDv4' }),
+              result: JwtProviderSchema.exactOptional(),
+            })
+            .openapi({ required: [] }),
+        },
+      },
+    },
+    400: {
+      description:
+        'The request cannot be processed due to a client error. Please verify your request parameters and try again.',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              status: z
+                .number()
+                .exactOptional()
+                .openapi({ description: 'HTTP status code.', example: 400 }),
+              error: z
+                .string()
+                .exactOptional()
+                .openapi({ description: 'Detailed error description.' }),
+              requestId: z
+                .uuid()
+                .exactOptional()
+                .openapi({ description: 'Unique id assigned to every request. UUIDv4' }),
+            })
+            .openapi({ required: [] }),
+        },
+      },
+    },
+    500: {
+      description:
+        'An internal server error has occurred. If this issue persists, please contact ClickHouse Cloud support for assistance.',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              status: z
+                .int()
+                .exactOptional()
+                .openapi({ description: 'HTTP status code.', example: 500 }),
+              error: z
+                .string()
+                .exactOptional()
+                .openapi({ description: 'Detailed error description.' }),
+              requestId: z
+                .uuid()
+                .exactOptional()
+                .openapi({ description: 'Unique id assigned to every request. UUIDv4' }),
+            })
+            .openapi({ required: [] }),
+        },
+      },
+    },
+  },
+  security: [{ basicAuth: ['control-plane:service:manage'] }],
+})
+
+export const getV1OrganizationsOrganizationIdServicesServiceIdJwtProvidersJwtProviderNameRoute =
+  createRoute({
+    method: 'get',
+    path: '/v1/organizations/{organizationId}/services/{serviceId}/jwtProviders/{jwtProviderName}',
+    tags: ['Service'],
+    summary: 'Get service JWT provider',
+    description:
+      '**This endpoint is in beta.** API contract is stable, and no breaking changes are expected in the future. <br /><br /> Returns a single JWT authentication provider of the service.\n\nErrors:\n- 400: invalid provider name.\n- 401: missing, invalid, or disabled API key.\n- 403: caller lacks `control-plane:service:manage` on the service, or the organization does not have the JWT authentication providers feature (Enterprise tier).\n- 404: service does not exist, is not visible to the caller, or has no provider with this name.',
+    operationId: 'jwtProviderGet',
+    request: {
+      params: z.object({
+        organizationId: z
+          .uuid()
+          .openapi({
+            param: {
+              in: 'path',
+              name: 'organizationId',
+              description: 'ID of the organization that owns the service.',
+              required: true,
+              schema: { type: 'string', format: 'uuid' },
+            },
+          }),
+        serviceId: z
+          .uuid()
+          .openapi({
+            param: {
+              in: 'path',
+              name: 'serviceId',
+              description: 'ID of the service.',
+              required: true,
+              schema: { type: 'string', format: 'uuid' },
+            },
+          }),
+        jwtProviderName: z
+          .string()
+          .openapi({
+            param: {
+              in: 'path',
+              name: 'jwtProviderName',
+              description: 'Name of the JWT authentication provider.',
+              required: true,
+              schema: { type: 'string' },
+            },
+          }),
+      }),
+    },
+    responses: {
+      200: {
+        description: 'Successful response',
+        content: {
+          'application/json': {
+            schema: z
+              .object({
+                status: z
+                  .number()
+                  .exactOptional()
+                  .openapi({ description: 'HTTP status code.', example: 200 }),
+                requestId: z
+                  .uuid()
+                  .exactOptional()
+                  .openapi({ description: 'Unique id assigned to every request. UUIDv4' }),
+                result: JwtProviderSchema.exactOptional(),
+              })
+              .openapi({ required: [] }),
+          },
+        },
+      },
+      400: {
+        description:
+          'The request cannot be processed due to a client error. Please verify your request parameters and try again.',
+        content: {
+          'application/json': {
+            schema: z
+              .object({
+                status: z
+                  .number()
+                  .exactOptional()
+                  .openapi({ description: 'HTTP status code.', example: 400 }),
+                error: z
+                  .string()
+                  .exactOptional()
+                  .openapi({ description: 'Detailed error description.' }),
+                requestId: z
+                  .uuid()
+                  .exactOptional()
+                  .openapi({ description: 'Unique id assigned to every request. UUIDv4' }),
+              })
+              .openapi({ required: [] }),
+          },
+        },
+      },
+      500: {
+        description:
+          'An internal server error has occurred. If this issue persists, please contact ClickHouse Cloud support for assistance.',
+        content: {
+          'application/json': {
+            schema: z
+              .object({
+                status: z
+                  .int()
+                  .exactOptional()
+                  .openapi({ description: 'HTTP status code.', example: 500 }),
+                error: z
+                  .string()
+                  .exactOptional()
+                  .openapi({ description: 'Detailed error description.' }),
+                requestId: z
+                  .uuid()
+                  .exactOptional()
+                  .openapi({ description: 'Unique id assigned to every request. UUIDv4' }),
+              })
+              .openapi({ required: [] }),
+          },
+        },
+      },
+    },
+    security: [{ basicAuth: ['control-plane:service:manage'] }],
+  })
+
+export const putV1OrganizationsOrganizationIdServicesServiceIdJwtProvidersJwtProviderNameRoute =
+  createRoute({
+    method: 'put',
+    path: '/v1/organizations/{organizationId}/services/{serviceId}/jwtProviders/{jwtProviderName}',
+    tags: ['Service'],
+    summary: 'Update service JWT provider',
+    description:
+      '**This endpoint is in beta.** API contract is stable, and no breaking changes are expected in the future. <br /><br /> Replaces the configuration of a JWT authentication provider. The JWKS URL is fetched and validated before the change is saved.\n\nErrors:\n- 400: invalid provider name or field values, or the JWKS URL is unreachable or does not return a key set with a supported signing key.\n- 401: missing, invalid, or disabled API key.\n- 403: caller lacks `control-plane:service:manage` on the service, or the organization does not have the JWT authentication providers feature (Enterprise tier).\n- 404: service does not exist, is not visible to the caller, or has no provider with this name.',
+    operationId: 'jwtProviderUpdate',
+    request: {
+      params: z.object({
+        organizationId: z
+          .uuid()
+          .openapi({
+            param: {
+              in: 'path',
+              name: 'organizationId',
+              description: 'ID of the organization that owns the service.',
+              required: true,
+              schema: { type: 'string', format: 'uuid' },
+            },
+          }),
+        serviceId: z
+          .uuid()
+          .openapi({
+            param: {
+              in: 'path',
+              name: 'serviceId',
+              description: 'ID of the service.',
+              required: true,
+              schema: { type: 'string', format: 'uuid' },
+            },
+          }),
+        jwtProviderName: z
+          .string()
+          .openapi({
+            param: {
+              in: 'path',
+              name: 'jwtProviderName',
+              description: 'Name of the JWT authentication provider.',
+              required: true,
+              schema: { type: 'string' },
+            },
+          }),
+      }),
+      body: { content: { 'application/json': { schema: JwtProviderPutRequestSchema } } },
+    },
+    responses: {
+      200: {
+        description: 'Successful response',
+        content: {
+          'application/json': {
+            schema: z
+              .object({
+                status: z
+                  .number()
+                  .exactOptional()
+                  .openapi({ description: 'HTTP status code.', example: 200 }),
+                requestId: z
+                  .uuid()
+                  .exactOptional()
+                  .openapi({ description: 'Unique id assigned to every request. UUIDv4' }),
+                result: JwtProviderSchema.exactOptional(),
+              })
+              .openapi({ required: [] }),
+          },
+        },
+      },
+      400: {
+        description:
+          'The request cannot be processed due to a client error. Please verify your request parameters and try again.',
+        content: {
+          'application/json': {
+            schema: z
+              .object({
+                status: z
+                  .number()
+                  .exactOptional()
+                  .openapi({ description: 'HTTP status code.', example: 400 }),
+                error: z
+                  .string()
+                  .exactOptional()
+                  .openapi({ description: 'Detailed error description.' }),
+                requestId: z
+                  .uuid()
+                  .exactOptional()
+                  .openapi({ description: 'Unique id assigned to every request. UUIDv4' }),
+              })
+              .openapi({ required: [] }),
+          },
+        },
+      },
+      500: {
+        description:
+          'An internal server error has occurred. If this issue persists, please contact ClickHouse Cloud support for assistance.',
+        content: {
+          'application/json': {
+            schema: z
+              .object({
+                status: z
+                  .int()
+                  .exactOptional()
+                  .openapi({ description: 'HTTP status code.', example: 500 }),
+                error: z
+                  .string()
+                  .exactOptional()
+                  .openapi({ description: 'Detailed error description.' }),
+                requestId: z
+                  .uuid()
+                  .exactOptional()
+                  .openapi({ description: 'Unique id assigned to every request. UUIDv4' }),
+              })
+              .openapi({ required: [] }),
+          },
+        },
+      },
+    },
+    security: [{ basicAuth: ['control-plane:service:manage'] }],
+  })
+
+export const deleteV1OrganizationsOrganizationIdServicesServiceIdJwtProvidersJwtProviderNameRoute =
+  createRoute({
+    method: 'delete',
+    path: '/v1/organizations/{organizationId}/services/{serviceId}/jwtProviders/{jwtProviderName}',
+    tags: ['Service'],
+    summary: 'Delete service JWT provider',
+    description:
+      '**This endpoint is in beta.** API contract is stable, and no breaking changes are expected in the future. <br /><br /> Removes a JWT authentication provider from the service. Tokens issued by the provider are no longer accepted.\n\nErrors:\n- 400: invalid provider name.\n- 401: missing, invalid, or disabled API key.\n- 403: caller lacks `control-plane:service:manage` on the service, or the organization does not have the JWT authentication providers feature (Enterprise tier).\n- 404: service does not exist, is not visible to the caller, or has no provider with this name.',
+    operationId: 'jwtProviderDelete',
+    request: {
+      params: z.object({
+        organizationId: z
+          .uuid()
+          .openapi({
+            param: {
+              in: 'path',
+              name: 'organizationId',
+              description: 'ID of the organization that owns the service.',
+              required: true,
+              schema: { type: 'string', format: 'uuid' },
+            },
+          }),
+        serviceId: z
+          .uuid()
+          .openapi({
+            param: {
+              in: 'path',
+              name: 'serviceId',
+              description: 'ID of the service.',
+              required: true,
+              schema: { type: 'string', format: 'uuid' },
+            },
+          }),
+        jwtProviderName: z
+          .string()
+          .openapi({
+            param: {
+              in: 'path',
+              name: 'jwtProviderName',
+              description: 'Name of the JWT authentication provider.',
+              required: true,
+              schema: { type: 'string' },
+            },
+          }),
+      }),
+    },
+    responses: {
+      200: {
+        description: 'Successful response',
+        content: {
+          'application/json': {
+            schema: z
+              .object({
+                status: z
+                  .number()
+                  .exactOptional()
+                  .openapi({ description: 'HTTP status code.', example: 200 }),
+                requestId: z
+                  .uuid()
+                  .exactOptional()
+                  .openapi({ description: 'Unique id assigned to every request. UUIDv4' }),
+              })
+              .openapi({ required: [] }),
+          },
+        },
+      },
+      400: {
+        description:
+          'The request cannot be processed due to a client error. Please verify your request parameters and try again.',
+        content: {
+          'application/json': {
+            schema: z
+              .object({
+                status: z
+                  .number()
+                  .exactOptional()
+                  .openapi({ description: 'HTTP status code.', example: 400 }),
+                error: z
+                  .string()
+                  .exactOptional()
+                  .openapi({ description: 'Detailed error description.' }),
+                requestId: z
+                  .uuid()
+                  .exactOptional()
+                  .openapi({ description: 'Unique id assigned to every request. UUIDv4' }),
+              })
+              .openapi({ required: [] }),
+          },
+        },
+      },
+      500: {
+        description:
+          'An internal server error has occurred. If this issue persists, please contact ClickHouse Cloud support for assistance.',
+        content: {
+          'application/json': {
+            schema: z
+              .object({
+                status: z
+                  .int()
+                  .exactOptional()
+                  .openapi({ description: 'HTTP status code.', example: 500 }),
+                error: z
+                  .string()
+                  .exactOptional()
+                  .openapi({ description: 'Detailed error description.' }),
+                requestId: z
+                  .uuid()
+                  .exactOptional()
+                  .openapi({ description: 'Unique id assigned to every request. UUIDv4' }),
+              })
+              .openapi({ required: [] }),
+          },
+        },
+      },
+    },
+    security: [{ basicAuth: ['control-plane:service:manage'] }],
+  })
+
 export const getV1OrganizationsOrganizationIdServicesServiceIdClickhouseSettingsRoute = createRoute(
   {
     method: 'get',
@@ -20379,7 +23439,7 @@ export const deleteV1OrganizationsOrganizationIdServicesServiceIdClickhouseSetti
     tags: ['Service'],
     summary: 'Reset ClickHouse setting to default',
     description:
-      '**Disclaimer:** This beta endpoint is evolving; the API contract may change. <br /><br /> Removes a previously-configured ClickHouse setting, reverting its effective value to the platform default. Settings under `spec.extraConfig.server.*` (e.g. `keep_alive_timeout`, `shared_merge_tree_disable_merges_and_mutations_assignment`) trigger a ClickHouse server rollout restart; other settings propagate to all replicas after a short delay. Deleting a setting that was never configured is a no-op (200 OK).',
+      "**Disclaimer:** This beta endpoint is evolving; the API contract may change. <br /><br /> Removes a previously-configured ClickHouse setting, reverting its effective value to the platform default. The reset is applied before this endpoint responds, so the response `warnings` describe what happens next and cannot prevent it. To find out beforehand, check the setting's `warning` field in the [schema endpoint](#tag/Service/operation/serviceClickhouseSettingsSchemaGet) (`GET /v1/organizations/{organizationId}/services/{serviceId}/clickhouseSettings/schema`, one entry per setting in `settings`). It says whether changing or resetting the setting triggers a ClickHouse server rollout restart (e.g. `compatibility`, `keep_alive_timeout`, `mark_cache_ram_ratio`) or takes effect after a short delay. When the setting was configured, the response `warnings` repeat that same message. Deleting a setting that was never configured is a no-op (200 OK) and returns no warnings.",
     operationId: 'serviceClickhouseSettingDelete',
     request: {
       params: z.object({
@@ -20433,6 +23493,7 @@ export const deleteV1OrganizationsOrganizationIdServicesServiceIdClickhouseSetti
                   .uuid()
                   .exactOptional()
                   .openapi({ description: 'Unique id assigned to every request. UUIDv4' }),
+                result: ServiceClickhouseSettingDeleteResponseSchema.exactOptional(),
               })
               .openapi({ required: [] }),
           },
@@ -21327,7 +24388,7 @@ export const patchV1OrganizationsOrganizationIdServicesServiceIdSnapshotConfigur
     tags: ['Snapshot'],
     summary: 'Update service snapshot configuration',
     description:
-      "**This endpoint is in beta.** API contract is stable, and no breaking changes are expected in the future. <br /><br /> Updates the service snapshot configuration. Requires ADMIN auth key role. Enables or disables scheduled snapshots and sets the cadence; when enabled, gap and timeFrame (in minutes) must together be one of the supported (gap, timeFrame) pairs: (30, 1440), (60, 2880). Provide at least one of enabled, gap, timeFrame; omit a field to leave it unchanged (null is not accepted). Enabling snapshots or changing the cadence requires an eligible organization (see the organization's capabilities.snapshots).",
+      "**This endpoint is in beta.** API contract is stable, and no breaking changes are expected in the future. <br /><br /> Updates the service snapshot configuration. Requires ADMIN auth key role. Enables or disables scheduled snapshots and sets the cadence; when enabled, the resulting configuration (in minutes) must satisfy: gap must be one of 10, 20, 30, 60; timeFrame must be a whole number of days (a multiple of 1440), at least 1440; and timeFrame / gap (the number of snapshots the configuration keeps) must not exceed 300. Provide at least one of enabled, gap, timeFrame; omit a field to leave it unchanged (null is not accepted). Gap or timeFrame may be changed on its own; the rules are checked against the configuration that results from merging the request into the stored one. After a change to gap or timeFrame, snapshots taken under the previous configuration expire by the new timeFrame, and cleanup also deletes the oldest snapshots beyond the limit of 300, including ones still inside the new timeFrame. Enabling snapshots or changing the cadence requires an eligible organization (see the organization's capabilities.snapshots).",
     operationId: 'snapshotConfigurationUpdate',
     request: {
       params: z.object({
@@ -24006,6 +27067,312 @@ export const getV1OrganizationsOrganizationIdNotificationTypesRoute = createRout
   security: [{ basicAuth: ['control-plane:organization:view'] }],
 })
 
+export const getV1OrganizationsOrganizationIdMembersUserIdNotificationSettingsRoute = createRoute({
+  method: 'get',
+  path: '/v1/organizations/{organizationId}/members/{userId}/notificationSettings',
+  tags: ['Notifications'],
+  summary: "List a member's notification settings",
+  description:
+    "**Disclaimer:** This beta endpoint is evolving; the API contract may change. <br /><br /> Returns the notification settings an organization member has explicitly chosen. A member who has never changed a setting has none, so an empty list means every notification follows the platform default for their role — it does not mean notifications are off. Settings for notification types the member cannot use are omitted, which depends on their permissions rather than the caller's. Slack is configured for the whole organization and never appears here. A page holds at most `limit` settings (default 100, maximum 250; a larger value is clamped) and the server may return fewer. Every response carries `limit` and `nextCursor`; pass `nextCursor` as the `cursor` query parameter to fetch the next page, repeating until it is null.",
+  operationId: 'memberNotificationSettingsGetList',
+  request: {
+    params: z.object({
+      organizationId: z
+        .uuid()
+        .openapi({
+          param: {
+            in: 'path',
+            name: 'organizationId',
+            description: 'ID of the organization the member belongs to.',
+            required: true,
+            schema: { type: 'string', format: 'uuid' },
+          },
+        }),
+      userId: z
+        .uuid()
+        .openapi({
+          param: {
+            in: 'path',
+            name: 'userId',
+            description: 'ID of the member whose settings are returned.',
+            required: true,
+            schema: { type: 'string', format: 'uuid' },
+          },
+        }),
+    }),
+    query: z.object({
+      limit: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int().min(1).max(250),
+        )
+        .default(100)
+        .exactOptional()
+        .openapi({
+          param: {
+            in: 'query',
+            name: 'limit',
+            description: 'Maximum number of results to return.',
+            schema: { type: 'integer', minimum: 1, maximum: 250, default: 100 },
+            required: false,
+          },
+        }),
+      cursor: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            in: 'query',
+            name: 'cursor',
+            description:
+              "Opaque cursor from a previous response's `nextCursor`, marking where to resume the list.",
+            schema: { type: 'string' },
+            required: false,
+          },
+        }),
+      type: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            in: 'query',
+            name: 'type',
+            description: 'Filter to settings for this notification type.',
+            schema: { type: 'string', example: 'service_backup_failed' },
+            required: false,
+          },
+          example: 'service_backup_failed',
+        }),
+      resource_id: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            in: 'query',
+            name: 'resource_id',
+            description: 'Filter to settings for this resource.',
+            schema: { type: 'string' },
+            required: false,
+          },
+        }),
+      resource_type: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            in: 'query',
+            name: 'resource_type',
+            description:
+              "Filter to settings for resources of this kind. One of 'service', 'organization', 'clickpipe', 'postgres'.",
+            schema: { type: 'string', example: 'service' },
+            required: false,
+          },
+          example: 'service',
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Successful response',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              status: z
+                .number()
+                .exactOptional()
+                .openapi({ description: 'HTTP status code.', example: 200 }),
+              requestId: z
+                .uuid()
+                .exactOptional()
+                .openapi({ description: 'Unique id assigned to every request. UUIDv4' }),
+              result: z.array(NotificationSettingSchema).exactOptional(),
+              limit: z
+                .int()
+                .exactOptional()
+                .openapi({ description: 'Maximum number of results returned in this page.' }),
+              nextCursor: z
+                .string()
+                .nullable()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'Cursor for the next page, to be sent as the `cursor` query parameter. Null on the last page.',
+                }),
+            })
+            .openapi({ required: [] }),
+        },
+      },
+    },
+    400: {
+      description:
+        'The request cannot be processed due to a client error. Please verify your request parameters and try again.',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              status: z
+                .number()
+                .exactOptional()
+                .openapi({ description: 'HTTP status code.', example: 400 }),
+              error: z
+                .string()
+                .exactOptional()
+                .openapi({ description: 'Detailed error description.' }),
+              requestId: z
+                .uuid()
+                .exactOptional()
+                .openapi({ description: 'Unique id assigned to every request. UUIDv4' }),
+            })
+            .openapi({ required: [] }),
+        },
+      },
+    },
+    500: {
+      description:
+        'An internal server error has occurred. If this issue persists, please contact ClickHouse Cloud support for assistance.',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              status: z
+                .int()
+                .exactOptional()
+                .openapi({ description: 'HTTP status code.', example: 500 }),
+              error: z
+                .string()
+                .exactOptional()
+                .openapi({ description: 'Detailed error description.' }),
+              requestId: z
+                .uuid()
+                .exactOptional()
+                .openapi({ description: 'Unique id assigned to every request. UUIDv4' }),
+            })
+            .openapi({ required: [] }),
+        },
+      },
+    },
+  },
+  security: [{ basicAuth: ['control-plane:organization:view-notification-settings'] }],
+})
+
+export const patchV1OrganizationsOrganizationIdMembersUserIdNotificationSettingsRoute = createRoute(
+  {
+    method: 'patch',
+    path: '/v1/organizations/{organizationId}/members/{userId}/notificationSettings',
+    tags: ['Notifications'],
+    summary: "Update a member's notification settings",
+    description:
+      "**Disclaimer:** This beta endpoint is evolving; the API contract may change. <br /><br /> Sets the notification settings an organization member has explicitly chosen. Each rule names notification types, resources and channels, and applies one effect to every combination of them. A notification type no rule names keeps the setting it had, so this endpoint never has to carry a member's whole configuration. Three effects: 'enabled' and 'disabled' store an explicit choice, and 'inherit' removes the stored setting so the notification follows the platform default again. Sending the same body twice changes nothing the second time. The request either applies completely or changes nothing: a rule naming a notification type that does not exist, that the member cannot configure, or a resource the caller cannot access is rejected whole, as is a request that names the same type, resource and channel twice. A request carries at most 100 rules, addressing at most 1000 settings in total.",
+    operationId: 'memberNotificationSettingsUpdate',
+    request: {
+      params: z.object({
+        organizationId: z
+          .uuid()
+          .openapi({
+            param: {
+              in: 'path',
+              name: 'organizationId',
+              description: 'ID of the organization the member belongs to.',
+              required: true,
+              schema: { type: 'string', format: 'uuid' },
+            },
+          }),
+        userId: z
+          .uuid()
+          .openapi({
+            param: {
+              in: 'path',
+              name: 'userId',
+              description: 'ID of the member whose settings are updated.',
+              required: true,
+              schema: { type: 'string', format: 'uuid' },
+            },
+          }),
+      }),
+      body: {
+        content: { 'application/json': { schema: MemberNotificationSettingsPatchRequestSchema } },
+      },
+    },
+    responses: {
+      200: {
+        description: 'Successful response',
+        content: {
+          'application/json': {
+            schema: z
+              .object({
+                status: z
+                  .number()
+                  .exactOptional()
+                  .openapi({ description: 'HTTP status code.', example: 200 }),
+                requestId: z
+                  .uuid()
+                  .exactOptional()
+                  .openapi({ description: 'Unique id assigned to every request. UUIDv4' }),
+                result: MemberNotificationSettingsPatchResponseSchema.exactOptional(),
+              })
+              .openapi({ required: [] }),
+          },
+        },
+      },
+      400: {
+        description:
+          'The request cannot be processed due to a client error. Please verify your request parameters and try again.',
+        content: {
+          'application/json': {
+            schema: z
+              .object({
+                status: z
+                  .number()
+                  .exactOptional()
+                  .openapi({ description: 'HTTP status code.', example: 400 }),
+                error: z
+                  .string()
+                  .exactOptional()
+                  .openapi({ description: 'Detailed error description.' }),
+                requestId: z
+                  .uuid()
+                  .exactOptional()
+                  .openapi({ description: 'Unique id assigned to every request. UUIDv4' }),
+              })
+              .openapi({ required: [] }),
+          },
+        },
+      },
+      500: {
+        description:
+          'An internal server error has occurred. If this issue persists, please contact ClickHouse Cloud support for assistance.',
+        content: {
+          'application/json': {
+            schema: z
+              .object({
+                status: z
+                  .int()
+                  .exactOptional()
+                  .openapi({ description: 'HTTP status code.', example: 500 }),
+                error: z
+                  .string()
+                  .exactOptional()
+                  .openapi({ description: 'Detailed error description.' }),
+                requestId: z
+                  .uuid()
+                  .exactOptional()
+                  .openapi({ description: 'Unique id assigned to every request. UUIDv4' }),
+              })
+              .openapi({ required: [] }),
+          },
+        },
+      },
+    },
+    security: [{ basicAuth: ['control-plane:organization:manage-notification-settings'] }],
+  },
+)
+
 export const getV1OrganizationsOrganizationIdUsageCostRoute = createRoute({
   method: 'get',
   path: '/v1/organizations/{organizationId}/usageCost',
@@ -24142,6 +27509,127 @@ export const getV1OrganizationsOrganizationIdUsageCostRoute = createRoute({
     },
   },
   security: [{ basicAuth: ['control-plane:organization:view'] }],
+})
+
+export const getV1OrganizationsOrganizationIdInferenceUsageCostRoute = createRoute({
+  method: 'get',
+  path: '/v1/organizations/{organizationId}/inferenceUsageCost',
+  tags: ['Billing'],
+  summary: 'Get organization AI inference usage costs',
+  description:
+    '**Disclaimer:** This beta endpoint is evolving; the API contract may change. <br /><br /> Returns a grand total and a list of daily AI inference usage cost records for the organization in the queried time period (maximum 31 days). There is one record per day, provider and model. Each record lists the tokens used, the average price and the cost for each metric, such as input, output, cache read and each cache write duration. All costs are at list price. All days in both the request and the response are evaluated based on the UTC timezone.',
+  operationId: 'inferenceUsageCostGet',
+  request: {
+    params: z.object({
+      organizationId: z
+        .uuid()
+        .openapi({
+          param: {
+            in: 'path',
+            name: 'organizationId',
+            description: 'ID of the requested organization.',
+            required: true,
+            schema: { type: 'string', format: 'uuid' },
+          },
+        }),
+    }),
+    query: z.object({
+      from_date: z.iso
+        .date()
+        .openapi({
+          param: {
+            in: 'query',
+            name: 'from_date',
+            description: 'Start date for the report, e.g. 2024-12-19.',
+            schema: { type: 'string', format: 'date' },
+            required: true,
+          },
+        }),
+      to_date: z.iso
+        .date()
+        .openapi({
+          param: {
+            in: 'query',
+            name: 'to_date',
+            description:
+              'End date (inclusive) for the report, e.g. 2024-12-20. This date cannot be more than 30 days after from_date (for a maximum queried period of 31 days).',
+            schema: { type: 'string', format: 'date' },
+            required: true,
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Successful response',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              status: z
+                .number()
+                .exactOptional()
+                .openapi({ description: 'HTTP status code.', example: 200 }),
+              requestId: z
+                .uuid()
+                .exactOptional()
+                .openapi({ description: 'Unique id assigned to every request. UUIDv4' }),
+              result: InferenceUsageCostSchema.exactOptional(),
+            })
+            .openapi({ required: [] }),
+        },
+      },
+    },
+    400: {
+      description:
+        'The request cannot be processed due to a client error. Please verify your request parameters and try again.',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              status: z
+                .number()
+                .exactOptional()
+                .openapi({ description: 'HTTP status code.', example: 400 }),
+              error: z
+                .string()
+                .exactOptional()
+                .openapi({ description: 'Detailed error description.' }),
+              requestId: z
+                .uuid()
+                .exactOptional()
+                .openapi({ description: 'Unique id assigned to every request. UUIDv4' }),
+            })
+            .openapi({ required: [] }),
+        },
+      },
+    },
+    500: {
+      description:
+        'An internal server error has occurred. If this issue persists, please contact ClickHouse Cloud support for assistance.',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              status: z
+                .int()
+                .exactOptional()
+                .openapi({ description: 'HTTP status code.', example: 500 }),
+              error: z
+                .string()
+                .exactOptional()
+                .openapi({ description: 'Detailed error description.' }),
+              requestId: z
+                .uuid()
+                .exactOptional()
+                .openapi({ description: 'Unique id assigned to every request. UUIDv4' }),
+            })
+            .openapi({ required: [] }),
+        },
+      },
+    },
+  },
+  security: [{ basicAuth: ['control-plane:organization:view-billing'] }],
 })
 
 export const getV1OrganizationsOrganizationIdActiveBalancesRoute = createRoute({
@@ -24386,7 +27874,8 @@ export const getV1OrganizationsOrganizationIdServicesServiceIdClickpipesRoute = 
   path: '/v1/organizations/{organizationId}/services/{serviceId}/clickpipes',
   tags: ['ClickPipes'],
   summary: 'List ClickPipes',
-  description: 'Returns a list of ClickPipes.',
+  description:
+    'Returns the ClickPipes in the specified service. If neither `limit` nor `cursor` is provided, returns all ClickPipes. In this case, `limit` and `totalCount` both equal the number of ClickPipes, and `nextCursor` is `null`. To paginate results, provide `limit` or `cursor`. Paginated results are sorted by creation date in descending order. Use `limit` to set the page size (default: 50). The server caps `limit` at its maximum page size and may return fewer results. Each response includes `limit`, `totalCount`, and `nextCursor`. To retrieve the next page, pass `nextCursor` as the `cursor` query parameter. Continue until `nextCursor` is `null`.',
   operationId: 'clickPipeGetList',
   request: {
     params: z.object({
@@ -24413,6 +27902,41 @@ export const getV1OrganizationsOrganizationIdServicesServiceIdClickpipesRoute = 
           },
         }),
     }),
+    query: z.object({
+      limit: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int().min(1),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            in: 'query',
+            name: 'limit',
+            description: 'Maximum number of results to return.',
+            schema: { type: 'integer', minimum: 1 },
+            required: false,
+          },
+        }),
+      cursor: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            in: 'query',
+            name: 'cursor',
+            description:
+              "Opaque cursor from a previous response's `nextCursor`, marking where to resume the list.",
+            schema: { type: 'string' },
+            required: false,
+          },
+        }),
+    }),
   },
   responses: {
     200: {
@@ -24430,6 +27954,26 @@ export const getV1OrganizationsOrganizationIdServicesServiceIdClickpipesRoute = 
                 .exactOptional()
                 .openapi({ description: 'Unique id assigned to every request. UUIDv4' }),
               result: z.array(ClickPipeSchema).exactOptional(),
+              limit: z
+                .int()
+                .exactOptional()
+                .openapi({ description: 'Maximum number of results returned in this page.' }),
+              totalCount: z
+                .int()
+                .nullable()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'Total number of results across all pages. It has only informative value, thus is not guaranteed and it is provided on a best-effort basis. Null if the total count is unknown.',
+                }),
+              nextCursor: z
+                .string()
+                .nullable()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'Cursor for the next page, to be sent as the `cursor` query parameter. Null on the last page.',
+                }),
             })
             .openapi({ required: [] }),
         },
@@ -24600,7 +28144,7 @@ export const getV1OrganizationsOrganizationIdServicesServiceIdClickpipesContextR
   tags: ['ClickPipes'],
   summary: 'Get ClickPipes service context',
   description:
-    '**This endpoint is in beta.** API contract is stable, and no breaking changes are expected in the future. <br /><br /> Returns service-level ClickPipes capabilities and Private Preview workload identity context, including the GCP service account to grant access to customer source resources.',
+    '**This endpoint is in beta.** API contract is stable, and no breaking changes are expected in the future. <br /><br /> Returns service-level ClickPipes capabilities and Beta workload identity context, including the GCP service account to grant access to customer source resources.',
   operationId: 'clickPipesServiceContextGet',
   request: {
     params: z.object({
@@ -25181,7 +28725,7 @@ export const putV1OrganizationsOrganizationIdServicesServiceIdClickpipesClickPip
     tags: ['ClickPipes'],
     summary: 'Update ClickPipe settings',
     description:
-      'Update the advanced settings for the specified ClickPipe. Send key-value pairs where values can be strings, numbers, or booleans.',
+      'Update the advanced settings for the specified ClickPipe. Send key-value pairs where values can be strings, numbers, or booleans. Omitted keys keep their current value. `null` is not accepted; to reset a setting, send its default value.',
     operationId: 'clickPipeSettingsUpdate',
     request: {
       params: z.object({
@@ -26549,7 +30093,7 @@ export const getV1OrganizationsOrganizationIdServicesServiceIdClickstackAlertsRo
   tags: ['ClickStack'],
   summary: 'ClickStack: List Alerts',
   description:
-    '**This endpoint is in beta.** API contract is stable, and no breaking changes are expected in the future. <br /><br /> ClickStack: Retrieves alerts for the authenticated team (paginated). Results are capped at `limit` (default and maximum 1000). When `totalCount` exceeds the number of returned items, page with `limit`/`offset` to retrieve them all.',
+    '**This endpoint is in beta.** API contract is stable, and no breaking changes are expected in the future. <br /><br /> ClickStack: Retrieves alerts for the authenticated team (paginated). Results are capped at `limit` (default and maximum 1000). When `totalCount` exceeds the number of returned items, page with `limit`/`offset` to retrieve them all. Optional filters narrow the result set, and `totalCount` counts only the matching alerts.',
   operationId: 'clickStackListAlerts',
   request: {
     params: z.object({
@@ -26616,6 +30160,77 @@ export const getV1OrganizationsOrganizationIdServicesServiceIdClickstackAlertsRo
             name: 'offset',
             description: 'Number of results to skip before returning.',
             schema: { type: 'integer', minimum: 0, default: 0 },
+            required: false,
+          },
+        }),
+      tag: z
+        .preprocess(
+          (val) => (val === undefined || Array.isArray(val) ? val : [val]),
+          z.array(z.string().max(32)).max(50),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            in: 'query',
+            name: 'tag',
+            description:
+              'Only return alerts that have any of the given tags. Repeat the parameter to pass several tags. Matches the tags stored on the alert, not tags inherited from the linked dashboard or saved search.',
+            schema: { type: 'array', items: { type: 'string', maxLength: 32 }, maxItems: 50 },
+            required: false,
+          },
+        }),
+      search: z
+        .string()
+        .max(512)
+        .exactOptional()
+        .openapi({
+          param: {
+            in: 'query',
+            name: 'search',
+            description:
+              'Only return alerts whose display name contains this text (case-insensitive). Matches the display name stored on the alert, not a name derived from the linked dashboard or saved search.',
+            schema: { type: 'string', maxLength: 512 },
+            required: false,
+          },
+        }),
+      source: z
+        .preprocess(
+          (val) => (val === undefined || Array.isArray(val) ? val : [val]),
+          z.array(z.enum(['saved_search', 'tile', 'inline'])),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            in: 'query',
+            name: 'source',
+            description:
+              'Only return alerts of any of the given sources. Repeat the parameter to pass several sources.',
+            schema: {
+              type: 'array',
+              items: { type: 'string', enum: ['saved_search', 'tile', 'inline'] },
+            },
+            required: false,
+          },
+        }),
+      state: z
+        .preprocess(
+          (val) => (val === undefined || Array.isArray(val) ? val : [val]),
+          z.array(z.enum(['ALERT', 'OK', 'INSUFFICIENT_DATA', 'DISABLED', 'PENDING'])),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            in: 'query',
+            name: 'state',
+            description:
+              'Only return alerts in any of the given states. Repeat the parameter to pass several states.',
+            schema: {
+              type: 'array',
+              items: {
+                type: 'string',
+                enum: ['ALERT', 'OK', 'INSUFFICIENT_DATA', 'DISABLED', 'PENDING'],
+              },
+            },
             required: false,
           },
         }),
@@ -27624,6 +31239,244 @@ export const deleteV1OrganizationsOrganizationIdServicesServiceIdClickstackAlert
     description:
       '**This endpoint is in beta.** API contract is stable, and no breaking changes are expected in the future. <br /><br /> ClickStack: Deletes an alert',
     operationId: 'clickStackDeleteAlert',
+    request: {
+      params: z.object({
+        organizationId: z
+          .uuid()
+          .openapi({
+            param: {
+              in: 'path',
+              name: 'organizationId',
+              description: 'ID of the organization that owns the service.',
+              required: true,
+              schema: { type: 'string', format: 'uuid' },
+            },
+          }),
+        serviceId: z
+          .uuid()
+          .openapi({
+            param: {
+              in: 'path',
+              name: 'serviceId',
+              description: 'ID of the ClickStack service.',
+              required: true,
+              schema: { type: 'string', format: 'uuid' },
+            },
+          }),
+        clickStackAlertId: z
+          .string()
+          .openapi({
+            param: {
+              in: 'path',
+              name: 'clickStackAlertId',
+              description: 'ClickStack Alert ID',
+              required: true,
+              schema: { type: 'string' },
+            },
+          }),
+      }),
+    },
+    responses: {
+      200: {
+        description: 'Successful response',
+        content: {
+          'application/json': {
+            schema: z
+              .object({
+                status: z
+                  .number()
+                  .exactOptional()
+                  .openapi({ description: 'HTTP status code.', example: 200 }),
+                requestId: z
+                  .uuid()
+                  .exactOptional()
+                  .openapi({ description: 'Unique id assigned to every request. UUIDv4' }),
+              })
+              .openapi({ required: [] }),
+          },
+        },
+      },
+      400: {
+        description:
+          'The request cannot be processed due to a client error. Please verify your request parameters and try again.',
+        content: {
+          'application/json': {
+            schema: z
+              .object({
+                status: z
+                  .number()
+                  .exactOptional()
+                  .openapi({ description: 'HTTP status code.', example: 400 }),
+                error: z
+                  .string()
+                  .exactOptional()
+                  .openapi({ description: 'Detailed error description.' }),
+                requestId: z
+                  .uuid()
+                  .exactOptional()
+                  .openapi({ description: 'Unique id assigned to every request. UUIDv4' }),
+              })
+              .openapi({ required: [] }),
+          },
+        },
+      },
+      500: {
+        description:
+          'An internal server error has occurred. If this issue persists, please contact ClickHouse Cloud support for assistance.',
+        content: {
+          'application/json': {
+            schema: z
+              .object({
+                status: z
+                  .int()
+                  .exactOptional()
+                  .openapi({ description: 'HTTP status code.', example: 500 }),
+                error: z
+                  .string()
+                  .exactOptional()
+                  .openapi({ description: 'Detailed error description.' }),
+                requestId: z
+                  .uuid()
+                  .exactOptional()
+                  .openapi({ description: 'Unique id assigned to every request. UUIDv4' }),
+              })
+              .openapi({ required: [] }),
+          },
+        },
+      },
+    },
+    security: [{ basicAuth: ['control-plane:service:manage-clickstack-api'] }],
+  })
+
+export const postV1OrganizationsOrganizationIdServicesServiceIdClickstackAlertsClickStackAlertIdSilencedRoute =
+  createRoute({
+    method: 'post',
+    path: '/v1/organizations/{organizationId}/services/{serviceId}/clickstack/alerts/{clickStackAlertId}/silenced',
+    tags: ['ClickStack'],
+    summary: 'ClickStack: Silence Alert',
+    description:
+      '**This endpoint is in beta.** API contract is stable, and no breaking changes are expected in the future. <br /><br /> ClickStack: Silences an alert until the given time. Notifications are suppressed while the alert is silenced.',
+    operationId: 'clickStackSilenceAlert',
+    request: {
+      params: z.object({
+        organizationId: z
+          .uuid()
+          .openapi({
+            param: {
+              in: 'path',
+              name: 'organizationId',
+              description: 'ID of the organization that owns the service.',
+              required: true,
+              schema: { type: 'string', format: 'uuid' },
+            },
+          }),
+        serviceId: z
+          .uuid()
+          .openapi({
+            param: {
+              in: 'path',
+              name: 'serviceId',
+              description: 'ID of the ClickStack service.',
+              required: true,
+              schema: { type: 'string', format: 'uuid' },
+            },
+          }),
+        clickStackAlertId: z
+          .string()
+          .openapi({
+            param: {
+              in: 'path',
+              name: 'clickStackAlertId',
+              description: 'ClickStack Alert ID',
+              required: true,
+              schema: { type: 'string' },
+            },
+          }),
+      }),
+      body: { content: { 'application/json': { schema: ClickStackSilenceAlertRequestSchema } } },
+    },
+    responses: {
+      200: {
+        description: 'Successful response',
+        content: {
+          'application/json': {
+            schema: z
+              .object({
+                status: z
+                  .number()
+                  .exactOptional()
+                  .openapi({ description: 'HTTP status code.', example: 200 }),
+                requestId: z
+                  .uuid()
+                  .exactOptional()
+                  .openapi({ description: 'Unique id assigned to every request. UUIDv4' }),
+                result: ClickStackAlertResponseSchema.exactOptional(),
+              })
+              .openapi({ required: [] }),
+          },
+        },
+      },
+      400: {
+        description:
+          'The request cannot be processed due to a client error. Please verify your request parameters and try again.',
+        content: {
+          'application/json': {
+            schema: z
+              .object({
+                status: z
+                  .number()
+                  .exactOptional()
+                  .openapi({ description: 'HTTP status code.', example: 400 }),
+                error: z
+                  .string()
+                  .exactOptional()
+                  .openapi({ description: 'Detailed error description.' }),
+                requestId: z
+                  .uuid()
+                  .exactOptional()
+                  .openapi({ description: 'Unique id assigned to every request. UUIDv4' }),
+              })
+              .openapi({ required: [] }),
+          },
+        },
+      },
+      500: {
+        description:
+          'An internal server error has occurred. If this issue persists, please contact ClickHouse Cloud support for assistance.',
+        content: {
+          'application/json': {
+            schema: z
+              .object({
+                status: z
+                  .int()
+                  .exactOptional()
+                  .openapi({ description: 'HTTP status code.', example: 500 }),
+                error: z
+                  .string()
+                  .exactOptional()
+                  .openapi({ description: 'Detailed error description.' }),
+                requestId: z
+                  .uuid()
+                  .exactOptional()
+                  .openapi({ description: 'Unique id assigned to every request. UUIDv4' }),
+              })
+              .openapi({ required: [] }),
+          },
+        },
+      },
+    },
+    security: [{ basicAuth: ['control-plane:service:manage-clickstack-api'] }],
+  })
+
+export const deleteV1OrganizationsOrganizationIdServicesServiceIdClickstackAlertsClickStackAlertIdSilencedRoute =
+  createRoute({
+    method: 'delete',
+    path: '/v1/organizations/{organizationId}/services/{serviceId}/clickstack/alerts/{clickStackAlertId}/silenced',
+    tags: ['ClickStack'],
+    summary: 'ClickStack: Unsilence Alert',
+    description:
+      '**This endpoint is in beta.** API contract is stable, and no breaking changes are expected in the future. <br /><br /> ClickStack: Clears the silence on an alert so notifications resume',
+    operationId: 'clickStackUnsilenceAlert',
     request: {
       params: z.object({
         organizationId: z
@@ -29537,8 +33390,7 @@ export const getV1OrganizationsOrganizationIdPostgresRoute = createRoute({
   path: '/v1/organizations/{organizationId}/postgres',
   tags: ['Postgres'],
   summary: 'List of organization Postgres services',
-  description:
-    '**This endpoint is in beta.** API contract is stable, and no breaking changes are expected in the future. <br /><br /> Returns a list of all Postgres services in the organization.',
+  description: 'Returns a list of all Postgres services in the organization.',
   operationId: 'postgresServiceGetList',
   request: {
     params: z.object({
@@ -29731,7 +33583,7 @@ export const getV1OrganizationsOrganizationIdPostgresPrometheusRoute = createRou
   tags: ['Prometheus'],
   summary: 'Get organization PostgreSQL metrics',
   description:
-    '**Disclaimer:** This beta endpoint is evolving; the API contract may change. <br /><br /> Returns Prometheus metrics for all PostgreSQL services in an organization. Maximum 100 services supported.',
+    'Returns Prometheus metrics for all PostgreSQL services in an organization. Maximum 100 services supported.',
   operationId: 'postgresOrgPrometheusGet',
   request: {
     params: z.object({
@@ -29810,8 +33662,7 @@ export const getV1OrganizationsOrganizationIdPostgresPostgresIdRoute = createRou
   path: '/v1/organizations/{organizationId}/postgres/{postgresId}',
   tags: ['Postgres'],
   summary: 'Get PostgreSQL service details',
-  description:
-    '**This endpoint is in beta.** API contract is stable, and no breaking changes are expected in the future. <br /><br /> Returns a Postgres service that belongs to the organization',
+  description: 'Returns a Postgres service that belongs to the organization',
   operationId: 'postgresServiceGet',
   request: {
     params: z.object({
@@ -29918,7 +33769,7 @@ export const deleteV1OrganizationsOrganizationIdPostgresPostgresIdRoute = create
   tags: ['Postgres'],
   summary: 'Delete a PostgreSQL service',
   description:
-    '**This endpoint is in beta.** API contract is stable, and no breaking changes are expected in the future. <br /><br /> Deletes a Postgres service that belongs to the organization',
+    'Deletes a Postgres service that belongs to the organization. Returns 409 if deletion protection is enabled for the service.',
   operationId: 'postgresServiceDelete',
   request: {
     params: z.object({
@@ -30024,7 +33875,7 @@ export const patchV1OrganizationsOrganizationIdPostgresPostgresIdRoute = createR
   tags: ['Postgres'],
   summary: 'Update a PostgreSQL service',
   description:
-    '**This endpoint is in beta.** API contract is stable, and no breaking changes are expected in the future. <br /><br /> Update a Postgres service that belongs to the organization. **WARNING:** Changing the name also updates the host name and certificates for the service.',
+    'Update a Postgres service that belongs to the organization. **WARNING:** Changing the name also updates the host name and certificates for the service.',
   operationId: 'postgresServicePatch',
   request: {
     params: z.object({
@@ -30131,8 +33982,7 @@ export const getV1OrganizationsOrganizationIdPostgresPostgresIdCaCertificatesRou
   path: '/v1/organizations/{organizationId}/postgres/{postgresId}/caCertificates',
   tags: ['Postgres'],
   summary: 'Get Postgres CA certs',
-  description:
-    '**This endpoint is in beta.** API contract is stable, and no breaking changes are expected in the future. <br /><br /> Download CA certificates for a PostgreSQL service',
+  description: 'Download CA certificates for a PostgreSQL service',
   operationId: 'postgresServiceCertsGet',
   request: {
     params: z.object({
@@ -30165,15 +34015,13 @@ export const getV1OrganizationsOrganizationIdPostgresPostgresIdCaCertificatesRou
       description: 'Successful response',
       content: { 'application/x-pem-file': { schema: z.string() } },
       headers: z.object({
-        'Content-Disposition': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example: 'attachment; filename="postgres-ca-certificate.pem"',
-            }),
-        },
+        'Content-Disposition': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example: 'attachment; filename="postgres-ca-certificate.pem"',
+          }),
       }),
     },
     400: {
@@ -30234,7 +34082,7 @@ export const postV1OrganizationsOrganizationIdPostgresPostgresIdRestoredServiceR
   tags: ['Postgres'],
   summary: 'Restore a Postgres service',
   description:
-    '**This endpoint is in beta.** API contract is stable, and no breaking changes are expected in the future. <br /><br /> Restore a Postgres database from continuous backup, optionally at a specific point in time.',
+    'Restore a Postgres database from continuous backup, optionally at a specific point in time.',
   operationId: 'postgresInstanceRestore',
   request: {
     params: z.object({
@@ -30348,8 +34196,7 @@ export const patchV1OrganizationsOrganizationIdPostgresPostgresIdPasswordRoute =
   path: '/v1/organizations/{organizationId}/postgres/{postgresId}/password',
   tags: ['Postgres'],
   summary: 'Update Postgres superuser password',
-  description:
-    "**This endpoint is in beta.** API contract is stable, and no breaking changes are expected in the future. <br /><br /> Sets a new password for a Postgres service's superuser account.",
+  description: "Sets a new password for a Postgres service's superuser account.",
   operationId: 'postgresServiceSetPassword',
   request: {
     params: z.object({
@@ -30457,7 +34304,7 @@ export const patchV1OrganizationsOrganizationIdPostgresPostgresIdStateRoute = cr
   tags: ['Postgres'],
   summary: 'Update Postgres service state',
   description:
-    '**This endpoint is in beta.** API contract is stable, and no breaking changes are expected in the future. <br /><br /> Initiate a process for a Postgres service:\n* restart: Initiates a service restart\n* promote: Promotes a read replica to primary\n* switchover: Switch a primary over to a standby\n',
+    'Initiate a process for a Postgres service:\n* restart: Initiates a service restart\n* promote: Promotes a read replica to primary\n* switchover: Switch a primary over to a standby. If there is no standby, replace the primary with a newly provisioned server and switch over to it.\n',
   operationId: 'postgresServicePatchState',
   request: {
     params: z.object({
@@ -30564,8 +34411,7 @@ export const postV1OrganizationsOrganizationIdPostgresPostgresIdReadReplicaRoute
   path: '/v1/organizations/{organizationId}/postgres/{postgresId}/readReplica',
   tags: ['Postgres'],
   summary: 'Create a read replica for a Postgres service',
-  description:
-    '**This endpoint is in beta.** API contract is stable, and no breaking changes are expected in the future. <br /><br /> Initiate the process to create a new read replica for a Postgres service.',
+  description: 'Initiate the process to create a new read replica for a Postgres service.',
   operationId: 'postgresInstanceCreateReadReplica',
   request: {
     params: z.object({
@@ -30679,8 +34525,7 @@ export const getV1OrganizationsOrganizationIdPostgresPostgresIdConfigRoute = cre
   path: '/v1/organizations/{organizationId}/postgres/{postgresId}/config',
   tags: ['Postgres'],
   summary: 'Get PostgreSQL service configuration',
-  description:
-    '**This endpoint is in beta.** API contract is stable, and no breaking changes are expected in the future. <br /><br /> Returns the configuration data for a Postgres service and its PgBouncer service.',
+  description: 'Returns the configuration data for a Postgres service and its PgBouncer service.',
   operationId: 'postgresInstanceConfigGet',
   request: {
     params: z.object({
@@ -30786,8 +34631,7 @@ export const postV1OrganizationsOrganizationIdPostgresPostgresIdConfigRoute = cr
   path: '/v1/organizations/{organizationId}/postgres/{postgresId}/config',
   tags: ['Postgres'],
   summary: 'Replace Postgres service configuration',
-  description:
-    '**This endpoint is in beta.** API contract is stable, and no breaking changes are expected in the future. <br /><br /> Replace the existing Postgres service and pgBouncer configuration.',
+  description: 'Replace the existing Postgres service and pgBouncer configuration.',
   operationId: 'postgresInstanceConfigPost',
   request: {
     params: z.object({
@@ -30894,8 +34738,7 @@ export const patchV1OrganizationsOrganizationIdPostgresPostgresIdConfigRoute = c
   path: '/v1/organizations/{organizationId}/postgres/{postgresId}/config',
   tags: ['Postgres'],
   summary: 'Update Postgres service configuration',
-  description:
-    '**This endpoint is in beta.** API contract is stable, and no breaking changes are expected in the future. <br /><br /> Update the existing Postgres service and pgBouncer configuration.',
+  description: 'Update the existing Postgres service and pgBouncer configuration.',
   operationId: 'postgresInstanceConfigPatch',
   request: {
     params: z.object({
@@ -31002,8 +34845,7 @@ export const getV1OrganizationsOrganizationIdPostgresPostgresIdPrometheusRoute =
   path: '/v1/organizations/{organizationId}/postgres/{postgresId}/prometheus',
   tags: ['Prometheus'],
   summary: 'Get PostgreSQL service metrics',
-  description:
-    '**Disclaimer:** This beta endpoint is evolving; the API contract may change. <br /><br /> Returns Prometheus metrics for a PostgreSQL service.',
+  description: 'Returns Prometheus metrics for a PostgreSQL service.',
   operationId: 'postgresInstancePrometheusGet',
   request: {
     params: z.object({
@@ -31094,7 +34936,7 @@ export const getV1OrganizationsOrganizationIdPostgresPostgresIdMetricsRoute = cr
   tags: ['Postgres'],
   summary: 'Get Postgres time-series metrics',
   description:
-    '**This endpoint is in beta.** API contract is stable, and no breaking changes are expected in the future. <br /><br /> Returns bucketed time-series metrics for a PostgreSQL service over the requested window (CPU, memory, disk, network, connections, cache hit ratio, throughput, transactions, wait events, lock waits, and more). Use this to chart or analyze how a service behaved over time.',
+    'Returns bucketed time-series metrics for a PostgreSQL service over the requested window (CPU, memory, disk, network, connections, cache hit ratio, throughput, transactions, wait events, lock waits, and more). Use this to chart or analyze how a service behaved over time.',
   operationId: 'postgresInstanceMetricsGet',
   request: {
     params: z.object({
@@ -31240,13 +35082,447 @@ export const getV1OrganizationsOrganizationIdPostgresPostgresIdMetricsRoute = cr
   security: [{ basicAuth: ['control-plane:postgres-service:view'] }],
 })
 
+export const getV1OrganizationsOrganizationIdPostgresPostgresIdPrivateEndpointRoute = createRoute({
+  method: 'get',
+  path: '/v1/organizations/{organizationId}/postgres/{postgresId}/privateEndpoint',
+  tags: ['Postgres'],
+  summary: 'Get the PostgreSQL private endpoint',
+  description:
+    '**This endpoint is in beta.** API contract is stable, and no breaking changes are expected in the future. <br /><br /> Returns the AWS private endpoint service of a Postgres service, or 404 if it has not been created. Private endpoints are available only for AWS Postgres services, and only for organizations with the feature enabled.',
+  operationId: 'postgresPrivateEndpointGet',
+  request: {
+    params: z.object({
+      organizationId: z
+        .uuid()
+        .openapi({
+          param: {
+            in: 'path',
+            name: 'organizationId',
+            description: 'ID of the organization that owns the Postgres service.',
+            required: true,
+            schema: { type: 'string', format: 'uuid' },
+          },
+        }),
+      postgresId: z
+        .uuid()
+        .openapi({
+          param: {
+            in: 'path',
+            name: 'postgresId',
+            description: 'ID of the Postgres service.',
+            required: true,
+            schema: { type: 'string', format: 'uuid' },
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Successful response',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              status: z
+                .number()
+                .exactOptional()
+                .openapi({ description: 'HTTP status code.', example: 200 }),
+              requestId: z
+                .uuid()
+                .exactOptional()
+                .openapi({ description: 'Unique id assigned to every request. UUIDv4' }),
+              result: PostgresPrivateEndpointSchema.exactOptional(),
+            })
+            .openapi({ required: [] }),
+        },
+      },
+    },
+    400: {
+      description:
+        'The request cannot be processed due to a client error. Please verify your request parameters and try again.',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              status: z
+                .number()
+                .exactOptional()
+                .openapi({ description: 'HTTP status code.', example: 400 }),
+              error: z
+                .string()
+                .exactOptional()
+                .openapi({ description: 'Detailed error description.' }),
+              requestId: z
+                .uuid()
+                .exactOptional()
+                .openapi({ description: 'Unique id assigned to every request. UUIDv4' }),
+            })
+            .openapi({ required: [] }),
+        },
+      },
+    },
+    500: {
+      description:
+        'An internal server error has occurred. If this issue persists, please contact ClickHouse Cloud support for assistance.',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              status: z
+                .int()
+                .exactOptional()
+                .openapi({ description: 'HTTP status code.', example: 500 }),
+              error: z
+                .string()
+                .exactOptional()
+                .openapi({ description: 'Detailed error description.' }),
+              requestId: z
+                .uuid()
+                .exactOptional()
+                .openapi({ description: 'Unique id assigned to every request. UUIDv4' }),
+            })
+            .openapi({ required: [] }),
+        },
+      },
+    },
+  },
+  security: [{ basicAuth: ['control-plane:postgres-service:view'] }],
+})
+
+export const postV1OrganizationsOrganizationIdPostgresPostgresIdPrivateEndpointRoute = createRoute({
+  method: 'post',
+  path: '/v1/organizations/{organizationId}/postgres/{postgresId}/privateEndpoint',
+  tags: ['Postgres'],
+  summary: 'Create the PostgreSQL private endpoint',
+  description:
+    '**This endpoint is in beta.** API contract is stable, and no breaking changes are expected in the future. <br /><br /> Creates the AWS private endpoint service of a Postgres service. Creation takes about 5 to 10 minutes: `state` is `creating` until the service is `available`. A VPC endpoint can connect only after its ID is approved with the update endpoint. Returns 409 if the service already has a private endpoint. Private endpoints are available only for AWS Postgres services, and only for organizations with the feature enabled.',
+  operationId: 'postgresPrivateEndpointPost',
+  request: {
+    params: z.object({
+      organizationId: z
+        .uuid()
+        .openapi({
+          param: {
+            in: 'path',
+            name: 'organizationId',
+            description: 'ID of the organization that owns the Postgres service.',
+            required: true,
+            schema: { type: 'string', format: 'uuid' },
+          },
+        }),
+      postgresId: z
+        .uuid()
+        .openapi({
+          param: {
+            in: 'path',
+            name: 'postgresId',
+            description: 'ID of the Postgres service.',
+            required: true,
+            schema: { type: 'string', format: 'uuid' },
+          },
+        }),
+    }),
+    body: { content: { 'application/json': { schema: PostgresPrivateEndpointPostRequestSchema } } },
+  },
+  responses: {
+    200: {
+      description: 'Successful response',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              status: z
+                .number()
+                .exactOptional()
+                .openapi({ description: 'HTTP status code.', example: 200 }),
+              requestId: z
+                .uuid()
+                .exactOptional()
+                .openapi({ description: 'Unique id assigned to every request. UUIDv4' }),
+              result: PostgresPrivateEndpointSchema.exactOptional(),
+            })
+            .openapi({ required: [] }),
+        },
+      },
+    },
+    400: {
+      description:
+        'The request cannot be processed due to a client error. Please verify your request parameters and try again.',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              status: z
+                .number()
+                .exactOptional()
+                .openapi({ description: 'HTTP status code.', example: 400 }),
+              error: z
+                .string()
+                .exactOptional()
+                .openapi({ description: 'Detailed error description.' }),
+              requestId: z
+                .uuid()
+                .exactOptional()
+                .openapi({ description: 'Unique id assigned to every request. UUIDv4' }),
+            })
+            .openapi({ required: [] }),
+        },
+      },
+    },
+    500: {
+      description:
+        'An internal server error has occurred. If this issue persists, please contact ClickHouse Cloud support for assistance.',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              status: z
+                .int()
+                .exactOptional()
+                .openapi({ description: 'HTTP status code.', example: 500 }),
+              error: z
+                .string()
+                .exactOptional()
+                .openapi({ description: 'Detailed error description.' }),
+              requestId: z
+                .uuid()
+                .exactOptional()
+                .openapi({ description: 'Unique id assigned to every request. UUIDv4' }),
+            })
+            .openapi({ required: [] }),
+        },
+      },
+    },
+  },
+  security: [{ basicAuth: ['control-plane:postgres-service:manage'] }],
+})
+
+export const deleteV1OrganizationsOrganizationIdPostgresPostgresIdPrivateEndpointRoute =
+  createRoute({
+    method: 'delete',
+    path: '/v1/organizations/{organizationId}/postgres/{postgresId}/privateEndpoint',
+    tags: ['Postgres'],
+    summary: 'Delete the PostgreSQL private endpoint',
+    description:
+      '**This endpoint is in beta.** API contract is stable, and no breaking changes are expected in the future. <br /><br /> Deletes the AWS private endpoint service of a Postgres service. Connections through approved VPC endpoints stop working. Private endpoints are available only for AWS Postgres services, and only for organizations with the feature enabled.',
+    operationId: 'postgresPrivateEndpointDelete',
+    request: {
+      params: z.object({
+        organizationId: z
+          .uuid()
+          .openapi({
+            param: {
+              in: 'path',
+              name: 'organizationId',
+              description: 'ID of the organization that owns the Postgres service.',
+              required: true,
+              schema: { type: 'string', format: 'uuid' },
+            },
+          }),
+        postgresId: z
+          .uuid()
+          .openapi({
+            param: {
+              in: 'path',
+              name: 'postgresId',
+              description: 'ID of the Postgres service.',
+              required: true,
+              schema: { type: 'string', format: 'uuid' },
+            },
+          }),
+      }),
+    },
+    responses: {
+      200: {
+        description: 'Successful response',
+        content: {
+          'application/json': {
+            schema: z
+              .object({
+                status: z
+                  .number()
+                  .exactOptional()
+                  .openapi({ description: 'HTTP status code.', example: 200 }),
+                requestId: z
+                  .uuid()
+                  .exactOptional()
+                  .openapi({ description: 'Unique id assigned to every request. UUIDv4' }),
+              })
+              .openapi({ required: [] }),
+          },
+        },
+      },
+      400: {
+        description:
+          'The request cannot be processed due to a client error. Please verify your request parameters and try again.',
+        content: {
+          'application/json': {
+            schema: z
+              .object({
+                status: z
+                  .number()
+                  .exactOptional()
+                  .openapi({ description: 'HTTP status code.', example: 400 }),
+                error: z
+                  .string()
+                  .exactOptional()
+                  .openapi({ description: 'Detailed error description.' }),
+                requestId: z
+                  .uuid()
+                  .exactOptional()
+                  .openapi({ description: 'Unique id assigned to every request. UUIDv4' }),
+              })
+              .openapi({ required: [] }),
+          },
+        },
+      },
+      500: {
+        description:
+          'An internal server error has occurred. If this issue persists, please contact ClickHouse Cloud support for assistance.',
+        content: {
+          'application/json': {
+            schema: z
+              .object({
+                status: z
+                  .int()
+                  .exactOptional()
+                  .openapi({ description: 'HTTP status code.', example: 500 }),
+                error: z
+                  .string()
+                  .exactOptional()
+                  .openapi({ description: 'Detailed error description.' }),
+                requestId: z
+                  .uuid()
+                  .exactOptional()
+                  .openapi({ description: 'Unique id assigned to every request. UUIDv4' }),
+              })
+              .openapi({ required: [] }),
+          },
+        },
+      },
+    },
+    security: [{ basicAuth: ['control-plane:postgres-service:manage'] }],
+  })
+
+export const patchV1OrganizationsOrganizationIdPostgresPostgresIdPrivateEndpointRoute = createRoute(
+  {
+    method: 'patch',
+    path: '/v1/organizations/{organizationId}/postgres/{postgresId}/privateEndpoint',
+    tags: ['Postgres'],
+    summary: 'Update the PostgreSQL private endpoint',
+    description:
+      '**This endpoint is in beta.** API contract is stable, and no breaking changes are expected in the future. <br /><br /> Approves VPC endpoints by ID and sets the supported regions. At least one of `allowedVpcEndpoints` and `supportedRegions` is required, and each one provided replaces the existing list in full, so include every entry to keep. Private endpoints are available only for AWS Postgres services, and only for organizations with the feature enabled.',
+    operationId: 'postgresPrivateEndpointPatch',
+    request: {
+      params: z.object({
+        organizationId: z
+          .uuid()
+          .openapi({
+            param: {
+              in: 'path',
+              name: 'organizationId',
+              description: 'ID of the organization that owns the Postgres service.',
+              required: true,
+              schema: { type: 'string', format: 'uuid' },
+            },
+          }),
+        postgresId: z
+          .uuid()
+          .openapi({
+            param: {
+              in: 'path',
+              name: 'postgresId',
+              description: 'ID of the Postgres service.',
+              required: true,
+              schema: { type: 'string', format: 'uuid' },
+            },
+          }),
+      }),
+      body: {
+        content: { 'application/json': { schema: PostgresPrivateEndpointPatchRequestSchema } },
+      },
+    },
+    responses: {
+      200: {
+        description: 'Successful response',
+        content: {
+          'application/json': {
+            schema: z
+              .object({
+                status: z
+                  .number()
+                  .exactOptional()
+                  .openapi({ description: 'HTTP status code.', example: 200 }),
+                requestId: z
+                  .uuid()
+                  .exactOptional()
+                  .openapi({ description: 'Unique id assigned to every request. UUIDv4' }),
+                result: PostgresPrivateEndpointSchema.exactOptional(),
+              })
+              .openapi({ required: [] }),
+          },
+        },
+      },
+      400: {
+        description:
+          'The request cannot be processed due to a client error. Please verify your request parameters and try again.',
+        content: {
+          'application/json': {
+            schema: z
+              .object({
+                status: z
+                  .number()
+                  .exactOptional()
+                  .openapi({ description: 'HTTP status code.', example: 400 }),
+                error: z
+                  .string()
+                  .exactOptional()
+                  .openapi({ description: 'Detailed error description.' }),
+                requestId: z
+                  .uuid()
+                  .exactOptional()
+                  .openapi({ description: 'Unique id assigned to every request. UUIDv4' }),
+              })
+              .openapi({ required: [] }),
+          },
+        },
+      },
+      500: {
+        description:
+          'An internal server error has occurred. If this issue persists, please contact ClickHouse Cloud support for assistance.',
+        content: {
+          'application/json': {
+            schema: z
+              .object({
+                status: z
+                  .int()
+                  .exactOptional()
+                  .openapi({ description: 'HTTP status code.', example: 500 }),
+                error: z
+                  .string()
+                  .exactOptional()
+                  .openapi({ description: 'Detailed error description.' }),
+                requestId: z
+                  .uuid()
+                  .exactOptional()
+                  .openapi({ description: 'Unique id assigned to every request. UUIDv4' }),
+              })
+              .openapi({ required: [] }),
+          },
+        },
+      },
+    },
+    security: [{ basicAuth: ['control-plane:postgres-service:manage'] }],
+  },
+)
+
 export const getV1OrganizationsOrganizationIdPostgresPostgresIdBackupsRoute = createRoute({
   method: 'get',
   path: '/v1/organizations/{organizationId}/postgres/{postgresId}/backups',
   tags: ['Postgres'],
   summary: 'List of Postgres service backups',
   description:
-    "**This endpoint is in beta.** API contract is stable, and no breaking changes are expected in the future. <br /><br /> Returns a list of the base backups retained for a Postgres service, ordered by last modified date, newest first. Results are capped at `limit` (default and maximum 100) per page. Every response carries `limit`, `totalCount` and `nextCursor`; pass `nextCursor` as the `cursor` query parameter to fetch the next page, repeating until it is null. A Postgres service is recovered to a point in time rather than to a single backup, so restore it with the restore endpoint and a timestamp between the service's `earliestRestoreTime` and now, rather than with a backup key from this list.",
+    "Returns a list of the base backups retained for a Postgres service, ordered by last modified date, newest first. Results are capped at `limit` (default and maximum 100) per page. Every response carries `limit`, `totalCount` and `nextCursor`; pass `nextCursor` as the `cursor` query parameter to fetch the next page, repeating until it is null. A Postgres service is recovered to a point in time rather than to a single backup, so restore it with the restore endpoint and a timestamp between the service's `earliestRestoreTime` and now, rather than with a backup key from this list.",
   operationId: 'postgresServiceBackupGetList',
   request: {
     params: z.object({
@@ -31410,7 +35686,7 @@ export const getV1OrganizationsOrganizationIdPostgresPostgresIdSlowQueryPatterns
     tags: ['Postgres'],
     summary: 'List Postgres slow query patterns',
     description:
-      '**This endpoint is in beta.** API contract is stable, and no breaking changes are expected in the future. <br /><br /> Returns aggregate metrics for the slowest query patterns observed on a Postgres service during the given time window. Use this to discover which queries dominate total execution time, CPU, I/O, or WAL generation.',
+      'Returns aggregate metrics for the slowest query patterns observed on a Postgres service during the given time window. Use this to discover which queries dominate total execution time, CPU, I/O, or WAL generation.',
     operationId: 'slowQueryPatternsGetList',
     request: {
       params: z.object({
@@ -31692,7 +35968,7 @@ export const getV1OrganizationsOrganizationIdPostgresPostgresIdSlowQueryPatterns
     tags: ['Postgres'],
     summary: 'Get a Postgres slow query pattern with recent executions',
     description:
-      '**This endpoint is in beta.** API contract is stable, and no breaking changes are expected in the future. <br /><br /> Returns aggregate metrics for a single slow query pattern together with its most recent individual executions.',
+      'Returns aggregate metrics for a single slow query pattern together with its most recent individual executions.',
     operationId: 'slowQueryPatternGet',
     request: {
       params: z.object({
@@ -31864,13 +36140,223 @@ export const getV1OrganizationsOrganizationIdPostgresPostgresIdSlowQueryPatterns
     security: [{ basicAuth: ['control-plane:postgres-service:view'] }],
   })
 
+export const getV1OrganizationsOrganizationIdPostgresPostgresIdBlockingQueriesRoute = createRoute({
+  method: 'get',
+  path: '/v1/organizations/{organizationId}/postgres/{postgresId}/blockingQueries',
+  tags: ['Postgres'],
+  summary: 'List Postgres blocking queries',
+  description:
+    '**This endpoint is in beta.** API contract is stable, and no breaking changes are expected in the future. <br /><br /> Returns which queries waited on locks held by other queries on a Postgres service during the given time window. Each item groups one waiting query with one direct blocker, most-sampled first. Groups come only from periods when blocking query collection was on for the service; turn it on in the console. Results are paginated with `limit`/`offset` and include `totalCount`. The time range must not exceed 31 days, and `to_date` must be after `from_date`.',
+  operationId: 'postgresBlockingQueriesGetList',
+  request: {
+    params: z.object({
+      organizationId: z
+        .uuid()
+        .openapi({
+          param: {
+            in: 'path',
+            name: 'organizationId',
+            description: 'ID of the organization that owns the Postgres service.',
+            required: true,
+            schema: { type: 'string', format: 'uuid' },
+          },
+        }),
+      postgresId: z
+        .uuid()
+        .openapi({
+          param: {
+            in: 'path',
+            name: 'postgresId',
+            description: 'ID of the requested Postgres service.',
+            required: true,
+            schema: { type: 'string', format: 'uuid' },
+          },
+        }),
+    }),
+    query: z.object({
+      from_date: z.iso
+        .datetime({ offset: true })
+        .openapi({
+          param: {
+            in: 'query',
+            name: 'from_date',
+            description: 'Inclusive start of the time window (RFC 3339 date-time).',
+            schema: { type: 'string', format: 'date-time' },
+            required: true,
+          },
+        }),
+      to_date: z.iso
+        .datetime({ offset: true })
+        .openapi({
+          param: {
+            in: 'query',
+            name: 'to_date',
+            description: 'Inclusive end of the time window (RFC 3339 date-time).',
+            schema: { type: 'string', format: 'date-time' },
+            required: true,
+          },
+        }),
+      db_name: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            in: 'query',
+            name: 'db_name',
+            description: 'Filter to groups whose waiting sessions used this database.',
+            schema: { type: 'string' },
+            required: false,
+          },
+        }),
+      db_user: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            in: 'query',
+            name: 'db_user',
+            description: 'Filter to groups whose waiting sessions ran as this database user.',
+            schema: { type: 'string' },
+            required: false,
+          },
+        }),
+      app: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            in: 'query',
+            name: 'app',
+            description:
+              'Filter to groups whose waiting sessions had this `application_name`. An empty value matches sessions with no application name.',
+            schema: { type: 'string' },
+            required: false,
+          },
+        }),
+      limit: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int().min(1).max(2000),
+        )
+        .default(50)
+        .exactOptional()
+        .openapi({
+          param: {
+            in: 'query',
+            name: 'limit',
+            description: 'Maximum number of results to return.',
+            schema: { type: 'integer', minimum: 1, maximum: 2000, default: 50 },
+            required: false,
+          },
+        }),
+      offset: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int().min(0),
+        )
+        .default(0)
+        .exactOptional()
+        .openapi({
+          param: {
+            in: 'query',
+            name: 'offset',
+            description: 'Number of results to skip before returning.',
+            schema: { type: 'integer', minimum: 0, default: 0 },
+            required: false,
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Successful response',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              status: z
+                .number()
+                .exactOptional()
+                .openapi({ description: 'HTTP status code.', example: 200 }),
+              requestId: z
+                .uuid()
+                .exactOptional()
+                .openapi({ description: 'Unique id assigned to every request. UUIDv4' }),
+              result: z.array(PostgresBlockingQuerySchema).exactOptional(),
+            })
+            .openapi({ required: [] }),
+        },
+      },
+    },
+    400: {
+      description:
+        'The request cannot be processed due to a client error. Please verify your request parameters and try again.',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              status: z
+                .number()
+                .exactOptional()
+                .openapi({ description: 'HTTP status code.', example: 400 }),
+              error: z
+                .string()
+                .exactOptional()
+                .openapi({ description: 'Detailed error description.' }),
+              requestId: z
+                .uuid()
+                .exactOptional()
+                .openapi({ description: 'Unique id assigned to every request. UUIDv4' }),
+            })
+            .openapi({ required: [] }),
+        },
+      },
+    },
+    500: {
+      description:
+        'An internal server error has occurred. If this issue persists, please contact ClickHouse Cloud support for assistance.',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              status: z
+                .int()
+                .exactOptional()
+                .openapi({ description: 'HTTP status code.', example: 500 }),
+              error: z
+                .string()
+                .exactOptional()
+                .openapi({ description: 'Detailed error description.' }),
+              requestId: z
+                .uuid()
+                .exactOptional()
+                .openapi({ description: 'Unique id assigned to every request. UUIDv4' }),
+            })
+            .openapi({ required: [] }),
+        },
+      },
+    },
+  },
+  security: [{ basicAuth: ['control-plane:postgres-service:view'] }],
+})
+
 export const getV1OrganizationsOrganizationIdPostgresPostgresIdLogsRoute = createRoute({
   method: 'get',
   path: '/v1/organizations/{organizationId}/postgres/{postgresId}/logs',
   tags: ['Postgres'],
   summary: 'List Postgres server logs',
   description:
-    '**This endpoint is in beta.** API contract is stable, and no breaking changes are expected in the future. <br /><br /> Returns PostgreSQL server log entries for a Postgres service within the given time window, most recent first by default (override with `sort_order`). Results are paginated with `limit`/`offset`; advance `offset` until a page returns fewer than `limit` entries to read the full window. The time range must not exceed 30 days, and `to_date` must be after `from_date`.',
+    'Returns PostgreSQL server log entries for a Postgres service within the given time window, most recent first by default (override with `sort_order`). Results are paginated with `limit`/`offset`; advance `offset` until a page returns fewer than `limit` entries to read the full window. The time range must not exceed 30 days, and `to_date` must be after `from_date`.',
   operationId: 'postgresLogsGetList',
   request: {
     params: z.object({
@@ -31933,15 +36419,18 @@ export const getV1OrganizationsOrganizationIdPostgresPostgresIdLogsRoute = creat
           },
         }),
       severity: z
-        .string()
+        .enum(['DEBUG', 'LOG', 'INFO', 'NOTICE', 'WARNING', 'ERROR', 'FATAL', 'PANIC'])
         .exactOptional()
         .openapi({
           param: {
             in: 'query',
             name: 'severity',
             description:
-              'Filter to log entries with this PostgreSQL severity (for example, ERROR, WARNING, LOG).',
-            schema: { type: 'string' },
+              'Filter to log entries with this PostgreSQL severity. Case-sensitive; an empty value applies no filter.',
+            schema: {
+              type: 'string',
+              enum: ['DEBUG', 'LOG', 'INFO', 'NOTICE', 'WARNING', 'ERROR', 'FATAL', 'PANIC'],
+            },
             required: false,
           },
         }),
@@ -32392,6 +36881,119 @@ export const postV1OrganizationsOrganizationIdByocInfrastructureValidateRoute = 
   },
   security: [{ basicAuth: ['control-plane:organization:manage'] }],
 })
+
+export const postV1OrganizationsOrganizationIdByocInfrastructureByocInfrastructureIdEnrollmentTokenRoute =
+  createRoute({
+    method: 'post',
+    path: '/v1/organizations/{organizationId}/byocInfrastructure/{byocInfrastructureId}/enrollmentToken',
+    tags: ['Organization'],
+    summary: 'Create BYOC infrastructure enrollment token',
+    description:
+      '**This endpoint is in beta.** API contract is stable, and no breaking changes are expected in the future. <br /><br /> Restricted access only. Mints a token the connector enrolls the infrastructure with. Every call mints a new token; earlier tokens stay valid until they expire. Answers 409 until ClickHouse has admitted the roles the infrastructure registered, which follows creation within minutes.',
+    operationId: 'organizationByocInfrastructureEnrollmentTokenCreate',
+    request: {
+      params: z.object({
+        organizationId: z
+          .uuid()
+          .openapi({
+            param: {
+              in: 'path',
+              name: 'organizationId',
+              description: 'ID of the requested organization.',
+              required: true,
+              schema: { type: 'string', format: 'uuid' },
+            },
+          }),
+        byocInfrastructureId: z
+          .uuid()
+          .openapi({
+            param: {
+              in: 'path',
+              name: 'byocInfrastructureId',
+              description: 'ID of the requested BYOC Infrastructure',
+              required: true,
+              schema: { type: 'string', format: 'uuid' },
+            },
+          }),
+      }),
+      body: {
+        content: {
+          'application/json': { schema: ByocInfrastructureEnrollmentTokenPostRequestSchema },
+        },
+      },
+    },
+    responses: {
+      200: {
+        description: 'Successful response',
+        content: {
+          'application/json': {
+            schema: z
+              .object({
+                status: z
+                  .number()
+                  .exactOptional()
+                  .openapi({ description: 'HTTP status code.', example: 200 }),
+                requestId: z
+                  .uuid()
+                  .exactOptional()
+                  .openapi({ description: 'Unique id assigned to every request. UUIDv4' }),
+                result: ByocInfrastructureEnrollmentTokenSchema.exactOptional(),
+              })
+              .openapi({ required: [] }),
+          },
+        },
+      },
+      400: {
+        description:
+          'The request cannot be processed due to a client error. Please verify your request parameters and try again.',
+        content: {
+          'application/json': {
+            schema: z
+              .object({
+                status: z
+                  .number()
+                  .exactOptional()
+                  .openapi({ description: 'HTTP status code.', example: 400 }),
+                error: z
+                  .string()
+                  .exactOptional()
+                  .openapi({ description: 'Detailed error description.' }),
+                requestId: z
+                  .uuid()
+                  .exactOptional()
+                  .openapi({ description: 'Unique id assigned to every request. UUIDv4' }),
+              })
+              .openapi({ required: [] }),
+          },
+        },
+      },
+      500: {
+        description:
+          'An internal server error has occurred. If this issue persists, please contact ClickHouse Cloud support for assistance.',
+        content: {
+          'application/json': {
+            schema: z
+              .object({
+                status: z
+                  .int()
+                  .exactOptional()
+                  .openapi({ description: 'HTTP status code.', example: 500 }),
+                error: z
+                  .string()
+                  .exactOptional()
+                  .openapi({ description: 'Detailed error description.' }),
+                requestId: z
+                  .uuid()
+                  .exactOptional()
+                  .openapi({ description: 'Unique id assigned to every request. UUIDv4' }),
+              })
+              .openapi({ required: [] }),
+          },
+        },
+      },
+    },
+    security: [{ basicAuth: ['control-plane:organization:manage'] }],
+  })
 
 export const getV1OrganizationsOrganizationIdByocInfrastructureByocInfrastructureIdRoute =
   createRoute({
@@ -33038,6 +37640,225 @@ export const getV1OrganizationsOrganizationIdByocInfrastructureByocInfrastructur
       },
     },
     security: [{ basicAuth: ['control-plane:organization:view'] }],
+  })
+
+export const getV1OrganizationsOrganizationIdByocInfrastructureByocInfrastructureIdCustomerAuthorizedAccessRoute =
+  createRoute({
+    method: 'get',
+    path: '/v1/organizations/{organizationId}/byocInfrastructure/{byocInfrastructureId}/customerAuthorizedAccess',
+    tags: ['Organization'],
+    summary: 'Get BYOC infrastructure customer-authorized access',
+    description:
+      '**This endpoint is in beta.** API contract is stable, and no breaking changes are expected in the future. <br /><br /> Returns the customer setting that controls when ClickHouse personnel may access the BYOC infrastructure, together with the data plane verdict at the time of the request.',
+    operationId: 'organizationByocInfrastructureCustomerAuthorizedAccessGet',
+    request: {
+      params: z.object({
+        organizationId: z
+          .uuid()
+          .openapi({
+            param: {
+              in: 'path',
+              name: 'organizationId',
+              description: 'ID of the organization that owns the BYOC infrastructure.',
+              required: true,
+              schema: { type: 'string', format: 'uuid' },
+            },
+          }),
+        byocInfrastructureId: z
+          .uuid()
+          .openapi({
+            param: {
+              in: 'path',
+              name: 'byocInfrastructureId',
+              description: 'ID of the BYOC infrastructure.',
+              required: true,
+              schema: { type: 'string', format: 'uuid' },
+            },
+          }),
+      }),
+    },
+    responses: {
+      200: {
+        description: 'Successful response',
+        content: {
+          'application/json': {
+            schema: z
+              .object({
+                status: z
+                  .number()
+                  .exactOptional()
+                  .openapi({ description: 'HTTP status code.', example: 200 }),
+                requestId: z
+                  .uuid()
+                  .exactOptional()
+                  .openapi({ description: 'Unique id assigned to every request. UUIDv4' }),
+                result: ByocCustomerAuthorizedAccessSchema.exactOptional(),
+              })
+              .openapi({ required: [] }),
+          },
+        },
+      },
+      400: {
+        description:
+          'The request cannot be processed due to a client error. Please verify your request parameters and try again.',
+        content: {
+          'application/json': {
+            schema: z
+              .object({
+                status: z
+                  .number()
+                  .exactOptional()
+                  .openapi({ description: 'HTTP status code.', example: 400 }),
+                error: z
+                  .string()
+                  .exactOptional()
+                  .openapi({ description: 'Detailed error description.' }),
+                requestId: z
+                  .uuid()
+                  .exactOptional()
+                  .openapi({ description: 'Unique id assigned to every request. UUIDv4' }),
+              })
+              .openapi({ required: [] }),
+          },
+        },
+      },
+      500: {
+        description:
+          'An internal server error has occurred. If this issue persists, please contact ClickHouse Cloud support for assistance.',
+        content: {
+          'application/json': {
+            schema: z
+              .object({
+                status: z
+                  .int()
+                  .exactOptional()
+                  .openapi({ description: 'HTTP status code.', example: 500 }),
+                error: z
+                  .string()
+                  .exactOptional()
+                  .openapi({ description: 'Detailed error description.' }),
+                requestId: z
+                  .uuid()
+                  .exactOptional()
+                  .openapi({ description: 'Unique id assigned to every request. UUIDv4' }),
+              })
+              .openapi({ required: [] }),
+          },
+        },
+      },
+    },
+    security: [{ basicAuth: ['control-plane:organization:view'] }],
+  })
+
+export const patchV1OrganizationsOrganizationIdByocInfrastructureByocInfrastructureIdCustomerAuthorizedAccessRoute =
+  createRoute({
+    method: 'patch',
+    path: '/v1/organizations/{organizationId}/byocInfrastructure/{byocInfrastructureId}/customerAuthorizedAccess',
+    tags: ['Organization'],
+    summary: 'Update BYOC infrastructure customer-authorized access',
+    description:
+      '**This endpoint is in beta.** API contract is stable, and no breaking changes are expected in the future. <br /><br /> Replaces the customer setting that controls when ClickHouse personnel may access the BYOC infrastructure. Allow access with `mode: always`, deny it with `mode: never`, or allow it for a single window with `mode: window`, `startTimestamp` and `durationSeconds`. Returns the stored setting together with the data plane verdict.',
+    operationId: 'organizationByocInfrastructureCustomerAuthorizedAccessUpdate',
+    request: {
+      params: z.object({
+        organizationId: z
+          .uuid()
+          .openapi({
+            param: {
+              in: 'path',
+              name: 'organizationId',
+              description: 'ID of the organization that owns the BYOC infrastructure.',
+              required: true,
+              schema: { type: 'string', format: 'uuid' },
+            },
+          }),
+        byocInfrastructureId: z
+          .uuid()
+          .openapi({
+            param: {
+              in: 'path',
+              name: 'byocInfrastructureId',
+              description: 'ID of the BYOC infrastructure.',
+              required: true,
+              schema: { type: 'string', format: 'uuid' },
+            },
+          }),
+      }),
+      body: {
+        content: { 'application/json': { schema: ByocCustomerAuthorizedAccessPatchRequestSchema } },
+      },
+    },
+    responses: {
+      200: {
+        description: 'Successful response',
+        content: {
+          'application/json': {
+            schema: z
+              .object({
+                status: z
+                  .number()
+                  .exactOptional()
+                  .openapi({ description: 'HTTP status code.', example: 200 }),
+                requestId: z
+                  .uuid()
+                  .exactOptional()
+                  .openapi({ description: 'Unique id assigned to every request. UUIDv4' }),
+                result: ByocCustomerAuthorizedAccessSchema.exactOptional(),
+              })
+              .openapi({ required: [] }),
+          },
+        },
+      },
+      400: {
+        description:
+          'The request cannot be processed due to a client error. Please verify your request parameters and try again.',
+        content: {
+          'application/json': {
+            schema: z
+              .object({
+                status: z
+                  .number()
+                  .exactOptional()
+                  .openapi({ description: 'HTTP status code.', example: 400 }),
+                error: z
+                  .string()
+                  .exactOptional()
+                  .openapi({ description: 'Detailed error description.' }),
+                requestId: z
+                  .uuid()
+                  .exactOptional()
+                  .openapi({ description: 'Unique id assigned to every request. UUIDv4' }),
+              })
+              .openapi({ required: [] }),
+          },
+        },
+      },
+      500: {
+        description:
+          'An internal server error has occurred. If this issue persists, please contact ClickHouse Cloud support for assistance.',
+        content: {
+          'application/json': {
+            schema: z
+              .object({
+                status: z
+                  .int()
+                  .exactOptional()
+                  .openapi({ description: 'HTTP status code.', example: 500 }),
+                error: z
+                  .string()
+                  .exactOptional()
+                  .openapi({ description: 'Detailed error description.' }),
+                requestId: z
+                  .uuid()
+                  .exactOptional()
+                  .openapi({ description: 'Unique id assigned to every request. UUIDv4' }),
+              })
+              .openapi({ required: [] }),
+          },
+        },
+      },
+    },
+    security: [{ basicAuth: ['control-plane:organization:manage'] }],
   })
 
 export const getV1OrganizationsOrganizationIdServicesServiceIdClickpipesReversePrivateEndpointsRoute =
@@ -35774,7 +40595,7 @@ export const postV1OrganizationsOrganizationIdUdfUploadsUrlRoute = createRoute({
       },
     },
   },
-  security: [{ basicAuth: ['control-plane:organization:manage'] }],
+  security: [{ basicAuth: ['control-plane:organization:manage-udfs'] }],
 })
 
 export const getV1OrganizationsOrganizationIdUdfsRoute = createRoute({
@@ -35957,7 +40778,7 @@ export const getV1OrganizationsOrganizationIdUdfsRoute = createRoute({
       },
     },
   },
-  security: [{ basicAuth: ['control-plane:organization:view'] }],
+  security: [{ basicAuth: ['control-plane:organization:view-udfs'] }],
 })
 
 export const postV1OrganizationsOrganizationIdUdfsRoute = createRoute({
@@ -36131,7 +40952,7 @@ export const postV1OrganizationsOrganizationIdUdfsRoute = createRoute({
       },
     },
   },
-  security: [{ basicAuth: ['control-plane:organization:manage'] }],
+  security: [{ basicAuth: ['control-plane:organization:manage-udfs'] }],
 })
 
 export const getV1OrganizationsOrganizationIdUdfsFunctionNameRoute = createRoute({
@@ -36282,7 +41103,7 @@ export const getV1OrganizationsOrganizationIdUdfsFunctionNameRoute = createRoute
       },
     },
   },
-  security: [{ basicAuth: ['control-plane:organization:view'] }],
+  security: [{ basicAuth: ['control-plane:organization:view-udfs'] }],
 })
 
 export const deleteV1OrganizationsOrganizationIdUdfsFunctionNameRoute = createRoute({
@@ -36452,7 +41273,7 @@ export const deleteV1OrganizationsOrganizationIdUdfsFunctionNameRoute = createRo
       },
     },
   },
-  security: [{ basicAuth: ['control-plane:organization:manage'] }],
+  security: [{ basicAuth: ['control-plane:organization:manage-udfs'] }],
 })
 
 export const getV1OrganizationsOrganizationIdUdfsFunctionNameAttachmentsRoute = createRoute({
@@ -36672,7 +41493,7 @@ export const getV1OrganizationsOrganizationIdUdfsFunctionNameAttachmentsRoute = 
       },
     },
   },
-  security: [{ basicAuth: ['control-plane:organization:view'] }],
+  security: [{ basicAuth: ['control-plane:organization:view-udfs'] }],
 })
 
 export const getV1OrganizationsOrganizationIdUdfsFunctionNameAttachmentsServiceIdRoute =
@@ -36845,7 +41666,7 @@ export const getV1OrganizationsOrganizationIdUdfsFunctionNameAttachmentsServiceI
         },
       },
     },
-    security: [{ basicAuth: ['control-plane:organization:view'] }],
+    security: [{ basicAuth: ['control-plane:organization:view-udfs'] }],
   })
 
 export const putV1OrganizationsOrganizationIdUdfsFunctionNameAttachmentsServiceIdRoute =
@@ -37105,7 +41926,7 @@ export const putV1OrganizationsOrganizationIdUdfsFunctionNameAttachmentsServiceI
         },
       },
     },
-    security: [{ basicAuth: ['control-plane:organization:manage'] }],
+    security: [{ basicAuth: ['control-plane:organization:manage-udfs'] }],
   })
 
 export const deleteV1OrganizationsOrganizationIdUdfsFunctionNameAttachmentsServiceIdRoute =
@@ -37296,7 +42117,7 @@ export const deleteV1OrganizationsOrganizationIdUdfsFunctionNameAttachmentsServi
         },
       },
     },
-    security: [{ basicAuth: ['control-plane:organization:manage'] }],
+    security: [{ basicAuth: ['control-plane:organization:manage-udfs'] }],
   })
 
 export const getV1OrganizationsOrganizationIdUdfsFunctionNameVersionsRoute = createRoute({
@@ -37515,7 +42336,7 @@ export const getV1OrganizationsOrganizationIdUdfsFunctionNameVersionsRoute = cre
       },
     },
   },
-  security: [{ basicAuth: ['control-plane:organization:view'] }],
+  security: [{ basicAuth: ['control-plane:organization:view-udfs'] }],
 })
 
 export const postV1OrganizationsOrganizationIdUdfsFunctionNameVersionsRoute = createRoute({
@@ -37725,7 +42546,7 @@ export const postV1OrganizationsOrganizationIdUdfsFunctionNameVersionsRoute = cr
       },
     },
   },
-  security: [{ basicAuth: ['control-plane:organization:manage'] }],
+  security: [{ basicAuth: ['control-plane:organization:manage-udfs'] }],
 })
 
 export const deleteV1OrganizationsOrganizationIdUdfsFunctionNameVersionsVersionRoute = createRoute({
@@ -37921,5 +42742,5 @@ export const deleteV1OrganizationsOrganizationIdUdfsFunctionNameVersionsVersionR
       },
     },
   },
-  security: [{ basicAuth: ['control-plane:organization:manage'] }],
+  security: [{ basicAuth: ['control-plane:organization:manage-udfs'] }],
 })

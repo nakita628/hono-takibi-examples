@@ -571,7 +571,7 @@ const OrderTokenSchema = z
   .openapi({
     title: 'Order-Token',
     description:
-      'Temporary ID for the order, which expires when the payment is authorised.\n\nThe order `token` is used for [token-based initialisation](https://developer.revolut.com/docs/sdks/merchant-web-sdk/initialisation/token-based), and is returned by the `createOrder` callback in the following payment methods:\n\n- [Embedded Checkout](https://developer.revolut.com/docs/sdks/merchant-web-sdk/payment-methods/embedded-checkout#embedded-checkout-options-interface)\n- [Revolut Pay](https://developer.revolut.com/docs/sdks/merchant-web-sdk/payment-methods/revolut-pay#widget-payments-revolut-pay-options)\n- [Apple Pay and Google Pay](https://developer.revolut.com/docs/sdks/merchant-web-sdk/payment-methods/apple-pay-google-pay#payment-request-options-interface)\n- [Pay by Bank](https://developer.revolut.com/docs/sdks/merchant-web-sdk/payment-methods/pay-by-bank#pay-by-bank-options-interface)',
+      'Temporary ID for the order, which expires when the payment is authorised.\n\nThe order `token` is used for [token-based initialisation](https://developer.revolut.com/docs/sdks/merchant-web-sdk/initialisation/token-based), and is returned by the `createOrder` callback in the following payment methods:\n\n- [Embedded Checkout](https://developer.revolut.com/docs/sdks/merchant-web-sdk/payment-methods/embedded-checkout#embeddedcheckoutoptions-interface)\n- [Revolut Pay](https://developer.revolut.com/docs/sdks/merchant-web-sdk/payment-methods/revolut-pay#widgetpaymentsrevolutpayoptions)\n- [Apple Pay and Google Pay](https://developer.revolut.com/docs/sdks/merchant-web-sdk/payment-methods/apple-pay-google-pay#paymentrequestoptions-interface)\n- [Pay by Bank](https://developer.revolut.com/docs/sdks/merchant-web-sdk/payment-methods/pay-by-bank#paybybankoptions-interface)',
   })
   .openapi('OrderToken')
 
@@ -651,7 +651,7 @@ const AuthorisationTypeSchema = z
   .openapi({
     title: 'Authorisation-Type',
     description:
-      "The type of authorisation for the order. Used with manual capture mode. If omitted, `final` is used by default.\n\n### Pre-authorisation\n\nPre-authorisation allows you to reserve funds on a customer's card without immediately capturing them. This is useful for scenarios like:\n\n- Hotel bookings where the final amount may vary\n- Car rentals where additional charges may apply\n- Deposits that need to be held temporarily\n\n| Parameter value | Description |\n| --------------- | ----------- |\n| `final` | Standard authorisation for immediate or near-immediate capture. |\n| `pre_authorisation` | Reserve funds for later capture, used with manual capture mode. |\n\n:::note\nPre-authorisation must be used with `capture_mode: manual`. For more information, see [Capture an order](https://developer.revolut.com/docs/api/merchant#capture-order).\n:::",
+      "The type of authorisation for the order. Used with manual capture mode. If omitted, `final` is used by default.\n\n### Pre-authorisation\n\nPre-authorisation allows you to reserve funds on a customer's card without immediately capturing them. This is useful for scenarios like:\n\n- Hotel bookings where the final amount may vary\n- Car rentals where additional charges may apply\n- Deposits that need to be held temporarily\n\n| Parameter value | Description |\n| --------------- | ----------- |\n| `final` | Standard authorisation for immediate or near-immediate capture. |\n| `pre_authorisation` | Reserve funds for later capture, used with manual capture mode. |\n\n:::info\nPre-authorisation must be used with `capture_mode: manual`. For more information, see [Capture an order](https://developer.revolut.com/docs/api/merchant#capture-order).\n:::",
   })
   .openapi('AuthorisationType')
 
@@ -973,7 +973,7 @@ const LineItemsSchema = z
   .openapi({
     title: 'Line-Items',
     description:
-      'An array of line items included in the order. Each line item represents an individual product or service, along with its quantity, price, taxes, and discounts.\n\n:::info\nRequired for merchants collecting payment for one or multiple products/services in one transaction. Omitting this information may trigger additional scrutiny and risk mitigation actions by Revolut.\n:::',
+      'An array of line items included in the order. Each line item represents an individual product or service, along with its quantity, price, taxes, and discounts.\n\n:::note\nRequired for merchants collecting payment for one or multiple products/services in one transaction. Omitting this information may trigger additional scrutiny and risk mitigation actions by Revolut.\n:::',
   })
   .openapi('LineItems')
 
@@ -1017,7 +1017,7 @@ const RedirectUrlSchema = z
   .openapi({
     title: 'Redirect-Url',
     description:
-      'The URL your customer will be redirected to after completing a payment flow.\n\n- **Hosted Checkout Page** (`checkout_url`): This is the post-success URL - the customer is redirected only after a successful payment.\n- **Embedded Revolut Pay** (Revolut Checkout widget): This URL is used for all redirect outcomes - success, failure, and cancellation.\n\n:::warning [Restrictions]\n- Must be a valid URI as defined by [RFC 3986](https://datatracker.ietf.org/doc/html/rfc3986)\n- URI scheme is required and must be either `http` or `https`\n- URI host is required and cannot be `localhost` or an IP address\n- Max length: `2000`\n- Reserved or invalid characters must be percent-encoded (for example, use `%20` instead of a space)\n:::\n\n:::note [Revolut Checkout]\n- Revolut Pay will not appear in the widget on mobile devices unless redirect targets are configured - either via this `redirect_url` parameter or the SDK-level `revolutPayOptions.mobileRedirectUrls` option.\n- If `redirect_url` is set on the order, it takes precedence over `revolutPayOptions.mobileRedirectUrls` and is used for all redirect outcomes (success, failure, cancel).\n:::\n\n:::info\nFor more information, see:\n- [Hosted Checkout Page: Custom redirection](https://developer.revolut.com/docs/guides/merchant/accept-payments/online-payments/hosted-checkout-page/api#custom-post-payment-redirection-optional)\n- [Revolut Checkout: Configure mobile redirects](https://developer.revolut.com/docs/guides/merchant/accept-payments/online-payments/revolut-checkout/web#35-configure-revolut-pay-mobile-redirects)\n:::',
+      'The URL your customer will be redirected to after completing a payment flow.\n\n- **Hosted Checkout Page** (`checkout_url`): This is the post-success URL - the customer is redirected only after a successful payment.\n- **Embedded Revolut Pay** (Revolut Checkout widget): This URL is used for all redirect outcomes - success, failure, and cancellation.\n\n:::warning [Restrictions]\n- Must be a valid URI as defined by [RFC 3986](https://datatracker.ietf.org/doc/html/rfc3986)\n- URI scheme is required and must be either `http` or `https`\n- URI host is required and cannot be `localhost` or an IP address\n- Max length: `2000`\n- Reserved or invalid characters must be percent-encoded (for example, use `%20` instead of a space)\n:::\n\n:::note [Revolut Checkout]\n- Revolut Pay will not appear in the widget on mobile devices unless redirect targets are configured - either via this `redirect_url` parameter or the SDK-level `revolutPayOptions.mobileRedirectUrls` option.\n- If `redirect_url` is set on the order, it takes precedence over `revolutPayOptions.mobileRedirectUrls` and is used for all redirect outcomes (success, failure, cancel).\n:::\n\n:::info\nFor more information, see:\n- [Hosted Checkout Page: Custom redirection](https://developer.revolut.com/docs/guides/merchant/accept-payments/online-payments/hosted-checkout-page/api#1-create-an-order)\n- [Revolut Checkout: Configure mobile redirects](https://developer.revolut.com/docs/guides/merchant/accept-payments/online-payments/revolut-checkout/web#35-configure-revolut-pay-mobile-redirects)\n:::',
   })
   .openapi('RedirectUrl')
 
@@ -1116,6 +1116,13 @@ const ErrorV2Schema = z
         description:
           'The [UNIX timestamp](https://www.unixtimestamp.com/) (in milliseconds) of when the error occurred.',
       }),
+    errorId: z
+      .uuid()
+      .exactOptional()
+      .openapi({
+        description:
+          'A unique identifier for the error instance. Share this ID with Revolut support for troubleshooting. Not always present.',
+      }),
   })
   .openapi({
     title: 'Error-v2',
@@ -1150,7 +1157,7 @@ const CustomerV2Schema = z
   .openapi({
     title: 'Customer-v2',
     description:
-      "Object containing information about a customer.\n\nIf you have it, we strongly advise providing at least either `id`, `phone`, or `email`.\n\nUsing the [Customers operations](https://developer.revolut.com/docs/api/merchant#tag-customers), you can manage customer instances.\n\nThe following behaviours apply to different use cases:\n\n  | Use case | API behavior |\n  | -------- | ------------ |\n  | Existing customer | If `id` was provided, we ignore other customer details and associate the customer with the order.<br/><br/>If either `email`, `phone`, or `full_name` was provided (without an existing customer's `id`), we always create a new customer, irrespective of another, existing customer object having the same details. |\n  | New customer | If either `email`, `phone`, or `full_name` was provided, we create a new customer, irrespective of another customer object having the same details. <br/><br/>If `id` of a non-existent customer was provided, we return a `404` error, irrespective of other details provided. |\n\n:::note\nTo avoid unintentional duplication of customer records, search for an existing customer by email or phone using the [List customers](https://developer.revolut.com/docs/api/merchant#retrieve-customer-list) endpoint first, then provide `customer.id` in the order.\n:::",
+      "Object containing information about a customer.\n\nIf you have it, we strongly advise providing at least either `id`, `phone`, or `email`.\n\nUsing the [Customers operations](https://developer.revolut.com/docs/api/merchant#tag-customers), you can manage customer instances.\n\nThe following behaviours apply to different use cases:\n\n  | Use case | API behavior |\n  | -------- | ------------ |\n  | Existing customer | If `id` was provided, we ignore other customer details and associate the customer with the order.<br/><br/>If either `email`, `phone`, or `full_name` was provided (without an existing customer's `id`), we always create a new customer, irrespective of another, existing customer object having the same details. |\n  | New customer | If either `email`, `phone`, or `full_name` was provided, we create a new customer, irrespective of another customer object having the same details. <br/><br/>If `id` of a non-existent customer was provided, we return a `404` error, irrespective of other details provided. |\n\n:::info\nTo avoid unintentional duplication of customer records, search for an existing customer by email or phone using the [List customers](https://developer.revolut.com/docs/api/merchant#retrieve-customer-list) endpoint first, then provide `customer.id` in the order.\n:::",
     required: [],
   })
   .openapi('CustomerV2')
@@ -1256,7 +1263,7 @@ const ShippingSchema = z
   .openapi({
     title: 'Shipping',
     description:
-      'Details about the shipping related to the order, including address, contact information, and individual shipments.\n\n:::info\nRequired for merchants shipping physical goods. Omitting this information may trigger additional scrutiny and risk mitigation actions by Revolut.\n:::',
+      'Details about the shipping related to the order, including address, contact information, and individual shipments.\n\n:::note\nRequired for merchants shipping physical goods. Omitting this information may trigger additional scrutiny and risk mitigation actions by Revolut.\n:::',
     required: [],
   })
   .openapi('Shipping')
@@ -1390,7 +1397,7 @@ const JourneyLegsSchema = z
   .openapi({
     title: 'Journey-Legs',
     description:
-      'Array containing information of journey legs associated with the booking.\n\n:::info\nThis field is required for activating **Revolut Flight Alerts** functionalities within the Revolut app. \n\nThis information is used to compile a tracking widget that provides real-time updates on flight status and sends notifications, such as a check-in reminders, boarding alerts, and notifications for cancellations or delays. \n\nTo enable the widget the following fields are required on order creation or update, before capturing the order:\n\n  ```\n  sequence,\n  departure_airport_code,\n  arrival_airport_code,\n  flight_number,\n  travel_date,\n  airline_name,\n  airline_code,\n  ```\n:::',
+      'Array containing information of journey legs associated with the booking.\n\n:::note\nThis field is required for activating **Revolut Flight Alerts** functionalities within the Revolut app. \n\nThis information is used to compile a tracking widget that provides real-time updates on flight status and sends notifications, such as a check-in reminders, boarding alerts, and notifications for cancellations or delays. \n\nTo enable the widget the following fields are required on order creation or update, before capturing the order:\n\n  ```\n  sequence,\n  departure_airport_code,\n  arrival_airport_code,\n  flight_number,\n  travel_date,\n  airline_name,\n  airline_code,\n  ```\n:::',
   })
   .openapi('JourneyLegs')
 
@@ -1410,7 +1417,7 @@ const AirlineDataSchema = z
       .exactOptional()
       .openapi({
         description:
-          'Flag indicating whether the order includes actual ticket purchases. Set to `true` if the order contains ticket purchases, and `false` if it does not (e.g., it **only** contains seat reservations, or baggage upgrades). \n\n:::info\nThis field is required for activating **Revolut Flight Alerts** functionalities within the Revolut app.\n\nProvide the info on order creation or update, before capturing the order.\n:::',
+          'Flag indicating whether the order includes actual ticket purchases. Set to `true` if the order contains ticket purchases, and `false` if it does not (e.g., it **only** contains seat reservations, or baggage upgrades). \n\n:::note\nThis field is required for activating **Revolut Flight Alerts** functionalities within the Revolut app.\n\nProvide the info on order creation or update, before capturing the order.\n:::',
       }),
     ticket_type: z
       .enum(['fixed', 'flexible'])
@@ -1444,7 +1451,7 @@ const AirlineDataSchema = z
       .exactOptional()
       .openapi({
         description:
-          'URL to the online portal for managing the airline booking, which includes check-in functionality. This URL may be a personalised, pre-populated check-in link specific to the user or a generic link, and it is essential for enabling direct access to booking details within the Revolut app.\n\n:::info\nThis field is required for activating **Revolut Flight Alerts** functionalities within the Revolut app. \n\nProvide the info on order creation or update, before capturing the order.\n:::\n\n:::warning\nRestrictions:\n- Must be a valid URI as defined by [RFC 3986](https://datatracker.ietf.org/doc/html/rfc3986)\n- URI scheme is required and must be either `http` or `https`\n- URI host is required and cannot be `localhost` or an IP address\n- Max length: `2000`\n- Reserved or invalid characters must be percent-encoded (for example, use `%20` instead of a space)\n:::',
+          'URL to the online portal for managing the airline booking, which includes check-in functionality. This URL may be a personalised, pre-populated check-in link specific to the user or a generic link, and it is essential for enabling direct access to booking details within the Revolut app.\n\n:::note\nThis field is required for activating **Revolut Flight Alerts** functionalities within the Revolut app. \n\nProvide the info on order creation or update, before capturing the order.\n:::\n\n:::warning\nRestrictions:\n- Must be a valid URI as defined by [RFC 3986](https://datatracker.ietf.org/doc/html/rfc3986)\n- URI scheme is required and must be either `http` or `https`\n- URI host is required and cannot be `localhost` or an IP address\n- Max length: `2000`\n- Reserved or invalid characters must be percent-encoded (for example, use `%20` instead of a space)\n:::',
       }),
   })
   .openapi({
@@ -1518,7 +1525,7 @@ const CryptoTransactionsSchema = z
   .openapi({
     title: 'Crypto-Transactions',
     description:
-      'Object containing information about crypto transactions associated with the order.\n\n:::info\nThese are the specific data field requirements for merchants offering crypto services. Note that these requirements can be extended on a case by case basis as decided by Revolut.\n\n```\ntransactions[].id\ntransactions[].status\ntransactions[].recipient_wallet_id\nsubseller_mcc\nsubseller_url\ncustomer.full_name\ncustomer.date_of_birth\n```\n:::',
+      'Object containing information about crypto transactions associated with the order.\n\n:::note\nThese are the specific data field requirements for merchants offering crypto services. Note that these requirements can be extended on a case by case basis as decided by Revolut.\n\n```\ntransactions[].id\ntransactions[].status\ntransactions[].recipient_wallet_id\nsubseller_mcc\nsubseller_url\ncustomer.full_name\ncustomer.date_of_birth\n```\n:::',
     required: ['type', 'transactions'],
   })
   .openapi('CryptoTransactions')
@@ -1550,7 +1557,7 @@ const AddressV4Schema = z
       .exactOptional()
       .openapi({
         description:
-          'The subdivision code represents the state, province, or region within the country, following the [ISO 3166-2](https://en.wikipedia.org/wiki/ISO_3166-2) standard. This code uniquely identifies subdivisions within a country. \n\nFor example, for London in the United Kingdom, use `GB-LND`.\n\n:::warning\nThe parameter is required for countries listed on the [ISO 3166-2](https://en.wikipedia.org/wiki/ISO_3166-2) page.\n:::',
+          'The subdivision code represents the state, province, or region within the country, following the [ISO 3166-2](https://en.wikipedia.org/wiki/ISO_3166-2) standard. This code uniquely identifies subdivisions within a country. \n\nFor example, for London in the United Kingdom, use `GB-LND`.\n\n:::warning\nRequired when the `country_code` is a country with [ISO 3166-2](https://en.wikipedia.org/wiki/ISO_3166-2) subdivisions. For countries without subdivisions, omit this parameter. The two-letter prefix must match the `country_code`. Empty values are not accepted.\n:::',
       }),
     postcode: z.string().max(100).openapi({ description: 'Postal code of the address.' }),
   })
@@ -1596,7 +1603,7 @@ const MarketplaceSchema = z
   .openapi({
     title: 'Marketplace',
     description:
-      "This object is required by Mastercard and Visa for merchants operating as marketplaces under the Merchant Category Code (MCC) `5262`. The marketplace object ensures compliance with the card schemes' regulations by providing detailed information about the subseller involved in the transaction.\n\n:::info\nThese are the specific data field requirements for merchants who must provide marketplace data.\n\n```\nsubseller.id\nsubseller.name\nsubseller.phone\n```\n:::",
+      "This object is required by Mastercard and Visa for merchants operating as marketplaces under the Merchant Category Code (MCC) `5262`. The marketplace object ensures compliance with the card schemes' regulations by providing detailed information about the subseller involved in the transaction.\n\n:::note\nThese are the specific data field requirements for merchants who must provide marketplace data.\n\n```\nsubseller.id\nsubseller.name\nsubseller.website\nsubseller.phone\nsubseller.address\n```\n:::",
     required: ['type', 'subseller'],
   })
   .openapi('Marketplace')
@@ -1699,7 +1706,7 @@ const EventsSchema = z
   .openapi({
     title: 'Events',
     description:
-      'Object containing booking information for a list of event tickets associated with the order.\n\n:::info\nThese are the specific data field requirements for merchants who must provide event data. Note that these requirements can be extended on a case by case basis as decided by Revolut.\n\n```\nbooking_id\nevents[].start_date\nevents[].end_date\nevents[].supplier\nevents[].tickets[].id\n```\n:::',
+      'Object containing booking information for a list of event tickets associated with the order.\n\n:::note\nThese are the specific data field requirements for merchants who must provide event data. Note that these requirements can be extended on a case by case basis as decided by Revolut.\n\n```\nbooking_id\nevents[].start_date\nevents[].end_date\nevents[].supplier\nevents[].tickets[].id\n```\n:::',
     required: ['type', 'booking_id'],
   })
   .openapi('Events')
@@ -1783,7 +1790,7 @@ const LodgingSchema = z
   .openapi({
     title: 'Lodging',
     description:
-      'Object containing details of a lodging booking.\n\n:::info\nThese are the specific data field requirements for merchants who must provide lodging data. Note that these requirements can be extended on a case by case basis as decided by Revolut.\n\n```\nbooking_id\ncheck_in_date\ncheck_out_date\nsupplier_payment_date\n```\n:::',
+      'Object containing details of a lodging booking.\n\n:::note\nThese are the specific data field requirements for merchants who must provide lodging data. Note that these requirements can be extended on a case by case basis as decided by Revolut.\n\n```\nbooking_id\ncheck_in_date\ncheck_out_date\nsupplier_payment_date\n```\n:::',
     required: ['type', 'booking_id'],
   })
   .openapi('Lodging')
@@ -1799,7 +1806,7 @@ const IndustryDataSchema = z
   .openapi({
     title: 'Industry-Data',
     description:
-      'Object containing industry-specific information associated with the order.\n\n:::info\nIn the following cases, industry-specific info is required. Omitting this information may trigger additional scrutiny and risk mitigation actions by the Revolut risk team.\n\n  | Transaction type | Required for | \n  | ---------------- | ----------- |\n  | `airline`        | Airlines and Online Travel Agencies (OTAs). |\n  | `crypto`         | Crypto merchants. |\n  | `marketplace`    | Marketplace merchants. |\n  | `event`          | Event ticket sellers. |\n  | `lodging`        | Lodging providers and OTAs. |\n:::',
+      'Object containing industry-specific information associated with the order.\n\n:::note\nIn the following cases, industry-specific info is required. Omitting this information may trigger additional scrutiny and risk mitigation actions by the Revolut risk team.\n\n  | Transaction type | Required for | \n  | ---------------- | ----------- |\n  | `airline`        | Airlines and Online Travel Agencies (OTAs). |\n  | `crypto`         | Crypto merchants. |\n  | `marketplace`    | Marketplace merchants. |\n  | `event`          | Event ticket sellers. |\n  | `lodging`        | Lodging providers and OTAs. |\n:::',
     discriminator: {
       propertyName: 'type',
       mapping: {
@@ -2025,7 +2032,7 @@ const PaymentAmountSchema = z
     minimum: 0,
     title: 'Payment-Amount',
     description:
-      'The payment amount in minor units (e.g., cents). The value of this field depends on the payment type and state.\n\n| Payment type | State | Amount value |\n|--------------|-------|--------------|\n| Standard payment | Any | Total payment amount |\n| Pre-authorised payment | `authorisation_started` | New amount being authorised (during increment processing) |\n| Pre-authorised payment | `authorised` | Currently authorised amount (equals `authorised_amount`) |\n\n:::info\nFor pre-authorised payments, see the `authorised_amount` field for tracking the currently authorised amount separately.\n:::',
+      'The payment amount in minor units (e.g., cents). The value of this field depends on the payment type and state.\n\n| Payment type | State | Amount value |\n|--------------|-------|--------------|\n| Standard payment | Any | Total payment amount |\n| Pre-authorised payment | `authorisation_started` | New amount being authorised (during increment processing) |\n| Pre-authorised payment | `authorised` | Currently authorised amount (equals `authorised_amount`) |\n\n:::note\nFor pre-authorised payments, see the `authorised_amount` field for tracking the currently authorised amount separately.\n:::',
     example: 600,
   })
   .openapi('PaymentAmount')
@@ -2078,6 +2085,15 @@ const PaymentSettledCurrencySchema = z
   })
   .openapi('PaymentSettledCurrency')
 
+const SavedPaymentMethodIdSchema = z
+  .uuid()
+  .openapi({
+    title: 'Saved-Payment-Method-Id',
+    description:
+      'ID of the saved payment method.\n\n:::note\nThe `id` parameter is only returned when the payment method is saved.\n:::',
+  })
+  .openapi('SavedPaymentMethodId')
+
 const PaymentMethodTypeSchema = z
   .enum([
     'apple_pay',
@@ -2093,6 +2109,15 @@ const PaymentMethodTypeSchema = z
       'The type of payment method used to pay for the order.\n\nAvailable values:\n\n| Payment method `type` | Description |\n| --------------------- | ----------- |\n| `apple_pay` | The customer paid the order using Apple Pay. |\n| `card` | The customer paid the order using their credit or debit card. |\n| `google_pay` | The customer paid the order using Google Pay. |\n| `revolut_pay_card` | The customer paid the order via Revolut Pay using their credit or debit card. |\n| `revolut_pay_account` | The customer paid the order via Revolut Pay using their Revolut account. |\n| `sepa_direct_debit` | The customer paid the order using SEPA Direct Debit. |',
   })
   .openapi('PaymentMethodType')
+
+const PaymentMethodCommercialSchema = z
+  .boolean()
+  .openapi({
+    title: 'Payment-Method-Commercial',
+    description:
+      'Indicates whether the customer paid with a commercial payment method, for example a business card or a commercial Revolut account.\n\n:::note\nIf the commercial classification is unavailable, the field is omitted for card payments and returned as `false` for Revolut Pay account payments.\n:::',
+  })
+  .openapi('PaymentMethodCommercial')
 
 const CardChecksV2Schema = z
   .object({
@@ -2177,7 +2202,7 @@ const CaptureDeadlineSchema = z.iso
   .openapi({
     title: 'Capture-Deadline',
     description:
-      'The date and time by which the payment must be captured.\n\nAfter this deadline, the authorised funds may be automatically released by the card issuer.',
+      "The date and time by which the payment must be captured. For pre-authorisation orders, this deadline is intentionally set one day before the card scheme's authorisation validity expires, to allow time for payment clearing.\n\nAfter this deadline, the authorised funds may be automatically released by the card issuer.",
   })
   .openapi('CaptureDeadline')
 
@@ -2212,13 +2237,7 @@ const NetworkTransactionIdSchema = z
 
 const ApplePaySchema = z
   .object({
-    id: z
-      .uuid()
-      .exactOptional()
-      .openapi({
-        description:
-          'ID of the saved payment method.\n\n:::note\nThe `id` parameter is only returned when the payment method is saved.\n:::',
-      }),
+    id: SavedPaymentMethodIdSchema.exactOptional(),
     type: PaymentMethodTypeSchema,
     card_brand: z
       .enum(['visa', 'mastercard', 'american_express'])
@@ -2228,13 +2247,7 @@ const ApplePaySchema = z
       .enum(['credit', 'debit', 'prepaid'])
       .exactOptional()
       .openapi({ description: 'The type of card funding.' }),
-    commercial: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates whether the card is a commercial card.\nThe field is omitted when the classification is unavailable.',
-      }),
+    commercial: PaymentMethodCommercialSchema.exactOptional(),
     card_country_code: z
       .string()
       .exactOptional()
@@ -2272,13 +2285,7 @@ const ApplePaySchema = z
 
 const CardSchema = z
   .object({
-    id: z
-      .uuid()
-      .exactOptional()
-      .openapi({
-        description:
-          'ID of the saved payment method.\n\n:::note\nThe `id` parameter is only returned when the payment method is saved.\n:::',
-      }),
+    id: SavedPaymentMethodIdSchema.exactOptional(),
     type: PaymentMethodTypeSchema,
     card_brand: z
       .enum(['visa', 'mastercard', 'american_express'])
@@ -2288,13 +2295,7 @@ const CardSchema = z
       .enum(['credit', 'debit', 'prepaid'])
       .exactOptional()
       .openapi({ description: 'The type of card funding.' }),
-    commercial: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates whether the card is a commercial card.\nThe field is omitted when the classification is unavailable.',
-      }),
+    commercial: PaymentMethodCommercialSchema.exactOptional(),
     card_country_code: z
       .string()
       .exactOptional()
@@ -2332,13 +2333,7 @@ const CardSchema = z
 
 const GooglePaySchema = z
   .object({
-    id: z
-      .uuid()
-      .exactOptional()
-      .openapi({
-        description:
-          'ID of the saved payment method.\n\n:::note\nThe `id` parameter is only returned when the payment method is saved.\n:::',
-      }),
+    id: SavedPaymentMethodIdSchema.exactOptional(),
     type: PaymentMethodTypeSchema,
     card_brand: z
       .enum(['visa', 'mastercard', 'american_express'])
@@ -2348,13 +2343,7 @@ const GooglePaySchema = z
       .enum(['credit', 'debit', 'prepaid'])
       .exactOptional()
       .openapi({ description: 'The type of card funding.' }),
-    commercial: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates whether the card is a commercial card.\nThe field is omitted when the classification is unavailable.',
-      }),
+    commercial: PaymentMethodCommercialSchema.exactOptional(),
     card_country_code: z
       .string()
       .exactOptional()
@@ -2392,13 +2381,7 @@ const GooglePaySchema = z
 
 const RevolutPayCardSchema = z
   .object({
-    id: z
-      .uuid()
-      .exactOptional()
-      .openapi({
-        description:
-          'ID of the saved payment method.\n\n:::note\nThe `id` parameter is only returned when the payment method is saved.\n:::',
-      }),
+    id: SavedPaymentMethodIdSchema.exactOptional(),
     type: PaymentMethodTypeSchema,
     card_brand: z
       .enum(['visa', 'mastercard', 'american_express'])
@@ -2408,13 +2391,7 @@ const RevolutPayCardSchema = z
       .enum(['credit', 'debit', 'prepaid'])
       .exactOptional()
       .openapi({ description: 'The type of card funding.' }),
-    commercial: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates whether the card is a commercial card.\nThe field is omitted when the classification is unavailable.',
-      }),
+    commercial: PaymentMethodCommercialSchema.exactOptional(),
     card_country_code: z
       .string()
       .exactOptional()
@@ -2452,14 +2429,9 @@ const RevolutPayCardSchema = z
 
 const RevolutPayAccountSchema = z
   .object({
-    id: z
-      .uuid()
-      .exactOptional()
-      .openapi({
-        description:
-          'ID of the saved payment method.\n\n:::note\nThe `id` parameter is only returned when the payment method is saved.\n:::',
-      }),
+    id: SavedPaymentMethodIdSchema.exactOptional(),
     type: PaymentMethodTypeSchema,
+    commercial: PaymentMethodCommercialSchema.exactOptional(),
     fingerprint: FingerprintSchema.exactOptional(),
   })
   .openapi({
@@ -2498,13 +2470,7 @@ const SepaDirectDebitMandateReferenceSchema = z
 
 const SepaDirectDebitSchema = z
   .object({
-    id: z
-      .uuid()
-      .exactOptional()
-      .openapi({
-        description:
-          'ID of the saved payment method.\n\n:::note\nThe `id` parameter is only returned when the payment method is saved for the merchant.\n:::',
-      }),
+    id: SavedPaymentMethodIdSchema.exactOptional(),
     type: PaymentMethodTypeSchema,
     debtor_iban_last_four: SepaDirectDebitDebtorIbanLastFourSchema.exactOptional(),
     debtor_name: SepaDirectDebitDebtorNameSchema.exactOptional(),
@@ -2881,7 +2847,7 @@ const OrderV4Schema = z
   .openapi({
     title: 'Order-v4',
     description:
-      'To process the order from a credit or debit card, you create an `Order` object. You can then retrieve, capture, cancel, refund, or pay an order using its unique `id`. Alternatively, you can use its unique `token` to process a card payment with the Revolut Checkout Widget.',
+      'An order object with its current state, amount, and payment details. Use its unique `id` to retrieve, capture, cancel, or refund the order.',
     required: [],
   })
   .openapi('OrderV4')
@@ -3049,13 +3015,7 @@ const RevolutPayAccountLegacySchema = z
         description:
           'Indicates whether the customer used their card or Revolut account via Revolut Pay.',
       }),
-    id: z
-      .uuid()
-      .exactOptional()
-      .openapi({
-        description:
-          'ID of the saved payment method.\n\n:::note\nThe `id` parameter is only returned if the payment method is saved.\n:::',
-      }),
+    id: SavedPaymentMethodIdSchema.exactOptional(),
   })
   .openapi({
     title: 'Revolut-Pay-Account-Legacy',
@@ -3076,13 +3036,7 @@ const RevolutPayCardLegacySchema = z
         description:
           'Indicates whether the customer used their card or Revolut account via Revolut Pay.',
       }),
-    id: z
-      .uuid()
-      .exactOptional()
-      .openapi({
-        description:
-          'ID of the saved payment method.\n\n:::note\nThe `id` parameter is only returned if the payment method is saved.\n:::',
-      }),
+    id: SavedPaymentMethodIdSchema.exactOptional(),
     brand: z.string().exactOptional().openapi({ description: 'The type of the card.' }),
     last_four: z
       .string()
@@ -3123,13 +3077,7 @@ const CardForPaymentDetailsSchema = z
       .string()
       .exactOptional()
       .openapi({ description: 'The last four digits of the card number.' }),
-    id: z
-      .uuid()
-      .exactOptional()
-      .openapi({
-        description:
-          'ID of the saved payment method.\n\n:::note\nThe `id` parameter is only returned if the payment method is saved.\n:::',
-      }),
+    id: SavedPaymentMethodIdSchema.exactOptional(),
   })
   .openapi({
     title: 'Card-For-Payment-Details',
@@ -3268,8 +3216,7 @@ const SavedPaymentMethodSchema = z
   .openapi('SavedPaymentMethod')
 
 const NextPageTokenSchema = z
-  .string()
-  .nullable()
+  .uuid()
   .openapi({
     title: 'Next-Page-Token',
     description:
@@ -3487,7 +3434,7 @@ const CardV2Schema = z
   .openapi({
     title: 'Card-v2',
     description:
-      'A saved card payment method.\n\n:::info\nThe `checks` object (3DS, CVV, address verification) is not included as it is specific to the transactional payment context.\n:::',
+      'A saved card payment method.\n\n:::note\nThe `checks` object (3DS, CVV, address verification) is not included as it is specific to the transactional payment context.\n:::',
     required: ['id', 'type', 'created_at'],
   })
   .openapi('CardV2')
@@ -6286,6 +6233,9 @@ const WebhookEventsSchema = z
         'DISPUTE_UNDER_REVIEW',
         'DISPUTE_WON',
         'DISPUTE_LOST',
+        'DISBURSEMENT_COMPLETED',
+        'DISBURSEMENT_DECLINED',
+        'DISBURSEMENT_REFUND_COMPLETED',
       ])
       .openapi({ description: 'The available event types your can listen to.' }),
   )
@@ -6293,7 +6243,7 @@ const WebhookEventsSchema = z
   .openapi({
     title: 'Webhook-Events',
     description:
-      'List of event types that the webhook is configured to listen to.\n\nEach event is related to status changes of a specific object in the Merchant API:\n\n  | Object | Event types |\n  | --------- | ----------- |\n  | `Order`   | <ul> <li>`ORDER_COMPLETED`</li> <li>`ORDER_AUTHORISED`</li> <li>`ORDER_CANCELLED`</li> <li>`ORDER_FAILED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_AUTHORISED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_DECLINED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_FAILED`</li> </ul> |\n  | `Payment` | <ul> <li>`ORDER_PAYMENT_AUTHENTICATION_CHALLENGED`</li> <li>`ORDER_PAYMENT_AUTHENTICATED`</li> <li>`ORDER_PAYMENT_AUTHORISATION_STARTED`</li> <li>`ORDER_PAYMENT_DECLINED`</li> <li>`ORDER_PAYMENT_FAILED`</li> </ul> |\n  | `Subscription`  | <ul> <li>`SUBSCRIPTION_INITIATED`</li> <li>`SUBSCRIPTION_FINISHED`</li> <li>`SUBSCRIPTION_CANCELLED`</li> <li>`SUBSCRIPTION_OVERDUE`</li></ul> |\n  | `Payout`  | <ul> <li>`PAYOUT_INITIATED`</li> <li>`PAYOUT_COMPLETED`</li> <li>`PAYOUT_FAILED`</li> </ul> |\n  | `Dispute`  | <ul> <li>`DISPUTE_ACTION_REQUIRED`</li> <li>`DISPUTE_UNDER_REVIEW`</li> <li>`DISPUTE_WON`</li> <li>`DISPUTE_LOST`</li></ul> |',
+      'List of event types that the webhook is configured to listen to.\n\nEach event is related to status changes of a specific object in the Merchant API:\n\n  | Object | Event types |\n  | --------- | ----------- |\n  | `Order`   | <ul> <li>`ORDER_COMPLETED`</li> <li>`ORDER_AUTHORISED`</li> <li>`ORDER_CANCELLED`</li> <li>`ORDER_FAILED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_AUTHORISED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_DECLINED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_FAILED`</li> </ul> |\n  | `Payment` | <ul> <li>`ORDER_PAYMENT_AUTHENTICATION_CHALLENGED`</li> <li>`ORDER_PAYMENT_AUTHENTICATED`</li> <li>`ORDER_PAYMENT_AUTHORISATION_STARTED`</li> <li>`ORDER_PAYMENT_DECLINED`</li> <li>`ORDER_PAYMENT_FAILED`</li> </ul> |\n  | `Subscription`  | <ul> <li>`SUBSCRIPTION_INITIATED`</li> <li>`SUBSCRIPTION_FINISHED`</li> <li>`SUBSCRIPTION_CANCELLED`</li> <li>`SUBSCRIPTION_OVERDUE`</li></ul> |\n  | `Payout`  | <ul> <li>`PAYOUT_INITIATED`</li> <li>`PAYOUT_COMPLETED`</li> <li>`PAYOUT_FAILED`</li> </ul> |\n  | `Dispute`  | <ul> <li>`DISPUTE_ACTION_REQUIRED`</li> <li>`DISPUTE_UNDER_REVIEW`</li> <li>`DISPUTE_WON`</li> <li>`DISPUTE_LOST`</li></ul> |\n  | `Disbursement`  | <ul> <li>`DISBURSEMENT_COMPLETED`</li> <li>`DISBURSEMENT_DECLINED`</li> </ul> |\n  | `Disbursement refund`  | <ul> <li>`DISBURSEMENT_REFUND_COMPLETED`</li> </ul> |',
   })
   .openapi('WebhookEvents')
 
@@ -6882,11 +6832,14 @@ const WebhookCallbackEventSchema = z
     'DISPUTE_UNDER_REVIEW',
     'DISPUTE_WON',
     'DISPUTE_LOST',
+    'DISBURSEMENT_COMPLETED',
+    'DISBURSEMENT_DECLINED',
+    'DISBURSEMENT_REFUND_COMPLETED',
   ])
   .openapi({
     title: 'Webhook-Callback-Event',
     description:
-      "The event type of the webhook notification that's sent by Revolut to your webhook URL.\n\nEach event is related to status changes of a specific object in the Merchant API:\n\n  | Object | Event types |\n  | --------- | ----------- |\n  | `Order`   | <ul> <li>`ORDER_COMPLETED`</li> <li>`ORDER_AUTHORISED`</li> <li>`ORDER_CANCELLED`</li> <li>`ORDER_FAILED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_AUTHORISED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_DECLINED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_FAILED`</li> </ul> |\n  | `Payment` | <ul> <li>`ORDER_PAYMENT_AUTHENTICATION_CHALLENGED`</li> <li>`ORDER_PAYMENT_AUTHENTICATED`</li> <li>`ORDER_PAYMENT_AUTHORISATION_STARTED`</li> <li>`ORDER_PAYMENT_DECLINED`</li> <li>`ORDER_PAYMENT_FAILED`</li> </ul> |\n  | `Subscription`  | <ul> <li>`SUBSCRIPTION_INITIATED`</li> <li>`SUBSCRIPTION_FINISHED`</li> <li>`SUBSCRIPTION_CANCELLED`</li> <li>`SUBSCRIPTION_OVERDUE`</li></ul> |\n  | `Payout`  | <ul> <li>`PAYOUT_INITIATED`</li> <li>`PAYOUT_COMPLETED`</li> <li>`PAYOUT_FAILED`</li> </ul> |\n  | `Dispute`  | <ul> <li>`DISPUTE_ACTION_REQUIRED`</li> <li>`DISPUTE_UNDER_REVIEW`</li> <li>`DISPUTE_WON`</li> <li>`DISPUTE_LOST`</li></ul> |",
+      "The event type of the webhook notification that's sent by Revolut to your webhook URL.\n\nEach event is related to status changes of a specific object in the Merchant API:\n\n  | Object | Event types |\n  | --------- | ----------- |\n  | `Order`   | <ul> <li>`ORDER_COMPLETED`</li> <li>`ORDER_AUTHORISED`</li> <li>`ORDER_CANCELLED`</li> <li>`ORDER_FAILED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_AUTHORISED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_DECLINED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_FAILED`</li> </ul> |\n  | `Payment` | <ul> <li>`ORDER_PAYMENT_AUTHENTICATION_CHALLENGED`</li> <li>`ORDER_PAYMENT_AUTHENTICATED`</li> <li>`ORDER_PAYMENT_AUTHORISATION_STARTED`</li> <li>`ORDER_PAYMENT_DECLINED`</li> <li>`ORDER_PAYMENT_FAILED`</li> </ul> |\n  | `Subscription`  | <ul> <li>`SUBSCRIPTION_INITIATED`</li> <li>`SUBSCRIPTION_FINISHED`</li> <li>`SUBSCRIPTION_CANCELLED`</li> <li>`SUBSCRIPTION_OVERDUE`</li></ul> |\n  | `Payout`  | <ul> <li>`PAYOUT_INITIATED`</li> <li>`PAYOUT_COMPLETED`</li> <li>`PAYOUT_FAILED`</li> </ul> |\n  | `Dispute`  | <ul> <li>`DISPUTE_ACTION_REQUIRED`</li> <li>`DISPUTE_UNDER_REVIEW`</li> <li>`DISPUTE_WON`</li> <li>`DISPUTE_LOST`</li></ul> |\n  | `Disbursement`  | <ul> <li>`DISBURSEMENT_COMPLETED`</li> <li>`DISBURSEMENT_DECLINED`</li> </ul> |\n  | `Disbursement refund`  | <ul> <li>`DISBURSEMENT_REFUND_COMPLETED`</li> </ul> |",
   })
   .openapi('WebhookCallbackEvent')
 
@@ -6963,6 +6916,49 @@ const WebhookDisputeEventSchema = z
   })
   .openapi('WebhookDisputeEvent')
 
+const DisbursementReferenceSchema = z
+  .string()
+  .max(200)
+  .openapi({
+    title: 'Disbursement-Reference',
+    description:
+      'A custom reference for the disbursement, useful for reconciliation. For example, a withdrawal ID from your system.',
+  })
+  .openapi('DisbursementReference')
+
+const WebhookDisbursementEventSchema = z
+  .object({
+    event: WebhookCallbackEventSchema,
+    id: z.uuid().openapi({ description: 'The ID of the disbursement the event is related to.' }),
+    reference: DisbursementReferenceSchema.exactOptional(),
+  })
+  .openapi({
+    title: 'Webhook-Disbursement-Event',
+    description:
+      'A webhook event payload for disbursement-related events, including the disbursement ID.',
+    required: ['event', 'id'],
+  })
+  .openapi('WebhookDisbursementEvent')
+
+const WebhookDisbursementRefundEventSchema = z
+  .object({
+    event: WebhookCallbackEventSchema,
+    id: z
+      .uuid()
+      .openapi({ description: 'The ID of the disbursement refund the event is related to.' }),
+    original_disbursement_id: z
+      .uuid()
+      .openapi({ description: 'The ID of the disbursement that was refunded.' }),
+    original_reference: DisbursementReferenceSchema.exactOptional(),
+  })
+  .openapi({
+    title: 'Webhook-Disbursement-Refund-Event',
+    description:
+      'A webhook event payload for disbursement-refund-related events, including the disbursement refund ID.',
+    required: ['event', 'id', 'original_disbursement_id'],
+  })
+  .openapi('WebhookDisbursementRefundEvent')
+
 const AuthorizationParamsSchema = z
   .string()
   .openapi({
@@ -6975,9 +6971,44 @@ const AuthorizationParamsSchema = z
       },
       required: true,
       description:
-        "This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. \n\nIt ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.\n\n:::info\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)\n:::",
+        'This parameter authorises requests with your [Merchant API Secret key](https://developer.revolut.com/docs/guides/api-console/create-key), passed as a `Bearer` token in all request headers.\n\nIf your API key has signing enabled, every Production request made with it must also be signed with the `Revolut-Api-Timestamp` and `Revolut-Api-Signature` headers. In Sandbox, requests made with a signed key are accepted without them.\n\n:::info\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication) and [Signing requirements](https://developer.revolut.com/docs/guides/api-console/signing-requirements)\n:::',
     },
     example: 'Bearer sk_1234567890ABCdefGHIjklMNOpqrSTUvwxYZ_1234567890-Ab_cdeFGHijkLMNopq',
+  })
+
+const RevolutApiTimestampParamsSchema = z
+  .string()
+  .exactOptional()
+  .openapi({
+    param: {
+      name: 'Revolut-Api-Timestamp',
+      in: 'header',
+      schema: { type: 'string', example: '1783616701644' },
+      required: false,
+      description:
+        'The current Unix timestamp in **milliseconds**, for example `1783616701644`. This is a request header your integration calculates and sends with every signed request.\n\nIts purpose is replay-attack prevention: it lets Revolut verify the request is fresh and not a captured one re-sent later. The same value is used as the first component of the [signed message](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) for `Revolut-Api-Signature`.\n\nRequired in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.\n\n:::info\nFor how to calculate this header and sign your requests, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#authentication-headers)\n:::',
+    },
+    example: '1783616701644',
+  })
+
+const RevolutApiSignatureParamsSchema = z
+  .string()
+  .exactOptional()
+  .openapi({
+    param: {
+      name: 'Revolut-Api-Signature',
+      in: 'header',
+      schema: {
+        type: 'string',
+        example:
+          'XVZerlAdz6IyfC5jidsDqJf4AO8g1dx5BwFMUwO4DmoJqXrj/Q5VPOk3pf4cJl9B9cGgBNAzao9bsv/O2ADuDg==',
+      },
+      required: false,
+      description:
+        "A Base64-encoded Ed25519 signature of the [request data](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) - the timestamp, HTTP method, request path, query string, and body concatenated. This is a request header your integration calculates and sends with every signed request.\n\nIts purpose is authenticity and integrity: it proves the request came from you and wasn't tampered with, so a stolen API key alone isn't enough to impersonate you.\n\nRequired in Production when your [API key has signing enabled](https://developer.revolut.com/docs/guides/api-console/signing-requirements). In Sandbox, requests made with a signed key are accepted without it.\n\n:::info\nFor how to generate the signature, see: [Make a request](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction)\n:::",
+    },
+    example:
+      'XVZerlAdz6IyfC5jidsDqJf4AO8g1dx5BwFMUwO4DmoJqXrj/Q5VPOk3pf4cJl9B9cGgBNAzao9bsv/O2ADuDg==',
   })
 
 const RevolutApiVersionParamsSchema = z
@@ -6990,6 +7021,7 @@ const RevolutApiVersionParamsSchema = z
     '2026-03-12',
     '2026-04-20',
     '2026-08-17',
+    '2026-09-22',
   ])
   .openapi({
     param: {
@@ -6998,7 +7030,7 @@ const RevolutApiVersionParamsSchema = z
       schema: {
         type: 'string',
         format: 'date',
-        example: '2026-08-17',
+        example: '2026-09-22',
         enum: [
           '2023-09-01',
           '2024-05-01',
@@ -7008,6 +7040,7 @@ const RevolutApiVersionParamsSchema = z
           '2026-03-12',
           '2026-04-20',
           '2026-08-17',
+          '2026-09-22',
         ],
       },
       required: true,
@@ -7015,7 +7048,7 @@ const RevolutApiVersionParamsSchema = z
         'The version of the Merchant API, specified in `YYYY-MM-DD` format.\n\nIf not specified, you will receive an error.\n\n\n:::info\nFor more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).\n:::',
       'x-config-always-visible-in-example': true,
     },
-    example: '2026-08-17',
+    example: '2026-09-22',
   })
 
 const LimitParamsSchema = z
@@ -7152,6 +7185,7 @@ const RevolutApiVersionOptionalParamsSchema = z
     '2026-03-12',
     '2026-04-20',
     '2026-08-17',
+    '2026-09-22',
   ])
   .exactOptional()
   .openapi({
@@ -7161,7 +7195,7 @@ const RevolutApiVersionOptionalParamsSchema = z
       schema: {
         type: 'string',
         format: 'date',
-        example: '2026-08-17',
+        example: '2026-09-22',
         enum: [
           '2023-09-01',
           '2024-05-01',
@@ -7171,6 +7205,7 @@ const RevolutApiVersionOptionalParamsSchema = z
           '2026-03-12',
           '2026-04-20',
           '2026-08-17',
+          '2026-09-22',
         ],
       },
       description:
@@ -7178,7 +7213,7 @@ const RevolutApiVersionOptionalParamsSchema = z
       'x-config-always-visible-in-example': true,
       required: false,
     },
-    example: '2026-08-17',
+    example: '2026-09-22',
   })
 
 const IdempotencyKeyParamsSchema = z
@@ -7197,7 +7232,15 @@ const IdempotencyKeyParamsSchema = z
   })
 
 const RevolutApiVersion_2024_09_01MinParamsSchema = z
-  .enum(['2024-09-01', '2025-10-16', '2025-12-04', '2026-03-12', '2026-04-20', '2026-08-17'])
+  .enum([
+    '2024-09-01',
+    '2025-10-16',
+    '2025-12-04',
+    '2026-03-12',
+    '2026-04-20',
+    '2026-08-17',
+    '2026-09-22',
+  ])
   .openapi({
     param: {
       name: 'Revolut-Api-Version',
@@ -7205,25 +7248,33 @@ const RevolutApiVersion_2024_09_01MinParamsSchema = z
       schema: {
         type: 'string',
         format: 'date',
-        example: '2026-08-17',
-        enum: ['2024-09-01', '2025-10-16', '2025-12-04', '2026-03-12', '2026-04-20', '2026-08-17'],
+        example: '2026-09-22',
+        enum: [
+          '2024-09-01',
+          '2025-10-16',
+          '2025-12-04',
+          '2026-03-12',
+          '2026-04-20',
+          '2026-08-17',
+          '2026-09-22',
+        ],
       },
       required: true,
       description:
         'The version of the Merchant API, specified in `YYYY-MM-DD` format.\n\nThis endpoint is available from version `2024-09-01`. If a version earlier than `2024-09-01` is provided, the endpoint returns a `404` response.\n\nIf not specified, you will receive an error.\n\n\n:::info\nFor more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).\n:::',
       'x-config-always-visible-in-example': true,
     },
-    example: '2026-08-17',
+    example: '2026-09-22',
   })
 
 const PageTokenParamsSchema = z
-  .string()
+  .uuid()
   .exactOptional()
   .openapi({
     param: {
       name: 'page_token',
       in: 'query',
-      schema: { type: 'string' },
+      schema: { type: 'string', format: 'uuid' },
       description:
         'Token for retrieving the next page of results. Used for **pagination**.\n\nTo paginate through results:\n\n  1. Make an initial request with the desired `limit`.\n  1. The response will include a `next_page_token` if more results are available.\n  1. Use that token in the `page_token` parameter of your next request.\n  1. Repeat until `next_page_token` is not present.\n\n:::note\nWhen using `page_token`, you must include all query parameters from the initial request (such as `from`, `to`, or other filter parameters) to maintain consistent filtering across pages.\n:::',
       required: false,
@@ -9216,6 +9267,7 @@ const ResOrderCancelAdditionalV2Example = {
         payer: { email: 'example.payer@example.com', phone: '+447911123456' },
         payment_method: {
           type: 'revolut_pay_account',
+          commercial: false,
           fingerprint: '1JAllfQY4POhBV8DaddAQ4LC5RbMP8LMLvUdJW4s5JY=',
         },
       },
@@ -9527,6 +9579,7 @@ const ResOrderCancelCryptoExample = {
         payer: { email: 'example.payer@example.com', phone: '+447911123456' },
         payment_method: {
           type: 'revolut_pay_account',
+          commercial: false,
           fingerprint: '1JAllfQY4POhBV8DaddAQ4LC5RbMP8LMLvUdJW4s5JY=',
         },
       },
@@ -9776,6 +9829,7 @@ const ResRefundAdditionalExample = {
         payer: { email: 'example.payer@example.com', phone: '+447911123456' },
         payment_method: {
           type: 'revolut_pay_account',
+          commercial: false,
           fingerprint: '1JAllfQY4POhBV8DaddAQ4LC5RbMP8LMLvUdJW4s5JY=',
         },
       },
@@ -11237,14 +11291,14 @@ const BearerAuthSecurityScheme = {
   scheme: 'bearer',
   bearerFormat: 'string',
   description:
-    "Each Merchant API request must contain an authorization header in the following format:\n\n```\n'Authorization: Bearer <yourSecretApiKey>'\n```\n\nTo use this API, you need to generate API keys from your Revolut Business account. The Secret key is used in the authorization header for all server calls, while the Public key is provided with payment methods at checkout.\n\n:::info\nFor detailed instructions on generating your API keys, see: [Generate API keys](https://developer.revolut.com/docs/guides/merchant/get-started#generate-api-keys).\n:::",
+    "Each Merchant API request must contain an authorization header in the following format:\n\n```\n'Authorization: Bearer <yourSecretApiKey>'\n```\n\nTo use this API, you need to generate API keys in the API Console. The Secret key is used in the authorization header for all server calls, while the Public key is provided with payment methods at checkout.\n\n:::info\nFor detailed instructions on generating your API keys, see: [Generate API keys](https://developer.revolut.com/docs/guides/merchant/get-started#generate-api-keys).\n:::\n\n:::info\nEvery operation requires your API key to have the matching resource permission (Read or Write) assigned in the API Console. Write access also grants Read access to the resource. For the full list of products, resources, and their permissions, see [Signing requirements](https://developer.revolut.com/docs/guides/api-console/signing-requirements).\n:::",
 }
 
 const SSLSecurityScheme = {
   type: 'http',
   scheme: 'SSL',
   description:
-    ":::note\nThis authentication protocol is used exclusively when using [Fast checkout](https://developer.revolut.com/docs/guides/merchant/optimise-checkout/fast-checkout).\n:::\n\nConnection over HTTPS is using SSL authentication. For successful authentication, your system's certificate should be issued by a Public Certificate Authority (PCA) and your system should trust Revolut's public certificate.",
+    ":::info\nThis authentication protocol is used exclusively when using [Fast checkout](https://developer.revolut.com/docs/guides/merchant/optimise-checkout/fast-checkout).\n:::\n\nConnection over HTTPS is using SSL authentication. For successful authentication, your system's certificate should be issued by a Public Certificate Authority (PCA) and your system should trust Revolut's public certificate.",
 }
 
 const PayloadSignatureSecurityScheme = {
@@ -11252,7 +11306,7 @@ const PayloadSignatureSecurityScheme = {
   in: 'header',
   name: 'Revolut-Pay-Payload-Signature',
   description:
-    ':::note\nThis authentication protocol is used exclusively when using [Fast checkout](https://developer.revolut.com/docs/guides/merchant/optimise-checkout/fast-checkout).\n:::\n\nData integrity and authorship will be verified using a payload-based signature. The response of a successful URL registration for address validation (see: [Register address validation for Fast checkout](https://developer.revolut.com/docs/api/merchant#register-address-validation-endpoint)) will contain a secret signing key.\n\nThe signing key will be used by Revolut to compute a Hash-based Message Authentication Code (HMAC) payload signature whenever the registered URL is called, which should be verified by your backend.',
+    ':::info\nThis authentication protocol is used exclusively when using [Fast checkout](https://developer.revolut.com/docs/guides/merchant/optimise-checkout/fast-checkout).\n:::\n\nData integrity and authorship will be verified using a payload-based signature. The response of a successful URL registration for address validation (see: [Register address validation for Fast checkout](https://developer.revolut.com/docs/api/merchant#register-address-validation-endpoint)) will contain a secret signing key.\n\nThe signing key will be used by Revolut to compute a Hash-based Message Authentication Code (HMAC) payload signature whenever the registered URL is called, which should be verified by your backend.',
 }
 
 export const getApiOrdersRoute = createRoute({
@@ -11266,6 +11320,8 @@ export const getApiOrdersRoute = createRoute({
   request: {
     headers: z.object({
       Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
       'Revolut-Api-Version': RevolutApiVersionParamsSchema,
     }),
     query: z.object({
@@ -11329,6 +11385,8 @@ export const postApiOrdersRoute = createRoute({
   request: {
     headers: z.object({
       Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
       'Revolut-Api-Version': RevolutApiVersionParamsSchema,
     }),
     body: {
@@ -11438,6 +11496,8 @@ export const getApiOrdersOrderIdRoute = createRoute({
   request: {
     headers: z.object({
       Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
       'Revolut-Api-Version': RevolutApiVersionParamsSchema,
     }),
     params: z.object({ order_id: OrderIdParamsSchema }),
@@ -11523,6 +11583,8 @@ export const patchApiOrdersOrderIdRoute = createRoute({
   request: {
     headers: z.object({
       Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
       'Revolut-Api-Version': RevolutApiVersionParamsSchema,
     }),
     params: z.object({ order_id: OrderIdParamsSchema }),
@@ -11631,6 +11693,8 @@ export const postApiOrdersOrderIdIncrementAuthorisationRoute = createRoute({
   request: {
     headers: z.object({
       Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
       'Revolut-Api-Version': RevolutApiVersionParamsSchema,
     }),
     params: z.object({ order_id: OrderIdParamsSchema }),
@@ -11731,11 +11795,13 @@ export const postApiOrdersOrderIdCaptureRoute = createRoute({
   tags: ['Orders'],
   summary: 'Capture an order',
   description:
-    "This endpoint is used to capture the funds of an existing, uncaptured order. When the payment for an order is authorised, you can capture the order to send it to the processing stage.\n\n:::info\nFor more information about the order and payment lifecycle, see: [Order and payment\nlifecycle](https://developer.revolut.com/docs/guides/merchant/reference/order-lifecycle).\n:::\n\n## Capture modes\n\nWhen you [create an order](https://developer.revolut.com/docs/api/merchant/2024-09-01#create-order), you can choose one of the following capture modes:\n\n  | **Capture mode** | **Description** |\n  | ---------------- | --------------- |\n  | `automatic` | The order is captured automatically after payment authorisation. No further actions are needed. |\n  | `manual` | The order is not captured automatically and stays in `authorised` state. You must manually capture the order using the steps outlined below. |\n\n:::warning\nBy default, uncaptured orders with **final authorisation** (`authorisation_type: final`) remain in `authorised` state for **7 days**. If not captured within this period, the funds are returned to the customer's original payment method.\n\nThe capture deadline can be customised:\n- Use `cancel_authorised_after` parameter when creating an order to set a custom expiry period\n- The effective deadline is the earlier of `cancel_authorised_after` and the card/network clearing window\n- `capture_deadline` is set when the order becomes `authorised` and doesn't change afterwards\n- Use **pre-authorisation** (`authorisation_type: pre_authorisation`) for extended clearing windows (up to 30 days) and incremental authorisation support (see tip below)\n:::\n\n:::tip [Extended clearing windows]\nIf your business requires longer authorisation hold periods (up to 30 days depending on card scheme and MCC), use [pre-authorisation](https://developer.revolut.com/docs/guides/merchant/operations/capture-and-settlement/advanced-authorisation/pre-authorisation) instead of standard authorisation. Pre-authorisation also supports [incremental authorisation](https://developer.revolut.com/docs/guides/merchant/operations/capture-and-settlement/advanced-authorisation/incremental-authorisation) for variable-amount scenarios.\n:::\n\n### Manual capture\n  \nTo capture an order manually, use one of the following methods:\n  \n| **Web UI** | **Merchant API** |\n| ---------- | ------------ |\n| <ol><li>Log in to your [Revolut Business portal](https://business.revolut.com).</li><li>Navigate to the **Merchant** tab on the dashboard, and click the **See all** button in the **Transactions** section.</li><li>Select an uncaptured payment, and click **Capture**.</li></ol> | Use the `/capture` endpoint. |\n\n:::info\nFor more information about manually capturing an order, see: [Authorise an amount to capture\nlater](https://developer.revolut.com/docs/guides/merchant/operations/capture-and-settlement/capture-later).\n:::\n\n#### Partial capture\n\nYou have the option to capture only a fraction of the full amount. In such cases, the uncaptured portion of the amount will be voided.\n\n:::warning\nThe following limitations apply to manual captures:\n  - An order can only be captured once\n  - Captured amount can't exceed the authorised amount\n  - On Web UI, only capturing full amount is possible\n  - `0` amount captures are not allowed\n  - For partial captures, you can only resend the request with the initial amount\n:::\n\n#### Updating line items at capture\n\nYou can optionally provide `line_items` when capturing an order. This allows you to adjust the final order details at the time of capture, which is useful for scenarios such as:\n- **Partial captures:** Specify which items are being captured when capturing less than the full amount. Line items help accurately reflect which items were captured versus voided (see [Partial capture](#partial-capture) above).\n- **Final adjustments:** Update order details when the delivered items differ from the initial authorisation (e.g., out-of-stock items, substitutions, quantity changes).\n\n:::warning\nIf you provide `line_items` when capturing, they will **overwrite** the original line items provided during order creation or update. Ensure you include all items you want associated with the captured order.\n:::\n\n:::info\nFor a comprehensive guide including use cases and examples, see: [Authorise a payment to capture later](https://developer.revolut.com/docs/guides/merchant/operations/capture-and-settlement/capture-later#update-line-items-at-capture).\n:::\n\n## Idempotency and repeated requests\n\nThe capture operation is idempotent. This means that an order can only be captured once. If you send a capture request more than once:\n\n- The first valid request captures the order and moves it to the processing stage.\n- Any subsequent request with the same capture amount will not recapture funds and behaves like a [Retrieve an order](https://developer.revolut.com/docs/api/merchant/2024-09-01#retrieve-order) request, returning the current order state.\n- A subsequent request with a different capture amount returns an error.\n\n:::info\nUtilising the idempotent nature of this endpoint helps maintain data consistency and prevents duplicate processing of the same order.\n:::",
+    "This endpoint is used to capture the funds of an existing, uncaptured order. When the payment for an order is authorised, you can capture the order to send it to the processing stage.\n\n:::info\nFor more information about the order and payment lifecycle, see: [Order and payment\nlifecycle](https://developer.revolut.com/docs/guides/merchant/reference/order-lifecycle).\n:::\n\n## Capture modes\n\nWhen you [create an order](https://developer.revolut.com/docs/api/merchant/2024-09-01#create-order), you can choose one of the following capture modes:\n\n  | **Capture mode** | **Description** |\n  | ---------------- | --------------- |\n  | `automatic` | The order is captured automatically after payment authorisation. No further actions are needed. |\n  | `manual` | The order is not captured automatically and stays in `authorised` state. You must manually capture the order using the steps outlined below. |\n\n:::warning\nBy default, uncaptured orders with **final authorisation** (`authorisation_type: final`) remain in `authorised` state for **7 days**. If not captured within this period, the funds are returned to the customer's original payment method.\n\nThe capture deadline can be customised:\n- Use `cancel_authorised_after` parameter when creating an order to set a custom expiry period\n- The effective deadline is the earlier of `cancel_authorised_after` and the card/network clearing window\n- `capture_deadline` is set when the order becomes `authorised` and doesn't change afterwards\n- Use **pre-authorisation** (`authorisation_type: pre_authorisation`) for extended clearing windows (up to 30 days) and incremental authorisation support (see tip below)\n:::\n\n:::tip [Extended clearing windows]\nIf your business requires longer authorisation hold periods (up to 30 days depending on card scheme and MCC), use [pre-authorisation](https://developer.revolut.com/docs/guides/merchant/operations/capture-and-settlement/advanced-authorisation/pre-authorisation) instead of standard authorisation. Pre-authorisation also supports [incremental authorisation](https://developer.revolut.com/docs/guides/merchant/operations/capture-and-settlement/advanced-authorisation/incremental-authorisation) for variable-amount scenarios.\n:::\n\n### Manual capture\n  \nTo capture an order manually, use one of the following methods:\n  \n| **Web UI** | **Merchant API** |\n| ---------- | ------------ |\n| <ol><li>Log in to your [Revolut Business portal](https://business.revolut.com).</li><li>Navigate to the **Merchant** tab on the dashboard, and click the **See all** button in the **Transactions** section.</li><li>Select an uncaptured payment, and click **Capture**.</li></ol> | Use the `/capture` endpoint. |\n\n:::info\nFor more information about manually capturing an order, see: [Authorise an amount to capture\nlater](https://developer.revolut.com/docs/guides/merchant/operations/capture-and-settlement/capture-later).\n:::\n\n#### Partial capture\n\nYou have the option to capture only a fraction of the full amount. In such cases, the uncaptured portion of the amount will be voided.\n\n:::warning\nThe following limitations apply to manual captures:\n  - An order can only be captured once\n  - Captured amount can't exceed the authorised amount\n  - On Web UI, only capturing full amount is possible\n  - `0` amount captures are not allowed\n  - For partial captures, you can only resend the request with the initial amount\n:::\n\n#### Updating line items at capture\n\nYou can optionally provide `line_items` when capturing an order. This allows you to adjust the final order details at the time of capture, which is useful for scenarios such as:\n- **Partial captures:** Specify which items are being captured when capturing less than the full amount. Line items help accurately reflect which items were captured versus voided (see [Partial capture](#partial-capture) above).\n- **Final adjustments:** Update order details when the delivered items differ from the initial authorisation (e.g., out-of-stock items, substitutions, quantity changes).\n\n:::warning\nIf you provide `line_items` when capturing, they will **overwrite** the original line items provided during order creation or update. Ensure you include all items you want associated with the captured order.\n:::\n\n:::info\nFor a comprehensive guide including use cases and examples, see: [Authorise a payment to capture later](https://developer.revolut.com/docs/guides/merchant/operations/capture-and-settlement/capture-later#4-capture-the-payment).\n:::\n\n## Idempotency and repeated requests\n\nThe capture operation is idempotent. This means that an order can only be captured once. If you send a capture request more than once:\n\n- The first valid request captures the order and moves it to the processing stage.\n- Any subsequent request with the same capture amount will not recapture funds and behaves like a [Retrieve an order](https://developer.revolut.com/docs/api/merchant/2024-09-01#retrieve-order) request, returning the current order state.\n- A subsequent request with a different capture amount returns an error.\n\n:::note\nUtilising the idempotent nature of this endpoint helps maintain data consistency and prevents duplicate processing of the same order.\n:::",
   operationId: 'captureOrder',
   request: {
     headers: z.object({
       Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
       'Revolut-Api-Version': RevolutApiVersionParamsSchema,
     }),
     params: z.object({ order_id: OrderIdParamsSchema }),
@@ -11839,6 +11905,8 @@ export const postApiOrdersOrderIdCancelRoute = createRoute({
   request: {
     headers: z.object({
       Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
       'Revolut-Api-Version': RevolutApiVersionOptionalParamsSchema,
     }),
     params: z.object({ order_id: OrderIdParamsSchema }),
@@ -11938,6 +12006,8 @@ export const postApiOrdersOrderIdRefundRoute = createRoute({
   request: {
     headers: z.object({
       Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
       'Revolut-Api-Version': RevolutApiVersionParamsSchema,
       'Idempotency-Key': IdempotencyKeyParamsSchema,
     }),
@@ -12053,7 +12123,11 @@ export const getApiOrdersOrderIdPaymentsRoute = createRoute({
     "Retrieve a list of payments for a specific order, based on the order's ID.\n\n:::note\nThis endpoint is part of a new API, pay attention to the different endpoint URL.\n:::\n\nUse this endpoint to retrieve payment details for saved payment methods to make merchant and customer initiated transactions. For more information, see: \n  - [Speed up customer checkout by using saved card details](https://developer.revolut.com/docs/guides/merchant/optimise-checkout/save-payment-methods/checkout-with-saved-card)\n  - [Manage subscriptions](https://developer.revolut.com/docs/guides/merchant/optimise-checkout/save-payment-methods/subscription-management)",
   operationId: 'retrievePaymentList',
   request: {
-    headers: z.object({ Authorization: AuthorizationParamsSchema }),
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     params: z.object({ order_id: OrderIdParamsSchema }),
   },
   responses: {
@@ -12183,7 +12257,11 @@ export const postApiOrdersOrderIdPaymentsRoute = createRoute({
     "Initiate a payment to pay full amount for an order using a customer's saved payment method.\n\n:::note\nThe `/orders/{order_id}/confirm` endpoint has been deprecated. It will be only supported for already existing implementations.\n:::\n\n:::warning\nThis endpoint is part of a new API, pay attention to the different endpoint URL. \n:::\n\nFor more information about how to save and charge payment methods, see: [Charge a customer's saved payment method](https://developer.revolut.com/docs/guides/merchant/optimise-checkout/save-payment-methods/charge-saved-payment-method).\n\nThe following table shows who can initiate payments on saved payment methods (`initiator` parameter), depending on if the payment method was saved for the customer or the merchant (`savedPaymentMethodFor` parameter):\n\n  |                           | `savePaymentMethodFor: customer` | `savePaymentMethodFor: merchant` |\n  | ------------------------- | -------------------------------- | -------------------------------- |\n  | **`initiator: customer`** | Allowed                          | Allowed                          |\n  | **`initiator: merchant`** | Not allowed                      | Allowed                          |\n\n\n:::note\nUsing this endpoint, only merchant initiated payments are supported with Revolut Pay.\n:::\n          \nFor more information about customers' payment methods, see the [Retrieve payment method list of a customer](https://developer.revolut.com/docs/api/merchant#retrieve-payment-method-list) operation.",
   operationId: 'payOrder',
   request: {
-    headers: z.object({ Authorization: AuthorizationParamsSchema }),
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     params: z.object({ order_id: OrderIdParamsSchema }),
     body: {
       content: {
@@ -12418,6 +12496,8 @@ export const getApiCustomersRoute = createRoute({
   request: {
     headers: z.object({
       Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
       'Revolut-Api-Version': RevolutApiVersion_2024_09_01MinParamsSchema,
     }),
     query: z.object({
@@ -12477,6 +12557,8 @@ export const postApiCustomersRoute = createRoute({
   request: {
     headers: z.object({
       Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
       'Revolut-Api-Version': RevolutApiVersion_2024_09_01MinParamsSchema,
     }),
     body: {
@@ -12539,6 +12621,8 @@ export const getApiCustomersCustomerIdRoute = createRoute({
   request: {
     headers: z.object({
       Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
       'Revolut-Api-Version': RevolutApiVersion_2024_09_01MinParamsSchema,
     }),
     params: z.object({ customer_id: CustomerIdParamsSchema }),
@@ -12576,6 +12660,8 @@ export const deleteApiCustomersCustomerIdRoute = createRoute({
   request: {
     headers: z.object({
       Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
       'Revolut-Api-Version': RevolutApiVersion_2024_09_01MinParamsSchema,
     }),
     params: z.object({ customer_id: CustomerIdParamsSchema }),
@@ -12632,6 +12718,8 @@ export const patchApiCustomersCustomerIdRoute = createRoute({
   request: {
     headers: z.object({
       Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
       'Revolut-Api-Version': RevolutApiVersion_2024_09_01MinParamsSchema,
     }),
     params: z.object({ customer_id: CustomerIdParamsSchema }),
@@ -12696,6 +12784,8 @@ export const getApiCustomersCustomerIdPaymentMethodsRoute = createRoute({
   request: {
     headers: z.object({
       Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
       'Revolut-Api-Version': RevolutApiVersion_2024_09_01MinParamsSchema,
     }),
     params: z.object({ customer_id: CustomerIdParamsSchema }),
@@ -12734,6 +12824,8 @@ export const getApiCustomersCustomerIdPaymentMethodsPaymentMethodIdRoute = creat
   request: {
     headers: z.object({
       Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
       'Revolut-Api-Version': RevolutApiVersion_2024_09_01MinParamsSchema,
     }),
     params: z.object({
@@ -12779,6 +12871,8 @@ export const deleteApiCustomersCustomerIdPaymentMethodsPaymentMethodIdRoute = cr
   request: {
     headers: z.object({
       Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
       'Revolut-Api-Version': RevolutApiVersion_2024_09_01MinParamsSchema,
     }),
     params: z.object({
@@ -12833,11 +12927,13 @@ export const patchApiCustomersCustomerIdPaymentMethodsPaymentMethodIdRoute = cre
   tags: ['Customers'],
   summary: "Update a customer's payment method",
   description:
-    "Update the attributes of a specific saved payment method for a customer.\n\n:::note\nUpdating `saved_for` to `customer` is a one-way operation — you can't change it back to `merchant`.\n\nOnce updated, this payment method can no longer be used for merchant-initiated transactions (MIT), for example, to charge recurring payments. It can only be used when the customer is on the checkout page.\n\nFor more information, see:\n- [Pay for an order](https://developer.revolut.com/docs/api/merchant/2024-09-01#pay-order)\n- [Charge a customer's saved payment method](https://developer.revolut.com/docs/guides/merchant/optimise-checkout/save-payment-methods/charge-saved-payment-method)\n:::",
+    "Update the attributes of a specific saved payment method for a customer.\n\n:::info\nUpdating `saved_for` to `customer` is a one-way operation — you can't change it back to `merchant`.\n\nOnce updated, this payment method can no longer be used for merchant-initiated transactions (MIT), for example, to charge recurring payments. It can only be used when the customer is on the checkout page.\n\nFor more information, see:\n- [Pay for an order](https://developer.revolut.com/docs/api/merchant/2024-09-01#pay-order)\n- [Charge a customer's saved payment method](https://developer.revolut.com/docs/guides/merchant/optimise-checkout/save-payment-methods/charge-saved-payment-method)\n:::",
   operationId: 'updatePaymentMethod',
   request: {
     headers: z.object({
       Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
       'Revolut-Api-Version': RevolutApiVersion_2024_09_01MinParamsSchema,
     }),
     params: z.object({
@@ -12908,6 +13004,8 @@ export const getApiDisputesRoute = createRoute({
   request: {
     headers: z.object({
       Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
       'Revolut-Api-Version': RevolutApiVersionParamsSchema,
     }),
     query: z.object({
@@ -12976,6 +13074,8 @@ export const getApiDisputesDisputeIdRoute = createRoute({
   request: {
     headers: z.object({
       Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
       'Revolut-Api-Version': RevolutApiVersionParamsSchema,
     }),
     params: z.object({ dispute_id: DisputeIdParamsSchema }),
@@ -13054,6 +13154,8 @@ export const postApiDisputesDisputeIdAcceptRoute = createRoute({
   request: {
     headers: z.object({
       Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
       'Revolut-Api-Version': RevolutApiVersionParamsSchema,
     }),
     params: z.object({ dispute_id: DisputeIdParamsSchema }),
@@ -13138,6 +13240,8 @@ export const postApiDisputesDisputeIdEvidencesRoute = createRoute({
   request: {
     headers: z.object({
       Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
       'Revolut-Api-Version': RevolutApiVersionParamsSchema,
       'Content-Type': ContentTypeParamsSchema,
     }),
@@ -13272,6 +13376,8 @@ export const postApiDisputesDisputeIdChallengeRoute = createRoute({
   request: {
     headers: z.object({
       Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
       'Revolut-Api-Version': RevolutApiVersionParamsSchema,
     }),
     params: z.object({ dispute_id: DisputeIdParamsSchema }),
@@ -13368,6 +13474,8 @@ export const getApiPaymentsPaymentIdRoute = createRoute({
   request: {
     headers: z.object({
       Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
       'Revolut-Api-Version': RevolutApiVersionOptionalParamsSchema,
     }),
     params: z.object({ payment_id: PaymentIdParamsSchema }),
@@ -13433,6 +13541,7 @@ export const getApiPaymentsPaymentIdRoute = createRoute({
                 fees: [{ type: 'acquiring', amount: 21, currency: 'GBP' }],
                 payment_method: {
                   type: 'revolut_pay_account',
+                  commercial: false,
                   fingerprint: '1JAllfQY4POhBV8DaddAQ4LC5RbMP8LMLvUdJW4s5JY=',
                 },
                 order_id: '6633865d-d911-a98c-8715-425f8731640c',
@@ -13712,6 +13821,8 @@ export const getApiSubscriptionPlansRoute = createRoute({
   request: {
     headers: z.object({
       Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
       'Revolut-Api-Version': RevolutApiVersionParamsSchema,
     }),
     query: z.object({
@@ -13776,6 +13887,8 @@ export const postApiSubscriptionPlansRoute = createRoute({
   request: {
     headers: z.object({
       Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
       'Revolut-Api-Version': RevolutApiVersionParamsSchema,
     }),
     body: {
@@ -13859,6 +13972,8 @@ export const getApiSubscriptionPlansSubscriptionPlanIdRoute = createRoute({
   request: {
     headers: z.object({
       Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
       'Revolut-Api-Version': RevolutApiVersionParamsSchema,
     }),
     params: z.object({ subscription_plan_id: SubscriptionPlanIdParamsSchema }),
@@ -13909,6 +14024,8 @@ export const getApiSubscriptionsRoute = createRoute({
   request: {
     headers: z.object({
       Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
       'Revolut-Api-Version': RevolutApiVersionParamsSchema,
     }),
     query: z.object({
@@ -13986,6 +14103,8 @@ export const postApiSubscriptionsRoute = createRoute({
   request: {
     headers: z.object({
       Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
       'Revolut-Api-Version': RevolutApiVersionParamsSchema,
       'Idempotency-Key': IdempotencyKeyParamsSchema,
     }),
@@ -14062,6 +14181,8 @@ export const getApiSubscriptionsSubscriptionIdRoute = createRoute({
   request: {
     headers: z.object({
       Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
       'Revolut-Api-Version': RevolutApiVersionParamsSchema,
     }),
     params: z.object({ subscription_id: SubscriptionIdParamsSchema }),
@@ -14108,6 +14229,8 @@ export const patchApiSubscriptionsSubscriptionIdRoute = createRoute({
   request: {
     headers: z.object({
       Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
       'Revolut-Api-Version': RevolutApiVersionParamsSchema,
     }),
     params: z.object({ subscription_id: SubscriptionIdParamsSchema }),
@@ -14180,6 +14303,8 @@ export const postApiSubscriptionsSubscriptionIdCancelRoute = createRoute({
   request: {
     headers: z.object({
       Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
       'Revolut-Api-Version': RevolutApiVersionParamsSchema,
     }),
     params: z.object({ subscription_id: SubscriptionIdParamsSchema }),
@@ -14235,6 +14360,8 @@ export const postApiSubscriptionsSubscriptionIdChangePlanRoute = createRoute({
   request: {
     headers: z.object({
       Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
       'Revolut-Api-Version': RevolutApiVersionParamsSchema,
     }),
     params: z.object({ subscription_id: SubscriptionIdParamsSchema }),
@@ -14343,6 +14470,8 @@ export const postApiSubscriptionsSubscriptionIdChangeRenewalDateRoute = createRo
   request: {
     headers: z.object({
       Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
       'Revolut-Api-Version': RevolutApiVersionParamsSchema,
     }),
     params: z.object({ subscription_id: SubscriptionIdParamsSchema }),
@@ -14445,6 +14574,8 @@ export const getApiSubscriptionsSubscriptionIdCyclesRoute = createRoute({
   request: {
     headers: z.object({
       Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
       'Revolut-Api-Version': RevolutApiVersionParamsSchema,
     }),
     params: z.object({ subscription_id: SubscriptionIdParamsSchema }),
@@ -14497,6 +14628,8 @@ export const getApiSubscriptionsSubscriptionIdCyclesCycleIdRoute = createRoute({
   request: {
     headers: z.object({
       Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
       'Revolut-Api-Version': RevolutApiVersionParamsSchema,
     }),
     params: z.object({
@@ -14546,6 +14679,8 @@ export const getApiSubscriptionUsagesRoute = createRoute({
   request: {
     headers: z.object({
       Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
       'Revolut-Api-Version': RevolutApiVersionParamsSchema,
     }),
     query: z.object({
@@ -14608,6 +14743,8 @@ export const postApiSubscriptionUsagesRoute = createRoute({
   request: {
     headers: z.object({
       Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
       'Revolut-Api-Version': RevolutApiVersionParamsSchema,
       'Idempotency-Key': IdempotencyKeyRequiredParamsSchema,
     }),
@@ -14739,6 +14876,8 @@ export const getApiSubscriptionUsagesUsageIdRoute = createRoute({
   request: {
     headers: z.object({
       Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
       'Revolut-Api-Version': RevolutApiVersionParamsSchema,
     }),
     params: z.object({ usage_id: UsageIdParamsSchema }),
@@ -14785,6 +14924,8 @@ export const deleteApiSubscriptionUsagesUsageIdRoute = createRoute({
   request: {
     headers: z.object({
       Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
       'Revolut-Api-Version': RevolutApiVersionParamsSchema,
     }),
     params: z.object({ usage_id: UsageIdParamsSchema }),
@@ -14853,6 +14994,8 @@ export const patchApiSubscriptionUsagesUsageIdRoute = createRoute({
   request: {
     headers: z.object({
       Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
       'Revolut-Api-Version': RevolutApiVersionParamsSchema,
     }),
     params: z.object({ usage_id: UsageIdParamsSchema }),
@@ -14943,6 +15086,8 @@ export const getApiPayoutsRoute = createRoute({
   request: {
     headers: z.object({
       Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
       'Revolut-Api-Version': RevolutApiVersionParamsSchema,
     }),
     query: z.object({
@@ -15060,6 +15205,8 @@ export const getApiPayoutsPayoutIdRoute = createRoute({
   request: {
     headers: z.object({
       Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
       'Revolut-Api-Version': RevolutApiVersionParamsSchema,
     }),
     params: z.object({ payout_id: PayoutIdParamsSchema }),
@@ -15138,7 +15285,11 @@ export const postApiReportRunsRoute = createRoute({
     'Start generating a report of all transactions that match the filter and options specified in the request body.\n\nUse the returned `report_run_id` and the [Retrieve report run details](https://developer.revolut.com/docs/api/merchant#retrieve-report-run) operation to check the status of the generation.\n\nAfter generation is done, use the [Download report file](https://developer.revolut.com/docs/api/merchant#download-report-file) operation to retrieve the CSV. The `file_url` in the completed report run object is the request URL for that endpoint and requires the same authorisation as any other Merchant API request. \n\n### Report types\n\nThe table below helps to choose the right report type for your use case:\n\n| Report type | What it covers |\n| ----------- | -------------- |\n| `custom_report` | Settled and processing transactions with configurable columns |\n| `settlement_report` | All settled transactions, with a configurable set of columns |\n| `payments_report` | All payments including failed and declined ones |\n| `payout_statement_report` | All transactions contributing to a specific payout |\n| `icpp_fee_breakdown_report` | IC++ fees per transaction for a specific IC++ charge |\n\n### IDs across report types\n\nEach report type uses a different primary ID, depending on which system the data comes from:\n\n| ID column | System | Report types |\n| --------- | ------ | ------------ |\n| `payment_id`, `id` | **Acquiring system** - identifies a payment attempt | `payments_report`, `icpp_fee_breakdown_report` |\n| `transaction_id` | **Core ledger** - identifies the settlement entry created when a payment is captured | `settlement_report`, `payout_statement_report`, `custom_report` |\n| `order_id` | **Both systems** - bridges the acquiring and ledger perspectives | `settlement_report`, `payments_report`, `payout_statement_report`, `custom_report` |',
   operationId: 'createReportRun',
   request: {
-    headers: z.object({ Authorization: AuthorizationParamsSchema }),
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     body: {
       content: {
         'application/json': {
@@ -15292,7 +15443,11 @@ export const getApiReportRunsReportRunIdRoute = createRoute({
     "Retrieve details of a report run, based on the `report_run_id`. \n\nUse this method to check the status of a report run.\n\nIf a report run's `status` is `completed`, the report file can be downloaded using the `file_url` for 24 hours after report generation finishes.\n\nOnce that 24-hour window elapses, the report run remains retrievable but transitions to `expired`, and the file can no longer be downloaded.",
   operationId: 'retrieveReportRun',
   request: {
-    headers: z.object({ Authorization: AuthorizationParamsSchema }),
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     params: z.object({ report_run_id: ReportRunIdParamsSchema }),
   },
   responses: {
@@ -15349,7 +15504,11 @@ export const getApiReportRunsReportRunIdFileRoute = createRoute({
     'Use this endpoint to download the generated report file.\n\nA generated report file is available for 24 hours after report generation finishes. After that, the report run becomes `expired` and the file can no longer be downloaded.\n\nThe response is a raw `text/csv` file. The first row contains the column headers. The columns included depend on the report type used when creating the report run, and the `options.columns` list if specified.\n\n### IDs across report types\n\nRevolut uses two separate ID systems across report types:\n\n| ID column | System | Report types |\n| --------- | ------ | ------------ |\n| `payment_id`, `id` | **Acquiring system** - identifies a payment attempt | `payments_report`, `icpp_fee_breakdown_report` |\n| `transaction_id` | **Core ledger** - identifies the settlement entry created when a payment is captured | `settlement_report`, `payout_statement_report`, `custom_report` |\n| `order_id` | **Both systems** - bridges the acquiring and ledger perspectives | `settlement_report`, `payments_report`, `payout_statement_report`, `custom_report` |\n\n:::tip\nA payment and its resulting ledger transaction represent the same event but have **different UUIDs**. To reconcile `payments_report` data against `settlement_report` data, join on `order_id`.\n:::\n\nUse the schema selector below to see the available columns for each report type.',
   operationId: 'downloadReportFile',
   request: {
-    headers: z.object({ Authorization: AuthorizationParamsSchema }),
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     params: z.object({ report_run_id: ReportRunIdParamsSchema }),
   },
   responses: {
@@ -15397,6 +15556,8 @@ export const getApiWebhooksRoute = createRoute({
   request: {
     headers: z.object({
       Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
       'Revolut-Api-Version': RevolutApiVersion_2024_09_01MinParamsSchema,
     }),
   },
@@ -15446,6 +15607,8 @@ export const postApiWebhooksRoute = createRoute({
   request: {
     headers: z.object({
       Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
       'Revolut-Api-Version': RevolutApiVersion_2024_09_01MinParamsSchema,
     }),
     body: {
@@ -15514,6 +15677,8 @@ export const getApiWebhooksWebhookIdRoute = createRoute({
   request: {
     headers: z.object({
       Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
       'Revolut-Api-Version': RevolutApiVersion_2024_09_01MinParamsSchema,
     }),
     params: z.object({ webhook_id: WebhookIdParamsSchema }),
@@ -15551,6 +15716,8 @@ export const deleteApiWebhooksWebhookIdRoute = createRoute({
   request: {
     headers: z.object({
       Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
       'Revolut-Api-Version': RevolutApiVersion_2024_09_01MinParamsSchema,
     }),
     params: z.object({ webhook_id: WebhookIdParamsSchema }),
@@ -15607,6 +15774,8 @@ export const patchApiWebhooksWebhookIdRoute = createRoute({
   request: {
     headers: z.object({
       Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
       'Revolut-Api-Version': RevolutApiVersion_2024_09_01MinParamsSchema,
     }),
     params: z.object({ webhook_id: WebhookIdParamsSchema }),
@@ -15671,6 +15840,8 @@ export const postApiWebhooksWebhookIdRotateSigningSecretRoute = createRoute({
   request: {
     headers: z.object({
       Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
       'Revolut-Api-Version': RevolutApiVersion_2024_09_01MinParamsSchema,
     }),
     params: z.object({ webhook_id: WebhookIdParamsSchema }),
@@ -15744,7 +15915,11 @@ export const postApiApplePayDomainsRegisterRoute = createRoute({
     "Register your website's domain to accept payments via Apple Pay. \n\nBefore you call this endpoint, make sure that you have completed the following steps:\n\n1. Download the latest [domain validation file](https://assets.revolut.com/api-docs/merchant-api/files/apple-developer-merchantid-domain-association).\n1. Upload the domain validation file to your website in the following folder `/.well-known/`. For example, if your website is `example.com`, the file should be available on `example.com/.well-known/apple-developer-merchantid-domain-association`, where `apple-developer-merchantid-domain-association` indicates the name of the file.",
   operationId: 'registerDomainApplePay',
   request: {
-    headers: z.object({ Authorization: AuthorizationParamsSchema }),
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     body: {
       content: {
         'application/json': {
@@ -15837,6 +16012,8 @@ export const postApiApplePayDomainsUnregisterRoute = createRoute({
   request: {
     headers: z.object({
       Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
       'Revolut-Api-Version': RevolutApiVersionOptionalParamsSchema,
     }),
     body: {
@@ -15933,7 +16110,13 @@ export const getApiSynchronousWebhooksRoute = createRoute({
   description:
     'Retrieve a list of synchronous webhook objects.\n\nYou can use this endpoint to see your different address validation endpoints registered to different locations.\n\n:::info\nFor more information about locations, see: [Merchant API: Locations](https://developer.revolut.com/docs/api/merchant#tag-locations).\n:::',
   operationId: 'retrieveSynchronousWebhookList',
-  request: { headers: z.object({ Authorization: AuthorizationParamsSchema }) },
+  request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
+  },
   responses: {
     200: {
       description: 'Synchronous webhook list returned',
@@ -16003,10 +16186,14 @@ export const postApiSynchronousWebhooksRoute = createRoute({
   tags: ['Other'],
   summary: 'Register address validation endpoint for Fast checkout',
   description:
-    "Use this endpoint to register a URL where Revolut can send shipping address(es) from a Revolut Pay customer for validation during the [Fast checkout\nprocess](https://developer.revolut.com/docs/guides/merchant/optimise-checkout/fast-checkout).\n\nRevolut Pay can support Fast checkout for delivering goods. Once your customer selects a shipping address, Revolut needs to validate if the merchant (or their shipping partner) delivers to the address provided. This is done by contacting the merchant's backend and asking for such validation and information.\n\nIn order for your backend to support Fast checkout, you need to:\n\n1. Register an URL to handle address validation\n1. Validate the shipping address sent to your backend\n1. Respond with a JSON object containing the result of the validation\n\nAdditionally, Revolut Pay can support multiple webhooks if you have multiple stores. For more information, see:\n  - [Manage multiple stores with Fast checkout](https://developer.revolut.com/docs/guides/merchant/optimise-checkout/fast-checkout#manage-multiple-stores-with-fast-checkout)\n  - [Merchant API: Locations](https://developer.revolut.com/docs/api/merchant#tag-locations)\n\n:::note\nTo set up a webhook for tracking order completion, failure, error, etc. events, use the [Webhooks endpoints](https://developer.revolut.com/docs/api/merchant#tag-webhooks).\n:::",
+    "Use this endpoint to register a URL where Revolut can send shipping address(es) from a Revolut Pay customer for validation during the [Fast checkout\nprocess](https://developer.revolut.com/docs/guides/merchant/optimise-checkout/fast-checkout).\n\nRevolut Pay can support Fast checkout for delivering goods. Once your customer selects a shipping address, Revolut needs to validate if the merchant (or their shipping partner) delivers to the address provided. This is done by contacting the merchant's backend and asking for such validation and information.\n\nIn order for your backend to support Fast checkout, you need to:\n\n1. Register an URL to handle address validation\n1. Validate the shipping address sent to your backend\n1. Respond with a JSON object containing the result of the validation\n\nAdditionally, Revolut Pay can support multiple webhooks if you have multiple stores. For more information, see:\n  - [Manage multiple stores with Fast checkout](https://developer.revolut.com/docs/guides/merchant/optimise-checkout/fast-checkout#manage-multiple-stores-with-fast-checkout)\n  - [Merchant API: Locations](https://developer.revolut.com/docs/api/merchant#tag-locations)\n\n:::info\nTo set up a webhook for tracking order completion, failure, error, etc. events, use the [Webhooks endpoints](https://developer.revolut.com/docs/api/merchant#tag-webhooks).\n:::",
   operationId: 'registerAddressValidationEndpoint',
   request: {
-    headers: z.object({ Authorization: AuthorizationParamsSchema }),
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     body: {
       content: {
         'application/json': {
@@ -16097,7 +16284,11 @@ export const deleteApiSynchronousWebhooksSynchronousWebhookIdRoute = createRoute
   description: 'Delete a specific synchronous webhook registration, based on its ID.',
   operationId: 'deleteSynchronousWebhook',
   request: {
-    headers: z.object({ Authorization: AuthorizationParamsSchema }),
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     params: z.object({ synchronous_webhook_id: SynchronousWebhookIdParamsSchema }),
   },
   responses: {
@@ -16147,7 +16338,11 @@ export const getApiLocationsRoute = createRoute({
     'Retrieve a list of locations registered for the merchant.\n\n:::note [Default behavior]\nWithout the `type` query parameter, this endpoint returns only **online** locations by default. To retrieve physical locations, you must explicitly specify `type=physical` in the query parameters.\n:::',
   operationId: 'retrieveLocationList',
   request: {
-    headers: z.object({ Authorization: AuthorizationParamsSchema }),
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     query: z.object({ type: LocationTypeParamsSchema }),
   },
   responses: {
@@ -16236,7 +16431,11 @@ export const postApiLocationsRoute = createRoute({
   description: 'Create a `Location` object. Supports `online` and `physical` location types.',
   operationId: 'createLocation',
   request: {
-    headers: z.object({ Authorization: AuthorizationParamsSchema }),
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     body: {
       content: {
         'application/json': {
@@ -16301,7 +16500,11 @@ export const getApiLocationsLocationIdRoute = createRoute({
   description: 'Retrieve details of a specific location, based on its ID.',
   operationId: 'retrieveLocation',
   request: {
-    headers: z.object({ Authorization: AuthorizationParamsSchema }),
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     params: z.object({ location_id: LocationIdParamsSchema }),
   },
   responses: {
@@ -16338,7 +16541,11 @@ export const deleteApiLocationsLocationIdRoute = createRoute({
   description: 'Delete a specific location, based on its ID.',
   operationId: 'deleteLocation',
   request: {
-    headers: z.object({ Authorization: AuthorizationParamsSchema }),
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     params: z.object({ location_id: LocationIdParamsSchema }),
   },
   responses: {
@@ -16391,7 +16598,11 @@ export const patchApiLocationsLocationIdRoute = createRoute({
     "Update details of a specific location, based on its ID. \n\nOnly the fields provided in the request will be updated. Any omitted fields will retain their current values.\n\n:::note\nThe value of the location's `type` parameter cannot be updated.\n:::",
   operationId: 'updateLocation',
   request: {
-    headers: z.object({ Authorization: AuthorizationParamsSchema }),
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     params: z.object({ location_id: LocationIdParamsSchema }),
     body: {
       content: {
@@ -16509,6 +16720,8 @@ export const getApiTerminalsRoute = createRoute({
   request: {
     headers: z.object({
       Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
       'Revolut-Api-Version': RevolutApiVersionOptionalParamsSchema,
     }),
     query: z.object({
@@ -16550,6 +16763,8 @@ export const postApiOrdersOrderIdPaymentIntentsRoute = createRoute({
   request: {
     headers: z.object({
       Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
       'Revolut-Api-Version': RevolutApiVersionOptionalParamsSchema,
     }),
     params: z.object({ order_id: OrderIdParamsSchema }),
@@ -16628,6 +16843,8 @@ export const getApiPaymentIntentsPaymentIntentIdRoute = createRoute({
   request: {
     headers: z.object({
       Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
       'Revolut-Api-Version': RevolutApiVersionOptionalParamsSchema,
     }),
     params: z.object({ payment_intent_id: PaymentIntentIdParamsSchema }),
@@ -16672,6 +16889,8 @@ export const postApiPaymentIntentsPaymentIntentIdCancelRoute = createRoute({
   request: {
     headers: z.object({
       Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
       'Revolut-Api-Version': RevolutApiVersionOptionalParamsSchema,
     }),
     params: z.object({ payment_intent_id: PaymentIntentIdParamsSchema }),
@@ -16739,6 +16958,8 @@ export const webhookEventPostWebhook = {
               WebhookSubscriptionEventSchema,
               WebhookPayoutEventSchema,
               WebhookDisputeEventSchema,
+              WebhookDisbursementEventSchema,
+              WebhookDisbursementRefundEventSchema,
             ])
             .openapi({
               discriminator: {
@@ -16748,6 +16969,9 @@ export const webhookEventPostWebhook = {
                   Subscription: '#/components/schemas/Webhook-Subscription-Event',
                   'Payout event': '#/components/schemas/Webhook-Payout-Event',
                   'Dispute event': '#/components/schemas/Webhook-Dispute-Event',
+                  'Disbursement event': '#/components/schemas/Webhook-Disbursement-Event',
+                  'Disbursement refund event':
+                    '#/components/schemas/Webhook-Disbursement-Refund-Event',
                 },
               },
             }),
@@ -16812,6 +17036,31 @@ export const webhookEventPostWebhook = {
               value: {
                 event: 'DISPUTE_ACTION_REQUIRED',
                 dispute_id: 'ab934829-e4ba-4e7f-8a21-365cad85c763',
+              },
+            },
+            disbursement_event: {
+              summary: 'Webhook event related to a disbursement',
+              value: {
+                event: 'DISBURSEMENT_COMPLETED',
+                id: '497f6eca-6276-4993-bfeb-53cbbbba6f08',
+                reference: 'withdrawal-1234',
+              },
+            },
+            disbursement_declined_event: {
+              summary: 'Webhook event related to a declined disbursement',
+              value: {
+                event: 'DISBURSEMENT_DECLINED',
+                id: '497f6eca-6276-4993-bfeb-53cbbbba6f08',
+                reference: 'withdrawal-1234',
+              },
+            },
+            disbursement_refund_event: {
+              summary: 'Webhook event related to a disbursement refund',
+              value: {
+                event: 'DISBURSEMENT_REFUND_COMPLETED',
+                id: '6e59f1f9-a23f-4a4c-8a4e-0fcfeb0f6a90',
+                original_disbursement_id: '497f6eca-6276-4993-bfeb-53cbbbba6f08',
+                original_reference: 'withdrawal-1234',
               },
             },
           },

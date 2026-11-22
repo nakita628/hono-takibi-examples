@@ -1,0 +1,9 @@
+import { OpenAPIHono } from '@hono/zod-openapi'
+import { postXAmzTargetAmazonAthenaStartQueryExecutionRoute } from '../routes'
+
+const app = new OpenAPIHono()
+
+export const XAmzTargetAmazonAthenaStartQueryExecutionHandler = app.openapi(
+  postXAmzTargetAmazonAthenaStartQueryExecutionRoute,
+  (c) => {},
+)

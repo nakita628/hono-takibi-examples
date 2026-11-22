@@ -1,0 +1,9 @@
+import { OpenAPIHono } from '@hono/zod-openapi'
+import { postXAmzTargetCertificateManagerListTagsForCertificateRoute } from '../routes'
+
+const app = new OpenAPIHono()
+
+export const XAmzTargetCertificateManagerListTagsForCertificateHandler = app.openapi(
+  postXAmzTargetCertificateManagerListTagsForCertificateRoute,
+  (c) => {},
+)

@@ -1,5 +1,778 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const CurrencyCodeSchema = z
+  .string()
+  .length(3)
+  .openapi({
+    description:
+      'The [three-character ISO-4217 currency code](/api/rest/reference/currency-codes/) that identifies the currency.',
+  })
+  .openapi('CurrencyCode')
+
+const MoneySchema = z
+  .object({
+    currency_code: CurrencyCodeSchema,
+    value: z
+      .string()
+      .regex(/^((-?[0-9]+)|(-?([0-9]+)?[.][0-9]+))$/)
+      .max(32)
+      .openapi({
+        description:
+          'The value, which might be:<ul><li>An integer for currencies like `JPY` that are not typically fractional.</li><li>A decimal fraction for currencies like `TND` that are subdivided into thousandths.</li></ul>For the required number of decimal places for a currency code, see [Currency Codes](/api/rest/reference/currency-codes/).',
+      }),
+  })
+  .openapi({
+    title: 'Money',
+    description:
+      'The currency and amount for a financial transaction, such as a balance or payment due.',
+    required: ['currency_code', 'value'],
+  })
+  .openapi('Money')
+
+const PricingTierSchema = z
+  .object({
+    starting_quantity: z
+      .string()
+      .regex(/^([0-9]+|([0-9]+)?[.][0-9]+)$/)
+      .min(1)
+      .max(32)
+      .openapi({ description: 'The starting quantity for the tier.' }),
+    ending_quantity: z
+      .string()
+      .regex(/^([0-9]+|([0-9]+)?[.][0-9]+)$/)
+      .min(1)
+      .max(32)
+      .exactOptional()
+      .openapi({ description: 'The ending quantity for the tier. Optional for the last tier.' }),
+    amount: MoneySchema.openapi({ description: 'The pricing amount for the tier.' }),
+  })
+  .openapi({
+    title: 'Pricing Tier',
+    description: 'The pricing tier details.',
+    required: ['starting_quantity', 'amount'],
+  })
+  .openapi('PricingTier')
+
+const PricingTierListSchema = z
+  .array(PricingTierSchema)
+  .min(1)
+  .max(32)
+  .openapi({
+    description:
+      'An array of pricing tiers which are used for billing volume/tiered plans. pricing_model field has to be specified.',
+  })
+  .openapi('PricingTierList')
+
+const DateTimeSchema = z
+  .string()
+  .regex(
+    /^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])[T,t]([0-1][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)([.][0-9]+)?([Zz]|[+-][0-9]{2}:[0-9]{2})$/,
+  )
+  .min(20)
+  .max(64)
+  .openapi({
+    description:
+      'The date and time, in [Internet date and time format](https://tools.ietf.org/html/rfc3339#section-5.6). Seconds are required while fractional seconds are optional.<blockquote><strong>Note:</strong> The regular expression provides guidance but does not reject all invalid dates.</blockquote>',
+  })
+  .openapi('DateTime')
+
+const PricingSchemeSchema = z
+  .object({
+    version: z
+      .int()
+      .min(0)
+      .max(999)
+      .exactOptional()
+      .openapi({ description: 'The version of the pricing scheme.', readOnly: true }),
+    fixed_price: MoneySchema.exactOptional().openapi({
+      description:
+        'The fixed amount to charge for the subscription. The changes to fixed amount are applicable to both existing and future subscriptions. For existing subscriptions, payments within 10 days of price change are not affected.',
+    }),
+    pricing_model: z
+      .enum(['VOLUME', 'TIERED'])
+      .exactOptional()
+      .openapi({
+        description: 'The pricing model for tiered plan. The `tiers` parameter is required.',
+        'x-enumDescriptions': [
+          { value: 'VOLUME', description: 'A volume pricing model.' },
+          { value: 'TIERED', description: 'A tiered pricing model.' },
+        ],
+      }),
+    tiers: PricingTierListSchema.exactOptional(),
+    create_time: DateTimeSchema.exactOptional().openapi({
+      description:
+        'The date and time when this pricing scheme was created, in [Internet date and time format](https://tools.ietf.org/html/rfc3339#section-5.6).',
+      readOnly: true,
+    }),
+    update_time: DateTimeSchema.exactOptional().openapi({
+      description:
+        'The date and time when this pricing scheme was last updated, in [Internet date and time format](https://tools.ietf.org/html/rfc3339#section-5.6).',
+      readOnly: true,
+    }),
+  })
+  .openapi({ title: 'Pricing Scheme', description: 'The pricing scheme details.', required: [] })
+  .openapi('PricingScheme')
+
+const FrequencySchema = z
+  .object({
+    interval_unit: z.enum(['DAY', 'WEEK', 'MONTH', 'YEAR']).openapi({
+      description: 'The interval at which the subscription is charged or billed.',
+      'x-enumDescriptions': [
+        { value: 'DAY', description: 'A daily billing cycle.' },
+        { value: 'WEEK', description: 'A weekly billing cycle.' },
+        { value: 'MONTH', description: 'A monthly billing cycle.' },
+        { value: 'YEAR', description: 'A yearly billing cycle.' },
+      ],
+    }),
+    interval_count: z
+      .int()
+      .min(1)
+      .max(365)
+      .default(1)
+      .exactOptional()
+      .openapi({
+        description:
+          'The number of intervals after which a subscriber is billed. For example, if the `interval_unit` is `DAY` with an `interval_count` of  `2`, the subscription is billed once every two days. The following table lists the maximum allowed values for the `interval_count` for each `interval_unit`:<table><thead><tr><th><code>Interval unit</code></th><th>Maximum interval count</th></tr></thead><tbody><tr><td><code>DAY</code></td><td align="right">365</td></tr><tr><td><code>WEEK</code></td><td align="right">52</td></tr><tr><td><code>MONTH</code></td><td align="right">12</td></tr><tr><td><code>YEAR</code></td><td align="right">1</td></tr></tbody></table>',
+      }),
+  })
+  .openapi({
+    title: 'Billing Cycle Frequency',
+    description: 'The frequency of the billing cycle.',
+    required: ['interval_unit'],
+  })
+  .openapi('Frequency')
+
+const BillingCycleSchema = z
+  .object({
+    pricing_scheme: PricingSchemeSchema.exactOptional().openapi({
+      description:
+        'The active pricing scheme for this billing cycle. A free trial billing cycle does not require a pricing scheme.',
+    }),
+    frequency: FrequencySchema.openapi({
+      description: 'The frequency details for this billing cycle.',
+    }),
+    tenure_type: z.enum(['REGULAR', 'TRIAL']).openapi({
+      description:
+        'The tenure type of the billing cycle. In case of a plan having trial cycle, only 2 trial cycles are allowed per plan.',
+      'x-enumDescriptions': [
+        { value: 'REGULAR', description: 'A regular billing cycle.' },
+        { value: 'TRIAL', description: 'A trial billing cycle.' },
+      ],
+    }),
+    sequence: z
+      .int()
+      .min(1)
+      .max(99)
+      .openapi({
+        description:
+          'The order in which this cycle is to run among other billing cycles. For example, a trial billing cycle has a `sequence` of `1` while a regular billing cycle has a `sequence` of `2`, so that trial cycle runs before the regular cycle.',
+      }),
+    total_cycles: z
+      .int()
+      .min(0)
+      .max(999)
+      .default(1)
+      .exactOptional()
+      .openapi({
+        description:
+          'The number of times this billing cycle gets executed. Trial billing cycles can only be executed a finite number of times (value between <code>1</code> and <code>999</code> for <code>total_cycles</code>). Regular billing cycles can be executed infinite times (value of <code>0</code> for <code>total_cycles</code>) or a finite number of times (value between <code>1</code> and <code>999</code> for <code>total_cycles</code>).',
+      }),
+  })
+  .openapi({
+    title: 'Billing Cycle',
+    description: 'The billing cycle details.',
+    required: ['frequency', 'tenure_type', 'sequence'],
+  })
+  .openapi('BillingCycle')
+
+const BillingCycleListSchema = z
+  .array(BillingCycleSchema)
+  .min(1)
+  .max(12)
+  .openapi({
+    description:
+      'An array of billing cycles for trial billing and regular billing. A plan can have at most two trial cycles and only one regular cycle.',
+  })
+  .openapi('BillingCycleList')
+
+const PaymentPreferencesSchema = z
+  .object({
+    auto_bill_outstanding: z
+      .boolean()
+      .default(true)
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates whether to automatically bill the outstanding amount in the next billing cycle.',
+      }),
+    setup_fee: MoneySchema.exactOptional().openapi({
+      description: 'The initial set-up fee for the service.',
+    }),
+    setup_fee_failure_action: z
+      .enum(['CONTINUE', 'CANCEL'])
+      .default('CANCEL')
+      .exactOptional()
+      .openapi({
+        description:
+          'The action to take on the subscription if the initial payment for the setup fails.',
+        'x-enumDescriptions': [
+          {
+            value: 'CONTINUE',
+            description: 'Continues the subscription if the initial payment for the setup fails.',
+          },
+          {
+            value: 'CANCEL',
+            description: 'Cancels the subscription if the initial payment for the setup fails.',
+          },
+        ],
+      }),
+    payment_failure_threshold: z
+      .int()
+      .min(0)
+      .max(999)
+      .default(0)
+      .exactOptional()
+      .openapi({
+        description:
+          'The maximum number of payment failures before a subscription is suspended. For example, if `payment_failure_threshold` is `2`, the subscription automatically updates to the `SUSPEND` state if two consecutive payments fail.',
+      }),
+  })
+  .openapi({
+    title: 'Payment Preferences',
+    description: 'The payment preferences for a subscription.',
+    required: [],
+  })
+  .openapi('PaymentPreferences')
+
+const PercentageSchema = z
+  .string()
+  .regex(/^((-?[0-9]+)|(-?([0-9]+)?[.][0-9]+))$/)
+  .openapi({
+    description:
+      'The percentage, as a fixed-point, signed decimal number. For example, define a 19.99% interest rate as `19.99`.',
+  })
+  .openapi('Percentage')
+
+const TaxesSchema = z
+  .object({
+    percentage: PercentageSchema.openapi({
+      description: 'The tax percentage on the billing amount.',
+    }),
+    inclusive: z
+      .boolean()
+      .default(true)
+      .exactOptional()
+      .openapi({
+        description: 'Indicates whether the tax was already included in the billing amount.',
+      }),
+  })
+  .openapi({ title: 'Taxes', description: 'The tax details.', required: ['percentage'] })
+  .openapi('Taxes')
+
+const LinkDescriptionSchema = z
+  .object({
+    href: z
+      .string()
+      .openapi({
+        description:
+          'The complete target URL. To make the related call, combine the method with this [URI Template-formatted](https://tools.ietf.org/html/rfc6570) link. For pre-processing, include the `$`, `(`, and `)` characters. The `href` is the key HATEOAS component that links a completed call with a subsequent call.',
+      }),
+    rel: z
+      .string()
+      .openapi({
+        description:
+          'The [link relation type](https://tools.ietf.org/html/rfc5988#section-4), which serves as an ID for a link that unambiguously describes the semantics of the link. See [Link Relations](https://www.iana.org/assignments/link-relations/link-relations.xhtml).',
+      }),
+    method: z
+      .enum(['GET', 'POST', 'PUT', 'DELETE', 'HEAD', 'CONNECT', 'OPTIONS', 'PATCH'])
+      .exactOptional()
+      .openapi({ description: 'The HTTP method required to make the related call.' }),
+  })
+  .openapi({
+    title: 'Link Description',
+    description:
+      'The request-related [HATEOAS link](/api/rest/responses/#hateoas-links) information.',
+    required: ['href', 'rel'],
+  })
+  .openapi('LinkDescription')
+
+const LinkDescriptionListSchema = z
+  .array(LinkDescriptionSchema)
+  .min(1)
+  .max(10)
+  .openapi({
+    description:
+      'An array of request-related [HATEOAS links](/docs/api/reference/api-responses/#hateoas-links).',
+    readOnly: true,
+  })
+  .openapi('LinkDescriptionList')
+
+const PlanSchema = z
+  .object({
+    id: z
+      .string()
+      .regex(/^P-[A-Z0-9]*$/)
+      .length(26)
+      .exactOptional()
+      .openapi({ description: 'The unique PayPal-generated ID for the plan.', readOnly: true }),
+    product_id: z
+      .string()
+      .regex(/^PROD-[A-Z0-9]*$/)
+      .length(22)
+      .exactOptional()
+      .openapi({ description: 'The ID for the product.' }),
+    name: z
+      .string()
+      .regex(/^.*$/)
+      .min(1)
+      .max(127)
+      .exactOptional()
+      .openapi({ description: 'The plan name.' }),
+    status: z
+      .enum(['CREATED', 'INACTIVE', 'ACTIVE'])
+      .exactOptional()
+      .openapi({
+        description: 'The plan status.',
+        'x-enumDescriptions': [
+          {
+            value: 'CREATED',
+            description:
+              'The plan was created. You cannot create subscriptions for a plan in this state.',
+          },
+          { value: 'INACTIVE', description: 'The plan is inactive.' },
+          {
+            value: 'ACTIVE',
+            description:
+              'The plan is active. You can only create subscriptions for a plan in this state.',
+          },
+        ],
+      }),
+    description: z
+      .string()
+      .regex(/^.*$/)
+      .min(1)
+      .max(127)
+      .exactOptional()
+      .openapi({ description: 'The detailed description of the plan.' }),
+    billing_cycles: BillingCycleListSchema.exactOptional(),
+    payment_preferences: PaymentPreferencesSchema.exactOptional(),
+    taxes: TaxesSchema.exactOptional(),
+    quantity_supported: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates whether you can subscribe to this plan by providing a quantity for the goods or service.',
+      }),
+    create_time: DateTimeSchema.exactOptional().openapi({
+      description:
+        'The date and time when the plan was created, in [Internet date and time format](https://tools.ietf.org/html/rfc3339#section-5.6).',
+      readOnly: true,
+    }),
+    update_time: DateTimeSchema.exactOptional().openapi({
+      description:
+        'The date and time when the plan was last updated, in [Internet date and time format](https://tools.ietf.org/html/rfc3339#section-5.6).',
+      readOnly: true,
+    }),
+    links: LinkDescriptionListSchema.exactOptional(),
+  })
+  .openapi({ title: 'Plan', description: 'The plan details.', required: [] })
+  .openapi('Plan')
+
+type PlanListType = z.infer<typeof PlanSchema>[]
+
+const PlanListSchema: z.ZodType<PlanListType> = z
+  .array(PlanSchema)
+  .min(0)
+  .max(32767)
+  .openapi({ description: 'An array of plans.' })
+  .openapi('PlanList')
+
+type PlanCollectionType = {
+  plans?: z.infer<typeof PlanListSchema>
+  total_items?: number
+  total_pages?: number
+  links?: z.infer<typeof LinkDescriptionListSchema>
+}
+
+const SubscriptionStatusSchema = z
+  .object({
+    status: z
+      .enum(['APPROVAL_PENDING', 'APPROVED', 'ACTIVE', 'SUSPENDED', 'CANCELLED', 'EXPIRED'])
+      .exactOptional()
+      .openapi({
+        description: 'The status of the subscription.',
+        'x-enumDescriptions': [
+          {
+            value: 'APPROVAL_PENDING',
+            description: 'The subscription is created but not yet approved by the buyer.',
+          },
+          { value: 'APPROVED', description: 'The buyer has approved the subscription.' },
+          { value: 'ACTIVE', description: 'The subscription is active.' },
+          { value: 'SUSPENDED', description: 'The subscription is suspended.' },
+          { value: 'CANCELLED', description: 'The subscription is cancelled.' },
+          { value: 'EXPIRED', description: 'The subscription is expired.' },
+        ],
+      }),
+    status_change_note: z
+      .string()
+      .regex(/^.*$/)
+      .min(1)
+      .max(128)
+      .exactOptional()
+      .openapi({ description: 'The reason or notes for the status of the subscription.' }),
+    status_update_time: DateTimeSchema.exactOptional().openapi({ readOnly: true }),
+  })
+  .openapi({
+    title: 'Subscription Status',
+    description: 'The subscription status details.',
+    required: [],
+  })
+  .openapi('SubscriptionStatus')
+
+const EmailSchema = z
+  .string()
+  .regex(
+    /(?:[a-zA-Z0-9!#$%&'*+\/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&'*+\/=?^_`{|}~-]+)*|(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\.)+[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-zA-Z0-9-]*[a-zA-Z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/,
+  )
+  .min(3)
+  .max(254)
+  .openapi({
+    description:
+      'The internationalized email address.<blockquote><strong>Note:</strong> Up to 64 characters are allowed before and 255 characters are allowed after the <code>@</code> sign. However, the generally accepted maximum length for an email address is 254 characters. The pattern verifies that an unquoted <code>@</code> sign exists.</blockquote>',
+  })
+  .openapi('Email')
+
+const AccountIdSchema = z
+  .string()
+  .regex(/^[2-9A-HJ-NP-Z]{13}$/)
+  .length(13)
+  .openapi({
+    title: 'PayPal Account Identifier',
+    description: 'The account identifier for a PayPal account.',
+  })
+  .openapi('AccountId')
+
+const PayerBaseSchema = z
+  .object({
+    email_address: EmailSchema.exactOptional().openapi({
+      description: 'The email address of the payer.',
+    }),
+    payer_id: AccountIdSchema.exactOptional().openapi({
+      description: 'The PayPal-assigned ID for the payer.',
+      readOnly: true,
+    }),
+  })
+  .openapi({
+    title: 'Payer Base',
+    description:
+      'The customer who approves and pays for the order. The customer is also known as the payer.',
+    required: [],
+  })
+  .openapi('PayerBase')
+
+const PhoneTypeSchema = z
+  .enum(['FAX', 'HOME', 'MOBILE', 'OTHER', 'PAGER'])
+  .openapi({ title: 'Phone Type', description: 'The phone type.' })
+  .openapi('PhoneType')
+
+const PhoneWithTypeSchema = z
+  .object({
+    phone_type: PhoneTypeSchema.exactOptional(),
+    phone_number: z
+      .object({
+        national_number: z
+          .string()
+          .regex(/^[0-9]{1,14}?$/)
+          .min(1)
+          .max(14)
+          .openapi({
+            description:
+              'The national number, in its canonical international [E.164 numbering plan format](https://www.itu.int/rec/T-REC-E.164/en). The combined length of the country calling code (CC) and the national number must not be greater than 15 digits. The national number consists of a national destination code (NDC) and subscriber number (SN).',
+          }),
+      })
+      .openapi({
+        description:
+          'The phone number, in its canonical international [E.164 numbering plan format](https://www.itu.int/rec/T-REC-E.164/en).',
+        title: 'Phone',
+        required: ['national_number'],
+      }),
+  })
+  .openapi({
+    title: 'Phone With Type',
+    description: 'The phone information.',
+    required: ['phone_number'],
+  })
+  .openapi('PhoneWithType')
+
+const ShippingTypeSchema = z
+  .enum(['SHIPPING', 'PICKUP', 'PICKUP_IN_STORE', 'PICKUP_FROM_PERSON'])
+  .openapi({
+    title: 'Shipping Type',
+    description: 'A classification for the method of purchase fulfillment.',
+    'x-enumDescriptions': [
+      {
+        value: 'SHIPPING',
+        description: 'The payer intends to receive the items at a specified address.',
+        default: true,
+      },
+      {
+        value: 'PICKUP',
+        description:
+          "DEPRECATED. To ensure that seller protection is correctly assigned, please use 'PICKUP_IN_STORE' or 'PICKUP_FROM_PERSON' instead. Currently, this field indicates that the payer intends to pick up the items at a specified address (ie. a store address). ",
+      },
+      {
+        value: 'PICKUP_IN_STORE',
+        description:
+          'The payer intends to pick up the item(s) from the payee\'s physical store. Also termed as BOPIS, "Buy Online, Pick-up in Store". Seller protection is provided with this option.',
+      },
+      {
+        value: 'PICKUP_FROM_PERSON',
+        description:
+          'The payer intends to pick up the item(s) from the payee in person. Also termed as BOPIP, "Buy Online, Pick-up in Person". Seller protection is not available, since the payer is receiving the item from the payee in person, and can validate the item prior to payment.',
+      },
+    ],
+  })
+  .openapi('ShippingType')
+
+const ShippingOptionSchema = z
+  .object({
+    id: z
+      .string()
+      .max(127)
+      .openapi({ description: 'A unique ID that identifies a payer-selected shipping option.' }),
+    label: z
+      .string()
+      .max(127)
+      .openapi({
+        description:
+          "A description that the payer sees, which helps them choose an appropriate shipping option. For example, `Free Shipping`, `USPS Priority Shipping`, `Expédition prioritaire USPS`, or `USPS yōuxiān fā huò`. Localize this description to the payer's locale.",
+      }),
+    type: ShippingTypeSchema.exactOptional().openapi({
+      description: 'A classification for the method of purchase fulfillment.',
+    }),
+    amount: MoneySchema.exactOptional().openapi({
+      description: 'The shipping cost for the selected option.',
+    }),
+    selected: z
+      .boolean()
+      .openapi({
+        description:
+          'If the API request sets `selected = true`, it represents the shipping option that the payee or merchant expects to be pre-selected for the payer when they first view the `shipping.options` in the PayPal Checkout experience. As part of the response if a `shipping.option` contains `selected=true`, it represents the shipping option that the payer selected during the course of checkout with PayPal. Only one `shipping.option` can be set to `selected=true`.',
+      }),
+  })
+  .openapi({
+    title: 'Shipping Option',
+    description:
+      'The options that the payee or merchant offers to the payer to ship or pick up their items.',
+    required: ['id', 'label', 'selected'],
+  })
+  .openapi('ShippingOption')
+
+const ShippingOptionListSchema = z
+  .array(ShippingOptionSchema)
+  .min(0)
+  .max(10)
+  .openapi({
+    description:
+      'An array of shipping options that the payee or merchant offers to the payer to ship or pick up their items.',
+  })
+  .openapi('ShippingOptionList')
+
+const CountryCodeSchema = z
+  .string()
+  .regex(/^([A-Z]{2}|C2)$/)
+  .length(2)
+  .openapi({
+    description:
+      'The [2-character ISO 3166-1 code](/api/rest/reference/country-codes/) that identifies the country or region.<blockquote><strong>Note:</strong> The country code for Great Britain is <code>GB</code> and not <code>UK</code> as used in the top-level domain names for that country. Use the `C2` country code for China worldwide for comparable uncontrolled price (CUP) method, bank card, and cross-border transactions.</blockquote>',
+  })
+  .openapi('CountryCode')
+
+const ShippingDetailSchema = z
+  .object({
+    name: z
+      .object({
+        full_name: z
+          .string()
+          .max(300)
+          .exactOptional()
+          .openapi({ description: "When the party is a person, the party's full name." }),
+      })
+      .exactOptional()
+      .openapi({ description: 'The name of the party.', title: 'Name', required: [] }),
+    type: z
+      .enum(['SHIPPING', 'PICKUP_IN_PERSON', 'PICKUP_IN_STORE', 'PICKUP_FROM_PERSON'])
+      .exactOptional()
+      .openapi({
+        title: 'Fullfillment Type',
+        description:
+          'A classification for the method of purchase fulfillment (e.g shipping, in-store pickup, etc). Either `type` or `options` may be present, but not both.',
+        'x-enumDescriptions': [
+          {
+            value: 'SHIPPING',
+            description: 'The payer intends to receive the items at a specified address.',
+            default: true,
+          },
+          {
+            value: 'PICKUP_IN_PERSON',
+            description: 'DEPRECATED. Please use "PICKUP_FROM_PERSON" instead.',
+          },
+          {
+            value: 'PICKUP_IN_STORE',
+            description:
+              'The payer intends to pick up the item(s) from the payee\'s physical store. Also termed as BOPIS, "Buy Online, Pick-up in Store". Seller protection is provided with this option.',
+          },
+          {
+            value: 'PICKUP_FROM_PERSON',
+            description:
+              'The payer intends to pick up the item(s) from the payee in person. Also termed as BOPIP, "Buy Online, Pick-up in Person". Seller protection is not available, since the payer is receiving the item from the payee in person, and can validate the item prior to payment.',
+          },
+        ],
+      }),
+    options: ShippingOptionListSchema.exactOptional(),
+    address: z
+      .object({
+        address_line_1: z
+          .string()
+          .max(300)
+          .exactOptional()
+          .openapi({
+            description:
+              'The first line of the address, such as number and street, for example, `173 Drury Lane`. Needed for data entry, and Compliance and Risk checks. This field needs to pass the full address.',
+          }),
+        address_line_2: z
+          .string()
+          .max(300)
+          .exactOptional()
+          .openapi({
+            description:
+              'The second line of the address, for example, a suite or apartment number.',
+          }),
+        admin_area_2: z
+          .string()
+          .max(120)
+          .exactOptional()
+          .openapi({ description: 'A city, town, or village. Smaller than `admin_area_level_1`.' }),
+        admin_area_1: z
+          .string()
+          .max(300)
+          .exactOptional()
+          .openapi({
+            description:
+              'The highest-level sub-division in a country, which is usually a province, state, or ISO-3166-2 subdivision. This data is formatted for postal delivery, for example, `CA` and not `California`. Value, by country, is:<ul><li>UK. A county.</li><li>US. A state.</li><li>Canada. A province.</li><li>Japan. A prefecture.</li><li>Switzerland. A *kanton*.</li></ul>',
+          }),
+        postal_code: z
+          .string()
+          .max(60)
+          .exactOptional()
+          .openapi({
+            description:
+              'The postal code, which is the ZIP code or equivalent. Typically required for countries with a postal code or an equivalent. See [postal code](https://en.wikipedia.org/wiki/Postal_code).',
+          }),
+        country_code: CountryCodeSchema,
+      })
+      .exactOptional()
+      .openapi({
+        description:
+          'The portable international postal address. Maps to [AddressValidationMetadata](https://github.com/googlei18n/libaddressinput/wiki/AddressValidationMetadata) and HTML 5.1 [Autofilling form controls: the autocomplete attribute](https://www.w3.org/TR/html51/sec-forms.html#autofilling-form-controls-the-autocomplete-attribute).',
+        title: 'Portable Postal Address (Medium-Grained)',
+        required: ['country_code'],
+      }),
+  })
+  .openapi({ description: 'The shipping details.', title: 'Shipping Details', required: [] })
+  .openapi('ShippingDetail')
+
+const CardBrandSchema = z
+  .enum([
+    'VISA',
+    'MASTERCARD',
+    'DISCOVER',
+    'AMEX',
+    'SOLO',
+    'JCB',
+    'STAR',
+    'DELTA',
+    'SWITCH',
+    'MAESTRO',
+    'CB_NATIONALE',
+    'CONFIGOGA',
+    'CONFIDIS',
+    'ELECTRON',
+    'CETELEM',
+    'CHINA_UNION_PAY',
+    'DINERS',
+    'ELO',
+    'HIPER',
+    'HIPERCARD',
+    'RUPAY',
+    'GE',
+    'SYNCHRONY',
+    'UNKNOWN',
+  ])
+  .openapi({
+    title: 'Card Brand',
+    description: 'The card network or brand. Applies to credit, debit, gift, and payment cards.',
+    'x-enumDescriptions': [
+      { value: 'VISA', description: 'Visa card.' },
+      { value: 'MASTERCARD', description: 'Mastecard card.' },
+      { value: 'DISCOVER', description: 'Discover card.' },
+      { value: 'AMEX', description: 'American Express card.' },
+      { value: 'SOLO', description: 'Solo debit card.' },
+      { value: 'JCB', description: 'Japan Credit Bureau card.' },
+      { value: 'STAR', description: 'Military Star card.' },
+      { value: 'DELTA', description: 'Delta Airlines card.' },
+      { value: 'SWITCH', description: 'Switch credit card.' },
+      { value: 'MAESTRO', description: 'Maestro credit card.' },
+      { value: 'CB_NATIONALE', description: 'Carte Bancaire (CB) credit card.' },
+      { value: 'CONFIGOGA', description: 'Configoga credit card.' },
+      { value: 'CONFIDIS', description: 'Confidis credit card.' },
+      { value: 'ELECTRON', description: 'Visa Electron credit card.' },
+      { value: 'CETELEM', description: 'Cetelem credit card.' },
+      { value: 'CHINA_UNION_PAY', description: 'China union pay credit card.' },
+      {
+        value: 'DINERS',
+        description:
+          'The Diners Club International banking and payment services capability network owned by Discover Financial Services (DFS), one of the most recognized brands in US financial services.',
+      },
+      { value: 'ELO', description: 'The Brazilian Elo card payment network.' },
+      { value: 'HIPER', description: 'The Hiper - Ingenico ePayment network.' },
+      {
+        value: 'HIPERCARD',
+        description:
+          "The Brazilian Hipercard payment network that's widely accepted in the retail market.",
+      },
+      { value: 'RUPAY', description: 'The RuPay payment network.' },
+      { value: 'GE', description: 'The GE Credit Union 3Point card payment network.' },
+      { value: 'SYNCHRONY', description: 'The Synchrony Financial (SYF) payment network.' },
+      { value: 'UNKNOWN', description: 'UNKNOWN payment network.' },
+    ],
+  })
+  .openapi('CardBrand')
+
+const CardBrandListSchema = z
+  .array(CardBrandSchema)
+  .min(1)
+  .max(256)
+  .openapi({ description: 'Array of brands or networks associated with the card.', readOnly: true })
+  .openapi('CardBrandList')
+
+const CardTypeSchema = z
+  .enum(['CREDIT', 'DEBIT', 'PREPAID', 'STORE', 'UNKNOWN'])
+  .openapi({
+    title: 'Card Type',
+    description: 'Type of card. i.e Credit, Debit and so on.',
+    'x-enumDescriptions': [
+      { value: 'CREDIT', description: 'A credit card.' },
+      { value: 'DEBIT', description: 'A debit card.' },
+      { value: 'PREPAID', description: 'A Prepaid card.' },
+      { value: 'STORE', description: 'A store card.' },
+      { value: 'UNKNOWN', description: 'Card type cannot be determined.' },
+    ],
+  })
+  .openapi('CardType')
+
 const LiabilityShiftSchema = z
   .enum(['NO', 'POSSIBLE', 'UNKNOWN'])
   .openapi({
@@ -80,9 +853,1148 @@ const ThreeDSecureAuthenticationResponseSchema = z
   })
   .openapi('ThreeDSecureAuthenticationResponse')
 
-type AuthenticationResponseType = {
-  liability_shift?: z.infer<typeof LiabilityShiftSchema>
-  three_d_secure?: z.infer<typeof ThreeDSecureAuthenticationResponseSchema>
+const AuthenticationResponseSchema = z
+  .object({
+    liability_shift: LiabilityShiftSchema.exactOptional(),
+    three_d_secure: ThreeDSecureAuthenticationResponseSchema.exactOptional(),
+  })
+  .openapi({
+    title: 'Authentication Response',
+    description: 'Results of Authentication such as 3D Secure.',
+    required: [],
+  })
+  .openapi('AuthenticationResponse')
+
+const MerchantPartnerCustomerIdSchema = z
+  .string()
+  .regex(/^[0-9a-zA-Z_-]+$/)
+  .min(1)
+  .max(22)
+  .openapi({ description: 'The unique ID for a customer generated by PayPal.' })
+  .openapi('MerchantPartnerCustomerId')
+
+const DefinitionsLinkDescriptionListSchema = z
+  .array(LinkDescriptionSchema)
+  .min(1)
+  .max(10)
+  .openapi({ description: 'An array of request-related HATEOAS links.', readOnly: true })
+  .openapi('DefinitionsLinkDescriptionList')
+
+const VaultResponseSchema = z
+  .object({
+    id: z
+      .string()
+      .min(1)
+      .max(255)
+      .exactOptional()
+      .openapi({ description: 'The PayPal-generated ID for the saved payment source.' }),
+    status: z
+      .enum(['VAULTED', 'CREATED', 'APPROVED'])
+      .exactOptional()
+      .openapi({
+        title: 'Vault Status',
+        description: 'The vault status.',
+        'x-enumDescriptions': [
+          {
+            value: 'VAULTED',
+            description:
+              "The payment source has been saved in your customer's vault. This vault status reflects `/v3/vault` status.",
+          },
+          {
+            value: 'CREATED',
+            description:
+              "DEPRECATED. The payment source has been saved in your customer's vault. This status applies to deprecated integration patterns and will not be returned for v3/vault integrations.",
+          },
+          {
+            value: 'APPROVED',
+            description:
+              'Customer has approved the action of saving the specified payment_source into their vault. Use v3/vault/payment-tokens with given setup_token to save the payment source in the vault',
+          },
+        ],
+        deprecated: true,
+      }),
+    customer: z
+      .object({ id: MerchantPartnerCustomerIdSchema.exactOptional() })
+      .exactOptional()
+      .openapi({
+        title: 'Customer Information',
+        description: "The details about a customer in PayPal's system of record.",
+        required: [],
+      }),
+    links: DefinitionsLinkDescriptionListSchema.exactOptional(),
+  })
+  .openapi({
+    title: 'Vault Response',
+    description: 'The details about a saved payment source.',
+    required: [],
+  })
+  .openapi('VaultResponse')
+
+const CardAttributesResponseSchema = z
+  .object({ vault: VaultResponseSchema.exactOptional() })
+  .openapi({
+    title: 'Card Attributes Response',
+    description: 'Additional attributes associated with the use of this card.',
+    required: [],
+  })
+  .openapi('CardAttributesResponse')
+
+const DateYearMonthSchema = z
+  .string()
+  .regex(/^[0-9]{4}-(0[1-9]|1[0-2])$/)
+  .length(7)
+  .openapi({
+    description:
+      'The year and month, in ISO-8601 `YYYY-MM` date format. See [Internet date and time format](https://tools.ietf.org/html/rfc3339#section-5.6).',
+  })
+  .openapi('DateYearMonth')
+
+const CardFromRequestSchema = z
+  .object({
+    expiry: DateYearMonthSchema.exactOptional().openapi({
+      description:
+        'The card expiration year and month, in [Internet date format](https://tools.ietf.org/html/rfc3339#section-5.6).',
+    }),
+    last_digits: z
+      .string()
+      .regex(/[0-9]{2,}/)
+      .min(2)
+      .max(4)
+      .exactOptional()
+      .openapi({ description: 'The last digits of the payment card.', readOnly: true }),
+  })
+  .openapi({
+    title: 'Card from Request',
+    description: 'Representation of card details as received in the request.',
+    required: [],
+  })
+  .openapi('CardFromRequest')
+
+const CountryCode_2Schema = z
+  .string()
+  .regex(/^([A-Z]{2}|C2)$/)
+  .length(2)
+  .openapi({
+    description:
+      'The [two-character ISO 3166-1 code](/api/rest/reference/country-codes/) that identifies the country or region.<blockquote><strong>Note:</strong> The country code for Great Britain is <code>GB</code> and not <code>UK</code> as used in the top-level domain names for that country. Use the `C2` country code for China worldwide for comparable uncontrolled price (CUP) method, bank card, and cross-border transactions.</blockquote>',
+  })
+  .openapi('CountryCode_2')
+
+const ProductsSchema = z
+  .string()
+  .min(1)
+  .max(255)
+  .openapi({ description: 'This value provides the category of the BIN.' })
+  .openapi('Products')
+
+const ProductsListSchema = z
+  .array(ProductsSchema)
+  .min(1)
+  .max(256)
+  .openapi({
+    description:
+      'The type of card product assigned to the BIN by the issuer. These values are defined by the issuer and may change over time. Some examples include: PREPAID_GIFT, CONSUMER, CORPORATE.',
+  })
+  .openapi('ProductsList')
+
+const BinDetailsSchema = z
+  .object({
+    bin: z
+      .string()
+      .regex(/^[0-9]+$/)
+      .min(1)
+      .max(25)
+      .exactOptional()
+      .openapi({
+        description:
+          'The Bank Identification Number (BIN) signifies the number that is being used to identify the granular level details (except the PII information) of the card.',
+      }),
+    issuing_bank: z
+      .string()
+      .min(1)
+      .max(64)
+      .exactOptional()
+      .openapi({ description: 'The issuer of the card instrument.' }),
+    bin_country_code: CountryCode_2Schema.exactOptional().openapi({
+      description:
+        'The [two-character ISO-3166-1 country code](/docs/integration/direct/rest/country-codes/) of the bank.',
+    }),
+    products: ProductsListSchema.exactOptional(),
+  })
+  .openapi({
+    title: 'Bin Details',
+    description: 'Bank Identification Number (BIN) details used to fund a payment.',
+    required: [],
+  })
+  .openapi('BinDetails')
+
+const CardResponseSchema = z
+  .object({
+    name: z
+      .string()
+      .min(2)
+      .max(300)
+      .exactOptional()
+      .openapi({ description: "The card holder's name as it appears on the card." }),
+    last_digits: z
+      .string()
+      .regex(/[0-9]{2,}/)
+      .exactOptional()
+      .openapi({ description: 'The last digits of the payment card.', readOnly: true }),
+    brand: CardBrandSchema.exactOptional().openapi({
+      description: 'The card brand or network. Typically used in the response.',
+      readOnly: true,
+    }),
+    available_networks: CardBrandListSchema.exactOptional(),
+    type: CardTypeSchema.exactOptional().openapi({ description: 'The payment card type.' }),
+    authentication_result: AuthenticationResponseSchema.exactOptional(),
+    attributes: CardAttributesResponseSchema.exactOptional(),
+    from_request: CardFromRequestSchema.exactOptional(),
+    expiry: DateYearMonthSchema.exactOptional().openapi({
+      description:
+        'The card expiration year and month, in [Internet date format](https://tools.ietf.org/html/rfc3339#section-5.6).',
+    }),
+    bin_details: BinDetailsSchema.exactOptional().openapi({
+      description: 'Bank Identification Number (BIN) details used to fund a payment.',
+    }),
+  })
+  .openapi({
+    title: 'Card Response',
+    description: 'The payment card to use to fund a payment. Card can be a credit or debit card.',
+    required: [],
+  })
+  .openapi('CardResponse')
+
+const CardResponseWithBillingAddressSchema = CardResponseSchema.and(
+  z
+    .object({
+      name: z
+        .string()
+        .min(2)
+        .max(300)
+        .exactOptional()
+        .openapi({ description: "The card holder's name as it appears on the card." }),
+      billing_address: z
+        .object({
+          address_line_1: z
+            .string()
+            .max(300)
+            .exactOptional()
+            .openapi({
+              description:
+                'The first line of the address, such as number and street, for example, `173 Drury Lane`. Needed for data entry, and Compliance and Risk checks. This field needs to pass the full address.',
+            }),
+          address_line_2: z
+            .string()
+            .max(300)
+            .exactOptional()
+            .openapi({
+              description:
+                'The second line of the address, for example, a suite or apartment number.',
+            }),
+          admin_area_2: z
+            .string()
+            .max(120)
+            .exactOptional()
+            .openapi({
+              description: 'A city, town, or village. Smaller than `admin_area_level_1`.',
+            }),
+          admin_area_1: z
+            .string()
+            .max(300)
+            .exactOptional()
+            .openapi({
+              description:
+                'The highest-level sub-division in a country, which is usually a province, state, or ISO-3166-2 subdivision. This data is formatted for postal delivery, for example, `CA` and not `California`. Value, by country, is:<ul><li>UK. A county.</li><li>US. A state.</li><li>Canada. A province.</li><li>Japan. A prefecture.</li><li>Switzerland. A *kanton*.</li></ul>',
+            }),
+          postal_code: z
+            .string()
+            .max(60)
+            .exactOptional()
+            .openapi({
+              description:
+                'The postal code, which is the ZIP code or equivalent. Typically required for countries with a postal code or an equivalent. See [postal code](https://en.wikipedia.org/wiki/Postal_code).',
+            }),
+          country_code: CountryCodeSchema,
+        })
+        .exactOptional()
+        .openapi({
+          description:
+            'The portable international postal address. Maps to [AddressValidationMetadata](https://github.com/googlei18n/libaddressinput/wiki/AddressValidationMetadata) and HTML 5.1 [Autofilling form controls: the autocomplete attribute](https://www.w3.org/TR/html51/sec-forms.html#autofilling-form-controls-the-autocomplete-attribute).',
+          title: 'Portable Postal Address (Medium-Grained)',
+          required: ['country_code'],
+        }),
+      expiry: DateYearMonthSchema.exactOptional().openapi({
+        description:
+          'The card expiration year and month, in [Internet date format](https://tools.ietf.org/html/rfc3339#section-5.6).',
+      }),
+      currency_code: CurrencyCodeSchema.exactOptional().openapi({
+        description: 'Currency code of the given instrument',
+      }),
+    })
+    .openapi({ required: [] }),
+)
+  .and(
+    z
+      .looseObject({})
+      .openapi({
+        title: 'Card Response with billing address and name',
+        description:
+          'The payment card used to fund the payment. Card can be a credit or debit card.',
+      }),
+  )
+  .openapi('CardResponseWithBillingAddress')
+
+const PaymentSourceResponseSchema = z
+  .object({ card: CardResponseWithBillingAddressSchema.exactOptional() })
+  .openapi({
+    title: 'Payment Source Response',
+    description: 'The payment source used to fund the payment.',
+    required: [],
+  })
+  .openapi('PaymentSourceResponse')
+
+const SubscriberSchema = PayerBaseSchema.and(
+  z
+    .object({
+      name: z
+        .object({
+          given_name: z
+            .string()
+            .max(140)
+            .exactOptional()
+            .openapi({
+              description: "When the party is a person, the party's given, or first, name.",
+            }),
+          surname: z
+            .string()
+            .max(140)
+            .exactOptional()
+            .openapi({
+              description:
+                "When the party is a person, the party's surname or family name. Also known as the last name. Required when the party is a person. Use also to store multiple surnames including the matronymic, or mother's, surname.",
+            }),
+        })
+        .exactOptional()
+        .openapi({ description: 'The name of the party.', title: 'Name', required: [] }),
+      phone: PhoneWithTypeSchema.exactOptional().openapi({
+        description:
+          'The phone number of the customer. Available only when you enable the **Contact Telephone Number** option in the <a href="https://www.paypal.com/cgi-bin/customerprofileweb?cmd=_profile-website-payments">**Profile & Settings**</a> for the merchant\'s PayPal account. The `phone.phone_number` supports only `national_number`.',
+      }),
+    })
+    .openapi({ required: [] }),
+)
+  .and(
+    z
+      .looseObject({})
+      .openapi({
+        title: 'Payer',
+        description:
+          'The customer who approves and pays for the order. The customer is also known as the payer.',
+      }),
+  )
+  .and(
+    z
+      .object({
+        shipping_address: ShippingDetailSchema.exactOptional(),
+        payment_source: PaymentSourceResponseSchema.exactOptional(),
+      })
+      .openapi({ required: [] }),
+  )
+  .and(
+    z
+      .looseObject({})
+      .openapi({
+        title: 'Subscriber Response Information',
+        description: 'The subscriber response information.',
+      }),
+  )
+  .openapi('Subscriber')
+
+const CycleExecutionSchema = z
+  .object({
+    tenure_type: z.enum(['REGULAR', 'TRIAL']).openapi({
+      description: 'The type of the billing cycle.',
+      'x-enumDescriptions': [
+        { value: 'REGULAR', description: 'A regular billing cycle.' },
+        { value: 'TRIAL', description: 'A trial billing cycle.' },
+      ],
+      readOnly: true,
+    }),
+    sequence: z
+      .int()
+      .min(0)
+      .max(99)
+      .openapi({ description: 'The order in which to run this cycle among other billing cycles.' }),
+    cycles_completed: z
+      .int()
+      .min(0)
+      .max(9999)
+      .openapi({
+        description: 'The number of billing cycles that have completed.',
+        readOnly: true,
+      }),
+    cycles_remaining: z
+      .int()
+      .min(0)
+      .max(9999)
+      .exactOptional()
+      .openapi({
+        description:
+          'For a finite billing cycle, cycles_remaining is the number of remaining cycles. For an infinite billing cycle, cycles_remaining is set as 0.',
+        readOnly: true,
+      }),
+    current_pricing_scheme_version: z
+      .int()
+      .min(1)
+      .max(99)
+      .exactOptional()
+      .openapi({
+        description: 'The active pricing scheme version for the billing cycle.',
+        readOnly: true,
+      }),
+    total_cycles: z
+      .int()
+      .min(0)
+      .max(999)
+      .exactOptional()
+      .openapi({
+        description:
+          'The number of times this billing cycle gets executed. Trial billing cycles can only be executed a finite number of times (value between <code>1</code> and <code>999</code> for <code>total_cycles</code>). Regular billing cycles can be executed infinite times (value of <code>0</code> for <code>total_cycles</code>) or a finite number of times (value between <code>1</code> and <code>999</code> for <code>total_cycles</code>).',
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    title: 'Billing Cycle Execution Details',
+    description: 'The regular and trial execution details for a billing cycle.',
+    required: ['tenure_type', 'sequence', 'cycles_completed'],
+  })
+  .openapi('CycleExecution')
+
+const CycleExecutionListSchema = z
+  .array(CycleExecutionSchema)
+  .min(0)
+  .max(3)
+  .openapi({ description: 'The trial and regular billing executions.', readOnly: true })
+  .openapi('CycleExecutionList')
+
+const LastPaymentDetailsSchema = z
+  .object({
+    amount: MoneySchema.exactOptional().openapi({
+      description: 'The last payment amount.',
+      readOnly: true,
+    }),
+    time: DateTimeSchema.exactOptional().openapi({
+      description:
+        'The date and time when the last payment was made, in [Internet date and time format](https://tools.ietf.org/html/rfc3339#section-5.6).',
+      readOnly: true,
+    }),
+  })
+  .openapi({ required: [] })
+  .and(z.looseObject({}).openapi({ required: ['amount', 'time'] }))
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'amount')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'time')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .openapi({
+    title: 'Last Payment Details',
+    description: 'The details for the last payment.',
+    required: ['amount', 'time'],
+  })
+  .openapi('LastPaymentDetails')
+
+const FailedPaymentDetailsSchema = z
+  .object({
+    amount: MoneySchema.openapi({ description: 'The failed payment amount.', readOnly: true }),
+    time: DateTimeSchema.openapi({
+      description:
+        'The date and time when the failed payment was made, in [Internet date and time format](https://tools.ietf.org/html/rfc3339#section-5.6).',
+      readOnly: true,
+    }),
+    reason_code: z
+      .enum([
+        'PAYMENT_DENIED',
+        'INTERNAL_SERVER_ERROR',
+        'PAYEE_ACCOUNT_RESTRICTED',
+        'PAYER_ACCOUNT_RESTRICTED',
+        'PAYER_CANNOT_PAY',
+        'SENDING_LIMIT_EXCEEDED',
+        'TRANSACTION_RECEIVING_LIMIT_EXCEEDED',
+        'CURRENCY_MISMATCH',
+      ])
+      .exactOptional()
+      .openapi({
+        description: 'The reason code for the payment failure.',
+        'x-enumDescriptions': [
+          {
+            value: 'PAYMENT_DENIED',
+            description: 'PayPal declined the payment due to one or more customer issues.',
+          },
+          { value: 'INTERNAL_SERVER_ERROR', description: 'An internal server error has occurred.' },
+          {
+            value: 'PAYEE_ACCOUNT_RESTRICTED',
+            description: 'The payee account is not in good standing and cannot receive payments.',
+          },
+          {
+            value: 'PAYER_ACCOUNT_RESTRICTED',
+            description: 'The payer account is not in good standing and cannot make payments.',
+          },
+          { value: 'PAYER_CANNOT_PAY', description: 'Payer cannot pay for this transaction.' },
+          {
+            value: 'SENDING_LIMIT_EXCEEDED',
+            description: "The transaction exceeds the payer's sending limit.",
+          },
+          {
+            value: 'TRANSACTION_RECEIVING_LIMIT_EXCEEDED',
+            description: "The transaction exceeds the receiver's receiving limit.",
+          },
+          {
+            value: 'CURRENCY_MISMATCH',
+            description: 'The transaction is declined due to a currency mismatch.',
+          },
+        ],
+        readOnly: true,
+      }),
+    next_payment_retry_time: DateTimeSchema.exactOptional().openapi({
+      description:
+        'The time when the retry attempt for the failed payment occurs, in [Internet date and time format](https://tools.ietf.org/html/rfc3339#section-5.6).',
+      readOnly: true,
+    }),
+  })
+  .openapi({
+    title: 'Failed Payment Details',
+    description: 'The details for the failed payment of the subscription.',
+    required: ['amount', 'time'],
+  })
+  .openapi('FailedPaymentDetails')
+
+const SubscriptionBillingInfoSchema = z
+  .object({
+    outstanding_balance: MoneySchema.openapi({
+      description: 'The total pending bill amount, to be paid by the subscriber.',
+    }),
+    cycle_executions: CycleExecutionListSchema.exactOptional(),
+    last_payment: LastPaymentDetailsSchema.exactOptional().openapi({
+      readOnly: true,
+      description: 'The details for the last payment of the subscription.',
+    }),
+    next_billing_time: DateTimeSchema.exactOptional().openapi({
+      description:
+        'The next date and time for billing this subscription, in [Internet date and time format](https://tools.ietf.org/html/rfc3339#section-5.6).',
+      readOnly: true,
+    }),
+    final_payment_time: DateTimeSchema.exactOptional().openapi({
+      description:
+        'The date and time when the final billing cycle occurs, in [Internet date and time format](https://tools.ietf.org/html/rfc3339#section-5.6).',
+      readOnly: true,
+    }),
+    failed_payments_count: z
+      .int()
+      .min(0)
+      .max(999)
+      .openapi({
+        description:
+          'The number of consecutive payment failures. Resets to `0` after a successful payment. If this reaches the `payment_failure_threshold` value, the subscription updates to the `SUSPENDED` state.',
+        readOnly: true,
+      }),
+    last_failed_payment: FailedPaymentDetailsSchema.exactOptional().openapi({
+      description: 'The details for the last failed payment of the subscription.',
+      readOnly: true,
+    }),
+  })
+  .openapi({
+    title: 'Subscription Billing Information',
+    description:
+      'The billing details for the subscription. If the subscription was or is active, these fields are populated.',
+    required: ['outstanding_balance', 'failed_payments_count'],
+  })
+  .openapi('SubscriptionBillingInfo')
+
+type SubscriptionType = z.infer<typeof SubscriptionStatusSchema> &
+  unknown & {
+    id?: string
+    plan_id?: string
+    start_time?: z.infer<typeof DateTimeSchema>
+    quantity?: string
+    shipping_amount?: z.infer<typeof MoneySchema>
+    subscriber?: z.infer<typeof SubscriberSchema>
+    billing_info?: z.infer<typeof SubscriptionBillingInfoSchema>
+    create_time?: z.infer<typeof DateTimeSchema>
+    update_time?: z.infer<typeof DateTimeSchema>
+    custom_id?: string
+    plan_overridden?: boolean
+    plan?: {
+      product_id?: string
+      name?: string
+      description?: string
+      billing_cycles?: z.infer<typeof BillingCycleListSchema>
+      payment_preferences?: z.infer<typeof PaymentPreferencesSchema>
+      taxes?: z.infer<typeof TaxesSchema>
+      quantity_supported?: boolean
+    }
+    links?: z.infer<typeof LinkDescriptionListSchema>
+  } & { [key: string]: unknown }
+
+const CustomerSchema = z
+  .object({
+    id: MerchantPartnerCustomerIdSchema.exactOptional(),
+    email_address: EmailSchema.exactOptional().openapi({
+      description:
+        'Email address of the buyer as provided to the merchant or on file with the merchant. Email Address is required if you are processing the transaction using PayPal Guest Processing which is offered to select partners and merchants. For all other use cases we do not expect partners/merchant to send email_address of their customer.',
+    }),
+    phone: PhoneWithTypeSchema.exactOptional().openapi({
+      description:
+        'The phone number of the buyer as provided to the merchant or on file with the merchant. The `phone.phone_number` supports only `national_number`.',
+    }),
+  })
+  .openapi({
+    title: 'Customer Information',
+    description: "The details about a customer in PayPal's system of record.",
+    required: [],
+  })
+  .openapi('Customer')
+
+const StoreInVaultInstructionSchema = z
+  .literal('ON_SUCCESS')
+  .openapi({
+    description: 'Defines how and when the payment source gets vaulted.',
+    'x-enumDescriptions': [
+      {
+        value: 'ON_SUCCESS',
+        description:
+          'Defines that the payment_source will be vaulted only when at least one authorization or capture using that payment_source is successful.',
+      },
+    ],
+  })
+  .openapi('StoreInVaultInstruction')
+
+const VaultInstructionBaseSchema = z
+  .object({ store_in_vault: StoreInVaultInstructionSchema.exactOptional() })
+  .openapi({
+    title: 'Vault Instruction Base',
+    description:
+      'Basic vault instruction specification that can be extended by specific payment sources that supports vaulting.',
+    required: [],
+  })
+  .openapi('VaultInstructionBase')
+
+const CardVerificationSchema = z
+  .object({
+    method: z
+      .enum(['SCA_ALWAYS', 'SCA_WHEN_REQUIRED', '3D_SECURE', 'AVS_CVV'])
+      .default('SCA_WHEN_REQUIRED')
+      .exactOptional()
+      .openapi({
+        description: 'The method used for card verification.',
+        'x-enumDescriptions': [
+          {
+            value: 'SCA_ALWAYS',
+            description:
+              'Selecting this option will attempt to force a strong customer authentication for the authorization/transaction. In countries where SCA has been defined and implemented it will result in a contingency and HATEOAS link being returned.  The API caller should redirect the payer to that link so that they can authenticate themselves against their issuing bank or other entity. As noted, the HATEOAS link is only available in all regions where strong authentication is supported, (e.g. in European countries where 3DS is live). Merchants can use this setting as an additional layer of security if they choose to. In all cases, when an authorization is requested the AVS/CVV results will be returned in the response.',
+          },
+          {
+            value: 'SCA_WHEN_REQUIRED',
+            description:
+              'This is the default. When an authorization or transaction is attempted this option will return a contingency and HATEOAS link only when local regulations require strong customer authentication, (e.g. 3DS in countries and use cases where it is mandated). The API caller should redirect the payer to the link so that they can authenticate themselves. In all cases, when an authorization is requested the AVS/CVV results will be returned in the response.',
+          },
+          {
+            value: '3D_SECURE',
+            description:
+              'The contingency surfaced as an additional security layer that helps prevent unauthorized card-not-present transactions and protects the merchant from exposure to fraud.',
+            deprecated: true,
+          },
+          {
+            value: 'AVS_CVV',
+            description:
+              'Places a temporary hold on the card to ensure its validity. This process protects the merchant from exposure to fraud. This verification method will confirm that the address information or CVV included matches what the issuing bank has on file for the associated card, ensuring that only authorized card users are able to make purchases from you.',
+            deprecated: true,
+          },
+        ],
+      }),
+  })
+  .openapi({
+    title: 'Card Verification',
+    description:
+      'The API caller can opt in to verify the card through PayPal offered verification services (e.g. Smart Dollar Auth, 3DS).',
+    required: [],
+  })
+  .openapi('CardVerification')
+
+const CardAttributesSchema = z
+  .object({
+    customer: CustomerSchema.exactOptional(),
+    vault: VaultInstructionBaseSchema.exactOptional().openapi({
+      description: 'Instruction to vault the card based on the specified strategy.',
+    }),
+    verification: CardVerificationSchema.exactOptional().openapi({
+      description: 'Instruction to optionally verify the card based on the specified strategy.',
+    }),
+  })
+  .openapi({
+    title: 'Card Attributes',
+    description: 'Additional attributes associated with the use of this card.',
+    required: [],
+  })
+  .openapi('CardAttributes')
+
+const PaymentSourceSchema = z
+  .object({
+    card: z
+      .object({
+        name: z
+          .string()
+          .regex(/^.{1,300}$/)
+          .min(1)
+          .max(300)
+          .exactOptional()
+          .openapi({ description: "The card holder's name as it appears on the card." }),
+        number: z
+          .string()
+          .regex(/^[0-9]{13,19}$/)
+          .min(13)
+          .max(19)
+          .exactOptional()
+          .openapi({ description: 'The primary account number (PAN) for the payment card.' }),
+        expiry: DateYearMonthSchema.exactOptional().openapi({
+          description:
+            'The card expiration year and month, in [Internet date format](https://tools.ietf.org/html/rfc3339#section-5.6).',
+        }),
+        security_code: z
+          .string()
+          .regex(/^[0-9]{3,4}$/)
+          .min(3)
+          .max(4)
+          .exactOptional()
+          .openapi({
+            description:
+              'The three- or four-digit security code of the card. Also known as the CVV, CVC, CVN, CVE, or CID. This parameter cannot be present in the request when `payment_initiator=MERCHANT`.',
+          }),
+        type: CardTypeSchema.exactOptional().openapi({ description: 'The payment card type.' }),
+        brand: CardBrandSchema.exactOptional().openapi({
+          description: 'The card brand or network. Typically used in the response.',
+        }),
+        billing_address: z
+          .object({
+            address_line_1: z
+              .string()
+              .max(300)
+              .exactOptional()
+              .openapi({
+                description:
+                  'The first line of the address, such as number and street, for example, `173 Drury Lane`. Needed for data entry, and Compliance and Risk checks. This field needs to pass the full address.',
+              }),
+            address_line_2: z
+              .string()
+              .max(300)
+              .exactOptional()
+              .openapi({
+                description:
+                  'The second line of the address, for example, a suite or apartment number.',
+              }),
+            admin_area_2: z
+              .string()
+              .max(120)
+              .exactOptional()
+              .openapi({
+                description: 'A city, town, or village. Smaller than `admin_area_level_1`.',
+              }),
+            admin_area_1: z
+              .string()
+              .max(300)
+              .exactOptional()
+              .openapi({
+                description:
+                  'The highest-level sub-division in a country, which is usually a province, state, or ISO-3166-2 subdivision. This data is formatted for postal delivery, for example, `CA` and not `California`. Value, by country, is:<ul><li>UK. A county.</li><li>US. A state.</li><li>Canada. A province.</li><li>Japan. A prefecture.</li><li>Switzerland. A *kanton*.</li></ul>',
+              }),
+            postal_code: z
+              .string()
+              .max(60)
+              .exactOptional()
+              .openapi({
+                description:
+                  'The postal code, which is the ZIP code or equivalent. Typically required for countries with a postal code or an equivalent. See [postal code](https://en.wikipedia.org/wiki/Postal_code).',
+              }),
+            country_code: CountryCodeSchema,
+          })
+          .exactOptional()
+          .openapi({
+            description:
+              'The portable international postal address. Maps to [AddressValidationMetadata](https://github.com/googlei18n/libaddressinput/wiki/AddressValidationMetadata) and HTML 5.1 [Autofilling form controls: the autocomplete attribute](https://www.w3.org/TR/html51/sec-forms.html#autofilling-form-controls-the-autocomplete-attribute).',
+            title: 'Portable Postal Address (Medium-Grained)',
+            required: ['country_code'],
+          }),
+        attributes: CardAttributesSchema.exactOptional().openapi({
+          description: 'Additional attributes associated with the use of this card.',
+        }),
+      })
+      .exactOptional()
+      .openapi({
+        title: 'Card',
+        description: 'The payment card to use to fund a payment. Can be a credit or debit card.',
+        required: [],
+      }),
+  })
+  .openapi({
+    title: 'Payment Source',
+    description:
+      'The payment source definition. To be eligible to create subscription using debit or credit card, you will need to sign up here (https://www.paypal.com/bizsignup/entry/product/ppcp). Please note, its available only for non-3DS cards and for merchants in US and AU regions.',
+    required: [],
+  })
+  .openapi('PaymentSource')
+
+const SubscriberRequestSchema = PayerBaseSchema.and(
+  z
+    .object({
+      name: z
+        .object({
+          given_name: z
+            .string()
+            .max(140)
+            .exactOptional()
+            .openapi({
+              description: "When the party is a person, the party's given, or first, name.",
+            }),
+          surname: z
+            .string()
+            .max(140)
+            .exactOptional()
+            .openapi({
+              description:
+                "When the party is a person, the party's surname or family name. Also known as the last name. Required when the party is a person. Use also to store multiple surnames including the matronymic, or mother's, surname.",
+            }),
+        })
+        .exactOptional()
+        .openapi({ description: 'The name of the party.', title: 'Name', required: [] }),
+      phone: PhoneWithTypeSchema.exactOptional().openapi({
+        description:
+          'The phone number of the customer. Available only when you enable the **Contact Telephone Number** option in the <a href="https://www.paypal.com/cgi-bin/customerprofileweb?cmd=_profile-website-payments">**Profile & Settings**</a> for the merchant\'s PayPal account. The `phone.phone_number` supports only `national_number`.',
+      }),
+    })
+    .openapi({ required: [] }),
+)
+  .and(
+    z
+      .looseObject({})
+      .openapi({
+        title: 'Payer',
+        description:
+          'The customer who approves and pays for the order. The customer is also known as the payer.',
+      }),
+  )
+  .and(
+    z
+      .object({
+        shipping_address: ShippingDetailSchema.exactOptional(),
+        payment_source: PaymentSourceSchema.exactOptional(),
+      })
+      .openapi({ required: [] }),
+  )
+  .and(
+    z
+      .looseObject({})
+      .openapi({
+        title: 'Subscriber Request Information',
+        description: 'The subscriber request information .',
+      }),
+  )
+  .openapi('SubscriberRequest')
+
+const LanguageSchema = z
+  .string()
+  .regex(/^[a-z]{2}(?:-[A-Z][a-z]{3})?(?:-(?:[A-Z]{2}|[0-9]{3}))?$/)
+  .min(2)
+  .max(10)
+  .openapi({
+    description:
+      'The [language tag](https://tools.ietf.org/html/bcp47#section-2) for the language in which to localize the error-related strings, such as messages, issues, and suggested actions. The tag is made up of the [ISO 639-2 language code](https://www.loc.gov/standards/iso639-2/php/code_list.php), the optional [ISO-15924 script tag](https://www.unicode.org/iso15924/codelists.html), and the [ISO-3166 alpha-2 country code](/api/rest/reference/country-codes/) or [M49 region code](https://unstats.un.org/unsd/methodology/m49/).',
+  })
+  .openapi('Language')
+
+const PayeePaymentMethodPreferenceSchema = z
+  .enum(['UNRESTRICTED', 'IMMEDIATE_PAYMENT_REQUIRED'])
+  .default('UNRESTRICTED')
+  .openapi({
+    description: 'The merchant-preferred payment methods.',
+    'x-enumDescriptions': [
+      {
+        value: 'UNRESTRICTED',
+        description: 'Accepts any type of payment from the customer.',
+        default: true,
+      },
+      {
+        value: 'IMMEDIATE_PAYMENT_REQUIRED',
+        description:
+          'Accepts only immediate payment from the customer. For example, credit card, PayPal balance, or instant ACH. Ensures that at the time of capture, the payment does not have the `pending` status.',
+      },
+    ],
+  })
+  .openapi('PayeePaymentMethodPreference')
+
+const ApplicationContextSchema = z
+  .object({
+    brand_name: z
+      .string()
+      .regex(/^.*$/)
+      .min(1)
+      .max(127)
+      .exactOptional()
+      .openapi({
+        description:
+          'The label that overrides the business name in the PayPal account on the PayPal site.',
+      }),
+    locale: LanguageSchema.exactOptional().openapi({
+      description:
+        'The BCP 47-formatted locale of pages that the PayPal payment experience shows. PayPal supports a five-character code. For example, `da-DK`, `he-IL`, `id-ID`, `ja-JP`, `no-NO`, `pt-BR`, `ru-RU`, `sv-SE`, `th-TH`, `zh-CN`, `zh-HK`, or `zh-TW`.',
+    }),
+    shipping_preference: z
+      .enum(['GET_FROM_FILE', 'NO_SHIPPING', 'SET_PROVIDED_ADDRESS'])
+      .default('GET_FROM_FILE')
+      .exactOptional()
+      .openapi({
+        description: 'The location from which the shipping address is derived.',
+        'x-enumDescriptions': [
+          {
+            value: 'GET_FROM_FILE',
+            description: 'Get the customer-provided shipping address on the PayPal site.',
+            default: true,
+          },
+          {
+            value: 'NO_SHIPPING',
+            description:
+              'Redacts the shipping address from the PayPal site. Recommended for digital goods.',
+          },
+          {
+            value: 'SET_PROVIDED_ADDRESS',
+            description:
+              'Get the merchant-provided address. The customer cannot change this address on the PayPal site. If merchant does not pass an address, customer can choose the address on PayPal pages.',
+          },
+        ],
+      }),
+    user_action: z
+      .enum(['CONTINUE', 'SUBSCRIBE_NOW'])
+      .default('SUBSCRIBE_NOW')
+      .exactOptional()
+      .openapi({
+        description:
+          'Configures the label name to `Continue` or `Subscribe Now` for subscription consent experience.',
+        'x-enumDescriptions': [
+          {
+            value: 'CONTINUE',
+            description:
+              'After you redirect the customer to the PayPal subscription consent page, a <strong>Continue</strong> button appears. Use this option when you want to control the activation of the subscription and do not want PayPal to activate the subscription.',
+            default: true,
+          },
+          {
+            value: 'SUBSCRIBE_NOW',
+            description:
+              'After you redirect the customer to the PayPal subscription consent page, a <strong>Subscribe Now</strong> button appears. Use this option when you want PayPal to activate the subscription.',
+          },
+        ],
+      }),
+    payment_method: z
+      .object({ payee_preferred: PayeePaymentMethodPreferenceSchema.exactOptional() })
+      .exactOptional()
+      .openapi({
+        description: 'The customer and merchant payment preferences.',
+        title: 'Payment Method',
+        required: [],
+      }),
+    return_url: z
+      .url()
+      .min(10)
+      .max(4000)
+      .openapi({
+        description:
+          'The URL where the customer is redirected after the customer approves the payment.',
+      }),
+    cancel_url: z
+      .url()
+      .min(10)
+      .max(4000)
+      .openapi({
+        description:
+          'The URL where the customer is redirected after the customer cancels the payment.',
+      }),
+  })
+  .openapi({
+    title: 'Application Context',
+    description:
+      'The application context, which customizes the payer experience during the subscription approval process with PayPal.',
+    required: ['return_url', 'cancel_url'],
+  })
+  .openapi('ApplicationContext')
+
+const BillingCycleOverrideSchema = z
+  .object({
+    pricing_scheme: PricingSchemeSchema.exactOptional().openapi({
+      description:
+        'The active pricing scheme for this billing cycle. A free trial billing cycle does not require a pricing scheme.',
+    }),
+    sequence: z
+      .int()
+      .min(1)
+      .max(99)
+      .openapi({
+        description:
+          'The order in which this cycle is to run among other billing cycles. For example, a trial billing cycle has a `sequence` of `1` while a regular billing cycle has a `sequence` of `2`, so that trial cycle runs before the regular cycle.',
+      }),
+    total_cycles: z
+      .int()
+      .min(0)
+      .max(999)
+      .exactOptional()
+      .openapi({
+        description:
+          'The number of times this billing cycle gets executed. Trial billing cycles can only be executed a finite number of times (value between <code>1</code> and <code>999</code> for <code>total_cycles</code>). Regular billing cycles can be executed infinite times (value of <code>0</code> for <code>total_cycles</code>) or a finite number of times (value between <code>1</code> and <code>999</code> for <code>total_cycles</code>).',
+      }),
+  })
+  .openapi({
+    title: 'Billing Cycle Override',
+    description:
+      'The billing cycle details to override at subscription level. The subscription billing cycle definition has to adhere to the plan billing cycle definition.',
+    required: ['sequence'],
+  })
+  .openapi('BillingCycleOverride')
+
+const BillingCycleOverrideListSchema = z
+  .array(BillingCycleOverrideSchema)
+  .min(1)
+  .max(12)
+  .openapi({
+    description:
+      'An array of billing cycles for trial billing and regular billing. The subscription billing cycle definition has to adhere to the plan billing cycle definition.',
+  })
+  .openapi('BillingCycleOverrideList')
+
+const PaymentPreferencesOverrideSchema = z
+  .object({
+    auto_bill_outstanding: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates whether to automatically bill the outstanding amount in the next billing cycle.',
+      }),
+    setup_fee: MoneySchema.exactOptional().openapi({
+      description: 'The initial set-up fee for the service.',
+    }),
+    setup_fee_failure_action: z
+      .enum(['CONTINUE', 'CANCEL'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The action to take on the subscription if the initial payment for the setup fails.',
+        'x-enumDescriptions': [
+          {
+            value: 'CONTINUE',
+            description: 'Continues the subscription if the initial payment for the setup fails.',
+          },
+          {
+            value: 'CANCEL',
+            description: 'Cancels the subscription if the initial payment for the setup fails.',
+          },
+        ],
+      }),
+    payment_failure_threshold: z
+      .int()
+      .min(0)
+      .max(999)
+      .exactOptional()
+      .openapi({
+        description:
+          'The maximum number of payment failures before a subscription is suspended. For example, if `payment_failure_threshold` is `2`, the subscription automatically updates to the `SUSPEND` state if two consecutive payments fail.',
+      }),
+  })
+  .openapi({
+    title: 'Payment Preferences Override',
+    description: 'The payment preferences to override at subscription level.',
+    required: [],
+  })
+  .openapi('PaymentPreferencesOverride')
+
+const TaxesOverrideSchema = z
+  .object({
+    percentage: PercentageSchema.exactOptional().openapi({
+      description: 'The tax percentage on the billing amount.',
+    }),
+    inclusive: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Indicates whether the tax was already included in the billing amount.',
+      }),
+  })
+  .openapi({ title: 'Taxes Override', description: 'The tax details.', required: [] })
+  .openapi('TaxesOverride')
+
+const PlanOverrideSchema = z
+  .object({
+    billing_cycles: BillingCycleOverrideListSchema.exactOptional(),
+    payment_preferences: PaymentPreferencesOverrideSchema.exactOptional(),
+    taxes: TaxesOverrideSchema.exactOptional(),
+  })
+  .openapi({
+    title: 'Plan Override',
+    description:
+      'An inline plan object to customise the subscription. You can override plan level default attributes by providing customised values for the subscription in this object.',
+    required: [],
+  })
+  .openapi('PlanOverride')
+
+const MerchantInventorySchema = z.any().openapi('MerchantInventory')
+
+type SubscriptionRequestPostType = {
+  plan_id: string
+  start_time?: z.infer<typeof DateTimeSchema>
+  quantity?: string
+  shipping_amount?: z.infer<typeof MoneySchema>
+  subscriber?: z.infer<typeof SubscriberRequestSchema>
+  auto_renewal?: boolean
+  application_context?: z.infer<typeof ApplicationContextSchema>
+  custom_id?: string
+  plan?: z.infer<typeof PlanOverrideSchema>
+  merchant_inventory?: z.infer<typeof MerchantInventorySchema>
+}
+
+type SubscriptionReviseRequestType = {
+  plan_id?: string
+  quantity?: string
+  shipping_amount?: z.infer<typeof MoneySchema>
+  shipping_address?: z.infer<typeof ShippingDetailSchema>
+  application_context?: {
+    brand_name?: string
+    locale?: z.infer<typeof LanguageSchema>
+    shipping_preference?: 'GET_FROM_FILE' | 'NO_SHIPPING' | 'SET_PROVIDED_ADDRESS'
+    payment_method?: { payee_preferred?: z.infer<typeof PayeePaymentMethodPreferenceSchema> }
+    return_url: string
+    cancel_url: string
+  }
+  plan?: z.infer<typeof PlanOverrideSchema>
+}
+
+const SubscriptionReviseResponseDefinitionsLinkDescriptionListSchema = z
+  .array(LinkDescriptionSchema)
+  .openapi({
+    description:
+      'An array of request-related [HATEOAS links](/docs/api/reference/api-responses/#hateoas-links).',
+    readOnly: true,
+  })
+  .openapi('SubscriptionReviseResponseDefinitionsLinkDescriptionList')
+
+type SubscriptionReviseResponseType = {
+  plan_id?: string
+  quantity?: string
+  shipping_amount?: z.infer<typeof MoneySchema>
+  shipping_address?: z.infer<typeof ShippingDetailSchema>
+  plan?: z.infer<typeof PlanOverrideSchema>
+  plan_overridden?: boolean
+  links?: z.infer<typeof SubscriptionReviseResponseDefinitionsLinkDescriptionListSchema>
 }
 
 const _400Schema = z
@@ -317,45 +2229,6 @@ const _422Schema = z
   .openapi({ required: [] })
   .openapi('_422')
 
-const AccountIdSchema = z
-  .string()
-  .regex(/^[2-9A-HJ-NP-Z]{13}$/)
-  .length(13)
-  .openapi({
-    title: 'PayPal Account Identifier',
-    description: 'The account identifier for a PayPal account.',
-  })
-  .openapi('AccountId')
-
-const CurrencyCodeSchema = z
-  .string()
-  .length(3)
-  .openapi({
-    description:
-      'The [three-character ISO-4217 currency code](/api/rest/reference/currency-codes/) that identifies the currency.',
-  })
-  .openapi('CurrencyCode')
-
-const MoneySchema = z
-  .object({
-    currency_code: CurrencyCodeSchema,
-    value: z
-      .string()
-      .regex(/^((-?[0-9]+)|(-?([0-9]+)?[.][0-9]+))$/)
-      .max(32)
-      .openapi({
-        description:
-          'The value, which might be:<ul><li>An integer for currencies like `JPY` that are not typically fractional.</li><li>A decimal fraction for currencies like `TND` that are subdivided into thousandths.</li></ul>For the required number of decimal places for a currency code, see [Currency Codes](/api/rest/reference/currency-codes/).',
-      }),
-  })
-  .openapi({
-    title: 'Money',
-    description:
-      'The currency and amount for a financial transaction, such as a balance or payment due.',
-    required: ['currency_code', 'value'],
-  })
-  .openapi('Money')
-
 const AmountWithBreakdownSchema = z
   .object({
     gross_amount: MoneySchema.openapi({
@@ -391,976 +2264,6 @@ const AmountWithBreakdownSchema = z
     required: ['gross_amount'],
   })
   .openapi('AmountWithBreakdown')
-
-const LanguageSchema = z
-  .string()
-  .regex(/^[a-z]{2}(?:-[A-Z][a-z]{3})?(?:-(?:[A-Z]{2}|[0-9]{3}))?$/)
-  .min(2)
-  .max(10)
-  .openapi({
-    description:
-      'The [language tag](https://tools.ietf.org/html/bcp47#section-2) for the language in which to localize the error-related strings, such as messages, issues, and suggested actions. The tag is made up of the [ISO 639-2 language code](https://www.loc.gov/standards/iso639-2/php/code_list.php), the optional [ISO-15924 script tag](https://www.unicode.org/iso15924/codelists.html), and the [ISO-3166 alpha-2 country code](/api/rest/reference/country-codes/) or [M49 region code](https://unstats.un.org/unsd/methodology/m49/).',
-  })
-  .openapi('Language')
-
-const PayeePaymentMethodPreferenceSchema = z
-  .enum(['UNRESTRICTED', 'IMMEDIATE_PAYMENT_REQUIRED'])
-  .default('UNRESTRICTED')
-  .openapi({
-    description: 'The merchant-preferred payment methods.',
-    'x-enumDescriptions': [
-      {
-        value: 'UNRESTRICTED',
-        description: 'Accepts any type of payment from the customer.',
-        default: true,
-      },
-      {
-        value: 'IMMEDIATE_PAYMENT_REQUIRED',
-        description:
-          'Accepts only immediate payment from the customer. For example, credit card, PayPal balance, or instant ACH. Ensures that at the time of capture, the payment does not have the `pending` status.',
-      },
-    ],
-  })
-  .openapi('PayeePaymentMethodPreference')
-
-const ApplicationContextSchema = z
-  .object({
-    brand_name: z
-      .string()
-      .regex(/^.*$/)
-      .min(1)
-      .max(127)
-      .exactOptional()
-      .openapi({
-        description:
-          'The label that overrides the business name in the PayPal account on the PayPal site.',
-      }),
-    locale: LanguageSchema.exactOptional().openapi({
-      description:
-        'The BCP 47-formatted locale of pages that the PayPal payment experience shows. PayPal supports a five-character code. For example, `da-DK`, `he-IL`, `id-ID`, `ja-JP`, `no-NO`, `pt-BR`, `ru-RU`, `sv-SE`, `th-TH`, `zh-CN`, `zh-HK`, or `zh-TW`.',
-    }),
-    shipping_preference: z
-      .enum(['GET_FROM_FILE', 'NO_SHIPPING', 'SET_PROVIDED_ADDRESS'])
-      .default('GET_FROM_FILE')
-      .exactOptional()
-      .openapi({
-        description: 'The location from which the shipping address is derived.',
-        'x-enumDescriptions': [
-          {
-            value: 'GET_FROM_FILE',
-            description: 'Get the customer-provided shipping address on the PayPal site.',
-            default: true,
-          },
-          {
-            value: 'NO_SHIPPING',
-            description:
-              'Redacts the shipping address from the PayPal site. Recommended for digital goods.',
-          },
-          {
-            value: 'SET_PROVIDED_ADDRESS',
-            description:
-              'Get the merchant-provided address. The customer cannot change this address on the PayPal site. If merchant does not pass an address, customer can choose the address on PayPal pages.',
-          },
-        ],
-      }),
-    user_action: z
-      .enum(['CONTINUE', 'SUBSCRIBE_NOW'])
-      .default('SUBSCRIBE_NOW')
-      .exactOptional()
-      .openapi({
-        description:
-          'Configures the label name to `Continue` or `Subscribe Now` for subscription consent experience.',
-        'x-enumDescriptions': [
-          {
-            value: 'CONTINUE',
-            description:
-              'After you redirect the customer to the PayPal subscription consent page, a <strong>Continue</strong> button appears. Use this option when you want to control the activation of the subscription and do not want PayPal to activate the subscription.',
-            default: true,
-          },
-          {
-            value: 'SUBSCRIBE_NOW',
-            description:
-              'After you redirect the customer to the PayPal subscription consent page, a <strong>Subscribe Now</strong> button appears. Use this option when you want PayPal to activate the subscription.',
-          },
-        ],
-      }),
-    payment_method: z
-      .object({ payee_preferred: PayeePaymentMethodPreferenceSchema.exactOptional() })
-      .exactOptional()
-      .openapi({
-        description: 'The customer and merchant payment preferences.',
-        title: 'Payment Method',
-        required: [],
-      }),
-    return_url: z
-      .url()
-      .min(10)
-      .max(4000)
-      .openapi({
-        description:
-          'The URL where the customer is redirected after the customer approves the payment.',
-      }),
-    cancel_url: z
-      .url()
-      .min(10)
-      .max(4000)
-      .openapi({
-        description:
-          'The URL where the customer is redirected after the customer cancels the payment.',
-      }),
-  })
-  .openapi({
-    title: 'Application Context',
-    description:
-      'The application context, which customizes the payer experience during the subscription approval process with PayPal.',
-    required: ['return_url', 'cancel_url'],
-  })
-  .openapi('ApplicationContext')
-
-const AuthenticationResponseSchema: z.ZodType<AuthenticationResponseType> = z
-  .lazy(() =>
-    z
-      .object({
-        liability_shift: LiabilityShiftSchema.exactOptional(),
-        three_d_secure: ThreeDSecureAuthenticationResponseSchema.exactOptional(),
-      })
-      .openapi({
-        title: 'Authentication Response',
-        description: 'Results of Authentication such as 3D Secure.',
-        required: [],
-      }),
-  )
-  .openapi('AuthenticationResponse')
-
-const PricingTierSchema = z
-  .object({
-    starting_quantity: z
-      .string()
-      .regex(/^([0-9]+|([0-9]+)?[.][0-9]+)$/)
-      .min(1)
-      .max(32)
-      .openapi({ description: 'The starting quantity for the tier.' }),
-    ending_quantity: z
-      .string()
-      .regex(/^([0-9]+|([0-9]+)?[.][0-9]+)$/)
-      .min(1)
-      .max(32)
-      .exactOptional()
-      .openapi({ description: 'The ending quantity for the tier. Optional for the last tier.' }),
-    amount: MoneySchema.openapi({ description: 'The pricing amount for the tier.' }),
-  })
-  .openapi({
-    title: 'Pricing Tier',
-    description: 'The pricing tier details.',
-    required: ['starting_quantity', 'amount'],
-  })
-  .openapi('PricingTier')
-
-const PricingTierListSchema = z
-  .array(PricingTierSchema)
-  .min(1)
-  .max(32)
-  .openapi({
-    description:
-      'An array of pricing tiers which are used for billing volume/tiered plans. pricing_model field has to be specified.',
-  })
-  .openapi('PricingTierList')
-
-const DateTimeSchema = z
-  .string()
-  .regex(
-    /^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])[T,t]([0-1][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)([.][0-9]+)?([Zz]|[+-][0-9]{2}:[0-9]{2})$/,
-  )
-  .min(20)
-  .max(64)
-  .openapi({
-    description:
-      'The date and time, in [Internet date and time format](https://tools.ietf.org/html/rfc3339#section-5.6). Seconds are required while fractional seconds are optional.<blockquote><strong>Note:</strong> The regular expression provides guidance but does not reject all invalid dates.</blockquote>',
-  })
-  .openapi('DateTime')
-
-const PricingSchemeSchema = z
-  .object({
-    version: z
-      .int()
-      .min(0)
-      .max(999)
-      .exactOptional()
-      .openapi({ description: 'The version of the pricing scheme.', readOnly: true }),
-    fixed_price: MoneySchema.exactOptional().openapi({
-      description:
-        'The fixed amount to charge for the subscription. The changes to fixed amount are applicable to both existing and future subscriptions. For existing subscriptions, payments within 10 days of price change are not affected.',
-    }),
-    pricing_model: z
-      .enum(['VOLUME', 'TIERED'])
-      .exactOptional()
-      .openapi({
-        description: 'The pricing model for tiered plan. The `tiers` parameter is required.',
-        'x-enumDescriptions': [
-          { value: 'VOLUME', description: 'A volume pricing model.' },
-          { value: 'TIERED', description: 'A tiered pricing model.' },
-        ],
-      }),
-    tiers: PricingTierListSchema.exactOptional(),
-    create_time: DateTimeSchema.exactOptional().openapi({
-      description:
-        'The date and time when this pricing scheme was created, in [Internet date and time format](https://tools.ietf.org/html/rfc3339#section-5.6).',
-      readOnly: true,
-    }),
-    update_time: DateTimeSchema.exactOptional().openapi({
-      description:
-        'The date and time when this pricing scheme was last updated, in [Internet date and time format](https://tools.ietf.org/html/rfc3339#section-5.6).',
-      readOnly: true,
-    }),
-  })
-  .openapi({ title: 'Pricing Scheme', description: 'The pricing scheme details.', required: [] })
-  .openapi('PricingScheme')
-
-const FrequencySchema = z
-  .object({
-    interval_unit: z.enum(['DAY', 'WEEK', 'MONTH', 'YEAR']).openapi({
-      description: 'The interval at which the subscription is charged or billed.',
-      'x-enumDescriptions': [
-        { value: 'DAY', description: 'A daily billing cycle.' },
-        { value: 'WEEK', description: 'A weekly billing cycle.' },
-        { value: 'MONTH', description: 'A monthly billing cycle.' },
-        { value: 'YEAR', description: 'A yearly billing cycle.' },
-      ],
-    }),
-    interval_count: z
-      .int()
-      .min(1)
-      .max(365)
-      .default(1)
-      .exactOptional()
-      .openapi({
-        description:
-          'The number of intervals after which a subscriber is billed. For example, if the `interval_unit` is `DAY` with an `interval_count` of  `2`, the subscription is billed once every two days. The following table lists the maximum allowed values for the `interval_count` for each `interval_unit`:<table><thead><tr><th><code>Interval unit</code></th><th>Maximum interval count</th></tr></thead><tbody><tr><td><code>DAY</code></td><td align="right">365</td></tr><tr><td><code>WEEK</code></td><td align="right">52</td></tr><tr><td><code>MONTH</code></td><td align="right">12</td></tr><tr><td><code>YEAR</code></td><td align="right">1</td></tr></tbody></table>',
-      }),
-  })
-  .openapi({
-    title: 'Billing Cycle Frequency',
-    description: 'The frequency of the billing cycle.',
-    required: ['interval_unit'],
-  })
-  .openapi('Frequency')
-
-const BillingCycleSchema = z
-  .object({
-    pricing_scheme: PricingSchemeSchema.exactOptional().openapi({
-      description:
-        'The active pricing scheme for this billing cycle. A free trial billing cycle does not require a pricing scheme.',
-    }),
-    frequency: FrequencySchema.openapi({
-      description: 'The frequency details for this billing cycle.',
-    }),
-    tenure_type: z.enum(['REGULAR', 'TRIAL']).openapi({
-      description:
-        'The tenure type of the billing cycle. In case of a plan having trial cycle, only 2 trial cycles are allowed per plan.',
-      'x-enumDescriptions': [
-        { value: 'REGULAR', description: 'A regular billing cycle.' },
-        { value: 'TRIAL', description: 'A trial billing cycle.' },
-      ],
-    }),
-    sequence: z
-      .int()
-      .min(1)
-      .max(99)
-      .openapi({
-        description:
-          'The order in which this cycle is to run among other billing cycles. For example, a trial billing cycle has a `sequence` of `1` while a regular billing cycle has a `sequence` of `2`, so that trial cycle runs before the regular cycle.',
-      }),
-    total_cycles: z
-      .int()
-      .min(0)
-      .max(999)
-      .default(1)
-      .exactOptional()
-      .openapi({
-        description:
-          'The number of times this billing cycle gets executed. Trial billing cycles can only be executed a finite number of times (value between <code>1</code> and <code>999</code> for <code>total_cycles</code>). Regular billing cycles can be executed infinite times (value of <code>0</code> for <code>total_cycles</code>) or a finite number of times (value between <code>1</code> and <code>999</code> for <code>total_cycles</code>).',
-      }),
-  })
-  .openapi({
-    title: 'Billing Cycle',
-    description: 'The billing cycle details.',
-    required: ['frequency', 'tenure_type', 'sequence'],
-  })
-  .openapi('BillingCycle')
-
-const BillingCycleListSchema = z
-  .array(BillingCycleSchema)
-  .min(1)
-  .max(12)
-  .openapi({
-    description:
-      'An array of billing cycles for trial billing and regular billing. A plan can have at most two trial cycles and only one regular cycle.',
-  })
-  .openapi('BillingCycleList')
-
-const BillingCycleOverrideSchema = z
-  .object({
-    pricing_scheme: PricingSchemeSchema.exactOptional().openapi({
-      description:
-        'The active pricing scheme for this billing cycle. A free trial billing cycle does not require a pricing scheme.',
-    }),
-    sequence: z
-      .int()
-      .min(1)
-      .max(99)
-      .openapi({
-        description:
-          'The order in which this cycle is to run among other billing cycles. For example, a trial billing cycle has a `sequence` of `1` while a regular billing cycle has a `sequence` of `2`, so that trial cycle runs before the regular cycle.',
-      }),
-    total_cycles: z
-      .int()
-      .min(0)
-      .max(999)
-      .exactOptional()
-      .openapi({
-        description:
-          'The number of times this billing cycle gets executed. Trial billing cycles can only be executed a finite number of times (value between <code>1</code> and <code>999</code> for <code>total_cycles</code>). Regular billing cycles can be executed infinite times (value of <code>0</code> for <code>total_cycles</code>) or a finite number of times (value between <code>1</code> and <code>999</code> for <code>total_cycles</code>).',
-      }),
-  })
-  .openapi({
-    title: 'Billing Cycle Override',
-    description:
-      'The billing cycle details to override at subscription level. The subscription billing cycle definition has to adhere to the plan billing cycle definition.',
-    required: ['sequence'],
-  })
-  .openapi('BillingCycleOverride')
-
-const BillingCycleOverrideListSchema = z
-  .array(BillingCycleOverrideSchema)
-  .min(1)
-  .max(12)
-  .openapi({
-    description:
-      'An array of billing cycles for trial billing and regular billing. The subscription billing cycle definition has to adhere to the plan billing cycle definition.',
-  })
-  .openapi('BillingCycleOverrideList')
-
-const CountryCode_2Schema = z
-  .string()
-  .regex(/^([A-Z]{2}|C2)$/)
-  .length(2)
-  .openapi({
-    description:
-      'The [two-character ISO 3166-1 code](/api/rest/reference/country-codes/) that identifies the country or region.<blockquote><strong>Note:</strong> The country code for Great Britain is <code>GB</code> and not <code>UK</code> as used in the top-level domain names for that country. Use the `C2` country code for China worldwide for comparable uncontrolled price (CUP) method, bank card, and cross-border transactions.</blockquote>',
-  })
-  .openapi('CountryCode_2')
-
-const ProductsSchema = z
-  .string()
-  .min(1)
-  .max(255)
-  .openapi({ description: 'This value provides the category of the BIN.' })
-  .openapi('Products')
-
-const ProductsListSchema = z
-  .array(ProductsSchema)
-  .min(1)
-  .max(256)
-  .openapi({
-    description:
-      'The type of card product assigned to the BIN by the issuer. These values are defined by the issuer and may change over time. Some examples include: PREPAID_GIFT, CONSUMER, CORPORATE.',
-  })
-  .openapi('ProductsList')
-
-const BinDetailsSchema = z
-  .object({
-    bin: z
-      .string()
-      .regex(/^[0-9]+$/)
-      .min(1)
-      .max(25)
-      .exactOptional()
-      .openapi({
-        description:
-          'The Bank Identification Number (BIN) signifies the number that is being used to identify the granular level details (except the PII information) of the card.',
-      }),
-    issuing_bank: z
-      .string()
-      .min(1)
-      .max(64)
-      .exactOptional()
-      .openapi({ description: 'The issuer of the card instrument.' }),
-    bin_country_code: CountryCode_2Schema.exactOptional().openapi({
-      description:
-        'The [two-character ISO-3166-1 country code](/docs/integration/direct/rest/country-codes/) of the bank.',
-    }),
-    products: ProductsListSchema.exactOptional(),
-  })
-  .openapi({
-    title: 'Bin Details',
-    description: 'Bank Identification Number (BIN) details used to fund a payment.',
-    required: [],
-  })
-  .openapi('BinDetails')
-
-const MerchantPartnerCustomerIdSchema = z
-  .string()
-  .regex(/^[0-9a-zA-Z_-]+$/)
-  .min(1)
-  .max(22)
-  .openapi({ description: 'The unique ID for a customer generated by PayPal.' })
-  .openapi('MerchantPartnerCustomerId')
-
-const EmailSchema = z
-  .string()
-  .regex(
-    /(?:[a-zA-Z0-9!#$%&'*+\/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&'*+\/=?^_`{|}~-]+)*|(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\.)+[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-zA-Z0-9-]*[a-zA-Z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/,
-  )
-  .min(3)
-  .max(254)
-  .openapi({
-    description:
-      'The internationalized email address.<blockquote><strong>Note:</strong> Up to 64 characters are allowed before and 255 characters are allowed after the <code>@</code> sign. However, the generally accepted maximum length for an email address is 254 characters. The pattern verifies that an unquoted <code>@</code> sign exists.</blockquote>',
-  })
-  .openapi('Email')
-
-const PhoneTypeSchema = z
-  .enum(['FAX', 'HOME', 'MOBILE', 'OTHER', 'PAGER'])
-  .openapi({ title: 'Phone Type', description: 'The phone type.' })
-  .openapi('PhoneType')
-
-const PhoneWithTypeSchema = z
-  .object({
-    phone_type: PhoneTypeSchema.exactOptional(),
-    phone_number: z
-      .object({
-        national_number: z
-          .string()
-          .regex(/^[0-9]{1,14}?$/)
-          .min(1)
-          .max(14)
-          .openapi({
-            description:
-              'The national number, in its canonical international [E.164 numbering plan format](https://www.itu.int/rec/T-REC-E.164/en). The combined length of the country calling code (CC) and the national number must not be greater than 15 digits. The national number consists of a national destination code (NDC) and subscriber number (SN).',
-          }),
-      })
-      .openapi({
-        description:
-          'The phone number, in its canonical international [E.164 numbering plan format](https://www.itu.int/rec/T-REC-E.164/en).',
-        title: 'Phone',
-        required: ['national_number'],
-      }),
-  })
-  .openapi({
-    title: 'Phone With Type',
-    description: 'The phone information.',
-    required: ['phone_number'],
-  })
-  .openapi('PhoneWithType')
-
-const CustomerSchema = z
-  .object({
-    id: MerchantPartnerCustomerIdSchema.exactOptional(),
-    email_address: EmailSchema.exactOptional().openapi({
-      description:
-        'Email address of the buyer as provided to the merchant or on file with the merchant. Email Address is required if you are processing the transaction using PayPal Guest Processing which is offered to select partners and merchants. For all other use cases we do not expect partners/merchant to send email_address of their customer.',
-    }),
-    phone: PhoneWithTypeSchema.exactOptional().openapi({
-      description:
-        'The phone number of the buyer as provided to the merchant or on file with the merchant. The `phone.phone_number` supports only `national_number`.',
-    }),
-  })
-  .openapi({
-    title: 'Customer Information',
-    description: "The details about a customer in PayPal's system of record.",
-    required: [],
-  })
-  .openapi('Customer')
-
-const StoreInVaultInstructionSchema = z
-  .literal('ON_SUCCESS')
-  .openapi({
-    description: 'Defines how and when the payment source gets vaulted.',
-    'x-enumDescriptions': [
-      {
-        value: 'ON_SUCCESS',
-        description:
-          'Defines that the payment_source will be vaulted only when at least one authorization or capture using that payment_source is successful.',
-      },
-    ],
-  })
-  .openapi('StoreInVaultInstruction')
-
-const VaultInstructionBaseSchema = z
-  .object({ store_in_vault: StoreInVaultInstructionSchema.exactOptional() })
-  .openapi({
-    title: 'Vault Instruction Base',
-    description:
-      'Basic vault instruction specification that can be extended by specific payment sources that supports vaulting.',
-    required: [],
-  })
-  .openapi('VaultInstructionBase')
-
-const CardVerificationSchema = z
-  .object({
-    method: z
-      .enum(['SCA_ALWAYS', 'SCA_WHEN_REQUIRED', '3D_SECURE', 'AVS_CVV'])
-      .default('SCA_WHEN_REQUIRED')
-      .exactOptional()
-      .openapi({
-        description: 'The method used for card verification.',
-        'x-enumDescriptions': [
-          {
-            value: 'SCA_ALWAYS',
-            description:
-              'Selecting this option will attempt to force a strong customer authentication for the authorization/transaction. In countries where SCA has been defined and implemented it will result in a contingency and HATEOAS link being returned.  The API caller should redirect the payer to that link so that they can authenticate themselves against their issuing bank or other entity. As noted, the HATEOAS link is only available in all regions where strong authentication is supported, (e.g. in European countries where 3DS is live). Merchants can use this setting as an additional layer of security if they choose to. In all cases, when an authorization is requested the AVS/CVV results will be returned in the response.',
-          },
-          {
-            value: 'SCA_WHEN_REQUIRED',
-            description:
-              'This is the default. When an authorization or transaction is attempted this option will return a contingency and HATEOAS link only when local regulations require strong customer authentication, (e.g. 3DS in countries and use cases where it is mandated). The API caller should redirect the payer to the link so that they can authenticate themselves. In all cases, when an authorization is requested the AVS/CVV results will be returned in the response.',
-          },
-          {
-            value: '3D_SECURE',
-            description:
-              'The contingency surfaced as an additional security layer that helps prevent unauthorized card-not-present transactions and protects the merchant from exposure to fraud.',
-            deprecated: true,
-          },
-          {
-            value: 'AVS_CVV',
-            description:
-              'Places a temporary hold on the card to ensure its validity. This process protects the merchant from exposure to fraud. This verification method will confirm that the address information or CVV included matches what the issuing bank has on file for the associated card, ensuring that only authorized card users are able to make purchases from you.',
-            deprecated: true,
-          },
-        ],
-      }),
-  })
-  .openapi({
-    title: 'Card Verification',
-    description:
-      'The API caller can opt in to verify the card through PayPal offered verification services (e.g. Smart Dollar Auth, 3DS).',
-    required: [],
-  })
-  .openapi('CardVerification')
-
-const CardAttributesSchema = z
-  .object({
-    customer: CustomerSchema.exactOptional(),
-    vault: VaultInstructionBaseSchema.exactOptional().openapi({
-      description: 'Instruction to vault the card based on the specified strategy.',
-    }),
-    verification: CardVerificationSchema.exactOptional().openapi({
-      description: 'Instruction to optionally verify the card based on the specified strategy.',
-    }),
-  })
-  .openapi({
-    title: 'Card Attributes',
-    description: 'Additional attributes associated with the use of this card.',
-    required: [],
-  })
-  .openapi('CardAttributes')
-
-const LinkDescriptionSchema = z
-  .object({
-    href: z
-      .string()
-      .openapi({
-        description:
-          'The complete target URL. To make the related call, combine the method with this [URI Template-formatted](https://tools.ietf.org/html/rfc6570) link. For pre-processing, include the `$`, `(`, and `)` characters. The `href` is the key HATEOAS component that links a completed call with a subsequent call.',
-      }),
-    rel: z
-      .string()
-      .openapi({
-        description:
-          'The [link relation type](https://tools.ietf.org/html/rfc5988#section-4), which serves as an ID for a link that unambiguously describes the semantics of the link. See [Link Relations](https://www.iana.org/assignments/link-relations/link-relations.xhtml).',
-      }),
-    method: z
-      .enum(['GET', 'POST', 'PUT', 'DELETE', 'HEAD', 'CONNECT', 'OPTIONS', 'PATCH'])
-      .exactOptional()
-      .openapi({ description: 'The HTTP method required to make the related call.' }),
-  })
-  .openapi({
-    title: 'Link Description',
-    description:
-      'The request-related [HATEOAS link](/api/rest/responses/#hateoas-links) information.',
-    required: ['href', 'rel'],
-  })
-  .openapi('LinkDescription')
-
-const DefinitionsLinkDescriptionListSchema = z
-  .array(LinkDescriptionSchema)
-  .min(1)
-  .max(10)
-  .openapi({ description: 'An array of request-related HATEOAS links.', readOnly: true })
-  .openapi('DefinitionsLinkDescriptionList')
-
-const VaultResponseSchema = z
-  .object({
-    id: z
-      .string()
-      .min(1)
-      .max(255)
-      .exactOptional()
-      .openapi({ description: 'The PayPal-generated ID for the saved payment source.' }),
-    status: z
-      .enum(['VAULTED', 'CREATED', 'APPROVED'])
-      .exactOptional()
-      .openapi({
-        title: 'Vault Status',
-        description: 'The vault status.',
-        'x-enumDescriptions': [
-          {
-            value: 'VAULTED',
-            description:
-              "The payment source has been saved in your customer's vault. This vault status reflects `/v3/vault` status.",
-          },
-          {
-            value: 'CREATED',
-            description:
-              "DEPRECATED. The payment source has been saved in your customer's vault. This status applies to deprecated integration patterns and will not be returned for v3/vault integrations.",
-          },
-          {
-            value: 'APPROVED',
-            description:
-              'Customer has approved the action of saving the specified payment_source into their vault. Use v3/vault/payment-tokens with given setup_token to save the payment source in the vault',
-          },
-        ],
-        deprecated: true,
-      }),
-    customer: z
-      .object({ id: MerchantPartnerCustomerIdSchema.exactOptional() })
-      .exactOptional()
-      .openapi({
-        title: 'Customer Information',
-        description: "The details about a customer in PayPal's system of record.",
-        required: [],
-      }),
-    links: DefinitionsLinkDescriptionListSchema.exactOptional(),
-  })
-  .openapi({
-    title: 'Vault Response',
-    description: 'The details about a saved payment source.',
-    required: [],
-  })
-  .openapi('VaultResponse')
-
-const CardAttributesResponseSchema = z
-  .object({ vault: VaultResponseSchema.exactOptional() })
-  .openapi({
-    title: 'Card Attributes Response',
-    description: 'Additional attributes associated with the use of this card.',
-    required: [],
-  })
-  .openapi('CardAttributesResponse')
-
-const CardBrandSchema = z
-  .enum([
-    'VISA',
-    'MASTERCARD',
-    'DISCOVER',
-    'AMEX',
-    'SOLO',
-    'JCB',
-    'STAR',
-    'DELTA',
-    'SWITCH',
-    'MAESTRO',
-    'CB_NATIONALE',
-    'CONFIGOGA',
-    'CONFIDIS',
-    'ELECTRON',
-    'CETELEM',
-    'CHINA_UNION_PAY',
-    'DINERS',
-    'ELO',
-    'HIPER',
-    'HIPERCARD',
-    'RUPAY',
-    'GE',
-    'SYNCHRONY',
-    'UNKNOWN',
-  ])
-  .openapi({
-    title: 'Card Brand',
-    description: 'The card network or brand. Applies to credit, debit, gift, and payment cards.',
-    'x-enumDescriptions': [
-      { value: 'VISA', description: 'Visa card.' },
-      { value: 'MASTERCARD', description: 'Mastecard card.' },
-      { value: 'DISCOVER', description: 'Discover card.' },
-      { value: 'AMEX', description: 'American Express card.' },
-      { value: 'SOLO', description: 'Solo debit card.' },
-      { value: 'JCB', description: 'Japan Credit Bureau card.' },
-      { value: 'STAR', description: 'Military Star card.' },
-      { value: 'DELTA', description: 'Delta Airlines card.' },
-      { value: 'SWITCH', description: 'Switch credit card.' },
-      { value: 'MAESTRO', description: 'Maestro credit card.' },
-      { value: 'CB_NATIONALE', description: 'Carte Bancaire (CB) credit card.' },
-      { value: 'CONFIGOGA', description: 'Configoga credit card.' },
-      { value: 'CONFIDIS', description: 'Confidis credit card.' },
-      { value: 'ELECTRON', description: 'Visa Electron credit card.' },
-      { value: 'CETELEM', description: 'Cetelem credit card.' },
-      { value: 'CHINA_UNION_PAY', description: 'China union pay credit card.' },
-      {
-        value: 'DINERS',
-        description:
-          'The Diners Club International banking and payment services capability network owned by Discover Financial Services (DFS), one of the most recognized brands in US financial services.',
-      },
-      { value: 'ELO', description: 'The Brazilian Elo card payment network.' },
-      { value: 'HIPER', description: 'The Hiper - Ingenico ePayment network.' },
-      {
-        value: 'HIPERCARD',
-        description:
-          "The Brazilian Hipercard payment network that's widely accepted in the retail market.",
-      },
-      { value: 'RUPAY', description: 'The RuPay payment network.' },
-      { value: 'GE', description: 'The GE Credit Union 3Point card payment network.' },
-      { value: 'SYNCHRONY', description: 'The Synchrony Financial (SYF) payment network.' },
-      { value: 'UNKNOWN', description: 'UNKNOWN payment network.' },
-    ],
-  })
-  .openapi('CardBrand')
-
-const CardBrandListSchema = z
-  .array(CardBrandSchema)
-  .min(1)
-  .max(256)
-  .openapi({ description: 'Array of brands or networks associated with the card.', readOnly: true })
-  .openapi('CardBrandList')
-
-const DateYearMonthSchema = z
-  .string()
-  .regex(/^[0-9]{4}-(0[1-9]|1[0-2])$/)
-  .length(7)
-  .openapi({
-    description:
-      'The year and month, in ISO-8601 `YYYY-MM` date format. See [Internet date and time format](https://tools.ietf.org/html/rfc3339#section-5.6).',
-  })
-  .openapi('DateYearMonth')
-
-const CardFromRequestSchema = z
-  .object({
-    expiry: DateYearMonthSchema.exactOptional().openapi({
-      description:
-        'The card expiration year and month, in [Internet date format](https://tools.ietf.org/html/rfc3339#section-5.6).',
-    }),
-    last_digits: z
-      .string()
-      .regex(/[0-9]{2,}/)
-      .min(2)
-      .max(4)
-      .exactOptional()
-      .openapi({ description: 'The last digits of the payment card.', readOnly: true }),
-  })
-  .openapi({
-    title: 'Card from Request',
-    description: 'Representation of card details as received in the request.',
-    required: [],
-  })
-  .openapi('CardFromRequest')
-
-const CardTypeSchema = z
-  .enum(['CREDIT', 'DEBIT', 'PREPAID', 'STORE', 'UNKNOWN'])
-  .openapi({
-    title: 'Card Type',
-    description: 'Type of card. i.e Credit, Debit and so on.',
-    'x-enumDescriptions': [
-      { value: 'CREDIT', description: 'A credit card.' },
-      { value: 'DEBIT', description: 'A debit card.' },
-      { value: 'PREPAID', description: 'A Prepaid card.' },
-      { value: 'STORE', description: 'A store card.' },
-      { value: 'UNKNOWN', description: 'Card type cannot be determined.' },
-    ],
-  })
-  .openapi('CardType')
-
-const CardResponseSchema = z
-  .object({
-    name: z
-      .string()
-      .min(2)
-      .max(300)
-      .exactOptional()
-      .openapi({ description: "The card holder's name as it appears on the card." }),
-    last_digits: z
-      .string()
-      .regex(/[0-9]{2,}/)
-      .exactOptional()
-      .openapi({ description: 'The last digits of the payment card.', readOnly: true }),
-    brand: CardBrandSchema.exactOptional().openapi({
-      description: 'The card brand or network. Typically used in the response.',
-      readOnly: true,
-    }),
-    available_networks: CardBrandListSchema.exactOptional(),
-    type: CardTypeSchema.exactOptional().openapi({ description: 'The payment card type.' }),
-    authentication_result: AuthenticationResponseSchema.exactOptional(),
-    attributes: CardAttributesResponseSchema.exactOptional(),
-    from_request: CardFromRequestSchema.exactOptional(),
-    expiry: DateYearMonthSchema.exactOptional().openapi({
-      description:
-        'The card expiration year and month, in [Internet date format](https://tools.ietf.org/html/rfc3339#section-5.6).',
-    }),
-    bin_details: BinDetailsSchema.exactOptional().openapi({
-      description: 'Bank Identification Number (BIN) details used to fund a payment.',
-    }),
-  })
-  .openapi({
-    title: 'Card Response',
-    description: 'The payment card to use to fund a payment. Card can be a credit or debit card.',
-    required: [],
-  })
-  .openapi('CardResponse')
-
-const CountryCodeSchema = z
-  .string()
-  .regex(/^([A-Z]{2}|C2)$/)
-  .length(2)
-  .openapi({
-    description:
-      'The [2-character ISO 3166-1 code](/api/rest/reference/country-codes/) that identifies the country or region.<blockquote><strong>Note:</strong> The country code for Great Britain is <code>GB</code> and not <code>UK</code> as used in the top-level domain names for that country. Use the `C2` country code for China worldwide for comparable uncontrolled price (CUP) method, bank card, and cross-border transactions.</blockquote>',
-  })
-  .openapi('CountryCode')
-
-const CardResponseWithBillingAddressSchema = CardResponseSchema.and(
-  z
-    .object({
-      name: z
-        .string()
-        .min(2)
-        .max(300)
-        .exactOptional()
-        .openapi({ description: "The card holder's name as it appears on the card." }),
-      billing_address: z
-        .object({
-          address_line_1: z
-            .string()
-            .max(300)
-            .exactOptional()
-            .openapi({
-              description:
-                'The first line of the address, such as number and street, for example, `173 Drury Lane`. Needed for data entry, and Compliance and Risk checks. This field needs to pass the full address.',
-            }),
-          address_line_2: z
-            .string()
-            .max(300)
-            .exactOptional()
-            .openapi({
-              description:
-                'The second line of the address, for example, a suite or apartment number.',
-            }),
-          admin_area_2: z
-            .string()
-            .max(120)
-            .exactOptional()
-            .openapi({
-              description: 'A city, town, or village. Smaller than `admin_area_level_1`.',
-            }),
-          admin_area_1: z
-            .string()
-            .max(300)
-            .exactOptional()
-            .openapi({
-              description:
-                'The highest-level sub-division in a country, which is usually a province, state, or ISO-3166-2 subdivision. This data is formatted for postal delivery, for example, `CA` and not `California`. Value, by country, is:<ul><li>UK. A county.</li><li>US. A state.</li><li>Canada. A province.</li><li>Japan. A prefecture.</li><li>Switzerland. A *kanton*.</li></ul>',
-            }),
-          postal_code: z
-            .string()
-            .max(60)
-            .exactOptional()
-            .openapi({
-              description:
-                'The postal code, which is the ZIP code or equivalent. Typically required for countries with a postal code or an equivalent. See [postal code](https://en.wikipedia.org/wiki/Postal_code).',
-            }),
-          country_code: CountryCodeSchema,
-        })
-        .exactOptional()
-        .openapi({
-          description:
-            'The portable international postal address. Maps to [AddressValidationMetadata](https://github.com/googlei18n/libaddressinput/wiki/AddressValidationMetadata) and HTML 5.1 [Autofilling form controls: the autocomplete attribute](https://www.w3.org/TR/html51/sec-forms.html#autofilling-form-controls-the-autocomplete-attribute).',
-          title: 'Portable Postal Address (Medium-Grained)',
-          required: ['country_code'],
-        }),
-      expiry: DateYearMonthSchema.exactOptional().openapi({
-        description:
-          'The card expiration year and month, in [Internet date format](https://tools.ietf.org/html/rfc3339#section-5.6).',
-      }),
-      currency_code: CurrencyCodeSchema.exactOptional().openapi({
-        description: 'Currency code of the given instrument',
-      }),
-    })
-    .openapi({ required: [] }),
-)
-  .and(
-    z
-      .object({})
-      .openapi({
-        title: 'Card Response with billing address and name',
-        description:
-          'The payment card used to fund the payment. Card can be a credit or debit card.',
-      }),
-  )
-  .openapi('CardResponseWithBillingAddress')
-
-const CycleExecutionSchema = z
-  .object({
-    tenure_type: z.enum(['REGULAR', 'TRIAL']).openapi({
-      description: 'The type of the billing cycle.',
-      'x-enumDescriptions': [
-        { value: 'REGULAR', description: 'A regular billing cycle.' },
-        { value: 'TRIAL', description: 'A trial billing cycle.' },
-      ],
-      readOnly: true,
-    }),
-    sequence: z
-      .int()
-      .min(0)
-      .max(99)
-      .openapi({ description: 'The order in which to run this cycle among other billing cycles.' }),
-    cycles_completed: z
-      .int()
-      .min(0)
-      .max(9999)
-      .openapi({
-        description: 'The number of billing cycles that have completed.',
-        readOnly: true,
-      }),
-    cycles_remaining: z
-      .int()
-      .min(0)
-      .max(9999)
-      .exactOptional()
-      .openapi({
-        description:
-          'For a finite billing cycle, cycles_remaining is the number of remaining cycles. For an infinite billing cycle, cycles_remaining is set as 0.',
-        readOnly: true,
-      }),
-    current_pricing_scheme_version: z
-      .int()
-      .min(1)
-      .max(99)
-      .exactOptional()
-      .openapi({
-        description: 'The active pricing scheme version for the billing cycle.',
-        readOnly: true,
-      }),
-    total_cycles: z
-      .int()
-      .min(0)
-      .max(999)
-      .exactOptional()
-      .openapi({
-        description:
-          'The number of times this billing cycle gets executed. Trial billing cycles can only be executed a finite number of times (value between <code>1</code> and <code>999</code> for <code>total_cycles</code>). Regular billing cycles can be executed infinite times (value of <code>0</code> for <code>total_cycles</code>) or a finite number of times (value between <code>1</code> and <code>999</code> for <code>total_cycles</code>).',
-        readOnly: true,
-      }),
-  })
-  .openapi({
-    title: 'Billing Cycle Execution Details',
-    description: 'The regular and trial execution details for a billing cycle.',
-    required: ['tenure_type', 'sequence', 'cycles_completed'],
-  })
-  .openapi('CycleExecution')
-
-const CycleExecutionListSchema = z
-  .array(CycleExecutionSchema)
-  .min(0)
-  .max(3)
-  .openapi({ description: 'The trial and regular billing executions.', readOnly: true })
-  .openapi('CycleExecutionList')
 
 const EmailAddressSchema = z
   .string()
@@ -1734,104 +2637,6 @@ const ErrorDefaultSchema = z
   .openapi({ description: 'The default error response.' })
   .openapi('ErrorDefault')
 
-const FailedPaymentDetailsSchema = z
-  .object({
-    amount: MoneySchema.openapi({ description: 'The failed payment amount.', readOnly: true }),
-    time: DateTimeSchema.openapi({
-      description:
-        'The date and time when the failed payment was made, in [Internet date and time format](https://tools.ietf.org/html/rfc3339#section-5.6).',
-      readOnly: true,
-    }),
-    reason_code: z
-      .enum([
-        'PAYMENT_DENIED',
-        'INTERNAL_SERVER_ERROR',
-        'PAYEE_ACCOUNT_RESTRICTED',
-        'PAYER_ACCOUNT_RESTRICTED',
-        'PAYER_CANNOT_PAY',
-        'SENDING_LIMIT_EXCEEDED',
-        'TRANSACTION_RECEIVING_LIMIT_EXCEEDED',
-        'CURRENCY_MISMATCH',
-      ])
-      .exactOptional()
-      .openapi({
-        description: 'The reason code for the payment failure.',
-        'x-enumDescriptions': [
-          {
-            value: 'PAYMENT_DENIED',
-            description: 'PayPal declined the payment due to one or more customer issues.',
-          },
-          { value: 'INTERNAL_SERVER_ERROR', description: 'An internal server error has occurred.' },
-          {
-            value: 'PAYEE_ACCOUNT_RESTRICTED',
-            description: 'The payee account is not in good standing and cannot receive payments.',
-          },
-          {
-            value: 'PAYER_ACCOUNT_RESTRICTED',
-            description: 'The payer account is not in good standing and cannot make payments.',
-          },
-          { value: 'PAYER_CANNOT_PAY', description: 'Payer cannot pay for this transaction.' },
-          {
-            value: 'SENDING_LIMIT_EXCEEDED',
-            description: "The transaction exceeds the payer's sending limit.",
-          },
-          {
-            value: 'TRANSACTION_RECEIVING_LIMIT_EXCEEDED',
-            description: "The transaction exceeds the receiver's receiving limit.",
-          },
-          {
-            value: 'CURRENCY_MISMATCH',
-            description: 'The transaction is declined due to a currency mismatch.',
-          },
-        ],
-        readOnly: true,
-      }),
-    next_payment_retry_time: DateTimeSchema.exactOptional().openapi({
-      description:
-        'The time when the retry attempt for the failed payment occurs, in [Internet date and time format](https://tools.ietf.org/html/rfc3339#section-5.6).',
-      readOnly: true,
-    }),
-  })
-  .openapi({
-    title: 'Failed Payment Details',
-    description: 'The details for the failed payment of the subscription.',
-    required: ['amount', 'time'],
-  })
-  .openapi('FailedPaymentDetails')
-
-const LastPaymentDetailsSchema = z
-  .object({
-    amount: MoneySchema.exactOptional().openapi({
-      description: 'The last payment amount.',
-      readOnly: true,
-    }),
-    time: DateTimeSchema.exactOptional().openapi({
-      description:
-        'The date and time when the last payment was made, in [Internet date and time format](https://tools.ietf.org/html/rfc3339#section-5.6).',
-      readOnly: true,
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi({
-    title: 'Last Payment Details',
-    description: 'The details for the last payment.',
-    required: ['amount', 'time'],
-  })
-  .openapi('LastPaymentDetails')
-
-const LinkDescriptionListSchema = z
-  .array(LinkDescriptionSchema)
-  .min(1)
-  .max(10)
-  .openapi({
-    description:
-      'An array of request-related [HATEOAS links](/docs/api/reference/api-responses/#hateoas-links).',
-    readOnly: true,
-  })
-  .openapi('LinkDescriptionList')
-
-const MerchantInventorySchema = z.any().openapi('MerchantInventory')
-
 const NameSchema = z
   .object({
     prefix: z
@@ -1949,339 +2754,7 @@ const PatchRequestSchema = z
   })
   .openapi('PatchRequest')
 
-const PayerBaseSchema = z
-  .object({
-    email_address: EmailSchema.exactOptional().openapi({
-      description: 'The email address of the payer.',
-    }),
-    payer_id: AccountIdSchema.exactOptional().openapi({
-      description: 'The PayPal-assigned ID for the payer.',
-      readOnly: true,
-    }),
-  })
-  .openapi({
-    title: 'Payer Base',
-    description:
-      'The customer who approves and pays for the order. The customer is also known as the payer.',
-    required: [],
-  })
-  .openapi('PayerBase')
-
-const PaymentPreferencesSchema = z
-  .object({
-    auto_bill_outstanding: z
-      .boolean()
-      .default(true)
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates whether to automatically bill the outstanding amount in the next billing cycle.',
-      }),
-    setup_fee: MoneySchema.exactOptional().openapi({
-      description: 'The initial set-up fee for the service.',
-    }),
-    setup_fee_failure_action: z
-      .enum(['CONTINUE', 'CANCEL'])
-      .default('CANCEL')
-      .exactOptional()
-      .openapi({
-        description:
-          'The action to take on the subscription if the initial payment for the setup fails.',
-        'x-enumDescriptions': [
-          {
-            value: 'CONTINUE',
-            description: 'Continues the subscription if the initial payment for the setup fails.',
-          },
-          {
-            value: 'CANCEL',
-            description: 'Cancels the subscription if the initial payment for the setup fails.',
-          },
-        ],
-      }),
-    payment_failure_threshold: z
-      .int()
-      .min(0)
-      .max(999)
-      .default(0)
-      .exactOptional()
-      .openapi({
-        description:
-          'The maximum number of payment failures before a subscription is suspended. For example, if `payment_failure_threshold` is `2`, the subscription automatically updates to the `SUSPEND` state if two consecutive payments fail.',
-      }),
-  })
-  .openapi({
-    title: 'Payment Preferences',
-    description: 'The payment preferences for a subscription.',
-    required: [],
-  })
-  .openapi('PaymentPreferences')
-
-const PaymentPreferencesOverrideSchema = z
-  .object({
-    auto_bill_outstanding: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates whether to automatically bill the outstanding amount in the next billing cycle.',
-      }),
-    setup_fee: MoneySchema.exactOptional().openapi({
-      description: 'The initial set-up fee for the service.',
-    }),
-    setup_fee_failure_action: z
-      .enum(['CONTINUE', 'CANCEL'])
-      .exactOptional()
-      .openapi({
-        description:
-          'The action to take on the subscription if the initial payment for the setup fails.',
-        'x-enumDescriptions': [
-          {
-            value: 'CONTINUE',
-            description: 'Continues the subscription if the initial payment for the setup fails.',
-          },
-          {
-            value: 'CANCEL',
-            description: 'Cancels the subscription if the initial payment for the setup fails.',
-          },
-        ],
-      }),
-    payment_failure_threshold: z
-      .int()
-      .min(0)
-      .max(999)
-      .exactOptional()
-      .openapi({
-        description:
-          'The maximum number of payment failures before a subscription is suspended. For example, if `payment_failure_threshold` is `2`, the subscription automatically updates to the `SUSPEND` state if two consecutive payments fail.',
-      }),
-  })
-  .openapi({
-    title: 'Payment Preferences Override',
-    description: 'The payment preferences to override at subscription level.',
-    required: [],
-  })
-  .openapi('PaymentPreferencesOverride')
-
-const PaymentSourceSchema = z
-  .object({
-    card: z
-      .object({
-        name: z
-          .string()
-          .regex(/^.{1,300}$/)
-          .min(1)
-          .max(300)
-          .exactOptional()
-          .openapi({ description: "The card holder's name as it appears on the card." }),
-        number: z
-          .string()
-          .regex(/^[0-9]{13,19}$/)
-          .min(13)
-          .max(19)
-          .exactOptional()
-          .openapi({ description: 'The primary account number (PAN) for the payment card.' }),
-        expiry: DateYearMonthSchema.exactOptional().openapi({
-          description:
-            'The card expiration year and month, in [Internet date format](https://tools.ietf.org/html/rfc3339#section-5.6).',
-        }),
-        security_code: z
-          .string()
-          .regex(/^[0-9]{3,4}$/)
-          .min(3)
-          .max(4)
-          .exactOptional()
-          .openapi({
-            description:
-              'The three- or four-digit security code of the card. Also known as the CVV, CVC, CVN, CVE, or CID. This parameter cannot be present in the request when `payment_initiator=MERCHANT`.',
-          }),
-        type: CardTypeSchema.exactOptional().openapi({ description: 'The payment card type.' }),
-        brand: CardBrandSchema.exactOptional().openapi({
-          description: 'The card brand or network. Typically used in the response.',
-        }),
-        billing_address: z
-          .object({
-            address_line_1: z
-              .string()
-              .max(300)
-              .exactOptional()
-              .openapi({
-                description:
-                  'The first line of the address, such as number and street, for example, `173 Drury Lane`. Needed for data entry, and Compliance and Risk checks. This field needs to pass the full address.',
-              }),
-            address_line_2: z
-              .string()
-              .max(300)
-              .exactOptional()
-              .openapi({
-                description:
-                  'The second line of the address, for example, a suite or apartment number.',
-              }),
-            admin_area_2: z
-              .string()
-              .max(120)
-              .exactOptional()
-              .openapi({
-                description: 'A city, town, or village. Smaller than `admin_area_level_1`.',
-              }),
-            admin_area_1: z
-              .string()
-              .max(300)
-              .exactOptional()
-              .openapi({
-                description:
-                  'The highest-level sub-division in a country, which is usually a province, state, or ISO-3166-2 subdivision. This data is formatted for postal delivery, for example, `CA` and not `California`. Value, by country, is:<ul><li>UK. A county.</li><li>US. A state.</li><li>Canada. A province.</li><li>Japan. A prefecture.</li><li>Switzerland. A *kanton*.</li></ul>',
-              }),
-            postal_code: z
-              .string()
-              .max(60)
-              .exactOptional()
-              .openapi({
-                description:
-                  'The postal code, which is the ZIP code or equivalent. Typically required for countries with a postal code or an equivalent. See [postal code](https://en.wikipedia.org/wiki/Postal_code).',
-              }),
-            country_code: CountryCodeSchema,
-          })
-          .exactOptional()
-          .openapi({
-            description:
-              'The portable international postal address. Maps to [AddressValidationMetadata](https://github.com/googlei18n/libaddressinput/wiki/AddressValidationMetadata) and HTML 5.1 [Autofilling form controls: the autocomplete attribute](https://www.w3.org/TR/html51/sec-forms.html#autofilling-form-controls-the-autocomplete-attribute).',
-            title: 'Portable Postal Address (Medium-Grained)',
-            required: ['country_code'],
-          }),
-        attributes: CardAttributesSchema.exactOptional().openapi({
-          description: 'Additional attributes associated with the use of this card.',
-        }),
-      })
-      .exactOptional()
-      .openapi({
-        title: 'Card',
-        description: 'The payment card to use to fund a payment. Can be a credit or debit card.',
-        required: [],
-      }),
-  })
-  .openapi({
-    title: 'Payment Source',
-    description:
-      'The payment source definition. To be eligible to create subscription using debit or credit card, you will need to sign up here (https://www.paypal.com/bizsignup/entry/product/ppcp). Please note, its available only for non-3DS cards and for merchants in US and AU regions.',
-    required: [],
-  })
-  .openapi('PaymentSource')
-
-const PaymentSourceResponseSchema = z
-  .object({ card: CardResponseWithBillingAddressSchema.exactOptional() })
-  .openapi({
-    title: 'Payment Source Response',
-    description: 'The payment source used to fund the payment.',
-    required: [],
-  })
-  .openapi('PaymentSourceResponse')
-
-const PercentageSchema = z
-  .string()
-  .regex(/^((-?[0-9]+)|(-?([0-9]+)?[.][0-9]+))$/)
-  .openapi({
-    description:
-      'The percentage, as a fixed-point, signed decimal number. For example, define a 19.99% interest rate as `19.99`.',
-  })
-  .openapi('Percentage')
-
-const TaxesSchema = z
-  .object({
-    percentage: PercentageSchema.openapi({
-      description: 'The tax percentage on the billing amount.',
-    }),
-    inclusive: z
-      .boolean()
-      .default(true)
-      .exactOptional()
-      .openapi({
-        description: 'Indicates whether the tax was already included in the billing amount.',
-      }),
-  })
-  .openapi({ title: 'Taxes', description: 'The tax details.', required: ['percentage'] })
-  .openapi('Taxes')
-
-const PlanSchema = z
-  .object({
-    id: z
-      .string()
-      .regex(/^P-[A-Z0-9]*$/)
-      .length(26)
-      .exactOptional()
-      .openapi({ description: 'The unique PayPal-generated ID for the plan.', readOnly: true }),
-    product_id: z
-      .string()
-      .regex(/^PROD-[A-Z0-9]*$/)
-      .length(22)
-      .exactOptional()
-      .openapi({ description: 'The ID for the product.' }),
-    name: z
-      .string()
-      .regex(/^.*$/)
-      .min(1)
-      .max(127)
-      .exactOptional()
-      .openapi({ description: 'The plan name.' }),
-    status: z
-      .enum(['CREATED', 'INACTIVE', 'ACTIVE'])
-      .exactOptional()
-      .openapi({
-        description: 'The plan status.',
-        'x-enumDescriptions': [
-          {
-            value: 'CREATED',
-            description:
-              'The plan was created. You cannot create subscriptions for a plan in this state.',
-          },
-          { value: 'INACTIVE', description: 'The plan is inactive.' },
-          {
-            value: 'ACTIVE',
-            description:
-              'The plan is active. You can only create subscriptions for a plan in this state.',
-          },
-        ],
-      }),
-    description: z
-      .string()
-      .regex(/^.*$/)
-      .min(1)
-      .max(127)
-      .exactOptional()
-      .openapi({ description: 'The detailed description of the plan.' }),
-    billing_cycles: BillingCycleListSchema.exactOptional(),
-    payment_preferences: PaymentPreferencesSchema.exactOptional(),
-    taxes: TaxesSchema.exactOptional(),
-    quantity_supported: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates whether you can subscribe to this plan by providing a quantity for the goods or service.',
-      }),
-    create_time: DateTimeSchema.exactOptional().openapi({
-      description:
-        'The date and time when the plan was created, in [Internet date and time format](https://tools.ietf.org/html/rfc3339#section-5.6).',
-      readOnly: true,
-    }),
-    update_time: DateTimeSchema.exactOptional().openapi({
-      description:
-        'The date and time when the plan was last updated, in [Internet date and time format](https://tools.ietf.org/html/rfc3339#section-5.6).',
-      readOnly: true,
-    }),
-    links: LinkDescriptionListSchema.exactOptional(),
-  })
-  .openapi({ title: 'Plan', description: 'The plan details.', required: [] })
-  .openapi('Plan')
-
-const PlanListSchema = z
-  .array(PlanSchema)
-  .min(0)
-  .max(32767)
-  .openapi({ description: 'An array of plans.' })
-  .openapi('PlanList')
-
-const PlanCollectionSchema = z
+const PlanCollectionSchema: z.ZodType<PlanCollectionType> = z
   .object({
     plans: PlanListSchema.exactOptional(),
     total_items: z
@@ -2304,35 +2777,6 @@ const PlanCollectionSchema = z
     required: [],
   })
   .openapi('PlanCollection')
-
-const TaxesOverrideSchema = z
-  .object({
-    percentage: PercentageSchema.exactOptional().openapi({
-      description: 'The tax percentage on the billing amount.',
-    }),
-    inclusive: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Indicates whether the tax was already included in the billing amount.',
-      }),
-  })
-  .openapi({ title: 'Taxes Override', description: 'The tax details.', required: [] })
-  .openapi('TaxesOverride')
-
-const PlanOverrideSchema = z
-  .object({
-    billing_cycles: BillingCycleOverrideListSchema.exactOptional(),
-    payment_preferences: PaymentPreferencesOverrideSchema.exactOptional(),
-    taxes: TaxesOverrideSchema.exactOptional(),
-  })
-  .openapi({
-    title: 'Plan Override',
-    description:
-      'An inline plan object to customise the subscription. You can override plan level default attributes by providing customised values for the subscription in this object.',
-    required: [],
-  })
-  .openapi('PlanOverride')
 
 const PlanRequestPOSTSchema = z
   .object({
@@ -2694,366 +3138,7 @@ const PlansUpdatePricingSchemes_422Schema = z
   .openapi({ required: [] })
   .openapi('PlansUpdatePricingSchemes_422')
 
-const ShippingTypeSchema = z
-  .enum(['SHIPPING', 'PICKUP', 'PICKUP_IN_STORE', 'PICKUP_FROM_PERSON'])
-  .openapi({
-    title: 'Shipping Type',
-    description: 'A classification for the method of purchase fulfillment.',
-    'x-enumDescriptions': [
-      {
-        value: 'SHIPPING',
-        description: 'The payer intends to receive the items at a specified address.',
-        default: true,
-      },
-      {
-        value: 'PICKUP',
-        description:
-          "DEPRECATED. To ensure that seller protection is correctly assigned, please use 'PICKUP_IN_STORE' or 'PICKUP_FROM_PERSON' instead. Currently, this field indicates that the payer intends to pick up the items at a specified address (ie. a store address). ",
-      },
-      {
-        value: 'PICKUP_IN_STORE',
-        description:
-          'The payer intends to pick up the item(s) from the payee\'s physical store. Also termed as BOPIS, "Buy Online, Pick-up in Store". Seller protection is provided with this option.',
-      },
-      {
-        value: 'PICKUP_FROM_PERSON',
-        description:
-          'The payer intends to pick up the item(s) from the payee in person. Also termed as BOPIP, "Buy Online, Pick-up in Person". Seller protection is not available, since the payer is receiving the item from the payee in person, and can validate the item prior to payment.',
-      },
-    ],
-  })
-  .openapi('ShippingType')
-
-const ShippingOptionSchema = z
-  .object({
-    id: z
-      .string()
-      .max(127)
-      .openapi({ description: 'A unique ID that identifies a payer-selected shipping option.' }),
-    label: z
-      .string()
-      .max(127)
-      .openapi({
-        description:
-          "A description that the payer sees, which helps them choose an appropriate shipping option. For example, `Free Shipping`, `USPS Priority Shipping`, `Expédition prioritaire USPS`, or `USPS yōuxiān fā huò`. Localize this description to the payer's locale.",
-      }),
-    type: ShippingTypeSchema.exactOptional().openapi({
-      description: 'A classification for the method of purchase fulfillment.',
-    }),
-    amount: MoneySchema.exactOptional().openapi({
-      description: 'The shipping cost for the selected option.',
-    }),
-    selected: z
-      .boolean()
-      .openapi({
-        description:
-          'If the API request sets `selected = true`, it represents the shipping option that the payee or merchant expects to be pre-selected for the payer when they first view the `shipping.options` in the PayPal Checkout experience. As part of the response if a `shipping.option` contains `selected=true`, it represents the shipping option that the payer selected during the course of checkout with PayPal. Only one `shipping.option` can be set to `selected=true`.',
-      }),
-  })
-  .openapi({
-    title: 'Shipping Option',
-    description:
-      'The options that the payee or merchant offers to the payer to ship or pick up their items.',
-    required: ['id', 'label', 'selected'],
-  })
-  .openapi('ShippingOption')
-
-const ShippingOptionListSchema = z
-  .array(ShippingOptionSchema)
-  .min(0)
-  .max(10)
-  .openapi({
-    description:
-      'An array of shipping options that the payee or merchant offers to the payer to ship or pick up their items.',
-  })
-  .openapi('ShippingOptionList')
-
-const ShippingDetailSchema = z
-  .object({
-    name: z
-      .object({
-        full_name: z
-          .string()
-          .max(300)
-          .exactOptional()
-          .openapi({ description: "When the party is a person, the party's full name." }),
-      })
-      .exactOptional()
-      .openapi({ description: 'The name of the party.', title: 'Name', required: [] }),
-    type: z
-      .enum(['SHIPPING', 'PICKUP_IN_PERSON', 'PICKUP_IN_STORE', 'PICKUP_FROM_PERSON'])
-      .exactOptional()
-      .openapi({
-        title: 'Fullfillment Type',
-        description:
-          'A classification for the method of purchase fulfillment (e.g shipping, in-store pickup, etc). Either `type` or `options` may be present, but not both.',
-        'x-enumDescriptions': [
-          {
-            value: 'SHIPPING',
-            description: 'The payer intends to receive the items at a specified address.',
-            default: true,
-          },
-          {
-            value: 'PICKUP_IN_PERSON',
-            description: 'DEPRECATED. Please use "PICKUP_FROM_PERSON" instead.',
-          },
-          {
-            value: 'PICKUP_IN_STORE',
-            description:
-              'The payer intends to pick up the item(s) from the payee\'s physical store. Also termed as BOPIS, "Buy Online, Pick-up in Store". Seller protection is provided with this option.',
-          },
-          {
-            value: 'PICKUP_FROM_PERSON',
-            description:
-              'The payer intends to pick up the item(s) from the payee in person. Also termed as BOPIP, "Buy Online, Pick-up in Person". Seller protection is not available, since the payer is receiving the item from the payee in person, and can validate the item prior to payment.',
-          },
-        ],
-      }),
-    options: ShippingOptionListSchema.exactOptional(),
-    address: z
-      .object({
-        address_line_1: z
-          .string()
-          .max(300)
-          .exactOptional()
-          .openapi({
-            description:
-              'The first line of the address, such as number and street, for example, `173 Drury Lane`. Needed for data entry, and Compliance and Risk checks. This field needs to pass the full address.',
-          }),
-        address_line_2: z
-          .string()
-          .max(300)
-          .exactOptional()
-          .openapi({
-            description:
-              'The second line of the address, for example, a suite or apartment number.',
-          }),
-        admin_area_2: z
-          .string()
-          .max(120)
-          .exactOptional()
-          .openapi({ description: 'A city, town, or village. Smaller than `admin_area_level_1`.' }),
-        admin_area_1: z
-          .string()
-          .max(300)
-          .exactOptional()
-          .openapi({
-            description:
-              'The highest-level sub-division in a country, which is usually a province, state, or ISO-3166-2 subdivision. This data is formatted for postal delivery, for example, `CA` and not `California`. Value, by country, is:<ul><li>UK. A county.</li><li>US. A state.</li><li>Canada. A province.</li><li>Japan. A prefecture.</li><li>Switzerland. A *kanton*.</li></ul>',
-          }),
-        postal_code: z
-          .string()
-          .max(60)
-          .exactOptional()
-          .openapi({
-            description:
-              'The postal code, which is the ZIP code or equivalent. Typically required for countries with a postal code or an equivalent. See [postal code](https://en.wikipedia.org/wiki/Postal_code).',
-          }),
-        country_code: CountryCodeSchema,
-      })
-      .exactOptional()
-      .openapi({
-        description:
-          'The portable international postal address. Maps to [AddressValidationMetadata](https://github.com/googlei18n/libaddressinput/wiki/AddressValidationMetadata) and HTML 5.1 [Autofilling form controls: the autocomplete attribute](https://www.w3.org/TR/html51/sec-forms.html#autofilling-form-controls-the-autocomplete-attribute).',
-        title: 'Portable Postal Address (Medium-Grained)',
-        required: ['country_code'],
-      }),
-  })
-  .openapi({ description: 'The shipping details.', title: 'Shipping Details', required: [] })
-  .openapi('ShippingDetail')
-
-const SubscriberSchema = PayerBaseSchema.and(
-  z
-    .object({
-      name: z
-        .object({
-          given_name: z
-            .string()
-            .max(140)
-            .exactOptional()
-            .openapi({
-              description: "When the party is a person, the party's given, or first, name.",
-            }),
-          surname: z
-            .string()
-            .max(140)
-            .exactOptional()
-            .openapi({
-              description:
-                "When the party is a person, the party's surname or family name. Also known as the last name. Required when the party is a person. Use also to store multiple surnames including the matronymic, or mother's, surname.",
-            }),
-        })
-        .exactOptional()
-        .openapi({ description: 'The name of the party.', title: 'Name', required: [] }),
-      phone: PhoneWithTypeSchema.exactOptional().openapi({
-        description:
-          'The phone number of the customer. Available only when you enable the **Contact Telephone Number** option in the <a href="https://www.paypal.com/cgi-bin/customerprofileweb?cmd=_profile-website-payments">**Profile & Settings**</a> for the merchant\'s PayPal account. The `phone.phone_number` supports only `national_number`.',
-      }),
-    })
-    .openapi({ required: [] }),
-)
-  .and(
-    z
-      .object({})
-      .openapi({
-        title: 'Payer',
-        description:
-          'The customer who approves and pays for the order. The customer is also known as the payer.',
-      }),
-  )
-  .and(
-    z
-      .object({
-        shipping_address: ShippingDetailSchema.exactOptional(),
-        payment_source: PaymentSourceResponseSchema.exactOptional(),
-      })
-      .openapi({ required: [] }),
-  )
-  .and(
-    z
-      .object({})
-      .openapi({
-        title: 'Subscriber Response Information',
-        description: 'The subscriber response information.',
-      }),
-  )
-  .openapi('Subscriber')
-
-const SubscriberRequestSchema = PayerBaseSchema.and(
-  z
-    .object({
-      name: z
-        .object({
-          given_name: z
-            .string()
-            .max(140)
-            .exactOptional()
-            .openapi({
-              description: "When the party is a person, the party's given, or first, name.",
-            }),
-          surname: z
-            .string()
-            .max(140)
-            .exactOptional()
-            .openapi({
-              description:
-                "When the party is a person, the party's surname or family name. Also known as the last name. Required when the party is a person. Use also to store multiple surnames including the matronymic, or mother's, surname.",
-            }),
-        })
-        .exactOptional()
-        .openapi({ description: 'The name of the party.', title: 'Name', required: [] }),
-      phone: PhoneWithTypeSchema.exactOptional().openapi({
-        description:
-          'The phone number of the customer. Available only when you enable the **Contact Telephone Number** option in the <a href="https://www.paypal.com/cgi-bin/customerprofileweb?cmd=_profile-website-payments">**Profile & Settings**</a> for the merchant\'s PayPal account. The `phone.phone_number` supports only `national_number`.',
-      }),
-    })
-    .openapi({ required: [] }),
-)
-  .and(
-    z
-      .object({})
-      .openapi({
-        title: 'Payer',
-        description:
-          'The customer who approves and pays for the order. The customer is also known as the payer.',
-      }),
-  )
-  .and(
-    z
-      .object({
-        shipping_address: ShippingDetailSchema.exactOptional(),
-        payment_source: PaymentSourceSchema.exactOptional(),
-      })
-      .openapi({ required: [] }),
-  )
-  .and(
-    z
-      .object({})
-      .openapi({
-        title: 'Subscriber Request Information',
-        description: 'The subscriber request information .',
-      }),
-  )
-  .openapi('SubscriberRequest')
-
-const SubscriptionStatusSchema = z
-  .object({
-    status: z
-      .enum(['APPROVAL_PENDING', 'APPROVED', 'ACTIVE', 'SUSPENDED', 'CANCELLED', 'EXPIRED'])
-      .exactOptional()
-      .openapi({
-        description: 'The status of the subscription.',
-        'x-enumDescriptions': [
-          {
-            value: 'APPROVAL_PENDING',
-            description: 'The subscription is created but not yet approved by the buyer.',
-          },
-          { value: 'APPROVED', description: 'The buyer has approved the subscription.' },
-          { value: 'ACTIVE', description: 'The subscription is active.' },
-          { value: 'SUSPENDED', description: 'The subscription is suspended.' },
-          { value: 'CANCELLED', description: 'The subscription is cancelled.' },
-          { value: 'EXPIRED', description: 'The subscription is expired.' },
-        ],
-      }),
-    status_change_note: z
-      .string()
-      .regex(/^.*$/)
-      .min(1)
-      .max(128)
-      .exactOptional()
-      .openapi({ description: 'The reason or notes for the status of the subscription.' }),
-    status_update_time: DateTimeSchema.exactOptional().openapi({ readOnly: true }),
-  })
-  .openapi({
-    title: 'Subscription Status',
-    description: 'The subscription status details.',
-    required: [],
-  })
-  .openapi('SubscriptionStatus')
-
-const SubscriptionBillingInfoSchema = z
-  .object({
-    outstanding_balance: MoneySchema.openapi({
-      description: 'The total pending bill amount, to be paid by the subscriber.',
-    }),
-    cycle_executions: CycleExecutionListSchema.exactOptional(),
-    last_payment: LastPaymentDetailsSchema.exactOptional().openapi({
-      readOnly: true,
-      description: 'The details for the last payment of the subscription.',
-    }),
-    next_billing_time: DateTimeSchema.exactOptional().openapi({
-      description:
-        'The next date and time for billing this subscription, in [Internet date and time format](https://tools.ietf.org/html/rfc3339#section-5.6).',
-      readOnly: true,
-    }),
-    final_payment_time: DateTimeSchema.exactOptional().openapi({
-      description:
-        'The date and time when the final billing cycle occurs, in [Internet date and time format](https://tools.ietf.org/html/rfc3339#section-5.6).',
-      readOnly: true,
-    }),
-    failed_payments_count: z
-      .int()
-      .min(0)
-      .max(999)
-      .openapi({
-        description:
-          'The number of consecutive payment failures. Resets to `0` after a successful payment. If this reaches the `payment_failure_threshold` value, the subscription updates to the `SUSPENDED` state.',
-        readOnly: true,
-      }),
-    last_failed_payment: FailedPaymentDetailsSchema.exactOptional().openapi({
-      description: 'The details for the last failed payment of the subscription.',
-      readOnly: true,
-    }),
-  })
-  .openapi({
-    title: 'Subscription Billing Information',
-    description:
-      'The billing details for the subscription. If the subscription was or is active, these fields are populated.',
-    required: ['outstanding_balance', 'failed_payments_count'],
-  })
-  .openapi('SubscriptionBillingInfo')
-
-const SubscriptionSchema = SubscriptionStatusSchema.and(z.any())
+const SubscriptionSchema: z.ZodType<SubscriptionType> = SubscriptionStatusSchema.and(z.any())
   .and(
     z
       .object({
@@ -3139,7 +3224,9 @@ const SubscriptionSchema = SubscriptionStatusSchema.and(z.any())
       })
       .openapi({ required: [] }),
   )
-  .and(z.object({}).openapi({ title: 'Subscription', description: 'The subscription details.' }))
+  .and(
+    z.looseObject({}).openapi({ title: 'Subscription', description: 'The subscription details.' }),
+  )
   .openapi('Subscription')
 
 const SubscriptionActivateRequestSchema = z
@@ -3209,7 +3296,7 @@ const SubscriptionCaptureRequestSchema = z
   })
   .openapi('SubscriptionCaptureRequest')
 
-const SubscriptionRequestPostSchema = z
+const SubscriptionRequestPostSchema: z.ZodType<SubscriptionRequestPostType> = z
   .object({
     plan_id: z
       .string()
@@ -3263,7 +3350,7 @@ const SubscriptionRequestPostSchema = z
   })
   .openapi('SubscriptionRequestPost')
 
-const SubscriptionReviseRequestSchema = z
+const SubscriptionReviseRequestSchema: z.ZodType<SubscriptionReviseRequestType> = z
   .object({
     plan_id: z
       .string()
@@ -3367,16 +3454,7 @@ const SubscriptionReviseRequestSchema = z
   })
   .openapi('SubscriptionReviseRequest')
 
-const SubscriptionReviseResponseDefinitionsLinkDescriptionListSchema = z
-  .array(LinkDescriptionSchema)
-  .openapi({
-    description:
-      'An array of request-related [HATEOAS links](/docs/api/reference/api-responses/#hateoas-links).',
-    readOnly: true,
-  })
-  .openapi('SubscriptionReviseResponseDefinitionsLinkDescriptionList')
-
-const SubscriptionReviseResponseSchema = z
+const SubscriptionReviseResponseSchema: z.ZodType<SubscriptionReviseResponseType> = z
   .object({
     plan_id: z
       .string()

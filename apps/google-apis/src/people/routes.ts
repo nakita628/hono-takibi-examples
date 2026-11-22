@@ -1,36 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const ContactGroupMembershipSchema = z
-  .object({
-    contactGroupId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        deprecated: true,
-        description: 'Output only. The contact group ID for the contact group membership.',
-        readOnly: true,
-      }),
-    contactGroupResourceName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The resource name for the contact group, assigned by the server. An ASCII string, in the form of `contactGroups/{contact_group_id}`. Only contact_group_resource_name can be used for modifying memberships. Any contact group membership can be removed, but only user group or "myContacts" or "starred" system groups memberships can be added. A contact must always have at least one contact group membership.',
-      }),
-  })
-  .openapi({ description: 'A Google contact group membership.', required: [] })
-  .openapi('ContactGroupMembership')
-
-const DomainMembershipSchema = z
-  .object({
-    inViewerDomain: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: "True if the person is in the viewer's Google Workspace domain." }),
-  })
-  .openapi({ description: 'A Google Workspace Domain membership.', required: [] })
-  .openapi('DomainMembership')
-
 const ProfileMetadataSchema = z
   .object({
     objectType: z
@@ -118,12 +87,6 @@ const FieldMetadataSchema = z
   })
   .openapi({ description: 'Metadata about a field.', required: [] })
   .openapi('FieldMetadata')
-
-type MembershipType = {
-  contactGroupMembership?: z.infer<typeof ContactGroupMembershipSchema>
-  domainMembership?: z.infer<typeof DomainMembershipSchema>
-  metadata?: z.infer<typeof FieldMetadataSchema>
-}
 
 const AddressSchema = z
   .object({
@@ -578,27 +541,55 @@ const LocationSchema = z
   .openapi({ description: "A person's location.", required: [] })
   .openapi('Location')
 
-const MembershipSchema: z.ZodType<MembershipType> = z
-  .lazy(() =>
-    z
-      .object({
-        contactGroupMembership: ContactGroupMembershipSchema.exactOptional().openapi({
-          description: 'The contact group membership.',
-        }),
-        domainMembership: DomainMembershipSchema.exactOptional().openapi({
-          description: 'Output only. The domain membership.',
-          readOnly: true,
-        }),
-        metadata: FieldMetadataSchema.exactOptional().openapi({
-          description: 'Metadata about the membership.',
-        }),
-      })
+const ContactGroupMembershipSchema = z
+  .object({
+    contactGroupId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description: 'Output only. The contact group ID for the contact group membership.',
+        readOnly: true,
+      }),
+    contactGroupResourceName: z
+      .string()
+      .exactOptional()
       .openapi({
         description:
-          "A person's membership in a group. Only contact group memberships can be modified.",
-        required: [],
+          'The resource name for the contact group, assigned by the server. An ASCII string, in the form of `contactGroups/{contact_group_id}`. Only contact_group_resource_name can be used for modifying memberships. Any contact group membership can be removed, but only user group or "myContacts" or "starred" system groups memberships can be added. A contact must always have at least one contact group membership.',
       }),
-  )
+  })
+  .openapi({ description: 'A Google contact group membership.', required: [] })
+  .openapi('ContactGroupMembership')
+
+const DomainMembershipSchema = z
+  .object({
+    inViewerDomain: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: "True if the person is in the viewer's Google Workspace domain." }),
+  })
+  .openapi({ description: 'A Google Workspace Domain membership.', required: [] })
+  .openapi('DomainMembership')
+
+const MembershipSchema = z
+  .object({
+    contactGroupMembership: ContactGroupMembershipSchema.exactOptional().openapi({
+      description: 'The contact group membership.',
+    }),
+    domainMembership: DomainMembershipSchema.exactOptional().openapi({
+      description: 'Output only. The domain membership.',
+      readOnly: true,
+    }),
+    metadata: FieldMetadataSchema.exactOptional().openapi({
+      description: 'Metadata about the membership.',
+    }),
+  })
+  .openapi({
+    description:
+      "A person's membership in a group. Only contact group memberships can be modified.",
+    required: [],
+  })
   .openapi('Membership')
 
 const PersonMetadataSchema = z
@@ -1342,7 +1333,9 @@ const PersonSchema = z
   })
   .openapi('Person')
 
-const ContactToCreateSchema = z
+type ContactToCreateType = { contactPerson?: z.infer<typeof PersonSchema> }
+
+const ContactToCreateSchema: z.ZodType<ContactToCreateType> = z
   .object({
     contactPerson: PersonSchema.exactOptional().openapi({
       description: 'Required. The person data to populate a newly created source.',
@@ -1354,39 +1347,16 @@ const ContactToCreateSchema = z
   })
   .openapi('ContactToCreate')
 
-const BatchCreateContactsRequestSchema = z
-  .object({
-    contacts: z
-      .array(ContactToCreateSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The contact to create. Allows up to 200 contacts in a single request.',
-      }),
-    readMask: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. A field mask to restrict which fields on each person are returned in the response. Multiple fields can be specified by separating them with commas. If read mask is left empty, the post-mutate-get is skipped and no data will be returned in the response. Valid values are: * addresses * ageRanges * biographies * birthdays * calendarUrls * clientData * coverPhotos * emailAddresses * events * externalIds * genders * imClients * interests * locales * locations * memberships * metadata * miscKeywords * names * nicknames * occupations * organizations * phoneNumbers * photos * relations * sipAddresses * skills * urls * userDefined',
-      }),
-    sources: z
-      .array(
-        z.enum([
-          'READ_SOURCE_TYPE_UNSPECIFIED',
-          'READ_SOURCE_TYPE_PROFILE',
-          'READ_SOURCE_TYPE_CONTACT',
-          'READ_SOURCE_TYPE_DOMAIN_CONTACT',
-        ]),
-      )
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. A mask of what source types to return in the post mutate read. Defaults to READ_SOURCE_TYPE_CONTACT and READ_SOURCE_TYPE_PROFILE if not set.',
-      }),
-  })
-  .openapi({ description: 'A request to create a batch of contacts.', required: [] })
-  .openapi('BatchCreateContactsRequest')
+type BatchCreateContactsRequestType = {
+  contacts?: z.infer<typeof ContactToCreateSchema>[]
+  readMask?: string
+  sources?: (
+    | 'READ_SOURCE_TYPE_UNSPECIFIED'
+    | 'READ_SOURCE_TYPE_PROFILE'
+    | 'READ_SOURCE_TYPE_CONTACT'
+    | 'READ_SOURCE_TYPE_DOMAIN_CONTACT'
+  )[]
+}
 
 const StatusSchema = z
   .object({
@@ -1427,7 +1397,14 @@ const StatusSchema = z
   })
   .openapi('Status')
 
-const PersonResponseSchema = z
+type PersonResponseType = {
+  httpStatusCode?: number
+  person?: z.infer<typeof PersonSchema>
+  requestedResourceName?: string
+  status?: z.infer<typeof StatusSchema>
+}
+
+const PersonResponseSchema: z.ZodType<PersonResponseType> = z
   .object({
     httpStatusCode: z
       .int32()
@@ -1450,7 +1427,101 @@ const PersonResponseSchema = z
   .openapi({ description: 'The response for a single person', required: [] })
   .openapi('PersonResponse')
 
-const BatchCreateContactsResponseSchema = z
+type BatchCreateContactsResponseType = { createdPeople?: z.infer<typeof PersonResponseSchema>[] }
+
+type BatchUpdateContactsRequestType = {
+  contacts?: { [key: string]: z.infer<typeof PersonSchema> }
+  readMask?: string
+  sources?: (
+    | 'READ_SOURCE_TYPE_UNSPECIFIED'
+    | 'READ_SOURCE_TYPE_PROFILE'
+    | 'READ_SOURCE_TYPE_CONTACT'
+    | 'READ_SOURCE_TYPE_DOMAIN_CONTACT'
+  )[]
+  updateMask?: string
+}
+
+type BatchUpdateContactsResponseType = {
+  updateResult?: { [key: string]: z.infer<typeof PersonResponseSchema> }
+}
+
+type DeleteContactPhotoResponseType = { person?: z.infer<typeof PersonSchema> }
+
+type GetPeopleResponseType = { responses?: z.infer<typeof PersonResponseSchema>[] }
+
+type ListConnectionsResponseType = {
+  connections?: z.infer<typeof PersonSchema>[]
+  nextPageToken?: string
+  nextSyncToken?: string
+  totalItems?: number
+  totalPeople?: number
+}
+
+type ListDirectoryPeopleResponseType = {
+  nextPageToken?: string
+  nextSyncToken?: string
+  people?: z.infer<typeof PersonSchema>[]
+}
+
+type ListOtherContactsResponseType = {
+  nextPageToken?: string
+  nextSyncToken?: string
+  otherContacts?: z.infer<typeof PersonSchema>[]
+  totalSize?: number
+}
+
+type SearchDirectoryPeopleResponseType = {
+  nextPageToken?: string
+  people?: z.infer<typeof PersonSchema>[]
+  totalSize?: number
+}
+
+type SearchResultType = { person?: z.infer<typeof PersonSchema> }
+
+const SearchResultSchema: z.ZodType<SearchResultType> = z
+  .object({ person: PersonSchema.exactOptional().openapi({ description: 'The matched Person.' }) })
+  .openapi({ description: 'A result of a search query.', required: [] })
+  .openapi('SearchResult')
+
+type SearchResponseType = { results?: z.infer<typeof SearchResultSchema>[] }
+
+type UpdateContactPhotoResponseType = { person?: z.infer<typeof PersonSchema> }
+
+const BatchCreateContactsRequestSchema: z.ZodType<BatchCreateContactsRequestType> = z
+  .object({
+    contacts: z
+      .array(ContactToCreateSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The contact to create. Allows up to 200 contacts in a single request.',
+      }),
+    readMask: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. A field mask to restrict which fields on each person are returned in the response. Multiple fields can be specified by separating them with commas. If read mask is left empty, the post-mutate-get is skipped and no data will be returned in the response. Valid values are: * addresses * ageRanges * biographies * birthdays * calendarUrls * clientData * coverPhotos * emailAddresses * events * externalIds * genders * imClients * interests * locales * locations * memberships * metadata * miscKeywords * names * nicknames * occupations * organizations * phoneNumbers * photos * relations * sipAddresses * skills * urls * userDefined',
+      }),
+    sources: z
+      .array(
+        z.enum([
+          'READ_SOURCE_TYPE_UNSPECIFIED',
+          'READ_SOURCE_TYPE_PROFILE',
+          'READ_SOURCE_TYPE_CONTACT',
+          'READ_SOURCE_TYPE_DOMAIN_CONTACT',
+        ]),
+      )
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. A mask of what source types to return in the post mutate read. Defaults to READ_SOURCE_TYPE_CONTACT and READ_SOURCE_TYPE_PROFILE if not set.',
+      }),
+  })
+  .openapi({ description: 'A request to create a batch of contacts.', required: [] })
+  .openapi('BatchCreateContactsRequest')
+
+const BatchCreateContactsResponseSchema: z.ZodType<BatchCreateContactsResponseType> = z
   .object({
     createdPeople: z
       .array(PersonResponseSchema)
@@ -1603,7 +1674,7 @@ const BatchGetContactGroupsResponseSchema = z
   .openapi({ description: 'The response to a batch get contact groups request.', required: [] })
   .openapi('BatchGetContactGroupsResponse')
 
-const BatchUpdateContactsRequestSchema = z
+const BatchUpdateContactsRequestSchema: z.ZodType<BatchUpdateContactsRequestType> = z
   .object({
     contacts: z
       .record(z.string(), PersonSchema)
@@ -1644,7 +1715,7 @@ const BatchUpdateContactsRequestSchema = z
   .openapi({ description: 'A request to update a batch of contacts.', required: [] })
   .openapi('BatchUpdateContactsRequest')
 
-const BatchUpdateContactsResponseSchema = z
+const BatchUpdateContactsResponseSchema: z.ZodType<BatchUpdateContactsResponseType> = z
   .object({
     updateResult: z
       .record(z.string(), PersonResponseSchema)
@@ -1714,7 +1785,7 @@ const CreateContactGroupRequestSchema = z
   .openapi({ description: 'A request to create a new contact group.', required: [] })
   .openapi('CreateContactGroupRequest')
 
-const DeleteContactPhotoResponseSchema = z
+const DeleteContactPhotoResponseSchema: z.ZodType<DeleteContactPhotoResponseType> = z
   .object({
     person: PersonSchema.exactOptional().openapi({
       description:
@@ -1725,14 +1796,14 @@ const DeleteContactPhotoResponseSchema = z
   .openapi('DeleteContactPhotoResponse')
 
 const EmptySchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',
   })
   .openapi('Empty')
 
-const GetPeopleResponseSchema = z
+const GetPeopleResponseSchema: z.ZodType<GetPeopleResponseType> = z
   .object({
     responses: z
       .array(PersonResponseSchema)
@@ -1745,7 +1816,7 @@ const GetPeopleResponseSchema = z
   })
   .openapi('GetPeopleResponse')
 
-const ListConnectionsResponseSchema = z
+const ListConnectionsResponseSchema: z.ZodType<ListConnectionsResponseType> = z
   .object({
     connections: z
       .array(PersonSchema)
@@ -1810,7 +1881,7 @@ const ListContactGroupsResponseSchema = z
   .openapi({ description: 'The response to a list contact groups request.', required: [] })
   .openapi('ListContactGroupsResponse')
 
-const ListDirectoryPeopleResponseSchema = z
+const ListDirectoryPeopleResponseSchema: z.ZodType<ListDirectoryPeopleResponseType> = z
   .object({
     nextPageToken: z
       .string()
@@ -1837,7 +1908,7 @@ const ListDirectoryPeopleResponseSchema = z
   })
   .openapi('ListDirectoryPeopleResponse')
 
-const ListOtherContactsResponseSchema = z
+const ListOtherContactsResponseSchema: z.ZodType<ListOtherContactsResponseType> = z
   .object({
     nextPageToken: z
       .string()
@@ -1914,7 +1985,7 @@ const ModifyContactGroupMembersResponseSchema = z
   .openapi({ description: 'The response to a modify contact group members request.', required: [] })
   .openapi('ModifyContactGroupMembersResponse')
 
-const SearchDirectoryPeopleResponseSchema = z
+const SearchDirectoryPeopleResponseSchema: z.ZodType<SearchDirectoryPeopleResponseType> = z
   .object({
     nextPageToken: z
       .string()
@@ -1939,12 +2010,7 @@ const SearchDirectoryPeopleResponseSchema = z
   })
   .openapi('SearchDirectoryPeopleResponse')
 
-const SearchResultSchema = z
-  .object({ person: PersonSchema.exactOptional().openapi({ description: 'The matched Person.' }) })
-  .openapi({ description: 'A result of a search query.', required: [] })
-  .openapi('SearchResult')
-
-const SearchResponseSchema = z
+const SearchResponseSchema: z.ZodType<SearchResponseType> = z
   .object({
     results: z
       .array(SearchResultSchema)
@@ -2016,7 +2082,7 @@ const UpdateContactPhotoRequestSchema = z
   })
   .openapi('UpdateContactPhotoRequest')
 
-const UpdateContactPhotoResponseSchema = z
+const UpdateContactPhotoResponseSchema: z.ZodType<UpdateContactPhotoResponseType> = z
   .object({
     person: PersonSchema.exactOptional().openapi({
       description:

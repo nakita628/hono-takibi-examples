@@ -60,6 +60,112 @@ const UserInfoSchema = z
   })
   .openapi('UserInfo')
 
+const RightSchema = z
+  .object({
+    description: z.string().openapi({ description: 'Right description' }),
+    id: z.int32().openapi({ description: 'Unique identifier for the right' }),
+    name: z.string().openapi({ description: 'Right (unique) name' }),
+  })
+  .openapi({ description: 'Right information', required: ['description', 'id', 'name'] })
+  .openapi('Right')
+
+const RoleSchema = z
+  .object({
+    description: z.string().openapi({ description: 'Role description' }),
+    id: z.int32().openapi({ description: 'Unique identifier for the role' }),
+    items: z
+      .array(RightSchema)
+      .exactOptional()
+      .openapi({ description: 'List of reachable right over role' }),
+    name: z.string().openapi({ description: 'Role (unique) name' }),
+  })
+  .openapi({ description: 'Role information', required: ['description', 'id', 'name'] })
+  .openapi('Role')
+
+const RoleListSchema = z
+  .object({ items: z.array(RoleSchema).openapi({ description: 'List of roles' }) })
+  .openapi({ description: 'List of roles', required: ['items'] })
+  .openapi('RoleList')
+
+const GroupSchema = z
+  .object({
+    cntUsers: z.int32().openapi({ description: 'Amount of users' }),
+    createdAt: z.iso.datetime({ offset: true }).openapi({ description: 'Creation date' }),
+    createdBy: UserInfoSchema,
+    expireAt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'Expiration date' }),
+    groupRoles: RoleListSchema.exactOptional(),
+    id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Unique identifier for the group',
+      }),
+    name: z.string().openapi({ description: 'Group name' }),
+    updatedAt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'Modification date' }),
+    updatedBy: UserInfoSchema.exactOptional(),
+  })
+  .openapi({
+    description: 'Group information',
+    required: ['cntUsers', 'createdAt', 'createdBy', 'id', 'name'],
+  })
+  .openapi('Group')
+
+const RangeSchema = z
+  .object({
+    limit: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64', description: 'Range limit. Maximum 500.' }),
+    offset: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64', description: 'Range offset' }),
+    total: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64', description: 'Total items available' }),
+  })
+  .openapi({ description: 'Range information', required: ['limit', 'offset', 'total'] })
+  .openapi('Range')
+
+type GroupListType = { items: z.infer<typeof GroupSchema>[]; range: z.infer<typeof RangeSchema> }
+
 const EncryptionInfoSchema = z
   .object({
     dataSpaceKeyState: z
@@ -219,6 +325,134 @@ type RoomDataType = {
   updatedBy?: z.infer<typeof UserInfoSchema>
 }
 
+const KeyValueEntrySchema = z
+  .object({
+    key: z.string().openapi({ description: 'Entry key' }),
+    value: z.string().openapi({ description: 'Entry value' }),
+  })
+  .openapi({ description: 'Key-value pair', required: ['key', 'value'] })
+  .openapi('KeyValueEntry')
+
+const UserAttributesSchema = z
+  .object({
+    items: z.array(KeyValueEntrySchema).openapi({ description: 'List of key-value pairs' }),
+  })
+  .openapi({
+    deprecated: true,
+    description: 'User custom attributes (list of key-value pairs)',
+    required: ['items'],
+  })
+  .openapi('UserAttributes')
+
+const UserItemSchema = z
+  .object({
+    avatarUuid: z.string().openapi({ description: '&#128640; Since v4.11.0\n\nAvatar UUID' }),
+    createdAt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'Creation date' }),
+    email: z.string().exactOptional().openapi({ description: 'Email ' }),
+    expireAt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'Expiration date' }),
+    firstName: z.string().openapi({ description: 'User first name' }),
+    gender: z
+      .string()
+      .default('n')
+      .exactOptional()
+      .openapi({ deprecated: true, description: '&#128679; Deprecated since v4.12.0\n\nGender' }),
+    hasManageableRooms: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description: '&#128679; Deprecated since v4.27.0\n\nUser has manageable rooms',
+      }),
+    homeRoomId: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64', description: 'Homeroom ID' }),
+    id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64', description: 'Unique identifier for the user' }),
+    isEncryptionEnabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'User has generated private key.\n\nPossible if client-side encryption is active for this customer',
+      }),
+    isLocked: z
+      .boolean()
+      .default(false)
+      .openapi({
+        description:
+          'User is locked:\n\n* `false` - unlocked\n\n* `true` - locked\n\n\n\nUser is locked and can not login anymore.',
+      }),
+    lastLoginSuccessAt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'Last successful logon date' }),
+    lastName: z.string().openapi({ description: 'User last name' }),
+    lockStatus: z
+      .int32()
+      .openapi({
+        deprecated: true,
+        description:
+          '&#128679; Deprecated since v4.7.0\n\nUser lock status:\n\n* `0` - locked\n\n* `1` - Web access allowed\n\n* `2` - Web and mobile access allowed\n\n\n\nPlease use `isLocked` instead.',
+      }),
+    login: z
+      .string()
+      .openapi({
+        deprecated: true,
+        description: '&#128679; Deprecated since v4.13.0\n\nUser login name',
+      }),
+    phone: z.string().exactOptional().openapi({ description: 'Phone number' }),
+    title: z
+      .string()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description: '&#128679; Deprecated since v4.18.0\n\nJob title',
+      }),
+    userAttributes: UserAttributesSchema.exactOptional(),
+    userName: z.string().openapi({ description: '&#128640; Since v4.13.0\n\nUsername' }),
+    userRoles: RoleListSchema.exactOptional(),
+  })
+  .openapi({
+    description: 'User information',
+    required: [
+      'avatarUuid',
+      'firstName',
+      'id',
+      'isLocked',
+      'lastName',
+      'lockStatus',
+      'login',
+      'userName',
+    ],
+  })
+  .openapi('UserItem')
+
+type UserListType = { items: z.infer<typeof UserItemSchema>[]; range: z.infer<typeof RangeSchema> }
+
 const ActiveDirectorySchema = z
   .object({
     alias: z.string().openapi({ description: 'Unique name for an Active Directory configuration' }),
@@ -377,53 +611,6 @@ const AlgorithmVersionInfoListSchema = z
     required: ['fileKeyAlgorithms', 'keyPairAlgorithms'],
   })
   .openapi('AlgorithmVersionInfoList')
-
-const KeyValueEntrySchema = z
-  .object({
-    key: z.string().openapi({ description: 'Entry key' }),
-    value: z.string().openapi({ description: 'Entry value' }),
-  })
-  .openapi({ description: 'Key-value pair', required: ['key', 'value'] })
-  .openapi('KeyValueEntry')
-
-const RangeSchema = z
-  .object({
-    limit: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({ type: 'integer', format: 'int64', description: 'Range limit. Maximum 500.' }),
-    offset: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({ type: 'integer', format: 'int64', description: 'Range offset' }),
-    total: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({ type: 'integer', format: 'int64', description: 'Total items available' }),
-  })
-  .openapi({ description: 'Range information', required: ['limit', 'offset', 'total'] })
-  .openapi('Range')
 
 const AttributesResponseSchema = z
   .object({
@@ -3450,71 +3637,6 @@ const GeneratePresignedUrlsRequestSchema = z
   })
   .openapi('GeneratePresignedUrlsRequest')
 
-const RightSchema = z
-  .object({
-    description: z.string().openapi({ description: 'Right description' }),
-    id: z.int32().openapi({ description: 'Unique identifier for the right' }),
-    name: z.string().openapi({ description: 'Right (unique) name' }),
-  })
-  .openapi({ description: 'Right information', required: ['description', 'id', 'name'] })
-  .openapi('Right')
-
-const RoleSchema = z
-  .object({
-    description: z.string().openapi({ description: 'Role description' }),
-    id: z.int32().openapi({ description: 'Unique identifier for the role' }),
-    items: z
-      .array(RightSchema)
-      .exactOptional()
-      .openapi({ description: 'List of reachable right over role' }),
-    name: z.string().openapi({ description: 'Role (unique) name' }),
-  })
-  .openapi({ description: 'Role information', required: ['description', 'id', 'name'] })
-  .openapi('Role')
-
-const RoleListSchema = z
-  .object({ items: z.array(RoleSchema).openapi({ description: 'List of roles' }) })
-  .openapi({ description: 'List of roles', required: ['items'] })
-  .openapi('RoleList')
-
-const GroupSchema = z
-  .object({
-    cntUsers: z.int32().openapi({ description: 'Amount of users' }),
-    createdAt: z.iso.datetime({ offset: true }).openapi({ description: 'Creation date' }),
-    createdBy: UserInfoSchema,
-    expireAt: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'Expiration date' }),
-    groupRoles: RoleListSchema.exactOptional(),
-    id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'Unique identifier for the group',
-      }),
-    name: z.string().openapi({ description: 'Group name' }),
-    updatedAt: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'Modification date' }),
-    updatedBy: UserInfoSchema.exactOptional(),
-  })
-  .openapi({
-    description: 'Group information',
-    required: ['cntUsers', 'createdAt', 'createdBy', 'id', 'name'],
-  })
-  .openapi('Group')
-
 const GroupIdsSchema = z
   .object({
     ids: z
@@ -3558,7 +3680,7 @@ const GroupInfoSchema = z
   .openapi({ description: 'Group information', required: ['id', 'name'] })
   .openapi('GroupInfo')
 
-const GroupListSchema = z
+const GroupListSchema: z.ZodType<GroupListType> = z
   .object({
     items: z.array(GroupSchema).openapi({ description: 'List of groups' }),
     range: RangeSchema,
@@ -8454,17 +8576,6 @@ const UploadShareListSchema = z
   .openapi({ description: 'List of Upload Shares', required: ['items', 'range'] })
   .openapi('UploadShareList')
 
-const UserAttributesSchema = z
-  .object({
-    items: z.array(KeyValueEntrySchema).openapi({ description: 'List of key-value pairs' }),
-  })
-  .openapi({
-    deprecated: true,
-    description: 'User custom attributes (list of key-value pairs)',
-    required: ['items'],
-  })
-  .openapi('UserAttributes')
-
 const UserGroupSchema = z
   .object({
     id: z
@@ -8843,114 +8954,7 @@ const UserIdsSchema = z
   .openapi({ description: 'User IDs', required: ['ids'] })
   .openapi('UserIds')
 
-const UserItemSchema = z
-  .object({
-    avatarUuid: z.string().openapi({ description: '&#128640; Since v4.11.0\n\nAvatar UUID' }),
-    createdAt: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'Creation date' }),
-    email: z.string().exactOptional().openapi({ description: 'Email ' }),
-    expireAt: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'Expiration date' }),
-    firstName: z.string().openapi({ description: 'User first name' }),
-    gender: z
-      .string()
-      .default('n')
-      .exactOptional()
-      .openapi({ deprecated: true, description: '&#128679; Deprecated since v4.12.0\n\nGender' }),
-    hasManageableRooms: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        deprecated: true,
-        description: '&#128679; Deprecated since v4.27.0\n\nUser has manageable rooms',
-      }),
-    homeRoomId: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64', description: 'Homeroom ID' }),
-    id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({ type: 'integer', format: 'int64', description: 'Unique identifier for the user' }),
-    isEncryptionEnabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'User has generated private key.\n\nPossible if client-side encryption is active for this customer',
-      }),
-    isLocked: z
-      .boolean()
-      .default(false)
-      .openapi({
-        description:
-          'User is locked:\n\n* `false` - unlocked\n\n* `true` - locked\n\n\n\nUser is locked and can not login anymore.',
-      }),
-    lastLoginSuccessAt: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'Last successful logon date' }),
-    lastName: z.string().openapi({ description: 'User last name' }),
-    lockStatus: z
-      .int32()
-      .openapi({
-        deprecated: true,
-        description:
-          '&#128679; Deprecated since v4.7.0\n\nUser lock status:\n\n* `0` - locked\n\n* `1` - Web access allowed\n\n* `2` - Web and mobile access allowed\n\n\n\nPlease use `isLocked` instead.',
-      }),
-    login: z
-      .string()
-      .openapi({
-        deprecated: true,
-        description: '&#128679; Deprecated since v4.13.0\n\nUser login name',
-      }),
-    phone: z.string().exactOptional().openapi({ description: 'Phone number' }),
-    title: z
-      .string()
-      .exactOptional()
-      .openapi({
-        deprecated: true,
-        description: '&#128679; Deprecated since v4.18.0\n\nJob title',
-      }),
-    userAttributes: UserAttributesSchema.exactOptional(),
-    userName: z.string().openapi({ description: '&#128640; Since v4.13.0\n\nUsername' }),
-    userRoles: RoleListSchema.exactOptional(),
-  })
-  .openapi({
-    description: 'User information',
-    required: [
-      'avatarUuid',
-      'firstName',
-      'id',
-      'isLocked',
-      'lastName',
-      'lockStatus',
-      'login',
-      'userName',
-    ],
-  })
-  .openapi('UserItem')
-
-const UserListSchema = z
+const UserListSchema: z.ZodType<UserListType> = z
   .object({
     items: z.array(UserItemSchema).openapi({ description: 'List of users' }),
     range: RangeSchema,

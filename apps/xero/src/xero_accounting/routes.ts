@@ -613,6 +613,7 @@ type AccountType = {
   ReportingCodeName?: string
   HasAttachments?: boolean
   UpdatedDateUTC?: string
+  CreatedDateUTC?: string
   AddToWatchlist?: boolean
   ValidationErrors?: z.infer<typeof ValidationErrorSchema>[]
 }
@@ -738,6 +739,135 @@ type LineItemType = {
   TaxBreakdown?: z.infer<typeof TaxBreakdownComponentSchema>[]
 }
 
+const BatchPaymentSchema: z.ZodType<BatchPaymentType> = z
+  .lazy(() =>
+    z
+      .object({
+        Account: AccountSchema.exactOptional(),
+        Reference: z
+          .string()
+          .max(255)
+          .exactOptional()
+          .openapi({
+            description:
+              '(NZ Only) Optional references for the batch payment transaction. It will also show with the batch payment transaction in the bank reconciliation Find & Match screen. Depending on your individual bank, the detail may also show on the bank statement you import into Xero.',
+          }),
+        Particulars: z
+          .string()
+          .max(12)
+          .exactOptional()
+          .openapi({
+            description:
+              '(NZ Only) Optional references for the batch payment transaction. It will also show with the batch payment transaction in the bank reconciliation Find & Match screen. Depending on your individual bank, the detail may also show on the bank statement you import into Xero.',
+          }),
+        Code: z
+          .string()
+          .max(12)
+          .exactOptional()
+          .openapi({
+            description:
+              '(NZ Only) Optional references for the batch payment transaction. It will also show with the batch payment transaction in the bank reconciliation Find & Match screen. Depending on your individual bank, the detail may also show on the bank statement you import into Xero.',
+          }),
+        Details: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              '(Non-NZ Only) These details are sent to the org’s bank as a reference for the batch payment transaction. They will also show with the batch payment transaction in the bank reconciliation Find & Match screen. Depending on your individual bank, the detail may also show on the bank statement imported into Xero. Maximum field length = 18',
+          }),
+        Narrative: z
+          .string()
+          .max(18)
+          .exactOptional()
+          .openapi({
+            description: '(UK Only) Only shows on the statement line in Xero. Max length =18',
+          }),
+        BatchPaymentID: z
+          .uuid()
+          .exactOptional()
+          .openapi({
+            description:
+              'The Xero generated unique identifier for the bank transaction (read-only)',
+            readOnly: true,
+          }),
+        DateString: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Date the payment is being made (YYYY-MM-DD) e.g. 2009-09-06' }),
+        Date: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Date the payment is being made (YYYY-MM-DD) e.g. 2009-09-06',
+            'x-is-msdate': true,
+          }),
+        Amount: z
+          .float64()
+          .exactOptional()
+          .openapi({
+            description:
+              'The amount of the payment. Must be less than or equal to the outstanding amount owing on the invoice e.g. 200.00',
+            'x-is-money': true,
+          }),
+        Payments: z
+          .array(PaymentSchema)
+          .exactOptional()
+          .openapi({ description: 'An array of payments' }),
+        Type: z
+          .enum(['PAYBATCH', 'RECBATCH'])
+          .exactOptional()
+          .openapi({
+            description:
+              'PAYBATCH for bill payments or RECBATCH for sales invoice payments (read-only)',
+            readOnly: true,
+          }),
+        Status: z
+          .enum(['AUTHORISED', 'DELETED'])
+          .exactOptional()
+          .openapi({
+            description:
+              'AUTHORISED or DELETED (read-only). New batch payments will have a status of AUTHORISED. It is not possible to delete batch payments via the API.',
+            readOnly: true,
+          }),
+        TotalAmount: z
+          .float64()
+          .exactOptional()
+          .openapi({
+            description: 'The total of the payments that make up the batch (read-only)',
+            'x-is-money': true,
+            readOnly: true,
+          }),
+        UpdatedDateUTC: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'UTC timestamp of last update to the payment',
+            'x-is-msdate-time': true,
+            example: '/Date(1573755038314)/',
+            readOnly: true,
+          }),
+        IsReconciled: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description:
+              'Booelan that tells you if the batch payment has been reconciled (read-only)',
+            readOnly: true,
+          }),
+        ValidationErrors: z
+          .array(ValidationErrorSchema)
+          .exactOptional()
+          .openapi({ description: 'Displays array of validation error messages from the API' }),
+      })
+      .openapi({
+        externalDocs: { url: 'http://developer.xero.com/documentation/api/BatchPayments/' },
+        required: [],
+      }),
+  )
+  .openapi('BatchPayment')
+
+type BatchPaymentsType = { BatchPayments?: z.infer<typeof BatchPaymentSchema>[] }
+
 const AccountSchema: z.ZodType<AccountType> = z
   .object({
     Code: z
@@ -852,6 +982,16 @@ const AccountSchema: z.ZodType<AccountType> = z
       .exactOptional()
       .openapi({
         description: 'Last modified date UTC format',
+        'x-is-msdate-time': true,
+        example: '/Date(1573755038314)/',
+        readOnly: true,
+      }),
+    CreatedDateUTC: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Created date UTC format. Only returned by GET Accounts and GET Accounts/{AccountID}, not on POST or PUT responses',
         'x-is-msdate-time': true,
         example: '/Date(1573755038314)/',
         readOnly: true,
@@ -1908,6 +2048,8 @@ type CreditNoteType = {
   InvoiceAddresses?: z.infer<typeof InvoiceAddressSchema>[]
 }
 
+type AllocationsType = { Allocations?: z.infer<typeof AllocationSchema>[] }
+
 const InvoiceSchema: z.ZodType<InvoiceType> = z
   .lazy(() =>
     z
@@ -2635,6 +2777,242 @@ type AllocationType = {
   ValidationErrors?: z.infer<typeof ValidationErrorSchema>[]
 }
 
+const UserSchema = z
+  .object({
+    UserID: z.uuid().exactOptional().openapi({ description: 'Xero identifier' }),
+    EmailAddress: z.string().exactOptional().openapi({ description: 'Email address of user' }),
+    FirstName: z.string().exactOptional().openapi({ description: 'First name of user' }),
+    LastName: z.string().exactOptional().openapi({ description: 'Last name of user' }),
+    UpdatedDateUTC: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Timestamp of last change to user',
+        'x-is-msdate-time': true,
+        example: '/Date(1573755038314)/',
+        readOnly: true,
+      }),
+    IsSubscriber: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Boolean to indicate if user is the subscriber' }),
+    OrganisationRole: z
+      .enum([
+        'READONLY',
+        'INVOICEONLY',
+        'STANDARD',
+        'FINANCIALADVISER',
+        'MANAGEDCLIENT',
+        'CASHBOOKCLIENT',
+        'UNKNOWN',
+        'REMOVED',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'User role that defines permissions in Xero and via API (READONLY, INVOICEONLY, STANDARD, FINANCIALADVISER, etc)',
+      }),
+  })
+  .openapi({
+    externalDocs: { url: 'http://developer.xero.com/documentation/api/users/' },
+    required: [],
+  })
+  .openapi('User')
+
+const ReceiptSchema = z
+  .object({
+    Date: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Date of receipt – YYYY-MM-DD', 'x-is-msdate': true }),
+    Contact: ContactSchema.exactOptional(),
+    LineItems: z.array(LineItemSchema).exactOptional(),
+    User: UserSchema.exactOptional(),
+    Reference: z.string().exactOptional().openapi({ description: 'Additional reference number' }),
+    LineAmountTypes: LineAmountTypesSchema.exactOptional(),
+    SubTotal: z
+      .float64()
+      .exactOptional()
+      .openapi({ description: 'Total of receipt excluding taxes', 'x-is-money': true }),
+    TotalTax: z
+      .float64()
+      .exactOptional()
+      .openapi({ description: 'Total tax on receipt', 'x-is-money': true }),
+    Total: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description: 'Total of receipt tax inclusive (i.e. SubTotal + TotalTax)',
+        'x-is-money': true,
+      }),
+    ReceiptID: z
+      .uuid()
+      .exactOptional()
+      .openapi({ description: 'Xero generated unique identifier for receipt' }),
+    Status: z
+      .enum(['DRAFT', 'SUBMITTED', 'AUTHORISED', 'DECLINED', 'VOIDED'])
+      .exactOptional()
+      .openapi({ description: 'Current status of receipt – see status types' }),
+    ReceiptNumber: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Xero generated sequence number for receipt in current claim for a given user',
+        readOnly: true,
+      }),
+    UpdatedDateUTC: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Last modified date UTC format',
+        'x-is-msdate-time': true,
+        example: '/Date(1573755038314)/',
+        readOnly: true,
+      }),
+    HasAttachments: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description: 'boolean to indicate if a receipt has an attachment',
+        readOnly: true,
+        example: 'false',
+      }),
+    Url: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'URL link to a source document – shown as “Go to [appName]” in the Xero app',
+        readOnly: true,
+      }),
+    ValidationErrors: z
+      .array(ValidationErrorSchema)
+      .exactOptional()
+      .openapi({ description: 'Displays array of validation error messages from the API' }),
+    Warnings: z
+      .array(ValidationErrorSchema)
+      .exactOptional()
+      .openapi({ description: 'Displays array of warning messages from the API' }),
+    Attachments: z
+      .array(AttachmentSchema)
+      .exactOptional()
+      .openapi({ description: 'Displays array of attachments from the API' }),
+  })
+  .openapi({
+    externalDocs: { url: 'http://developer.xero.com/documentation/api/receipts/' },
+    required: [],
+  })
+  .openapi('Receipt')
+
+type ExpenseClaimType = {
+  ExpenseClaimID?: string
+  Status?: 'SUBMITTED' | 'AUTHORISED' | 'PAID' | 'VOIDED' | 'DELETED'
+  Payments?: z.infer<typeof PaymentSchema>[]
+  User?: z.infer<typeof UserSchema>
+  Receipts?: z.infer<typeof ReceiptSchema>[]
+  UpdatedDateUTC?: string
+  Total?: number
+  AmountDue?: number
+  AmountPaid?: number
+  PaymentDueDate?: string
+  ReportingDate?: string
+  ReceiptID?: string
+}
+
+const ExpenseClaimSchema: z.ZodType<ExpenseClaimType> = z
+  .object({
+    ExpenseClaimID: z
+      .uuid()
+      .exactOptional()
+      .openapi({ description: 'Xero generated unique identifier for an expense claim' }),
+    Status: z
+      .enum(['SUBMITTED', 'AUTHORISED', 'PAID', 'VOIDED', 'DELETED'])
+      .exactOptional()
+      .openapi({ description: 'Current status of an expense claim – see status types' }),
+    Payments: z.array(PaymentSchema).exactOptional().openapi({ description: 'See Payments' }),
+    User: UserSchema.exactOptional(),
+    Receipts: z.array(ReceiptSchema).exactOptional(),
+    UpdatedDateUTC: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Last modified date UTC format',
+        'x-is-msdate-time': true,
+        example: '/Date(1573755038314)/',
+        readOnly: true,
+      }),
+    Total: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description: 'The total of an expense claim being paid',
+        readOnly: true,
+        'x-is-money': true,
+      }),
+    AmountDue: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description: 'The amount due to be paid for an expense claim',
+        readOnly: true,
+        'x-is-money': true,
+      }),
+    AmountPaid: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description: 'The amount still to pay for an expense claim',
+        readOnly: true,
+        'x-is-money': true,
+      }),
+    PaymentDueDate: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The date when the expense claim is due to be paid YYYY-MM-DD',
+        readOnly: true,
+        'x-is-msdate': true,
+      }),
+    ReportingDate: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The date the expense claim will be reported in Xero YYYY-MM-DD',
+        readOnly: true,
+        'x-is-msdate': true,
+      }),
+    ReceiptID: z
+      .uuid()
+      .exactOptional()
+      .openapi({
+        description:
+          'The Xero identifier for the Receipt e.g. e59a2c7f-1306-4078-a0f3-73537afcbba9',
+      }),
+  })
+  .openapi({
+    externalDocs: { url: 'http://developer.xero.com/documentation/api/expense-claims/' },
+    required: [],
+  })
+  .openapi('ExpenseClaim')
+
+type ExpenseClaimsType = { ExpenseClaims?: z.infer<typeof ExpenseClaimSchema>[] }
+
+const PaginationSchema = z
+  .object({
+    page: z.int().exactOptional(),
+    pageSize: z.int().exactOptional(),
+    pageCount: z.int().exactOptional(),
+    itemCount: z.int().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('Pagination')
+
+type InvoicesType = {
+  pagination?: z.infer<typeof PaginationSchema>
+  Warnings?: z.infer<typeof ValidationErrorSchema>[]
+  Invoices?: z.infer<typeof InvoiceSchema>[]
+}
+
 type InvoiceType = {
   Type?:
     | 'ACCPAY'
@@ -2689,6 +3067,1667 @@ type InvoiceType = {
   Warnings?: z.infer<typeof ValidationErrorSchema>[]
   InvoiceAddresses?: z.infer<typeof InvoiceAddressSchema>[]
 }
+
+const TrackingOptionSchema = z
+  .object({
+    TrackingOptionID: z
+      .uuid()
+      .exactOptional()
+      .openapi({
+        description:
+          'The Xero identifier for a tracking option e.g. ae777a87-5ef3-4fa0-a4f0-d10e1f13073a',
+      }),
+    Name: z
+      .string()
+      .max(100)
+      .exactOptional()
+      .openapi({
+        description: 'The name of the tracking option e.g. Marketing, East (max length = 100)',
+      }),
+    Status: z
+      .enum(['ACTIVE', 'ARCHIVED', 'DELETED'])
+      .exactOptional()
+      .openapi({ description: 'The status of a tracking option' }),
+    TrackingCategoryID: z
+      .uuid()
+      .exactOptional()
+      .openapi({
+        description: 'Filter by a tracking category e.g. 297c2dc5-cc47-4afd-8ec8-74990b8761e9',
+      }),
+  })
+  .openapi({
+    externalDocs: { url: 'http://developer.xero.com/documentation/api/tracking-categories/' },
+    required: [],
+  })
+  .openapi('TrackingOption')
+
+const TrackingCategorySchema = z
+  .object({
+    TrackingCategoryID: z
+      .uuid()
+      .exactOptional()
+      .openapi({
+        description:
+          'The Xero identifier for a tracking category e.g. 297c2dc5-cc47-4afd-8ec8-74990b8761e9',
+      }),
+    TrackingOptionID: z
+      .uuid()
+      .exactOptional()
+      .openapi({
+        description:
+          'The Xero identifier for a tracking option e.g. dc54c220-0140-495a-b925-3246adc0075f',
+      }),
+    Name: z
+      .string()
+      .max(100)
+      .exactOptional()
+      .openapi({
+        description: 'The name of the tracking category e.g. Department, Region (max length = 100)',
+      }),
+    Option: z
+      .string()
+      .max(100)
+      .exactOptional()
+      .openapi({
+        description: 'The option name of the tracking option e.g. East, West (max length = 100)',
+      }),
+    Status: z
+      .enum(['ACTIVE', 'ARCHIVED', 'DELETED'])
+      .exactOptional()
+      .openapi({ description: 'The status of a tracking category' }),
+    Options: z
+      .array(TrackingOptionSchema)
+      .exactOptional()
+      .openapi({ description: 'See Tracking Options' }),
+  })
+  .openapi({
+    externalDocs: { url: 'http://developer.xero.com/documentation/api/tracking-categories/' },
+    required: [],
+  })
+  .openapi('TrackingCategory')
+
+const JournalLineSchema = z
+  .object({
+    JournalLineID: z
+      .uuid()
+      .exactOptional()
+      .openapi({
+        description: 'Xero identifier for Journal',
+        example: '7be9db36-3598-4755-ba5c-c2dbc8c4a7a2',
+      }),
+    AccountID: z
+      .uuid()
+      .exactOptional()
+      .openapi({ description: 'See Accounts', example: 'ceef66a5-a545-413b-9312-78a53caadbc4' }),
+    AccountCode: z.string().exactOptional().openapi({ description: 'See Accounts', example: 90 }),
+    AccountType: AccountTypeSchema.exactOptional(),
+    AccountName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'See AccountCodes', example: 'Checking Account' }),
+    Description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The description from the source transaction line item. Only returned if populated.',
+        example: 'My business checking account',
+      }),
+    NetAmount: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description:
+          'Net amount of journal line. This will be a positive value for a debit and negative for a credit',
+        'x-is-money': true,
+        example: 4130.98,
+      }),
+    GrossAmount: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description: 'Gross amount of journal line (NetAmount + TaxAmount).',
+        'x-is-money': true,
+        example: 4130.98,
+      }),
+    TaxAmount: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description: 'Total tax on a journal line',
+        'x-is-money': true,
+        readOnly: true,
+        example: 0,
+      }),
+    TaxType: z.string().exactOptional().openapi({ description: 'The tax type from taxRates' }),
+    TaxName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'see TaxRates', example: 'Tax Exempt' }),
+    TrackingCategories: z
+      .array(TrackingCategorySchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional Tracking Category – see Tracking. Any JournalLine can have a maximum of 2 <TrackingCategory> elements.',
+      }),
+  })
+  .openapi({
+    externalDocs: { url: 'https://developer.xero.com/documentation/api/journals#JournalLines' },
+    required: [],
+  })
+  .openapi('JournalLine')
+
+const JournalSchema = z
+  .object({
+    JournalID: z.uuid().exactOptional().openapi({ description: 'Xero identifier' }),
+    JournalDate: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Date the journal was posted', 'x-is-msdate': true }),
+    JournalNumber: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'Xero generated journal number' }),
+    CreatedDateUTC: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Created date UTC format',
+        'x-is-msdate-time': true,
+        example: '/Date(1573755038314)/',
+        readOnly: true,
+      }),
+    Reference: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'reference field for additional indetifying information' }),
+    SourceID: z
+      .uuid()
+      .exactOptional()
+      .openapi({ description: 'The identifier for the source transaction (e.g. InvoiceID)' }),
+    SourceType: z
+      .enum([
+        'ACCREC',
+        'ACCPAY',
+        'ACCRECCREDIT',
+        'ACCPAYCREDIT',
+        'ACCRECPAYMENT',
+        'ACCPAYPAYMENT',
+        'ARCREDITPAYMENT',
+        'APCREDITPAYMENT',
+        'CASHREC',
+        'CASHPAID',
+        'TRANSFER',
+        'ARPREPAYMENT',
+        'APPREPAYMENT',
+        'AROVERPAYMENT',
+        'APOVERPAYMENT',
+        'EXPCLAIM',
+        'EXPPAYMENT',
+        'MANJOURNAL',
+        'PAYSLIP',
+        'WAGEPAYABLE',
+        'INTEGRATEDPAYROLLPE',
+        'INTEGRATEDPAYROLLPT',
+        'EXTERNALSPENDMONEY',
+        'INTEGRATEDPAYROLLPTPAYMENT',
+        'INTEGRATEDPAYROLLCN',
+      ])
+      .exactOptional()
+      .openapi({
+        description: 'The journal source type. The type of transaction that created the journal',
+      }),
+    JournalLines: z
+      .array(JournalLineSchema)
+      .exactOptional()
+      .openapi({ description: 'See JournalLines' }),
+  })
+  .openapi({
+    externalDocs: { url: 'http://developer.xero.com/documentation/api/journals/' },
+    required: [],
+  })
+  .openapi('Journal')
+
+type JournalsType = {
+  Warnings?: z.infer<typeof ValidationErrorSchema>[]
+  Journals?: z.infer<typeof JournalSchema>[]
+}
+
+const ManualJournalLineSchema = z
+  .object({
+    LineAmount: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description: 'total for line. Debits are positive, credits are negative value',
+        'x-is-money': true,
+        example: -2569,
+      }),
+    AccountCode: z.string().exactOptional().openapi({ description: 'See Accounts', example: 720 }),
+    AccountID: z.uuid().exactOptional().openapi({ description: 'See Accounts' }),
+    Description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Description for journal line',
+        example: 'Coded incorrectly Office Equipment should be Computer Equipment',
+      }),
+    TaxType: z.string().exactOptional().openapi({ description: 'The tax type from TaxRates' }),
+    Tracking: z
+      .array(TrackingCategorySchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional Tracking Category – see Tracking. Any JournalLine can have a maximum of 2 <TrackingCategory> elements.',
+      }),
+    TaxAmount: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description: 'The calculated tax amount based on the TaxType and LineAmount',
+        'x-is-money': true,
+        example: 0,
+      }),
+    IsBlank: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'is the line blank', example: false }),
+  })
+  .openapi({
+    externalDocs: { url: 'http://developer.xero.com/documentation/api/manual-journals/' },
+    required: [],
+  })
+  .openapi('ManualJournalLine')
+
+const ManualJournalSchema = z
+  .object({
+    Narration: z.string().openapi({ description: 'Description of journal being posted' }),
+    JournalLines: z
+      .array(ManualJournalLineSchema)
+      .exactOptional()
+      .openapi({ description: 'See JournalLines' }),
+    Date: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Date journal was posted – YYYY-MM-DD', 'x-is-msdate': true }),
+    LineAmountTypes: LineAmountTypesSchema.exactOptional(),
+    Status: z
+      .enum(['DRAFT', 'POSTED', 'DELETED', 'VOIDED', 'ARCHIVED'])
+      .exactOptional()
+      .openapi({ description: 'See Manual Journal Status Codes' }),
+    Url: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Url link to a source document – shown as “Go to [appName]” in the Xero app',
+      }),
+    ShowOnCashBasisReports: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Boolean – default is true if not specified' }),
+    HasAttachments: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description: 'Boolean to indicate if a manual journal has an attachment',
+        readOnly: true,
+        example: 'false',
+      }),
+    UpdatedDateUTC: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Last modified date UTC format',
+        'x-is-msdate-time': true,
+        example: '/Date(1573755038314)/',
+        readOnly: true,
+      }),
+    ManualJournalID: z
+      .uuid()
+      .exactOptional()
+      .openapi({ description: 'The Xero identifier for a Manual Journal' }),
+    StatusAttributeString: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'A string to indicate if a invoice status', example: 'ERROR' }),
+    Warnings: z
+      .array(ValidationErrorSchema)
+      .exactOptional()
+      .openapi({ description: 'Displays array of warning messages from the API' }),
+    ValidationErrors: z
+      .array(ValidationErrorSchema)
+      .exactOptional()
+      .openapi({ description: 'Displays array of validation error messages from the API' }),
+    Attachments: z
+      .array(AttachmentSchema)
+      .exactOptional()
+      .openapi({ description: 'Displays array of attachments from the API' }),
+  })
+  .openapi({
+    externalDocs: { url: 'http://developer.xero.com/documentation/api/manual-journals/' },
+    required: ['Narration'],
+  })
+  .openapi('ManualJournal')
+
+type ManualJournalsType = {
+  pagination?: z.infer<typeof PaginationSchema>
+  Warnings?: z.infer<typeof ValidationErrorSchema>[]
+  ManualJournals?: z.infer<typeof ManualJournalSchema>[]
+}
+
+type OverpaymentType = {
+  Type?: 'RECEIVE-OVERPAYMENT' | 'SPEND-OVERPAYMENT' | 'AROVERPAYMENT'
+  Contact?: z.infer<typeof ContactSchema>
+  Date?: string
+  Status?: 'AUTHORISED' | 'PAID' | 'VOIDED'
+  LineAmountTypes?: z.infer<typeof LineAmountTypesSchema>
+  LineItems?: z.infer<typeof LineItemSchema>[]
+  SubTotal?: number
+  TotalTax?: number
+  Total?: number
+  UpdatedDateUTC?: string
+  UpdatedDateUTCString?: string
+  CurrencyCode?: z.infer<typeof CurrencyCodeSchema>
+  OverpaymentID?: string
+  CurrencyRate?: number
+  RemainingCredit?: number
+  Allocations?: z.infer<typeof AllocationSchema>[]
+  AppliedAmount?: number
+  Payments?: z.infer<typeof PaymentSchema>[]
+  HasAttachments?: boolean
+  Reference?: string
+  Attachments?: z.infer<typeof AttachmentSchema>[]
+}
+
+type PaymentsType = {
+  pagination?: z.infer<typeof PaginationSchema>
+  Warnings?: z.infer<typeof ValidationErrorSchema>[]
+  Payments?: z.infer<typeof PaymentSchema>[]
+}
+
+type PaymentType = {
+  Invoice?: z.infer<typeof InvoiceSchema>
+  CreditNote?: z.infer<typeof CreditNoteSchema>
+  Prepayment?: z.infer<typeof PrepaymentSchema>
+  Overpayment?: z.infer<typeof OverpaymentSchema>
+  InvoiceNumber?: string
+  CreditNoteNumber?: string
+  BatchPayment?: z.infer<typeof BatchPaymentSchema>
+  Account?: z.infer<typeof AccountSchema>
+  Code?: string
+  Date?: string
+  CurrencyRate?: number
+  Amount?: number
+  BankAmount?: number
+  Reference?: string
+  IsReconciled?: boolean
+  Status?: 'AUTHORISED' | 'DELETED'
+  PaymentType?:
+    | 'ACCRECPAYMENT'
+    | 'ACCPAYPAYMENT'
+    | 'ARCREDITPAYMENT'
+    | 'APCREDITPAYMENT'
+    | 'AROVERPAYMENTPAYMENT'
+    | 'ARPREPAYMENTPAYMENT'
+    | 'APPREPAYMENTPAYMENT'
+    | 'APOVERPAYMENTPAYMENT'
+  UpdatedDateUTC?: string
+  UpdatedDateUTCString?: string
+  PaymentID?: string
+  BatchPaymentID?: string
+  BankAccountNumber?: string
+  Particulars?: string
+  Details?: string
+  HasAccount?: boolean
+  HasValidationErrors?: boolean
+  StatusAttributeString?: string
+  ValidationErrors?: z.infer<typeof ValidationErrorSchema>[]
+  Warnings?: z.infer<typeof ValidationErrorSchema>[]
+}
+
+type PrepaymentsType = {
+  pagination?: z.infer<typeof PaginationSchema>
+  Warnings?: z.infer<typeof ValidationErrorSchema>[]
+  Prepayments?: z.infer<typeof PrepaymentSchema>[]
+}
+
+type PrepaymentType = {
+  Type?: 'RECEIVE-PREPAYMENT' | 'SPEND-PREPAYMENT' | 'ARPREPAYMENT' | 'APPREPAYMENT'
+  Contact?: z.infer<typeof ContactSchema>
+  Date?: string
+  Status?: 'AUTHORISED' | 'PAID' | 'VOIDED'
+  LineAmountTypes?: z.infer<typeof LineAmountTypesSchema>
+  LineItems?: z.infer<typeof LineItemSchema>[]
+  SubTotal?: number
+  TotalTax?: number
+  Total?: number
+  Reference?: string
+  InvoiceNumber?: string
+  UpdatedDateUTC?: string
+  UpdatedDateUTCString?: string
+  CurrencyCode?: z.infer<typeof CurrencyCodeSchema>
+  PrepaymentID?: string
+  BrandingThemeID?: string
+  CurrencyRate?: number
+  RemainingCredit?: number
+  Allocations?: z.infer<typeof AllocationSchema>[]
+  Payments?: z.infer<typeof PaymentSchema>[]
+  AppliedAmount?: number
+  HasAttachments?: boolean
+  Attachments?: z.infer<typeof AttachmentSchema>[]
+}
+
+const TenNinetyNineContactSchema = z
+  .object({
+    Box1: z
+      .float64()
+      .exactOptional()
+      .openapi({ description: 'Box 1 on 1099 Form', 'x-is-money': true }),
+    Box2: z
+      .float64()
+      .exactOptional()
+      .openapi({ description: 'Box 2 on 1099 Form', 'x-is-money': true }),
+    Box3: z
+      .float64()
+      .exactOptional()
+      .openapi({ description: 'Box 3 on 1099 Form', 'x-is-money': true }),
+    Box4: z
+      .float64()
+      .exactOptional()
+      .openapi({ description: 'Box 4 on 1099 Form', 'x-is-money': true }),
+    Box5: z
+      .float64()
+      .exactOptional()
+      .openapi({ description: 'Box 5 on 1099 Form', 'x-is-money': true }),
+    Box6: z
+      .float64()
+      .exactOptional()
+      .openapi({ description: 'Box 6 on 1099 Form', 'x-is-money': true }),
+    Box7: z
+      .float64()
+      .exactOptional()
+      .openapi({ description: 'Box 7 on 1099 Form', 'x-is-money': true }),
+    Box8: z
+      .float64()
+      .exactOptional()
+      .openapi({ description: 'Box 8 on 1099 Form', 'x-is-money': true }),
+    Box9: z
+      .float64()
+      .exactOptional()
+      .openapi({ description: 'Box 9 on 1099 Form', 'x-is-money': true }),
+    Box10: z
+      .float64()
+      .exactOptional()
+      .openapi({ description: 'Box 10 on 1099 Form', 'x-is-money': true }),
+    Box11: z
+      .float64()
+      .exactOptional()
+      .openapi({ description: 'Box 11 on 1099 Form', 'x-is-money': true }),
+    Box13: z
+      .float64()
+      .exactOptional()
+      .openapi({ description: 'Box 13 on 1099 Form', 'x-is-money': true }),
+    Box14: z
+      .float64()
+      .exactOptional()
+      .openapi({ description: 'Box 14 on 1099 Form', 'x-is-money': true }),
+    Name: z.string().exactOptional().openapi({ description: 'Contact name on 1099 Form' }),
+    FederalTaxIDType: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Contact Fed Tax ID type' }),
+    City: z.string().exactOptional().openapi({ description: 'Contact city on 1099 Form' }),
+    Zip: z.string().exactOptional().openapi({ description: 'Contact zip on 1099 Form' }),
+    State: z.string().exactOptional().openapi({ description: 'Contact State on 1099 Form' }),
+    Email: z.string().exactOptional().openapi({ description: 'Contact email on 1099 Form' }),
+    StreetAddress: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Contact address on 1099 Form' }),
+    TaxID: z.string().exactOptional().openapi({ description: 'Contact tax id on 1099 Form' }),
+    ContactId: z.uuid().exactOptional().openapi({ description: 'Contact contact id' }),
+    LegalName: z.string().exactOptional().openapi({ description: 'Contact legal name' }),
+    BusinessName: z.string().exactOptional().openapi({ description: 'Contact business name' }),
+    FederalTaxClassification: z
+      .enum([
+        'SOLE_PROPRIETOR',
+        'PARTNERSHIP',
+        'TRUST_OR_ESTATE',
+        'NONPROFIT',
+        'C_CORP',
+        'S_CORP',
+        'OTHER',
+      ])
+      .exactOptional()
+      .openapi({ description: 'Contact federal tax classification' }),
+  })
+  .openapi({ required: [] })
+  .openapi('TenNinetyNineContact')
+
+type ReportType = {
+  ReportName?: string
+  ReportType?: 'AgedPayablesByContact'
+  ReportTitle?: string
+  ReportDate?: string
+  UpdatedDateUTC?: string
+  Contacts?: z.infer<typeof TenNinetyNineContactSchema>[]
+}
+
+const RowTypeSchema = z.enum(['Header', 'Section', 'Row', 'SummaryRow']).openapi('RowType')
+
+const ReportAttributeSchema = z
+  .object({ Id: z.string().exactOptional(), Value: z.string().exactOptional() })
+  .openapi({
+    externalDocs: { url: 'http://developer.xero.com/documentation/api/reports/' },
+    required: [],
+  })
+  .openapi('ReportAttribute')
+
+const ReportCellSchema = z
+  .object({
+    Value: z.string().exactOptional(),
+    Attributes: z.array(ReportAttributeSchema).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ReportCell')
+
+const ReportRowSchema = z
+  .object({
+    RowType: RowTypeSchema.exactOptional(),
+    Title: z.string().exactOptional(),
+    Cells: z.array(ReportCellSchema).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ReportRow')
+
+const ReportRowsSchema = z
+  .object({
+    RowType: RowTypeSchema.exactOptional(),
+    Title: z.string().exactOptional(),
+    Cells: z.array(ReportCellSchema).exactOptional(),
+    Rows: z.array(ReportRowSchema).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ReportRows')
+
+const ReportFieldsSchema = z
+  .object({
+    FieldID: z.string().exactOptional(),
+    Description: z.string().exactOptional(),
+    Value: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ReportFields')
+
+type ReportWithRowType = {
+  ReportID?: string
+  ReportName?: string
+  ReportTitle?: string
+  ReportType?: string
+  ReportTitles?: string[]
+  ReportDate?: string
+  Rows?: z.infer<typeof ReportRowsSchema>[]
+  UpdatedDateUTC?: string
+  Fields?: z.infer<typeof ReportFieldsSchema>[]
+}
+
+const ReportWithRowSchema: z.ZodType<ReportWithRowType> = z
+  .object({
+    ReportID: z.string().exactOptional().openapi({ description: 'ID of the Report' }),
+    ReportName: z.string().exactOptional().openapi({ description: 'Name of the report' }),
+    ReportTitle: z.string().exactOptional().openapi({ description: 'Title of the report' }),
+    ReportType: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The type of report (BalanceSheet,ProfitLoss, etc)' }),
+    ReportTitles: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Report titles array (3 to 4 strings with the report name, orgnisation name and time frame of report)',
+      }),
+    ReportDate: z.string().exactOptional().openapi({ description: 'Date of report' }),
+    Rows: z.array(ReportRowsSchema).exactOptional(),
+    UpdatedDateUTC: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Updated Date',
+        'x-is-msdate-time': true,
+        example: '/Date(1573755038314)/',
+        readOnly: true,
+      }),
+    Fields: z.array(ReportFieldsSchema).exactOptional(),
+  })
+  .openapi({
+    externalDocs: { url: 'http://developer.xero.com/documentation/api/reports/' },
+    required: [],
+  })
+  .openapi('ReportWithRow')
+
+type ReportWithRowsType = { Reports?: z.infer<typeof ReportWithRowSchema>[] }
+
+const AddressForOrganisationSchema = z
+  .object({
+    AddressType: z
+      .enum(['POBOX', 'STREET', 'DELIVERY'])
+      .exactOptional()
+      .openapi({ description: 'define the type of address' }),
+    AddressLine1: z.string().max(500).exactOptional().openapi({ description: 'max length = 500' }),
+    AddressLine2: z.string().max(500).exactOptional().openapi({ description: 'max length = 500' }),
+    AddressLine3: z.string().max(500).exactOptional().openapi({ description: 'max length = 500' }),
+    AddressLine4: z.string().max(500).exactOptional().openapi({ description: 'max length = 500' }),
+    City: z.string().max(255).exactOptional().openapi({ description: 'max length = 255' }),
+    Region: z.string().max(255).exactOptional().openapi({ description: 'max length = 255' }),
+    PostalCode: z.string().max(50).exactOptional().openapi({ description: 'max length = 50' }),
+    Country: z
+      .string()
+      .max(50)
+      .exactOptional()
+      .openapi({ description: 'max length = 50, [A-Z], [a-z] only' }),
+    AttentionTo: z.string().max(255).exactOptional().openapi({ description: 'max length = 255' }),
+  })
+  .openapi({
+    externalDocs: { url: 'http://developer.xero.com/documentation/api/types' },
+    required: [],
+  })
+  .openapi('AddressForOrganisation')
+
+const AccountsSchema = z
+  .object({ Accounts: z.array(AccountSchema).exactOptional() })
+  .openapi({ 'x-objectArrayKey': 'accounts', required: [] })
+  .openapi('Accounts')
+
+const AttachmentsSchema = z
+  .object({ Attachments: z.array(AttachmentSchema).exactOptional() })
+  .openapi({ 'x-objectArrayKey': 'attachments', required: [] })
+  .openapi('Attachments')
+
+const BankTransactionSchema = z
+  .object({
+    Type: z
+      .enum([
+        'RECEIVE',
+        'RECEIVE-OVERPAYMENT',
+        'RECEIVE-PREPAYMENT',
+        'SPEND',
+        'SPEND-OVERPAYMENT',
+        'SPEND-PREPAYMENT',
+        'RECEIVE-TRANSFER',
+        'SPEND-TRANSFER',
+      ])
+      .openapi({ description: 'See Bank Transaction Types' }),
+    Contact: ContactSchema.exactOptional(),
+    LineItems: z.array(LineItemSchema).openapi({ description: 'See LineItems' }),
+    BankAccount: AccountSchema,
+    IsReconciled: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Boolean to show if transaction is reconciled' }),
+    Date: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Date of transaction – YYYY-MM-DD', 'x-is-msdate': true }),
+    Reference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Reference for the transaction. Only supported for SPEND and RECEIVE transactions.',
+      }),
+    CurrencyCode: CurrencyCodeSchema.exactOptional(),
+    CurrencyRate: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description:
+          'Exchange rate to base currency when money is spent or received. e.g.0.7500 Only used for bank transactions in non base currency. If this isn’t specified for non base currency accounts then either the user-defined rate (preference) or the XE.com day rate will be used. Setting currency is only supported on overpayments.',
+        'x-is-money': true,
+      }),
+    Url: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'URL link to a source document – shown as “Go to App Name”' }),
+    Status: z
+      .enum(['AUTHORISED', 'DELETED', 'VOIDED'])
+      .exactOptional()
+      .openapi({ description: 'See Bank Transaction Status Codes' }),
+    LineAmountTypes: LineAmountTypesSchema.exactOptional(),
+    SubTotal: z
+      .float64()
+      .exactOptional()
+      .openapi({ description: 'Total of bank transaction excluding taxes', 'x-is-money': true }),
+    TotalTax: z
+      .float64()
+      .exactOptional()
+      .openapi({ description: 'Total tax on bank transaction', 'x-is-money': true }),
+    Total: z
+      .float64()
+      .exactOptional()
+      .openapi({ description: 'Total of bank transaction tax inclusive', 'x-is-money': true }),
+    BankTransactionID: z
+      .uuid()
+      .exactOptional()
+      .openapi({
+        description: 'Xero generated unique identifier for bank transaction',
+        example: '00000000-0000-0000-0000-000000000000',
+      }),
+    PrepaymentID: z
+      .uuid()
+      .exactOptional()
+      .openapi({
+        description:
+          'Xero generated unique identifier for a Prepayment. This will be returned on BankTransactions with a Type of SPEND-PREPAYMENT or RECEIVE-PREPAYMENT',
+        readOnly: true,
+        example: '00000000-0000-0000-0000-000000000000',
+      }),
+    OverpaymentID: z
+      .uuid()
+      .exactOptional()
+      .openapi({
+        description:
+          'Xero generated unique identifier for an Overpayment. This will be returned on BankTransactions with a Type of SPEND-OVERPAYMENT or RECEIVE-OVERPAYMENT',
+        readOnly: true,
+        example: '00000000-0000-0000-0000-000000000000',
+      }),
+    UpdatedDateUTC: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Last modified date UTC format',
+        'x-is-msdate-time': true,
+        example: '/Date(1573755038314)/',
+        readOnly: true,
+      }),
+    HasAttachments: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description: 'Boolean to indicate if a bank transaction has an attachment',
+        readOnly: true,
+        example: 'false',
+      }),
+    StatusAttributeString: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'A string to indicate if a invoice status' }),
+    ValidationErrors: z
+      .array(ValidationErrorSchema)
+      .exactOptional()
+      .openapi({ description: 'Displays array of validation error messages from the API' }),
+  })
+  .openapi({
+    externalDocs: { url: 'http://developer.xero.com/documentation/api/banktransactions/' },
+    required: ['Type', 'LineItems', 'BankAccount'],
+  })
+  .openapi('BankTransaction')
+
+const BankTransactionsSchema = z
+  .object({
+    pagination: PaginationSchema.exactOptional(),
+    Warnings: z
+      .array(ValidationErrorSchema)
+      .exactOptional()
+      .openapi({ description: 'Displays array of warning messages from the API' }),
+    BankTransactions: z.array(BankTransactionSchema).exactOptional(),
+  })
+  .openapi({ 'x-objectArrayKey': 'bank_transactions', required: [] })
+  .openapi('BankTransactions')
+
+const TrackingReferenceSchema = z
+  .object({
+    TrackingCategoryID: z
+      .uuid()
+      .openapi({ description: 'The Xero identifier for a tracking category' }),
+    TrackingOptionID: z
+      .uuid()
+      .openapi({ description: 'The Xero identifier for a tracking category option' }),
+    Name: z
+      .string()
+      .max(100)
+      .exactOptional()
+      .openapi({ description: 'The name of the tracking category', readOnly: true }),
+    Option: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'See Tracking Options', readOnly: true }),
+  })
+  .openapi({
+    externalDocs: { url: 'http://developer.xero.com/documentation/api/tracking-categories/' },
+    required: ['TrackingCategoryID', 'TrackingOptionID'],
+  })
+  .openapi('TrackingReference')
+
+const BankTransferSchema = z
+  .object({
+    FromBankAccount: AccountSchema,
+    ToBankAccount: AccountSchema,
+    Amount: z.float64().openapi({ description: 'amount of the transaction', 'x-is-money': true }),
+    Date: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The date of the Transfer YYYY-MM-DD', 'x-is-msdate': true }),
+    BankTransferID: z
+      .uuid()
+      .exactOptional()
+      .openapi({ description: 'The identifier of the Bank Transfer', readOnly: true }),
+    CurrencyRate: z
+      .float64()
+      .exactOptional()
+      .openapi({ description: 'The currency rate', readOnly: true, 'x-is-money': true }),
+    FromBankTransactionID: z
+      .uuid()
+      .exactOptional()
+      .openapi({ description: 'The Bank Transaction ID for the source account', readOnly: true }),
+    ToBankTransactionID: z
+      .uuid()
+      .exactOptional()
+      .openapi({
+        description: 'The Bank Transaction ID for the destination account',
+        readOnly: true,
+      }),
+    FromIsReconciled: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description:
+          'The Bank Transaction boolean to show if it is reconciled for the source account',
+        example: 'false',
+      }),
+    ToIsReconciled: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description:
+          'The Bank Transaction boolean to show if it is reconciled for the destination account',
+        example: 'false',
+      }),
+    Reference: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Reference for the transactions.' }),
+    HasAttachments: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description: 'Boolean to indicate if a Bank Transfer has an attachment',
+        readOnly: true,
+        example: 'false',
+      }),
+    CreatedDateUTC: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'UTC timestamp of creation date of bank transfer',
+        'x-is-msdate-time': true,
+        example: '/Date(1573755038314)/',
+        readOnly: true,
+      }),
+    Status: z
+      .enum(['AUTHORISED', 'DELETED'])
+      .exactOptional()
+      .openapi({
+        description:
+          'AUTHORISED or DELETED (read-only). New bank transfers will have a status of AUTHORISED.',
+        readOnly: true,
+      }),
+    FromTracking: z
+      .array(TrackingReferenceSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional Tracking Category for the source account – see Tracking. A bank transfer can have a maximum of 2 tracking categories per account.',
+      }),
+    ToTracking: z
+      .array(TrackingReferenceSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional Tracking Category for the destination account – see Tracking. A bank transfer can have a maximum of 2 tracking categories per account.',
+      }),
+    ValidationErrors: z
+      .array(ValidationErrorSchema)
+      .exactOptional()
+      .openapi({ description: 'Displays array of validation error messages from the API' }),
+  })
+  .openapi({
+    externalDocs: { url: 'http://developer.xero.com/documentation/api/bank-transfers/' },
+    required: ['FromBankAccount', 'ToBankAccount', 'Amount'],
+  })
+  .openapi('BankTransfer')
+
+const BankTransfersSchema = z
+  .object({ BankTransfers: z.array(BankTransferSchema).exactOptional() })
+  .openapi({ 'x-objectArrayKey': 'bank_transfers', required: [] })
+  .openapi('BankTransfers')
+
+const BankTransferDeleteSchema = z
+  .object({
+    BankTransferID: z.uuid().openapi({ description: 'The Xero identifier for a bank transfer' }),
+    Status: z
+      .string()
+      .default('DELETED')
+      .openapi({ description: 'The status of the bank transfer.' }),
+  })
+  .openapi({
+    externalDocs: { url: 'http://developer.xero.com/documentation/api/bank-transfers/' },
+    required: ['Status', 'BankTransferID'],
+  })
+  .openapi('BankTransferDelete')
+
+const BankTransferDeleteByUrlParamSchema = z
+  .object({
+    Status: z
+      .string()
+      .default('DELETED')
+      .openapi({ description: 'The status of the bank transfer.' }),
+  })
+  .openapi({
+    externalDocs: { url: 'http://developer.xero.com/documentation/api/bank-transfers/' },
+    required: ['Status'],
+  })
+  .openapi('BankTransferDeleteByUrlParam')
+
+const BankTransfersDeleteSchema = z
+  .object({ BankTransfers: z.array(BankTransferDeleteSchema).exactOptional() })
+  .openapi({ 'x-objectArrayKey': 'bank_transfers', required: [] })
+  .openapi('BankTransfersDelete')
+
+const BatchPaymentsSchema: z.ZodType<BatchPaymentsType> = z
+  .object({ BatchPayments: z.array(BatchPaymentSchema).exactOptional() })
+  .openapi({ 'x-objectArrayKey': 'batch_payments', required: [] })
+  .openapi('BatchPayments')
+
+const BatchPaymentDeleteSchema = z
+  .object({
+    BatchPaymentID: z
+      .uuid()
+      .openapi({
+        description: 'The Xero generated unique identifier for the bank transaction (read-only)',
+      }),
+    Status: z
+      .string()
+      .default('DELETED')
+      .openapi({ description: 'The status of the batch payment.' }),
+  })
+  .openapi({
+    externalDocs: { url: 'http://developer.xero.com/documentation/api/accounting/batchpayments' },
+    required: ['Status', 'BatchPaymentID'],
+  })
+  .openapi('BatchPaymentDelete')
+
+const BatchPaymentDeleteByUrlParamSchema = z
+  .object({
+    Status: z
+      .string()
+      .default('DELETED')
+      .openapi({ description: 'The status of the batch payment.' }),
+  })
+  .openapi({
+    externalDocs: { url: 'http://developer.xero.com/documentation/api/accounting/batchpayments' },
+    required: ['Status'],
+  })
+  .openapi('BatchPaymentDeleteByUrlParam')
+
+const BrandingThemesSchema = z
+  .object({ BrandingThemes: z.array(BrandingThemeSchema).exactOptional() })
+  .openapi({ 'x-objectArrayKey': 'branding_themes', required: [] })
+  .openapi('BrandingThemes')
+
+const PaymentServiceSchema = z
+  .object({
+    PaymentServiceID: z.uuid().exactOptional().openapi({ description: 'Xero identifier' }),
+    PaymentServiceName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Name of payment service' }),
+    PaymentServiceUrl: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The custom payment URL' }),
+    PayNowText: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The text displayed on the Pay Now button in Xero Online Invoicing. If this is not set it will default to Pay by credit card',
+      }),
+    PaymentServiceType: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'This will always be CUSTOM for payment services created via the API.',
+      }),
+    ValidationErrors: z
+      .array(ValidationErrorSchema)
+      .exactOptional()
+      .openapi({ description: 'Displays array of validation error messages from the API' }),
+  })
+  .openapi({
+    externalDocs: { url: 'http://developer.xero.com/documentation/api/branding-themes/' },
+    required: [],
+  })
+  .openapi('PaymentService')
+
+const PaymentServicesSchema = z
+  .object({ PaymentServices: z.array(PaymentServiceSchema).exactOptional() })
+  .openapi({ 'x-objectArrayKey': 'payment_services', required: [] })
+  .openapi('PaymentServices')
+
+const ContactsSchema = z
+  .object({
+    pagination: PaginationSchema.exactOptional(),
+    Warnings: z
+      .array(ValidationErrorSchema)
+      .exactOptional()
+      .openapi({ description: 'Displays array of warning messages from the API' }),
+    Contacts: z.array(ContactSchema).exactOptional(),
+  })
+  .openapi({ 'x-objectArrayKey': 'contacts', required: [] })
+  .openapi('Contacts')
+
+const BudgetBalanceSchema = z
+  .object({
+    Period: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Period the amount applies to (e.g. “2019-08”)',
+        'x-is-msdate': true,
+      }),
+    Amount: z
+      .float64()
+      .exactOptional()
+      .openapi({ description: 'LineItem Quantity', 'x-is-money': true }),
+  })
+  .openapi({ required: [] })
+  .openapi('BudgetBalance')
+
+const BudgetLineSchema = z
+  .object({
+    AccountID: z.uuid().exactOptional().openapi({ description: 'See Accounts' }),
+    AccountCode: z.string().exactOptional().openapi({ description: 'See Accounts', example: 90 }),
+    BudgetBalances: z.array(BudgetBalanceSchema).exactOptional(),
+  })
+  .openapi({
+    externalDocs: { url: 'http://developer.xero.com/documentation/api/budgets/' },
+    required: [],
+  })
+  .openapi('BudgetLine')
+
+const BudgetSchema = z
+  .object({
+    BudgetID: z.uuid().exactOptional().openapi({ description: 'Xero identifier' }),
+    CreatedIn: z
+      .enum(['XERO_ANALYTICS', 'BUDGETS_MANAGER'])
+      .exactOptional()
+      .openapi({ description: 'The tool used to create the budget' }),
+    Type: z
+      .enum(['OVERALL', 'TRACKING'])
+      .exactOptional()
+      .openapi({ description: 'Type of Budget. OVERALL or TRACKING' }),
+    Description: z
+      .string()
+      .max(255)
+      .exactOptional()
+      .openapi({ description: 'The Budget description' }),
+    UpdatedDateUTC: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'UTC timestamp of last update to budget',
+        'x-is-msdate-time': true,
+        example: '/Date(1573755038314)/',
+        readOnly: true,
+      }),
+    BudgetLines: z.array(BudgetLineSchema).exactOptional(),
+    Tracking: z.array(TrackingCategorySchema).exactOptional(),
+  })
+  .openapi({
+    externalDocs: { url: 'http://developer.xero.com/documentation/api/budgets/' },
+    required: [],
+  })
+  .openapi('Budget')
+
+const BudgetsSchema = z
+  .object({ Budgets: z.array(BudgetSchema).exactOptional() })
+  .openapi({ 'x-objectArrayKey': 'budgets', required: [] })
+  .openapi('Budgets')
+
+const CISSettingSchema = z
+  .object({
+    CISEnabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Boolean that describes if the contact is a CIS Subcontractor' }),
+    Rate: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description:
+          'CIS Deduction rate for the contact if he is a subcontractor. If the contact is not CISEnabled, then the rate is not returned',
+        readOnly: true,
+        'x-is-money': true,
+      }),
+  })
+  .openapi({
+    externalDocs: { url: 'http://developer.xero.com/documentation/api/contacts/' },
+    required: [],
+  })
+  .openapi('CISSetting')
+
+const CISSettingsSchema = z
+  .object({ CISSettings: z.array(CISSettingSchema).exactOptional() })
+  .openapi({ 'x-objectArrayKey': 'cis_settings', required: [] })
+  .openapi('CISSettings')
+
+const CISOrgSettingSchema = z
+  .object({
+    CISContractorEnabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'true or false - Boolean that describes if the organisation is a CIS Contractor',
+      }),
+    CISSubContractorEnabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'true or false - Boolean that describes if the organisation is a CIS SubContractor',
+      }),
+    Rate: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description: 'CIS Deduction rate for the organisation',
+        readOnly: true,
+        'x-is-money': true,
+      }),
+  })
+  .openapi({
+    externalDocs: { url: 'https://developer.xero.com/documentation/api/organisation' },
+    required: [],
+  })
+  .openapi('CISOrgSetting')
+
+const CISOrgSettingsSchema = z
+  .object({ CISSettings: z.array(CISOrgSettingSchema).exactOptional() })
+  .openapi({ 'x-objectArrayKey': 'cis_settings', required: [] })
+  .openapi('CISOrgSettings')
+
+const ContactGroupsSchema = z
+  .object({ ContactGroups: z.array(ContactGroupSchema).exactOptional() })
+  .openapi({ 'x-objectArrayKey': 'contact_groups', required: [] })
+  .openapi('ContactGroups')
+
+const RequestEmptySchema = z
+  .object({
+    Status: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Need at least one field to create an empty JSON payload' }),
+  })
+  .openapi({
+    externalDocs: { url: 'http://developer.xero.com/documentation/api/invoice/' },
+    required: [],
+  })
+  .openapi('RequestEmpty')
+
+const CreditNotesSchema = z
+  .object({
+    pagination: PaginationSchema.exactOptional(),
+    Warnings: z
+      .array(ValidationErrorSchema)
+      .exactOptional()
+      .openapi({ description: 'Displays array of warning messages from the API' }),
+    CreditNotes: z.array(CreditNoteSchema).exactOptional(),
+  })
+  .openapi({ 'x-objectArrayKey': 'credit_notes', required: [] })
+  .openapi('CreditNotes')
+
+const AllocationsSchema: z.ZodType<AllocationsType> = z
+  .object({ Allocations: z.array(AllocationSchema).exactOptional() })
+  .openapi({ 'x-objectArrayKey': 'allocations', required: [] })
+  .openapi('Allocations')
+
+const CurrencySchema = z
+  .object({
+    Code: CurrencyCodeSchema.exactOptional(),
+    Description: z.string().exactOptional().openapi({ description: 'Name of Currency' }),
+  })
+  .openapi({
+    externalDocs: { url: 'http://developer.xero.com/documentation/api/currencies/' },
+    required: [],
+  })
+  .openapi('Currency')
+
+const CurrenciesSchema = z
+  .object({ Currencies: z.array(CurrencySchema).exactOptional() })
+  .openapi({ 'x-objectArrayKey': 'currencies', required: [] })
+  .openapi('Currencies')
+
+const ExternalLinkSchema = z
+  .object({
+    LinkType: z
+      .enum(['Facebook', 'GooglePlus', 'LinkedIn', 'Twitter', 'Website'])
+      .exactOptional()
+      .openapi({ description: 'See External link types' }),
+    Url: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'URL for service e.g. http://twitter.com/xeroapi' }),
+    Description: z.string().exactOptional(),
+  })
+  .openapi({
+    externalDocs: { url: 'http://developer.xero.com/documentation/api/organisation/' },
+    required: [],
+  })
+  .openapi('ExternalLink')
+
+const EmployeeSchema = z
+  .object({
+    EmployeeID: z
+      .uuid()
+      .exactOptional()
+      .openapi({
+        description:
+          'The Xero identifier for an employee e.g. 297c2dc5-cc47-4afd-8ec8-74990b8761e9',
+      }),
+    Status: z
+      .enum(['ACTIVE', 'ARCHIVED', 'GDPRREQUEST', 'DELETED'])
+      .exactOptional()
+      .openapi({ description: 'Current status of an employee – see contact status types' }),
+    FirstName: z
+      .string()
+      .max(255)
+      .exactOptional()
+      .openapi({ description: 'First name of an employee (max length = 255)' }),
+    LastName: z
+      .string()
+      .max(255)
+      .exactOptional()
+      .openapi({ description: 'Last name of an employee (max length = 255)' }),
+    ExternalLink: ExternalLinkSchema.exactOptional(),
+    UpdatedDateUTC: z
+      .string()
+      .exactOptional()
+      .openapi({ 'x-is-msdate-time': true, example: '/Date(1573755038314)/', readOnly: true }),
+    StatusAttributeString: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'A string to indicate if a invoice status', example: 'ERROR' }),
+    ValidationErrors: z
+      .array(ValidationErrorSchema)
+      .exactOptional()
+      .openapi({ description: 'Displays array of validation error messages from the API' }),
+  })
+  .openapi({
+    externalDocs: { url: 'http://developer.xero.com/documentation/api/employees/' },
+    required: [],
+  })
+  .openapi('Employee')
+
+const EmployeesSchema = z
+  .object({ Employees: z.array(EmployeeSchema).exactOptional() })
+  .openapi({ 'x-objectArrayKey': 'employees', required: [] })
+  .openapi('Employees')
+
+const ExpenseClaimsSchema: z.ZodType<ExpenseClaimsType> = z
+  .object({ ExpenseClaims: z.array(ExpenseClaimSchema).exactOptional() })
+  .openapi({ 'x-objectArrayKey': 'expense_claims', required: [] })
+  .openapi('ExpenseClaims')
+
+const HistoryRecordSchema = z
+  .object({
+    Details: z.string().exactOptional().openapi({ description: 'details' }),
+    Changes: z.string().exactOptional().openapi({ description: 'Name of branding theme' }),
+    User: z.string().exactOptional().openapi({ description: 'has a value of 0' }),
+    DateUTC: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'UTC timestamp of creation date of branding theme',
+        'x-is-msdate-time': true,
+        example: '/Date(1573755038314)/',
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    externalDocs: { url: 'https://developer.xero.com/documentation/api/history-and-notes' },
+    required: [],
+  })
+  .openapi('HistoryRecord')
+
+const HistoryRecordsSchema = z
+  .object({ HistoryRecords: z.array(HistoryRecordSchema).exactOptional() })
+  .openapi({ 'x-objectArrayKey': 'history_records', required: [] })
+  .openapi('HistoryRecords')
+
+const InvoicesSchema: z.ZodType<InvoicesType> = z
+  .object({
+    pagination: PaginationSchema.exactOptional(),
+    Warnings: z
+      .array(ValidationErrorSchema)
+      .exactOptional()
+      .openapi({ description: 'Displays array of warning messages from the API' }),
+    Invoices: z.array(InvoiceSchema).exactOptional(),
+  })
+  .openapi({ 'x-objectArrayKey': 'invoices', required: [] })
+  .openapi('Invoices')
+
+const OnlineInvoiceSchema = z
+  .object({
+    OnlineInvoiceUrl: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'the URL to an online invoice' }),
+  })
+  .openapi({
+    externalDocs: { url: 'http://developer.xero.com/documentation/api/invoices/' },
+    required: [],
+  })
+  .openapi('OnlineInvoice')
+
+const OnlineInvoicesSchema = z
+  .object({ OnlineInvoices: z.array(OnlineInvoiceSchema).exactOptional() })
+  .openapi({ 'x-objectArrayKey': 'online_invoices', required: [] })
+  .openapi('OnlineInvoices')
+
+const InvoiceReminderSchema = z
+  .object({
+    Enabled: z.boolean().exactOptional().openapi({ description: 'setting for on or off' }),
+  })
+  .openapi({
+    externalDocs: { url: 'http://developer.xero.com/documentation/api/invoice-reminders/' },
+    required: [],
+  })
+  .openapi('InvoiceReminder')
+
+const InvoiceRemindersSchema = z
+  .object({ InvoiceReminders: z.array(InvoiceReminderSchema).exactOptional() })
+  .openapi({ 'x-objectArrayKey': 'invoice_reminders', required: [] })
+  .openapi('InvoiceReminders')
+
+const PurchaseSchema = z
+  .object({
+    UnitPrice: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description:
+          'Unit Price of the item. By default UnitPrice is rounded to two decimal places. You can use 4 decimal places by adding the unitdp=4 querystring parameter to your request.',
+        'x-is-money': true,
+      }),
+    AccountCode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Default account code to be used for purchased/sale. Not applicable to the purchase details of tracked items',
+      }),
+    COGSAccountCode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Cost of goods sold account. Only applicable to the purchase details of tracked items.',
+      }),
+    TaxType: z.string().exactOptional().openapi({ description: 'The tax type from TaxRates' }),
+  })
+  .openapi({
+    externalDocs: { url: 'http://developer.xero.com/documentation/api/items/' },
+    required: [],
+  })
+  .openapi('Purchase')
+
+const ItemSchema = z
+  .object({
+    Code: z.string().max(30).openapi({ description: 'User defined item code (max length = 30)' }),
+    InventoryAssetAccountCode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The inventory asset account for the item. The account must be of type INVENTORY. The  COGSAccountCode in PurchaseDetails is also required to create a tracked item',
+      }),
+    Name: z
+      .string()
+      .max(50)
+      .exactOptional()
+      .openapi({ description: 'The name of the item (max length = 50)' }),
+    IsSold: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Boolean value, defaults to true. When IsSold is true the item will be available on sales transactions in the Xero UI. If IsSold is updated to false then Description and SalesDetails values will be nulled.',
+      }),
+    IsPurchased: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Boolean value, defaults to true. When IsPurchased is true the item is available for purchase transactions in the Xero UI. If IsPurchased is updated to false then PurchaseDescription and PurchaseDetails values will be nulled.',
+      }),
+    Description: z
+      .string()
+      .max(4000)
+      .exactOptional()
+      .openapi({ description: 'The sales description of the item (max length = 4000)' }),
+    PurchaseDescription: z
+      .string()
+      .max(4000)
+      .exactOptional()
+      .openapi({ description: 'The purchase description of the item (max length = 4000)' }),
+    PurchaseDetails: PurchaseSchema.exactOptional(),
+    SalesDetails: PurchaseSchema.exactOptional(),
+    IsTrackedAsInventory: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'True for items that are tracked as inventory. An item will be tracked as inventory if the InventoryAssetAccountCode and COGSAccountCode are set.',
+      }),
+    TotalCostPool: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description: 'The value of the item on hand. Calculated using average cost accounting.',
+        'x-is-money': true,
+      }),
+    QuantityOnHand: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description:
+          'The quantity of the item on hand. This will be 0 if `QuantityOnBackOrder` is greater than 0.',
+        'x-is-money': true,
+      }),
+    QuantityAvailable: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description:
+          'The quantity of the item available. This is equal to `QuantityOnHand` - `QuantityOnBackOrder`. This value will be negative if `QuantityOnBackOrder` is greater than 0.',
+        readOnly: true,
+      }),
+    QuantityOnBackOrder: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description:
+          'The quantity of the item on backorder. This will be 0 if `QuantityOnHand` is greater than 0.',
+        readOnly: true,
+      }),
+    UpdatedDateUTC: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Last modified date in UTC format',
+        'x-is-msdate-time': true,
+        example: '/Date(1573755038314)/',
+        readOnly: true,
+      }),
+    ItemID: z.uuid().exactOptional().openapi({ description: 'The Xero identifier for an Item' }),
+    StatusAttributeString: z.string().exactOptional().openapi({ description: 'Status of object' }),
+    ValidationErrors: z
+      .array(ValidationErrorSchema)
+      .exactOptional()
+      .openapi({ description: 'Displays array of validation error messages from the API' }),
+  })
+  .openapi({
+    externalDocs: { url: 'http://developer.xero.com/documentation/api/items/' },
+    required: ['Code'],
+  })
+  .openapi('Item')
+
+const ItemsSchema = z
+  .object({ Items: z.array(ItemSchema).exactOptional() })
+  .openapi({ 'x-objectArrayKey': 'items', required: [] })
+  .openapi('Items')
+
+const JournalsSchema: z.ZodType<JournalsType> = z
+  .object({
+    Warnings: z
+      .array(ValidationErrorSchema)
+      .exactOptional()
+      .openapi({ description: 'Displays array of warning messages from the API' }),
+    Journals: z.array(JournalSchema).exactOptional(),
+  })
+  .openapi({ 'x-objectArrayKey': 'journals', required: [] })
+  .openapi('Journals')
+
+const LinkedTransactionSchema = z
+  .object({
+    SourceTransactionID: z
+      .uuid()
+      .exactOptional()
+      .openapi({
+        description:
+          'Filter by the SourceTransactionID. Get all the linked transactions created from a particular ACCPAY invoice',
+      }),
+    SourceLineItemID: z
+      .uuid()
+      .exactOptional()
+      .openapi({ description: 'The line item identifier from the source transaction.' }),
+    ContactID: z
+      .uuid()
+      .exactOptional()
+      .openapi({
+        description:
+          'Filter by the combination of ContactID and Status. Get all the linked transactions that have been assigned to a particular customer and have a particular status e.g. GET /LinkedTransactions?ContactID=4bb34b03-3378-4bb2-a0ed-6345abf3224e&Status=APPROVED.',
+      }),
+    TargetTransactionID: z
+      .uuid()
+      .exactOptional()
+      .openapi({
+        description:
+          'Filter by the TargetTransactionID. Get all the linked transactions  allocated to a particular ACCREC invoice',
+      }),
+    TargetLineItemID: z
+      .uuid()
+      .exactOptional()
+      .openapi({
+        description:
+          'The line item identifier from the target transaction. It is possible  to link multiple billable expenses to the same TargetLineItemID.',
+      }),
+    LinkedTransactionID: z
+      .uuid()
+      .exactOptional()
+      .openapi({
+        description:
+          'The Xero identifier for an Linked Transaction e.g./LinkedTransactions/297c2dc5-cc47-4afd-8ec8-74990b8761e9',
+      }),
+    Status: z
+      .enum(['APPROVED', 'DRAFT', 'ONDRAFT', 'BILLED', 'VOIDED'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Filter by the combination of ContactID and Status. Get all the linked transactions that have been assigned to a particular customer and have a particular status e.g. GET /LinkedTransactions?ContactID=4bb34b03-3378-4bb2-a0ed-6345abf3224e&Status=APPROVED.',
+      }),
+    Type: z
+      .literal('BILLABLEEXPENSE')
+      .exactOptional()
+      .openapi({
+        description: 'This will always be BILLABLEEXPENSE. More types may be added in future.',
+      }),
+    UpdatedDateUTC: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The last modified date in UTC format',
+        'x-is-msdate-time': true,
+        example: '/Date(1573755038314)/',
+        readOnly: true,
+      }),
+    SourceTransactionTypeCode: z
+      .enum(['ACCPAY', 'SPEND'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The Type of the source tranasction. This will be ACCPAY if the linked transaction was created from an invoice and SPEND if it was created from a bank transaction.',
+      }),
+    ValidationErrors: z
+      .array(ValidationErrorSchema)
+      .exactOptional()
+      .openapi({ description: 'Displays array of validation error messages from the API' }),
+  })
+  .openapi({
+    externalDocs: { url: 'http://developer.xero.com/documentation/api/linked-transactions/' },
+    required: [],
+  })
+  .openapi('LinkedTransaction')
+
+const LinkedTransactionsSchema = z
+  .object({ LinkedTransactions: z.array(LinkedTransactionSchema).exactOptional() })
+  .openapi({ 'x-objectArrayKey': 'linked_transactions', required: [] })
+  .openapi('LinkedTransactions')
+
+const ManualJournalsSchema: z.ZodType<ManualJournalsType> = z
+  .object({
+    pagination: PaginationSchema.exactOptional(),
+    Warnings: z
+      .array(ValidationErrorSchema)
+      .exactOptional()
+      .openapi({ description: 'Displays array of warning messages from the API' }),
+    ManualJournals: z.array(ManualJournalSchema).exactOptional(),
+  })
+  .openapi({ 'x-objectArrayKey': 'manual_journals', required: [] })
+  .openapi('ManualJournals')
+
+const ActionSchema = z
+  .object({
+    Name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Name of the actions for this organisation',
+        example: 'UseMulticurrency',
+      }),
+    Status: z
+      .enum(['ALLOWED', 'NOT-ALLOWED'])
+      .exactOptional()
+      .openapi({ description: 'Status of the action for this organisation' }),
+  })
+  .openapi({
+    externalDocs: { url: 'http://developer.xero.com/documentation/api/organisation/' },
+    required: [],
+  })
+  .openapi('Action')
+
+const ActionsSchema = z
+  .object({ Actions: z.array(ActionSchema).exactOptional() })
+  .openapi({ 'x-objectArrayKey': 'actions', required: [] })
+  .openapi('Actions')
 
 const CountryCodeSchema = z
   .enum([
@@ -3082,2198 +5121,261 @@ const TimeZoneSchema = z
   .openapi({ description: 'Timezone specifications' })
   .openapi('TimeZone')
 
-const AddressForOrganisationSchema = z
+const OrganisationSchema = z
   .object({
-    AddressType: z
-      .enum(['POBOX', 'STREET', 'DELIVERY'])
+    OrganisationID: z
+      .uuid()
       .exactOptional()
-      .openapi({ description: 'define the type of address' }),
-    AddressLine1: z.string().max(500).exactOptional().openapi({ description: 'max length = 500' }),
-    AddressLine2: z.string().max(500).exactOptional().openapi({ description: 'max length = 500' }),
-    AddressLine3: z.string().max(500).exactOptional().openapi({ description: 'max length = 500' }),
-    AddressLine4: z.string().max(500).exactOptional().openapi({ description: 'max length = 500' }),
-    City: z.string().max(255).exactOptional().openapi({ description: 'max length = 255' }),
-    Region: z.string().max(255).exactOptional().openapi({ description: 'max length = 255' }),
-    PostalCode: z.string().max(50).exactOptional().openapi({ description: 'max length = 50' }),
-    Country: z
-      .string()
-      .max(50)
-      .exactOptional()
-      .openapi({ description: 'max length = 50, [A-Z], [a-z] only' }),
-    AttentionTo: z.string().max(255).exactOptional().openapi({ description: 'max length = 255' }),
-  })
-  .openapi({
-    externalDocs: { url: 'http://developer.xero.com/documentation/api/types' },
-    required: [],
-  })
-  .openapi('AddressForOrganisation')
-
-const ExternalLinkSchema = z
-  .object({
-    LinkType: z
-      .enum(['Facebook', 'GooglePlus', 'LinkedIn', 'Twitter', 'Website'])
-      .exactOptional()
-      .openapi({ description: 'See External link types' }),
-    Url: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'URL for service e.g. http://twitter.com/xeroapi' }),
-    Description: z.string().exactOptional(),
-  })
-  .openapi({
-    externalDocs: { url: 'http://developer.xero.com/documentation/api/organisation/' },
-    required: [],
-  })
-  .openapi('ExternalLink')
-
-type OrganisationType = {
-  OrganisationID?: string
-  APIKey?: string
-  Name?: string
-  LegalName?: string
-  PaysTax?: boolean
-  Version?:
-    | 'AU'
-    | 'NZ'
-    | 'GLOBAL'
-    | 'UK'
-    | 'US'
-    | 'AUONRAMP'
-    | 'NZONRAMP'
-    | 'GLOBALONRAMP'
-    | 'UKONRAMP'
-    | 'USONRAMP'
-  OrganisationType?:
-    | 'ACCOUNTING_PRACTICE'
-    | 'COMPANY'
-    | 'CHARITY'
-    | 'CLUB_OR_SOCIETY'
-    | 'INDIVIDUAL'
-    | 'LOOK_THROUGH_COMPANY'
-    | 'NOT_FOR_PROFIT'
-    | 'PARTNERSHIP'
-    | 'S_CORPORATION'
-    | 'SELF_MANAGED_SUPERANNUATION_FUND'
-    | 'SOLE_TRADER'
-    | 'SUPERANNUATION_FUND'
-    | 'TRUST'
-    | 'PERSONAL'
-    | 'SINGLEMEMBERLLC'
-    | 'CCORPORATIONLLC'
-    | 'PARTNERSHIPLLC'
-    | 'SCORPORATIONLLC'
-    | 'LLC'
-    | 'NOTLLC'
-    | 'UNSPECIFIED'
-  BaseCurrency?: z.infer<typeof CurrencyCodeSchema>
-  CountryCode?: z.infer<typeof CountryCodeSchema>
-  IsDemoCompany?: boolean
-  OrganisationStatus?: string
-  RegistrationNumber?: string
-  EmployerIdentificationNumber?: string
-  TaxNumber?: string
-  FinancialYearEndDay?: number
-  FinancialYearEndMonth?: number
-  SalesTaxBasis?:
-    | 'PAYMENTS'
-    | 'INVOICE'
-    | 'NONE'
-    | 'CASH'
-    | 'ACCRUAL'
-    | 'FLATRATECASH'
-    | 'FLATRATEACCRUAL'
-    | 'ACCRUALS'
-  SalesTaxPeriod?:
-    | 'MONTHLY'
-    | 'QUARTERLY1'
-    | 'QUARTERLY2'
-    | 'QUARTERLY3'
-    | 'ANNUALLY'
-    | 'ONEMONTHS'
-    | 'TWOMONTHS'
-    | 'SIXMONTHS'
-    | '1MONTHLY'
-    | '2MONTHLY'
-    | '3MONTHLY'
-    | '6MONTHLY'
-    | 'QUARTERLY'
-    | 'YEARLY'
-    | 'NONE'
-  DefaultSalesTax?: string
-  DefaultPurchasesTax?: string
-  PeriodLockDate?: string
-  EndOfYearLockDate?: string
-  CreatedDateUTC?: string
-  Timezone?: z.infer<typeof TimeZoneSchema>
-  OrganisationEntityType?:
-    | 'ACCOUNTING_PRACTICE'
-    | 'COMPANY'
-    | 'CHARITY'
-    | 'CLUB_OR_SOCIETY'
-    | 'INDIVIDUAL'
-    | 'LOOK_THROUGH_COMPANY'
-    | 'NOT_FOR_PROFIT'
-    | 'PARTNERSHIP'
-    | 'S_CORPORATION'
-    | 'SELF_MANAGED_SUPERANNUATION_FUND'
-    | 'SOLE_TRADER'
-    | 'SUPERANNUATION_FUND'
-    | 'TRUST'
-    | 'PERSONAL'
-    | 'SINGLEMEMBERLLC'
-    | 'CCORPORATIONLLC'
-    | 'PARTNERSHIPLLC'
-    | 'SCORPORATIONLLC'
-    | 'LLC'
-    | 'NOTLLC'
-    | 'UNSPECIFIED'
-  ShortCode?: string
-  Class?:
-    | 'DEMO'
-    | 'TRIAL'
-    | 'STARTER'
-    | 'STANDARD'
-    | 'PREMIUM'
-    | 'PREMIUM_20'
-    | 'PREMIUM_50'
-    | 'PREMIUM_100'
-    | 'LEDGER'
-    | 'GST_CASHBOOK'
-    | 'NON_GST_CASHBOOK'
-    | 'ULTIMATE'
-    | 'LITE'
-    | 'ULTIMATE_10'
-    | 'ULTIMATE_20'
-    | 'ULTIMATE_50'
-    | 'ULTIMATE_100'
-    | 'IGNITE'
-    | 'GROW'
-    | 'COMPREHENSIVE'
-    | 'SIMPLE'
-    | 'BASICLITE'
-    | 'ULTRA'
-  Edition?: 'BUSINESS' | 'PARTNER'
-  LineOfBusiness?: string
-  Addresses?: z.infer<typeof AddressForOrganisationSchema>[]
-  Phones?: z.infer<typeof PhoneSchema>[]
-  ExternalLinks?: z.infer<typeof ExternalLinkSchema>[]
-  PaymentTerms?: z.infer<typeof PaymentTermSchema>
-}
-
-type OverpaymentType = {
-  Type?: 'RECEIVE-OVERPAYMENT' | 'SPEND-OVERPAYMENT' | 'AROVERPAYMENT'
-  Contact?: z.infer<typeof ContactSchema>
-  Date?: string
-  Status?: 'AUTHORISED' | 'PAID' | 'VOIDED'
-  LineAmountTypes?: z.infer<typeof LineAmountTypesSchema>
-  LineItems?: z.infer<typeof LineItemSchema>[]
-  SubTotal?: number
-  TotalTax?: number
-  Total?: number
-  UpdatedDateUTC?: string
-  UpdatedDateUTCString?: string
-  CurrencyCode?: z.infer<typeof CurrencyCodeSchema>
-  OverpaymentID?: string
-  CurrencyRate?: number
-  RemainingCredit?: number
-  Allocations?: z.infer<typeof AllocationSchema>[]
-  AppliedAmount?: number
-  Payments?: z.infer<typeof PaymentSchema>[]
-  HasAttachments?: boolean
-  Reference?: string
-  Attachments?: z.infer<typeof AttachmentSchema>[]
-}
-
-const BatchPaymentSchema: z.ZodType<BatchPaymentType> = z
-  .lazy(() =>
-    z
-      .object({
-        Account: AccountSchema.exactOptional(),
-        Reference: z
-          .string()
-          .max(255)
-          .exactOptional()
-          .openapi({
-            description:
-              '(NZ Only) Optional references for the batch payment transaction. It will also show with the batch payment transaction in the bank reconciliation Find & Match screen. Depending on your individual bank, the detail may also show on the bank statement you import into Xero.',
-          }),
-        Particulars: z
-          .string()
-          .max(12)
-          .exactOptional()
-          .openapi({
-            description:
-              '(NZ Only) Optional references for the batch payment transaction. It will also show with the batch payment transaction in the bank reconciliation Find & Match screen. Depending on your individual bank, the detail may also show on the bank statement you import into Xero.',
-          }),
-        Code: z
-          .string()
-          .max(12)
-          .exactOptional()
-          .openapi({
-            description:
-              '(NZ Only) Optional references for the batch payment transaction. It will also show with the batch payment transaction in the bank reconciliation Find & Match screen. Depending on your individual bank, the detail may also show on the bank statement you import into Xero.',
-          }),
-        Details: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              '(Non-NZ Only) These details are sent to the org’s bank as a reference for the batch payment transaction. They will also show with the batch payment transaction in the bank reconciliation Find & Match screen. Depending on your individual bank, the detail may also show on the bank statement imported into Xero. Maximum field length = 18',
-          }),
-        Narrative: z
-          .string()
-          .max(18)
-          .exactOptional()
-          .openapi({
-            description: '(UK Only) Only shows on the statement line in Xero. Max length =18',
-          }),
-        BatchPaymentID: z
-          .uuid()
-          .exactOptional()
-          .openapi({
-            description:
-              'The Xero generated unique identifier for the bank transaction (read-only)',
-            readOnly: true,
-          }),
-        DateString: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Date the payment is being made (YYYY-MM-DD) e.g. 2009-09-06' }),
-        Date: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'Date the payment is being made (YYYY-MM-DD) e.g. 2009-09-06',
-            'x-is-msdate': true,
-          }),
-        Amount: z
-          .float64()
-          .exactOptional()
-          .openapi({
-            description:
-              'The amount of the payment. Must be less than or equal to the outstanding amount owing on the invoice e.g. 200.00',
-            'x-is-money': true,
-          }),
-        Payments: z
-          .array(PaymentSchema)
-          .exactOptional()
-          .openapi({ description: 'An array of payments' }),
-        Type: z
-          .enum(['PAYBATCH', 'RECBATCH'])
-          .exactOptional()
-          .openapi({
-            description:
-              'PAYBATCH for bill payments or RECBATCH for sales invoice payments (read-only)',
-            readOnly: true,
-          }),
-        Status: z
-          .enum(['AUTHORISED', 'DELETED'])
-          .exactOptional()
-          .openapi({
-            description:
-              'AUTHORISED or DELETED (read-only). New batch payments will have a status of AUTHORISED. It is not possible to delete batch payments via the API.',
-            readOnly: true,
-          }),
-        TotalAmount: z
-          .float64()
-          .exactOptional()
-          .openapi({
-            description: 'The total of the payments that make up the batch (read-only)',
-            'x-is-money': true,
-            readOnly: true,
-          }),
-        UpdatedDateUTC: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'UTC timestamp of last update to the payment',
-            'x-is-msdate-time': true,
-            example: '/Date(1573755038314)/',
-            readOnly: true,
-          }),
-        IsReconciled: z
-          .boolean()
-          .exactOptional()
-          .openapi({
-            description:
-              'Booelan that tells you if the batch payment has been reconciled (read-only)',
-            readOnly: true,
-          }),
-        ValidationErrors: z
-          .array(ValidationErrorSchema)
-          .exactOptional()
-          .openapi({ description: 'Displays array of validation error messages from the API' }),
-      })
       .openapi({
-        externalDocs: { url: 'http://developer.xero.com/documentation/api/BatchPayments/' },
-        required: [],
+        description: 'Unique Xero identifier',
+        example: '8be9db36-3598-4755-ba5c-c2dbc8c4a7a2',
       }),
-  )
-  .openapi('BatchPayment')
-
-type PaymentType = {
-  Invoice?: z.infer<typeof InvoiceSchema>
-  CreditNote?: z.infer<typeof CreditNoteSchema>
-  Prepayment?: z.infer<typeof PrepaymentSchema>
-  Overpayment?: z.infer<typeof OverpaymentSchema>
-  InvoiceNumber?: string
-  CreditNoteNumber?: string
-  BatchPayment?: z.infer<typeof BatchPaymentSchema>
-  Account?: z.infer<typeof AccountSchema>
-  Code?: string
-  Date?: string
-  CurrencyRate?: number
-  Amount?: number
-  BankAmount?: number
-  Reference?: string
-  IsReconciled?: boolean
-  Status?: 'AUTHORISED' | 'DELETED'
-  PaymentType?:
-    | 'ACCRECPAYMENT'
-    | 'ACCPAYPAYMENT'
-    | 'ARCREDITPAYMENT'
-    | 'APCREDITPAYMENT'
-    | 'AROVERPAYMENTPAYMENT'
-    | 'ARPREPAYMENTPAYMENT'
-    | 'APPREPAYMENTPAYMENT'
-    | 'APOVERPAYMENTPAYMENT'
-  UpdatedDateUTC?: string
-  UpdatedDateUTCString?: string
-  PaymentID?: string
-  BatchPaymentID?: string
-  BankAccountNumber?: string
-  Particulars?: string
-  Details?: string
-  HasAccount?: boolean
-  HasValidationErrors?: boolean
-  StatusAttributeString?: string
-  ValidationErrors?: z.infer<typeof ValidationErrorSchema>[]
-  Warnings?: z.infer<typeof ValidationErrorSchema>[]
-}
-
-type PrepaymentType = {
-  Type?: 'RECEIVE-PREPAYMENT' | 'SPEND-PREPAYMENT' | 'ARPREPAYMENT' | 'APPREPAYMENT'
-  Contact?: z.infer<typeof ContactSchema>
-  Date?: string
-  Status?: 'AUTHORISED' | 'PAID' | 'VOIDED'
-  LineAmountTypes?: z.infer<typeof LineAmountTypesSchema>
-  LineItems?: z.infer<typeof LineItemSchema>[]
-  SubTotal?: number
-  TotalTax?: number
-  Total?: number
-  Reference?: string
-  InvoiceNumber?: string
-  UpdatedDateUTC?: string
-  UpdatedDateUTCString?: string
-  CurrencyCode?: z.infer<typeof CurrencyCodeSchema>
-  PrepaymentID?: string
-  BrandingThemeID?: string
-  CurrencyRate?: number
-  RemainingCredit?: number
-  Allocations?: z.infer<typeof AllocationSchema>[]
-  Payments?: z.infer<typeof PaymentSchema>[]
-  AppliedAmount?: number
-  HasAttachments?: boolean
-  Attachments?: z.infer<typeof AttachmentSchema>[]
-}
-
-const AccountsSchema = z
-  .object({ Accounts: z.array(AccountSchema).exactOptional() })
-  .openapi({ 'x-objectArrayKey': 'accounts', required: [] })
-  .openapi('Accounts')
-
-const AttachmentsSchema = z
-  .object({ Attachments: z.array(AttachmentSchema).exactOptional() })
-  .openapi({ 'x-objectArrayKey': 'attachments', required: [] })
-  .openapi('Attachments')
-
-const PaginationSchema = z
-  .object({
-    page: z.int().exactOptional(),
-    pageSize: z.int().exactOptional(),
-    pageCount: z.int().exactOptional(),
-    itemCount: z.int().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('Pagination')
-
-const BankTransactionSchema = z
-  .object({
-    Type: z
+    APIKey: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Display a unique key used for Xero-to-Xero transactions' }),
+    Name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Display name of organisation shown in Xero' }),
+    LegalName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Organisation name shown on Reports' }),
+    PaysTax: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Boolean to describe if organisation is registered with a local tax authority i.e. true, false',
+      }),
+    Version: z
       .enum([
-        'RECEIVE',
-        'RECEIVE-OVERPAYMENT',
-        'RECEIVE-PREPAYMENT',
-        'SPEND',
-        'SPEND-OVERPAYMENT',
-        'SPEND-PREPAYMENT',
-        'RECEIVE-TRANSFER',
-        'SPEND-TRANSFER',
-      ])
-      .openapi({ description: 'See Bank Transaction Types' }),
-    Contact: ContactSchema.exactOptional(),
-    LineItems: z.array(LineItemSchema).openapi({ description: 'See LineItems' }),
-    BankAccount: AccountSchema,
-    IsReconciled: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Boolean to show if transaction is reconciled' }),
-    Date: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Date of transaction – YYYY-MM-DD', 'x-is-msdate': true }),
-    Reference: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Reference for the transaction. Only supported for SPEND and RECEIVE transactions.',
-      }),
-    CurrencyCode: CurrencyCodeSchema.exactOptional(),
-    CurrencyRate: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description:
-          'Exchange rate to base currency when money is spent or received. e.g.0.7500 Only used for bank transactions in non base currency. If this isn’t specified for non base currency accounts then either the user-defined rate (preference) or the XE.com day rate will be used. Setting currency is only supported on overpayments.',
-        'x-is-money': true,
-      }),
-    Url: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'URL link to a source document – shown as “Go to App Name”' }),
-    Status: z
-      .enum(['AUTHORISED', 'DELETED', 'VOIDED'])
-      .exactOptional()
-      .openapi({ description: 'See Bank Transaction Status Codes' }),
-    LineAmountTypes: LineAmountTypesSchema.exactOptional(),
-    SubTotal: z
-      .float64()
-      .exactOptional()
-      .openapi({ description: 'Total of bank transaction excluding taxes', 'x-is-money': true }),
-    TotalTax: z
-      .float64()
-      .exactOptional()
-      .openapi({ description: 'Total tax on bank transaction', 'x-is-money': true }),
-    Total: z
-      .float64()
-      .exactOptional()
-      .openapi({ description: 'Total of bank transaction tax inclusive', 'x-is-money': true }),
-    BankTransactionID: z
-      .uuid()
-      .exactOptional()
-      .openapi({
-        description: 'Xero generated unique identifier for bank transaction',
-        example: '00000000-0000-0000-0000-000000000000',
-      }),
-    PrepaymentID: z
-      .uuid()
-      .exactOptional()
-      .openapi({
-        description:
-          'Xero generated unique identifier for a Prepayment. This will be returned on BankTransactions with a Type of SPEND-PREPAYMENT or RECEIVE-PREPAYMENT',
-        readOnly: true,
-        example: '00000000-0000-0000-0000-000000000000',
-      }),
-    OverpaymentID: z
-      .uuid()
-      .exactOptional()
-      .openapi({
-        description:
-          'Xero generated unique identifier for an Overpayment. This will be returned on BankTransactions with a Type of SPEND-OVERPAYMENT or RECEIVE-OVERPAYMENT',
-        readOnly: true,
-        example: '00000000-0000-0000-0000-000000000000',
-      }),
-    UpdatedDateUTC: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Last modified date UTC format',
-        'x-is-msdate-time': true,
-        example: '/Date(1573755038314)/',
-        readOnly: true,
-      }),
-    HasAttachments: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({
-        description: 'Boolean to indicate if a bank transaction has an attachment',
-        readOnly: true,
-        example: 'false',
-      }),
-    StatusAttributeString: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'A string to indicate if a invoice status' }),
-    ValidationErrors: z
-      .array(ValidationErrorSchema)
-      .exactOptional()
-      .openapi({ description: 'Displays array of validation error messages from the API' }),
-  })
-  .openapi({
-    externalDocs: { url: 'http://developer.xero.com/documentation/api/banktransactions/' },
-    required: ['Type', 'LineItems', 'BankAccount'],
-  })
-  .openapi('BankTransaction')
-
-const BankTransactionsSchema = z
-  .object({
-    pagination: PaginationSchema.exactOptional(),
-    Warnings: z
-      .array(ValidationErrorSchema)
-      .exactOptional()
-      .openapi({ description: 'Displays array of warning messages from the API' }),
-    BankTransactions: z.array(BankTransactionSchema).exactOptional(),
-  })
-  .openapi({ 'x-objectArrayKey': 'bank_transactions', required: [] })
-  .openapi('BankTransactions')
-
-const TrackingReferenceSchema = z
-  .object({
-    TrackingCategoryID: z
-      .uuid()
-      .openapi({ description: 'The Xero identifier for a tracking category' }),
-    TrackingOptionID: z
-      .uuid()
-      .openapi({ description: 'The Xero identifier for a tracking category option' }),
-    Name: z
-      .string()
-      .max(100)
-      .exactOptional()
-      .openapi({ description: 'The name of the tracking category', readOnly: true }),
-    Option: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'See Tracking Options', readOnly: true }),
-  })
-  .openapi({
-    externalDocs: { url: 'http://developer.xero.com/documentation/api/tracking-categories/' },
-    required: ['TrackingCategoryID', 'TrackingOptionID'],
-  })
-  .openapi('TrackingReference')
-
-const BankTransferSchema = z
-  .object({
-    FromBankAccount: AccountSchema,
-    ToBankAccount: AccountSchema,
-    Amount: z.float64().openapi({ description: 'amount of the transaction', 'x-is-money': true }),
-    Date: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The date of the Transfer YYYY-MM-DD', 'x-is-msdate': true }),
-    BankTransferID: z
-      .uuid()
-      .exactOptional()
-      .openapi({ description: 'The identifier of the Bank Transfer', readOnly: true }),
-    CurrencyRate: z
-      .float64()
-      .exactOptional()
-      .openapi({ description: 'The currency rate', readOnly: true, 'x-is-money': true }),
-    FromBankTransactionID: z
-      .uuid()
-      .exactOptional()
-      .openapi({ description: 'The Bank Transaction ID for the source account', readOnly: true }),
-    ToBankTransactionID: z
-      .uuid()
-      .exactOptional()
-      .openapi({
-        description: 'The Bank Transaction ID for the destination account',
-        readOnly: true,
-      }),
-    FromIsReconciled: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({
-        description:
-          'The Bank Transaction boolean to show if it is reconciled for the source account',
-        example: 'false',
-      }),
-    ToIsReconciled: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({
-        description:
-          'The Bank Transaction boolean to show if it is reconciled for the destination account',
-        example: 'false',
-      }),
-    Reference: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Reference for the transactions.' }),
-    HasAttachments: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({
-        description: 'Boolean to indicate if a Bank Transfer has an attachment',
-        readOnly: true,
-        example: 'false',
-      }),
-    CreatedDateUTC: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'UTC timestamp of creation date of bank transfer',
-        'x-is-msdate-time': true,
-        example: '/Date(1573755038314)/',
-        readOnly: true,
-      }),
-    Status: z
-      .enum(['AUTHORISED', 'DELETED'])
-      .exactOptional()
-      .openapi({
-        description:
-          'AUTHORISED or DELETED (read-only). New bank transfers will have a status of AUTHORISED.',
-        readOnly: true,
-      }),
-    FromTracking: z
-      .array(TrackingReferenceSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional Tracking Category for the source account – see Tracking. A bank transfer can have a maximum of 2 tracking categories per account.',
-      }),
-    ToTracking: z
-      .array(TrackingReferenceSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional Tracking Category for the destination account – see Tracking. A bank transfer can have a maximum of 2 tracking categories per account.',
-      }),
-    ValidationErrors: z
-      .array(ValidationErrorSchema)
-      .exactOptional()
-      .openapi({ description: 'Displays array of validation error messages from the API' }),
-  })
-  .openapi({
-    externalDocs: { url: 'http://developer.xero.com/documentation/api/bank-transfers/' },
-    required: ['FromBankAccount', 'ToBankAccount', 'Amount'],
-  })
-  .openapi('BankTransfer')
-
-const BankTransfersSchema = z
-  .object({ BankTransfers: z.array(BankTransferSchema).exactOptional() })
-  .openapi({ 'x-objectArrayKey': 'bank_transfers', required: [] })
-  .openapi('BankTransfers')
-
-const BankTransferDeleteSchema = z
-  .object({
-    BankTransferID: z.uuid().openapi({ description: 'The Xero identifier for a bank transfer' }),
-    Status: z
-      .string()
-      .default('DELETED')
-      .openapi({ description: 'The status of the bank transfer.' }),
-  })
-  .openapi({
-    externalDocs: { url: 'http://developer.xero.com/documentation/api/bank-transfers/' },
-    required: ['Status', 'BankTransferID'],
-  })
-  .openapi('BankTransferDelete')
-
-const BankTransferDeleteByUrlParamSchema = z
-  .object({
-    Status: z
-      .string()
-      .default('DELETED')
-      .openapi({ description: 'The status of the bank transfer.' }),
-  })
-  .openapi({
-    externalDocs: { url: 'http://developer.xero.com/documentation/api/bank-transfers/' },
-    required: ['Status'],
-  })
-  .openapi('BankTransferDeleteByUrlParam')
-
-const BankTransfersDeleteSchema = z
-  .object({ BankTransfers: z.array(BankTransferDeleteSchema).exactOptional() })
-  .openapi({ 'x-objectArrayKey': 'bank_transfers', required: [] })
-  .openapi('BankTransfersDelete')
-
-const BatchPaymentsSchema = z
-  .object({ BatchPayments: z.array(BatchPaymentSchema).exactOptional() })
-  .openapi({ 'x-objectArrayKey': 'batch_payments', required: [] })
-  .openapi('BatchPayments')
-
-const BatchPaymentDeleteSchema = z
-  .object({
-    BatchPaymentID: z
-      .uuid()
-      .openapi({
-        description: 'The Xero generated unique identifier for the bank transaction (read-only)',
-      }),
-    Status: z
-      .string()
-      .default('DELETED')
-      .openapi({ description: 'The status of the batch payment.' }),
-  })
-  .openapi({
-    externalDocs: { url: 'http://developer.xero.com/documentation/api/accounting/batchpayments' },
-    required: ['Status', 'BatchPaymentID'],
-  })
-  .openapi('BatchPaymentDelete')
-
-const BatchPaymentDeleteByUrlParamSchema = z
-  .object({
-    Status: z
-      .string()
-      .default('DELETED')
-      .openapi({ description: 'The status of the batch payment.' }),
-  })
-  .openapi({
-    externalDocs: { url: 'http://developer.xero.com/documentation/api/accounting/batchpayments' },
-    required: ['Status'],
-  })
-  .openapi('BatchPaymentDeleteByUrlParam')
-
-const BrandingThemesSchema = z
-  .object({ BrandingThemes: z.array(BrandingThemeSchema).exactOptional() })
-  .openapi({ 'x-objectArrayKey': 'branding_themes', required: [] })
-  .openapi('BrandingThemes')
-
-const PaymentServiceSchema = z
-  .object({
-    PaymentServiceID: z.uuid().exactOptional().openapi({ description: 'Xero identifier' }),
-    PaymentServiceName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Name of payment service' }),
-    PaymentServiceUrl: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The custom payment URL' }),
-    PayNowText: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The text displayed on the Pay Now button in Xero Online Invoicing. If this is not set it will default to Pay by credit card',
-      }),
-    PaymentServiceType: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'This will always be CUSTOM for payment services created via the API.',
-      }),
-    ValidationErrors: z
-      .array(ValidationErrorSchema)
-      .exactOptional()
-      .openapi({ description: 'Displays array of validation error messages from the API' }),
-  })
-  .openapi({
-    externalDocs: { url: 'http://developer.xero.com/documentation/api/branding-themes/' },
-    required: [],
-  })
-  .openapi('PaymentService')
-
-const PaymentServicesSchema = z
-  .object({ PaymentServices: z.array(PaymentServiceSchema).exactOptional() })
-  .openapi({ 'x-objectArrayKey': 'payment_services', required: [] })
-  .openapi('PaymentServices')
-
-const ContactsSchema = z
-  .object({
-    pagination: PaginationSchema.exactOptional(),
-    Warnings: z
-      .array(ValidationErrorSchema)
-      .exactOptional()
-      .openapi({ description: 'Displays array of warning messages from the API' }),
-    Contacts: z.array(ContactSchema).exactOptional(),
-  })
-  .openapi({ 'x-objectArrayKey': 'contacts', required: [] })
-  .openapi('Contacts')
-
-const BudgetBalanceSchema = z
-  .object({
-    Period: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Period the amount applies to (e.g. “2019-08”)',
-        'x-is-msdate': true,
-      }),
-    Amount: z
-      .float64()
-      .exactOptional()
-      .openapi({ description: 'LineItem Quantity', 'x-is-money': true }),
-    UnitAmount: z
-      .float64()
-      .exactOptional()
-      .openapi({ description: 'Budgeted amount', 'x-is-money': true }),
-    Notes: z
-      .string()
-      .max(255)
-      .exactOptional()
-      .openapi({ description: 'Any footnotes associated with this balance' }),
-  })
-  .openapi({ required: [] })
-  .openapi('BudgetBalance')
-
-const BudgetLineSchema = z
-  .object({
-    AccountID: z.uuid().exactOptional().openapi({ description: 'See Accounts' }),
-    AccountCode: z.string().exactOptional().openapi({ description: 'See Accounts', example: 90 }),
-    BudgetBalances: z.array(BudgetBalanceSchema).exactOptional(),
-  })
-  .openapi({
-    externalDocs: { url: 'http://developer.xero.com/documentation/api/budgets/' },
-    required: [],
-  })
-  .openapi('BudgetLine')
-
-const TrackingOptionSchema = z
-  .object({
-    TrackingOptionID: z
-      .uuid()
-      .exactOptional()
-      .openapi({
-        description:
-          'The Xero identifier for a tracking option e.g. ae777a87-5ef3-4fa0-a4f0-d10e1f13073a',
-      }),
-    Name: z
-      .string()
-      .max(100)
-      .exactOptional()
-      .openapi({
-        description: 'The name of the tracking option e.g. Marketing, East (max length = 100)',
-      }),
-    Status: z
-      .enum(['ACTIVE', 'ARCHIVED', 'DELETED'])
-      .exactOptional()
-      .openapi({ description: 'The status of a tracking option' }),
-    TrackingCategoryID: z
-      .uuid()
-      .exactOptional()
-      .openapi({
-        description: 'Filter by a tracking category e.g. 297c2dc5-cc47-4afd-8ec8-74990b8761e9',
-      }),
-  })
-  .openapi({
-    externalDocs: { url: 'http://developer.xero.com/documentation/api/tracking-categories/' },
-    required: [],
-  })
-  .openapi('TrackingOption')
-
-const TrackingCategorySchema = z
-  .object({
-    TrackingCategoryID: z
-      .uuid()
-      .exactOptional()
-      .openapi({
-        description:
-          'The Xero identifier for a tracking category e.g. 297c2dc5-cc47-4afd-8ec8-74990b8761e9',
-      }),
-    TrackingOptionID: z
-      .uuid()
-      .exactOptional()
-      .openapi({
-        description:
-          'The Xero identifier for a tracking option e.g. dc54c220-0140-495a-b925-3246adc0075f',
-      }),
-    Name: z
-      .string()
-      .max(100)
-      .exactOptional()
-      .openapi({
-        description: 'The name of the tracking category e.g. Department, Region (max length = 100)',
-      }),
-    Option: z
-      .string()
-      .max(100)
-      .exactOptional()
-      .openapi({
-        description: 'The option name of the tracking option e.g. East, West (max length = 100)',
-      }),
-    Status: z
-      .enum(['ACTIVE', 'ARCHIVED', 'DELETED'])
-      .exactOptional()
-      .openapi({ description: 'The status of a tracking category' }),
-    Options: z
-      .array(TrackingOptionSchema)
-      .exactOptional()
-      .openapi({ description: 'See Tracking Options' }),
-  })
-  .openapi({
-    externalDocs: { url: 'http://developer.xero.com/documentation/api/tracking-categories/' },
-    required: [],
-  })
-  .openapi('TrackingCategory')
-
-const BudgetSchema = z
-  .object({
-    BudgetID: z.uuid().exactOptional().openapi({ description: 'Xero identifier' }),
-    Type: z
-      .enum(['OVERALL', 'TRACKING'])
-      .exactOptional()
-      .openapi({ description: 'Type of Budget. OVERALL or TRACKING' }),
-    Description: z
-      .string()
-      .max(255)
-      .exactOptional()
-      .openapi({ description: 'The Budget description' }),
-    UpdatedDateUTC: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'UTC timestamp of last update to budget',
-        'x-is-msdate-time': true,
-        example: '/Date(1573755038314)/',
-        readOnly: true,
-      }),
-    BudgetLines: z.array(BudgetLineSchema).exactOptional(),
-    Tracking: z.array(TrackingCategorySchema).exactOptional(),
-  })
-  .openapi({
-    externalDocs: { url: 'http://developer.xero.com/documentation/api/budgets/' },
-    required: [],
-  })
-  .openapi('Budget')
-
-const BudgetsSchema = z
-  .object({ Budgets: z.array(BudgetSchema).exactOptional() })
-  .openapi({ 'x-objectArrayKey': 'budgets', required: [] })
-  .openapi('Budgets')
-
-const CISSettingSchema = z
-  .object({
-    CISEnabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Boolean that describes if the contact is a CIS Subcontractor' }),
-    Rate: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description:
-          'CIS Deduction rate for the contact if he is a subcontractor. If the contact is not CISEnabled, then the rate is not returned',
-        readOnly: true,
-        'x-is-money': true,
-      }),
-  })
-  .openapi({
-    externalDocs: { url: 'http://developer.xero.com/documentation/api/contacts/' },
-    required: [],
-  })
-  .openapi('CISSetting')
-
-const CISSettingsSchema = z
-  .object({ CISSettings: z.array(CISSettingSchema).exactOptional() })
-  .openapi({ 'x-objectArrayKey': 'cis_settings', required: [] })
-  .openapi('CISSettings')
-
-const CISOrgSettingSchema = z
-  .object({
-    CISContractorEnabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'true or false - Boolean that describes if the organisation is a CIS Contractor',
-      }),
-    CISSubContractorEnabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'true or false - Boolean that describes if the organisation is a CIS SubContractor',
-      }),
-    Rate: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description: 'CIS Deduction rate for the organisation',
-        readOnly: true,
-        'x-is-money': true,
-      }),
-  })
-  .openapi({
-    externalDocs: { url: 'https://developer.xero.com/documentation/api/organisation' },
-    required: [],
-  })
-  .openapi('CISOrgSetting')
-
-const CISOrgSettingsSchema = z
-  .object({ CISSettings: z.array(CISOrgSettingSchema).exactOptional() })
-  .openapi({ 'x-objectArrayKey': 'cis_settings', required: [] })
-  .openapi('CISOrgSettings')
-
-const ContactGroupsSchema = z
-  .object({ ContactGroups: z.array(ContactGroupSchema).exactOptional() })
-  .openapi({ 'x-objectArrayKey': 'contact_groups', required: [] })
-  .openapi('ContactGroups')
-
-const RequestEmptySchema = z
-  .object({
-    Status: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Need at least one field to create an empty JSON payload' }),
-  })
-  .openapi({
-    externalDocs: { url: 'http://developer.xero.com/documentation/api/invoice/' },
-    required: [],
-  })
-  .openapi('RequestEmpty')
-
-const CreditNotesSchema = z
-  .object({
-    pagination: PaginationSchema.exactOptional(),
-    Warnings: z
-      .array(ValidationErrorSchema)
-      .exactOptional()
-      .openapi({ description: 'Displays array of warning messages from the API' }),
-    CreditNotes: z.array(CreditNoteSchema).exactOptional(),
-  })
-  .openapi({ 'x-objectArrayKey': 'credit_notes', required: [] })
-  .openapi('CreditNotes')
-
-const AllocationsSchema = z
-  .object({ Allocations: z.array(AllocationSchema).exactOptional() })
-  .openapi({ 'x-objectArrayKey': 'allocations', required: [] })
-  .openapi('Allocations')
-
-const CurrencySchema = z
-  .object({
-    Code: CurrencyCodeSchema.exactOptional(),
-    Description: z.string().exactOptional().openapi({ description: 'Name of Currency' }),
-  })
-  .openapi({
-    externalDocs: { url: 'http://developer.xero.com/documentation/api/currencies/' },
-    required: [],
-  })
-  .openapi('Currency')
-
-const CurrenciesSchema = z
-  .object({ Currencies: z.array(CurrencySchema).exactOptional() })
-  .openapi({ 'x-objectArrayKey': 'currencies', required: [] })
-  .openapi('Currencies')
-
-const EmployeeSchema = z
-  .object({
-    EmployeeID: z
-      .uuid()
-      .exactOptional()
-      .openapi({
-        description:
-          'The Xero identifier for an employee e.g. 297c2dc5-cc47-4afd-8ec8-74990b8761e9',
-      }),
-    Status: z
-      .enum(['ACTIVE', 'ARCHIVED', 'GDPRREQUEST', 'DELETED'])
-      .exactOptional()
-      .openapi({ description: 'Current status of an employee – see contact status types' }),
-    FirstName: z
-      .string()
-      .max(255)
-      .exactOptional()
-      .openapi({ description: 'First name of an employee (max length = 255)' }),
-    LastName: z
-      .string()
-      .max(255)
-      .exactOptional()
-      .openapi({ description: 'Last name of an employee (max length = 255)' }),
-    ExternalLink: ExternalLinkSchema.exactOptional(),
-    UpdatedDateUTC: z
-      .string()
-      .exactOptional()
-      .openapi({ 'x-is-msdate-time': true, example: '/Date(1573755038314)/', readOnly: true }),
-    StatusAttributeString: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'A string to indicate if a invoice status', example: 'ERROR' }),
-    ValidationErrors: z
-      .array(ValidationErrorSchema)
-      .exactOptional()
-      .openapi({ description: 'Displays array of validation error messages from the API' }),
-  })
-  .openapi({
-    externalDocs: { url: 'http://developer.xero.com/documentation/api/employees/' },
-    required: [],
-  })
-  .openapi('Employee')
-
-const EmployeesSchema = z
-  .object({ Employees: z.array(EmployeeSchema).exactOptional() })
-  .openapi({ 'x-objectArrayKey': 'employees', required: [] })
-  .openapi('Employees')
-
-const UserSchema = z
-  .object({
-    UserID: z.uuid().exactOptional().openapi({ description: 'Xero identifier' }),
-    EmailAddress: z.string().exactOptional().openapi({ description: 'Email address of user' }),
-    FirstName: z.string().exactOptional().openapi({ description: 'First name of user' }),
-    LastName: z.string().exactOptional().openapi({ description: 'Last name of user' }),
-    UpdatedDateUTC: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Timestamp of last change to user',
-        'x-is-msdate-time': true,
-        example: '/Date(1573755038314)/',
-        readOnly: true,
-      }),
-    IsSubscriber: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Boolean to indicate if user is the subscriber' }),
-    OrganisationRole: z
-      .enum([
-        'READONLY',
-        'INVOICEONLY',
-        'STANDARD',
-        'FINANCIALADVISER',
-        'MANAGEDCLIENT',
-        'CASHBOOKCLIENT',
-        'UNKNOWN',
-        'REMOVED',
+        'AU',
+        'NZ',
+        'GLOBAL',
+        'UK',
+        'US',
+        'AUONRAMP',
+        'NZONRAMP',
+        'GLOBALONRAMP',
+        'UKONRAMP',
+        'USONRAMP',
       ])
       .exactOptional()
-      .openapi({
-        description:
-          'User role that defines permissions in Xero and via API (READONLY, INVOICEONLY, STANDARD, FINANCIALADVISER, etc)',
-      }),
-  })
-  .openapi({
-    externalDocs: { url: 'http://developer.xero.com/documentation/api/users/' },
-    required: [],
-  })
-  .openapi('User')
-
-const ReceiptSchema = z
-  .object({
-    Date: z
-      .string()
+      .openapi({ description: 'See Version Types' }),
+    OrganisationType: z
+      .enum([
+        'ACCOUNTING_PRACTICE',
+        'COMPANY',
+        'CHARITY',
+        'CLUB_OR_SOCIETY',
+        'INDIVIDUAL',
+        'LOOK_THROUGH_COMPANY',
+        'NOT_FOR_PROFIT',
+        'PARTNERSHIP',
+        'S_CORPORATION',
+        'SELF_MANAGED_SUPERANNUATION_FUND',
+        'SOLE_TRADER',
+        'SUPERANNUATION_FUND',
+        'TRUST',
+        'PERSONAL',
+        'SINGLEMEMBERLLC',
+        'CCORPORATIONLLC',
+        'PARTNERSHIPLLC',
+        'SCORPORATIONLLC',
+        'LLC',
+        'NOTLLC',
+        'UNSPECIFIED',
+      ])
       .exactOptional()
-      .openapi({ description: 'Date of receipt – YYYY-MM-DD', 'x-is-msdate': true }),
-    Contact: ContactSchema.exactOptional(),
-    LineItems: z.array(LineItemSchema).exactOptional(),
-    User: UserSchema.exactOptional(),
-    Reference: z.string().exactOptional().openapi({ description: 'Additional reference number' }),
-    LineAmountTypes: LineAmountTypesSchema.exactOptional(),
-    SubTotal: z
-      .float64()
-      .exactOptional()
-      .openapi({ description: 'Total of receipt excluding taxes', 'x-is-money': true }),
-    TotalTax: z
-      .float64()
-      .exactOptional()
-      .openapi({ description: 'Total tax on receipt', 'x-is-money': true }),
-    Total: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description: 'Total of receipt tax inclusive (i.e. SubTotal + TotalTax)',
-        'x-is-money': true,
-      }),
-    ReceiptID: z
-      .uuid()
-      .exactOptional()
-      .openapi({ description: 'Xero generated unique identifier for receipt' }),
-    Status: z
-      .enum(['DRAFT', 'SUBMITTED', 'AUTHORISED', 'DECLINED', 'VOIDED'])
-      .exactOptional()
-      .openapi({ description: 'Current status of receipt – see status types' }),
-    ReceiptNumber: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Xero generated sequence number for receipt in current claim for a given user',
-        readOnly: true,
-      }),
-    UpdatedDateUTC: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Last modified date UTC format',
-        'x-is-msdate-time': true,
-        example: '/Date(1573755038314)/',
-        readOnly: true,
-      }),
-    HasAttachments: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({
-        description: 'boolean to indicate if a receipt has an attachment',
-        readOnly: true,
-        example: 'false',
-      }),
-    Url: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'URL link to a source document – shown as “Go to [appName]” in the Xero app',
-        readOnly: true,
-      }),
-    ValidationErrors: z
-      .array(ValidationErrorSchema)
-      .exactOptional()
-      .openapi({ description: 'Displays array of validation error messages from the API' }),
-    Warnings: z
-      .array(ValidationErrorSchema)
-      .exactOptional()
-      .openapi({ description: 'Displays array of warning messages from the API' }),
-    Attachments: z
-      .array(AttachmentSchema)
-      .exactOptional()
-      .openapi({ description: 'Displays array of attachments from the API' }),
-  })
-  .openapi({
-    externalDocs: { url: 'http://developer.xero.com/documentation/api/receipts/' },
-    required: [],
-  })
-  .openapi('Receipt')
-
-const ExpenseClaimSchema = z
-  .object({
-    ExpenseClaimID: z
-      .uuid()
-      .exactOptional()
-      .openapi({ description: 'Xero generated unique identifier for an expense claim' }),
-    Status: z
-      .enum(['SUBMITTED', 'AUTHORISED', 'PAID', 'VOIDED', 'DELETED'])
-      .exactOptional()
-      .openapi({ description: 'Current status of an expense claim – see status types' }),
-    Payments: z.array(PaymentSchema).exactOptional().openapi({ description: 'See Payments' }),
-    User: UserSchema.exactOptional(),
-    Receipts: z.array(ReceiptSchema).exactOptional(),
-    UpdatedDateUTC: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Last modified date UTC format',
-        'x-is-msdate-time': true,
-        example: '/Date(1573755038314)/',
-        readOnly: true,
-      }),
-    Total: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description: 'The total of an expense claim being paid',
-        readOnly: true,
-        'x-is-money': true,
-      }),
-    AmountDue: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description: 'The amount due to be paid for an expense claim',
-        readOnly: true,
-        'x-is-money': true,
-      }),
-    AmountPaid: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description: 'The amount still to pay for an expense claim',
-        readOnly: true,
-        'x-is-money': true,
-      }),
-    PaymentDueDate: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The date when the expense claim is due to be paid YYYY-MM-DD',
-        readOnly: true,
-        'x-is-msdate': true,
-      }),
-    ReportingDate: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The date the expense claim will be reported in Xero YYYY-MM-DD',
-        readOnly: true,
-        'x-is-msdate': true,
-      }),
-    ReceiptID: z
-      .uuid()
-      .exactOptional()
-      .openapi({
-        description:
-          'The Xero identifier for the Receipt e.g. e59a2c7f-1306-4078-a0f3-73537afcbba9',
-      }),
-  })
-  .openapi({
-    externalDocs: { url: 'http://developer.xero.com/documentation/api/expense-claims/' },
-    required: [],
-  })
-  .openapi('ExpenseClaim')
-
-const ExpenseClaimsSchema = z
-  .object({ ExpenseClaims: z.array(ExpenseClaimSchema).exactOptional() })
-  .openapi({ 'x-objectArrayKey': 'expense_claims', required: [] })
-  .openapi('ExpenseClaims')
-
-const HistoryRecordSchema = z
-  .object({
-    Details: z.string().exactOptional().openapi({ description: 'details' }),
-    Changes: z.string().exactOptional().openapi({ description: 'Name of branding theme' }),
-    User: z.string().exactOptional().openapi({ description: 'has a value of 0' }),
-    DateUTC: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'UTC timestamp of creation date of branding theme',
-        'x-is-msdate-time': true,
-        example: '/Date(1573755038314)/',
-        readOnly: true,
-      }),
-  })
-  .openapi({
-    externalDocs: { url: 'https://developer.xero.com/documentation/api/history-and-notes' },
-    required: [],
-  })
-  .openapi('HistoryRecord')
-
-const HistoryRecordsSchema = z
-  .object({ HistoryRecords: z.array(HistoryRecordSchema).exactOptional() })
-  .openapi({ 'x-objectArrayKey': 'history_records', required: [] })
-  .openapi('HistoryRecords')
-
-const InvoicesSchema = z
-  .object({
-    pagination: PaginationSchema.exactOptional(),
-    Warnings: z
-      .array(ValidationErrorSchema)
-      .exactOptional()
-      .openapi({ description: 'Displays array of warning messages from the API' }),
-    Invoices: z.array(InvoiceSchema).exactOptional(),
-  })
-  .openapi({ 'x-objectArrayKey': 'invoices', required: [] })
-  .openapi('Invoices')
-
-const OnlineInvoiceSchema = z
-  .object({
-    OnlineInvoiceUrl: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'the URL to an online invoice' }),
-  })
-  .openapi({
-    externalDocs: { url: 'http://developer.xero.com/documentation/api/invoices/' },
-    required: [],
-  })
-  .openapi('OnlineInvoice')
-
-const OnlineInvoicesSchema = z
-  .object({ OnlineInvoices: z.array(OnlineInvoiceSchema).exactOptional() })
-  .openapi({ 'x-objectArrayKey': 'online_invoices', required: [] })
-  .openapi('OnlineInvoices')
-
-const InvoiceReminderSchema = z
-  .object({
-    Enabled: z.boolean().exactOptional().openapi({ description: 'setting for on or off' }),
-  })
-  .openapi({
-    externalDocs: { url: 'http://developer.xero.com/documentation/api/invoice-reminders/' },
-    required: [],
-  })
-  .openapi('InvoiceReminder')
-
-const InvoiceRemindersSchema = z
-  .object({ InvoiceReminders: z.array(InvoiceReminderSchema).exactOptional() })
-  .openapi({ 'x-objectArrayKey': 'invoice_reminders', required: [] })
-  .openapi('InvoiceReminders')
-
-const PurchaseSchema = z
-  .object({
-    UnitPrice: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description:
-          'Unit Price of the item. By default UnitPrice is rounded to two decimal places. You can use 4 decimal places by adding the unitdp=4 querystring parameter to your request.',
-        'x-is-money': true,
-      }),
-    AccountCode: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Default account code to be used for purchased/sale. Not applicable to the purchase details of tracked items',
-      }),
-    COGSAccountCode: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Cost of goods sold account. Only applicable to the purchase details of tracked items.',
-      }),
-    TaxType: z.string().exactOptional().openapi({ description: 'The tax type from TaxRates' }),
-  })
-  .openapi({
-    externalDocs: { url: 'http://developer.xero.com/documentation/api/items/' },
-    required: [],
-  })
-  .openapi('Purchase')
-
-const ItemSchema = z
-  .object({
-    Code: z.string().max(30).openapi({ description: 'User defined item code (max length = 30)' }),
-    InventoryAssetAccountCode: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The inventory asset account for the item. The account must be of type INVENTORY. The  COGSAccountCode in PurchaseDetails is also required to create a tracked item',
-      }),
-    Name: z
-      .string()
-      .max(50)
-      .exactOptional()
-      .openapi({ description: 'The name of the item (max length = 50)' }),
-    IsSold: z
+      .openapi({ description: 'Organisation Type' }),
+    BaseCurrency: CurrencyCodeSchema.exactOptional(),
+    CountryCode: CountryCodeSchema.exactOptional(),
+    IsDemoCompany: z
       .boolean()
       .exactOptional()
-      .openapi({
-        description:
-          'Boolean value, defaults to true. When IsSold is true the item will be available on sales transactions in the Xero UI. If IsSold is updated to false then Description and SalesDetails values will be nulled.',
-      }),
-    IsPurchased: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Boolean value, defaults to true. When IsPurchased is true the item is available for purchase transactions in the Xero UI. If IsPurchased is updated to false then PurchaseDescription and PurchaseDetails values will be nulled.',
-      }),
-    Description: z
-      .string()
-      .max(4000)
-      .exactOptional()
-      .openapi({ description: 'The sales description of the item (max length = 4000)' }),
-    PurchaseDescription: z
-      .string()
-      .max(4000)
-      .exactOptional()
-      .openapi({ description: 'The purchase description of the item (max length = 4000)' }),
-    PurchaseDetails: PurchaseSchema.exactOptional(),
-    SalesDetails: PurchaseSchema.exactOptional(),
-    IsTrackedAsInventory: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'True for items that are tracked as inventory. An item will be tracked as inventory if the InventoryAssetAccountCode and COGSAccountCode are set.',
-      }),
-    TotalCostPool: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description: 'The value of the item on hand. Calculated using average cost accounting.',
-        'x-is-money': true,
-      }),
-    QuantityOnHand: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description:
-          'The quantity of the item on hand. This will be 0 if `QuantityOnBackOrder` is greater than 0.',
-        'x-is-money': true,
-      }),
-    QuantityAvailable: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description:
-          'The quantity of the item available. This is equal to `QuantityOnHand` - `QuantityOnBackOrder`. This value will be negative if `QuantityOnBackOrder` is greater than 0.',
-        readOnly: true,
-      }),
-    QuantityOnBackOrder: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description:
-          'The quantity of the item on backorder. This will be 0 if `QuantityOnHand` is greater than 0.',
-        readOnly: true,
-      }),
-    UpdatedDateUTC: z
+      .openapi({ description: 'Boolean to describe if organisation is a demo company.' }),
+    OrganisationStatus: z
       .string()
       .exactOptional()
       .openapi({
-        description: 'Last modified date in UTC format',
-        'x-is-msdate-time': true,
-        example: '/Date(1573755038314)/',
-        readOnly: true,
+        description: 'Will be set to ACTIVE if you can connect to organisation via the Xero API',
       }),
-    ItemID: z.uuid().exactOptional().openapi({ description: 'The Xero identifier for an Item' }),
-    StatusAttributeString: z.string().exactOptional().openapi({ description: 'Status of object' }),
-    ValidationErrors: z
-      .array(ValidationErrorSchema)
-      .exactOptional()
-      .openapi({ description: 'Displays array of validation error messages from the API' }),
-  })
-  .openapi({
-    externalDocs: { url: 'http://developer.xero.com/documentation/api/items/' },
-    required: ['Code'],
-  })
-  .openapi('Item')
-
-const ItemsSchema = z
-  .object({ Items: z.array(ItemSchema).exactOptional() })
-  .openapi({ 'x-objectArrayKey': 'items', required: [] })
-  .openapi('Items')
-
-const JournalLineSchema = z
-  .object({
-    JournalLineID: z
-      .uuid()
-      .exactOptional()
-      .openapi({
-        description: 'Xero identifier for Journal',
-        example: '7be9db36-3598-4755-ba5c-c2dbc8c4a7a2',
-      }),
-    AccountID: z
-      .uuid()
-      .exactOptional()
-      .openapi({ description: 'See Accounts', example: 'ceef66a5-a545-413b-9312-78a53caadbc4' }),
-    AccountCode: z.string().exactOptional().openapi({ description: 'See Accounts', example: 90 }),
-    AccountType: AccountTypeSchema.exactOptional(),
-    AccountName: z
+    RegistrationNumber: z
       .string()
       .exactOptional()
-      .openapi({ description: 'See AccountCodes', example: 'Checking Account' }),
-    Description: z
+      .openapi({ description: 'Shows for New Zealand, Australian and UK organisations' }),
+    EmployerIdentificationNumber: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Shown if set. US Only.' }),
+    TaxNumber: z
       .string()
       .exactOptional()
       .openapi({
         description:
-          'The description from the source transaction line item. Only returned if populated.',
-        example: 'My business checking account',
+          'Shown if set. Displays in the Xero UI as Tax File Number (AU), GST Number (NZ), VAT Number (UK) and Tax ID Number (US & Global).',
       }),
-    NetAmount: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description:
-          'Net amount of journal line. This will be a positive value for a debit and negative for a credit',
-        'x-is-money': true,
-        example: 4130.98,
-      }),
-    GrossAmount: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description: 'Gross amount of journal line (NetAmount + TaxAmount).',
-        'x-is-money': true,
-        example: 4130.98,
-      }),
-    TaxAmount: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description: 'Total tax on a journal line',
-        'x-is-money': true,
-        readOnly: true,
-        example: 0,
-      }),
-    TaxType: z.string().exactOptional().openapi({ description: 'The tax type from taxRates' }),
-    TaxName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'see TaxRates', example: 'Tax Exempt' }),
-    TrackingCategories: z
-      .array(TrackingCategorySchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional Tracking Category – see Tracking. Any JournalLine can have a maximum of 2 <TrackingCategory> elements.',
-      }),
-  })
-  .openapi({
-    externalDocs: { url: 'https://developer.xero.com/documentation/api/journals#JournalLines' },
-    required: [],
-  })
-  .openapi('JournalLine')
-
-const JournalSchema = z
-  .object({
-    JournalID: z.uuid().exactOptional().openapi({ description: 'Xero identifier' }),
-    JournalDate: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Date the journal was posted', 'x-is-msdate': true }),
-    JournalNumber: z
+    FinancialYearEndDay: z.int().exactOptional().openapi({ description: 'Calendar day e.g. 0-31' }),
+    FinancialYearEndMonth: z
       .int()
       .exactOptional()
-      .openapi({ description: 'Xero generated journal number' }),
+      .openapi({ description: 'Calendar Month e.g. 1-12' }),
+    SalesTaxBasis: z
+      .enum([
+        'PAYMENTS',
+        'INVOICE',
+        'NONE',
+        'CASH',
+        'ACCRUAL',
+        'FLATRATECASH',
+        'FLATRATEACCRUAL',
+        'ACCRUALS',
+      ])
+      .exactOptional()
+      .openapi({ description: 'The accounting basis used for tax returns. See Sales Tax Basis' }),
+    SalesTaxPeriod: z
+      .enum([
+        'MONTHLY',
+        'QUARTERLY1',
+        'QUARTERLY2',
+        'QUARTERLY3',
+        'ANNUALLY',
+        'ONEMONTHS',
+        'TWOMONTHS',
+        'SIXMONTHS',
+        '1MONTHLY',
+        '2MONTHLY',
+        '3MONTHLY',
+        '6MONTHLY',
+        'QUARTERLY',
+        'YEARLY',
+        'NONE',
+      ])
+      .exactOptional()
+      .openapi({
+        description: 'The frequency with which tax returns are processed. See Sales Tax Period',
+      }),
+    DefaultSalesTax: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The default for LineAmountTypes on sales transactions' }),
+    DefaultPurchasesTax: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The default for LineAmountTypes on purchase transactions' }),
+    PeriodLockDate: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Shown if set. See lock dates', 'x-is-msdate': true }),
+    EndOfYearLockDate: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Shown if set. See lock dates', 'x-is-msdate': true }),
     CreatedDateUTC: z
       .string()
       .exactOptional()
       .openapi({
-        description: 'Created date UTC format',
+        description: 'Timestamp when the organisation was created in Xero',
         'x-is-msdate-time': true,
         example: '/Date(1573755038314)/',
         readOnly: true,
       }),
-    Reference: z
+    Timezone: TimeZoneSchema.exactOptional(),
+    OrganisationEntityType: z
+      .enum([
+        'ACCOUNTING_PRACTICE',
+        'COMPANY',
+        'CHARITY',
+        'CLUB_OR_SOCIETY',
+        'INDIVIDUAL',
+        'LOOK_THROUGH_COMPANY',
+        'NOT_FOR_PROFIT',
+        'PARTNERSHIP',
+        'S_CORPORATION',
+        'SELF_MANAGED_SUPERANNUATION_FUND',
+        'SOLE_TRADER',
+        'SUPERANNUATION_FUND',
+        'TRUST',
+        'PERSONAL',
+        'SINGLEMEMBERLLC',
+        'CCORPORATIONLLC',
+        'PARTNERSHIPLLC',
+        'SCORPORATIONLLC',
+        'LLC',
+        'NOTLLC',
+        'UNSPECIFIED',
+      ])
+      .exactOptional()
+      .openapi({ description: 'Organisation Entity Type' }),
+    ShortCode: z
       .string()
       .exactOptional()
-      .openapi({ description: 'reference field for additional indetifying information' }),
-    SourceID: z
-      .uuid()
-      .exactOptional()
-      .openapi({ description: 'The identifier for the source transaction (e.g. InvoiceID)' }),
-    SourceType: z
+      .openapi({ description: 'A unique identifier for the organisation. Potential uses.' }),
+    Class: z
       .enum([
-        'ACCREC',
-        'ACCPAY',
-        'ACCRECCREDIT',
-        'ACCPAYCREDIT',
-        'ACCRECPAYMENT',
-        'ACCPAYPAYMENT',
-        'ARCREDITPAYMENT',
-        'APCREDITPAYMENT',
-        'CASHREC',
-        'CASHPAID',
-        'TRANSFER',
-        'ARPREPAYMENT',
-        'APPREPAYMENT',
-        'AROVERPAYMENT',
-        'APOVERPAYMENT',
-        'EXPCLAIM',
-        'EXPPAYMENT',
-        'MANJOURNAL',
-        'PAYSLIP',
-        'WAGEPAYABLE',
-        'INTEGRATEDPAYROLLPE',
-        'INTEGRATEDPAYROLLPT',
-        'EXTERNALSPENDMONEY',
-        'INTEGRATEDPAYROLLPTPAYMENT',
-        'INTEGRATEDPAYROLLCN',
+        'DEMO',
+        'TRIAL',
+        'STARTER',
+        'STANDARD',
+        'PREMIUM',
+        'PREMIUM_20',
+        'PREMIUM_50',
+        'PREMIUM_100',
+        'LEDGER',
+        'GST_CASHBOOK',
+        'NON_GST_CASHBOOK',
+        'ULTIMATE',
+        'LITE',
+        'ULTIMATE_10',
+        'ULTIMATE_20',
+        'ULTIMATE_50',
+        'ULTIMATE_100',
+        'IGNITE',
+        'GROW',
+        'COMPREHENSIVE',
+        'SIMPLE',
+        'BASICLITE',
+        'ULTRA',
       ])
       .exactOptional()
       .openapi({
-        description: 'The journal source type. The type of transaction that created the journal',
+        description:
+          'Organisation Classes describe which plan the Xero organisation is on (e.g. DEMO, TRIAL, PREMIUM)',
       }),
-    JournalLines: z
-      .array(JournalLineSchema)
-      .exactOptional()
-      .openapi({ description: 'See JournalLines' }),
-  })
-  .openapi({
-    externalDocs: { url: 'http://developer.xero.com/documentation/api/journals/' },
-    required: [],
-  })
-  .openapi('Journal')
-
-const JournalsSchema = z
-  .object({
-    Warnings: z
-      .array(ValidationErrorSchema)
-      .exactOptional()
-      .openapi({ description: 'Displays array of warning messages from the API' }),
-    Journals: z.array(JournalSchema).exactOptional(),
-  })
-  .openapi({ 'x-objectArrayKey': 'journals', required: [] })
-  .openapi('Journals')
-
-const LinkedTransactionSchema = z
-  .object({
-    SourceTransactionID: z
-      .uuid()
+    Edition: z
+      .enum(['BUSINESS', 'PARTNER'])
       .exactOptional()
       .openapi({
         description:
-          'Filter by the SourceTransactionID. Get all the linked transactions created from a particular ACCPAY invoice',
+          'BUSINESS or PARTNER. Partner edition organisations are sold exclusively through accounting partners and have restricted functionality (e.g. no access to invoicing)',
       }),
-    SourceLineItemID: z
-      .uuid()
-      .exactOptional()
-      .openapi({ description: 'The line item identifier from the source transaction.' }),
-    ContactID: z
-      .uuid()
-      .exactOptional()
-      .openapi({
-        description:
-          'Filter by the combination of ContactID and Status. Get all the linked transactions that have been assigned to a particular customer and have a particular status e.g. GET /LinkedTransactions?ContactID=4bb34b03-3378-4bb2-a0ed-6345abf3224e&Status=APPROVED.',
-      }),
-    TargetTransactionID: z
-      .uuid()
-      .exactOptional()
-      .openapi({
-        description:
-          'Filter by the TargetTransactionID. Get all the linked transactions  allocated to a particular ACCREC invoice',
-      }),
-    TargetLineItemID: z
-      .uuid()
-      .exactOptional()
-      .openapi({
-        description:
-          'The line item identifier from the target transaction. It is possible  to link multiple billable expenses to the same TargetLineItemID.',
-      }),
-    LinkedTransactionID: z
-      .uuid()
-      .exactOptional()
-      .openapi({
-        description:
-          'The Xero identifier for an Linked Transaction e.g./LinkedTransactions/297c2dc5-cc47-4afd-8ec8-74990b8761e9',
-      }),
-    Status: z
-      .enum(['APPROVED', 'DRAFT', 'ONDRAFT', 'BILLED', 'VOIDED'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Filter by the combination of ContactID and Status. Get all the linked transactions that have been assigned to a particular customer and have a particular status e.g. GET /LinkedTransactions?ContactID=4bb34b03-3378-4bb2-a0ed-6345abf3224e&Status=APPROVED.',
-      }),
-    Type: z
-      .literal('BILLABLEEXPENSE')
-      .exactOptional()
-      .openapi({
-        description: 'This will always be BILLABLEEXPENSE. More types may be added in future.',
-      }),
-    UpdatedDateUTC: z
+    LineOfBusiness: z
       .string()
       .exactOptional()
-      .openapi({
-        description: 'The last modified date in UTC format',
-        'x-is-msdate-time': true,
-        example: '/Date(1573755038314)/',
-        readOnly: true,
-      }),
-    SourceTransactionTypeCode: z
-      .enum(['ACCPAY', 'SPEND'])
+      .openapi({ description: 'Description of business type as defined in Organisation settings' }),
+    Addresses: z
+      .array(AddressForOrganisationSchema)
+      .exactOptional()
+      .openapi({ description: 'Address details for organisation – see Addresses' }),
+    Phones: z
+      .array(PhoneSchema)
+      .exactOptional()
+      .openapi({ description: 'Phones details for organisation – see Phones' }),
+    ExternalLinks: z
+      .array(ExternalLinkSchema)
       .exactOptional()
       .openapi({
         description:
-          'The Type of the source tranasction. This will be ACCPAY if the linked transaction was created from an invoice and SPEND if it was created from a bank transaction.',
+          'Organisation profile links for popular services such as Facebook,Twitter, GooglePlus and LinkedIn. You can also add link to your website here. Shown if Organisation settings  is updated in Xero. See ExternalLinks below',
       }),
-    ValidationErrors: z
-      .array(ValidationErrorSchema)
-      .exactOptional()
-      .openapi({ description: 'Displays array of validation error messages from the API' }),
-  })
-  .openapi({
-    externalDocs: { url: 'http://developer.xero.com/documentation/api/linked-transactions/' },
-    required: [],
-  })
-  .openapi('LinkedTransaction')
-
-const LinkedTransactionsSchema = z
-  .object({ LinkedTransactions: z.array(LinkedTransactionSchema).exactOptional() })
-  .openapi({ 'x-objectArrayKey': 'linked_transactions', required: [] })
-  .openapi('LinkedTransactions')
-
-const ManualJournalLineSchema = z
-  .object({
-    LineAmount: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description: 'total for line. Debits are positive, credits are negative value',
-        'x-is-money': true,
-        example: -2569,
-      }),
-    AccountCode: z.string().exactOptional().openapi({ description: 'See Accounts', example: 720 }),
-    AccountID: z.uuid().exactOptional().openapi({ description: 'See Accounts' }),
-    Description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Description for journal line',
-        example: 'Coded incorrectly Office Equipment should be Computer Equipment',
-      }),
-    TaxType: z.string().exactOptional().openapi({ description: 'The tax type from TaxRates' }),
-    Tracking: z
-      .array(TrackingCategorySchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional Tracking Category – see Tracking. Any JournalLine can have a maximum of 2 <TrackingCategory> elements.',
-      }),
-    TaxAmount: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description: 'The calculated tax amount based on the TaxType and LineAmount',
-        'x-is-money': true,
-        example: 0,
-      }),
-    IsBlank: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'is the line blank', example: false }),
-  })
-  .openapi({
-    externalDocs: { url: 'http://developer.xero.com/documentation/api/manual-journals/' },
-    required: [],
-  })
-  .openapi('ManualJournalLine')
-
-const ManualJournalSchema = z
-  .object({
-    Narration: z.string().openapi({ description: 'Description of journal being posted' }),
-    JournalLines: z
-      .array(ManualJournalLineSchema)
-      .exactOptional()
-      .openapi({ description: 'See JournalLines' }),
-    Date: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Date journal was posted – YYYY-MM-DD', 'x-is-msdate': true }),
-    LineAmountTypes: LineAmountTypesSchema.exactOptional(),
-    Status: z
-      .enum(['DRAFT', 'POSTED', 'DELETED', 'VOIDED', 'ARCHIVED'])
-      .exactOptional()
-      .openapi({ description: 'See Manual Journal Status Codes' }),
-    Url: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Url link to a source document – shown as “Go to [appName]” in the Xero app',
-      }),
-    ShowOnCashBasisReports: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Boolean – default is true if not specified' }),
-    HasAttachments: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({
-        description: 'Boolean to indicate if a manual journal has an attachment',
-        readOnly: true,
-        example: 'false',
-      }),
-    UpdatedDateUTC: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Last modified date UTC format',
-        'x-is-msdate-time': true,
-        example: '/Date(1573755038314)/',
-        readOnly: true,
-      }),
-    ManualJournalID: z
-      .uuid()
-      .exactOptional()
-      .openapi({ description: 'The Xero identifier for a Manual Journal' }),
-    StatusAttributeString: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'A string to indicate if a invoice status', example: 'ERROR' }),
-    Warnings: z
-      .array(ValidationErrorSchema)
-      .exactOptional()
-      .openapi({ description: 'Displays array of warning messages from the API' }),
-    ValidationErrors: z
-      .array(ValidationErrorSchema)
-      .exactOptional()
-      .openapi({ description: 'Displays array of validation error messages from the API' }),
-    Attachments: z
-      .array(AttachmentSchema)
-      .exactOptional()
-      .openapi({ description: 'Displays array of attachments from the API' }),
-  })
-  .openapi({
-    externalDocs: { url: 'http://developer.xero.com/documentation/api/manual-journals/' },
-    required: ['Narration'],
-  })
-  .openapi('ManualJournal')
-
-const ManualJournalsSchema = z
-  .object({
-    pagination: PaginationSchema.exactOptional(),
-    Warnings: z
-      .array(ValidationErrorSchema)
-      .exactOptional()
-      .openapi({ description: 'Displays array of warning messages from the API' }),
-    ManualJournals: z.array(ManualJournalSchema).exactOptional(),
-  })
-  .openapi({ 'x-objectArrayKey': 'manual_journals', required: [] })
-  .openapi('ManualJournals')
-
-const ActionSchema = z
-  .object({
-    Name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Name of the actions for this organisation',
-        example: 'UseMulticurrency',
-      }),
-    Status: z
-      .enum(['ALLOWED', 'NOT-ALLOWED'])
-      .exactOptional()
-      .openapi({ description: 'Status of the action for this organisation' }),
+    PaymentTerms: PaymentTermSchema.exactOptional(),
   })
   .openapi({
     externalDocs: { url: 'http://developer.xero.com/documentation/api/organisation/' },
     required: [],
   })
-  .openapi('Action')
-
-const ActionsSchema = z
-  .object({ Actions: z.array(ActionSchema).exactOptional() })
-  .openapi({ 'x-objectArrayKey': 'actions', required: [] })
-  .openapi('Actions')
-
-const OrganisationSchema: z.ZodType<OrganisationType> = z
-  .lazy(() =>
-    z
-      .object({
-        OrganisationID: z
-          .uuid()
-          .exactOptional()
-          .openapi({
-            description: 'Unique Xero identifier',
-            example: '8be9db36-3598-4755-ba5c-c2dbc8c4a7a2',
-          }),
-        APIKey: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Display a unique key used for Xero-to-Xero transactions' }),
-        Name: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Display name of organisation shown in Xero' }),
-        LegalName: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Organisation name shown on Reports' }),
-        PaysTax: z
-          .boolean()
-          .exactOptional()
-          .openapi({
-            description:
-              'Boolean to describe if organisation is registered with a local tax authority i.e. true, false',
-          }),
-        Version: z
-          .enum([
-            'AU',
-            'NZ',
-            'GLOBAL',
-            'UK',
-            'US',
-            'AUONRAMP',
-            'NZONRAMP',
-            'GLOBALONRAMP',
-            'UKONRAMP',
-            'USONRAMP',
-          ])
-          .exactOptional()
-          .openapi({ description: 'See Version Types' }),
-        OrganisationType: z
-          .enum([
-            'ACCOUNTING_PRACTICE',
-            'COMPANY',
-            'CHARITY',
-            'CLUB_OR_SOCIETY',
-            'INDIVIDUAL',
-            'LOOK_THROUGH_COMPANY',
-            'NOT_FOR_PROFIT',
-            'PARTNERSHIP',
-            'S_CORPORATION',
-            'SELF_MANAGED_SUPERANNUATION_FUND',
-            'SOLE_TRADER',
-            'SUPERANNUATION_FUND',
-            'TRUST',
-            'PERSONAL',
-            'SINGLEMEMBERLLC',
-            'CCORPORATIONLLC',
-            'PARTNERSHIPLLC',
-            'SCORPORATIONLLC',
-            'LLC',
-            'NOTLLC',
-            'UNSPECIFIED',
-          ])
-          .exactOptional()
-          .openapi({ description: 'Organisation Type' }),
-        BaseCurrency: CurrencyCodeSchema.exactOptional(),
-        CountryCode: CountryCodeSchema.exactOptional(),
-        IsDemoCompany: z
-          .boolean()
-          .exactOptional()
-          .openapi({ description: 'Boolean to describe if organisation is a demo company.' }),
-        OrganisationStatus: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Will be set to ACTIVE if you can connect to organisation via the Xero API',
-          }),
-        RegistrationNumber: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Shows for New Zealand, Australian and UK organisations' }),
-        EmployerIdentificationNumber: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Shown if set. US Only.' }),
-        TaxNumber: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Shown if set. Displays in the Xero UI as Tax File Number (AU), GST Number (NZ), VAT Number (UK) and Tax ID Number (US & Global).',
-          }),
-        FinancialYearEndDay: z
-          .int()
-          .exactOptional()
-          .openapi({ description: 'Calendar day e.g. 0-31' }),
-        FinancialYearEndMonth: z
-          .int()
-          .exactOptional()
-          .openapi({ description: 'Calendar Month e.g. 1-12' }),
-        SalesTaxBasis: z
-          .enum([
-            'PAYMENTS',
-            'INVOICE',
-            'NONE',
-            'CASH',
-            'ACCRUAL',
-            'FLATRATECASH',
-            'FLATRATEACCRUAL',
-            'ACCRUALS',
-          ])
-          .exactOptional()
-          .openapi({
-            description: 'The accounting basis used for tax returns. See Sales Tax Basis',
-          }),
-        SalesTaxPeriod: z
-          .enum([
-            'MONTHLY',
-            'QUARTERLY1',
-            'QUARTERLY2',
-            'QUARTERLY3',
-            'ANNUALLY',
-            'ONEMONTHS',
-            'TWOMONTHS',
-            'SIXMONTHS',
-            '1MONTHLY',
-            '2MONTHLY',
-            '3MONTHLY',
-            '6MONTHLY',
-            'QUARTERLY',
-            'YEARLY',
-            'NONE',
-          ])
-          .exactOptional()
-          .openapi({
-            description: 'The frequency with which tax returns are processed. See Sales Tax Period',
-          }),
-        DefaultSalesTax: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The default for LineAmountTypes on sales transactions' }),
-        DefaultPurchasesTax: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The default for LineAmountTypes on purchase transactions' }),
-        PeriodLockDate: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Shown if set. See lock dates', 'x-is-msdate': true }),
-        EndOfYearLockDate: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Shown if set. See lock dates', 'x-is-msdate': true }),
-        CreatedDateUTC: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'Timestamp when the organisation was created in Xero',
-            'x-is-msdate-time': true,
-            example: '/Date(1573755038314)/',
-            readOnly: true,
-          }),
-        Timezone: TimeZoneSchema.exactOptional(),
-        OrganisationEntityType: z
-          .enum([
-            'ACCOUNTING_PRACTICE',
-            'COMPANY',
-            'CHARITY',
-            'CLUB_OR_SOCIETY',
-            'INDIVIDUAL',
-            'LOOK_THROUGH_COMPANY',
-            'NOT_FOR_PROFIT',
-            'PARTNERSHIP',
-            'S_CORPORATION',
-            'SELF_MANAGED_SUPERANNUATION_FUND',
-            'SOLE_TRADER',
-            'SUPERANNUATION_FUND',
-            'TRUST',
-            'PERSONAL',
-            'SINGLEMEMBERLLC',
-            'CCORPORATIONLLC',
-            'PARTNERSHIPLLC',
-            'SCORPORATIONLLC',
-            'LLC',
-            'NOTLLC',
-            'UNSPECIFIED',
-          ])
-          .exactOptional()
-          .openapi({ description: 'Organisation Entity Type' }),
-        ShortCode: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'A unique identifier for the organisation. Potential uses.' }),
-        Class: z
-          .enum([
-            'DEMO',
-            'TRIAL',
-            'STARTER',
-            'STANDARD',
-            'PREMIUM',
-            'PREMIUM_20',
-            'PREMIUM_50',
-            'PREMIUM_100',
-            'LEDGER',
-            'GST_CASHBOOK',
-            'NON_GST_CASHBOOK',
-            'ULTIMATE',
-            'LITE',
-            'ULTIMATE_10',
-            'ULTIMATE_20',
-            'ULTIMATE_50',
-            'ULTIMATE_100',
-            'IGNITE',
-            'GROW',
-            'COMPREHENSIVE',
-            'SIMPLE',
-            'BASICLITE',
-            'ULTRA',
-          ])
-          .exactOptional()
-          .openapi({
-            description:
-              'Organisation Classes describe which plan the Xero organisation is on (e.g. DEMO, TRIAL, PREMIUM)',
-          }),
-        Edition: z
-          .enum(['BUSINESS', 'PARTNER'])
-          .exactOptional()
-          .openapi({
-            description:
-              'BUSINESS or PARTNER. Partner edition organisations are sold exclusively through accounting partners and have restricted functionality (e.g. no access to invoicing)',
-          }),
-        LineOfBusiness: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'Description of business type as defined in Organisation settings',
-          }),
-        Addresses: z
-          .array(AddressForOrganisationSchema)
-          .exactOptional()
-          .openapi({ description: 'Address details for organisation – see Addresses' }),
-        Phones: z
-          .array(PhoneSchema)
-          .exactOptional()
-          .openapi({ description: 'Phones details for organisation – see Phones' }),
-        ExternalLinks: z
-          .array(ExternalLinkSchema)
-          .exactOptional()
-          .openapi({
-            description:
-              'Organisation profile links for popular services such as Facebook,Twitter, GooglePlus and LinkedIn. You can also add link to your website here. Shown if Organisation settings  is updated in Xero. See ExternalLinks below',
-          }),
-        PaymentTerms: PaymentTermSchema.exactOptional(),
-      })
-      .openapi({
-        externalDocs: { url: 'http://developer.xero.com/documentation/api/organisation/' },
-        required: [],
-      }),
-  )
   .openapi('Organisation')
 
 const OrganisationsSchema = z
@@ -5293,7 +5395,7 @@ const OverpaymentsSchema = z
   .openapi({ 'x-objectArrayKey': 'overpayments', required: [] })
   .openapi('Overpayments')
 
-const PaymentsSchema = z
+const PaymentsSchema: z.ZodType<PaymentsType> = z
   .object({
     pagination: PaginationSchema.exactOptional(),
     Warnings: z
@@ -5315,7 +5417,7 @@ const PaymentDeleteSchema = z
   })
   .openapi('PaymentDelete')
 
-const PrepaymentsSchema = z
+const PrepaymentsSchema: z.ZodType<PrepaymentsType> = z
   .object({
     pagination: PaginationSchema.exactOptional(),
     Warnings: z
@@ -5775,178 +5877,10 @@ const RepeatingInvoicesSchema = z
   .openapi({ 'x-objectArrayKey': 'repeating_invoices', required: [] })
   .openapi('RepeatingInvoices')
 
-const RowTypeSchema = z.enum(['Header', 'Section', 'Row', 'SummaryRow']).openapi('RowType')
-
-const ReportAttributeSchema = z
-  .object({ Id: z.string().exactOptional(), Value: z.string().exactOptional() })
-  .openapi({
-    externalDocs: { url: 'http://developer.xero.com/documentation/api/reports/' },
-    required: [],
-  })
-  .openapi('ReportAttribute')
-
-const ReportCellSchema = z
-  .object({
-    Value: z.string().exactOptional(),
-    Attributes: z.array(ReportAttributeSchema).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ReportCell')
-
-const ReportRowSchema = z
-  .object({
-    RowType: RowTypeSchema.exactOptional(),
-    Title: z.string().exactOptional(),
-    Cells: z.array(ReportCellSchema).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ReportRow')
-
-const ReportRowsSchema = z
-  .object({
-    RowType: RowTypeSchema.exactOptional(),
-    Title: z.string().exactOptional(),
-    Cells: z.array(ReportCellSchema).exactOptional(),
-    Rows: z.array(ReportRowSchema).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ReportRows')
-
-const ReportFieldsSchema = z
-  .object({
-    FieldID: z.string().exactOptional(),
-    Description: z.string().exactOptional(),
-    Value: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ReportFields')
-
-const ReportWithRowSchema = z
-  .object({
-    ReportID: z.string().exactOptional().openapi({ description: 'ID of the Report' }),
-    ReportName: z.string().exactOptional().openapi({ description: 'Name of the report' }),
-    ReportTitle: z.string().exactOptional().openapi({ description: 'Title of the report' }),
-    ReportType: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The type of report (BalanceSheet,ProfitLoss, etc)' }),
-    ReportTitles: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Report titles array (3 to 4 strings with the report name, orgnisation name and time frame of report)',
-      }),
-    ReportDate: z.string().exactOptional().openapi({ description: 'Date of report' }),
-    Rows: z.array(ReportRowsSchema).exactOptional(),
-    UpdatedDateUTC: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Updated Date',
-        'x-is-msdate-time': true,
-        example: '/Date(1573755038314)/',
-        readOnly: true,
-      }),
-    Fields: z.array(ReportFieldsSchema).exactOptional(),
-  })
-  .openapi({
-    externalDocs: { url: 'http://developer.xero.com/documentation/api/reports/' },
-    required: [],
-  })
-  .openapi('ReportWithRow')
-
-const ReportWithRowsSchema = z
+const ReportWithRowsSchema: z.ZodType<ReportWithRowsType> = z
   .object({ Reports: z.array(ReportWithRowSchema).exactOptional() })
   .openapi({ required: [] })
   .openapi('ReportWithRows')
-
-const TenNinetyNineContactSchema = z
-  .object({
-    Box1: z
-      .float64()
-      .exactOptional()
-      .openapi({ description: 'Box 1 on 1099 Form', 'x-is-money': true }),
-    Box2: z
-      .float64()
-      .exactOptional()
-      .openapi({ description: 'Box 2 on 1099 Form', 'x-is-money': true }),
-    Box3: z
-      .float64()
-      .exactOptional()
-      .openapi({ description: 'Box 3 on 1099 Form', 'x-is-money': true }),
-    Box4: z
-      .float64()
-      .exactOptional()
-      .openapi({ description: 'Box 4 on 1099 Form', 'x-is-money': true }),
-    Box5: z
-      .float64()
-      .exactOptional()
-      .openapi({ description: 'Box 5 on 1099 Form', 'x-is-money': true }),
-    Box6: z
-      .float64()
-      .exactOptional()
-      .openapi({ description: 'Box 6 on 1099 Form', 'x-is-money': true }),
-    Box7: z
-      .float64()
-      .exactOptional()
-      .openapi({ description: 'Box 7 on 1099 Form', 'x-is-money': true }),
-    Box8: z
-      .float64()
-      .exactOptional()
-      .openapi({ description: 'Box 8 on 1099 Form', 'x-is-money': true }),
-    Box9: z
-      .float64()
-      .exactOptional()
-      .openapi({ description: 'Box 9 on 1099 Form', 'x-is-money': true }),
-    Box10: z
-      .float64()
-      .exactOptional()
-      .openapi({ description: 'Box 10 on 1099 Form', 'x-is-money': true }),
-    Box11: z
-      .float64()
-      .exactOptional()
-      .openapi({ description: 'Box 11 on 1099 Form', 'x-is-money': true }),
-    Box13: z
-      .float64()
-      .exactOptional()
-      .openapi({ description: 'Box 13 on 1099 Form', 'x-is-money': true }),
-    Box14: z
-      .float64()
-      .exactOptional()
-      .openapi({ description: 'Box 14 on 1099 Form', 'x-is-money': true }),
-    Name: z.string().exactOptional().openapi({ description: 'Contact name on 1099 Form' }),
-    FederalTaxIDType: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Contact Fed Tax ID type' }),
-    City: z.string().exactOptional().openapi({ description: 'Contact city on 1099 Form' }),
-    Zip: z.string().exactOptional().openapi({ description: 'Contact zip on 1099 Form' }),
-    State: z.string().exactOptional().openapi({ description: 'Contact State on 1099 Form' }),
-    Email: z.string().exactOptional().openapi({ description: 'Contact email on 1099 Form' }),
-    StreetAddress: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Contact address on 1099 Form' }),
-    TaxID: z.string().exactOptional().openapi({ description: 'Contact tax id on 1099 Form' }),
-    ContactId: z.uuid().exactOptional().openapi({ description: 'Contact contact id' }),
-    LegalName: z.string().exactOptional().openapi({ description: 'Contact legal name' }),
-    BusinessName: z.string().exactOptional().openapi({ description: 'Contact business name' }),
-    FederalTaxClassification: z
-      .enum([
-        'SOLE_PROPRIETOR',
-        'PARTNERSHIP',
-        'TRUST_OR_ESTATE',
-        'NONPROFIT',
-        'C_CORP',
-        'S_CORP',
-        'OTHER',
-      ])
-      .exactOptional()
-      .openapi({ description: 'Contact federal tax classification' }),
-  })
-  .openapi({ required: [] })
-  .openapi('TenNinetyNineContact')
 
 const ReportSchema = z
   .object({
@@ -10458,6 +10392,7 @@ export const getBudgetsRoute = createRoute({
             Budgets: [
               {
                 BudgetID: '847da917-9565-466c-a9cd-3ecf7eb9d094',
+                CreatedIn: 'BUDGETS_MANAGER',
                 Status: 'APPROVED',
                 Description: 'FY2021 budget',
                 Type: 'TRACKING',
@@ -10467,6 +10402,7 @@ export const getBudgetsRoute = createRoute({
               },
               {
                 BudgetID: '93a4bab1-0021-4320-a2ec-c250528b4bc5',
+                CreatedIn: 'XERO_ANALYTICS',
                 Status: 'APPROVED',
                 Description: 'Overall Budget',
                 Type: 'OVERALL',
@@ -10536,6 +10472,7 @@ export const getBudgetsBudgetIDRoute = createRoute({
             DateTimeUTC: '/Date(1551399323399)/',
             Budgets: {
               BudgetID: 'c1d195d4-92aa-4abd-867a-7ac2f9d60500',
+              CreatedIn: 'BUDGETS_MANAGER',
               Type: 'TRACKING',
               Description: 'Daniels Northern Budget',
               UpdatedDateUTC: '2017-08-14T01:18:26.74',
@@ -10558,18 +10495,18 @@ export const getBudgetsBudgetIDRoute = createRoute({
                   AccountID: '9c24de87-a2b7-439d-a216-35d1af7bdec3',
                   AccountCode: '200',
                   BudgetBalances: [
-                    { Period: '2019-08', Amount: '1000', Notes: 'Sample note' },
-                    { Period: '2019-09', Amount: '1050', Notes: '' },
-                    { Period: '2019-10', Amount: '1102', Notes: '' },
+                    { Period: '2019-08', Amount: '1000' },
+                    { Period: '2019-09', Amount: '1050' },
+                    { Period: '2019-10', Amount: '1102' },
                   ],
                 },
                 {
                   AccountID: '385f90ae-e798-4990-9b1c-db8eb8b735c2',
                   AccountCode: '420',
                   BudgetBalances: [
-                    { Period: '2019-08', Amount: '500', Notes: '' },
-                    { Period: '2019-09', Amount: '505', Notes: 'Special Month' },
-                    { Period: '2019-10', Amount: '510', Notes: '' },
+                    { Period: '2019-08', Amount: '500' },
+                    { Period: '2019-09', Amount: '505' },
+                    { Period: '2019-10', Amount: '510' },
                   ],
                 },
               ],

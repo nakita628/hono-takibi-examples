@@ -1345,7 +1345,7 @@ export const getActionsRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -1372,7 +1372,7 @@ export const getActionsRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -1561,7 +1561,7 @@ export const getActionsIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -1588,7 +1588,7 @@ export const getActionsIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -2119,7 +2119,7 @@ export const getCertificatesRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -2146,7 +2146,7 @@ export const getCertificatesRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -2599,7 +2599,7 @@ export const postCertificatesRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -2626,7 +2626,7 @@ export const postCertificatesRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -3097,7 +3097,7 @@ export const getCertificatesActionsRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -3124,7 +3124,7 @@ export const getCertificatesActionsRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -3313,7 +3313,7 @@ export const getCertificatesActionsIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -3340,7 +3340,7 @@ export const getCertificatesActionsIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -3602,7 +3602,7 @@ export const getCertificatesIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -3629,7 +3629,7 @@ export const getCertificatesIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -3915,7 +3915,7 @@ export const putCertificatesIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -3942,7 +3942,7 @@ export const putCertificatesIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -4010,7 +4010,7 @@ export const deleteCertificatesIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -4037,7 +4037,7 @@ export const deleteCertificatesIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -4521,7 +4521,7 @@ export const getCertificatesIdActionsRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -4548,7 +4548,7 @@ export const getCertificatesIdActionsRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -4759,7 +4759,7 @@ export const postCertificatesIdActionsRetryRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -4786,7 +4786,7 @@ export const postCertificatesIdActionsRetryRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -5018,7 +5018,7 @@ export const getCertificatesIdActionsActionIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -5045,7 +5045,7 @@ export const getCertificatesIdActionsActionIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -5070,7 +5070,7 @@ export const getDatacentersRoute = createRoute({
   tags: ['Data Centers'],
   summary: 'List Data Centers',
   description:
-    '**Deprecated:** This endpoint is deprecated as of 01 June 2026 and will be removed after 01 October 2026.\n\nReturns all [Data Centers](#tag/data-centers).\n',
+    '**Deprecated:** This endpoint was deprecated on 01 June 2026 and removed on 01 October 2026. It now returns `410 Gone`.\n\nReturns all [Data Centers](#tag/data-centers).\n',
   operationId: 'list_datacenters',
   request: {
     query: z.object({
@@ -5528,7 +5528,7 @@ export const getDatacentersRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -5555,7 +5555,7 @@ export const getDatacentersRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -5580,7 +5580,7 @@ export const getDatacentersIdRoute = createRoute({
   tags: ['Data Centers'],
   summary: 'Get a Data Center',
   description:
-    '**Deprecated:** This endpoint is deprecated as of 01 June 2026 and will be removed after 01 October 2026.\n\nReturns a single [Data Center](#tag/data-centers).\n',
+    '**Deprecated:** This endpoint was deprecated on 01 June 2026 and removed on 01 October 2026. It now returns `410 Gone`.\n\nReturns a single [Data Center](#tag/data-centers).\n',
   operationId: 'get_datacenter',
   request: {
     params: z.object({
@@ -5826,7 +5826,7 @@ export const getDatacentersIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -5853,7 +5853,7 @@ export const getDatacentersIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -6365,7 +6365,7 @@ export const getFirewallsRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -6392,7 +6392,7 @@ export const getFirewallsRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -6961,7 +6961,7 @@ export const postFirewallsRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -6988,7 +6988,7 @@ export const postFirewallsRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -7459,7 +7459,7 @@ export const getFirewallsActionsRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -7486,7 +7486,7 @@ export const getFirewallsActionsRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -7675,7 +7675,7 @@ export const getFirewallsActionsIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -7702,7 +7702,7 @@ export const getFirewallsActionsIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -7980,7 +7980,7 @@ export const getFirewallsIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -8007,7 +8007,7 @@ export const getFirewallsIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -8315,7 +8315,7 @@ export const putFirewallsIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -8342,7 +8342,7 @@ export const putFirewallsIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -8411,7 +8411,7 @@ export const deleteFirewallsIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -8438,7 +8438,7 @@ export const deleteFirewallsIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -8922,7 +8922,7 @@ export const getFirewallsIdActionsRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -8949,7 +8949,7 @@ export const getFirewallsIdActionsRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -9224,7 +9224,7 @@ export const postFirewallsIdActionsApplyToResourcesRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -9251,7 +9251,7 @@ export const postFirewallsIdActionsApplyToResourcesRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -9527,7 +9527,7 @@ export const postFirewallsIdActionsRemoveFromResourcesRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -9554,7 +9554,7 @@ export const postFirewallsIdActionsRemoveFromResourcesRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -9863,7 +9863,7 @@ export const postFirewallsIdActionsSetRulesRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -9890,7 +9890,7 @@ export const postFirewallsIdActionsSetRulesRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -10122,7 +10122,7 @@ export const getFirewallsIdActionsActionIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -10149,7 +10149,7 @@ export const getFirewallsIdActionsActionIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -10655,7 +10655,7 @@ export const getFloatingIpsRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -10682,7 +10682,7 @@ export const getFloatingIpsRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -11199,7 +11199,7 @@ export const postFloatingIpsRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -11226,7 +11226,7 @@ export const postFloatingIpsRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -11697,7 +11697,7 @@ export const getFloatingIpsActionsRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -11724,7 +11724,7 @@ export const getFloatingIpsActionsRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -11913,7 +11913,7 @@ export const getFloatingIpsActionsIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -11940,7 +11940,7 @@ export const getFloatingIpsActionsIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -12235,7 +12235,7 @@ export const getFloatingIpsIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -12262,7 +12262,7 @@ export const getFloatingIpsIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -12622,7 +12622,7 @@ export const putFloatingIpsIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -12649,7 +12649,7 @@ export const putFloatingIpsIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -12718,7 +12718,7 @@ export const deleteFloatingIpsIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -12745,7 +12745,7 @@ export const deleteFloatingIpsIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -13232,7 +13232,7 @@ export const getFloatingIpsIdActionsRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -13259,7 +13259,7 @@ export const getFloatingIpsIdActionsRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -13502,7 +13502,7 @@ export const postFloatingIpsIdActionsAssignRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -13529,7 +13529,7 @@ export const postFloatingIpsIdActionsAssignRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -13770,7 +13770,7 @@ export const postFloatingIpsIdActionsChangeDnsPtrRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -13797,7 +13797,7 @@ export const postFloatingIpsIdActionsChangeDnsPtrRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -14029,7 +14029,7 @@ export const postFloatingIpsIdActionsChangeProtectionRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -14056,7 +14056,7 @@ export const postFloatingIpsIdActionsChangeProtectionRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -14270,7 +14270,7 @@ export const postFloatingIpsIdActionsUnassignRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -14297,7 +14297,7 @@ export const postFloatingIpsIdActionsUnassignRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -14532,7 +14532,7 @@ export const getFloatingIpsIdActionsActionIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -14559,7 +14559,7 @@ export const getFloatingIpsIdActionsActionIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -14969,15 +14969,6 @@ export const getImagesRoute = createRoute({
                         description: 'Protection configuration for the Resource.',
                         required: ['delete'],
                       }),
-                    deprecated: z.iso
-                      .datetime({ offset: true })
-                      .nullable()
-                      .openapi({
-                        deprecated: true,
-                        description:
-                          '**Deprecated:** This field is deprecated, use the deprecation object instead.\n\nPoint in time when the Image is considered to be deprecated (in [RFC3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) format).\n',
-                        example: '2018-02-28T00:00:00Z',
-                      }),
                     deprecation: z
                       .object({
                         unavailable_after: z.iso
@@ -15042,7 +15033,6 @@ export const getImagesRoute = createRoute({
                       'os_flavor',
                       'os_version',
                       'protection',
-                      'deprecated',
                       'deprecation',
                       'deleted',
                       'labels',
@@ -15196,7 +15186,7 @@ export const getImagesRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -15223,7 +15213,7 @@ export const getImagesRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -15694,7 +15684,7 @@ export const getImagesActionsRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -15721,7 +15711,7 @@ export const getImagesActionsRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -15910,7 +15900,7 @@ export const getImagesActionsIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -15937,7 +15927,7 @@ export const getImagesActionsIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -16147,15 +16137,6 @@ export const getImagesIdRoute = createRoute({
                       description: 'Protection configuration for the Resource.',
                       required: ['delete'],
                     }),
-                  deprecated: z.iso
-                    .datetime({ offset: true })
-                    .nullable()
-                    .openapi({
-                      deprecated: true,
-                      description:
-                        '**Deprecated:** This field is deprecated, use the deprecation object instead.\n\nPoint in time when the Image is considered to be deprecated (in [RFC3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) format).\n',
-                      example: '2018-02-28T00:00:00Z',
-                    }),
                   deprecation: z
                     .object({
                       unavailable_after: z.iso
@@ -16217,7 +16198,6 @@ export const getImagesIdRoute = createRoute({
                     'os_flavor',
                     'os_version',
                     'protection',
-                    'deprecated',
                     'deprecation',
                     'deleted',
                     'labels',
@@ -16240,7 +16220,7 @@ export const getImagesIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -16267,7 +16247,7 @@ export const getImagesIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -16508,15 +16488,6 @@ export const putImagesIdRoute = createRoute({
                       description: 'Protection configuration for the Resource.',
                       required: ['delete'],
                     }),
-                  deprecated: z.iso
-                    .datetime({ offset: true })
-                    .nullable()
-                    .openapi({
-                      deprecated: true,
-                      description:
-                        '**Deprecated:** This field is deprecated, use the deprecation object instead.\n\nPoint in time when the Image is considered to be deprecated (in [RFC3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) format).\n',
-                      example: '2018-02-28T00:00:00Z',
-                    }),
                   deprecation: z
                     .object({
                       unavailable_after: z.iso
@@ -16578,7 +16549,6 @@ export const putImagesIdRoute = createRoute({
                     'os_flavor',
                     'os_version',
                     'protection',
-                    'deprecated',
                     'deprecation',
                     'deleted',
                     'labels',
@@ -16605,7 +16575,6 @@ export const putImagesIdRoute = createRoute({
                   os_version: '20.04',
                   rapid_deploy: false,
                   protection: { delete: false },
-                  deprecated: null,
                   deprecation: null,
                   deleted: null,
                   labels: { key: 'value' },
@@ -16628,7 +16597,7 @@ export const putImagesIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -16655,7 +16624,7 @@ export const putImagesIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -16723,7 +16692,7 @@ export const deleteImagesIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -16750,7 +16719,7 @@ export const deleteImagesIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -17234,7 +17203,7 @@ export const getImagesIdActionsRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -17261,7 +17230,7 @@ export const getImagesIdActionsRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -17490,7 +17459,7 @@ export const postImagesIdActionsChangeProtectionRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -17517,7 +17486,7 @@ export const postImagesIdActionsChangeProtectionRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -17749,7 +17718,7 @@ export const getImagesIdActionsActionIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -17776,7 +17745,7 @@ export const getImagesIdActionsActionIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -18128,7 +18097,7 @@ export const getIsosRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -18155,7 +18124,7 @@ export const getIsosRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -18305,7 +18274,7 @@ export const getIsosIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -18332,7 +18301,7 @@ export const getIsosIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -18526,15 +18495,6 @@ export const getLoadBalancerTypesRoute = createRoute({
                           'Number of SSL Certificates that can be assigned to a single Load Balancer.',
                         example: 10,
                       }),
-                    deprecated: z.iso
-                      .datetime({ offset: true })
-                      .nullable()
-                      .openapi({
-                        deprecated: true,
-                        description:
-                          '**Deprecated:** This field is deprecated. Use the `deprecation` object instead.\n\nPoint in time when the Load Balancer type is deprecated (in [RFC3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) format).\n',
-                        example: '2016-01-30T23:50:00Z',
-                      }),
                     deprecation: z
                       .object({
                         unavailable_after: z.iso
@@ -18666,7 +18626,6 @@ export const getLoadBalancerTypesRoute = createRoute({
                       'max_services',
                       'max_targets',
                       'max_assigned_certificates',
-                      'deprecated',
                       'deprecation',
                       'prices',
                     ],
@@ -18818,7 +18777,7 @@ export const getLoadBalancerTypesRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -18845,7 +18804,7 @@ export const getLoadBalancerTypesRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -19002,15 +18961,6 @@ export const getLoadBalancerTypesIdRoute = createRoute({
                         'Number of SSL Certificates that can be assigned to a single Load Balancer.',
                       example: 10,
                     }),
-                  deprecated: z.iso
-                    .datetime({ offset: true })
-                    .nullable()
-                    .openapi({
-                      deprecated: true,
-                      description:
-                        '**Deprecated:** This field is deprecated. Use the `deprecation` object instead.\n\nPoint in time when the Load Balancer type is deprecated (in [RFC3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) format).\n',
-                      example: '2016-01-30T23:50:00Z',
-                    }),
                   deprecation: z
                     .object({
                       unavailable_after: z.iso
@@ -19133,7 +19083,6 @@ export const getLoadBalancerTypesIdRoute = createRoute({
                     'max_services',
                     'max_targets',
                     'max_assigned_certificates',
-                    'deprecated',
                     'deprecation',
                     'prices',
                   ],
@@ -19154,7 +19103,7 @@ export const getLoadBalancerTypesIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -19181,7 +19130,7 @@ export const getLoadBalancerTypesIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -19679,15 +19628,6 @@ export const getLoadBalancersRoute = createRoute({
                               'Number of SSL Certificates that can be assigned to a single Load Balancer.',
                             example: 10,
                           }),
-                        deprecated: z.iso
-                          .datetime({ offset: true })
-                          .nullable()
-                          .openapi({
-                            deprecated: true,
-                            description:
-                              '**Deprecated:** This field is deprecated. Use the `deprecation` object instead.\n\nPoint in time when the Load Balancer type is deprecated (in [RFC3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) format).\n',
-                            example: '2016-01-30T23:50:00Z',
-                          }),
                         deprecation: z
                           .object({
                             unavailable_after: z.iso
@@ -19820,7 +19760,6 @@ export const getLoadBalancersRoute = createRoute({
                           'max_services',
                           'max_targets',
                           'max_assigned_certificates',
-                          'deprecated',
                           'deprecation',
                           'prices',
                         ],
@@ -21021,7 +20960,7 @@ export const getLoadBalancersRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -21048,7 +20987,7 @@ export const getLoadBalancersRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -22230,15 +22169,6 @@ export const postLoadBalancersRoute = createRoute({
                             'Number of SSL Certificates that can be assigned to a single Load Balancer.',
                           example: 10,
                         }),
-                      deprecated: z.iso
-                        .datetime({ offset: true })
-                        .nullable()
-                        .openapi({
-                          deprecated: true,
-                          description:
-                            '**Deprecated:** This field is deprecated. Use the `deprecation` object instead.\n\nPoint in time when the Load Balancer type is deprecated (in [RFC3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) format).\n',
-                          example: '2016-01-30T23:50:00Z',
-                        }),
                       deprecation: z
                         .object({
                           unavailable_after: z.iso
@@ -22370,7 +22300,6 @@ export const postLoadBalancersRoute = createRoute({
                         'max_services',
                         'max_targets',
                         'max_assigned_certificates',
-                        'deprecated',
                         'deprecation',
                         'prices',
                       ],
@@ -23539,7 +23468,6 @@ export const postLoadBalancersRoute = createRoute({
                     max_services: 5,
                     max_targets: 25,
                     max_assigned_certificates: 10,
-                    deprecated: '2016-01-30T23:50:00Z',
                     deprecation: null,
                     prices: [
                       {
@@ -23632,7 +23560,7 @@ export const postLoadBalancersRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -23659,7 +23587,7 @@ export const postLoadBalancersRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -24130,7 +24058,7 @@ export const getLoadBalancersActionsRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -24157,7 +24085,7 @@ export const getLoadBalancersActionsRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -24346,7 +24274,7 @@ export const getLoadBalancersActionsIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -24373,7 +24301,7 @@ export const getLoadBalancersActionsIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -24775,15 +24703,6 @@ export const getLoadBalancersIdRoute = createRoute({
                             'Number of SSL Certificates that can be assigned to a single Load Balancer.',
                           example: 10,
                         }),
-                      deprecated: z.iso
-                        .datetime({ offset: true })
-                        .nullable()
-                        .openapi({
-                          deprecated: true,
-                          description:
-                            '**Deprecated:** This field is deprecated. Use the `deprecation` object instead.\n\nPoint in time when the Load Balancer type is deprecated (in [RFC3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) format).\n',
-                          example: '2016-01-30T23:50:00Z',
-                        }),
                       deprecation: z
                         .object({
                           unavailable_after: z.iso
@@ -24915,7 +24834,6 @@ export const getLoadBalancersIdRoute = createRoute({
                         'max_services',
                         'max_targets',
                         'max_assigned_certificates',
-                        'deprecated',
                         'deprecation',
                         'prices',
                       ],
@@ -25957,7 +25875,7 @@ export const getLoadBalancersIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -25984,7 +25902,7 @@ export const getLoadBalancersIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -26413,15 +26331,6 @@ export const putLoadBalancersIdRoute = createRoute({
                             'Number of SSL Certificates that can be assigned to a single Load Balancer.',
                           example: 10,
                         }),
-                      deprecated: z.iso
-                        .datetime({ offset: true })
-                        .nullable()
-                        .openapi({
-                          deprecated: true,
-                          description:
-                            '**Deprecated:** This field is deprecated. Use the `deprecation` object instead.\n\nPoint in time when the Load Balancer type is deprecated (in [RFC3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) format).\n',
-                          example: '2016-01-30T23:50:00Z',
-                        }),
                       deprecation: z
                         .object({
                           unavailable_after: z.iso
@@ -26553,7 +26462,6 @@ export const putLoadBalancersIdRoute = createRoute({
                         'max_services',
                         'max_targets',
                         'max_assigned_certificates',
-                        'deprecated',
                         'deprecation',
                         'prices',
                       ],
@@ -27611,7 +27519,6 @@ export const putLoadBalancersIdRoute = createRoute({
                     max_services: 5,
                     max_targets: 25,
                     max_assigned_certificates: 10,
-                    deprecated: '2016-01-30T23:50:00Z',
                     deprecation: null,
                     prices: [
                       {
@@ -27696,7 +27603,7 @@ export const putLoadBalancersIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -27723,7 +27630,7 @@ export const putLoadBalancersIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -27912,7 +27819,7 @@ export const deleteLoadBalancersIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -27939,7 +27846,7 @@ export const deleteLoadBalancersIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -28423,7 +28330,7 @@ export const getLoadBalancersIdActionsRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -28450,7 +28357,7 @@ export const getLoadBalancersIdActionsRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -28626,7 +28533,7 @@ export const postLoadBalancersIdActionsAddServiceRoute = createRoute({
                 })
                 .and(
                   z
-                    .object({})
+                    .looseObject({})
                     .openapi({ required: ['protocol', 'port', 'interval', 'timeout', 'retries'] }),
                 )
                 .exactOptional(),
@@ -28881,7 +28788,7 @@ export const postLoadBalancersIdActionsAddServiceRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -28908,7 +28815,7 @@ export const postLoadBalancersIdActionsAddServiceRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -29218,7 +29125,7 @@ export const postLoadBalancersIdActionsAddTargetRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -29245,7 +29152,7 @@ export const postLoadBalancersIdActionsAddTargetRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -29499,7 +29406,7 @@ export const postLoadBalancersIdActionsAttachToNetworkRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -29526,7 +29433,7 @@ export const postLoadBalancersIdActionsAttachToNetworkRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -29755,7 +29662,7 @@ export const postLoadBalancersIdActionsChangeAlgorithmRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -29782,7 +29689,7 @@ export const postLoadBalancersIdActionsChangeAlgorithmRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -30020,7 +29927,7 @@ export const postLoadBalancersIdActionsChangeDnsPtrRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -30047,7 +29954,7 @@ export const postLoadBalancersIdActionsChangeDnsPtrRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -30275,7 +30182,7 @@ export const postLoadBalancersIdActionsChangeProtectionRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -30302,7 +30209,7 @@ export const postLoadBalancersIdActionsChangeProtectionRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -30531,7 +30438,7 @@ export const postLoadBalancersIdActionsChangeTypeRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -30558,7 +30465,7 @@ export const postLoadBalancersIdActionsChangeTypeRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -30785,7 +30692,7 @@ export const postLoadBalancersIdActionsDeleteServiceRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -30812,7 +30719,7 @@ export const postLoadBalancersIdActionsDeleteServiceRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -31052,7 +30959,7 @@ export const postLoadBalancersIdActionsDetachFromNetworkRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -31079,7 +30986,7 @@ export const postLoadBalancersIdActionsDetachFromNetworkRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -31293,7 +31200,7 @@ export const postLoadBalancersIdActionsDisablePublicInterfaceRoute = createRoute
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -31320,7 +31227,7 @@ export const postLoadBalancersIdActionsDisablePublicInterfaceRoute = createRoute
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -31534,7 +31441,7 @@ export const postLoadBalancersIdActionsEnablePublicInterfaceRoute = createRoute(
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -31561,7 +31468,7 @@ export const postLoadBalancersIdActionsEnablePublicInterfaceRoute = createRoute(
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -31855,7 +31762,7 @@ export const postLoadBalancersIdActionsRemoveTargetRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -31882,7 +31789,7 @@ export const postLoadBalancersIdActionsRemoveTargetRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -32058,7 +31965,7 @@ export const postLoadBalancersIdActionsUpdateServiceRoute = createRoute({
                 })
                 .and(
                   z
-                    .object({})
+                    .looseObject({})
                     .openapi({ required: ['protocol', 'port', 'interval', 'timeout', 'retries'] }),
                 )
                 .exactOptional(),
@@ -32406,7 +32313,7 @@ export const postLoadBalancersIdActionsUpdateServiceRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -32433,7 +32340,7 @@ export const postLoadBalancersIdActionsUpdateServiceRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -32665,7 +32572,7 @@ export const getLoadBalancersIdActionsActionIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -32692,7 +32599,7 @@ export const getLoadBalancersIdActionsActionIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -32904,7 +32811,7 @@ export const getLoadBalancersIdMetricsRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -32931,7 +32838,7 @@ export const getLoadBalancersIdMetricsRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -33284,7 +33191,7 @@ export const getLocationsRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -33311,7 +33218,7 @@ export const getLocationsRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -33471,7 +33378,7 @@ export const getLocationsIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -33498,7 +33405,7 @@ export const getLocationsIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -34014,7 +33921,7 @@ export const getNetworksRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -34041,7 +33948,7 @@ export const getNetworksRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -34421,7 +34328,7 @@ export const postNetworksRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -34448,7 +34355,7 @@ export const postNetworksRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -34919,7 +34826,7 @@ export const getNetworksActionsRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -34946,7 +34853,7 @@ export const getNetworksActionsRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -35135,7 +35042,7 @@ export const getNetworksActionsIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -35162,7 +35069,7 @@ export const getNetworksActionsIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -35449,7 +35356,7 @@ export const getNetworksIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -35476,7 +35383,7 @@ export const getNetworksIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -35824,7 +35731,7 @@ export const putNetworksIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -35851,7 +35758,7 @@ export const putNetworksIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -35920,7 +35827,7 @@ export const deleteNetworksIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -35947,7 +35854,7 @@ export const deleteNetworksIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -36431,7 +36338,7 @@ export const getNetworksIdActionsRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -36458,7 +36365,7 @@ export const getNetworksIdActionsRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -36694,7 +36601,7 @@ export const postNetworksIdActionsAddRouteRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -36721,7 +36628,7 @@ export const postNetworksIdActionsAddRouteRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -36989,7 +36896,7 @@ export const postNetworksIdActionsAddSubnetRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -37016,7 +36923,7 @@ export const postNetworksIdActionsAddSubnetRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -37040,7 +36947,7 @@ export const postNetworksIdActionsChangeIpRangeRoute = createRoute({
   tags: ['Network Actions'],
   summary: 'Change IP range of a Network',
   description:
-    'Changes the IP range of a [Network](#tag/networks).\n\nThe following restrictions apply to changing the IP range:\n- IP ranges can only be extended and never shrunk.\n- IPs can only be added to the end of the existing range, therefore only the netmask is allowed to be changed.\n\nTo update the routes on the connected [Servers](#tag/servers), they need to be rebooted or the routes to be updated manually.\n\nFor example if the [Network](#tag/networks) has a range of `10.0.0.0/16` to extend it the new range has to start with the IP `10.0.0.0` as well. The netmask `/16` can be changed to a smaller one then `16` therefore increasing the IP range. A valid entry would be `10.0.0.0/15`, `10.0.0.0/14` or `10.0.0.0/13` and so on.\n\nIf a change is currently being performed on this [Network](#tag/networks), a error response with code `conflict` will be returned.\n',
+    'Changes the IP range of a [Network](#tag/networks).\n\nThe following restrictions apply to changing the IP range:\n- IP ranges can only be extended and never shrunk.\n- IPs can only be added to the end of the existing range, therefore only the netmask is allowed to be changed.\n- The Network must not have any attached members.\n\nTo update the routes on the connected [Servers](#tag/servers), they need to be rebooted or the routes to be updated manually.\n\nFor example if the [Network](#tag/networks) has a range of `10.0.0.0/16` to extend it the new range has to start with the IP `10.0.0.0` as well. The netmask `/16` can be changed to a smaller one then `16` therefore increasing the IP range. A valid entry would be `10.0.0.0/15`, `10.0.0.0/14` or `10.0.0.0/13` and so on.\n\nIf a change is currently being performed on this [Network](#tag/networks), an error response with code `conflict` will be returned. If the Network has any attached members, an error response with code `service_error` will be returned.\n',
   operationId: 'change_network_ip_range',
   request: {
     params: z.object({
@@ -37245,7 +37152,7 @@ export const postNetworksIdActionsChangeIpRangeRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -37272,7 +37179,7 @@ export const postNetworksIdActionsChangeIpRangeRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -37502,7 +37409,7 @@ export const postNetworksIdActionsChangeProtectionRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -37529,7 +37436,7 @@ export const postNetworksIdActionsChangeProtectionRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -37765,7 +37672,7 @@ export const postNetworksIdActionsDeleteRouteRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -37792,7 +37699,7 @@ export const postNetworksIdActionsDeleteRouteRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -38020,7 +37927,7 @@ export const postNetworksIdActionsDeleteSubnetRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -38047,7 +37954,7 @@ export const postNetworksIdActionsDeleteSubnetRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -38279,7 +38186,7 @@ export const getNetworksIdActionsActionIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -38306,7 +38213,7 @@ export const getNetworksIdActionsActionIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -38820,7 +38727,7 @@ export const getNetworksIdMembersRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -38847,7 +38754,7 @@ export const getNetworksIdMembersRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -39275,7 +39182,7 @@ export const getPlacementGroupsRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -39302,7 +39209,7 @@ export const getPlacementGroupsRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -39574,7 +39481,7 @@ export const postPlacementGroupsRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -39601,7 +39508,7 @@ export const postPlacementGroupsRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -39759,7 +39666,7 @@ export const getPlacementGroupsIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -39786,7 +39693,7 @@ export const getPlacementGroupsIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -39971,7 +39878,7 @@ export const putPlacementGroupsIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -39998,7 +39905,7 @@ export const putPlacementGroupsIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -40066,7 +39973,7 @@ export const deletePlacementGroupsIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -40093,7 +40000,7 @@ export const deletePlacementGroupsIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -40658,7 +40565,7 @@ export const getPricingRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -40685,7 +40592,7 @@ export const getPricingRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -41212,7 +41119,7 @@ export const getPrimaryIpsRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -41239,7 +41146,7 @@ export const getPrimaryIpsRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -41773,7 +41680,7 @@ export const postPrimaryIpsRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -41800,7 +41707,7 @@ export const postPrimaryIpsRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -42271,7 +42178,7 @@ export const getPrimaryIpsActionsRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -42298,7 +42205,7 @@ export const getPrimaryIpsActionsRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -42487,7 +42394,7 @@ export const getPrimaryIpsActionsIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -42514,7 +42421,7 @@ export const getPrimaryIpsActionsIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -42970,7 +42877,7 @@ export const getPrimaryIpsIdActionsRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -42997,7 +42904,7 @@ export const getPrimaryIpsIdActionsRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -43213,7 +43120,7 @@ export const getPrimaryIpsIdActionsActionIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -43240,7 +43147,7 @@ export const getPrimaryIpsIdActionsActionIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -43545,7 +43452,7 @@ export const getPrimaryIpsIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -43572,7 +43479,7 @@ export const getPrimaryIpsIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -43914,7 +43821,7 @@ export const putPrimaryIpsIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -43941,7 +43848,7 @@ export const putPrimaryIpsIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -44010,7 +43917,7 @@ export const deletePrimaryIpsIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -44037,7 +43944,7 @@ export const deletePrimaryIpsIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -44287,7 +44194,7 @@ export const postPrimaryIpsIdActionsAssignRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -44314,7 +44221,7 @@ export const postPrimaryIpsIdActionsAssignRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -44552,7 +44459,7 @@ export const postPrimaryIpsIdActionsChangeDnsPtrRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -44579,7 +44486,7 @@ export const postPrimaryIpsIdActionsChangeDnsPtrRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -44811,7 +44718,7 @@ export const postPrimaryIpsIdActionsChangeProtectionRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -44838,7 +44745,7 @@ export const postPrimaryIpsIdActionsChangeProtectionRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -45052,7 +44959,7 @@ export const postPrimaryIpsIdActionsUnassignRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -45079,7 +44986,7 @@ export const postPrimaryIpsIdActionsUnassignRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -45225,13 +45132,6 @@ export const getServerTypesRoute = createRoute({
                       .openapi({
                         description: 'Disk size a Server of this type will have in GB.',
                         example: 80,
-                      }),
-                    deprecated: z
-                      .boolean()
-                      .openapi({
-                        description:
-                          'This field is deprecated. Use the deprecation object instead.',
-                        example: false,
                       }),
                     prices: z
                       .array(
@@ -45460,7 +45360,6 @@ export const getServerTypesRoute = createRoute({
                       'cores',
                       'memory',
                       'disk',
-                      'deprecated',
                       'prices',
                       'storage_type',
                       'cpu_type',
@@ -45615,7 +45514,7 @@ export const getServerTypesRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -45642,7 +45541,7 @@ export const getServerTypesRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -45748,12 +45647,6 @@ export const getServerTypesIdRoute = createRoute({
                     .openapi({
                       description: 'Disk size a Server of this type will have in GB.',
                       example: 80,
-                    }),
-                  deprecated: z
-                    .boolean()
-                    .openapi({
-                      description: 'This field is deprecated. Use the deprecation object instead.',
-                      example: false,
                     }),
                   prices: z
                     .array(
@@ -45973,7 +45866,6 @@ export const getServerTypesIdRoute = createRoute({
                     'cores',
                     'memory',
                     'disk',
-                    'deprecated',
                     'prices',
                     'storage_type',
                     'cpu_type',
@@ -45997,7 +45889,7 @@ export const getServerTypesIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -46024,7 +45916,7 @@ export const getServerTypesIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -46545,13 +46437,6 @@ export const getServersRoute = createRoute({
                             description: 'Disk size a Server of this type will have in GB.',
                             example: 80,
                           }),
-                        deprecated: z
-                          .boolean()
-                          .openapi({
-                            description:
-                              'This field is deprecated. Use the deprecation object instead.',
-                            example: false,
-                          }),
                         prices: z
                           .array(
                             z
@@ -46783,7 +46668,6 @@ export const getServersRoute = createRoute({
                           'cores',
                           'memory',
                           'disk',
-                          'deprecated',
                           'prices',
                           'storage_type',
                           'cpu_type',
@@ -47023,15 +46907,6 @@ export const getServersRoute = createRoute({
                             description: 'Protection configuration for the Resource.',
                             required: ['delete'],
                           }),
-                        deprecated: z.iso
-                          .datetime({ offset: true })
-                          .nullable()
-                          .openapi({
-                            deprecated: true,
-                            description:
-                              '**Deprecated:** This field is deprecated, use the deprecation object instead.\n\nPoint in time when the Image is considered to be deprecated (in [RFC3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) format).\n',
-                            example: '2018-02-28T00:00:00Z',
-                          }),
                         deprecation: z
                           .object({
                             unavailable_after: z.iso
@@ -47098,7 +46973,6 @@ export const getServersRoute = createRoute({
                           'os_flavor',
                           'os_version',
                           'protection',
-                          'deprecated',
                           'deprecation',
                           'deleted',
                           'labels',
@@ -47561,16 +47435,13 @@ export const getServersRoute = createRoute({
         },
       },
       headers: z.object({
-        'x-next': {
-          description: 'A link to the next page of responses.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A link to the next page of responses.',
-              param: { required: false },
-            }),
-        },
+        'x-next': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A link to the next page of responses.',
+            param: { required: false },
+          }),
       }),
     },
     '4xx': {
@@ -47584,7 +47455,7 @@ export const getServersRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -47611,7 +47482,7 @@ export const getServersRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -48160,13 +48031,6 @@ export const postServersRoute = createRoute({
                           description: 'Disk size a Server of this type will have in GB.',
                           example: 80,
                         }),
-                      deprecated: z
-                        .boolean()
-                        .openapi({
-                          description:
-                            'This field is deprecated. Use the deprecation object instead.',
-                          example: false,
-                        }),
                       prices: z
                         .array(
                           z
@@ -48397,7 +48261,6 @@ export const postServersRoute = createRoute({
                         'cores',
                         'memory',
                         'disk',
-                        'deprecated',
                         'prices',
                         'storage_type',
                         'cpu_type',
@@ -48637,15 +48500,6 @@ export const postServersRoute = createRoute({
                           description: 'Protection configuration for the Resource.',
                           required: ['delete'],
                         }),
-                      deprecated: z.iso
-                        .datetime({ offset: true })
-                        .nullable()
-                        .openapi({
-                          deprecated: true,
-                          description:
-                            '**Deprecated:** This field is deprecated, use the deprecation object instead.\n\nPoint in time when the Image is considered to be deprecated (in [RFC3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) format).\n',
-                          example: '2018-02-28T00:00:00Z',
-                        }),
                       deprecation: z
                         .object({
                           unavailable_after: z.iso
@@ -48712,7 +48566,6 @@ export const postServersRoute = createRoute({
                         'os_flavor',
                         'os_version',
                         'protection',
-                        'deprecated',
                         'deprecation',
                         'deleted',
                         'labels',
@@ -49301,7 +49154,6 @@ export const postServersRoute = createRoute({
                     cores: 2,
                     memory: 4,
                     disk: 80,
-                    deprecated: true,
                     prices: [
                       {
                         location: 'fsn1',
@@ -49359,7 +49211,6 @@ export const postServersRoute = createRoute({
                     os_version: '24.04',
                     rapid_deploy: false,
                     protection: { delete: false },
-                    deprecated: null,
                     deprecation: null,
                     deleted: null,
                     labels: { key: 'value' },
@@ -49428,7 +49279,7 @@ export const postServersRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -49455,7 +49306,7 @@ export const postServersRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -49926,7 +49777,7 @@ export const getServersActionsRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -49953,7 +49804,7 @@ export const getServersActionsRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -50142,7 +49993,7 @@ export const getServersActionsIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -50169,7 +50020,7 @@ export const getServersActionsIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -50547,13 +50398,6 @@ export const getServersIdRoute = createRoute({
                           description: 'Disk size a Server of this type will have in GB.',
                           example: 80,
                         }),
-                      deprecated: z
-                        .boolean()
-                        .openapi({
-                          description:
-                            'This field is deprecated. Use the deprecation object instead.',
-                          example: false,
-                        }),
                       prices: z
                         .array(
                           z
@@ -50784,7 +50628,6 @@ export const getServersIdRoute = createRoute({
                         'cores',
                         'memory',
                         'disk',
-                        'deprecated',
                         'prices',
                         'storage_type',
                         'cpu_type',
@@ -51024,15 +50867,6 @@ export const getServersIdRoute = createRoute({
                           description: 'Protection configuration for the Resource.',
                           required: ['delete'],
                         }),
-                      deprecated: z.iso
-                        .datetime({ offset: true })
-                        .nullable()
-                        .openapi({
-                          deprecated: true,
-                          description:
-                            '**Deprecated:** This field is deprecated, use the deprecation object instead.\n\nPoint in time when the Image is considered to be deprecated (in [RFC3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) format).\n',
-                          example: '2018-02-28T00:00:00Z',
-                        }),
                       deprecation: z
                         .object({
                           unavailable_after: z.iso
@@ -51099,7 +50933,6 @@ export const getServersIdRoute = createRoute({
                         'os_flavor',
                         'os_version',
                         'protection',
-                        'deprecated',
                         'deprecation',
                         'deleted',
                         'labels',
@@ -51436,7 +51269,7 @@ export const getServersIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -51463,7 +51296,7 @@ export const getServersIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -51865,13 +51698,6 @@ export const putServersIdRoute = createRoute({
                           description: 'Disk size a Server of this type will have in GB.',
                           example: 80,
                         }),
-                      deprecated: z
-                        .boolean()
-                        .openapi({
-                          description:
-                            'This field is deprecated. Use the deprecation object instead.',
-                          example: false,
-                        }),
                       prices: z
                         .array(
                           z
@@ -52102,7 +51928,6 @@ export const putServersIdRoute = createRoute({
                         'cores',
                         'memory',
                         'disk',
-                        'deprecated',
                         'prices',
                         'storage_type',
                         'cpu_type',
@@ -52342,15 +52167,6 @@ export const putServersIdRoute = createRoute({
                           description: 'Protection configuration for the Resource.',
                           required: ['delete'],
                         }),
-                      deprecated: z.iso
-                        .datetime({ offset: true })
-                        .nullable()
-                        .openapi({
-                          deprecated: true,
-                          description:
-                            '**Deprecated:** This field is deprecated, use the deprecation object instead.\n\nPoint in time when the Image is considered to be deprecated (in [RFC3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) format).\n',
-                          example: '2018-02-28T00:00:00Z',
-                        }),
                       deprecation: z
                         .object({
                           unavailable_after: z.iso
@@ -52417,7 +52233,6 @@ export const putServersIdRoute = createRoute({
                         'os_flavor',
                         'os_version',
                         'protection',
-                        'deprecated',
                         'deprecation',
                         'deleted',
                         'labels',
@@ -52754,7 +52569,7 @@ export const putServersIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -52781,7 +52596,7 @@ export const putServersIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -52972,7 +52787,7 @@ export const deleteServersIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -52999,7 +52814,7 @@ export const deleteServersIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -53483,7 +53298,7 @@ export const getServersIdActionsRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -53510,7 +53325,7 @@ export const getServersIdActionsRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -53748,7 +53563,7 @@ export const postServersIdActionsAddToPlacementGroupRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -53775,7 +53590,7 @@ export const postServersIdActionsAddToPlacementGroupRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -54004,7 +53819,7 @@ export const postServersIdActionsAttachIsoRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -54031,7 +53846,7 @@ export const postServersIdActionsAttachIsoRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -54295,7 +54110,7 @@ export const postServersIdActionsAttachToNetworkRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -54322,7 +54137,7 @@ export const postServersIdActionsAttachToNetworkRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -54569,7 +54384,7 @@ export const postServersIdActionsChangeAliasIpsRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -54596,7 +54411,7 @@ export const postServersIdActionsChangeAliasIpsRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -54834,7 +54649,7 @@ export const postServersIdActionsChangeDnsPtrRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -54861,7 +54676,7 @@ export const postServersIdActionsChangeDnsPtrRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -55098,7 +54913,7 @@ export const postServersIdActionsChangeProtectionRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -55125,7 +54940,7 @@ export const postServersIdActionsChangeProtectionRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -55360,7 +55175,7 @@ export const postServersIdActionsChangeTypeRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -55387,7 +55202,7 @@ export const postServersIdActionsChangeTypeRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -55629,15 +55444,6 @@ export const postServersIdActionsCreateImageRoute = createRoute({
                       description: 'Protection configuration for the Resource.',
                       required: ['delete'],
                     }),
-                  deprecated: z.iso
-                    .datetime({ offset: true })
-                    .nullable()
-                    .openapi({
-                      deprecated: true,
-                      description:
-                        '**Deprecated:** This field is deprecated, use the deprecation object instead.\n\nPoint in time when the Image is considered to be deprecated (in [RFC3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) format).\n',
-                      example: '2018-02-28T00:00:00Z',
-                    }),
                   deprecation: z
                     .object({
                       unavailable_after: z.iso
@@ -55699,7 +55505,6 @@ export const postServersIdActionsCreateImageRoute = createRoute({
                     'os_flavor',
                     'os_version',
                     'protection',
-                    'deprecated',
                     'deprecation',
                     'deleted',
                     'labels',
@@ -55838,7 +55643,6 @@ export const postServersIdActionsCreateImageRoute = createRoute({
                   os_version: '20.04',
                   rapid_deploy: false,
                   protection: { delete: false },
-                  deprecated: null,
                   deprecation: null,
                   deleted: null,
                   labels: { key: 'value' },
@@ -55871,7 +55675,7 @@ export const postServersIdActionsCreateImageRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -55898,7 +55702,7 @@ export const postServersIdActionsCreateImageRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -56138,7 +55942,7 @@ export const postServersIdActionsDetachFromNetworkRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -56165,7 +55969,7 @@ export const postServersIdActionsDetachFromNetworkRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -56376,7 +56180,7 @@ export const postServersIdActionsDetachIsoRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -56403,7 +56207,7 @@ export const postServersIdActionsDetachIsoRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -56614,7 +56418,7 @@ export const postServersIdActionsDisableBackupRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -56641,7 +56445,7 @@ export const postServersIdActionsDisableBackupRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -56852,7 +56656,7 @@ export const postServersIdActionsDisableRescueRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -56879,7 +56683,7 @@ export const postServersIdActionsDisableRescueRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -57090,7 +56894,7 @@ export const postServersIdActionsEnableBackupRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -57117,7 +56921,7 @@ export const postServersIdActionsEnableBackupRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -57373,7 +57177,7 @@ export const postServersIdActionsEnableRescueRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -57400,7 +57204,7 @@ export const postServersIdActionsEnableRescueRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -57611,7 +57415,7 @@ export const postServersIdActionsPoweroffRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -57638,7 +57442,7 @@ export const postServersIdActionsPoweroffRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -57848,7 +57652,7 @@ export const postServersIdActionsPoweronRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -57875,7 +57679,7 @@ export const postServersIdActionsPoweronRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -58086,7 +57890,7 @@ export const postServersIdActionsRebootRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -58113,7 +57917,7 @@ export const postServersIdActionsRebootRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -58353,7 +58157,7 @@ export const postServersIdActionsRebuildRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -58380,7 +58184,7 @@ export const postServersIdActionsRebuildRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -58590,7 +58394,7 @@ export const postServersIdActionsRemoveFromPlacementGroupRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -58617,7 +58421,7 @@ export const postServersIdActionsRemoveFromPlacementGroupRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -58841,7 +58645,7 @@ export const postServersIdActionsRequestConsoleRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -58868,7 +58672,7 @@ export const postServersIdActionsRequestConsoleRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -59079,7 +58883,7 @@ export const postServersIdActionsResetRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -59106,7 +58910,7 @@ export const postServersIdActionsResetRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -59326,7 +59130,7 @@ export const postServersIdActionsResetPasswordRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -59353,7 +59157,7 @@ export const postServersIdActionsResetPasswordRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -59564,7 +59368,7 @@ export const postServersIdActionsShutdownRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -59591,7 +59395,7 @@ export const postServersIdActionsShutdownRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -59823,7 +59627,7 @@ export const getServersIdActionsActionIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -59850,7 +59654,7 @@ export const getServersIdActionsActionIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -60044,7 +59848,7 @@ export const getServersIdMetricsRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -60071,7 +59875,7 @@ export const getServersIdMetricsRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -60422,7 +60226,7 @@ export const getSshKeysRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -60449,7 +60253,7 @@ export const getSshKeysRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -60578,7 +60382,7 @@ export const postSshKeysRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -60605,7 +60409,7 @@ export const postSshKeysRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -60736,7 +60540,7 @@ export const getSshKeysIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -60763,7 +60567,7 @@ export const getSshKeysIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -60931,7 +60735,7 @@ export const putSshKeysIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -60958,7 +60762,7 @@ export const putSshKeysIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -61026,7 +60830,7 @@ export const deleteSshKeysIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -61053,7 +60857,7 @@ export const deleteSshKeysIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -61612,7 +61416,7 @@ export const getVolumesRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -61639,7 +61443,7 @@ export const getVolumesRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -62300,7 +62104,7 @@ export const postVolumesRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -62327,7 +62131,7 @@ export const postVolumesRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -62798,7 +62602,7 @@ export const getVolumesActionsRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -62825,7 +62629,7 @@ export const getVolumesActionsRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -63014,7 +62818,7 @@ export const getVolumesActionsIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -63041,7 +62845,7 @@ export const getVolumesActionsIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -63343,7 +63147,7 @@ export const getVolumesIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -63370,7 +63174,7 @@ export const getVolumesIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -63724,7 +63528,7 @@ export const putVolumesIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -63751,7 +63555,7 @@ export const putVolumesIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -63820,7 +63624,7 @@ export const deleteVolumesIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -63847,7 +63651,7 @@ export const deleteVolumesIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -64334,7 +64138,7 @@ export const getVolumesIdActionsRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -64361,7 +64165,7 @@ export const getVolumesIdActionsRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -64640,7 +64444,7 @@ export const postVolumesIdActionsAttachRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -64667,7 +64471,7 @@ export const postVolumesIdActionsAttachRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -64898,7 +64702,7 @@ export const postVolumesIdActionsChangeProtectionRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -64925,7 +64729,7 @@ export const postVolumesIdActionsChangeProtectionRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -65136,7 +64940,7 @@ export const postVolumesIdActionsDetachRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -65163,7 +64967,7 @@ export const postVolumesIdActionsDetachRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -65390,7 +65194,7 @@ export const postVolumesIdActionsResizeRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -65417,7 +65221,7 @@ export const postVolumesIdActionsResizeRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -65649,7 +65453,7 @@ export const getVolumesIdActionsActionIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -65676,7 +65480,7 @@ export const getVolumesIdActionsActionIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -66470,7 +66274,7 @@ export const getZonesRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -66497,7 +66301,7 @@ export const getZonesRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -67400,7 +67204,7 @@ export const postZonesRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -67427,7 +67231,7 @@ export const postZonesRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -67954,7 +67758,7 @@ export const getZonesIdOrNameRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -67981,7 +67785,7 @@ export const getZonesIdOrNameRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -68560,7 +68364,7 @@ export const putZonesIdOrNameRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -68587,7 +68391,7 @@ export const putZonesIdOrNameRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -68778,7 +68582,7 @@ export const deleteZonesIdOrNameRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -68805,7 +68609,7 @@ export const deleteZonesIdOrNameRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -68878,7 +68682,7 @@ export const getZonesIdOrNameZonefileRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -68905,7 +68709,7 @@ export const getZonesIdOrNameZonefileRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -69376,7 +69180,7 @@ export const getZonesActionsRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -69403,7 +69207,7 @@ export const getZonesActionsRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -69592,7 +69396,7 @@ export const getZonesActionsIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -69619,7 +69423,7 @@ export const getZonesActionsIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -70061,7 +69865,7 @@ export const getZonesIdOrNameActionsRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -70088,7 +69892,7 @@ export const getZonesIdOrNameActionsRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -70306,7 +70110,7 @@ export const getZonesIdOrNameActionsActionIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -70333,7 +70137,7 @@ export const getZonesIdOrNameActionsActionIdRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -70586,7 +70390,7 @@ export const postZonesIdOrNameActionsChangePrimaryNameserversRoute = createRoute
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -70613,7 +70417,7 @@ export const postZonesIdOrNameActionsChangePrimaryNameserversRoute = createRoute
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -70827,7 +70631,7 @@ export const postZonesIdOrNameActionsChangeProtectionRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -70854,7 +70658,7 @@ export const postZonesIdOrNameActionsChangeProtectionRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -71072,7 +70876,7 @@ export const postZonesIdOrNameActionsChangeTtlRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -71099,7 +70903,7 @@ export const postZonesIdOrNameActionsChangeTtlRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -71315,7 +71119,7 @@ export const postZonesIdOrNameActionsImportZonefileRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -71342,7 +71146,7 @@ export const postZonesIdOrNameActionsImportZonefileRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -71856,7 +71660,7 @@ export const getZonesIdOrNameRrsetsRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -71883,7 +71687,7 @@ export const getZonesIdOrNameRrsetsRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -72302,7 +72106,7 @@ export const postZonesIdOrNameRrsetsRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -72329,7 +72133,7 @@ export const postZonesIdOrNameRrsetsRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -72593,7 +72397,7 @@ export const getZonesIdOrNameRrsetsRrNameRrTypeRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -72620,7 +72424,7 @@ export const getZonesIdOrNameRrsetsRrNameRrTypeRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -72919,7 +72723,7 @@ export const putZonesIdOrNameRrsetsRrNameRrTypeRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -72946,7 +72750,7 @@ export const putZonesIdOrNameRrsetsRrNameRrTypeRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -73207,7 +73011,7 @@ export const deleteZonesIdOrNameRrsetsRrNameRrTypeRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -73234,7 +73038,7 @@ export const deleteZonesIdOrNameRrsetsRrNameRrTypeRoute = createRoute({
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -73520,7 +73324,7 @@ export const postZonesIdOrNameRrsetsRrNameRrTypeActionsChangeProtectionRoute = c
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -73547,7 +73351,7 @@ export const postZonesIdOrNameRrsetsRrNameRrTypeActionsChangeProtectionRoute = c
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -73834,7 +73638,7 @@ export const postZonesIdOrNameRrsetsRrNameRrTypeActionsChangeTtlRoute = createRo
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -73861,7 +73665,7 @@ export const postZonesIdOrNameRrsetsRrNameRrTypeActionsChangeTtlRoute = createRo
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -74170,7 +73974,7 @@ export const postZonesIdOrNameRrsetsRrNameRrTypeActionsSetRecordsRoute = createR
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -74197,7 +74001,7 @@ export const postZonesIdOrNameRrsetsRrNameRrTypeActionsSetRecordsRoute = createR
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -74517,7 +74321,7 @@ export const postZonesIdOrNameRrsetsRrNameRrTypeActionsAddRecordsRoute = createR
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -74544,7 +74348,7 @@ export const postZonesIdOrNameRrsetsRrNameRrTypeActionsAddRecordsRoute = createR
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -74853,7 +74657,7 @@ export const postZonesIdOrNameRrsetsRrNameRrTypeActionsRemoveRecordsRoute = crea
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -74880,7 +74684,7 @@ export const postZonesIdOrNameRrsetsRrNameRrTypeActionsRemoveRecordsRoute = crea
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -75187,7 +74991,7 @@ export const postZonesIdOrNameRrsetsRrNameRrTypeActionsUpdateRecordsRoute = crea
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),
@@ -75214,7 +75018,7 @@ export const postZonesIdOrNameRrsetsRrNameRrTypeActionsUpdateRecordsRoute = crea
                   code: z.string().openapi({ description: 'Error code for machines.' }),
                   message: z.string().openapi({ description: 'Error message for humans.' }),
                   details: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({ description: 'Details about the error.' }),

@@ -58,6 +58,7 @@ Get template parameter schema.
     {
       "title": "string",
       "description": "string",
+      "when": "string",
       "schema": {}
     }
   ],
@@ -1933,6 +1934,7 @@ The response shape for a single filter in the `listTemplatingExtensions` call to
     {
       "title": "string",
       "description": "string",
+      "when": "string",
       "schema": {}
     }
   ],

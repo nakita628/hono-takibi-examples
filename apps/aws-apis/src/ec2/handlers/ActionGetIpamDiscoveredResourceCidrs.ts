@@ -1,0 +1,15 @@
+import { OpenAPIHono } from '@hono/zod-openapi'
+import {
+  getActionGetIpamDiscoveredResourceCidrsRoute,
+  postActionGetIpamDiscoveredResourceCidrsRoute,
+} from '../routes'
+
+const app = new OpenAPIHono()
+
+export const ActionGetIpamDiscoveredResourceCidrsHandler = app
+  .openapi(getActionGetIpamDiscoveredResourceCidrsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postActionGetIpamDiscoveredResourceCidrsRoute, (c) => {
+    throw new Error('Not implemented')
+  })

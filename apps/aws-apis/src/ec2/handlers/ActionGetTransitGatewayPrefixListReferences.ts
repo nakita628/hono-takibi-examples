@@ -1,0 +1,15 @@
+import { OpenAPIHono } from '@hono/zod-openapi'
+import {
+  getActionGetTransitGatewayPrefixListReferencesRoute,
+  postActionGetTransitGatewayPrefixListReferencesRoute,
+} from '../routes'
+
+const app = new OpenAPIHono()
+
+export const ActionGetTransitGatewayPrefixListReferencesHandler = app
+  .openapi(getActionGetTransitGatewayPrefixListReferencesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postActionGetTransitGatewayPrefixListReferencesRoute, (c) => {
+    throw new Error('Not implemented')
+  })

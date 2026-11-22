@@ -55,6 +55,220 @@ Status Code **200**
 This operation does not require authentication
 </aside>
 
+<h1 id="podman-desktop-ai-lab-api-openai">openai</h1>
+
+OpenAI-compatible endpoints
+
+## List the locally available models in the OpenAI API format
+
+<a id="opIdlistOpenAIModels"></a>
+
+> Code samples
+
+```bash
+curl http://localhost:10434/v1/models \
+  -H 'Accept: application/json'
+```
+
+`GET /v1/models`
+
+List the models that are available locally, in the OpenAI API format.
+This is the OpenAI-compatible equivalent of /api/tags: it lists the
+models downloaded by the user, whether their inference server is
+running or not.
+
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "object": "string",
+  "data": [
+    {
+      "id": "string",
+      "object": "string",
+      "created": 0,
+      "owned_by": "string"
+    }
+  ]
+}
+```
+
+> 500 Response
+
+```json
+{
+  "error": {
+    "message": "string",
+    "type": "string",
+    "code": "string"
+  }
+}
+```
+
+<h3 id="list-the-locally-available-models-in-the-openai-api-format-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|The models were successfully fetched|[OpenAIModelListResponse](#schemaopenaimodellistresponse)|
+|500|Internal Server Error|The models could not be fetched|[OpenAIErrorResponse](#schemaopenaierrorresponse)|
+
+<aside class="success">
+This operation does not require authentication
+</aside>
+
+## Create a chat completion in the OpenAI API format
+
+<a id="opIdcreateOpenAIChatCompletion"></a>
+
+> Code samples
+
+```bash
+curl http://localhost:10434/v1/chat/completions \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -d '{
+    "model": "string",
+    "messages": [
+      {
+        "role": "string",
+        "content": "string"
+      }
+    ],
+    "stream": true
+  }'
+```
+
+`POST /v1/chat/completions`
+
+Create a chat completion for a provided model, in the OpenAI API
+format. The inference server for the model is created and started if
+necessary. The request is forwarded as is to the inference server's
+OpenAI endpoint (only the model field is rewritten), so any OpenAI
+chat completion field (tools, tool_choice, temperature, max_tokens,
+stream_options, ...) is passed through, and the inference server
+response (including streaming server-sent events) is returned
+unchanged.
+
+
+> Body parameter
+
+```json
+{
+  "model": "string",
+  "messages": [
+    {
+      "role": "string",
+      "content": "string"
+    }
+  ],
+  "stream": true
+}
+```
+
+<h3 id="create-a-chat-completion-in-the-openai-api-format-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|body|body|[OpenAIChatCompletionRequest](#schemaopenaichatcompletionrequest)|true|OpenAI chat completion request|
+|» model|body|string|true|The model name|
+|» messages|body|[[OpenAIMessage](#schemaopenaimessage)]|true|The messages of the chat|
+|» stream|body|boolean|false|Enable streaming of the response as server-sent events|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "id": "string",
+  "object": "string",
+  "created": 0,
+  "model": "string",
+  "choices": [
+    {}
+  ]
+}
+```
+
+> 400 Response
+
+```json
+{
+  "error": {
+    "message": "string",
+    "type": "string",
+    "code": "string"
+  }
+}
+```
+
+> 404 Response
+
+```json
+{
+  "error": {
+    "message": "string",
+    "type": "string",
+    "code": "string"
+  }
+}
+```
+
+> 413 Response
+
+```json
+{
+  "error": {
+    "message": "string",
+    "type": "string",
+    "code": "string"
+  }
+}
+```
+
+> 500 Response
+
+```json
+{
+  "error": {
+    "message": "string",
+    "type": "string",
+    "code": "string"
+  }
+}
+```
+
+> 502 Response
+
+```json
+{
+  "error": {
+    "message": "string",
+    "type": "string",
+    "code": "string"
+  }
+}
+```
+
+<h3 id="create-a-chat-completion-in-the-openai-api-format-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|The completion was successfully generated. When stream is true the<br>response is a stream of server-sent events terminated by a<br>"data: [DONE]" event<br>|[OpenAIChatCompletionResponse](#schemaopenaichatcompletionresponse)|
+|400|Bad Request|The request is invalid (malformed body or missing model)|[OpenAIErrorResponse](#schemaopenaierrorresponse)|
+|404|Not Found|The model does not exist or has not been downloaded|[OpenAIErrorResponse](#schemaopenaierrorresponse)|
+|413|Payload Too Large|The request body is too large|[OpenAIErrorResponse](#schemaopenaierrorresponse)|
+|500|Internal Server Error|The inference server could not be created or started|[OpenAIErrorResponse](#schemaopenaierrorresponse)|
+|502|Bad Gateway|The inference server could not be reached|[OpenAIErrorResponse](#schemaopenaierrorresponse)|
+
+<aside class="success">
+This operation does not require authentication
+</aside>
+
 <h1 id="podman-desktop-ai-lab-api-models">models</h1>
 
 ## List models that are available locally
@@ -1214,4 +1428,177 @@ Advanced model and runner options for generation and chat requests
 |vocab_only|boolean|false|none|Indicates whether to only load the vocabulary without the full model. <br>(Default: false)<br>|
 |use_mmap|boolean|false|none|Determines whether to use memory-mapped files for loading the model, <br>improving performance on large models. <br>(Default: true)<br>|
 |use_mlock|boolean|false|none|Determines whether to use memory locking to prevent swapping the <br>model out of RAM. <br>(Default: false)<br>|
-|num_thread|integer|false|none|Specifies the number of threads to use for processing. A value of <br>0 uses all available threads. <br>(Default: 0)<br>|
+|num_thread|integer|false|none|Specifies the number of threads to use for processing. A value of<br>0 uses all available threads.<br>(Default: 0)<br>|
+
+<h2 id="tocS_OpenAIModelListResponse">OpenAIModelListResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemaopenaimodellistresponse"></a>
+<a id="schema_OpenAIModelListResponse"></a>
+<a id="tocSopenaimodellistresponse"></a>
+<a id="tocsopenaimodellistresponse"></a>
+
+```json
+{
+  "object": "string",
+  "data": [
+    {
+      "id": "string",
+      "object": "string",
+      "created": 0,
+      "owned_by": "string"
+    }
+  ]
+}
+```
+
+Response listing the locally available models, in the OpenAI API format
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|object|string|true|none|The object type, always 'list'|
+|data|[[OpenAIModel](#schemaopenaimodel)]|true|none|The locally available models|
+
+<h2 id="tocS_OpenAIModel">OpenAIModel</h2>
+<!-- backwards compatibility -->
+<a id="schemaopenaimodel"></a>
+<a id="schema_OpenAIModel"></a>
+<a id="tocSopenaimodel"></a>
+<a id="tocsopenaimodel"></a>
+
+```json
+{
+  "id": "string",
+  "object": "string",
+  "created": 0,
+  "owned_by": "string"
+}
+```
+
+A locally available model, in the OpenAI API format
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|The model name, to be used as the model field of chat completion requests|
+|object|string|true|none|The object type, always 'model'|
+|created|integer|true|none|Unix timestamp (seconds) of the model file creation, 0 when unknown|
+|owned_by|string|true|none|The owner of the model, always 'Podman AI Lab'|
+
+<h2 id="tocS_OpenAIChatCompletionRequest">OpenAIChatCompletionRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemaopenaichatcompletionrequest"></a>
+<a id="schema_OpenAIChatCompletionRequest"></a>
+<a id="tocSopenaichatcompletionrequest"></a>
+<a id="tocsopenaichatcompletionrequest"></a>
+
+```json
+{
+  "model": "string",
+  "messages": [
+    {
+      "role": "string",
+      "content": "string"
+    }
+  ],
+  "stream": true
+}
+```
+
+Chat completion request in the OpenAI API format. The request is
+forwarded as is to the inference server's OpenAI endpoint: only the
+model field is rewritten, and every other OpenAI field (tools,
+tool_choice, temperature, max_tokens, stream_options, ...) is passed
+through.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|model|string|true|none|The model name|
+|messages|[[OpenAIMessage](#schemaopenaimessage)]|true|none|The messages of the chat|
+|stream|boolean|false|none|Enable streaming of the response as server-sent events|
+
+<h2 id="tocS_OpenAIMessage">OpenAIMessage</h2>
+<!-- backwards compatibility -->
+<a id="schemaopenaimessage"></a>
+<a id="schema_OpenAIMessage"></a>
+<a id="tocSopenaimessage"></a>
+<a id="tocsopenaimessage"></a>
+
+```json
+{
+  "role": "string",
+  "content": "string"
+}
+```
+
+A message in a chat, in the OpenAI API format
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|role|string|true|none|The role of the message author (e.g. system, user, assistant, tool)|
+|content|string \| null \| [object]|false|none|The content of the message: a string, an array of content parts, or<br>null (e.g. for an assistant message carrying tool_calls). The<br>content parts are not described here, as the inference server is<br>the authority on them.<br>|
+
+<h2 id="tocS_OpenAIChatCompletionResponse">OpenAIChatCompletionResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemaopenaichatcompletionresponse"></a>
+<a id="schema_OpenAIChatCompletionResponse"></a>
+<a id="tocSopenaichatcompletionresponse"></a>
+<a id="tocsopenaichatcompletionresponse"></a>
+
+```json
+{
+  "id": "string",
+  "object": "string",
+  "created": 0,
+  "model": "string",
+  "choices": [
+    {}
+  ]
+}
+```
+
+Chat completion response in the OpenAI API format, returned by the
+inference server and passed through unchanged. Only the most common
+fields are described here; the complete shape is the OpenAI chat
+completion object served by the inference server.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|false|none|The unique identifier of the completion|
+|object|string|false|none|The object type (chat.completion, or chat.completion.chunk when streaming)|
+|created|integer|false|none|Unix timestamp (seconds) of the creation|
+|model|string|false|none|The model name|
+|choices|[object]|false|none|The list of completion choices|
+
+<h2 id="tocS_OpenAIErrorResponse">OpenAIErrorResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemaopenaierrorresponse"></a>
+<a id="schema_OpenAIErrorResponse"></a>
+<a id="tocSopenaierrorresponse"></a>
+<a id="tocsopenaierrorresponse"></a>
+
+```json
+{
+  "error": {
+    "message": "string",
+    "type": "string",
+    "code": "string"
+  }
+}
+```
+
+Error response in the OpenAI API format
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|error|object|false|none|none|

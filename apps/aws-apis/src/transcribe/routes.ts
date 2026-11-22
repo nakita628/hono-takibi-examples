@@ -11,38 +11,22 @@ const TimestampMillisecondsSchema = z.int().min(0).max(14400000).openapi('Timest
 
 const AbsoluteTimeRangeSchema = z
   .object({
-    StartTime: TimestampMillisecondsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time, in milliseconds, when Amazon Transcribe starts searching for the specified criteria in your audio. If you include <code>StartTime</code> in your request, you must also include <code>EndTime</code>.',
-        }),
-    ).exactOptional(),
-    EndTime: TimestampMillisecondsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time, in milliseconds, when Amazon Transcribe stops searching for the specified criteria in your audio. If you include <code>EndTime</code> in your request, you must also include <code>StartTime</code>.',
-        }),
-    ).exactOptional(),
-    First: TimestampMillisecondsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time, in milliseconds, from the start of your media file until the specified value. Amazon Transcribe searches for your specified criteria in this time segment.',
-        }),
-    ).exactOptional(),
-    Last: TimestampMillisecondsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time, in milliseconds, from the specified value until the end of your media file. Amazon Transcribe searches for your specified criteria in this time segment.',
-        }),
-    ).exactOptional(),
+    StartTime: TimestampMillisecondsSchema.exactOptional().openapi({
+      description:
+        'The time, in milliseconds, when Amazon Transcribe starts searching for the specified criteria in your audio. If you include <code>StartTime</code> in your request, you must also include <code>EndTime</code>.',
+    }),
+    EndTime: TimestampMillisecondsSchema.exactOptional().openapi({
+      description:
+        'The time, in milliseconds, when Amazon Transcribe stops searching for the specified criteria in your audio. If you include <code>EndTime</code> in your request, you must also include <code>StartTime</code>.',
+    }),
+    First: TimestampMillisecondsSchema.exactOptional().openapi({
+      description:
+        'The time, in milliseconds, from the start of your media file until the specified value. Amazon Transcribe searches for your specified criteria in this time segment.',
+    }),
+    Last: TimestampMillisecondsSchema.exactOptional().openapi({
+      description:
+        'The time, in milliseconds, from the specified value until the end of your media file. Amazon Transcribe searches for your specified criteria in this time segment.',
+    }),
   })
   .openapi({
     description:
@@ -55,38 +39,22 @@ const PercentageSchema = z.int().min(0).max(100).openapi('Percentage')
 
 const RelativeTimeRangeSchema = z
   .object({
-    StartPercentage: PercentageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time, in percentage, when Amazon Transcribe starts searching for the specified criteria in your media file. If you include <code>StartPercentage</code> in your request, you must also include <code>EndPercentage</code>.',
-        }),
-    ).exactOptional(),
-    EndPercentage: PercentageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time, in percentage, when Amazon Transcribe stops searching for the specified criteria in your media file. If you include <code>EndPercentage</code> in your request, you must also include <code>StartPercentage</code>.',
-        }),
-    ).exactOptional(),
-    First: PercentageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time, in percentage, from the start of your media file until the specified value. Amazon Transcribe searches for your specified criteria in this time segment.',
-        }),
-    ).exactOptional(),
-    Last: PercentageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time, in percentage, from the specified value until the end of your media file. Amazon Transcribe searches for your specified criteria in this time segment.',
-        }),
-    ).exactOptional(),
+    StartPercentage: PercentageSchema.exactOptional().openapi({
+      description:
+        'The time, in percentage, when Amazon Transcribe starts searching for the specified criteria in your media file. If you include <code>StartPercentage</code> in your request, you must also include <code>EndPercentage</code>.',
+    }),
+    EndPercentage: PercentageSchema.exactOptional().openapi({
+      description:
+        'The time, in percentage, when Amazon Transcribe stops searching for the specified criteria in your media file. If you include <code>EndPercentage</code> in your request, you must also include <code>StartPercentage</code>.',
+    }),
+    First: PercentageSchema.exactOptional().openapi({
+      description:
+        'The time, in percentage, from the start of your media file until the specified value. Amazon Transcribe searches for your specified criteria in this time segment.',
+    }),
+    Last: PercentageSchema.exactOptional().openapi({
+      description:
+        'The time, in percentage, from the specified value until the end of your media file. Amazon Transcribe searches for your specified criteria in this time segment.',
+    }),
   })
   .openapi({
     description:
@@ -99,38 +67,22 @@ const BooleanSchema = z.boolean().openapi('Boolean')
 
 const NonTalkTimeFilterSchema = z
   .object({
-    Threshold: TimestampMillisecondsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specify the duration, in milliseconds, of the period of silence that you want to flag. For example, you can flag a silent period that lasts 30,000 milliseconds.',
-        }),
-    ).exactOptional(),
-    AbsoluteTimeRange: AbsoluteTimeRangeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Makes it possible to specify a time range (in milliseconds) in your audio, during which you want to search for a period of silence. See for more detail.',
-        }),
-    ).exactOptional(),
-    RelativeTimeRange: RelativeTimeRangeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Makes it possible to specify a time range (in percentage) in your media file, during which you want to search for a period of silence. See for more detail.',
-        }),
-    ).exactOptional(),
-    Negate: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Set to <code>TRUE</code> to flag periods of speech. Set to <code>FALSE</code> to flag periods of silence',
-        }),
-    ).exactOptional(),
+    Threshold: TimestampMillisecondsSchema.exactOptional().openapi({
+      description:
+        'Specify the duration, in milliseconds, of the period of silence that you want to flag. For example, you can flag a silent period that lasts 30,000 milliseconds.',
+    }),
+    AbsoluteTimeRange: AbsoluteTimeRangeSchema.exactOptional().openapi({
+      description:
+        'Makes it possible to specify a time range (in milliseconds) in your audio, during which you want to search for a period of silence. See for more detail.',
+    }),
+    RelativeTimeRange: RelativeTimeRangeSchema.exactOptional().openapi({
+      description:
+        'Makes it possible to specify a time range (in percentage) in your media file, during which you want to search for a period of silence. See for more detail.',
+    }),
+    Negate: BooleanSchema.exactOptional().openapi({
+      description:
+        'Set to <code>TRUE</code> to flag periods of speech. Set to <code>FALSE</code> to flag periods of silence',
+    }),
   })
   .openapi({
     description:
@@ -143,46 +95,26 @@ const ParticipantRoleSchema = z.enum(['AGENT', 'CUSTOMER']).openapi('Participant
 
 const InterruptionFilterSchema = z
   .object({
-    Threshold: TimestampMillisecondsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specify the duration of the interruptions in milliseconds. For example, you can flag speech that contains more than 10,000 milliseconds of interruptions.',
-        }),
-    ).exactOptional(),
-    ParticipantRole: ParticipantRoleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specify the interrupter that you want to flag. Omitting this parameter is equivalent to specifying both participants.',
-        }),
-    ).exactOptional(),
-    AbsoluteTimeRange: AbsoluteTimeRangeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Makes it possible to specify a time range (in milliseconds) in your audio, during which you want to search for an interruption. See for more detail.',
-        }),
-    ).exactOptional(),
-    RelativeTimeRange: RelativeTimeRangeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Makes it possible to specify a time range (in percentage) in your media file, during which you want to search for an interruption. See for more detail.',
-        }),
-    ).exactOptional(),
-    Negate: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Set to <code>TRUE</code> to flag speech that does not contain interruptions. Set to <code>FALSE</code> to flag speech that contains interruptions.',
-        }),
-    ).exactOptional(),
+    Threshold: TimestampMillisecondsSchema.exactOptional().openapi({
+      description:
+        'Specify the duration of the interruptions in milliseconds. For example, you can flag speech that contains more than 10,000 milliseconds of interruptions.',
+    }),
+    ParticipantRole: ParticipantRoleSchema.exactOptional().openapi({
+      description:
+        'Specify the interrupter that you want to flag. Omitting this parameter is equivalent to specifying both participants.',
+    }),
+    AbsoluteTimeRange: AbsoluteTimeRangeSchema.exactOptional().openapi({
+      description:
+        'Makes it possible to specify a time range (in milliseconds) in your audio, during which you want to search for an interruption. See for more detail.',
+    }),
+    RelativeTimeRange: RelativeTimeRangeSchema.exactOptional().openapi({
+      description:
+        'Makes it possible to specify a time range (in percentage) in your media file, during which you want to search for an interruption. See for more detail.',
+    }),
+    Negate: BooleanSchema.exactOptional().openapi({
+      description:
+        'Set to <code>TRUE</code> to flag speech that does not contain interruptions. Set to <code>FALSE</code> to flag speech that contains interruptions.',
+    }),
   })
   .openapi({
     description:
@@ -204,49 +136,29 @@ const StringTargetListSchema = z.array(NonEmptyStringSchema).min(1).openapi('Str
 
 const TranscriptFilterSchema = z
   .object({
-    TranscriptFilterType: TranscriptFilterTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Flag the presence or absence of an exact match to the phrases that you specify. For example, if you specify the phrase "speak to a manager" as your <code>Targets</code> value, only that exact phrase is flagged.</p> <p>Note that semantic matching is not supported. For example, if your customer says "speak to <i>the</i> manager", instead of "speak to <i>a</i> manager", your content is not flagged.</p>',
-        }),
-    ),
-    AbsoluteTimeRange: AbsoluteTimeRangeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Makes it possible to specify a time range (in milliseconds) in your audio, during which you want to search for the specified key words or phrases. See for more detail.',
-        }),
-    ).exactOptional(),
-    RelativeTimeRange: RelativeTimeRangeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Makes it possible to specify a time range (in percentage) in your media file, during which you want to search for the specified key words or phrases. See for more detail.',
-        }),
-    ).exactOptional(),
-    ParticipantRole: ParticipantRoleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specify the participant that you want to flag. Omitting this parameter is equivalent to specifying both participants.',
-        }),
-    ).exactOptional(),
-    Negate: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Set to <code>TRUE</code> to flag the absence of the phrase that you specified in your request. Set to <code>FALSE</code> to flag the presence of the phrase that you specified in your request.',
-        }),
-    ).exactOptional(),
-    Targets: StringTargetListSchema.and(
-      z.any().openapi({ description: 'Specify the phrases that you want to flag.' }),
-    ),
+    TranscriptFilterType: TranscriptFilterTypeSchema.openapi({
+      description:
+        '<p>Flag the presence or absence of an exact match to the phrases that you specify. For example, if you specify the phrase "speak to a manager" as your <code>Targets</code> value, only that exact phrase is flagged.</p> <p>Note that semantic matching is not supported. For example, if your customer says "speak to <i>the</i> manager", instead of "speak to <i>a</i> manager", your content is not flagged.</p>',
+    }),
+    AbsoluteTimeRange: AbsoluteTimeRangeSchema.exactOptional().openapi({
+      description:
+        'Makes it possible to specify a time range (in milliseconds) in your audio, during which you want to search for the specified key words or phrases. See for more detail.',
+    }),
+    RelativeTimeRange: RelativeTimeRangeSchema.exactOptional().openapi({
+      description:
+        'Makes it possible to specify a time range (in percentage) in your media file, during which you want to search for the specified key words or phrases. See for more detail.',
+    }),
+    ParticipantRole: ParticipantRoleSchema.exactOptional().openapi({
+      description:
+        'Specify the participant that you want to flag. Omitting this parameter is equivalent to specifying both participants.',
+    }),
+    Negate: BooleanSchema.exactOptional().openapi({
+      description:
+        'Set to <code>TRUE</code> to flag the absence of the phrase that you specified in your request. Set to <code>FALSE</code> to flag the presence of the phrase that you specified in your request.',
+    }),
+    Targets: StringTargetListSchema.openapi({
+      description: 'Specify the phrases that you want to flag.',
+    }),
   })
   .openapi({
     required: ['TranscriptFilterType', 'Targets'],
@@ -266,41 +178,25 @@ const SentimentValueListSchema = z
 
 const SentimentFilterSchema = z
   .object({
-    Sentiments: SentimentValueListSchema.and(
-      z.any().openapi({ description: 'Specify the sentiments that you want to flag.' }),
-    ),
-    AbsoluteTimeRange: AbsoluteTimeRangeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Makes it possible to specify a time range (in milliseconds) in your audio, during which you want to search for the specified sentiments. See for more detail.',
-        }),
-    ).exactOptional(),
-    RelativeTimeRange: RelativeTimeRangeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Makes it possible to specify a time range (in percentage) in your media file, during which you want to search for the specified sentiments. See for more detail.',
-        }),
-    ).exactOptional(),
-    ParticipantRole: ParticipantRoleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specify the participant that you want to flag. Omitting this parameter is equivalent to specifying both participants.',
-        }),
-    ).exactOptional(),
-    Negate: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Set to <code>TRUE</code> to flag the sentiments that you didn't include in your request. Set to <code>FALSE</code> to flag the sentiments that you specified in your request.",
-        }),
-    ).exactOptional(),
+    Sentiments: SentimentValueListSchema.openapi({
+      description: 'Specify the sentiments that you want to flag.',
+    }),
+    AbsoluteTimeRange: AbsoluteTimeRangeSchema.exactOptional().openapi({
+      description:
+        'Makes it possible to specify a time range (in milliseconds) in your audio, during which you want to search for the specified sentiments. See for more detail.',
+    }),
+    RelativeTimeRange: RelativeTimeRangeSchema.exactOptional().openapi({
+      description:
+        'Makes it possible to specify a time range (in percentage) in your media file, during which you want to search for the specified sentiments. See for more detail.',
+    }),
+    ParticipantRole: ParticipantRoleSchema.exactOptional().openapi({
+      description:
+        'Specify the participant that you want to flag. Omitting this parameter is equivalent to specifying both participants.',
+    }),
+    Negate: BooleanSchema.exactOptional().openapi({
+      description:
+        "Set to <code>TRUE</code> to flag the sentiments that you didn't include in your request. Set to <code>FALSE</code> to flag the sentiments that you specified in your request.",
+    }),
   })
   .openapi({
     required: ['Sentiments'],
@@ -311,38 +207,22 @@ const SentimentFilterSchema = z
 
 const RuleSchema = z
   .object({
-    NonTalkTimeFilter: NonTalkTimeFilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Flag the presence or absence of periods of silence in your Call Analytics transcription output. Refer to for more detail.',
-        }),
-    ).exactOptional(),
-    InterruptionFilter: InterruptionFilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Flag the presence or absence of interruptions in your Call Analytics transcription output. Refer to for more detail.',
-        }),
-    ).exactOptional(),
-    TranscriptFilter: TranscriptFilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Flag the presence or absence of specific words or phrases in your Call Analytics transcription output. Refer to for more detail.',
-        }),
-    ).exactOptional(),
-    SentimentFilter: SentimentFilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Flag the presence or absence of specific sentiments in your Call Analytics transcription output. Refer to for more detail.',
-        }),
-    ).exactOptional(),
+    NonTalkTimeFilter: NonTalkTimeFilterSchema.exactOptional().openapi({
+      description:
+        'Flag the presence or absence of periods of silence in your Call Analytics transcription output. Refer to for more detail.',
+    }),
+    InterruptionFilter: InterruptionFilterSchema.exactOptional().openapi({
+      description:
+        'Flag the presence or absence of interruptions in your Call Analytics transcription output. Refer to for more detail.',
+    }),
+    TranscriptFilter: TranscriptFilterSchema.exactOptional().openapi({
+      description:
+        'Flag the presence or absence of specific words or phrases in your Call Analytics transcription output. Refer to for more detail.',
+    }),
+    SentimentFilter: SentimentFilterSchema.exactOptional().openapi({
+      description:
+        'Flag the presence or absence of specific sentiments in your Call Analytics transcription output. Refer to for more detail.',
+    }),
   })
   .openapi({
     description:
@@ -359,46 +239,26 @@ const InputTypeSchema = z.enum(['REAL_TIME', 'POST_CALL']).openapi('InputType')
 
 const CategoryPropertiesSchema = z
   .object({
-    CategoryName: CategoryNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the Call Analytics category. Category names are case sensitive and must be unique within an Amazon Web Services account.',
-        }),
-    ).exactOptional(),
-    Rules: RuleListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The rules used to define a Call Analytics category. Each category can have between 1 and 20 rules.',
-        }),
-    ).exactOptional(),
-    CreateTime: DateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The date and time the specified Call Analytics category was created.</p> <p>Timestamps are in the format <code>YYYY-MM-DD'T'HH:MM:SS.SSSSSS-UTC</code>. For example, <code>2022-05-04T12:32:58.761000-07:00</code> represents 12:32 PM UTC-7 on May 4, 2022.</p>",
-        }),
-    ).exactOptional(),
-    LastUpdateTime: DateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The date and time the specified Call Analytics category was last updated.</p> <p>Timestamps are in the format <code>YYYY-MM-DD'T'HH:MM:SS.SSSSSS-UTC</code>. For example, <code>2022-05-05T12:45:32.691000-07:00</code> represents 12:45 PM UTC-7 on May 5, 2022.</p>",
-        }),
-    ).exactOptional(),
-    InputType: InputTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The input type associated with the specified category. <code>POST_CALL</code> refers to a category that is applied to batch transcriptions; <code>REAL_TIME</code> refers to a category that is applied to streaming transcriptions.',
-        }),
-    ).exactOptional(),
+    CategoryName: CategoryNameSchema.exactOptional().openapi({
+      description:
+        'The name of the Call Analytics category. Category names are case sensitive and must be unique within an Amazon Web Services account.',
+    }),
+    Rules: RuleListSchema.exactOptional().openapi({
+      description:
+        'The rules used to define a Call Analytics category. Each category can have between 1 and 20 rules.',
+    }),
+    CreateTime: DateTimeSchema.exactOptional().openapi({
+      description:
+        "<p>The date and time the specified Call Analytics category was created.</p> <p>Timestamps are in the format <code>YYYY-MM-DD'T'HH:MM:SS.SSSSSS-UTC</code>. For example, <code>2022-05-04T12:32:58.761000-07:00</code> represents 12:32 PM UTC-7 on May 4, 2022.</p>",
+    }),
+    LastUpdateTime: DateTimeSchema.exactOptional().openapi({
+      description:
+        "<p>The date and time the specified Call Analytics category was last updated.</p> <p>Timestamps are in the format <code>YYYY-MM-DD'T'HH:MM:SS.SSSSSS-UTC</code>. For example, <code>2022-05-05T12:45:32.691000-07:00</code> represents 12:45 PM UTC-7 on May 5, 2022.</p>",
+    }),
+    InputType: InputTypeSchema.exactOptional().openapi({
+      description:
+        'The input type associated with the specified category. <code>POST_CALL</code> refers to a category that is applied to batch transcriptions; <code>REAL_TIME</code> refers to a category that is applied to streaming transcriptions.',
+    }),
   })
   .openapi({
     description:
@@ -409,44 +269,28 @@ const CategoryPropertiesSchema = z
 
 const CreateCallAnalyticsCategoryResponseSchema = z
   .object({
-    CategoryProperties: CategoryPropertiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Provides you with the properties of your new category, including its associated rules.',
-        }),
-    ).exactOptional(),
+    CategoryProperties: CategoryPropertiesSchema.exactOptional().openapi({
+      description:
+        'Provides you with the properties of your new category, including its associated rules.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateCallAnalyticsCategoryResponse')
 
 const CreateCallAnalyticsCategoryRequestSchema = z
   .object({
-    CategoryName: CategoryNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A unique name, chosen by you, for your Call Analytics category. It's helpful to use a detailed naming system that will make sense to you in the future. For example, it's better to use <code>sentiment-positive-last30seconds</code> for a category over a generic name like <code>test-category</code>.</p> <p>Category names are case sensitive.</p>",
-        }),
-    ),
-    Rules: RuleListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Rules define a Call Analytics category. When creating a new category, you must create between 1 and 20 rules for that category. For each rule, you specify a filter you want applied to the attributes of a call. For example, you can choose a sentiment filter that detects if a customer's sentiment was positive during the last 30 seconds of the call.",
-        }),
-    ),
-    InputType: InputTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Choose whether you want to create a real-time or a post-call category for your Call Analytics transcription.</p> <p>Specifying <code>POST_CALL</code> assigns your category to post-call transcriptions; categories with this input type cannot be applied to streaming (real-time) transcriptions.</p> <p>Specifying <code>REAL_TIME</code> assigns your category to streaming transcriptions; categories with this input type cannot be applied to post-call transcriptions.</p> <p>If you do not include <code>InputType</code>, your category is created as a post-call category by default.</p>',
-        }),
-    ).exactOptional(),
+    CategoryName: CategoryNameSchema.openapi({
+      description:
+        "<p>A unique name, chosen by you, for your Call Analytics category. It's helpful to use a detailed naming system that will make sense to you in the future. For example, it's better to use <code>sentiment-positive-last30seconds</code> for a category over a generic name like <code>test-category</code>.</p> <p>Category names are case sensitive.</p>",
+    }),
+    Rules: RuleListSchema.openapi({
+      description:
+        "Rules define a Call Analytics category. When creating a new category, you must create between 1 and 20 rules for that category. For each rule, you specify a filter you want applied to the attributes of a call. For example, you can choose a sentiment filter that detects if a customer's sentiment was positive during the last 30 seconds of the call.",
+    }),
+    InputType: InputTypeSchema.exactOptional().openapi({
+      description:
+        '<p>Choose whether you want to create a real-time or a post-call category for your Call Analytics transcription.</p> <p>Specifying <code>POST_CALL</code> assigns your category to post-call transcriptions; categories with this input type cannot be applied to streaming (real-time) transcriptions.</p> <p>Specifying <code>REAL_TIME</code> assigns your category to streaming transcriptions; categories with this input type cannot be applied to post-call transcriptions.</p> <p>If you do not include <code>InputType</code>, your category is created as a post-call category by default.</p>',
+    }),
   })
   .openapi({ required: ['CategoryName', 'Rules'], title: 'CreateCallAnalyticsCategoryRequest' })
   .openapi('CreateCallAnalyticsCategoryRequest')
@@ -490,30 +334,18 @@ const DataAccessRoleArnSchema = z
 
 const InputDataConfigSchema = z
   .object({
-    S3Uri: UriSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The Amazon S3 location (URI) of the text files you want to use to train your custom language model.</p> <p>Here's an example URI path: <code>s3://DOC-EXAMPLE-BUCKET/my-model-training-data/</code> </p>",
-        }),
-    ),
-    TuningDataS3Uri: UriSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The Amazon S3 location (URI) of the text files you want to use to tune your custom language model.</p> <p>Here's an example URI path: <code>s3://DOC-EXAMPLE-BUCKET/my-model-tuning-data/</code> </p>",
-        }),
-    ).exactOptional(),
-    DataAccessRoleArn: DataAccessRoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of an IAM role that has permissions to access the Amazon S3 bucket that contains your input files. If the role that you specify doesn’t have the appropriate permissions to access the specified Amazon S3 location, your request fails.</p> <p>IAM role ARNs have the format <code>arn:partition:iam::account:role/role-name-with-path</code>. For example: <code>arn:aws:iam::111122223333:role/Admin</code>.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_identifiers.html#identifiers-arns">IAM ARNs</a>.</p>',
-        }),
-    ),
+    S3Uri: UriSchema.openapi({
+      description:
+        "<p>The Amazon S3 location (URI) of the text files you want to use to train your custom language model.</p> <p>Here's an example URI path: <code>s3://DOC-EXAMPLE-BUCKET/my-model-training-data/</code> </p>",
+    }),
+    TuningDataS3Uri: UriSchema.exactOptional().openapi({
+      description:
+        "<p>The Amazon S3 location (URI) of the text files you want to use to tune your custom language model.</p> <p>Here's an example URI path: <code>s3://DOC-EXAMPLE-BUCKET/my-model-tuning-data/</code> </p>",
+    }),
+    DataAccessRoleArn: DataAccessRoleArnSchema.openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of an IAM role that has permissions to access the Amazon S3 bucket that contains your input files. If the role that you specify doesn’t have the appropriate permissions to access the specified Amazon S3 location, your request fails.</p> <p>IAM role ARNs have the format <code>arn:partition:iam::account:role/role-name-with-path</code>. For example: <code>arn:aws:iam::111122223333:role/Admin</code>.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_identifiers.html#identifiers-arns">IAM ARNs</a>.</p>',
+    }),
   })
   .openapi({
     required: ['S3Uri', 'DataAccessRoleArn'],
@@ -526,38 +358,24 @@ const ModelStatusSchema = z.enum(['IN_PROGRESS', 'FAILED', 'COMPLETED']).openapi
 
 const CreateLanguageModelResponseSchema = z
   .object({
-    LanguageCode: CLMLanguageCodeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The language code you selected for your custom language model.' }),
-    ).exactOptional(),
-    BaseModelName: BaseModelNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Transcribe standard language model, or base model, you specified when creating your custom language model.',
-        }),
-    ).exactOptional(),
-    ModelName: ModelNameSchema.and(
-      z.any().openapi({ description: 'The name of your custom language model.' }),
-    ).exactOptional(),
-    InputDataConfig: InputDataConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Lists your data access role ARN (Amazon Resource Name) and the Amazon S3 locations you provided for your training (<code>S3Uri</code>) and tuning (<code>TuningDataS3Uri</code>) data.',
-        }),
-    ).exactOptional(),
-    ModelStatus: ModelStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status of your custom language model. When the status displays as <code>COMPLETED</code>, your model is ready to use.',
-        }),
-    ).exactOptional(),
+    LanguageCode: CLMLanguageCodeSchema.exactOptional().openapi({
+      description: 'The language code you selected for your custom language model.',
+    }),
+    BaseModelName: BaseModelNameSchema.exactOptional().openapi({
+      description:
+        'The Amazon Transcribe standard language model, or base model, you specified when creating your custom language model.',
+    }),
+    ModelName: ModelNameSchema.exactOptional().openapi({
+      description: 'The name of your custom language model.',
+    }),
+    InputDataConfig: InputDataConfigSchema.exactOptional().openapi({
+      description:
+        'Lists your data access role ARN (Amazon Resource Name) and the Amazon S3 locations you provided for your training (<code>S3Uri</code>) and tuning (<code>TuningDataS3Uri</code>) data.',
+    }),
+    ModelStatus: ModelStatusSchema.exactOptional().openapi({
+      description:
+        'The status of your custom language model. When the status displays as <code>COMPLETED</code>, your model is ready to use.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateLanguageModelResponse')
@@ -568,22 +386,14 @@ const TagValueSchema = z.string().min(0).max(256).openapi('TagValue')
 
 const TagSchema = z
   .object({
-    Key: TagKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The first part of a key:value pair that forms a tag associated with a given resource. For example, in the tag <code>Department:Sales</code>, the key is 'Department'.",
-        }),
-    ),
-    Value: TagValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The second part of a key:value pair that forms a tag associated with a given resource. For example, in the tag <code>Department:Sales</code>, the value is 'Sales'.</p> <p>Note that you can set the value of a tag to an empty string, but you can't set the value of a tag to null. Omitting the tag value is the same as using an empty string.</p>",
-        }),
-    ),
+    Key: TagKeySchema.openapi({
+      description:
+        "The first part of a key:value pair that forms a tag associated with a given resource. For example, in the tag <code>Department:Sales</code>, the key is 'Department'.",
+    }),
+    Value: TagValueSchema.openapi({
+      description:
+        "<p>The second part of a key:value pair that forms a tag associated with a given resource. For example, in the tag <code>Department:Sales</code>, the value is 'Sales'.</p> <p>Note that you can set the value of a tag to an empty string, but you can't set the value of a tag to null. Omitting the tag value is the same as using an empty string.</p>",
+    }),
   })
   .openapi({
     required: ['Key', 'Value'],
@@ -596,46 +406,26 @@ const TagListSchema = z.array(TagSchema).min(1).max(200).openapi('TagList')
 
 const CreateLanguageModelRequestSchema = z
   .object({
-    LanguageCode: CLMLanguageCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The language code that represents the language of your model. Each custom language model must contain terms in only one language, and the language you select for your custom language model must match the language of your training and tuning data.</p> <p>For a list of supported languages and their associated language codes, refer to the <a href="https://docs.aws.amazon.com/transcribe/latest/dg/supported-languages.html">Supported languages</a> table. Note that US English (<code>en-US</code>) is the only language supported with Amazon Transcribe Medical.</p> <p>A custom language model can only be used to transcribe files in the same language as the model. For example, if you create a custom language model using US English (<code>en-US</code>), you can only apply this model to files that contain English audio.</p>',
-        }),
-    ),
-    BaseModelName: BaseModelNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Transcribe standard language model, or base model, used to create your custom language model. Amazon Transcribe offers two options for base models: Wideband and Narrowband.</p> <p>If the audio you want to transcribe has a sample rate of 16,000 Hz or greater, choose <code>WideBand</code>. To transcribe audio with a sample rate less than 16,000 Hz, choose <code>NarrowBand</code>.</p>',
-        }),
-    ),
-    ModelName: ModelNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A unique name, chosen by you, for your custom language model.</p> <p>This name is case sensitive, cannot contain spaces, and must be unique within an Amazon Web Services account. If you try to create a new custom language model with the same name as an existing custom language model, you get a <code>ConflictException</code> error.</p>',
-        }),
-    ),
-    InputDataConfig: InputDataConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Contains the Amazon S3 location of the training data you want to use to create a new custom language model, and permissions to access this location.</p> <p>When using <code>InputDataConfig</code>, you must include these sub-parameters: <code>S3Uri</code>, which is the Amazon S3 location of your training data, and <code>DataAccessRoleArn</code>, which is the Amazon Resource Name (ARN) of the role that has permission to access your specified Amazon S3 location. You can optionally include <code>TuningDataS3Uri</code>, which is the Amazon S3 location of your tuning data. If you specify different Amazon S3 locations for training and tuning data, the ARN you use must have permissions to access both locations.</p>',
-        }),
-    ),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Adds one or more custom tags, each in the form of a key:value pair, to a new custom language model at the time you create this new model.</p> <p>To learn more about using tags with Amazon Transcribe, refer to <a href="https://docs.aws.amazon.com/transcribe/latest/dg/tagging.html">Tagging resources</a>.</p>',
-        }),
-    ).exactOptional(),
+    LanguageCode: CLMLanguageCodeSchema.openapi({
+      description:
+        '<p>The language code that represents the language of your model. Each custom language model must contain terms in only one language, and the language you select for your custom language model must match the language of your training and tuning data.</p> <p>For a list of supported languages and their associated language codes, refer to the <a href="https://docs.aws.amazon.com/transcribe/latest/dg/supported-languages.html">Supported languages</a> table. Note that US English (<code>en-US</code>) is the only language supported with Amazon Transcribe Medical.</p> <p>A custom language model can only be used to transcribe files in the same language as the model. For example, if you create a custom language model using US English (<code>en-US</code>), you can only apply this model to files that contain English audio.</p>',
+    }),
+    BaseModelName: BaseModelNameSchema.openapi({
+      description:
+        '<p>The Amazon Transcribe standard language model, or base model, used to create your custom language model. Amazon Transcribe offers two options for base models: Wideband and Narrowband.</p> <p>If the audio you want to transcribe has a sample rate of 16,000 Hz or greater, choose <code>WideBand</code>. To transcribe audio with a sample rate less than 16,000 Hz, choose <code>NarrowBand</code>.</p>',
+    }),
+    ModelName: ModelNameSchema.openapi({
+      description:
+        '<p>A unique name, chosen by you, for your custom language model.</p> <p>This name is case sensitive, cannot contain spaces, and must be unique within an Amazon Web Services account. If you try to create a new custom language model with the same name as an existing custom language model, you get a <code>ConflictException</code> error.</p>',
+    }),
+    InputDataConfig: InputDataConfigSchema.openapi({
+      description:
+        '<p>Contains the Amazon S3 location of the training data you want to use to create a new custom language model, and permissions to access this location.</p> <p>When using <code>InputDataConfig</code>, you must include these sub-parameters: <code>S3Uri</code>, which is the Amazon S3 location of your training data, and <code>DataAccessRoleArn</code>, which is the Amazon Resource Name (ARN) of the role that has permission to access your specified Amazon S3 location. You can optionally include <code>TuningDataS3Uri</code>, which is the Amazon S3 location of your tuning data. If you specify different Amazon S3 locations for training and tuning data, the ARN you use must have permissions to access both locations.</p>',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        '<p>Adds one or more custom tags, each in the form of a key:value pair, to a new custom language model at the time you create this new model.</p> <p>To learn more about using tags with Amazon Transcribe, refer to <a href="https://docs.aws.amazon.com/transcribe/latest/dg/tagging.html">Tagging resources</a>.</p>',
+    }),
   })
   .openapi({
     required: ['LanguageCode', 'BaseModelName', 'ModelName', 'InputDataConfig'],
@@ -700,79 +490,47 @@ const FailureReasonSchema = z.string().openapi('FailureReason')
 
 const CreateMedicalVocabularyResponseSchema = z
   .object({
-    VocabularyName: VocabularyNameSchema.and(
-      z.any().openapi({ description: 'The name you chose for your custom medical vocabulary.' }),
-    ).exactOptional(),
-    LanguageCode: LanguageCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The language code you selected for your custom medical vocabulary. US English (<code>en-US</code>) is the only language supported with Amazon Transcribe Medical.',
-        }),
-    ).exactOptional(),
-    VocabularyState: VocabularyStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The processing state of your custom medical vocabulary. If the state is <code>READY</code>, you can use the custom vocabulary in a <code>StartMedicalTranscriptionJob</code> request.',
-        }),
-    ).exactOptional(),
-    LastModifiedTime: DateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The date and time you created your custom medical vocabulary.</p> <p>Timestamps are in the format <code>YYYY-MM-DD'T'HH:MM:SS.SSSSSS-UTC</code>. For example, <code>2022-05-04T12:32:58.761000-07:00</code> represents 12:32 PM UTC-7 on May 4, 2022.</p>",
-        }),
-    ).exactOptional(),
-    FailureReason: FailureReasonSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If <code>VocabularyState</code> is <code>FAILED</code>, <code>FailureReason</code> contains information about why the medical transcription job request failed. See also: <a href="https://docs.aws.amazon.com/transcribe/latest/APIReference/CommonErrors.html">Common Errors</a>.',
-        }),
-    ).exactOptional(),
+    VocabularyName: VocabularyNameSchema.exactOptional().openapi({
+      description: 'The name you chose for your custom medical vocabulary.',
+    }),
+    LanguageCode: LanguageCodeSchema.exactOptional().openapi({
+      description:
+        'The language code you selected for your custom medical vocabulary. US English (<code>en-US</code>) is the only language supported with Amazon Transcribe Medical.',
+    }),
+    VocabularyState: VocabularyStateSchema.exactOptional().openapi({
+      description:
+        'The processing state of your custom medical vocabulary. If the state is <code>READY</code>, you can use the custom vocabulary in a <code>StartMedicalTranscriptionJob</code> request.',
+    }),
+    LastModifiedTime: DateTimeSchema.exactOptional().openapi({
+      description:
+        "<p>The date and time you created your custom medical vocabulary.</p> <p>Timestamps are in the format <code>YYYY-MM-DD'T'HH:MM:SS.SSSSSS-UTC</code>. For example, <code>2022-05-04T12:32:58.761000-07:00</code> represents 12:32 PM UTC-7 on May 4, 2022.</p>",
+    }),
+    FailureReason: FailureReasonSchema.exactOptional().openapi({
+      description:
+        'If <code>VocabularyState</code> is <code>FAILED</code>, <code>FailureReason</code> contains information about why the medical transcription job request failed. See also: <a href="https://docs.aws.amazon.com/transcribe/latest/APIReference/CommonErrors.html">Common Errors</a>.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateMedicalVocabularyResponse')
 
 const CreateMedicalVocabularyRequestSchema = z
   .object({
-    VocabularyName: VocabularyNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A unique name, chosen by you, for your new custom medical vocabulary.</p> <p>This name is case sensitive, cannot contain spaces, and must be unique within an Amazon Web Services account. If you try to create a new custom medical vocabulary with the same name as an existing custom medical vocabulary, you get a <code>ConflictException</code> error.</p>',
-        }),
-    ),
-    LanguageCode: LanguageCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The language code that represents the language of the entries in your custom vocabulary. US English (<code>en-US</code>) is the only language supported with Amazon Transcribe Medical.',
-        }),
-    ),
-    VocabularyFileUri: UriSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The Amazon S3 location (URI) of the text file that contains your custom medical vocabulary. The URI must be in the same Amazon Web Services Region as the resource you're calling.</p> <p>Here's an example URI path: <code>s3://DOC-EXAMPLE-BUCKET/my-vocab-file.txt</code> </p>",
-        }),
-    ),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Adds one or more custom tags, each in the form of a key:value pair, to a new custom medical vocabulary at the time you create this new custom vocabulary.</p> <p>To learn more about using tags with Amazon Transcribe, refer to <a href="https://docs.aws.amazon.com/transcribe/latest/dg/tagging.html">Tagging resources</a>.</p>',
-        }),
-    ).exactOptional(),
+    VocabularyName: VocabularyNameSchema.openapi({
+      description:
+        '<p>A unique name, chosen by you, for your new custom medical vocabulary.</p> <p>This name is case sensitive, cannot contain spaces, and must be unique within an Amazon Web Services account. If you try to create a new custom medical vocabulary with the same name as an existing custom medical vocabulary, you get a <code>ConflictException</code> error.</p>',
+    }),
+    LanguageCode: LanguageCodeSchema.openapi({
+      description:
+        'The language code that represents the language of the entries in your custom vocabulary. US English (<code>en-US</code>) is the only language supported with Amazon Transcribe Medical.',
+    }),
+    VocabularyFileUri: UriSchema.openapi({
+      description:
+        "<p>The Amazon S3 location (URI) of the text file that contains your custom medical vocabulary. The URI must be in the same Amazon Web Services Region as the resource you're calling.</p> <p>Here's an example URI path: <code>s3://DOC-EXAMPLE-BUCKET/my-vocab-file.txt</code> </p>",
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        '<p>Adds one or more custom tags, each in the form of a key:value pair, to a new custom medical vocabulary at the time you create this new custom vocabulary.</p> <p>To learn more about using tags with Amazon Transcribe, refer to <a href="https://docs.aws.amazon.com/transcribe/latest/dg/tagging.html">Tagging resources</a>.</p>',
+    }),
   })
   .openapi({
     required: ['VocabularyName', 'LanguageCode', 'VocabularyFileUri'],
@@ -782,38 +540,24 @@ const CreateMedicalVocabularyRequestSchema = z
 
 const CreateVocabularyResponseSchema = z
   .object({
-    VocabularyName: VocabularyNameSchema.and(
-      z.any().openapi({ description: 'The name you chose for your custom vocabulary.' }),
-    ).exactOptional(),
-    LanguageCode: LanguageCodeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The language code you selected for your custom vocabulary.' }),
-    ).exactOptional(),
-    VocabularyState: VocabularyStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The processing state of your custom vocabulary. If the state is <code>READY</code>, you can use the custom vocabulary in a <code>StartTranscriptionJob</code> request.',
-        }),
-    ).exactOptional(),
-    LastModifiedTime: DateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The date and time you created your custom vocabulary.</p> <p>Timestamps are in the format <code>YYYY-MM-DD'T'HH:MM:SS.SSSSSS-UTC</code>. For example, <code>2022-05-04T12:32:58.761000-07:00</code> represents 12:32 PM UTC-7 on May 4, 2022.</p>",
-        }),
-    ).exactOptional(),
-    FailureReason: FailureReasonSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If <code>VocabularyState</code> is <code>FAILED</code>, <code>FailureReason</code> contains information about why the custom vocabulary request failed. See also: <a href="https://docs.aws.amazon.com/transcribe/latest/APIReference/CommonErrors.html">Common Errors</a>.',
-        }),
-    ).exactOptional(),
+    VocabularyName: VocabularyNameSchema.exactOptional().openapi({
+      description: 'The name you chose for your custom vocabulary.',
+    }),
+    LanguageCode: LanguageCodeSchema.exactOptional().openapi({
+      description: 'The language code you selected for your custom vocabulary.',
+    }),
+    VocabularyState: VocabularyStateSchema.exactOptional().openapi({
+      description:
+        'The processing state of your custom vocabulary. If the state is <code>READY</code>, you can use the custom vocabulary in a <code>StartTranscriptionJob</code> request.',
+    }),
+    LastModifiedTime: DateTimeSchema.exactOptional().openapi({
+      description:
+        "<p>The date and time you created your custom vocabulary.</p> <p>Timestamps are in the format <code>YYYY-MM-DD'T'HH:MM:SS.SSSSSS-UTC</code>. For example, <code>2022-05-04T12:32:58.761000-07:00</code> represents 12:32 PM UTC-7 on May 4, 2022.</p>",
+    }),
+    FailureReason: FailureReasonSchema.exactOptional().openapi({
+      description:
+        'If <code>VocabularyState</code> is <code>FAILED</code>, <code>FailureReason</code> contains information about why the custom vocabulary request failed. See also: <a href="https://docs.aws.amazon.com/transcribe/latest/APIReference/CommonErrors.html">Common Errors</a>.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateVocabularyResponse')
@@ -824,54 +568,30 @@ const PhrasesSchema = z.array(PhraseSchema).openapi('Phrases')
 
 const CreateVocabularyRequestSchema = z
   .object({
-    VocabularyName: VocabularyNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A unique name, chosen by you, for your new custom vocabulary.</p> <p>This name is case sensitive, cannot contain spaces, and must be unique within an Amazon Web Services account. If you try to create a new custom vocabulary with the same name as an existing custom vocabulary, you get a <code>ConflictException</code> error.</p>',
-        }),
-    ),
-    LanguageCode: LanguageCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The language code that represents the language of the entries in your custom vocabulary. Each custom vocabulary must contain terms in only one language.</p> <p>A custom vocabulary can only be used to transcribe files in the same language as the custom vocabulary. For example, if you create a custom vocabulary using US English (<code>en-US</code>), you can only apply this custom vocabulary to files that contain English audio.</p> <p>For a list of supported languages and their associated language codes, refer to the <a href="https://docs.aws.amazon.com/transcribe/latest/dg/supported-languages.html">Supported languages</a> table.</p>',
-        }),
-    ),
-    Phrases: PhrasesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Use this parameter if you want to create your custom vocabulary by including all desired terms, as comma-separated values, within your request. The other option for creating your custom vocabulary is to save your entries in a text file and upload them to an Amazon S3 bucket, then specify the location of your file using the <code>VocabularyFileUri</code> parameter.</p> <p>Note that if you include <code>Phrases</code> in your request, you cannot use <code>VocabularyFileUri</code>; you must choose one or the other.</p> <p>Each language has a character set that contains all allowed characters for that specific language. If you use unsupported characters, your custom vocabulary filter request fails. Refer to <a href="https://docs.aws.amazon.com/transcribe/latest/dg/charsets.html">Character Sets for Custom Vocabularies</a> to get the character set for your language.</p>',
-        }),
-    ).exactOptional(),
-    VocabularyFileUri: UriSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The Amazon S3 location of the text file that contains your custom vocabulary. The URI must be located in the same Amazon Web Services Region as the resource you're calling.</p> <p>Here's an example URI path: <code>s3://DOC-EXAMPLE-BUCKET/my-vocab-file.txt</code> </p> <p>Note that if you include <code>VocabularyFileUri</code> in your request, you cannot use the <code>Phrases</code> flag; you must choose one or the other.</p>",
-        }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Adds one or more custom tags, each in the form of a key:value pair, to a new custom vocabulary at the time you create this new custom vocabulary.</p> <p>To learn more about using tags with Amazon Transcribe, refer to <a href="https://docs.aws.amazon.com/transcribe/latest/dg/tagging.html">Tagging resources</a>.</p>',
-        }),
-    ).exactOptional(),
-    DataAccessRoleArn: DataAccessRoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of an IAM role that has permissions to access the Amazon S3 bucket that contains your input files (in this case, your custom vocabulary). If the role that you specify doesn’t have the appropriate permissions to access the specified Amazon S3 location, your request fails.</p> <p>IAM role ARNs have the format <code>arn:partition:iam::account:role/role-name-with-path</code>. For example: <code>arn:aws:iam::111122223333:role/Admin</code>.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_identifiers.html#identifiers-arns">IAM ARNs</a>.</p>',
-        }),
-    ).exactOptional(),
+    VocabularyName: VocabularyNameSchema.openapi({
+      description:
+        '<p>A unique name, chosen by you, for your new custom vocabulary.</p> <p>This name is case sensitive, cannot contain spaces, and must be unique within an Amazon Web Services account. If you try to create a new custom vocabulary with the same name as an existing custom vocabulary, you get a <code>ConflictException</code> error.</p>',
+    }),
+    LanguageCode: LanguageCodeSchema.openapi({
+      description:
+        '<p>The language code that represents the language of the entries in your custom vocabulary. Each custom vocabulary must contain terms in only one language.</p> <p>A custom vocabulary can only be used to transcribe files in the same language as the custom vocabulary. For example, if you create a custom vocabulary using US English (<code>en-US</code>), you can only apply this custom vocabulary to files that contain English audio.</p> <p>For a list of supported languages and their associated language codes, refer to the <a href="https://docs.aws.amazon.com/transcribe/latest/dg/supported-languages.html">Supported languages</a> table.</p>',
+    }),
+    Phrases: PhrasesSchema.exactOptional().openapi({
+      description:
+        '<p>Use this parameter if you want to create your custom vocabulary by including all desired terms, as comma-separated values, within your request. The other option for creating your custom vocabulary is to save your entries in a text file and upload them to an Amazon S3 bucket, then specify the location of your file using the <code>VocabularyFileUri</code> parameter.</p> <p>Note that if you include <code>Phrases</code> in your request, you cannot use <code>VocabularyFileUri</code>; you must choose one or the other.</p> <p>Each language has a character set that contains all allowed characters for that specific language. If you use unsupported characters, your custom vocabulary filter request fails. Refer to <a href="https://docs.aws.amazon.com/transcribe/latest/dg/charsets.html">Character Sets for Custom Vocabularies</a> to get the character set for your language.</p>',
+    }),
+    VocabularyFileUri: UriSchema.exactOptional().openapi({
+      description:
+        "<p>The Amazon S3 location of the text file that contains your custom vocabulary. The URI must be located in the same Amazon Web Services Region as the resource you're calling.</p> <p>Here's an example URI path: <code>s3://DOC-EXAMPLE-BUCKET/my-vocab-file.txt</code> </p> <p>Note that if you include <code>VocabularyFileUri</code> in your request, you cannot use the <code>Phrases</code> flag; you must choose one or the other.</p>",
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        '<p>Adds one or more custom tags, each in the form of a key:value pair, to a new custom vocabulary at the time you create this new custom vocabulary.</p> <p>To learn more about using tags with Amazon Transcribe, refer to <a href="https://docs.aws.amazon.com/transcribe/latest/dg/tagging.html">Tagging resources</a>.</p>',
+    }),
+    DataAccessRoleArn: DataAccessRoleArnSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of an IAM role that has permissions to access the Amazon S3 bucket that contains your input files (in this case, your custom vocabulary). If the role that you specify doesn’t have the appropriate permissions to access the specified Amazon S3 location, your request fails.</p> <p>IAM role ARNs have the format <code>arn:partition:iam::account:role/role-name-with-path</code>. For example: <code>arn:aws:iam::111122223333:role/Admin</code>.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_identifiers.html#identifiers-arns">IAM ARNs</a>.</p>',
+    }),
   })
   .openapi({ required: ['VocabularyName', 'LanguageCode'], title: 'CreateVocabularyRequest' })
   .openapi('CreateVocabularyRequest')
@@ -885,24 +605,16 @@ const VocabularyFilterNameSchema = z
 
 const CreateVocabularyFilterResponseSchema = z
   .object({
-    VocabularyFilterName: VocabularyFilterNameSchema.and(
-      z.any().openapi({ description: 'The name you chose for your custom vocabulary filter.' }),
-    ).exactOptional(),
-    LanguageCode: LanguageCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The language code you selected for your custom vocabulary filter.',
-        }),
-    ).exactOptional(),
-    LastModifiedTime: DateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The date and time you created your custom vocabulary filter.</p> <p>Timestamps are in the format <code>YYYY-MM-DD'T'HH:MM:SS.SSSSSS-UTC</code>. For example, <code>2022-05-04T12:32:58.761000-07:00</code> represents 12:32 PM UTC-7 on May 4, 2022.</p>",
-        }),
-    ).exactOptional(),
+    VocabularyFilterName: VocabularyFilterNameSchema.exactOptional().openapi({
+      description: 'The name you chose for your custom vocabulary filter.',
+    }),
+    LanguageCode: LanguageCodeSchema.exactOptional().openapi({
+      description: 'The language code you selected for your custom vocabulary filter.',
+    }),
+    LastModifiedTime: DateTimeSchema.exactOptional().openapi({
+      description:
+        "<p>The date and time you created your custom vocabulary filter.</p> <p>Timestamps are in the format <code>YYYY-MM-DD'T'HH:MM:SS.SSSSSS-UTC</code>. For example, <code>2022-05-04T12:32:58.761000-07:00</code> represents 12:32 PM UTC-7 on May 4, 2022.</p>",
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateVocabularyFilterResponse')
@@ -913,54 +625,30 @@ const WordsSchema = z.array(WordSchema).min(1).openapi('Words')
 
 const CreateVocabularyFilterRequestSchema = z
   .object({
-    VocabularyFilterName: VocabularyFilterNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A unique name, chosen by you, for your new custom vocabulary filter.</p> <p>This name is case sensitive, cannot contain spaces, and must be unique within an Amazon Web Services account. If you try to create a new custom vocabulary filter with the same name as an existing custom vocabulary filter, you get a <code>ConflictException</code> error.</p>',
-        }),
-    ),
-    LanguageCode: LanguageCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The language code that represents the language of the entries in your vocabulary filter. Each custom vocabulary filter must contain terms in only one language.</p> <p>A custom vocabulary filter can only be used to transcribe files in the same language as the filter. For example, if you create a custom vocabulary filter using US English (<code>en-US</code>), you can only apply this filter to files that contain English audio.</p> <p>For a list of supported languages and their associated language codes, refer to the <a href="https://docs.aws.amazon.com/transcribe/latest/dg/supported-languages.html">Supported languages</a> table.</p>',
-        }),
-    ),
-    Words: WordsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Use this parameter if you want to create your custom vocabulary filter by including all desired terms, as comma-separated values, within your request. The other option for creating your vocabulary filter is to save your entries in a text file and upload them to an Amazon S3 bucket, then specify the location of your file using the <code>VocabularyFilterFileUri</code> parameter.</p> <p>Note that if you include <code>Words</code> in your request, you cannot use <code>VocabularyFilterFileUri</code>; you must choose one or the other.</p> <p>Each language has a character set that contains all allowed characters for that specific language. If you use unsupported characters, your custom vocabulary filter request fails. Refer to <a href="https://docs.aws.amazon.com/transcribe/latest/dg/charsets.html">Character Sets for Custom Vocabularies</a> to get the character set for your language.</p>',
-        }),
-    ).exactOptional(),
-    VocabularyFilterFileUri: UriSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The Amazon S3 location of the text file that contains your custom vocabulary filter terms. The URI must be located in the same Amazon Web Services Region as the resource you're calling.</p> <p>Here's an example URI path: <code>s3://DOC-EXAMPLE-BUCKET/my-vocab-filter-file.txt</code> </p> <p>Note that if you include <code>VocabularyFilterFileUri</code> in your request, you cannot use <code>Words</code>; you must choose one or the other.</p>",
-        }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Adds one or more custom tags, each in the form of a key:value pair, to a new custom vocabulary filter at the time you create this new vocabulary filter.</p> <p>To learn more about using tags with Amazon Transcribe, refer to <a href="https://docs.aws.amazon.com/transcribe/latest/dg/tagging.html">Tagging resources</a>.</p>',
-        }),
-    ).exactOptional(),
-    DataAccessRoleArn: DataAccessRoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of an IAM role that has permissions to access the Amazon S3 bucket that contains your input files (in this case, your custom vocabulary filter). If the role that you specify doesn’t have the appropriate permissions to access the specified Amazon S3 location, your request fails.</p> <p>IAM role ARNs have the format <code>arn:partition:iam::account:role/role-name-with-path</code>. For example: <code>arn:aws:iam::111122223333:role/Admin</code>.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_identifiers.html#identifiers-arns">IAM ARNs</a>.</p>',
-        }),
-    ).exactOptional(),
+    VocabularyFilterName: VocabularyFilterNameSchema.openapi({
+      description:
+        '<p>A unique name, chosen by you, for your new custom vocabulary filter.</p> <p>This name is case sensitive, cannot contain spaces, and must be unique within an Amazon Web Services account. If you try to create a new custom vocabulary filter with the same name as an existing custom vocabulary filter, you get a <code>ConflictException</code> error.</p>',
+    }),
+    LanguageCode: LanguageCodeSchema.openapi({
+      description:
+        '<p>The language code that represents the language of the entries in your vocabulary filter. Each custom vocabulary filter must contain terms in only one language.</p> <p>A custom vocabulary filter can only be used to transcribe files in the same language as the filter. For example, if you create a custom vocabulary filter using US English (<code>en-US</code>), you can only apply this filter to files that contain English audio.</p> <p>For a list of supported languages and their associated language codes, refer to the <a href="https://docs.aws.amazon.com/transcribe/latest/dg/supported-languages.html">Supported languages</a> table.</p>',
+    }),
+    Words: WordsSchema.exactOptional().openapi({
+      description:
+        '<p>Use this parameter if you want to create your custom vocabulary filter by including all desired terms, as comma-separated values, within your request. The other option for creating your vocabulary filter is to save your entries in a text file and upload them to an Amazon S3 bucket, then specify the location of your file using the <code>VocabularyFilterFileUri</code> parameter.</p> <p>Note that if you include <code>Words</code> in your request, you cannot use <code>VocabularyFilterFileUri</code>; you must choose one or the other.</p> <p>Each language has a character set that contains all allowed characters for that specific language. If you use unsupported characters, your custom vocabulary filter request fails. Refer to <a href="https://docs.aws.amazon.com/transcribe/latest/dg/charsets.html">Character Sets for Custom Vocabularies</a> to get the character set for your language.</p>',
+    }),
+    VocabularyFilterFileUri: UriSchema.exactOptional().openapi({
+      description:
+        "<p>The Amazon S3 location of the text file that contains your custom vocabulary filter terms. The URI must be located in the same Amazon Web Services Region as the resource you're calling.</p> <p>Here's an example URI path: <code>s3://DOC-EXAMPLE-BUCKET/my-vocab-filter-file.txt</code> </p> <p>Note that if you include <code>VocabularyFilterFileUri</code> in your request, you cannot use <code>Words</code>; you must choose one or the other.</p>",
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        '<p>Adds one or more custom tags, each in the form of a key:value pair, to a new custom vocabulary filter at the time you create this new vocabulary filter.</p> <p>To learn more about using tags with Amazon Transcribe, refer to <a href="https://docs.aws.amazon.com/transcribe/latest/dg/tagging.html">Tagging resources</a>.</p>',
+    }),
+    DataAccessRoleArn: DataAccessRoleArnSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of an IAM role that has permissions to access the Amazon S3 bucket that contains your input files (in this case, your custom vocabulary filter). If the role that you specify doesn’t have the appropriate permissions to access the specified Amazon S3 location, your request fails.</p> <p>IAM role ARNs have the format <code>arn:partition:iam::account:role/role-name-with-path</code>. For example: <code>arn:aws:iam::111122223333:role/Admin</code>.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_identifiers.html#identifiers-arns">IAM ARNs</a>.</p>',
+    }),
   })
   .openapi({
     required: ['VocabularyFilterName', 'LanguageCode'],
@@ -969,26 +657,24 @@ const CreateVocabularyFilterRequestSchema = z
   .openapi('CreateVocabularyFilterRequest')
 
 const DeleteCallAnalyticsCategoryResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DeleteCallAnalyticsCategoryResponse')
 
 const DeleteCallAnalyticsCategoryRequestSchema = z
   .object({
-    CategoryName: CategoryNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the Call Analytics category you want to delete. Category names are case sensitive.',
-        }),
-    ),
+    CategoryName: CategoryNameSchema.openapi({
+      description:
+        'The name of the Call Analytics category you want to delete. Category names are case sensitive.',
+    }),
   })
   .openapi({ required: ['CategoryName'], title: 'DeleteCallAnalyticsCategoryRequest' })
   .openapi('DeleteCallAnalyticsCategoryRequest')
 
 const NotFoundExceptionSchema = z.any().openapi('NotFoundException')
 
-const DeleteCallAnalyticsJobResponseSchema = z.object({}).openapi('DeleteCallAnalyticsJobResponse')
+const DeleteCallAnalyticsJobResponseSchema = z
+  .looseObject({})
+  .openapi('DeleteCallAnalyticsJobResponse')
 
 const CallAnalyticsJobNameSchema = z
   .string()
@@ -999,28 +685,20 @@ const CallAnalyticsJobNameSchema = z
 
 const DeleteCallAnalyticsJobRequestSchema = z
   .object({
-    CallAnalyticsJobName: CallAnalyticsJobNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the Call Analytics job you want to delete. Job names are case sensitive.',
-        }),
-    ),
+    CallAnalyticsJobName: CallAnalyticsJobNameSchema.openapi({
+      description:
+        'The name of the Call Analytics job you want to delete. Job names are case sensitive.',
+    }),
   })
   .openapi({ required: ['CallAnalyticsJobName'], title: 'DeleteCallAnalyticsJobRequest' })
   .openapi('DeleteCallAnalyticsJobRequest')
 
 const DeleteLanguageModelRequestSchema = z
   .object({
-    ModelName: ModelNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the custom language model you want to delete. Model names are case sensitive.',
-        }),
-    ),
+    ModelName: ModelNameSchema.openapi({
+      description:
+        'The name of the custom language model you want to delete. Model names are case sensitive.',
+    }),
   })
   .openapi({ required: ['ModelName'], title: 'DeleteLanguageModelRequest' })
   .openapi('DeleteLanguageModelRequest')
@@ -1034,14 +712,10 @@ const TranscriptionJobNameSchema = z
 
 const DeleteMedicalTranscriptionJobRequestSchema = z
   .object({
-    MedicalTranscriptionJobName: TranscriptionJobNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the medical transcription job you want to delete. Job names are case sensitive.',
-        }),
-    ),
+    MedicalTranscriptionJobName: TranscriptionJobNameSchema.openapi({
+      description:
+        'The name of the medical transcription job you want to delete. Job names are case sensitive.',
+    }),
   })
   .openapi({
     required: ['MedicalTranscriptionJobName'],
@@ -1051,134 +725,82 @@ const DeleteMedicalTranscriptionJobRequestSchema = z
 
 const DeleteMedicalVocabularyRequestSchema = z
   .object({
-    VocabularyName: VocabularyNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the custom medical vocabulary you want to delete. Custom medical vocabulary names are case sensitive.',
-        }),
-    ),
+    VocabularyName: VocabularyNameSchema.openapi({
+      description:
+        'The name of the custom medical vocabulary you want to delete. Custom medical vocabulary names are case sensitive.',
+    }),
   })
   .openapi({ required: ['VocabularyName'], title: 'DeleteMedicalVocabularyRequest' })
   .openapi('DeleteMedicalVocabularyRequest')
 
 const DeleteTranscriptionJobRequestSchema = z
   .object({
-    TranscriptionJobName: TranscriptionJobNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the transcription job you want to delete. Job names are case sensitive.',
-        }),
-    ),
+    TranscriptionJobName: TranscriptionJobNameSchema.openapi({
+      description:
+        'The name of the transcription job you want to delete. Job names are case sensitive.',
+    }),
   })
   .openapi({ required: ['TranscriptionJobName'], title: 'DeleteTranscriptionJobRequest' })
   .openapi('DeleteTranscriptionJobRequest')
 
 const DeleteVocabularyRequestSchema = z
   .object({
-    VocabularyName: VocabularyNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the custom vocabulary you want to delete. Custom vocabulary names are case sensitive.',
-        }),
-    ),
+    VocabularyName: VocabularyNameSchema.openapi({
+      description:
+        'The name of the custom vocabulary you want to delete. Custom vocabulary names are case sensitive.',
+    }),
   })
   .openapi({ required: ['VocabularyName'], title: 'DeleteVocabularyRequest' })
   .openapi('DeleteVocabularyRequest')
 
 const DeleteVocabularyFilterRequestSchema = z
   .object({
-    VocabularyFilterName: VocabularyFilterNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the custom vocabulary filter you want to delete. Custom vocabulary filter names are case sensitive.',
-        }),
-    ),
+    VocabularyFilterName: VocabularyFilterNameSchema.openapi({
+      description:
+        'The name of the custom vocabulary filter you want to delete. Custom vocabulary filter names are case sensitive.',
+    }),
   })
   .openapi({ required: ['VocabularyFilterName'], title: 'DeleteVocabularyFilterRequest' })
   .openapi('DeleteVocabularyFilterRequest')
 
 const LanguageModelSchema = z
   .object({
-    ModelName: ModelNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A unique name, chosen by you, for your custom language model.</p> <p>This name is case sensitive, cannot contain spaces, and must be unique within an Amazon Web Services account.</p>',
-        }),
-    ).exactOptional(),
-    CreateTime: DateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The date and time the specified custom language model was created.</p> <p>Timestamps are in the format <code>YYYY-MM-DD'T'HH:MM:SS.SSSSSS-UTC</code>. For example, <code>2022-05-04T12:32:58.761000-07:00</code> represents 12:32 PM UTC-7 on May 4, 2022.</p>",
-        }),
-    ).exactOptional(),
-    LastModifiedTime: DateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The date and time the specified custom language model was last modified.</p> <p>Timestamps are in the format <code>YYYY-MM-DD'T'HH:MM:SS.SSSSSS-UTC</code>. For example, <code>2022-05-04T12:32:58.761000-07:00</code> represents 12:32 PM UTC-7 on May 4, 2022.</p>",
-        }),
-    ).exactOptional(),
-    LanguageCode: CLMLanguageCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The language code used to create your custom language model. Each custom language model must contain terms in only one language, and the language you select for your custom language model must match the language of your training and tuning data.</p> <p>For a list of supported languages and their associated language codes, refer to the <a href="https://docs.aws.amazon.com/transcribe/latest/dg/supported-languages.html">Supported languages</a> table. Note that U.S. English (<code>en-US</code>) is the only language supported with Amazon Transcribe Medical.</p>',
-        }),
-    ).exactOptional(),
-    BaseModelName: BaseModelNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Transcribe standard language model, or base model, used to create your custom language model.',
-        }),
-    ).exactOptional(),
-    ModelStatus: ModelStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status of the specified custom language model. When the status displays as <code>COMPLETED</code> the model is ready for use.',
-        }),
-    ).exactOptional(),
-    UpgradeAvailability: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Shows if a more current base model is available for use with the specified custom language model.</p> <p>If <code>false</code>, your custom language model is using the most up-to-date base model.</p> <p>If <code>true</code>, there is a newer base model available than the one your language model is using.</p> <p>Note that to update a base model, you must recreate the custom language model using the new base model. Base model upgrades for existing custom language models are not supported.</p>',
-        }),
-    ).exactOptional(),
-    FailureReason: FailureReasonSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If <code>ModelStatus</code> is <code>FAILED</code>, <code>FailureReason</code> contains information about why the custom language model request failed. See also: <a href="https://docs.aws.amazon.com/transcribe/latest/APIReference/CommonErrors.html">Common Errors</a>.',
-        }),
-    ).exactOptional(),
-    InputDataConfig: InputDataConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon S3 location of the input files used to train and tune your custom language model, in addition to the data access role ARN (Amazon Resource Name) that has permissions to access these data.',
-        }),
-    ).exactOptional(),
+    ModelName: ModelNameSchema.exactOptional().openapi({
+      description:
+        '<p>A unique name, chosen by you, for your custom language model.</p> <p>This name is case sensitive, cannot contain spaces, and must be unique within an Amazon Web Services account.</p>',
+    }),
+    CreateTime: DateTimeSchema.exactOptional().openapi({
+      description:
+        "<p>The date and time the specified custom language model was created.</p> <p>Timestamps are in the format <code>YYYY-MM-DD'T'HH:MM:SS.SSSSSS-UTC</code>. For example, <code>2022-05-04T12:32:58.761000-07:00</code> represents 12:32 PM UTC-7 on May 4, 2022.</p>",
+    }),
+    LastModifiedTime: DateTimeSchema.exactOptional().openapi({
+      description:
+        "<p>The date and time the specified custom language model was last modified.</p> <p>Timestamps are in the format <code>YYYY-MM-DD'T'HH:MM:SS.SSSSSS-UTC</code>. For example, <code>2022-05-04T12:32:58.761000-07:00</code> represents 12:32 PM UTC-7 on May 4, 2022.</p>",
+    }),
+    LanguageCode: CLMLanguageCodeSchema.exactOptional().openapi({
+      description:
+        '<p>The language code used to create your custom language model. Each custom language model must contain terms in only one language, and the language you select for your custom language model must match the language of your training and tuning data.</p> <p>For a list of supported languages and their associated language codes, refer to the <a href="https://docs.aws.amazon.com/transcribe/latest/dg/supported-languages.html">Supported languages</a> table. Note that U.S. English (<code>en-US</code>) is the only language supported with Amazon Transcribe Medical.</p>',
+    }),
+    BaseModelName: BaseModelNameSchema.exactOptional().openapi({
+      description:
+        'The Amazon Transcribe standard language model, or base model, used to create your custom language model.',
+    }),
+    ModelStatus: ModelStatusSchema.exactOptional().openapi({
+      description:
+        'The status of the specified custom language model. When the status displays as <code>COMPLETED</code> the model is ready for use.',
+    }),
+    UpgradeAvailability: BooleanSchema.exactOptional().openapi({
+      description:
+        '<p>Shows if a more current base model is available for use with the specified custom language model.</p> <p>If <code>false</code>, your custom language model is using the most up-to-date base model.</p> <p>If <code>true</code>, there is a newer base model available than the one your language model is using.</p> <p>Note that to update a base model, you must recreate the custom language model using the new base model. Base model upgrades for existing custom language models are not supported.</p>',
+    }),
+    FailureReason: FailureReasonSchema.exactOptional().openapi({
+      description:
+        'If <code>ModelStatus</code> is <code>FAILED</code>, <code>FailureReason</code> contains information about why the custom language model request failed. See also: <a href="https://docs.aws.amazon.com/transcribe/latest/APIReference/CommonErrors.html">Common Errors</a>.',
+    }),
+    InputDataConfig: InputDataConfigSchema.exactOptional().openapi({
+      description:
+        'The Amazon S3 location of the input files used to train and tune your custom language model, in addition to the data access role ARN (Amazon Resource Name) that has permissions to access these data.',
+    }),
   })
   .openapi({
     description:
@@ -1189,56 +811,40 @@ const LanguageModelSchema = z
 
 const DescribeLanguageModelResponseSchema = z
   .object({
-    LanguageModel: LanguageModelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Provides information about the specified custom language model.</p> <p>This parameter also shows if the base language model you used to create your custom language model has been updated. If Amazon Transcribe has updated the base model, you can create a new custom language model using the updated base model.</p> <p>If you tried to create a new custom language model and the request wasn't successful, you can use this <code>DescribeLanguageModel</code> to help identify the reason for this failure.</p>",
-        }),
-    ).exactOptional(),
+    LanguageModel: LanguageModelSchema.exactOptional().openapi({
+      description:
+        "<p>Provides information about the specified custom language model.</p> <p>This parameter also shows if the base language model you used to create your custom language model has been updated. If Amazon Transcribe has updated the base model, you can create a new custom language model using the updated base model.</p> <p>If you tried to create a new custom language model and the request wasn't successful, you can use this <code>DescribeLanguageModel</code> to help identify the reason for this failure.</p>",
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeLanguageModelResponse')
 
 const DescribeLanguageModelRequestSchema = z
   .object({
-    ModelName: ModelNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the custom language model you want information about. Model names are case sensitive.',
-        }),
-    ),
+    ModelName: ModelNameSchema.openapi({
+      description:
+        'The name of the custom language model you want information about. Model names are case sensitive.',
+    }),
   })
   .openapi({ required: ['ModelName'], title: 'DescribeLanguageModelRequest' })
   .openapi('DescribeLanguageModelRequest')
 
 const GetCallAnalyticsCategoryResponseSchema = z
   .object({
-    CategoryProperties: CategoryPropertiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Provides you with the properties of the Call Analytics category you specified in your <code>GetCallAnalyticsCategory</code> request.',
-        }),
-    ).exactOptional(),
+    CategoryProperties: CategoryPropertiesSchema.exactOptional().openapi({
+      description:
+        'Provides you with the properties of the Call Analytics category you specified in your <code>GetCallAnalyticsCategory</code> request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetCallAnalyticsCategoryResponse')
 
 const GetCallAnalyticsCategoryRequestSchema = z
   .object({
-    CategoryName: CategoryNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the Call Analytics category you want information about. Category names are case sensitive.',
-        }),
-    ),
+    CategoryName: CategoryNameSchema.openapi({
+      description:
+        'The name of the Call Analytics category you want information about. Category names are case sensitive.',
+    }),
   })
   .openapi({ required: ['CategoryName'], title: 'GetCallAnalyticsCategoryRequest' })
   .openapi('GetCallAnalyticsCategoryRequest')
@@ -1255,22 +861,14 @@ const MediaFormatSchema = z
 
 const MediaSchema = z
   .object({
-    MediaFileUri: UriSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The Amazon S3 location of the media file you want to transcribe. For example:</p> <ul> <li> <p> <code>s3://DOC-EXAMPLE-BUCKET/my-media-file.flac</code> </p> </li> <li> <p> <code>s3://DOC-EXAMPLE-BUCKET/media-files/my-media-file.flac</code> </p> </li> </ul> <p>Note that the Amazon S3 bucket that contains your input media must be located in the same Amazon Web Services Region where you're making your transcription request.</p>",
-        }),
-    ).exactOptional(),
-    RedactedMediaFileUri: UriSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The Amazon S3 location of the media file you want to redact. For example:</p> <ul> <li> <p> <code>s3://DOC-EXAMPLE-BUCKET/my-media-file.flac</code> </p> </li> <li> <p> <code>s3://DOC-EXAMPLE-BUCKET/media-files/my-media-file.flac</code> </p> </li> </ul> <p>Note that the Amazon S3 bucket that contains your input media must be located in the same Amazon Web Services Region where you're making your transcription request.</p> <important> <p> <code>RedactedMediaFileUri</code> produces a redacted audio file in addition to a redacted transcript. It is only supported for Call Analytics (<code>StartCallAnalyticsJob</code>) transcription requests.</p> </important>",
-        }),
-    ).exactOptional(),
+    MediaFileUri: UriSchema.exactOptional().openapi({
+      description:
+        "<p>The Amazon S3 location of the media file you want to transcribe. For example:</p> <ul> <li> <p> <code>s3://DOC-EXAMPLE-BUCKET/my-media-file.flac</code> </p> </li> <li> <p> <code>s3://DOC-EXAMPLE-BUCKET/media-files/my-media-file.flac</code> </p> </li> </ul> <p>Note that the Amazon S3 bucket that contains your input media must be located in the same Amazon Web Services Region where you're making your transcription request.</p>",
+    }),
+    RedactedMediaFileUri: UriSchema.exactOptional().openapi({
+      description:
+        "<p>The Amazon S3 location of the media file you want to redact. For example:</p> <ul> <li> <p> <code>s3://DOC-EXAMPLE-BUCKET/my-media-file.flac</code> </p> </li> <li> <p> <code>s3://DOC-EXAMPLE-BUCKET/media-files/my-media-file.flac</code> </p> </li> </ul> <p>Note that the Amazon S3 bucket that contains your input media must be located in the same Amazon Web Services Region where you're making your transcription request.</p> <important> <p> <code>RedactedMediaFileUri</code> produces a redacted audio file in addition to a redacted transcript. It is only supported for Call Analytics (<code>StartCallAnalyticsJob</code>) transcription requests.</p> </important>",
+    }),
   })
   .openapi({
     description:
@@ -1281,22 +879,14 @@ const MediaSchema = z
 
 const TranscriptSchema = z
   .object({
-    TranscriptFileUri: UriSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The Amazon S3 location of your transcript. You can use this URI to access or download your transcript.</p> <p>If you included <code>OutputBucketName</code> in your transcription job request, this is the URI of that bucket. If you also included <code>OutputKey</code> in your request, your output is located in the path you specified in your request.</p> <p>If you didn't include <code>OutputBucketName</code> in your transcription job request, your transcript is stored in a service-managed bucket, and <code>TranscriptFileUri</code> provides you with a temporary URI you can use for secure access to your transcript.</p> <note> <p>Temporary URIs for service-managed Amazon S3 buckets are only valid for 15 minutes. If you get an <code>AccesDenied</code> error, you can get a new temporary URI by running a <code>GetTranscriptionJob</code> or <code>ListTranscriptionJob</code> request.</p> </note>",
-        }),
-    ).exactOptional(),
-    RedactedTranscriptFileUri: UriSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The Amazon S3 location of your redacted transcript. You can use this URI to access or download your transcript.</p> <p>If you included <code>OutputBucketName</code> in your transcription job request, this is the URI of that bucket. If you also included <code>OutputKey</code> in your request, your output is located in the path you specified in your request.</p> <p>If you didn't include <code>OutputBucketName</code> in your transcription job request, your transcript is stored in a service-managed bucket, and <code>RedactedTranscriptFileUri</code> provides you with a temporary URI you can use for secure access to your transcript.</p> <note> <p>Temporary URIs for service-managed Amazon S3 buckets are only valid for 15 minutes. If you get an <code>AccesDenied</code> error, you can get a new temporary URI by running a <code>GetTranscriptionJob</code> or <code>ListTranscriptionJob</code> request.</p> </note>",
-        }),
-    ).exactOptional(),
+    TranscriptFileUri: UriSchema.exactOptional().openapi({
+      description:
+        "<p>The Amazon S3 location of your transcript. You can use this URI to access or download your transcript.</p> <p>If you included <code>OutputBucketName</code> in your transcription job request, this is the URI of that bucket. If you also included <code>OutputKey</code> in your request, your output is located in the path you specified in your request.</p> <p>If you didn't include <code>OutputBucketName</code> in your transcription job request, your transcript is stored in a service-managed bucket, and <code>TranscriptFileUri</code> provides you with a temporary URI you can use for secure access to your transcript.</p> <note> <p>Temporary URIs for service-managed Amazon S3 buckets are only valid for 15 minutes. If you get an <code>AccesDenied</code> error, you can get a new temporary URI by running a <code>GetTranscriptionJob</code> or <code>ListTranscriptionJob</code> request.</p> </note>",
+    }),
+    RedactedTranscriptFileUri: UriSchema.exactOptional().openapi({
+      description:
+        "<p>The Amazon S3 location of your redacted transcript. You can use this URI to access or download your transcript.</p> <p>If you included <code>OutputBucketName</code> in your transcription job request, this is the URI of that bucket. If you also included <code>OutputKey</code> in your request, your output is located in the path you specified in your request.</p> <p>If you didn't include <code>OutputBucketName</code> in your transcription job request, your transcript is stored in a service-managed bucket, and <code>RedactedTranscriptFileUri</code> provides you with a temporary URI you can use for secure access to your transcript.</p> <note> <p>Temporary URIs for service-managed Amazon S3 buckets are only valid for 15 minutes. If you get an <code>AccesDenied</code> error, you can get a new temporary URI by running a <code>GetTranscriptionJob</code> or <code>ListTranscriptionJob</code> request.</p> </note>",
+    }),
   })
   .openapi({
     description: 'Provides you with the Amazon S3 URI you can use to access your transcript.',
@@ -1337,30 +927,18 @@ const PiiEntityTypesSchema = z.array(PiiEntityTypeSchema).min(0).max(11).openapi
 
 const ContentRedactionSchema = z
   .object({
-    RedactionType: RedactionTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specify the category of information you want to redact; <code>PII</code> (personally identifiable information) is the only valid value. You can use <code>PiiEntityTypes</code> to choose which types of PII you want to redact.',
-        }),
-    ),
-    RedactionOutput: RedactionOutputSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specify if you want only a redacted transcript, or if you want a redacted and an unredacted transcript.</p> <p>When you choose <code>redacted</code> Amazon Transcribe creates only a redacted transcript.</p> <p>When you choose <code>redacted_and_unredacted</code> Amazon Transcribe creates a redacted and an unredacted transcript (as two separate files).</p>',
-        }),
-    ),
-    PiiEntityTypes: PiiEntityTypesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Specify which types of personally identifiable information (PII) you want to redact in your transcript. You can include as many types as you'd like, or you can select <code>ALL</code>.",
-        }),
-    ).exactOptional(),
+    RedactionType: RedactionTypeSchema.openapi({
+      description:
+        'Specify the category of information you want to redact; <code>PII</code> (personally identifiable information) is the only valid value. You can use <code>PiiEntityTypes</code> to choose which types of PII you want to redact.',
+    }),
+    RedactionOutput: RedactionOutputSchema.openapi({
+      description:
+        '<p>Specify if you want only a redacted transcript, or if you want a redacted and an unredacted transcript.</p> <p>When you choose <code>redacted</code> Amazon Transcribe creates only a redacted transcript.</p> <p>When you choose <code>redacted_and_unredacted</code> Amazon Transcribe creates a redacted and an unredacted transcript (as two separate files).</p>',
+    }),
+    PiiEntityTypes: PiiEntityTypesSchema.exactOptional().openapi({
+      description:
+        "Specify which types of personally identifiable information (PII) you want to redact in your transcript. You can include as many types as you'd like, or you can select <code>ALL</code>.",
+    }),
   })
   .openapi({
     required: ['RedactionType', 'RedactionOutput'],
@@ -1373,30 +951,18 @@ const LanguageOptionsSchema = z.array(LanguageCodeSchema).min(1).openapi('Langua
 
 const LanguageIdSettingsSchema = z
   .object({
-    VocabularyName: VocabularyNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The name of the custom vocabulary you want to use when processing your transcription job. Custom vocabulary names are case sensitive.</p> <p>The language of the specified custom vocabulary must match the language code that you specify in your transcription request. If the languages don't match, the custom vocabulary isn't applied. There are no errors or warnings associated with a language mismatch.</p>",
-        }),
-    ).exactOptional(),
-    VocabularyFilterName: VocabularyFilterNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The name of the custom vocabulary filter you want to use when processing your transcription job. Custom vocabulary filter names are case sensitive.</p> <p>The language of the specified custom vocabulary filter must match the language code that you specify in your transcription request. If the languages don't match, the custom vocabulary filter isn't applied. There are no errors or warnings associated with a language mismatch.</p> <p>Note that if you include <code>VocabularyFilterName</code> in your request, you must also include <code>VocabularyFilterMethod</code>.</p>",
-        }),
-    ).exactOptional(),
-    LanguageModelName: ModelNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The name of the custom language model you want to use when processing your transcription job. Note that custom language model names are case sensitive.</p> <p>The language of the specified custom language model must match the language code that you specify in your transcription request. If the languages don't match, the custom language model isn't applied. There are no errors or warnings associated with a language mismatch.</p>",
-        }),
-    ).exactOptional(),
+    VocabularyName: VocabularyNameSchema.exactOptional().openapi({
+      description:
+        "<p>The name of the custom vocabulary you want to use when processing your transcription job. Custom vocabulary names are case sensitive.</p> <p>The language of the specified custom vocabulary must match the language code that you specify in your transcription request. If the languages don't match, the custom vocabulary isn't applied. There are no errors or warnings associated with a language mismatch.</p>",
+    }),
+    VocabularyFilterName: VocabularyFilterNameSchema.exactOptional().openapi({
+      description:
+        "<p>The name of the custom vocabulary filter you want to use when processing your transcription job. Custom vocabulary filter names are case sensitive.</p> <p>The language of the specified custom vocabulary filter must match the language code that you specify in your transcription request. If the languages don't match, the custom vocabulary filter isn't applied. There are no errors or warnings associated with a language mismatch.</p> <p>Note that if you include <code>VocabularyFilterName</code> in your request, you must also include <code>VocabularyFilterMethod</code>.</p>",
+    }),
+    LanguageModelName: ModelNameSchema.exactOptional().openapi({
+      description:
+        "<p>The name of the custom language model you want to use when processing your transcription job. Note that custom language model names are case sensitive.</p> <p>The language of the specified custom language model must match the language code that you specify in your transcription request. If the languages don't match, the custom language model isn't applied. There are no errors or warnings associated with a language mismatch.</p>",
+    }),
   })
   .openapi({
     description:
@@ -1413,55 +979,31 @@ const LanguageIdSettingsMapSchema = z
 
 const CallAnalyticsJobSettingsSchema = z
   .object({
-    VocabularyName: VocabularyNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the custom vocabulary you want to include in your Call Analytics transcription request. Custom vocabulary names are case sensitive.',
-        }),
-    ).exactOptional(),
-    VocabularyFilterName: VocabularyFilterNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the custom vocabulary filter you want to include in your Call Analytics transcription request. Custom vocabulary filter names are case sensitive.</p> <p>Note that if you include <code>VocabularyFilterName</code> in your request, you must also include <code>VocabularyFilterMethod</code>.</p>',
-        }),
-    ).exactOptional(),
-    VocabularyFilterMethod: VocabularyFilterMethodSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specify how you want your custom vocabulary filter applied to your transcript.</p> <p>To replace words with <code>***</code>, choose <code>mask</code>.</p> <p>To delete words, choose <code>remove</code>.</p> <p>To flag words without changing them, choose <code>tag</code>.</p>',
-        }),
-    ).exactOptional(),
-    LanguageModelName: ModelNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The name of the custom language model you want to use when processing your Call Analytics job. Note that custom language model names are case sensitive.</p> <p>The language of the specified custom language model must match the language code that you specify in your transcription request. If the languages don't match, the custom language model isn't applied. There are no errors or warnings associated with a language mismatch.</p>",
-        }),
-    ).exactOptional(),
+    VocabularyName: VocabularyNameSchema.exactOptional().openapi({
+      description:
+        'The name of the custom vocabulary you want to include in your Call Analytics transcription request. Custom vocabulary names are case sensitive.',
+    }),
+    VocabularyFilterName: VocabularyFilterNameSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the custom vocabulary filter you want to include in your Call Analytics transcription request. Custom vocabulary filter names are case sensitive.</p> <p>Note that if you include <code>VocabularyFilterName</code> in your request, you must also include <code>VocabularyFilterMethod</code>.</p>',
+    }),
+    VocabularyFilterMethod: VocabularyFilterMethodSchema.exactOptional().openapi({
+      description:
+        '<p>Specify how you want your custom vocabulary filter applied to your transcript.</p> <p>To replace words with <code>***</code>, choose <code>mask</code>.</p> <p>To delete words, choose <code>remove</code>.</p> <p>To flag words without changing them, choose <code>tag</code>.</p>',
+    }),
+    LanguageModelName: ModelNameSchema.exactOptional().openapi({
+      description:
+        "<p>The name of the custom language model you want to use when processing your Call Analytics job. Note that custom language model names are case sensitive.</p> <p>The language of the specified custom language model must match the language code that you specify in your transcription request. If the languages don't match, the custom language model isn't applied. There are no errors or warnings associated with a language mismatch.</p>",
+    }),
     ContentRedaction: ContentRedactionSchema.exactOptional(),
-    LanguageOptions: LanguageOptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>You can specify two or more language codes that represent the languages you think may be present in your media. Including more than five is not recommended. If you\'re unsure what languages are present, do not include this parameter.</p> <p>Including language options can improve the accuracy of language identification.</p> <p>For a list of languages supported with Call Analytics, refer to the <a href="https://docs.aws.amazon.com/transcribe/latest/dg/supported-languages.html">Supported languages</a> table.</p> <p>To transcribe speech in Modern Standard Arabic (<code>ar-SA</code>), your media file must be encoded at a sample rate of 16,000 Hz or higher.</p>',
-        }),
-    ).exactOptional(),
-    LanguageIdSettings: LanguageIdSettingsMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If using automatic language identification in your request and you want to apply a custom language model, a custom vocabulary, or a custom vocabulary filter, include <code>LanguageIdSettings</code> with the relevant sub-parameters (<code>VocabularyName</code>, <code>LanguageModelName</code>, and <code>VocabularyFilterName</code>).</p> <p> <code>LanguageIdSettings</code> supports two to five language codes. Each language code you include can have an associated custom language model, custom vocabulary, and custom vocabulary filter. The language codes that you specify must match the languages of the associated custom language models, custom vocabularies, and custom vocabulary filters.</p> <p>It\'s recommended that you include <code>LanguageOptions</code> when using <code>LanguageIdSettings</code> to ensure that the correct language dialect is identified. For example, if you specify a custom vocabulary that is in <code>en-US</code> but Amazon Transcribe determines that the language spoken in your media is <code>en-AU</code>, your custom vocabulary <i>is not</i> applied to your transcription. If you include <code>LanguageOptions</code> and include <code>en-US</code> as the only English language dialect, your custom vocabulary <i>is</i> applied to your transcription.</p> <p>If you want to include a custom language model, custom vocabulary, or custom vocabulary filter with your request but <b>do not</b> want to use automatic language identification, use instead the <code/> parameter with the <code>LanguageModelName</code>, <code>VocabularyName</code>, or <code>VocabularyFilterName</code> sub-parameters.</p> <p>For a list of languages supported with Call Analytics, refer to <a href="https://docs.aws.amazon.com/transcribe/latest/dg/supported-languages.html">Supported languages and language-specific features</a>.</p>',
-        }),
-    ).exactOptional(),
+    LanguageOptions: LanguageOptionsSchema.exactOptional().openapi({
+      description:
+        '<p>You can specify two or more language codes that represent the languages you think may be present in your media. Including more than five is not recommended. If you\'re unsure what languages are present, do not include this parameter.</p> <p>Including language options can improve the accuracy of language identification.</p> <p>For a list of languages supported with Call Analytics, refer to the <a href="https://docs.aws.amazon.com/transcribe/latest/dg/supported-languages.html">Supported languages</a> table.</p> <p>To transcribe speech in Modern Standard Arabic (<code>ar-SA</code>), your media file must be encoded at a sample rate of 16,000 Hz or higher.</p>',
+    }),
+    LanguageIdSettings: LanguageIdSettingsMapSchema.exactOptional().openapi({
+      description:
+        '<p>If using automatic language identification in your request and you want to apply a custom language model, a custom vocabulary, or a custom vocabulary filter, include <code>LanguageIdSettings</code> with the relevant sub-parameters (<code>VocabularyName</code>, <code>LanguageModelName</code>, and <code>VocabularyFilterName</code>).</p> <p> <code>LanguageIdSettings</code> supports two to five language codes. Each language code you include can have an associated custom language model, custom vocabulary, and custom vocabulary filter. The language codes that you specify must match the languages of the associated custom language models, custom vocabularies, and custom vocabulary filters.</p> <p>It\'s recommended that you include <code>LanguageOptions</code> when using <code>LanguageIdSettings</code> to ensure that the correct language dialect is identified. For example, if you specify a custom vocabulary that is in <code>en-US</code> but Amazon Transcribe determines that the language spoken in your media is <code>en-AU</code>, your custom vocabulary <i>is not</i> applied to your transcription. If you include <code>LanguageOptions</code> and include <code>en-US</code> as the only English language dialect, your custom vocabulary <i>is</i> applied to your transcription.</p> <p>If you want to include a custom language model, custom vocabulary, or custom vocabulary filter with your request but <b>do not</b> want to use automatic language identification, use instead the <code/> parameter with the <code>LanguageModelName</code>, <code>VocabularyName</code>, or <code>VocabularyFilterName</code> sub-parameters.</p> <p>For a list of languages supported with Call Analytics, refer to <a href="https://docs.aws.amazon.com/transcribe/latest/dg/supported-languages.html">Supported languages and language-specific features</a>.</p>',
+    }),
   })
   .openapi({
     description:
@@ -1474,17 +1016,13 @@ const ChannelIdSchema = z.int().min(0).max(1).openapi('ChannelId')
 
 const ChannelDefinitionSchema = z
   .object({
-    ChannelId: ChannelIdSchema.and(
-      z.any().openapi({ description: 'Specify the audio channel you want to define.' }),
-    ).exactOptional(),
-    ParticipantRole: ParticipantRoleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specify the speaker you want to define. Omitting this parameter is equivalent to specifying both participants.',
-        }),
-    ).exactOptional(),
+    ChannelId: ChannelIdSchema.exactOptional().openapi({
+      description: 'Specify the audio channel you want to define.',
+    }),
+    ParticipantRole: ParticipantRoleSchema.exactOptional().openapi({
+      description:
+        'Specify the speaker you want to define. Omitting this parameter is equivalent to specifying both participants.',
+    }),
   })
   .openapi({
     description:
@@ -1500,105 +1038,59 @@ const ChannelDefinitionsSchema = z
 
 const CallAnalyticsJobSchema = z
   .object({
-    CallAnalyticsJobName: CallAnalyticsJobNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the Call Analytics job. Job names are case sensitive and must be unique within an Amazon Web Services account.',
-        }),
-    ).exactOptional(),
-    CallAnalyticsJobStatus: CallAnalyticsJobStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Provides the status of the specified Call Analytics job.</p> <p>If the status is <code>COMPLETED</code>, the job is finished and you can find the results at the location specified in <code>TranscriptFileUri</code> (or <code>RedactedTranscriptFileUri</code>, if you requested transcript redaction). If the status is <code>FAILED</code>, <code>FailureReason</code> provides details on why your transcription job failed.</p>',
-        }),
-    ).exactOptional(),
-    LanguageCode: LanguageCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The language code used to create your Call Analytics job. For a list of supported languages and their associated language codes, refer to the <a href="https://docs.aws.amazon.com/transcribe/latest/dg/supported-languages.html">Supported languages</a> table.</p> <p>If you don\'t know the language spoken in your media file, you can omit this field and let Amazon Transcribe automatically identify the language of your media. To improve the accuracy of language identification, you can include several language codes and Amazon Transcribe chooses the closest match for your transcription.</p>',
-        }),
-    ).exactOptional(),
-    MediaSampleRateHertz: MediaSampleRateHertzSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The sample rate, in hertz, of the audio track in your input media file.',
-        }),
-    ).exactOptional(),
-    MediaFormat: MediaFormatSchema.and(
-      z.any().openapi({ description: 'The format of the input media file.' }),
-    ).exactOptional(),
-    Media: MediaSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Provides the Amazon S3 location of the media file you used in your Call Analytics request.',
-        }),
-    ).exactOptional(),
+    CallAnalyticsJobName: CallAnalyticsJobNameSchema.exactOptional().openapi({
+      description:
+        'The name of the Call Analytics job. Job names are case sensitive and must be unique within an Amazon Web Services account.',
+    }),
+    CallAnalyticsJobStatus: CallAnalyticsJobStatusSchema.exactOptional().openapi({
+      description:
+        '<p>Provides the status of the specified Call Analytics job.</p> <p>If the status is <code>COMPLETED</code>, the job is finished and you can find the results at the location specified in <code>TranscriptFileUri</code> (or <code>RedactedTranscriptFileUri</code>, if you requested transcript redaction). If the status is <code>FAILED</code>, <code>FailureReason</code> provides details on why your transcription job failed.</p>',
+    }),
+    LanguageCode: LanguageCodeSchema.exactOptional().openapi({
+      description:
+        '<p>The language code used to create your Call Analytics job. For a list of supported languages and their associated language codes, refer to the <a href="https://docs.aws.amazon.com/transcribe/latest/dg/supported-languages.html">Supported languages</a> table.</p> <p>If you don\'t know the language spoken in your media file, you can omit this field and let Amazon Transcribe automatically identify the language of your media. To improve the accuracy of language identification, you can include several language codes and Amazon Transcribe chooses the closest match for your transcription.</p>',
+    }),
+    MediaSampleRateHertz: MediaSampleRateHertzSchema.exactOptional().openapi({
+      description: 'The sample rate, in hertz, of the audio track in your input media file.',
+    }),
+    MediaFormat: MediaFormatSchema.exactOptional().openapi({
+      description: 'The format of the input media file.',
+    }),
+    Media: MediaSchema.exactOptional().openapi({
+      description:
+        'Provides the Amazon S3 location of the media file you used in your Call Analytics request.',
+    }),
     Transcript: TranscriptSchema.exactOptional(),
-    StartTime: DateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The date and time the specified Call Analytics job began processing.</p> <p>Timestamps are in the format <code>YYYY-MM-DD'T'HH:MM:SS.SSSSSS-UTC</code>. For example, <code>2022-05-04T12:32:58.789000-07:00</code> represents a transcription job that started processing at 12:32 PM UTC-7 on May 4, 2022.</p>",
-        }),
-    ).exactOptional(),
-    CreationTime: DateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The date and time the specified Call Analytics job request was made.</p> <p>Timestamps are in the format <code>YYYY-MM-DD'T'HH:MM:SS.SSSSSS-UTC</code>. For example, <code>2022-05-04T12:32:58.761000-07:00</code> represents a transcription job that started processing at 12:32 PM UTC-7 on May 4, 2022.</p>",
-        }),
-    ).exactOptional(),
-    CompletionTime: DateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The date and time the specified Call Analytics job finished processing.</p> <p>Timestamps are in the format <code>YYYY-MM-DD'T'HH:MM:SS.SSSSSS-UTC</code>. For example, <code>2022-05-04T12:33:13.922000-07:00</code> represents a transcription job that started processing at 12:33 PM UTC-7 on May 4, 2022.</p>",
-        }),
-    ).exactOptional(),
-    FailureReason: FailureReasonSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If <code>CallAnalyticsJobStatus</code> is <code>FAILED</code>, <code>FailureReason</code> contains information about why the Call Analytics job request failed.</p> <p>The <code>FailureReason</code> field contains one of the following values:</p> <ul> <li> <p> <code>Unsupported media format</code>.</p> <p>The media format specified in <code>MediaFormat</code> isn\'t valid. Refer to <b>MediaFormat</b> for a list of supported formats.</p> </li> <li> <p> <code>The media format provided does not match the detected media format</code>.</p> <p>The media format specified in <code>MediaFormat</code> doesn\'t match the format of the input file. Check the media format of your media file and correct the specified value.</p> </li> <li> <p> <code>Invalid sample rate for audio file</code>.</p> <p>The sample rate specified in <code>MediaSampleRateHertz</code> isn\'t valid. The sample rate must be between 8,000 and 48,000 hertz.</p> </li> <li> <p> <code>The sample rate provided does not match the detected sample rate</code>.</p> <p>The sample rate specified in <code>MediaSampleRateHertz</code> doesn\'t match the sample rate detected in your input media file. Check the sample rate of your media file and correct the specified value.</p> </li> <li> <p> <code>Invalid file size: file size too large</code>.</p> <p>The size of your media file is larger than what Amazon Transcribe can process. For more information, refer to <a href="https://docs.aws.amazon.com/transcribe/latest/dg/limits-guidelines.html#limits">Guidelines and quotas</a>.</p> </li> <li> <p> <code>Invalid number of channels: number of channels too large</code>.</p> <p>Your audio contains more channels than Amazon Transcribe is able to process. For more information, refer to <a href="https://docs.aws.amazon.com/transcribe/latest/dg/limits-guidelines.html#limits">Guidelines and quotas</a>.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    DataAccessRoleArn: DataAccessRoleArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) you included in your request.' }),
-    ).exactOptional(),
-    IdentifiedLanguageScore: IdentifiedLanguageScoreSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The confidence score associated with the language identified in your media file.</p> <p>Confidence scores are values between 0 and 1; a larger value indicates a higher probability that the identified language correctly matches the language spoken in your media.</p>',
-        }),
-    ).exactOptional(),
-    Settings: CallAnalyticsJobSettingsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Provides information on any additional settings that were included in your request. Additional settings include content redaction and language identification settings.',
-        }),
-    ).exactOptional(),
-    ChannelDefinitions: ChannelDefinitionsSchema.and(
-      z.any().openapi({ description: 'Indicates which speaker is on which channel.' }),
-    ).exactOptional(),
+    StartTime: DateTimeSchema.exactOptional().openapi({
+      description:
+        "<p>The date and time the specified Call Analytics job began processing.</p> <p>Timestamps are in the format <code>YYYY-MM-DD'T'HH:MM:SS.SSSSSS-UTC</code>. For example, <code>2022-05-04T12:32:58.789000-07:00</code> represents a transcription job that started processing at 12:32 PM UTC-7 on May 4, 2022.</p>",
+    }),
+    CreationTime: DateTimeSchema.exactOptional().openapi({
+      description:
+        "<p>The date and time the specified Call Analytics job request was made.</p> <p>Timestamps are in the format <code>YYYY-MM-DD'T'HH:MM:SS.SSSSSS-UTC</code>. For example, <code>2022-05-04T12:32:58.761000-07:00</code> represents a transcription job that started processing at 12:32 PM UTC-7 on May 4, 2022.</p>",
+    }),
+    CompletionTime: DateTimeSchema.exactOptional().openapi({
+      description:
+        "<p>The date and time the specified Call Analytics job finished processing.</p> <p>Timestamps are in the format <code>YYYY-MM-DD'T'HH:MM:SS.SSSSSS-UTC</code>. For example, <code>2022-05-04T12:33:13.922000-07:00</code> represents a transcription job that started processing at 12:33 PM UTC-7 on May 4, 2022.</p>",
+    }),
+    FailureReason: FailureReasonSchema.exactOptional().openapi({
+      description:
+        '<p>If <code>CallAnalyticsJobStatus</code> is <code>FAILED</code>, <code>FailureReason</code> contains information about why the Call Analytics job request failed.</p> <p>The <code>FailureReason</code> field contains one of the following values:</p> <ul> <li> <p> <code>Unsupported media format</code>.</p> <p>The media format specified in <code>MediaFormat</code> isn\'t valid. Refer to <b>MediaFormat</b> for a list of supported formats.</p> </li> <li> <p> <code>The media format provided does not match the detected media format</code>.</p> <p>The media format specified in <code>MediaFormat</code> doesn\'t match the format of the input file. Check the media format of your media file and correct the specified value.</p> </li> <li> <p> <code>Invalid sample rate for audio file</code>.</p> <p>The sample rate specified in <code>MediaSampleRateHertz</code> isn\'t valid. The sample rate must be between 8,000 and 48,000 hertz.</p> </li> <li> <p> <code>The sample rate provided does not match the detected sample rate</code>.</p> <p>The sample rate specified in <code>MediaSampleRateHertz</code> doesn\'t match the sample rate detected in your input media file. Check the sample rate of your media file and correct the specified value.</p> </li> <li> <p> <code>Invalid file size: file size too large</code>.</p> <p>The size of your media file is larger than what Amazon Transcribe can process. For more information, refer to <a href="https://docs.aws.amazon.com/transcribe/latest/dg/limits-guidelines.html#limits">Guidelines and quotas</a>.</p> </li> <li> <p> <code>Invalid number of channels: number of channels too large</code>.</p> <p>Your audio contains more channels than Amazon Transcribe is able to process. For more information, refer to <a href="https://docs.aws.amazon.com/transcribe/latest/dg/limits-guidelines.html#limits">Guidelines and quotas</a>.</p> </li> </ul>',
+    }),
+    DataAccessRoleArn: DataAccessRoleArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) you included in your request.',
+    }),
+    IdentifiedLanguageScore: IdentifiedLanguageScoreSchema.exactOptional().openapi({
+      description:
+        '<p>The confidence score associated with the language identified in your media file.</p> <p>Confidence scores are values between 0 and 1; a larger value indicates a higher probability that the identified language correctly matches the language spoken in your media.</p>',
+    }),
+    Settings: CallAnalyticsJobSettingsSchema.exactOptional().openapi({
+      description:
+        'Provides information on any additional settings that were included in your request. Additional settings include content redaction and language identification settings.',
+    }),
+    ChannelDefinitions: ChannelDefinitionsSchema.exactOptional().openapi({
+      description: 'Indicates which speaker is on which channel.',
+    }),
   })
   .openapi({
     description:
@@ -1609,28 +1101,20 @@ const CallAnalyticsJobSchema = z
 
 const GetCallAnalyticsJobResponseSchema = z
   .object({
-    CallAnalyticsJob: CallAnalyticsJobSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Provides detailed information about the specified Call Analytics job, including job status and, if applicable, failure reason.',
-        }),
-    ).exactOptional(),
+    CallAnalyticsJob: CallAnalyticsJobSchema.exactOptional().openapi({
+      description:
+        'Provides detailed information about the specified Call Analytics job, including job status and, if applicable, failure reason.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetCallAnalyticsJobResponse')
 
 const GetCallAnalyticsJobRequestSchema = z
   .object({
-    CallAnalyticsJobName: CallAnalyticsJobNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the Call Analytics job you want information about. Job names are case sensitive.',
-        }),
-    ),
+    CallAnalyticsJobName: CallAnalyticsJobNameSchema.openapi({
+      description:
+        'The name of the Call Analytics job you want information about. Job names are case sensitive.',
+    }),
   })
   .openapi({ required: ['CallAnalyticsJobName'], title: 'GetCallAnalyticsJobRequest' })
   .openapi('GetCallAnalyticsJobRequest')
@@ -1647,14 +1131,10 @@ const MedicalMediaSampleRateHertzSchema = z
 
 const MedicalTranscriptSchema = z
   .object({
-    TranscriptFileUri: UriSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon S3 location of your transcript. You can use this URI to access or download your transcript.</p> <p>Note that this is the Amazon S3 location you specified in your request using the <code>OutputBucketName</code> parameter.</p>',
-        }),
-    ).exactOptional(),
+    TranscriptFileUri: UriSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon S3 location of your transcript. You can use this URI to access or download your transcript.</p> <p>Note that this is the Amazon S3 location you specified in your request using the <code>OutputBucketName</code> parameter.</p>',
+    }),
   })
   .openapi({
     description: 'Provides you with the Amazon S3 URI you can use to access your transcript.',
@@ -1668,54 +1148,30 @@ const MaxAlternativesSchema = z.int().min(2).max(10).openapi('MaxAlternatives')
 
 const MedicalTranscriptionSettingSchema = z
   .object({
-    ShowSpeakerLabels: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Enables speaker partitioning (diarization) in your transcription output. Speaker partitioning labels the speech from individual speakers in your media file.</p> <p>If you enable <code>ShowSpeakerLabels</code> in your request, you must also include <code>MaxSpeakerLabels</code>.</p> <p>You can\'t include <code>ShowSpeakerLabels</code> and <code>ChannelIdentification</code> in the same request. Including both parameters returns a <code>BadRequestException</code>.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/transcribe/latest/dg/diarization.html">Partitioning speakers (diarization)</a>.</p>',
-        }),
-    ).exactOptional(),
-    MaxSpeakerLabels: MaxSpeakersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specify the maximum number of speakers you want to partition in your media.</p> <p>Note that if your media contains more speakers than the specified number, multiple speakers are treated as a single speaker.</p> <p>If you specify the <code>MaxSpeakerLabels</code> field, you must set the <code>ShowSpeakerLabels</code> field to true.</p>',
-        }),
-    ).exactOptional(),
-    ChannelIdentification: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Enables channel identification in multi-channel audio.</p> <p>Channel identification transcribes the audio on each channel independently, then appends the output for each channel into one transcript.</p> <p>If you have multi-channel audio and do not enable channel identification, your audio is transcribed in a continuous manner and your transcript does not separate the speech by channel.</p> <p>You can\'t include both <code>ShowSpeakerLabels</code> and <code>ChannelIdentification</code> in the same request. Including both parameters returns a <code>BadRequestException</code>.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/transcribe/latest/dg/channel-id.html">Transcribing multi-channel audio</a>.</p>',
-        }),
-    ).exactOptional(),
-    ShowAlternatives: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>To include alternative transcriptions within your transcription output, include <code>ShowAlternatives</code> in your transcription request.</p> <p>If you include <code>ShowAlternatives</code>, you must also include <code>MaxAlternatives</code>, which is the maximum number of alternative transcriptions you want Amazon Transcribe Medical to generate.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/transcribe/latest/dg/how-alternatives.html">Alternative transcriptions</a>.</p>',
-        }),
-    ).exactOptional(),
-    MaxAlternatives: MaxAlternativesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Indicate the maximum number of alternative transcriptions you want Amazon Transcribe Medical to include in your transcript.</p> <p>If you select a number greater than the number of alternative transcriptions generated by Amazon Transcribe Medical, only the actual number of alternative transcriptions are included.</p> <p>If you include <code>MaxAlternatives</code> in your request, you must also include <code>ShowAlternatives</code> with a value of <code>true</code>.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/transcribe/latest/dg/how-alternatives.html">Alternative transcriptions</a>.</p>',
-        }),
-    ).exactOptional(),
-    VocabularyName: VocabularyNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The name of the custom vocabulary you want to use when processing your medical transcription job. Custom vocabulary names are case sensitive.</p> <p>The language of the specified custom vocabulary must match the language code that you specify in your transcription request. If the languages don't match, the custom vocabulary isn't applied. There are no errors or warnings associated with a language mismatch. US English (<code>en-US</code>) is the only valid language for Amazon Transcribe Medical.</p>",
-        }),
-    ).exactOptional(),
+    ShowSpeakerLabels: BooleanSchema.exactOptional().openapi({
+      description:
+        '<p>Enables speaker partitioning (diarization) in your transcription output. Speaker partitioning labels the speech from individual speakers in your media file.</p> <p>If you enable <code>ShowSpeakerLabels</code> in your request, you must also include <code>MaxSpeakerLabels</code>.</p> <p>You can\'t include <code>ShowSpeakerLabels</code> and <code>ChannelIdentification</code> in the same request. Including both parameters returns a <code>BadRequestException</code>.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/transcribe/latest/dg/diarization.html">Partitioning speakers (diarization)</a>.</p>',
+    }),
+    MaxSpeakerLabels: MaxSpeakersSchema.exactOptional().openapi({
+      description:
+        '<p>Specify the maximum number of speakers you want to partition in your media.</p> <p>Note that if your media contains more speakers than the specified number, multiple speakers are treated as a single speaker.</p> <p>If you specify the <code>MaxSpeakerLabels</code> field, you must set the <code>ShowSpeakerLabels</code> field to true.</p>',
+    }),
+    ChannelIdentification: BooleanSchema.exactOptional().openapi({
+      description:
+        '<p>Enables channel identification in multi-channel audio.</p> <p>Channel identification transcribes the audio on each channel independently, then appends the output for each channel into one transcript.</p> <p>If you have multi-channel audio and do not enable channel identification, your audio is transcribed in a continuous manner and your transcript does not separate the speech by channel.</p> <p>You can\'t include both <code>ShowSpeakerLabels</code> and <code>ChannelIdentification</code> in the same request. Including both parameters returns a <code>BadRequestException</code>.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/transcribe/latest/dg/channel-id.html">Transcribing multi-channel audio</a>.</p>',
+    }),
+    ShowAlternatives: BooleanSchema.exactOptional().openapi({
+      description:
+        '<p>To include alternative transcriptions within your transcription output, include <code>ShowAlternatives</code> in your transcription request.</p> <p>If you include <code>ShowAlternatives</code>, you must also include <code>MaxAlternatives</code>, which is the maximum number of alternative transcriptions you want Amazon Transcribe Medical to generate.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/transcribe/latest/dg/how-alternatives.html">Alternative transcriptions</a>.</p>',
+    }),
+    MaxAlternatives: MaxAlternativesSchema.exactOptional().openapi({
+      description:
+        '<p>Indicate the maximum number of alternative transcriptions you want Amazon Transcribe Medical to include in your transcript.</p> <p>If you select a number greater than the number of alternative transcriptions generated by Amazon Transcribe Medical, only the actual number of alternative transcriptions are included.</p> <p>If you include <code>MaxAlternatives</code> in your request, you must also include <code>ShowAlternatives</code> with a value of <code>true</code>.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/transcribe/latest/dg/how-alternatives.html">Alternative transcriptions</a>.</p>',
+    }),
+    VocabularyName: VocabularyNameSchema.exactOptional().openapi({
+      description:
+        "<p>The name of the custom vocabulary you want to use when processing your medical transcription job. Custom vocabulary names are case sensitive.</p> <p>The language of the specified custom vocabulary must match the language code that you specify in your transcription request. If the languages don't match, the custom vocabulary isn't applied. There are no errors or warnings associated with a language mismatch. US English (<code>en-US</code>) is the only valid language for Amazon Transcribe Medical.</p>",
+    }),
   })
   .openapi({
     description:
@@ -1734,117 +1190,63 @@ const TypeSchema = z.enum(['CONVERSATION', 'DICTATION']).openapi('Type')
 
 const MedicalTranscriptionJobSchema = z
   .object({
-    MedicalTranscriptionJobName: TranscriptionJobNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the medical transcription job. Job names are case sensitive and must be unique within an Amazon Web Services account.',
-        }),
-    ).exactOptional(),
-    TranscriptionJobStatus: TranscriptionJobStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Provides the status of the specified medical transcription job.</p> <p>If the status is <code>COMPLETED</code>, the job is finished and you can find the results at the location specified in <code>TranscriptFileUri</code>. If the status is <code>FAILED</code>, <code>FailureReason</code> provides details on why your transcription job failed.</p>',
-        }),
-    ).exactOptional(),
-    LanguageCode: LanguageCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The language code used to create your medical transcription job. US English (<code>en-US</code>) is the only supported language for medical transcriptions.',
-        }),
-    ).exactOptional(),
-    MediaSampleRateHertz: MedicalMediaSampleRateHertzSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The sample rate, in hertz, of the audio track in your input media file.',
-        }),
-    ).exactOptional(),
-    MediaFormat: MediaFormatSchema.and(
-      z.any().openapi({ description: 'The format of the input media file.' }),
-    ).exactOptional(),
+    MedicalTranscriptionJobName: TranscriptionJobNameSchema.exactOptional().openapi({
+      description:
+        'The name of the medical transcription job. Job names are case sensitive and must be unique within an Amazon Web Services account.',
+    }),
+    TranscriptionJobStatus: TranscriptionJobStatusSchema.exactOptional().openapi({
+      description:
+        '<p>Provides the status of the specified medical transcription job.</p> <p>If the status is <code>COMPLETED</code>, the job is finished and you can find the results at the location specified in <code>TranscriptFileUri</code>. If the status is <code>FAILED</code>, <code>FailureReason</code> provides details on why your transcription job failed.</p>',
+    }),
+    LanguageCode: LanguageCodeSchema.exactOptional().openapi({
+      description:
+        'The language code used to create your medical transcription job. US English (<code>en-US</code>) is the only supported language for medical transcriptions.',
+    }),
+    MediaSampleRateHertz: MedicalMediaSampleRateHertzSchema.exactOptional().openapi({
+      description: 'The sample rate, in hertz, of the audio track in your input media file.',
+    }),
+    MediaFormat: MediaFormatSchema.exactOptional().openapi({
+      description: 'The format of the input media file.',
+    }),
     Media: MediaSchema.exactOptional(),
-    Transcript: MedicalTranscriptSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Provides you with the Amazon S3 URI you can use to access your transcript.',
-        }),
-    ).exactOptional(),
-    StartTime: DateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The date and time the specified medical transcription job began processing.</p> <p>Timestamps are in the format <code>YYYY-MM-DD'T'HH:MM:SS.SSSSSS-UTC</code>. For example, <code>2022-05-04T12:32:58.789000-07:00</code> represents a transcription job that started processing at 12:32 PM UTC-7 on May 4, 2022.</p>",
-        }),
-    ).exactOptional(),
-    CreationTime: DateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The date and time the specified medical transcription job request was made.</p> <p>Timestamps are in the format <code>YYYY-MM-DD'T'HH:MM:SS.SSSSSS-UTC</code>. For example, <code>2022-05-04T12:32:58.761000-07:00</code> represents a transcription job that started processing at 12:32 PM UTC-7 on May 4, 2022.</p>",
-        }),
-    ).exactOptional(),
-    CompletionTime: DateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The date and time the specified medical transcription job finished processing.</p> <p>Timestamps are in the format <code>YYYY-MM-DD'T'HH:MM:SS.SSSSSS-UTC</code>. For example, <code>2022-05-04T12:33:13.922000-07:00</code> represents a transcription job that started processing at 12:33 PM UTC-7 on May 4, 2022.</p>",
-        }),
-    ).exactOptional(),
-    FailureReason: FailureReasonSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If <code>TranscriptionJobStatus</code> is <code>FAILED</code>, <code>FailureReason</code> contains information about why the transcription job request failed.</p> <p>The <code>FailureReason</code> field contains one of the following values:</p> <ul> <li> <p> <code>Unsupported media format</code>.</p> <p>The media format specified in <code>MediaFormat</code> isn\'t valid. Refer to <b>MediaFormat</b> for a list of supported formats.</p> </li> <li> <p> <code>The media format provided does not match the detected media format</code>.</p> <p>The media format specified in <code>MediaFormat</code> doesn\'t match the format of the input file. Check the media format of your media file and correct the specified value.</p> </li> <li> <p> <code>Invalid sample rate for audio file</code>.</p> <p>The sample rate specified in <code>MediaSampleRateHertz</code> isn\'t valid. The sample rate must be between 16,000 and 48,000 hertz.</p> </li> <li> <p> <code>The sample rate provided does not match the detected sample rate</code>.</p> <p>The sample rate specified in <code>MediaSampleRateHertz</code> doesn\'t match the sample rate detected in your input media file. Check the sample rate of your media file and correct the specified value.</p> </li> <li> <p> <code>Invalid file size: file size too large</code>.</p> <p>The size of your media file is larger than what Amazon Transcribe can process. For more information, refer to <a href="https://docs.aws.amazon.com/transcribe/latest/dg/limits-guidelines.html#limits">Guidelines and quotas</a>.</p> </li> <li> <p> <code>Invalid number of channels: number of channels too large</code>.</p> <p>Your audio contains more channels than Amazon Transcribe is able to process. For more information, refer to <a href="https://docs.aws.amazon.com/transcribe/latest/dg/limits-guidelines.html#limits">Guidelines and quotas</a>.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Settings: MedicalTranscriptionSettingSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Provides information on any additional settings that were included in your request. Additional settings include channel identification, alternative transcriptions, speaker partitioning, custom vocabularies, and custom vocabulary filters.',
-        }),
-    ).exactOptional(),
-    ContentIdentificationType: MedicalContentIdentificationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether content identification was enabled for your transcription request.',
-        }),
-    ).exactOptional(),
-    Specialty: SpecialtySchema.and(
-      z
-        .any()
-        .openapi({ description: 'Describes the medical specialty represented in your media.' }),
-    ).exactOptional(),
-    Type: TypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether the input media is a dictation or a conversation, as specified in the <code>StartMedicalTranscriptionJob</code> request.',
-        }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tags, each in the form of a key:value pair, assigned to the specified medical transcription job.',
-        }),
-    ).exactOptional(),
+    Transcript: MedicalTranscriptSchema.exactOptional().openapi({
+      description: 'Provides you with the Amazon S3 URI you can use to access your transcript.',
+    }),
+    StartTime: DateTimeSchema.exactOptional().openapi({
+      description:
+        "<p>The date and time the specified medical transcription job began processing.</p> <p>Timestamps are in the format <code>YYYY-MM-DD'T'HH:MM:SS.SSSSSS-UTC</code>. For example, <code>2022-05-04T12:32:58.789000-07:00</code> represents a transcription job that started processing at 12:32 PM UTC-7 on May 4, 2022.</p>",
+    }),
+    CreationTime: DateTimeSchema.exactOptional().openapi({
+      description:
+        "<p>The date and time the specified medical transcription job request was made.</p> <p>Timestamps are in the format <code>YYYY-MM-DD'T'HH:MM:SS.SSSSSS-UTC</code>. For example, <code>2022-05-04T12:32:58.761000-07:00</code> represents a transcription job that started processing at 12:32 PM UTC-7 on May 4, 2022.</p>",
+    }),
+    CompletionTime: DateTimeSchema.exactOptional().openapi({
+      description:
+        "<p>The date and time the specified medical transcription job finished processing.</p> <p>Timestamps are in the format <code>YYYY-MM-DD'T'HH:MM:SS.SSSSSS-UTC</code>. For example, <code>2022-05-04T12:33:13.922000-07:00</code> represents a transcription job that started processing at 12:33 PM UTC-7 on May 4, 2022.</p>",
+    }),
+    FailureReason: FailureReasonSchema.exactOptional().openapi({
+      description:
+        '<p>If <code>TranscriptionJobStatus</code> is <code>FAILED</code>, <code>FailureReason</code> contains information about why the transcription job request failed.</p> <p>The <code>FailureReason</code> field contains one of the following values:</p> <ul> <li> <p> <code>Unsupported media format</code>.</p> <p>The media format specified in <code>MediaFormat</code> isn\'t valid. Refer to <b>MediaFormat</b> for a list of supported formats.</p> </li> <li> <p> <code>The media format provided does not match the detected media format</code>.</p> <p>The media format specified in <code>MediaFormat</code> doesn\'t match the format of the input file. Check the media format of your media file and correct the specified value.</p> </li> <li> <p> <code>Invalid sample rate for audio file</code>.</p> <p>The sample rate specified in <code>MediaSampleRateHertz</code> isn\'t valid. The sample rate must be between 16,000 and 48,000 hertz.</p> </li> <li> <p> <code>The sample rate provided does not match the detected sample rate</code>.</p> <p>The sample rate specified in <code>MediaSampleRateHertz</code> doesn\'t match the sample rate detected in your input media file. Check the sample rate of your media file and correct the specified value.</p> </li> <li> <p> <code>Invalid file size: file size too large</code>.</p> <p>The size of your media file is larger than what Amazon Transcribe can process. For more information, refer to <a href="https://docs.aws.amazon.com/transcribe/latest/dg/limits-guidelines.html#limits">Guidelines and quotas</a>.</p> </li> <li> <p> <code>Invalid number of channels: number of channels too large</code>.</p> <p>Your audio contains more channels than Amazon Transcribe is able to process. For more information, refer to <a href="https://docs.aws.amazon.com/transcribe/latest/dg/limits-guidelines.html#limits">Guidelines and quotas</a>.</p> </li> </ul>',
+    }),
+    Settings: MedicalTranscriptionSettingSchema.exactOptional().openapi({
+      description:
+        'Provides information on any additional settings that were included in your request. Additional settings include channel identification, alternative transcriptions, speaker partitioning, custom vocabularies, and custom vocabulary filters.',
+    }),
+    ContentIdentificationType: MedicalContentIdentificationTypeSchema.exactOptional().openapi({
+      description:
+        'Indicates whether content identification was enabled for your transcription request.',
+    }),
+    Specialty: SpecialtySchema.exactOptional().openapi({
+      description: 'Describes the medical specialty represented in your media.',
+    }),
+    Type: TypeSchema.exactOptional().openapi({
+      description:
+        'Indicates whether the input media is a dictation or a conversation, as specified in the <code>StartMedicalTranscriptionJob</code> request.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        'The tags, each in the form of a key:value pair, assigned to the specified medical transcription job.',
+    }),
   })
   .openapi({
     description:
@@ -1855,28 +1257,20 @@ const MedicalTranscriptionJobSchema = z
 
 const GetMedicalTranscriptionJobResponseSchema = z
   .object({
-    MedicalTranscriptionJob: MedicalTranscriptionJobSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Provides detailed information about the specified medical transcription job, including job status and, if applicable, failure reason.',
-        }),
-    ).exactOptional(),
+    MedicalTranscriptionJob: MedicalTranscriptionJobSchema.exactOptional().openapi({
+      description:
+        'Provides detailed information about the specified medical transcription job, including job status and, if applicable, failure reason.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetMedicalTranscriptionJobResponse')
 
 const GetMedicalTranscriptionJobRequestSchema = z
   .object({
-    MedicalTranscriptionJobName: TranscriptionJobNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the medical transcription job you want information about. Job names are case sensitive.',
-        }),
-    ),
+    MedicalTranscriptionJobName: TranscriptionJobNameSchema.openapi({
+      description:
+        'The name of the medical transcription job you want information about. Job names are case sensitive.',
+    }),
   })
   .openapi({
     required: ['MedicalTranscriptionJobName'],
@@ -1886,137 +1280,77 @@ const GetMedicalTranscriptionJobRequestSchema = z
 
 const GetMedicalVocabularyResponseSchema = z
   .object({
-    VocabularyName: VocabularyNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the custom medical vocabulary you requested information about.',
-        }),
-    ).exactOptional(),
-    LanguageCode: LanguageCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The language code you selected for your custom medical vocabulary. US English (<code>en-US</code>) is the only language supported with Amazon Transcribe Medical.',
-        }),
-    ).exactOptional(),
-    VocabularyState: VocabularyStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The processing state of your custom medical vocabulary. If the state is <code>READY</code>, you can use the custom vocabulary in a <code>StartMedicalTranscriptionJob</code> request.',
-        }),
-    ).exactOptional(),
-    LastModifiedTime: DateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The date and time the specified custom medical vocabulary was last modified.</p> <p>Timestamps are in the format <code>YYYY-MM-DD'T'HH:MM:SS.SSSSSS-UTC</code>. For example, <code>2022-05-04T12:32:58.761000-07:00</code> represents 12:32 PM UTC-7 on May 4, 2022.</p>",
-        }),
-    ).exactOptional(),
-    FailureReason: FailureReasonSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If <code>VocabularyState</code> is <code>FAILED</code>, <code>FailureReason</code> contains information about why the custom medical vocabulary request failed. See also: <a href="https://docs.aws.amazon.com/transcribe/latest/APIReference/CommonErrors.html">Common Errors</a>.',
-        }),
-    ).exactOptional(),
-    DownloadUri: UriSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The S3 location where the specified custom medical vocabulary is stored; use this URI to view or download the custom vocabulary.',
-        }),
-    ).exactOptional(),
+    VocabularyName: VocabularyNameSchema.exactOptional().openapi({
+      description: 'The name of the custom medical vocabulary you requested information about.',
+    }),
+    LanguageCode: LanguageCodeSchema.exactOptional().openapi({
+      description:
+        'The language code you selected for your custom medical vocabulary. US English (<code>en-US</code>) is the only language supported with Amazon Transcribe Medical.',
+    }),
+    VocabularyState: VocabularyStateSchema.exactOptional().openapi({
+      description:
+        'The processing state of your custom medical vocabulary. If the state is <code>READY</code>, you can use the custom vocabulary in a <code>StartMedicalTranscriptionJob</code> request.',
+    }),
+    LastModifiedTime: DateTimeSchema.exactOptional().openapi({
+      description:
+        "<p>The date and time the specified custom medical vocabulary was last modified.</p> <p>Timestamps are in the format <code>YYYY-MM-DD'T'HH:MM:SS.SSSSSS-UTC</code>. For example, <code>2022-05-04T12:32:58.761000-07:00</code> represents 12:32 PM UTC-7 on May 4, 2022.</p>",
+    }),
+    FailureReason: FailureReasonSchema.exactOptional().openapi({
+      description:
+        'If <code>VocabularyState</code> is <code>FAILED</code>, <code>FailureReason</code> contains information about why the custom medical vocabulary request failed. See also: <a href="https://docs.aws.amazon.com/transcribe/latest/APIReference/CommonErrors.html">Common Errors</a>.',
+    }),
+    DownloadUri: UriSchema.exactOptional().openapi({
+      description:
+        'The S3 location where the specified custom medical vocabulary is stored; use this URI to view or download the custom vocabulary.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetMedicalVocabularyResponse')
 
 const GetMedicalVocabularyRequestSchema = z
   .object({
-    VocabularyName: VocabularyNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the custom medical vocabulary you want information about. Custom medical vocabulary names are case sensitive.',
-        }),
-    ),
+    VocabularyName: VocabularyNameSchema.openapi({
+      description:
+        'The name of the custom medical vocabulary you want information about. Custom medical vocabulary names are case sensitive.',
+    }),
   })
   .openapi({ required: ['VocabularyName'], title: 'GetMedicalVocabularyRequest' })
   .openapi('GetMedicalVocabularyRequest')
 
 const SettingsSchema = z
   .object({
-    VocabularyName: VocabularyNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the custom vocabulary you want to use in your transcription job request. This name is case sensitive, cannot contain spaces, and must be unique within an Amazon Web Services account.',
-        }),
-    ).exactOptional(),
-    ShowSpeakerLabels: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Enables speaker partitioning (diarization) in your transcription output. Speaker partitioning labels the speech from individual speakers in your media file.</p> <p>If you enable <code>ShowSpeakerLabels</code> in your request, you must also include <code>MaxSpeakerLabels</code>.</p> <p>You can\'t include both <code>ShowSpeakerLabels</code> and <code>ChannelIdentification</code> in the same request. Including both parameters returns a <code>BadRequestException</code>.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/transcribe/latest/dg/diarization.html">Partitioning speakers (diarization)</a>.</p>',
-        }),
-    ).exactOptional(),
-    MaxSpeakerLabels: MaxSpeakersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specify the maximum number of speakers you want to partition in your media.</p> <p>Note that if your media contains more speakers than the specified number, multiple speakers are treated as a single speaker.</p> <p>If you specify the <code>MaxSpeakerLabels</code> field, you must set the <code>ShowSpeakerLabels</code> field to true.</p>',
-        }),
-    ).exactOptional(),
-    ChannelIdentification: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Enables channel identification in multi-channel audio.</p> <p>Channel identification transcribes the audio on each channel independently, then appends the output for each channel into one transcript.</p> <p>You can\'t include both <code>ShowSpeakerLabels</code> and <code>ChannelIdentification</code> in the same request. Including both parameters returns a <code>BadRequestException</code>.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/transcribe/latest/dg/channel-id.html">Transcribing multi-channel audio</a>.</p>',
-        }),
-    ).exactOptional(),
-    ShowAlternatives: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>To include alternative transcriptions within your transcription output, include <code>ShowAlternatives</code> in your transcription request.</p> <p>If you have multi-channel audio and do not enable channel identification, your audio is transcribed in a continuous manner and your transcript does not separate the speech by channel.</p> <p>If you include <code>ShowAlternatives</code>, you must also include <code>MaxAlternatives</code>, which is the maximum number of alternative transcriptions you want Amazon Transcribe to generate.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/transcribe/latest/dg/how-alternatives.html">Alternative transcriptions</a>.</p>',
-        }),
-    ).exactOptional(),
-    MaxAlternatives: MaxAlternativesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Indicate the maximum number of alternative transcriptions you want Amazon Transcribe to include in your transcript.</p> <p>If you select a number greater than the number of alternative transcriptions generated by Amazon Transcribe, only the actual number of alternative transcriptions are included.</p> <p>If you include <code>MaxAlternatives</code> in your request, you must also include <code>ShowAlternatives</code> with a value of <code>true</code>.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/transcribe/latest/dg/how-alternatives.html">Alternative transcriptions</a>.</p>',
-        }),
-    ).exactOptional(),
-    VocabularyFilterName: VocabularyFilterNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the custom vocabulary filter you want to use in your transcription job request. This name is case sensitive, cannot contain spaces, and must be unique within an Amazon Web Services account.</p> <p>Note that if you include <code>VocabularyFilterName</code> in your request, you must also include <code>VocabularyFilterMethod</code>.</p>',
-        }),
-    ).exactOptional(),
-    VocabularyFilterMethod: VocabularyFilterMethodSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specify how you want your custom vocabulary filter applied to your transcript.</p> <p>To replace words with <code>***</code>, choose <code>mask</code>.</p> <p>To delete words, choose <code>remove</code>.</p> <p>To flag words without changing them, choose <code>tag</code>.</p>',
-        }),
-    ).exactOptional(),
+    VocabularyName: VocabularyNameSchema.exactOptional().openapi({
+      description:
+        'The name of the custom vocabulary you want to use in your transcription job request. This name is case sensitive, cannot contain spaces, and must be unique within an Amazon Web Services account.',
+    }),
+    ShowSpeakerLabels: BooleanSchema.exactOptional().openapi({
+      description:
+        '<p>Enables speaker partitioning (diarization) in your transcription output. Speaker partitioning labels the speech from individual speakers in your media file.</p> <p>If you enable <code>ShowSpeakerLabels</code> in your request, you must also include <code>MaxSpeakerLabels</code>.</p> <p>You can\'t include both <code>ShowSpeakerLabels</code> and <code>ChannelIdentification</code> in the same request. Including both parameters returns a <code>BadRequestException</code>.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/transcribe/latest/dg/diarization.html">Partitioning speakers (diarization)</a>.</p>',
+    }),
+    MaxSpeakerLabels: MaxSpeakersSchema.exactOptional().openapi({
+      description:
+        '<p>Specify the maximum number of speakers you want to partition in your media.</p> <p>Note that if your media contains more speakers than the specified number, multiple speakers are treated as a single speaker.</p> <p>If you specify the <code>MaxSpeakerLabels</code> field, you must set the <code>ShowSpeakerLabels</code> field to true.</p>',
+    }),
+    ChannelIdentification: BooleanSchema.exactOptional().openapi({
+      description:
+        '<p>Enables channel identification in multi-channel audio.</p> <p>Channel identification transcribes the audio on each channel independently, then appends the output for each channel into one transcript.</p> <p>You can\'t include both <code>ShowSpeakerLabels</code> and <code>ChannelIdentification</code> in the same request. Including both parameters returns a <code>BadRequestException</code>.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/transcribe/latest/dg/channel-id.html">Transcribing multi-channel audio</a>.</p>',
+    }),
+    ShowAlternatives: BooleanSchema.exactOptional().openapi({
+      description:
+        '<p>To include alternative transcriptions within your transcription output, include <code>ShowAlternatives</code> in your transcription request.</p> <p>If you have multi-channel audio and do not enable channel identification, your audio is transcribed in a continuous manner and your transcript does not separate the speech by channel.</p> <p>If you include <code>ShowAlternatives</code>, you must also include <code>MaxAlternatives</code>, which is the maximum number of alternative transcriptions you want Amazon Transcribe to generate.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/transcribe/latest/dg/how-alternatives.html">Alternative transcriptions</a>.</p>',
+    }),
+    MaxAlternatives: MaxAlternativesSchema.exactOptional().openapi({
+      description:
+        '<p>Indicate the maximum number of alternative transcriptions you want Amazon Transcribe to include in your transcript.</p> <p>If you select a number greater than the number of alternative transcriptions generated by Amazon Transcribe, only the actual number of alternative transcriptions are included.</p> <p>If you include <code>MaxAlternatives</code> in your request, you must also include <code>ShowAlternatives</code> with a value of <code>true</code>.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/transcribe/latest/dg/how-alternatives.html">Alternative transcriptions</a>.</p>',
+    }),
+    VocabularyFilterName: VocabularyFilterNameSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the custom vocabulary filter you want to use in your transcription job request. This name is case sensitive, cannot contain spaces, and must be unique within an Amazon Web Services account.</p> <p>Note that if you include <code>VocabularyFilterName</code> in your request, you must also include <code>VocabularyFilterMethod</code>.</p>',
+    }),
+    VocabularyFilterMethod: VocabularyFilterMethodSchema.exactOptional().openapi({
+      description:
+        '<p>Specify how you want your custom vocabulary filter applied to your transcript.</p> <p>To replace words with <code>***</code>, choose <code>mask</code>.</p> <p>To delete words, choose <code>remove</code>.</p> <p>To flag words without changing them, choose <code>tag</code>.</p>',
+    }),
   })
   .openapi({
     description:
@@ -2027,14 +1361,10 @@ const SettingsSchema = z
 
 const ModelSettingsSchema = z
   .object({
-    LanguageModelName: ModelNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The name of the custom language model you want to use when processing your transcription job. Note that custom language model names are case sensitive.</p> <p>The language of the specified custom language model must match the language code that you specify in your transcription request. If the languages don't match, the custom language model isn't applied. There are no errors or warnings associated with a language mismatch.</p>",
-        }),
-    ).exactOptional(),
+    LanguageModelName: ModelNameSchema.exactOptional().openapi({
+      description:
+        "<p>The name of the custom language model you want to use when processing your transcription job. Note that custom language model names are case sensitive.</p> <p>The language of the specified custom language model must match the language code that you specify in your transcription request. If the languages don't match, the custom language model isn't applied. There are no errors or warnings associated with a language mismatch.</p>",
+    }),
   })
   .openapi({
     description:
@@ -2045,22 +1375,14 @@ const ModelSettingsSchema = z
 
 const JobExecutionSettingsSchema = z
   .object({
-    AllowDeferredExecution: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Makes it possible to enable job queuing when your concurrent request limit is exceeded. When <code>AllowDeferredExecution</code> is set to <code>true</code>, transcription job requests are placed in a queue until the number of jobs falls below the concurrent request limit. If <code>AllowDeferredExecution</code> is set to <code>false</code> and the number of transcription job requests exceed the concurrent request limit, you get a <code>LimitExceededException</code> error.</p> <p>If you include <code>AllowDeferredExecution</code> in your request, you must also include <code>DataAccessRoleArn</code>.</p>',
-        }),
-    ).exactOptional(),
-    DataAccessRoleArn: DataAccessRoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of an IAM role that has permissions to access the Amazon S3 bucket that contains your input files. If the role that you specify doesn’t have the appropriate permissions to access the specified Amazon S3 location, your request fails.</p> <p>IAM role ARNs have the format <code>arn:partition:iam::account:role/role-name-with-path</code>. For example: <code>arn:aws:iam::111122223333:role/Admin</code>. For more information, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_identifiers.html#identifiers-arns">IAM ARNs</a>.</p> <p>Note that if you include <code>DataAccessRoleArn</code> in your request, you must also include <code>AllowDeferredExecution</code>.</p>',
-        }),
-    ).exactOptional(),
+    AllowDeferredExecution: BooleanSchema.exactOptional().openapi({
+      description:
+        '<p>Makes it possible to enable job queuing when your concurrent request limit is exceeded. When <code>AllowDeferredExecution</code> is set to <code>true</code>, transcription job requests are placed in a queue until the number of jobs falls below the concurrent request limit. If <code>AllowDeferredExecution</code> is set to <code>false</code> and the number of transcription job requests exceed the concurrent request limit, you get a <code>LimitExceededException</code> error.</p> <p>If you include <code>AllowDeferredExecution</code> in your request, you must also include <code>DataAccessRoleArn</code>.</p>',
+    }),
+    DataAccessRoleArn: DataAccessRoleArnSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of an IAM role that has permissions to access the Amazon S3 bucket that contains your input files. If the role that you specify doesn’t have the appropriate permissions to access the specified Amazon S3 location, your request fails.</p> <p>IAM role ARNs have the format <code>arn:partition:iam::account:role/role-name-with-path</code>. For example: <code>arn:aws:iam::111122223333:role/Admin</code>. For more information, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_identifiers.html#identifiers-arns">IAM ARNs</a>.</p> <p>Note that if you include <code>DataAccessRoleArn</code> in your request, you must also include <code>AllowDeferredExecution</code>.</p>',
+    }),
   })
   .openapi({
     description:
@@ -2073,21 +1395,13 @@ const DurationInSecondsSchema = z.float32().openapi('DurationInSeconds')
 
 const LanguageCodeItemSchema = z
   .object({
-    LanguageCode: LanguageCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Provides the language code for each language identified in your media.',
-        }),
-    ).exactOptional(),
-    DurationInSeconds: DurationInSecondsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Provides the total time, in seconds, each identified language is spoken in your media.',
-        }),
-    ).exactOptional(),
+    LanguageCode: LanguageCodeSchema.exactOptional().openapi({
+      description: 'Provides the language code for each language identified in your media.',
+    }),
+    DurationInSeconds: DurationInSecondsSchema.exactOptional().openapi({
+      description:
+        'Provides the total time, in seconds, each identified language is spoken in your media.',
+    }),
   })
   .openapi({
     description:
@@ -2108,30 +1422,18 @@ const SubtitleOutputStartIndexSchema = z.int().min(0).max(1).openapi('SubtitleOu
 
 const SubtitlesOutputSchema = z
   .object({
-    Formats: SubtitleFormatsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Provides the format of your subtitle files. If your request included both WebVTT (<code>vtt</code>) and SubRip (<code>srt</code>) formats, both formats are shown.',
-        }),
-    ).exactOptional(),
-    SubtitleFileUris: SubtitleFileUrisSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The Amazon S3 location of your transcript. You can use this URI to access or download your subtitle file. Your subtitle file is stored in the same location as your transcript. If you specified both WebVTT and SubRip subtitle formats, two URIs are provided.</p> <p>If you included <code>OutputBucketName</code> in your transcription job request, this is the URI of that bucket. If you also included <code>OutputKey</code> in your request, your output is located in the path you specified in your request.</p> <p>If you didn't include <code>OutputBucketName</code> in your transcription job request, your subtitle file is stored in a service-managed bucket, and <code>TranscriptFileUri</code> provides you with a temporary URI you can use for secure access to your subtitle file.</p> <note> <p>Temporary URIs for service-managed Amazon S3 buckets are only valid for 15 minutes. If you get an <code>AccesDenied</code> error, you can get a new temporary URI by running a <code>GetTranscriptionJob</code> or <code>ListTranscriptionJob</code> request.</p> </note>",
-        }),
-    ).exactOptional(),
-    OutputStartIndex: SubtitleOutputStartIndexSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Provides the start index value for your subtitle files. If you did not specify a value in your request, the default value of <code>0</code> is used.',
-        }),
-    ).exactOptional(),
+    Formats: SubtitleFormatsSchema.exactOptional().openapi({
+      description:
+        'Provides the format of your subtitle files. If your request included both WebVTT (<code>vtt</code>) and SubRip (<code>srt</code>) formats, both formats are shown.',
+    }),
+    SubtitleFileUris: SubtitleFileUrisSchema.exactOptional().openapi({
+      description:
+        "<p>The Amazon S3 location of your transcript. You can use this URI to access or download your subtitle file. Your subtitle file is stored in the same location as your transcript. If you specified both WebVTT and SubRip subtitle formats, two URIs are provided.</p> <p>If you included <code>OutputBucketName</code> in your transcription job request, this is the URI of that bucket. If you also included <code>OutputKey</code> in your request, your output is located in the path you specified in your request.</p> <p>If you didn't include <code>OutputBucketName</code> in your transcription job request, your subtitle file is stored in a service-managed bucket, and <code>TranscriptFileUri</code> provides you with a temporary URI you can use for secure access to your subtitle file.</p> <note> <p>Temporary URIs for service-managed Amazon S3 buckets are only valid for 15 minutes. If you get an <code>AccesDenied</code> error, you can get a new temporary URI by running a <code>GetTranscriptionJob</code> or <code>ListTranscriptionJob</code> request.</p> </note>",
+    }),
+    OutputStartIndex: SubtitleOutputStartIndexSchema.exactOptional().openapi({
+      description:
+        'Provides the start index value for your subtitle files. If you did not specify a value in your request, the default value of <code>0</code> is used.',
+    }),
   })
   .openapi({
     description:
@@ -2149,14 +1451,10 @@ const ToxicityCategoriesSchema = z
 
 const ToxicityDetectionSettingsSchema = z
   .object({
-    ToxicityCategories: ToxicityCategoriesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' If you include <code>ToxicityDetection</code> in your transcription request, you must also include <code>ToxicityCategories</code>. The only accepted value for this parameter is <code>ALL</code>.',
-        }),
-    ),
+    ToxicityCategories: ToxicityCategoriesSchema.openapi({
+      description:
+        ' If you include <code>ToxicityDetection</code> in your transcription request, you must also include <code>ToxicityCategories</code>. The only accepted value for this parameter is <code>ALL</code>.',
+    }),
   })
   .openapi({
     required: ['ToxicityCategories'],
@@ -2172,184 +1470,95 @@ const ToxicityDetectionSchema = z
 
 const TranscriptionJobSchema = z
   .object({
-    TranscriptionJobName: TranscriptionJobNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the transcription job. Job names are case sensitive and must be unique within an Amazon Web Services account.',
-        }),
-    ).exactOptional(),
-    TranscriptionJobStatus: TranscriptionJobStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Provides the status of the specified transcription job.</p> <p>If the status is <code>COMPLETED</code>, the job is finished and you can find the results at the location specified in <code>TranscriptFileUri</code> (or <code>RedactedTranscriptFileUri</code>, if you requested transcript redaction). If the status is <code>FAILED</code>, <code>FailureReason</code> provides details on why your transcription job failed.</p>',
-        }),
-    ).exactOptional(),
-    LanguageCode: LanguageCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The language code used to create your transcription job. This parameter is used with single-language identification. For multi-language identification requests, refer to the plural version of this parameter, <code>LanguageCodes</code>.',
-        }),
-    ).exactOptional(),
-    MediaSampleRateHertz: MediaSampleRateHertzSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The sample rate, in hertz, of the audio track in your input media file.',
-        }),
-    ).exactOptional(),
-    MediaFormat: MediaFormatSchema.and(
-      z.any().openapi({ description: 'The format of the input media file.' }),
-    ).exactOptional(),
-    Media: MediaSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Provides the Amazon S3 location of the media file you used in your request.',
-        }),
-    ).exactOptional(),
-    Transcript: TranscriptSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Provides you with the Amazon S3 URI you can use to access your transcript.',
-        }),
-    ).exactOptional(),
-    StartTime: DateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The date and time the specified transcription job began processing.</p> <p>Timestamps are in the format <code>YYYY-MM-DD'T'HH:MM:SS.SSSSSS-UTC</code>. For example, <code>2022-05-04T12:32:58.789000-07:00</code> represents a transcription job that started processing at 12:32 PM UTC-7 on May 4, 2022.</p>",
-        }),
-    ).exactOptional(),
-    CreationTime: DateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The date and time the specified transcription job request was made.</p> <p>Timestamps are in the format <code>YYYY-MM-DD'T'HH:MM:SS.SSSSSS-UTC</code>. For example, <code>2022-05-04T12:32:58.761000-07:00</code> represents a transcription job that started processing at 12:32 PM UTC-7 on May 4, 2022.</p>",
-        }),
-    ).exactOptional(),
-    CompletionTime: DateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The date and time the specified transcription job finished processing.</p> <p>Timestamps are in the format <code>YYYY-MM-DD'T'HH:MM:SS.SSSSSS-UTC</code>. For example, <code>2022-05-04T12:33:13.922000-07:00</code> represents a transcription job that started processing at 12:33 PM UTC-7 on May 4, 2022.</p>",
-        }),
-    ).exactOptional(),
-    FailureReason: FailureReasonSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If <code>TranscriptionJobStatus</code> is <code>FAILED</code>, <code>FailureReason</code> contains information about why the transcription job request failed.</p> <p>The <code>FailureReason</code> field contains one of the following values:</p> <ul> <li> <p> <code>Unsupported media format</code>.</p> <p>The media format specified in <code>MediaFormat</code> isn\'t valid. Refer to <b>MediaFormat</b> for a list of supported formats.</p> </li> <li> <p> <code>The media format provided does not match the detected media format</code>.</p> <p>The media format specified in <code>MediaFormat</code> doesn\'t match the format of the input file. Check the media format of your media file and correct the specified value.</p> </li> <li> <p> <code>Invalid sample rate for audio file</code>.</p> <p>The sample rate specified in <code>MediaSampleRateHertz</code> isn\'t valid. The sample rate must be between 8,000 and 48,000 hertz.</p> </li> <li> <p> <code>The sample rate provided does not match the detected sample rate</code>.</p> <p>The sample rate specified in <code>MediaSampleRateHertz</code> doesn\'t match the sample rate detected in your input media file. Check the sample rate of your media file and correct the specified value.</p> </li> <li> <p> <code>Invalid file size: file size too large</code>.</p> <p>The size of your media file is larger than what Amazon Transcribe can process. For more information, refer to <a href="https://docs.aws.amazon.com/transcribe/latest/dg/limits-guidelines.html#limits">Guidelines and quotas</a>.</p> </li> <li> <p> <code>Invalid number of channels: number of channels too large</code>.</p> <p>Your audio contains more channels than Amazon Transcribe is able to process. For more information, refer to <a href="https://docs.aws.amazon.com/transcribe/latest/dg/limits-guidelines.html#limits">Guidelines and quotas</a>.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Settings: SettingsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Provides information on any additional settings that were included in your request. Additional settings include channel identification, alternative transcriptions, speaker partitioning, custom vocabularies, and custom vocabulary filters.',
-        }),
-    ).exactOptional(),
-    ModelSettings: ModelSettingsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Provides information on the custom language model you included in your request.',
-        }),
-    ).exactOptional(),
-    JobExecutionSettings: JobExecutionSettingsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Provides information about how your transcription job was processed. This parameter shows if your request was queued and what data access role was used.',
-        }),
-    ).exactOptional(),
-    ContentRedaction: ContentRedactionSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Indicates whether redaction was enabled in your transcript.' }),
-    ).exactOptional(),
-    IdentifyLanguage: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether automatic language identification was enabled (<code>TRUE</code>) for the specified transcription job.',
-        }),
-    ).exactOptional(),
-    IdentifyMultipleLanguages: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether automatic multi-language identification was enabled (<code>TRUE</code>) for the specified transcription job.',
-        }),
-    ).exactOptional(),
-    LanguageOptions: LanguageOptionsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Provides the language codes you specified in your request.' }),
-    ).exactOptional(),
-    IdentifiedLanguageScore: IdentifiedLanguageScoreSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The confidence score associated with the language identified in your media file.</p> <p>Confidence scores are values between 0 and 1; a larger value indicates a higher probability that the identified language correctly matches the language spoken in your media.</p>',
-        }),
-    ).exactOptional(),
-    LanguageCodes: LanguageCodeListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The language codes used to create your transcription job. This parameter is used with multi-language identification. For single-language identification requests, refer to the singular version of this parameter, <code>LanguageCode</code>.',
-        }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tags, each in the form of a key:value pair, assigned to the specified transcription job.',
-        }),
-    ).exactOptional(),
-    Subtitles: SubtitlesOutputSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Indicates whether subtitles were generated with your transcription.',
-        }),
-    ).exactOptional(),
-    LanguageIdSettings: LanguageIdSettingsMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Provides the name and language of all custom language models, custom vocabularies, and custom vocabulary filters that you included in your request.',
-        }),
-    ).exactOptional(),
-    ToxicityDetection: ToxicityDetectionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Provides information about the toxicity detection settings applied to your transcription.',
-        }),
-    ).exactOptional(),
+    TranscriptionJobName: TranscriptionJobNameSchema.exactOptional().openapi({
+      description:
+        'The name of the transcription job. Job names are case sensitive and must be unique within an Amazon Web Services account.',
+    }),
+    TranscriptionJobStatus: TranscriptionJobStatusSchema.exactOptional().openapi({
+      description:
+        '<p>Provides the status of the specified transcription job.</p> <p>If the status is <code>COMPLETED</code>, the job is finished and you can find the results at the location specified in <code>TranscriptFileUri</code> (or <code>RedactedTranscriptFileUri</code>, if you requested transcript redaction). If the status is <code>FAILED</code>, <code>FailureReason</code> provides details on why your transcription job failed.</p>',
+    }),
+    LanguageCode: LanguageCodeSchema.exactOptional().openapi({
+      description:
+        'The language code used to create your transcription job. This parameter is used with single-language identification. For multi-language identification requests, refer to the plural version of this parameter, <code>LanguageCodes</code>.',
+    }),
+    MediaSampleRateHertz: MediaSampleRateHertzSchema.exactOptional().openapi({
+      description: 'The sample rate, in hertz, of the audio track in your input media file.',
+    }),
+    MediaFormat: MediaFormatSchema.exactOptional().openapi({
+      description: 'The format of the input media file.',
+    }),
+    Media: MediaSchema.exactOptional().openapi({
+      description: 'Provides the Amazon S3 location of the media file you used in your request.',
+    }),
+    Transcript: TranscriptSchema.exactOptional().openapi({
+      description: 'Provides you with the Amazon S3 URI you can use to access your transcript.',
+    }),
+    StartTime: DateTimeSchema.exactOptional().openapi({
+      description:
+        "<p>The date and time the specified transcription job began processing.</p> <p>Timestamps are in the format <code>YYYY-MM-DD'T'HH:MM:SS.SSSSSS-UTC</code>. For example, <code>2022-05-04T12:32:58.789000-07:00</code> represents a transcription job that started processing at 12:32 PM UTC-7 on May 4, 2022.</p>",
+    }),
+    CreationTime: DateTimeSchema.exactOptional().openapi({
+      description:
+        "<p>The date and time the specified transcription job request was made.</p> <p>Timestamps are in the format <code>YYYY-MM-DD'T'HH:MM:SS.SSSSSS-UTC</code>. For example, <code>2022-05-04T12:32:58.761000-07:00</code> represents a transcription job that started processing at 12:32 PM UTC-7 on May 4, 2022.</p>",
+    }),
+    CompletionTime: DateTimeSchema.exactOptional().openapi({
+      description:
+        "<p>The date and time the specified transcription job finished processing.</p> <p>Timestamps are in the format <code>YYYY-MM-DD'T'HH:MM:SS.SSSSSS-UTC</code>. For example, <code>2022-05-04T12:33:13.922000-07:00</code> represents a transcription job that started processing at 12:33 PM UTC-7 on May 4, 2022.</p>",
+    }),
+    FailureReason: FailureReasonSchema.exactOptional().openapi({
+      description:
+        '<p>If <code>TranscriptionJobStatus</code> is <code>FAILED</code>, <code>FailureReason</code> contains information about why the transcription job request failed.</p> <p>The <code>FailureReason</code> field contains one of the following values:</p> <ul> <li> <p> <code>Unsupported media format</code>.</p> <p>The media format specified in <code>MediaFormat</code> isn\'t valid. Refer to <b>MediaFormat</b> for a list of supported formats.</p> </li> <li> <p> <code>The media format provided does not match the detected media format</code>.</p> <p>The media format specified in <code>MediaFormat</code> doesn\'t match the format of the input file. Check the media format of your media file and correct the specified value.</p> </li> <li> <p> <code>Invalid sample rate for audio file</code>.</p> <p>The sample rate specified in <code>MediaSampleRateHertz</code> isn\'t valid. The sample rate must be between 8,000 and 48,000 hertz.</p> </li> <li> <p> <code>The sample rate provided does not match the detected sample rate</code>.</p> <p>The sample rate specified in <code>MediaSampleRateHertz</code> doesn\'t match the sample rate detected in your input media file. Check the sample rate of your media file and correct the specified value.</p> </li> <li> <p> <code>Invalid file size: file size too large</code>.</p> <p>The size of your media file is larger than what Amazon Transcribe can process. For more information, refer to <a href="https://docs.aws.amazon.com/transcribe/latest/dg/limits-guidelines.html#limits">Guidelines and quotas</a>.</p> </li> <li> <p> <code>Invalid number of channels: number of channels too large</code>.</p> <p>Your audio contains more channels than Amazon Transcribe is able to process. For more information, refer to <a href="https://docs.aws.amazon.com/transcribe/latest/dg/limits-guidelines.html#limits">Guidelines and quotas</a>.</p> </li> </ul>',
+    }),
+    Settings: SettingsSchema.exactOptional().openapi({
+      description:
+        'Provides information on any additional settings that were included in your request. Additional settings include channel identification, alternative transcriptions, speaker partitioning, custom vocabularies, and custom vocabulary filters.',
+    }),
+    ModelSettings: ModelSettingsSchema.exactOptional().openapi({
+      description:
+        'Provides information on the custom language model you included in your request.',
+    }),
+    JobExecutionSettings: JobExecutionSettingsSchema.exactOptional().openapi({
+      description:
+        'Provides information about how your transcription job was processed. This parameter shows if your request was queued and what data access role was used.',
+    }),
+    ContentRedaction: ContentRedactionSchema.exactOptional().openapi({
+      description: 'Indicates whether redaction was enabled in your transcript.',
+    }),
+    IdentifyLanguage: BooleanSchema.exactOptional().openapi({
+      description:
+        'Indicates whether automatic language identification was enabled (<code>TRUE</code>) for the specified transcription job.',
+    }),
+    IdentifyMultipleLanguages: BooleanSchema.exactOptional().openapi({
+      description:
+        'Indicates whether automatic multi-language identification was enabled (<code>TRUE</code>) for the specified transcription job.',
+    }),
+    LanguageOptions: LanguageOptionsSchema.exactOptional().openapi({
+      description: 'Provides the language codes you specified in your request.',
+    }),
+    IdentifiedLanguageScore: IdentifiedLanguageScoreSchema.exactOptional().openapi({
+      description:
+        '<p>The confidence score associated with the language identified in your media file.</p> <p>Confidence scores are values between 0 and 1; a larger value indicates a higher probability that the identified language correctly matches the language spoken in your media.</p>',
+    }),
+    LanguageCodes: LanguageCodeListSchema.exactOptional().openapi({
+      description:
+        'The language codes used to create your transcription job. This parameter is used with multi-language identification. For single-language identification requests, refer to the singular version of this parameter, <code>LanguageCode</code>.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        'The tags, each in the form of a key:value pair, assigned to the specified transcription job.',
+    }),
+    Subtitles: SubtitlesOutputSchema.exactOptional().openapi({
+      description: 'Indicates whether subtitles were generated with your transcription.',
+    }),
+    LanguageIdSettings: LanguageIdSettingsMapSchema.exactOptional().openapi({
+      description:
+        'Provides the name and language of all custom language models, custom vocabularies, and custom vocabulary filters that you included in your request.',
+    }),
+    ToxicityDetection: ToxicityDetectionSchema.exactOptional().openapi({
+      description:
+        'Provides information about the toxicity detection settings applied to your transcription.',
+    }),
   })
   .openapi({
     description:
@@ -2360,142 +1569,88 @@ const TranscriptionJobSchema = z
 
 const GetTranscriptionJobResponseSchema = z
   .object({
-    TranscriptionJob: TranscriptionJobSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Provides detailed information about the specified transcription job, including job status and, if applicable, failure reason.',
-        }),
-    ).exactOptional(),
+    TranscriptionJob: TranscriptionJobSchema.exactOptional().openapi({
+      description:
+        'Provides detailed information about the specified transcription job, including job status and, if applicable, failure reason.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetTranscriptionJobResponse')
 
 const GetTranscriptionJobRequestSchema = z
   .object({
-    TranscriptionJobName: TranscriptionJobNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the transcription job you want information about. Job names are case sensitive.',
-        }),
-    ),
+    TranscriptionJobName: TranscriptionJobNameSchema.openapi({
+      description:
+        'The name of the transcription job you want information about. Job names are case sensitive.',
+    }),
   })
   .openapi({ required: ['TranscriptionJobName'], title: 'GetTranscriptionJobRequest' })
   .openapi('GetTranscriptionJobRequest')
 
 const GetVocabularyResponseSchema = z
   .object({
-    VocabularyName: VocabularyNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the custom vocabulary you requested information about.',
-        }),
-    ).exactOptional(),
-    LanguageCode: LanguageCodeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The language code you selected for your custom vocabulary.' }),
-    ).exactOptional(),
-    VocabularyState: VocabularyStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The processing state of your custom vocabulary. If the state is <code>READY</code>, you can use the custom vocabulary in a <code>StartTranscriptionJob</code> request.',
-        }),
-    ).exactOptional(),
-    LastModifiedTime: DateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The date and time the specified custom vocabulary was last modified.</p> <p>Timestamps are in the format <code>YYYY-MM-DD'T'HH:MM:SS.SSSSSS-UTC</code>. For example, <code>2022-05-04T12:32:58.761000-07:00</code> represents 12:32 PM UTC-7 on May 4, 2022.</p>",
-        }),
-    ).exactOptional(),
-    FailureReason: FailureReasonSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If <code>VocabularyState</code> is <code>FAILED</code>, <code>FailureReason</code> contains information about why the custom vocabulary request failed. See also: <a href="https://docs.aws.amazon.com/transcribe/latest/APIReference/CommonErrors.html">Common Errors</a>.',
-        }),
-    ).exactOptional(),
-    DownloadUri: UriSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The S3 location where the custom vocabulary is stored; use this URI to view or download the custom vocabulary.',
-        }),
-    ).exactOptional(),
+    VocabularyName: VocabularyNameSchema.exactOptional().openapi({
+      description: 'The name of the custom vocabulary you requested information about.',
+    }),
+    LanguageCode: LanguageCodeSchema.exactOptional().openapi({
+      description: 'The language code you selected for your custom vocabulary.',
+    }),
+    VocabularyState: VocabularyStateSchema.exactOptional().openapi({
+      description:
+        'The processing state of your custom vocabulary. If the state is <code>READY</code>, you can use the custom vocabulary in a <code>StartTranscriptionJob</code> request.',
+    }),
+    LastModifiedTime: DateTimeSchema.exactOptional().openapi({
+      description:
+        "<p>The date and time the specified custom vocabulary was last modified.</p> <p>Timestamps are in the format <code>YYYY-MM-DD'T'HH:MM:SS.SSSSSS-UTC</code>. For example, <code>2022-05-04T12:32:58.761000-07:00</code> represents 12:32 PM UTC-7 on May 4, 2022.</p>",
+    }),
+    FailureReason: FailureReasonSchema.exactOptional().openapi({
+      description:
+        'If <code>VocabularyState</code> is <code>FAILED</code>, <code>FailureReason</code> contains information about why the custom vocabulary request failed. See also: <a href="https://docs.aws.amazon.com/transcribe/latest/APIReference/CommonErrors.html">Common Errors</a>.',
+    }),
+    DownloadUri: UriSchema.exactOptional().openapi({
+      description:
+        'The S3 location where the custom vocabulary is stored; use this URI to view or download the custom vocabulary.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetVocabularyResponse')
 
 const GetVocabularyRequestSchema = z
   .object({
-    VocabularyName: VocabularyNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the custom vocabulary you want information about. Custom vocabulary names are case sensitive.',
-        }),
-    ),
+    VocabularyName: VocabularyNameSchema.openapi({
+      description:
+        'The name of the custom vocabulary you want information about. Custom vocabulary names are case sensitive.',
+    }),
   })
   .openapi({ required: ['VocabularyName'], title: 'GetVocabularyRequest' })
   .openapi('GetVocabularyRequest')
 
 const GetVocabularyFilterResponseSchema = z
   .object({
-    VocabularyFilterName: VocabularyFilterNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the custom vocabulary filter you requested information about.',
-        }),
-    ).exactOptional(),
-    LanguageCode: LanguageCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The language code you selected for your custom vocabulary filter.',
-        }),
-    ).exactOptional(),
-    LastModifiedTime: DateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The date and time the specified custom vocabulary filter was last modified.</p> <p>Timestamps are in the format <code>YYYY-MM-DD'T'HH:MM:SS.SSSSSS-UTC</code>. For example, <code>2022-05-04T12:32:58.761000-07:00</code> represents 12:32 PM UTC-7 on May 4, 2022.</p>",
-        }),
-    ).exactOptional(),
-    DownloadUri: UriSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon S3 location where the custom vocabulary filter is stored; use this URI to view or download the custom vocabulary filter.',
-        }),
-    ).exactOptional(),
+    VocabularyFilterName: VocabularyFilterNameSchema.exactOptional().openapi({
+      description: 'The name of the custom vocabulary filter you requested information about.',
+    }),
+    LanguageCode: LanguageCodeSchema.exactOptional().openapi({
+      description: 'The language code you selected for your custom vocabulary filter.',
+    }),
+    LastModifiedTime: DateTimeSchema.exactOptional().openapi({
+      description:
+        "<p>The date and time the specified custom vocabulary filter was last modified.</p> <p>Timestamps are in the format <code>YYYY-MM-DD'T'HH:MM:SS.SSSSSS-UTC</code>. For example, <code>2022-05-04T12:32:58.761000-07:00</code> represents 12:32 PM UTC-7 on May 4, 2022.</p>",
+    }),
+    DownloadUri: UriSchema.exactOptional().openapi({
+      description:
+        'The Amazon S3 location where the custom vocabulary filter is stored; use this URI to view or download the custom vocabulary filter.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetVocabularyFilterResponse')
 
 const GetVocabularyFilterRequestSchema = z
   .object({
-    VocabularyFilterName: VocabularyFilterNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the custom vocabulary filter you want information about. Custom vocabulary filter names are case sensitive.',
-        }),
-    ),
+    VocabularyFilterName: VocabularyFilterNameSchema.openapi({
+      description:
+        'The name of the custom vocabulary filter you want information about. Custom vocabulary filter names are case sensitive.',
+    }),
   })
   .openapi({ required: ['VocabularyFilterName'], title: 'GetVocabularyFilterRequest' })
   .openapi('GetVocabularyFilterRequest')
@@ -2508,22 +1663,14 @@ const CategoryPropertiesListSchema = z
 
 const ListCallAnalyticsCategoriesResponseSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If <code>NextToken</code> is present in your response, it indicates that not all results are displayed. To view the next set of results, copy the string associated with the <code>NextToken</code> parameter in your results output, then run your request again including <code>NextToken</code> with the value of the copied string. Repeat as needed to view all your results.',
-        }),
-    ).exactOptional(),
-    Categories: CategoryPropertiesListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Provides detailed information about your Call Analytics categories, including all the rules associated with each category.',
-        }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If <code>NextToken</code> is present in your response, it indicates that not all results are displayed. To view the next set of results, copy the string associated with the <code>NextToken</code> parameter in your results output, then run your request again including <code>NextToken</code> with the value of the copied string. Repeat as needed to view all your results.',
+    }),
+    Categories: CategoryPropertiesListSchema.exactOptional().openapi({
+      description:
+        'Provides detailed information about your Call Analytics categories, including all the rules associated with each category.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListCallAnalyticsCategoriesResponse')
@@ -2532,83 +1679,47 @@ const MaxResultsSchema = z.int().min(1).max(100).openapi('MaxResults')
 
 const ListCallAnalyticsCategoriesRequestSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If your <code>ListCallAnalyticsCategories</code> request returns more results than can be displayed, <code>NextToken</code> is displayed in the response with an associated string. To get the next page of results, copy this string and repeat your request, including <code>NextToken</code> with the value of the copied string. Repeat as needed to view all your results.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The maximum number of Call Analytics categories to return in each page of results. If there are fewer results than the value that you specify, only the actual results are returned. If you don't specify a value, a default of 5 is used.",
-        }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If your <code>ListCallAnalyticsCategories</code> request returns more results than can be displayed, <code>NextToken</code> is displayed in the response with an associated string. To get the next page of results, copy this string and repeat your request, including <code>NextToken</code> with the value of the copied string. Repeat as needed to view all your results.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        "The maximum number of Call Analytics categories to return in each page of results. If there are fewer results than the value that you specify, only the actual results are returned. If you don't specify a value, a default of 5 is used.",
+    }),
   })
   .openapi({ title: 'ListCallAnalyticsCategoriesRequest', required: [] })
   .openapi('ListCallAnalyticsCategoriesRequest')
 
 const CallAnalyticsJobSummarySchema = z
   .object({
-    CallAnalyticsJobName: CallAnalyticsJobNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the Call Analytics job. Job names are case sensitive and must be unique within an Amazon Web Services account.',
-        }),
-    ).exactOptional(),
-    CreationTime: DateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The date and time the specified Call Analytics job request was made.</p> <p>Timestamps are in the format <code>YYYY-MM-DD'T'HH:MM:SS.SSSSSS-UTC</code>. For example, <code>2022-05-04T12:32:58.761000-07:00</code> represents a transcription job that started processing at 12:32 PM UTC-7 on May 4, 2022.</p>",
-        }),
-    ).exactOptional(),
-    StartTime: DateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The date and time your Call Analytics job began processing.</p> <p>Timestamps are in the format <code>YYYY-MM-DD'T'HH:MM:SS.SSSSSS-UTC</code>. For example, <code>2022-05-04T12:32:58.789000-07:00</code> represents a transcription job that started processing at 12:32 PM UTC-7 on May 4, 2022.</p>",
-        }),
-    ).exactOptional(),
-    CompletionTime: DateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The date and time the specified Call Analytics job finished processing.</p> <p>Timestamps are in the format <code>YYYY-MM-DD'T'HH:MM:SS.SSSSSS-UTC</code>. For example, <code>2022-05-04T12:33:13.922000-07:00</code> represents a transcription job that started processing at 12:33 PM UTC-7 on May 4, 2022.</p>",
-        }),
-    ).exactOptional(),
-    LanguageCode: LanguageCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The language code used to create your Call Analytics transcription.',
-        }),
-    ).exactOptional(),
-    CallAnalyticsJobStatus: CallAnalyticsJobStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Provides the status of your Call Analytics job.</p> <p>If the status is <code>COMPLETED</code>, the job is finished and you can find the results at the location specified in <code>TranscriptFileUri</code> (or <code>RedactedTranscriptFileUri</code>, if you requested transcript redaction). If the status is <code>FAILED</code>, <code>FailureReason</code> provides details on why your transcription job failed.</p>',
-        }),
-    ).exactOptional(),
-    FailureReason: FailureReasonSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If <code>CallAnalyticsJobStatus</code> is <code>FAILED</code>, <code>FailureReason</code> contains information about why the Call Analytics job failed. See also: <a href="https://docs.aws.amazon.com/transcribe/latest/APIReference/CommonErrors.html">Common Errors</a>.',
-        }),
-    ).exactOptional(),
+    CallAnalyticsJobName: CallAnalyticsJobNameSchema.exactOptional().openapi({
+      description:
+        'The name of the Call Analytics job. Job names are case sensitive and must be unique within an Amazon Web Services account.',
+    }),
+    CreationTime: DateTimeSchema.exactOptional().openapi({
+      description:
+        "<p>The date and time the specified Call Analytics job request was made.</p> <p>Timestamps are in the format <code>YYYY-MM-DD'T'HH:MM:SS.SSSSSS-UTC</code>. For example, <code>2022-05-04T12:32:58.761000-07:00</code> represents a transcription job that started processing at 12:32 PM UTC-7 on May 4, 2022.</p>",
+    }),
+    StartTime: DateTimeSchema.exactOptional().openapi({
+      description:
+        "<p>The date and time your Call Analytics job began processing.</p> <p>Timestamps are in the format <code>YYYY-MM-DD'T'HH:MM:SS.SSSSSS-UTC</code>. For example, <code>2022-05-04T12:32:58.789000-07:00</code> represents a transcription job that started processing at 12:32 PM UTC-7 on May 4, 2022.</p>",
+    }),
+    CompletionTime: DateTimeSchema.exactOptional().openapi({
+      description:
+        "<p>The date and time the specified Call Analytics job finished processing.</p> <p>Timestamps are in the format <code>YYYY-MM-DD'T'HH:MM:SS.SSSSSS-UTC</code>. For example, <code>2022-05-04T12:33:13.922000-07:00</code> represents a transcription job that started processing at 12:33 PM UTC-7 on May 4, 2022.</p>",
+    }),
+    LanguageCode: LanguageCodeSchema.exactOptional().openapi({
+      description: 'The language code used to create your Call Analytics transcription.',
+    }),
+    CallAnalyticsJobStatus: CallAnalyticsJobStatusSchema.exactOptional().openapi({
+      description:
+        '<p>Provides the status of your Call Analytics job.</p> <p>If the status is <code>COMPLETED</code>, the job is finished and you can find the results at the location specified in <code>TranscriptFileUri</code> (or <code>RedactedTranscriptFileUri</code>, if you requested transcript redaction). If the status is <code>FAILED</code>, <code>FailureReason</code> provides details on why your transcription job failed.</p>',
+    }),
+    FailureReason: FailureReasonSchema.exactOptional().openapi({
+      description:
+        'If <code>CallAnalyticsJobStatus</code> is <code>FAILED</code>, <code>FailureReason</code> contains information about why the Call Analytics job failed. See also: <a href="https://docs.aws.amazon.com/transcribe/latest/APIReference/CommonErrors.html">Common Errors</a>.',
+    }),
   })
   .openapi({
     description: 'Provides detailed information about a specific Call Analytics job.',
@@ -2622,63 +1733,39 @@ const CallAnalyticsJobSummariesSchema = z
 
 const ListCallAnalyticsJobsResponseSchema = z
   .object({
-    Status: CallAnalyticsJobStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Lists all Call Analytics jobs that have the status specified in your request. Jobs are ordered by creation date, with the newest job first.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If <code>NextToken</code> is present in your response, it indicates that not all results are displayed. To view the next set of results, copy the string associated with the <code>NextToken</code> parameter in your results output, then run your request again including <code>NextToken</code> with the value of the copied string. Repeat as needed to view all your results.',
-        }),
-    ).exactOptional(),
-    CallAnalyticsJobSummaries: CallAnalyticsJobSummariesSchema.and(
-      z.any().openapi({ description: 'Provides a summary of information about each result.' }),
-    ).exactOptional(),
+    Status: CallAnalyticsJobStatusSchema.exactOptional().openapi({
+      description:
+        'Lists all Call Analytics jobs that have the status specified in your request. Jobs are ordered by creation date, with the newest job first.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If <code>NextToken</code> is present in your response, it indicates that not all results are displayed. To view the next set of results, copy the string associated with the <code>NextToken</code> parameter in your results output, then run your request again including <code>NextToken</code> with the value of the copied string. Repeat as needed to view all your results.',
+    }),
+    CallAnalyticsJobSummaries: CallAnalyticsJobSummariesSchema.exactOptional().openapi({
+      description: 'Provides a summary of information about each result.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListCallAnalyticsJobsResponse')
 
 const ListCallAnalyticsJobsRequestSchema = z
   .object({
-    Status: CallAnalyticsJobStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Returns only Call Analytics jobs with the specified status. Jobs are ordered by creation date, with the newest job first. If you don't include <code>Status</code>, all Call Analytics jobs are returned.",
-        }),
-    ).exactOptional(),
-    JobNameContains: CallAnalyticsJobNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Returns only the Call Analytics jobs that contain the specified string. The search is not case sensitive.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If your <code>ListCallAnalyticsJobs</code> request returns more results than can be displayed, <code>NextToken</code> is displayed in the response with an associated string. To get the next page of results, copy this string and repeat your request, including <code>NextToken</code> with the value of the copied string. Repeat as needed to view all your results.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The maximum number of Call Analytics jobs to return in each page of results. If there are fewer results than the value that you specify, only the actual results are returned. If you don't specify a value, a default of 5 is used.",
-        }),
-    ).exactOptional(),
+    Status: CallAnalyticsJobStatusSchema.exactOptional().openapi({
+      description:
+        "Returns only Call Analytics jobs with the specified status. Jobs are ordered by creation date, with the newest job first. If you don't include <code>Status</code>, all Call Analytics jobs are returned.",
+    }),
+    JobNameContains: CallAnalyticsJobNameSchema.exactOptional().openapi({
+      description:
+        'Returns only the Call Analytics jobs that contain the specified string. The search is not case sensitive.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If your <code>ListCallAnalyticsJobs</code> request returns more results than can be displayed, <code>NextToken</code> is displayed in the response with an associated string. To get the next page of results, copy this string and repeat your request, including <code>NextToken</code> with the value of the copied string. Repeat as needed to view all your results.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        "The maximum number of Call Analytics jobs to return in each page of results. If there are fewer results than the value that you specify, only the actual results are returned. If you don't specify a value, a default of 5 is used.",
+    }),
   })
   .openapi({ title: 'ListCallAnalyticsJobsRequest', required: [] })
   .openapi('ListCallAnalyticsJobsRequest')
@@ -2687,60 +1774,36 @@ const ModelsSchema = z.array(LanguageModelSchema).openapi('Models')
 
 const ListLanguageModelsResponseSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If <code>NextToken</code> is present in your response, it indicates that not all results are displayed. To view the next set of results, copy the string associated with the <code>NextToken</code> parameter in your results output, then run your request again including <code>NextToken</code> with the value of the copied string. Repeat as needed to view all your results.',
-        }),
-    ).exactOptional(),
-    Models: ModelsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Provides information about the custom language models that match the criteria specified in your request.',
-        }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If <code>NextToken</code> is present in your response, it indicates that not all results are displayed. To view the next set of results, copy the string associated with the <code>NextToken</code> parameter in your results output, then run your request again including <code>NextToken</code> with the value of the copied string. Repeat as needed to view all your results.',
+    }),
+    Models: ModelsSchema.exactOptional().openapi({
+      description:
+        'Provides information about the custom language models that match the criteria specified in your request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListLanguageModelsResponse')
 
 const ListLanguageModelsRequestSchema = z
   .object({
-    StatusEquals: ModelStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Returns only custom language models with the specified status. Language models are ordered by creation date, with the newest model first. If you don't include <code>StatusEquals</code>, all custom language models are returned.",
-        }),
-    ).exactOptional(),
-    NameContains: ModelNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Returns only the custom language models that contain the specified string. The search is not case sensitive.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If your <code>ListLanguageModels</code> request returns more results than can be displayed, <code>NextToken</code> is displayed in the response with an associated string. To get the next page of results, copy this string and repeat your request, including <code>NextToken</code> with the value of the copied string. Repeat as needed to view all your results.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The maximum number of custom language models to return in each page of results. If there are fewer results than the value that you specify, only the actual results are returned. If you don't specify a value, a default of 5 is used.",
-        }),
-    ).exactOptional(),
+    StatusEquals: ModelStatusSchema.exactOptional().openapi({
+      description:
+        "Returns only custom language models with the specified status. Language models are ordered by creation date, with the newest model first. If you don't include <code>StatusEquals</code>, all custom language models are returned.",
+    }),
+    NameContains: ModelNameSchema.exactOptional().openapi({
+      description:
+        'Returns only the custom language models that contain the specified string. The search is not case sensitive.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If your <code>ListLanguageModels</code> request returns more results than can be displayed, <code>NextToken</code> is displayed in the response with an associated string. To get the next page of results, copy this string and repeat your request, including <code>NextToken</code> with the value of the copied string. Repeat as needed to view all your results.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        "The maximum number of custom language models to return in each page of results. If there are fewer results than the value that you specify, only the actual results are returned. If you don't specify a value, a default of 5 is used.",
+    }),
   })
   .openapi({ title: 'ListLanguageModelsRequest', required: [] })
   .openapi('ListLanguageModelsRequest')
@@ -2751,89 +1814,49 @@ const OutputLocationTypeSchema = z
 
 const MedicalTranscriptionJobSummarySchema = z
   .object({
-    MedicalTranscriptionJobName: TranscriptionJobNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the medical transcription job. Job names are case sensitive and must be unique within an Amazon Web Services account.',
-        }),
-    ).exactOptional(),
-    CreationTime: DateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The date and time the specified medical transcription job request was made.</p> <p>Timestamps are in the format <code>YYYY-MM-DD'T'HH:MM:SS.SSSSSS-UTC</code>. For example, <code>2022-05-04T12:32:58.761000-07:00</code> represents a transcription job that started processing at 12:32 PM UTC-7 on May 4, 2022.</p>",
-        }),
-    ).exactOptional(),
-    StartTime: DateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The date and time your medical transcription job began processing.</p> <p>Timestamps are in the format <code>YYYY-MM-DD'T'HH:MM:SS.SSSSSS-UTC</code>. For example, <code>2022-05-04T12:32:58.789000-07:00</code> represents a transcription job that started processing at 12:32 PM UTC-7 on May 4, 2022.</p>",
-        }),
-    ).exactOptional(),
-    CompletionTime: DateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The date and time the specified medical transcription job finished processing.</p> <p>Timestamps are in the format <code>YYYY-MM-DD'T'HH:MM:SS.SSSSSS-UTC</code>. For example, <code>2022-05-04T12:33:13.922000-07:00</code> represents a transcription job that started processing at 12:33 PM UTC-7 on May 4, 2022.</p>",
-        }),
-    ).exactOptional(),
-    LanguageCode: LanguageCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The language code used to create your medical transcription. US English (<code>en-US</code>) is the only supported language for medical transcriptions.',
-        }),
-    ).exactOptional(),
-    TranscriptionJobStatus: TranscriptionJobStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Provides the status of your medical transcription job.</p> <p>If the status is <code>COMPLETED</code>, the job is finished and you can find the results at the location specified in <code>TranscriptFileUri</code>. If the status is <code>FAILED</code>, <code>FailureReason</code> provides details on why your transcription job failed.</p>',
-        }),
-    ).exactOptional(),
-    FailureReason: FailureReasonSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If <code>TranscriptionJobStatus</code> is <code>FAILED</code>, <code>FailureReason</code> contains information about why the transcription job failed. See also: <a href="https://docs.aws.amazon.com/transcribe/latest/APIReference/CommonErrors.html">Common Errors</a>.',
-        }),
-    ).exactOptional(),
-    OutputLocationType: OutputLocationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Indicates where the specified medical transcription output is stored.</p> <p>If the value is <code>CUSTOMER_BUCKET</code>, the location is the Amazon S3 bucket you specified using the <code>OutputBucketName</code> parameter in your request. If you also included <code>OutputKey</code> in your request, your output is located in the path you specified in your request.</p> <p>If the value is <code>SERVICE_BUCKET</code>, the location is a service-managed Amazon S3 bucket. To access a transcript stored in a service-managed bucket, use the URI shown in the <code>TranscriptFileUri</code> field.</p>',
-        }),
-    ).exactOptional(),
-    Specialty: SpecialtySchema.and(
-      z.any().openapi({ description: 'Provides the medical specialty represented in your media.' }),
-    ).exactOptional(),
-    ContentIdentificationType: MedicalContentIdentificationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Labels all personal health information (PHI) identified in your transcript. For more information, see <a href="https://docs.aws.amazon.com/transcribe/latest/dg/phi-id.html">Identifying personal health information (PHI) in a transcription</a>.',
-        }),
-    ).exactOptional(),
-    Type: TypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether the input media is a dictation or a conversation, as specified in the <code>StartMedicalTranscriptionJob</code> request.',
-        }),
-    ).exactOptional(),
+    MedicalTranscriptionJobName: TranscriptionJobNameSchema.exactOptional().openapi({
+      description:
+        'The name of the medical transcription job. Job names are case sensitive and must be unique within an Amazon Web Services account.',
+    }),
+    CreationTime: DateTimeSchema.exactOptional().openapi({
+      description:
+        "<p>The date and time the specified medical transcription job request was made.</p> <p>Timestamps are in the format <code>YYYY-MM-DD'T'HH:MM:SS.SSSSSS-UTC</code>. For example, <code>2022-05-04T12:32:58.761000-07:00</code> represents a transcription job that started processing at 12:32 PM UTC-7 on May 4, 2022.</p>",
+    }),
+    StartTime: DateTimeSchema.exactOptional().openapi({
+      description:
+        "<p>The date and time your medical transcription job began processing.</p> <p>Timestamps are in the format <code>YYYY-MM-DD'T'HH:MM:SS.SSSSSS-UTC</code>. For example, <code>2022-05-04T12:32:58.789000-07:00</code> represents a transcription job that started processing at 12:32 PM UTC-7 on May 4, 2022.</p>",
+    }),
+    CompletionTime: DateTimeSchema.exactOptional().openapi({
+      description:
+        "<p>The date and time the specified medical transcription job finished processing.</p> <p>Timestamps are in the format <code>YYYY-MM-DD'T'HH:MM:SS.SSSSSS-UTC</code>. For example, <code>2022-05-04T12:33:13.922000-07:00</code> represents a transcription job that started processing at 12:33 PM UTC-7 on May 4, 2022.</p>",
+    }),
+    LanguageCode: LanguageCodeSchema.exactOptional().openapi({
+      description:
+        'The language code used to create your medical transcription. US English (<code>en-US</code>) is the only supported language for medical transcriptions.',
+    }),
+    TranscriptionJobStatus: TranscriptionJobStatusSchema.exactOptional().openapi({
+      description:
+        '<p>Provides the status of your medical transcription job.</p> <p>If the status is <code>COMPLETED</code>, the job is finished and you can find the results at the location specified in <code>TranscriptFileUri</code>. If the status is <code>FAILED</code>, <code>FailureReason</code> provides details on why your transcription job failed.</p>',
+    }),
+    FailureReason: FailureReasonSchema.exactOptional().openapi({
+      description:
+        'If <code>TranscriptionJobStatus</code> is <code>FAILED</code>, <code>FailureReason</code> contains information about why the transcription job failed. See also: <a href="https://docs.aws.amazon.com/transcribe/latest/APIReference/CommonErrors.html">Common Errors</a>.',
+    }),
+    OutputLocationType: OutputLocationTypeSchema.exactOptional().openapi({
+      description:
+        '<p>Indicates where the specified medical transcription output is stored.</p> <p>If the value is <code>CUSTOMER_BUCKET</code>, the location is the Amazon S3 bucket you specified using the <code>OutputBucketName</code> parameter in your request. If you also included <code>OutputKey</code> in your request, your output is located in the path you specified in your request.</p> <p>If the value is <code>SERVICE_BUCKET</code>, the location is a service-managed Amazon S3 bucket. To access a transcript stored in a service-managed bucket, use the URI shown in the <code>TranscriptFileUri</code> field.</p>',
+    }),
+    Specialty: SpecialtySchema.exactOptional().openapi({
+      description: 'Provides the medical specialty represented in your media.',
+    }),
+    ContentIdentificationType: MedicalContentIdentificationTypeSchema.exactOptional().openapi({
+      description:
+        'Labels all personal health information (PHI) identified in your transcript. For more information, see <a href="https://docs.aws.amazon.com/transcribe/latest/dg/phi-id.html">Identifying personal health information (PHI) in a transcription</a>.',
+    }),
+    Type: TypeSchema.exactOptional().openapi({
+      description:
+        'Indicates whether the input media is a dictation or a conversation, as specified in the <code>StartMedicalTranscriptionJob</code> request.',
+    }),
   })
   .openapi({
     description: 'Provides detailed information about a specific medical transcription job.',
@@ -2847,101 +1870,62 @@ const MedicalTranscriptionJobSummariesSchema = z
 
 const ListMedicalTranscriptionJobsResponseSchema = z
   .object({
-    Status: TranscriptionJobStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Lists all medical transcription jobs that have the status specified in your request. Jobs are ordered by creation date, with the newest job first.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If <code>NextToken</code> is present in your response, it indicates that not all results are displayed. To view the next set of results, copy the string associated with the <code>NextToken</code> parameter in your results output, then run your request again including <code>NextToken</code> with the value of the copied string. Repeat as needed to view all your results.',
-        }),
-    ).exactOptional(),
-    MedicalTranscriptionJobSummaries: MedicalTranscriptionJobSummariesSchema.and(
-      z.any().openapi({ description: 'Provides a summary of information about each result.' }),
-    ).exactOptional(),
+    Status: TranscriptionJobStatusSchema.exactOptional().openapi({
+      description:
+        'Lists all medical transcription jobs that have the status specified in your request. Jobs are ordered by creation date, with the newest job first.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If <code>NextToken</code> is present in your response, it indicates that not all results are displayed. To view the next set of results, copy the string associated with the <code>NextToken</code> parameter in your results output, then run your request again including <code>NextToken</code> with the value of the copied string. Repeat as needed to view all your results.',
+    }),
+    MedicalTranscriptionJobSummaries:
+      MedicalTranscriptionJobSummariesSchema.exactOptional().openapi({
+        description: 'Provides a summary of information about each result.',
+      }),
   })
   .openapi({ required: [] })
   .openapi('ListMedicalTranscriptionJobsResponse')
 
 const ListMedicalTranscriptionJobsRequestSchema = z
   .object({
-    Status: TranscriptionJobStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Returns only medical transcription jobs with the specified status. Jobs are ordered by creation date, with the newest job first. If you don't include <code>Status</code>, all medical transcription jobs are returned.",
-        }),
-    ).exactOptional(),
-    JobNameContains: TranscriptionJobNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Returns only the medical transcription jobs that contain the specified string. The search is not case sensitive.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If your <code>ListMedicalTranscriptionJobs</code> request returns more results than can be displayed, <code>NextToken</code> is displayed in the response with an associated string. To get the next page of results, copy this string and repeat your request, including <code>NextToken</code> with the value of the copied string. Repeat as needed to view all your results.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The maximum number of medical transcription jobs to return in each page of results. If there are fewer results than the value that you specify, only the actual results are returned. If you don't specify a value, a default of 5 is used.",
-        }),
-    ).exactOptional(),
+    Status: TranscriptionJobStatusSchema.exactOptional().openapi({
+      description:
+        "Returns only medical transcription jobs with the specified status. Jobs are ordered by creation date, with the newest job first. If you don't include <code>Status</code>, all medical transcription jobs are returned.",
+    }),
+    JobNameContains: TranscriptionJobNameSchema.exactOptional().openapi({
+      description:
+        'Returns only the medical transcription jobs that contain the specified string. The search is not case sensitive.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If your <code>ListMedicalTranscriptionJobs</code> request returns more results than can be displayed, <code>NextToken</code> is displayed in the response with an associated string. To get the next page of results, copy this string and repeat your request, including <code>NextToken</code> with the value of the copied string. Repeat as needed to view all your results.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        "The maximum number of medical transcription jobs to return in each page of results. If there are fewer results than the value that you specify, only the actual results are returned. If you don't specify a value, a default of 5 is used.",
+    }),
   })
   .openapi({ title: 'ListMedicalTranscriptionJobsRequest', required: [] })
   .openapi('ListMedicalTranscriptionJobsRequest')
 
 const VocabularyInfoSchema = z
   .object({
-    VocabularyName: VocabularyNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique name, chosen by you, for your custom vocabulary. This name is case sensitive, cannot contain spaces, and must be unique within an Amazon Web Services account.',
-        }),
-    ).exactOptional(),
-    LanguageCode: LanguageCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The language code used to create your custom vocabulary. Each custom vocabulary must contain terms in only one language.</p> <p>A custom vocabulary can only be used to transcribe files in the same language as the custom vocabulary. For example, if you create a custom vocabulary using US English (<code>en-US</code>), you can only apply this custom vocabulary to files that contain English audio.</p>',
-        }),
-    ).exactOptional(),
-    LastModifiedTime: DateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The date and time the specified custom vocabulary was last modified.</p> <p>Timestamps are in the format <code>YYYY-MM-DD'T'HH:MM:SS.SSSSSS-UTC</code>. For example, <code>2022-05-04T12:32:58.761000-07:00</code> represents 12:32 PM UTC-7 on May 4, 2022.</p>",
-        }),
-    ).exactOptional(),
-    VocabularyState: VocabularyStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The processing state of your custom vocabulary. If the state is <code>READY</code>, you can use the custom vocabulary in a <code>StartTranscriptionJob</code> request.',
-        }),
-    ).exactOptional(),
+    VocabularyName: VocabularyNameSchema.exactOptional().openapi({
+      description:
+        'A unique name, chosen by you, for your custom vocabulary. This name is case sensitive, cannot contain spaces, and must be unique within an Amazon Web Services account.',
+    }),
+    LanguageCode: LanguageCodeSchema.exactOptional().openapi({
+      description:
+        '<p>The language code used to create your custom vocabulary. Each custom vocabulary must contain terms in only one language.</p> <p>A custom vocabulary can only be used to transcribe files in the same language as the custom vocabulary. For example, if you create a custom vocabulary using US English (<code>en-US</code>), you can only apply this custom vocabulary to files that contain English audio.</p>',
+    }),
+    LastModifiedTime: DateTimeSchema.exactOptional().openapi({
+      description:
+        "<p>The date and time the specified custom vocabulary was last modified.</p> <p>Timestamps are in the format <code>YYYY-MM-DD'T'HH:MM:SS.SSSSSS-UTC</code>. For example, <code>2022-05-04T12:32:58.761000-07:00</code> represents 12:32 PM UTC-7 on May 4, 2022.</p>",
+    }),
+    VocabularyState: VocabularyStateSchema.exactOptional().openapi({
+      description:
+        'The processing state of your custom vocabulary. If the state is <code>READY</code>, you can use the custom vocabulary in a <code>StartTranscriptionJob</code> request.',
+    }),
   })
   .openapi({
     description:
@@ -2954,68 +1938,40 @@ const VocabulariesSchema = z.array(VocabularyInfoSchema).openapi('Vocabularies')
 
 const ListMedicalVocabulariesResponseSchema = z
   .object({
-    Status: VocabularyStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Lists all custom medical vocabularies that have the status specified in your request. Custom vocabularies are ordered by creation date, with the newest vocabulary first.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If <code>NextToken</code> is present in your response, it indicates that not all results are displayed. To view the next set of results, copy the string associated with the <code>NextToken</code> parameter in your results output, then run your request again including <code>NextToken</code> with the value of the copied string. Repeat as needed to view all your results.',
-        }),
-    ).exactOptional(),
-    Vocabularies: VocabulariesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Provides information about the custom medical vocabularies that match the criteria specified in your request.',
-        }),
-    ).exactOptional(),
+    Status: VocabularyStateSchema.exactOptional().openapi({
+      description:
+        'Lists all custom medical vocabularies that have the status specified in your request. Custom vocabularies are ordered by creation date, with the newest vocabulary first.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If <code>NextToken</code> is present in your response, it indicates that not all results are displayed. To view the next set of results, copy the string associated with the <code>NextToken</code> parameter in your results output, then run your request again including <code>NextToken</code> with the value of the copied string. Repeat as needed to view all your results.',
+    }),
+    Vocabularies: VocabulariesSchema.exactOptional().openapi({
+      description:
+        'Provides information about the custom medical vocabularies that match the criteria specified in your request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListMedicalVocabulariesResponse')
 
 const ListMedicalVocabulariesRequestSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If your <code>ListMedicalVocabularies</code> request returns more results than can be displayed, <code>NextToken</code> is displayed in the response with an associated string. To get the next page of results, copy this string and repeat your request, including <code>NextToken</code> with the value of the copied string. Repeat as needed to view all your results.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The maximum number of custom medical vocabularies to return in each page of results. If there are fewer results than the value that you specify, only the actual results are returned. If you don't specify a value, a default of 5 is used.",
-        }),
-    ).exactOptional(),
-    StateEquals: VocabularyStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Returns only custom medical vocabularies with the specified state. Custom vocabularies are ordered by creation date, with the newest vocabulary first. If you don't include <code>StateEquals</code>, all custom medical vocabularies are returned.",
-        }),
-    ).exactOptional(),
-    NameContains: VocabularyNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Returns only the custom medical vocabularies that contain the specified string. The search is not case sensitive.',
-        }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If your <code>ListMedicalVocabularies</code> request returns more results than can be displayed, <code>NextToken</code> is displayed in the response with an associated string. To get the next page of results, copy this string and repeat your request, including <code>NextToken</code> with the value of the copied string. Repeat as needed to view all your results.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        "The maximum number of custom medical vocabularies to return in each page of results. If there are fewer results than the value that you specify, only the actual results are returned. If you don't specify a value, a default of 5 is used.",
+    }),
+    StateEquals: VocabularyStateSchema.exactOptional().openapi({
+      description:
+        "Returns only custom medical vocabularies with the specified state. Custom vocabularies are ordered by creation date, with the newest vocabulary first. If you don't include <code>StateEquals</code>, all custom medical vocabularies are returned.",
+    }),
+    NameContains: VocabularyNameSchema.exactOptional().openapi({
+      description:
+        'Returns only the custom medical vocabularies that contain the specified string. The search is not case sensitive.',
+    }),
   })
   .openapi({ title: 'ListMedicalVocabulariesRequest', required: [] })
   .openapi('ListMedicalVocabulariesRequest')
@@ -3029,140 +1985,84 @@ const TranscribeArnSchema = z
 
 const ListTagsForResourceResponseSchema = z
   .object({
-    ResourceArn: TranscribeArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) specified in your request.' }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Lists all tags associated with the given transcription job, vocabulary, model, or resource.',
-        }),
-    ).exactOptional(),
+    ResourceArn: TranscribeArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) specified in your request.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        'Lists all tags associated with the given transcription job, vocabulary, model, or resource.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTagsForResourceResponse')
 
 const ListTagsForResourceRequestSchema = z
   .object({
-    ResourceArn: TranscribeArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Returns a list of all tags associated with the specified Amazon Resource Name (ARN). ARNs have the format <code>arn:partition:service:region:account-id:resource-type/resource-id</code>.</p> <p>For example, <code>arn:aws:transcribe:us-west-2:111122223333:transcription-job/transcription-job-name</code>.</p> <p>Valid values for <code>resource-type</code> are: <code>transcription-job</code>, <code>medical-transcription-job</code>, <code>vocabulary</code>, <code>medical-vocabulary</code>, <code>vocabulary-filter</code>, and <code>language-model</code>.</p>',
-        }),
-    ),
+    ResourceArn: TranscribeArnSchema.openapi({
+      description:
+        '<p>Returns a list of all tags associated with the specified Amazon Resource Name (ARN). ARNs have the format <code>arn:partition:service:region:account-id:resource-type/resource-id</code>.</p> <p>For example, <code>arn:aws:transcribe:us-west-2:111122223333:transcription-job/transcription-job-name</code>.</p> <p>Valid values for <code>resource-type</code> are: <code>transcription-job</code>, <code>medical-transcription-job</code>, <code>vocabulary</code>, <code>medical-vocabulary</code>, <code>vocabulary-filter</code>, and <code>language-model</code>.</p>',
+    }),
   })
   .openapi({ required: ['ResourceArn'], title: 'ListTagsForResourceRequest' })
   .openapi('ListTagsForResourceRequest')
 
 const TranscriptionJobSummarySchema = z
   .object({
-    TranscriptionJobName: TranscriptionJobNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the transcription job. Job names are case sensitive and must be unique within an Amazon Web Services account.',
-        }),
-    ).exactOptional(),
-    CreationTime: DateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The date and time the specified transcription job request was made.</p> <p>Timestamps are in the format <code>YYYY-MM-DD'T'HH:MM:SS.SSSSSS-UTC</code>. For example, <code>2022-05-04T12:32:58.761000-07:00</code> represents a transcription job that started processing at 12:32 PM UTC-7 on May 4, 2022.</p>",
-        }),
-    ).exactOptional(),
-    StartTime: DateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The date and time your transcription job began processing.</p> <p>Timestamps are in the format <code>YYYY-MM-DD'T'HH:MM:SS.SSSSSS-UTC</code>. For example, <code>2022-05-04T12:32:58.789000-07:00</code> represents a transcription job that started processing at 12:32 PM UTC-7 on May 4, 2022.</p>",
-        }),
-    ).exactOptional(),
-    CompletionTime: DateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The date and time the specified transcription job finished processing.</p> <p>Timestamps are in the format <code>YYYY-MM-DD'T'HH:MM:SS.SSSSSS-UTC</code>. For example, <code>2022-05-04T12:33:13.922000-07:00</code> represents a transcription job that started processing at 12:33 PM UTC-7 on May 4, 2022.</p>",
-        }),
-    ).exactOptional(),
-    LanguageCode: LanguageCodeSchema.and(
-      z.any().openapi({ description: 'The language code used to create your transcription.' }),
-    ).exactOptional(),
-    TranscriptionJobStatus: TranscriptionJobStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Provides the status of your transcription job.</p> <p>If the status is <code>COMPLETED</code>, the job is finished and you can find the results at the location specified in <code>TranscriptFileUri</code> (or <code>RedactedTranscriptFileUri</code>, if you requested transcript redaction). If the status is <code>FAILED</code>, <code>FailureReason</code> provides details on why your transcription job failed.</p>',
-        }),
-    ).exactOptional(),
-    FailureReason: FailureReasonSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If <code>TranscriptionJobStatus</code> is <code>FAILED</code>, <code>FailureReason</code> contains information about why the transcription job failed. See also: <a href="https://docs.aws.amazon.com/transcribe/latest/APIReference/CommonErrors.html">Common Errors</a>.',
-        }),
-    ).exactOptional(),
-    OutputLocationType: OutputLocationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Indicates where the specified transcription output is stored.</p> <p>If the value is <code>CUSTOMER_BUCKET</code>, the location is the Amazon S3 bucket you specified using the <code>OutputBucketName</code> parameter in your request. If you also included <code>OutputKey</code> in your request, your output is located in the path you specified in your request.</p> <p>If the value is <code>SERVICE_BUCKET</code>, the location is a service-managed Amazon S3 bucket. To access a transcript stored in a service-managed bucket, use the URI shown in the <code>TranscriptFileUri</code> or <code>RedactedTranscriptFileUri</code> field.</p>',
-        }),
-    ).exactOptional(),
-    ContentRedaction: ContentRedactionSchema.and(
-      z.any().openapi({ description: 'The content redaction settings of the transcription job.' }),
-    ).exactOptional(),
+    TranscriptionJobName: TranscriptionJobNameSchema.exactOptional().openapi({
+      description:
+        'The name of the transcription job. Job names are case sensitive and must be unique within an Amazon Web Services account.',
+    }),
+    CreationTime: DateTimeSchema.exactOptional().openapi({
+      description:
+        "<p>The date and time the specified transcription job request was made.</p> <p>Timestamps are in the format <code>YYYY-MM-DD'T'HH:MM:SS.SSSSSS-UTC</code>. For example, <code>2022-05-04T12:32:58.761000-07:00</code> represents a transcription job that started processing at 12:32 PM UTC-7 on May 4, 2022.</p>",
+    }),
+    StartTime: DateTimeSchema.exactOptional().openapi({
+      description:
+        "<p>The date and time your transcription job began processing.</p> <p>Timestamps are in the format <code>YYYY-MM-DD'T'HH:MM:SS.SSSSSS-UTC</code>. For example, <code>2022-05-04T12:32:58.789000-07:00</code> represents a transcription job that started processing at 12:32 PM UTC-7 on May 4, 2022.</p>",
+    }),
+    CompletionTime: DateTimeSchema.exactOptional().openapi({
+      description:
+        "<p>The date and time the specified transcription job finished processing.</p> <p>Timestamps are in the format <code>YYYY-MM-DD'T'HH:MM:SS.SSSSSS-UTC</code>. For example, <code>2022-05-04T12:33:13.922000-07:00</code> represents a transcription job that started processing at 12:33 PM UTC-7 on May 4, 2022.</p>",
+    }),
+    LanguageCode: LanguageCodeSchema.exactOptional().openapi({
+      description: 'The language code used to create your transcription.',
+    }),
+    TranscriptionJobStatus: TranscriptionJobStatusSchema.exactOptional().openapi({
+      description:
+        '<p>Provides the status of your transcription job.</p> <p>If the status is <code>COMPLETED</code>, the job is finished and you can find the results at the location specified in <code>TranscriptFileUri</code> (or <code>RedactedTranscriptFileUri</code>, if you requested transcript redaction). If the status is <code>FAILED</code>, <code>FailureReason</code> provides details on why your transcription job failed.</p>',
+    }),
+    FailureReason: FailureReasonSchema.exactOptional().openapi({
+      description:
+        'If <code>TranscriptionJobStatus</code> is <code>FAILED</code>, <code>FailureReason</code> contains information about why the transcription job failed. See also: <a href="https://docs.aws.amazon.com/transcribe/latest/APIReference/CommonErrors.html">Common Errors</a>.',
+    }),
+    OutputLocationType: OutputLocationTypeSchema.exactOptional().openapi({
+      description:
+        '<p>Indicates where the specified transcription output is stored.</p> <p>If the value is <code>CUSTOMER_BUCKET</code>, the location is the Amazon S3 bucket you specified using the <code>OutputBucketName</code> parameter in your request. If you also included <code>OutputKey</code> in your request, your output is located in the path you specified in your request.</p> <p>If the value is <code>SERVICE_BUCKET</code>, the location is a service-managed Amazon S3 bucket. To access a transcript stored in a service-managed bucket, use the URI shown in the <code>TranscriptFileUri</code> or <code>RedactedTranscriptFileUri</code> field.</p>',
+    }),
+    ContentRedaction: ContentRedactionSchema.exactOptional().openapi({
+      description: 'The content redaction settings of the transcription job.',
+    }),
     ModelSettings: ModelSettingsSchema.exactOptional(),
-    IdentifyLanguage: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether automatic language identification was enabled (<code>TRUE</code>) for the specified transcription job.',
-        }),
-    ).exactOptional(),
-    IdentifyMultipleLanguages: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether automatic multi-language identification was enabled (<code>TRUE</code>) for the specified transcription job.',
-        }),
-    ).exactOptional(),
-    IdentifiedLanguageScore: IdentifiedLanguageScoreSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The confidence score associated with the language identified in your media file.</p> <p>Confidence scores are values between 0 and 1; a larger value indicates a higher probability that the identified language correctly matches the language spoken in your media.</p>',
-        }),
-    ).exactOptional(),
-    LanguageCodes: LanguageCodeListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The language codes used to create your transcription job. This parameter is used with multi-language identification. For single-language identification, the singular version of this parameter, <code>LanguageCode</code>, is present.',
-        }),
-    ).exactOptional(),
-    ToxicityDetection: ToxicityDetectionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether toxicity detection was enabled for the specified transcription job.',
-        }),
-    ).exactOptional(),
+    IdentifyLanguage: BooleanSchema.exactOptional().openapi({
+      description:
+        'Indicates whether automatic language identification was enabled (<code>TRUE</code>) for the specified transcription job.',
+    }),
+    IdentifyMultipleLanguages: BooleanSchema.exactOptional().openapi({
+      description:
+        'Indicates whether automatic multi-language identification was enabled (<code>TRUE</code>) for the specified transcription job.',
+    }),
+    IdentifiedLanguageScore: IdentifiedLanguageScoreSchema.exactOptional().openapi({
+      description:
+        '<p>The confidence score associated with the language identified in your media file.</p> <p>Confidence scores are values between 0 and 1; a larger value indicates a higher probability that the identified language correctly matches the language spoken in your media.</p>',
+    }),
+    LanguageCodes: LanguageCodeListSchema.exactOptional().openapi({
+      description:
+        'The language codes used to create your transcription job. This parameter is used with multi-language identification. For single-language identification, the singular version of this parameter, <code>LanguageCode</code>, is present.',
+    }),
+    ToxicityDetection: ToxicityDetectionSchema.exactOptional().openapi({
+      description:
+        'Indicates whether toxicity detection was enabled for the specified transcription job.',
+    }),
   })
   .openapi({
     description: 'Provides detailed information about a specific transcription job.',
@@ -3176,161 +2076,97 @@ const TranscriptionJobSummariesSchema = z
 
 const ListTranscriptionJobsResponseSchema = z
   .object({
-    Status: TranscriptionJobStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Lists all transcription jobs that have the status specified in your request. Jobs are ordered by creation date, with the newest job first.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If <code>NextToken</code> is present in your response, it indicates that not all results are displayed. To view the next set of results, copy the string associated with the <code>NextToken</code> parameter in your results output, then run your request again including <code>NextToken</code> with the value of the copied string. Repeat as needed to view all your results.',
-        }),
-    ).exactOptional(),
-    TranscriptionJobSummaries: TranscriptionJobSummariesSchema.and(
-      z.any().openapi({ description: 'Provides a summary of information about each result.' }),
-    ).exactOptional(),
+    Status: TranscriptionJobStatusSchema.exactOptional().openapi({
+      description:
+        'Lists all transcription jobs that have the status specified in your request. Jobs are ordered by creation date, with the newest job first.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If <code>NextToken</code> is present in your response, it indicates that not all results are displayed. To view the next set of results, copy the string associated with the <code>NextToken</code> parameter in your results output, then run your request again including <code>NextToken</code> with the value of the copied string. Repeat as needed to view all your results.',
+    }),
+    TranscriptionJobSummaries: TranscriptionJobSummariesSchema.exactOptional().openapi({
+      description: 'Provides a summary of information about each result.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTranscriptionJobsResponse')
 
 const ListTranscriptionJobsRequestSchema = z
   .object({
-    Status: TranscriptionJobStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Returns only transcription jobs with the specified status. Jobs are ordered by creation date, with the newest job first. If you don't include <code>Status</code>, all transcription jobs are returned.",
-        }),
-    ).exactOptional(),
-    JobNameContains: TranscriptionJobNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Returns only the transcription jobs that contain the specified string. The search is not case sensitive.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If your <code>ListTranscriptionJobs</code> request returns more results than can be displayed, <code>NextToken</code> is displayed in the response with an associated string. To get the next page of results, copy this string and repeat your request, including <code>NextToken</code> with the value of the copied string. Repeat as needed to view all your results.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The maximum number of transcription jobs to return in each page of results. If there are fewer results than the value that you specify, only the actual results are returned. If you don't specify a value, a default of 5 is used.",
-        }),
-    ).exactOptional(),
+    Status: TranscriptionJobStatusSchema.exactOptional().openapi({
+      description:
+        "Returns only transcription jobs with the specified status. Jobs are ordered by creation date, with the newest job first. If you don't include <code>Status</code>, all transcription jobs are returned.",
+    }),
+    JobNameContains: TranscriptionJobNameSchema.exactOptional().openapi({
+      description:
+        'Returns only the transcription jobs that contain the specified string. The search is not case sensitive.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If your <code>ListTranscriptionJobs</code> request returns more results than can be displayed, <code>NextToken</code> is displayed in the response with an associated string. To get the next page of results, copy this string and repeat your request, including <code>NextToken</code> with the value of the copied string. Repeat as needed to view all your results.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        "The maximum number of transcription jobs to return in each page of results. If there are fewer results than the value that you specify, only the actual results are returned. If you don't specify a value, a default of 5 is used.",
+    }),
   })
   .openapi({ title: 'ListTranscriptionJobsRequest', required: [] })
   .openapi('ListTranscriptionJobsRequest')
 
 const ListVocabulariesResponseSchema = z
   .object({
-    Status: VocabularyStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Lists all custom vocabularies that have the status specified in your request. Vocabularies are ordered by creation date, with the newest vocabulary first.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If <code>NextToken</code> is present in your response, it indicates that not all results are displayed. To view the next set of results, copy the string associated with the <code>NextToken</code> parameter in your results output, then run your request again including <code>NextToken</code> with the value of the copied string. Repeat as needed to view all your results.',
-        }),
-    ).exactOptional(),
-    Vocabularies: VocabulariesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Provides information about the custom vocabularies that match the criteria specified in your request.',
-        }),
-    ).exactOptional(),
+    Status: VocabularyStateSchema.exactOptional().openapi({
+      description:
+        'Lists all custom vocabularies that have the status specified in your request. Vocabularies are ordered by creation date, with the newest vocabulary first.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If <code>NextToken</code> is present in your response, it indicates that not all results are displayed. To view the next set of results, copy the string associated with the <code>NextToken</code> parameter in your results output, then run your request again including <code>NextToken</code> with the value of the copied string. Repeat as needed to view all your results.',
+    }),
+    Vocabularies: VocabulariesSchema.exactOptional().openapi({
+      description:
+        'Provides information about the custom vocabularies that match the criteria specified in your request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListVocabulariesResponse')
 
 const ListVocabulariesRequestSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If your <code>ListVocabularies</code> request returns more results than can be displayed, <code>NextToken</code> is displayed in the response with an associated string. To get the next page of results, copy this string and repeat your request, including <code>NextToken</code> with the value of the copied string. Repeat as needed to view all your results.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The maximum number of custom vocabularies to return in each page of results. If there are fewer results than the value that you specify, only the actual results are returned. If you don't specify a value, a default of 5 is used.",
-        }),
-    ).exactOptional(),
-    StateEquals: VocabularyStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Returns only custom vocabularies with the specified state. Vocabularies are ordered by creation date, with the newest vocabulary first. If you don't include <code>StateEquals</code>, all custom medical vocabularies are returned.",
-        }),
-    ).exactOptional(),
-    NameContains: VocabularyNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Returns only the custom vocabularies that contain the specified string. The search is not case sensitive.',
-        }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If your <code>ListVocabularies</code> request returns more results than can be displayed, <code>NextToken</code> is displayed in the response with an associated string. To get the next page of results, copy this string and repeat your request, including <code>NextToken</code> with the value of the copied string. Repeat as needed to view all your results.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        "The maximum number of custom vocabularies to return in each page of results. If there are fewer results than the value that you specify, only the actual results are returned. If you don't specify a value, a default of 5 is used.",
+    }),
+    StateEquals: VocabularyStateSchema.exactOptional().openapi({
+      description:
+        "Returns only custom vocabularies with the specified state. Vocabularies are ordered by creation date, with the newest vocabulary first. If you don't include <code>StateEquals</code>, all custom medical vocabularies are returned.",
+    }),
+    NameContains: VocabularyNameSchema.exactOptional().openapi({
+      description:
+        'Returns only the custom vocabularies that contain the specified string. The search is not case sensitive.',
+    }),
   })
   .openapi({ title: 'ListVocabulariesRequest', required: [] })
   .openapi('ListVocabulariesRequest')
 
 const VocabularyFilterInfoSchema = z
   .object({
-    VocabularyFilterName: VocabularyFilterNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique name, chosen by you, for your custom vocabulary filter. This name is case sensitive, cannot contain spaces, and must be unique within an Amazon Web Services account.',
-        }),
-    ).exactOptional(),
-    LanguageCode: LanguageCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The language code that represents the language of the entries in your vocabulary filter. Each custom vocabulary filter must contain terms in only one language.</p> <p>A custom vocabulary filter can only be used to transcribe files in the same language as the filter. For example, if you create a custom vocabulary filter using US English (<code>en-US</code>), you can only apply this filter to files that contain English audio.</p> <p>For a list of supported languages and their associated language codes, refer to the <a href="https://docs.aws.amazon.com/transcribe/latest/dg/supported-languages.html">Supported languages</a> table.</p>',
-        }),
-    ).exactOptional(),
-    LastModifiedTime: DateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The date and time the specified custom vocabulary filter was last modified.</p> <p>Timestamps are in the format <code>YYYY-MM-DD'T'HH:MM:SS.SSSSSS-UTC</code>. For example, <code>2022-05-04T12:32:58.761000-07:00</code> represents 12:32 PM UTC-7 on May 4, 2022.</p>",
-        }),
-    ).exactOptional(),
+    VocabularyFilterName: VocabularyFilterNameSchema.exactOptional().openapi({
+      description:
+        'A unique name, chosen by you, for your custom vocabulary filter. This name is case sensitive, cannot contain spaces, and must be unique within an Amazon Web Services account.',
+    }),
+    LanguageCode: LanguageCodeSchema.exactOptional().openapi({
+      description:
+        '<p>The language code that represents the language of the entries in your vocabulary filter. Each custom vocabulary filter must contain terms in only one language.</p> <p>A custom vocabulary filter can only be used to transcribe files in the same language as the filter. For example, if you create a custom vocabulary filter using US English (<code>en-US</code>), you can only apply this filter to files that contain English audio.</p> <p>For a list of supported languages and their associated language codes, refer to the <a href="https://docs.aws.amazon.com/transcribe/latest/dg/supported-languages.html">Supported languages</a> table.</p>',
+    }),
+    LastModifiedTime: DateTimeSchema.exactOptional().openapi({
+      description:
+        "<p>The date and time the specified custom vocabulary filter was last modified.</p> <p>Timestamps are in the format <code>YYYY-MM-DD'T'HH:MM:SS.SSSSSS-UTC</code>. For example, <code>2022-05-04T12:32:58.761000-07:00</code> represents 12:32 PM UTC-7 on May 4, 2022.</p>",
+    }),
   })
   .openapi({
     description:
@@ -3343,66 +2179,42 @@ const VocabularyFiltersSchema = z.array(VocabularyFilterInfoSchema).openapi('Voc
 
 const ListVocabularyFiltersResponseSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If <code>NextToken</code> is present in your response, it indicates that not all results are displayed. To view the next set of results, copy the string associated with the <code>NextToken</code> parameter in your results output, then run your request again including <code>NextToken</code> with the value of the copied string. Repeat as needed to view all your results.',
-        }),
-    ).exactOptional(),
-    VocabularyFilters: VocabularyFiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Provides information about the custom vocabulary filters that match the criteria specified in your request.',
-        }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If <code>NextToken</code> is present in your response, it indicates that not all results are displayed. To view the next set of results, copy the string associated with the <code>NextToken</code> parameter in your results output, then run your request again including <code>NextToken</code> with the value of the copied string. Repeat as needed to view all your results.',
+    }),
+    VocabularyFilters: VocabularyFiltersSchema.exactOptional().openapi({
+      description:
+        'Provides information about the custom vocabulary filters that match the criteria specified in your request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListVocabularyFiltersResponse')
 
 const ListVocabularyFiltersRequestSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If your <code>ListVocabularyFilters</code> request returns more results than can be displayed, <code>NextToken</code> is displayed in the response with an associated string. To get the next page of results, copy this string and repeat your request, including <code>NextToken</code> with the value of the copied string. Repeat as needed to view all your results.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The maximum number of custom vocabulary filters to return in each page of results. If there are fewer results than the value that you specify, only the actual results are returned. If you don't specify a value, a default of 5 is used.",
-        }),
-    ).exactOptional(),
-    NameContains: VocabularyFilterNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Returns only the custom vocabulary filters that contain the specified string. The search is not case sensitive.',
-        }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If your <code>ListVocabularyFilters</code> request returns more results than can be displayed, <code>NextToken</code> is displayed in the response with an associated string. To get the next page of results, copy this string and repeat your request, including <code>NextToken</code> with the value of the copied string. Repeat as needed to view all your results.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        "The maximum number of custom vocabulary filters to return in each page of results. If there are fewer results than the value that you specify, only the actual results are returned. If you don't specify a value, a default of 5 is used.",
+    }),
+    NameContains: VocabularyFilterNameSchema.exactOptional().openapi({
+      description:
+        'Returns only the custom vocabulary filters that contain the specified string. The search is not case sensitive.',
+    }),
   })
   .openapi({ title: 'ListVocabularyFiltersRequest', required: [] })
   .openapi('ListVocabularyFiltersRequest')
 
 const StartCallAnalyticsJobResponseSchema = z
   .object({
-    CallAnalyticsJob: CallAnalyticsJobSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Provides detailed information about the current Call Analytics job, including job status and, if applicable, failure reason.',
-        }),
-    ).exactOptional(),
+    CallAnalyticsJob: CallAnalyticsJobSchema.exactOptional().openapi({
+      description:
+        'Provides detailed information about the current Call Analytics job, including job status and, if applicable, failure reason.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StartCallAnalyticsJobResponse')
@@ -3416,76 +2228,44 @@ const KMSKeyIdSchema = z
 
 const StartCallAnalyticsJobRequestSchema = z
   .object({
-    CallAnalyticsJobName: CallAnalyticsJobNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A unique name, chosen by you, for your Call Analytics job.</p> <p>This name is case sensitive, cannot contain spaces, and must be unique within an Amazon Web Services account. If you try to create a new job with the same name as an existing job, you get a <code>ConflictException</code> error.</p>',
-        }),
-    ),
-    Media: MediaSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Describes the Amazon S3 location of the media file you want to use in your Call Analytics request.',
-        }),
-    ),
-    OutputLocation: UriSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The Amazon S3 location where you want your Call Analytics transcription output stored. You can use any of the following formats to specify the output location:</p> <ol> <li> <p>s3://DOC-EXAMPLE-BUCKET</p> </li> <li> <p>s3://DOC-EXAMPLE-BUCKET/my-output-folder/</p> </li> <li> <p>s3://DOC-EXAMPLE-BUCKET/my-output-folder/my-call-analytics-job.json</p> </li> </ol> <p>Unless you specify a file name (option 3), the name of your output file has a default value that matches the name you specified for your transcription job using the <code>CallAnalyticsJobName</code> parameter.</p> <p>You can specify a KMS key to encrypt your output using the <code>OutputEncryptionKMSKeyId</code> parameter. If you don't specify a KMS key, Amazon Transcribe uses the default Amazon S3 key for server-side encryption.</p> <p>If you don't specify <code>OutputLocation</code>, your transcript is placed in a service-managed Amazon S3 bucket and you are provided with a URI to access your transcript.</p>",
-        }),
-    ).exactOptional(),
-    OutputEncryptionKMSKeyId: KMSKeyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The KMS key you want to use to encrypt your Call Analytics output.</p> <p>If using a key located in the <b>current</b> Amazon Web Services account, you can specify your KMS key in one of four ways:</p> <ol> <li> <p>Use the KMS key ID itself. For example, <code>1234abcd-12ab-34cd-56ef-1234567890ab</code>.</p> </li> <li> <p>Use an alias for the KMS key ID. For example, <code>alias/ExampleAlias</code>.</p> </li> <li> <p>Use the Amazon Resource Name (ARN) for the KMS key ID. For example, <code>arn:aws:kms:region:account-ID:key/1234abcd-12ab-34cd-56ef-1234567890ab</code>.</p> </li> <li> <p>Use the ARN for the KMS key alias. For example, <code>arn:aws:kms:region:account-ID:alias/ExampleAlias</code>.</p> </li> </ol> <p>If using a key located in a <b>different</b> Amazon Web Services account than the current Amazon Web Services account, you can specify your KMS key in one of two ways:</p> <ol> <li> <p>Use the ARN for the KMS key ID. For example, <code>arn:aws:kms:region:account-ID:key/1234abcd-12ab-34cd-56ef-1234567890ab</code>.</p> </li> <li> <p>Use the ARN for the KMS key alias. For example, <code>arn:aws:kms:region:account-ID:alias/ExampleAlias</code>.</p> </li> </ol> <p>If you don't specify an encryption key, your output is encrypted with the default Amazon S3 key (SSE-S3).</p> <p>If you specify a KMS key to encrypt your output, you must also specify an output location using the <code>OutputLocation</code> parameter.</p> <p>Note that the role making the request must have permission to use the specified KMS key.</p>",
-        }),
-    ).exactOptional(),
-    DataAccessRoleArn: DataAccessRoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of an IAM role that has permissions to access the Amazon S3 bucket that contains your input files. If the role that you specify doesn’t have the appropriate permissions to access the specified Amazon S3 location, your request fails.</p> <p>IAM role ARNs have the format <code>arn:partition:iam::account:role/role-name-with-path</code>. For example: <code>arn:aws:iam::111122223333:role/Admin</code>.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_identifiers.html#identifiers-arns">IAM ARNs</a>.</p>',
-        }),
-    ).exactOptional(),
-    Settings: CallAnalyticsJobSettingsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specify additional optional settings in your request, including content redaction; allows you to apply custom language models, vocabulary filters, and custom vocabularies to your Call Analytics job.',
-        }),
-    ).exactOptional(),
-    ChannelDefinitions: ChannelDefinitionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Makes it possible to specify which speaker is on which channel. For example, if your agent is the first participant to speak, you would set <code>ChannelId</code> to <code>0</code> (to indicate the first channel) and <code>ParticipantRole</code> to <code>AGENT</code> (to indicate that it's the agent speaking).",
-        }),
-    ).exactOptional(),
+    CallAnalyticsJobName: CallAnalyticsJobNameSchema.openapi({
+      description:
+        '<p>A unique name, chosen by you, for your Call Analytics job.</p> <p>This name is case sensitive, cannot contain spaces, and must be unique within an Amazon Web Services account. If you try to create a new job with the same name as an existing job, you get a <code>ConflictException</code> error.</p>',
+    }),
+    Media: MediaSchema.openapi({
+      description:
+        'Describes the Amazon S3 location of the media file you want to use in your Call Analytics request.',
+    }),
+    OutputLocation: UriSchema.exactOptional().openapi({
+      description:
+        "<p>The Amazon S3 location where you want your Call Analytics transcription output stored. You can use any of the following formats to specify the output location:</p> <ol> <li> <p>s3://DOC-EXAMPLE-BUCKET</p> </li> <li> <p>s3://DOC-EXAMPLE-BUCKET/my-output-folder/</p> </li> <li> <p>s3://DOC-EXAMPLE-BUCKET/my-output-folder/my-call-analytics-job.json</p> </li> </ol> <p>Unless you specify a file name (option 3), the name of your output file has a default value that matches the name you specified for your transcription job using the <code>CallAnalyticsJobName</code> parameter.</p> <p>You can specify a KMS key to encrypt your output using the <code>OutputEncryptionKMSKeyId</code> parameter. If you don't specify a KMS key, Amazon Transcribe uses the default Amazon S3 key for server-side encryption.</p> <p>If you don't specify <code>OutputLocation</code>, your transcript is placed in a service-managed Amazon S3 bucket and you are provided with a URI to access your transcript.</p>",
+    }),
+    OutputEncryptionKMSKeyId: KMSKeyIdSchema.exactOptional().openapi({
+      description:
+        "<p>The KMS key you want to use to encrypt your Call Analytics output.</p> <p>If using a key located in the <b>current</b> Amazon Web Services account, you can specify your KMS key in one of four ways:</p> <ol> <li> <p>Use the KMS key ID itself. For example, <code>1234abcd-12ab-34cd-56ef-1234567890ab</code>.</p> </li> <li> <p>Use an alias for the KMS key ID. For example, <code>alias/ExampleAlias</code>.</p> </li> <li> <p>Use the Amazon Resource Name (ARN) for the KMS key ID. For example, <code>arn:aws:kms:region:account-ID:key/1234abcd-12ab-34cd-56ef-1234567890ab</code>.</p> </li> <li> <p>Use the ARN for the KMS key alias. For example, <code>arn:aws:kms:region:account-ID:alias/ExampleAlias</code>.</p> </li> </ol> <p>If using a key located in a <b>different</b> Amazon Web Services account than the current Amazon Web Services account, you can specify your KMS key in one of two ways:</p> <ol> <li> <p>Use the ARN for the KMS key ID. For example, <code>arn:aws:kms:region:account-ID:key/1234abcd-12ab-34cd-56ef-1234567890ab</code>.</p> </li> <li> <p>Use the ARN for the KMS key alias. For example, <code>arn:aws:kms:region:account-ID:alias/ExampleAlias</code>.</p> </li> </ol> <p>If you don't specify an encryption key, your output is encrypted with the default Amazon S3 key (SSE-S3).</p> <p>If you specify a KMS key to encrypt your output, you must also specify an output location using the <code>OutputLocation</code> parameter.</p> <p>Note that the role making the request must have permission to use the specified KMS key.</p>",
+    }),
+    DataAccessRoleArn: DataAccessRoleArnSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of an IAM role that has permissions to access the Amazon S3 bucket that contains your input files. If the role that you specify doesn’t have the appropriate permissions to access the specified Amazon S3 location, your request fails.</p> <p>IAM role ARNs have the format <code>arn:partition:iam::account:role/role-name-with-path</code>. For example: <code>arn:aws:iam::111122223333:role/Admin</code>.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_identifiers.html#identifiers-arns">IAM ARNs</a>.</p>',
+    }),
+    Settings: CallAnalyticsJobSettingsSchema.exactOptional().openapi({
+      description:
+        'Specify additional optional settings in your request, including content redaction; allows you to apply custom language models, vocabulary filters, and custom vocabularies to your Call Analytics job.',
+    }),
+    ChannelDefinitions: ChannelDefinitionsSchema.exactOptional().openapi({
+      description:
+        "Makes it possible to specify which speaker is on which channel. For example, if your agent is the first participant to speak, you would set <code>ChannelId</code> to <code>0</code> (to indicate the first channel) and <code>ParticipantRole</code> to <code>AGENT</code> (to indicate that it's the agent speaking).",
+    }),
   })
   .openapi({ required: ['CallAnalyticsJobName', 'Media'], title: 'StartCallAnalyticsJobRequest' })
   .openapi('StartCallAnalyticsJobRequest')
 
 const StartMedicalTranscriptionJobResponseSchema = z
   .object({
-    MedicalTranscriptionJob: MedicalTranscriptionJobSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Provides detailed information about the current medical transcription job, including job status and, if applicable, failure reason.',
-        }),
-    ).exactOptional(),
+    MedicalTranscriptionJob: MedicalTranscriptionJobSchema.exactOptional().openapi({
+      description:
+        'Provides detailed information about the current medical transcription job, including job status and, if applicable, failure reason.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StartMedicalTranscriptionJobResponse')
@@ -3511,106 +2291,58 @@ const KMSEncryptionContextMapSchema = z
 
 const StartMedicalTranscriptionJobRequestSchema = z
   .object({
-    MedicalTranscriptionJobName: TranscriptionJobNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A unique name, chosen by you, for your medical transcription job. The name that you specify is also used as the default name of your transcription output file. If you want to specify a different name for your transcription output, use the <code>OutputKey</code> parameter.</p> <p>This name is case sensitive, cannot contain spaces, and must be unique within an Amazon Web Services account. If you try to create a new job with the same name as an existing job, you get a <code>ConflictException</code> error.</p>',
-        }),
-    ),
-    LanguageCode: LanguageCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The language code that represents the language spoken in the input media file. US English (<code>en-US</code>) is the only valid value for medical transcription jobs. Any other value you enter for language code results in a <code>BadRequestException</code> error.',
-        }),
-    ),
-    MediaSampleRateHertz: MedicalMediaSampleRateHertzSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The sample rate, in hertz, of the audio track in your input media file.</p> <p>If you don't specify the media sample rate, Amazon Transcribe Medical determines it for you. If you specify the sample rate, it must match the rate detected by Amazon Transcribe Medical; if there's a mismatch between the value that you specify and the value detected, your job fails. Therefore, in most cases, it's advised to omit <code>MediaSampleRateHertz</code> and let Amazon Transcribe Medical determine the sample rate.</p>",
-        }),
-    ).exactOptional(),
-    MediaFormat: MediaFormatSchema.and(
-      z.any().openapi({ description: 'Specify the format of your input media file.' }),
-    ).exactOptional(),
+    MedicalTranscriptionJobName: TranscriptionJobNameSchema.openapi({
+      description:
+        '<p>A unique name, chosen by you, for your medical transcription job. The name that you specify is also used as the default name of your transcription output file. If you want to specify a different name for your transcription output, use the <code>OutputKey</code> parameter.</p> <p>This name is case sensitive, cannot contain spaces, and must be unique within an Amazon Web Services account. If you try to create a new job with the same name as an existing job, you get a <code>ConflictException</code> error.</p>',
+    }),
+    LanguageCode: LanguageCodeSchema.openapi({
+      description:
+        'The language code that represents the language spoken in the input media file. US English (<code>en-US</code>) is the only valid value for medical transcription jobs. Any other value you enter for language code results in a <code>BadRequestException</code> error.',
+    }),
+    MediaSampleRateHertz: MedicalMediaSampleRateHertzSchema.exactOptional().openapi({
+      description:
+        "<p>The sample rate, in hertz, of the audio track in your input media file.</p> <p>If you don't specify the media sample rate, Amazon Transcribe Medical determines it for you. If you specify the sample rate, it must match the rate detected by Amazon Transcribe Medical; if there's a mismatch between the value that you specify and the value detected, your job fails. Therefore, in most cases, it's advised to omit <code>MediaSampleRateHertz</code> and let Amazon Transcribe Medical determine the sample rate.</p>",
+    }),
+    MediaFormat: MediaFormatSchema.exactOptional().openapi({
+      description: 'Specify the format of your input media file.',
+    }),
     Media: MediaSchema,
-    OutputBucketName: OutputBucketNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the Amazon S3 bucket where you want your medical transcription output stored. Do not include the <code>S3://</code> prefix of the specified bucket.</p> <p>If you want your output to go to a sub-folder of this bucket, specify it using the <code>OutputKey</code> parameter; <code>OutputBucketName</code> only accepts the name of a bucket.</p> <p>For example, if you want your output stored in <code>S3://DOC-EXAMPLE-BUCKET</code>, set <code>OutputBucketName</code> to <code>DOC-EXAMPLE-BUCKET</code>. However, if you want your output stored in <code>S3://DOC-EXAMPLE-BUCKET/test-files/</code>, set <code>OutputBucketName</code> to <code>DOC-EXAMPLE-BUCKET</code> and <code>OutputKey</code> to <code>test-files/</code>.</p> <p>Note that Amazon Transcribe must have permission to use the specified location. You can change Amazon S3 permissions using the <a href="https://console.aws.amazon.com/s3">Amazon Web Services Management Console</a>. See also <a href="https://docs.aws.amazon.com/transcribe/latest/dg/security_iam_id-based-policy-examples.html#auth-role-iam-user">Permissions Required for IAM User Roles</a>.</p>',
-        }),
-    ),
-    OutputKey: OutputKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Use in combination with <code>OutputBucketName</code> to specify the output location of your transcript and, optionally, a unique name for your output file. The default name for your transcription output is the same as the name you specified for your medical transcription job (<code>MedicalTranscriptionJobName</code>).</p> <p>Here are some examples of how you can use <code>OutputKey</code>:</p> <ul> <li> <p>If you specify 'DOC-EXAMPLE-BUCKET' as the <code>OutputBucketName</code> and 'my-transcript.json' as the <code>OutputKey</code>, your transcription output path is <code>s3://DOC-EXAMPLE-BUCKET/my-transcript.json</code>.</p> </li> <li> <p>If you specify 'my-first-transcription' as the <code>MedicalTranscriptionJobName</code>, 'DOC-EXAMPLE-BUCKET' as the <code>OutputBucketName</code>, and 'my-transcript' as the <code>OutputKey</code>, your transcription output path is <code>s3://DOC-EXAMPLE-BUCKET/my-transcript/my-first-transcription.json</code>.</p> </li> <li> <p>If you specify 'DOC-EXAMPLE-BUCKET' as the <code>OutputBucketName</code> and 'test-files/my-transcript.json' as the <code>OutputKey</code>, your transcription output path is <code>s3://DOC-EXAMPLE-BUCKET/test-files/my-transcript.json</code>.</p> </li> <li> <p>If you specify 'my-first-transcription' as the <code>MedicalTranscriptionJobName</code>, 'DOC-EXAMPLE-BUCKET' as the <code>OutputBucketName</code>, and 'test-files/my-transcript' as the <code>OutputKey</code>, your transcription output path is <code>s3://DOC-EXAMPLE-BUCKET/test-files/my-transcript/my-first-transcription.json</code>.</p> </li> </ul> <p>If you specify the name of an Amazon S3 bucket sub-folder that doesn't exist, one is created for you.</p>",
-        }),
-    ).exactOptional(),
-    OutputEncryptionKMSKeyId: KMSKeyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The KMS key you want to use to encrypt your medical transcription output.</p> <p>If using a key located in the <b>current</b> Amazon Web Services account, you can specify your KMS key in one of four ways:</p> <ol> <li> <p>Use the KMS key ID itself. For example, <code>1234abcd-12ab-34cd-56ef-1234567890ab</code>.</p> </li> <li> <p>Use an alias for the KMS key ID. For example, <code>alias/ExampleAlias</code>.</p> </li> <li> <p>Use the Amazon Resource Name (ARN) for the KMS key ID. For example, <code>arn:aws:kms:region:account-ID:key/1234abcd-12ab-34cd-56ef-1234567890ab</code>.</p> </li> <li> <p>Use the ARN for the KMS key alias. For example, <code>arn:aws:kms:region:account-ID:alias/ExampleAlias</code>.</p> </li> </ol> <p>If using a key located in a <b>different</b> Amazon Web Services account than the current Amazon Web Services account, you can specify your KMS key in one of two ways:</p> <ol> <li> <p>Use the ARN for the KMS key ID. For example, <code>arn:aws:kms:region:account-ID:key/1234abcd-12ab-34cd-56ef-1234567890ab</code>.</p> </li> <li> <p>Use the ARN for the KMS key alias. For example, <code>arn:aws:kms:region:account-ID:alias/ExampleAlias</code>.</p> </li> </ol> <p>If you don't specify an encryption key, your output is encrypted with the default Amazon S3 key (SSE-S3).</p> <p>If you specify a KMS key to encrypt your output, you must also specify an output location using the <code>OutputLocation</code> parameter.</p> <p>Note that the role making the request must have permission to use the specified KMS key.</p>",
-        }),
-    ).exactOptional(),
-    KMSEncryptionContext: KMSEncryptionContextMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A map of plain text, non-secret key:value pairs, known as encryption context pairs, that provide an added layer of security for your data. For more information, see <a href="https://docs.aws.amazon.com/transcribe/latest/dg/key-management.html#kms-context">KMS encryption context</a> and <a href="https://docs.aws.amazon.com/transcribe/latest/dg/symmetric-asymmetric.html">Asymmetric keys in KMS</a>.',
-        }),
-    ).exactOptional(),
-    Settings: MedicalTranscriptionSettingSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specify additional optional settings in your request, including channel identification, alternative transcriptions, and speaker partitioning. You can use that to apply custom vocabularies to your transcription job.',
-        }),
-    ).exactOptional(),
-    ContentIdentificationType: MedicalContentIdentificationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Labels all personal health information (PHI) identified in your transcript. For more information, see <a href="https://docs.aws.amazon.com/transcribe/latest/dg/phi-id.html">Identifying personal health information (PHI) in a transcription</a>.',
-        }),
-    ).exactOptional(),
-    Specialty: SpecialtySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specify the predominant medical specialty represented in your media. For batch transcriptions, <code>PRIMARYCARE</code> is the only valid value. If you require additional specialties, refer to .',
-        }),
-    ),
-    Type: TypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Specify whether your input media contains only one person (<code>DICTATION</code>) or contains a conversation between two people (<code>CONVERSATION</code>).</p> <p>For example, <code>DICTATION</code> could be used for a medical professional wanting to transcribe voice memos; <code>CONVERSATION</code> could be used for transcribing the doctor-patient dialogue during the patient's office visit.</p>",
-        }),
-    ),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Adds one or more custom tags, each in the form of a key:value pair, to a new medical transcription job at the time you start this new job.</p> <p>To learn more about using tags with Amazon Transcribe, refer to <a href="https://docs.aws.amazon.com/transcribe/latest/dg/tagging.html">Tagging resources</a>.</p>',
-        }),
-    ).exactOptional(),
+    OutputBucketName: OutputBucketNameSchema.openapi({
+      description:
+        '<p>The name of the Amazon S3 bucket where you want your medical transcription output stored. Do not include the <code>S3://</code> prefix of the specified bucket.</p> <p>If you want your output to go to a sub-folder of this bucket, specify it using the <code>OutputKey</code> parameter; <code>OutputBucketName</code> only accepts the name of a bucket.</p> <p>For example, if you want your output stored in <code>S3://DOC-EXAMPLE-BUCKET</code>, set <code>OutputBucketName</code> to <code>DOC-EXAMPLE-BUCKET</code>. However, if you want your output stored in <code>S3://DOC-EXAMPLE-BUCKET/test-files/</code>, set <code>OutputBucketName</code> to <code>DOC-EXAMPLE-BUCKET</code> and <code>OutputKey</code> to <code>test-files/</code>.</p> <p>Note that Amazon Transcribe must have permission to use the specified location. You can change Amazon S3 permissions using the <a href="https://console.aws.amazon.com/s3">Amazon Web Services Management Console</a>. See also <a href="https://docs.aws.amazon.com/transcribe/latest/dg/security_iam_id-based-policy-examples.html#auth-role-iam-user">Permissions Required for IAM User Roles</a>.</p>',
+    }),
+    OutputKey: OutputKeySchema.exactOptional().openapi({
+      description:
+        "<p>Use in combination with <code>OutputBucketName</code> to specify the output location of your transcript and, optionally, a unique name for your output file. The default name for your transcription output is the same as the name you specified for your medical transcription job (<code>MedicalTranscriptionJobName</code>).</p> <p>Here are some examples of how you can use <code>OutputKey</code>:</p> <ul> <li> <p>If you specify 'DOC-EXAMPLE-BUCKET' as the <code>OutputBucketName</code> and 'my-transcript.json' as the <code>OutputKey</code>, your transcription output path is <code>s3://DOC-EXAMPLE-BUCKET/my-transcript.json</code>.</p> </li> <li> <p>If you specify 'my-first-transcription' as the <code>MedicalTranscriptionJobName</code>, 'DOC-EXAMPLE-BUCKET' as the <code>OutputBucketName</code>, and 'my-transcript' as the <code>OutputKey</code>, your transcription output path is <code>s3://DOC-EXAMPLE-BUCKET/my-transcript/my-first-transcription.json</code>.</p> </li> <li> <p>If you specify 'DOC-EXAMPLE-BUCKET' as the <code>OutputBucketName</code> and 'test-files/my-transcript.json' as the <code>OutputKey</code>, your transcription output path is <code>s3://DOC-EXAMPLE-BUCKET/test-files/my-transcript.json</code>.</p> </li> <li> <p>If you specify 'my-first-transcription' as the <code>MedicalTranscriptionJobName</code>, 'DOC-EXAMPLE-BUCKET' as the <code>OutputBucketName</code>, and 'test-files/my-transcript' as the <code>OutputKey</code>, your transcription output path is <code>s3://DOC-EXAMPLE-BUCKET/test-files/my-transcript/my-first-transcription.json</code>.</p> </li> </ul> <p>If you specify the name of an Amazon S3 bucket sub-folder that doesn't exist, one is created for you.</p>",
+    }),
+    OutputEncryptionKMSKeyId: KMSKeyIdSchema.exactOptional().openapi({
+      description:
+        "<p>The KMS key you want to use to encrypt your medical transcription output.</p> <p>If using a key located in the <b>current</b> Amazon Web Services account, you can specify your KMS key in one of four ways:</p> <ol> <li> <p>Use the KMS key ID itself. For example, <code>1234abcd-12ab-34cd-56ef-1234567890ab</code>.</p> </li> <li> <p>Use an alias for the KMS key ID. For example, <code>alias/ExampleAlias</code>.</p> </li> <li> <p>Use the Amazon Resource Name (ARN) for the KMS key ID. For example, <code>arn:aws:kms:region:account-ID:key/1234abcd-12ab-34cd-56ef-1234567890ab</code>.</p> </li> <li> <p>Use the ARN for the KMS key alias. For example, <code>arn:aws:kms:region:account-ID:alias/ExampleAlias</code>.</p> </li> </ol> <p>If using a key located in a <b>different</b> Amazon Web Services account than the current Amazon Web Services account, you can specify your KMS key in one of two ways:</p> <ol> <li> <p>Use the ARN for the KMS key ID. For example, <code>arn:aws:kms:region:account-ID:key/1234abcd-12ab-34cd-56ef-1234567890ab</code>.</p> </li> <li> <p>Use the ARN for the KMS key alias. For example, <code>arn:aws:kms:region:account-ID:alias/ExampleAlias</code>.</p> </li> </ol> <p>If you don't specify an encryption key, your output is encrypted with the default Amazon S3 key (SSE-S3).</p> <p>If you specify a KMS key to encrypt your output, you must also specify an output location using the <code>OutputLocation</code> parameter.</p> <p>Note that the role making the request must have permission to use the specified KMS key.</p>",
+    }),
+    KMSEncryptionContext: KMSEncryptionContextMapSchema.exactOptional().openapi({
+      description:
+        'A map of plain text, non-secret key:value pairs, known as encryption context pairs, that provide an added layer of security for your data. For more information, see <a href="https://docs.aws.amazon.com/transcribe/latest/dg/key-management.html#kms-context">KMS encryption context</a> and <a href="https://docs.aws.amazon.com/transcribe/latest/dg/symmetric-asymmetric.html">Asymmetric keys in KMS</a>.',
+    }),
+    Settings: MedicalTranscriptionSettingSchema.exactOptional().openapi({
+      description:
+        'Specify additional optional settings in your request, including channel identification, alternative transcriptions, and speaker partitioning. You can use that to apply custom vocabularies to your transcription job.',
+    }),
+    ContentIdentificationType: MedicalContentIdentificationTypeSchema.exactOptional().openapi({
+      description:
+        'Labels all personal health information (PHI) identified in your transcript. For more information, see <a href="https://docs.aws.amazon.com/transcribe/latest/dg/phi-id.html">Identifying personal health information (PHI) in a transcription</a>.',
+    }),
+    Specialty: SpecialtySchema.openapi({
+      description:
+        'Specify the predominant medical specialty represented in your media. For batch transcriptions, <code>PRIMARYCARE</code> is the only valid value. If you require additional specialties, refer to .',
+    }),
+    Type: TypeSchema.openapi({
+      description:
+        "<p>Specify whether your input media contains only one person (<code>DICTATION</code>) or contains a conversation between two people (<code>CONVERSATION</code>).</p> <p>For example, <code>DICTATION</code> could be used for a medical professional wanting to transcribe voice memos; <code>CONVERSATION</code> could be used for transcribing the doctor-patient dialogue during the patient's office visit.</p>",
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        '<p>Adds one or more custom tags, each in the form of a key:value pair, to a new medical transcription job at the time you start this new job.</p> <p>To learn more about using tags with Amazon Transcribe, refer to <a href="https://docs.aws.amazon.com/transcribe/latest/dg/tagging.html">Tagging resources</a>.</p>',
+    }),
   })
   .openapi({
     required: [
@@ -3627,36 +2359,24 @@ const StartMedicalTranscriptionJobRequestSchema = z
 
 const StartTranscriptionJobResponseSchema = z
   .object({
-    TranscriptionJob: TranscriptionJobSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Provides detailed information about the current transcription job, including job status and, if applicable, failure reason.',
-        }),
-    ).exactOptional(),
+    TranscriptionJob: TranscriptionJobSchema.exactOptional().openapi({
+      description:
+        'Provides detailed information about the current transcription job, including job status and, if applicable, failure reason.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StartTranscriptionJobResponse')
 
 const SubtitlesSchema = z
   .object({
-    Formats: SubtitleFormatsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specify the output format for your subtitle file; if you select both WebVTT (<code>vtt</code>) and SubRip (<code>srt</code>) formats, two output files are generated.',
-        }),
-    ).exactOptional(),
-    OutputStartIndex: SubtitleOutputStartIndexSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Specify the starting value that is assigned to the first subtitle segment.</p> <p>The default start index for Amazon Transcribe is <code>0</code>, which differs from the more widely used standard of <code>1</code>. If you're uncertain which value to use, we recommend choosing <code>1</code>, as this may improve compatibility with other services.</p>",
-        }),
-    ).exactOptional(),
+    Formats: SubtitleFormatsSchema.exactOptional().openapi({
+      description:
+        'Specify the output format for your subtitle file; if you select both WebVTT (<code>vtt</code>) and SubRip (<code>srt</code>) formats, two output files are generated.',
+    }),
+    OutputStartIndex: SubtitleOutputStartIndexSchema.exactOptional().openapi({
+      description:
+        "<p>Specify the starting value that is assigned to the first subtitle segment.</p> <p>The default start index for Amazon Transcribe is <code>0</code>, which differs from the more widely used standard of <code>1</code>. If you're uncertain which value to use, we recommend choosing <code>1</code>, as this may improve compatibility with other services.</p>",
+    }),
   })
   .openapi({
     description:
@@ -3667,318 +2387,185 @@ const SubtitlesSchema = z
 
 const StartTranscriptionJobRequestSchema = z
   .object({
-    TranscriptionJobName: TranscriptionJobNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A unique name, chosen by you, for your transcription job. The name that you specify is also used as the default name of your transcription output file. If you want to specify a different name for your transcription output, use the <code>OutputKey</code> parameter.</p> <p>This name is case sensitive, cannot contain spaces, and must be unique within an Amazon Web Services account. If you try to create a new job with the same name as an existing job, you get a <code>ConflictException</code> error.</p>',
-        }),
-    ),
-    LanguageCode: LanguageCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The language code that represents the language spoken in the input media file.</p> <p>If you\'re unsure of the language spoken in your media file, consider using <code>IdentifyLanguage</code> or <code>IdentifyMultipleLanguages</code> to enable automatic language identification.</p> <p>Note that you must include one of <code>LanguageCode</code>, <code>IdentifyLanguage</code>, or <code>IdentifyMultipleLanguages</code> in your request. If you include more than one of these parameters, your transcription job fails.</p> <p>For a list of supported languages and their associated language codes, refer to the <a href="https://docs.aws.amazon.com/transcribe/latest/dg/supported-languages.html">Supported languages</a> table.</p> <note> <p>To transcribe speech in Modern Standard Arabic (<code>ar-SA</code>), your media file must be encoded at a sample rate of 16,000 Hz or higher.</p> </note>',
-        }),
-    ).exactOptional(),
-    MediaSampleRateHertz: MediaSampleRateHertzSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The sample rate, in hertz, of the audio track in your input media file.</p> <p>If you don't specify the media sample rate, Amazon Transcribe determines it for you. If you specify the sample rate, it must match the rate detected by Amazon Transcribe. If there's a mismatch between the value that you specify and the value detected, your job fails. In most cases, you can omit <code>MediaSampleRateHertz</code> and let Amazon Transcribe determine the sample rate.</p>",
-        }),
-    ).exactOptional(),
-    MediaFormat: MediaFormatSchema.and(
-      z.any().openapi({ description: 'Specify the format of your input media file.' }),
-    ).exactOptional(),
-    Media: MediaSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Describes the Amazon S3 location of the media file you want to use in your request.',
-        }),
-    ),
-    OutputBucketName: OutputBucketNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the Amazon S3 bucket where you want your transcription output stored. Do not include the <code>S3://</code> prefix of the specified bucket.</p> <p>If you want your output to go to a sub-folder of this bucket, specify it using the <code>OutputKey</code> parameter; <code>OutputBucketName</code> only accepts the name of a bucket.</p> <p>For example, if you want your output stored in <code>S3://DOC-EXAMPLE-BUCKET</code>, set <code>OutputBucketName</code> to <code>DOC-EXAMPLE-BUCKET</code>. However, if you want your output stored in <code>S3://DOC-EXAMPLE-BUCKET/test-files/</code>, set <code>OutputBucketName</code> to <code>DOC-EXAMPLE-BUCKET</code> and <code>OutputKey</code> to <code>test-files/</code>.</p> <p>Note that Amazon Transcribe must have permission to use the specified location. You can change Amazon S3 permissions using the <a href="https://console.aws.amazon.com/s3">Amazon Web Services Management Console</a>. See also <a href="https://docs.aws.amazon.com/transcribe/latest/dg/security_iam_id-based-policy-examples.html#auth-role-iam-user">Permissions Required for IAM User Roles</a>.</p> <p>If you don\'t specify <code>OutputBucketName</code>, your transcript is placed in a service-managed Amazon S3 bucket and you are provided with a URI to access your transcript.</p>',
-        }),
-    ).exactOptional(),
-    OutputKey: OutputKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Use in combination with <code>OutputBucketName</code> to specify the output location of your transcript and, optionally, a unique name for your output file. The default name for your transcription output is the same as the name you specified for your transcription job (<code>TranscriptionJobName</code>).</p> <p>Here are some examples of how you can use <code>OutputKey</code>:</p> <ul> <li> <p>If you specify 'DOC-EXAMPLE-BUCKET' as the <code>OutputBucketName</code> and 'my-transcript.json' as the <code>OutputKey</code>, your transcription output path is <code>s3://DOC-EXAMPLE-BUCKET/my-transcript.json</code>.</p> </li> <li> <p>If you specify 'my-first-transcription' as the <code>TranscriptionJobName</code>, 'DOC-EXAMPLE-BUCKET' as the <code>OutputBucketName</code>, and 'my-transcript' as the <code>OutputKey</code>, your transcription output path is <code>s3://DOC-EXAMPLE-BUCKET/my-transcript/my-first-transcription.json</code>.</p> </li> <li> <p>If you specify 'DOC-EXAMPLE-BUCKET' as the <code>OutputBucketName</code> and 'test-files/my-transcript.json' as the <code>OutputKey</code>, your transcription output path is <code>s3://DOC-EXAMPLE-BUCKET/test-files/my-transcript.json</code>.</p> </li> <li> <p>If you specify 'my-first-transcription' as the <code>TranscriptionJobName</code>, 'DOC-EXAMPLE-BUCKET' as the <code>OutputBucketName</code>, and 'test-files/my-transcript' as the <code>OutputKey</code>, your transcription output path is <code>s3://DOC-EXAMPLE-BUCKET/test-files/my-transcript/my-first-transcription.json</code>.</p> </li> </ul> <p>If you specify the name of an Amazon S3 bucket sub-folder that doesn't exist, one is created for you.</p>",
-        }),
-    ).exactOptional(),
-    OutputEncryptionKMSKeyId: KMSKeyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The KMS key you want to use to encrypt your transcription output.</p> <p>If using a key located in the <b>current</b> Amazon Web Services account, you can specify your KMS key in one of four ways:</p> <ol> <li> <p>Use the KMS key ID itself. For example, <code>1234abcd-12ab-34cd-56ef-1234567890ab</code>.</p> </li> <li> <p>Use an alias for the KMS key ID. For example, <code>alias/ExampleAlias</code>.</p> </li> <li> <p>Use the Amazon Resource Name (ARN) for the KMS key ID. For example, <code>arn:aws:kms:region:account-ID:key/1234abcd-12ab-34cd-56ef-1234567890ab</code>.</p> </li> <li> <p>Use the ARN for the KMS key alias. For example, <code>arn:aws:kms:region:account-ID:alias/ExampleAlias</code>.</p> </li> </ol> <p>If using a key located in a <b>different</b> Amazon Web Services account than the current Amazon Web Services account, you can specify your KMS key in one of two ways:</p> <ol> <li> <p>Use the ARN for the KMS key ID. For example, <code>arn:aws:kms:region:account-ID:key/1234abcd-12ab-34cd-56ef-1234567890ab</code>.</p> </li> <li> <p>Use the ARN for the KMS key alias. For example, <code>arn:aws:kms:region:account-ID:alias/ExampleAlias</code>.</p> </li> </ol> <p>If you don't specify an encryption key, your output is encrypted with the default Amazon S3 key (SSE-S3).</p> <p>If you specify a KMS key to encrypt your output, you must also specify an output location using the <code>OutputLocation</code> parameter.</p> <p>Note that the role making the request must have permission to use the specified KMS key.</p>",
-        }),
-    ).exactOptional(),
-    KMSEncryptionContext: KMSEncryptionContextMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A map of plain text, non-secret key:value pairs, known as encryption context pairs, that provide an added layer of security for your data. For more information, see <a href="https://docs.aws.amazon.com/transcribe/latest/dg/key-management.html#kms-context">KMS encryption context</a> and <a href="https://docs.aws.amazon.com/transcribe/latest/dg/symmetric-asymmetric.html">Asymmetric keys in KMS</a>.',
-        }),
-    ).exactOptional(),
-    Settings: SettingsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Specify additional optional settings in your request, including channel identification, alternative transcriptions, speaker partitioning. You can use that to apply custom vocabularies and vocabulary filters.</p> <p>If you want to include a custom vocabulary or a custom vocabulary filter (or both) with your request but <b>do not</b> want to use automatic language identification, use <code>Settings</code> with the <code>VocabularyName</code> or <code>VocabularyFilterName</code> (or both) sub-parameter.</p> <p>If you're using automatic language identification with your request and want to include a custom language model, a custom vocabulary, or a custom vocabulary filter, use instead the <code/> parameter with the <code>LanguageModelName</code>, <code>VocabularyName</code> or <code>VocabularyFilterName</code> sub-parameters.</p>",
-        }),
-    ).exactOptional(),
-    ModelSettings: ModelSettingsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specify the custom language model you want to include with your transcription job. If you include <code>ModelSettings</code> in your request, you must include the <code>LanguageModelName</code> sub-parameter.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/transcribe/latest/dg/custom-language-models.html">Custom language models</a>.</p>',
-        }),
-    ).exactOptional(),
-    JobExecutionSettings: JobExecutionSettingsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Makes it possible to control how your transcription job is processed. Currently, the only <code>JobExecutionSettings</code> modification you can choose is enabling job queueing using the <code>AllowDeferredExecution</code> sub-parameter.</p> <p>If you include <code>JobExecutionSettings</code> in your request, you must also include the sub-parameters: <code>AllowDeferredExecution</code> and <code>DataAccessRoleArn</code>.</p>',
-        }),
-    ).exactOptional(),
-    ContentRedaction: ContentRedactionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Makes it possible to redact or flag specified personally identifiable information (PII) in your transcript. If you use <code>ContentRedaction</code>, you must also include the sub-parameters: <code>PiiEntityTypes</code>, <code>RedactionOutput</code>, and <code>RedactionType</code>.',
-        }),
-    ).exactOptional(),
-    IdentifyLanguage: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Enables automatic language identification in your transcription job request. Use this parameter if your media file contains only one language. If your media contains multiple languages, use <code>IdentifyMultipleLanguages</code> instead.</p> <p>If you include <code>IdentifyLanguage</code>, you can optionally include a list of language codes, using <code>LanguageOptions</code>, that you think may be present in your media file. Including <code>LanguageOptions</code> restricts <code>IdentifyLanguage</code> to only the language options that you specify, which can improve transcription accuracy.</p> <p>If you want to apply a custom language model, a custom vocabulary, or a custom vocabulary filter to your automatic language identification request, include <code>LanguageIdSettings</code> with the relevant sub-parameters (<code>VocabularyName</code>, <code>LanguageModelName</code>, and <code>VocabularyFilterName</code>). If you include <code>LanguageIdSettings</code>, also include <code>LanguageOptions</code>.</p> <p>Note that you must include one of <code>LanguageCode</code>, <code>IdentifyLanguage</code>, or <code>IdentifyMultipleLanguages</code> in your request. If you include more than one of these parameters, your transcription job fails.</p>',
-        }),
-    ).exactOptional(),
-    IdentifyMultipleLanguages: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Enables automatic multi-language identification in your transcription job request. Use this parameter if your media file contains more than one language. If your media contains only one language, use <code>IdentifyLanguage</code> instead.</p> <p>If you include <code>IdentifyMultipleLanguages</code>, you can optionally include a list of language codes, using <code>LanguageOptions</code>, that you think may be present in your media file. Including <code>LanguageOptions</code> restricts <code>IdentifyLanguage</code> to only the language options that you specify, which can improve transcription accuracy.</p> <p>If you want to apply a custom vocabulary or a custom vocabulary filter to your automatic language identification request, include <code>LanguageIdSettings</code> with the relevant sub-parameters (<code>VocabularyName</code> and <code>VocabularyFilterName</code>). If you include <code>LanguageIdSettings</code>, also include <code>LanguageOptions</code>.</p> <p>Note that you must include one of <code>LanguageCode</code>, <code>IdentifyLanguage</code>, or <code>IdentifyMultipleLanguages</code> in your request. If you include more than one of these parameters, your transcription job fails.</p>',
-        }),
-    ).exactOptional(),
-    LanguageOptions: LanguageOptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>You can specify two or more language codes that represent the languages you think may be present in your media. Including more than five is not recommended. If you\'re unsure what languages are present, do not include this parameter.</p> <p>If you include <code>LanguageOptions</code> in your request, you must also include <code>IdentifyLanguage</code>.</p> <p>For more information, refer to <a href="https://docs.aws.amazon.com/transcribe/latest/dg/supported-languages.html">Supported languages</a>.</p> <p>To transcribe speech in Modern Standard Arabic (<code>ar-SA</code>), your media file must be encoded at a sample rate of 16,000 Hz or higher.</p>',
-        }),
-    ).exactOptional(),
-    Subtitles: SubtitlesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Produces subtitle files for your input media. You can specify WebVTT (*.vtt) and SubRip (*.srt) formats.',
-        }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Adds one or more custom tags, each in the form of a key:value pair, to a new transcription job at the time you start this new job.</p> <p>To learn more about using tags with Amazon Transcribe, refer to <a href="https://docs.aws.amazon.com/transcribe/latest/dg/tagging.html">Tagging resources</a>.</p>',
-        }),
-    ).exactOptional(),
-    LanguageIdSettings: LanguageIdSettingsMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>If using automatic language identification in your request and you want to apply a custom language model, a custom vocabulary, or a custom vocabulary filter, include <code>LanguageIdSettings</code> with the relevant sub-parameters (<code>VocabularyName</code>, <code>LanguageModelName</code>, and <code>VocabularyFilterName</code>). Note that multi-language identification (<code>IdentifyMultipleLanguages</code>) doesn't support custom language models.</p> <p> <code>LanguageIdSettings</code> supports two to five language codes. Each language code you include can have an associated custom language model, custom vocabulary, and custom vocabulary filter. The language codes that you specify must match the languages of the associated custom language models, custom vocabularies, and custom vocabulary filters.</p> <p>It's recommended that you include <code>LanguageOptions</code> when using <code>LanguageIdSettings</code> to ensure that the correct language dialect is identified. For example, if you specify a custom vocabulary that is in <code>en-US</code> but Amazon Transcribe determines that the language spoken in your media is <code>en-AU</code>, your custom vocabulary <i>is not</i> applied to your transcription. If you include <code>LanguageOptions</code> and include <code>en-US</code> as the only English language dialect, your custom vocabulary <i>is</i> applied to your transcription.</p> <p>If you want to include a custom language model with your request but <b>do not</b> want to use automatic language identification, use instead the <code/> parameter with the <code>LanguageModelName</code> sub-parameter. If you want to include a custom vocabulary or a custom vocabulary filter (or both) with your request but <b>do not</b> want to use automatic language identification, use instead the <code/> parameter with the <code>VocabularyName</code> or <code>VocabularyFilterName</code> (or both) sub-parameter.</p>",
-        }),
-    ).exactOptional(),
-    ToxicityDetection: ToxicityDetectionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Enables toxic speech detection in your transcript. If you include <code>ToxicityDetection</code> in your request, you must also include <code>ToxicityCategories</code>.</p> <p>For information on the types of toxic speech Amazon Transcribe can detect, see <a href="https://docs.aws.amazon.com/transcribe/latest/dg/toxic-language.html">Detecting toxic speech</a>.</p>',
-        }),
-    ).exactOptional(),
+    TranscriptionJobName: TranscriptionJobNameSchema.openapi({
+      description:
+        '<p>A unique name, chosen by you, for your transcription job. The name that you specify is also used as the default name of your transcription output file. If you want to specify a different name for your transcription output, use the <code>OutputKey</code> parameter.</p> <p>This name is case sensitive, cannot contain spaces, and must be unique within an Amazon Web Services account. If you try to create a new job with the same name as an existing job, you get a <code>ConflictException</code> error.</p>',
+    }),
+    LanguageCode: LanguageCodeSchema.exactOptional().openapi({
+      description:
+        '<p>The language code that represents the language spoken in the input media file.</p> <p>If you\'re unsure of the language spoken in your media file, consider using <code>IdentifyLanguage</code> or <code>IdentifyMultipleLanguages</code> to enable automatic language identification.</p> <p>Note that you must include one of <code>LanguageCode</code>, <code>IdentifyLanguage</code>, or <code>IdentifyMultipleLanguages</code> in your request. If you include more than one of these parameters, your transcription job fails.</p> <p>For a list of supported languages and their associated language codes, refer to the <a href="https://docs.aws.amazon.com/transcribe/latest/dg/supported-languages.html">Supported languages</a> table.</p> <note> <p>To transcribe speech in Modern Standard Arabic (<code>ar-SA</code>), your media file must be encoded at a sample rate of 16,000 Hz or higher.</p> </note>',
+    }),
+    MediaSampleRateHertz: MediaSampleRateHertzSchema.exactOptional().openapi({
+      description:
+        "<p>The sample rate, in hertz, of the audio track in your input media file.</p> <p>If you don't specify the media sample rate, Amazon Transcribe determines it for you. If you specify the sample rate, it must match the rate detected by Amazon Transcribe. If there's a mismatch between the value that you specify and the value detected, your job fails. In most cases, you can omit <code>MediaSampleRateHertz</code> and let Amazon Transcribe determine the sample rate.</p>",
+    }),
+    MediaFormat: MediaFormatSchema.exactOptional().openapi({
+      description: 'Specify the format of your input media file.',
+    }),
+    Media: MediaSchema.openapi({
+      description:
+        'Describes the Amazon S3 location of the media file you want to use in your request.',
+    }),
+    OutputBucketName: OutputBucketNameSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the Amazon S3 bucket where you want your transcription output stored. Do not include the <code>S3://</code> prefix of the specified bucket.</p> <p>If you want your output to go to a sub-folder of this bucket, specify it using the <code>OutputKey</code> parameter; <code>OutputBucketName</code> only accepts the name of a bucket.</p> <p>For example, if you want your output stored in <code>S3://DOC-EXAMPLE-BUCKET</code>, set <code>OutputBucketName</code> to <code>DOC-EXAMPLE-BUCKET</code>. However, if you want your output stored in <code>S3://DOC-EXAMPLE-BUCKET/test-files/</code>, set <code>OutputBucketName</code> to <code>DOC-EXAMPLE-BUCKET</code> and <code>OutputKey</code> to <code>test-files/</code>.</p> <p>Note that Amazon Transcribe must have permission to use the specified location. You can change Amazon S3 permissions using the <a href="https://console.aws.amazon.com/s3">Amazon Web Services Management Console</a>. See also <a href="https://docs.aws.amazon.com/transcribe/latest/dg/security_iam_id-based-policy-examples.html#auth-role-iam-user">Permissions Required for IAM User Roles</a>.</p> <p>If you don\'t specify <code>OutputBucketName</code>, your transcript is placed in a service-managed Amazon S3 bucket and you are provided with a URI to access your transcript.</p>',
+    }),
+    OutputKey: OutputKeySchema.exactOptional().openapi({
+      description:
+        "<p>Use in combination with <code>OutputBucketName</code> to specify the output location of your transcript and, optionally, a unique name for your output file. The default name for your transcription output is the same as the name you specified for your transcription job (<code>TranscriptionJobName</code>).</p> <p>Here are some examples of how you can use <code>OutputKey</code>:</p> <ul> <li> <p>If you specify 'DOC-EXAMPLE-BUCKET' as the <code>OutputBucketName</code> and 'my-transcript.json' as the <code>OutputKey</code>, your transcription output path is <code>s3://DOC-EXAMPLE-BUCKET/my-transcript.json</code>.</p> </li> <li> <p>If you specify 'my-first-transcription' as the <code>TranscriptionJobName</code>, 'DOC-EXAMPLE-BUCKET' as the <code>OutputBucketName</code>, and 'my-transcript' as the <code>OutputKey</code>, your transcription output path is <code>s3://DOC-EXAMPLE-BUCKET/my-transcript/my-first-transcription.json</code>.</p> </li> <li> <p>If you specify 'DOC-EXAMPLE-BUCKET' as the <code>OutputBucketName</code> and 'test-files/my-transcript.json' as the <code>OutputKey</code>, your transcription output path is <code>s3://DOC-EXAMPLE-BUCKET/test-files/my-transcript.json</code>.</p> </li> <li> <p>If you specify 'my-first-transcription' as the <code>TranscriptionJobName</code>, 'DOC-EXAMPLE-BUCKET' as the <code>OutputBucketName</code>, and 'test-files/my-transcript' as the <code>OutputKey</code>, your transcription output path is <code>s3://DOC-EXAMPLE-BUCKET/test-files/my-transcript/my-first-transcription.json</code>.</p> </li> </ul> <p>If you specify the name of an Amazon S3 bucket sub-folder that doesn't exist, one is created for you.</p>",
+    }),
+    OutputEncryptionKMSKeyId: KMSKeyIdSchema.exactOptional().openapi({
+      description:
+        "<p>The KMS key you want to use to encrypt your transcription output.</p> <p>If using a key located in the <b>current</b> Amazon Web Services account, you can specify your KMS key in one of four ways:</p> <ol> <li> <p>Use the KMS key ID itself. For example, <code>1234abcd-12ab-34cd-56ef-1234567890ab</code>.</p> </li> <li> <p>Use an alias for the KMS key ID. For example, <code>alias/ExampleAlias</code>.</p> </li> <li> <p>Use the Amazon Resource Name (ARN) for the KMS key ID. For example, <code>arn:aws:kms:region:account-ID:key/1234abcd-12ab-34cd-56ef-1234567890ab</code>.</p> </li> <li> <p>Use the ARN for the KMS key alias. For example, <code>arn:aws:kms:region:account-ID:alias/ExampleAlias</code>.</p> </li> </ol> <p>If using a key located in a <b>different</b> Amazon Web Services account than the current Amazon Web Services account, you can specify your KMS key in one of two ways:</p> <ol> <li> <p>Use the ARN for the KMS key ID. For example, <code>arn:aws:kms:region:account-ID:key/1234abcd-12ab-34cd-56ef-1234567890ab</code>.</p> </li> <li> <p>Use the ARN for the KMS key alias. For example, <code>arn:aws:kms:region:account-ID:alias/ExampleAlias</code>.</p> </li> </ol> <p>If you don't specify an encryption key, your output is encrypted with the default Amazon S3 key (SSE-S3).</p> <p>If you specify a KMS key to encrypt your output, you must also specify an output location using the <code>OutputLocation</code> parameter.</p> <p>Note that the role making the request must have permission to use the specified KMS key.</p>",
+    }),
+    KMSEncryptionContext: KMSEncryptionContextMapSchema.exactOptional().openapi({
+      description:
+        'A map of plain text, non-secret key:value pairs, known as encryption context pairs, that provide an added layer of security for your data. For more information, see <a href="https://docs.aws.amazon.com/transcribe/latest/dg/key-management.html#kms-context">KMS encryption context</a> and <a href="https://docs.aws.amazon.com/transcribe/latest/dg/symmetric-asymmetric.html">Asymmetric keys in KMS</a>.',
+    }),
+    Settings: SettingsSchema.exactOptional().openapi({
+      description:
+        "<p>Specify additional optional settings in your request, including channel identification, alternative transcriptions, speaker partitioning. You can use that to apply custom vocabularies and vocabulary filters.</p> <p>If you want to include a custom vocabulary or a custom vocabulary filter (or both) with your request but <b>do not</b> want to use automatic language identification, use <code>Settings</code> with the <code>VocabularyName</code> or <code>VocabularyFilterName</code> (or both) sub-parameter.</p> <p>If you're using automatic language identification with your request and want to include a custom language model, a custom vocabulary, or a custom vocabulary filter, use instead the <code/> parameter with the <code>LanguageModelName</code>, <code>VocabularyName</code> or <code>VocabularyFilterName</code> sub-parameters.</p>",
+    }),
+    ModelSettings: ModelSettingsSchema.exactOptional().openapi({
+      description:
+        '<p>Specify the custom language model you want to include with your transcription job. If you include <code>ModelSettings</code> in your request, you must include the <code>LanguageModelName</code> sub-parameter.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/transcribe/latest/dg/custom-language-models.html">Custom language models</a>.</p>',
+    }),
+    JobExecutionSettings: JobExecutionSettingsSchema.exactOptional().openapi({
+      description:
+        '<p>Makes it possible to control how your transcription job is processed. Currently, the only <code>JobExecutionSettings</code> modification you can choose is enabling job queueing using the <code>AllowDeferredExecution</code> sub-parameter.</p> <p>If you include <code>JobExecutionSettings</code> in your request, you must also include the sub-parameters: <code>AllowDeferredExecution</code> and <code>DataAccessRoleArn</code>.</p>',
+    }),
+    ContentRedaction: ContentRedactionSchema.exactOptional().openapi({
+      description:
+        'Makes it possible to redact or flag specified personally identifiable information (PII) in your transcript. If you use <code>ContentRedaction</code>, you must also include the sub-parameters: <code>PiiEntityTypes</code>, <code>RedactionOutput</code>, and <code>RedactionType</code>.',
+    }),
+    IdentifyLanguage: BooleanSchema.exactOptional().openapi({
+      description:
+        '<p>Enables automatic language identification in your transcription job request. Use this parameter if your media file contains only one language. If your media contains multiple languages, use <code>IdentifyMultipleLanguages</code> instead.</p> <p>If you include <code>IdentifyLanguage</code>, you can optionally include a list of language codes, using <code>LanguageOptions</code>, that you think may be present in your media file. Including <code>LanguageOptions</code> restricts <code>IdentifyLanguage</code> to only the language options that you specify, which can improve transcription accuracy.</p> <p>If you want to apply a custom language model, a custom vocabulary, or a custom vocabulary filter to your automatic language identification request, include <code>LanguageIdSettings</code> with the relevant sub-parameters (<code>VocabularyName</code>, <code>LanguageModelName</code>, and <code>VocabularyFilterName</code>). If you include <code>LanguageIdSettings</code>, also include <code>LanguageOptions</code>.</p> <p>Note that you must include one of <code>LanguageCode</code>, <code>IdentifyLanguage</code>, or <code>IdentifyMultipleLanguages</code> in your request. If you include more than one of these parameters, your transcription job fails.</p>',
+    }),
+    IdentifyMultipleLanguages: BooleanSchema.exactOptional().openapi({
+      description:
+        '<p>Enables automatic multi-language identification in your transcription job request. Use this parameter if your media file contains more than one language. If your media contains only one language, use <code>IdentifyLanguage</code> instead.</p> <p>If you include <code>IdentifyMultipleLanguages</code>, you can optionally include a list of language codes, using <code>LanguageOptions</code>, that you think may be present in your media file. Including <code>LanguageOptions</code> restricts <code>IdentifyLanguage</code> to only the language options that you specify, which can improve transcription accuracy.</p> <p>If you want to apply a custom vocabulary or a custom vocabulary filter to your automatic language identification request, include <code>LanguageIdSettings</code> with the relevant sub-parameters (<code>VocabularyName</code> and <code>VocabularyFilterName</code>). If you include <code>LanguageIdSettings</code>, also include <code>LanguageOptions</code>.</p> <p>Note that you must include one of <code>LanguageCode</code>, <code>IdentifyLanguage</code>, or <code>IdentifyMultipleLanguages</code> in your request. If you include more than one of these parameters, your transcription job fails.</p>',
+    }),
+    LanguageOptions: LanguageOptionsSchema.exactOptional().openapi({
+      description:
+        '<p>You can specify two or more language codes that represent the languages you think may be present in your media. Including more than five is not recommended. If you\'re unsure what languages are present, do not include this parameter.</p> <p>If you include <code>LanguageOptions</code> in your request, you must also include <code>IdentifyLanguage</code>.</p> <p>For more information, refer to <a href="https://docs.aws.amazon.com/transcribe/latest/dg/supported-languages.html">Supported languages</a>.</p> <p>To transcribe speech in Modern Standard Arabic (<code>ar-SA</code>), your media file must be encoded at a sample rate of 16,000 Hz or higher.</p>',
+    }),
+    Subtitles: SubtitlesSchema.exactOptional().openapi({
+      description:
+        'Produces subtitle files for your input media. You can specify WebVTT (*.vtt) and SubRip (*.srt) formats.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        '<p>Adds one or more custom tags, each in the form of a key:value pair, to a new transcription job at the time you start this new job.</p> <p>To learn more about using tags with Amazon Transcribe, refer to <a href="https://docs.aws.amazon.com/transcribe/latest/dg/tagging.html">Tagging resources</a>.</p>',
+    }),
+    LanguageIdSettings: LanguageIdSettingsMapSchema.exactOptional().openapi({
+      description:
+        "<p>If using automatic language identification in your request and you want to apply a custom language model, a custom vocabulary, or a custom vocabulary filter, include <code>LanguageIdSettings</code> with the relevant sub-parameters (<code>VocabularyName</code>, <code>LanguageModelName</code>, and <code>VocabularyFilterName</code>). Note that multi-language identification (<code>IdentifyMultipleLanguages</code>) doesn't support custom language models.</p> <p> <code>LanguageIdSettings</code> supports two to five language codes. Each language code you include can have an associated custom language model, custom vocabulary, and custom vocabulary filter. The language codes that you specify must match the languages of the associated custom language models, custom vocabularies, and custom vocabulary filters.</p> <p>It's recommended that you include <code>LanguageOptions</code> when using <code>LanguageIdSettings</code> to ensure that the correct language dialect is identified. For example, if you specify a custom vocabulary that is in <code>en-US</code> but Amazon Transcribe determines that the language spoken in your media is <code>en-AU</code>, your custom vocabulary <i>is not</i> applied to your transcription. If you include <code>LanguageOptions</code> and include <code>en-US</code> as the only English language dialect, your custom vocabulary <i>is</i> applied to your transcription.</p> <p>If you want to include a custom language model with your request but <b>do not</b> want to use automatic language identification, use instead the <code/> parameter with the <code>LanguageModelName</code> sub-parameter. If you want to include a custom vocabulary or a custom vocabulary filter (or both) with your request but <b>do not</b> want to use automatic language identification, use instead the <code/> parameter with the <code>VocabularyName</code> or <code>VocabularyFilterName</code> (or both) sub-parameter.</p>",
+    }),
+    ToxicityDetection: ToxicityDetectionSchema.exactOptional().openapi({
+      description:
+        '<p>Enables toxic speech detection in your transcript. If you include <code>ToxicityDetection</code> in your request, you must also include <code>ToxicityCategories</code>.</p> <p>For information on the types of toxic speech Amazon Transcribe can detect, see <a href="https://docs.aws.amazon.com/transcribe/latest/dg/toxic-language.html">Detecting toxic speech</a>.</p>',
+    }),
   })
   .openapi({ required: ['TranscriptionJobName', 'Media'], title: 'StartTranscriptionJobRequest' })
   .openapi('StartTranscriptionJobRequest')
 
-const TagResourceResponseSchema = z.object({}).openapi('TagResourceResponse')
+const TagResourceResponseSchema = z.looseObject({}).openapi('TagResourceResponse')
 
 const TagResourceRequestSchema = z
   .object({
-    ResourceArn: TranscribeArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the resource you want to tag. ARNs have the format <code>arn:partition:service:region:account-id:resource-type/resource-id</code>.</p> <p>For example, <code>arn:aws:transcribe:us-west-2:111122223333:transcription-job/transcription-job-name</code>.</p> <p>Valid values for <code>resource-type</code> are: <code>transcription-job</code>, <code>medical-transcription-job</code>, <code>vocabulary</code>, <code>medical-vocabulary</code>, <code>vocabulary-filter</code>, and <code>language-model</code>.</p>',
-        }),
-    ),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Adds one or more custom tags, each in the form of a key:value pair, to the specified resource.</p> <p>To learn more about using tags with Amazon Transcribe, refer to <a href="https://docs.aws.amazon.com/transcribe/latest/dg/tagging.html">Tagging resources</a>.</p>',
-        }),
-    ),
+    ResourceArn: TranscribeArnSchema.openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the resource you want to tag. ARNs have the format <code>arn:partition:service:region:account-id:resource-type/resource-id</code>.</p> <p>For example, <code>arn:aws:transcribe:us-west-2:111122223333:transcription-job/transcription-job-name</code>.</p> <p>Valid values for <code>resource-type</code> are: <code>transcription-job</code>, <code>medical-transcription-job</code>, <code>vocabulary</code>, <code>medical-vocabulary</code>, <code>vocabulary-filter</code>, and <code>language-model</code>.</p>',
+    }),
+    Tags: TagListSchema.openapi({
+      description:
+        '<p>Adds one or more custom tags, each in the form of a key:value pair, to the specified resource.</p> <p>To learn more about using tags with Amazon Transcribe, refer to <a href="https://docs.aws.amazon.com/transcribe/latest/dg/tagging.html">Tagging resources</a>.</p>',
+    }),
   })
   .openapi({ required: ['ResourceArn', 'Tags'], title: 'TagResourceRequest' })
   .openapi('TagResourceRequest')
 
-const UntagResourceResponseSchema = z.object({}).openapi('UntagResourceResponse')
+const UntagResourceResponseSchema = z.looseObject({}).openapi('UntagResourceResponse')
 
 const TagKeyListSchema = z.array(TagKeySchema).min(1).max(200).openapi('TagKeyList')
 
 const UntagResourceRequestSchema = z
   .object({
-    ResourceArn: TranscribeArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the Amazon Transcribe resource you want to remove tags from. ARNs have the format <code>arn:partition:service:region:account-id:resource-type/resource-id</code>.</p> <p>For example, <code>arn:aws:transcribe:us-west-2:111122223333:transcription-job/transcription-job-name</code>.</p> <p>Valid values for <code>resource-type</code> are: <code>transcription-job</code>, <code>medical-transcription-job</code>, <code>vocabulary</code>, <code>medical-vocabulary</code>, <code>vocabulary-filter</code>, and <code>language-model</code>.</p>',
-        }),
-    ),
-    TagKeys: TagKeyListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Removes the specified tag keys from the specified Amazon Transcribe resource.',
-        }),
-    ),
+    ResourceArn: TranscribeArnSchema.openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the Amazon Transcribe resource you want to remove tags from. ARNs have the format <code>arn:partition:service:region:account-id:resource-type/resource-id</code>.</p> <p>For example, <code>arn:aws:transcribe:us-west-2:111122223333:transcription-job/transcription-job-name</code>.</p> <p>Valid values for <code>resource-type</code> are: <code>transcription-job</code>, <code>medical-transcription-job</code>, <code>vocabulary</code>, <code>medical-vocabulary</code>, <code>vocabulary-filter</code>, and <code>language-model</code>.</p>',
+    }),
+    TagKeys: TagKeyListSchema.openapi({
+      description: 'Removes the specified tag keys from the specified Amazon Transcribe resource.',
+    }),
   })
   .openapi({ required: ['ResourceArn', 'TagKeys'], title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')
 
 const UpdateCallAnalyticsCategoryResponseSchema = z
   .object({
-    CategoryProperties: CategoryPropertiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Provides you with the properties of the Call Analytics category you specified in your <code>UpdateCallAnalyticsCategory</code> request.',
-        }),
-    ).exactOptional(),
+    CategoryProperties: CategoryPropertiesSchema.exactOptional().openapi({
+      description:
+        'Provides you with the properties of the Call Analytics category you specified in your <code>UpdateCallAnalyticsCategory</code> request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateCallAnalyticsCategoryResponse')
 
 const UpdateCallAnalyticsCategoryRequestSchema = z
   .object({
-    CategoryName: CategoryNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the Call Analytics category you want to update. Category names are case sensitive.',
-        }),
-    ),
-    Rules: RuleListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The rules used for the updated Call Analytics category. The rules you provide in this field replace the ones that are currently being used in the specified category.',
-        }),
-    ),
-    InputType: InputTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Choose whether you want to update a real-time or a post-call category. The input type you specify must match the input type specified when the category was created. For example, if you created a category with the <code>POST_CALL</code> input type, you must use <code>POST_CALL</code> as the input type when updating this category.',
-        }),
-    ).exactOptional(),
+    CategoryName: CategoryNameSchema.openapi({
+      description:
+        'The name of the Call Analytics category you want to update. Category names are case sensitive.',
+    }),
+    Rules: RuleListSchema.openapi({
+      description:
+        'The rules used for the updated Call Analytics category. The rules you provide in this field replace the ones that are currently being used in the specified category.',
+    }),
+    InputType: InputTypeSchema.exactOptional().openapi({
+      description:
+        'Choose whether you want to update a real-time or a post-call category. The input type you specify must match the input type specified when the category was created. For example, if you created a category with the <code>POST_CALL</code> input type, you must use <code>POST_CALL</code> as the input type when updating this category.',
+    }),
   })
   .openapi({ required: ['CategoryName', 'Rules'], title: 'UpdateCallAnalyticsCategoryRequest' })
   .openapi('UpdateCallAnalyticsCategoryRequest')
 
 const UpdateMedicalVocabularyResponseSchema = z
   .object({
-    VocabularyName: VocabularyNameSchema.and(
-      z.any().openapi({ description: 'The name of the updated custom medical vocabulary.' }),
-    ).exactOptional(),
-    LanguageCode: LanguageCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The language code you selected for your custom medical vocabulary. US English (<code>en-US</code>) is the only language supported with Amazon Transcribe Medical.',
-        }),
-    ).exactOptional(),
-    LastModifiedTime: DateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The date and time the specified custom medical vocabulary was last updated.</p> <p>Timestamps are in the format <code>YYYY-MM-DD'T'HH:MM:SS.SSSSSS-UTC</code>. For example, <code>2022-05-04T12:32:58.761000-07:00</code> represents 12:32 PM UTC-7 on May 4, 2022.</p>",
-        }),
-    ).exactOptional(),
-    VocabularyState: VocabularyStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The processing state of your custom medical vocabulary. If the state is <code>READY</code>, you can use the custom vocabulary in a <code>StartMedicalTranscriptionJob</code> request.',
-        }),
-    ).exactOptional(),
+    VocabularyName: VocabularyNameSchema.exactOptional().openapi({
+      description: 'The name of the updated custom medical vocabulary.',
+    }),
+    LanguageCode: LanguageCodeSchema.exactOptional().openapi({
+      description:
+        'The language code you selected for your custom medical vocabulary. US English (<code>en-US</code>) is the only language supported with Amazon Transcribe Medical.',
+    }),
+    LastModifiedTime: DateTimeSchema.exactOptional().openapi({
+      description:
+        "<p>The date and time the specified custom medical vocabulary was last updated.</p> <p>Timestamps are in the format <code>YYYY-MM-DD'T'HH:MM:SS.SSSSSS-UTC</code>. For example, <code>2022-05-04T12:32:58.761000-07:00</code> represents 12:32 PM UTC-7 on May 4, 2022.</p>",
+    }),
+    VocabularyState: VocabularyStateSchema.exactOptional().openapi({
+      description:
+        'The processing state of your custom medical vocabulary. If the state is <code>READY</code>, you can use the custom vocabulary in a <code>StartMedicalTranscriptionJob</code> request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateMedicalVocabularyResponse')
 
 const UpdateMedicalVocabularyRequestSchema = z
   .object({
-    VocabularyName: VocabularyNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the custom medical vocabulary you want to update. Custom medical vocabulary names are case sensitive.',
-        }),
-    ),
-    LanguageCode: LanguageCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The language code that represents the language of the entries in the custom vocabulary you want to update. US English (<code>en-US</code>) is the only language supported with Amazon Transcribe Medical.',
-        }),
-    ),
-    VocabularyFileUri: UriSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The Amazon S3 location of the text file that contains your custom medical vocabulary. The URI must be located in the same Amazon Web Services Region as the resource you're calling.</p> <p>Here's an example URI path: <code>s3://DOC-EXAMPLE-BUCKET/my-vocab-file.txt</code> </p>",
-        }),
-    ),
+    VocabularyName: VocabularyNameSchema.openapi({
+      description:
+        'The name of the custom medical vocabulary you want to update. Custom medical vocabulary names are case sensitive.',
+    }),
+    LanguageCode: LanguageCodeSchema.openapi({
+      description:
+        'The language code that represents the language of the entries in the custom vocabulary you want to update. US English (<code>en-US</code>) is the only language supported with Amazon Transcribe Medical.',
+    }),
+    VocabularyFileUri: UriSchema.openapi({
+      description:
+        "<p>The Amazon S3 location of the text file that contains your custom medical vocabulary. The URI must be located in the same Amazon Web Services Region as the resource you're calling.</p> <p>Here's an example URI path: <code>s3://DOC-EXAMPLE-BUCKET/my-vocab-file.txt</code> </p>",
+    }),
   })
   .openapi({
     required: ['VocabularyName', 'LanguageCode', 'VocabularyFileUri'],
@@ -3988,138 +2575,84 @@ const UpdateMedicalVocabularyRequestSchema = z
 
 const UpdateVocabularyResponseSchema = z
   .object({
-    VocabularyName: VocabularyNameSchema.and(
-      z.any().openapi({ description: 'The name of the updated custom vocabulary.' }),
-    ).exactOptional(),
-    LanguageCode: LanguageCodeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The language code you selected for your custom vocabulary.' }),
-    ).exactOptional(),
-    LastModifiedTime: DateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The date and time the specified custom vocabulary was last updated.</p> <p>Timestamps are in the format <code>YYYY-MM-DD'T'HH:MM:SS.SSSSSS-UTC</code>. For example, <code>2022-05-04T12:32:58.761000-07:00</code> represents 12:32 PM UTC-7 on May 4, 2022.</p>",
-        }),
-    ).exactOptional(),
-    VocabularyState: VocabularyStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The processing state of your custom vocabulary. If the state is <code>READY</code>, you can use the custom vocabulary in a <code>StartTranscriptionJob</code> request.',
-        }),
-    ).exactOptional(),
+    VocabularyName: VocabularyNameSchema.exactOptional().openapi({
+      description: 'The name of the updated custom vocabulary.',
+    }),
+    LanguageCode: LanguageCodeSchema.exactOptional().openapi({
+      description: 'The language code you selected for your custom vocabulary.',
+    }),
+    LastModifiedTime: DateTimeSchema.exactOptional().openapi({
+      description:
+        "<p>The date and time the specified custom vocabulary was last updated.</p> <p>Timestamps are in the format <code>YYYY-MM-DD'T'HH:MM:SS.SSSSSS-UTC</code>. For example, <code>2022-05-04T12:32:58.761000-07:00</code> represents 12:32 PM UTC-7 on May 4, 2022.</p>",
+    }),
+    VocabularyState: VocabularyStateSchema.exactOptional().openapi({
+      description:
+        'The processing state of your custom vocabulary. If the state is <code>READY</code>, you can use the custom vocabulary in a <code>StartTranscriptionJob</code> request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateVocabularyResponse')
 
 const UpdateVocabularyRequestSchema = z
   .object({
-    VocabularyName: VocabularyNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the custom vocabulary you want to update. Custom vocabulary names are case sensitive.',
-        }),
-    ),
-    LanguageCode: LanguageCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The language code that represents the language of the entries in the custom vocabulary you want to update. Each custom vocabulary must contain terms in only one language.</p> <p>A custom vocabulary can only be used to transcribe files in the same language as the custom vocabulary. For example, if you create a custom vocabulary using US English (<code>en-US</code>), you can only apply this custom vocabulary to files that contain English audio.</p> <p>For a list of supported languages and their associated language codes, refer to the <a href="https://docs.aws.amazon.com/transcribe/latest/dg/supported-languages.html">Supported languages</a> table.</p>',
-        }),
-    ),
-    Phrases: PhrasesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Use this parameter if you want to update your custom vocabulary by including all desired terms, as comma-separated values, within your request. The other option for updating your custom vocabulary is to save your entries in a text file and upload them to an Amazon S3 bucket, then specify the location of your file using the <code>VocabularyFileUri</code> parameter.</p> <p>Note that if you include <code>Phrases</code> in your request, you cannot use <code>VocabularyFileUri</code>; you must choose one or the other.</p> <p>Each language has a character set that contains all allowed characters for that specific language. If you use unsupported characters, your custom vocabulary filter request fails. Refer to <a href="https://docs.aws.amazon.com/transcribe/latest/dg/charsets.html">Character Sets for Custom Vocabularies</a> to get the character set for your language.</p>',
-        }),
-    ).exactOptional(),
-    VocabularyFileUri: UriSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The Amazon S3 location of the text file that contains your custom vocabulary. The URI must be located in the same Amazon Web Services Region as the resource you're calling.</p> <p>Here's an example URI path: <code>s3://DOC-EXAMPLE-BUCKET/my-vocab-file.txt</code> </p> <p>Note that if you include <code>VocabularyFileUri</code> in your request, you cannot use the <code>Phrases</code> flag; you must choose one or the other.</p>",
-        }),
-    ).exactOptional(),
-    DataAccessRoleArn: DataAccessRoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of an IAM role that has permissions to access the Amazon S3 bucket that contains your input files (in this case, your custom vocabulary). If the role that you specify doesn’t have the appropriate permissions to access the specified Amazon S3 location, your request fails.</p> <p>IAM role ARNs have the format <code>arn:partition:iam::account:role/role-name-with-path</code>. For example: <code>arn:aws:iam::111122223333:role/Admin</code>.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_identifiers.html#identifiers-arns">IAM ARNs</a>.</p>',
-        }),
-    ).exactOptional(),
+    VocabularyName: VocabularyNameSchema.openapi({
+      description:
+        'The name of the custom vocabulary you want to update. Custom vocabulary names are case sensitive.',
+    }),
+    LanguageCode: LanguageCodeSchema.openapi({
+      description:
+        '<p>The language code that represents the language of the entries in the custom vocabulary you want to update. Each custom vocabulary must contain terms in only one language.</p> <p>A custom vocabulary can only be used to transcribe files in the same language as the custom vocabulary. For example, if you create a custom vocabulary using US English (<code>en-US</code>), you can only apply this custom vocabulary to files that contain English audio.</p> <p>For a list of supported languages and their associated language codes, refer to the <a href="https://docs.aws.amazon.com/transcribe/latest/dg/supported-languages.html">Supported languages</a> table.</p>',
+    }),
+    Phrases: PhrasesSchema.exactOptional().openapi({
+      description:
+        '<p>Use this parameter if you want to update your custom vocabulary by including all desired terms, as comma-separated values, within your request. The other option for updating your custom vocabulary is to save your entries in a text file and upload them to an Amazon S3 bucket, then specify the location of your file using the <code>VocabularyFileUri</code> parameter.</p> <p>Note that if you include <code>Phrases</code> in your request, you cannot use <code>VocabularyFileUri</code>; you must choose one or the other.</p> <p>Each language has a character set that contains all allowed characters for that specific language. If you use unsupported characters, your custom vocabulary filter request fails. Refer to <a href="https://docs.aws.amazon.com/transcribe/latest/dg/charsets.html">Character Sets for Custom Vocabularies</a> to get the character set for your language.</p>',
+    }),
+    VocabularyFileUri: UriSchema.exactOptional().openapi({
+      description:
+        "<p>The Amazon S3 location of the text file that contains your custom vocabulary. The URI must be located in the same Amazon Web Services Region as the resource you're calling.</p> <p>Here's an example URI path: <code>s3://DOC-EXAMPLE-BUCKET/my-vocab-file.txt</code> </p> <p>Note that if you include <code>VocabularyFileUri</code> in your request, you cannot use the <code>Phrases</code> flag; you must choose one or the other.</p>",
+    }),
+    DataAccessRoleArn: DataAccessRoleArnSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of an IAM role that has permissions to access the Amazon S3 bucket that contains your input files (in this case, your custom vocabulary). If the role that you specify doesn’t have the appropriate permissions to access the specified Amazon S3 location, your request fails.</p> <p>IAM role ARNs have the format <code>arn:partition:iam::account:role/role-name-with-path</code>. For example: <code>arn:aws:iam::111122223333:role/Admin</code>.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_identifiers.html#identifiers-arns">IAM ARNs</a>.</p>',
+    }),
   })
   .openapi({ required: ['VocabularyName', 'LanguageCode'], title: 'UpdateVocabularyRequest' })
   .openapi('UpdateVocabularyRequest')
 
 const UpdateVocabularyFilterResponseSchema = z
   .object({
-    VocabularyFilterName: VocabularyFilterNameSchema.and(
-      z.any().openapi({ description: 'The name of the updated custom vocabulary filter.' }),
-    ).exactOptional(),
-    LanguageCode: LanguageCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The language code you selected for your custom vocabulary filter.',
-        }),
-    ).exactOptional(),
-    LastModifiedTime: DateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The date and time the specified custom vocabulary filter was last updated.</p> <p>Timestamps are in the format <code>YYYY-MM-DD'T'HH:MM:SS.SSSSSS-UTC</code>. For example, <code>2022-05-04T12:32:58.761000-07:00</code> represents 12:32 PM UTC-7 on May 4, 2022.</p>",
-        }),
-    ).exactOptional(),
+    VocabularyFilterName: VocabularyFilterNameSchema.exactOptional().openapi({
+      description: 'The name of the updated custom vocabulary filter.',
+    }),
+    LanguageCode: LanguageCodeSchema.exactOptional().openapi({
+      description: 'The language code you selected for your custom vocabulary filter.',
+    }),
+    LastModifiedTime: DateTimeSchema.exactOptional().openapi({
+      description:
+        "<p>The date and time the specified custom vocabulary filter was last updated.</p> <p>Timestamps are in the format <code>YYYY-MM-DD'T'HH:MM:SS.SSSSSS-UTC</code>. For example, <code>2022-05-04T12:32:58.761000-07:00</code> represents 12:32 PM UTC-7 on May 4, 2022.</p>",
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateVocabularyFilterResponse')
 
 const UpdateVocabularyFilterRequestSchema = z
   .object({
-    VocabularyFilterName: VocabularyFilterNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the custom vocabulary filter you want to update. Custom vocabulary filter names are case sensitive.',
-        }),
-    ),
-    Words: WordsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Use this parameter if you want to update your custom vocabulary filter by including all desired terms, as comma-separated values, within your request. The other option for updating your vocabulary filter is to save your entries in a text file and upload them to an Amazon S3 bucket, then specify the location of your file using the <code>VocabularyFilterFileUri</code> parameter.</p> <p>Note that if you include <code>Words</code> in your request, you cannot use <code>VocabularyFilterFileUri</code>; you must choose one or the other.</p> <p>Each language has a character set that contains all allowed characters for that specific language. If you use unsupported characters, your custom vocabulary filter request fails. Refer to <a href="https://docs.aws.amazon.com/transcribe/latest/dg/charsets.html">Character Sets for Custom Vocabularies</a> to get the character set for your language.</p>',
-        }),
-    ).exactOptional(),
-    VocabularyFilterFileUri: UriSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The Amazon S3 location of the text file that contains your custom vocabulary filter terms. The URI must be located in the same Amazon Web Services Region as the resource you're calling.</p> <p>Here's an example URI path: <code>s3://DOC-EXAMPLE-BUCKET/my-vocab-filter-file.txt</code> </p> <p>Note that if you include <code>VocabularyFilterFileUri</code> in your request, you cannot use <code>Words</code>; you must choose one or the other.</p>",
-        }),
-    ).exactOptional(),
-    DataAccessRoleArn: DataAccessRoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of an IAM role that has permissions to access the Amazon S3 bucket that contains your input files (in this case, your custom vocabulary filter). If the role that you specify doesn’t have the appropriate permissions to access the specified Amazon S3 location, your request fails.</p> <p>IAM role ARNs have the format <code>arn:partition:iam::account:role/role-name-with-path</code>. For example: <code>arn:aws:iam::111122223333:role/Admin</code>.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_identifiers.html#identifiers-arns">IAM ARNs</a>.</p>',
-        }),
-    ).exactOptional(),
+    VocabularyFilterName: VocabularyFilterNameSchema.openapi({
+      description:
+        'The name of the custom vocabulary filter you want to update. Custom vocabulary filter names are case sensitive.',
+    }),
+    Words: WordsSchema.exactOptional().openapi({
+      description:
+        '<p>Use this parameter if you want to update your custom vocabulary filter by including all desired terms, as comma-separated values, within your request. The other option for updating your vocabulary filter is to save your entries in a text file and upload them to an Amazon S3 bucket, then specify the location of your file using the <code>VocabularyFilterFileUri</code> parameter.</p> <p>Note that if you include <code>Words</code> in your request, you cannot use <code>VocabularyFilterFileUri</code>; you must choose one or the other.</p> <p>Each language has a character set that contains all allowed characters for that specific language. If you use unsupported characters, your custom vocabulary filter request fails. Refer to <a href="https://docs.aws.amazon.com/transcribe/latest/dg/charsets.html">Character Sets for Custom Vocabularies</a> to get the character set for your language.</p>',
+    }),
+    VocabularyFilterFileUri: UriSchema.exactOptional().openapi({
+      description:
+        "<p>The Amazon S3 location of the text file that contains your custom vocabulary filter terms. The URI must be located in the same Amazon Web Services Region as the resource you're calling.</p> <p>Here's an example URI path: <code>s3://DOC-EXAMPLE-BUCKET/my-vocab-filter-file.txt</code> </p> <p>Note that if you include <code>VocabularyFilterFileUri</code> in your request, you cannot use <code>Words</code>; you must choose one or the other.</p>",
+    }),
+    DataAccessRoleArn: DataAccessRoleArnSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of an IAM role that has permissions to access the Amazon S3 bucket that contains your input files (in this case, your custom vocabulary filter). If the role that you specify doesn’t have the appropriate permissions to access the specified Amazon S3 location, your request fails.</p> <p>IAM role ARNs have the format <code>arn:partition:iam::account:role/role-name-with-path</code>. For example: <code>arn:aws:iam::111122223333:role/Admin</code>.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_identifiers.html#identifiers-arns">IAM ARNs</a>.</p>',
+    }),
   })
   .openapi({ required: ['VocabularyFilterName'], title: 'UpdateVocabularyFilterRequest' })
   .openapi('UpdateVocabularyFilterRequest')

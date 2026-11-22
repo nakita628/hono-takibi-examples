@@ -1880,7 +1880,7 @@ const FeatureSchemaSchema: z.ZodType<FeatureSchemaType> = z
       .exactOptional()
       .openapi({
         description:
-          'The JSON Schema document, draft 2020-12, that describes the variant payloads of the flag. Absent when the flag has none. This is an experimental field and may change.',
+          'The JSON Schema document, draft 2020-12, that describes the variant payloads of the flag. Absent when the flag has none. Only present on Unleash Enterprise. This is an experimental field and may change.',
       }),
     lifetimeDays: z
       .int()
@@ -3106,6 +3106,180 @@ const FeatureSearchResponseSchemaSchema: z.ZodType<FeatureSearchResponseSchemaTy
 type SearchFeaturesSchemaType = {
   features: z.infer<typeof FeatureSearchResponseSchemaSchema>[]
   total?: number
+}
+
+type UserRecentFlagSchemaType = {
+  name: string
+  type: string
+  description: string | null
+  dependencyType: 'parent' | 'child' | null
+  project: string
+  stale: boolean
+  favorite: boolean
+  impressionData: boolean
+  createdAt: string | null
+  archivedAt: string | null
+  environments: z.infer<typeof FeatureSearchEnvironmentSchemaSchema>[]
+  segments: string[]
+  tags?: z.infer<typeof TagSchemaSchema>[] | null
+  lifecycle?: {
+    stage: 'initial' | 'pre-live' | 'live' | 'completed' | 'archived'
+    status?: string | null
+    enteredStageAt: string
+  }
+  createdBy: { id: number; name: string; imageUrl: string }
+  userLastUpdatedAt: string
+}
+
+const UserRecentFlagSchemaSchema: z.ZodType<UserRecentFlagSchemaType> = z
+  .strictObject({
+    name: z.string().openapi({ example: 'disable-comments', description: 'Unique feature name' }),
+    type: z
+      .string()
+      .openapi({
+        example: 'kill-switch',
+        description:
+          'Type of the flag e.g. experiment, kill-switch, release, operational, permission',
+      }),
+    description: z
+      .string()
+      .nullable()
+      .openapi({
+        example: 'Controls disabling of the comments section in case of an incident',
+        description: 'Detailed description of the feature',
+      }),
+    dependencyType: z
+      .union([z.literal('parent'), z.literal('child'), z.literal(null)])
+      .nullable()
+      .openapi({
+        example: 'parent',
+        description:
+          "The type of dependency. 'parent' means that the feature is a parent feature, 'child' means that the feature is a child feature.",
+      }),
+    project: z
+      .string()
+      .openapi({ example: 'dx-squad', description: 'Name of the project the feature belongs to' }),
+    stale: z
+      .boolean()
+      .openapi({
+        example: false,
+        description:
+          '`true` if the feature is stale based on the age and feature type, otherwise `false`.',
+      }),
+    favorite: z
+      .boolean()
+      .openapi({
+        example: true,
+        description: '`true` if the feature was favorited, otherwise `false`.',
+      }),
+    impressionData: z
+      .boolean()
+      .openapi({
+        example: false,
+        description:
+          '`true` if the impression data collection is enabled for the feature, otherwise `false`.',
+      }),
+    createdAt: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .openapi({
+        example: '2023-01-28T15:21:39.975Z',
+        description: 'The date the feature was created',
+      }),
+    archivedAt: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .openapi({
+        example: '2023-01-29T15:21:39.975Z',
+        description: 'The date the feature was archived',
+      }),
+    environments: z
+      .array(FeatureSearchEnvironmentSchemaSchema)
+      .openapi({ description: 'The list of environments where the feature can be used' }),
+    segments: z
+      .array(z.string())
+      .openapi({
+        description: 'The list of segments the feature is enabled for.',
+        example: ['pro-users', 'main-segment'],
+      }),
+    tags: z
+      .array(TagSchemaSchema)
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The list of feature tags' }),
+    lifecycle: z
+      .strictObject({
+        stage: z
+          .enum(['initial', 'pre-live', 'live', 'completed', 'archived'])
+          .openapi({ description: 'The name of the current lifecycle stage', example: 'initial' }),
+        status: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            example: 'kept',
+            description:
+              'The name of the detailed status of a given stage. E.g. completed stage can be kept or discarded.',
+          }),
+        enteredStageAt: z.iso
+          .datetime({ offset: true })
+          .openapi({
+            description: 'When the feature entered this stage',
+            example: '2023-01-28T15:21:39.975Z',
+          }),
+      })
+      .exactOptional()
+      .openapi({
+        description: 'Current lifecycle stage of the feature',
+        required: ['stage', 'enteredStageAt'],
+      }),
+    createdBy: z
+      .strictObject({
+        id: z.int().openapi({ description: 'The user id', example: 123 }),
+        name: z.string().openapi({ description: 'Name of the user', example: 'User' }),
+        imageUrl: z
+          .string()
+          .openapi({
+            description: 'URL used for the user profile image',
+            example: 'https://example.com/242x200.png',
+          }),
+      })
+      .openapi({
+        description: 'User who created the feature flag',
+        required: ['id', 'name', 'imageUrl'],
+      }),
+    userLastUpdatedAt: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'When the current user created or last changed this flag.',
+        example: '2026-11-09T12:00:00.000Z',
+      }),
+  })
+  .openapi({
+    required: [
+      'name',
+      'description',
+      'dependencyType',
+      'type',
+      'project',
+      'stale',
+      'favorite',
+      'impressionData',
+      'createdAt',
+      'createdBy',
+      'environments',
+      'segments',
+      'archivedAt',
+      'userLastUpdatedAt',
+    ],
+    description: 'A flag the current user recently worked on.',
+  })
+  .openapi('UserRecentFlagSchema')
+
+type UserRecentFlagsSchemaType = {
+  flags: z.infer<typeof UserRecentFlagSchemaSchema>[]
+  limit: number
+  offset: number
 }
 
 const UpsertSegmentSchemaSchema = z
@@ -4384,7 +4558,7 @@ type ChangeRequestsSchemaType = (
 )[]
 
 const CreateReleasePlanMilestoneStrategySchemaSchema = z
-  .strictObject({
+  .looseObject({
     sortOrder: z
       .number()
       .openapi({ description: 'The order of the strategy in the list', example: 9999 }),
@@ -4444,7 +4618,7 @@ const CreateReleasePlanMilestoneStrategySchemaSchema = z
   .openapi('CreateReleasePlanMilestoneStrategySchema')
 
 const CreateReleasePlanMilestoneSchemaSchema = z
-  .strictObject({
+  .looseObject({
     name: z
       .string()
       .openapi({ description: 'The name of the milestone.', example: 'My milestone' }),
@@ -4521,7 +4695,6 @@ type CreateReleasePlanTemplateSchemaType = {
 }
 
 type UpdateReleasePlanTemplateSchemaType = {
-  id: string
   name: string
   description?: string | null
   milestones?: z.infer<typeof CreateReleasePlanMilestoneSchemaSchema>[] | null
@@ -5562,6 +5735,14 @@ const AdvancedPlaygroundResponseSchemaSchema: z.ZodType<AdvancedPlaygroundRespon
 
 const ApiTokenSchemaSchema = z
   .strictObject({
+    appName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The immutable appName of the explicitly associated Application, when configured.',
+        example: 'checkout-service',
+      }),
     secret: z
       .string()
       .nullable()
@@ -5652,6 +5833,34 @@ const ApiTokensSchemaSchema = z
     required: ['tokens'],
   })
   .openapi('ApiTokensSchema')
+
+const ApplicationCreatedSchemaSchema = z
+  .strictObject({
+    appName: z
+      .string()
+      .openapi({
+        description: 'The name SDKs report and tokens link to.',
+        example: 'checkout-service',
+      }),
+    description: z
+      .string()
+      .nullable()
+      .openapi({
+        description: 'What the application does.',
+        example: 'Payment and basket service',
+      }),
+    createdAt: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'When the application was created.',
+        example: '2026-11-20T09:12:00.000Z',
+      }),
+  })
+  .openapi({
+    description: 'An application that was created in Unleash.',
+    required: ['appName', 'description', 'createdAt'],
+  })
+  .openapi('ApplicationCreatedSchema')
 
 const ApplicationEnvironmentInstancesSchemaSchema = z
   .strictObject({
@@ -6722,6 +6931,7 @@ const CreateApiTokenSchemaSchema = z
         tokenName: z
           .string()
           .openapi({ description: 'The name of the token.', example: 'token-64522' }),
+        appName: z.string().min(1).exactOptional().openapi({ example: 'checkout-service' }),
       })
       .openapi({ required: ['type', 'tokenName'] }),
   ])
@@ -6730,6 +6940,32 @@ const CreateApiTokenSchemaSchema = z
       'The data required to create an [Unleash API token](https://docs.getunleash.io/concepts/api-tokens-and-client-keys).',
   })
   .openapi('CreateApiTokenSchema')
+
+const CreateApplicationRequestSchemaSchema = z
+  .object({
+    appName: z
+      .string()
+      .regex(/^[A-Za-z0-9][A-Za-z0-9._~-]*$/)
+      .max(255)
+      .openapi({
+        description:
+          'The name SDKs report and tokens link to. It can never change. Letters, digits, `.`, `_`, `~` and `-`, starting with a letter or digit.',
+        example: 'checkout-service',
+      }),
+    description: z
+      .string()
+      .max(255)
+      .exactOptional()
+      .openapi({
+        description: 'What the application does.',
+        example: 'Payment and basket service',
+      }),
+  })
+  .openapi({
+    description: 'An application to create before any SDK reports it.',
+    required: ['appName'],
+  })
+  .openapi('CreateApplicationRequestSchema')
 
 const CreateApplicationSchemaSchema = z
   .object({
@@ -7580,6 +7816,8 @@ const EventSchemaSchema = z
         'feature-link-added',
         'feature-link-removed',
         'feature-link-updated',
+        'feature-payload-schema-updated',
+        'feature-payload-schema-deleted',
         'strategy-order-changed',
         'feature-untagged',
         'feature-stale-on',
@@ -11990,17 +12228,17 @@ const SubmitSignupDataSchemaSchema = z
         description: 'Whether the user has consented to receive product update emails.',
         example: true,
       }),
+    hearAboutUs: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'How the user heard about Unleash.',
+        example: 'Search Engine (Google, Bing, etc.)',
+      }),
     password: z
       .string()
       .exactOptional()
       .openapi({ example: 'k!5As3HquUrQ', description: "The user's new password." }),
-    inviteEmails: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description: 'A list of email addresses to invite.',
-        example: ['marks@lumon.industries', 'hellyr@lumon.industries'],
-      }),
   })
   .openapi({
     description: 'An object describing the user and company signup data submission.',
@@ -12915,22 +13153,6 @@ const UpdateUserSchemaSchema = z
   .openapi({ description: 'All fields that can be directly changed for the user', required: [] })
   .openapi('UpdateUserSchema')
 
-const UpsertPayloadSchemaSchemaSchema = z
-  .object({
-    schema: z
-      .record(z.string(), z.any())
-      .openapi({
-        description:
-          'A JSON Schema document, draft 2020-12. It replaces the schema the flag already has, if any.',
-        example: { type: 'object', properties: { model: { type: 'string' } }, required: ['model'] },
-      }),
-  })
-  .openapi({
-    required: ['schema'],
-    description: 'The schema that the variant payloads of a feature flag have to match.',
-  })
-  .openapi('UpsertPayloadSchemaSchema')
-
 const UserAccessOverviewSchemaSchema = z
   .strictObject({
     overview: z
@@ -13126,6 +13348,26 @@ const UserAccessOverviewSchemaSchema = z
     description: 'Describes the access overview (list of permissions and metadata) for a user.',
   })
   .openapi('UserAccessOverviewSchema')
+
+const UserRecentFlagsSchemaSchema: z.ZodType<UserRecentFlagsSchemaType> = z
+  .strictObject({
+    flags: z
+      .array(UserRecentFlagSchemaSchema)
+      .openapi({ description: 'The page of flags the current user most recently worked on.' }),
+    limit: z
+      .int()
+      .min(1)
+      .openapi({ description: 'The maximum number of flags returned in this page.', example: 100 }),
+    offset: z
+      .int()
+      .min(0)
+      .openapi({ description: 'The number of flags skipped before this page.', example: 0 }),
+  })
+  .openapi({
+    required: ['flags', 'limit', 'offset'],
+    description: 'Flags the current user interacted with, most recent first.',
+  })
+  .openapi('UserRecentFlagsSchema')
 
 const UsersGroupsBaseSchemaSchema = z
   .strictObject({
@@ -19000,6 +19242,85 @@ const RemoteMcpSettingsSchemaSchema = z
   })
   .openapi('RemoteMcpSettingsSchema')
 
+const UpsertPayloadSchemaSchemaSchema = z
+  .object({
+    schema: z
+      .record(z.string(), z.any())
+      .openapi({
+        description: 'A JSON Schema document, draft 2020-12.',
+        example: { type: 'object', properties: { model: { type: 'string' } }, required: ['model'] },
+      }),
+  })
+  .openapi({
+    required: ['schema'],
+    description: 'The schema that the variant payloads of a feature flag have to match.',
+  })
+  .openapi('UpsertPayloadSchemaSchema')
+
+const PayloadSchemaValidationSchemaSchema = z
+  .strictObject({
+    nonMatchingPayloads: z
+      .array(
+        z
+          .strictObject({
+            source: z
+              .strictObject({
+                kind: z.enum(['strategy', 'changeRequest', 'releasePlan']),
+                id: z
+                  .string()
+                  .openapi({
+                    description:
+                      'The strategy id, the change request id, or the milestone strategy id, depending on the kind.',
+                    example: '01JYJ7V6A6WJ2XM3Z7Q5S1K9RT',
+                  }),
+              })
+              .openapi({
+                required: ['kind', 'id'],
+                description:
+                  'Where the payload is stored: a strategy of the flag, a pending change request, or a milestone strategy of a release plan on the flag.',
+              }),
+            variantName: z.string().openapi({ example: 'blue' }),
+            value: z
+              .string()
+              .openapi({ description: 'The stored json payload.', example: '{"color":1}' }),
+            error: z
+              .string()
+              .openapi({
+                description: 'Why the payload does not match the schema.',
+                example: 'data/color must be string',
+              }),
+          })
+          .openapi({ required: ['source', 'variantName', 'value', 'error'] }),
+      )
+      .openapi({
+        description:
+          'Every stored json variant payload that does not match the schema, with the reason and where the payload is stored. Empty when the schema can be saved.',
+      }),
+  })
+  .openapi({
+    required: ['nonMatchingPayloads'],
+    description:
+      'The result of checking a payload schema against the json variant payloads stored for a feature flag.',
+  })
+  .openapi('PayloadSchemaValidationSchema')
+
+const InferredPayloadSchemaSchemaSchema = z
+  .strictObject({
+    schema: z
+      .record(z.string(), z.any())
+      .openapi({
+        description:
+          'A JSON Schema document, draft 2020-12, that every stored json variant payload matches.',
+        example: { type: 'object', properties: { model: { type: 'string' } }, required: ['model'] },
+      }),
+  })
+  .openapi({
+    required: ['schema'],
+    description:
+      'A payload schema inferred from the json variant payloads stored for a feature flag.',
+  })
+  .openapi('InferredPayloadSchemaSchema')
+
 const ScimTokenSchemaSchema = z
   .strictObject({
     token: z
@@ -19325,7 +19646,7 @@ const SignalQueryResponseSchemaSchema = z
   .openapi('SignalQueryResponseSchema')
 
 const CreateReleasePlanTemplateSchemaSchema: z.ZodType<CreateReleasePlanTemplateSchemaType> = z
-  .strictObject({
+  .looseObject({
     name: z
       .string()
       .openapi({ description: 'The name of the release template.', example: 'My release plan' }),
@@ -19349,13 +19670,7 @@ const CreateReleasePlanTemplateSchemaSchema: z.ZodType<CreateReleasePlanTemplate
   .openapi('CreateReleasePlanTemplateSchema')
 
 const UpdateReleasePlanTemplateSchemaSchema: z.ZodType<UpdateReleasePlanTemplateSchemaType> = z
-  .strictObject({
-    id: z
-      .string()
-      .openapi({
-        description: "The release plan/template's ID. Release template IDs are ulids.",
-        example: '01JB9GGTGQYEQ9D40R17T3YVW2',
-      }),
+  .looseObject({
     name: z
       .string()
       .openapi({ description: 'The name of the release template.', example: 'My release plan' }),
@@ -19375,12 +19690,100 @@ const UpdateReleasePlanTemplateSchemaSchema: z.ZodType<UpdateReleasePlanTemplate
   })
   .openapi({
     description: 'Schema representing the update of a release template.',
-    required: ['id', 'name'],
+    required: ['name'],
   })
   .openapi('UpdateReleasePlanTemplateSchema')
 
+const ReplaceReleasePlanMilestoneStrategySchemaSchema = z
+  .looseObject({
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the strategy type', example: 'flexibleRollout' }),
+    title: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'A descriptive title for the strategy',
+        example: 'Gradual Rollout 25-Prod',
+      }),
+    sortOrder: z
+      .number()
+      .openapi({ description: 'The order of the strategy in the list', example: 9999 }),
+    constraints: z
+      .array(ConstraintSchemaSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'A list of the constraints attached to the strategy. See https://docs.getunleash.io/concepts/activation-strategies#constraints',
+        example: [
+          {
+            values: ['1', '2'],
+            inverted: false,
+            operator: 'IN',
+            contextName: 'appName',
+            caseInsensitive: false,
+          },
+        ],
+      }),
+    variants: z
+      .array(CreateStrategyVariantSchemaSchema)
+      .exactOptional()
+      .openapi({ description: 'Strategy level variants' }),
+    parameters: ParametersSchemaSchema.exactOptional().openapi({
+      description: 'An object containing the parameters for the strategy',
+      example: { groupId: 'some_new', rollout: '25', stickiness: 'sessionId' },
+    }),
+    segments: z
+      .array(z.number())
+      .exactOptional()
+      .openapi({ description: 'Ids of segments to use for this strategy', example: [1, 2] }),
+    strategyName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The name of the strategy type',
+        example: 'flexibleRollout',
+        deprecated: true,
+      }),
+  })
+  .openapi({
+    description:
+      'A replacement strategy supplied when updating a milestone. The parent milestone supplies the milestoneId.',
+    required: ['sortOrder'],
+  })
+  .openapi('ReplaceReleasePlanMilestoneStrategySchema')
+
+const UpdateReleasePlanMilestoneSchemaSchema = z
+  .looseObject({
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the milestone.', example: 'My milestone' }),
+    sortOrder: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'The order of the milestone in the release plan.', example: 1 }),
+    releasePlanDefinitionId: z
+      .string()
+      .openapi({
+        description: 'The ID of the release plan/template that this milestone belongs to.',
+        example: '01JB9GGTGQYEQ9D40R17T3YVW2',
+      }),
+    strategies: z
+      .array(ReplaceReleasePlanMilestoneStrategySchemaSchema)
+      .exactOptional()
+      .openapi({ description: 'A list of strategies that are attached to this milestone.' }),
+  })
+  .openapi({
+    description: 'Schema representing the update of a release plan milestone.',
+    required: ['releasePlanDefinitionId'],
+  })
+  .openapi('UpdateReleasePlanMilestoneSchema')
+
 const UpdateReleasePlanMilestoneStrategySchemaSchema = z
-  .strictObject({
+  .looseObject({
     id: z
       .string()
       .exactOptional()
@@ -19405,9 +19808,18 @@ const UpdateReleasePlanMilestoneStrategySchemaSchema = z
         description: 'A descriptive title for the strategy',
         example: 'Gradual Rollout 25-Prod',
       }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the strategy type', example: 'flexibleRollout' }),
     strategyName: z
       .string()
-      .openapi({ description: 'The name of the strategy type', example: 'flexibleRollout' }),
+      .exactOptional()
+      .openapi({
+        description: 'Deprecated alias for name. Use name instead.',
+        example: 'flexibleRollout',
+        deprecated: true,
+      }),
     parameters: ParametersSchemaSchema.exactOptional().openapi({
       description: 'An object containing the parameters for the strategy',
       example: { groupId: 'some_new', rollout: '25', stickiness: 'sessionId' },
@@ -19439,34 +19851,9 @@ const UpdateReleasePlanMilestoneStrategySchemaSchema = z
   })
   .openapi({
     description: 'Schema representing the update of a release plan milestone.',
-    required: ['milestoneId', 'sortOrder', 'strategyName'],
+    required: ['milestoneId', 'sortOrder'],
   })
   .openapi('UpdateReleasePlanMilestoneStrategySchema')
-
-const UpdateReleasePlanMilestoneSchemaSchema = z
-  .strictObject({
-    name: z
-      .string()
-      .openapi({ description: 'The name of the milestone.', example: 'My milestone' }),
-    sortOrder: z
-      .int()
-      .openapi({ description: 'The order of the milestone in the release plan.', example: 1 }),
-    releasePlanDefinitionId: z
-      .string()
-      .openapi({
-        description: 'The ID of the release plan/template that this milestone belongs to.',
-        example: '01JB9GGTGQYEQ9D40R17T3YVW2',
-      }),
-    strategies: z
-      .array(UpdateReleasePlanMilestoneStrategySchemaSchema)
-      .exactOptional()
-      .openapi({ description: 'A list of strategies that are attached to this milestone.' }),
-  })
-  .openapi({
-    description: 'Schema representing the update of a release plan milestone.',
-    required: ['name', 'sortOrder', 'releasePlanDefinitionId'],
-  })
-  .openapi('UpdateReleasePlanMilestoneSchema')
 
 const EdgeInstanceDataSchemaSchema: z.ZodType<EdgeInstanceDataSchemaType> = z
   .lazy(() =>
@@ -19934,6 +20321,7 @@ const RegisterImpactMetricSchemaSchema = z
     name: z
       .string()
       .regex(/^[a-zA-Z_:][a-zA-Z0-9_:]*$/)
+      .max(200)
       .openapi({
         description:
           'The metric name. Must start with a letter or underscore and contain only alphanumerics, underscores or colons.',
@@ -26851,7 +27239,7 @@ export const deleteApiAdminMetricsApplicationsAppNameRoute = createRoute({
   tags: ['Metrics'],
   summary: 'Delete an application',
   description:
-    "Delete the application specified in the request URL. Returns 200 OK if the application was successfully deleted or if it didn't exist",
+    "Delete the application specified in the request URL. Returns 200 OK if the application was successfully deleted or if it didn't exist. Returns 400 Bad Request if an API token is linked to the application.",
   operationId: 'deleteApplication',
   request: {
     params: z.object({
@@ -26864,6 +27252,36 @@ export const deleteApiAdminMetricsApplicationsAppNameRoute = createRoute({
   },
   responses: {
     200: { description: 'This response has no body.' },
+    400: {
+      description: 'The request data does not match what we expect.',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              id: z
+                .string()
+                .exactOptional()
+                .openapi({
+                  example: '9c40958a-daac-400e-98fb-3bb438567008',
+                  description: 'The ID of the error instance',
+                }),
+              name: z
+                .string()
+                .exactOptional()
+                .openapi({ example: 'ValidationError', description: 'The name of the error kind' }),
+              message: z
+                .string()
+                .exactOptional()
+                .openapi({
+                  example:
+                    "The request payload you provided doesn't conform to the schema. The .parameters property should be object. You sent [].",
+                  description: 'A description of what went wrong.',
+                }),
+            })
+            .openapi({ required: [] }),
+        },
+      },
+    },
     401: {
       description:
         'Authorization information is missing or invalid. Provide a valid API token as the `authorization` header, e.g. `authorization:*.*.my-admin-token`.',
@@ -29831,6 +30249,35 @@ export const putApiAdminTagTypesNameRoute = createRoute({
         },
       },
     },
+    404: {
+      description: 'The requested resource was not found.',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              id: z
+                .string()
+                .exactOptional()
+                .openapi({
+                  example: '9c40958a-daac-400e-98fb-3bb438567008',
+                  description: 'The ID of the error instance',
+                }),
+              name: z
+                .string()
+                .exactOptional()
+                .openapi({ example: 'NotFoundError', description: 'The name of the error kind' }),
+              message: z
+                .string()
+                .exactOptional()
+                .openapi({
+                  example: 'Could not find the addon with ID "12345".',
+                  description: 'A description of what went wrong.',
+                }),
+            })
+            .openapi({ required: [] }),
+        },
+      },
+    },
     415: {
       description:
         'The operation does not support request payloads of the provided type. Please ensure that you\'re using one of the listed payload types and that you have specified the right content type in the "content-type" header.',
@@ -30888,12 +31335,62 @@ export const getApiAdminApiTokensRoute = createRoute({
   path: '/api/admin/api-tokens',
   tags: ['API tokens'],
   summary: 'Get API tokens',
-  description: 'Retrieves all API tokens that exist in the Unleash instance.',
+  description:
+    'Retrieves all API tokens that exist in the Unleash instance. Use `appName` to get only the tokens linked to an application.',
   operationId: 'getAllApiTokens',
+  request: {
+    query: z.object({
+      appName: z
+        .string()
+        .regex(/^IS:.+$/)
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'appName',
+            schema: { type: 'string', example: 'IS:my-application-name', pattern: '^IS:.+$' },
+            description:
+              'Filter by the name of the application the tokens are linked to, using supported operators: IS. Everything after `IS:` is one exact, case-sensitive application name, including any commas or spaces. Percent-encode the value (for example with `encodeURIComponent`), since a `+` is read as a space. Only user-created tokens linked to that application are returned, so legacy (v1) and unlinked tokens never match. An unknown application returns an empty list.',
+            in: 'query',
+            required: false,
+          },
+          example: 'IS:my-application-name',
+        }),
+    }),
+  },
   responses: {
     200: {
       description: 'apiTokensSchema',
       content: { 'application/json': { schema: ApiTokensSchemaSchema } },
+    },
+    400: {
+      description: 'The request data does not match what we expect.',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              id: z
+                .string()
+                .exactOptional()
+                .openapi({
+                  example: '9c40958a-daac-400e-98fb-3bb438567008',
+                  description: 'The ID of the error instance',
+                }),
+              name: z
+                .string()
+                .exactOptional()
+                .openapi({ example: 'ValidationError', description: 'The name of the error kind' }),
+              message: z
+                .string()
+                .exactOptional()
+                .openapi({
+                  example:
+                    "The request payload you provided doesn't conform to the schema. The .parameters property should be object. You sent [].",
+                  description: 'A description of what went wrong.',
+                }),
+            })
+            .openapi({ required: [] }),
+        },
+      },
     },
     401: {
       description:

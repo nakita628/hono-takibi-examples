@@ -175,6 +175,8 @@ curl https://api.intercom.io/admins/0/away \
 
 You can set an Admin as away for the Inbox.
 
+When `away_mode_reassign` is `true`, the request can return a `403` if the teammate does not have Inbox access.
+
 Requires the `update_admins` OAuth scope.
 
 
@@ -278,6 +280,21 @@ Requires the `update_admins` OAuth scope.
 }
 ```
 
+> 403 Response
+
+```json
+{
+  "type": "error.list",
+  "request_id": "f62b30e2-5b2e-561d-b1e8-01a84a380ee2",
+  "errors": [
+    {
+      "code": "action_forbidden",
+      "message": "This admin does not have Inbox access permissions"
+    }
+  ]
+}
+```
+
 > 404 Response
 
 ```json
@@ -315,6 +332,7 @@ Requires the `update_admins` OAuth scope.
 |200|OK|Successful response|[admin](#schemaadmin)|
 |400|Bad Request|Bad Request|[error](#schemaerror)|
 |401|Unauthorized|Unauthorized|[error](#schemaerror)|
+|403|Forbidden|Forbidden. Can be returned when `away_mode_reassign` is `true` and the admin does not have Inbox access for the workspace.|[error](#schemaerror)|
 |404|Not Found|Admin not found|[error](#schemaerror)|
 |405|Method Not Allowed|Method Not Allowed|[error](#schemaerror)|
 
@@ -600,6 +618,21 @@ Requires the `read_admins` OAuth scope.
 }
 ```
 
+> 400 Response
+
+```json
+{
+  "type": "error.list",
+  "request_id": "816186b3-3187-4b47-adf8-e201bea32208",
+  "errors": [
+    {
+      "code": "parameter_not_found",
+      "message": "Please provide the following parameters: max_per_page"
+    }
+  ]
+}
+```
+
 > 401 Response
 
 ```json
@@ -620,6 +653,7 @@ Requires the `read_admins` OAuth scope.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Successful response|[activity_log_list](#schemaactivity_log_list)|
+|400|Bad Request|Bad Request|[error](#schemaerror)|
 |401|Unauthorized|Unauthorized|[error](#schemaerror)|
 
 <aside class="warning">
@@ -1326,6 +1360,171 @@ Requires the `read_single_admin` or `read_admins` OAuth scope.
 |200|OK|Admin found|[admin](#schemaadmin)|
 |401|Unauthorized|Unauthorized|[error](#schemaerror)|
 |404|Not Found|Admin not found|[error](#schemaerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth
+</aside>
+
+## Remove an admin
+
+<a id="opIdremoveAdmin"></a>
+
+> Code samples
+
+```bash
+curl 'https://api.intercom.io/admins/remove?admin_id=123&reassign_messages_admin_id=456&reassign_owner_admin_id=456&reassign_articles_author_id=456&reassign_conversations_admin_id=456' \
+  -X DELETE \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`DELETE /admins/remove`
+
+You can remove a single admin (teammate) from your workspace.
+Requires the `remove_admins` OAuth scope.
+
+This removes the admin's access to the workspace. In most cases their
+work is reassigned to the IDs given in the `reassign_*` parameters. In
+workspaces with more than one seat type, no reassignment happens if the
+admin has no seat, a Collaborator seat or a Lite seat.
+
+<h3 id="remove-an-admin-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|Intercom-Version|header|[intercom_version](#schemaintercom_version)|false|none|
+|admin_id|query|integer|true|The unique identifier of the admin to remove.|
+|reassign_messages_admin_id|query|integer|true|The unique identifier of a human admin to reassign the removed admin's auto-message ownership to.|
+|reassign_owner_admin_id|query|integer|true|The unique identifier of a human admin to reassign the removed admin's ownership (of users and leads) to.|
+|reassign_articles_author_id|query|integer|true|The unique identifier of a human admin to reassign the removed admin's article authorship to.|
+|reassign_conversations_admin_id|query|integer|true|The ID of an admin with Inbox access, or a team, to reassign the removed admin's conversation replies to. Pass `0` to leave conversations unassigned.|
+|reassign_replies_teams|query|[object]|false|A list of teams and the admin each team's conversation replies should be reassigned to.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|Intercom-Version|1.0|
+|Intercom-Version|1.1|
+|Intercom-Version|1.2|
+|Intercom-Version|1.3|
+|Intercom-Version|1.4|
+|Intercom-Version|2.0|
+|Intercom-Version|2.1|
+|Intercom-Version|2.2|
+|Intercom-Version|2.3|
+|Intercom-Version|2.4|
+|Intercom-Version|2.5|
+|Intercom-Version|2.6|
+|Intercom-Version|2.7|
+|Intercom-Version|2.8|
+|Intercom-Version|2.9|
+|Intercom-Version|2.10|
+|Intercom-Version|2.11|
+|Intercom-Version|2.12|
+|Intercom-Version|2.13|
+|Intercom-Version|2.14|
+|Intercom-Version|2.15|
+|Intercom-Version|2.16|
+|Intercom-Version|2.17|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "id": "123",
+  "object": "admin",
+  "removed": "true"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "type": "error.list",
+  "request_id": "00000000-0000-4000-8000-000000000002",
+  "errors": [
+    {
+      "code": "unauthorized",
+      "message": "Access Token Invalid"
+    }
+  ]
+}
+```
+
+> 403 Response
+
+```json
+{
+  "type": "error.list",
+  "errors": [
+    {
+      "code": "action_forbidden",
+      "message": "The admin for reassign_conversations_admin_id does not have Inbox access permissions"
+    }
+  ]
+}
+```
+
+> 404 Response
+
+```json
+{
+  "type": "error.list",
+  "request_id": "00000000-0000-4000-8000-000000000001",
+  "errors": [
+    {
+      "code": "admin_not_found",
+      "message": "Admin for admin_id not found"
+    }
+  ]
+}
+```
+
+> 405 Response
+
+```json
+{
+  "type": "error.list",
+  "errors": [
+    {
+      "code": "action_forbidden",
+      "message": "This method is not allowed for this type of Admin for admin_id"
+    }
+  ]
+}
+```
+
+<h3 id="remove-an-admin-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Successful response|Inline|
+|401|Unauthorized|Unauthorized|[error](#schemaerror)|
+|403|Forbidden|Forbidden. Returned when `reassign_conversations_admin_id` refers to an admin without Inbox access for the workspace. This includes teammates with a Lite seat.|[error](#schemaerror)|
+|404|Not Found|Admin not found. A `reassign_conversations_admin_id` that is missing, or doesn't match an admin or team, returns `404` with the code `not_found` and the message "Resource Not Found".|[error](#schemaerror)|
+|405|Method Not Allowed|Method Not Allowed. Returned when `admin_id`, `reassign_messages_admin_id`, `reassign_owner_admin_id` or `reassign_articles_author_id` refers to a bot. A team ID in any of these four parameters returns `404`.|[error](#schemaerror)|
+
+<h3 id="remove-an-admin-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|false|none|The unique identifier of the removed admin.|
+|object|string|false|none|none|
+|removed|string|false|none|Whether the admin was removed. Returned as the string `"true"`.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|object|admin|
+|removed|true|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -2823,6 +3022,289 @@ To perform this operation, you must be authenticated by means of one of the foll
 bearerAuth
 </aside>
 
+## Add a tag to an external page
+
+<a id="opIdattachTagToExternalPage"></a>
+
+> Code samples
+
+```bash
+curl https://api.intercom.io/ai/external_pages/1234/tags \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "id": "7522907"
+  }'
+```
+
+`POST /ai/external_pages/{external_page_id}/tags`
+
+Apply an existing tag to an external page. Returns the tag that was applied.
+
+The tag must already exist in the workspace (create tags with the Tags API),
+and the authenticating teammate must have the `manage_knowledge_base_content`
+permission. Pages uploaded as files can't be tagged and return a 404.
+
+OAuth tokens must have the `read_write_ai_content` scope.
+
+
+> Body parameter
+
+```json
+{
+  "id": "7522907"
+}
+```
+
+<h3 id="add-a-tag-to-an-external-page-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|Intercom-Version|header|[intercom_version](#schemaintercom_version)|false|none|
+|external_page_id|path|string|true|The unique identifier for the external page which is given by Intercom.|
+|body|body|object|false|none|
+|» id|body|string|true|The unique identifier of the tag to apply, as given by Intercom.|
+|» admin_id|body|string \| null|false|Optional id of the teammate to attribute the tagging to. Defaults to the authenticating teammate.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|Intercom-Version|1.0|
+|Intercom-Version|1.1|
+|Intercom-Version|1.2|
+|Intercom-Version|1.3|
+|Intercom-Version|1.4|
+|Intercom-Version|2.0|
+|Intercom-Version|2.1|
+|Intercom-Version|2.2|
+|Intercom-Version|2.3|
+|Intercom-Version|2.4|
+|Intercom-Version|2.5|
+|Intercom-Version|2.6|
+|Intercom-Version|2.7|
+|Intercom-Version|2.8|
+|Intercom-Version|2.9|
+|Intercom-Version|2.10|
+|Intercom-Version|2.11|
+|Intercom-Version|2.12|
+|Intercom-Version|2.13|
+|Intercom-Version|2.14|
+|Intercom-Version|2.15|
+|Intercom-Version|2.16|
+|Intercom-Version|2.17|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "type": "tag",
+  "id": "7522907",
+  "name": "Independent",
+  "applied_at": 1663597223,
+  "applied_by": {
+    "type": "admin",
+    "id": "1234"
+  }
+}
+```
+
+> 401 Response
+
+```json
+{
+  "type": "error.list",
+  "request_id": "12a938a3-314e-4939-b773-5cd45738bd21",
+  "errors": [
+    {
+      "code": "unauthorized",
+      "message": "Access Token Invalid"
+    }
+  ]
+}
+```
+
+> 403 Response
+
+```json
+{
+  "type": "error.list",
+  "request_id": "6f3c2b1a-2d4e-4f6a-9b8c-1a2b3c4d5e6f",
+  "errors": [
+    {
+      "code": "forbidden",
+      "message": "Not authorized to manage knowledge base content"
+    }
+  ]
+}
+```
+
+> 404 Response
+
+```json
+{
+  "type": "error.list",
+  "request_id": "302049fb-b8c1-4dc8-a327-a8f6e1923484",
+  "errors": [
+    {
+      "code": "not_found",
+      "message": "Resource Not Found"
+    }
+  ]
+}
+```
+
+<h3 id="add-a-tag-to-an-external-page-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Tag applied|[tag](#schematag)|
+|401|Unauthorized|Unauthorized|[error](#schemaerror)|
+|403|Forbidden|Forbidden|[error](#schemaerror)|
+|404|Not Found|External page, tag or teammate not found|[error](#schemaerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth
+</aside>
+
+## Remove a tag from an external page
+
+<a id="opIddetachTagFromExternalPage"></a>
+
+> Code samples
+
+```bash
+curl https://api.intercom.io/ai/external_pages/1234/tags/7522907 \
+  -X DELETE \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`DELETE /ai/external_pages/{external_page_id}/tags/{id}`
+
+Remove a tag from an external page. Returns the tag that was removed, with
+null `applied_at` and `applied_by`.
+
+The authenticating teammate must have the `manage_knowledge_base_content`
+permission. Pages uploaded as files can't be tagged and return a 404.
+
+OAuth tokens must have the `read_write_ai_content` scope.
+
+
+<h3 id="remove-a-tag-from-an-external-page-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|Intercom-Version|header|[intercom_version](#schemaintercom_version)|false|none|
+|external_page_id|path|string|true|The unique identifier for the external page which is given by Intercom.|
+|id|path|string|true|The unique identifier of the tag to remove, as given by Intercom.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|Intercom-Version|1.0|
+|Intercom-Version|1.1|
+|Intercom-Version|1.2|
+|Intercom-Version|1.3|
+|Intercom-Version|1.4|
+|Intercom-Version|2.0|
+|Intercom-Version|2.1|
+|Intercom-Version|2.2|
+|Intercom-Version|2.3|
+|Intercom-Version|2.4|
+|Intercom-Version|2.5|
+|Intercom-Version|2.6|
+|Intercom-Version|2.7|
+|Intercom-Version|2.8|
+|Intercom-Version|2.9|
+|Intercom-Version|2.10|
+|Intercom-Version|2.11|
+|Intercom-Version|2.12|
+|Intercom-Version|2.13|
+|Intercom-Version|2.14|
+|Intercom-Version|2.15|
+|Intercom-Version|2.16|
+|Intercom-Version|2.17|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "type": "tag",
+  "id": "7522907",
+  "name": "Independent",
+  "applied_at": null,
+  "applied_by": null
+}
+```
+
+> 401 Response
+
+```json
+{
+  "type": "error.list",
+  "request_id": "12a938a3-314e-4939-b773-5cd45738bd21",
+  "errors": [
+    {
+      "code": "unauthorized",
+      "message": "Access Token Invalid"
+    }
+  ]
+}
+```
+
+> 403 Response
+
+```json
+{
+  "type": "error.list",
+  "request_id": "6f3c2b1a-2d4e-4f6a-9b8c-1a2b3c4d5e6f",
+  "errors": [
+    {
+      "code": "forbidden",
+      "message": "Not authorized to manage knowledge base content"
+    }
+  ]
+}
+```
+
+> 404 Response
+
+```json
+{
+  "type": "error.list",
+  "request_id": "302049fb-b8c1-4dc8-a327-a8f6e1923484",
+  "errors": [
+    {
+      "code": "not_found",
+      "message": "Resource Not Found"
+    }
+  ]
+}
+```
+
+<h3 id="remove-a-tag-from-an-external-page-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Tag removed|[tag](#schematag)|
+|401|Unauthorized|Unauthorized|[error](#schemaerror)|
+|403|Forbidden|Forbidden|[error](#schemaerror)|
+|404|Not Found|External page or tag not found|[error](#schemaerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth
+</aside>
+
 <h1 id="intercom-api-articles">Articles</h1>
 
 Everything about your Articles
@@ -2847,7 +3329,7 @@ You can fetch a list of all articles by making a GET request to `https://api.int
 >
 > Articles will be returned in descending order on the `updated_at` attribute. This means if you need to iterate through results then we'll show the most recently updated articles first.
 
-Requires the `read_articles_scope` OAuth scope.
+Requires the `read_articles_scope` or `create_update_articles` OAuth scope.
 
 
 <h3 id="list-all-articles-parameters">Parameters</h3>
@@ -3020,7 +3502,7 @@ You can create a new article by making a POST request to `https://api.intercom.i
 >
 > Tags are returned in article responses but cannot be set in the request body. To add or remove an article's tags, use the `POST /articles/{article_id}/tags` and `DELETE /articles/{article_id}/tags/{id}` endpoints.
 
-Requires the `read_write_articles_scope` OAuth scope.
+Requires the `read_write_articles_scope` or `create_update_articles` OAuth scope.
 
 
 > Body parameter
@@ -3244,7 +3726,7 @@ curl https://api.intercom.io/articles/123 \
 
 You can fetch the details of a single article by making a GET request to `https://api.intercom.io/articles/<id>`.
 
-Requires the `read_articles_scope` OAuth scope.
+Requires the `read_articles_scope` or `create_update_articles` OAuth scope.
 
 
 <h3 id="retrieve-an-article-parameters">Parameters</h3>
@@ -3403,7 +3885,7 @@ You can update the details of a single article by making a PUT request to `https
 >
 > Tags are returned in article responses but cannot be set in the request body. To add or remove an article's tags, use the `POST /articles/{article_id}/tags` and `DELETE /articles/{article_id}/tags/{id}` endpoints.
 
-Requires the `read_write_articles_scope` OAuth scope.
+Requires the `read_write_articles_scope` or `create_update_articles` OAuth scope.
 
 
 > Body parameter
@@ -3745,7 +4227,7 @@ on top of it. Returns `404` with an empty response body when the article
 has no staged draft. An article ID that doesn't exist returns a `404` with
 the standard error body.
 
-Requires the `read_articles_scope` OAuth scope.
+Requires the `read_articles_scope` or `create_update_articles` OAuth scope.
 
 
 <h3 id="retrieve-an-article-draft-parameters">Parameters</h3>
@@ -3915,7 +4397,7 @@ scheduling fields, is still validated but not applied, so the live article is le
 scheduling, state and placement notes on the request schema's other fields
 do not apply to this endpoint, because those fields are not applied.
 
-Requires the `read_write_articles_scope` OAuth scope.
+Requires the `read_write_articles_scope` or `create_update_articles` OAuth scope.
 
 
 > Body parameter
@@ -4125,7 +4607,7 @@ The `422` for no staged draft has the short body
 `{ "errors": [{ "message": "...", "status": 422 }] }`, with no `type`,
 `request_id` or `code`. The other `422` errors use the standard error format.
 
-Requires the `read_write_articles_scope` OAuth scope.
+Requires the `read_write_articles_scope` or `create_update_articles` OAuth scope.
 
 
 > Body parameter
@@ -4311,7 +4793,7 @@ The tag must already exist in the workspace (create tags with the Tags API),
 and the authenticating teammate must have the `manage_knowledge_base_content`
 permission.
 
-Requires the `read_write_articles_scope` OAuth scope.
+Requires the `read_write_articles_scope` or `create_update_articles` OAuth scope.
 
 
 > Body parameter
@@ -4457,7 +4939,7 @@ Remove a tag from an article. Returns the tag that was removed, with null
 The authenticating teammate must have the `manage_knowledge_base_content`
 permission.
 
-Requires the `read_write_articles_scope` OAuth scope.
+Requires the `read_write_articles_scope` or `create_update_articles` OAuth scope.
 
 
 <h3 id="remove-a-tag-from-an-article-parameters">Parameters</h3>
@@ -4592,7 +5074,7 @@ with its full content.
 A `404` has an empty response body, whether the article or its content
 isn't found.
 
-Requires the `read_articles_scope` OAuth scope.
+Requires the `read_articles_scope` or `create_update_articles` OAuth scope.
 
 
 <h3 id="list-article-versions-parameters">Parameters</h3>
@@ -4759,7 +5241,7 @@ the version's full content; the live article remains untouched.
 A `404` has an empty response body, whether the article, its content or
 the version isn't found.
 
-Requires the `read_articles_scope` OAuth scope.
+Requires the `read_articles_scope` or `create_update_articles` OAuth scope.
 
 
 <h3 id="retrieve-an-article-version-parameters">Parameters</h3>
@@ -4899,7 +5381,7 @@ You can search for articles by making a GET request to `https://api.intercom.io/
 
 If no articles match the search, `data` is an empty array rather than an object.
 
-Requires the `read_articles_scope` OAuth scope.
+Requires the `read_articles_scope` or `create_update_articles` OAuth scope.
 
 
 <h3 id="search-for-articles-parameters">Parameters</h3>
@@ -7133,7 +7615,7 @@ Requires the `read_conversations` OAuth scope.
 |» phone_number|body|string|true|Phone number in E.164 format for the call|
 |» call_id|body|string|true|External call identifier from the call provider|
 |» source|body|string|false|Source of the call. Can be "five9", "zoom_phone", "nice_cxone", "dialpad", "generic", or "aws_connect". Defaults to "aws_connect", and any other value is treated as "aws_connect".|
-|» vendor_internal_id|body|string \| null|false|Optional vendor-supplied identifier for linking the Fin Voice session to records in the vendor's own systems. Stored as-is and returned on every lookup.|
+|» vendor_internal_id|body|string \| null|false|Optional vendor-supplied identifier for linking the Fin Voice session to records in the vendor's own systems. Stored as-is and returned on every lookup. Cannot exceed 191 characters.|
 |» data|body|object \| null|false|Additional metadata about the call|
 
 #### Enumerated Values
@@ -9242,7 +9724,7 @@ When using the Companies endpoint and the pages object to iterate through the re
   See the [pagination section](https://developers.intercom.com/docs/build-an-integration/learn-more/rest-apis/pagination/#pagination-for-list-apis) for more details.
 {% /admonition %}
 
-Requires the `write_users_companies` OAuth scope. A token with only read scopes cannot call this endpoint.
+Requires the `read_users_companies` or `write_users_companies` OAuth scope.
 
 
 <h3 id="list-all-companies-parameters">Parameters</h3>
@@ -12503,7 +12985,24 @@ Requires the `read_write_users` or `write_users_companies` OAuth scope.
 |---|---|---|---|---|
 |Intercom-Version|header|[intercom_version](#schemaintercom_version)|false|none|
 |body|body|[create_contact_request](#schemacreate_contact_request)|false|none|
-|» *oneOf*|body|[create_contact_request](#schemacreate_contact_request)|false|Payload to create a contact|
+|» role|body|string|false|The role of the contact. `lead` creates a lead; any other value creates a user.|
+|» external_id|body|string|false|A unique identifier for the contact which is given to Intercom|
+|» email_verified|body|boolean \| null|false|Whether the contact has proved they own this email address, for example through a confirmation link or one-time code you sent. Send it together with `email`. `email_verified` without `email` is rejected.<br><br>Changing a contact's email resets it to not verified. Intercom reuses leads with a verified email when an inbound email, conversation or ticket matches the address.|
+|» email|body|string|false|The contacts email|
+|» phone|body|string \| null|false|The contacts phone|
+|» name|body|string \| null|false|The contacts name|
+|» avatar|body|string \| null|false|An image URL containing the avatar of a contact|
+|» signed_up_at|body|integer(date-time) \| null|false|(Unix timestamp in seconds) The time specified for when a contact signed up.|
+|» last_seen_at|body|integer(date-time) \| null|false|(Unix timestamp in seconds) The time when the contact was last seen (either where the Intercom Messenger was installed or when specified manually).|
+|» owner_id|body|string \| null|false|The id of an admin that has been assigned account ownership of the contact|
+|» unsubscribed_from_emails|body|boolean \| null|false|Whether the contact is unsubscribed from emails|
+|» sms_consent|body|boolean|false|Whether the contact has consented to receive SMS messages.|
+|» unsubscribed_from_sms|body|boolean|false|Whether the contact is unsubscribed from SMS messages.|
+|» language_override|body|string \| null|false|A preferred language setting for the contact, used by the Intercom Messenger even if their browser settings change.|
+|» custom_attributes|body|object \| null|false|The custom attributes which are set for the contact|
+|» *anyOf*|body|object|false|none|
+|» *anyOf*|body|object|false|none|
+|» *anyOf*|body|object|false|none|
 
 #### Enumerated Values
 
@@ -15922,7 +16421,7 @@ You can optionally request the result page size and the cursor to start after to
 |Intercom-Version|header|[intercom_version](#schemaintercom_version)|false|none|
 |per_page|query|integer|false|How many results per page|
 |starting_after|query|string|false|String used to get the next page of conversations.|
-|include_monitors|query|boolean|false|If set to true, the response will include a `monitor_evaluations` array on each conversation with any QA monitor results that flagged it.|
+|include_monitors|query|boolean|false|If set to true, the response will include a `monitor_evaluations` array on each conversation with the latest QA monitor evaluation for each monitor that has evaluated it.|
 |include_scorecards|query|boolean|false|If set to true, the response will include a `scorecards` array on each conversation with any QA scorecard results.|
 
 #### Enumerated Values
@@ -16027,7 +16526,30 @@ You can optionally request the result page size and the cursor to start after to
         "has_more": false
       },
       "ai_agent": null,
-      "ai_agent_participated": false
+      "ai_agent_participated": false,
+      "sales_agent_participated": false,
+      "sales_agent": null,
+      "company": null,
+      "external_references": [],
+      "channel": {
+        "initial": "messenger",
+        "current": "messenger"
+      }
+    }
+  ]
+}
+```
+
+> 400 Response
+
+```json
+{
+  "type": "error.list",
+  "request_id": "3b6e9d52-7a04-4c81-b5f3-0d8a2e4c1f69",
+  "errors": [
+    {
+      "code": "invalid_per_page",
+      "message": "per_page must be an integer between 0 and 150"
     }
   ]
 }
@@ -16068,6 +16590,7 @@ You can optionally request the result page size and the cursor to start after to
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|successful|[conversation_list](#schemaconversation_list)|
+|400|Bad Request|Invalid request|[error](#schemaerror)|
 |401|Unauthorized|Unauthorized|[error](#schemaerror)|
 |403|Forbidden|API plan restricted|[error](#schemaerror)|
 
@@ -16185,6 +16708,21 @@ This will return the Message model that has been created.
 }
 ```
 
+> 400 Response
+
+```json
+{
+  "type": "error.list",
+  "request_id": "2a9c6e13-5d70-4b84-8f21-6c3e0a7d9b58",
+  "errors": [
+    {
+      "code": "data_invalid",
+      "message": "Field 'from' must be an object"
+    }
+  ]
+}
+```
+
 > 401 Response
 
 ```json
@@ -16230,14 +16768,31 @@ This will return the Message model that has been created.
 }
 ```
 
+> 422 Response
+
+```json
+{
+  "type": "error.list",
+  "request_id": "f0b4d728-1e63-4a95-b7c0-8d2a5e9c3f16",
+  "errors": [
+    {
+      "code": "parameter_invalid",
+      "message": "Message is too long. Maximum length is 300000"
+    }
+  ]
+}
+```
+
 <h3 id="creates-a-conversation-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|conversation created|Inline|
+|400|Bad Request|Invalid request|[error](#schemaerror)|
 |401|Unauthorized|Unauthorized|[error](#schemaerror)|
 |403|Forbidden|API plan restricted|[error](#schemaerror)|
 |404|Not Found|Contact Not Found|[error](#schemaerror)|
+|422|Unprocessable Entity|Unprocessable entity|[error](#schemaerror)|
 
 <h3 id="creates-a-conversation-responseschema">Response Schema</h3>
 
@@ -16250,8 +16805,12 @@ Status Code **200**
 |created_at|integer(date-time)|true|none|The time the conversation was created.|
 |subject|string|false|none|The subject of the message. Only present if message_type: email.|
 |body|string|true|none|The message body, which may contain HTML.|
-|message_type|string|true|none|The type of message that was sent. Can be email, inapp, facebook or twitter.|
+|message_type|string|true|none|The type of message that was sent. Can be email, inapp, facebook, twitter or whatsapp.|
 |conversation_id|string|true|none|The associated conversation_id|
+|owner|[admin](#schemaadmin)|false|none|The admin who sent the message. Only present when the message has an owner.|
+|template|string|false|none|The style of the email, such as `plain` or `personal`. Only present when `message_type` is `email`.|
+|external_id|string|false|none|The external identifier of the message, if one was set when the message was created. Only returned for messages started by a contact.|
+|whatsapp_message_id|string|false|none|The id WhatsApp gave the message. Only present for `whatsapp` messages that WhatsApp accepted.|
 
 #### Enumerated Values
 
@@ -16261,6 +16820,7 @@ Status Code **200**
 |message_type|inapp|
 |message_type|facebook|
 |message_type|twitter|
+|message_type|whatsapp|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -16301,7 +16861,10 @@ For AI agent conversation metadata, please note that you need to have the agent 
 |conversation_id|path|integer|true|The id of the conversation to target|
 |display_as|query|string|false|Set to plaintext to retrieve conversation messages in plain text. This affects both the body and subject fields. Inline links are rendered as `label (url)`, preserving the link URL alongside the visible text.|
 |include_translations|query|boolean|false|If set to true, conversation parts will be translated to the detected language of the conversation.|
-|include_monitors|query|boolean|false|If set to true, the response will include a `monitor_evaluations` array with any QA monitor results that flagged this conversation.|
+|include_email_history|query|boolean|false|If set to true, the source of the conversation will include the email history, for conversations started by email.|
+|parts_created_after|query|integer|false|Only include conversation parts created at or after this time, as a Unix timestamp in seconds.|
+|parts_created_before|query|integer|false|Only include conversation parts created at or before this time, as a Unix timestamp in seconds.|
+|include_monitors|query|boolean|false|If set to true, the response will include a `monitor_evaluations` array with the latest QA monitor evaluation for each monitor that has evaluated this conversation.|
 |include_scorecards|query|boolean|false|If set to true, the response will include a `scorecards` array with any QA scorecard results for this conversation.|
 
 #### Enumerated Values
@@ -16413,7 +16976,7 @@ For AI agent conversation metadata, please note that you need to have the agent 
     "conversation_parts": [
       {
         "type": "conversation_part",
-        "id": 1,
+        "id": "1",
         "part_type": "comment",
         "body": "<p>Okay!</p>",
         "created_at": 1663597223,
@@ -16448,7 +17011,7 @@ For AI agent conversation metadata, please note that you need to have the agent 
       },
       {
         "type": "conversation_part",
-        "id": 2,
+        "id": "2",
         "part_type": "custom_action_started",
         "body": null,
         "created_at": 1740141842,
@@ -16476,7 +17039,7 @@ For AI agent conversation metadata, please note that you need to have the agent 
       },
       {
         "type": "conversation_part",
-        "id": 3,
+        "id": "3",
         "part_type": "conversation_attribute_updated_by_admin",
         "body": null,
         "created_at": 1740141851,
@@ -16507,7 +17070,7 @@ For AI agent conversation metadata, please note that you need to have the agent 
       },
       {
         "type": "conversation_part",
-        "id": 4,
+        "id": "4",
         "part_type": "custom_action_finished",
         "body": null,
         "created_at": 1740141857,
@@ -16817,6 +17380,21 @@ The `PUT /conversations/{id}` endpoint now returns a `400 INVALID_PARAMETER` err
 }
 ```
 
+> 400 Response
+
+```json
+{
+  "type": "error.list",
+  "request_id": "c6a1d739-8e25-4f40-b9c7-2d5e0a3b7f19",
+  "errors": [
+    {
+      "code": "side_conversation",
+      "message": "action can not be performed on a side conversation"
+    }
+  ]
+}
+```
+
 > 401 Response
 
 ```json
@@ -16867,6 +17445,7 @@ The `PUT /conversations/{id}` endpoint now returns a `400 INVALID_PARAMETER` err
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|update a conversation with an association to a custom object instance|[conversation](#schemaconversation)|
+|400|Bad Request|Invalid request|[error](#schemaerror)|
 |401|Unauthorized|Unauthorized|[error](#schemaerror)|
 |403|Forbidden|API plan restricted|[error](#schemaerror)|
 |404|Not Found|Not found|[error](#schemaerror)|
@@ -16891,8 +17470,8 @@ curl https://api.intercom.io/conversations/0 \
 
 `DELETE /conversations/{conversation_id}`
 
-{% admonition type="warning" name="Irreversible operation" %}
-Deleting a conversation is permanent and cannot be reversed.
+{% admonition type="warning" name="Irreversible after the recovery window" %}
+With `retain_metrics=false`, deleting a conversation is permanent and cannot be reversed. With the default `retain_metrics=true`, the conversation's data is retained for 7 days before being permanently deleted, and recovering it during that window isn't available through the API.
 {% /admonition %}
 
 You can delete a single conversation. The behavior depends on the `retain_metrics` parameter:
@@ -17072,11 +17651,12 @@ The `source.body` field is unique as the search will not be performed against th
 
 | Field                                     | Type                                                                                                                                                   |
 | :---------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| id                                        | String                                                                                                                                                 |
+| id                                        | Integer                                                                                                                                                |
+| type                                      | String                                                                                                                                                 |
 | created_at                                | Date (UNIX timestamp)                                                                                                                                  |
 | updated_at                                | Date (UNIX timestamp)                                                                                                                                  |
 | source.type                               | String<br>Accepted fields are `conversation`, `email`, `facebook`, `instagram`, `phone_call`, `phone_switch`, `push`, `sms`, `twitter` and `whatsapp`. |
-| source.id                                 | String                                                                                                                                                 |
+| source.id                                 | Integer                                                                                                                                                |
 | source.delivered_as                       | String                                                                                                                                                 |
 | source.subject                            | String                                                                                                                                                 |
 | source.body                               | String                                                                                                                                                 |
@@ -17111,7 +17691,7 @@ The `source.body` field is unique as the search will not be performed against th
 | statistics.last_contact_reply_at          | Date (UNIX timestamp)                                                                                                                                  |
 | statistics.last_admin_reply_at            | Date (UNIX timestamp)                                                                                                                                  |
 | statistics.last_close_at                  | Date (UNIX timestamp)                                                                                                                                  |
-| statistics.last_closed_by_id              | String                                                                                                                                                 |
+| statistics.last_closed_by_id              | Integer                                                                                                                                                |
 | statistics.count_reopens                  | Integer                                                                                                                                                |
 | statistics.count_assignments              | Integer                                                                                                                                                |
 | statistics.count_conversation_parts       | Integer                                                                                                                                                |
@@ -17120,7 +17700,7 @@ The `source.body` field is unique as the search will not be performed against th
 | conversation_rating.score                 | Integer                                                                                                                                                |
 | conversation_rating.remark                | String                                                                                                                                                 |
 | conversation_rating.contact_id            | String                                                                                                                                                 |
-| conversation_rating.admin_d               | String                                                                                                                                                 |
+| conversation_rating.admin_id              | String                                                                                                                                                 |
 | ai_agent_participated                     | Boolean                                                                                                                                                |
 | ai_agent.resolution_state                 | String                                                                                                                                                 |
 | ai_agent.last_answer_type                 | String                                                                                                                                                 |
@@ -17139,12 +17719,17 @@ The table below shows the operators you can use to define how you want to search
 | !=       | All                            | Doesn't Equal                                                |
 | IN       | All                            | In  Shortcut for `OR` queries  Values most be in Array       |
 | NIN      | All                            | Not In  Shortcut for `OR !` queries  Values must be in Array |
-| >        | Integer  Date (UNIX Timestamp) | Greater (or equal) than                                      |
-| <       | Integer  Date (UNIX Timestamp) | Lower (or equal) than                                        |
+| >       | Integer  Date (UNIX Timestamp) | Greater than                                                 |
+| >=      | Integer  Date (UNIX Timestamp) | Greater than or equal to                                     |
+| <       | Integer  Date (UNIX Timestamp) | Lower than                                                   |
+| <=      | Integer  Date (UNIX Timestamp) | Lower than or equal to                                       |
 | ~        | String                         | Contains                                                     |
 | !~       | String                         | Doesn't Contain                                              |
 | ^        | String                         | Starts With                                                  |
 | $        | String                         | Ends With                                                    |
+### Sorting
+
+Results are sorted by `updated_at`, newest first. To sort differently, add a `sort` object to the request body with a `field` and an `order` of `ascending` or `descending`. `field` is required whenever `sort` is sent, and must be one of the fields in the table above, other than `type`, `state`, `source.subject`, `source.body`, `source.author.id`, `source.author.type`, `source.author.name`, `source.author.email`, `conversation_rating.remark`, `ai_agent.rating_remark` and `ai_agent.source_title`, which can't be sorted. A missing `field`, or one that isn't searchable, returns a `400` error with the code `invalid_field`.
 
 
 > Body parameter
@@ -17172,13 +17757,16 @@ The table below shows the operators you can use to define how you want to search
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |Intercom-Version|header|[intercom_version](#schemaintercom_version)|false|none|
-|include_monitors|query|boolean|false|If set to true, the response will include a `monitor_evaluations` array on each conversation with any QA monitor results that flagged it.|
+|include_monitors|query|boolean|false|If set to true, the response will include a `monitor_evaluations` array on each conversation with the latest QA monitor evaluation for each monitor that has evaluated it.|
 |include_scorecards|query|boolean|false|If set to true, the response will include a `scorecards` array on each conversation with any QA scorecard results.|
 |body|body|[search_request](#schemasearch_request)|false|none|
 |» query|body|[single_filter_search_request](#schemasingle_filter_search_request) \| [multiple_filter_search_request](#schemamultiple_filter_search_request)|true|none|
 |» » *oneOf*|body|[single_filter_search_request](#schemasingle_filter_search_request)|false|Search using Intercoms Search APIs with a single filter.|
 |» » *oneOf*|body|[multiple_filter_search_request](#schemamultiple_filter_search_request)|false|Search using Intercoms Search APIs with more than one filter.|
 |» pagination|body|[starting_after_paging](#schemastarting_after_paging)|false|none|
+|» sort|body|object|false|How to sort the results. Without it, the endpoint's default order is used.|
+|» » field|body|string|true|The field to sort by, one of the searchable fields listed for the endpoint. Some fields can't be sorted; the endpoint's Sorting section says which. A missing `field`, or one that isn't searchable, returns a `400` error with the code `invalid_field`.|
+|» » order|body|string|false|The sort order.|
 
 #### Enumerated Values
 
@@ -17207,6 +17795,8 @@ The table below shows the operators you can use to define how you want to search
 |Intercom-Version|2.15|
 |Intercom-Version|2.16|
 |Intercom-Version|2.17|
+|» » order|ascending|
+|» » order|descending|
 
 > Example responses
 
@@ -17282,7 +17872,45 @@ The table below shows the operators you can use to define how you want to search
         "has_more": false
       },
       "ai_agent": null,
-      "ai_agent_participated": false
+      "ai_agent_participated": false,
+      "sales_agent_participated": false,
+      "sales_agent": null,
+      "company": null,
+      "external_references": [],
+      "channel": {
+        "initial": "messenger",
+        "current": "messenger"
+      }
+    }
+  ]
+}
+```
+
+> 400 Response
+
+```json
+{
+  "type": "error.list",
+  "request_id": "5e0a9c24-6f18-4d73-a2b5-8c1e3d7f9a60",
+  "errors": [
+    {
+      "code": "invalid_query",
+      "message": "Invalid query. Ensure 'field', 'operator', 'value' are present for simple queries. Ensure 'operator' and 'value' for composite queries. Ensure query is a JSON object."
+    }
+  ]
+}
+```
+
+> 401 Response
+
+```json
+{
+  "type": "error.list",
+  "request_id": "d0c4f817-3a96-4e25-8b1d-5f7a2c9e0b38",
+  "errors": [
+    {
+      "code": "unauthorized",
+      "message": "Access Token Invalid"
     }
   ]
 }
@@ -17293,6 +17921,8 @@ The table below shows the operators you can use to define how you want to search
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|successful|[conversation_list](#schemaconversation_list)|
+|400|Bad Request|Invalid request|[error](#schemaerror)|
+|401|Unauthorized|Unauthorized|[error](#schemaerror)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -17349,10 +17979,11 @@ To close, open, snooze or assign a conversation, use [Manage a conversation](/do
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |Intercom-Version|header|[intercom_version](#schemaintercom_version)|false|none|
-|conversation_id|path|string|true|The Intercom provisioned identifier for the conversation or the string "last" to reply to the last part of the conversation|
+|conversation_id|path|string|true|The Intercom provisioned identifier for the conversation, or the string `last` to use the most recent conversation of a contact. With `last`, also send the contact's `intercom_user_id`, `user_id` or `email` in the request body, whatever type of request you send. A contact that can't be found returns a `404` error, and a contact with no conversations returns a `422` error.|
 |body|body|[reply_conversation_request](#schemareply_conversation_request)|false|none|
 |» *oneOf*|body|[contact_reply_conversation_request](#schemacontact_reply_conversation_request)|false|none|
 |» *oneOf*|body|[admin_reply_conversation_request](#schemaadmin_reply_conversation_request)|false|Payload of the request to reply on behalf of an admin|
+|» *oneOf*|body|[bot_reply_conversation_request](#schemabot_reply_conversation_request)|false|Payload of the request to reply on behalf of a bot|
 
 #### Enumerated Values
 
@@ -17482,6 +18113,21 @@ To close, open, snooze or assign a conversation, use [Manage a conversation](/do
 }
 ```
 
+> 400 Response
+
+```json
+{
+  "type": "error.list",
+  "request_id": "b5e90d26-7c14-4a83-8f3b-1d6a2c9e4b70",
+  "errors": [
+    {
+      "code": "side_conversation",
+      "message": "action can not be performed on a side conversation"
+    }
+  ]
+}
+```
+
 > 401 Response
 
 ```json
@@ -17527,14 +18173,31 @@ To close, open, snooze or assign a conversation, use [Manage a conversation](/do
 }
 ```
 
+> 422 Response
+
+```json
+{
+  "type": "error.list",
+  "request_id": "0e5c9a37-4b82-4d16-a3f7-7c1d8b6e2a49",
+  "errors": [
+    {
+      "code": "parameter_invalid",
+      "message": "No conversation for this user"
+    }
+  ]
+}
+```
+
 <h3 id="reply-to-a-conversation-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|User last conversation reply|[conversation](#schemaconversation)|
+|400|Bad Request|Invalid request|[error](#schemaerror)|
 |401|Unauthorized|Unauthorized|[error](#schemaerror)|
-|403|Forbidden|API plan restricted|[error](#schemaerror)|
+|403|Forbidden|Forbidden|[error](#schemaerror)|
 |404|Not Found|Not found|[error](#schemaerror)|
+|422|Unprocessable Entity|Unprocessable entity|[error](#schemaerror)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -17556,7 +18219,7 @@ curl https://api.intercom.io/conversations/123/parts \
   -d '{
     "message_type": "close",
     "type": "admin",
-    "admin_id": 991267708,
+    "admin_id": "991267708",
     "body": "Goodbye :)"
   }'
 ```
@@ -17580,7 +18243,7 @@ To send a comment, note or quick reply, use [Reply to a conversation](/docs/refe
 {
   "message_type": "close",
   "type": "admin",
-  "admin_id": 991267708,
+  "admin_id": "991267708",
   "body": "Goodbye :)"
 }
 ```
@@ -17590,7 +18253,7 @@ To send a comment, note or quick reply, use [Reply to a conversation](/docs/refe
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |Intercom-Version|header|[intercom_version](#schemaintercom_version)|false|none|
-|conversation_id|path|string|true|The identifier for the conversation as given by Intercom.|
+|conversation_id|path|string|true|The identifier for the conversation as given by Intercom, or the string `last` to use the most recent conversation of a contact. With `last`, also send the contact's `intercom_user_id`, `user_id` or `email` in the request body, whatever type of request you send. A contact that can't be found returns a `404` error, and a contact with no conversations returns a `422` error.|
 |body|body|[close_conversation_request](#schemaclose_conversation_request) \| [snooze_conversation_request](#schemasnooze_conversation_request) \| [open_conversation_request](#schemaopen_conversation_request) \| [assign_conversation_request](#schemaassign_conversation_request)|false|none|
 |» *oneOf*|body|[close_conversation_request](#schemaclose_conversation_request)|false|Payload of the request to close a conversation|
 |» *oneOf*|body|[snooze_conversation_request](#schemasnooze_conversation_request)|false|Payload of the request to snooze a conversation|
@@ -17726,6 +18389,21 @@ To send a comment, note or quick reply, use [Reply to a conversation](/docs/refe
 }
 ```
 
+> 400 Response
+
+```json
+{
+  "type": "error.list",
+  "request_id": "b5e90d26-7c14-4a83-8f3b-1d6a2c9e4b70",
+  "errors": [
+    {
+      "code": "side_conversation",
+      "message": "action can not be performed on a side conversation"
+    }
+  ]
+}
+```
+
 > 401 Response
 
 ```json
@@ -17771,14 +18449,31 @@ To send a comment, note or quick reply, use [Reply to a conversation](/docs/refe
 }
 ```
 
+> 422 Response
+
+```json
+{
+  "type": "error.list",
+  "request_id": "6d1a8f40-9c37-4e25-b0d8-2f7a4c5e8b93",
+  "errors": [
+    {
+      "code": "parameter_invalid",
+      "message": "snoozed_until must be in the future"
+    }
+  ]
+}
+```
+
 <h3 id="manage-a-conversation-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Assign a conversation|[conversation](#schemaconversation)|
+|400|Bad Request|Invalid request|[error](#schemaerror)|
 |401|Unauthorized|Unauthorized|[error](#schemaerror)|
-|403|Forbidden|API plan restricted|[error](#schemaerror)|
+|403|Forbidden|Forbidden|[error](#schemaerror)|
 |404|Not Found|Not found|[error](#schemaerror)|
+|422|Unprocessable Entity|Unprocessable entity|[error](#schemaerror)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -17833,17 +18528,11 @@ If you add a contact via the email parameter and there is no user/lead found on 
 |Intercom-Version|header|[intercom_version](#schemaintercom_version)|false|none|
 |conversation_id|path|string|true|The identifier for the conversation as given by Intercom.|
 |body|body|[attach_contact_to_conversation_request](#schemaattach_contact_to_conversation_request)|false|none|
-|» admin_id|body|string|false|The `id` of the admin who is adding the new participant.|
-|» customer|body|object|false|none|
-|» » *oneOf*|body|object|false|none|
-|» » intercom_user_id|body|string|true|The identifier for the contact as given by Intercom.|
-|» » customer|body|[customer_request](#schemacustomer_request)|false|none|
-|» » *oneOf*|body|object|false|none|
-|» » user_id|body|string|true|The external_id you have defined for the contact who is being added as a participant.|
-|» » customer|body|[customer_request](#schemacustomer_request)|false|none|
-|» » *oneOf*|body|object|false|none|
-|» » email|body|string|true|The email you have defined for the contact who is being added as a participant.|
-|» » customer|body|[customer_request](#schemacustomer_request)|false|none|
+|» admin_id|body|string|false|The `id` of the admin who is adding the new participant. Send this to act as an admin.|
+|» intercom_user_id|body|string|false|The identifier, as given by Intercom, of the contact who is adding the new participant. Send this, `user_id` or `email` to act as a contact.|
+|» user_id|body|string|false|The `external_id` you have defined for the contact who is adding the new participant.|
+|» email|body|string|false|The email of the contact who is adding the new participant.|
+|» customer|body|[customer_request](#schemacustomer_request)|true|The contact to add as a participant. Identify them with exactly one of `intercom_user_id`, `user_id` or `email`.|
 
 #### Enumerated Values
 
@@ -18647,6 +19336,199 @@ To perform this operation, you must be authenticated by means of one of the foll
 bearerAuth
 </aside>
 
+## Rate a conversation
+
+<a id="opIdrateConversation"></a>
+
+> Code samples
+
+```bash
+curl https://api.intercom.io/conversations/215471234567890/rating \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "intercom_user_id": "6541f0a2c3d4e5f607182930",
+    "rating": 4,
+    "remark": "Fast and friendly"
+  }'
+```
+
+`POST /conversations/{conversation_id}/rating`
+
+Record a contact's CSAT rating, and an optional remark, on the latest rating request Intercom sent for a conversation. The rating counts in your CSAT reports for the teammate, Fin or workflow that was rated.
+
+Only the contact the request was sent to can answer. Pass their Intercom ID as `intercom_user_id`.
+
+Sending the same rating and remark again returns the current rating without changing it, so it is safe to retry. A different `rating` replaces the earlier one while the rating request still accepts answers. A `remark` can be added to a rating that has none. Once a remark is set, the rating and the remark can no longer be changed.
+
+Requires the `write_conversations` permission.
+
+
+> Body parameter
+
+```json
+{
+  "intercom_user_id": "6541f0a2c3d4e5f607182930",
+  "rating": 4,
+  "remark": "Fast and friendly"
+}
+```
+
+<h3 id="rate-a-conversation-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|Intercom-Version|header|[intercom_version](#schemaintercom_version)|false|none|
+|conversation_id|path|string|true|The unique identifier for the conversation.|
+|body|body|[rate_conversation_request](#schemarate_conversation_request)|false|none|
+|» intercom_user_id|body|string|true|The unique identifier for the contact the rating request was sent to.|
+|» rating|body|integer|true|The rating, from 1 to 5.|
+|» remark|body|string|false|Free text from the contact to go with the rating.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|Intercom-Version|1.0|
+|Intercom-Version|1.1|
+|Intercom-Version|1.2|
+|Intercom-Version|1.3|
+|Intercom-Version|1.4|
+|Intercom-Version|2.0|
+|Intercom-Version|2.1|
+|Intercom-Version|2.2|
+|Intercom-Version|2.3|
+|Intercom-Version|2.4|
+|Intercom-Version|2.5|
+|Intercom-Version|2.6|
+|Intercom-Version|2.7|
+|Intercom-Version|2.8|
+|Intercom-Version|2.9|
+|Intercom-Version|2.10|
+|Intercom-Version|2.11|
+|Intercom-Version|2.12|
+|Intercom-Version|2.13|
+|Intercom-Version|2.14|
+|Intercom-Version|2.15|
+|Intercom-Version|2.16|
+|Intercom-Version|2.17|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "type": "conversation_rating",
+  "conversation_id": "215471234567890",
+  "rating": 4,
+  "remark": "Fast and friendly",
+  "created_at": 1793664000,
+  "updated_at": 1793664120,
+  "customer": {
+    "type": "user",
+    "id": "6541f0a2c3d4e5f607182930"
+  },
+  "teammate": {
+    "type": "admin",
+    "id": "12345"
+  }
+}
+```
+
+> 400 Response
+
+```json
+{
+  "type": "error.list",
+  "request_id": "7a80b950-b392-499f-85db-ea7c6c424d37",
+  "errors": [
+    {
+      "code": "intercom_version_invalid",
+      "message": "Requested resource is not available in current API version"
+    }
+  ]
+}
+```
+
+> 401 Response
+
+```json
+{
+  "type": "error.list",
+  "request_id": "7d3e1f0a-5b2c-4a96-8c41-0e9f6b2d7a35",
+  "errors": [
+    {
+      "code": "unauthorized",
+      "message": "Access Token Invalid"
+    }
+  ]
+}
+```
+
+> 403 Response
+
+```json
+{
+  "type": "error.list",
+  "request_id": "9b1c2d3e-4f50-4a61-8b72-c3d4e5f60718",
+  "errors": [
+    {
+      "code": "forbidden",
+      "message": "The rating request for this conversation was sent to a different contact"
+    }
+  ]
+}
+```
+
+> 404 Response
+
+```json
+{
+  "type": "error.list",
+  "request_id": "4a5b6c7d-8e9f-4a0b-9c1d-2e3f4a5b6c7d",
+  "errors": [
+    {
+      "code": "conversation_not_found",
+      "message": "Conversation not found"
+    }
+  ]
+}
+```
+
+> 422 Response
+
+```json
+{
+  "type": "error.list",
+  "request_id": "6e2f8a1b-0c47-4d93-8b5a-7f1e3c9d0a26",
+  "errors": [
+    {
+      "code": "rating_request_not_found",
+      "message": "No rating request has been sent for this conversation"
+    }
+  ]
+}
+```
+
+<h3 id="rate-a-conversation-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Rating recorded|[rated_conversation](#schemarated_conversation)|
+|400|Bad Request|Bad request|[error](#schemaerror)|
+|401|Unauthorized|Unauthorized|[error](#schemaerror)|
+|403|Forbidden|Forbidden|[error](#schemaerror)|
+|404|Not Found|The conversation was not found, or the endpoint is not enabled for the workspace|[error](#schemaerror)|
+|422|Unprocessable Entity|Rating not accepted|[error](#schemaerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth
+</aside>
+
 ## Redact a conversation part
 
 <a id="opIdredactConversation"></a>
@@ -18661,8 +19543,8 @@ curl https://api.intercom.io/conversations/redact \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "type": "conversation_part",
-    "conversation_id": 608,
-    "conversation_part_id": 149
+    "conversation_id": "608",
+    "conversation_part_id": "149"
   }'
 ```
 
@@ -18681,8 +19563,8 @@ If you are redacting a conversation part, it must have a `body`. If you are reda
 ```json
 {
   "type": "conversation_part",
-  "conversation_id": 608,
-  "conversation_part_id": 149
+  "conversation_id": "608",
+  "conversation_part_id": "149"
 }
 ```
 
@@ -18897,8 +19779,7 @@ Merge a secondary (source) conversation into a primary (target) conversation.
 The secondary conversation is closed and linked to the primary, which
 becomes the surviving thread. Returns the primary conversation on success.
 
-Requires `write_conversations` OAuth scope. When the secondary is a ticket,
-`write_tickets` scope is also required.
+Requires `write_conversations` OAuth scope.
 
 
 > Body parameter
@@ -18989,8 +19870,8 @@ Requires `write_conversations` OAuth scope. When the secondary is a ticket,
     "type": "conversation",
     "url": null
   },
-  "admin_assignee_id": null,
-  "team_assignee_id": null,
+  "admin_assignee_id": 0,
+  "team_assignee_id": 0,
   "open": true,
   "state": "open",
   "read": false,
@@ -19084,8 +19965,8 @@ Requires `write_conversations` OAuth scope. When the secondary is a ticket,
   "request_id": "b4f6c9d3-2345-6789-abcd-ef0123456789",
   "errors": [
     {
-      "code": "forbidden",
-      "message": "Forbidden request"
+      "code": "action_forbidden",
+      "message": "The admin doesn't have the permissions required to merge conversations"
     }
   ]
 }
@@ -19159,7 +20040,7 @@ You can convert a conversation to a ticket.
 |body|body|[convert_conversation_to_ticket_request](#schemaconvert_conversation_to_ticket_request)|false|none|
 |» ticket_type_id|body|string|true|The ID of the type of ticket you want to convert the conversation to|
 |» ticket_state_id|body|string|false|The ID of the ticket state associated with the ticket type.|
-|» attributes|body|[ticket_request_custom_attributes](#schematicket_request_custom_attributes)|false|The attributes set on the ticket. When setting the default title and description attributes, the attribute keys that should be used are `_default_title_` and `_default_description_`. When setting ticket type attributes of the list attribute type, the key should be the attribute name and the value of the attribute should be the list item id, obtainable by [listing the ticket type](ref:get_ticket-types). For example, if the ticket type has an attribute called `priority` of type `list`, the key should be `priority` and the value of the attribute should be the guid of the list item (e.g. `de1825a0-0164-4070-8ca6-13e22462fa7e`).|
+|» attributes|body|[ticket_request_custom_attributes](#schematicket_request_custom_attributes)|false|The attributes set on the ticket. When setting the default title and description attributes, the attribute keys that should be used are `_default_title_` and `_default_description_`. When setting ticket type attributes of the list attribute type, the key should be the attribute name and the value of the attribute should be the list item id, obtainable by [listing the ticket type](ref:get_ticket-types). For example, if the ticket type has an attribute called `priority` of type `list`, the key should be `priority` and the value of the attribute should be the guid of the list item (e.g. `de1825a0-0164-4070-8ca6-13e22462fa7e`). For a `files` attribute, pass an array of upload ids; for a `relationship` attribute, pass an array of related object ids as strings.|
 
 #### Enumerated Values
 
@@ -19416,7 +20297,7 @@ List all deleted conversation IDs.
   "errors": [
     {
       "code": "intercom_version_invalid",
-      "message": "Requested resource is not available in current API version."
+      "message": "Requested resource is not available in current API version"
     }
   ]
 }
@@ -19437,6 +20318,21 @@ List all deleted conversation IDs.
 }
 ```
 
+> 403 Response
+
+```json
+{
+  "type": "error.list",
+  "request_id": "58d2b7e4-1f93-4a60-9c05-4e8b3a6d0c17",
+  "errors": [
+    {
+      "code": "api_plan_restricted",
+      "message": "Active subscription needed."
+    }
+  ]
+}
+```
+
 <h3 id="list-all-deleted-conversation-ids-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
@@ -19444,6 +20340,226 @@ List all deleted conversation IDs.
 |200|OK|View all deleted conversation IDs|[deleted_conversation_list](#schemadeleted_conversation_list)|
 |400|Bad Request|Resource not available|[error](#schemaerror)|
 |401|Unauthorized|Unauthorized|[error](#schemaerror)|
+|403|Forbidden|API plan restricted|[error](#schemaerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth
+</aside>
+
+## Create a conversation stream token
+
+<a id="opIdcreateConversationStreamToken"></a>
+
+> Code samples
+
+```bash
+curl https://api.intercom.io/conversations/stream/token \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "external_id": "contact-1234"
+  }'
+```
+
+`POST /conversations/stream/token`
+
+Realtime streaming of conversation events uses Server-Sent Events (SSE). It is an opt-in feature, enabled per workspace. Contact Intercom to turn it on.
+
+Issue a token that a contact's client uses to subscribe to a realtime stream of that contact's conversation events.
+
+Tokens are short-lived, so call this endpoint again before `expires_at` to get a fresh one. Use the `revoke` link in the response to end every active token for the contact.
+
+Requires the `read_conversations` permission.
+
+
+> Body parameter
+
+```json
+{
+  "external_id": "contact-1234"
+}
+```
+
+<h3 id="create-a-conversation-stream-token-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|Intercom-Version|header|[intercom_version](#schemaintercom_version)|false|none|
+|body|body|[create_conversation_stream_token_request](#schemacreate_conversation_stream_token_request)|false|none|
+|» external_id|body|string|true|The external ID of the contact to issue a token for.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|Intercom-Version|1.0|
+|Intercom-Version|1.1|
+|Intercom-Version|1.2|
+|Intercom-Version|1.3|
+|Intercom-Version|1.4|
+|Intercom-Version|2.0|
+|Intercom-Version|2.1|
+|Intercom-Version|2.2|
+|Intercom-Version|2.3|
+|Intercom-Version|2.4|
+|Intercom-Version|2.5|
+|Intercom-Version|2.6|
+|Intercom-Version|2.7|
+|Intercom-Version|2.8|
+|Intercom-Version|2.9|
+|Intercom-Version|2.10|
+|Intercom-Version|2.11|
+|Intercom-Version|2.12|
+|Intercom-Version|2.13|
+|Intercom-Version|2.14|
+|Intercom-Version|2.15|
+|Intercom-Version|2.16|
+|Intercom-Version|2.17|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "type": "conversation_stream_token",
+  "expires_at": 1731241200,
+  "stream": {
+    "provider": "ably",
+    "url": "main.realtime.ably.net",
+    "channel": "conversation_stream:abc123:6710a1b2c3d4e5f6a7b8c9d0",
+    "token": "<stream token>"
+  },
+  "links": {
+    "self": {
+      "href": "https://api.intercom.io/conversations/stream/token",
+      "method": "POST"
+    },
+    "revoke": {
+      "href": "https://api.intercom.io/conversations/stream/token?external_id=contact-1234",
+      "method": "DELETE"
+    }
+  }
+}
+```
+
+> 401 Response
+
+```json
+{
+  "type": "error.list",
+  "request_id": "7d3e1f0a-5b2c-4a96-8c41-0e9f6b2d7a35",
+  "errors": [
+    {
+      "code": "unauthorized",
+      "message": "Access Token Invalid"
+    }
+  ]
+}
+```
+
+<h3 id="create-a-conversation-stream-token-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Token issued|[conversation_stream_token](#schemaconversation_stream_token)|
+|400|Bad Request|`external_id` is missing|None|
+|401|Unauthorized|Unauthorized|[error](#schemaerror)|
+|403|Forbidden|The access token is limited to the conversations of the teammate who installed the app|None|
+|404|Not Found|The contact was not found, or the conversation stream is not available for the workspace|None|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth
+</aside>
+
+## Revoke conversation stream tokens
+
+<a id="opIdrevokeConversationStreamTokens"></a>
+
+> Code samples
+
+```bash
+curl 'https://api.intercom.io/conversations/stream/token?external_id=contact-1234' \
+  -X DELETE \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`DELETE /conversations/stream/token`
+
+Realtime streaming of conversation events uses Server-Sent Events (SSE). It is an opt-in feature, enabled per workspace. Contact Intercom to turn it on.
+
+Revoke every active conversation stream token for a contact. Call this when the contact signs out or you suspect a token has been exposed.
+
+Requires the `read_conversations` permission.
+
+
+<h3 id="revoke-conversation-stream-tokens-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|Intercom-Version|header|[intercom_version](#schemaintercom_version)|false|none|
+|external_id|query|string|true|The external ID of the contact whose tokens to revoke.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|Intercom-Version|1.0|
+|Intercom-Version|1.1|
+|Intercom-Version|1.2|
+|Intercom-Version|1.3|
+|Intercom-Version|1.4|
+|Intercom-Version|2.0|
+|Intercom-Version|2.1|
+|Intercom-Version|2.2|
+|Intercom-Version|2.3|
+|Intercom-Version|2.4|
+|Intercom-Version|2.5|
+|Intercom-Version|2.6|
+|Intercom-Version|2.7|
+|Intercom-Version|2.8|
+|Intercom-Version|2.9|
+|Intercom-Version|2.10|
+|Intercom-Version|2.11|
+|Intercom-Version|2.12|
+|Intercom-Version|2.13|
+|Intercom-Version|2.14|
+|Intercom-Version|2.15|
+|Intercom-Version|2.16|
+|Intercom-Version|2.17|
+
+> Example responses
+
+> 401 Response
+
+```json
+{
+  "type": "error.list",
+  "request_id": "2c8a4e6b-9f1d-4b73-a5e0-6d1c3f8b9a47",
+  "errors": [
+    {
+      "code": "unauthorized",
+      "message": "Access Token Invalid"
+    }
+  ]
+}
+```
+
+<h3 id="revoke-conversation-stream-tokens-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|204|No Content|Tokens revoked|None|
+|400|Bad Request|`external_id` is missing|None|
+|401|Unauthorized|Unauthorized|[error](#schemaerror)|
+|403|Forbidden|The access token is limited to the conversations of the teammate who installed the app|None|
+|404|Not Found|The contact was not found, or the conversation stream is not available for the workspace|None|
+|502|Bad Gateway|The realtime provider did not confirm the revocation. Retry the request.|None|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -23031,7 +24147,7 @@ curl https://api.intercom.io/data_connectors/12345/execution_results \
 Retrieve paginated execution logs for a specific data connector.
 Results from the last hour are returned by default. Use `start_ts` and `end_ts` to customize the time range.
 
-Request/response bodies are excluded by default. Use `include_bodies=true` to include them.
+Request/response bodies are excluded by default. Use `include_bodies=true` to include them. Apps owned by another workspace never receive them.
 
 OAuth tokens must have the `read_workflow_connector_execution_result` or `read_write_data_connectors` scope.
 
@@ -23048,7 +24164,7 @@ OAuth tokens must have the `read_workflow_connector_execution_result` or `read_w
 |error_type|query|string|false|Filter by error type.|
 |start_ts|query|integer|false|Unix timestamp for start of time range (default 1 hour ago).|
 |end_ts|query|integer|false|Unix timestamp for end of time range (default now).|
-|include_bodies|query|string|false|Include request/response bodies in the response (default false).|
+|include_bodies|query|string|false|Include request/response bodies in the response (default false). Ignored for third-party apps (apps owned by another workspace), which never receive bodies.|
 
 #### Enumerated Values
 
@@ -23213,7 +24329,7 @@ curl https://api.intercom.io/data_connectors/12345/execution_results/99001 \
 `GET /data_connectors/{data_connector_id}/execution_results/{id}`
 
 Retrieve details for a specific data connector execution result.
-Includes the request/response bodies and sanitised request URL when they are available.
+Includes the sanitised request URL, and the request/response bodies when they are available. Bodies are omitted when the request comes from a third-party app (an app owned by another workspace).
 
 OAuth tokens must have the `read_workflow_connector_execution_result` or `read_write_data_connectors` scope.
 
@@ -29205,7 +30321,7 @@ curl https://api.intercom.io/help_center/collections \
 
 You can fetch a list of all collections by making a GET request to `https://api.intercom.io/help_center/collections`.
 
-Requires the `read_articles_scope` OAuth scope.
+Requires the `read_articles_scope` or `create_update_articles` OAuth scope.
 
 
 <h3 id="list-all-collections-parameters">Parameters</h3>
@@ -29356,7 +30472,7 @@ curl https://api.intercom.io/help_center/collections \
 
 You can create a new collection by making a POST request to `https://api.intercom.io/help_center/collections`.
 
-Requires the `read_write_articles_scope` OAuth scope.
+Requires the `read_write_articles_scope` or `create_update_articles` OAuth scope.
 
 
 > Body parameter
@@ -29488,7 +30604,7 @@ curl https://api.intercom.io/help_center/collections/123 \
 
 You can fetch the details of a single collection by making a GET request to `https://api.intercom.io/help_center/collections/<id>`.
 
-Requires the `read_articles_scope` OAuth scope.
+Requires the `read_articles_scope` or `create_update_articles` OAuth scope.
 
 
 <h3 id="retrieve-a-collection-parameters">Parameters</h3>
@@ -29613,7 +30729,7 @@ You can update the details of a single collection by making a PUT request to `ht
 
 `help_center_id` is checked but never applied. It must match the help center of the collection's articles and sub-collections, or the request returns a `400`. A collection with no content rejects any `help_center_id`, so leave it out. Moving a collection to another help center isn't supported.
 
-Requires the `read_write_articles_scope` OAuth scope.
+Requires the `read_write_articles_scope` or `create_update_articles` OAuth scope.
 
 
 > Body parameter
@@ -29872,7 +30988,7 @@ curl https://api.intercom.io/help_center/help_centers/123 \
 
 You can fetch the details of a single Help Center by making a GET request to `https://api.intercom.io/help_center/help_centers/<id>`.
 
-Requires the `read_articles_scope` OAuth scope.
+Requires the `read_articles_scope` or `create_update_articles` OAuth scope.
 
 
 <h3 id="retrieve-a-help-center-parameters">Parameters</h3>
@@ -29991,7 +31107,7 @@ curl https://api.intercom.io/help_center/help_centers \
 
 You can list all Help Centers by making a GET request to `https://api.intercom.io/help_center/help_centers`.
 
-Requires the `read_articles_scope` OAuth scope.
+Requires the `read_articles_scope` or `create_update_articles` OAuth scope.
 
 
 <h3 id="list-all-help-centers-parameters">Parameters</h3>
@@ -31975,7 +33091,9 @@ This will return the Message model that has been created.
 
 > 🚧 Retrieving Associated Conversations
 >
-> As this is a message, there will be no conversation present until the contact responds. Once they do, you will have to search for a contact's conversations with the id of the message.
+> For in-app and email messages, there will be no conversation present until the contact responds. Once they do, you will have to search for a contact's conversations with the id of the message.
+>
+> For `whatsapp` messages, the conversation is created when the message is sent, and its id is returned as `conversation_id`.
 
 {% admonition type="warning" name="Messages from contacts" %}
 `from` should be an admin. A request with a user or lead as `from` is not rejected: it creates a conversation initiated by that contact, as the Create a conversation endpoint (`POST /conversations`) does, and the `to`, `cc` and `bcc` fields are ignored. To create a conversation initiated by a contact, use `POST /conversations`.
@@ -32001,16 +33119,20 @@ This will return the Message model that has been created.
 |---|---|---|---|---|
 |Intercom-Version|header|[intercom_version](#schemaintercom_version)|false|none|
 |body|body|[create_message_request](#schemacreate_message_request)|false|none|
-|» message_type|body|string|false|The kind of message being created. Values: `in_app`, `email` or `whatsapp`.|
+|» message_type|body|string|false|The kind of message being created. Values: `in_app`, `email` or `whatsapp`. `inapp` is also accepted for in-app messages, and responses always show in-app messages as `inapp`.|
 |» subject|body|string|false|The title of the email.|
 |» body|body|string|false|The content of the message. HTML and plaintext are supported.|
-|» template|body|string|false|The style of the outgoing message. Possible values `plain` or `personal`.|
-|» from|body|object|false|The sender of the message. If not provided, the default sender will be used.|
+|» template|body|string|false|For `email` messages, the style of the outgoing message. Possible values `plain` or `personal`. For `whatsapp` messages, the name of the WhatsApp message template to send. A template that doesn't exist returns a `400` error.|
+|» from|body|object|false|The sender of the message. Required. A request without `from` returns a `400` error.|
 |» » type|body|string|true|Always `admin`.|
 |» » id|body|integer|true|The identifier for the admin which is given by Intercom.|
-|» to|body|[recipient](#schemarecipient) \| [[recipient](#schemarecipient)]|false|none|
+|» » whatsapp_number|body|string|false|For `whatsapp` messages, the WhatsApp number of your workspace to send from, in international format. If you leave it out, a WhatsApp number in your workspace that has the template is used. A number that isn't valid, or isn't registered in your workspace, returns a `400` error.|
+|» to|body|[recipient](#schemarecipient) \| [[recipient](#schemarecipient)] \| object|false|none|
 |» » *oneOf*|body|[recipient](#schemarecipient)|false|A recipient of a message|
-|» » *oneOf*|body|[[recipient](#schemarecipient)]|false|The recipients of the message.|
+|» » *oneOf*|body|[[recipient](#schemarecipient)]|false|The recipients of the message. Not accepted for `whatsapp` messages, which take a single recipient. An array returns a `400` error.|
+|» » *oneOf*|body|object|false|The recipient of a `whatsapp` message, identified by phone number. Required form for `whatsapp` messages. A contact is created for the number if there isn't one. Only `phone` and `name` are used. Other keys are ignored.|
+|» » phone|body|string|true|The recipient's phone number, in international format.|
+|» » name|body|string|false|The name to give the contact if one is created.|
 |» cc|body|[recipient](#schemarecipient) \| [[recipient](#schemarecipient)]|false|none|
 |» » *oneOf*|body|[recipient](#schemarecipient)|false|A recipient of a message|
 |» » *oneOf*|body|[[recipient](#schemarecipient)]|false|The CC recipients of the message.|
@@ -32018,7 +33140,10 @@ This will return the Message model that has been created.
 |» » *oneOf*|body|[recipient](#schemarecipient)|false|A recipient of a message|
 |» » *oneOf*|body|[[recipient](#schemarecipient)]|false|The BCC recipients of the message.|
 |» created_at|body|integer|false|The time the message was created. If not provided, the current time will be used.|
-|» create_conversation_without_contact_reply|body|boolean|false|Whether a conversation should be opened in the inbox for the message without the contact replying. Defaults to false if not provided.|
+|» create_conversation_without_contact_reply|body|boolean|false|Whether a conversation should be opened in the inbox for the message without the contact replying. Defaults to false if not provided. For `whatsapp` messages, a conversation is always opened and this field is ignored.|
+|» components|body|[object]|false|The components of the WhatsApp template, with the values for its variables. Required for `whatsapp` messages.|
+|» locale|body|string|false|The locale of the WhatsApp template to send, such as `en`. If you leave it out, the contact's messenger locale is used, then the workspace locale. A template that isn't available in the locale returns a `400` error.|
+|» brand_id|body|string|false|The id of the brand to send the message from. Not used for `whatsapp` messages. A brand that doesn't exist returns a `400` error.|
 |» *anyOf*|body|object|false|none|
 |» *anyOf*|body|object|false|none|
 |» *anyOf*|body|object|false|none|
@@ -32051,6 +33176,7 @@ This will return the Message model that has been created.
 |Intercom-Version|2.16|
 |Intercom-Version|2.17|
 |» message_type|in_app|
+|» message_type|inapp|
 |» message_type|email|
 |» message_type|whatsapp|
 |» » type|admin|
@@ -32115,6 +33241,21 @@ This will return the Message model that has been created.
 }
 ```
 
+> 404 Response
+
+```json
+{
+  "type": "error.list",
+  "request_id": "7b0d4e92-6a53-4c18-9e2f-3a5c8d1b6f40",
+  "errors": [
+    {
+      "code": "not_found",
+      "message": "User Not Found"
+    }
+  ]
+}
+```
+
 > 422 Response
 
 ```json
@@ -32130,15 +33271,32 @@ This will return the Message model that has been created.
 }
 ```
 
+> 500 Response
+
+```json
+{
+  "type": "error.list",
+  "request_id": "f2b8d4a6-1c73-4e9f-b0a5-7d3e9c2f6a18",
+  "errors": [
+    {
+      "code": "server_error",
+      "message": "Failed to send WhatsApp message: (#131026) Message undeliverable"
+    }
+  ]
+}
+```
+
 <h3 id="create-a-message-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|admin message created|[message](#schemamessage)|
-|400|Bad Request|No body supplied for email message|[error](#schemaerror)|
+|400|Bad Request|Invalid request|[error](#schemaerror)|
 |401|Unauthorized|Unauthorized|[error](#schemaerror)|
-|403|Forbidden|API plan restricted|[error](#schemaerror)|
-|422|Unprocessable Entity|No subject supplied for email message|[error](#schemaerror)|
+|403|Forbidden|Forbidden|[error](#schemaerror)|
+|404|Not Found|Contact not found|[error](#schemaerror)|
+|422|Unprocessable Entity|Unprocessable entity|[error](#schemaerror)|
+|500|Internal Server Error|Server error|[error](#schemaerror)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -37360,7 +38518,15 @@ If custom attributes are specified, they will be added to the user or lead's cus
 |Intercom-Version|header|[intercom_version](#schemaintercom_version)|false|none|
 |body|body|[create_phone_switch_request](#schemacreate_phone_switch_request)|false|none|
 |» phone|body|string|true|Phone number in E.164 format, that will receive the SMS to continue the conversation in the Messenger.|
-|» custom_attributes|body|[custom_attributes_request](#schemacustom_attributes_request)|false|The custom attributes which are set on this object, as key-value pairs. For relationship attributes the value should be a list of custom object instance models. Only attributes a caller may set should be sent here — attributes Intercom generates are returned in responses only.|
+|» custom_attributes|body|object|false|Custom attributes to add to the user or lead's custom data attributes. Values are strings. Numbers and booleans are converted to strings. An empty string, or any array or object value, returns a `422` error with the key `context`. A `null` value is ignored.|
+|» » **additionalProperties**|body|string \| null \| number \| boolean|false|none|
+|» » » *oneOf*|body|string \| null|false|none|
+|» » » *oneOf*|body|number|false|none|
+|» » » *oneOf*|body|boolean|false|none|
+|» body|body|string|false|The text of the contact's first message. When you send it, a conversation is created straight away with this text as its first message.|
+|» send_notification|body|boolean|false|Whether to send the SMS with the link to the Messenger. When `false`, no SMS is sent.|
+|» user_input_phone|body|string \| null|false|The phone number as the contact typed it, in national format. When sent with `country`, used in place of `phone` to read the number. `phone` is still required.|
+|» country|body|string \| null|false|The two-letter country code used to read `user_input_phone`. When `country` is `US`, Intercom also looks up the carrier to detect landlines.|
 
 #### Enumerated Values
 
@@ -37438,9 +38604,9 @@ If custom attributes are specified, they will be added to the user or lead's cus
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|successful|[phone_switch](#schemaphone_switch)|
-|400|Bad Request|Phone number lookup or SMS send failed|None|
+|400|Bad Request|The phone number lookup or the SMS send failed|None|
 |401|Unauthorized|Unauthorized|[error](#schemaerror)|
-|422|Unprocessable Entity|unprocessable entity|None|
+|422|Unprocessable Entity|The request was invalid. The response is an object with a single `error_key`: `caller_phone` when `phone` is missing, `invalid_phone_number`, `landline_phone`, `twilio_settings` when the workspace has no Twilio account to send the SMS, or `context` when `custom_attributes` is invalid. Any other invalid input returns its own key, such as `send_notification` or `country`.|None|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -41131,7 +42297,7 @@ You can create a new ticket.
 |» conversation_to_link_id|body|string|false|The ID of the conversation you want to link to the ticket. Here are the valid ways of linking two tickets:<br> - conversation \| back-office ticket<br> - customer tickets \| non-shared back-office ticket<br> - conversation \| tracker ticket<br> - customer ticket \| tracker ticket|
 |» company_id|body|string|false|The ID of the company that the ticket is associated with. The unique identifier for the company which is given by Intercom|
 |» created_at|body|integer|false|The time the ticket was created. If not provided, the current time will be used.|
-|» ticket_attributes|body|[ticket_request_custom_attributes](#schematicket_request_custom_attributes)|false|The attributes set on the ticket. When setting the default title and description attributes, the attribute keys that should be used are `_default_title_` and `_default_description_`. When setting ticket type attributes of the list attribute type, the key should be the attribute name and the value of the attribute should be the list item id, obtainable by [listing the ticket type](ref:get_ticket-types). For example, if the ticket type has an attribute called `priority` of type `list`, the key should be `priority` and the value of the attribute should be the guid of the list item (e.g. `de1825a0-0164-4070-8ca6-13e22462fa7e`).|
+|» ticket_attributes|body|[ticket_request_custom_attributes](#schematicket_request_custom_attributes)|false|The attributes set on the ticket. When setting the default title and description attributes, the attribute keys that should be used are `_default_title_` and `_default_description_`. When setting ticket type attributes of the list attribute type, the key should be the attribute name and the value of the attribute should be the list item id, obtainable by [listing the ticket type](ref:get_ticket-types). For example, if the ticket type has an attribute called `priority` of type `list`, the key should be `priority` and the value of the attribute should be the guid of the list item (e.g. `de1825a0-0164-4070-8ca6-13e22462fa7e`). For a `files` attribute, pass an array of upload ids; for a `relationship` attribute, pass an array of related object ids as strings.|
 |» assignment|body|object|false|none|
 |» » admin_assignee_id|body|string|false|The ID of the admin to which the ticket is assigned. If not provided, the ticket will be unassigned.|
 |» » team_assignee_id|body|string|false|The ID of the team to which the ticket is assigned. If not provided, the ticket will be unassigned.|
@@ -41432,7 +42598,7 @@ Enqueues ticket creation for asynchronous processing, returning if the job was e
 |» conversation_to_link_id|body|string|false|The ID of the conversation you want to link to the ticket. Here are the valid ways of linking two tickets:<br> - conversation \| back-office ticket<br> - customer tickets \| non-shared back-office ticket<br> - conversation \| tracker ticket<br> - customer ticket \| tracker ticket|
 |» company_id|body|string|false|The ID of the company that the ticket is associated with. The unique identifier for the company which is given by Intercom|
 |» created_at|body|integer|false|The time the ticket was created. If not provided, the current time will be used.|
-|» ticket_attributes|body|[ticket_request_custom_attributes](#schematicket_request_custom_attributes)|false|The attributes set on the ticket. When setting the default title and description attributes, the attribute keys that should be used are `_default_title_` and `_default_description_`. When setting ticket type attributes of the list attribute type, the key should be the attribute name and the value of the attribute should be the list item id, obtainable by [listing the ticket type](ref:get_ticket-types). For example, if the ticket type has an attribute called `priority` of type `list`, the key should be `priority` and the value of the attribute should be the guid of the list item (e.g. `de1825a0-0164-4070-8ca6-13e22462fa7e`).|
+|» ticket_attributes|body|[ticket_request_custom_attributes](#schematicket_request_custom_attributes)|false|The attributes set on the ticket. When setting the default title and description attributes, the attribute keys that should be used are `_default_title_` and `_default_description_`. When setting ticket type attributes of the list attribute type, the key should be the attribute name and the value of the attribute should be the list item id, obtainable by [listing the ticket type](ref:get_ticket-types). For example, if the ticket type has an attribute called `priority` of type `list`, the key should be `priority` and the value of the attribute should be the guid of the list item (e.g. `de1825a0-0164-4070-8ca6-13e22462fa7e`). For a `files` attribute, pass an array of upload ids; for a `relationship` attribute, pass an array of related object ids as strings.|
 |» assignment|body|object|false|none|
 |» » admin_assignee_id|body|string|false|The ID of the admin to which the ticket is assigned. If not provided, the ticket will be unassigned.|
 |» » team_assignee_id|body|string|false|The ID of the team to which the ticket is assigned. If not provided, the ticket will be unassigned.|
@@ -42605,7 +43771,7 @@ When searching for tickets by the **`category`** field, specific terms must be u
 
 ### Sorting
 
-You can sort the results with a `sort` object, for example `{"field": "created_at", "order": "ascending"}`. `field` must be one of the fields in the table above, other than `ticket_attribute.{id}`, `title` and `description`. `order` is `ascending` or `descending`, and any other value is treated as `descending`. Without `sort`, results are sorted by `updated_at`, newest first.
+You can sort the results with a `sort` object, for example `{"field": "created_at", "order": "ascending"}`. `field` must be one of the fields in the table above, other than `ticket_attribute.{id}`, `title` and `description`. `order` is `ascending` or `descending`. Without `sort`, results are sorted by `updated_at`, newest first.
 
 ### Accepted Operators
 
@@ -42659,6 +43825,9 @@ The table below shows the operators you can use to define how you want to search
 |» » *oneOf*|body|[single_filter_search_request](#schemasingle_filter_search_request)|false|Search using Intercoms Search APIs with a single filter.|
 |» » *oneOf*|body|[multiple_filter_search_request](#schemamultiple_filter_search_request)|false|Search using Intercoms Search APIs with more than one filter.|
 |» pagination|body|[starting_after_paging](#schemastarting_after_paging)|false|none|
+|» sort|body|object|false|How to sort the results. Without it, the endpoint's default order is used.|
+|» » field|body|string|true|The field to sort by, one of the searchable fields listed for the endpoint. Some fields can't be sorted; the endpoint's Sorting section says which. A missing `field`, or one that isn't searchable, returns a `400` error with the code `invalid_field`.|
+|» » order|body|string|false|The sort order.|
 
 #### Enumerated Values
 
@@ -42687,6 +43856,8 @@ The table below shows the operators you can use to define how you want to search
 |Intercom-Version|2.15|
 |Intercom-Version|2.16|
 |Intercom-Version|2.17|
+|» » order|ascending|
+|» » order|descending|
 
 > Example responses
 
@@ -44861,7 +46032,9 @@ Admin priority levels for the team
       "name": "test.json"
     }
   ],
-  "skip_notifications": true
+  "skip_notifications": true,
+  "assignee_id": "4324241",
+  "skip_reopen": true
 }
 ```
 
@@ -44880,6 +46053,8 @@ Payload of the request to reply on behalf of an admin
 |attachment_urls|[string(uri)]|false|none|A list of image URLs that will be added as attachments. You can include up to 10 URLs.|
 |attachment_files|[[conversation_attachment_files](#schemaconversation_attachment_files)]|false|none|A list of files that will be added as attachments. You can include up to 10 files|
 |skip_notifications|boolean|false|none|Option to disable notifications when replying to a conversation.|
+|assignee_id|string|false|none|The `id` of the admin or team to assign the conversation to with this reply.|
+|skip_reopen|boolean|false|none|When true, a reply that assigns the conversation (a `comment` with `assignee_id`) doesn't reopen or unsnooze it. A plain `comment` still reopens a closed conversation. Available from API version 2.17.|
 
 #### Enumerated Values
 
@@ -44889,6 +46064,57 @@ Payload of the request to reply on behalf of an admin
 |message_type|note|
 |message_type|quick_reply|
 |type|admin|
+
+<h2 id="tocS_bot_reply_conversation_request">bot_reply_conversation_request</h2>
+<!-- backwards compatibility -->
+<a id="schemabot_reply_conversation_request"></a>
+<a id="schema_bot_reply_conversation_request"></a>
+<a id="tocSbot_reply_conversation_request"></a>
+<a id="tocsbot_reply_conversation_request"></a>
+
+```json
+{
+  "message_type": "comment",
+  "type": "bot",
+  "bot_id": "3156780",
+  "body": "Hello there!",
+  "created_at": 1590000000,
+  "reply_options": [
+    {
+      "text": "string",
+      "uuid": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+    }
+  ],
+  "attachment_urls": [
+    "http://example.com"
+  ],
+  "skip_notifications": true
+}
+```
+
+Payload of the request to reply on behalf of a bot
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|message_type|string|true|none|none|
+|type|string|true|none|none|
+|bot_id|string|true|none|The id of the bot that is authoring the reply. A bot that doesn't exist returns a `404` error.|
+|body|string|false|none|The text body of the reply. Must be present for comment and note message types.|
+|created_at|integer|false|none|The time the reply was created. If not provided, the current time will be used.|
+|reply_options|[[quick_reply_option](#schemaquick_reply_option)]|false|none|The quick reply options to display to the end user. Must be present for quick_reply message types.|
+|attachment_urls|[string(uri)]|false|none|A list of image URLs that will be added as attachments. You can include up to 10 URLs.|
+|skip_notifications|boolean|false|none|Option to disable notifications when replying to a conversation. Available from API version 2.15.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|message_type|comment|
+|message_type|note|
+|message_type|quick_reply|
+|type|bot|
 
 <h2 id="tocS_admin_reply_ticket_request">admin_reply_ticket_request</h2>
 <!-- backwards compatibility -->
@@ -51005,7 +52231,8 @@ A metadata summary of an article version, as returned by the version-history lis
   "admin_id": "12345",
   "assignee_id": "4324241",
   "body": "Let me pass you over to one of my colleagues.",
-  "skip_reopen": true
+  "skip_reopen": true,
+  "skip_notifications": true
 }
 ```
 
@@ -51021,6 +52248,7 @@ Payload of the request to assign a conversation
 |assignee_id|string|true|none|The `id` of the `admin` or `team` which will be assigned the conversation. A conversation can be assigned both an admin and a team.\nSet `0` if you want this assign to no admin or team (ie. Unassigned).|
 |body|string|false|none|Optionally you can send a response in the conversation when it is assigned.|
 |skip_reopen|boolean|false|none|When true, assigning a closed conversation leaves it closed instead of reopening it. No reopen event is recorded, so the conversation keeps its original close timestamp and the assignment does not count as a new closure in reporting.|
+|skip_notifications|boolean|false|none|Option to disable notifications when assigning a conversation. Available from API version 2.15.|
 
 #### Enumerated Values
 
@@ -51040,23 +52268,26 @@ Payload of the request to assign a conversation
 ```json
 {
   "admin_id": "12345",
+  "intercom_user_id": "6329bd9ffe4e2e91dac76188",
+  "user_id": "2e91dac761886329bd9ffe4e",
+  "email": "winstonsmith@truth.org",
   "customer": {
-    "intercom_user_id": "6329bd9ffe4e2e91dac76188",
-    "customer": {
-      "intercom_user_id": "6329bd9ffe4e2e91dac76188"
-    }
+    "intercom_user_id": "6329bd9ffe4e2e91dac76188"
   }
 }
 ```
 
-Payload of the request to assign a conversation
+Payload of the request to add a contact to a conversation. Say who is adding the contact in one of two ways: send `admin_id` to act as an admin, or send one of `intercom_user_id`, `user_id` or `email` to act as a contact. Sending both, or neither, returns a `422` error. Use `customer` to identify the contact to add.
 
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|admin_id|string|false|none|The `id` of the admin who is adding the new participant.|
-|customer|object|false|none|none|
+|admin_id|string|false|none|The `id` of the admin who is adding the new participant. Send this to act as an admin.|
+|intercom_user_id|string|false|none|The identifier, as given by Intercom, of the contact who is adding the new participant. Send this, `user_id` or `email` to act as a contact.|
+|user_id|string|false|none|The `external_id` you have defined for the contact who is adding the new participant.|
+|email|string|false|none|The email of the contact who is adding the new participant.|
+|customer|[customer_request](#schemacustomer_request)|true|none|The contact to add as a participant. Identify them with exactly one of `intercom_user_id`, `user_id` or `email`.|
 
 <h2 id="tocS_conversation_participants_response">conversation_participants_response</h2>
 <!-- backwards compatibility -->
@@ -51463,7 +52694,9 @@ You can change the type of a Ticket
   "message_type": "close",
   "type": "admin",
   "admin_id": "12345",
-  "body": " This conversation is now closed!"
+  "body": " This conversation is now closed!",
+  "assignee_id": "4324241",
+  "skip_notifications": true
 }
 ```
 
@@ -51477,6 +52710,8 @@ Payload of the request to close a conversation
 |type|string|true|none|none|
 |admin_id|string|true|none|The id of the admin who is performing the action.|
 |body|string|false|none|Optionally you can leave a message in the conversation to provide additional context to the user and other teammates.|
+|assignee_id|string|false|none|The `id` of the `admin` or `team` to assign the conversation to when it is closed. Set `0` to unassign it, which clears both the teammate and the team assignee.|
+|skip_notifications|boolean|false|none|Option to disable notifications when closing a conversation. Available from API version 2.15.|
 
 #### Enumerated Values
 
@@ -53866,7 +55101,7 @@ reference to contact object
 |---|---|---|---|---|
 |message_type|string|true|none|none|
 |type|string|true|none|none|
-|body|string|true|none|The text body of the comment.|
+|body|string|false|none|The text body of the comment. Required unless the reply includes attachments. Always required when replying to a ticket.|
 |created_at|integer|false|none|The time the reply was created. If not provided, the current time will be used.|
 |attachment_urls|[string(uri)]|false|none|A list of image URLs that will be added as attachments. You can include up to 10 URLs.|
 |reply_options|[object]|false|none|The quick reply selection the contact wishes to respond with. These map to buttons displayed in the Messenger UI if sent by a bot, or the reply options sent by an Admin via the API.|
@@ -53960,7 +55195,7 @@ Payload of the request to reply on behalf of a contact using their `email`
 |---|---|---|---|---|
 |message_type|string|true|none|none|
 |type|string|true|none|none|
-|body|string|true|none|The text body of the comment.|
+|body|string|false|none|The text body of the comment. Required unless the reply includes attachments. Always required when replying to a ticket.|
 |created_at|integer|false|none|The time the reply was created. If not provided, the current time will be used.|
 |attachment_urls|[string(uri)]|false|none|A list of image URLs that will be added as attachments. You can include up to 10 URLs.|
 |reply_options|[object]|false|none|The quick reply selection the contact wishes to respond with. These map to buttons displayed in the Messenger UI if sent by a bot, or the reply options sent by an Admin via the API.|
@@ -54015,7 +55250,7 @@ Payload of the request to reply on behalf of a contact using their `intercom_use
 |---|---|---|---|---|
 |message_type|string|true|none|none|
 |type|string|true|none|none|
-|body|string|true|none|The text body of the comment.|
+|body|string|false|none|The text body of the comment. Required unless the reply includes attachments. Always required when replying to a ticket.|
 |created_at|integer|false|none|The time the reply was created. If not provided, the current time will be used.|
 |attachment_urls|[string(uri)]|false|none|A list of image URLs that will be added as attachments. You can include up to 10 URLs.|
 |reply_options|[object]|false|none|The quick reply selection the contact wishes to respond with. These map to buttons displayed in the Messenger UI if sent by a bot, or the reply options sent by an Admin via the API.|
@@ -54063,7 +55298,7 @@ Payload of the request to reply on behalf of a contact using their `email`
 |---|---|---|---|---|
 |message_type|string|true|none|none|
 |type|string|true|none|none|
-|body|string|true|none|The text body of the comment.|
+|body|string|true|none|The text body of the comment. Required unless the reply includes attachments. Always required when replying to a ticket.|
 |created_at|integer|false|none|The time the reply was created. If not provided, the current time will be used.|
 |attachment_urls|[string(uri)]|false|none|A list of image URLs that will be added as attachments. You can include up to 10 URLs.|
 |reply_options|[object]|false|none|The quick reply selection the contact wishes to respond with. These map to buttons displayed in the Messenger UI if sent by a bot, or the reply options sent by an Admin via the API.|
@@ -54110,7 +55345,7 @@ Payload of the request to reply on behalf of a contact using their `intercom_use
 |---|---|---|---|---|
 |message_type|string|true|none|none|
 |type|string|true|none|none|
-|body|string|true|none|The text body of the comment.|
+|body|string|true|none|The text body of the comment. Required unless the reply includes attachments. Always required when replying to a ticket.|
 |created_at|integer|false|none|The time the reply was created. If not provided, the current time will be used.|
 |attachment_urls|[string(uri)]|false|none|A list of image URLs that will be added as attachments. You can include up to 10 URLs.|
 |reply_options|[object]|false|none|The quick reply selection the contact wishes to respond with. These map to buttons displayed in the Messenger UI if sent by a bot, or the reply options sent by an Admin via the API.|
@@ -54191,7 +55426,7 @@ Payload of the request to reply on behalf of a contact using their `user_id`
 |---|---|---|---|---|
 |message_type|string|true|none|none|
 |type|string|true|none|none|
-|body|string|true|none|The text body of the comment.|
+|body|string|true|none|The text body of the comment. Required unless the reply includes attachments. Always required when replying to a ticket.|
 |created_at|integer|false|none|The time the reply was created. If not provided, the current time will be used.|
 |attachment_urls|[string(uri)]|false|none|A list of image URLs that will be added as attachments. You can include up to 10 URLs.|
 |reply_options|[object]|false|none|The quick reply selection the contact wishes to respond with. These map to buttons displayed in the Messenger UI if sent by a bot, or the reply options sent by an Admin via the API.|
@@ -54245,7 +55480,7 @@ Payload of the request to reply on behalf of a contact using their `user_id`
 |---|---|---|---|---|
 |message_type|string|true|none|none|
 |type|string|true|none|none|
-|body|string|true|none|The text body of the comment.|
+|body|string|false|none|The text body of the comment. Required unless the reply includes attachments. Always required when replying to a ticket.|
 |created_at|integer|false|none|The time the reply was created. If not provided, the current time will be used.|
 |attachment_urls|[string(uri)]|false|none|A list of image URLs that will be added as attachments. You can include up to 10 URLs.|
 |reply_options|[object]|false|none|The quick reply selection the contact wishes to respond with. These map to buttons displayed in the Messenger UI if sent by a bot, or the reply options sent by an Admin via the API.|
@@ -55852,6 +57087,38 @@ A single search result. The `type` field discriminates between the flat shape us
     "initial": "messenger",
     "current": "messenger"
   },
+  "topics": {
+    "type": "topic.list",
+    "topics": [
+      {
+        "type": "topic",
+        "id": 4521,
+        "name": "Billing"
+      }
+    ],
+    "total_count": 1
+  },
+  "ticket": {
+    "type": "ticket",
+    "id": 1295,
+    "url": "https://app.intercom.com/a/apps/abcd1234/conversations/1295",
+    "custom_attributes": {
+      "property1": {
+        "value": "string",
+        "type": "string"
+      },
+      "property2": {
+        "value": "string",
+        "type": "string"
+      }
+    },
+    "state": "submitted",
+    "ticket_type": "Bug report",
+    "ticket_type_description": "Something is broken",
+    "ticket_type_emoji": "🐛",
+    "ticket_custom_state_admin_label": "Submitted",
+    "ticket_custom_state_user_label": "Received"
+  },
   "external_references": [
     {
       "type": "zendesk_ticket",
@@ -55867,7 +57134,7 @@ A single search result. The `type` field discriminates between the flat shape us
       "monitor_id": "12345",
       "monitor_name": "Customer complaint handling",
       "monitor_type": "prompt",
-      "result": "flagged",
+      "result": "included",
       "explanation": "The customer mentioned wanting a refund without resolution.",
       "evaluated_at": 1719493065
     }
@@ -55976,8 +57243,10 @@ The data returned about your conversations when you list or search them.
 |sales_agent_participated|boolean|false|none|Indicates whether the Sales Agent participated in the conversation.|
 |sales_agent|[sales_agent](#schemasales_agent)|false|none|Data related to Sales Agent involvement in the conversation.|
 |channel|object \| null|false|none|The channel through which the conversation was initiated and its current channel.|
+|topics|object|false|none|The topics of the conversation. An empty object when the workspace doesn't use topics.|
+|ticket|object \| null|false|none|The ticket details when the conversation is a ticket. `null` for any other conversation.|
 |external_references|[[conversation_external_reference](#schemaconversation_external_reference)]|false|none|References linking this conversation to records in an external helpdesk or CRM system. Populated for Fin Standalone workspaces synced from an external platform; an empty array otherwise. Sorted alphabetically by `type` and capped at 20 entries.|
-|monitor_evaluations|[[conversation_monitor_evaluation](#schemaconversation_monitor_evaluation)]|false|none|QA monitor evaluations that flagged this conversation. Only included when `include_monitors=true` is passed as a query parameter.|
+|monitor_evaluations|[[conversation_monitor_evaluation](#schemaconversation_monitor_evaluation)]|false|none|The latest QA monitor evaluation for each monitor that has evaluated this conversation, whatever its result. Only included when `include_monitors=true` is passed as a query parameter.|
 |scorecards|[[conversation_scorecard](#schemaconversation_scorecard)]|false|none|QA scorecard results for this conversation. Only included when `include_scorecards=true` is passed as a query parameter.|
 
 #### Enumerated Values
@@ -56403,7 +57672,7 @@ The data returned about your conversations when you list or search them.
       "monitor_id": "12345",
       "monitor_name": "Customer complaint handling",
       "monitor_type": "prompt",
-      "result": "flagged",
+      "result": "included",
       "explanation": "The customer mentioned wanting a refund without resolution.",
       "evaluated_at": 1719493065
     }
@@ -56514,7 +57783,7 @@ Conversations are how you can communicate with users in Intercom. They are creat
 |sales_agent|[sales_agent](#schemasales_agent)|false|none|Data related to Sales Agent involvement in the conversation.|
 |channel|object \| null|false|none|The channel through which the conversation was initiated and its current channel.|
 |external_references|[[conversation_external_reference](#schemaconversation_external_reference)]|false|none|References linking this conversation to records in an external helpdesk or CRM system. Populated for Fin Standalone workspaces synced from an external platform; an empty array otherwise. Sorted alphabetically by `type` and capped at 20 entries.|
-|monitor_evaluations|[[conversation_monitor_evaluation](#schemaconversation_monitor_evaluation)]|false|none|QA monitor evaluations that flagged this conversation. Only included when `include_monitors=true` is passed as a query parameter.|
+|monitor_evaluations|[[conversation_monitor_evaluation](#schemaconversation_monitor_evaluation)]|false|none|The latest QA monitor evaluation for each monitor that has evaluated this conversation, whatever its result. Only included when `include_monitors=true` is passed as a query parameter.|
 |scorecards|[[conversation_scorecard](#schemaconversation_scorecard)]|false|none|QA scorecard results for this conversation. Only included when `include_scorecards=true` is passed as a query parameter.|
 
 #### Enumerated Values
@@ -56613,13 +57882,13 @@ A reference linking a conversation to a record in an external helpdesk or CRM sy
   "monitor_id": "12345",
   "monitor_name": "Customer complaint handling",
   "monitor_type": "prompt",
-  "result": "flagged",
+  "result": "included",
   "explanation": "The customer mentioned wanting a refund without resolution.",
   "evaluated_at": 1719493065
 }
 ```
 
-A QA monitor evaluation that flagged this conversation. Returned in the `monitor_evaluations` array on conversation responses when `include_monitors=true` is passed.
+A QA monitor evaluation of this conversation. Returned in the `monitor_evaluations` array on conversation responses when `include_monitors=true` is passed.
 
 ### Properties
 
@@ -56628,7 +57897,7 @@ A QA monitor evaluation that flagged this conversation. Returned in the `monitor
 |monitor_id|string|false|none|The unique identifier of the monitor that produced this evaluation.|
 |monitor_name|string \| null|false|none|The name of the monitor at the time of evaluation. Null if the monitor has since been deleted.|
 |monitor_type|string \| null|false|none|The type of the monitor. Null if the monitor has since been deleted.|
-|result|string|false|none|The evaluation outcome reported by the monitor.|
+|result|string|false|none|The evaluation outcome reported by the monitor: `included` (the conversation matches the monitor's criteria), `excluded`, `error` or `awaiting_async_data`.|
 |explanation|string \| null|false|none|The reasoning provided by the monitor for its result. May be null if no reasoning was generated.|
 |evaluated_at|integer(date-time) \| null|false|none|The time the monitor evaluated this conversation. Null in the rare case the underlying record's timestamp is not yet set.|
 
@@ -57085,7 +58354,7 @@ deleted conversation object
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |id|string|false|none|The unique identifier for the conversation.|
-|object|string|false|none|always conversation|
+|object|string|false|none|`conversation`, or `ticket` when the deleted item is a ticket.|
 |deleted|boolean|false|none|Whether the conversation is deleted or not.|
 
 #### Enumerated Values
@@ -57093,6 +58362,7 @@ deleted conversation object
 |Property|Value|
 |---|---|
 |object|conversation|
+|object|ticket|
 
 <h2 id="tocS_deleted_conversation_item">deleted_conversation_item</h2>
 <!-- backwards compatibility -->
@@ -57120,6 +58390,72 @@ A deleted conversation record containing its ID, metrics retained status and del
 |id|string|false|none|The ID of the deleted conversation.|
 |metrics_retained|boolean|false|none|Whether reporting metrics are retained for this conversation ID|
 |deleted_at|integer(date-time)|false|none|The time when the conversation was deleted.|
+
+<h2 id="tocS_create_conversation_stream_token_request">create_conversation_stream_token_request</h2>
+<!-- backwards compatibility -->
+<a id="schemacreate_conversation_stream_token_request"></a>
+<a id="schema_create_conversation_stream_token_request"></a>
+<a id="tocScreate_conversation_stream_token_request"></a>
+<a id="tocscreate_conversation_stream_token_request"></a>
+
+```json
+{
+  "external_id": "contact-1234"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|external_id|string|true|none|The external ID of the contact to issue a token for.|
+
+<h2 id="tocS_conversation_stream_token">conversation_stream_token</h2>
+<!-- backwards compatibility -->
+<a id="schemaconversation_stream_token"></a>
+<a id="schema_conversation_stream_token"></a>
+<a id="tocSconversation_stream_token"></a>
+<a id="tocsconversation_stream_token"></a>
+
+```json
+{
+  "type": "conversation_stream_token",
+  "expires_at": 1731241200,
+  "stream": {
+    "provider": "ably",
+    "url": "main.realtime.ably.net",
+    "channel": "conversation_stream:abc123:6710a1b2c3d4e5f6a7b8c9d0",
+    "token": "<stream token>"
+  },
+  "links": {
+    "self": {
+      "href": "https://api.intercom.io/conversations/stream/token",
+      "method": "POST"
+    },
+    "revoke": {
+      "href": "https://api.intercom.io/conversations/stream/token?external_id=contact-1234",
+      "method": "DELETE"
+    }
+  }
+}
+```
+
+A token that lets a contact's client subscribe to a realtime stream of their conversation events.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|type|string|false|none|String representing the object's type. Always has the value `conversation_stream_token`.|
+|expires_at|integer(date-time)|false|none|The time the token expires, as a UNIX timestamp.|
+|stream|object|false|none|What the client needs to connect to the stream.|
+|links|object|false|none|The requests you can make with this token.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|conversation_stream_token|
 
 <h2 id="tocS_deleted_conversation_list">deleted_conversation_list</h2>
 <!-- backwards compatibility -->
@@ -57494,6 +58830,38 @@ An object containing information on the first users message. For a contact initi
         "initial": "messenger",
         "current": "messenger"
       },
+      "topics": {
+        "type": "topic.list",
+        "topics": [
+          {
+            "type": "topic",
+            "id": 4521,
+            "name": "Billing"
+          }
+        ],
+        "total_count": 1
+      },
+      "ticket": {
+        "type": "ticket",
+        "id": 1295,
+        "url": "https://app.intercom.com/a/apps/abcd1234/conversations/1295",
+        "custom_attributes": {
+          "property1": {
+            "value": "string",
+            "type": "string"
+          },
+          "property2": {
+            "value": "string",
+            "type": "string"
+          }
+        },
+        "state": "submitted",
+        "ticket_type": "Bug report",
+        "ticket_type_description": "Something is broken",
+        "ticket_type_emoji": "🐛",
+        "ticket_custom_state_admin_label": "Submitted",
+        "ticket_custom_state_user_label": "Received"
+      },
       "external_references": [
         {
           "type": "zendesk_ticket",
@@ -57509,7 +58877,7 @@ An object containing information on the first users message. For a contact initi
           "monitor_id": "12345",
           "monitor_name": "Customer complaint handling",
           "monitor_type": "prompt",
-          "result": "flagged",
+          "result": "included",
           "explanation": "The customer mentioned wanting a refund without resolution.",
           "evaluated_at": 1719493065
         }
@@ -57734,7 +59102,7 @@ A Conversation Part represents a message in the conversation.
 |tags|[[tag_basic](#schematag_basic)]|false|none|A list of tags objects associated with the conversation part.|
 |event_details|[event_details](#schemaevent_details)|false|none|none|
 |app_package_code|string \| null|false|none|The app package code if this part was created via API. null if the part was not created via API.|
-|translations|object \| null|false|none|A map of the reply text keyed by locale code. Backs the `conversation.admin.replied.translated` webhook topic. `original` holds the locale code the reply was written in; every other key holds the reply translated into that locale.|
+|translations|object \| null|false|none|A map of the reply text keyed by locale code. Backs the `conversation.admin.replied.translated` webhook topic. `original` holds the locale code the reply was written in, when it is known; every other key holds the reply translated into that locale.|
 
 #### Enumerated Values
 
@@ -57986,6 +59354,76 @@ Details of first response time of assigned team in seconds.
 |team_id|integer|false|none|Id of the assigned team.|
 |team_name|string|false|none|Name of the assigned Team, null if team does not exist, Unassigned if no team is assigned.|
 |response_time|integer|false|none|First response time of assigned team in seconds.|
+
+<h2 id="tocS_rate_conversation_request">rate_conversation_request</h2>
+<!-- backwards compatibility -->
+<a id="schemarate_conversation_request"></a>
+<a id="schema_rate_conversation_request"></a>
+<a id="tocSrate_conversation_request"></a>
+<a id="tocsrate_conversation_request"></a>
+
+```json
+{
+  "intercom_user_id": "6541f0a2c3d4e5f607182930",
+  "rating": 4,
+  "remark": "Fast and friendly"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|intercom_user_id|string|true|none|The unique identifier for the contact the rating request was sent to.|
+|rating|integer|true|none|The rating, from 1 to 5.|
+|remark|string|false|none|Free text from the contact to go with the rating.|
+
+<h2 id="tocS_rated_conversation">rated_conversation</h2>
+<!-- backwards compatibility -->
+<a id="schemarated_conversation"></a>
+<a id="schema_rated_conversation"></a>
+<a id="tocSrated_conversation"></a>
+<a id="tocsrated_conversation"></a>
+
+```json
+{
+  "type": "conversation_rating",
+  "conversation_id": "215471234567890",
+  "rating": 4,
+  "remark": "Fast and friendly",
+  "created_at": 1793664000,
+  "updated_at": 1793664120,
+  "customer": {
+    "type": "user",
+    "id": "6541f0a2c3d4e5f607182930"
+  },
+  "teammate": {
+    "type": "admin",
+    "id": "12345"
+  }
+}
+```
+
+The CSAT rating recorded on a conversation.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|type|string|false|none|String representing the object's type. Always has the value `conversation_rating`.|
+|conversation_id|string|false|none|The unique identifier for the conversation.|
+|rating|integer|false|none|The rating, from 1 to 5.|
+|remark|string \| null|false|none|The free text left with the rating.|
+|created_at|integer(date-time)|false|none|The time the rating request was created, as a UNIX timestamp.|
+|updated_at|integer(date-time)|false|none|The time the rating or remark last changed, as a UNIX timestamp.|
+|customer|object|false|none|The contact who answered.|
+|teammate|object|false|none|Who was rated.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|conversation_rating|
 
 <h2 id="tocS_conversation_source">conversation_source</h2>
 <!-- backwards compatibility -->
@@ -58258,7 +59696,7 @@ You can convert a Conversation to a Ticket
 |---|---|---|---|---|
 |ticket_type_id|string|true|none|The ID of the type of ticket you want to convert the conversation to|
 |ticket_state_id|string|false|none|The ID of the ticket state associated with the ticket type.|
-|attributes|[ticket_request_custom_attributes](#schematicket_request_custom_attributes)|false|none|The attributes set on the ticket. When setting the default title and description attributes, the attribute keys that should be used are `_default_title_` and `_default_description_`. When setting ticket type attributes of the list attribute type, the key should be the attribute name and the value of the attribute should be the list item id, obtainable by [listing the ticket type](ref:get_ticket-types). For example, if the ticket type has an attribute called `priority` of type `list`, the key should be `priority` and the value of the attribute should be the guid of the list item (e.g. `de1825a0-0164-4070-8ca6-13e22462fa7e`).|
+|attributes|[ticket_request_custom_attributes](#schematicket_request_custom_attributes)|false|none|The attributes set on the ticket. When setting the default title and description attributes, the attribute keys that should be used are `_default_title_` and `_default_description_`. When setting ticket type attributes of the list attribute type, the key should be the attribute name and the value of the attribute should be the list item id, obtainable by [listing the ticket type](ref:get_ticket-types). For example, if the ticket type has an attribute called `priority` of type `list`, the key should be `priority` and the value of the attribute should be the guid of the list item (e.g. `de1825a0-0164-4070-8ca6-13e22462fa7e`). For a `files` attribute, pass an array of upload ids; for a `relationship` attribute, pass an array of related object ids as strings.|
 
 <h2 id="tocS_convert_visitor_request">convert_visitor_request</h2>
 <!-- backwards compatibility -->
@@ -59892,7 +61330,8 @@ You can add an External Page to your Fin Content Library.
   "template": "plain",
   "from": {
     "type": "admin",
-    "id": 394051
+    "id": 394051,
+    "whatsapp_number": "+14155550123"
   },
   "to": {
     "type": "user",
@@ -59907,7 +61346,20 @@ You can add an External Page to your Fin Content Library.
     "id": "536e564f316c83104c000020"
   },
   "created_at": 1590000000,
-  "create_conversation_without_contact_reply": true
+  "create_conversation_without_contact_reply": true,
+  "components": [
+    {
+      "type": "BODY",
+      "parameters": [
+        {
+          "type": "text",
+          "text": "Username 123"
+        }
+      ]
+    }
+  ],
+  "locale": "en",
+  "brand_id": "1234"
 }
 ```
 
@@ -59917,16 +61369,19 @@ You can create a message
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|message_type|string|false|none|The kind of message being created. Values: `in_app`, `email` or `whatsapp`.|
+|message_type|string|false|none|The kind of message being created. Values: `in_app`, `email` or `whatsapp`. `inapp` is also accepted for in-app messages, and responses always show in-app messages as `inapp`.|
 |subject|string|false|none|The title of the email.|
 |body|string|false|none|The content of the message. HTML and plaintext are supported.|
-|template|string|false|none|The style of the outgoing message. Possible values `plain` or `personal`.|
-|from|object|false|none|The sender of the message. If not provided, the default sender will be used.|
-|to|[recipient](#schemarecipient) \| [[recipient](#schemarecipient)]|false|none|none|
+|template|string|false|none|For `email` messages, the style of the outgoing message. Possible values `plain` or `personal`. For `whatsapp` messages, the name of the WhatsApp message template to send. A template that doesn't exist returns a `400` error.|
+|from|object|false|none|The sender of the message. Required. A request without `from` returns a `400` error.|
+|to|[recipient](#schemarecipient) \| [[recipient](#schemarecipient)] \| object|false|none|none|
 |cc|[recipient](#schemarecipient) \| [[recipient](#schemarecipient)]|false|none|none|
 |bcc|[recipient](#schemarecipient) \| [[recipient](#schemarecipient)]|false|none|none|
 |created_at|integer|false|none|The time the message was created. If not provided, the current time will be used.|
-|create_conversation_without_contact_reply|boolean|false|none|Whether a conversation should be opened in the inbox for the message without the contact replying. Defaults to false if not provided.|
+|create_conversation_without_contact_reply|boolean|false|none|Whether a conversation should be opened in the inbox for the message without the contact replying. Defaults to false if not provided. For `whatsapp` messages, a conversation is always opened and this field is ignored.|
+|components|[object]|false|none|The components of the WhatsApp template, with the values for its variables. Required for `whatsapp` messages.|
+|locale|string|false|none|The locale of the WhatsApp template to send, such as `en`. If you leave it out, the contact's messenger locale is used, then the workspace locale. A template that isn't available in the locale returns a `400` error.|
+|brand_id|string|false|none|The id of the brand to send the message from. Not used for `whatsapp` messages. A brand that doesn't exist returns a `400` error.|
 |*anyOf*|object|false|none|none|
 |*anyOf*|object|false|none|none|
 |*anyOf*|object|false|none|none|
@@ -59936,6 +61391,7 @@ You can create a message
 |Property|Value|
 |---|---|
 |message_type|in_app|
+|message_type|inapp|
 |message_type|email|
 |message_type|whatsapp|
 
@@ -60132,12 +61588,13 @@ You can create or update an existing tag, and optionally apply it to a list of c
 {
   "phone": "+1 1234567890",
   "custom_attributes": {
-    "paid_subscriber": true,
-    "monthly_spend": 155.5,
-    "team_mates": 9,
-    "start_date_iso8601": "2023-03-04T09:46:14Z",
-    "end_date_timestamp": 1677923174
-  }
+    "issue_type": "Billing",
+    "priority": "High"
+  },
+  "body": "I need help with my invoice",
+  "send_notification": true,
+  "user_input_phone": "087 234 5678",
+  "country": "IE"
 }
 ```
 
@@ -60148,7 +61605,11 @@ You can create an phone switch
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |phone|string|true|none|Phone number in E.164 format, that will receive the SMS to continue the conversation in the Messenger.|
-|custom_attributes|[custom_attributes_request](#schemacustom_attributes_request)|false|none|The custom attributes which are set on this object, as key-value pairs. For relationship attributes the value should be a list of custom object instance models. Only attributes a caller may set should be sent here — attributes Intercom generates are returned in responses only.|
+|custom_attributes|object|false|none|Custom attributes to add to the user or lead's custom data attributes. Values are strings. Numbers and booleans are converted to strings. An empty string, or any array or object value, returns a `422` error with the key `context`. A `null` value is ignored.|
+|body|string|false|none|The text of the contact's first message. When you send it, a conversation is created straight away with this text as its first message.|
+|send_notification|boolean|false|none|Whether to send the SMS with the link to the Messenger. When `false`, no SMS is sent.|
+|user_input_phone|string \| null|false|none|The phone number as the contact typed it, in national format. When sent with `country`, used in place of `phone` to read the number. `phone` is still required.|
+|country|string \| null|false|none|The two-letter country code used to read `user_input_phone`. When `country` is `US`, Intercom also looks up the carrier to detect landlines.|
 
 <h2 id="tocS_create_ticket_reply_with_comment_request">create_ticket_reply_with_comment_request</h2>
 <!-- backwards compatibility -->
@@ -60224,7 +61685,7 @@ You can create a Ticket
 |conversation_to_link_id|string|false|none|The ID of the conversation you want to link to the ticket. Here are the valid ways of linking two tickets:<br> - conversation \| back-office ticket<br> - customer tickets \| non-shared back-office ticket<br> - conversation \| tracker ticket<br> - customer ticket \| tracker ticket|
 |company_id|string|false|none|The ID of the company that the ticket is associated with. The unique identifier for the company which is given by Intercom|
 |created_at|integer|false|none|The time the ticket was created. If not provided, the current time will be used.|
-|ticket_attributes|[ticket_request_custom_attributes](#schematicket_request_custom_attributes)|false|none|The attributes set on the ticket. When setting the default title and description attributes, the attribute keys that should be used are `_default_title_` and `_default_description_`. When setting ticket type attributes of the list attribute type, the key should be the attribute name and the value of the attribute should be the list item id, obtainable by [listing the ticket type](ref:get_ticket-types). For example, if the ticket type has an attribute called `priority` of type `list`, the key should be `priority` and the value of the attribute should be the guid of the list item (e.g. `de1825a0-0164-4070-8ca6-13e22462fa7e`).|
+|ticket_attributes|[ticket_request_custom_attributes](#schematicket_request_custom_attributes)|false|none|The attributes set on the ticket. When setting the default title and description attributes, the attribute keys that should be used are `_default_title_` and `_default_description_`. When setting ticket type attributes of the list attribute type, the key should be the attribute name and the value of the attribute should be the list item id, obtainable by [listing the ticket type](ref:get_ticket-types). For example, if the ticket type has an attribute called `priority` of type `list`, the key should be `priority` and the value of the attribute should be the guid of the list item (e.g. `de1825a0-0164-4070-8ca6-13e22462fa7e`). For a `files` attribute, pass an array of upload ids; for a `relationship` attribute, pass an array of related object ids as strings.|
 |assignment|object|false|none|none|
 |channel|string|false|none|The channel for the ticket. Only supported for customer ticket types. Defaults to messenger if not provided.|
 
@@ -65966,7 +67427,41 @@ Payload to merge a secondary conversation into a primary conversation.
   "subject": "Greetings",
   "body": "Hello",
   "message_type": "inapp",
-  "conversation_id": "64619700005570"
+  "conversation_id": "64619700005570",
+  "owner": {
+    "type": "admin",
+    "id": "1295",
+    "name": "Joe Example",
+    "email": "jdoe@example.com",
+    "job_title": "Associate",
+    "away_mode_enabled": false,
+    "away_mode_reassign": false,
+    "away_status_reason_id": 12345,
+    "has_inbox_seat": true,
+    "team_ids": [
+      814865
+    ],
+    "avatar": {
+      "type": "avatar",
+      "image_url": "https://picsum.photos/200/300"
+    },
+    "team_priority_level": {
+      "primary_team_ids": [
+        814865
+      ],
+      "secondary_team_ids": [
+        493881
+      ]
+    },
+    "role": {
+      "type": "role",
+      "id": "1",
+      "name": "Support Agent"
+    }
+  },
+  "template": "plain",
+  "external_id": "api:order-1234",
+  "whatsapp_message_id": "wamid.EXAMPLE123"
 }
 ```
 
@@ -65981,8 +67476,12 @@ Message are how you reach out to contacts in Intercom. They are created when an 
 |created_at|integer(date-time)|true|none|The time the conversation was created.|
 |subject|string|false|none|The subject of the message. Only present if message_type: email.|
 |body|string|true|none|The message body, which may contain HTML.|
-|message_type|string|true|none|The type of message that was sent. Can be email, inapp, facebook or twitter.|
+|message_type|string|true|none|The type of message that was sent. Can be email, inapp, facebook, twitter or whatsapp.|
 |conversation_id|string|false|none|The associated conversation_id|
+|owner|[admin](#schemaadmin)|false|none|The admin who sent the message. Only present when the message has an owner.|
+|template|string|false|none|The style of the email, such as `plain` or `personal`. Only present when `message_type` is `email`.|
+|external_id|string|false|none|The external identifier of the message, if one was set when the message was created. Only returned for messages started by a contact.|
+|whatsapp_message_id|string|false|none|The id WhatsApp gave the message. Only present for `whatsapp` messages that WhatsApp accepted.|
 
 #### Enumerated Values
 
@@ -65992,6 +67491,7 @@ Message are how you reach out to contacts in Intercom. They are created when an 
 |message_type|inapp|
 |message_type|facebook|
 |message_type|twitter|
+|message_type|whatsapp|
 
 <h2 id="tocS_whatsapp_message_status">whatsapp_message_status</h2>
 <!-- backwards compatibility -->
@@ -66525,7 +68025,9 @@ A paginated list of notes associated with a contact or a company. On the last pa
 ```json
 {
   "message_type": "open",
-  "admin_id": "5017690"
+  "admin_id": "5017690",
+  "assignee_id": "4324241",
+  "skip_notifications": true
 }
 ```
 
@@ -66537,6 +68039,8 @@ Payload of the request to open a conversation
 |---|---|---|---|---|
 |message_type|string|true|none|none|
 |admin_id|string|true|none|The id of the admin who is performing the action.|
+|assignee_id|string|false|none|The `id` of the `admin` or `team` to assign the conversation to when it is opened. Set `0` to unassign it, which clears both the teammate and the team assignee.|
+|skip_notifications|boolean|false|none|Option to disable notifications when opening a conversation. Available from API version 2.15.|
 
 #### Enumerated Values
 
@@ -66761,7 +68265,7 @@ Register a Fin Voice call with Intercom
 |phone_number|string|true|none|Phone number in E.164 format for the call|
 |call_id|string|true|none|External call identifier from the call provider|
 |source|string|false|none|Source of the call. Can be "five9", "zoom_phone", "nice_cxone", "dialpad", "generic", or "aws_connect". Defaults to "aws_connect", and any other value is treated as "aws_connect".|
-|vendor_internal_id|string \| null|false|none|Optional vendor-supplied identifier for linking the Fin Voice session to records in the vendor's own systems. Stored as-is and returned on every lookup.|
+|vendor_internal_id|string \| null|false|none|Optional vendor-supplied identifier for linking the Fin Voice session to records in the vendor's own systems. Stored as-is and returned on every lookup. Cannot exceed 191 characters.|
 |data|object \| null|false|none|Additional metadata about the call|
 
 #### Enumerated Values
@@ -66872,6 +68376,7 @@ reference to another object
 |---|---|---|---|---|
 |*oneOf*|[contact_reply_conversation_request](#schemacontact_reply_conversation_request)|false|none|none|
 |*oneOf*|[admin_reply_conversation_request](#schemaadmin_reply_conversation_request)|false|none|Payload of the request to reply on behalf of an admin|
+|*oneOf*|[bot_reply_conversation_request](#schemabot_reply_conversation_request)|false|none|Payload of the request to reply on behalf of a bot|
 
 <h2 id="tocS_search_request">search_request</h2>
 <!-- backwards compatibility -->
@@ -66890,6 +68395,10 @@ reference to another object
   "pagination": {
     "per_page": 2,
     "starting_after": "your-cursor-from-response"
+  },
+  "sort": {
+    "field": "updated_at",
+    "order": "descending"
   }
 }
 ```
@@ -66902,6 +68411,7 @@ Search using Intercoms Search APIs.
 |---|---|---|---|---|
 |query|[single_filter_search_request](#schemasingle_filter_search_request) \| [multiple_filter_search_request](#schemamultiple_filter_search_request)|true|none|none|
 |pagination|[starting_after_paging](#schemastarting_after_paging)|false|none|none|
+|sort|object|false|none|How to sort the results. Without it, the endpoint's default order is used.|
 
 <h2 id="tocS_company_search_request">company_search_request</h2>
 <!-- backwards compatibility -->
@@ -67300,7 +68810,7 @@ A list of subscription type objects.
 }
 ```
 
-A tag allows you to label your contacts, companies, conversations, tickets, articles, internal articles and content snippets, and list them using that tag.
+A tag allows you to label your contacts, companies, conversations, tickets, articles, internal articles, content snippets and external pages, and list them using that tag.
 
 ### Properties
 
@@ -67309,8 +68819,8 @@ A tag allows you to label your contacts, companies, conversations, tickets, arti
 |type|string|false|none|value is "tag"|
 |id|string|false|none|The id of the tag|
 |name|string|false|none|The name of the tag|
-|applied_at|integer(timestamp) \| null|false|none|The time when the tag was applied to the object. Only present when the tag is returned as part of a tagging operation on a contact, conversation, ticket, article, internal article, or content snippet, when listing the tags on a contact, or when it is returned as part of an external page. `null` when the tag has just been removed from an article, internal article, content snippet or external page. Removing a tag from a contact, conversation or ticket returns the original value.|
-|applied_by|object \| null|false|none|The admin who applied the tag. Only present when the tag is returned as part of a tagging operation on a contact, conversation, ticket, article, internal article, or content snippet, when listing the tags on a contact, or when it is returned as part of an external page. `null` when the tag has just been removed from an article, internal article, content snippet or external page. Removing a tag from a contact, conversation or ticket returns the original value. When no admin is recorded, `type` is `nobody_admin` and `id` is `null`.|
+|applied_at|integer(timestamp) \| null|false|none|The time when the tag was applied to the object. Only present when the tag is returned as part of a tagging operation on a contact, conversation, ticket, article, internal article, content snippet, or external page, when listing the tags on a contact, or when it is returned as part of an external page. `null` when the tag has just been removed from an article, internal article, content snippet or external page. Removing a tag from a contact, conversation or ticket returns the original value.|
+|applied_by|object \| null|false|none|The admin who applied the tag. Only present when the tag is returned as part of a tagging operation on a contact, conversation, ticket, article, internal article, content snippet, or external page, when listing the tags on a contact, or when it is returned as part of an external page. `null` when the tag has just been removed from an article, internal article, content snippet or external page. Removing a tag from a contact, conversation or ticket returns the original value. When no admin is recorded, `type` is `nobody_admin` and `id` is `null`.|
 
 <h2 id="tocS_tag_basic">tag_basic</h2>
 <!-- backwards compatibility -->
@@ -67948,7 +69458,7 @@ An object containing the different attributes associated to the ticket as key-va
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|**additionalProperties**|string \| null \| number \| boolean \| array \| [file_attribute](#schemafile_attribute)|false|none|none|
+|**additionalProperties**|string \| null \| number \| boolean \| [[file_attribute](#schemafile_attribute)] \| [file_attribute](#schemafile_attribute)|false|none|none|
 
 <h2 id="tocS_ticket_list">ticket_list</h2>
 <!-- backwards compatibility -->
@@ -68237,7 +69747,7 @@ A Ticket Part represents a message in the ticket.
 |external_id|string \| null|false|none|The external id of the ticket part|
 |redacted|boolean|false|none|Whether or not the ticket part has been redacted.|
 |app_package_code|string|false|none|The app package code if this part was created via API. Note this field won't show if the part was not created via API.|
-|translations|object \| null|false|none|A map of the reply text keyed by locale code. Backs the `ticket.admin.replied.translated` webhook topic. `original` holds the locale code the reply was written in; every other key holds the reply translated into that locale.|
+|translations|object \| null|false|none|A map of the reply text keyed by locale code. Backs the `ticket.admin.replied.translated` webhook topic. `original` holds the locale code the reply was written in, when it is known; every other key holds the reply translated into that locale.|
 |updated_attribute_data|object \| null|false|none|The updated attribute data of the ticket part. Only present for attribute update parts.|
 
 #### Enumerated Values
@@ -68432,7 +69942,7 @@ A Ticket Part representing a note, comment, or quick_reply on a ticket
 |attachments|[[part_attachment](#schemapart_attachment)]|false|none|A list of attachments for the part.|
 |redacted|boolean|false|none|Whether or not the ticket part has been redacted.|
 |app_package_code|string|false|none|The app package code if this part was created via API. Note this field won't show if the part was not created via API.|
-|translations|object \| null|false|none|A map of the reply text keyed by locale code. Backs the `ticket.admin.replied.translated` webhook topic. `original` holds the locale code the reply was written in; every other key holds the reply translated into that locale.|
+|translations|object \| null|false|none|A map of the reply text keyed by locale code. Backs the `ticket.admin.replied.translated` webhook topic. `original` holds the locale code the reply was written in, when it is known; every other key holds the reply translated into that locale.|
 
 #### Enumerated Values
 
@@ -68457,13 +69967,13 @@ A Ticket Part representing a note, comment, or quick_reply on a ticket
 }
 ```
 
-The attributes set on the ticket. When setting the default title and description attributes, the attribute keys that should be used are `_default_title_` and `_default_description_`. When setting ticket type attributes of the list attribute type, the key should be the attribute name and the value of the attribute should be the list item id, obtainable by [listing the ticket type](ref:get_ticket-types). For example, if the ticket type has an attribute called `priority` of type `list`, the key should be `priority` and the value of the attribute should be the guid of the list item (e.g. `de1825a0-0164-4070-8ca6-13e22462fa7e`).
+The attributes set on the ticket. When setting the default title and description attributes, the attribute keys that should be used are `_default_title_` and `_default_description_`. When setting ticket type attributes of the list attribute type, the key should be the attribute name and the value of the attribute should be the list item id, obtainable by [listing the ticket type](ref:get_ticket-types). For example, if the ticket type has an attribute called `priority` of type `list`, the key should be `priority` and the value of the attribute should be the guid of the list item (e.g. `de1825a0-0164-4070-8ca6-13e22462fa7e`). For a `files` attribute, pass an array of upload ids; for a `relationship` attribute, pass an array of related object ids as strings.
 
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|**additionalProperties**|string \| null \| number \| boolean \| array|false|none|none|
+|**additionalProperties**|string \| null \| number \| boolean \| [integer] \| [string]|false|none|none|
 
 <h2 id="tocS_ticket_state">ticket_state</h2>
 <!-- backwards compatibility -->

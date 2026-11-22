@@ -417,7 +417,7 @@ export const postV1TableNameDescribeIndexRoute = createRoute({
               table: z.string().exactOptional(),
               version: z.int().exactOptional(),
               schema: z.string().exactOptional(),
-              stats: z.object({}).exactOptional(),
+              stats: z.looseObject({}).exactOptional(),
             })
             .openapi({ required: [] }),
         },

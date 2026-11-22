@@ -52,338 +52,6 @@ const AppEngineHttpQueueSchema = z
   })
   .openapi('AppEngineHttpQueue')
 
-const HeaderSchema = z
-  .object({
-    key: z.string().exactOptional().openapi({ description: 'The Key of the header.' }),
-    value: z.string().exactOptional().openapi({ description: 'The Value of the header.' }),
-  })
-  .openapi({
-    description: 'Defines a header message. A header can have a key and a value.',
-    required: [],
-  })
-  .openapi('Header')
-
-const HeaderOverrideSchema = z
-  .object({
-    header: HeaderSchema.exactOptional().openapi({
-      description: 'header embodying a key and a value.',
-    }),
-  })
-  .openapi({ description: 'Wraps the Header object.', required: [] })
-  .openapi('HeaderOverride')
-
-const OAuthTokenSchema = z
-  .object({
-    scope: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'OAuth scope to be used for generating OAuth access token. If not specified, "https://www.googleapis.com/auth/cloud-platform" will be used.',
-      }),
-    serviceAccountEmail: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          '[Service account email](https://cloud.google.com/iam/docs/service-accounts) to be used for generating OAuth token. The service account must be within the same project as the queue. The caller must have iam.serviceAccounts.actAs permission for the service account.',
-      }),
-  })
-  .openapi({
-    description:
-      'Contains information needed for generating an [OAuth token](https://developers.google.com/identity/protocols/OAuth2). This type of authorization should generally only be used when calling Google APIs hosted on *.googleapis.com.',
-    required: [],
-  })
-  .openapi('OAuthToken')
-
-const OidcTokenSchema = z
-  .object({
-    audience: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Audience to be used when generating OIDC token. If not specified, the URI specified in target will be used.',
-      }),
-    serviceAccountEmail: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          '[Service account email](https://cloud.google.com/iam/docs/service-accounts) to be used for generating OIDC token. The service account must be within the same project as the queue. The caller must have iam.serviceAccounts.actAs permission for the service account.',
-      }),
-  })
-  .openapi({
-    description:
-      'Contains information needed for generating an [OpenID Connect token](https://developers.google.com/identity/protocols/OpenIDConnect). This type of authorization can be used for many scenarios, including calling Cloud Run, or endpoints where you intend to validate the token yourself.',
-    required: [],
-  })
-  .openapi('OidcToken')
-
-const PathOverrideSchema = z
-  .object({
-    path: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The URI path (e.g., /users/1234). Default is an empty string.' }),
-  })
-  .openapi({
-    description: 'PathOverride. Path message defines path override for HTTP targets.',
-    required: [],
-  })
-  .openapi('PathOverride')
-
-const QueryOverrideSchema = z
-  .object({
-    queryParams: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The query parameters (e.g., qparam1=123&qparam2=456). Default is an empty string.',
-      }),
-  })
-  .openapi({
-    description: 'QueryOverride. Query message defines query override for HTTP targets.',
-    required: [],
-  })
-  .openapi('QueryOverride')
-
-const UriOverrideSchema = z
-  .object({
-    host: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Host override. When specified, replaces the host part of the task URL. For example, if the task URL is "https://www.google.com," and host value is set to "example.net", the overridden URI will be changed to "https://example.net." Host value cannot be an empty string (INVALID_ARGUMENT).',
-      }),
-    pathOverride: PathOverrideSchema.exactOptional().openapi({
-      description:
-        'URI path. When specified, replaces the existing path of the task URL. Setting the path value to an empty string clears the URI path segment.',
-    }),
-    port: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Port override. When specified, replaces the port part of the task URI. For instance, for a URI http://www.google.com/foo and port=123, the overridden URI becomes http://www.google.com:123/foo. Note that the port value must be a positive integer. Setting the port to 0 (Zero) clears the URI port.',
-      }),
-    queryOverride: QueryOverrideSchema.exactOptional().openapi({
-      description:
-        'URI Query. When specified, replaces the query part of the task URI. Setting the query value to an empty string clears the URI query segment.',
-    }),
-    scheme: z
-      .enum(['SCHEME_UNSPECIFIED', 'HTTP', 'HTTPS'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Scheme override. When specified, the task URI scheme is replaced by the provided value (HTTP or HTTPS).',
-      }),
-    uriOverrideEnforceMode: z
-      .enum(['URI_OVERRIDE_ENFORCE_MODE_UNSPECIFIED', 'IF_NOT_EXISTS', 'ALWAYS'])
-      .exactOptional()
-      .openapi({
-        description:
-          'URI Override Enforce Mode When specified, determines the Target UriOverride mode. If not specified, it defaults to ALWAYS.',
-      }),
-  })
-  .openapi({
-    description:
-      'URI Override. When specified, all the HTTP tasks inside the queue will be partially or fully overridden depending on the configured values.',
-    required: [],
-  })
-  .openapi('UriOverride')
-
-const HttpTargetSchema = z
-  .object({
-    headerOverrides: z
-      .array(HeaderOverrideSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'HTTP target headers. This map contains the header field names and values. Headers will be set when running the CreateTask and/or BufferTask. These headers represent a subset of the headers that will be configured for the task\'s HTTP request. Some HTTP request headers will be ignored or replaced. A partial list of headers that will be ignored or replaced is: * Several predefined headers, prefixed with "X-CloudTasks-", can be used to define properties of the task. * Host: This will be computed by Cloud Tasks and derived from HttpRequest.url. * Content-Length: This will be computed by Cloud Tasks. `Content-Type` won\'t be set by Cloud Tasks. You can explicitly set `Content-Type` to a media type when the task is created. For example,`Content-Type` can be set to `"application/octet-stream"` or `"application/json"`. The default value is set to `"application/json"`. * User-Agent: This will be set to `"Google-Cloud-Tasks"`. Headers which can have multiple values (according to RFC2616) can be specified using comma-separated values. The size of the headers must be less than 80KB. Queue-level headers to override headers of all the tasks in the queue.',
-      }),
-    httpMethod: z
-      .enum(['HTTP_METHOD_UNSPECIFIED', 'POST', 'GET', 'HEAD', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'])
-      .exactOptional()
-      .openapi({
-        description:
-          'The HTTP method to use for the request. When specified, it overrides HttpRequest for the task. Note that if the value is set to HttpMethod the HttpRequest of the task will be ignored at execution time.',
-      }),
-    oauthToken: OAuthTokenSchema.exactOptional().openapi({
-      description:
-        'If specified, an [OAuth token](https://developers.google.com/identity/protocols/OAuth2) will be generated and attached as the `Authorization` header in the HTTP request. This type of authorization should generally only be used when calling Google APIs hosted on *.googleapis.com.',
-    }),
-    oidcToken: OidcTokenSchema.exactOptional().openapi({
-      description:
-        'If specified, an [OIDC](https://developers.google.com/identity/protocols/OpenIDConnect) token will be generated and attached as an `Authorization` header in the HTTP request. This type of authorization can be used for many scenarios, including calling Cloud Run, or endpoints where you intend to validate the token yourself.',
-    }),
-    uriOverride: UriOverrideSchema.exactOptional().openapi({
-      description:
-        'URI override. When specified, overrides the execution URI for all the tasks in the queue.',
-    }),
-  })
-  .openapi({
-    description:
-      'HTTP target. When specified as a Queue, all the tasks with [HttpRequest] will be overridden according to the target.',
-    required: [],
-  })
-  .openapi('HttpTarget')
-
-const RateLimitsSchema = z
-  .object({
-    maxBurstSize: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          "The max burst size. Max burst size limits how fast tasks in queue are processed when many tasks are in the queue and the rate is high. This field allows the queue to have a high rate so processing starts shortly after a task is enqueued, but still limits resource usage when many tasks are enqueued in a short period of time. The [token bucket](https://wikipedia.org/wiki/Token_Bucket) algorithm is used to control the rate of task dispatches. Each queue has a token bucket that holds tokens, up to the maximum specified by `max_burst_size`. Each time a task is dispatched, a token is removed from the bucket. Tasks will be dispatched until the queue's bucket runs out of tokens. The bucket will be continuously refilled with new tokens based on max_dispatches_per_second. The default value of `max_burst_size` is picked by Cloud Tasks based on the value of max_dispatches_per_second. The maximum value of `max_burst_size` is 500. For App Engine queues that were created or updated using `queue.yaml/xml`, `max_burst_size` is equal to [bucket_size](https://cloud.google.com/appengine/docs/standard/python/config/queueref#bucket_size). If UpdateQueue is called on a queue without explicitly setting a value for `max_burst_size`, `max_burst_size` value will get updated if UpdateQueue is updating max_dispatches_per_second. ",
-      }),
-    maxConcurrentDispatches: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'The maximum number of concurrent tasks that Cloud Tasks allows to be dispatched for this queue. After this threshold has been reached, Cloud Tasks stops dispatching tasks until the number of concurrent requests decreases. If unspecified when the queue is created, Cloud Tasks will pick the default. The maximum allowed value is 5,000. This field has the same meaning as [max_concurrent_requests in queue.yaml/xml](https://cloud.google.com/appengine/docs/standard/python/config/queueref#max_concurrent_requests).',
-      }),
-    maxDispatchesPerSecond: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description:
-          'The maximum rate at which tasks are dispatched from this queue. If unspecified when the queue is created, Cloud Tasks will pick the default. * For App Engine queues, the maximum allowed value is 500. This field has the same meaning as [rate in queue.yaml/xml](https://cloud.google.com/appengine/docs/standard/python/config/queueref#rate).',
-      }),
-  })
-  .openapi({
-    description:
-      'Rate limits. This message determines the maximum rate that tasks can be dispatched by a queue, regardless of whether the dispatch is a first task attempt or a retry. Note: The debugging command, RunTask, will run a task even if the queue has reached its RateLimits.',
-    required: [],
-  })
-  .openapi('RateLimits')
-
-const RetryConfigSchema = z
-  .object({
-    maxAttempts: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Number of attempts per task. Cloud Tasks will attempt the task `max_attempts` times (that is, if the first attempt fails, then there will be `max_attempts - 1` retries). Must be >= -1. If unspecified when the queue is created, Cloud Tasks will pick the default. -1 indicates unlimited attempts. This field has the same meaning as [task_retry_limit in queue.yaml/xml](https://cloud.google.com/appengine/docs/standard/python/config/queueref#retry_parameters).',
-      }),
-    maxBackoff: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A task will be scheduled for retry between min_backoff and max_backoff duration after it fails, if the queue\'s RetryConfig specifies that the task should be retried. If unspecified when the queue is created, Cloud Tasks will pick the default. The value must be given as a string that indicates the length of time (in seconds) followed by `s` (for "seconds"). For more information on the format, see the documentation for [Duration](https://protobuf.dev/reference/protobuf/google.protobuf/#duration). `max_backoff` will be truncated to the nearest second. This field has the same meaning as [max_backoff_seconds in queue.yaml/xml](https://cloud.google.com/appengine/docs/standard/python/config/queueref#retry_parameters).',
-      }),
-    maxDoublings: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          "The time between retries will double `max_doublings` times. A task's retry interval starts at min_backoff, then doubles `max_doublings` times, then increases linearly, and finally retries at intervals of max_backoff up to max_attempts times. For example, if min_backoff is 10s, max_backoff is 300s, and `max_doublings` is 3, then the a task will first be retried in 10s. The retry interval will double three times, and then increase linearly by 2^3 * 10s. Finally, the task will retry at intervals of max_backoff until the task has been attempted max_attempts times. Thus, the requests will retry at 10s, 20s, 40s, 80s, 160s, 240s, 300s, 300s, .... If unspecified when the queue is created, Cloud Tasks will pick the default. This field has the same meaning as [max_doublings in queue.yaml/xml](https://cloud.google.com/appengine/docs/standard/python/config/queueref#retry_parameters).",
-      }),
-    maxRetryDuration: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'If positive, `max_retry_duration` specifies the time limit for retrying a failed task, measured from when the task was first attempted. Once `max_retry_duration` time has passed *and* the task has been attempted max_attempts times, no further attempts will be made and the task will be deleted. If zero, then the task age is unlimited. If unspecified when the queue is created, Cloud Tasks will pick the default. The value must be given as a string that indicates the length of time (in seconds) followed by `s` (for "seconds"). For the maximum possible value or the format, see the documentation for [Duration](https://protobuf.dev/reference/protobuf/google.protobuf/#duration). `max_retry_duration` will be truncated to the nearest second. This field has the same meaning as [task_age_limit in queue.yaml/xml](https://cloud.google.com/appengine/docs/standard/python/config/queueref#retry_parameters).',
-      }),
-    minBackoff: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A task will be scheduled for retry between min_backoff and max_backoff duration after it fails, if the queue\'s RetryConfig specifies that the task should be retried. If unspecified when the queue is created, Cloud Tasks will pick the default. The value must be given as a string that indicates the length of time (in seconds) followed by `s` (for "seconds"). For more information on the format, see the documentation for [Duration](https://protobuf.dev/reference/protobuf/google.protobuf/#duration). `min_backoff` will be truncated to the nearest second. This field has the same meaning as [min_backoff_seconds in queue.yaml/xml](https://cloud.google.com/appengine/docs/standard/python/config/queueref#retry_parameters).',
-      }),
-  })
-  .openapi({
-    description: 'Retry config. These settings determine when a failed task attempt is retried.',
-    required: [],
-  })
-  .openapi('RetryConfig')
-
-const StackdriverLoggingConfigSchema = z
-  .object({
-    samplingRatio: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description:
-          'Specifies the fraction of operations to write to [Stackdriver Logging](https://cloud.google.com/logging/docs/). This field may contain any value between 0.0 and 1.0, inclusive. 0.0 is the default and means that no operations are logged.',
-      }),
-  })
-  .openapi({
-    description:
-      'Configuration options for writing logs to [Stackdriver Logging](https://cloud.google.com/logging/docs/).',
-    required: [],
-  })
-  .openapi('StackdriverLoggingConfig')
-
-const QueueStatsSchema = z
-  .object({
-    concurrentDispatchesCount: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The number of requests that the queue has dispatched but has not received a reply for yet.',
-        readOnly: true,
-      }),
-    effectiveExecutionRate: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The current maximum number of tasks per second executed by the queue. The maximum value of this variable is controlled by the RateLimits of the Queue. However, this value could be less to avoid overloading the endpoints tasks in the queue are targeting.',
-        readOnly: true,
-      }),
-    executedLastMinuteCount: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The number of tasks that the queue has dispatched and received a reply for during the last minute. This variable counts both successful and non-successful executions.',
-        readOnly: true,
-      }),
-    oldestEstimatedArrivalTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. An estimation of the nearest time in the future where a task in the queue is scheduled to be executed.',
-        readOnly: true,
-      }),
-    tasksCount: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Output only. An estimation of the number of tasks in the queue, that is, the tasks in the queue that haven't been executed, the tasks in the queue which the queue has dispatched but has not yet received a reply for, and the failed tasks that the queue is retrying.",
-        readOnly: true,
-      }),
-  })
-  .openapi({ description: 'Statistics for a queue.', required: [] })
-  .openapi('QueueStats')
-
-type QueueType = {
-  appEngineHttpQueue?: z.infer<typeof AppEngineHttpQueueSchema>
-  httpTarget?: z.infer<typeof HttpTargetSchema>
-  name?: string
-  purgeTime?: string
-  rateLimits?: z.infer<typeof RateLimitsSchema>
-  retryConfig?: z.infer<typeof RetryConfigSchema>
-  stackdriverLoggingConfig?: z.infer<typeof StackdriverLoggingConfigSchema>
-  state?: 'STATE_UNSPECIFIED' | 'RUNNING' | 'PAUSED' | 'DISABLED'
-  stats?: z.infer<typeof QueueStatsSchema>
-  taskTtl?: string
-  tombstoneTtl?: string
-  type?: 'TYPE_UNSPECIFIED' | 'PULL' | 'PUSH'
-}
-
 const AppEngineHttpRequestSchema = z
   .object({
     appEngineRouting: AppEngineRoutingSchema.exactOptional().openapi({
@@ -604,6 +272,54 @@ const BufferTaskRequestSchema = z
   .openapi({ description: 'Request message for BufferTask.', required: [] })
   .openapi('BufferTaskRequest')
 
+const OAuthTokenSchema = z
+  .object({
+    scope: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'OAuth scope to be used for generating OAuth access token. If not specified, "https://www.googleapis.com/auth/cloud-platform" will be used.',
+      }),
+    serviceAccountEmail: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          '[Service account email](https://cloud.google.com/iam/docs/service-accounts) to be used for generating OAuth token. The service account must be within the same project as the queue. The caller must have iam.serviceAccounts.actAs permission for the service account.',
+      }),
+  })
+  .openapi({
+    description:
+      'Contains information needed for generating an [OAuth token](https://developers.google.com/identity/protocols/OAuth2). This type of authorization should generally only be used when calling Google APIs hosted on *.googleapis.com.',
+    required: [],
+  })
+  .openapi('OAuthToken')
+
+const OidcTokenSchema = z
+  .object({
+    audience: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Audience to be used when generating OIDC token. If not specified, the URI specified in target will be used.',
+      }),
+    serviceAccountEmail: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          '[Service account email](https://cloud.google.com/iam/docs/service-accounts) to be used for generating OIDC token. The service account must be within the same project as the queue. The caller must have iam.serviceAccounts.actAs permission for the service account.',
+      }),
+  })
+  .openapi({
+    description:
+      'Contains information needed for generating an [OpenID Connect token](https://developers.google.com/identity/protocols/OpenIDConnect). This type of authorization can be used for many scenarios, including calling Cloud Run, or endpoints where you intend to validate the token yourself.',
+    required: [],
+  })
+  .openapi('OidcToken')
+
 const HttpRequestSchema = z
   .object({
     body: z
@@ -788,7 +504,7 @@ const CreateTaskRequestSchema = z
   .openapi('CreateTaskRequest')
 
 const EmptySchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',
@@ -817,6 +533,137 @@ const GetIamPolicyRequestSchema = z
   })
   .openapi({ description: 'Request message for `GetIamPolicy` method.', required: [] })
   .openapi('GetIamPolicyRequest')
+
+const HeaderSchema = z
+  .object({
+    key: z.string().exactOptional().openapi({ description: 'The Key of the header.' }),
+    value: z.string().exactOptional().openapi({ description: 'The Value of the header.' }),
+  })
+  .openapi({
+    description: 'Defines a header message. A header can have a key and a value.',
+    required: [],
+  })
+  .openapi('Header')
+
+const HeaderOverrideSchema = z
+  .object({
+    header: HeaderSchema.exactOptional().openapi({
+      description: 'header embodying a key and a value.',
+    }),
+  })
+  .openapi({ description: 'Wraps the Header object.', required: [] })
+  .openapi('HeaderOverride')
+
+const PathOverrideSchema = z
+  .object({
+    path: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The URI path (e.g., /users/1234). Default is an empty string.' }),
+  })
+  .openapi({
+    description: 'PathOverride. Path message defines path override for HTTP targets.',
+    required: [],
+  })
+  .openapi('PathOverride')
+
+const QueryOverrideSchema = z
+  .object({
+    queryParams: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The query parameters (e.g., qparam1=123&qparam2=456). Default is an empty string.',
+      }),
+  })
+  .openapi({
+    description: 'QueryOverride. Query message defines query override for HTTP targets.',
+    required: [],
+  })
+  .openapi('QueryOverride')
+
+const UriOverrideSchema = z
+  .object({
+    host: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Host override. When specified, replaces the host part of the task URL. For example, if the task URL is "https://www.google.com," and host value is set to "example.net", the overridden URI will be changed to "https://example.net." Host value cannot be an empty string (INVALID_ARGUMENT).',
+      }),
+    pathOverride: PathOverrideSchema.exactOptional().openapi({
+      description:
+        'URI path. When specified, replaces the existing path of the task URL. Setting the path value to an empty string clears the URI path segment.',
+    }),
+    port: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Port override. When specified, replaces the port part of the task URI. For instance, for a URI http://www.google.com/foo and port=123, the overridden URI becomes http://www.google.com:123/foo. Note that the port value must be a positive integer. Setting the port to 0 (Zero) clears the URI port.',
+      }),
+    queryOverride: QueryOverrideSchema.exactOptional().openapi({
+      description:
+        'URI Query. When specified, replaces the query part of the task URI. Setting the query value to an empty string clears the URI query segment.',
+    }),
+    scheme: z
+      .enum(['SCHEME_UNSPECIFIED', 'HTTP', 'HTTPS'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Scheme override. When specified, the task URI scheme is replaced by the provided value (HTTP or HTTPS).',
+      }),
+    uriOverrideEnforceMode: z
+      .enum(['URI_OVERRIDE_ENFORCE_MODE_UNSPECIFIED', 'IF_NOT_EXISTS', 'ALWAYS'])
+      .exactOptional()
+      .openapi({
+        description:
+          'URI Override Enforce Mode When specified, determines the Target UriOverride mode. If not specified, it defaults to ALWAYS.',
+      }),
+  })
+  .openapi({
+    description:
+      'URI Override. When specified, all the HTTP tasks inside the queue will be partially or fully overridden depending on the configured values.',
+    required: [],
+  })
+  .openapi('UriOverride')
+
+const HttpTargetSchema = z
+  .object({
+    headerOverrides: z
+      .array(HeaderOverrideSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'HTTP target headers. This map contains the header field names and values. Headers will be set when running the CreateTask and/or BufferTask. These headers represent a subset of the headers that will be configured for the task\'s HTTP request. Some HTTP request headers will be ignored or replaced. A partial list of headers that will be ignored or replaced is: * Several predefined headers, prefixed with "X-CloudTasks-", can be used to define properties of the task. * Host: This will be computed by Cloud Tasks and derived from HttpRequest.url. * Content-Length: This will be computed by Cloud Tasks. `Content-Type` won\'t be set by Cloud Tasks. You can explicitly set `Content-Type` to a media type when the task is created. For example,`Content-Type` can be set to `"application/octet-stream"` or `"application/json"`. The default value is set to `"application/json"`. * User-Agent: This will be set to `"Google-Cloud-Tasks"`. Headers which can have multiple values (according to RFC2616) can be specified using comma-separated values. The size of the headers must be less than 80KB. Queue-level headers to override headers of all the tasks in the queue.',
+      }),
+    httpMethod: z
+      .enum(['HTTP_METHOD_UNSPECIFIED', 'POST', 'GET', 'HEAD', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The HTTP method to use for the request. When specified, it overrides HttpRequest for the task. Note that if the value is set to HttpMethod the HttpRequest of the task will be ignored at execution time.',
+      }),
+    oauthToken: OAuthTokenSchema.exactOptional().openapi({
+      description:
+        'If specified, an [OAuth token](https://developers.google.com/identity/protocols/OAuth2) will be generated and attached as the `Authorization` header in the HTTP request. This type of authorization should generally only be used when calling Google APIs hosted on *.googleapis.com.',
+    }),
+    oidcToken: OidcTokenSchema.exactOptional().openapi({
+      description:
+        'If specified, an [OIDC](https://developers.google.com/identity/protocols/OpenIDConnect) token will be generated and attached as an `Authorization` header in the HTTP request. This type of authorization can be used for many scenarios, including calling Cloud Run, or endpoints where you intend to validate the token yourself.',
+    }),
+    uriOverride: UriOverrideSchema.exactOptional().openapi({
+      description:
+        'URI override. When specified, overrides the execution URI for all the tasks in the queue.',
+    }),
+  })
+  .openapi({
+    description:
+      'HTTP target. When specified as a Queue, all the tasks with [HttpRequest] will be overridden according to the target.',
+    required: [],
+  })
+  .openapi('HttpTarget')
 
 const LocationSchema = z
   .object({
@@ -879,83 +726,218 @@ const ListLocationsResponseSchema = z
   .openapi({ description: 'The response message for Locations.ListLocations.', required: [] })
   .openapi('ListLocationsResponse')
 
-const QueueSchema: z.ZodType<QueueType> = z
-  .lazy(() =>
-    z
-      .object({
-        appEngineHttpQueue: AppEngineHttpQueueSchema.exactOptional().openapi({
-          description:
-            'AppEngineHttpQueue settings apply only to App Engine tasks in this queue. Http tasks are not affected by this proto.',
-        }),
-        httpTarget: HttpTargetSchema.exactOptional().openapi({
-          description: 'Modifies HTTP target for HTTP tasks.',
-        }),
-        name: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              "Caller-specified and required in CreateQueue, after which it becomes output only. The queue name. The queue name must have the following format: `projects/PROJECT_ID/locations/LOCATION_ID/queues/QUEUE_ID` * `PROJECT_ID` can contain letters ([A-Za-z]), numbers ([0-9]), hyphens (-), colons (:), or periods (.). For more information, see [Identifying projects](https://cloud.google.com/resource-manager/docs/creating-managing-projects#identifying_projects) * `LOCATION_ID` is the canonical ID for the queue's location. The list of available locations can be obtained by calling ListLocations. For more information, see https://cloud.google.com/about/locations/. * `QUEUE_ID` can contain letters ([A-Za-z]), numbers ([0-9]), or hyphens (-). The maximum length is 100 characters.",
-          }),
-        purgeTime: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Output only. The last time this queue was purged. All tasks that were created before this time were purged. A queue can be purged using PurgeQueue, the [App Engine Task Queue SDK, or the Cloud Console](https://cloud.google.com/appengine/docs/standard/python/taskqueue/push/deleting-tasks-and-queues#purging_all_tasks_from_a_queue). Purge time will be truncated to the nearest microsecond. Purge time will be unset if the queue has never been purged.',
-          }),
-        rateLimits: RateLimitsSchema.exactOptional().openapi({
-          description:
-            "Rate limits for task dispatches. rate_limits and retry_config are related because they both control task attempts. However they control task attempts in different ways: * rate_limits controls the total rate of dispatches from a queue (i.e. all traffic dispatched from the queue, regardless of whether the dispatch is from a first attempt or a retry). * retry_config controls what happens to particular a task after its first attempt fails. That is, retry_config controls task retries (the second attempt, third attempt, etc). The queue's actual dispatch rate is the result of: * Number of tasks in the queue * User-specified throttling: rate_limits, retry_config, and the queue's state. * System throttling due to `429` (Too Many Requests) or `503` (Service Unavailable) responses from the worker, high error rates, or to smooth sudden large traffic spikes.",
-        }),
-        retryConfig: RetryConfigSchema.exactOptional().openapi({
-          description:
-            'Settings that determine the retry behavior. * For tasks created using Cloud Tasks: the queue-level retry settings apply to all tasks in the queue that were created using Cloud Tasks. Retry settings cannot be set on individual tasks. * For tasks created using the App Engine SDK: the queue-level retry settings apply to all tasks in the queue which do not have retry settings explicitly set on the task and were created by the App Engine SDK. See [App Engine documentation](https://cloud.google.com/appengine/docs/standard/python/taskqueue/push/retrying-tasks).',
-        }),
-        stackdriverLoggingConfig: StackdriverLoggingConfigSchema.exactOptional().openapi({
-          description:
-            'Configuration options for writing logs to [Stackdriver Logging](https://cloud.google.com/logging/docs/). If this field is unset, then no logs are written.',
-        }),
-        state: z
-          .enum(['STATE_UNSPECIFIED', 'RUNNING', 'PAUSED', 'DISABLED'])
-          .exactOptional()
-          .openapi({
-            description:
-              'Output only. The state of the queue. `state` can only be changed by called PauseQueue, ResumeQueue, or uploading [queue.yaml/xml](https://cloud.google.com/appengine/docs/python/config/queueref). UpdateQueue cannot be used to change `state`.',
-          }),
-        stats: QueueStatsSchema.exactOptional().openapi({
-          description:
-            'Output only. The realtime, informational statistics for a queue. In order to receive the statistics the caller should include this field in the FieldMask.',
-          readOnly: true,
-        }),
-        taskTtl: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'The maximum amount of time that a task will be retained in this queue. After a task has lived for `task_ttl`, the task will be deleted regardless of whether it was dispatched or not. The minimum value is 10 days. The maximum value is 10 years. The value must be given as a string that indicates the length of time (in seconds) followed by `s` (for "seconds"). For more information on the format, see the documentation for [Duration](https://protobuf.dev/reference/protobuf/google.protobuf/#duration). Queues created by Cloud Tasks have a default `task_ttl` of 31 days. . Queues created by queue.yaml/xml have a fixed `task_ttl` of the maximum duration, because there is a [storage quota](https://cloud.google.com/appengine/quotas#Task_Queue) for these queues.',
-          }),
-        tombstoneTtl: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'The task tombstone time to live (TTL). After a task is deleted or executed, the task\'s tombstone is retained for the length of time specified by `tombstone_ttl`. The tombstone is used by task de-duplication; another task with the same name can\'t be created until the tombstone has expired. For more information about task de-duplication, see the documentation for CreateTaskRequest. The minimum value is 1 hour. The maximum value is 9 days. The value must be given as a string that indicates the length of time (in seconds) followed by `s` (for "seconds"). For more information on the format, see the documentation for [Duration](https://protobuf.dev/reference/protobuf/google.protobuf/#duration). Queues created by Cloud Tasks have a default `tombstone_ttl` of 1 hour.',
-          }),
-        type: z
-          .enum(['TYPE_UNSPECIFIED', 'PULL', 'PUSH'])
-          .exactOptional()
-          .openapi({
-            description:
-              'Immutable. The type of a queue (push or pull). `Queue.type` is an immutable property of the queue that is set at the queue creation time. When left unspecified, the default value of `PUSH` is selected.',
-          }),
-      })
+const RateLimitsSchema = z
+  .object({
+    maxBurstSize: z
+      .int32()
+      .exactOptional()
       .openapi({
         description:
-          'A queue is a container of related tasks. Queues are configured to manage how those tasks are dispatched. Configurable properties include rate limits, retry options, queue types, and others.',
-        required: [],
+          "The max burst size. Max burst size limits how fast tasks in queue are processed when many tasks are in the queue and the rate is high. This field allows the queue to have a high rate so processing starts shortly after a task is enqueued, but still limits resource usage when many tasks are enqueued in a short period of time. The [token bucket](https://wikipedia.org/wiki/Token_Bucket) algorithm is used to control the rate of task dispatches. Each queue has a token bucket that holds tokens, up to the maximum specified by `max_burst_size`. Each time a task is dispatched, a token is removed from the bucket. Tasks will be dispatched until the queue's bucket runs out of tokens. The bucket will be continuously refilled with new tokens based on max_dispatches_per_second. The default value of `max_burst_size` is picked by Cloud Tasks based on the value of max_dispatches_per_second. The maximum value of `max_burst_size` is 500. For App Engine queues that were created or updated using `queue.yaml/xml`, `max_burst_size` is equal to [bucket_size](https://cloud.google.com/appengine/docs/standard/python/config/queueref#bucket_size). If UpdateQueue is called on a queue without explicitly setting a value for `max_burst_size`, `max_burst_size` value will get updated if UpdateQueue is updating max_dispatches_per_second. ",
       }),
-  )
+    maxConcurrentDispatches: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The maximum number of concurrent tasks that Cloud Tasks allows to be dispatched for this queue. After this threshold has been reached, Cloud Tasks stops dispatching tasks until the number of concurrent requests decreases. If unspecified when the queue is created, Cloud Tasks will pick the default. The maximum allowed value is 5,000. This field has the same meaning as [max_concurrent_requests in queue.yaml/xml](https://cloud.google.com/appengine/docs/standard/python/config/queueref#max_concurrent_requests).',
+      }),
+    maxDispatchesPerSecond: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description:
+          'The maximum rate at which tasks are dispatched from this queue. If unspecified when the queue is created, Cloud Tasks will pick the default. * For App Engine queues, the maximum allowed value is 500. This field has the same meaning as [rate in queue.yaml/xml](https://cloud.google.com/appengine/docs/standard/python/config/queueref#rate).',
+      }),
+  })
+  .openapi({
+    description:
+      'Rate limits. This message determines the maximum rate that tasks can be dispatched by a queue, regardless of whether the dispatch is a first task attempt or a retry. Note: The debugging command, RunTask, will run a task even if the queue has reached its RateLimits.',
+    required: [],
+  })
+  .openapi('RateLimits')
+
+const RetryConfigSchema = z
+  .object({
+    maxAttempts: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Number of attempts per task. Cloud Tasks will attempt the task `max_attempts` times (that is, if the first attempt fails, then there will be `max_attempts - 1` retries). Must be >= -1. If unspecified when the queue is created, Cloud Tasks will pick the default. -1 indicates unlimited attempts. This field has the same meaning as [task_retry_limit in queue.yaml/xml](https://cloud.google.com/appengine/docs/standard/python/config/queueref#retry_parameters).',
+      }),
+    maxBackoff: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A task will be scheduled for retry between min_backoff and max_backoff duration after it fails, if the queue\'s RetryConfig specifies that the task should be retried. If unspecified when the queue is created, Cloud Tasks will pick the default. The value must be given as a string that indicates the length of time (in seconds) followed by `s` (for "seconds"). For more information on the format, see the documentation for [Duration](https://protobuf.dev/reference/protobuf/google.protobuf/#duration). `max_backoff` will be truncated to the nearest second. This field has the same meaning as [max_backoff_seconds in queue.yaml/xml](https://cloud.google.com/appengine/docs/standard/python/config/queueref#retry_parameters).',
+      }),
+    maxDoublings: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          "The time between retries will double `max_doublings` times. A task's retry interval starts at min_backoff, then doubles `max_doublings` times, then increases linearly, and finally retries at intervals of max_backoff up to max_attempts times. For example, if min_backoff is 10s, max_backoff is 300s, and `max_doublings` is 3, then the a task will first be retried in 10s. The retry interval will double three times, and then increase linearly by 2^3 * 10s. Finally, the task will retry at intervals of max_backoff until the task has been attempted max_attempts times. Thus, the requests will retry at 10s, 20s, 40s, 80s, 160s, 240s, 300s, 300s, .... If unspecified when the queue is created, Cloud Tasks will pick the default. This field has the same meaning as [max_doublings in queue.yaml/xml](https://cloud.google.com/appengine/docs/standard/python/config/queueref#retry_parameters).",
+      }),
+    maxRetryDuration: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'If positive, `max_retry_duration` specifies the time limit for retrying a failed task, measured from when the task was first attempted. Once `max_retry_duration` time has passed *and* the task has been attempted max_attempts times, no further attempts will be made and the task will be deleted. If zero, then the task age is unlimited. If unspecified when the queue is created, Cloud Tasks will pick the default. The value must be given as a string that indicates the length of time (in seconds) followed by `s` (for "seconds"). For the maximum possible value or the format, see the documentation for [Duration](https://protobuf.dev/reference/protobuf/google.protobuf/#duration). `max_retry_duration` will be truncated to the nearest second. This field has the same meaning as [task_age_limit in queue.yaml/xml](https://cloud.google.com/appengine/docs/standard/python/config/queueref#retry_parameters).',
+      }),
+    minBackoff: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A task will be scheduled for retry between min_backoff and max_backoff duration after it fails, if the queue\'s RetryConfig specifies that the task should be retried. If unspecified when the queue is created, Cloud Tasks will pick the default. The value must be given as a string that indicates the length of time (in seconds) followed by `s` (for "seconds"). For more information on the format, see the documentation for [Duration](https://protobuf.dev/reference/protobuf/google.protobuf/#duration). `min_backoff` will be truncated to the nearest second. This field has the same meaning as [min_backoff_seconds in queue.yaml/xml](https://cloud.google.com/appengine/docs/standard/python/config/queueref#retry_parameters).',
+      }),
+  })
+  .openapi({
+    description: 'Retry config. These settings determine when a failed task attempt is retried.',
+    required: [],
+  })
+  .openapi('RetryConfig')
+
+const StackdriverLoggingConfigSchema = z
+  .object({
+    samplingRatio: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description:
+          'Specifies the fraction of operations to write to [Stackdriver Logging](https://cloud.google.com/logging/docs/). This field may contain any value between 0.0 and 1.0, inclusive. 0.0 is the default and means that no operations are logged.',
+      }),
+  })
+  .openapi({
+    description:
+      'Configuration options for writing logs to [Stackdriver Logging](https://cloud.google.com/logging/docs/).',
+    required: [],
+  })
+  .openapi('StackdriverLoggingConfig')
+
+const QueueStatsSchema = z
+  .object({
+    concurrentDispatchesCount: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The number of requests that the queue has dispatched but has not received a reply for yet.',
+        readOnly: true,
+      }),
+    effectiveExecutionRate: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The current maximum number of tasks per second executed by the queue. The maximum value of this variable is controlled by the RateLimits of the Queue. However, this value could be less to avoid overloading the endpoints tasks in the queue are targeting.',
+        readOnly: true,
+      }),
+    executedLastMinuteCount: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The number of tasks that the queue has dispatched and received a reply for during the last minute. This variable counts both successful and non-successful executions.',
+        readOnly: true,
+      }),
+    oldestEstimatedArrivalTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. An estimation of the nearest time in the future where a task in the queue is scheduled to be executed.',
+        readOnly: true,
+      }),
+    tasksCount: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Output only. An estimation of the number of tasks in the queue, that is, the tasks in the queue that haven't been executed, the tasks in the queue which the queue has dispatched but has not yet received a reply for, and the failed tasks that the queue is retrying.",
+        readOnly: true,
+      }),
+  })
+  .openapi({ description: 'Statistics for a queue.', required: [] })
+  .openapi('QueueStats')
+
+const QueueSchema = z
+  .object({
+    appEngineHttpQueue: AppEngineHttpQueueSchema.exactOptional().openapi({
+      description:
+        'AppEngineHttpQueue settings apply only to App Engine tasks in this queue. Http tasks are not affected by this proto.',
+    }),
+    httpTarget: HttpTargetSchema.exactOptional().openapi({
+      description: 'Modifies HTTP target for HTTP tasks.',
+    }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Caller-specified and required in CreateQueue, after which it becomes output only. The queue name. The queue name must have the following format: `projects/PROJECT_ID/locations/LOCATION_ID/queues/QUEUE_ID` * `PROJECT_ID` can contain letters ([A-Za-z]), numbers ([0-9]), hyphens (-), colons (:), or periods (.). For more information, see [Identifying projects](https://cloud.google.com/resource-manager/docs/creating-managing-projects#identifying_projects) * `LOCATION_ID` is the canonical ID for the queue's location. The list of available locations can be obtained by calling ListLocations. For more information, see https://cloud.google.com/about/locations/. * `QUEUE_ID` can contain letters ([A-Za-z]), numbers ([0-9]), or hyphens (-). The maximum length is 100 characters.",
+      }),
+    purgeTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The last time this queue was purged. All tasks that were created before this time were purged. A queue can be purged using PurgeQueue, the [App Engine Task Queue SDK, or the Cloud Console](https://cloud.google.com/appengine/docs/standard/python/taskqueue/push/deleting-tasks-and-queues#purging_all_tasks_from_a_queue). Purge time will be truncated to the nearest microsecond. Purge time will be unset if the queue has never been purged.',
+      }),
+    rateLimits: RateLimitsSchema.exactOptional().openapi({
+      description:
+        "Rate limits for task dispatches. rate_limits and retry_config are related because they both control task attempts. However they control task attempts in different ways: * rate_limits controls the total rate of dispatches from a queue (i.e. all traffic dispatched from the queue, regardless of whether the dispatch is from a first attempt or a retry). * retry_config controls what happens to particular a task after its first attempt fails. That is, retry_config controls task retries (the second attempt, third attempt, etc). The queue's actual dispatch rate is the result of: * Number of tasks in the queue * User-specified throttling: rate_limits, retry_config, and the queue's state. * System throttling due to `429` (Too Many Requests) or `503` (Service Unavailable) responses from the worker, high error rates, or to smooth sudden large traffic spikes.",
+    }),
+    retryConfig: RetryConfigSchema.exactOptional().openapi({
+      description:
+        'Settings that determine the retry behavior. * For tasks created using Cloud Tasks: the queue-level retry settings apply to all tasks in the queue that were created using Cloud Tasks. Retry settings cannot be set on individual tasks. * For tasks created using the App Engine SDK: the queue-level retry settings apply to all tasks in the queue which do not have retry settings explicitly set on the task and were created by the App Engine SDK. See [App Engine documentation](https://cloud.google.com/appengine/docs/standard/python/taskqueue/push/retrying-tasks).',
+    }),
+    stackdriverLoggingConfig: StackdriverLoggingConfigSchema.exactOptional().openapi({
+      description:
+        'Configuration options for writing logs to [Stackdriver Logging](https://cloud.google.com/logging/docs/). If this field is unset, then no logs are written.',
+    }),
+    state: z
+      .enum(['STATE_UNSPECIFIED', 'RUNNING', 'PAUSED', 'DISABLED'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The state of the queue. `state` can only be changed by called PauseQueue, ResumeQueue, or uploading [queue.yaml/xml](https://cloud.google.com/appengine/docs/python/config/queueref). UpdateQueue cannot be used to change `state`.',
+      }),
+    stats: QueueStatsSchema.exactOptional().openapi({
+      description:
+        'Output only. The realtime, informational statistics for a queue. In order to receive the statistics the caller should include this field in the FieldMask.',
+      readOnly: true,
+    }),
+    taskTtl: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The maximum amount of time that a task will be retained in this queue. After a task has lived for `task_ttl`, the task will be deleted regardless of whether it was dispatched or not. The minimum value is 10 days. The maximum value is 10 years. The value must be given as a string that indicates the length of time (in seconds) followed by `s` (for "seconds"). For more information on the format, see the documentation for [Duration](https://protobuf.dev/reference/protobuf/google.protobuf/#duration). Queues created by Cloud Tasks have a default `task_ttl` of 31 days. . Queues created by queue.yaml/xml have a fixed `task_ttl` of the maximum duration, because there is a [storage quota](https://cloud.google.com/appengine/quotas#Task_Queue) for these queues.',
+      }),
+    tombstoneTtl: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The task tombstone time to live (TTL). After a task is deleted or executed, the task\'s tombstone is retained for the length of time specified by `tombstone_ttl`. The tombstone is used by task de-duplication; another task with the same name can\'t be created until the tombstone has expired. For more information about task de-duplication, see the documentation for CreateTaskRequest. The minimum value is 1 hour. The maximum value is 9 days. The value must be given as a string that indicates the length of time (in seconds) followed by `s` (for "seconds"). For more information on the format, see the documentation for [Duration](https://protobuf.dev/reference/protobuf/google.protobuf/#duration). Queues created by Cloud Tasks have a default `tombstone_ttl` of 1 hour.',
+      }),
+    type: z
+      .enum(['TYPE_UNSPECIFIED', 'PULL', 'PUSH'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Immutable. The type of a queue (push or pull). `Queue.type` is an immutable property of the queue that is set at the queue creation time. When left unspecified, the default value of `PUSH` is selected.',
+      }),
+  })
+  .openapi({
+    description:
+      'A queue is a container of related tasks. Queues are configured to manage how those tasks are dispatched. Configurable properties include rate limits, retry options, queue types, and others.',
+    required: [],
+  })
   .openapi('Queue')
 
 const ListQueuesResponseSchema = z
@@ -987,7 +969,7 @@ const ListTasksResponseSchema = z
   .openapi('ListTasksResponse')
 
 const PauseQueueRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Request message for PauseQueue.' })
   .openapi('PauseQueueRequest')
 
@@ -1023,12 +1005,12 @@ const PolicySchema = z
   .openapi('Policy')
 
 const PurgeQueueRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Request message for PurgeQueue.' })
   .openapi('PurgeQueueRequest')
 
 const ResumeQueueRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Request message for ResumeQueue.' })
   .openapi('ResumeQueueRequest')
 

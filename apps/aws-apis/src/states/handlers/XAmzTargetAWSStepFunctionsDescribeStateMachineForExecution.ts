@@ -1,0 +1,9 @@
+import { OpenAPIHono } from '@hono/zod-openapi'
+import { postXAmzTargetAWSStepFunctionsDescribeStateMachineForExecutionRoute } from '../routes'
+
+const app = new OpenAPIHono()
+
+export const XAmzTargetAWSStepFunctionsDescribeStateMachineForExecutionHandler = app.openapi(
+  postXAmzTargetAWSStepFunctionsDescribeStateMachineForExecutionRoute,
+  (c) => {},
+)

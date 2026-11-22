@@ -28,12 +28,6 @@ Base URLs:
 |settings.users.teams.read||
 |settings.users.write||
 
-* API Key (private_apps)
-    - Parameter Name: **private-app**, in: header.
-
-* API Key (private_apps_legacy)
-    - Parameter Name: **private-app-legacy**, in: header.
-
 <h1 id="settings-user-provisioning-basic">Basic</h1>
 
 ## Retrieves users
@@ -153,7 +147,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: settings.users.write ), oauth2 ( Scopes: crm.objects.users.write )
+oauth2 ( Scopes: crm.objects.users.write ), oauth2 ( Scopes: settings.users.write )
 </aside>
 
 <h1 id="settings-user-provisioning-roles">Roles</h1>
@@ -415,7 +409,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: settings.users.write ), oauth2 ( Scopes: crm.objects.users.write )
+oauth2 ( Scopes: crm.objects.users.write ), oauth2 ( Scopes: settings.users.write )
 </aside>
 
 ## Removes a user
@@ -465,7 +459,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: settings.users.write ), oauth2 ( Scopes: crm.objects.users.write )
+oauth2 ( Scopes: crm.objects.users.write ), oauth2 ( Scopes: settings.users.write )
 </aside>
 
 # Schemas

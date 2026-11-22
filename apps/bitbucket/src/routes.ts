@@ -12,6 +12,204 @@ const ObjectSchema: z.ZodType<ObjectType> = z
   })
   .openapi('Object')
 
+const DeploymentStateSchema = ObjectSchema.and(
+  z
+    .looseObject({})
+    .openapi({
+      title: 'Deployment State',
+      description: 'The representation of the progress state of a deployment.',
+    }),
+).openapi('DeploymentState')
+
+const DeploymentEnvironmentSchema = ObjectSchema.and(
+  z
+    .looseObject({
+      uuid: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'The UUID identifying the environment.' }),
+      name: z.string().exactOptional().openapi({ description: 'The name of the environment.' }),
+    })
+    .openapi({
+      title: 'Deployment Environment',
+      description: 'A Bitbucket Deployment Environment.',
+      required: [],
+    }),
+)
+  .openapi({
+    'x-bb-default-fields': ['uuid'],
+    'x-bb-url':
+      '/rest/2.0/accounts/{workspace.uuid}/repositories/{repository.uuid}/environments/{uuid}',
+    'x-bb-batch-url':
+      '/rest/2.0/accounts/{workspace.uuid}/repositories/{repository.uuid}/environments_batch',
+    'x-bb-batch-max-size': 100,
+  })
+  .openapi('DeploymentEnvironment')
+
+const CommitSchema: z.ZodType<CommitType> = z
+  .lazy(() =>
+    BaseCommitSchema.and(
+      z
+        .looseObject({
+          repository: RepositorySchema.exactOptional(),
+          participants: z.array(ParticipantSchema).min(0).exactOptional(),
+        })
+        .openapi({ title: 'Commit', description: 'A repository commit object.', required: [] }),
+    ),
+  )
+  .openapi('Commit')
+
+const DeploymentReleaseSchema = ObjectSchema.and(
+  z
+    .looseObject({
+      uuid: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'The UUID identifying the release.' }),
+      name: z.string().exactOptional().openapi({ description: 'The name of the release.' }),
+      url: z
+        .url()
+        .exactOptional()
+        .openapi({ description: 'Link to the pipeline that produced the release.' }),
+      commit: CommitSchema.exactOptional(),
+      created_on: z.iso
+        .datetime({ offset: true })
+        .exactOptional()
+        .openapi({ description: 'The timestamp when the release was created.' }),
+    })
+    .openapi({
+      title: 'Deployment Release',
+      description: 'A Bitbucket Deployment Release.',
+      required: [],
+    }),
+).openapi('DeploymentRelease')
+
+type DeploymentType = z.infer<typeof ObjectSchema> & {
+  uuid?: string
+  state?: z.infer<typeof DeploymentStateSchema>
+  environment?: z.infer<typeof DeploymentEnvironmentSchema>
+  release?: z.infer<typeof DeploymentReleaseSchema>
+}
+
+const DeploymentSchema: z.ZodType<DeploymentType> = ObjectSchema.and(
+  z
+    .looseObject({
+      uuid: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'The UUID identifying the deployment.' }),
+      state: DeploymentStateSchema.exactOptional(),
+      environment: DeploymentEnvironmentSchema.exactOptional(),
+      release: DeploymentReleaseSchema.exactOptional(),
+    })
+    .openapi({ title: 'Deployment', description: 'A Bitbucket Deployment.', required: [] }),
+).openapi('Deployment')
+
+type PaginatedDeploymentsType = {
+  page?: number
+  values?: z.infer<typeof DeploymentSchema>[]
+  size?: number
+  pagelen?: number
+  next?: string
+  previous?: string
+}
+
+const PipelineTargetSchema = ObjectSchema.and(
+  z
+    .looseObject({})
+    .openapi({
+      title: 'Pipeline Target',
+      description: 'A representation of the target that a pipeline executes on.',
+    }),
+).openapi('PipelineTarget')
+
+const PipelineSelectorSchema = ObjectSchema.and(
+  z
+    .looseObject({
+      type: z
+        .enum(['branches', 'tags', 'bookmarks', 'default', 'custom'])
+        .exactOptional()
+        .openapi({ description: 'The type of selector.' }),
+      pattern: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'The name of the matching pipeline definition.' }),
+    })
+    .openapi({
+      title: 'Pipeline Selector',
+      description:
+        'A representation of the selector that was used to identify the pipeline in the YML file.',
+      required: [],
+    }),
+).openapi('PipelineSelector')
+
+const PipelineRefTargetSchema = PipelineTargetSchema.and(
+  z
+    .looseObject({
+      ref_type: z
+        .enum(['branch', 'tag', 'named_branch', 'bookmark'])
+        .exactOptional()
+        .openapi({ description: 'The type of reference (branch/tag).' }),
+      ref_name: z.string().exactOptional().openapi({ description: 'The name of the reference.' }),
+      commit: CommitSchema.exactOptional(),
+      selector: PipelineSelectorSchema.exactOptional(),
+    })
+    .openapi({
+      title: 'Pipeline Ref Target',
+      description: 'A Bitbucket Pipelines reference target.',
+      required: [],
+    }),
+).openapi('PipelineRefTarget')
+
+type PipelineScheduleType = z.infer<typeof ObjectSchema> & {
+  uuid?: string
+  enabled?: boolean
+  target?: z.infer<typeof PipelineRefTargetSchema>
+  cron_pattern?: string
+  created_on?: string
+  updated_on?: string
+}
+
+const PipelineScheduleSchema: z.ZodType<PipelineScheduleType> = ObjectSchema.and(
+  z
+    .looseObject({
+      uuid: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'The UUID identifying the schedule.' }),
+      enabled: z
+        .boolean()
+        .exactOptional()
+        .openapi({ description: 'Whether the schedule is enabled.' }),
+      target: PipelineRefTargetSchema.exactOptional(),
+      cron_pattern: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'The cron expression with second precision (7 fields) that the schedule applies. For example, for expression: 0 0 12 * * ? *, will execute at 12pm UTC every day.',
+        }),
+      created_on: z.iso
+        .datetime({ offset: true })
+        .exactOptional()
+        .openapi({ description: 'The timestamp when the schedule was created.' }),
+      updated_on: z.iso
+        .datetime({ offset: true })
+        .exactOptional()
+        .openapi({ description: 'The timestamp when the schedule was updated.' }),
+    })
+    .openapi({ title: 'Pipeline Schedule', description: 'A Pipelines schedule.', required: [] }),
+).openapi('PipelineSchedule')
+
+type PaginatedPipelineSchedulesType = {
+  page?: number
+  values?: z.infer<typeof PipelineScheduleSchema>[]
+  size?: number
+  pagelen?: number
+  next?: string
+  previous?: string
+}
+
 const LinkSchema = z
   .strictObject({ href: z.url().exactOptional(), name: z.string().exactOptional() })
   .openapi({
@@ -43,371 +241,6 @@ const AccountSchema: z.ZodType<AccountType> = ObjectSchema.and(
     })
     .openapi({ title: 'Account', description: 'An account object.', required: [] }),
 ).openapi('Account')
-
-const TeamLinksSchema = AccountLinksSchema.and(
-  z
-    .looseObject({
-      self: LinkSchema.exactOptional(),
-      html: LinkSchema.exactOptional(),
-      members: LinkSchema.exactOptional(),
-      projects: LinkSchema.exactOptional(),
-      repositories: LinkSchema.exactOptional(),
-    })
-    .openapi({ title: 'Team Links', description: 'Links related to a Team.', required: [] }),
-).openapi('TeamLinks')
-
-const TeamSchema = AccountSchema.and(
-  z
-    .looseObject({ links: TeamLinksSchema.exactOptional() })
-    .openapi({ title: 'Team', description: 'A team object.', required: [] }),
-).openapi('Team')
-
-type ProjectType = z.infer<typeof ObjectSchema> & {
-  links?: { html?: { href?: string; name?: string }; avatar?: { href?: string; name?: string } }
-  uuid?: string
-  key?: string
-  owner?: z.infer<typeof TeamSchema>
-  name?: string
-  description?: string
-  is_private?: boolean
-  created_on?: string
-  updated_on?: string
-  has_publicly_visible_repos?: boolean
-}
-
-const ProjectSchema: z.ZodType<ProjectType> = ObjectSchema.and(
-  z
-    .looseObject({
-      links: z
-        .strictObject({
-          html: z
-            .strictObject({ href: z.url().exactOptional(), name: z.string().exactOptional() })
-            .exactOptional()
-            .openapi({
-              title: 'Link',
-              description: 'A link to a resource related to this object.',
-              required: [],
-            }),
-          avatar: z
-            .strictObject({ href: z.url().exactOptional(), name: z.string().exactOptional() })
-            .exactOptional()
-            .openapi({
-              title: 'Link',
-              description: 'A link to a resource related to this object.',
-              required: [],
-            }),
-        })
-        .exactOptional()
-        .openapi({ required: [] }),
-      uuid: z.string().exactOptional().openapi({ description: "The project's immutable id." }),
-      key: z.string().exactOptional().openapi({ description: "The project's key." }),
-      owner: TeamSchema.exactOptional(),
-      name: z.string().exactOptional().openapi({ description: 'The name of the project.' }),
-      description: z.string().exactOptional(),
-      is_private: z
-        .boolean()
-        .exactOptional()
-        .openapi({
-          description:
-            '\nIndicates whether the project is publicly accessible, or whether it is\nprivate to the team and consequently only visible to team members.\nNote that private projects cannot contain public repositories.',
-        }),
-      created_on: z.iso.datetime({ offset: true }).exactOptional(),
-      updated_on: z.iso.datetime({ offset: true }).exactOptional(),
-      has_publicly_visible_repos: z
-        .boolean()
-        .exactOptional()
-        .openapi({
-          description:
-            '\nIndicates whether the project contains publicly visible repositories.\nNote that private projects cannot contain public repositories.',
-        }),
-    })
-    .openapi({
-      title: 'Project',
-      description:
-        'A Bitbucket project.\n            Projects are used by teams to organize repositories.',
-      required: [],
-    }),
-).openapi('Project')
-
-const BranchSchema: z.ZodType<BranchType> = z
-  .lazy(() =>
-    RefSchema.and(
-      z
-        .looseObject({
-          merge_strategies: z
-            .array(
-              z.enum([
-                'merge_commit',
-                'squash',
-                'fast_forward',
-                'squash_fast_forward',
-                'rebase_fast_forward',
-                'rebase_merge',
-              ]),
-            )
-            .exactOptional()
-            .openapi({
-              description: 'Available merge strategies for pull requests targeting this branch.',
-            }),
-          default_merge_strategy: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'The default merge strategy for pull requests targeting this branch.',
-            }),
-        })
-        .openapi({
-          title: 'Branch',
-          description: 'A branch object, representing a branch in a repository.',
-          required: [],
-        }),
-    ),
-  )
-  .openapi('Branch')
-
-type RepositoryType = z.infer<typeof ObjectSchema> & {
-  links?: {
-    self?: { href?: string; name?: string }
-    html?: { href?: string; name?: string }
-    avatar?: { href?: string; name?: string }
-    pullrequests?: { href?: string; name?: string }
-    commits?: { href?: string; name?: string }
-    forks?: { href?: string; name?: string }
-    watchers?: { href?: string; name?: string }
-    downloads?: { href?: string; name?: string }
-    clone?: { href?: string; name?: string }[]
-    hooks?: { href?: string; name?: string }
-  }
-  uuid?: string
-  full_name?: string
-  is_private?: boolean
-  parent?: RepositoryType
-  scm?: 'git'
-  owner?: z.infer<typeof AccountSchema>
-  name?: string
-  description?: string
-  created_on?: string
-  updated_on?: string
-  size?: number
-  language?: string
-  has_issues?: boolean
-  has_wiki?: boolean
-  fork_policy?: 'allow_forks' | 'no_public_forks' | 'no_forks'
-  project?: z.infer<typeof ProjectSchema>
-  mainbranch?: z.infer<typeof BranchSchema>
-}
-
-type CommentType = z.infer<typeof ObjectSchema> & {
-  id?: bigint
-  created_on?: string
-  updated_on?: string
-  content?: { raw?: string; markup?: 'markdown' | 'creole' | 'plaintext'; html?: string }
-  user?: z.infer<typeof AccountSchema>
-  deleted?: boolean
-  parent?: CommentType
-  inline?: { from?: number; to?: number; start_from?: number; start_to?: number; path: string }
-  links?: {
-    self?: { href?: string; name?: string }
-    html?: { href?: string; name?: string }
-    code?: { href?: string; name?: string }
-  }
-}
-
-type ParticipantType = z.infer<typeof ObjectSchema> & {
-  user?: z.infer<typeof AccountSchema>
-  role?: 'PARTICIPANT' | 'REVIEWER'
-  approved?: boolean
-  state?: 'approved' | 'changes_requested' | null
-  participated_on?: string
-}
-
-const AuthorSchema = ObjectSchema.and(
-  z
-    .looseObject({
-      raw: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description:
-            'The raw author value from the repository. This may be the only value available if the author does not match a user in Bitbucket.',
-        }),
-      user: AccountSchema.exactOptional(),
-    })
-    .openapi({
-      title: 'Author',
-      description: 'The author of a change in a repository',
-      required: [],
-    }),
-).openapi('Author')
-
-const CommitterSchema = ObjectSchema.and(
-  z
-    .looseObject({
-      raw: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description:
-            'The raw committer value from the repository. This may be the only value available if the committer does not match a user in Bitbucket.',
-        }),
-      user: AccountSchema.exactOptional(),
-    })
-    .openapi({
-      title: 'Committer',
-      description: 'The committer of a change in a repository',
-      required: [],
-    }),
-).openapi('Committer')
-
-type BaseCommitType = z.infer<typeof ObjectSchema> & {
-  hash?: string
-  date?: string
-  author?: z.infer<typeof AuthorSchema>
-  committer?: z.infer<typeof CommitterSchema>
-  message?: string
-  summary?: { raw?: string; markup?: 'markdown' | 'creole' | 'plaintext'; html?: string }
-  parents?: BaseCommitType[]
-}
-
-const CommitSchema: z.ZodType<CommitType> = z
-  .lazy(() =>
-    BaseCommitSchema.and(
-      z
-        .looseObject({
-          repository: RepositorySchema.exactOptional(),
-          participants: z.array(ParticipantSchema).min(0).exactOptional(),
-        })
-        .openapi({ title: 'Commit', description: 'A repository commit object.', required: [] }),
-    ),
-  )
-  .openapi('Commit')
-
-type RefType = {
-  type: string
-  links?: {
-    self?: { href?: string; name?: string }
-    commits?: { href?: string; name?: string }
-    html?: { href?: string; name?: string }
-  }
-  name?: string
-  target?: z.infer<typeof CommitSchema>
-}
-
-type GPGAccountKeyType = z.infer<typeof ObjectSchema> & {
-  owner?: z.infer<typeof AccountSchema>
-  key?: string
-  key_id?: string
-  fingerprint?: string
-  parent_fingerprint?: string
-  name?: string
-  expires_on?: string
-  created_on?: string
-  added_on?: string
-  last_used?: string
-  subkeys?: GPGAccountKeyType[]
-  links?: { self?: { href?: string; name?: string } }
-}
-
-const RefSchema: z.ZodType<RefType> = z
-  .lazy(() =>
-    z
-      .looseObject({
-        type: z.string(),
-        links: z
-          .strictObject({
-            self: z
-              .strictObject({ href: z.url().exactOptional(), name: z.string().exactOptional() })
-              .exactOptional()
-              .openapi({
-                title: 'Link',
-                description: 'A link to a resource related to this object.',
-                required: [],
-              }),
-            commits: z
-              .strictObject({ href: z.url().exactOptional(), name: z.string().exactOptional() })
-              .exactOptional()
-              .openapi({
-                title: 'Link',
-                description: 'A link to a resource related to this object.',
-                required: [],
-              }),
-            html: z
-              .strictObject({ href: z.url().exactOptional(), name: z.string().exactOptional() })
-              .exactOptional()
-              .openapi({
-                title: 'Link',
-                description: 'A link to a resource related to this object.',
-                required: [],
-              }),
-          })
-          .exactOptional()
-          .openapi({ required: [] }),
-        name: z.string().exactOptional().openapi({ description: 'The name of the ref.' }),
-        target: CommitSchema.exactOptional(),
-      })
-      .openapi({
-        title: 'Ref',
-        description: 'A ref object, representing a branch or tag in a repository.',
-        required: ['type'],
-      }),
-  )
-  .openapi('Ref')
-
-type BranchType = z.infer<typeof RefSchema> & {
-  merge_strategies?: (
-    | 'merge_commit'
-    | 'squash'
-    | 'fast_forward'
-    | 'squash_fast_forward'
-    | 'rebase_fast_forward'
-    | 'rebase_merge'
-  )[]
-  default_merge_strategy?: string
-}
-
-const BaseCommitSchema: z.ZodType<BaseCommitType> = z
-  .lazy(() =>
-    ObjectSchema.and(
-      z
-        .looseObject({
-          hash: z
-            .string()
-            .regex(/[0-9a-f]{7,}?/)
-            .exactOptional(),
-          date: z.iso.datetime({ offset: true }).exactOptional(),
-          author: AuthorSchema.exactOptional(),
-          committer: CommitterSchema.exactOptional(),
-          message: z.string().exactOptional(),
-          summary: z
-            .strictObject({
-              raw: z
-                .string()
-                .exactOptional()
-                .openapi({ description: 'The text as it was typed by a user.' }),
-              markup: z
-                .enum(['markdown', 'creole', 'plaintext'])
-                .exactOptional()
-                .openapi({
-                  description:
-                    'The type of markup language the raw content is to be interpreted in.',
-                }),
-              html: z
-                .string()
-                .exactOptional()
-                .openapi({ description: "The user's content rendered as HTML." }),
-            })
-            .exactOptional()
-            .openapi({ required: [] }),
-          parents: z.array(BaseCommitSchema).min(0).exactOptional(),
-        })
-        .openapi({
-          title: 'Base Commit',
-          description: 'The common base type for both repository and snippet commits.',
-          required: [],
-        }),
-    ),
-  )
-  .openapi('BaseCommit')
 
 const RepositorySchema: z.ZodType<RepositoryType> = z
   .lazy(() =>
@@ -550,6 +383,13 @@ const RepositorySchema: z.ZodType<RepositoryType> = z
               description:
                 '\nControls the rules for forking this repository.\n\n* **allow_forks**: unrestricted forking\n* **no_public_forks**: restrict forking to private forks (forks cannot\n  be made public later)\n* **no_forks**: deny all forking\n',
             }),
+          enforced_signed_commits: z
+            .boolean()
+            .exactOptional()
+            .openapi({
+              description:
+                'Whether signed commits are required for this repository:\n\n- true when the workspace is on a Premium plan and enforcement is enabled at the repository, project,\n  or workspace level;\n- otherwise false.',
+            }),
           project: ProjectSchema.exactOptional(),
           mainbranch: BranchSchema.exactOptional(),
         })
@@ -557,6 +397,209 @@ const RepositorySchema: z.ZodType<RepositoryType> = z
     ),
   )
   .openapi('Repository')
+
+const PipelineTriggerSchema = ObjectSchema.and(
+  z
+    .looseObject({})
+    .openapi({
+      title: 'Pipeline Trigger',
+      description: 'A representation of the trigger used for a pipeline.',
+    }),
+).openapi('PipelineTrigger')
+
+const PipelineStateSchema = ObjectSchema.and(
+  z
+    .looseObject({})
+    .openapi({
+      title: 'Pipeline State',
+      description: 'The representation of the progress state of a pipeline.',
+    }),
+).openapi('PipelineState')
+
+const PipelineVariableSchema = ObjectSchema.and(
+  z
+    .looseObject({
+      uuid: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'The UUID identifying the variable.' }),
+      key: z.string().exactOptional().openapi({ description: 'The unique name of the variable.' }),
+      value: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description: 'The value of the variable. If the variable is secured, this will be empty.',
+        }),
+      secured: z
+        .boolean()
+        .exactOptional()
+        .openapi({
+          description:
+            'If true, this variable will be treated as secured. The value will never be exposed in the logs or the REST API.',
+        }),
+    })
+    .openapi({ title: 'Pipeline Variable', description: 'A Pipelines variable.', required: [] }),
+).openapi('PipelineVariable')
+
+const PipelineConfigurationSourceSchema = z
+  .object({
+    source: z.string().openapi({ description: 'Identifier of the configuration source' }),
+    uri: z
+      .url()
+      .openapi({ description: 'Link to the configuration source view or its immediate content' }),
+  })
+  .openapi({
+    description: 'Information about the source of the pipeline configuration',
+    required: ['source', 'uri'],
+  })
+  .openapi('PipelineConfigurationSource')
+
+const PipelinesLinksSectionHrefSchema = ObjectSchema.and(
+  z
+    .looseObject({ href: z.url().exactOptional().openapi({ description: 'A link' }) })
+    .openapi({ title: 'Pipeline Links href', description: 'A links section href', required: [] }),
+).openapi('PipelinesLinksSectionHref')
+
+const PipelinesPipelineLinksSchema = ObjectSchema.and(
+  z
+    .looseObject({
+      self: PipelinesLinksSectionHrefSchema.exactOptional(),
+      steps: PipelinesLinksSectionHrefSchema.exactOptional(),
+    })
+    .openapi({
+      title: 'Pipeline Links',
+      description: 'Links section for a Pipeline.',
+      required: [],
+    }),
+).openapi('PipelinesPipelineLinks')
+
+const PipelineSchema = ObjectSchema.and(
+  z
+    .looseObject({
+      uuid: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'The UUID identifying the pipeline.' }),
+      build_number: z
+        .int()
+        .exactOptional()
+        .openapi({ description: 'The build number of the pipeline.' }),
+      creator: AccountSchema.exactOptional(),
+      repository: RepositorySchema.exactOptional(),
+      target: PipelineTargetSchema.exactOptional(),
+      trigger: PipelineTriggerSchema.exactOptional(),
+      state: PipelineStateSchema.exactOptional(),
+      variables: z
+        .array(PipelineVariableSchema)
+        .min(0)
+        .exactOptional()
+        .openapi({ description: 'The variables for the pipeline.' }),
+      created_on: z.iso
+        .datetime({ offset: true })
+        .exactOptional()
+        .openapi({ description: 'The timestamp when the pipeline was created.' }),
+      completed_on: z.iso
+        .datetime({ offset: true })
+        .exactOptional()
+        .openapi({
+          description:
+            'The timestamp when the Pipeline was completed. This is not set if the pipeline is still in progress.',
+        }),
+      build_seconds_used: z
+        .int()
+        .exactOptional()
+        .openapi({ description: 'The number of build seconds used by this pipeline.' }),
+      configuration_sources: z
+        .array(PipelineConfigurationSourceSchema)
+        .min(0)
+        .exactOptional()
+        .openapi({ description: 'An ordered list of sources of the pipeline configuration' }),
+      links: PipelinesPipelineLinksSchema.exactOptional(),
+    })
+    .openapi({
+      title: 'Pipeline',
+      description: 'A Bitbucket Pipeline. This represents an actual pipeline result.',
+      required: [],
+    }),
+)
+  .openapi({
+    'x-bb-default-fields': ['uuid'],
+    'x-bb-batch-url':
+      '/rest/1.0/accounts/{workspace.uuid}/repositories/{repository.uuid}/pipelines/pipelines_batch',
+    'x-bb-batch-max-size': 100,
+  })
+  .openapi('Pipeline')
+
+type PaginatedPipelinesType = {
+  page?: number
+  values?: z.infer<typeof PipelineSchema>[]
+  size?: number
+  pagelen?: number
+  next?: string
+  previous?: string
+}
+
+const MergeQueueReferenceSchema = z
+  .object({ type: z.literal('merge_queue').exactOptional(), uuid: z.uuid().exactOptional() })
+  .openapi({
+    title: 'Merge Queue Reference',
+    description: 'A reference to the merge queue holding a pullrequest.',
+    required: [],
+  })
+  .openapi('MergeQueueReference')
+
+const PullrequestEndpointSchema = z
+  .strictObject({
+    repository: RepositorySchema.exactOptional(),
+    branch: z
+      .strictObject({
+        name: z.string().exactOptional(),
+        merge_strategies: z
+          .array(
+            z.enum([
+              'merge_commit',
+              'squash',
+              'fast_forward',
+              'squash_fast_forward',
+              'rebase_fast_forward',
+              'rebase_merge',
+            ]),
+          )
+          .exactOptional()
+          .openapi({
+            description:
+              'Available merge strategies, when this endpoint is the destination of the pull request.',
+          }),
+        default_merge_strategy: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The default merge strategy, when this endpoint is the destination of the pull request.',
+          }),
+      })
+      .exactOptional()
+      .openapi({ title: 'Pull Request Branch', required: [] }),
+    commit: z
+      .strictObject({
+        hash: z
+          .string()
+          .regex(/[0-9a-f]{7,}?/)
+          .exactOptional(),
+      })
+      .exactOptional()
+      .openapi({ title: 'Pull Request Commit', required: [] }),
+  })
+  .openapi({ title: 'Pull Request Endpoint', required: [] })
+  .openapi('PullrequestEndpoint')
+
+type ParticipantType = z.infer<typeof ObjectSchema> & {
+  user?: z.infer<typeof AccountSchema>
+  role?: 'PARTICIPANT' | 'REVIEWER'
+  approved?: boolean
+  state?: 'approved' | 'changes_requested' | null
+  participated_on?: string
+}
 
 const ParticipantSchema: z.ZodType<ParticipantType> = ObjectSchema.and(
   z
@@ -581,6 +624,1444 @@ const ParticipantSchema: z.ZodType<ParticipantType> = ObjectSchema.and(
       required: [],
     }),
 ).openapi('Participant')
+
+const PullrequestSchema = ObjectSchema.and(
+  z
+    .looseObject({
+      links: z
+        .strictObject({
+          self: z
+            .strictObject({ href: z.url().exactOptional(), name: z.string().exactOptional() })
+            .exactOptional()
+            .openapi({
+              title: 'Link',
+              description: 'A link to a resource related to this object.',
+              required: [],
+            }),
+          html: z
+            .strictObject({ href: z.url().exactOptional(), name: z.string().exactOptional() })
+            .exactOptional()
+            .openapi({
+              title: 'Link',
+              description: 'A link to a resource related to this object.',
+              required: [],
+            }),
+          commits: z
+            .strictObject({ href: z.url().exactOptional(), name: z.string().exactOptional() })
+            .exactOptional()
+            .openapi({
+              title: 'Link',
+              description: 'A link to a resource related to this object.',
+              required: [],
+            }),
+          approve: z
+            .strictObject({ href: z.url().exactOptional(), name: z.string().exactOptional() })
+            .exactOptional()
+            .openapi({
+              title: 'Link',
+              description: 'A link to a resource related to this object.',
+              required: [],
+            }),
+          diff: z
+            .strictObject({ href: z.url().exactOptional(), name: z.string().exactOptional() })
+            .exactOptional()
+            .openapi({
+              title: 'Link',
+              description: 'A link to a resource related to this object.',
+              required: [],
+            }),
+          diffstat: z
+            .strictObject({ href: z.url().exactOptional(), name: z.string().exactOptional() })
+            .exactOptional()
+            .openapi({
+              title: 'Link',
+              description: 'A link to a resource related to this object.',
+              required: [],
+            }),
+          comments: z
+            .strictObject({ href: z.url().exactOptional(), name: z.string().exactOptional() })
+            .exactOptional()
+            .openapi({
+              title: 'Link',
+              description: 'A link to a resource related to this object.',
+              required: [],
+            }),
+          activity: z
+            .strictObject({ href: z.url().exactOptional(), name: z.string().exactOptional() })
+            .exactOptional()
+            .openapi({
+              title: 'Link',
+              description: 'A link to a resource related to this object.',
+              required: [],
+            }),
+          merge: z
+            .strictObject({ href: z.url().exactOptional(), name: z.string().exactOptional() })
+            .exactOptional()
+            .openapi({
+              title: 'Link',
+              description: 'A link to a resource related to this object.',
+              required: [],
+            }),
+          decline: z
+            .strictObject({ href: z.url().exactOptional(), name: z.string().exactOptional() })
+            .exactOptional()
+            .openapi({
+              title: 'Link',
+              description: 'A link to a resource related to this object.',
+              required: [],
+            }),
+          mergeability_checks: z
+            .strictObject({ href: z.url().exactOptional(), name: z.string().exactOptional() })
+            .exactOptional()
+            .openapi({
+              title: 'Link',
+              description: 'A link to a resource related to this object.',
+              required: [],
+            }),
+        })
+        .exactOptional()
+        .openapi({ required: [] }),
+      id: z
+        .int()
+        .exactOptional()
+        .openapi({
+          description:
+            "The pull request's unique ID. Note that pull request IDs are only unique within their associated repository.",
+        }),
+      title: z.string().exactOptional().openapi({ description: 'Title of the pull request.' }),
+      rendered: z
+        .strictObject({
+          title: z
+            .strictObject({
+              raw: z
+                .string()
+                .exactOptional()
+                .openapi({ description: 'The text as it was typed by a user.' }),
+              markup: z
+                .enum(['markdown', 'creole', 'plaintext'])
+                .exactOptional()
+                .openapi({
+                  description:
+                    'The type of markup language the raw content is to be interpreted in.',
+                }),
+              html: z
+                .string()
+                .exactOptional()
+                .openapi({ description: "The user's content rendered as HTML." }),
+            })
+            .exactOptional()
+            .openapi({ required: [] }),
+          description: z
+            .strictObject({
+              raw: z
+                .string()
+                .exactOptional()
+                .openapi({ description: 'The text as it was typed by a user.' }),
+              markup: z
+                .enum(['markdown', 'creole', 'plaintext'])
+                .exactOptional()
+                .openapi({
+                  description:
+                    'The type of markup language the raw content is to be interpreted in.',
+                }),
+              html: z
+                .string()
+                .exactOptional()
+                .openapi({ description: "The user's content rendered as HTML." }),
+            })
+            .exactOptional()
+            .openapi({ required: [] }),
+          reason: z
+            .strictObject({
+              raw: z
+                .string()
+                .exactOptional()
+                .openapi({ description: 'The text as it was typed by a user.' }),
+              markup: z
+                .enum(['markdown', 'creole', 'plaintext'])
+                .exactOptional()
+                .openapi({
+                  description:
+                    'The type of markup language the raw content is to be interpreted in.',
+                }),
+              html: z
+                .string()
+                .exactOptional()
+                .openapi({ description: "The user's content rendered as HTML." }),
+            })
+            .exactOptional()
+            .openapi({ required: [] }),
+        })
+        .exactOptional()
+        .openapi({
+          title: 'Rendered Pull Request Markup',
+          description:
+            'User provided pull request text, interpreted in a markup language and rendered in HTML',
+          required: [],
+        }),
+      summary: z
+        .strictObject({
+          raw: z
+            .string()
+            .exactOptional()
+            .openapi({ description: 'The text as it was typed by a user.' }),
+          markup: z
+            .enum(['markdown', 'creole', 'plaintext'])
+            .exactOptional()
+            .openapi({
+              description: 'The type of markup language the raw content is to be interpreted in.',
+            }),
+          html: z
+            .string()
+            .exactOptional()
+            .openapi({ description: "The user's content rendered as HTML." }),
+        })
+        .exactOptional()
+        .openapi({ required: [] }),
+      state: z
+        .enum(['OPEN', 'MERGED', 'DECLINED', 'SUPERSEDED'])
+        .exactOptional()
+        .openapi({ description: "The pull request's current status." }),
+      author: AccountSchema.exactOptional(),
+      source: PullrequestEndpointSchema.exactOptional(),
+      destination: PullrequestEndpointSchema.exactOptional(),
+      merge_commit: z
+        .strictObject({
+          hash: z
+            .string()
+            .regex(/[0-9a-f]{7,}?/)
+            .exactOptional(),
+        })
+        .exactOptional()
+        .openapi({ title: 'Pull Request Commit', required: [] }),
+      comment_count: z
+        .int()
+        .min(0)
+        .exactOptional()
+        .openapi({ description: 'The number of comments for a specific pull request.' }),
+      task_count: z
+        .int()
+        .min(0)
+        .exactOptional()
+        .openapi({ description: 'The number of open tasks for a specific pull request.' }),
+      close_source_branch: z
+        .boolean()
+        .exactOptional()
+        .openapi({
+          description:
+            'A boolean flag indicating if merging the pull request closes the source branch.',
+        }),
+      closed_by: AccountSchema.exactOptional(),
+      reason: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Explains why a pull request was declined. This field is only applicable to pull requests in rejected state.',
+        }),
+      created_on: z.iso
+        .datetime({ offset: true })
+        .exactOptional()
+        .openapi({ description: 'The ISO8601 timestamp the request was created.' }),
+      updated_on: z.iso
+        .datetime({ offset: true })
+        .exactOptional()
+        .openapi({ description: 'The ISO8601 timestamp the request was last updated.' }),
+      reviewers: z
+        .array(AccountSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            "The list of users that were added as reviewers on this pull request when it was created. For performance reasons, the API only includes this list on a pull request's `self` URL.",
+        }),
+      participants: z
+        .array(ParticipantSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            "        The list of users that are collaborating on this pull request.\n        Collaborators are user that:\n\n        * are added to the pull request as a reviewer (part of the reviewers\n          list)\n        * are not explicit reviewers, but have commented on the pull request\n        * are not explicit reviewers, but have approved the pull request\n\n        Each user is wrapped in an object that indicates the user's role and\n        whether they have approved the pull request. For performance reasons,\n        the API only returns this list when an API requests a pull request by\n        id.\n        ",
+        }),
+      draft: z
+        .boolean()
+        .exactOptional()
+        .openapi({ description: 'A boolean flag indicating whether the pull request is a draft.' }),
+      queued: z
+        .boolean()
+        .exactOptional()
+        .openapi({ description: 'A boolean flag indicating whether the pull request is queued' }),
+    })
+    .openapi({ title: 'Pull Request', description: 'A pull request object.', required: [] }),
+).openapi('Pullrequest')
+
+type MergeQueuePullrequestType = {
+  type?: 'queued_pullrequest'
+  status?: 'QUEUED' | 'PROCESSING' | 'AWAITING_MERGE' | 'MERGE_IN_PROGRESS' | 'REMOVING' | 'UNKNOWN'
+  rank?: number
+  queued_on?: string
+  last_activity_on?: string
+  merge_queue?: z.infer<typeof MergeQueueReferenceSchema>
+  pipeline?: z.infer<typeof PipelineSchema>
+  pullrequest?: z.infer<typeof PullrequestSchema>
+}
+
+const MergeQueuePullrequestSchema: z.ZodType<MergeQueuePullrequestType> = z
+  .object({
+    type: z.literal('queued_pullrequest').exactOptional(),
+    status: z
+      .enum(['QUEUED', 'PROCESSING', 'AWAITING_MERGE', 'MERGE_IN_PROGRESS', 'REMOVING', 'UNKNOWN'])
+      .exactOptional(),
+    rank: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'The one-based position of the pullrequest in the merge queue.' }),
+    queued_on: z.iso.datetime({ offset: true }).exactOptional(),
+    last_activity_on: z.iso.datetime({ offset: true }).exactOptional(),
+    merge_queue: MergeQueueReferenceSchema.exactOptional(),
+    pipeline: PipelineSchema.exactOptional(),
+    pullrequest: PullrequestSchema.exactOptional(),
+  })
+  .openapi({
+    title: 'Merge Queue PullRequest Object',
+    description: 'The pullrequest object in a merge queue.',
+    required: [],
+  })
+  .openapi('MergeQueuePullrequest')
+
+type PaginatedMergeQueuePullrequestsType = {
+  page?: number
+  size?: number
+  pagelen?: number
+  values?: z.infer<typeof MergeQueuePullrequestSchema>[]
+}
+
+const SearchSegmentSchema = z
+  .object({
+    text: z.string().exactOptional().openapi({ readOnly: true }),
+    match: z.boolean().exactOptional().openapi({ readOnly: true }),
+  })
+  .openapi({ required: [] })
+  .openapi('SearchSegment')
+
+const SearchLineSchema = z
+  .object({
+    line: z.int32().exactOptional().openapi({ readOnly: true }),
+    segments: z.array(SearchSegmentSchema).exactOptional().openapi({ readOnly: true }),
+  })
+  .openapi({ required: [] })
+  .openapi('SearchLine')
+
+const SearchContentMatchSchema = z
+  .object({ lines: z.array(SearchLineSchema).exactOptional().openapi({ readOnly: true }) })
+  .openapi({ required: [] })
+  .openapi('SearchContentMatch')
+
+const CommitFileSchema = z
+  .looseObject({
+    type: z.string(),
+    path: z.string().exactOptional().openapi({ description: 'The path in the repository' }),
+    commit: CommitSchema.exactOptional(),
+    attributes: z.enum(['link', 'executable', 'subrepository', 'binary', 'lfs']).exactOptional(),
+    escaped_path: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The escaped version of the path as it appears in a diff. If the path does not require escaping this will be the same as path.',
+      }),
+  })
+  .openapi({
+    title: 'Commit File',
+    description: 'A file object, representing a file at a commit in a repository',
+    required: ['type'],
+  })
+  .openapi('CommitFile')
+
+type SearchCodeSearchResultType = {
+  type?: string
+  content_match_count?: bigint
+  content_matches?: z.infer<typeof SearchContentMatchSchema>[]
+  path_matches?: z.infer<typeof SearchSegmentSchema>[]
+  file?: z.infer<typeof CommitFileSchema>
+}
+
+const SearchCodeSearchResultSchema: z.ZodType<SearchCodeSearchResultType> = z
+  .object({
+    type: z.string().exactOptional().openapi({ readOnly: true }),
+    content_match_count: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64', readOnly: true }),
+    content_matches: z.array(SearchContentMatchSchema).exactOptional().openapi({ readOnly: true }),
+    path_matches: z.array(SearchSegmentSchema).exactOptional().openapi({ readOnly: true }),
+    file: CommitFileSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('SearchCodeSearchResult')
+
+type SearchResultPageType = {
+  size?: bigint
+  page?: number
+  pagelen?: number
+  query_substituted?: boolean
+  next?: string
+  previous?: string
+  values?: z.infer<typeof SearchCodeSearchResultSchema>[]
+}
+
+type PaginatedPullrequestsType = {
+  size?: number
+  page?: number
+  pagelen?: number
+  next?: string
+  previous?: string
+  values?: z.infer<typeof PullrequestSchema>[]
+}
+
+const TeamLinksSchema = AccountLinksSchema.and(
+  z
+    .looseObject({
+      self: LinkSchema.exactOptional(),
+      html: LinkSchema.exactOptional(),
+      members: LinkSchema.exactOptional(),
+      projects: LinkSchema.exactOptional(),
+      repositories: LinkSchema.exactOptional(),
+    })
+    .openapi({ title: 'Team Links', description: 'Links related to a Team.', required: [] }),
+).openapi('TeamLinks')
+
+const TeamSchema = AccountSchema.and(
+  z
+    .looseObject({ links: TeamLinksSchema.exactOptional() })
+    .openapi({ title: 'Team', description: 'A team object.', required: [] }),
+).openapi('Team')
+
+type ProjectType = z.infer<typeof ObjectSchema> & {
+  links?: { html?: { href?: string; name?: string }; avatar?: { href?: string; name?: string } }
+  uuid?: string
+  key?: string
+  owner?: z.infer<typeof TeamSchema>
+  name?: string
+  description?: string
+  is_private?: boolean
+  created_on?: string
+  updated_on?: string
+  has_publicly_visible_repos?: boolean
+  enforced_signed_commits?: boolean
+}
+
+const ProjectSchema: z.ZodType<ProjectType> = ObjectSchema.and(
+  z
+    .looseObject({
+      links: z
+        .strictObject({
+          html: z
+            .strictObject({ href: z.url().exactOptional(), name: z.string().exactOptional() })
+            .exactOptional()
+            .openapi({
+              title: 'Link',
+              description: 'A link to a resource related to this object.',
+              required: [],
+            }),
+          avatar: z
+            .strictObject({ href: z.url().exactOptional(), name: z.string().exactOptional() })
+            .exactOptional()
+            .openapi({
+              title: 'Link',
+              description: 'A link to a resource related to this object.',
+              required: [],
+            }),
+        })
+        .exactOptional()
+        .openapi({ required: [] }),
+      uuid: z.string().exactOptional().openapi({ description: "The project's immutable id." }),
+      key: z.string().exactOptional().openapi({ description: "The project's key." }),
+      owner: TeamSchema.exactOptional(),
+      name: z.string().exactOptional().openapi({ description: 'The name of the project.' }),
+      description: z.string().exactOptional(),
+      is_private: z
+        .boolean()
+        .exactOptional()
+        .openapi({
+          description:
+            '\nIndicates whether the project is publicly accessible, or whether it is\nprivate to the team and consequently only visible to team members.\nNote that private projects cannot contain public repositories.',
+        }),
+      created_on: z.iso.datetime({ offset: true }).exactOptional(),
+      updated_on: z.iso.datetime({ offset: true }).exactOptional(),
+      has_publicly_visible_repos: z
+        .boolean()
+        .exactOptional()
+        .openapi({
+          description:
+            '\nIndicates whether the project contains publicly visible repositories.\nNote that private projects cannot contain public repositories.',
+        }),
+      enforced_signed_commits: z
+        .boolean()
+        .exactOptional()
+        .openapi({
+          description:
+            'Whether signed commits are required for this project:\n\n- true when the workspace is on a Premium plan and enforcement is enabled at the project or the\n  workspace level;\n- otherwise false.',
+        }),
+    })
+    .openapi({
+      title: 'Project',
+      description:
+        'A Bitbucket project.\n            Projects are used by teams to organize repositories.',
+      required: [],
+    }),
+).openapi('Project')
+
+const BranchSchema: z.ZodType<BranchType> = z
+  .lazy(() =>
+    RefSchema.and(
+      z
+        .looseObject({
+          merge_strategies: z
+            .array(
+              z.enum([
+                'merge_commit',
+                'squash',
+                'fast_forward',
+                'squash_fast_forward',
+                'rebase_fast_forward',
+                'rebase_merge',
+              ]),
+            )
+            .exactOptional()
+            .openapi({
+              description: 'Available merge strategies for pull requests targeting this branch.',
+            }),
+          default_merge_strategy: z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'The default merge strategy for pull requests targeting this branch.',
+            }),
+        })
+        .openapi({
+          title: 'Branch',
+          description: 'A branch object, representing a branch in a repository.',
+          required: [],
+        }),
+    ),
+  )
+  .openapi('Branch')
+
+type RepositoryType = z.infer<typeof ObjectSchema> & {
+  links?: {
+    self?: { href?: string; name?: string }
+    html?: { href?: string; name?: string }
+    avatar?: { href?: string; name?: string }
+    pullrequests?: { href?: string; name?: string }
+    commits?: { href?: string; name?: string }
+    forks?: { href?: string; name?: string }
+    watchers?: { href?: string; name?: string }
+    downloads?: { href?: string; name?: string }
+    clone?: { href?: string; name?: string }[]
+    hooks?: { href?: string; name?: string }
+  }
+  uuid?: string
+  full_name?: string
+  is_private?: boolean
+  parent?: RepositoryType
+  scm?: 'git'
+  owner?: z.infer<typeof AccountSchema>
+  name?: string
+  description?: string
+  created_on?: string
+  updated_on?: string
+  size?: number
+  language?: string
+  has_issues?: boolean
+  has_wiki?: boolean
+  fork_policy?: 'allow_forks' | 'no_public_forks' | 'no_forks'
+  enforced_signed_commits?: boolean
+  project?: z.infer<typeof ProjectSchema>
+  mainbranch?: z.infer<typeof BranchSchema>
+}
+
+const WorkspaceSchema = ObjectSchema.and(
+  z
+    .looseObject({
+      links: z
+        .strictObject({
+          avatar: z
+            .strictObject({ href: z.url().exactOptional(), name: z.string().exactOptional() })
+            .exactOptional()
+            .openapi({
+              title: 'Link',
+              description: 'A link to a resource related to this object.',
+              required: [],
+            }),
+          html: z
+            .strictObject({ href: z.url().exactOptional(), name: z.string().exactOptional() })
+            .exactOptional()
+            .openapi({
+              title: 'Link',
+              description: 'A link to a resource related to this object.',
+              required: [],
+            }),
+          members: z
+            .strictObject({ href: z.url().exactOptional(), name: z.string().exactOptional() })
+            .exactOptional()
+            .openapi({
+              title: 'Link',
+              description: 'A link to a resource related to this object.',
+              required: [],
+            }),
+          owners: z
+            .strictObject({ href: z.url().exactOptional(), name: z.string().exactOptional() })
+            .exactOptional()
+            .openapi({
+              title: 'Link',
+              description: 'A link to a resource related to this object.',
+              required: [],
+            }),
+          projects: z
+            .strictObject({ href: z.url().exactOptional(), name: z.string().exactOptional() })
+            .exactOptional()
+            .openapi({
+              title: 'Link',
+              description: 'A link to a resource related to this object.',
+              required: [],
+            }),
+          repositories: z
+            .strictObject({ href: z.url().exactOptional(), name: z.string().exactOptional() })
+            .exactOptional()
+            .openapi({
+              title: 'Link',
+              description: 'A link to a resource related to this object.',
+              required: [],
+            }),
+          snippets: z
+            .strictObject({ href: z.url().exactOptional(), name: z.string().exactOptional() })
+            .exactOptional()
+            .openapi({
+              title: 'Link',
+              description: 'A link to a resource related to this object.',
+              required: [],
+            }),
+          self: z
+            .strictObject({ href: z.url().exactOptional(), name: z.string().exactOptional() })
+            .exactOptional()
+            .openapi({
+              title: 'Link',
+              description: 'A link to a resource related to this object.',
+              required: [],
+            }),
+        })
+        .exactOptional()
+        .openapi({ required: [] }),
+      uuid: z.string().exactOptional().openapi({ description: "The workspace's immutable id." }),
+      name: z.string().exactOptional().openapi({ description: 'The name of the workspace.' }),
+      slug: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'The short label that identifies this workspace.' }),
+      is_private: z
+        .boolean()
+        .exactOptional()
+        .openapi({
+          description:
+            'Indicates whether the workspace is publicly accessible, or whether it is\nprivate to the members and consequently only visible to members.',
+        }),
+      is_personal: z
+        .boolean()
+        .exactOptional()
+        .openapi({ description: 'Indicates whether the workspace belongs to an individual user.' }),
+      enforced_signed_commits: z
+        .boolean()
+        .exactOptional()
+        .openapi({
+          description:
+            'Whether signed commits are required for this workspace:\n\n- true when enforcement is enabled at the workspace level, even if the workspace is no longer on a\n  Premium plan. Signed commits are only enforced on a Premium plan;\n- otherwise false.',
+        }),
+      is_privacy_enforced: z
+        .boolean()
+        .exactOptional()
+        .openapi({
+          description:
+            'Indicates whether the workspace enforces private content, or whether it allows public content.',
+        }),
+      forking_mode: z
+        .enum(['allow_forks', 'internal_only'])
+        .exactOptional()
+        .openapi({
+          description:
+            'Controls the rules for forking repositories within this workspace.\n\n* **allow_forks**: unrestricted forking\n* **internal_only**: prevents forking of private repositories outside the workspace or to public repositories\n',
+        }),
+      created_on: z.iso.datetime({ offset: true }).exactOptional(),
+      updated_on: z.iso.datetime({ offset: true }).exactOptional(),
+    })
+    .openapi({
+      title: 'Workspace',
+      description:
+        'A Bitbucket workspace.\n            Workspaces are used to organize repositories.',
+      required: [],
+    }),
+).openapi('Workspace')
+
+const GroupSchema = ObjectSchema.and(
+  z
+    .looseObject({
+      links: z
+        .strictObject({
+          self: z
+            .strictObject({ href: z.url().exactOptional(), name: z.string().exactOptional() })
+            .exactOptional()
+            .openapi({
+              title: 'Link',
+              description: 'A link to a resource related to this object.',
+              required: [],
+            }),
+          html: z
+            .strictObject({ href: z.url().exactOptional(), name: z.string().exactOptional() })
+            .exactOptional()
+            .openapi({
+              title: 'Link',
+              description: 'A link to a resource related to this object.',
+              required: [],
+            }),
+        })
+        .exactOptional()
+        .openapi({ required: [] }),
+      owner: AccountSchema.exactOptional(),
+      workspace: WorkspaceSchema.exactOptional(),
+      name: z.string().exactOptional(),
+      slug: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'The "sluggified" version of the group\'s name. This contains only ASCII\ncharacters and can therefore be slightly different than the name',
+        }),
+      full_slug: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            "The concatenation of the workspace's slug and the group's slug,\nseparated with a colon (e.g. `acme:developers`)\n",
+        }),
+    })
+    .openapi({ title: 'Group', description: 'A group object', required: [] }),
+).openapi('Group')
+
+const BranchrestrictionSchema = ObjectSchema.and(
+  z
+    .looseObject({
+      links: z
+        .strictObject({
+          self: z
+            .strictObject({ href: z.url().exactOptional(), name: z.string().exactOptional() })
+            .exactOptional()
+            .openapi({
+              title: 'Link',
+              description: 'A link to a resource related to this object.',
+              required: [],
+            }),
+        })
+        .exactOptional()
+        .openapi({ required: [] }),
+      id: z.int().exactOptional().openapi({ description: "The branch restriction status' id." }),
+      kind: z
+        .enum([
+          'push',
+          'delete',
+          'force',
+          'restrict_merges',
+          'require_tasks_to_be_completed',
+          'require_approvals_to_merge',
+          'require_review_group_approvals_to_merge',
+          'require_default_reviewer_approvals_to_merge',
+          'require_no_changes_requested',
+          'require_passing_builds_to_merge',
+          'require_commits_behind',
+          'reset_pullrequest_approvals_on_change',
+          'smart_reset_pullrequest_approvals',
+          'reset_pullrequest_changes_requested_on_change',
+          'require_all_dependencies_merged',
+          'enforce_merge_checks',
+          'allow_auto_merge_when_builds_pass',
+          'require_all_comments_resolved',
+        ])
+        .openapi({ description: 'The type of restriction that is being applied.' }),
+      branch_match_kind: z
+        .enum(['branching_model', 'glob'])
+        .openapi({
+          description:
+            'Indicates how the restriction is matched against a branch. The default is `glob`.',
+        }),
+      branch_type: z
+        .enum(['feature', 'bugfix', 'release', 'hotfix', 'development', 'production'])
+        .exactOptional()
+        .openapi({
+          description:
+            'Apply the restriction to branches of this type. Active when `branch_match_kind` is `branching_model`. The branch type will be calculated using the branching model configured for the repository.',
+        }),
+      pattern: z
+        .string()
+        .openapi({
+          description:
+            'Apply the restriction to branches that match this pattern. Active when `branch_match_kind` is `glob`. Will be empty when `branch_match_kind` is `branching_model`.',
+        }),
+      pipelines_source_branches: z
+        .array(z.string())
+        .exactOptional()
+        .openapi({
+          description:
+            'List of source branch names allowed to push back to the restricted branch. Used in conjunction with pipeline-based restrictions.',
+        }),
+      value: z
+        .int()
+        .exactOptional()
+        .openapi({
+          description:
+            'Value with kind-specific semantics:\n\n* `require_approvals_to_merge` uses it to require a minimum number of approvals on a PR.\n\n* `require_default_reviewer_approvals_to_merge` uses it to require a minimum number of approvals from default reviewers on a PR.\n\n* `require_passing_builds_to_merge` uses it to require a minimum number of passing builds.\n\n* `require_commits_behind` uses it to require the current branch is up to a maximum number of commits behind it destination.',
+        }),
+      users: z.array(AccountSchema).min(0).exactOptional(),
+      groups: z.array(GroupSchema).min(0).exactOptional(),
+    })
+    .openapi({
+      title: 'Branch Restriction',
+      description: 'A branch restriction rule.',
+      required: ['kind', 'branch_match_kind', 'pattern'],
+    }),
+).openapi('Branchrestriction')
+
+type PaginatedBranchrestrictionsType = {
+  size?: number
+  page?: number
+  pagelen?: number
+  next?: string
+  previous?: string
+  values?: z.infer<typeof BranchrestrictionSchema>[]
+}
+
+type CommentType = z.infer<typeof ObjectSchema> & {
+  id?: bigint
+  created_on?: string
+  updated_on?: string
+  content?: { raw?: string; markup?: 'markdown' | 'creole' | 'plaintext'; html?: string }
+  user?: z.infer<typeof AccountSchema>
+  deleted?: boolean
+  parent?: CommentType
+  inline?: { from?: number; to?: number; start_from?: number; start_to?: number; path: string }
+  links?: {
+    self?: { href?: string; name?: string }
+    html?: { href?: string; name?: string }
+    code?: { href?: string; name?: string }
+  }
+}
+
+const RepositoryGroupPermissionSchema = z
+  .looseObject({
+    type: z.string(),
+    links: z
+      .strictObject({
+        self: z
+          .strictObject({ href: z.url().exactOptional(), name: z.string().exactOptional() })
+          .exactOptional()
+          .openapi({
+            title: 'Link',
+            description: 'A link to a resource related to this object.',
+            required: [],
+          }),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+    permission: z.enum(['read', 'write', 'admin', 'none']).exactOptional(),
+    group: GroupSchema.exactOptional(),
+    repository: RepositorySchema.exactOptional(),
+  })
+  .openapi({
+    title: 'Repository Group Permission',
+    description: "A group's permission for a given repository.",
+    required: ['type'],
+  })
+  .openapi('RepositoryGroupPermission')
+
+type PaginatedRepositoryGroupPermissionsType = {
+  size?: number
+  page?: number
+  pagelen?: number
+  next?: string
+  previous?: string
+  values?: z.infer<typeof RepositoryGroupPermissionSchema>[]
+}
+
+const UserLinksSchema = AccountLinksSchema.and(
+  z
+    .looseObject({
+      self: LinkSchema.exactOptional(),
+      html: LinkSchema.exactOptional(),
+      repositories: LinkSchema.exactOptional(),
+    })
+    .openapi({ title: 'User Links', description: 'Links related to a User.', required: [] }),
+).openapi('UserLinks')
+
+const UserSchema = AccountSchema.and(
+  z
+    .looseObject({
+      links: UserLinksSchema.exactOptional(),
+      account_id: z
+        .string()
+        .exactOptional()
+        .openapi({ description: "The user's Atlassian account ID." }),
+      account_status: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'The status of the account. Currently the only possible value is "active", but more values may be added in the future.',
+        }),
+      has_2fa_enabled: z.boolean().exactOptional(),
+      nickname: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Account name defined by the owner. Should be used instead of the "username" field. Note that "nickname" cannot be used in place of "username" in URLs and queries, as "nickname" is not guaranteed to be unique.',
+        }),
+      is_staff: z.boolean().exactOptional(),
+    })
+    .openapi({ title: 'User', description: 'A user object.', required: [] }),
+).openapi('User')
+
+const RepositoryPermissionSchema = z
+  .looseObject({
+    type: z.string(),
+    permission: z.enum(['read', 'write', 'admin', 'none']).exactOptional(),
+    user: UserSchema.exactOptional(),
+    repository: RepositorySchema.exactOptional(),
+  })
+  .openapi({
+    title: 'Repository Permission',
+    description: "A user's permission for a given repository.",
+    required: ['type'],
+  })
+  .openapi('RepositoryPermission')
+
+type PaginatedRepositoryPermissionsType = {
+  size?: number
+  page?: number
+  pagelen?: number
+  next?: string
+  previous?: string
+  values?: z.infer<typeof RepositoryPermissionSchema>[]
+}
+
+const RepositoryUserPermissionSchema = z
+  .looseObject({
+    type: z.string(),
+    permission: z.enum(['read', 'write', 'admin', 'none']).exactOptional(),
+    user: UserSchema.exactOptional(),
+    repository: RepositorySchema.exactOptional(),
+    links: z
+      .strictObject({
+        self: z
+          .strictObject({ href: z.url().exactOptional(), name: z.string().exactOptional() })
+          .exactOptional()
+          .openapi({
+            title: 'Link',
+            description: 'A link to a resource related to this object.',
+            required: [],
+          }),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+  })
+  .openapi({
+    title: 'Repository User Permission',
+    description: "A user's direct permission for a given repository.",
+    required: ['type'],
+  })
+  .openapi('RepositoryUserPermission')
+
+type PaginatedRepositoryUserPermissionsType = {
+  size?: number
+  page?: number
+  pagelen?: number
+  next?: string
+  previous?: string
+  values?: z.infer<typeof RepositoryUserPermissionSchema>[]
+}
+
+const CommentSchema: z.ZodType<CommentType> = z
+  .lazy(() =>
+    ObjectSchema.and(
+      z
+        .looseObject({
+          id: z
+            .preprocess(
+              (val) =>
+                typeof val === 'number' && Number.isSafeInteger(val)
+                  ? BigInt(val)
+                  : typeof val === 'string' && /^-?\d+$/.test(val)
+                    ? BigInt(val)
+                    : val,
+              z.int64(),
+            )
+            .exactOptional()
+            .openapi({ type: 'integer', format: 'int64' }),
+          created_on: z.iso.datetime({ offset: true }).exactOptional(),
+          updated_on: z.iso.datetime({ offset: true }).exactOptional(),
+          content: z
+            .strictObject({
+              raw: z
+                .string()
+                .exactOptional()
+                .openapi({ description: 'The text as it was typed by a user.' }),
+              markup: z
+                .enum(['markdown', 'creole', 'plaintext'])
+                .exactOptional()
+                .openapi({
+                  description:
+                    'The type of markup language the raw content is to be interpreted in.',
+                }),
+              html: z
+                .string()
+                .exactOptional()
+                .openapi({ description: "The user's content rendered as HTML." }),
+            })
+            .exactOptional()
+            .openapi({ required: [] }),
+          user: AccountSchema.exactOptional(),
+          deleted: z.boolean().exactOptional(),
+          parent: CommentSchema.exactOptional(),
+          inline: z
+            .strictObject({
+              from: z
+                .int()
+                .min(1)
+                .exactOptional()
+                .openapi({
+                  description:
+                    "The comment's anchor line in the old version of the file. If the comment is a multi-line comment, this is the ending line number in the old version of the file.",
+                }),
+              to: z
+                .int()
+                .min(1)
+                .exactOptional()
+                .openapi({
+                  description:
+                    "The comment's anchor line in the new version of the file. If the comment is a multi-line comment, this is the ending line number in the new version of the file.",
+                }),
+              start_from: z
+                .int()
+                .min(1)
+                .exactOptional()
+                .openapi({
+                  description:
+                    'The starting line number in the old version of the file, if the comment is a multi-line comment. This is null otherwise.',
+                }),
+              start_to: z
+                .int()
+                .min(1)
+                .exactOptional()
+                .openapi({
+                  description:
+                    'The starting line number in the new version of the file, if the comment is a multi-line comment. This is null otherwise.',
+                }),
+              path: z
+                .string()
+                .openapi({ description: 'The path of the file this comment is anchored to.' }),
+            })
+            .exactOptional()
+            .openapi({ required: ['path'] }),
+          links: z
+            .strictObject({
+              self: z
+                .strictObject({ href: z.url().exactOptional(), name: z.string().exactOptional() })
+                .exactOptional()
+                .openapi({
+                  title: 'Link',
+                  description: 'A link to a resource related to this object.',
+                  required: [],
+                }),
+              html: z
+                .strictObject({ href: z.url().exactOptional(), name: z.string().exactOptional() })
+                .exactOptional()
+                .openapi({
+                  title: 'Link',
+                  description: 'A link to a resource related to this object.',
+                  required: [],
+                }),
+              code: z
+                .strictObject({ href: z.url().exactOptional(), name: z.string().exactOptional() })
+                .exactOptional()
+                .openapi({
+                  title: 'Link',
+                  description: 'A link to a resource related to this object.',
+                  required: [],
+                }),
+            })
+            .exactOptional()
+            .openapi({ required: [] }),
+        })
+        .openapi({
+          title: 'Comment',
+          description:
+            'The base type for all comments. This type should be considered abstract. Each of the "commentable" resources defines its own subtypes (e.g. `issue_comment`).',
+          required: [],
+        }),
+    ),
+  )
+  .openapi('Comment')
+
+const CommentResolutionSchema = z
+  .looseObject({
+    type: z.string(),
+    user: AccountSchema.exactOptional(),
+    created_on: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'The ISO8601 timestamp the resolution was created.' }),
+  })
+  .openapi({
+    title: 'Comment Resolution',
+    description: 'The resolution object for a Comment.',
+    required: ['type'],
+  })
+  .openapi('CommentResolution')
+
+type PullrequestCommentType = z.infer<typeof CommentSchema> & {
+  pullrequest?: z.infer<typeof PullrequestSchema>
+  resolution?: z.infer<typeof CommentResolutionSchema>
+  pending?: boolean
+}
+
+const PullrequestCommentSchema: z.ZodType<PullrequestCommentType> = CommentSchema.and(
+  z
+    .looseObject({
+      pullrequest: PullrequestSchema.exactOptional(),
+      resolution: CommentResolutionSchema.exactOptional(),
+      pending: z.boolean().exactOptional(),
+    })
+    .openapi({
+      title: 'Pull Request Comment',
+      description: 'A pullrequest comment.',
+      required: [],
+    }),
+).openapi('PullrequestComment')
+
+type PaginatedPullrequestCommentsType = {
+  size?: number
+  page?: number
+  pagelen?: number
+  next?: string
+  previous?: string
+  values?: z.infer<typeof PullrequestCommentSchema>[]
+}
+
+const AuthorSchema = ObjectSchema.and(
+  z
+    .looseObject({
+      raw: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'The raw author value from the repository. This may be the only value available if the author does not match a user in Bitbucket.',
+        }),
+      user: AccountSchema.exactOptional(),
+    })
+    .openapi({
+      title: 'Author',
+      description: 'The author of a change in a repository',
+      required: [],
+    }),
+).openapi('Author')
+
+const CommitterSchema = ObjectSchema.and(
+  z
+    .looseObject({
+      raw: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'The raw committer value from the repository. This may be the only value available if the committer does not match a user in Bitbucket.',
+        }),
+      user: AccountSchema.exactOptional(),
+    })
+    .openapi({
+      title: 'Committer',
+      description: 'The committer of a change in a repository',
+      required: [],
+    }),
+).openapi('Committer')
+
+type BaseCommitType = z.infer<typeof ObjectSchema> & {
+  hash?: string
+  date?: string
+  author?: z.infer<typeof AuthorSchema>
+  committer?: z.infer<typeof CommitterSchema>
+  message?: string
+  summary?: { raw?: string; markup?: 'markdown' | 'creole' | 'plaintext'; html?: string }
+  parents?: BaseCommitType[]
+}
+
+const CommitCommentSchema = CommentSchema.and(
+  z
+    .looseObject({ commit: CommitSchema.exactOptional() })
+    .openapi({ title: 'Commit Comment', description: 'A commit comment.', required: [] }),
+).openapi('CommitComment')
+
+type PaginatedCommitCommentsType = {
+  size?: number
+  page?: number
+  pagelen?: number
+  next?: string
+  previous?: string
+  values?: z.infer<typeof CommitCommentSchema>[]
+}
+
+type DiffstatType = {
+  type: string
+  status?: 'added' | 'removed' | 'modified' | 'renamed'
+  lines_added?: number
+  lines_removed?: number
+  old?: z.infer<typeof CommitFileSchema>
+  new?: z.infer<typeof CommitFileSchema>
+}
+
+const DiffstatSchema: z.ZodType<DiffstatType> = z
+  .looseObject({
+    type: z.string(),
+    status: z.enum(['added', 'removed', 'modified', 'renamed']).exactOptional(),
+    lines_added: z.int().exactOptional(),
+    lines_removed: z.int().exactOptional(),
+    old: CommitFileSchema.exactOptional(),
+    new: CommitFileSchema.exactOptional(),
+  })
+  .openapi({
+    title: 'Diff Stat',
+    description:
+      'A diffstat object that includes a summary of changes made to a file between two commits.',
+    required: ['type'],
+  })
+  .openapi('Diffstat')
+
+type PaginatedDiffstatsType = {
+  size?: number
+  page?: number
+  pagelen?: number
+  next?: string
+  previous?: string
+  values?: z.infer<typeof DiffstatSchema>[]
+}
+
+type PaginatedFilesType = {
+  size?: number
+  page?: number
+  pagelen?: number
+  next?: string
+  previous?: string
+  values?: z.infer<typeof CommitFileSchema>[]
+}
+
+const TreeentrySchema = z
+  .looseObject({
+    type: z.string(),
+    path: z.string().exactOptional().openapi({ description: 'The path in the repository' }),
+    commit: CommitSchema.exactOptional(),
+  })
+  .openapi({
+    title: 'Tree Entry',
+    description:
+      "Base type for most resource objects. It defines the common `type` element that identifies an object's type. It also identifies the element as Swagger's `discriminator`.",
+    required: ['type'],
+  })
+  .openapi('Treeentry')
+
+type PaginatedTreeentriesType = {
+  size?: number
+  page?: number
+  pagelen?: number
+  next?: string
+  previous?: string
+  values?: z.infer<typeof TreeentrySchema>[]
+}
+
+type RefType = {
+  type: string
+  links?: {
+    self?: { href?: string; name?: string }
+    commits?: { href?: string; name?: string }
+    html?: { href?: string; name?: string }
+  }
+  name?: string
+  target?: z.infer<typeof CommitSchema>
+}
+
+type GPGAccountKeyType = z.infer<typeof ObjectSchema> & {
+  owner?: z.infer<typeof AccountSchema>
+  key?: string
+  key_id?: string
+  fingerprint?: string
+  parent_fingerprint?: string
+  name?: string
+  expires_on?: string
+  created_on?: string
+  added_on?: string
+  last_used?: string
+  subkeys?: GPGAccountKeyType[]
+  links?: { self?: { href?: string; name?: string } }
+}
+
+const DeployKeySchema = ObjectSchema.and(
+  z
+    .looseObject({
+      key: z.string().exactOptional().openapi({ description: 'The deploy key value.' }),
+      repository: RepositorySchema.exactOptional(),
+      comment: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'The comment parsed from the deploy key (if present)' }),
+      label: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'The user-defined label for the deploy key' }),
+      added_on: z.iso.datetime({ offset: true }).exactOptional(),
+      last_used: z.iso.datetime({ offset: true }).exactOptional(),
+      links: z
+        .strictObject({
+          self: z
+            .strictObject({ href: z.url().exactOptional(), name: z.string().exactOptional() })
+            .exactOptional()
+            .openapi({
+              title: 'Link',
+              description: 'A link to a resource related to this object.',
+              required: [],
+            }),
+        })
+        .exactOptional()
+        .openapi({ required: [] }),
+      owner: AccountSchema.exactOptional(),
+    })
+    .openapi({
+      title: 'Deploy Key',
+      description: 'Represents deploy key for a repository.',
+      required: [],
+    }),
+).openapi('DeployKey')
+
+type PaginatedDeployKeysType = {
+  size?: number
+  page?: number
+  pagelen?: number
+  next?: string
+  previous?: string
+  values?: z.infer<typeof DeployKeySchema>[]
+}
+
+const RefSchema: z.ZodType<RefType> = z
+  .lazy(() =>
+    z
+      .looseObject({
+        type: z.string(),
+        links: z
+          .strictObject({
+            self: z
+              .strictObject({ href: z.url().exactOptional(), name: z.string().exactOptional() })
+              .exactOptional()
+              .openapi({
+                title: 'Link',
+                description: 'A link to a resource related to this object.',
+                required: [],
+              }),
+            commits: z
+              .strictObject({ href: z.url().exactOptional(), name: z.string().exactOptional() })
+              .exactOptional()
+              .openapi({
+                title: 'Link',
+                description: 'A link to a resource related to this object.',
+                required: [],
+              }),
+            html: z
+              .strictObject({ href: z.url().exactOptional(), name: z.string().exactOptional() })
+              .exactOptional()
+              .openapi({
+                title: 'Link',
+                description: 'A link to a resource related to this object.',
+                required: [],
+              }),
+          })
+          .exactOptional()
+          .openapi({ required: [] }),
+        name: z.string().exactOptional().openapi({ description: 'The name of the ref.' }),
+        target: CommitSchema.exactOptional(),
+      })
+      .openapi({
+        title: 'Ref',
+        description: 'A ref object, representing a branch or tag in a repository.',
+        required: ['type'],
+      }),
+  )
+  .openapi('Ref')
+
+type BranchType = z.infer<typeof RefSchema> & {
+  merge_strategies?: (
+    | 'merge_commit'
+    | 'squash'
+    | 'fast_forward'
+    | 'squash_fast_forward'
+    | 'rebase_fast_forward'
+    | 'rebase_merge'
+  )[]
+  default_merge_strategy?: string
+}
+
+const BaseCommitSchema: z.ZodType<BaseCommitType> = z
+  .lazy(() =>
+    ObjectSchema.and(
+      z
+        .looseObject({
+          hash: z
+            .string()
+            .regex(/[0-9a-f]{7,}?/)
+            .exactOptional(),
+          date: z.iso.datetime({ offset: true }).exactOptional(),
+          author: AuthorSchema.exactOptional(),
+          committer: CommitterSchema.exactOptional(),
+          message: z.string().exactOptional(),
+          summary: z
+            .strictObject({
+              raw: z
+                .string()
+                .exactOptional()
+                .openapi({ description: 'The text as it was typed by a user.' }),
+              markup: z
+                .enum(['markdown', 'creole', 'plaintext'])
+                .exactOptional()
+                .openapi({
+                  description:
+                    'The type of markup language the raw content is to be interpreted in.',
+                }),
+              html: z
+                .string()
+                .exactOptional()
+                .openapi({ description: "The user's content rendered as HTML." }),
+            })
+            .exactOptional()
+            .openapi({ required: [] }),
+          parents: z.array(BaseCommitSchema).min(0).exactOptional(),
+        })
+        .openapi({
+          title: 'Base Commit',
+          description: 'The common base type for both repository and snippet commits.',
+          required: [],
+        }),
+    ),
+  )
+  .openapi('BaseCommit')
 
 type CommitType = z.infer<typeof BaseCommitSchema> & {
   repository?: z.infer<typeof RepositorySchema>
@@ -914,31 +2395,6 @@ const ApplicationPropertySchema = z
   })
   .openapi('ApplicationProperty')
 
-const DeploymentEnvironmentSchema = ObjectSchema.and(
-  z
-    .looseObject({
-      uuid: z
-        .string()
-        .exactOptional()
-        .openapi({ description: 'The UUID identifying the environment.' }),
-      name: z.string().exactOptional().openapi({ description: 'The name of the environment.' }),
-    })
-    .openapi({
-      title: 'Deployment Environment',
-      description: 'A Bitbucket Deployment Environment.',
-      required: [],
-    }),
-)
-  .openapi({
-    'x-bb-default-fields': ['uuid'],
-    'x-bb-url':
-      '/rest/2.0/accounts/{workspace.uuid}/repositories/{repository.uuid}/environments/{uuid}',
-    'x-bb-batch-url':
-      '/rest/2.0/accounts/{workspace.uuid}/repositories/{repository.uuid}/environments_batch',
-    'x-bb-batch-max-size': 100,
-  })
-  .openapi('DeploymentEnvironment')
-
 const PaginatedEnvironmentsSchema = z
   .object({
     page: z
@@ -988,54 +2444,6 @@ const PaginatedEnvironmentsSchema = z
     required: [],
   })
   .openapi('PaginatedEnvironments')
-
-const DeploymentReleaseSchema = ObjectSchema.and(
-  z
-    .looseObject({
-      uuid: z
-        .string()
-        .exactOptional()
-        .openapi({ description: 'The UUID identifying the release.' }),
-      name: z.string().exactOptional().openapi({ description: 'The name of the release.' }),
-      url: z
-        .url()
-        .exactOptional()
-        .openapi({ description: 'Link to the pipeline that produced the release.' }),
-      commit: CommitSchema.exactOptional(),
-      created_on: z.iso
-        .datetime({ offset: true })
-        .exactOptional()
-        .openapi({ description: 'The timestamp when the release was created.' }),
-    })
-    .openapi({
-      title: 'Deployment Release',
-      description: 'A Bitbucket Deployment Release.',
-      required: [],
-    }),
-).openapi('DeploymentRelease')
-
-const DeploymentStateSchema = ObjectSchema.and(
-  z
-    .looseObject({})
-    .openapi({
-      title: 'Deployment State',
-      description: 'The representation of the progress state of a deployment.',
-    }),
-).openapi('DeploymentState')
-
-const DeploymentSchema = ObjectSchema.and(
-  z
-    .looseObject({
-      uuid: z
-        .string()
-        .exactOptional()
-        .openapi({ description: 'The UUID identifying the deployment.' }),
-      state: DeploymentStateSchema.exactOptional(),
-      environment: DeploymentEnvironmentSchema.exactOptional(),
-      release: DeploymentReleaseSchema.exactOptional(),
-    })
-    .openapi({ title: 'Deployment', description: 'A Bitbucket Deployment.', required: [] }),
-).openapi('Deployment')
 
 const DeploymentStateUndeployedSchema = DeploymentStateSchema.and(
   z
@@ -1133,7 +2541,7 @@ const DeploymentStateCompletedStatusStoppedSchema = DeploymentStateCompletedStat
     .openapi({ description: 'A STOPPED completed deployment status.', required: [] }),
 ).openapi('DeploymentStateCompletedStatusStopped')
 
-const PaginatedDeploymentsSchema = z
+const PaginatedDeploymentsSchema: z.ZodType<PaginatedDeploymentsType> = z
   .object({
     page: z
       .int()
@@ -1275,7 +2683,10 @@ const ReportDataSchema = z
       .string()
       .exactOptional()
       .openapi({ description: 'A string describing what this data field represents.' }),
-    value: z.object({}).exactOptional().openapi({ description: 'The value of the data element.' }),
+    value: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({ description: 'The value of the data element.' }),
   })
   .openapi({
     title: 'Report Data',
@@ -1552,146 +2963,6 @@ const PipelinesConfigSchema = ObjectSchema.and(
     }),
 ).openapi('PipelinesConfig')
 
-const PipelineTargetSchema = ObjectSchema.and(
-  z
-    .looseObject({})
-    .openapi({
-      title: 'Pipeline Target',
-      description: 'A representation of the target that a pipeline executes on.',
-    }),
-).openapi('PipelineTarget')
-
-const PipelineTriggerSchema = ObjectSchema.and(
-  z
-    .looseObject({})
-    .openapi({
-      title: 'Pipeline Trigger',
-      description: 'A representation of the trigger used for a pipeline.',
-    }),
-).openapi('PipelineTrigger')
-
-const PipelineStateSchema = ObjectSchema.and(
-  z
-    .looseObject({})
-    .openapi({
-      title: 'Pipeline State',
-      description: 'The representation of the progress state of a pipeline.',
-    }),
-).openapi('PipelineState')
-
-const PipelineVariableSchema = ObjectSchema.and(
-  z
-    .looseObject({
-      uuid: z
-        .string()
-        .exactOptional()
-        .openapi({ description: 'The UUID identifying the variable.' }),
-      key: z.string().exactOptional().openapi({ description: 'The unique name of the variable.' }),
-      value: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'The value of the variable. If the variable is secured, this will be empty.',
-        }),
-      secured: z
-        .boolean()
-        .exactOptional()
-        .openapi({
-          description:
-            'If true, this variable will be treated as secured. The value will never be exposed in the logs or the REST API.',
-        }),
-    })
-    .openapi({ title: 'Pipeline Variable', description: 'A Pipelines variable.', required: [] }),
-).openapi('PipelineVariable')
-
-const PipelineConfigurationSourceSchema = z
-  .object({
-    source: z.string().openapi({ description: 'Identifier of the configuration source' }),
-    uri: z
-      .url()
-      .openapi({ description: 'Link to the configuration source view or its immediate content' }),
-  })
-  .openapi({
-    description: 'Information about the source of the pipeline configuration',
-    required: ['source', 'uri'],
-  })
-  .openapi('PipelineConfigurationSource')
-
-const PipelinesLinksSectionHrefSchema = ObjectSchema.and(
-  z
-    .looseObject({ href: z.url().exactOptional().openapi({ description: 'A link' }) })
-    .openapi({ title: 'Pipeline Links href', description: 'A links section href', required: [] }),
-).openapi('PipelinesLinksSectionHref')
-
-const PipelinesPipelineLinksSchema = ObjectSchema.and(
-  z
-    .looseObject({
-      self: PipelinesLinksSectionHrefSchema.exactOptional(),
-      steps: PipelinesLinksSectionHrefSchema.exactOptional(),
-    })
-    .openapi({
-      title: 'Pipeline Links',
-      description: 'Links section for a Pipeline.',
-      required: [],
-    }),
-).openapi('PipelinesPipelineLinks')
-
-const PipelineSchema = ObjectSchema.and(
-  z
-    .looseObject({
-      uuid: z
-        .string()
-        .exactOptional()
-        .openapi({ description: 'The UUID identifying the pipeline.' }),
-      build_number: z
-        .int()
-        .exactOptional()
-        .openapi({ description: 'The build number of the pipeline.' }),
-      creator: AccountSchema.exactOptional(),
-      repository: RepositorySchema.exactOptional(),
-      target: PipelineTargetSchema.exactOptional(),
-      trigger: PipelineTriggerSchema.exactOptional(),
-      state: PipelineStateSchema.exactOptional(),
-      variables: z
-        .array(PipelineVariableSchema)
-        .min(0)
-        .exactOptional()
-        .openapi({ description: 'The variables for the pipeline.' }),
-      created_on: z.iso
-        .datetime({ offset: true })
-        .exactOptional()
-        .openapi({ description: 'The timestamp when the pipeline was created.' }),
-      completed_on: z.iso
-        .datetime({ offset: true })
-        .exactOptional()
-        .openapi({
-          description:
-            'The timestamp when the Pipeline was completed. This is not set if the pipeline is still in progress.',
-        }),
-      build_seconds_used: z
-        .int()
-        .exactOptional()
-        .openapi({ description: 'The number of build seconds used by this pipeline.' }),
-      configuration_sources: z
-        .array(PipelineConfigurationSourceSchema)
-        .min(0)
-        .exactOptional()
-        .openapi({ description: 'An ordered list of sources of the pipeline configuration' }),
-      links: PipelinesPipelineLinksSchema.exactOptional(),
-    })
-    .openapi({
-      title: 'Pipeline',
-      description: 'A Bitbucket Pipeline. This represents an actual pipeline result.',
-      required: [],
-    }),
-)
-  .openapi({
-    'x-bb-batch-url':
-      '/rest/1.0/accounts/{workspace.uuid}/repositories/{repository.uuid}/pipelines/pipelines_batch',
-    'x-bb-batch-max-size': 100,
-  })
-  .openapi('Pipeline')
-
 const PipelineCacheSchema = ObjectSchema.and(
   z
     .looseObject({
@@ -1792,44 +3063,6 @@ const PipelineCacheContentUriSchema = z
     required: [],
   })
   .openapi('PipelineCacheContentUri')
-
-const PipelineSelectorSchema = ObjectSchema.and(
-  z
-    .looseObject({
-      type: z
-        .enum(['branches', 'tags', 'bookmarks', 'default', 'custom'])
-        .exactOptional()
-        .openapi({ description: 'The type of selector.' }),
-      pattern: z
-        .string()
-        .exactOptional()
-        .openapi({ description: 'The name of the matching pipeline definition.' }),
-    })
-    .openapi({
-      title: 'Pipeline Selector',
-      description:
-        'A representation of the selector that was used to identify the pipeline in the YML file.',
-      required: [],
-    }),
-).openapi('PipelineSelector')
-
-const PipelineRefTargetSchema = PipelineTargetSchema.and(
-  z
-    .looseObject({
-      ref_type: z
-        .enum(['branch', 'tag', 'named_branch', 'bookmark'])
-        .exactOptional()
-        .openapi({ description: 'The type of reference (branch/tag).' }),
-      ref_name: z.string().exactOptional().openapi({ description: 'The name of the reference.' }),
-      commit: CommitSchema.exactOptional(),
-      selector: PipelineSelectorSchema.exactOptional(),
-    })
-    .openapi({
-      title: 'Pipeline Ref Target',
-      description: 'A Bitbucket Pipelines reference target.',
-      required: [],
-    }),
-).openapi('PipelineRefTarget')
 
 const PipelineCommitTargetSchema = PipelineTargetSchema.and(
   z
@@ -2088,37 +3321,6 @@ const PipelineSshKeyPairSchema = ObjectSchema.and(
     }),
 ).openapi('PipelineSshKeyPair')
 
-const PipelineScheduleSchema = ObjectSchema.and(
-  z
-    .looseObject({
-      uuid: z
-        .string()
-        .exactOptional()
-        .openapi({ description: 'The UUID identifying the schedule.' }),
-      enabled: z
-        .boolean()
-        .exactOptional()
-        .openapi({ description: 'Whether the schedule is enabled.' }),
-      target: PipelineRefTargetSchema.exactOptional(),
-      cron_pattern: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description:
-            'The cron expression with second precision (7 fields) that the schedule applies. For example, for expression: 0 0 12 * * ? *, will execute at 12pm UTC every day.',
-        }),
-      created_on: z.iso
-        .datetime({ offset: true })
-        .exactOptional()
-        .openapi({ description: 'The timestamp when the schedule was created.' }),
-      updated_on: z.iso
-        .datetime({ offset: true })
-        .exactOptional()
-        .openapi({ description: 'The timestamp when the schedule was updated.' }),
-    })
-    .openapi({ title: 'Pipeline Schedule', description: 'A Pipelines schedule.', required: [] }),
-).openapi('PipelineSchedule')
-
 const PipelineSchedulePostRequestBodySchema = ObjectSchema.and(
   z
     .looseObject({
@@ -2162,7 +3364,7 @@ const PipelineSchedulePutRequestBodySchema = ObjectSchema.and(
     .openapi({ title: 'Request body for Pipeline Schedule PUT request', required: [] }),
 ).openapi('PipelineSchedulePutRequestBody')
 
-const PaginatedPipelineSchedulesSchema = z
+const PaginatedPipelineSchedulesSchema: z.ZodType<PaginatedPipelineSchedulesType> = z
   .object({
     page: z
       .int()
@@ -2553,7 +3755,7 @@ const PipelineStepStateCompletedSuccessfulSchema = PipelineStepStateCompletedRes
     }),
 ).openapi('PipelineStepStateCompletedSuccessful')
 
-const PaginatedPipelinesSchema = z
+const PaginatedPipelinesSchema: z.ZodType<PaginatedPipelinesType> = z
   .object({
     page: z
       .int()
@@ -2913,15 +4115,6 @@ const MergeQueueSchema = ObjectSchema.and(
     }),
 ).openapi('MergeQueue')
 
-const MergeQueueReferenceSchema = z
-  .object({ type: z.literal('merge_queue').exactOptional(), uuid: z.uuid().exactOptional() })
-  .openapi({
-    title: 'Merge Queue Reference',
-    description: 'A reference to the merge queue holding a pullrequest.',
-    required: [],
-  })
-  .openapi('MergeQueueReference')
-
 const PaginatedMergeQueuesSchema = z
   .object({
     page: z.int().exactOptional(),
@@ -2932,343 +4125,7 @@ const PaginatedMergeQueuesSchema = z
   .openapi({ title: 'Paginated Merge Queues', required: [] })
   .openapi('PaginatedMergeQueues')
 
-const PullrequestEndpointSchema = z
-  .strictObject({
-    repository: RepositorySchema.exactOptional(),
-    branch: z
-      .strictObject({
-        name: z.string().exactOptional(),
-        merge_strategies: z
-          .array(
-            z.enum([
-              'merge_commit',
-              'squash',
-              'fast_forward',
-              'squash_fast_forward',
-              'rebase_fast_forward',
-              'rebase_merge',
-            ]),
-          )
-          .exactOptional()
-          .openapi({
-            description:
-              'Available merge strategies, when this endpoint is the destination of the pull request.',
-          }),
-        default_merge_strategy: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'The default merge strategy, when this endpoint is the destination of the pull request.',
-          }),
-      })
-      .exactOptional()
-      .openapi({ title: 'Pull Request Branch', required: [] }),
-    commit: z
-      .strictObject({
-        hash: z
-          .string()
-          .regex(/[0-9a-f]{7,}?/)
-          .exactOptional(),
-      })
-      .exactOptional()
-      .openapi({ title: 'Pull Request Commit', required: [] }),
-  })
-  .openapi({ title: 'Pull Request Endpoint', required: [] })
-  .openapi('PullrequestEndpoint')
-
-const PullrequestSchema = ObjectSchema.and(
-  z
-    .looseObject({
-      links: z
-        .strictObject({
-          self: z
-            .strictObject({ href: z.url().exactOptional(), name: z.string().exactOptional() })
-            .exactOptional()
-            .openapi({
-              title: 'Link',
-              description: 'A link to a resource related to this object.',
-              required: [],
-            }),
-          html: z
-            .strictObject({ href: z.url().exactOptional(), name: z.string().exactOptional() })
-            .exactOptional()
-            .openapi({
-              title: 'Link',
-              description: 'A link to a resource related to this object.',
-              required: [],
-            }),
-          commits: z
-            .strictObject({ href: z.url().exactOptional(), name: z.string().exactOptional() })
-            .exactOptional()
-            .openapi({
-              title: 'Link',
-              description: 'A link to a resource related to this object.',
-              required: [],
-            }),
-          approve: z
-            .strictObject({ href: z.url().exactOptional(), name: z.string().exactOptional() })
-            .exactOptional()
-            .openapi({
-              title: 'Link',
-              description: 'A link to a resource related to this object.',
-              required: [],
-            }),
-          diff: z
-            .strictObject({ href: z.url().exactOptional(), name: z.string().exactOptional() })
-            .exactOptional()
-            .openapi({
-              title: 'Link',
-              description: 'A link to a resource related to this object.',
-              required: [],
-            }),
-          diffstat: z
-            .strictObject({ href: z.url().exactOptional(), name: z.string().exactOptional() })
-            .exactOptional()
-            .openapi({
-              title: 'Link',
-              description: 'A link to a resource related to this object.',
-              required: [],
-            }),
-          comments: z
-            .strictObject({ href: z.url().exactOptional(), name: z.string().exactOptional() })
-            .exactOptional()
-            .openapi({
-              title: 'Link',
-              description: 'A link to a resource related to this object.',
-              required: [],
-            }),
-          activity: z
-            .strictObject({ href: z.url().exactOptional(), name: z.string().exactOptional() })
-            .exactOptional()
-            .openapi({
-              title: 'Link',
-              description: 'A link to a resource related to this object.',
-              required: [],
-            }),
-          merge: z
-            .strictObject({ href: z.url().exactOptional(), name: z.string().exactOptional() })
-            .exactOptional()
-            .openapi({
-              title: 'Link',
-              description: 'A link to a resource related to this object.',
-              required: [],
-            }),
-          decline: z
-            .strictObject({ href: z.url().exactOptional(), name: z.string().exactOptional() })
-            .exactOptional()
-            .openapi({
-              title: 'Link',
-              description: 'A link to a resource related to this object.',
-              required: [],
-            }),
-          mergeability_checks: z
-            .strictObject({ href: z.url().exactOptional(), name: z.string().exactOptional() })
-            .exactOptional()
-            .openapi({
-              title: 'Link',
-              description: 'A link to a resource related to this object.',
-              required: [],
-            }),
-        })
-        .exactOptional()
-        .openapi({ required: [] }),
-      id: z
-        .int()
-        .exactOptional()
-        .openapi({
-          description:
-            "The pull request's unique ID. Note that pull request IDs are only unique within their associated repository.",
-        }),
-      title: z.string().exactOptional().openapi({ description: 'Title of the pull request.' }),
-      rendered: z
-        .strictObject({
-          title: z
-            .strictObject({
-              raw: z
-                .string()
-                .exactOptional()
-                .openapi({ description: 'The text as it was typed by a user.' }),
-              markup: z
-                .enum(['markdown', 'creole', 'plaintext'])
-                .exactOptional()
-                .openapi({
-                  description:
-                    'The type of markup language the raw content is to be interpreted in.',
-                }),
-              html: z
-                .string()
-                .exactOptional()
-                .openapi({ description: "The user's content rendered as HTML." }),
-            })
-            .exactOptional()
-            .openapi({ required: [] }),
-          description: z
-            .strictObject({
-              raw: z
-                .string()
-                .exactOptional()
-                .openapi({ description: 'The text as it was typed by a user.' }),
-              markup: z
-                .enum(['markdown', 'creole', 'plaintext'])
-                .exactOptional()
-                .openapi({
-                  description:
-                    'The type of markup language the raw content is to be interpreted in.',
-                }),
-              html: z
-                .string()
-                .exactOptional()
-                .openapi({ description: "The user's content rendered as HTML." }),
-            })
-            .exactOptional()
-            .openapi({ required: [] }),
-          reason: z
-            .strictObject({
-              raw: z
-                .string()
-                .exactOptional()
-                .openapi({ description: 'The text as it was typed by a user.' }),
-              markup: z
-                .enum(['markdown', 'creole', 'plaintext'])
-                .exactOptional()
-                .openapi({
-                  description:
-                    'The type of markup language the raw content is to be interpreted in.',
-                }),
-              html: z
-                .string()
-                .exactOptional()
-                .openapi({ description: "The user's content rendered as HTML." }),
-            })
-            .exactOptional()
-            .openapi({ required: [] }),
-        })
-        .exactOptional()
-        .openapi({
-          title: 'Rendered Pull Request Markup',
-          description:
-            'User provided pull request text, interpreted in a markup language and rendered in HTML',
-          required: [],
-        }),
-      summary: z
-        .strictObject({
-          raw: z
-            .string()
-            .exactOptional()
-            .openapi({ description: 'The text as it was typed by a user.' }),
-          markup: z
-            .enum(['markdown', 'creole', 'plaintext'])
-            .exactOptional()
-            .openapi({
-              description: 'The type of markup language the raw content is to be interpreted in.',
-            }),
-          html: z
-            .string()
-            .exactOptional()
-            .openapi({ description: "The user's content rendered as HTML." }),
-        })
-        .exactOptional()
-        .openapi({ required: [] }),
-      state: z
-        .enum(['OPEN', 'MERGED', 'DECLINED', 'SUPERSEDED'])
-        .exactOptional()
-        .openapi({ description: "The pull request's current status." }),
-      author: AccountSchema.exactOptional(),
-      source: PullrequestEndpointSchema.exactOptional(),
-      destination: PullrequestEndpointSchema.exactOptional(),
-      merge_commit: z
-        .strictObject({
-          hash: z
-            .string()
-            .regex(/[0-9a-f]{7,}?/)
-            .exactOptional(),
-        })
-        .exactOptional()
-        .openapi({ title: 'Pull Request Commit', required: [] }),
-      comment_count: z
-        .int()
-        .min(0)
-        .exactOptional()
-        .openapi({ description: 'The number of comments for a specific pull request.' }),
-      task_count: z
-        .int()
-        .min(0)
-        .exactOptional()
-        .openapi({ description: 'The number of open tasks for a specific pull request.' }),
-      close_source_branch: z
-        .boolean()
-        .exactOptional()
-        .openapi({
-          description:
-            'A boolean flag indicating if merging the pull request closes the source branch.',
-        }),
-      closed_by: AccountSchema.exactOptional(),
-      reason: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description:
-            'Explains why a pull request was declined. This field is only applicable to pull requests in rejected state.',
-        }),
-      created_on: z.iso
-        .datetime({ offset: true })
-        .exactOptional()
-        .openapi({ description: 'The ISO8601 timestamp the request was created.' }),
-      updated_on: z.iso
-        .datetime({ offset: true })
-        .exactOptional()
-        .openapi({ description: 'The ISO8601 timestamp the request was last updated.' }),
-      reviewers: z
-        .array(AccountSchema)
-        .exactOptional()
-        .openapi({
-          description:
-            "The list of users that were added as reviewers on this pull request when it was created. For performance reasons, the API only includes this list on a pull request's `self` URL.",
-        }),
-      participants: z
-        .array(ParticipantSchema)
-        .exactOptional()
-        .openapi({
-          description:
-            "        The list of users that are collaborating on this pull request.\n        Collaborators are user that:\n\n        * are added to the pull request as a reviewer (part of the reviewers\n          list)\n        * are not explicit reviewers, but have commented on the pull request\n        * are not explicit reviewers, but have approved the pull request\n\n        Each user is wrapped in an object that indicates the user's role and\n        whether they have approved the pull request. For performance reasons,\n        the API only returns this list when an API requests a pull request by\n        id.\n        ",
-        }),
-      draft: z
-        .boolean()
-        .exactOptional()
-        .openapi({ description: 'A boolean flag indicating whether the pull request is a draft.' }),
-      queued: z
-        .boolean()
-        .exactOptional()
-        .openapi({ description: 'A boolean flag indicating whether the pull request is queued' }),
-    })
-    .openapi({ title: 'Pull Request', description: 'A pull request object.', required: [] }),
-).openapi('Pullrequest')
-
-const MergeQueuePullrequestSchema = z
-  .object({
-    type: z.literal('queued_pullrequest').exactOptional(),
-    status: z
-      .enum(['QUEUED', 'PROCESSING', 'AWAITING_MERGE', 'MERGE_IN_PROGRESS', 'REMOVING', 'UNKNOWN'])
-      .exactOptional(),
-    rank: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'The one-based position of the pullrequest in the merge queue.' }),
-    queued_on: z.iso.datetime({ offset: true }).exactOptional(),
-    last_activity_on: z.iso.datetime({ offset: true }).exactOptional(),
-    merge_queue: MergeQueueReferenceSchema.exactOptional(),
-    pipeline: PipelineSchema.exactOptional(),
-    pullrequest: PullrequestSchema.exactOptional(),
-  })
-  .openapi({
-    title: 'Merge Queue PullRequest Object',
-    description: 'The pullrequest object in a merge queue.',
-    required: [],
-  })
-  .openapi('MergeQueuePullrequest')
-
-const PaginatedMergeQueuePullrequestsSchema = z
+const PaginatedMergeQueuePullrequestsSchema: z.ZodType<PaginatedMergeQueuePullrequestsType> = z
   .object({
     page: z.int().exactOptional(),
     size: z.int().exactOptional(),
@@ -3278,71 +4135,7 @@ const PaginatedMergeQueuePullrequestsSchema = z
   .openapi({ title: 'Paginated Merge Queue PullRequests', required: [] })
   .openapi('PaginatedMergeQueuePullrequests')
 
-const SearchSegmentSchema = z
-  .object({
-    text: z.string().exactOptional().openapi({ readOnly: true }),
-    match: z.boolean().exactOptional().openapi({ readOnly: true }),
-  })
-  .openapi({ required: [] })
-  .openapi('SearchSegment')
-
-const SearchLineSchema = z
-  .object({
-    line: z.int32().exactOptional().openapi({ readOnly: true }),
-    segments: z.array(SearchSegmentSchema).exactOptional().openapi({ readOnly: true }),
-  })
-  .openapi({ required: [] })
-  .openapi('SearchLine')
-
-const SearchContentMatchSchema = z
-  .object({ lines: z.array(SearchLineSchema).exactOptional().openapi({ readOnly: true }) })
-  .openapi({ required: [] })
-  .openapi('SearchContentMatch')
-
-const CommitFileSchema = z
-  .looseObject({
-    type: z.string(),
-    path: z.string().exactOptional().openapi({ description: 'The path in the repository' }),
-    commit: CommitSchema.exactOptional(),
-    attributes: z.enum(['link', 'executable', 'subrepository', 'binary', 'lfs']).exactOptional(),
-    escaped_path: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The escaped version of the path as it appears in a diff. If the path does not require escaping this will be the same as path.',
-      }),
-  })
-  .openapi({
-    title: 'Commit File',
-    description: 'A file object, representing a file at a commit in a repository',
-    required: ['type'],
-  })
-  .openapi('CommitFile')
-
-const SearchCodeSearchResultSchema = z
-  .object({
-    type: z.string().exactOptional().openapi({ readOnly: true }),
-    content_match_count: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64', readOnly: true }),
-    content_matches: z.array(SearchContentMatchSchema).exactOptional().openapi({ readOnly: true }),
-    path_matches: z.array(SearchSegmentSchema).exactOptional().openapi({ readOnly: true }),
-    file: CommitFileSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('SearchCodeSearchResult')
-
-const SearchResultPageSchema = z
+const SearchResultPageSchema: z.ZodType<SearchResultPageType> = z
   .object({
     size: z
       .preprocess(
@@ -3366,7 +4159,7 @@ const SearchResultPageSchema = z
   .openapi({ required: [] })
   .openapi('SearchResultPage')
 
-const PaginatedPullrequestsSchema = z
+const PaginatedPullrequestsSchema: z.ZodType<PaginatedPullrequestsType> = z
   .strictObject({
     size: z
       .int()
@@ -3667,128 +4460,6 @@ const PullrequestMergeabilityChecksSchema = z
   })
   .openapi('PullrequestMergeabilityChecks')
 
-const CommentSchema: z.ZodType<CommentType> = z
-  .lazy(() =>
-    ObjectSchema.and(
-      z
-        .looseObject({
-          id: z
-            .preprocess(
-              (val) =>
-                typeof val === 'number' && Number.isSafeInteger(val)
-                  ? BigInt(val)
-                  : typeof val === 'string' && /^-?\d+$/.test(val)
-                    ? BigInt(val)
-                    : val,
-              z.int64(),
-            )
-            .exactOptional()
-            .openapi({ type: 'integer', format: 'int64' }),
-          created_on: z.iso.datetime({ offset: true }).exactOptional(),
-          updated_on: z.iso.datetime({ offset: true }).exactOptional(),
-          content: z
-            .strictObject({
-              raw: z
-                .string()
-                .exactOptional()
-                .openapi({ description: 'The text as it was typed by a user.' }),
-              markup: z
-                .enum(['markdown', 'creole', 'plaintext'])
-                .exactOptional()
-                .openapi({
-                  description:
-                    'The type of markup language the raw content is to be interpreted in.',
-                }),
-              html: z
-                .string()
-                .exactOptional()
-                .openapi({ description: "The user's content rendered as HTML." }),
-            })
-            .exactOptional()
-            .openapi({ required: [] }),
-          user: AccountSchema.exactOptional(),
-          deleted: z.boolean().exactOptional(),
-          parent: CommentSchema.exactOptional(),
-          inline: z
-            .strictObject({
-              from: z
-                .int()
-                .min(1)
-                .exactOptional()
-                .openapi({
-                  description:
-                    "The comment's anchor line in the old version of the file. If the comment is a multi-line comment, this is the ending line number in the old version of the file.",
-                }),
-              to: z
-                .int()
-                .min(1)
-                .exactOptional()
-                .openapi({
-                  description:
-                    "The comment's anchor line in the new version of the file. If the comment is a multi-line comment, this is the ending line number in the new version of the file.",
-                }),
-              start_from: z
-                .int()
-                .min(1)
-                .exactOptional()
-                .openapi({
-                  description:
-                    'The starting line number in the old version of the file, if the comment is a multi-line comment. This is null otherwise.',
-                }),
-              start_to: z
-                .int()
-                .min(1)
-                .exactOptional()
-                .openapi({
-                  description:
-                    'The starting line number in the new version of the file, if the comment is a multi-line comment. This is null otherwise.',
-                }),
-              path: z
-                .string()
-                .openapi({ description: 'The path of the file this comment is anchored to.' }),
-            })
-            .exactOptional()
-            .openapi({ required: ['path'] }),
-          links: z
-            .strictObject({
-              self: z
-                .strictObject({ href: z.url().exactOptional(), name: z.string().exactOptional() })
-                .exactOptional()
-                .openapi({
-                  title: 'Link',
-                  description: 'A link to a resource related to this object.',
-                  required: [],
-                }),
-              html: z
-                .strictObject({ href: z.url().exactOptional(), name: z.string().exactOptional() })
-                .exactOptional()
-                .openapi({
-                  title: 'Link',
-                  description: 'A link to a resource related to this object.',
-                  required: [],
-                }),
-              code: z
-                .strictObject({ href: z.url().exactOptional(), name: z.string().exactOptional() })
-                .exactOptional()
-                .openapi({
-                  title: 'Link',
-                  description: 'A link to a resource related to this object.',
-                  required: [],
-                }),
-            })
-            .exactOptional()
-            .openapi({ required: [] }),
-        })
-        .openapi({
-          title: 'Comment',
-          description:
-            'The base type for all comments. This type should be considered abstract. Each of the "commentable" resources defines its own subtypes (e.g. `issue_comment`).',
-          required: [],
-        }),
-    ),
-  )
-  .openapi('Comment')
-
 const PullrequestTaskCreateSchema = z
   .strictObject({
     content: z
@@ -4013,7 +4684,7 @@ const PaginatedRepositoriesSchema = z
   .openapi('PaginatedRepositories')
 
 const RepositoryInheritanceStateSchema = z
-  .looseObject({ type: z.string(), override_settings: z.object({}).exactOptional() })
+  .looseObject({ type: z.string(), override_settings: z.looseObject({}).exactOptional() })
   .openapi({
     title: 'Repository Inheritance State',
     description: "A json object representing the repository's inheritance state values",
@@ -4359,248 +5030,7 @@ const EffectiveRepoBranchingModelSchema = ObjectSchema.and(
     }),
 ).openapi('EffectiveRepoBranchingModel')
 
-const WorkspaceSchema = ObjectSchema.and(
-  z
-    .looseObject({
-      links: z
-        .strictObject({
-          avatar: z
-            .strictObject({ href: z.url().exactOptional(), name: z.string().exactOptional() })
-            .exactOptional()
-            .openapi({
-              title: 'Link',
-              description: 'A link to a resource related to this object.',
-              required: [],
-            }),
-          html: z
-            .strictObject({ href: z.url().exactOptional(), name: z.string().exactOptional() })
-            .exactOptional()
-            .openapi({
-              title: 'Link',
-              description: 'A link to a resource related to this object.',
-              required: [],
-            }),
-          members: z
-            .strictObject({ href: z.url().exactOptional(), name: z.string().exactOptional() })
-            .exactOptional()
-            .openapi({
-              title: 'Link',
-              description: 'A link to a resource related to this object.',
-              required: [],
-            }),
-          owners: z
-            .strictObject({ href: z.url().exactOptional(), name: z.string().exactOptional() })
-            .exactOptional()
-            .openapi({
-              title: 'Link',
-              description: 'A link to a resource related to this object.',
-              required: [],
-            }),
-          projects: z
-            .strictObject({ href: z.url().exactOptional(), name: z.string().exactOptional() })
-            .exactOptional()
-            .openapi({
-              title: 'Link',
-              description: 'A link to a resource related to this object.',
-              required: [],
-            }),
-          repositories: z
-            .strictObject({ href: z.url().exactOptional(), name: z.string().exactOptional() })
-            .exactOptional()
-            .openapi({
-              title: 'Link',
-              description: 'A link to a resource related to this object.',
-              required: [],
-            }),
-          snippets: z
-            .strictObject({ href: z.url().exactOptional(), name: z.string().exactOptional() })
-            .exactOptional()
-            .openapi({
-              title: 'Link',
-              description: 'A link to a resource related to this object.',
-              required: [],
-            }),
-          self: z
-            .strictObject({ href: z.url().exactOptional(), name: z.string().exactOptional() })
-            .exactOptional()
-            .openapi({
-              title: 'Link',
-              description: 'A link to a resource related to this object.',
-              required: [],
-            }),
-        })
-        .exactOptional()
-        .openapi({ required: [] }),
-      uuid: z.string().exactOptional().openapi({ description: "The workspace's immutable id." }),
-      name: z.string().exactOptional().openapi({ description: 'The name of the workspace.' }),
-      slug: z
-        .string()
-        .exactOptional()
-        .openapi({ description: 'The short label that identifies this workspace.' }),
-      is_private: z
-        .boolean()
-        .exactOptional()
-        .openapi({
-          description:
-            'Indicates whether the workspace is publicly accessible, or whether it is\nprivate to the members and consequently only visible to members.',
-        }),
-      is_personal: z
-        .boolean()
-        .exactOptional()
-        .openapi({ description: 'Indicates whether the workspace belongs to an individual user.' }),
-      is_privacy_enforced: z
-        .boolean()
-        .exactOptional()
-        .openapi({
-          description:
-            'Indicates whether the workspace enforces private content, or whether it allows public content.',
-        }),
-      forking_mode: z
-        .enum(['allow_forks', 'internal_only'])
-        .exactOptional()
-        .openapi({
-          description:
-            'Controls the rules for forking repositories within this workspace.\n\n* **allow_forks**: unrestricted forking\n* **internal_only**: prevents forking of private repositories outside the workspace or to public repositories\n',
-        }),
-      created_on: z.iso.datetime({ offset: true }).exactOptional(),
-      updated_on: z.iso.datetime({ offset: true }).exactOptional(),
-    })
-    .openapi({
-      title: 'Workspace',
-      description:
-        'A Bitbucket workspace.\n            Workspaces are used to organize repositories.',
-      required: [],
-    }),
-).openapi('Workspace')
-
-const GroupSchema = ObjectSchema.and(
-  z
-    .looseObject({
-      links: z
-        .strictObject({
-          self: z
-            .strictObject({ href: z.url().exactOptional(), name: z.string().exactOptional() })
-            .exactOptional()
-            .openapi({
-              title: 'Link',
-              description: 'A link to a resource related to this object.',
-              required: [],
-            }),
-          html: z
-            .strictObject({ href: z.url().exactOptional(), name: z.string().exactOptional() })
-            .exactOptional()
-            .openapi({
-              title: 'Link',
-              description: 'A link to a resource related to this object.',
-              required: [],
-            }),
-        })
-        .exactOptional()
-        .openapi({ required: [] }),
-      owner: AccountSchema.exactOptional(),
-      workspace: WorkspaceSchema.exactOptional(),
-      name: z.string().exactOptional(),
-      slug: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description:
-            'The "sluggified" version of the group\'s name. This contains only ASCII\ncharacters and can therefore be slightly different than the name',
-        }),
-      full_slug: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description:
-            "The concatenation of the workspace's slug and the group's slug,\nseparated with a colon (e.g. `acme:developers`)\n",
-        }),
-    })
-    .openapi({ title: 'Group', description: 'A group object', required: [] }),
-).openapi('Group')
-
-const BranchrestrictionSchema = ObjectSchema.and(
-  z
-    .looseObject({
-      links: z
-        .strictObject({
-          self: z
-            .strictObject({ href: z.url().exactOptional(), name: z.string().exactOptional() })
-            .exactOptional()
-            .openapi({
-              title: 'Link',
-              description: 'A link to a resource related to this object.',
-              required: [],
-            }),
-        })
-        .exactOptional()
-        .openapi({ required: [] }),
-      id: z.int().exactOptional().openapi({ description: "The branch restriction status' id." }),
-      kind: z
-        .enum([
-          'push',
-          'delete',
-          'force',
-          'restrict_merges',
-          'require_tasks_to_be_completed',
-          'require_approvals_to_merge',
-          'require_review_group_approvals_to_merge',
-          'require_default_reviewer_approvals_to_merge',
-          'require_no_changes_requested',
-          'require_passing_builds_to_merge',
-          'require_commits_behind',
-          'reset_pullrequest_approvals_on_change',
-          'smart_reset_pullrequest_approvals',
-          'reset_pullrequest_changes_requested_on_change',
-          'require_all_dependencies_merged',
-          'enforce_merge_checks',
-          'allow_auto_merge_when_builds_pass',
-          'require_all_comments_resolved',
-        ])
-        .openapi({ description: 'The type of restriction that is being applied.' }),
-      branch_match_kind: z
-        .enum(['branching_model', 'glob'])
-        .openapi({
-          description:
-            'Indicates how the restriction is matched against a branch. The default is `glob`.',
-        }),
-      branch_type: z
-        .enum(['feature', 'bugfix', 'release', 'hotfix', 'development', 'production'])
-        .exactOptional()
-        .openapi({
-          description:
-            'Apply the restriction to branches of this type. Active when `branch_match_kind` is `branching_model`. The branch type will be calculated using the branching model configured for the repository.',
-        }),
-      pattern: z
-        .string()
-        .openapi({
-          description:
-            'Apply the restriction to branches that match this pattern. Active when `branch_match_kind` is `glob`. Will be empty when `branch_match_kind` is `branching_model`.',
-        }),
-      pipelines_source_branches: z
-        .array(z.string())
-        .exactOptional()
-        .openapi({
-          description:
-            'List of source branch names allowed to push back to the restricted branch. Used in conjunction with pipeline-based restrictions.',
-        }),
-      value: z
-        .int()
-        .exactOptional()
-        .openapi({
-          description:
-            'Value with kind-specific semantics:\n\n* `require_approvals_to_merge` uses it to require a minimum number of approvals on a PR.\n\n* `require_default_reviewer_approvals_to_merge` uses it to require a minimum number of approvals from default reviewers on a PR.\n\n* `require_passing_builds_to_merge` uses it to require a minimum number of passing builds.\n\n* `require_commits_behind` uses it to require the current branch is up to a maximum number of commits behind it destination.',
-        }),
-      users: z.array(AccountSchema).min(0).exactOptional(),
-      groups: z.array(GroupSchema).min(0).exactOptional(),
-    })
-    .openapi({
-      title: 'Branch Restriction',
-      description: 'A branch restriction rule.',
-      required: ['kind', 'branch_match_kind', 'pattern'],
-    }),
-).openapi('Branchrestriction')
-
-const PaginatedBranchrestrictionsSchema = z
+const PaginatedBranchrestrictionsSchema: z.ZodType<PaginatedBranchrestrictionsType> = z
   .strictObject({
     size: z
       .int()
@@ -4812,33 +5242,6 @@ const ProjectGroupPermissionSchema = z
   })
   .openapi('ProjectGroupPermission')
 
-const RepositoryGroupPermissionSchema = z
-  .looseObject({
-    type: z.string(),
-    links: z
-      .strictObject({
-        self: z
-          .strictObject({ href: z.url().exactOptional(), name: z.string().exactOptional() })
-          .exactOptional()
-          .openapi({
-            title: 'Link',
-            description: 'A link to a resource related to this object.',
-            required: [],
-          }),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-    permission: z.enum(['read', 'write', 'admin', 'none']).exactOptional(),
-    group: GroupSchema.exactOptional(),
-    repository: RepositorySchema.exactOptional(),
-  })
-  .openapi({
-    title: 'Repository Group Permission',
-    description: "A group's permission for a given repository.",
-    required: ['type'],
-  })
-  .openapi('RepositoryGroupPermission')
-
 const PaginatedProjectGroupPermissionsSchema = z
   .strictObject({
     size: z
@@ -4898,44 +5301,6 @@ const PaginatedProjectGroupPermissionsSchema = z
     required: [],
   })
   .openapi('PaginatedProjectGroupPermissions')
-
-const UserLinksSchema = AccountLinksSchema.and(
-  z
-    .looseObject({
-      self: LinkSchema.exactOptional(),
-      html: LinkSchema.exactOptional(),
-      repositories: LinkSchema.exactOptional(),
-    })
-    .openapi({ title: 'User Links', description: 'Links related to a User.', required: [] }),
-).openapi('UserLinks')
-
-const UserSchema = AccountSchema.and(
-  z
-    .looseObject({
-      links: UserLinksSchema.exactOptional(),
-      account_id: z
-        .string()
-        .exactOptional()
-        .openapi({ description: "The user's Atlassian account ID." }),
-      account_status: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description:
-            'The status of the account. Currently the only possible value is "active", but more values may be added in the future.',
-        }),
-      has_2fa_enabled: z.boolean().exactOptional(),
-      nickname: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description:
-            'Account name defined by the owner. Should be used instead of the "username" field. Note that "nickname" cannot be used in place of "username" in URLs and queries, as "nickname" is not guaranteed to be unique.',
-        }),
-      is_staff: z.boolean().exactOptional(),
-    })
-    .openapi({ title: 'User', description: 'A user object.', required: [] }),
-).openapi('User')
 
 const ProjectUserPermissionSchema = z
   .looseObject({
@@ -5024,81 +5389,68 @@ const PaginatedProjectUserPermissionsSchema = z
   })
   .openapi('PaginatedProjectUserPermissions')
 
-const PaginatedRepositoryGroupPermissionsSchema = z
-  .strictObject({
-    size: z
-      .int()
-      .min(0)
-      .exactOptional()
-      .openapi({
-        description:
-          'Total number of objects in the response. This is an optional element that is not provided in all responses, as it can be expensive to compute.',
-      }),
-    page: z
-      .int()
-      .min(1)
-      .exactOptional()
-      .openapi({
-        description:
-          'Page number of the current results. This is an optional element that is not provided in all responses.',
-      }),
-    pagelen: z
-      .int()
-      .min(1)
-      .exactOptional()
-      .openapi({
-        description:
-          'Current number of objects on the existing page. The default value is 10 with 100 being the maximum allowed value. Individual APIs may enforce different values.',
-      }),
-    next: z
-      .url()
-      .exactOptional()
-      .openapi({
-        description:
-          'Link to the next page if it exists. The last page of a collection does not have this value. Use this link to navigate the result set and refrain from constructing your own URLs.',
-      }),
-    previous: z
-      .url()
-      .exactOptional()
-      .openapi({
-        description:
-          'Link to previous page if it exists. A collections first page does not have this value. This is an optional element that is not provided in all responses. Some result sets strictly support forward navigation and never provide previous links. Clients must anticipate that backwards navigation is not always available. Use this link to navigate the result set and refrain from constructing your own URLs.',
-      }),
-    values: z
-      .array(RepositoryGroupPermissionSchema)
-      .min(0)
-      .superRefine((items, ctx) => {
-        const seen = new Map()
-        for (const [i, val] of items.entries()) {
-          const key = JSON.stringify(val)
-          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-          else seen.set(key, i)
-        }
-      })
-      .exactOptional(),
-  })
-  .openapi({
-    title: 'Paginated Repository Group Permissions',
-    description: 'A paginated list of repository group permissions.',
-    required: [],
-  })
-  .openapi('PaginatedRepositoryGroupPermissions')
+const PaginatedRepositoryGroupPermissionsSchema: z.ZodType<PaginatedRepositoryGroupPermissionsType> =
+  z
+    .strictObject({
+      size: z
+        .int()
+        .min(0)
+        .exactOptional()
+        .openapi({
+          description:
+            'Total number of objects in the response. This is an optional element that is not provided in all responses, as it can be expensive to compute.',
+        }),
+      page: z
+        .int()
+        .min(1)
+        .exactOptional()
+        .openapi({
+          description:
+            'Page number of the current results. This is an optional element that is not provided in all responses.',
+        }),
+      pagelen: z
+        .int()
+        .min(1)
+        .exactOptional()
+        .openapi({
+          description:
+            'Current number of objects on the existing page. The default value is 10 with 100 being the maximum allowed value. Individual APIs may enforce different values.',
+        }),
+      next: z
+        .url()
+        .exactOptional()
+        .openapi({
+          description:
+            'Link to the next page if it exists. The last page of a collection does not have this value. Use this link to navigate the result set and refrain from constructing your own URLs.',
+        }),
+      previous: z
+        .url()
+        .exactOptional()
+        .openapi({
+          description:
+            'Link to previous page if it exists. A collections first page does not have this value. This is an optional element that is not provided in all responses. Some result sets strictly support forward navigation and never provide previous links. Clients must anticipate that backwards navigation is not always available. Use this link to navigate the result set and refrain from constructing your own URLs.',
+        }),
+      values: z
+        .array(RepositoryGroupPermissionSchema)
+        .min(0)
+        .superRefine((items, ctx) => {
+          const seen = new Map()
+          for (const [i, val] of items.entries()) {
+            const key = JSON.stringify(val)
+            if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+            else seen.set(key, i)
+          }
+        })
+        .exactOptional(),
+    })
+    .openapi({
+      title: 'Paginated Repository Group Permissions',
+      description: 'A paginated list of repository group permissions.',
+      required: [],
+    })
+    .openapi('PaginatedRepositoryGroupPermissions')
 
-const RepositoryPermissionSchema = z
-  .looseObject({
-    type: z.string(),
-    permission: z.enum(['read', 'write', 'admin', 'none']).exactOptional(),
-    user: UserSchema.exactOptional(),
-    repository: RepositorySchema.exactOptional(),
-  })
-  .openapi({
-    title: 'Repository Permission',
-    description: "A user's permission for a given repository.",
-    required: ['type'],
-  })
-  .openapi('RepositoryPermission')
-
-const PaginatedRepositoryPermissionsSchema = z
+const PaginatedRepositoryPermissionsSchema: z.ZodType<PaginatedRepositoryPermissionsType> = z
   .strictObject({
     size: z
       .int()
@@ -5158,92 +5510,66 @@ const PaginatedRepositoryPermissionsSchema = z
   })
   .openapi('PaginatedRepositoryPermissions')
 
-const RepositoryUserPermissionSchema = z
-  .looseObject({
-    type: z.string(),
-    permission: z.enum(['read', 'write', 'admin', 'none']).exactOptional(),
-    user: UserSchema.exactOptional(),
-    repository: RepositorySchema.exactOptional(),
-    links: z
-      .strictObject({
-        self: z
-          .strictObject({ href: z.url().exactOptional(), name: z.string().exactOptional() })
-          .exactOptional()
-          .openapi({
-            title: 'Link',
-            description: 'A link to a resource related to this object.',
-            required: [],
-          }),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-  })
-  .openapi({
-    title: 'Repository User Permission',
-    description: "A user's direct permission for a given repository.",
-    required: ['type'],
-  })
-  .openapi('RepositoryUserPermission')
-
-const PaginatedRepositoryUserPermissionsSchema = z
-  .strictObject({
-    size: z
-      .int()
-      .min(0)
-      .exactOptional()
-      .openapi({
-        description:
-          'Total number of objects in the response. This is an optional element that is not provided in all responses, as it can be expensive to compute.',
-      }),
-    page: z
-      .int()
-      .min(1)
-      .exactOptional()
-      .openapi({
-        description:
-          'Page number of the current results. This is an optional element that is not provided in all responses.',
-      }),
-    pagelen: z
-      .int()
-      .min(1)
-      .exactOptional()
-      .openapi({
-        description:
-          'Current number of objects on the existing page. The default value is 10 with 100 being the maximum allowed value. Individual APIs may enforce different values.',
-      }),
-    next: z
-      .url()
-      .exactOptional()
-      .openapi({
-        description:
-          'Link to the next page if it exists. The last page of a collection does not have this value. Use this link to navigate the result set and refrain from constructing your own URLs.',
-      }),
-    previous: z
-      .url()
-      .exactOptional()
-      .openapi({
-        description:
-          'Link to previous page if it exists. A collections first page does not have this value. This is an optional element that is not provided in all responses. Some result sets strictly support forward navigation and never provide previous links. Clients must anticipate that backwards navigation is not always available. Use this link to navigate the result set and refrain from constructing your own URLs.',
-      }),
-    values: z
-      .array(RepositoryUserPermissionSchema)
-      .min(0)
-      .superRefine((items, ctx) => {
-        const seen = new Map()
-        for (const [i, val] of items.entries()) {
-          const key = JSON.stringify(val)
-          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-          else seen.set(key, i)
-        }
-      })
-      .exactOptional(),
-  })
-  .openapi({
-    title: 'Paginated Repository User Permissions',
-    description: 'A paginated list of repository user permissions.',
-    required: [],
-  })
-  .openapi('PaginatedRepositoryUserPermissions')
+const PaginatedRepositoryUserPermissionsSchema: z.ZodType<PaginatedRepositoryUserPermissionsType> =
+  z
+    .strictObject({
+      size: z
+        .int()
+        .min(0)
+        .exactOptional()
+        .openapi({
+          description:
+            'Total number of objects in the response. This is an optional element that is not provided in all responses, as it can be expensive to compute.',
+        }),
+      page: z
+        .int()
+        .min(1)
+        .exactOptional()
+        .openapi({
+          description:
+            'Page number of the current results. This is an optional element that is not provided in all responses.',
+        }),
+      pagelen: z
+        .int()
+        .min(1)
+        .exactOptional()
+        .openapi({
+          description:
+            'Current number of objects on the existing page. The default value is 10 with 100 being the maximum allowed value. Individual APIs may enforce different values.',
+        }),
+      next: z
+        .url()
+        .exactOptional()
+        .openapi({
+          description:
+            'Link to the next page if it exists. The last page of a collection does not have this value. Use this link to navigate the result set and refrain from constructing your own URLs.',
+        }),
+      previous: z
+        .url()
+        .exactOptional()
+        .openapi({
+          description:
+            'Link to previous page if it exists. A collections first page does not have this value. This is an optional element that is not provided in all responses. Some result sets strictly support forward navigation and never provide previous links. Clients must anticipate that backwards navigation is not always available. Use this link to navigate the result set and refrain from constructing your own URLs.',
+        }),
+      values: z
+        .array(RepositoryUserPermissionSchema)
+        .min(0)
+        .superRefine((items, ctx) => {
+          const seen = new Map()
+          for (const [i, val] of items.entries()) {
+            const key = JSON.stringify(val)
+            if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+            else seen.set(key, i)
+          }
+        })
+        .exactOptional(),
+    })
+    .openapi({
+      title: 'Paginated Repository User Permissions',
+      description: 'A paginated list of repository user permissions.',
+      required: [],
+    })
+    .openapi('PaginatedRepositoryUserPermissions')
 
 const PaginatedProjectsSchema = z
   .strictObject({
@@ -5304,22 +5630,6 @@ const PaginatedProjectsSchema = z
     required: [],
   })
   .openapi('PaginatedProjects')
-
-const CommentResolutionSchema = z
-  .looseObject({
-    type: z.string(),
-    user: AccountSchema.exactOptional(),
-    created_on: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'The ISO8601 timestamp the resolution was created.' }),
-  })
-  .openapi({
-    title: 'Comment Resolution',
-    description: 'The resolution object for a Comment.',
-    required: ['type'],
-  })
-  .openapi('CommentResolution')
 
 const DefaultReviewerAndTypeSchema = z
   .looseObject({
@@ -5394,21 +5704,7 @@ const PaginatedDefaultReviewerAndTypeSchema = z
   })
   .openapi('PaginatedDefaultReviewerAndType')
 
-const PullrequestCommentSchema = CommentSchema.and(
-  z
-    .looseObject({
-      pullrequest: PullrequestSchema.exactOptional(),
-      resolution: CommentResolutionSchema.exactOptional(),
-      pending: z.boolean().exactOptional(),
-    })
-    .openapi({
-      title: 'Pull Request Comment',
-      description: 'A pullrequest comment.',
-      required: [],
-    }),
-).openapi('PullrequestComment')
-
-const PaginatedPullrequestCommentsSchema = z
+const PaginatedPullrequestCommentsSchema: z.ZodType<PaginatedPullrequestCommentsType> = z
   .strictObject({
     size: z
       .int()
@@ -5745,13 +6041,7 @@ const PaginatedChangesetSchema = z
   .openapi({ title: 'Page', description: 'A paginated list of commits.', required: [] })
   .openapi('PaginatedChangeset')
 
-const CommitCommentSchema = CommentSchema.and(
-  z
-    .looseObject({ commit: CommitSchema.exactOptional() })
-    .openapi({ title: 'Commit Comment', description: 'A commit comment.', required: [] }),
-).openapi('CommitComment')
-
-const PaginatedCommitCommentsSchema = z
+const PaginatedCommitCommentsSchema: z.ZodType<PaginatedCommitCommentsType> = z
   .strictObject({
     size: z
       .int()
@@ -5811,24 +6101,7 @@ const PaginatedCommitCommentsSchema = z
   })
   .openapi('PaginatedCommitComments')
 
-const DiffstatSchema = z
-  .looseObject({
-    type: z.string(),
-    status: z.enum(['added', 'removed', 'modified', 'renamed']).exactOptional(),
-    lines_added: z.int().exactOptional(),
-    lines_removed: z.int().exactOptional(),
-    old: CommitFileSchema.exactOptional(),
-    new: CommitFileSchema.exactOptional(),
-  })
-  .openapi({
-    title: 'Diff Stat',
-    description:
-      'A diffstat object that includes a summary of changes made to a file between two commits.',
-    required: ['type'],
-  })
-  .openapi('Diffstat')
-
-const PaginatedDiffstatsSchema = z
+const PaginatedDiffstatsSchema: z.ZodType<PaginatedDiffstatsType> = z
   .strictObject({
     size: z
       .int()
@@ -5888,7 +6161,7 @@ const PaginatedDiffstatsSchema = z
   })
   .openapi('PaginatedDiffstats')
 
-const PaginatedFilesSchema = z
+const PaginatedFilesSchema: z.ZodType<PaginatedFilesType> = z
   .strictObject({
     size: z
       .int()
@@ -6004,21 +6277,7 @@ const PaginatedRefsSchema = z
   .openapi({ title: 'Paginated Refs', description: 'A paginated list of refs.', required: [] })
   .openapi('PaginatedRefs')
 
-const TreeentrySchema = z
-  .looseObject({
-    type: z.string(),
-    path: z.string().exactOptional().openapi({ description: 'The path in the repository' }),
-    commit: CommitSchema.exactOptional(),
-  })
-  .openapi({
-    title: 'Tree Entry',
-    description:
-      "Base type for most resource objects. It defines the common `type` element that identifies an object's type. It also identifies the element as Swagger's `discriminator`.",
-    required: ['type'],
-  })
-  .openapi('Treeentry')
-
-const PaginatedTreeentriesSchema = z
+const PaginatedTreeentriesSchema: z.ZodType<PaginatedTreeentriesType> = z
   .strictObject({
     size: z
       .int()
@@ -6331,43 +6590,6 @@ const PaginatedSnippetsSchema = z
   })
   .openapi('PaginatedSnippets')
 
-const DeployKeySchema = ObjectSchema.and(
-  z
-    .looseObject({
-      key: z.string().exactOptional().openapi({ description: 'The deploy key value.' }),
-      repository: RepositorySchema.exactOptional(),
-      comment: z
-        .string()
-        .exactOptional()
-        .openapi({ description: 'The comment parsed from the deploy key (if present)' }),
-      label: z
-        .string()
-        .exactOptional()
-        .openapi({ description: 'The user-defined label for the deploy key' }),
-      added_on: z.iso.datetime({ offset: true }).exactOptional(),
-      last_used: z.iso.datetime({ offset: true }).exactOptional(),
-      links: z
-        .strictObject({
-          self: z
-            .strictObject({ href: z.url().exactOptional(), name: z.string().exactOptional() })
-            .exactOptional()
-            .openapi({
-              title: 'Link',
-              description: 'A link to a resource related to this object.',
-              required: [],
-            }),
-        })
-        .exactOptional()
-        .openapi({ required: [] }),
-      owner: AccountSchema.exactOptional(),
-    })
-    .openapi({
-      title: 'Deploy Key',
-      description: 'Represents deploy key for a repository.',
-      required: [],
-    }),
-).openapi('DeployKey')
-
 const GPGAccountKeySchema: z.ZodType<GPGAccountKeyType> = z
   .lazy(() =>
     ObjectSchema.and(
@@ -6436,7 +6658,7 @@ const GPGAccountKeySchema: z.ZodType<GPGAccountKeyType> = z
   )
   .openapi('GPGAccountKey')
 
-const PaginatedDeployKeysSchema = z
+const PaginatedDeployKeysSchema: z.ZodType<PaginatedDeployKeysType> = z
   .strictObject({
     size: z
       .int()
@@ -7574,7 +7796,7 @@ export const putRepositoriesWorkspaceRepoSlugRoute = createRoute({
   tags: ['Repositories'],
   summary: 'Update a repository',
   description:
-    "Since this endpoint can be used to both update and to create a\nrepository, the request body depends on the intent.\n\n#### Creation\n\nSee the POST documentation for the repository endpoint for an example\nof the request body.\n\n#### Update\n\nNote: Changing the `name` of the repository will cause the location to\nbe changed. This is because the URL of the repo is derived from the\nname (a process called slugification). In such a scenario, it is\npossible for the request to fail if the newly created slug conflicts\nwith an existing repository's slug. But if there is no conflict,\nthe new location will be returned in the `Location` header of the\nresponse.",
+    "Since this endpoint can be used to both update and to create a\nrepository, the request body depends on the intent.\n\n#### Creation\n\nSee the POST documentation for the repository endpoint for an example\nof the request body.\n\n#### Update\n\nNote: Changing the `name` of the repository will cause the location to\nbe changed. This is because the URL of the repo is derived from the\nname (a process called slugification). In such a scenario, it is\npossible for the request to fail if the newly created slug conflicts\nwith an existing repository's slug. But if there is no conflict,\nthe new location will be returned in the `Location` header of the\nresponse.\n\nNote: Changing the `enforced_signed_commits` setting requires the workspace\nto be on a Premium plan. Cannot be disabled while the setting is enforced\nat the project or workspace level.",
   request: {
     params: z.object({
       repo_slug: z
@@ -7613,39 +7835,32 @@ export const putRepositoriesWorkspaceRepoSlugRoute = createRoute({
       description: 'The existing repository has been updated',
       content: { 'application/json': { schema: RepositorySchema } },
       headers: z.object({
-        Location: {
-          description:
-            "The location of the repository. This header is only\nprovided when the repository's name is changed.",
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                "The location of the repository. This header is only\nprovided when the repository's name is changed.",
-              param: { required: false },
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              "The location of the repository. This header is only\nprovided when the repository's name is changed.",
+            param: { required: false },
+          }),
       }),
     },
     201: {
       description: 'A new repository has been created',
       content: { 'application/json': { schema: RepositorySchema } },
       headers: z.object({
-        Location: {
-          description: 'The location of the newly created repository',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'The location of the newly created repository',
-              param: { required: false },
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'The location of the newly created repository',
+            param: { required: false },
+          }),
       }),
     },
     400: {
       description:
-        'If the input document was invalid, or if the caller lacks the privilege to create repositories under the targeted account.',
+        'If the input document was invalid, if the caller lacks the privilege to create repositories under the targeted account, or if `enforced_signed_commits` cannot be changed.',
       content: { 'application/json': { schema: ErrorSchema } },
     },
     401: {
@@ -7662,7 +7877,7 @@ export const postRepositoriesWorkspaceRepoSlugRoute = createRoute({
   tags: ['Repositories'],
   summary: 'Create a repository',
   description:
-    'Creates a new repository.\n\nNote: In order to set the project for the newly created repository,\npass in either the project key or the project UUID as part of the\nrequest body as shown in the examples below:\n\n```\n$ curl -X POST -H "Content-Type: application/json" -d \'{\n    "scm": "git",\n    "project": {\n        "key": "MARS"\n    }\n}\' https://api.bitbucket.org/2.0/repositories/teamsinspace/hablanding\n```\n\nor\n\n```\n$ curl -X POST -H "Content-Type: application/json" -d \'{\n    "scm": "git",\n    "project": {\n        "key": "{ba516952-992a-4c2d-acbd-17d502922f96}"\n    }\n}\' https://api.bitbucket.org/2.0/repositories/teamsinspace/hablanding\n```\n\nThe project must be assigned for all repositories. If the project is not provided,\nthe repository is automatically assigned to the oldest project in the workspace.\n\nNote: In the examples above, the workspace ID `teamsinspace`,\nand/or the repository name `hablanding` can be replaced by UUIDs.',
+    'Creates a new repository.\n\nNote: In order to set the project for the newly created repository,\npass in either the project key or the project UUID as part of the\nrequest body as shown in the examples below:\n\n```\n$ curl -X POST -H "Content-Type: application/json" -d \'{\n    "scm": "git",\n    "project": {\n        "key": "MARS"\n    }\n}\' https://api.bitbucket.org/2.0/repositories/teamsinspace/hablanding\n```\n\nor\n\n```\n$ curl -X POST -H "Content-Type: application/json" -d \'{\n    "scm": "git",\n    "project": {\n        "key": "{ba516952-992a-4c2d-acbd-17d502922f96}"\n    }\n}\' https://api.bitbucket.org/2.0/repositories/teamsinspace/hablanding\n```\n\nThe project must be assigned for all repositories. If the project is not provided,\nthe repository is automatically assigned to the oldest project in the workspace.\n\nNote: In order to require signed commits for the newly created repository,\npass in `enforced_signed_commits` as part of the request body as shown in\nthe example below. This requires the workspace to be on a Premium plan.\nCannot be disabled while the setting is enforced at the project or\nworkspace level.\n\n```\n$ curl -X POST -H "Content-Type: application/json" -d \'{\n    "enforced_signed_commits": true\n}\' https://api.bitbucket.org/2.0/repositories/teamsinspace/hablanding\n```\n\nNote: In the examples above, the workspace ID `teamsinspace`,\nand/or the repository name `hablanding` can be replaced by UUIDs.',
   request: {
     params: z.object({
       repo_slug: z
@@ -7703,7 +7918,7 @@ export const postRepositoriesWorkspaceRepoSlugRoute = createRoute({
     },
     400: {
       description:
-        'If the input document was invalid, or if the caller lacks the privilege to create repositories under the targeted account.',
+        'If the input document was invalid, if the caller lacks the privilege to create repositories under the targeted account, or if `enforced_signed_commits` cannot be changed.',
       content: { 'application/json': { schema: ErrorSchema } },
     },
     401: {
@@ -8791,16 +9006,13 @@ export const postRepositoriesWorkspaceRepoSlugCommitCommitCommentsRoute = create
     201: {
       description: 'The newly created comment.',
       headers: z.object({
-        Location: {
-          description: 'The location of the newly created comment.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'The location of the newly created comment.',
-              param: { required: false },
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'The location of the newly created comment.',
+            param: { required: false },
+          }),
       }),
     },
     400: {
@@ -8955,16 +9167,13 @@ export const putRepositoriesWorkspaceRepoSlugCommitCommitCommentsCommentIdRoute 
     201: {
       description: 'The newly updated comment.',
       headers: z.object({
-        Location: {
-          description: 'The location of the newly updated comment.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'The location of the newly updated comment.',
-              param: { required: false },
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'The location of the newly updated comment.',
+            param: { required: false },
+          }),
       }),
     },
     400: { description: 'If the comment update was detected as spam' },
@@ -11393,16 +11602,13 @@ export const postRepositoriesWorkspaceRepoSlugDeploymentsConfigEnvironmentsEnvir
         description: 'The variable was created.',
         content: { 'application/json': { schema: DeploymentVariableSchema } },
         headers: z.object({
-          Location: {
-            description: 'The URL of the newly created variable.',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'The URL of the newly created variable.',
-                param: { required: false },
-              }),
-          },
+          Location: z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'The URL of the newly created variable.',
+              param: { required: false },
+            }),
         }),
       },
       404: {
@@ -12318,16 +12524,13 @@ export const postRepositoriesWorkspaceRepoSlugEnvironmentsRoute = createRoute({
       description: 'The environment was created.',
       content: { 'application/json': { schema: DeploymentEnvironmentSchema } },
       headers: z.object({
-        Location: {
-          description: 'The URL of the newly created environment.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'The URL of the newly created environment.',
-              param: { required: false },
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'The URL of the newly created environment.',
+            param: { required: false },
+          }),
       }),
     },
     404: {
@@ -12851,16 +13054,13 @@ export const postRepositoriesWorkspaceRepoSlugForksRoute = createRoute({
       description: 'The newly created fork.',
       content: { 'application/json': { schema: RepositorySchema } },
       headers: z.object({
-        Location: {
-          description: 'The URL of the newly created fork',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'The URL of the newly created fork',
-              param: { required: false },
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'The URL of the newly created fork',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -12960,16 +13160,13 @@ export const postRepositoriesWorkspaceRepoSlugHooksRoute = createRoute({
       description: 'If the webhook was registered successfully.',
       content: { 'application/json': { schema: WebhookSubscriptionSchema } },
       headers: z.object({
-        Location: {
-          description: 'The URL of new newly created webhook.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'The URL of new newly created webhook.',
-              param: { required: false },
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'The URL of new newly created webhook.',
+            param: { required: false },
+          }),
       }),
     },
     403: {
@@ -14898,16 +15095,13 @@ export const postRepositoriesWorkspaceRepoSlugPipelinesRoute = createRoute({
       description: 'The initiated pipeline.',
       content: { 'application/json': { schema: PipelineSchema } },
       headers: z.object({
-        Location: {
-          description: 'The URL of the newly created pipeline.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'The URL of the newly created pipeline.',
-              param: { required: false },
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'The URL of the newly created pipeline.',
+            param: { required: false },
+          }),
       }),
     },
     400: {
@@ -14920,7 +15114,7 @@ export const postRepositoriesWorkspaceRepoSlugPipelinesRoute = createRoute({
       content: { 'application/json': { schema: ErrorSchema } },
     },
   },
-  security: [{ oauth2: ['pipeline'] }, { basic: [] }, { api_key: [] }],
+  security: [{ oauth2: ['pipeline:write'] }, { basic: [] }, { api_key: [] }],
 })
 
 export const getRepositoriesWorkspaceRepoSlugPipelinesConfigCachesRoute = createRoute({
@@ -16263,16 +16457,13 @@ export const postRepositoriesWorkspaceRepoSlugPipelinesConfigSchedulesRoute = cr
       description: 'The created schedule.',
       content: { 'application/json': { schema: PipelineScheduleSchema } },
       headers: z.object({
-        Location: {
-          description: 'The URL of the newly created schedule.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'The URL of the newly created schedule.',
-              param: { required: false },
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'The URL of the newly created schedule.',
+            param: { required: false },
+          }),
       }),
     },
     400: {
@@ -16761,16 +16952,13 @@ export const postRepositoriesWorkspaceRepoSlugPipelinesConfigSshKnownHostsRoute 
       description: 'The known host was created.',
       content: { 'application/json': { schema: PipelineKnownHostSchema } },
       headers: z.object({
-        Location: {
-          description: 'The URL of the newly created pipeline known host.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'The URL of the newly created pipeline known host.',
-              param: { required: false },
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'The URL of the newly created pipeline known host.',
+            param: { required: false },
+          }),
       }),
     },
     404: {
@@ -17051,16 +17239,13 @@ export const postRepositoriesWorkspaceRepoSlugPipelinesConfigVariablesRoute = cr
       description: 'The variable was created.',
       content: { 'application/json': { schema: PipelineVariableSchema } },
       headers: z.object({
-        Location: {
-          description: 'The URL of the newly created pipeline variable.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'The URL of the newly created pipeline variable.',
-              param: { required: false },
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'The URL of the newly created pipeline variable.',
+            param: { required: false },
+          }),
       }),
     },
     404: {
@@ -17555,16 +17740,13 @@ export const postRepositoriesWorkspaceRepoSlugPullrequestsRoute = createRoute({
       description: 'The newly created pull request.',
       content: { 'application/json': { schema: PullrequestSchema } },
       headers: z.object({
-        Location: {
-          description: 'The URL of new newly created pull request.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'The URL of new newly created pull request.',
-              param: { required: false },
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'The URL of new newly created pull request.',
+            param: { required: false },
+          }),
       }),
     },
     400: {
@@ -18121,13 +18303,10 @@ export const postRepositoriesWorkspaceRepoSlugPullrequestsPullRequestIdCommentsR
       description: 'The newly created comment.',
       content: { 'application/json': { schema: PullrequestCommentSchema } },
       headers: z.object({
-        Location: {
-          description: 'The URL of the new comment',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ description: 'The URL of the new comment', param: { required: false } }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'The URL of the new comment', param: { required: false } }),
       }),
     },
     403: {
@@ -19700,13 +19879,10 @@ export const postRepositoriesWorkspaceRepoSlugPullrequestsPullRequestIdTasksRout
       description: 'The newly created task.',
       content: { 'application/json': { schema: PullrequestCommentTaskSchema } },
       headers: z.object({
-        Location: {
-          description: 'The URL of the new task',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ description: 'The URL of the new task', param: { required: false } }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'The URL of the new task', param: { required: false } }),
       }),
     },
     400: {
@@ -21419,16 +21595,13 @@ export const postSnippetsRoute = createRoute({
       description: 'The newly created snippet object.',
       content: { 'application/json': { schema: SnippetSchema } },
       headers: z.object({
-        Location: {
-          description: 'The URL of the newly created snippet.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'The URL of the newly created snippet.',
-              param: { required: false },
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'The URL of the newly created snippet.',
+            param: { required: false },
+          }),
       }),
     },
     401: {
@@ -21519,16 +21692,13 @@ export const postSnippetsWorkspaceRoute = createRoute({
       description: 'The newly created snippet object.',
       content: { 'application/json': { schema: SnippetSchema } },
       headers: z.object({
-        Location: {
-          description: 'The URL of the newly created snippet.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'The URL of the newly created snippet.',
-              param: { required: false },
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'The URL of the newly created snippet.',
+            param: { required: false },
+          }),
       }),
     },
     401: {
@@ -21840,13 +22010,10 @@ export const postSnippetsWorkspaceEncodedIdCommentsRoute = createRoute({
       description: 'The newly created comment.',
       content: { 'application/json': { schema: SnippetCommentSchema } },
       headers: z.object({
-        Location: {
-          description: 'The URL of the new comment',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ description: 'The URL of the new comment', param: { required: false } }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'The URL of the new comment', param: { required: false } }),
       }),
     },
     403: {
@@ -22226,16 +22393,13 @@ export const getSnippetsWorkspaceEncodedIdFilesPathRoute = createRoute({
     302: {
       description: 'A redirect to the most recent revision of the specified file.',
       headers: z.object({
-        Location: {
-          description: 'The URL of the most recent file revision.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'The URL of the most recent file revision.',
-              param: { required: false },
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'The URL of the most recent file revision.',
+            param: { required: false },
+          }),
       }),
     },
     403: {
@@ -22736,23 +22900,17 @@ export const getSnippetsWorkspaceEncodedIdNodeIdFilesPathRoute = createRoute({
     200: {
       description: 'Returns the contents of the specified file.',
       headers: z.object({
-        'Content-Type': {
-          description: 'The mime type as derived from the filename',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'The mime type as derived from the filename',
-              param: { required: false },
-            }),
-        },
-        'Content-Disposition': {
-          description: 'attachment',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ description: 'attachment', param: { required: false } }),
-        },
+        'Content-Type': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'The mime type as derived from the filename',
+            param: { required: false },
+          }),
+        'Content-Disposition': z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'attachment', param: { required: false } }),
       }),
     },
     403: {
@@ -22963,16 +23121,13 @@ export const postTeamsUsernamePipelinesConfigVariablesRoute = createRoute({
       description: 'The created variable.',
       content: { 'application/json': { schema: PipelineVariableSchema } },
       headers: z.object({
-        Location: {
-          description: 'The URL of the newly created pipeline variable.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'The URL of the newly created pipeline variable.',
-              param: { required: false },
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'The URL of the newly created pipeline variable.',
+            param: { required: false },
+          }),
       }),
     },
     404: {
@@ -23979,16 +24134,13 @@ export const postUsersSelectedUserPipelinesConfigVariablesRoute = createRoute({
       description: 'The created variable.',
       content: { 'application/json': { schema: PipelineVariableSchema } },
       headers: z.object({
-        Location: {
-          description: 'The URL of the newly created pipeline variable.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'The URL of the newly created pipeline variable.',
-              param: { required: false },
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'The URL of the newly created pipeline variable.',
+            param: { required: false },
+          }),
       }),
     },
     404: {
@@ -24915,7 +25067,7 @@ export const postWorkspacesWorkspaceCodesearchRoute = createRoute({
   tags: ['Workspaces'],
   summary: 'Search code in a workspace',
   description:
-    'Search code across repositories in a workspace.\n\nResults are limited to the repositories that the calling user can\naccess.\n\n#### Supported authentication\n\nThe endpoint requires a credential that identifies the calling user.\nThe following authentication modes are accepted:\n\n- Browser session cookie (Bitbucket web UI)\n- Atlassian API token (Basic auth using your email and a scoped API\n  token that includes both `repository:read` and `workspace:read`)\n- OAuth 2.0 via Forge or an Atlassian app (3LO or 2LO, with both\n  `repository:read` and `workspace:read` granted to the app)\n- Bitbucket repository, project, or workspace access tokens\n\nAuthentication modes that **do not** identify the user, including\nAtlassian Connect JWT, legacy Bitbucket OAuth not migrated to\nidentity, app passwords, and API keys, are rejected with a `403`.\n\n#### Request body\n\nRequires `Content-Type: application/json`. Anything else returns `415`.\n\n`query.search_term` is required. These fields are accepted:\n\n- `query.search_term`: non-blank, at most 1024 characters\n- `query.filters`\n- `config.max_results`: a JSON integer (a string or float is rejected),\n  1 to 100, default 50\n- `config.search_mode`: `LEXICAL` or omitted\n- `request_id` and `pagination.next_cursor`: see "Pagination"\n\nAny other field is ignored.\n\n```json\n{\n  "query": {\n    "search_term": "logr",\n    "filters": { "attribute": "language", "eq": "go" }\n  },\n  "config": {\n    "max_results": 10\n  }\n}\n```\n\n#### Search mode\n\nThis endpoint performs lexical code search only. `config.search_mode`\nis fixed to `LEXICAL` server-side, so callers may omit the field or\nset it explicitly to `LEXICAL`. Any other value returns a `400`.\n\n#### Filters\n\nUse `query.filters` to narrow a search. For example, to search for\n`logr` only in Go files whose path matches `cmd/*/main.go`:\n\n```json\n{\n  "query": {\n    "search_term": "logr",\n    "filters": {\n      "and": [\n        { "attribute": "language", "eq": "go" },\n        { "attribute": "path", "wildcard": "cmd/*/main.go" }\n      ]\n    }\n  }\n}\n```\n\nA filter names an `attribute` and exactly one operator:\n\n* `eq` matches a value, and works with every attribute. Values are\n  not case-sensitive.\n* `wildcard` matches a pattern, and works only with `path` and\n  `repository`. In a pattern, `*` matches any run of characters and `?`\n  matches one character. A pattern must match the whole value. On\n  `repository` it ignores case, and on `path` it is case-sensitive.\n\nSetting both `eq` and `wildcard` on one filter returns `400`.\n\nThese attributes are supported:\n\n* `repository`: a repository slug, such as `my-repo`. Use a wildcard\n  such as `my-*` to match every slug that starts with `my-`.\n* `path`: with `eq`, a value such as `src/main` matches any path that\n  contains those folder or file names in that order, such as\n  `app/src/main/App.java`. Each name must match in full. With\n  `wildcard`, the pattern must match the whole file path, such as\n  `*/main.go`.\n* `language`: a language name, such as `go`, `python`, or\n  `javascript`. To filter by file extension, use `extension`.\n* `extension`: a file extension without the dot, such as `go` or `py`.\n* `project`: a project key or name.\n* `scm`: the source control host of the repository.\n* `branches`: searches run on the default branch only. Set `branches`\n  to `"true"` to search all indexed branches.\n* `forks`: by default, results include repositories that are forks. Set\n  `forks` to `"true"` to get results from forks only, or to `"false"` to\n  get results from repositories that are not forks.\n\n`branches` only accepts the value `"true"`. `branches` and `forks` only\nwork when they are the whole of `query.filters`. You cannot combine\nthem with other filters.\n\nCombine filters with `and`, `or`, and `not`. Filters can nest up to 5\nlevels deep, and the workspace filter this endpoint adds uses one of\nthem. That leaves 3 levels of `and`, `or`, or `not` around a filter.\nDeeper filters return `400`. This filter uses all 3 levels:\n\n```json\n{\n  "and": [\n    { "or": [\n      { "not": { "attribute": "language", "eq": "python" } }\n    ] },\n    { "attribute": "extension", "eq": "go" }\n  ]\n}\n```\n\n#### Workspace scoping\n\nThe endpoint always applies a `namespace = <workspace_slug>` filter\nand passes the workspace\'s wrapped UUID as `scope.workspace_ids`.\nCallers must **not** include a `namespace` filter in `query.filters`\n(anywhere in the tree, including nested AND/OR/NOT). Doing so returns\n`400`. A `scope.workspace_ids` value in the request body is ignored.\nThe workspace in the URL always sets the scope.\n\n#### Pagination\n\nPagination uses a cursor. To page beyond the first result set, include\nthe `id` from the previous response as `request_id`, and the previous\nresponse\'s `pagination.next_cursor` as `pagination.next_cursor`.\n`request_id` is required whenever `pagination` is sent. Repeat\nuntil `pagination.has_more` is `false`.\n\nOn every page, `query.search_term` and `query.filters` must be the\nsame as on the first page, including the order of items inside\n`and`/`or`. A different value returns `400`. `config.max_results` may\nchange between pages.\n\n```json\n{\n  "query": { "search_term": "logr" },\n  "config": { "max_results": 10 },\n  "request_id": "550e8400-e29b-41d4-a716-446655440000",\n  "pagination": { "next_cursor": "eyJlbnRyaWVzIjpbeyJsZXhpY2FsS2V5Ijoi..." }\n}\n```\n\n#### Response\n\nYou can rely on these fields:\n\n- `id`, `pagination.next_cursor`, `pagination.has_more`\n- `repositories[]`: `url`, `host`, `ns`, `name`\n- `matched_files[]`: `path`, `name`, `language`, `url`, `repositoryId`,\n  `version` (the commit hash), `branch_or_tag_name`, `is_default_branch`\n- `matched_files[].matched_chunks[]`: `source_code`, `line_range`,\n  `matched_line_numbers`, `matched_ranges`\n- `metadata.total_count`: an approximate size, meaningful on page 1 only\n\n`branch_or_tag_name` and `is_default_branch` are left out when not\nknown, and `language` can be `null`.\n\nLine numbers start at 1, and `line_range.end` is the last line of the\nchunk. Each `matched_ranges` entry is `[line, start_column,\nend_column]`, where `line` is the line number in the file, the columns\nstart at 0, and `end_column` is exclusive.\n\n`matched_line_numbers` and `matched_ranges` mark where a search term\nappears as a whole word in the chunk. They can be empty even when the\nchunk matched.\n\nOther fields can change or be removed without notice, so ignore any\nfield not listed here. Treat ids and `pagination.next_cursor` as opaque.\n\nErrors from this endpoint, including errors from the search backend, use\nthe standard Bitbucket error envelope:\n`{"type": "error", "error": {"message": ..., "code": ...}}`.\nA backend error keeps its status code, except that a backend 5xx is\nreturned as `502 Bad Gateway`. The backend\'s own error code, when there\nis one, is in `error.detail.upstream_code`.',
+    'Search code across repositories in a workspace.\n\nResults are limited to the repositories that the calling user can\naccess.\n\n#### Supported authentication\n\nThe endpoint requires a credential that identifies the calling user.\nThe following authentication modes are accepted:\n\n- Browser session cookie (Bitbucket web UI)\n- Atlassian API token (Basic auth using your email and a scoped API\n  token that includes both `repository:read` and `workspace:read`)\n- OAuth 2.0 via Forge or an Atlassian app (3LO or 2LO, with both\n  `repository:read` and `workspace:read` granted to the app)\n- Bitbucket repository, project, or workspace access tokens\n\nAuthentication modes that **do not** identify the user, including\nAtlassian Connect JWT, legacy Bitbucket OAuth not migrated to\nidentity, app passwords, and API keys, are rejected with a `403`.\n\n#### Request body\n\nRequires `Content-Type: application/json`. Anything else returns `415`.\n\n`query.search_term` is required. These fields are accepted:\n\n- `query.search_term`: non-blank, at most 1024 characters\n- `query.filters`\n- `config.max_results`: a JSON integer (a string or float is rejected),\n  1 to 100, default 50\n- `config.search_mode`: `LEXICAL` or omitted\n- `request_id` and `pagination.next_cursor`: see "Pagination"\n\nAny other field is ignored.\n\n```json\n{\n  "query": {\n    "search_term": "logr",\n    "filters": { "attribute": "language", "eq": "go" }\n  },\n  "config": {\n    "max_results": 10\n  }\n}\n```\n\n#### Search mode\n\nThis endpoint performs lexical code search only. `config.search_mode`\nis fixed to `LEXICAL` server-side, so callers may omit the field or\nset it explicitly to `LEXICAL`. Any other value returns a `400`.\n\n#### Filters\n\nUse `query.filters` to narrow a search. For example, to search for\n`logr` only in Go files whose path matches `cmd/*/main.go`:\n\n```json\n{\n  "query": {\n    "search_term": "logr",\n    "filters": {\n      "and": [\n        { "attribute": "language", "eq": "go" },\n        { "attribute": "path", "wildcard": "cmd/*/main.go" }\n      ]\n    }\n  }\n}\n```\n\nA filter names an `attribute` and exactly one operator:\n\n* `eq` matches a value, and works with every attribute. Values are\n  not case-sensitive.\n* `wildcard` matches a pattern, and works only with `path` and\n  `repository`. In a pattern, `*` matches any run of characters and `?`\n  matches one character. A pattern must match the whole value. On\n  `repository` it ignores case, and on `path` it is case-sensitive.\n\nSetting both `eq` and `wildcard` on one filter returns `400`.\n\nThese attributes are supported:\n\n* `repository`: a repository slug, such as `my-repo`. Use a wildcard\n  such as `my-*` to match every slug that starts with `my-`.\n* `path`: with `eq`, a value such as `src/main` matches any path that\n  contains those folder or file names in that order, such as\n  `app/src/main/App.java`. Each name must match in full. With\n  `wildcard`, the pattern must match the whole file path, such as\n  `*/main.go`.\n* `language`: a language name, such as `go`, `python`, or\n  `javascript`. To filter by file extension, use `extension`.\n* `extension`: a file extension without the dot, such as `go` or `py`.\n* `project`: a project key or name.\n* `scm`: the source control host of the repository.\n* `branches`: searches run on the default branch only. Set `branches`\n  to `"true"` to search all indexed branches.\n* `forks`: by default, results include repositories that are forks. Set\n  `forks` to `"true"` to get results from forks only, or to `"false"` to\n  get results from repositories that are not forks.\n\n`branches` only accepts the value `"true"`. `branches` and `forks` only\nwork when they are the whole of `query.filters`. You cannot combine\nthem with other filters.\n\nCombine filters with `and`, `or`, and `not`. Filters can nest up to 5\nlevels deep, and the workspace filter this endpoint adds uses one of\nthem. That leaves 3 levels of `and`, `or`, or `not` around a filter.\nDeeper filters return `400`. This filter uses all 3 levels:\n\n```json\n{\n  "and": [\n    { "or": [\n      { "not": { "attribute": "language", "eq": "python" } }\n    ] },\n    { "attribute": "extension", "eq": "go" }\n  ]\n}\n```\n\n#### Workspace scoping\n\nThe endpoint always applies a `namespace = <workspace_slug>` filter\nand passes the workspace\'s wrapped UUID as `scope.workspace_ids`.\nCallers must **not** include a `namespace` filter in `query.filters`\n(anywhere in the tree, including nested AND/OR/NOT). Doing so returns\n`400`. A `scope.workspace_ids` value in the request body is ignored.\nThe workspace in the URL always sets the scope.\n\n#### Pagination\n\nPagination uses a cursor. To page beyond the first result set, include\nthe `id` from the previous response as `request_id`, and the previous\nresponse\'s `pagination.next_cursor` as `pagination.next_cursor`.\n`request_id` is required whenever `pagination` is sent. Repeat\nuntil `pagination.has_more` is `false`.\n\nOn every page, `query.search_term` and `query.filters` must be the\nsame as on the first page, including the order of items inside\n`and`/`or`. A different value returns `400`. `config.max_results` may\nchange between pages.\n\n```json\n{\n  "query": { "search_term": "logr" },\n  "config": { "max_results": 10 },\n  "request_id": "550e8400-e29b-41d4-a716-446655440000",\n  "pagination": { "next_cursor": "eyJlbnRyaWVzIjpbeyJsZXhpY2FsS2V5Ijoi..." }\n}\n```\n\n#### Response\n\nYou can rely on these fields:\n\n- `id`, `pagination.next_cursor`, `pagination.has_more`\n- `repositories[]`: `url`, `host`, `ns`, `name`\n- `matched_files[]`: `path`, `name`, `language`, `url`, `repositoryId`,\n  `version` (the commit hash), `branch_or_tag_name`, `is_default_branch`\n- `matched_files[].matched_chunks[]`: `source_code`, `line_range`,\n  `matched_line_numbers`, `matched_ranges`\n- `metadata.total_count`: an approximate size, meaningful on page 1 only\n\n`branch_or_tag_name` and `is_default_branch` are left out when not\nknown, and `language` can be `null`.\n\nLine numbers start at 1, and `line_range.end` is the last line of the\nchunk. Each `matched_ranges` entry is `[line, start_column,\nend_column]`, where `line` is the line number in the file, the columns\nstart at 0, and `end_column` is exclusive.\n\n`matched_line_numbers` and `matched_ranges` mark where a search term\nappears as a whole word in the chunk. They can be empty even when the\nchunk matched.\n\nOther fields can change or be removed without notice, so ignore any\nfield not listed here. Treat ids and `pagination.next_cursor` as opaque.\n\nErrors from this endpoint, including errors from the search backend, use\nthe standard Bitbucket error envelope:\n`{"type": "error", "error": {"message": ..., "code": ...}}`.\nA backend error keeps its status code, except that a backend 5xx is\nreturned as `502 Bad Gateway`. The backend\'s own error code, when there\nis one, is in `error.detail.upstream_code`. A `429` includes the\nbackend\'s `Retry-After` header when the backend sends one.',
   request: {
     params: z.object({
       workspace: z
@@ -25040,16 +25192,13 @@ export const postWorkspacesWorkspaceHooksRoute = createRoute({
       description: 'The webhook subscription object.',
       content: { 'application/json': { schema: WebhookSubscriptionSchema } },
       headers: z.object({
-        Location: {
-          description: 'The URL of new newly created webhook.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'The URL of new newly created webhook.',
-              param: { required: false },
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'The URL of new newly created webhook.',
+            param: { required: false },
+          }),
       }),
     },
     403: {
@@ -25986,16 +26135,13 @@ export const postWorkspacesWorkspacePipelinesConfigVariablesRoute = createRoute(
       description: 'The created variable.',
       content: { 'application/json': { schema: PipelineVariableSchema } },
       headers: z.object({
-        Location: {
-          description: 'The URL of the newly created pipeline variable.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'The URL of the newly created pipeline variable.',
-              param: { required: false },
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'The URL of the newly created pipeline variable.',
+            param: { required: false },
+          }),
       }),
     },
     404: {
@@ -26190,7 +26336,7 @@ export const postWorkspacesWorkspaceProjectsRoute = createRoute({
   tags: ['Projects'],
   summary: 'Create a project in a workspace',
   description:
-    'Creates a new project.\n\nNote that the avatar has to be embedded as either a data-url\nor a URL to an external image as shown in the examples below:\n\n```\n$ body=$(cat << EOF\n{\n    "name": "Mars Project",\n    "key": "MARS",\n    "description": "Software for colonizing mars.",\n    "links": {\n        "avatar": {\n            "href": "data:image/gif;base64,R0lGODlhEAAQAMQAAORHHOVSKudfOulrSOp3WOyDZu6QdvCchPGolfO0o/..."\n        }\n    },\n    "is_private": false\n}\nEOF\n)\n$ curl -H "Content-Type: application/json" \\\n       -X POST \\\n       -d "$body" \\\n       https://api.bitbucket.org/2.0/workspaces/teams-in-space/projects/ | jq .\n{\n  // Serialized project document\n}\n```\n\nor even:\n\n```\n$ body=$(cat << EOF\n{\n    "name": "Mars Project",\n    "key": "MARS",\n    "description": "Software for colonizing mars.",\n    "links": {\n        "avatar": {\n            "href": "http://i.imgur.com/72tRx4w.gif"\n        }\n    },\n    "is_private": false\n}\nEOF\n)\n$ curl -H "Content-Type: application/json" \\\n       -X POST \\\n       -d "$body" \\\n       https://api.bitbucket.org/2.0/workspaces/teams-in-space/projects/ | jq .\n{\n  // Serialized project document\n}\n```',
+    'Creates a new project.\n\nNote: Setting `enforced_signed_commits` requires the workspace to be on a\nPremium plan. Cannot be disabled while the setting is enforced at the\nworkspace level.\n\nNote that the avatar has to be embedded as either a data-url\nor a URL to an external image as shown in the examples below:\n\n```\n$ body=$(cat << EOF\n{\n    "name": "Mars Project",\n    "key": "MARS",\n    "description": "Software for colonizing mars.",\n    "links": {\n        "avatar": {\n            "href": "data:image/gif;base64,R0lGODlhEAAQAMQAAORHHOVSKudfOulrSOp3WOyDZu6QdvCchPGolfO0o/..."\n        }\n    },\n    "is_private": false\n}\nEOF\n)\n$ curl -H "Content-Type: application/json" \\\n       -X POST \\\n       -d "$body" \\\n       https://api.bitbucket.org/2.0/workspaces/teams-in-space/projects/ | jq .\n{\n  // Serialized project document\n}\n```\n\nor even:\n\n```\n$ body=$(cat << EOF\n{\n    "name": "Mars Project",\n    "key": "MARS",\n    "description": "Software for colonizing mars.",\n    "links": {\n        "avatar": {\n            "href": "http://i.imgur.com/72tRx4w.gif"\n        }\n    },\n    "is_private": false\n}\nEOF\n)\n$ curl -H "Content-Type: application/json" \\\n       -X POST \\\n       -d "$body" \\\n       https://api.bitbucket.org/2.0/workspaces/teams-in-space/projects/ | jq .\n{\n  // Serialized project document\n}\n```',
   request: {
     params: z.object({
       workspace: z
@@ -26213,17 +26359,18 @@ export const postWorkspacesWorkspaceProjectsRoute = createRoute({
       description: 'A new project has been created.',
       content: { 'application/json': { schema: ProjectSchema } },
       headers: z.object({
-        Location: {
-          description: 'The location of the newly created project',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'The location of the newly created project',
-              param: { required: false },
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'The location of the newly created project',
+            param: { required: false },
+          }),
       }),
+    },
+    400: {
+      description: "The request body is invalid, or `enforced_signed_commits` can't be set.",
+      content: { 'application/json': { schema: ErrorSchema } },
     },
     403: {
       description:
@@ -26299,7 +26446,7 @@ export const putWorkspacesWorkspaceProjectsProjectKeyRoute = createRoute({
   tags: ['Projects'],
   summary: 'Update a project for a workspace',
   description:
-    'Since this endpoint can be used to both update and to create a\nproject, the request body depends on the intent.\n\n#### Creation\n\nSee the POST documentation for the project collection for an\nexample of the request body.\n\nNote: The `key` should not be specified in the body of request\n(since it is already present in the URL). The `name` is required,\neverything else is optional.\n\n#### Update\n\nSee the POST documentation for the project collection for an\nexample of the request body.\n\nNote: The key is not required in the body (since it is already in\nthe URL). The key may be specified in the body, if the intent is\nto change the key itself. In such a scenario, the location of the\nproject is changed and is returned in the `Location` header of the\nresponse.',
+    'Since this endpoint can be used to both update and to create a\nproject, the request body depends on the intent.\n\n#### Creation\n\nSee the POST documentation for the project collection for an\nexample of the request body.\n\nNote: The `key` should not be specified in the body of request\n(since it is already present in the URL). The `name` is required,\neverything else is optional.\n\n#### Update\n\nSee the POST documentation for the project collection for an\nexample of the request body.\n\nNote: The key is not required in the body (since it is already in\nthe URL). The key may be specified in the body, if the intent is\nto change the key itself. In such a scenario, the location of the\nproject is changed and is returned in the `Location` header of the\nresponse.\n\nNote: Changing the `enforced_signed_commits` setting requires the workspace\nto be on a Premium plan. Cannot be disabled while the setting is enforced\nat the workspace level.',
   request: {
     params: z.object({
       project_key: z
@@ -26334,35 +26481,32 @@ export const putWorkspacesWorkspaceProjectsProjectKeyRoute = createRoute({
       description: 'The existing project is has been updated.',
       content: { 'application/json': { schema: ProjectSchema } },
       headers: z.object({
-        Location: {
-          description:
-            'The location of the project. This header is only provided\nwhen the project key is updated.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The location of the project. This header is only provided\nwhen the project key is updated.',
-              param: { required: false },
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The location of the project. This header is only provided\nwhen the project key is updated.',
+            param: { required: false },
+          }),
       }),
     },
     201: {
       description: 'A new project has been created.',
       content: { 'application/json': { schema: ProjectSchema } },
       headers: z.object({
-        Location: {
-          description: 'The location of the newly created project',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'The location of the newly created project',
-              param: { required: false },
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'The location of the newly created project',
+            param: { required: false },
+          }),
       }),
+    },
+    400: {
+      description: "The request body is invalid, or `enforced_signed_commits` can't be changed.",
+      content: { 'application/json': { schema: ErrorSchema } },
     },
     403: {
       description: "The requesting user isn't authorized to update or create the project.",

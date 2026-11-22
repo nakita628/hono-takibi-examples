@@ -1,0 +1,39 @@
+import { OpenAPIHono } from '@hono/zod-openapi'
+import {
+  deleteVideosItemIdAlternateSourcesRoute,
+  getVideosItemIdAdditionalPartsRoute,
+  getVideosItemIdStreamContainerRoute,
+  getVideosItemIdStreamRoute,
+  getVideosVideoIdMediaSourceIdAttachmentsIndexRoute,
+  headVideosItemIdStreamContainerRoute,
+  headVideosItemIdStreamRoute,
+  postVideosMergeVersionsRoute,
+} from '../routes'
+
+const app = new OpenAPIHono()
+
+export const videoHandler = app
+  .openapi(getVideosVideoIdMediaSourceIdAttachmentsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getVideosItemIdAdditionalPartsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteVideosItemIdAlternateSourcesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getVideosItemIdStreamRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(headVideosItemIdStreamRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getVideosItemIdStreamContainerRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(headVideosItemIdStreamContainerRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postVideosMergeVersionsRoute, (c) => {
+    throw new Error('Not implemented')
+  })

@@ -1410,15 +1410,15 @@ const EntityBalanceTransactionSchema = z
   .openapi('EntityBalanceTransaction')
 
 const ReportTypeSchema = z
-  .literal('transaction_margin')
+  .literal('transaction-margin')
   .openapi({
     description:
       'The type of report to generate. Determines which other fields the request needs, and which fields show up\non the resulting report.',
     'x-enumDescriptions': {
-      transaction_margin:
+      'transaction-margin':
         'A transaction margin report for a whole organization, over a date range.',
     },
-    example: 'transaction_margin',
+    example: 'transaction-margin',
   })
   .openapi('ReportType')
 
@@ -1467,43 +1467,99 @@ const ReportStatusSchema = z
   })
   .openapi('ReportStatus')
 
-const ReportStatusReasonSchema = z
+const ReportTypeResponseSchema = z
+  .literal('transaction-margin')
+  .openapi({
+    description:
+      'The type of report to generate. Determines which other fields the request needs, and which fields show up\non the resulting report.',
+    'x-enumDescriptions': {
+      'transaction-margin':
+        'A transaction margin report for a whole organization, over a date range.',
+    },
+    example: 'transaction-margin',
+    'x-speakeasy-unknown-values': 'allow',
+  })
+  .openapi('ReportTypeResponse')
+
+const CreateReportResponseSchema = z
   .object({
-    code: z
+    resource: z
       .string()
       .openapi({
-        description: 'A machine-readable code for the failure reason.',
-        example: 'generation_failed',
+        description:
+          'Indicates the response contains a report object. Will always contain the string `report` for this\nendpoint.',
+        readOnly: true,
+        example: 'report',
       }),
+    id: ReportTokenSchema.openapi({
+      description:
+        'The identifier uniquely referring to this report. Mollie assigns this identifier when you create the\nreport. Example: `rpt_XRAG3v9EUyCDcX99pJ2Vc`.',
+      readOnly: true,
+    }),
+    reportType: ReportTypeResponseSchema,
+    fromDate: z.iso
+      .date()
+      .exactOptional()
+      .openapi({
+        description:
+          'The start date of the report period. Only present for date-range report types.',
+        example: '2026-08-01',
+        readOnly: true,
+      }),
+    untilDate: z.iso
+      .date()
+      .exactOptional()
+      .openapi({
+        description: 'The end date of the report period. Only present for date-range report types.',
+        example: '2026-08-31',
+        readOnly: true,
+      }),
+    status: ReportStatusSchema.openapi({ readOnly: true }),
+    createdAt: CreatedAtSchema,
+    _links: z
+      .object({ self: UrlSchema, documentation: UrlSchema })
+      .openapi({
+        description:
+          'An object with several relevant URLs. Every URL object will contain an `href` and a `type` field.',
+        required: ['self', 'documentation'],
+        readOnly: true,
+      }),
+  })
+  .openapi({ required: ['resource', 'id', 'reportType', 'status', 'createdAt', '_links'] })
+  .openapi('CreateReportResponse')
+
+const ReportStatusReasonCodeSchema = z
+  .enum(['generation-failed', 'validation-failed', 'empty-report'])
+  .openapi({
+    description: 'A machine-readable code for the failure reason.',
+    'x-enumDescriptions': {
+      'generation-failed': 'An error occurred while generating the report.',
+      'validation-failed': 'The report data could not be verified.',
+      'empty-report': 'The report contains no data for the requested period.',
+    },
+    readOnly: true,
+    example: 'generation-failed',
+    'x-speakeasy-unknown-values': 'allow',
+  })
+  .openapi('ReportStatusReasonCode')
+
+const ReportStatusReasonSchema = z
+  .object({
+    code: ReportStatusReasonCodeSchema,
     message: z
       .string()
       .openapi({
         description: 'A human-readable explanation of why the report failed.',
         example:
-          'Something went wrong while generating the report. Try again, or contact support if it keeps happening.',
+          'An error occurred while generating the report. Please try again or contact support if the issue persists.',
       }),
   })
-  .nullable()
   .openapi({
     description: 'Present when `status` is `failed`. Explains what went wrong.',
     readOnly: true,
     required: ['code', 'message'],
   })
   .openapi('ReportStatusReason')
-
-const ReportTypeResponseSchema = z
-  .literal('transaction_margin')
-  .openapi({
-    description:
-      'The type of report to generate. Determines which other fields the request needs, and which fields show up\non the resulting report.',
-    'x-enumDescriptions': {
-      transaction_margin:
-        'A transaction margin report for a whole organization, over a date range.',
-    },
-    example: 'transaction_margin',
-    'x-speakeasy-unknown-values': 'allow',
-  })
-  .openapi('ReportTypeResponse')
 
 const EntityReportSchema = z
   .object({
@@ -1523,21 +1579,18 @@ const EntityReportSchema = z
     reportType: ReportTypeResponseSchema,
     fromDate: z.iso
       .date()
-      .nullable()
       .exactOptional()
       .openapi({
         description:
-          'The start date of the report period. Set for date-range report types, `null` otherwise.',
+          'The start date of the report period. Only present for date-range report types.',
         example: '2026-08-01',
         readOnly: true,
       }),
     untilDate: z.iso
       .date()
-      .nullable()
       .exactOptional()
       .openapi({
-        description:
-          'The end date of the report period. Set for date-range report types, `null` otherwise.',
+        description: 'The end date of the report period. Only present for date-range report types.',
         example: '2026-08-31',
         readOnly: true,
       }),
@@ -1546,31 +1599,28 @@ const EntityReportSchema = z
     createdAt: CreatedAtSchema,
     completedAt: z.iso
       .datetime({ offset: true })
-      .nullable()
       .exactOptional()
       .openapi({
         description:
-          'The date and time the report finished generating, in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601)\nformat. Only present once `status` is `completed`.',
+          'The date and time the report finished generating, in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601)\nformat. Only present when `status` is `completed`.',
         readOnly: true,
         example: '2026-09-01T09:01:12+00:00',
       }),
     failedAt: z.iso
       .datetime({ offset: true })
-      .nullable()
       .exactOptional()
       .openapi({
         description:
-          'The date and time the report failed to generate, in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601)\nformat. Only present once `status` is `failed`.',
+          'The date and time the report failed to generate, in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601)\nformat. Only present when `status` is `failed`.',
         readOnly: true,
         example: '2026-09-01T09:03:00+00:00',
       }),
     downloadExpiresAt: z.iso
       .datetime({ offset: true })
-      .nullable()
       .exactOptional()
       .openapi({
         description:
-          'The date and time the `_links.download` link expires, in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601)\nformat. We issue a fresh link and expiry on every call to [Get report](get-report), so just call it\nagain once this one expires.',
+          'The date and time the `_links.download` link expires, in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601)\nformat. Only present when `status` is `completed`.',
         readOnly: true,
         example: '2026-09-01T09:16:12+00:00',
       }),
@@ -1579,7 +1629,7 @@ const EntityReportSchema = z
         self: UrlSchema,
         download: UrlSchema.exactOptional().openapi({
           description:
-            'A time-limited, pre-signed download link for the report file. Only present while `status` is\n`completed`.',
+            'A time-limited, pre-signed download link for the report file. Only present when `status` is\n`completed`.',
         }),
         documentation: UrlSchema,
       })
@@ -4799,14 +4849,66 @@ const MethodResponseSchema = z
 
 const PaymentResponseSchema = EntityPaymentResponseSchema.and(
   z
-    .object({
-      method: MethodResponseSchema.exactOptional().openapi({
-        description:
-          'The payment method used for this transaction. If a specific method was selected during payment initialization,\nthis field reflects that choice.',
-      }),
-    })
-    .openapi({ required: [] }),
+    .looseObject({})
+    .openapi({
+      required: [
+        'resource',
+        'id',
+        'mode',
+        'createdAt',
+        'amount',
+        'description',
+        'status',
+        'profileId',
+        'sequenceType',
+        '_links',
+      ],
+    }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'resource')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'mode')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'createdAt')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'amount')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'description')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'status')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'profileId')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'sequenceType')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, '_links')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        method: MethodResponseSchema.exactOptional().openapi({
+          description:
+            'The payment method used for this transaction. If a specific method was selected during payment initialization,\nthis field reflects that choice.',
+        }),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({
     required: [
       'resource',
@@ -5038,9 +5140,45 @@ const EntityCaptureResponseSchema = z
   .openapi({ required: [] })
   .openapi('EntityCaptureResponse')
 
-const CaptureResponseSchema = EntityCaptureResponseSchema.openapi({
-  required: ['resource', 'id', 'mode', 'amount', 'status', 'createdAt', 'paymentId', '_links'],
-}).openapi('CaptureResponse')
+const CaptureResponseSchema = EntityCaptureResponseSchema.and(
+  z
+    .looseObject({})
+    .openapi({
+      required: ['resource', 'id', 'mode', 'amount', 'status', 'createdAt', 'paymentId', '_links'],
+    }),
+)
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'resource')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'mode')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'amount')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'status')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'createdAt')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'paymentId')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, '_links')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .openapi({
+    required: ['resource', 'id', 'mode', 'amount', 'status', 'createdAt', 'paymentId', '_links'],
+  })
+  .openapi('CaptureResponse')
 
 const SettlementCaptureStatusSchema = z
   .literal('succeeded')
@@ -5351,20 +5489,73 @@ const EntityRefundResponseSchema = z
   .openapi({ required: [] })
   .openapi('EntityRefundResponse')
 
-const RefundResponseSchema = EntityRefundResponseSchema.openapi({
-  required: [
-    'resource',
-    'id',
-    'mode',
-    'createdAt',
-    'amount',
-    'description',
-    'status',
-    'paymentId',
-    'metadata',
-    '_links',
-  ],
-}).openapi('RefundResponse')
+const RefundResponseSchema = EntityRefundResponseSchema.and(
+  z
+    .looseObject({})
+    .openapi({
+      required: [
+        'resource',
+        'id',
+        'mode',
+        'createdAt',
+        'amount',
+        'description',
+        'status',
+        'paymentId',
+        'metadata',
+        '_links',
+      ],
+    }),
+)
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'resource')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'mode')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'createdAt')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'amount')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'description')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'status')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'paymentId')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'metadata')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, '_links')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .openapi({
+    required: [
+      'resource',
+      'id',
+      'mode',
+      'createdAt',
+      'amount',
+      'description',
+      'status',
+      'paymentId',
+      'metadata',
+      '_links',
+    ],
+  })
+  .openapi('RefundResponse')
 
 const SettlementRefundStatusSchema = z
   .enum(['refunded', 'failed'])
@@ -6775,6 +6966,7 @@ const WebhookEventTypesSchema = z
     'business-account-draft-transfer.created',
     'business-account-draft-transfer.approved',
     'business-account-draft-transfer.declined',
+    'business-account.created',
     'unmatched-credit-transfer.received',
     'unmatched-credit-transfer.matched',
     'unmatched-credit-transfer.returned',
@@ -6841,6 +7033,7 @@ const WebhookEventTypesSchema = z
         'The draft transfer is approved by the initiator.',
       'business-account-draft-transfer.declined':
         'The draft transfer is declined, either by the initiator, the creator, or because the debtor account was closed.',
+      'business-account.created': 'Occurs when a business account has been created.',
       'unmatched-credit-transfer.received':
         'An incoming credit transfer has been received and could not be automatically matched to a payment.',
       'unmatched-credit-transfer.matched':
@@ -6912,6 +7105,7 @@ const WebhookEventTypesResponseSchema = z
     'business-account-draft-transfer.created',
     'business-account-draft-transfer.approved',
     'business-account-draft-transfer.declined',
+    'business-account.created',
     'unmatched-credit-transfer.received',
     'unmatched-credit-transfer.matched',
     'unmatched-credit-transfer.returned',
@@ -6978,6 +7172,7 @@ const WebhookEventTypesResponseSchema = z
         'The draft transfer is approved by the initiator.',
       'business-account-draft-transfer.declined':
         'The draft transfer is declined, either by the initiator, the creator, or because the debtor account was closed.',
+      'business-account.created': 'Occurs when a business account has been created.',
       'unmatched-credit-transfer.received':
         'An incoming credit transfer has been received and could not be automatically matched to a payment.',
       'unmatched-credit-transfer.matched':
@@ -7473,25 +7668,98 @@ const EntityPaymentLinkSchema = z
   .openapi({ required: [] })
   .openapi('EntityPaymentLink')
 
-const PaymentLinkResponseSchema = EntityPaymentLinkSchema.openapi({
-  required: [
-    'resource',
-    'id',
-    'mode',
-    'description',
-    'archived',
-    'reusable',
-    'profileId',
-    'amount',
-    'webhookUrl',
-    'redirectUrl',
-    'createdAt',
-    'paidAt',
-    'expiresAt',
-    'allowedMethods',
-    '_links',
-  ],
-}).openapi('PaymentLinkResponse')
+const PaymentLinkResponseSchema = EntityPaymentLinkSchema.and(
+  z
+    .looseObject({})
+    .openapi({
+      required: [
+        'resource',
+        'id',
+        'mode',
+        'description',
+        'archived',
+        'reusable',
+        'profileId',
+        'amount',
+        'webhookUrl',
+        'redirectUrl',
+        'createdAt',
+        'paidAt',
+        'expiresAt',
+        'allowedMethods',
+        '_links',
+      ],
+    }),
+)
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'resource')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'mode')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'description')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'archived')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'reusable')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'profileId')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'amount')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'webhookUrl')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'redirectUrl')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'createdAt')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'paidAt')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'expiresAt')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'allowedMethods')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, '_links')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .openapi({
+    required: [
+      'resource',
+      'id',
+      'mode',
+      'description',
+      'archived',
+      'reusable',
+      'profileId',
+      'amount',
+      'webhookUrl',
+      'redirectUrl',
+      'createdAt',
+      'paidAt',
+      'expiresAt',
+      'allowedMethods',
+      '_links',
+    ],
+  })
+  .openapi('PaymentLinkResponse')
 
 const PayoutStatusSchema = z
   .enum(['requested', 'initiated', 'processing-at-bank', 'completed', 'failed', 'canceled'])
@@ -8539,19 +8807,35 @@ const SalesInvoicePaymentDetailsResponseSchema = z
   .openapi('SalesInvoicePaymentDetailsResponse')
 
 const SalesInvoiceResponseSchema = EntitySalesInvoiceResponseSchema.and(
-  z
-    .object({
-      status: SalesInvoiceStatusResponseSchema.exactOptional(),
-      paymentDetails: z
-        .array(SalesInvoicePaymentDetailsResponseSchema)
-        .exactOptional()
-        .openapi({
-          description:
-            'Used when setting an invoice to status of `paid`, and will store a payment that fully pays the invoice with the\nprovided details. Required for `paid` status.',
-        }),
-    })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['resource', 'id', 'mode'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'resource')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'mode')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        status: SalesInvoiceStatusResponseSchema.exactOptional(),
+        paymentDetails: z
+          .array(SalesInvoicePaymentDetailsResponseSchema)
+          .exactOptional()
+          .openapi({
+            description:
+              'Used when setting an invoice to status of `paid`, and will store a payment that fully pays the invoice with the\nprovided details. Required for `paid` status.',
+          }),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({ required: ['resource', 'id', 'mode'] })
   .openapi('SalesInvoiceResponse')
 
@@ -8888,22 +9172,83 @@ const EntityTransferResponseSchema = z
   .openapi({ required: [] })
   .openapi('EntityTransferResponse')
 
-const TransferResponseSchema = EntityTransferResponseSchema.openapi({
-  required: [
-    'resource',
-    'id',
-    'mode',
-    'businessAccountTransactionId',
-    'transferScheme',
-    'creditDebitIndicator',
-    'amount',
-    'debtor',
-    'creditor',
-    'status',
-    'statusHistory',
-    'createdAt',
-  ],
-}).openapi('TransferResponse')
+const TransferResponseSchema = EntityTransferResponseSchema.and(
+  z
+    .looseObject({})
+    .openapi({
+      required: [
+        'resource',
+        'id',
+        'mode',
+        'businessAccountTransactionId',
+        'transferScheme',
+        'creditDebitIndicator',
+        'amount',
+        'debtor',
+        'creditor',
+        'status',
+        'statusHistory',
+        'createdAt',
+      ],
+    }),
+)
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'resource')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'mode')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'businessAccountTransactionId')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'transferScheme')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'creditDebitIndicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'amount')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'debtor')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'creditor')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'status')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'statusHistory')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'createdAt')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .openapi({
+    required: [
+      'resource',
+      'id',
+      'mode',
+      'businessAccountTransactionId',
+      'transferScheme',
+      'creditDebitIndicator',
+      'amount',
+      'debtor',
+      'creditor',
+      'status',
+      'statusHistory',
+      'createdAt',
+    ],
+  })
+  .openapi('TransferResponse')
 
 const DraftTransferTokenSchema = z
   .string()
@@ -9242,19 +9587,234 @@ const EntityDraftTransferResponseSchema = z
   .openapi({ required: [] })
   .openapi('EntityDraftTransferResponse')
 
-const DraftTransferResponseSchema = EntityDraftTransferResponseSchema.openapi({
-  required: [
-    'resource',
-    'id',
-    'mode',
-    'debtor',
-    'creditor',
-    'amount',
-    'status',
-    'createdAt',
-    '_links',
-  ],
-}).openapi('DraftTransferResponse')
+const DraftTransferResponseSchema = EntityDraftTransferResponseSchema.and(
+  z
+    .looseObject({})
+    .openapi({
+      required: [
+        'resource',
+        'id',
+        'mode',
+        'debtor',
+        'creditor',
+        'amount',
+        'status',
+        'createdAt',
+        '_links',
+      ],
+    }),
+)
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'resource')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'mode')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'debtor')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'creditor')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'amount')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'status')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'createdAt')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, '_links')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .openapi({
+    required: [
+      'resource',
+      'id',
+      'mode',
+      'debtor',
+      'creditor',
+      'amount',
+      'status',
+      'createdAt',
+      '_links',
+    ],
+  })
+  .openapi('DraftTransferResponse')
+
+const BusinessAccountTokenSchema = z
+  .string()
+  .regex(/^ba_.+$/)
+  .openapi({ example: 'ba_nopqrstuvwxyz23456789A' })
+  .openapi('BusinessAccountToken')
+
+const AccountDetailsSchema = z
+  .object({
+    accountHolderName: z
+      .string()
+      .openapi({ description: 'The name of the account holder.', example: 'Mollie B.V.' }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'A name of the account.', example: 'Main Checking Account' }),
+    currency: z
+      .string()
+      .openapi({ description: 'The currency of the account in ISO 4217 format.', example: 'EUR' }),
+    iban: z
+      .string()
+      .openapi({
+        description: 'The IBAN (International Bank Account Number) of the account.',
+        example: 'NL95MLLE1234567890',
+      }),
+    bic: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The BIC (Bank Identifier Code) of the account.',
+        example: 'MLLENL2AXXX',
+      }),
+  })
+  .openapi({
+    description:
+      'The account holder details and bank account information for the business account.',
+    required: ['accountHolderName', 'currency', 'iban'],
+  })
+  .openapi('AccountDetails')
+
+const BalanceSchema = z
+  .object({
+    total: AmountSchema.openapi({
+      description: 'The total available balance of the business account.',
+    }),
+  })
+  .openapi({ description: 'The balance of the business account.', required: ['total'] })
+  .openapi('Balance')
+
+const AccountStatusSchema = z
+  .enum(['active', 'blocked', 'closed'])
+  .openapi({
+    description: 'The status of the business account.',
+    'x-enumDescriptions': {
+      active: 'The account is active and operational.',
+      blocked: 'The account is blocked and cannot be used for transactions.',
+      closed: 'The account has been closed.',
+    },
+    readOnly: true,
+    example: 'active',
+    'x-speakeasy-unknown-values': 'allow',
+  })
+  .openapi('AccountStatus')
+
+const EntityBusinessAccountSchema = z
+  .object({
+    resource: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates the response contains a business account object. Will always contain the string `business-account`\nfor this endpoint.',
+        readOnly: true,
+        example: 'business-account',
+      }),
+    id: BusinessAccountTokenSchema.exactOptional().openapi({
+      description:
+        'The identifier uniquely referring to this business account. Mollie assigns this identifier at account creation\ntime.',
+      readOnly: true,
+    }),
+    accountDetails: AccountDetailsSchema.exactOptional(),
+    balance: BalanceSchema.exactOptional(),
+    status: AccountStatusSchema.exactOptional(),
+    mode: ModeSchema.exactOptional(),
+    createdAt: CreatedAtSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('EntityBusinessAccount')
+
+const BusinessAccountResponseSchema = EntityBusinessAccountSchema.and(
+  z
+    .looseObject({})
+    .openapi({
+      required: [
+        'resource',
+        'id',
+        'mode',
+        'accountDetails',
+        'status',
+        'balance',
+        'createdAt',
+        '_links',
+      ],
+    }),
+)
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'resource')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'mode')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'accountDetails')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'status')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'balance')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'createdAt')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, '_links')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        _links: z
+          .object({
+            self: UrlSchema.openapi({ description: 'The URL to this business account.' }),
+            documentation: UrlSchema.openapi({
+              description: 'The URL to the business account endpoint documentation.',
+            }),
+          })
+          .exactOptional()
+          .openapi({
+            description:
+              'An object with several relevant URLs. Every URL object will contain an `href` and a `type` field.',
+            readOnly: true,
+            required: ['self', 'documentation'],
+          }),
+      })
+      .openapi({ required: [] }),
+  )
+  .openapi({
+    required: [
+      'resource',
+      'id',
+      'mode',
+      'accountDetails',
+      'status',
+      'balance',
+      'createdAt',
+      '_links',
+    ],
+  })
+  .openapi('BusinessAccountResponse')
 
 const EntityPayoutResponseSchema = z
   .object({
@@ -9394,6 +9954,7 @@ const EntityWebhookEventSchema = z
             SalesInvoiceResponseSchema.openapi({ title: 'sales-invoice.*' }),
             TransferResponseSchema.openapi({ title: 'business-account-transfer.*' }),
             DraftTransferResponseSchema.openapi({ title: 'business-account-draft-transfer.*' }),
+            BusinessAccountResponseSchema.openapi({ title: 'business-account.*' }),
           ])
           .exactOptional(),
       })
@@ -9670,8 +10231,7 @@ const ExtraParameterParametersSchema = z
       .string()
       .exactOptional()
       .openapi({
-        description:
-          "The card token you received from the card component of Mollie Components. The token represents the customer's\ncard information needed to complete the payment.",
+        description: 'Number of the voucher.',
         example: '1234567890',
         writeOnly: true,
         'x-methodSpecific': true,
@@ -10382,6 +10942,47 @@ const EntitySessionSchema = z
           })
           .openapi({ required: ['callbackUrl'] }),
       ])
+      .and(
+        z
+          .object({
+            options: z
+              .array(
+                z
+                  .object({
+                    description: z
+                      .string()
+                      .openapi({
+                        description: 'The name of the shipping option, as shown to your customer.',
+                        example: 'Next day delivery',
+                      }),
+                    reference: z
+                      .string()
+                      .openapi({
+                        description: 'Your own identifier for the shipping option.',
+                        example: 'express',
+                      }),
+                    amount: AmountSchema,
+                  })
+                  .openapi({ required: ['description', 'reference', 'amount'] }),
+              )
+              .min(1)
+              .max(10)
+              .exactOptional()
+              .openapi({
+                description:
+                  "A fixed list of shipping options to show your customer during checkout. Use `callbackUrl` instead if your\noptions depend on the customer's shipping address.",
+              }),
+            callbackUrl: z
+              .string()
+              .exactOptional()
+              .openapi({
+                description:
+                  'The URL Mollie calls to retrieve shipping options whenever your customer selects or changes their shipping\naddress. Requires `https://` for live mode. In test mode, `http://` is also allowed.\n\nSee the [shipping options guide](https://docs.mollie.com/docs/handle-shipping-options-with-express-component)\nfor the callback request and response.',
+                example: 'https://example.org/shipping-options',
+              }),
+          })
+          .openapi({ required: [] }),
+      )
       .exactOptional()
       .openapi({
         description:
@@ -10643,6 +11244,47 @@ const EntitySessionResponseSchema = z
           })
           .openapi({ required: ['callbackUrl'] }),
       ])
+      .and(
+        z
+          .object({
+            options: z
+              .array(
+                z
+                  .object({
+                    description: z
+                      .string()
+                      .openapi({
+                        description: 'The name of the shipping option, as shown to your customer.',
+                        example: 'Next day delivery',
+                      }),
+                    reference: z
+                      .string()
+                      .openapi({
+                        description: 'Your own identifier for the shipping option.',
+                        example: 'express',
+                      }),
+                    amount: AmountSchema,
+                  })
+                  .openapi({ required: ['description', 'reference', 'amount'] }),
+              )
+              .min(1)
+              .max(10)
+              .exactOptional()
+              .openapi({
+                description:
+                  "A fixed list of shipping options to show your customer during checkout. Use `callbackUrl` instead if your\noptions depend on the customer's shipping address.",
+              }),
+            callbackUrl: z
+              .string()
+              .exactOptional()
+              .openapi({
+                description:
+                  'The URL Mollie calls to retrieve shipping options whenever your customer selects or changes their shipping\naddress. Requires `https://` for live mode. In test mode, `http://` is also allowed.\n\nSee the [shipping options guide](https://docs.mollie.com/docs/handle-shipping-options-with-express-component)\nfor the callback request and response.',
+                example: 'https://example.org/shipping-options',
+              }),
+          })
+          .openapi({ required: [] }),
+      )
       .exactOptional()
       .openapi({
         description:
@@ -12706,101 +13348,15 @@ const UpdateValuesSalesInvoiceSchema = z
   .openapi({ required: [] })
   .openapi('UpdateValuesSalesInvoice')
 
-const BusinessAccountTokenSchema = z
-  .string()
-  .regex(/^ba_.+$/)
-  .openapi({ example: 'ba_nopqrstuvwxyz23456789A' })
-  .openapi('BusinessAccountToken')
-
-const AccountDetailsSchema = z
-  .object({
-    accountHolderName: z
-      .string()
-      .openapi({ description: 'The name of the account holder.', example: 'Mollie B.V.' }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'A name of the account.', example: 'Main Checking Account' }),
-    currency: z
-      .string()
-      .openapi({ description: 'The currency of the account in ISO 4217 format.', example: 'EUR' }),
-    iban: z
-      .string()
-      .openapi({
-        description: 'The IBAN (International Bank Account Number) of the account.',
-        example: 'NL95MLLE1234567890',
-      }),
-    bic: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The BIC (Bank Identifier Code) of the account.',
-        example: 'MLLENL2AXXX',
-      }),
-  })
+const AccountCurrencySchema = z
+  .literal('EUR')
   .openapi({
     description:
-      'The account holder details and bank account information for the business account.',
-    required: ['accountHolderName', 'currency', 'iban'],
+      "The currency of the business account, as an [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code.\n\nOnly `EUR` is supported for now. We're working on more currencies, and they'll be available soon.",
+    'x-enumDescriptions': { EUR: 'Euro' },
+    example: 'EUR',
   })
-  .openapi('AccountDetails')
-
-const BalanceSchema = z
-  .object({
-    total: AmountSchema.openapi({
-      description: 'The total available balance of the business account.',
-    }),
-  })
-  .openapi({ description: 'The balance of the business account.', required: ['total'] })
-  .openapi('Balance')
-
-const AccountStatusSchema = z
-  .enum(['active', 'blocked', 'closed'])
-  .openapi({
-    description: 'The status of the business account.',
-    'x-enumDescriptions': {
-      active: 'The account is active and operational.',
-      blocked: 'The account is blocked and cannot be used for transactions.',
-      closed: 'The account has been closed.',
-    },
-    readOnly: true,
-    example: 'active',
-    'x-speakeasy-unknown-values': 'allow',
-  })
-  .openapi('AccountStatus')
-
-const EntityBusinessAccountSchema = z
-  .object({
-    resource: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates the response contains a business account object. Will always contain the string `business-account`\nfor this endpoint.',
-        readOnly: true,
-        example: 'business-account',
-      }),
-    id: BusinessAccountTokenSchema.exactOptional().openapi({
-      description:
-        'The identifier uniquely referring to this business account. Mollie assigns this identifier at account creation\ntime.',
-      readOnly: true,
-    }),
-    accountDetails: AccountDetailsSchema.exactOptional(),
-    balance: BalanceSchema.exactOptional(),
-    status: AccountStatusSchema.exactOptional(),
-    mode: ModeSchema.exactOptional(),
-    createdAt: CreatedAtSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('EntityBusinessAccount')
-
-const BusinessAccountResponseSchema = EntityBusinessAccountSchema.and(
-  z
-    .looseObject({})
-    .openapi({
-      required: ['resource', 'id', 'mode', 'accountDetails', 'status', 'balance', 'createdAt'],
-    }),
-).openapi('BusinessAccountResponse')
+  .openapi('AccountCurrency')
 
 const TransactionTypeSchema = z
   .enum([
@@ -13612,14 +14168,66 @@ const ListEntityPaymentSchema = z
 
 const ListPaymentResponseSchema = ListEntityPaymentSchema.and(
   z
-    .object({
-      method: MethodResponseSchema.exactOptional().openapi({
-        description:
-          'The payment method used for this transaction. If a specific method was selected during payment initialization,\nthis field reflects that choice.',
-      }),
-    })
-    .openapi({ required: [] }),
+    .looseObject({})
+    .openapi({
+      required: [
+        'resource',
+        'id',
+        'mode',
+        'createdAt',
+        'amount',
+        'description',
+        'status',
+        'profileId',
+        'sequenceType',
+        '_links',
+      ],
+    }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'resource')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'mode')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'createdAt')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'amount')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'description')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'status')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'profileId')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'sequenceType')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, '_links')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        method: MethodResponseSchema.exactOptional().openapi({
+          description:
+            'The payment method used for this transaction. If a specific method was selected during payment initialization,\nthis field reflects that choice.',
+        }),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({
     required: [
       'resource',
@@ -13729,9 +14337,45 @@ const ListEntityCaptureSchema = z
   .openapi({ required: [] })
   .openapi('ListEntityCapture')
 
-const ListCaptureResponseSchema = ListEntityCaptureSchema.openapi({
-  required: ['resource', 'id', 'mode', 'amount', 'status', 'createdAt', 'paymentId', '_links'],
-}).openapi('ListCaptureResponse')
+const ListCaptureResponseSchema = ListEntityCaptureSchema.and(
+  z
+    .looseObject({})
+    .openapi({
+      required: ['resource', 'id', 'mode', 'amount', 'status', 'createdAt', 'paymentId', '_links'],
+    }),
+)
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'resource')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'mode')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'amount')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'status')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'createdAt')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'paymentId')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, '_links')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .openapi({
+    required: ['resource', 'id', 'mode', 'amount', 'status', 'createdAt', 'paymentId', '_links'],
+  })
+  .openapi('ListCaptureResponse')
 
 const ListSettlementCaptureResponseSchema = ListCaptureResponseSchema.and(
   z
@@ -13868,20 +14512,73 @@ const ListEntityRefundSchema = z
   .openapi({ required: [] })
   .openapi('ListEntityRefund')
 
-const ListRefundResponseSchema = ListEntityRefundSchema.openapi({
-  required: [
-    'resource',
-    'id',
-    'mode',
-    'createdAt',
-    'amount',
-    'description',
-    'status',
-    'paymentId',
-    'metadata',
-    '_links',
-  ],
-}).openapi('ListRefundResponse')
+const ListRefundResponseSchema = ListEntityRefundSchema.and(
+  z
+    .looseObject({})
+    .openapi({
+      required: [
+        'resource',
+        'id',
+        'mode',
+        'createdAt',
+        'amount',
+        'description',
+        'status',
+        'paymentId',
+        'metadata',
+        '_links',
+      ],
+    }),
+)
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'resource')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'mode')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'createdAt')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'amount')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'description')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'status')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'paymentId')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'metadata')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, '_links')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .openapi({
+    required: [
+      'resource',
+      'id',
+      'mode',
+      'createdAt',
+      'amount',
+      'description',
+      'status',
+      'paymentId',
+      'metadata',
+      '_links',
+    ],
+  })
+  .openapi('ListRefundResponse')
 
 const ListSettlementRefundResponseSchema = ListRefundResponseSchema.and(
   z
@@ -15604,21 +16301,115 @@ const ListEntitySalesInvoiceSchema = z
   .openapi('ListEntitySalesInvoice')
 
 const ListSalesInvoiceResponseSchema = ListEntitySalesInvoiceSchema.and(
-  z
-    .object({
-      status: SalesInvoiceStatusResponseSchema.exactOptional(),
-      paymentDetails: z
-        .array(SalesInvoicePaymentDetailsResponseSchema)
-        .exactOptional()
-        .openapi({
-          description:
-            'Used when setting an invoice to status of `paid`, and will store a payment that fully pays the invoice with the\nprovided details. Required for `paid` status.',
-        }),
-    })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['resource', 'id', 'mode'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'resource')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'mode')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        status: SalesInvoiceStatusResponseSchema.exactOptional(),
+        paymentDetails: z
+          .array(SalesInvoicePaymentDetailsResponseSchema)
+          .exactOptional()
+          .openapi({
+            description:
+              'Used when setting an invoice to status of `paid`, and will store a payment that fully pays the invoice with the\nprovided details. Required for `paid` status.',
+          }),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({ required: ['resource', 'id', 'mode'] })
   .openapi('ListSalesInvoiceResponse')
+
+const ListBusinessAccountResponseSchema = EntityBusinessAccountSchema.and(
+  z
+    .looseObject({})
+    .openapi({
+      required: [
+        'resource',
+        'id',
+        'mode',
+        'accountDetails',
+        'status',
+        'balance',
+        'createdAt',
+        '_links',
+      ],
+    }),
+)
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'resource')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'mode')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'accountDetails')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'status')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'balance')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'createdAt')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, '_links')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        _links: z
+          .object({
+            self: UrlSchema.openapi({ description: 'The URL to this business account.' }),
+            documentation: UrlSchema.openapi({
+              description: 'The URL to the business account endpoint documentation.',
+            }),
+          })
+          .exactOptional()
+          .openapi({
+            description:
+              'An object with several relevant URLs. Every URL object will contain an `href` and a `type` field.',
+            readOnly: true,
+            required: ['self', 'documentation'],
+          }),
+      })
+      .openapi({ required: [] }),
+  )
+  .openapi({
+    required: [
+      'resource',
+      'id',
+      'mode',
+      'accountDetails',
+      'status',
+      'balance',
+      'createdAt',
+      '_links',
+    ],
+  })
+  .openapi('ListBusinessAccountResponse')
 
 const ListEntityPayoutSchema = z
   .object({
@@ -16456,15 +17247,65 @@ const IdempotencyKeyParamsSchema = z
     example: '123e4567-e89b-12d3-a456-426',
   })
 
+const XClientSignatureParamsSchema = z
+  .string()
+  .exactOptional()
+  .openapi({
+    param: {
+      name: 'X-Client-Signature',
+      in: 'header',
+      description:
+        "A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.",
+      required: false,
+      schema: { type: 'string', example: 'MEUCIQDx8sJvK3z...' },
+    },
+    example: 'MEUCIQDx8sJvK3z...',
+  })
+
+const XClientSignedAtParamsSchema = z
+  .string()
+  .exactOptional()
+  .openapi({
+    param: {
+      name: 'X-Client-Signed-At',
+      in: 'header',
+      description:
+        "The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.",
+      required: false,
+      schema: { type: 'string', example: '2025-01-01T12:00:00Z' },
+    },
+    example: '2025-01-01T12:00:00Z',
+  })
+
 const GetReportPendingExample = {
   summary: 'A report that is still being generated',
   value: {
     resource: 'report',
     id: 'rpt_9fKq2pLxAqYTBz9WQvhc4',
-    reportType: 'transaction_margin',
+    reportType: 'transaction-margin',
     fromDate: '2026-08-01',
     untilDate: '2026-08-31',
     status: 'pending',
+    createdAt: '2026-09-01T09:00:00+00:00',
+    _links: {
+      self: {
+        href: 'https://api.mollie.com/v2/reports/rpt_9fKq2pLxAqYTBz9WQvhc4',
+        type: 'application/hal+json',
+      },
+      documentation: { href: 'https://docs.mollie.com/reference/get-report', type: 'text/html' },
+    },
+  },
+}
+
+const CreateReportCompletedExample = {
+  summary: 'A report that already existed and had completed',
+  value: {
+    resource: 'report',
+    id: 'rpt_9fKq2pLxAqYTBz9WQvhc4',
+    reportType: 'transaction-margin',
+    fromDate: '2026-08-01',
+    untilDate: '2026-08-31',
+    status: 'completed',
     createdAt: '2026-09-01T09:00:00+00:00',
     _links: {
       self: {
@@ -16481,7 +17322,7 @@ const GetReportCompletedExample = {
   value: {
     resource: 'report',
     id: 'rpt_9fKq2pLxAqYTBz9WQvhc4',
-    reportType: 'transaction_margin',
+    reportType: 'transaction-margin',
     fromDate: '2026-08-01',
     untilDate: '2026-08-31',
     status: 'completed',
@@ -16504,16 +17345,16 @@ const GetReportFailedExample = {
   value: {
     resource: 'report',
     id: 'rpt_9fKq2pLxAqYTBz9WQvhc4',
-    reportType: 'transaction_margin',
+    reportType: 'transaction-margin',
     fromDate: '2026-08-01',
     untilDate: '2026-08-31',
     status: 'failed',
     createdAt: '2026-09-01T09:00:00+00:00',
     failedAt: '2026-09-01T09:03:00+00:00',
     statusReason: {
-      code: 'generation_failed',
+      code: 'generation-failed',
       message:
-        'Something went wrong while generating the report. Try again, or contact support if it keeps\nhappening.',
+        'An error occurred while generating the report. Please try again or contact support if the\nissue persists.',
     },
     _links: {
       self: {
@@ -16980,6 +17821,16 @@ const GetBusinessAccountExample = {
     status: 'active',
     balance: { total: { currency: 'EUR', value: '5000.00' } },
     createdAt: '2024-03-20T09:13:37+00:00',
+    _links: {
+      self: {
+        href: 'https://api.mollie.com/v2/business-accounts/accounts/ba_nopqrstuvwxyz23456789A',
+        type: 'application/hal+json',
+      },
+      documentation: {
+        href: 'https://docs.mollie.com/reference/get-business-account',
+        type: 'text/html',
+      },
+    },
   },
 }
 
@@ -17553,7 +18404,11 @@ export const getV2BalancesRoute = createRoute({
       limit: ListLimitParamsSchema,
       testmode: OauthTestmodeParamsSchema,
     }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
   },
   responses: {
     200: {
@@ -17695,7 +18550,11 @@ export const getV2BalancesBalanceIdRoute = createRoute({
   request: {
     params: z.object({ balanceId: ParentBalanceIdParamsSchema }),
     query: z.object({ testmode: OauthTestmodeParamsSchema }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
   },
   responses: {
     200: {
@@ -17774,7 +18633,13 @@ export const getV2BalancesPrimaryRoute = createRoute({
   description:
     "Retrieve the primary balance. This is the balance of your account's primary\ncurrency, where all payments are settled to by default.\n\nThis endpoint is a convenient alias of the [Get balance](get-balance)\nendpoint.",
   operationId: 'get-primary-balance',
-  request: { headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }) },
+  request: {
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
+  },
   responses: {
     200: {
       description: 'The primary balance object.',
@@ -17866,7 +18731,11 @@ export const getV2BalancesBalanceIdReportRoute = createRoute({
       }).exactOptional(),
       testmode: OauthTestmodeParamsSchema,
     }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
   },
   responses: {
     200: {
@@ -18592,7 +19461,11 @@ export const getV2BalancesBalanceIdTransactionsRoute = createRoute({
       limit: ListLimitParamsSchema,
       testmode: OauthTestmodeParamsSchema,
     }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
   },
   responses: {
     200: {
@@ -19157,10 +20030,14 @@ export const postV2ReportsRoute = createRoute({
   tags: ['Reports API'],
   summary: 'Create report',
   description:
-    "> 🚧 Beta feature\n>\n> This feature is currently in private beta, and the final specification may still change. To\n> join the beta program, reach out to [partners@mollie.com](mailto:partners@mollie.com).\n\nCreate a report. Mollie generates it in the background, so you get a `pending` status back right away.\n\nPoll [Get report](get-report) to check on progress, and grab a download link once it's ready.\n\nThis needs an organization access token. A token scoped to a single website profile can't be used,\nsince report data spans the whole organization.\n\nTest mode credentials are rejected, since report data has no live/test distinction.\n\nCreating a report with the exact same parameters while one is already pending or completed doesn't create\na new one. You get the existing report back instead, whatever status it currently has.",
+    "> 🚧 Beta feature\n>\n> This feature is currently in private beta, and the final specification may still change. To\n> join the beta program, reach out to [partners@mollie.com](mailto:partners@mollie.com).\n\nCreate a report. Mollie generates it in the background, so you get a `pending` status back right away.\n\nPoll [Get report](get-report) to check on progress, and grab a download link once it's ready.\n\nCreating a report with the exact same parameters while one is already pending or completed doesn't create\na new one. You get the existing report back instead, whatever status it currently has.",
   operationId: 'create-report',
   request: {
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
     body: {
       content: { 'application/json': { schema: CreateReportRequestSchema } },
       required: true,
@@ -19169,7 +20046,7 @@ export const postV2ReportsRoute = createRoute({
   responses: {
     202: {
       description:
-        'The report was accepted. Its `status` is usually `pending` for a brand new report, but if an\nidentical request (same organization, same parameters) already has a pending or completed report,\nyou get that report back instead, with its current status. Read `status` from the body rather than\nassuming `202` always means `pending`.',
+        "The report was accepted. Returns `pending` for a new report, or the existing report's status when\ndeduplicated.",
     },
     400: {
       description: 'The request contains issues, or was made with a test mode credential.',
@@ -19179,7 +20056,7 @@ export const postV2ReportsRoute = createRoute({
           example: {
             status: 400,
             title: 'Bad Request',
-            detail: 'This endpoint cannot be accessed using a test mode credential',
+            detail: 'Operation not supported in test mode.',
             _links: {
               documentation: {
                 href: 'https://docs.mollie.com/overview/handling-errors',
@@ -19199,7 +20076,8 @@ export const postV2ReportsRoute = createRoute({
           example: {
             status: 403,
             title: 'Forbidden',
-            detail: 'This endpoint requires an organization-level access token',
+            detail:
+              'Report data spans a whole organization, use an organization-level credential instead.',
             _links: {
               documentation: {
                 href: 'https://docs.mollie.com/overview/handling-errors',
@@ -19219,7 +20097,7 @@ export const postV2ReportsRoute = createRoute({
           example: {
             status: 422,
             title: 'Unprocessable Entity',
-            detail: "The 'fromDate' field is after 'untilDate' field",
+            detail: 'The fromDate must not be after the untilDate.',
             field: 'fromDate',
             _links: {
               documentation: {
@@ -19242,11 +20120,15 @@ export const getV2ReportsReportIdRoute = createRoute({
   tags: ['Reports API'],
   summary: 'Get report',
   description:
-    "> 🚧 Beta feature\n>\n> This feature is currently in private beta, and the final specification may still change. To\n> join the beta program, reach out to [partners@mollie.com](mailto:partners@mollie.com).\n\nRetrieve a single report by its ID. Poll this to check on a report you created, and to grab a download\nlink once it's ready.\n\nThe download link is pre-signed and freshly generated on every call, and expires 15 minutes after you get\nit. If it expires before you download the file, just call this endpoint again for a new one. Expiry of\nthe link doesn't affect the report itself.\n\nA report that belongs to another organization gets a `404`, same as one that doesn't exist. The same goes\nfor a credential scoped to a single website profile, or a test mode credential. Reports are\norganization-wide with no live/test distinction, so neither can ever own a real report. That keeps the\nrule simple: any credential that can't own this report gets a `404`, and we never leak whether it exists.",
+    "> 🚧 Beta feature\n>\n> This feature is currently in private beta, and the final specification may still change. To\n> join the beta program, reach out to [partners@mollie.com](mailto:partners@mollie.com).\n\nRetrieve a single report by its ID. Poll this to check on a report you created, and to grab a download\nlink once it's ready.\n\nThe download link is pre-signed and freshly generated on every call, and expires 15 minutes after you get\nit. If it expires before you download the file, just call this endpoint again for a new one. Expiry of\nthe link doesn't affect the report itself.",
   operationId: 'get-report',
   request: {
     params: z.object({ reportId: ParentReportIdParamsSchema }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
   },
   responses: {
     200: {
@@ -19258,6 +20140,46 @@ export const getV2ReportsReportIdRoute = createRoute({
             'get-report-200-pending': GetReportPendingExample,
             'get-report-200-completed': GetReportCompletedExample,
             'get-report-200-failed': GetReportFailedExample,
+          },
+        },
+      },
+    },
+    400: {
+      description: 'The request contains issues, or was made with a test mode credential.',
+      content: {
+        'application/hal+json': {
+          schema: ErrorResponseSchema,
+          example: {
+            status: 400,
+            title: 'Bad Request',
+            detail: 'Operation not supported in test mode.',
+            _links: {
+              documentation: {
+                href: 'https://docs.mollie.com/overview/handling-errors',
+                type: 'text/html',
+              },
+            },
+          },
+        },
+      },
+    },
+    403: {
+      description:
+        'The request was made with a credential scoped to a single website profile. Use an organization-level\ncredential instead.',
+      content: {
+        'application/hal+json': {
+          schema: ErrorResponseSchema,
+          example: {
+            status: 403,
+            title: 'Forbidden',
+            detail:
+              'Report data spans a whole organization, use an organization-level credential instead.',
+            _links: {
+              documentation: {
+                href: 'https://docs.mollie.com/overview/handling-errors',
+                type: 'text/html',
+              },
+            },
           },
         },
       },
@@ -19417,7 +20339,11 @@ export const getV2SettlementsRoute = createRoute({
           examples: ['EUR', 'EUR,GBP'],
         }),
     }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
   },
   responses: {
     200: {
@@ -19517,7 +20443,11 @@ export const getV2SettlementsSettlementIdRoute = createRoute({
   operationId: 'get-settlement',
   request: {
     params: z.object({ settlementId: ParentSettlementIdParamsSchema }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
   },
   responses: {
     200: {
@@ -19627,7 +20557,13 @@ export const getV2SettlementsOpenRoute = createRoute({
   description:
     "Retrieve the details of the open balance of the organization. This will return a settlement object representing your\norganization's balance.\n\nFor a complete reference of the settlement object, refer to the [Get settlement endpoint](get-settlement)\ndocumentation.\n\nFor more accurate bookkeeping, refer to the [balance report](get-balance-report) endpoint or the\n[balance transactions](list-balance-transactions) endpoint.",
   operationId: 'get-open-settlement',
-  request: { headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }) },
+  request: {
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
+  },
   responses: {
     200: {
       description:
@@ -19729,7 +20665,13 @@ export const getV2SettlementsNextRoute = createRoute({
   description:
     'Retrieve the details of the current settlement, that has not yet been paid out.\n\nFor a complete reference of the settlement object, refer to the [Get settlement endpoint](get-settlement)\ndocumentation.\n\nFor more accurate bookkeeping, refer to the [balance report](get-balance-report) endpoint or the\n[balance transactions](list-balance-transactions) endpoint.',
   operationId: 'get-next-settlement',
-  request: { headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }) },
+  request: {
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
+  },
   responses: {
     200: {
       description:
@@ -19848,7 +20790,11 @@ export const getV2SettlementsSettlementIdPaymentsRoute = createRoute({
       sort: ListSortParamsSchema,
       profileId: ProfileIdParamsSchema,
     }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
   },
   responses: {
     200: {
@@ -19950,7 +20896,11 @@ export const getV2SettlementsSettlementIdCapturesRoute = createRoute({
       limit: ListLimitParamsSchema,
       embed: EmbedParamsSchema,
     }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
   },
   responses: {
     200: {
@@ -20048,7 +20998,11 @@ export const getV2SettlementsSettlementIdRefundsRoute = createRoute({
       limit: ListLimitParamsSchema,
       embed: EmbedParamsSchema,
     }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
   },
   responses: {
     200: {
@@ -20147,7 +21101,11 @@ export const getV2SettlementsSettlementIdChargebacksRoute = createRoute({
       embed: EmbedParamsSchema,
       testmode: TestmodeParamsSchema,
     }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
   },
   responses: {
     200: {
@@ -20339,7 +21297,11 @@ export const getV2InvoicesRoute = createRoute({
       limit: ListLimitParamsSchema,
       sort: ListSortParamsSchema,
     }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
   },
   responses: {
     200: {
@@ -21243,7 +22205,11 @@ export const getV2InvoicesInvoiceIdRoute = createRoute({
   operationId: 'get-invoice',
   request: {
     params: z.object({ invoiceId: ParentInvoiceIdParamsSchema }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
   },
   responses: {
     200: {
@@ -21302,7 +22268,13 @@ export const getV2PermissionsRoute = createRoute({
   description:
     'Retrieve a list of all permissions available to the current access token.\n\nThe results are **not** paginated.',
   operationId: 'list-permissions',
-  request: { headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }) },
+  request: {
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
+  },
   responses: {
     200: {
       description: 'A list of permission objects.',
@@ -21562,7 +22534,11 @@ export const getV2PermissionsPermissionIdRoute = createRoute({
   request: {
     params: z.object({ permissionId: ParentPermissionIdParamsSchema }),
     query: z.object({ testmode: OauthTestmodeParamsSchema }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
   },
   responses: {
     200: {
@@ -21618,7 +22594,11 @@ export const getV2OrganizationsOrganizationIdRoute = createRoute({
   request: {
     params: z.object({ organizationId: ParentOrganizationIdParamsSchema }),
     query: z.object({ testmode: OauthTestmodeParamsSchema }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
   },
   responses: {
     200: {
@@ -21671,7 +22651,13 @@ export const getV2OrganizationsMeRoute = createRoute({
   description:
     'Retrieve the currently authenticated organization. A convenient alias of the [Get organization](get-organization)\nendpoint.\n\nFor a complete reference of the organization object, refer to the [Get organization](get-organization) endpoint\ndocumentation.',
   operationId: 'get-current-organization',
-  request: { headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }) },
+  request: {
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
+  },
   responses: {
     200: {
       description: 'The current organization object.',
@@ -21752,7 +22738,13 @@ export const getV2OrganizationsMePartnerRoute = createRoute({
   description:
     'Retrieve partnership details about the currently authenticated organization. Only relevant for so-called *partner\naccounts*.',
   operationId: 'get-partner-status',
-  request: { headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }) },
+  request: {
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
+  },
   responses: {
     200: {
       description: 'The partner status object.',
@@ -21900,7 +22892,11 @@ export const getV2ProfilesRoute = createRoute({
   operationId: 'list-profiles',
   request: {
     query: z.object({ from: ListFromParamsSchema, limit: ListLimitParamsSchema }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
   },
   responses: {
     200: {
@@ -21973,7 +22969,11 @@ export const postV2ProfilesRoute = createRoute({
     'Create a profile to process payments on.\n\nProfiles are required for payment processing. Normally they are created via the Mollie dashboard. Alternatively, you\ncan use this endpoint to automate profile creation.',
   operationId: 'create-profile',
   request: {
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
     body: { content: { 'application/json': { schema: ProfileRequestSchema } }, required: true },
   },
   responses: {
@@ -22077,7 +23077,11 @@ export const getV2ProfilesProfileIdRoute = createRoute({
   request: {
     params: z.object({ profileId: ParentProfileIdParamsSchema }),
     query: z.object({ testmode: OauthTestmodeParamsSchema }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
   },
   responses: {
     200: {
@@ -22120,7 +23124,11 @@ export const deleteV2ProfilesProfileIdRoute = createRoute({
   operationId: 'delete-profile',
   request: {
     params: z.object({ profileId: ParentProfileIdParamsSchema }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
   },
   responses: {
     204: { description: 'An empty response.' },
@@ -22155,7 +23163,11 @@ export const patchV2ProfilesProfileIdRoute = createRoute({
   operationId: 'update-profile',
   request: {
     params: z.object({ profileId: ParentProfileIdParamsSchema }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
     body: {
       content: {
         'application/json': {
@@ -22374,7 +23386,13 @@ export const getV2ProfilesMeRoute = createRoute({
   description:
     'Retrieve the currently authenticated profile. A convenient alias of the [Get profile](get-profile)\nendpoint.\n\nFor a complete reference of the profile object, refer to the [Get profile](get-profile) endpoint\ndocumentation.',
   operationId: 'get-current-profile',
-  request: { headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }) },
+  request: {
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
+  },
   responses: {
     200: {
       description:
@@ -22442,7 +23460,13 @@ export const getV2OnboardingMeRoute = createRoute({
   summary: 'Get onboarding status',
   description: 'Retrieve the onboarding status of the currently authenticated organization.',
   operationId: 'get-onboarding-status',
-  request: { headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }) },
+  request: {
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
+  },
   responses: {
     200: {
       description: 'The onboarding status object of the current organization.',
@@ -22491,7 +23515,11 @@ export const postV2OnboardingMeRoute = createRoute({
     "**⚠️ We no longer recommend implementing this endpoint. Please refer to the Client Links API instead to kick off the\nonboarding process for your merchants.**\n\nSubmit data that will be prefilled in the merchant's onboarding. The data you submit will only be processed when the\nonboarding status is `needs-data`.  \nInformation that the merchant has entered in their dashboard will not be overwritten.",
   operationId: 'submit-onboarding-data',
   request: {
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
     body: {
       content: {
         'application/json': {
@@ -22602,7 +23630,13 @@ export const getV2CapabilitiesRoute = createRoute({
   description:
     "> 🚧 Beta feature\n>\n> This feature is currently in beta testing, and the final specification may still change.\n\nRetrieve a list of capabilities for an organization.\n\nThis API provides detailed insights into the specific requirements and status of each client's onboarding journey.\n\nCapabilities are at the organization level, indicating if the organization can perform a given capability.\nCapabilities may have requirements, which provide more information on what is needed to use this capability. \nRequirements may have a due date, which indicates the date by which the requirement should be fulfilled. \nIf a requirement is past due, the capability is disabled until the requirement is fulfilled.\n\nFor payments, regardless them being at the profile level, the capability is listed at the organization level.\nThis means that if at least one of the clients's profiles can receive payments,\nthe payments capability is enabled, communicating that the organization can indeed receive payments.",
   operationId: 'list-capabilities',
-  request: { headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }) },
+  request: {
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
+  },
   responses: {
     200: {
       description: 'A list of capabilities.',
@@ -22698,7 +23732,11 @@ export const getV2ClientsRoute = createRoute({
       from: ListFromParamsSchema,
       limit: ListLimitParamsSchema,
     }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
   },
   responses: {
     200: {
@@ -22787,7 +23825,11 @@ export const getV2ClientsOrganizationIdRoute = createRoute({
   request: {
     params: z.object({ organizationId: ParentOrganizationIdParamsSchema }),
     query: z.object({ embed: EmbedParamsSchema }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
   },
   responses: {
     200: {
@@ -22979,7 +24021,11 @@ export const postV2ClientLinksRoute = createRoute({
     "Link a new or existing organization to your OAuth application, in effect creating a new client. The response\ncontains a `clientLink` where you should redirect your customer to.\n\n## Redirecting the Customer\n\nThe `clientLink` URL behaves similarly to a standard OAuth authorization URL. Therefore, after receiving the\n`clientLink` URL in the API response, you need to **append the following query parameters** *before* redirecting\nthe customer:\n\n* `client_id` _string (required)_\n\n  The client ID you received when you registered your OAuth app. The ID starts with `app_`. For example:\n  `app_abc123qwerty`.\n\n* `state` _string (required)_\n\n  A random string **generated by your app** to prevent CSRF attacks. This will be reflected in the `state` query\n  parameter when the user returns to the `redirect_uri` after authorizing your app.\n\n* `scope` _string (required)_\n\n  A space-separated list of permissions ('scopes') your app requires. See the\n  [permissions list](https://docs.mollie.com/docs/permissions) for more information about the available\n  scopes.\n\n  We recommend at least : `onboarding.read onboarding.write`\n\n* `approval_prompt` _string_\n\n  Can be set to `force` to force showing the consent screen to the merchant, *even when it is not necessary*. If you\n  force an approval prompt and the user creates a new authorization, previously active authorizations will be\n  revoked.\n\n  Possible values: `auto` `force` (default: `auto`)\n\n### Example of a Complete Redirect URL\n\nAfter adding the above url parameter your URL will look something like this and you can redirect your client to this\npage:\n\n```\nhttps://my.mollie.com/dashboard/client-link/{id}?client_id={your_client_id}&state={unique_state}&scope=onboarding.read%20onboarding.write\n```\n\n## Error Handling\n\nError handling is also dealt with similar to the [Authorize](https://docs.mollie.com/reference/authorize) endpoint:\nthe customer is redirected back to your app's redirect URL with the `error` and `error_description` parameters added\nto the URL.\n\n> 🚧\n>\n> A client link must be used within 30 days of creation. After that period, it will expire and you will need to create a new client link.",
   operationId: 'create-client-link',
   request: {
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
     body: { content: { 'application/json': { schema: ClientLinkRequestSchema } } },
   },
   responses: {
@@ -23068,7 +24114,11 @@ export const getV2WebhooksRoute = createRoute({
       }).exactOptional(),
       testmode: OauthTestmodeParamsSchema,
     }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
   },
   responses: {
     200: {
@@ -23173,7 +24223,11 @@ export const postV2WebhooksRoute = createRoute({
     'A webhook must have a name, an url and a list of event types. You can also create webhooks in the webhooks settings section of the Dashboard.',
   operationId: 'create-webhook',
   request: {
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
     body: {
       content: {
         'application/json': {
@@ -23271,7 +24325,11 @@ export const getV2WebhooksWebhookIdRoute = createRoute({
   request: {
     params: z.object({ webhookId: ParentWebhookIdParamsSchema }),
     query: z.object({ testmode: OauthTestmodeParamsSchema }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
   },
   responses: {
     200: {
@@ -23356,7 +24414,11 @@ export const deleteV2WebhooksWebhookIdRoute = createRoute({
   operationId: 'delete-webhook',
   request: {
     params: z.object({ webhookId: ParentWebhookIdParamsSchema }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
     body: {
       content: {
         'application/json': {
@@ -23400,7 +24462,11 @@ export const patchV2WebhooksWebhookIdRoute = createRoute({
   operationId: 'update-webhook',
   request: {
     params: z.object({ webhookId: ParentWebhookIdParamsSchema }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
     body: {
       content: {
         'application/json': {
@@ -23522,7 +24588,11 @@ export const postV2WebhooksWebhookIdPingRoute = createRoute({
   operationId: 'test-webhook',
   request: {
     params: z.object({ webhookId: ParentWebhookIdParamsSchema }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
     body: {
       content: {
         'application/json': {
@@ -23566,7 +24636,11 @@ export const getV2EventsWebhookEventIdRoute = createRoute({
   request: {
     params: z.object({ webhookEventId: ParentWebhookEventIdParamsSchema }),
     query: z.object({ testmode: OauthTestmodeParamsSchema }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
   },
   responses: {
     200: {
@@ -23658,7 +24732,11 @@ export const getV2ConnectBalanceTransfersRoute = createRoute({
       sort: ListSortParamsSchema,
       testmode: OauthTestmodeParamsSchema,
     }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
   },
   responses: {
     200: {
@@ -23771,7 +24849,11 @@ export const postV2ConnectBalanceTransfersRoute = createRoute({
     "This API endpoint allows you to create a balance transfer from your organization's balance to a connected organization's balance, or vice versa.\nYou can also create a balance transfer between two connected organizations.\nTo create a balance transfer, you must be authenticated as the source organization, and the destination organization must be a connected organization\nthat has authorized the `balance-transfers.write` scope for your organization.",
   operationId: 'create-connect-balance-transfer',
   request: {
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
     body: { content: { 'application/json': { schema: EntityBalanceTransferSchema } } },
   },
   responses: {
@@ -23856,7 +24938,11 @@ export const getV2ConnectBalanceTransfersBalanceTransferIdRoute = createRoute({
   request: {
     params: z.object({ balanceTransferId: ParentConnectBalanceTransferIdParamsSchema }),
     query: z.object({ testmode: OauthTestmodeParamsSchema }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
   },
   responses: {
     200: {
@@ -23931,7 +25017,11 @@ export const getV2PaymentsRoute = createRoute({
       profileId: ProfileIdParamsSchema,
       testmode: TestmodeParamsSchema,
     }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
   },
   responses: {
     200: {
@@ -26065,7 +27155,11 @@ export const postV2PaymentsRoute = createRoute({
   operationId: 'create-payment',
   request: {
     query: z.object({ include: IncludeParamsSchema }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
     body: { content: { 'application/json': { schema: PaymentRequestSchema } } },
   },
   responses: {
@@ -26605,7 +27699,11 @@ export const getV2PaymentsPaymentIdRoute = createRoute({
       embed: EmbedParamsSchema,
       testmode: TestmodeParamsSchema,
     }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
   },
   responses: {
     200: {
@@ -26730,7 +27828,11 @@ export const deleteV2PaymentsPaymentIdRoute = createRoute({
   operationId: 'cancel-payment',
   request: {
     params: z.object({ paymentId: ParentPaymentIdParamsSchema }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
     body: {
       content: {
         'application/json': {
@@ -26786,7 +27888,11 @@ export const patchV2PaymentsPaymentIdRoute = createRoute({
   operationId: 'update-payment',
   request: {
     params: z.object({ paymentId: ParentPaymentIdParamsSchema }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
     body: {
       content: {
         'application/json': {
@@ -26961,7 +28067,11 @@ export const postV2PaymentsPaymentIdReleaseAuthorizationRoute = createRoute({
   operationId: 'release-authorization',
   request: {
     params: z.object({ paymentId: ParentPaymentIdParamsSchema }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
     body: {
       content: {
         'application/json': {
@@ -27013,7 +28123,11 @@ export const getV2UnmatchedCreditTransfersRoute = createRoute({
   operationId: 'list-unmatched-credit-transfers',
   request: {
     query: z.object({ from: ListFromParamsSchema, limit: ListLimitParamsSchema }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
   },
   responses: {
     200: {
@@ -27142,7 +28256,11 @@ export const getV2UnmatchedCreditTransfersUnmatchedCreditTransferIdRoute = creat
   operationId: 'get-unmatched-credit-transfer',
   request: {
     params: z.object({ unmatchedCreditTransferId: ParentUnmatchedCreditTransferIdParamsSchema }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
   },
   responses: {
     200: {
@@ -27170,11 +28288,15 @@ export const postV2UnmatchedCreditTransfersUnmatchedCreditTransferIdMatchRoute =
   tags: ['Unmatched Credit Transfers API'],
   summary: 'Match unmatched credit transfer',
   description:
-    '> 🚧 Beta feature\n>\n> This feature is currently in private beta, and the final specification may still change.\n\nMatches an unmatched credit transfer to one or more payments, settling the funds accordingly.',
+    '> 🚧\n>\n> To get access to this functionality, a virtual IBAN must be assigned to your webshop. We are currently rolling out virtual IBANs to our merchant base. Contact our support team or your account/sales manager to request access today.\n\nMatches an unmatched credit transfer to one or more payments, settling the funds accordingly.',
   operationId: 'match-unmatched-credit-transfer',
   request: {
     params: z.object({ unmatchedCreditTransferId: ParentUnmatchedCreditTransferIdParamsSchema }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
     body: {
       content: { 'application/json': { schema: UnmatchedCreditTransferMatchRequestSchema } },
     },
@@ -27229,7 +28351,11 @@ export const postV2UnmatchedCreditTransfersUnmatchedCreditTransferIdReturnRoute 
   operationId: 'return-unmatched-credit-transfer',
   request: {
     params: z.object({ unmatchedCreditTransferId: ParentUnmatchedCreditTransferIdParamsSchema }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
   },
   responses: {
     201: {
@@ -27262,7 +28388,11 @@ export const postV2SessionsRoute = createRoute({
     '> 🚧 Beta feature\n>\n> This feature is currently in beta.\n>\n> The `shipping` and `requiredCustomerDetails` properties are still in private beta.\n\nCreate a Checkout Session to start a checkout process with Mollie Components.',
   operationId: 'create-session',
   request: {
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
     body: { content: { 'application/json': { schema: SessionRequestSchema } } },
   },
   responses: {
@@ -27421,7 +28551,11 @@ export const getV2SessionsSessionIdRoute = createRoute({
   operationId: 'get-session',
   request: {
     params: z.object({ sessionId: ParentSessionIdParamsSchema }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
   },
   responses: {
     200: {
@@ -27633,7 +28767,11 @@ export const getV2MethodsRoute = createRoute({
           testmode: TestmodeParamsSchema,
         }),
       ),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
   },
   responses: {
     200: {
@@ -28129,7 +29267,11 @@ export const getV2MethodsAllRoute = createRoute({
           testmode: TestmodeParamsSchema,
         }),
       ),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
   },
   responses: {
     200: {
@@ -29449,7 +30591,11 @@ export const getV2MethodsMethodIdRoute = createRoute({
       }).exactOptional(),
       testmode: TestmodeParamsSchema,
     }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
   },
   responses: {
     200: {
@@ -29500,7 +30646,11 @@ export const postV2ProfilesProfileIdMethodsMethodIdRoute = createRoute({
       profileId: ParentProfileAndMeIdParamsSchema,
       methodId: ParentMethodIdParamsSchema,
     }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
   },
   responses: {
     201: {
@@ -29593,7 +30743,11 @@ export const deleteV2ProfilesProfileIdMethodsMethodIdRoute = createRoute({
       profileId: ParentProfileAndMeIdParamsSchema,
       methodId: ParentMethodIdParamsSchema,
     }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
   },
   responses: {
     204: { description: 'An empty response.' },
@@ -29621,7 +30775,11 @@ export const postV2ProfilesProfileIdMethodsMethodIdIssuersIssuerIdRoute = create
       methodId: ParentMethodWithIssuerIdParamsSchema,
       issuerId: ParentIssuerIdParamsSchema,
     }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
     body: {
       content: {
         'application/json': {
@@ -29705,7 +30863,11 @@ export const deleteV2ProfilesProfileIdMethodsMethodIdIssuersIssuerIdRoute = crea
       methodId: ParentMethodWithIssuerIdParamsSchema,
       issuerId: ParentIssuerIdParamsSchema,
     }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
   },
   responses: {
     204: { description: 'An empty response.' },
@@ -29760,7 +30922,11 @@ export const getV2PaymentsPaymentIdRefundsRoute = createRoute({
       embed: EmbedParamsSchema,
       testmode: TestmodeParamsSchema,
     }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
   },
   responses: {
     200: {
@@ -29845,7 +31011,11 @@ export const postV2PaymentsPaymentIdRefundsRoute = createRoute({
   operationId: 'create-refund',
   request: {
     params: z.object({ paymentId: ParentPaymentIdParamsSchema }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
     body: { content: { 'application/json': { schema: RefundRequestSchema } } },
   },
   responses: {
@@ -29945,7 +31115,11 @@ export const getV2PaymentsPaymentIdRefundsRefundIdRoute = createRoute({
       refundId: ParentRefundIdParamsSchema,
     }),
     query: z.object({ embed: EmbedParamsSchema, testmode: TestmodeParamsSchema }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
   },
   responses: {
     200: {
@@ -29981,7 +31155,11 @@ export const deleteV2PaymentsPaymentIdRefundsRefundIdRoute = createRoute({
       refundId: ParentRefundIdParamsSchema,
     }),
     query: z.object({ testmode: TestmodeParamsSchema }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
   },
   responses: {
     204: { description: 'An empty response if the refund was successfully canceled.' },
@@ -30020,7 +31198,11 @@ export const getV2RefundsRoute = createRoute({
       profileId: ProfileIdParamsSchema,
       testmode: TestmodeParamsSchema,
     }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
   },
   responses: {
     200: {
@@ -30118,7 +31300,11 @@ export const getV2PaymentsPaymentIdChargebacksRoute = createRoute({
       embed: EmbedParamsSchema,
       testmode: TestmodeParamsSchema,
     }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
   },
   responses: {
     200: {
@@ -30281,7 +31467,11 @@ export const getV2PaymentsPaymentIdChargebacksChargebackIdRoute = createRoute({
       chargebackId: ParentChargebackIdParamsSchema,
     }),
     query: z.object({ embed: EmbedParamsSchema, testmode: TestmodeParamsSchema }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
   },
   responses: {
     200: {
@@ -30399,7 +31589,11 @@ export const getV2ChargebacksRoute = createRoute({
         }),
       testmode: TestmodeParamsSchema,
     }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
   },
   responses: {
     200: {
@@ -30655,7 +31849,11 @@ export const getV2PaymentsPaymentIdCapturesRoute = createRoute({
       embed: EmbedParamsSchema,
       testmode: TestmodeParamsSchema,
     }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
   },
   responses: {
     200: {
@@ -30778,7 +31976,11 @@ export const postV2PaymentsPaymentIdCapturesRoute = createRoute({
   operationId: 'create-capture',
   request: {
     params: z.object({ paymentId: ParentPaymentIdParamsSchema }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
     body: { content: { 'application/json': { schema: EntityCaptureSchema } } },
   },
   responses: {
@@ -30858,7 +32060,11 @@ export const getV2PaymentsPaymentIdCapturesCaptureIdRoute = createRoute({
       captureId: ParentCaptureIdParamsSchema,
     }),
     query: z.object({ embed: EmbedParamsSchema, testmode: TestmodeParamsSchema }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
   },
   responses: {
     200: {
@@ -30917,7 +32123,11 @@ export const postV2WalletsApplepaySessionsRoute = createRoute({
     "When integrating Apple Pay in your own checkout on the web, you need to\n[provide merchant validation](https://developer.apple.com/documentation/apple_pay_on_the_web/apple_pay_js_api/providing_merchant_validation).\nThis is normally done using Apple's\n[Requesting an Apple Pay Session](https://developer.apple.com/documentation/apple_pay_on_the_web/apple_pay_js_api/requesting_an_apple_pay_payment_session).\nThe merchant validation proves to Apple that a validated merchant is calling the Apple Pay Javascript APIs.\n\nTo integrate Apple Pay via Mollie, you will have to call the Mollie API instead of Apple's API. The response of this\nAPI call can then be passed as-is to the completion method, `completeMerchantValidation`.\n\nBefore requesting an Apple Pay Payment Session, you must place the domain validation file on your server at:\n`https://[domain]/.well-known/apple-developer-merchantid-domain-association`. Without this file, it will not be\npossible to use Apple Pay on your domain.\n\nEach new transaction requires a new payment session object. Merchant session objects are not reusable, and they\nexpire after five minutes.\n\nPayment sessions cannot be requested directly from the browser. The request must be sent from your server. For the\nfull documentation, see the official\n[Apple Pay JS API](https://developer.apple.com/documentation/apple_pay_on_the_web/apple_pay_js_api) documentation.",
   operationId: 'request-apple-pay-payment-session',
   request: {
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
     body: {
       content: {
         'application/json': {
@@ -31022,7 +32232,11 @@ export const getV2PaymentLinksRoute = createRoute({
       limit: ListLimitParamsSchema,
       testmode: TestmodeParamsSchema,
     }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
   },
   responses: {
     200: {
@@ -31205,7 +32419,11 @@ export const postV2PaymentLinksRoute = createRoute({
     'With the Payment links API you can generate payment links that by default, unlike regular payments, do not expire.\nThe payment link can be shared with your customers and will redirect them to them the payment page where they can\ncomplete the payment. A [payment](get-payment) will only be created once the customer initiates the payment.',
   operationId: 'create-payment-link',
   request: {
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
     body: {
       content: {
         'application/json': {
@@ -31521,7 +32739,11 @@ export const getV2PaymentLinksPaymentLinkIdRoute = createRoute({
   request: {
     params: z.object({ paymentLinkId: ParentPaymentLinkIdParamsSchema }),
     query: z.object({ testmode: TestmodeParamsSchema }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
   },
   responses: {
     200: {
@@ -31553,7 +32775,11 @@ export const deleteV2PaymentLinksPaymentLinkIdRoute = createRoute({
   operationId: 'delete-payment-link',
   request: {
     params: z.object({ paymentLinkId: ParentPaymentLinkIdParamsSchema }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
     body: {
       content: {
         'application/json': {
@@ -31598,7 +32824,11 @@ export const patchV2PaymentLinksPaymentLinkIdRoute = createRoute({
   operationId: 'update-payment-link',
   request: {
     params: z.object({ paymentLinkId: ParentPaymentLinkIdParamsSchema }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
     body: {
       content: {
         'application/json': {
@@ -31738,7 +32968,11 @@ export const getV2PaymentLinksPaymentLinkIdPaymentsRoute = createRoute({
       sort: ListSortParamsSchema,
       testmode: TestmodeParamsSchema,
     }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
   },
   responses: {
     200: {
@@ -31847,7 +33081,11 @@ export const getV2TerminalsRoute = createRoute({
       sort: ListSortParamsSchema,
       testmode: TestmodeParamsSchema,
     }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
   },
   responses: {
     200: {
@@ -31997,7 +33235,11 @@ export const getV2TerminalsTerminalIdRoute = createRoute({
   request: {
     params: z.object({ terminalId: ParentTerminalIdParamsSchema }),
     query: z.object({ testmode: TestmodeParamsSchema }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
   },
   responses: {
     200: {
@@ -32069,7 +33311,11 @@ export const getV2TerminalsPairingCodesRoute = createRoute({
           example: 'pfl_QkEhN94Ba',
         }),
     }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
   },
   responses: {
     200: {
@@ -32208,7 +33454,11 @@ export const postV2TerminalsPairingCodesRoute = createRoute({
   operationId: 'terminals-request-pairing-code',
   request: {
     query: z.object({ include: IncludeParamsSchema }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
     body: {
       content: {
         'application/json': {
@@ -32319,7 +33569,11 @@ export const getV2TerminalsPairingCodesPairingCodeIdRoute = createRoute({
   request: {
     params: z.object({ pairingCodeId: ParentTerminalPairingCodeIdParamsSchema }),
     query: z.object({ include: IncludeParamsSchema }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
   },
   responses: {
     200: {
@@ -32378,7 +33632,11 @@ export const deleteV2TerminalsPairingCodesPairingCodeIdRoute = createRoute({
   operationId: 'terminals-revoke-pairing-code',
   request: {
     params: z.object({ pairingCodeId: ParentTerminalPairingCodeIdParamsSchema }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
   },
   responses: {
     200: {
@@ -32448,7 +33706,11 @@ export const getV2PaymentsPaymentIdRoutesRoute = createRoute({
   request: {
     params: z.object({ paymentId: ParentPaymentIdParamsSchema }),
     query: z.object({ testmode: TestmodeParamsSchema }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
   },
   responses: {
     200: {
@@ -32560,7 +33822,11 @@ export const postV2PaymentsPaymentIdRoutesRoute = createRoute({
   operationId: 'payment-create-route',
   request: {
     params: z.object({ paymentId: ParentPaymentIdParamsSchema }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
     body: { content: { 'application/json': { schema: RouteCreateRequestSchema } } },
   },
   responses: {
@@ -32610,7 +33876,11 @@ export const getV2PaymentsPaymentIdRoutesRouteIdRoute = createRoute({
   operationId: 'payment-get-route',
   request: {
     params: z.object({ paymentId: ParentPaymentIdParamsSchema, routeId: RouteIdParamsSchema }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
   },
   responses: {
     200: {
@@ -32673,7 +33943,11 @@ export const getV2CustomersRoute = createRoute({
       sort: ListSortParamsSchema,
       testmode: TestmodeParamsSchema,
     }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
   },
   responses: {
     200: {
@@ -32754,7 +34028,11 @@ export const postV2CustomersRoute = createRoute({
     'Creates a simple minimal representation of a customer. Payments, recurring mandates, and subscriptions can be linked\nto this customer object, which simplifies management of recurring payments.\n\nOnce registered, customers will also appear in your Mollie dashboard.',
   operationId: 'create-customer',
   request: {
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
     body: { content: { 'application/json': { schema: EntityCustomerSchema } } },
   },
   responses: {
@@ -32787,7 +34065,11 @@ export const getV2CustomersCustomerIdRoute = createRoute({
   request: {
     params: z.object({ customerId: ParentCustomerIdParamsSchema }),
     query: z.object({ testmode: TestmodeParamsSchema }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
   },
   responses: {
     200: {
@@ -32819,7 +34101,11 @@ export const deleteV2CustomersCustomerIdRoute = createRoute({
   operationId: 'delete-customer',
   request: {
     params: z.object({ customerId: ParentCustomerIdParamsSchema }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
     body: {
       content: {
         'application/json': {
@@ -32850,7 +34136,11 @@ export const patchV2CustomersCustomerIdRoute = createRoute({
   operationId: 'update-customer',
   request: {
     params: z.object({ customerId: ParentCustomerIdParamsSchema }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
     body: {
       content: {
         'application/json': {
@@ -32946,7 +34236,11 @@ export const getV2CustomersCustomerIdPaymentsRoute = createRoute({
       profileId: ProfileIdParamsSchema,
       testmode: TestmodeParamsSchema,
     }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
   },
   responses: {
     200: {
@@ -35080,7 +36374,11 @@ export const postV2CustomersCustomerIdPaymentsRoute = createRoute({
   operationId: 'create-customer-payment',
   request: {
     params: z.object({ customerId: ParentCustomerIdParamsSchema }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
     body: RequestBodyRequestBody,
   },
   responses: {
@@ -35645,7 +36943,11 @@ export const getV2CustomersCustomerIdMandatesRoute = createRoute({
         }),
       testmode: TestmodeParamsSchema,
     }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
   },
   responses: {
     200: {
@@ -35731,7 +37033,11 @@ export const postV2CustomersCustomerIdMandatesRoute = createRoute({
   operationId: 'create-mandate',
   request: {
     params: z.object({ customerId: ParentCustomerIdParamsSchema }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
     body: { content: { 'application/json': { schema: MandateRequestSchema } } },
   },
   responses: {
@@ -35797,7 +37103,11 @@ export const getV2CustomersCustomerIdMandatesMandateIdRoute = createRoute({
       mandateId: ParentMandateIdParamsSchema,
     }),
     query: z.object({ testmode: TestmodeParamsSchema }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
   },
   responses: {
     200: {
@@ -35832,7 +37142,11 @@ export const deleteV2CustomersCustomerIdMandatesMandateIdRoute = createRoute({
       customerId: ParentCustomerIdParamsSchema,
       mandateId: ParentMandateIdParamsSchema,
     }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
     body: {
       content: {
         'application/json': {
@@ -35877,7 +37191,11 @@ export const getV2CustomersCustomerIdSubscriptionsRoute = createRoute({
       sort: ListSortParamsSchema,
       testmode: TestmodeParamsSchema,
     }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
   },
   responses: {
     200: {
@@ -35971,7 +37289,11 @@ export const postV2CustomersCustomerIdSubscriptionsRoute = createRoute({
   operationId: 'create-subscription',
   request: {
     params: z.object({ customerId: ParentCustomerIdParamsSchema }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
     body: {
       content: {
         'application/json': {
@@ -36015,7 +37337,11 @@ export const getV2CustomersCustomerIdSubscriptionsSubscriptionIdRoute = createRo
       subscriptionId: ParentSubscriptionIdParamsSchema,
     }),
     query: z.object({ testmode: TestmodeParamsSchema }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
   },
   responses: {
     200: {
@@ -36050,7 +37376,11 @@ export const deleteV2CustomersCustomerIdSubscriptionsSubscriptionIdRoute = creat
       customerId: ParentCustomerIdParamsSchema,
       subscriptionId: ParentSubscriptionIdParamsSchema,
     }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
     body: {
       content: {
         'application/json': {
@@ -36125,7 +37455,11 @@ export const patchV2CustomersCustomerIdSubscriptionsSubscriptionIdRoute = create
       customerId: ParentCustomerIdParamsSchema,
       subscriptionId: ParentSubscriptionIdParamsSchema,
     }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
     body: {
       content: {
         'application/json': {
@@ -36311,7 +37645,11 @@ export const getV2SubscriptionsRoute = createRoute({
         }),
       testmode: TestmodeParamsSchema,
     }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
   },
   responses: {
     200: {
@@ -36423,7 +37761,11 @@ export const getV2CustomersCustomerIdSubscriptionsSubscriptionIdPaymentsRoute = 
       profileId: ProfileIdParamsSchema,
       testmode: TestmodeParamsSchema,
     }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
   },
   responses: {
     200: {
@@ -38561,7 +39903,11 @@ export const getV2SalesInvoicesRoute = createRoute({
       limit: ListLimitParamsSchema,
       testmode: TestmodeParamsSchema,
     }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
   },
   responses: {
     200: {
@@ -38651,7 +39997,11 @@ export const postV2SalesInvoicesRoute = createRoute({
     'With the Sales Invoice API you can generate sales invoices to send to your customers.',
   operationId: 'create-sales-invoice',
   request: {
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
     body: { content: { 'application/json': { schema: SalesInvoiceRequestSchema } } },
   },
   responses: {
@@ -38741,7 +40091,11 @@ export const getV2SalesInvoicesSalesInvoiceIdRoute = createRoute({
   request: {
     params: z.object({ salesInvoiceId: ParentSalesInvoiceIdParamsSchema }),
     query: z.object({ testmode: TestmodeParamsSchema }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
   },
   responses: {
     200: {
@@ -38814,7 +40168,11 @@ export const deleteV2SalesInvoicesSalesInvoiceIdRoute = createRoute({
   operationId: 'delete-sales-invoice',
   request: {
     params: z.object({ salesInvoiceId: ParentSalesInvoiceIdParamsSchema }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
     body: { content: { 'application/json': { schema: DeleteValuesSalesInvoiceSchema } } },
   },
   responses: {
@@ -38853,7 +40211,11 @@ export const patchV2SalesInvoicesSalesInvoiceIdRoute = createRoute({
   operationId: 'update-sales-invoice',
   request: {
     params: z.object({ salesInvoiceId: ParentSalesInvoiceIdParamsSchema }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
     body: {
       content: {
         'application/json': {
@@ -38978,7 +40340,11 @@ export const getV2BusinessAccountsAccountsRoute = createRoute({
       sort: ListSortParamsSchema,
       testmode: TestmodeParamsSchema,
     }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
   },
   responses: {
     200: {
@@ -38991,7 +40357,7 @@ export const getV2BusinessAccountsAccountsRoute = createRoute({
               _embedded: z
                 .object({
                   businessAccounts: z
-                    .array(BusinessAccountResponseSchema)
+                    .array(ListBusinessAccountResponseSchema)
                     .exactOptional()
                     .openapi({ description: 'An array of business account objects.' }),
                 })
@@ -39019,8 +40385,30 @@ export const getV2BusinessAccountsAccountsRoute = createRoute({
                       status: 'active',
                       balance: { total: { currency: 'EUR', value: '5000.00' } },
                       createdAt: '2024-03-20T09:13:37+00:00',
+                      _links: {
+                        self: {
+                          href: 'https://api.mollie.com/v2/business-accounts/accounts/ba_nopqrstuvwxyz23456789A',
+                          type: 'application/hal+json',
+                        },
+                        documentation: {
+                          href: 'https://docs.mollie.com/reference/get-business-account',
+                          type: 'text/html',
+                        },
+                      },
                     },
                   ],
+                },
+                _links: {
+                  self: {
+                    href: 'https://api.mollie.com/v2/business-accounts/accounts?limit=50',
+                    type: 'application/hal+json',
+                  },
+                  previous: null,
+                  next: null,
+                  documentation: {
+                    href: 'https://docs.mollie.com/reference/list-business-accounts',
+                    type: 'text/html',
+                  },
                 },
               },
             },
@@ -39034,6 +40422,160 @@ export const getV2BusinessAccountsAccountsRoute = createRoute({
   security: [{ oAuth: ['business-accounts.read'] }],
 })
 
+export const postV2BusinessAccountsAccountsRoute = createRoute({
+  method: 'post',
+  path: '/v2/business-accounts/accounts',
+  tags: ['Accounts API'],
+  summary: 'Create business account',
+  description:
+    "> 🔒 Restricted access\n>\n> This API is currently only available to Mollie's authorized partners via OAuth. Direct access for individual businesses isn't available yet, but it's on our roadmap — check back here for updates.\n\nCreate a new business account for the authenticated organization.\n\nThe response contains the newly created business account.\n\nEach organization can have up to 5 active business accounts. Need more? [Contact us](https://www.mollie.com/contact)\nand we'll help you out.",
+  operationId: 'create-business-account',
+  request: {
+    headers: z.object({
+      'Idempotency-Key': z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'Idempotency-Key',
+            in: 'header',
+            description:
+              "A unique value that identifies this request, so you can safely retry it without creating a second account.\nRetrying with the same key within one hour returns the original response. We recommend a UUIDv4.\n\nKeys are tied to the credential that sent the original request, so a refreshed OAuth token won't match\nearlier keys. View the [public documentation](https://docs.mollie.com/reference/api-idempotency) to learn\nmore.",
+            required: false,
+            schema: { type: 'string' },
+            example: '123e4567-e89b-12d3-a456-426614174000',
+          },
+        }),
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
+    body: {
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              name: z
+                .string()
+                .min(1)
+                .max(80)
+                .openapi({
+                  description: 'The name of the business account, as shown to the account holder.',
+                  example: 'Main Checking Account',
+                }),
+              currency: AccountCurrencySchema,
+              testmode: OauthTestmodeCreateSchema.exactOptional(),
+            })
+            .openapi({ required: ['name', 'currency'] }),
+        },
+      },
+    },
+  },
+  responses: {
+    201: {
+      description: 'The newly created business account object.',
+      content: {
+        'application/hal+json': {
+          schema: BusinessAccountResponseSchema,
+          examples: {
+            'create-business-account-201': {
+              summary: 'The newly created business account',
+              value: {
+                resource: 'business-account',
+                id: 'ba_nopqrstuvwxyz23456789A',
+                mode: 'live',
+                accountDetails: {
+                  accountHolderName: 'Mollie B.V.',
+                  name: 'Main Checking Account',
+                  currency: 'EUR',
+                  iban: 'NL95MLLE1234567890',
+                  bic: 'MLLENL2AXXX',
+                },
+                status: 'active',
+                balance: { total: { currency: 'EUR', value: '0.00' } },
+                createdAt: '2024-03-20T09:13:37+00:00',
+                _links: {
+                  self: {
+                    href: 'https://api.mollie.com/v2/business-accounts/accounts/ba_nopqrstuvwxyz23456789A',
+                    type: 'application/hal+json',
+                  },
+                  documentation: {
+                    href: 'https://docs.mollie.com/reference/create-business-account',
+                    type: 'text/html',
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    400: {
+      description:
+        "The request is malformed. For example, the body isn't valid JSON, a required field such as `name` is missing,\nor the `Idempotency-Key` was already used for a request with different parameters.",
+      content: {
+        'application/hal+json': {
+          schema: ErrorResponseSchema,
+          example: {
+            status: 400,
+            title: 'Bad Request',
+            detail: "The 'name' field is missing",
+            field: 'name',
+            _links: {
+              documentation: {
+                href: 'https://docs.mollie.com/overview/handling-errors',
+                type: 'text/html',
+              },
+            },
+          },
+        },
+      },
+    },
+    409: {
+      description:
+        'Your organization already has a business account with this name, or a request with the same\n`Idempotency-Key` is still being processed.',
+      content: {
+        'application/hal+json': {
+          schema: ErrorResponseSchema,
+          example: {
+            status: 409,
+            title: 'Conflict',
+            detail: "A business account with the name 'Main Checking Account' already exists",
+            field: 'name',
+            _links: {
+              documentation: {
+                href: 'https://docs.mollie.com/overview/handling-errors',
+                type: 'text/html',
+              },
+            },
+          },
+        },
+      },
+    },
+    422: {
+      description:
+        "The request is well-formed, but Mollie can't create the account. For example, your organization already\nhas 5 active business accounts, the maximum allowed. [Contact us](https://www.mollie.com/contact) if you\nneed more.",
+      content: {
+        'application/hal+json': {
+          schema: ErrorResponseSchema,
+          example: {
+            status: 422,
+            title: 'Unprocessable Entity',
+            detail: 'Your organization has reached the maximum of 5 active business accounts',
+            _links: {
+              documentation: {
+                href: 'https://docs.mollie.com/overview/handling-errors',
+                type: 'text/html',
+              },
+            },
+          },
+        },
+      },
+    },
+    429: _429RateLimitResponse,
+  },
+  security: [{ oAuth: ['business-accounts.write'] }],
+})
+
 export const getV2BusinessAccountsAccountsBusinessAccountIdRoute = createRoute({
   method: 'get',
   path: '/v2/business-accounts/accounts/{businessAccountId}',
@@ -39045,7 +40587,11 @@ export const getV2BusinessAccountsAccountsBusinessAccountIdRoute = createRoute({
   request: {
     params: z.object({ businessAccountId: ParentBusinessAccountIdParamsSchema }),
     query: z.object({ testmode: TestmodeParamsSchema }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
   },
   responses: {
     200: {
@@ -39126,7 +40672,11 @@ export const getV2BusinessAccountsAccountsBusinessAccountIdTransactionsRoute = c
       sort: ListSortParamsSchema,
       testmode: TestmodeParamsSchema,
     }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
   },
   responses: {
     200: {
@@ -39210,7 +40760,11 @@ export const getV2BusinessAccountsAccountsBusinessAccountIdTransactionsTransacti
         transactionId: ParentBusinessAccountTransactionIdParamsSchema,
       }),
       query: z.object({ testmode: TestmodeParamsSchema }),
-      headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+      headers: z.object({
+        'idempotency-key': IdempotencyKeyParamsSchema,
+        'X-Client-Signature': XClientSignatureParamsSchema,
+        'X-Client-Signed-At': XClientSignedAtParamsSchema,
+      }),
     },
     responses: {
       200: {
@@ -39295,7 +40849,6 @@ export const postV2BusinessAccountsTransfersRoute = createRoute({
             example: '12345678-abcd',
           },
         }),
-      'idempotency-key': IdempotencyKeyParamsSchema,
     }),
     body: { content: { 'application/json': { schema: TransferRequestSchema } } },
   },
@@ -39357,7 +40910,11 @@ export const getV2BusinessAccountsTransfersBusinessAccountsTransferIdRoute = cre
   request: {
     params: z.object({ businessAccountsTransferId: ParentBusinessAccountsTransferIdParamsSchema }),
     query: z.object({ testmode: TestmodeParamsSchema }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
   },
   responses: {
     200: {
@@ -39410,7 +40967,11 @@ export const postV2BusinessAccountsPayeeVerificationsRoute = createRoute({
     '> 🚧 Beta feature\n>\n> This feature is currently in beta testing, and the final specification may still change.\n\nPerform a Verification of Payee (VoP) check. This allows you to verify the account holder name against the\nrecords held by the receiving bank before initiating a transfer.\n\nThe verification result indicates whether the provided name matches, closely matches, or does not match the\nname on file at the receiving bank. This helps prevent misdirected payments.\n\n### Simulating verification scenarios in test mode\n\nIn test mode, you can simulate various verification outcomes by adjusting the creditor name in the\n`creditorBankAccount.accountHolderName` property. This allows you to test all possible Verification of Payee\nresults without needing special properties. The names are case insensitive.\n\n| Account holder name                    | Scenario                                      | Verification result | Suggested name |\n|----------------------------------------|-----------------------------------------------|---------------------|----------------|\n| `John Close Match`                     | Name closely matches the bank records          | `close-match`       | `John Match`   |\n| `John No Match`                        | Name does not match the bank records           | `no-match`          | —              |\n| `John Unavailable`                     | Verification is not available                  | `not-available`     | —              |\n| Any other name                         | Default: name matches the bank records         | `match`             | —              |',
   operationId: 'verify-payee',
   request: {
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
     body: { content: { 'application/json': { schema: VerificationOfPayeeRequestSchema } } },
   },
   responses: {
@@ -39541,7 +41102,11 @@ export const getV2BusinessAccountsDraftTransfersRoute = createRoute({
       }).exactOptional(),
       testmode: TestmodeParamsSchema,
     }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
   },
   responses: {
     200: {
@@ -39628,7 +41193,11 @@ export const postV2BusinessAccountsDraftTransfersRoute = createRoute({
     "> 🚧 Beta feature\n>\n> This feature is currently in beta testing, and the final specification may still change.\n\nCreates a draft transfer. The draft transfer immediately enters `pending-review` and appears in the\ninitiator's queue in Mollie Apps. It carries no legal weight and moves no funds until a human initiator\napproves it there.\n\n### Test mode\n\nCreating a draft transfer always returns a synthetic draft in `pending-review` status, using synthetic data,\nsame as in live mode. No real funds move and nothing is sent to Mollie Apps.\n\nEditing a draft transfer after creation is not supported via the API. Instead, depending on the amount, you\ncan simulate different outcomes for the initiator's decision at creation time:\n\n| Amount  | Simulated outcome                                    | Webhook sequence                                                                                  |\n|---------|-------------------------------------------------------|----------------------------------------------------------------------------------------------------|\n| `13.00` | Declined by the initiator, with a free-text reason     | `business-account-draft-transfer.created` → `business-account-draft-transfer.declined`             |\n| `14.00` | Approved                                               | `business-account-draft-transfer.created` → `business-account-draft-transfer.approved`             |\n| Other   | Default behavior (pending review)                      | `business-account-draft-transfer.created`                                                          |\n\nThe webhooks fire asynchronously, with a short delay between them to mimic real timing. [Get](get-draft-transfer)\nand [list](list-draft-transfers) reflect the simulated outcome once it lands.\n\nCancelling (via `DELETE`) is unaffected by the amount: it always transitions the draft to `declined` with\n`statusReason.code` set to `deleted-by-creator`, the same as in live mode.",
   operationId: 'create-draft-transfer',
   request: {
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
     body: { content: { 'application/json': { schema: CreateDraftTransferRequestSchema } } },
   },
   responses: {
@@ -39691,7 +41260,11 @@ export const getV2BusinessAccountsDraftTransfersDraftTransferIdRoute = createRou
   request: {
     params: z.object({ draftTransferId: ParentDraftTransferIdParamsSchema }),
     query: z.object({ testmode: TestmodeParamsSchema }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
   },
   responses: {
     200: {
@@ -39726,7 +41299,11 @@ export const deleteV2BusinessAccountsDraftTransfersDraftTransferIdRoute = create
   operationId: 'cancel-draft-transfer',
   request: {
     params: z.object({ draftTransferId: ParentDraftTransferIdParamsSchema }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
     body: {
       content: {
         'application/json': {
@@ -39785,7 +41362,11 @@ export const getV2PayoutsRoute = createRoute({
       sort: ListSortParamsSchema,
       testmode: TestmodeParamsSchema,
     }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
   },
   responses: {
     200: {
@@ -39828,7 +41409,11 @@ export const postV2PayoutsRoute = createRoute({
     "Request a payout from one of your balances to the balance's configured bank account.\n\nThe payout will be executed on the next scheduled business day. If no `amount` is specified, the full available\nbalance minus any configured balance reserve is paid out.\n\nOnce the payout is created with status `requested`, you can cancel it via the\n[Cancel payout](cancel-payout) endpoint, up until the payout moves to `initiated`.\n\nCreating a payout via the API automatically sets the balance's `transferFrequency` to `never`,\npausing any previously configured automatic settlement schedule. To resume automatic settlements,\nupdate the transfer frequency via the dashboard.\n\n### Webhooks\n\nSubscribe to the following webhook events to track payout status changes. See the\n[Webhook Subscriptions API](list-webhooks) for details on subscribing.\n\n| Event | Description |\n|---|---|\n| `payout.initiated` | The payout is being executed and funds are reserved. |\n| `payout.processing-at-bank` | The payout has been submitted to the bank. |\n| `payout.completed` | The payout has been sent to the destination bank account. |\n| `payout.canceled` | The payout was canceled via the API before being submitted to the bank. |\n| `payout.failed` | The payout failed after creation, including bank rejections and post-submission cancellations. |\n\n### Payout failure reasons\n\nA payout request may fail immediately if one of the following conditions applies:\n\n- A payout is already scheduled for the next business day for this balance.\n- The balance has insufficient funds.\n- The balance is not active.\n- Payouts are blocked for this organization.\n- The balance has queued refunds.\n- One of the organization's balances is below the negative balance threshold.\n- The payout destination (bank account) is invalid or not configured.",
   operationId: 'create-payout',
   request: {
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
     body: { content: { 'application/json': { schema: PayoutRequestSchema } }, required: true },
   },
   responses: {
@@ -39874,7 +41459,11 @@ export const getV2PayoutsPayoutIdRoute = createRoute({
   request: {
     params: z.object({ payoutId: ParentPayoutIdParamsSchema }),
     query: z.object({ testmode: TestmodeParamsSchema }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
   },
   responses: {
     200: {
@@ -39907,7 +41496,11 @@ export const deleteV2PayoutsPayoutIdRoute = createRoute({
   request: {
     params: z.object({ payoutId: ParentPayoutIdParamsSchema }),
     query: z.object({ testmode: TestmodeParamsSchema }),
-    headers: z.object({ 'idempotency-key': IdempotencyKeyParamsSchema }),
+    headers: z.object({
+      'idempotency-key': IdempotencyKeyParamsSchema,
+      'X-Client-Signature': XClientSignatureParamsSchema,
+      'X-Client-Signed-At': XClientSignedAtParamsSchema,
+    }),
   },
   responses: {
     200: {

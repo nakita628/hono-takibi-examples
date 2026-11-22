@@ -1,0 +1,9 @@
+import { OpenAPIHono } from '@hono/zod-openapi'
+import { postXAmzTargetLogs20140328PutDestinationPolicyRoute } from '../routes'
+
+const app = new OpenAPIHono()
+
+export const XAmzTargetLogs20140328PutDestinationPolicyHandler = app.openapi(
+  postXAmzTargetLogs20140328PutDestinationPolicyRoute,
+  (c) => {},
+)

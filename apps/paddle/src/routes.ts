@@ -9321,6 +9321,9 @@ const CurrencyConversionsSchema = z
   .record(z.string(), CurrencyConversionSchema)
   .superRefine((o, ctx) => {
     const e = new Set()
+    for (const k of Object.keys(o)) {
+      e.add(k)
+    }
     const Schema = CurrencyConversionSchema
     for (const [k, val] of Object.entries(o)) {
       if (e.has(k)) {
@@ -9361,6 +9364,9 @@ const CurrencyConversionsUpdateSchema = z
   .record(z.string(), CurrencyConversionUpdateSchema)
   .superRefine((o, ctx) => {
     const e = new Set()
+    for (const k of Object.keys(o)) {
+      e.add(k)
+    }
     const Schema = CurrencyConversionUpdateSchema
     for (const [k, val] of Object.entries(o)) {
       if (e.has(k)) {

@@ -924,7 +924,7 @@ const CardReferenceSchema = z
       .min(1)
       .max(30)
       .openapi({ description: 'The name of the card reference.\nMust be unique.' }),
-    value: z.string().min(1).max(30).openapi({ description: 'The value for this reference.' }),
+    value: z.string().min(1).max(50).openapi({ description: 'The value for this reference.' }),
   })
   .openapi({
     description:
@@ -4165,6 +4165,58 @@ const PageTokenParamsSchema = PageTokenSchema.openapi({
   },
 }).exactOptional()
 
+const AuthorizationParamsSchema = z
+  .string()
+  .openapi({
+    param: {
+      name: 'Authorization',
+      in: 'header',
+      required: true,
+      schema: {
+        type: 'string',
+        example: 'Bearer r_prod_NbrnTP3fAbnFbmOHnKYaXRvj7uff0LYTH8xIZM1JRcoreogrNwwmq6OLkTkx9NIQ',
+      },
+      description:
+        "This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.\nIf you haven't migrated to the API key yet, it accepts your access token instead (deprecated).\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).",
+    },
+    example: 'Bearer r_prod_NbrnTP3fAbnFbmOHnKYaXRvj7uff0LYTH8xIZM1JRcoreogrNwwmq6OLkTkx9NIQ',
+  })
+
+const RevolutApiTimestampParamsSchema = z
+  .string()
+  .exactOptional()
+  .openapi({
+    param: {
+      in: 'header',
+      name: 'Revolut-Api-Timestamp',
+      required: false,
+      schema: { type: 'string', example: '1783616701644' },
+      description:
+        'The current Unix timestamp in **milliseconds**, for example `1783616701644`.\nRequired when your API key has signing enabled. Used to prevent replay attacks.\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).',
+    },
+    example: '1783616701644',
+  })
+
+const RevolutApiSignatureParamsSchema = z
+  .string()
+  .exactOptional()
+  .openapi({
+    param: {
+      in: 'header',
+      name: 'Revolut-Api-Signature',
+      required: false,
+      schema: {
+        type: 'string',
+        example:
+          'XVZerlAdz6IyfC5jidsDqJf4AO8g1dx5BwFMUwO4DmoJqXrj/Q5VPOk3pf4cJl9B9cGgBNAzao9bsv/O2ADuDg==',
+      },
+      description:
+        'A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.\nRequired when your API key has signing enabled.\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).',
+    },
+    example:
+      'XVZerlAdz6IyfC5jidsDqJf4AO8g1dx5BwFMUwO4DmoJqXrj/Q5VPOk3pf4cJl9B9cGgBNAzao9bsv/O2ADuDg==',
+  })
+
 const CardErrorBadIdExample = {
   summary: 'Invalid ID - the path parameter must be UUID',
   value: { message: "Invalid path parameter 'id': expected UUID", code: 2101 },
@@ -5297,11 +5349,18 @@ const WebhookV2BasicAllEventsExample = {
   ],
 }
 
+const ApiKeySecurityScheme = {
+  type: 'http',
+  scheme: 'bearer',
+  description:
+    'The Business API uses API keys for authentication.\nEach request must include an `Authorization` header with your API key in the format `Bearer <your_api_key>`.\nIf your [key has signing enabled](https://developer.revolut.com/docs/guides/api-console/create-key#how-it-works), each request must also include:\n- `Revolut-Api-Timestamp`: the current Unix timestamp in **milliseconds**, for example `1783616701644`. Used to prevent replay attacks.\n- `Revolut-Api-Signature`: a Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.\n\nThe scopes required by each endpoint correspond to the **Products and permissions** you select for your API key in the [API Console](https://developer.revolut.com/docs/guides/api-console/introduction).\nA key can only access the resources covered by its permissions — see the API Console documentation: [Create an API key](https://developer.revolut.com/docs/guides/api-console/create-key#2-select-products-and-permissions), [Manage API key settings](https://developer.revolut.com/docs/guides/api-console/manage-key-permissions#update-product-permissions), and [Signing requirements](https://developer.revolut.com/docs/guides/api-console/signing-requirements).\n\n:::info\nTo create an API key, configure signing, and make your first authenticated request, see the [API Console guides](https://developer.revolut.com/docs/guides/api-console/introduction).\n:::',
+}
+
 const AccessTokenSecurityScheme = {
   type: 'http',
   scheme: 'bearer',
   description:
-    'Each Business API request must contain an authorization header in the following format to make a call: `Bearer <your_access_token>`.\n\nThe access token will be obtained the first time you set up your application and has an expiration of 40 minutes. \nDuring setup, a `refresh_token` will also be obtained which allows to obtain a new `access_token`.\n\n:::danger\nNever share your client-assertion JWT (JSON web token), `access_token` and `refresh_token` with anyone, as these can be used to access your banking data and initiate transactions.\n:::\n\nAccess tokens can be issued with four security scopes and require a JWT (JSON Web Token) signature to be obtained:\n- `READ`: Permissions for `GET` operations.\n- `WRITE`: Permissions to update counterparties, webhooks, and issue payment drafts.\n- `PAY`: Permissions to initiate or cancel transactions and currency exchanges.    \n- `READ_SENSITIVE_CARD_DATA`: Permissions to retrieve sensitive card details.\n\n  :::warning\n  If you enable the `READ_SENSITIVE_CARD_DATA` scope for your access token, you must set up IP whitelisting. \n  Failing to do so will prevent you from accessing **any** Business API endpoint. \n\n  IP whitelisting means that you must specify an IP or a set of IPs which will be the only IPs from which requests to the API will be accepted. \n  To do so:\n  1. Go to the Revolut Business web app [settings](https://business.revolut.com/settings) → **APIs** → **Business API**.\n  2. Select the corresponding API certificate.\n  3. In **Production IP whitelist**, provide the IP(s) which should be whitelisted.\n      Make sure that the IPs you provide are **not** [local (i.e. private) IP addresses](https://www.okta.com/en-sg/identity-101/understanding-private-ip-ranges/). \n  4. Save the new settings.\n  :::\n\nTo configure your JWT and obtain the refresh and first access tokens, complete the following steps:\n\n  1. [Sign up for a Revolut Business account](https://developer.revolut.com/docs/guides/manage-accounts/get-started/sign-up-for-revolut-business-account)\n  2. [Prepare your Sandbox environment](https://developer.revolut.com/docs/guides/manage-accounts/get-started/prepare-sandbox-environment)\n  3. [Make your first API request](https://developer.revolut.com/docs/guides/manage-accounts/get-started/make-your-first-api-request)',
+    ':::warning[Deprecated]\nThe access token (OAuth 2.0) authentication method is deprecated.\nUse API key authentication instead.\nIf you already use access tokens, switch to API keys as soon as possible — see the [API Console guides](https://developer.revolut.com/docs/guides/api-console/introduction).\n:::\n\nEach Business API request must contain an authorization header in the following format to make a call: `Bearer <your_access_token>`.\n\nThe access token will be obtained the first time you set up your application and has an expiration of 40 minutes. \nDuring setup, a `refresh_token` will also be obtained which allows to obtain a new `access_token`.\n\n:::danger\nNever share your client-assertion JWT (JSON web token), `access_token` and `refresh_token` with anyone, as these can be used to access your banking data and initiate transactions.\n:::\n\nAccess tokens can be issued with four security scopes and require a JWT (JSON Web Token) signature to be obtained:\n- `READ`: Permissions for `GET` operations.\n- `WRITE`: Permissions to update counterparties, webhooks, and issue payment drafts.\n- `PAY`: Permissions to initiate or cancel transactions and currency exchanges.    \n- `READ_SENSITIVE_CARD_DATA`: Permissions to retrieve sensitive card details.\n\n  :::warning\n  If you enable the `READ_SENSITIVE_CARD_DATA` scope for your access token, you must set up IP whitelisting. \n  Failing to do so will prevent you from accessing **any** Business API endpoint. \n\n  IP whitelisting means that you must specify an IP or a set of IPs which will be the only IPs from which requests to the API will be accepted. \n  To do so:\n  1. Go to the Revolut Business web app [settings](https://business.revolut.com/settings) → **APIs** → **Business API**.\n  2. Select the corresponding API certificate.\n  3. In **Production IP whitelist**, provide the IP(s) which should be whitelisted.\n      Make sure that the IPs you provide are **not** [local (i.e. private) IP addresses](https://www.okta.com/en-sg/identity-101/understanding-private-ip-ranges/). \n  4. Save the new settings.\n  :::\n\nTo configure your JWT and obtain the refresh and first access tokens, complete the following steps:\n\n  1. [Sign up for a Revolut Business account](https://developer.revolut.com/docs/guides/manage-accounts/get-started/sign-up-for-revolut-business-account)\n  2. [Prepare your Sandbox environment](https://developer.revolut.com/docs/guides/manage-accounts/get-started/prepare-sandbox-environment)\n  3. [Make your first API request](https://developer.revolut.com/docs/guides/manage-accounts/get-started/make-your-first-api-request)',
 }
 
 export const getAccountingCategoriesRoute = createRoute({
@@ -5310,9 +5369,14 @@ export const getAccountingCategoriesRoute = createRoute({
   tags: ['Accounting', 'Accounting categories'],
   summary: 'Retrieve a list of accounting categories',
   description:
-    "Get available accounting categories based on the provided query criteria.\n\n:::note\nThe API returns a maximum of 500 accounting categories per request. \nThe default page size is 100.\n:::\n\nThe accounting categories are sorted by the `created_at` date in reverse chronological order, and they're **paginated**.\nThe page size, that is, the maximum number of accounting categories returned per page is specified by the `limit` parameter. \n- If the number of results exceeds the page size, the response also returns a cursor for the next page under `next_page_token`.        \n  To get the next page of results, make a new request using that `next_page_token` value in `page_token`.\n- If the number of results is smaller than the page size, `next_page_token` is not returned.\n\nFor more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage accounting categories](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-categories).",
+    "Get available accounting categories based on the provided query criteria.\n\n:::note\nThe API returns a maximum of 500 accounting categories per request. \nThe default page size is 100.\n:::\n\nThe accounting categories are sorted by the `created_at` date in reverse chronological order, and they're **paginated**.\nThe page size, that is, the maximum number of accounting categories returned per page is specified by the `limit` parameter. \n- If the number of results exceeds the page size, the response also returns a cursor for the next page under `next_page_token`.        \n  To get the next page of results, make a new request using that `next_page_token` value in `page_token`.\n- If the number of results is smaller than the page size, `next_page_token` is not returned.\n\nFor more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage accounting categories](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-categories).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Accounting** | Accounting categories | Read | `accounting-categories:read` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).",
   operationId: 'getAccountingCategories',
   request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     query: z.object({
       limit: z
         .preprocess(
@@ -5541,7 +5605,7 @@ export const getAccountingCategoriesRoute = createRoute({
       content: { 'application/json': { schema: ErrorWithIdSchema } },
     },
   },
-  security: [{ AccessToken: ['READ'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['READ'] }],
 })
 
 export const postAccountingCategoriesRoute = createRoute({
@@ -5550,9 +5614,14 @@ export const postAccountingCategoriesRoute = createRoute({
   tags: ['Accounting', 'Accounting categories'],
   summary: 'Create an accounting category',
   description:
-    'Add a new accounting category to the list of accounting categories that can be assigned to your financial records, such as expenses.\n\n:::note\nThis operation is not supported for [externally managed accounting categories](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-categories#externally-managed-settings).\n:::\n\nFor more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage accounting categories](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-categories).',
+    'Add a new accounting category to the list of accounting categories that can be assigned to your financial records, such as expenses.\n\n:::note\nThis operation is not supported for [externally managed accounting categories](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-categories#externally-managed-settings).\n:::\n\nFor more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage accounting categories](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-categories).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Accounting** | Accounting categories | Write | `accounting-categories:write` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).',
   operationId: 'createAccountingCategory',
   request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     body: {
       content: {
         'application/json': {
@@ -5695,7 +5764,7 @@ export const postAccountingCategoriesRoute = createRoute({
       content: { 'application/json': { schema: ErrorWithIdSchema } },
     },
   },
-  security: [{ AccessToken: ['WRITE'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['WRITE'] }],
 })
 
 export const getAccountingCategoriesAccountingCategoryIdRoute = createRoute({
@@ -5704,9 +5773,14 @@ export const getAccountingCategoriesAccountingCategoryIdRoute = createRoute({
   tags: ['Accounting', 'Accounting categories'],
   summary: 'Retrieve accounting category details',
   description:
-    'Get the details of a specific accounting category based on its ID.\n\nThe details include the accounting category name, code, and default tax rate, as well as when the accounting category was added to your settings, and when it was last updated.\n\nFor more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage accounting categories](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-categories).',
+    'Get the details of a specific accounting category based on its ID.\n\nThe details include the accounting category name, code, and default tax rate, as well as when the accounting category was added to your settings, and when it was last updated.\n\nFor more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage accounting categories](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-categories).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Accounting** | Accounting categories | Read | `accounting-categories:read` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).',
   operationId: 'getAccountingCategory',
   request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     params: z.object({
       accounting_category_id: z
         .uuid()
@@ -5796,7 +5870,7 @@ export const getAccountingCategoriesAccountingCategoryIdRoute = createRoute({
       content: { 'application/json': { schema: ErrorWithIdSchema } },
     },
   },
-  security: [{ AccessToken: ['READ'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['READ'] }],
 })
 
 export const deleteAccountingCategoriesAccountingCategoryIdRoute = createRoute({
@@ -5805,9 +5879,14 @@ export const deleteAccountingCategoriesAccountingCategoryIdRoute = createRoute({
   tags: ['Accounting', 'Accounting categories'],
   summary: 'Delete an accounting category',
   description:
-    "Delete a specific accounting category, based on its ID.\n\n:::note\nThis operation is not supported for [externally managed accounting categories](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-categories#externally-managed-settings).\n:::\n\nOnce the accounting category is deleted, it will not be returned by the API or in the Revolut Business app, and:\n- You will not be able to assign it to new financial records (e.g. expenses). \n- Existing records assigned to this category that have not been completed will be marked as invalid, and you'll need to reassign them to another category.\n- Completed records will not be affected by the change. \n\nA successful response does not get any content in return.\n\nFor more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage accounting categories](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-categories).",
+    "Delete a specific accounting category, based on its ID.\n\n:::note\nThis operation is not supported for [externally managed accounting categories](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-categories#externally-managed-settings).\n:::\n\nOnce the accounting category is deleted, it will not be returned by the API or in the Revolut Business app, and:\n- You will not be able to assign it to new financial records (e.g. expenses). \n- Existing records assigned to this category that have not been completed will be marked as invalid, and you'll need to reassign them to another category.\n- Completed records will not be affected by the change. \n\nA successful response does not get any content in return.\n\nFor more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage accounting categories](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-categories).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Accounting** | Accounting categories | Write | `accounting-categories:write` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).",
   operationId: 'deleteAccountingCategory',
   request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     params: z.object({
       accounting_category_id: z
         .uuid()
@@ -5892,7 +5971,7 @@ export const deleteAccountingCategoriesAccountingCategoryIdRoute = createRoute({
       content: { 'application/json': { schema: ErrorWithIdSchema } },
     },
   },
-  security: [{ AccessToken: ['WRITE'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['WRITE'] }],
 })
 
 export const patchAccountingCategoriesAccountingCategoryIdRoute = createRoute({
@@ -5901,9 +5980,14 @@ export const patchAccountingCategoriesAccountingCategoryIdRoute = createRoute({
   tags: ['Accounting', 'Accounting categories'],
   summary: 'Update accounting category settings',
   description:
-    'Update settings for a specific accounting category, based on its ID.\n\n:::note\nThis operation is not supported for [externally managed accounting categories](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-categories#externally-managed-settings).\n:::\n\nFor more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage accounting categories](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-categories).',
+    'Update settings for a specific accounting category, based on its ID.\n\n:::note\nThis operation is not supported for [externally managed accounting categories](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-categories#externally-managed-settings).\n:::\n\nFor more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage accounting categories](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-categories).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Accounting** | Accounting categories | Write | `accounting-categories:write` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).',
   operationId: 'updateAccountingCategory',
   request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     params: z.object({
       accounting_category_id: z
         .uuid()
@@ -6125,7 +6209,7 @@ export const patchAccountingCategoriesAccountingCategoryIdRoute = createRoute({
       content: { 'application/json': { schema: ErrorWithIdSchema } },
     },
   },
-  security: [{ AccessToken: ['WRITE'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['WRITE'] }],
 })
 
 export const postAccountNameValidationRoute = createRoute({
@@ -6134,9 +6218,14 @@ export const postAccountNameValidationRoute = createRoute({
   tags: ['Counterparties'],
   summary: 'Validate an account name (CoP/VoP)',
   description:
-    "Validate a counterparty's account name against their account details when [adding a counterparty](https://developer.revolut.com/docs/api/business#add-counterparty) or [making a transfer](https://developer.revolut.com/docs/api/business#create-payment) to a new or existing counterparty.\n\n:::warning\nThe CoP check is **not** a complete fraud-prevention tool, and it does **not** guarantee the person is who they claim to be.\nIt only confirms that the name and account details your provide match the bank's records.\n\nEven if the counterparty's details match, you should still exercise due caution when transferring funds.\n:::\n\n:::note[Availability & Sandbox behaviour]\n- This feature is only available to businesses in the [supported regions](https://developer.revolut.com/docs/guides/manage-accounts/counterparties/confirmation-of-payee#supported-regions-and-services).\n  Additionally, to get access to CoP in the UK, eligible businesses must contact [Revolut API Support](mailto:api-requests@revolut.com).\n- In Sandbox, this feature is only available for **testing**.\n  While **incomplete or invalid requests** will return production-like error responses, **complete and valid requests** in Sandbox do **not** undergo real validation and will always return `cannot_be_checked`.\n:::\n\nThe validation relies on different underlying services, depending on the recipient's payment scheme (region and currency).\nThese factors determine which fields you must provide and what response you get.\n- For examples, refer to the request body samples.\n- For more information, see the guides: [Validate an account name (CoP/VoP)](https://developer.revolut.com/docs/guides/manage-accounts/counterparties/confirmation-of-payee).",
+    "Validate a counterparty's account name against their account details when [adding a counterparty](https://developer.revolut.com/docs/api/business#add-counterparty) or [making a transfer](https://developer.revolut.com/docs/api/business#create-payment) to a new or existing counterparty.\n\n:::warning\nThe CoP check is **not** a complete fraud-prevention tool, and it does **not** guarantee the person is who they claim to be.\nIt only confirms that the name and account details your provide match the bank's records.\n\nEven if the counterparty's details match, you should still exercise due caution when transferring funds.\n:::\n\n:::note[Availability & Sandbox behaviour]\n- This feature is only available to businesses in the [supported regions](https://developer.revolut.com/docs/guides/manage-accounts/counterparties/confirmation-of-payee#supported-regions-and-services).\n  Additionally, to get access to CoP in the UK, eligible businesses must contact [Revolut API Support](mailto:api-requests@revolut.com).\n- In Sandbox, this feature is only available for **testing**.\n  While **incomplete or invalid requests** will return production-like error responses, **complete and valid requests** in Sandbox do **not** undergo real validation and will always return `cannot_be_checked`.\n:::\n\nThe validation relies on different underlying services, depending on the recipient's payment scheme (region and currency).\nThese factors determine which fields you must provide and what response you get.\n- For examples, refer to the request body samples.\n- For more information, see the guides: [Validate an account name (CoP/VoP)](https://developer.revolut.com/docs/guides/manage-accounts/counterparties/confirmation-of-payee).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Transfers** | Counterparties | Write | `counterparties:write` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).",
   operationId: 'validateAccountName',
   request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     body: {
       description: 'Counterparty account details',
       content: {
@@ -6527,7 +6616,7 @@ export const postAccountNameValidationRoute = createRoute({
       content: { 'application/json': { schema: ErrorSchema } },
     },
   },
-  security: [{ AccessToken: ['WRITE'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['WRITE'] }],
 })
 
 export const getAccountsRoute = createRoute({
@@ -6536,8 +6625,15 @@ export const getAccountsRoute = createRoute({
   tags: ['Accounts'],
   summary: 'Retrieve all accounts',
   description:
-    'Get a list of all your accounts.\n\nFor more information, see the guides: [Get your account details](https://developer.revolut.com/docs/guides/manage-accounts/accounts-and-transactions/manage-your-accounts).',
+    'Get a list of all your accounts.\n\nFor more information, see the guides: [Get your account details](https://developer.revolut.com/docs/guides/manage-accounts/accounts-and-transactions/manage-your-accounts).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Accounts** | Accounts | Read | `accounts:read` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).',
   operationId: 'getAccounts',
+  request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
+  },
   responses: {
     200: {
       description: 'List of business accounts',
@@ -6576,7 +6672,7 @@ export const getAccountsRoute = createRoute({
       content: { 'application/json': { schema: ErrorSchema } },
     },
   },
-  security: [{ AccessToken: ['READ'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['READ'] }],
 })
 
 export const getAccountsAccountIdRoute = createRoute({
@@ -6585,9 +6681,14 @@ export const getAccountsAccountIdRoute = createRoute({
   tags: ['Accounts'],
   summary: 'Retrieve an account',
   description:
-    'Get the information about one of your accounts.\nSpecify the account by its ID.\n\nFor more information, see the guides: [Get your account details](https://developer.revolut.com/docs/guides/manage-accounts/accounts-and-transactions/manage-your-accounts).',
+    'Get the information about one of your accounts.\nSpecify the account by its ID.\n\nFor more information, see the guides: [Get your account details](https://developer.revolut.com/docs/guides/manage-accounts/accounts-and-transactions/manage-your-accounts).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Accounts** | Accounts | Read | `accounts:read` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).',
   operationId: 'getAccount',
   request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     params: z.object({
       account_id: z
         .uuid()
@@ -6627,7 +6728,7 @@ export const getAccountsAccountIdRoute = createRoute({
       content: { 'application/json': { schema: ErrorSchema } },
     },
   },
-  security: [{ AccessToken: ['READ'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['READ'] }],
 })
 
 export const getAccountsAccountIdBankDetailsRoute = createRoute({
@@ -6636,9 +6737,14 @@ export const getAccountsAccountIdBankDetailsRoute = createRoute({
   tags: ['Accounts'],
   summary: "Retrieve account's full bank details",
   description:
-    'Get all the bank details of one of your accounts.\nSpecify the account by its ID.\n\nFor more information, see the guides: [Get your account details](https://developer.revolut.com/docs/guides/manage-accounts/accounts-and-transactions/manage-your-accounts).',
+    'Get all the bank details of one of your accounts.\nSpecify the account by its ID.\n\nFor more information, see the guides: [Get your account details](https://developer.revolut.com/docs/guides/manage-accounts/accounts-and-transactions/manage-your-accounts).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Accounts** | Accounts | Read | `accounts:read` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).',
   operationId: 'getAccountDetails',
   request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     params: z.object({
       account_id: z
         .uuid()
@@ -6685,7 +6791,7 @@ export const getAccountsAccountIdBankDetailsRoute = createRoute({
       content: { 'application/json': { schema: ErrorSchema } },
     },
   },
-  security: [{ AccessToken: ['READ'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['READ'] }],
 })
 
 export const getCardInvitationsRoute = createRoute({
@@ -6694,9 +6800,14 @@ export const getCardInvitationsRoute = createRoute({
   tags: ['Card invitations'],
   summary: 'Retrieve a list of card invitations',
   description:
-    "Get the list of all card invitations in your organisation.\n\nThe results are paginated and sorted by the `created_at` date in reverse chronological order.\n\n:::note\nTo increase your account's card limits, please contact [Revolut API Support](mailto:api-requests@revolut.com).\n:::\n\nFor more information, see the guides: [Manage card invitations](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-card-invitations).",
+    "Get the list of all card invitations in your organisation.\n\nThe results are paginated and sorted by the `created_at` date in reverse chronological order.\n\n:::note\nTo increase your account's card limits, please contact [Revolut API Support](mailto:api-requests@revolut.com).\n:::\n\nFor more information, see the guides: [Manage card invitations](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-card-invitations).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Cards** | Card invitations | Read | `card-invitations:read` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).",
   operationId: 'getCardInvitations',
   request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     query: z.object({
       created_before: z.iso
         .datetime({ offset: true })
@@ -6741,13 +6852,15 @@ export const getCardInvitationsRoute = createRoute({
         }),
       state: z
         .preprocess(
-          (val) =>
-            val === undefined
-              ? val
-              : (Array.isArray(val) ? val : [val]).flatMap((item) =>
-                  typeof item === 'string' ? item.split(',') : [item],
-                ),
-          z.array(CardInvitationStateSchema),
+          (val) => (val === undefined || Array.isArray(val) ? val : [val]),
+          z.array(CardInvitationStateSchema).superRefine((items, ctx) => {
+            const seen = new Map()
+            for (const [i, val] of items.entries()) {
+              const key = JSON.stringify(val)
+              if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+              else seen.set(key, i)
+            }
+          }),
         )
         .exactOptional()
         .openapi({
@@ -6757,10 +6870,14 @@ export const getCardInvitationsRoute = createRoute({
             required: false,
             description:
               'Retrieves card invitations filtered by the specified state(s).\nTo specify multiple values, follow this pattern: `state={VALUE1}&state={VALUE2}`. \nIf not provided, all states are returned.',
-            schema: { type: 'array', items: { $ref: '#/components/schemas/CardInvitationState' } },
+            schema: {
+              type: 'array',
+              items: { $ref: '#/components/schemas/CardInvitationState' },
+              uniqueItems: true,
+            },
             style: 'form',
-            explode: false,
-            example: 'state=created&state=redeemed',
+            explode: true,
+            example: ['created', 'redeemed'],
           },
         }),
     }),
@@ -6816,7 +6933,7 @@ export const getCardInvitationsRoute = createRoute({
       content: { 'application/json': { schema: ErrorSchema } },
     },
   },
-  security: [{ AccessToken: ['READ'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['READ'] }],
 })
 
 export const postCardInvitationsRoute = createRoute({
@@ -6825,9 +6942,14 @@ export const postCardInvitationsRoute = createRoute({
   tags: ['Card invitations'],
   summary: 'Create a card invitation',
   description:
-    "Create an invitation for a virtual [team member card](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards#different-types-of-cards) for a new, not-yet-onboarded team member.\nWhen the team member completes onboarding before the invitation's expiry date, the invitation will automatically be claimed, and the card will then be issued for the team member immediately.\n\n:::note\nTo increase your account's card limits, please contact [Revolut API Support](mailto:api-requests@revolut.com).\n:::\n\nFor more information, see the guides: [Manage card invitations](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-card-invitations).",
+    "Create an invitation for a virtual [team member card](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards#different-types-of-cards) for a new, not-yet-onboarded team member.\nWhen the team member completes onboarding before the invitation's expiry date, the invitation will automatically be claimed, and the card will then be issued for the team member immediately.\n\n:::note\nTo increase your account's card limits, please contact [Revolut API Support](mailto:api-requests@revolut.com).\n:::\n\nFor more information, see the guides: [Manage card invitations](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-card-invitations).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Cards** | Card invitations | Write | `card-invitations:write` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).",
   operationId: 'createCardInvitation',
   request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     body: {
       description: 'Card to create an invitation for',
       content: {
@@ -7036,7 +7158,7 @@ export const postCardInvitationsRoute = createRoute({
       content: { 'application/json': { schema: ErrorSchema } },
     },
   },
-  security: [{ AccessToken: ['WRITE'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['WRITE'] }],
 })
 
 export const getCardInvitationsCardInvitationIdRoute = createRoute({
@@ -7045,9 +7167,14 @@ export const getCardInvitationsCardInvitationIdRoute = createRoute({
   tags: ['Card invitations'],
   summary: 'Retrieve card invitation details',
   description:
-    "Get the details of a specific card invitation, based on its ID.\n\n:::note\nTo increase your account's card limits, please contact [Revolut API Support](mailto:api-requests@revolut.com).\n:::\n\nFor more information, see the guides: [Manage card invitations](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-card-invitations).",
+    "Get the details of a specific card invitation, based on its ID.\n\n:::note\nTo increase your account's card limits, please contact [Revolut API Support](mailto:api-requests@revolut.com).\n:::\n\nFor more information, see the guides: [Manage card invitations](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-card-invitations).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Cards** | Card invitations | Read | `card-invitations:read` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).",
   operationId: 'getCardInvitation',
   request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     params: z.object({
       card_invitation_id: z
         .uuid()
@@ -7113,7 +7240,7 @@ export const getCardInvitationsCardInvitationIdRoute = createRoute({
       content: { 'application/json': { schema: ErrorSchema } },
     },
   },
-  security: [{ AccessToken: ['READ'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['READ'] }],
 })
 
 export const patchCardInvitationsCardInvitationIdRoute = createRoute({
@@ -7122,9 +7249,14 @@ export const patchCardInvitationsCardInvitationIdRoute = createRoute({
   tags: ['Card invitations'],
   summary: 'Update card invitation settings',
   description:
-    "Update settings for a specific card invitation, based on its ID.\nYou can update successfully created invitations that have not been claimed yet (`state=created`).\n\n:::note\nTo increase your account's card limits, please contact [Revolut API Support](mailto:api-requests@revolut.com).\n:::\n\nFor more information, see the guides: [Manage card invitations](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-card-invitations).",
+    "Update settings for a specific card invitation, based on its ID.\nYou can update successfully created invitations that have not been claimed yet (`state=created`).\n\n:::note\nTo increase your account's card limits, please contact [Revolut API Support](mailto:api-requests@revolut.com).\n:::\n\nFor more information, see the guides: [Manage card invitations](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-card-invitations).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Cards** | Card invitations | Write | `card-invitations:write` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).",
   operationId: 'updateCardInvitation',
   request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     params: z.object({
       card_invitation_id: z
         .uuid()
@@ -7377,7 +7509,7 @@ export const patchCardInvitationsCardInvitationIdRoute = createRoute({
       content: { 'application/json': { schema: ErrorSchema } },
     },
   },
-  security: [{ AccessToken: ['WRITE'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['WRITE'] }],
 })
 
 export const postCardInvitationsCardInvitationIdCancelRoute = createRoute({
@@ -7386,9 +7518,14 @@ export const postCardInvitationsCardInvitationIdCancelRoute = createRoute({
   tags: ['Card invitations'],
   summary: 'Cancel a card invitation',
   description:
-    "Cancel a specific card invitation, based on its ID.\n\n:::note\nTo increase your account's card limits, please contact [Revolut API Support](mailto:api-requests@revolut.com).\n:::\n\nYou can cancel successfully created invitations that have not been claimed yet (`state=created`).\n\nOnce the card invitation is cancelled, it cannot be claimed or reactivated.\n\nA successful response does not get any content in return.\n\nFor more information, see the guides: [Manage card invitations](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-card-invitations).",
+    "Cancel a specific card invitation, based on its ID.\n\n:::note\nTo increase your account's card limits, please contact [Revolut API Support](mailto:api-requests@revolut.com).\n:::\n\nYou can cancel successfully created invitations that have not been claimed yet (`state=created`).\n\nOnce the card invitation is cancelled, it cannot be claimed or reactivated.\n\nA successful response does not get any content in return.\n\nFor more information, see the guides: [Manage card invitations](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-card-invitations).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Cards** | Card invitations | Write | `card-invitations:write` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).",
   operationId: 'cancelCardInvitation',
   request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     params: z.object({
       card_invitation_id: z
         .uuid()
@@ -7459,7 +7596,7 @@ export const postCardInvitationsCardInvitationIdCancelRoute = createRoute({
       content: { 'application/json': { schema: ErrorSchema } },
     },
   },
-  security: [{ AccessToken: ['WRITE'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['WRITE'] }],
 })
 
 export const getCardsRoute = createRoute({
@@ -7468,9 +7605,14 @@ export const getCardsRoute = createRoute({
   tags: ['Cards'],
   summary: 'Retrieve a list of cards',
   description:
-    "Get the list of all cards in your organisation.\n\nThe results are paginated and sorted by the `created_at` date in reverse chronological order.\nTerminated cards are not included in the list.\nTo check the status of a specific terminated card, [retrieve it by its ID](https://developer.revolut.com/docs/api/business#get-card).\n\n:::note\nTo increase your account's card limits, please contact [Revolut API Support](mailto:api-requests@revolut.com).\n:::\n\nFor more information, see the guides: [Manage cards](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards).",
+    "Get the list of all cards in your organisation.\n\nThe results are paginated and sorted by the `created_at` date in reverse chronological order.\nTerminated cards are not included in the list.\nTo check the status of a specific terminated card, [retrieve it by its ID](https://developer.revolut.com/docs/api/business#get-card).\n\n:::note\nTo increase your account's card limits, please contact [Revolut API Support](mailto:api-requests@revolut.com).\n:::\n\nFor more information, see the guides: [Manage cards](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Cards** | Cards | Read | `cards:read` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).",
   operationId: 'getCards',
   request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     query: z.object({
       created_before: z.iso
         .datetime({ offset: true })
@@ -7541,7 +7683,7 @@ export const getCardsRoute = createRoute({
       content: { 'application/json': { schema: ErrorSchema } },
     },
   },
-  security: [{ AccessToken: ['READ'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['READ'] }],
 })
 
 export const postCardsRoute = createRoute({
@@ -7550,9 +7692,14 @@ export const postCardsRoute = createRoute({
   tags: ['Cards'],
   summary: 'Create a card',
   description:
-    "Create a new [team member card](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards#different-types-of-cards), [company card](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards#different-types-of-cards), or [auto-issued card](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards#different-types-of-cards).\n\nWhen using the API, you can create only virtual cards.\nTo create a physical card, use the [Revolut Business app](https://business.revolut.com).\n\n:::note\nTo increase your account's card limits, please contact [Revolut API Support](mailto:api-requests@revolut.com).\n:::\n\nFor more information, see the guides: [Manage cards](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards).",
+    "Create a new [team member card](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards#different-types-of-cards), [company card](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards#different-types-of-cards), or [auto-issued card](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards#different-types-of-cards).\n\nWhen using the API, you can create only virtual cards.\nTo create a physical card, use the [Revolut Business app](https://business.revolut.com).\n\n:::note\nTo increase your account's card limits, please contact [Revolut API Support](mailto:api-requests@revolut.com).\n:::\n\nFor more information, see the guides: [Manage cards](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Cards** | Cards | Write | `cards:write` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).",
   operationId: 'createCard',
   request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     body: {
       description: 'Card to create',
       content: {
@@ -7794,7 +7941,7 @@ export const postCardsRoute = createRoute({
       content: { 'application/json': { schema: ErrorSchema } },
     },
   },
-  security: [{ AccessToken: ['WRITE'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['WRITE'] }],
 })
 
 export const getCardsCardIdRoute = createRoute({
@@ -7803,9 +7950,14 @@ export const getCardsCardIdRoute = createRoute({
   tags: ['Cards'],
   summary: 'Retrieve card details',
   description:
-    "Get the details of a specific card, based on its ID.\n\n:::note\nTo increase your account's card limits, please contact [Revolut API Support](mailto:api-requests@revolut.com).\n:::\n\nFor more information, see the guides: [Manage cards](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards).",
+    "Get the details of a specific card, based on its ID.\n\n:::note\nTo increase your account's card limits, please contact [Revolut API Support](mailto:api-requests@revolut.com).\n:::\n\nFor more information, see the guides: [Manage cards](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Cards** | Cards | Read | `cards:read` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).",
   operationId: 'getCard',
   request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     params: z.object({
       card_id: z
         .uuid()
@@ -7864,7 +8016,7 @@ export const getCardsCardIdRoute = createRoute({
       content: { 'application/json': { schema: ErrorSchema } },
     },
   },
-  security: [{ AccessToken: ['READ'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['READ'] }],
 })
 
 export const deleteCardsCardIdRoute = createRoute({
@@ -7873,9 +8025,14 @@ export const deleteCardsCardIdRoute = createRoute({
   tags: ['Cards'],
   summary: 'Terminate a card',
   description:
-    "Terminate a specific card, based on its ID.\n\nOnce the card is terminated, its state changes to `terminated`.\nTerminated cards are not returned when listing cards, but you can still retrieve a terminated card by its ID using the [`GET /cards/{card_id}` endpoint](https://developer.revolut.com/docs/api/business#get-card).\n\nA successful response does not get any content in return.\n\n:::note\nTo increase your account's card limits, please contact [Revolut API Support](mailto:api-requests@revolut.com).\n:::\n\nFor more information, see the guides: [Manage cards](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards).",
+    "Terminate a specific card, based on its ID.\n\nOnce the card is terminated, its state changes to `terminated`.\nTerminated cards are not returned when listing cards, but you can still retrieve a terminated card by its ID using the [`GET /cards/{card_id}` endpoint](https://developer.revolut.com/docs/api/business#get-card).\n\nA successful response does not get any content in return.\n\n:::note\nTo increase your account's card limits, please contact [Revolut API Support](mailto:api-requests@revolut.com).\n:::\n\nFor more information, see the guides: [Manage cards](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Cards** | Cards | Write | `cards:write` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).",
   operationId: 'deleteCard',
   request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     params: z.object({
       card_id: z
         .uuid()
@@ -7916,7 +8073,7 @@ export const deleteCardsCardIdRoute = createRoute({
       content: { 'application/json': { schema: ErrorSchema } },
     },
   },
-  security: [{ AccessToken: ['WRITE'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['WRITE'] }],
 })
 
 export const patchCardsCardIdRoute = createRoute({
@@ -7925,9 +8082,14 @@ export const patchCardsCardIdRoute = createRoute({
   tags: ['Cards'],
   summary: 'Update card settings',
   description:
-    "Update settings for a specific card, based on its ID.\n\n:::note\nTo increase your account's card limits, please contact [Revolut API Support](mailto:api-requests@revolut.com).\n:::\n\nFor more information, see the guides: [Manage cards](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards).",
+    "Update settings for a specific card, based on its ID.\n\n:::note\nTo increase your account's card limits, please contact [Revolut API Support](mailto:api-requests@revolut.com).\n:::\n\nFor more information, see the guides: [Manage cards](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Cards** | Cards | Write | `cards:write` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).",
   operationId: 'updateCard',
   request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     params: z.object({
       card_id: z
         .uuid()
@@ -8142,7 +8304,7 @@ export const patchCardsCardIdRoute = createRoute({
       content: { 'application/json': { schema: ErrorSchema } },
     },
   },
-  security: [{ AccessToken: ['WRITE'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['WRITE'] }],
 })
 
 export const putCardsCardIdContactsRoute = createRoute({
@@ -8151,9 +8313,14 @@ export const putCardsCardIdContactsRoute = createRoute({
   tags: ['Cards'],
   summary: 'Update card contacts',
   description:
-    "Update the list of card contacts (`contact_ids`) for a [company card](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards#different-types-of-cards).\n\n:::note\nTo increase your account's card limits, please contact [Revolut API Support](mailto:api-requests@revolut.com).\n:::\n\nYou can only update cards with existing contacts.\nIf a card does not have any contacts assigned, this operation is not allowed.\n\nOn success, the updated list of contacts is returned.\n\n:::warning\nThis operation **overrides** the existing contacts.\nThis means that it removes the current list completely, and replaces it with the new one provided in this request.\n\nIf you want to add new contacts for the card instead of replacing the existing ones, make sure that you [fetch](https://developer.revolut.com/docs/api/business#get-card) the existing contacts first, and include them in your request.\n:::\n\nFor more information, see the guides: [Manage cards](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards).",
+    "Update the list of card contacts (`contact_ids`) for a [company card](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards#different-types-of-cards).\n\n:::note\nTo increase your account's card limits, please contact [Revolut API Support](mailto:api-requests@revolut.com).\n:::\n\nYou can only update cards with existing contacts.\nIf a card does not have any contacts assigned, this operation is not allowed.\n\nOn success, the updated list of contacts is returned.\n\n:::warning\nThis operation **overrides** the existing contacts.\nThis means that it removes the current list completely, and replaces it with the new one provided in this request.\n\nIf you want to add new contacts for the card instead of replacing the existing ones, make sure that you [fetch](https://developer.revolut.com/docs/api/business#get-card) the existing contacts first, and include them in your request.\n:::\n\nFor more information, see the guides: [Manage cards](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Cards** | Cards | Write | `cards:write` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).",
   operationId: 'updateCardContacts',
   request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     params: z.object({
       card_id: z
         .uuid()
@@ -8242,7 +8409,7 @@ export const putCardsCardIdContactsRoute = createRoute({
       content: { 'application/json': { schema: ErrorSchema } },
     },
   },
-  security: [{ AccessToken: ['WRITE'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['WRITE'] }],
 })
 
 export const putCardsCardIdReferencesRoute = createRoute({
@@ -8251,9 +8418,14 @@ export const putCardsCardIdReferencesRoute = createRoute({
   tags: ['Cards'],
   summary: 'Update card references',
   description:
-    "Update the list of [references (`references`)](https://developer.revolut.com/docs/api/business#get-card#response) for a [company](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards#different-types-of-cards) or [auto-issued card](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards#different-types-of-cards).\n\n:::note\nTo increase your account's card limits, please contact [Revolut API Support](mailto:api-requests@revolut.com).\n:::\n\nReferences can be amended up to 10 times.\nReference names must be unique.\n\nReferences are only supported for cards owned by the business (i.e. [company](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards#different-types-of-cards) or [auto-issued cards](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards#different-types-of-cards)).\nThey can't be added to [team member cards](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards#different-types-of-cards) (i.e. with `holder_id` present). \n\nThe references recorded on a transaction are those assigned to the card at the time the transaction took place.\nIf the references are amended, they will only be applied to future transactions.\nExisting transaction are not affected.\n\nOn success, the updated list of references is returned.\n\n:::warning\nThis operation **overrides** the existing references.\nThis means that it removes the current list completely, and replaces it with the new one provided in this request.\n\nIf you want to add references to the card instead of replacing the existing ones, make sure that you [fetch](https://developer.revolut.com/docs/api/business#get-card) the existing references first, and include them in your request.\n\nTo delete existing references without adding new ones, simply provide an empty list.\n:::\n\nFor more information, see the guides: [Manage cards](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards).",
+    "Update the list of [references (`references`)](https://developer.revolut.com/docs/api/business#get-card#response) for a [company](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards#different-types-of-cards) or [auto-issued card](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards#different-types-of-cards).\n\n:::note\nTo increase your account's card limits, please contact [Revolut API Support](mailto:api-requests@revolut.com).\n:::\n\nReferences can be amended up to 10 times.\nReference names must be unique.\n\nReferences are only supported for cards owned by the business (i.e. [company](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards#different-types-of-cards) or [auto-issued cards](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards#different-types-of-cards)).\nThey can't be added to [team member cards](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards#different-types-of-cards) (i.e. with `holder_id` present). \n\nThe references recorded on a transaction are those assigned to the card at the time the transaction took place.\nIf the references are amended, they will only be applied to future transactions.\nExisting transaction are not affected.\n\nOn success, the updated list of references is returned.\n\n:::warning\nThis operation **overrides** the existing references.\nThis means that it removes the current list completely, and replaces it with the new one provided in this request.\n\nIf you want to add references to the card instead of replacing the existing ones, make sure that you [fetch](https://developer.revolut.com/docs/api/business#get-card) the existing references first, and include them in your request.\n\nTo delete existing references without adding new ones, simply provide an empty list.\n:::\n\nFor more information, see the guides: [Manage cards](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Cards** | Cards | Write | `cards:write` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).",
   operationId: 'updateCardReferences',
   request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     params: z.object({
       card_id: z
         .uuid()
@@ -8310,7 +8482,7 @@ export const putCardsCardIdReferencesRoute = createRoute({
             },
             too_long_values: {
               summary: 'Too long reference value(s)',
-              value: { code: 3000, message: 'value cannot be longer than 30' },
+              value: { code: 3000, message: 'value cannot be longer than 50' },
             },
             wrong_size: {
               summary: 'Too many references',
@@ -8363,7 +8535,7 @@ export const putCardsCardIdReferencesRoute = createRoute({
       content: { 'application/json': { schema: ErrorSchema } },
     },
   },
-  security: [{ AccessToken: ['WRITE'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['WRITE'] }],
 })
 
 export const postCardsCardIdFreezeRoute = createRoute({
@@ -8372,9 +8544,14 @@ export const postCardsCardIdFreezeRoute = createRoute({
   tags: ['Cards'],
   summary: 'Freeze a card',
   description:
-    "Freeze a card to make it temporarily unavailable for spending.\nYou can only freeze a card that is in the state `active`.\n\nA successful freeze changes the card's state to `frozen`, and no content is returned in the response.\n\n:::note\nTo increase your account's card limits, please contact [Revolut API Support](mailto:api-requests@revolut.com).\n:::\n\nFor more information, see the guides: [Manage cards](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards).",
+    "Freeze a card to make it temporarily unavailable for spending.\nYou can only freeze a card that is in the state `active`.\n\nA successful freeze changes the card's state to `frozen`, and no content is returned in the response.\n\n:::note\nTo increase your account's card limits, please contact [Revolut API Support](mailto:api-requests@revolut.com).\n:::\n\nFor more information, see the guides: [Manage cards](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Cards** | Cards | Write | `cards:write` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).",
   operationId: 'freezeCard',
   request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     params: z.object({
       card_id: z
         .uuid()
@@ -8424,7 +8601,7 @@ export const postCardsCardIdFreezeRoute = createRoute({
       content: { 'application/json': { schema: ErrorSchema } },
     },
   },
-  security: [{ AccessToken: ['WRITE'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['WRITE'] }],
 })
 
 export const postCardsCardIdUnfreezeRoute = createRoute({
@@ -8433,9 +8610,14 @@ export const postCardsCardIdUnfreezeRoute = createRoute({
   tags: ['Cards'],
   summary: 'Unfreeze a card',
   description:
-    "Unfreeze a card to re-enable spending for that card.\nYou can only unfreeze a card that is in the state `frozen`.\n\nA successful unfreeze changes the card's state back to `active`, and no content is returned in the response.\n\n:::note\nTo increase your account's card limits, please contact [Revolut API Support](mailto:api-requests@revolut.com).\n:::\n\nFor more information, see the guides: [Manage cards](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards).",
+    "Unfreeze a card to re-enable spending for that card.\nYou can only unfreeze a card that is in the state `frozen`.\n\nA successful unfreeze changes the card's state back to `active`, and no content is returned in the response.\n\n:::note\nTo increase your account's card limits, please contact [Revolut API Support](mailto:api-requests@revolut.com).\n:::\n\nFor more information, see the guides: [Manage cards](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Cards** | Cards | Write | `cards:write` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).",
   operationId: 'unfreezeCard',
   request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     params: z.object({
       card_id: z
         .uuid()
@@ -8485,7 +8667,7 @@ export const postCardsCardIdUnfreezeRoute = createRoute({
       content: { 'application/json': { schema: ErrorSchema } },
     },
   },
-  security: [{ AccessToken: ['WRITE'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['WRITE'] }],
 })
 
 export const postCardsCardIdLockRoute = createRoute({
@@ -8494,9 +8676,14 @@ export const postCardsCardIdLockRoute = createRoute({
   tags: ['Cards'],
   summary: 'Lock a card',
   description:
-    "Apply an admin lock to a card to make it temporarily unavailable for spending.\n\nA successful lock changes the card's state to `locked`, and no content is returned in the response.\n\n:::note\nTo increase your account's card limits, please contact [Revolut API Support](mailto:api-requests@revolut.com).\n:::\n\nFor more information, see the guides: [Manage cards](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards).",
+    "Apply an admin lock to a card to make it temporarily unavailable for spending.\n\nA successful lock changes the card's state to `locked`, and no content is returned in the response.\n\n:::note\nTo increase your account's card limits, please contact [Revolut API Support](mailto:api-requests@revolut.com).\n:::\n\nFor more information, see the guides: [Manage cards](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Cards** | Cards | Write | `cards:write` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).",
   operationId: 'lockCard',
   request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     params: z.object({
       card_id: z
         .uuid()
@@ -8547,7 +8734,7 @@ export const postCardsCardIdLockRoute = createRoute({
       content: { 'application/json': { schema: ErrorSchema } },
     },
   },
-  security: [{ AccessToken: ['WRITE'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['WRITE'] }],
 })
 
 export const postCardsCardIdUnlockRoute = createRoute({
@@ -8556,9 +8743,14 @@ export const postCardsCardIdUnlockRoute = createRoute({
   tags: ['Cards'],
   summary: 'Unlock a card',
   description:
-    "Unlock a card locked with an admin lock or spending period settings to make it available for spending again.\n\n:::note\nTo increase your account's card limits, please contact [Revolut API Support](mailto:api-requests@revolut.com).\n:::\n\n:::warning\nIf a card has a `spending_period` set and is locked due to being outside of that period, unlocking the card removes this spending period completely, including the end date.\n\nIf you want to unlock such a card but keep its spending period end date:\n1. [Fetch](https://developer.revolut.com/docs/api/business#get-card) the card's details.\n2. Save the `spending_period.end_date` and `spending_period.end_date_action` settings.\n3. [Unlock](https://developer.revolut.com/docs/api/business#unlock-card) the card.\n4. [Update](https://developer.revolut.com/docs/api/business#update-card) the card's `spending_period` by re-adding the saved settings.\n\n:::tip\nIf both start and end dates for the spending period are provided, and the card is locked due to those dates, to unlock such a card, [update](https://developer.revolut.com/docs/api/business#update-card) its `spending_period` settings instead.\n:::\n\nA successful unlock changes the card's state to `active`, and no content is returned in the response.\n\nFor more information, see the guides: [Manage cards](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards).",
+    "Unlock a card locked with an admin lock or spending period settings to make it available for spending again.\n\n:::note\nTo increase your account's card limits, please contact [Revolut API Support](mailto:api-requests@revolut.com).\n:::\n\n:::warning\nIf a card has a `spending_period` set and is locked due to being outside of that period, unlocking the card removes this spending period completely, including the end date.\n\nIf you want to unlock such a card but keep its spending period end date:\n1. [Fetch](https://developer.revolut.com/docs/api/business#get-card) the card's details.\n2. Save the `spending_period.end_date` and `spending_period.end_date_action` settings.\n3. [Unlock](https://developer.revolut.com/docs/api/business#unlock-card) the card.\n4. [Update](https://developer.revolut.com/docs/api/business#update-card) the card's `spending_period` by re-adding the saved settings.\n\n:::tip\nIf both start and end dates for the spending period are provided, and the card is locked due to those dates, to unlock such a card, [update](https://developer.revolut.com/docs/api/business#update-card) its `spending_period` settings instead.\n:::\n\nA successful unlock changes the card's state to `active`, and no content is returned in the response.\n\nFor more information, see the guides: [Manage cards](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Cards** | Cards | Write | `cards:write` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).",
   operationId: 'unlockCard',
   request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     params: z.object({
       card_id: z
         .uuid()
@@ -8609,7 +8801,7 @@ export const postCardsCardIdUnlockRoute = createRoute({
       content: { 'application/json': { schema: ErrorSchema } },
     },
   },
-  security: [{ AccessToken: ['WRITE'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['WRITE'] }],
 })
 
 export const getCardsCardIdSensitiveDetailsRoute = createRoute({
@@ -8618,9 +8810,14 @@ export const getCardsCardIdSensitiveDetailsRoute = createRoute({
   tags: ['Cards'],
   summary: 'Retrieve sensitive card details',
   description:
-    "Get sensitive details of a specific card, based on its ID.\n\nRequires the `READ_SENSITIVE_CARD_DATA` token scope. For more information, see the **Authorization** section.\n\n:::note\nTo increase your account's card limits, please contact [Revolut API Support](mailto:api-requests@revolut.com).\n:::\n\nFor more information, see the guides: [Manage cards](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards).",
+    "Get sensitive details of a specific card, based on its ID.\n\nRequires the `READ_SENSITIVE_CARD_DATA` token scope. For more information, see the **Authorization** section.\n\n:::note\nTo increase your account's card limits, please contact [Revolut API Support](mailto:api-requests@revolut.com).\n:::\n\nFor more information, see the guides: [Manage cards](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Cards** | Card sensitive details | Read | `card-sensitive-details:read` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).",
   operationId: 'getSensitiveCardDetails',
   request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     params: z.object({
       card_id: z
         .uuid()
@@ -8691,7 +8888,7 @@ export const getCardsCardIdSensitiveDetailsRoute = createRoute({
       content: { 'application/json': { schema: ErrorSchema } },
     },
   },
-  security: [{ AccessToken: ['READ_SENSITIVE_CARD_DATA'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['READ_SENSITIVE_CARD_DATA'] }],
 })
 
 export const getCounterpartiesRoute = createRoute({
@@ -8700,9 +8897,14 @@ export const getCounterpartiesRoute = createRoute({
   tags: ['Counterparties'],
   summary: 'Retrieve a list of counterparties',
   description:
-    'Get all the counterparties that you have created, or use the query parameters to filter the results. \n\nThe counterparties are sorted by the `created_at` date in reverse chronological order.\n\nThe returned counterparties are **paginated**. \nThe maximum number of counterparties returned per page is specified by the `limit` parameter.\nTo get to the next page, make a new request and use the `created_at` date of the last counterparty returned in the previous response.\n\nFor more information, see the guides: [Retrieve counterparties](https://developer.revolut.com/docs/guides/manage-accounts/counterparties/retrieve-counterparties).',
+    'Get all the counterparties that you have created, or use the query parameters to filter the results. \n\nThe counterparties are sorted by the `created_at` date in reverse chronological order.\n\nThe returned counterparties are **paginated**. \nThe maximum number of counterparties returned per page is specified by the `limit` parameter.\nTo get to the next page, make a new request and use the `created_at` date of the last counterparty returned in the previous response.\n\nFor more information, see the guides: [Retrieve counterparties](https://developer.revolut.com/docs/guides/manage-accounts/counterparties/retrieve-counterparties).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Transfers** | Counterparties | Read | `counterparties:read` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).',
   operationId: 'getCounterparties',
   request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     query: z.object({
       name: z
         .string()
@@ -9056,7 +9258,7 @@ export const getCounterpartiesRoute = createRoute({
       content: { 'application/json': { schema: ErrorSchema } },
     },
   },
-  security: [{ AccessToken: ['READ'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['READ'] }],
 })
 
 export const postCounterpartyRoute = createRoute({
@@ -9065,9 +9267,14 @@ export const postCounterpartyRoute = createRoute({
   tags: ['Counterparties'],
   summary: 'Create a counterparty',
   description:
-    "Create a new counterparty to transact with.\n\n### Revtags in Sandbox\n\nIn the Sandbox environment, you cannot add real people and businesses as Revolut counterparties.\nTo help you simulate adding counterparties using Revtag, we created some test accounts of profile type `personal` that you can use.\n\n<details id='test-accounts-for-sandbox'>\n  <summary> \n  <b>Test accounts for Sandbox</b>\n  </summary>\n\n  To add a counterparty via Revtag, use one of these pairs for the `name` and `revtag` fields respectively:\n  - `Test User 1` & `john1pvki`\n  - `Test User 2` & `john2pvki`\n  -    ...\n  - `Test User 9` & `john9pvki`\n\n</details>\n\n### Address field recommendations\n\nSome payment rails may have stricter requirements regarding the `address` field – for example, by also requiring the `region` field.  \nThis is why we recommend that you use **all** available address fields (including `street_line1`, `region` and `city`) when creating a counterparty.\n\nThis significantly reduces the risk of any disruption to payments made via the API.\n\n### Multiple counterparties with the same details\n\nYou cannot create multiple counterparties with the same Revtag.\nThis restriction does not apply to other details. \nFor example:\n- **Revtag**: If you've already added `johnsmith` as a Revolut counterparty, you can't add another counterparty with the `johnsmith` Revtag.\n  If you try to do so, you'll get an error.\n- **Other details**: If you've added John Smith as an individual UK counterparty using GBP with `sort_code=54-01-05` and `account_no=12345678`, you can still use the same details to create another counterparty.\n\n### Counterparty name\n\nWhen creating a counterparty, ensure that you use the correct field to define the counterparty's name.\n\n<table>\n  <thead>\n    <tr>\n      <th rowSpan=\"2\"> Counterparty type</th>\n      <th colSpan=\"2\">Name field to use when added with:</th>\n    </tr>\n    <tr>\n      <th>Revtag</th>\n      <th>Other details</th>\n    </tr>\n  </thead>\n  <tbody>\n    <tr>\n      <th>Individual</th>\n      <td><code>name</code> (string)</td>\n      <td><code>individual_name</code> (<b>object</b> with string subfields for first and last name)</td>\n    </tr>\n    <tr>\n      <th>Company</th>\n      <td><code>name</code> (string)</td>\n      <td><code>company_name</code> (string)</td>\n    </tr>\n  </tbody>\n</table>\n\n---\n\nFor more information, see the guides: [Create a counterparty](https://developer.revolut.com/docs/guides/manage-accounts/counterparties/create-a-counterparty).",
+    "Create a new counterparty to transact with.\n\n### Revtags in Sandbox\n\nIn the Sandbox environment, you cannot add real people and businesses as Revolut counterparties.\nTo help you simulate adding counterparties using Revtag, we created some test accounts of profile type `personal` that you can use.\n\n<details id='test-accounts-for-sandbox'>\n  <summary> \n  <b>Test accounts for Sandbox</b>\n  </summary>\n\n  To add a counterparty via Revtag, use one of these pairs for the `name` and `revtag` fields respectively:\n  - `Test User 1` & `john1pvki`\n  - `Test User 2` & `john2pvki`\n  -    ...\n  - `Test User 9` & `john9pvki`\n\n</details>\n\n### Address field recommendations\n\nSome payment rails may have stricter requirements regarding the `address` field – for example, by also requiring the `region` field.  \nThis is why we recommend that you use **all** available address fields (including `street_line1`, `region` and `city`) when creating a counterparty.\n\nThis significantly reduces the risk of any disruption to payments made via the API.\n\n### Multiple counterparties with the same details\n\nYou cannot create multiple counterparties with the same Revtag.\nThis restriction does not apply to other details. \nFor example:\n- **Revtag**: If you've already added `johnsmith` as a Revolut counterparty, you can't add another counterparty with the `johnsmith` Revtag.\n  If you try to do so, you'll get an error.\n- **Other details**: If you've added John Smith as an individual UK counterparty using GBP with `sort_code=54-01-05` and `account_no=12345678`, you can still use the same details to create another counterparty.\n\n### Counterparty name\n\nWhen creating a counterparty, ensure that you use the correct field to define the counterparty's name.\n\n<table>\n  <thead>\n    <tr>\n      <th rowSpan=\"2\"> Counterparty type</th>\n      <th colSpan=\"2\">Name field to use when added with:</th>\n    </tr>\n    <tr>\n      <th>Revtag</th>\n      <th>Other details</th>\n    </tr>\n  </thead>\n  <tbody>\n    <tr>\n      <th>Individual</th>\n      <td><code>name</code> (string)</td>\n      <td><code>individual_name</code> (<b>object</b> with string subfields for first and last name)</td>\n    </tr>\n    <tr>\n      <th>Company</th>\n      <td><code>name</code> (string)</td>\n      <td><code>company_name</code> (string)</td>\n    </tr>\n  </tbody>\n</table>\n\n---\n\nFor more information, see the guides: [Create a counterparty](https://developer.revolut.com/docs/guides/manage-accounts/counterparties/create-a-counterparty).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Transfers** | Counterparties | Write | `counterparties:write` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).",
   operationId: 'addCounterparty',
   request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     body: {
       description: 'Counterparty to add',
       content: {
@@ -9367,7 +9574,7 @@ export const postCounterpartyRoute = createRoute({
       content: { 'application/json': { schema: ErrorSchema } },
     },
   },
-  security: [{ AccessToken: ['READ', 'WRITE'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['READ', 'WRITE'] }],
 })
 
 export const getCounterpartiesCountriesRoute = createRoute({
@@ -9376,8 +9583,15 @@ export const getCounterpartiesCountriesRoute = createRoute({
   tags: ['Counterparties'],
   summary: 'Check supported countries and currencies',
   description:
-    'Retrieve all supported bank countries and their available currencies for counterparty creation.\n\n:::note [Note]\nThis feature is not available in Sandbox.\n:::\n\nUse this endpoint to discover which country and currency combinations are supported before checking field requirements with the [Check counterparty field requirements endpoint](https://developer.revolut.com/docs/api/business#get-counterparty-requirements).\n\nFor more details, see the guide: **Check supported counterparty countries and currencies** section in [Create a counterparty](https://developer.revolut.com/docs/guides/manage-accounts/counterparties/create-a-counterparty#check-supported-counterparty-countries-and-currencies).',
+    'Retrieve all supported bank countries and their available currencies for counterparty creation.\n\n:::note [Note]\nThis feature is not available in Sandbox.\n:::\n\nUse this endpoint to discover which country and currency combinations are supported before checking field requirements with the [Check counterparty field requirements endpoint](https://developer.revolut.com/docs/api/business#get-counterparty-requirements).\n\nFor more details, see the guide: **Check supported counterparty countries and currencies** section in [Create a counterparty](https://developer.revolut.com/docs/guides/manage-accounts/counterparties/create-a-counterparty#check-supported-counterparty-countries-and-currencies).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Transfers** | Counterparties | Read | `counterparties:read` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).',
   operationId: 'getCounterpartyCountries',
+  request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
+  },
   responses: {
     200: {
       description: 'The list of supported bank countries and their available currencies',
@@ -9399,7 +9613,7 @@ export const getCounterpartiesCountriesRoute = createRoute({
       content: { 'application/json': { schema: ErrorWithIdSchema } },
     },
   },
-  security: [{ AccessToken: ['READ'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['READ'] }],
 })
 
 export const getCounterpartiesFieldsRoute = createRoute({
@@ -9408,9 +9622,14 @@ export const getCounterpartiesFieldsRoute = createRoute({
   tags: ['Counterparties'],
   summary: 'Check counterparty field requirements',
   description:
-    "Retrieve the list of conditionally required or applicable fields for creating a counterparty together with their constraints.\n\n:::note [Note]\nThis feature is not available in Sandbox.\n:::\n\nWhen creating a counterparty via the [Create a counterparty endpoint](https://developer.revolut.com/docs/api/business#add-counterparty), certain fields (such as `first_name`, `last_name`, `company_name`, `tax_id`, `route`, or `account_type`) become required depending on the counterparty's bank country, currency, and profile type.\nThis read-only endpoint allows you to discover these contextual fields dynamically, along with their validation rules and available options.\n\nOnly the fields relevant to the specific context are returned.\nThe input parameters (`country`, `currency`, and `recipient_type`) are intentionally excluded from the response.\n\nFor more details, see the guide: **Check counterparty field requirements** section in [Create a counterparty](https://developer.revolut.com/docs/guides/manage-accounts/counterparties/create-a-counterparty#check-counterparty-field-requirements).",
+    "Retrieve the list of conditionally required or applicable fields for creating a counterparty together with their constraints.\n\n:::note [Note]\nThis feature is not available in Sandbox.\n:::\n\nWhen creating a counterparty via the [Create a counterparty endpoint](https://developer.revolut.com/docs/api/business#add-counterparty), certain fields (such as `first_name`, `last_name`, `company_name`, `tax_id`, `route`, or `account_type`) become required depending on the counterparty's bank country, currency, and profile type.\nThis read-only endpoint allows you to discover these contextual fields dynamically, along with their validation rules and available options.\n\nOnly the fields relevant to the specific context are returned.\nThe input parameters (`country`, `currency`, and `recipient_type`) are intentionally excluded from the response.\n\nFor more details, see the guide: **Check counterparty field requirements** section in [Create a counterparty](https://developer.revolut.com/docs/guides/manage-accounts/counterparties/create-a-counterparty#check-counterparty-field-requirements).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Transfers** | Counterparties | Read | `counterparties:read` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).",
   operationId: 'getCounterpartyRequirements',
   request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     query: z.object({
       country: BankCountryCodeSchema.openapi({
         param: {
@@ -9599,7 +9818,7 @@ export const getCounterpartiesFieldsRoute = createRoute({
       content: { 'application/json': { schema: ErrorWithIdSchema } },
     },
   },
-  security: [{ AccessToken: ['READ'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['READ'] }],
 })
 
 export const getCounterpartyCounterpartyIdRoute = createRoute({
@@ -9607,9 +9826,15 @@ export const getCounterpartyCounterpartyIdRoute = createRoute({
   path: '/counterparty/{counterparty_id}',
   tags: ['Counterparties'],
   summary: 'Retrieve a counterparty',
-  description: 'Get the information about a specific counterparty by ID.',
+  description:
+    'Get the information about a specific counterparty by ID.\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Transfers** | Counterparties | Read | `counterparties:read` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).',
   operationId: 'getCounterparty',
   request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     params: z.object({
       counterparty_id: z
         .uuid()
@@ -9808,7 +10033,7 @@ export const getCounterpartyCounterpartyIdRoute = createRoute({
       content: { 'application/json': { schema: ErrorSchema } },
     },
   },
-  security: [{ AccessToken: ['READ'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['READ'] }],
 })
 
 export const deleteCounterpartyCounterpartyIdRoute = createRoute({
@@ -9817,9 +10042,14 @@ export const deleteCounterpartyCounterpartyIdRoute = createRoute({
   tags: ['Counterparties'],
   summary: 'Delete a counterparty',
   description:
-    'Delete a counterparty with the given ID. When a counterparty is deleted, you cannot make any payments to the counterparty.',
+    'Delete a counterparty with the given ID. When a counterparty is deleted, you cannot make any payments to the counterparty.\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Transfers** | Counterparties | Write | `counterparties:write` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).',
   operationId: 'deleteCounterparty',
   request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     params: z.object({
       counterparty_id: z
         .uuid()
@@ -9841,7 +10071,7 @@ export const deleteCounterpartyCounterpartyIdRoute = createRoute({
       content: { 'application/json': { schema: ErrorSchema } },
     },
   },
-  security: [{ AccessToken: ['READ', 'WRITE'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['READ', 'WRITE'] }],
 })
 
 export const patchCounterpartiesCounterpartyIdPaymentMethodsPaymentMethodIdRoute = createRoute({
@@ -9850,9 +10080,14 @@ export const patchCounterpartiesCounterpartyIdPaymentMethodsPaymentMethodIdRoute
   tags: ['Counterparties'],
   summary: "Update a counterparty's payment method",
   description:
-    "Update the **address** of a counterparty's payment method.\n\n:::tip [What is a payment method?]\nA payment method is an individual account or card linked to a counterparty. When you [retrieve a counterparty](https://developer.revolut.com/docs/api/business#get-counterparty), the response includes an `accounts` array and a `cards` array — each entry in these arrays is a payment method with its own `id`.\n:::\n\nAs only bank account payment methods have an address, you can use this endpoint to update the address of a counterparty's bank account.\n\nTo get the `payment_method_id` for the bank account, [retrieve the counterparty](https://developer.revolut.com/docs/api/business#get-counterparty) and use the `id` from the `accounts` array in the response.\n\nYou must provide the full address object — all required address fields must be present in the request.\nOmitted optional fields will retain their existing values.\n\nFor more information, see the guide: [Update a counterparty's payment method](https://developer.revolut.com/docs/guides/manage-accounts/counterparties/update-counterparty-payment-method).",
+    "Update the **address** of a counterparty's payment method.\n\n:::tip [What is a payment method?]\nA payment method is an individual account or card linked to a counterparty. When you [retrieve a counterparty](https://developer.revolut.com/docs/api/business#get-counterparty), the response includes an `accounts` array and a `cards` array — each entry in these arrays is a payment method with its own `id`.\n:::\n\nAs only bank account payment methods have an address, you can use this endpoint to update the address of a counterparty's bank account.\n\nTo get the `payment_method_id` for the bank account, [retrieve the counterparty](https://developer.revolut.com/docs/api/business#get-counterparty) and use the `id` from the `accounts` array in the response.\n\nYou must provide the full address object — all required address fields must be present in the request.\nOmitted optional fields will retain their existing values.\n\nFor more information, see the guide: [Update a counterparty's payment method](https://developer.revolut.com/docs/guides/manage-accounts/counterparties/update-counterparty-payment-method).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Transfers** | Counterparties | Write | `counterparties:write` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).",
   operationId: 'updateCounterpartyPaymentMethod',
   request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     params: z.object({
       counterparty_id: z
         .uuid()
@@ -9909,7 +10144,7 @@ export const patchCounterpartiesCounterpartyIdPaymentMethodsPaymentMethodIdRoute
       content: { 'application/json': { schema: ErrorWithIdSchema } },
     },
   },
-  security: [{ AccessToken: ['WRITE'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['WRITE'] }],
 })
 
 export const getRateRoute = createRoute({
@@ -9918,9 +10153,14 @@ export const getRateRoute = createRoute({
   tags: ['Foreign exchange'],
   summary: 'Get an exchange rate',
   description:
-    'Get the sell exchange rate between two currencies.\n\nYou can check the [currencies supported in Production](https://help.revolut.com/business/help/receiving-payments/currency-exchanges/which-currencies-can-i-exchange-and-keep-in-my-account/) in the Revolut Help Centre.\nSome of these currencies might not be available in Sandbox.\n\nFor more information, see the guides: [Exchange money](https://developer.revolut.com/docs/guides/manage-accounts/exchange-money).',
+    'Get the sell exchange rate between two currencies.\n\nYou can check the [currencies supported in Production](https://help.revolut.com/business/help/receiving-payments/currency-exchanges/which-currencies-can-i-exchange-and-keep-in-my-account/) in the Revolut Help Centre.\nSome of these currencies might not be available in Sandbox.\n\nFor more information, see the guides: [Exchange money](https://developer.revolut.com/docs/guides/manage-accounts/exchange-money).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Foreign exchange** | Exchange | Read | `exchange:read` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).',
   operationId: 'getRate',
   request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     query: z.object({
       from: CurrencySchema.openapi({
         param: {
@@ -9996,7 +10236,7 @@ export const getRateRoute = createRoute({
       content: { 'application/json': { schema: ErrorSchema } },
     },
   },
-  security: [{ AccessToken: ['READ'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['READ'] }],
 })
 
 export const postExchangeRoute = createRoute({
@@ -10005,9 +10245,14 @@ export const postExchangeRoute = createRoute({
   tags: ['Foreign exchange'],
   summary: 'Exchange money',
   description:
-    'Exchange money using one of these methods: \n\n- **Sell currency**: You know the amount of currency to sell. \n  For example, you want to exchange 135.5 USD to some EUR. \n\n  Specify the amount in the `from` object.\n- **Buy currency**: You know the amount of currency to buy. \n  For example, you want to exchange some USD to 200 EUR. \n\n  Specify the amount in the `to` object.\n\n:::note\nYou must specify the `amount` field only once, either in the `from` object or in the `to` object.\n:::\n\nYou can check the [currencies supported in Production](https://help.revolut.com/business/help/receiving-payments/currency-exchanges/which-currencies-can-i-exchange-and-keep-in-my-account/) in the Revolut Help Centre.\nSome of these currencies might not be available in Sandbox.\n\nFor more information, see the guides: [Exchange money](https://developer.revolut.com/docs/guides/manage-accounts/exchange-money).',
+    'Exchange money using one of these methods: \n\n- **Sell currency**: You know the amount of currency to sell. \n  For example, you want to exchange 135.5 USD to some EUR. \n\n  Specify the amount in the `from` object.\n- **Buy currency**: You know the amount of currency to buy. \n  For example, you want to exchange some USD to 200 EUR. \n\n  Specify the amount in the `to` object.\n\n:::note\nYou must specify the `amount` field only once, either in the `from` object or in the `to` object.\n:::\n\nYou can check the [currencies supported in Production](https://help.revolut.com/business/help/receiving-payments/currency-exchanges/which-currencies-can-i-exchange-and-keep-in-my-account/) in the Revolut Help Centre.\nSome of these currencies might not be available in Sandbox.\n\nFor more information, see the guides: [Exchange money](https://developer.revolut.com/docs/guides/manage-accounts/exchange-money).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Foreign exchange** | Exchange | Write | `exchange:write` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).',
   operationId: 'exchangeMoney',
   request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     body: {
       description: 'Specify the exchange information',
       content: {
@@ -10075,7 +10320,7 @@ export const postExchangeRoute = createRoute({
       content: { 'application/json': { schema: ErrorSchema } },
     },
   },
-  security: [{ AccessToken: ['READ', 'PAY'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['READ', 'PAY'] }],
 })
 
 export const getExchangeReasonsRoute = createRoute({
@@ -10084,8 +10329,15 @@ export const getExchangeReasonsRoute = createRoute({
   tags: ['Foreign exchange', 'Transfers'],
   summary: 'Get exchange reasons',
   description:
-    'Depending on the country and the amount of funds to be exchanged, you might be required to provide an exchange reason. \nWith this endpoint, you can retrieve all exchange reasons available to your business account.\n\nAfter you retrieve the results, use the appropriate reason code in the `exchange_reason_code` field when [exchanging money](https://developer.revolut.com/docs/api/business#exchange-money) or [making a payment](https://developer.revolut.com/docs/api/business#create-payment) that involves foreign currency exchange.',
+    'Depending on the country and the amount of funds to be exchanged, you might be required to provide an exchange reason. \nWith this endpoint, you can retrieve all exchange reasons available to your business account.\n\nAfter you retrieve the results, use the appropriate reason code in the `exchange_reason_code` field when [exchanging money](https://developer.revolut.com/docs/api/business#exchange-money) or [making a payment](https://developer.revolut.com/docs/api/business#create-payment) that involves foreign currency exchange.\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Foreign exchange** | Exchange reasons | Read | `exchange-reasons:read` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).',
   operationId: 'getExchangeReasons',
+  request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
+  },
   responses: {
     200: {
       description: 'List of exchange reasons',
@@ -10123,7 +10375,7 @@ export const getExchangeReasonsRoute = createRoute({
       content: { 'application/json': { schema: ErrorSchema } },
     },
   },
-  security: [{ AccessToken: ['READ'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['READ'] }],
 })
 
 export const getExpensesRoute = createRoute({
@@ -10132,9 +10384,14 @@ export const getExpensesRoute = createRoute({
   tags: ['Expenses'],
   summary: 'Retrieve a list of expenses',
   description:
-    "Get all your expenses, or use the query parameters to filter the results.\n\nThe expenses are sorted by the `expense_date` value in reverse chronological order, and they're **paginated**.\nThe maximum number of expenses returned per page is specified by the `count` parameter.\nTo get the next page of results, make a new request and use the `expense_date` value from the last item of the previous page as the value for the `to` parameter.\n\nThe data enriched by the user, for example, VAT and cost centre, is returned under `splits[].tax_rate` and `splits[].labels`, respectively.\n\n:::note\n- The API returns a maximum of 500 expenses per request.\n- This feature is not available in Sandbox.\n:::\n\nFor more information, see the guides: [Retrieve expenses and receipts](https://developer.revolut.com/docs/guides/manage-accounts/accounts-and-transactions/retrieve-expenses).",
+    "Get all your expenses, or use the query parameters to filter the results.\n\nThe expenses are sorted by the `expense_date` value in reverse chronological order, and they're **paginated**.\nThe maximum number of expenses returned per page is specified by the `count` parameter.\nTo get the next page of results, make a new request and use the `expense_date` value from the last item of the previous page as the value for the `to` parameter.\n\nThe data enriched by the user, for example, VAT and cost centre, is returned under `splits[].tax_rate` and `splits[].labels`, respectively.\n\n:::note\n- The API returns a maximum of 500 expenses per request.\n- This feature is not available in Sandbox.\n:::\n\nFor more information, see the guides: [Retrieve expenses and receipts](https://developer.revolut.com/docs/guides/manage-accounts/accounts-and-transactions/retrieve-expenses).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Expenses** | Expenses | Read | `expenses:read` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).",
   operationId: 'getExpenses',
   request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     query: z.object({
       from: z.iso
         .datetime({ offset: true })
@@ -10431,7 +10688,7 @@ export const getExpensesRoute = createRoute({
       content: { 'application/json': { schema: ErrorSchema } },
     },
   },
-  security: [{ AccessToken: ['READ'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['READ'] }],
 })
 
 export const getExpensesExpenseIdRoute = createRoute({
@@ -10440,9 +10697,14 @@ export const getExpensesExpenseIdRoute = createRoute({
   tags: ['Expenses'],
   summary: 'Retrieve an expense',
   description:
-    'Get the information about a specific expense by ID.\n\nThe data enriched by the user, for example, VAT and cost centre, is returned under `splits[].tax_rate` and `splits[].labels`, respectively.\n\n:::note\nThis feature is not available in Sandbox.\n:::\n\nFor more information, see the guides: [Retrieve expenses and receipts](https://developer.revolut.com/docs/guides/manage-accounts/accounts-and-transactions/retrieve-expenses).',
+    'Get the information about a specific expense by ID.\n\nThe data enriched by the user, for example, VAT and cost centre, is returned under `splits[].tax_rate` and `splits[].labels`, respectively.\n\n:::note\nThis feature is not available in Sandbox.\n:::\n\nFor more information, see the guides: [Retrieve expenses and receipts](https://developer.revolut.com/docs/guides/manage-accounts/accounts-and-transactions/retrieve-expenses).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Expenses** | Expenses | Read | `expenses:read` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).',
   operationId: 'getExpense',
   request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     params: z.object({
       expense_id: z
         .uuid()
@@ -10689,7 +10951,7 @@ export const getExpensesExpenseIdRoute = createRoute({
       content: { 'application/json': { schema: ErrorSchema } },
     },
   },
-  security: [{ AccessToken: ['READ'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['READ'] }],
 })
 
 export const getExpensesExpenseIdReceiptsReceiptIdContentRoute = createRoute({
@@ -10698,9 +10960,14 @@ export const getExpensesExpenseIdReceiptsReceiptIdContentRoute = createRoute({
   tags: ['Expenses'],
   summary: 'Retrieve a receipt related to an expense',
   description:
-    "Get the receipt related to an expense by providing the receipt's ID.\n\n:::note\nThis feature is not available in Sandbox.\n:::\n\nFor more information, see the guides: [Retrieve expenses and receipts](https://developer.revolut.com/docs/guides/manage-accounts/accounts-and-transactions/retrieve-expenses).",
+    "Get the receipt related to an expense by providing the receipt's ID.\n\n:::note\nThis feature is not available in Sandbox.\n:::\n\nFor more information, see the guides: [Retrieve expenses and receipts](https://developer.revolut.com/docs/guides/manage-accounts/accounts-and-transactions/retrieve-expenses).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Expenses** | Expenses | Read | `expenses:read` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).",
   operationId: 'getExpenseReceipt',
   request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     params: z.object({
       expense_id: z
         .uuid()
@@ -10786,7 +11053,7 @@ export const getExpensesExpenseIdReceiptsReceiptIdContentRoute = createRoute({
       content: { 'application/json': { schema: ErrorSchema } },
     },
   },
-  security: [{ AccessToken: ['READ'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['READ'] }],
 })
 
 export const getLabelGroupsRoute = createRoute({
@@ -10795,9 +11062,14 @@ export const getLabelGroupsRoute = createRoute({
   tags: ['Accounting', 'Labels'],
   summary: 'Retrieve a list of label groups',
   description:
-    "Get available label groups based on the provided query criteria.\n\nThe label groups are sorted by the `created_at` date in reverse chronological order, and they're **paginated**.\n\nFor more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage labels and label groups](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-labels-and-label-groups).",
+    "Get available label groups based on the provided query criteria.\n\nThe label groups are sorted by the `created_at` date in reverse chronological order, and they're **paginated**.\n\nFor more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage labels and label groups](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-labels-and-label-groups).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Accounting** | Labels | Read | `labels:read` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).",
   operationId: 'getLabelGroups',
   request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     query: z.object({
       limit: z
         .preprocess(
@@ -10980,7 +11252,7 @@ export const getLabelGroupsRoute = createRoute({
       content: { 'application/json': { schema: ErrorWithIdSchema } },
     },
   },
-  security: [{ AccessToken: ['READ'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['READ'] }],
 })
 
 export const postLabelGroupsRoute = createRoute({
@@ -10989,9 +11261,14 @@ export const postLabelGroupsRoute = createRoute({
   tags: ['Accounting', 'Labels'],
   summary: 'Create a new label group',
   description:
-    'Add a new group of labels that can be applied to your financial records, such as expenses.\n\n:::note\n- This operation is not supported for [externally managed label groups](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-labels-and-label-groups#externally-managed-settings).\n- You can have up to 5 label groups at a time per business.\n:::\n\nFor more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage labels and label groups](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-labels-and-label-groups).',
+    'Add a new group of labels that can be applied to your financial records, such as expenses.\n\n:::note\n- This operation is not supported for [externally managed label groups](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-labels-and-label-groups#externally-managed-settings).\n- You can have up to 5 label groups at a time per business.\n:::\n\nFor more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage labels and label groups](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-labels-and-label-groups).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Accounting** | Labels | Write | `labels:write` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).',
   operationId: 'createLabelGroup',
   request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     body: {
       content: {
         'application/json': {
@@ -11148,7 +11425,7 @@ export const postLabelGroupsRoute = createRoute({
       content: { 'application/json': { schema: ErrorWithIdSchema } },
     },
   },
-  security: [{ AccessToken: ['WRITE'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['WRITE'] }],
 })
 
 export const getLabelGroupsGroupIdRoute = createRoute({
@@ -11157,9 +11434,14 @@ export const getLabelGroupsGroupIdRoute = createRoute({
   tags: ['Accounting', 'Labels'],
   summary: 'Retrieve label group details',
   description:
-    'Get the details of a specific label group based on the label group ID.\n\nThe details include the label group name, as well as when the label group was added to your settings, and when it was last updated.\n\nFor more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage labels and label groups](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-labels-and-label-groups).',
+    'Get the details of a specific label group based on the label group ID.\n\nThe details include the label group name, as well as when the label group was added to your settings, and when it was last updated.\n\nFor more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage labels and label groups](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-labels-and-label-groups).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Accounting** | Labels | Read | `labels:read` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).',
   operationId: 'getLabelGroup',
   request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     params: z.object({
       group_id: z
         .uuid()
@@ -11237,7 +11519,7 @@ export const getLabelGroupsGroupIdRoute = createRoute({
       content: { 'application/json': { schema: ErrorWithIdSchema } },
     },
   },
-  security: [{ AccessToken: ['READ'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['READ'] }],
 })
 
 export const deleteLabelGroupsGroupIdRoute = createRoute({
@@ -11246,9 +11528,14 @@ export const deleteLabelGroupsGroupIdRoute = createRoute({
   tags: ['Accounting', 'Labels'],
   summary: 'Delete a label group',
   description:
-    "Delete a specific label group, based on its ID.\n\n:::note\nThis operation is not supported for [externally managed label groups](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-labels-and-label-groups#externally-managed-settings).\n:::\n\nOnce the label group is deleted, it will not be returned by the API or in the Revolut Business app, and:\n- You will not be able to apply labels from the group to new financial records (e.g. expenses). \n- Existing records that have not been completed and that contain labels from this group will be marked as invalid, and you'll need to update them to use different labels.\n- Completed records will not be affected by the change. \n\nA successful response does not get any content in return.\n\nFor more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage labels and label groups](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-labels-and-label-groups).",
+    "Delete a specific label group, based on its ID.\n\n:::note\nThis operation is not supported for [externally managed label groups](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-labels-and-label-groups#externally-managed-settings).\n:::\n\nOnce the label group is deleted, it will not be returned by the API or in the Revolut Business app, and:\n- You will not be able to apply labels from the group to new financial records (e.g. expenses). \n- Existing records that have not been completed and that contain labels from this group will be marked as invalid, and you'll need to update them to use different labels.\n- Completed records will not be affected by the change. \n\nA successful response does not get any content in return.\n\nFor more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage labels and label groups](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-labels-and-label-groups).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Accounting** | Labels | Write | `labels:write` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).",
   operationId: 'deleteLabelGroup',
   request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     params: z.object({
       group_id: z
         .uuid()
@@ -11333,7 +11620,7 @@ export const deleteLabelGroupsGroupIdRoute = createRoute({
       content: { 'application/json': { schema: ErrorWithIdSchema } },
     },
   },
-  security: [{ AccessToken: ['WRITE'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['WRITE'] }],
 })
 
 export const patchLabelGroupsGroupIdRoute = createRoute({
@@ -11342,9 +11629,14 @@ export const patchLabelGroupsGroupIdRoute = createRoute({
   tags: ['Accounting', 'Labels'],
   summary: 'Update label group settings',
   description:
-    'Update the name for a specific label group, based on its ID.\n\n:::note\nThis operation is not supported for [externally managed label groups](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-labels-and-label-groups#externally-managed-settings).\n:::\n\nFor more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage labels and label groups](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-labels-and-label-groups).',
+    'Update the name for a specific label group, based on its ID.\n\n:::note\nThis operation is not supported for [externally managed label groups](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-labels-and-label-groups#externally-managed-settings).\n:::\n\nFor more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage labels and label groups](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-labels-and-label-groups).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Accounting** | Labels | Write | `labels:write` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).',
   operationId: 'updateLabelGroup',
   request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     params: z.object({
       group_id: z
         .uuid()
@@ -11489,7 +11781,7 @@ export const patchLabelGroupsGroupIdRoute = createRoute({
       content: { 'application/json': { schema: ErrorWithIdSchema } },
     },
   },
-  security: [{ AccessToken: ['WRITE'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['WRITE'] }],
 })
 
 export const getLabelGroupsGroupIdLabelsRoute = createRoute({
@@ -11498,9 +11790,14 @@ export const getLabelGroupsGroupIdLabelsRoute = createRoute({
   tags: ['Accounting', 'Labels'],
   summary: 'Retrieve a list of labels from a label group',
   description:
-    "Get labels from a specific label group based on the provided query criteria.\n\n:::note\nThe API returns a maximum of 500 labels per request. \nThe default page size is 100.\n:::\n\nThe labels are sorted by the `created_at` date in reverse chronological order, and they're **paginated**.\nThe page size, that is, the maximum number of labels returned per page is specified by the `limit` parameter. \n- If the number of results exceeds the page size, the response also returns a cursor for the next page under `next_page_token`.        \n  To get the next page of results, make a new request using that `next_page_token` value in `page_token`.\n- If the number of results is smaller than the page size, `next_page_token` is not returned.\n\nFor more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage labels and label groups](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-labels-and-label-groups).",
+    "Get labels from a specific label group based on the provided query criteria.\n\n:::note\nThe API returns a maximum of 500 labels per request. \nThe default page size is 100.\n:::\n\nThe labels are sorted by the `created_at` date in reverse chronological order, and they're **paginated**.\nThe page size, that is, the maximum number of labels returned per page is specified by the `limit` parameter. \n- If the number of results exceeds the page size, the response also returns a cursor for the next page under `next_page_token`.        \n  To get the next page of results, make a new request using that `next_page_token` value in `page_token`.\n- If the number of results is smaller than the page size, `next_page_token` is not returned.\n\nFor more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage labels and label groups](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-labels-and-label-groups).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Accounting** | Labels | Read | `labels:read` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).",
   operationId: 'getLabels',
   request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     params: z.object({
       group_id: z
         .uuid()
@@ -11689,7 +11986,7 @@ export const getLabelGroupsGroupIdLabelsRoute = createRoute({
       content: { 'application/json': { schema: ErrorWithIdSchema } },
     },
   },
-  security: [{ AccessToken: ['READ'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['READ'] }],
 })
 
 export const postLabelGroupsGroupIdLabelsRoute = createRoute({
@@ -11698,9 +11995,14 @@ export const postLabelGroupsGroupIdLabelsRoute = createRoute({
   tags: ['Accounting', 'Labels'],
   summary: 'Create a new label',
   description:
-    'Add a new label to a label group. \n\n:::note\nThis operation is not supported for [externally managed labels](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-labels-and-label-groups#externally-managed-settings).\n:::\n\nThe labels are used for accounting and can be applied to your financial records, such as expenses.\n\nFor more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage labels and label groups](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-labels-and-label-groups).',
+    'Add a new label to a label group. \n\n:::note\nThis operation is not supported for [externally managed labels](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-labels-and-label-groups#externally-managed-settings).\n:::\n\nThe labels are used for accounting and can be applied to your financial records, such as expenses.\n\nFor more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage labels and label groups](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-labels-and-label-groups).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Accounting** | Labels | Write | `labels:write` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).',
   operationId: 'createLabel',
   request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     params: z.object({
       group_id: z
         .uuid()
@@ -11827,7 +12129,7 @@ export const postLabelGroupsGroupIdLabelsRoute = createRoute({
       content: { 'application/json': { schema: ErrorWithIdSchema } },
     },
   },
-  security: [{ AccessToken: ['WRITE'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['WRITE'] }],
 })
 
 export const deleteLabelGroupsGroupIdLabelsLabelIdRoute = createRoute({
@@ -11836,9 +12138,14 @@ export const deleteLabelGroupsGroupIdLabelsLabelIdRoute = createRoute({
   tags: ['Accounting', 'Labels'],
   summary: 'Delete a label',
   description:
-    "Delete a specific label, based on the IDs of the label and its label group.\n\n:::note\nThis operation is not supported for [externally managed labels](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-labels-and-label-groups#externally-managed-settings).\n:::\n\nOnce the label is deleted, it will not be returned by the API or in the Revolut Business app, and:\n- You will not be able to apply it to new financial records (e.g. expenses). \n- Existing records with this label that have not been completed will be marked as invalid, and you'll need to update them to use a different label.\n- Completed records will not be affected by the change. \n\nA successful response does not get any content in return.\n\nFor more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage labels and label groups](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-labels-and-label-groups).",
+    "Delete a specific label, based on the IDs of the label and its label group.\n\n:::note\nThis operation is not supported for [externally managed labels](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-labels-and-label-groups#externally-managed-settings).\n:::\n\nOnce the label is deleted, it will not be returned by the API or in the Revolut Business app, and:\n- You will not be able to apply it to new financial records (e.g. expenses). \n- Existing records with this label that have not been completed will be marked as invalid, and you'll need to update them to use a different label.\n- Completed records will not be affected by the change. \n\nA successful response does not get any content in return.\n\nFor more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage labels and label groups](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-labels-and-label-groups).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Accounting** | Labels | Write | `labels:write` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).",
   operationId: 'deleteLabel',
   request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     params: z.object({
       group_id: z
         .uuid()
@@ -11939,7 +12246,7 @@ export const deleteLabelGroupsGroupIdLabelsLabelIdRoute = createRoute({
       content: { 'application/json': { schema: ErrorWithIdSchema } },
     },
   },
-  security: [{ AccessToken: ['WRITE'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['WRITE'] }],
 })
 
 export const patchLabelGroupsGroupIdLabelsLabelIdRoute = createRoute({
@@ -11948,9 +12255,14 @@ export const patchLabelGroupsGroupIdLabelsLabelIdRoute = createRoute({
   tags: ['Accounting', 'Labels'],
   summary: 'Update a label',
   description:
-    'Update the name for a specific label, based on the IDs of the label and its label group.\n\n:::note\nThis operation is not supported for [externally managed labels]/docs/guides/manage-accounts/accounting/manage-labels-and-label-groups(#externally-managed-settings).\n:::\n\nFor more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage labels and label groups](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-labels-and-label-groups).',
+    'Update the name for a specific label, based on the IDs of the label and its label group.\n\n:::note\nThis operation is not supported for [externally managed labels]/docs/guides/manage-accounts/accounting/manage-labels-and-label-groups(#externally-managed-settings).\n:::\n\nFor more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage labels and label groups](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-labels-and-label-groups).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Accounting** | Labels | Write | `labels:write` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).',
   operationId: 'updateLabel',
   request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     params: z.object({
       group_id: z
         .uuid()
@@ -12111,7 +12423,7 @@ export const patchLabelGroupsGroupIdLabelsLabelIdRoute = createRoute({
       content: { 'application/json': { schema: ErrorWithIdSchema } },
     },
   },
-  security: [{ AccessToken: ['WRITE'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['WRITE'] }],
 })
 
 export const getPaymentDraftsRoute = createRoute({
@@ -12120,9 +12432,14 @@ export const getPaymentDraftsRoute = createRoute({
   tags: ['Payment drafts'],
   summary: 'Retrieve a list of payment drafts',
   description:
-    "Get the list of payment drafts that haven't been [sent for processing](https://developer.revolut.com/docs/guides/manage-accounts/transfers/payment-drafts#send-drafts-for-processing).\n\nBy default, only payment drafts created with the API (including [Draft payment](https://developer.revolut.com/docs/api/open-banking#tag-draft-payment) endpoints) are returned. To retrieve drafts from other sources, use the `source` parameter.\n\nThe response lists the drafts with their details, such as the number of payments included in the draft, but not the payment details.\n\nFor more information, see the guides: [Payment drafts](https://developer.revolut.com/docs/guides/manage-accounts/transfers/payment-drafts).",
+    "Get the list of payment drafts that haven't been [sent for processing](https://developer.revolut.com/docs/guides/manage-accounts/transfers/payment-drafts#send-drafts-for-processing).\n\nBy default, only payment drafts created with the API (including [Draft payment](https://developer.revolut.com/docs/api/open-banking#tag-draft-payment) endpoints) are returned. To retrieve drafts from other sources, use the `source` parameter.\n\nThe response lists the drafts with their details, such as the number of payments included in the draft, but not the payment details.\n\nFor more information, see the guides: [Payment drafts](https://developer.revolut.com/docs/guides/manage-accounts/transfers/payment-drafts).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Transfers** | Payment drafts | Read | `payment-drafts:read` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).",
   operationId: 'getPaymentDrafts',
   request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     query: z.object({
       source: z
         .enum(['api', 'integration', 'email', 'all'])
@@ -12164,7 +12481,7 @@ export const getPaymentDraftsRoute = createRoute({
       content: { 'application/json': { schema: ErrorWithIdSchema } },
     },
   },
-  security: [{ AccessToken: ['READ'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['READ'] }],
 })
 
 export const postPaymentDraftsRoute = createRoute({
@@ -12173,9 +12490,14 @@ export const postPaymentDraftsRoute = createRoute({
   tags: ['Payment drafts'],
   summary: 'Create a payment draft',
   description:
-    "Create a payment draft.\n\nWhen you create a payment draft, it stays a draft until you [send it for processing as payment](https://developer.revolut.com/docs/guides/manage-accounts/transfers/payment-drafts#send-drafts-for-processing) in the [Revolut Business app](https://business.revolut.com/).\n\nUntil then, you can [delete](https://developer.revolut.com/docs/api/business#delete-payment-draft) the draft if you no longer wish to proceed with it.\n\n:::note\nIf you or the payment you're making is subject to an [approval process](https://help.revolut.com/business/help/managing-my-business/users-and-employees/how-can-i-set-payment-approval-rules/), when you send the draft for processing, the payment goes into the `Pending review` state.\nBefore it can be processed, the business owner, administrator, or another team member designated as an approver must approve it in the Revolut Business app.\n:::\n\nFor more information on use cases and other details, see the guides: [Payment drafts](https://developer.revolut.com/docs/guides/manage-accounts/transfers/payment-drafts).",
+    "Create a payment draft.\n\nWhen you create a payment draft, it stays a draft until you [send it for processing as payment](https://developer.revolut.com/docs/guides/manage-accounts/transfers/payment-drafts#send-drafts-for-processing) in the [Revolut Business app](https://business.revolut.com/).\n\nUntil then, you can [delete](https://developer.revolut.com/docs/api/business#delete-payment-draft) the draft if you no longer wish to proceed with it.\n\n:::note\nIf you or the payment you're making is subject to an [approval process](https://help.revolut.com/business/help/managing-my-business/users-and-employees/how-can-i-set-payment-approval-rules/), when you send the draft for processing, the payment goes into the `Pending review` state.\nBefore it can be processed, the business owner, administrator, or another team member designated as an approver must approve it in the Revolut Business app.\n:::\n\nFor more information on use cases and other details, see the guides: [Payment drafts](https://developer.revolut.com/docs/guides/manage-accounts/transfers/payment-drafts).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Transfers** | Payment drafts | Write | `payment-drafts:write` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).",
   operationId: 'createPaymentDraft',
   request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     body: {
       description: 'The payment draft information',
       content: {
@@ -12342,7 +12664,7 @@ export const postPaymentDraftsRoute = createRoute({
       content: { 'application/json': { schema: ErrorWithIdSchema } },
     },
   },
-  security: [{ AccessToken: ['READ', 'WRITE'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['READ', 'WRITE'] }],
 })
 
 export const getPaymentDraftsPaymentDraftIdRoute = createRoute({
@@ -12351,9 +12673,14 @@ export const getPaymentDraftsPaymentDraftIdRoute = createRoute({
   tags: ['Payment drafts'],
   summary: 'Retrieve a payment draft',
   description:
-    'Get the information about a specific payment draft by ID.\n\nReturns drafts created with the API or via the [Revolut Business app](https://business.revolut.com/).\n\nThe response lists the details of the payment(s) included in the draft, as well as the draft details.\n\nFor more information, see the guides: [Payment drafts](https://developer.revolut.com/docs/guides/manage-accounts/transfers/payment-drafts).',
+    'Get the information about a specific payment draft by ID.\n\nReturns drafts created with the API or via the [Revolut Business app](https://business.revolut.com/).\n\nThe response lists the details of the payment(s) included in the draft, as well as the draft details.\n\nFor more information, see the guides: [Payment drafts](https://developer.revolut.com/docs/guides/manage-accounts/transfers/payment-drafts).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Transfers** | Payment drafts | Read | `payment-drafts:read` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).',
   operationId: 'getPaymentDraft',
   request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     params: z.object({
       payment_draft_id: z
         .uuid()
@@ -12402,7 +12729,7 @@ export const getPaymentDraftsPaymentDraftIdRoute = createRoute({
       content: { 'application/json': { schema: ErrorWithIdSchema } },
     },
   },
-  security: [{ AccessToken: ['READ'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['READ'] }],
 })
 
 export const deletePaymentDraftsPaymentDraftIdRoute = createRoute({
@@ -12411,9 +12738,14 @@ export const deletePaymentDraftsPaymentDraftIdRoute = createRoute({
   tags: ['Payment drafts'],
   summary: 'Delete a payment draft',
   description:
-    "Delete a payment draft with the given ID.\n\nYou can delete a payment draft only if it hasn't been [sent for processing](https://developer.revolut.com/docs/guides/manage-accounts/transfers/payment-drafts#send-drafts-for-processing).\n\nFor more information, see the guides: [Payment drafts](https://developer.revolut.com/docs/guides/manage-accounts/transfers/payment-drafts).",
+    "Delete a payment draft with the given ID.\n\nYou can delete a payment draft only if it hasn't been [sent for processing](https://developer.revolut.com/docs/guides/manage-accounts/transfers/payment-drafts#send-drafts-for-processing).\n\nFor more information, see the guides: [Payment drafts](https://developer.revolut.com/docs/guides/manage-accounts/transfers/payment-drafts).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Transfers** | Payment drafts | Write | `payment-drafts:write` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).",
   operationId: 'deletePaymentDraft',
   request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     params: z.object({
       payment_draft_id: z
         .uuid()
@@ -12435,7 +12767,7 @@ export const deletePaymentDraftsPaymentDraftIdRoute = createRoute({
       content: { 'application/json': { schema: ErrorWithIdSchema } },
     },
   },
-  security: [{ AccessToken: ['READ', 'WRITE'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['READ', 'WRITE'] }],
 })
 
 export const patchPaymentDraftsPaymentDraftIdRoute = createRoute({
@@ -12444,9 +12776,14 @@ export const patchPaymentDraftsPaymentDraftIdRoute = createRoute({
   tags: ['Payment drafts'],
   summary: 'Update a payment draft',
   description:
-    'Update the metadata of a payment draft (`title` and/or `schedule_for`).\n\n:::note\n- You can update drafts created with the API or via the Revolut Business app.\n- The `schedule_for` date must be in the future.\n:::\n\nAll fields are optional — omitting a field leaves it unchanged.\n\nFor more information, see the guides: [Payment drafts](https://developer.revolut.com/docs/guides/manage-accounts/transfers/payment-drafts).',
+    'Update the metadata of a payment draft (`title` and/or `schedule_for`).\n\n:::note\n- You can update drafts created with the API or via the Revolut Business app.\n- The `schedule_for` date must be in the future.\n:::\n\nAll fields are optional — omitting a field leaves it unchanged.\n\nFor more information, see the guides: [Payment drafts](https://developer.revolut.com/docs/guides/manage-accounts/transfers/payment-drafts).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Transfers** | Payment drafts | Write | `payment-drafts:write` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).',
   operationId: 'updatePaymentDraft',
   request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     params: z.object({
       payment_draft_id: z
         .uuid()
@@ -12531,7 +12868,7 @@ export const patchPaymentDraftsPaymentDraftIdRoute = createRoute({
       content: { 'application/json': { schema: ErrorWithIdSchema } },
     },
   },
-  security: [{ AccessToken: ['READ', 'WRITE'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['READ', 'WRITE'] }],
 })
 
 export const postPaymentDraftsPaymentDraftIdPaymentsRoute = createRoute({
@@ -12540,9 +12877,14 @@ export const postPaymentDraftsPaymentDraftIdPaymentsRoute = createRoute({
   tags: ['Payment drafts'],
   summary: 'Add a payment to a payment draft',
   description:
-    'Add a new payment to an existing payment draft.\n\n:::note\nYou can add payments to drafts created with the API or via the Revolut Business app.\n:::\n\nThe payment uses the same shape as the payments in the [create payment draft](#create-payment-draft) request.\n\nFor more information, see the guides: [Payment drafts](https://developer.revolut.com/docs/guides/manage-accounts/transfers/payment-drafts).',
+    'Add a new payment to an existing payment draft.\n\n:::note\nYou can add payments to drafts created with the API or via the Revolut Business app.\n:::\n\nThe payment uses the same shape as the payments in the [create payment draft](#create-payment-draft) request.\n\nFor more information, see the guides: [Payment drafts](https://developer.revolut.com/docs/guides/manage-accounts/transfers/payment-drafts).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Transfers** | Payment drafts | Write | `payment-drafts:write` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).',
   operationId: 'addPaymentDraftPayment',
   request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     params: z.object({
       payment_draft_id: z
         .uuid()
@@ -12636,7 +12978,7 @@ export const postPaymentDraftsPaymentDraftIdPaymentsRoute = createRoute({
       content: { 'application/json': { schema: ErrorWithIdSchema } },
     },
   },
-  security: [{ AccessToken: ['READ', 'WRITE'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['READ', 'WRITE'] }],
 })
 
 export const deletePaymentDraftsPaymentDraftIdPaymentsPaymentIdRoute = createRoute({
@@ -12645,9 +12987,14 @@ export const deletePaymentDraftsPaymentDraftIdPaymentsPaymentIdRoute = createRou
   tags: ['Payment drafts'],
   summary: 'Delete a payment from a payment draft',
   description:
-    'Delete a single payment from a payment draft. Other payments in the draft are unaffected.\n\n:::note\nYou can delete payments from drafts created with the API or via the Revolut Business app.\n:::\n\nFor more information, see the guides: [Payment drafts](https://developer.revolut.com/docs/guides/manage-accounts/transfers/payment-drafts).',
+    'Delete a single payment from a payment draft. Other payments in the draft are unaffected.\n\n:::note\nYou can delete payments from drafts created with the API or via the Revolut Business app.\n:::\n\nFor more information, see the guides: [Payment drafts](https://developer.revolut.com/docs/guides/manage-accounts/transfers/payment-drafts).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Transfers** | Payment drafts | Write | `payment-drafts:write` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).',
   operationId: 'deletePaymentDraftPayment',
   request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     params: z.object({
       payment_draft_id: z
         .uuid()
@@ -12718,7 +13065,7 @@ export const deletePaymentDraftsPaymentDraftIdPaymentsPaymentIdRoute = createRou
       content: { 'application/json': { schema: ErrorWithIdSchema } },
     },
   },
-  security: [{ AccessToken: ['READ', 'WRITE'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['READ', 'WRITE'] }],
 })
 
 export const patchPaymentDraftsPaymentDraftIdPaymentsPaymentIdRoute = createRoute({
@@ -12727,9 +13074,14 @@ export const patchPaymentDraftsPaymentDraftIdPaymentsPaymentIdRoute = createRout
   tags: ['Payment drafts'],
   summary: 'Update a payment in a payment draft',
   description:
-    'Update the fields of a single payment within a payment draft.\n\n:::note\nYou can update payments in drafts created with the API or via the Revolut Business app.\n:::\n\nAll fields are optional — omit what should not change. Other payments in the draft are unaffected.\n\nFor more information, see the guides: [Payment drafts](https://developer.revolut.com/docs/guides/manage-accounts/transfers/payment-drafts).',
+    'Update the fields of a single payment within a payment draft.\n\n:::note\nYou can update payments in drafts created with the API or via the Revolut Business app.\n:::\n\nAll fields are optional — omit what should not change. Other payments in the draft are unaffected.\n\nFor more information, see the guides: [Payment drafts](https://developer.revolut.com/docs/guides/manage-accounts/transfers/payment-drafts).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Transfers** | Payment drafts | Write | `payment-drafts:write` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).',
   operationId: 'updatePaymentDraftPayment',
   request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     params: z.object({
       payment_draft_id: z
         .uuid()
@@ -12825,7 +13177,7 @@ export const patchPaymentDraftsPaymentDraftIdPaymentsPaymentIdRoute = createRout
       content: { 'application/json': { schema: ErrorWithIdSchema } },
     },
   },
-  security: [{ AccessToken: ['READ', 'WRITE'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['READ', 'WRITE'] }],
 })
 
 export const getPayoutLinksRoute = createRoute({
@@ -12834,14 +13186,26 @@ export const getPayoutLinksRoute = createRoute({
   tags: ['Payout links'],
   summary: 'Retrieve a list of payout links',
   description:
-    'Get all the links that you have created, or use the query parameters to filter the results.\n\nThe links are sorted by the `created_at` date in reverse chronological order.\n\nThe returned links are **paginated**. \nThe maximum number of payout links returned per page is specified by the `limit` parameter.\nTo get to the next page, make a new request and use the `created_at` date of the last payout link returned in the previous response.\n\n:::note\nThis feature is available in the UK, the EEA, AU, and SG.\n:::        \n\nFor more information, see the guides: [Send money via payout link](https://developer.revolut.com/docs/guides/manage-accounts/transfers/payout-links).',
+    'Get all the links that you have created, or use the query parameters to filter the results.\n\nThe links are sorted by the `created_at` date in reverse chronological order.\n\nThe returned links are **paginated**. \nThe maximum number of payout links returned per page is specified by the `limit` parameter.\nTo get to the next page, make a new request and use the `created_at` date of the last payout link returned in the previous response.\n\n:::note\nThis feature is available in the UK, the EEA, AU, and SG.\n:::        \n\nFor more information, see the guides: [Send money via payout link](https://developer.revolut.com/docs/guides/manage-accounts/transfers/payout-links).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Transfers** | Payout links | Read | `payout-links:read` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).',
   operationId: 'getPayoutLinks',
   request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     query: z.object({
       state: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(PayoutLinkStateSchema),
+          z.array(PayoutLinkStateSchema).superRefine((items, ctx) => {
+            const seen = new Map()
+            for (const [i, val] of items.entries()) {
+              const key = JSON.stringify(val)
+              if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+              else seen.set(key, i)
+            }
+          }),
         )
         .exactOptional()
         .openapi({
@@ -12850,7 +13214,11 @@ export const getPayoutLinksRoute = createRoute({
             in: 'query',
             description:
               'Retrieves links in the specified state(s).\nUse for filtering.\n\nTo specify multiple values, follow this pattern: `state={VALUE1}&state={VALUE2}`.',
-            schema: { type: 'array', items: { $ref: '#/components/schemas/PayoutLinkState' } },
+            schema: {
+              type: 'array',
+              items: { $ref: '#/components/schemas/PayoutLinkState' },
+              uniqueItems: true,
+            },
             explode: true,
             required: false,
           },
@@ -12975,7 +13343,7 @@ export const getPayoutLinksRoute = createRoute({
       content: { 'application/json': { schema: ErrorSchema } },
     },
   },
-  security: [{ AccessToken: ['READ'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['READ'] }],
 })
 
 export const postPayoutLinksRoute = createRoute({
@@ -12984,9 +13352,14 @@ export const postPayoutLinksRoute = createRoute({
   tags: ['Payout links'],
   summary: 'Create a payout link',
   description:
-    "Create a payout link to send money even when you don't have the full banking details of the counterparty.  \nAfter you have created the link, send it to the recipient so that they can claim the payment.\n\n:::note\nThis feature is available in the UK, the EEA, AU, and SG.\n:::\n\nFor more information, see the guides: [Send money via payout link](https://developer.revolut.com/docs/guides/manage-accounts/transfers/payout-links).",
+    "Create a payout link to send money even when you don't have the full banking details of the counterparty.  \nAfter you have created the link, send it to the recipient so that they can claim the payment.\n\n:::note\nThis feature is available in the UK, the EEA, AU, and SG.\n:::\n\nFor more information, see the guides: [Send money via payout link](https://developer.revolut.com/docs/guides/manage-accounts/transfers/payout-links).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Transfers** | Payout links | Write | `payout-links:write` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).",
   operationId: 'createPayoutLink',
   request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     body: {
       description: 'Payout link to create',
       content: { 'application/json': { schema: CreatePayoutLinkRequestSchema } },
@@ -13057,7 +13430,7 @@ export const postPayoutLinksRoute = createRoute({
       content: { 'application/json': { schema: ErrorSchema } },
     },
   },
-  security: [{ AccessToken: ['PAY', 'WRITE'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['PAY', 'WRITE'] }],
 })
 
 export const getPayoutLinksPayoutLinkIdRoute = createRoute({
@@ -13066,9 +13439,14 @@ export const getPayoutLinksPayoutLinkIdRoute = createRoute({
   tags: ['Payout links'],
   summary: 'Retrieve a payout link',
   description:
-    'Get the information about a specific link by its ID.\n\n:::note\nThis feature is available in the UK, the EEA, AU, and SG.\n:::\n\nFor more information, see the guides: [Send money via payout link](https://developer.revolut.com/docs/guides/manage-accounts/transfers/payout-links).',
+    'Get the information about a specific link by its ID.\n\n:::note\nThis feature is available in the UK, the EEA, AU, and SG.\n:::\n\nFor more information, see the guides: [Send money via payout link](https://developer.revolut.com/docs/guides/manage-accounts/transfers/payout-links).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Transfers** | Payout links | Read | `payout-links:read` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).',
   operationId: 'getPayoutLink',
   request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     params: z.object({
       payout_link_id: z
         .uuid()
@@ -13134,7 +13512,7 @@ export const getPayoutLinksPayoutLinkIdRoute = createRoute({
       content: { 'application/json': { schema: ErrorSchema } },
     },
   },
-  security: [{ AccessToken: ['READ'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['READ'] }],
 })
 
 export const postPayoutLinksPayoutLinkIdCancelRoute = createRoute({
@@ -13143,9 +13521,14 @@ export const postPayoutLinksPayoutLinkIdCancelRoute = createRoute({
   tags: ['Payout links'],
   summary: 'Cancel a payout link',
   description:
-    "Cancel a payout link. You can only cancel a link that hasn't been claimed yet. \nA successful request does not get any content in response.\n\n:::note\nThis feature is available in the UK, the EEA, AU, and SG.\n:::\n\nFor more information, see the guides: [Send money via payout link](https://developer.revolut.com/docs/guides/manage-accounts/transfers/payout-links).",
+    "Cancel a payout link. You can only cancel a link that hasn't been claimed yet. \nA successful request does not get any content in response.\n\n:::note\nThis feature is available in the UK, the EEA, AU, and SG.\n:::\n\nFor more information, see the guides: [Send money via payout link](https://developer.revolut.com/docs/guides/manage-accounts/transfers/payout-links).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Transfers** | Payout links | Write | `payout-links:write` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).",
   operationId: 'cancelPayoutLink',
   request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     params: z.object({
       payout_link_id: z
         .uuid()
@@ -13181,7 +13564,7 @@ export const postPayoutLinksPayoutLinkIdCancelRoute = createRoute({
       content: { 'application/json': { schema: ErrorSchema } },
     },
   },
-  security: [{ AccessToken: ['READ', 'WRITE'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['READ', 'WRITE'] }],
 })
 
 export const postSandboxTransactionsIdActionRoute = createRoute({
@@ -13190,9 +13573,14 @@ export const postSandboxTransactionsIdActionRoute = createRoute({
   tags: ['Simulations'],
   summary: 'Simulate a transfer state update (Sandbox only)',
   description:
-    'Simulate a transfer state change in the Sandbox environment. \n\nFor example, after you make a transfer in Sandbox, you can change its state to `completed`. The resulting state is final and cannot be changed.\n\nFor more information, see the guides: [Test your flows with simulations (Sandbox only)](https://developer.revolut.com/docs/guides/manage-accounts/api-usage-and-testing/test-flows-with-simulations).',
+    'Simulate a transfer state change in the Sandbox environment. \n\nFor example, after you make a transfer in Sandbox, you can change its state to `completed`. The resulting state is final and cannot be changed.\n\nFor more information, see the guides: [Test your flows with simulations (Sandbox only)](https://developer.revolut.com/docs/guides/manage-accounts/api-usage-and-testing/test-flows-with-simulations).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Sandbox simulations** | Simulations | Write | `simulations:write` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).',
   operationId: 'simulateTransferStateUpdate',
   request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     params: z.object({
       id: z
         .uuid()
@@ -13269,7 +13657,7 @@ export const postSandboxTransactionsIdActionRoute = createRoute({
       content: { 'application/json': { schema: ErrorSchema } },
     },
   },
-  security: [{ AccessToken: ['WRITE'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['WRITE'] }],
 })
 
 export const postSandboxTopupRoute = createRoute({
@@ -13278,9 +13666,14 @@ export const postSandboxTopupRoute = createRoute({
   tags: ['Simulations'],
   summary: 'Simulate an account top-up (Sandbox only)',
   description:
-    'Simulate a top-up of your account in the Sandbox environment. \n\nThis is useful during testing, when you run out of money in your test account and need to add more.\n\nFor more information, see the guides: [Test your flows with simulations (Sandbox only)](https://developer.revolut.com/docs/guides/manage-accounts/api-usage-and-testing/test-flows-with-simulations).',
+    'Simulate a top-up of your account in the Sandbox environment. \n\nThis is useful during testing, when you run out of money in your test account and need to add more.\n\nFor more information, see the guides: [Test your flows with simulations (Sandbox only)](https://developer.revolut.com/docs/guides/manage-accounts/api-usage-and-testing/test-flows-with-simulations).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Sandbox simulations** | Simulations | Write | `simulations:write` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).',
   operationId: 'simulateTopUp',
   request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     body: {
       description: 'Top-up details',
       content: {
@@ -13363,7 +13756,7 @@ export const postSandboxTopupRoute = createRoute({
       content: { 'application/json': { schema: ErrorSchema } },
     },
   },
-  security: [{ AccessToken: ['WRITE'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['WRITE'] }],
 })
 
 export const getTaxRatesRoute = createRoute({
@@ -13372,9 +13765,14 @@ export const getTaxRatesRoute = createRoute({
   tags: ['Accounting', 'Tax rates'],
   summary: 'Retrieve a list of tax rates',
   description:
-    "Get available tax rates based on the provided query criteria.\n\n:::note\nThe API returns a maximum of 500 tax rates per request. \nThe default page size is 100.\n:::\n\nThe tax rates are sorted by the `created_at` date in reverse chronological order, and they're **paginated**.\nThe page size, that is, the maximum number of tax rates returned per page is specified by the `limit` parameter. \n- If the number of results exceeds the page size, the response also returns a cursor for the next page under `next_page_token`.        \n  To get the next page of results, make a new request using that `next_page_token` value in `page_token`.\n- If the number of results is smaller than the page size, `next_page_token` is not returned.\n\nFor more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage tax rates](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-tax-rates).",
+    "Get available tax rates based on the provided query criteria.\n\n:::note\nThe API returns a maximum of 500 tax rates per request. \nThe default page size is 100.\n:::\n\nThe tax rates are sorted by the `created_at` date in reverse chronological order, and they're **paginated**.\nThe page size, that is, the maximum number of tax rates returned per page is specified by the `limit` parameter. \n- If the number of results exceeds the page size, the response also returns a cursor for the next page under `next_page_token`.        \n  To get the next page of results, make a new request using that `next_page_token` value in `page_token`.\n- If the number of results is smaller than the page size, `next_page_token` is not returned.\n\nFor more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage tax rates](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-tax-rates).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Accounting** | Tax rates | Read | `tax-rates:read` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).",
   operationId: 'getTaxRates',
   request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     query: z.object({
       limit: z
         .preprocess(
@@ -13551,7 +13949,7 @@ export const getTaxRatesRoute = createRoute({
       content: { 'application/json': { schema: ErrorWithIdSchema } },
     },
   },
-  security: [{ AccessToken: ['READ'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['READ'] }],
 })
 
 export const postTaxRatesRoute = createRoute({
@@ -13560,9 +13958,14 @@ export const postTaxRatesRoute = createRoute({
   tags: ['Accounting', 'Tax rates'],
   summary: 'Create a new tax rate',
   description:
-    'Add a new tax rate to the list of tax rates that can be applied to your financial records, such as expenses.\n\n:::note\nThis operation is not supported for [externally managed tax rates](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-tax-rates#externally-managed-settings).\n:::\n\nFor more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage tax rates](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-tax-rates).',
+    'Add a new tax rate to the list of tax rates that can be applied to your financial records, such as expenses.\n\n:::note\nThis operation is not supported for [externally managed tax rates](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-tax-rates#externally-managed-settings).\n:::\n\nFor more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage tax rates](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-tax-rates).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Accounting** | Tax rates | Write | `tax-rates:write` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).',
   operationId: 'createTaxRate',
   request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     body: {
       content: {
         'application/json': {
@@ -13686,7 +14089,7 @@ export const postTaxRatesRoute = createRoute({
       content: { 'application/json': { schema: ErrorWithIdSchema } },
     },
   },
-  security: [{ AccessToken: ['WRITE'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['WRITE'] }],
 })
 
 export const getTaxRatesTaxRateIdRoute = createRoute({
@@ -13695,9 +14098,14 @@ export const getTaxRatesTaxRateIdRoute = createRoute({
   tags: ['Accounting', 'Tax rates'],
   summary: 'Retrieve tax rate details',
   description:
-    'Get the details of a specific tax rate based on the tax rate ID.\n\nThe details include the tax rate name and percentage, as well as when the tax rate was added to your settings, and when it was last updated.\n\nFor more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage tax rates](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-tax-rates).',
+    'Get the details of a specific tax rate based on the tax rate ID.\n\nThe details include the tax rate name and percentage, as well as when the tax rate was added to your settings, and when it was last updated.\n\nFor more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage tax rates](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-tax-rates).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Accounting** | Tax rates | Read | `tax-rates:read` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).',
   operationId: 'getTaxRate',
   request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     params: z.object({
       tax_rate_id: z
         .uuid()
@@ -13776,7 +14184,7 @@ export const getTaxRatesTaxRateIdRoute = createRoute({
       content: { 'application/json': { schema: ErrorWithIdSchema } },
     },
   },
-  security: [{ AccessToken: ['READ'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['READ'] }],
 })
 
 export const deleteTaxRatesTaxRateIdRoute = createRoute({
@@ -13785,9 +14193,14 @@ export const deleteTaxRatesTaxRateIdRoute = createRoute({
   tags: ['Accounting', 'Tax rates'],
   summary: 'Delete a tax rate',
   description:
-    "Delete a specific tax rate, based on its ID.\n\n:::note\nThis operation is not supported for [externally managed tax rates](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-tax-rates#externally-managed-settings).\n:::\n\nOnce the tax rate is deleted, it will not be returned by the API or in the Revolut Business app, and:\n- You will not be able to apply it to new financial records (e.g. expenses). \n- Existing records with this tax rate that have not been completed will be marked as invalid, and you'll need to update them to use a different tax rate.\n- Completed records will not be affected by the change. \n\nA successful response does not get any content in return.\n\nFor more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage tax rates](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-tax-rates).",
+    "Delete a specific tax rate, based on its ID.\n\n:::note\nThis operation is not supported for [externally managed tax rates](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-tax-rates#externally-managed-settings).\n:::\n\nOnce the tax rate is deleted, it will not be returned by the API or in the Revolut Business app, and:\n- You will not be able to apply it to new financial records (e.g. expenses). \n- Existing records with this tax rate that have not been completed will be marked as invalid, and you'll need to update them to use a different tax rate.\n- Completed records will not be affected by the change. \n\nA successful response does not get any content in return.\n\nFor more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage tax rates](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-tax-rates).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Accounting** | Tax rates | Write | `tax-rates:write` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).",
   operationId: 'deleteTaxRate',
   request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     params: z.object({
       tax_rate_id: z
         .uuid()
@@ -13872,7 +14285,7 @@ export const deleteTaxRatesTaxRateIdRoute = createRoute({
       content: { 'application/json': { schema: ErrorWithIdSchema } },
     },
   },
-  security: [{ AccessToken: ['WRITE'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['WRITE'] }],
 })
 
 export const patchTaxRatesTaxRateIdRoute = createRoute({
@@ -13881,9 +14294,14 @@ export const patchTaxRatesTaxRateIdRoute = createRoute({
   tags: ['Accounting', 'Tax rates'],
   summary: 'Update tax rate settings',
   description:
-    'Update settings for a specific tax rate, based on its ID.\n\n:::note\nThis operation is not supported for [externally managed tax rates](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-tax-rates#externally-managed-settings).\n:::\n\nFor more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage tax rates](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-tax-rates).',
+    'Update settings for a specific tax rate, based on its ID.\n\n:::note\nThis operation is not supported for [externally managed tax rates](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-tax-rates#externally-managed-settings).\n:::\n\nFor more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage tax rates](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-tax-rates).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Accounting** | Tax rates | Write | `tax-rates:write` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).',
   operationId: 'updateTaxRate',
   request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     params: z.object({
       tax_rate_id: z
         .uuid()
@@ -14028,7 +14446,7 @@ export const patchTaxRatesTaxRateIdRoute = createRoute({
       content: { 'application/json': { schema: ErrorWithIdSchema } },
     },
   },
-  security: [{ AccessToken: ['WRITE'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['WRITE'] }],
 })
 
 export const getTeamMembersRoute = createRoute({
@@ -14037,9 +14455,14 @@ export const getTeamMembersRoute = createRoute({
   tags: ['Teams'],
   summary: 'Retrieve a list of team members',
   description:
-    'Get information about all the team members of your business.\n\nThe results are paginated and sorted by the `created_at` date in reverse chronological order.\n\nFor more information, see the guides: [Manage team members](https://developer.revolut.com/docs/guides/manage-accounts/teams/manage-team-members).',
+    'Get information about all the team members of your business.\n\nThe results are paginated and sorted by the `created_at` date in reverse chronological order.\n\nFor more information, see the guides: [Manage team members](https://developer.revolut.com/docs/guides/manage-accounts/teams/manage-team-members).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Team** | Team members | Read | `team-members:read` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).',
   operationId: 'getTeamMembers',
   request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     query: z.object({
       created_before: z.iso
         .datetime({ offset: true })
@@ -14134,7 +14557,7 @@ export const getTeamMembersRoute = createRoute({
       content: { 'application/json': { schema: ErrorWithIdSchema } },
     },
   },
-  security: [{ AccessToken: ['READ'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['READ'] }],
 })
 
 export const postTeamMembersRoute = createRoute({
@@ -14143,9 +14566,14 @@ export const postTeamMembersRoute = createRoute({
   tags: ['Teams'],
   summary: 'Invite a new member to your business',
   description:
-    'Invite a new member to your business account.\n\nWhen you invite a new team member to your business account, an invitation is sent to their email address that you provided in this request.\nTo join your business account, the new team member has to accept this invitation.\n\nFor more information, see the guides: [Manage team members](https://developer.revolut.com/docs/guides/manage-accounts/teams/manage-team-members).',
+    'Invite a new member to your business account.\n\nWhen you invite a new team member to your business account, an invitation is sent to their email address that you provided in this request.\nTo join your business account, the new team member has to accept this invitation.\n\nFor more information, see the guides: [Manage team members](https://developer.revolut.com/docs/guides/manage-accounts/teams/manage-team-members).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Team** | Team members | Write | `team-members:write` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).',
   operationId: 'inviteTeamMember',
   request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     body: {
       content: {
         'application/json': {
@@ -14269,7 +14697,7 @@ export const postTeamMembersRoute = createRoute({
       content: { 'application/json': { schema: ErrorWithIdSchema } },
     },
   },
-  security: [{ AccessToken: ['WRITE'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['WRITE'] }],
 })
 
 export const getTeamMembersTeamMemberIdRoute = createRoute({
@@ -14278,9 +14706,14 @@ export const getTeamMembersTeamMemberIdRoute = createRoute({
   tags: ['Teams'],
   summary: 'Retrieve a team member',
   description:
-    'Get information about a specific team member by their ID.\n\nFor more information, see the guides: [Manage team members](https://developer.revolut.com/docs/guides/manage-accounts/teams/manage-team-members).',
+    'Get information about a specific team member by their ID.\n\nFor more information, see the guides: [Manage team members](https://developer.revolut.com/docs/guides/manage-accounts/teams/manage-team-members).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Team** | Team members | Read | `team-members:read` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).',
   operationId: 'getTeamMemberById',
   request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     params: z.object({
       team_member_id: z
         .uuid()
@@ -14353,7 +14786,7 @@ export const getTeamMembersTeamMemberIdRoute = createRoute({
       content: { 'application/json': { schema: ErrorWithIdSchema } },
     },
   },
-  security: [{ AccessToken: ['READ'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['READ'] }],
 })
 
 export const deleteTeamMembersTeamMemberIdRoute = createRoute({
@@ -14362,9 +14795,14 @@ export const deleteTeamMembersTeamMemberIdRoute = createRoute({
   tags: ['Teams'],
   summary: 'Delete a team member',
   description:
-    'Delete a specific member of your team.\n\n:::note\nThis action does not delete the person’s Revolut Business user account – it only removes them from your team.\nThey will lose access to your Revolut Business account and team but can still log in to Revolut Business.\nTheir user account will remain linked to any other teams and accounts it’s associated with.\n:::\n\nFor more information, see the guides: [Manage team members](https://developer.revolut.com/docs/guides/manage-accounts/teams/manage-team-members).',
+    'Delete a specific member of your team.\n\n:::note\nThis action does not delete the person’s Revolut Business user account – it only removes them from your team.\nThey will lose access to your Revolut Business account and team but can still log in to Revolut Business.\nTheir user account will remain linked to any other teams and accounts it’s associated with.\n:::\n\nFor more information, see the guides: [Manage team members](https://developer.revolut.com/docs/guides/manage-accounts/teams/manage-team-members).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Team** | Team members | Write | `team-members:write` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).',
   operationId: 'deleteTeamMember',
   request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     params: z.object({
       team_member_id: z
         .uuid()
@@ -14420,7 +14858,7 @@ export const deleteTeamMembersTeamMemberIdRoute = createRoute({
       content: { 'application/json': { schema: ErrorWithIdSchema } },
     },
   },
-  security: [{ AccessToken: ['WRITE'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['WRITE'] }],
 })
 
 export const putTeamMembersTeamMemberIdDepartmentRoute = createRoute({
@@ -14429,9 +14867,14 @@ export const putTeamMembersTeamMemberIdDepartmentRoute = createRoute({
   tags: ['Teams'],
   summary: 'Assign a department to a team member',
   description:
-    'Assign a department to a specific team member.\n\nFor more information, see the guides: [Manage team members](https://developer.revolut.com/docs/guides/manage-accounts/teams/manage-team-members) and [Manage departments](https://developer.revolut.com/docs/guides/manage-accounts/teams/manage-departments).',
+    'Assign a department to a specific team member.\n\nFor more information, see the guides: [Manage team members](https://developer.revolut.com/docs/guides/manage-accounts/teams/manage-team-members) and [Manage departments](https://developer.revolut.com/docs/guides/manage-accounts/teams/manage-departments).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Team** | Team members | Write | `team-members:write` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).',
   operationId: 'assignDepartment',
   request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     params: z.object({
       team_member_id: z
         .uuid()
@@ -14502,7 +14945,7 @@ export const putTeamMembersTeamMemberIdDepartmentRoute = createRoute({
       content: { 'application/json': { schema: ErrorWithIdSchema } },
     },
   },
-  security: [{ AccessToken: ['WRITE'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['WRITE'] }],
 })
 
 export const deleteTeamMembersTeamMemberIdDepartmentRoute = createRoute({
@@ -14511,9 +14954,14 @@ export const deleteTeamMembersTeamMemberIdDepartmentRoute = createRoute({
   tags: ['Teams'],
   summary: 'Remove department from a team member',
   description:
-    'Remove the department assignment from a specific team member.\n\nFor more information, see the guides: [Manage team members](https://developer.revolut.com/docs/guides/manage-accounts/teams/manage-team-members).',
+    'Remove the department assignment from a specific team member.\n\nFor more information, see the guides: [Manage team members](https://developer.revolut.com/docs/guides/manage-accounts/teams/manage-team-members).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Team** | Team members | Write | `team-members:write` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).',
   operationId: 'unassignDepartment',
   request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     params: z.object({
       team_member_id: z
         .uuid()
@@ -14556,7 +15004,7 @@ export const deleteTeamMembersTeamMemberIdDepartmentRoute = createRoute({
       content: { 'application/json': { schema: ErrorWithIdSchema } },
     },
   },
-  security: [{ AccessToken: ['WRITE'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['WRITE'] }],
 })
 
 export const putTeamMembersTeamMemberIdManagerRoute = createRoute({
@@ -14565,9 +15013,14 @@ export const putTeamMembersTeamMemberIdManagerRoute = createRoute({
   tags: ['Teams'],
   summary: 'Assign a manager to a team member',
   description:
-    'Assign a manager to a specific team member.\n\nFor more information, see the guides: [Manage team members](https://developer.revolut.com/docs/guides/manage-accounts/teams/manage-team-members).',
+    'Assign a manager to a specific team member.\n\nFor more information, see the guides: [Manage team members](https://developer.revolut.com/docs/guides/manage-accounts/teams/manage-team-members).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Team** | Team members | Write | `team-members:write` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).',
   operationId: 'assignManager',
   request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     params: z.object({
       team_member_id: z
         .uuid()
@@ -14638,7 +15091,7 @@ export const putTeamMembersTeamMemberIdManagerRoute = createRoute({
       content: { 'application/json': { schema: ErrorWithIdSchema } },
     },
   },
-  security: [{ AccessToken: ['WRITE'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['WRITE'] }],
 })
 
 export const deleteTeamMembersTeamMemberIdManagerRoute = createRoute({
@@ -14647,9 +15100,14 @@ export const deleteTeamMembersTeamMemberIdManagerRoute = createRoute({
   tags: ['Teams'],
   summary: 'Remove manager from a team member',
   description:
-    'Remove the manager assignment from a specific team member.\n\nFor more information, see the guides: [Manage team members](https://developer.revolut.com/docs/guides/manage-accounts/teams/manage-team-members).',
+    'Remove the manager assignment from a specific team member.\n\nFor more information, see the guides: [Manage team members](https://developer.revolut.com/docs/guides/manage-accounts/teams/manage-team-members).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Team** | Team members | Write | `team-members:write` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).',
   operationId: 'unassignManager',
   request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     params: z.object({
       team_member_id: z
         .uuid()
@@ -14692,7 +15150,7 @@ export const deleteTeamMembersTeamMemberIdManagerRoute = createRoute({
       content: { 'application/json': { schema: ErrorWithIdSchema } },
     },
   },
-  security: [{ AccessToken: ['WRITE'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['WRITE'] }],
 })
 
 export const putTeamMembersTeamMemberIdRoleRoute = createRoute({
@@ -14701,9 +15159,14 @@ export const putTeamMembersTeamMemberIdRoleRoute = createRoute({
   tags: ['Teams'],
   summary: "Update a team member's role",
   description:
-    'Update the role assigned to a specific team member.\n\n:::note\nYou cannot modify the business owner or assign the owner role to another team member.\n:::\n\nFor more information, see the guides: [Manage team members](https://developer.revolut.com/docs/guides/manage-accounts/teams/manage-team-members).',
+    'Update the role assigned to a specific team member.\n\n:::note\nYou cannot modify the business owner or assign the owner role to another team member.\n:::\n\nFor more information, see the guides: [Manage team members](https://developer.revolut.com/docs/guides/manage-accounts/teams/manage-team-members).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Team** | Team members | Write | `team-members:write` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).',
   operationId: 'updateTeamMemberRole',
   request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     params: z.object({
       team_member_id: z
         .uuid()
@@ -14793,7 +15256,7 @@ export const putTeamMembersTeamMemberIdRoleRoute = createRoute({
       content: { 'application/json': { schema: ErrorWithIdSchema } },
     },
   },
-  security: [{ AccessToken: ['WRITE'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['WRITE'] }],
 })
 
 export const postTeamMembersTeamMemberIdSuspendRoute = createRoute({
@@ -14802,9 +15265,14 @@ export const postTeamMembersTeamMemberIdSuspendRoute = createRoute({
   tags: ['Teams'],
   summary: 'Suspend a team member',
   description:
-    'Suspend a specific team member, preventing them from accessing the business.\n\nTo restore access, use the [Unsuspend a team member](#unsuspend-a-team-member) operation.\n\n:::note\nYou cannot suspend the business owner.\n:::\n\nFor more information, see the guides: [Manage team members](https://developer.revolut.com/docs/guides/manage-accounts/teams/manage-team-members).',
+    'Suspend a specific team member, preventing them from accessing the business.\n\nTo restore access, use the [Unsuspend a team member](#unsuspend-team-member) operation.\n\n:::note\nYou cannot suspend the business owner.\n:::\n\nFor more information, see the guides: [Manage team members](https://developer.revolut.com/docs/guides/manage-accounts/teams/manage-team-members).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Team** | Team members | Write | `team-members:write` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).',
   operationId: 'suspendTeamMember',
   request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     params: z.object({
       team_member_id: z
         .uuid()
@@ -14874,7 +15342,7 @@ export const postTeamMembersTeamMemberIdSuspendRoute = createRoute({
       content: { 'application/json': { schema: ErrorWithIdSchema } },
     },
   },
-  security: [{ AccessToken: ['WRITE'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['WRITE'] }],
 })
 
 export const postTeamMembersTeamMemberIdUnsuspendRoute = createRoute({
@@ -14883,9 +15351,14 @@ export const postTeamMembersTeamMemberIdUnsuspendRoute = createRoute({
   tags: ['Teams'],
   summary: 'Unsuspend a team member',
   description:
-    'Unsuspend a [suspended](#suspend-a-team-member) team member, restoring their access to the business.\n\n:::note\nYou cannot unsuspend the business owner (the owner cannot be suspended).\n:::\n\nFor more information, see the guides: [Manage team members](https://developer.revolut.com/docs/guides/manage-accounts/teams/manage-team-members).',
+    'Unsuspend a [suspended](#suspend-team-member) team member, restoring their access to the business.\n\n:::note\nYou cannot unsuspend the business owner (the owner cannot be suspended).\n:::\n\nFor more information, see the guides: [Manage team members](https://developer.revolut.com/docs/guides/manage-accounts/teams/manage-team-members).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Team** | Team members | Write | `team-members:write` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).',
   operationId: 'unsuspendTeamMember',
   request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     params: z.object({
       team_member_id: z
         .uuid()
@@ -14955,7 +15428,7 @@ export const postTeamMembersTeamMemberIdUnsuspendRoute = createRoute({
       content: { 'application/json': { schema: ErrorWithIdSchema } },
     },
   },
-  security: [{ AccessToken: ['WRITE'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['WRITE'] }],
 })
 
 export const getRolesRoute = createRoute({
@@ -14964,9 +15437,14 @@ export const getRolesRoute = createRoute({
   tags: ['Teams'],
   summary: 'Retrieve team roles',
   description:
-    'Get the list of roles for your business.\n\nThe results are paginated and sorted by the `created_at` date in reverse chronological order.\n\nFor more information, see the guides: [Manage team members](https://developer.revolut.com/docs/guides/manage-accounts/teams/manage-team-members).',
+    'Get the list of roles for your business.\n\nThe results are paginated and sorted by the `created_at` date in reverse chronological order.\n\nFor more information, see the guides: [Manage team members](https://developer.revolut.com/docs/guides/manage-accounts/teams/manage-team-members).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Team** | Team members | Read | `team-members:read` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).',
   operationId: 'getRoles',
   request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     query: z.object({
       created_before: z.iso
         .datetime({ offset: true })
@@ -15065,7 +15543,7 @@ export const getRolesRoute = createRoute({
       content: { 'application/json': { schema: ErrorWithIdSchema } },
     },
   },
-  security: [{ AccessToken: ['READ'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['READ'] }],
 })
 
 export const getDepartmentsRoute = createRoute({
@@ -15074,9 +15552,14 @@ export const getDepartmentsRoute = createRoute({
   tags: ['Teams'],
   summary: 'Retrieve a list of departments',
   description:
-    'Get a paginated list of all departments in your business.\n\nFor more information, see the guides: [Manage departments](https://developer.revolut.com/docs/guides/manage-accounts/teams/manage-departments).',
+    'Get a paginated list of all departments in your business.\n\nFor more information, see the guides: [Manage departments](https://developer.revolut.com/docs/guides/manage-accounts/teams/manage-departments).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Team** | Departments | Read | `departments:read` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).',
   operationId: 'getDepartments',
   request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     query: z.object({
       limit: z
         .preprocess(
@@ -15183,7 +15666,7 @@ export const getDepartmentsRoute = createRoute({
       content: { 'application/json': { schema: ErrorWithIdSchema } },
     },
   },
-  security: [{ AccessToken: ['READ'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['READ'] }],
 })
 
 export const postDepartmentsRoute = createRoute({
@@ -15192,9 +15675,14 @@ export const postDepartmentsRoute = createRoute({
   tags: ['Teams'],
   summary: 'Create a department',
   description:
-    'Create a new department in your business.\n\nFor more information, see the guides: [Manage departments](https://developer.revolut.com/docs/guides/manage-accounts/teams/manage-departments).',
+    'Create a new department in your business.\n\nFor more information, see the guides: [Manage departments](https://developer.revolut.com/docs/guides/manage-accounts/teams/manage-departments).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Team** | Departments | Write | `departments:write` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).',
   operationId: 'createDepartment',
   request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     body: {
       content: {
         'application/json': {
@@ -15268,7 +15756,7 @@ export const postDepartmentsRoute = createRoute({
       content: { 'application/json': { schema: ErrorWithIdSchema } },
     },
   },
-  security: [{ AccessToken: ['WRITE'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['WRITE'] }],
 })
 
 export const getDepartmentsDepartmentIdRoute = createRoute({
@@ -15277,9 +15765,14 @@ export const getDepartmentsDepartmentIdRoute = createRoute({
   tags: ['Teams'],
   summary: 'Retrieve a department',
   description:
-    'Get details of a specific department by its ID.\n\nFor more information, see the guides: [Manage departments](https://developer.revolut.com/docs/guides/manage-accounts/teams/manage-departments).',
+    'Get details of a specific department by its ID.\n\nFor more information, see the guides: [Manage departments](https://developer.revolut.com/docs/guides/manage-accounts/teams/manage-departments).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Team** | Departments | Read | `departments:read` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).',
   operationId: 'getDepartment',
   request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     params: z.object({
       department_id: z
         .uuid()
@@ -15335,7 +15828,7 @@ export const getDepartmentsDepartmentIdRoute = createRoute({
       content: { 'application/json': { schema: ErrorWithIdSchema } },
     },
   },
-  security: [{ AccessToken: ['READ'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['READ'] }],
 })
 
 export const deleteDepartmentsDepartmentIdRoute = createRoute({
@@ -15344,9 +15837,14 @@ export const deleteDepartmentsDepartmentIdRoute = createRoute({
   tags: ['Teams'],
   summary: 'Delete a department',
   description:
-    'Delete a specific department from your business.\n\n:::note\nDeleting a department does not delete the team members assigned to it.\nThe department assignment is simply removed from the team members.\n:::\n\nFor more information, see the guides: [Manage departments](https://developer.revolut.com/docs/guides/manage-accounts/teams/manage-departments).',
+    'Delete a specific department from your business.\n\n:::note\nDeleting a department does not delete the team members assigned to it.\nThe department assignment is simply removed from the team members.\n:::\n\nFor more information, see the guides: [Manage departments](https://developer.revolut.com/docs/guides/manage-accounts/teams/manage-departments).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Team** | Departments | Write | `departments:write` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).',
   operationId: 'deleteDepartment',
   request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     params: z.object({
       department_id: z
         .uuid()
@@ -15389,7 +15887,7 @@ export const deleteDepartmentsDepartmentIdRoute = createRoute({
       content: { 'application/json': { schema: ErrorWithIdSchema } },
     },
   },
-  security: [{ AccessToken: ['WRITE'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['WRITE'] }],
 })
 
 export const patchDepartmentsDepartmentIdRoute = createRoute({
@@ -15398,9 +15896,14 @@ export const patchDepartmentsDepartmentIdRoute = createRoute({
   tags: ['Teams'],
   summary: 'Update a department',
   description:
-    'Update the name of a specific department.\n\nFor more information, see the guides: [Manage departments](https://developer.revolut.com/docs/guides/manage-accounts/teams/manage-departments).',
+    'Update the name of a specific department.\n\nFor more information, see the guides: [Manage departments](https://developer.revolut.com/docs/guides/manage-accounts/teams/manage-departments).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Team** | Departments | Write | `departments:write` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).',
   operationId: 'updateDepartment',
   request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     params: z.object({
       department_id: z
         .uuid()
@@ -15499,7 +16002,7 @@ export const patchDepartmentsDepartmentIdRoute = createRoute({
       content: { 'application/json': { schema: ErrorWithIdSchema } },
     },
   },
-  security: [{ AccessToken: ['WRITE'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['WRITE'] }],
 })
 
 export const getTransactionsRoute = createRoute({
@@ -15508,9 +16011,14 @@ export const getTransactionsRoute = createRoute({
   tags: ['Transactions'],
   summary: 'Retrieve a list of transactions',
   description:
-    "Retrieve the historical transactions based on the provided query criteria.\n\nThe transactions are sorted by the `created_at` date in reverse chronological order, and they're **paginated**. \nThe maximum number of transactions returned per page is specified by the `count` parameter. \nTo get the next page of results, make a new request and use the `created_at` date from the last item of the previous page as the value for the `to` parameter.\n\n:::note\nThe API returns a maximum of 1,000 transactions per request.\n:::\n\nFor more details, see the guides: [Retrieve transactions](https://developer.revolut.com/docs/guides/manage-accounts/accounts-and-transactions/retrieve-transactions).",
+    "Retrieve the historical transactions based on the provided query criteria.\n\nThe transactions are sorted by the `created_at` date in reverse chronological order, and they're **paginated**. \nThe maximum number of transactions returned per page is specified by the `count` parameter. \nTo get the next page of results, make a new request and use the `created_at` date from the last item of the previous page as the value for the `to` parameter.\n\n:::note\nThe API returns a maximum of 1,000 transactions per request.\n:::\n\nFor more details, see the guides: [Retrieve transactions](https://developer.revolut.com/docs/guides/manage-accounts/accounts-and-transactions/retrieve-transactions).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Accounts** | Transactions | Read | `transactions:read` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).",
   operationId: 'getTransactions',
   request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     query: z.object({
       from: z
         .string()
@@ -15731,7 +16239,7 @@ export const getTransactionsRoute = createRoute({
       content: { 'application/json': { schema: ErrorSchema } },
     },
   },
-  security: [{ AccessToken: ['READ'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['READ'] }],
 })
 
 export const getTransactionIdRoute = createRoute({
@@ -15740,9 +16248,14 @@ export const getTransactionIdRoute = createRoute({
   tags: ['Transactions'],
   summary: 'Retrieve a transaction',
   description:
-    "Retrieve the details of a specific transaction by the transaction's ID.\nThe details can include, for example, cardholder details for card payments.\n\n:::tip [Retrieve by request_id instead]\nAlternatively, you can retrieve a transaction by the **request ID** that was provided for this transaction at the time of its creation, for example, when you [created a payment](https://developer.revolut.com/docs/api/business#create-payment).\n\nTo do that, use the `GET /transactions` endpoint to [retrieve a list of transactions](https://developer.revolut.com/docs/api/business#get-transactions) and provide the `request_id` and appropriate `from`/`to` values as filters.\n:::\n\nFor more details, see the guides: [Retrieve transactions](https://developer.revolut.com/docs/guides/manage-accounts/accounts-and-transactions/retrieve-transactions).",
+    "Retrieve the details of a specific transaction by the transaction's ID.\nThe details can include, for example, cardholder details for card payments.\n\n:::tip [Retrieve by request_id instead]\nAlternatively, you can retrieve a transaction by the **request ID** that was provided for this transaction at the time of its creation, for example, when you [created a payment](https://developer.revolut.com/docs/api/business#create-payment).\n\nTo do that, use the `GET /transactions` endpoint to [retrieve a list of transactions](https://developer.revolut.com/docs/api/business#get-transactions) and provide the `request_id` and appropriate `from`/`to` values as filters.\n:::\n\nFor more details, see the guides: [Retrieve transactions](https://developer.revolut.com/docs/guides/manage-accounts/accounts-and-transactions/retrieve-transactions).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Accounts** | Transactions | Read | `transactions:read` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).",
   operationId: 'getTransaction',
   request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     params: z.object({
       id: z
         .string()
@@ -16086,7 +16599,7 @@ export const getTransactionIdRoute = createRoute({
       content: { 'application/json': { schema: ErrorSchema } },
     },
   },
-  security: [{ AccessToken: ['READ'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['READ'] }],
 })
 
 export const postPayRoute = createRoute({
@@ -16095,9 +16608,14 @@ export const postPayRoute = createRoute({
   tags: ['Transfers'],
   summary: 'Create a transfer to another account or card',
   description:
-    'Make a payment to a counterparty. You can choose either a bank transfer or a card transfer. The resulting transaction has the type `transfer`.\n\nIf you make the payment to another Revolut account, either business or personal, the transaction is executed instantly.\n\nIf the counterparty has multiple payment methods available, for example, 2 accounts, or 1 account and 1 card, you **must specify the account or card** to which you want to transfer the money (`receiver.account_id` or `receiver.card_id` respectively).\n\nFor more details, see the guides: [Send money via bank transfer](https://developer.revolut.com/docs/guides/manage-accounts/transfers/bank-transfers) and [Card transfers](https://developer.revolut.com/docs/guides/manage-accounts/transfers/card-transfers).',
+    'Make a payment to a counterparty. You can choose either a bank transfer or a card transfer. The resulting transaction has the type `transfer`.\n\nIf you make the payment to another Revolut account, either business or personal, the transaction is executed instantly.\n\nIf the counterparty has multiple payment methods available, for example, 2 accounts, or 1 account and 1 card, you **must specify the account or card** to which you want to transfer the money (`receiver.account_id` or `receiver.card_id` respectively).\n\nFor more details, see the guides: [Send money via bank transfer](https://developer.revolut.com/docs/guides/manage-accounts/transfers/bank-transfers) and [Card transfers](https://developer.revolut.com/docs/guides/manage-accounts/transfers/card-transfers).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Transfers** | Payments | Write | `payments:write` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).',
   operationId: 'createPayment',
   request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     body: {
       description: 'Create a transfer',
       content: {
@@ -16218,7 +16736,7 @@ export const postPayRoute = createRoute({
       content: { 'application/json': { schema: ErrorSchema } },
     },
   },
-  security: [{ AccessToken: ['READ', 'PAY'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['READ', 'PAY'] }],
 })
 
 export const postPayIndicativeQuoteRoute = createRoute({
@@ -16227,9 +16745,14 @@ export const postPayIndicativeQuoteRoute = createRoute({
   tags: ['Transfers'],
   summary: 'Get an indicative quote for a transfer',
   description:
-    'Get a non-binding estimate of fees, the exchange rate, and the expected delivery time for a potential [transfer](https://developer.revolut.com/docs/api/business#create-payment).\nNo money is moved and no resource is created.\n\nThe request mirrors the [`/pay` endpoint](https://developer.revolut.com/docs/api/business#create-payment) that is used to initiate a transfer, but it excludes irrelevant fields that do not affect pricing or delivery time, such as the request ID or reference.\n\nIf the counterparty has multiple payment methods available, for example, 2 accounts, or 1 account and 1 card, you **must specify the account or card** to which you want to transfer the money (`receiver.account_id` or `receiver.card_id` respectively).\nNote that in a single request, you can specify either an account or a card, but not both.\n\n:::note[Sandbox behaviour]\nIn Sandbox, this feature is only available for testing.\nWhile **incomplete** or **invalid requests** will return production-like error responses, **complete and valid requests** in Sandbox do not return real values and `estimated_arrival` will always return `instant`.\n:::\n\nFor more details, see the guides: **Check costs and delivery time before paying** section in [Bank transfers](https://developer.revolut.com/docs/guides/manage-accounts/transfers/bank-transfers#check-costs-and-delivery-time-before-paying) or [Card transfers](https://developer.revolut.com/docs/guides/manage-accounts/transfers/card-transfers#check-costs-and-delivery-time-before-paying).',
+    'Get a non-binding estimate of fees, the exchange rate, and the expected delivery time for a potential [transfer](https://developer.revolut.com/docs/api/business#create-payment).\nNo money is moved and no resource is created.\n\nThe request mirrors the [`/pay` endpoint](https://developer.revolut.com/docs/api/business#create-payment) that is used to initiate a transfer, but it excludes irrelevant fields that do not affect pricing or delivery time, such as the request ID or reference.\n\nIf the counterparty has multiple payment methods available, for example, 2 accounts, or 1 account and 1 card, you **must specify the account or card** to which you want to transfer the money (`receiver.account_id` or `receiver.card_id` respectively).\nNote that in a single request, you can specify either an account or a card, but not both.\n\n:::note[Sandbox behaviour]\nIn Sandbox, this feature is only available for testing.\nWhile **incomplete** or **invalid requests** will return production-like error responses, **complete and valid requests** in Sandbox do not return real values and `estimated_arrival` will always return `instant`.\n:::\n\nFor more details, see the guides: **Check costs and delivery time before paying** section in [Bank transfers](https://developer.revolut.com/docs/guides/manage-accounts/transfers/bank-transfers#check-costs-and-delivery-time-before-paying) or [Card transfers](https://developer.revolut.com/docs/guides/manage-accounts/transfers/card-transfers#check-costs-and-delivery-time-before-paying).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Transfers** | Payments | Write | `payments:write` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).',
   operationId: 'getIndicativeQuote',
   request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     body: {
       description: 'Request an indicative quote',
       content: {
@@ -16445,7 +16968,7 @@ export const postPayIndicativeQuoteRoute = createRoute({
       content: { 'application/json': { schema: ErrorWithIdSchema } },
     },
   },
-  security: [{ AccessToken: ['READ', 'PAY'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['READ', 'PAY'] }],
 })
 
 export const postPayFieldsRoute = createRoute({
@@ -16454,9 +16977,14 @@ export const postPayFieldsRoute = createRoute({
   tags: ['Transfers'],
   summary: 'Check transfer field requirements',
   description:
-    'Retrieve the list of conditionally required or applicable fields for a specific transfer destination together with their constraints.\n\n:::note [Note]\nThis feature is not available in Sandbox.\n:::\n\nWhen creating a payment via the [`/pay` endpoint](https://developer.revolut.com/docs/api/business#create-payment), certain fields (such as `transfer_reason_code`, `charge_bearer`, or `exchange_reason_code`) become required or applicable depending on the source account, destination corridor, and business profile.\nThis read-only endpoint allows you to discover these contextual fields dynamically, along with their validation rules and available options.\n\n:::tip\nA **destination corridor** is a specific combination of bank country and currency representing a supported payment destination (e.g. GBP to GB, USD to US).\n:::\n\nOnly the fields relevant to the specific context are returned.\nUniversally required fields (such as `amount`, `account_id`, `receiver`, and `request_id`) are always required and are intentionally excluded from this response.\n\nFor more details, see the guides: **Check transfer field requirements** section in [Bank transfers](https://developer.revolut.com/docs/guides/manage-accounts/transfers/bank-transfers#check-transfer-field-requirements) or [Card transfers](https://developer.revolut.com/docs/guides/manage-accounts/transfers/card-transfers#check-transfer-field-requirements).',
+    'Retrieve the list of conditionally required or applicable fields for a specific transfer destination together with their constraints.\n\n:::note [Note]\nThis feature is not available in Sandbox.\n:::\n\nWhen creating a payment via the [`/pay` endpoint](https://developer.revolut.com/docs/api/business#create-payment), certain fields (such as `transfer_reason_code`, `charge_bearer`, or `exchange_reason_code`) become required or applicable depending on the source account, destination corridor, and business profile.\nThis read-only endpoint allows you to discover these contextual fields dynamically, along with their validation rules and available options.\n\n:::tip\nA **destination corridor** is a specific combination of bank country and currency representing a supported payment destination (e.g. GBP to GB, USD to US).\n:::\n\nOnly the fields relevant to the specific context are returned.\nUniversally required fields (such as `amount`, `account_id`, `receiver`, and `request_id`) are always required and are intentionally excluded from this response.\n\nFor more details, see the guides: **Check transfer field requirements** section in [Bank transfers](https://developer.revolut.com/docs/guides/manage-accounts/transfers/bank-transfers#check-transfer-field-requirements) or [Card transfers](https://developer.revolut.com/docs/guides/manage-accounts/transfers/card-transfers#check-transfer-field-requirements).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Transfers** | Payments | Write | `payments:write` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).',
   operationId: 'getPaymentRequirements',
   request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     body: {
       content: {
         'application/json': {
@@ -16599,7 +17127,7 @@ export const postPayFieldsRoute = createRoute({
       content: { 'application/json': { schema: ErrorSchema } },
     },
   },
-  security: [{ AccessToken: ['READ', 'PAY'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['READ', 'PAY'] }],
 })
 
 export const postTransferRoute = createRoute({
@@ -16608,9 +17136,14 @@ export const postTransferRoute = createRoute({
   tags: ['Transfers'],
   summary: 'Move money between your accounts',
   description:
-    'Move money between the Revolut accounts of the business in the same currency.\n\nThe resulting transaction has the type `transfer`.\n\nFor more information, see the guides: [Send money](https://developer.revolut.com/docs/guides/manage-accounts/transfers/send-money).',
+    'Move money between the Revolut accounts of the business in the same currency.\n\nThe resulting transaction has the type `transfer`.\n\nFor more information, see the guides: [Send money](https://developer.revolut.com/docs/guides/manage-accounts/transfers/send-money).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Transfers** | Transfers | Write | `transfers:write` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).',
   operationId: 'createTransfer',
   request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     body: {
       description: 'Create a transfer',
       content: {
@@ -16649,7 +17182,7 @@ export const postTransferRoute = createRoute({
       content: { 'application/json': { schema: ErrorSchema } },
     },
   },
-  security: [{ AccessToken: ['READ', 'PAY'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['READ', 'PAY'] }],
 })
 
 export const getTransferReasonsRoute = createRoute({
@@ -16658,8 +17191,15 @@ export const getTransferReasonsRoute = createRoute({
   tags: ['Transfers', 'Payout links'],
   summary: 'Get transfer reasons',
   description:
-    'In order to initiate a transfer in certain currencies and countries, you must provide a transfer reason. \nWith this endpoint you can retrieve all transfer reasons available to your business account per country and currency.\n\nAfter you retrieve the results, use the appropriate reason code in the `transfer_reason_code` field when [making a transfer to a counterparty](https://developer.revolut.com/docs/api/business#create-payment) or [creating a payout link](https://developer.revolut.com/docs/api/business#create-payout-link).',
+    'In order to initiate a transfer in certain currencies and countries, you must provide a transfer reason. \nWith this endpoint you can retrieve all transfer reasons available to your business account per country and currency.\n\nAfter you retrieve the results, use the appropriate reason code in the `transfer_reason_code` field when [making a transfer to a counterparty](https://developer.revolut.com/docs/api/business#create-payment) or [creating a payout link](https://developer.revolut.com/docs/api/business#create-payout-link).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Transfers** | Transfer reasons | Read | `transfer-reasons:read` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).',
   operationId: 'getTransferReasons',
+  request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
+  },
   responses: {
     200: {
       description: 'List of transfer reasons',
@@ -16680,7 +17220,7 @@ export const getTransferReasonsRoute = createRoute({
       content: { 'application/json': { schema: ErrorSchema } },
     },
   },
-  security: [{ AccessToken: ['READ'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['READ'] }],
 })
 
 export const getWebhookRoute = createRoute({
@@ -16688,8 +17228,16 @@ export const getWebhookRoute = createRoute({
   path: '/webhook',
   tags: ['Webhooks (v1) (deprecated)'],
   summary: 'Retrieve a webhook',
-  description: 'Get your webhook URL.',
+  description:
+    'Get your webhook URL.\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Webhooks** | Webhooks | Read | `webhooks:read` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).',
   operationId: 'getWebhookV1',
+  request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
+  },
   responses: {
     200: {
       description: 'The existing webhook',
@@ -16706,7 +17254,7 @@ export const getWebhookRoute = createRoute({
     },
   },
   deprecated: true,
-  security: [{ AccessToken: ['READ'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['READ'] }],
 })
 
 export const postWebhookRoute = createRoute({
@@ -16715,9 +17263,14 @@ export const postWebhookRoute = createRoute({
   tags: ['Webhooks (v1) (deprecated)'],
   summary: 'Set a webhook',
   description:
-    'Set up a webhook URL so that event notifications are pushed to the specified URL. Only HTTPS URLs are supported.',
+    'Set up a webhook URL so that event notifications are pushed to the specified URL. Only HTTPS URLs are supported.\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Webhooks** | Webhooks | Write | `webhooks:write` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).',
   operationId: 'setUpWebhook',
   request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     body: {
       description: 'URL to set up as a webhook',
       content: {
@@ -16737,7 +17290,7 @@ export const postWebhookRoute = createRoute({
     },
   },
   deprecated: true,
-  security: [{ AccessToken: ['READ', 'WRITE'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['READ', 'WRITE'] }],
 })
 
 export const deleteWebhookRoute = createRoute({
@@ -16745,8 +17298,16 @@ export const deleteWebhookRoute = createRoute({
   path: '/webhook',
   tags: ['Webhooks (v1) (deprecated)'],
   summary: 'Delete a webhook',
-  description: 'Delete a webhook so that events are not sent to the specified URL any more.',
+  description:
+    'Delete a webhook so that events are not sent to the specified URL any more.\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Webhooks** | Webhooks | Write | `webhooks:write` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).',
   operationId: 'deleteWebhookV1',
+  request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
+  },
   responses: {
     204: { description: 'The webhook has been deleted' },
     default: {
@@ -16755,7 +17316,7 @@ export const deleteWebhookRoute = createRoute({
     },
   },
   deprecated: true,
-  security: [{ AccessToken: ['READ', 'WRITE'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['READ', 'WRITE'] }],
 })
 
 export const getWebhooksRoute = createRoute({
@@ -16764,8 +17325,15 @@ export const getWebhooksRoute = createRoute({
   tags: ['Webhooks (v2)'],
   summary: 'Retrieve a list of webhooks',
   description:
-    'Get the list of all your existing webhooks and their details.\n\nFor more information, see the guides: [About webhooks](https://developer.revolut.com/docs/guides/manage-accounts/webhooks/about-webhooks) and [Manage webhooks](https://developer.revolut.com/docs/guides/manage-accounts/webhooks/manage-webhooks#retrieve-a-list-of-webhooks).',
+    'Get the list of all your existing webhooks and their details.\n\nFor more information, see the guides: [About webhooks](https://developer.revolut.com/docs/guides/manage-accounts/webhooks/about-webhooks) and [Manage webhooks](https://developer.revolut.com/docs/guides/manage-accounts/webhooks/manage-webhooks#retrieve-a-list-of-webhooks).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Webhooks** | Webhooks | Read | `webhooks:read` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).',
   operationId: 'getWebhooks',
+  request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
+  },
   responses: {
     200: {
       description: 'The list of all your existing webhooks',
@@ -16784,7 +17352,7 @@ export const getWebhooksRoute = createRoute({
       content: { 'application/json': { schema: ErrorSchema } },
     },
   },
-  security: [{ AccessToken: ['READ'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['READ'] }],
 })
 
 export const postWebhooksRoute = createRoute({
@@ -16793,9 +17361,14 @@ export const postWebhooksRoute = createRoute({
   tags: ['Webhooks (v2)'],
   summary: 'Create a new webhook',
   description:
-    'Create a new webhook to receive event notifications to the specified URL. Provide a list of event types that you want to subscribe to and a URL for the webhook.\nOnly HTTPS URLs are supported.\n\nFor more information, see the guides: [About webhooks](https://developer.revolut.com/docs/guides/manage-accounts/webhooks/about-webhooks) and [Manage webhooks](https://developer.revolut.com/docs/guides/manage-accounts/webhooks/manage-webhooks#create-a-webhook).',
+    'Create a new webhook to receive event notifications to the specified URL. Provide a list of event types that you want to subscribe to and a URL for the webhook.\nOnly HTTPS URLs are supported.\n\nFor more information, see the guides: [About webhooks](https://developer.revolut.com/docs/guides/manage-accounts/webhooks/about-webhooks) and [Manage webhooks](https://developer.revolut.com/docs/guides/manage-accounts/webhooks/manage-webhooks#create-a-webhook).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Webhooks** | Webhooks | Write | `webhooks:write` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).',
   operationId: 'createWebhook',
   request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     body: {
       description: 'The webhook to create.',
       content: {
@@ -16852,7 +17425,7 @@ export const postWebhooksRoute = createRoute({
       content: { 'application/json': { schema: ErrorSchema } },
     },
   },
-  security: [{ AccessToken: ['WRITE'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['WRITE'] }],
 })
 
 export const getWebhooksWebhookIdRoute = createRoute({
@@ -16861,9 +17434,14 @@ export const getWebhooksWebhookIdRoute = createRoute({
   tags: ['Webhooks (v2)'],
   summary: 'Retrieve a webhook',
   description:
-    'Get the information about a specific webhook by ID.\n\nFor more information, see the guides: [About webhooks](https://developer.revolut.com/docs/guides/manage-accounts/webhooks/about-webhooks) and [Manage webhooks](https://developer.revolut.com/docs/guides/manage-accounts/webhooks/manage-webhooks#retrieve-a-specific-webhook).',
+    'Get the information about a specific webhook by ID.\n\nFor more information, see the guides: [About webhooks](https://developer.revolut.com/docs/guides/manage-accounts/webhooks/about-webhooks) and [Manage webhooks](https://developer.revolut.com/docs/guides/manage-accounts/webhooks/manage-webhooks#retrieve-a-specific-webhook).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Webhooks** | Webhooks | Read | `webhooks:read` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).',
   operationId: 'getWebhook',
   request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     params: z.object({
       webhook_id: z
         .uuid()
@@ -16916,7 +17494,7 @@ export const getWebhooksWebhookIdRoute = createRoute({
       content: { 'application/json': { schema: ErrorSchema } },
     },
   },
-  security: [{ AccessToken: ['READ'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['READ'] }],
 })
 
 export const deleteWebhooksWebhookIdRoute = createRoute({
@@ -16925,9 +17503,14 @@ export const deleteWebhooksWebhookIdRoute = createRoute({
   tags: ['Webhooks (v2)'],
   summary: 'Delete a webhook',
   description:
-    'Delete a specific webhook.\n\nA successful response does not get any content in return.\n\nFor more information, see the guides: [About webhooks](https://developer.revolut.com/docs/guides/manage-accounts/webhooks/about-webhooks) and [Manage webhooks](https://developer.revolut.com/docs/guides/manage-accounts/webhooks/manage-webhooks#delete-a-webhook).',
+    'Delete a specific webhook.\n\nA successful response does not get any content in return.\n\nFor more information, see the guides: [About webhooks](https://developer.revolut.com/docs/guides/manage-accounts/webhooks/about-webhooks) and [Manage webhooks](https://developer.revolut.com/docs/guides/manage-accounts/webhooks/manage-webhooks#delete-a-webhook).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Webhooks** | Webhooks | Write | `webhooks:write` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).',
   operationId: 'deleteWebhook',
   request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     params: z.object({
       webhook_id: z
         .uuid()
@@ -16958,7 +17541,7 @@ export const deleteWebhooksWebhookIdRoute = createRoute({
       content: { 'application/json': { schema: ErrorSchema } },
     },
   },
-  security: [{ AccessToken: ['WRITE'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['WRITE'] }],
 })
 
 export const patchWebhooksWebhookIdRoute = createRoute({
@@ -16967,9 +17550,14 @@ export const patchWebhooksWebhookIdRoute = createRoute({
   tags: ['Webhooks (v2)'],
   summary: 'Update a webhook',
   description:
-    "Update an existing webhook. Change the URL to which event notifications are sent or the list of event types to be notified about.\n\nYou must specify at least one of these two. The fields that you don't specify are not updated.\n\nFor more information, see the guides: [About webhooks](https://developer.revolut.com/docs/guides/manage-accounts/webhooks/about-webhooks) and [Manage webhooks](https://developer.revolut.com/docs/guides/manage-accounts/webhooks/manage-webhooks#update-a-webhook).",
+    "Update an existing webhook. Change the URL to which event notifications are sent or the list of event types to be notified about.\n\nYou must specify at least one of these two. The fields that you don't specify are not updated.\n\nFor more information, see the guides: [About webhooks](https://developer.revolut.com/docs/guides/manage-accounts/webhooks/about-webhooks) and [Manage webhooks](https://developer.revolut.com/docs/guides/manage-accounts/webhooks/manage-webhooks#update-a-webhook).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Webhooks** | Webhooks | Write | `webhooks:write` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).",
   operationId: 'updateWebhook',
   request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     params: z.object({
       webhook_id: z
         .uuid()
@@ -17035,7 +17623,7 @@ export const patchWebhooksWebhookIdRoute = createRoute({
       content: { 'application/json': { schema: ErrorSchema } },
     },
   },
-  security: [{ AccessToken: ['WRITE'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['WRITE'] }],
 })
 
 export const postWebhooksWebhookIdRotateSigningSecretRoute = createRoute({
@@ -17044,9 +17632,14 @@ export const postWebhooksWebhookIdRotateSigningSecretRoute = createRoute({
   tags: ['Webhooks (v2)'],
   summary: 'Rotate a webhook signing secret',
   description:
-    'Rotate a signing secret for a specific webhook.\n\nFor more information, see the guides: [About webhooks](https://developer.revolut.com/docs/guides/manage-accounts/webhooks/about-webhooks) and [Manage webhooks](https://developer.revolut.com/docs/guides/manage-accounts/webhooks/manage-webhooks#rotate-a-webhook-signing-secret).',
+    'Rotate a signing secret for a specific webhook.\n\nFor more information, see the guides: [About webhooks](https://developer.revolut.com/docs/guides/manage-accounts/webhooks/about-webhooks) and [Manage webhooks](https://developer.revolut.com/docs/guides/manage-accounts/webhooks/manage-webhooks#rotate-a-webhook-signing-secret).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Webhooks** | Webhooks | Write | `webhooks:write` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).',
   operationId: 'rotateWebhookSigningSecret',
   request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     params: z.object({
       webhook_id: z
         .uuid()
@@ -17118,7 +17711,7 @@ export const postWebhooksWebhookIdRotateSigningSecretRoute = createRoute({
       content: { 'application/json': { schema: ErrorSchema } },
     },
   },
-  security: [{ AccessToken: ['WRITE'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['WRITE'] }],
 })
 
 export const getWebhooksWebhookIdFailedEventsRoute = createRoute({
@@ -17127,9 +17720,14 @@ export const getWebhooksWebhookIdFailedEventsRoute = createRoute({
   tags: ['Webhooks (v2)'],
   summary: 'Retrieve a list of failed webhook events',
   description:
-    'Get the list of all your failed webhook events, or use the query parameters to filter the results.\n\nThe events are sorted by the `created_at` date in reverse chronological order.\n\nThe returned failed events are **paginated**. \nThe maximum number of events returned per page is specified by the `limit` parameter.\nTo get to the next page, make a new request and use the `created_at` date of the last event returned in the previous response.\n\nFor more information, see the guides: [About webhooks](https://developer.revolut.com/docs/guides/manage-accounts/webhooks/about-webhooks) and [Manage webhooks](https://developer.revolut.com/docs/guides/manage-accounts/webhooks/manage-webhooks#retrieve-a-list-of-failed-webhook-events).',
+    'Get the list of all your failed webhook events, or use the query parameters to filter the results.\n\nThe events are sorted by the `created_at` date in reverse chronological order.\n\nThe returned failed events are **paginated**. \nThe maximum number of events returned per page is specified by the `limit` parameter.\nTo get to the next page, make a new request and use the `created_at` date of the last event returned in the previous response.\n\nFor more information, see the guides: [About webhooks](https://developer.revolut.com/docs/guides/manage-accounts/webhooks/about-webhooks) and [Manage webhooks](https://developer.revolut.com/docs/guides/manage-accounts/webhooks/manage-webhooks#retrieve-a-list-of-failed-webhook-events).\n\n### Required API key permissions\nTo call this endpoint, your API key must have the following permissions (scopes):\n\n| Product | Resource | Permission | Mapped scope |\n|---------|----------|-------------|--------------|\n| **Webhooks** | Webhooks | Read | `webhooks:read` |\n\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).',
   operationId: 'getFailedWebhookEvents',
   request: {
+    headers: z.object({
+      Authorization: AuthorizationParamsSchema,
+      'Revolut-Api-Timestamp': RevolutApiTimestampParamsSchema,
+      'Revolut-Api-Signature': RevolutApiSignatureParamsSchema,
+    }),
     params: z.object({
       webhook_id: z
         .uuid()
@@ -17287,5 +17885,5 @@ export const getWebhooksWebhookIdFailedEventsRoute = createRoute({
       content: { 'application/json': { schema: ErrorSchema } },
     },
   },
-  security: [{ AccessToken: ['READ'] }],
+  security: [{ ApiKey: [] }, { AccessToken: ['READ'] }],
 })

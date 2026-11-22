@@ -3447,6 +3447,7 @@ export const getApiOrganizationsNameAuditLogExportRoute = createRoute({
                   'billing.gcp_remove',
                   'billing.marketplace_approve',
                   'billing.cancel_subscription',
+                  'billing.end_subscription',
                   'billing.renew_subscription',
                   'billing.start_subscription',
                   'billing.un_cancel_subscription',
@@ -3507,6 +3508,7 @@ export const getApiOrganizationsNameAuditLogExportRoute = createRoute({
                   'org.token_approval.authorization_request.denied',
                   'org.audit_log.export',
                   'org.repo_analytics.export',
+                  'org.blog_analytics.export',
                   'repo.add_secrets',
                   'repo.remove_secrets',
                   'repo.add_secret',
@@ -3563,6 +3565,8 @@ export const getApiOrganizationsNameAuditLogExportRoute = createRoute({
                   'org.service_account.token.update',
                   'org.service_account.token.s3_credential.create',
                   'org.service_account.token.s3_credential.delete',
+                  'org.service_account.trusted_publisher.create',
+                  'org.service_account.trusted_publisher.delete',
                   'oauth.token',
                   'oauth.app.create',
                   'oauth.app.update',
@@ -6500,6 +6504,18 @@ export const getApiOrganizationsNameServiceAccountsServiceAccountIdRoute = creat
                           }),
                       ),
                       repoPermissions: z.array(z.enum(['repo.content.read', 'repo.write'])),
+                      resourceGroupIds: z.array(
+                        z
+                          .string()
+                          .regex(/^[0-9a-f]{24}$/)
+                          .length(24)
+                          .openapi({
+                            description: 'A hex string of 24 characters representing an ObjectId.',
+                          }),
+                      ),
+                      resourceGroupPermissions: z.array(
+                        z.enum(['repo.content.read', 'repo.write']),
+                      ),
                       userPermissions: z.array(z.literal('user.gated-repos-requests.write')),
                       endpointPatterns: z.array(z.string()),
                       last4: z.string().exactOptional(),
@@ -6516,6 +6532,8 @@ export const getApiOrganizationsNameServiceAccountsServiceAccountIdRoute = creat
                         'permissions',
                         'repoIds',
                         'repoPermissions',
+                        'resourceGroupIds',
+                        'resourceGroupPermissions',
                         'userPermissions',
                         'endpointPatterns',
                       ],
@@ -6633,13 +6651,33 @@ export const postApiOrganizationsNameServiceAccountsServiceAccountIdTokensRoute 
                 .exactOptional()
                 .openapi({
                   description:
-                    'Repositories to grant `repoPermissions` on. Can be repositories owned by the organization or any public repository. These override the org-wide permissions.',
+                    'Repositories to grant `repoPermissions` on. Can be repositories owned by the organization or any public repository. These override the org-wide and resource-group permissions.',
                 }),
               repoPermissions: z
                 .array(z.enum(['repo.content.read', 'repo.write']))
                 .default([])
                 .exactOptional()
                 .openapi({ description: 'Permissions granted on the selected `repoIds`.' }),
+              resourceGroupIds: z
+                .array(
+                  z
+                    .string()
+                    .regex(/^[0-9a-fA-F]{24}$/)
+                    .length(24),
+                )
+                .exactOptional()
+                .openapi({
+                  description:
+                    'Resource groups of the organization to grant `resourceGroupPermissions` on. Applies to every repository currently or later in those resource groups, and overrides the org-wide permissions.',
+                }),
+              resourceGroupPermissions: z
+                .array(z.enum(['repo.content.read', 'repo.write']))
+                .default([])
+                .exactOptional()
+                .openapi({
+                  description:
+                    'Permissions granted on the repositories of the selected `resourceGroupIds`.',
+                }),
               userPermissions: z
                 .array(z.literal('user.gated-repos-requests.write'))
                 .default([])
@@ -6701,6 +6739,8 @@ export const postApiOrganizationsNameServiceAccountsServiceAccountIdTokensRoute 
                   permissions: z.array(z.string()).exactOptional(),
                   repoIds: z.array(z.string()),
                   repoPermissions: z.array(z.string()),
+                  resourceGroupIds: z.array(z.string()),
+                  resourceGroupPermissions: z.array(z.string()),
                   userPermissions: z.array(z.string()),
                   endpointPatterns: z.array(z.string()),
                   skipNetworkSecurity: z.boolean(),
@@ -6713,6 +6753,8 @@ export const postApiOrganizationsNameServiceAccountsServiceAccountIdTokensRoute 
                     'createdAt',
                     'repoIds',
                     'repoPermissions',
+                    'resourceGroupIds',
+                    'resourceGroupPermissions',
                     'userPermissions',
                     'endpointPatterns',
                     'skipNetworkSecurity',
@@ -6836,12 +6878,31 @@ export const patchApiOrganizationsNameServiceAccountsServiceAccountIdTokensToken
                   .exactOptional()
                   .openapi({
                     description:
-                      'Repositories to grant `repoPermissions` on. Can be repositories owned by the organization or any public repository. These override the org-wide permissions.',
+                      'Repositories to grant `repoPermissions` on. Can be repositories owned by the organization or any public repository. These override the org-wide and resource-group permissions.',
                   }),
                 repoPermissions: z
                   .array(z.enum(['repo.content.read', 'repo.write']))
                   .exactOptional()
                   .openapi({ description: 'Permissions granted on the selected `repoIds`.' }),
+                resourceGroupIds: z
+                  .array(
+                    z
+                      .string()
+                      .regex(/^[0-9a-fA-F]{24}$/)
+                      .length(24),
+                  )
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      'Resource groups of the organization to grant `resourceGroupPermissions` on. Applies to every repository currently or later in those resource groups, and overrides the org-wide permissions.',
+                  }),
+                resourceGroupPermissions: z
+                  .array(z.enum(['repo.content.read', 'repo.write']))
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      'Permissions granted on the repositories of the selected `resourceGroupIds`.',
+                  }),
                 userPermissions: z
                   .array(z.literal('user.gated-repos-requests.write'))
                   .exactOptional()
@@ -6890,6 +6951,8 @@ export const patchApiOrganizationsNameServiceAccountsServiceAccountIdTokensToken
                 permissions: z.array(z.string()),
                 repoIds: z.array(z.string()),
                 repoPermissions: z.array(z.string()),
+                resourceGroupIds: z.array(z.string()),
+                resourceGroupPermissions: z.array(z.string()),
                 userPermissions: z.array(z.string()),
                 endpointPatterns: z.array(z.string()),
                 skipNetworkSecurity: z.boolean(),
@@ -6902,6 +6965,8 @@ export const patchApiOrganizationsNameServiceAccountsServiceAccountIdTokensToken
                   'permissions',
                   'repoIds',
                   'repoPermissions',
+                  'resourceGroupIds',
+                  'resourceGroupPermissions',
                   'userPermissions',
                   'endpointPatterns',
                   'skipNetworkSecurity',
@@ -6964,6 +7029,403 @@ export const postApiOrganizationsNameServiceAccountsServiceAccountIdTokensTokenI
                   .openapi({ required: ['_id', 'displayName', 'createdAt'] }),
               })
               .openapi({ required: ['token', 'tokenInfo'] }),
+          },
+        },
+      },
+    },
+  })
+
+export const getApiOrganizationsNameServiceAccountsServiceAccountIdTrustedPublishersRoute =
+  createRoute({
+    method: 'get',
+    path: '/api/organizations/{name}/service-accounts/{serviceAccountId}/trusted-publishers',
+    tags: ['service-accounts'],
+    summary: 'Trusted publishers',
+    description:
+      'List the [trusted publishers](https://huggingface.co/docs/hub/trusted-publishers) of a service account.',
+    request: {
+      params: z.object({
+        name: z
+          .string()
+          .openapi({
+            param: { name: 'name', in: 'path', required: true, schema: { type: 'string' } },
+          }),
+        serviceAccountId: z
+          .string()
+          .openapi({
+            param: {
+              name: 'serviceAccountId',
+              in: 'path',
+              required: true,
+              schema: { type: 'string' },
+            },
+          }),
+      }),
+    },
+    responses: {
+      200: {
+        description: 'Trusted publishers',
+        content: {
+          'application/json': {
+            schema: z.array(
+              z
+                .strictObject({
+                  _id: z
+                    .string()
+                    .regex(/^[0-9a-f]{24}$/)
+                    .length(24)
+                    .openapi({
+                      description: 'A hex string of 24 characters representing an ObjectId.',
+                    }),
+                  issuerUrl: z.string(),
+                  claims: z.record(
+                    z.string(),
+                    z
+                      .union([
+                        z
+                          .strictObject({ kind: z.literal('eq'), value: z.string() })
+                          .openapi({ required: ['kind', 'value'] }),
+                        z
+                          .strictObject({ kind: z.literal('prefix'), value: z.string().min(1) })
+                          .openapi({ required: ['kind', 'value'] }),
+                      ])
+                      .openapi({
+                        description:
+                          'The claim must equal `value` (`eq`) or start with it (`prefix`).',
+                      }),
+                  ),
+                  configuredBy: z
+                    .xor([
+                      z
+                        .strictObject({
+                          _id: z
+                            .string()
+                            .regex(/^[0-9a-f]{24}$/)
+                            .length(24)
+                            .openapi({
+                              description:
+                                'A hex string of 24 characters representing an ObjectId.',
+                            }),
+                          avatarUrl: z.string(),
+                          fullname: z.string(),
+                          name: z.string(),
+                          isHf: z.boolean(),
+                          isHfAdmin: z.boolean(),
+                          isMod: z.boolean(),
+                          followerCount: z.number().exactOptional(),
+                          type: z.literal('org'),
+                          plan: z.enum(['team', 'enterprise', 'plus', 'academia']).exactOptional(),
+                          isUserFollowing: z.boolean().exactOptional(),
+                        })
+                        .openapi({
+                          required: [
+                            '_id',
+                            'avatarUrl',
+                            'fullname',
+                            'name',
+                            'isHf',
+                            'isHfAdmin',
+                            'isMod',
+                            'type',
+                          ],
+                        }),
+                      z
+                        .strictObject({
+                          _id: z
+                            .string()
+                            .regex(/^[0-9a-f]{24}$/)
+                            .length(24)
+                            .openapi({
+                              description:
+                                'A hex string of 24 characters representing an ObjectId.',
+                            }),
+                          avatarUrl: z.string(),
+                          fullname: z.string(),
+                          name: z.string(),
+                          isHf: z.boolean(),
+                          isHfAdmin: z.boolean(),
+                          isMod: z.boolean(),
+                          followerCount: z.number().exactOptional(),
+                          type: z.literal('user'),
+                          isPro: z.boolean(),
+                          isUserFollowing: z.boolean().exactOptional(),
+                          primaryOrg: z
+                            .strictObject({
+                              avatarUrl: z.string(),
+                              fullname: z.string(),
+                              name: z.string(),
+                              type: z.literal('org'),
+                              isHf: z.boolean(),
+                              isFollowing: z.boolean().exactOptional(),
+                              plan: z
+                                .enum(['team', 'enterprise', 'plus', 'academia'])
+                                .exactOptional(),
+                              details: z.string().exactOptional(),
+                              hasPrivateMembersList: z.boolean().exactOptional(),
+                              userRole: z
+                                .enum(['admin', 'write', 'contributor', 'read', 'no_access'])
+                                .exactOptional(),
+                              numUsers: z.number().exactOptional(),
+                            })
+                            .exactOptional()
+                            .openapi({
+                              required: ['avatarUrl', 'fullname', 'name', 'type', 'isHf'],
+                            }),
+                        })
+                        .openapi({
+                          required: [
+                            '_id',
+                            'avatarUrl',
+                            'fullname',
+                            'name',
+                            'isHf',
+                            'isHfAdmin',
+                            'isMod',
+                            'type',
+                            'isPro',
+                          ],
+                        }),
+                    ])
+                    .exactOptional(),
+                  createdAt: z.iso
+                    .datetime({ offset: true })
+                    .regex(
+                      /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$/,
+                    ),
+                  lastUsedAt: z.iso
+                    .datetime({ offset: true })
+                    .regex(
+                      /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$/,
+                    )
+                    .exactOptional(),
+                  capabilities: z
+                    .array(z.enum(['inference-api', 'request-gated-repos']))
+                    .exactOptional(),
+                  permissions: z
+                    .array(z.enum(['repo.content.read', 'repo.content.write']))
+                    .exactOptional(),
+                })
+                .openapi({
+                  required: ['_id', 'issuerUrl', 'claims', 'createdAt'],
+                  description: 'Trusted publisher',
+                }),
+            ),
+          },
+        },
+      },
+    },
+  })
+
+export const postApiOrganizationsNameServiceAccountsServiceAccountIdTrustedPublishersRoute =
+  createRoute({
+    method: 'post',
+    path: '/api/organizations/{name}/service-accounts/{serviceAccountId}/trusted-publishers',
+    tags: ['service-accounts'],
+    summary: 'Trusted publisher',
+    description:
+      'Let OIDC tokens matching the issuer and claims exchange for a short-lived token of the service account, with `resource` set to the service account name.',
+    request: {
+      params: z.object({
+        name: z
+          .string()
+          .openapi({
+            param: { name: 'name', in: 'path', required: true, schema: { type: 'string' } },
+          }),
+        serviceAccountId: z
+          .string()
+          .openapi({
+            param: {
+              name: 'serviceAccountId',
+              in: 'path',
+              required: true,
+              schema: { type: 'string' },
+            },
+          }),
+      }),
+      body: {
+        content: {
+          'application/json': {
+            schema: z
+              .object({
+                issuerUrl: z
+                  .url()
+                  .openapi({
+                    description:
+                      'URL of the OIDC issuer, e.g. `https://token.actions.githubusercontent.com`.',
+                  }),
+                claims: z
+                  .record(
+                    z.string(),
+                    z
+                      .union([
+                        z
+                          .object({ kind: z.literal('eq'), value: z.string() })
+                          .openapi({ required: ['kind', 'value'] }),
+                        z
+                          .object({ kind: z.literal('prefix'), value: z.string().min(1) })
+                          .openapi({ required: ['kind', 'value'] }),
+                      ])
+                      .openapi({
+                        description:
+                          'The claim must equal `value` (`eq`) or start with it (`prefix`).',
+                      }),
+                  )
+                  .openapi({
+                    description:
+                      'Claims the OIDC token must match, by claim name. At least one is required.',
+                  }),
+                capabilities: z
+                  .array(z.enum(['inference-api', 'request-gated-repos']))
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      'Scopes granted to matching tokens on top of `gated-repos` (read the gated repos the account has access to).',
+                  }),
+              })
+              .openapi({ required: ['issuerUrl', 'claims'] }),
+          },
+        },
+      },
+    },
+    responses: {
+      200: {
+        description: 'Trusted publisher',
+        content: {
+          'application/json': {
+            schema: z
+              .strictObject({
+                _id: z
+                  .string()
+                  .regex(/^[0-9a-f]{24}$/)
+                  .length(24)
+                  .openapi({
+                    description: 'A hex string of 24 characters representing an ObjectId.',
+                  }),
+                issuerUrl: z.string(),
+                claims: z.record(
+                  z.string(),
+                  z
+                    .union([
+                      z
+                        .strictObject({ kind: z.literal('eq'), value: z.string() })
+                        .openapi({ required: ['kind', 'value'] }),
+                      z
+                        .strictObject({ kind: z.literal('prefix'), value: z.string().min(1) })
+                        .openapi({ required: ['kind', 'value'] }),
+                    ])
+                    .openapi({
+                      description:
+                        'The claim must equal `value` (`eq`) or start with it (`prefix`).',
+                    }),
+                ),
+                configuredBy: z
+                  .xor([
+                    z
+                      .strictObject({
+                        _id: z
+                          .string()
+                          .regex(/^[0-9a-f]{24}$/)
+                          .length(24)
+                          .openapi({
+                            description: 'A hex string of 24 characters representing an ObjectId.',
+                          }),
+                        avatarUrl: z.string(),
+                        fullname: z.string(),
+                        name: z.string(),
+                        isHf: z.boolean(),
+                        isHfAdmin: z.boolean(),
+                        isMod: z.boolean(),
+                        followerCount: z.number().exactOptional(),
+                        type: z.literal('org'),
+                        plan: z.enum(['team', 'enterprise', 'plus', 'academia']).exactOptional(),
+                        isUserFollowing: z.boolean().exactOptional(),
+                      })
+                      .openapi({
+                        required: [
+                          '_id',
+                          'avatarUrl',
+                          'fullname',
+                          'name',
+                          'isHf',
+                          'isHfAdmin',
+                          'isMod',
+                          'type',
+                        ],
+                      }),
+                    z
+                      .strictObject({
+                        _id: z
+                          .string()
+                          .regex(/^[0-9a-f]{24}$/)
+                          .length(24)
+                          .openapi({
+                            description: 'A hex string of 24 characters representing an ObjectId.',
+                          }),
+                        avatarUrl: z.string(),
+                        fullname: z.string(),
+                        name: z.string(),
+                        isHf: z.boolean(),
+                        isHfAdmin: z.boolean(),
+                        isMod: z.boolean(),
+                        followerCount: z.number().exactOptional(),
+                        type: z.literal('user'),
+                        isPro: z.boolean(),
+                        isUserFollowing: z.boolean().exactOptional(),
+                        primaryOrg: z
+                          .strictObject({
+                            avatarUrl: z.string(),
+                            fullname: z.string(),
+                            name: z.string(),
+                            type: z.literal('org'),
+                            isHf: z.boolean(),
+                            isFollowing: z.boolean().exactOptional(),
+                            plan: z
+                              .enum(['team', 'enterprise', 'plus', 'academia'])
+                              .exactOptional(),
+                            details: z.string().exactOptional(),
+                            hasPrivateMembersList: z.boolean().exactOptional(),
+                            userRole: z
+                              .enum(['admin', 'write', 'contributor', 'read', 'no_access'])
+                              .exactOptional(),
+                            numUsers: z.number().exactOptional(),
+                          })
+                          .exactOptional()
+                          .openapi({ required: ['avatarUrl', 'fullname', 'name', 'type', 'isHf'] }),
+                      })
+                      .openapi({
+                        required: [
+                          '_id',
+                          'avatarUrl',
+                          'fullname',
+                          'name',
+                          'isHf',
+                          'isHfAdmin',
+                          'isMod',
+                          'type',
+                          'isPro',
+                        ],
+                      }),
+                  ])
+                  .exactOptional(),
+                createdAt: z.iso
+                  .datetime({ offset: true })
+                  .regex(
+                    /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$/,
+                  ),
+                lastUsedAt: z.iso
+                  .datetime({ offset: true })
+                  .regex(
+                    /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$/,
+                  )
+                  .exactOptional(),
+                capabilities: z
+                  .array(z.enum(['inference-api', 'request-gated-repos']))
+                  .exactOptional(),
+                permissions: z
+                  .array(z.enum(['repo.content.read', 'repo.content.write']))
+                  .exactOptional(),
+              })
+              .openapi({ required: ['_id', 'issuerUrl', 'claims', 'createdAt'] }),
           },
         },
       },
@@ -12349,14 +12811,14 @@ export const getApiOrganizationsNameBillingUsageByResourceGroupRoute = createRou
         .regex(
           /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$/,
         )
-        .default('2026-11-14T14:07:00.495Z')
+        .default('2026-11-20T14:04:03.691Z')
         .exactOptional()
         .openapi({
           param: {
             name: 'endDate',
             in: 'query',
             schema: {
-              default: '2026-11-14T14:07:00.495Z',
+              default: '2026-11-20T14:04:03.691Z',
               type: 'string',
               format: 'date-time',
               pattern:
@@ -12463,14 +12925,14 @@ export const getApiOrganizationsNameBillingUsageByInferenceSessionRoute = create
         .regex(
           /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$/,
         )
-        .default('2026-11-14T14:07:00.496Z')
+        .default('2026-11-20T14:04:03.692Z')
         .exactOptional()
         .openapi({
           param: {
             name: 'endDate',
             in: 'query',
             schema: {
-              default: '2026-11-14T14:07:00.496Z',
+              default: '2026-11-20T14:04:03.692Z',
               type: 'string',
               format: 'date-time',
               pattern:
@@ -12559,14 +13021,14 @@ export const getApiOrganizationsNameBillingUsageInferenceRoute = createRoute({
         .regex(
           /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$/,
         )
-        .default('2026-11-14T14:07:00.497Z')
+        .default('2026-11-20T14:04:03.692Z')
         .exactOptional()
         .openapi({
           param: {
             name: 'endDate',
             in: 'query',
             schema: {
-              default: '2026-11-14T14:07:00.497Z',
+              default: '2026-11-20T14:04:03.692Z',
               type: 'string',
               format: 'date-time',
               pattern:
@@ -12661,6 +13123,188 @@ export const getApiOrganizationsNameBillingUsageInferenceRoute = createRoute({
   },
 })
 
+export const getApiOrganizationsNameBillingCreditsRoute = createRoute({
+  method: 'get',
+  path: '/api/organizations/{name}/billing/credits',
+  tags: ['orgs'],
+  summary: 'Get org credits',
+  description:
+    "Get the org's credits balance, with each purchased, granted and monthly included balance and its expiry date",
+  request: {
+    params: z.object({
+      name: z
+        .string()
+        .openapi({
+          param: { name: 'name', in: 'path', required: true, schema: { type: 'string' } },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Credits balance',
+      content: {
+        'application/json': {
+          schema: z
+            .strictObject({
+              balanceUsd: z.number().openapi({ description: 'Total credits balance, in USD' }),
+              billingMode: z
+                .enum(['postpaid', 'prepaid'])
+                .openapi({
+                  description:
+                    '`prepaid` accounts can only use their credits, `postpaid` ones are billed for usage beyond them',
+                }),
+              balances: z.array(
+                z
+                  .strictObject({
+                    name: z.string().exactOptional(),
+                    type: z.enum(['included', 'purchased', 'granted']),
+                    balanceUsd: z.number(),
+                    expiresAt: z.iso
+                      .datetime({ offset: true })
+                      .regex(
+                        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$/,
+                      )
+                      .exactOptional(),
+                  })
+                  .openapi({ required: ['type', 'balanceUsd'] }),
+              ),
+            })
+            .openapi({ required: ['balanceUsd', 'billingMode', 'balances'] }),
+        },
+      },
+    },
+  },
+})
+
+export const postApiOrganizationsNameBillingPrepaidCreditsPurchaseLinkRoute = createRoute({
+  method: 'post',
+  path: '/api/organizations/{name}/billing/prepaid-credits/purchase-link',
+  tags: ['orgs'],
+  summary: 'Credits purchase link',
+  description:
+    'Get a link to the org billing page with a credits purchase prefilled, also sent to the requesting user by email. Nothing is charged until they confirm the purchase on that page.',
+  request: {
+    params: z.object({
+      name: z
+        .string()
+        .openapi({
+          param: { name: 'name', in: 'path', required: true, schema: { type: 'string' } },
+        }),
+    }),
+    body: {
+      content: {
+        'application/json': {
+          schema: z
+            .object({ amountUsd: z.int().min(5).max(5000) })
+            .openapi({ required: ['amountUsd'] }),
+        },
+      },
+    },
+  },
+  responses: {
+    200: {
+      description: 'Credits purchase link',
+      content: {
+        'application/json': {
+          schema: z
+            .strictObject({
+              url: z
+                .url()
+                .openapi({
+                  description:
+                    'Billing page link that opens the prefilled purchase, to share with the user',
+                }),
+            })
+            .openapi({ required: ['url'] }),
+        },
+      },
+    },
+  },
+})
+
+export const getApiSettingsBillingCreditsRoute = createRoute({
+  method: 'get',
+  path: '/api/settings/billing/credits',
+  tags: ['users'],
+  summary: 'Get credits',
+  description:
+    "Get the user's credits balance, with each purchased, granted and monthly included balance and its expiry date",
+  responses: {
+    200: {
+      description: 'Credits balance',
+      content: {
+        'application/json': {
+          schema: z
+            .strictObject({
+              balanceUsd: z.number().openapi({ description: 'Total credits balance, in USD' }),
+              billingMode: z
+                .enum(['postpaid', 'prepaid'])
+                .openapi({
+                  description:
+                    '`prepaid` accounts can only use their credits, `postpaid` ones are billed for usage beyond them',
+                }),
+              balances: z.array(
+                z
+                  .strictObject({
+                    name: z.string().exactOptional(),
+                    type: z.enum(['included', 'purchased', 'granted']),
+                    balanceUsd: z.number(),
+                    expiresAt: z.iso
+                      .datetime({ offset: true })
+                      .regex(
+                        /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$/,
+                      )
+                      .exactOptional(),
+                  })
+                  .openapi({ required: ['type', 'balanceUsd'] }),
+              ),
+            })
+            .openapi({ required: ['balanceUsd', 'billingMode', 'balances'] }),
+        },
+      },
+    },
+  },
+})
+
+export const postApiSettingsBillingPrepaidCreditsPurchaseLinkRoute = createRoute({
+  method: 'post',
+  path: '/api/settings/billing/prepaid-credits/purchase-link',
+  tags: ['users'],
+  summary: 'Credits purchase link',
+  description:
+    'Get a link to the billing page with a credits purchase prefilled, also sent to the user by email. Nothing is charged until the user confirms the purchase on that page.',
+  request: {
+    body: {
+      content: {
+        'application/json': {
+          schema: z
+            .object({ amountUsd: z.int().min(5).max(5000) })
+            .openapi({ required: ['amountUsd'] }),
+        },
+      },
+    },
+  },
+  responses: {
+    200: {
+      description: 'Credits purchase link',
+      content: {
+        'application/json': {
+          schema: z
+            .strictObject({
+              url: z
+                .url()
+                .openapi({
+                  description:
+                    'Billing page link that opens the prefilled purchase, to share with the user',
+                }),
+            })
+            .openapi({ required: ['url'] }),
+        },
+      },
+    },
+  },
+})
+
 export const getApiSettingsBillingUsageByInferenceSessionRoute = createRoute({
   method: 'get',
   path: '/api/settings/billing/usage-by-inference-session',
@@ -12695,14 +13339,14 @@ export const getApiSettingsBillingUsageByInferenceSessionRoute = createRoute({
         .regex(
           /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$/,
         )
-        .default('2026-11-14T14:07:00.496Z')
+        .default('2026-11-20T14:04:03.692Z')
         .exactOptional()
         .openapi({
           param: {
             name: 'endDate',
             in: 'query',
             schema: {
-              default: '2026-11-14T14:07:00.496Z',
+              default: '2026-11-20T14:04:03.692Z',
               type: 'string',
               format: 'date-time',
               pattern:
@@ -19197,7 +19841,9 @@ export const getApiRepoTypeNamespaceRepoSettingsTrustedPublishersRoute = createR
                     /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$/,
                   )
                   .exactOptional(),
-                capabilities: z.array(z.literal('inference-api')).exactOptional(),
+                capabilities: z
+                  .array(z.enum(['inference-api', 'request-gated-repos']))
+                  .exactOptional(),
                 permissions: z
                   .array(z.enum(['repo.content.read', 'repo.content.write']))
                   .exactOptional(),
@@ -19420,7 +20066,9 @@ export const postApiRepoTypeNamespaceRepoSettingsTrustedPublishersRoute = create
                   /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$/,
                 )
                 .exactOptional(),
-              capabilities: z.array(z.literal('inference-api')).exactOptional(),
+              capabilities: z
+                .array(z.enum(['inference-api', 'request-gated-repos']))
+                .exactOptional(),
               permissions: z
                 .array(z.enum(['repo.content.read', 'repo.content.write']))
                 .exactOptional(),
@@ -28524,6 +29172,7 @@ export const getApiQuicksearchRoute = createRoute({
             'chatterbox',
             'chaossim',
             'chat_tts',
+            'chessqueries',
             'chexmix',
             'chronos-forecasting',
             'circuit-tracer',
@@ -28532,6 +29181,7 @@ export const getApiQuicksearchRoute = createRoute({
             'cloud-agents',
             'collectorvision',
             'colipri',
+            'cooperscene',
             'cosyvoice',
             'cotracker',
             'colpali',
@@ -28663,6 +29313,7 @@ export const getApiQuicksearchRoute = createRoute({
             'ninfer',
             'nobg',
             'nv-medtech',
+            'onnxruntime-genai',
             'open-oasis',
             'open_clip',
             'openasr',
@@ -28731,6 +29382,7 @@ export const getApiQuicksearchRoute = createRoute({
             'songbloom',
             'stable-baselines3',
             'stanza',
+            'strands-decider',
             'supertonic',
             'svdtrunc',
             'swarmformer',
@@ -28756,11 +29408,13 @@ export const getApiQuicksearchRoute = createRoute({
             'trellis2',
             'tunejury',
             'ultralytics',
+            'unitree-rl',
             'univa',
             'uni-3dar',
             'unity-sentis',
             'sana',
             'videoprism',
+            'verto-asr',
             'vfi-mamba',
             'vismatch',
             'lvface',
@@ -28771,11 +29425,13 @@ export const getApiQuicksearchRoute = createRoute({
             'vibevoice',
             'videox_fun',
             'wan2.2',
+            'wavegen',
             'wham',
             'whisperkit',
             'wilddet3d',
             'yolov10',
             'yolov26',
+            'zao-lib',
             'zipsplat',
             'zonos',
             '3dtopia-xl',
@@ -28825,6 +29481,7 @@ export const getApiQuicksearchRoute = createRoute({
                     'chatterbox',
                     'chaossim',
                     'chat_tts',
+                    'chessqueries',
                     'chexmix',
                     'chronos-forecasting',
                     'circuit-tracer',
@@ -28833,6 +29490,7 @@ export const getApiQuicksearchRoute = createRoute({
                     'cloud-agents',
                     'collectorvision',
                     'colipri',
+                    'cooperscene',
                     'cosyvoice',
                     'cotracker',
                     'colpali',
@@ -28964,6 +29622,7 @@ export const getApiQuicksearchRoute = createRoute({
                     'ninfer',
                     'nobg',
                     'nv-medtech',
+                    'onnxruntime-genai',
                     'open-oasis',
                     'open_clip',
                     'openasr',
@@ -29032,6 +29691,7 @@ export const getApiQuicksearchRoute = createRoute({
                     'songbloom',
                     'stable-baselines3',
                     'stanza',
+                    'strands-decider',
                     'supertonic',
                     'svdtrunc',
                     'swarmformer',
@@ -29057,11 +29717,13 @@ export const getApiQuicksearchRoute = createRoute({
                     'trellis2',
                     'tunejury',
                     'ultralytics',
+                    'unitree-rl',
                     'univa',
                     'uni-3dar',
                     'unity-sentis',
                     'sana',
                     'videoprism',
+                    'verto-asr',
                     'vfi-mamba',
                     'vismatch',
                     'lvface',
@@ -29072,11 +29734,13 @@ export const getApiQuicksearchRoute = createRoute({
                     'vibevoice',
                     'videox_fun',
                     'wan2.2',
+                    'wavegen',
                     'wham',
                     'whisperkit',
                     'wilddet3d',
                     'yolov10',
                     'yolov26',
+                    'zao-lib',
                     'zipsplat',
                     'zonos',
                     '3dtopia-xl',
@@ -30110,6 +30774,7 @@ export const postApiQuicksearchRoute = createRoute({
             'chatterbox',
             'chaossim',
             'chat_tts',
+            'chessqueries',
             'chexmix',
             'chronos-forecasting',
             'circuit-tracer',
@@ -30118,6 +30783,7 @@ export const postApiQuicksearchRoute = createRoute({
             'cloud-agents',
             'collectorvision',
             'colipri',
+            'cooperscene',
             'cosyvoice',
             'cotracker',
             'colpali',
@@ -30249,6 +30915,7 @@ export const postApiQuicksearchRoute = createRoute({
             'ninfer',
             'nobg',
             'nv-medtech',
+            'onnxruntime-genai',
             'open-oasis',
             'open_clip',
             'openasr',
@@ -30317,6 +30984,7 @@ export const postApiQuicksearchRoute = createRoute({
             'songbloom',
             'stable-baselines3',
             'stanza',
+            'strands-decider',
             'supertonic',
             'svdtrunc',
             'swarmformer',
@@ -30342,11 +31010,13 @@ export const postApiQuicksearchRoute = createRoute({
             'trellis2',
             'tunejury',
             'ultralytics',
+            'unitree-rl',
             'univa',
             'uni-3dar',
             'unity-sentis',
             'sana',
             'videoprism',
+            'verto-asr',
             'vfi-mamba',
             'vismatch',
             'lvface',
@@ -30357,11 +31027,13 @@ export const postApiQuicksearchRoute = createRoute({
             'vibevoice',
             'videox_fun',
             'wan2.2',
+            'wavegen',
             'wham',
             'whisperkit',
             'wilddet3d',
             'yolov10',
             'yolov26',
+            'zao-lib',
             'zipsplat',
             'zonos',
             '3dtopia-xl',
@@ -30411,6 +31083,7 @@ export const postApiQuicksearchRoute = createRoute({
                     'chatterbox',
                     'chaossim',
                     'chat_tts',
+                    'chessqueries',
                     'chexmix',
                     'chronos-forecasting',
                     'circuit-tracer',
@@ -30419,6 +31092,7 @@ export const postApiQuicksearchRoute = createRoute({
                     'cloud-agents',
                     'collectorvision',
                     'colipri',
+                    'cooperscene',
                     'cosyvoice',
                     'cotracker',
                     'colpali',
@@ -30550,6 +31224,7 @@ export const postApiQuicksearchRoute = createRoute({
                     'ninfer',
                     'nobg',
                     'nv-medtech',
+                    'onnxruntime-genai',
                     'open-oasis',
                     'open_clip',
                     'openasr',
@@ -30618,6 +31293,7 @@ export const postApiQuicksearchRoute = createRoute({
                     'songbloom',
                     'stable-baselines3',
                     'stanza',
+                    'strands-decider',
                     'supertonic',
                     'svdtrunc',
                     'swarmformer',
@@ -30643,11 +31319,13 @@ export const postApiQuicksearchRoute = createRoute({
                     'trellis2',
                     'tunejury',
                     'ultralytics',
+                    'unitree-rl',
                     'univa',
                     'uni-3dar',
                     'unity-sentis',
                     'sana',
                     'videoprism',
+                    'verto-asr',
                     'vfi-mamba',
                     'vismatch',
                     'lvface',
@@ -30658,11 +31336,13 @@ export const postApiQuicksearchRoute = createRoute({
                     'vibevoice',
                     'videox_fun',
                     'wan2.2',
+                    'wavegen',
                     'wham',
                     'whisperkit',
                     'wilddet3d',
                     'yolov10',
                     'yolov26',
+                    'zao-lib',
                     'zipsplat',
                     'zonos',
                     '3dtopia-xl',
@@ -31274,6 +31954,7 @@ export const postApiQuicksearchRoute = createRoute({
                     'chatterbox',
                     'chaossim',
                     'chat_tts',
+                    'chessqueries',
                     'chexmix',
                     'chronos-forecasting',
                     'circuit-tracer',
@@ -31282,6 +31963,7 @@ export const postApiQuicksearchRoute = createRoute({
                     'cloud-agents',
                     'collectorvision',
                     'colipri',
+                    'cooperscene',
                     'cosyvoice',
                     'cotracker',
                     'colpali',
@@ -31413,6 +32095,7 @@ export const postApiQuicksearchRoute = createRoute({
                     'ninfer',
                     'nobg',
                     'nv-medtech',
+                    'onnxruntime-genai',
                     'open-oasis',
                     'open_clip',
                     'openasr',
@@ -31481,6 +32164,7 @@ export const postApiQuicksearchRoute = createRoute({
                     'songbloom',
                     'stable-baselines3',
                     'stanza',
+                    'strands-decider',
                     'supertonic',
                     'svdtrunc',
                     'swarmformer',
@@ -31506,11 +32190,13 @@ export const postApiQuicksearchRoute = createRoute({
                     'trellis2',
                     'tunejury',
                     'ultralytics',
+                    'unitree-rl',
                     'univa',
                     'uni-3dar',
                     'unity-sentis',
                     'sana',
                     'videoprism',
+                    'verto-asr',
                     'vfi-mamba',
                     'vismatch',
                     'lvface',
@@ -31521,11 +32207,13 @@ export const postApiQuicksearchRoute = createRoute({
                     'vibevoice',
                     'videox_fun',
                     'wan2.2',
+                    'wavegen',
                     'wham',
                     'whisperkit',
                     'wilddet3d',
                     'yolov10',
                     'yolov26',
+                    'zao-lib',
                     'zipsplat',
                     'zonos',
                     '3dtopia-xl',

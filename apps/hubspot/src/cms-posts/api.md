@@ -21,13 +21,8 @@ Base URLs:
 
 |Scope|Scope Description|
 |---|---|
+|cms.blogs.blog_posts.read||
 |content||
-
-* API Key (private_apps)
-    - Parameter Name: **private-app**, in: header.
-
-* API Key (private_apps_legacy)
-    - Parameter Name: **private-app-legacy**, in: header.
 
 <h1 id="posts-basic">Basic</h1>
 
@@ -39,6 +34,7 @@ Base URLs:
 
 ```bash
 curl https://api.hubapi.com/cms/blogs/2026-09/authors/cursor \
+  -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
@@ -85,7 +81,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: content )
+oauth2 ( Scopes: cms.blogs.blog_posts.read ), oauth2 ( Scopes: content )
 </aside>
 
 ## Query authors
@@ -96,6 +92,7 @@ oauth2 ( Scopes: content )
 
 ```bash
 curl https://api.hubapi.com/cms/blogs/2026-09/authors/cursor/query \
+  -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
@@ -142,7 +139,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: content )
+oauth2 ( Scopes: cms.blogs.blog_posts.read ), oauth2 ( Scopes: content )
 </aside>
 
 ## Get all posts
@@ -153,6 +150,7 @@ oauth2 ( Scopes: content )
 
 ```bash
 curl https://api.hubapi.com/cms/blogs/2026-09/posts \
+  -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
@@ -199,7 +197,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: content )
+oauth2 ( Scopes: cms.blogs.blog_posts.read ), oauth2 ( Scopes: content )
 </aside>
 
 ## Create a new post
@@ -211,8 +209,10 @@ oauth2 ( Scopes: content )
 ```bash
 curl https://api.hubapi.com/cms/blogs/2026-09/posts \
   -X POST \
-  -H 'Content-Type: */*' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d 'null'
 ```
 
 `POST /cms/blogs/2026-09/posts`
@@ -1299,8 +1299,10 @@ oauth2 ( Scopes: content )
 ```bash
 curl https://api.hubapi.com/cms/blogs/2026-09/posts/clone \
   -X POST \
-  -H 'Content-Type: */*' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d 'null'
 ```
 
 `POST /cms/blogs/2026-09/posts/clone`
@@ -1355,6 +1357,7 @@ oauth2 ( Scopes: content )
 
 ```bash
 curl https://api.hubapi.com/cms/blogs/2026-09/posts/cursor \
+  -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
@@ -1401,7 +1404,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: content )
+oauth2 ( Scopes: cms.blogs.blog_posts.read ), oauth2 ( Scopes: content )
 </aside>
 
 ## Query Posts
@@ -1412,6 +1415,7 @@ oauth2 ( Scopes: content )
 
 ```bash
 curl https://api.hubapi.com/cms/blogs/2026-09/posts/cursor/query \
+  -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
@@ -1458,7 +1462,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: content )
+oauth2 ( Scopes: cms.blogs.blog_posts.read ), oauth2 ( Scopes: content )
 </aside>
 
 ## Schedule a post to be published
@@ -1470,8 +1474,9 @@ oauth2 ( Scopes: content )
 ```bash
 curl https://api.hubapi.com/cms/blogs/2026-09/posts/schedule \
   -X POST \
-  -H 'Content-Type: */*' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+  -H 'Content-Type: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d 'null'
 ```
 
 `POST /cms/blogs/2026-09/posts/schedule`
@@ -1520,6 +1525,7 @@ oauth2 ( Scopes: content )
 
 ```bash
 curl 'https://api.hubapi.com/cms/blogs/2026-09/posts/{objectId}' \
+  -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
@@ -1558,7 +1564,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: content )
+oauth2 ( Scopes: cms.blogs.blog_posts.read ), oauth2 ( Scopes: content )
 </aside>
 
 ## Delete a blog post
@@ -1613,8 +1619,10 @@ oauth2 ( Scopes: content )
 ```bash
 curl 'https://api.hubapi.com/cms/blogs/2026-09/posts/{objectId}' \
   -X PATCH \
-  -H 'Content-Type: */*' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d 'null'
 ```
 
 `PATCH /cms/blogs/2026-09/posts/{objectId}`
@@ -2696,6 +2704,7 @@ oauth2 ( Scopes: content )
 
 ```bash
 curl 'https://api.hubapi.com/cms/blogs/2026-09/posts/{objectId}/draft' \
+  -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
@@ -2732,7 +2741,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: content )
+oauth2 ( Scopes: cms.blogs.blog_posts.read ), oauth2 ( Scopes: content )
 </aside>
 
 ## Update the draft of a post
@@ -2744,8 +2753,10 @@ oauth2 ( Scopes: content )
 ```bash
 curl 'https://api.hubapi.com/cms/blogs/2026-09/posts/{objectId}/draft' \
   -X PATCH \
-  -H 'Content-Type: */*' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d 'null'
 ```
 
 `PATCH /cms/blogs/2026-09/posts/{objectId}/draft`
@@ -3910,6 +3921,7 @@ oauth2 ( Scopes: content )
 
 ```bash
 curl https://api.hubapi.com/cms/blogs/2026-09/tags/cursor \
+  -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
@@ -3956,7 +3968,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: content )
+oauth2 ( Scopes: cms.blogs.blog_posts.read ), oauth2 ( Scopes: content )
 </aside>
 
 ## Query Tags
@@ -3967,6 +3979,7 @@ oauth2 ( Scopes: content )
 
 ```bash
 curl https://api.hubapi.com/cms/blogs/2026-09/tags/cursor/query \
+  -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
@@ -4013,7 +4026,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: content )
+oauth2 ( Scopes: cms.blogs.blog_posts.read ), oauth2 ( Scopes: content )
 </aside>
 
 <h1 id="posts-batch">Batch</h1>
@@ -4027,8 +4040,10 @@ oauth2 ( Scopes: content )
 ```bash
 curl https://api.hubapi.com/cms/blogs/2026-09/posts/batch/archive \
   -X POST \
-  -H 'Content-Type: */*' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d 'null'
 ```
 
 `POST /cms/blogs/2026-09/posts/batch/archive`
@@ -4051,6 +4066,12 @@ null
 
 > Example responses
 
+> 207 Response
+
+```json
+null
+```
+
 > default Response
 
 ```json
@@ -4062,6 +4083,7 @@ null
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |204|No Content|No content|None|
+|207|Multi-Status|multiple statuses|[BatchResponseBlogPostWithErrors](#schemabatchresponseblogpostwitherrors)|
 |default|Default|An error occurred.|[Error](#schemaerror)|
 
 <aside class="warning">
@@ -4078,8 +4100,10 @@ oauth2 ( Scopes: content )
 ```bash
 curl https://api.hubapi.com/cms/blogs/2026-09/posts/batch/create \
   -X POST \
-  -H 'Content-Type: */*' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d 'null'
 ```
 
 `POST /cms/blogs/2026-09/posts/batch/create`
@@ -4141,8 +4165,10 @@ oauth2 ( Scopes: content )
 ```bash
 curl https://api.hubapi.com/cms/blogs/2026-09/posts/batch/read \
   -X POST \
-  -H 'Content-Type: */*' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d 'null'
 ```
 
 `POST /cms/blogs/2026-09/posts/batch/read`
@@ -4193,7 +4219,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: content )
+oauth2 ( Scopes: cms.blogs.blog_posts.read ), oauth2 ( Scopes: content )
 </aside>
 
 ## Update a batch of Blog Posts
@@ -4205,8 +4231,10 @@ oauth2 ( Scopes: content )
 ```bash
 curl https://api.hubapi.com/cms/blogs/2026-09/posts/batch/update \
   -X POST \
-  -H 'Content-Type: */*' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d 'null'
 ```
 
 `POST /cms/blogs/2026-09/posts/batch/update`
@@ -4271,8 +4299,9 @@ oauth2 ( Scopes: content )
 ```bash
 curl https://api.hubapi.com/cms/blogs/2026-09/posts/multi-language/attach-to-lang-group \
   -X POST \
-  -H 'Content-Type: */*' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+  -H 'Content-Type: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d 'null'
 ```
 
 `POST /cms/blogs/2026-09/posts/multi-language/attach-to-lang-group`
@@ -6112,8 +6141,10 @@ oauth2 ( Scopes: content )
 ```bash
 curl https://api.hubapi.com/cms/blogs/2026-09/posts/multi-language/create-language-variation \
   -X POST \
-  -H 'Content-Type: */*' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d 'null'
 ```
 
 `POST /cms/blogs/2026-09/posts/multi-language/create-language-variation`
@@ -6170,8 +6201,9 @@ oauth2 ( Scopes: content )
 ```bash
 curl https://api.hubapi.com/cms/blogs/2026-09/posts/multi-language/detach-from-lang-group \
   -X POST \
-  -H 'Content-Type: */*' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+  -H 'Content-Type: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d 'null'
 ```
 
 `POST /cms/blogs/2026-09/posts/multi-language/detach-from-lang-group`
@@ -6219,8 +6251,9 @@ oauth2 ( Scopes: content )
 ```bash
 curl https://api.hubapi.com/cms/blogs/2026-09/posts/multi-language/set-new-lang-primary \
   -X PUT \
-  -H 'Content-Type: */*' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+  -H 'Content-Type: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d 'null'
 ```
 
 `PUT /cms/blogs/2026-09/posts/multi-language/set-new-lang-primary`
@@ -6269,8 +6302,9 @@ oauth2 ( Scopes: content )
 ```bash
 curl https://api.hubapi.com/cms/blogs/2026-09/posts/multi-language/update-languages \
   -X POST \
-  -H 'Content-Type: */*' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+  -H 'Content-Type: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d 'null'
 ```
 
 `POST /cms/blogs/2026-09/posts/multi-language/update-languages`
@@ -7217,6 +7251,7 @@ oauth2 ( Scopes: content )
 
 ```bash
 curl 'https://api.hubapi.com/cms/blogs/2026-09/posts/{objectId}/revisions' \
+  -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
@@ -7256,7 +7291,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: content )
+oauth2 ( Scopes: cms.blogs.blog_posts.read ), oauth2 ( Scopes: content )
 </aside>
 
 ## Retrieve a previous version of a blog post
@@ -7267,6 +7302,7 @@ oauth2 ( Scopes: content )
 
 ```bash
 curl 'https://api.hubapi.com/cms/blogs/2026-09/posts/{objectId}/revisions/{revisionId}' \
+  -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
@@ -7304,7 +7340,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: content )
+oauth2 ( Scopes: cms.blogs.blog_posts.read ), oauth2 ( Scopes: content )
 </aside>
 
 ## Restore a previous version
@@ -7316,6 +7352,7 @@ oauth2 ( Scopes: content )
 ```bash
 curl 'https://api.hubapi.com/cms/blogs/2026-09/posts/{objectId}/revisions/{revisionId}/restore' \
   -X POST \
+  -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
@@ -7365,6 +7402,7 @@ oauth2 ( Scopes: content )
 ```bash
 curl 'https://api.hubapi.com/cms/blogs/2026-09/posts/{objectId}/revisions/{revisionId}/restore-to-draft' \
   -X POST \
+  -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 

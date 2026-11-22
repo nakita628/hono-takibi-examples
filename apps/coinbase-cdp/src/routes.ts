@@ -1,849 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const DepositDestinationIdSchema = z
-  .string()
-  .regex(/^depositDestination_[a-f0-9\-]{36}$/)
-  .openapi({
-    description:
-      'The ID of the Deposit Destination, which is a UUID prefixed by the string `depositDestination_`.',
-    example: 'depositDestination_af2937b0-9846-4fe7-bfe9-ccc22d935114',
-  })
-  .openapi('DepositDestinationId')
-
-const AccountIdSchema = z
-  .string()
-  .regex(/^account_[a-f0-9\-]{36}$/)
-  .openapi({
-    description: 'The ID of the Account, which is a UUID prefixed by the string `account_`.',
-    example: 'account_af2937b0-9846-4fe7-bfe9-ccc22d935114',
-  })
-  .openapi('AccountId')
-
-const PaymentNetworkSchema = z
-  .enum([
-    'base',
-    'ethereum',
-    'solana',
-    'arbitrum',
-    'optimism',
-    'monad',
-    'sui',
-    'avacchain',
-    'tempo',
-  ])
-  .openapi({
-    description: 'The blockchain network for crypto payments, transfers, and deposit destinations.',
-    example: 'base',
-  })
-  .openapi('PaymentNetwork')
-
-const BlockchainAddressSchema = z
-  .string()
-  .min(1)
-  .max(128)
-  .openapi({
-    description:
-      'A blockchain address. Format varies by network (e.g., 0x-prefixed for EVM, base58 for Solana).',
-    example: '0x742d35Cc6634C0532925a3b844Bc454e4438f44e',
-  })
-  .openapi('BlockchainAddress')
-
-const DepositDestinationCryptoSchema = z
-  .object({ network: PaymentNetworkSchema, address: BlockchainAddressSchema })
-  .openapi({
-    description:
-      'Crypto-specific deposit destination details. In responses, this object is always present. Contains the network and address for the deposit destination.',
-    required: ['network', 'address'],
-    example: { network: 'base', address: '0x742d35Cc6634C0532925a3b844Bc454e4438f44e' },
-  })
-  .openapi('DepositDestinationCrypto')
-
-const AssetSchema = z
-  .string()
-  .min(1)
-  .max(42)
-  .openapi({ description: 'The symbol of the asset (e.g., eth, usd, usdc, usdt).', example: 'usd' })
-  .openapi('Asset')
-
-const DepositDestinationTargetAccountSchema = z
-  .strictObject({
-    accountId: AccountIdSchema.exactOptional().openapi({
-      description: 'The ID of the CDP Account to which deposited funds should be transferred.',
-    }),
-    asset: AssetSchema.openapi({
-      description: 'The symbol of the asset that should land in the target account.',
-      example: 'usd',
-    }),
-  })
-  .openapi({
-    title: 'Target Account',
-    description: 'The account and asset where incoming deposits should be credited.',
-    required: ['asset'],
-    example: { accountId: 'account_af2937b0-9846-4fe7-bfe9-ccc22d935114', asset: 'usd' },
-  })
-  .openapi('DepositDestinationTargetAccount')
-
-const OnchainAddressSchema = z
-  .object({
-    address: BlockchainAddressSchema.openapi({
-      description:
-        'The onchain crypto address of the recipient.\n\nExamples:\n- EVM address: 0xabc1234567890abcdef1234567890abcdef123456\n- Solana address: HpabPRRCFbBKSuJr5PdkVvQc85FyxyTWkFM2obBRSvHT\n- XRP address: rhccc5p23aKiCGFcEqqnjEfLRZ6xEvfy3s\n',
-    }),
-    network: PaymentNetworkSchema,
-    destinationTag: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The destination tag of the onchain address. Destination tags are used by certain networks\n(primarily XRP/Ripple) to identify specific recipients when multiple users share a single address.\nThe tag ensures funds are credited to the correct account within the shared address.\n\nExamples by network:\n- XRP/Ripple: Numeric values like "1234567890" or "123456"\n- Stellar (XLM): Memos which can be text, ID, or hash format\n\nNote: Most networks (Ethereum, Bitcoin, Solana) do not use destination tags.\n',
-      }),
-    asset: AssetSchema.openapi({
-      description:
-        'Asset symbol of the payment received by the recipient. Supported values are `usdc` and `eurc`.',
-      example: 'usdc',
-    }),
-  })
-  .openapi({
-    title: 'Onchain Address',
-    description: 'The target of the payment is an onchain address.',
-    required: ['address', 'network', 'asset'],
-    example: {
-      address: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
-      network: 'base',
-      asset: 'usdc',
-    },
-  })
-  .openapi('OnchainAddress')
-
-const DepositDestinationTargetOnchainAddressSchema = OnchainAddressSchema.openapi({
-  'x-audience': 'public',
-  title: 'Target Onchain Address',
-  description: 'Routes deposited funds to an external onchain address.',
-  example: {
-    address: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
-    network: 'base',
-    asset: 'usdc',
-  },
-}).openapi('DepositDestinationTargetOnchainAddress')
-
-const DepositDestinationTargetSchema = z
-  .xor([DepositDestinationTargetAccountSchema, DepositDestinationTargetOnchainAddressSchema])
-  .openapi({ description: 'The intended target for deposited funds.' })
-  .openapi('DepositDestinationTarget')
-
-const DepositDestinationStatusSchema = z
-  .enum(['active', 'inactive', 'pending'])
-  .openapi({ description: 'The status of the deposit destination.', example: 'active' })
-  .openapi('DepositDestinationStatus')
-
-const MetadataSchema = z
-  .record(z.string(), z.string().min(0).max(500))
-  .refine((val) => Object.keys(val).length <= 10)
-  .openapi({
-    description:
-      'Optional metadata as key-value pairs. Use this to store additional structured information on a resource, such as customer IDs, order references, or any application-specific data. Up to 10 key/value pairs may be provided. Keys and values are both strings. Keys must be ≤ 40 characters; values must be ≤ 500 characters.',
-    example: { customer_id: 'cust_12345', order_reference: 'order-67890' },
-  })
-  .openapi('Metadata')
-
-const CryptoDepositDestinationSchema = z
-  .object({
-    depositDestinationId: DepositDestinationIdSchema,
-    accountId: AccountIdSchema,
-    type: z
-      .literal('crypto')
-      .openapi({ description: 'The type of deposit destination.', example: 'crypto' }),
-    crypto: DepositDestinationCryptoSchema.openapi({
-      description:
-        'Crypto-specific details for this deposit destination. Always populated in responses. Contains the network and address.',
-    }),
-    target: DepositDestinationTargetSchema.exactOptional(),
-    status: DepositDestinationStatusSchema,
-    metadata: MetadataSchema.exactOptional(),
-    createdAt: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'The timestamp when the deposit destination was created.',
-        example: '2023-10-08T14:30:00Z',
-      }),
-    updatedAt: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'The timestamp when the deposit destination was last updated.',
-        example: '2023-10-08T14:30:00Z',
-      }),
-  })
-  .openapi({
-    title: 'Crypto',
-    description: 'A cryptocurrency deposit destination.',
-    required: [
-      'depositDestinationId',
-      'accountId',
-      'type',
-      'crypto',
-      'status',
-      'createdAt',
-      'updatedAt',
-    ],
-    example: {
-      depositDestinationId: 'depositDestination_af2937b0-9846-4fe7-bfe9-ccc22d935114',
-      accountId: 'account_af2937b0-9846-4fe7-bfe9-ccc22d935114',
-      type: 'crypto',
-      crypto: { network: 'base', address: '0x742d35Cc6634C0532925a3b844Bc454e4438f44e' },
-      target: { accountId: 'account_bf3847c1-a957-5ae8-cfa0-ddd33e046225', asset: 'usd' },
-      status: 'active',
-      metadata: { customer_id: '123e4567-e89b-12d3-a456-426614174000', reference: 'order-12345' },
-      createdAt: '2023-10-08T14:30:00Z',
-      updatedAt: '2023-10-08T14:30:00Z',
-    },
-  })
-  .openapi('CryptoDepositDestination')
-
-const FiatAccountNumberSchema = z
-  .string()
-  .regex(/^[0-9]{4,17}$/)
-  .openapi({
-    'x-audience': 'public',
-    description: 'The bank account number.',
-    example: '123456789',
-  })
-  .openapi('FiatAccountNumber')
-
-const DepositDestinationPaymentRailSchema = z
-  .enum(['ach', 'fedwire'])
-  .openapi({
-    description: 'A payment rail supported by a fiat deposit destination.',
-    example: 'ach',
-  })
-  .openapi('DepositDestinationPaymentRail')
-
-const BankAccountUSSchema = z
-  .object({
-    accountType: z
-      .literal('us_bank')
-      .openapi({
-        description:
-          'The type of bank account, based on the account identification scheme (e.g., `us_bank`).',
-        example: 'us_bank',
-      }),
-    currency: z
-      .literal('usd')
-      .openapi({ description: 'The fiat currency for the deposit destination.', example: 'usd' }),
-    bankName: z
-      .string()
-      .openapi({
-        description: 'The name of the bank holding the account.',
-        example: 'Citibank N.A.',
-      }),
-    beneficiaryName: z
-      .string()
-      .openapi({ description: 'The name of the account beneficiary.', example: 'John Smith' }),
-    routingNumber: z
-      .string()
-      .regex(/^[0-9]{9}$/)
-      .openapi({ description: 'The ABA routing number of the bank.', example: '987654321' }),
-    accountNumber: FiatAccountNumberSchema,
-    bankAddress: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The address of the bank. Present when required by the receiving institution.',
-        example: '399 Park Avenue, New York, NY 10022',
-      }),
-    referenceCode: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A reference code that must be included in the payment memo or reference field so the receiving institution can route the deposit to the correct account. Only present when required by the receiving institution.',
-        example: 'CBAUSD1A2B3C4D',
-      }),
-    supportedRails: z
-      .array(DepositDestinationPaymentRailSchema)
-      .openapi({
-        description: 'The payment rails this account can receive deposits on.',
-        example: ['ach', 'fedwire'],
-      }),
-  })
-  .openapi({
-    description: 'A US bank account identified by ABA routing number and account number.',
-    required: [
-      'accountType',
-      'currency',
-      'bankName',
-      'beneficiaryName',
-      'routingNumber',
-      'accountNumber',
-      'supportedRails',
-    ],
-    example: {
-      accountType: 'us_bank',
-      currency: 'usd',
-      bankName: 'Citibank N.A.',
-      beneficiaryName: 'John Smith',
-      routingNumber: '987654321',
-      accountNumber: '123456789',
-      bankAddress: '399 Park Avenue, New York, NY 10022',
-      supportedRails: ['ach', 'fedwire'],
-    },
-  })
-  .openapi('BankAccountUS')
-
-const DepositDestinationFiatSchema = z
-  .xor([BankAccountUSSchema])
-  .openapi({
-    'x-audience': 'public',
-    description:
-      'Fiat bank account details for a deposit destination. The `accountType` field indicates the account identification scheme and determines which fields are present.',
-    discriminator: {
-      propertyName: 'accountType',
-      mapping: { us_bank: '#/components/schemas/BankAccountUS' },
-    },
-  })
-  .openapi('DepositDestinationFiat')
-
-const FiatDepositDestinationSchema = z
-  .object({
-    depositDestinationId: DepositDestinationIdSchema,
-    accountId: AccountIdSchema,
-    type: z
-      .literal('fiat')
-      .openapi({ description: 'The type of deposit destination.', example: 'fiat' }),
-    fiat: DepositDestinationFiatSchema,
-    target: DepositDestinationTargetSchema.exactOptional(),
-    status: DepositDestinationStatusSchema,
-    metadata: MetadataSchema.exactOptional(),
-    createdAt: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'The timestamp when the deposit destination was created.',
-        example: '2025-06-01T00:00:00Z',
-      }),
-    updatedAt: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'The timestamp when the deposit destination was last updated.',
-        example: '2025-06-01T00:00:00Z',
-      }),
-  })
-  .openapi({
-    title: 'Fiat',
-    'x-audience': 'public',
-    description:
-      'A fiat deposit destination. Represents a single bank account provisioned at a single banking partner. Each deposit destination has one status and one lifecycle. The `fiat` object contains the bank account details, keyed by account type.',
-    required: [
-      'depositDestinationId',
-      'accountId',
-      'type',
-      'fiat',
-      'status',
-      'createdAt',
-      'updatedAt',
-    ],
-    example: {
-      depositDestinationId: 'depositDestination_cf4958d2-b068-6bf9-da01-eee44f157336',
-      accountId: 'account_af2937b0-9846-4fe7-bfe9-ccc22d935114',
-      type: 'fiat',
-      status: 'pending',
-      fiat: {
-        accountType: 'us_bank',
-        currency: 'usd',
-        bankName: 'Citibank N.A.',
-        beneficiaryName: 'John Smith',
-        routingNumber: '987654321',
-        accountNumber: '123456789',
-        bankAddress: '399 Park Avenue, New York, NY 10022',
-        supportedRails: ['ach', 'fedwire'],
-      },
-      target: { accountId: 'account_af2937b0-9846-4fe7-bfe9-ccc22d935114', asset: 'usdc' },
-      metadata: { customer_id: '123e4567-e89b-12d3-a456-426614174000', reference: 'order-12345' },
-      createdAt: '2025-06-01T00:00:00Z',
-      updatedAt: '2025-06-01T00:00:00Z',
-    },
-  })
-  .openapi('FiatDepositDestination')
-
-type DepositDestinationType =
-  | z.infer<typeof CryptoDepositDestinationSchema>
-  | z.infer<typeof FiatDepositDestinationSchema>
-
-const EIP712DomainSchema = z
-  .object({
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The name of the DApp or protocol.', example: 'Permit2' }),
-    version: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The version of the DApp or protocol.', example: '1' }),
-    chainId: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'The chain ID of the EVM network.',
-        example: 1,
-      }),
-    verifyingContract: z
-      .string()
-      .regex(/^0x[a-fA-F0-9]{40}$/)
-      .exactOptional()
-      .openapi({
-        description: 'The 0x-prefixed EVM address of the verifying smart contract.',
-        example: '0x000000000022D473030F116dDEE9F6B43aC78BA3',
-      }),
-    salt: z
-      .string()
-      .regex(/^0x[a-fA-F0-9]{64}$/)
-      .exactOptional()
-      .openapi({
-        description: 'The optional 32-byte 0x-prefixed hex salt for domain separation.',
-        example: '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef',
-      }),
-  })
-  .openapi({
-    description: 'The domain of the EIP-712 typed data.',
-    example: {
-      name: 'Permit2',
-      chainId: 1,
-      verifyingContract: '0x000000000022D473030F116dDEE9F6B43aC78BA3',
-    },
-    required: [],
-  })
-  .openapi('EIP712Domain')
-
-const EIP712TypesSchema = z
-  .object({})
-  .openapi({
-    description:
-      'A mapping of struct names to an array of type objects (name + type).\nEach key corresponds to a type name (e.g., "`EIP712Domain`", "`PermitTransferFrom`").\n',
-    example: {
-      EIP712Domain: [
-        { name: 'name', type: 'string' },
-        { name: 'chainId', type: 'uint256' },
-        { name: 'verifyingContract', type: 'address' },
-      ],
-      PermitTransferFrom: [
-        { name: 'permitted', type: 'TokenPermissions' },
-        { name: 'spender', type: 'address' },
-        { name: 'nonce', type: 'uint256' },
-        { name: 'deadline', type: 'uint256' },
-      ],
-      TokenPermissions: [
-        { name: 'token', type: 'address' },
-        { name: 'amount', type: 'uint256' },
-      ],
-    },
-  })
-  .openapi('EIP712Types')
-
-const EIP712MessageSchema = z
-  .object({
-    domain: EIP712DomainSchema,
-    types: EIP712TypesSchema,
-    primaryType: z
-      .string()
-      .openapi({
-        description:
-          'The primary type of the message. This is the name of the struct in the `types` object that is the root of the message.',
-        example: 'PermitTransferFrom',
-      }),
-    message: z
-      .object({})
-      .openapi({
-        description:
-          'The message to sign. The structure of this message must match the `primaryType` struct in the `types` object.',
-        example: {
-          permitted: { token: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48', amount: '1000000' },
-          spender: '0x1111111254EEB25477B68fb85Ed929f73A960582',
-          nonce: '0',
-          deadline: '1716239020',
-        },
-      }),
-  })
-  .openapi({
-    description: 'The message to sign using EIP-712.',
-    required: ['domain', 'types', 'primaryType', 'message'],
-    example: {
-      domain: {
-        name: 'Permit2',
-        chainId: 1,
-        verifyingContract: '0x000000000022D473030F116dDEE9F6B43aC78BA3',
-      },
-      types: {
-        EIP712Domain: [
-          { name: 'name', type: 'string' },
-          { name: 'chainId', type: 'uint256' },
-          { name: 'verifyingContract', type: 'address' },
-        ],
-        PermitTransferFrom: [
-          { name: 'permitted', type: 'TokenPermissions' },
-          { name: 'spender', type: 'address' },
-          { name: 'nonce', type: 'uint256' },
-          { name: 'deadline', type: 'uint256' },
-        ],
-        TokenPermissions: [
-          { name: 'token', type: 'address' },
-          { name: 'amount', type: 'uint256' },
-        ],
-      },
-      primaryType: 'PermitTransferFrom',
-      message: {
-        permitted: { token: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48', amount: '1000000' },
-        spender: '0xFfFfFfFFfFFfFFfFFfFFFFFffFFFffffFfFFFfFf',
-        nonce: '123456',
-        deadline: '1717123200',
-      },
-    },
-  })
-  .openapi('EIP712Message')
-
-const EIP2612PayloadSchema = z
-  .object({
-    payloadId: z
-      .string()
-      .openapi({
-        description: 'The unique identifier of the payload.',
-        example: 'payload_af2937b0-9846-4fe7-bfe9-ccc22d935114',
-      }),
-    type: z.literal('eip2612').openapi({ description: 'The payload type.', example: 'eip2612' }),
-    data: EIP712MessageSchema.openapi({
-      description: 'EIP-712 typed data for an EIP-2612 Permit. Pass to `eth_signTypedData_v4`.',
-      example: {
-        types: {
-          EIP712Domain: [
-            { name: 'name', type: 'string' },
-            { name: 'version', type: 'string' },
-            { name: 'chainId', type: 'uint256' },
-            { name: 'verifyingContract', type: 'address' },
-          ],
-          Permit: [
-            { name: 'owner', type: 'address' },
-            { name: 'spender', type: 'address' },
-            { name: 'value', type: 'uint256' },
-            { name: 'nonce', type: 'uint256' },
-            { name: 'deadline', type: 'uint256' },
-          ],
-        },
-        primaryType: 'Permit',
-        domain: {
-          name: 'USD Coin',
-          version: '2',
-          chainId: 8453,
-          verifyingContract: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
-        },
-        message: {
-          owner: '0xAbC1234567890aBcDeF1234567890AbCdEf123456',
-          spender: '0x9Fb909eA400c2b8D99Be292DADf07e63B814527c',
-          value: '115792089237316195423570985008687907853269984665640564039457584007913129639935',
-          nonce: '0',
-          deadline: '1798761600',
-        },
-      },
-    }),
-  })
-  .openapi({
-    title: 'EIP-2612 Payload',
-    description:
-      "An EIP-2612 Permit typed-data payload. The payer must pass `data` to `eth_signTypedData_v4` and return the resulting signature. Used to set up a mandate's reusable credential; the permit stands in for a live per-authorization signature on later authorizations.",
-    required: ['payloadId', 'type', 'data'],
-    example: {
-      payloadId: 'payload_af2937b0-9846-4fe7-bfe9-ccc22d935114',
-      type: 'eip2612',
-      data: {
-        types: {
-          EIP712Domain: [
-            { name: 'name', type: 'string' },
-            { name: 'version', type: 'string' },
-            { name: 'chainId', type: 'uint256' },
-            { name: 'verifyingContract', type: 'address' },
-          ],
-          Permit: [
-            { name: 'owner', type: 'address' },
-            { name: 'spender', type: 'address' },
-            { name: 'value', type: 'uint256' },
-            { name: 'nonce', type: 'uint256' },
-            { name: 'deadline', type: 'uint256' },
-          ],
-        },
-        primaryType: 'Permit',
-        domain: {
-          name: 'USD Coin',
-          version: '2',
-          chainId: 8453,
-          verifyingContract: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
-        },
-        message: {
-          owner: '0xAbC1234567890aBcDeF1234567890AbCdEf123456',
-          spender: '0x9Fb909eA400c2b8D99Be292DADf07e63B814527c',
-          value: '115792089237316195423570985008687907853269984665640564039457584007913129639935',
-          nonce: '0',
-          deadline: '1798761600',
-        },
-      },
-    },
-  })
-  .openapi('EIP2612Payload')
-
-const Permit2AllowancePayloadSchema = z
-  .object({
-    payloadId: z
-      .string()
-      .openapi({
-        description: 'The unique identifier of the payload.',
-        example: 'payload_cg4059d2-b068-6ih9-dha1-eee44f157336',
-      }),
-    type: z.literal('permit2').openapi({ description: 'The payload type.', example: 'permit2' }),
-    data: EIP712MessageSchema.openapi({
-      description:
-        'EIP-712 typed data for a Permit2 `PermitSingle`. Pass to `eth_signTypedData_v4`.',
-      example: {
-        types: {
-          EIP712Domain: [
-            { name: 'name', type: 'string' },
-            { name: 'chainId', type: 'uint256' },
-            { name: 'verifyingContract', type: 'address' },
-          ],
-          PermitDetails: [
-            { name: 'token', type: 'address' },
-            { name: 'amount', type: 'uint160' },
-            { name: 'expiration', type: 'uint48' },
-            { name: 'nonce', type: 'uint48' },
-          ],
-          PermitSingle: [
-            { name: 'details', type: 'PermitDetails' },
-            { name: 'spender', type: 'address' },
-            { name: 'sigDeadline', type: 'uint256' },
-          ],
-        },
-        primaryType: 'PermitSingle',
-        domain: {
-          name: 'Permit2',
-          chainId: 8453,
-          verifyingContract: '0x000000000022D473030F116dDEE9F6B43aC78BA3',
-        },
-        message: {
-          details: {
-            token: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
-            amount: '1461501637330902918203684832716283019655932542975',
-            expiration: '1798761600',
-            nonce: '0',
-          },
-          spender: '0x9Fb909eA400c2b8D99Be292DADf07e63B814527c',
-          sigDeadline: '1798761600',
-        },
-      },
-    }),
-  })
-  .openapi({
-    title: 'Permit2 Allowance Payload',
-    description:
-      'A Permit2 `PermitSingle` (AllowanceTransfer) typed-data payload. It grants the spender a reusable allowance through the canonical Permit2 contract, so it can back repeated charges rather than a single transfer. The payer must pass `data` to `eth_signTypedData_v4` and return the resulting signature. A one-time ERC-20 approval of the Permit2 contract (an `erc20_approval` payload) is required first if the wallet has not yet approved Permit2 for this asset.',
-    required: ['payloadId', 'type', 'data'],
-    example: {
-      payloadId: 'payload_cg4059d2-b068-6ih9-dha1-eee44f157336',
-      type: 'permit2',
-      data: {
-        types: {
-          EIP712Domain: [
-            { name: 'name', type: 'string' },
-            { name: 'chainId', type: 'uint256' },
-            { name: 'verifyingContract', type: 'address' },
-          ],
-          PermitDetails: [
-            { name: 'token', type: 'address' },
-            { name: 'amount', type: 'uint160' },
-            { name: 'expiration', type: 'uint48' },
-            { name: 'nonce', type: 'uint48' },
-          ],
-          PermitSingle: [
-            { name: 'details', type: 'PermitDetails' },
-            { name: 'spender', type: 'address' },
-            { name: 'sigDeadline', type: 'uint256' },
-          ],
-        },
-        primaryType: 'PermitSingle',
-        domain: {
-          name: 'Permit2',
-          chainId: 8453,
-          verifyingContract: '0x000000000022D473030F116dDEE9F6B43aC78BA3',
-        },
-        message: {
-          details: {
-            token: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
-            amount: '1461501637330902918203684832716283019655932542975',
-            expiration: '1798761600',
-            nonce: '0',
-          },
-          spender: '0x9Fb909eA400c2b8D99Be292DADf07e63B814527c',
-          sigDeadline: '1798761600',
-        },
-      },
-    },
-  })
-  .openapi('Permit2AllowancePayload')
-
-const Erc20ApprovalPayloadSchema = z
-  .object({
-    payloadId: z
-      .string()
-      .openapi({
-        description: 'The unique identifier of the payload.',
-        example: 'payload_bf3948c1-a957-5gh8-cgf0-ddd33e046225',
-      }),
-    type: z
-      .literal('erc20_approval')
-      .openapi({ description: 'The payload type.', example: 'erc20_approval' }),
-    data: z
-      .object({
-        chainId: z
-          .int()
-          .openapi({ description: 'The EVM chain ID for the transaction.', example: 1 }),
-        to: z
-          .string()
-          .regex(/^0x[a-fA-F0-9]{40}$/)
-          .openapi({
-            description: 'The 0x-prefixed address of the ERC-20 token contract to approve.',
-            example: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
-          }),
-        data: z
-          .string()
-          .openapi({
-            description: 'The ABI-encoded `approve()` calldata.',
-            example:
-              '0x095ea7b3000000000000000000000000000000000022d473030f116ddee9f6b43ac78ba3000000000000000000000000ffffffffffffffffffffffffffffffffffffffff',
-          }),
-        value: z
-          .string()
-          .openapi({
-            description: 'The native token value to send (always `"0"` for approvals).',
-            example: '0',
-          }),
-        gas: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'The estimated gas limit for the transaction.',
-            example: '63804',
-          }),
-        maxFeePerGas: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'The maximum fee per gas unit (EIP-1559).',
-            example: '1751588354',
-          }),
-        maxPriorityFeePerGas: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'The maximum priority fee per gas unit (EIP-1559).',
-            example: '1000000000',
-          }),
-      })
-      .openapi({
-        description: 'An EVM transaction object. Send via `eth_sendTransaction`.',
-        required: ['chainId', 'to', 'data', 'value'],
-        example: {
-          chainId: 1,
-          to: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
-          data: '0x095ea7b3000000000000000000000000000000000022d473030f116ddee9f6b43ac78ba3000000000000000000000000ffffffffffffffffffffffffffffffffffffffff',
-          value: '0',
-          gas: '63804',
-          maxFeePerGas: '1751588354',
-          maxPriorityFeePerGas: '1000000000',
-        },
-      }),
-  })
-  .openapi({
-    title: 'ERC-20 Approval Payload',
-    description:
-      'An ERC-20 approval transaction payload. The payer must send `data` as an EVM transaction via `eth_sendTransaction` and return the resulting transaction hash.',
-    required: ['payloadId', 'type', 'data'],
-    example: {
-      payloadId: 'payload_bf3948c1-a957-5gh8-cgf0-ddd33e046225',
-      type: 'erc20_approval',
-      data: {
-        chainId: 1,
-        to: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
-        data: '0x095ea7b3000000000000000000000000000000000022d473030f116ddee9f6b43ac78ba3000000000000000000000000ffffffffffffffffffffffffffffffffffffffff',
-        value: '0',
-        gas: '63804',
-        maxFeePerGas: '1751588354',
-        maxPriorityFeePerGas: '1000000000',
-      },
-    },
-  })
-  .openapi('Erc20ApprovalPayload')
-
-const SolanaSubscriptionPayloadDataSchema = z
-  .object({
-    transaction: z
-      .string()
-      .openapi({
-        description:
-          'The unsigned Solana transaction, serialized to bytes and encoded as base64. Pass the decoded bytes to the Solana Wallet Standard `signTransaction` method. Do not POST this field (or the signed transaction bytes) as `OnchainSignedPayload.signature`.',
-        example:
-          'AQABAgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQABAQECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8CBgMBAQAAAAIBAwQAAAAABgIAAAAAAAYDBQEBAAAGBAgAAAAABgUAAAAA6AMAAAAAAAAGBgUBAQEBBgcEAQAAAAYICgMBAQIDBgkCBgAAAAYKAwABAQEGCwMGAQEBBgwDAAABAQAAAAA=',
-      }),
-  })
-  .openapi({
-    title: 'Solana Subscription Payload Data',
-    description:
-      'The unsigned Solana transaction the payer signs to approve or revoke a mandate on a Solana wallet source. Decode `transaction` and pass it to the Solana Wallet Standard `signTransaction` method. Submit only the extracted per-signer signature, not the signed transaction.',
-    required: ['transaction'],
-    example: {
-      transaction:
-        'AQABAgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQABAQECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8CBgMBAQAAAAIBAwQAAAAABgIAAAAAAAYDBQEBAAAGBAgAAAAABgUAAAAA6AMAAAAAAAAGBgUBAQEBBgcEAQAAAAYICgMBAQIDBgkCBgAAAAYKAwABAQEGCwMGAQEBBgwDAAABAQAAAAA=',
-    },
-  })
-  .openapi('SolanaSubscriptionPayloadData')
-
-const SolanaSubscriptionPayloadSchema = z
-  .object({
-    payloadId: z
-      .string()
-      .openapi({
-        description: 'The unique identifier of the payload.',
-        example: 'payload_7c18e4a2-9d53-4b61-8f20-1a6e9c0d4b87',
-      }),
-    type: z
-      .literal('solana_subscription')
-      .openapi({ description: 'The payload type.', example: 'solana_subscription' }),
-    data: SolanaSubscriptionPayloadDataSchema,
-  })
-  .openapi({
-    title: 'Solana Subscription Payload',
-    description:
-      'An unsigned Solana transaction the payer must sign to approve or revoke a mandate on a Solana wallet source. Decode `data.transaction` from base64 and pass the bytes to the Solana Wallet Standard `signTransaction` method (never `signAndSendTransaction`). Do not submit the signed transaction bytes. From the signed transaction, take the 64-byte ed25519 signature for the payer that signed, base58-encode those 64 bytes, and return that string as `OnchainSignedPayload.signature`.',
-    required: ['payloadId', 'type', 'data'],
-    example: {
-      payloadId: 'payload_7c18e4a2-9d53-4b61-8f20-1a6e9c0d4b87',
-      type: 'solana_subscription',
-      data: {
-        transaction:
-          'AQABAgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQABAQECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8CBgMBAQAAAAIBAwQAAAAABgIAAAAAAAYDBQEBAAAGBAgAAAAABgUAAAAA6AMAAAAAAAAGBgUBAQEBBgcEAQAAAAYICgMBAQIDBgkCBgAAAAYKAwABAQEGCwMGAQEBBgwDAAABAQAAAAA=',
-      },
-    },
-  })
-  .openapi('SolanaSubscriptionPayload')
-
-type ApprovalPayloadType =
-  | z.infer<typeof EIP2612PayloadSchema>
-  | z.infer<typeof Permit2AllowancePayloadSchema>
-  | z.infer<typeof Erc20ApprovalPayloadSchema>
-  | z.infer<typeof SolanaSubscriptionPayloadSchema>
-
 type AbiParameterType = {
   name?: string
   type: string
@@ -1294,25 +450,11 @@ const SignEvmTransactionCriteriaSchema = z
   })
   .openapi('SignEvmTransactionCriteria')
 
-const SignEvmTransactionRuleSchema = z
-  .object({
-    action: z
-      .enum(['reject', 'accept'])
-      .openapi({
-        description: 'Whether matching the rule will cause the request to be rejected or accepted.',
-        example: 'accept',
-      }),
-    operation: z
-      .literal('signEvmTransaction')
-      .openapi({
-        description:
-          'The operation to which the rule applies. Every element of the `criteria` array must match the specified operation.',
-        example: 'signEvmTransaction',
-      }),
-    criteria: SignEvmTransactionCriteriaSchema,
-  })
-  .openapi({ title: 'SignEvmTransactionRule', required: ['action', 'operation', 'criteria'] })
-  .openapi('SignEvmTransactionRule')
+type SignEvmTransactionRuleType = {
+  action: 'reject' | 'accept'
+  operation: 'signEvmTransaction'
+  criteria: z.infer<typeof SignEvmTransactionCriteriaSchema>
+}
 
 const EvmNetworkCriterionSchema = z
   .object({
@@ -1388,7 +530,1068 @@ const SendEvmTransactionCriteriaSchema = z
   })
   .openapi('SendEvmTransactionCriteria')
 
-const SendEvmTransactionRuleSchema = z
+type SendEvmTransactionRuleType = {
+  action: 'reject' | 'accept'
+  operation: 'sendEvmTransaction'
+  criteria: z.infer<typeof SendEvmTransactionCriteriaSchema>
+}
+
+const SolAddressCriterionSchema = z
+  .object({
+    type: z
+      .literal('solAddress')
+      .openapi({
+        description: 'The type of criterion to use. This should be `solAddress`.',
+        example: 'solAddress',
+      }),
+    addresses: z
+      .array(
+        z
+          .string()
+          .regex(/^[1-9A-HJ-NP-Za-km-z]{32,44}$/)
+          .openapi({
+            description:
+              "The Solana address that is compared to the list of native transfer recipient addresses in the transaction's `accountKeys` (for legacy transactions) or `staticAccountKeys` (for V0 transactions) array.",
+          }),
+      )
+      .openapi({
+        description:
+          "The Solana addresses that are compared to the list of native transfer recipient addresses in the transaction's `accountKeys` (for legacy transactions) or `staticAccountKeys` (for V0 transactions) array.",
+        example: ['HpabPRRCFbBKSuJr5PdkVvQc85FyxyTWkFM2obBRSvHT'],
+      }),
+    operator: z
+      .enum(['in', 'not in'])
+      .openapi({
+        description:
+          "The operator to use for the comparison. Each of the native transfer recipient addresses in the transaction's `accountKeys` (for legacy transactions) or `staticAccountKeys` (for V0 transactions) array will be on the left-hand side of the operator, and the `addresses` field will be on the right-hand side.",
+        example: 'in',
+      }),
+  })
+  .openapi({
+    title: 'SolAddressCriterion',
+    description:
+      "The criterion for the recipient addresses of a Solana transaction's native transfer instruction.",
+    required: ['type', 'addresses', 'operator'],
+  })
+  .openapi('SolAddressCriterion')
+
+const SolValueCriterionSchema = z
+  .object({
+    type: z
+      .literal('solValue')
+      .openapi({
+        description: 'The type of criterion to use. This should be `solValue`.',
+        example: 'solValue',
+      }),
+    solValue: z
+      .string()
+      .openapi({
+        description:
+          "The amount of SOL in lamports that the transaction instruction's `value` field should be compared to.",
+        example: '1000000000000000000',
+      }),
+    operator: z
+      .enum(['>', '>=', '<', '<=', '=='])
+      .openapi({
+        description:
+          "The operator to use for the comparison. The transaction instruction's `value` field will be on the left-hand side of the operator, and the `solValue` field will be on the right-hand side.",
+        example: '<=',
+      }),
+  })
+  .openapi({
+    'x-audience': 'public',
+    title: 'SolValueCriterion',
+    description:
+      'The criterion for the SOL value in lamports of a native transfer instruction in a Solana transaction.',
+    required: ['type', 'solValue', 'operator'],
+  })
+  .openapi('SolValueCriterion')
+
+const SplAddressCriterionSchema = z
+  .object({
+    type: z
+      .literal('splAddress')
+      .openapi({
+        description: 'The type of criterion to use. This should be `splAddress`.',
+        example: 'splAddress',
+      }),
+    addresses: z
+      .array(
+        z
+          .string()
+          .regex(/^[1-9A-HJ-NP-Za-km-z]{32,44}$/)
+          .openapi({
+            description:
+              "The Solana address that is compared to the list of SPL token transfer recipient addresses in the transaction's `accountKeys` (for legacy transactions) or `staticAccountKeys` (for V0 transactions) array.",
+          }),
+      )
+      .openapi({
+        description:
+          "The Solana addresses that are compared to the list of SPL token transfer recipient addresses in the transaction's `accountKeys` (for legacy transactions) or `staticAccountKeys` (for V0 transactions) array.",
+        example: ['HpabPRRCFbBKSuJr5PdkVvQc85FyxyTWkFM2obBRSvHT'],
+      }),
+    operator: z
+      .enum(['in', 'not in'])
+      .openapi({
+        description:
+          "The operator to use for the comparison. Each of the SPL token transfer recipient addresses in the transaction's `accountKeys` (for legacy transactions) or `staticAccountKeys` (for V0 transactions) array will be on the left-hand side of the operator, and the `addresses` field will be on the right-hand side.",
+        example: 'in',
+      }),
+  })
+  .openapi({
+    'x-audience': 'public',
+    title: 'SplAddressCriterion',
+    description:
+      "The criterion for the recipient addresses of a Solana transaction's SPL token transfer instructions.",
+    required: ['type', 'addresses', 'operator'],
+  })
+  .openapi('SplAddressCriterion')
+
+const SplValueCriterionSchema = z
+  .object({
+    type: z
+      .literal('splValue')
+      .openapi({
+        description: 'The type of criterion to use. This should be `splValue`.',
+        example: 'splValue',
+      }),
+    splValue: z
+      .string()
+      .openapi({
+        description:
+          "The amount of the SPL token that the transaction instruction's `value` field should be compared to.",
+        example: '1000000000000000000',
+      }),
+    operator: z
+      .enum(['>', '>=', '<', '<=', '=='])
+      .openapi({
+        description:
+          "The operator to use for the comparison. The transaction instruction's `value` field will be on the left-hand side of the operator, and the `splValue` field will be on the right-hand side.",
+        example: '<=',
+      }),
+  })
+  .openapi({
+    'x-audience': 'public',
+    title: 'SplValueCriterion',
+    description:
+      'The criterion for the SPL token value of a SPL token transfer instruction in a Solana transaction.',
+    required: ['type', 'splValue', 'operator'],
+  })
+  .openapi('SplValueCriterion')
+
+const MintAddressCriterionSchema = z
+  .object({
+    type: z
+      .literal('mintAddress')
+      .openapi({
+        description: 'The type of criterion to use. This should be `mintAddress`.',
+        example: 'mintAddress',
+      }),
+    addresses: z
+      .array(
+        z
+          .string()
+          .regex(/^[1-9A-HJ-NP-Za-km-z]{32,44}$/)
+          .openapi({
+            description:
+              "The Solana address that is compared to the list of token mint addresses in the transaction's `accountKeys` (for legacy transactions) or `staticAccountKeys` (for V0 transactions) array.",
+          }),
+      )
+      .openapi({
+        description:
+          "The Solana addresses that are compared to the list of token mint addresses in the transaction's `accountKeys` (for legacy transactions) or `staticAccountKeys` (for V0 transactions) array.",
+        example: ['HpabPRRCFbBKSuJr5PdkVvQc85FyxyTWkFM2obBRSvHT'],
+      }),
+    operator: z
+      .enum(['in', 'not in'])
+      .openapi({
+        description:
+          "The operator to use for the comparison. Each of the token mint addresses in the transaction's `accountKeys` (for legacy transactions) or `staticAccountKeys` (for V0 transactions) array will be on the left-hand side of the operator, and the `addresses` field will be on the right-hand side.",
+        example: 'in',
+      }),
+  })
+  .openapi({
+    'x-audience': 'public',
+    title: 'MintAddressCriterion',
+    description:
+      "The criterion for the token mint addresses of a Solana transaction's SPL token transfer instructions.",
+    required: ['type', 'addresses', 'operator'],
+  })
+  .openapi('MintAddressCriterion')
+
+const KnownIdlTypeSchema = z
+  .enum(['SystemProgram', 'TokenProgram', 'AssociatedTokenProgram'])
+  .openapi({
+    'x-audience': 'public',
+    title: 'KnownIdlType',
+    description:
+      'A reference to an established Solana program. When referencing a `KnownIdlType` within a policy rule configuring an `SolDataCriterion`, criteria will decode instruction data as documented in the programs. For more information on supported programs, see the links below.\n  - [SystemProgram](https://docs.rs/solana-program/latest/solana_program/system_instruction/enum.SystemInstruction.html).\n  - [TokenProgram](https://docs.rs/spl-token/latest/spl_token/instruction/enum.TokenInstruction.html).\n  - [AssociatedTokenProgram](https://docs.rs/spl-associated-token-account/latest/spl_associated_token_account/instruction/index.html).',
+  })
+  .openapi('KnownIdlType')
+
+const IdlSchema = z
+  .object({
+    address: z
+      .string()
+      .openapi({
+        description: 'The program address.',
+        example: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+      }),
+    instructions: z
+      .array(
+        z
+          .object({
+            name: z
+              .string()
+              .openapi({ description: 'The instruction name.', example: 'transfer_checked' }),
+            discriminator: z
+              .array(z.int().min(0).max(255))
+              .length(8)
+              .openapi({
+                description: 'Array of 8 numbers representing the instruction discriminator.',
+                example: [119, 250, 202, 24, 253, 135, 244, 121],
+              }),
+            args: z
+              .array(
+                z
+                  .object({
+                    name: z
+                      .string()
+                      .openapi({ description: 'The argument name.', example: 'amount' }),
+                    type: z.string().openapi({ description: 'The argument type.', example: 'u64' }),
+                  })
+                  .openapi({ required: ['name', 'type'] }),
+              )
+              .openapi({ description: 'List of instruction arguments.' }),
+            accounts: z
+              .array(
+                z
+                  .object({
+                    name: z.string().openapi({ description: 'The account name.', example: 'mint' }),
+                    writable: z
+                      .boolean()
+                      .exactOptional()
+                      .openapi({ description: 'Whether the account is writable.', example: true }),
+                    signer: z
+                      .boolean()
+                      .exactOptional()
+                      .openapi({
+                        description: 'Whether the account must be a signer.',
+                        example: false,
+                      }),
+                  })
+                  .openapi({ required: ['name'] }),
+              )
+              .exactOptional()
+              .openapi({ description: 'Optional list of accounts required by the instruction.' }),
+          })
+          .openapi({ required: ['name', 'discriminator', 'args'] }),
+      )
+      .openapi({
+        description: 'List of program instructions.',
+        example: [
+          {
+            name: 'transfer_checked',
+            discriminator: [119, 250, 202, 24, 253, 135, 244, 121],
+            accounts: [{ name: 'mint', writable: true }, { name: 'rent' }],
+            args: [
+              { name: 'amount', type: 'u64' },
+              { name: 'decimals', type: 'u8' },
+            ],
+          },
+        ],
+      }),
+    metadata: z
+      .object({
+        name: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'The program name.', example: 'system_program' }),
+        version: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'The program version.', example: '0.1.0' }),
+        spec: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'The IDL specification version.', example: '0.1.0' }),
+      })
+      .exactOptional()
+      .openapi({
+        description: 'Optional metadata about the IDL.',
+        example: { name: 'system_program', version: '0.1.0', spec: '0.1.0' },
+        required: [],
+      }),
+    types: z
+      .array(z.looseObject({}))
+      .exactOptional()
+      .openapi({
+        description: 'Optional type definitions for custom data structures used in the program.',
+        example: [
+          {
+            name: 'MyStruct',
+            type: 'struct',
+            fields: [
+              { name: 'id', type: 'u64' },
+              { name: 'owner', type: 'pubkey' },
+            ],
+          },
+        ],
+      }),
+  })
+  .openapi({
+    'x-audience': 'public',
+    description: "IDL Specification following Anchor's IDL format v0.30+.",
+    required: ['address', 'instructions'],
+  })
+  .openapi('Idl')
+
+const SolDataParameterConditionSchema = z
+  .object({
+    name: z.string().openapi({ description: 'The parameter name.', example: 'amount' }),
+    operator: z
+      .enum(['>', '>=', '<', '<=', '=='])
+      .openapi({
+        description:
+          'The operator to use for the comparison. The value resolved at the `name` will be on the left-hand side of the operator, and the `value` field will be on the right-hand side.',
+        example: '==',
+      }),
+    value: z.string().openapi({ description: 'The value to compare against.', example: '1000000' }),
+  })
+  .openapi({
+    'x-audience': 'public',
+    title: 'SolDataParameterCondition',
+    description:
+      "A single parameter condition to apply against a specific instruction's parameters.",
+    required: ['name', 'operator', 'value'],
+  })
+  .openapi('SolDataParameterCondition')
+
+const SolDataParameterConditionListSchema = z
+  .object({
+    name: z.string().openapi({ description: 'The parameter name.', example: 'amount' }),
+    operator: z
+      .enum(['in', 'not in'])
+      .openapi({
+        description:
+          'The operator to use for the comparison. The value resolved at the `name` will be on the left-hand side of the operator, and the `value` field will be on the right-hand side.',
+        example: 'in',
+      }),
+    values: z
+      .array(
+        z
+          .string()
+          .openapi({
+            description: 'A single potential value to compare against the resolved `name` value.',
+            example: '1000000',
+          }),
+      )
+      .openapi({
+        description: 'The values to compare against.',
+        example: ['1000000', 'HpabPRRCFbBKSuJr5PdkVvQc85FyxyTWkFM2obBRSvHT', '6'],
+      }),
+  })
+  .openapi({
+    'x-audience': 'public',
+    title: 'SolDataParameterConditionList',
+    description:
+      "A single parameter condition to apply against a specific instruction's parameters.",
+    required: ['name', 'operator', 'values'],
+  })
+  .openapi('SolDataParameterConditionList')
+
+const SolDataConditionSchema = z
+  .object({
+    instruction: z
+      .string()
+      .openapi({ description: 'The instruction name.', example: 'transfer_checked' }),
+    params: z
+      .array(
+        z
+          .xor([SolDataParameterConditionSchema, SolDataParameterConditionListSchema])
+          .openapi({
+            description:
+              "A list of parameter conditions to apply against a specific instruction's data.",
+          }),
+      )
+      .exactOptional()
+      .openapi({
+        description: 'Parameter conditions for the instruction.',
+        example: [
+          { name: 'amount', operator: '<=', value: '1000000' },
+          { name: 'decimals', operator: '==', value: '6' },
+          {
+            name: 'owner',
+            operator: 'in',
+            values: [
+              'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+              'So11111111111111111111111111111111111111112',
+            ],
+          },
+        ],
+      }),
+  })
+  .openapi({
+    'x-audience': 'public',
+    description:
+      'A single condition to apply against a specific instruction type and its parameters.',
+    required: ['instruction'],
+  })
+  .openapi('SolDataCondition')
+
+const SolDataCriterionSchema = z
+  .object({
+    type: z
+      .literal('solData')
+      .openapi({
+        description: 'The type of criterion to use. This should be `solData`.',
+        example: 'solData',
+      }),
+    idls: z.array(z.xor([KnownIdlTypeSchema, IdlSchema])).openapi({
+      description:
+        'List of IDL specifications. Can contain known program names (strings) or custom IDL objects.',
+      example: [
+        'SystemProgram',
+        'TokenProgram',
+        {
+          address: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+          instructions: [
+            {
+              name: 'transfer_checked',
+              discriminator: [119, 250, 202, 24, 253, 135, 244, 121],
+              args: [
+                { name: 'amount', type: 'u64' },
+                { name: 'decimals', type: 'u8' },
+              ],
+            },
+          ],
+        },
+      ],
+    }),
+    conditions: z.array(SolDataConditionSchema).openapi({
+      description:
+        'A list of conditions to apply against the transaction instruction. Only one condition must evaluate to true for this criterion to be met.',
+      example: [
+        {
+          instruction: 'transfer_checked',
+          params: [
+            { name: 'lamports', operator: '<=', value: '1000000' },
+            { name: 'space', operator: '==', value: '64' },
+          ],
+        },
+      ],
+    }),
+  })
+  .openapi({
+    'x-audience': 'public',
+    description: 'A schema for specifying criterion for instruction data in a Solana transaction.',
+    required: ['type', 'idls', 'conditions'],
+  })
+  .openapi('SolDataCriterion')
+
+const ProgramIdCriterionSchema = z
+  .object({
+    type: z
+      .literal('programId')
+      .openapi({
+        description: 'The type of criterion to use. This should be `programId`.',
+        example: 'programId',
+      }),
+    programIds: z
+      .array(
+        z
+          .string()
+          .regex(/^[1-9A-HJ-NP-Za-km-z]{32,44}$/)
+          .openapi({
+            description:
+              "The Solana program ID that is compared to the list of program IDs in the transaction's instructions.",
+          }),
+      )
+      .openapi({
+        description:
+          "The Solana program IDs that are compared to the list of program IDs in the transaction's instructions.",
+        example: [
+          'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+          '11111111111111111111111111111112',
+        ],
+      }),
+    operator: z
+      .enum(['in', 'not in'])
+      .openapi({
+        description:
+          "The operator to use for the comparison. Each of the program IDs in the transaction's instructions will be on the left-hand side of the operator, and the `programIds` field will be on the right-hand side.",
+        example: 'in',
+      }),
+  })
+  .openapi({
+    'x-audience': 'public',
+    title: 'ProgramIdCriterion',
+    description: "The criterion for the program IDs of a Solana transaction's instructions.",
+    required: ['type', 'programIds', 'operator'],
+  })
+  .openapi('ProgramIdCriterion')
+
+type SignSolTransactionCriteriaType = (
+  | z.infer<typeof SolAddressCriterionSchema>
+  | z.infer<typeof SolValueCriterionSchema>
+  | z.infer<typeof SplAddressCriterionSchema>
+  | z.infer<typeof SplValueCriterionSchema>
+  | z.infer<typeof MintAddressCriterionSchema>
+  | z.infer<typeof SolDataCriterionSchema>
+  | z.infer<typeof ProgramIdCriterionSchema>
+)[]
+
+const SignSolTransactionCriteriaSchema: z.ZodType<SignSolTransactionCriteriaType> = z
+  .array(
+    z.xor([
+      SolAddressCriterionSchema,
+      SolValueCriterionSchema,
+      SplAddressCriterionSchema,
+      SplValueCriterionSchema,
+      MintAddressCriterionSchema,
+      SolDataCriterionSchema,
+      ProgramIdCriterionSchema,
+    ]),
+  )
+  .openapi({
+    'x-audience': 'public',
+    description: 'A schema for specifying criteria for the SignSolTransaction operation.',
+    example: [
+      {
+        type: 'solAddress',
+        addresses: ['HpabPRRCFbBKSuJr5PdkVvQc85FyxyTWkFM2obBRSvHT'],
+        operator: 'in',
+      },
+    ],
+  })
+  .openapi('SignSolTransactionCriteria')
+
+type SignSolTransactionRuleType = {
+  action: 'reject' | 'accept'
+  operation: 'signSolTransaction'
+  criteria: z.infer<typeof SignSolTransactionCriteriaSchema>
+}
+
+const SolNetworkCriterionSchema = z
+  .object({
+    type: z
+      .literal('solNetwork')
+      .openapi({
+        description: 'The type of criterion to use. This should be `solNetwork`.',
+        example: 'solNetwork',
+      }),
+    networks: z
+      .array(
+        z
+          .enum(['solana-devnet', 'solana'])
+          .openapi({
+            description: 'The Solana network the transaction is for.',
+            example: 'solana-devnet',
+          }),
+      )
+      .openapi({
+        description:
+          "The Solana networks that the transaction's intended network should be compared to.",
+        example: ['solana-devnet', 'solana'],
+      }),
+    operator: z
+      .enum(['in', 'not in'])
+      .openapi({
+        description:
+          "The operator to use for the comparison. The transaction's intended network will be on the left-hand side of the operator, and the `networks` field will be on the right-hand side.",
+        example: 'in',
+      }),
+  })
+  .openapi({
+    'x-audience': 'public',
+    title: 'SolNetworkCriterion',
+    description: 'The criterion for the Solana network of a transaction.',
+    required: ['type', 'networks', 'operator'],
+  })
+  .openapi('SolNetworkCriterion')
+
+type SendSolTransactionCriteriaType = (
+  | z.infer<typeof SolAddressCriterionSchema>
+  | z.infer<typeof SolValueCriterionSchema>
+  | z.infer<typeof SplAddressCriterionSchema>
+  | z.infer<typeof SplValueCriterionSchema>
+  | z.infer<typeof MintAddressCriterionSchema>
+  | z.infer<typeof SolDataCriterionSchema>
+  | z.infer<typeof ProgramIdCriterionSchema>
+  | z.infer<typeof SolNetworkCriterionSchema>
+)[]
+
+const SendSolTransactionCriteriaSchema: z.ZodType<SendSolTransactionCriteriaType> = z
+  .array(
+    z.xor([
+      SolAddressCriterionSchema,
+      SolValueCriterionSchema,
+      SplAddressCriterionSchema,
+      SplValueCriterionSchema,
+      MintAddressCriterionSchema,
+      SolDataCriterionSchema,
+      ProgramIdCriterionSchema,
+      SolNetworkCriterionSchema,
+    ]),
+  )
+  .openapi({
+    'x-audience': 'public',
+    description: 'A schema for specifying criteria for the SendSolTransaction operation.',
+    example: [
+      {
+        type: 'solAddress',
+        addresses: ['HpabPRRCFbBKSuJr5PdkVvQc85FyxyTWkFM2obBRSvHT'],
+        operator: 'in',
+      },
+      { type: 'solValue', solValue: '1000000000000000000', operator: '<=' },
+    ],
+  })
+  .openapi('SendSolTransactionCriteria')
+
+type SendSolTransactionRuleType = {
+  action: 'reject' | 'accept'
+  operation: 'sendSolTransaction'
+  criteria: z.infer<typeof SendSolTransactionCriteriaSchema>
+}
+
+const PrepareUserOperationCriteriaSchema = z
+  .array(
+    z.xor([
+      EthValueCriterionSchema,
+      EvmAddressCriterionSchema,
+      EvmNetworkCriterionSchema,
+      EvmDataCriterionSchema,
+      NetUSDChangeCriterionSchema,
+    ]),
+  )
+  .openapi({
+    'x-audience': 'public',
+    description: 'A schema for specifying criteria for the PrepareUserOperation operation.',
+    example: [
+      { type: 'ethValue', ethValue: '1000000', operator: '>=' },
+      {
+        type: 'evmAddress',
+        addresses: ['0x742d35Cc6634C0532925a3b844Bc454e4438f44e'],
+        operator: 'in',
+      },
+    ],
+  })
+  .openapi('PrepareUserOperationCriteria')
+
+type PrepareUserOperationRuleType = {
+  action: 'reject' | 'accept'
+  operation: 'prepareUserOperation'
+  criteria: z.infer<typeof PrepareUserOperationCriteriaSchema>
+}
+
+const SendUserOperationCriteriaSchema = z
+  .array(
+    z.xor([
+      EthValueCriterionSchema,
+      EvmAddressCriterionSchema,
+      EvmNetworkCriterionSchema,
+      EvmDataCriterionSchema,
+      NetUSDChangeCriterionSchema,
+    ]),
+  )
+  .openapi({
+    'x-audience': 'public',
+    description: 'A schema for specifying criteria for the SendUserOperation operation.',
+    example: [
+      { type: 'ethValue', ethValue: '1000000', operator: '>=' },
+      {
+        type: 'evmAddress',
+        addresses: ['0x742d35Cc6634C0532925a3b844Bc454e4438f44e'],
+        operator: 'in',
+      },
+    ],
+  })
+  .openapi('SendUserOperationCriteria')
+
+type SendUserOperationRuleType = {
+  action: 'reject' | 'accept'
+  operation: 'sendUserOperation'
+  criteria: z.infer<typeof SendUserOperationCriteriaSchema>
+}
+
+const SignEndUserEvmTransactionCriteriaSchema = z
+  .array(
+    z.xor([
+      EthValueCriterionSchema,
+      EvmAddressCriterionSchema,
+      EvmDataCriterionSchema,
+      NetUSDChangeCriterionSchema,
+    ]),
+  )
+  .openapi({
+    'x-audience': 'public',
+    description: 'A schema for specifying criteria for the signEndUserEvmTransaction operation.',
+    example: [
+      { type: 'ethValue', ethValue: '1000000', operator: '>=' },
+      {
+        type: 'evmAddress',
+        addresses: ['0x742d35Cc6634C0532925a3b844Bc454e4438f44e'],
+        operator: 'in',
+      },
+      {
+        type: 'evmData',
+        abi: 'erc20',
+        conditions: [
+          { function: 'transfer', params: [{ name: 'value', operator: '<=', value: '10000' }] },
+        ],
+      },
+      { type: 'netUSDChange', changeCents: 10000, operator: '<=' },
+    ],
+  })
+  .openapi('SignEndUserEvmTransactionCriteria')
+
+type SignEndUserEvmTransactionRuleType = {
+  action: 'reject' | 'accept'
+  operation: 'signEndUserEvmTransaction'
+  criteria: z.infer<typeof SignEndUserEvmTransactionCriteriaSchema>
+}
+
+const SendEndUserEvmTransactionCriteriaSchema = z
+  .array(
+    z.xor([
+      EthValueCriterionSchema,
+      EvmAddressCriterionSchema,
+      EvmNetworkCriterionSchema,
+      EvmDataCriterionSchema,
+      NetUSDChangeCriterionSchema,
+    ]),
+  )
+  .openapi({
+    'x-audience': 'public',
+    description: 'A schema for specifying criteria for the sendEndUserEvmTransaction operation.',
+    example: [
+      { type: 'ethValue', ethValue: '1000000', operator: '>=' },
+      {
+        type: 'evmAddress',
+        addresses: ['0x742d35Cc6634C0532925a3b844Bc454e4438f44e'],
+        operator: 'in',
+      },
+      { type: 'evmNetwork', networks: ['base', 'ethereum'], operator: 'in' },
+      {
+        type: 'evmData',
+        abi: 'erc20',
+        conditions: [
+          { function: 'transfer', params: [{ name: 'value', operator: '<=', value: '10000' }] },
+        ],
+      },
+      { type: 'netUSDChange', changeCents: 10000, operator: '<=' },
+    ],
+  })
+  .openapi('SendEndUserEvmTransactionCriteria')
+
+type SendEndUserEvmTransactionRuleType = {
+  action: 'reject' | 'accept'
+  operation: 'sendEndUserEvmTransaction'
+  criteria: z.infer<typeof SendEndUserEvmTransactionCriteriaSchema>
+}
+
+type SignEndUserSolTransactionCriteriaType = (
+  | z.infer<typeof SolAddressCriterionSchema>
+  | z.infer<typeof SolValueCriterionSchema>
+  | z.infer<typeof SplAddressCriterionSchema>
+  | z.infer<typeof SplValueCriterionSchema>
+  | z.infer<typeof MintAddressCriterionSchema>
+  | z.infer<typeof SolDataCriterionSchema>
+  | z.infer<typeof ProgramIdCriterionSchema>
+)[]
+
+const SignEndUserSolTransactionCriteriaSchema: z.ZodType<SignEndUserSolTransactionCriteriaType> = z
+  .array(
+    z.xor([
+      SolAddressCriterionSchema,
+      SolValueCriterionSchema,
+      SplAddressCriterionSchema,
+      SplValueCriterionSchema,
+      MintAddressCriterionSchema,
+      SolDataCriterionSchema,
+      ProgramIdCriterionSchema,
+    ]),
+  )
+  .openapi({
+    'x-audience': 'public',
+    description: 'A schema for specifying criteria for the signEndUserSolTransaction operation.',
+    example: [
+      {
+        type: 'solAddress',
+        addresses: ['HpabPRRCFbBKSuJr5PdkVvQc85FyxyTWkFM2obBRSvHT'],
+        operator: 'in',
+      },
+      { type: 'solValue', solValue: '1000000000000000000', operator: '<=' },
+      {
+        type: 'splAddress',
+        addresses: ['HpabPRRCFbBKSuJr5PdkVvQc85FyxyTWkFM2obBRSvHT'],
+        operator: 'in',
+      },
+      { type: 'splValue', splValue: '1000000000000000000', operator: '<=' },
+      {
+        type: 'mintAddress',
+        addresses: ['HpabPRRCFbBKSuJr5PdkVvQc85FyxyTWkFM2obBRSvHT'],
+        operator: 'in',
+      },
+      {
+        type: 'solData',
+        idls: ['SystemProgram'],
+        conditions: [
+          {
+            instruction: 'transfer_checked',
+            params: [{ name: 'lamports', operator: '<=', value: '1000000' }],
+          },
+        ],
+      },
+      {
+        type: 'programId',
+        programIds: ['TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'],
+        operator: 'in',
+      },
+    ],
+  })
+  .openapi('SignEndUserSolTransactionCriteria')
+
+type SignEndUserSolTransactionRuleType = {
+  action: 'reject' | 'accept'
+  operation: 'signEndUserSolTransaction'
+  criteria: z.infer<typeof SignEndUserSolTransactionCriteriaSchema>
+}
+
+type SendEndUserSolTransactionCriteriaType = (
+  | z.infer<typeof SolAddressCriterionSchema>
+  | z.infer<typeof SolValueCriterionSchema>
+  | z.infer<typeof SplAddressCriterionSchema>
+  | z.infer<typeof SplValueCriterionSchema>
+  | z.infer<typeof MintAddressCriterionSchema>
+  | z.infer<typeof SolDataCriterionSchema>
+  | z.infer<typeof ProgramIdCriterionSchema>
+  | z.infer<typeof SolNetworkCriterionSchema>
+)[]
+
+const SendEndUserSolTransactionCriteriaSchema: z.ZodType<SendEndUserSolTransactionCriteriaType> = z
+  .array(
+    z.xor([
+      SolAddressCriterionSchema,
+      SolValueCriterionSchema,
+      SplAddressCriterionSchema,
+      SplValueCriterionSchema,
+      MintAddressCriterionSchema,
+      SolDataCriterionSchema,
+      ProgramIdCriterionSchema,
+      SolNetworkCriterionSchema,
+    ]),
+  )
+  .openapi({
+    'x-audience': 'public',
+    description: 'A schema for specifying criteria for the sendEndUserSolTransaction operation.',
+    example: [
+      {
+        type: 'solAddress',
+        addresses: ['HpabPRRCFbBKSuJr5PdkVvQc85FyxyTWkFM2obBRSvHT'],
+        operator: 'in',
+      },
+      { type: 'solValue', solValue: '1000000000000000000', operator: '<=' },
+      {
+        type: 'splAddress',
+        addresses: ['HpabPRRCFbBKSuJr5PdkVvQc85FyxyTWkFM2obBRSvHT'],
+        operator: 'in',
+      },
+      { type: 'splValue', splValue: '1000000000000000000', operator: '<=' },
+      {
+        type: 'mintAddress',
+        addresses: ['HpabPRRCFbBKSuJr5PdkVvQc85FyxyTWkFM2obBRSvHT'],
+        operator: 'in',
+      },
+      {
+        type: 'solData',
+        idls: ['SystemProgram'],
+        conditions: [
+          {
+            instruction: 'transfer_checked',
+            params: [{ name: 'lamports', operator: '<=', value: '1000000' }],
+          },
+        ],
+      },
+      {
+        type: 'programId',
+        programIds: ['TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'],
+        operator: 'in',
+      },
+      { type: 'solNetwork', networks: ['solana-devnet', 'solana'], operator: 'in' },
+    ],
+  })
+  .openapi('SendEndUserSolTransactionCriteria')
+
+type SendEndUserSolTransactionRuleType = {
+  action: 'reject' | 'accept'
+  operation: 'sendEndUserSolTransaction'
+  criteria: z.infer<typeof SendEndUserSolTransactionCriteriaSchema>
+}
+
+const SendEndUserEvmAssetCriteriaSchema = z
+  .array(z.xor([EvmNetworkCriterionSchema, EvmDataCriterionSchema, NetUSDChangeCriterionSchema]))
+  .openapi({
+    'x-audience': 'public',
+    description: 'A schema for specifying criteria for the sendEndUserEvmAsset operation.',
+    example: [
+      { type: 'ethValue', ethValue: '1000000', operator: '>=' },
+      {
+        type: 'evmAddress',
+        addresses: ['0x742d35Cc6634C0532925a3b844Bc454e4438f44e'],
+        operator: 'in',
+      },
+      { type: 'evmNetwork', networks: ['base', 'ethereum'], operator: 'in' },
+      {
+        type: 'evmData',
+        abi: 'erc20',
+        conditions: [
+          { function: 'transfer', params: [{ name: 'value', operator: '<=', value: '10000' }] },
+        ],
+      },
+      { type: 'netUSDChange', changeCents: 10000, operator: '<=' },
+    ],
+  })
+  .openapi('SendEndUserEvmAssetCriteria')
+
+type SendEndUserEvmAssetRuleType = {
+  action: 'reject' | 'accept'
+  operation: 'sendEndUserEvmAsset'
+  criteria: z.infer<typeof SendEndUserEvmAssetCriteriaSchema>
+}
+
+type SendEndUserSolAssetCriteriaType = (
+  | z.infer<typeof SplAddressCriterionSchema>
+  | z.infer<typeof SplValueCriterionSchema>
+  | z.infer<typeof SolDataCriterionSchema>
+  | z.infer<typeof SolNetworkCriterionSchema>
+)[]
+
+const SendEndUserSolAssetCriteriaSchema: z.ZodType<SendEndUserSolAssetCriteriaType> = z
+  .array(
+    z.xor([
+      SplAddressCriterionSchema,
+      SplValueCriterionSchema,
+      SolDataCriterionSchema,
+      SolNetworkCriterionSchema,
+    ]),
+  )
+  .openapi({
+    'x-audience': 'public',
+    description: 'A schema for specifying criteria for the sendEndUserSolAsset operation.',
+    example: [
+      {
+        type: 'splAddress',
+        addresses: ['HpabPRRCFbBKSuJr5PdkVvQc85FyxyTWkFM2obBRSvHT'],
+        operator: 'in',
+      },
+      { type: 'splValue', splValue: '1000000000000000000', operator: '<=' },
+      {
+        type: 'solData',
+        idls: ['SystemProgram'],
+        conditions: [
+          {
+            instruction: 'transfer_checked',
+            params: [{ name: 'lamports', operator: '<=', value: '1000000' }],
+          },
+        ],
+      },
+      { type: 'solNetwork', networks: ['solana-devnet', 'solana'], operator: 'in' },
+    ],
+  })
+  .openapi('SendEndUserSolAssetCriteria')
+
+type SendEndUserSolAssetRuleType = {
+  action: 'reject' | 'accept'
+  operation: 'sendEndUserSolAsset'
+  criteria: z.infer<typeof SendEndUserSolAssetCriteriaSchema>
+}
+
+const SendEndUserOperationCriteriaSchema = z
+  .array(
+    z.xor([
+      EthValueCriterionSchema,
+      EvmAddressCriterionSchema,
+      EvmNetworkCriterionSchema,
+      EvmDataCriterionSchema,
+      NetUSDChangeCriterionSchema,
+    ]),
+  )
+  .openapi({
+    'x-audience': 'public',
+    description: 'A schema for specifying criteria for the sendEndUserOperation operation.',
+    example: [
+      { type: 'ethValue', ethValue: '1000000', operator: '>=' },
+      {
+        type: 'evmAddress',
+        addresses: ['0x742d35Cc6634C0532925a3b844Bc454e4438f44e'],
+        operator: 'in',
+      },
+      { type: 'evmNetwork', networks: ['base', 'ethereum'], operator: 'in' },
+      {
+        type: 'evmData',
+        abi: 'erc20',
+        conditions: [
+          { function: 'transfer', params: [{ name: 'value', operator: '<=', value: '10000' }] },
+        ],
+      },
+      { type: 'netUSDChange', changeCents: 10000, operator: '<=' },
+    ],
+  })
+  .openapi('SendEndUserOperationCriteria')
+
+type SendEndUserOperationRuleType = {
+  action: 'reject' | 'accept'
+  operation: 'sendEndUserOperation'
+  criteria: z.infer<typeof SendEndUserOperationCriteriaSchema>
+}
+
+const CreateEndUserEvmSwapCriteriaSchema = z
+  .array(z.xor([EvmNetworkCriterionSchema, EvmDataCriterionSchema, NetUSDChangeCriterionSchema]))
+  .openapi({
+    'x-audience': 'public',
+    description: 'A schema for specifying criteria for the createEndUserEvmSwap operation.',
+    example: [
+      { type: 'evmNetwork', networks: ['base', 'ethereum'], operator: 'in' },
+      {
+        type: 'evmData',
+        abi: 'erc20',
+        conditions: [
+          { function: 'transfer', params: [{ name: 'value', operator: '<=', value: '10000' }] },
+        ],
+      },
+      { type: 'netUSDChange', changeCents: 10000, operator: '<=' },
+    ],
+  })
+  .openapi('CreateEndUserEvmSwapCriteria')
+
+type CreateEndUserEvmSwapRuleType = {
+  action: 'reject' | 'accept'
+  operation: 'createEndUserEvmSwap'
+  criteria: z.infer<typeof CreateEndUserEvmSwapCriteriaSchema>
+}
+
+const SignEvmTransactionRuleSchema: z.ZodType<SignEvmTransactionRuleType> = z
+  .object({
+    action: z
+      .enum(['reject', 'accept'])
+      .openapi({
+        description: 'Whether matching the rule will cause the request to be rejected or accepted.',
+        example: 'accept',
+      }),
+    operation: z
+      .literal('signEvmTransaction')
+      .openapi({
+        description:
+          'The operation to which the rule applies. Every element of the `criteria` array must match the specified operation.',
+        example: 'signEvmTransaction',
+      }),
+    criteria: SignEvmTransactionCriteriaSchema,
+  })
+  .openapi({ title: 'SignEvmTransactionRule', required: ['action', 'operation', 'criteria'] })
+  .openapi('SignEvmTransactionRule')
+
+const SendEvmTransactionRuleSchema: z.ZodType<SendEvmTransactionRuleType> = z
   .object({
     action: z
       .enum(['reject', 'accept'])
@@ -1777,527 +1980,7 @@ const SignEvmTypedDataRuleSchema = z
   })
   .openapi('SignEvmTypedDataRule')
 
-const SolAddressCriterionSchema = z
-  .object({
-    type: z
-      .literal('solAddress')
-      .openapi({
-        description: 'The type of criterion to use. This should be `solAddress`.',
-        example: 'solAddress',
-      }),
-    addresses: z
-      .array(
-        z
-          .string()
-          .regex(/^[1-9A-HJ-NP-Za-km-z]{32,44}$/)
-          .openapi({
-            description:
-              "The Solana address that is compared to the list of native transfer recipient addresses in the transaction's `accountKeys` (for legacy transactions) or `staticAccountKeys` (for V0 transactions) array.",
-          }),
-      )
-      .openapi({
-        description:
-          "The Solana addresses that are compared to the list of native transfer recipient addresses in the transaction's `accountKeys` (for legacy transactions) or `staticAccountKeys` (for V0 transactions) array.",
-        example: ['HpabPRRCFbBKSuJr5PdkVvQc85FyxyTWkFM2obBRSvHT'],
-      }),
-    operator: z
-      .enum(['in', 'not in'])
-      .openapi({
-        description:
-          "The operator to use for the comparison. Each of the native transfer recipient addresses in the transaction's `accountKeys` (for legacy transactions) or `staticAccountKeys` (for V0 transactions) array will be on the left-hand side of the operator, and the `addresses` field will be on the right-hand side.",
-        example: 'in',
-      }),
-  })
-  .openapi({
-    title: 'SolAddressCriterion',
-    description:
-      "The criterion for the recipient addresses of a Solana transaction's native transfer instruction.",
-    required: ['type', 'addresses', 'operator'],
-  })
-  .openapi('SolAddressCriterion')
-
-const SolValueCriterionSchema = z
-  .object({
-    type: z
-      .literal('solValue')
-      .openapi({
-        description: 'The type of criterion to use. This should be `solValue`.',
-        example: 'solValue',
-      }),
-    solValue: z
-      .string()
-      .openapi({
-        description:
-          "The amount of SOL in lamports that the transaction instruction's `value` field should be compared to.",
-        example: '1000000000000000000',
-      }),
-    operator: z
-      .enum(['>', '>=', '<', '<=', '=='])
-      .openapi({
-        description:
-          "The operator to use for the comparison. The transaction instruction's `value` field will be on the left-hand side of the operator, and the `solValue` field will be on the right-hand side.",
-        example: '<=',
-      }),
-  })
-  .openapi({
-    'x-audience': 'public',
-    title: 'SolValueCriterion',
-    description:
-      'The criterion for the SOL value in lamports of a native transfer instruction in a Solana transaction.',
-    required: ['type', 'solValue', 'operator'],
-  })
-  .openapi('SolValueCriterion')
-
-const SplAddressCriterionSchema = z
-  .object({
-    type: z
-      .literal('splAddress')
-      .openapi({
-        description: 'The type of criterion to use. This should be `splAddress`.',
-        example: 'splAddress',
-      }),
-    addresses: z
-      .array(
-        z
-          .string()
-          .regex(/^[1-9A-HJ-NP-Za-km-z]{32,44}$/)
-          .openapi({
-            description:
-              "The Solana address that is compared to the list of SPL token transfer recipient addresses in the transaction's `accountKeys` (for legacy transactions) or `staticAccountKeys` (for V0 transactions) array.",
-          }),
-      )
-      .openapi({
-        description:
-          "The Solana addresses that are compared to the list of SPL token transfer recipient addresses in the transaction's `accountKeys` (for legacy transactions) or `staticAccountKeys` (for V0 transactions) array.",
-        example: ['HpabPRRCFbBKSuJr5PdkVvQc85FyxyTWkFM2obBRSvHT'],
-      }),
-    operator: z
-      .enum(['in', 'not in'])
-      .openapi({
-        description:
-          "The operator to use for the comparison. Each of the SPL token transfer recipient addresses in the transaction's `accountKeys` (for legacy transactions) or `staticAccountKeys` (for V0 transactions) array will be on the left-hand side of the operator, and the `addresses` field will be on the right-hand side.",
-        example: 'in',
-      }),
-  })
-  .openapi({
-    'x-audience': 'public',
-    title: 'SplAddressCriterion',
-    description:
-      "The criterion for the recipient addresses of a Solana transaction's SPL token transfer instructions.",
-    required: ['type', 'addresses', 'operator'],
-  })
-  .openapi('SplAddressCriterion')
-
-const SplValueCriterionSchema = z
-  .object({
-    type: z
-      .literal('splValue')
-      .openapi({
-        description: 'The type of criterion to use. This should be `splValue`.',
-        example: 'splValue',
-      }),
-    splValue: z
-      .string()
-      .openapi({
-        description:
-          "The amount of the SPL token that the transaction instruction's `value` field should be compared to.",
-        example: '1000000000000000000',
-      }),
-    operator: z
-      .enum(['>', '>=', '<', '<=', '=='])
-      .openapi({
-        description:
-          "The operator to use for the comparison. The transaction instruction's `value` field will be on the left-hand side of the operator, and the `splValue` field will be on the right-hand side.",
-        example: '<=',
-      }),
-  })
-  .openapi({
-    'x-audience': 'public',
-    title: 'SplValueCriterion',
-    description:
-      'The criterion for the SPL token value of a SPL token transfer instruction in a Solana transaction.',
-    required: ['type', 'splValue', 'operator'],
-  })
-  .openapi('SplValueCriterion')
-
-const MintAddressCriterionSchema = z
-  .object({
-    type: z
-      .literal('mintAddress')
-      .openapi({
-        description: 'The type of criterion to use. This should be `mintAddress`.',
-        example: 'mintAddress',
-      }),
-    addresses: z
-      .array(
-        z
-          .string()
-          .regex(/^[1-9A-HJ-NP-Za-km-z]{32,44}$/)
-          .openapi({
-            description:
-              "The Solana address that is compared to the list of token mint addresses in the transaction's `accountKeys` (for legacy transactions) or `staticAccountKeys` (for V0 transactions) array.",
-          }),
-      )
-      .openapi({
-        description:
-          "The Solana addresses that are compared to the list of token mint addresses in the transaction's `accountKeys` (for legacy transactions) or `staticAccountKeys` (for V0 transactions) array.",
-        example: ['HpabPRRCFbBKSuJr5PdkVvQc85FyxyTWkFM2obBRSvHT'],
-      }),
-    operator: z
-      .enum(['in', 'not in'])
-      .openapi({
-        description:
-          "The operator to use for the comparison. Each of the token mint addresses in the transaction's `accountKeys` (for legacy transactions) or `staticAccountKeys` (for V0 transactions) array will be on the left-hand side of the operator, and the `addresses` field will be on the right-hand side.",
-        example: 'in',
-      }),
-  })
-  .openapi({
-    'x-audience': 'public',
-    title: 'MintAddressCriterion',
-    description:
-      "The criterion for the token mint addresses of a Solana transaction's SPL token transfer instructions.",
-    required: ['type', 'addresses', 'operator'],
-  })
-  .openapi('MintAddressCriterion')
-
-const KnownIdlTypeSchema = z
-  .enum(['SystemProgram', 'TokenProgram', 'AssociatedTokenProgram'])
-  .openapi({
-    'x-audience': 'public',
-    title: 'KnownIdlType',
-    description:
-      'A reference to an established Solana program. When referencing a `KnownIdlType` within a policy rule configuring an `SolDataCriterion`, criteria will decode instruction data as documented in the programs. For more information on supported programs, see the links below.\n  - [SystemProgram](https://docs.rs/solana-program/latest/solana_program/system_instruction/enum.SystemInstruction.html).\n  - [TokenProgram](https://docs.rs/spl-token/latest/spl_token/instruction/enum.TokenInstruction.html).\n  - [AssociatedTokenProgram](https://docs.rs/spl-associated-token-account/latest/spl_associated_token_account/instruction/index.html).',
-  })
-  .openapi('KnownIdlType')
-
-const IdlSchema = z
-  .object({
-    address: z
-      .string()
-      .openapi({
-        description: 'The program address.',
-        example: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-      }),
-    instructions: z
-      .array(
-        z
-          .object({
-            name: z
-              .string()
-              .openapi({ description: 'The instruction name.', example: 'transfer_checked' }),
-            discriminator: z
-              .array(z.int().min(0).max(255))
-              .length(8)
-              .openapi({
-                description: 'Array of 8 numbers representing the instruction discriminator.',
-                example: [119, 250, 202, 24, 253, 135, 244, 121],
-              }),
-            args: z
-              .array(
-                z
-                  .object({
-                    name: z
-                      .string()
-                      .openapi({ description: 'The argument name.', example: 'amount' }),
-                    type: z.string().openapi({ description: 'The argument type.', example: 'u64' }),
-                  })
-                  .openapi({ required: ['name', 'type'] }),
-              )
-              .openapi({ description: 'List of instruction arguments.' }),
-            accounts: z
-              .array(
-                z
-                  .object({
-                    name: z.string().openapi({ description: 'The account name.', example: 'mint' }),
-                    writable: z
-                      .boolean()
-                      .exactOptional()
-                      .openapi({ description: 'Whether the account is writable.', example: true }),
-                    signer: z
-                      .boolean()
-                      .exactOptional()
-                      .openapi({
-                        description: 'Whether the account must be a signer.',
-                        example: false,
-                      }),
-                  })
-                  .openapi({ required: ['name'] }),
-              )
-              .exactOptional()
-              .openapi({ description: 'Optional list of accounts required by the instruction.' }),
-          })
-          .openapi({ required: ['name', 'discriminator', 'args'] }),
-      )
-      .openapi({
-        description: 'List of program instructions.',
-        example: [
-          {
-            name: 'transfer_checked',
-            discriminator: [119, 250, 202, 24, 253, 135, 244, 121],
-            accounts: [{ name: 'mint', writable: true }, { name: 'rent' }],
-            args: [
-              { name: 'amount', type: 'u64' },
-              { name: 'decimals', type: 'u8' },
-            ],
-          },
-        ],
-      }),
-    metadata: z
-      .object({
-        name: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The program name.', example: 'system_program' }),
-        version: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The program version.', example: '0.1.0' }),
-        spec: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The IDL specification version.', example: '0.1.0' }),
-      })
-      .exactOptional()
-      .openapi({
-        description: 'Optional metadata about the IDL.',
-        example: { name: 'system_program', version: '0.1.0', spec: '0.1.0' },
-        required: [],
-      }),
-    types: z
-      .array(z.object({}))
-      .exactOptional()
-      .openapi({
-        description: 'Optional type definitions for custom data structures used in the program.',
-        example: [
-          {
-            name: 'MyStruct',
-            type: 'struct',
-            fields: [
-              { name: 'id', type: 'u64' },
-              { name: 'owner', type: 'pubkey' },
-            ],
-          },
-        ],
-      }),
-  })
-  .openapi({
-    'x-audience': 'public',
-    description: "IDL Specification following Anchor's IDL format v0.30+.",
-    required: ['address', 'instructions'],
-  })
-  .openapi('Idl')
-
-const SolDataParameterConditionSchema = z
-  .object({
-    name: z.string().openapi({ description: 'The parameter name.', example: 'amount' }),
-    operator: z
-      .enum(['>', '>=', '<', '<=', '=='])
-      .openapi({
-        description:
-          'The operator to use for the comparison. The value resolved at the `name` will be on the left-hand side of the operator, and the `value` field will be on the right-hand side.',
-        example: '==',
-      }),
-    value: z.string().openapi({ description: 'The value to compare against.', example: '1000000' }),
-  })
-  .openapi({
-    'x-audience': 'public',
-    title: 'SolDataParameterCondition',
-    description:
-      "A single parameter condition to apply against a specific instruction's parameters.",
-    required: ['name', 'operator', 'value'],
-  })
-  .openapi('SolDataParameterCondition')
-
-const SolDataParameterConditionListSchema = z
-  .object({
-    name: z.string().openapi({ description: 'The parameter name.', example: 'amount' }),
-    operator: z
-      .enum(['in', 'not in'])
-      .openapi({
-        description:
-          'The operator to use for the comparison. The value resolved at the `name` will be on the left-hand side of the operator, and the `value` field will be on the right-hand side.',
-        example: 'in',
-      }),
-    values: z
-      .array(
-        z
-          .string()
-          .openapi({
-            description: 'A single potential value to compare against the resolved `name` value.',
-            example: '1000000',
-          }),
-      )
-      .openapi({
-        description: 'The values to compare against.',
-        example: ['1000000', 'HpabPRRCFbBKSuJr5PdkVvQc85FyxyTWkFM2obBRSvHT', '6'],
-      }),
-  })
-  .openapi({
-    'x-audience': 'public',
-    title: 'SolDataParameterConditionList',
-    description:
-      "A single parameter condition to apply against a specific instruction's parameters.",
-    required: ['name', 'operator', 'values'],
-  })
-  .openapi('SolDataParameterConditionList')
-
-const SolDataConditionSchema = z
-  .object({
-    instruction: z
-      .string()
-      .openapi({ description: 'The instruction name.', example: 'transfer_checked' }),
-    params: z
-      .array(
-        z
-          .xor([SolDataParameterConditionSchema, SolDataParameterConditionListSchema])
-          .openapi({
-            description:
-              "A list of parameter conditions to apply against a specific instruction's data.",
-          }),
-      )
-      .exactOptional()
-      .openapi({
-        description: 'Parameter conditions for the instruction.',
-        example: [
-          { name: 'amount', operator: '<=', value: '1000000' },
-          { name: 'decimals', operator: '==', value: '6' },
-          {
-            name: 'owner',
-            operator: 'in',
-            values: [
-              'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-              'So11111111111111111111111111111111111111112',
-            ],
-          },
-        ],
-      }),
-  })
-  .openapi({
-    'x-audience': 'public',
-    description:
-      'A single condition to apply against a specific instruction type and its parameters.',
-    required: ['instruction'],
-  })
-  .openapi('SolDataCondition')
-
-const SolDataCriterionSchema = z
-  .object({
-    type: z
-      .literal('solData')
-      .openapi({
-        description: 'The type of criterion to use. This should be `solData`.',
-        example: 'solData',
-      }),
-    idls: z.array(z.xor([KnownIdlTypeSchema, IdlSchema])).openapi({
-      description:
-        'List of IDL specifications. Can contain known program names (strings) or custom IDL objects.',
-      example: [
-        'SystemProgram',
-        'TokenProgram',
-        {
-          address: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-          instructions: [
-            {
-              name: 'transfer_checked',
-              discriminator: [119, 250, 202, 24, 253, 135, 244, 121],
-              args: [
-                { name: 'amount', type: 'u64' },
-                { name: 'decimals', type: 'u8' },
-              ],
-            },
-          ],
-        },
-      ],
-    }),
-    conditions: z.array(SolDataConditionSchema).openapi({
-      description:
-        'A list of conditions to apply against the transaction instruction. Only one condition must evaluate to true for this criterion to be met.',
-      example: [
-        {
-          instruction: 'transfer_checked',
-          params: [
-            { name: 'lamports', operator: '<=', value: '1000000' },
-            { name: 'space', operator: '==', value: '64' },
-          ],
-        },
-      ],
-    }),
-  })
-  .openapi({
-    'x-audience': 'public',
-    description: 'A schema for specifying criterion for instruction data in a Solana transaction.',
-    required: ['type', 'idls', 'conditions'],
-  })
-  .openapi('SolDataCriterion')
-
-const ProgramIdCriterionSchema = z
-  .object({
-    type: z
-      .literal('programId')
-      .openapi({
-        description: 'The type of criterion to use. This should be `programId`.',
-        example: 'programId',
-      }),
-    programIds: z
-      .array(
-        z
-          .string()
-          .regex(/^[1-9A-HJ-NP-Za-km-z]{32,44}$/)
-          .openapi({
-            description:
-              "The Solana program ID that is compared to the list of program IDs in the transaction's instructions.",
-          }),
-      )
-      .openapi({
-        description:
-          "The Solana program IDs that are compared to the list of program IDs in the transaction's instructions.",
-        example: [
-          'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-          '11111111111111111111111111111112',
-        ],
-      }),
-    operator: z
-      .enum(['in', 'not in'])
-      .openapi({
-        description:
-          "The operator to use for the comparison. Each of the program IDs in the transaction's instructions will be on the left-hand side of the operator, and the `programIds` field will be on the right-hand side.",
-        example: 'in',
-      }),
-  })
-  .openapi({
-    'x-audience': 'public',
-    title: 'ProgramIdCriterion',
-    description: "The criterion for the program IDs of a Solana transaction's instructions.",
-    required: ['type', 'programIds', 'operator'],
-  })
-  .openapi('ProgramIdCriterion')
-
-const SignSolTransactionCriteriaSchema = z
-  .array(
-    z.xor([
-      SolAddressCriterionSchema,
-      SolValueCriterionSchema,
-      SplAddressCriterionSchema,
-      SplValueCriterionSchema,
-      MintAddressCriterionSchema,
-      SolDataCriterionSchema,
-      ProgramIdCriterionSchema,
-    ]),
-  )
-  .openapi({
-    'x-audience': 'public',
-    description: 'A schema for specifying criteria for the SignSolTransaction operation.',
-    example: [
-      {
-        type: 'solAddress',
-        addresses: ['HpabPRRCFbBKSuJr5PdkVvQc85FyxyTWkFM2obBRSvHT'],
-        operator: 'in',
-      },
-    ],
-  })
-  .openapi('SignSolTransactionCriteria')
-
-const SignSolTransactionRuleSchema = z
+const SignSolTransactionRuleSchema: z.ZodType<SignSolTransactionRuleType> = z
   .object({
     action: z
       .enum(['reject', 'accept'])
@@ -2317,72 +2000,7 @@ const SignSolTransactionRuleSchema = z
   .openapi({ title: 'SignSolTransactionRule', required: ['action', 'operation', 'criteria'] })
   .openapi('SignSolTransactionRule')
 
-const SolNetworkCriterionSchema = z
-  .object({
-    type: z
-      .literal('solNetwork')
-      .openapi({
-        description: 'The type of criterion to use. This should be `solNetwork`.',
-        example: 'solNetwork',
-      }),
-    networks: z
-      .array(
-        z
-          .enum(['solana-devnet', 'solana'])
-          .openapi({
-            description: 'The Solana network the transaction is for.',
-            example: 'solana-devnet',
-          }),
-      )
-      .openapi({
-        description:
-          "The Solana networks that the transaction's intended network should be compared to.",
-        example: ['solana-devnet', 'solana'],
-      }),
-    operator: z
-      .enum(['in', 'not in'])
-      .openapi({
-        description:
-          "The operator to use for the comparison. The transaction's intended network will be on the left-hand side of the operator, and the `networks` field will be on the right-hand side.",
-        example: 'in',
-      }),
-  })
-  .openapi({
-    'x-audience': 'public',
-    title: 'SolNetworkCriterion',
-    description: 'The criterion for the Solana network of a transaction.',
-    required: ['type', 'networks', 'operator'],
-  })
-  .openapi('SolNetworkCriterion')
-
-const SendSolTransactionCriteriaSchema = z
-  .array(
-    z.xor([
-      SolAddressCriterionSchema,
-      SolValueCriterionSchema,
-      SplAddressCriterionSchema,
-      SplValueCriterionSchema,
-      MintAddressCriterionSchema,
-      SolDataCriterionSchema,
-      ProgramIdCriterionSchema,
-      SolNetworkCriterionSchema,
-    ]),
-  )
-  .openapi({
-    'x-audience': 'public',
-    description: 'A schema for specifying criteria for the SendSolTransaction operation.',
-    example: [
-      {
-        type: 'solAddress',
-        addresses: ['HpabPRRCFbBKSuJr5PdkVvQc85FyxyTWkFM2obBRSvHT'],
-        operator: 'in',
-      },
-      { type: 'solValue', solValue: '1000000000000000000', operator: '<=' },
-    ],
-  })
-  .openapi('SendSolTransactionCriteria')
-
-const SendSolTransactionRuleSchema = z
+const SendSolTransactionRuleSchema: z.ZodType<SendSolTransactionRuleType> = z
   .object({
     action: z
       .enum(['reject', 'accept'])
@@ -2478,31 +2096,7 @@ const SignEvmHashRuleSchema = z
   .openapi({ 'x-audience': 'public', title: 'SignEvmHashRule', required: ['action', 'operation'] })
   .openapi('SignEvmHashRule')
 
-const PrepareUserOperationCriteriaSchema = z
-  .array(
-    z.xor([
-      EthValueCriterionSchema,
-      EvmAddressCriterionSchema,
-      EvmNetworkCriterionSchema,
-      EvmDataCriterionSchema,
-      NetUSDChangeCriterionSchema,
-    ]),
-  )
-  .openapi({
-    'x-audience': 'public',
-    description: 'A schema for specifying criteria for the PrepareUserOperation operation.',
-    example: [
-      { type: 'ethValue', ethValue: '1000000', operator: '>=' },
-      {
-        type: 'evmAddress',
-        addresses: ['0x742d35Cc6634C0532925a3b844Bc454e4438f44e'],
-        operator: 'in',
-      },
-    ],
-  })
-  .openapi('PrepareUserOperationCriteria')
-
-const PrepareUserOperationRuleSchema = z
+const PrepareUserOperationRuleSchema: z.ZodType<PrepareUserOperationRuleType> = z
   .object({
     action: z
       .enum(['reject', 'accept'])
@@ -2526,31 +2120,7 @@ const PrepareUserOperationRuleSchema = z
   })
   .openapi('PrepareUserOperationRule')
 
-const SendUserOperationCriteriaSchema = z
-  .array(
-    z.xor([
-      EthValueCriterionSchema,
-      EvmAddressCriterionSchema,
-      EvmNetworkCriterionSchema,
-      EvmDataCriterionSchema,
-      NetUSDChangeCriterionSchema,
-    ]),
-  )
-  .openapi({
-    'x-audience': 'public',
-    description: 'A schema for specifying criteria for the SendUserOperation operation.',
-    example: [
-      { type: 'ethValue', ethValue: '1000000', operator: '>=' },
-      {
-        type: 'evmAddress',
-        addresses: ['0x742d35Cc6634C0532925a3b844Bc454e4438f44e'],
-        operator: 'in',
-      },
-    ],
-  })
-  .openapi('SendUserOperationCriteria')
-
-const SendUserOperationRuleSchema = z
+const SendUserOperationRuleSchema: z.ZodType<SendUserOperationRuleType> = z
   .object({
     action: z
       .enum(['reject', 'accept'])
@@ -2574,38 +2144,7 @@ const SendUserOperationRuleSchema = z
   })
   .openapi('SendUserOperationRule')
 
-const SignEndUserEvmTransactionCriteriaSchema = z
-  .array(
-    z.xor([
-      EthValueCriterionSchema,
-      EvmAddressCriterionSchema,
-      EvmDataCriterionSchema,
-      NetUSDChangeCriterionSchema,
-    ]),
-  )
-  .openapi({
-    'x-audience': 'public',
-    description: 'A schema for specifying criteria for the signEndUserEvmTransaction operation.',
-    example: [
-      { type: 'ethValue', ethValue: '1000000', operator: '>=' },
-      {
-        type: 'evmAddress',
-        addresses: ['0x742d35Cc6634C0532925a3b844Bc454e4438f44e'],
-        operator: 'in',
-      },
-      {
-        type: 'evmData',
-        abi: 'erc20',
-        conditions: [
-          { function: 'transfer', params: [{ name: 'value', operator: '<=', value: '10000' }] },
-        ],
-      },
-      { type: 'netUSDChange', changeCents: 10000, operator: '<=' },
-    ],
-  })
-  .openapi('SignEndUserEvmTransactionCriteria')
-
-const SignEndUserEvmTransactionRuleSchema = z
+const SignEndUserEvmTransactionRuleSchema: z.ZodType<SignEndUserEvmTransactionRuleType> = z
   .object({
     action: z
       .enum(['reject', 'accept'])
@@ -2629,40 +2168,7 @@ const SignEndUserEvmTransactionRuleSchema = z
   })
   .openapi('SignEndUserEvmTransactionRule')
 
-const SendEndUserEvmTransactionCriteriaSchema = z
-  .array(
-    z.xor([
-      EthValueCriterionSchema,
-      EvmAddressCriterionSchema,
-      EvmNetworkCriterionSchema,
-      EvmDataCriterionSchema,
-      NetUSDChangeCriterionSchema,
-    ]),
-  )
-  .openapi({
-    'x-audience': 'public',
-    description: 'A schema for specifying criteria for the sendEndUserEvmTransaction operation.',
-    example: [
-      { type: 'ethValue', ethValue: '1000000', operator: '>=' },
-      {
-        type: 'evmAddress',
-        addresses: ['0x742d35Cc6634C0532925a3b844Bc454e4438f44e'],
-        operator: 'in',
-      },
-      { type: 'evmNetwork', networks: ['base', 'ethereum'], operator: 'in' },
-      {
-        type: 'evmData',
-        abi: 'erc20',
-        conditions: [
-          { function: 'transfer', params: [{ name: 'value', operator: '<=', value: '10000' }] },
-        ],
-      },
-      { type: 'netUSDChange', changeCents: 10000, operator: '<=' },
-    ],
-  })
-  .openapi('SendEndUserEvmTransactionCriteria')
-
-const SendEndUserEvmTransactionRuleSchema = z
+const SendEndUserEvmTransactionRuleSchema: z.ZodType<SendEndUserEvmTransactionRuleType> = z
   .object({
     action: z
       .enum(['reject', 'accept'])
@@ -2810,59 +2316,7 @@ const SignEndUserEvmHashRuleSchema = z
   })
   .openapi('SignEndUserEvmHashRule')
 
-const SignEndUserSolTransactionCriteriaSchema = z
-  .array(
-    z.xor([
-      SolAddressCriterionSchema,
-      SolValueCriterionSchema,
-      SplAddressCriterionSchema,
-      SplValueCriterionSchema,
-      MintAddressCriterionSchema,
-      SolDataCriterionSchema,
-      ProgramIdCriterionSchema,
-    ]),
-  )
-  .openapi({
-    'x-audience': 'public',
-    description: 'A schema for specifying criteria for the signEndUserSolTransaction operation.',
-    example: [
-      {
-        type: 'solAddress',
-        addresses: ['HpabPRRCFbBKSuJr5PdkVvQc85FyxyTWkFM2obBRSvHT'],
-        operator: 'in',
-      },
-      { type: 'solValue', solValue: '1000000000000000000', operator: '<=' },
-      {
-        type: 'splAddress',
-        addresses: ['HpabPRRCFbBKSuJr5PdkVvQc85FyxyTWkFM2obBRSvHT'],
-        operator: 'in',
-      },
-      { type: 'splValue', splValue: '1000000000000000000', operator: '<=' },
-      {
-        type: 'mintAddress',
-        addresses: ['HpabPRRCFbBKSuJr5PdkVvQc85FyxyTWkFM2obBRSvHT'],
-        operator: 'in',
-      },
-      {
-        type: 'solData',
-        idls: ['SystemProgram'],
-        conditions: [
-          {
-            instruction: 'transfer_checked',
-            params: [{ name: 'lamports', operator: '<=', value: '1000000' }],
-          },
-        ],
-      },
-      {
-        type: 'programId',
-        programIds: ['TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'],
-        operator: 'in',
-      },
-    ],
-  })
-  .openapi('SignEndUserSolTransactionCriteria')
-
-const SignEndUserSolTransactionRuleSchema = z
+const SignEndUserSolTransactionRuleSchema: z.ZodType<SignEndUserSolTransactionRuleType> = z
   .object({
     action: z
       .enum(['reject', 'accept'])
@@ -2886,61 +2340,7 @@ const SignEndUserSolTransactionRuleSchema = z
   })
   .openapi('SignEndUserSolTransactionRule')
 
-const SendEndUserSolTransactionCriteriaSchema = z
-  .array(
-    z.xor([
-      SolAddressCriterionSchema,
-      SolValueCriterionSchema,
-      SplAddressCriterionSchema,
-      SplValueCriterionSchema,
-      MintAddressCriterionSchema,
-      SolDataCriterionSchema,
-      ProgramIdCriterionSchema,
-      SolNetworkCriterionSchema,
-    ]),
-  )
-  .openapi({
-    'x-audience': 'public',
-    description: 'A schema for specifying criteria for the sendEndUserSolTransaction operation.',
-    example: [
-      {
-        type: 'solAddress',
-        addresses: ['HpabPRRCFbBKSuJr5PdkVvQc85FyxyTWkFM2obBRSvHT'],
-        operator: 'in',
-      },
-      { type: 'solValue', solValue: '1000000000000000000', operator: '<=' },
-      {
-        type: 'splAddress',
-        addresses: ['HpabPRRCFbBKSuJr5PdkVvQc85FyxyTWkFM2obBRSvHT'],
-        operator: 'in',
-      },
-      { type: 'splValue', splValue: '1000000000000000000', operator: '<=' },
-      {
-        type: 'mintAddress',
-        addresses: ['HpabPRRCFbBKSuJr5PdkVvQc85FyxyTWkFM2obBRSvHT'],
-        operator: 'in',
-      },
-      {
-        type: 'solData',
-        idls: ['SystemProgram'],
-        conditions: [
-          {
-            instruction: 'transfer_checked',
-            params: [{ name: 'lamports', operator: '<=', value: '1000000' }],
-          },
-        ],
-      },
-      {
-        type: 'programId',
-        programIds: ['TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'],
-        operator: 'in',
-      },
-      { type: 'solNetwork', networks: ['solana-devnet', 'solana'], operator: 'in' },
-    ],
-  })
-  .openapi('SendEndUserSolTransactionCriteria')
-
-const SendEndUserSolTransactionRuleSchema = z
+const SendEndUserSolTransactionRuleSchema: z.ZodType<SendEndUserSolTransactionRuleType> = z
   .object({
     action: z
       .enum(['reject', 'accept'])
@@ -2997,32 +2397,7 @@ const SignEndUserSolMessageRuleSchema = z
   })
   .openapi('SignEndUserSolMessageRule')
 
-const SendEndUserEvmAssetCriteriaSchema = z
-  .array(z.xor([EvmNetworkCriterionSchema, EvmDataCriterionSchema, NetUSDChangeCriterionSchema]))
-  .openapi({
-    'x-audience': 'public',
-    description: 'A schema for specifying criteria for the sendEndUserEvmAsset operation.',
-    example: [
-      { type: 'ethValue', ethValue: '1000000', operator: '>=' },
-      {
-        type: 'evmAddress',
-        addresses: ['0x742d35Cc6634C0532925a3b844Bc454e4438f44e'],
-        operator: 'in',
-      },
-      { type: 'evmNetwork', networks: ['base', 'ethereum'], operator: 'in' },
-      {
-        type: 'evmData',
-        abi: 'erc20',
-        conditions: [
-          { function: 'transfer', params: [{ name: 'value', operator: '<=', value: '10000' }] },
-        ],
-      },
-      { type: 'netUSDChange', changeCents: 10000, operator: '<=' },
-    ],
-  })
-  .openapi('SendEndUserEvmAssetCriteria')
-
-const SendEndUserEvmAssetRuleSchema = z
+const SendEndUserEvmAssetRuleSchema: z.ZodType<SendEndUserEvmAssetRuleType> = z
   .object({
     action: z
       .enum(['reject', 'accept'])
@@ -3046,41 +2421,7 @@ const SendEndUserEvmAssetRuleSchema = z
   })
   .openapi('SendEndUserEvmAssetRule')
 
-const SendEndUserSolAssetCriteriaSchema = z
-  .array(
-    z.xor([
-      SplAddressCriterionSchema,
-      SplValueCriterionSchema,
-      SolDataCriterionSchema,
-      SolNetworkCriterionSchema,
-    ]),
-  )
-  .openapi({
-    'x-audience': 'public',
-    description: 'A schema for specifying criteria for the sendEndUserSolAsset operation.',
-    example: [
-      {
-        type: 'splAddress',
-        addresses: ['HpabPRRCFbBKSuJr5PdkVvQc85FyxyTWkFM2obBRSvHT'],
-        operator: 'in',
-      },
-      { type: 'splValue', splValue: '1000000000000000000', operator: '<=' },
-      {
-        type: 'solData',
-        idls: ['SystemProgram'],
-        conditions: [
-          {
-            instruction: 'transfer_checked',
-            params: [{ name: 'lamports', operator: '<=', value: '1000000' }],
-          },
-        ],
-      },
-      { type: 'solNetwork', networks: ['solana-devnet', 'solana'], operator: 'in' },
-    ],
-  })
-  .openapi('SendEndUserSolAssetCriteria')
-
-const SendEndUserSolAssetRuleSchema = z
+const SendEndUserSolAssetRuleSchema: z.ZodType<SendEndUserSolAssetRuleType> = z
   .object({
     action: z
       .enum(['reject', 'accept'])
@@ -3104,40 +2445,7 @@ const SendEndUserSolAssetRuleSchema = z
   })
   .openapi('SendEndUserSolAssetRule')
 
-const SendEndUserOperationCriteriaSchema = z
-  .array(
-    z.xor([
-      EthValueCriterionSchema,
-      EvmAddressCriterionSchema,
-      EvmNetworkCriterionSchema,
-      EvmDataCriterionSchema,
-      NetUSDChangeCriterionSchema,
-    ]),
-  )
-  .openapi({
-    'x-audience': 'public',
-    description: 'A schema for specifying criteria for the sendEndUserOperation operation.',
-    example: [
-      { type: 'ethValue', ethValue: '1000000', operator: '>=' },
-      {
-        type: 'evmAddress',
-        addresses: ['0x742d35Cc6634C0532925a3b844Bc454e4438f44e'],
-        operator: 'in',
-      },
-      { type: 'evmNetwork', networks: ['base', 'ethereum'], operator: 'in' },
-      {
-        type: 'evmData',
-        abi: 'erc20',
-        conditions: [
-          { function: 'transfer', params: [{ name: 'value', operator: '<=', value: '10000' }] },
-        ],
-      },
-      { type: 'netUSDChange', changeCents: 10000, operator: '<=' },
-    ],
-  })
-  .openapi('SendEndUserOperationCriteria')
-
-const SendEndUserOperationRuleSchema = z
+const SendEndUserOperationRuleSchema: z.ZodType<SendEndUserOperationRuleType> = z
   .object({
     action: z
       .enum(['reject', 'accept'])
@@ -3161,26 +2469,7 @@ const SendEndUserOperationRuleSchema = z
   })
   .openapi('SendEndUserOperationRule')
 
-const CreateEndUserEvmSwapCriteriaSchema = z
-  .array(z.xor([EvmNetworkCriterionSchema, EvmDataCriterionSchema, NetUSDChangeCriterionSchema]))
-  .openapi({
-    'x-audience': 'public',
-    description: 'A schema for specifying criteria for the createEndUserEvmSwap operation.',
-    example: [
-      { type: 'evmNetwork', networks: ['base', 'ethereum'], operator: 'in' },
-      {
-        type: 'evmData',
-        abi: 'erc20',
-        conditions: [
-          { function: 'transfer', params: [{ name: 'value', operator: '<=', value: '10000' }] },
-        ],
-      },
-      { type: 'netUSDChange', changeCents: 10000, operator: '<=' },
-    ],
-  })
-  .openapi('CreateEndUserEvmSwapCriteria')
-
-const CreateEndUserEvmSwapRuleSchema = z
+const CreateEndUserEvmSwapRuleSchema: z.ZodType<CreateEndUserEvmSwapRuleType> = z
   .object({
     action: z
       .enum(['reject', 'accept'])
@@ -3228,6 +2517,1166 @@ type RuleType =
   | z.infer<typeof SendEndUserOperationRuleSchema>
   | z.infer<typeof CreateEndUserEvmSwapRuleSchema>
 
+const RuleSchema: z.ZodType<RuleType> = z
+  .xor([
+    SignEvmTransactionRuleSchema,
+    SendEvmTransactionRuleSchema,
+    SignEvmMessageRuleSchema,
+    SignEvmTypedDataRuleSchema,
+    SignSolTransactionRuleSchema,
+    SendSolTransactionRuleSchema,
+    SignSolMessageRuleSchema,
+    SignEvmHashRuleSchema,
+    PrepareUserOperationRuleSchema,
+    SendUserOperationRuleSchema,
+    SignEndUserEvmTransactionRuleSchema,
+    SendEndUserEvmTransactionRuleSchema,
+    SignEndUserEvmMessageRuleSchema,
+    SignEndUserEvmTypedDataRuleSchema,
+    SignEndUserEvmHashRuleSchema,
+    SignEndUserSolTransactionRuleSchema,
+    SendEndUserSolTransactionRuleSchema,
+    SignEndUserSolMessageRuleSchema,
+    SendEndUserEvmAssetRuleSchema,
+    SendEndUserSolAssetRuleSchema,
+    SendEndUserOperationRuleSchema,
+    CreateEndUserEvmSwapRuleSchema,
+  ])
+  .openapi({
+    description: 'A rule that limits the behavior of an account.',
+    example: {
+      action: 'accept',
+      operation: 'signEvmTransaction',
+      criteria: [
+        { type: 'ethValue', ethValue: '1000000', operator: '>=' },
+        {
+          type: 'evmAddress',
+          addresses: ['0x742d35Cc6634C0532925a3b844Bc454e4438f44e'],
+          operator: 'in',
+        },
+      ],
+    },
+  })
+  .openapi('Rule')
+
+type PolicyRulesType = z.infer<typeof RuleSchema>[]
+
+const PolicyRulesSchema: z.ZodType<PolicyRulesType> = z
+  .array(RuleSchema)
+  .openapi({
+    description:
+      'A list of rules that comprise the policy. Each policy is limited to 100 rules and a total serialized size of 8 MiB.',
+    example: [
+      {
+        action: 'accept',
+        operation: 'signEvmTransaction',
+        criteria: [
+          { type: 'ethValue', ethValue: '1000000000000000000', operator: '<=' },
+          {
+            type: 'evmAddress',
+            addresses: [
+              '0x742d35Cc6634C0532925a3b844Bc454e4438f44e',
+              '0x1234567890123456789012345678901234567890',
+            ],
+            operator: 'in',
+          },
+        ],
+      },
+      {
+        action: 'accept',
+        operation: 'signSolTransaction',
+        criteria: [
+          {
+            type: 'solAddress',
+            addresses: ['HpabPRRCFbBKSuJr5PdkVvQc85FyxyTWkFM2obBRSvHT'],
+            operator: 'in',
+          },
+        ],
+      },
+    ],
+  })
+  .openapi('PolicyRules')
+
+type PolicyType = {
+  id: string
+  description?: string
+  scope: 'project' | 'account'
+  status?: 'active' | 'paused'
+  pausedAt?: string
+  resumeAt?: string
+  rules: z.infer<typeof PolicyRulesSchema>
+  createdAt: string
+  updatedAt: string
+}
+
+const EvaluatedPolicySchema = z
+  .object({
+    id: z
+      .string()
+      .regex(/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/)
+      .openapi({
+        description: 'The ID of the policy.',
+        example: '123e4567-e89b-12d3-a456-426614174000',
+      }),
+    scope: z
+      .enum(['project', 'account'])
+      .openapi({
+        description: 'The scope of the policy.',
+        'x-go-type': 'PolicyScope',
+        example: 'project',
+      }),
+    updatedAt: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description:
+          'The version of the policy evaluated. Rule and criterion indices refer to this version.',
+        example: '2026-09-01T12:00:00Z',
+      }),
+  })
+  .openapi({
+    description: 'A policy consulted during evaluation, at the version evaluated.',
+    example: {
+      id: '123e4567-e89b-12d3-a456-426614174000',
+      scope: 'project',
+      updatedAt: '2026-09-01T12:00:00Z',
+    },
+    required: ['id', 'scope', 'updatedAt'],
+  })
+  .openapi('EvaluatedPolicy')
+
+const EthValueObservationSchema = z
+  .strictObject({
+    type: z
+      .literal('ethValue')
+      .openapi({ description: 'The criterion type.', 'x-go-type': 'string', example: 'ethValue' }),
+    ethValue: z
+      .string()
+      .regex(/^[0-9]+$/)
+      .max(78)
+      .openapi({
+        description: 'The transaction `value`, in wei. `0` when the transaction transfers no ETH.',
+        example: '500000000000000000',
+      }),
+  })
+  .openapi({
+    title: 'EthValueObservation',
+    description: 'The transaction `value` an `ethValue` criterion compared.',
+    example: { type: 'ethValue', ethValue: '500000000000000000' },
+    required: ['type', 'ethValue'],
+  })
+  .openapi('EthValueObservation')
+
+const EvmAddressObservationSchema = z
+  .strictObject({
+    type: z
+      .literal('evmAddress')
+      .openapi({
+        description: 'The criterion type.',
+        'x-go-type': 'string',
+        example: 'evmAddress',
+      }),
+    address: z
+      .string()
+      .regex(/^0x[0-9a-fA-F]{40}$/)
+      .exactOptional()
+      .openapi({
+        description:
+          'The transaction `to` address. Omitted for a contract-creation transaction, which has none.',
+        example: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+      }),
+  })
+  .openapi({
+    title: 'EvmAddressObservation',
+    description:
+      'The transaction `to` address an `evmAddress` criterion compared. For a token transfer, this is the token contract, not the token recipient; use an `evmData` criterion to constrain the recipient.',
+    example: { type: 'evmAddress', address: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913' },
+    required: ['type'],
+  })
+  .openapi('EvmAddressObservation')
+
+const EvmNetworkObservationSchema = z
+  .strictObject({
+    type: z
+      .literal('evmNetwork')
+      .openapi({
+        description: 'The criterion type.',
+        'x-go-type': 'string',
+        example: 'evmNetwork',
+      }),
+    network: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The network the operation targets, from the request's `network` or derived from the transaction's chain ID. Omitted when the chain ID is not a supported network.",
+        example: 'base-sepolia',
+      }),
+    chainId: z
+      .int()
+      .min(0)
+      .exactOptional()
+      .openapi({
+        description:
+          "The chain ID from the transaction. Omitted when the network came from the request's `network`.",
+        example: 84532,
+      }),
+  })
+  .openapi({
+    title: 'EvmNetworkObservation',
+    description: 'The network an `evmNetwork` criterion compared.',
+    example: { type: 'evmNetwork', network: 'base-sepolia', chainId: 84532 },
+    required: ['type'],
+  })
+  .openapi('EvmNetworkObservation')
+
+const ObservedArgumentSchema = z
+  .strictObject({
+    name: z
+      .string()
+      .max(256)
+      .openapi({
+        description: 'The argument name from the ABI or IDL. Empty when the ABI leaves it unnamed.',
+        example: 'value',
+      }),
+    type: z
+      .string()
+      .max(256)
+      .openapi({ description: 'The argument type from the ABI or IDL.', example: 'uint256' }),
+    value: z
+      .string()
+      .max(256)
+      .openapi({
+        description:
+          'The decoded value as text: integers in decimal base units, EVM addresses 0x-prefixed, Solana public keys in base58, bytes 0x-prefixed hex, booleans `true` or `false`, strings as-is, and arrays, tuples, and structs as compact JSON.',
+        example: '25000000',
+      }),
+    truncated: z
+      .boolean()
+      .openapi({
+        description: 'Whether `value` was cut to its first 256 characters.',
+        example: false,
+      }),
+  })
+  .openapi({
+    title: 'ObservedArgument',
+    description: 'A decoded function or instruction argument.',
+    example: { name: 'value', type: 'uint256', value: '25000000', truncated: false },
+    required: ['name', 'type', 'value', 'truncated'],
+  })
+  .openapi('ObservedArgument')
+
+const EvmDataObservationSchema = z
+  .strictObject({
+    type: z
+      .literal('evmData')
+      .openapi({ description: 'The criterion type.', 'x-go-type': 'string', example: 'evmData' }),
+    selector: z
+      .string()
+      .regex(/^0x[0-9a-f]{8}$/)
+      .exactOptional()
+      .openapi({
+        description: 'The 4-byte function selector. Omitted when `data` is shorter than 4 bytes.',
+        example: '0xa9059cbb',
+      }),
+    function: z
+      .string()
+      .max(256)
+      .exactOptional()
+      .openapi({
+        description:
+          'The name of the ABI function with this selector. Omitted when no function in the `abi` has it.',
+        example: 'transfer',
+      }),
+    arguments: z
+      .array(ObservedArgumentSchema)
+      .max(32)
+      .openapi({
+        description:
+          'The decoded arguments of `function`, in ABI order. Empty when `function` is omitted. Only the first 32 arguments are returned.',
+      }),
+  })
+  .openapi({
+    title: 'EvmDataObservation',
+    description:
+      "The call an `evmData` criterion decoded from the transaction `data` with the criterion's `abi`. Parameters are checked against the first of the criterion's `conditions` whose `function` equals `function`.",
+    example: {
+      type: 'evmData',
+      selector: '0xa9059cbb',
+      function: 'transfer',
+      arguments: [
+        {
+          name: 'to',
+          type: 'address',
+          value: '0x1111111254EEB25477B68fb85Ed929f73A960582',
+          truncated: false,
+        },
+        { name: 'value', type: 'uint256', value: '25000000', truncated: false },
+      ],
+    },
+    required: ['type', 'arguments'],
+  })
+  .openapi('EvmDataObservation')
+
+const ObservedMessageTextSchema = z
+  .string()
+  .max(2048)
+  .openapi({
+    description:
+      'The message exactly as matched, including line breaks. When `encoding` is `hex`, the message bytes are not valid UTF-8 and are shown as a 0x-prefixed hex string instead.',
+    example: 'Hello, world',
+  })
+  .openapi('ObservedMessageText')
+
+const ObservedMessageEncodingSchema = z
+  .enum(['utf8', 'hex'])
+  .openapi({
+    description:
+      'How `message` represents the matched bytes: `utf8` for the text itself, or `hex` for a 0x-prefixed hex string when the bytes are not valid UTF-8.',
+    'x-go-type': 'string',
+    example: 'utf8',
+  })
+  .openapi('ObservedMessageEncoding')
+
+const EvmMessageObservationSchema = z
+  .strictObject({
+    type: z
+      .literal('evmMessage')
+      .openapi({
+        description: 'The criterion type.',
+        'x-go-type': 'string',
+        example: 'evmMessage',
+      }),
+    message: ObservedMessageTextSchema,
+    encoding: ObservedMessageEncodingSchema,
+    truncated: z
+      .boolean()
+      .openapi({
+        description:
+          'Whether `message` was cut to its first 2048 characters. The expression was matched against the whole message.',
+        example: false,
+      }),
+  })
+  .openapi({
+    title: 'EvmMessageObservation',
+    description: 'The message an `evmMessage` criterion matched its `match` expression against.',
+    example: {
+      type: 'evmMessage',
+      message:
+        'example.com wants you to sign in with your Ethereum account:\n0x742d35Cc6634C0532925a3b844Bc454e4438f44e\n\nSign in to Example.',
+      encoding: 'utf8',
+      truncated: false,
+    },
+    required: ['type', 'message', 'encoding', 'truncated'],
+  })
+  .openapi('EvmMessageObservation')
+
+const ObservedTypedDataFieldSchema = z
+  .strictObject({
+    conditionIndex: z
+      .int()
+      .min(0)
+      .openapi({ description: "Zero-based index into the criterion's `conditions`.", example: 1 }),
+    value: z
+      .string()
+      .max(256)
+      .exactOptional()
+      .openapi({
+        description:
+          "The value at the condition's `path`, as text in the same format as `ObservedArgument.value`. Omitted when the message has no value at that path.",
+        example: '40',
+      }),
+    truncated: z
+      .boolean()
+      .openapi({
+        description: 'Whether `value` was cut to its first 256 characters.',
+        example: false,
+      }),
+  })
+  .openapi({
+    title: 'ObservedTypedDataField',
+    description: 'The value an `evmTypedDataField` condition read from the typed data message.',
+    example: { conditionIndex: 1, value: '40', truncated: false },
+    required: ['conditionIndex', 'truncated'],
+  })
+  .openapi('ObservedTypedDataField')
+
+const EvmTypedDataFieldObservationSchema = z
+  .strictObject({
+    type: z
+      .literal('evmTypedDataField')
+      .openapi({
+        description: 'The criterion type.',
+        'x-go-type': 'string',
+        example: 'evmTypedDataField',
+      }),
+    typesMatched: z
+      .boolean()
+      .openapi({
+        description:
+          "Whether the message's types matched the criterion's `types`. When `false`, no condition was checked and `fields` is empty.",
+        example: true,
+      }),
+    fields: z
+      .array(ObservedTypedDataFieldSchema)
+      .max(64)
+      .openapi({
+        description:
+          'The fields that decided the criterion. When the criterion is unmet, this is the field of the first failing condition only. When it is met, this is the field of every condition, in `conditions` order.',
+      }),
+  })
+  .openapi({
+    title: 'EvmTypedDataFieldObservation',
+    description:
+      "The typed data fields an `evmTypedDataField` criterion compared. The message's types must match the criterion's `types` before any condition is checked.",
+    example: {
+      type: 'evmTypedDataField',
+      typesMatched: true,
+      fields: [{ conditionIndex: 1, value: '40', truncated: false }],
+    },
+    required: ['type', 'typesMatched', 'fields'],
+  })
+  .openapi('EvmTypedDataFieldObservation')
+
+const EvmTypedDataVerifyingContractObservationSchema = z
+  .strictObject({
+    type: z
+      .literal('evmTypedDataVerifyingContract')
+      .openapi({
+        description: 'The criterion type.',
+        'x-go-type': 'string',
+        example: 'evmTypedDataVerifyingContract',
+      }),
+    address: z
+      .string()
+      .regex(/^0x[0-9a-fA-F]{40}$/)
+      .exactOptional()
+      .openapi({
+        description: "The domain's `verifyingContract`. Omitted when the domain has none.",
+        example: '0x000000000022D473030F116dDEE9F6B43aC78BA3',
+      }),
+  })
+  .openapi({
+    title: 'EvmTypedDataVerifyingContractObservation',
+    description:
+      'The domain `verifyingContract` an `evmTypedDataVerifyingContract` criterion compared.',
+    example: {
+      type: 'evmTypedDataVerifyingContract',
+      address: '0x000000000022D473030F116dDEE9F6B43aC78BA3',
+    },
+    required: ['type'],
+  })
+  .openapi('EvmTypedDataVerifyingContractObservation')
+
+const NetUSDChangeObservationSchema = z
+  .strictObject({
+    type: z
+      .literal('netUSDChange')
+      .openapi({
+        description: 'The criterion type.',
+        'x-go-type': 'string',
+        example: 'netUSDChange',
+      }),
+    skipped: z
+      .boolean()
+      .openapi({
+        description:
+          'Whether simulation was skipped because the operation targets a testnet. A skipped criterion is treated as met, as in the real operation, and `changeCents` is omitted.',
+        example: false,
+      }),
+    changeCents: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          "The net USD change, in cents, of the transaction's asset transfers and exposure, as simulated at evaluation time. Present exactly when `skipped` is `false`.",
+        example: 12550,
+      }),
+  })
+  .openapi({
+    title: 'NetUSDChangeObservation',
+    description: 'The simulated net USD change a `netUSDChange` criterion compared.',
+    example: { type: 'netUSDChange', skipped: false, changeCents: 12550 },
+    required: ['type', 'skipped'],
+  })
+  .openapi('NetUSDChangeObservation')
+
+const SolAddressObservationSchema = z
+  .strictObject({
+    type: z
+      .literal('solAddress')
+      .openapi({
+        description: 'The criterion type.',
+        'x-go-type': 'string',
+        example: 'solAddress',
+      }),
+    addresses: z
+      .array(
+        z
+          .string()
+          .regex(/^[1-9A-HJ-NP-Za-km-z]{32,44}$/)
+          .openapi({ description: 'A transfer recipient.' }),
+      )
+      .max(128)
+      .openapi({
+        description:
+          'The recipient of each System Program transfer, in instruction order. Empty when the transaction has none.',
+        example: ['ExXhNkgYf6efh7YyqDRVxPZuzafobao1A74drUdp8trd'],
+      }),
+  })
+  .openapi({
+    title: 'SolAddressObservation',
+    description: 'The native SOL transfer recipients a `solAddress` criterion compared.',
+    example: { type: 'solAddress', addresses: ['ExXhNkgYf6efh7YyqDRVxPZuzafobao1A74drUdp8trd'] },
+    required: ['type', 'addresses'],
+  })
+  .openapi('SolAddressObservation')
+
+const SolValueObservationSchema = z
+  .strictObject({
+    type: z
+      .literal('solValue')
+      .openapi({ description: 'The criterion type.', 'x-go-type': 'string', example: 'solValue' }),
+    solValues: z
+      .array(
+        z
+          .string()
+          .regex(/^[0-9]+$/)
+          .max(20)
+          .openapi({ description: 'A transfer amount in lamports.' }),
+      )
+      .max(128)
+      .openapi({
+        description:
+          'The amount of each System Program transfer, in lamports, in instruction order. Empty when the transaction has none.',
+        example: ['1500000000'],
+      }),
+  })
+  .openapi({
+    title: 'SolValueObservation',
+    description: 'The native SOL transfer amounts a `solValue` criterion compared.',
+    example: { type: 'solValue', solValues: ['1500000000'] },
+    required: ['type', 'solValues'],
+  })
+  .openapi('SolValueObservation')
+
+const SplAddressObservationSchema = z
+  .strictObject({
+    type: z
+      .literal('splAddress')
+      .openapi({
+        description: 'The criterion type.',
+        'x-go-type': 'string',
+        example: 'splAddress',
+      }),
+    addresses: z
+      .array(
+        z
+          .string()
+          .regex(/^[1-9A-HJ-NP-Za-km-z]{32,44}$/)
+          .openapi({ description: 'A token transfer recipient.' }),
+      )
+      .max(128)
+      .openapi({
+        description:
+          'The recipient of each SPL token transfer, in instruction order. Empty when the transaction has none.',
+        example: ['9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM'],
+      }),
+  })
+  .openapi({
+    title: 'SplAddressObservation',
+    description:
+      "The SPL token transfer recipients an `splAddress` criterion compared. For a raw transaction these are the recipients' token accounts (usually associated token accounts), not their wallet addresses. For `sendEndUserSolAsset` they are wallet addresses.",
+    example: { type: 'splAddress', addresses: ['9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM'] },
+    required: ['type', 'addresses'],
+  })
+  .openapi('SplAddressObservation')
+
+const SplValueObservationSchema = z
+  .strictObject({
+    type: z
+      .literal('splValue')
+      .openapi({ description: 'The criterion type.', 'x-go-type': 'string', example: 'splValue' }),
+    splValues: z
+      .array(
+        z
+          .string()
+          .regex(/^[0-9]+$/)
+          .max(20)
+          .openapi({ description: 'A transfer amount in atomic units.' }),
+      )
+      .max(128)
+      .openapi({
+        description:
+          "The amount of each `TransferChecked` instruction, in the token's atomic units (not scaled by decimals), in instruction order. Empty when the transaction has none.",
+        example: ['1500000'],
+      }),
+  })
+  .openapi({
+    title: 'SplValueObservation',
+    description: 'The SPL token transfer amounts an `splValue` criterion compared.',
+    example: { type: 'splValue', splValues: ['1500000'] },
+    required: ['type', 'splValues'],
+  })
+  .openapi('SplValueObservation')
+
+const MintAddressObservationSchema = z
+  .strictObject({
+    type: z
+      .literal('mintAddress')
+      .openapi({
+        description: 'The criterion type.',
+        'x-go-type': 'string',
+        example: 'mintAddress',
+      }),
+    addresses: z
+      .array(
+        z
+          .string()
+          .regex(/^[1-9A-HJ-NP-Za-km-z]{32,44}$/)
+          .openapi({ description: 'A token mint.' }),
+      )
+      .max(128)
+      .openapi({
+        description:
+          'The mint of each SPL token transfer, in instruction order. Empty when the transaction has none.',
+        example: ['EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v'],
+      }),
+  })
+  .openapi({
+    title: 'MintAddressObservation',
+    description: 'The token mints of the SPL token transfers a `mintAddress` criterion compared.',
+    example: { type: 'mintAddress', addresses: ['EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v'] },
+    required: ['type', 'addresses'],
+  })
+  .openapi('MintAddressObservation')
+
+const ObservedInstructionSchema = z
+  .strictObject({
+    index: z
+      .int()
+      .min(0)
+      .openapi({
+        description: 'Zero-based index of the instruction in the transaction.',
+        example: 1,
+      }),
+    programId: z
+      .string()
+      .regex(/^[1-9A-HJ-NP-Za-km-z]{32,44}$/)
+      .openapi({
+        description: 'The program the instruction invokes.',
+        example: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+      }),
+    instruction: z
+      .string()
+      .max(256)
+      .exactOptional()
+      .openapi({
+        description:
+          'The instruction name from the IDL. Omitted when no IDL in the criterion decodes the instruction.',
+        example: 'transfer_checked',
+      }),
+    arguments: z
+      .array(ObservedArgumentSchema)
+      .max(32)
+      .openapi({
+        description:
+          'The decoded arguments, in IDL order. Empty when `instruction` is omitted. Only the first 32 arguments are returned.',
+      }),
+  })
+  .openapi({
+    title: 'ObservedInstruction',
+    description: 'A Solana instruction as decoded by a `solData` criterion.',
+    example: {
+      index: 1,
+      programId: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+      instruction: 'transfer_checked',
+      arguments: [{ name: 'amount', type: 'u64', value: '2000000', truncated: false }],
+    },
+    required: ['index', 'programId', 'arguments'],
+  })
+  .openapi('ObservedInstruction')
+
+const SolDataObservationSchema = z
+  .strictObject({
+    type: z
+      .literal('solData')
+      .openapi({ description: 'The criterion type.', 'x-go-type': 'string', example: 'solData' }),
+    instructions: z
+      .array(ObservedInstructionSchema)
+      .max(64)
+      .openapi({
+        description:
+          'The instructions that decided the criterion. When the criterion is unmet, this is the first instruction that matched no condition, only. When it is met, this is every instruction, in transaction order.',
+      }),
+    truncated: z
+      .boolean()
+      .openapi({
+        description: 'Whether `instructions` was cut to its first 64 entries.',
+        example: false,
+      }),
+  })
+  .openapi({
+    title: 'SolDataObservation',
+    description:
+      "The instructions a `solData` criterion decoded with the criterion's `idls`. The criterion is met when every instruction matches at least one of its `conditions`.",
+    example: {
+      type: 'solData',
+      instructions: [
+        {
+          index: 1,
+          programId: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+          instruction: 'transfer_checked',
+          arguments: [
+            { name: 'amount', type: 'u64', value: '2000000', truncated: false },
+            { name: 'decimals', type: 'u8', value: '6', truncated: false },
+          ],
+        },
+      ],
+      truncated: false,
+    },
+    required: ['type', 'instructions', 'truncated'],
+  })
+  .openapi('SolDataObservation')
+
+const SolMessageObservationSchema = z
+  .strictObject({
+    type: z
+      .literal('solMessage')
+      .openapi({
+        description: 'The criterion type.',
+        'x-go-type': 'string',
+        example: 'solMessage',
+      }),
+    message: ObservedMessageTextSchema,
+    encoding: ObservedMessageEncodingSchema,
+    truncated: z
+      .boolean()
+      .openapi({
+        description:
+          'Whether `message` was cut to its first 2048 characters. The expression was matched against the whole message.',
+        example: false,
+      }),
+  })
+  .openapi({
+    title: 'SolMessageObservation',
+    description:
+      "The message a `solMessage` criterion matched its `match` expression against, after decoding the request's base64 `message` when its `encoding` is `base64`.",
+    example: { type: 'solMessage', message: 'Hello, world', encoding: 'utf8', truncated: false },
+    required: ['type', 'message', 'encoding', 'truncated'],
+  })
+  .openapi('SolMessageObservation')
+
+const ProgramIdObservationSchema = z
+  .strictObject({
+    type: z
+      .literal('programId')
+      .openapi({ description: 'The criterion type.', 'x-go-type': 'string', example: 'programId' }),
+    programIds: z
+      .array(
+        z
+          .string()
+          .regex(/^[1-9A-HJ-NP-Za-km-z]{32,44}$/)
+          .openapi({ description: 'An instruction program ID.' }),
+      )
+      .max(128)
+      .openapi({
+        description: 'The program ID of each instruction, in instruction order.',
+        example: [
+          '11111111111111111111111111111111',
+          'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+        ],
+      }),
+  })
+  .openapi({
+    title: 'ProgramIdObservation',
+    description: 'The instruction program IDs a `programId` criterion compared.',
+    example: {
+      type: 'programId',
+      programIds: [
+        '11111111111111111111111111111111',
+        'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+      ],
+    },
+    required: ['type', 'programIds'],
+  })
+  .openapi('ProgramIdObservation')
+
+const SolNetworkObservationSchema = z
+  .strictObject({
+    type: z
+      .literal('solNetwork')
+      .openapi({
+        description: 'The criterion type.',
+        'x-go-type': 'string',
+        example: 'solNetwork',
+      }),
+    network: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The request's `network`. Omitted when the request has none, which no `networks` value matches.",
+        example: 'solana-devnet',
+      }),
+  })
+  .openapi({
+    title: 'SolNetworkObservation',
+    description: 'The network a `solNetwork` criterion compared.',
+    example: { type: 'solNetwork', network: 'solana-devnet' },
+    required: ['type'],
+  })
+  .openapi('SolNetworkObservation')
+
+const RateLimitCountUsageSchema = z
+  .strictObject({
+    type: z
+      .literal('count')
+      .openapi({ description: 'The usage type.', 'x-go-type': 'string', example: 'count' }),
+    windowCount: z
+      .int()
+      .min(0)
+      .openapi({ description: 'Operations counted in the current `window`.', example: 10 }),
+    pendingCount: z
+      .int()
+      .min(0)
+      .openapi({
+        description:
+          'Operations added by earlier units of this simulation request. They are not persisted. Always `0` when `evaluatedUnit` is absent.',
+        example: 0,
+      }),
+  })
+  .openapi({
+    title: 'RateLimitCountUsage',
+    description:
+      'Operation counts for a `maxCount` criterion. The criterion is met when `windowCount + pendingCount + 1 <= maxCount` and unmet when the sum exceeds `maxCount`, where `1` is this operation.',
+    example: { type: 'count', windowCount: 10, pendingCount: 0 },
+    required: ['type', 'windowCount', 'pendingCount'],
+  })
+  .openapi('RateLimitCountUsage')
+
+const RateLimitValueUsageSchema = z
+  .strictObject({
+    type: z
+      .literal('value')
+      .openapi({ description: 'The usage type.', 'x-go-type': 'string', example: 'value' }),
+    windowCents: z
+      .int()
+      .min(0)
+      .openapi({
+        description: 'USD value, in cents, counted in the current `window`.',
+        example: 95000,
+      }),
+    pendingCents: z
+      .int()
+      .min(0)
+      .openapi({
+        description:
+          'USD value, in cents, added by earlier units of this simulation request. It is not persisted. Always `0` when `evaluatedUnit` is absent.',
+        example: 0,
+      }),
+    operationCents: z
+      .int()
+      .min(0)
+      .openapi({
+        description: 'The absolute USD value, in cents, of this operation.',
+        example: 12550,
+      }),
+  })
+  .openapi({
+    title: 'RateLimitValueUsage',
+    description:
+      'USD totals, in cents, for a `maxValueCents` criterion. The criterion is met when `windowCents + pendingCents + operationCents <= maxValueCents` and unmet when the sum exceeds `maxValueCents`.',
+    example: { type: 'value', windowCents: 95000, pendingCents: 0, operationCents: 12550 },
+    required: ['type', 'windowCents', 'pendingCents', 'operationCents'],
+  })
+  .openapi('RateLimitValueUsage')
+
+const RateLimitUsageSchema = z
+  .discriminatedUnion('type', [RateLimitCountUsageSchema, RateLimitValueUsageSchema])
+  .openapi({
+    description:
+      'The usage totals the criterion compared, discriminated by `type`: `count` when the criterion sets `maxCount`, `value` when it sets `maxValueCents`.',
+    example: { type: 'count', windowCount: 10, pendingCount: 0 },
+    discriminator: {
+      propertyName: 'type',
+      mapping: {
+        count: '#/components/schemas/RateLimitCountUsage',
+        value: '#/components/schemas/RateLimitValueUsage',
+      },
+    },
+  })
+  .openapi('RateLimitUsage')
+
+const RateLimitingObservationSchema = z
+  .strictObject({
+    type: z
+      .literal('rateLimiting')
+      .openapi({
+        description: 'The criterion type.',
+        'x-go-type': 'string',
+        example: 'rateLimiting',
+      }),
+    scope: z
+      .enum(['project', 'end_user'])
+      .openapi({
+        description:
+          'Whose operations the counter totals. `project` counts operations of every account in the project, not only the account in the request. `end_user` counts operations of the end user in the request.',
+        'x-go-type': 'string',
+        example: 'project',
+      }),
+    usage: RateLimitUsageSchema,
+  })
+  .openapi({
+    title: 'RateLimitingObservation',
+    description:
+      'The rate-limit usage a `rateLimiting` criterion compared, read without being consumed. The criterion is met when the projected usage stays within the limit and unmet when it exceeds the limit. Totals can change before a real call.',
+    example: {
+      type: 'rateLimiting',
+      scope: 'project',
+      usage: { type: 'count', windowCount: 10, pendingCount: 0 },
+    },
+    required: ['type', 'scope', 'usage'],
+  })
+  .openapi('RateLimitingObservation')
+
+const PolicyCriterionObservationSchema = z
+  .discriminatedUnion('type', [
+    EthValueObservationSchema,
+    EvmAddressObservationSchema,
+    EvmNetworkObservationSchema,
+    EvmDataObservationSchema,
+    EvmMessageObservationSchema,
+    EvmTypedDataFieldObservationSchema,
+    EvmTypedDataVerifyingContractObservationSchema,
+    NetUSDChangeObservationSchema,
+    SolAddressObservationSchema,
+    SolValueObservationSchema,
+    SplAddressObservationSchema,
+    SplValueObservationSchema,
+    MintAddressObservationSchema,
+    SolDataObservationSchema,
+    SolMessageObservationSchema,
+    ProgramIdObservationSchema,
+    SolNetworkObservationSchema,
+    RateLimitingObservationSchema,
+  ])
+  .openapi({
+    description:
+      "The value taken from the operation that a criterion was compared against, discriminated by the criterion's `type`. Amounts use the criterion's units: integer strings of base units (wei, lamports, or token atomic units) and USD in integer cents, so a unit mistake in a rule shows as a difference in magnitude. A field is omitted when the operation has no such value; each field says when that happens.\nValues come only from the request, the prepared user operation it names, transaction simulation, and the rate-limit counters the criterion reads. These are never returned: signatures, raw transaction bytes, calldata or instruction data beyond the decoded selector, instruction and arguments, the operations or accounts that make up a rate-limit total, and simulation results other than the net USD change. A string longer than its `maxLength` is cut to its first `maxLength` characters and marked `truncated: true`.",
+    example: { type: 'evmAddress', address: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913' },
+    discriminator: {
+      propertyName: 'type',
+      mapping: {
+        ethValue: '#/components/schemas/EthValueObservation',
+        evmAddress: '#/components/schemas/EvmAddressObservation',
+        evmNetwork: '#/components/schemas/EvmNetworkObservation',
+        evmData: '#/components/schemas/EvmDataObservation',
+        evmMessage: '#/components/schemas/EvmMessageObservation',
+        evmTypedDataField: '#/components/schemas/EvmTypedDataFieldObservation',
+        evmTypedDataVerifyingContract:
+          '#/components/schemas/EvmTypedDataVerifyingContractObservation',
+        netUSDChange: '#/components/schemas/NetUSDChangeObservation',
+        solAddress: '#/components/schemas/SolAddressObservation',
+        solValue: '#/components/schemas/SolValueObservation',
+        splAddress: '#/components/schemas/SplAddressObservation',
+        splValue: '#/components/schemas/SplValueObservation',
+        mintAddress: '#/components/schemas/MintAddressObservation',
+        solData: '#/components/schemas/SolDataObservation',
+        solMessage: '#/components/schemas/SolMessageObservation',
+        programId: '#/components/schemas/ProgramIdObservation',
+        solNetwork: '#/components/schemas/SolNetworkObservation',
+        rateLimiting: '#/components/schemas/RateLimitingObservation',
+      },
+    },
+  })
+  .openapi('PolicyCriterionObservation')
+
+type MatchedPolicyRuleType = {
+  policy: z.infer<typeof EvaluatedPolicySchema>
+  ruleIndex: number
+  rule: z.infer<typeof RuleSchema>
+  observations?: z.infer<typeof PolicyCriterionObservationSchema>[]
+}
+
+const PolicyCriterionSchema = z
+  .discriminatedUnion('type', [
+    EthValueCriterionSchema,
+    EvmAddressCriterionSchema,
+    EvmNetworkCriterionSchema,
+    EvmDataCriterionSchema,
+    EvmMessageCriterionSchema,
+    SignEvmTypedDataFieldCriterionSchema,
+    SignEvmTypedDataVerifyingContractCriterionSchema,
+    NetUSDChangeCriterionSchema,
+    SolAddressCriterionSchema,
+    SolValueCriterionSchema,
+    SplAddressCriterionSchema,
+    SplValueCriterionSchema,
+    MintAddressCriterionSchema,
+    SolDataCriterionSchema,
+    SolMessageCriterionSchema,
+    ProgramIdCriterionSchema,
+    SolNetworkCriterionSchema,
+  ])
+  .openapi({
+    description: 'The unmet criterion, exactly as defined in the rule, discriminated by `type`.',
+    example: {
+      type: 'evmAddress',
+      addresses: ['0x000000000000000000000000000000000000dEaD'],
+      operator: 'in',
+    },
+    discriminator: {
+      propertyName: 'type',
+      mapping: {
+        ethValue: '#/components/schemas/EthValueCriterion',
+        evmAddress: '#/components/schemas/EvmAddressCriterion',
+        evmNetwork: '#/components/schemas/EvmNetworkCriterion',
+        evmData: '#/components/schemas/EvmDataCriterion',
+        evmMessage: '#/components/schemas/EvmMessageCriterion',
+        evmTypedDataField: '#/components/schemas/SignEvmTypedDataFieldCriterion',
+        evmTypedDataVerifyingContract:
+          '#/components/schemas/SignEvmTypedDataVerifyingContractCriterion',
+        netUSDChange: '#/components/schemas/NetUSDChangeCriterion',
+        solAddress: '#/components/schemas/SolAddressCriterion',
+        solValue: '#/components/schemas/SolValueCriterion',
+        splAddress: '#/components/schemas/SplAddressCriterion',
+        splValue: '#/components/schemas/SplValueCriterion',
+        mintAddress: '#/components/schemas/MintAddressCriterion',
+        solData: '#/components/schemas/SolDataCriterion',
+        solMessage: '#/components/schemas/SolMessageCriterion',
+        programId: '#/components/schemas/ProgramIdCriterion',
+        solNetwork: '#/components/schemas/SolNetworkCriterion',
+      },
+    },
+  })
+  .openapi('PolicyCriterion')
+
+type UnmatchedPolicyRuleType = {
+  policy: z.infer<typeof EvaluatedPolicySchema>
+  ruleIndex: number
+  criterionIndex: number
+  criterion: z.infer<typeof PolicyCriterionSchema>
+  observed?: z.infer<typeof PolicyCriterionObservationSchema>
+}
+
+const MatchedPolicyRuleSchema: z.ZodType<MatchedPolicyRuleType> = z
+  .object({
+    policy: EvaluatedPolicySchema,
+    ruleIndex: z
+      .int()
+      .min(0)
+      .openapi({ description: "Zero-based index into the policy's `rules`.", example: 1 }),
+    rule: RuleSchema.openapi({
+      description: 'The full rule as defined at the evaluated policy version (`policy.updatedAt`).',
+    }),
+    observations: z
+      .array(PolicyCriterionObservationSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The value each criterion was compared against, index-aligned with `rule.criteria`: `observations[i]` belongs to `rule.criteria[i]` and has the same `type`. Either every criterion has an entry or the field is omitted. Empty when the rule has no criteria.',
+      }),
+  })
+  .openapi({
+    description: 'The rule whose action decided the evaluation.',
+    example: {
+      policy: {
+        id: '123e4567-e89b-12d3-a456-426614174000',
+        scope: 'project',
+        updatedAt: '2026-09-01T12:00:00Z',
+      },
+      ruleIndex: 1,
+      rule: {
+        action: 'reject',
+        operation: 'signEvmTransaction',
+        criteria: [{ type: 'ethValue', ethValue: '1000000000000000000', operator: '>' }],
+      },
+      observations: [{ type: 'ethValue', ethValue: '2500000000000000000' }],
+    },
+    required: ['policy', 'ruleIndex', 'rule'],
+  })
+  .openapi('MatchedPolicyRule')
+
+const UnmatchedPolicyRuleSchema: z.ZodType<UnmatchedPolicyRuleType> = z
+  .object({
+    policy: EvaluatedPolicySchema,
+    ruleIndex: z
+      .int()
+      .min(0)
+      .openapi({ description: "Zero-based index into the policy's `rules`.", example: 0 }),
+    criterionIndex: z
+      .int()
+      .min(0)
+      .openapi({
+        description: "Zero-based index into the rule's `criteria` of the first unmet criterion.",
+        example: 1,
+      }),
+    criterion: PolicyCriterionSchema,
+    observed: PolicyCriterionObservationSchema.exactOptional(),
+  })
+  .openapi({
+    description:
+      'A rule that targeted the operation but did not match. Criteria are evaluated in order and evaluation stops at the first unmet one, so later criteria were not evaluated. `observed` is present when the service captured the value `criterion` was compared against.',
+    example: {
+      policy: {
+        id: '123e4567-e89b-12d3-a456-426614174000',
+        scope: 'project',
+        updatedAt: '2026-09-01T12:00:00Z',
+      },
+      ruleIndex: 0,
+      criterionIndex: 1,
+      criterion: {
+        type: 'evmAddress',
+        addresses: ['0x742d35Cc6634C0532925a3b844Bc454e4438f44e'],
+        operator: 'in',
+      },
+      observed: { type: 'evmAddress', address: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913' },
+    },
+    required: ['policy', 'ruleIndex', 'criterionIndex', 'criterion'],
+  })
+  .openapi('UnmatchedPolicyRule')
+
+const EvaluatedUnitSchema = z
+  .strictObject({
+    index: z
+      .int()
+      .min(0)
+      .openapi({
+        description:
+          "Zero-based index of the unit. For user operations, this is the index into the operation's `calls`.",
+        example: 2,
+      }),
+    count: z
+      .int()
+      .min(2)
+      .openapi({ description: 'The number of units the operation was split into.', example: 3 }),
+    address: z
+      .string()
+      .regex(/^[1-9A-HJ-NP-Za-km-z]{32,44}$/)
+      .exactOptional()
+      .openapi({
+        description: 'The Solana signing account of the unit. Omitted for user operations.',
+        example: 'HpabPRRCFbBKSuJr5PdkVvQc85FyxyTWkFM2obBRSvHT',
+      }),
+  })
+  .openapi({
+    title: 'EvaluatedUnit',
+    description:
+      'The unit this result describes. Present only when the operation was evaluated as more than one unit: one unit per call for user operations, and one unit per signing account for Solana transactions. Each unit is evaluated against the policies separately, and `matchedRule`, `unmatchedRules`, `evaluatedPolicies`, and every observed value describe this unit only. When `action` is `reject`, this is the first unit that was rejected. When `action` is `accept`, every unit was accepted and this is the last one.',
+    example: { index: 2, count: 3 },
+    required: ['index', 'count'],
+  })
+  .openapi('EvaluatedUnit')
+
+type PolicySimulationResultType = {
+  action: 'accept' | 'reject'
+  reason: 'rule_accepted' | 'rule_rejected' | 'no_rule_matched' | 'no_rule_for_operation'
+  matchedRule?: z.infer<typeof MatchedPolicyRuleSchema>
+  unmatchedRules: z.infer<typeof UnmatchedPolicyRuleSchema>[]
+  evaluatedPolicies: z.infer<typeof EvaluatedPolicySchema>[]
+  evaluatedUnit?: z.infer<typeof EvaluatedUnitSchema>
+}
+
 const AccountTypeSchema = z
   .enum(['prime', 'business', 'cdp'])
   .openapi({
@@ -3236,6 +3685,15 @@ const AccountTypeSchema = z
     example: 'prime',
   })
   .openapi('AccountType')
+
+const AccountIdSchema = z
+  .string()
+  .regex(/^account_[a-f0-9\-]{36}$/)
+  .openapi({
+    description: 'The ID of the Account, which is a UUID prefixed by the string `account_`.',
+    example: 'account_af2937b0-9846-4fe7-bfe9-ccc22d935114',
+  })
+  .openapi('AccountId')
 
 const OwnerSchema = z
   .string()
@@ -3727,6 +4185,13 @@ const CreateAccountRequestSchema = z
   })
   .openapi({ required: [] })
   .openapi('CreateAccountRequest')
+
+const AssetSchema = z
+  .string()
+  .min(1)
+  .max(42)
+  .openapi({ description: 'The symbol of the asset (e.g., eth, usd, usdc, usdt).', example: 'usd' })
+  .openapi('Asset')
 
 const AssetTypeSchema = z
   .enum(['fiat', 'crypto'])
@@ -4678,9 +5143,31 @@ const CustomerWriteBaseSchema = z
   })
   .openapi('CustomerWriteBase')
 
-const CreateCustomerRequestSchema = CustomerWriteBaseSchema.and(
-  z.object({}).openapi({ required: ['type'] }),
-).openapi('CreateCustomerRequest')
+const CreateCustomerRequestSchema = (() => {
+  const Schema = CustomerWriteBaseSchema.and(z.looseObject({}).openapi({ required: ['type'] }))
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (
+          ![
+            'type',
+            'capabilities',
+            'individual',
+            'projectIds',
+            'tosAcceptances',
+            'taxAttestations',
+            'compliance',
+          ].includes(k)
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})().openapi('CreateCustomerRequest')
 
 const UpdateCustomerRequestSchema = CustomerWriteBaseSchema.openapi('UpdateCustomerRequest')
 
@@ -4692,21 +5179,365 @@ const DepositDestinationTypeSchema = z
   .openapi({ description: 'The type of deposit destination.', example: 'crypto' })
   .openapi('DepositDestinationType')
 
-const DepositDestinationSchema: z.ZodType<DepositDestinationType> = z
-  .lazy(() =>
-    z
-      .discriminatedUnion('type', [CryptoDepositDestinationSchema, FiatDepositDestinationSchema])
+const DepositDestinationStatusSchema = z
+  .enum(['active', 'inactive', 'pending'])
+  .openapi({ description: 'The status of the deposit destination.', example: 'active' })
+  .openapi('DepositDestinationStatus')
+
+const DepositDestinationIdSchema = z
+  .string()
+  .regex(/^depositDestination_[a-f0-9\-]{36}$/)
+  .openapi({
+    description:
+      'The ID of the Deposit Destination, which is a UUID prefixed by the string `depositDestination_`.',
+    example: 'depositDestination_af2937b0-9846-4fe7-bfe9-ccc22d935114',
+  })
+  .openapi('DepositDestinationId')
+
+const PaymentNetworkSchema = z
+  .enum([
+    'base',
+    'ethereum',
+    'solana',
+    'arbitrum',
+    'optimism',
+    'monad',
+    'sui',
+    'avacchain',
+    'tempo',
+  ])
+  .openapi({
+    description: 'The blockchain network for crypto payments, transfers, and deposit destinations.',
+    example: 'base',
+  })
+  .openapi('PaymentNetwork')
+
+const BlockchainAddressSchema = z
+  .string()
+  .min(1)
+  .max(128)
+  .openapi({
+    description:
+      'A blockchain address. Format varies by network (e.g., 0x-prefixed for EVM, base58 for Solana).',
+    example: '0x742d35Cc6634C0532925a3b844Bc454e4438f44e',
+  })
+  .openapi('BlockchainAddress')
+
+const DepositDestinationCryptoSchema = z
+  .object({ network: PaymentNetworkSchema, address: BlockchainAddressSchema })
+  .openapi({
+    description:
+      'Crypto-specific deposit destination details. In responses, this object is always present. Contains the network and address for the deposit destination.',
+    required: ['network', 'address'],
+    example: { network: 'base', address: '0x742d35Cc6634C0532925a3b844Bc454e4438f44e' },
+  })
+  .openapi('DepositDestinationCrypto')
+
+const DepositDestinationTargetAccountSchema = z
+  .strictObject({
+    accountId: AccountIdSchema.exactOptional().openapi({
+      description: 'The ID of the CDP Account to which deposited funds should be transferred.',
+    }),
+    asset: AssetSchema.openapi({
+      description: 'The symbol of the asset that should land in the target account.',
+      example: 'usd',
+    }),
+  })
+  .openapi({
+    title: 'Target Account',
+    description: 'The account and asset where incoming deposits should be credited.',
+    required: ['asset'],
+    example: { accountId: 'account_af2937b0-9846-4fe7-bfe9-ccc22d935114', asset: 'usd' },
+  })
+  .openapi('DepositDestinationTargetAccount')
+
+const OnchainAddressSchema = z
+  .object({
+    address: BlockchainAddressSchema.openapi({
+      description:
+        'The onchain crypto address of the recipient.\n\nExamples:\n- EVM address: 0xabc1234567890abcdef1234567890abcdef123456\n- Solana address: HpabPRRCFbBKSuJr5PdkVvQc85FyxyTWkFM2obBRSvHT\n- XRP address: rhccc5p23aKiCGFcEqqnjEfLRZ6xEvfy3s\n',
+    }),
+    network: PaymentNetworkSchema,
+    destinationTag: z
+      .string()
+      .exactOptional()
       .openapi({
-        description: 'A deposit destination for receiving funds to an account.',
-        discriminator: {
-          propertyName: 'type',
-          mapping: {
-            crypto: '#/components/schemas/CryptoDepositDestination',
-            fiat: '#/components/schemas/FiatDepositDestination',
-          },
-        },
+        description:
+          'The destination tag of the onchain address. Destination tags are used by certain networks\n(primarily XRP/Ripple) to identify specific recipients when multiple users share a single address.\nThe tag ensures funds are credited to the correct account within the shared address.\n\nExamples by network:\n- XRP/Ripple: Numeric values like "1234567890" or "123456"\n- Stellar (XLM): Memos which can be text, ID, or hash format\n\nNote: Most networks (Ethereum, Bitcoin, Solana) do not use destination tags.\n',
       }),
-  )
+    asset: AssetSchema.openapi({
+      description:
+        'Asset symbol of the payment received by the recipient. Supported values are `usdc` and `eurc`.',
+      example: 'usdc',
+    }),
+  })
+  .openapi({
+    title: 'Onchain Address',
+    description: 'The target of the payment is an onchain address.',
+    required: ['address', 'network', 'asset'],
+    example: {
+      address: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+      network: 'base',
+      asset: 'usdc',
+    },
+  })
+  .openapi('OnchainAddress')
+
+const DepositDestinationTargetOnchainAddressSchema = OnchainAddressSchema.openapi({
+  'x-audience': 'public',
+  title: 'Target Onchain Address',
+  description: 'Routes deposited funds to an external onchain address.',
+  example: {
+    address: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+    network: 'base',
+    asset: 'usdc',
+  },
+}).openapi('DepositDestinationTargetOnchainAddress')
+
+const DepositDestinationTargetSchema = z
+  .xor([DepositDestinationTargetAccountSchema, DepositDestinationTargetOnchainAddressSchema])
+  .openapi({ description: 'The intended target for deposited funds.' })
+  .openapi('DepositDestinationTarget')
+
+const MetadataSchema = z
+  .record(z.string(), z.string().min(0).max(500))
+  .refine((val) => Object.keys(val).length <= 10)
+  .openapi({
+    description:
+      'Optional metadata as key-value pairs. Use this to store additional structured information on a resource, such as customer IDs, order references, or any application-specific data. Up to 10 key/value pairs may be provided. Keys and values are both strings. Keys must be ≤ 40 characters; values must be ≤ 500 characters.',
+    example: { customer_id: 'cust_12345', order_reference: 'order-67890' },
+  })
+  .openapi('Metadata')
+
+const CryptoDepositDestinationSchema = z
+  .object({
+    depositDestinationId: DepositDestinationIdSchema,
+    accountId: AccountIdSchema,
+    type: z
+      .literal('crypto')
+      .openapi({ description: 'The type of deposit destination.', example: 'crypto' }),
+    crypto: DepositDestinationCryptoSchema.openapi({
+      description:
+        'Crypto-specific details for this deposit destination. Always populated in responses. Contains the network and address.',
+    }),
+    target: DepositDestinationTargetSchema.exactOptional(),
+    status: DepositDestinationStatusSchema,
+    metadata: MetadataSchema.exactOptional(),
+    createdAt: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'The timestamp when the deposit destination was created.',
+        example: '2023-10-08T14:30:00Z',
+      }),
+    updatedAt: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'The timestamp when the deposit destination was last updated.',
+        example: '2023-10-08T14:30:00Z',
+      }),
+  })
+  .openapi({
+    title: 'Crypto',
+    description: 'A cryptocurrency deposit destination.',
+    required: [
+      'depositDestinationId',
+      'accountId',
+      'type',
+      'crypto',
+      'status',
+      'createdAt',
+      'updatedAt',
+    ],
+    example: {
+      depositDestinationId: 'depositDestination_af2937b0-9846-4fe7-bfe9-ccc22d935114',
+      accountId: 'account_af2937b0-9846-4fe7-bfe9-ccc22d935114',
+      type: 'crypto',
+      crypto: { network: 'base', address: '0x742d35Cc6634C0532925a3b844Bc454e4438f44e' },
+      target: { accountId: 'account_bf3847c1-a957-5ae8-cfa0-ddd33e046225', asset: 'usd' },
+      status: 'active',
+      metadata: { customer_id: '123e4567-e89b-12d3-a456-426614174000', reference: 'order-12345' },
+      createdAt: '2023-10-08T14:30:00Z',
+      updatedAt: '2023-10-08T14:30:00Z',
+    },
+  })
+  .openapi('CryptoDepositDestination')
+
+const FiatAccountNumberSchema = z
+  .string()
+  .regex(/^[0-9]{4,17}$/)
+  .openapi({
+    'x-audience': 'public',
+    description: 'The bank account number.',
+    example: '123456789',
+  })
+  .openapi('FiatAccountNumber')
+
+const DepositDestinationPaymentRailSchema = z
+  .enum(['ach', 'fedwire'])
+  .openapi({
+    description: 'A payment rail supported by a fiat deposit destination.',
+    example: 'ach',
+  })
+  .openapi('DepositDestinationPaymentRail')
+
+const BankAccountUSSchema = z
+  .object({
+    accountType: z
+      .literal('us_bank')
+      .openapi({
+        description:
+          'The type of bank account, based on the account identification scheme (e.g., `us_bank`).',
+        example: 'us_bank',
+      }),
+    currency: z
+      .literal('usd')
+      .openapi({ description: 'The fiat currency for the deposit destination.', example: 'usd' }),
+    bankName: z
+      .string()
+      .openapi({
+        description: 'The name of the bank holding the account.',
+        example: 'Citibank N.A.',
+      }),
+    beneficiaryName: z
+      .string()
+      .openapi({ description: 'The name of the account beneficiary.', example: 'John Smith' }),
+    routingNumber: z
+      .string()
+      .regex(/^[0-9]{9}$/)
+      .openapi({ description: 'The ABA routing number of the bank.', example: '987654321' }),
+    accountNumber: FiatAccountNumberSchema,
+    bankAddress: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The address of the bank. Present when required by the receiving institution.',
+        example: '399 Park Avenue, New York, NY 10022',
+      }),
+    referenceCode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A reference code that must be included in the payment memo or reference field so the receiving institution can route the deposit to the correct account. Only present when required by the receiving institution.',
+        example: 'CBAUSD1A2B3C4D',
+      }),
+    supportedRails: z
+      .array(DepositDestinationPaymentRailSchema)
+      .openapi({
+        description: 'The payment rails this account can receive deposits on.',
+        example: ['ach', 'fedwire'],
+      }),
+  })
+  .openapi({
+    description: 'A US bank account identified by ABA routing number and account number.',
+    required: [
+      'accountType',
+      'currency',
+      'bankName',
+      'beneficiaryName',
+      'routingNumber',
+      'accountNumber',
+      'supportedRails',
+    ],
+    example: {
+      accountType: 'us_bank',
+      currency: 'usd',
+      bankName: 'Citibank N.A.',
+      beneficiaryName: 'John Smith',
+      routingNumber: '987654321',
+      accountNumber: '123456789',
+      bankAddress: '399 Park Avenue, New York, NY 10022',
+      supportedRails: ['ach', 'fedwire'],
+    },
+  })
+  .openapi('BankAccountUS')
+
+const DepositDestinationFiatSchema = z
+  .xor([BankAccountUSSchema])
+  .openapi({
+    'x-audience': 'public',
+    description:
+      'Fiat bank account details for a deposit destination. The `accountType` field indicates the account identification scheme and determines which fields are present.',
+    discriminator: {
+      propertyName: 'accountType',
+      mapping: { us_bank: '#/components/schemas/BankAccountUS' },
+    },
+  })
+  .openapi('DepositDestinationFiat')
+
+const FiatDepositDestinationSchema = z
+  .object({
+    depositDestinationId: DepositDestinationIdSchema,
+    accountId: AccountIdSchema,
+    type: z
+      .literal('fiat')
+      .openapi({ description: 'The type of deposit destination.', example: 'fiat' }),
+    fiat: DepositDestinationFiatSchema,
+    target: DepositDestinationTargetSchema.exactOptional(),
+    status: DepositDestinationStatusSchema,
+    metadata: MetadataSchema.exactOptional(),
+    createdAt: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'The timestamp when the deposit destination was created.',
+        example: '2025-06-01T00:00:00Z',
+      }),
+    updatedAt: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'The timestamp when the deposit destination was last updated.',
+        example: '2025-06-01T00:00:00Z',
+      }),
+  })
+  .openapi({
+    title: 'Fiat',
+    'x-audience': 'public',
+    description:
+      'A fiat deposit destination. Represents a single bank account provisioned at a single banking partner. Each deposit destination has one status and one lifecycle. The `fiat` object contains the bank account details, keyed by account type.',
+    required: [
+      'depositDestinationId',
+      'accountId',
+      'type',
+      'fiat',
+      'status',
+      'createdAt',
+      'updatedAt',
+    ],
+    example: {
+      depositDestinationId: 'depositDestination_cf4958d2-b068-6bf9-da01-eee44f157336',
+      accountId: 'account_af2937b0-9846-4fe7-bfe9-ccc22d935114',
+      type: 'fiat',
+      status: 'pending',
+      fiat: {
+        accountType: 'us_bank',
+        currency: 'usd',
+        bankName: 'Citibank N.A.',
+        beneficiaryName: 'John Smith',
+        routingNumber: '987654321',
+        accountNumber: '123456789',
+        bankAddress: '399 Park Avenue, New York, NY 10022',
+        supportedRails: ['ach', 'fedwire'],
+      },
+      target: { accountId: 'account_af2937b0-9846-4fe7-bfe9-ccc22d935114', asset: 'usdc' },
+      metadata: { customer_id: '123e4567-e89b-12d3-a456-426614174000', reference: 'order-12345' },
+      createdAt: '2025-06-01T00:00:00Z',
+      updatedAt: '2025-06-01T00:00:00Z',
+    },
+  })
+  .openapi('FiatDepositDestination')
+
+const DepositDestinationSchema = z
+  .discriminatedUnion('type', [CryptoDepositDestinationSchema, FiatDepositDestinationSchema])
+  .openapi({
+    description: 'A deposit destination for receiving funds to an account.',
+    discriminator: {
+      propertyName: 'type',
+      mapping: {
+        crypto: '#/components/schemas/CryptoDepositDestination',
+        fiat: '#/components/schemas/FiatDepositDestination',
+      },
+    },
+  })
   .openapi('DepositDestination')
 
 const CreateDepositDestinationRequestBaseSchema = z
@@ -6918,6 +7749,147 @@ const CancelPaymentSessionRequestSchema = z
   .openapi({ description: 'A request to cancel a payment session.', required: [] })
   .openapi('CancelPaymentSessionRequest')
 
+const EIP712DomainSchema = z
+  .object({
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the DApp or protocol.', example: 'Permit2' }),
+    version: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The version of the DApp or protocol.', example: '1' }),
+    chainId: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The chain ID of the EVM network.',
+        example: 1,
+      }),
+    verifyingContract: z
+      .string()
+      .regex(/^0x[a-fA-F0-9]{40}$/)
+      .exactOptional()
+      .openapi({
+        description: 'The 0x-prefixed EVM address of the verifying smart contract.',
+        example: '0x000000000022D473030F116dDEE9F6B43aC78BA3',
+      }),
+    salt: z
+      .string()
+      .regex(/^0x[a-fA-F0-9]{64}$/)
+      .exactOptional()
+      .openapi({
+        description: 'The optional 32-byte 0x-prefixed hex salt for domain separation.',
+        example: '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef',
+      }),
+  })
+  .openapi({
+    description: 'The domain of the EIP-712 typed data.',
+    example: {
+      name: 'Permit2',
+      chainId: 1,
+      verifyingContract: '0x000000000022D473030F116dDEE9F6B43aC78BA3',
+    },
+    required: [],
+  })
+  .openapi('EIP712Domain')
+
+const EIP712TypesSchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      'A mapping of struct names to an array of type objects (name + type).\nEach key corresponds to a type name (e.g., "`EIP712Domain`", "`PermitTransferFrom`").\n',
+    example: {
+      EIP712Domain: [
+        { name: 'name', type: 'string' },
+        { name: 'chainId', type: 'uint256' },
+        { name: 'verifyingContract', type: 'address' },
+      ],
+      PermitTransferFrom: [
+        { name: 'permitted', type: 'TokenPermissions' },
+        { name: 'spender', type: 'address' },
+        { name: 'nonce', type: 'uint256' },
+        { name: 'deadline', type: 'uint256' },
+      ],
+      TokenPermissions: [
+        { name: 'token', type: 'address' },
+        { name: 'amount', type: 'uint256' },
+      ],
+    },
+  })
+  .openapi('EIP712Types')
+
+const EIP712MessageSchema = z
+  .object({
+    domain: EIP712DomainSchema,
+    types: EIP712TypesSchema,
+    primaryType: z
+      .string()
+      .openapi({
+        description:
+          'The primary type of the message. This is the name of the struct in the `types` object that is the root of the message.',
+        example: 'PermitTransferFrom',
+      }),
+    message: z
+      .looseObject({})
+      .openapi({
+        description:
+          'The message to sign. The structure of this message must match the `primaryType` struct in the `types` object.',
+        example: {
+          permitted: { token: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48', amount: '1000000' },
+          spender: '0x1111111254EEB25477B68fb85Ed929f73A960582',
+          nonce: '0',
+          deadline: '1716239020',
+        },
+      }),
+  })
+  .openapi({
+    description: 'The message to sign using EIP-712.',
+    required: ['domain', 'types', 'primaryType', 'message'],
+    example: {
+      domain: {
+        name: 'Permit2',
+        chainId: 1,
+        verifyingContract: '0x000000000022D473030F116dDEE9F6B43aC78BA3',
+      },
+      types: {
+        EIP712Domain: [
+          { name: 'name', type: 'string' },
+          { name: 'chainId', type: 'uint256' },
+          { name: 'verifyingContract', type: 'address' },
+        ],
+        PermitTransferFrom: [
+          { name: 'permitted', type: 'TokenPermissions' },
+          { name: 'spender', type: 'address' },
+          { name: 'nonce', type: 'uint256' },
+          { name: 'deadline', type: 'uint256' },
+        ],
+        TokenPermissions: [
+          { name: 'token', type: 'address' },
+          { name: 'amount', type: 'uint256' },
+        ],
+      },
+      primaryType: 'PermitTransferFrom',
+      message: {
+        permitted: { token: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48', amount: '1000000' },
+        spender: '0xFfFfFfFFfFFfFFfFFfFFFFFffFFFffffFfFFFfFf',
+        nonce: '123456',
+        deadline: '1717123200',
+      },
+    },
+  })
+  .openapi('EIP712Message')
+
 const EIP3009PayloadSchema = z
   .object({
     payloadId: z
@@ -7099,6 +8071,99 @@ const Permit2PayloadSchema = z
     },
   })
   .openapi('Permit2Payload')
+
+const Erc20ApprovalPayloadSchema = z
+  .object({
+    payloadId: z
+      .string()
+      .openapi({
+        description: 'The unique identifier of the payload.',
+        example: 'payload_bf3948c1-a957-5gh8-cgf0-ddd33e046225',
+      }),
+    type: z
+      .literal('erc20_approval')
+      .openapi({ description: 'The payload type.', example: 'erc20_approval' }),
+    data: z
+      .object({
+        chainId: z
+          .int()
+          .openapi({ description: 'The EVM chain ID for the transaction.', example: 1 }),
+        to: z
+          .string()
+          .regex(/^0x[a-fA-F0-9]{40}$/)
+          .openapi({
+            description: 'The 0x-prefixed address of the ERC-20 token contract to approve.',
+            example: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
+          }),
+        data: z
+          .string()
+          .openapi({
+            description: 'The ABI-encoded `approve()` calldata.',
+            example:
+              '0x095ea7b3000000000000000000000000000000000022d473030f116ddee9f6b43ac78ba3000000000000000000000000ffffffffffffffffffffffffffffffffffffffff',
+          }),
+        value: z
+          .string()
+          .openapi({
+            description: 'The native token value to send (always `"0"` for approvals).',
+            example: '0',
+          }),
+        gas: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'The estimated gas limit for the transaction.',
+            example: '63804',
+          }),
+        maxFeePerGas: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'The maximum fee per gas unit (EIP-1559).',
+            example: '1751588354',
+          }),
+        maxPriorityFeePerGas: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'The maximum priority fee per gas unit (EIP-1559).',
+            example: '1000000000',
+          }),
+      })
+      .openapi({
+        description: 'An EVM transaction object. Send via `eth_sendTransaction`.',
+        required: ['chainId', 'to', 'data', 'value'],
+        example: {
+          chainId: 1,
+          to: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
+          data: '0x095ea7b3000000000000000000000000000000000022d473030f116ddee9f6b43ac78ba3000000000000000000000000ffffffffffffffffffffffffffffffffffffffff',
+          value: '0',
+          gas: '63804',
+          maxFeePerGas: '1751588354',
+          maxPriorityFeePerGas: '1000000000',
+        },
+      }),
+  })
+  .openapi({
+    title: 'ERC-20 Approval Payload',
+    description:
+      'An ERC-20 approval transaction payload. The payer must send `data` as an EVM transaction via `eth_sendTransaction` and return the resulting transaction hash.',
+    required: ['payloadId', 'type', 'data'],
+    example: {
+      payloadId: 'payload_bf3948c1-a957-5gh8-cgf0-ddd33e046225',
+      type: 'erc20_approval',
+      data: {
+        chainId: 1,
+        to: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
+        data: '0x095ea7b3000000000000000000000000000000000022d473030f116ddee9f6b43ac78ba3000000000000000000000000ffffffffffffffffffffffffffffffffffffffff',
+        value: '0',
+        gas: '63804',
+        maxFeePerGas: '1751588354',
+        maxPriorityFeePerGas: '1000000000',
+      },
+    },
+  })
+  .openapi('Erc20ApprovalPayload')
 
 const SpendPermissionPayloadSchema = z
   .object({
@@ -8256,6 +9321,243 @@ const WalletRevocationRequestSchema = z
   })
   .openapi('WalletRevocationRequest')
 
+const EIP2612PayloadSchema = z
+  .object({
+    payloadId: z
+      .string()
+      .openapi({
+        description: 'The unique identifier of the payload.',
+        example: 'payload_af2937b0-9846-4fe7-bfe9-ccc22d935114',
+      }),
+    type: z.literal('eip2612').openapi({ description: 'The payload type.', example: 'eip2612' }),
+    data: EIP712MessageSchema.openapi({
+      description: 'EIP-712 typed data for an EIP-2612 Permit. Pass to `eth_signTypedData_v4`.',
+      example: {
+        types: {
+          EIP712Domain: [
+            { name: 'name', type: 'string' },
+            { name: 'version', type: 'string' },
+            { name: 'chainId', type: 'uint256' },
+            { name: 'verifyingContract', type: 'address' },
+          ],
+          Permit: [
+            { name: 'owner', type: 'address' },
+            { name: 'spender', type: 'address' },
+            { name: 'value', type: 'uint256' },
+            { name: 'nonce', type: 'uint256' },
+            { name: 'deadline', type: 'uint256' },
+          ],
+        },
+        primaryType: 'Permit',
+        domain: {
+          name: 'USD Coin',
+          version: '2',
+          chainId: 8453,
+          verifyingContract: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+        },
+        message: {
+          owner: '0xAbC1234567890aBcDeF1234567890AbCdEf123456',
+          spender: '0x9Fb909eA400c2b8D99Be292DADf07e63B814527c',
+          value: '115792089237316195423570985008687907853269984665640564039457584007913129639935',
+          nonce: '0',
+          deadline: '1798761600',
+        },
+      },
+    }),
+  })
+  .openapi({
+    title: 'EIP-2612 Payload',
+    description:
+      "An EIP-2612 Permit typed-data payload. The payer must pass `data` to `eth_signTypedData_v4` and return the resulting signature. Used to set up a mandate's reusable credential; the permit stands in for a live per-authorization signature on later authorizations.",
+    required: ['payloadId', 'type', 'data'],
+    example: {
+      payloadId: 'payload_af2937b0-9846-4fe7-bfe9-ccc22d935114',
+      type: 'eip2612',
+      data: {
+        types: {
+          EIP712Domain: [
+            { name: 'name', type: 'string' },
+            { name: 'version', type: 'string' },
+            { name: 'chainId', type: 'uint256' },
+            { name: 'verifyingContract', type: 'address' },
+          ],
+          Permit: [
+            { name: 'owner', type: 'address' },
+            { name: 'spender', type: 'address' },
+            { name: 'value', type: 'uint256' },
+            { name: 'nonce', type: 'uint256' },
+            { name: 'deadline', type: 'uint256' },
+          ],
+        },
+        primaryType: 'Permit',
+        domain: {
+          name: 'USD Coin',
+          version: '2',
+          chainId: 8453,
+          verifyingContract: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+        },
+        message: {
+          owner: '0xAbC1234567890aBcDeF1234567890AbCdEf123456',
+          spender: '0x9Fb909eA400c2b8D99Be292DADf07e63B814527c',
+          value: '115792089237316195423570985008687907853269984665640564039457584007913129639935',
+          nonce: '0',
+          deadline: '1798761600',
+        },
+      },
+    },
+  })
+  .openapi('EIP2612Payload')
+
+const Permit2AllowancePayloadSchema = z
+  .object({
+    payloadId: z
+      .string()
+      .openapi({
+        description: 'The unique identifier of the payload.',
+        example: 'payload_cg4059d2-b068-6ih9-dha1-eee44f157336',
+      }),
+    type: z.literal('permit2').openapi({ description: 'The payload type.', example: 'permit2' }),
+    data: EIP712MessageSchema.openapi({
+      description:
+        'EIP-712 typed data for a Permit2 `PermitSingle`. Pass to `eth_signTypedData_v4`.',
+      example: {
+        types: {
+          EIP712Domain: [
+            { name: 'name', type: 'string' },
+            { name: 'chainId', type: 'uint256' },
+            { name: 'verifyingContract', type: 'address' },
+          ],
+          PermitDetails: [
+            { name: 'token', type: 'address' },
+            { name: 'amount', type: 'uint160' },
+            { name: 'expiration', type: 'uint48' },
+            { name: 'nonce', type: 'uint48' },
+          ],
+          PermitSingle: [
+            { name: 'details', type: 'PermitDetails' },
+            { name: 'spender', type: 'address' },
+            { name: 'sigDeadline', type: 'uint256' },
+          ],
+        },
+        primaryType: 'PermitSingle',
+        domain: {
+          name: 'Permit2',
+          chainId: 8453,
+          verifyingContract: '0x000000000022D473030F116dDEE9F6B43aC78BA3',
+        },
+        message: {
+          details: {
+            token: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+            amount: '1461501637330902918203684832716283019655932542975',
+            expiration: '1798761600',
+            nonce: '0',
+          },
+          spender: '0x9Fb909eA400c2b8D99Be292DADf07e63B814527c',
+          sigDeadline: '1798761600',
+        },
+      },
+    }),
+  })
+  .openapi({
+    title: 'Permit2 Allowance Payload',
+    description:
+      'A Permit2 `PermitSingle` (AllowanceTransfer) typed-data payload. It grants the spender a reusable allowance through the canonical Permit2 contract, so it can back repeated charges rather than a single transfer. The payer must pass `data` to `eth_signTypedData_v4` and return the resulting signature. A one-time ERC-20 approval of the Permit2 contract (an `erc20_approval` payload) is required first if the wallet has not yet approved Permit2 for this asset.',
+    required: ['payloadId', 'type', 'data'],
+    example: {
+      payloadId: 'payload_cg4059d2-b068-6ih9-dha1-eee44f157336',
+      type: 'permit2',
+      data: {
+        types: {
+          EIP712Domain: [
+            { name: 'name', type: 'string' },
+            { name: 'chainId', type: 'uint256' },
+            { name: 'verifyingContract', type: 'address' },
+          ],
+          PermitDetails: [
+            { name: 'token', type: 'address' },
+            { name: 'amount', type: 'uint160' },
+            { name: 'expiration', type: 'uint48' },
+            { name: 'nonce', type: 'uint48' },
+          ],
+          PermitSingle: [
+            { name: 'details', type: 'PermitDetails' },
+            { name: 'spender', type: 'address' },
+            { name: 'sigDeadline', type: 'uint256' },
+          ],
+        },
+        primaryType: 'PermitSingle',
+        domain: {
+          name: 'Permit2',
+          chainId: 8453,
+          verifyingContract: '0x000000000022D473030F116dDEE9F6B43aC78BA3',
+        },
+        message: {
+          details: {
+            token: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+            amount: '1461501637330902918203684832716283019655932542975',
+            expiration: '1798761600',
+            nonce: '0',
+          },
+          spender: '0x9Fb909eA400c2b8D99Be292DADf07e63B814527c',
+          sigDeadline: '1798761600',
+        },
+      },
+    },
+  })
+  .openapi('Permit2AllowancePayload')
+
+const SolanaSubscriptionPayloadDataSchema = z
+  .object({
+    transaction: z
+      .string()
+      .openapi({
+        description:
+          'The unsigned Solana transaction, serialized to bytes and encoded as base64. Pass the decoded bytes to the Solana Wallet Standard `signTransaction` method. Do not POST this field (or the signed transaction bytes) as `OnchainSignedPayload.signature`.',
+        example:
+          'AQABAgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQABAQECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8CBgMBAQAAAAIBAwQAAAAABgIAAAAAAAYDBQEBAAAGBAgAAAAABgUAAAAA6AMAAAAAAAAGBgUBAQEBBgcEAQAAAAYICgMBAQIDBgkCBgAAAAYKAwABAQEGCwMGAQEBBgwDAAABAQAAAAA=',
+      }),
+  })
+  .openapi({
+    title: 'Solana Subscription Payload Data',
+    description:
+      'The unsigned Solana transaction the payer signs to approve or revoke a mandate on a Solana wallet source. Decode `transaction` and pass it to the Solana Wallet Standard `signTransaction` method. Submit only the extracted per-signer signature, not the signed transaction.',
+    required: ['transaction'],
+    example: {
+      transaction:
+        'AQABAgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQABAQECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8CBgMBAQAAAAIBAwQAAAAABgIAAAAAAAYDBQEBAAAGBAgAAAAABgUAAAAA6AMAAAAAAAAGBgUBAQEBBgcEAQAAAAYICgMBAQIDBgkCBgAAAAYKAwABAQEGCwMGAQEBBgwDAAABAQAAAAA=',
+    },
+  })
+  .openapi('SolanaSubscriptionPayloadData')
+
+const SolanaSubscriptionPayloadSchema = z
+  .object({
+    payloadId: z
+      .string()
+      .openapi({
+        description: 'The unique identifier of the payload.',
+        example: 'payload_7c18e4a2-9d53-4b61-8f20-1a6e9c0d4b87',
+      }),
+    type: z
+      .literal('solana_subscription')
+      .openapi({ description: 'The payload type.', example: 'solana_subscription' }),
+    data: SolanaSubscriptionPayloadDataSchema,
+  })
+  .openapi({
+    title: 'Solana Subscription Payload',
+    description:
+      'An unsigned Solana transaction the payer must sign to approve or revoke a mandate on a Solana wallet source. Decode `data.transaction` from base64 and pass the bytes to the Solana Wallet Standard `signTransaction` method (never `signAndSendTransaction`). Do not submit the signed transaction bytes. From the signed transaction, take the 64-byte ed25519 signature for the payer that signed, base58-encode those 64 bytes, and return that string as `OnchainSignedPayload.signature`.',
+    required: ['payloadId', 'type', 'data'],
+    example: {
+      payloadId: 'payload_7c18e4a2-9d53-4b61-8f20-1a6e9c0d4b87',
+      type: 'solana_subscription',
+      data: {
+        transaction:
+          'AQABAgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQABAQECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8CBgMBAQAAAAIBAwQAAAAABgIAAAAAAAYDBQEBAAAGBAgAAAAABgUAAAAA6AMAAAAAAAAGBgUBAQEBBgcEAQAAAAYICgMBAQIDBgkCBgAAAAYKAwABAQEGCwMGAQEBBgwDAAABAQAAAAA=',
+      },
+    },
+  })
+  .openapi('SolanaSubscriptionPayload')
+
 const RevocationPayloadSchema = z
   .discriminatedUnion('type', [
     EIP2612PayloadSchema,
@@ -8541,29 +9843,26 @@ const WalletApprovalRequestSchema = z
   })
   .openapi('WalletApprovalRequest')
 
-const ApprovalPayloadSchema: z.ZodType<ApprovalPayloadType> = z
-  .lazy(() =>
-    z
-      .discriminatedUnion('type', [
-        EIP2612PayloadSchema,
-        Permit2AllowancePayloadSchema,
-        Erc20ApprovalPayloadSchema,
-        SolanaSubscriptionPayloadSchema,
-      ])
-      .openapi({
-        description:
-          'A single payload the customer signs to approve a mandate on a wallet source. Mandates support allowance-style credentials only, since a mandate must be reusable for later debits when the customer is not present. Inspect `type` to determine how to handle `data`:\n\n- `eip2612`: pass `data` to `eth_signTypedData_v4`, return the signature.\n\n- `permit2`: a Permit2 `PermitSingle` (AllowanceTransfer) granting a\n  reusable allowance; pass `data` to `eth_signTypedData_v4`, return the\n  signature. Preceded by a one-time `erc20_approval` of the Permit2 contract\n  when the wallet has not yet approved Permit2 for this asset.\n\n\n- `erc20_approval`: send `data` via `eth_sendTransaction`, return the transaction hash.\n- `solana_subscription`: decode `data.transaction` from base64 and pass the\n  bytes to the Solana Wallet Standard `signTransaction` method (never\n  `signAndSendTransaction`). From the signed transaction, extract the\n  64-byte ed25519 signature for the payer that signed, base58-encode it,\n  and return that string as `OnchainSignedPayload.signature`. Do not\n  submit the signed transaction bytes.',
-        discriminator: {
-          propertyName: 'type',
-          mapping: {
-            eip2612: '#/components/schemas/EIP2612Payload',
-            permit2: '#/components/schemas/Permit2AllowancePayload',
-            erc20_approval: '#/components/schemas/Erc20ApprovalPayload',
-            solana_subscription: '#/components/schemas/SolanaSubscriptionPayload',
-          },
-        },
-      }),
-  )
+const ApprovalPayloadSchema = z
+  .discriminatedUnion('type', [
+    EIP2612PayloadSchema,
+    Permit2AllowancePayloadSchema,
+    Erc20ApprovalPayloadSchema,
+    SolanaSubscriptionPayloadSchema,
+  ])
+  .openapi({
+    description:
+      'A single payload the customer signs to approve a mandate on a wallet source. Mandates support allowance-style credentials only, since a mandate must be reusable for later debits when the customer is not present. Inspect `type` to determine how to handle `data`:\n\n- `eip2612`: pass `data` to `eth_signTypedData_v4`, return the signature.\n\n- `permit2`: a Permit2 `PermitSingle` (AllowanceTransfer) granting a\n  reusable allowance; pass `data` to `eth_signTypedData_v4`, return the\n  signature. Preceded by a one-time `erc20_approval` of the Permit2 contract\n  when the wallet has not yet approved Permit2 for this asset.\n\n\n- `erc20_approval`: send `data` via `eth_sendTransaction`, return the transaction hash.\n- `solana_subscription`: decode `data.transaction` from base64 and pass the\n  bytes to the Solana Wallet Standard `signTransaction` method (never\n  `signAndSendTransaction`). From the signed transaction, extract the\n  64-byte ed25519 signature for the payer that signed, base58-encode it,\n  and return that string as `OnchainSignedPayload.signature`. Do not\n  submit the signed transaction bytes.',
+    discriminator: {
+      propertyName: 'type',
+      mapping: {
+        eip2612: '#/components/schemas/EIP2612Payload',
+        permit2: '#/components/schemas/Permit2AllowancePayload',
+        erc20_approval: '#/components/schemas/Erc20ApprovalPayload',
+        solana_subscription: '#/components/schemas/SolanaSubscriptionPayload',
+      },
+    },
+  })
   .openapi('ApprovalPayload')
 
 const WalletMandateApprovalOptionSchema = z
@@ -12544,6 +13843,168 @@ const RevokeSpendPermissionRequestSchema = z
   })
   .openapi('RevokeSpendPermissionRequest')
 
+const CatalogVaultIdSchema = z
+  .string()
+  .regex(/^cv_[a-f0-9-]{36}$/)
+  .openapi({
+    description:
+      'The globally unique ID of the catalog vault, which is a UUID prefixed with the string `cv_`.',
+    example: 'cv_019ee022-3586-7473-8354-b2c32c18221a',
+  })
+  .openapi('CatalogVaultId')
+
+const VaultStatusSchema = z
+  .enum(['pending', 'active', 'failed'])
+  .openapi({
+    description:
+      'The lifecycle status of the vault. A vault is `pending` from creation until its deployment user operation succeeds onchain, then `active`. If the deployment user operation fails onchain, then the status is `failed`.',
+    example: 'pending',
+  })
+  .openapi('VaultStatus')
+
+const ApyMetricsSchema = z
+  .object({
+    apyBps: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          'The trailing 30-day net APY, in basis points, after all applicable performance fees. For example, `500` equates to 5%. Only present once sufficient history has been observed.',
+        example: 500,
+      }),
+    apyUpdatedAt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'The time the APY metrics were last updated, in RFC 3339 format. Only present when `apyBps` is present.',
+        example: '2026-09-22T00:00:00Z',
+      }),
+  })
+  .openapi({
+    description:
+      'The trailing 30-day net APY of a lend resource, along with the timestamp of observation.',
+    required: [],
+  })
+  .openapi('ApyMetrics')
+
+const NonNegativeDecimalSchema = z
+  .string()
+  .regex(/^(0|[1-9][0-9]*)([.][0-9]+)?$/)
+  .openapi({
+    description:
+      'A non-negative decimal string without scientific notation, whitespace, leading zeros, or a trailing dot. Zero is allowed.',
+    example: '100.00',
+  })
+  .openapi('NonNegativeDecimal')
+
+const VaultMetricsSchema = ApyMetricsSchema.and(
+  z
+    .object({
+      tvl: NonNegativeDecimalSchema.exactOptional().openapi({
+        description:
+          'The total value locked in the vault, equivalent to the amount of funds deposited. It is expressed as a decimal string in standard unit denomination of the underlying asset. For example, `1000` equates to 1000 USDC. Only present once a TVL snapshot has been observed for the vault.',
+        example: '1000',
+      }),
+      tvlUpdatedAt: z.iso
+        .datetime({ offset: true })
+        .exactOptional()
+        .openapi({
+          description:
+            'The time the TVL metrics were last updated, in RFC 3339 format. Only present when `tvl` is present.',
+          example: '2026-09-22T00:00:00Z',
+        }),
+    })
+    .openapi({ required: [] }),
+)
+  .openapi({ description: 'The current performance metrics of a vault.' })
+  .openapi('VaultMetrics')
+
+const VaultIdSchema = z
+  .string()
+  .regex(/^vault_[a-f0-9-]{36}$/)
+  .openapi({
+    description:
+      'The globally unique ID of the vault, which is a UUID prefixed with the string `vault_`.',
+    example: 'vault_019f5f10-096a-7a23-86df-f479650d813f',
+  })
+  .openapi('VaultId')
+
+const LendNetworkSchema = z
+  .literal('base')
+  .openapi({
+    description: 'The network on which the lend resource (catalog vault or vault) is deployed.',
+    example: 'base',
+  })
+  .openapi('LendNetwork')
+
+const VaultSchema = z
+  .object({
+    vaultId: VaultIdSchema,
+    address: z
+      .string()
+      .regex(/^0x[a-fA-F0-9]{40}$/)
+      .openapi({
+        description:
+          'The 0x-prefixed onchain address of the vault. The address is deterministic and known at creation; the vault deploys at this address once the deployment user operation is included onchain.',
+        example: '0x15966F1582CAEFB56CDB4Fba1dC622E41F2Ad33D',
+      }),
+    catalogVaultId: CatalogVaultIdSchema,
+    performanceFeeBps: z
+      .int()
+      .min(0)
+      .max(5000)
+      .openapi({
+        description:
+          'Your performance fee, in basis points. CDP charges an additional fee equal to currently 10% (1000 bps) of your fee.',
+        example: 2000,
+      }),
+    feeRecipientAddress: z
+      .string()
+      .regex(/^0x[a-fA-F0-9]{40}$/)
+      .openapi({
+        description: "The 0x-prefixed address that receives the vault's performance fees.",
+        example: '0x742d35Cc6634C0532925a3b844Bc454e4438f44e',
+      }),
+    network: LendNetworkSchema,
+    status: VaultStatusSchema,
+    createdAt: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'The time the vault was created, in RFC 3339 format.',
+        example: '2026-09-15T15:39:37Z',
+      }),
+    underlyingAsset: AssetSchema.openapi({
+      description: "The symbol of the vault's underlying asset.",
+      example: 'usdc',
+    }),
+    metrics: VaultMetricsSchema.exactOptional().openapi({
+      description:
+        "The vault's current metrics. Only present once at least one metrics snapshot has been observed for the vault.",
+      example: {
+        apyBps: 500,
+        apyUpdatedAt: '2026-09-22T00:00:00Z',
+        tvl: '1000',
+        tvlUpdatedAt: '2026-09-22T00:00:00Z',
+      },
+    }),
+  })
+  .openapi({
+    description: 'A vault created on top of a catalog vault.',
+    required: [
+      'vaultId',
+      'address',
+      'catalogVaultId',
+      'underlyingAsset',
+      'performanceFeeBps',
+      'feeRecipientAddress',
+      'network',
+      'status',
+      'createdAt',
+    ],
+  })
+  .openapi('Vault')
+
 const EvmSwapsNetworkSchema = z
   .enum(['base', 'ethereum', 'arbitrum', 'optimism', 'polygon'])
   .openapi({ description: 'The network on which to perform the swap.', example: 'base' })
@@ -12883,6 +14344,7 @@ const CommonSwapResponseSchema = z
       fromAmount: '1000000000000000000',
       fromToken: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
     },
+    not: { properties: { liquidityAvailable: { enum: [false] } } },
   })
   .openapi('CommonSwapResponse')
 
@@ -12934,6 +14396,7 @@ const SwapUnavailableResponseSchema = z
     title: 'SwapUnavailableResponse',
     required: ['liquidityAvailable'],
     example: { liquidityAvailable: false },
+    not: { properties: { liquidityAvailable: { enum: [true] } } },
   })
   .openapi('SwapUnavailableResponse')
 
@@ -13110,88 +14573,7 @@ const TokenBalanceSchema = z
   .openapi({ required: ['amount', 'token'] })
   .openapi('TokenBalance')
 
-const RuleSchema: z.ZodType<RuleType> = z
-  .lazy(() =>
-    z
-      .xor([
-        SignEvmTransactionRuleSchema,
-        SendEvmTransactionRuleSchema,
-        SignEvmMessageRuleSchema,
-        SignEvmTypedDataRuleSchema,
-        SignSolTransactionRuleSchema,
-        SendSolTransactionRuleSchema,
-        SignSolMessageRuleSchema,
-        SignEvmHashRuleSchema,
-        PrepareUserOperationRuleSchema,
-        SendUserOperationRuleSchema,
-        SignEndUserEvmTransactionRuleSchema,
-        SendEndUserEvmTransactionRuleSchema,
-        SignEndUserEvmMessageRuleSchema,
-        SignEndUserEvmTypedDataRuleSchema,
-        SignEndUserEvmHashRuleSchema,
-        SignEndUserSolTransactionRuleSchema,
-        SendEndUserSolTransactionRuleSchema,
-        SignEndUserSolMessageRuleSchema,
-        SendEndUserEvmAssetRuleSchema,
-        SendEndUserSolAssetRuleSchema,
-        SendEndUserOperationRuleSchema,
-        CreateEndUserEvmSwapRuleSchema,
-      ])
-      .openapi({
-        description: 'A rule that limits the behavior of an account.',
-        example: {
-          action: 'accept',
-          operation: 'signEvmTransaction',
-          criteria: [
-            { type: 'ethValue', ethValue: '1000000', operator: '>=' },
-            {
-              type: 'evmAddress',
-              addresses: ['0x742d35Cc6634C0532925a3b844Bc454e4438f44e'],
-              operator: 'in',
-            },
-          ],
-        },
-      }),
-  )
-  .openapi('Rule')
-
-const PolicyRulesSchema = z
-  .array(RuleSchema)
-  .openapi({
-    description:
-      'A list of rules that comprise the policy. Each policy is limited to 100 rules and a total serialized size of 8 MiB.',
-    example: [
-      {
-        action: 'accept',
-        operation: 'signEvmTransaction',
-        criteria: [
-          { type: 'ethValue', ethValue: '1000000000000000000', operator: '<=' },
-          {
-            type: 'evmAddress',
-            addresses: [
-              '0x742d35Cc6634C0532925a3b844Bc454e4438f44e',
-              '0x1234567890123456789012345678901234567890',
-            ],
-            operator: 'in',
-          },
-        ],
-      },
-      {
-        action: 'accept',
-        operation: 'signSolTransaction',
-        criteria: [
-          {
-            type: 'solAddress',
-            addresses: ['HpabPRRCFbBKSuJr5PdkVvQc85FyxyTWkFM2obBRSvHT'],
-            operator: 'in',
-          },
-        ],
-      },
-    ],
-  })
-  .openapi('PolicyRules')
-
-const PolicySchema = z
+const PolicySchema: z.ZodType<PolicyType> = z
   .object({
     id: z
       .string()
@@ -13393,7 +14775,7 @@ const SignEvmTypedDataSimulationInputSchema = z
           'The primary type of the message. This is the name of the struct in the `types` object that is the root of the message.',
       }),
     message: z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'The message to evaluate. The structure of this message must match the `primaryType` struct in the `types` object.',
@@ -14186,1051 +15568,7 @@ const SimulatePoliciesRequestSchema = z
   })
   .openapi('SimulatePoliciesRequest')
 
-const EvaluatedPolicySchema = z
-  .object({
-    id: z
-      .string()
-      .regex(/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/)
-      .openapi({
-        description: 'The ID of the policy.',
-        example: '123e4567-e89b-12d3-a456-426614174000',
-      }),
-    scope: z
-      .enum(['project', 'account'])
-      .openapi({
-        description: 'The scope of the policy.',
-        'x-go-type': 'PolicyScope',
-        example: 'project',
-      }),
-    updatedAt: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description:
-          'The version of the policy evaluated. Rule and criterion indices refer to this version.',
-        example: '2026-09-01T12:00:00Z',
-      }),
-  })
-  .openapi({
-    description: 'A policy consulted during evaluation, at the version evaluated.',
-    example: {
-      id: '123e4567-e89b-12d3-a456-426614174000',
-      scope: 'project',
-      updatedAt: '2026-09-01T12:00:00Z',
-    },
-    required: ['id', 'scope', 'updatedAt'],
-  })
-  .openapi('EvaluatedPolicy')
-
-const EthValueObservationSchema = z
-  .strictObject({
-    type: z
-      .literal('ethValue')
-      .openapi({ description: 'The criterion type.', 'x-go-type': 'string', example: 'ethValue' }),
-    ethValue: z
-      .string()
-      .regex(/^[0-9]+$/)
-      .max(78)
-      .openapi({
-        description: 'The transaction `value`, in wei. `0` when the transaction transfers no ETH.',
-        example: '500000000000000000',
-      }),
-  })
-  .openapi({
-    title: 'EthValueObservation',
-    description: 'The transaction `value` an `ethValue` criterion compared.',
-    example: { type: 'ethValue', ethValue: '500000000000000000' },
-    required: ['type', 'ethValue'],
-  })
-  .openapi('EthValueObservation')
-
-const EvmAddressObservationSchema = z
-  .strictObject({
-    type: z
-      .literal('evmAddress')
-      .openapi({
-        description: 'The criterion type.',
-        'x-go-type': 'string',
-        example: 'evmAddress',
-      }),
-    address: z
-      .string()
-      .regex(/^0x[0-9a-fA-F]{40}$/)
-      .exactOptional()
-      .openapi({
-        description:
-          'The transaction `to` address. Omitted for a contract-creation transaction, which has none.',
-        example: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
-      }),
-  })
-  .openapi({
-    title: 'EvmAddressObservation',
-    description:
-      'The transaction `to` address an `evmAddress` criterion compared. For a token transfer, this is the token contract, not the token recipient; use an `evmData` criterion to constrain the recipient.',
-    example: { type: 'evmAddress', address: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913' },
-    required: ['type'],
-  })
-  .openapi('EvmAddressObservation')
-
-const EvmNetworkObservationSchema = z
-  .strictObject({
-    type: z
-      .literal('evmNetwork')
-      .openapi({
-        description: 'The criterion type.',
-        'x-go-type': 'string',
-        example: 'evmNetwork',
-      }),
-    network: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The network the operation targets, from the request's `network` or derived from the transaction's chain ID. Omitted when the chain ID is not a supported network.",
-        example: 'base-sepolia',
-      }),
-    chainId: z
-      .int()
-      .min(0)
-      .exactOptional()
-      .openapi({
-        description:
-          "The chain ID from the transaction. Omitted when the network came from the request's `network`.",
-        example: 84532,
-      }),
-  })
-  .openapi({
-    title: 'EvmNetworkObservation',
-    description: 'The network an `evmNetwork` criterion compared.',
-    example: { type: 'evmNetwork', network: 'base-sepolia', chainId: 84532 },
-    required: ['type'],
-  })
-  .openapi('EvmNetworkObservation')
-
-const ObservedArgumentSchema = z
-  .strictObject({
-    name: z
-      .string()
-      .max(256)
-      .openapi({
-        description: 'The argument name from the ABI or IDL. Empty when the ABI leaves it unnamed.',
-        example: 'value',
-      }),
-    type: z
-      .string()
-      .max(256)
-      .openapi({ description: 'The argument type from the ABI or IDL.', example: 'uint256' }),
-    value: z
-      .string()
-      .max(256)
-      .openapi({
-        description:
-          'The decoded value as text: integers in decimal base units, EVM addresses 0x-prefixed, Solana public keys in base58, bytes 0x-prefixed hex, booleans `true` or `false`, strings as-is, and arrays, tuples, and structs as compact JSON.',
-        example: '25000000',
-      }),
-    truncated: z
-      .boolean()
-      .openapi({
-        description: 'Whether `value` was cut to its first 256 characters.',
-        example: false,
-      }),
-  })
-  .openapi({
-    title: 'ObservedArgument',
-    description: 'A decoded function or instruction argument.',
-    example: { name: 'value', type: 'uint256', value: '25000000', truncated: false },
-    required: ['name', 'type', 'value', 'truncated'],
-  })
-  .openapi('ObservedArgument')
-
-const EvmDataObservationSchema = z
-  .strictObject({
-    type: z
-      .literal('evmData')
-      .openapi({ description: 'The criterion type.', 'x-go-type': 'string', example: 'evmData' }),
-    selector: z
-      .string()
-      .regex(/^0x[0-9a-f]{8}$/)
-      .exactOptional()
-      .openapi({
-        description: 'The 4-byte function selector. Omitted when `data` is shorter than 4 bytes.',
-        example: '0xa9059cbb',
-      }),
-    function: z
-      .string()
-      .max(256)
-      .exactOptional()
-      .openapi({
-        description:
-          'The name of the ABI function with this selector. Omitted when no function in the `abi` has it.',
-        example: 'transfer',
-      }),
-    arguments: z
-      .array(ObservedArgumentSchema)
-      .max(32)
-      .openapi({
-        description:
-          'The decoded arguments of `function`, in ABI order. Empty when `function` is omitted. Only the first 32 arguments are returned.',
-      }),
-  })
-  .openapi({
-    title: 'EvmDataObservation',
-    description:
-      "The call an `evmData` criterion decoded from the transaction `data` with the criterion's `abi`. Parameters are checked against the first of the criterion's `conditions` whose `function` equals `function`.",
-    example: {
-      type: 'evmData',
-      selector: '0xa9059cbb',
-      function: 'transfer',
-      arguments: [
-        {
-          name: 'to',
-          type: 'address',
-          value: '0x1111111254EEB25477B68fb85Ed929f73A960582',
-          truncated: false,
-        },
-        { name: 'value', type: 'uint256', value: '25000000', truncated: false },
-      ],
-    },
-    required: ['type', 'arguments'],
-  })
-  .openapi('EvmDataObservation')
-
-const ObservedMessageTextSchema = z
-  .string()
-  .max(2048)
-  .openapi({
-    description:
-      'The message exactly as matched, including line breaks. When `encoding` is `hex`, the message bytes are not valid UTF-8 and are shown as a 0x-prefixed hex string instead.',
-    example: 'Hello, world',
-  })
-  .openapi('ObservedMessageText')
-
-const ObservedMessageEncodingSchema = z
-  .enum(['utf8', 'hex'])
-  .openapi({
-    description:
-      'How `message` represents the matched bytes: `utf8` for the text itself, or `hex` for a 0x-prefixed hex string when the bytes are not valid UTF-8.',
-    'x-go-type': 'string',
-    example: 'utf8',
-  })
-  .openapi('ObservedMessageEncoding')
-
-const EvmMessageObservationSchema = z
-  .strictObject({
-    type: z
-      .literal('evmMessage')
-      .openapi({
-        description: 'The criterion type.',
-        'x-go-type': 'string',
-        example: 'evmMessage',
-      }),
-    message: ObservedMessageTextSchema,
-    encoding: ObservedMessageEncodingSchema,
-    truncated: z
-      .boolean()
-      .openapi({
-        description:
-          'Whether `message` was cut to its first 2048 characters. The expression was matched against the whole message.',
-        example: false,
-      }),
-  })
-  .openapi({
-    title: 'EvmMessageObservation',
-    description: 'The message an `evmMessage` criterion matched its `match` expression against.',
-    example: {
-      type: 'evmMessage',
-      message:
-        'example.com wants you to sign in with your Ethereum account:\n0x742d35Cc6634C0532925a3b844Bc454e4438f44e\n\nSign in to Example.',
-      encoding: 'utf8',
-      truncated: false,
-    },
-    required: ['type', 'message', 'encoding', 'truncated'],
-  })
-  .openapi('EvmMessageObservation')
-
-const ObservedTypedDataFieldSchema = z
-  .strictObject({
-    conditionIndex: z
-      .int()
-      .min(0)
-      .openapi({ description: "Zero-based index into the criterion's `conditions`.", example: 1 }),
-    value: z
-      .string()
-      .max(256)
-      .exactOptional()
-      .openapi({
-        description:
-          "The value at the condition's `path`, as text in the same format as `ObservedArgument.value`. Omitted when the message has no value at that path.",
-        example: '40',
-      }),
-    truncated: z
-      .boolean()
-      .openapi({
-        description: 'Whether `value` was cut to its first 256 characters.',
-        example: false,
-      }),
-  })
-  .openapi({
-    title: 'ObservedTypedDataField',
-    description: 'The value an `evmTypedDataField` condition read from the typed data message.',
-    example: { conditionIndex: 1, value: '40', truncated: false },
-    required: ['conditionIndex', 'truncated'],
-  })
-  .openapi('ObservedTypedDataField')
-
-const EvmTypedDataFieldObservationSchema = z
-  .strictObject({
-    type: z
-      .literal('evmTypedDataField')
-      .openapi({
-        description: 'The criterion type.',
-        'x-go-type': 'string',
-        example: 'evmTypedDataField',
-      }),
-    typesMatched: z
-      .boolean()
-      .openapi({
-        description:
-          "Whether the message's types matched the criterion's `types`. When `false`, no condition was checked and `fields` is empty.",
-        example: true,
-      }),
-    fields: z
-      .array(ObservedTypedDataFieldSchema)
-      .max(64)
-      .openapi({
-        description:
-          'The fields that decided the criterion. When the criterion is unmet, this is the field of the first failing condition only. When it is met, this is the field of every condition, in `conditions` order.',
-      }),
-  })
-  .openapi({
-    title: 'EvmTypedDataFieldObservation',
-    description:
-      "The typed data fields an `evmTypedDataField` criterion compared. The message's types must match the criterion's `types` before any condition is checked.",
-    example: {
-      type: 'evmTypedDataField',
-      typesMatched: true,
-      fields: [{ conditionIndex: 1, value: '40', truncated: false }],
-    },
-    required: ['type', 'typesMatched', 'fields'],
-  })
-  .openapi('EvmTypedDataFieldObservation')
-
-const EvmTypedDataVerifyingContractObservationSchema = z
-  .strictObject({
-    type: z
-      .literal('evmTypedDataVerifyingContract')
-      .openapi({
-        description: 'The criterion type.',
-        'x-go-type': 'string',
-        example: 'evmTypedDataVerifyingContract',
-      }),
-    address: z
-      .string()
-      .regex(/^0x[0-9a-fA-F]{40}$/)
-      .exactOptional()
-      .openapi({
-        description: "The domain's `verifyingContract`. Omitted when the domain has none.",
-        example: '0x000000000022D473030F116dDEE9F6B43aC78BA3',
-      }),
-  })
-  .openapi({
-    title: 'EvmTypedDataVerifyingContractObservation',
-    description:
-      'The domain `verifyingContract` an `evmTypedDataVerifyingContract` criterion compared.',
-    example: {
-      type: 'evmTypedDataVerifyingContract',
-      address: '0x000000000022D473030F116dDEE9F6B43aC78BA3',
-    },
-    required: ['type'],
-  })
-  .openapi('EvmTypedDataVerifyingContractObservation')
-
-const NetUSDChangeObservationSchema = z
-  .strictObject({
-    type: z
-      .literal('netUSDChange')
-      .openapi({
-        description: 'The criterion type.',
-        'x-go-type': 'string',
-        example: 'netUSDChange',
-      }),
-    skipped: z
-      .boolean()
-      .openapi({
-        description:
-          'Whether simulation was skipped because the operation targets a testnet. A skipped criterion is treated as met, as in the real operation, and `changeCents` is omitted.',
-        example: false,
-      }),
-    changeCents: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description:
-          "The net USD change, in cents, of the transaction's asset transfers and exposure, as simulated at evaluation time. Present exactly when `skipped` is `false`.",
-        example: 12550,
-      }),
-  })
-  .openapi({
-    title: 'NetUSDChangeObservation',
-    description: 'The simulated net USD change a `netUSDChange` criterion compared.',
-    example: { type: 'netUSDChange', skipped: false, changeCents: 12550 },
-    required: ['type', 'skipped'],
-  })
-  .openapi('NetUSDChangeObservation')
-
-const SolAddressObservationSchema = z
-  .strictObject({
-    type: z
-      .literal('solAddress')
-      .openapi({
-        description: 'The criterion type.',
-        'x-go-type': 'string',
-        example: 'solAddress',
-      }),
-    addresses: z
-      .array(
-        z
-          .string()
-          .regex(/^[1-9A-HJ-NP-Za-km-z]{32,44}$/)
-          .openapi({ description: 'A transfer recipient.' }),
-      )
-      .max(128)
-      .openapi({
-        description:
-          'The recipient of each System Program transfer, in instruction order. Empty when the transaction has none.',
-        example: ['ExXhNkgYf6efh7YyqDRVxPZuzafobao1A74drUdp8trd'],
-      }),
-  })
-  .openapi({
-    title: 'SolAddressObservation',
-    description: 'The native SOL transfer recipients a `solAddress` criterion compared.',
-    example: { type: 'solAddress', addresses: ['ExXhNkgYf6efh7YyqDRVxPZuzafobao1A74drUdp8trd'] },
-    required: ['type', 'addresses'],
-  })
-  .openapi('SolAddressObservation')
-
-const SolValueObservationSchema = z
-  .strictObject({
-    type: z
-      .literal('solValue')
-      .openapi({ description: 'The criterion type.', 'x-go-type': 'string', example: 'solValue' }),
-    solValues: z
-      .array(
-        z
-          .string()
-          .regex(/^[0-9]+$/)
-          .max(20)
-          .openapi({ description: 'A transfer amount in lamports.' }),
-      )
-      .max(128)
-      .openapi({
-        description:
-          'The amount of each System Program transfer, in lamports, in instruction order. Empty when the transaction has none.',
-        example: ['1500000000'],
-      }),
-  })
-  .openapi({
-    title: 'SolValueObservation',
-    description: 'The native SOL transfer amounts a `solValue` criterion compared.',
-    example: { type: 'solValue', solValues: ['1500000000'] },
-    required: ['type', 'solValues'],
-  })
-  .openapi('SolValueObservation')
-
-const SplAddressObservationSchema = z
-  .strictObject({
-    type: z
-      .literal('splAddress')
-      .openapi({
-        description: 'The criterion type.',
-        'x-go-type': 'string',
-        example: 'splAddress',
-      }),
-    addresses: z
-      .array(
-        z
-          .string()
-          .regex(/^[1-9A-HJ-NP-Za-km-z]{32,44}$/)
-          .openapi({ description: 'A token transfer recipient.' }),
-      )
-      .max(128)
-      .openapi({
-        description:
-          'The recipient of each SPL token transfer, in instruction order. Empty when the transaction has none.',
-        example: ['9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM'],
-      }),
-  })
-  .openapi({
-    title: 'SplAddressObservation',
-    description:
-      "The SPL token transfer recipients an `splAddress` criterion compared. For a raw transaction these are the recipients' token accounts (usually associated token accounts), not their wallet addresses. For `sendEndUserSolAsset` they are wallet addresses.",
-    example: { type: 'splAddress', addresses: ['9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM'] },
-    required: ['type', 'addresses'],
-  })
-  .openapi('SplAddressObservation')
-
-const SplValueObservationSchema = z
-  .strictObject({
-    type: z
-      .literal('splValue')
-      .openapi({ description: 'The criterion type.', 'x-go-type': 'string', example: 'splValue' }),
-    splValues: z
-      .array(
-        z
-          .string()
-          .regex(/^[0-9]+$/)
-          .max(20)
-          .openapi({ description: 'A transfer amount in atomic units.' }),
-      )
-      .max(128)
-      .openapi({
-        description:
-          "The amount of each `TransferChecked` instruction, in the token's atomic units (not scaled by decimals), in instruction order. Empty when the transaction has none.",
-        example: ['1500000'],
-      }),
-  })
-  .openapi({
-    title: 'SplValueObservation',
-    description: 'The SPL token transfer amounts an `splValue` criterion compared.',
-    example: { type: 'splValue', splValues: ['1500000'] },
-    required: ['type', 'splValues'],
-  })
-  .openapi('SplValueObservation')
-
-const MintAddressObservationSchema = z
-  .strictObject({
-    type: z
-      .literal('mintAddress')
-      .openapi({
-        description: 'The criterion type.',
-        'x-go-type': 'string',
-        example: 'mintAddress',
-      }),
-    addresses: z
-      .array(
-        z
-          .string()
-          .regex(/^[1-9A-HJ-NP-Za-km-z]{32,44}$/)
-          .openapi({ description: 'A token mint.' }),
-      )
-      .max(128)
-      .openapi({
-        description:
-          'The mint of each SPL token transfer, in instruction order. Empty when the transaction has none.',
-        example: ['EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v'],
-      }),
-  })
-  .openapi({
-    title: 'MintAddressObservation',
-    description: 'The token mints of the SPL token transfers a `mintAddress` criterion compared.',
-    example: { type: 'mintAddress', addresses: ['EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v'] },
-    required: ['type', 'addresses'],
-  })
-  .openapi('MintAddressObservation')
-
-const ObservedInstructionSchema = z
-  .strictObject({
-    index: z
-      .int()
-      .min(0)
-      .openapi({
-        description: 'Zero-based index of the instruction in the transaction.',
-        example: 1,
-      }),
-    programId: z
-      .string()
-      .regex(/^[1-9A-HJ-NP-Za-km-z]{32,44}$/)
-      .openapi({
-        description: 'The program the instruction invokes.',
-        example: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-      }),
-    instruction: z
-      .string()
-      .max(256)
-      .exactOptional()
-      .openapi({
-        description:
-          'The instruction name from the IDL. Omitted when no IDL in the criterion decodes the instruction.',
-        example: 'transfer_checked',
-      }),
-    arguments: z
-      .array(ObservedArgumentSchema)
-      .max(32)
-      .openapi({
-        description:
-          'The decoded arguments, in IDL order. Empty when `instruction` is omitted. Only the first 32 arguments are returned.',
-      }),
-  })
-  .openapi({
-    title: 'ObservedInstruction',
-    description: 'A Solana instruction as decoded by a `solData` criterion.',
-    example: {
-      index: 1,
-      programId: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-      instruction: 'transfer_checked',
-      arguments: [{ name: 'amount', type: 'u64', value: '2000000', truncated: false }],
-    },
-    required: ['index', 'programId', 'arguments'],
-  })
-  .openapi('ObservedInstruction')
-
-const SolDataObservationSchema = z
-  .strictObject({
-    type: z
-      .literal('solData')
-      .openapi({ description: 'The criterion type.', 'x-go-type': 'string', example: 'solData' }),
-    instructions: z
-      .array(ObservedInstructionSchema)
-      .max(64)
-      .openapi({
-        description:
-          'The instructions that decided the criterion. When the criterion is unmet, this is the first instruction that matched no condition, only. When it is met, this is every instruction, in transaction order.',
-      }),
-    truncated: z
-      .boolean()
-      .openapi({
-        description: 'Whether `instructions` was cut to its first 64 entries.',
-        example: false,
-      }),
-  })
-  .openapi({
-    title: 'SolDataObservation',
-    description:
-      "The instructions a `solData` criterion decoded with the criterion's `idls`. The criterion is met when every instruction matches at least one of its `conditions`.",
-    example: {
-      type: 'solData',
-      instructions: [
-        {
-          index: 1,
-          programId: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-          instruction: 'transfer_checked',
-          arguments: [
-            { name: 'amount', type: 'u64', value: '2000000', truncated: false },
-            { name: 'decimals', type: 'u8', value: '6', truncated: false },
-          ],
-        },
-      ],
-      truncated: false,
-    },
-    required: ['type', 'instructions', 'truncated'],
-  })
-  .openapi('SolDataObservation')
-
-const SolMessageObservationSchema = z
-  .strictObject({
-    type: z
-      .literal('solMessage')
-      .openapi({
-        description: 'The criterion type.',
-        'x-go-type': 'string',
-        example: 'solMessage',
-      }),
-    message: ObservedMessageTextSchema,
-    encoding: ObservedMessageEncodingSchema,
-    truncated: z
-      .boolean()
-      .openapi({
-        description:
-          'Whether `message` was cut to its first 2048 characters. The expression was matched against the whole message.',
-        example: false,
-      }),
-  })
-  .openapi({
-    title: 'SolMessageObservation',
-    description:
-      "The message a `solMessage` criterion matched its `match` expression against, after decoding the request's base64 `message` when its `encoding` is `base64`.",
-    example: { type: 'solMessage', message: 'Hello, world', encoding: 'utf8', truncated: false },
-    required: ['type', 'message', 'encoding', 'truncated'],
-  })
-  .openapi('SolMessageObservation')
-
-const ProgramIdObservationSchema = z
-  .strictObject({
-    type: z
-      .literal('programId')
-      .openapi({ description: 'The criterion type.', 'x-go-type': 'string', example: 'programId' }),
-    programIds: z
-      .array(
-        z
-          .string()
-          .regex(/^[1-9A-HJ-NP-Za-km-z]{32,44}$/)
-          .openapi({ description: 'An instruction program ID.' }),
-      )
-      .max(128)
-      .openapi({
-        description: 'The program ID of each instruction, in instruction order.',
-        example: [
-          '11111111111111111111111111111111',
-          'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-        ],
-      }),
-  })
-  .openapi({
-    title: 'ProgramIdObservation',
-    description: 'The instruction program IDs a `programId` criterion compared.',
-    example: {
-      type: 'programId',
-      programIds: [
-        '11111111111111111111111111111111',
-        'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-      ],
-    },
-    required: ['type', 'programIds'],
-  })
-  .openapi('ProgramIdObservation')
-
-const SolNetworkObservationSchema = z
-  .strictObject({
-    type: z
-      .literal('solNetwork')
-      .openapi({
-        description: 'The criterion type.',
-        'x-go-type': 'string',
-        example: 'solNetwork',
-      }),
-    network: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The request's `network`. Omitted when the request has none, which no `networks` value matches.",
-        example: 'solana-devnet',
-      }),
-  })
-  .openapi({
-    title: 'SolNetworkObservation',
-    description: 'The network a `solNetwork` criterion compared.',
-    example: { type: 'solNetwork', network: 'solana-devnet' },
-    required: ['type'],
-  })
-  .openapi('SolNetworkObservation')
-
-const RateLimitCountUsageSchema = z
-  .strictObject({
-    type: z
-      .literal('count')
-      .openapi({ description: 'The usage type.', 'x-go-type': 'string', example: 'count' }),
-    windowCount: z
-      .int()
-      .min(0)
-      .openapi({ description: 'Operations counted in the current `window`.', example: 10 }),
-    pendingCount: z
-      .int()
-      .min(0)
-      .openapi({
-        description:
-          'Operations added by earlier units of this simulation request. They are not persisted. Always `0` when `evaluatedUnit` is absent.',
-        example: 0,
-      }),
-  })
-  .openapi({
-    title: 'RateLimitCountUsage',
-    description:
-      'Operation counts for a `maxCount` criterion. The criterion is met when `windowCount + pendingCount + 1 <= maxCount` and unmet when the sum exceeds `maxCount`, where `1` is this operation.',
-    example: { type: 'count', windowCount: 10, pendingCount: 0 },
-    required: ['type', 'windowCount', 'pendingCount'],
-  })
-  .openapi('RateLimitCountUsage')
-
-const RateLimitValueUsageSchema = z
-  .strictObject({
-    type: z
-      .literal('value')
-      .openapi({ description: 'The usage type.', 'x-go-type': 'string', example: 'value' }),
-    windowCents: z
-      .int()
-      .min(0)
-      .openapi({
-        description: 'USD value, in cents, counted in the current `window`.',
-        example: 95000,
-      }),
-    pendingCents: z
-      .int()
-      .min(0)
-      .openapi({
-        description:
-          'USD value, in cents, added by earlier units of this simulation request. It is not persisted. Always `0` when `evaluatedUnit` is absent.',
-        example: 0,
-      }),
-    operationCents: z
-      .int()
-      .min(0)
-      .openapi({
-        description: 'The absolute USD value, in cents, of this operation.',
-        example: 12550,
-      }),
-  })
-  .openapi({
-    title: 'RateLimitValueUsage',
-    description:
-      'USD totals, in cents, for a `maxValueCents` criterion. The criterion is met when `windowCents + pendingCents + operationCents <= maxValueCents` and unmet when the sum exceeds `maxValueCents`.',
-    example: { type: 'value', windowCents: 95000, pendingCents: 0, operationCents: 12550 },
-    required: ['type', 'windowCents', 'pendingCents', 'operationCents'],
-  })
-  .openapi('RateLimitValueUsage')
-
-const RateLimitUsageSchema = z
-  .discriminatedUnion('type', [RateLimitCountUsageSchema, RateLimitValueUsageSchema])
-  .openapi({
-    description:
-      'The usage totals the criterion compared, discriminated by `type`: `count` when the criterion sets `maxCount`, `value` when it sets `maxValueCents`.',
-    example: { type: 'count', windowCount: 10, pendingCount: 0 },
-    discriminator: {
-      propertyName: 'type',
-      mapping: {
-        count: '#/components/schemas/RateLimitCountUsage',
-        value: '#/components/schemas/RateLimitValueUsage',
-      },
-    },
-  })
-  .openapi('RateLimitUsage')
-
-const RateLimitingObservationSchema = z
-  .strictObject({
-    type: z
-      .literal('rateLimiting')
-      .openapi({
-        description: 'The criterion type.',
-        'x-go-type': 'string',
-        example: 'rateLimiting',
-      }),
-    scope: z
-      .enum(['project', 'end_user'])
-      .openapi({
-        description:
-          'Whose operations the counter totals. `project` counts operations of every account in the project, not only the account in the request. `end_user` counts operations of the end user in the request.',
-        'x-go-type': 'string',
-        example: 'project',
-      }),
-    usage: RateLimitUsageSchema,
-  })
-  .openapi({
-    title: 'RateLimitingObservation',
-    description:
-      'The rate-limit usage a `rateLimiting` criterion compared, read without being consumed. The criterion is met when the projected usage stays within the limit and unmet when it exceeds the limit. Totals can change before a real call.',
-    example: {
-      type: 'rateLimiting',
-      scope: 'project',
-      usage: { type: 'count', windowCount: 10, pendingCount: 0 },
-    },
-    required: ['type', 'scope', 'usage'],
-  })
-  .openapi('RateLimitingObservation')
-
-const PolicyCriterionObservationSchema = z
-  .discriminatedUnion('type', [
-    EthValueObservationSchema,
-    EvmAddressObservationSchema,
-    EvmNetworkObservationSchema,
-    EvmDataObservationSchema,
-    EvmMessageObservationSchema,
-    EvmTypedDataFieldObservationSchema,
-    EvmTypedDataVerifyingContractObservationSchema,
-    NetUSDChangeObservationSchema,
-    SolAddressObservationSchema,
-    SolValueObservationSchema,
-    SplAddressObservationSchema,
-    SplValueObservationSchema,
-    MintAddressObservationSchema,
-    SolDataObservationSchema,
-    SolMessageObservationSchema,
-    ProgramIdObservationSchema,
-    SolNetworkObservationSchema,
-    RateLimitingObservationSchema,
-  ])
-  .openapi({
-    description:
-      "The value taken from the operation that a criterion was compared against, discriminated by the criterion's `type`. Amounts use the criterion's units: integer strings of base units (wei, lamports, or token atomic units) and USD in integer cents, so a unit mistake in a rule shows as a difference in magnitude. A field is omitted when the operation has no such value; each field says when that happens.\nValues come only from the request, the prepared user operation it names, transaction simulation, and the rate-limit counters the criterion reads. These are never returned: signatures, raw transaction bytes, calldata or instruction data beyond the decoded selector, instruction and arguments, the operations or accounts that make up a rate-limit total, and simulation results other than the net USD change. A string longer than its `maxLength` is cut to its first `maxLength` characters and marked `truncated: true`.",
-    example: { type: 'evmAddress', address: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913' },
-    discriminator: {
-      propertyName: 'type',
-      mapping: {
-        ethValue: '#/components/schemas/EthValueObservation',
-        evmAddress: '#/components/schemas/EvmAddressObservation',
-        evmNetwork: '#/components/schemas/EvmNetworkObservation',
-        evmData: '#/components/schemas/EvmDataObservation',
-        evmMessage: '#/components/schemas/EvmMessageObservation',
-        evmTypedDataField: '#/components/schemas/EvmTypedDataFieldObservation',
-        evmTypedDataVerifyingContract:
-          '#/components/schemas/EvmTypedDataVerifyingContractObservation',
-        netUSDChange: '#/components/schemas/NetUSDChangeObservation',
-        solAddress: '#/components/schemas/SolAddressObservation',
-        solValue: '#/components/schemas/SolValueObservation',
-        splAddress: '#/components/schemas/SplAddressObservation',
-        splValue: '#/components/schemas/SplValueObservation',
-        mintAddress: '#/components/schemas/MintAddressObservation',
-        solData: '#/components/schemas/SolDataObservation',
-        solMessage: '#/components/schemas/SolMessageObservation',
-        programId: '#/components/schemas/ProgramIdObservation',
-        solNetwork: '#/components/schemas/SolNetworkObservation',
-        rateLimiting: '#/components/schemas/RateLimitingObservation',
-      },
-    },
-  })
-  .openapi('PolicyCriterionObservation')
-
-const MatchedPolicyRuleSchema = z
-  .object({
-    policy: EvaluatedPolicySchema,
-    ruleIndex: z
-      .int()
-      .min(0)
-      .openapi({ description: "Zero-based index into the policy's `rules`.", example: 1 }),
-    rule: RuleSchema.openapi({
-      description: 'The full rule as defined at the evaluated policy version (`policy.updatedAt`).',
-    }),
-    observations: z
-      .array(PolicyCriterionObservationSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The value each criterion was compared against, index-aligned with `rule.criteria`: `observations[i]` belongs to `rule.criteria[i]` and has the same `type`. Either every criterion has an entry or the field is omitted. Empty when the rule has no criteria.',
-      }),
-  })
-  .openapi({
-    description: 'The rule whose action decided the evaluation.',
-    example: {
-      policy: {
-        id: '123e4567-e89b-12d3-a456-426614174000',
-        scope: 'project',
-        updatedAt: '2026-09-01T12:00:00Z',
-      },
-      ruleIndex: 1,
-      rule: {
-        action: 'reject',
-        operation: 'signEvmTransaction',
-        criteria: [{ type: 'ethValue', ethValue: '1000000000000000000', operator: '>' }],
-      },
-      observations: [{ type: 'ethValue', ethValue: '2500000000000000000' }],
-    },
-    required: ['policy', 'ruleIndex', 'rule'],
-  })
-  .openapi('MatchedPolicyRule')
-
-const PolicyCriterionSchema = z
-  .discriminatedUnion('type', [
-    EthValueCriterionSchema,
-    EvmAddressCriterionSchema,
-    EvmNetworkCriterionSchema,
-    EvmDataCriterionSchema,
-    EvmMessageCriterionSchema,
-    SignEvmTypedDataFieldCriterionSchema,
-    SignEvmTypedDataVerifyingContractCriterionSchema,
-    NetUSDChangeCriterionSchema,
-    SolAddressCriterionSchema,
-    SolValueCriterionSchema,
-    SplAddressCriterionSchema,
-    SplValueCriterionSchema,
-    MintAddressCriterionSchema,
-    SolDataCriterionSchema,
-    SolMessageCriterionSchema,
-    ProgramIdCriterionSchema,
-    SolNetworkCriterionSchema,
-  ])
-  .openapi({
-    description: 'The unmet criterion, exactly as defined in the rule, discriminated by `type`.',
-    example: {
-      type: 'evmAddress',
-      addresses: ['0x000000000000000000000000000000000000dEaD'],
-      operator: 'in',
-    },
-    discriminator: {
-      propertyName: 'type',
-      mapping: {
-        ethValue: '#/components/schemas/EthValueCriterion',
-        evmAddress: '#/components/schemas/EvmAddressCriterion',
-        evmNetwork: '#/components/schemas/EvmNetworkCriterion',
-        evmData: '#/components/schemas/EvmDataCriterion',
-        evmMessage: '#/components/schemas/EvmMessageCriterion',
-        evmTypedDataField: '#/components/schemas/SignEvmTypedDataFieldCriterion',
-        evmTypedDataVerifyingContract:
-          '#/components/schemas/SignEvmTypedDataVerifyingContractCriterion',
-        netUSDChange: '#/components/schemas/NetUSDChangeCriterion',
-        solAddress: '#/components/schemas/SolAddressCriterion',
-        solValue: '#/components/schemas/SolValueCriterion',
-        splAddress: '#/components/schemas/SplAddressCriterion',
-        splValue: '#/components/schemas/SplValueCriterion',
-        mintAddress: '#/components/schemas/MintAddressCriterion',
-        solData: '#/components/schemas/SolDataCriterion',
-        solMessage: '#/components/schemas/SolMessageCriterion',
-        programId: '#/components/schemas/ProgramIdCriterion',
-        solNetwork: '#/components/schemas/SolNetworkCriterion',
-      },
-    },
-  })
-  .openapi('PolicyCriterion')
-
-const UnmatchedPolicyRuleSchema = z
-  .object({
-    policy: EvaluatedPolicySchema,
-    ruleIndex: z
-      .int()
-      .min(0)
-      .openapi({ description: "Zero-based index into the policy's `rules`.", example: 0 }),
-    criterionIndex: z
-      .int()
-      .min(0)
-      .openapi({
-        description: "Zero-based index into the rule's `criteria` of the first unmet criterion.",
-        example: 1,
-      }),
-    criterion: PolicyCriterionSchema,
-    observed: PolicyCriterionObservationSchema.exactOptional(),
-  })
-  .openapi({
-    description:
-      'A rule that targeted the operation but did not match. Criteria are evaluated in order and evaluation stops at the first unmet one, so later criteria were not evaluated. `observed` is present when the service captured the value `criterion` was compared against.',
-    example: {
-      policy: {
-        id: '123e4567-e89b-12d3-a456-426614174000',
-        scope: 'project',
-        updatedAt: '2026-09-01T12:00:00Z',
-      },
-      ruleIndex: 0,
-      criterionIndex: 1,
-      criterion: {
-        type: 'evmAddress',
-        addresses: ['0x742d35Cc6634C0532925a3b844Bc454e4438f44e'],
-        operator: 'in',
-      },
-      observed: { type: 'evmAddress', address: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913' },
-    },
-    required: ['policy', 'ruleIndex', 'criterionIndex', 'criterion'],
-  })
-  .openapi('UnmatchedPolicyRule')
-
-const EvaluatedUnitSchema = z
-  .strictObject({
-    index: z
-      .int()
-      .min(0)
-      .openapi({
-        description:
-          "Zero-based index of the unit. For user operations, this is the index into the operation's `calls`.",
-        example: 2,
-      }),
-    count: z
-      .int()
-      .min(2)
-      .openapi({ description: 'The number of units the operation was split into.', example: 3 }),
-    address: z
-      .string()
-      .regex(/^[1-9A-HJ-NP-Za-km-z]{32,44}$/)
-      .exactOptional()
-      .openapi({
-        description: 'The Solana signing account of the unit. Omitted for user operations.',
-        example: 'HpabPRRCFbBKSuJr5PdkVvQc85FyxyTWkFM2obBRSvHT',
-      }),
-  })
-  .openapi({
-    title: 'EvaluatedUnit',
-    description:
-      'The unit this result describes. Present only when the operation was evaluated as more than one unit: one unit per call for user operations, and one unit per signing account for Solana transactions. Each unit is evaluated against the policies separately, and `matchedRule`, `unmatchedRules`, `evaluatedPolicies`, and every observed value describe this unit only. When `action` is `reject`, this is the first unit that was rejected. When `action` is `accept`, every unit was accepted and this is the last one.',
-    example: { index: 2, count: 3 },
-    required: ['index', 'count'],
-  })
-  .openapi('EvaluatedUnit')
-
-const PolicySimulationResultSchema = z
+const PolicySimulationResultSchema: z.ZodType<PolicySimulationResultType> = z
   .object({
     action: z
       .enum(['accept', 'reject'])
@@ -15774,7 +16112,7 @@ const AccountTokenAddressesResponseSchema = z
   .openapi('AccountTokenAddressesResponse')
 
 const OnchainActivityWebhookResponseLabelsSchema = z
-  .strictObject({
+  .looseObject({
     network: z
       .enum(['base-mainnet', 'base-sepolia'])
       .openapi({ description: 'Blockchain network being monitored.', example: 'base-mainnet' }),
@@ -15811,6 +16149,22 @@ const OnchainActivityWebhookResponseLabelsSchema = z
       }),
   })
   .superRefine((o, ctx) => {
+    const keys = Object.keys(o).filter(
+      (k) =>
+        ![
+          'network',
+          'contract_address',
+          'event_name',
+          'event_signature',
+          'transaction_from',
+          'transaction_to',
+        ].includes(k) && !['^params\\.'].some((p) => new RegExp(p).test(k)),
+    )
+    if (keys.length > 0) {
+      ctx.addIssue({ code: 'unrecognized_keys', keys, input: o })
+    }
+  })
+  .superRefine((o, ctx) => {
     const regex = new RegExp('^params\\.')
     const Schema = z.string().openapi({ description: 'Event parameter value being matched.' })
     for (const [k, val] of Object.entries(o)) {
@@ -15826,57 +16180,81 @@ const OnchainActivityWebhookResponseLabelsSchema = z
     }
   })
   .openapi({
+    ...{
+      patternProperties: {
+        '^params\\.': { type: 'string', description: 'Event parameter value being matched.' },
+      },
+    },
+    additionalProperties: false,
     description: 'Effective labels returned for `onchain.activity.detected` subscriptions.',
     required: ['contract_address', 'network'],
   })
   .openapi('OnchainActivityWebhookResponseLabels')
 
-const WalletActivityDetectedWebhookResponseLabelsSchema = z
-  .union([
-    z
-      .unknown()
-      .superRefine((val, ctx) => {
-        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-          if (!Object.hasOwn(val, 'params.to')) {
-            ctx.addIssue({ code: 'custom' })
+const WalletActivityDetectedWebhookResponseLabelsSchema = (() => {
+  const Schema = z
+    .union([
+      z
+        .unknown()
+        .superRefine((val, ctx) => {
+          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+            if (!Object.hasOwn(val, 'params.to')) {
+              ctx.addIssue({ code: 'custom' })
+            }
           }
-        }
-      })
-      .openapi({ required: ['params.to'] }),
-    z
-      .unknown()
-      .superRefine((val, ctx) => {
-        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-          if (!Object.hasOwn(val, 'params.from')) {
-            ctx.addIssue({ code: 'custom' })
+        })
+        .openapi({ required: ['params.to'] }),
+      z
+        .unknown()
+        .superRefine((val, ctx) => {
+          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+            if (!Object.hasOwn(val, 'params.from')) {
+              ctx.addIssue({ code: 'custom' })
+            }
           }
+        })
+        .openapi({ required: ['params.from'] }),
+    ])
+    .and(
+      z
+        .object({
+          network: z
+            .enum(['base-mainnet', 'base-sepolia'])
+            .openapi({
+              description: 'Blockchain network being monitored.',
+              example: 'base-mainnet',
+            }),
+          'params.to': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Transaction recipient address being matched.',
+              example: '0x61040E143A77F165Ba44543AF4A079F2C809D14b',
+            }),
+          'params.from': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Transaction sender address being matched.',
+              example: '0x3E16D476D8Df15e3E776EAa5A46f37EC44C830cD',
+            }),
+        })
+        .openapi({ required: ['network'] }),
+    )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['network', 'params.to', 'params.from'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
         }
-      })
-      .openapi({ required: ['params.from'] }),
-  ])
-  .and(
-    z
-      .object({
-        network: z
-          .enum(['base-mainnet', 'base-sepolia'])
-          .openapi({ description: 'Blockchain network being monitored.', example: 'base-mainnet' }),
-        'params.to': z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'Transaction recipient address being matched.',
-            example: '0x61040E143A77F165Ba44543AF4A079F2C809D14b',
-          }),
-        'params.from': z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'Transaction sender address being matched.',
-            example: '0x3E16D476D8Df15e3E776EAa5A46f37EC44C830cD',
-          }),
-      })
-      .openapi({ required: ['network'] }),
-  )
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({ additionalProperties: false })
   .openapi({
     description: 'Effective labels returned for `wallet.activity.detected` subscriptions.',
     required: ['network'],
@@ -16470,7 +16848,7 @@ const WebhookSubscriptionListResponseSchema = z
   .openapi('WebhookSubscriptionListResponse')
 
 const OnchainActivityWebhookLabelsSchema = z
-  .strictObject({
+  .looseObject({
     network: z
       .enum(['base-mainnet', 'base-sepolia'])
       .exactOptional()
@@ -16507,6 +16885,22 @@ const OnchainActivityWebhookLabelsSchema = z
         example: '0x61040E143A77F165Ba44543AF4A079F2C809D14b',
       }),
   })
+  .superRefine((o, ctx) => {
+    const keys = Object.keys(o).filter(
+      (k) =>
+        ![
+          'network',
+          'contract_address',
+          'event_name',
+          'event_signature',
+          'transaction_from',
+          'transaction_to',
+        ].includes(k) && !['^params\\.'].some((p) => new RegExp(p).test(k)),
+    )
+    if (keys.length > 0) {
+      ctx.addIssue({ code: 'unrecognized_keys', keys, input: o })
+    }
+  })
   .refine((val) => Object.keys(val).length <= 20)
   .superRefine((o, ctx) => {
     const regex = new RegExp('^params\\.')
@@ -16524,6 +16918,12 @@ const OnchainActivityWebhookLabelsSchema = z
     }
   })
   .openapi({
+    ...{
+      patternProperties: {
+        '^params\\.': { type: 'string', description: 'Event parameter value to match.' },
+      },
+    },
+    additionalProperties: false,
     description: 'Labels accepted for `onchain.activity.detected` subscriptions.',
     required: ['contract_address'],
     example: {
@@ -16534,53 +16934,68 @@ const OnchainActivityWebhookLabelsSchema = z
   })
   .openapi('OnchainActivityWebhookLabels')
 
-const WalletActivityDetectedWebhookLabelsSchema = z
-  .union([
-    z
-      .unknown()
-      .superRefine((val, ctx) => {
-        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-          if (!Object.hasOwn(val, 'params.to')) {
-            ctx.addIssue({ code: 'custom' })
+const WalletActivityDetectedWebhookLabelsSchema = (() => {
+  const Schema = z
+    .union([
+      z
+        .unknown()
+        .superRefine((val, ctx) => {
+          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+            if (!Object.hasOwn(val, 'params.to')) {
+              ctx.addIssue({ code: 'custom' })
+            }
           }
-        }
-      })
-      .openapi({ required: ['params.to'] }),
-    z
-      .unknown()
-      .superRefine((val, ctx) => {
-        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-          if (!Object.hasOwn(val, 'params.from')) {
-            ctx.addIssue({ code: 'custom' })
+        })
+        .openapi({ required: ['params.to'] }),
+      z
+        .unknown()
+        .superRefine((val, ctx) => {
+          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+            if (!Object.hasOwn(val, 'params.from')) {
+              ctx.addIssue({ code: 'custom' })
+            }
           }
+        })
+        .openapi({ required: ['params.from'] }),
+    ])
+    .and(
+      z
+        .object({
+          network: z
+            .enum(['base-mainnet', 'base-sepolia'])
+            .exactOptional()
+            .openapi({ description: 'Blockchain network to monitor.', example: 'base-mainnet' }),
+          'params.to': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Transaction recipient address to match.',
+              example: '0x61040E143A77F165Ba44543AF4A079F2C809D14b',
+            }),
+          'params.from': z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Transaction sender address to match.',
+              example: '0x3E16D476D8Df15e3E776EAa5A46f37EC44C830cD',
+            }),
+        })
+        .openapi({ required: [] }),
+    )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['network', 'params.to', 'params.from'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
         }
-      })
-      .openapi({ required: ['params.from'] }),
-  ])
-  .and(
-    z
-      .object({
-        network: z
-          .enum(['base-mainnet', 'base-sepolia'])
-          .exactOptional()
-          .openapi({ description: 'Blockchain network to monitor.', example: 'base-mainnet' }),
-        'params.to': z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'Transaction recipient address to match.',
-            example: '0x61040E143A77F165Ba44543AF4A079F2C809D14b',
-          }),
-        'params.from': z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'Transaction sender address to match.',
-            example: '0x3E16D476D8Df15e3E776EAa5A46f37EC44C830cD',
-          }),
-      })
-      .openapi({ required: [] }),
-  )
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({ additionalProperties: false })
   .openapi({
     description: 'Labels accepted for `wallet.activity.detected` subscriptions.',
     example: {
@@ -16812,24 +17227,27 @@ const WebhookSubscriptionRequestSchema = z
                           }
                         }
                         if (!ifOk) {
-                          const Schema = z.any().refine(
-                            (val) =>
-                              !z
-                                .unknown()
-                                .superRefine((val, ctx) => {
-                                  if (
-                                    typeof val === 'object' &&
-                                    val !== null &&
-                                    !Array.isArray(val)
-                                  ) {
-                                    if (!Object.hasOwn(val, 'labels')) {
-                                      ctx.addIssue({ code: 'custom' })
+                          const Schema = z
+                            .any()
+                            .refine(
+                              (val) =>
+                                !z
+                                  .unknown()
+                                  .superRefine((val, ctx) => {
+                                    if (
+                                      typeof val === 'object' &&
+                                      val !== null &&
+                                      !Array.isArray(val)
+                                    ) {
+                                      if (!Object.hasOwn(val, 'labels')) {
+                                        ctx.addIssue({ code: 'custom' })
+                                      }
                                     }
-                                  }
-                                })
-                                .openapi({ required: ['labels'] })
-                                .safeParse(val).success,
-                          )
+                                  })
+                                  .openapi({ required: ['labels'] })
+                                  .safeParse(val).success,
+                            )
+                            .openapi({ not: { required: ['labels'] } })
                           if (!Schema.safeParse(val).success) {
                             ctx.addIssue({ code: 'custom' })
                           }
@@ -17026,24 +17444,27 @@ const WebhookSubscriptionUpdateRequestSchema = z
                           }
                         }
                         if (!ifOk) {
-                          const Schema = z.any().refine(
-                            (val) =>
-                              !z
-                                .unknown()
-                                .superRefine((val, ctx) => {
-                                  if (
-                                    typeof val === 'object' &&
-                                    val !== null &&
-                                    !Array.isArray(val)
-                                  ) {
-                                    if (!Object.hasOwn(val, 'labels')) {
-                                      ctx.addIssue({ code: 'custom' })
+                          const Schema = z
+                            .any()
+                            .refine(
+                              (val) =>
+                                !z
+                                  .unknown()
+                                  .superRefine((val, ctx) => {
+                                    if (
+                                      typeof val === 'object' &&
+                                      val !== null &&
+                                      !Array.isArray(val)
+                                    ) {
+                                      if (!Object.hasOwn(val, 'labels')) {
+                                        ctx.addIssue({ code: 'custom' })
+                                      }
                                     }
-                                  }
-                                })
-                                .openapi({ required: ['labels'] })
-                                .safeParse(val).success,
-                          )
+                                  })
+                                  .openapi({ required: ['labels'] })
+                                  .safeParse(val).success,
+                            )
+                            .openapi({ not: { required: ['labels'] } })
                           if (!Schema.safeParse(val).success) {
                             ctx.addIssue({ code: 'custom' })
                           }
@@ -19020,6 +19441,18 @@ const CreateOnrampMobileSessionRequestSchema = z
       })
       .openapi({ title: 'Android', required: ['android'] }),
   ])
+  .and(
+    z
+      .object({
+        challenge: OnrampMobileChallengeTokenSchema.openapi({
+          description:
+            'The challenge returned by the [Create Onramp Mobile Challenge](#operation/createOnrampMobileChallenge) endpoint. Must be passed back exactly as received — do not decode or modify.',
+        }),
+        ios: IosAssertionPayloadSchema.exactOptional(),
+        android: AndroidIntegrityPayloadSchema.exactOptional(),
+      })
+      .openapi({ required: ['challenge'] }),
+  )
   .openapi({
     description: 'Request body for creating an onramp mobile session.',
     required: ['challenge'],
@@ -19833,7 +20266,7 @@ const WalletEvmTransactionCreatedPayloadSchema = z
   .openapi('WalletEvmTransactionCreatedPayload')
 
 const WalletApiKeyEventPayloadSchema = z
-  .object({})
+  .looseObject({})
   .refine(
     (val) =>
       !z
@@ -19864,6 +20297,7 @@ const WalletApiKeyEventPayloadSchema = z
   .openapi({
     description:
       'Payload for API Key Wallet events. These events carry no end-user payload fields, so neither `user_id` nor `delegation_id` is present.',
+    not: { anyOf: [{ required: ['user_id'] }, { required: ['delegation_id'] }] },
   })
   .openapi('WalletApiKeyEventPayload')
 
@@ -19900,6 +20334,7 @@ const WalletSolanaTransactionCreatedPayloadSchema = z
     description:
       'Payload for `wallet.transaction.created` on Solana. Solana transaction events do not include an `address`.',
     required: ['network', 'created_at'],
+    not: { required: ['address'] },
   })
   .openapi('WalletSolanaTransactionCreatedPayload')
 
@@ -19929,6 +20364,7 @@ const WalletUserEventPayloadSchema = z
     description:
       'Payload for User Wallet events. The wallet is owned by an end user, identified by `user_id`. User Wallet actions do not include `delegation_id`.',
     required: ['user_id'],
+    not: { required: ['delegation_id'] },
   })
   .openapi('WalletUserEventPayload')
 
@@ -23922,15 +24358,29 @@ const CustomersRequirementChangedEventSchema = CustomersEventBaseSchema.and(
   .openapi({ 'x-event-type': 'customers.requirement.changed' })
   .openapi('CustomersRequirementChangedEvent')
 
-const VaultIdSchema = z
-  .string()
-  .regex(/^vault_[a-f0-9-]{36}$/)
-  .openapi({
-    description:
-      'The globally unique ID of the vault, which is a UUID prefixed with the string `vault_`.',
-    example: 'vault_019f5f10-096a-7a23-86df-f479650d813f',
+const LendPositionSchema = z
+  .object({
+    vaultId: VaultIdSchema,
+    network: LendNetworkSchema,
+    underlyingAsset: AssetSchema.openapi({
+      description: "The symbol of the vault's underlying asset.",
+      example: 'usdc',
+    }),
+    vaultShares: NonNegativeDecimalSchema.openapi({
+      description: "The account's vault share balance in standard units of the share token.",
+      example: '1',
+    }),
+    assetBalance: NonNegativeDecimalSchema.openapi({
+      description:
+        'The current underlying asset value of the shares, in standard units of underlyingAsset.',
+      example: '1.025',
+    }),
   })
-  .openapi('VaultId')
+  .openapi({
+    description: "An account's current share balance and underlying asset value in a lend vault.",
+    required: ['vaultId', 'network', 'underlyingAsset', 'vaultShares', 'assetBalance'],
+  })
+  .openapi('LendPosition')
 
 const VaultRedeemFeesRequestSchema = z
   .object({
@@ -23955,7 +24405,7 @@ const VaultRedeemFeesRequestSchema = z
 
 const EoaVaultRedeemFeesRequestSchema = VaultRedeemFeesRequestSchema.and(
   z
-    .object({})
+    .looseObject({})
     .openapi({
       example: { vaultId: 'vault_019f5f10-096a-7a23-86df-f479650d813f', maxSlippageBps: 100 },
       description:
@@ -24022,6 +24472,245 @@ const SmartAccountVaultRedeemFeesResponseSchema = z
     required: ['userOpHash'],
   })
   .openapi('SmartAccountVaultRedeemFeesResponse')
+
+const VaultDepositAmountSchema = PositiveDecimalSchema.openapi({
+  description:
+    'The amount of the vault\'s underlying asset to deposit, as a decimal string in standard unit denomination of the asset (i.e. "25.50" for 25.50 USDC).',
+  example: '25.50',
+}).openapi('VaultDepositAmount')
+
+const VaultDepositReceiverSchema = BlockchainAddressSchema.openapi({
+  description:
+    'The 0x-prefixed address that receives the minted vault shares. Defaults to the depositing account given in the path.',
+  example: '0x1234567890123456789012345678901234567890',
+}).openapi('VaultDepositReceiver')
+
+const DepositToVaultBaseRequestSchema = z
+  .object({
+    vaultId: VaultIdSchema.exactOptional(),
+    amount: VaultDepositAmountSchema.exactOptional(),
+    receiver: VaultDepositReceiverSchema.exactOptional(),
+  })
+  .openapi({
+    description:
+      'Fields shared by the API-key requests that deposit into a vault from an EVM account or an EVM Smart Account. Composed into `DepositToVaultWithEvmAccountRequest` and `DepositToVaultWithEvmSmartAccountRequest`.',
+    required: [],
+  })
+  .openapi('DepositToVaultBaseRequest')
+
+const VaultDepositMaxSlippageBpsSchema = z
+  .int()
+  .min(0)
+  .max(9999)
+  .openapi({
+    description:
+      "The maximum share-price movement tolerated between calldata construction and onchain execution, in basis points. The deposit reverts if the vault's share price moves beyond this bound. A guard of 100 bps (i.e. 1%) is applied when omitted.",
+    example: 100,
+  })
+  .openapi('VaultDepositMaxSlippageBps')
+
+const DepositToVaultWithEvmAccountRequestSchema = DepositToVaultBaseRequestSchema.and(
+  z
+    .object({ maxSlippageBps: VaultDepositMaxSlippageBpsSchema.exactOptional() })
+    .openapi({
+      description:
+        "A request to deposit the vault's underlying asset (e.g. USDC) into a vault from an EVM account. The account signs an EIP-2612 permit authorizing the deposit, and the token approval and deposit are executed in a single transaction.",
+      example: { vaultId: 'vault_019f5f10-096a-7a23-86df-f479650d813f', amount: '25.50' },
+      required: ['vaultId', 'amount'],
+    }),
+).openapi('DepositToVaultWithEvmAccountRequest')
+
+const VaultDepositUseCdpPaymasterSchema = z
+  .boolean()
+  .openapi({
+    description:
+      'Whether to use CDP Paymaster to sponsor gas fees. When true, the user operation gas will be paid by the Paymaster, allowing the account to deposit without holding native gas tokens. Cannot be used together with `paymasterUrl`.',
+    example: true,
+  })
+  .openapi('VaultDepositUseCdpPaymaster')
+
+const VaultDepositPaymasterUrlSchema = UrlSchema.openapi({
+  description:
+    "Optional custom Paymaster URL to use for gas sponsorship. This allows you to use your own Paymaster service instead of CDP's Paymaster. Cannot be used together with `useCdpPaymaster`.",
+  example: 'https://api.developer.coinbase.com/rpc/v1/base/AbCdEf123456',
+}).openapi('VaultDepositPaymasterUrl')
+
+const DepositToVaultWithEvmSmartAccountRequestSchema = DepositToVaultBaseRequestSchema.and(
+  z
+    .object({
+      useCdpPaymaster: VaultDepositUseCdpPaymasterSchema.exactOptional(),
+      paymasterUrl: VaultDepositPaymasterUrlSchema.exactOptional(),
+      paymasterContext: PaymasterContextSchema.exactOptional(),
+    })
+    .openapi({
+      description:
+        "A request to deposit the vault's underlying asset (e.g. USDC) into a vault from an EVM Smart Account. The token approval and deposit are batched into a single user operation.",
+      example: {
+        vaultId: 'vault_019f5f10-096a-7a23-86df-f479650d813f',
+        amount: '25.50',
+        useCdpPaymaster: true,
+      },
+      required: ['vaultId', 'amount'],
+    }),
+).openapi('DepositToVaultWithEvmSmartAccountRequest')
+
+const EoaVaultDepositResponseSchema = z
+  .object({
+    transactionHash: z
+      .string()
+      .regex(/^0x[0-9a-fA-F]{64}$/)
+      .openapi({
+        description: 'The hash of the broadcast deposit transaction, as a 0x-prefixed hex string.',
+        example: '0xf8f98fb6726fc936f24b2007df5cb20e2b8444ff3dfaa2a929335f432a9be2e7',
+      }),
+  })
+  .openapi({
+    description: 'The result of a vault deposit from an EOA after broadcast.',
+    required: ['transactionHash'],
+  })
+  .openapi('EoaVaultDepositResponse')
+
+const SmartAccountVaultDepositResponseSchema = z
+  .object({
+    userOpHash: z
+      .string()
+      .regex(/^0x[0-9a-fA-F]{64}$/)
+      .openapi({
+        description:
+          'The hash of the user operation executing the deposit, as a 0x-prefixed hex string.',
+        example: '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef',
+      }),
+  })
+  .openapi({
+    description: 'The result of a vault deposit from an EVM Smart Account after broadcast.',
+    required: ['userOpHash'],
+  })
+  .openapi('SmartAccountVaultDepositResponse')
+
+const EoaVaultWithdrawResponseSchema = z
+  .object({
+    transactionHash: z
+      .string()
+      .regex(/^0x[0-9a-fA-F]{64}$/)
+      .openapi({
+        description:
+          'The hash of the broadcast withdrawal transaction, as a 0x-prefixed hex string.',
+        example: '0xf8f98fb6726fc936f24b2007df5cb20e2b8444ff3dfaa2a929335f432a9be2e7',
+      }),
+  })
+  .openapi({
+    description: 'The result of a vault withdrawal from an EOA after broadcast.',
+    required: ['transactionHash'],
+  })
+  .openapi('EoaVaultWithdrawResponse')
+
+const SmartAccountVaultWithdrawResponseSchema = z
+  .object({
+    userOpHash: z
+      .string()
+      .regex(/^0x[0-9a-fA-F]{64}$/)
+      .openapi({
+        description:
+          'The hash of the user operation executing the withdrawal, as a 0x-prefixed hex string.',
+        example: '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef',
+      }),
+  })
+  .openapi({
+    description: 'The result of a vault withdrawal from an EVM Smart Account after broadcast.',
+    required: ['userOpHash'],
+  })
+  .openapi('SmartAccountVaultWithdrawResponse')
+
+const VaultWithdrawAllSchema = z
+  .boolean()
+  .openapi({
+    description:
+      "Whether to withdraw the account's entire position in the vault. When true, every vault share held by the account is redeemed for the underlying asset (e.g. USDC). Cannot be `true` when `amount` is set.",
+    example: true,
+  })
+  .openapi('VaultWithdrawAll')
+
+const VaultWithdrawAmountSchema = PositiveDecimalSchema.openapi({
+  description:
+    'The amount of the vault\'s underlying asset to withdraw, as a decimal string in standard unit denomination of the asset (i.e. "25.50" for 25.50 USDC). Cannot be used when `withdrawAll` is `true`.',
+  example: '25.50',
+}).openapi('VaultWithdrawAmount')
+
+const VaultWithdrawMaxSlippageBpsSchema = z
+  .int()
+  .min(0)
+  .max(9999)
+  .openapi({
+    description:
+      'The maximum share-price movement tolerated between calldata construction and onchain execution, in basis points. Defaults to 100 bps (1%) when omitted.',
+    example: 100,
+  })
+  .openapi('VaultWithdrawMaxSlippageBps')
+
+const VaultWithdrawPaymasterUrlSchema = UrlSchema.openapi({
+  description:
+    "Optional custom Paymaster URL to use for gas sponsorship. This allows you to use your own Paymaster service instead of CDP's Paymaster. Cannot be used together with `useCdpPaymaster`.",
+  example: 'https://api.developer.coinbase.com/rpc/v1/base/AbCdEf123456',
+}).openapi('VaultWithdrawPaymasterUrl')
+
+const VaultWithdrawReceiverSchema = BlockchainAddressSchema.openapi({
+  description:
+    'The 0x-prefixed address that receives the withdrawn underlying asset. Defaults to the withdrawing account given in the path.',
+  example: '0x1234567890123456789012345678901234567890',
+}).openapi('VaultWithdrawReceiver')
+
+const VaultWithdrawUseCdpPaymasterSchema = z
+  .boolean()
+  .openapi({
+    description:
+      'Whether to use CDP Paymaster to sponsor gas fees. When true, the user operation gas will be paid by the Paymaster, allowing the account to withdraw without holding native gas tokens. Cannot be used together with `paymasterUrl`.',
+    example: true,
+  })
+  .openapi('VaultWithdrawUseCdpPaymaster')
+
+const WithdrawFromVaultBaseRequestSchema = z
+  .object({
+    vaultId: VaultIdSchema,
+    amount: VaultWithdrawAmountSchema.exactOptional(),
+    withdrawAll: VaultWithdrawAllSchema.exactOptional(),
+    receiver: VaultWithdrawReceiverSchema.exactOptional(),
+    maxSlippageBps: VaultWithdrawMaxSlippageBpsSchema.exactOptional(),
+  })
+  .openapi({
+    description:
+      'Fields shared by the API-key requests that withdraw from a vault with an EVM account or an EVM Smart Account. Composed into `WithdrawFromVaultWithEvmAccountRequest` and `WithdrawFromVaultWithEvmSmartAccountRequest`.\nProvide either `amount` or `withdrawAll: true`. `withdrawAll: false` is treated as omitted. Requests that set both `amount` and `withdrawAll: true`, or neither, are rejected with `invalid_request`.',
+    required: ['vaultId'],
+  })
+  .openapi('WithdrawFromVaultBaseRequest')
+
+const WithdrawFromVaultWithEvmAccountRequestSchema = WithdrawFromVaultBaseRequestSchema.and(
+  z
+    .looseObject({})
+    .openapi({
+      description:
+        "A request to withdraw the vault's underlying asset (e.g. USDC) from a vault position held by an EVM account. The account signs an EIP-2612 permit over its vault shares authorizing the withdrawal, and the share approval and withdrawal are executed in a single transaction.",
+      example: { vaultId: 'vault_019f5f10-096a-7a23-86df-f479650d813f', amount: '25.50' },
+    }),
+).openapi('WithdrawFromVaultWithEvmAccountRequest')
+
+const WithdrawFromVaultWithEvmSmartAccountRequestSchema = WithdrawFromVaultBaseRequestSchema.and(
+  z
+    .object({
+      useCdpPaymaster: VaultWithdrawUseCdpPaymasterSchema.exactOptional(),
+      paymasterUrl: VaultWithdrawPaymasterUrlSchema.exactOptional(),
+      paymasterContext: PaymasterContextSchema.exactOptional(),
+    })
+    .openapi({
+      description:
+        "A request to withdraw the vault's underlying asset (e.g. USDC) from a vault position held by an EVM Smart Account. The share approval and withdrawal are batched into a single user operation.",
+      example: {
+        vaultId: 'vault_019f5f10-096a-7a23-86df-f479650d813f',
+        withdrawAll: true,
+        useCdpPaymaster: true,
+      },
+      required: [],
+    }),
+).openapi('WithdrawFromVaultWithEvmSmartAccountRequest')
 
 const IdempotencyErrorExample = {
   value: {
@@ -24157,22 +24846,16 @@ const PaymentRequiredResponse = {
     },
   },
   headers: z.object({
-    'PAYMENT-REQUIRED': {
-      description:
-        'Base64-encoded (RFC 4648), x402-compliant, description of the networks, assets, and amounts that will be accepted for payment.',
-      example:
-        'eyJ4NDAyVmVyc2lvbiI6MiwiZXJyb3IiOiJQQVlNRU5ULVNJR05BVFVSRSBoZWFkZXIgaXMgcmVxdWlyZWQiLCJyZXNvdXJjZSI6eyJ1cmwiOiJodHRwczovL2FwaS5leGFtcGxlLmNvbS9wcmVtaXVtLWRhdGEiLCJkZXNjcmlwdGlvbiI6IkFjY2VzcyB0byBwcmVtaXVtIG1hcmtldCBkYXRhIiwibWltZVR5cGUiOiJhcHBsaWNhdGlvbi9qc29uIn0sImFjY2VwdHMiOlt7InNjaGVtZSI6ImV4YWN0IiwibmV0d29yayI6ImVpcDE1NTo4NDUzMiIsImFtb3VudCI6IjEwMDAwIiwiYXNzZXQiOiIweDAzNkNiRDUzODQyYzU0MjY2MzRlNzkyOTU0MWVDMjMxOGYzZENGN2UiLCJwYXlUbyI6IjB4MjA5NjkzQmM2YWZjMEM1MzI4YkEzNkZhRjAzQzUxNEVGMzEyMjg3QyIsIm1heFRpbWVvdXRTZWNvbmRzIjo2MCwiZXh0cmEiOnsibmFtZSI6IlVTREMiLCJ2ZXJzaW9uIjoiMiJ9fV19',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description:
-            'Base64-encoded (RFC 4648), x402-compliant, description of the networks, assets, and amounts that will be accepted for payment.',
-          example:
-            'eyJ4NDAyVmVyc2lvbiI6MiwiZXJyb3IiOiJQQVlNRU5ULVNJR05BVFVSRSBoZWFkZXIgaXMgcmVxdWlyZWQiLCJyZXNvdXJjZSI6eyJ1cmwiOiJodHRwczovL2FwaS5leGFtcGxlLmNvbS9wcmVtaXVtLWRhdGEiLCJkZXNjcmlwdGlvbiI6IkFjY2VzcyB0byBwcmVtaXVtIG1hcmtldCBkYXRhIiwibWltZVR5cGUiOiJhcHBsaWNhdGlvbi9qc29uIn0sImFjY2VwdHMiOlt7InNjaGVtZSI6ImV4YWN0IiwibmV0d29yayI6ImVpcDE1NTo4NDUzMiIsImFtb3VudCI6IjEwMDAwIiwiYXNzZXQiOiIweDAzNkNiRDUzODQyYzU0MjY2MzRlNzkyOTU0MWVDMjMxOGYzZENGN2UiLCJwYXlUbyI6IjB4MjA5NjkzQmM2YWZjMEM1MzI4YkEzNkZhRjAzQzUxNEVGMzEyMjg3QyIsIm1heFRpbWVvdXRTZWNvbmRzIjo2MCwiZXh0cmEiOnsibmFtZSI6IlVTREMiLCJ2ZXJzaW9uIjoiMiJ9fV19',
-          param: { required: false },
-        }),
-    },
+    'PAYMENT-REQUIRED': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Base64-encoded (RFC 4648), x402-compliant, description of the networks, assets, and amounts that will be accepted for payment.',
+        example:
+          'eyJ4NDAyVmVyc2lvbiI6MiwiZXJyb3IiOiJQQVlNRU5ULVNJR05BVFVSRSBoZWFkZXIgaXMgcmVxdWlyZWQiLCJyZXNvdXJjZSI6eyJ1cmwiOiJodHRwczovL2FwaS5leGFtcGxlLmNvbS9wcmVtaXVtLWRhdGEiLCJkZXNjcmlwdGlvbiI6IkFjY2VzcyB0byBwcmVtaXVtIG1hcmtldCBkYXRhIiwibWltZVR5cGUiOiJhcHBsaWNhdGlvbi9qc29uIn0sImFjY2VwdHMiOlt7InNjaGVtZSI6ImV4YWN0IiwibmV0d29yayI6ImVpcDE1NTo4NDUzMiIsImFtb3VudCI6IjEwMDAwIiwiYXNzZXQiOiIweDAzNkNiRDUzODQyYzU0MjY2MzRlNzkyOTU0MWVDMjMxOGYzZENGN2UiLCJwYXlUbyI6IjB4MjA5NjkzQmM2YWZjMEM1MzI4YkEzNkZhRjAzQzUxNEVGMzEyMjg3QyIsIm1heFRpbWVvdXRTZWNvbmRzIjo2MCwiZXh0cmEiOnsibmFtZSI6IlVTREMiLCJ2ZXJzaW9uIjoiMiJ9fV19',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -28666,22 +29349,16 @@ export const postV2PaymentSessionsPaymentSessionIdAuthorizationsX402Route = crea
         },
       },
       headers: z.object({
-        'PAYMENT-RESPONSE': {
-          description:
-            'Always returned on **200**. Base64-encoded (RFC 4648) payload containing the response from the successful payment.',
-          example:
-            'eyJzdWNjZXNzIjp0cnVlLCJ0cmFuc2FjdGlvbiI6IjB4MTIzNDU2Nzg5MGFiY2RlZjEyMzQ1Njc4OTBhYmNkZWYxMjM0NTY3ODkwYWJjZGVmMTIzNDU2Nzg5MGFiY2RlZiIsIm5ldHdvcmsiOiJlaXAxNTU6ODQ1MzIiLCJwYXllciI6IjB4ODU3YjA2NTE5RTkxZTNBNTQ1Mzg3OTFiRGJiMEUyMjM3M2UzNmI2NiJ9',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Always returned on **200**. Base64-encoded (RFC 4648) payload containing the response from the successful payment.',
-              example:
-                'eyJzdWNjZXNzIjp0cnVlLCJ0cmFuc2FjdGlvbiI6IjB4MTIzNDU2Nzg5MGFiY2RlZjEyMzQ1Njc4OTBhYmNkZWYxMjM0NTY3ODkwYWJjZGVmMTIzNDU2Nzg5MGFiY2RlZiIsIm5ldHdvcmsiOiJlaXAxNTU6ODQ1MzIiLCJwYXllciI6IjB4ODU3YjA2NTE5RTkxZTNBNTQ1Mzg3OTFiRGJiMEUyMjM3M2UzNmI2NiJ9',
-              param: { required: false },
-            }),
-        },
+        'PAYMENT-RESPONSE': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Always returned on **200**. Base64-encoded (RFC 4648) payload containing the response from the successful payment.',
+            example:
+              'eyJzdWNjZXNzIjp0cnVlLCJ0cmFuc2FjdGlvbiI6IjB4MTIzNDU2Nzg5MGFiY2RlZjEyMzQ1Njc4OTBhYmNkZWYxMjM0NTY3ODkwYWJjZGVmMTIzNDU2Nzg5MGFiY2RlZiIsIm5ldHdvcmsiOiJlaXAxNTU6ODQ1MzIiLCJwYXllciI6IjB4ODU3YjA2NTE5RTkxZTNBNTQ1Mzg3OTFiRGJiMEUyMjM3M2UzNmI2NiJ9',
+            param: { required: false },
+          }),
       }),
     },
     400: {
@@ -32709,7 +33386,7 @@ export const postV2EndUsersUserIdEvmRoute = createRoute({
     body: {
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: { default: { summary: 'Create EVM EOA account', value: {} } },
         },
       },
@@ -32940,7 +33617,7 @@ export const postV2EndUsersUserIdSolanaRoute = createRoute({
     body: {
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: { default: { summary: 'Create Solana account', value: {} } },
         },
       },
@@ -39656,6 +40333,348 @@ export const postV2EvmSmartAccountsAddressSpendPermissionsRevokeRoute = createRo
   security: [{ apiKeyAuth: [] }],
 })
 
+export const getV2LendPositionsRoute = createRoute({
+  method: 'get',
+  path: '/v2/lend/positions',
+  tags: ['Lend'],
+  summary: 'List lend positions',
+  description:
+    "Lists non-zero lend positions for an EVM account or EVM Smart Account in the project. Each position reports the account's vault share balance and its current value in the vault's underlying asset.\nWhen `vaultIds` is omitted, only vaults where the address received shares through a Lend deposit are listed. Shares received any other way are not discovered, including transfers, deposits made outside the Lend deposit APIs, and fee shares CDP distributes to a vault's fee recipient, so an empty list does not mean the address holds no shares. Supply `vaultIds` to read specific project-owned vaults.\nPositions are ordered by vault ID. `pageSize` defaults to 20 and must be between 1 and 100. Keep the address and vault filter unchanged when following `nextPageToken`. Each page fetches fresh balances, so positions and balances may change between page requests as deposits, withdrawals, or yield accrual occur.",
+  operationId: 'listLendPositions',
+  request: {
+    query: z.object({
+      address: z
+        .string()
+        .regex(/^0x[0-9a-fA-F]{40}$/)
+        .openapi({
+          param: {
+            name: 'address',
+            description:
+              'The 0x-prefixed address of the EVM account or EVM Smart Account to list lend positions for.',
+            in: 'query',
+            required: true,
+            schema: { type: 'string', pattern: '^0x[0-9a-fA-F]{40}$' },
+            example: '0x742d35Cc6634C0532925a3b844Bc454e4438f44e',
+          },
+        }),
+      vaultIds: z
+        .preprocess(
+          (val) =>
+            val === undefined
+              ? val
+              : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+                  typeof item === 'string' ? item.split(',') : [item],
+                ),
+          z
+            .array(VaultIdSchema)
+            .min(1)
+            .max(100)
+            .superRefine((items, ctx) => {
+              const seen = new Map()
+              for (const [i, val] of items.entries()) {
+                const key = JSON.stringify(val)
+                if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+                else seen.set(key, i)
+              }
+            }),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'vaultIds',
+            in: 'query',
+            required: false,
+            description:
+              'Filter positions to these project-owned vaults. Provide 1 to 100 unique, comma-separated vault IDs. Omit to list positions in the vaults discovered for the address.',
+            style: 'form',
+            explode: false,
+            schema: {
+              type: 'array',
+              minItems: 1,
+              maxItems: 100,
+              uniqueItems: true,
+              items: { $ref: '#/components/schemas/VaultId' },
+            },
+            example: ['vault_019f5f10-096a-7a23-86df-f479650d813f'],
+          },
+        }),
+      pageSize: PageSizeParamsSchema,
+      pageToken: PageTokenParamsSchema,
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Successfully listed lend positions.',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              lendPositions: z
+                .array(LendPositionSchema)
+                .openapi({
+                  description:
+                    'The lend positions on this page. Empty when no matching positions remain.',
+                }),
+            })
+            .openapi({
+              description:
+                'Non-zero positions in the vaults discovered for the address, or in the vaults named by `vaultIds`.',
+              required: ['lendPositions'],
+            })
+            .and(ListResponseSchema),
+          examples: {
+            success: {
+              value: {
+                lendPositions: [
+                  {
+                    vaultId: 'vault_019f5f10-096a-7a23-86df-f479650d813f',
+                    network: 'base',
+                    underlyingAsset: 'usdc',
+                    vaultShares: '1',
+                    assetBalance: '1.025',
+                  },
+                ],
+                nextPageToken:
+                  'MTpkY2Y0M2U4MzI5OTM2NTNiOTE1ZWUxZDUzYjY3YjI1MTVjODFiNWE3Yzg1OGI5ZWQyZTZjZmIxNDM3NjEzZjBjOjAxOWY1ZjEwLTA5NmEtN2EyMy04NmRmLWY0Nzk2NTBkODEzZg==',
+              },
+            },
+            empty: { value: { lendPositions: [] } },
+          },
+        },
+      },
+    },
+    400: {
+      description: 'Invalid address, vault filter, page size, or page token.',
+      content: {
+        'application/json': {
+          schema: ErrorSchema,
+          examples: {
+            invalid_page_size: {
+              value: {
+                errorType: 'invalid_request',
+                errorMessage: 'Page size must be between 1 and 100.',
+              },
+            },
+            invalid_page_token: {
+              value: {
+                errorType: 'invalid_request',
+                errorMessage: 'Invalid page token for this request.',
+              },
+            },
+            invalid_vault_filter: {
+              value: {
+                errorType: 'invalid_request',
+                errorMessage: 'vaultIds must not contain duplicate IDs.',
+              },
+            },
+          },
+        },
+      },
+    },
+    401: UnauthorizedErrorResponse,
+    403: ForbiddenErrorResponse,
+    404: {
+      description:
+        'The address or an explicitly requested vault was not found in the authenticated project.',
+      content: {
+        'application/json': {
+          schema: ErrorSchema,
+          examples: {
+            vault_not_found: {
+              value: { errorType: 'not_found', errorMessage: 'Vault not found.' },
+            },
+            account_not_found: {
+              value: {
+                errorType: 'not_found',
+                errorMessage:
+                  'No EVM account or EVM Smart Account with the given address was found.',
+              },
+            },
+          },
+        },
+      },
+    },
+    500: InternalServerErrorResponse,
+    502: BadGatewayErrorResponse,
+    503: ServiceUnavailableErrorResponse,
+    504: TimedOutErrorResponse,
+  },
+  security: [{ apiKeyAuth: [] }],
+})
+
+export const getV2LendVaultsRoute = createRoute({
+  method: 'get',
+  path: '/v2/lend/vaults',
+  tags: ['Lend'],
+  summary: 'List vaults',
+  description:
+    'Lists the vaults created by the project. Use `pageSize` and `pageToken` to page through the results. Each vault includes its current metrics, when a metrics snapshot has been observed for it.',
+  operationId: 'listVaults',
+  request: {
+    query: z.object({
+      pageSize: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int().min(1).max(1000),
+        )
+        .default(20)
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'pageSize',
+            description: 'The number of vaults to return per page.',
+            in: 'query',
+            required: false,
+            schema: { type: 'integer', default: 20, minimum: 1, maximum: 1000 },
+            example: 10,
+          },
+        }),
+      pageToken: PageTokenParamsSchema,
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Successfully retrieved vaults.',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              vaults: z
+                .array(VaultSchema)
+                .openapi({ description: 'The list of vaults created by the project.' }),
+            })
+            .openapi({ description: 'Response containing a list of vaults.', required: ['vaults'] })
+            .and(ListResponseSchema),
+          examples: {
+            success: {
+              value: {
+                vaults: [
+                  {
+                    vaultId: 'vault_019f5f10-096a-7a23-86df-f479650d813f',
+                    address: '0x15966F1582CAEFB56CDB4Fba1dC622E41F2Ad33D',
+                    catalogVaultId: 'cv_019ee022-3586-7473-8354-b2c32c18221a',
+                    underlyingAsset: 'usdc',
+                    performanceFeeBps: 2000,
+                    feeRecipientAddress: '0x742d35Cc6634C0532925a3b844Bc454e4438f44e',
+                    network: 'base',
+                    status: 'active',
+                    createdAt: '2026-09-15T15:39:37Z',
+                    metrics: {
+                      apyBps: 500,
+                      apyUpdatedAt: '2026-09-22T00:00:00Z',
+                      tvl: '1000',
+                      tvlUpdatedAt: '2026-09-22T00:00:00Z',
+                    },
+                  },
+                ],
+                nextPageToken: 'eyJsYXN0X2lkIjogImFiYzEyMyIsICJ0aW1lc3RhbXAiOiAxNzA3ODIzNzAxfQ==',
+              },
+            },
+          },
+        },
+      },
+    },
+    400: {
+      description: 'Invalid request.',
+      content: {
+        'application/json': {
+          schema: ErrorSchema,
+          examples: {
+            invalid_request: {
+              value: {
+                errorType: 'invalid_request',
+                errorMessage: 'pageSize must be between 1 and 1000.',
+              },
+            },
+          },
+        },
+      },
+    },
+    401: UnauthorizedErrorResponse,
+    500: InternalServerErrorResponse,
+    503: ServiceUnavailableErrorResponse,
+  },
+  security: [{ apiKeyAuth: [] }],
+})
+
+export const getV2LendVaultsVaultIdRoute = createRoute({
+  method: 'get',
+  path: '/v2/lend/vaults/{vaultId}',
+  tags: ['Lend'],
+  summary: 'Get a vault',
+  description:
+    'Retrieves a vault created by the project, including its current metrics such as APY and TVL.',
+  operationId: 'getVault',
+  request: {
+    params: z.object({
+      vaultId: VaultIdSchema.openapi({
+        param: {
+          name: 'vaultId',
+          in: 'path',
+          required: true,
+          description: 'The ID of the vault to retrieve.',
+          schema: { $ref: '#/components/schemas/VaultId' },
+          example: 'vault_019f5f10-096a-7a23-86df-f479650d813f',
+        },
+      }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Successfully retrieved the vault.',
+      content: {
+        'application/json': {
+          schema: VaultSchema,
+          examples: {
+            success: {
+              value: {
+                vaultId: 'vault_019f5f10-096a-7a23-86df-f479650d813f',
+                address: '0x15966F1582CAEFB56CDB4Fba1dC622E41F2Ad33D',
+                catalogVaultId: 'cv_019ee022-3586-7473-8354-b2c32c18221a',
+                underlyingAsset: 'usdc',
+                performanceFeeBps: 2000,
+                feeRecipientAddress: '0x742d35Cc6634C0532925a3b844Bc454e4438f44e',
+                network: 'base',
+                status: 'active',
+                createdAt: '2026-09-15T15:39:37Z',
+                metrics: {
+                  apyBps: 500,
+                  apyUpdatedAt: '2026-09-22T00:00:00Z',
+                  tvl: '1000',
+                  tvlUpdatedAt: '2026-09-22T00:00:00Z',
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    401: UnauthorizedErrorResponse,
+    404: {
+      description: 'Not found. The vault does not exist or belongs to a different project.',
+      content: {
+        'application/json': {
+          schema: ErrorSchema,
+          examples: {
+            vault_not_found: {
+              summary: 'Vault not found',
+              value: { errorType: 'not_found', errorMessage: 'Vault not found.' },
+            },
+          },
+        },
+      },
+    },
+    500: InternalServerErrorResponse,
+    503: ServiceUnavailableErrorResponse,
+  },
+  security: [{ apiKeyAuth: [] }],
+})
+
 export const postV2EvmAccountsAddressLendRedeemFeesRoute = createRoute({
   method: 'post',
   path: '/v2/evm/accounts/{address}/lend/redeem-fees',
@@ -39927,6 +40946,656 @@ export const postV2EvmSmartAccountsAddressLendRedeemFeesRoute = createRoute({
     409: {
       description:
         'Conflict. A fee redemption or another lend operation for this account is already in progress.',
+      content: {
+        'application/json': {
+          schema: ErrorSchema,
+          examples: {
+            operation_in_progress: {
+              value: {
+                errorType: 'operation_in_progress',
+                errorMessage:
+                  'A lend operation for this account and vault is already in progress. In-progress operations typically complete in under 30 seconds. Please wait for it to complete before retrying.',
+              },
+            },
+          },
+        },
+      },
+    },
+    422: IdempotencyErrorResponse,
+    500: InternalServerErrorResponse,
+    502: BadGatewayErrorResponse,
+    503: ServiceUnavailableErrorResponse,
+  },
+  security: [{ apiKeyAuth: [] }],
+})
+
+export const postV2EvmAccountsAddressLendDepositRoute = createRoute({
+  method: 'post',
+  path: '/v2/evm/accounts/{address}/lend/deposit',
+  tags: ['Lend'],
+  summary: 'Deposit into a vault with an EVM account',
+  description:
+    'Deposits the vault\'s underlying asset (e.g. USDC) from an EVM account into a vault. The account signs an EIP-2612 permit authorizing the deposit, and the token approval and deposit are executed in a single transaction. The transaction hash is returned in the response.\nFor deposits from EVM Smart Accounts, use `depositToVaultWithEvmSmartAccount` instead.\nThe `amount` field accepts human-readable amounts as decimal strings (e.g., "1.5", "25.50") in the standard unit denomination of the vault\'s underlying asset.',
+  operationId: 'depositToVaultWithEvmAccount',
+  request: {
+    headers: z.object({
+      'X-Wallet-Auth': XWalletAuthParamsSchema,
+      'X-Idempotency-Key': IdempotencyKeyParamsSchema,
+    }),
+    params: z.object({
+      address: z
+        .string()
+        .regex(/^0x[0-9a-fA-F]{40}$/)
+        .openapi({
+          param: {
+            name: 'address',
+            description: 'The 0x-prefixed address of the EVM account to deposit from.',
+            in: 'path',
+            required: true,
+            schema: { type: 'string', pattern: '^0x[0-9a-fA-F]{40}$' },
+            example: '0x742d35Cc6634C0532925a3b844Bc454e4438f44e',
+          },
+        }),
+    }),
+    body: {
+      content: {
+        'application/json': {
+          schema: DepositToVaultWithEvmAccountRequestSchema,
+          examples: {
+            deposit: {
+              summary: 'Deposit into a vault',
+              value: {
+                vaultId: 'vault_019f5f10-096a-7a23-86df-f479650d813f',
+                amount: '25.50',
+                maxSlippageBps: 100,
+              },
+            },
+            deposit_to_different_receiver: {
+              summary: 'Deposit and send the vault shares to a different address',
+              value: {
+                vaultId: 'vault_019f5f10-096a-7a23-86df-f479650d813f',
+                amount: '25.50',
+                receiver: '0x1234567890123456789012345678901234567890',
+              },
+            },
+          },
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'Successfully broadcast the deposit.',
+      content: {
+        'application/json': {
+          schema: EoaVaultDepositResponseSchema,
+          examples: {
+            deposit: {
+              summary: 'Deposit response',
+              value: {
+                transactionHash:
+                  '0xf8f98fb6726fc936f24b2007df5cb20e2b8444ff3dfaa2a929335f432a9be2e7',
+              },
+            },
+          },
+        },
+      },
+    },
+    400: {
+      description: 'Invalid request.',
+      content: {
+        'application/json': {
+          schema: ErrorSchema,
+          examples: {
+            invalid_amount: {
+              value: {
+                errorType: 'invalid_request',
+                errorMessage: 'Invalid amount format. Amount must be a valid decimal string.',
+              },
+            },
+            vault_not_active: {
+              value: {
+                errorType: 'invalid_request',
+                errorMessage: "Vault 'vault_019f5f10-096a-7a23-86df-f479650d813f' is not active.",
+              },
+            },
+          },
+        },
+      },
+    },
+    401: UnauthorizedErrorResponse,
+    402: PaymentMethodRequiredErrorResponse,
+    403: ForbiddenErrorResponse,
+    404: {
+      description: 'Not found.',
+      content: {
+        'application/json': {
+          schema: ErrorSchema,
+          examples: {
+            vault_not_found: {
+              value: { errorType: 'not_found', errorMessage: 'Vault not found.' },
+            },
+            account_not_found: {
+              value: {
+                errorType: 'not_found',
+                errorMessage: 'EVM account with the given address not found.',
+              },
+            },
+          },
+        },
+      },
+    },
+    409: {
+      description:
+        'Conflict. A deposit or another lend operation for this account and vault is already in progress.',
+      content: {
+        'application/json': {
+          schema: ErrorSchema,
+          examples: {
+            operation_in_progress: {
+              value: {
+                errorType: 'operation_in_progress',
+                errorMessage:
+                  'A lend operation for this account and vault is already in progress. In-progress operations typically complete in under 30 seconds. Please wait for it to complete before retrying.',
+              },
+            },
+          },
+        },
+      },
+    },
+    422: IdempotencyErrorResponse,
+    500: InternalServerErrorResponse,
+    502: BadGatewayErrorResponse,
+    503: ServiceUnavailableErrorResponse,
+  },
+  security: [{ apiKeyAuth: [] }],
+})
+
+export const postV2EvmSmartAccountsAddressLendDepositRoute = createRoute({
+  method: 'post',
+  path: '/v2/evm/smart-accounts/{address}/lend/deposit',
+  tags: ['Lend'],
+  summary: 'Deposit into a vault with an EVM Smart Account',
+  description:
+    'Deposits the vault\'s underlying asset (e.g. USDC) from an EVM Smart Account into a vault. The Smart Account\'s owner must be a CDP EVM account. The token approval and deposit are batched into a single user operation, whose hash is returned in `userOpHash`.\nBecause the approval and deposit execute atomically in a single user operation, no share-price guard is required.\nPoll `getUserOperation` until the user operation reaches a terminal status.\nFor deposits from EVM accounts, use `depositToVaultWithEvmAccount` instead.\nThe `amount` field accepts human-readable amounts as decimal strings (e.g., "1.5", "25.50") in the standard unit denomination of the vault\'s underlying asset.',
+  operationId: 'depositToVaultWithEvmSmartAccount',
+  request: {
+    headers: z.object({
+      'X-Wallet-Auth': XWalletAuthParamsSchema,
+      'X-Idempotency-Key': IdempotencyKeyParamsSchema,
+    }),
+    params: z.object({
+      address: z
+        .string()
+        .regex(/^0x[0-9a-fA-F]{40}$/)
+        .openapi({
+          param: {
+            name: 'address',
+            description: 'The 0x-prefixed address of the EVM Smart Account to deposit from.',
+            in: 'path',
+            required: true,
+            schema: { type: 'string', pattern: '^0x[0-9a-fA-F]{40}$' },
+            example: '0x742d35Cc6634C0532925a3b844Bc454e4438f44e',
+          },
+        }),
+    }),
+    body: {
+      content: {
+        'application/json': {
+          schema: DepositToVaultWithEvmSmartAccountRequestSchema,
+          examples: {
+            deposit: {
+              summary: 'Deposit',
+              value: { vaultId: 'vault_019f5f10-096a-7a23-86df-f479650d813f', amount: '25.50' },
+            },
+            deposit_cdp_paymaster: {
+              summary: 'Deposit with CDP Paymaster',
+              value: {
+                vaultId: 'vault_019f5f10-096a-7a23-86df-f479650d813f',
+                amount: '25.50',
+                useCdpPaymaster: true,
+              },
+            },
+            deposit_to_different_receiver: {
+              summary: 'Deposit and send the vault shares to a different address',
+              value: {
+                vaultId: 'vault_019f5f10-096a-7a23-86df-f479650d813f',
+                amount: '25.50',
+                receiver: '0x1234567890123456789012345678901234567890',
+              },
+            },
+          },
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description:
+        'Successfully broadcast the deposit user operation. Poll `getUserOperation` for its status.',
+      content: {
+        'application/json': {
+          schema: SmartAccountVaultDepositResponseSchema,
+          examples: {
+            deposit: {
+              summary: 'Deposit response',
+              value: {
+                userOpHash: '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef',
+              },
+            },
+          },
+        },
+      },
+    },
+    400: {
+      description: 'Invalid request.',
+      content: {
+        'application/json': {
+          schema: ErrorSchema,
+          examples: {
+            invalid_amount: {
+              value: {
+                errorType: 'invalid_request',
+                errorMessage: 'Invalid amount format. Amount must be a valid decimal string.',
+              },
+            },
+            vault_not_active: {
+              value: {
+                errorType: 'invalid_request',
+                errorMessage: "Vault 'vault_019f5f10-096a-7a23-86df-f479650d813f' is not active.",
+              },
+            },
+            conflicting_paymaster: {
+              value: {
+                errorType: 'invalid_request',
+                errorMessage:
+                  "Cannot specify both 'useCdpPaymaster' and 'paymasterUrl'. Please use only one.",
+              },
+            },
+            paymaster_context_without_paymaster: {
+              value: {
+                errorType: 'invalid_request',
+                errorMessage:
+                  'paymasterContext requires a paymaster: set paymasterUrl or useCdpPaymaster.',
+              },
+            },
+          },
+        },
+      },
+    },
+    401: UnauthorizedErrorResponse,
+    402: PaymentMethodRequiredErrorResponse,
+    403: ForbiddenErrorResponse,
+    404: {
+      description: 'Not found.',
+      content: {
+        'application/json': {
+          schema: ErrorSchema,
+          examples: {
+            vault_not_found: {
+              value: { errorType: 'not_found', errorMessage: 'Vault not found.' },
+            },
+            account_not_found: {
+              value: {
+                errorType: 'not_found',
+                errorMessage: 'EVM Smart Account with the given address not found.',
+              },
+            },
+          },
+        },
+      },
+    },
+    409: {
+      description:
+        'Conflict. A deposit or another lend operation for this account and vault is already in progress.',
+      content: {
+        'application/json': {
+          schema: ErrorSchema,
+          examples: {
+            operation_in_progress: {
+              value: {
+                errorType: 'operation_in_progress',
+                errorMessage:
+                  'A lend operation for this account and vault is already in progress. In-progress operations typically complete in under 30 seconds. Please wait for it to complete before retrying.',
+              },
+            },
+          },
+        },
+      },
+    },
+    422: IdempotencyErrorResponse,
+    500: InternalServerErrorResponse,
+    502: BadGatewayErrorResponse,
+    503: ServiceUnavailableErrorResponse,
+  },
+  security: [{ apiKeyAuth: [] }],
+})
+
+export const postV2EvmAccountsAddressLendWithdrawRoute = createRoute({
+  method: 'post',
+  path: '/v2/evm/accounts/{address}/lend/withdraw',
+  tags: ['Lend'],
+  summary: 'Withdraw from a vault with an EVM account',
+  description:
+    'Withdraws the vault\'s underlying asset (e.g. USDC) from an EVM account\'s position in a vault. The account signs an EIP-2612 permit over its vault shares authorizing the withdrawal, and the share approval and withdrawal are executed in a single transaction. The transaction hash is returned in the response.\nFor withdrawals from EVM Smart Accounts, use `withdrawFromVaultWithEvmSmartAccount` instead.\nProvide either `amount` or `withdrawAll: true`. The `amount` field accepts human-readable amounts as decimal strings (e.g., "1.5", "25.50") in the standard unit denomination of the vault\'s underlying asset. Set `withdrawAll` to `true` to withdraw the entire position: every vault share held by the account is redeemed, so no residual shares remain from interest that accrues before execution.',
+  operationId: 'withdrawFromVaultWithEvmAccount',
+  request: {
+    headers: z.object({
+      'X-Wallet-Auth': XWalletAuthParamsSchema,
+      'X-Idempotency-Key': IdempotencyKeyParamsSchema,
+    }),
+    params: z.object({
+      address: z
+        .string()
+        .regex(/^0x[0-9a-fA-F]{40}$/)
+        .openapi({
+          param: {
+            name: 'address',
+            description: 'The 0x-prefixed address of the EVM account to withdraw from.',
+            in: 'path',
+            required: true,
+            schema: { type: 'string', pattern: '^0x[0-9a-fA-F]{40}$' },
+            example: '0x742d35Cc6634C0532925a3b844Bc454e4438f44e',
+          },
+        }),
+    }),
+    body: {
+      content: {
+        'application/json': {
+          schema: WithdrawFromVaultWithEvmAccountRequestSchema,
+          examples: {
+            withdraw_amount: {
+              summary: 'Withdraw an amount from a vault',
+              value: {
+                vaultId: 'vault_019f5f10-096a-7a23-86df-f479650d813f',
+                amount: '25.50',
+                maxSlippageBps: 100,
+              },
+            },
+            withdraw_all: {
+              summary: 'Withdraw the entire position from a vault',
+              value: { vaultId: 'vault_019f5f10-096a-7a23-86df-f479650d813f', withdrawAll: true },
+            },
+            withdraw_to_different_receiver: {
+              summary: 'Withdraw and send the underlying asset to a different address',
+              value: {
+                vaultId: 'vault_019f5f10-096a-7a23-86df-f479650d813f',
+                amount: '25.50',
+                receiver: '0x1234567890123456789012345678901234567890',
+              },
+            },
+          },
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'Successfully broadcast the withdrawal.',
+      content: {
+        'application/json': {
+          schema: EoaVaultWithdrawResponseSchema,
+          examples: {
+            withdraw: {
+              summary: 'Withdrawal response',
+              value: {
+                transactionHash:
+                  '0xf8f98fb6726fc936f24b2007df5cb20e2b8444ff3dfaa2a929335f432a9be2e7',
+              },
+            },
+          },
+        },
+      },
+    },
+    400: {
+      description: 'Invalid request.',
+      content: {
+        'application/json': {
+          schema: ErrorSchema,
+          examples: {
+            invalid_amount: {
+              value: {
+                errorType: 'invalid_request',
+                errorMessage: 'Invalid amount format. Amount must be a valid decimal string.',
+              },
+            },
+            amount_and_withdraw_all: {
+              value: {
+                errorType: 'invalid_request',
+                errorMessage:
+                  "Cannot specify both 'amount' and 'withdrawAll'. Please use only one.",
+              },
+            },
+            missing_amount: {
+              value: {
+                errorType: 'invalid_request',
+                errorMessage: "Either 'amount' or 'withdrawAll' must be provided.",
+              },
+            },
+            insufficient_position: {
+              value: {
+                errorType: 'invalid_request',
+                errorMessage: "Withdrawal amount exceeds the account's position in the vault.",
+              },
+            },
+            no_position: {
+              value: {
+                errorType: 'invalid_request',
+                errorMessage: 'The account has no position in the vault to withdraw.',
+              },
+            },
+          },
+        },
+      },
+    },
+    401: UnauthorizedErrorResponse,
+    402: PaymentMethodRequiredErrorResponse,
+    403: ForbiddenErrorResponse,
+    404: {
+      description: 'Not found.',
+      content: {
+        'application/json': {
+          schema: ErrorSchema,
+          examples: {
+            vault_not_found: {
+              value: { errorType: 'not_found', errorMessage: 'Vault not found.' },
+            },
+            account_not_found: {
+              value: {
+                errorType: 'not_found',
+                errorMessage: 'EVM account with the given address not found.',
+              },
+            },
+          },
+        },
+      },
+    },
+    409: {
+      description:
+        'Conflict. A withdrawal or another lend operation for this account and vault is already in progress.',
+      content: {
+        'application/json': {
+          schema: ErrorSchema,
+          examples: {
+            operation_in_progress: {
+              value: {
+                errorType: 'operation_in_progress',
+                errorMessage:
+                  'A lend operation for this account and vault is already in progress. In-progress operations typically complete in under 30 seconds. Please wait for it to complete before retrying.',
+              },
+            },
+          },
+        },
+      },
+    },
+    422: IdempotencyErrorResponse,
+    500: InternalServerErrorResponse,
+    502: BadGatewayErrorResponse,
+    503: ServiceUnavailableErrorResponse,
+  },
+  security: [{ apiKeyAuth: [] }],
+})
+
+export const postV2EvmSmartAccountsAddressLendWithdrawRoute = createRoute({
+  method: 'post',
+  path: '/v2/evm/smart-accounts/{address}/lend/withdraw',
+  tags: ['Lend'],
+  summary: 'Withdraw from a vault with an EVM Smart Account',
+  description:
+    "Withdraws the vault's underlying asset (e.g. USDC) from an EVM Smart Account's position in a vault. The Smart Account's owner must be a CDP EVM account. The share approval and withdrawal are batched into a single user operation, whose hash is returned in `userOpHash`.\nThe withdrawal reverts if the vault's share price moves beyond `maxSlippageBps` before the user operation is included onchain.\nPoll `getUserOperation` until the user operation reaches a terminal status.\nFor withdrawals from EVM accounts, use `withdrawFromVaultWithEvmAccount` instead.\nProvide either `amount` or `withdrawAll: true`. The `amount` field accepts human-readable amounts as decimal strings (e.g., \"1.5\", \"25.50\") in the standard unit denomination of the vault's underlying asset. Set `withdrawAll` to `true` to withdraw the entire position: every vault share held by the account is redeemed, so no residual shares remain from interest that accrues before execution.",
+  operationId: 'withdrawFromVaultWithEvmSmartAccount',
+  request: {
+    headers: z.object({
+      'X-Wallet-Auth': XWalletAuthParamsSchema,
+      'X-Idempotency-Key': IdempotencyKeyParamsSchema,
+    }),
+    params: z.object({
+      address: z
+        .string()
+        .regex(/^0x[0-9a-fA-F]{40}$/)
+        .openapi({
+          param: {
+            name: 'address',
+            description: 'The 0x-prefixed address of the EVM Smart Account to withdraw from.',
+            in: 'path',
+            required: true,
+            schema: { type: 'string', pattern: '^0x[0-9a-fA-F]{40}$' },
+            example: '0x742d35Cc6634C0532925a3b844Bc454e4438f44e',
+          },
+        }),
+    }),
+    body: {
+      content: {
+        'application/json': {
+          schema: WithdrawFromVaultWithEvmSmartAccountRequestSchema,
+          examples: {
+            withdraw_amount: {
+              summary: 'Withdraw an amount',
+              value: { vaultId: 'vault_019f5f10-096a-7a23-86df-f479650d813f', amount: '25.50' },
+            },
+            withdraw_all_cdp_paymaster: {
+              summary: 'Withdraw the entire position with CDP Paymaster',
+              value: {
+                vaultId: 'vault_019f5f10-096a-7a23-86df-f479650d813f',
+                withdrawAll: true,
+                useCdpPaymaster: true,
+              },
+            },
+            withdraw_to_different_receiver: {
+              summary: 'Withdraw and send the underlying asset to a different address',
+              value: {
+                vaultId: 'vault_019f5f10-096a-7a23-86df-f479650d813f',
+                amount: '25.50',
+                receiver: '0x1234567890123456789012345678901234567890',
+              },
+            },
+          },
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description:
+        'Successfully broadcast the withdrawal user operation. Poll `getUserOperation` for its status.',
+      content: {
+        'application/json': {
+          schema: SmartAccountVaultWithdrawResponseSchema,
+          examples: {
+            withdraw: {
+              summary: 'Withdrawal response',
+              value: {
+                userOpHash: '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef',
+              },
+            },
+          },
+        },
+      },
+    },
+    400: {
+      description: 'Invalid request.',
+      content: {
+        'application/json': {
+          schema: ErrorSchema,
+          examples: {
+            invalid_amount: {
+              value: {
+                errorType: 'invalid_request',
+                errorMessage: 'Invalid amount format. Amount must be a valid decimal string.',
+              },
+            },
+            amount_and_withdraw_all: {
+              value: {
+                errorType: 'invalid_request',
+                errorMessage:
+                  "Cannot specify both 'amount' and 'withdrawAll'. Please use only one.",
+              },
+            },
+            missing_amount: {
+              value: {
+                errorType: 'invalid_request',
+                errorMessage: "Either 'amount' or 'withdrawAll' must be provided.",
+              },
+            },
+            insufficient_position: {
+              value: {
+                errorType: 'invalid_request',
+                errorMessage: "Withdrawal amount exceeds the account's position in the vault.",
+              },
+            },
+            no_position: {
+              value: {
+                errorType: 'invalid_request',
+                errorMessage: 'The account has no position in the vault to withdraw.',
+              },
+            },
+            conflicting_paymaster: {
+              value: {
+                errorType: 'invalid_request',
+                errorMessage:
+                  "Cannot specify both 'useCdpPaymaster' and 'paymasterUrl'. Please use only one.",
+              },
+            },
+            paymaster_context_without_paymaster: {
+              value: {
+                errorType: 'invalid_request',
+                errorMessage:
+                  'paymasterContext requires a paymaster: set paymasterUrl or useCdpPaymaster.',
+              },
+            },
+          },
+        },
+      },
+    },
+    401: UnauthorizedErrorResponse,
+    402: PaymentMethodRequiredErrorResponse,
+    403: ForbiddenErrorResponse,
+    404: {
+      description: 'Not found.',
+      content: {
+        'application/json': {
+          schema: ErrorSchema,
+          examples: {
+            vault_not_found: {
+              value: { errorType: 'not_found', errorMessage: 'Vault not found.' },
+            },
+            account_not_found: {
+              value: {
+                errorType: 'not_found',
+                errorMessage: 'EVM Smart Account with the given address not found.',
+              },
+            },
+          },
+        },
+      },
+    },
+    409: {
+      description:
+        'Conflict. A withdrawal or another lend operation for this account and vault is already in progress.',
       content: {
         'application/json': {
           schema: ErrorSchema,
@@ -45197,7 +46866,7 @@ export const postV2OnrampMobileSessionsChallengesRoute = createRoute({
       content: {
         'application/json': {
           schema: OnrampSessionRequestSchema.and(
-            z.object({}).openapi({ required: ['redirectUrl'] }),
+            z.looseObject({}).openapi({ required: ['redirectUrl'] }),
           ),
         },
       },

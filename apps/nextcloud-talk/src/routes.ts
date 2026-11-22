@@ -422,8 +422,23 @@ const CapabilitiesSchema = z
               .openapi({
                 description: 'Whether per-conversation subfolders are used for attachments',
               }),
+            'default-allow-edit': z
+              .boolean()
+              .openapi({ description: 'Whether shared files are editable by default' }),
+            'default-original-quality': z
+              .boolean()
+              .openapi({
+                description: 'Whether images are uploaded in original quality by default',
+              }),
           })
-          .openapi({ required: ['allowed', 'conversation-subfolders'] }),
+          .openapi({
+            required: [
+              'allowed',
+              'conversation-subfolders',
+              'default-allow-edit',
+              'default-original-quality',
+            ],
+          }),
         call: z
           .object({
             enabled: z.boolean().openapi({ description: 'Whether calls are enabled' }),
@@ -3298,6 +3313,13 @@ const SignalingFederationSettingsSchema = z
     nextcloudServer: z
       .string()
       .openapi({ description: 'URL of the Nextcloud server for federation' }),
+    joinAuthParams: z
+      .object({ token: z.string() })
+      .exactOptional()
+      .openapi({
+        description: 'Authentication parameters for the federation join request',
+        required: ['token'],
+      }),
     helloAuthParams: z
       .object({ token: z.string() })
       .openapi({
@@ -7150,6 +7172,7 @@ export const getOcsV2PhpAppsSpreedApiApiVersionChatTokenRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 100, minimum: 1, maximum: 200 },
             required: false,
           },
+          default: 100,
         }),
       lastKnownMessageId: z
         .preprocess((val) => {
@@ -7169,6 +7192,7 @@ export const getOcsV2PhpAppsSpreedApiApiVersionChatTokenRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 0, minimum: 0 },
             required: false,
           },
+          default: 0,
         }),
       lastCommonReadId: z
         .preprocess((val) => {
@@ -7189,6 +7213,7 @@ export const getOcsV2PhpAppsSpreedApiApiVersionChatTokenRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 0, minimum: 0 },
             required: false,
           },
+          default: 0,
         }),
       timeout: z
         .preprocess((val) => {
@@ -7208,6 +7233,7 @@ export const getOcsV2PhpAppsSpreedApiApiVersionChatTokenRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 30, minimum: 0, maximum: 30 },
             required: false,
           },
+          default: 30,
         }),
       setReadMarker: z
         .preprocess(
@@ -7231,6 +7257,7 @@ export const getOcsV2PhpAppsSpreedApiApiVersionChatTokenRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 1, enum: [0, 1] },
             required: false,
           },
+          default: 1,
         }),
       includeLastKnown: z
         .preprocess(
@@ -7253,6 +7280,7 @@ export const getOcsV2PhpAppsSpreedApiApiVersionChatTokenRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 0, enum: [0, 1] },
             required: false,
           },
+          default: 0,
         }),
       noStatusUpdate: z
         .preprocess(
@@ -7276,6 +7304,7 @@ export const getOcsV2PhpAppsSpreedApiApiVersionChatTokenRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 0, enum: [0, 1] },
             required: false,
           },
+          default: 0,
         }),
       markNotificationsAsRead: z
         .preprocess(
@@ -7298,6 +7327,7 @@ export const getOcsV2PhpAppsSpreedApiApiVersionChatTokenRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 1, enum: [0, 1] },
             required: false,
           },
+          default: 1,
         }),
       threadId: z
         .preprocess((val) => {
@@ -7317,6 +7347,7 @@ export const getOcsV2PhpAppsSpreedApiApiVersionChatTokenRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 0, minimum: 0 },
             required: false,
           },
+          default: 0,
         }),
     }),
     headers: z.object({
@@ -8474,6 +8505,7 @@ export const getOcsV2PhpAppsSpreedApiApiVersionChatTokenShareRoute = createRoute
             schema: { type: 'integer', format: 'int64', default: 0, minimum: 0 },
             required: false,
           },
+          default: 0,
         }),
       limit: z
         .preprocess((val) => {
@@ -8493,6 +8525,7 @@ export const getOcsV2PhpAppsSpreedApiApiVersionChatTokenShareRoute = createRoute
             schema: { type: 'integer', format: 'int64', default: 100, minimum: 1, maximum: 200 },
             required: false,
           },
+          default: 100,
         }),
     }),
     headers: z.object({
@@ -8921,6 +8954,7 @@ export const getOcsV2PhpAppsSpreedApiApiVersionChatTokenMessageIdContextRoute = 
             schema: { type: 'integer', format: 'int64', default: 50, minimum: 0, maximum: 100 },
             required: false,
           },
+          default: 50,
         }),
       threadId: z
         .preprocess((val) => {
@@ -8940,6 +8974,7 @@ export const getOcsV2PhpAppsSpreedApiApiVersionChatTokenMessageIdContextRoute = 
             schema: { type: 'integer', format: 'int64', default: 0, minimum: 0 },
             required: false,
           },
+          default: 0,
         }),
     }),
     headers: z.object({
@@ -10186,6 +10221,7 @@ export const getOcsV2PhpAppsSpreedApiApiVersionChatTokenShareOverviewRoute = cre
             schema: { type: 'integer', format: 'int64', default: 7, minimum: 1, maximum: 20 },
             required: false,
           },
+          default: 7,
         }),
     }),
     headers: z.object({
@@ -10704,6 +10740,7 @@ export const getOcsV2PhpAppsSpreedApiApiVersionChatTokenMentionsRoute = createRo
             schema: { type: 'integer', format: 'int64', default: 20 },
             required: false,
           },
+          default: 20,
         }),
       includeStatus: z
         .stringbool()
@@ -17015,6 +17052,7 @@ export const getOcsV2PhpAppsSpreedApiApiVersionRoomRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 0, enum: [0, 1] },
             required: false,
           },
+          default: 0,
         }),
       includeStatus: z
         .stringbool()
@@ -17047,6 +17085,7 @@ export const getOcsV2PhpAppsSpreedApiApiVersionRoomRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 0, minimum: 0 },
             required: false,
           },
+          default: 0,
         }),
       includeLastMessage: z
         .stringbool()
@@ -22466,6 +22505,7 @@ export const deleteOcsV2PhpAppsSpreedApiApiVersionRoomTokenModeratorsRoute = cre
             schema: { type: 'integer', format: 'int64', default: 0 },
             required: false,
           },
+          default: 0,
         }),
     }),
     headers: z.object({
@@ -25354,6 +25394,7 @@ export const getOcsV2PhpAppsSpreedApiApiVersionChatTokenThreadsRecentRoute = cre
             schema: { type: 'integer', format: 'int64', default: 50, minimum: 1, maximum: 50 },
             required: false,
           },
+          default: 50,
         }),
     }),
     headers: z.object({
@@ -25443,6 +25484,7 @@ export const getOcsV2PhpAppsSpreedApiApiVersionChatSubscribedThreadsRoute = crea
             schema: { type: 'integer', format: 'int64', default: 100, minimum: 1, maximum: 100 },
             required: false,
           },
+          default: 100,
         }),
       offset: z
         .preprocess((val) => {
@@ -25462,6 +25504,7 @@ export const getOcsV2PhpAppsSpreedApiApiVersionChatSubscribedThreadsRoute = crea
             schema: { type: 'integer', format: 'int64', default: 0, minimum: 0 },
             required: false,
           },
+          default: 0,
         }),
     }),
     headers: z.object({

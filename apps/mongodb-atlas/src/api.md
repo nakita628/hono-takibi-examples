@@ -799,6 +799,8 @@ Create a new AI model API key for the given group.
 |---|---|
 |» cloud|ANY|
 |» geography|ANY|
+|» geography|EU|
+|» geography|US|
 
 > Example responses
 
@@ -17703,6 +17705,367 @@ To perform this operation, you must be authenticated by means of one of the foll
 ServiceAccounts, DigestAuth
 </aside>
 
+## Validate One Cluster Configuration
+
+<a id="opIdvalidateGroupClusterConfigurations"></a>
+
+> Code samples
+
+```bash
+curl https://cloud.mongodb.com/api/atlas/v2/groups/32b6e34b3d91647abb20e7b8/clusterConfigurations:validate \
+  -X POST \
+  -H 'Content-Type: application/vnd.atlas.2025-03-12+json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "advancedConfiguration": {
+      "changeStreamOptionsPreAndPostImagesExpireAfterSeconds": -1,
+      "chunkMigrationConcurrency": 0,
+      "customOpensslCipherConfigTls12": [
+        "TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384"
+      ],
+      "customOpensslCipherConfigTls13": [
+        "TLS_AES_256_GCM_SHA384"
+      ],
+      "defaultMaxTimeMS": 0,
+      "defaultWriteConcern": "string",
+      "javascriptEnabled": true,
+      "minimumEnabledTlsProtocol": "TLS1_2",
+      "noTableScan": true,
+      "oplogMinRetentionHours": 0,
+      "oplogSizeMB": 0,
+      "queryStatsLogVerbosity": 0,
+      "sampleRefreshIntervalBIConnector": 0,
+      "sampleSizeBIConnector": 0,
+      "tlsCipherConfigMode": "CUSTOM",
+      "transactionLifetimeLimitSeconds": 1
+    },
+    "clusterDescription": {
+      "acceptDataRisksAndForceReplicaSetReconfig": "1970-01-01T00:00:00Z",
+      "adaptiveCapacity": "ENABLED",
+      "advancedConfiguration": {
+        "customOpensslCipherConfigTls12": [
+          "TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384"
+        ],
+        "customOpensslCipherConfigTls13": [
+          "TLS_AES_256_GCM_SHA384"
+        ],
+        "minimumEnabledTlsProtocol": "TLS1_2",
+        "tlsCipherConfigMode": "CUSTOM"
+      },
+      "backupEnabled": true,
+      "biConnector": {
+        "enabled": true,
+        "readPreference": "PRIMARY"
+      },
+      "clusterType": "REPLICASET",
+      "configServerManagementMode": "ATLAS_MANAGED",
+      "databaseEdition": "CORE",
+      "diskWarmingMode": "FULLY_WARMED",
+      "encryptionAtRestProvider": "NONE",
+      "globalClusterSelfManagedSharding": true,
+      "labels": [
+        {
+          "key": "string",
+          "value": "string"
+        }
+      ],
+      "mongoDBMajorVersion": "string",
+      "name": "string",
+      "paused": true,
+      "pitEnabled": true,
+      "redactClientLogData": true,
+      "replicaSetScalingStrategy": "WORKLOAD_TYPE",
+      "replicationSpecs": [
+        {
+          "regionConfigs": [
+            {
+              "electableSpecs": {
+                "diskIOPS": 0,
+                "diskSizeGB": 0,
+                "ebsVolumeType": "STANDARD",
+                "instanceSize": "M10",
+                "nodeCount": 3
+              },
+              "priority": 7,
+              "providerName": "AWS",
+              "regionName": "US_GOV_WEST_1"
+            }
+          ],
+          "zoneName": "string"
+        }
+      ],
+      "retainBackups": false,
+      "rootCertType": "ISRGROOTX1",
+      "searchAutoMigration": {
+        "disabled": false
+      },
+      "tags": [
+        {
+          "key": "string",
+          "value": "string"
+        }
+      ],
+      "terminationProtectionEnabled": false,
+      "useAwsTimeBasedSnapshotCopyForFastInitialSync": false,
+      "versionReleaseSystem": "LTS"
+    },
+    "clusterName": "string",
+    "editing": true,
+    "searchDeploymentSpec": {
+      "instanceSize": "S10_HIGHCPU",
+      "nodeCount": 2
+    },
+    "tags": [
+      {
+        "key": "string",
+        "value": "string"
+      }
+    ]
+  }'
+```
+
+`POST /api/atlas/v2/groups/{groupId}/clusterConfigurations:validate`
+
+Checks if the given cluster configuration is valid and ready to be used to create or edit a cluster.
+
+> Body parameter
+
+```json
+{
+  "advancedConfiguration": {
+    "changeStreamOptionsPreAndPostImagesExpireAfterSeconds": -1,
+    "chunkMigrationConcurrency": 0,
+    "customOpensslCipherConfigTls12": [
+      "TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384"
+    ],
+    "customOpensslCipherConfigTls13": [
+      "TLS_AES_256_GCM_SHA384"
+    ],
+    "defaultMaxTimeMS": 0,
+    "defaultWriteConcern": "string",
+    "javascriptEnabled": true,
+    "minimumEnabledTlsProtocol": "TLS1_2",
+    "noTableScan": true,
+    "oplogMinRetentionHours": 0,
+    "oplogSizeMB": 0,
+    "queryStatsLogVerbosity": 0,
+    "sampleRefreshIntervalBIConnector": 0,
+    "sampleSizeBIConnector": 0,
+    "tlsCipherConfigMode": "CUSTOM",
+    "transactionLifetimeLimitSeconds": 1
+  },
+  "clusterDescription": {
+    "acceptDataRisksAndForceReplicaSetReconfig": "1970-01-01T00:00:00Z",
+    "adaptiveCapacity": "ENABLED",
+    "advancedConfiguration": {
+      "customOpensslCipherConfigTls12": [
+        "TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384"
+      ],
+      "customOpensslCipherConfigTls13": [
+        "TLS_AES_256_GCM_SHA384"
+      ],
+      "minimumEnabledTlsProtocol": "TLS1_2",
+      "tlsCipherConfigMode": "CUSTOM"
+    },
+    "backupEnabled": true,
+    "biConnector": {
+      "enabled": true,
+      "readPreference": "PRIMARY"
+    },
+    "clusterType": "REPLICASET",
+    "configServerManagementMode": "ATLAS_MANAGED",
+    "databaseEdition": "CORE",
+    "diskWarmingMode": "FULLY_WARMED",
+    "encryptionAtRestProvider": "NONE",
+    "globalClusterSelfManagedSharding": true,
+    "labels": [
+      {
+        "key": "string",
+        "value": "string"
+      }
+    ],
+    "mongoDBMajorVersion": "string",
+    "name": "string",
+    "paused": true,
+    "pitEnabled": true,
+    "redactClientLogData": true,
+    "replicaSetScalingStrategy": "WORKLOAD_TYPE",
+    "replicationSpecs": [
+      {
+        "regionConfigs": [
+          {
+            "electableSpecs": {
+              "diskIOPS": 0,
+              "diskSizeGB": 0,
+              "ebsVolumeType": "STANDARD",
+              "instanceSize": "M10",
+              "nodeCount": 3
+            },
+            "priority": 7,
+            "providerName": "AWS",
+            "regionName": "US_GOV_WEST_1"
+          }
+        ],
+        "zoneName": "string"
+      }
+    ],
+    "retainBackups": false,
+    "rootCertType": "ISRGROOTX1",
+    "searchAutoMigration": {
+      "disabled": false
+    },
+    "tags": [
+      {
+        "key": "string",
+        "value": "string"
+      }
+    ],
+    "terminationProtectionEnabled": false,
+    "useAwsTimeBasedSnapshotCopyForFastInitialSync": false,
+    "versionReleaseSystem": "LTS"
+  },
+  "clusterName": "string",
+  "editing": true,
+  "searchDeploymentSpec": {
+    "instanceSize": "S10_HIGHCPU",
+    "nodeCount": 2
+  },
+  "tags": [
+    {
+      "key": "string",
+      "value": "string"
+    }
+  ]
+}
+```
+
+<h3 id="validate-one-cluster-configuration-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|envelope|query|boolean|false|Flag that indicates whether Application wraps the response in an `envelope` JSON object. Some API clients cannot access the HTTP response headers or status code. To remediate this, set envelope=true in the query. Endpoints that return a list of results use the results object as an envelope. Application adds the status parameter to the response body.|
+|pretty|query|boolean|false|Flag that indicates whether the response body should be in the prettyprint format.|
+|groupId|path|string|true|Unique 24-hexadecimal digit string that identifies your project. Use the [/groups](#tag/Projects/operation/listProjects) endpoint to retrieve all projects to which the authenticated user has access.<br><br>**NOTE**: Groups and projects are synonymous terms. Your group id is the same as your project id. For existing groups, your group/project id remains the same. The resource and corresponding endpoints use the term groups.|
+|Use-Effective-Instance-Fields|header|boolean|false|When true, hardware specification fields for autoscaling-enabled clusters are resolved to their effective (current operational) values before validating an edit. When false (default), the client-specified values are validated. Set this to match the header sent on the corresponding cluster update.|
+|Use-Effective-Fields-Replication-Specs|header|boolean|false|Controls how `replicationSpecs` are interpreted for auto-sharded clusters when validating an edit. When false (default), `replicationSpecs` is treated as the actual cluster state.|
+|body|body|[ClusterConfigurationValidation](#schemaclusterconfigurationvalidation)|true|Cluster configuration to validate.|
+|» advancedConfiguration|body|[ClusterDescriptionProcessArgs20240805](#schemaclusterdescriptionprocessargs20240805)|false|Advanced MongoDB process configuration options applied to the cluster.|
+|» clusterDescription|body|[ClusterDescription20240805](#schemaclusterdescription20240805)|true|Configuration of a MongoDB Atlas cluster, including its replication topology, instance sizing, storage, and operational settings.|
+|» clusterName|body|string|false|Name of the existing cluster to validate against when editing is true.|
+|» editing|body|boolean|true|When true, validates the configuration as an update to an existing cluster. When false, validates as a new cluster create.|
+|» searchDeploymentSpec|body|[ApiSearchDeploymentSpecView](#schemaapisearchdeploymentspecview)|false|Hardware specification for the Search Nodes that back a search deployment.|
+|» tags|body|[[ResourceTag](#schemaresourcetag)]|false|Optional list of resource tags.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "errors": [
+    {
+      "errorCode": "CLUSTER_NOT_FOUND",
+      "validationIssue": "string"
+    }
+  ],
+  "valid": true
+}
+```
+
+> 400 Response
+
+```json
+{
+  "detail": "(This is just an example, the exception may not be related to this endpoint) No provider AWS exists.",
+  "error": 400,
+  "errorCode": "VALIDATION_ERROR",
+  "reason": "Bad Request"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "detail": "(This is just an example, the exception may not be related to this endpoint)",
+  "error": 401,
+  "errorCode": "NOT_ORG_GROUP_CREATOR",
+  "reason": "Unauthorized"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "detail": "(This is just an example, the exception may not be related to this endpoint)",
+  "error": 403,
+  "errorCode": "CANNOT_CHANGE_GROUP_NAME",
+  "reason": "Forbidden"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "detail": "(This is just an example, the exception may not be related to this endpoint) Cannot find resource AWS",
+  "error": 404,
+  "errorCode": "RESOURCE_NOT_FOUND",
+  "reason": "Not Found"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "detail": "(This is just an example, the exception may not be related to this endpoint)",
+  "error": 429,
+  "errorCode": "RATE_LIMITED",
+  "reason": "Too Many Requests"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "detail": "(This is just an example, the exception may not be related to this endpoint)",
+  "error": 500,
+  "errorCode": "UNEXPECTED_ERROR",
+  "reason": "Internal Server Error"
+}
+```
+
+<h3 id="validate-one-cluster-configuration-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Ok|[ClusterConfigurationValidationResult](#schemaclusterconfigurationvalidationresult)|
+|400|Bad Request|Bad Request.|[ApiError](#schemaapierror)|
+|401|Unauthorized|Unauthorized.|[ApiError](#schemaapierror)|
+|403|Forbidden|Forbidden.|[ApiError](#schemaapierror)|
+|404|Not Found|Not Found.|[ApiError](#schemaapierror)|
+|429|Too Many Requests|Too Many Requests.|[ApiError](#schemaapierror)|
+|500|Internal Server Error|Internal Server Error.|[ApiError](#schemaapierror)|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|200|RateLimit-Limit|integer||The maximum number of requests that a user can make within a specific time window.|
+|200|RateLimit-Remaining|integer||The number of requests remaining in the current rate limit window before the limit is reached.|
+|429|RateLimit-Limit|integer||The maximum number of requests that a user can make within a specific time window.|
+|429|RateLimit-Remaining|integer||The number of requests remaining in the current rate limit window before the limit is reached.|
+|429|Retry-After|integer||The minimum time you should wait, in seconds, before retrying the API request. This header might be returned for 429 or 503 error responses.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+ServiceAccounts, DigestAuth
+</aside>
+
 ## Return All Clusters in One Project
 
 <a id="opIdlistGroupClusters"></a>
@@ -18228,7 +18591,7 @@ Please note that using an `instanceSize` of M2 or M5 will create a Flex cluster 
 |» diskWarmingMode|body|string|false|Disk warming mode selection.|
 |» encryptionAtRestProvider|body|string|false|Cloud service provider that manages your customer keys to provide an additional layer of encryption at rest for the cluster. To enable customer key management for encryption at rest, the cluster `replicationSpecs[n].regionConfigs[m].{type}Specs.instanceSize` setting must be `M10` or higher and `"backupEnabled" : false` or omitted entirely.|
 |» globalClusterSelfManagedSharding|body|boolean|false|Set this field to configure the Sharding Management Mode when creating a new Global Cluster.<br><br>When set to false, the management mode is set to Atlas-Managed Sharding. This mode fully manages the sharding of your Global Cluster and is built to provide a seamless deployment experience.<br><br>When set to true, the management mode is set to Self-Managed Sharding. This mode leaves the management of shards in your hands and is built to provide an advanced and flexible deployment experience.<br><br>This setting cannot be changed once the cluster is deployed.|
-|» labels|body|[[ComponentLabel](#schemacomponentlabel)]|false|**Deprecated.** Collection of key-value pairs between 1 to 255 characters in length that tag and categorize the cluster. The MongoDB Cloud console doesn't display your labels.<br><br>Cluster labels are deprecated and will be removed in a future release. We strongly recommend that you use Resource Tags instead.|
+|» labels|body|[[ComponentLabel](#schemacomponentlabel)]|false|**Deprecated.** Deprecated: Cluster labels will be removed in a future release. We strongly recommend that you use Resource Tags instead.<br><br>Collection of key-value pairs between 1 to 255 characters in length that tag and categorize the cluster. The MongoDB Cloud console doesn't display your labels.|
 |» mongoDBMajorVersion|body|string|false|MongoDB major version of the cluster.<br><br>On creation: Choose from the available versions of MongoDB, or leave unspecified for the current recommended default in the MongoDB Cloud platform. The recommended version is a recent Long Term Support version. The default is not guaranteed to be the most recently released version throughout the entire release cycle. For versions available in a specific project, see the linked documentation or use the API endpoint for [project LTS versions endpoint](#tag/Projects/operation/getProjectLTSVersions).<br><br> On update: Increase version only by 1 major version at a time. If the cluster is pinned to a MongoDB feature compatibility version exactly one major version below the current MongoDB version, the MongoDB version can be downgraded to the previous major version.|
 |» mongoDBVersion|body|string|false|Version of MongoDB that the cluster runs.|
 |» name|body|string|false|Human-readable label that identifies the cluster.|
@@ -18238,7 +18601,7 @@ Please note that using an `instanceSize` of M2 or M5 will create a Flex cluster 
 |» providerBackupEnabled|body|boolean|false|Flag that indicates whether the M10 or higher cluster can perform Cloud Backups. If set to `true`, the cluster can perform backups. If this and `backupEnabled` are set to `false`, the cluster doesn't use MongoDB Cloud backups.|
 |» providerSettings|body|[ClusterProviderSettings](#schemaclusterprovidersettings)|false|Group of cloud provider settings that configure the provisioned MongoDB hosts.|
 |» replicaSetScalingStrategy|body|string|false|Set this field to configure the replica set scaling mode for your cluster.<br><br>By default, Atlas scales under `WORKLOAD_TYPE`. This mode allows Atlas to scale your analytics nodes in parallel to your operational nodes.<br><br>When configured as `SEQUENTIAL`, Atlas scales all nodes sequentially. This mode is intended for steady-state workloads and applications performing latency-sensitive secondary reads.<br><br>When configured as `NODE_TYPE`, Atlas scales your electable nodes in parallel with your read-only and analytics nodes. This mode is intended for large, dynamic workloads requiring frequent and timely cluster tier scaling. This is the fastest scaling strategy, but it might impact latency of workloads when performing extensive secondary reads.|
-|» replicationFactor|body|integer(int32)|false|**Deprecated.** Number of members that belong to the replica set. Each member retains a copy of your databases, providing high availability and data redundancy. Use `replicationSpecs` instead.|
+|» replicationFactor|body|integer(int32)|false|**Deprecated.** Deprecated: Use `replicationSpecs` instead. Number of members that belong to the replica set. Each member retains a copy of your databases, providing high availability and data redundancy.|
 |» replicationSpec|body|object|false|Physical location where MongoDB Cloud provisions cluster nodes.|
 |» » **additionalProperties**|body|[RegionSpec](#schemaregionspec)|false|Physical location where MongoDB Cloud provisions cluster nodes.|
 |» replicationSpecs|body|[[LegacyReplicationSpec](#schemalegacyreplicationspec)]|false|List of settings that configure your cluster regions.<br><br>- For Global Clusters, each object in the array represents one zone where MongoDB Cloud deploys your clusters nodes.<br>- For non-Global sharded clusters and replica sets, the single object represents where MongoDB Cloud deploys your clusters nodes.|
@@ -18530,7 +18893,7 @@ Please note that using an `instanceSize` of M2 or M5 will create a Flex cluster 
 |400|Bad Request|Bad Request.|[ApiError](#schemaapierror)|
 |401|Unauthorized|Unauthorized.|[ApiError](#schemaapierror)|
 |402|Payment Required|Payment Required.|[ApiError](#schemaapierror)|
-|403|Forbidden|Forbidden.|[ApiError](#schemaapierror)|
+|403|Forbidden|Forbidden. Atlas Resource Policy details are returned only when an Atlas Resource Policy denies the request.|[ApiError](#schemaapierror)|
 |404|Not Found|Not Found.|[ApiError](#schemaapierror)|
 |409|Conflict|Conflict.|[ApiError](#schemaapierror)|
 |429|Too Many Requests|Too Many Requests.|[ApiError](#schemaapierror)|
@@ -19210,7 +19573,7 @@ Updates the details for one cluster in the specified project. Clusters contain a
 |» diskWarmingMode|body|string|false|Disk warming mode selection.|
 |» encryptionAtRestProvider|body|string|false|Cloud service provider that manages your customer keys to provide an additional layer of encryption at rest for the cluster. To enable customer key management for encryption at rest, the cluster `replicationSpecs[n].regionConfigs[m].{type}Specs.instanceSize` setting must be `M10` or higher and `"backupEnabled" : false` or omitted entirely.|
 |» globalClusterSelfManagedSharding|body|boolean|false|Set this field to configure the Sharding Management Mode when creating a new Global Cluster.<br><br>When set to false, the management mode is set to Atlas-Managed Sharding. This mode fully manages the sharding of your Global Cluster and is built to provide a seamless deployment experience.<br><br>When set to true, the management mode is set to Self-Managed Sharding. This mode leaves the management of shards in your hands and is built to provide an advanced and flexible deployment experience.<br><br>This setting cannot be changed once the cluster is deployed.|
-|» labels|body|[[ComponentLabel](#schemacomponentlabel)]|false|**Deprecated.** Collection of key-value pairs between 1 to 255 characters in length that tag and categorize the cluster. The MongoDB Cloud console doesn't display your labels.<br><br>Cluster labels are deprecated and will be removed in a future release. We strongly recommend that you use Resource Tags instead.|
+|» labels|body|[[ComponentLabel](#schemacomponentlabel)]|false|**Deprecated.** Deprecated: Cluster labels will be removed in a future release. We strongly recommend that you use Resource Tags instead.<br><br>Collection of key-value pairs between 1 to 255 characters in length that tag and categorize the cluster. The MongoDB Cloud console doesn't display your labels.|
 |» mongoDBMajorVersion|body|string|false|MongoDB major version of the cluster.<br><br>On creation: Choose from the available versions of MongoDB, or leave unspecified for the current recommended default in the MongoDB Cloud platform. The recommended version is a recent Long Term Support version. The default is not guaranteed to be the most recently released version throughout the entire release cycle. For versions available in a specific project, see the linked documentation or use the API endpoint for [project LTS versions endpoint](#tag/Projects/operation/getProjectLTSVersions).<br><br> On update: Increase version only by 1 major version at a time. If the cluster is pinned to a MongoDB feature compatibility version exactly one major version below the current MongoDB version, the MongoDB version can be downgraded to the previous major version.|
 |» mongoDBVersion|body|string|false|Version of MongoDB that the cluster runs.|
 |» name|body|string|false|Human-readable label that identifies the cluster.|
@@ -19220,7 +19583,7 @@ Updates the details for one cluster in the specified project. Clusters contain a
 |» providerBackupEnabled|body|boolean|false|Flag that indicates whether the M10 or higher cluster can perform Cloud Backups. If set to `true`, the cluster can perform backups. If this and `backupEnabled` are set to `false`, the cluster doesn't use MongoDB Cloud backups.|
 |» providerSettings|body|[ClusterProviderSettings](#schemaclusterprovidersettings)|false|Group of cloud provider settings that configure the provisioned MongoDB hosts.|
 |» replicaSetScalingStrategy|body|string|false|Set this field to configure the replica set scaling mode for your cluster.<br><br>By default, Atlas scales under `WORKLOAD_TYPE`. This mode allows Atlas to scale your analytics nodes in parallel to your operational nodes.<br><br>When configured as `SEQUENTIAL`, Atlas scales all nodes sequentially. This mode is intended for steady-state workloads and applications performing latency-sensitive secondary reads.<br><br>When configured as `NODE_TYPE`, Atlas scales your electable nodes in parallel with your read-only and analytics nodes. This mode is intended for large, dynamic workloads requiring frequent and timely cluster tier scaling. This is the fastest scaling strategy, but it might impact latency of workloads when performing extensive secondary reads.|
-|» replicationFactor|body|integer(int32)|false|**Deprecated.** Number of members that belong to the replica set. Each member retains a copy of your databases, providing high availability and data redundancy. Use `replicationSpecs` instead.|
+|» replicationFactor|body|integer(int32)|false|**Deprecated.** Deprecated: Use `replicationSpecs` instead. Number of members that belong to the replica set. Each member retains a copy of your databases, providing high availability and data redundancy.|
 |» replicationSpec|body|object|false|Physical location where MongoDB Cloud provisions cluster nodes.|
 |» » **additionalProperties**|body|[RegionSpec](#schemaregionspec)|false|Physical location where MongoDB Cloud provisions cluster nodes.|
 |» replicationSpecs|body|[[LegacyReplicationSpec](#schemalegacyreplicationspec)]|false|List of settings that configure your cluster regions.<br><br>- For Global Clusters, each object in the array represents one zone where MongoDB Cloud deploys your clusters nodes.<br>- For non-Global sharded clusters and replica sets, the single object represents where MongoDB Cloud deploys your clusters nodes.|
@@ -21662,7 +22025,7 @@ Updates the advanced configuration details for one cluster in the specified proj
 |» defaultMaxTimeMS|body|integer(int32)|false|Default time limit in milliseconds for individual read operations to complete.|
 |» defaultReadConcern|body|string|false|Default level of acknowledgment requested from MongoDB for read operations set for this cluster.<br><br>MongoDB 4.4 clusters default to `available`. MongoDB 5.0 and later clusters default to `local`.|
 |» defaultWriteConcern|body|string|false|Default level of acknowledgment requested from MongoDB for write operations when none is specified by the driver.|
-|» failIndexKeyTooLong|body|boolean|false|**Deprecated.** Flag that indicates whether you can insert or update documents where all indexed entries don't exceed 1024 bytes. If you set this to false, [mongod](https://docs.mongodb.com/upcoming/reference/program/mongod/#mongodb-binary-bin.mongod) writes documents that exceed this limit but doesn't index them. This parameter has been removed as of [MongoDB 4.4](https://www.mongodb.com/docs/manual/reference/parameters/#mongodb-parameter-param.failIndexKeyTooLong).|
+|» failIndexKeyTooLong|body|boolean|false|**Deprecated.** Deprecated: This parameter has been removed as of [MongoDB 4.4](https://www.mongodb.com/docs/manual/reference/parameters/#mongodb-parameter-param.failIndexKeyTooLong). Flag that indicates whether you can insert or update documents where all indexed entries don't exceed 1024 bytes. If you set this to false, [mongod](https://docs.mongodb.com/upcoming/reference/program/mongod/#mongodb-binary-bin.mongod) writes documents that exceed this limit but doesn't index them.|
 |» javascriptEnabled|body|boolean|false|Flag that indicates whether the cluster allows execution of operations that perform server-side executions of JavaScript. When using 8.0+, we recommend disabling server-side JavaScript and using operators of aggregation pipeline as more performant alternative.|
 |» minimumEnabledTlsProtocol|body|string|false|Minimum Transport Layer Security (TLS) version that the cluster accepts for incoming connections.|
 |» noTableScan|body|boolean|false|Flag that indicates whether the cluster disables executing any query that requires a collection scan to return results.|
@@ -23303,7 +23666,7 @@ This endpoint can also be used to upgrade Flex clusters that were created using 
 |» diskWarmingMode|body|string|false|Disk warming mode selection.|
 |» encryptionAtRestProvider|body|string|false|Cloud service provider that manages your customer keys to provide an additional layer of encryption at rest for the cluster. To enable customer key management for encryption at rest, the cluster `replicationSpecs[n].regionConfigs[m].{type}Specs.instanceSize` setting must be `M10` or higher and `"backupEnabled" : false` or omitted entirely.|
 |» globalClusterSelfManagedSharding|body|boolean|false|Set this field to configure the Sharding Management Mode when creating a new Global Cluster.<br><br>When set to false, the management mode is set to Atlas-Managed Sharding. This mode fully manages the sharding of your Global Cluster and is built to provide a seamless deployment experience.<br><br>When set to true, the management mode is set to Self-Managed Sharding. This mode leaves the management of shards in your hands and is built to provide an advanced and flexible deployment experience.<br><br>This setting cannot be changed once the cluster is deployed.|
-|» labels|body|[[ComponentLabel](#schemacomponentlabel)]|false|**Deprecated.** Collection of key-value pairs between 1 to 255 characters in length that tag and categorize the cluster. The MongoDB Cloud console doesn't display your labels.<br><br>Cluster labels are deprecated and will be removed in a future release. We strongly recommend that you use Resource Tags instead.|
+|» labels|body|[[ComponentLabel](#schemacomponentlabel)]|false|**Deprecated.** Deprecated: Cluster labels will be removed in a future release. We strongly recommend that you use Resource Tags instead.<br><br>Collection of key-value pairs between 1 to 255 characters in length that tag and categorize the cluster. The MongoDB Cloud console doesn't display your labels.|
 |» mongoDBMajorVersion|body|string|false|MongoDB major version of the cluster.<br><br>On creation: Choose from the available versions of MongoDB, or leave unspecified for the current recommended default in the MongoDB Cloud platform. The recommended version is a recent Long Term Support version. The default is not guaranteed to be the most recently released version throughout the entire release cycle. For versions available in a specific project, see the linked documentation or use the API endpoint for [project LTS versions endpoint](#tag/Projects/operation/getProjectLTSVersions).<br><br> On update: Increase version only by 1 major version at a time. If the cluster is pinned to a MongoDB feature compatibility version exactly one major version below the current MongoDB version, the MongoDB version can be downgraded to the previous major version.|
 |» mongoDBVersion|body|string|false|Version of MongoDB that the cluster runs.|
 |» name|body|string|true|Human-readable label that identifies the cluster.|
@@ -23313,7 +23676,7 @@ This endpoint can also be used to upgrade Flex clusters that were created using 
 |» providerBackupEnabled|body|boolean|false|Flag that indicates whether the M10 or higher cluster can perform Cloud Backups. If set to `true`, the cluster can perform backups. If this and `backupEnabled` are set to `false`, the cluster doesn't use MongoDB Cloud backups.|
 |» providerSettings|body|[ClusterProviderSettings](#schemaclusterprovidersettings)|false|Group of cloud provider settings that configure the provisioned MongoDB hosts.|
 |» replicaSetScalingStrategy|body|string|false|Set this field to configure the replica set scaling mode for your cluster.<br><br>By default, Atlas scales under `WORKLOAD_TYPE`. This mode allows Atlas to scale your analytics nodes in parallel to your operational nodes.<br><br>When configured as `SEQUENTIAL`, Atlas scales all nodes sequentially. This mode is intended for steady-state workloads and applications performing latency-sensitive secondary reads.<br><br>When configured as `NODE_TYPE`, Atlas scales your electable nodes in parallel with your read-only and analytics nodes. This mode is intended for large, dynamic workloads requiring frequent and timely cluster tier scaling. This is the fastest scaling strategy, but it might impact latency of workloads when performing extensive secondary reads.|
-|» replicationFactor|body|integer(int32)|false|**Deprecated.** Number of members that belong to the replica set. Each member retains a copy of your databases, providing high availability and data redundancy. Use `replicationSpecs` instead.|
+|» replicationFactor|body|integer(int32)|false|**Deprecated.** Deprecated: Use `replicationSpecs` instead. Number of members that belong to the replica set. Each member retains a copy of your databases, providing high availability and data redundancy.|
 |» replicationSpec|body|object|false|Physical location where MongoDB Cloud provisions cluster nodes.|
 |» » **additionalProperties**|body|[RegionSpec](#schemaregionspec)|false|Physical location where MongoDB Cloud provisions cluster nodes.|
 |» replicationSpecs|body|[[LegacyReplicationSpec](#schemalegacyreplicationspec)]|false|List of settings that configure your cluster regions.<br><br>- For Global Clusters, each object in the array represents one zone where MongoDB Cloud deploys your clusters nodes.<br>- For non-Global sharded clusters and replica sets, the single object represents where MongoDB Cloud deploys your clusters nodes.|
@@ -23605,7 +23968,7 @@ This endpoint can also be used to upgrade Flex clusters that were created using 
 |400|Bad Request|Bad Request.|[ApiError](#schemaapierror)|
 |401|Unauthorized|Unauthorized.|[ApiError](#schemaapierror)|
 |402|Payment Required|Payment Required.|[ApiError](#schemaapierror)|
-|403|Forbidden|Forbidden.|[ApiError](#schemaapierror)|
+|403|Forbidden|Forbidden. Atlas Resource Policy details are returned only when an Atlas Resource Policy denies the request.|[ApiError](#schemaapierror)|
 |404|Not Found|Not Found.|[ApiError](#schemaapierror)|
 |409|Conflict|Conflict.|[ApiError](#schemaapierror)|
 |429|Too Many Requests|Too Many Requests.|[ApiError](#schemaapierror)|
@@ -23995,7 +24358,7 @@ Returns the dedicated mongos topologies in the specified project, including topo
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|OK|OK|[PaginatedMongosTopologyResourceResponse](#schemapaginatedmongostopologyresourceresponse)|
+|200|OK|OK|[PaginatedMongosTopologyResponse](#schemapaginatedmongostopologyresponse)|
 |401|Unauthorized|Unauthorized.|[ApiError](#schemaapierror)|
 |403|Forbidden|Forbidden.|[ApiError](#schemaapierror)|
 |404|Not Found|Not Found.|[ApiError](#schemaapierror)|
@@ -24072,7 +24435,7 @@ Attaches a dedicated mongos topology to an existing sharded cluster, triggering 
 |body|body|[MongosTopologyCreateRequest](#schemamongostopologycreaterequest)|true|Dedicated mongos topology to attach.|
 |» clusterName|body|string|false|Human-readable label that identifies the sharded cluster this topology belongs to.|
 |» instanceSize|body|string|false|Instance size of the dedicated mongos hosts (for example, `M30`).|
-|» regionPlacements|body|[[MongosTopologyResourceRegionConfig](#schemamongostopologyresourceregionconfig)]|false|Per-region placement of the dedicated mongos hosts.|
+|» regionPlacements|body|[[MongosRegionPlacement](#schemamongosregionplacement)]|false|Per-region placement of the dedicated mongos hosts.|
 
 > Example responses
 
@@ -24174,10 +24537,10 @@ Attaches a dedicated mongos topology to an existing sharded cluster, triggering 
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|202|Accepted|Accepted|[MongosTopologyResourceResponse](#schemamongostopologyresourceresponse)|
+|202|Accepted|Accepted|[MongosTopologyResponse](#schemamongostopologyresponse)|
 |400|Bad Request|Bad Request.|[ApiError](#schemaapierror)|
 |401|Unauthorized|Unauthorized.|[ApiError](#schemaapierror)|
-|403|Forbidden|Forbidden.|[ApiError](#schemaapierror)|
+|403|Forbidden|Forbidden. Atlas Resource Policy details are returned only when an Atlas Resource Policy denies the request.|[ApiError](#schemaapierror)|
 |404|Not Found|Not Found.|[ApiError](#schemaapierror)|
 |409|Conflict|Conflict.|[ApiError](#schemaapierror)|
 |429|Too Many Requests|Too Many Requests.|[ApiError](#schemaapierror)|
@@ -24302,7 +24665,7 @@ Returns the dedicated mongos topology for the specified cluster, or a topology s
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|OK|OK|[MongosTopologyResourceResponse](#schemamongostopologyresourceresponse)|
+|200|OK|OK|[MongosTopologyResponse](#schemamongostopologyresponse)|
 |401|Unauthorized|Unauthorized.|[ApiError](#schemaapierror)|
 |403|Forbidden|Forbidden.|[ApiError](#schemaapierror)|
 |404|Not Found|Not Found.|[ApiError](#schemaapierror)|
@@ -24424,7 +24787,7 @@ Removes the dedicated mongos topology from the specified cluster, transitioning 
 |---|---|---|---|
 |204|No Content|No Content|None|
 |401|Unauthorized|Unauthorized.|[ApiError](#schemaapierror)|
-|403|Forbidden|Forbidden.|[ApiError](#schemaapierror)|
+|403|Forbidden|Forbidden. Atlas Resource Policy details are returned only when an Atlas Resource Policy denies the request.|[ApiError](#schemaapierror)|
 |404|Not Found|Not Found.|[ApiError](#schemaapierror)|
 |409|Conflict|Conflict.|[ApiError](#schemaapierror)|
 |429|Too Many Requests|Too Many Requests.|[ApiError](#schemaapierror)|
@@ -24501,7 +24864,7 @@ Updates the dedicated mongos tier (instance size or region placements) for the s
 |body|body|[MongosTopologyUpdateRequest](#schemamongostopologyupdaterequest)|true|Dedicated mongos tier fields to update.|
 |» clusterName|body|string|false|Human-readable label that identifies the sharded cluster this topology belongs to.|
 |» instanceSize|body|string|false|Instance size of the dedicated mongos hosts (for example, `M30`).|
-|» regionPlacements|body|[[MongosTopologyResourceRegionConfig](#schemamongostopologyresourceregionconfig)]|false|Per-region placement of the dedicated mongos hosts.|
+|» regionPlacements|body|[[MongosRegionPlacement](#schemamongosregionplacement)]|false|Per-region placement of the dedicated mongos hosts.|
 
 > Example responses
 
@@ -24603,10 +24966,10 @@ Updates the dedicated mongos tier (instance size or region placements) for the s
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|202|Accepted|Accepted|[MongosTopologyResourceResponse](#schemamongostopologyresourceresponse)|
+|202|Accepted|Accepted|[MongosTopologyResponse](#schemamongostopologyresponse)|
 |400|Bad Request|Bad Request.|[ApiError](#schemaapierror)|
 |401|Unauthorized|Unauthorized.|[ApiError](#schemaapierror)|
-|403|Forbidden|Forbidden.|[ApiError](#schemaapierror)|
+|403|Forbidden|Forbidden. Atlas Resource Policy details are returned only when an Atlas Resource Policy denies the request.|[ApiError](#schemaapierror)|
 |404|Not Found|Not Found.|[ApiError](#schemaapierror)|
 |409|Conflict|Conflict.|[ApiError](#schemaapierror)|
 |429|Too Many Requests|Too Many Requests.|[ApiError](#schemaapierror)|
@@ -29875,7 +30238,7 @@ Creates one database user in the specified project. This MongoDB Cloud supports 
 |» password|body|string|false|Alphanumeric string that authenticates this database user against the database specified in `databaseName`. To authenticate with SCRAM-SHA, you must specify this parameter. This parameter doesn't appear in this response.|
 |» roles|body|[[DatabaseUserRole](#schemadatabaseuserrole)]|true|List that provides the pairings of one role with one applicable database.|
 |» scopes|body|[[UserScope](#schemauserscope)]|false|List that contains clusters, MongoDB Atlas Data Lakes, and MongoDB Atlas Streams Workspaces that this database user can access. If omitted, MongoDB Cloud grants the database user access to all the clusters, MongoDB Atlas Data Lakes, and MongoDB Atlas Streams Workspaces in the project.|
-|» username|body|string|true|Human-readable label that represents the user that authenticates to MongoDB. The format of this label depends on the method of authentication:<br><br>\| Authentication Method \| Parameter Needed \| Parameter Value \| username Format \|<br>\|---\|---\|---\|---\|<br>\| AWS IAM \| `awsIAMType` \| `ROLE` \| <abbr title="Amazon Resource Name">ARN</abbr> \|<br>\| AWS IAM \| `awsIAMType` \| `USER` \| <abbr title="Amazon Resource Name">ARN</abbr> \|<br>\| x.509 \| `x509Type` \| `CUSTOMER` \| [RFC 2253](https://tools.ietf.org/html/2253) Distinguished Name \|<br>\| x.509 \| `x509Type` \| `MANAGED` \| [RFC 2253](https://tools.ietf.org/html/2253) Distinguished Name \|<br>\| LDAP \| `ldapAuthType` \| `USER` \| [RFC 2253](https://tools.ietf.org/html/2253) Distinguished Name \|<br>\| LDAP \| `ldapAuthType` \| `GROUP` \| [RFC 2253](https://tools.ietf.org/html/2253) Distinguished Name \|<br>\| OIDC Workforce \| `oidcAuthType` \| `IDP_GROUP` \| Atlas OIDC IdP ID (found in federation settings), followed by a '/', followed by the IdP group name \|<br>\| OIDC Workload \| `oidcAuthType` \| `USER` \| Atlas OIDC IdP ID (found in federation settings), followed by a '/', followed by the IdP user name \|<br>\| SCRAM-SHA \| `awsIAMType`, `x509Type`, `ldapAuthType`, `oidcAuthType` \| `NONE` \| Alphanumeric string \|<br>|
+|» username|body|string|true|Human-readable label that represents the user that authenticates to MongoDB. The format of this label depends on the method of authentication:<br><br>\| Authentication Method \| Parameter Needed \| Parameter Value \| username Format \|<br>\|---\|---\|---\|---\|<br>\| AWS IAM \| `awsIAMType` \| `ROLE` \| <abbr title="Amazon Resource Name">ARN</abbr> \|<br>\| AWS IAM \| `awsIAMType` \| `USER` \| <abbr title="Amazon Resource Name">ARN</abbr> \|<br>\| x.509 \| `x509Type` \| `CUSTOMER` \| [RFC 2253](https://tools.ietf.org/html/2253) Distinguished Name \|<br>\| x.509 \| `x509Type` \| `MANAGED` \| [RFC 2253](https://tools.ietf.org/html/2253) Distinguished Name \|<br>\| LDAP \| `ldapAuthType` \| `USER` \| [RFC 2253](https://tools.ietf.org/html/2253) Distinguished Name \|<br>\| LDAP \| `ldapAuthType` \| `GROUP` \| [RFC 2253](https://tools.ietf.org/html/2253) Distinguished Name \|<br>\| OIDC Workforce or Workload \| `oidcAuthType` \| `IDP_GROUP` \| Atlas OIDC IdP ID (found in federation settings), followed by a '/', followed by a group identifier from the IdP's configured `groupsClaim`. Use when the IdP's `authorizationType` is `GROUP`. The groups claim can be a custom claim, such as `roles`. \|<br>\| OIDC Workforce or Workload \| `oidcAuthType` \| `USER` \| Atlas OIDC IdP ID (found in federation settings), followed by a '/', followed by a user identifier from the IdP's configured `userClaim`. Use when the IdP's `authorizationType` is `USER`. \|<br>\| SCRAM-SHA \| `awsIAMType`, `x509Type`, `ldapAuthType`, `oidcAuthType` \| `NONE` \| Alphanumeric string \|<br>|
 |» x509Type|body|string|false|X.509 method that MongoDB Cloud uses to authenticate the database user.<br><br>- For application-managed X.509, specify `MANAGED`.<br>- For self-managed X.509, specify `CUSTOMER`.<br><br>Users created with the `CUSTOMER` method require a Common Name (CN) in the **username** parameter. You must create externally authenticated users on the `$external` database.|
 
 #### Enumerated Values
@@ -30068,7 +30431,7 @@ Returns one database user that belong to the specified project.
 |groupId|path|string|true|Unique 24-hexadecimal digit string that identifies your project. Use the [/groups](#tag/Projects/operation/listProjects) endpoint to retrieve all projects to which the authenticated user has access.<br><br>**NOTE**: Groups and projects are synonymous terms. Your group id is the same as your project id. For existing groups, your group/project id remains the same. The resource and corresponding endpoints use the term groups.|
 |pretty|query|boolean|false|Flag that indicates whether the response body should be in the prettyprint format.|
 |databaseName|path|string|true|The database against which the database user authenticates. Database users must provide both a username and authentication database to log into MongoDB. If the user authenticates with AWS IAM, x.509, LDAP, or OIDC Workload this value should be `$external`. If the user authenticates with SCRAM-SHA or OIDC Workforce, this value should be `admin`.|
-|username|path|string|true|Human-readable label that represents the user that authenticates to MongoDB. The format of this label depends on the method of authentication:<br><br>\| Authentication Method \| Parameter Needed \| Parameter Value \| username Format \|<br>\|---\|---\|---\|---\|<br>\| AWS IAM \| `awsIAMType` \| `ROLE` \| <abbr title="Amazon Resource Name">ARN</abbr> \|<br>\| AWS IAM \| `awsIAMType` \| `USER` \| <abbr title="Amazon Resource Name">ARN</abbr> \|<br>\| x.509 \| `x509Type` \| `CUSTOMER` \| [RFC 2253](https://tools.ietf.org/html/2253) Distinguished Name \|<br>\| x.509 \| `x509Type` \| `MANAGED` \| [RFC 2253](https://tools.ietf.org/html/2253) Distinguished Name \|<br>\| LDAP \| `ldapAuthType` \| `USER` \| [RFC 2253](https://tools.ietf.org/html/2253) Distinguished Name \|<br>\| LDAP \| `ldapAuthType` \| `GROUP` \| [RFC 2253](https://tools.ietf.org/html/2253) Distinguished Name \|<br>\| OIDC Workforce \| `oidcAuthType` \| `IDP_GROUP` \| Atlas OIDC IdP ID (found in federation settings), followed by a '/', followed by the IdP group name \|<br>\| OIDC Workload \| `oidcAuthType` \| `USER` \| Atlas OIDC IdP ID (found in federation settings), followed by a '/', followed by the IdP user name \|<br>\| SCRAM-SHA \| `awsIAMType`, `x509Type`, `ldapAuthType`, `oidcAuthType` \| `NONE` \| Alphanumeric string \|<br>|
+|username|path|string|true|Human-readable label that represents the user that authenticates to MongoDB. The format of this label depends on the method of authentication:<br><br>\| Authentication Method \| Parameter Needed \| Parameter Value \| username Format \|<br>\|---\|---\|---\|---\|<br>\| AWS IAM \| `awsIAMType` \| `ROLE` \| <abbr title="Amazon Resource Name">ARN</abbr> \|<br>\| AWS IAM \| `awsIAMType` \| `USER` \| <abbr title="Amazon Resource Name">ARN</abbr> \|<br>\| x.509 \| `x509Type` \| `CUSTOMER` \| [RFC 2253](https://tools.ietf.org/html/2253) Distinguished Name \|<br>\| x.509 \| `x509Type` \| `MANAGED` \| [RFC 2253](https://tools.ietf.org/html/2253) Distinguished Name \|<br>\| LDAP \| `ldapAuthType` \| `USER` \| [RFC 2253](https://tools.ietf.org/html/2253) Distinguished Name \|<br>\| LDAP \| `ldapAuthType` \| `GROUP` \| [RFC 2253](https://tools.ietf.org/html/2253) Distinguished Name \|<br>\| OIDC Workforce or Workload \| `oidcAuthType` \| `IDP_GROUP` \| Atlas OIDC IdP ID (found in federation settings), followed by a '/', followed by a group identifier from the IdP's configured `groupsClaim`. Use when the IdP's `authorizationType` is `GROUP`. The groups claim can be a custom claim, such as `roles`. \|<br>\| OIDC Workforce or Workload \| `oidcAuthType` \| `USER` \| Atlas OIDC IdP ID (found in federation settings), followed by a '/', followed by a user identifier from the IdP's configured `userClaim`. Use when the IdP's `authorizationType` is `USER`. \|<br>\| SCRAM-SHA \| `awsIAMType`, `x509Type`, `ldapAuthType`, `oidcAuthType` \| `NONE` \| Alphanumeric string \|<br>|
 
 > Example responses
 
@@ -30218,7 +30581,7 @@ Removes one database user from the specified project.
 |groupId|path|string|true|Unique 24-hexadecimal digit string that identifies your project. Use the [/groups](#tag/Projects/operation/listProjects) endpoint to retrieve all projects to which the authenticated user has access.<br><br>**NOTE**: Groups and projects are synonymous terms. Your group id is the same as your project id. For existing groups, your group/project id remains the same. The resource and corresponding endpoints use the term groups.|
 |pretty|query|boolean|false|Flag that indicates whether the response body should be in the prettyprint format.|
 |databaseName|path|string|true|The database against which the database user authenticates. Database users must provide both a username and authentication database to log into MongoDB. If the user authenticates with AWS IAM, x.509, LDAP, or OIDC Workload this value should be `$external`. If the user authenticates with SCRAM-SHA or OIDC Workforce, this value should be `admin`.|
-|username|path|string|true|Human-readable label that represents the user that authenticates to MongoDB. The format of this label depends on the method of authentication:<br><br>\| Authentication Method \| Parameter Needed \| Parameter Value \| username Format \|<br>\|---\|---\|---\|---\|<br>\| AWS IAM \| `awsIAMType` \| `ROLE` \| <abbr title="Amazon Resource Name">ARN</abbr> \|<br>\| AWS IAM \| `awsIAMType` \| `USER` \| <abbr title="Amazon Resource Name">ARN</abbr> \|<br>\| x.509 \| `x509Type` \| `CUSTOMER` \| [RFC 2253](https://tools.ietf.org/html/2253) Distinguished Name \|<br>\| x.509 \| `x509Type` \| `MANAGED` \| [RFC 2253](https://tools.ietf.org/html/2253) Distinguished Name \|<br>\| LDAP \| `ldapAuthType` \| `USER` \| [RFC 2253](https://tools.ietf.org/html/2253) Distinguished Name \|<br>\| LDAP \| `ldapAuthType` \| `GROUP` \| [RFC 2253](https://tools.ietf.org/html/2253) Distinguished Name \|<br>\| OIDC Workforce \| `oidcAuthType` \| `IDP_GROUP` \| Atlas OIDC IdP ID (found in federation settings), followed by a '/', followed by the IdP group name \|<br>\| OIDC Workload \| `oidcAuthType` \| `USER` \| Atlas OIDC IdP ID (found in federation settings), followed by a '/', followed by the IdP user name \|<br>\| SCRAM-SHA \| `awsIAMType`, `x509Type`, `ldapAuthType`, `oidcAuthType` \| `NONE` \| Alphanumeric string \|<br>|
+|username|path|string|true|Human-readable label that represents the user that authenticates to MongoDB. The format of this label depends on the method of authentication:<br><br>\| Authentication Method \| Parameter Needed \| Parameter Value \| username Format \|<br>\|---\|---\|---\|---\|<br>\| AWS IAM \| `awsIAMType` \| `ROLE` \| <abbr title="Amazon Resource Name">ARN</abbr> \|<br>\| AWS IAM \| `awsIAMType` \| `USER` \| <abbr title="Amazon Resource Name">ARN</abbr> \|<br>\| x.509 \| `x509Type` \| `CUSTOMER` \| [RFC 2253](https://tools.ietf.org/html/2253) Distinguished Name \|<br>\| x.509 \| `x509Type` \| `MANAGED` \| [RFC 2253](https://tools.ietf.org/html/2253) Distinguished Name \|<br>\| LDAP \| `ldapAuthType` \| `USER` \| [RFC 2253](https://tools.ietf.org/html/2253) Distinguished Name \|<br>\| LDAP \| `ldapAuthType` \| `GROUP` \| [RFC 2253](https://tools.ietf.org/html/2253) Distinguished Name \|<br>\| OIDC Workforce or Workload \| `oidcAuthType` \| `IDP_GROUP` \| Atlas OIDC IdP ID (found in federation settings), followed by a '/', followed by a group identifier from the IdP's configured `groupsClaim`. Use when the IdP's `authorizationType` is `GROUP`. The groups claim can be a custom claim, such as `roles`. \|<br>\| OIDC Workforce or Workload \| `oidcAuthType` \| `USER` \| Atlas OIDC IdP ID (found in federation settings), followed by a '/', followed by a user identifier from the IdP's configured `userClaim`. Use when the IdP's `authorizationType` is `USER`. \|<br>\| SCRAM-SHA \| `awsIAMType`, `x509Type`, `ldapAuthType`, `oidcAuthType` \| `NONE` \| Alphanumeric string \|<br>|
 
 > Example responses
 
@@ -30396,7 +30759,7 @@ Updates one database user that belongs to the specified project.
 |groupId|path|string|true|Unique 24-hexadecimal digit string that identifies your project. Use the [/groups](#tag/Projects/operation/listProjects) endpoint to retrieve all projects to which the authenticated user has access.<br><br>**NOTE**: Groups and projects are synonymous terms. Your group id is the same as your project id. For existing groups, your group/project id remains the same. The resource and corresponding endpoints use the term groups.|
 |pretty|query|boolean|false|Flag that indicates whether the response body should be in the prettyprint format.|
 |databaseName|path|string|true|The database against which the database user authenticates. Database users must provide both a username and authentication database to log into MongoDB. If the user authenticates with AWS IAM, x.509, LDAP, or OIDC Workload this value should be `$external`. If the user authenticates with SCRAM-SHA or OIDC Workforce, this value should be `admin`.|
-|username|path|string|true|Human-readable label that represents the user that authenticates to MongoDB. The format of this label depends on the method of authentication:<br><br>\| Authentication Method \| Parameter Needed \| Parameter Value \| username Format \|<br>\|---\|---\|---\|---\|<br>\| AWS IAM \| `awsIAMType` \| `ROLE` \| <abbr title="Amazon Resource Name">ARN</abbr> \|<br>\| AWS IAM \| `awsIAMType` \| `USER` \| <abbr title="Amazon Resource Name">ARN</abbr> \|<br>\| x.509 \| `x509Type` \| `CUSTOMER` \| [RFC 2253](https://tools.ietf.org/html/2253) Distinguished Name \|<br>\| x.509 \| `x509Type` \| `MANAGED` \| [RFC 2253](https://tools.ietf.org/html/2253) Distinguished Name \|<br>\| LDAP \| `ldapAuthType` \| `USER` \| [RFC 2253](https://tools.ietf.org/html/2253) Distinguished Name \|<br>\| LDAP \| `ldapAuthType` \| `GROUP` \| [RFC 2253](https://tools.ietf.org/html/2253) Distinguished Name \|<br>\| OIDC Workforce \| `oidcAuthType` \| `IDP_GROUP` \| Atlas OIDC IdP ID (found in federation settings), followed by a '/', followed by the IdP group name \|<br>\| OIDC Workload \| `oidcAuthType` \| `USER` \| Atlas OIDC IdP ID (found in federation settings), followed by a '/', followed by the IdP user name \|<br>\| SCRAM-SHA \| `awsIAMType`, `x509Type`, `ldapAuthType`, `oidcAuthType` \| `NONE` \| Alphanumeric string \|<br>|
+|username|path|string|true|Human-readable label that represents the user that authenticates to MongoDB. The format of this label depends on the method of authentication:<br><br>\| Authentication Method \| Parameter Needed \| Parameter Value \| username Format \|<br>\|---\|---\|---\|---\|<br>\| AWS IAM \| `awsIAMType` \| `ROLE` \| <abbr title="Amazon Resource Name">ARN</abbr> \|<br>\| AWS IAM \| `awsIAMType` \| `USER` \| <abbr title="Amazon Resource Name">ARN</abbr> \|<br>\| x.509 \| `x509Type` \| `CUSTOMER` \| [RFC 2253](https://tools.ietf.org/html/2253) Distinguished Name \|<br>\| x.509 \| `x509Type` \| `MANAGED` \| [RFC 2253](https://tools.ietf.org/html/2253) Distinguished Name \|<br>\| LDAP \| `ldapAuthType` \| `USER` \| [RFC 2253](https://tools.ietf.org/html/2253) Distinguished Name \|<br>\| LDAP \| `ldapAuthType` \| `GROUP` \| [RFC 2253](https://tools.ietf.org/html/2253) Distinguished Name \|<br>\| OIDC Workforce or Workload \| `oidcAuthType` \| `IDP_GROUP` \| Atlas OIDC IdP ID (found in federation settings), followed by a '/', followed by a group identifier from the IdP's configured `groupsClaim`. Use when the IdP's `authorizationType` is `GROUP`. The groups claim can be a custom claim, such as `roles`. \|<br>\| OIDC Workforce or Workload \| `oidcAuthType` \| `USER` \| Atlas OIDC IdP ID (found in federation settings), followed by a '/', followed by a user identifier from the IdP's configured `userClaim`. Use when the IdP's `authorizationType` is `USER`. \|<br>\| SCRAM-SHA \| `awsIAMType`, `x509Type`, `ldapAuthType`, `oidcAuthType` \| `NONE` \| Alphanumeric string \|<br>|
 |body|body|[CloudDatabaseUser](#schemaclouddatabaseuser)|true|Updates one database user that belongs to the specified project.|
 |» awsIAMType|body|string|false|Human-readable label that indicates whether the new database user authenticates with the Amazon Web Services (AWS) Identity and Access Management (IAM) credentials associated with the user or the user's role.|
 |» databaseName|body|string|true|The database against which the database user authenticates. Database users must provide both a username and authentication database to log into MongoDB. If the user authenticates with AWS IAM, x.509, LDAP, or OIDC Workload this value should be `$external`. If the user authenticates with SCRAM-SHA or OIDC Workforce, this value should be `admin`.|
@@ -30409,7 +30772,7 @@ Updates one database user that belongs to the specified project.
 |» password|body|string|false|Alphanumeric string that authenticates this database user against the database specified in `databaseName`. To authenticate with SCRAM-SHA, you must specify this parameter. This parameter doesn't appear in this response.|
 |» roles|body|[[DatabaseUserRole](#schemadatabaseuserrole)]|true|List that provides the pairings of one role with one applicable database.|
 |» scopes|body|[[UserScope](#schemauserscope)]|false|List that contains clusters, MongoDB Atlas Data Lakes, and MongoDB Atlas Streams Workspaces that this database user can access. If omitted, MongoDB Cloud grants the database user access to all the clusters, MongoDB Atlas Data Lakes, and MongoDB Atlas Streams Workspaces in the project.|
-|» username|body|string|true|Human-readable label that represents the user that authenticates to MongoDB. The format of this label depends on the method of authentication:<br><br>\| Authentication Method \| Parameter Needed \| Parameter Value \| username Format \|<br>\|---\|---\|---\|---\|<br>\| AWS IAM \| `awsIAMType` \| `ROLE` \| <abbr title="Amazon Resource Name">ARN</abbr> \|<br>\| AWS IAM \| `awsIAMType` \| `USER` \| <abbr title="Amazon Resource Name">ARN</abbr> \|<br>\| x.509 \| `x509Type` \| `CUSTOMER` \| [RFC 2253](https://tools.ietf.org/html/2253) Distinguished Name \|<br>\| x.509 \| `x509Type` \| `MANAGED` \| [RFC 2253](https://tools.ietf.org/html/2253) Distinguished Name \|<br>\| LDAP \| `ldapAuthType` \| `USER` \| [RFC 2253](https://tools.ietf.org/html/2253) Distinguished Name \|<br>\| LDAP \| `ldapAuthType` \| `GROUP` \| [RFC 2253](https://tools.ietf.org/html/2253) Distinguished Name \|<br>\| OIDC Workforce \| `oidcAuthType` \| `IDP_GROUP` \| Atlas OIDC IdP ID (found in federation settings), followed by a '/', followed by the IdP group name \|<br>\| OIDC Workload \| `oidcAuthType` \| `USER` \| Atlas OIDC IdP ID (found in federation settings), followed by a '/', followed by the IdP user name \|<br>\| SCRAM-SHA \| `awsIAMType`, `x509Type`, `ldapAuthType`, `oidcAuthType` \| `NONE` \| Alphanumeric string \|<br>|
+|» username|body|string|true|Human-readable label that represents the user that authenticates to MongoDB. The format of this label depends on the method of authentication:<br><br>\| Authentication Method \| Parameter Needed \| Parameter Value \| username Format \|<br>\|---\|---\|---\|---\|<br>\| AWS IAM \| `awsIAMType` \| `ROLE` \| <abbr title="Amazon Resource Name">ARN</abbr> \|<br>\| AWS IAM \| `awsIAMType` \| `USER` \| <abbr title="Amazon Resource Name">ARN</abbr> \|<br>\| x.509 \| `x509Type` \| `CUSTOMER` \| [RFC 2253](https://tools.ietf.org/html/2253) Distinguished Name \|<br>\| x.509 \| `x509Type` \| `MANAGED` \| [RFC 2253](https://tools.ietf.org/html/2253) Distinguished Name \|<br>\| LDAP \| `ldapAuthType` \| `USER` \| [RFC 2253](https://tools.ietf.org/html/2253) Distinguished Name \|<br>\| LDAP \| `ldapAuthType` \| `GROUP` \| [RFC 2253](https://tools.ietf.org/html/2253) Distinguished Name \|<br>\| OIDC Workforce or Workload \| `oidcAuthType` \| `IDP_GROUP` \| Atlas OIDC IdP ID (found in federation settings), followed by a '/', followed by a group identifier from the IdP's configured `groupsClaim`. Use when the IdP's `authorizationType` is `GROUP`. The groups claim can be a custom claim, such as `roles`. \|<br>\| OIDC Workforce or Workload \| `oidcAuthType` \| `USER` \| Atlas OIDC IdP ID (found in federation settings), followed by a '/', followed by a user identifier from the IdP's configured `userClaim`. Use when the IdP's `authorizationType` is `USER`. \|<br>\| SCRAM-SHA \| `awsIAMType`, `x509Type`, `ldapAuthType`, `oidcAuthType` \| `NONE` \| Alphanumeric string \|<br>|
 |» x509Type|body|string|false|X.509 method that MongoDB Cloud uses to authenticate the database user.<br><br>- For application-managed X.509, specify `MANAGED`.<br>- For self-managed X.509, specify `CUSTOMER`.<br><br>Users created with the `CUSTOMER` method require a Common Name (CN) in the **username** parameter. You must create externally authenticated users on the `$external` database.|
 
 #### Enumerated Values
@@ -36774,7 +37137,7 @@ Upgrades a flex cluster to a dedicated cluster (M10+) in the specified project.
 |» diskWarmingMode|body|string|false|Disk warming mode selection.|
 |» encryptionAtRestProvider|body|string|false|Cloud service provider that manages your customer keys to provide an additional layer of encryption at rest for the cluster. To enable customer key management for encryption at rest, the cluster `replicationSpecs[n].regionConfigs[m].{type}Specs.instanceSize` setting must be `M10` or higher and `"backupEnabled" : false` or omitted entirely.|
 |» globalClusterSelfManagedSharding|body|boolean|false|Set this field to configure the Sharding Management Mode when creating a new Global Cluster.<br><br>When set to false, the management mode is set to Atlas-Managed Sharding. This mode fully manages the sharding of your Global Cluster and is built to provide a seamless deployment experience.<br><br>When set to true, the management mode is set to Self-Managed Sharding. This mode leaves the management of shards in your hands and is built to provide an advanced and flexible deployment experience.<br><br>This setting cannot be changed once the cluster is deployed.|
-|» labels|body|[[ComponentLabel](#schemacomponentlabel)]|false|**Deprecated.** Collection of key-value pairs between 1 to 255 characters in length that tag and categorize the cluster. The MongoDB Cloud console doesn't display your labels.<br><br>Cluster labels are deprecated and will be removed in a future release. We strongly recommend that you use Resource Tags instead.|
+|» labels|body|[[ComponentLabel](#schemacomponentlabel)]|false|**Deprecated.** Deprecated: Cluster labels will be removed in a future release. We strongly recommend that you use Resource Tags instead.<br><br>Collection of key-value pairs between 1 to 255 characters in length that tag and categorize the cluster. The MongoDB Cloud console doesn't display your labels.|
 |» mongoDBMajorVersion|body|string|false|MongoDB major version of the cluster. Set to the binary major version. <br><br>On creation: Choose from the available versions of MongoDB, or leave unspecified for the current recommended default in the MongoDB Cloud platform. The recommended version is a recent Long Term Support version. The default is not guaranteed to be the most recently released version throughout the entire release cycle. For versions available in a specific project, see the linked documentation or use the API endpoint for [project LTS versions endpoint](#tag/Projects/operation/getProjectLtsVersions).<br><br> On update: Increase version only by 1 major version at a time. If the cluster is pinned to a MongoDB feature compatibility version exactly one major version below the current MongoDB version, the MongoDB version can be downgraded to the previous major version.|
 |» name|body|string|true|Human-readable label that identifies the cluster.|
 |» paused|body|boolean|false|Flag that indicates whether the cluster is paused.|
@@ -50385,7 +50748,8 @@ Returns the measurements of one database for the specified host for the specifie
     "minimumTier": "M10",
     "scaleUrl": "string"
   },
-  "start": "1970-01-01T00:00:00Z"
+  "start": "1970-01-01T00:00:00Z",
+  "warningMessage": "string"
 }
 ```
 
@@ -50826,7 +51190,8 @@ Returns the measurements of one disk or partition for the specified host for the
     "minimumTier": "M10",
     "scaleUrl": "string"
   },
-  "start": "1970-01-01T00:00:00Z"
+  "start": "1970-01-01T00:00:00Z",
+  "warningMessage": "string"
 }
 ```
 
@@ -51160,7 +51525,8 @@ Returns disk, partition, or host measurements per process for the specified host
     "minimumTier": "M10",
     "scaleUrl": "string"
   },
-  "start": "1970-01-01T00:00:00Z"
+  "start": "1970-01-01T00:00:00Z",
+  "warningMessage": "string"
 }
 ```
 
@@ -60206,7 +60572,7 @@ Creates one private endpoint for the specified cloud service provider. This clou
 |400|Bad Request|Bad Request.|[ApiError](#schemaapierror)|
 |401|Unauthorized|Unauthorized.|[ApiError](#schemaapierror)|
 |402|Payment Required|Payment Required.|[ApiError](#schemaapierror)|
-|403|Forbidden|Forbidden.|[ApiError](#schemaapierror)|
+|403|Forbidden|Forbidden. Atlas Resource Policy details are returned only when an Atlas Resource Policy denies the request.|[ApiError](#schemaapierror)|
 |404|Not Found|Not Found.|[ApiError](#schemaapierror)|
 |409|Conflict|Conflict.|[ApiError](#schemaapierror)|
 |429|Too Many Requests|Too Many Requests.|[ApiError](#schemaapierror)|
@@ -60479,7 +60845,7 @@ Removes one private endpoint from the specified project and private endpoint ser
 |204|No Content|No Content|None|
 |400|Bad Request|Bad Request.|[ApiError](#schemaapierror)|
 |401|Unauthorized|Unauthorized.|[ApiError](#schemaapierror)|
-|403|Forbidden|Forbidden.|[ApiError](#schemaapierror)|
+|403|Forbidden|Forbidden. Atlas Resource Policy details are returned only when an Atlas Resource Policy denies the request.|[ApiError](#schemaapierror)|
 |404|Not Found|Not Found.|[ApiError](#schemaapierror)|
 |429|Too Many Requests|Too Many Requests.|[ApiError](#schemaapierror)|
 |500|Internal Server Error|Internal Server Error.|[ApiError](#schemaapierror)|
@@ -66875,6 +67241,17 @@ Updates the settings of the specified project. You can update any of the options
 }
 ```
 
+> 400 Response
+
+```json
+{
+  "detail": "(This is just an example, the exception may not be related to this endpoint) No provider AWS exists.",
+  "error": 400,
+  "errorCode": "VALIDATION_ERROR",
+  "reason": "Bad Request"
+}
+```
+
 > 401 Response
 
 ```json
@@ -66946,6 +67323,7 @@ Updates the settings of the specified project. You can update any of the options
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|OK|[GroupSettings](#schemagroupsettings)|
+|400|Bad Request|Bad Request.|[ApiError](#schemaapierror)|
 |401|Unauthorized|Unauthorized.|[ApiError](#schemaapierror)|
 |403|Forbidden|Forbidden. Atlas Resource Policy details are returned only when an Atlas Resource Policy denies the request.|[ApiError](#schemaapierror)|
 |404|Not Found|Not Found.|[ApiError](#schemaapierror)|
@@ -93293,7 +93671,7 @@ Collection of settings that configures the network container for a virtual priva
 |*oneOf*|[ClusterFlexProviderSettings](#schemaclusterflexprovidersettings)|false|none|none|
 |autoScaling|[CloudProviderAWSAutoScaling](#schemacloudproviderawsautoscaling)|false|none|Range of instance sizes to which your cluster can scale.|
 |diskIOPS|integer(int32)|false|none|Maximum Disk Input/Output Operations per Second (IOPS) that the database host can perform.|
-|encryptEBSVolume|boolean|false|none|**Deprecated.** Flag that indicates whether the Amazon Elastic Block Store (EBS) encryption feature encrypts the host's root volume for both data at rest within the volume and for data moving between the volume and the cluster. Clusters always have this setting enabled.|
+|encryptEBSVolume|boolean|false|none|**Deprecated.** Deprecated: Flag that indicates whether the Amazon Elastic Block Store (EBS) encryption feature encrypts the host's root volume for both data at rest within the volume and for data moving between the volume and the cluster. Clusters always have this setting enabled.|
 |instanceSizeName|string|false|none|Cluster tier, with a default storage and memory capacity, that applies to all the data-bearing hosts in your cluster.|
 |regionName|string|false|none|Physical location where MongoDB Cloud deploys your AWS-hosted MongoDB cluster nodes. The region you choose can affect network latency for clients accessing your databases. When MongoDB Cloud deploys a dedicated cluster, it checks if a VPC or VPC connection exists for that provider and region. If not, MongoDB Cloud creates them as part of the deployment. MongoDB Cloud assigns the VPC a CIDR block. To limit a new VPC peering connection to one CIDR block and region, create the connection first. Deploy the cluster after the connection starts.|
 |volumeType|string|false|none|Disk Input/Output Operations per Second (IOPS) setting for Amazon Web Services (AWS) storage that you configure only for AWS. Specify whether Disk Input/Output Operations per Second (IOPS) must not exceed the default Input/Output Operations per Second (IOPS) rate for the selected volume size (`STANDARD`), or must fall within the allowable Input/Output Operations per Second (IOPS) range for the selected volume size (`PROVISIONED` or `HIGH_PERFORMANCE`). NVMe clusters require either `PROVISIONED` or `HIGH_PERFORMANCE`.|
@@ -94680,7 +95058,7 @@ Options that determine how this cluster handles resource scaling.
 |globalClusterSelfManagedSharding|boolean|false|none|Set this field to configure the Sharding Management Mode when creating a new Global Cluster.<br><br>When set to false, the management mode is set to Atlas-Managed Sharding. This mode fully manages the sharding of your Global Cluster and is built to provide a seamless deployment experience.<br><br>When set to true, the management mode is set to Self-Managed Sharding. This mode leaves the management of shards in your hands and is built to provide an advanced and flexible deployment experience.<br><br>This setting cannot be changed once the cluster is deployed.|
 |groupId|string|false|read-only|Unique 24-hexadecimal character string that identifies the project.|
 |id|string|false|read-only|Unique 24-hexadecimal digit string that identifies the cluster.|
-|labels|[[ComponentLabel](#schemacomponentlabel)]|false|none|**Deprecated.** Collection of key-value pairs between 1 to 255 characters in length that tag and categorize the cluster. The MongoDB Cloud console doesn't display your labels.<br><br>Cluster labels are deprecated and will be removed in a future release. We strongly recommend that you use Resource tags instead.|
+|labels|[[ComponentLabel](#schemacomponentlabel)]|false|none|**Deprecated.** Deprecated: Cluster labels will be removed in a future release. We strongly recommend that you use Resource tags instead.<br><br>Collection of key-value pairs between 1 to 255 characters in length that tag and categorize the cluster. The MongoDB Cloud console doesn't display your labels.|
 |links|[[Link](#schemalink)]|false|read-only|List of one or more Uniform Resource Locators (URLs) that point to API sub-resources, related API resources, or both. RFC 5988 outlines these relationships.|
 |mongoDBEmployeeAccessGrant|[EmployeeAccessGrantView](#schemaemployeeaccessgrantview)|false|read-only|MongoDB employee granted access level and expiration for a cluster.|
 |mongoDBMajorVersion|string|false|none|MongoDB major version of the cluster.<br><br>On creation: Choose from the available versions of MongoDB, or leave unspecified for the current recommended default in the MongoDB Cloud platform. The recommended version is a recent Long Term Support version. The default is not guaranteed to be the most recently released version throughout the entire release cycle. For versions available in a specific project, see the linked documentation or use the API endpoint for [project LTS versions endpoint](#tag/Projects/operation/getProjectLTSVersions).<br><br> On update: Increase version only by 1 major version at a time. If the cluster is pinned to a MongoDB feature compatibility version exactly one major version below the current MongoDB version, the MongoDB version can be downgraded to the previous major version.|
@@ -94812,6 +95190,8 @@ List that contains a document for each backup policy item in the desired backup 
 |---|---|
 |cloud|ANY|
 |geography|ANY|
+|geography|EU|
+|geography|US|
 
 <h2 id="tocS_AiModelApiKeyResponse">AiModelApiKeyResponse</h2>
 <!-- backwards compatibility -->
@@ -96707,7 +97087,8 @@ Details of the Programmatic API Keys.
     "minimumTier": "M10",
     "scaleUrl": "string"
   },
-  "start": "1970-01-01T00:00:00Z"
+  "start": "1970-01-01T00:00:00Z",
+  "warningMessage": "string"
 }
 ```
 
@@ -96727,6 +97108,7 @@ Details of the Programmatic API Keys.
 |processId|string|false|read-only|Combination of hostname and Internet Assigned Numbers Authority (IANA) port that serves the MongoDB process. The host must be the hostname, fully qualified domain name (FQDN), or Internet Protocol address (IPv4 or IPv6) of the host that runs the MongoDB process (`mongod` or `mongos`). The port must be the IANA port on which the MongoDB process listens for requests.|
 |scale|[ApiClusterScaleView_Atlas](#schemaapiclusterscaleview_atlas)|false|read-only|Information on scaling the cluster to a tier that supports the requested feature. Present only when the feature is unavailable on the cluster's current tier.|
 |start|string(date-time)|false|read-only|Date and time that specifies when to start retrieving measurements. If you set **start**, you must set **end**. You can't set this parameter and **period** in the same request. This parameter expresses its value in the ISO 8601 timestamp format in UTC.|
+|warningMessage|string|false|read-only|Explanation of why the response contains no measurement data points, when applicable.|
 
 #### Enumerated Values
 
@@ -96956,6 +97338,7 @@ Settings that control Search Node tier scaling based on load.
 |instanceSize|S40_STORAGE_NVME|
 |instanceSize|S50_STORAGE_NVME|
 |instanceSize|S60_STORAGE_NVME|
+|instanceSize|S70_STORAGE_NVME|
 |instanceSize|S80_STORAGE_NVME|
 |instanceSize|S90_STORAGE_NVME|
 
@@ -97017,7 +97400,7 @@ Settings that control Search Node tier scaling based on load.
 |encryptionAtRestProvider|string \| null|false|read-only|Cloud service provider that manages your customer keys to provide an additional layer of Encryption At Rest for the cluster.|
 |groupId|string|false|read-only|Unique 24-hexadecimal character string that identifies the project.|
 |id|string|false|read-only|Unique 24-hexadecimal digit string that identifies the search deployment.|
-|specs|[[ApiSearchDeploymentSpecView](#schemaapisearchdeploymentspecview)]|false|read-only|**Deprecated.** Deprecated. `specs` will be removed in a future release. We strongly recommend that you use `effectiveSpecs` instead.|
+|specs|[[ApiSearchDeploymentSpecView](#schemaapisearchdeploymentspecview)]|false|read-only|**Deprecated.** Deprecated: `specs` will be removed in a future release. We strongly recommend that you use `effectiveSpecs` instead.|
 |stateName|string|false|read-only|Human-readable label that indicates the current operating condition of this search deployment.|
 
 #### Enumerated Values
@@ -97088,6 +97471,7 @@ Settings that control Search Node tier scaling based on load.
 |instanceSize|S40_STORAGE_NVME|
 |instanceSize|S50_STORAGE_NVME|
 |instanceSize|S60_STORAGE_NVME|
+|instanceSize|S70_STORAGE_NVME|
 |instanceSize|S80_STORAGE_NVME|
 |instanceSize|S90_STORAGE_NVME|
 
@@ -97186,7 +97570,7 @@ Settings that control Search Node tier scaling based on load.
 |encryptionAtRestProvider|string \| null|false|read-only|Cloud service provider that manages your customer keys to provide an additional layer of Encryption At Rest for the cluster.|
 |groupId|string|false|read-only|Unique 24-hexadecimal character string that identifies the project.|
 |id|string|false|read-only|Unique 24-hexadecimal digit string that identifies the search deployment.|
-|specs|[[ApiSearchDeploymentSpecView](#schemaapisearchdeploymentspecview)]|false|read-only|**Deprecated.** Deprecated. `specs` will be removed in a future release. We strongly recommend that you use `effectiveSpecs` instead.|
+|specs|[[ApiSearchDeploymentSpecView](#schemaapisearchdeploymentspecview)]|false|read-only|**Deprecated.** Deprecated: `specs` will be removed in a future release. We strongly recommend that you use `effectiveSpecs` instead.|
 |stateName|string|false|read-only|Human-readable label that indicates the current operating condition of this search deployment.|
 
 #### Enumerated Values
@@ -97252,6 +97636,7 @@ Hardware specification for the Search Nodes that back a search deployment.
 |instanceSize|S40_STORAGE_NVME|
 |instanceSize|S50_STORAGE_NVME|
 |instanceSize|S60_STORAGE_NVME|
+|instanceSize|S70_STORAGE_NVME|
 |instanceSize|S80_STORAGE_NVME|
 |instanceSize|S90_STORAGE_NVME|
 
@@ -98773,7 +99158,7 @@ Request containing target state of tenant cluster to be upgraded.
 |groupId|string|false|read-only|Unique 24-hexadecimal character string that identifies the project.|
 |id|string|false|read-only|Unique 24-hexadecimal digit string that identifies the cluster.|
 |internalClusterRole|string|false|read-only|Internal classification of the cluster's role. Possible values: `NONE` (regular user cluster), `SYSTEM_CLUSTER` (system cluster for backup), `INTERNAL_SHADOW_CLUSTER` (internal use shadow cluster for testing).|
-|labels|[[ComponentLabel](#schemacomponentlabel)]|false|none|**Deprecated.** Collection of key-value pairs between 1 to 255 characters in length that tag and categorize the cluster. The MongoDB Cloud console doesn't display your labels.<br><br>Cluster labels are deprecated and will be removed in a future release. We strongly recommend that you use Resource Tags instead.|
+|labels|[[ComponentLabel](#schemacomponentlabel)]|false|none|**Deprecated.** Deprecated: Cluster labels will be removed in a future release. We strongly recommend that you use Resource Tags instead.<br><br>Collection of key-value pairs between 1 to 255 characters in length that tag and categorize the cluster. The MongoDB Cloud console doesn't display your labels.|
 |links|[[Link](#schemalink)]|false|read-only|List of one or more Uniform Resource Locators (URLs) that point to API sub-resources, related API resources, or both. RFC 5988 outlines these relationships.|
 |mongoDBEmployeeAccessGrant|[EmployeeAccessGrantView](#schemaemployeeaccessgrantview)|false|read-only|MongoDB employee granted access level and expiration for a cluster.|
 |mongoDBMajorVersion|string|false|none|MongoDB major version of the cluster. Set to the binary major version. <br><br>On creation: Choose from the available versions of MongoDB, or leave unspecified for the current recommended default in the MongoDB Cloud platform. The recommended version is a recent Long Term Support version. The default is not guaranteed to be the most recently released version throughout the entire release cycle. For versions available in a specific project, see the linked documentation or use the API endpoint for [project LTS versions endpoint](#tag/Projects/operation/getProjectLtsVersions).<br><br> On update: Increase version only by 1 major version at a time. If the cluster is pinned to a MongoDB feature compatibility version exactly one major version below the current MongoDB version, the MongoDB version can be downgraded to the previous major version.|
@@ -99843,7 +100228,7 @@ Azure-specific configuration for the connection.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |links|[[Link](#schemalink)]|false|read-only|List of one or more Uniform Resource Locators (URLs) that point to API sub-resources, related API resources, or both. RFC 5988 outlines these relationships.|
-|region|string|false|none|**Deprecated.** Azure region where the storage account is located.|
+|region|string|false|none|**Deprecated.** Deprecated: Azure region where the storage account is located.|
 |servicePrincipalId|string|false|none|Unique ID of the Azure Service Principal that has access to the storage account.|
 |storageAccountName|string|false|none|Name of the Azure Storage Account to connect to.|
 
@@ -101026,7 +101411,7 @@ Method and details that indicate how to deliver the restored snapshot data.
 |targetClusterId|string|false|none|Unique 24-hexadecimal digit string that identifies the target cluster. Use the `clusterId` returned in the response body of the **Get All Snapshots** and **Get a Snapshot** endpoints. This parameter applies when `"delivery.methodName" : "AUTOMATED_RESTORE"`.<br><br> If the target cluster doesn't have backup enabled, two resources return parameters with empty values:<br><br>- **Get All Snapshots** endpoint returns an empty results array without `clusterId` elements<br>- **Get a Snapshot** endpoint doesn't return a `clusterId` parameter.<br><br>To return a response with the `clusterId` parameter, either use the `delivery.targetClusterName` parameter or enable backup on the target cluster.|
 |targetClusterName|string|false|none|Human-readable label that identifies the target cluster. Use the `clusterName` returned in the response body of the **Get All Snapshots** and **Get a Snapshot** endpoints.  This parameter applies when `"delivery.methodName" : "AUTOMATED_RESTORE"`.<br><br>If the target cluster doesn't have backup enabled, two resources return parameters with empty values:<br><br>- **Get All Snapshots** endpoint returns an empty results array without `clusterId` elements<br>- **Get a Snapshot** endpoint doesn't return a `clusterId` parameter.<br><br>To return a response with the `clusterId` parameter, either use the `delivery.targetClusterName` parameter or enable backup on the target cluster.|
 |targetGroupId|string|false|none|Unique 24-hexadecimal digit string that identifies the project that contains the destination cluster for the restore job. The resource returns this parameter when `"delivery.methodName" : "AUTOMATED_RESTORE"`.|
-|url|string|false|read-only|**Deprecated.** Uniform Resource Locator (URL) from which you can download the restored snapshot data. URL includes the verification key. The resource returns this parameter when `"delivery.methodName" : "HTTP"`.|
+|url|string|false|read-only|**Deprecated.** Deprecated: Uniform Resource Locator (URL) from which you can download the restored snapshot data. URL includes the verification key. The resource returns this parameter when `"delivery.methodName" : "HTTP"`.|
 |urlV2|string|false|read-only|Uniform Resource Locator (URL) from which you can download the restored snapshot data. This should be preferred over `url`. The verification key must be sent as an HTTP header. The resource returns this parameter when `"delivery.methodName" : "HTTP"`.|
 
 #### Enumerated Values
@@ -102633,7 +103018,7 @@ MongoDB Cloud user's roles and the corresponding organization or project to whic
 |---|---|---|---|---|
 |country|string|true|none|Two alphabet characters that identifies MongoDB Cloud user's geographic location. This parameter uses the ISO 3166-1a2 code format.|
 |createdAt|string(date-time)|false|read-only|Date and time when the current account is created. This value is in the ISO 8601 timestamp format in UTC.|
-|emailAddress|string(email)|true|read-only|**Deprecated.** Email address that belongs to the MongoDB Cloud user.|
+|emailAddress|string(email)|true|read-only|**Deprecated.** Deprecated: Email address that belongs to the MongoDB Cloud user.|
 |firstName|string|true|none|First or given name that belongs to the MongoDB Cloud user.|
 |id|string|false|read-only|Unique 24-hexadecimal digit string that identifies the MongoDB Cloud user.|
 |lastAuth|string(date-time)|false|read-only|Date and time when the current account last authenticated. This value is in the ISO 8601 timestamp format in UTC.|
@@ -102762,7 +103147,7 @@ Settings that describe the clusters in each project that the API key is authoriz
 |password|string|false|write-only|Alphanumeric string that authenticates this database user against the database specified in `databaseName`. To authenticate with SCRAM-SHA, you must specify this parameter. This parameter doesn't appear in this response.|
 |roles|[[DatabaseUserRole](#schemadatabaseuserrole)]|true|none|List that provides the pairings of one role with one applicable database.|
 |scopes|[[UserScope](#schemauserscope)]|false|none|List that contains clusters, MongoDB Atlas Data Lakes, and MongoDB Atlas Streams Workspaces that this database user can access. If omitted, MongoDB Cloud grants the database user access to all the clusters, MongoDB Atlas Data Lakes, and MongoDB Atlas Streams Workspaces in the project.|
-|username|string|true|none|Human-readable label that represents the user that authenticates to MongoDB. The format of this label depends on the method of authentication:<br><br>\| Authentication Method \| Parameter Needed \| Parameter Value \| username Format \|<br>\|---\|---\|---\|---\|<br>\| AWS IAM \| `awsIAMType` \| `ROLE` \| <abbr title="Amazon Resource Name">ARN</abbr> \|<br>\| AWS IAM \| `awsIAMType` \| `USER` \| <abbr title="Amazon Resource Name">ARN</abbr> \|<br>\| x.509 \| `x509Type` \| `CUSTOMER` \| [RFC 2253](https://tools.ietf.org/html/2253) Distinguished Name \|<br>\| x.509 \| `x509Type` \| `MANAGED` \| [RFC 2253](https://tools.ietf.org/html/2253) Distinguished Name \|<br>\| LDAP \| `ldapAuthType` \| `USER` \| [RFC 2253](https://tools.ietf.org/html/2253) Distinguished Name \|<br>\| LDAP \| `ldapAuthType` \| `GROUP` \| [RFC 2253](https://tools.ietf.org/html/2253) Distinguished Name \|<br>\| OIDC Workforce \| `oidcAuthType` \| `IDP_GROUP` \| Atlas OIDC IdP ID (found in federation settings), followed by a '/', followed by the IdP group name \|<br>\| OIDC Workload \| `oidcAuthType` \| `USER` \| Atlas OIDC IdP ID (found in federation settings), followed by a '/', followed by the IdP user name \|<br>\| SCRAM-SHA \| `awsIAMType`, `x509Type`, `ldapAuthType`, `oidcAuthType` \| `NONE` \| Alphanumeric string \|<br>|
+|username|string|true|none|Human-readable label that represents the user that authenticates to MongoDB. The format of this label depends on the method of authentication:<br><br>\| Authentication Method \| Parameter Needed \| Parameter Value \| username Format \|<br>\|---\|---\|---\|---\|<br>\| AWS IAM \| `awsIAMType` \| `ROLE` \| <abbr title="Amazon Resource Name">ARN</abbr> \|<br>\| AWS IAM \| `awsIAMType` \| `USER` \| <abbr title="Amazon Resource Name">ARN</abbr> \|<br>\| x.509 \| `x509Type` \| `CUSTOMER` \| [RFC 2253](https://tools.ietf.org/html/2253) Distinguished Name \|<br>\| x.509 \| `x509Type` \| `MANAGED` \| [RFC 2253](https://tools.ietf.org/html/2253) Distinguished Name \|<br>\| LDAP \| `ldapAuthType` \| `USER` \| [RFC 2253](https://tools.ietf.org/html/2253) Distinguished Name \|<br>\| LDAP \| `ldapAuthType` \| `GROUP` \| [RFC 2253](https://tools.ietf.org/html/2253) Distinguished Name \|<br>\| OIDC Workforce or Workload \| `oidcAuthType` \| `IDP_GROUP` \| Atlas OIDC IdP ID (found in federation settings), followed by a '/', followed by a group identifier from the IdP's configured `groupsClaim`. Use when the IdP's `authorizationType` is `GROUP`. The groups claim can be a custom claim, such as `roles`. \|<br>\| OIDC Workforce or Workload \| `oidcAuthType` \| `USER` \| Atlas OIDC IdP ID (found in federation settings), followed by a '/', followed by a user identifier from the IdP's configured `userClaim`. Use when the IdP's `authorizationType` is `USER`. \|<br>\| SCRAM-SHA \| `awsIAMType`, `x509Type`, `ldapAuthType`, `oidcAuthType` \| `NONE` \| Alphanumeric string \|<br>|
 |x509Type|string|false|none|X.509 method that MongoDB Cloud uses to authenticate the database user.<br><br>- For application-managed X.509, specify `MANAGED`.<br>- For self-managed X.509, specify `CUSTOMER`.<br><br>Users created with the `CUSTOMER` method require a Common Name (CN) in the **username** parameter. You must create externally authenticated users on the `$external` database.|
 
 #### Enumerated Values
@@ -103112,6 +103497,7 @@ Details that describe the Atlas log integration linked to this cloud provider ac
 |featureType|EXPORT_SNAPSHOT|
 |featureType|PUSH_BASED_LOG_EXPORT|
 |featureType|ATLAS_LOG_INTEGRATION|
+|featureType|OBJECT_STORAGE_PRIVATE_ENDPOINT|
 
 <h2 id="tocS_CloudProviderAccessAzureServicePrincipal">CloudProviderAccessAzureServicePrincipal</h2>
 <!-- backwards compatibility -->
@@ -103292,6 +103678,7 @@ Details that describe the Atlas Data Lakes linked to this Amazon Web Services (A
 |featureType|EXPORT_SNAPSHOT|
 |featureType|PUSH_BASED_LOG_EXPORT|
 |featureType|ATLAS_LOG_INTEGRATION|
+|featureType|OBJECT_STORAGE_PRIVATE_ENDPOINT|
 
 <h2 id="tocS_CloudProviderAccessEncryptionAtRestFeatureUsage">CloudProviderAccessEncryptionAtRestFeatureUsage</h2>
 <!-- backwards compatibility -->
@@ -103325,6 +103712,7 @@ Details that describe the Key Management Service (KMS) linked to this Amazon Web
 |featureType|EXPORT_SNAPSHOT|
 |featureType|PUSH_BASED_LOG_EXPORT|
 |featureType|ATLAS_LOG_INTEGRATION|
+|featureType|OBJECT_STORAGE_PRIVATE_ENDPOINT|
 
 <h2 id="tocS_CloudProviderAccessExportSnapshotFeatureUsage">CloudProviderAccessExportSnapshotFeatureUsage</h2>
 <!-- backwards compatibility -->
@@ -103361,6 +103749,7 @@ Details that describe the Amazon Web Services (AWS) Simple Storage Service (S3) 
 |featureType|EXPORT_SNAPSHOT|
 |featureType|PUSH_BASED_LOG_EXPORT|
 |featureType|ATLAS_LOG_INTEGRATION|
+|featureType|OBJECT_STORAGE_PRIVATE_ENDPOINT|
 
 <h2 id="tocS_CloudProviderAccessFeatureUsage">CloudProviderAccessFeatureUsage</h2>
 <!-- backwards compatibility -->
@@ -103392,6 +103781,7 @@ MongoDB Cloud features associated with this Amazon Web Services (AWS) Identity a
 |featureType|EXPORT_SNAPSHOT|
 |featureType|PUSH_BASED_LOG_EXPORT|
 |featureType|ATLAS_LOG_INTEGRATION|
+|featureType|OBJECT_STORAGE_PRIVATE_ENDPOINT|
 
 <h2 id="tocS_CloudProviderAccessFeatureUsageAtlasLogIntegrationFeatureId">CloudProviderAccessFeatureUsageAtlasLogIntegrationFeatureId</h2>
 <!-- backwards compatibility -->
@@ -103463,6 +103853,29 @@ Identifying characteristics about the Amazon Web Services (AWS) Simple Storage S
 |---|---|---|---|---|
 |exportBucketId|string|false|read-only|Unique 24-hexadecimal digit string that identifies the AWS S3 bucket to which you export your snapshots.|
 |groupId|string|false|read-only|Unique 24-hexadecimal digit string that identifies your project.|
+
+<h2 id="tocS_CloudProviderAccessFeatureUsageObjectStoragePrivateEndpointFeatureId">CloudProviderAccessFeatureUsageObjectStoragePrivateEndpointFeatureId</h2>
+<!-- backwards compatibility -->
+<a id="schemacloudprovideraccessfeatureusageobjectstorageprivateendpointfeatureid"></a>
+<a id="schema_CloudProviderAccessFeatureUsageObjectStoragePrivateEndpointFeatureId"></a>
+<a id="tocScloudprovideraccessfeatureusageobjectstorageprivateendpointfeatureid"></a>
+<a id="tocscloudprovideraccessfeatureusageobjectstorageprivateendpointfeatureid"></a>
+
+```json
+{
+  "groupId": "32b6e34b3d91647abb20e7b8",
+  "privateEndpointId": "32b6e34b3d91647abb20e7b8"
+}
+```
+
+Identifying characteristics about the object storage private endpoint linked to this Azure Service Principal.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|groupId|string|false|read-only|Unique 24-hexadecimal digit string that identifies your project.|
+|privateEndpointId|string|false|read-only|Unique 24-hexadecimal digit string that identifies the object storage private endpoint.|
 
 <h2 id="tocS_CloudProviderAccessFeatureUsagePushBasedLogExportFeatureId">CloudProviderAccessFeatureUsagePushBasedLogExportFeatureId</h2>
 <!-- backwards compatibility -->
@@ -103607,6 +104020,43 @@ Details that describe the features linked to the GCP Service Account.
 |providerName|AZURE|
 |providerName|GCP|
 
+<h2 id="tocS_CloudProviderAccessObjectStoragePrivateEndpointFeatureUsage">CloudProviderAccessObjectStoragePrivateEndpointFeatureUsage</h2>
+<!-- backwards compatibility -->
+<a id="schemacloudprovideraccessobjectstorageprivateendpointfeatureusage"></a>
+<a id="schema_CloudProviderAccessObjectStoragePrivateEndpointFeatureUsage"></a>
+<a id="tocScloudprovideraccessobjectstorageprivateendpointfeatureusage"></a>
+<a id="tocscloudprovideraccessobjectstorageprivateendpointfeatureusage"></a>
+
+```json
+{
+  "featureType": "ATLAS_DATA_LAKE",
+  "featureId": {
+    "groupId": "32b6e34b3d91647abb20e7b8",
+    "privateEndpointId": "32b6e34b3d91647abb20e7b8"
+  }
+}
+```
+
+Details that describe the object storage private endpoints linked to this Azure Service Principal. This capability is in limited early access: it is enabled per project via a feature flag and is not generally available. Contact MongoDB to become an early adopter.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|featureType|string|false|read-only|Human-readable label that describes one MongoDB Cloud feature linked to this Amazon Web Services (AWS) Identity and Access Management (IAM) role.|
+|featureId|[CloudProviderAccessFeatureUsageObjectStoragePrivateEndpointFeatureId](#schemacloudprovideraccessfeatureusageobjectstorageprivateendpointfeatureid)|false|none|Identifying characteristics about the object storage private endpoint linked to this Azure Service Principal.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|featureType|ATLAS_DATA_LAKE|
+|featureType|ENCRYPTION_AT_REST|
+|featureType|EXPORT_SNAPSHOT|
+|featureType|PUSH_BASED_LOG_EXPORT|
+|featureType|ATLAS_LOG_INTEGRATION|
+|featureType|OBJECT_STORAGE_PRIVATE_ENDPOINT|
+
 <h2 id="tocS_CloudProviderAccessPushBasedLogExportFeatureUsage">CloudProviderAccessPushBasedLogExportFeatureUsage</h2>
 <!-- backwards compatibility -->
 <a id="schemacloudprovideraccesspushbasedlogexportfeatureusage"></a>
@@ -103642,6 +104092,7 @@ Details that describe the Amazon Web Services (AWS) Simple Storage Service (S3) 
 |featureType|EXPORT_SNAPSHOT|
 |featureType|PUSH_BASED_LOG_EXPORT|
 |featureType|ATLAS_LOG_INTEGRATION|
+|featureType|OBJECT_STORAGE_PRIVATE_ENDPOINT|
 
 <h2 id="tocS_CloudProviderAccessRole">CloudProviderAccessRole</h2>
 <!-- backwards compatibility -->
@@ -104445,6 +104896,260 @@ Collection of settings that configures how a cluster might scale its cluster tie
 |enabled|boolean|false|none|Flag that indicates whether instance size reactive auto-scaling is enabled.<br><br>- Set to `true` to enable instance size reactive auto-scaling. If enabled, you must specify a value for `providerSettings.autoScaling.compute.maxInstanceSize`.<br>- Set to `false` to disable instance size reactive auto-scaling.|
 |scaleDownEnabled|boolean|false|none|Flag that indicates whether the cluster tier can scale down via reactive auto-scaling. This is required if `autoScaling.compute.enabled` is `true`. If you enable this option, specify a value for `providerSettings.autoScaling.compute.minInstanceSize`.|
 
+<h2 id="tocS_ClusterConfigurationValidation">ClusterConfigurationValidation</h2>
+<!-- backwards compatibility -->
+<a id="schemaclusterconfigurationvalidation"></a>
+<a id="schema_ClusterConfigurationValidation"></a>
+<a id="tocSclusterconfigurationvalidation"></a>
+<a id="tocsclusterconfigurationvalidation"></a>
+
+```json
+{
+  "advancedConfiguration": {
+    "changeStreamOptionsPreAndPostImagesExpireAfterSeconds": -1,
+    "chunkMigrationConcurrency": 0,
+    "customOpensslCipherConfigTls12": [
+      "TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384"
+    ],
+    "customOpensslCipherConfigTls13": [
+      "TLS_AES_256_GCM_SHA384"
+    ],
+    "defaultMaxTimeMS": 0,
+    "defaultWriteConcern": "string",
+    "javascriptEnabled": true,
+    "minimumEnabledTlsProtocol": "TLS1_2",
+    "noTableScan": true,
+    "oplogMinRetentionHours": 0,
+    "oplogSizeMB": 0,
+    "queryStatsLogVerbosity": 0,
+    "sampleRefreshIntervalBIConnector": 0,
+    "sampleSizeBIConnector": 0,
+    "tlsCipherConfigMode": "CUSTOM",
+    "transactionLifetimeLimitSeconds": 1
+  },
+  "clusterDescription": {
+    "acceptDataRisksAndForceReplicaSetReconfig": "1970-01-01T00:00:00Z",
+    "adaptiveCapacity": "ENABLED",
+    "advancedConfiguration": {
+      "customOpensslCipherConfigTls12": [
+        "TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384"
+      ],
+      "customOpensslCipherConfigTls13": [
+        "TLS_AES_256_GCM_SHA384"
+      ],
+      "minimumEnabledTlsProtocol": "TLS1_2",
+      "tlsCipherConfigMode": "CUSTOM"
+    },
+    "backupEnabled": true,
+    "biConnector": {
+      "enabled": true,
+      "readPreference": "PRIMARY"
+    },
+    "clusterType": "REPLICASET",
+    "configServerManagementMode": "ATLAS_MANAGED",
+    "configServerType": "DEDICATED",
+    "connectionStrings": {
+      "awsPrivateLink": {
+        "property1": "string",
+        "property2": "string"
+      },
+      "awsPrivateLinkSrv": {
+        "property1": "string",
+        "property2": "string"
+      },
+      "private": "string",
+      "privateEndpoint": [
+        {
+          "connectionString": "string",
+          "endpoints": [
+            {
+              "endpointId": "string",
+              "providerName": "AWS",
+              "region": "string"
+            }
+          ],
+          "srvConnectionString": "string",
+          "srvShardOptimizedConnectionString": "string",
+          "type": "MONGOD"
+        }
+      ],
+      "privateSrv": "string",
+      "standard": "string",
+      "standardSrv": "string"
+    },
+    "createDate": "1970-01-01T00:00:00Z",
+    "databaseEdition": "CORE",
+    "diskWarmingMode": "FULLY_WARMED",
+    "effectiveDatabaseEdition": "CORE",
+    "effectiveReplicationSpecs": [
+      {
+        "id": "32b6e34b3d91647abb20e7b8",
+        "regionConfigs": [
+          {
+            "electableSpecs": {
+              "diskIOPS": 0,
+              "diskSizeGB": 0,
+              "diskThroughput": 0,
+              "ebsVolumeType": "STANDARD",
+              "instanceSize": "M10",
+              "nodeCount": 3
+            },
+            "priority": 7,
+            "providerName": "AWS",
+            "regionName": "US_GOV_WEST_1"
+          }
+        ],
+        "zoneId": "32b6e34b3d91647abb20e7b8",
+        "zoneName": "string"
+      }
+    ],
+    "encryptionAtRestProvider": "NONE",
+    "featureCompatibilityVersion": "string",
+    "featureCompatibilityVersionExpirationDate": "1970-01-01T00:00:00Z",
+    "globalClusterSelfManagedSharding": true,
+    "groupId": "32b6e34b3d91647abb20e7b8",
+    "id": "32b6e34b3d91647abb20e7b8",
+    "internalClusterRole": "NONE",
+    "labels": [
+      {
+        "key": "string",
+        "value": "string"
+      }
+    ],
+    "links": [
+      {
+        "href": "https://cloud.mongodb.com/api/atlas",
+        "rel": "self"
+      }
+    ],
+    "mongoDBEmployeeAccessGrant": {
+      "expirationTime": "1970-01-01T00:00:00Z",
+      "grantType": "CLUSTER_DATABASE_LOGS",
+      "links": [
+        {
+          "href": "https://cloud.mongodb.com/api/atlas",
+          "rel": "self"
+        }
+      ]
+    },
+    "mongoDBMajorVersion": "string",
+    "mongoDBVersion": "string",
+    "name": "string",
+    "paused": true,
+    "pitEnabled": true,
+    "redactClientLogData": true,
+    "replicaSetScalingStrategy": "WORKLOAD_TYPE",
+    "replicationSpecs": [
+      {
+        "id": "32b6e34b3d91647abb20e7b8",
+        "regionConfigs": [
+          {
+            "electableSpecs": {
+              "diskIOPS": 0,
+              "diskSizeGB": 0,
+              "diskThroughput": 0,
+              "ebsVolumeType": "STANDARD",
+              "instanceSize": "M10",
+              "nodeCount": 3
+            },
+            "priority": 7,
+            "providerName": "AWS",
+            "regionName": "US_GOV_WEST_1"
+          }
+        ],
+        "zoneId": "32b6e34b3d91647abb20e7b8",
+        "zoneName": "string"
+      }
+    ],
+    "retainBackups": false,
+    "rootCertType": "ISRGROOTX1",
+    "searchAutoMigration": {
+      "disabled": false
+    },
+    "stateName": "IDLE",
+    "tags": [
+      {
+        "key": "string",
+        "value": "string"
+      }
+    ],
+    "terminationProtectionEnabled": false,
+    "useAwsTimeBasedSnapshotCopyForFastInitialSync": false,
+    "versionReleaseSystem": "LTS"
+  },
+  "clusterName": "string",
+  "editing": true,
+  "searchDeploymentSpec": {
+    "instanceSize": "S10_HIGHCPU",
+    "nodeCount": 2
+  },
+  "tags": [
+    {
+      "key": "string",
+      "value": "string"
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|advancedConfiguration|[ClusterDescriptionProcessArgs20240805](#schemaclusterdescriptionprocessargs20240805)|false|none|Advanced MongoDB process configuration options applied to the cluster.|
+|clusterDescription|[ClusterDescription20240805](#schemaclusterdescription20240805)|true|none|Configuration of a MongoDB Atlas cluster, including its replication topology, instance sizing, storage, and operational settings.|
+|clusterName|string|false|none|Name of the existing cluster to validate against when editing is true.|
+|editing|boolean|true|none|When true, validates the configuration as an update to an existing cluster. When false, validates as a new cluster create.|
+|searchDeploymentSpec|[ApiSearchDeploymentSpecView](#schemaapisearchdeploymentspecview)|false|none|Hardware specification for the Search Nodes that back a search deployment.|
+|tags|[[ResourceTag](#schemaresourcetag)]|false|none|Optional list of resource tags.|
+
+<h2 id="tocS_ClusterConfigurationValidationError">ClusterConfigurationValidationError</h2>
+<!-- backwards compatibility -->
+<a id="schemaclusterconfigurationvalidationerror"></a>
+<a id="schema_ClusterConfigurationValidationError"></a>
+<a id="tocSclusterconfigurationvalidationerror"></a>
+<a id="tocsclusterconfigurationvalidationerror"></a>
+
+```json
+{
+  "errorCode": "CLUSTER_NOT_FOUND",
+  "validationIssue": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|errorCode|string|false|none|Machine-readable error code identifying the type of validation failure.|
+|validationIssue|string|false|none|Description of the validation failure.|
+
+<h2 id="tocS_ClusterConfigurationValidationResult">ClusterConfigurationValidationResult</h2>
+<!-- backwards compatibility -->
+<a id="schemaclusterconfigurationvalidationresult"></a>
+<a id="schema_ClusterConfigurationValidationResult"></a>
+<a id="tocSclusterconfigurationvalidationresult"></a>
+<a id="tocsclusterconfigurationvalidationresult"></a>
+
+```json
+{
+  "errors": [
+    {
+      "errorCode": "CLUSTER_NOT_FOUND",
+      "validationIssue": "string"
+    }
+  ],
+  "valid": true
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|errors|[[ClusterConfigurationValidationError](#schemaclusterconfigurationvalidationerror)]|false|none|List of validation errors, present only when valid is false.|
+|valid|boolean|false|none|Whether the cluster configuration is valid.|
+
 <h2 id="tocS_ClusterConnectionStrings">ClusterConnectionStrings</h2>
 <!-- backwards compatibility -->
 <a id="schemaclusterconnectionstrings"></a>
@@ -104490,10 +105195,10 @@ Collection of Uniform Resource Locators that point to the MongoDB database.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|awsPrivateLink|object|false|read-only|**Deprecated.** Private endpoint-aware connection strings that use AWS-hosted clusters with Amazon Web Services (AWS) PrivateLink. Each key identifies an Amazon Web Services (AWS) interface endpoint. Each value identifies the related `mongodb://` connection string that you use to connect to MongoDB Cloud through the interface endpoint that the key names. This field is deprecated. Use the Private Endpoint Connection Strings resource instead.|
-|awsPrivateLinkSrv|object|false|read-only|**Deprecated.** Private endpoint-aware connection strings that use AWS-hosted clusters with Amazon Web Services (AWS) PrivateLink. Each key identifies an Amazon Web Services (AWS) interface endpoint. Each value identifies the related `mongodb://` connection string that you use to connect to Atlas through the interface endpoint that the key names. If the cluster uses an optimized connection string, `awsPrivateLinkSrv` contains the optimized connection string. If the cluster has the non-optimized (legacy) connection string, `awsPrivateLinkSrv` contains the non-optimized connection string even if an optimized connection string is also present. This field is deprecated. Use the Private Endpoint Connection Strings resource instead.|
+|awsPrivateLink|object|false|read-only|**Deprecated.** Deprecated: Use the Private Endpoint Connection Strings resource instead. Private endpoint-aware connection strings that use AWS-hosted clusters with Amazon Web Services (AWS) PrivateLink. Each key identifies an Amazon Web Services (AWS) interface endpoint. Each value identifies the related `mongodb://` connection string that you use to connect to MongoDB Cloud through the interface endpoint that the key names.|
+|awsPrivateLinkSrv|object|false|read-only|**Deprecated.** Deprecated: Use the Private Endpoint Connection Strings resource instead. Private endpoint-aware connection strings that use AWS-hosted clusters with Amazon Web Services (AWS) PrivateLink. Each key identifies an Amazon Web Services (AWS) interface endpoint. Each value identifies the related `mongodb://` connection string that you use to connect to Atlas through the interface endpoint that the key names. If the cluster uses an optimized connection string, `awsPrivateLinkSrv` contains the optimized connection string. If the cluster has the non-optimized (legacy) connection string, `awsPrivateLinkSrv` contains the non-optimized connection string even if an optimized connection string is also present.|
 |private|string|false|read-only|Network peering connection strings for each interface Virtual Private Cloud (VPC) endpoint that you configured to connect to this cluster. This connection string uses the `mongodb+srv://` protocol. The resource returns this parameter once someone creates a network peering connection to this cluster. This protocol tells the application to look up the host seed list in the Domain Name System (DNS). This list synchronizes with the nodes in a cluster. If the connection string uses this Uniform Resource Identifier (URI) format, you don't need to append the seed list or change the URI if the nodes change. Use this URI format if your driver supports it. If it doesn't, use `connectionStrings.private`. For Amazon Web Services (AWS) clusters, this resource returns this parameter only if you enable custom DNS.|
-|privateEndpoint|[[ClusterDescriptionConnectionStringsPrivateEndpoint](#schemaclusterdescriptionconnectionstringsprivateendpoint)]|false|read-only|**Deprecated.** List of private endpoint-aware connection strings that you can use to connect to this cluster through a private endpoint. This parameter returns only if you deployed a private endpoint to all regions to which you deployed this clusters' nodes. This field is deprecated. Use the Private Endpoint Connection Strings resource instead.|
+|privateEndpoint|[[ClusterDescriptionConnectionStringsPrivateEndpoint](#schemaclusterdescriptionconnectionstringsprivateendpoint)]|false|read-only|**Deprecated.** Deprecated: Use the Private Endpoint Connection Strings resource instead. List of private endpoint-aware connection strings that you can use to connect to this cluster through a private endpoint. This parameter returns only if you deployed a private endpoint to all regions to which you deployed this clusters' nodes.|
 |privateSrv|string|false|read-only|Network peering connection strings for each interface Virtual Private Cloud (VPC) endpoint that you configured to connect to this cluster. This connection string uses the `mongodb+srv://` protocol. The resource returns this parameter when someone creates a network peering connection to this cluster. This protocol tells the application to look up the host seed list in the Domain Name System (DNS). This list synchronizes with the nodes in a cluster. If the connection string uses this Uniform Resource Identifier (URI) format, you don't need to append the seed list or change the Uniform Resource Identifier (URI) if the nodes change. Use this Uniform Resource Identifier (URI) format if your driver supports it. If it doesn't, use `connectionStrings.private`. For Amazon Web Services (AWS) clusters, this parameter returns only if you [enable custom DNS](https://docs.atlas.mongodb.com/reference/api/aws-custom-dns-update/).|
 |standard|string|false|read-only|Public connection string that you can use to connect to this cluster. This connection string uses the `mongodb://` protocol.|
 |standardSrv|string|false|read-only|Public connection string that you can use to connect to this cluster. This connection string uses the `mongodb+srv://` protocol.|
@@ -104685,7 +105390,7 @@ Configuration of a MongoDB Atlas cluster, including its replication topology, in
 |groupId|string|false|read-only|Unique 24-hexadecimal character string that identifies the project.|
 |id|string|false|read-only|Unique 24-hexadecimal digit string that identifies the cluster.|
 |internalClusterRole|string|false|read-only|Internal classification of the cluster's role. Possible values: `NONE` (regular user cluster), `SYSTEM_CLUSTER` (system cluster for backup), `INTERNAL_SHADOW_CLUSTER` (internal use shadow cluster for testing).|
-|labels|[[ComponentLabel](#schemacomponentlabel)]|false|none|**Deprecated.** Collection of key-value pairs between 1 to 255 characters in length that tag and categorize the cluster. The MongoDB Cloud console doesn't display your labels.<br><br>Cluster labels are deprecated and will be removed in a future release. We strongly recommend that you use Resource Tags instead.|
+|labels|[[ComponentLabel](#schemacomponentlabel)]|false|none|**Deprecated.** Deprecated: Cluster labels will be removed in a future release. We strongly recommend that you use Resource Tags instead.<br><br>Collection of key-value pairs between 1 to 255 characters in length that tag and categorize the cluster. The MongoDB Cloud console doesn't display your labels.|
 |links|[[Link](#schemalink)]|false|read-only|List of one or more Uniform Resource Locators (URLs) that point to API sub-resources, related API resources, or both. RFC 5988 outlines these relationships.|
 |mongoDBEmployeeAccessGrant|[EmployeeAccessGrantView](#schemaemployeeaccessgrantview)|false|read-only|MongoDB employee granted access level and expiration for a cluster.|
 |mongoDBMajorVersion|string|false|none|MongoDB major version of the cluster. Set to the binary major version. <br><br>On creation: Choose from the available versions of MongoDB, or leave unspecified for the current recommended default in the MongoDB Cloud platform. The recommended version is a recent Long Term Support version. The default is not guaranteed to be the most recently released version throughout the entire release cycle. For versions available in a specific project, see the linked documentation or use the API endpoint for [project LTS versions endpoint](#tag/Projects/operation/getProjectLtsVersions).<br><br> On update: Increase version only by 1 major version at a time. If the cluster is pinned to a MongoDB feature compatibility version exactly one major version below the current MongoDB version, the MongoDB version can be downgraded to the previous major version.|
@@ -104891,7 +105596,7 @@ Details of a private endpoint deployed for this cluster.
 |defaultMaxTimeMS|integer(int32)|false|none|Default time limit in milliseconds for individual read operations to complete.|
 |defaultReadConcern|string|false|none|Default level of acknowledgment requested from MongoDB for read operations set for this cluster.<br><br>MongoDB 4.4 clusters default to `available`. MongoDB 5.0 and later clusters default to `local`.|
 |defaultWriteConcern|string|false|none|Default level of acknowledgment requested from MongoDB for write operations when none is specified by the driver.|
-|failIndexKeyTooLong|boolean|false|none|**Deprecated.** Flag that indicates whether you can insert or update documents where all indexed entries don't exceed 1024 bytes. If you set this to false, [mongod](https://docs.mongodb.com/upcoming/reference/program/mongod/#mongodb-binary-bin.mongod) writes documents that exceed this limit but doesn't index them. This parameter has been removed as of [MongoDB 4.4](https://www.mongodb.com/docs/manual/reference/parameters/#mongodb-parameter-param.failIndexKeyTooLong).|
+|failIndexKeyTooLong|boolean|false|none|**Deprecated.** Deprecated: This parameter has been removed as of [MongoDB 4.4](https://www.mongodb.com/docs/manual/reference/parameters/#mongodb-parameter-param.failIndexKeyTooLong). Flag that indicates whether you can insert or update documents where all indexed entries don't exceed 1024 bytes. If you set this to false, [mongod](https://docs.mongodb.com/upcoming/reference/program/mongod/#mongodb-binary-bin.mongod) writes documents that exceed this limit but doesn't index them.|
 |javascriptEnabled|boolean|false|none|Flag that indicates whether the cluster allows execution of operations that perform server-side executions of JavaScript. When using 8.0+, we recommend disabling server-side JavaScript and using operators of aggregation pipeline as more performant alternative.|
 |minimumEnabledTlsProtocol|string|false|none|Minimum Transport Layer Security (TLS) version that the cluster accepts for incoming connections.|
 |noTableScan|boolean|false|none|Flag that indicates whether the cluster disables executing any query that requires a collection scan to return results.|
@@ -111368,7 +112073,7 @@ Details of the sharded cluster snapshot that MongoDB Cloud created.
 |bucketName|string|false|none|The name of the Azure Storage Container to export to. This can be omitted and computed from the `serviceUrl` if the `serviceUrl` includes a Azure Storage Container name. For example a `serviceUrl` of `https://examplestorageaccount.blob.core.windows.net/exportcontainer` will yield a computed `bucketName` of `exportcontainer`. If the `serviceUrl` does not include a Container name, this field is required.|
 |roleId|string|true|none|Unique 24-hexadecimal digit string that identifies the Azure Cloud Provider Access Role that MongoDB Cloud uses to access the Azure Blob Storage Container.|
 |serviceUrl|string|true|none|URL of the Azure Storage Account to export to. For example: `https://examplestorageaccount.blob.core.windows.net/exportcontainer`. Only standard endpoints (with `blob.core.windows.net`) are supported.|
-|tenantId|string(uuid)|false|none|**Deprecated.** UUID that identifies the Azure Active Directory Tenant ID. Deprecated: this field is ignored; the `tenantId` of the Cloud Provider Access role (from `roleId`) is used.|
+|tenantId|string(uuid)|false|none|**Deprecated.** Deprecated: The `tenantId` of the Cloud Provider Access role (from `roleId`) is used instead. UUID that identifies the Azure Active Directory Tenant ID.|
 
 #### Enumerated Values
 
@@ -113859,8 +114564,6 @@ A singular type of event.
 |*oneOf*|AZURE_ENCRYPTION_KEY_INVALID|
 |*oneOf*|GCP_ENCRYPTION_KEY_VALID|
 |*oneOf*|GCP_ENCRYPTION_KEY_INVALID|
-|*oneOf*|ENCRYPTION_KEY_TRANSITION_STARTED|
-|*oneOf*|ENCRYPTION_KEY_TRANSITION_COMPLETED|
 |*oneOf*|BUCKET_CREATED_AUDIT|
 |*oneOf*|BUCKET_DELETED_AUDIT|
 |*oneOf*|FTS_INDEX_DELETION_FAILED|
@@ -113899,6 +114602,9 @@ A singular type of event.
 |*oneOf*|GROUP_CHARTS_ACTIVATED|
 |*oneOf*|GROUP_CHARTS_UPGRADED|
 |*oneOf*|GROUP_CHARTS_RESET|
+|*oneOf*|PROJECT_OPERATIONS_CONTACT_MODIFIED|
+|*oneOf*|PROJECT_OPERATIONS_CONTACT_ALERTS_ENABLED|
+|*oneOf*|PROJECT_OPERATIONS_CONTACT_ALERTS_DISABLED|
 |*oneOf*|GROUP_DEFAULT_ALERTS_SETTINGS_CHANGED|
 |*oneOf*|PAID_IN_FULL|
 |*oneOf*|DELINQUENT|
@@ -114022,6 +114728,7 @@ A singular type of event.
 |*oneOf*|MONGODB_USER_X509_CERT_CREATED|
 |*oneOf*|MONGODB_USER_X509_CERT_REVOKED|
 |*oneOf*|MONGODB_USER_UPDATED|
+|*oneOf*|MONGODB_USER_PASSWORD_UPDATED|
 |*oneOf*|MONGODB_ROLE_ADDED|
 |*oneOf*|MONGODB_ROLE_DELETED|
 |*oneOf*|MONGODB_ROLE_UPDATED|
@@ -114234,6 +114941,7 @@ A singular type of event.
 |*oneOf*|SEARCH_HOST_DISABLE_FTS|
 |*oneOf*|SEARCH_HOST_PAUSE_INITIAL_SYNC_ON_INDEX_IDS|
 |*oneOf*|SEARCH_AUTOSCALING_ADMIN_OVERRIDES_UPDATED|
+|*oneOf*|SEARCH_CLUSTER_MONGOT_VERSION_OVERRIDE_UPDATED|
 |*oneOf*|CLUSTER_BLOCK_WRITE|
 |*oneOf*|CLUSTER_UNBLOCK_WRITE|
 |*oneOf*|KMIP_KEY_ROTATION_SCHEDULED|
@@ -114469,6 +115177,8 @@ A singular type of event.
 |*oneOf*|AI_MODELS_APIS_RATE_LIMIT_UPDATED|
 |*oneOf*|AI_MODELS_APIS_RATE_LIMIT_RESET|
 |*oneOf*|AI_MODELS_APIS_RATE_LIMIT_ADMIN_OVERRIDE|
+|*oneOf*|ENCRYPTION_KEY_TRANSITION_STARTED|
+|*oneOf*|ENCRYPTION_KEY_TRANSITION_COMPLETED|
 |*oneOf*|PROACTIVE_REMEDIATION_NEEDED|
 |*oneOf*|STREAMS_PRIVATE_LINK_ENDPOINT_UNUSED_FIRST_WARNING|
 |*oneOf*|STREAMS_PRIVATE_LINK_ENDPOINT_UNUSED_SECOND_WARNING|
@@ -114658,6 +115368,9 @@ A singular type of event.
 |*oneOf*|GROUP_DELETED|
 |*oneOf*|GROUP_CREATED|
 |*oneOf*|GROUP_MOVED|
+|*oneOf*|PROJECT_OPERATIONS_CONTACT_MODIFIED|
+|*oneOf*|PROJECT_OPERATIONS_CONTACT_ALERTS_ENABLED|
+|*oneOf*|PROJECT_OPERATIONS_CONTACT_ALERTS_DISABLED|
 |*oneOf*|MLAB_MIGRATION_COMPLETED|
 |*oneOf*|MLAB_MIGRATION_TARGET_CLUSTER_CREATED|
 |*oneOf*|MLAB_MIGRATION_DATABASE_USERS_IMPORTED|
@@ -122344,7 +123057,7 @@ Group of settings that configure a MongoDB cluster.
 |globalClusterSelfManagedSharding|boolean|false|none|Set this field to configure the Sharding Management Mode when creating a new Global Cluster.<br><br>When set to false, the management mode is set to Atlas-Managed Sharding. This mode fully manages the sharding of your Global Cluster and is built to provide a seamless deployment experience.<br><br>When set to true, the management mode is set to Self-Managed Sharding. This mode leaves the management of shards in your hands and is built to provide an advanced and flexible deployment experience.<br><br>This setting cannot be changed once the cluster is deployed.|
 |groupId|string|false|read-only|Unique 24-hexadecimal character string that identifies the project.|
 |id|string|false|read-only|Unique 24-hexadecimal digit string that identifies the cluster.|
-|labels|[[ComponentLabel](#schemacomponentlabel)]|false|none|**Deprecated.** Collection of key-value pairs between 1 to 255 characters in length that tag and categorize the cluster. The MongoDB Cloud console doesn't display your labels.<br><br>Cluster labels are deprecated and will be removed in a future release. We strongly recommend that you use Resource Tags instead.|
+|labels|[[ComponentLabel](#schemacomponentlabel)]|false|none|**Deprecated.** Deprecated: Cluster labels will be removed in a future release. We strongly recommend that you use Resource Tags instead.<br><br>Collection of key-value pairs between 1 to 255 characters in length that tag and categorize the cluster. The MongoDB Cloud console doesn't display your labels.|
 |links|[[Link](#schemalink)]|false|read-only|List of one or more Uniform Resource Locators (URLs) that point to API sub-resources, related API resources, or both. RFC 5988 outlines these relationships.|
 |mongoDBEmployeeAccessGrant|[EmployeeAccessGrantView](#schemaemployeeaccessgrantview)|false|read-only|MongoDB employee granted access level and expiration for a cluster.|
 |mongoDBMajorVersion|string|false|none|MongoDB major version of the cluster.<br><br>On creation: Choose from the available versions of MongoDB, or leave unspecified for the current recommended default in the MongoDB Cloud platform. The recommended version is a recent Long Term Support version. The default is not guaranteed to be the most recently released version throughout the entire release cycle. For versions available in a specific project, see the linked documentation or use the API endpoint for [project LTS versions endpoint](#tag/Projects/operation/getProjectLTSVersions).<br><br> On update: Increase version only by 1 major version at a time. If the cluster is pinned to a MongoDB feature compatibility version exactly one major version below the current MongoDB version, the MongoDB version can be downgraded to the previous major version.|
@@ -122359,7 +123072,7 @@ Group of settings that configure a MongoDB cluster.
 |providerBackupEnabled|boolean|false|none|Flag that indicates whether the M10 or higher cluster can perform Cloud Backups. If set to `true`, the cluster can perform backups. If this and `backupEnabled` are set to `false`, the cluster doesn't use MongoDB Cloud backups.|
 |providerSettings|[ClusterProviderSettings](#schemaclusterprovidersettings)|false|none|Group of cloud provider settings that configure the provisioned MongoDB hosts.|
 |replicaSetScalingStrategy|string|false|none|Set this field to configure the replica set scaling mode for your cluster.<br><br>By default, Atlas scales under `WORKLOAD_TYPE`. This mode allows Atlas to scale your analytics nodes in parallel to your operational nodes.<br><br>When configured as `SEQUENTIAL`, Atlas scales all nodes sequentially. This mode is intended for steady-state workloads and applications performing latency-sensitive secondary reads.<br><br>When configured as `NODE_TYPE`, Atlas scales your electable nodes in parallel with your read-only and analytics nodes. This mode is intended for large, dynamic workloads requiring frequent and timely cluster tier scaling. This is the fastest scaling strategy, but it might impact latency of workloads when performing extensive secondary reads.|
-|replicationFactor|integer(int32)|false|none|**Deprecated.** Number of members that belong to the replica set. Each member retains a copy of your databases, providing high availability and data redundancy. Use `replicationSpecs` instead.|
+|replicationFactor|integer(int32)|false|none|**Deprecated.** Deprecated: Use `replicationSpecs` instead. Number of members that belong to the replica set. Each member retains a copy of your databases, providing high availability and data redundancy.|
 |replicationSpec|object|false|none|Physical location where MongoDB Cloud provisions cluster nodes.|
 |replicationSpecs|[[LegacyReplicationSpec](#schemalegacyreplicationspec)]|false|none|List of settings that configure your cluster regions.<br><br>- For Global Clusters, each object in the array represents one zone where MongoDB Cloud deploys your clusters nodes.<br>- For non-Global sharded clusters and replica sets, the single object represents where MongoDB Cloud deploys your clusters nodes.|
 |rootCertType|string|false|none|Root Certificate Authority that MongoDB Atlas cluster uses. MongoDB Cloud supports Internet Security Research Group.|
@@ -122596,7 +123309,7 @@ Request containing target state of tenant cluster to be upgraded.
 |globalClusterSelfManagedSharding|boolean|false|none|Set this field to configure the Sharding Management Mode when creating a new Global Cluster.<br><br>When set to false, the management mode is set to Atlas-Managed Sharding. This mode fully manages the sharding of your Global Cluster and is built to provide a seamless deployment experience.<br><br>When set to true, the management mode is set to Self-Managed Sharding. This mode leaves the management of shards in your hands and is built to provide an advanced and flexible deployment experience.<br><br>This setting cannot be changed once the cluster is deployed.|
 |groupId|string|false|read-only|Unique 24-hexadecimal character string that identifies the project.|
 |id|string|false|read-only|Unique 24-hexadecimal digit string that identifies the cluster.|
-|labels|[[ComponentLabel](#schemacomponentlabel)]|false|none|**Deprecated.** Collection of key-value pairs between 1 to 255 characters in length that tag and categorize the cluster. The MongoDB Cloud console doesn't display your labels.<br><br>Cluster labels are deprecated and will be removed in a future release. We strongly recommend that you use Resource Tags instead.|
+|labels|[[ComponentLabel](#schemacomponentlabel)]|false|none|**Deprecated.** Deprecated: Cluster labels will be removed in a future release. We strongly recommend that you use Resource Tags instead.<br><br>Collection of key-value pairs between 1 to 255 characters in length that tag and categorize the cluster. The MongoDB Cloud console doesn't display your labels.|
 |links|[[Link](#schemalink)]|false|read-only|List of one or more Uniform Resource Locators (URLs) that point to API sub-resources, related API resources, or both. RFC 5988 outlines these relationships.|
 |mongoDBEmployeeAccessGrant|[EmployeeAccessGrantView](#schemaemployeeaccessgrantview)|false|read-only|MongoDB employee granted access level and expiration for a cluster.|
 |mongoDBMajorVersion|string|false|none|MongoDB major version of the cluster.<br><br>On creation: Choose from the available versions of MongoDB, or leave unspecified for the current recommended default in the MongoDB Cloud platform. The recommended version is a recent Long Term Support version. The default is not guaranteed to be the most recently released version throughout the entire release cycle. For versions available in a specific project, see the linked documentation or use the API endpoint for [project LTS versions endpoint](#tag/Projects/operation/getProjectLTSVersions).<br><br> On update: Increase version only by 1 major version at a time. If the cluster is pinned to a MongoDB feature compatibility version exactly one major version below the current MongoDB version, the MongoDB version can be downgraded to the previous major version.|
@@ -122611,7 +123324,7 @@ Request containing target state of tenant cluster to be upgraded.
 |providerBackupEnabled|boolean|false|none|Flag that indicates whether the M10 or higher cluster can perform Cloud Backups. If set to `true`, the cluster can perform backups. If this and `backupEnabled` are set to `false`, the cluster doesn't use MongoDB Cloud backups.|
 |providerSettings|[ClusterProviderSettings](#schemaclusterprovidersettings)|false|none|Group of cloud provider settings that configure the provisioned MongoDB hosts.|
 |replicaSetScalingStrategy|string|false|none|Set this field to configure the replica set scaling mode for your cluster.<br><br>By default, Atlas scales under `WORKLOAD_TYPE`. This mode allows Atlas to scale your analytics nodes in parallel to your operational nodes.<br><br>When configured as `SEQUENTIAL`, Atlas scales all nodes sequentially. This mode is intended for steady-state workloads and applications performing latency-sensitive secondary reads.<br><br>When configured as `NODE_TYPE`, Atlas scales your electable nodes in parallel with your read-only and analytics nodes. This mode is intended for large, dynamic workloads requiring frequent and timely cluster tier scaling. This is the fastest scaling strategy, but it might impact latency of workloads when performing extensive secondary reads.|
-|replicationFactor|integer(int32)|false|none|**Deprecated.** Number of members that belong to the replica set. Each member retains a copy of your databases, providing high availability and data redundancy. Use `replicationSpecs` instead.|
+|replicationFactor|integer(int32)|false|none|**Deprecated.** Deprecated: Use `replicationSpecs` instead. Number of members that belong to the replica set. Each member retains a copy of your databases, providing high availability and data redundancy.|
 |replicationSpec|object|false|none|Physical location where MongoDB Cloud provisions cluster nodes.|
 |replicationSpecs|[[LegacyReplicationSpec](#schemalegacyreplicationspec)]|false|none|List of settings that configure your cluster regions.<br><br>- For Global Clusters, each object in the array represents one zone where MongoDB Cloud deploys your clusters nodes.<br>- For non-Global sharded clusters and replica sets, the single object represents where MongoDB Cloud deploys your clusters nodes.|
 |rootCertType|string|false|none|Root Certificate Authority that MongoDB Atlas cluster uses. MongoDB Cloud supports Internet Security Research Group.|
@@ -125449,6 +126162,39 @@ Authentication attempt, one per object, made against the cluster.
 |---|---|---|---|---|
 |accessLogs|[[MongoDBAccessLogs](#schemamongodbaccesslogs)]|false|read-only|Authentication attempt, one per object, made against the cluster.|
 
+<h2 id="tocS_MongosRegionPlacement">MongosRegionPlacement</h2>
+<!-- backwards compatibility -->
+<a id="schemamongosregionplacement"></a>
+<a id="schema_MongosRegionPlacement"></a>
+<a id="tocSmongosregionplacement"></a>
+<a id="tocsmongosregionplacement"></a>
+
+```json
+{
+  "nodeCount": 0,
+  "providerName": "AWS",
+  "regionName": "string"
+}
+```
+
+Dedicated mongos placement in one region.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|nodeCount|integer(int32)|false|none|Number of dedicated mongos to run in this region.|
+|providerName|string|false|none|Cloud provider on which the dedicated mongos run.|
+|regionName|string|false|none|Region in which the dedicated mongos run.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|providerName|AWS|
+|providerName|AZURE|
+|providerName|GCP|
+
 <h2 id="tocS_MongosTopologyCreateRequest">MongosTopologyCreateRequest</h2>
 <!-- backwards compatibility -->
 <a id="schemamongostopologycreaterequest"></a>
@@ -125478,47 +126224,14 @@ Dedicated mongos topology to attach to a sharded cluster.
 |---|---|---|---|---|
 |clusterName|string|false|none|Human-readable label that identifies the sharded cluster this topology belongs to.|
 |instanceSize|string|false|none|Instance size of the dedicated mongos hosts (for example, `M30`).|
-|regionPlacements|[[MongosTopologyResourceRegionConfig](#schemamongostopologyresourceregionconfig)]|false|none|Per-region placement of the dedicated mongos hosts.|
+|regionPlacements|[[MongosRegionPlacement](#schemamongosregionplacement)]|false|none|Per-region placement of the dedicated mongos hosts.|
 
-<h2 id="tocS_MongosTopologyResourceRegionConfig">MongosTopologyResourceRegionConfig</h2>
+<h2 id="tocS_MongosTopologyResponse">MongosTopologyResponse</h2>
 <!-- backwards compatibility -->
-<a id="schemamongostopologyresourceregionconfig"></a>
-<a id="schema_MongosTopologyResourceRegionConfig"></a>
-<a id="tocSmongostopologyresourceregionconfig"></a>
-<a id="tocsmongostopologyresourceregionconfig"></a>
-
-```json
-{
-  "nodeCount": 0,
-  "providerName": "AWS",
-  "regionName": "string"
-}
-```
-
-Dedicated mongos placement in one region.
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|nodeCount|integer(int32)|false|none|Number of dedicated mongos to run in this region.|
-|providerName|string|false|none|Cloud provider on which the dedicated mongos run.|
-|regionName|string|false|none|Region in which the dedicated mongos run.|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|providerName|AWS|
-|providerName|AZURE|
-|providerName|GCP|
-
-<h2 id="tocS_MongosTopologyResourceResponse">MongosTopologyResourceResponse</h2>
-<!-- backwards compatibility -->
-<a id="schemamongostopologyresourceresponse"></a>
-<a id="schema_MongosTopologyResourceResponse"></a>
-<a id="tocSmongostopologyresourceresponse"></a>
-<a id="tocsmongostopologyresourceresponse"></a>
+<a id="schemamongostopologyresponse"></a>
+<a id="schema_MongosTopologyResponse"></a>
+<a id="tocSmongostopologyresponse"></a>
+<a id="tocsmongostopologyresponse"></a>
 
 ```json
 {
@@ -125543,7 +126256,7 @@ Configuration of the dedicated mongos routers for a sharded cluster, identified 
 |---|---|---|---|---|
 |clusterName|string|false|none|Human-readable label that identifies the sharded cluster this topology belongs to.|
 |instanceSize|string|false|none|Instance size of the dedicated mongos hosts (for example, `M30`).|
-|regionPlacements|[[MongosTopologyResourceRegionConfig](#schemamongostopologyresourceregionconfig)]|false|none|Per-region placement of the dedicated mongos hosts.|
+|regionPlacements|[[MongosRegionPlacement](#schemamongosregionplacement)]|false|none|Per-region placement of the dedicated mongos hosts.|
 |status|string|false|read-only|Lifecycle status of the dedicated mongos topology resource.|
 
 #### Enumerated Values
@@ -125584,7 +126297,7 @@ Dedicated mongos tier to apply to a sharded cluster.
 |---|---|---|---|---|
 |clusterName|string|false|none|Human-readable label that identifies the sharded cluster this topology belongs to.|
 |instanceSize|string|false|none|Instance size of the dedicated mongos hosts (for example, `M30`).|
-|regionPlacements|[[MongosTopologyResourceRegionConfig](#schemamongostopologyresourceregionconfig)]|false|none|Per-region placement of the dedicated mongos hosts.|
+|regionPlacements|[[MongosRegionPlacement](#schemamongosregionplacement)]|false|none|Per-region placement of the dedicated mongos hosts.|
 
 <h2 id="tocS_MongotuneAlertConfigViewForNdsGroup">MongotuneAlertConfigViewForNdsGroup</h2>
 <!-- backwards compatibility -->
@@ -126120,6 +126833,7 @@ Audit saving information about Atlas cloud provider and other Atlas related deta
 |eventTypeName|MONGODB_USER_X509_CERT_CREATED|
 |eventTypeName|MONGODB_USER_X509_CERT_REVOKED|
 |eventTypeName|MONGODB_USER_UPDATED|
+|eventTypeName|MONGODB_USER_PASSWORD_UPDATED|
 |eventTypeName|MONGODB_ROLE_ADDED|
 |eventTypeName|MONGODB_ROLE_DELETED|
 |eventTypeName|MONGODB_ROLE_UPDATED|
@@ -126332,6 +127046,7 @@ Audit saving information about Atlas cloud provider and other Atlas related deta
 |eventTypeName|SEARCH_HOST_DISABLE_FTS|
 |eventTypeName|SEARCH_HOST_PAUSE_INITIAL_SYNC_ON_INDEX_IDS|
 |eventTypeName|SEARCH_AUTOSCALING_ADMIN_OVERRIDES_UPDATED|
+|eventTypeName|SEARCH_CLUSTER_MONGOT_VERSION_OVERRIDE_UPDATED|
 |eventTypeName|CLUSTER_BLOCK_WRITE|
 |eventTypeName|CLUSTER_UNBLOCK_WRITE|
 |eventTypeName|KMIP_KEY_ROTATION_SCHEDULED|
@@ -134240,12 +134955,12 @@ A list of Project Service Accounts.
 |results|[[MetricIntegrationResponse](#schemametricintegrationresponse)]|true|read-only|List of returned documents that MongoDB Cloud provides when completing this request.|
 |totalCount|integer(int32)|false|read-only|Total number of documents available. When `includeCount` is set to `false`, MongoDB Cloud may omit this value or return it when the count is available without additional calculation. The total number is an estimate and may not be exact.|
 
-<h2 id="tocS_PaginatedMongosTopologyResourceResponse">PaginatedMongosTopologyResourceResponse</h2>
+<h2 id="tocS_PaginatedMongosTopologyResponse">PaginatedMongosTopologyResponse</h2>
 <!-- backwards compatibility -->
-<a id="schemapaginatedmongostopologyresourceresponse"></a>
-<a id="schema_PaginatedMongosTopologyResourceResponse"></a>
-<a id="tocSpaginatedmongostopologyresourceresponse"></a>
-<a id="tocspaginatedmongostopologyresourceresponse"></a>
+<a id="schemapaginatedmongostopologyresponse"></a>
+<a id="schema_PaginatedMongosTopologyResponse"></a>
+<a id="tocSpaginatedmongostopologyresponse"></a>
+<a id="tocspaginatedmongostopologyresponse"></a>
 
 ```json
 {
@@ -134278,7 +134993,7 @@ A list of Project Service Accounts.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |links|[[Link](#schemalink)]|false|read-only|List of one or more Uniform Resource Locators (URLs) that point to API sub-resources, related API resources, or both. RFC 5988 outlines these relationships.|
-|results|[[MongosTopologyResourceResponse](#schemamongostopologyresourceresponse)]|true|read-only|List of returned documents that MongoDB Cloud provides when completing this request.|
+|results|[[MongosTopologyResponse](#schemamongostopologyresponse)]|true|read-only|List of returned documents that MongoDB Cloud provides when completing this request.|
 |totalCount|integer(int32)|false|read-only|Total number of documents available. When `includeCount` is set to `false`, MongoDB Cloud may omit this value or return it when the count is available without additional calculation. The total number is an estimate and may not be exact.|
 
 <h2 id="tocS_PaginatedNetworkAccessView">PaginatedNetworkAccessView</h2>
@@ -137191,9 +137906,9 @@ A summary of execution statistics for a given query shape.
 |nModified|number(double) \| null|false|none|Total number of documents modified by queries with the given query shape. Available for MongoDB 9.0+ write commands.|
 |nUpserted|number(double) \| null|false|none|Total number of documents upserted by queries with the given query shape. Available for MongoDB 9.0+ write commands.|
 |namespace|string|false|none|Human-readable label that identifies the namespace on the specified host. The resource expresses this parameter value as `<database>.<collection>`.|
-|p50ExecMicros|number(double)|false|none|**Deprecated.** The 50th percentile value of execution time in microseconds. This field is deprecated as the values it reports may be inaccurate. It will be removed in a future release.|
-|p90ExecMicros|number(double)|false|none|**Deprecated.** The 90th percentile value of execution time in microseconds. This field is deprecated as the values it reports may be inaccurate. It will be removed in a future release.|
-|p99ExecMicros|number(double)|false|none|**Deprecated.** The 99th percentile value of execution time in microseconds. This field is deprecated as the values it reports may be inaccurate. It will be removed in a future release.|
+|p50ExecMicros|number(double)|false|none|**Deprecated.** Deprecated: The values it reports may be inaccurate. It will be removed in a future release. The 50th percentile value of execution time in microseconds.|
+|p90ExecMicros|number(double)|false|none|**Deprecated.** Deprecated: The values it reports may be inaccurate. It will be removed in a future release. The 90th percentile value of execution time in microseconds.|
+|p99ExecMicros|number(double)|false|none|**Deprecated.** Deprecated: The values it reports may be inaccurate. It will be removed in a future release. The 99th percentile value of execution time in microseconds.|
 |queryShape|string|false|none|A query shape is a set of specifications that group similar queries together. Specifications can include filters, sorts, projections, aggregation pipeline stages, a namespace, and others. Queries that have similar specifications have the same query shape.|
 |queryShapeHash|string|false|none|A hexadecimal string that represents the hash of a MongoDB query shape.|
 |systemQuery|boolean|false|none|Indicates whether this query shape represents a system-initiated query.|
@@ -142087,6 +142802,7 @@ Details of the failure that ended the shard key analysis operation.
 |---|---|
 |code|NAMESPACE_NOT_FOUND|
 |code|COLLECTION_EMPTY|
+|code|TIMESERIES_COLLECTION_UNSUPPORTED|
 |code|SHARD_KEY_MISSING_SUPPORTING_INDEX|
 |code|INSUFFICIENT_CARDINALITY_FOR_DISTRIBUTION|
 |code|SHARD_KEY_CONTAINS_ARRAY_FIELD|

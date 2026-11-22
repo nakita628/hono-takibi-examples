@@ -1,406 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const ObjectSubscriptionUpsertRequestSchema = z
-  .object({
-    actions: z
-      .array(
-        z
-          .enum([
-            'CREATE',
-            'UPDATE',
-            'DELETE',
-            'MERGE',
-            'RESTORE',
-            'ASSOCIATION_ADDED',
-            'ASSOCIATION_REMOVED',
-            'SNAPSHOT',
-            'APP_INSTALL',
-            'APP_UNINSTALL',
-            'ADDED_TO_LIST',
-            'REMOVED_FROM_LIST',
-            'GDPR_DELETE',
-          ])
-          .openapi({ example: null }),
-      )
-      .openapi({
-        description:
-          "An array of strings specifying the actions that trigger the subscription. Valid actions include 'CREATE', 'UPDATE', 'DELETE', 'MERGE', 'RESTORE', 'ASSOCIATION_ADDED', 'ASSOCIATION_REMOVED', 'SNAPSHOT', 'APP_INSTALL', 'APP_UNINSTALL', 'ADDED_TO_LIST', 'REMOVED_FROM_LIST', and 'GDPR_DELETE'.",
-        example: null,
-      }),
-    objectIds: z
-      .array(
-        z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({ type: 'integer', format: 'int64', example: null }),
-      )
-      .openapi({
-        description:
-          'An array of integers specifying the unique identifiers of the objects involved in the subscription.',
-        example: null,
-      }),
-    objectTypeId: z
-      .string()
-      .openapi({
-        description:
-          'A string representing the unique identifier of the object type for which the subscription is being created or updated.',
-        example: null,
-      }),
-    portalId: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'An integer representing the unique identifier of the HubSpot portal.',
-        example: null,
-      }),
-    properties: z
-      .array(z.string().openapi({ example: null }))
-      .openapi({
-        description:
-          'An array of strings listing the properties of the objects that are relevant to the subscription.',
-        example: null,
-      }),
-    subscriptionType: z
-      .literal('OBJECT')
-      .default('OBJECT')
-      .openapi({
-        description:
-          "A string indicating the type of subscription, which is always 'OBJECT' for this request.",
-        example: null,
-      }),
-  })
-  .openapi({
-    required: [
-      'actions',
-      'objectIds',
-      'objectTypeId',
-      'portalId',
-      'properties',
-      'subscriptionType',
-    ],
-    example: null,
-    'x-hubspot-sub-type-impl': true,
-  })
-  .openapi('ObjectSubscriptionUpsertRequest')
-
-const AssociationSubscriptionUpsertRequestSchema = z
-  .object({
-    actions: z
-      .array(
-        z
-          .enum([
-            'CREATE',
-            'UPDATE',
-            'DELETE',
-            'MERGE',
-            'RESTORE',
-            'ASSOCIATION_ADDED',
-            'ASSOCIATION_REMOVED',
-            'SNAPSHOT',
-            'APP_INSTALL',
-            'APP_UNINSTALL',
-            'ADDED_TO_LIST',
-            'REMOVED_FROM_LIST',
-            'GDPR_DELETE',
-          ])
-          .openapi({ example: null }),
-      )
-      .openapi({
-        description:
-          "An array of strings specifying the actions that trigger the subscription. Valid actions include 'CREATE', 'UPDATE', 'DELETE', 'MERGE', 'RESTORE', 'ASSOCIATION_ADDED', 'ASSOCIATION_REMOVED', 'SNAPSHOT', 'APP_INSTALL', 'APP_UNINSTALL', 'ADDED_TO_LIST', 'REMOVED_FROM_LIST', and 'GDPR_DELETE'.",
-        example: null,
-      }),
-    associatedObjectTypeIds: z
-      .array(z.string().openapi({ example: null }))
-      .openapi({
-        description:
-          'An array of strings representing the type identifiers of the associated objects in the subscription.',
-        example: null,
-      }),
-    objectIds: z
-      .array(
-        z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({ type: 'integer', format: 'int64', example: null }),
-      )
-      .openapi({
-        description:
-          'An array of integers representing the unique identifiers of the objects involved in the subscription.',
-        example: null,
-      }),
-    objectTypeId: z
-      .string()
-      .openapi({
-        description:
-          'A string representing the type identifier of the object involved in the subscription.',
-        example: null,
-      }),
-    portalId: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'An integer representing the unique identifier of the HubSpot portal.',
-        example: null,
-      }),
-    subscriptionType: z
-      .literal('ASSOCIATION')
-      .default('ASSOCIATION')
-      .openapi({
-        description:
-          "A string indicating the type of subscription, which is 'ASSOCIATION' for this component.",
-        example: null,
-      }),
-  })
-  .openapi({
-    required: [
-      'actions',
-      'associatedObjectTypeIds',
-      'objectIds',
-      'objectTypeId',
-      'portalId',
-      'subscriptionType',
-    ],
-    example: null,
-    'x-hubspot-sub-type-impl': true,
-  })
-  .openapi('AssociationSubscriptionUpsertRequest')
-
-const AppLifecycleEventSubscriptionUpsertRequestSchema = z
-  .object({
-    eventTypeId: z
-      .string()
-      .openapi({
-        description:
-          'A string representing the unique identifier for the event type that the subscription is related to.',
-        example: null,
-      }),
-    properties: z
-      .array(z.string().openapi({ example: null }))
-      .openapi({
-        description:
-          'An array of strings specifying the properties associated with the event type that should be included in the subscription.',
-        example: null,
-      }),
-    subscriptionType: z
-      .literal('APP_LIFECYCLE_EVENT')
-      .default('APP_LIFECYCLE_EVENT')
-      .openapi({
-        description:
-          "A string indicating the type of subscription, which is 'APP_LIFECYCLE_EVENT' by default.",
-        example: null,
-      }),
-  })
-  .openapi({
-    required: ['eventTypeId', 'properties', 'subscriptionType'],
-    example: null,
-    'x-hubspot-sub-type-impl': true,
-  })
-  .openapi('AppLifecycleEventSubscriptionUpsertRequest')
-
-const ListMembershipSubscriptionUpsertRequestSchema = z
-  .object({
-    actions: z
-      .array(
-        z
-          .enum([
-            'CREATE',
-            'UPDATE',
-            'DELETE',
-            'MERGE',
-            'RESTORE',
-            'ASSOCIATION_ADDED',
-            'ASSOCIATION_REMOVED',
-            'SNAPSHOT',
-            'APP_INSTALL',
-            'APP_UNINSTALL',
-            'ADDED_TO_LIST',
-            'REMOVED_FROM_LIST',
-            'GDPR_DELETE',
-          ])
-          .openapi({ example: null }),
-      )
-      .openapi({
-        description:
-          "An array of strings specifying the actions that trigger the subscription. Valid actions include 'CREATE', 'UPDATE', 'DELETE', 'MERGE', 'RESTORE', 'ASSOCIATION_ADDED', 'ASSOCIATION_REMOVED', 'SNAPSHOT', 'APP_INSTALL', 'APP_UNINSTALL', 'ADDED_TO_LIST', 'REMOVED_FROM_LIST', and 'GDPR_DELETE'.",
-        example: null,
-      }),
-    listIds: z
-      .array(
-        z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({ type: 'integer', format: 'int64', example: null }),
-      )
-      .openapi({
-        description:
-          'An array of integers representing the unique identifiers of the lists involved in the subscription.',
-        example: null,
-      }),
-    objectIds: z
-      .array(
-        z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({ type: 'integer', format: 'int64', example: null }),
-      )
-      .openapi({
-        description:
-          'An array of integers representing the unique identifiers of the objects involved in the subscription.',
-        example: null,
-      }),
-    portalId: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'An integer representing the unique identifier of the portal in which the subscription is being managed.',
-        example: null,
-      }),
-    subscriptionType: z
-      .literal('LIST_MEMBERSHIP')
-      .default('LIST_MEMBERSHIP')
-      .openapi({
-        description:
-          "A string indicating the type of subscription. The default and only valid value is 'LIST_MEMBERSHIP'.",
-        example: null,
-      }),
-  })
-  .openapi({
-    required: ['actions', 'listIds', 'objectIds', 'portalId', 'subscriptionType'],
-    example: null,
-    'x-hubspot-sub-type-impl': true,
-  })
-  .openapi('ListMembershipSubscriptionUpsertRequest')
-
-const GdprPrivacyDeletionSubscriptionUpsertRequestSchema = z
-  .object({
-    actions: z
-      .array(
-        z
-          .enum([
-            'CREATE',
-            'UPDATE',
-            'DELETE',
-            'MERGE',
-            'RESTORE',
-            'ASSOCIATION_ADDED',
-            'ASSOCIATION_REMOVED',
-            'SNAPSHOT',
-            'APP_INSTALL',
-            'APP_UNINSTALL',
-            'ADDED_TO_LIST',
-            'REMOVED_FROM_LIST',
-            'GDPR_DELETE',
-          ])
-          .openapi({ example: null }),
-      )
-      .openapi({
-        description:
-          "An array of actions that can trigger the subscription, such as 'CREATE', 'UPDATE', 'DELETE', and 'GDPR_DELETE'.",
-        example: null,
-      }),
-    objectTypeId: z
-      .string()
-      .openapi({
-        description:
-          'A string representing the unique identifier for the object type associated with the subscription.',
-        example: null,
-      }),
-    portalId: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'The unique identifier for the HubSpot portal, represented as a 64-bit integer.',
-        example: null,
-      }),
-    subscriptionType: z
-      .literal('GDPR_PRIVACY_DELETION')
-      .default('GDPR_PRIVACY_DELETION')
-      .openapi({
-        description: "The type of subscription, which is fixed as 'GDPR_PRIVACY_DELETION'.",
-        example: null,
-      }),
-  })
-  .openapi({
-    required: ['actions', 'objectTypeId', 'portalId', 'subscriptionType'],
-    example: null,
-    'x-hubspot-sub-type-impl': true,
-  })
-  .openapi('GdprPrivacyDeletionSubscriptionUpsertRequest')
-
-type SubscriptionUpsertRequestType =
-  | z.infer<typeof ObjectSubscriptionUpsertRequestSchema>
-  | z.infer<typeof AssociationSubscriptionUpsertRequestSchema>
-  | z.infer<typeof AppLifecycleEventSubscriptionUpsertRequestSchema>
-  | z.infer<typeof ListMembershipSubscriptionUpsertRequestSchema>
-  | z.infer<typeof GdprPrivacyDeletionSubscriptionUpsertRequestSchema>
-
 const ActionOverrideRequestSchema = z
   .object({
     associatedObjectTypeIds: z
@@ -463,13 +62,143 @@ const ActionOverrideRequestSchema = z
   .openapi({ example: null, required: [] })
   .openapi('ActionOverrideRequest')
 
+const AppLifecycleEventSubscriptionUpsertRequestSchema = z
+  .object({
+    eventTypeId: z
+      .string()
+      .openapi({
+        description:
+          'A string representing the unique identifier for the event type that the subscription is related to.',
+        example: null,
+      }),
+    properties: z
+      .array(z.string().openapi({ example: null }))
+      .openapi({
+        description:
+          'An array of strings specifying the properties associated with the event type that should be included in the subscription.',
+        example: null,
+      }),
+    subscriptionType: z
+      .literal('APP_LIFECYCLE_EVENT')
+      .default('APP_LIFECYCLE_EVENT')
+      .openapi({
+        description:
+          "A string indicating the type of subscription, which is 'APP_LIFECYCLE_EVENT' by default.",
+        example: null,
+      }),
+  })
+  .openapi({
+    required: ['eventTypeId', 'properties', 'subscriptionType'],
+    example: null,
+    'x-hubspot-sub-type-impl': true,
+  })
+  .openapi('AppLifecycleEventSubscriptionUpsertRequest')
+
+const AssociationSubscriptionUpsertRequestSchema = z
+  .object({
+    actions: z
+      .array(
+        z
+          .enum([
+            'CREATE',
+            'UPDATE',
+            'DELETE',
+            'MERGE',
+            'RESTORE',
+            'ASSOCIATION_ADDED',
+            'ASSOCIATION_REMOVED',
+            'SNAPSHOT',
+            'APP_INSTALL',
+            'APP_UNINSTALL',
+            'ADDED_TO_LIST',
+            'REMOVED_FROM_LIST',
+            'GDPR_DELETE',
+          ])
+          .openapi({ example: null }),
+      )
+      .openapi({
+        description: 'The actions to track: `ASSOCIATION_ADDED` or `ASSOCIATION_REMOVED`.',
+        example: null,
+      }),
+    associatedObjectTypeIds: z
+      .array(z.string().openapi({ example: null }))
+      .openapi({
+        description:
+          'An array of strings representing the type identifiers of the associated objects in the subscription.',
+        example: null,
+      }),
+    objectIds: z
+      .array(
+        z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({ type: 'integer', format: 'int64', example: null }),
+      )
+      .openapi({
+        description:
+          'The IDs of specific objects to track. Use an empty array to track all objects of this type.',
+        example: null,
+      }),
+    objectTypeId: z
+      .string()
+      .openapi({
+        description:
+          'A string representing the type identifier of the object involved in the subscription.',
+        example: null,
+      }),
+    portalId: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'An integer representing the unique identifier of the HubSpot portal.',
+        example: null,
+      }),
+    subscriptionType: z
+      .literal('ASSOCIATION')
+      .default('ASSOCIATION')
+      .openapi({
+        description:
+          "A string indicating the type of subscription, which is 'ASSOCIATION' for this component.",
+        example: null,
+      }),
+  })
+  .openapi({
+    required: [
+      'actions',
+      'associatedObjectTypeIds',
+      'objectIds',
+      'objectTypeId',
+      'portalId',
+      'subscriptionType',
+    ],
+    example: null,
+    'x-hubspot-sub-type-impl': true,
+  })
+  .openapi('AssociationSubscriptionUpsertRequest')
+
 const BatchInputStringSchema = z
   .object({
     inputs: z
       .array(z.string().openapi({ example: null }))
       .openapi({
         description:
-          'An array of strings that are to be processed in the batch operation. This property is required.',
+          "The offsets (UUIDs) of the journal entries to fetch, up to 100 per request. Use the `currentOffset` values returned by other journal endpoints. If any value is not a valid UUID, the whole request is rejected with a `400`. Offsets that can't be fetched, including ones with no matching entry for your app (or for `installPortalId` when it is set), don't fail the request: each one appears in `errors` with the offset in `context.offset`, and `numErrors` counts them. An empty list returns an empty result.",
         example: null,
       }),
   })
@@ -493,7 +222,8 @@ const JournalFetchResponseSchema = z
     url: z
       .string()
       .openapi({
-        description: 'A string representing the URL where the journal data can be accessed.',
+        description:
+          "A temporary, pre-signed URL for downloading this entry's JSON file. Request it without an `Authorization` header.",
         example: null,
       }),
   })
@@ -635,7 +365,7 @@ const StandardErrorSchema = z
       .string()
       .openapi({ description: 'A string representing the status of the error.', example: null }),
     subCategory: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'An object providing more specific details about the error category.',
@@ -712,575 +442,6 @@ const BatchResponseJournalFetchResponseWithErrorsSchema = z
   })
   .openapi({ required: ['completedAt', 'results', 'startedAt', 'status'], example: null })
   .openapi('BatchResponseJournalFetchResponseWithErrors')
-
-const SubscriptionResponseMarch2027Schema = z
-  .object({
-    actionOverrides: z
-      .record(z.string(), ActionOverrideRequestSchema)
-      .exactOptional()
-      .openapi({ example: null }),
-    actions: z
-      .array(
-        z
-          .enum([
-            'CREATE',
-            'UPDATE',
-            'DELETE',
-            'MERGE',
-            'RESTORE',
-            'ASSOCIATION_ADDED',
-            'ASSOCIATION_REMOVED',
-            'SNAPSHOT',
-            'APP_INSTALL',
-            'APP_UNINSTALL',
-            'ADDED_TO_LIST',
-            'REMOVED_FROM_LIST',
-            'GDPR_DELETE',
-          ])
-          .openapi({ example: null }),
-      )
-      .openapi({ example: null }),
-    appId: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({ type: 'integer', format: 'int64', example: null }),
-    associatedObjectTypeIds: z
-      .array(z.string().openapi({ example: null }))
-      .exactOptional()
-      .openapi({ example: null }),
-    createdAt: z.iso.datetime({ offset: true }).openapi({ example: null }),
-    createdBy: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64', example: null }),
-    deletedAt: z.iso.datetime({ offset: true }).exactOptional().openapi({ example: null }),
-    id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({ type: 'integer', format: 'int64', example: null }),
-    includeSensitivePropertiesChanged: z.boolean().exactOptional().openapi({ example: null }),
-    listIds: z
-      .array(
-        z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({ type: 'integer', format: 'int64', example: null }),
-      )
-      .exactOptional()
-      .openapi({ example: null }),
-    objectIds: z
-      .array(
-        z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({ type: 'integer', format: 'int64', example: null }),
-      )
-      .exactOptional()
-      .openapi({ example: null }),
-    objectTypeId: z.string().openapi({ example: null }),
-    portalId: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64', example: null }),
-    properties: z
-      .array(z.string().openapi({ example: null }))
-      .exactOptional()
-      .openapi({ example: null }),
-    subscriptionType: z
-      .enum([
-        'APP_LIFECYCLE_EVENT',
-        'ASSOCIATION',
-        'EVENT',
-        'GDPR_PRIVACY_DELETION',
-        'LIST_MEMBERSHIP',
-        'OBJECT',
-      ])
-      .openapi({ example: null }),
-    updatedAt: z.iso.datetime({ offset: true }).openapi({ example: null }),
-  })
-  .openapi({
-    required: [
-      'actions',
-      'appId',
-      'createdAt',
-      'id',
-      'objectTypeId',
-      'subscriptionType',
-      'updatedAt',
-    ],
-    example: null,
-  })
-  .openapi('SubscriptionResponseMarch2027')
-
-const CollectionResponseSubscriptionResponseMarch2027NoPagingSchema = z
-  .object({ results: z.array(SubscriptionResponseMarch2027Schema).openapi({ example: null }) })
-  .openapi({ required: ['results'], example: null })
-  .openapi('CollectionResponseSubscriptionResponseMarch2027NoPaging')
-
-const ConditionSchema = z
-  .object({
-    filterType: z
-      .literal('CRM_OBJECT_PROPERTY')
-      .openapi({
-        description:
-          "A string indicating the type of filter applied. Valid value is 'CRM_OBJECT_PROPERTY'.",
-        example: null,
-      }),
-    operator: z
-      .enum([
-        'CONTAINS',
-        'ENDS_WITH',
-        'EQ',
-        'GT',
-        'GTE',
-        'IN',
-        'IS_EMPTY',
-        'IS_NOT_EMPTY',
-        'LT',
-        'LTE',
-        'N_EQ',
-        'NOT_IN',
-        'STARTS_WITH',
-      ])
-      .openapi({
-        description:
-          "A string specifying the operation used for comparison. Valid values include 'EQ', 'N_EQ', 'LT', 'GT', 'LTE', 'GTE', 'CONTAINS', 'STARTS_WITH', 'ENDS_WITH', 'IN', 'NOT_IN', 'IS_EMPTY', and 'IS_NOT_EMPTY'.",
-        example: null,
-      }),
-    property: z
-      .string()
-      .openapi({
-        description: 'A string representing the property name that the condition is evaluating.',
-        example: null,
-      }),
-    value: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A string representing the value to compare against the specified property using the defined operator.',
-        example: null,
-      }),
-    values: z
-      .array(z.string().openapi({ example: null }))
-      .exactOptional()
-      .openapi({
-        description:
-          "An array of strings containing multiple values for comparison when using operators like 'IN' or 'NOT_IN'.",
-        example: null,
-      }),
-  })
-  .openapi({ required: ['filterType', 'operator', 'property'], example: null })
-  .openapi('Condition')
-
-const CrmObjectSnapshotRequestSchema = z
-  .object({
-    objectId: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'An integer representing the unique identifier of the CRM object.',
-        example: null,
-      }),
-    objectTypeId: z
-      .string()
-      .openapi({
-        description: 'A string representing the type identifier of the CRM object.',
-        example: null,
-      }),
-    portalId: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'An integer representing the unique identifier of the HubSpot portal.',
-        example: null,
-      }),
-    properties: z
-      .array(z.string().openapi({ example: null }))
-      .openapi({
-        description:
-          'An array of strings specifying the properties of the CRM object to include in the snapshot.',
-        example: null,
-      }),
-  })
-  .openapi({ required: ['objectId', 'objectTypeId', 'portalId', 'properties'], example: null })
-  .openapi('CrmObjectSnapshotRequest')
-
-const CrmObjectSnapshotBatchRequestSchema = z
-  .object({
-    snapshotRequests: z
-      .array(CrmObjectSnapshotRequestSchema)
-      .openapi({
-        description:
-          'An array of CrmObjectSnapshotRequest objects, each representing a request to create a snapshot for a specific CRM object. This property is required.',
-        example: null,
-      }),
-  })
-  .openapi({ required: ['snapshotRequests'], example: null })
-  .openapi('CrmObjectSnapshotBatchRequest')
-
-const CrmObjectSnapshotResponseSchema = z
-  .object({
-    objectId: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'An integer representing the unique identifier of the CRM object for which the snapshot was taken. It is in int64 format.',
-        example: null,
-      }),
-    objectTypeId: z
-      .string()
-      .openapi({
-        description:
-          'A string representing the type identifier of the CRM object involved in the snapshot.',
-        example: null,
-      }),
-    portalId: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'An integer representing the unique identifier of the HubSpot portal associated with the CRM object snapshot. It is in int64 format.',
-        example: null,
-      }),
-    snapshotStatusId: z
-      .uuid()
-      .openapi({
-        description:
-          'A string in UUID format representing the status identifier of the snapshot operation.',
-        example: null,
-      }),
-  })
-  .openapi({
-    required: ['objectId', 'objectTypeId', 'portalId', 'snapshotStatusId'],
-    example: null,
-  })
-  .openapi('CrmObjectSnapshotResponse')
-
-const CrmObjectSnapshotBatchResponseSchema = z
-  .object({
-    snapshotResponses: z
-      .array(CrmObjectSnapshotResponseSchema)
-      .openapi({
-        description:
-          'An array of responses for each CRM object snapshot request. Each item in the array is a CrmObjectSnapshotResponse object, detailing the outcome of a single snapshot request.',
-        example: null,
-      }),
-  })
-  .openapi({ required: ['snapshotResponses'], example: null })
-  .openapi('CrmObjectSnapshotBatchResponse')
-
-const ErrorSchema = z
-  .object({
-    category: z.string().openapi({ description: 'The error category', example: null }),
-    context: z
-      .record(z.string(), z.array(z.string().openapi({ example: null })).openapi({ example: null }))
-      .exactOptional()
-      .openapi({
-        description: 'Context about the error condition',
-        example: '{invalidPropertyName=[propertyValue], missingScopes=[scope1, scope2]}',
-      }),
-    correlationId: z
-      .uuid()
-      .openapi({
-        description:
-          'A unique identifier for the request. Include this value with any error reports or support tickets',
-        example: 'aeb5f871-7f07-4993-9211-075dc63e7cbf',
-      }),
-    errors: z
-      .array(ErrorDetailSchema)
-      .exactOptional()
-      .openapi({ description: 'further information about the error', example: null }),
-    links: z
-      .record(z.string(), z.string().openapi({ example: null }))
-      .exactOptional()
-      .openapi({
-        description:
-          'A map of link names to associated URIs containing documentation about the error or recommended remediation steps',
-        example: null,
-      }),
-    message: z
-      .string()
-      .openapi({
-        description:
-          'A human readable message describing the error along with remediation steps where appropriate',
-        example: 'An error occurred',
-      }),
-    subCategory: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'A specific category that contains more specific detail about the error',
-        example: null,
-      }),
-  })
-  .openapi({
-    required: ['category', 'correlationId', 'message'],
-    description:
-      'Represents an error response returned by the API when an operation fails. This component is used in various endpoints to provide detailed information about the error encountered.',
-    example: {
-      message: 'Invalid input (details will vary based on the error)',
-      correlationId: 'aeb5f871-7f07-4993-9211-075dc63e7cbf',
-      category: 'VALIDATION_ERROR',
-      links: { 'knowledge-base': 'https://www.hubspot.com/products/service/knowledge-base' },
-    },
-  })
-  .openapi('Error')
-
-const FilterSchema = z
-  .object({
-    conditions: z
-      .array(ConditionSchema)
-      .openapi({
-        description:
-          'An array of conditions that define the criteria for the filter. Each condition specifies a filter type, operator, property, and optional values.',
-        example: null,
-      }),
-  })
-  .openapi({
-    required: ['conditions'],
-    description:
-      'Defines a single condition for searching CRM objects, specifying the property to filter on, the operator to use (such as equals, greater than, or contains), and the value(s) to compare against. ',
-    example: null,
-  })
-  .openapi('Filter')
-
-const FilterCreateRequestSchema = z
-  .object({
-    filter: FilterSchema,
-    subscriptionId: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'An integer representing the unique identifier of the subscription to which the filter will be applied. It is required and uses the int64 format.',
-        example: null,
-      }),
-  })
-  .openapi({ required: ['filter', 'subscriptionId'], example: null })
-  .openapi('FilterCreateRequest')
-
-const FilterCreateResponseSchema = z
-  .object({
-    filterId: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'The unique identifier for the created filter. It is an integer in int64 format.',
-        example: null,
-      }),
-  })
-  .openapi({ required: ['filterId'], example: null })
-  .openapi('FilterCreateResponse')
-
-const FilterResponseSchema = z
-  .object({
-    createdAt: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'A Unix timestamp in milliseconds indicating when the filter was created.',
-        example: null,
-      }),
-    filter: FilterSchema,
-    id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'The unique identifier for the filter, represented as a 64-bit integer.',
-        example: null,
-      }),
-  })
-  .openapi({ required: ['createdAt', 'filter', 'id'], example: null })
-  .openapi('FilterResponse')
-
-const SnapshotStatusResponseSchema = z
-  .object({
-    completedAt: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'The timestamp when the snapshot was completed, represented as an integer in int64 format. This field may be null if the snapshot is not yet completed.',
-        example: null,
-      }),
-    errorCode: z
-      .enum(['INTERNAL_ERROR', 'PERMISSION_DENIED', 'TIMEOUT', 'VALIDATION_ERROR'])
-      .exactOptional()
-      .openapi({
-        description:
-          "An optional code indicating the error that occurred, if any. Possible values are 'TIMEOUT', 'VALIDATION_ERROR', 'INTERNAL_ERROR', and 'PERMISSION_DENIED'.",
-        example: null,
-      }),
-    id: z
-      .uuid()
-      .openapi({
-        description: 'A unique identifier for the snapshot, represented as a UUID.',
-        example: null,
-      }),
-    initiatedAt: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'The timestamp when the snapshot was initiated, represented as an integer in int64 format.',
-        example: null,
-      }),
-    message: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A descriptive message providing additional information about the snapshot status or error.',
-        example: null,
-      }),
-    status: z
-      .enum(['EXPIRED', 'FAILED', 'IN_PROGRESS', 'PENDING', 'SUCCESS'])
-      .openapi({
-        description:
-          "The current status of the snapshot. Valid values include 'PENDING', 'IN_PROGRESS', 'COMPLETED', 'FAILED', and 'EXPIRED'.",
-        example: null,
-      }),
-  })
-  .openapi({ required: ['id', 'initiatedAt', 'status'], example: null })
-  .openapi('SnapshotStatusResponse')
 
 const SubscriptionResponseSchema = z
   .object({
@@ -1498,18 +659,707 @@ const SubscriptionResponseSchema = z
   })
   .openapi('SubscriptionResponse')
 
-const SubscriptionUpsertRequestSchema: z.ZodType<SubscriptionUpsertRequestType> = z
-  .lazy(() =>
-    z
-      .xor([
-        ObjectSubscriptionUpsertRequestSchema,
-        AssociationSubscriptionUpsertRequestSchema,
-        AppLifecycleEventSubscriptionUpsertRequestSchema,
-        ListMembershipSubscriptionUpsertRequestSchema,
-        GdprPrivacyDeletionSubscriptionUpsertRequestSchema,
+const CollectionResponseSubscriptionResponseNoPagingSchema = z
+  .object({
+    results: z
+      .array(SubscriptionResponseSchema)
+      .openapi({
+        description:
+          'An array of subscription responses, where each item contains details about a specific subscription. Each item follows the SubscriptionResponse schema.',
+        example: null,
+      }),
+  })
+  .openapi({ required: ['results'], example: null })
+  .openapi('CollectionResponseSubscriptionResponseNoPaging')
+
+const ConditionSchema = z
+  .object({
+    filterType: z
+      .literal('CRM_OBJECT_PROPERTY')
+      .openapi({
+        description:
+          "A string indicating the type of filter applied. Valid value is 'CRM_OBJECT_PROPERTY'.",
+        example: null,
+      }),
+    operator: z
+      .enum([
+        'CONTAINS',
+        'ENDS_WITH',
+        'EQ',
+        'GT',
+        'GTE',
+        'IN',
+        'IS_EMPTY',
+        'IS_NOT_EMPTY',
+        'LT',
+        'LTE',
+        'N_EQ',
+        'NOT_IN',
+        'STARTS_WITH',
       ])
-      .openapi({ example: null }),
-  )
+      .openapi({
+        description:
+          "A string specifying the operation used for comparison. Valid values include 'EQ', 'N_EQ', 'LT', 'GT', 'LTE', 'GTE', 'CONTAINS', 'STARTS_WITH', 'ENDS_WITH', 'IN', 'NOT_IN', 'IS_EMPTY', and 'IS_NOT_EMPTY'.",
+        example: null,
+      }),
+    property: z
+      .string()
+      .openapi({
+        description: 'A string representing the property name that the condition is evaluating.',
+        example: null,
+      }),
+    value: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A string representing the value to compare against the specified property using the defined operator.',
+        example: null,
+      }),
+    values: z
+      .array(z.string().openapi({ example: null }))
+      .exactOptional()
+      .openapi({
+        description:
+          "An array of strings containing multiple values for comparison when using operators like 'IN' or 'NOT_IN'.",
+        example: null,
+      }),
+  })
+  .openapi({ required: ['filterType', 'operator', 'property'], example: null })
+  .openapi('Condition')
+
+const CrmObjectSnapshotRequestSchema = z
+  .object({
+    objectId: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'An integer representing the unique identifier of the CRM object.',
+        example: null,
+      }),
+    objectTypeId: z
+      .string()
+      .openapi({
+        description: 'A string representing the type identifier of the CRM object.',
+        example: null,
+      }),
+    portalId: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'An integer representing the unique identifier of the HubSpot portal.',
+        example: null,
+      }),
+    properties: z
+      .array(z.string().openapi({ example: null }))
+      .openapi({
+        description:
+          'An array of strings specifying the properties of the CRM object to include in the snapshot.',
+        example: null,
+      }),
+  })
+  .openapi({ required: ['objectId', 'objectTypeId', 'portalId', 'properties'], example: null })
+  .openapi('CrmObjectSnapshotRequest')
+
+const CrmObjectSnapshotBatchRequestSchema = z
+  .object({
+    snapshotRequests: z
+      .array(CrmObjectSnapshotRequestSchema)
+      .openapi({
+        description:
+          'An array of CrmObjectSnapshotRequest objects, each representing a request to create a snapshot for a specific CRM object. This property is required.',
+        example: null,
+      }),
+  })
+  .openapi({ required: ['snapshotRequests'], example: null })
+  .openapi('CrmObjectSnapshotBatchRequest')
+
+const CrmObjectSnapshotResponseSchema = z
+  .object({
+    objectId: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'An integer representing the unique identifier of the CRM object for which the snapshot was taken. It is in int64 format.',
+        example: null,
+      }),
+    objectTypeId: z
+      .string()
+      .openapi({
+        description:
+          'A string representing the type identifier of the CRM object involved in the snapshot.',
+        example: null,
+      }),
+    portalId: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'An integer representing the unique identifier of the HubSpot portal associated with the CRM object snapshot. It is in int64 format.',
+        example: null,
+      }),
+    snapshotStatusId: z
+      .uuid()
+      .openapi({
+        description:
+          'The ID for tracking this snapshot. Pass it to the status endpoint to check progress.',
+        example: null,
+      }),
+  })
+  .openapi({
+    required: ['objectId', 'objectTypeId', 'portalId', 'snapshotStatusId'],
+    example: null,
+  })
+  .openapi('CrmObjectSnapshotResponse')
+
+const CrmObjectSnapshotBatchResponseSchema = z
+  .object({
+    snapshotResponses: z
+      .array(CrmObjectSnapshotResponseSchema)
+      .openapi({
+        description:
+          'An array of responses for each CRM object snapshot request. Each item in the array is a CrmObjectSnapshotResponse object, detailing the outcome of a single snapshot request.',
+        example: null,
+      }),
+  })
+  .openapi({ required: ['snapshotResponses'], example: null })
+  .openapi('CrmObjectSnapshotBatchResponse')
+
+const ErrorSchema = z
+  .object({
+    category: z.string().openapi({ description: 'The error category', example: null }),
+    context: z
+      .record(z.string(), z.array(z.string().openapi({ example: null })).openapi({ example: null }))
+      .exactOptional()
+      .openapi({
+        description: 'Context about the error condition',
+        example: '{invalidPropertyName=[propertyValue], missingScopes=[scope1, scope2]}',
+      }),
+    correlationId: z
+      .uuid()
+      .openapi({
+        description:
+          'A unique identifier for the request. Include this value with any error reports or support tickets',
+        example: 'aeb5f871-7f07-4993-9211-075dc63e7cbf',
+      }),
+    errors: z
+      .array(ErrorDetailSchema)
+      .exactOptional()
+      .openapi({ description: 'further information about the error', example: null }),
+    links: z
+      .record(z.string(), z.string().openapi({ example: null }))
+      .exactOptional()
+      .openapi({
+        description:
+          'A map of link names to associated URIs containing documentation about the error or recommended remediation steps',
+        example: null,
+      }),
+    message: z
+      .string()
+      .openapi({
+        description:
+          'A human readable message describing the error along with remediation steps where appropriate',
+        example: 'An error occurred',
+      }),
+    subCategory: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'A specific category that contains more specific detail about the error',
+        example: null,
+      }),
+  })
+  .openapi({
+    required: ['category', 'correlationId', 'message'],
+    description:
+      'Represents an error response returned by the API when an operation fails. This component is used in various endpoints to provide detailed information about the error encountered.',
+    example: {
+      message: 'Invalid input (details will vary based on the error)',
+      correlationId: 'aeb5f871-7f07-4993-9211-075dc63e7cbf',
+      category: 'VALIDATION_ERROR',
+      links: { 'knowledge-base': 'https://www.hubspot.com/products/service/knowledge-base' },
+    },
+  })
+  .openapi('Error')
+
+const FilterSchema = z
+  .object({
+    conditions: z
+      .array(ConditionSchema)
+      .openapi({
+        description:
+          'The conditions that define the filter. An event matches the filter only if it matches every condition.',
+        example: null,
+      }),
+  })
+  .openapi({
+    required: ['conditions'],
+    description:
+      'Defines a single condition for searching CRM objects, specifying the property to filter on, the operator to use (such as equals, greater than, or contains), and the value(s) to compare against. ',
+    example: null,
+  })
+  .openapi('Filter')
+
+const FilterCreateRequestSchema = z
+  .object({
+    filter: FilterSchema,
+    subscriptionId: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'An integer representing the unique identifier of the subscription to which the filter will be applied. It is required and uses the int64 format.',
+        example: null,
+      }),
+  })
+  .openapi({ required: ['filter', 'subscriptionId'], example: null })
+  .openapi('FilterCreateRequest')
+
+const FilterCreateResponseSchema = z
+  .object({
+    filterId: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'The unique identifier for the created filter. It is an integer in int64 format.',
+        example: null,
+      }),
+  })
+  .openapi({ required: ['filterId'], example: null })
+  .openapi('FilterCreateResponse')
+
+const FilterResponseSchema = z
+  .object({
+    createdAt: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'A Unix timestamp in milliseconds indicating when the filter was created.',
+        example: null,
+      }),
+    filter: FilterSchema,
+    id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The unique identifier for the filter, represented as a 64-bit integer.',
+        example: null,
+      }),
+  })
+  .openapi({ required: ['createdAt', 'filter', 'id'], example: null })
+  .openapi('FilterResponse')
+
+const GdprPrivacyDeletionSubscriptionUpsertRequestSchema = z
+  .object({
+    actions: z
+      .array(
+        z
+          .enum([
+            'CREATE',
+            'UPDATE',
+            'DELETE',
+            'MERGE',
+            'RESTORE',
+            'ASSOCIATION_ADDED',
+            'ASSOCIATION_REMOVED',
+            'SNAPSHOT',
+            'APP_INSTALL',
+            'APP_UNINSTALL',
+            'ADDED_TO_LIST',
+            'REMOVED_FROM_LIST',
+            'GDPR_DELETE',
+          ])
+          .openapi({ example: null }),
+      )
+      .openapi({
+        description: 'The actions to track. The only valid action is `GDPR_DELETE`.',
+        example: null,
+      }),
+    objectTypeId: z
+      .string()
+      .openapi({
+        description:
+          'A string representing the unique identifier for the object type associated with the subscription.',
+        example: null,
+      }),
+    portalId: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'The unique identifier for the HubSpot portal, represented as a 64-bit integer.',
+        example: null,
+      }),
+    subscriptionType: z
+      .literal('GDPR_PRIVACY_DELETION')
+      .default('GDPR_PRIVACY_DELETION')
+      .openapi({
+        description: "The type of subscription, which is fixed as 'GDPR_PRIVACY_DELETION'.",
+        example: null,
+      }),
+  })
+  .openapi({
+    required: ['actions', 'objectTypeId', 'portalId', 'subscriptionType'],
+    example: null,
+    'x-hubspot-sub-type-impl': true,
+  })
+  .openapi('GdprPrivacyDeletionSubscriptionUpsertRequest')
+
+const ListMembershipSubscriptionUpsertRequestSchema = z
+  .object({
+    actions: z
+      .array(
+        z
+          .enum([
+            'CREATE',
+            'UPDATE',
+            'DELETE',
+            'MERGE',
+            'RESTORE',
+            'ASSOCIATION_ADDED',
+            'ASSOCIATION_REMOVED',
+            'SNAPSHOT',
+            'APP_INSTALL',
+            'APP_UNINSTALL',
+            'ADDED_TO_LIST',
+            'REMOVED_FROM_LIST',
+            'GDPR_DELETE',
+          ])
+          .openapi({ example: null }),
+      )
+      .openapi({
+        description: 'The actions to track: `ADDED_TO_LIST` or `REMOVED_FROM_LIST`.',
+        example: null,
+      }),
+    listIds: z
+      .array(
+        z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({ type: 'integer', format: 'int64', example: null }),
+      )
+      .openapi({
+        description: 'The IDs of the lists to track. Use an empty array to track all lists.',
+        example: null,
+      }),
+    objectIds: z
+      .array(
+        z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({ type: 'integer', format: 'int64', example: null }),
+      )
+      .openapi({
+        description:
+          'The IDs of specific records to track. Use an empty array to track all records.',
+        example: null,
+      }),
+    portalId: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'An integer representing the unique identifier of the portal in which the subscription is being managed.',
+        example: null,
+      }),
+    subscriptionType: z
+      .literal('LIST_MEMBERSHIP')
+      .default('LIST_MEMBERSHIP')
+      .openapi({
+        description:
+          "A string indicating the type of subscription. The default and only valid value is 'LIST_MEMBERSHIP'.",
+        example: null,
+      }),
+  })
+  .openapi({
+    required: ['actions', 'listIds', 'objectIds', 'portalId', 'subscriptionType'],
+    example: null,
+    'x-hubspot-sub-type-impl': true,
+  })
+  .openapi('ListMembershipSubscriptionUpsertRequest')
+
+const ObjectSubscriptionUpsertRequestSchema = z
+  .object({
+    actions: z
+      .array(
+        z
+          .enum([
+            'CREATE',
+            'UPDATE',
+            'DELETE',
+            'MERGE',
+            'RESTORE',
+            'ASSOCIATION_ADDED',
+            'ASSOCIATION_REMOVED',
+            'SNAPSHOT',
+            'APP_INSTALL',
+            'APP_UNINSTALL',
+            'ADDED_TO_LIST',
+            'REMOVED_FROM_LIST',
+            'GDPR_DELETE',
+          ])
+          .openapi({ example: null }),
+      )
+      .openapi({
+        description: 'The actions to track: `CREATE`, `UPDATE`, `DELETE`, `MERGE`, or `RESTORE`.',
+        example: null,
+      }),
+    objectIds: z
+      .array(
+        z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({ type: 'integer', format: 'int64', example: null }),
+      )
+      .openapi({
+        description:
+          'The IDs of specific objects to track. Use an empty array to track all objects of this type.',
+        example: null,
+      }),
+    objectTypeId: z
+      .string()
+      .openapi({
+        description:
+          'A string representing the unique identifier of the object type for which the subscription is being created or updated.',
+        example: null,
+      }),
+    portalId: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'An integer representing the unique identifier of the HubSpot portal.',
+        example: null,
+      }),
+    properties: z
+      .array(z.string().openapi({ example: null }))
+      .openapi({
+        description:
+          'The properties to track. When set, updates are only recorded if one of these properties changed. Use an empty array to track all properties.',
+        example: null,
+      }),
+    subscriptionType: z
+      .literal('OBJECT')
+      .default('OBJECT')
+      .openapi({
+        description:
+          "A string indicating the type of subscription, which is always 'OBJECT' for this request.",
+        example: null,
+      }),
+  })
+  .openapi({
+    required: [
+      'actions',
+      'objectIds',
+      'objectTypeId',
+      'portalId',
+      'properties',
+      'subscriptionType',
+    ],
+    example: null,
+    'x-hubspot-sub-type-impl': true,
+  })
+  .openapi('ObjectSubscriptionUpsertRequest')
+
+const SnapshotStatusResponseSchema = z
+  .object({
+    completedAt: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'When the snapshot finished, in milliseconds since the Unix epoch. Absent until the snapshot finishes.',
+        example: null,
+      }),
+    errorCode: z
+      .enum(['INTERNAL_ERROR', 'PERMISSION_DENIED', 'TIMEOUT', 'VALIDATION_ERROR'])
+      .exactOptional()
+      .openapi({
+        description:
+          "An optional code indicating the error that occurred, if any. Possible values are 'TIMEOUT', 'VALIDATION_ERROR', 'INTERNAL_ERROR', and 'PERMISSION_DENIED'.",
+        example: null,
+      }),
+    id: z
+      .uuid()
+      .openapi({
+        description: 'A unique identifier for the snapshot, represented as a UUID.',
+        example: null,
+      }),
+    initiatedAt: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'When the snapshot was requested, in milliseconds since the Unix epoch.',
+        example: null,
+      }),
+    message: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A descriptive message providing additional information about the snapshot status or error.',
+        example: null,
+      }),
+    status: z
+      .enum(['EXPIRED', 'FAILED', 'IN_PROGRESS', 'PENDING', 'SUCCESS'])
+      .openapi({
+        description:
+          'The current status of the snapshot: `PENDING`, `IN_PROGRESS`, `SUCCESS`, `FAILED`, or `EXPIRED`.',
+        example: null,
+      }),
+  })
+  .openapi({ required: ['id', 'initiatedAt', 'status'], example: null })
+  .openapi('SnapshotStatusResponse')
+
+const SubscriptionUpsertRequestSchema = z
+  .xor([
+    ObjectSubscriptionUpsertRequestSchema,
+    AssociationSubscriptionUpsertRequestSchema,
+    AppLifecycleEventSubscriptionUpsertRequestSchema,
+    ListMembershipSubscriptionUpsertRequestSchema,
+    GdprPrivacyDeletionSubscriptionUpsertRequestSchema,
+  ])
+  .openapi({ example: null })
   .openapi('SubscriptionUpsertRequest')
 
 const ErrorResponse = {
@@ -1530,17 +1380,12 @@ const Oauth2SecurityScheme = {
   },
 }
 
-const PrivateAppsSecurityScheme = { type: 'apiKey', name: 'private-app', in: 'header' }
-
-const PrivateAppsLegacySecurityScheme = { type: 'apiKey', name: 'private-app-legacy', in: 'header' }
-
 export const getWebhooksJournalJournalLocal202609BatchEarliestCountRoute = createRoute({
   method: 'get',
   path: '/webhooks-journal/journal-local/2026-09/batch/earliest/{count}',
   tags: ['Batch'],
   summary: 'Fetch earliest batch',
-  description:
-    "Retrieve the earliest batch of webhook journal entries. This endpoint is useful for accessing the oldest available data in the webhook journal, allowing users to process or analyze historical webhook events. The number of entries to fetch is specified by the 'count' path parameter.",
+  description: "Retrieve the oldest entries still available in your app's journal, up to `count`.",
   operationId: 'get-/webhooks-journal/journal-local/2026-09/batch/earliest/{count}',
   request: {
     params: z.object({
@@ -1558,8 +1403,7 @@ export const getWebhooksJournalJournalLocal202609BatchEarliestCountRoute = creat
           param: {
             name: 'count',
             in: 'path',
-            description:
-              'The number of webhook journal entries to retrieve. Must be an integer with a minimum value of 1.',
+            description: 'The number of entries to return, from 1 to 100.',
             required: true,
             style: 'simple',
             explode: false,
@@ -1613,7 +1457,7 @@ export const getWebhooksJournalJournalLocal202609BatchLatestCountRoute = createR
   tags: ['Batch'],
   summary: 'Retrieve Latest Batch',
   description:
-    'Retrieve the latest batch of webhook journal entries. This endpoint allows you to specify the number of entries to fetch, providing a way to access the most recent webhook events processed by your HubSpot account.',
+    "Retrieve the most recent entries in your app's journal, up to `count`. Entries are returned oldest first.",
   operationId: 'get-/webhooks-journal/journal-local/2026-09/batch/latest/{count}',
   request: {
     params: z.object({
@@ -1631,8 +1475,7 @@ export const getWebhooksJournalJournalLocal202609BatchLatestCountRoute = createR
           param: {
             name: 'count',
             in: 'path',
-            description:
-              'The number of journal entries to retrieve. Must be an integer with a minimum value of 1.',
+            description: 'The number of entries to return, from 1 to 100.',
             required: true,
             style: 'simple',
             explode: false,
@@ -1658,7 +1501,7 @@ export const getWebhooksJournalJournalLocal202609BatchLatestCountRoute = createR
             name: 'installPortalId',
             in: 'query',
             description:
-              'The ID of the portal installation. This parameter is optional and can be used to filter results by a specific portal.',
+              'The ID of an account that has installed your app. When set, only entries for that account are returned.',
             required: false,
             style: 'form',
             explode: true,
@@ -1686,7 +1529,7 @@ export const postWebhooksJournalJournalLocal202609BatchReadRoute = createRoute({
   tags: ['Batch'],
   summary: 'Batch read',
   description:
-    'Execute a batch read operation on the webhooks journal. This endpoint allows you to retrieve a batch of webhook journal entries by providing the necessary input data. It is useful for processing multiple records in a single request, streamlining data retrieval tasks.',
+    "Fetch up to 100 journal entries by offset in a single request. Offsets that can't be fetched don't fail the request; they're listed in `errors` and counted in `numErrors`.",
   operationId: 'post-/webhooks-journal/journal-local/2026-09/batch/read',
   request: {
     query: z.object({
@@ -1706,7 +1549,7 @@ export const postWebhooksJournalJournalLocal202609BatchReadRoute = createRoute({
             name: 'installPortalId',
             in: 'query',
             description:
-              'An integer representing the ID of the portal where the installation occurred. This parameter is optional.',
+              'The ID of an account that has installed your app. When set, only entries for that account are returned.',
             required: false,
             style: 'form',
             explode: true,
@@ -1747,7 +1590,7 @@ export const getWebhooksJournalJournalLocal202609BatchOffsetNextCountRoute = cre
   tags: ['Batch'],
   summary: 'Fetch Batch',
   description:
-    "Retrieve a batch of webhook journal entries starting from a specified offset. This endpoint is useful for paginating through large sets of webhook data. The number of entries returned is determined by the 'count' parameter.",
+    "Retrieve up to `count` entries that follow the given offset. Pass the last entry's `currentOffset` to fetch the next page.",
   operationId: 'get-/webhooks-journal/journal-local/2026-09/batch/{offset}/next/{count}',
   request: {
     params: z.object({
@@ -1765,8 +1608,7 @@ export const getWebhooksJournalJournalLocal202609BatchOffsetNextCountRoute = cre
           param: {
             name: 'count',
             in: 'path',
-            description:
-              'An integer specifying the number of journal entries to retrieve. Must be at least 1.',
+            description: 'The number of entries to return, from 1 to 100.',
             required: true,
             style: 'simple',
             explode: false,
@@ -1781,7 +1623,7 @@ export const getWebhooksJournalJournalLocal202609BatchOffsetNextCountRoute = cre
             name: 'offset',
             in: 'path',
             description:
-              'A string representing the starting point for fetching the batch of journal entries.',
+              "The `currentOffset` of the last entry you processed. Entries after this offset are returned. If the offset has expired or doesn't exist, the batch is empty.",
             required: true,
             style: 'simple',
             explode: false,
@@ -1807,7 +1649,7 @@ export const getWebhooksJournalJournalLocal202609BatchOffsetNextCountRoute = cre
             name: 'installPortalId',
             in: 'query',
             description:
-              'An integer representing the ID of the portal installation to filter the webhook journal entries.',
+              'The ID of an account that has installed your app. When set, only entries for that account are returned.',
             required: false,
             style: 'form',
             explode: true,
@@ -1835,7 +1677,7 @@ export const getWebhooksJournalJournalLocal202609EarliestRoute = createRoute({
   tags: ['Basic'],
   summary: 'Retrieve earliest',
   description:
-    'Retrieve the earliest webhook journal entries for the specified portal. This endpoint can be used to access the oldest records available in the webhook journal, which may be useful for auditing or historical analysis.',
+    "Retrieve the oldest entry still available in your app's journal. Use `installPortalId` to limit it to one account.",
   operationId: 'get-/webhooks-journal/journal-local/2026-09/earliest',
   request: {
     query: z.object({
@@ -1865,7 +1707,14 @@ export const getWebhooksJournalJournalLocal202609EarliestRoute = createRoute({
         }),
     }),
   },
-  responses: { default: ErrorResponse },
+  responses: {
+    200: {
+      description: 'successful operation',
+      content: { 'application/json': { schema: JournalFetchResponseSchema, example: null } },
+    },
+    204: { description: 'The journal has no entries', content: {} },
+    default: ErrorResponse,
+  },
   security: [],
 })
 
@@ -1875,7 +1724,7 @@ export const getWebhooksJournalJournalLocal202609LatestRoute = createRoute({
   tags: ['Basic'],
   summary: 'Retrieve latest',
   description:
-    'Retrieve the latest entries from the webhooks journal for the specified portal. This endpoint is useful for accessing the most recent webhook events that have been logged, allowing for real-time monitoring or debugging of webhook activities.',
+    "Retrieve the most recent entry in your app's journal. Use `installPortalId` to limit it to one account.",
   operationId: 'get-/webhooks-journal/journal-local/2026-09/latest',
   request: {
     query: z.object({
@@ -1905,7 +1754,14 @@ export const getWebhooksJournalJournalLocal202609LatestRoute = createRoute({
         }),
     }),
   },
-  responses: { default: ErrorResponse },
+  responses: {
+    200: {
+      description: 'successful operation',
+      content: { 'application/json': { schema: JournalFetchResponseSchema, example: null } },
+    },
+    204: { description: 'The journal has no entries', content: {} },
+    default: ErrorResponse,
+  },
   security: [],
 })
 
@@ -1915,7 +1771,7 @@ export const getWebhooksJournalJournalLocal202609OffsetOffsetNextRoute = createR
   tags: ['Basic'],
   summary: 'Retrieve Next Batch',
   description:
-    'Retrieve the next set of webhook journal entries starting from a specified offset. This endpoint is useful for paginating through large sets of webhook data, allowing you to continue from where a previous request left off.',
+    "Retrieve the entry that follows the given offset. Fails with a `404` if the offset has expired or doesn't exist.",
   operationId: 'get-/webhooks-journal/journal-local/2026-09/offset/{offset}/next',
   request: {
     params: z.object({
@@ -1926,7 +1782,7 @@ export const getWebhooksJournalJournalLocal202609OffsetOffsetNextRoute = createR
             name: 'offset',
             in: 'path',
             description:
-              'The offset from which to start retrieving the next batch of webhook journal entries. This is a string value that indicates the starting point for fetching entries.',
+              'The `currentOffset` of the last entry you processed. The entry after this offset is returned.',
             required: true,
             style: 'simple',
             explode: false,
@@ -1962,7 +1818,14 @@ export const getWebhooksJournalJournalLocal202609OffsetOffsetNextRoute = createR
         }),
     }),
   },
-  responses: { default: ErrorResponse },
+  responses: {
+    200: {
+      description: 'successful operation',
+      content: { 'application/json': { schema: JournalFetchResponseSchema, example: null } },
+    },
+    204: { description: 'No journal entry exists after the given offset', content: {} },
+    default: ErrorResponse,
+  },
   security: [],
 })
 
@@ -1972,7 +1835,7 @@ export const getWebhooksJournalJournalLocal202609StatusStatusIdRoute = createRou
   tags: ['Basic'],
   summary: 'Retrieve status',
   description:
-    'Retrieve the status of a specific webhook journal entry using its unique status ID. This endpoint is useful for monitoring the progress or outcome of webhook journal entries, allowing you to check if an entry is pending, in progress, completed, failed, or expired.',
+    'Retrieve the status of a snapshot request. Use the `snapshotStatusId` returned when the snapshot was requested.',
   operationId: 'get-/webhooks-journal/journal-local/2026-09/status/{statusId}',
   request: {
     params: z.object({
@@ -1982,7 +1845,7 @@ export const getWebhooksJournalJournalLocal202609StatusStatusIdRoute = createRou
           param: {
             name: 'statusId',
             in: 'path',
-            description: 'The unique identifier (UUID) of the webhook journal status to retrieve.',
+            description: 'The `snapshotStatusId` returned when the snapshot was requested.',
             required: true,
             style: 'simple',
             explode: false,
@@ -2007,8 +1870,7 @@ export const getWebhooksJournalJournal202609BatchEarliestCountRoute = createRout
   path: '/webhooks-journal/journal/2026-09/batch/earliest/{count}',
   tags: ['Batch'],
   summary: 'Fetch Earliest Batch',
-  description:
-    'Retrieve the earliest batch of webhook journal entries for a specified count. This endpoint is useful for accessing historical webhook data in batches, allowing you to process or analyze older entries. The number of entries retrieved is determined by the count parameter.',
+  description: "Retrieve the oldest entries still available in your app's journal, up to `count`.",
   operationId: 'get-/webhooks-journal/journal/2026-09/batch/earliest/{count}',
   request: {
     params: z.object({
@@ -2026,8 +1888,7 @@ export const getWebhooksJournalJournal202609BatchEarliestCountRoute = createRout
           param: {
             name: 'count',
             in: 'path',
-            description:
-              'The number of earliest webhook journal entries to retrieve. Must be an integer with a minimum value of 1.',
+            description: 'The number of entries to return, from 1 to 100.',
             required: true,
             style: 'simple',
             explode: false,
@@ -2078,9 +1939,9 @@ export const getWebhooksJournalJournal202609BatchLatestCountRoute = createRoute(
   method: 'get',
   path: '/webhooks-journal/journal/2026-09/batch/latest/{count}',
   tags: ['Batch'],
-  summary: 'Retrieve batch',
+  summary: 'Retrieve latest batch',
   description:
-    'Retrieve the latest batch of webhook journal entries up to the specified count. This endpoint is useful for fetching recent webhook data for analysis or processing. The count parameter determines the maximum number of entries to return.',
+    "Retrieve the most recent entries in your app's journal, up to `count`. Entries are returned oldest first.",
   operationId: 'get-/webhooks-journal/journal/2026-09/batch/latest/{count}',
   request: {
     params: z.object({
@@ -2098,8 +1959,7 @@ export const getWebhooksJournalJournal202609BatchLatestCountRoute = createRoute(
           param: {
             name: 'count',
             in: 'path',
-            description:
-              'The number of journal entries to retrieve. This must be an integer with a minimum value of 1.',
+            description: 'The number of entries to return, from 1 to 100.',
             required: true,
             style: 'simple',
             explode: false,
@@ -2125,7 +1985,7 @@ export const getWebhooksJournalJournal202609BatchLatestCountRoute = createRoute(
             name: 'installPortalId',
             in: 'query',
             description:
-              'The ID of the portal installation. This parameter is optional and used to filter the results by a specific portal.',
+              'The ID of an account that has installed your app. When set, only entries for that account are returned.',
             required: false,
             style: 'form',
             explode: true,
@@ -2153,7 +2013,7 @@ export const postWebhooksJournalJournal202609BatchReadRoute = createRoute({
   tags: ['Batch'],
   summary: 'Batch read',
   description:
-    'Execute a batch read operation on the webhooks journal for the specified date, 2026-03. This endpoint allows you to retrieve multiple entries from the webhooks journal in a single request, which can be useful for processing large amounts of data efficiently. Ensure that the request body is provided in the required format.',
+    "Fetch up to 100 journal entries by offset in a single request. Offsets that can't be fetched don't fail the request; they're listed in `errors` and counted in `numErrors`.",
   operationId: 'post-/webhooks-journal/journal/2026-09/batch/read',
   request: {
     query: z.object({
@@ -2214,7 +2074,7 @@ export const getWebhooksJournalJournal202609BatchOffsetNextCountRoute = createRo
   tags: ['Batch'],
   summary: 'Fetch Batch',
   description:
-    'Retrieve a batch of webhook journal entries starting from a specified offset. This endpoint allows you to fetch a defined number of entries, which can be useful for processing large datasets in manageable chunks.',
+    "Retrieve up to `count` entries that follow the given offset. Pass the last entry's `currentOffset` to fetch the next page.",
   operationId: 'get-/webhooks-journal/journal/2026-09/batch/{offset}/next/{count}',
   request: {
     params: z.object({
@@ -2232,8 +2092,7 @@ export const getWebhooksJournalJournal202609BatchOffsetNextCountRoute = createRo
           param: {
             name: 'count',
             in: 'path',
-            description:
-              'The number of journal entries to retrieve. This must be an integer with a minimum value of 1.',
+            description: 'The number of entries to return, from 1 to 100.',
             required: true,
             style: 'simple',
             explode: false,
@@ -2248,7 +2107,7 @@ export const getWebhooksJournalJournal202609BatchOffsetNextCountRoute = createRo
             name: 'offset',
             in: 'path',
             description:
-              'The offset from which to start fetching the journal entries. This is a string value.',
+              "The `currentOffset` of the last entry you processed. Entries after this offset are returned. If the offset has expired or doesn't exist, the batch is empty.",
             required: true,
             style: 'simple',
             explode: false,
@@ -2274,7 +2133,7 @@ export const getWebhooksJournalJournal202609BatchOffsetNextCountRoute = createRo
             name: 'installPortalId',
             in: 'query',
             description:
-              'The ID of the portal where the webhook is installed. This is an integer value.',
+              'The ID of an account that has installed your app. When set, only entries for that account are returned.',
             required: false,
             style: 'form',
             explode: true,
@@ -2302,7 +2161,7 @@ export const getWebhooksJournalJournal202609EarliestRoute = createRoute({
   tags: ['Basic'],
   summary: 'Retrieve earliest entry',
   description:
-    'Retrieve the earliest entry from the webhooks journal for the specified portal. This endpoint is useful for accessing the first recorded webhook event in the journal, which can be helpful for auditing or debugging purposes.',
+    "Retrieve the oldest entry still available in your app's journal. Use `installPortalId` to limit it to one account.",
   operationId: 'get-/webhooks-journal/journal/2026-09/earliest',
   request: {
     query: z.object({
@@ -2332,7 +2191,14 @@ export const getWebhooksJournalJournal202609EarliestRoute = createRoute({
         }),
     }),
   },
-  responses: { default: ErrorResponse },
+  responses: {
+    200: {
+      description: 'successful operation',
+      content: { 'application/json': { schema: JournalFetchResponseSchema, example: null } },
+    },
+    204: { description: 'The journal has no entries', content: {} },
+    default: ErrorResponse,
+  },
   security: [],
 })
 
@@ -2342,7 +2208,7 @@ export const getWebhooksJournalJournal202609LatestRoute = createRoute({
   tags: ['Basic'],
   summary: 'Retrieve latest journal',
   description:
-    'Retrieve the latest entries from the webhooks journal for the specified portal. This endpoint is useful for accessing the most recent webhook events and their statuses, allowing you to monitor and debug webhook activity effectively.',
+    "Retrieve the most recent entry in your app's journal. Use `installPortalId` to limit it to one account.",
   operationId: 'get-/webhooks-journal/journal/2026-09/latest',
   request: {
     query: z.object({
@@ -2372,7 +2238,14 @@ export const getWebhooksJournalJournal202609LatestRoute = createRoute({
         }),
     }),
   },
-  responses: { default: ErrorResponse },
+  responses: {
+    200: {
+      description: 'successful operation',
+      content: { 'application/json': { schema: JournalFetchResponseSchema, example: null } },
+    },
+    204: { description: 'The journal has no entries', content: {} },
+    default: ErrorResponse,
+  },
   security: [],
 })
 
@@ -2382,7 +2255,7 @@ export const getWebhooksJournalJournal202609OffsetOffsetNextRoute = createRoute(
   tags: ['Basic'],
   summary: 'Retrieve Next Entries',
   description:
-    'Retrieve the next set of entries from the webhooks journal starting from a specified offset. This endpoint is useful for paginating through journal entries to process or analyze webhook events sequentially.',
+    "Retrieve the entry that follows the given offset. Fails with a `404` if the offset has expired or doesn't exist.",
   operationId: 'get-/webhooks-journal/journal/2026-09/offset/{offset}/next',
   request: {
     params: z.object({
@@ -2393,7 +2266,7 @@ export const getWebhooksJournalJournal202609OffsetOffsetNextRoute = createRoute(
             name: 'offset',
             in: 'path',
             description:
-              'The offset from which to start retrieving the next set of journal entries. This is a string value.',
+              'The `currentOffset` of the last entry you processed. The entry after this offset is returned.',
             required: true,
             style: 'simple',
             explode: false,
@@ -2419,7 +2292,7 @@ export const getWebhooksJournalJournal202609OffsetOffsetNextRoute = createRoute(
             name: 'installPortalId',
             in: 'query',
             description:
-              'The ID of the portal where the webhook is installed. This is an integer value.',
+              'The ID of an account that has installed your app. When set, only entries for that account are returned.',
             required: false,
             style: 'form',
             explode: true,
@@ -2429,7 +2302,14 @@ export const getWebhooksJournalJournal202609OffsetOffsetNextRoute = createRoute(
         }),
     }),
   },
-  responses: { default: ErrorResponse },
+  responses: {
+    200: {
+      description: 'successful operation',
+      content: { 'application/json': { schema: JournalFetchResponseSchema, example: null } },
+    },
+    204: { description: 'No journal entry exists after the given offset', content: {} },
+    default: ErrorResponse,
+  },
   security: [],
 })
 
@@ -2439,7 +2319,7 @@ export const getWebhooksJournalJournal202609StatusStatusIdRoute = createRoute({
   tags: ['Basic'],
   summary: 'Retrieve status',
   description:
-    'Retrieve the status of a specific webhook journal entry using its unique status ID. This endpoint provides detailed information about the status, including whether it is pending, in progress, completed, failed, or expired. It is useful for monitoring and managing the state of webhook journal entries.',
+    'Retrieve the status of a snapshot request. Use the `snapshotStatusId` returned when the snapshot was requested.',
   operationId: 'get-/webhooks-journal/journal/2026-09/status/{statusId}',
   request: {
     params: z.object({
@@ -2449,7 +2329,7 @@ export const getWebhooksJournalJournal202609StatusStatusIdRoute = createRoute({
           param: {
             name: 'statusId',
             in: 'path',
-            description: 'The unique identifier (UUID) of the webhook journal status to retrieve.',
+            description: 'The `snapshotStatusId` returned when the snapshot was requested.',
             required: true,
             style: 'simple',
             explode: false,
@@ -2475,7 +2355,7 @@ export const postWebhooksJournalSnapshots202609CrmRoute = createRoute({
   tags: ['Advanced'],
   summary: 'Create Snapshot',
   description:
-    'Create a batch of CRM object snapshots in HubSpot. This endpoint is used to capture the current state of specified CRM objects for later reference or analysis. It requires a JSON payload containing the details of the CRM objects to snapshot. This operation is exempt from daily and ten-secondly rate limits.',
+    'Capture the current state of up to 200 CRM objects. Each snapshot is written to your journal as a `SNAPSHOT` entry, and its progress can be checked with the status endpoint using the returned `snapshotStatusId`. This operation is exempt from daily and ten-secondly rate limits.',
   operationId: 'post-/webhooks-journal/snapshots/2026-09/crm',
   request: {
     body: {
@@ -2502,15 +2382,14 @@ export const getWebhooksJournalSubscriptions202609Route = createRoute({
   path: '/webhooks-journal/subscriptions/2026-09',
   tags: ['Basic'],
   summary: 'List subscriptions',
-  description:
-    'Retrieve a list of webhook journal subscriptions. This endpoint provides access to subscription details without pagination, allowing you to view all current subscriptions in a single request. It is useful for managing and reviewing webhook subscriptions for your app.',
+  description: "Retrieve all of your app's subscriptions.",
   operationId: 'get-/webhooks-journal/subscriptions/2026-09',
   responses: {
     200: {
       description: 'successful operation',
       content: {
         'application/json': {
-          schema: CollectionResponseSubscriptionResponseMarch2027NoPagingSchema,
+          schema: CollectionResponseSubscriptionResponseNoPagingSchema,
           example: null,
         },
       },
@@ -2526,7 +2405,7 @@ export const postWebhooksJournalSubscriptions202609Route = createRoute({
   tags: ['Basic'],
   summary: 'Upsert subscription',
   description:
-    'Create a new webhook journal subscription for the specified portal. This endpoint allows you to define the actions and object types that the subscription will monitor. It requires a request body with the subscription details.',
+    'Create a subscription, or update the existing one with the same subscription type, object type, and account. The request body sets which actions and objects are recorded in your journal.',
   operationId: 'post-/webhooks-journal/subscriptions/2026-09',
   request: {
     body: {
@@ -2550,7 +2429,7 @@ export const postWebhooksJournalSubscriptions202609FiltersRoute = createRoute({
   tags: ['Advanced'],
   summary: 'Create Filter',
   description:
-    'Create a new filter for a specific webhook subscription in the HubSpot account. This endpoint allows you to define conditions that determine when a webhook should be triggered. The filter is associated with a subscription identified by its ID, and the request must include the filter details.',
+    'Add a filter to a subscription. When a subscription has filters, only events that match at least one of them are recorded in your journal.',
   operationId: 'post-/webhooks-journal/subscriptions/2026-09/filters',
   request: {
     body: {
@@ -2574,8 +2453,7 @@ export const getWebhooksJournalSubscriptions202609FiltersSubscriptionSubscriptio
     path: '/webhooks-journal/subscriptions/2026-09/filters/subscription/{subscriptionId}',
     tags: ['Basic'],
     summary: 'Retrieve filters',
-    description:
-      'Retrieve the filters associated with a specific webhook subscription. This endpoint allows you to view the filters applied to a subscription, which can help in managing and understanding the conditions set for webhook events.',
+    description: 'Retrieve all filters attached to a subscription.',
     operationId:
       'get-/webhooks-journal/subscriptions/2026-09/filters/subscription/{subscriptionId}',
     request: {
@@ -2623,8 +2501,7 @@ export const getWebhooksJournalSubscriptions202609FiltersFilterIdRoute = createR
   path: '/webhooks-journal/subscriptions/2026-09/filters/{filterId}',
   tags: ['Basic'],
   summary: 'Retrieve filter',
-  description:
-    'Retrieve a specific filter associated with a webhook journal subscription. This endpoint allows you to access the details of the filter identified by the filterId, which is useful for managing and understanding the conditions applied to webhook events.',
+  description: 'Retrieve a filter by its ID.',
   operationId: 'get-/webhooks-journal/subscriptions/2026-09/filters/{filterId}',
   request: {
     params: z.object({
@@ -2665,8 +2542,7 @@ export const deleteWebhooksJournalSubscriptions202609FiltersFilterIdRoute = crea
   path: '/webhooks-journal/subscriptions/2026-09/filters/{filterId}',
   tags: ['Basic'],
   summary: 'Delete filter',
-  description:
-    'Remove a specific filter from the webhooks journal subscriptions. This operation is useful for managing and cleaning up filters that are no longer needed. Once deleted, the filter cannot be recovered.',
+  description: "Delete a filter from its subscription. This can't be undone.",
   operationId: 'delete-/webhooks-journal/subscriptions/2026-09/filters/{filterId}',
   request: {
     params: z.object({
@@ -2702,7 +2578,7 @@ export const deleteWebhooksJournalSubscriptions202609PortalsPortalIdRoute = crea
   tags: ['Basic'],
   summary: 'Delete Subscription',
   description:
-    'Delete a webhook journal subscription for a specific portal. This operation removes the subscription associated with the given portalId, ensuring that no further webhook events are sent for this portal. Use this endpoint to manage and clean up subscriptions that are no longer needed.',
+    "Delete all of your app's subscriptions for an account, along with their filters. Changes in that account are no longer recorded in your journal.",
   operationId: 'delete-/webhooks-journal/subscriptions/2026-09/portals/{portalId}',
   request: {
     params: z.object({
@@ -2738,8 +2614,7 @@ export const getWebhooksJournalSubscriptions202609SubscriptionIdRoute = createRo
   path: '/webhooks-journal/subscriptions/2026-09/{subscriptionId}',
   tags: ['Basic'],
   summary: 'Retrieve subscription',
-  description:
-    'Retrieve details of a specific webhook subscription using its unique identifier. This endpoint is useful for obtaining information about a particular subscription, such as its actions, object type, and associated properties.',
+  description: 'Retrieve a subscription by its ID.',
   operationId: 'get-/webhooks-journal/subscriptions/2026-09/{subscriptionId}',
   request: {
     params: z.object({
@@ -2781,8 +2656,7 @@ export const deleteWebhooksJournalSubscriptions202609SubscriptionIdRoute = creat
   path: '/webhooks-journal/subscriptions/2026-09/{subscriptionId}',
   tags: ['Basic'],
   summary: 'Delete subscription',
-  description:
-    'Delete a specific webhook journal subscription using its unique identifier. This operation is useful for managing and cleaning up subscriptions that are no longer needed in your HubSpot account.',
+  description: 'Delete a subscription by its ID.',
   operationId: 'delete-/webhooks-journal/subscriptions/2026-09/{subscriptionId}',
   request: {
     params: z.object({

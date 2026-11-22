@@ -21,13 +21,10 @@ Base URLs:
 
 |Scope|Scope Description|
 |---|---|
+|cms.source_code.read||
+|cms.source_code.write||
 |content||
-
-* API Key (private_apps)
-    - Parameter Name: **private-app**, in: header.
-
-* API Key (private_apps_legacy)
-    - Parameter Name: **private-app-legacy**, in: header.
+|marketplace_validation||
 
 <h1 id="cms-source-code-advanced">Advanced</h1>
 
@@ -86,7 +83,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: content )
+oauth2 ( Scopes: cms.source_code.read ), oauth2 ( Scopes: marketplace_validation ), oauth2 ( Scopes: content ), oauth2 ( Scopes: cms.source_code.write )
 </aside>
 
 ## Get extraction status
@@ -134,7 +131,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: content )
+oauth2 ( Scopes: cms.source_code.read ), oauth2 ( Scopes: marketplace_validation ), oauth2 ( Scopes: content ), oauth2 ( Scopes: cms.source_code.write )
 </aside>
 
 ## Create or update a file
@@ -192,7 +189,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: content )
+oauth2 ( Scopes: cms.source_code.write ), oauth2 ( Scopes: marketplace_validation ), oauth2 ( Scopes: content )
 </aside>
 
 ## Create a file
@@ -254,7 +251,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: content )
+oauth2 ( Scopes: cms.source_code.write ), oauth2 ( Scopes: marketplace_validation ), oauth2 ( Scopes: content )
 </aside>
 
 ## Validate the contents of a file
@@ -304,7 +301,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: content )
+oauth2 ( Scopes: cms.source_code.read ), oauth2 ( Scopes: marketplace_validation ), oauth2 ( Scopes: content ), oauth2 ( Scopes: cms.source_code.write )
 </aside>
 
 <h1 id="cms-source-code-basic">Basic</h1>
@@ -347,7 +344,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: content )
+oauth2 ( Scopes: cms.source_code.read ), oauth2 ( Scopes: marketplace_validation ), oauth2 ( Scopes: content )
 </aside>
 
 ## Delete a file
@@ -390,7 +387,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: content )
+oauth2 ( Scopes: cms.source_code.write ), oauth2 ( Scopes: marketplace_validation ), oauth2 ( Scopes: content )
 </aside>
 
 ## Get the metadata for a file
@@ -440,7 +437,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: content )
+oauth2 ( Scopes: cms.source_code.read ), oauth2 ( Scopes: marketplace_validation ), oauth2 ( Scopes: content )
 </aside>
 
 # Schemas

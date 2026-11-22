@@ -344,26 +344,10 @@ const RecipientSchema = z
       .exactOptional()
       .openapi({ description: 'when using APNs, specifies the required device token.' }),
     registrationToken: z
-      .object({
-        auth: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'An Elliptic curve Diffie-Hellman public key on the P-256 curve. Obtained from a PushDescription using the `getKey` method.',
-          }),
-        p256dh: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'An authentication secret, as described by [Message Encryption for Web Push](https://datatracker.ietf.org/doc/html/draft-ietf-webpush-encryption-08).',
-          }),
-      })
+      .string()
       .exactOptional()
       .openapi({
         description: 'when using GCM or FCM, specifies the required registration token.',
-        required: [],
       }),
     encryptionKey: z
       .looseObject({})

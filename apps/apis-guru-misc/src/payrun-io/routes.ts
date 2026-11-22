@@ -1,5 +1,47 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+type ReportDefinitionType = {
+  ReportDefinition?: {
+    Active?: boolean
+    Readonly?: boolean
+    ReportQuery?: {
+      Encoding?: string
+      ExcludeNullOrEmptyElements?: boolean
+      Groups?: {
+        Group?: {
+          '@GroupName'?: string
+          '@ItemName'?: string
+          '@LoopExpression'?: string
+          '@Predicate'?: string
+          '@Selector'?: string
+          '@UniqueKeyVariable'?: string
+          Condition?: { '@ValueA'?: string; '@ValueB'?: string }[]
+          Filter?: { '@IsOr'?: boolean; '@Property'?: string; '@Value'?: string }[]
+          Order?: { '@Property'?: string }[]
+          Output?: {
+            '@MaxLength'?: string
+            '@Output'?:
+              | 'Element'
+              | 'Attribute'
+              | 'Variable'
+              | 'VariableSum'
+              | 'VariableAppend'
+              | 'VariablePrepend'
+              | 'ElementDatePart'
+              | 'InnerText'
+          }[]
+        }[]
+      }
+      RootNodeName?: string
+      SuppressMetricAttributes?: boolean
+      Variables?: { Variable?: { '@Name'?: string; '@Value'?: string }[] }
+    }
+    SupportedTransforms?: string
+    Title?: string
+    Version?: string
+  }
+}
+
 const AEAssessmentSchema = z
   .object({
     AEAssessment: z
@@ -586,7 +628,7 @@ const DpsJobInstructionSchema = z
           .exactOptional()
           .openapi({ description: "The dps job instructions' holding date", title: 'HoldingDate' }),
         MessageTypes: z
-          .object({ Type: z.array(z.object({})).exactOptional() })
+          .object({ Type: z.array(z.looseObject({})).exactOptional() })
           .exactOptional()
           .openapi({
             description: "The dps job instructions' message types",
@@ -910,7 +952,7 @@ const EmployeeSchema = z
           .exactOptional()
           .openapi({ description: "The employees' marital status", title: 'MaritalStatus' }),
         MetaData: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({ description: "The employees' meta data", title: 'MetaData' }),
         MiddleName: z
@@ -1512,7 +1554,7 @@ const EmployerSchema = z
             required: [],
           }),
         MetaData: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({ description: "The employers' meta data", title: 'MetaData' }),
         Name: z
@@ -2049,7 +2091,7 @@ const PayCodeSchema = z
           .exactOptional()
           .openapi({ description: "The pay codes' effective date", title: 'EffectiveDate' }),
         MetaData: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({ description: "The pay codes' meta data", title: 'MetaData' }),
         NextRevisionDate: z.iso
@@ -2382,7 +2424,7 @@ const PayScheduleSchema = z
     PaySchedule: z
       .object({
         MetaData: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({ description: "The pay schedules' meta data", title: 'MetaData' }),
         Name: z
@@ -2475,7 +2517,7 @@ const PensionSchema = z
           .exactOptional()
           .openapi({ description: "The pensions' lower threshold", title: 'LowerThreshold' }),
         MetaData: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({ description: "The pensions' meta data", title: 'MetaData' }),
         NextRevisionDate: z.iso
@@ -2818,7 +2860,7 @@ const QuerySchema = z
   .openapi({ xml: { name: 'Query' }, required: [] })
   .openapi('Query')
 
-const ReportDefinitionSchema = z
+const ReportDefinitionSchema: z.ZodType<ReportDefinitionType> = z
   .object({
     ReportDefinition: z
       .object({
@@ -3463,7 +3505,7 @@ const SubContractorSchema = z
           .exactOptional()
           .openapi({ description: "The sub contractors' last name", title: 'LastName' }),
         MetaData: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({ description: "The sub contractors' meta data", title: 'MetaData' }),
         MiddleName: z
@@ -3636,7 +3678,7 @@ const ThirdPartyJobInstructionSchema = z
             title: 'InstructionType',
           }),
         MetaData: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({
             description: "The third party job instructions' meta data",
@@ -3716,7 +3758,7 @@ const UserSchema = z
     User: z
       .object({
         MetaData: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({ description: "The users' meta data", title: 'MetaData' }),
         Permissions: z

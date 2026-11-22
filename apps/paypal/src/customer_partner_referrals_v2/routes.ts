@@ -1,119 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const _400Schema = z
-  .object({
-    details: z
-      .array(
-        z.union([
-          z
-            .object({
-              issue: z.literal('INVALID_STRING_LENGTH').exactOptional(),
-              description: z
-                .literal('the value of a field is either too short or too long')
-                .exactOptional(),
-            })
-            .openapi({ title: 'INVALID_STRING_LENGTH', required: [] }),
-          z
-            .object({
-              issue: z.literal('INVALID_PARAMETER_SYNTAX').exactOptional(),
-              description: z
-                .literal('the value of a field does not conform to the expected format')
-                .exactOptional(),
-            })
-            .openapi({ title: 'INVALID_PARAMETER_SYNTAX', required: [] }),
-          z
-            .object({
-              issue: z.literal('INVALID_PARAMETER_VALUE').exactOptional(),
-              description: z.literal('the value of a field is invalid').exactOptional(),
-            })
-            .openapi({ title: 'INVALID_PARAMETER_VALUE', required: [] }),
-          z
-            .object({
-              issue: z.literal('INVALID_ARRAY_LENGTH').exactOptional(),
-              description: z
-                .literal('the number of items in an array parameter is too small or too large')
-                .exactOptional(),
-            })
-            .openapi({ title: 'INVALID_ARRAY_LENGTH', required: [] }),
-        ]),
-      )
-      .exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('_400')
-
-const _401Schema = z
-  .object({
-    details: z
-      .array(
-        z.union([
-          z
-            .object({
-              issue: z.literal('AUTHORIZATION_ERROR').exactOptional(),
-              description: z.literal('This API call is not authorized').exactOptional(),
-            })
-            .openapi({ title: 'AUTHORIZATION_ERROR', required: [] }),
-        ]),
-      )
-      .exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('_401')
-
-const _403Schema = z
-  .object({
-    details: z
-      .array(
-        z.union([
-          z
-            .object({
-              issue: z.literal('PERMISSION_DENIED').exactOptional(),
-              description: z
-                .literal(
-                  'You do not have permission to access or perform operations on this resource.',
-                )
-                .exactOptional(),
-            })
-            .openapi({ title: 'PERMISSION_DENIED', required: [] }),
-        ]),
-      )
-      .exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('_403')
-
-const _422Schema = z
-  .object({
-    details: z
-      .array(
-        z.union([
-          z
-            .object({
-              issue: z.literal('USER_NOT_FOUND').exactOptional(),
-              description: z.literal('Account for this Partner ID does not exist.').exactOptional(),
-            })
-            .openapi({ title: 'USER_NOT_FOUND', required: [] }),
-          z
-            .object({
-              issue: z.literal('ACCOUNT_STATUS_ERROR').exactOptional(),
-              description: z.string().exactOptional(),
-            })
-            .openapi({ title: 'ACCOUNT_STATUS_ERROR', required: [] }),
-          z
-            .object({
-              issue: z.literal('PRODUCT_PPCP_UNAUTHORIZED').exactOptional(),
-              description: z
-                .literal('Account has not been configured to use PayPal Complete Payments')
-                .exactOptional(),
-            })
-            .openapi({ title: 'PRODUCT_PPCP_UNAUTHORIZED', required: [] }),
-        ]),
-      )
-      .exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('_422')
-
 const NameSchema = z
   .object({
     prefix: z
@@ -178,7 +64,7 @@ const PersonNameSchema = NameSchema.and(
 )
   .and(
     z
-      .object({})
+      .looseObject({})
       .openapi({
         title: 'Person name',
         description: 'The name of the person.',
@@ -348,7 +234,7 @@ const PersonAddressDetailSchema = AddressPortableSchema.and(
 )
   .and(
     z
-      .object({})
+      .looseObject({})
       .openapi({
         title: 'Person address detail',
         description: 'A simple postal address with coarse-grained fields.',
@@ -426,7 +312,7 @@ const PersonPhoneDetailSchema = PhoneSchema.and(
 )
   .and(
     z
-      .object({})
+      .looseObject({})
       .openapi({
         title: 'Phone details',
         description:
@@ -670,14 +556,7 @@ const PersonDocumentSchema = DocumentSchema.and(
     })
     .openapi({ required: [] }),
 )
-  .and(
-    z
-      .any()
-      .openapi({
-        title: 'Person document',
-        description: 'The documents associated with the person.',
-      }),
-  )
+  .openapi({ title: 'Person document', description: 'The documents associated with the person.' })
   .openapi('PersonDocument')
 
 const PersonDocumentListSchema = z
@@ -731,11 +610,7 @@ const IndividualOwnerSchema = PersonSchema.and(
     })
     .openapi({ required: [] }),
 )
-  .and(
-    z
-      .any()
-      .openapi({ title: 'Individual_owner', description: 'The individual owner of the account.' }),
-  )
+  .openapi({ title: 'Individual_owner', description: 'The individual owner of the account.' })
   .openapi('IndividualOwner')
 
 const IndividualOwnerListSchema = z
@@ -925,7 +800,7 @@ const BusinessNameDetailSchema = BusinessNameSchema.and(
 )
   .and(
     z
-      .object({})
+      .looseObject({})
       .openapi({
         title: 'Business name',
         description: 'Name of the business provided.',
@@ -1002,7 +877,7 @@ const BusinessAddressDetailSchema = AddressPortableSchema.and(
 )
   .and(
     z
-      .object({})
+      .looseObject({})
       .openapi({
         title: 'Business_address_detail',
         description: 'A simple postal address with coarse-grained fields.',
@@ -1041,7 +916,7 @@ const BusinessPhoneDetailSchema = PhoneSchema.and(
 )
   .and(
     z
-      .object({})
+      .looseObject({})
       .openapi({
         title: 'Phone details',
         description:
@@ -1114,14 +989,10 @@ const BusinessDocumentSchema = DocumentSchema.and(
     })
     .openapi({ required: [] }),
 )
-  .and(
-    z
-      .any()
-      .openapi({
-        title: 'Business document',
-        description: 'The documents associated with the business.',
-      }),
-  )
+  .openapi({
+    title: 'Business document',
+    description: 'The documents associated with the business.',
+  })
   .openapi('BusinessDocument')
 
 const BusinessDocumentListSchema = z
@@ -1192,14 +1063,10 @@ const IndividualBeneficialOwnerSchema = PersonSchema.and(
     })
     .openapi({ required: [] }),
 )
-  .and(
-    z
-      .any()
-      .openapi({
-        title: 'Individual_beneficial_owner',
-        description: 'The individual owner of the account.',
-      }),
-  )
+  .openapi({
+    title: 'Individual_beneficial_owner',
+    description: 'The individual owner of the account.',
+  })
   .openapi('IndividualBeneficialOwner')
 
 const IndividualBeneficialOwnerListSchema = z
@@ -1218,14 +1085,10 @@ const BusinessBeneficialOwnerSchema = BusinessSchema.and(
     })
     .openapi({ required: [] }),
 )
-  .and(
-    z
-      .any()
-      .openapi({
-        title: 'Business_beneficial_owner',
-        description: 'The business beneficial owner of the account.',
-      }),
-  )
+  .openapi({
+    title: 'Business_beneficial_owner',
+    description: 'The business beneficial owner of the account.',
+  })
   .openapi('BusinessBeneficialOwner')
 
 const BusinessBeneficialOwnerListSchema = z
@@ -1293,6 +1156,15 @@ const CurrencyRangeSchema = z
   })
   .openapi('CurrencyRange')
 
+type BusinessEntityType = z.infer<typeof BusinessSchema> &
+  unknown & {
+    beneficial_owners?: z.infer<typeof BeneficialOwnersSchema>
+    annual_sales_volume_range?: z.infer<typeof CurrencyRangeSchema>
+    average_monthly_volume_range?: z.infer<typeof CurrencyRangeSchema>
+    purpose_code?: unknown
+    business_description?: string
+  } & unknown
+
 const PurposeCodeEnumSchema = z
   .enum([
     'P0104',
@@ -1333,10 +1205,9 @@ const PurposeCodeEnumSchema = z
   })
   .openapi('PurposeCodeEnum')
 
-const BusinessEntitySchema = BusinessSchema.openapi({
+const BusinessEntitySchema: z.ZodType<BusinessEntityType> = BusinessSchema.openapi({
   description: 'Common business information section.',
 })
-  .and(z.any().openapi({ description: 'Common business information section.' }))
   .and(
     z
       .object({
@@ -1377,14 +1248,15 @@ const BusinessEntitySchema = BusinessSchema.openapi({
       })
       .openapi({ description: 'Additional business information section.', required: [] }),
   )
-  .and(
-    z
-      .any()
-      .openapi({ title: 'Business_entity', description: 'The business entity of the account.' }),
-  )
+  .openapi({ description: 'The business entity of the account.', title: 'Business_entity' })
   .openapi('BusinessEntity')
 
-const AccountSchema = z
+type AccountType = {
+  individual_owners?: z.infer<typeof IndividualOwnerListSchema>
+  business_entity?: z.infer<typeof BusinessEntitySchema>
+}
+
+const AccountSchema: z.ZodType<AccountType> = z
   .object({
     individual_owners: IndividualOwnerListSchema.exactOptional(),
     business_entity: BusinessEntitySchema.exactOptional().openapi({
@@ -1397,6 +1269,48 @@ const AccountSchema = z
     required: [],
   })
   .openapi('Account')
+
+const LanguageSchema = z
+  .string()
+  .regex(/^[a-z]{2}(?:-[A-Z][a-z]{3})?(?:-(?:[A-Z]{2}))?$/)
+  .min(2)
+  .max(10)
+  .openapi({
+    description:
+      'The [language tag](https://tools.ietf.org/html/bcp47#section-2) for the language in which to localize the error-related strings, such as messages, issues, and suggested actions. The tag is made up of the [ISO 639-2 language code](https://www.loc.gov/standards/iso639-2/php/code_list.php), the optional [ISO-15924 script tag](https://www.unicode.org/iso15924/codelists.html), and the [ISO-3166 alpha-2 country code](/docs/integration/direct/rest/country-codes/).',
+  })
+  .openapi('Language')
+
+const PartnerConfigOverrideSchema = z
+  .strictObject({
+    return_url: z
+      .url()
+      .min(1)
+      .max(127)
+      .exactOptional()
+      .openapi({
+        description:
+          'The URL to which to redirect the customer upon completion of the onboarding process.',
+      }),
+    return_url_description: z
+      .string()
+      .regex(/^.+$/)
+      .min(1)
+      .max(127)
+      .exactOptional()
+      .openapi({ description: 'The description of the return URL.' }),
+    show_add_credit_card: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates whether to show an add credit card page.' }),
+  })
+  .openapi({
+    title: 'Partner Configuration Override',
+    description:
+      "The preference to customize the web experience of the customer by overriding that is set at the Partner's Account.",
+    required: [],
+  })
+  .openapi('PartnerConfigOverride')
 
 const IdentifierSchema = z
   .strictObject({
@@ -1572,6 +1486,222 @@ const BankListSchema = z
   .openapi({ description: 'An array of banks attached to this managed account.' })
   .openapi('BankList')
 
+const FinancialInstrumentsSchema = z
+  .strictObject({ banks: BankListSchema.exactOptional() })
+  .openapi({
+    title: 'Financial instrument.',
+    description: 'Financial instruments attached to this account.',
+    required: [],
+  })
+  .openapi('FinancialInstruments')
+
+const ClassicApiIntegrationSchema = z
+  .strictObject({})
+  .openapi({
+    title: 'CLASSIC API integration',
+    description: 'The integration details for PayPal CLASSIC endpoints.',
+  })
+  .openapi('ClassicApiIntegration')
+
+const RestEndpointFeaturesEnumSchema = z
+  .enum([
+    'PAYOUTS',
+    'PAYMENT',
+    'REFUND',
+    'FUTURE_PAYMENT',
+    'DIRECT_PAYMENT',
+    'PARTNER_FEE',
+    'DELAY_FUNDS_DISBURSEMENT',
+    'READ_SELLER_DISPUTE',
+    'UPDATE_SELLER_DISPUTE',
+    'ADVANCED_TRANSACTIONS_SEARCH',
+    'SWEEP_FUNDS_EXTERNAL_SINK',
+    'ACCESS_MERCHANT_INFORMATION',
+    'TRACKING_SHIPMENT_READWRITE',
+    'INVOICE_READ_WRITE',
+    'DISPUTE_READ_BUYER',
+    'UPDATE_CUSTOMER_DISPUTES',
+    'VAULT',
+    'BILLING_AGREEMENT',
+    'WITHDRAWALS',
+    'LINKED_FINANCIAL_INSTRUMENTS',
+    'USER_PROFILE',
+    'TRANSACTION_RISK_DATA',
+    'PAYPAL_BALANCE',
+    'EXCHANGE_CURRENCY',
+  ])
+  .openapi({
+    title: 'REST Endpoint Features',
+    description: 'The REST endpoint.',
+    'x-enumDescriptions': [
+      { value: 'PAYOUTS', description: 'Payout feature.' },
+      { value: 'PAYMENT', description: 'Payment feature.' },
+      { value: 'REFUND', description: 'Refund feature.' },
+      { value: 'FUTURE_PAYMENT', description: 'Future Payment feature.' },
+      { value: 'DIRECT_PAYMENT', description: 'Direct Payment feature.' },
+      { value: 'PARTNER_FEE', description: 'Partner fee feature.' },
+      { value: 'DELAY_FUNDS_DISBURSEMENT', description: 'Delay funds disbursement feature.' },
+      { value: 'READ_SELLER_DISPUTE', description: 'Read seller dispute feature.' },
+      { value: 'UPDATE_SELLER_DISPUTE', description: 'update seller dispute feature.' },
+      {
+        value: 'ADVANCED_TRANSACTIONS_SEARCH',
+        description: 'Advanced transaction search feature.',
+      },
+      { value: 'SWEEP_FUNDS_EXTERNAL_SINK', description: 'Sweep funds external sink feature.' },
+      { value: 'ACCESS_MERCHANT_INFORMATION', description: 'Access merchant information feature.' },
+      { value: 'TRACKING_SHIPMENT_READWRITE', description: 'Tracking Shipment readwrite feature.' },
+      { value: 'INVOICE_READ_WRITE', description: 'Invoice readwrite feature.' },
+      { value: 'DISPUTE_READ_BUYER', description: 'Read the buyer disputes.' },
+      { value: 'UPDATE_CUSTOMER_DISPUTES', description: 'Update the buyer disputes.' },
+      { value: 'VAULT', description: 'Manage the payment methods that my customers save.' },
+      {
+        value: 'BILLING_AGREEMENT',
+        description: 'Obtain prior approval for future payments(billing agreements).',
+      },
+      {
+        value: 'WITHDRAWALS',
+        description: 'Execute a withdrawal and fetch details of a withdrawal',
+      },
+      {
+        value: 'LINKED_FINANCIAL_INSTRUMENTS',
+        description: 'Read and update linked financial instruments information.',
+      },
+      { value: 'USER_PROFILE', description: 'Read and update business and user information.' },
+      { value: 'TRANSACTION_RISK_DATA', description: 'Read PayPal risk data from a transaction' },
+      { value: 'PAYPAL_BALANCE', description: 'Read the merchant balance amount.' },
+      { value: 'EXCHANGE_CURRENCY', description: 'Read the exchange currency rate for withdraw.' },
+    ],
+  })
+  .openapi('RestEndpointFeaturesEnum')
+
+const RestEndpointFeaturesEnumListSchema = z
+  .array(RestEndpointFeaturesEnumSchema)
+  .openapi({
+    description:
+      'An array of features that partner can access, or use, in PayPal on behalf of the seller. The seller grants permission for these features to the partner.',
+  })
+  .openapi('RestEndpointFeaturesEnumList')
+
+const FirstPartyDetailsSchema = z
+  .object({
+    features: RestEndpointFeaturesEnumListSchema,
+    seller_nonce: z
+      .string()
+      .regex(/^[a-zA-Z0-9-_:]+$/)
+      .min(44)
+      .max(128)
+      .openapi({
+        description:
+          'S256 - The code verifier must be high-entropy cryptographic random string with a byte length of 43-128 range.',
+      }),
+  })
+  .openapi({
+    title: 'REST First-Party Details',
+    description: 'The integration details for PayPal first party REST endpoints.',
+    required: ['features', 'seller_nonce'],
+  })
+  .openapi('FirstPartyDetails')
+
+const RestApiIntegrationRestEndpointFeaturesEnumListSchema = z
+  .array(RestEndpointFeaturesEnumSchema)
+  .min(0)
+  .max(20)
+  .openapi({
+    description:
+      'An array of features that partner can access, or use, in PayPal on behalf of the seller. The seller grants permission for these features to the partner.',
+  })
+  .openapi('RestApiIntegrationRestEndpointFeaturesEnumList')
+
+const SignupModeSchema = z
+  .literal('VERIFY_WITH_PAYPAL')
+  .openapi({
+    title: 'Signup Mode',
+    description: 'Signup Mode to be used for sellers for third party integration.',
+    'x-enumDescriptions': [
+      { value: 'VERIFY_WITH_PAYPAL', description: 'Sign up mode that uses Verify with Paypal.' },
+    ],
+  })
+  .openapi('SignupMode')
+
+const ThirdPartyDetailsSchema = z
+  .object({
+    features: RestApiIntegrationRestEndpointFeaturesEnumListSchema.exactOptional(),
+    signup_mode: SignupModeSchema.exactOptional(),
+    organization: z
+      .string()
+      .regex(/^.*$/)
+      .min(1)
+      .max(127)
+      .exactOptional()
+      .openapi({
+        description:
+          'The organization to which the account will belong in the partner’s hierarchy, as a path.',
+      }),
+  })
+  .openapi({
+    title: 'REST Third-Party Details',
+    description: 'The integration details for PayPal REST endpoints.',
+    required: [],
+  })
+  .openapi('ThirdPartyDetails')
+
+const RestApiIntegrationSchema = z
+  .object({
+    integration_method: z
+      .enum(['BRAINTREE', 'PAYPAL', 'SDK'])
+      .default('PAYPAL')
+      .exactOptional()
+      .openapi({
+        description: 'The REST-credential integration method.',
+        'x-enumDescriptions': [
+          { value: 'BRAINTREE', description: 'Braintree integration method.' },
+          { value: 'PAYPAL', description: 'PayPal integration method.' },
+          {
+            value: 'SDK',
+            description: 'Indicates that merchant onboarding will be done via the Embedded SDK.',
+          },
+        ],
+      }),
+    integration_type: z.enum(['FIRST_PARTY', 'THIRD_PARTY']).openapi({
+      title: 'Integration Type',
+      description:
+        'The type of REST-endpoint integration. To integrate with Braintree v.zero for PayPal REST endpoints, specify `third_party_details`.',
+      'x-enumDescriptions': [
+        { value: 'FIRST_PARTY', description: 'A first-party integration.' },
+        { value: 'THIRD_PARTY', description: 'A third-party integration.' },
+      ],
+    }),
+    first_party_details: FirstPartyDetailsSchema.exactOptional(),
+    third_party_details: ThirdPartyDetailsSchema.exactOptional(),
+  })
+  .openapi({
+    title: 'REST API Integration',
+    description: 'The integration details for PayPal REST endpoints.',
+    required: ['integration_type'],
+  })
+  .openapi('RestApiIntegration')
+
+const IntegrationDetailsSchema = z
+  .object({
+    classic_api_integration: ClassicApiIntegrationSchema.exactOptional(),
+    rest_api_integration: RestApiIntegrationSchema.exactOptional(),
+  })
+  .openapi({
+    title: 'Integration Details',
+    description:
+      'The integration details for the partner and customer relationship. Required if `operation` is `API_INTEGRATION`.',
+    required: [],
+  })
+  .openapi('IntegrationDetails')
+
+const OfflineOnboardingPreferenceSchema = z
+  .looseObject({})
+  .openapi({
+    title: 'Offline Oboarding Preference',
+    description: 'The preference details for offline onboarding without UI.',
+  })
+  .openapi('OfflineOnboardingPreference')
+
 const BillingExperiencePreferenceSchema = z
   .strictObject({
     experience_id: z
@@ -1636,6 +1766,184 @@ const BillingAgreementSchema = z
   })
   .openapi('BillingAgreement')
 
+const OperationSchema = z
+  .object({
+    operation: z
+      .enum([
+        'API_INTEGRATION',
+        'BANK_ADDITION',
+        'BILLING_AGREEMENT',
+        'CONTEXTUAL_MARKETING_CONSENT',
+        'OFFLINE_ONBOARDING',
+        'SALESFORCE_REFERRAL',
+      ])
+      .openapi({
+        description:
+          'The operation to enable for the customer. To enable the collection of the API permissions that you require to integrate with the customer, specify `API_INTEGRATION`. `BANK_ADDITION` is supported only for the US.',
+        'x-enumDescriptions': [
+          {
+            value: 'API_INTEGRATION',
+            description:
+              'The operation used by partner request permission for customers api access.',
+          },
+          { value: 'BANK_ADDITION', description: 'Captured state of an order.' },
+          {
+            value: 'BILLING_AGREEMENT',
+            description: 'The operation to create a billing agreement.',
+          },
+          {
+            value: 'CONTEXTUAL_MARKETING_CONSENT',
+            description: 'The operation to create a contextual marketing consent.',
+          },
+          {
+            value: 'OFFLINE_ONBOARDING',
+            description:
+              'The operation to create merchant account using referral data without UIs.',
+          },
+          {
+            value: 'SALESFORCE_REFERRAL',
+            description: 'The operation to be used to distinguish traffic coming from Salesforce.',
+          },
+        ],
+      }),
+    api_integration_preference: IntegrationDetailsSchema.exactOptional(),
+    offline_onboarding_preference: OfflineOnboardingPreferenceSchema.exactOptional(),
+    billing_agreement: BillingAgreementSchema.exactOptional(),
+  })
+  .openapi({
+    title: 'Operation',
+    description: 'The required operation to share data.',
+    required: ['operation'],
+  })
+  .openapi('Operation')
+
+const OperationListSchema = z
+  .array(OperationSchema)
+  .min(1)
+  .max(5)
+  .openapi({
+    description: 'An array of operations to perform for the customer while they share their data.',
+  })
+  .openapi('OperationList')
+
+const ProductSchema = z
+  .enum([
+    'ALIPAY',
+    'BANCONTACT',
+    'BLIK',
+    'EPS',
+    'PPCP',
+    'EXPRESS_CHECKOUT',
+    'PAYMENT_METHODS',
+    'ADVANCED_VAULTING',
+    'IDEAL',
+    'MB_WAY',
+    'MULTIBANCO',
+    'PAYPAL_COMMERCE_PLATFORM_BUSINESS',
+    'PPPLUS',
+    'PRZELEWY24',
+    'SATISPAY',
+    'TRUSTLY',
+    'WECHAT_PAY',
+    'WEBSITE_PAYMENT_PRO',
+    'ZETTLE',
+    'PAYPAL_COMMERCE_PLATFORM_BUSINESS',
+    'HYPERWALLET_PAYOUTS',
+  ])
+  .openapi({
+    description: 'The PayPal product for which the customer is onboarded.',
+    title: 'Product Name',
+    'x-enumDescriptions': [
+      {
+        value: 'ALIPAY',
+        description:
+          'Alipay is a China-based payment method that allows customers to complete transactions online using their Alipay wallet. Include only if Alipay alone is required. You can use PPCP if all features are required.',
+      },
+      {
+        value: 'BANCONTACT',
+        description:
+          'Bancontact is a Belgium-based payment method that allows customers to complete transactions online using their bank credentials. Include only if Bancontact alone is required. You can use PPCP if all features are required.',
+      },
+      {
+        value: 'BLIK',
+        description:
+          'Blik is a Poland-based payment method that allows customers to complete transactions online using their bank credentials. Include only if Blik alone is required. You can use PPCP if all features are required.',
+      },
+      {
+        value: 'EPS',
+        description:
+          'EPS is an Austria-based payment method that allows customers to complete transactions online using their bank credentials. Include only if EPS alone is required. You can use PPCP if all features are required.',
+      },
+      {
+        value: 'PPCP',
+        description:
+          'PayPal Complete Payments product, which includes Express Checkout, advanced credit and debit card payments, Apple Pay, and Google Pay. Use PPCP if all features are required.',
+      },
+      { value: 'EXPRESS_CHECKOUT', description: 'Express checkout product.' },
+      {
+        value: 'PAYMENT_METHODS',
+        description:
+          'PayPal Alternative Payment Methods product. Include only if Apple Pay or Google Pay or both are required alone. You can use PPCP if all features are required.',
+      },
+      {
+        value: 'ADVANCED_VAULTING',
+        description:
+          'PayPal Advanced Vaulting product. Must be requested along with either EXPRESS_CHECKOUT or PPCP. Include only if ADVANCED_VAULTING alone is required. You can use PPCP if all features are required.',
+      },
+      {
+        value: 'IDEAL',
+        description:
+          'iDEAL is a Netherlands-based payment method that allows customers to complete transactions online using their bank credentials. Include only if iDEAL alone is required. You can use PPCP if all features are required.',
+      },
+      {
+        value: 'MB_WAY',
+        description:
+          'MB Way is a Portugal-based payment method that allows customers to complete transactions online using their MB Way wallet. Include only if MB Way alone is required. You can use PPCP if all features are required.',
+      },
+      {
+        value: 'MULTIBANCO',
+        description:
+          'Multibanco is a Portugal-based payment method that allows customers to complete transactions online using their bank credentials or pay in cash at a bank branch. Include only if Multibanco alone is required. You can use PPCP if all features are required.',
+      },
+      { value: 'PAYPAL_COMMERCE_PLATFORM_BUSINESS', description: 'PayPal PayIn product.' },
+      { value: 'PPPLUS', description: 'PayPal PLUS product.' },
+      {
+        value: 'PRZELEWY24',
+        description:
+          'Przelewy24 is a Poland-based payment method that allows customers to complete transactions online. Include only if Przelewy24 alone is required. You can use PPCP if all features are required.',
+      },
+      {
+        value: 'SATISPAY',
+        description:
+          'Satispay is an Italy-based payment method that allows customers to complete transactions online using their bank credentials. Include only if Satispay alone is required. You can use PPCP if all features are required.',
+      },
+      {
+        value: 'TRUSTLY',
+        description:
+          'Trustly is a payment method that allows customers from (Austria (AT), Germany (DE), Denmark (DK), Estonia (EE), Spain (ES), Finland (FI), Great Britain (GB), Lithuania (LT), Latvia (LV), Netherlands (NL), Norway (NO), Sweden (SE)) to complete transactions online using their bank credentials. Include only if Trustly alone is required. You can use PPCP if all features are required.',
+      },
+      {
+        value: 'WECHAT_PAY',
+        description:
+          'WeChat Pay is a China-based payment method that allows customers to complete transactions online using their WeChat Pay wallet. Include only if WeChat Pay alone is required. You can use PPCP if all features are required.',
+      },
+      { value: 'WEBSITE_PAYMENT_PRO', description: 'PayPal Professional product.' },
+      { value: 'ZETTLE', description: 'PayPal Zettle in-person payments product.' },
+      { value: 'PAYPAL_COMMERCE_PLATFORM_BUSINESS', description: 'PayPal PayIn product.' },
+      { value: 'HYPERWALLET_PAYOUTS', description: 'Hyperwallet payouts product' },
+    ],
+  })
+  .openapi('Product')
+
+const ProductListSchema = z
+  .array(ProductSchema)
+  .min(1)
+  .max(5)
+  .openapi({
+    description: 'An array of PayPal products to which the partner wants to onboard the customer.',
+  })
+  .openapi('ProductList')
+
 const CapabilitiesSchema = z
   .enum(['PAYPAL_WALLET_VAULTING_ADVANCED', 'PAY_UPON_INVOICE', 'APPLE_PAY', 'GOOGLE_PAY'])
   .openapi({
@@ -1677,13 +1985,52 @@ const CapabilitiesListSchema = z
   })
   .openapi('CapabilitiesList')
 
-const ClassicApiIntegrationSchema = z
-  .strictObject({})
-  .openapi({
-    title: 'CLASSIC API integration',
-    description: 'The integration details for PayPal CLASSIC endpoints.',
+const DependentProcessSchema = z.any().openapi('DependentProcess')
+
+const DependentProcessListSchema = z
+  .array(DependentProcessSchema)
+  .min(1)
+  .max(5)
+  .openapi({ description: 'An array of dependent processes.' })
+  .openapi('DependentProcessList')
+
+const LegalConsentSchema = z
+  .object({
+    type: z
+      .literal('SHARE_DATA_CONSENT')
+      .openapi({
+        description:
+          "The type of consent. `SHARE_DATA_CONSENT` gives consent to you to share your customer's data with PayPal.",
+        'x-enumDescriptions': [
+          {
+            value: 'SHARE_DATA_CONSENT',
+            description: 'The consent given by the customer to share their data with paypal.',
+          },
+        ],
+      }),
+    granted: z
+      .boolean()
+      .openapi({
+        description:
+          'Indicates whether the customer agreed to share this type of data. To give consent, specify `true`. To withhold consent, specify `false`.',
+      }),
   })
-  .openapi('ClassicApiIntegration')
+  .openapi({
+    title: 'Legal Consent',
+    description: 'The customer-provided consent.',
+    required: ['type', 'granted'],
+  })
+  .openapi('LegalConsent')
+
+const LegalConsentListSchema = z
+  .array(LegalConsentSchema)
+  .min(1)
+  .max(5)
+  .openapi({
+    description:
+      'An array of all consents that the partner has received from this seller. If `SHARE_DATA_CONSENT` is not granted, PayPal does not store customer data.',
+  })
+  .openapi('LegalConsentList')
 
 const CurrencyCode_2Schema = z
   .string()
@@ -1750,6 +2097,234 @@ const CountryTransferMethodCurrencySelectionListSchema = z
   .openapi({ description: 'Requested country, transfer method and currency.' })
   .openapi('CountryTransferMethodCurrencySelectionList')
 
+const PayoutAttributesSchema = z
+  .strictObject({
+    marketplace: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'If `true`, specifies that the merchant or platform is offering goods or services on behalf of 3rd party sellers.',
+      }),
+    kyc_required: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'If `true`, specifies that the Kyc is required for the merchant.' }),
+    country_transfer_method_currency_selection:
+      CountryTransferMethodCurrencySelectionListSchema.exactOptional(),
+  })
+  .openapi({ title: 'Payout Attributes', description: 'Payout specific attributes.', required: [] })
+  .openapi('PayoutAttributes')
+
+type ReferralDataType = z.infer<typeof AccountSchema> & {
+  email?: z.infer<typeof EmailAddressSchema>
+  preferred_language_code?: z.infer<typeof LanguageSchema>
+  tracking_id?: string
+  partner_config_override?: z.infer<typeof PartnerConfigOverrideSchema>
+  financial_instruments?: z.infer<typeof FinancialInstrumentsSchema>
+  operations?: z.infer<typeof OperationListSchema>
+  products?: z.infer<typeof ProductListSchema>
+  capabilities?: z.infer<typeof CapabilitiesListSchema>
+  outside_process_dependencies?: z.infer<typeof DependentProcessListSchema>
+  legal_consents?: z.infer<typeof LegalConsentListSchema>
+  payout_attributes?: z.infer<typeof PayoutAttributesSchema>
+  legal_country_code?: z.infer<typeof CountryCodeSchema>
+}
+
+const ReferralDataSchema: z.ZodType<ReferralDataType> = AccountSchema.openapi({
+  description: 'The common account model representing the basic account structure.',
+})
+  .and(z.looseObject({}).openapi({ required: ['operations', 'legal_consents'] }))
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'operations')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'legal_consents')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        email: EmailAddressSchema.exactOptional().openapi({
+          description: 'Email address of the customer used to create the account.',
+        }),
+        preferred_language_code: LanguageSchema.exactOptional().openapi({
+          description:
+            'The preferred [locale code](/docs/api/reference/locale-codes/) to use in the onboarding flow for the customer.',
+        }),
+        tracking_id: z
+          .string()
+          .min(1)
+          .max(127)
+          .exactOptional()
+          .openapi({
+            description:
+              "The partner's unique identifier for this customer in their system which can be used to track user in PayPal.",
+          }),
+        partner_config_override: PartnerConfigOverrideSchema.exactOptional().openapi({
+          description:
+            'The configuration property that the partner intends to override for this onboarding request.',
+        }),
+        financial_instruments: FinancialInstrumentsSchema.exactOptional().openapi({
+          description: "Array of financial instruments attached to the customer's account.",
+        }),
+        operations: OperationListSchema.exactOptional(),
+        products: ProductListSchema.exactOptional(),
+        capabilities: CapabilitiesListSchema.exactOptional(),
+        outside_process_dependencies: DependentProcessListSchema.exactOptional(),
+        legal_consents: LegalConsentListSchema.exactOptional(),
+        payout_attributes: PayoutAttributesSchema.exactOptional().openapi({
+          description: 'Payout specific attributes.',
+        }),
+        legal_country_code: CountryCodeSchema.exactOptional().openapi({
+          description: 'Legal Country Code.',
+        }),
+      })
+      .openapi({ required: [] }),
+  )
+  .openapi({
+    title: 'Customer Data',
+    description: "The customer's referral data that partners share with PayPal.",
+    required: ['operations', 'legal_consents'],
+  })
+  .openapi('ReferralData')
+
+const ReferralDataResponseDefinitionsLinkDescriptionListSchema = z
+  .array(LinkDescriptionSchema)
+  .min(0)
+  .max(2)
+  .openapi({
+    title: 'Links',
+    description: 'An array of request-related [HATEOAS links](/docs/api/overview/#hateoas-links).',
+    readOnly: true,
+  })
+  .openapi('ReferralDataResponseDefinitionsLinkDescriptionList')
+
+type ReferralDataResponseType = {
+  partner_referral_id?: string
+  submitter_payer_id?: string
+  submitter_client_id?: string
+  referral_data?: z.infer<typeof ReferralDataSchema>
+  links?: z.infer<typeof ReferralDataResponseDefinitionsLinkDescriptionListSchema>
+}
+
+const _400Schema = z
+  .object({
+    details: z
+      .array(
+        z.union([
+          z
+            .object({
+              issue: z.literal('INVALID_STRING_LENGTH').exactOptional(),
+              description: z
+                .literal('the value of a field is either too short or too long')
+                .exactOptional(),
+            })
+            .openapi({ title: 'INVALID_STRING_LENGTH', required: [] }),
+          z
+            .object({
+              issue: z.literal('INVALID_PARAMETER_SYNTAX').exactOptional(),
+              description: z
+                .literal('the value of a field does not conform to the expected format')
+                .exactOptional(),
+            })
+            .openapi({ title: 'INVALID_PARAMETER_SYNTAX', required: [] }),
+          z
+            .object({
+              issue: z.literal('INVALID_PARAMETER_VALUE').exactOptional(),
+              description: z.literal('the value of a field is invalid').exactOptional(),
+            })
+            .openapi({ title: 'INVALID_PARAMETER_VALUE', required: [] }),
+          z
+            .object({
+              issue: z.literal('INVALID_ARRAY_LENGTH').exactOptional(),
+              description: z
+                .literal('the number of items in an array parameter is too small or too large')
+                .exactOptional(),
+            })
+            .openapi({ title: 'INVALID_ARRAY_LENGTH', required: [] }),
+        ]),
+      )
+      .exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('_400')
+
+const _401Schema = z
+  .object({
+    details: z
+      .array(
+        z.union([
+          z
+            .object({
+              issue: z.literal('AUTHORIZATION_ERROR').exactOptional(),
+              description: z.literal('This API call is not authorized').exactOptional(),
+            })
+            .openapi({ title: 'AUTHORIZATION_ERROR', required: [] }),
+        ]),
+      )
+      .exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('_401')
+
+const _403Schema = z
+  .object({
+    details: z
+      .array(
+        z.union([
+          z
+            .object({
+              issue: z.literal('PERMISSION_DENIED').exactOptional(),
+              description: z
+                .literal(
+                  'You do not have permission to access or perform operations on this resource.',
+                )
+                .exactOptional(),
+            })
+            .openapi({ title: 'PERMISSION_DENIED', required: [] }),
+        ]),
+      )
+      .exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('_403')
+
+const _422Schema = z
+  .object({
+    details: z
+      .array(
+        z.union([
+          z
+            .object({
+              issue: z.literal('USER_NOT_FOUND').exactOptional(),
+              description: z.literal('Account for this Partner ID does not exist.').exactOptional(),
+            })
+            .openapi({ title: 'USER_NOT_FOUND', required: [] }),
+          z
+            .object({
+              issue: z.literal('ACCOUNT_STATUS_ERROR').exactOptional(),
+              description: z.string().exactOptional(),
+            })
+            .openapi({ title: 'ACCOUNT_STATUS_ERROR', required: [] }),
+          z
+            .object({
+              issue: z.literal('PRODUCT_PPCP_UNAUTHORIZED').exactOptional(),
+              description: z
+                .literal('Account has not been configured to use PayPal Complete Payments')
+                .exactOptional(),
+            })
+            .openapi({ title: 'PRODUCT_PPCP_UNAUTHORIZED', required: [] }),
+        ]),
+      )
+      .exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('_422')
+
 const DefinitionsLinkDescriptionListSchema = z
   .array(LinkDescriptionSchema)
   .min(1)
@@ -1769,15 +2344,6 @@ const CreateReferralDataResponseSchema = z
     required: [],
   })
   .openapi('CreateReferralDataResponse')
-
-const DependentProcessSchema = z.any().openapi('DependentProcess')
-
-const DependentProcessListSchema = z
-  .array(DependentProcessSchema)
-  .min(1)
-  .max(5)
-  .openapi({ description: 'An array of dependent processes.' })
-  .openapi('DependentProcessList')
 
 const ErrorLocationSchema = z
   .enum(['body', 'path', 'query'])
@@ -2138,553 +2704,7 @@ const ErrorDefaultSchema = z
   .openapi({ description: 'The default error response.' })
   .openapi('ErrorDefault')
 
-const FinancialInstrumentsSchema = z
-  .strictObject({ banks: BankListSchema.exactOptional() })
-  .openapi({
-    title: 'Financial instrument.',
-    description: 'Financial instruments attached to this account.',
-    required: [],
-  })
-  .openapi('FinancialInstruments')
-
-const RestEndpointFeaturesEnumSchema = z
-  .enum([
-    'PAYOUTS',
-    'PAYMENT',
-    'REFUND',
-    'FUTURE_PAYMENT',
-    'DIRECT_PAYMENT',
-    'PARTNER_FEE',
-    'DELAY_FUNDS_DISBURSEMENT',
-    'READ_SELLER_DISPUTE',
-    'UPDATE_SELLER_DISPUTE',
-    'ADVANCED_TRANSACTIONS_SEARCH',
-    'SWEEP_FUNDS_EXTERNAL_SINK',
-    'ACCESS_MERCHANT_INFORMATION',
-    'TRACKING_SHIPMENT_READWRITE',
-    'INVOICE_READ_WRITE',
-    'DISPUTE_READ_BUYER',
-    'UPDATE_CUSTOMER_DISPUTES',
-    'VAULT',
-    'BILLING_AGREEMENT',
-    'WITHDRAWALS',
-    'LINKED_FINANCIAL_INSTRUMENTS',
-    'USER_PROFILE',
-    'TRANSACTION_RISK_DATA',
-    'PAYPAL_BALANCE',
-    'EXCHANGE_CURRENCY',
-  ])
-  .openapi({
-    title: 'REST Endpoint Features',
-    description: 'The REST endpoint.',
-    'x-enumDescriptions': [
-      { value: 'PAYOUTS', description: 'Payout feature.' },
-      { value: 'PAYMENT', description: 'Payment feature.' },
-      { value: 'REFUND', description: 'Refund feature.' },
-      { value: 'FUTURE_PAYMENT', description: 'Future Payment feature.' },
-      { value: 'DIRECT_PAYMENT', description: 'Direct Payment feature.' },
-      { value: 'PARTNER_FEE', description: 'Partner fee feature.' },
-      { value: 'DELAY_FUNDS_DISBURSEMENT', description: 'Delay funds disbursement feature.' },
-      { value: 'READ_SELLER_DISPUTE', description: 'Read seller dispute feature.' },
-      { value: 'UPDATE_SELLER_DISPUTE', description: 'update seller dispute feature.' },
-      {
-        value: 'ADVANCED_TRANSACTIONS_SEARCH',
-        description: 'Advanced transaction search feature.',
-      },
-      { value: 'SWEEP_FUNDS_EXTERNAL_SINK', description: 'Sweep funds external sink feature.' },
-      { value: 'ACCESS_MERCHANT_INFORMATION', description: 'Access merchant information feature.' },
-      { value: 'TRACKING_SHIPMENT_READWRITE', description: 'Tracking Shipment readwrite feature.' },
-      { value: 'INVOICE_READ_WRITE', description: 'Invoice readwrite feature.' },
-      { value: 'DISPUTE_READ_BUYER', description: 'Read the buyer disputes.' },
-      { value: 'UPDATE_CUSTOMER_DISPUTES', description: 'Update the buyer disputes.' },
-      { value: 'VAULT', description: 'Manage the payment methods that my customers save.' },
-      {
-        value: 'BILLING_AGREEMENT',
-        description: 'Obtain prior approval for future payments(billing agreements).',
-      },
-      {
-        value: 'WITHDRAWALS',
-        description: 'Execute a withdrawal and fetch details of a withdrawal',
-      },
-      {
-        value: 'LINKED_FINANCIAL_INSTRUMENTS',
-        description: 'Read and update linked financial instruments information.',
-      },
-      { value: 'USER_PROFILE', description: 'Read and update business and user information.' },
-      { value: 'TRANSACTION_RISK_DATA', description: 'Read PayPal risk data from a transaction' },
-      { value: 'PAYPAL_BALANCE', description: 'Read the merchant balance amount.' },
-      { value: 'EXCHANGE_CURRENCY', description: 'Read the exchange currency rate for withdraw.' },
-    ],
-  })
-  .openapi('RestEndpointFeaturesEnum')
-
-const RestEndpointFeaturesEnumListSchema = z
-  .array(RestEndpointFeaturesEnumSchema)
-  .openapi({
-    description:
-      'An array of features that partner can access, or use, in PayPal on behalf of the seller. The seller grants permission for these features to the partner.',
-  })
-  .openapi('RestEndpointFeaturesEnumList')
-
-const FirstPartyDetailsSchema = z
-  .object({
-    features: RestEndpointFeaturesEnumListSchema,
-    seller_nonce: z
-      .string()
-      .regex(/^[a-zA-Z0-9-_:]+$/)
-      .min(44)
-      .max(128)
-      .openapi({
-        description:
-          'S256 - The code verifier must be high-entropy cryptographic random string with a byte length of 43-128 range.',
-      }),
-  })
-  .openapi({
-    title: 'REST First-Party Details',
-    description: 'The integration details for PayPal first party REST endpoints.',
-    required: ['features', 'seller_nonce'],
-  })
-  .openapi('FirstPartyDetails')
-
-const RestApiIntegrationRestEndpointFeaturesEnumListSchema = z
-  .array(RestEndpointFeaturesEnumSchema)
-  .min(0)
-  .max(20)
-  .openapi({
-    description:
-      'An array of features that partner can access, or use, in PayPal on behalf of the seller. The seller grants permission for these features to the partner.',
-  })
-  .openapi('RestApiIntegrationRestEndpointFeaturesEnumList')
-
-const SignupModeSchema = z
-  .literal('VERIFY_WITH_PAYPAL')
-  .openapi({
-    title: 'Signup Mode',
-    description: 'Signup Mode to be used for sellers for third party integration.',
-    'x-enumDescriptions': [
-      { value: 'VERIFY_WITH_PAYPAL', description: 'Sign up mode that uses Verify with Paypal.' },
-    ],
-  })
-  .openapi('SignupMode')
-
-const ThirdPartyDetailsSchema = z
-  .object({
-    features: RestApiIntegrationRestEndpointFeaturesEnumListSchema.exactOptional(),
-    signup_mode: SignupModeSchema.exactOptional(),
-    organization: z
-      .string()
-      .regex(/^.*$/)
-      .min(1)
-      .max(127)
-      .exactOptional()
-      .openapi({
-        description:
-          'The organization to which the account will belong in the partner’s hierarchy, as a path.',
-      }),
-  })
-  .openapi({
-    title: 'REST Third-Party Details',
-    description: 'The integration details for PayPal REST endpoints.',
-    required: [],
-  })
-  .openapi('ThirdPartyDetails')
-
-const RestApiIntegrationSchema = z
-  .object({
-    integration_method: z
-      .enum(['BRAINTREE', 'PAYPAL', 'SDK'])
-      .default('PAYPAL')
-      .exactOptional()
-      .openapi({
-        description: 'The REST-credential integration method.',
-        'x-enumDescriptions': [
-          { value: 'BRAINTREE', description: 'Braintree integration method.' },
-          { value: 'PAYPAL', description: 'PayPal integration method.' },
-          {
-            value: 'SDK',
-            description: 'Indicates that merchant onboarding will be done via the Embedded SDK.',
-          },
-        ],
-      }),
-    integration_type: z.enum(['FIRST_PARTY', 'THIRD_PARTY']).openapi({
-      title: 'Integration Type',
-      description:
-        'The type of REST-endpoint integration. To integrate with Braintree v.zero for PayPal REST endpoints, specify `third_party_details`.',
-      'x-enumDescriptions': [
-        { value: 'FIRST_PARTY', description: 'A first-party integration.' },
-        { value: 'THIRD_PARTY', description: 'A third-party integration.' },
-      ],
-    }),
-    first_party_details: FirstPartyDetailsSchema.exactOptional(),
-    third_party_details: ThirdPartyDetailsSchema.exactOptional(),
-  })
-  .openapi({
-    title: 'REST API Integration',
-    description: 'The integration details for PayPal REST endpoints.',
-    required: ['integration_type'],
-  })
-  .openapi('RestApiIntegration')
-
-const IntegrationDetailsSchema = z
-  .object({
-    classic_api_integration: ClassicApiIntegrationSchema.exactOptional(),
-    rest_api_integration: RestApiIntegrationSchema.exactOptional(),
-  })
-  .openapi({
-    title: 'Integration Details',
-    description:
-      'The integration details for the partner and customer relationship. Required if `operation` is `API_INTEGRATION`.',
-    required: [],
-  })
-  .openapi('IntegrationDetails')
-
-const LanguageSchema = z
-  .string()
-  .regex(/^[a-z]{2}(?:-[A-Z][a-z]{3})?(?:-(?:[A-Z]{2}))?$/)
-  .min(2)
-  .max(10)
-  .openapi({
-    description:
-      'The [language tag](https://tools.ietf.org/html/bcp47#section-2) for the language in which to localize the error-related strings, such as messages, issues, and suggested actions. The tag is made up of the [ISO 639-2 language code](https://www.loc.gov/standards/iso639-2/php/code_list.php), the optional [ISO-15924 script tag](https://www.unicode.org/iso15924/codelists.html), and the [ISO-3166 alpha-2 country code](/docs/integration/direct/rest/country-codes/).',
-  })
-  .openapi('Language')
-
-const LegalConsentSchema = z
-  .object({
-    type: z
-      .literal('SHARE_DATA_CONSENT')
-      .openapi({
-        description:
-          "The type of consent. `SHARE_DATA_CONSENT` gives consent to you to share your customer's data with PayPal.",
-        'x-enumDescriptions': [
-          {
-            value: 'SHARE_DATA_CONSENT',
-            description: 'The consent given by the customer to share their data with paypal.',
-          },
-        ],
-      }),
-    granted: z
-      .boolean()
-      .openapi({
-        description:
-          'Indicates whether the customer agreed to share this type of data. To give consent, specify `true`. To withhold consent, specify `false`.',
-      }),
-  })
-  .openapi({
-    title: 'Legal Consent',
-    description: 'The customer-provided consent.',
-    required: ['type', 'granted'],
-  })
-  .openapi('LegalConsent')
-
-const LegalConsentListSchema = z
-  .array(LegalConsentSchema)
-  .min(1)
-  .max(5)
-  .openapi({
-    description:
-      'An array of all consents that the partner has received from this seller. If `SHARE_DATA_CONSENT` is not granted, PayPal does not store customer data.',
-  })
-  .openapi('LegalConsentList')
-
-const OfflineOnboardingPreferenceSchema = z
-  .object({})
-  .openapi({
-    title: 'Offline Oboarding Preference',
-    description: 'The preference details for offline onboarding without UI.',
-  })
-  .openapi('OfflineOnboardingPreference')
-
-const OperationSchema = z
-  .object({
-    operation: z
-      .enum([
-        'API_INTEGRATION',
-        'BANK_ADDITION',
-        'BILLING_AGREEMENT',
-        'CONTEXTUAL_MARKETING_CONSENT',
-        'OFFLINE_ONBOARDING',
-        'SALESFORCE_REFERRAL',
-      ])
-      .openapi({
-        description:
-          'The operation to enable for the customer. To enable the collection of the API permissions that you require to integrate with the customer, specify `API_INTEGRATION`. `BANK_ADDITION` is supported only for the US.',
-        'x-enumDescriptions': [
-          {
-            value: 'API_INTEGRATION',
-            description:
-              'The operation used by partner request permission for customers api access.',
-          },
-          { value: 'BANK_ADDITION', description: 'Captured state of an order.' },
-          {
-            value: 'BILLING_AGREEMENT',
-            description: 'The operation to create a billing agreement.',
-          },
-          {
-            value: 'CONTEXTUAL_MARKETING_CONSENT',
-            description: 'The operation to create a contextual marketing consent.',
-          },
-          {
-            value: 'OFFLINE_ONBOARDING',
-            description:
-              'The operation to create merchant account using referral data without UIs.',
-          },
-          {
-            value: 'SALESFORCE_REFERRAL',
-            description: 'The operation to be used to distinguish traffic coming from Salesforce.',
-          },
-        ],
-      }),
-    api_integration_preference: IntegrationDetailsSchema.exactOptional(),
-    offline_onboarding_preference: OfflineOnboardingPreferenceSchema.exactOptional(),
-    billing_agreement: BillingAgreementSchema.exactOptional(),
-  })
-  .openapi({
-    title: 'Operation',
-    description: 'The required operation to share data.',
-    required: ['operation'],
-  })
-  .openapi('Operation')
-
-const OperationListSchema = z
-  .array(OperationSchema)
-  .min(1)
-  .max(5)
-  .openapi({
-    description: 'An array of operations to perform for the customer while they share their data.',
-  })
-  .openapi('OperationList')
-
-const PartnerConfigOverrideSchema = z
-  .strictObject({
-    return_url: z
-      .url()
-      .min(1)
-      .max(127)
-      .exactOptional()
-      .openapi({
-        description:
-          'The URL to which to redirect the customer upon completion of the onboarding process.',
-      }),
-    return_url_description: z
-      .string()
-      .regex(/^.+$/)
-      .min(1)
-      .max(127)
-      .exactOptional()
-      .openapi({ description: 'The description of the return URL.' }),
-    show_add_credit_card: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Indicates whether to show an add credit card page.' }),
-  })
-  .openapi({
-    title: 'Partner Configuration Override',
-    description:
-      "The preference to customize the web experience of the customer by overriding that is set at the Partner's Account.",
-    required: [],
-  })
-  .openapi('PartnerConfigOverride')
-
-const PayoutAttributesSchema = z
-  .strictObject({
-    marketplace: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'If `true`, specifies that the merchant or platform is offering goods or services on behalf of 3rd party sellers.',
-      }),
-    kyc_required: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'If `true`, specifies that the Kyc is required for the merchant.' }),
-    country_transfer_method_currency_selection:
-      CountryTransferMethodCurrencySelectionListSchema.exactOptional(),
-  })
-  .openapi({ title: 'Payout Attributes', description: 'Payout specific attributes.', required: [] })
-  .openapi('PayoutAttributes')
-
-const ProductSchema = z
-  .enum([
-    'ALIPAY',
-    'BANCONTACT',
-    'BLIK',
-    'EPS',
-    'PPCP',
-    'EXPRESS_CHECKOUT',
-    'PAYMENT_METHODS',
-    'ADVANCED_VAULTING',
-    'IDEAL',
-    'MB_WAY',
-    'MULTIBANCO',
-    'PAYPAL_COMMERCE_PLATFORM_BUSINESS',
-    'PPPLUS',
-    'PRZELEWY24',
-    'SATISPAY',
-    'TRUSTLY',
-    'WECHAT_PAY',
-    'WEBSITE_PAYMENT_PRO',
-    'ZETTLE',
-    'PAYPAL_COMMERCE_PLATFORM_BUSINESS',
-    'HYPERWALLET_PAYOUTS',
-  ])
-  .openapi({
-    description: 'The PayPal product for which the customer is onboarded.',
-    title: 'Product Name',
-    'x-enumDescriptions': [
-      {
-        value: 'ALIPAY',
-        description:
-          'Alipay is a China-based payment method that allows customers to complete transactions online using their Alipay wallet. Include only if Alipay alone is required. You can use PPCP if all features are required.',
-      },
-      {
-        value: 'BANCONTACT',
-        description:
-          'Bancontact is a Belgium-based payment method that allows customers to complete transactions online using their bank credentials. Include only if Bancontact alone is required. You can use PPCP if all features are required.',
-      },
-      {
-        value: 'BLIK',
-        description:
-          'Blik is a Poland-based payment method that allows customers to complete transactions online using their bank credentials. Include only if Blik alone is required. You can use PPCP if all features are required.',
-      },
-      {
-        value: 'EPS',
-        description:
-          'EPS is an Austria-based payment method that allows customers to complete transactions online using their bank credentials. Include only if EPS alone is required. You can use PPCP if all features are required.',
-      },
-      {
-        value: 'PPCP',
-        description:
-          'PayPal Complete Payments product, which includes Express Checkout, advanced credit and debit card payments, Apple Pay, and Google Pay. Use PPCP if all features are required.',
-      },
-      { value: 'EXPRESS_CHECKOUT', description: 'Express checkout product.' },
-      {
-        value: 'PAYMENT_METHODS',
-        description:
-          'PayPal Alternative Payment Methods product. Include only if Apple Pay or Google Pay or both are required alone. You can use PPCP if all features are required.',
-      },
-      {
-        value: 'ADVANCED_VAULTING',
-        description:
-          'PayPal Advanced Vaulting product. Must be requested along with either EXPRESS_CHECKOUT or PPCP. Include only if ADVANCED_VAULTING alone is required. You can use PPCP if all features are required.',
-      },
-      {
-        value: 'IDEAL',
-        description:
-          'iDEAL is a Netherlands-based payment method that allows customers to complete transactions online using their bank credentials. Include only if iDEAL alone is required. You can use PPCP if all features are required.',
-      },
-      {
-        value: 'MB_WAY',
-        description:
-          'MB Way is a Portugal-based payment method that allows customers to complete transactions online using their MB Way wallet. Include only if MB Way alone is required. You can use PPCP if all features are required.',
-      },
-      {
-        value: 'MULTIBANCO',
-        description:
-          'Multibanco is a Portugal-based payment method that allows customers to complete transactions online using their bank credentials or pay in cash at a bank branch. Include only if Multibanco alone is required. You can use PPCP if all features are required.',
-      },
-      { value: 'PAYPAL_COMMERCE_PLATFORM_BUSINESS', description: 'PayPal PayIn product.' },
-      { value: 'PPPLUS', description: 'PayPal PLUS product.' },
-      {
-        value: 'PRZELEWY24',
-        description:
-          'Przelewy24 is a Poland-based payment method that allows customers to complete transactions online. Include only if Przelewy24 alone is required. You can use PPCP if all features are required.',
-      },
-      {
-        value: 'SATISPAY',
-        description:
-          'Satispay is an Italy-based payment method that allows customers to complete transactions online using their bank credentials. Include only if Satispay alone is required. You can use PPCP if all features are required.',
-      },
-      {
-        value: 'TRUSTLY',
-        description:
-          'Trustly is a payment method that allows customers from (Austria (AT), Germany (DE), Denmark (DK), Estonia (EE), Spain (ES), Finland (FI), Great Britain (GB), Lithuania (LT), Latvia (LV), Netherlands (NL), Norway (NO), Sweden (SE)) to complete transactions online using their bank credentials. Include only if Trustly alone is required. You can use PPCP if all features are required.',
-      },
-      {
-        value: 'WECHAT_PAY',
-        description:
-          'WeChat Pay is a China-based payment method that allows customers to complete transactions online using their WeChat Pay wallet. Include only if WeChat Pay alone is required. You can use PPCP if all features are required.',
-      },
-      { value: 'WEBSITE_PAYMENT_PRO', description: 'PayPal Professional product.' },
-      { value: 'ZETTLE', description: 'PayPal Zettle in-person payments product.' },
-      { value: 'PAYPAL_COMMERCE_PLATFORM_BUSINESS', description: 'PayPal PayIn product.' },
-      { value: 'HYPERWALLET_PAYOUTS', description: 'Hyperwallet payouts product' },
-    ],
-  })
-  .openapi('Product')
-
-const ProductListSchema = z
-  .array(ProductSchema)
-  .min(1)
-  .max(5)
-  .openapi({
-    description: 'An array of PayPal products to which the partner wants to onboard the customer.',
-  })
-  .openapi('ProductList')
-
-const ReferralDataSchema = AccountSchema.openapi({
-  description: 'The common account model representing the basic account structure.',
-})
-  .and(
-    z
-      .object({
-        email: EmailAddressSchema.exactOptional().openapi({
-          description: 'Email address of the customer used to create the account.',
-        }),
-        preferred_language_code: LanguageSchema.exactOptional().openapi({
-          description:
-            'The preferred [locale code](/docs/api/reference/locale-codes/) to use in the onboarding flow for the customer.',
-        }),
-        tracking_id: z
-          .string()
-          .min(1)
-          .max(127)
-          .exactOptional()
-          .openapi({
-            description:
-              "The partner's unique identifier for this customer in their system which can be used to track user in PayPal.",
-          }),
-        partner_config_override: PartnerConfigOverrideSchema.exactOptional().openapi({
-          description:
-            'The configuration property that the partner intends to override for this onboarding request.',
-        }),
-        financial_instruments: FinancialInstrumentsSchema.exactOptional().openapi({
-          description: "Array of financial instruments attached to the customer's account.",
-        }),
-        operations: OperationListSchema.exactOptional(),
-        products: ProductListSchema.exactOptional(),
-        capabilities: CapabilitiesListSchema.exactOptional(),
-        outside_process_dependencies: DependentProcessListSchema.exactOptional(),
-        legal_consents: LegalConsentListSchema.exactOptional(),
-        payout_attributes: PayoutAttributesSchema.exactOptional().openapi({
-          description: 'Payout specific attributes.',
-        }),
-        legal_country_code: CountryCodeSchema.exactOptional().openapi({
-          description: 'Legal Country Code.',
-        }),
-      })
-      .openapi({ required: [] }),
-  )
-  .openapi({
-    title: 'Customer Data',
-    description: "The customer's referral data that partners share with PayPal.",
-    required: ['operations', 'legal_consents'],
-  })
-  .openapi('ReferralData')
-
-const ReferralDataResponseDefinitionsLinkDescriptionListSchema = z
-  .array(LinkDescriptionSchema)
-  .min(0)
-  .max(2)
-  .openapi({
-    title: 'Links',
-    description: 'An array of request-related [HATEOAS links](/docs/api/overview/#hateoas-links).',
-    readOnly: true,
-  })
-  .openapi('ReferralDataResponseDefinitionsLinkDescriptionList')
-
-const ReferralDataResponseSchema = z
+const ReferralDataResponseSchema: z.ZodType<ReferralDataResponseType> = z
   .object({
     partner_referral_id: z
       .string()

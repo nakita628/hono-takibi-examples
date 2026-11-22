@@ -318,14 +318,14 @@ const MidServiceNotificationDataSchema = z
       .exactOptional()
       .openapi({
         description:
-          'Indicates whether receiving payments is allowed. This value is set to **true** by Adyen after screening your merchant account.',
+          'Indicates whether receiving payments is allowed. This value is set to **true** by Adyen after screening your merchant account.\n\nOnly returned in webhooks that include the screening results for your merchant account.',
       }),
     enabled: z
       .boolean()
       .exactOptional()
       .openapi({
         description:
-          'Indicates whether the payment method is enabled (**true**) or disabled (**false**).',
+          'Indicates whether the payment method is enabled (**true**) or disabled (**false**).\n\nOnly reliable in webhooks that include the screening results for your merchant account.',
       }),
     id: z.string().openapi({ description: 'The unique identifier of the resource.' }),
     merchantId: z
@@ -339,7 +339,7 @@ const MidServiceNotificationDataSchema = z
       .enum(['success', 'failure', 'capabilityPending', 'dataRequired', 'updatesExpected'])
       .openapi({
         description:
-          'The status of the request to add a payment method. Possible values:\n\n* **success**: the payment method was added.\n* **failure**: the request failed.\n* **capabilityPending**: the **receivePayments** capability is not allowed.\n',
+          'The status of the request to add a payment method. Possible values:\n\n* **success**: the payment method was added.\n* **failure**: the request failed.\n* **capabilityPending**: the **receivePayments** capability is not allowed.\n\nA webhook with `status` **success** is the last webhook for that payment method.',
         'x-addedInVersion': '2',
       }),
     storeId: z
@@ -360,7 +360,7 @@ const MidServiceNotificationDataSchema = z
       .exactOptional()
       .openapi({
         description:
-          'Payment method status. Possible values:\n* **valid**\n* **pending**\n* **invalid**\n* **rejected**',
+          'Payment method status. Possible values:\n* **valid**\n* **pending**\n* **invalid**\n* **rejected**\n\nOnly returned in webhooks that include the screening results for your merchant account.',
       }),
   })
   .openapi({ required: ['id', 'merchantId', 'status', 'type'] })

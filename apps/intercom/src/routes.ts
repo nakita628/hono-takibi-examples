@@ -4,8 +4,3977 @@ type PredicateType = {
   attribute?: string
   type?: string
   comparison?: string
-  value?: { [key: string]: unknown }
+  value?: unknown
   predicates?: PredicateType[]
+}
+
+const ArticleContentSchema = z
+  .object({
+    type: z
+      .union([z.literal(null), z.literal('article_content')])
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'The type of object - `article_content` .',
+        example: 'article_content',
+      }),
+    content_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        readOnly: true,
+        description: "The unique identifier for the article's content in this locale.",
+        example: '6871120',
+      }),
+    title: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The title of the article.',
+        example: 'How to create a new article',
+      }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The description of the article.',
+        example: 'This article will show you how to create a new article.',
+      }),
+    body: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The body of the article in HTML.',
+        example: 'This is the body of the article.',
+      }),
+    body_markdown: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'The body of the article in markdown.',
+        example: '# How to create a new article\n\nThis is the body of the article.\n',
+      }),
+    author_id: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'The ID of the author of the article.', example: '5017691' }),
+    state: z
+      .enum(['published', 'draft'])
+      .exactOptional()
+      .openapi({
+        description: 'Whether the article is `published` or is a `draft` .',
+        example: 'draft',
+      }),
+    created_at: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'The time when the article was created (seconds).',
+        example: 1663597223,
+      }),
+    updated_at: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'The time when the article was last updated (seconds).',
+        example: 1663597260,
+      }),
+    has_unpublished_changes: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          "Whether this locale's published content has unpublished changes staged as a draft on top of its live content.",
+        example: false,
+      }),
+    draft_updated_at: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          "The time, in seconds, when this locale's staged draft was last edited, or `null` when there is no staged draft.",
+        example: 1663597260,
+      }),
+    url: z.string().exactOptional().openapi({ description: 'The URL of the article.' }),
+    audience_ids: z
+      .array(z.int())
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The list of audience IDs this article content is targeted to for Fin AI Agent. On multilingual help centers this field appears per-locale inside `translated_content`. On single-language help centers it appears at the article root level. Empty array means no audience targeting is set.',
+        example: [1, 2],
+      }),
+    ai_chatbot_availability: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether the article is available for AI Chatbot.', example: true }),
+    ai_copilot_availability: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether the article is available for AI Copilot.', example: true }),
+    ai_sales_agent_availability: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Whether the article is available for AI Sales Agent.',
+        example: true,
+      }),
+    created_by_id: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        readOnly: true,
+        description: 'The ID of the teammate who created this content version.',
+        example: 5017691,
+      }),
+    updated_by_id: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        readOnly: true,
+        description: 'The ID of the teammate who last updated this content version.',
+        example: 5017691,
+      }),
+  })
+  .nullable()
+  .openapi({ title: 'Article Content', description: 'The Content of an Article.', required: [] })
+  .openapi('ArticleContent')
+
+const ArticleTranslatedContentSchema = z
+  .object({
+    type: z
+      .union([z.literal(null), z.literal('article_translated_content')])
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'The type of object - article_translated_content.',
+        example: 'article_translated_content',
+      }),
+    ar: ArticleContentSchema.exactOptional().openapi({
+      description: 'The content of the article in Arabic',
+    }),
+    bg: ArticleContentSchema.exactOptional().openapi({
+      description: 'The content of the article in Bulgarian',
+    }),
+    bs: ArticleContentSchema.exactOptional().openapi({
+      description: 'The content of the article in Bosnian',
+    }),
+    ca: ArticleContentSchema.exactOptional().openapi({
+      description: 'The content of the article in Catalan',
+    }),
+    cs: ArticleContentSchema.exactOptional().openapi({
+      description: 'The content of the article in Czech',
+    }),
+    da: ArticleContentSchema.exactOptional().openapi({
+      description: 'The content of the article in Danish',
+    }),
+    de: ArticleContentSchema.exactOptional().openapi({
+      description: 'The content of the article in German',
+    }),
+    el: ArticleContentSchema.exactOptional().openapi({
+      description: 'The content of the article in Greek',
+    }),
+    en: ArticleContentSchema.exactOptional().openapi({
+      description: 'The content of the article in English',
+    }),
+    es: ArticleContentSchema.exactOptional().openapi({
+      description: 'The content of the article in Spanish',
+    }),
+    et: ArticleContentSchema.exactOptional().openapi({
+      description: 'The content of the article in Estonian',
+    }),
+    fi: ArticleContentSchema.exactOptional().openapi({
+      description: 'The content of the article in Finnish',
+    }),
+    fr: ArticleContentSchema.exactOptional().openapi({
+      description: 'The content of the article in French',
+    }),
+    he: ArticleContentSchema.exactOptional().openapi({
+      description: 'The content of the article in Hebrew',
+    }),
+    hr: ArticleContentSchema.exactOptional().openapi({
+      description: 'The content of the article in Croatian',
+    }),
+    hu: ArticleContentSchema.exactOptional().openapi({
+      description: 'The content of the article in Hungarian',
+    }),
+    id: ArticleContentSchema.exactOptional().openapi({
+      description: 'The content of the article in Indonesian',
+    }),
+    it: ArticleContentSchema.exactOptional().openapi({
+      description: 'The content of the article in Italian',
+    }),
+    ja: ArticleContentSchema.exactOptional().openapi({
+      description: 'The content of the article in Japanese',
+    }),
+    ko: ArticleContentSchema.exactOptional().openapi({
+      description: 'The content of the article in Korean',
+    }),
+    lt: ArticleContentSchema.exactOptional().openapi({
+      description: 'The content of the article in Lithuanian',
+    }),
+    lv: ArticleContentSchema.exactOptional().openapi({
+      description: 'The content of the article in Latvian',
+    }),
+    mn: ArticleContentSchema.exactOptional().openapi({
+      description: 'The content of the article in Mongolian',
+    }),
+    nb: ArticleContentSchema.exactOptional().openapi({
+      description: 'The content of the article in Norwegian',
+    }),
+    nl: ArticleContentSchema.exactOptional().openapi({
+      description: 'The content of the article in Dutch',
+    }),
+    pl: ArticleContentSchema.exactOptional().openapi({
+      description: 'The content of the article in Polish',
+    }),
+    pt: ArticleContentSchema.exactOptional().openapi({
+      description: 'The content of the article in Portuguese (Portugal)',
+    }),
+    ro: ArticleContentSchema.exactOptional().openapi({
+      description: 'The content of the article in Romanian',
+    }),
+    ru: ArticleContentSchema.exactOptional().openapi({
+      description: 'The content of the article in Russian',
+    }),
+    sl: ArticleContentSchema.exactOptional().openapi({
+      description: 'The content of the article in Slovenian',
+    }),
+    sr: ArticleContentSchema.exactOptional().openapi({
+      description: 'The content of the article in Serbian',
+    }),
+    sv: ArticleContentSchema.exactOptional().openapi({
+      description: 'The content of the article in Swedish',
+    }),
+    tr: ArticleContentSchema.exactOptional().openapi({
+      description: 'The content of the article in Turkish',
+    }),
+    vi: ArticleContentSchema.exactOptional().openapi({
+      description: 'The content of the article in Vietnamese',
+    }),
+    'pt-BR': ArticleContentSchema.exactOptional().openapi({
+      description: 'The content of the article in Portuguese (Brazil)',
+    }),
+    'zh-CN': ArticleContentSchema.exactOptional().openapi({
+      description: 'The content of the article in Chinese (China)',
+    }),
+    'zh-TW': ArticleContentSchema.exactOptional().openapi({
+      description: 'The content of the article in Chinese (Taiwan)',
+    }),
+  })
+  .nullable()
+  .openapi({
+    title: 'Article Translated Content',
+    description:
+      'The Translated Content of an Article. The keys are the locale codes and the values are the translated content of the article.',
+    required: [],
+  })
+  .openapi('ArticleTranslatedContent')
+
+const ReferenceSchema = z
+  .object({
+    type: z.string().exactOptional().openapi({ description: '', example: 'contact' }),
+    id: z.string().nullable().exactOptional().openapi({ description: '', example: '1a2b3c' }),
+  })
+  .openapi({ title: 'Reference', description: 'reference to another object', required: [] })
+  .openapi('Reference')
+
+const TagSchema = z
+  .object({
+    type: z.string().exactOptional().openapi({ description: 'value is "tag"', example: 'tag' }),
+    id: z.string().exactOptional().openapi({ description: 'The id of the tag', example: '123456' }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the tag', example: 'Test tag' }),
+    applied_at: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The time when the tag was applied to the object. Only present when the tag is returned as part of a tagging operation on a contact, conversation, ticket, article, internal article, content snippet, or external page, when listing the tags on a contact, or when it is returned as part of an external page. `null` when the tag has just been removed from an article, internal article, content snippet or external page. Removing a tag from a contact, conversation or ticket returns the original value.',
+        example: 1663597223,
+      }),
+    applied_by: ReferenceSchema.nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The admin who applied the tag. Only present when the tag is returned as part of a tagging operation on a contact, conversation, ticket, article, internal article, content snippet, or external page, when listing the tags on a contact, or when it is returned as part of an external page. `null` when the tag has just been removed from an article, internal article, content snippet or external page. Removing a tag from a contact, conversation or ticket returns the original value. When no admin is recorded, `type` is `nobody_admin` and `id` is `null`.',
+      }),
+  })
+  .openapi({
+    title: 'Tag',
+    'x-tags': ['Tags'],
+    description:
+      'A tag allows you to label your contacts, companies, conversations, tickets, articles, internal articles, content snippets and external pages, and list them using that tag.',
+    required: [],
+  })
+  .openapi('Tag')
+
+const TagsSchema = z
+  .object({
+    type: z
+      .literal('tag.list')
+      .exactOptional()
+      .openapi({ description: 'The type of the object', example: 'tag.list' }),
+    tags: z
+      .array(TagSchema)
+      .exactOptional()
+      .openapi({ description: 'A list of tags objects associated with the object.' }),
+  })
+  .openapi({
+    title: 'Tags',
+    description:
+      'A list of tags objects associated with a conversation, article or internal article',
+    required: [],
+  })
+  .openapi('Tags')
+
+const ArticleListItemSchema = z
+  .object({
+    type: z
+      .literal('article')
+      .default('article')
+      .exactOptional()
+      .openapi({ description: 'The type of object - `article`.', example: 'article' }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The unique identifier for the article which is given by Intercom.',
+        example: '6871119',
+      }),
+    workspace_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The id of the workspace which the article belongs to.',
+        example: 'hfi1bx4l',
+      }),
+    content_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The unique identifier for the article's content. For multilingual articles, this will be the identifier of the default language's content.",
+        example: '6871120',
+      }),
+    title: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The title of the article. For multilingual articles, this will be the title of the default language's content.",
+        example: 'Default language title',
+      }),
+    description: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          "The description of the article. For multilingual articles, this will be the description of the default language's content.",
+        example: 'Default language description',
+      }),
+    body: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          "The body of the article in HTML. For multilingual articles, this will be the body of the default language's content.",
+        example: 'Default language body in html',
+      }),
+    body_markdown: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          "The body of the article in markdown. For multilingual articles, this will be the body of the default language's content.",
+        example: '# Default language title\n\nDefault language body in markdown\n',
+      }),
+    author_id: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          "The id of the author of the article. For multilingual articles, this will be the id of the author of the default language's content. Must be a teammate on the help center's workspace.",
+        example: '5017691',
+      }),
+    state: z
+      .enum(['published', 'draft'])
+      .default('draft')
+      .exactOptional()
+      .openapi({
+        description:
+          "Whether the article is `published` or is a `draft`. For multilingual articles, this will be the state of the default language's content.",
+        example: 'published',
+      }),
+    created_at: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          "The time when the article was created. For multilingual articles, this will be the timestamp of creation of the default language's content in seconds.",
+        example: 1672928359,
+      }),
+    updated_at: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          "The time when the article was last updated. For multilingual articles, this will be the timestamp of last update of the default language's content in seconds.",
+        example: 1672928610,
+      }),
+    has_unpublished_changes: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          "Whether the published article has unpublished changes staged as a draft on top of its live content. For multilingual articles this reflects the default language's content; a pure draft (never published) reports `false`.",
+        example: false,
+      }),
+    draft_updated_at: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The time, in seconds, when the staged draft was last edited, or `null` when there is no staged draft.',
+        example: 1672928610,
+      }),
+    url: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          "The URL of the article. For multilingual articles, this will be the URL of the default language's content.",
+        example: 'http://intercom.test/help/en/articles/3-default-language',
+      }),
+    parent_ids: z
+      .array(z.int())
+      .exactOptional()
+      .openapi({
+        description:
+          "The ids of the article's parent collections or sections. An article without this field stands alone.",
+        example: [18, 19],
+      }),
+    audience_ids: z
+      .array(z.int())
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The list of audience IDs this article is targeted to for Fin AI Agent. This field is only returned for single-language help centers. For multilingual help centers it appears per locale inside `translated_content`. Empty array means no audience targeting is set.',
+        example: [1, 2],
+      }),
+    ai_chatbot_availability: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          "Whether the article is available for AI Chatbot. For multilingual articles, this will be the value of the default language's content.",
+        example: true,
+      }),
+    ai_copilot_availability: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          "Whether the article is available for AI Copilot. For multilingual articles, this will be the value of the default language's content.",
+        example: true,
+      }),
+    ai_sales_agent_availability: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          "Whether the article is available for AI Sales Agent. For multilingual articles, this will be the value of the default language's content.",
+        example: true,
+      }),
+    created_by_id: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        readOnly: true,
+        description:
+          "The ID of the teammate who created the article. For multilingual articles, this will be the creator of the default language's content.",
+        example: 5017691,
+      }),
+    updated_by_id: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        readOnly: true,
+        description:
+          "The ID of the teammate who last updated the article. For multilingual articles, this will be the last editor of the default language's content.",
+        example: 5017691,
+      }),
+    exclude_from_article_suggestions: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        readOnly: true,
+        description: 'Whether the article is excluded from Fin AI Agent article suggestions.',
+        example: false,
+      }),
+    help_center_audience: z
+      .enum([
+        'everyone',
+        'all_users',
+        'all_visitors',
+        'all_leads',
+        'all_visitors_and_leads',
+        'restricted',
+      ])
+      .nullable()
+      .exactOptional()
+      .openapi({
+        readOnly: true,
+        description:
+          'The audience that can view this article in the Help Center. `everyone` means all users and visitors can view it; `restricted` indicates a custom audience ruleset. For multilingual articles, this is the article-level audience.',
+        example: 'everyone',
+      }),
+    scheduled_publish_at: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        readOnly: true,
+        description:
+          'The Unix timestamp (in seconds) at which the article is scheduled to be published. `null` when no publish is scheduled. Mutually exclusive with `scheduled_unpublish_at` — at most one pending schedule exists per article.',
+        example: 1769443200,
+      }),
+    scheduled_unpublish_at: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        readOnly: true,
+        description:
+          'The Unix timestamp (in seconds) at which the article is scheduled to be unpublished. `null` when no unpublish is scheduled. Mutually exclusive with `scheduled_publish_at` — at most one pending schedule exists per article.',
+        example: 1769443200,
+      }),
+    default_locale: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The default locale of the help center. This field is only returned for multilingual help centers.',
+        example: 'en',
+      }),
+    translated_content: ArticleTranslatedContentSchema.nullable().exactOptional(),
+    tags: TagsSchema.exactOptional(),
+    folder_id: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'The ID of the folder this article belongs to, or null if not in a folder.',
+        example: 6,
+      }),
+  })
+  .openapi({
+    title: 'Articles',
+    'x-tags': ['Articles'],
+    description: 'The data returned about your articles when you list them.',
+    required: [],
+  })
+  .openapi('ArticleListItem')
+
+const ArticleStatisticsSchema = z
+  .object({
+    type: z
+      .literal('article_statistics')
+      .default('article_statistics')
+      .exactOptional()
+      .openapi({
+        description: 'The type of object - `article_statistics`.',
+        example: 'article_statistics',
+      }),
+    views: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'The number of total views the article has received.', example: 10 }),
+    conversations: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'The number of conversations started from the article.',
+        example: 0,
+      }),
+    reactions: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'The number of total reactions the article has received.',
+        example: 10,
+      }),
+    happy_reaction_percentage: z
+      .float32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The percentage of happy reactions the article has received against other types of reaction.',
+        example: 40,
+      }),
+    neutral_reaction_percentage: z
+      .float32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The percentage of neutral reactions the article has received against other types of reaction.',
+        example: 40,
+      }),
+    sad_reaction_percentage: z
+      .float32()
+      .exactOptional()
+      .openapi({ description: 'The percentage of sad reactions the article has received against' }),
+    fin_involvements: z
+      .int()
+      .exactOptional()
+      .openapi({
+        readOnly: true,
+        description:
+          "The number of conversations in which Fin AI Agent used this article, summed across all of the article's locales.",
+        example: 10,
+      }),
+    fin_resolutions: z
+      .int()
+      .exactOptional()
+      .openapi({
+        readOnly: true,
+        description:
+          "The number of conversations Fin AI Agent resolved using this article, summed across all of the article's locales.",
+        example: 8,
+      }),
+    fin_resolution_rate: z
+      .float32()
+      .exactOptional()
+      .openapi({
+        readOnly: true,
+        description:
+          'The percentage of Fin AI Agent involvements that resulted in a resolution (fin_resolutions / fin_involvements * 100).',
+        example: 80,
+      }),
+  })
+  .nullable()
+  .openapi({
+    title: 'Article Statistics',
+    description: 'The statistics of an article.',
+    required: [],
+  })
+  .openapi('ArticleStatistics')
+
+const ArticleSchema = ArticleListItemSchema.and(
+  z
+    .object({ statistics: ArticleStatisticsSchema.nullable().exactOptional() })
+    .openapi({ required: [] }),
+)
+  .openapi({
+    title: 'Article',
+    'x-tags': ['Articles'],
+    description:
+      'The Articles API is a central place to gather all information and take actions on your articles. Articles can live within collections and sections, or alternatively they can stand alone.',
+  })
+  .openapi('Article')
+
+const ArticleSearchHighlightsSchema = z
+  .object({
+    article_id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The ID of the corresponding article.', example: '123' }),
+    highlighted_title: z
+      .array(
+        z
+          .object({
+            type: z
+              .enum(['highlight', 'plain'])
+              .exactOptional()
+              .openapi({
+                description: 'The type of text - `highlight` or `plain`.',
+                example: 'The highlight is ',
+              }),
+            text: z
+              .string()
+              .exactOptional()
+              .openapi({ description: 'The text of the title.', example: 'my query' }),
+          })
+          .openapi({ description: 'A highlighted article title.', required: [] }),
+      )
+      .exactOptional()
+      .openapi({ description: 'An Article title highlighted.' }),
+    highlighted_summary: z
+      .array(
+        z
+          .array(
+            z
+              .object({
+                type: z
+                  .enum(['highlight', 'plain'])
+                  .exactOptional()
+                  .openapi({
+                    description: 'The type of text - `highlight` or `plain`.',
+                    example: 'How to highlight ',
+                  }),
+                text: z
+                  .string()
+                  .exactOptional()
+                  .openapi({ description: 'The text of the title.', example: 'my query' }),
+              })
+              .openapi({ description: 'An instance of highlighted summary text.', required: [] }),
+          )
+          .openapi({
+            description:
+              'An array containing the highlighted summary text split into chunks of plain and highlighted text.',
+          }),
+      )
+      .exactOptional()
+      .openapi({ description: 'An Article description and body text highlighted.' }),
+  })
+  .openapi({
+    title: 'Article Search Highlights',
+    'x-tags': ['Articles'],
+    description:
+      'The highlighted results of an Article search. In the examples provided my search query is always "my query".',
+    required: [],
+  })
+  .openapi('ArticleSearchHighlights')
+
+const PagesLinkSchema = z
+  .object({
+    type: z.literal('pages').exactOptional().openapi({ example: 'pages' }),
+    page: z.int().exactOptional().openapi({ example: 1 }),
+    next: z
+      .url()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'A link to the next page of results. Omitted or `null` on the last page, depending on the list. Some lists never include `next` or `prev`, so compare `page` with `total_pages` to tell whether more pages remain.',
+      }),
+    prev: z
+      .url()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'A link to the previous page of results. Omitted on the first page.',
+      }),
+    per_page: z.int().exactOptional().openapi({ example: 50 }),
+    total_pages: z.int().exactOptional().openapi({ example: 1 }),
+  })
+  .openapi({
+    title: 'Pagination Object',
+    description:
+      'The majority of list resources in the API are paginated to allow clients to traverse data over multiple requests.\n\nTheir responses are likely to contain a pages object that hosts pagination links which a client can use to paginate through the data without having to construct a query. The link relations for the pages field are as follows.\n',
+    required: [],
+  })
+  .openapi('PagesLink')
+
+type ArticleSearchResponseType = {
+  type?: 'list'
+  total_count?: number
+  data?: {
+    articles?: z.infer<typeof ArticleSchema>[]
+    highlights?: z.infer<typeof ArticleSearchHighlightsSchema>[]
+  }
+  pages?: z.infer<typeof PagesLinkSchema>
+}
+
+const TagBasicSchema = z
+  .object({
+    type: z.string().exactOptional().openapi({ description: 'value is "tag"', example: 'tag' }),
+    id: z.string().exactOptional().openapi({ description: 'The id of the tag', example: '123456' }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the tag', example: 'Test tag' }),
+  })
+  .openapi({
+    title: 'Tag',
+    'x-tags': ['Tags'],
+    description:
+      'A tag allows you to label your contacts, companies, and conversations and list them using that tag.',
+    required: [],
+  })
+  .openapi('TagBasic')
+
+const SegmentSchema = z
+  .object({
+    type: z
+      .literal('segment')
+      .exactOptional()
+      .openapi({ description: 'The type of object.', example: 'segment' }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The unique identifier representing the segment.',
+        example: '56203d253cba154d39010062',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the segment.', example: 'Active' }),
+    created_at: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'The time the segment was created.', example: 1394621988 }),
+    updated_at: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'The time the segment was updated.', example: 1394622004 }),
+    person_type: z
+      .enum(['contact', 'user'])
+      .exactOptional()
+      .openapi({ description: 'Type of the contact: contact (lead) or user.', example: 'contact' }),
+    count: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          "The number of items in the user segment. It's returned when the request has `include_count` with a value. A company segment only gets a count when a contact segment has the same name, and it shows that segment's count.",
+        example: 3,
+      }),
+  })
+  .openapi({
+    title: 'Segment',
+    'x-tags': ['Segments'],
+    description: 'A segment is a group of your contacts defined by the rules that you set.',
+    required: [],
+  })
+  .openapi('Segment')
+
+const CompanyNoteSchema = z
+  .object({
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: "String representing the object's type. Always has the value `note`.",
+        example: 'note',
+      }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The id of the note.', example: '17495962' }),
+    url: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The relative URL of the note.', example: '/notes/17495962' }),
+    body: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The body text of the note.', example: '<p>Text for the note.</p>' }),
+  })
+  .openapi({
+    title: 'Company Note',
+    'x-tags': ['Notes'],
+    description:
+      "A note as it appears inside a company's `notes` list. Fetch the full note with the retrieve note endpoint.",
+    required: [],
+  })
+  .openapi('CompanyNote')
+
+const CompanySchema = z
+  .object({
+    type: z
+      .literal('company')
+      .exactOptional()
+      .openapi({ description: 'Value is `company`', example: 'company' }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The Intercom defined id representing the company.',
+        example: '531ee472cce572a6ec000006',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The name of the company. Returned HTML-escaped, for example `&` as `&amp;`.',
+        example: 'Blue Sun',
+      }),
+    app_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The Intercom defined code of the workspace the company is associated to.',
+        example: 'ecahpwf5',
+      }),
+    plan: z
+      .object({
+        type: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Value is always "plan"', example: 'plan' }),
+        id: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'The id of the plan', example: '269315' }),
+        name: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'The name of the plan', example: 'Pro' }),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+    company_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The company id you have defined for the company. Returned HTML-escaped, for example `&` as `&amp;`.',
+        example: '6',
+      }),
+    remote_created_at: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'The time the company was created by you.', example: 1663597223 }),
+    created_at: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'The time the company was added in Intercom.', example: 1663597223 }),
+    updated_at: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'The last time the company was updated.', example: 1663597223 }),
+    last_request_at: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'The time the company last recorded making a request.',
+        example: 1663597223,
+      }),
+    size: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'The number of employees in the company.', example: 100 }),
+    website: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The URL for the company website.',
+        example: 'https://www.intercom.com',
+      }),
+    industry: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The industry that the company operates in.', example: 'Software' }),
+    monthly_spend: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'How much revenue the company generates for your business.',
+        example: 100,
+      }),
+    session_count: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'How many sessions the company has recorded.', example: 100 }),
+    user_count: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'The number of users in the company.', example: 100 }),
+    custom_attributes: z
+      .record(z.string(), z.union([z.string().nullable(), z.int(), z.number(), z.boolean()]))
+      .exactOptional()
+      .openapi({
+        description: 'The custom attributes you have set on the company.',
+        example: { paid_subscriber: true, monthly_spend: 155.5, team_mates: 9 },
+      }),
+    tags: z
+      .object({
+        type: z
+          .literal('tag.list')
+          .exactOptional()
+          .openapi({ description: 'The type of the object' }),
+        tags: z.array(TagBasicSchema).exactOptional(),
+      })
+      .exactOptional()
+      .openapi({ description: 'The list of tags associated with the company', required: [] }),
+    segments: z
+      .object({
+        type: z
+          .literal('segment.list')
+          .exactOptional()
+          .openapi({ description: 'The type of the object' }),
+        segments: z.array(SegmentSchema).exactOptional(),
+      })
+      .exactOptional()
+      .openapi({
+        description:
+          "Always returned empty. Fetch a company's segments with the list attached segments endpoint.",
+        required: [],
+      }),
+    notes: z
+      .object({
+        type: z
+          .literal('note.list')
+          .exactOptional()
+          .openapi({ description: 'The type of the object' }),
+        data: z
+          .array(CompanyNoteSchema)
+          .exactOptional()
+          .openapi({ description: 'The notes on the company, newest first.' }),
+        url: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: "The relative URL of the company's notes.",
+            example: '/companies/531ee472cce572a6ec000006/notes',
+          }),
+        total_count: z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'The number of notes in `data`.', example: 1 }),
+        has_more: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Always `false`. Every note on the company is returned in `data`.',
+            example: false,
+          }),
+      })
+      .exactOptional()
+      .openapi({ description: 'The list of notes associated with the company', required: [] }),
+  })
+  .openapi({
+    title: 'Company',
+    'x-tags': ['Companies'],
+    description:
+      'Companies allow you to represent organizations using your product. Each company will have its own description and be associated with contacts. You can fetch, create, update and list companies.',
+    required: [],
+  })
+  .openapi('Company')
+
+const ContactReferenceSchema = z
+  .object({
+    type: z
+      .literal('contact')
+      .exactOptional()
+      .openapi({ description: 'always contact', example: 'contact' }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The unique identifier for the contact which is given by Intercom.',
+        example: '5ba682d23d7cf92bef87bfd4',
+      }),
+    external_id: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'The unique identifier for the contact which is provided by the Client.',
+        example: '70',
+      }),
+  })
+  .openapi({ title: 'Contact Reference', description: 'reference to contact object', required: [] })
+  .openapi('ContactReference')
+
+const ConversationRatingSchema = z
+  .object({
+    rating: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'The rating, between 1 and 5, for the conversation.', example: 5 }),
+    remark: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An optional field to add a remark to correspond to the number rating',
+        example: '',
+      }),
+    created_at: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'The time the rating was requested in the conversation being rated.',
+        example: 1671028894,
+      }),
+    updated_at: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'The time the rating was last updated.', example: 1671028894 }),
+    contact: ContactReferenceSchema.exactOptional(),
+    teammate: z
+      .object({
+        type: z
+          .enum(['admin', 'team', 'bot', 'workflow'])
+          .exactOptional()
+          .openapi({
+            description:
+              'The type of the rated actor. `workflow` when a workflow requested the rating and no teammate took part.',
+            example: 'admin',
+          }),
+        id: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'The unique identifier for the rated actor.', example: '123' }),
+      })
+      .nullable()
+      .exactOptional()
+      .openapi({
+        title: 'Conversation Rating Teammate',
+        description: 'The teammate, bot or workflow the rating is attributed to.',
+        required: [],
+      }),
+  })
+  .nullable()
+  .openapi({
+    title: 'Conversation Rating',
+    description:
+      'The Conversation Rating object which contains information on the rating and/or remark added by a Contact and the Admin assigned to the conversation.',
+    required: [],
+  })
+  .openapi('ConversationRating')
+
+const ConversationSourceAuthorSchema = z
+  .object({
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The type of the author.', example: 'admin' }),
+    id: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The id of the author.', example: '274' }),
+    name: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The name of the author.', example: 'Jane Doe' }),
+    email: z
+      .email()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The email of the author.', example: 'jane.doe@example.com' }),
+  })
+  .openapi({
+    title: 'Conversation source author',
+    description: 'The author who started the conversation. Can be a Contact, Admin, or Bot.',
+    required: [],
+  })
+  .openapi('ConversationSourceAuthor')
+
+const PartAttachmentSchema = z
+  .object({
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The type of attachment', example: 'upload' }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the attachment', example: 'example.png' }),
+    url: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The URL of the attachment',
+        example: 'https://picsum.photos/200/300',
+      }),
+    content_type: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The content type of the attachment', example: 'image/png' }),
+    filesize: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'The size of the attachment', example: 100 }),
+    width: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'The width of the attachment', example: 100 }),
+    height: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'The height of the attachment', example: 100 }),
+  })
+  .openapi({ title: 'Part attachment', description: 'The file attached to a part', required: [] })
+  .openapi('PartAttachment')
+
+const EmailAddressHeaderSchema = z
+  .object({
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The type of email address header', example: 'from' }),
+    email_address: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The email address', example: 'jdoe@example.com' }),
+    name: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'The name associated with the email address',
+        example: 'Joe Example',
+      }),
+  })
+  .openapi({
+    title: 'Email Address Header',
+    description:
+      'Contains data for an email address header for a conversation part that was sent as an email.',
+    required: [],
+  })
+  .openapi('EmailAddressHeader')
+
+const SourceEmailMessageMetadataSchema = z
+  .object({
+    message_id: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The unique identifier for the email message as specified in the Message-ID header',
+        example: '<CADKw7xrXzqSn8v3mP8K8Q8yZ6K8Q8yZ6@mail.gmail.com>',
+      }),
+    subject: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The subject of the email', example: 'Question about my order' }),
+    email_address_headers: z
+      .array(EmailAddressHeaderSchema)
+      .exactOptional()
+      .openapi({
+        title: 'Email Address Headers',
+        description: 'A list of an email address headers.',
+      }),
+    history: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The HTML content of any quoted or forwarded email history from the initial inbound message',
+        example:
+          '<div><span>On Jan 28, wrote:</span><blockquote>Previous thread</blockquote></div>',
+      }),
+  })
+  .openapi({
+    title: 'Email Message Metadata',
+    description: 'Contains metadata if the message was sent as an email',
+    required: [],
+  })
+  .openapi('SourceEmailMessageMetadata')
+
+const ConversationSourceSchema = z
+  .object({
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The origin of this conversation.', example: 'email' }),
+    id: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The id of the source message.', example: '3' }),
+    delivered_as: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'How the conversation was initiated.',
+        example: 'operator_initiated',
+      }),
+    recipients: z
+      .array(
+        z
+          .object({
+            type: z
+              .string()
+              .exactOptional()
+              .openapi({
+                description: 'The recipient type. One of `to`, `cc`, or `bcc`.',
+                example: 'to',
+              }),
+            email: z
+              .email()
+              .exactOptional()
+              .openapi({
+                description: 'The recipient email address.',
+                example: 'user@example.com',
+              }),
+            drop_reason: z
+              .string()
+              .nullable()
+              .exactOptional()
+              .openapi({
+                description: 'The reason this recipient was dropped, if applicable.',
+                example: null,
+              }),
+          })
+          .openapi({ required: [] }),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'The recipients of the source message. Only present for email conversations.',
+      }),
+    reply_to: z
+      .array(
+        z
+          .object({
+            email: z
+              .email()
+              .exactOptional()
+              .openapi({
+                description: 'The Reply-To email address.',
+                example: 'replies@example.com',
+              }),
+            name: z
+              .string()
+              .nullable()
+              .exactOptional()
+              .openapi({
+                description: 'The display name associated with the Reply-To address.',
+                example: 'Support Team',
+              }),
+          })
+          .openapi({ required: [] }),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          "The Reply-To header addresses of the source message, where a reply will be routed. Can differ from the sender's From address. Only present for email conversations.",
+      }),
+    subject: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. The message subject. For Twitter, this will show a generic message regarding why the subject is obscured. In webhook payloads for API version 2.15+, this field returns plain text.',
+        example: '',
+      }),
+    body: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The message body, which may contain HTML. For Twitter, this will show a generic message regarding why the body is obscured. In webhook payloads for API version 2.15+, this field returns plain text.',
+        example: '<p>Hey there!</p>',
+      }),
+    author: ConversationSourceAuthorSchema.exactOptional(),
+    attachments: z
+      .array(PartAttachmentSchema)
+      .exactOptional()
+      .openapi({ description: 'A list of attachments for the part.' }),
+    url: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The URL where the conversation was started. For Twitter, Email, and Bots, this will be blank.',
+        example: null,
+      }),
+    redacted: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether or not the source message has been redacted. Only applicable for contact initiated messages.',
+        example: false,
+      }),
+    email_message_metadata: SourceEmailMessageMetadataSchema.exactOptional(),
+  })
+  .openapi({
+    title: 'Conversation source',
+    description:
+      'The type of the conversation part that started this conversation. Can be Contact, Admin, Campaign, Automated or Operator initiated.',
+    required: [],
+  })
+  .openapi('ConversationSource')
+
+const ConversationContactsSchema = z
+  .object({
+    type: z
+      .literal('contact.list')
+      .exactOptional()
+      .openapi({ description: '', example: 'contact.list' }),
+    contacts: z
+      .array(ContactReferenceSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The list of contacts (users or leads) involved in this conversation. This will only contain one customer unless more were added via the group conversation feature.',
+      }),
+  })
+  .openapi({
+    title: 'Contacts',
+    description:
+      'The list of contacts (users or leads) involved in this conversation. This will only contain one customer unless more were added via the group conversation feature.',
+    required: [],
+  })
+  .openapi('ConversationContacts')
+
+const ConversationTeammatesSchema = z
+  .object({
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The type of the object - `admin.list`.', example: 'admin.list' }),
+    admins: z
+      .array(ReferenceSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The list of teammates who participated in the conversation (wrote at least one conversation part).',
+      }),
+  })
+  .nullable()
+  .openapi({
+    title: 'Conversation teammates',
+    description:
+      'The list of teammates who participated in the conversation (wrote at least one conversation part).',
+    required: [],
+  })
+  .openapi('ConversationTeammates')
+
+const AiTopicSubtopicSchema = z
+  .object({
+    topic_name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the AI-generated topic.', example: 'Billing' }),
+    subtopic_name: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'The name of the AI-generated subtopic, if any.',
+        example: 'Payment Issues',
+      }),
+    id: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The id of the subtopic.', example: 42 }),
+  })
+  .openapi({
+    title: 'AI Topic and Subtopic',
+    description:
+      'A single AI-generated topic and subtopic classification for a conversation. Surfaced inside `custom_attributes` under the "AI Topic and Subtopic" key as an array of these objects. Requires the AI add-on; the key is omitted when the conversation has no classification.',
+    required: [],
+  })
+  .openapi('AiTopicSubtopic')
+
+const CxScoreReasonSchema = z
+  .object({
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the reason.', example: 'Resolution speed' }),
+    value: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The value recorded for the reason.', example: 'Fast' }),
+  })
+  .openapi({
+    title: 'CX Score reason',
+    description:
+      'A single reason behind a conversation\'s CX Score. Surfaced inside `custom_attributes` under the "CX Score reasons" key as an array of these objects.',
+    required: [],
+  })
+  .openapi('CxScoreReason')
+
+const DatetimeSchema = z
+  .xor([
+    z.iso
+      .datetime({ offset: true })
+      .openapi({ title: 'string', description: 'A date and time following the ISO8601 notation.' }),
+    z
+      .int()
+      .openapi({ title: 'integer', description: 'A date and time as UNIX timestamp notation.' }),
+  ])
+  .openapi('Datetime')
+
+const CustomObjectInstanceSchema = z
+  .object({
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The Intercom defined id representing the custom object instance.',
+        example: 16032025,
+      }),
+    external_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The id you have defined for the custom object instance.',
+        example: '0001d1c1e65a7a19e9f59ae2',
+      }),
+    external_created_at: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The time when the Custom Object instance was created in the external system it originated from.',
+        example: 1571672154,
+      }),
+    external_updated_at: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The time when the Custom Object instance was last updated in the external system it originated from.',
+        example: 1571672154,
+      }),
+    created_at: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'The time the attribute was created as a UTC Unix timestamp',
+        example: 1671028894,
+      }),
+    updated_at: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'The time the attribute was last updated as a UTC Unix timestamp',
+        example: 1671028894,
+      }),
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The identifier of the custom object type that defines the structure of the custom object instance.',
+        example: 'Order',
+      }),
+    custom_attributes: z
+      .record(
+        z.string(),
+        z.union([z.string().nullable(), z.int(), z.number(), z.boolean(), z.looseObject({})]),
+      )
+      .exactOptional()
+      .openapi({
+        description:
+          'The custom attributes you have set on the custom object instance.\n\nEach value is returned with the type of the attribute it is set on: a string, integer, number or boolean, or `null` when the attribute is unset. A list attribute returns the label of the selected option. A reference attribute returns an object holding the referenced records, under `contacts` for a contact reference, `conversations` for a conversation reference, or `instances` for a reference to another custom object type.',
+        example: { order_number: 'ORDER-12345', total_amount: 99.99 },
+      }),
+  })
+  .nullable()
+  .openapi({
+    title: 'Custom Object Instance',
+    'x-tags': ['Custom Object Instances'],
+    description:
+      'A Custom Object Instance represents an instance of a custom object type. This allows you to create and set custom attributes to store data about your customers that is not already captured by Intercom. The parent object includes recommended default attributes and you can add your own custom attributes.',
+    required: [],
+  })
+  .openapi('CustomObjectInstance')
+
+const CustomObjectInstanceListSchema = z
+  .object({
+    type: z.string().exactOptional().openapi({ example: 'order.list' }),
+    instances: z
+      .array(CustomObjectInstanceSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The list of associated custom object instances for a given reference attribute on the parent object.',
+      }),
+  })
+  .openapi({
+    title: 'Custom Object Instances',
+    description:
+      'The list of associated custom object instances for a given reference attribute on the parent object.',
+    required: [],
+  })
+  .openapi('CustomObjectInstanceList')
+
+const CustomAttributesSchema = z
+  .object({
+    'AI Topic and Subtopic': z
+      .array(AiTopicSubtopicSchema)
+      .exactOptional()
+      .openapi({
+        readOnly: true,
+        description:
+          'Read-only AI Insights classification of the conversation. Present only with the AI add-on; omitted when the conversation has no classification.',
+        example: [{ topic_name: 'Billing', subtopic_name: 'Payment Issues', id: 42 }],
+      }),
+    'CX Score reasons': z
+      .array(CxScoreReasonSchema)
+      .exactOptional()
+      .openapi({
+        readOnly: true,
+        description:
+          "Read-only reasons behind the conversation's CX Score. Intercom generates this attribute, so it cannot be set. Omitted when the conversation has no CX Score reasons.",
+        example: [{ name: 'Resolution speed', value: 'Fast' }],
+      }),
+  })
+  .catchall(
+    z.union([
+      z.string(),
+      z.int(),
+      z.number(),
+      z.boolean(),
+      DatetimeSchema,
+      CustomObjectInstanceListSchema,
+    ]),
+  )
+  .openapi({
+    title: 'Custom Attributes',
+    description:
+      'An object containing the custom attributes on a conversation as key-value pairs. For relationship attributes the value is a list of custom object instance models. System-defined attributes such as "AI Topic and Subtopic", "CX Score rating", "CX Score explanation" and "CX Score reasons" may also be included.',
+    example: {
+      paid_subscriber: true,
+      monthly_spend: 155.5,
+      team_mates: 9,
+      start_date_iso8601: '2023-03-04T09:46:14Z',
+      end_date_timestamp: 1677923174,
+      'CX Score rating': 4,
+      'CX Score explanation':
+        'The conversation was resolved quickly and the customer expressed satisfaction with the outcome.',
+      'AI Topic and Subtopic': [{ topic_name: 'Billing', subtopic_name: 'Payment Issues', id: 42 }],
+      'CX Score reasons': [{ name: 'Resolution speed', value: 'Fast' }],
+    },
+    required: [],
+  })
+  .openapi('CustomAttributes')
+
+const ConversationFirstContactReplySchema = z
+  .object({
+    created_at: z.int().exactOptional().openapi({ description: '', example: 1663597223 }),
+    type: z.string().exactOptional().openapi({ description: '', example: 'conversation' }),
+    url: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: '', example: 'https://developers.intercom.com/' }),
+  })
+  .nullable()
+  .openapi({
+    title: 'First contact reply',
+    description:
+      'An object containing information on the first users message. For a contact initiated message this will represent the users original message.',
+    required: [],
+  })
+  .openapi('ConversationFirstContactReply')
+
+const SlaAppliedSchema = z
+  .object({
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'object type', example: 'conversation_sla_summary' }),
+    sla_name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The name of the SLA as given by the teammate when it was created.',
+        example: '',
+      }),
+    sla_status: z
+      .enum(['hit', 'missed', 'canceled', 'active'])
+      .exactOptional()
+      .openapi({
+        description:
+          'SLA statuses:\n            - `hit`: If there’s at least one hit event in the underlying sla_events table, and no “missed” or “canceled” events for the conversation.\n            - `missed`: If there are any missed sla_events for the conversation and no canceled events. If there’s even a single missed sla event, the status will always be missed. A missed status is not applied when the SLA expires, only the next time a teammate replies.\n            - `active`: An SLA has been applied to a conversation, but has not yet been fulfilled. SLA status is active only if there are no “hit, “missed”, or “canceled” events.',
+        example: 'hit',
+      }),
+  })
+  .nullable()
+  .openapi({
+    title: 'Applied SLA',
+    description:
+      'The SLA Applied object contains the details for which SLA has been applied to this conversation.\nImportant: if there are any canceled sla_events for the conversation - meaning an SLA has been manually removed from a conversation, the sla_status will always be returned as null.\n',
+    required: [],
+  })
+  .openapi('SlaApplied')
+
+const ConversationResponseTimeSchema = z
+  .object({
+    team_id: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'Id of the assigned team.', example: 100 }),
+    team_name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Name of the assigned Team, null if team does not exist, Unassigned if no team is assigned.',
+        example: 'Team One',
+      }),
+    response_time: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'First response time of assigned team in seconds.', example: 2310 }),
+  })
+  .openapi({
+    title: 'Conversation response time',
+    description: 'Details of first response time of assigned team in seconds.',
+    required: [],
+  })
+  .openapi('ConversationResponseTime')
+
+const ConversationStatisticsSchema = z
+  .object({
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({ description: '', example: 'conversation_statistics' }),
+    time_to_assignment: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'Duration until last assignment before first admin reply. In seconds.',
+        example: 2310,
+      }),
+    time_to_admin_reply: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          'Duration until first admin reply. Subtracts out of business hours. In seconds.',
+        example: 2310,
+      }),
+    time_to_first_close: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          'Duration until conversation was closed first time. Subtracts out of business hours. In seconds.',
+        example: 2310,
+      }),
+    time_to_last_close: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          'Duration until conversation was closed last time. Subtracts out of business hours. In seconds.',
+        example: 2310,
+      }),
+    median_time_to_reply: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          'Median based on all admin replies after a contact reply. Subtracts out of business hours. In seconds.',
+        example: 2310,
+      }),
+    first_contact_reply_at: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'Time of first text conversation part from a contact.',
+        example: 1663597233,
+      }),
+    first_assignment_at: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'Time of first assignment after first_contact_reply_at.',
+        example: 1663597233,
+      }),
+    first_admin_reply_at: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'Time of first admin reply after first_contact_reply_at.',
+        example: 1663597233,
+      }),
+    first_close_at: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'Time of first close after first_contact_reply_at.',
+        example: 1663597233,
+      }),
+    last_assignment_at: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'Time of last assignment after first_contact_reply_at.',
+        example: 1663597233,
+      }),
+    last_assignment_admin_reply_at: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'Time of first admin reply since most recent assignment.',
+        example: 1663597233,
+      }),
+    last_contact_reply_at: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'Time of the last conversation part from a contact.',
+        example: 1663597233,
+      }),
+    last_admin_reply_at: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'Time of the last conversation part from an admin.',
+        example: 1663597233,
+      }),
+    last_close_at: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'Time of the last conversation close.', example: 1663597233 }),
+    last_closed_by_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The last admin who closed the conversation. Returns a reference to an Admin object.',
+        example: 'c3po',
+      }),
+    count_reopens: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'Number of reopens after first_contact_reply_at.', example: 1 }),
+    count_assignments: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'Number of assignments after first_contact_reply_at.', example: 1 }),
+    count_conversation_parts: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'Total number of conversation parts.', example: 1 }),
+    assigned_team_first_response_time: z
+      .array(ConversationResponseTimeSchema)
+      .exactOptional()
+      .openapi({ description: 'An array of conversation response time objects' }),
+    assigned_team_first_response_time_in_office_hours: z
+      .array(ConversationResponseTimeSchema)
+      .exactOptional()
+      .openapi({
+        description: 'An array of conversation response time objects within office hours',
+      }),
+    handling_time: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'Time from conversation assignment to conversation close in seconds.',
+        example: 2310,
+      }),
+    adjusted_handling_time: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Adjusted handling time for conversation in seconds. This is the active handling time excluding idle periods when teammates are not actively working on the conversation.',
+        example: 1800,
+      }),
+  })
+  .nullable()
+  .openapi({
+    title: 'Conversation statistics',
+    description:
+      'A Statistics object containing all information required for reporting, with timestamps and calculated metrics.',
+    required: [],
+  })
+  .openapi('ConversationStatistics')
+
+const LinkedObjectSchema = z
+  .object({
+    type: z
+      .enum(['ticket', 'conversation'])
+      .exactOptional()
+      .openapi({ description: 'ticket or conversation', example: 'ticket' }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The ID of the linked object', example: '7583' }),
+    category: z
+      .union([
+        z.literal('Customer'),
+        z.literal('Back-office'),
+        z.literal('Tracker'),
+        z.literal(null),
+      ])
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Category of the Linked Ticket Object.', example: 'Customer' }),
+  })
+  .openapi({
+    title: 'Linked Object',
+    description: 'A linked conversation or ticket.',
+    required: [],
+  })
+  .openapi('LinkedObject')
+
+const LinkedObjectListSchema = z
+  .object({
+    type: z
+      .literal('list')
+      .exactOptional()
+      .openapi({ description: 'Always list.', example: 'list' }),
+    total_count: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'The total number of linked objects.', example: 100 }),
+    has_more: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Whether or not there are more linked objects than returned.',
+        example: false,
+      }),
+    data: z
+      .array(LinkedObjectSchema)
+      .exactOptional()
+      .openapi({ description: 'An array containing the linked conversations and linked tickets.' }),
+  })
+  .openapi({
+    title: 'Linked Objects',
+    description:
+      'An object containing metadata about linked conversations and linked tickets. Up to 1000 can be returned.',
+    required: [],
+  })
+  .openapi('LinkedObjectList')
+
+const ContentSourceSchema = z
+  .object({
+    content_type: z
+      .enum([
+        'file',
+        'article',
+        'external_content',
+        'content_snippet',
+        'workflow_connector_action',
+        'internal_article',
+      ])
+      .exactOptional()
+      .openapi({ description: 'The type of the content source.', example: 'content_snippet' }),
+    url: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The internal URL linking to the content source for teammates.',
+        example: '/fin-ai-agent/content?content=content_snippet&id=3234924',
+      }),
+    title: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The title of the content source.',
+        example: 'My internal content snippet',
+      }),
+    locale: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The ISO 639 language code of the content source.', example: 'en' }),
+  })
+  .openapi({
+    title: 'Content Source',
+    'x-tags': ['AI Content Source'],
+    description: 'The content source used by AI Agent in the conversation.',
+    required: [],
+  })
+  .openapi('ContentSource')
+
+const ContentSourcesListSchema = z
+  .object({
+    type: z
+      .literal('content_source.list')
+      .exactOptional()
+      .openapi({ example: 'content_source.list' }),
+    total_count: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'The total number of content sources used by AI Agent in the conversation.',
+        example: 1,
+      }),
+    content_sources: z
+      .array(ContentSourceSchema)
+      .exactOptional()
+      .openapi({ description: 'The content sources used by AI Agent in the conversation.' }),
+  })
+  .openapi({ title: 'Content Source List', required: [] })
+  .openapi('ContentSourcesList')
+
+const AiAgentSchema = z
+  .object({
+    source_type: z
+      .enum(['essentials_plan_setup', 'profile', 'workflow', 'workflow_preview', 'fin_preview'])
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The type of the source that triggered AI Agent involvement in the conversation.',
+        example: 'workflow',
+      }),
+    source_title: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The title of the source that triggered AI Agent involvement in the conversation. If this is `essentials_plan_setup` then it will return `null`.',
+        example: 'My AI Workflow',
+      }),
+    last_answer_type: z
+      .union([z.literal(null), z.literal('ai_answer'), z.literal('custom_answer')])
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The type of the last answer delivered by AI Agent. If no answer was delivered then this will return `null`',
+        example: 'ai_answer',
+      }),
+    resolution_state: z
+      .union([
+        z.literal('assumed_resolution'),
+        z.literal('confirmed_resolution'),
+        z.literal('escalated'),
+        z.literal('negative_feedback'),
+        z.literal('procedure_handoff'),
+        z.literal(null),
+      ])
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The resolution state of AI Agent. If no AI or custom answer has been delivered then this will return `null`.',
+        example: 'assumed_resolution',
+      }),
+    rating: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'The customer satisfaction rating given to AI Agent, from 1-5.',
+        example: 4,
+      }),
+    rating_remark: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'The customer satisfaction rating remark given to AI Agent.',
+        example: 'Very helpful!',
+      }),
+    created_at: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'The time when the AI agent rating was created.',
+        example: 1663597260,
+      }),
+    updated_at: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'The time when the AI agent rating was last updated.',
+        example: 1663597260,
+      }),
+    content_sources: ContentSourcesListSchema.exactOptional(),
+  })
+  .openapi({
+    title: 'AI Agent',
+    'x-tags': ['Ai Agent'],
+    description: 'Data related to AI Agent involvement in the conversation.',
+    required: [],
+  })
+  .openapi('AiAgent')
+
+const SalesAgentSchema = z
+  .object({
+    outcome: z
+      .enum(['qualified', 'disqualified', 'product_discovery', 'escalated_to_support', 'spam'])
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The fixed outcome of the sales agent interaction, used for billing and tracking.',
+        example: 'qualified',
+      }),
+    routing_outcome: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The identifier of the user-defined routing outcome selected by the sales agent.',
+        example: 'enterprise_sales',
+      }),
+    collected_data: z
+      .record(z.string(), z.string())
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'A flat key-value map of memory fields collected by the sales agent during the conversation.',
+        example: { email: 'user@example.com', 'company.name': 'Acme Inc' },
+      }),
+  })
+  .openapi({
+    title: 'Sales Agent',
+    'x-tags': ['Sales Agent'],
+    description: 'Data related to Sales Agent involvement in the conversation.',
+    required: [],
+  })
+  .openapi('SalesAgent')
+
+const ConversationChannelSchema = z
+  .object({
+    initial: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The channel through which the conversation was originally initiated. Possible values include `messenger`, `zendesk_sunshine`, `zendesk_ticket`, `twitter`, `email`. Returns `null` if channel data is unavailable.',
+        example: 'messenger',
+      }),
+    current: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The current channel of the conversation. May differ from `initial` if the conversation was migrated between channels. Returns `null` if channel data is unavailable.',
+        example: 'messenger',
+      }),
+  })
+  .openapi({
+    title: 'Conversation Channel',
+    description:
+      'The channel through which a conversation was originally initiated and its current channel.',
+    required: [],
+  })
+  .openapi('ConversationChannel')
+
+const FileAttributeSchema = z
+  .object({
+    type: z.string().exactOptional().openapi({ example: 'upload' }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the file', example: 'Screenshot.png' }),
+    url: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The url of the file. This is a temporary URL and will expire after 30 minutes.',
+        example: 'https://intercom-attachments-1.com/.../Screenshot.png',
+      }),
+    content_type: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The type of file', example: 'image/png' }),
+    filesize: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'The size of the file in bytes', example: 11308309 }),
+    width: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'The width of the file in pixels, if applicable', example: 3024 }),
+    height: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'The height of the file in pixels, if applicable', example: 1964 }),
+  })
+  .openapi({
+    title: 'File',
+    description: 'The value describing a file upload set for a custom attribute',
+    required: [],
+  })
+  .openapi('FileAttribute')
+
+const ConversationExternalReferenceSchema = z
+  .object({
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The type of external system the reference points to. Possible values include `zendesk_ticket`, `zendesk_sunshine_conversation`, `salesforce_case`, `salesforce_in_app_message_conversation`, `freshdesk_ticket`, `freshchat_conversation`, `hubspot_conversation`, `custom_helpdesk_conversation`, `api_conversation`.',
+        example: 'zendesk_ticket',
+      }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The identifier of the record in the external system. Always serialized as a string, since some external IDs exceed 32-bit integer range.',
+        example: '3633338',
+      }),
+  })
+  .openapi({
+    title: 'Conversation External Reference',
+    description:
+      'A reference linking a conversation to a record in an external helpdesk or CRM system, surfaced for Fin Standalone workspaces.',
+    required: [],
+  })
+  .openapi('ConversationExternalReference')
+
+const ConversationMonitorEvaluationSchema = z
+  .object({
+    monitor_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The unique identifier of the monitor that produced this evaluation.',
+        example: '12345',
+      }),
+    monitor_name: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The name of the monitor at the time of evaluation. Null if the monitor has since been deleted.',
+        example: 'Customer complaint handling',
+      }),
+    monitor_type: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'The type of the monitor. Null if the monitor has since been deleted.',
+        example: 'prompt',
+      }),
+    result: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The evaluation outcome reported by the monitor: `included` (the conversation matches the monitor's criteria), `excluded`, `error` or `awaiting_async_data`.",
+        example: 'included',
+      }),
+    explanation: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The reasoning provided by the monitor for its result. May be null if no reasoning was generated.',
+        example: 'The customer mentioned wanting a refund without resolution.',
+      }),
+    evaluated_at: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          "The time the monitor evaluated this conversation. Null in the rare case the underlying record's timestamp is not yet set.",
+        example: 1719493065,
+      }),
+  })
+  .openapi({
+    title: 'Conversation Monitor Evaluation',
+    'x-tags': ['Conversations'],
+    description:
+      'A QA monitor evaluation of this conversation. Returned in the `monitor_evaluations` array on conversation responses when `include_monitors=true` is passed.',
+    required: [],
+  })
+  .openapi('ConversationMonitorEvaluation')
+
+const ConversationScorecardReviewedTeammateSchema = z
+  .object({
+    type: z
+      .enum(['ai', 'admin'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The kind of reviewee. `ai` if the conversation was handled by Fin or scored without a specific teammate; `admin` if a specific teammate was reviewed.',
+        example: 'admin',
+      }),
+    admin_id: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'The id of the admin who was reviewed. Present only when `type` is `admin`.',
+        example: '991267715',
+      }),
+  })
+  .openapi({
+    title: 'Reviewed Teammate',
+    'x-tags': ['Conversations'],
+    description:
+      'The teammate (or AI agent) whose handling of the conversation was reviewed by this scorecard.',
+    required: [],
+  })
+  .openapi('ConversationScorecardReviewedTeammate')
+
+const ConversationScorecardReviewerSchema = z
+  .object({
+    type: z
+      .enum(['ai', 'admin'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The kind of reviewer. `ai` if the review is assigned to Fin; `admin` if it is assigned to a teammate.',
+        example: 'admin',
+      }),
+    admin_id: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The id of the admin the review is assigned to. Present only when `type` is `admin`.',
+        example: '884120017',
+      }),
+  })
+  .nullable()
+  .openapi({
+    title: 'Reviewer',
+    'x-tags': ['Conversations'],
+    description:
+      'Who the review of this scorecard is assigned to. `ai` when it is assigned to Fin; `admin` when it is assigned to a teammate. Null when no review exists for this scorecard or the review is unassigned.',
+    required: [],
+  })
+  .openapi('ConversationScorecardReviewer')
+
+const ConversationScorecardSubmittedBySchema = z
+  .object({
+    type: z
+      .enum(['ai', 'admin'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The kind of submitter. `ai` if Fin submitted the review; `admin` if a teammate did.',
+        example: 'admin',
+      }),
+    admin_id: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The id of the admin who submitted the review. Present only when `type` is `admin`.',
+        example: '884120017',
+      }),
+  })
+  .nullable()
+  .openapi({
+    title: 'Submitted By',
+    'x-tags': ['Conversations'],
+    description:
+      'Who last submitted the review of this scorecard, which can differ from the `reviewer` it is assigned to. `ai` when Fin submitted it; `admin` when a teammate did. Null while the review is unreviewed or when no review exists for this scorecard.',
+    required: [],
+  })
+  .openapi('ConversationScorecardSubmittedBy')
+
+const ConversationScorecardRevisedBySchema = z
+  .object({
+    type: z
+      .enum(['ai', 'admin'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The kind of reviser. `ai` if Fin changed the review; `admin` if a teammate did.',
+        example: 'admin',
+      }),
+    admin_id: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The id of the admin who last changed the review. Present only when `type` is `admin`.',
+        example: '884120017',
+      }),
+  })
+  .nullable()
+  .openapi({
+    title: 'Revised By',
+    'x-tags': ['Conversations'],
+    description:
+      'Who last changed the review of this scorecard after it was submitted. `ai` when Fin made the change; `admin` when a teammate did. Null while the review is unreviewed, when it has not been changed since it was submitted, or when no review exists for this scorecard.',
+    required: [],
+  })
+  .openapi('ConversationScorecardRevisedBy')
+
+const ConversationScorecardNoteAuthorSchema = z
+  .object({
+    type: z
+      .enum(['ai', 'admin'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The kind of author. `admin` when a teammate wrote the note; `ai` when Fin did.',
+        example: 'admin',
+      }),
+    admin_id: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'The id of the admin who wrote the note. Present only when `type` is `admin`.',
+        example: '884120017',
+      }),
+  })
+  .nullable()
+  .openapi({
+    title: 'Note Author',
+    'x-tags': ['Conversations'],
+    description: 'Who wrote the note. Null when the teammate who wrote it has since been deleted.',
+    required: [],
+  })
+  .openapi('ConversationScorecardNoteAuthor')
+
+const ConversationScorecardNoteSchema = z
+  .object({
+    id: z.string().exactOptional().openapi({ description: 'The id of the note.', example: '9001' }),
+    created_at: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'The time the note was created.', example: 1734537900 }),
+    updated_at: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          'The time the note was last edited. Equal to `created_at` when the note has never been edited.',
+        example: 1734537900,
+      }),
+    author: ConversationScorecardNoteAuthorSchema.exactOptional(),
+    body: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The text of the note exactly as the teammate entered it. Plain text; it is not rendered as HTML.',
+        example: 'Great empathy in the second reply.',
+      }),
+  })
+  .openapi({
+    title: 'Scorecard Note',
+    'x-tags': ['Conversations'],
+    description: 'A note a teammate left on the QA review of this scorecard.',
+    required: [],
+  })
+  .openapi('ConversationScorecardNote')
+
+const ConversationScorecardEvaluatorReasonSchema = z
+  .object({
+    name: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: "The name of the reason. Null if the reason's name could not be resolved.",
+        example: 'Clear and concise',
+      }),
+  })
+  .openapi({
+    title: 'Evaluator Reason',
+    'x-tags': ['Conversations'],
+    description: "A single structured reason assigned to an evaluator's result.",
+    required: [],
+  })
+  .openapi('ConversationScorecardEvaluatorReason')
+
+const ConversationScorecardEvaluatorResultSchema = z
+  .object({
+    value: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          "The evaluator's selected value (typically a label such as `pass`, `fail`, or a category identifier).",
+        example: 'pass',
+      }),
+    value_label: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The label of the rating option matching `value` (for example `Needs improvement`). Omitted when the label could not be resolved.',
+        example: 'Pass',
+      }),
+    source: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'The origin of the result (for example, `ai` or `human`).',
+        example: 'ai',
+      }),
+    reasoning: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'A free-text explanation of the result.',
+        example: 'The agent acknowledged the issue and resolved it within the same response.',
+      }),
+    reason_ids: z
+      .array(z.string())
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Identifiers for structured reasons assigned to the result, if any.',
+        example: ['101', '102'],
+      }),
+    reasons: z
+      .array(ConversationScorecardEvaluatorReasonSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The structured reasons chosen for this result. Omitted when none were chosen.',
+        example: [{ name: 'Clear and concise' }, { name: 'Empathetic tone' }],
+      }),
+    other_text: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Free-text entered by the reviewer to supplement or stand in for the structured `reason_ids` — typically captured when the reviewer selects an "Other" option or adds a custom note. Null when not provided.',
+        example: 'Agent acknowledged the issue but missed the follow-up question about billing.',
+      }),
+  })
+  .openapi({
+    title: 'Conversation Scorecard Evaluator Result',
+    'x-tags': ['Conversations'],
+    description: 'The outcome of a single evaluator within a scorecard.',
+    required: [],
+  })
+  .openapi('ConversationScorecardEvaluatorResult')
+
+const ConversationScorecardEvaluatorSchema = z
+  .object({
+    evaluator_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The unique identifier of the evaluator (criterion) within the scorecard.',
+        example: '54321',
+      }),
+    name: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          "The name of the evaluator (criterion). Null if the evaluator's name could not be resolved.",
+        example: 'Tone of voice',
+      }),
+    result: ConversationScorecardEvaluatorResultSchema.nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          "The evaluator's result for this conversation. Null if the evaluator was not scored.",
+      }),
+  })
+  .openapi({
+    title: 'Conversation Scorecard Evaluator',
+    'x-tags': ['Conversations'],
+    description:
+      'A single evaluator within a scorecard, including its result for this conversation.',
+    required: [],
+  })
+  .openapi('ConversationScorecardEvaluator')
+
+const ConversationScorecardSchema = z
+  .object({
+    scorecard_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The unique identifier of the scorecard definition.',
+        example: '67890',
+      }),
+    scorecard_version_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The unique identifier of the specific scorecard version that produced this result.',
+        example: '67891',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the scorecard.', example: 'Standard QA Review' }),
+    scorecard_type: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The type of scorecard.', example: 'human' }),
+    passed: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether the conversation passed the scorecard. Null when the scorecard has not been scored.',
+        example: true,
+      }),
+    score: z
+      .number()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The numeric score for the scorecard. Null when the scorecard has not been scored.',
+        example: 0.85,
+      }),
+    ai_score: z
+      .number()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The numeric score produced by AI evaluation, if applicable. Null when not AI-scored.',
+        example: 0.9,
+      }),
+    evaluated_at: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          "The time the scorecard was last evaluated. Null in the rare case the underlying record's timestamp is not yet set.",
+        example: 1719493065,
+      }),
+    reviewed_teammate: ConversationScorecardReviewedTeammateSchema.exactOptional(),
+    reviewer: ConversationScorecardReviewerSchema.exactOptional(),
+    review_status: z
+      .enum(['unreviewed', 'submitted', 'passed_review', 'needs_fix', 'wont_fix', 'fix_complete'])
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          "The status of the review of this scorecard, as shown in the QA reviews list in Intercom. `unreviewed` while the review is waiting for a reviewer's verdict; `submitted` once the review has been submitted; `passed_review`, `needs_fix`, `wont_fix` or `fix_complete` when a teammate set a specific outcome. Null when no review exists for this scorecard.",
+        example: 'submitted',
+      }),
+    submitted_by: ConversationScorecardSubmittedBySchema.exactOptional(),
+    revised_by: ConversationScorecardRevisedBySchema.exactOptional(),
+    notes: z
+      .array(ConversationScorecardNoteSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The notes teammates left on the QA review linked to this scorecard entry. Empty when the scorecard has no linked review.',
+        example: [
+          {
+            id: '9001',
+            created_at: 1734537900,
+            updated_at: 1734537900,
+            author: { type: 'admin', admin_id: '884120017' },
+            body: 'Great empathy in the second reply.',
+          },
+        ],
+      }),
+    evaluators: z
+      .array(ConversationScorecardEvaluatorSchema)
+      .exactOptional()
+      .openapi({ description: 'Per-evaluator results within this scorecard.' }),
+  })
+  .openapi({
+    title: 'Conversation Scorecard',
+    'x-tags': ['Conversations'],
+    description:
+      'A QA scorecard result for this conversation. Returned in the `scorecards` array on conversation responses when `include_scorecards=true` is passed.',
+    required: [],
+  })
+  .openapi('ConversationScorecard')
+
+type ConversationListItemType = {
+  type?: string
+  id?: string
+  title?: string | null
+  created_at?: number
+  updated_at?: number
+  waiting_since?: number | null
+  snoozed_until?: number | null
+  open?: boolean
+  state?: 'open' | 'closed' | 'snoozed'
+  read?: boolean
+  priority?: 'none' | 'low' | 'medium' | 'high' | 'urgent'
+  admin_assignee_id?: number
+  team_assignee_id?: number
+  company?: z.infer<typeof CompanySchema> | null
+  tags?: z.infer<typeof TagsSchema>
+  conversation_rating?: z.infer<typeof ConversationRatingSchema>
+  source?: z.infer<typeof ConversationSourceSchema>
+  contacts?: z.infer<typeof ConversationContactsSchema>
+  teammates?: z.infer<typeof ConversationTeammatesSchema>
+  custom_attributes?: z.infer<typeof CustomAttributesSchema>
+  first_contact_reply?: z.infer<typeof ConversationFirstContactReplySchema>
+  sla_applied?: z.infer<typeof SlaAppliedSchema>
+  statistics?: z.infer<typeof ConversationStatisticsSchema>
+  linked_objects?: z.infer<typeof LinkedObjectListSchema>
+  ai_agent_participated?: boolean
+  ai_agent?: z.infer<typeof AiAgentSchema> | null
+  sales_agent_participated?: boolean
+  sales_agent?: z.infer<typeof SalesAgentSchema> | null
+  channel?: z.infer<typeof ConversationChannelSchema> | null
+  topics?: {
+    type?: string
+    topics?: { type?: string; id?: number; name?: string }[]
+    total_count?: number
+  }
+  ticket?: {
+    type?: string
+    id?: number
+    url?: string
+    custom_attributes?: {
+      [key: string]: {
+        value?: (string | null) | number | boolean | number[] | z.infer<typeof FileAttributeSchema>
+        type?: string
+      }
+    }
+    state?: string
+    ticket_type?: string
+    ticket_type_description?: string
+    ticket_type_emoji?: string | null
+    ticket_custom_state_admin_label?: string | null
+    ticket_custom_state_user_label?: string | null
+  } | null
+  external_references?: z.infer<typeof ConversationExternalReferenceSchema>[]
+  monitor_evaluations?: z.infer<typeof ConversationMonitorEvaluationSchema>[]
+  scorecards?: z.infer<typeof ConversationScorecardSchema>[]
+}
+
+const ConversationPartAuthorSchema = z
+  .object({
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The type of the author', example: 'admin' }),
+    id: z.string().exactOptional().openapi({ description: 'The id of the author', example: '274' }),
+    name: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The name of the author. `null` if the author is a contact that has since been archived or deleted.',
+        example: 'Operator',
+      }),
+    email: z
+      .email()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The email of the author. `null` if the author is a contact that has since been archived or deleted.',
+        example: 'operator+abcd1234@intercom.io',
+      }),
+    from_ai_agent: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'If this conversation part was sent by the AI Agent',
+        example: true,
+      }),
+    is_ai_answer: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'If this conversation part body was generated by the AI Agent',
+        example: false,
+      }),
+  })
+  .openapi({
+    title: 'Conversation part author',
+    description:
+      'The object who initiated the conversation, which can be a Contact, Admin or Team. Bots and campaigns send messages on behalf of Admins or Teams. For Twitter, this will be blank.',
+    required: [],
+  })
+  .openapi('ConversationPartAuthor')
+
+const EmailMessageMetadataSchema = z
+  .object({
+    subject: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The subject of the email', example: 'Question about my order' }),
+    email_address_headers: z
+      .array(EmailAddressHeaderSchema)
+      .exactOptional()
+      .openapi({
+        title: 'Email Address Headers',
+        description: 'A list of an email address headers.',
+      }),
+    message_id: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The unique identifier for the email message as specified in the Message-ID header',
+        example: '<CADKw7xrXzqSn8v3mP8K8Q8yZ6K8Q8yZ6@mail.gmail.com>',
+      }),
+  })
+  .openapi({
+    title: 'Email Message Metadata',
+    description: 'Contains metadata if the message was sent as an email',
+    required: [],
+  })
+  .openapi('EmailMessageMetadata')
+
+const QuickReplyOptionSchema = z
+  .object({
+    text: z.string().openapi({ description: 'The text to display in this quick reply option.' }),
+    uuid: z
+      .uuid()
+      .openapi({
+        description:
+          'A unique identifier for this quick reply option. This value will be available within the metadata of the comment conversation part that is created when a user clicks on this reply option.',
+      }),
+  })
+  .openapi({ title: 'Quick Reply Option', required: ['text', 'uuid'] })
+  .openapi('QuickReplyOption')
+
+const ConversationPartMetadataSchema = z
+  .object({
+    quick_reply_options: z
+      .array(
+        QuickReplyOptionSchema.and(
+          z
+            .object({
+              translations: z
+                .looseObject({})
+                .nullable()
+                .exactOptional()
+                .openapi({
+                  description: 'The translations for the quick reply option.',
+                  example: { en: 'Hello', fr: 'Bonjour' },
+                }),
+            })
+            .openapi({ required: [] }),
+        ),
+      )
+      .exactOptional()
+      .openapi({
+        description:
+          'The quick reply options sent by the Admin or bot, presented in this conversation part.',
+      }),
+    quick_reply_option_uuid: z
+      .uuid()
+      .exactOptional()
+      .openapi({
+        description:
+          'The unique identifier for the quick reply option that was clicked by the end user.',
+        example: '123e4567-e89b-12d3-a456-426614174000',
+      }),
+  })
+  .openapi({
+    title: 'Conversation Part Metadata',
+    description: 'Metadata for a conversation part',
+    required: [],
+  })
+  .openapi('ConversationPartMetadata')
+
+const ConversationAttributeUpdatedByWorkflowSchema = z
+  .object({
+    workflow: z
+      .object({
+        name: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Name of the workflow', example: 'Workflow 1' }),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+    attribute: z
+      .object({
+        name: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Name of the CDA updated', example: 'flight_category' }),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+    value: z
+      .object({
+        name: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Value of the CDA updated', example: 'vip_status' }),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+  })
+  .openapi({
+    title: 'Part type - conversation_attribute_updated_by_workflow',
+    description:
+      'Contains details about the workflow that was triggered and any Custom Data Attributes (CDAs) that were modified during the workflow execution for conversation part type <code>conversation_attribute_updated_by_workflow</code>.',
+    required: [],
+  })
+  .openapi('ConversationAttributeUpdatedByWorkflow')
+
+const ConversationAttributeUpdatedByAdminSchema = z
+  .object({
+    attribute: z
+      .object({
+        name: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Name of the CDA updated', example: 'jira_issue_key' }),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+    value: z
+      .object({
+        name: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Current value of the CDA updated', example: 'PROJ-007' }),
+        previous: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Previous value of the CDA', example: 'PROJ-006' }),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+  })
+  .openapi({
+    title: 'Part type - conversation_attribute_updated_by_admin',
+    description:
+      'Contains details about Custom Data Attributes (CDAs) that were modified by an admin (operator) for conversation part type <code>conversation_attribute_updated_by_admin</code>.',
+    required: [],
+  })
+  .openapi('ConversationAttributeUpdatedByAdmin')
+
+const ConversationAttributeUpdatedByUserSchema = z
+  .object({
+    attribute: z
+      .object({
+        name: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Name of the CDA updated', example: 'Priority' }),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+    value: z
+      .object({
+        name: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Current value of the CDA updated', example: 'High' }),
+        previous: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: 'Previous value of the CDA (null for older events)',
+            example: 'Medium',
+          }),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+  })
+  .openapi({
+    title: 'Part type - conversation_attribute_updated_by_user',
+    description:
+      'Contains details about Custom Data Attributes (CDAs) that were modified by a user for conversation part type <code>conversation_attribute_updated_by_user</code>.',
+    required: [],
+  })
+  .openapi('ConversationAttributeUpdatedByUser')
+
+const CustomActionStartedSchema = z
+  .object({
+    action: z
+      .object({
+        name: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Name of the action', example: 'Jira Create Issue' }),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+  })
+  .openapi({
+    title: 'Part type - custom_action_started',
+    description:
+      'Contains details about name of the action that was initiated for conversation part type <code>custom_action_started</code>.',
+    required: [],
+  })
+  .openapi('CustomActionStarted')
+
+const CustomActionFinishedSchema = z
+  .object({
+    action: z
+      .object({
+        name: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Name of the action', example: 'Jira Create Issue' }),
+        result: z
+          .enum(['success', 'failed'])
+          .exactOptional()
+          .openapi({ description: 'Status of the action', example: 'success' }),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+  })
+  .openapi({
+    title: 'Part type - custom_action_finished',
+    description:
+      'Contains details about final status of the completed action for conversation part type <code>custom_action_finished</code>.',
+    required: [],
+  })
+  .openapi('CustomActionFinished')
+
+const OperatorWorkflowEventSchema = z
+  .object({
+    workflow: z
+      .object({
+        name: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'The name of the workflow', example: 'Custom Bot 1' }),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+    event: z
+      .object({
+        type: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Type of the workflow event initiated',
+            example: 'wait_finished',
+          }),
+        result: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Result of the workflow event', example: 'Finsihed waiting' }),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+  })
+  .openapi({
+    title: 'Part type - operator_workflow_event',
+    description:
+      'Contains details about name of the workflow for conversation part type <code>operator_workflow_event</code>.',
+    required: [],
+  })
+  .openapi('OperatorWorkflowEvent')
+
+const CallSummarySchema = z
+  .object({
+    call_id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The id of the call the summary describes', example: '3822007689' }),
+  })
+  .openapi({
+    title: 'Part type - call_summary',
+    description:
+      'Contains the id of the call the summary describes, for conversation part type <code>call_summary</code>. A conversation can contain several calls, and therefore several call summaries, so this identifies which call each summary belongs to. The id matches the <code>id</code> returned by the Calls API and by the <code>call.started</code>, <code>call.ended</code>, <code>call.recording_available</code> and <code>call.transcription_available</code> webhook topics.',
+    required: [],
+  })
+  .openapi('CallSummary')
+
+const AiAgentEventOtpEmailVerificationFailedSchema = z
+  .object({
+    event: z
+      .object({
+        type: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'The event type', example: 'otp_email_verification_failed' }),
+        value: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A readable label for the event',
+            example: 'OTP email verification failed',
+          }),
+        data: z
+          .object({
+            otp_email_verification_failed: z
+              .object({
+                reason: z
+                  .string()
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      'Why the one-time passcode email could not verify the contact. Treat this as a free-form string and fall back to <code>value</code> for a reason you do not recognise. <code>no_email</code> means the contact has no email address on record.',
+                    example: 'no_email',
+                  }),
+              })
+              .exactOptional()
+              .openapi({
+                description: 'Details of the failed verification',
+                example: { reason: 'no_email' },
+                required: [],
+              }),
+          })
+          .exactOptional()
+          .openapi({
+            description:
+              'Data recorded with the event. Empty when the failure was recorded without a reason.',
+            example: { otp_email_verification_failed: { reason: 'no_email' } },
+            required: [],
+          }),
+      })
+      .exactOptional()
+      .openapi({
+        description: 'The event the part records',
+        example: {
+          type: 'otp_email_verification_failed',
+          value: 'OTP email verification failed',
+          data: { otp_email_verification_failed: { reason: 'no_email' } },
+        },
+        required: [],
+      }),
+  })
+  .openapi({
+    title: 'Part type - ai_agent_event (otp_email_verification_failed)',
+    description:
+      'Contains the reason Fin could not verify a contact by one-time passcode email, for conversation part type <code>ai_agent_event</code> when the event type is <code>otp_email_verification_failed</code>. Other <code>ai_agent_event</code> event types are not described here.',
+    required: [],
+  })
+  .openapi('AiAgentEventOtpEmailVerificationFailed')
+
+const EventDetailsSchema = z
+  .union([
+    ConversationAttributeUpdatedByWorkflowSchema,
+    ConversationAttributeUpdatedByAdminSchema,
+    ConversationAttributeUpdatedByUserSchema,
+    CustomActionStartedSchema,
+    CustomActionFinishedSchema,
+    OperatorWorkflowEventSchema,
+    CallSummarySchema,
+    AiAgentEventOtpEmailVerificationFailedSchema,
+  ])
+  .openapi({ title: 'Event details of Workflow & actions' })
+  .openapi('EventDetails')
+
+const ConversationPartSchema = z
+  .object({
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Always conversation_part', example: 'conversation_part' }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The id representing the conversation part.', example: '3' }),
+    part_type: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The type of conversation part.', example: 'comment' }),
+    body: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The message body, which may contain HTML. For Twitter, this will show a generic message regarding why the body is obscured. In webhook payloads for API version 2.15+, this field returns plain text.',
+        example: '<p>Okay!</p>',
+      }),
+    created_at: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'The time the conversation part was created.', example: 1663597223 }),
+    updated_at: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'The last time the conversation part was updated.',
+        example: 1663597260,
+      }),
+    notified_at: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'The time the user was notified with the conversation part.',
+        example: 1663597260,
+      }),
+    assigned_to: ReferenceSchema.nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The assignee this conversation_part assigned the conversation to, as a reference whose `type` is `admin`, `team` or `bot`. When the part unassigned the conversation, `type` is `nobody_admin` and `id` is `null`. Null when the part did not change the assignment, or when the assignee has since been deleted.',
+      }),
+    admin_assignee_id: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The id of the teammate that this conversation_part assigned the conversation to, or 0 if the part removed the teammate. Null or absent when the part did not change the teammate, including an unassignment that did not name which assignee it cleared. A bot is reported here, because assignment treats anything that is not a team as a teammate.',
+        example: 991267715,
+      }),
+    team_assignee_id: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The id of the team that this conversation_part assigned the conversation to, or 0 if the part removed the team. Null or absent when the part did not change the team, including an unassignment that did not name which assignee it cleared. A part can assign a team and a teammate at the same time, for example when the team uses Round Robin distribution and the teammate is resolved inline. In that case assigned_to reports only the teammate, and these two fields report each assignee separately.',
+        example: 5017691,
+      }),
+    author: ConversationPartAuthorSchema.exactOptional(),
+    attachments: z
+      .array(PartAttachmentSchema)
+      .exactOptional()
+      .openapi({
+        title: 'Conversation part attachments',
+        description: 'A list of attachments for the part.',
+      }),
+    external_id: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The external id of the conversation part', example: 'abcd1234' }),
+    redacted: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Whether or not the conversation part has been redacted.',
+        example: false,
+      }),
+    email_message_metadata: EmailMessageMetadataSchema.nullable().exactOptional(),
+    metadata: ConversationPartMetadataSchema.nullable().exactOptional(),
+    state: z
+      .enum(['open', 'closed', 'snoozed'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates the current state of conversation when the conversation part was created.',
+        example: 'open',
+      }),
+    tags: z
+      .array(TagBasicSchema)
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'A list of tags objects associated with the conversation part.' }),
+    event_details: EventDetailsSchema.nullable().exactOptional(),
+    app_package_code: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        example: 'test-integration',
+        description:
+          'The app package code if this part was created via API. null if the part was not created via API.',
+      }),
+    translations: z
+      .object({
+        original: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The locale code identifying the language the reply was originally written in.',
+            example: 'en',
+          }),
+      })
+      .catchall(z.string())
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'A map of the reply text keyed by locale code. Backs the `conversation.admin.replied.translated` webhook topic. `original` holds the locale code the reply was written in, when it is known; every other key holds the reply translated into that locale.',
+        example: { original: 'en', en: '<p>Hello</p>', fr: '<p>Bonjour</p>' },
+        required: [],
+      }),
+  })
+  .openapi({
+    title: 'Conversation Part',
+    description: 'A Conversation Part represents a message in the conversation.',
+    required: [],
+  })
+  .openapi('ConversationPart')
+
+const ConversationPartsSchema = z
+  .object({
+    type: z
+      .literal('conversation_part.list')
+      .exactOptional()
+      .openapi({ description: '', example: 'conversation_part.list' }),
+    conversation_parts: z
+      .array(ConversationPartSchema)
+      .exactOptional()
+      .openapi({
+        title: 'Conversation Parts',
+        description:
+          'A list of Conversation Part objects for each part message in the conversation. This is only returned when Retrieving a Conversation, and ignored when Listing all Conversations. There is a limit of 500 parts.',
+      }),
+    total_count: z.int().exactOptional().openapi({ description: '', example: 1 }),
+  })
+  .openapi({
+    title: 'Conversation Parts',
+    description:
+      'A list of Conversation Part objects for each part message in the conversation. This is only returned when Retrieving a Conversation, and ignored when Listing all Conversations. There is a limit of 500 parts.',
+    required: [],
+  })
+  .openapi('ConversationParts')
+
+type ConversationType = {
+  type?: string
+  id?: string
+  title?: string | null
+  created_at?: number
+  updated_at?: number
+  waiting_since?: number | null
+  snoozed_until?: number | null
+  open?: boolean
+  state?: 'open' | 'closed' | 'snoozed'
+  read?: boolean
+  priority?: 'none' | 'low' | 'medium' | 'high' | 'urgent'
+  admin_assignee_id?: number
+  team_assignee_id?: number
+  company?: z.infer<typeof CompanySchema> | null
+  tags?: z.infer<typeof TagsSchema>
+  conversation_rating?: z.infer<typeof ConversationRatingSchema>
+  source?: z.infer<typeof ConversationSourceSchema>
+  contacts?: z.infer<typeof ConversationContactsSchema>
+  teammates?: z.infer<typeof ConversationTeammatesSchema>
+  custom_attributes?: z.infer<typeof CustomAttributesSchema>
+  first_contact_reply?: z.infer<typeof ConversationFirstContactReplySchema>
+  sla_applied?: z.infer<typeof SlaAppliedSchema>
+  statistics?: z.infer<typeof ConversationStatisticsSchema>
+  conversation_parts?: z.infer<typeof ConversationPartsSchema>
+  linked_objects?: z.infer<typeof LinkedObjectListSchema>
+  ai_agent_participated?: boolean
+  ai_agent?: z.infer<typeof AiAgentSchema> | null
+  sales_agent_participated?: boolean
+  sales_agent?: z.infer<typeof SalesAgentSchema> | null
+  channel?: z.infer<typeof ConversationChannelSchema> | null
+  external_references?: z.infer<typeof ConversationExternalReferenceSchema>[]
+  monitor_evaluations?: z.infer<typeof ConversationMonitorEvaluationSchema>[]
+  scorecards?: z.infer<typeof ConversationScorecardSchema>[]
+}
+
+const ConversationListItemSchema: z.ZodType<ConversationListItemType> = z
+  .object({
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Always conversation.', example: 'conversation' }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The id representing the conversation.', example: '1295' }),
+    title: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'The title given to the conversation.',
+        example: 'Conversation Title',
+      }),
+    created_at: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'The time the conversation was created.', example: 1663597223 }),
+    updated_at: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'The last time the conversation was updated.', example: 1663597260 }),
+    waiting_since: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The last time a Contact responded to an Admin. In other words, the time a customer started waiting for a response. Set to null if last reply is from an Admin.',
+        example: 1663597260,
+      }),
+    snoozed_until: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'If set this is the time in the future when this conversation will be marked as open. i.e. it will be in a snoozed state until this time. i.e. it will be in a snoozed state until this time.',
+        example: 1663597260,
+      }),
+    open: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Indicates whether a conversation is open (true) or closed (false).',
+        example: true,
+      }),
+    state: z
+      .enum(['open', 'closed', 'snoozed'])
+      .exactOptional()
+      .openapi({ description: 'Can be set to "open", "closed" or "snoozed".', example: 'open' }),
+    read: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates whether a conversation has been read.', example: true }),
+    priority: z
+      .enum(['none', 'low', 'medium', 'high', 'urgent'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The priority level of the conversation. Returns one of none, low, medium, high, or urgent.',
+        example: 'high',
+      }),
+    admin_assignee_id: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          "The id of the admin assigned to the conversation. If it's not assigned to an admin it will return 0.",
+        example: 0,
+      }),
+    team_assignee_id: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          "The id of the team assigned to the conversation. If it's not assigned to a team it will return 0.",
+        example: 5017691,
+      }),
+    company: CompanySchema.nullable()
+      .exactOptional()
+      .openapi({ description: 'The company associated with the conversation.' }),
+    tags: TagsSchema.exactOptional(),
+    conversation_rating: ConversationRatingSchema.exactOptional(),
+    source: ConversationSourceSchema.exactOptional(),
+    contacts: ConversationContactsSchema.exactOptional(),
+    teammates: ConversationTeammatesSchema.exactOptional(),
+    custom_attributes: CustomAttributesSchema.exactOptional(),
+    first_contact_reply: ConversationFirstContactReplySchema.exactOptional(),
+    sla_applied: SlaAppliedSchema.exactOptional(),
+    statistics: ConversationStatisticsSchema.exactOptional(),
+    linked_objects: LinkedObjectListSchema.exactOptional(),
+    ai_agent_participated: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Indicates whether the AI Agent participated in the conversation.',
+        example: true,
+      }),
+    ai_agent: AiAgentSchema.nullable().exactOptional(),
+    sales_agent_participated: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Indicates whether the Sales Agent participated in the conversation.',
+        example: false,
+      }),
+    sales_agent: SalesAgentSchema.nullable().exactOptional(),
+    channel: ConversationChannelSchema.nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The channel through which the conversation was initiated and its current channel.',
+      }),
+    topics: z
+      .object({
+        type: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Always `topic.list`.', example: 'topic.list' }),
+        topics: z
+          .array(
+            z
+              .object({
+                type: z
+                  .string()
+                  .exactOptional()
+                  .openapi({ description: 'Always `topic`.', example: 'topic' }),
+                id: z
+                  .int()
+                  .exactOptional()
+                  .openapi({ description: 'The id of the topic.', example: 4521 }),
+                name: z
+                  .string()
+                  .exactOptional()
+                  .openapi({ description: 'The name of the topic.', example: 'Billing' }),
+              })
+              .openapi({ required: [] }),
+          )
+          .exactOptional()
+          .openapi({ description: 'The topics of the conversation.' }),
+        total_count: z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'The number of topics.', example: 1 }),
+      })
+      .exactOptional()
+      .openapi({
+        description:
+          "The topics of the conversation. An empty object when the workspace doesn't use topics.",
+        required: [],
+      }),
+    ticket: z
+      .object({
+        type: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Always `ticket`.', example: 'ticket' }),
+        id: z
+          .int()
+          .exactOptional()
+          .openapi({ description: "The id of the ticket's conversation.", example: 1295 }),
+        url: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'The link to the ticket in the inbox.',
+            example: 'https://app.intercom.com/a/apps/abcd1234/conversations/1295',
+          }),
+        custom_attributes: z
+          .record(
+            z.string(),
+            z
+              .object({
+                value: z
+                  .union([
+                    z.string().nullable(),
+                    z.number(),
+                    z.boolean(),
+                    z.array(z.int()),
+                    FileAttributeSchema,
+                  ])
+                  .exactOptional()
+                  .openapi({ description: 'The value of the attribute.' }),
+                type: z
+                  .string()
+                  .exactOptional()
+                  .openapi({ description: 'The data type of the attribute.', example: 'string' }),
+              })
+              .openapi({ required: [] }),
+          )
+          .exactOptional()
+          .openapi({ description: "The ticket's attributes, keyed by attribute name." }),
+        state: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'The current state of the ticket.', example: 'submitted' }),
+        ticket_type: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'The name of the ticket type.', example: 'Bug report' }),
+        ticket_type_description: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'The description of the ticket type.',
+            example: 'Something is broken',
+          }),
+        ticket_type_emoji: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'The emoji of the ticket type.', example: '🐛' }),
+        ticket_custom_state_admin_label: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: "The label of the ticket's state as teammates see it.",
+            example: 'Submitted',
+          }),
+        ticket_custom_state_user_label: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: "The label of the ticket's state as the customer sees it.",
+            example: 'Received',
+          }),
+      })
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The ticket details when the conversation is a ticket. `null` for any other conversation.',
+        required: [],
+      }),
+    external_references: z
+      .array(ConversationExternalReferenceSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'References linking this conversation to records in an external helpdesk or CRM system. Populated for Fin Standalone workspaces synced from an external platform; an empty array otherwise. Sorted alphabetically by `type` and capped at 20 entries.',
+        example: [
+          { type: 'zendesk_ticket', id: '3633338' },
+          { type: 'zendesk_sunshine_conversation', id: 'abc-def-uuid' },
+        ],
+      }),
+    monitor_evaluations: z
+      .array(ConversationMonitorEvaluationSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The latest QA monitor evaluation for each monitor that has evaluated this conversation, whatever its result. Only included when `include_monitors=true` is passed as a query parameter.',
+      }),
+    scorecards: z
+      .array(ConversationScorecardSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'QA scorecard results for this conversation. Only included when `include_scorecards=true` is passed as a query parameter.',
+      }),
+  })
+  .openapi({
+    title: 'Conversation List Item',
+    'x-tags': ['Conversations'],
+    description: 'The data returned about your conversations when you list or search them.',
+    required: [],
+  })
+  .openapi('ConversationListItem')
+
+const CursorPagesSchema = z
+  .object({
+    type: z
+      .literal('pages')
+      .exactOptional()
+      .openapi({ description: 'the type of object `pages`.', example: 'pages' }),
+    page: z.int().exactOptional().openapi({ description: 'The current page', example: 1 }),
+    next: z
+      .object({
+        page: z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'The number of the next page', example: 2 }),
+        starting_after: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'The cursor to send in the next request to get the next page of results.',
+            example: 'your-cursor-from-response',
+          }),
+      })
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Fetch the next page by sending this `starting_after` cursor. Omitted on the last page.',
+        required: [],
+      }),
+    per_page: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'Number of results per page', example: 2 }),
+    total_pages: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'Total number of pages', example: 13 }),
+  })
+  .nullable()
+  .openapi({
+    title: 'Cursor based pages',
+    description:
+      'Cursor-based pagination is a technique used in the Intercom API to navigate through large amounts of data.\nA "cursor" or pointer is used to keep track of the current position in the result set, allowing the API to return the data in small chunks or "pages" as needed.\n',
+    required: [],
+  })
+  .openapi('CursorPages')
+
+type ConversationListType = {
+  type?: 'conversation.list'
+  conversations?: z.infer<typeof ConversationListItemSchema>[]
+  total_count?: number
+  pages?: z.infer<typeof CursorPagesSchema>
+}
+
+const DataConnectorVersionSchema = z
+  .object({
+    type: z
+      .literal('data_connector_version')
+      .exactOptional()
+      .openapi({
+        description: 'The type of object - `data_connector_version`.',
+        example: 'data_connector_version',
+      }),
+    status: z
+      .enum(['live', 'paused', 'draft', 'previously_live'])
+      .exactOptional()
+      .openapi({ description: 'The status of this version today.', example: 'live' }),
+    note: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'A note describing this version, if one has been set.',
+        example: 'Switched to the v2 orders endpoint',
+      }),
+    author: z
+      .object({
+        id: z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'The unique identifier of the teammate.', example: 456 }),
+        name: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'The name of the teammate.', example: 'Alice Admin' }),
+      })
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The teammate who created this version.', required: [] }),
+    created_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'The time this version was created.',
+        example: '2026-09-14T10:02:11Z',
+      }),
+    entity_version_id: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          'The identifier of this version. Use it as `version_id` when retrieving or updating a version.',
+        example: 9821,
+      }),
+    definition: z
+      .object({
+        name: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'The name of the data connector.',
+            example: 'Order Status Service',
+          }),
+        description: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'A description of what this data connector does.' }),
+        internal_description: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'The internal description of the data connector.' }),
+        state: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'The state of the data connector at this version.',
+            example: 'live',
+          }),
+        url: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'The URL of the external API endpoint. Supports template variables like `{{order_id}}`.',
+          }),
+        body: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'The request body template. Supports template variables.' }),
+        headers: z
+          .array(
+            z
+              .object({
+                name: z.string().exactOptional().openapi({ example: 'Authorization' }),
+                value: z
+                  .string()
+                  .exactOptional()
+                  .openapi({ description: 'Always `"****"` in responses.', example: '****' }),
+              })
+              .openapi({ required: [] }),
+          )
+          .exactOptional()
+          .openapi({
+            description:
+              'HTTP headers for the request. Header values are always redacted as `"****"`.',
+          }),
+        http_method: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'The HTTP method used by the data connector.', example: 'get' }),
+        direct_fin_usage: z
+          .boolean()
+          .exactOptional()
+          .openapi({ description: 'Whether this connector is used directly by Fin.' }),
+        audiences: z
+          .array(z.string())
+          .exactOptional()
+          .openapi({ description: 'The audience types this connector targets.' }),
+        execution_type: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: 'How the connector executes, for example `server_side` or `client_side`.',
+          }),
+        configuration_response_type: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'The expected response format from the connector.' }),
+        data_transformation_type: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'The type of data transformation applied to the response.' }),
+        client_function_name: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'The name of the client-side function, if applicable.' }),
+        client_function_timeout_ms: z
+          .int()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: 'Timeout in milliseconds for the client function, if applicable.',
+          }),
+        data_inputs: z
+          .array(
+            z
+              .object({
+                name: z.string().exactOptional(),
+                type: z.string().exactOptional(),
+                description: z.string().nullable().exactOptional(),
+                required: z.boolean().exactOptional(),
+                default_value: z.any().exactOptional(),
+              })
+              .openapi({ required: [] }),
+          )
+          .exactOptional()
+          .openapi({ description: 'The input parameters accepted by this data connector.' }),
+        response_fields: z
+          .array(
+            z
+              .object({
+                path: z.string().exactOptional(),
+                type: z.string().exactOptional(),
+                example_value: z.any().exactOptional(),
+                redacted: z.boolean().exactOptional(),
+              })
+              .openapi({ required: [] }),
+          )
+          .exactOptional()
+          .openapi({ description: 'The fields returned in the connector response.' }),
+        object_mappings: z
+          .array(
+            z
+              .object({
+                response_object_path: z.string().exactOptional(),
+                intercom_object_type: z.string().exactOptional(),
+                attribute_mappings: z
+                  .array(
+                    z
+                      .object({
+                        response_attribute_path: z.string().exactOptional(),
+                        intercom_attribute_identifier: z.string().exactOptional(),
+                        mapping_type: z.string().exactOptional(),
+                      })
+                      .openapi({ required: [] }),
+                  )
+                  .exactOptional(),
+                reference_mappings: z
+                  .array(
+                    z
+                      .object({
+                        intercom_object_type: z.string().exactOptional(),
+                        intercom_attribute_identifier: z.string().exactOptional(),
+                      })
+                      .openapi({ required: [] }),
+                  )
+                  .exactOptional(),
+              })
+              .openapi({ required: [] }),
+          )
+          .exactOptional()
+          .openapi({
+            description: 'Mappings from connector response objects to Intercom objects.',
+          }),
+        token_ids: z
+          .array(z.string())
+          .exactOptional()
+          .openapi({ description: 'IDs of authentication tokens associated with this connector.' }),
+        customer_authentication: z
+          .boolean()
+          .exactOptional()
+          .openapi({ description: 'Whether OTP authentication is enabled for this connector.' }),
+        bypass_authentication: z
+          .boolean()
+          .exactOptional()
+          .openapi({ description: 'Whether authentication is bypassed for this connector.' }),
+        enforce_auth: z
+          .boolean()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Whether authentication is enforced for this connector.' }),
+        validate_missing_attributes: z
+          .boolean()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Whether to validate missing attributes before execution.' }),
+      })
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          "The data connector's configuration at this version. `null` if the snapshot is no longer available. Mirrors the response of [Retrieve a data connector](/docs/references/rest-api/api.intercom.io/data-connectors/retrievedataconnector), without `id`, `type`, `created_by_admin_id`, `updated_by_admin_id`, `created_at`, `updated_at`, `execution_results_url` and `transform_code_block`.",
+        required: [],
+      }),
+  })
+  .openapi({
+    title: 'Data Connector Version',
+    'x-tags': ['Data Connectors'],
+    description:
+      "A point-in-time snapshot of a data connector's configuration, with the version's status and an optional note.",
+    required: [],
+  })
+  .openapi('DataConnectorVersion')
+
+type DataConnectorVersionListType = {
+  type?: 'list'
+  data?: z.infer<typeof DataConnectorVersionSchema>[]
+  pages?: { type?: 'pages'; per_page?: number; next?: { starting_after?: string } }
+}
+
+const SideConversationSummarySchema = z
+  .object({
+    side_conversation_id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The unique identifier for the side conversation.', example: '456' }),
+    conversation_parts: z
+      .array(ConversationPartSchema)
+      .exactOptional()
+      .openapi({ description: 'The conversation parts (messages) in this side conversation.' }),
+    total_count: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'The total number of conversation parts in this side conversation.',
+        example: 1,
+      }),
+  })
+  .openapi({
+    title: 'Side Conversation Summary',
+    description: 'A side conversation with its conversation parts.',
+    required: [],
+  })
+  .openapi('SideConversationSummary')
+
+type SideConversationListType = {
+  type?: 'side_conversation.list'
+  side_conversations?: z.infer<typeof SideConversationSummarySchema>[]
+  total_count?: number
+  pages?: { type?: 'pages'; page?: number; per_page?: number; total_pages?: number }
 }
 
 const SingleFilterSearchRequestSchema = z
@@ -43,287 +4012,691 @@ type MultipleFilterSearchRequestType = {
   value?: MultipleFilterSearchRequestType[] | z.infer<typeof SingleFilterSearchRequestSchema>[]
 }
 
-const ContactReplyBaseRequestSchema = z
+const TicketCustomAttributesSchema = z
+  .record(
+    z.string(),
+    z.union([
+      z.string().nullable(),
+      z.number(),
+      z.boolean(),
+      z.array(FileAttributeSchema),
+      FileAttributeSchema,
+    ]),
+  )
+  .openapi({
+    title: 'Ticket Attributes',
+    description:
+      'An object containing the different attributes associated to the ticket as key-value pairs. For the default title and description attributes, the keys are `_default_title_` and `_default_description_`.',
+    example: { _default_title_: 'Found a bug', _default_description_: "The button's not working" },
+  })
+  .openapi('TicketCustomAttributes')
+
+const TicketStateSchema = z
   .object({
-    message_type: z.literal('comment'),
-    type: z.literal('user'),
-    body: z.string().openapi({ description: 'The text body of the comment.' }),
-    created_at: z
-      .int()
+    type: z
+      .string()
       .exactOptional()
       .openapi({
-        description:
-          'The time the reply was created. If not provided, the current time will be used.',
-        example: 1590000000,
+        description: "String representing the object's type. Always has the value `ticket_state`.",
+        example: 'ticket_state',
       }),
-    attachment_urls: z
-      .array(z.url())
-      .max(10)
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The id of the ticket state', example: '12' }),
+    category: z
+      .enum(['submitted', 'in_progress', 'waiting_on_customer', 'resolved'])
+      .exactOptional()
+      .openapi({ description: 'The category of the ticket state', example: 'in_progress' }),
+    internal_label: z
+      .string()
       .exactOptional()
       .openapi({
-        title: 'Attachment URLs',
         description:
-          'A list of image URLs that will be added as attachments. You can include up to 10 URLs.',
+          'The state the ticket is currently in, in a human readable form - visible in Intercom',
+        example: 'With Dev Team',
       }),
-    reply_options: z
-      .array(
-        z
-          .object({
-            text: z.string().openapi({ description: 'The text of the chosen reply option.' }),
-            uuid: z
-              .uuid()
-              .openapi({
-                description: 'The unique identifier for the quick reply option selected.',
-              }),
-          })
-          .openapi({ title: 'Quick Reply Option', required: ['text', 'uuid'] }),
-      )
+    external_label: z
+      .string()
       .exactOptional()
       .openapi({
-        title: 'Contact Quick Reply',
         description:
-          'The quick reply selection the contact wishes to respond with. These map to buttons displayed in the Messenger UI if sent by a bot, or the reply options sent by an Admin via the API.',
+          'The state the ticket is currently in, in a human readable form - visible to customers, in the messenger, email and tickets portal.',
+        example: 'In Progress',
       }),
   })
-  .openapi({ title: 'Contact Reply Base Object', required: ['message_type', 'type', 'body'] })
-  .openapi('ContactReplyBaseRequest')
+  .nullable()
+  .openapi({
+    title: 'Ticket State',
+    'x-tags': ['Tickets'],
+    description: 'A ticket state, used to define the state of a ticket.',
+    required: [],
+  })
+  .openapi('TicketState')
 
-const ConversationAttachmentFilesSchema = z
+const TicketTypeAttributeSchema = z
   .object({
-    content_type: z
+    type: z
       .string()
       .exactOptional()
-      .openapi({ description: 'The content type of the file', example: 'application/json' }),
-    data: z
+      .openapi({
+        description:
+          "String representing the object's type. Always has the value `ticket_type_attribute`.",
+        example: 'ticket_type_attribute',
+      }),
+    id: z
       .string()
       .exactOptional()
-      .openapi({ description: 'The base64 encoded file data.', example: 'ewogICJ0ZXN0IjogMQp9' }),
+      .openapi({ description: 'The id representing the ticket type attribute.', example: '1' }),
+    workspace_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The id of the workspace that the ticket type attribute belongs to.',
+        example: 'ecahpwf5',
+      }),
     name: z
       .string()
       .exactOptional()
-      .openapi({ description: 'The name of the file.', example: 'test.json' }),
-  })
-  .openapi({
-    title: 'Conversation attachment files',
-    description: 'Properties of the attachment files in a conversation part',
-    required: [],
-  })
-  .openapi('ConversationAttachmentFiles')
-
-const ContactReplyIntercomUserIdRequestSchema = ContactReplyBaseRequestSchema.and(
-  z
-    .object({
-      intercom_user_id: z
-        .string()
-        .openapi({ description: 'The identifier for the contact as given by Intercom.' }),
-      attachment_files: z
-        .array(ConversationAttachmentFilesSchema)
-        .exactOptional()
-        .openapi({ description: 'A list of files that will be added as attachments.' }),
-    })
-    .openapi({ required: ['intercom_user_id'] }),
-)
-  .openapi({
-    title: 'Intercom User ID',
-    description:
-      'Payload of the request to reply on behalf of a contact using their `intercom_user_id`',
-    required: ['intercom_user_id'],
-  })
-  .openapi('ContactReplyIntercomUserIdRequest')
-
-const ContactReplyEmailRequestSchema = ContactReplyBaseRequestSchema.and(
-  z
-    .object({
-      email: z.string().openapi({ description: 'The email you have defined for the user.' }),
-      attachment_files: z
-        .array(ConversationAttachmentFilesSchema)
-        .exactOptional()
-        .openapi({ description: 'A list of files that will be added as attachments.' }),
-    })
-    .openapi({ required: ['email'] }),
-)
-  .openapi({
-    title: 'Email',
-    description: 'Payload of the request to reply on behalf of a contact using their `email`',
-    required: ['email'],
-  })
-  .openapi('ContactReplyEmailRequest')
-
-const ContactReplyUserIdRequestSchema = ContactReplyBaseRequestSchema.and(
-  z
-    .object({
-      user_id: z
-        .string()
-        .openapi({ description: 'The external_id you have defined for the contact.' }),
-      attachment_files: z
-        .array(ConversationAttachmentFilesSchema)
-        .max(10)
-        .exactOptional()
-        .openapi({
-          description:
-            'A list of files that will be added as attachments. You can include up to 10 files.',
-        }),
-    })
-    .openapi({ required: ['user_id'] }),
-)
-  .openapi({
-    title: 'User ID',
-    description: 'Payload of the request to reply on behalf of a contact using their `user_id`',
-    required: ['user_id'],
-  })
-  .openapi('ContactReplyUserIdRequest')
-
-const ContactReplyConversationRequestSchema = z
-  .xor([
-    ContactReplyIntercomUserIdRequestSchema,
-    ContactReplyEmailRequestSchema,
-    ContactReplyUserIdRequestSchema,
-  ])
-  .openapi({ title: 'Contact Reply' })
-  .openapi('ContactReplyConversationRequest')
-
-const QuickReplyOptionSchema = z
-  .object({
-    text: z.string().openapi({ description: 'The text to display in this quick reply option.' }),
-    uuid: z
-      .uuid()
+      .openapi({ description: 'The name of the ticket type attribute', example: 'Title' }),
+    description: z
+      .string()
+      .exactOptional()
       .openapi({
-        description:
-          'A unique identifier for this quick reply option. This value will be available within the metadata of the comment conversation part that is created when a user clicks on this reply option.',
+        description: 'The description of the ticket type attribute',
+        example: 'Bug title.',
       }),
-  })
-  .openapi({ title: 'Quick Reply Option', required: ['text', 'uuid'] })
-  .openapi('QuickReplyOption')
-
-const AdminReplyConversationRequestSchema = z
-  .object({
-    message_type: z.enum(['comment', 'note', 'quick_reply']).openapi({ example: 'comment' }),
-    type: z.literal('admin').openapi({ example: 'admin' }),
-    body: z
+    data_type: z
       .string()
       .exactOptional()
       .openapi({
         description:
-          'The text body of the reply. Notes accept some HTML formatting. Must be present for comment and note message types.',
-        example: 'Hello there!',
+          'The type of the data attribute (allowed values: "string list integer decimal boolean datetime files")',
+        example: 'string',
       }),
-    admin_id: z
-      .string()
+    input_options: z
+      .looseObject({})
+      .nullable()
+      .exactOptional()
       .openapi({
-        description: 'The id of the admin who is authoring the comment.',
-        example: '3156780',
+        description:
+          "Input options for the attribute. For a string attribute this holds `multiline` when it was set; for a list attribute it holds the list's options. When the attribute has no input options, this is `null`, or left out of the create and update ticket type attribute responses.",
+        example: { multiline: true },
+      }),
+    order: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'The order of the attribute against other attributes', example: 1 }),
+    required_to_create: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description: 'Whether the attribute is required or not for teammates.',
+        example: false,
+      }),
+    required_to_create_for_contacts: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description: 'Whether the attribute is required or not for contacts.',
+        example: false,
+      }),
+    visible_on_create: z
+      .boolean()
+      .default(true)
+      .exactOptional()
+      .openapi({
+        description: 'Whether the attribute is visible or not to teammates.',
+        example: false,
+      }),
+    visible_to_contacts: z
+      .boolean()
+      .default(true)
+      .exactOptional()
+      .openapi({
+        description: 'Whether the attribute is visible or not to contacts.',
+        example: false,
+      }),
+    default: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether the attribute is built in or not.', example: true }),
+    ticket_type_id: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'The id of the ticket type that the attribute belongs to.',
+        example: 42,
+      }),
+    archived: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Whether the ticket type attribute is archived or not.',
+        example: false,
       }),
     created_at: z
       .int()
       .exactOptional()
-      .openapi({
-        description:
-          'The time the reply was created. If not provided, the current time will be used.',
-        example: 1590000000,
-      }),
-    reply_options: z
-      .array(QuickReplyOptionSchema)
+      .openapi({ description: 'The date and time the ticket type attribute was created.' }),
+    updated_at: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'The date and time the ticket type attribute was last updated.' }),
+  })
+  .nullable()
+  .openapi({
+    title: 'Ticket Type Attribute',
+    description:
+      'Ticket type attribute, used to define each data field to be captured in a ticket.',
+    required: [],
+  })
+  .openapi('TicketTypeAttribute')
+
+const TicketTypeAttributeListSchema = z
+  .object({
+    type: z
+      .string()
       .exactOptional()
       .openapi({
-        title: 'Quick Reply Options',
-        description:
-          'The quick reply options to display to the end user. Must be present for quick_reply message types.',
+        description: "String representing the object's type. Always has the value `list`.",
+        example: 'list',
       }),
-    attachment_urls: z
-      .array(z.url())
-      .max(10)
+    data: z
+      .array(TicketTypeAttributeSchema)
       .exactOptional()
       .openapi({
-        description:
-          'A list of image URLs that will be added as attachments. You can include up to 10 URLs.',
-      }),
-    attachment_files: z
-      .array(ConversationAttachmentFilesSchema)
-      .max(10)
-      .exactOptional()
-      .openapi({
-        description:
-          'A list of files that will be added as attachments. You can include up to 10 files',
-      }),
-    skip_notifications: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Option to disable notifications when replying to a conversation.',
-        example: true,
+        description: 'A list of ticket type attributes associated with a given ticket type.',
       }),
   })
   .openapi({
-    title: 'Admin Reply',
-    description: 'Payload of the request to reply on behalf of an admin',
-    required: ['message_type', 'type', 'admin_id'],
+    title: 'Ticket Type Attributes',
+    description: 'A list of attributes associated with a given ticket type.',
+    required: [],
   })
-  .openapi('AdminReplyConversationRequest')
+  .openapi('TicketTypeAttributeList')
 
-type ReplyConversationRequestType =
-  | z.infer<typeof ContactReplyConversationRequestSchema>
-  | z.infer<typeof AdminReplyConversationRequestSchema>
-
-const MultipleFilterSearchRequestSchema: z.ZodType<MultipleFilterSearchRequestType> = z
-  .lazy(() =>
-    z
+const TicketTypeSchema = z
+  .object({
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: "String representing the object's type. Always has the value `ticket_type`.",
+        example: 'ticket_type',
+      }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The id representing the ticket type.', example: '1295' }),
+    category: z
+      .enum(['Customer', 'Back-office', 'Tracker'])
+      .exactOptional()
+      .openapi({ description: 'Category of the Ticket Type.', example: 'Customer' }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the ticket type', example: 'Bug' }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The description of the ticket type',
+        example: 'A bug that has been reported.',
+      }),
+    icon: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The icon of the ticket type', example: '🐞' }),
+    workspace_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The id of the workspace that the ticket type belongs to.',
+        example: 'ecahpwf5',
+      }),
+    ticket_type_attributes: TicketTypeAttributeListSchema.exactOptional(),
+    ticket_states: z
       .object({
-        operator: z
-          .enum(['AND', 'OR'])
+        type: z
+          .string()
           .exactOptional()
           .openapi({
-            description: 'An operator to allow boolean inspection between multiple fields.',
-            example: 'AND',
+            description: "String representing the object's type. Always has the value `list`.",
+            example: 'list',
           }),
-        value: z
-          .xor([
-            z
-              .array(MultipleFilterSearchRequestSchema)
-              .openapi({
-                description: 'Add mutiple filters.',
-                title: 'multiple filter search request',
-              }),
-            z
-              .array(SingleFilterSearchRequestSchema)
-              .openapi({
-                description: 'Add a single filter field.',
-                title: 'single filter search request',
-              }),
-          ])
-          .exactOptional(),
+        data: z
+          .array(TicketStateSchema)
+          .exactOptional()
+          .openapi({ description: 'A list of ticket states associated with a given ticket type.' }),
       })
+      .exactOptional()
       .openapi({
-        title: 'Multiple Filter Search Request',
-        description: 'Search using Intercoms Search APIs with more than one filter.',
+        title: 'Ticket States',
+        description: 'A list of ticket states associated with a given ticket type.',
         required: [],
       }),
-  )
-  .openapi('MultipleFilterSearchRequest')
-
-const StartingAfterPagingSchema = z
-  .object({
-    per_page: z
+    archived: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether the ticket type is archived or not.', example: false }),
+    is_internal: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          '`true` if tickets of this type are internal only and can never be shared with customers; `false` if they are, or can be, shared.',
+        example: false,
+      }),
+    created_at: z
       .int()
       .exactOptional()
-      .openapi({ description: 'The number of results to fetch per page.', example: 2 }),
-    starting_after: z
+      .openapi({ description: 'The date and time the ticket type was created.' }),
+    updated_at: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'The date and time the ticket type was last updated.' }),
+  })
+  .nullable()
+  .openapi({
+    title: 'Ticket Type',
+    'x-tags': ['Tickets'],
+    description: 'A ticket type, used to define the data fields to be captured in a ticket.',
+    required: [],
+  })
+  .openapi('TicketType')
+
+const TicketContactsSchema = z
+  .object({
+    type: z
+      .literal('contact.list')
+      .exactOptional()
+      .openapi({ description: 'always contact.list', example: 'contact.list' }),
+    contacts: z
+      .array(ContactReferenceSchema)
+      .exactOptional()
+      .openapi({ description: 'The list of contacts affected by this ticket.' }),
+  })
+  .openapi({
+    title: 'Contacts',
+    'x-tags': ['Tickets'],
+    description: 'The list of contacts affected by a ticket.',
+    required: [],
+  })
+  .openapi('TicketContacts')
+
+const TicketPartAuthorSchema = z
+  .object({
+    type: z
+      .enum(['admin', 'bot', 'team', 'user'])
+      .exactOptional()
+      .openapi({ description: 'The type of the author', example: 'admin' }),
+    id: z.string().exactOptional().openapi({ description: 'The id of the author', example: '274' }),
+    name: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The name of the author', example: 'Operator' }),
+    email: z
+      .email()
+      .exactOptional()
+      .openapi({
+        description: 'The email of the author',
+        example: 'operator+abcd1234@intercom.io',
+      }),
+  })
+  .openapi({
+    title: 'Ticket part author',
+    description: 'The author that wrote or triggered the part. Can be a bot, admin, team or user.',
+    required: [],
+  })
+  .openapi('TicketPartAuthor')
+
+const TicketPartSchema = z
+  .object({
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Always ticket_part', example: 'ticket_part' }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The id representing the ticket part.', example: '3' }),
+    part_type: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The type of ticket part.', example: 'comment' }),
+    body: z
       .string()
       .nullable()
       .exactOptional()
       .openapi({
-        description: 'The cursor to use in the next request to get the next page of results.',
-        example: 'your-cursor-from-response',
+        description: 'The message body, which may contain HTML.',
+        example: '<p>Okay!</p>',
+      }),
+    previous_ticket_state: z
+      .enum(['submitted', 'in_progress', 'waiting_on_customer', 'resolved'])
+      .exactOptional()
+      .openapi({ description: 'The previous state of the ticket.', example: 'submitted' }),
+    ticket_state: z
+      .enum(['submitted', 'in_progress', 'waiting_on_customer', 'resolved'])
+      .exactOptional()
+      .openapi({ description: 'The state of the ticket.', example: 'submitted' }),
+    created_at: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'The time the ticket part was created.', example: 1663597223 }),
+    updated_at: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'The last time the ticket part was updated.', example: 1663597260 }),
+    assigned_to: ReferenceSchema.nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The assignee this ticket_part assigned the ticket to, as a reference whose `type` is `admin`, `team` or `bot`. When the part unassigned the ticket, `type` is `nobody_admin` and `id` is `null`. Null when the part did not change the assignment, or when the assignee has since been deleted.',
+      }),
+    admin_assignee_id: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The id of the teammate that this ticket_part assigned the ticket to, or 0 if the part removed the teammate. Null or absent when the part did not change the teammate, including an unassignment that did not name which assignee it cleared. A bot is reported here, because assignment treats anything that is not a team as a teammate.',
+        example: 991268013,
+      }),
+    team_assignee_id: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The id of the team that this ticket_part assigned the ticket to, or 0 if the part removed the team. Null or absent when the part did not change the team, including an unassignment that did not name which assignee it cleared. A part can assign a team and a teammate at the same time, for example when the team uses Round Robin distribution and the teammate is resolved inline. In that case assigned_to reports only the teammate, and these two fields report each assignee separately.',
+        example: 5017691,
+      }),
+    author: TicketPartAuthorSchema.exactOptional(),
+    attachments: z
+      .array(PartAttachmentSchema)
+      .exactOptional()
+      .openapi({
+        title: 'Ticket part attachments',
+        description: 'A list of attachments for the part.',
+      }),
+    external_id: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The external id of the ticket part', example: 'abcd1234' }),
+    redacted: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Whether or not the ticket part has been redacted.',
+        example: false,
+      }),
+    app_package_code: z
+      .string()
+      .exactOptional()
+      .openapi({
+        example: 'text-integration',
+        description:
+          "The app package code if this part was created via API. Note this field won't show if the part was not created via API.",
+      }),
+    translations: z
+      .object({
+        original: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The locale code identifying the language the reply was originally written in.',
+            example: 'en',
+          }),
+      })
+      .catchall(z.string())
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'A map of the reply text keyed by locale code. Backs the `ticket.admin.replied.translated` webhook topic. `original` holds the locale code the reply was written in, when it is known; every other key holds the reply translated into that locale.',
+        example: { original: 'en', en: '<p>Hello</p>', fr: '<p>Bonjour</p>' },
+        required: [],
+      }),
+    updated_attribute_data: z
+      .object({
+        attribute: z
+          .object({
+            type: z
+              .literal('attribute')
+              .openapi({
+                description: "The type of the object. Always 'attribute'.",
+                example: 'attribute',
+              }),
+            id: z
+              .string()
+              .openapi({ description: 'The unique identifier of the attribute.', example: '7' }),
+            label: z
+              .string()
+              .openapi({
+                description: 'The human-readable name of the attribute.',
+                example: 'Progress',
+              }),
+          })
+          .openapi({
+            description: 'Information about the attribute that was updated.',
+            required: ['type', 'id', 'label'],
+          }),
+        value: z
+          .object({
+            type: z
+              .literal('value')
+              .openapi({
+                description: "The type of the object. Always 'value'.",
+                example: 'value',
+              }),
+            id: z.xor([
+              z
+                .string()
+                .nullable()
+                .openapi({
+                  description:
+                    'The value for text/number/decimal/boolean/date attributes, or the ID of the list option for list attributes.',
+                  example: 'Fast',
+                }),
+              z
+                .array(z.int())
+                .openapi({ description: 'Array of file IDs for file attributes.', example: [2] }),
+            ]),
+            label: z.xor([
+              z
+                .string()
+                .openapi({
+                  description:
+                    'The display value for text/number/decimal/boolean/date/list attributes.',
+                  example: 'Fast',
+                }),
+              z
+                .array(z.string())
+                .openapi({
+                  description: 'Array of file names for file attributes.',
+                  example: ['photo.png'],
+                }),
+            ]),
+          })
+          .openapi({
+            description: 'The new value of the attribute.',
+            required: ['type', 'id', 'label'],
+          }),
+      })
+      .nullable()
+      .exactOptional()
+      .openapi({
+        title: 'Updated Attribute',
+        description:
+          'The updated attribute data of the ticket part. Only present for attribute update parts.',
+        required: ['attribute', 'value'],
+      }),
+  })
+  .openapi({
+    title: 'Ticket Part',
+    'x-tags': ['Tickets'],
+    description: 'A Ticket Part represents a message in the ticket.',
+    required: [],
+  })
+  .openapi('TicketPart')
+
+const TicketPartsSchema = z
+  .object({
+    type: z
+      .literal('ticket_part.list')
+      .exactOptional()
+      .openapi({ description: '', example: 'ticket_part.list' }),
+    ticket_parts: z
+      .array(TicketPartSchema)
+      .exactOptional()
+      .openapi({
+        title: 'Tickt Parts',
+        description:
+          'A list of Ticket Part objects for each ticket. There is a limit of 500 parts.',
+      }),
+    total_count: z.int().exactOptional().openapi({ description: '', example: 2 }),
+  })
+  .openapi({
+    title: 'Ticket Parts',
+    description:
+      'A list of Ticket Part objects for each note and event in the ticket. There is a limit of 500 parts.',
+    required: [],
+  })
+  .openapi('TicketParts')
+
+const TicketSchema = z
+  .object({
+    type: z
+      .literal('ticket')
+      .default('ticket')
+      .exactOptional()
+      .openapi({ description: 'Always ticket', example: 'ticket' }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The unique identifier for the ticket which is given by Intercom.',
+        example: '1295',
+      }),
+    ticket_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The ID of the Ticket used in the Intercom Inbox and Messenger. Do not use ticket_id for API queries.',
+        example: '1390',
+      }),
+    category: z
+      .enum(['Customer', 'Back-office', 'Tracker'])
+      .exactOptional()
+      .openapi({ description: 'Category of the Ticket.', example: 'Customer' }),
+    channel: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The channel the ticket was created through. Defaults to messenger when no channel is specified at creation.',
+        example: 'messenger',
+      }),
+    ticket_attributes: TicketCustomAttributesSchema.exactOptional(),
+    ticket_state: TicketStateSchema.exactOptional(),
+    ticket_type: TicketTypeSchema.exactOptional(),
+    contacts: TicketContactsSchema.exactOptional(),
+    admin_assignee_id: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          "The id representing the admin assigned to the ticket. If it's not assigned to an admin it will return 0.",
+        example: 1295,
+      }),
+    team_assignee_id: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          "The id representing the team assigned to the ticket. If it's not assigned to a team it will return 0.",
+        example: 1295,
+      }),
+    created_at: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'The time the ticket was created as a UTC Unix timestamp.',
+        example: 1663597223,
+      }),
+    updated_at: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'The last time the ticket was updated as a UTC Unix timestamp.',
+        example: 1663597260,
+      }),
+    open: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Whether or not the ticket is open. If false, the ticket is closed.',
+        example: true,
+      }),
+    snoozed_until: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          'The time the ticket will be snoozed until as a UTC Unix timestamp. If null, the ticket is not currently snoozed.',
+        example: 1663597260,
+      }),
+    linked_objects: LinkedObjectListSchema.exactOptional(),
+    ticket_parts: TicketPartsSchema.exactOptional(),
+    is_shared: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Whether or not the ticket is shared with the customer.',
+        example: true,
+      }),
+    company_id: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The ID of the company the ticket is associated with. Omitted when the ticket has no company.',
+        example: '531ee472cce572a6ec000006',
+      }),
+    previous_ticket_state_id: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The ID of the previous ticket state from the most recent state change. Returns null if no state change history exists. Useful for tracking state transitions for reporting and compliance.',
+        example: '7493',
       }),
   })
   .nullable()
-  .openapi({ title: 'Pagination: Starting After', required: [] })
-  .openapi('StartingAfterPaging')
+  .openapi({
+    title: 'Ticket',
+    'x-tags': ['Tickets'],
+    description: 'Tickets are how you track requests from your users.',
+    required: [],
+  })
+  .openapi('Ticket')
 
-type SearchRequestType = {
-  query:
-    | z.infer<typeof SingleFilterSearchRequestSchema>
-    | z.infer<typeof MultipleFilterSearchRequestSchema>
-  pagination?: z.infer<typeof StartingAfterPagingSchema>
+type TicketListType = {
+  type?: 'ticket.list'
+  tickets?: z.infer<typeof TicketSchema>[]
+  total_count?: number
+  pages?: z.infer<typeof CursorPagesSchema>
 }
 
 const OfficeHoursTimeIntervalSchema = z
@@ -699,17 +5072,6 @@ const UpdateOfficeHoursExceptionRequestSchema = z
   })
   .openapi('UpdateOfficeHoursExceptionRequest')
 
-const DatetimeSchema = z
-  .xor([
-    z.iso
-      .datetime({ offset: true })
-      .openapi({ title: 'string', description: 'A date and time following the ISO8601 notation.' }),
-    z
-      .int()
-      .openapi({ title: 'integer', description: 'A date and time as UNIX timestamp notation.' }),
-  ])
-  .openapi('Datetime')
-
 const ActivityLogMetadataSchema = z
   .object({
     sign_in_method: z
@@ -908,7 +5270,7 @@ const ActivityLogMetadataSchema = z
         example: '2025-12-04T09:31:57.000Z',
       }),
     before: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({
@@ -916,7 +5278,7 @@ const ActivityLogMetadataSchema = z
           'The state of settings or values before the change. Structure varies by activity type.',
       }),
     after: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({
@@ -1412,36 +5774,6 @@ const ActivityLogEventTypeListSchema = z
   })
   .openapi('ActivityLogEventTypeList')
 
-const PagesLinkSchema = z
-  .object({
-    type: z.literal('pages').exactOptional().openapi({ example: 'pages' }),
-    page: z.int().exactOptional().openapi({ example: 1 }),
-    next: z
-      .url()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'A link to the next page of results. Omitted or `null` on the last page, depending on the list. Some lists never include `next` or `prev`, so compare `page` with `total_pages` to tell whether more pages remain.',
-      }),
-    prev: z
-      .url()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'A link to the previous page of results. Omitted on the first page.',
-      }),
-    per_page: z.int().exactOptional().openapi({ example: 50 }),
-    total_pages: z.int().exactOptional().openapi({ example: 1 }),
-  })
-  .openapi({
-    title: 'Pagination Object',
-    description:
-      'The majority of list resources in the API are paginated to allow clients to traverse data over multiple requests.\n\nTheir responses are likely to contain a pages object that hosts pagination links which a client can use to paginate through the data without having to construct a query. The link relations for the pages field are as follows.\n',
-    required: [],
-  })
-  .openapi('PagesLink')
-
 const ActivityLogListSchema = z
   .object({
     type: z
@@ -1678,6 +6010,168 @@ const AdminPriorityLevelSchema = z
     required: [],
   })
   .openapi('AdminPriorityLevel')
+
+const ConversationAttachmentFilesSchema = z
+  .object({
+    content_type: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The content type of the file', example: 'application/json' }),
+    data: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The base64 encoded file data.', example: 'ewogICJ0ZXN0IjogMQp9' }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the file.', example: 'test.json' }),
+  })
+  .openapi({
+    title: 'Conversation attachment files',
+    description: 'Properties of the attachment files in a conversation part',
+    required: [],
+  })
+  .openapi('ConversationAttachmentFiles')
+
+const AdminReplyConversationRequestSchema = z
+  .object({
+    message_type: z.enum(['comment', 'note', 'quick_reply']).openapi({ example: 'comment' }),
+    type: z.literal('admin').openapi({ example: 'admin' }),
+    body: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The text body of the reply. Notes accept some HTML formatting. Must be present for comment and note message types.',
+        example: 'Hello there!',
+      }),
+    admin_id: z
+      .string()
+      .openapi({
+        description: 'The id of the admin who is authoring the comment.',
+        example: '3156780',
+      }),
+    created_at: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          'The time the reply was created. If not provided, the current time will be used.',
+        example: 1590000000,
+      }),
+    reply_options: z
+      .array(QuickReplyOptionSchema)
+      .exactOptional()
+      .openapi({
+        title: 'Quick Reply Options',
+        description:
+          'The quick reply options to display to the end user. Must be present for quick_reply message types.',
+      }),
+    attachment_urls: z
+      .array(z.url())
+      .max(10)
+      .exactOptional()
+      .openapi({
+        description:
+          'A list of image URLs that will be added as attachments. You can include up to 10 URLs.',
+      }),
+    attachment_files: z
+      .array(ConversationAttachmentFilesSchema)
+      .max(10)
+      .exactOptional()
+      .openapi({
+        description:
+          'A list of files that will be added as attachments. You can include up to 10 files',
+      }),
+    skip_notifications: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Option to disable notifications when replying to a conversation.',
+        example: true,
+      }),
+    assignee_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The `id` of the admin or team to assign the conversation to with this reply.',
+        example: '4324241',
+      }),
+    skip_reopen: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description:
+          "When true, a reply that assigns the conversation (a `comment` with `assignee_id`) doesn't reopen or unsnooze it. A plain `comment` still reopens a closed conversation. Available from API version 2.17.",
+        example: true,
+      }),
+  })
+  .openapi({
+    title: 'Admin Reply',
+    description: 'Payload of the request to reply on behalf of an admin',
+    required: ['message_type', 'type', 'admin_id'],
+  })
+  .openapi('AdminReplyConversationRequest')
+
+const BotReplyConversationRequestSchema = z
+  .object({
+    message_type: z.enum(['comment', 'note', 'quick_reply']).openapi({ example: 'comment' }),
+    type: z.literal('bot').openapi({ example: 'bot' }),
+    bot_id: z
+      .string()
+      .openapi({
+        description:
+          "The id of the bot that is authoring the reply. A bot that doesn't exist returns a `404` error.",
+        example: '3156780',
+      }),
+    body: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The text body of the reply. Must be present for comment and note message types.',
+        example: 'Hello there!',
+      }),
+    created_at: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          'The time the reply was created. If not provided, the current time will be used.',
+        example: 1590000000,
+      }),
+    reply_options: z
+      .array(QuickReplyOptionSchema)
+      .exactOptional()
+      .openapi({
+        title: 'Quick Reply Options',
+        description:
+          'The quick reply options to display to the end user. Must be present for quick_reply message types.',
+      }),
+    attachment_urls: z
+      .array(z.url())
+      .max(10)
+      .exactOptional()
+      .openapi({
+        description:
+          'A list of image URLs that will be added as attachments. You can include up to 10 URLs.',
+      }),
+    skip_notifications: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Option to disable notifications when replying to a conversation. Available from API version 2.15.',
+        example: true,
+      }),
+  })
+  .openapi({
+    title: 'Bot Reply',
+    description: 'Payload of the request to reply on behalf of a bot',
+    required: ['message_type', 'type', 'bot_id'],
+  })
+  .openapi('BotReplyConversationRequest')
 
 const AdminReplyTicketRequestSchema = z
   .object({
@@ -1933,192 +6427,6 @@ const AdminWithAppSchema = z
   })
   .openapi('AdminWithApp')
 
-const ContentSourceSchema = z
-  .object({
-    content_type: z
-      .enum([
-        'file',
-        'article',
-        'external_content',
-        'content_snippet',
-        'workflow_connector_action',
-        'internal_article',
-      ])
-      .exactOptional()
-      .openapi({ description: 'The type of the content source.', example: 'content_snippet' }),
-    url: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The internal URL linking to the content source for teammates.',
-        example: '/fin-ai-agent/content?content=content_snippet&id=3234924',
-      }),
-    title: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The title of the content source.',
-        example: 'My internal content snippet',
-      }),
-    locale: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The ISO 639 language code of the content source.', example: 'en' }),
-  })
-  .openapi({
-    title: 'Content Source',
-    'x-tags': ['AI Content Source'],
-    description: 'The content source used by AI Agent in the conversation.',
-    required: [],
-  })
-  .openapi('ContentSource')
-
-const ContentSourcesListSchema = z
-  .object({
-    type: z
-      .literal('content_source.list')
-      .exactOptional()
-      .openapi({ example: 'content_source.list' }),
-    total_count: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'The total number of content sources used by AI Agent in the conversation.',
-        example: 1,
-      }),
-    content_sources: z
-      .array(ContentSourceSchema)
-      .exactOptional()
-      .openapi({ description: 'The content sources used by AI Agent in the conversation.' }),
-  })
-  .openapi({ title: 'Content Source List', required: [] })
-  .openapi('ContentSourcesList')
-
-const AiAgentSchema = z
-  .object({
-    source_type: z
-      .enum(['essentials_plan_setup', 'profile', 'workflow', 'workflow_preview', 'fin_preview'])
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The type of the source that triggered AI Agent involvement in the conversation.',
-        example: 'workflow',
-      }),
-    source_title: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The title of the source that triggered AI Agent involvement in the conversation. If this is `essentials_plan_setup` then it will return `null`.',
-        example: 'My AI Workflow',
-      }),
-    last_answer_type: z
-      .union([z.literal(null), z.literal('ai_answer'), z.literal('custom_answer')])
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The type of the last answer delivered by AI Agent. If no answer was delivered then this will return `null`',
-        example: 'ai_answer',
-      }),
-    resolution_state: z
-      .union([
-        z.literal('assumed_resolution'),
-        z.literal('confirmed_resolution'),
-        z.literal('escalated'),
-        z.literal('negative_feedback'),
-        z.literal('procedure_handoff'),
-        z.literal(null),
-      ])
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The resolution state of AI Agent. If no AI or custom answer has been delivered then this will return `null`.',
-        example: 'assumed_resolution',
-      }),
-    rating: z
-      .int()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'The customer satisfaction rating given to AI Agent, from 1-5.',
-        example: 4,
-      }),
-    rating_remark: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'The customer satisfaction rating remark given to AI Agent.',
-        example: 'Very helpful!',
-      }),
-    created_at: z
-      .int()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'The time when the AI agent rating was created.',
-        example: 1663597260,
-      }),
-    updated_at: z
-      .int()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'The time when the AI agent rating was last updated.',
-        example: 1663597260,
-      }),
-    content_sources: ContentSourcesListSchema.exactOptional(),
-  })
-  .openapi({
-    title: 'AI Agent',
-    'x-tags': ['Ai Agent'],
-    description: 'Data related to AI Agent involvement in the conversation.',
-    required: [],
-  })
-  .openapi('AiAgent')
-
-const SalesAgentSchema = z
-  .object({
-    outcome: z
-      .enum(['qualified', 'disqualified', 'product_discovery', 'escalated_to_support', 'spam'])
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The fixed outcome of the sales agent interaction, used for billing and tracking.',
-        example: 'qualified',
-      }),
-    routing_outcome: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The identifier of the user-defined routing outcome selected by the sales agent.',
-        example: 'enterprise_sales',
-      }),
-    collected_data: z
-      .record(z.string(), z.string())
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'A flat key-value map of memory fields collected by the sales agent during the conversation.',
-        example: { email: 'user@example.com', 'company.name': 'Acme Inc' },
-      }),
-  })
-  .openapi({
-    title: 'Sales Agent',
-    'x-tags': ['Sales Agent'],
-    description: 'Data related to Sales Agent involvement in the conversation.',
-    required: [],
-  })
-  .openapi('SalesAgent')
-
 const AiCallResponseSchema = z
   .object({
     id: z
@@ -2177,7 +6485,7 @@ const AiCallResponseSchema = z
         example: '5678',
       }),
     call_transcript: z
-      .array(z.object({}))
+      .array(z.looseObject({}))
       .exactOptional()
       .openapi({ description: 'Array of transcript entries for the call', example: [] }),
     call_summary: z
@@ -2189,7 +6497,7 @@ const AiCallResponseSchema = z
         example: 'Customer called about billing issue...',
       }),
     intent: z
-      .array(z.object({}))
+      .array(z.looseObject({}))
       .exactOptional()
       .openapi({ description: 'Array of intent classifications for the call', example: [] }),
     fin_call_duration: z
@@ -2202,7 +6510,7 @@ const AiCallResponseSchema = z
         example: '45',
       }),
     data: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -2377,687 +6685,6 @@ const AudienceListSchema = z
     required: [],
   })
   .openapi('AudienceList')
-
-const ArticleContentSchema = z
-  .object({
-    type: z
-      .union([z.literal(null), z.literal('article_content')])
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'The type of object - `article_content` .',
-        example: 'article_content',
-      }),
-    content_id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description: "The unique identifier for the article's content in this locale.",
-        example: '6871120',
-      }),
-    title: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The title of the article.',
-        example: 'How to create a new article',
-      }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The description of the article.',
-        example: 'This article will show you how to create a new article.',
-      }),
-    body: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The body of the article in HTML.',
-        example: 'This is the body of the article.',
-      }),
-    body_markdown: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'The body of the article in markdown.',
-        example: '# How to create a new article\n\nThis is the body of the article.\n',
-      }),
-    author_id: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'The ID of the author of the article.', example: '5017691' }),
-    state: z
-      .enum(['published', 'draft'])
-      .exactOptional()
-      .openapi({
-        description: 'Whether the article is `published` or is a `draft` .',
-        example: 'draft',
-      }),
-    created_at: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'The time when the article was created (seconds).',
-        example: 1663597223,
-      }),
-    updated_at: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'The time when the article was last updated (seconds).',
-        example: 1663597260,
-      }),
-    has_unpublished_changes: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          "Whether this locale's published content has unpublished changes staged as a draft on top of its live content.",
-        example: false,
-      }),
-    draft_updated_at: z
-      .int()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          "The time, in seconds, when this locale's staged draft was last edited, or `null` when there is no staged draft.",
-        example: 1663597260,
-      }),
-    url: z.string().exactOptional().openapi({ description: 'The URL of the article.' }),
-    audience_ids: z
-      .array(z.int())
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The list of audience IDs this article content is targeted to for Fin AI Agent. On multilingual help centers this field appears per-locale inside `translated_content`. On single-language help centers it appears at the article root level. Empty array means no audience targeting is set.',
-        example: [1, 2],
-      }),
-    ai_chatbot_availability: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether the article is available for AI Chatbot.', example: true }),
-    ai_copilot_availability: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether the article is available for AI Copilot.', example: true }),
-    ai_sales_agent_availability: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Whether the article is available for AI Sales Agent.',
-        example: true,
-      }),
-    created_by_id: z
-      .int()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description: 'The ID of the teammate who created this content version.',
-        example: 5017691,
-      }),
-    updated_by_id: z
-      .int()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description: 'The ID of the teammate who last updated this content version.',
-        example: 5017691,
-      }),
-  })
-  .nullable()
-  .openapi({ title: 'Article Content', description: 'The Content of an Article.', required: [] })
-  .openapi('ArticleContent')
-
-const ArticleTranslatedContentSchema = z
-  .object({
-    type: z
-      .union([z.literal(null), z.literal('article_translated_content')])
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'The type of object - article_translated_content.',
-        example: 'article_translated_content',
-      }),
-    ar: ArticleContentSchema.exactOptional().openapi({
-      description: 'The content of the article in Arabic',
-    }),
-    bg: ArticleContentSchema.exactOptional().openapi({
-      description: 'The content of the article in Bulgarian',
-    }),
-    bs: ArticleContentSchema.exactOptional().openapi({
-      description: 'The content of the article in Bosnian',
-    }),
-    ca: ArticleContentSchema.exactOptional().openapi({
-      description: 'The content of the article in Catalan',
-    }),
-    cs: ArticleContentSchema.exactOptional().openapi({
-      description: 'The content of the article in Czech',
-    }),
-    da: ArticleContentSchema.exactOptional().openapi({
-      description: 'The content of the article in Danish',
-    }),
-    de: ArticleContentSchema.exactOptional().openapi({
-      description: 'The content of the article in German',
-    }),
-    el: ArticleContentSchema.exactOptional().openapi({
-      description: 'The content of the article in Greek',
-    }),
-    en: ArticleContentSchema.exactOptional().openapi({
-      description: 'The content of the article in English',
-    }),
-    es: ArticleContentSchema.exactOptional().openapi({
-      description: 'The content of the article in Spanish',
-    }),
-    et: ArticleContentSchema.exactOptional().openapi({
-      description: 'The content of the article in Estonian',
-    }),
-    fi: ArticleContentSchema.exactOptional().openapi({
-      description: 'The content of the article in Finnish',
-    }),
-    fr: ArticleContentSchema.exactOptional().openapi({
-      description: 'The content of the article in French',
-    }),
-    he: ArticleContentSchema.exactOptional().openapi({
-      description: 'The content of the article in Hebrew',
-    }),
-    hr: ArticleContentSchema.exactOptional().openapi({
-      description: 'The content of the article in Croatian',
-    }),
-    hu: ArticleContentSchema.exactOptional().openapi({
-      description: 'The content of the article in Hungarian',
-    }),
-    id: ArticleContentSchema.exactOptional().openapi({
-      description: 'The content of the article in Indonesian',
-    }),
-    it: ArticleContentSchema.exactOptional().openapi({
-      description: 'The content of the article in Italian',
-    }),
-    ja: ArticleContentSchema.exactOptional().openapi({
-      description: 'The content of the article in Japanese',
-    }),
-    ko: ArticleContentSchema.exactOptional().openapi({
-      description: 'The content of the article in Korean',
-    }),
-    lt: ArticleContentSchema.exactOptional().openapi({
-      description: 'The content of the article in Lithuanian',
-    }),
-    lv: ArticleContentSchema.exactOptional().openapi({
-      description: 'The content of the article in Latvian',
-    }),
-    mn: ArticleContentSchema.exactOptional().openapi({
-      description: 'The content of the article in Mongolian',
-    }),
-    nb: ArticleContentSchema.exactOptional().openapi({
-      description: 'The content of the article in Norwegian',
-    }),
-    nl: ArticleContentSchema.exactOptional().openapi({
-      description: 'The content of the article in Dutch',
-    }),
-    pl: ArticleContentSchema.exactOptional().openapi({
-      description: 'The content of the article in Polish',
-    }),
-    pt: ArticleContentSchema.exactOptional().openapi({
-      description: 'The content of the article in Portuguese (Portugal)',
-    }),
-    ro: ArticleContentSchema.exactOptional().openapi({
-      description: 'The content of the article in Romanian',
-    }),
-    ru: ArticleContentSchema.exactOptional().openapi({
-      description: 'The content of the article in Russian',
-    }),
-    sl: ArticleContentSchema.exactOptional().openapi({
-      description: 'The content of the article in Slovenian',
-    }),
-    sr: ArticleContentSchema.exactOptional().openapi({
-      description: 'The content of the article in Serbian',
-    }),
-    sv: ArticleContentSchema.exactOptional().openapi({
-      description: 'The content of the article in Swedish',
-    }),
-    tr: ArticleContentSchema.exactOptional().openapi({
-      description: 'The content of the article in Turkish',
-    }),
-    vi: ArticleContentSchema.exactOptional().openapi({
-      description: 'The content of the article in Vietnamese',
-    }),
-    'pt-BR': ArticleContentSchema.exactOptional().openapi({
-      description: 'The content of the article in Portuguese (Brazil)',
-    }),
-    'zh-CN': ArticleContentSchema.exactOptional().openapi({
-      description: 'The content of the article in Chinese (China)',
-    }),
-    'zh-TW': ArticleContentSchema.exactOptional().openapi({
-      description: 'The content of the article in Chinese (Taiwan)',
-    }),
-  })
-  .nullable()
-  .openapi({
-    title: 'Article Translated Content',
-    description:
-      'The Translated Content of an Article. The keys are the locale codes and the values are the translated content of the article.',
-    required: [],
-  })
-  .openapi('ArticleTranslatedContent')
-
-const ReferenceSchema = z
-  .object({
-    type: z.string().exactOptional().openapi({ description: '', example: 'contact' }),
-    id: z.string().nullable().exactOptional().openapi({ description: '', example: '1a2b3c' }),
-  })
-  .openapi({ title: 'Reference', description: 'reference to another object', required: [] })
-  .openapi('Reference')
-
-const TagSchema = z
-  .object({
-    type: z.string().exactOptional().openapi({ description: 'value is "tag"', example: 'tag' }),
-    id: z.string().exactOptional().openapi({ description: 'The id of the tag', example: '123456' }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The name of the tag', example: 'Test tag' }),
-    applied_at: z
-      .int()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The time when the tag was applied to the object. Only present when the tag is returned as part of a tagging operation on a contact, conversation, ticket, article, internal article, or content snippet, when listing the tags on a contact, or when it is returned as part of an external page. `null` when the tag has just been removed from an article, internal article, content snippet or external page. Removing a tag from a contact, conversation or ticket returns the original value.',
-        example: 1663597223,
-      }),
-    applied_by: ReferenceSchema.nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The admin who applied the tag. Only present when the tag is returned as part of a tagging operation on a contact, conversation, ticket, article, internal article, or content snippet, when listing the tags on a contact, or when it is returned as part of an external page. `null` when the tag has just been removed from an article, internal article, content snippet or external page. Removing a tag from a contact, conversation or ticket returns the original value. When no admin is recorded, `type` is `nobody_admin` and `id` is `null`.',
-      }),
-  })
-  .openapi({
-    title: 'Tag',
-    'x-tags': ['Tags'],
-    description:
-      'A tag allows you to label your contacts, companies, conversations, tickets, articles, internal articles and content snippets, and list them using that tag.',
-    required: [],
-  })
-  .openapi('Tag')
-
-const TagsSchema = z
-  .object({
-    type: z
-      .literal('tag.list')
-      .exactOptional()
-      .openapi({ description: 'The type of the object', example: 'tag.list' }),
-    tags: z
-      .array(TagSchema)
-      .exactOptional()
-      .openapi({ description: 'A list of tags objects associated with the object.' }),
-  })
-  .openapi({
-    title: 'Tags',
-    description:
-      'A list of tags objects associated with a conversation, article or internal article',
-    required: [],
-  })
-  .openapi('Tags')
-
-const ArticleListItemSchema = z
-  .object({
-    type: z
-      .literal('article')
-      .default('article')
-      .exactOptional()
-      .openapi({ description: 'The type of object - `article`.', example: 'article' }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The unique identifier for the article which is given by Intercom.',
-        example: '6871119',
-      }),
-    workspace_id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The id of the workspace which the article belongs to.',
-        example: 'hfi1bx4l',
-      }),
-    content_id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The unique identifier for the article's content. For multilingual articles, this will be the identifier of the default language's content.",
-        example: '6871120',
-      }),
-    title: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The title of the article. For multilingual articles, this will be the title of the default language's content.",
-        example: 'Default language title',
-      }),
-    description: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          "The description of the article. For multilingual articles, this will be the description of the default language's content.",
-        example: 'Default language description',
-      }),
-    body: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          "The body of the article in HTML. For multilingual articles, this will be the body of the default language's content.",
-        example: 'Default language body in html',
-      }),
-    body_markdown: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          "The body of the article in markdown. For multilingual articles, this will be the body of the default language's content.",
-        example: '# Default language title\n\nDefault language body in markdown\n',
-      }),
-    author_id: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description:
-          "The id of the author of the article. For multilingual articles, this will be the id of the author of the default language's content. Must be a teammate on the help center's workspace.",
-        example: '5017691',
-      }),
-    state: z
-      .enum(['published', 'draft'])
-      .default('draft')
-      .exactOptional()
-      .openapi({
-        description:
-          "Whether the article is `published` or is a `draft`. For multilingual articles, this will be the state of the default language's content.",
-        example: 'published',
-      }),
-    created_at: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description:
-          "The time when the article was created. For multilingual articles, this will be the timestamp of creation of the default language's content in seconds.",
-        example: 1672928359,
-      }),
-    updated_at: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description:
-          "The time when the article was last updated. For multilingual articles, this will be the timestamp of last update of the default language's content in seconds.",
-        example: 1672928610,
-      }),
-    has_unpublished_changes: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          "Whether the published article has unpublished changes staged as a draft on top of its live content. For multilingual articles this reflects the default language's content; a pure draft (never published) reports `false`.",
-        example: false,
-      }),
-    draft_updated_at: z
-      .int()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The time, in seconds, when the staged draft was last edited, or `null` when there is no staged draft.',
-        example: 1672928610,
-      }),
-    url: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          "The URL of the article. For multilingual articles, this will be the URL of the default language's content.",
-        example: 'http://intercom.test/help/en/articles/3-default-language',
-      }),
-    parent_ids: z
-      .array(z.int())
-      .exactOptional()
-      .openapi({
-        description:
-          "The ids of the article's parent collections or sections. An article without this field stands alone.",
-        example: [18, 19],
-      }),
-    audience_ids: z
-      .array(z.int())
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The list of audience IDs this article is targeted to for Fin AI Agent. This field is only returned for single-language help centers. For multilingual help centers it appears per locale inside `translated_content`. Empty array means no audience targeting is set.',
-        example: [1, 2],
-      }),
-    ai_chatbot_availability: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          "Whether the article is available for AI Chatbot. For multilingual articles, this will be the value of the default language's content.",
-        example: true,
-      }),
-    ai_copilot_availability: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          "Whether the article is available for AI Copilot. For multilingual articles, this will be the value of the default language's content.",
-        example: true,
-      }),
-    ai_sales_agent_availability: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          "Whether the article is available for AI Sales Agent. For multilingual articles, this will be the value of the default language's content.",
-        example: true,
-      }),
-    created_by_id: z
-      .int()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description:
-          "The ID of the teammate who created the article. For multilingual articles, this will be the creator of the default language's content.",
-        example: 5017691,
-      }),
-    updated_by_id: z
-      .int()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description:
-          "The ID of the teammate who last updated the article. For multilingual articles, this will be the last editor of the default language's content.",
-        example: 5017691,
-      }),
-    exclude_from_article_suggestions: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description: 'Whether the article is excluded from Fin AI Agent article suggestions.',
-        example: false,
-      }),
-    help_center_audience: z
-      .enum([
-        'everyone',
-        'all_users',
-        'all_visitors',
-        'all_leads',
-        'all_visitors_and_leads',
-        'restricted',
-      ])
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description:
-          'The audience that can view this article in the Help Center. `everyone` means all users and visitors can view it; `restricted` indicates a custom audience ruleset. For multilingual articles, this is the article-level audience.',
-        example: 'everyone',
-      }),
-    scheduled_publish_at: z
-      .int()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description:
-          'The Unix timestamp (in seconds) at which the article is scheduled to be published. `null` when no publish is scheduled. Mutually exclusive with `scheduled_unpublish_at` — at most one pending schedule exists per article.',
-        example: 1769443200,
-      }),
-    scheduled_unpublish_at: z
-      .int()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description:
-          'The Unix timestamp (in seconds) at which the article is scheduled to be unpublished. `null` when no unpublish is scheduled. Mutually exclusive with `scheduled_publish_at` — at most one pending schedule exists per article.',
-        example: 1769443200,
-      }),
-    default_locale: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The default locale of the help center. This field is only returned for multilingual help centers.',
-        example: 'en',
-      }),
-    translated_content: ArticleTranslatedContentSchema.nullable().exactOptional(),
-    tags: TagsSchema.exactOptional(),
-    folder_id: z
-      .int()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'The ID of the folder this article belongs to, or null if not in a folder.',
-        example: 6,
-      }),
-  })
-  .openapi({
-    title: 'Articles',
-    'x-tags': ['Articles'],
-    description: 'The data returned about your articles when you list them.',
-    required: [],
-  })
-  .openapi('ArticleListItem')
-
-const ArticleStatisticsSchema = z
-  .object({
-    type: z
-      .literal('article_statistics')
-      .default('article_statistics')
-      .exactOptional()
-      .openapi({
-        description: 'The type of object - `article_statistics`.',
-        example: 'article_statistics',
-      }),
-    views: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'The number of total views the article has received.', example: 10 }),
-    conversations: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'The number of conversations started from the article.',
-        example: 0,
-      }),
-    reactions: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'The number of total reactions the article has received.',
-        example: 10,
-      }),
-    happy_reaction_percentage: z
-      .float32()
-      .exactOptional()
-      .openapi({
-        description:
-          'The percentage of happy reactions the article has received against other types of reaction.',
-        example: 40,
-      }),
-    neutral_reaction_percentage: z
-      .float32()
-      .exactOptional()
-      .openapi({
-        description:
-          'The percentage of neutral reactions the article has received against other types of reaction.',
-        example: 40,
-      }),
-    sad_reaction_percentage: z
-      .float32()
-      .exactOptional()
-      .openapi({ description: 'The percentage of sad reactions the article has received against' }),
-    fin_involvements: z
-      .int()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description:
-          "The number of conversations in which Fin AI Agent used this article, summed across all of the article's locales.",
-        example: 10,
-      }),
-    fin_resolutions: z
-      .int()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description:
-          "The number of conversations Fin AI Agent resolved using this article, summed across all of the article's locales.",
-        example: 8,
-      }),
-    fin_resolution_rate: z
-      .float32()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description:
-          'The percentage of Fin AI Agent involvements that resulted in a resolution (fin_resolutions / fin_involvements * 100).',
-        example: 80,
-      }),
-  })
-  .nullable()
-  .openapi({
-    title: 'Article Statistics',
-    description: 'The statistics of an article.',
-    required: [],
-  })
-  .openapi('ArticleStatistics')
-
-const ArticleSchema = ArticleListItemSchema.and(
-  z
-    .object({ statistics: ArticleStatisticsSchema.nullable().exactOptional() })
-    .openapi({ required: [] }),
-)
-  .openapi({
-    title: 'Article',
-    'x-tags': ['Articles'],
-    description:
-      'The Articles API is a central place to gather all information and take actions on your articles. Articles can live within collections and sections, or alternatively they can stand alone.',
-  })
-  .openapi('Article')
 
 const InternalArticleListItemSchema = z
   .object({
@@ -3289,70 +6916,7 @@ const ArticleListSchema = z
   })
   .openapi('ArticleList')
 
-const ArticleSearchHighlightsSchema = z
-  .object({
-    article_id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The ID of the corresponding article.', example: '123' }),
-    highlighted_title: z
-      .array(
-        z
-          .object({
-            type: z
-              .enum(['highlight', 'plain'])
-              .exactOptional()
-              .openapi({
-                description: 'The type of text - `highlight` or `plain`.',
-                example: 'The highlight is ',
-              }),
-            text: z
-              .string()
-              .exactOptional()
-              .openapi({ description: 'The text of the title.', example: 'my query' }),
-          })
-          .openapi({ description: 'A highlighted article title.', required: [] }),
-      )
-      .exactOptional()
-      .openapi({ description: 'An Article title highlighted.' }),
-    highlighted_summary: z
-      .array(
-        z
-          .array(
-            z
-              .object({
-                type: z
-                  .enum(['highlight', 'plain'])
-                  .exactOptional()
-                  .openapi({
-                    description: 'The type of text - `highlight` or `plain`.',
-                    example: 'How to highlight ',
-                  }),
-                text: z
-                  .string()
-                  .exactOptional()
-                  .openapi({ description: 'The text of the title.', example: 'my query' }),
-              })
-              .openapi({ description: 'An instance of highlighted summary text.', required: [] }),
-          )
-          .openapi({
-            description:
-              'An array containing the highlighted summary text split into chunks of plain and highlighted text.',
-          }),
-      )
-      .exactOptional()
-      .openapi({ description: 'An Article description and body text highlighted.' }),
-  })
-  .openapi({
-    title: 'Article Search Highlights',
-    'x-tags': ['Articles'],
-    description:
-      'The highlighted results of an Article search. In the examples provided my search query is always "my query".',
-    required: [],
-  })
-  .openapi('ArticleSearchHighlights')
-
-const ArticleSearchResponseSchema = z
+const ArticleSearchResponseSchema: z.ZodType<ArticleSearchResponseType> = z
   .object({
     type: z
       .literal('list')
@@ -3675,6 +7239,14 @@ const AssignConversationRequestSchema = z
           'When true, assigning a closed conversation leaves it closed instead of reopening it. No reopen event is recorded, so the conversation keeps its original close timestamp and the assignment does not count as a new closure in reporting.',
         example: true,
       }),
+    skip_notifications: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Option to disable notifications when assigning a conversation. Available from API version 2.15.',
+        example: true,
+      }),
   })
   .openapi({
     title: 'Assign Conversation Request',
@@ -3727,53 +7299,43 @@ const AttachContactToConversationRequestSchema = z
       .string()
       .exactOptional()
       .openapi({
-        description: 'The `id` of the admin who is adding the new participant.',
+        description:
+          'The `id` of the admin who is adding the new participant. Send this to act as an admin.',
         example: '12345',
       }),
-    customer: z
-      .xor([
-        z
-          .object({
-            intercom_user_id: z
-              .string()
-              .openapi({
-                description: 'The identifier for the contact as given by Intercom.',
-                example: '6329bd9ffe4e2e91dac76188',
-              }),
-            customer: CustomerRequestSchema.exactOptional(),
-          })
-          .openapi({ title: 'Intercom User ID', required: ['intercom_user_id'] }),
-        z
-          .object({
-            user_id: z
-              .string()
-              .openapi({
-                description:
-                  'The external_id you have defined for the contact who is being added as a participant.',
-                example: '6329bd9ffe4e2e91dac76188',
-              }),
-            customer: CustomerRequestSchema.exactOptional(),
-          })
-          .openapi({ title: 'User ID', required: ['user_id'] }),
-        z
-          .object({
-            email: z
-              .string()
-              .openapi({
-                description:
-                  'The email you have defined for the contact who is being added as a participant.',
-                example: 'winstonsmith@truth.org',
-              }),
-            customer: CustomerRequestSchema.exactOptional(),
-          })
-          .openapi({ title: 'Email', required: ['email'] }),
-      ])
-      .exactOptional(),
+    intercom_user_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The identifier, as given by Intercom, of the contact who is adding the new participant. Send this, `user_id` or `email` to act as a contact.',
+        example: '6329bd9ffe4e2e91dac76188',
+      }),
+    user_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The `external_id` you have defined for the contact who is adding the new participant.',
+        example: '2e91dac761886329bd9ffe4e',
+      }),
+    email: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The email of the contact who is adding the new participant.',
+        example: 'winstonsmith@truth.org',
+      }),
+    customer: CustomerRequestSchema.openapi({
+      description:
+        'The contact to add as a participant. Identify them with exactly one of `intercom_user_id`, `user_id` or `email`.',
+    }),
   })
   .openapi({
-    title: 'Assign Conversation Request',
-    description: 'Payload of the request to assign a conversation',
-    required: [],
+    title: 'Attach Contact To Conversation Request',
+    description:
+      'Payload of the request to add a contact to a conversation. Say who is adding the contact in one of two ways: send `admin_id` to act as an admin, or send one of `intercom_user_id`, `user_id` or `email` to act as a contact. Sending both, or neither, returns a `422` error. Use `customer` to identify the contact to add.',
+    required: ['customer'],
   })
   .openapi('AttachContactToConversationRequest')
 
@@ -4093,7 +7655,7 @@ const BannerSchema = z
         required: [],
       }),
     client_targeting: z
-      .array(z.object({}))
+      .array(z.looseObject({}))
       .nullable()
       .exactOptional()
       .openapi({
@@ -4178,7 +7740,7 @@ const ChangeTicketTypeRequestSchema = z
         example: '5678',
       }),
     ticket_attributes: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -4210,6 +7772,22 @@ const CloseConversationRequestSchema = z
         description:
           'Optionally you can leave a message in the conversation to provide additional context to the user and other teammates.',
         example: ' This conversation is now closed!',
+      }),
+    assignee_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The `id` of the `admin` or `team` to assign the conversation to when it is closed. Set `0` to unassign it, which clears both the teammate and the team assignee.',
+        example: '4324241',
+      }),
+    skip_notifications: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Option to disable notifications when closing a conversation. Available from API version 2.15.',
+        example: true,
       }),
   })
   .openapi({
@@ -4724,7 +8302,7 @@ const BulkCreateContactsRequestSchema = z
                 example: 'fr',
               }),
             custom_attributes: z
-              .object({})
+              .looseObject({})
               .exactOptional()
               .openapi({ description: 'Custom attributes to set on the contact.' }),
             signed_up_at: z
@@ -4944,7 +8522,7 @@ const BulkUpdateContactsRequestSchema = z
                 example: 'fr',
               }),
             custom_attributes: z
-              .object({})
+              .looseObject({})
               .exactOptional()
               .openapi({ description: 'Custom attributes to update on the contact.' }),
             companies: z
@@ -5046,275 +8624,6 @@ const BulkUpdateContactsRequestSchema = z
     required: ['contacts'],
   })
   .openapi('BulkUpdateContactsRequest')
-
-const TagBasicSchema = z
-  .object({
-    type: z.string().exactOptional().openapi({ description: 'value is "tag"', example: 'tag' }),
-    id: z.string().exactOptional().openapi({ description: 'The id of the tag', example: '123456' }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The name of the tag', example: 'Test tag' }),
-  })
-  .openapi({
-    title: 'Tag',
-    'x-tags': ['Tags'],
-    description:
-      'A tag allows you to label your contacts, companies, and conversations and list them using that tag.',
-    required: [],
-  })
-  .openapi('TagBasic')
-
-const SegmentSchema = z
-  .object({
-    type: z
-      .literal('segment')
-      .exactOptional()
-      .openapi({ description: 'The type of object.', example: 'segment' }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The unique identifier representing the segment.',
-        example: '56203d253cba154d39010062',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The name of the segment.', example: 'Active' }),
-    created_at: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'The time the segment was created.', example: 1394621988 }),
-    updated_at: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'The time the segment was updated.', example: 1394622004 }),
-    person_type: z
-      .enum(['contact', 'user'])
-      .exactOptional()
-      .openapi({ description: 'Type of the contact: contact (lead) or user.', example: 'contact' }),
-    count: z
-      .int()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          "The number of items in the user segment. It's returned when the request has `include_count` with a value. A company segment only gets a count when a contact segment has the same name, and it shows that segment's count.",
-        example: 3,
-      }),
-  })
-  .openapi({
-    title: 'Segment',
-    'x-tags': ['Segments'],
-    description: 'A segment is a group of your contacts defined by the rules that you set.',
-    required: [],
-  })
-  .openapi('Segment')
-
-const CompanyNoteSchema = z
-  .object({
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: "String representing the object's type. Always has the value `note`.",
-        example: 'note',
-      }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The id of the note.', example: '17495962' }),
-    url: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The relative URL of the note.', example: '/notes/17495962' }),
-    body: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The body text of the note.', example: '<p>Text for the note.</p>' }),
-  })
-  .openapi({
-    title: 'Company Note',
-    'x-tags': ['Notes'],
-    description:
-      "A note as it appears inside a company's `notes` list. Fetch the full note with the retrieve note endpoint.",
-    required: [],
-  })
-  .openapi('CompanyNote')
-
-const CompanySchema = z
-  .object({
-    type: z
-      .literal('company')
-      .exactOptional()
-      .openapi({ description: 'Value is `company`', example: 'company' }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The Intercom defined id representing the company.',
-        example: '531ee472cce572a6ec000006',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The name of the company. Returned HTML-escaped, for example `&` as `&amp;`.',
-        example: 'Blue Sun',
-      }),
-    app_id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The Intercom defined code of the workspace the company is associated to.',
-        example: 'ecahpwf5',
-      }),
-    plan: z
-      .object({
-        type: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Value is always "plan"', example: 'plan' }),
-        id: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The id of the plan', example: '269315' }),
-        name: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The name of the plan', example: 'Pro' }),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-    company_id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The company id you have defined for the company. Returned HTML-escaped, for example `&` as `&amp;`.',
-        example: '6',
-      }),
-    remote_created_at: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'The time the company was created by you.', example: 1663597223 }),
-    created_at: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'The time the company was added in Intercom.', example: 1663597223 }),
-    updated_at: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'The last time the company was updated.', example: 1663597223 }),
-    last_request_at: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'The time the company last recorded making a request.',
-        example: 1663597223,
-      }),
-    size: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'The number of employees in the company.', example: 100 }),
-    website: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The URL for the company website.',
-        example: 'https://www.intercom.com',
-      }),
-    industry: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The industry that the company operates in.', example: 'Software' }),
-    monthly_spend: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'How much revenue the company generates for your business.',
-        example: 100,
-      }),
-    session_count: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'How many sessions the company has recorded.', example: 100 }),
-    user_count: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'The number of users in the company.', example: 100 }),
-    custom_attributes: z
-      .record(z.string(), z.union([z.string().nullable(), z.int(), z.number(), z.boolean()]))
-      .exactOptional()
-      .openapi({
-        description: 'The custom attributes you have set on the company.',
-        example: { paid_subscriber: true, monthly_spend: 155.5, team_mates: 9 },
-      }),
-    tags: z
-      .object({
-        type: z
-          .literal('tag.list')
-          .exactOptional()
-          .openapi({ description: 'The type of the object' }),
-        tags: z.array(TagBasicSchema).exactOptional(),
-      })
-      .exactOptional()
-      .openapi({ description: 'The list of tags associated with the company', required: [] }),
-    segments: z
-      .object({
-        type: z
-          .literal('segment.list')
-          .exactOptional()
-          .openapi({ description: 'The type of the object' }),
-        segments: z.array(SegmentSchema).exactOptional(),
-      })
-      .exactOptional()
-      .openapi({
-        description:
-          "Always returned empty. Fetch a company's segments with the list attached segments endpoint.",
-        required: [],
-      }),
-    notes: z
-      .object({
-        type: z
-          .literal('note.list')
-          .exactOptional()
-          .openapi({ description: 'The type of the object' }),
-        data: z
-          .array(CompanyNoteSchema)
-          .exactOptional()
-          .openapi({ description: 'The notes on the company, newest first.' }),
-        url: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: "The relative URL of the company's notes.",
-            example: '/companies/531ee472cce572a6ec000006/notes',
-          }),
-        total_count: z
-          .int()
-          .exactOptional()
-          .openapi({ description: 'The number of notes in `data`.', example: 1 }),
-        has_more: z
-          .boolean()
-          .exactOptional()
-          .openapi({
-            description: 'Always `false`. Every note on the company is returned in `data`.',
-            example: false,
-          }),
-      })
-      .exactOptional()
-      .openapi({ description: 'The list of notes associated with the company', required: [] }),
-  })
-  .openapi({
-    title: 'Company',
-    'x-tags': ['Companies'],
-    description:
-      'Companies allow you to represent organizations using your product. Each company will have its own description and be associated with contacts. You can fetch, create, update and list companies.',
-    required: [],
-  })
-  .openapi('Company')
 
 const ContactTagsSchema = z
   .object({
@@ -5904,7 +9213,7 @@ const ContactSchema = z
         example: 1571672154,
       }),
     custom_attributes: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'The custom attributes which are set for the contact.' }),
     avatar: z
@@ -6010,52 +9319,6 @@ const ContactSchema = z
   })
   .openapi('Contact')
 
-const CursorPagesSchema = z
-  .object({
-    type: z
-      .literal('pages')
-      .exactOptional()
-      .openapi({ description: 'the type of object `pages`.', example: 'pages' }),
-    page: z.int().exactOptional().openapi({ description: 'The current page', example: 1 }),
-    next: z
-      .object({
-        page: z
-          .int()
-          .exactOptional()
-          .openapi({ description: 'The number of the next page', example: 2 }),
-        starting_after: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'The cursor to send in the next request to get the next page of results.',
-            example: 'your-cursor-from-response',
-          }),
-      })
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Fetch the next page by sending this `starting_after` cursor. Omitted on the last page.',
-        required: [],
-      }),
-    per_page: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'Number of results per page', example: 2 }),
-    total_pages: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'Total number of pages', example: 13 }),
-  })
-  .nullable()
-  .openapi({
-    title: 'Cursor based pages',
-    description:
-      'Cursor-based pagination is a technique used in the Intercom API to navigate through large amounts of data.\nA "cursor" or pointer is used to keep track of the current position in the result set, allowing the API to return the data in small chunks or "pages" as needed.\n',
-    required: [],
-  })
-  .openapi('CursorPages')
-
 const CompanyAttachedContactsSchema = z
   .object({
     type: z
@@ -6152,7 +9415,7 @@ const CompanyScrollSchema = z
       .openapi({ description: 'The type of object - `list`', example: 'list' }),
     data: z.array(CompanySchema).exactOptional(),
     pages: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({
@@ -6190,7 +9453,7 @@ const CompanyUserListSchema = z
       .exactOptional()
       .openapi({ description: 'The type of object - `user.list`.', example: 'user.list' }),
     users: z
-      .array(z.object({}))
+      .array(z.looseObject({}))
       .exactOptional()
       .openapi({ description: 'The contacts attached to the company, in the legacy user format.' }),
     pages: PagesLinkSchema.exactOptional(),
@@ -6239,31 +9502,6 @@ const ContactAttachedCompaniesSchema = z
     required: [],
   })
   .openapi('ContactAttachedCompanies')
-
-const ContactReferenceSchema = z
-  .object({
-    type: z
-      .literal('contact')
-      .exactOptional()
-      .openapi({ description: 'always contact', example: 'contact' }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The unique identifier for the contact which is given by Intercom.',
-        example: '5ba682d23d7cf92bef87bfd4',
-      }),
-    external_id: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'The unique identifier for the contact which is provided by the Client.',
-        example: '70',
-      }),
-  })
-  .openapi({ title: 'Contact Reference', description: 'reference to contact object', required: [] })
-  .openapi('ContactReference')
 
 const ContactDeletedSchema = ContactReferenceSchema.and(
   z
@@ -6532,10 +9770,86 @@ const ContactsBulkJobSchema = z
   })
   .openapi('ContactsBulkJob')
 
-const ContactReplyTicketEmailRequestSchema = ContactReplyBaseRequestSchema.and(
+const ContactReplyBaseRequestSchema = z
+  .object({
+    message_type: z.literal('comment'),
+    type: z.literal('user'),
+    body: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The text body of the comment. Required unless the reply includes attachments. Always required when replying to a ticket.',
+      }),
+    created_at: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          'The time the reply was created. If not provided, the current time will be used.',
+        example: 1590000000,
+      }),
+    attachment_urls: z
+      .array(z.url())
+      .max(10)
+      .exactOptional()
+      .openapi({
+        title: 'Attachment URLs',
+        description:
+          'A list of image URLs that will be added as attachments. You can include up to 10 URLs.',
+      }),
+    reply_options: z
+      .array(
+        z
+          .object({
+            text: z.string().openapi({ description: 'The text of the chosen reply option.' }),
+            uuid: z
+              .uuid()
+              .openapi({
+                description: 'The unique identifier for the quick reply option selected.',
+              }),
+          })
+          .openapi({ title: 'Quick Reply Option', required: ['text', 'uuid'] }),
+      )
+      .exactOptional()
+      .openapi({
+        title: 'Contact Quick Reply',
+        description:
+          'The quick reply selection the contact wishes to respond with. These map to buttons displayed in the Messenger UI if sent by a bot, or the reply options sent by an Admin via the API.',
+      }),
+  })
+  .openapi({ title: 'Contact Reply Base Object', required: ['message_type', 'type'] })
+  .openapi('ContactReplyBaseRequest')
+
+const ContactReplyIntercomUserIdRequestSchema = ContactReplyBaseRequestSchema.and(
+  z
+    .object({
+      intercom_user_id: z
+        .string()
+        .openapi({ description: 'The identifier for the contact as given by Intercom.' }),
+      attachment_files: z
+        .array(ConversationAttachmentFilesSchema)
+        .exactOptional()
+        .openapi({ description: 'A list of files that will be added as attachments.' }),
+    })
+    .openapi({ required: ['intercom_user_id'] }),
+)
+  .openapi({
+    title: 'Intercom User ID',
+    description:
+      'Payload of the request to reply on behalf of a contact using their `intercom_user_id`',
+    required: ['intercom_user_id'],
+  })
+  .openapi('ContactReplyIntercomUserIdRequest')
+
+const ContactReplyEmailRequestSchema = ContactReplyBaseRequestSchema.and(
   z
     .object({
       email: z.string().openapi({ description: 'The email you have defined for the user.' }),
+      attachment_files: z
+        .array(ConversationAttachmentFilesSchema)
+        .exactOptional()
+        .openapi({ description: 'A list of files that will be added as attachments.' }),
     })
     .openapi({ required: ['email'] }),
 )
@@ -6543,6 +9857,53 @@ const ContactReplyTicketEmailRequestSchema = ContactReplyBaseRequestSchema.and(
     title: 'Email',
     description: 'Payload of the request to reply on behalf of a contact using their `email`',
     required: ['email'],
+  })
+  .openapi('ContactReplyEmailRequest')
+
+const ContactReplyUserIdRequestSchema = ContactReplyBaseRequestSchema.and(
+  z
+    .object({
+      user_id: z
+        .string()
+        .openapi({ description: 'The external_id you have defined for the contact.' }),
+      attachment_files: z
+        .array(ConversationAttachmentFilesSchema)
+        .max(10)
+        .exactOptional()
+        .openapi({
+          description:
+            'A list of files that will be added as attachments. You can include up to 10 files.',
+        }),
+    })
+    .openapi({ required: ['user_id'] }),
+)
+  .openapi({
+    title: 'User ID',
+    description: 'Payload of the request to reply on behalf of a contact using their `user_id`',
+    required: ['user_id'],
+  })
+  .openapi('ContactReplyUserIdRequest')
+
+const ContactReplyConversationRequestSchema = z
+  .xor([
+    ContactReplyIntercomUserIdRequestSchema,
+    ContactReplyEmailRequestSchema,
+    ContactReplyUserIdRequestSchema,
+  ])
+  .openapi({ title: 'Contact Reply' })
+  .openapi('ContactReplyConversationRequest')
+
+const ContactReplyTicketEmailRequestSchema = ContactReplyBaseRequestSchema.and(
+  z
+    .object({
+      email: z.string().openapi({ description: 'The email you have defined for the user.' }),
+    })
+    .openapi({ required: ['email', 'body'] }),
+)
+  .openapi({
+    title: 'Email',
+    description: 'Payload of the request to reply on behalf of a contact using their `email`',
+    required: ['email', 'body'],
   })
   .openapi('ContactReplyTicketEmailRequest')
 
@@ -6553,13 +9914,13 @@ const ContactReplyTicketIntercomUserIdRequestSchema = ContactReplyBaseRequestSch
         .string()
         .openapi({ description: 'The identifier for the contact as given by Intercom.' }),
     })
-    .openapi({ required: ['intercom_user_id'] }),
+    .openapi({ required: ['intercom_user_id', 'body'] }),
 )
   .openapi({
     title: 'Intercom User ID',
     description:
       'Payload of the request to reply on behalf of a contact using their `intercom_user_id`',
-    required: ['intercom_user_id'],
+    required: ['intercom_user_id', 'body'],
   })
   .openapi('ContactReplyTicketIntercomUserIdRequest')
 
@@ -6570,12 +9931,12 @@ const ContactReplyTicketUserIdRequestSchema = ContactReplyBaseRequestSchema.and(
         .string()
         .openapi({ description: 'The external_id you have defined for the contact.' }),
     })
-    .openapi({ required: ['user_id'] }),
+    .openapi({ required: ['user_id', 'body'] }),
 )
   .openapi({
     title: 'User ID',
     description: 'Payload of the request to reply on behalf of a contact using their `user_id`',
-    required: ['user_id'],
+    required: ['user_id', 'body'],
   })
   .openapi('ContactReplyTicketUserIdRequest')
 
@@ -6587,6 +9948,61 @@ const ContactReplyTicketRequestSchema = z
   ])
   .openapi({ title: 'Contact Reply on ticket' })
   .openapi('ContactReplyTicketRequest')
+
+const MultipleFilterSearchRequestSchema: z.ZodType<MultipleFilterSearchRequestType> = z
+  .lazy(() =>
+    z
+      .object({
+        operator: z
+          .enum(['AND', 'OR'])
+          .exactOptional()
+          .openapi({
+            description: 'An operator to allow boolean inspection between multiple fields.',
+            example: 'AND',
+          }),
+        value: z
+          .xor([
+            z
+              .array(MultipleFilterSearchRequestSchema)
+              .openapi({
+                description: 'Add mutiple filters.',
+                title: 'multiple filter search request',
+              }),
+            z
+              .array(SingleFilterSearchRequestSchema)
+              .openapi({
+                description: 'Add a single filter field.',
+                title: 'single filter search request',
+              }),
+          ])
+          .exactOptional(),
+      })
+      .openapi({
+        title: 'Multiple Filter Search Request',
+        description: 'Search using Intercoms Search APIs with more than one filter.',
+        required: [],
+      }),
+  )
+  .openapi('MultipleFilterSearchRequest')
+
+const StartingAfterPagingSchema = z
+  .object({
+    per_page: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'The number of results to fetch per page.', example: 2 }),
+    starting_after: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'The cursor to use in the next request to get the next page of results.',
+        example: 'your-cursor-from-response',
+      }),
+  })
+  .nullable()
+  .openapi({ title: 'Pagination: Starting After', required: [] })
+  .openapi('StartingAfterPaging')
 
 const ContactSearchRequestSchema = z
   .object({
@@ -7033,7 +10449,7 @@ const ContentSnippetSchema = z
       .exactOptional()
       .openapi({ description: 'The locale of the content snippet.', example: 'en' }),
     json_blocks: z
-      .array(z.object({}))
+      .array(z.looseObject({}))
       .exactOptional()
       .openapi({
         description:
@@ -7156,7 +10572,7 @@ const ContentSnippetCreateRequestSchema = z
         example: 'How to reset your password',
       }),
     json_blocks: z
-      .array(z.object({}))
+      .array(z.looseObject({}))
       .exactOptional()
       .openapi({
         description:
@@ -7235,7 +10651,7 @@ const ContentSnippetUpdateRequestSchema = z
         example: 'How to reset your password',
       }),
     json_blocks: z
-      .array(z.object({}))
+      .array(z.looseObject({}))
       .exactOptional()
       .openapi({
         description:
@@ -7329,7 +10745,7 @@ const DynamicContentVariationSchema = z
         example: '+1-555-0100',
       }),
     json_blocks: z
-      .array(z.object({}))
+      .array(z.looseObject({}))
       .nullable()
       .exactOptional()
       .openapi({
@@ -7743,2091 +11159,7 @@ const ContentSearchResponseSchema = z
   })
   .openapi('ContentSearchResponse')
 
-const ConversationRatingSchema = z
-  .object({
-    rating: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'The rating, between 1 and 5, for the conversation.', example: 5 }),
-    remark: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'An optional field to add a remark to correspond to the number rating',
-        example: '',
-      }),
-    created_at: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'The time the rating was requested in the conversation being rated.',
-        example: 1671028894,
-      }),
-    updated_at: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'The time the rating was last updated.', example: 1671028894 }),
-    contact: ContactReferenceSchema.exactOptional(),
-    teammate: z
-      .object({
-        type: z
-          .enum(['admin', 'team', 'bot', 'workflow'])
-          .exactOptional()
-          .openapi({
-            description:
-              'The type of the rated actor. `workflow` when a workflow requested the rating and no teammate took part.',
-            example: 'admin',
-          }),
-        id: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The unique identifier for the rated actor.', example: '123' }),
-      })
-      .nullable()
-      .exactOptional()
-      .openapi({
-        title: 'Conversation Rating Teammate',
-        description: 'The teammate, bot or workflow the rating is attributed to.',
-        required: [],
-      }),
-  })
-  .nullable()
-  .openapi({
-    title: 'Conversation Rating',
-    description:
-      'The Conversation Rating object which contains information on the rating and/or remark added by a Contact and the Admin assigned to the conversation.',
-    required: [],
-  })
-  .openapi('ConversationRating')
-
-const ConversationSourceAuthorSchema = z
-  .object({
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The type of the author.', example: 'admin' }),
-    id: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The id of the author.', example: '274' }),
-    name: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The name of the author.', example: 'Jane Doe' }),
-    email: z
-      .email()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The email of the author.', example: 'jane.doe@example.com' }),
-  })
-  .openapi({
-    title: 'Conversation source author',
-    description: 'The author who started the conversation. Can be a Contact, Admin, or Bot.',
-    required: [],
-  })
-  .openapi('ConversationSourceAuthor')
-
-const PartAttachmentSchema = z
-  .object({
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The type of attachment', example: 'upload' }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The name of the attachment', example: 'example.png' }),
-    url: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The URL of the attachment',
-        example: 'https://picsum.photos/200/300',
-      }),
-    content_type: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The content type of the attachment', example: 'image/png' }),
-    filesize: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'The size of the attachment', example: 100 }),
-    width: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'The width of the attachment', example: 100 }),
-    height: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'The height of the attachment', example: 100 }),
-  })
-  .openapi({ title: 'Part attachment', description: 'The file attached to a part', required: [] })
-  .openapi('PartAttachment')
-
-const EmailAddressHeaderSchema = z
-  .object({
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The type of email address header', example: 'from' }),
-    email_address: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The email address', example: 'jdoe@example.com' }),
-    name: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'The name associated with the email address',
-        example: 'Joe Example',
-      }),
-  })
-  .openapi({
-    title: 'Email Address Header',
-    description:
-      'Contains data for an email address header for a conversation part that was sent as an email.',
-    required: [],
-  })
-  .openapi('EmailAddressHeader')
-
-const SourceEmailMessageMetadataSchema = z
-  .object({
-    message_id: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The unique identifier for the email message as specified in the Message-ID header',
-        example: '<CADKw7xrXzqSn8v3mP8K8Q8yZ6K8Q8yZ6@mail.gmail.com>',
-      }),
-    subject: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The subject of the email', example: 'Question about my order' }),
-    email_address_headers: z
-      .array(EmailAddressHeaderSchema)
-      .exactOptional()
-      .openapi({
-        title: 'Email Address Headers',
-        description: 'A list of an email address headers.',
-      }),
-    history: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The HTML content of any quoted or forwarded email history from the initial inbound message',
-        example:
-          '<div><span>On Jan 28, wrote:</span><blockquote>Previous thread</blockquote></div>',
-      }),
-  })
-  .openapi({
-    title: 'Email Message Metadata',
-    description: 'Contains metadata if the message was sent as an email',
-    required: [],
-  })
-  .openapi('SourceEmailMessageMetadata')
-
-const ConversationSourceSchema = z
-  .object({
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The origin of this conversation.', example: 'email' }),
-    id: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The id of the source message.', example: '3' }),
-    delivered_as: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'How the conversation was initiated.',
-        example: 'operator_initiated',
-      }),
-    recipients: z
-      .array(
-        z
-          .object({
-            type: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'The recipient type. One of `to`, `cc`, or `bcc`.',
-                example: 'to',
-              }),
-            email: z
-              .email()
-              .exactOptional()
-              .openapi({
-                description: 'The recipient email address.',
-                example: 'user@example.com',
-              }),
-            drop_reason: z
-              .string()
-              .nullable()
-              .exactOptional()
-              .openapi({
-                description: 'The reason this recipient was dropped, if applicable.',
-                example: null,
-              }),
-          })
-          .openapi({ required: [] }),
-      )
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'The recipients of the source message. Only present for email conversations.',
-      }),
-    reply_to: z
-      .array(
-        z
-          .object({
-            email: z
-              .email()
-              .exactOptional()
-              .openapi({
-                description: 'The Reply-To email address.',
-                example: 'replies@example.com',
-              }),
-            name: z
-              .string()
-              .nullable()
-              .exactOptional()
-              .openapi({
-                description: 'The display name associated with the Reply-To address.',
-                example: 'Support Team',
-              }),
-          })
-          .openapi({ required: [] }),
-      )
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          "The Reply-To header addresses of the source message, where a reply will be routed. Can differ from the sender's From address. Only present for email conversations.",
-      }),
-    subject: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. The message subject. For Twitter, this will show a generic message regarding why the subject is obscured. In webhook payloads for API version 2.15+, this field returns plain text.',
-        example: '',
-      }),
-    body: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The message body, which may contain HTML. For Twitter, this will show a generic message regarding why the body is obscured. In webhook payloads for API version 2.15+, this field returns plain text.',
-        example: '<p>Hey there!</p>',
-      }),
-    author: ConversationSourceAuthorSchema.exactOptional(),
-    attachments: z
-      .array(PartAttachmentSchema)
-      .exactOptional()
-      .openapi({ description: 'A list of attachments for the part.' }),
-    url: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The URL where the conversation was started. For Twitter, Email, and Bots, this will be blank.',
-        example: null,
-      }),
-    redacted: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether or not the source message has been redacted. Only applicable for contact initiated messages.',
-        example: false,
-      }),
-    email_message_metadata: SourceEmailMessageMetadataSchema.exactOptional(),
-  })
-  .openapi({
-    title: 'Conversation source',
-    description:
-      'The type of the conversation part that started this conversation. Can be Contact, Admin, Campaign, Automated or Operator initiated.',
-    required: [],
-  })
-  .openapi('ConversationSource')
-
-const ConversationContactsSchema = z
-  .object({
-    type: z
-      .literal('contact.list')
-      .exactOptional()
-      .openapi({ description: '', example: 'contact.list' }),
-    contacts: z
-      .array(ContactReferenceSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The list of contacts (users or leads) involved in this conversation. This will only contain one customer unless more were added via the group conversation feature.',
-      }),
-  })
-  .openapi({
-    title: 'Contacts',
-    description:
-      'The list of contacts (users or leads) involved in this conversation. This will only contain one customer unless more were added via the group conversation feature.',
-    required: [],
-  })
-  .openapi('ConversationContacts')
-
-const ConversationTeammatesSchema = z
-  .object({
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The type of the object - `admin.list`.', example: 'admin.list' }),
-    admins: z
-      .array(ReferenceSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The list of teammates who participated in the conversation (wrote at least one conversation part).',
-      }),
-  })
-  .nullable()
-  .openapi({
-    title: 'Conversation teammates',
-    description:
-      'The list of teammates who participated in the conversation (wrote at least one conversation part).',
-    required: [],
-  })
-  .openapi('ConversationTeammates')
-
-const AiTopicSubtopicSchema = z
-  .object({
-    topic_name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The name of the AI-generated topic.', example: 'Billing' }),
-    subtopic_name: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'The name of the AI-generated subtopic, if any.',
-        example: 'Payment Issues',
-      }),
-    id: z
-      .int()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The id of the subtopic.', example: 42 }),
-  })
-  .openapi({
-    title: 'AI Topic and Subtopic',
-    description:
-      'A single AI-generated topic and subtopic classification for a conversation. Surfaced inside `custom_attributes` under the "AI Topic and Subtopic" key as an array of these objects. Requires the AI add-on; the key is omitted when the conversation has no classification.',
-    required: [],
-  })
-  .openapi('AiTopicSubtopic')
-
-const CxScoreReasonSchema = z
-  .object({
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The name of the reason.', example: 'Resolution speed' }),
-    value: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The value recorded for the reason.', example: 'Fast' }),
-  })
-  .openapi({
-    title: 'CX Score reason',
-    description:
-      'A single reason behind a conversation\'s CX Score. Surfaced inside `custom_attributes` under the "CX Score reasons" key as an array of these objects.',
-    required: [],
-  })
-  .openapi('CxScoreReason')
-
-const CustomObjectInstanceSchema = z
-  .object({
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The Intercom defined id representing the custom object instance.',
-        example: 16032025,
-      }),
-    external_id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The id you have defined for the custom object instance.',
-        example: '0001d1c1e65a7a19e9f59ae2',
-      }),
-    external_created_at: z
-      .int()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The time when the Custom Object instance was created in the external system it originated from.',
-        example: 1571672154,
-      }),
-    external_updated_at: z
-      .int()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The time when the Custom Object instance was last updated in the external system it originated from.',
-        example: 1571672154,
-      }),
-    created_at: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'The time the attribute was created as a UTC Unix timestamp',
-        example: 1671028894,
-      }),
-    updated_at: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'The time the attribute was last updated as a UTC Unix timestamp',
-        example: 1671028894,
-      }),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The identifier of the custom object type that defines the structure of the custom object instance.',
-        example: 'Order',
-      }),
-    custom_attributes: z
-      .record(
-        z.string(),
-        z.union([z.string().nullable(), z.int(), z.number(), z.boolean(), z.object({})]),
-      )
-      .exactOptional()
-      .openapi({
-        description:
-          'The custom attributes you have set on the custom object instance.\n\nEach value is returned with the type of the attribute it is set on: a string, integer, number or boolean, or `null` when the attribute is unset. A list attribute returns the label of the selected option. A reference attribute returns an object holding the referenced records, under `contacts` for a contact reference, `conversations` for a conversation reference, or `instances` for a reference to another custom object type.',
-        example: { order_number: 'ORDER-12345', total_amount: 99.99 },
-      }),
-  })
-  .nullable()
-  .openapi({
-    title: 'Custom Object Instance',
-    'x-tags': ['Custom Object Instances'],
-    description:
-      'A Custom Object Instance represents an instance of a custom object type. This allows you to create and set custom attributes to store data about your customers that is not already captured by Intercom. The parent object includes recommended default attributes and you can add your own custom attributes.',
-    required: [],
-  })
-  .openapi('CustomObjectInstance')
-
-const CustomObjectInstanceListSchema = z
-  .object({
-    type: z.string().exactOptional().openapi({ example: 'order.list' }),
-    instances: z
-      .array(CustomObjectInstanceSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The list of associated custom object instances for a given reference attribute on the parent object.',
-      }),
-  })
-  .openapi({
-    title: 'Custom Object Instances',
-    description:
-      'The list of associated custom object instances for a given reference attribute on the parent object.',
-    required: [],
-  })
-  .openapi('CustomObjectInstanceList')
-
-const CustomAttributesSchema = z
-  .object({
-    'AI Topic and Subtopic': z
-      .array(AiTopicSubtopicSchema)
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description:
-          'Read-only AI Insights classification of the conversation. Present only with the AI add-on; omitted when the conversation has no classification.',
-        example: [{ topic_name: 'Billing', subtopic_name: 'Payment Issues', id: 42 }],
-      }),
-    'CX Score reasons': z
-      .array(CxScoreReasonSchema)
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description:
-          "Read-only reasons behind the conversation's CX Score. Intercom generates this attribute, so it cannot be set. Omitted when the conversation has no CX Score reasons.",
-        example: [{ name: 'Resolution speed', value: 'Fast' }],
-      }),
-  })
-  .catchall(
-    z.union([
-      z.string(),
-      z.int(),
-      z.number(),
-      z.boolean(),
-      DatetimeSchema,
-      CustomObjectInstanceListSchema,
-    ]),
-  )
-  .openapi({
-    title: 'Custom Attributes',
-    description:
-      'An object containing the custom attributes on a conversation as key-value pairs. For relationship attributes the value is a list of custom object instance models. System-defined attributes such as "AI Topic and Subtopic", "CX Score rating", "CX Score explanation" and "CX Score reasons" may also be included.',
-    example: {
-      paid_subscriber: true,
-      monthly_spend: 155.5,
-      team_mates: 9,
-      start_date_iso8601: '2023-03-04T09:46:14Z',
-      end_date_timestamp: 1677923174,
-      'CX Score rating': 4,
-      'CX Score explanation':
-        'The conversation was resolved quickly and the customer expressed satisfaction with the outcome.',
-      'AI Topic and Subtopic': [{ topic_name: 'Billing', subtopic_name: 'Payment Issues', id: 42 }],
-      'CX Score reasons': [{ name: 'Resolution speed', value: 'Fast' }],
-    },
-  })
-  .openapi('CustomAttributes')
-
-const ConversationFirstContactReplySchema = z
-  .object({
-    created_at: z.int().exactOptional().openapi({ description: '', example: 1663597223 }),
-    type: z.string().exactOptional().openapi({ description: '', example: 'conversation' }),
-    url: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: '', example: 'https://developers.intercom.com/' }),
-  })
-  .nullable()
-  .openapi({
-    title: 'First contact reply',
-    description:
-      'An object containing information on the first users message. For a contact initiated message this will represent the users original message.',
-    required: [],
-  })
-  .openapi('ConversationFirstContactReply')
-
-const SlaAppliedSchema = z
-  .object({
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'object type', example: 'conversation_sla_summary' }),
-    sla_name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The name of the SLA as given by the teammate when it was created.',
-        example: '',
-      }),
-    sla_status: z
-      .enum(['hit', 'missed', 'canceled', 'active'])
-      .exactOptional()
-      .openapi({
-        description:
-          'SLA statuses:\n            - `hit`: If there’s at least one hit event in the underlying sla_events table, and no “missed” or “canceled” events for the conversation.\n            - `missed`: If there are any missed sla_events for the conversation and no canceled events. If there’s even a single missed sla event, the status will always be missed. A missed status is not applied when the SLA expires, only the next time a teammate replies.\n            - `active`: An SLA has been applied to a conversation, but has not yet been fulfilled. SLA status is active only if there are no “hit, “missed”, or “canceled” events.',
-        example: 'hit',
-      }),
-  })
-  .nullable()
-  .openapi({
-    title: 'Applied SLA',
-    description:
-      'The SLA Applied object contains the details for which SLA has been applied to this conversation.\nImportant: if there are any canceled sla_events for the conversation - meaning an SLA has been manually removed from a conversation, the sla_status will always be returned as null.\n',
-    required: [],
-  })
-  .openapi('SlaApplied')
-
-const ConversationResponseTimeSchema = z
-  .object({
-    team_id: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'Id of the assigned team.', example: 100 }),
-    team_name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Name of the assigned Team, null if team does not exist, Unassigned if no team is assigned.',
-        example: 'Team One',
-      }),
-    response_time: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'First response time of assigned team in seconds.', example: 2310 }),
-  })
-  .openapi({
-    title: 'Conversation response time',
-    description: 'Details of first response time of assigned team in seconds.',
-    required: [],
-  })
-  .openapi('ConversationResponseTime')
-
-const ConversationStatisticsSchema = z
-  .object({
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({ description: '', example: 'conversation_statistics' }),
-    time_to_assignment: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'Duration until last assignment before first admin reply. In seconds.',
-        example: 2310,
-      }),
-    time_to_admin_reply: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description:
-          'Duration until first admin reply. Subtracts out of business hours. In seconds.',
-        example: 2310,
-      }),
-    time_to_first_close: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description:
-          'Duration until conversation was closed first time. Subtracts out of business hours. In seconds.',
-        example: 2310,
-      }),
-    time_to_last_close: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description:
-          'Duration until conversation was closed last time. Subtracts out of business hours. In seconds.',
-        example: 2310,
-      }),
-    median_time_to_reply: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description:
-          'Median based on all admin replies after a contact reply. Subtracts out of business hours. In seconds.',
-        example: 2310,
-      }),
-    first_contact_reply_at: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'Time of first text conversation part from a contact.',
-        example: 1663597233,
-      }),
-    first_assignment_at: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'Time of first assignment after first_contact_reply_at.',
-        example: 1663597233,
-      }),
-    first_admin_reply_at: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'Time of first admin reply after first_contact_reply_at.',
-        example: 1663597233,
-      }),
-    first_close_at: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'Time of first close after first_contact_reply_at.',
-        example: 1663597233,
-      }),
-    last_assignment_at: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'Time of last assignment after first_contact_reply_at.',
-        example: 1663597233,
-      }),
-    last_assignment_admin_reply_at: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'Time of first admin reply since most recent assignment.',
-        example: 1663597233,
-      }),
-    last_contact_reply_at: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'Time of the last conversation part from a contact.',
-        example: 1663597233,
-      }),
-    last_admin_reply_at: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'Time of the last conversation part from an admin.',
-        example: 1663597233,
-      }),
-    last_close_at: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'Time of the last conversation close.', example: 1663597233 }),
-    last_closed_by_id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The last admin who closed the conversation. Returns a reference to an Admin object.',
-        example: 'c3po',
-      }),
-    count_reopens: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'Number of reopens after first_contact_reply_at.', example: 1 }),
-    count_assignments: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'Number of assignments after first_contact_reply_at.', example: 1 }),
-    count_conversation_parts: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'Total number of conversation parts.', example: 1 }),
-    assigned_team_first_response_time: z
-      .array(ConversationResponseTimeSchema)
-      .exactOptional()
-      .openapi({ description: 'An array of conversation response time objects' }),
-    assigned_team_first_response_time_in_office_hours: z
-      .array(ConversationResponseTimeSchema)
-      .exactOptional()
-      .openapi({
-        description: 'An array of conversation response time objects within office hours',
-      }),
-    handling_time: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'Time from conversation assignment to conversation close in seconds.',
-        example: 2310,
-      }),
-    adjusted_handling_time: z
-      .int()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Adjusted handling time for conversation in seconds. This is the active handling time excluding idle periods when teammates are not actively working on the conversation.',
-        example: 1800,
-      }),
-  })
-  .nullable()
-  .openapi({
-    title: 'Conversation statistics',
-    description:
-      'A Statistics object containing all information required for reporting, with timestamps and calculated metrics.',
-    required: [],
-  })
-  .openapi('ConversationStatistics')
-
-const LinkedObjectSchema = z
-  .object({
-    type: z
-      .enum(['ticket', 'conversation'])
-      .exactOptional()
-      .openapi({ description: 'ticket or conversation', example: 'ticket' }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The ID of the linked object', example: '7583' }),
-    category: z
-      .union([
-        z.literal('Customer'),
-        z.literal('Back-office'),
-        z.literal('Tracker'),
-        z.literal(null),
-      ])
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Category of the Linked Ticket Object.', example: 'Customer' }),
-  })
-  .openapi({
-    title: 'Linked Object',
-    description: 'A linked conversation or ticket.',
-    required: [],
-  })
-  .openapi('LinkedObject')
-
-const LinkedObjectListSchema = z
-  .object({
-    type: z
-      .literal('list')
-      .exactOptional()
-      .openapi({ description: 'Always list.', example: 'list' }),
-    total_count: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'The total number of linked objects.', example: 100 }),
-    has_more: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Whether or not there are more linked objects than returned.',
-        example: false,
-      }),
-    data: z
-      .array(LinkedObjectSchema)
-      .exactOptional()
-      .openapi({ description: 'An array containing the linked conversations and linked tickets.' }),
-  })
-  .openapi({
-    title: 'Linked Objects',
-    description:
-      'An object containing metadata about linked conversations and linked tickets. Up to 1000 can be returned.',
-    required: [],
-  })
-  .openapi('LinkedObjectList')
-
-const ConversationChannelSchema = z
-  .object({
-    initial: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The channel through which the conversation was originally initiated. Possible values include `messenger`, `zendesk_sunshine`, `zendesk_ticket`, `twitter`, `email`. Returns `null` if channel data is unavailable.',
-        example: 'messenger',
-      }),
-    current: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The current channel of the conversation. May differ from `initial` if the conversation was migrated between channels. Returns `null` if channel data is unavailable.',
-        example: 'messenger',
-      }),
-  })
-  .openapi({
-    title: 'Conversation Channel',
-    description:
-      'The channel through which a conversation was originally initiated and its current channel.',
-    required: [],
-  })
-  .openapi('ConversationChannel')
-
-const ConversationExternalReferenceSchema = z
-  .object({
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The type of external system the reference points to. Possible values include `zendesk_ticket`, `zendesk_sunshine_conversation`, `salesforce_case`, `salesforce_in_app_message_conversation`, `freshdesk_ticket`, `freshchat_conversation`, `hubspot_conversation`, `custom_helpdesk_conversation`, `api_conversation`.',
-        example: 'zendesk_ticket',
-      }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The identifier of the record in the external system. Always serialized as a string, since some external IDs exceed 32-bit integer range.',
-        example: '3633338',
-      }),
-  })
-  .openapi({
-    title: 'Conversation External Reference',
-    description:
-      'A reference linking a conversation to a record in an external helpdesk or CRM system, surfaced for Fin Standalone workspaces.',
-    required: [],
-  })
-  .openapi('ConversationExternalReference')
-
-const ConversationMonitorEvaluationSchema = z
-  .object({
-    monitor_id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The unique identifier of the monitor that produced this evaluation.',
-        example: '12345',
-      }),
-    monitor_name: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The name of the monitor at the time of evaluation. Null if the monitor has since been deleted.',
-        example: 'Customer complaint handling',
-      }),
-    monitor_type: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'The type of the monitor. Null if the monitor has since been deleted.',
-        example: 'prompt',
-      }),
-    result: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The evaluation outcome reported by the monitor.',
-        example: 'flagged',
-      }),
-    explanation: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The reasoning provided by the monitor for its result. May be null if no reasoning was generated.',
-        example: 'The customer mentioned wanting a refund without resolution.',
-      }),
-    evaluated_at: z
-      .int()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          "The time the monitor evaluated this conversation. Null in the rare case the underlying record's timestamp is not yet set.",
-        example: 1719493065,
-      }),
-  })
-  .openapi({
-    title: 'Conversation Monitor Evaluation',
-    'x-tags': ['Conversations'],
-    description:
-      'A QA monitor evaluation that flagged this conversation. Returned in the `monitor_evaluations` array on conversation responses when `include_monitors=true` is passed.',
-    required: [],
-  })
-  .openapi('ConversationMonitorEvaluation')
-
-const ConversationScorecardReviewedTeammateSchema = z
-  .object({
-    type: z
-      .enum(['ai', 'admin'])
-      .exactOptional()
-      .openapi({
-        description:
-          'The kind of reviewee. `ai` if the conversation was handled by Fin or scored without a specific teammate; `admin` if a specific teammate was reviewed.',
-        example: 'admin',
-      }),
-    admin_id: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'The id of the admin who was reviewed. Present only when `type` is `admin`.',
-        example: '991267715',
-      }),
-  })
-  .openapi({
-    title: 'Reviewed Teammate',
-    'x-tags': ['Conversations'],
-    description:
-      'The teammate (or AI agent) whose handling of the conversation was reviewed by this scorecard.',
-    required: [],
-  })
-  .openapi('ConversationScorecardReviewedTeammate')
-
-const ConversationScorecardReviewerSchema = z
-  .object({
-    type: z
-      .enum(['ai', 'admin'])
-      .exactOptional()
-      .openapi({
-        description:
-          'The kind of reviewer. `ai` if the review is assigned to Fin; `admin` if it is assigned to a teammate.',
-        example: 'admin',
-      }),
-    admin_id: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The id of the admin the review is assigned to. Present only when `type` is `admin`.',
-        example: '884120017',
-      }),
-  })
-  .nullable()
-  .openapi({
-    title: 'Reviewer',
-    'x-tags': ['Conversations'],
-    description:
-      'Who the review of this scorecard is assigned to. `ai` when it is assigned to Fin; `admin` when it is assigned to a teammate. Null when no review exists for this scorecard or the review is unassigned.',
-    required: [],
-  })
-  .openapi('ConversationScorecardReviewer')
-
-const ConversationScorecardSubmittedBySchema = z
-  .object({
-    type: z
-      .enum(['ai', 'admin'])
-      .exactOptional()
-      .openapi({
-        description:
-          'The kind of submitter. `ai` if Fin submitted the review; `admin` if a teammate did.',
-        example: 'admin',
-      }),
-    admin_id: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The id of the admin who submitted the review. Present only when `type` is `admin`.',
-        example: '884120017',
-      }),
-  })
-  .nullable()
-  .openapi({
-    title: 'Submitted By',
-    'x-tags': ['Conversations'],
-    description:
-      'Who last submitted the review of this scorecard, which can differ from the `reviewer` it is assigned to. `ai` when Fin submitted it; `admin` when a teammate did. Null while the review is unreviewed or when no review exists for this scorecard.',
-    required: [],
-  })
-  .openapi('ConversationScorecardSubmittedBy')
-
-const ConversationScorecardRevisedBySchema = z
-  .object({
-    type: z
-      .enum(['ai', 'admin'])
-      .exactOptional()
-      .openapi({
-        description:
-          'The kind of reviser. `ai` if Fin changed the review; `admin` if a teammate did.',
-        example: 'admin',
-      }),
-    admin_id: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The id of the admin who last changed the review. Present only when `type` is `admin`.',
-        example: '884120017',
-      }),
-  })
-  .nullable()
-  .openapi({
-    title: 'Revised By',
-    'x-tags': ['Conversations'],
-    description:
-      'Who last changed the review of this scorecard after it was submitted. `ai` when Fin made the change; `admin` when a teammate did. Null while the review is unreviewed, when it has not been changed since it was submitted, or when no review exists for this scorecard.',
-    required: [],
-  })
-  .openapi('ConversationScorecardRevisedBy')
-
-const ConversationScorecardNoteAuthorSchema = z
-  .object({
-    type: z
-      .enum(['ai', 'admin'])
-      .exactOptional()
-      .openapi({
-        description:
-          'The kind of author. `admin` when a teammate wrote the note; `ai` when Fin did.',
-        example: 'admin',
-      }),
-    admin_id: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'The id of the admin who wrote the note. Present only when `type` is `admin`.',
-        example: '884120017',
-      }),
-  })
-  .nullable()
-  .openapi({
-    title: 'Note Author',
-    'x-tags': ['Conversations'],
-    description: 'Who wrote the note. Null when the teammate who wrote it has since been deleted.',
-    required: [],
-  })
-  .openapi('ConversationScorecardNoteAuthor')
-
-const ConversationScorecardNoteSchema = z
-  .object({
-    id: z.string().exactOptional().openapi({ description: 'The id of the note.', example: '9001' }),
-    created_at: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'The time the note was created.', example: 1734537900 }),
-    updated_at: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description:
-          'The time the note was last edited. Equal to `created_at` when the note has never been edited.',
-        example: 1734537900,
-      }),
-    author: ConversationScorecardNoteAuthorSchema.exactOptional(),
-    body: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The text of the note exactly as the teammate entered it. Plain text; it is not rendered as HTML.',
-        example: 'Great empathy in the second reply.',
-      }),
-  })
-  .openapi({
-    title: 'Scorecard Note',
-    'x-tags': ['Conversations'],
-    description: 'A note a teammate left on the QA review of this scorecard.',
-    required: [],
-  })
-  .openapi('ConversationScorecardNote')
-
-const ConversationScorecardEvaluatorReasonSchema = z
-  .object({
-    name: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: "The name of the reason. Null if the reason's name could not be resolved.",
-        example: 'Clear and concise',
-      }),
-  })
-  .openapi({
-    title: 'Evaluator Reason',
-    'x-tags': ['Conversations'],
-    description: "A single structured reason assigned to an evaluator's result.",
-    required: [],
-  })
-  .openapi('ConversationScorecardEvaluatorReason')
-
-const ConversationScorecardEvaluatorResultSchema = z
-  .object({
-    value: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          "The evaluator's selected value (typically a label such as `pass`, `fail`, or a category identifier).",
-        example: 'pass',
-      }),
-    value_label: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The label of the rating option matching `value` (for example `Needs improvement`). Omitted when the label could not be resolved.',
-        example: 'Pass',
-      }),
-    source: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'The origin of the result (for example, `ai` or `human`).',
-        example: 'ai',
-      }),
-    reasoning: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'A free-text explanation of the result.',
-        example: 'The agent acknowledged the issue and resolved it within the same response.',
-      }),
-    reason_ids: z
-      .array(z.string())
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Identifiers for structured reasons assigned to the result, if any.',
-        example: ['101', '102'],
-      }),
-    reasons: z
-      .array(ConversationScorecardEvaluatorReasonSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The structured reasons chosen for this result. Omitted when none were chosen.',
-        example: [{ name: 'Clear and concise' }, { name: 'Empathetic tone' }],
-      }),
-    other_text: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Free-text entered by the reviewer to supplement or stand in for the structured `reason_ids` — typically captured when the reviewer selects an "Other" option or adds a custom note. Null when not provided.',
-        example: 'Agent acknowledged the issue but missed the follow-up question about billing.',
-      }),
-  })
-  .openapi({
-    title: 'Conversation Scorecard Evaluator Result',
-    'x-tags': ['Conversations'],
-    description: 'The outcome of a single evaluator within a scorecard.',
-    required: [],
-  })
-  .openapi('ConversationScorecardEvaluatorResult')
-
-const ConversationScorecardEvaluatorSchema = z
-  .object({
-    evaluator_id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The unique identifier of the evaluator (criterion) within the scorecard.',
-        example: '54321',
-      }),
-    name: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          "The name of the evaluator (criterion). Null if the evaluator's name could not be resolved.",
-        example: 'Tone of voice',
-      }),
-    result: ConversationScorecardEvaluatorResultSchema.nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          "The evaluator's result for this conversation. Null if the evaluator was not scored.",
-      }),
-  })
-  .openapi({
-    title: 'Conversation Scorecard Evaluator',
-    'x-tags': ['Conversations'],
-    description:
-      'A single evaluator within a scorecard, including its result for this conversation.',
-    required: [],
-  })
-  .openapi('ConversationScorecardEvaluator')
-
-const ConversationScorecardSchema = z
-  .object({
-    scorecard_id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The unique identifier of the scorecard definition.',
-        example: '67890',
-      }),
-    scorecard_version_id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The unique identifier of the specific scorecard version that produced this result.',
-        example: '67891',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The name of the scorecard.', example: 'Standard QA Review' }),
-    scorecard_type: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The type of scorecard.', example: 'human' }),
-    passed: z
-      .boolean()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether the conversation passed the scorecard. Null when the scorecard has not been scored.',
-        example: true,
-      }),
-    score: z
-      .number()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The numeric score for the scorecard. Null when the scorecard has not been scored.',
-        example: 0.85,
-      }),
-    ai_score: z
-      .number()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The numeric score produced by AI evaluation, if applicable. Null when not AI-scored.',
-        example: 0.9,
-      }),
-    evaluated_at: z
-      .int()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          "The time the scorecard was last evaluated. Null in the rare case the underlying record's timestamp is not yet set.",
-        example: 1719493065,
-      }),
-    reviewed_teammate: ConversationScorecardReviewedTeammateSchema.exactOptional(),
-    reviewer: ConversationScorecardReviewerSchema.exactOptional(),
-    review_status: z
-      .enum(['unreviewed', 'submitted', 'passed_review', 'needs_fix', 'wont_fix', 'fix_complete'])
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          "The status of the review of this scorecard, as shown in the QA reviews list in Intercom. `unreviewed` while the review is waiting for a reviewer's verdict; `submitted` once the review has been submitted; `passed_review`, `needs_fix`, `wont_fix` or `fix_complete` when a teammate set a specific outcome. Null when no review exists for this scorecard.",
-        example: 'submitted',
-      }),
-    submitted_by: ConversationScorecardSubmittedBySchema.exactOptional(),
-    revised_by: ConversationScorecardRevisedBySchema.exactOptional(),
-    notes: z
-      .array(ConversationScorecardNoteSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The notes teammates left on the QA review linked to this scorecard entry. Empty when the scorecard has no linked review.',
-        example: [
-          {
-            id: '9001',
-            created_at: 1734537900,
-            updated_at: 1734537900,
-            author: { type: 'admin', admin_id: '884120017' },
-            body: 'Great empathy in the second reply.',
-          },
-        ],
-      }),
-    evaluators: z
-      .array(ConversationScorecardEvaluatorSchema)
-      .exactOptional()
-      .openapi({ description: 'Per-evaluator results within this scorecard.' }),
-  })
-  .openapi({
-    title: 'Conversation Scorecard',
-    'x-tags': ['Conversations'],
-    description:
-      'A QA scorecard result for this conversation. Returned in the `scorecards` array on conversation responses when `include_scorecards=true` is passed.',
-    required: [],
-  })
-  .openapi('ConversationScorecard')
-
-const ConversationListItemSchema = z
-  .object({
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Always conversation.', example: 'conversation' }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The id representing the conversation.', example: '1295' }),
-    title: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'The title given to the conversation.',
-        example: 'Conversation Title',
-      }),
-    created_at: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'The time the conversation was created.', example: 1663597223 }),
-    updated_at: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'The last time the conversation was updated.', example: 1663597260 }),
-    waiting_since: z
-      .int()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The last time a Contact responded to an Admin. In other words, the time a customer started waiting for a response. Set to null if last reply is from an Admin.',
-        example: 1663597260,
-      }),
-    snoozed_until: z
-      .int()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'If set this is the time in the future when this conversation will be marked as open. i.e. it will be in a snoozed state until this time. i.e. it will be in a snoozed state until this time.',
-        example: 1663597260,
-      }),
-    open: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Indicates whether a conversation is open (true) or closed (false).',
-        example: true,
-      }),
-    state: z
-      .enum(['open', 'closed', 'snoozed'])
-      .exactOptional()
-      .openapi({ description: 'Can be set to "open", "closed" or "snoozed".', example: 'open' }),
-    read: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Indicates whether a conversation has been read.', example: true }),
-    priority: z
-      .enum(['none', 'low', 'medium', 'high', 'urgent'])
-      .exactOptional()
-      .openapi({
-        description:
-          'The priority level of the conversation. Returns one of none, low, medium, high, or urgent.',
-        example: 'high',
-      }),
-    admin_assignee_id: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description:
-          "The id of the admin assigned to the conversation. If it's not assigned to an admin it will return 0.",
-        example: 0,
-      }),
-    team_assignee_id: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description:
-          "The id of the team assigned to the conversation. If it's not assigned to a team it will return 0.",
-        example: 5017691,
-      }),
-    company: CompanySchema.nullable()
-      .exactOptional()
-      .openapi({ description: 'The company associated with the conversation.' }),
-    tags: TagsSchema.exactOptional(),
-    conversation_rating: ConversationRatingSchema.exactOptional(),
-    source: ConversationSourceSchema.exactOptional(),
-    contacts: ConversationContactsSchema.exactOptional(),
-    teammates: ConversationTeammatesSchema.exactOptional(),
-    custom_attributes: CustomAttributesSchema.exactOptional(),
-    first_contact_reply: ConversationFirstContactReplySchema.exactOptional(),
-    sla_applied: SlaAppliedSchema.exactOptional(),
-    statistics: ConversationStatisticsSchema.exactOptional(),
-    linked_objects: LinkedObjectListSchema.exactOptional(),
-    ai_agent_participated: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Indicates whether the AI Agent participated in the conversation.',
-        example: true,
-      }),
-    ai_agent: AiAgentSchema.nullable().exactOptional(),
-    sales_agent_participated: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Indicates whether the Sales Agent participated in the conversation.',
-        example: false,
-      }),
-    sales_agent: SalesAgentSchema.nullable().exactOptional(),
-    channel: ConversationChannelSchema.nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The channel through which the conversation was initiated and its current channel.',
-      }),
-    external_references: z
-      .array(ConversationExternalReferenceSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'References linking this conversation to records in an external helpdesk or CRM system. Populated for Fin Standalone workspaces synced from an external platform; an empty array otherwise. Sorted alphabetically by `type` and capped at 20 entries.',
-        example: [
-          { type: 'zendesk_ticket', id: '3633338' },
-          { type: 'zendesk_sunshine_conversation', id: 'abc-def-uuid' },
-        ],
-      }),
-    monitor_evaluations: z
-      .array(ConversationMonitorEvaluationSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'QA monitor evaluations that flagged this conversation. Only included when `include_monitors=true` is passed as a query parameter.',
-      }),
-    scorecards: z
-      .array(ConversationScorecardSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'QA scorecard results for this conversation. Only included when `include_scorecards=true` is passed as a query parameter.',
-      }),
-  })
-  .openapi({
-    title: 'Conversation List Item',
-    'x-tags': ['Conversations'],
-    description: 'The data returned about your conversations when you list or search them.',
-    required: [],
-  })
-  .openapi('ConversationListItem')
-
-const ConversationPartAuthorSchema = z
-  .object({
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The type of the author', example: 'admin' }),
-    id: z.string().exactOptional().openapi({ description: 'The id of the author', example: '274' }),
-    name: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The name of the author. `null` if the author is a contact that has since been archived or deleted.',
-        example: 'Operator',
-      }),
-    email: z
-      .email()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The email of the author. `null` if the author is a contact that has since been archived or deleted.',
-        example: 'operator+abcd1234@intercom.io',
-      }),
-    from_ai_agent: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'If this conversation part was sent by the AI Agent',
-        example: true,
-      }),
-    is_ai_answer: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'If this conversation part body was generated by the AI Agent',
-        example: false,
-      }),
-  })
-  .openapi({
-    title: 'Conversation part author',
-    description:
-      'The object who initiated the conversation, which can be a Contact, Admin or Team. Bots and campaigns send messages on behalf of Admins or Teams. For Twitter, this will be blank.',
-    required: [],
-  })
-  .openapi('ConversationPartAuthor')
-
-const EmailMessageMetadataSchema = z
-  .object({
-    subject: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The subject of the email', example: 'Question about my order' }),
-    email_address_headers: z
-      .array(EmailAddressHeaderSchema)
-      .exactOptional()
-      .openapi({
-        title: 'Email Address Headers',
-        description: 'A list of an email address headers.',
-      }),
-    message_id: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The unique identifier for the email message as specified in the Message-ID header',
-        example: '<CADKw7xrXzqSn8v3mP8K8Q8yZ6K8Q8yZ6@mail.gmail.com>',
-      }),
-  })
-  .openapi({
-    title: 'Email Message Metadata',
-    description: 'Contains metadata if the message was sent as an email',
-    required: [],
-  })
-  .openapi('EmailMessageMetadata')
-
-const ConversationPartMetadataSchema = z
-  .object({
-    quick_reply_options: z
-      .array(
-        QuickReplyOptionSchema.and(
-          z
-            .object({
-              translations: z
-                .object({})
-                .nullable()
-                .exactOptional()
-                .openapi({
-                  description: 'The translations for the quick reply option.',
-                  example: { en: 'Hello', fr: 'Bonjour' },
-                }),
-            })
-            .openapi({ required: [] }),
-        ),
-      )
-      .exactOptional()
-      .openapi({
-        description:
-          'The quick reply options sent by the Admin or bot, presented in this conversation part.',
-      }),
-    quick_reply_option_uuid: z
-      .uuid()
-      .exactOptional()
-      .openapi({
-        description:
-          'The unique identifier for the quick reply option that was clicked by the end user.',
-        example: '123e4567-e89b-12d3-a456-426614174000',
-      }),
-  })
-  .openapi({
-    title: 'Conversation Part Metadata',
-    description: 'Metadata for a conversation part',
-    required: [],
-  })
-  .openapi('ConversationPartMetadata')
-
-const ConversationAttributeUpdatedByWorkflowSchema = z
-  .object({
-    workflow: z
-      .object({
-        name: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Name of the workflow', example: 'Workflow 1' }),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-    attribute: z
-      .object({
-        name: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Name of the CDA updated', example: 'flight_category' }),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-    value: z
-      .object({
-        name: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Value of the CDA updated', example: 'vip_status' }),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-  })
-  .openapi({
-    title: 'Part type - conversation_attribute_updated_by_workflow',
-    description:
-      'Contains details about the workflow that was triggered and any Custom Data Attributes (CDAs) that were modified during the workflow execution for conversation part type <code>conversation_attribute_updated_by_workflow</code>.',
-    required: [],
-  })
-  .openapi('ConversationAttributeUpdatedByWorkflow')
-
-const ConversationAttributeUpdatedByAdminSchema = z
-  .object({
-    attribute: z
-      .object({
-        name: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Name of the CDA updated', example: 'jira_issue_key' }),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-    value: z
-      .object({
-        name: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Current value of the CDA updated', example: 'PROJ-007' }),
-        previous: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Previous value of the CDA', example: 'PROJ-006' }),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-  })
-  .openapi({
-    title: 'Part type - conversation_attribute_updated_by_admin',
-    description:
-      'Contains details about Custom Data Attributes (CDAs) that were modified by an admin (operator) for conversation part type <code>conversation_attribute_updated_by_admin</code>.',
-    required: [],
-  })
-  .openapi('ConversationAttributeUpdatedByAdmin')
-
-const ConversationAttributeUpdatedByUserSchema = z
-  .object({
-    attribute: z
-      .object({
-        name: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Name of the CDA updated', example: 'Priority' }),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-    value: z
-      .object({
-        name: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Current value of the CDA updated', example: 'High' }),
-        previous: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description: 'Previous value of the CDA (null for older events)',
-            example: 'Medium',
-          }),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-  })
-  .openapi({
-    title: 'Part type - conversation_attribute_updated_by_user',
-    description:
-      'Contains details about Custom Data Attributes (CDAs) that were modified by a user for conversation part type <code>conversation_attribute_updated_by_user</code>.',
-    required: [],
-  })
-  .openapi('ConversationAttributeUpdatedByUser')
-
-const CustomActionStartedSchema = z
-  .object({
-    action: z
-      .object({
-        name: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Name of the action', example: 'Jira Create Issue' }),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-  })
-  .openapi({
-    title: 'Part type - custom_action_started',
-    description:
-      'Contains details about name of the action that was initiated for conversation part type <code>custom_action_started</code>.',
-    required: [],
-  })
-  .openapi('CustomActionStarted')
-
-const CustomActionFinishedSchema = z
-  .object({
-    action: z
-      .object({
-        name: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Name of the action', example: 'Jira Create Issue' }),
-        result: z
-          .enum(['success', 'failed'])
-          .exactOptional()
-          .openapi({ description: 'Status of the action', example: 'success' }),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-  })
-  .openapi({
-    title: 'Part type - custom_action_finished',
-    description:
-      'Contains details about final status of the completed action for conversation part type <code>custom_action_finished</code>.',
-    required: [],
-  })
-  .openapi('CustomActionFinished')
-
-const OperatorWorkflowEventSchema = z
-  .object({
-    workflow: z
-      .object({
-        name: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The name of the workflow', example: 'Custom Bot 1' }),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-    event: z
-      .object({
-        type: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'Type of the workflow event initiated',
-            example: 'wait_finished',
-          }),
-        result: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Result of the workflow event', example: 'Finsihed waiting' }),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-  })
-  .openapi({
-    title: 'Part type - operator_workflow_event',
-    description:
-      'Contains details about name of the workflow for conversation part type <code>operator_workflow_event</code>.',
-    required: [],
-  })
-  .openapi('OperatorWorkflowEvent')
-
-const CallSummarySchema = z
-  .object({
-    call_id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The id of the call the summary describes', example: '3822007689' }),
-  })
-  .openapi({
-    title: 'Part type - call_summary',
-    description:
-      'Contains the id of the call the summary describes, for conversation part type <code>call_summary</code>. A conversation can contain several calls, and therefore several call summaries, so this identifies which call each summary belongs to. The id matches the <code>id</code> returned by the Calls API and by the <code>call.started</code>, <code>call.ended</code>, <code>call.recording_available</code> and <code>call.transcription_available</code> webhook topics.',
-    required: [],
-  })
-  .openapi('CallSummary')
-
-const AiAgentEventOtpEmailVerificationFailedSchema = z
-  .object({
-    event: z
-      .object({
-        type: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The event type', example: 'otp_email_verification_failed' }),
-        value: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'A readable label for the event',
-            example: 'OTP email verification failed',
-          }),
-        data: z
-          .object({
-            otp_email_verification_failed: z
-              .object({
-                reason: z
-                  .string()
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'Why the one-time passcode email could not verify the contact. Treat this as a free-form string and fall back to <code>value</code> for a reason you do not recognise. <code>no_email</code> means the contact has no email address on record.',
-                    example: 'no_email',
-                  }),
-              })
-              .exactOptional()
-              .openapi({
-                description: 'Details of the failed verification',
-                example: { reason: 'no_email' },
-                required: [],
-              }),
-          })
-          .exactOptional()
-          .openapi({
-            description:
-              'Data recorded with the event. Empty when the failure was recorded without a reason.',
-            example: { otp_email_verification_failed: { reason: 'no_email' } },
-            required: [],
-          }),
-      })
-      .exactOptional()
-      .openapi({
-        description: 'The event the part records',
-        example: {
-          type: 'otp_email_verification_failed',
-          value: 'OTP email verification failed',
-          data: { otp_email_verification_failed: { reason: 'no_email' } },
-        },
-        required: [],
-      }),
-  })
-  .openapi({
-    title: 'Part type - ai_agent_event (otp_email_verification_failed)',
-    description:
-      'Contains the reason Fin could not verify a contact by one-time passcode email, for conversation part type <code>ai_agent_event</code> when the event type is <code>otp_email_verification_failed</code>. Other <code>ai_agent_event</code> event types are not described here.',
-    required: [],
-  })
-  .openapi('AiAgentEventOtpEmailVerificationFailed')
-
-const EventDetailsSchema = z
-  .union([
-    ConversationAttributeUpdatedByWorkflowSchema,
-    ConversationAttributeUpdatedByAdminSchema,
-    ConversationAttributeUpdatedByUserSchema,
-    CustomActionStartedSchema,
-    CustomActionFinishedSchema,
-    OperatorWorkflowEventSchema,
-    CallSummarySchema,
-    AiAgentEventOtpEmailVerificationFailedSchema,
-  ])
-  .openapi({ title: 'Event details of Workflow & actions' })
-  .openapi('EventDetails')
-
-const ConversationPartSchema = z
-  .object({
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Always conversation_part', example: 'conversation_part' }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The id representing the conversation part.', example: '3' }),
-    part_type: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The type of conversation part.', example: 'comment' }),
-    body: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The message body, which may contain HTML. For Twitter, this will show a generic message regarding why the body is obscured. In webhook payloads for API version 2.15+, this field returns plain text.',
-        example: '<p>Okay!</p>',
-      }),
-    created_at: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'The time the conversation part was created.', example: 1663597223 }),
-    updated_at: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'The last time the conversation part was updated.',
-        example: 1663597260,
-      }),
-    notified_at: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'The time the user was notified with the conversation part.',
-        example: 1663597260,
-      }),
-    assigned_to: ReferenceSchema.nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The assignee this conversation_part assigned the conversation to, as a reference whose `type` is `admin`, `team` or `bot`. When the part unassigned the conversation, `type` is `nobody_admin` and `id` is `null`. Null when the part did not change the assignment, or when the assignee has since been deleted.',
-      }),
-    admin_assignee_id: z
-      .int()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The id of the teammate that this conversation_part assigned the conversation to, or 0 if the part removed the teammate. Null or absent when the part did not change the teammate, including an unassignment that did not name which assignee it cleared. A bot is reported here, because assignment treats anything that is not a team as a teammate.',
-        example: 991267715,
-      }),
-    team_assignee_id: z
-      .int()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The id of the team that this conversation_part assigned the conversation to, or 0 if the part removed the team. Null or absent when the part did not change the team, including an unassignment that did not name which assignee it cleared. A part can assign a team and a teammate at the same time, for example when the team uses Round Robin distribution and the teammate is resolved inline. In that case assigned_to reports only the teammate, and these two fields report each assignee separately.',
-        example: 5017691,
-      }),
-    author: ConversationPartAuthorSchema.exactOptional(),
-    attachments: z
-      .array(PartAttachmentSchema)
-      .exactOptional()
-      .openapi({
-        title: 'Conversation part attachments',
-        description: 'A list of attachments for the part.',
-      }),
-    external_id: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The external id of the conversation part', example: 'abcd1234' }),
-    redacted: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Whether or not the conversation part has been redacted.',
-        example: false,
-      }),
-    email_message_metadata: EmailMessageMetadataSchema.nullable().exactOptional(),
-    metadata: ConversationPartMetadataSchema.nullable().exactOptional(),
-    state: z
-      .enum(['open', 'closed', 'snoozed'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates the current state of conversation when the conversation part was created.',
-        example: 'open',
-      }),
-    tags: z
-      .array(TagBasicSchema)
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'A list of tags objects associated with the conversation part.' }),
-    event_details: EventDetailsSchema.nullable().exactOptional(),
-    app_package_code: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        example: 'test-integration',
-        description:
-          'The app package code if this part was created via API. null if the part was not created via API.',
-      }),
-    translations: z
-      .object({
-        original: z
-          .string()
-          .openapi({
-            description:
-              'The locale code identifying the language the reply was originally written in.',
-            example: 'en',
-          }),
-      })
-      .catchall(z.string())
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'A map of the reply text keyed by locale code. Backs the `conversation.admin.replied.translated` webhook topic. `original` holds the locale code the reply was written in; every other key holds the reply translated into that locale.',
-        required: ['original'],
-        example: { original: 'en', en: '<p>Hello</p>', fr: '<p>Bonjour</p>' },
-      }),
-  })
-  .openapi({
-    title: 'Conversation Part',
-    description: 'A Conversation Part represents a message in the conversation.',
-    required: [],
-  })
-  .openapi('ConversationPart')
-
-const ConversationPartsSchema = z
-  .object({
-    type: z
-      .literal('conversation_part.list')
-      .exactOptional()
-      .openapi({ description: '', example: 'conversation_part.list' }),
-    conversation_parts: z
-      .array(ConversationPartSchema)
-      .exactOptional()
-      .openapi({
-        title: 'Conversation Parts',
-        description:
-          'A list of Conversation Part objects for each part message in the conversation. This is only returned when Retrieving a Conversation, and ignored when Listing all Conversations. There is a limit of 500 parts.',
-      }),
-    total_count: z.int().exactOptional().openapi({ description: '', example: 1 }),
-  })
-  .openapi({
-    title: 'Conversation Parts',
-    description:
-      'A list of Conversation Part objects for each part message in the conversation. This is only returned when Retrieving a Conversation, and ignored when Listing all Conversations. There is a limit of 500 parts.',
-    required: [],
-  })
-  .openapi('ConversationParts')
-
-const ConversationSchema = z
+const ConversationSchema: z.ZodType<ConversationType> = z
   .object({
     type: z
       .string()
@@ -9962,7 +11294,7 @@ const ConversationSchema = z
       .exactOptional()
       .openapi({
         description:
-          'QA monitor evaluations that flagged this conversation. Only included when `include_monitors=true` is passed as a query parameter.',
+          'The latest QA monitor evaluation for each monitor that has evaluated this conversation, whatever its result. Only included when `include_monitors=true` is passed as a query parameter.',
       }),
     scorecards: z
       .array(ConversationScorecardSchema)
@@ -9991,9 +11323,12 @@ const ConversationDeletedSchema = z
         example: '5ba682d23d7cf92bef87bfd4',
       }),
     object: z
-      .literal('conversation')
+      .enum(['conversation', 'ticket'])
       .exactOptional()
-      .openapi({ description: 'always conversation', example: 'conversation' }),
+      .openapi({
+        description: '`conversation`, or `ticket` when the deleted item is a ticket.',
+        example: 'conversation',
+      }),
     deleted: z
       .boolean()
       .exactOptional()
@@ -10040,6 +11375,116 @@ const DeletedConversationItemSchema = z
   })
   .openapi('DeletedConversationItem')
 
+const CreateConversationStreamTokenRequestSchema = z
+  .object({
+    external_id: z
+      .string()
+      .openapi({
+        description: 'The external ID of the contact to issue a token for.',
+        example: 'contact-1234',
+      }),
+  })
+  .openapi({ title: 'Create conversation stream token request', required: ['external_id'] })
+  .openapi('CreateConversationStreamTokenRequest')
+
+const ConversationStreamTokenSchema = z
+  .object({
+    type: z
+      .literal('conversation_stream_token')
+      .exactOptional()
+      .openapi({
+        description:
+          "String representing the object's type. Always has the value `conversation_stream_token`.",
+        example: 'conversation_stream_token',
+      }),
+    expires_at: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'The time the token expires, as a UNIX timestamp.',
+        example: 1731241200,
+      }),
+    stream: z
+      .object({
+        provider: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'The realtime provider that delivers the stream.',
+            example: 'ably',
+          }),
+        url: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'The host to connect to.', example: 'main.realtime.ably.net' }),
+        channel: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'The channel to subscribe to.',
+            example: 'conversation_stream:abc123:6710a1b2c3d4e5f6a7b8c9d0',
+          }),
+        token: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'The token to connect with.', example: '<stream token>' }),
+      })
+      .exactOptional()
+      .openapi({ description: 'What the client needs to connect to the stream.', required: [] }),
+    links: z
+      .object({
+        self: z
+          .object({
+            href: z
+              .string()
+              .exactOptional()
+              .openapi({
+                description: 'The URL to request.',
+                example: 'https://api.intercom.io/conversations/stream/token',
+              }),
+            method: z
+              .string()
+              .exactOptional()
+              .openapi({ description: 'The HTTP method to use.', example: 'POST' }),
+          })
+          .exactOptional()
+          .openapi({
+            description: 'The request that issues a new token for the contact.',
+            required: [],
+          }),
+        revoke: z
+          .object({
+            href: z
+              .string()
+              .exactOptional()
+              .openapi({
+                description: 'The URL to request.',
+                example:
+                  'https://api.intercom.io/conversations/stream/token?external_id=contact-1234',
+              }),
+            method: z
+              .string()
+              .exactOptional()
+              .openapi({ description: 'The HTTP method to use.', example: 'DELETE' }),
+          })
+          .exactOptional()
+          .openapi({
+            description: 'The request that revokes every active token for the contact.',
+            required: [],
+          }),
+      })
+      .exactOptional()
+      .openapi({ description: 'The requests you can make with this token.', required: [] }),
+  })
+  .openapi({
+    title: 'Conversation stream token',
+    'x-tags': ['Conversations'],
+    description:
+      "A token that lets a contact's client subscribe to a realtime stream of their conversation events.",
+    required: [],
+  })
+  .openapi('ConversationStreamToken')
+
 const DeletedConversationListSchema = z
   .object({
     type: z
@@ -10067,7 +11512,7 @@ const DeletedConversationListSchema = z
   })
   .openapi('DeletedConversationList')
 
-const ConversationListSchema = z
+const ConversationListSchema: z.ZodType<ConversationListType> = z
   .object({
     type: z
       .literal('conversation.list')
@@ -10091,12 +11536,129 @@ const ConversationListSchema = z
   })
   .openapi('ConversationList')
 
+const RateConversationRequestSchema = z
+  .object({
+    intercom_user_id: z
+      .string()
+      .openapi({
+        description: 'The unique identifier for the contact the rating request was sent to.',
+        example: '6541f0a2c3d4e5f607182930',
+      }),
+    rating: z.int().min(1).max(5).openapi({ description: 'The rating, from 1 to 5.', example: 4 }),
+    remark: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Free text from the contact to go with the rating.',
+        example: 'Fast and friendly',
+      }),
+  })
+  .openapi({ title: 'Rate conversation request', required: ['intercom_user_id', 'rating'] })
+  .openapi('RateConversationRequest')
+
+const RatedConversationSchema = z
+  .object({
+    type: z
+      .literal('conversation_rating')
+      .exactOptional()
+      .openapi({
+        description:
+          "String representing the object's type. Always has the value `conversation_rating`.",
+        example: 'conversation_rating',
+      }),
+    conversation_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The unique identifier for the conversation.',
+        example: '215471234567890',
+      }),
+    rating: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'The rating, from 1 to 5.', example: 4 }),
+    remark: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'The free text left with the rating.',
+        example: 'Fast and friendly',
+      }),
+    created_at: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'The time the rating request was created, as a UNIX timestamp.',
+        example: 1793664000,
+      }),
+    updated_at: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'The time the rating or remark last changed, as a UNIX timestamp.',
+        example: 1793664120,
+      }),
+    customer: z
+      .object({
+        type: z
+          .enum(['user', 'lead', 'visitor'])
+          .exactOptional()
+          .openapi({ description: 'The type of contact.', example: 'user' }),
+        id: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'The unique identifier for the contact.',
+            example: '6541f0a2c3d4e5f607182930',
+          }),
+      })
+      .exactOptional()
+      .openapi({ description: 'The contact who answered.', required: [] }),
+    teammate: z
+      .object({
+        type: z
+          .enum(['admin', 'bot', 'workflow'])
+          .exactOptional()
+          .openapi({
+            description: '`admin` for a teammate, `bot` for Fin, or `workflow` for a workflow.',
+            example: 'admin',
+          }),
+        id: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The unique identifier for the teammate, Fin or workflow. For a deleted workflow, this is the identifier recorded with the rating.',
+            example: '12345',
+          }),
+      })
+      .exactOptional()
+      .openapi({ description: 'Who was rated.', required: [] }),
+  })
+  .openapi({
+    title: 'Rated conversation',
+    'x-tags': ['Conversations'],
+    description: 'The CSAT rating recorded on a conversation.',
+    required: [],
+  })
+  .openapi('RatedConversation')
+
 const TicketRequestCustomAttributesSchema = z
-  .record(z.string(), z.union([z.string().nullable(), z.number(), z.boolean(), z.array(z.any())]))
+  .record(
+    z.string(),
+    z.union([
+      z.string().nullable(),
+      z.number(),
+      z.boolean(),
+      z.array(z.int()),
+      z.array(z.string()),
+    ]),
+  )
   .openapi({
     title: 'Ticket Attributes',
     description:
-      'The attributes set on the ticket. When setting the default title and description attributes, the attribute keys that should be used are `_default_title_` and `_default_description_`. When setting ticket type attributes of the list attribute type, the key should be the attribute name and the value of the attribute should be the list item id, obtainable by [listing the ticket type](ref:get_ticket-types). For example, if the ticket type has an attribute called `priority` of type `list`, the key should be `priority` and the value of the attribute should be the guid of the list item (e.g. `de1825a0-0164-4070-8ca6-13e22462fa7e`).',
+      'The attributes set on the ticket. When setting the default title and description attributes, the attribute keys that should be used are `_default_title_` and `_default_description_`. When setting ticket type attributes of the list attribute type, the key should be the attribute name and the value of the attribute should be the list item id, obtainable by [listing the ticket type](ref:get_ticket-types). For example, if the ticket type has an attribute called `priority` of type `list`, the key should be `priority` and the value of the attribute should be the guid of the list item (e.g. `de1825a0-0164-4070-8ca6-13e22462fa7e`). For a `files` attribute, pass an array of upload ids; for a `relationship` attribute, pass an array of related object ids as strings.',
     example: { _default_title_: 'Found a bug', _default_description_: 'The button is not working' },
   })
   .openapi('TicketRequestCustomAttributes')
@@ -10460,7 +12022,7 @@ const CreateInternalArticleRequestSchema = z
         example: '# Internal Guide\n\nSome instructions.\n',
       }),
     json_blocks: z
-      .array(z.object({}))
+      .array(z.looseObject({}))
       .exactOptional()
       .openapi({
         description:
@@ -10724,7 +12286,7 @@ const CreateContactRequestSchema = z
             example: 'en',
           }),
         custom_attributes: z
-          .object({})
+          .looseObject({})
           .nullable()
           .exactOptional()
           .openapi({
@@ -10877,6 +12439,38 @@ const CreateDataAttributeRequestSchema = z
       })
       .openapi({ title: 'other type', required: [] }),
   ])
+  .and(
+    z
+      .object({
+        name: z
+          .string()
+          .openapi({
+            description: 'The name of the data attribute.',
+            example: 'My Data Attribute',
+          }),
+        model: z
+          .enum(['contact', 'company'])
+          .openapi({
+            description: 'The model that the data attribute belongs to.',
+            example: 'contact',
+          }),
+        description: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'The readable description you see in the UI for the attribute.',
+            example: 'My Data Attribute Description',
+          }),
+        messenger_writable: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Can this attribute be updated by the Messenger',
+            example: false,
+          }),
+      })
+      .openapi({ required: ['name', 'model', 'data_type'] }),
+  )
   .openapi({
     description: '',
     title: 'Create Data Attribute Request',
@@ -10974,7 +12568,10 @@ const CreateDataEventRequestSchema = z
             example: 'frodo.baggins@example.com',
           }),
         metadata: z
-          .record(z.string(), z.union([z.string(), z.int(), z.number(), z.boolean(), z.object({})]))
+          .record(
+            z.string(),
+            z.union([z.string(), z.int(), z.number(), z.boolean(), z.looseObject({})]),
+          )
           .exactOptional()
           .openapi({
             description:
@@ -11302,11 +12899,11 @@ const CreateMessageRequestSchema = z
     z
       .object({
         message_type: z
-          .enum(['in_app', 'email', 'whatsapp'])
+          .enum(['in_app', 'inapp', 'email', 'whatsapp'])
           .exactOptional()
           .openapi({
             description:
-              'The kind of message being created. Values: `in_app`, `email` or `whatsapp`.',
+              'The kind of message being created. Values: `in_app`, `email` or `whatsapp`. `inapp` is also accepted for in-app messages, and responses always show in-app messages as `inapp`.',
             example: 'in_app',
           }),
         subject: z
@@ -11325,7 +12922,7 @@ const CreateMessageRequestSchema = z
           .exactOptional()
           .openapi({
             description:
-              'The style of the outgoing message. Possible values `plain` or `personal`.',
+              "For `email` messages, the style of the outgoing message. Possible values `plain` or `personal`. For `whatsapp` messages, the name of the WhatsApp message template to send. A template that doesn't exist returns a `400` error.",
             example: 'plain',
           }),
         from: z
@@ -11337,23 +12934,54 @@ const CreateMessageRequestSchema = z
                 description: 'The identifier for the admin which is given by Intercom.',
                 example: 394051,
               }),
+            whatsapp_number: z
+              .string()
+              .exactOptional()
+              .openapi({
+                description:
+                  "For `whatsapp` messages, the WhatsApp number of your workspace to send from, in international format. If you leave it out, a WhatsApp number in your workspace that has the template is used. A number that isn't valid, or isn't registered in your workspace, returns a `400` error.",
+                example: '+14155550123',
+              }),
           })
           .exactOptional()
           .openapi({
             description:
-              'The sender of the message. If not provided, the default sender will be used.',
+              'The sender of the message. Required. A request without `from` returns a `400` error.',
             required: ['type', 'id'],
           }),
         to: z
           .xor([
             RecipientSchema,
             z.array(RecipientSchema).openapi({
-              description: 'The recipients of the message.',
+              description:
+                'The recipients of the message. Not accepted for `whatsapp` messages, which take a single recipient. An array returns a `400` error.',
               example: [
                 { type: 'user', id: '536e564f316c83104c000020' },
                 { type: 'lead', id: '536e564f316c83104c000021' },
               ],
             }),
+            z
+              .object({
+                phone: z
+                  .string()
+                  .openapi({
+                    description: "The recipient's phone number, in international format.",
+                    example: '+5547999998888',
+                  }),
+                name: z
+                  .string()
+                  .exactOptional()
+                  .openapi({
+                    description: 'The name to give the contact if one is created.',
+                    example: 'John Doe',
+                  }),
+              })
+              .openapi({
+                title: 'WhatsApp recipient',
+                description:
+                  "The recipient of a `whatsapp` message, identified by phone number. Required form for `whatsapp` messages. A contact is created for the number if there isn't one. Only `phone` and `name` are used. Other keys are ignored.",
+                required: ['phone'],
+              }),
           ])
           .exactOptional(),
         cc: z
@@ -11392,8 +13020,32 @@ const CreateMessageRequestSchema = z
           .exactOptional()
           .openapi({
             description:
-              'Whether a conversation should be opened in the inbox for the message without the contact replying. Defaults to false if not provided.',
+              'Whether a conversation should be opened in the inbox for the message without the contact replying. Defaults to false if not provided. For `whatsapp` messages, a conversation is always opened and this field is ignored.',
             example: true,
+          }),
+        components: z
+          .array(z.looseObject({}))
+          .exactOptional()
+          .openapi({
+            description:
+              'The components of the WhatsApp template, with the values for its variables. Required for `whatsapp` messages.',
+            example: [{ type: 'BODY', parameters: [{ type: 'text', text: 'Username 123' }] }],
+          }),
+        locale: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              "The locale of the WhatsApp template to send, such as `en`. If you leave it out, the contact's messenger locale is used, then the workspace locale. A template that isn't available in the locale returns a `400` error.",
+            example: 'en',
+          }),
+        brand_id: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              "The id of the brand to send the message from. Not used for `whatsapp` messages. A brand that doesn't exist returns a `400` error.",
+            example: '1234',
           }),
       })
       .openapi({ required: [] }),
@@ -11645,32 +13297,6 @@ const CreateOrUpdateTagRequestSchema = z
   })
   .openapi('CreateOrUpdateTagRequest')
 
-const CustomAttributesRequestSchema = z
-  .record(
-    z.string(),
-    z.union([
-      z.string(),
-      z.int(),
-      z.number(),
-      z.boolean(),
-      DatetimeSchema,
-      CustomObjectInstanceListSchema,
-    ]),
-  )
-  .openapi({
-    title: 'Custom Attributes (write)',
-    description:
-      'The custom attributes which are set on this object, as key-value pairs. For relationship attributes the value should be a list of custom object instance models. Only attributes a caller may set should be sent here — attributes Intercom generates are returned in responses only.',
-    example: {
-      paid_subscriber: true,
-      monthly_spend: 155.5,
-      team_mates: 9,
-      start_date_iso8601: '2023-03-04T09:46:14Z',
-      end_date_timestamp: 1677923174,
-    },
-  })
-  .openapi('CustomAttributesRequest')
-
 const CreatePhoneSwitchRequestSchema = z
   .object({
     phone: z
@@ -11680,7 +13306,49 @@ const CreatePhoneSwitchRequestSchema = z
           'Phone number in E.164 format, that will receive the SMS to continue the conversation in the Messenger.',
         example: '+1 1234567890',
       }),
-    custom_attributes: CustomAttributesRequestSchema.exactOptional(),
+    custom_attributes: z
+      .record(z.string(), z.xor([z.string().nullable(), z.number(), z.boolean()]))
+      .exactOptional()
+      .openapi({
+        description:
+          "Custom attributes to add to the user or lead's custom data attributes. Values are strings. Numbers and booleans are converted to strings. An empty string, or any array or object value, returns a `422` error with the key `context`. A `null` value is ignored.",
+        example: { issue_type: 'Billing', priority: 'High' },
+      }),
+    body: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The text of the contact's first message. When you send it, a conversation is created straight away with this text as its first message.",
+        example: 'I need help with my invoice',
+      }),
+    send_notification: z
+      .boolean()
+      .default(true)
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether to send the SMS with the link to the Messenger. When `false`, no SMS is sent.',
+        example: true,
+      }),
+    user_input_phone: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The phone number as the contact typed it, in national format. When sent with `country`, used in place of `phone` to read the number. `phone` is still required.',
+        example: '087 234 5678',
+      }),
+    country: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The two-letter country code used to read `user_input_phone`. When `country` is `US`, Intercom also looks up the carrier to detect landlines.',
+        example: 'IE',
+      }),
   })
   .nullable()
   .openapi({
@@ -12196,6 +13864,32 @@ const CallTranscriptTurnSchema = z
   })
   .openapi('CallTranscriptTurn')
 
+const CustomAttributesRequestSchema = z
+  .record(
+    z.string(),
+    z.union([
+      z.string(),
+      z.int(),
+      z.number(),
+      z.boolean(),
+      DatetimeSchema,
+      CustomObjectInstanceListSchema,
+    ]),
+  )
+  .openapi({
+    title: 'Custom Attributes (write)',
+    description:
+      'The custom attributes which are set on this object, as key-value pairs. For relationship attributes the value should be a list of custom object instance models. Only attributes a caller may set should be sent here — attributes Intercom generates are returned in responses only.',
+    example: {
+      paid_subscriber: true,
+      monthly_spend: 155.5,
+      team_mates: 9,
+      start_date_iso8601: '2023-03-04T09:46:14Z',
+      end_date_timestamp: 1677923174,
+    },
+  })
+  .openapi('CustomAttributesRequest')
+
 const CustomObjectInstanceDeletedSchema = z
   .object({
     object: z
@@ -12255,7 +13949,7 @@ const CustomObjectInstanceNotFoundSchema = z
         example: 'Order',
       }),
     custom_attributes: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Always an empty object.' }),
     external_created_at: z.int().nullable().exactOptional(),
@@ -13062,7 +14756,7 @@ const CreateDataConnectorRequestSchema = z
         example: false,
       }),
     mock_response: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -13217,7 +14911,7 @@ const UpdateDataConnectorRequestSchema = z
         example: true,
       }),
     mock_response: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -13880,255 +15574,7 @@ const DataConnectorListSchema = z
   })
   .openapi('DataConnectorList')
 
-const DataConnectorVersionSchema = z
-  .object({
-    type: z
-      .literal('data_connector_version')
-      .exactOptional()
-      .openapi({
-        description: 'The type of object - `data_connector_version`.',
-        example: 'data_connector_version',
-      }),
-    status: z
-      .enum(['live', 'paused', 'draft', 'previously_live'])
-      .exactOptional()
-      .openapi({ description: 'The status of this version today.', example: 'live' }),
-    note: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'A note describing this version, if one has been set.',
-        example: 'Switched to the v2 orders endpoint',
-      }),
-    author: z
-      .object({
-        id: z
-          .int()
-          .exactOptional()
-          .openapi({ description: 'The unique identifier of the teammate.', example: 456 }),
-        name: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The name of the teammate.', example: 'Alice Admin' }),
-      })
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The teammate who created this version.', required: [] }),
-    created_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'The time this version was created.',
-        example: '2026-09-14T10:02:11Z',
-      }),
-    entity_version_id: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description:
-          'The identifier of this version. Use it as `version_id` when retrieving or updating a version.',
-        example: 9821,
-      }),
-    definition: z
-      .object({
-        name: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'The name of the data connector.',
-            example: 'Order Status Service',
-          }),
-        description: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'A description of what this data connector does.' }),
-        internal_description: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'The internal description of the data connector.' }),
-        state: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'The state of the data connector at this version.',
-            example: 'live',
-          }),
-        url: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'The URL of the external API endpoint. Supports template variables like `{{order_id}}`.',
-          }),
-        body: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'The request body template. Supports template variables.' }),
-        headers: z
-          .array(
-            z
-              .object({
-                name: z.string().exactOptional().openapi({ example: 'Authorization' }),
-                value: z
-                  .string()
-                  .exactOptional()
-                  .openapi({ description: 'Always `"****"` in responses.', example: '****' }),
-              })
-              .openapi({ required: [] }),
-          )
-          .exactOptional()
-          .openapi({
-            description:
-              'HTTP headers for the request. Header values are always redacted as `"****"`.',
-          }),
-        http_method: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The HTTP method used by the data connector.', example: 'get' }),
-        direct_fin_usage: z
-          .boolean()
-          .exactOptional()
-          .openapi({ description: 'Whether this connector is used directly by Fin.' }),
-        audiences: z
-          .array(z.string())
-          .exactOptional()
-          .openapi({ description: 'The audience types this connector targets.' }),
-        execution_type: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description: 'How the connector executes, for example `server_side` or `client_side`.',
-          }),
-        configuration_response_type: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'The expected response format from the connector.' }),
-        data_transformation_type: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'The type of data transformation applied to the response.' }),
-        client_function_name: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'The name of the client-side function, if applicable.' }),
-        client_function_timeout_ms: z
-          .int()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description: 'Timeout in milliseconds for the client function, if applicable.',
-          }),
-        data_inputs: z
-          .array(
-            z
-              .object({
-                name: z.string().exactOptional(),
-                type: z.string().exactOptional(),
-                description: z.string().nullable().exactOptional(),
-                required: z.boolean().exactOptional(),
-                default_value: z.any().exactOptional(),
-              })
-              .openapi({ required: [] }),
-          )
-          .exactOptional()
-          .openapi({ description: 'The input parameters accepted by this data connector.' }),
-        response_fields: z
-          .array(
-            z
-              .object({
-                path: z.string().exactOptional(),
-                type: z.string().exactOptional(),
-                example_value: z.any().exactOptional(),
-                redacted: z.boolean().exactOptional(),
-              })
-              .openapi({ required: [] }),
-          )
-          .exactOptional()
-          .openapi({ description: 'The fields returned in the connector response.' }),
-        object_mappings: z
-          .array(
-            z
-              .object({
-                response_object_path: z.string().exactOptional(),
-                intercom_object_type: z.string().exactOptional(),
-                attribute_mappings: z
-                  .array(
-                    z
-                      .object({
-                        response_attribute_path: z.string().exactOptional(),
-                        intercom_attribute_identifier: z.string().exactOptional(),
-                        mapping_type: z.string().exactOptional(),
-                      })
-                      .openapi({ required: [] }),
-                  )
-                  .exactOptional(),
-                reference_mappings: z
-                  .array(
-                    z
-                      .object({
-                        intercom_object_type: z.string().exactOptional(),
-                        intercom_attribute_identifier: z.string().exactOptional(),
-                      })
-                      .openapi({ required: [] }),
-                  )
-                  .exactOptional(),
-              })
-              .openapi({ required: [] }),
-          )
-          .exactOptional()
-          .openapi({
-            description: 'Mappings from connector response objects to Intercom objects.',
-          }),
-        token_ids: z
-          .array(z.string())
-          .exactOptional()
-          .openapi({ description: 'IDs of authentication tokens associated with this connector.' }),
-        customer_authentication: z
-          .boolean()
-          .exactOptional()
-          .openapi({ description: 'Whether OTP authentication is enabled for this connector.' }),
-        bypass_authentication: z
-          .boolean()
-          .exactOptional()
-          .openapi({ description: 'Whether authentication is bypassed for this connector.' }),
-        enforce_auth: z
-          .boolean()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Whether authentication is enforced for this connector.' }),
-        validate_missing_attributes: z
-          .boolean()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Whether to validate missing attributes before execution.' }),
-      })
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          "The data connector's configuration at this version. `null` if the snapshot is no longer available. Mirrors the response of [Retrieve a data connector](/docs/references/rest-api/api.intercom.io/data-connectors/retrievedataconnector), without `id`, `type`, `created_by_admin_id`, `updated_by_admin_id`, `created_at`, `updated_at`, `execution_results_url` and `transform_code_block`.",
-        required: [],
-      }),
-  })
-  .openapi({
-    title: 'Data Connector Version',
-    'x-tags': ['Data Connectors'],
-    description:
-      "A point-in-time snapshot of a data connector's configuration, with the version's status and an optional note.",
-    required: [],
-  })
-  .openapi('DataConnectorVersion')
-
-const DataConnectorVersionListSchema = z
+const DataConnectorVersionListSchema: z.ZodType<DataConnectorVersionListType> = z
   .object({
     type: z
       .literal('list')
@@ -14260,7 +15706,10 @@ const DataEventSchema = z
         example: 'frodo.baggins@example.com',
       }),
     metadata: z
-      .record(z.string(), z.union([z.string(), z.int(), z.number(), z.boolean(), z.object({})]))
+      .record(
+        z.string(),
+        z.union([z.string(), z.int(), z.number(), z.boolean(), z.looseObject({})]),
+      )
       .exactOptional()
       .openapi({
         description: 'Optional metadata about the event. Values keep the type they were sent with.',
@@ -15437,45 +16886,6 @@ const FinAgentCsatRequestedEventSchema = z
   })
   .openapi('FinAgentCsatRequestedEvent')
 
-const FileAttributeSchema = z
-  .object({
-    type: z.string().exactOptional().openapi({ example: 'upload' }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The name of the file', example: 'Screenshot.png' }),
-    url: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The url of the file. This is a temporary URL and will expire after 30 minutes.',
-        example: 'https://intercom-attachments-1.com/.../Screenshot.png',
-      }),
-    content_type: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The type of file', example: 'image/png' }),
-    filesize: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'The size of the file in bytes', example: 11308309 }),
-    width: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'The width of the file in pixels, if applicable', example: 3024 }),
-    height: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'The height of the file in pixels, if applicable', example: 1964 }),
-  })
-  .openapi({
-    title: 'File',
-    description: 'The value describing a file upload set for a custom attribute',
-    required: [],
-  })
-  .openapi('FileAttribute')
-
 const TeammateReferenceSchema = z
   .object({
     type: z
@@ -15787,32 +17197,7 @@ const HitlEventListSchema = z
   })
   .openapi('HitlEventList')
 
-const SideConversationSummarySchema = z
-  .object({
-    side_conversation_id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The unique identifier for the side conversation.', example: '456' }),
-    conversation_parts: z
-      .array(ConversationPartSchema)
-      .exactOptional()
-      .openapi({ description: 'The conversation parts (messages) in this side conversation.' }),
-    total_count: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'The total number of conversation parts in this side conversation.',
-        example: 1,
-      }),
-  })
-  .openapi({
-    title: 'Side Conversation Summary',
-    description: 'A side conversation with its conversation parts.',
-    required: [],
-  })
-  .openapi('SideConversationSummary')
-
-const SideConversationListSchema = z
+const SideConversationListSchema: z.ZodType<SideConversationListType> = z
   .object({
     type: z
       .literal('side_conversation.list')
@@ -16613,15 +17998,43 @@ const MessageSchema = z
       .string()
       .openapi({ description: 'The message body, which may contain HTML.', example: 'Hello' }),
     message_type: z
-      .enum(['email', 'inapp', 'facebook', 'twitter'])
+      .enum(['email', 'inapp', 'facebook', 'twitter', 'whatsapp'])
       .openapi({
-        description: 'The type of message that was sent. Can be email, inapp, facebook or twitter.',
+        description:
+          'The type of message that was sent. Can be email, inapp, facebook, twitter or whatsapp.',
         example: 'inapp',
       }),
     conversation_id: z
       .string()
       .exactOptional()
       .openapi({ description: 'The associated conversation_id', example: '64619700005570' }),
+    owner: AdminSchema.exactOptional().openapi({
+      description: 'The admin who sent the message. Only present when the message has an owner.',
+    }),
+    template: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The style of the email, such as `plain` or `personal`. Only present when `message_type` is `email`.',
+        example: 'plain',
+      }),
+    external_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The external identifier of the message, if one was set when the message was created. Only returned for messages started by a contact.',
+        example: 'api:order-1234',
+      }),
+    whatsapp_message_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The id WhatsApp gave the message. Only present for `whatsapp` messages that WhatsApp accepted.',
+        example: 'wamid.EXAMPLE123',
+      }),
   })
   .openapi({
     title: 'Message',
@@ -17187,6 +18600,22 @@ const OpenConversationRequestSchema = z
         description: 'The id of the admin who is performing the action.',
         example: '5017690',
       }),
+    assignee_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The `id` of the `admin` or `team` to assign the conversation to when it is opened. Set `0` to unassign it, which clears both the teammate and the team assignee.',
+        example: '4324241',
+      }),
+    skip_notifications: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Option to disable notifications when opening a conversation. Available from API version 2.15.',
+        example: true,
+      }),
   })
   .openapi({
     title: 'Open Conversation Request',
@@ -17258,15 +18687,16 @@ const RegisterFinVoiceCallRequestSchema = z
       }),
     vendor_internal_id: z
       .string()
+      .max(191)
       .nullable()
       .exactOptional()
       .openapi({
         description:
-          "Optional vendor-supplied identifier for linking the Fin Voice session to records in the vendor's own systems. Stored as-is and returned on every lookup.",
+          "Optional vendor-supplied identifier for linking the Fin Voice session to records in the vendor's own systems. Stored as-is and returned on every lookup. Cannot exceed 191 characters.",
         example: 'vendor-internal-abc-123',
       }),
     data: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({ description: 'Additional metadata about the call', example: { key: 'value' } }),
@@ -17321,26 +18751,47 @@ const RedactConversationRequestSchema = z
   ])
   .openapi('RedactConversationRequest')
 
-const ReplyConversationRequestSchema: z.ZodType<ReplyConversationRequestType> = z
-  .lazy(() => z.xor([ContactReplyConversationRequestSchema, AdminReplyConversationRequestSchema]))
+const ReplyConversationRequestSchema = z
+  .xor([
+    ContactReplyConversationRequestSchema,
+    AdminReplyConversationRequestSchema,
+    BotReplyConversationRequestSchema,
+  ])
   .openapi('ReplyConversationRequest')
 
-const SearchRequestSchema: z.ZodType<SearchRequestType> = z
-  .lazy(() =>
-    z
+const SearchRequestSchema = z
+  .object({
+    query: z.xor([
+      SingleFilterSearchRequestSchema.openapi({ title: 'Single filter search request' }),
+      MultipleFilterSearchRequestSchema.openapi({ title: 'multiple filter search request' }),
+    ]),
+    pagination: StartingAfterPagingSchema.exactOptional(),
+    sort: z
       .object({
-        query: z.xor([
-          SingleFilterSearchRequestSchema.openapi({ title: 'Single filter search request' }),
-          MultipleFilterSearchRequestSchema.openapi({ title: 'multiple filter search request' }),
-        ]),
-        pagination: StartingAfterPagingSchema.exactOptional(),
+        field: z
+          .string()
+          .openapi({
+            description:
+              "The field to sort by, one of the searchable fields listed for the endpoint. Some fields can't be sorted; the endpoint's Sorting section says which. A missing `field`, or one that isn't searchable, returns a `400` error with the code `invalid_field`.",
+            example: 'updated_at',
+          }),
+        order: z
+          .enum(['ascending', 'descending'])
+          .default('descending')
+          .exactOptional()
+          .openapi({ description: 'The sort order.', example: 'descending' }),
       })
+      .exactOptional()
       .openapi({
-        description: 'Search using Intercoms Search APIs.',
-        title: 'Search data',
-        required: ['query'],
+        description: "How to sort the results. Without it, the endpoint's default order is used.",
+        required: ['field'],
       }),
-  )
+  })
+  .openapi({
+    description: 'Search using Intercoms Search APIs.',
+    title: 'Search data',
+    required: ['query'],
+  })
   .openapi('SearchRequest')
 
 const CompanySearchRequestSchema = z
@@ -17762,685 +19213,6 @@ const TeamListSchema = z
   })
   .openapi('TeamList')
 
-const TicketCustomAttributesSchema = z
-  .record(
-    z.string(),
-    z.union([
-      z.string().nullable(),
-      z.number(),
-      z.boolean(),
-      z.array(z.any()),
-      FileAttributeSchema,
-    ]),
-  )
-  .openapi({
-    title: 'Ticket Attributes',
-    description:
-      'An object containing the different attributes associated to the ticket as key-value pairs. For the default title and description attributes, the keys are `_default_title_` and `_default_description_`.',
-    example: { _default_title_: 'Found a bug', _default_description_: "The button's not working" },
-  })
-  .openapi('TicketCustomAttributes')
-
-const TicketStateSchema = z
-  .object({
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: "String representing the object's type. Always has the value `ticket_state`.",
-        example: 'ticket_state',
-      }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The id of the ticket state', example: '12' }),
-    category: z
-      .enum(['submitted', 'in_progress', 'waiting_on_customer', 'resolved'])
-      .exactOptional()
-      .openapi({ description: 'The category of the ticket state', example: 'in_progress' }),
-    internal_label: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The state the ticket is currently in, in a human readable form - visible in Intercom',
-        example: 'With Dev Team',
-      }),
-    external_label: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The state the ticket is currently in, in a human readable form - visible to customers, in the messenger, email and tickets portal.',
-        example: 'In Progress',
-      }),
-  })
-  .nullable()
-  .openapi({
-    title: 'Ticket State',
-    'x-tags': ['Tickets'],
-    description: 'A ticket state, used to define the state of a ticket.',
-    required: [],
-  })
-  .openapi('TicketState')
-
-const TicketTypeAttributeSchema = z
-  .object({
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "String representing the object's type. Always has the value `ticket_type_attribute`.",
-        example: 'ticket_type_attribute',
-      }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The id representing the ticket type attribute.', example: '1' }),
-    workspace_id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The id of the workspace that the ticket type attribute belongs to.',
-        example: 'ecahpwf5',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The name of the ticket type attribute', example: 'Title' }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The description of the ticket type attribute',
-        example: 'Bug title.',
-      }),
-    data_type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The type of the data attribute (allowed values: "string list integer decimal boolean datetime files")',
-        example: 'string',
-      }),
-    input_options: z
-      .object({})
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          "Input options for the attribute. For a string attribute this holds `multiline` when it was set; for a list attribute it holds the list's options. When the attribute has no input options, this is `null`, or left out of the create and update ticket type attribute responses.",
-        example: { multiline: true },
-      }),
-    order: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'The order of the attribute against other attributes', example: 1 }),
-    required_to_create: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({
-        description: 'Whether the attribute is required or not for teammates.',
-        example: false,
-      }),
-    required_to_create_for_contacts: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({
-        description: 'Whether the attribute is required or not for contacts.',
-        example: false,
-      }),
-    visible_on_create: z
-      .boolean()
-      .default(true)
-      .exactOptional()
-      .openapi({
-        description: 'Whether the attribute is visible or not to teammates.',
-        example: false,
-      }),
-    visible_to_contacts: z
-      .boolean()
-      .default(true)
-      .exactOptional()
-      .openapi({
-        description: 'Whether the attribute is visible or not to contacts.',
-        example: false,
-      }),
-    default: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether the attribute is built in or not.', example: true }),
-    ticket_type_id: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'The id of the ticket type that the attribute belongs to.',
-        example: 42,
-      }),
-    archived: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Whether the ticket type attribute is archived or not.',
-        example: false,
-      }),
-    created_at: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'The date and time the ticket type attribute was created.' }),
-    updated_at: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'The date and time the ticket type attribute was last updated.' }),
-  })
-  .nullable()
-  .openapi({
-    title: 'Ticket Type Attribute',
-    description:
-      'Ticket type attribute, used to define each data field to be captured in a ticket.',
-    required: [],
-  })
-  .openapi('TicketTypeAttribute')
-
-const TicketTypeAttributeListSchema = z
-  .object({
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: "String representing the object's type. Always has the value `list`.",
-        example: 'list',
-      }),
-    data: z
-      .array(TicketTypeAttributeSchema)
-      .exactOptional()
-      .openapi({
-        description: 'A list of ticket type attributes associated with a given ticket type.',
-      }),
-  })
-  .openapi({
-    title: 'Ticket Type Attributes',
-    description: 'A list of attributes associated with a given ticket type.',
-    required: [],
-  })
-  .openapi('TicketTypeAttributeList')
-
-const TicketTypeSchema = z
-  .object({
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: "String representing the object's type. Always has the value `ticket_type`.",
-        example: 'ticket_type',
-      }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The id representing the ticket type.', example: '1295' }),
-    category: z
-      .enum(['Customer', 'Back-office', 'Tracker'])
-      .exactOptional()
-      .openapi({ description: 'Category of the Ticket Type.', example: 'Customer' }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The name of the ticket type', example: 'Bug' }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The description of the ticket type',
-        example: 'A bug that has been reported.',
-      }),
-    icon: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The icon of the ticket type', example: '🐞' }),
-    workspace_id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The id of the workspace that the ticket type belongs to.',
-        example: 'ecahpwf5',
-      }),
-    ticket_type_attributes: TicketTypeAttributeListSchema.exactOptional(),
-    ticket_states: z
-      .object({
-        type: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: "String representing the object's type. Always has the value `list`.",
-            example: 'list',
-          }),
-        data: z
-          .array(TicketStateSchema)
-          .exactOptional()
-          .openapi({ description: 'A list of ticket states associated with a given ticket type.' }),
-      })
-      .exactOptional()
-      .openapi({
-        title: 'Ticket States',
-        description: 'A list of ticket states associated with a given ticket type.',
-        required: [],
-      }),
-    archived: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether the ticket type is archived or not.', example: false }),
-    is_internal: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          '`true` if tickets of this type are internal only and can never be shared with customers; `false` if they are, or can be, shared.',
-        example: false,
-      }),
-    created_at: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'The date and time the ticket type was created.' }),
-    updated_at: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'The date and time the ticket type was last updated.' }),
-  })
-  .nullable()
-  .openapi({
-    title: 'Ticket Type',
-    'x-tags': ['Tickets'],
-    description: 'A ticket type, used to define the data fields to be captured in a ticket.',
-    required: [],
-  })
-  .openapi('TicketType')
-
-const TicketContactsSchema = z
-  .object({
-    type: z
-      .literal('contact.list')
-      .exactOptional()
-      .openapi({ description: 'always contact.list', example: 'contact.list' }),
-    contacts: z
-      .array(ContactReferenceSchema)
-      .exactOptional()
-      .openapi({ description: 'The list of contacts affected by this ticket.' }),
-  })
-  .openapi({
-    title: 'Contacts',
-    'x-tags': ['Tickets'],
-    description: 'The list of contacts affected by a ticket.',
-    required: [],
-  })
-  .openapi('TicketContacts')
-
-const TicketPartAuthorSchema = z
-  .object({
-    type: z
-      .enum(['admin', 'bot', 'team', 'user'])
-      .exactOptional()
-      .openapi({ description: 'The type of the author', example: 'admin' }),
-    id: z.string().exactOptional().openapi({ description: 'The id of the author', example: '274' }),
-    name: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The name of the author', example: 'Operator' }),
-    email: z
-      .email()
-      .exactOptional()
-      .openapi({
-        description: 'The email of the author',
-        example: 'operator+abcd1234@intercom.io',
-      }),
-  })
-  .openapi({
-    title: 'Ticket part author',
-    description: 'The author that wrote or triggered the part. Can be a bot, admin, team or user.',
-    required: [],
-  })
-  .openapi('TicketPartAuthor')
-
-const TicketPartSchema = z
-  .object({
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Always ticket_part', example: 'ticket_part' }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The id representing the ticket part.', example: '3' }),
-    part_type: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The type of ticket part.', example: 'comment' }),
-    body: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'The message body, which may contain HTML.',
-        example: '<p>Okay!</p>',
-      }),
-    previous_ticket_state: z
-      .enum(['submitted', 'in_progress', 'waiting_on_customer', 'resolved'])
-      .exactOptional()
-      .openapi({ description: 'The previous state of the ticket.', example: 'submitted' }),
-    ticket_state: z
-      .enum(['submitted', 'in_progress', 'waiting_on_customer', 'resolved'])
-      .exactOptional()
-      .openapi({ description: 'The state of the ticket.', example: 'submitted' }),
-    created_at: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'The time the ticket part was created.', example: 1663597223 }),
-    updated_at: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'The last time the ticket part was updated.', example: 1663597260 }),
-    assigned_to: ReferenceSchema.nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The assignee this ticket_part assigned the ticket to, as a reference whose `type` is `admin`, `team` or `bot`. When the part unassigned the ticket, `type` is `nobody_admin` and `id` is `null`. Null when the part did not change the assignment, or when the assignee has since been deleted.',
-      }),
-    admin_assignee_id: z
-      .int()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The id of the teammate that this ticket_part assigned the ticket to, or 0 if the part removed the teammate. Null or absent when the part did not change the teammate, including an unassignment that did not name which assignee it cleared. A bot is reported here, because assignment treats anything that is not a team as a teammate.',
-        example: 991268013,
-      }),
-    team_assignee_id: z
-      .int()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The id of the team that this ticket_part assigned the ticket to, or 0 if the part removed the team. Null or absent when the part did not change the team, including an unassignment that did not name which assignee it cleared. A part can assign a team and a teammate at the same time, for example when the team uses Round Robin distribution and the teammate is resolved inline. In that case assigned_to reports only the teammate, and these two fields report each assignee separately.',
-        example: 5017691,
-      }),
-    author: TicketPartAuthorSchema.exactOptional(),
-    attachments: z
-      .array(PartAttachmentSchema)
-      .exactOptional()
-      .openapi({
-        title: 'Ticket part attachments',
-        description: 'A list of attachments for the part.',
-      }),
-    external_id: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The external id of the ticket part', example: 'abcd1234' }),
-    redacted: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Whether or not the ticket part has been redacted.',
-        example: false,
-      }),
-    app_package_code: z
-      .string()
-      .exactOptional()
-      .openapi({
-        example: 'text-integration',
-        description:
-          "The app package code if this part was created via API. Note this field won't show if the part was not created via API.",
-      }),
-    translations: z
-      .object({
-        original: z
-          .string()
-          .openapi({
-            description:
-              'The locale code identifying the language the reply was originally written in.',
-            example: 'en',
-          }),
-      })
-      .catchall(z.string())
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'A map of the reply text keyed by locale code. Backs the `ticket.admin.replied.translated` webhook topic. `original` holds the locale code the reply was written in; every other key holds the reply translated into that locale.',
-        required: ['original'],
-        example: { original: 'en', en: '<p>Hello</p>', fr: '<p>Bonjour</p>' },
-      }),
-    updated_attribute_data: z
-      .object({
-        attribute: z
-          .object({
-            type: z
-              .literal('attribute')
-              .openapi({
-                description: "The type of the object. Always 'attribute'.",
-                example: 'attribute',
-              }),
-            id: z
-              .string()
-              .openapi({ description: 'The unique identifier of the attribute.', example: '7' }),
-            label: z
-              .string()
-              .openapi({
-                description: 'The human-readable name of the attribute.',
-                example: 'Progress',
-              }),
-          })
-          .openapi({
-            description: 'Information about the attribute that was updated.',
-            required: ['type', 'id', 'label'],
-          }),
-        value: z
-          .object({
-            type: z
-              .literal('value')
-              .openapi({
-                description: "The type of the object. Always 'value'.",
-                example: 'value',
-              }),
-            id: z.xor([
-              z
-                .string()
-                .nullable()
-                .openapi({
-                  description:
-                    'The value for text/number/decimal/boolean/date attributes, or the ID of the list option for list attributes.',
-                  example: 'Fast',
-                }),
-              z
-                .array(z.int())
-                .openapi({ description: 'Array of file IDs for file attributes.', example: [2] }),
-            ]),
-            label: z.xor([
-              z
-                .string()
-                .openapi({
-                  description:
-                    'The display value for text/number/decimal/boolean/date/list attributes.',
-                  example: 'Fast',
-                }),
-              z
-                .array(z.string())
-                .openapi({
-                  description: 'Array of file names for file attributes.',
-                  example: ['photo.png'],
-                }),
-            ]),
-          })
-          .openapi({
-            description: 'The new value of the attribute.',
-            required: ['type', 'id', 'label'],
-          }),
-      })
-      .nullable()
-      .exactOptional()
-      .openapi({
-        title: 'Updated Attribute',
-        description:
-          'The updated attribute data of the ticket part. Only present for attribute update parts.',
-        required: ['attribute', 'value'],
-      }),
-  })
-  .openapi({
-    title: 'Ticket Part',
-    'x-tags': ['Tickets'],
-    description: 'A Ticket Part represents a message in the ticket.',
-    required: [],
-  })
-  .openapi('TicketPart')
-
-const TicketPartsSchema = z
-  .object({
-    type: z
-      .literal('ticket_part.list')
-      .exactOptional()
-      .openapi({ description: '', example: 'ticket_part.list' }),
-    ticket_parts: z
-      .array(TicketPartSchema)
-      .exactOptional()
-      .openapi({
-        title: 'Tickt Parts',
-        description:
-          'A list of Ticket Part objects for each ticket. There is a limit of 500 parts.',
-      }),
-    total_count: z.int().exactOptional().openapi({ description: '', example: 2 }),
-  })
-  .openapi({
-    title: 'Ticket Parts',
-    description:
-      'A list of Ticket Part objects for each note and event in the ticket. There is a limit of 500 parts.',
-    required: [],
-  })
-  .openapi('TicketParts')
-
-const TicketSchema = z
-  .object({
-    type: z
-      .literal('ticket')
-      .default('ticket')
-      .exactOptional()
-      .openapi({ description: 'Always ticket', example: 'ticket' }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The unique identifier for the ticket which is given by Intercom.',
-        example: '1295',
-      }),
-    ticket_id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The ID of the Ticket used in the Intercom Inbox and Messenger. Do not use ticket_id for API queries.',
-        example: '1390',
-      }),
-    category: z
-      .enum(['Customer', 'Back-office', 'Tracker'])
-      .exactOptional()
-      .openapi({ description: 'Category of the Ticket.', example: 'Customer' }),
-    channel: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The channel the ticket was created through. Defaults to messenger when no channel is specified at creation.',
-        example: 'messenger',
-      }),
-    ticket_attributes: TicketCustomAttributesSchema.exactOptional(),
-    ticket_state: TicketStateSchema.exactOptional(),
-    ticket_type: TicketTypeSchema.exactOptional(),
-    contacts: TicketContactsSchema.exactOptional(),
-    admin_assignee_id: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description:
-          "The id representing the admin assigned to the ticket. If it's not assigned to an admin it will return 0.",
-        example: 1295,
-      }),
-    team_assignee_id: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description:
-          "The id representing the team assigned to the ticket. If it's not assigned to a team it will return 0.",
-        example: 1295,
-      }),
-    created_at: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'The time the ticket was created as a UTC Unix timestamp.',
-        example: 1663597223,
-      }),
-    updated_at: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'The last time the ticket was updated as a UTC Unix timestamp.',
-        example: 1663597260,
-      }),
-    open: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Whether or not the ticket is open. If false, the ticket is closed.',
-        example: true,
-      }),
-    snoozed_until: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description:
-          'The time the ticket will be snoozed until as a UTC Unix timestamp. If null, the ticket is not currently snoozed.',
-        example: 1663597260,
-      }),
-    linked_objects: LinkedObjectListSchema.exactOptional(),
-    ticket_parts: TicketPartsSchema.exactOptional(),
-    is_shared: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Whether or not the ticket is shared with the customer.',
-        example: true,
-      }),
-    company_id: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The ID of the company the ticket is associated with. Omitted when the ticket has no company.',
-        example: '531ee472cce572a6ec000006',
-      }),
-    previous_ticket_state_id: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The ID of the previous ticket state from the most recent state change. Returns null if no state change history exists. Useful for tracking state transitions for reporting and compliance.',
-        example: '7493',
-      }),
-  })
-  .nullable()
-  .openapi({
-    title: 'Ticket',
-    'x-tags': ['Tickets'],
-    description: 'Tickets are how you track requests from your users.',
-    required: [],
-  })
-  .openapi('Ticket')
-
 const TicketDeletedSchema = z
   .object({
     id: z
@@ -18462,7 +19234,7 @@ const TicketDeletedSchema = z
   .openapi({ title: 'Ticket Deleted', description: 'deleted ticket object', required: [] })
   .openapi('TicketDeleted')
 
-const TicketListSchema = z
+const TicketListSchema: z.ZodType<TicketListType> = z
   .object({
     type: z
       .literal('ticket.list')
@@ -18542,6 +19314,7 @@ const TicketReplySchema = z
       .object({
         original: z
           .string()
+          .exactOptional()
           .openapi({
             description:
               'The locale code identifying the language the reply was originally written in.',
@@ -18553,9 +19326,9 @@ const TicketReplySchema = z
       .exactOptional()
       .openapi({
         description:
-          'A map of the reply text keyed by locale code. Backs the `ticket.admin.replied.translated` webhook topic. `original` holds the locale code the reply was written in; every other key holds the reply translated into that locale.',
-        required: ['original'],
+          'A map of the reply text keyed by locale code. Backs the `ticket.admin.replied.translated` webhook topic. `original` holds the locale code the reply was written in, when it is known; every other key holds the reply translated into that locale.',
         example: { original: 'en', en: '<p>Hello</p>', fr: '<p>Bonjour</p>' },
+        required: [],
       }),
   })
   .openapi({
@@ -19012,7 +19785,7 @@ const UpdateInternalArticleRequestSchema = z
         example: '## Updated\n\nNew content.\n',
       }),
     json_blocks: z
-      .array(z.object({}))
+      .array(z.looseObject({}))
       .exactOptional()
       .openapi({
         description:
@@ -19232,7 +20005,7 @@ const UpdateContactRequestSchema = z
         example: 'en',
       }),
     custom_attributes: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({ description: 'The custom attributes which are set for the contact' }),
@@ -19336,6 +20109,33 @@ const UpdateDataAttributeRequestSchema = z
       .openapi({ required: ['options'], title: 'list attribute' }),
     z.any().openapi({ title: 'other type' }),
   ])
+  .and(
+    z
+      .object({
+        archived: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Whether the attribute is to be archived or not.',
+            example: false,
+          }),
+        description: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'The readable description you see in the UI for the attribute.',
+            example: 'My Data Attribute Description',
+          }),
+        messenger_writable: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Can this attribute be updated by the Messenger',
+            example: false,
+          }),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({ description: '', title: 'Update Data Attribute Request' })
   .openapi('UpdateDataAttributeRequest')
 
@@ -19424,7 +20224,7 @@ const UpdateExternalPageRequestSchema = z
 const UpdateTicketRequestSchema = z
   .object({
     ticket_attributes: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'The attributes set on the ticket.',
@@ -19732,7 +20532,7 @@ const UpdateVisitorRequestSchema = z
             example: 'https://example.org/128Wu8Q.jpg',
           }),
         companies: z
-          .array(z.object({}))
+          .array(z.looseObject({}))
           .exactOptional()
           .openapi({
             description:
@@ -20204,21 +21004,21 @@ const WorkflowExportSchema = z
             example: '2026-01-20T14:45:00Z',
           }),
         targeting: z
-          .object({})
+          .looseObject({})
           .nullable()
           .exactOptional()
           .openapi({ description: 'The targeting rules for this workflow.' }),
         snapshot: z
-          .object({})
+          .looseObject({})
           .nullable()
           .exactOptional()
           .openapi({ description: 'The current snapshot of workflow steps and configuration.' }),
         attributes: z
-          .array(z.object({}))
+          .array(z.looseObject({}))
           .exactOptional()
           .openapi({ description: 'Custom attributes defined for this workflow.' }),
         embedded_rules: z
-          .array(z.object({}))
+          .array(z.looseObject({}))
           .exactOptional()
           .openapi({ description: 'Rules embedded within the workflow steps.' }),
       })
@@ -20897,7 +21697,7 @@ export const putAdminsAdminIdAwayRoute = createRoute({
   tags: ['Admins'],
   summary: 'Set an admin to away',
   description:
-    'You can set an Admin as away for the Inbox.\n\nRequires the `update_admins` OAuth scope.\n',
+    'You can set an Admin as away for the Inbox.\n\nWhen `away_mode_reassign` is `true`, the request can return a `403` if the teammate does not have Inbox access.\n\nRequires the `update_admins` OAuth scope.\n',
   operationId: 'setAwayAdmin',
   request: {
     headers: z.object({
@@ -20945,7 +21745,6 @@ export const putAdminsAdminIdAwayRoute = createRoute({
                 }),
               away_mode_reassign: z
                 .boolean()
-                .default(false)
                 .openapi({
                   description:
                     'Set to "true" to assign any new conversation replies to your default inbox.',
@@ -21119,6 +21918,29 @@ export const putAdminsAdminIdAwayRoute = createRoute({
                 request_id: 'a3e5b8e2-1234-5678-9abc-def012345678',
                 errors: [
                   { code: 'token_unauthorized', message: 'Not authorized to access resource' },
+                ],
+              },
+            },
+          },
+        },
+      },
+    },
+    403: {
+      description:
+        'Forbidden. Can be returned when `away_mode_reassign` is `true` and the admin does not have Inbox access for the workspace.',
+      content: {
+        'application/json': {
+          schema: ErrorSchema,
+          examples: {
+            'Admin without Inbox access': {
+              value: {
+                type: 'error.list',
+                request_id: 'f62b30e2-5b2e-561d-b1e8-01a84a380ee2',
+                errors: [
+                  {
+                    code: 'action_forbidden',
+                    message: 'This admin does not have Inbox access permissions',
+                  },
                 ],
               },
             },
@@ -21334,6 +22156,19 @@ export const getAdminsActivityLogsRoute = createRoute({
                 ],
               },
             },
+            'per_page above 250': {
+              summary: 'Example of a per_page greater than 250',
+              value: {
+                type: 'error.list',
+                request_id: '816186b3-3187-4b47-adf8-e201bea32208',
+                errors: [
+                  {
+                    code: 'parameter_not_found',
+                    message: 'Please provide the following parameters: max_per_page',
+                  },
+                ],
+              },
+            },
           },
         },
       },
@@ -21476,6 +22311,29 @@ export const postAdminsActivityLogsSearchRoute = createRoute({
                     created_at: 1734537253,
                     activity_type: 'app_name_change',
                     activity_description: 'Ciaran5 Lee changed your app name from before to after.',
+                  },
+                ],
+              },
+            },
+          },
+        },
+      },
+    },
+    400: {
+      description: 'Bad Request',
+      content: {
+        'application/json': {
+          schema: ErrorSchema,
+          examples: {
+            'per_page above 250': {
+              summary: 'Example of a per_page greater than 250',
+              value: {
+                type: 'error.list',
+                request_id: '816186b3-3187-4b47-adf8-e201bea32208',
+                errors: [
+                  {
+                    code: 'parameter_not_found',
+                    message: 'Please provide the following parameters: max_per_page',
                   },
                 ],
               },
@@ -23416,6 +24274,299 @@ export const getAdminsAdminIdRoute = createRoute({
   },
 })
 
+export const deleteAdminsRemoveRoute = createRoute({
+  method: 'delete',
+  path: '/admins/remove',
+  tags: ['Admins'],
+  summary: 'Remove an admin',
+  description:
+    "You can remove a single admin (teammate) from your workspace.\nRequires the `remove_admins` OAuth scope.\n\nThis removes the admin's access to the workspace. In most cases their\nwork is reassigned to the IDs given in the `reassign_*` parameters. In\nworkspaces with more than one seat type, no reassignment happens if the\nadmin has no seat, a Collaborator seat or a Lite seat.",
+  operationId: 'removeAdmin',
+  request: {
+    headers: z.object({
+      'Intercom-Version': IntercomVersionSchema.openapi({
+        param: {
+          name: 'Intercom-Version',
+          in: 'header',
+          schema: { $ref: '#/components/schemas/intercom_version' },
+          required: false,
+        },
+      }).exactOptional(),
+    }),
+    query: z.object({
+      admin_id: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int(),
+        )
+        .openapi({
+          param: {
+            name: 'admin_id',
+            in: 'query',
+            required: true,
+            description: 'The unique identifier of the admin to remove.',
+            example: 123,
+            schema: { type: 'integer' },
+          },
+        }),
+      reassign_messages_admin_id: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int(),
+        )
+        .openapi({
+          param: {
+            name: 'reassign_messages_admin_id',
+            in: 'query',
+            required: true,
+            description:
+              "The unique identifier of a human admin to reassign the removed admin's auto-message ownership to.",
+            example: 456,
+            schema: { type: 'integer' },
+          },
+        }),
+      reassign_owner_admin_id: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int(),
+        )
+        .openapi({
+          param: {
+            name: 'reassign_owner_admin_id',
+            in: 'query',
+            required: true,
+            description:
+              "The unique identifier of a human admin to reassign the removed admin's ownership (of users and leads) to.",
+            example: 456,
+            schema: { type: 'integer' },
+          },
+        }),
+      reassign_articles_author_id: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int(),
+        )
+        .openapi({
+          param: {
+            name: 'reassign_articles_author_id',
+            in: 'query',
+            required: true,
+            description:
+              "The unique identifier of a human admin to reassign the removed admin's article authorship to.",
+            example: 456,
+            schema: { type: 'integer' },
+          },
+        }),
+      reassign_conversations_admin_id: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int(),
+        )
+        .openapi({
+          param: {
+            name: 'reassign_conversations_admin_id',
+            in: 'query',
+            required: true,
+            description:
+              "The ID of an admin with Inbox access, or a team, to reassign the removed admin's conversation replies to. Pass `0` to leave conversations unassigned.",
+            example: 456,
+            schema: { type: 'integer' },
+          },
+        }),
+      reassign_replies_teams: z
+        .preprocess(
+          (val) => (val === undefined || Array.isArray(val) ? val : [val]),
+          z.array(
+            z
+              .object({
+                team_id: z
+                  .preprocess(
+                    (val) =>
+                      typeof val === 'string' &&
+                      /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+                      (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+                        ? Number(val)
+                        : val,
+                    z.int(),
+                  )
+                  .exactOptional()
+                  .openapi({ example: 789 }),
+                assignee_id: z
+                  .preprocess(
+                    (val) =>
+                      typeof val === 'string' &&
+                      /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+                      (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+                        ? Number(val)
+                        : val,
+                    z.int(),
+                  )
+                  .exactOptional()
+                  .openapi({ example: 456 }),
+              })
+              .openapi({ required: [] }),
+          ),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'reassign_replies_teams',
+            in: 'query',
+            required: false,
+            description:
+              "A list of teams and the admin each team's conversation replies should be reassigned to.",
+            schema: {
+              type: 'array',
+              items: {
+                type: 'object',
+                properties: {
+                  team_id: { type: 'integer', example: 789 },
+                  assignee_id: { type: 'integer', example: 456 },
+                },
+              },
+            },
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Successful response',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              id: z
+                .string()
+                .exactOptional()
+                .openapi({
+                  description: 'The unique identifier of the removed admin.',
+                  example: '123',
+                }),
+              object: z.literal('admin').exactOptional().openapi({ example: 'admin' }),
+              removed: z
+                .literal('true')
+                .exactOptional()
+                .openapi({
+                  description: 'Whether the admin was removed. Returned as the string `"true"`.',
+                  example: 'true',
+                }),
+            })
+            .openapi({ required: [] }),
+          examples: {
+            'Successful response': { value: { id: '123', object: 'admin', removed: 'true' } },
+          },
+        },
+      },
+    },
+    401: {
+      description: 'Unauthorized',
+      content: {
+        'application/json': {
+          schema: ErrorSchema,
+          examples: {
+            Unauthorized: {
+              value: {
+                type: 'error.list',
+                request_id: '00000000-0000-4000-8000-000000000002',
+                errors: [{ code: 'unauthorized', message: 'Access Token Invalid' }],
+              },
+            },
+          },
+        },
+      },
+    },
+    403: {
+      description:
+        'Forbidden. Returned when `reassign_conversations_admin_id` refers to an admin without Inbox access for the workspace. This includes teammates with a Lite seat.',
+      content: {
+        'application/json': {
+          schema: ErrorSchema,
+          examples: {
+            Forbidden: {
+              value: {
+                type: 'error.list',
+                errors: [
+                  {
+                    code: 'action_forbidden',
+                    message:
+                      'The admin for reassign_conversations_admin_id does not have Inbox access permissions',
+                  },
+                ],
+              },
+            },
+          },
+        },
+      },
+    },
+    404: {
+      description:
+        'Admin not found. A `reassign_conversations_admin_id` that is missing, or doesn\'t match an admin or team, returns `404` with the code `not_found` and the message "Resource Not Found".',
+      content: {
+        'application/json': {
+          schema: ErrorSchema,
+          examples: {
+            'Admin not found': {
+              value: {
+                type: 'error.list',
+                request_id: '00000000-0000-4000-8000-000000000001',
+                errors: [{ code: 'admin_not_found', message: 'Admin for admin_id not found' }],
+              },
+            },
+          },
+        },
+      },
+    },
+    405: {
+      description:
+        'Method Not Allowed. Returned when `admin_id`, `reassign_messages_admin_id`, `reassign_owner_admin_id` or `reassign_articles_author_id` refers to a bot. A team ID in any of these four parameters returns `404`.',
+      content: {
+        'application/json': {
+          schema: ErrorSchema,
+          examples: {
+            'Method Not Allowed': {
+              value: {
+                type: 'error.list',
+                errors: [
+                  {
+                    code: 'action_forbidden',
+                    message: 'This method is not allowed for this type of Admin for admin_id',
+                  },
+                ],
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+})
+
 export const getAiContentImportSourcesRoute = createRoute({
   method: 'get',
   path: '/ai/content_import_sources',
@@ -24866,13 +26017,260 @@ export const deleteAiExternalPagesPageIdRoute = createRoute({
   },
 })
 
+export const postAiExternalPagesExternalPageIdTagsRoute = createRoute({
+  method: 'post',
+  path: '/ai/external_pages/{external_page_id}/tags',
+  tags: ['AI Content', 'Tags'],
+  summary: 'Add a tag to an external page',
+  description:
+    "Apply an existing tag to an external page. Returns the tag that was applied.\n\nThe tag must already exist in the workspace (create tags with the Tags API),\nand the authenticating teammate must have the `manage_knowledge_base_content`\npermission. Pages uploaded as files can't be tagged and return a 404.\n\nOAuth tokens must have the `read_write_ai_content` scope.\n",
+  operationId: 'attachTagToExternalPage',
+  request: {
+    headers: z.object({
+      'Intercom-Version': IntercomVersionSchema.openapi({
+        param: {
+          name: 'Intercom-Version',
+          in: 'header',
+          schema: { $ref: '#/components/schemas/intercom_version' },
+          required: false,
+        },
+      }).exactOptional(),
+    }),
+    params: z.object({
+      external_page_id: z
+        .string()
+        .openapi({
+          param: {
+            name: 'external_page_id',
+            in: 'path',
+            required: true,
+            description: 'The unique identifier for the external page which is given by Intercom.',
+            example: '1234',
+            schema: { type: 'string' },
+          },
+        }),
+    }),
+    body: {
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              id: z
+                .string()
+                .openapi({
+                  description: 'The unique identifier of the tag to apply, as given by Intercom.',
+                  example: '7522907',
+                }),
+              admin_id: z
+                .string()
+                .nullable()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'Optional id of the teammate to attribute the tagging to. Defaults to the authenticating teammate.',
+                  example: '1234',
+                }),
+            })
+            .openapi({ required: ['id'] }),
+          examples: { successful: { summary: 'Apply a tag', value: { id: '7522907' } } },
+        },
+      },
+    },
+  },
+  responses: {
+    200: {
+      description: 'Tag applied',
+      content: {
+        'application/json': {
+          schema: TagSchema,
+          examples: {
+            'Tag applied': {
+              value: {
+                type: 'tag',
+                id: '7522907',
+                name: 'Independent',
+                applied_at: 1663597223,
+                applied_by: { type: 'admin', id: '1234' },
+              },
+            },
+          },
+        },
+      },
+    },
+    401: UnauthorizedResponse,
+    403: {
+      description: 'Forbidden',
+      content: {
+        'application/json': {
+          schema: ErrorSchema,
+          examples: {
+            Forbidden: {
+              value: {
+                type: 'error.list',
+                request_id: '6f3c2b1a-2d4e-4f6a-9b8c-1a2b3c4d5e6f',
+                errors: [
+                  { code: 'forbidden', message: 'Not authorized to manage knowledge base content' },
+                ],
+              },
+            },
+          },
+        },
+      },
+    },
+    404: {
+      description: 'External page, tag or teammate not found',
+      content: {
+        'application/json': {
+          schema: ErrorSchema,
+          examples: {
+            'External page not found': {
+              value: {
+                type: 'error.list',
+                request_id: '302049fb-b8c1-4dc8-a327-a8f6e1923484',
+                errors: [{ code: 'not_found', message: 'Resource Not Found' }],
+              },
+            },
+            'Tag not found': {
+              value: {
+                type: 'error.list',
+                request_id: '8a3e4f88-ae65-433a-b4eb-46780ffc5402',
+                errors: [{ code: 'tag_not_found', message: 'Tag not found' }],
+              },
+            },
+            'Admin not found': {
+              value: {
+                type: 'error.list',
+                request_id: '7a34a204-9fae-5335-b818-1da0df3b5234',
+                errors: [{ code: 'admin_not_found', message: 'Admin not found' }],
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+})
+
+export const deleteAiExternalPagesExternalPageIdTagsIdRoute = createRoute({
+  method: 'delete',
+  path: '/ai/external_pages/{external_page_id}/tags/{id}',
+  tags: ['AI Content', 'Tags'],
+  summary: 'Remove a tag from an external page',
+  description:
+    "Remove a tag from an external page. Returns the tag that was removed, with\nnull `applied_at` and `applied_by`.\n\nThe authenticating teammate must have the `manage_knowledge_base_content`\npermission. Pages uploaded as files can't be tagged and return a 404.\n\nOAuth tokens must have the `read_write_ai_content` scope.\n",
+  operationId: 'detachTagFromExternalPage',
+  request: {
+    headers: z.object({
+      'Intercom-Version': IntercomVersionSchema.openapi({
+        param: {
+          name: 'Intercom-Version',
+          in: 'header',
+          schema: { $ref: '#/components/schemas/intercom_version' },
+          required: false,
+        },
+      }).exactOptional(),
+    }),
+    params: z.object({
+      external_page_id: z
+        .string()
+        .openapi({
+          param: {
+            name: 'external_page_id',
+            in: 'path',
+            required: true,
+            description: 'The unique identifier for the external page which is given by Intercom.',
+            example: '1234',
+            schema: { type: 'string' },
+          },
+        }),
+      id: z
+        .string()
+        .openapi({
+          param: {
+            name: 'id',
+            in: 'path',
+            required: true,
+            description: 'The unique identifier of the tag to remove, as given by Intercom.',
+            example: '7522907',
+            schema: { type: 'string' },
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Tag removed',
+      content: {
+        'application/json': {
+          schema: TagSchema,
+          examples: {
+            'Tag removed': {
+              value: {
+                type: 'tag',
+                id: '7522907',
+                name: 'Independent',
+                applied_at: null,
+                applied_by: null,
+              },
+            },
+          },
+        },
+      },
+    },
+    401: UnauthorizedResponse,
+    403: {
+      description: 'Forbidden',
+      content: {
+        'application/json': {
+          schema: ErrorSchema,
+          examples: {
+            Forbidden: {
+              value: {
+                type: 'error.list',
+                request_id: '6f3c2b1a-2d4e-4f6a-9b8c-1a2b3c4d5e6f',
+                errors: [
+                  { code: 'forbidden', message: 'Not authorized to manage knowledge base content' },
+                ],
+              },
+            },
+          },
+        },
+      },
+    },
+    404: {
+      description: 'External page or tag not found',
+      content: {
+        'application/json': {
+          schema: ErrorSchema,
+          examples: {
+            'External page not found': {
+              value: {
+                type: 'error.list',
+                request_id: '302049fb-b8c1-4dc8-a327-a8f6e1923484',
+                errors: [{ code: 'not_found', message: 'Resource Not Found' }],
+              },
+            },
+            'Tag not found': {
+              value: {
+                type: 'error.list',
+                request_id: '8a3e4f88-ae65-433a-b4eb-46780ffc5402',
+                errors: [{ code: 'tag_not_found', message: 'Tag not found' }],
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+})
+
 export const getArticlesRoute = createRoute({
   method: 'get',
   path: '/articles',
   tags: ['Articles'],
   summary: 'List all articles',
   description:
-    "You can fetch a list of all articles by making a GET request to `https://api.intercom.io/articles`.\n\n> 📘 How are the articles sorted and ordered?\n>\n> Articles will be returned in descending order on the `updated_at` attribute. This means if you need to iterate through results then we'll show the most recently updated articles first.\n\nRequires the `read_articles_scope` OAuth scope.\n",
+    "You can fetch a list of all articles by making a GET request to `https://api.intercom.io/articles`.\n\n> 📘 How are the articles sorted and ordered?\n>\n> Articles will be returned in descending order on the `updated_at` attribute. This means if you need to iterate through results then we'll show the most recently updated articles first.\n\nRequires the `read_articles_scope` or `create_update_articles` OAuth scope.\n",
   operationId: 'listArticles',
   request: {
     headers: z.object({
@@ -25024,7 +26422,7 @@ export const postArticlesRoute = createRoute({
   tags: ['Articles'],
   summary: 'Create an article',
   description:
-    "You can create a new article by making a POST request to `https://api.intercom.io/articles`.\n\n> 📘 Tags are managed separately\n>\n> Tags are returned in article responses but cannot be set in the request body. To add or remove an article's tags, use the `POST /articles/{article_id}/tags` and `DELETE /articles/{article_id}/tags/{id}` endpoints.\n\nRequires the `read_write_articles_scope` OAuth scope.\n",
+    "You can create a new article by making a POST request to `https://api.intercom.io/articles`.\n\n> 📘 Tags are managed separately\n>\n> Tags are returned in article responses but cannot be set in the request body. To add or remove an article's tags, use the `POST /articles/{article_id}/tags` and `DELETE /articles/{article_id}/tags/{id}` endpoints.\n\nRequires the `read_write_articles_scope` or `create_update_articles` OAuth scope.\n",
   operationId: 'createArticle',
   request: {
     headers: z.object({
@@ -25279,7 +26677,7 @@ export const getArticlesArticleIdRoute = createRoute({
   tags: ['Articles'],
   summary: 'Retrieve an article',
   description:
-    'You can fetch the details of a single article by making a GET request to `https://api.intercom.io/articles/<id>`.\n\nRequires the `read_articles_scope` OAuth scope.\n',
+    'You can fetch the details of a single article by making a GET request to `https://api.intercom.io/articles/<id>`.\n\nRequires the `read_articles_scope` or `create_update_articles` OAuth scope.\n',
   operationId: 'retrieveArticle',
   request: {
     headers: z.object({
@@ -25413,7 +26811,7 @@ export const putArticlesArticleIdRoute = createRoute({
   tags: ['Articles'],
   summary: 'Update an article',
   description:
-    "You can update the details of a single article by making a PUT request to `https://api.intercom.io/articles/<id>`.\n\n> 📘 Tags are managed separately\n>\n> Tags are returned in article responses but cannot be set in the request body. To add or remove an article's tags, use the `POST /articles/{article_id}/tags` and `DELETE /articles/{article_id}/tags/{id}` endpoints.\n\nRequires the `read_write_articles_scope` OAuth scope.\n",
+    "You can update the details of a single article by making a PUT request to `https://api.intercom.io/articles/<id>`.\n\n> 📘 Tags are managed separately\n>\n> Tags are returned in article responses but cannot be set in the request body. To add or remove an article's tags, use the `POST /articles/{article_id}/tags` and `DELETE /articles/{article_id}/tags/{id}` endpoints.\n\nRequires the `read_write_articles_scope` or `create_update_articles` OAuth scope.\n",
   operationId: 'updateArticle',
   request: {
     headers: z.object({
@@ -25810,7 +27208,7 @@ export const getArticlesIdDraftRoute = createRoute({
   tags: ['Articles'],
   summary: 'Retrieve an article draft',
   description:
-    "Fetch the staged draft of a published article by making a GET request to\n`https://api.intercom.io/articles/<id>/draft`. The response is the article\nrendered with its draft content, leaving the live article untouched.\n\nA draft exists only when a published article has unpublished changes staged\non top of it. Returns `404` with an empty response body when the article\nhas no staged draft. An article ID that doesn't exist returns a `404` with\nthe standard error body.\n\nRequires the `read_articles_scope` OAuth scope.\n",
+    "Fetch the staged draft of a published article by making a GET request to\n`https://api.intercom.io/articles/<id>/draft`. The response is the article\nrendered with its draft content, leaving the live article untouched.\n\nA draft exists only when a published article has unpublished changes staged\non top of it. Returns `404` with an empty response body when the article\nhas no staged draft. An article ID that doesn't exist returns a `404` with\nthe standard error body.\n\nRequires the `read_articles_scope` or `create_update_articles` OAuth scope.\n",
   operationId: 'retrieveArticleDraft',
   request: {
     headers: z.object({
@@ -25912,7 +27310,7 @@ export const putArticlesIdDraftRoute = createRoute({
   tags: ['Articles'],
   summary: 'Stage an article draft',
   description:
-    'Stage changes to a published article as a draft by making a PUT request to\n`https://api.intercom.io/articles/<id>/draft`. The live article remains\nunchanged until the draft is published.\n\nThe article must already be published; staging a draft on an article that\nhas never been published returns `422`. That `422` has the short body\n`{ "errors": [{ "message": "...", "status": 422 }] }`, with no `type`,\n`request_id` or `code`. Other `422` errors use the standard error format.\n\nOnly text content is staged: `title`, `description`, `body` or\n`body_markdown`, and `author_id`, including per-locale values in\n`translated_content`. Any other field in the request body, such as `state`,\n`parent_id`, `folder_id`, `audience_ids`, the AI availability fields or the\nscheduling fields, is still validated but not applied, so the live article is left untouched. The\nscheduling, state and placement notes on the request schema\'s other fields\ndo not apply to this endpoint, because those fields are not applied.\n\nRequires the `read_write_articles_scope` OAuth scope.\n',
+    'Stage changes to a published article as a draft by making a PUT request to\n`https://api.intercom.io/articles/<id>/draft`. The live article remains\nunchanged until the draft is published.\n\nThe article must already be published; staging a draft on an article that\nhas never been published returns `422`. That `422` has the short body\n`{ "errors": [{ "message": "...", "status": 422 }] }`, with no `type`,\n`request_id` or `code`. Other `422` errors use the standard error format.\n\nOnly text content is staged: `title`, `description`, `body` or\n`body_markdown`, and `author_id`, including per-locale values in\n`translated_content`. Any other field in the request body, such as `state`,\n`parent_id`, `folder_id`, `audience_ids`, the AI availability fields or the\nscheduling fields, is still validated but not applied, so the live article is left untouched. The\nscheduling, state and placement notes on the request schema\'s other fields\ndo not apply to this endpoint, because those fields are not applied.\n\nRequires the `read_write_articles_scope` or `create_update_articles` OAuth scope.\n',
   operationId: 'stageArticleDraft',
   request: {
     headers: z.object({
@@ -26063,7 +27461,7 @@ export const postArticlesIdDraftPublishRoute = createRoute({
   tags: ['Articles'],
   summary: 'Publish an article draft',
   description:
-    'Publish a staged draft by making a POST request to\n`https://api.intercom.io/articles/<id>/draft/publish`, promoting the draft\ncontent to live.\n\nOn a single-language workspace no body is required. On a multilingual\nworkspace you must list which locales to publish via the `locales` array;\nomitting it returns `422`. Returns `422` when there is no staged draft to\npublish, or when a requested locale has no pending changes.\n\nThe `422` for no staged draft has the short body\n`{ "errors": [{ "message": "...", "status": 422 }] }`, with no `type`,\n`request_id` or `code`. The other `422` errors use the standard error format.\n\nRequires the `read_write_articles_scope` OAuth scope.\n',
+    'Publish a staged draft by making a POST request to\n`https://api.intercom.io/articles/<id>/draft/publish`, promoting the draft\ncontent to live.\n\nOn a single-language workspace no body is required. On a multilingual\nworkspace you must list which locales to publish via the `locales` array;\nomitting it returns `422`. Returns `422` when there is no staged draft to\npublish, or when a requested locale has no pending changes.\n\nThe `422` for no staged draft has the short body\n`{ "errors": [{ "message": "...", "status": 422 }] }`, with no `type`,\n`request_id` or `code`. The other `422` errors use the standard error format.\n\nRequires the `read_write_articles_scope` or `create_update_articles` OAuth scope.\n',
   operationId: 'publishArticleDraft',
   request: {
     headers: z.object({
@@ -26217,7 +27615,7 @@ export const postArticlesArticleIdTagsRoute = createRoute({
   tags: ['Articles', 'Tags'],
   summary: 'Add a tag to an article',
   description:
-    'Apply an existing tag to an article. Returns the tag that was applied.\n\nThe tag must already exist in the workspace (create tags with the Tags API),\nand the authenticating teammate must have the `manage_knowledge_base_content`\npermission.\n\nRequires the `read_write_articles_scope` OAuth scope.\n',
+    'Apply an existing tag to an article. Returns the tag that was applied.\n\nThe tag must already exist in the workspace (create tags with the Tags API),\nand the authenticating teammate must have the `manage_knowledge_base_content`\npermission.\n\nRequires the `read_write_articles_scope` or `create_update_articles` OAuth scope.\n',
   operationId: 'attachTagToArticle',
   request: {
     headers: z.object({
@@ -26359,7 +27757,7 @@ export const deleteArticlesArticleIdTagsIdRoute = createRoute({
   tags: ['Articles', 'Tags'],
   summary: 'Remove a tag from an article',
   description:
-    'Remove a tag from an article. Returns the tag that was removed, with null\n`applied_at` and `applied_by`.\n\nThe authenticating teammate must have the `manage_knowledge_base_content`\npermission.\n\nRequires the `read_write_articles_scope` OAuth scope.\n',
+    'Remove a tag from an article. Returns the tag that was removed, with null\n`applied_at` and `applied_by`.\n\nThe authenticating teammate must have the `manage_knowledge_base_content`\npermission.\n\nRequires the `read_write_articles_scope` or `create_update_articles` OAuth scope.\n',
   operationId: 'detachTagFromArticle',
   request: {
     headers: z.object({
@@ -26480,7 +27878,7 @@ export const getArticlesArticleIdVersionsRoute = createRoute({
   tags: ['Articles'],
   summary: 'List article versions',
   description:
-    "Fetch the version history of an article by making a GET request to\n`https://api.intercom.io/articles/<article_id>/versions`. Versions are\nreturned newest-first as a paginated list of metadata. Use\n`GET /articles/{article_id}/versions/{id}` to retrieve a single version\nwith its full content.\n\nA `404` has an empty response body, whether the article or its content\nisn't found.\n\nRequires the `read_articles_scope` OAuth scope.\n",
+    "Fetch the version history of an article by making a GET request to\n`https://api.intercom.io/articles/<article_id>/versions`. Versions are\nreturned newest-first as a paginated list of metadata. Use\n`GET /articles/{article_id}/versions/{id}` to retrieve a single version\nwith its full content.\n\nA `404` has an empty response body, whether the article or its content\nisn't found.\n\nRequires the `read_articles_scope` or `create_update_articles` OAuth scope.\n",
   operationId: 'listArticleVersions',
   request: {
     headers: z.object({
@@ -26653,7 +28051,7 @@ export const getArticlesArticleIdVersionsIdRoute = createRoute({
   tags: ['Articles'],
   summary: 'Retrieve an article version',
   description:
-    "Fetch a single prior version of an article, including its body content,\nby making a GET request to\n`https://api.intercom.io/articles/<article_id>/versions/<id>`. Returns\nthe version's full content; the live article remains untouched.\n\nA `404` has an empty response body, whether the article, its content or\nthe version isn't found.\n\nRequires the `read_articles_scope` OAuth scope.\n",
+    "Fetch a single prior version of an article, including its body content,\nby making a GET request to\n`https://api.intercom.io/articles/<article_id>/versions/<id>`. Returns\nthe version's full content; the live article remains untouched.\n\nA `404` has an empty response body, whether the article, its content or\nthe version isn't found.\n\nRequires the `read_articles_scope` or `create_update_articles` OAuth scope.\n",
   operationId: 'retrieveArticleVersion',
   request: {
     headers: z.object({
@@ -26779,7 +28177,7 @@ export const getArticlesSearchRoute = createRoute({
   tags: ['Articles'],
   summary: 'Search for articles',
   description:
-    'You can search for articles by making a GET request to `https://api.intercom.io/articles/search`.\n\nIf no articles match the search, `data` is an empty array rather than an object.\n\nRequires the `read_articles_scope` OAuth scope.\n',
+    'You can search for articles by making a GET request to `https://api.intercom.io/articles/search`.\n\nIf no articles match the search, `data` is an empty array rather than an object.\n\nRequires the `read_articles_scope` or `create_update_articles` OAuth scope.\n',
   operationId: 'searchArticles',
   request: {
     headers: z.object({
@@ -28315,17 +29713,14 @@ export const getDownloadReportingDataJobIdentifierRoute = createRoute({
         },
       },
       headers: z.object({
-        'Content-Encoding': {
-          description: 'The encoding applied to the response body.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'The encoding applied to the response body.',
-              param: { required: false },
-              example: 'gzip',
-            }),
-        },
+        'Content-Encoding': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'The encoding applied to the response body.',
+            param: { required: false },
+            example: 'gzip',
+          }),
       }),
     },
     400: {
@@ -29245,14 +30640,10 @@ export const postFinCapabilitiesRoute = createRoute({
         'application/json': {
           schema: z
             .object({
-              user: FinAgentUserSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      'The user to list capabilities for. If no user exists for the id, one is created from the supplied details; if the user already exists, the supplied email and attributes update it.',
-                  }),
-              ),
+              user: FinAgentUserSchema.openapi({
+                description:
+                  'The user to list capabilities for. If no user exists for the id, one is created from the supplied details; if the user already exists, the supplied email and attributes update it.',
+              }),
             })
             .openapi({ required: ['user'] }),
           examples: { 'Capabilities for a user': { value: { user: { id: '123456' } } } },
@@ -30353,28 +31744,56 @@ export const postFinEscalateRoute = createRoute({
     body: {
       content: {
         'application/json': {
-          schema: z.xor([
-            z
-              .unknown()
-              .superRefine((val, ctx) => {
-                if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                  if (!Object.hasOwn(val, 'conversation_id')) {
-                    ctx.addIssue({ code: 'custom' })
+          schema: z
+            .xor([
+              z
+                .unknown()
+                .superRefine((val, ctx) => {
+                  if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                    if (!Object.hasOwn(val, 'conversation_id')) {
+                      ctx.addIssue({ code: 'custom' })
+                    }
                   }
-                }
-              })
-              .openapi({ required: ['conversation_id'] }),
-            z
-              .unknown()
-              .superRefine((val, ctx) => {
-                if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                  if (!Object.hasOwn(val, 'user')) {
-                    ctx.addIssue({ code: 'custom' })
+                })
+                .openapi({ required: ['conversation_id'] }),
+              z
+                .unknown()
+                .superRefine((val, ctx) => {
+                  if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                    if (!Object.hasOwn(val, 'user')) {
+                      ctx.addIssue({ code: 'custom' })
+                    }
                   }
-                }
-              })
-              .openapi({ required: ['user'] }),
-          ]),
+                })
+                .openapi({ required: ['user'] }),
+            ])
+            .and(
+              z
+                .object({
+                  conversation_id: z
+                    .string()
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'The external ID of the conversation to escalate. Provide this or `user`. Required on Fin for Platforms, where `user` is not supported.',
+                      example: 'ext-123',
+                    }),
+                  user: FinAgentUserSchema.exactOptional().openapi({
+                    description:
+                      'The user to escalate on behalf of, creating a new conversation. Provide this or `conversation_id`. Not supported on Fin for Platforms.',
+                  }),
+                  context: z
+                    .string()
+                    .max(10000)
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'Optional background for the receiving teammate, valid with either `conversation_id` or `user`. On the Intercom Helpdesk, it appears above the summary in the internal note of the new conversation the teammate picks up, and is never shown to the end user. Not surfaced on Fin for Platforms. Avoid including credentials or unnecessary personal data — it is visible to any teammate with access to the conversation.',
+                      example: 'Customer is requesting a refund and is frustrated.',
+                    }),
+                })
+                .openapi({ required: [] }),
+            ),
           examples: {
             'Escalate an existing conversation': {
               value: {
@@ -31113,7 +32532,7 @@ export const getHelpCenterCollectionsRoute = createRoute({
   tags: ['Help Center'],
   summary: 'List all collections',
   description:
-    'You can fetch a list of all collections by making a GET request to `https://api.intercom.io/help_center/collections`.\n\nRequires the `read_articles_scope` OAuth scope.\n',
+    'You can fetch a list of all collections by making a GET request to `https://api.intercom.io/help_center/collections`.\n\nRequires the `read_articles_scope` or `create_update_articles` OAuth scope.\n',
   operationId: 'listAllCollections',
   request: {
     headers: z.object({
@@ -31291,7 +32710,7 @@ export const postHelpCenterCollectionsRoute = createRoute({
   tags: ['Help Center'],
   summary: 'Create a collection',
   description:
-    'You can create a new collection by making a POST request to `https://api.intercom.io/help_center/collections`.\n\nRequires the `read_write_articles_scope` OAuth scope.\n',
+    'You can create a new collection by making a POST request to `https://api.intercom.io/help_center/collections`.\n\nRequires the `read_write_articles_scope` or `create_update_articles` OAuth scope.\n',
   operationId: 'createCollection',
   request: {
     headers: z.object({
@@ -31406,7 +32825,7 @@ export const getHelpCenterCollectionsCollectionIdRoute = createRoute({
   tags: ['Help Center'],
   summary: 'Retrieve a collection',
   description:
-    'You can fetch the details of a single collection by making a GET request to `https://api.intercom.io/help_center/collections/<id>`.\n\nRequires the `read_articles_scope` OAuth scope.\n',
+    'You can fetch the details of a single collection by making a GET request to `https://api.intercom.io/help_center/collections/<id>`.\n\nRequires the `read_articles_scope` or `create_update_articles` OAuth scope.\n',
   operationId: 'retrieveCollection',
   request: {
     headers: z.object({
@@ -31512,7 +32931,7 @@ export const putHelpCenterCollectionsCollectionIdRoute = createRoute({
   tags: ['Help Center'],
   summary: 'Update a collection',
   description:
-    "You can update the details of a single collection by making a PUT request to `https://api.intercom.io/help_center/collections/<id>`.\n\n`help_center_id` is checked but never applied. It must match the help center of the collection's articles and sub-collections, or the request returns a `400`. A collection with no content rejects any `help_center_id`, so leave it out. Moving a collection to another help center isn't supported.\n\nRequires the `read_write_articles_scope` OAuth scope.\n",
+    "You can update the details of a single collection by making a PUT request to `https://api.intercom.io/help_center/collections/<id>`.\n\n`help_center_id` is checked but never applied. It must match the help center of the collection's articles and sub-collections, or the request returns a `400`. A collection with no content rejects any `help_center_id`, so leave it out. Moving a collection to another help center isn't supported.\n\nRequires the `read_write_articles_scope` or `create_update_articles` OAuth scope.\n",
   operationId: 'updateCollection',
   request: {
     headers: z.object({
@@ -31758,7 +33177,7 @@ export const getHelpCenterHelpCentersHelpCenterIdRoute = createRoute({
   tags: ['Help Center'],
   summary: 'Retrieve a Help Center',
   description:
-    'You can fetch the details of a single Help Center by making a GET request to `https://api.intercom.io/help_center/help_centers/<id>`.\n\nRequires the `read_articles_scope` OAuth scope.\n',
+    'You can fetch the details of a single Help Center by making a GET request to `https://api.intercom.io/help_center/help_centers/<id>`.\n\nRequires the `read_articles_scope` or `create_update_articles` OAuth scope.\n',
   operationId: 'retrieveHelpCenter',
   request: {
     headers: z.object({
@@ -31863,7 +33282,7 @@ export const getHelpCenterHelpCentersRoute = createRoute({
   tags: ['Help Center'],
   summary: 'List all Help Centers',
   description:
-    'You can list all Help Centers by making a GET request to `https://api.intercom.io/help_center/help_centers`.\n\nRequires the `read_articles_scope` OAuth scope.\n',
+    'You can list all Help Centers by making a GET request to `https://api.intercom.io/help_center/help_centers`.\n\nRequires the `read_articles_scope` or `create_update_articles` OAuth scope.\n',
   operationId: 'listHelpCenters',
   request: {
     headers: z.object({
@@ -35606,7 +37025,7 @@ export const postCompaniesListRoute = createRoute({
   tags: ['Companies'],
   summary: 'List all companies',
   description:
-    'You can list companies. The company list is sorted by the `last_request_at` field and by default is ordered descending, most recently requested first.\n\nNote that the API does not include companies who have no associated users in list responses.\n\nWhen using the Companies endpoint and the pages object to iterate through the returned companies, there is a limit of 10,000 Companies that can be returned. If you need to list or iterate on more than 10,000 Companies, please use the [Scroll API](https://developers.intercom.com/reference#iterating-over-all-companies). Going past that limit returns a `400` error with code `bad_request`.\n{% admonition type="warning" name="Pagination" %}\n  This endpoint pages by page number, not by cursor. Use the `page` and `per_page` query parameters, and the `page`, `total_pages` and `next` values in the `pages` object of the response. The default is `15` results per page.\n  See the [pagination section](https://developers.intercom.com/docs/build-an-integration/learn-more/rest-apis/pagination/#pagination-for-list-apis) for more details.\n{% /admonition %}\n\nRequires the `write_users_companies` OAuth scope. A token with only read scopes cannot call this endpoint.\n',
+    'You can list companies. The company list is sorted by the `last_request_at` field and by default is ordered descending, most recently requested first.\n\nNote that the API does not include companies who have no associated users in list responses.\n\nWhen using the Companies endpoint and the pages object to iterate through the returned companies, there is a limit of 10,000 Companies that can be returned. If you need to list or iterate on more than 10,000 Companies, please use the [Scroll API](https://developers.intercom.com/reference#iterating-over-all-companies). Going past that limit returns a `400` error with code `bad_request`.\n{% admonition type="warning" name="Pagination" %}\n  This endpoint pages by page number, not by cursor. Use the `page` and `per_page` query parameters, and the `page`, `total_pages` and `next` values in the `pages` object of the response. The default is `15` results per page.\n  See the [pagination section](https://developers.intercom.com/docs/build-an-integration/learn-more/rest-apis/pagination/#pagination-for-list-apis) for more details.\n{% /admonition %}\n\nRequires the `read_users_companies` or `write_users_companies` OAuth scope.\n',
   operationId: 'listAllCompanies',
   request: {
     headers: z.object({
@@ -38119,19 +39538,15 @@ export const getContactsContactIdRoute = createRoute({
         },
       },
       headers: z.object({
-        Link: {
-          description:
-            'Link to the canonical (merged-into) contact. Format: `</contacts/{id}>; rel="canonical"`',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Link to the canonical (merged-into) contact. Format: `</contacts/{id}>; rel="canonical"`',
-              param: { required: false },
-              example: '</contacts/6762f0d01bb69f9f2193bb7d>; rel="canonical"',
-            }),
-        },
+        Link: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Link to the canonical (merged-into) contact. Format: `</contacts/{id}>; rel="canonical"`',
+            param: { required: false },
+            example: '</contacts/6762f0d01bb69f9f2193bb7d>; rel="canonical"',
+          }),
       }),
     },
   },
@@ -39652,7 +41067,7 @@ export const postContactsRoute = createRoute({
     body: {
       content: {
         'application/json': {
-          schema: z.xor([CreateContactRequestSchema]),
+          schema: CreateContactRequestSchema,
           examples: {
             successful: { summary: 'successful', value: { email: 'joebloggs@intercom.io' } },
           },
@@ -40199,19 +41614,15 @@ export const getContactsFindByExternalIdExternalIdRoute = createRoute({
         },
       },
       headers: z.object({
-        Link: {
-          description:
-            'Link to the canonical (merged-into) contact. Format: `</contacts/{id}>; rel="canonical"`',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Link to the canonical (merged-into) contact. Format: `</contacts/{id}>; rel="canonical"`',
-              param: { required: false },
-              example: '</contacts/6762f0df1bb69f9f2193bb84>; rel="canonical"',
-            }),
-        },
+        Link: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Link to the canonical (merged-into) contact. Format: `</contacts/{id}>; rel="canonical"`',
+            param: { required: false },
+            example: '</contacts/6762f0df1bb69f9f2193bb84>; rel="canonical"',
+          }),
       }),
     },
   },
@@ -44474,7 +45885,7 @@ export const getConversationsRoute = createRoute({
             in: 'query',
             required: false,
             description:
-              'If set to true, the response will include a `monitor_evaluations` array on each conversation with any QA monitor results that flagged it.',
+              'If set to true, the response will include a `monitor_evaluations` array on each conversation with the latest QA monitor evaluation for each monitor that has evaluated it.',
             example: true,
             schema: { type: 'boolean', default: false },
           },
@@ -44557,6 +45968,46 @@ export const getConversationsRoute = createRoute({
                     linked_objects: { type: 'list', data: [], total_count: 0, has_more: false },
                     ai_agent: null,
                     ai_agent_participated: false,
+                    sales_agent_participated: false,
+                    sales_agent: null,
+                    company: null,
+                    external_references: [],
+                    channel: { initial: 'messenger', current: 'messenger' },
+                  },
+                ],
+              },
+            },
+          },
+        },
+      },
+    },
+    400: {
+      description: 'Invalid request',
+      content: {
+        'application/json': {
+          schema: ErrorSchema,
+          examples: {
+            'Invalid per_page': {
+              value: {
+                type: 'error.list',
+                request_id: '3b6e9d52-7a04-4c81-b5f3-0d8a2e4c1f69',
+                errors: [
+                  {
+                    code: 'invalid_per_page',
+                    message: 'per_page must be an integer between 0 and 150',
+                  },
+                ],
+              },
+            },
+            'Invalid starting_after': {
+              value: {
+                type: 'error.list',
+                request_id: 'c9a5e130-6d72-4f48-8b0e-2a7c4d1f5b83',
+                errors: [
+                  {
+                    code: 'client_error',
+                    message:
+                      'Invalid starting_after param. Please try again using a starting_after value from a paginated response',
                   },
                 ],
               },
@@ -44647,7 +46098,15 @@ export const postConversationsRoute = createRoute({
       description: 'conversation created',
       content: {
         'application/json': {
-          schema: MessageSchema.openapi({ required: ['conversation_id'] }),
+          schema: MessageSchema.and(z.looseObject({}).openapi({ required: ['conversation_id'] }))
+            .superRefine((val, ctx) => {
+              if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                if (!Object.hasOwn(val, 'conversation_id')) {
+                  ctx.addIssue({ code: 'custom' })
+                }
+              }
+            })
+            .openapi({ required: ['conversation_id'] }),
           examples: {
             'conversation created': {
               value: {
@@ -44657,6 +46116,23 @@ export const postConversationsRoute = createRoute({
                 body: 'Hello there',
                 message_type: 'inapp',
                 conversation_id: '499',
+              },
+            },
+          },
+        },
+      },
+    },
+    400: {
+      description: 'Invalid request',
+      content: {
+        'application/json': {
+          schema: ErrorSchema,
+          examples: {
+            'Sender missing': {
+              value: {
+                type: 'error.list',
+                request_id: '2a9c6e13-5d70-4b84-8f21-6c3e0a7d9b58',
+                errors: [{ code: 'data_invalid', message: "Field 'from' must be an object" }],
               },
             },
           },
@@ -44708,6 +46184,28 @@ export const postConversationsRoute = createRoute({
                 type: 'error.list',
                 request_id: 'd7eb553e-74ae-4341-820b-5d38a94d4a99',
                 errors: [{ code: 'not_found', message: 'User Not Found' }],
+              },
+            },
+          },
+        },
+      },
+    },
+    422: {
+      description: 'Unprocessable entity',
+      content: {
+        'application/json': {
+          schema: ErrorSchema,
+          examples: {
+            'Message too long': {
+              value: {
+                type: 'error.list',
+                request_id: 'f0b4d728-1e63-4a95-b7c0-8d2a5e9c3f16',
+                errors: [
+                  {
+                    code: 'parameter_invalid',
+                    message: 'Message is too long. Maximum length is 300000',
+                  },
+                ],
               },
             },
           },
@@ -44787,6 +46285,64 @@ export const getConversationsConversationIdRoute = createRoute({
             schema: { type: 'boolean' },
           },
         }),
+      include_email_history: z
+        .stringbool()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'include_email_history',
+            in: 'query',
+            required: false,
+            description:
+              'If set to true, the source of the conversation will include the email history, for conversations started by email.',
+            example: true,
+            schema: { type: 'boolean' },
+          },
+        }),
+      parts_created_after: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int(),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'parts_created_after',
+            in: 'query',
+            required: false,
+            description:
+              'Only include conversation parts created at or after this time, as a Unix timestamp in seconds.',
+            example: 1700000000,
+            schema: { type: 'integer' },
+          },
+        }),
+      parts_created_before: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int(),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'parts_created_before',
+            in: 'query',
+            required: false,
+            description:
+              'Only include conversation parts created at or before this time, as a Unix timestamp in seconds.',
+            example: 1700086400,
+            schema: { type: 'integer' },
+          },
+        }),
       include_monitors: z
         .stringbool()
         .default(false)
@@ -44797,7 +46353,7 @@ export const getConversationsConversationIdRoute = createRoute({
             in: 'query',
             required: false,
             description:
-              'If set to true, the response will include a `monitor_evaluations` array with any QA monitor results that flagged this conversation.',
+              'If set to true, the response will include a `monitor_evaluations` array with the latest QA monitor evaluation for each monitor that has evaluated this conversation.',
             example: true,
             schema: { type: 'boolean', default: false },
           },
@@ -44891,7 +46447,7 @@ export const getConversationsConversationIdRoute = createRoute({
                   conversation_parts: [
                     {
                       type: 'conversation_part',
-                      id: 1,
+                      id: '1',
                       part_type: 'comment',
                       body: '<p>Okay!</p>',
                       created_at: 1663597223,
@@ -44916,7 +46472,7 @@ export const getConversationsConversationIdRoute = createRoute({
                     },
                     {
                       type: 'conversation_part',
-                      id: 2,
+                      id: '2',
                       part_type: 'custom_action_started',
                       body: null,
                       created_at: 1740141842,
@@ -44940,7 +46496,7 @@ export const getConversationsConversationIdRoute = createRoute({
                     },
                     {
                       type: 'conversation_part',
-                      id: 3,
+                      id: '3',
                       part_type: 'conversation_attribute_updated_by_admin',
                       body: null,
                       created_at: 1740141851,
@@ -44967,7 +46523,7 @@ export const getConversationsConversationIdRoute = createRoute({
                     },
                     {
                       type: 'conversation_part',
-                      id: 4,
+                      id: '4',
                       part_type: 'custom_action_finished',
                       body: null,
                       created_at: 1740141857,
@@ -45321,6 +46877,40 @@ export const putConversationsConversationIdRoute = createRoute({
         },
       },
     },
+    400: {
+      description: 'Invalid request',
+      content: {
+        'application/json': {
+          schema: ErrorSchema,
+          examples: {
+            'Side conversation': {
+              value: {
+                type: 'error.list',
+                request_id: 'c6a1d739-8e25-4f40-b9c7-2d5e0a3b7f19',
+                errors: [
+                  {
+                    code: 'side_conversation',
+                    message: 'action can not be performed on a side conversation',
+                  },
+                ],
+              },
+            },
+            'Unknown conversation attribute': {
+              value: {
+                type: 'error.list',
+                request_id: '83b4e6f0-2d17-4a59-8c36-0e9a1b5d7c42',
+                errors: [
+                  {
+                    code: 'parameter_invalid',
+                    message: "Conversation attribute 'Region' does not exist",
+                  },
+                ],
+              },
+            },
+          },
+        },
+      },
+    },
     401: {
       description: 'Unauthorized',
       content: {
@@ -45381,7 +46971,7 @@ export const deleteConversationsConversationIdRoute = createRoute({
   tags: ['Conversations'],
   summary: 'Delete a conversation',
   description:
-    '{% admonition type="warning" name="Irreversible operation" %}\nDeleting a conversation is permanent and cannot be reversed.\n{% /admonition %}\n\nYou can delete a single conversation. The behavior depends on the `retain_metrics` parameter:\n\n- **With `retain_metrics=true` (default)**: Deletes the conversation while retaining reporting data. The conversation will still appear in reporting, though some data may be incomplete due to the deletion.\n\n- **With `retain_metrics=false`**: Deletes the conversation and all associated reporting data. The conversation will be completely removed from both the inbox and all reporting.\n\n{% admonition type="info" name="Required scope for retain_metrics=false" %}\nUsing `retain_metrics=false` requires the `delete_conversations_and_metrics` OAuth scope.\n{% /admonition %}\n\nFor more info, see [this help center article](https://www.intercom.com/help/en/articles/13885146-deleting-a-conversation).\n',
+    '{% admonition type="warning" name="Irreversible after the recovery window" %}\nWith `retain_metrics=false`, deleting a conversation is permanent and cannot be reversed. With the default `retain_metrics=true`, the conversation\'s data is retained for 7 days before being permanently deleted, and recovering it during that window isn\'t available through the API.\n{% /admonition %}\n\nYou can delete a single conversation. The behavior depends on the `retain_metrics` parameter:\n\n- **With `retain_metrics=true` (default)**: Deletes the conversation while retaining reporting data. The conversation will still appear in reporting, though some data may be incomplete due to the deletion.\n\n- **With `retain_metrics=false`**: Deletes the conversation and all associated reporting data. The conversation will be completely removed from both the inbox and all reporting.\n\n{% admonition type="info" name="Required scope for retain_metrics=false" %}\nUsing `retain_metrics=false` requires the `delete_conversations_and_metrics` OAuth scope.\n{% /admonition %}\n\nFor more info, see [this help center article](https://www.intercom.com/help/en/articles/13885146-deleting-a-conversation).\n',
   operationId: 'deleteConversation',
   request: {
     headers: z.object({
@@ -45507,7 +47097,7 @@ export const postConversationsSearchRoute = createRoute({
   tags: ['Conversations'],
   summary: 'Search conversations',
   description:
-    'You can search for multiple conversations by the value of their attributes in order to fetch exactly which ones you want.\n\nTo search for conversations, you need to send a `POST` request to `https://api.intercom.io/conversations/search`.\n\nThis will accept a query object in the body which will define your filters in order to search for conversations.\n{% admonition type="warning" name="Optimizing search queries" %}\n  Search queries can be complex, so optimizing them can help the performance of your search.\n  Use the `AND` and `OR` operators to combine multiple filters to get the exact results you need and utilize\n  pagination to limit the number of results returned. The default is `20` results per page and maximum is `150`.\n  See the [pagination section](https://developers.intercom.com/docs/build-an-integration/learn-more/rest-apis/pagination/#example-search-conversations-request) for more details on how to use the `starting_after` param.\n{% /admonition %}\n\n### Nesting & Limitations\n\nYou can nest these filters in order to get even more granular insights that pinpoint exactly what you need. Example: (1 OR 2) AND (3 OR 4).\nThere are some limitations to the amount of multiple\'s there can be:\n- There\'s a limit of max 2 nested filters\n- There\'s a limit of max 15 filters for each AND or OR group\n\n### Accepted Fields\n\nMost keys listed in the conversation model are searchable, whether writeable or not. The value you search for has to match the accepted type, otherwise the query will fail (ie. as `created_at` accepts a date, the `value` cannot be a string such as `"foorbar"`).\nThe `source.body` field is unique as the search will not be performed against the entire value, but instead against every element of the value separately. For example, when searching for a conversation with a `"I need support"` body - the query should contain a `=` operator with the value `"support"` for such conversation to be returned. A query with a `=` operator and a `"need support"` value will not yield a result.\n\n| Field                                     | Type                                                                                                                                                   |\n| :---------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------- |\n| id                                        | String                                                                                                                                                 |\n| created_at                                | Date (UNIX timestamp)                                                                                                                                  |\n| updated_at                                | Date (UNIX timestamp)                                                                                                                                  |\n| source.type                               | String<br>Accepted fields are `conversation`, `email`, `facebook`, `instagram`, `phone_call`, `phone_switch`, `push`, `sms`, `twitter` and `whatsapp`. |\n| source.id                                 | String                                                                                                                                                 |\n| source.delivered_as                       | String                                                                                                                                                 |\n| source.subject                            | String                                                                                                                                                 |\n| source.body                               | String                                                                                                                                                 |\n| source.author.id                          | String                                                                                                                                                 |\n| source.author.type                        | String                                                                                                                                                 |\n| source.author.name                        | String                                                                                                                                                 |\n| source.author.email                       | String                                                                                                                                                 |\n| source.url                                | String                                                                                                                                                 |\n| contact_ids                               | String                                                                                                                                                 |\n| teammate_ids                              | String                                                                                                                                                 |\n| admin_assignee_id                         | Integer                                                                                                                                                |\n| team_assignee_id                          | Integer                                                                                                                                                |\n| channel_initiated                         | String                                                                                                                                                 |\n| open                                      | Boolean                                                                                                                                                |\n| read                                      | Boolean                                                                                                                                                |\n| state                                     | String                                                                                                                                                 |\n| waiting_since                             | Date (UNIX timestamp)                                                                                                                                  |\n| snoozed_until                             | Date (UNIX timestamp)                                                                                                                                  |\n| tag_ids                                   | String                                                                                                                                                 |\n| priority                                  | String                                                                                                                                                 |\n| statistics.time_to_assignment             | Integer                                                                                                                                                |\n| statistics.time_to_admin_reply            | Integer                                                                                                                                                |\n| statistics.time_to_first_close            | Integer                                                                                                                                                |\n| statistics.time_to_last_close             | Integer                                                                                                                                                |\n| statistics.median_time_to_reply           | Integer                                                                                                                                                |\n| statistics.first_contact_reply_at         | Date (UNIX timestamp)                                                                                                                                  |\n| statistics.first_assignment_at            | Date (UNIX timestamp)                                                                                                                                  |\n| statistics.first_admin_reply_at           | Date (UNIX timestamp)                                                                                                                                  |\n| statistics.first_close_at                 | Date (UNIX timestamp)                                                                                                                                  |\n| statistics.last_assignment_at             | Date (UNIX timestamp)                                                                                                                                  |\n| statistics.last_assignment_admin_reply_at | Date (UNIX timestamp)                                                                                                                                  |\n| statistics.last_contact_reply_at          | Date (UNIX timestamp)                                                                                                                                  |\n| statistics.last_admin_reply_at            | Date (UNIX timestamp)                                                                                                                                  |\n| statistics.last_close_at                  | Date (UNIX timestamp)                                                                                                                                  |\n| statistics.last_closed_by_id              | String                                                                                                                                                 |\n| statistics.count_reopens                  | Integer                                                                                                                                                |\n| statistics.count_assignments              | Integer                                                                                                                                                |\n| statistics.count_conversation_parts       | Integer                                                                                                                                                |\n| conversation_rating.requested_at          | Date (UNIX timestamp)                                                                                                                                  |\n| conversation_rating.replied_at            | Date (UNIX timestamp)                                                                                                                                  |\n| conversation_rating.score                 | Integer                                                                                                                                                |\n| conversation_rating.remark                | String                                                                                                                                                 |\n| conversation_rating.contact_id            | String                                                                                                                                                 |\n| conversation_rating.admin_d               | String                                                                                                                                                 |\n| ai_agent_participated                     | Boolean                                                                                                                                                |\n| ai_agent.resolution_state                 | String                                                                                                                                                 |\n| ai_agent.last_answer_type                 | String                                                                                                                                                 |\n| ai_agent.rating                           | Integer                                                                                                                                                |\n| ai_agent.rating_remark                    | String                                                                                                                                                 |\n| ai_agent.source_type                      | String                                                                                                                                                 |\n| ai_agent.source_title                     | String                                                                                                                                                 |\n\n### Accepted Operators\n\nThe table below shows the operators you can use to define how you want to search for the value.  The operator should be put in as a string (`"="`). The operator has to be compatible with the field\'s type  (eg. you cannot search with `>` for a given string value as it\'s only compatible for integer\'s and dates).\n\n| Operator | Valid Types                    | Description                                                  |\n| :------- | :----------------------------- | :----------------------------------------------------------- |\n| =        | All                            | Equals                                                       |\n| !=       | All                            | Doesn\'t Equal                                                |\n| IN       | All                            | In  Shortcut for `OR` queries  Values most be in Array       |\n| NIN      | All                            | Not In  Shortcut for `OR !` queries  Values must be in Array |\n| >        | Integer  Date (UNIX Timestamp) | Greater (or equal) than                                      |\n| <       | Integer  Date (UNIX Timestamp) | Lower (or equal) than                                        |\n| ~        | String                         | Contains                                                     |\n| !~       | String                         | Doesn\'t Contain                                              |\n| ^        | String                         | Starts With                                                  |\n| $        | String                         | Ends With                                                    |\n',
+    'You can search for multiple conversations by the value of their attributes in order to fetch exactly which ones you want.\n\nTo search for conversations, you need to send a `POST` request to `https://api.intercom.io/conversations/search`.\n\nThis will accept a query object in the body which will define your filters in order to search for conversations.\n{% admonition type="warning" name="Optimizing search queries" %}\n  Search queries can be complex, so optimizing them can help the performance of your search.\n  Use the `AND` and `OR` operators to combine multiple filters to get the exact results you need and utilize\n  pagination to limit the number of results returned. The default is `20` results per page and maximum is `150`.\n  See the [pagination section](https://developers.intercom.com/docs/build-an-integration/learn-more/rest-apis/pagination/#example-search-conversations-request) for more details on how to use the `starting_after` param.\n{% /admonition %}\n\n### Nesting & Limitations\n\nYou can nest these filters in order to get even more granular insights that pinpoint exactly what you need. Example: (1 OR 2) AND (3 OR 4).\nThere are some limitations to the amount of multiple\'s there can be:\n- There\'s a limit of max 2 nested filters\n- There\'s a limit of max 15 filters for each AND or OR group\n\n### Accepted Fields\n\nMost keys listed in the conversation model are searchable, whether writeable or not. The value you search for has to match the accepted type, otherwise the query will fail (ie. as `created_at` accepts a date, the `value` cannot be a string such as `"foorbar"`).\nThe `source.body` field is unique as the search will not be performed against the entire value, but instead against every element of the value separately. For example, when searching for a conversation with a `"I need support"` body - the query should contain a `=` operator with the value `"support"` for such conversation to be returned. A query with a `=` operator and a `"need support"` value will not yield a result.\n\n| Field                                     | Type                                                                                                                                                   |\n| :---------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------- |\n| id                                        | Integer                                                                                                                                                |\n| type                                      | String                                                                                                                                                 |\n| created_at                                | Date (UNIX timestamp)                                                                                                                                  |\n| updated_at                                | Date (UNIX timestamp)                                                                                                                                  |\n| source.type                               | String<br>Accepted fields are `conversation`, `email`, `facebook`, `instagram`, `phone_call`, `phone_switch`, `push`, `sms`, `twitter` and `whatsapp`. |\n| source.id                                 | Integer                                                                                                                                                |\n| source.delivered_as                       | String                                                                                                                                                 |\n| source.subject                            | String                                                                                                                                                 |\n| source.body                               | String                                                                                                                                                 |\n| source.author.id                          | String                                                                                                                                                 |\n| source.author.type                        | String                                                                                                                                                 |\n| source.author.name                        | String                                                                                                                                                 |\n| source.author.email                       | String                                                                                                                                                 |\n| source.url                                | String                                                                                                                                                 |\n| contact_ids                               | String                                                                                                                                                 |\n| teammate_ids                              | String                                                                                                                                                 |\n| admin_assignee_id                         | Integer                                                                                                                                                |\n| team_assignee_id                          | Integer                                                                                                                                                |\n| channel_initiated                         | String                                                                                                                                                 |\n| open                                      | Boolean                                                                                                                                                |\n| read                                      | Boolean                                                                                                                                                |\n| state                                     | String                                                                                                                                                 |\n| waiting_since                             | Date (UNIX timestamp)                                                                                                                                  |\n| snoozed_until                             | Date (UNIX timestamp)                                                                                                                                  |\n| tag_ids                                   | String                                                                                                                                                 |\n| priority                                  | String                                                                                                                                                 |\n| statistics.time_to_assignment             | Integer                                                                                                                                                |\n| statistics.time_to_admin_reply            | Integer                                                                                                                                                |\n| statistics.time_to_first_close            | Integer                                                                                                                                                |\n| statistics.time_to_last_close             | Integer                                                                                                                                                |\n| statistics.median_time_to_reply           | Integer                                                                                                                                                |\n| statistics.first_contact_reply_at         | Date (UNIX timestamp)                                                                                                                                  |\n| statistics.first_assignment_at            | Date (UNIX timestamp)                                                                                                                                  |\n| statistics.first_admin_reply_at           | Date (UNIX timestamp)                                                                                                                                  |\n| statistics.first_close_at                 | Date (UNIX timestamp)                                                                                                                                  |\n| statistics.last_assignment_at             | Date (UNIX timestamp)                                                                                                                                  |\n| statistics.last_assignment_admin_reply_at | Date (UNIX timestamp)                                                                                                                                  |\n| statistics.last_contact_reply_at          | Date (UNIX timestamp)                                                                                                                                  |\n| statistics.last_admin_reply_at            | Date (UNIX timestamp)                                                                                                                                  |\n| statistics.last_close_at                  | Date (UNIX timestamp)                                                                                                                                  |\n| statistics.last_closed_by_id              | Integer                                                                                                                                                |\n| statistics.count_reopens                  | Integer                                                                                                                                                |\n| statistics.count_assignments              | Integer                                                                                                                                                |\n| statistics.count_conversation_parts       | Integer                                                                                                                                                |\n| conversation_rating.requested_at          | Date (UNIX timestamp)                                                                                                                                  |\n| conversation_rating.replied_at            | Date (UNIX timestamp)                                                                                                                                  |\n| conversation_rating.score                 | Integer                                                                                                                                                |\n| conversation_rating.remark                | String                                                                                                                                                 |\n| conversation_rating.contact_id            | String                                                                                                                                                 |\n| conversation_rating.admin_id              | String                                                                                                                                                 |\n| ai_agent_participated                     | Boolean                                                                                                                                                |\n| ai_agent.resolution_state                 | String                                                                                                                                                 |\n| ai_agent.last_answer_type                 | String                                                                                                                                                 |\n| ai_agent.rating                           | Integer                                                                                                                                                |\n| ai_agent.rating_remark                    | String                                                                                                                                                 |\n| ai_agent.source_type                      | String                                                                                                                                                 |\n| ai_agent.source_title                     | String                                                                                                                                                 |\n\n### Accepted Operators\n\nThe table below shows the operators you can use to define how you want to search for the value.  The operator should be put in as a string (`"="`). The operator has to be compatible with the field\'s type  (eg. you cannot search with `>` for a given string value as it\'s only compatible for integer\'s and dates).\n\n| Operator | Valid Types                    | Description                                                  |\n| :------- | :----------------------------- | :----------------------------------------------------------- |\n| =        | All                            | Equals                                                       |\n| !=       | All                            | Doesn\'t Equal                                                |\n| IN       | All                            | In  Shortcut for `OR` queries  Values most be in Array       |\n| NIN      | All                            | Not In  Shortcut for `OR !` queries  Values must be in Array |\n| >       | Integer  Date (UNIX Timestamp) | Greater than                                                 |\n| >=      | Integer  Date (UNIX Timestamp) | Greater than or equal to                                     |\n| <       | Integer  Date (UNIX Timestamp) | Lower than                                                   |\n| <=      | Integer  Date (UNIX Timestamp) | Lower than or equal to                                       |\n| ~        | String                         | Contains                                                     |\n| !~       | String                         | Doesn\'t Contain                                              |\n| ^        | String                         | Starts With                                                  |\n| $        | String                         | Ends With                                                    |\n### Sorting\n\nResults are sorted by `updated_at`, newest first. To sort differently, add a `sort` object to the request body with a `field` and an `order` of `ascending` or `descending`. `field` is required whenever `sort` is sent, and must be one of the fields in the table above, other than `type`, `state`, `source.subject`, `source.body`, `source.author.id`, `source.author.type`, `source.author.name`, `source.author.email`, `conversation_rating.remark`, `ai_agent.rating_remark` and `ai_agent.source_title`, which can\'t be sorted. A missing `field`, or one that isn\'t searchable, returns a `400` error with the code `invalid_field`.\n',
   operationId: 'searchConversations',
   request: {
     headers: z.object({
@@ -45531,7 +47121,7 @@ export const postConversationsSearchRoute = createRoute({
             in: 'query',
             required: false,
             description:
-              'If set to true, the response will include a `monitor_evaluations` array on each conversation with any QA monitor results that flagged it.',
+              'If set to true, the response will include a `monitor_evaluations` array on each conversation with the latest QA monitor evaluation for each monitor that has evaluated it.',
             example: true,
             schema: { type: 'boolean', default: false },
           },
@@ -45633,8 +47223,97 @@ export const postConversationsSearchRoute = createRoute({
                     linked_objects: { type: 'list', data: [], total_count: 0, has_more: false },
                     ai_agent: null,
                     ai_agent_participated: false,
+                    sales_agent_participated: false,
+                    sales_agent: null,
+                    company: null,
+                    external_references: [],
+                    channel: { initial: 'messenger', current: 'messenger' },
                   },
                 ],
+              },
+            },
+          },
+        },
+      },
+    },
+    400: {
+      description: 'Invalid request',
+      content: {
+        'application/json': {
+          schema: ErrorSchema,
+          examples: {
+            'Invalid query': {
+              value: {
+                type: 'error.list',
+                request_id: '5e0a9c24-6f18-4d73-a2b5-8c1e3d7f9a60',
+                errors: [
+                  {
+                    code: 'invalid_query',
+                    message:
+                      "Invalid query. Ensure 'field', 'operator', 'value' are present for simple queries. Ensure 'operator' and 'value' for composite queries. Ensure query is a JSON object.",
+                  },
+                ],
+              },
+            },
+            'Invalid operator': {
+              value: {
+                type: 'error.list',
+                request_id: 'a1c7e439-0b52-4f86-9d24-3e6a8c0b5d71',
+                errors: [
+                  {
+                    code: 'invalid_operator',
+                    message: 'Composite operators must be of type AND or OR',
+                  },
+                ],
+              },
+            },
+            'Invalid field': {
+              value: {
+                type: 'error.list',
+                request_id: '2f8d6b05-9a31-4c47-b1e8-7d0c5a3e9f36',
+                errors: [{ code: 'invalid_field', message: 'foo is not a valid search field' }],
+              },
+            },
+            'Invalid per_page': {
+              value: {
+                type: 'error.list',
+                request_id: 'e9b3a728-4d60-4a15-8f7c-1c5e0d2b6a94',
+                errors: [
+                  {
+                    code: 'invalid_per_page',
+                    message: 'per_page must be an integer between 0 and 150',
+                  },
+                ],
+              },
+            },
+            'Invalid starting_after': {
+              value: {
+                type: 'error.list',
+                request_id: '74a0c5d1-8e39-4b62-a9f4-6b2d1e8c3a07',
+                errors: [
+                  {
+                    code: 'client_error',
+                    message:
+                      'Invalid starting_after param. Please try again using a starting_after value from a paginated response',
+                  },
+                ],
+              },
+            },
+          },
+        },
+      },
+    },
+    401: {
+      description: 'Unauthorized',
+      content: {
+        'application/json': {
+          schema: ErrorSchema,
+          examples: {
+            Unauthorized: {
+              value: {
+                type: 'error.list',
+                request_id: 'd0c4f817-3a96-4e25-8b1d-5f7a2c9e0b38',
+                errors: [{ code: 'unauthorized', message: 'Access Token Invalid' }],
               },
             },
           },
@@ -45672,7 +47351,7 @@ export const postConversationsConversationIdReplyRoute = createRoute({
             in: 'path',
             required: true,
             description:
-              'The Intercom provisioned identifier for the conversation or the string "last" to reply to the last part of the conversation',
+              "The Intercom provisioned identifier for the conversation, or the string `last` to use the most recent conversation of a contact. With `last`, also send the contact's `intercom_user_id`, `user_id` or `email` in the request body, whatever type of request you send. A contact that can't be found returns a `404` error, and a contact with no conversations returns a `422` error.",
             example: '123 or "last"',
             schema: { type: 'string' },
           },
@@ -45697,7 +47376,7 @@ export const postConversationsConversationIdReplyRoute = createRoute({
               value: {
                 message_type: 'note',
                 type: 'admin',
-                admin_id: 991267696,
+                admin_id: '991267696',
                 body: '<html> <body>  <h2>An Unordered HTML List</h2>  <ul>   <li>Coffee</li>   <li>Tea</li>   <li>Milk</li> </ul>    <h2>An Ordered HTML List</h2>  <ol>   <li>Coffee</li>   <li>Tea</li>   <li>Milk</li> </ol>   </body> </html>',
               },
             },
@@ -45706,7 +47385,7 @@ export const postConversationsConversationIdReplyRoute = createRoute({
               value: {
                 message_type: 'quick_reply',
                 type: 'admin',
-                admin_id: 991267698,
+                admin_id: '991267698',
                 reply_options: [
                   { text: 'Yes', uuid: 'a5e1c524-5ddd-4c3e-9328-6bca5d6e3edb' },
                   { text: 'No', uuid: 'f4a98af1-be56-4948-a57e-e1a83f8484c6' },
@@ -46063,6 +47742,35 @@ export const postConversationsConversationIdReplyRoute = createRoute({
         },
       },
     },
+    400: {
+      description: 'Invalid request',
+      content: {
+        'application/json': {
+          schema: ErrorSchema,
+          examples: {
+            'Side conversation': {
+              value: {
+                type: 'error.list',
+                request_id: 'b5e90d26-7c14-4a83-8f3b-1d6a2c9e4b70',
+                errors: [
+                  {
+                    code: 'side_conversation',
+                    message: 'action can not be performed on a side conversation',
+                  },
+                ],
+              },
+            },
+            'Unsupported message type': {
+              value: {
+                type: 'error.list',
+                request_id: '4c7a1e85-2f90-4d63-a5b8-9e3d0c6f1a27',
+                errors: [{ code: 'parameter_invalid', message: 'Unsupported message type' }],
+              },
+            },
+          },
+        },
+      },
+    },
     401: {
       description: 'Unauthorized',
       content: {
@@ -46081,7 +47789,7 @@ export const postConversationsConversationIdReplyRoute = createRoute({
       },
     },
     403: {
-      description: 'API plan restricted',
+      description: 'Forbidden',
       content: {
         'application/json': {
           schema: ErrorSchema,
@@ -46091,6 +47799,19 @@ export const postConversationsConversationIdReplyRoute = createRoute({
                 type: 'error.list',
                 request_id: '48ad16d0-525c-40bf-b733-89239feb70e3',
                 errors: [{ code: 'api_plan_restricted', message: 'Active subscription needed.' }],
+              },
+            },
+            'Admin lacks permission': {
+              value: {
+                type: 'error.list',
+                request_id: 'd3a6f081-5b27-4e94-8c1d-7a0e9b2c4f68',
+                errors: [
+                  {
+                    code: 'action_forbidden',
+                    message:
+                      "The admin doesn't have the permissions required to reply to this conversation",
+                  },
+                ],
               },
             },
           },
@@ -46108,6 +47829,42 @@ export const postConversationsConversationIdReplyRoute = createRoute({
                 type: 'error.list',
                 request_id: '06234918-c245-4caa-a2cc-90247983c6ff',
                 errors: [{ code: 'not_found', message: 'Resource Not Found' }],
+              },
+            },
+            'Contact not found': {
+              value: {
+                type: 'error.list',
+                request_id: '19e8b3c6-0a74-4f52-b6d1-3c9a5e7d2b04',
+                errors: [{ code: 'not_found', message: 'User Not Found' }],
+              },
+            },
+          },
+        },
+      },
+    },
+    422: {
+      description: 'Unprocessable entity',
+      content: {
+        'application/json': {
+          schema: ErrorSchema,
+          examples: {
+            'No conversation for the contact': {
+              value: {
+                type: 'error.list',
+                request_id: '0e5c9a37-4b82-4d16-a3f7-7c1d8b6e2a49',
+                errors: [{ code: 'parameter_invalid', message: 'No conversation for this user' }],
+              },
+            },
+            'Message too long': {
+              value: {
+                type: 'error.list',
+                request_id: '7f2d5a98-1c46-4b03-9e7a-6b8c0d3f5a21',
+                errors: [
+                  {
+                    code: 'parameter_invalid',
+                    message: 'Message is too long. Maximum length is 300000',
+                  },
+                ],
               },
             },
           },
@@ -46144,7 +47901,8 @@ export const postConversationsConversationIdPartsRoute = createRoute({
             name: 'conversation_id',
             in: 'path',
             required: true,
-            description: 'The identifier for the conversation as given by Intercom.',
+            description:
+              "The identifier for the conversation as given by Intercom, or the string `last` to use the most recent conversation of a contact. With `last`, also send the contact's `intercom_user_id`, `user_id` or `email` in the request body, whatever type of request you send. A contact that can't be found returns a `404` error, and a contact with no conversations returns a `422` error.",
             example: '123',
             schema: { type: 'string' },
           },
@@ -46165,25 +47923,25 @@ export const postConversationsConversationIdPartsRoute = createRoute({
               value: {
                 message_type: 'close',
                 type: 'admin',
-                admin_id: 991267708,
+                admin_id: '991267708',
                 body: 'Goodbye :)',
               },
             },
             snooze_a_conversation: {
               summary: 'Snooze a conversation',
-              value: { message_type: 'snoozed', admin_id: 991267710, snoozed_until: 1734541187 },
+              value: { message_type: 'snoozed', admin_id: '991267710', snoozed_until: 1734541187 },
             },
             open_a_conversation: {
               summary: 'Open a conversation',
-              value: { message_type: 'open', admin_id: 991267712 },
+              value: { message_type: 'open', admin_id: '991267712' },
             },
             assign_a_conversation: {
               summary: 'Assign a conversation',
               value: {
                 message_type: 'assignment',
                 type: 'admin',
-                admin_id: 991267715,
-                assignee_id: 991267715,
+                admin_id: '991267715',
+                assignee_id: '991267715',
               },
             },
             not_found: {
@@ -46191,7 +47949,7 @@ export const postConversationsConversationIdPartsRoute = createRoute({
               value: {
                 message_type: 'close',
                 type: 'admin',
-                admin_id: 991267717,
+                admin_id: '991267717',
                 body: 'Goodbye :)',
               },
             },
@@ -46532,6 +48290,35 @@ export const postConversationsConversationIdPartsRoute = createRoute({
         },
       },
     },
+    400: {
+      description: 'Invalid request',
+      content: {
+        'application/json': {
+          schema: ErrorSchema,
+          examples: {
+            'Side conversation': {
+              value: {
+                type: 'error.list',
+                request_id: 'b5e90d26-7c14-4a83-8f3b-1d6a2c9e4b70',
+                errors: [
+                  {
+                    code: 'side_conversation',
+                    message: 'action can not be performed on a side conversation',
+                  },
+                ],
+              },
+            },
+            'Unsupported message type': {
+              value: {
+                type: 'error.list',
+                request_id: '4c7a1e85-2f90-4d63-a5b8-9e3d0c6f1a27',
+                errors: [{ code: 'parameter_invalid', message: 'Unsupported message type' }],
+              },
+            },
+          },
+        },
+      },
+    },
     401: {
       description: 'Unauthorized',
       content: {
@@ -46550,7 +48337,7 @@ export const postConversationsConversationIdPartsRoute = createRoute({
       },
     },
     403: {
-      description: 'API plan restricted',
+      description: 'Forbidden',
       content: {
         'application/json': {
           schema: ErrorSchema,
@@ -46560,6 +48347,19 @@ export const postConversationsConversationIdPartsRoute = createRoute({
                 type: 'error.list',
                 request_id: 'a57737d0-63a7-42bd-aa65-8380ef828124',
                 errors: [{ code: 'api_plan_restricted', message: 'Active subscription needed.' }],
+              },
+            },
+            'Admin lacks permission': {
+              value: {
+                type: 'error.list',
+                request_id: 'd3a6f081-5b27-4e94-8c1d-7a0e9b2c4f68',
+                errors: [
+                  {
+                    code: 'action_forbidden',
+                    message:
+                      "The admin doesn't have the permissions required to reply to this conversation",
+                  },
+                ],
               },
             },
           },
@@ -46577,6 +48377,56 @@ export const postConversationsConversationIdPartsRoute = createRoute({
                 type: 'error.list',
                 request_id: 'e056b3c3-fae3-4a3c-9bcf-836b84efa331',
                 errors: [{ code: 'not_found', message: 'Resource Not Found' }],
+              },
+            },
+            'Contact not found': {
+              value: {
+                type: 'error.list',
+                request_id: '19e8b3c6-0a74-4f52-b6d1-3c9a5e7d2b04',
+                errors: [{ code: 'not_found', message: 'User Not Found' }],
+              },
+            },
+          },
+        },
+      },
+    },
+    422: {
+      description: 'Unprocessable entity',
+      content: {
+        'application/json': {
+          schema: ErrorSchema,
+          examples: {
+            'Snooze time not in the future': {
+              value: {
+                type: 'error.list',
+                request_id: '6d1a8f40-9c37-4e25-b0d8-2f7a4c5e8b93',
+                errors: [
+                  { code: 'parameter_invalid', message: 'snoozed_until must be in the future' },
+                ],
+              },
+            },
+            'Already assigned': {
+              value: {
+                type: 'error.list',
+                request_id: 'a8f2c514-3e69-4b07-9d1a-5e0c7b3d6f82',
+                errors: [
+                  {
+                    code: 'conversation_already_assigned_to_assignee',
+                    message: 'The conversation is already assigned to the specified assignee',
+                  },
+                ],
+              },
+            },
+            'Message too long': {
+              value: {
+                type: 'error.list',
+                request_id: '7f2d5a98-1c46-4b03-9e7a-6b8c0d3f5a21',
+                errors: [
+                  {
+                    code: 'parameter_invalid',
+                    message: 'Message is too long. Maximum length is 300000',
+                  },
+                ],
               },
             },
           },
@@ -47254,6 +49104,245 @@ export const getConversationsIdSideConversationsRoute = createRoute({
   },
 })
 
+export const postConversationsConversationIdRatingRoute = createRoute({
+  method: 'post',
+  path: '/conversations/{conversation_id}/rating',
+  tags: ['Conversations'],
+  summary: 'Rate a conversation',
+  description:
+    "Record a contact's CSAT rating, and an optional remark, on the latest rating request Intercom sent for a conversation. The rating counts in your CSAT reports for the teammate, Fin or workflow that was rated.\n\nOnly the contact the request was sent to can answer. Pass their Intercom ID as `intercom_user_id`.\n\nSending the same rating and remark again returns the current rating without changing it, so it is safe to retry. A different `rating` replaces the earlier one while the rating request still accepts answers. A `remark` can be added to a rating that has none. Once a remark is set, the rating and the remark can no longer be changed.\n\nRequires the `write_conversations` permission.\n",
+  operationId: 'rateConversation',
+  request: {
+    headers: z.object({
+      'Intercom-Version': IntercomVersionSchema.openapi({
+        param: {
+          name: 'Intercom-Version',
+          in: 'header',
+          schema: { $ref: '#/components/schemas/intercom_version' },
+          required: false,
+        },
+      }).exactOptional(),
+    }),
+    params: z.object({
+      conversation_id: z
+        .string()
+        .openapi({
+          param: {
+            name: 'conversation_id',
+            in: 'path',
+            required: true,
+            description: 'The unique identifier for the conversation.',
+            example: '215471234567890',
+            schema: { type: 'string' },
+          },
+        }),
+    }),
+    body: {
+      content: {
+        'application/json': {
+          schema: RateConversationRequestSchema,
+          examples: {
+            successful: {
+              summary: 'successful',
+              value: {
+                intercom_user_id: '6541f0a2c3d4e5f607182930',
+                rating: 4,
+                remark: 'Fast and friendly',
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+  responses: {
+    200: {
+      description: 'Rating recorded',
+      content: {
+        'application/json': {
+          schema: RatedConversationSchema,
+          examples: {
+            successful: {
+              value: {
+                type: 'conversation_rating',
+                conversation_id: '215471234567890',
+                rating: 4,
+                remark: 'Fast and friendly',
+                created_at: 1793664000,
+                updated_at: 1793664120,
+                customer: { type: 'user', id: '6541f0a2c3d4e5f607182930' },
+                teammate: { type: 'admin', id: '12345' },
+              },
+            },
+          },
+        },
+      },
+    },
+    400: {
+      description: 'Bad request',
+      content: {
+        'application/json': {
+          schema: ErrorSchema,
+          examples: {
+            'Resource not available': {
+              value: {
+                type: 'error.list',
+                request_id: '7a80b950-b392-499f-85db-ea7c6c424d37',
+                errors: [
+                  {
+                    code: 'intercom_version_invalid',
+                    message: 'Requested resource is not available in current API version',
+                  },
+                ],
+              },
+            },
+            'Missing parameter': {
+              value: {
+                type: 'error.list',
+                request_id: '5f0c2a8e-3d71-4b96-a1e4-9c6b7d2f8e13',
+                errors: [{ code: 'parameter_not_found', message: 'rating parameter is required' }],
+              },
+            },
+            'Invalid parameter type': {
+              value: {
+                type: 'error.list',
+                request_id: '0e4b9d1c-6a85-4f32-b7d0-2c8e5a1f9b64',
+                errors: [{ code: 'parameter_invalid', message: 'rating must be a integer' }],
+              },
+            },
+            'Rating out of range': {
+              value: {
+                type: 'error.list',
+                request_id: 'c3a1e7f5-82d4-4b09-9e6a-1d5b0f7c2a48',
+                errors: [
+                  { code: 'parameter_invalid', message: 'rating must be an integer from 1 to 5' },
+                ],
+              },
+            },
+          },
+        },
+      },
+    },
+    401: {
+      description: 'Unauthorized',
+      content: {
+        'application/json': {
+          schema: ErrorSchema,
+          examples: {
+            Unauthorized: {
+              value: {
+                type: 'error.list',
+                request_id: '7d3e1f0a-5b2c-4a96-8c41-0e9f6b2d7a35',
+                errors: [{ code: 'unauthorized', message: 'Access Token Invalid' }],
+              },
+            },
+          },
+        },
+      },
+    },
+    403: {
+      description: 'Forbidden',
+      content: {
+        'application/json': {
+          schema: ErrorSchema,
+          examples: {
+            'Different contact': {
+              value: {
+                type: 'error.list',
+                request_id: '9b1c2d3e-4f50-4a61-8b72-c3d4e5f60718',
+                errors: [
+                  {
+                    code: 'forbidden',
+                    message:
+                      'The rating request for this conversation was sent to a different contact',
+                  },
+                ],
+              },
+            },
+            'Conversation access restricted': {
+              value: {
+                type: 'error.list',
+                request_id: '2c8a4e6b-9f1d-4b73-a5e0-6d1c3f8b9a47',
+                errors: [
+                  {
+                    code: 'token_unauthorized',
+                    message: 'Not authorized to access this conversation',
+                  },
+                ],
+              },
+            },
+          },
+        },
+      },
+    },
+    404: {
+      description:
+        'The conversation was not found, or the endpoint is not enabled for the workspace',
+      content: {
+        'application/json': {
+          schema: ErrorSchema,
+          examples: {
+            'Conversation not found': {
+              value: {
+                type: 'error.list',
+                request_id: '4a5b6c7d-8e9f-4a0b-9c1d-2e3f4a5b6c7d',
+                errors: [{ code: 'conversation_not_found', message: 'Conversation not found' }],
+              },
+            },
+          },
+        },
+      },
+    },
+    422: {
+      description: 'Rating not accepted',
+      content: {
+        'application/json': {
+          schema: ErrorSchema,
+          examples: {
+            'No rating request': {
+              value: {
+                type: 'error.list',
+                request_id: '6e2f8a1b-0c47-4d93-8b5a-7f1e3c9d0a26',
+                errors: [
+                  {
+                    code: 'rating_request_not_found',
+                    message: 'No rating request has been sent for this conversation',
+                  },
+                ],
+              },
+            },
+            'Rating window closed': {
+              value: {
+                type: 'error.list',
+                request_id: '1d7c4b9a-5e30-4f68-a2b1-8c0e6d3f7a95',
+                errors: [
+                  {
+                    code: 'rating_window_closed',
+                    message: 'The rating window for this conversation has closed',
+                  },
+                ],
+              },
+            },
+            'Rating locked': {
+              value: {
+                type: 'error.list',
+                request_id: '8f3a6c2d-1b94-4e07-9d5c-0a7b2e4f1c63',
+                errors: [
+                  {
+                    code: 'rating_locked',
+                    message:
+                      'This rating can no longer be changed because a remark has already been submitted',
+                  },
+                ],
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+})
+
 export const postConversationsRedactRoute = createRoute({
   method: 'post',
   path: '/conversations/redact',
@@ -47280,7 +49369,11 @@ export const postConversationsRedactRoute = createRoute({
           examples: {
             redact_a_conversation_part: {
               summary: 'Redact a conversation part',
-              value: { type: 'conversation_part', conversation_id: 608, conversation_part_id: 149 },
+              value: {
+                type: 'conversation_part',
+                conversation_id: '608',
+                conversation_part_id: '149',
+              },
             },
             not_found: {
               summary: 'Not found',
@@ -47433,7 +49526,7 @@ export const postConversationsIdMergeRoute = createRoute({
   tags: ['Conversations'],
   summary: 'Merge a conversation',
   description:
-    'Merge a secondary (source) conversation into a primary (target) conversation.\nThe secondary conversation is closed and linked to the primary, which\nbecomes the surviving thread. Returns the primary conversation on success.\n\nRequires `write_conversations` OAuth scope. When the secondary is a ticket,\n`write_tickets` scope is also required.\n',
+    'Merge a secondary (source) conversation into a primary (target) conversation.\nThe secondary conversation is closed and linked to the primary, which\nbecomes the surviving thread. Returns the primary conversation on success.\n\nRequires `write_conversations` OAuth scope.\n',
   operationId: 'mergeConversation',
   request: {
     headers: z.object({
@@ -47512,8 +49605,8 @@ export const postConversationsIdMergeRoute = createRoute({
                   ],
                 },
                 first_contact_reply: { created_at: 1734537561, type: 'conversation', url: null },
-                admin_assignee_id: null,
-                team_assignee_id: null,
+                admin_assignee_id: 0,
+                team_assignee_id: 0,
                 open: true,
                 state: 'open',
                 read: false,
@@ -47615,7 +49708,13 @@ export const postConversationsIdMergeRoute = createRoute({
               value: {
                 type: 'error.list',
                 request_id: 'b4f6c9d3-2345-6789-abcd-ef0123456789',
-                errors: [{ code: 'forbidden', message: 'Forbidden request' }],
+                errors: [
+                  {
+                    code: 'action_forbidden',
+                    message:
+                      "The admin doesn't have the permissions required to merge conversations",
+                  },
+                ],
               },
             },
           },
@@ -47976,7 +50075,7 @@ export const getConversationsDeletedRoute = createRoute({
                 errors: [
                   {
                     code: 'intercom_version_invalid',
-                    message: 'Requested resource is not available in current API version.',
+                    message: 'Requested resource is not available in current API version',
                   },
                 ],
               },
@@ -48001,6 +50100,183 @@ export const getConversationsDeletedRoute = createRoute({
           },
         },
       },
+    },
+    403: {
+      description: 'API plan restricted',
+      content: {
+        'application/json': {
+          schema: ErrorSchema,
+          examples: {
+            'API plan restricted': {
+              value: {
+                type: 'error.list',
+                request_id: '58d2b7e4-1f93-4a60-9c05-4e8b3a6d0c17',
+                errors: [{ code: 'api_plan_restricted', message: 'Active subscription needed.' }],
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+})
+
+export const postConversationsStreamTokenRoute = createRoute({
+  method: 'post',
+  path: '/conversations/stream/token',
+  tags: ['Conversations'],
+  summary: 'Create a conversation stream token',
+  description:
+    "Realtime streaming of conversation events uses Server-Sent Events (SSE). It is an opt-in feature, enabled per workspace. Contact Intercom to turn it on.\n\nIssue a token that a contact's client uses to subscribe to a realtime stream of that contact's conversation events.\n\nTokens are short-lived, so call this endpoint again before `expires_at` to get a fresh one. Use the `revoke` link in the response to end every active token for the contact.\n\nRequires the `read_conversations` permission.\n",
+  operationId: 'createConversationStreamToken',
+  request: {
+    headers: z.object({
+      'Intercom-Version': IntercomVersionSchema.openapi({
+        param: {
+          name: 'Intercom-Version',
+          in: 'header',
+          schema: { $ref: '#/components/schemas/intercom_version' },
+          required: false,
+        },
+      }).exactOptional(),
+    }),
+    body: {
+      content: {
+        'application/json': {
+          schema: CreateConversationStreamTokenRequestSchema,
+          examples: {
+            successful: { summary: 'successful', value: { external_id: 'contact-1234' } },
+          },
+        },
+      },
+    },
+  },
+  responses: {
+    200: {
+      description: 'Token issued',
+      content: {
+        'application/json': {
+          schema: ConversationStreamTokenSchema,
+          examples: {
+            successful: {
+              value: {
+                type: 'conversation_stream_token',
+                expires_at: 1731241200,
+                stream: {
+                  provider: 'ably',
+                  url: 'main.realtime.ably.net',
+                  channel: 'conversation_stream:abc123:6710a1b2c3d4e5f6a7b8c9d0',
+                  token: '<stream token>',
+                },
+                links: {
+                  self: {
+                    href: 'https://api.intercom.io/conversations/stream/token',
+                    method: 'POST',
+                  },
+                  revoke: {
+                    href: 'https://api.intercom.io/conversations/stream/token?external_id=contact-1234',
+                    method: 'DELETE',
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    400: { description: '`external_id` is missing' },
+    401: {
+      description: 'Unauthorized',
+      content: {
+        'application/json': {
+          schema: ErrorSchema,
+          examples: {
+            Unauthorized: {
+              value: {
+                type: 'error.list',
+                request_id: '7d3e1f0a-5b2c-4a96-8c41-0e9f6b2d7a35',
+                errors: [{ code: 'unauthorized', message: 'Access Token Invalid' }],
+              },
+            },
+          },
+        },
+      },
+    },
+    403: {
+      description:
+        'The access token is limited to the conversations of the teammate who installed the app',
+    },
+    404: {
+      description:
+        'The contact was not found, or the conversation stream is not available for the workspace',
+    },
+  },
+})
+
+export const deleteConversationsStreamTokenRoute = createRoute({
+  method: 'delete',
+  path: '/conversations/stream/token',
+  tags: ['Conversations'],
+  summary: 'Revoke conversation stream tokens',
+  description:
+    'Realtime streaming of conversation events uses Server-Sent Events (SSE). It is an opt-in feature, enabled per workspace. Contact Intercom to turn it on.\n\nRevoke every active conversation stream token for a contact. Call this when the contact signs out or you suspect a token has been exposed.\n\nRequires the `read_conversations` permission.\n',
+  operationId: 'revokeConversationStreamTokens',
+  request: {
+    headers: z.object({
+      'Intercom-Version': IntercomVersionSchema.openapi({
+        param: {
+          name: 'Intercom-Version',
+          in: 'header',
+          schema: { $ref: '#/components/schemas/intercom_version' },
+          required: false,
+        },
+      }).exactOptional(),
+    }),
+    query: z.object({
+      external_id: z
+        .string()
+        .openapi({
+          param: {
+            name: 'external_id',
+            in: 'query',
+            required: true,
+            description: 'The external ID of the contact whose tokens to revoke.',
+            example: 'contact-1234',
+            schema: { type: 'string' },
+          },
+        }),
+    }),
+  },
+  responses: {
+    204: { description: 'Tokens revoked' },
+    400: { description: '`external_id` is missing' },
+    401: {
+      description: 'Unauthorized',
+      content: {
+        'application/json': {
+          schema: ErrorSchema,
+          examples: {
+            Unauthorized: {
+              value: {
+                type: 'error.list',
+                request_id: '2c8a4e6b-9f1d-4b73-a5e0-6d1c3f8b9a47',
+                errors: [{ code: 'unauthorized', message: 'Access Token Invalid' }],
+              },
+            },
+          },
+        },
+      },
+    },
+    403: {
+      description:
+        'The access token is limited to the conversations of the teammate who installed the app',
+    },
+    404: {
+      description:
+        'The contact was not found, or the conversation stream is not available for the workspace',
+    },
+    502: {
+      description: 'The realtime provider did not confirm the revocation. Retry the request.',
     },
   },
 })
@@ -49541,57 +51817,30 @@ export const deleteCustomObjectInstancesCustomObjectTypeIdentifierRoute = create
           },
         }),
     }),
-    query: z
-      .looseObject({})
-      .transform((val) => {
-        const rest: [string, unknown][] = []
-        const groups = new Map<string, Record<string, unknown>>()
-        const group = (name: string) => {
-          const found = groups.get(name)
-          if (found !== undefined) return found
-          const made: Record<string, unknown> = Object.create(null)
-          groups.set(name, made)
-          return made
-        }
-        const spread = new Map<string, string[]>([['external_id', ['external_id']]])
-        for (const [key, item] of Object.entries(val)) {
-          const owners = spread.get(key)
-          if (owners !== undefined) {
-            for (const owner of owners) {
-              group(owner)[key] = item
-            }
-            continue
-          }
-          rest.push([key, item])
-        }
-        return Object.fromEntries([...rest, ...groups])
-      })
-      .pipe(
-        z.object({
-          external_id: z
-            .object({ external_id: z.string() })
-            .openapi({
-              param: {
-                name: 'external_id',
-                in: 'query',
-                style: 'form',
-                required: true,
-                schema: {
-                  type: 'string',
-                  description:
-                    'The unique identifier for the instance in the external system it originated from.',
-                  title: 'Find by external_id',
-                  properties: { external_id: { type: 'string' } },
-                  required: ['external_id'],
-                },
-              },
+    query: z.object({
+      external_id: z
+        .string()
+        .openapi({
+          param: {
+            name: 'external_id',
+            in: 'query',
+            style: 'form',
+            required: true,
+            schema: {
+              type: 'string',
               description:
                 'The unique identifier for the instance in the external system it originated from.',
               title: 'Find by external_id',
+              properties: { external_id: { type: 'string' } },
               required: ['external_id'],
-            }),
+            },
+          },
+          description:
+            'The unique identifier for the instance in the external system it originated from.',
+          title: 'Find by external_id',
+          required: ['external_id'],
         }),
-      ),
+    }),
     headers: z.object({
       'Intercom-Version': IntercomVersionSchema.openapi({
         param: {
@@ -51486,7 +53735,7 @@ export const getDataConnectorsDataConnectorIdExecutionResultsRoute = createRoute
   tags: ['Data Connectors'],
   summary: 'List execution results for a data connector',
   description:
-    'Retrieve paginated execution logs for a specific data connector.\nResults from the last hour are returned by default. Use `start_ts` and `end_ts` to customize the time range.\n\nRequest/response bodies are excluded by default. Use `include_bodies=true` to include them.\n\nOAuth tokens must have the `read_workflow_connector_execution_result` or `read_write_data_connectors` scope.\n',
+    'Retrieve paginated execution logs for a specific data connector.\nResults from the last hour are returned by default. Use `start_ts` and `end_ts` to customize the time range.\n\nRequest/response bodies are excluded by default. Use `include_bodies=true` to include them. Apps owned by another workspace never receive them.\n\nOAuth tokens must have the `read_workflow_connector_execution_result` or `read_write_data_connectors` scope.\n',
   operationId: 'listDataConnectorExecutionResults',
   request: {
     headers: z.object({
@@ -51651,7 +53900,8 @@ export const getDataConnectorsDataConnectorIdExecutionResultsRoute = createRoute
             name: 'include_bodies',
             in: 'query',
             required: false,
-            description: 'Include request/response bodies in the response (default false).',
+            description:
+              'Include request/response bodies in the response (default false). Ignored for third-party apps (apps owned by another workspace), which never receive bodies.',
             schema: { type: 'string', enum: ['true', 'false'] },
           },
         }),
@@ -51805,7 +54055,7 @@ export const getDataConnectorsDataConnectorIdExecutionResultsIdRoute = createRou
   tags: ['Data Connectors'],
   summary: 'Retrieve an execution result',
   description:
-    'Retrieve details for a specific data connector execution result.\nIncludes the request/response bodies and sanitised request URL when they are available.\n\nOAuth tokens must have the `read_workflow_connector_execution_result` or `read_write_data_connectors` scope.\n',
+    'Retrieve details for a specific data connector execution result.\nIncludes the sanitised request URL, and the request/response bodies when they are available. Bodies are omitted when the request comes from a third-party app (an app owned by another workspace).\n\nOAuth tokens must have the `read_workflow_connector_execution_result` or `read_write_data_connectors` scope.\n',
   operationId: 'showDataConnectorExecutionResult',
   request: {
     headers: z.object({
@@ -53713,7 +55963,7 @@ export const postMessagesRoute = createRoute({
   tags: ['Messages'],
   summary: 'Create a message',
   description:
-    'You can create a message that has been initiated by an admin. The conversation can be either an in-app message, an email or whatsapp.\n\n> 🚧 Sending for visitors\n>\n> There can be a short delay between when a contact is created and when a contact becomes available to be messaged through the API. A 404 Not Found error will be returned in this case.\n\nThis will return the Message model that has been created.\n\n> 🚧 Retrieving Associated Conversations\n>\n> As this is a message, there will be no conversation present until the contact responds. Once they do, you will have to search for a contact\'s conversations with the id of the message.\n\n{% admonition type="warning" name="Messages from contacts" %}\n`from` should be an admin. A request with a user or lead as `from` is not rejected: it creates a conversation initiated by that contact, as the Create a conversation endpoint (`POST /conversations`) does, and the `to`, `cc` and `bcc` fields are ignored. To create a conversation initiated by a contact, use `POST /conversations`.\n{% /admonition %}\n',
+    'You can create a message that has been initiated by an admin. The conversation can be either an in-app message, an email or whatsapp.\n\n> 🚧 Sending for visitors\n>\n> There can be a short delay between when a contact is created and when a contact becomes available to be messaged through the API. A 404 Not Found error will be returned in this case.\n\nThis will return the Message model that has been created.\n\n> 🚧 Retrieving Associated Conversations\n>\n> For in-app and email messages, there will be no conversation present until the contact responds. Once they do, you will have to search for a contact\'s conversations with the id of the message.\n>\n> For `whatsapp` messages, the conversation is created when the message is sent, and its id is returned as `conversation_id`.\n\n{% admonition type="warning" name="Messages from contacts" %}\n`from` should be an admin. A request with a user or lead as `from` is not rejected: it creates a conversation initiated by that contact, as the Create a conversation endpoint (`POST /conversations`) does, and the `to`, `cc` and `bcc` fields are ignored. To create a conversation initiated by a contact, use `POST /conversations`.\n{% /admonition %}\n',
   operationId: 'createMessage',
   request: {
     headers: z.object({
@@ -53761,7 +56011,7 @@ export const postMessagesRoute = createRoute({
                   { type: 'user', id: '6762f23f1bb69f9f2193bc1e' },
                 ],
                 bcc: [{ type: 'user', id: '6762f23e1bb69f9f2193bc2f' }],
-                message_type: 'conversation',
+                message_type: 'inapp',
                 body: 'heyy',
               },
             },
@@ -53857,12 +56107,31 @@ export const postMessagesRoute = createRoute({
                 },
               },
             },
+            'admin whatsapp message created': {
+              value: {
+                type: 'admin_message',
+                id: '20',
+                created_at: 1734537790,
+                body: 'Hi Username 123, your account is still active.',
+                message_type: 'whatsapp',
+                conversation_id: '615',
+                owner: {
+                  type: 'admin',
+                  id: '991267817',
+                  name: 'Ciaran300 Lee',
+                  email: 'admin300@email.com',
+                  away_mode_enabled: false,
+                  away_mode_reassign: false,
+                },
+                whatsapp_message_id: 'wamid.abc123',
+              },
+            },
           },
         },
       },
     },
     400: {
-      description: 'No body supplied for email message',
+      description: 'Invalid request',
       content: {
         'application/json': {
           schema: ErrorSchema,
@@ -53879,6 +56148,175 @@ export const postMessagesRoute = createRoute({
                 type: 'error.list',
                 request_id: '2d6abc61-1441-4860-9ef0-777852f8b24f',
                 errors: [{ code: 'parameter_invalid', message: 'Body is required' }],
+              },
+            },
+            'Recipient missing': {
+              value: {
+                type: 'error.list',
+                request_id: '8c1f3a52-6d0e-4f7b-9a41-2e5b7c9d0a11',
+                errors: [{ code: 'data_invalid', message: "Field 'to' is required" }],
+              },
+            },
+            'WhatsApp not enabled for workspace': {
+              value: {
+                type: 'error.list',
+                request_id: '4e1b7c92-3a5d-4f08-b6e2-9d7a0c3f5b18',
+                errors: [
+                  {
+                    code: 'parameter_invalid',
+                    message: 'This app is not allowed to send WhatsApp messages',
+                  },
+                ],
+              },
+            },
+            'WhatsApp template missing': {
+              value: {
+                type: 'error.list',
+                request_id: 'a7d3e5f1-2b64-4c9a-8e17-5f0b3d9c6a24',
+                errors: [
+                  {
+                    code: 'parameter_invalid',
+                    message: 'template is required for WhatsApp messages',
+                  },
+                ],
+              },
+            },
+            'WhatsApp components missing': {
+              value: {
+                type: 'error.list',
+                request_id: '6c2f9a8d-7e13-4b5c-a0d4-1e8b7f3c2d95',
+                errors: [
+                  {
+                    code: 'parameter_invalid',
+                    message: 'Components must be provided for WhatsApp messages',
+                  },
+                ],
+              },
+            },
+            'WhatsApp integration not found': {
+              value: {
+                type: 'error.list',
+                request_id: 'd9e4b1a6-5c37-4f2e-9b80-3a6d2c7e1f43',
+                errors: [
+                  {
+                    code: 'parameter_invalid',
+                    message: 'No WhatsApp integration found for this app',
+                  },
+                ],
+              },
+            },
+            'WhatsApp sender number invalid': {
+              value: {
+                type: 'error.list',
+                request_id: '2f8a6d3c-1b95-4e7a-8c42-7d0e5b9a3f61',
+                errors: [
+                  {
+                    code: 'parameter_invalid',
+                    message: 'Sender WhatsApp number format is invalid',
+                  },
+                ],
+              },
+            },
+            'WhatsApp sender number not registered': {
+              value: {
+                type: 'error.list',
+                request_id: 'b3c7e9f2-6a14-4d8b-9e05-2c1f8a4d7b36',
+                errors: [
+                  {
+                    code: 'parameter_invalid',
+                    message: 'Sender WhatsApp number is not registered in this workspace',
+                  },
+                ],
+              },
+            },
+            'WhatsApp template not found': {
+              value: {
+                type: 'error.list',
+                request_id: '5e0d2a7b-9c63-4f1e-a8b4-6d3c9e2f0a57',
+                errors: [
+                  { code: 'parameter_invalid', message: "template 'order_update' does not exist" },
+                ],
+              },
+            },
+            'WhatsApp recipient phone missing': {
+              value: {
+                type: 'error.list',
+                request_id: '8a4f1c6e-3d27-4b9a-b5e1-0f7c2a8d4e69',
+                errors: [
+                  {
+                    code: 'parameter_invalid',
+                    message: 'WhatsApp message payload must include phone.',
+                  },
+                ],
+              },
+            },
+            'WhatsApp recipient phone invalid': {
+              value: {
+                type: 'error.list',
+                request_id: 'c1e6a3d8-4f52-4a7b-9d03-8b5e1c7f2a94',
+                errors: [
+                  {
+                    code: 'parameter_invalid',
+                    message: 'Recipient does not have a valid phone number.',
+                  },
+                ],
+              },
+            },
+            'WhatsApp template not available in locale': {
+              value: {
+                type: 'error.list',
+                request_id: '7b9d2e4f-8a16-4c3e-b7a5-1d0f6c3e9b28',
+                errors: [
+                  {
+                    code: 'parameter_invalid',
+                    message:
+                      "template 'order_update' is not available in locale 'fr' (available: en, es)",
+                  },
+                ],
+              },
+            },
+            'WhatsApp template locale ambiguous': {
+              value: {
+                type: 'error.list',
+                request_id: 'e5a8c0b3-2d79-4f6a-8c14-9e3b7d1a5f02',
+                errors: [
+                  {
+                    code: 'parameter_invalid',
+                    message:
+                      "template 'order_update' exists in multiple regional variants (en_GB, en_US); pass an explicit locale",
+                  },
+                ],
+              },
+            },
+            'WhatsApp multiple recipients': {
+              value: {
+                type: 'error.list',
+                request_id: '3d6f8b1a-7e42-4c9d-a2b5-4f0e8c6d3a71',
+                errors: [
+                  {
+                    code: 'data_invalid',
+                    message: 'To field must not contains an array of recipients.',
+                  },
+                ],
+              },
+            },
+            'Too many recipients': {
+              value: {
+                type: 'error.list',
+                request_id: '1b7e9d34-5c28-4a6f-8e03-7d4a6b2c9f52',
+                errors: [
+                  {
+                    code: 'parameter_invalid',
+                    message: 'Max Number of recipients per request reached',
+                  },
+                ],
+              },
+            },
+            'Brand not found': {
+              value: {
+                type: 'error.list',
+                request_id: '5a2c8e71-3f94-4d0b-b6a8-0c9e1d7f3b64',
+                errors: [{ code: 'parameter_invalid', message: 'brand_id 1234 not found' }],
               },
             },
           },
@@ -53903,7 +56341,7 @@ export const postMessagesRoute = createRoute({
       },
     },
     403: {
-      description: 'API plan restricted',
+      description: 'Forbidden',
       content: {
         'application/json': {
           schema: ErrorSchema,
@@ -53915,12 +56353,65 @@ export const postMessagesRoute = createRoute({
                 errors: [{ code: 'api_plan_restricted', message: 'Active subscription needed.' }],
               },
             },
+            'Recipient unsubscribed from emails': {
+              value: {
+                type: 'error.list',
+                request_id: 'e4d6b0a8-2c71-4f35-9d8e-6a1b3c5f7e20',
+                errors: [
+                  {
+                    code: 'action_forbidden',
+                    message: 'One or more users are unsubscribed from emails',
+                  },
+                ],
+              },
+            },
+            'Recipient hard bounced': {
+              value: {
+                type: 'error.list',
+                request_id: '9f3a7c15-8b42-4e60-a1d9-5c7e2b4d6a83',
+                errors: [
+                  {
+                    code: 'action_forbidden',
+                    message: 'One or more users have hard bounced and cannot be messaged via email',
+                  },
+                ],
+              },
+            },
+            'WhatsApp recipient blocked': {
+              value: {
+                type: 'error.list',
+                request_id: '9c3e7a1f-5b28-4d6e-8f04-2a9d6c1b7e53',
+                errors: [
+                  {
+                    code: 'whatsapp_recipient_blocked',
+                    message: 'The recipient associated with this phone number has been blocked.',
+                  },
+                ],
+              },
+            },
+          },
+        },
+      },
+    },
+    404: {
+      description: 'Contact not found',
+      content: {
+        'application/json': {
+          schema: ErrorSchema,
+          examples: {
+            'Contact not found': {
+              value: {
+                type: 'error.list',
+                request_id: '7b0d4e92-6a53-4c18-9e2f-3a5c8d1b6f40',
+                errors: [{ code: 'not_found', message: 'User Not Found' }],
+              },
+            },
           },
         },
       },
     },
     422: {
-      description: 'No subject supplied for email message',
+      description: 'Unprocessable entity',
       content: {
         'application/json': {
           schema: ErrorSchema,
@@ -53931,6 +56422,64 @@ export const postMessagesRoute = createRoute({
                 request_id: '97db463e-7070-4ac9-9846-9a5d31933772',
                 errors: [
                   { code: 'parameter_not_found', message: 'No subject supplied for email message' },
+                ],
+              },
+            },
+            'Subject too long': {
+              value: {
+                type: 'error.list',
+                request_id: '3d8b5f90-7a16-4c2e-8f04-9b6d1e3a5c77',
+                errors: [
+                  {
+                    code: 'parameter_invalid',
+                    message: 'Subject length must be under 255 characters',
+                  },
+                ],
+              },
+            },
+            'Message too long': {
+              value: {
+                type: 'error.list',
+                request_id: 'c2e7a461-0d95-4b38-a7f6-4e8c0b2d9a15',
+                errors: [
+                  {
+                    code: 'parameter_invalid',
+                    message: 'Message is too long. Maximum length is 300000',
+                  },
+                ],
+              },
+            },
+          },
+        },
+      },
+    },
+    500: {
+      description: 'Server error',
+      content: {
+        'application/json': {
+          schema: ErrorSchema,
+          examples: {
+            'WhatsApp message not sent': {
+              value: {
+                type: 'error.list',
+                request_id: 'f2b8d4a6-1c73-4e9f-b0a5-7d3e9c2f6a18',
+                errors: [
+                  {
+                    code: 'server_error',
+                    message: 'Failed to send WhatsApp message: (#131026) Message undeliverable',
+                  },
+                ],
+              },
+            },
+            'WhatsApp conversation not created': {
+              value: {
+                type: 'error.list',
+                request_id: '6a1d9f3c-8e54-4b2a-9c07-3f5b1e8d4a26',
+                errors: [
+                  {
+                    code: 'server_error',
+                    message: 'Failed to create WhatsApp conversation - no conversation returned',
+                  },
                 ],
               },
             },
@@ -56158,6 +58707,14 @@ export const postPhoneCallRedirectsRoute = createRoute({
                 custom_attributes: { issue_type: 'Billing', priority: 'High' },
               },
             },
+            missing_phone_number: {
+              summary: 'Missing phone number',
+              value: { custom_attributes: { issue_type: 'Billing', priority: 'High' } },
+            },
+            invalid_custom_attributes: {
+              summary: 'Invalid custom attributes',
+              value: { phone: '+353832345678', custom_attributes: { issue_type: ['Billing'] } },
+            },
           },
         },
       },
@@ -56180,7 +58737,7 @@ export const postPhoneCallRedirectsRoute = createRoute({
         },
       },
     },
-    400: { description: 'Phone number lookup or SMS send failed', content: {} },
+    400: { description: 'The phone number lookup or the SMS send failed', content: {} },
     401: {
       description: 'Unauthorized',
       content: {
@@ -56207,7 +58764,11 @@ export const postPhoneCallRedirectsRoute = createRoute({
         },
       },
     },
-    422: { description: 'unprocessable entity', content: {} },
+    422: {
+      description:
+        'The request was invalid. The response is an object with a single `error_key`: `caller_phone` when `phone` is missing, `invalid_phone_number`, `landline_phone`, `twilio_settings` when the workspace has no Twilio account to send the SMS, or `context` when `custom_attributes` is invalid. Any other invalid input returns its own key, such as `send_notification` or `country`.',
+      content: {},
+    },
   },
 })
 
@@ -56501,13 +59062,10 @@ export const getCallsCallIdRecordingRoute = createRoute({
     302: {
       description: 'Redirect to signed recording URL',
       headers: z.object({
-        Location: {
-          description: 'The signed recording URL',
-          schema: z
-            .url()
-            .exactOptional()
-            .openapi({ description: 'The signed recording URL', param: { required: false } }),
-        },
+        Location: z
+          .url()
+          .exactOptional()
+          .openapi({ description: 'The signed recording URL', param: { required: false } }),
       }),
     },
     401: {
@@ -59007,7 +61565,21 @@ export const postTicketsTicketIdReplyRoute = createRoute({
     body: {
       content: {
         'application/json': {
-          schema: z.xor([ContactReplyTicketRequestSchema, AdminReplyTicketRequestSchema]),
+          schema: z
+            .xor([ContactReplyTicketRequestSchema, AdminReplyTicketRequestSchema])
+            .and(
+              z
+                .object({
+                  skip_notifications: z
+                    .boolean()
+                    .exactOptional()
+                    .openapi({
+                      description: 'Option to disable notifications when replying to a Ticket.',
+                      example: true,
+                    }),
+                })
+                .openapi({ required: [] }),
+            ),
           examples: {
             admin_reply: {
               summary: 'Admin reply',
@@ -61181,7 +63753,7 @@ export const postTicketsSearchRoute = createRoute({
   tags: ['Tickets'],
   summary: 'Search tickets',
   description:
-    'You can search for multiple tickets by the value of their attributes in order to fetch exactly which ones you want.\n\nTo search for tickets, you send a `POST` request to `https://api.intercom.io/tickets/search`.\n\nThis will accept a query object in the body which will define your filters.\n{% admonition type="warning" name="Optimizing search queries" %}\n  Search queries can be complex, so optimizing them can help the performance of your search.\n  Use the `AND` and `OR` operators to combine multiple filters to get the exact results you need and utilize\n  pagination to limit the number of results returned. The default is `20` results per page and maximum is `150`.\n  See the [pagination section](https://developers.intercom.com/docs/build-an-integration/learn-more/rest-apis/pagination/#example-search-conversations-request) for more details on how to use the `starting_after` param.\n{% /admonition %}\n\n### Nesting & Limitations\n\nYou can nest these filters in order to get even more granular insights that pinpoint exactly what you need. Example: (1 OR 2) AND (3 OR 4).\nThere are some limitations to the amount of multiples there can be:\n- There\'s a limit of max 2 nested filters\n- There\'s a limit of max 15 filters for each AND or OR group\n\n### Accepted Fields\n\nMost keys listed as part of the Ticket model are searchable, whether writeable or not. The value you search for has to match the accepted type, otherwise the query will fail (ie. as `created_at` accepts a date, the `value` cannot be a string such as `"foobar"`).\nFields not in the table below, such as `source.body`, are rejected with a `400` error.\n\n| Field                                     | Type                                                                                     |\n| :---------------------------------------- | :--------------------------------------------------------------------------------------- |\n| id                                        | Integer                                                                                  |\n| created_at                                | Date (UNIX timestamp)                                                                    |\n| updated_at                                | Date (UNIX timestamp)                                                                    |\n| title                           | String                                                                                   |\n| description                     | String                                                                                   |\n| category                                  | String                                                                                   |\n| ticket_type_id                            | Integer                                                                                  |\n| contact_ids                               | String                                                                                   |\n| admin_assignee_id                         | Integer                                                                                  |\n| team_assignee_id                          | Integer                                                                                  |\n| open                                      | Boolean                                                                                  |\n| state                                     | String                                                                                   |\n| snoozed_until                             | Date (UNIX timestamp)                                                                    |\n| ticket_attribute.{id}                     | String or Boolean or Date (UNIX timestamp) or Float or Integer                           |\n\n{% admonition type="info" name="Searching by Category" %}\nWhen searching for tickets by the **`category`** field, specific terms must be used instead of the category names:\n* For **Customer** category tickets, use the term `request`.\n* For **Back-office** category tickets, use the term `task`.\n* For **Tracker** category tickets, use the term `tracker`.\n{% /admonition %}\n\n### Sorting\n\nYou can sort the results with a `sort` object, for example `{"field": "created_at", "order": "ascending"}`. `field` must be one of the fields in the table above, other than `ticket_attribute.{id}`, `title` and `description`. `order` is `ascending` or `descending`, and any other value is treated as `descending`. Without `sort`, results are sorted by `updated_at`, newest first.\n\n### Accepted Operators\n\n{% admonition type="info" name="Searching based on `created_at`" %}\n  You may use the `<=` or `>=` operators to search by `created_at`.\n{% /admonition %}\n\nThe table below shows the operators you can use to define how you want to search for the value.  The operator should be put in as a string (`"="`). The operator has to be compatible with the field\'s type  (eg. you cannot search with `>` for a given string value as it\'s only compatible for integer\'s and dates).\n\n| Operator | Valid Types                    | Description                                                  |\n| :------- | :----------------------------- | :----------------------------------------------------------- |\n| =        | All                            | Equals                                                       |\n| !=       | All                            | Doesn\'t Equal                                                |\n| IN       | All                            | In  Shortcut for `OR` queries  Values most be in Array       |\n| NIN      | All                            | Not In  Shortcut for `OR !` queries  Values must be in Array |\n| >        | Integer  Date (UNIX Timestamp) | Greater (or equal) than                                      |\n| <       | Integer  Date (UNIX Timestamp) | Lower (or equal) than                                        |\n| ~        | String                         | Contains                                                     |\n| !~       | String                         | Doesn\'t Contain                                              |\n| ^        | String                         | Starts With                                                  |\n| $        | String                         | Ends With                                                    |\n',
+    'You can search for multiple tickets by the value of their attributes in order to fetch exactly which ones you want.\n\nTo search for tickets, you send a `POST` request to `https://api.intercom.io/tickets/search`.\n\nThis will accept a query object in the body which will define your filters.\n{% admonition type="warning" name="Optimizing search queries" %}\n  Search queries can be complex, so optimizing them can help the performance of your search.\n  Use the `AND` and `OR` operators to combine multiple filters to get the exact results you need and utilize\n  pagination to limit the number of results returned. The default is `20` results per page and maximum is `150`.\n  See the [pagination section](https://developers.intercom.com/docs/build-an-integration/learn-more/rest-apis/pagination/#example-search-conversations-request) for more details on how to use the `starting_after` param.\n{% /admonition %}\n\n### Nesting & Limitations\n\nYou can nest these filters in order to get even more granular insights that pinpoint exactly what you need. Example: (1 OR 2) AND (3 OR 4).\nThere are some limitations to the amount of multiples there can be:\n- There\'s a limit of max 2 nested filters\n- There\'s a limit of max 15 filters for each AND or OR group\n\n### Accepted Fields\n\nMost keys listed as part of the Ticket model are searchable, whether writeable or not. The value you search for has to match the accepted type, otherwise the query will fail (ie. as `created_at` accepts a date, the `value` cannot be a string such as `"foobar"`).\nFields not in the table below, such as `source.body`, are rejected with a `400` error.\n\n| Field                                     | Type                                                                                     |\n| :---------------------------------------- | :--------------------------------------------------------------------------------------- |\n| id                                        | Integer                                                                                  |\n| created_at                                | Date (UNIX timestamp)                                                                    |\n| updated_at                                | Date (UNIX timestamp)                                                                    |\n| title                           | String                                                                                   |\n| description                     | String                                                                                   |\n| category                                  | String                                                                                   |\n| ticket_type_id                            | Integer                                                                                  |\n| contact_ids                               | String                                                                                   |\n| admin_assignee_id                         | Integer                                                                                  |\n| team_assignee_id                          | Integer                                                                                  |\n| open                                      | Boolean                                                                                  |\n| state                                     | String                                                                                   |\n| snoozed_until                             | Date (UNIX timestamp)                                                                    |\n| ticket_attribute.{id}                     | String or Boolean or Date (UNIX timestamp) or Float or Integer                           |\n\n{% admonition type="info" name="Searching by Category" %}\nWhen searching for tickets by the **`category`** field, specific terms must be used instead of the category names:\n* For **Customer** category tickets, use the term `request`.\n* For **Back-office** category tickets, use the term `task`.\n* For **Tracker** category tickets, use the term `tracker`.\n{% /admonition %}\n\n### Sorting\n\nYou can sort the results with a `sort` object, for example `{"field": "created_at", "order": "ascending"}`. `field` must be one of the fields in the table above, other than `ticket_attribute.{id}`, `title` and `description`. `order` is `ascending` or `descending`. Without `sort`, results are sorted by `updated_at`, newest first.\n\n### Accepted Operators\n\n{% admonition type="info" name="Searching based on `created_at`" %}\n  You may use the `<=` or `>=` operators to search by `created_at`.\n{% /admonition %}\n\nThe table below shows the operators you can use to define how you want to search for the value.  The operator should be put in as a string (`"="`). The operator has to be compatible with the field\'s type  (eg. you cannot search with `>` for a given string value as it\'s only compatible for integer\'s and dates).\n\n| Operator | Valid Types                    | Description                                                  |\n| :------- | :----------------------------- | :----------------------------------------------------------- |\n| =        | All                            | Equals                                                       |\n| !=       | All                            | Doesn\'t Equal                                                |\n| IN       | All                            | In  Shortcut for `OR` queries  Values most be in Array       |\n| NIN      | All                            | Not In  Shortcut for `OR !` queries  Values must be in Array |\n| >        | Integer  Date (UNIX Timestamp) | Greater (or equal) than                                      |\n| <       | Integer  Date (UNIX Timestamp) | Lower (or equal) than                                        |\n| ~        | String                         | Contains                                                     |\n| !~       | String                         | Doesn\'t Contain                                              |\n| ^        | String                         | Starts With                                                  |\n| $        | String                         | Ends With                                                    |\n',
   operationId: 'searchTickets',
   request: {
     headers: z.object({

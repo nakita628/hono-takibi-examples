@@ -240,7 +240,7 @@ const InviteuserSchema = z
 const GetWebhookSchema = z
   .object({
     auth: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'Authentication header to be send with the webhook requests',
@@ -276,7 +276,7 @@ const GetWebhookSchema = z
     headers: z
       .array(
         z
-          .object({})
+          .looseObject({})
           .openapi({
             description: 'Headers send with the requests to the webhook',
             example: { key: 'cf-secret', value: 'test-header-value' },
@@ -359,7 +359,7 @@ const ConsentGroupItemSchema = z
 const GetContactDetailsSchema = z
   .object({
     attributes: z
-      .object({})
+      .looseObject({})
       .openapi({
         description: 'Set of attributes of the contact',
         example: { email: 'joe@example.com', name: 'Joe' },
@@ -524,7 +524,7 @@ const ContactErrorModelSchema = z
         example: 'email is already associated with another Contact',
       }),
     metadata: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'Additional information about the error',
@@ -1585,7 +1585,10 @@ const ConversationsMessageSchema = z
         description: 'Message ID. It can be used for further manipulations with the message.',
         example: 'eYBEm3gq3zc5ayE2g',
       }),
-    integrations: z.object({}).exactOptional().openapi({ description: 'Integration details.' }),
+    integrations: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({ description: 'Integration details.' }),
     isBot: z
       .boolean()
       .exactOptional()
@@ -1688,7 +1691,7 @@ const ConversationsMessageSchema = z
       .exactOptional()
       .openapi({ description: '‘`true` if the message is a forwarded message.’' }),
     source: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Source information for the message.' }),
     visitorId: z
@@ -2099,7 +2102,7 @@ const GetProductDetailsSchema = z
         example: true,
       }),
     metaInfo: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -3925,7 +3928,7 @@ const VariablesItemsSchema = z
 const CompanySchema = z
   .object({
     attributes: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'Company attributes with values',
@@ -3974,7 +3977,7 @@ const DealSchema = z
       .exactOptional()
       .openapi({ description: 'Unique deal id', example: '629475917295261d9b1f4403' }),
     attributes: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'Deal attributes with values',
@@ -4113,7 +4116,7 @@ const NoteSchema = z
         example: ['61a5ce58c5d4795761045990', '61a5ce58c5d4795761045991'],
       }),
     authorId: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'Account details of user which created the note',
@@ -6331,7 +6334,7 @@ export const postCorporateSubAccountIpAssociateRoute = createRoute({
     201: {
       description: 'IP has been associated with sub-accounts successfully',
       content: {
-        'application/json': { schema: z.object({}), examples: { response: { value: [] } } },
+        'application/json': { schema: z.looseObject({}), examples: { response: { value: [] } } },
       },
     },
     400: {
@@ -12064,7 +12067,7 @@ export const postObjectsObjectTypeBatchUpsertRoute = createRoute({
                               'List of associations for the object record. Maximum 20 total entries allowed, with a maximum of 10 link actions and 10 unlink actions. Each entry specifies an object_type and an action (link or unlink). Unlink is idempotent — removing a non-existing association does not return an error. Both associated records must already exist before creating a link.\n',
                           }),
                         attributes: z
-                          .object({})
+                          .looseObject({})
                           .exactOptional()
                           .openapi({
                             description:
@@ -12467,7 +12470,7 @@ export const getObjectsObjectTypeRecordsRoute = createRoute({
                             'List of associations for the object record. If association query param is true it will return 5 associated records per association.',
                         }),
                       attributes: z
-                        .object({})
+                        .looseObject({})
                         .exactOptional()
                         .openapi({
                           description:
@@ -12800,7 +12803,7 @@ export const getObjectsObjectTypeAssociatedRecordsRoute = createRoute({
                       object: z
                         .object({
                           attributes: z
-                            .object({})
+                            .looseObject({})
                             .exactOptional()
                             .openapi({
                               description:
@@ -14702,7 +14705,7 @@ export const postContactsImportRoute = createRoute({
   request: {
     body: {
       description:
-        'Values to import contacts in Brevo. To know more about the expected format, please have a look at ``https://help.brevo.com/hc/en-us/articles/209499265-Build-contacts-lists-for-your-email-marketing-campaigns``',
+        'Values to import contacts in Brevo. To know more about the expected format, please have a look at ``https://help.brevo.com/hc/en-us/articles/209499265-Build-contacts-lists-for-your-email-marketing-campaigns``\n\n<Note>Contacts with a matching `EXT_ID` are updated as usual. If the `EXT_ID` in your file or `jsonBody` is new and the email belongs to a contact with no `EXT_ID`, that contact is replaced by a new one with a new contact ID, and its email history is lost. Its blocklist status can also be reset. To keep history, identify contacts by email or contact ID.</Note>',
       content: {
         'application/json': {
           schema: z
@@ -16760,7 +16763,7 @@ export const getContactsIdentifierRoute = createRoute({
                         description: 'Listing of the soft bounces generated by the contact',
                       }),
                     transacAttributes: z
-                      .array(z.object({}))
+                      .array(z.looseObject({}))
                       .exactOptional()
                       .openapi({
                         description: 'Listing of the transactional attributes for the contact',
@@ -21129,7 +21132,13 @@ export const postEventsRoute = createRoute({
               event_properties: z
                 .record(
                   z.string(),
-                  z.union([z.string(), z.number(), z.boolean(), z.object({}), z.array(z.any())]),
+                  z.union([
+                    z.string(),
+                    z.number(),
+                    z.boolean(),
+                    z.looseObject({}),
+                    z.array(z.any()),
+                  ]),
                 )
                 .exactOptional()
                 .openapi({
@@ -21290,7 +21299,7 @@ export const postEventsBatchRoute = createRoute({
                     event_properties: z
                       .record(
                         z.string(),
-                        z.union([z.string(), z.int(), z.object({}), z.array(z.any())]),
+                        z.union([z.string(), z.int(), z.looseObject({}), z.array(z.any())]),
                       )
                       .exactOptional()
                       .openapi({
@@ -21756,27 +21765,18 @@ export const getInboundAttachmentsDownloadTokenRoute = createRoute({
         },
       },
       headers: z.object({
-        'Content-Disposition': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example: 'attachment; filename="download.png"',
-            }),
-        },
-        'Content-Length': {
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 4032 }),
-        },
-        'Content-Type': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'image/png' }),
-        },
+        'Content-Disposition': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'attachment; filename="download.png"' }),
+        'Content-Length': z
+          .int()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 4032 }),
+        'Content-Type': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'image/png' }),
       }),
     },
     400: ErrorModelResponse,
@@ -24431,7 +24431,7 @@ export const putLoyaltyConfigProgramsPidRoute = createRoute({
                 .exactOptional()
                 .openapi({ description: 'Loyalty Program description' }),
               meta: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({ description: 'Loyalty Program meta data' }),
               name: z.string().openapi({ description: 'Loyalty Program name' }),
@@ -24553,7 +24553,7 @@ export const patchLoyaltyConfigProgramsPidRoute = createRoute({
                 .exactOptional()
                 .openapi({ description: 'Loyalty Program description' }),
               meta: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({ description: 'Loyalty Program meta data' }),
               name: z.string().exactOptional().openapi({ description: 'Loyalty Program name' }),
@@ -32796,7 +32796,7 @@ export const postCompaniesRoute = createRoute({
           schema: z
             .object({
               attributes: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description: 'Attributes for company creation',
@@ -32903,7 +32903,7 @@ export const postCompaniesImportRoute = createRoute({
                   example: false,
                 }),
               mapping: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
@@ -33126,7 +33126,7 @@ export const patchCompaniesIdRoute = createRoute({
           schema: z
             .object({
               attributes: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description: 'Attributes for company update',
@@ -33744,7 +33744,7 @@ export const postCrmDealsRoute = createRoute({
           schema: z
             .object({
               attributes: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
@@ -33830,7 +33830,7 @@ export const postCrmDealsImportRoute = createRoute({
                   example: false,
                 }),
               mapping: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
@@ -34043,7 +34043,7 @@ export const patchCrmDealsIdRoute = createRoute({
           schema: z
             .object({
               attributes: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
@@ -35339,7 +35339,7 @@ export const postWhatsappSendMessageRoute = createRoute({
                   )
                   .openapi({ description: 'List of phone numbers of the contacts' }),
                 params: z
-                  .object({})
+                  .looseObject({})
                   .exactOptional()
                   .openapi({
                     description:

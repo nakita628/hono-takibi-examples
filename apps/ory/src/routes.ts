@@ -37,6 +37,104 @@ const AdminIdentityImportCredentialsLookupSecretSchema = z
   .openapi({ description: 'Create Identity and Import Lookup Secret Credentials', required: [] })
   .openapi('AdminIdentityImportCredentialsLookupSecret')
 
+const NullUUIDSchema = z.string().nullable().openapi('NullUUID')
+
+const IdentityWithCredentialsOidcConfigProviderSchema = z
+  .object({
+    organization: NullUUIDSchema.exactOptional(),
+    provider: z
+      .string()
+      .openapi({
+        description:
+          'The OpenID Connect provider to link the subject to. Usually something like `google` or `github`.',
+      }),
+    subject: z
+      .string()
+      .openapi({
+        description:
+          'The subject (`sub`) of the OpenID Connect connection. Usually the `sub` field of the ID Token.',
+      }),
+    use_auto_link: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'If set, this credential allows the user to sign in using the OpenID Connect provider without setting the subject first.',
+      }),
+  })
+  .openapi({
+    description: 'Create Identity and Import Social Sign In Credentials Configuration',
+    required: ['subject', 'provider'],
+  })
+  .openapi('IdentityWithCredentialsOidcConfigProvider')
+
+const IdentityWithCredentialsOidcConfigSchema = z
+  .object({
+    providers: z
+      .array(IdentityWithCredentialsOidcConfigProviderSchema)
+      .exactOptional()
+      .openapi({ description: 'A list of OpenID Connect Providers' }),
+  })
+  .openapi({ required: [] })
+  .openapi('IdentityWithCredentialsOidcConfig')
+
+const IdentityWithCredentialsOidcSchema = z
+  .object({ config: IdentityWithCredentialsOidcConfigSchema.exactOptional() })
+  .openapi({ description: 'Create Identity and Import Social Sign In Credentials', required: [] })
+  .openapi('IdentityWithCredentialsOidc')
+
+const IdentityCredentialsWebAuthnAttestationSchema = z
+  .object({
+    authenticator_data: z.array(z.int()).exactOptional(),
+    client_dataJSON: z.array(z.int()).exactOptional(),
+    client_data_hash: z.array(z.int()).exactOptional(),
+    object: z.array(z.int()).exactOptional(),
+    public_key_algorithm: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+  })
+  .openapi({
+    title:
+      'CredentialWebAuthnAttestation contains information about attestation of a webauthn credential.',
+    required: [],
+  })
+  .openapi('IdentityCredentialsWebAuthnAttestation')
+
+const IdentityCredentialsWebAuthnAuthenticatorSchema = z
+  .object({
+    aaguid: z.array(z.int()).exactOptional(),
+    clone_warning: z.boolean().exactOptional(),
+    sign_count: z.uint32().exactOptional(),
+  })
+  .openapi({
+    title:
+      'AuthenticatorWebAuthn contains information about the authenticator of a webauthn credential.',
+    required: [],
+  })
+  .openapi('IdentityCredentialsWebAuthnAuthenticator')
+
+const IdentityCredentialsWebAuthnFlagsSchema = z
+  .object({
+    backup_eligible: z.boolean().exactOptional(),
+    backup_state: z.boolean().exactOptional(),
+    user_present: z.boolean().exactOptional(),
+    user_verified: z.boolean().exactOptional(),
+  })
+  .openapi({
+    title: 'CredentialWebAuthnFlags contains information about the flags of a webauthn credential.',
+    required: [],
+  })
+  .openapi('IdentityCredentialsWebAuthnFlags')
+
 const AuthenticatorTransportSchema = z
   .string()
   .openapi({
@@ -45,6 +143,333 @@ const AuthenticatorTransportSchema = z
     title: 'AuthenticatorTransport represents the IDL enum with the same name.',
   })
   .openapi('AuthenticatorTransport')
+
+const IdentityCredentialsWebAuthnSchema = z
+  .object({
+    added_at: z.iso.datetime({ offset: true }).exactOptional(),
+    attestation: IdentityCredentialsWebAuthnAttestationSchema.exactOptional(),
+    attestation_type: z.string().exactOptional(),
+    authenticator: IdentityCredentialsWebAuthnAuthenticatorSchema.exactOptional(),
+    display_name: z.string().exactOptional(),
+    flags: IdentityCredentialsWebAuthnFlagsSchema.exactOptional(),
+    id: z.array(z.int()).exactOptional(),
+    is_passwordless: z.boolean().exactOptional(),
+    public_key: z.array(z.int()).exactOptional(),
+    transport: z.array(AuthenticatorTransportSchema).exactOptional(),
+  })
+  .openapi({
+    title: 'CredentialWebAuthn contains information about a webauthn credential.',
+    required: [],
+  })
+  .openapi('IdentityCredentialsWebAuthn')
+
+const IdentityCredentialsWebAuthnListSchema = z
+  .array(IdentityCredentialsWebAuthnSchema)
+  .openapi('IdentityCredentialsWebAuthnList')
+
+const IdentityWithCredentialsPasskeyConfigSchema = z
+  .object({
+    credentials: IdentityCredentialsWebAuthnListSchema.exactOptional(),
+    user_handle: z
+      .array(z.int())
+      .exactOptional()
+      .openapi({ description: 'UserHandle is the user handle of the webauthn credential.' }),
+  })
+  .openapi({
+    description: 'Create Identity and Import Passkey Credentials Configuration',
+    required: [],
+  })
+  .openapi('IdentityWithCredentialsPasskeyConfig')
+
+const IdentityWithCredentialsPasskeySchema = z
+  .object({ config: IdentityWithCredentialsPasskeyConfigSchema.exactOptional() })
+  .openapi({ description: 'Create Identity and Import Passkey Credentials', required: [] })
+  .openapi('IdentityWithCredentialsPasskey')
+
+const IdentityWithCredentialsPasswordConfigSchema = z
+  .object({
+    hashed_password: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The hashed password in [PHC format](https://www.ory.com/docs/kratos/manage-identities/import-user-accounts-identities#hashed-passwords)',
+      }),
+    password: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The password in plain text if no hash is available.' }),
+    use_password_migration_hook: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'If set to true, the password will be migrated using the password migration hook.',
+      }),
+  })
+  .openapi({
+    description: 'Create Identity and Import Password Credentials Configuration',
+    required: [],
+  })
+  .openapi('IdentityWithCredentialsPasswordConfig')
+
+const IdentityWithCredentialsPasswordSchema = z
+  .object({ config: IdentityWithCredentialsPasswordConfigSchema.exactOptional() })
+  .openapi({ description: 'Create Identity and Import Password Credentials', required: [] })
+  .openapi('IdentityWithCredentialsPassword')
+
+const IdentityWithCredentialsSamlConfigProviderSchema = z
+  .object({
+    organization: NullUUIDSchema.exactOptional(),
+    provider: z.string().openapi({ description: 'The SAML provider to link the subject to.' }),
+    subject: z
+      .string()
+      .openapi({
+        description:
+          'The unique subject of the SAML connection. This value must be immutable at the source.',
+      }),
+  })
+  .openapi({ description: 'Payload of specific SAML provider', required: ['subject', 'provider'] })
+  .openapi('IdentityWithCredentialsSamlConfigProvider')
+
+const IdentityWithCredentialsSamlConfigSchema = z
+  .object({
+    providers: z
+      .array(IdentityWithCredentialsSamlConfigProviderSchema)
+      .exactOptional()
+      .openapi({ description: 'A list of SAML Providers' }),
+  })
+  .openapi({ description: 'Payload of SAML providers', required: [] })
+  .openapi('IdentityWithCredentialsSamlConfig')
+
+const IdentityWithCredentialsSamlSchema = z
+  .object({ config: IdentityWithCredentialsSamlConfigSchema.exactOptional() })
+  .openapi({ description: 'Payload to import SAML credentials', required: [] })
+  .openapi('IdentityWithCredentialsSaml')
+
+const IdentityWithCredentialsTotpConfigSchema = z
+  .object({
+    totp_url: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'TOTPURL is the TOTP URL\n\nFor more details see: https://github.com/google/google-authenticator/wiki/Key-Uri-Format',
+      }),
+  })
+  .openapi({
+    description: 'Create Identity and Import TOTP 2FA Credentials Configuration',
+    required: [],
+  })
+  .openapi('IdentityWithCredentialsTotpConfig')
+
+const IdentityWithCredentialsTotpSchema = z
+  .object({ config: IdentityWithCredentialsTotpConfigSchema.exactOptional() })
+  .openapi({ description: 'Create Identity and Import TOTP 2FA Credentials', required: [] })
+  .openapi('IdentityWithCredentialsTotp')
+
+const IdentityWithCredentialsWebAuthnConfigSchema = z
+  .object({
+    credentials: IdentityCredentialsWebAuthnListSchema.exactOptional(),
+    user_handle: z
+      .array(z.int())
+      .exactOptional()
+      .openapi({ description: 'UserHandle is the user handle of the webauthn credential.' }),
+  })
+  .openapi({
+    description: 'Create Identity and Import WebAuthn Credentials Configuration',
+    required: [],
+  })
+  .openapi('IdentityWithCredentialsWebAuthnConfig')
+
+const IdentityWithCredentialsWebAuthnSchema = z
+  .object({ config: IdentityWithCredentialsWebAuthnConfigSchema.exactOptional() })
+  .openapi({ description: 'Create Identity and Import WebAuthn Credentials', required: [] })
+  .openapi('IdentityWithCredentialsWebAuthn')
+
+const IdentityWithCredentialsSchema = z
+  .object({
+    lookup_secret: AdminIdentityImportCredentialsLookupSecretSchema.exactOptional(),
+    oidc: IdentityWithCredentialsOidcSchema.exactOptional(),
+    passkey: IdentityWithCredentialsPasskeySchema.exactOptional(),
+    password: IdentityWithCredentialsPasswordSchema.exactOptional(),
+    saml: IdentityWithCredentialsSamlSchema.exactOptional(),
+    totp: IdentityWithCredentialsTotpSchema.exactOptional(),
+    webauthn: IdentityWithCredentialsWebAuthnSchema.exactOptional(),
+  })
+  .openapi({ description: 'Create Identity and Import Credentials', required: [] })
+  .openapi('IdentityWithCredentials')
+
+const RecoveryIdentityAddressSchema = z
+  .object({
+    break_glass_for_organization: NullUUIDSchema.exactOptional(),
+    created_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'CreatedAt is a helper struct field for gobuffalo.pop.' }),
+    id: z.uuid().exactOptional(),
+    updated_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'UpdatedAt is a helper struct field for gobuffalo.pop.' }),
+    value: z.string(),
+    via: z.string(),
+  })
+  .openapi({ required: ['value', 'via'] })
+  .openapi('RecoveryIdentityAddress')
+
+const IdentityVerifiableAddressStatusSchema = z
+  .string()
+  .openapi({
+    description:
+      'VerifiableAddressStatus must not exceed 16 characters as that is the limitation in the SQL Schema',
+  })
+  .openapi('IdentityVerifiableAddressStatus')
+
+const VerifiableIdentityAddressSchema = z
+  .object({
+    created_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'When this entry was created', example: '2014-01-01T23:28:56.782Z' }),
+    id: z.uuid().exactOptional().openapi({ description: 'The ID' }),
+    status: IdentityVerifiableAddressStatusSchema,
+    updated_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'When this entry was last updated',
+        example: '2014-01-01T23:28:56.782Z',
+      }),
+    value: z.string().openapi({ description: 'The address value\n\nexample foo@user.com' }),
+    verified: z
+      .boolean()
+      .openapi({
+        description: 'Indicates if the address has already been verified',
+        example: true,
+      }),
+    verified_at: NullTime2Schema.exactOptional(),
+    via: z.enum(['email', 'sms']).openapi({ description: 'The delivery method', example: 'email' }),
+  })
+  .openapi({
+    description: "VerifiableAddress is an identity's verifiable address",
+    required: ['value', 'verified', 'via', 'status'],
+  })
+  .openapi('VerifiableIdentityAddress')
+
+type CreateIdentityBodyType = {
+  credentials?: z.infer<typeof IdentityWithCredentialsSchema>
+  external_id?: string
+  metadata_admin?: unknown
+  metadata_public?: unknown
+  organization_id?: z.infer<typeof NullUUIDSchema>
+  recovery_addresses?: z.infer<typeof RecoveryIdentityAddressSchema>[]
+  region?: 'eu-central' | 'asia-northeast' | 'us-east' | 'us-west' | 'eu' | 'asia' | 'us' | 'global'
+  schema_id: string
+  state?: 'active' | 'inactive'
+  traits: { [key: string]: unknown }
+  verifiable_addresses?: z.infer<typeof VerifiableIdentityAddressSchema>[]
+}
+
+const CreateIdentityBodySchema: z.ZodType<CreateIdentityBodyType> = z
+  .object({
+    credentials: IdentityWithCredentialsSchema.exactOptional(),
+    external_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'ExternalID is an optional external ID of the identity. This is used to link\nthe identity to an external system. If set, the external ID must be unique\nacross all identities.',
+      }),
+    metadata_admin: z
+      .any()
+      .exactOptional()
+      .openapi({
+        description:
+          'Store metadata about the user which is only accessible through admin APIs such as `GET /admin/identities/<id>`.',
+      }),
+    metadata_public: z
+      .any()
+      .exactOptional()
+      .openapi({
+        description:
+          'Store metadata about the identity which the identity itself can see when calling for example the\nsession endpoint. Do not store sensitive information (e.g. credit score) about the identity in this field.',
+      }),
+    organization_id: NullUUIDSchema.exactOptional(),
+    recovery_addresses: z
+      .array(RecoveryIdentityAddressSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'RecoveryAddresses contains all the addresses that can be used to recover an identity.\n\nUse this structure to import recovery addresses for an identity. Please keep in mind\nthat the address needs to be represented in the Identity Schema or this field will be overwritten\non the next identity update.',
+      }),
+    region: z
+      .enum(['eu-central', 'asia-northeast', 'us-east', 'us-west', 'eu', 'asia', 'us', 'global'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Region is the Ory Network region this identity will be created in.\nOptional; defaults to the project home region if omitted. Only effective\non the Ory Network.\neu-central EUCentral\nasia-northeast AsiaNorthEast\nus-east USEast\nus-west USWest\neu EU\nasia Asia\nus US\nglobal Global',
+        'x-go-enum-desc':
+          'eu-central EUCentral\nasia-northeast AsiaNorthEast\nus-east USEast\nus-west USWest\neu EU\nasia Asia\nus US\nglobal Global',
+      }),
+    schema_id: z
+      .string()
+      .openapi({
+        description:
+          "SchemaID is the ID of the JSON Schema to be used for validating the identity's traits.",
+      }),
+    state: z
+      .enum(['active', 'inactive'])
+      .exactOptional()
+      .openapi({
+        description: "State is the identity's state.\nactive StateActive\ninactive StateInactive",
+        'x-go-enum-desc': 'active StateActive\ninactive StateInactive',
+      }),
+    traits: z
+      .looseObject({})
+      .openapi({
+        description:
+          "Traits represent an identity's traits. The identity is able to create, modify, and delete traits\nin a self-service manner. The input will always be validated against the JSON Schema defined\nin `schema_url`.",
+      }),
+    verifiable_addresses: z
+      .array(VerifiableIdentityAddressSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'VerifiableAddresses contains all the addresses that can be verified by the user.\n\nUse this structure to import verified addresses for an identity. Please keep in mind\nthat the address needs to be represented in the Identity Schema or this field will be overwritten\non the next identity update.',
+      }),
+  })
+  .openapi({ description: 'Create Identity Body', required: ['schema_id', 'traits'] })
+  .openapi('CreateIdentityBody')
+
+type IdentityPatchType = { create?: z.infer<typeof CreateIdentityBodySchema>; patch_id?: string }
+
+const IdentityPatchSchema: z.ZodType<IdentityPatchType> = z
+  .object({
+    create: CreateIdentityBodySchema.exactOptional(),
+    patch_id: z
+      .uuid()
+      .exactOptional()
+      .openapi({
+        description:
+          'The ID of this patch.\n\nThe patch ID is optional. If specified, the ID will be returned in the\nresponse, so consumers of this API can correlate the response with the\npatch.',
+      }),
+  })
+  .openapi({ description: 'Payload for patching an identity', required: [] })
+  .openapi('IdentityPatch')
+
+type PatchIdentitiesBodyType = { identities?: z.infer<typeof IdentityPatchSchema>[] }
+
+type UpdateIdentityBodyType = {
+  credentials?: z.infer<typeof IdentityWithCredentialsSchema>
+  external_id?: string
+  metadata_admin?: unknown
+  metadata_public?: unknown
+  region?: 'eu-central' | 'asia-northeast' | 'us-east' | 'us-west' | 'eu' | 'asia' | 'us' | 'global'
+  schema_id: string
+  state: 'active' | 'inactive'
+  traits: { [key: string]: unknown }
+}
 
 const CodeChannelSchema = z.string().openapi('CodeChannel')
 
@@ -560,7 +985,7 @@ const IDSchema = z
   .openapi('ID')
 
 const JSONRawMessageSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title:
       'JSONRawMessage represents a json.RawMessage that works well with JSON, SQL, and Swagger.',
@@ -574,8 +999,6 @@ const NullIntSchema = z.int().nullable().openapi('NullInt')
 const NullStringSchema = z.string().nullable().openapi('NullString')
 
 const NullTimeSchema = z.iso.datetime({ offset: true }).nullable().openapi('NullTime')
-
-const NullUUIDSchema = z.string().nullable().openapi('NullUUID')
 
 const OAuth2ClientSchema = z
   .object({
@@ -913,7 +1336,7 @@ const OAuth2ConsentRequestOpenIDConnectContextSchema = z
   })
   .openapi('OAuth2ConsentRequestOpenIDConnectContext')
 
-const OAuth2LoginChallengeParamsSchema = z.object({}).openapi('OAuth2LoginChallengeParams')
+const OAuth2LoginChallengeParamsSchema = z.looseObject({}).openapi('OAuth2LoginChallengeParams')
 
 const OAuth2LoginRequestSchema = z
   .object({
@@ -1027,7 +1450,7 @@ const UpdateFedcmFlowBodySchema = z
       .string()
       .openapi({ description: 'Token contains the result of `navigator.credentials.get`.' }),
     transient_payload: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Transient data to pass along to any webhooks.' }),
   })
@@ -1278,6 +1701,7 @@ const ContinueWithSchema = z
   ])
   .openapi({
     discriminator: {
+      propertyName: 'action',
       mapping: {
         redirect_browser_to: '#/components/schemas/continueWithRedirectBrowserTo',
         set_ory_session_token: '#/components/schemas/continueWithSetOrySessionToken',
@@ -1286,7 +1710,6 @@ const ContinueWithSchema = z
         show_settings_ui: '#/components/schemas/continueWithSettingsUi',
         show_verification_ui: '#/components/schemas/continueWithVerificationUi',
       },
-      propertyName: 'action',
     },
   })
   .openapi('ContinueWith')
@@ -1312,386 +1735,6 @@ const CreateFedcmFlowResponseSchema = z
     required: [],
   })
   .openapi('CreateFedcmFlowResponse')
-
-const IdentityWithCredentialsOidcConfigProviderSchema = z
-  .object({
-    organization: NullUUIDSchema.exactOptional(),
-    provider: z
-      .string()
-      .openapi({
-        description:
-          'The OpenID Connect provider to link the subject to. Usually something like `google` or `github`.',
-      }),
-    subject: z
-      .string()
-      .openapi({
-        description:
-          'The subject (`sub`) of the OpenID Connect connection. Usually the `sub` field of the ID Token.',
-      }),
-    use_auto_link: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'If set, this credential allows the user to sign in using the OpenID Connect provider without setting the subject first.',
-      }),
-  })
-  .openapi({
-    description: 'Create Identity and Import Social Sign In Credentials Configuration',
-    required: ['subject', 'provider'],
-  })
-  .openapi('IdentityWithCredentialsOidcConfigProvider')
-
-const IdentityWithCredentialsOidcConfigSchema = z
-  .object({
-    providers: z
-      .array(IdentityWithCredentialsOidcConfigProviderSchema)
-      .exactOptional()
-      .openapi({ description: 'A list of OpenID Connect Providers' }),
-  })
-  .openapi({ required: [] })
-  .openapi('IdentityWithCredentialsOidcConfig')
-
-const IdentityWithCredentialsOidcSchema = z
-  .object({ config: IdentityWithCredentialsOidcConfigSchema.exactOptional() })
-  .openapi({ description: 'Create Identity and Import Social Sign In Credentials', required: [] })
-  .openapi('IdentityWithCredentialsOidc')
-
-const IdentityCredentialsWebAuthnAttestationSchema = z
-  .object({
-    authenticator_data: z.array(z.int()).exactOptional(),
-    client_dataJSON: z.array(z.int()).exactOptional(),
-    client_data_hash: z.array(z.int()).exactOptional(),
-    object: z.array(z.int()).exactOptional(),
-    public_key_algorithm: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-  })
-  .openapi({
-    title:
-      'CredentialWebAuthnAttestation contains information about attestation of a webauthn credential.',
-    required: [],
-  })
-  .openapi('IdentityCredentialsWebAuthnAttestation')
-
-const IdentityCredentialsWebAuthnAuthenticatorSchema = z
-  .object({
-    aaguid: z.array(z.int()).exactOptional(),
-    clone_warning: z.boolean().exactOptional(),
-    sign_count: z.uint32().exactOptional(),
-  })
-  .openapi({
-    title:
-      'AuthenticatorWebAuthn contains information about the authenticator of a webauthn credential.',
-    required: [],
-  })
-  .openapi('IdentityCredentialsWebAuthnAuthenticator')
-
-const IdentityCredentialsWebAuthnFlagsSchema = z
-  .object({
-    backup_eligible: z.boolean().exactOptional(),
-    backup_state: z.boolean().exactOptional(),
-    user_present: z.boolean().exactOptional(),
-    user_verified: z.boolean().exactOptional(),
-  })
-  .openapi({
-    title: 'CredentialWebAuthnFlags contains information about the flags of a webauthn credential.',
-    required: [],
-  })
-  .openapi('IdentityCredentialsWebAuthnFlags')
-
-const IdentityCredentialsWebAuthnSchema = z
-  .object({
-    added_at: z.iso.datetime({ offset: true }).exactOptional(),
-    attestation: IdentityCredentialsWebAuthnAttestationSchema.exactOptional(),
-    attestation_type: z.string().exactOptional(),
-    authenticator: IdentityCredentialsWebAuthnAuthenticatorSchema.exactOptional(),
-    display_name: z.string().exactOptional(),
-    flags: IdentityCredentialsWebAuthnFlagsSchema.exactOptional(),
-    id: z.array(z.int()).exactOptional(),
-    is_passwordless: z.boolean().exactOptional(),
-    public_key: z.array(z.int()).exactOptional(),
-    transport: z.array(AuthenticatorTransportSchema).exactOptional(),
-  })
-  .openapi({
-    title: 'CredentialWebAuthn contains information about a webauthn credential.',
-    required: [],
-  })
-  .openapi('IdentityCredentialsWebAuthn')
-
-const IdentityCredentialsWebAuthnListSchema = z
-  .array(IdentityCredentialsWebAuthnSchema)
-  .openapi('IdentityCredentialsWebAuthnList')
-
-const IdentityWithCredentialsPasskeyConfigSchema = z
-  .object({
-    credentials: IdentityCredentialsWebAuthnListSchema.exactOptional(),
-    user_handle: z
-      .array(z.int())
-      .exactOptional()
-      .openapi({ description: 'UserHandle is the user handle of the webauthn credential.' }),
-  })
-  .openapi({
-    description: 'Create Identity and Import Passkey Credentials Configuration',
-    required: [],
-  })
-  .openapi('IdentityWithCredentialsPasskeyConfig')
-
-const IdentityWithCredentialsPasskeySchema = z
-  .object({ config: IdentityWithCredentialsPasskeyConfigSchema.exactOptional() })
-  .openapi({ description: 'Create Identity and Import Passkey Credentials', required: [] })
-  .openapi('IdentityWithCredentialsPasskey')
-
-const IdentityWithCredentialsPasswordConfigSchema = z
-  .object({
-    hashed_password: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The hashed password in [PHC format](https://www.ory.com/docs/kratos/manage-identities/import-user-accounts-identities#hashed-passwords)',
-      }),
-    password: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The password in plain text if no hash is available.' }),
-    use_password_migration_hook: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'If set to true, the password will be migrated using the password migration hook.',
-      }),
-  })
-  .openapi({
-    description: 'Create Identity and Import Password Credentials Configuration',
-    required: [],
-  })
-  .openapi('IdentityWithCredentialsPasswordConfig')
-
-const IdentityWithCredentialsPasswordSchema = z
-  .object({ config: IdentityWithCredentialsPasswordConfigSchema.exactOptional() })
-  .openapi({ description: 'Create Identity and Import Password Credentials', required: [] })
-  .openapi('IdentityWithCredentialsPassword')
-
-const IdentityWithCredentialsSamlConfigProviderSchema = z
-  .object({
-    organization: NullUUIDSchema.exactOptional(),
-    provider: z.string().openapi({ description: 'The SAML provider to link the subject to.' }),
-    subject: z
-      .string()
-      .openapi({
-        description:
-          'The unique subject of the SAML connection. This value must be immutable at the source.',
-      }),
-  })
-  .openapi({ description: 'Payload of specific SAML provider', required: ['subject', 'provider'] })
-  .openapi('IdentityWithCredentialsSamlConfigProvider')
-
-const IdentityWithCredentialsSamlConfigSchema = z
-  .object({
-    providers: z
-      .array(IdentityWithCredentialsSamlConfigProviderSchema)
-      .exactOptional()
-      .openapi({ description: 'A list of SAML Providers' }),
-  })
-  .openapi({ description: 'Payload of SAML providers', required: [] })
-  .openapi('IdentityWithCredentialsSamlConfig')
-
-const IdentityWithCredentialsSamlSchema = z
-  .object({ config: IdentityWithCredentialsSamlConfigSchema.exactOptional() })
-  .openapi({ description: 'Payload to import SAML credentials', required: [] })
-  .openapi('IdentityWithCredentialsSaml')
-
-const IdentityWithCredentialsTotpConfigSchema = z
-  .object({
-    totp_url: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'TOTPURL is the TOTP URL\n\nFor more details see: https://github.com/google/google-authenticator/wiki/Key-Uri-Format',
-      }),
-  })
-  .openapi({
-    description: 'Create Identity and Import TOTP 2FA Credentials Configuration',
-    required: [],
-  })
-  .openapi('IdentityWithCredentialsTotpConfig')
-
-const IdentityWithCredentialsTotpSchema = z
-  .object({ config: IdentityWithCredentialsTotpConfigSchema.exactOptional() })
-  .openapi({ description: 'Create Identity and Import TOTP 2FA Credentials', required: [] })
-  .openapi('IdentityWithCredentialsTotp')
-
-const IdentityWithCredentialsWebAuthnConfigSchema = z
-  .object({
-    credentials: IdentityCredentialsWebAuthnListSchema.exactOptional(),
-    user_handle: z
-      .array(z.int())
-      .exactOptional()
-      .openapi({ description: 'UserHandle is the user handle of the webauthn credential.' }),
-  })
-  .openapi({
-    description: 'Create Identity and Import WebAuthn Credentials Configuration',
-    required: [],
-  })
-  .openapi('IdentityWithCredentialsWebAuthnConfig')
-
-const IdentityWithCredentialsWebAuthnSchema = z
-  .object({ config: IdentityWithCredentialsWebAuthnConfigSchema.exactOptional() })
-  .openapi({ description: 'Create Identity and Import WebAuthn Credentials', required: [] })
-  .openapi('IdentityWithCredentialsWebAuthn')
-
-const IdentityWithCredentialsSchema = z
-  .object({
-    lookup_secret: AdminIdentityImportCredentialsLookupSecretSchema.exactOptional(),
-    oidc: IdentityWithCredentialsOidcSchema.exactOptional(),
-    passkey: IdentityWithCredentialsPasskeySchema.exactOptional(),
-    password: IdentityWithCredentialsPasswordSchema.exactOptional(),
-    saml: IdentityWithCredentialsSamlSchema.exactOptional(),
-    totp: IdentityWithCredentialsTotpSchema.exactOptional(),
-    webauthn: IdentityWithCredentialsWebAuthnSchema.exactOptional(),
-  })
-  .openapi({ description: 'Create Identity and Import Credentials', required: [] })
-  .openapi('IdentityWithCredentials')
-
-const RecoveryIdentityAddressSchema = z
-  .object({
-    break_glass_for_organization: NullUUIDSchema.exactOptional(),
-    created_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'CreatedAt is a helper struct field for gobuffalo.pop.' }),
-    id: z.uuid().exactOptional(),
-    updated_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'UpdatedAt is a helper struct field for gobuffalo.pop.' }),
-    value: z.string(),
-    via: z.string(),
-  })
-  .openapi({ required: ['value', 'via'] })
-  .openapi('RecoveryIdentityAddress')
-
-const IdentityVerifiableAddressStatusSchema = z
-  .string()
-  .openapi({
-    description:
-      'VerifiableAddressStatus must not exceed 16 characters as that is the limitation in the SQL Schema',
-  })
-  .openapi('IdentityVerifiableAddressStatus')
-
-const VerifiableIdentityAddressSchema = z
-  .object({
-    created_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'When this entry was created', example: '2014-01-01T23:28:56.782Z' }),
-    id: z.uuid().exactOptional().openapi({ description: 'The ID' }),
-    status: IdentityVerifiableAddressStatusSchema,
-    updated_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'When this entry was last updated',
-        example: '2014-01-01T23:28:56.782Z',
-      }),
-    value: z.string().openapi({ description: 'The address value\n\nexample foo@user.com' }),
-    verified: z
-      .boolean()
-      .openapi({
-        description: 'Indicates if the address has already been verified',
-        example: true,
-      }),
-    verified_at: NullTime2Schema.exactOptional(),
-    via: z.enum(['email', 'sms']).openapi({ description: 'The delivery method', example: 'email' }),
-  })
-  .openapi({
-    description: "VerifiableAddress is an identity's verifiable address",
-    required: ['value', 'verified', 'via', 'status'],
-  })
-  .openapi('VerifiableIdentityAddress')
-
-const CreateIdentityBodySchema = z
-  .object({
-    credentials: IdentityWithCredentialsSchema.exactOptional(),
-    external_id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'ExternalID is an optional external ID of the identity. This is used to link\nthe identity to an external system. If set, the external ID must be unique\nacross all identities.',
-      }),
-    metadata_admin: z
-      .any()
-      .exactOptional()
-      .openapi({
-        description:
-          'Store metadata about the user which is only accessible through admin APIs such as `GET /admin/identities/<id>`.',
-      }),
-    metadata_public: z
-      .any()
-      .exactOptional()
-      .openapi({
-        description:
-          'Store metadata about the identity which the identity itself can see when calling for example the\nsession endpoint. Do not store sensitive information (e.g. credit score) about the identity in this field.',
-      }),
-    organization_id: NullUUIDSchema.exactOptional(),
-    recovery_addresses: z
-      .array(RecoveryIdentityAddressSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'RecoveryAddresses contains all the addresses that can be used to recover an identity.\n\nUse this structure to import recovery addresses for an identity. Please keep in mind\nthat the address needs to be represented in the Identity Schema or this field will be overwritten\non the next identity update.',
-      }),
-    region: z
-      .enum(['eu-central', 'asia-northeast', 'us-east', 'us-west', 'eu', 'asia', 'us', 'global'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Region is the Ory Network region this identity will be created in.\nOptional; defaults to the project home region if omitted. Only effective\non the Ory Network.\neu-central EUCentral\nasia-northeast AsiaNorthEast\nus-east USEast\nus-west USWest\neu EU\nasia Asia\nus US\nglobal Global',
-        'x-go-enum-desc':
-          'eu-central EUCentral\nasia-northeast AsiaNorthEast\nus-east USEast\nus-west USWest\neu EU\nasia Asia\nus US\nglobal Global',
-      }),
-    schema_id: z
-      .string()
-      .openapi({
-        description:
-          "SchemaID is the ID of the JSON Schema to be used for validating the identity's traits.",
-      }),
-    state: z
-      .enum(['active', 'inactive'])
-      .exactOptional()
-      .openapi({
-        description: "State is the identity's state.\nactive StateActive\ninactive StateInactive",
-        'x-go-enum-desc': 'active StateActive\ninactive StateInactive',
-      }),
-    traits: z
-      .object({})
-      .openapi({
-        description:
-          "Traits represent an identity's traits. The identity is able to create, modify, and delete traits\nin a self-service manner. The input will always be validated against the JSON Schema defined\nin `schema_url`.",
-      }),
-    verifiable_addresses: z
-      .array(VerifiableIdentityAddressSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'VerifiableAddresses contains all the addresses that can be verified by the user.\n\nUse this structure to import verified addresses for an identity. Please keep in mind\nthat the address needs to be represented in the Identity Schema or this field will be overwritten\non the next identity update.',
-      }),
-  })
-  .openapi({ description: 'Create Identity Body', required: ['schema_id', 'traits'] })
-  .openapi('CreateIdentityBody')
 
 const SelfServiceFlowTypeSchema = z
   .string()
@@ -1899,7 +1942,7 @@ const FlowErrorSchema = z
       .datetime({ offset: true })
       .exactOptional()
       .openapi({ description: 'CreatedAt is a helper struct field for gobuffalo.pop.' }),
-    error: z.object({}).exactOptional(),
+    error: z.looseObject({}).exactOptional(),
     id: z.uuid().openapi({ description: 'ID of the error container.' }),
     updated_at: z.iso
       .datetime({ offset: true })
@@ -2158,29 +2201,15 @@ const IdentityCredentialsPasswordSchema = z
   })
   .openapi('IdentityCredentialsPassword')
 
-const IdentityPatchSchema = z
-  .object({
-    create: CreateIdentityBodySchema.exactOptional(),
-    patch_id: z
-      .uuid()
-      .exactOptional()
-      .openapi({
-        description:
-          'The ID of this patch.\n\nThe patch ID is optional. If specified, the ID will be returned in the\nresponse, so consumers of this API can correlate the response with the\npatch.',
-      }),
-  })
-  .openapi({ description: 'Payload for patching an identity', required: [] })
-  .openapi('IdentityPatch')
-
 const IdentitySchemaSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Raw JSON Schema' })
   .openapi('IdentitySchema')
 
 const IdentitySchemaContainerSchema = z
   .object({
     id: z.string().openapi({ description: 'The ID of the Identity JSON Schema' }),
-    schema: z.object({}).openapi({ description: 'The actual Identity JSON Schema' }),
+    schema: z.looseObject({}).openapi({ description: 'The actual Identity JSON Schema' }),
   })
   .openapi({ description: 'An Identity JSON Schema Container', required: ['id', 'schema'] })
   .openapi('IdentitySchemaContainer')
@@ -2337,7 +2366,7 @@ const LoginFlowTestContextSchema = z
 const UiTextSchema = z
   .object({
     context: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: "The message's context. Useful when customizing messages." }),
     id: IDSchema,
@@ -2668,6 +2697,7 @@ const UiNodeAttributesSchema = z
   ])
   .openapi({
     discriminator: {
+      propertyName: 'node_type',
       mapping: {
         a: '#/components/schemas/uiNodeAnchorAttributes',
         div: '#/components/schemas/uiNodeDivisionAttributes',
@@ -2676,7 +2706,6 @@ const UiNodeAttributesSchema = z
         script: '#/components/schemas/uiNodeScriptAttributes',
         text: '#/components/schemas/uiNodeTextAttributes',
       },
-      propertyName: 'node_type',
     },
     title: 'Attributes represents a list of attributes (e.g. `href="foo"` for links).',
   })
@@ -2850,7 +2879,7 @@ const LoginFlowSchema = z
       }),
     test_context: LoginFlowTestContextSchema.exactOptional(),
     transient_payload: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -3075,7 +3104,7 @@ const NeedsPrivilegedSessionErrorSchema = z
 
 const NullInt64Schema = z.int().nullable().openapi('NullInt64')
 
-const PatchIdentitiesBodySchema = z
+const PatchIdentitiesBodySchema: z.ZodType<PatchIdentitiesBodyType> = z
   .object({
     identities: z
       .array(IdentityPatchSchema)
@@ -3165,7 +3194,7 @@ const RecoveryFlowSchema = z
           'State represents the state of this request:\n\nchoose_method: ask the user to choose a method (e.g. recover account via email)\nsent_email: the email has been sent to the user\npassed_challenge: the request was successful and the recovery challenge was passed.',
       }),
     transient_payload: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -3290,7 +3319,7 @@ const RegistrationFlowSchema = z
           'State represents the state of this request:\n\nchoose_method: ask the user to choose a method (e.g. registration with email)\nsent_email: the email has been sent to the user\npassed_challenge: the request was successful and the registration challenge was passed.',
       }),
     transient_payload: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'TransientPayload is used to pass data from the registration to a webhook',
@@ -3503,7 +3532,7 @@ const SettingsFlowSchema = z
           'State represents the state of this flow. It knows two states:\n\nshow_form: No user data has been collected, or it is invalid, and thus the form should be shown.\nsuccess: Indicates that the settings flow has been updated successfully with the provided data.\nDone will stay true when repeatedly checking. If set to true, done will revert back to false only\nwhen a flow with invalid (e.g. "please use a valid phone number") data was sent.',
       }),
     transient_payload: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -3639,7 +3668,7 @@ const TokenPaginationHeadersSchema = z
 
 const UnexpectedErrorSchema = z.string().openapi('UnexpectedError')
 
-const UpdateIdentityBodySchema = z
+const UpdateIdentityBodySchema: z.ZodType<UpdateIdentityBodyType> = z
   .object({
     credentials: IdentityWithCredentialsSchema.exactOptional(),
     external_id: z
@@ -3685,7 +3714,7 @@ const UpdateIdentityBodySchema = z
         'x-go-enum-desc': 'active StateActive\ninactive StateInactive',
       }),
     traits: z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           "Traits represent an identity's traits. The identity is able to create, modify, and delete traits\nin a self-service manner. The input will always be validated against the JSON Schema defined\nin `schema_id`.",
@@ -3722,7 +3751,7 @@ const UpdateLoginFlowWithPasswordMethodSchema = z
           'Identifier is the email or username of the user trying to log in.\nThis field is deprecated!',
       }),
     transient_payload: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Transient data to pass along to any webhooks' }),
   })
@@ -3757,17 +3786,17 @@ const UpdateLoginFlowWithOidcMethodSchema = z
       }),
     provider: z.string().openapi({ description: 'The provider to register with' }),
     traits: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'The identity traits. This is a placeholder for the registration flow.',
       }),
     transient_payload: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Transient data to pass along to any webhooks' }),
     upstream_parameters: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -3791,7 +3820,7 @@ const UpdateLoginFlowWithSamlMethodSchema = z
       }),
     provider: z.string().openapi({ description: 'The provider to register with' }),
     transient_payload: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Transient data to pass along to any webhooks' }),
   })
@@ -3813,7 +3842,7 @@ const UpdateLoginFlowWithTotpMethodSchema = z
       }),
     totp_code: z.string().openapi({ description: 'The TOTP code.' }),
     transient_payload: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Transient data to pass along to any webhooks' }),
   })
@@ -3840,7 +3869,7 @@ const UpdateLoginFlowWithWebAuthnMethodSchema = z
           'Method should be set to "webAuthn" when logging in using the WebAuthn strategy.',
       }),
     transient_payload: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Transient data to pass along to any webhooks' }),
     webauthn_login: z
@@ -3910,7 +3939,7 @@ const UpdateLoginFlowWithCodeMethodSchema = z
       .exactOptional()
       .openapi({ description: 'Resend is set when the user wants to resend the code' }),
     transient_payload: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Transient data to pass along to any webhooks' }),
   })
@@ -3965,7 +3994,7 @@ const UpdateLoginFlowWithIdentifierFirstMethodSchema = z
           'Method should be set to "password" when logging in using the identifier and password strategy.',
       }),
     transient_payload: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Transient data to pass along to any webhooks' }),
   })
@@ -3989,6 +4018,7 @@ const UpdateLoginFlowBodySchema = z
   ])
   .openapi({
     discriminator: {
+      propertyName: 'method',
       mapping: {
         code: '#/components/schemas/updateLoginFlowWithCodeMethod',
         identifier_first: '#/components/schemas/updateLoginFlowWithIdentifierFirstMethod',
@@ -4000,7 +4030,6 @@ const UpdateLoginFlowBodySchema = z
         totp: '#/components/schemas/updateLoginFlowWithTotpMethod',
         webauthn: '#/components/schemas/updateLoginFlowWithWebAuthnMethod',
       },
-      propertyName: 'method',
     },
   })
   .openapi('UpdateLoginFlowBody')
@@ -4027,7 +4056,7 @@ const UpdateRecoveryFlowWithLinkMethodSchema = z
         'x-go-enum-desc': 'link RecoveryStrategyLink\ncode RecoveryStrategyCode',
       }),
     transient_payload: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Transient data to pass along to any webhooks' }),
   })
@@ -4091,7 +4120,7 @@ const UpdateRecoveryFlowWithCodeMethodSchema = z
         description: 'Set to "previous" to go back in the flow, meaningfully.\nUsed in RecoveryV2.',
       }),
     transient_payload: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Transient data to pass along to any webhooks' }),
   })
@@ -4103,11 +4132,11 @@ const UpdateRecoveryFlowBodySchema = z
   .openapi({
     description: 'Update Recovery Flow Request Body',
     discriminator: {
+      propertyName: 'method',
       mapping: {
         code: '#/components/schemas/updateRecoveryFlowWithCodeMethod',
         link: '#/components/schemas/updateRecoveryFlowWithLinkMethod',
       },
-      propertyName: 'method',
     },
   })
   .openapi('UpdateRecoveryFlowBody')
@@ -4122,9 +4151,9 @@ const UpdateRegistrationFlowWithPasswordMethodSchema = z
           'Method to use\n\nThis field must be set to `password` when using the password method.',
       }),
     password: z.string().openapi({ description: 'Password to sign the user up with' }),
-    traits: z.object({}).openapi({ description: "The identity's traits" }),
+    traits: z.looseObject({}).openapi({ description: "The identity's traits" }),
     transient_payload: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Transient data to pass along to any webhooks' }),
   })
@@ -4158,13 +4187,13 @@ const UpdateRegistrationFlowWithOidcMethodSchema = z
           'Method to use\n\nThis field must be set to `oidc` when using the oidc method.',
       }),
     provider: z.string().openapi({ description: 'The provider to register with' }),
-    traits: z.object({}).exactOptional().openapi({ description: 'The identity traits' }),
+    traits: z.looseObject({}).exactOptional().openapi({ description: 'The identity traits' }),
     transient_payload: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Transient data to pass along to any webhooks' }),
     upstream_parameters: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -4187,9 +4216,9 @@ const UpdateRegistrationFlowWithSamlMethodSchema = z
           'Method to use\n\nThis field must be set to `saml` when using the saml method.',
       }),
     provider: z.string().openapi({ description: 'The provider to register with' }),
-    traits: z.object({}).exactOptional().openapi({ description: 'The identity traits' }),
+    traits: z.looseObject({}).exactOptional().openapi({ description: 'The identity traits' }),
     transient_payload: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Transient data to pass along to any webhooks' }),
   })
@@ -4208,9 +4237,9 @@ const UpdateRegistrationFlowWithWebAuthnMethodSchema = z
         description:
           'Method\n\nShould be set to "webauthn" when trying to add, update, or remove a webAuthn pairing.',
       }),
-    traits: z.object({}).openapi({ description: "The identity's traits" }),
+    traits: z.looseObject({}).openapi({ description: "The identity's traits" }),
     transient_payload: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Transient data to pass along to any webhooks' }),
     webauthn_register: z
@@ -4248,9 +4277,9 @@ const UpdateRegistrationFlowWithCodeMethodSchema = z
       .string()
       .exactOptional()
       .openapi({ description: 'Resend restarts the flow with a new code' }),
-    traits: z.object({}).openapi({ description: "The identity's traits" }),
+    traits: z.looseObject({}).openapi({ description: "The identity's traits" }),
     transient_payload: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Transient data to pass along to any webhooks' }),
   })
@@ -4279,9 +4308,9 @@ const UpdateRegistrationFlowWithPasskeyMethodSchema = z
         description:
           'Register a WebAuthn Security Key\n\nIt is expected that the JSON returned by the WebAuthn registration process\nis included here.',
       }),
-    traits: z.object({}).openapi({ description: "The identity's traits" }),
+    traits: z.looseObject({}).openapi({ description: "The identity's traits" }),
     transient_payload: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Transient data to pass along to any webhooks' }),
   })
@@ -4314,9 +4343,9 @@ const UpdateRegistrationFlowWithProfileMethodSchema = z
         'x-go-enum-desc':
           'credential-selection RegistrationScreenCredentialSelection nolint:gosec // not a credential\nprevious RegistrationScreenPrevious',
       }),
-    traits: z.object({}).openapi({ description: "Traits\n\nThe identity's traits." }),
+    traits: z.looseObject({}).openapi({ description: "Traits\n\nThe identity's traits." }),
     transient_payload: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Transient data to pass along to any webhooks' }),
   })
@@ -4339,6 +4368,7 @@ const UpdateRegistrationFlowBodySchema = z
   .openapi({
     description: 'Update Registration Request Body',
     discriminator: {
+      propertyName: 'method',
       mapping: {
         code: '#/components/schemas/updateRegistrationFlowWithCodeMethod',
         oidc: '#/components/schemas/updateRegistrationFlowWithOidcMethod',
@@ -4348,7 +4378,6 @@ const UpdateRegistrationFlowBodySchema = z
         saml: '#/components/schemas/updateRegistrationFlowWithSamlMethod',
         webauthn: '#/components/schemas/updateRegistrationFlowWithWebAuthnMethod',
       },
-      propertyName: 'method',
     },
   })
   .openapi('UpdateRegistrationFlowBody')
@@ -4366,7 +4395,7 @@ const UpdateSettingsFlowWithPasswordMethodSchema = z
       }),
     password: z.string().openapi({ description: 'Password is the updated password' }),
     transient_payload: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Transient data to pass along to any webhooks' }),
   })
@@ -4390,9 +4419,9 @@ const UpdateSettingsFlowWithProfileMethodSchema = z
       .openapi({
         description: 'Method\n\nShould be set to profile when trying to update a profile.',
       }),
-    traits: z.object({}).openapi({ description: "Traits\n\nThe identity's traits." }),
+    traits: z.looseObject({}).openapi({ description: "Traits\n\nThe identity's traits." }),
     transient_payload: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Transient data to pass along to any webhooks' }),
   })
@@ -4421,11 +4450,11 @@ const UpdateSettingsFlowWithOidcMethodSchema = z
         description: 'Method\n\nShould be set to profile when trying to update a profile.',
       }),
     traits: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: "The identity's traits\n\nin: body" }),
     transient_payload: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Transient data to pass along to any webhooks' }),
     unlink: z
@@ -4436,7 +4465,7 @@ const UpdateSettingsFlowWithOidcMethodSchema = z
           'Unlink this provider\n\nEither this or `link` must be set.\n\ntype: string\nin: body',
       }),
     upstream_parameters: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -4464,11 +4493,11 @@ const UpdateSettingsFlowWithSamlMethodSchema = z
       .string()
       .openapi({ description: 'Method\n\nShould be set to saml when trying to update a profile.' }),
     traits: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: "The identity's traits\n\nin: body" }),
     transient_payload: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Transient data to pass along to any webhooks' }),
     unlink: z
@@ -4506,7 +4535,7 @@ const UpdateSettingsFlowWithTotpMethodSchema = z
           'UnlinkTOTP if true will remove the TOTP pairing,\neffectively removing the credential. This can be used\nto set up a new TOTP device.',
       }),
     transient_payload: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Transient data to pass along to any webhooks' }),
   })
@@ -4526,7 +4555,7 @@ const UpdateSettingsFlowWithWebAuthnMethodSchema = z
           'Method\n\nShould be set to "webauthn" when trying to add, update, or remove a webAuthn pairing.',
       }),
     transient_payload: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Transient data to pass along to any webhooks' }),
     webauthn_register: z
@@ -4583,7 +4612,7 @@ const UpdateSettingsFlowWithLookupMethodSchema = z
           'Method\n\nShould be set to "lookup" when trying to add, update, or remove a lookup pairing.',
       }),
     transient_payload: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Transient data to pass along to any webhooks' }),
   })
@@ -4634,6 +4663,7 @@ const UpdateSettingsFlowBodySchema = z
   .openapi({
     description: 'Update Settings Flow Request Body',
     discriminator: {
+      propertyName: 'method',
       mapping: {
         lookup_secret: '#/components/schemas/updateSettingsFlowWithLookupMethod',
         oidc: '#/components/schemas/updateSettingsFlowWithOidcMethod',
@@ -4644,7 +4674,6 @@ const UpdateSettingsFlowBodySchema = z
         totp: '#/components/schemas/updateSettingsFlowWithTotpMethod',
         webauthn: '#/components/schemas/updateSettingsFlowWithWebAuthnMethod',
       },
-      propertyName: 'method',
     },
   })
   .openapi('UpdateSettingsFlowBody')
@@ -4671,7 +4700,7 @@ const UpdateVerificationFlowWithLinkMethodSchema = z
         'x-go-enum-desc': 'link VerificationStrategyLink\ncode VerificationStrategyCode',
       }),
     transient_payload: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Transient data to pass along to any webhooks' }),
   })
@@ -4711,7 +4740,7 @@ const UpdateVerificationFlowWithCodeMethodSchema = z
         'x-go-enum-desc': 'link VerificationStrategyLink\ncode VerificationStrategyCode',
       }),
     transient_payload: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Transient data to pass along to any webhooks' }),
   })
@@ -4723,11 +4752,11 @@ const UpdateVerificationFlowBodySchema = z
   .openapi({
     description: 'Update Verification Flow Request Body',
     discriminator: {
+      propertyName: 'method',
       mapping: {
         code: '#/components/schemas/updateVerificationFlowWithCodeMethod',
         link: '#/components/schemas/updateVerificationFlowWithLinkMethod',
       },
-      propertyName: 'method',
     },
   })
   .openapi('UpdateVerificationFlowBody')
@@ -4776,7 +4805,7 @@ const VerificationFlowSchema = z
           'State represents the state of this request:\n\nchoose_method: ask the user to choose a method (e.g. verify your email)\nsent_email: the email has been sent to the user\npassed_challenge: the request was successful and the verification challenge was passed.',
       }),
     transient_payload: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -7696,7 +7725,7 @@ export const postSelfServiceSettingsRoute = createRoute({
                         'UnlinkTOTP if true will remove the TOTP pairing,\neffectively removing the credential. This can be used\nto set up a new TOTP device.',
                     }),
                   transient_payload: z
-                    .object({})
+                    .looseObject({})
                     .exactOptional()
                     .openapi({ description: 'Transient data to pass along to any webhooks' }),
                 })
@@ -7760,7 +7789,7 @@ export const postSelfServiceSettingsRoute = createRoute({
                         'Method\n\nShould be set to "lookup" when trying to add, update, or remove a lookup pairing.',
                     }),
                   transient_payload: z
-                    .object({})
+                    .looseObject({})
                     .exactOptional()
                     .openapi({ description: 'Transient data to pass along to any webhooks' }),
                 })
@@ -7773,6 +7802,7 @@ export const postSelfServiceSettingsRoute = createRoute({
             .openapi({
               description: 'Update Settings Flow Request Body',
               discriminator: {
+                propertyName: 'method',
                 mapping: {
                   lookup_secret: '#/components/schemas/updateSettingsFlowWithLookupMethod',
                   oidc: '#/components/schemas/updateSettingsFlowWithOidcMethod',
@@ -7783,7 +7813,6 @@ export const postSelfServiceSettingsRoute = createRoute({
                   totp: '#/components/schemas/updateSettingsFlowWithTotpMethod',
                   webauthn: '#/components/schemas/updateSettingsFlowWithWebAuthnMethod',
                 },
-                propertyName: 'method',
               },
             }),
         },

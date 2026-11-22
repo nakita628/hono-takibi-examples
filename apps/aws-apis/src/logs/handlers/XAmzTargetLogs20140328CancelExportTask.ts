@@ -1,0 +1,9 @@
+import { OpenAPIHono } from '@hono/zod-openapi'
+import { postXAmzTargetLogs20140328CancelExportTaskRoute } from '../routes'
+
+const app = new OpenAPIHono()
+
+export const XAmzTargetLogs20140328CancelExportTaskHandler = app.openapi(
+  postXAmzTargetLogs20140328CancelExportTaskRoute,
+  (c) => {},
+)

@@ -49,7 +49,7 @@ export const getUserContentByDateJsonRoute = createRoute({
                           lft: z.int().exactOptional(),
                           parentID: z.any().nullable().exactOptional(),
                           recommendationCount: z.int().exactOptional(),
-                          replies: z.array(z.object({})).exactOptional(),
+                          replies: z.array(z.looseObject({})).exactOptional(),
                           replyCount: z.int().exactOptional(),
                           rgt: z.int().exactOptional(),
                           status: z.string().exactOptional(),
@@ -155,7 +155,7 @@ export const getUserContentRecentJsonRoute = createRoute({
                                     .object({
                                       description: z.string().exactOptional(),
                                       name: z.string().exactOptional(),
-                                      properties: z.array(z.object({})).exactOptional(),
+                                      properties: z.array(z.looseObject({})).exactOptional(),
                                     })
                                     .openapi({ required: [] }),
                                 )
@@ -164,7 +164,7 @@ export const getUserContentRecentJsonRoute = createRoute({
                               assetTitle: z.string().exactOptional(),
                               assetURL: z.string().exactOptional(),
                               createDate: z.string().exactOptional(),
-                              labels: z.array(z.object({})).exactOptional(),
+                              labels: z.array(z.looseObject({})).exactOptional(),
                               properties: z
                                 .object({
                                   'automoderation-on': z
@@ -193,7 +193,7 @@ export const getUserContentRecentJsonRoute = createRoute({
                                 .openapi({ required: [] }),
                               source: z.string().exactOptional(),
                               taxonomy: z.string().exactOptional(),
-                              text: z.array(z.object({})).exactOptional(),
+                              text: z.array(z.looseObject({})).exactOptional(),
                               updateDate: z.string().exactOptional(),
                               vendorID: z.string().exactOptional(),
                             })
@@ -211,7 +211,7 @@ export const getUserContentRecentJsonRoute = createRoute({
                           location: z.string().exactOptional(),
                           parentID: z.any().nullable().exactOptional(),
                           recommendationCount: z.int().exactOptional(),
-                          replies: z.array(z.object({})).exactOptional(),
+                          replies: z.array(z.looseObject({})).exactOptional(),
                           status: z.string().exactOptional(),
                           statusID: z.int().exactOptional(),
                           updateDate: z.string().exactOptional(),
@@ -512,7 +512,7 @@ export const getUserContentUserJsonRoute = createRoute({
                                     .object({
                                       description: z.string().exactOptional(),
                                       name: z.string().exactOptional(),
-                                      properties: z.array(z.object({})).exactOptional(),
+                                      properties: z.array(z.looseObject({})).exactOptional(),
                                     })
                                     .openapi({ required: [] }),
                                 )
@@ -559,7 +559,7 @@ export const getUserContentUserJsonRoute = createRoute({
                                 .openapi({ required: [] }),
                               source: z.string().exactOptional(),
                               taxonomy: z.string().exactOptional(),
-                              text: z.array(z.object({})).exactOptional(),
+                              text: z.array(z.looseObject({})).exactOptional(),
                               updateDate: z.string().exactOptional(),
                               vendorID: z.string().exactOptional(),
                             })
@@ -572,12 +572,12 @@ export const getUserContentUserJsonRoute = createRoute({
                           commentType: z.string().exactOptional(),
                           createDate: z.string().exactOptional(),
                           editorsSelection: z.boolean().exactOptional(),
-                          labels: z.array(z.object({})).exactOptional(),
+                          labels: z.array(z.looseObject({})).exactOptional(),
                           parentID: z.any().nullable().exactOptional(),
                           permid: z.int().exactOptional(),
                           picURL: z.string().exactOptional(),
                           recommendations: z.int().exactOptional(),
-                          replies: z.array(z.object({})).exactOptional(),
+                          replies: z.array(z.looseObject({})).exactOptional(),
                           replyCount: z.int().exactOptional(),
                           status: z.string().exactOptional(),
                           updateDate: z.string().exactOptional(),

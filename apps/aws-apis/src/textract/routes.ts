@@ -4,12 +4,224 @@ const UIntegerSchema = z.int().min(0).openapi('UInteger')
 
 const DocumentMetadataSchema = z
   .object({
-    Pages: UIntegerSchema.and(
-      z.any().openapi({ description: 'The number of pages that are detected in the document.' }),
-    ).exactOptional(),
+    Pages: UIntegerSchema.exactOptional().openapi({
+      description: 'The number of pages that are detected in the document.',
+    }),
   })
   .openapi({ description: 'Information about the input document.', required: [] })
   .openapi('DocumentMetadata')
+
+const StringSchema = z.string().openapi('String')
+
+const PercentSchema = z.float32().min(0).max(100).openapi('Percent')
+
+const ExpenseTypeSchema = z
+  .object({
+    Text: StringSchema.exactOptional().openapi({
+      description: 'The word or line of text detected by Amazon Textract.',
+    }),
+    Confidence: PercentSchema.exactOptional().openapi({
+      description: 'The confidence of accuracy, as a percentage.',
+    }),
+  })
+  .openapi({
+    description: 'An object used to store information about the Type detected by Amazon Textract.',
+    required: [],
+  })
+  .openapi('ExpenseType')
+
+const FloatSchema = z.float32().openapi('Float')
+
+const BoundingBoxSchema = z
+  .object({
+    Width: FloatSchema.exactOptional().openapi({
+      description: 'The width of the bounding box as a ratio of the overall document page width.',
+    }),
+    Height: FloatSchema.exactOptional().openapi({
+      description: 'The height of the bounding box as a ratio of the overall document page height.',
+    }),
+    Left: FloatSchema.exactOptional().openapi({
+      description:
+        'The left coordinate of the bounding box as a ratio of overall document page width.',
+    }),
+    Top: FloatSchema.exactOptional().openapi({
+      description:
+        'The top coordinate of the bounding box as a ratio of overall document page height.',
+    }),
+  })
+  .openapi({
+    description:
+      '<p>The bounding box around the detected page, text, key-value pair, table, table cell, or selection element on a document page. The <code>left</code> (x-coordinate) and <code>top</code> (y-coordinate) are coordinates that represent the top and left sides of the bounding box. Note that the upper-left corner of the image is the origin (0,0). </p> <p>The <code>top</code> and <code>left</code> values returned are ratios of the overall document page size. For example, if the input image is 700 x 200 pixels, and the top-left coordinate of the bounding box is 350 x 50 pixels, the API returns a <code>left</code> value of 0.5 (350/700) and a <code>top</code> value of 0.25 (50/200).</p> <p>The <code>width</code> and <code>height</code> values represent the dimensions of the bounding box as a ratio of the overall document page dimension. For example, if the document page size is 700 x 200 pixels, and the bounding box width is 70 pixels, the width returned is 0.1. </p>',
+    required: [],
+  })
+  .openapi('BoundingBox')
+
+const PointSchema = z
+  .object({
+    X: FloatSchema.exactOptional().openapi({
+      description: 'The value of the X coordinate for a point on a <code>Polygon</code>.',
+    }),
+    Y: FloatSchema.exactOptional().openapi({
+      description: 'The value of the Y coordinate for a point on a <code>Polygon</code>.',
+    }),
+  })
+  .openapi({
+    description:
+      '<p>The X and Y coordinates of a point on a document page. The X and Y values that are returned are ratios of the overall document page size. For example, if the input document is 700 x 200 and the operation returns X=0.5 and Y=0.25, then the point is at the (350,50) pixel coordinate on the document page.</p> <p>An array of <code>Point</code> objects, <code>Polygon</code>, is returned by <a>DetectDocumentText</a>. <code>Polygon</code> represents a fine-grained polygon around detected text. For more information, see Geometry in the Amazon Textract Developer Guide. </p>',
+    required: [],
+  })
+  .openapi('Point')
+
+const PolygonSchema = z.array(PointSchema).openapi('Polygon')
+
+const GeometrySchema = z
+  .object({
+    BoundingBox: BoundingBoxSchema.exactOptional().openapi({
+      description:
+        'An axis-aligned coarse representation of the location of the recognized item on the document page.',
+    }),
+    Polygon: PolygonSchema.exactOptional().openapi({
+      description: 'Within the bounding box, a fine-grained polygon around the recognized item.',
+    }),
+  })
+  .openapi({
+    description:
+      'Information about where the following items are located on a document page: detected page, text, key-value pairs, tables, table cells, and selection elements.',
+    required: [],
+  })
+  .openapi('Geometry')
+
+const ExpenseDetectionSchema = z
+  .object({
+    Text: StringSchema.exactOptional().openapi({
+      description: 'The word or line of text recognized by Amazon Textract',
+    }),
+    Geometry: GeometrySchema.exactOptional(),
+    Confidence: PercentSchema.exactOptional().openapi({
+      description: 'The confidence in detection, as a percentage',
+    }),
+  })
+  .openapi({
+    description:
+      'An object used to store information about the Value or Label detected by Amazon Textract.',
+    required: [],
+  })
+  .openapi('ExpenseDetection')
+
+const ExpenseCurrencySchema = z
+  .object({
+    Code: StringSchema.exactOptional().openapi({
+      description:
+        '<p>Currency code for detected currency. the current supported codes are:</p> <ul> <li> <p>USD</p> </li> <li> <p>EUR</p> </li> <li> <p>GBP</p> </li> <li> <p>CAD</p> </li> <li> <p>INR</p> </li> <li> <p>JPY</p> </li> <li> <p>CHF</p> </li> <li> <p>AUD</p> </li> <li> <p>CNY</p> </li> <li> <p>BZR</p> </li> <li> <p>SEK</p> </li> <li> <p>HKD</p> </li> </ul>',
+    }),
+    Confidence: PercentSchema.exactOptional().openapi({
+      description: 'Percentage confideence in the detected currency.',
+    }),
+  })
+  .openapi({ description: 'Returns the kind of currency detected.', required: [] })
+  .openapi('ExpenseCurrency')
+
+const StringListSchema = z.array(StringSchema).openapi('StringList')
+
+const ExpenseGroupPropertySchema = z
+  .object({
+    Types: StringListSchema.exactOptional().openapi({
+      description: 'Informs you on whether the expense group is a name or an address.',
+    }),
+    Id: StringSchema.exactOptional().openapi({
+      description: 'Provides a group Id number, which will be the same for each in the group.',
+    }),
+  })
+  .openapi({
+    description:
+      'Shows the group that a certain key belongs to. This helps differentiate between names and addresses for different organizations, that can be hard to determine via JSON response.',
+    required: [],
+  })
+  .openapi('ExpenseGroupProperty')
+
+const ExpenseGroupPropertyListSchema = z
+  .array(ExpenseGroupPropertySchema)
+  .openapi('ExpenseGroupPropertyList')
+
+const ExpenseFieldSchema = z
+  .object({
+    Type: ExpenseTypeSchema.exactOptional().openapi({
+      description:
+        'The implied label of a detected element. Present alongside LabelDetection for explicit elements.',
+    }),
+    LabelDetection: ExpenseDetectionSchema.exactOptional().openapi({
+      description: 'The explicitly stated label of a detected element.',
+    }),
+    ValueDetection: ExpenseDetectionSchema.exactOptional().openapi({
+      description: 'The value of a detected element. Present in explicit and implicit elements.',
+    }),
+    PageNumber: UIntegerSchema.exactOptional().openapi({
+      description: 'The page number the value was detected on.',
+    }),
+    Currency: ExpenseCurrencySchema.exactOptional().openapi({
+      description:
+        'Shows the kind of currency, both the code and confidence associated with any monatary value detected.',
+    }),
+    GroupProperties: ExpenseGroupPropertyListSchema.exactOptional().openapi({
+      description:
+        "Shows which group a response object belongs to, such as whether an address line belongs to the vendor's address or the recipent's address.",
+    }),
+  })
+  .openapi({
+    description:
+      'Breakdown of detected information, seperated into the catagories Type, LabelDetection, and ValueDetection',
+    required: [],
+  })
+  .openapi('ExpenseField')
+
+const ExpenseFieldListSchema = z.array(ExpenseFieldSchema).openapi('ExpenseFieldList')
+
+const LineItemFieldsSchema = z
+  .object({
+    LineItemExpenseFields: ExpenseFieldListSchema.exactOptional().openapi({
+      description: 'ExpenseFields used to show information from detected lines on a table.',
+    }),
+  })
+  .openapi({
+    description:
+      "A structure that holds information about the different lines found in a document's tables.",
+    required: [],
+  })
+  .openapi('LineItemFields')
+
+type LineItemListType = z.infer<typeof LineItemFieldsSchema>[]
+
+const LineItemListSchema: z.ZodType<LineItemListType> = z
+  .array(LineItemFieldsSchema)
+  .openapi('LineItemList')
+
+type LineItemGroupType = {
+  LineItemGroupIndex?: z.infer<typeof UIntegerSchema> & unknown
+  LineItems?: z.infer<typeof LineItemListSchema> & unknown
+}
+
+const LineItemGroupSchema: z.ZodType<LineItemGroupType> = z
+  .object({
+    LineItemGroupIndex: UIntegerSchema.exactOptional().openapi({
+      description:
+        'The number used to identify a specific table in a document. The first table encountered will have a LineItemGroupIndex of 1, the second 2, etc.',
+    }),
+    LineItems: LineItemListSchema.exactOptional().openapi({
+      description: 'The breakdown of information on a particular line of a table. ',
+    }),
+  })
+  .openapi({
+    description:
+      "A grouping of tables which contain LineItems, with each table identified by the table's <code>LineItemGroupIndex</code>.",
+    required: [],
+  })
+  .openapi('LineItemGroup')
+
+type LineItemGroupListType = z.infer<typeof LineItemGroupSchema>[]
+
+const LineItemGroupListSchema: z.ZodType<LineItemGroupListType> = z
+  .array(LineItemGroupSchema)
+  .openapi('LineItemGroupList')
 
 const BlockTypeSchema = z
   .enum([
@@ -30,107 +242,7 @@ const BlockTypeSchema = z
   ])
   .openapi('BlockType')
 
-const PercentSchema = z.float32().min(0).max(100).openapi('Percent')
-
-const StringSchema = z.string().openapi('String')
-
 const TextTypeSchema = z.enum(['HANDWRITING', 'PRINTED']).openapi('TextType')
-
-const FloatSchema = z.float32().openapi('Float')
-
-const BoundingBoxSchema = z
-  .object({
-    Width: FloatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The width of the bounding box as a ratio of the overall document page width.',
-        }),
-    ).exactOptional(),
-    Height: FloatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The height of the bounding box as a ratio of the overall document page height.',
-        }),
-    ).exactOptional(),
-    Left: FloatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The left coordinate of the bounding box as a ratio of overall document page width.',
-        }),
-    ).exactOptional(),
-    Top: FloatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The top coordinate of the bounding box as a ratio of overall document page height.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      '<p>The bounding box around the detected page, text, key-value pair, table, table cell, or selection element on a document page. The <code>left</code> (x-coordinate) and <code>top</code> (y-coordinate) are coordinates that represent the top and left sides of the bounding box. Note that the upper-left corner of the image is the origin (0,0). </p> <p>The <code>top</code> and <code>left</code> values returned are ratios of the overall document page size. For example, if the input image is 700 x 200 pixels, and the top-left coordinate of the bounding box is 350 x 50 pixels, the API returns a <code>left</code> value of 0.5 (350/700) and a <code>top</code> value of 0.25 (50/200).</p> <p>The <code>width</code> and <code>height</code> values represent the dimensions of the bounding box as a ratio of the overall document page dimension. For example, if the document page size is 700 x 200 pixels, and the bounding box width is 70 pixels, the width returned is 0.1. </p>',
-    required: [],
-  })
-  .openapi('BoundingBox')
-
-const PointSchema = z
-  .object({
-    X: FloatSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The value of the X coordinate for a point on a <code>Polygon</code>.',
-        }),
-    ).exactOptional(),
-    Y: FloatSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The value of the Y coordinate for a point on a <code>Polygon</code>.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      '<p>The X and Y coordinates of a point on a document page. The X and Y values that are returned are ratios of the overall document page size. For example, if the input document is 700 x 200 and the operation returns X=0.5 and Y=0.25, then the point is at the (350,50) pixel coordinate on the document page.</p> <p>An array of <code>Point</code> objects, <code>Polygon</code>, is returned by <a>DetectDocumentText</a>. <code>Polygon</code> represents a fine-grained polygon around detected text. For more information, see Geometry in the Amazon Textract Developer Guide. </p>',
-    required: [],
-  })
-  .openapi('Point')
-
-const PolygonSchema = z.array(PointSchema).openapi('Polygon')
-
-const GeometrySchema = z
-  .object({
-    BoundingBox: BoundingBoxSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An axis-aligned coarse representation of the location of the recognized item on the document page.',
-        }),
-    ).exactOptional(),
-    Polygon: PolygonSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Within the bounding box, a fine-grained polygon around the recognized item.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Information about where the following items are located on a document page: detected page, text, key-value pairs, tables, table cells, and selection elements.',
-    required: [],
-  })
-  .openapi('Geometry')
 
 const NonEmptyStringSchema = z
   .string()
@@ -155,22 +267,14 @@ const IdListSchema = z.array(NonEmptyStringSchema).openapi('IdList')
 
 const RelationshipSchema = z
   .object({
-    Type: RelationshipTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The type of relationship between the blocks in the IDs array and the current block. The following list describes the relationship types that can be returned. </p> <ul> <li> <p> <i>VALUE</i> - A list that contains the ID of the VALUE block that's associated with the KEY of a key-value pair.</p> </li> <li> <p> <i>CHILD</i> - A list of IDs that identify blocks found within the current block object. For example, WORD blocks have a CHILD relationship to the LINE block type.</p> </li> <li> <p> <i>MERGED_CELL</i> - A list of IDs that identify each of the MERGED_CELL block types in a table.</p> </li> <li> <p> <i>ANSWER</i> - A list that contains the ID of the QUERY_RESULT block that’s associated with the corresponding QUERY block. </p> </li> <li> <p> <i>TABLE</i> - A list of IDs that identify associated TABLE block types. </p> </li> <li> <p> <i>TABLE_TITLE</i> - A list that contains the ID for the TABLE_TITLE block type in a table. </p> </li> <li> <p> <i>TABLE_FOOTER</i> - A list of IDs that identify the TABLE_FOOTER block types in a table. </p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    Ids: IdListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of IDs for related blocks. You can get the type of the relationship from the <code>Type</code> element.',
-        }),
-    ).exactOptional(),
+    Type: RelationshipTypeSchema.exactOptional().openapi({
+      description:
+        "<p>The type of relationship between the blocks in the IDs array and the current block. The following list describes the relationship types that can be returned. </p> <ul> <li> <p> <i>VALUE</i> - A list that contains the ID of the VALUE block that's associated with the KEY of a key-value pair.</p> </li> <li> <p> <i>CHILD</i> - A list of IDs that identify blocks found within the current block object. For example, WORD blocks have a CHILD relationship to the LINE block type.</p> </li> <li> <p> <i>MERGED_CELL</i> - A list of IDs that identify each of the MERGED_CELL block types in a table.</p> </li> <li> <p> <i>ANSWER</i> - A list that contains the ID of the QUERY_RESULT block that’s associated with the corresponding QUERY block. </p> </li> <li> <p> <i>TABLE</i> - A list of IDs that identify associated TABLE block types. </p> </li> <li> <p> <i>TABLE_TITLE</i> - A list that contains the ID for the TABLE_TITLE block type in a table. </p> </li> <li> <p> <i>TABLE_FOOTER</i> - A list of IDs that identify the TABLE_FOOTER block types in a table. </p> </li> </ul>",
+    }),
+    Ids: IdListSchema.exactOptional().openapi({
+      description:
+        'An array of IDs for related blocks. You can get the type of the relationship from the <code>Type</code> element.',
+    }),
   })
   .openapi({
     description:
@@ -217,25 +321,17 @@ const QueryPagesSchema = z.array(QueryPageSchema).min(1).openapi('QueryPages')
 
 const QuerySchema = z
   .object({
-    Text: QueryInputSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Question that Amazon Textract will apply to the document. An example would be "What is the customer\'s SSN?"',
-        }),
-    ),
-    Alias: QueryInputSchema.and(
-      z.any().openapi({ description: 'Alias attached to the query, for ease of location.' }),
-    ).exactOptional(),
-    Pages: QueryPagesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Pages is a parameter that the user inputs to specify which pages to apply a query to. The following is a list of rules for using this parameter.</p> <ul> <li> <p>If a page is not specified, it is set to <code>["1"]</code> by default.</p> </li> <li> <p>The following characters are allowed in the parameter\'s string: <code>0 1 2 3 4 5 6 7 8 9 - *</code>. No whitespace is allowed.</p> </li> <li> <p>When using * to indicate all pages, it must be the only element in the list.</p> </li> <li> <p>You can use page intervals, such as <code>[“1-3”, “1-1”, “4-*”]</code>. Where <code>*</code> indicates last page of document.</p> </li> <li> <p>Specified pages must be greater than 0 and less than or equal to the number of pages in the document.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    Text: QueryInputSchema.openapi({
+      description:
+        'Question that Amazon Textract will apply to the document. An example would be "What is the customer\'s SSN?"',
+    }),
+    Alias: QueryInputSchema.exactOptional().openapi({
+      description: 'Alias attached to the query, for ease of location.',
+    }),
+    Pages: QueryPagesSchema.exactOptional().openapi({
+      description:
+        '<p>Pages is a parameter that the user inputs to specify which pages to apply a query to. The following is a list of rules for using this parameter.</p> <ul> <li> <p>If a page is not specified, it is set to <code>["1"]</code> by default.</p> </li> <li> <p>The following characters are allowed in the parameter\'s string: <code>0 1 2 3 4 5 6 7 8 9 - *</code>. No whitespace is allowed.</p> </li> <li> <p>When using * to indicate all pages, it must be the only element in the list.</p> </li> <li> <p>You can use page intervals, such as <code>[“1-3”, “1-1”, “4-*”]</code>. Where <code>*</code> indicates last page of document.</p> </li> <li> <p>Specified pages must be greater than 0 and less than or equal to the number of pages in the document.</p> </li> </ul>',
+    }),
   })
   .openapi({
     required: ['Text'],
@@ -246,118 +342,62 @@ const QuerySchema = z
 
 const BlockSchema = z
   .object({
-    BlockType: BlockTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The type of text item that's recognized. In operations for text detection, the following types are returned:</p> <ul> <li> <p> <i>PAGE</i> - Contains a list of the LINE <code>Block</code> objects that are detected on a document page.</p> </li> <li> <p> <i>WORD</i> - A word detected on a document page. A word is one or more ISO basic Latin script characters that aren't separated by spaces.</p> </li> <li> <p> <i>LINE</i> - A string of tab-delimited, contiguous words that are detected on a document page.</p> </li> </ul> <p>In text analysis operations, the following types are returned:</p> <ul> <li> <p> <i>PAGE</i> - Contains a list of child <code>Block</code> objects that are detected on a document page.</p> </li> <li> <p> <i>KEY_VALUE_SET</i> - Stores the KEY and VALUE <code>Block</code> objects for linked text that's detected on a document page. Use the <code>EntityType</code> field to determine if a KEY_VALUE_SET object is a KEY <code>Block</code> object or a VALUE <code>Block</code> object. </p> </li> <li> <p> <i>WORD</i> - A word that's detected on a document page. A word is one or more ISO basic Latin script characters that aren't separated by spaces.</p> </li> <li> <p> <i>LINE</i> - A string of tab-delimited, contiguous words that are detected on a document page.</p> </li> <li> <p> <i>TABLE</i> - A table that's detected on a document page. A table is grid-based information with two or more rows or columns, with a cell span of one row and one column each. </p> </li> <li> <p> <i>TABLE_TITLE</i> - The title of a table. A title is typically a line of text above or below a table, or embedded as the first row of a table. </p> </li> <li> <p> <i>TABLE_FOOTER</i> - The footer associated with a table. A footer is typically a line or lines of text below a table or embedded as the last row of a table. </p> </li> <li> <p> <i>CELL</i> - A cell within a detected table. The cell is the parent of the block that contains the text in the cell.</p> </li> <li> <p> <i>MERGED_CELL</i> - A cell in a table whose content spans more than one row or column. The <code>Relationships</code> array for this cell contain data from individual cells.</p> </li> <li> <p> <i>SELECTION_ELEMENT</i> - A selection element such as an option button (radio button) or a check box that's detected on a document page. Use the value of <code>SelectionStatus</code> to determine the status of the selection element.</p> </li> <li> <p> <i>SIGNATURE</i> - The location and confidene score of a signature detected on a document page. Can be returned as part of a Key-Value pair or a detected cell.</p> </li> <li> <p> <i>QUERY</i> - A question asked during the call of AnalyzeDocument. Contains an alias and an ID that attaches it to its answer.</p> </li> <li> <p> <i>QUERY_RESULT</i> - A response to a question asked during the call of analyze document. Comes with an alias and ID for ease of locating in a response. Also contains location and confidence score.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    Confidence: PercentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The confidence score that Amazon Textract has in the accuracy of the recognized text and the accuracy of the geometry points around the recognized text.',
-        }),
-    ).exactOptional(),
-    Text: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The word or line of text that's recognized by Amazon Textract. ",
-        }),
-    ).exactOptional(),
-    TextType: TextTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The kind of text that Amazon Textract has detected. Can check for handwritten text and printed text.',
-        }),
-    ).exactOptional(),
-    RowIndex: UIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The row in which a table cell is located. The first row position is 1. <code>RowIndex</code> isn't returned by <code>DetectDocumentText</code> and <code>GetDocumentTextDetection</code>.",
-        }),
-    ).exactOptional(),
-    ColumnIndex: UIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The column in which a table cell appears. The first column position is 1. <code>ColumnIndex</code> isn't returned by <code>DetectDocumentText</code> and <code>GetDocumentTextDetection</code>.",
-        }),
-    ).exactOptional(),
-    RowSpan: UIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The number of rows that a table cell spans. <code>RowSpan</code> isn't returned by <code>DetectDocumentText</code> and <code>GetDocumentTextDetection</code>.",
-        }),
-    ).exactOptional(),
-    ColumnSpan: UIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The number of columns that a table cell spans. <code>ColumnSpan</code> isn't returned by <code>DetectDocumentText</code> and <code>GetDocumentTextDetection</code>. ",
-        }),
-    ).exactOptional(),
-    Geometry: GeometrySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The location of the recognized text on the image. It includes an axis-aligned, coarse bounding box that surrounds the text, and a finer-grain polygon for more accurate spatial information. ',
-        }),
-    ).exactOptional(),
-    Id: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier for the recognized text. The identifier is only unique for a single operation. ',
-        }),
-    ).exactOptional(),
-    Relationships: RelationshipListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A list of relationship objects that describe how blocks are related to each other. For example, a LINE block object contains a CHILD relationship type with the WORD blocks that make up the line of text. There aren't Relationship objects in the list for relationships that don't exist, such as when the current block has no child blocks.",
-        }),
-    ).exactOptional(),
-    EntityTypes: EntityTypesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The type of entity. </p> <p>The following entity types can be returned by FORMS analysis:</p> <ul> <li> <p> <i>KEY</i> - An identifier for a field on the document.</p> </li> <li> <p> <i>VALUE</i> - The field text.</p> </li> </ul> <p>The following entity types can be returned by TABLES analysis:</p> <ul> <li> <p> <i>COLUMN_HEADER</i> - Identifies a cell that is a header of a column. </p> </li> <li> <p> <i>TABLE_TITLE</i> - Identifies a cell that is a title within the table. </p> </li> <li> <p> <i>TABLE_SECTION_TITLE</i> - Identifies a cell that is a title of a section within a table. A section title is a cell that typically spans an entire row above a section. </p> </li> <li> <p> <i>TABLE_FOOTER</i> - Identifies a cell that is a footer of a table. </p> </li> <li> <p> <i>TABLE_SUMMARY</i> - Identifies a summary cell of a table. A summary cell can be a row of a table or an additional, smaller table that contains summary information for another table. </p> </li> <li> <p> <i>STRUCTURED_TABLE </i> - Identifies a table with column headers where the content of each row corresponds to the headers. </p> </li> <li> <p> <i>SEMI_STRUCTURED_TABLE</i> - Identifies a non-structured table. </p> </li> </ul> <p> <code>EntityTypes</code> isn't returned by <code>DetectDocumentText</code> and <code>GetDocumentTextDetection</code>.</p>",
-        }),
-    ).exactOptional(),
-    SelectionStatus: SelectionStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The selection status of a selection element, such as an option button or check box. ',
-        }),
-    ).exactOptional(),
-    Page: UIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The page on which a block was detected. <code>Page</code> is returned by synchronous and asynchronous operations. Page values greater than 1 are only returned for multipage documents that are in PDF or TIFF format. A scanned image (JPEG/PNG) provided to an asynchronous operation, even if it contains multiple document pages, is considered a single-page document. This means that for scanned images the value of <code>Page</code> is always 1. Synchronous operations will also return a <code>Page</code> value of 1 because every input document is considered to be a single-page document.',
-        }),
-    ).exactOptional(),
-    Query: QuerySchema.and(z.any().openapi({ description: '<p/>' })).exactOptional(),
+    BlockType: BlockTypeSchema.exactOptional().openapi({
+      description:
+        "<p>The type of text item that's recognized. In operations for text detection, the following types are returned:</p> <ul> <li> <p> <i>PAGE</i> - Contains a list of the LINE <code>Block</code> objects that are detected on a document page.</p> </li> <li> <p> <i>WORD</i> - A word detected on a document page. A word is one or more ISO basic Latin script characters that aren't separated by spaces.</p> </li> <li> <p> <i>LINE</i> - A string of tab-delimited, contiguous words that are detected on a document page.</p> </li> </ul> <p>In text analysis operations, the following types are returned:</p> <ul> <li> <p> <i>PAGE</i> - Contains a list of child <code>Block</code> objects that are detected on a document page.</p> </li> <li> <p> <i>KEY_VALUE_SET</i> - Stores the KEY and VALUE <code>Block</code> objects for linked text that's detected on a document page. Use the <code>EntityType</code> field to determine if a KEY_VALUE_SET object is a KEY <code>Block</code> object or a VALUE <code>Block</code> object. </p> </li> <li> <p> <i>WORD</i> - A word that's detected on a document page. A word is one or more ISO basic Latin script characters that aren't separated by spaces.</p> </li> <li> <p> <i>LINE</i> - A string of tab-delimited, contiguous words that are detected on a document page.</p> </li> <li> <p> <i>TABLE</i> - A table that's detected on a document page. A table is grid-based information with two or more rows or columns, with a cell span of one row and one column each. </p> </li> <li> <p> <i>TABLE_TITLE</i> - The title of a table. A title is typically a line of text above or below a table, or embedded as the first row of a table. </p> </li> <li> <p> <i>TABLE_FOOTER</i> - The footer associated with a table. A footer is typically a line or lines of text below a table or embedded as the last row of a table. </p> </li> <li> <p> <i>CELL</i> - A cell within a detected table. The cell is the parent of the block that contains the text in the cell.</p> </li> <li> <p> <i>MERGED_CELL</i> - A cell in a table whose content spans more than one row or column. The <code>Relationships</code> array for this cell contain data from individual cells.</p> </li> <li> <p> <i>SELECTION_ELEMENT</i> - A selection element such as an option button (radio button) or a check box that's detected on a document page. Use the value of <code>SelectionStatus</code> to determine the status of the selection element.</p> </li> <li> <p> <i>SIGNATURE</i> - The location and confidene score of a signature detected on a document page. Can be returned as part of a Key-Value pair or a detected cell.</p> </li> <li> <p> <i>QUERY</i> - A question asked during the call of AnalyzeDocument. Contains an alias and an ID that attaches it to its answer.</p> </li> <li> <p> <i>QUERY_RESULT</i> - A response to a question asked during the call of analyze document. Comes with an alias and ID for ease of locating in a response. Also contains location and confidence score.</p> </li> </ul>",
+    }),
+    Confidence: PercentSchema.exactOptional().openapi({
+      description:
+        'The confidence score that Amazon Textract has in the accuracy of the recognized text and the accuracy of the geometry points around the recognized text.',
+    }),
+    Text: StringSchema.exactOptional().openapi({
+      description: "The word or line of text that's recognized by Amazon Textract. ",
+    }),
+    TextType: TextTypeSchema.exactOptional().openapi({
+      description:
+        'The kind of text that Amazon Textract has detected. Can check for handwritten text and printed text.',
+    }),
+    RowIndex: UIntegerSchema.exactOptional().openapi({
+      description:
+        "The row in which a table cell is located. The first row position is 1. <code>RowIndex</code> isn't returned by <code>DetectDocumentText</code> and <code>GetDocumentTextDetection</code>.",
+    }),
+    ColumnIndex: UIntegerSchema.exactOptional().openapi({
+      description:
+        "The column in which a table cell appears. The first column position is 1. <code>ColumnIndex</code> isn't returned by <code>DetectDocumentText</code> and <code>GetDocumentTextDetection</code>.",
+    }),
+    RowSpan: UIntegerSchema.exactOptional().openapi({
+      description:
+        "The number of rows that a table cell spans. <code>RowSpan</code> isn't returned by <code>DetectDocumentText</code> and <code>GetDocumentTextDetection</code>.",
+    }),
+    ColumnSpan: UIntegerSchema.exactOptional().openapi({
+      description:
+        "The number of columns that a table cell spans. <code>ColumnSpan</code> isn't returned by <code>DetectDocumentText</code> and <code>GetDocumentTextDetection</code>. ",
+    }),
+    Geometry: GeometrySchema.exactOptional().openapi({
+      description:
+        'The location of the recognized text on the image. It includes an axis-aligned, coarse bounding box that surrounds the text, and a finer-grain polygon for more accurate spatial information. ',
+    }),
+    Id: NonEmptyStringSchema.exactOptional().openapi({
+      description:
+        'The identifier for the recognized text. The identifier is only unique for a single operation. ',
+    }),
+    Relationships: RelationshipListSchema.exactOptional().openapi({
+      description:
+        "A list of relationship objects that describe how blocks are related to each other. For example, a LINE block object contains a CHILD relationship type with the WORD blocks that make up the line of text. There aren't Relationship objects in the list for relationships that don't exist, such as when the current block has no child blocks.",
+    }),
+    EntityTypes: EntityTypesSchema.exactOptional().openapi({
+      description:
+        "<p>The type of entity. </p> <p>The following entity types can be returned by FORMS analysis:</p> <ul> <li> <p> <i>KEY</i> - An identifier for a field on the document.</p> </li> <li> <p> <i>VALUE</i> - The field text.</p> </li> </ul> <p>The following entity types can be returned by TABLES analysis:</p> <ul> <li> <p> <i>COLUMN_HEADER</i> - Identifies a cell that is a header of a column. </p> </li> <li> <p> <i>TABLE_TITLE</i> - Identifies a cell that is a title within the table. </p> </li> <li> <p> <i>TABLE_SECTION_TITLE</i> - Identifies a cell that is a title of a section within a table. A section title is a cell that typically spans an entire row above a section. </p> </li> <li> <p> <i>TABLE_FOOTER</i> - Identifies a cell that is a footer of a table. </p> </li> <li> <p> <i>TABLE_SUMMARY</i> - Identifies a summary cell of a table. A summary cell can be a row of a table or an additional, smaller table that contains summary information for another table. </p> </li> <li> <p> <i>STRUCTURED_TABLE </i> - Identifies a table with column headers where the content of each row corresponds to the headers. </p> </li> <li> <p> <i>SEMI_STRUCTURED_TABLE</i> - Identifies a non-structured table. </p> </li> </ul> <p> <code>EntityTypes</code> isn't returned by <code>DetectDocumentText</code> and <code>GetDocumentTextDetection</code>.</p>",
+    }),
+    SelectionStatus: SelectionStatusSchema.exactOptional().openapi({
+      description:
+        'The selection status of a selection element, such as an option button or check box. ',
+    }),
+    Page: UIntegerSchema.exactOptional().openapi({
+      description:
+        'The page on which a block was detected. <code>Page</code> is returned by synchronous and asynchronous operations. Page values greater than 1 are only returned for multipage documents that are in PDF or TIFF format. A scanned image (JPEG/PNG) provided to an asynchronous operation, even if it contains multiple document pages, is considered a single-page document. This means that for scanned images the value of <code>Page</code> is always 1. Synchronous operations will also return a <code>Page</code> value of 1 because every input document is considered to be a single-page document.',
+    }),
+    Query: QuerySchema.exactOptional().openapi({ description: '<p/>' }),
   })
   .openapi({
     description:
@@ -367,6 +407,351 @@ const BlockSchema = z
   .openapi('Block')
 
 const BlockListSchema = z.array(BlockSchema).openapi('BlockList')
+
+type ExpenseDocumentType = {
+  ExpenseIndex?: z.infer<typeof UIntegerSchema> & unknown
+  SummaryFields?: z.infer<typeof ExpenseFieldListSchema> & unknown
+  LineItemGroups?: z.infer<typeof LineItemGroupListSchema> & unknown
+  Blocks?: z.infer<typeof BlockListSchema> & unknown
+}
+
+const ExpenseDocumentSchema: z.ZodType<ExpenseDocumentType> = z
+  .object({
+    ExpenseIndex: UIntegerSchema.exactOptional().openapi({
+      description:
+        'Denotes which invoice or receipt in the document the information is coming from. First document will be 1, the second 2, and so on.',
+    }),
+    SummaryFields: ExpenseFieldListSchema.exactOptional().openapi({
+      description: 'Any information found outside of a table by Amazon Textract.',
+    }),
+    LineItemGroups: LineItemGroupListSchema.exactOptional().openapi({
+      description:
+        'Information detected on each table of a document, seperated into <code>LineItems</code>.',
+    }),
+    Blocks: BlockListSchema.exactOptional().openapi({
+      description:
+        'This is a block object, the same as reported when DetectDocumentText is run on a document. It provides word level recognition of text.',
+    }),
+  })
+  .openapi({
+    description: 'The structure holding all the information returned by AnalyzeExpense',
+    required: [],
+  })
+  .openapi('ExpenseDocument')
+
+type ExpenseDocumentListType = z.infer<typeof ExpenseDocumentSchema>[]
+
+const ExpenseDocumentListSchema: z.ZodType<ExpenseDocumentListType> = z
+  .array(ExpenseDocumentSchema)
+  .openapi('ExpenseDocumentList')
+
+type AnalyzeExpenseResponseType = {
+  DocumentMetadata?: z.infer<typeof DocumentMetadataSchema>
+  ExpenseDocuments?: z.infer<typeof ExpenseDocumentListSchema> & unknown
+}
+
+const ValueTypeSchema = z.literal('DATE').openapi('ValueType')
+
+const NormalizedValueSchema = z
+  .object({
+    Value: StringSchema.exactOptional().openapi({
+      description: 'The value of the date, written as Year-Month-DayTHour:Minute:Second.',
+    }),
+    ValueType: ValueTypeSchema.exactOptional().openapi({
+      description: 'The normalized type of the value detected. In this case, DATE.',
+    }),
+  })
+  .openapi({
+    description:
+      'Contains information relating to dates in a document, including the type of value, and the value.',
+    required: [],
+  })
+  .openapi('NormalizedValue')
+
+const AnalyzeIDDetectionsSchema = z
+  .object({
+    Text: StringSchema.openapi({
+      description: 'Text of either the normalized field or value associated with it.',
+    }),
+    NormalizedValue: NormalizedValueSchema.exactOptional().openapi({
+      description:
+        'Only returned for dates, returns the type of value detected and the date written in a more machine readable way.',
+    }),
+    Confidence: PercentSchema.exactOptional().openapi({
+      description: 'The confidence score of the detected text.',
+    }),
+  })
+  .openapi({
+    required: ['Text'],
+    description: 'Used to contain the information detected by an AnalyzeID operation.',
+  })
+  .openapi('AnalyzeIDDetections')
+
+const IdentityDocumentFieldSchema = z
+  .object({
+    Type: AnalyzeIDDetectionsSchema.exactOptional(),
+    ValueDetection: AnalyzeIDDetectionsSchema.exactOptional(),
+  })
+  .openapi({
+    description:
+      'Structure containing both the normalized type of the extracted information and the text associated with it. These are extracted as Type and Value respectively.',
+    required: [],
+  })
+  .openapi('IdentityDocumentField')
+
+const IdentityDocumentFieldListSchema = z
+  .array(IdentityDocumentFieldSchema)
+  .openapi('IdentityDocumentFieldList')
+
+const IdentityDocumentSchema = z
+  .object({
+    DocumentIndex: UIntegerSchema.exactOptional().openapi({
+      description:
+        'Denotes the placement of a document in the IdentityDocument list. The first document is marked 1, the second 2 and so on.',
+    }),
+    IdentityDocumentFields: IdentityDocumentFieldListSchema.exactOptional().openapi({
+      description:
+        'The structure used to record information extracted from identity documents. Contains both normalized field and value of the extracted text.',
+    }),
+    Blocks: BlockListSchema.exactOptional().openapi({
+      description: 'Individual word recognition, as returned by document detection.',
+    }),
+  })
+  .openapi({
+    description: 'The structure that lists each document processed in an AnalyzeID operation.',
+    required: [],
+  })
+  .openapi('IdentityDocument')
+
+const IdentityDocumentListSchema = z.array(IdentityDocumentSchema).openapi('IdentityDocumentList')
+
+type AnalyzeIDResponseType = {
+  IdentityDocuments?: z.infer<typeof IdentityDocumentListSchema> & unknown
+  DocumentMetadata?: z.infer<typeof DocumentMetadataSchema>
+  AnalyzeIDModelVersion?: z.infer<typeof StringSchema> & unknown
+}
+
+const JobStatusSchema = z
+  .enum(['IN_PROGRESS', 'SUCCEEDED', 'FAILED', 'PARTIAL_SUCCESS'])
+  .openapi('JobStatus')
+
+const PaginationTokenSchema = z
+  .string()
+  .regex(/.*\S.*/)
+  .min(1)
+  .max(255)
+  .openapi('PaginationToken')
+
+const ErrorCodeSchema = z.string().openapi('ErrorCode')
+
+const PagesSchema = z.array(UIntegerSchema).openapi('Pages')
+
+const WarningSchema = z
+  .object({
+    ErrorCode: ErrorCodeSchema.exactOptional().openapi({
+      description: 'The error code for the warning.',
+    }),
+    Pages: PagesSchema.exactOptional().openapi({
+      description: 'A list of the pages that the warning applies to.',
+    }),
+  })
+  .openapi({
+    description:
+      'A warning about an issue that occurred during asynchronous text analysis (<a>StartDocumentAnalysis</a>) or asynchronous document text detection (<a>StartDocumentTextDetection</a>). ',
+    required: [],
+  })
+  .openapi('Warning')
+
+const WarningsSchema = z.array(WarningSchema).openapi('Warnings')
+
+const StatusMessageSchema = z.string().openapi('StatusMessage')
+
+type GetExpenseAnalysisResponseType = {
+  DocumentMetadata?: z.infer<typeof DocumentMetadataSchema> & unknown
+  JobStatus?: z.infer<typeof JobStatusSchema> & unknown
+  NextToken?: z.infer<typeof PaginationTokenSchema> & unknown
+  ExpenseDocuments?: z.infer<typeof ExpenseDocumentListSchema> & unknown
+  Warnings?: z.infer<typeof WarningsSchema> & unknown
+  StatusMessage?: z.infer<typeof StatusMessageSchema> & unknown
+  AnalyzeExpenseModelVersion?: z.infer<typeof StringSchema> & unknown
+}
+
+const PredictionSchema = z
+  .object({
+    Value: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'The predicted value of a detected object.',
+    }),
+    Confidence: PercentSchema.exactOptional().openapi({
+      description: "Amazon Textract's confidence in its predicted value.",
+    }),
+  })
+  .openapi({
+    description:
+      'Contains information regarding predicted values returned by Amazon Textract operations, including the predicted value and the confidence in the predicted value.',
+    required: [],
+  })
+  .openapi('Prediction')
+
+const PredictionListSchema = z.array(PredictionSchema).openapi('PredictionList')
+
+const PageClassificationSchema = z
+  .object({
+    PageType: PredictionListSchema.openapi({
+      description:
+        'The class, or document type, assigned to a detected Page object. The class, or document type, assigned to a detected Page object.',
+    }),
+    PageNumber: PredictionListSchema.openapi({
+      description:
+        " The page number the value was detected on, relative to Amazon Textract's starting position.",
+    }),
+  })
+  .openapi({
+    required: ['PageType', 'PageNumber'],
+    description:
+      "The class assigned to a Page object detected in an input document. Contains information regarding the predicted type/class of a document's page and the page number that the Page object was detected on.",
+  })
+  .openapi('PageClassification')
+
+const LendingDetectionSchema = z
+  .object({
+    Text: StringSchema.exactOptional().openapi({
+      description: 'The text extracted for a detected value in a lending document.',
+    }),
+    SelectionStatus: SelectionStatusSchema.exactOptional().openapi({
+      description:
+        'The selection status of a selection element, such as an option button or check box.',
+    }),
+    Geometry: GeometrySchema.exactOptional(),
+    Confidence: PercentSchema.exactOptional().openapi({
+      description: 'The confidence level for the text of a detected value in a lending document.',
+    }),
+  })
+  .openapi({ description: 'The results extracted for a lending document.', required: [] })
+  .openapi('LendingDetection')
+
+const LendingDetectionListSchema = z.array(LendingDetectionSchema).openapi('LendingDetectionList')
+
+const LendingFieldSchema = z
+  .object({
+    Type: StringSchema.exactOptional().openapi({
+      description: 'The type of the lending document.',
+    }),
+    KeyDetection: LendingDetectionSchema.exactOptional(),
+    ValueDetections: LendingDetectionListSchema.exactOptional().openapi({
+      description: 'An array of LendingDetection objects.',
+    }),
+  })
+  .openapi({
+    description:
+      'Holds the normalized key-value pairs returned by AnalyzeDocument, including the document type, detected text, and geometry.',
+    required: [],
+  })
+  .openapi('LendingField')
+
+const LendingFieldListSchema = z.array(LendingFieldSchema).openapi('LendingFieldList')
+
+const SignatureDetectionSchema = z
+  .object({
+    Confidence: PercentSchema.exactOptional().openapi({
+      description:
+        'The confidence, from 0 to 100, in the predicted values for a detected signature.',
+    }),
+    Geometry: GeometrySchema.exactOptional(),
+  })
+  .openapi({ description: 'Information regarding a detected signature on a page.', required: [] })
+  .openapi('SignatureDetection')
+
+const SignatureDetectionListSchema = z
+  .array(SignatureDetectionSchema)
+  .openapi('SignatureDetectionList')
+
+type LendingDocumentType = {
+  LendingFields?: z.infer<typeof LendingFieldListSchema> & unknown
+  SignatureDetections?: z.infer<typeof SignatureDetectionListSchema> & unknown
+}
+
+const LendingDocumentSchema: z.ZodType<LendingDocumentType> = z
+  .object({
+    LendingFields: LendingFieldListSchema.exactOptional().openapi({
+      description: 'An array of LendingField objects.',
+    }),
+    SignatureDetections: SignatureDetectionListSchema.exactOptional().openapi({
+      description: 'A list of signatures detected in a lending document.',
+    }),
+  })
+  .openapi({
+    description: 'Holds the structured data returned by AnalyzeDocument for lending documents.',
+    required: [],
+  })
+  .openapi('LendingDocument')
+
+type ExtractionType = {
+  LendingDocument?: z.infer<typeof LendingDocumentSchema> & unknown
+  ExpenseDocument?: z.infer<typeof ExpenseDocumentSchema>
+  IdentityDocument?: z.infer<typeof IdentityDocumentSchema>
+}
+
+const ExtractionSchema: z.ZodType<ExtractionType> = z
+  .object({
+    LendingDocument: LendingDocumentSchema.exactOptional().openapi({
+      description: 'Holds the structured data returned by AnalyzeDocument for lending documents.',
+    }),
+    ExpenseDocument: ExpenseDocumentSchema.exactOptional(),
+    IdentityDocument: IdentityDocumentSchema.exactOptional(),
+  })
+  .openapi({
+    description:
+      'Contains information extracted by an analysis operation after using StartLendingAnalysis.',
+    required: [],
+  })
+  .openapi('Extraction')
+
+type ExtractionListType = z.infer<typeof ExtractionSchema>[]
+
+const ExtractionListSchema: z.ZodType<ExtractionListType> = z
+  .array(ExtractionSchema)
+  .openapi('ExtractionList')
+
+type LendingResultType = {
+  Page?: z.infer<typeof UIntegerSchema> & unknown
+  PageClassification?: z.infer<typeof PageClassificationSchema> & unknown
+  Extractions?: z.infer<typeof ExtractionListSchema> & unknown
+}
+
+const LendingResultSchema: z.ZodType<LendingResultType> = z
+  .object({
+    Page: UIntegerSchema.exactOptional().openapi({
+      description: 'The page number for a page, with regard to whole submission.',
+    }),
+    PageClassification: PageClassificationSchema.exactOptional().openapi({
+      description: 'The classifier result for a given page.',
+    }),
+    Extractions: ExtractionListSchema.exactOptional().openapi({
+      description:
+        'An array of Extraction to hold structured data. e.g. normalized key value pairs instead of raw OCR detections .',
+    }),
+  })
+  .openapi({
+    description: 'Contains the detections for each page analyzed through the Analyze Lending API.',
+    required: [],
+  })
+  .openapi('LendingResult')
+
+type LendingResultListType = z.infer<typeof LendingResultSchema>[]
+
+const LendingResultListSchema: z.ZodType<LendingResultListType> = z
+  .array(LendingResultSchema)
+  .openapi('LendingResultList')
+
+type GetLendingAnalysisResponseType = {
+  DocumentMetadata?: z.infer<typeof DocumentMetadataSchema>
+  JobStatus?: z.infer<typeof JobStatusSchema> & unknown
+  NextToken?: z.infer<typeof PaginationTokenSchema> & unknown
+  Results?: z.infer<typeof LendingResultListSchema> & unknown
+  Warnings?: z.infer<typeof WarningsSchema> & unknown
+  StatusMessage?: z.infer<typeof StatusMessageSchema> & unknown
+  AnalyzeLendingModelVersion?: z.infer<typeof StringSchema> & unknown
+}
 
 const HumanLoopArnSchema = z.string().max(256).openapi('HumanLoopArn')
 
@@ -384,21 +769,17 @@ const HumanLoopActivationConditionsEvaluationResultsSchema = z
 
 const HumanLoopActivationOutputSchema = z
   .object({
-    HumanLoopArn: HumanLoopArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the HumanLoop created.' }),
-    ).exactOptional(),
-    HumanLoopActivationReasons: HumanLoopActivationReasonsSchema.and(
-      z.any().openapi({ description: 'Shows if and why human review was needed.' }),
-    ).exactOptional(),
+    HumanLoopArn: HumanLoopArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the HumanLoop created.',
+    }),
+    HumanLoopActivationReasons: HumanLoopActivationReasonsSchema.exactOptional().openapi({
+      description: 'Shows if and why human review was needed.',
+    }),
     HumanLoopActivationConditionsEvaluationResults:
-      HumanLoopActivationConditionsEvaluationResultsSchema.and(
-        z
-          .any()
-          .openapi({
-            description:
-              'Shows the result of condition evaluations, including those conditions which activated a human review.',
-          }),
-      ).exactOptional(),
+      HumanLoopActivationConditionsEvaluationResultsSchema.exactOptional().openapi({
+        description:
+          'Shows the result of condition evaluations, including those conditions which activated a human review.',
+      }),
   })
   .openapi({
     description:
@@ -409,26 +790,18 @@ const HumanLoopActivationOutputSchema = z
 
 const AnalyzeDocumentResponseSchema = z
   .object({
-    DocumentMetadata: DocumentMetadataSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Metadata about the analyzed document. An example is the number of pages.',
-        }),
-    ).exactOptional(),
-    Blocks: BlockListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The items that are detected and analyzed by <code>AnalyzeDocument</code>.',
-        }),
-    ).exactOptional(),
-    HumanLoopActivationOutput: HumanLoopActivationOutputSchema.and(
-      z.any().openapi({ description: 'Shows the results of the human in the loop evaluation.' }),
-    ).exactOptional(),
-    AnalyzeDocumentModelVersion: StringSchema.and(
-      z.any().openapi({ description: 'The version of the model used to analyze the document.' }),
-    ).exactOptional(),
+    DocumentMetadata: DocumentMetadataSchema.exactOptional().openapi({
+      description: 'Metadata about the analyzed document. An example is the number of pages.',
+    }),
+    Blocks: BlockListSchema.exactOptional().openapi({
+      description: 'The items that are detected and analyzed by <code>AnalyzeDocument</code>.',
+    }),
+    HumanLoopActivationOutput: HumanLoopActivationOutputSchema.exactOptional().openapi({
+      description: 'Shows the results of the human in the loop evaluation.',
+    }),
+    AnalyzeDocumentModelVersion: StringSchema.exactOptional().openapi({
+      description: 'The version of the model used to analyze the document.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('AnalyzeDocumentResponse')
@@ -458,29 +831,17 @@ const S3ObjectVersionSchema = z
 
 const S3ObjectSchema = z
   .object({
-    Bucket: S3BucketSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the S3 bucket. Note that the # character is not valid in the file name.',
-        }),
-    ).exactOptional(),
-    Name: S3ObjectNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The file name of the input document. Synchronous operations can use image files that are in JPEG or PNG format. Asynchronous operations also support PDF and TIFF format files.',
-        }),
-    ).exactOptional(),
-    Version: S3ObjectVersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'If the bucket has versioning enabled, you can specify the object version. ',
-        }),
-    ).exactOptional(),
+    Bucket: S3BucketSchema.exactOptional().openapi({
+      description:
+        'The name of the S3 bucket. Note that the # character is not valid in the file name.',
+    }),
+    Name: S3ObjectNameSchema.exactOptional().openapi({
+      description:
+        'The file name of the input document. Synchronous operations can use image files that are in JPEG or PNG format. Asynchronous operations also support PDF and TIFF format files.',
+    }),
+    Version: S3ObjectVersionSchema.exactOptional().openapi({
+      description: 'If the bucket has versioning enabled, you can specify the object version. ',
+    }),
   })
   .openapi({
     description:
@@ -491,22 +852,14 @@ const S3ObjectSchema = z
 
 const DocumentSchema = z
   .object({
-    Bytes: ImageBlobSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A blob of base64-encoded document bytes. The maximum size of a document that's provided in a blob of bytes is 5 MB. The document bytes must be in PNG or JPEG format.</p> <p>If you're using an AWS SDK to call Amazon Textract, you might not need to base64-encode image bytes passed using the <code>Bytes</code> field. </p>",
-        }),
-    ).exactOptional(),
-    S3Object: S3ObjectSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Identifies an S3 object as the document source. The maximum size of a document that's stored in an S3 bucket is 5 MB.",
-        }),
-    ).exactOptional(),
+    Bytes: ImageBlobSchema.exactOptional().openapi({
+      description:
+        "<p>A blob of base64-encoded document bytes. The maximum size of a document that's provided in a blob of bytes is 5 MB. The document bytes must be in PNG or JPEG format.</p> <p>If you're using an AWS SDK to call Amazon Textract, you might not need to base64-encode image bytes passed using the <code>Bytes</code> field. </p>",
+    }),
+    S3Object: S3ObjectSchema.exactOptional().openapi({
+      description:
+        "Identifies an S3 object as the document source. The maximum size of a document that's stored in an S3 bucket is 5 MB.",
+    }),
   })
   .openapi({
     description:
@@ -541,14 +894,10 @@ const ContentClassifiersSchema = z
 
 const HumanLoopDataAttributesSchema = z
   .object({
-    ContentClassifiers: ContentClassifiersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Sets whether the input image is free of personally identifiable information or adult content.',
-        }),
-    ).exactOptional(),
+    ContentClassifiers: ContentClassifiersSchema.exactOptional().openapi({
+      description:
+        'Sets whether the input image is free of personally identifiable information or adult content.',
+    }),
   })
   .openapi({
     description:
@@ -559,20 +908,16 @@ const HumanLoopDataAttributesSchema = z
 
 const HumanLoopConfigSchema = z
   .object({
-    HumanLoopName: HumanLoopNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the human workflow used for this image. This should be kept unique within a region.',
-        }),
-    ),
-    FlowDefinitionArn: FlowDefinitionArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the flow definition.' }),
-    ),
-    DataAttributes: HumanLoopDataAttributesSchema.and(
-      z.any().openapi({ description: 'Sets attributes of the input data.' }),
-    ).exactOptional(),
+    HumanLoopName: HumanLoopNameSchema.openapi({
+      description:
+        'The name of the human workflow used for this image. This should be kept unique within a region.',
+    }),
+    FlowDefinitionArn: FlowDefinitionArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the flow definition.',
+    }),
+    DataAttributes: HumanLoopDataAttributesSchema.exactOptional().openapi({
+      description: 'Sets attributes of the input data.',
+    }),
   })
   .openapi({
     required: ['HumanLoopName', 'FlowDefinitionArn'],
@@ -584,44 +929,27 @@ const HumanLoopConfigSchema = z
 const QueriesSchema = z.array(QuerySchema).min(1).openapi('Queries')
 
 const QueriesConfigSchema = z
-  .object({ Queries: QueriesSchema.and(z.any().openapi({ description: '<p/>' })) })
+  .object({ Queries: QueriesSchema.openapi({ description: '<p/>' }) })
   .openapi({ required: ['Queries'], description: '<p/>' })
   .openapi('QueriesConfig')
 
 const AnalyzeDocumentRequestSchema = z
   .object({
-    Document: DocumentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The input document as base64-encoded bytes or an Amazon S3 object. If you use the AWS CLI to call Amazon Textract operations, you can't pass image bytes. The document must be an image in JPEG, PNG, PDF, or TIFF format.</p> <p>If you're using an AWS SDK to call Amazon Textract, you might not need to base64-encode image bytes that are passed using the <code>Bytes</code> field. </p>",
-        }),
-    ),
-    FeatureTypes: FeatureTypesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A list of the types of analysis to perform. Add TABLES to the list to return information about the tables that are detected in the input document. Add FORMS to return detected form data. Add SIGNATURES to return the locations of detected signatures. To perform both forms and table analysis, add TABLES and FORMS to <code>FeatureTypes</code>. To detect signatures within form data and table data, add SIGNATURES to either TABLES or FORMS. All lines and words detected in the document are included in the response (including text that isn't related to the value of <code>FeatureTypes</code>). ",
-        }),
-    ),
-    HumanLoopConfig: HumanLoopConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Sets the configuration for the human in the loop workflow for analyzing documents.',
-        }),
-    ).exactOptional(),
-    QueriesConfig: QueriesConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains Queries and the alias for those Queries, as determined by the input. ',
-        }),
-    ).exactOptional(),
+    Document: DocumentSchema.openapi({
+      description:
+        "<p>The input document as base64-encoded bytes or an Amazon S3 object. If you use the AWS CLI to call Amazon Textract operations, you can't pass image bytes. The document must be an image in JPEG, PNG, PDF, or TIFF format.</p> <p>If you're using an AWS SDK to call Amazon Textract, you might not need to base64-encode image bytes that are passed using the <code>Bytes</code> field. </p>",
+    }),
+    FeatureTypes: FeatureTypesSchema.openapi({
+      description:
+        "A list of the types of analysis to perform. Add TABLES to the list to return information about the tables that are detected in the input document. Add FORMS to return detected form data. Add SIGNATURES to return the locations of detected signatures. To perform both forms and table analysis, add TABLES and FORMS to <code>FeatureTypes</code>. To detect signatures within form data and table data, add SIGNATURES to either TABLES or FORMS. All lines and words detected in the document are included in the response (including text that isn't related to the value of <code>FeatureTypes</code>). ",
+    }),
+    HumanLoopConfig: HumanLoopConfigSchema.exactOptional().openapi({
+      description:
+        'Sets the configuration for the human in the loop workflow for analyzing documents.',
+    }),
+    QueriesConfig: QueriesConfigSchema.exactOptional().openapi({
+      description: 'Contains Queries and the alias for those Queries, as determined by the input. ',
+    }),
   })
   .openapi({ required: ['Document', 'FeatureTypes'], title: 'AnalyzeDocumentRequest' })
   .openapi('AnalyzeDocumentRequest')
@@ -648,225 +976,12 @@ const ThrottlingExceptionSchema = z.any().openapi('ThrottlingException')
 
 const HumanLoopQuotaExceededExceptionSchema = z.any().openapi('HumanLoopQuotaExceededException')
 
-const ExpenseTypeSchema = z
-  .object({
-    Text: StringSchema.and(
-      z.any().openapi({ description: 'The word or line of text detected by Amazon Textract.' }),
-    ).exactOptional(),
-    Confidence: PercentSchema.and(
-      z.any().openapi({ description: 'The confidence of accuracy, as a percentage.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'An object used to store information about the Type detected by Amazon Textract.',
-    required: [],
-  })
-  .openapi('ExpenseType')
-
-const ExpenseDetectionSchema = z
-  .object({
-    Text: StringSchema.and(
-      z.any().openapi({ description: 'The word or line of text recognized by Amazon Textract' }),
-    ).exactOptional(),
-    Geometry: GeometrySchema.exactOptional(),
-    Confidence: PercentSchema.and(
-      z.any().openapi({ description: 'The confidence in detection, as a percentage' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'An object used to store information about the Value or Label detected by Amazon Textract.',
-    required: [],
-  })
-  .openapi('ExpenseDetection')
-
-const ExpenseCurrencySchema = z
-  .object({
-    Code: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Currency code for detected currency. the current supported codes are:</p> <ul> <li> <p>USD</p> </li> <li> <p>EUR</p> </li> <li> <p>GBP</p> </li> <li> <p>CAD</p> </li> <li> <p>INR</p> </li> <li> <p>JPY</p> </li> <li> <p>CHF</p> </li> <li> <p>AUD</p> </li> <li> <p>CNY</p> </li> <li> <p>BZR</p> </li> <li> <p>SEK</p> </li> <li> <p>HKD</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Confidence: PercentSchema.and(
-      z.any().openapi({ description: 'Percentage confideence in the detected currency.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Returns the kind of currency detected.', required: [] })
-  .openapi('ExpenseCurrency')
-
-const StringListSchema = z.array(StringSchema).openapi('StringList')
-
-const ExpenseGroupPropertySchema = z
-  .object({
-    Types: StringListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Informs you on whether the expense group is a name or an address.',
-        }),
-    ).exactOptional(),
-    Id: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Provides a group Id number, which will be the same for each in the group.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Shows the group that a certain key belongs to. This helps differentiate between names and addresses for different organizations, that can be hard to determine via JSON response.',
-    required: [],
-  })
-  .openapi('ExpenseGroupProperty')
-
-const ExpenseGroupPropertyListSchema = z
-  .array(ExpenseGroupPropertySchema)
-  .openapi('ExpenseGroupPropertyList')
-
-const ExpenseFieldSchema = z
-  .object({
-    Type: ExpenseTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The implied label of a detected element. Present alongside LabelDetection for explicit elements.',
-        }),
-    ).exactOptional(),
-    LabelDetection: ExpenseDetectionSchema.and(
-      z.any().openapi({ description: 'The explicitly stated label of a detected element.' }),
-    ).exactOptional(),
-    ValueDetection: ExpenseDetectionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The value of a detected element. Present in explicit and implicit elements.',
-        }),
-    ).exactOptional(),
-    PageNumber: UIntegerSchema.and(
-      z.any().openapi({ description: 'The page number the value was detected on.' }),
-    ).exactOptional(),
-    Currency: ExpenseCurrencySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Shows the kind of currency, both the code and confidence associated with any monatary value detected.',
-        }),
-    ).exactOptional(),
-    GroupProperties: ExpenseGroupPropertyListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Shows which group a response object belongs to, such as whether an address line belongs to the vendor's address or the recipent's address.",
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Breakdown of detected information, seperated into the catagories Type, LabelDetection, and ValueDetection',
-    required: [],
-  })
-  .openapi('ExpenseField')
-
-const ExpenseFieldListSchema = z.array(ExpenseFieldSchema).openapi('ExpenseFieldList')
-
-const LineItemFieldsSchema = z
-  .object({
-    LineItemExpenseFields: ExpenseFieldListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'ExpenseFields used to show information from detected lines on a table.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      "A structure that holds information about the different lines found in a document's tables.",
-    required: [],
-  })
-  .openapi('LineItemFields')
-
-const LineItemListSchema = z.array(LineItemFieldsSchema).openapi('LineItemList')
-
-const LineItemGroupSchema = z
-  .object({
-    LineItemGroupIndex: UIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number used to identify a specific table in a document. The first table encountered will have a LineItemGroupIndex of 1, the second 2, etc.',
-        }),
-    ).exactOptional(),
-    LineItems: LineItemListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The breakdown of information on a particular line of a table. ' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      "A grouping of tables which contain LineItems, with each table identified by the table's <code>LineItemGroupIndex</code>.",
-    required: [],
-  })
-  .openapi('LineItemGroup')
-
-const LineItemGroupListSchema = z.array(LineItemGroupSchema).openapi('LineItemGroupList')
-
-const ExpenseDocumentSchema = z
-  .object({
-    ExpenseIndex: UIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Denotes which invoice or receipt in the document the information is coming from. First document will be 1, the second 2, and so on.',
-        }),
-    ).exactOptional(),
-    SummaryFields: ExpenseFieldListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Any information found outside of a table by Amazon Textract.' }),
-    ).exactOptional(),
-    LineItemGroups: LineItemGroupListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information detected on each table of a document, seperated into <code>LineItems</code>.',
-        }),
-    ).exactOptional(),
-    Blocks: BlockListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This is a block object, the same as reported when DetectDocumentText is run on a document. It provides word level recognition of text.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'The structure holding all the information returned by AnalyzeExpense',
-    required: [],
-  })
-  .openapi('ExpenseDocument')
-
-const ExpenseDocumentListSchema = z.array(ExpenseDocumentSchema).openapi('ExpenseDocumentList')
-
-const AnalyzeExpenseResponseSchema = z
+const AnalyzeExpenseResponseSchema: z.ZodType<AnalyzeExpenseResponseType> = z
   .object({
     DocumentMetadata: DocumentMetadataSchema.exactOptional(),
-    ExpenseDocuments: ExpenseDocumentListSchema.and(
-      z.any().openapi({ description: 'The expenses detected by Amazon Textract.' }),
-    ).exactOptional(),
+    ExpenseDocuments: ExpenseDocumentListSchema.exactOptional().openapi({
+      description: 'The expenses detected by Amazon Textract.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('AnalyzeExpenseResponse')
@@ -876,125 +991,16 @@ const AnalyzeExpenseRequestSchema = z
   .openapi({ required: ['Document'], title: 'AnalyzeExpenseRequest' })
   .openapi('AnalyzeExpenseRequest')
 
-const ValueTypeSchema = z.literal('DATE').openapi('ValueType')
-
-const NormalizedValueSchema = z
+const AnalyzeIDResponseSchema: z.ZodType<AnalyzeIDResponseType> = z
   .object({
-    Value: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The value of the date, written as Year-Month-DayTHour:Minute:Second.',
-        }),
-    ).exactOptional(),
-    ValueType: ValueTypeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The normalized type of the value detected. In this case, DATE.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Contains information relating to dates in a document, including the type of value, and the value.',
-    required: [],
-  })
-  .openapi('NormalizedValue')
-
-const AnalyzeIDDetectionsSchema = z
-  .object({
-    Text: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Text of either the normalized field or value associated with it.',
-        }),
-    ),
-    NormalizedValue: NormalizedValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Only returned for dates, returns the type of value detected and the date written in a more machine readable way.',
-        }),
-    ).exactOptional(),
-    Confidence: PercentSchema.and(
-      z.any().openapi({ description: 'The confidence score of the detected text.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: ['Text'],
-    description: 'Used to contain the information detected by an AnalyzeID operation.',
-  })
-  .openapi('AnalyzeIDDetections')
-
-const IdentityDocumentFieldSchema = z
-  .object({
-    Type: AnalyzeIDDetectionsSchema.exactOptional(),
-    ValueDetection: AnalyzeIDDetectionsSchema.exactOptional(),
-  })
-  .openapi({
-    description:
-      'Structure containing both the normalized type of the extracted information and the text associated with it. These are extracted as Type and Value respectively.',
-    required: [],
-  })
-  .openapi('IdentityDocumentField')
-
-const IdentityDocumentFieldListSchema = z
-  .array(IdentityDocumentFieldSchema)
-  .openapi('IdentityDocumentFieldList')
-
-const IdentityDocumentSchema = z
-  .object({
-    DocumentIndex: UIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Denotes the placement of a document in the IdentityDocument list. The first document is marked 1, the second 2 and so on.',
-        }),
-    ).exactOptional(),
-    IdentityDocumentFields: IdentityDocumentFieldListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The structure used to record information extracted from identity documents. Contains both normalized field and value of the extracted text.',
-        }),
-    ).exactOptional(),
-    Blocks: BlockListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Individual word recognition, as returned by document detection.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'The structure that lists each document processed in an AnalyzeID operation.',
-    required: [],
-  })
-  .openapi('IdentityDocument')
-
-const IdentityDocumentListSchema = z.array(IdentityDocumentSchema).openapi('IdentityDocumentList')
-
-const AnalyzeIDResponseSchema = z
-  .object({
-    IdentityDocuments: IdentityDocumentListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of documents processed by AnalyzeID. Includes a number denoting their place in the list and the response structure for the document.',
-        }),
-    ).exactOptional(),
+    IdentityDocuments: IdentityDocumentListSchema.exactOptional().openapi({
+      description:
+        'The list of documents processed by AnalyzeID. Includes a number denoting their place in the list and the response structure for the document.',
+    }),
     DocumentMetadata: DocumentMetadataSchema.exactOptional(),
-    AnalyzeIDModelVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The version of the AnalyzeIdentity API being used to process documents.',
-        }),
-    ).exactOptional(),
+    AnalyzeIDModelVersion: StringSchema.exactOptional().openapi({
+      description: 'The version of the AnalyzeIdentity API being used to process documents.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('AnalyzeIDResponse')
@@ -1003,129 +1009,62 @@ const DocumentPagesSchema = z.array(DocumentSchema).min(1).max(2).openapi('Docum
 
 const AnalyzeIDRequestSchema = z
   .object({
-    DocumentPages: DocumentPagesSchema.and(
-      z.any().openapi({ description: 'The document being passed to AnalyzeID.' }),
-    ),
+    DocumentPages: DocumentPagesSchema.openapi({
+      description: 'The document being passed to AnalyzeID.',
+    }),
   })
   .openapi({ required: ['DocumentPages'], title: 'AnalyzeIDRequest' })
   .openapi('AnalyzeIDRequest')
 
 const DetectDocumentTextResponseSchema = z
   .object({
-    DocumentMetadata: DocumentMetadataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Metadata about the document. It contains the number of pages that are detected in the document.',
-        }),
-    ).exactOptional(),
-    Blocks: BlockListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "An array of <code>Block</code> objects that contain the text that's detected in the document.",
-        }),
-    ).exactOptional(),
-    DetectDocumentTextModelVersion: StringSchema.and(
-      z.any().openapi({ description: '<p/>' }),
-    ).exactOptional(),
+    DocumentMetadata: DocumentMetadataSchema.exactOptional().openapi({
+      description:
+        'Metadata about the document. It contains the number of pages that are detected in the document.',
+    }),
+    Blocks: BlockListSchema.exactOptional().openapi({
+      description:
+        "An array of <code>Block</code> objects that contain the text that's detected in the document.",
+    }),
+    DetectDocumentTextModelVersion: StringSchema.exactOptional().openapi({ description: '<p/>' }),
   })
   .openapi({ required: [] })
   .openapi('DetectDocumentTextResponse')
 
 const DetectDocumentTextRequestSchema = z
   .object({
-    Document: DocumentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The input document as base64-encoded bytes or an Amazon S3 object. If you use the AWS CLI to call Amazon Textract operations, you can't pass image bytes. The document must be an image in JPEG or PNG format.</p> <p>If you're using an AWS SDK to call Amazon Textract, you might not need to base64-encode image bytes that are passed using the <code>Bytes</code> field. </p>",
-        }),
-    ),
+    Document: DocumentSchema.openapi({
+      description:
+        "<p>The input document as base64-encoded bytes or an Amazon S3 object. If you use the AWS CLI to call Amazon Textract operations, you can't pass image bytes. The document must be an image in JPEG or PNG format.</p> <p>If you're using an AWS SDK to call Amazon Textract, you might not need to base64-encode image bytes that are passed using the <code>Bytes</code> field. </p>",
+    }),
   })
   .openapi({ required: ['Document'], title: 'DetectDocumentTextRequest' })
   .openapi('DetectDocumentTextRequest')
 
-const JobStatusSchema = z
-  .enum(['IN_PROGRESS', 'SUCCEEDED', 'FAILED', 'PARTIAL_SUCCESS'])
-  .openapi('JobStatus')
-
-const PaginationTokenSchema = z
-  .string()
-  .regex(/.*\S.*/)
-  .min(1)
-  .max(255)
-  .openapi('PaginationToken')
-
-const ErrorCodeSchema = z.string().openapi('ErrorCode')
-
-const PagesSchema = z.array(UIntegerSchema).openapi('Pages')
-
-const WarningSchema = z
-  .object({
-    ErrorCode: ErrorCodeSchema.and(
-      z.any().openapi({ description: 'The error code for the warning.' }),
-    ).exactOptional(),
-    Pages: PagesSchema.and(
-      z.any().openapi({ description: 'A list of the pages that the warning applies to.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'A warning about an issue that occurred during asynchronous text analysis (<a>StartDocumentAnalysis</a>) or asynchronous document text detection (<a>StartDocumentTextDetection</a>). ',
-    required: [],
-  })
-  .openapi('Warning')
-
-const WarningsSchema = z.array(WarningSchema).openapi('Warnings')
-
-const StatusMessageSchema = z.string().openapi('StatusMessage')
-
 const GetDocumentAnalysisResponseSchema = z
   .object({
-    DocumentMetadata: DocumentMetadataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about a document that Amazon Textract processed. <code>DocumentMetadata</code> is returned in every page of paginated responses from an Amazon Textract video operation.',
-        }),
-    ).exactOptional(),
-    JobStatus: JobStatusSchema.and(
-      z.any().openapi({ description: 'The current status of the text detection job.' }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the response is truncated, Amazon Textract returns this token. You can use this token in the subsequent request to retrieve the next set of text detection results.',
-        }),
-    ).exactOptional(),
-    Blocks: BlockListSchema.and(
-      z.any().openapi({ description: 'The results of the text-analysis operation.' }),
-    ).exactOptional(),
-    Warnings: WarningsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of warnings that occurred during the document-analysis operation.',
-        }),
-    ).exactOptional(),
-    StatusMessage: StatusMessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Returns if the detection job could not be completed. Contains explanation for what error occured.',
-        }),
-    ).exactOptional(),
-    AnalyzeDocumentModelVersion: StringSchema.and(
-      z.any().openapi({ description: '<p/>' }),
-    ).exactOptional(),
+    DocumentMetadata: DocumentMetadataSchema.exactOptional().openapi({
+      description:
+        'Information about a document that Amazon Textract processed. <code>DocumentMetadata</code> is returned in every page of paginated responses from an Amazon Textract video operation.',
+    }),
+    JobStatus: JobStatusSchema.exactOptional().openapi({
+      description: 'The current status of the text detection job.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'If the response is truncated, Amazon Textract returns this token. You can use this token in the subsequent request to retrieve the next set of text detection results.',
+    }),
+    Blocks: BlockListSchema.exactOptional().openapi({
+      description: 'The results of the text-analysis operation.',
+    }),
+    Warnings: WarningsSchema.exactOptional().openapi({
+      description: 'A list of warnings that occurred during the document-analysis operation.',
+    }),
+    StatusMessage: StatusMessageSchema.exactOptional().openapi({
+      description:
+        'Returns if the detection job could not be completed. Contains explanation for what error occured.',
+    }),
+    AnalyzeDocumentModelVersion: StringSchema.exactOptional().openapi({ description: '<p/>' }),
   })
   .openapi({ required: [] })
   .openapi('GetDocumentAnalysisResponse')
@@ -1141,30 +1080,18 @@ const MaxResultsSchema = z.int().min(1).openapi('MaxResults')
 
 const GetDocumentAnalysisRequestSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the text-detection job. The <code>JobId</code> is returned from <code>StartDocumentAnalysis</code>. A <code>JobId</code> value is only valid for 7 days.',
-        }),
-    ),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results to return per paginated call. The largest value that you can specify is 1,000. If you specify a value greater than 1,000, a maximum of 1,000 results is returned. The default value is 1,000.',
-        }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the previous response was incomplete (because there are more blocks to retrieve), Amazon Textract returns a pagination token in the response. You can use this pagination token to retrieve the next set of blocks.',
-        }),
-    ).exactOptional(),
+    JobId: JobIdSchema.openapi({
+      description:
+        'A unique identifier for the text-detection job. The <code>JobId</code> is returned from <code>StartDocumentAnalysis</code>. A <code>JobId</code> value is only valid for 7 days.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results to return per paginated call. The largest value that you can specify is 1,000. If you specify a value greater than 1,000, a maximum of 1,000 results is returned. The default value is 1,000.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'If the previous response was incomplete (because there are more blocks to retrieve), Amazon Textract returns a pagination token in the response. You can use this pagination token to retrieve the next set of blocks.',
+    }),
   })
   .openapi({ required: ['JobId'], title: 'GetDocumentAnalysisRequest' })
   .openapi('GetDocumentAnalysisRequest')
@@ -1175,404 +1102,142 @@ const InvalidKMSKeyExceptionSchema = z.any().openapi('InvalidKMSKeyException')
 
 const GetDocumentTextDetectionResponseSchema = z
   .object({
-    DocumentMetadata: DocumentMetadataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about a document that Amazon Textract processed. <code>DocumentMetadata</code> is returned in every page of paginated responses from an Amazon Textract video operation.',
-        }),
-    ).exactOptional(),
-    JobStatus: JobStatusSchema.and(
-      z.any().openapi({ description: 'The current status of the text detection job.' }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the response is truncated, Amazon Textract returns this token. You can use this token in the subsequent request to retrieve the next set of text-detection results.',
-        }),
-    ).exactOptional(),
-    Blocks: BlockListSchema.and(
-      z.any().openapi({ description: 'The results of the text-detection operation.' }),
-    ).exactOptional(),
-    Warnings: WarningsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of warnings that occurred during the text-detection operation for the document.',
-        }),
-    ).exactOptional(),
-    StatusMessage: StatusMessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Returns if the detection job could not be completed. Contains explanation for what error occured. ',
-        }),
-    ).exactOptional(),
-    DetectDocumentTextModelVersion: StringSchema.and(
-      z.any().openapi({ description: '<p/>' }),
-    ).exactOptional(),
+    DocumentMetadata: DocumentMetadataSchema.exactOptional().openapi({
+      description:
+        'Information about a document that Amazon Textract processed. <code>DocumentMetadata</code> is returned in every page of paginated responses from an Amazon Textract video operation.',
+    }),
+    JobStatus: JobStatusSchema.exactOptional().openapi({
+      description: 'The current status of the text detection job.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'If the response is truncated, Amazon Textract returns this token. You can use this token in the subsequent request to retrieve the next set of text-detection results.',
+    }),
+    Blocks: BlockListSchema.exactOptional().openapi({
+      description: 'The results of the text-detection operation.',
+    }),
+    Warnings: WarningsSchema.exactOptional().openapi({
+      description:
+        'A list of warnings that occurred during the text-detection operation for the document.',
+    }),
+    StatusMessage: StatusMessageSchema.exactOptional().openapi({
+      description:
+        'Returns if the detection job could not be completed. Contains explanation for what error occured. ',
+    }),
+    DetectDocumentTextModelVersion: StringSchema.exactOptional().openapi({ description: '<p/>' }),
   })
   .openapi({ required: [] })
   .openapi('GetDocumentTextDetectionResponse')
 
 const GetDocumentTextDetectionRequestSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the text detection job. The <code>JobId</code> is returned from <code>StartDocumentTextDetection</code>. A <code>JobId</code> value is only valid for 7 days.',
-        }),
-    ),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results to return per paginated call. The largest value you can specify is 1,000. If you specify a value greater than 1,000, a maximum of 1,000 results is returned. The default value is 1,000.',
-        }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the previous response was incomplete (because there are more blocks to retrieve), Amazon Textract returns a pagination token in the response. You can use this pagination token to retrieve the next set of blocks.',
-        }),
-    ).exactOptional(),
+    JobId: JobIdSchema.openapi({
+      description:
+        'A unique identifier for the text detection job. The <code>JobId</code> is returned from <code>StartDocumentTextDetection</code>. A <code>JobId</code> value is only valid for 7 days.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results to return per paginated call. The largest value you can specify is 1,000. If you specify a value greater than 1,000, a maximum of 1,000 results is returned. The default value is 1,000.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'If the previous response was incomplete (because there are more blocks to retrieve), Amazon Textract returns a pagination token in the response. You can use this pagination token to retrieve the next set of blocks.',
+    }),
   })
   .openapi({ required: ['JobId'], title: 'GetDocumentTextDetectionRequest' })
   .openapi('GetDocumentTextDetectionRequest')
 
-const GetExpenseAnalysisResponseSchema = z
+const GetExpenseAnalysisResponseSchema: z.ZodType<GetExpenseAnalysisResponseType> = z
   .object({
-    DocumentMetadata: DocumentMetadataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about a document that Amazon Textract processed. <code>DocumentMetadata</code> is returned in every page of paginated responses from an Amazon Textract operation.',
-        }),
-    ).exactOptional(),
-    JobStatus: JobStatusSchema.and(
-      z.any().openapi({ description: 'The current status of the text detection job.' }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the response is truncated, Amazon Textract returns this token. You can use this token in the subsequent request to retrieve the next set of text-detection results.',
-        }),
-    ).exactOptional(),
-    ExpenseDocuments: ExpenseDocumentListSchema.and(
-      z.any().openapi({ description: 'The expenses detected by Amazon Textract.' }),
-    ).exactOptional(),
-    Warnings: WarningsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of warnings that occurred during the text-detection operation for the document.',
-        }),
-    ).exactOptional(),
-    StatusMessage: StatusMessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Returns if the detection job could not be completed. Contains explanation for what error occured. ',
-        }),
-    ).exactOptional(),
-    AnalyzeExpenseModelVersion: StringSchema.and(
-      z.any().openapi({ description: 'The current model version of AnalyzeExpense.' }),
-    ).exactOptional(),
+    DocumentMetadata: DocumentMetadataSchema.exactOptional().openapi({
+      description:
+        'Information about a document that Amazon Textract processed. <code>DocumentMetadata</code> is returned in every page of paginated responses from an Amazon Textract operation.',
+    }),
+    JobStatus: JobStatusSchema.exactOptional().openapi({
+      description: 'The current status of the text detection job.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'If the response is truncated, Amazon Textract returns this token. You can use this token in the subsequent request to retrieve the next set of text-detection results.',
+    }),
+    ExpenseDocuments: ExpenseDocumentListSchema.exactOptional().openapi({
+      description: 'The expenses detected by Amazon Textract.',
+    }),
+    Warnings: WarningsSchema.exactOptional().openapi({
+      description:
+        'A list of warnings that occurred during the text-detection operation for the document.',
+    }),
+    StatusMessage: StatusMessageSchema.exactOptional().openapi({
+      description:
+        'Returns if the detection job could not be completed. Contains explanation for what error occured. ',
+    }),
+    AnalyzeExpenseModelVersion: StringSchema.exactOptional().openapi({
+      description: 'The current model version of AnalyzeExpense.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetExpenseAnalysisResponse')
 
 const GetExpenseAnalysisRequestSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the text detection job. The <code>JobId</code> is returned from <code>StartExpenseAnalysis</code>. A <code>JobId</code> value is only valid for 7 days.',
-        }),
-    ),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results to return per paginated call. The largest value you can specify is 20. If you specify a value greater than 20, a maximum of 20 results is returned. The default value is 20.',
-        }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the previous response was incomplete (because there are more blocks to retrieve), Amazon Textract returns a pagination token in the response. You can use this pagination token to retrieve the next set of blocks.',
-        }),
-    ).exactOptional(),
+    JobId: JobIdSchema.openapi({
+      description:
+        'A unique identifier for the text detection job. The <code>JobId</code> is returned from <code>StartExpenseAnalysis</code>. A <code>JobId</code> value is only valid for 7 days.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results to return per paginated call. The largest value you can specify is 20. If you specify a value greater than 20, a maximum of 20 results is returned. The default value is 20.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'If the previous response was incomplete (because there are more blocks to retrieve), Amazon Textract returns a pagination token in the response. You can use this pagination token to retrieve the next set of blocks.',
+    }),
   })
   .openapi({ required: ['JobId'], title: 'GetExpenseAnalysisRequest' })
   .openapi('GetExpenseAnalysisRequest')
 
-const PredictionSchema = z
-  .object({
-    Value: NonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The predicted value of a detected object.' }),
-    ).exactOptional(),
-    Confidence: PercentSchema.and(
-      z.any().openapi({ description: "Amazon Textract's confidence in its predicted value." }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Contains information regarding predicted values returned by Amazon Textract operations, including the predicted value and the confidence in the predicted value.',
-    required: [],
-  })
-  .openapi('Prediction')
-
-const PredictionListSchema = z.array(PredictionSchema).openapi('PredictionList')
-
-const PageClassificationSchema = z
-  .object({
-    PageType: PredictionListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The class, or document type, assigned to a detected Page object. The class, or document type, assigned to a detected Page object.',
-        }),
-    ),
-    PageNumber: PredictionListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            " The page number the value was detected on, relative to Amazon Textract's starting position.",
-        }),
-    ),
-  })
-  .openapi({
-    required: ['PageType', 'PageNumber'],
-    description:
-      "The class assigned to a Page object detected in an input document. Contains information regarding the predicted type/class of a document's page and the page number that the Page object was detected on.",
-  })
-  .openapi('PageClassification')
-
-const LendingDetectionSchema = z
-  .object({
-    Text: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The text extracted for a detected value in a lending document.' }),
-    ).exactOptional(),
-    SelectionStatus: SelectionStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The selection status of a selection element, such as an option button or check box.',
-        }),
-    ).exactOptional(),
-    Geometry: GeometrySchema.exactOptional(),
-    Confidence: PercentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The confidence level for the text of a detected value in a lending document.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'The results extracted for a lending document.', required: [] })
-  .openapi('LendingDetection')
-
-const LendingDetectionListSchema = z.array(LendingDetectionSchema).openapi('LendingDetectionList')
-
-const LendingFieldSchema = z
-  .object({
-    Type: StringSchema.and(
-      z.any().openapi({ description: 'The type of the lending document.' }),
-    ).exactOptional(),
-    KeyDetection: LendingDetectionSchema.exactOptional(),
-    ValueDetections: LendingDetectionListSchema.and(
-      z.any().openapi({ description: 'An array of LendingDetection objects.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Holds the normalized key-value pairs returned by AnalyzeDocument, including the document type, detected text, and geometry.',
-    required: [],
-  })
-  .openapi('LendingField')
-
-const LendingFieldListSchema = z.array(LendingFieldSchema).openapi('LendingFieldList')
-
-const SignatureDetectionSchema = z
-  .object({
-    Confidence: PercentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The confidence, from 0 to 100, in the predicted values for a detected signature.',
-        }),
-    ).exactOptional(),
-    Geometry: GeometrySchema.exactOptional(),
-  })
-  .openapi({ description: 'Information regarding a detected signature on a page.', required: [] })
-  .openapi('SignatureDetection')
-
-const SignatureDetectionListSchema = z
-  .array(SignatureDetectionSchema)
-  .openapi('SignatureDetectionList')
-
-const LendingDocumentSchema = z
-  .object({
-    LendingFields: LendingFieldListSchema.and(
-      z.any().openapi({ description: 'An array of LendingField objects.' }),
-    ).exactOptional(),
-    SignatureDetections: SignatureDetectionListSchema.and(
-      z.any().openapi({ description: 'A list of signatures detected in a lending document.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'Holds the structured data returned by AnalyzeDocument for lending documents.',
-    required: [],
-  })
-  .openapi('LendingDocument')
-
-const ExtractionSchema = z
-  .object({
-    LendingDocument: LendingDocumentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Holds the structured data returned by AnalyzeDocument for lending documents.',
-        }),
-    ).exactOptional(),
-    ExpenseDocument: ExpenseDocumentSchema.exactOptional(),
-    IdentityDocument: IdentityDocumentSchema.exactOptional(),
-  })
-  .openapi({
-    description:
-      'Contains information extracted by an analysis operation after using StartLendingAnalysis.',
-    required: [],
-  })
-  .openapi('Extraction')
-
-const ExtractionListSchema = z.array(ExtractionSchema).openapi('ExtractionList')
-
-const LendingResultSchema = z
-  .object({
-    Page: UIntegerSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The page number for a page, with regard to whole submission.' }),
-    ).exactOptional(),
-    PageClassification: PageClassificationSchema.and(
-      z.any().openapi({ description: 'The classifier result for a given page.' }),
-    ).exactOptional(),
-    Extractions: ExtractionListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of Extraction to hold structured data. e.g. normalized key value pairs instead of raw OCR detections .',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'Contains the detections for each page analyzed through the Analyze Lending API.',
-    required: [],
-  })
-  .openapi('LendingResult')
-
-const LendingResultListSchema = z.array(LendingResultSchema).openapi('LendingResultList')
-
-const GetLendingAnalysisResponseSchema = z
+const GetLendingAnalysisResponseSchema: z.ZodType<GetLendingAnalysisResponseType> = z
   .object({
     DocumentMetadata: DocumentMetadataSchema.exactOptional(),
-    JobStatus: JobStatusSchema.and(
-      z.any().openapi({ description: ' The current status of the lending analysis job.' }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the response is truncated, Amazon Textract returns this token. You can use this token in the subsequent request to retrieve the next set of lending results.',
-        }),
-    ).exactOptional(),
-    Results: LendingResultListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            " Holds the information returned by one of AmazonTextract's document analysis operations for the pinstripe.",
-        }),
-    ).exactOptional(),
-    Warnings: WarningsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' A list of warnings that occurred during the lending analysis operation. ',
-        }),
-    ).exactOptional(),
-    StatusMessage: StatusMessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Returns if the lending analysis job could not be completed. Contains explanation for what error occurred. ',
-        }),
-    ).exactOptional(),
-    AnalyzeLendingModelVersion: StringSchema.and(
-      z.any().openapi({ description: ' The current model version of the Analyze Lending API.' }),
-    ).exactOptional(),
+    JobStatus: JobStatusSchema.exactOptional().openapi({
+      description: ' The current status of the lending analysis job.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'If the response is truncated, Amazon Textract returns this token. You can use this token in the subsequent request to retrieve the next set of lending results.',
+    }),
+    Results: LendingResultListSchema.exactOptional().openapi({
+      description:
+        " Holds the information returned by one of AmazonTextract's document analysis operations for the pinstripe.",
+    }),
+    Warnings: WarningsSchema.exactOptional().openapi({
+      description: ' A list of warnings that occurred during the lending analysis operation. ',
+    }),
+    StatusMessage: StatusMessageSchema.exactOptional().openapi({
+      description:
+        ' Returns if the lending analysis job could not be completed. Contains explanation for what error occurred. ',
+    }),
+    AnalyzeLendingModelVersion: StringSchema.exactOptional().openapi({
+      description: ' The current model version of the Analyze Lending API.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetLendingAnalysisResponse')
 
 const GetLendingAnalysisRequestSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the lending or text-detection job. The <code>JobId</code> is returned from <code>StartLendingAnalysis</code>. A <code>JobId</code> value is only valid for 7 days.',
-        }),
-    ),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results to return per paginated call. The largest value that you can specify is 30. If you specify a value greater than 30, a maximum of 30 results is returned. The default value is 30.',
-        }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the previous response was incomplete, Amazon Textract returns a pagination token in the response. You can use this pagination token to retrieve the next set of lending results.',
-        }),
-    ).exactOptional(),
+    JobId: JobIdSchema.openapi({
+      description:
+        'A unique identifier for the lending or text-detection job. The <code>JobId</code> is returned from <code>StartLendingAnalysis</code>. A <code>JobId</code> value is only valid for 7 days.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results to return per paginated call. The largest value that you can specify is 30. If you specify a value greater than 30, a maximum of 30 results is returned. The default value is 30.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'If the previous response was incomplete, Amazon Textract returns a pagination token in the response. You can use this pagination token to retrieve the next set of lending results.',
+    }),
   })
   .openapi({ required: ['JobId'], title: 'GetLendingAnalysisRequest' })
   .openapi('GetLendingAnalysisRequest')
@@ -1581,21 +1246,13 @@ const PageListSchema = z.array(UIntegerSchema).openapi('PageList')
 
 const SplitDocumentSchema = z
   .object({
-    Index: UIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The index for a given document in a DocumentGroup of a specific Type.',
-        }),
-    ).exactOptional(),
-    Pages: PageListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of page numbers for a for a given document, ordered by logical boundary.',
-        }),
-    ).exactOptional(),
+    Index: UIntegerSchema.exactOptional().openapi({
+      description: 'The index for a given document in a DocumentGroup of a specific Type.',
+    }),
+    Pages: PageListSchema.exactOptional().openapi({
+      description:
+        'An array of page numbers for a for a given document, ordered by logical boundary.',
+    }),
   })
   .openapi({
     description: 'Contains information about the pages of a document, defined by logical boundary.',
@@ -1607,9 +1264,9 @@ const SplitDocumentListSchema = z.array(SplitDocumentSchema).openapi('SplitDocum
 
 const DetectedSignatureSchema = z
   .object({
-    Page: UIntegerSchema.and(
-      z.any().openapi({ description: 'The page a detected signature was found on.' }),
-    ).exactOptional(),
+    Page: UIntegerSchema.exactOptional().openapi({
+      description: 'The page a detected signature was found on.',
+    }),
   })
   .openapi({
     description: 'A structure that holds information regarding a detected signature on a page.',
@@ -1623,9 +1280,9 @@ const DetectedSignatureListSchema = z
 
 const UndetectedSignatureSchema = z
   .object({
-    Page: UIntegerSchema.and(
-      z.any().openapi({ description: 'The page where a signature was expected but not found.' }),
-    ).exactOptional(),
+    Page: UIntegerSchema.exactOptional().openapi({
+      description: 'The page where a signature was expected but not found.',
+    }),
   })
   .openapi({
     description:
@@ -1640,34 +1297,20 @@ const UndetectedSignatureListSchema = z
 
 const DocumentGroupSchema = z
   .object({
-    Type: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of document that Amazon Textract has detected. See <a href="https://docs.aws.amazon.com/textract/latest/dg/lending-response-objects.html">Analyze Lending Response Objects</a> for a list of all types returned by Textract.',
-        }),
-    ).exactOptional(),
-    SplitDocuments: SplitDocumentListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array that contains information about the pages of a document, defined by logical boundary.',
-        }),
-    ).exactOptional(),
-    DetectedSignatures: DetectedSignatureListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A list of the detected signatures found in a document group.' }),
-    ).exactOptional(),
-    UndetectedSignatures: UndetectedSignatureListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of any expected signatures not found in a document group.',
-        }),
-    ).exactOptional(),
+    Type: NonEmptyStringSchema.exactOptional().openapi({
+      description:
+        'The type of document that Amazon Textract has detected. See <a href="https://docs.aws.amazon.com/textract/latest/dg/lending-response-objects.html">Analyze Lending Response Objects</a> for a list of all types returned by Textract.',
+    }),
+    SplitDocuments: SplitDocumentListSchema.exactOptional().openapi({
+      description:
+        'An array that contains information about the pages of a document, defined by logical boundary.',
+    }),
+    DetectedSignatures: DetectedSignatureListSchema.exactOptional().openapi({
+      description: 'A list of the detected signatures found in a document group.',
+    }),
+    UndetectedSignatures: UndetectedSignatureListSchema.exactOptional().openapi({
+      description: 'A list of any expected signatures not found in a document group.',
+    }),
   })
   .openapi({
     description: 'Summary information about documents grouped by the same document type.',
@@ -1683,12 +1326,12 @@ const UndetectedDocumentTypeListSchema = z
 
 const LendingSummarySchema = z
   .object({
-    DocumentGroups: DocumentGroupListSchema.and(
-      z.any().openapi({ description: 'Contains an array of all DocumentGroup objects.' }),
-    ).exactOptional(),
-    UndetectedDocumentTypes: UndetectedDocumentTypeListSchema.and(
-      z.any().openapi({ description: 'UndetectedDocumentTypes.' }),
-    ).exactOptional(),
+    DocumentGroups: DocumentGroupListSchema.exactOptional().openapi({
+      description: 'Contains an array of all DocumentGroup objects.',
+    }),
+    UndetectedDocumentTypes: UndetectedDocumentTypeListSchema.exactOptional().openapi({
+      description: 'UndetectedDocumentTypes.',
+    }),
   })
   .openapi({
     description: 'Contains information regarding DocumentGroups and UndetectedDocumentTypes.',
@@ -1699,69 +1342,51 @@ const LendingSummarySchema = z
 const GetLendingAnalysisSummaryResponseSchema = z
   .object({
     DocumentMetadata: DocumentMetadataSchema.exactOptional(),
-    JobStatus: JobStatusSchema.and(
-      z.any().openapi({ description: ' The current status of the lending analysis job. ' }),
-    ).exactOptional(),
-    Summary: LendingSummarySchema.and(
-      z
-        .any()
-        .openapi({ description: ' Contains summary information for documents grouped by type.' }),
-    ).exactOptional(),
-    Warnings: WarningsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of warnings that occurred during the lending analysis operation.',
-        }),
-    ).exactOptional(),
-    StatusMessage: StatusMessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Returns if the lending analysis could not be completed. Contains explanation for what error occurred.',
-        }),
-    ).exactOptional(),
-    AnalyzeLendingModelVersion: StringSchema.and(
-      z.any().openapi({ description: 'The current model version of the Analyze Lending API.' }),
-    ).exactOptional(),
+    JobStatus: JobStatusSchema.exactOptional().openapi({
+      description: ' The current status of the lending analysis job. ',
+    }),
+    Summary: LendingSummarySchema.exactOptional().openapi({
+      description: ' Contains summary information for documents grouped by type.',
+    }),
+    Warnings: WarningsSchema.exactOptional().openapi({
+      description: 'A list of warnings that occurred during the lending analysis operation.',
+    }),
+    StatusMessage: StatusMessageSchema.exactOptional().openapi({
+      description:
+        'Returns if the lending analysis could not be completed. Contains explanation for what error occurred.',
+    }),
+    AnalyzeLendingModelVersion: StringSchema.exactOptional().openapi({
+      description: 'The current model version of the Analyze Lending API.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetLendingAnalysisSummaryResponse')
 
 const GetLendingAnalysisSummaryRequestSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A unique identifier for the lending or text-detection job. The <code>JobId</code> is returned from StartLendingAnalysis. A <code>JobId</code> value is only valid for 7 days.',
-        }),
-    ),
+    JobId: JobIdSchema.openapi({
+      description:
+        ' A unique identifier for the lending or text-detection job. The <code>JobId</code> is returned from StartLendingAnalysis. A <code>JobId</code> value is only valid for 7 days.',
+    }),
   })
   .openapi({ required: ['JobId'], title: 'GetLendingAnalysisSummaryRequest' })
   .openapi('GetLendingAnalysisSummaryRequest')
 
 const StartDocumentAnalysisResponseSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier for the document text detection job. Use <code>JobId</code> to identify the job in a subsequent call to <code>GetDocumentAnalysis</code>. A <code>JobId</code> value is only valid for 7 days.',
-        }),
-    ).exactOptional(),
+    JobId: JobIdSchema.exactOptional().openapi({
+      description:
+        'The identifier for the document text detection job. Use <code>JobId</code> to identify the job in a subsequent call to <code>GetDocumentAnalysis</code>. A <code>JobId</code> value is only valid for 7 days.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StartDocumentAnalysisResponse')
 
 const DocumentLocationSchema = z
   .object({
-    S3Object: S3ObjectSchema.and(
-      z.any().openapi({ description: 'The Amazon S3 bucket that contains the input document.' }),
-    ).exactOptional(),
+    S3Object: S3ObjectSchema.exactOptional().openapi({
+      description: 'The Amazon S3 bucket that contains the input document.',
+    }),
   })
   .openapi({
     description:
@@ -1800,21 +1425,13 @@ const RoleArnSchema = z
 
 const NotificationChannelSchema = z
   .object({
-    SNSTopicArn: SNSTopicArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon SNS topic that Amazon Textract posts the completion status to.',
-        }),
-    ),
-    RoleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of an IAM role that gives Amazon Textract publishing permissions to the Amazon SNS topic. ',
-        }),
-    ),
+    SNSTopicArn: SNSTopicArnSchema.openapi({
+      description: 'The Amazon SNS topic that Amazon Textract posts the completion status to.',
+    }),
+    RoleArn: RoleArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of an IAM role that gives Amazon Textract publishing permissions to the Amazon SNS topic. ',
+    }),
   })
   .openapi({
     required: ['SNSTopicArn', 'RoleArn'],
@@ -1825,17 +1442,13 @@ const NotificationChannelSchema = z
 
 const OutputConfigSchema = z
   .object({
-    S3Bucket: S3BucketSchema.and(
-      z.any().openapi({ description: 'The name of the bucket your output will go to.' }),
-    ),
-    S3Prefix: S3ObjectNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The prefix of the object key that the output will be saved to. When not enabled, the prefix will be “textract_output".',
-        }),
-    ).exactOptional(),
+    S3Bucket: S3BucketSchema.openapi({
+      description: 'The name of the bucket your output will go to.',
+    }),
+    S3Prefix: S3ObjectNameSchema.exactOptional().openapi({
+      description:
+        'The prefix of the object key that the output will be saved to. When not enabled, the prefix will be “textract_output".',
+    }),
   })
   .openapi({
     required: ['S3Bucket'],
@@ -1853,57 +1466,33 @@ const KMSKeyIdSchema = z
 
 const StartDocumentAnalysisRequestSchema = z
   .object({
-    DocumentLocation: DocumentLocationSchema.and(
-      z.any().openapi({ description: 'The location of the document to be processed.' }),
-    ),
-    FeatureTypes: FeatureTypesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A list of the types of analysis to perform. Add TABLES to the list to return information about the tables that are detected in the input document. Add FORMS to return detected form data. To perform both types of analysis, add TABLES and FORMS to <code>FeatureTypes</code>. All lines and words detected in the document are included in the response (including text that isn't related to the value of <code>FeatureTypes</code>). ",
-        }),
-    ),
-    ClientRequestToken: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The idempotent token that you use to identify the start request. If you use the same token with multiple <code>StartDocumentAnalysis</code> requests, the same <code>JobId</code> is returned. Use <code>ClientRequestToken</code> to prevent the same job from being accidentally started more than once. For more information, see <a href="https://docs.aws.amazon.com/textract/latest/dg/api-async.html">Calling Amazon Textract Asynchronous Operations</a>.',
-        }),
-    ).exactOptional(),
-    JobTag: JobTagSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "An identifier that you specify that's included in the completion notification published to the Amazon SNS topic. For example, you can use <code>JobTag</code> to identify the type of document that the completion notification corresponds to (such as a tax form or a receipt).",
-        }),
-    ).exactOptional(),
-    NotificationChannel: NotificationChannelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon SNS topic ARN that you want Amazon Textract to publish the completion status of the operation to. ',
-        }),
-    ).exactOptional(),
-    OutputConfig: OutputConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Sets if the output will go to a customer defined bucket. By default, Amazon Textract will save the results internally to be accessed by the GetDocumentAnalysis operation.',
-        }),
-    ).exactOptional(),
-    KMSKeyId: KMSKeyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The KMS key used to encrypt the inference results. This can be in either Key ID or Key Alias format. When a KMS key is provided, the KMS key will be used for server-side encryption of the objects in the customer bucket. When this parameter is not enabled, the result will be encrypted server side,using SSE-S3.',
-        }),
-    ).exactOptional(),
+    DocumentLocation: DocumentLocationSchema.openapi({
+      description: 'The location of the document to be processed.',
+    }),
+    FeatureTypes: FeatureTypesSchema.openapi({
+      description:
+        "A list of the types of analysis to perform. Add TABLES to the list to return information about the tables that are detected in the input document. Add FORMS to return detected form data. To perform both types of analysis, add TABLES and FORMS to <code>FeatureTypes</code>. All lines and words detected in the document are included in the response (including text that isn't related to the value of <code>FeatureTypes</code>). ",
+    }),
+    ClientRequestToken: ClientRequestTokenSchema.exactOptional().openapi({
+      description:
+        'The idempotent token that you use to identify the start request. If you use the same token with multiple <code>StartDocumentAnalysis</code> requests, the same <code>JobId</code> is returned. Use <code>ClientRequestToken</code> to prevent the same job from being accidentally started more than once. For more information, see <a href="https://docs.aws.amazon.com/textract/latest/dg/api-async.html">Calling Amazon Textract Asynchronous Operations</a>.',
+    }),
+    JobTag: JobTagSchema.exactOptional().openapi({
+      description:
+        "An identifier that you specify that's included in the completion notification published to the Amazon SNS topic. For example, you can use <code>JobTag</code> to identify the type of document that the completion notification corresponds to (such as a tax form or a receipt).",
+    }),
+    NotificationChannel: NotificationChannelSchema.exactOptional().openapi({
+      description:
+        'The Amazon SNS topic ARN that you want Amazon Textract to publish the completion status of the operation to. ',
+    }),
+    OutputConfig: OutputConfigSchema.exactOptional().openapi({
+      description:
+        'Sets if the output will go to a customer defined bucket. By default, Amazon Textract will save the results internally to be accessed by the GetDocumentAnalysis operation.',
+    }),
+    KMSKeyId: KMSKeyIdSchema.exactOptional().openapi({
+      description:
+        'The KMS key used to encrypt the inference results. This can be in either Key ID or Key Alias format. When a KMS key is provided, the KMS key will be used for server-side encryption of the objects in the customer bucket. When this parameter is not enabled, the result will be encrypted server side,using SSE-S3.',
+    }),
     QueriesConfig: QueriesConfigSchema.exactOptional(),
   })
   .openapi({
@@ -1920,140 +1509,88 @@ const LimitExceededExceptionSchema = z.any().openapi('LimitExceededException')
 
 const StartDocumentTextDetectionResponseSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the text detection job for the document. Use <code>JobId</code> to identify the job in a subsequent call to <code>GetDocumentTextDetection</code>. A <code>JobId</code> value is only valid for 7 days.',
-        }),
-    ).exactOptional(),
+    JobId: JobIdSchema.exactOptional().openapi({
+      description:
+        'The identifier of the text detection job for the document. Use <code>JobId</code> to identify the job in a subsequent call to <code>GetDocumentTextDetection</code>. A <code>JobId</code> value is only valid for 7 days.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StartDocumentTextDetectionResponse')
 
 const StartDocumentTextDetectionRequestSchema = z
   .object({
-    DocumentLocation: DocumentLocationSchema.and(
-      z.any().openapi({ description: 'The location of the document to be processed.' }),
-    ),
-    ClientRequestToken: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The idempotent token that\'s used to identify the start request. If you use the same token with multiple <code>StartDocumentTextDetection</code> requests, the same <code>JobId</code> is returned. Use <code>ClientRequestToken</code> to prevent the same job from being accidentally started more than once. For more information, see <a href="https://docs.aws.amazon.com/textract/latest/dg/api-async.html">Calling Amazon Textract Asynchronous Operations</a>.',
-        }),
-    ).exactOptional(),
-    JobTag: JobTagSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "An identifier that you specify that's included in the completion notification published to the Amazon SNS topic. For example, you can use <code>JobTag</code> to identify the type of document that the completion notification corresponds to (such as a tax form or a receipt).",
-        }),
-    ).exactOptional(),
-    NotificationChannel: NotificationChannelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon SNS topic ARN that you want Amazon Textract to publish the completion status of the operation to. ',
-        }),
-    ).exactOptional(),
-    OutputConfig: OutputConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Sets if the output will go to a customer defined bucket. By default Amazon Textract will save the results internally to be accessed with the GetDocumentTextDetection operation.',
-        }),
-    ).exactOptional(),
-    KMSKeyId: KMSKeyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The KMS key used to encrypt the inference results. This can be in either Key ID or Key Alias format. When a KMS key is provided, the KMS key will be used for server-side encryption of the objects in the customer bucket. When this parameter is not enabled, the result will be encrypted server side,using SSE-S3.',
-        }),
-    ).exactOptional(),
+    DocumentLocation: DocumentLocationSchema.openapi({
+      description: 'The location of the document to be processed.',
+    }),
+    ClientRequestToken: ClientRequestTokenSchema.exactOptional().openapi({
+      description:
+        'The idempotent token that\'s used to identify the start request. If you use the same token with multiple <code>StartDocumentTextDetection</code> requests, the same <code>JobId</code> is returned. Use <code>ClientRequestToken</code> to prevent the same job from being accidentally started more than once. For more information, see <a href="https://docs.aws.amazon.com/textract/latest/dg/api-async.html">Calling Amazon Textract Asynchronous Operations</a>.',
+    }),
+    JobTag: JobTagSchema.exactOptional().openapi({
+      description:
+        "An identifier that you specify that's included in the completion notification published to the Amazon SNS topic. For example, you can use <code>JobTag</code> to identify the type of document that the completion notification corresponds to (such as a tax form or a receipt).",
+    }),
+    NotificationChannel: NotificationChannelSchema.exactOptional().openapi({
+      description:
+        'The Amazon SNS topic ARN that you want Amazon Textract to publish the completion status of the operation to. ',
+    }),
+    OutputConfig: OutputConfigSchema.exactOptional().openapi({
+      description:
+        'Sets if the output will go to a customer defined bucket. By default Amazon Textract will save the results internally to be accessed with the GetDocumentTextDetection operation.',
+    }),
+    KMSKeyId: KMSKeyIdSchema.exactOptional().openapi({
+      description:
+        'The KMS key used to encrypt the inference results. This can be in either Key ID or Key Alias format. When a KMS key is provided, the KMS key will be used for server-side encryption of the objects in the customer bucket. When this parameter is not enabled, the result will be encrypted server side,using SSE-S3.',
+    }),
   })
   .openapi({ required: ['DocumentLocation'], title: 'StartDocumentTextDetectionRequest' })
   .openapi('StartDocumentTextDetectionRequest')
 
 const StartExpenseAnalysisResponseSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the text detection job. The <code>JobId</code> is returned from <code>StartExpenseAnalysis</code>. A <code>JobId</code> value is only valid for 7 days.',
-        }),
-    ).exactOptional(),
+    JobId: JobIdSchema.exactOptional().openapi({
+      description:
+        'A unique identifier for the text detection job. The <code>JobId</code> is returned from <code>StartExpenseAnalysis</code>. A <code>JobId</code> value is only valid for 7 days.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StartExpenseAnalysisResponse')
 
 const StartExpenseAnalysisRequestSchema = z
   .object({
-    DocumentLocation: DocumentLocationSchema.and(
-      z.any().openapi({ description: 'The location of the document to be processed.' }),
-    ),
-    ClientRequestToken: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The idempotent token that\'s used to identify the start request. If you use the same token with multiple <code>StartDocumentTextDetection</code> requests, the same <code>JobId</code> is returned. Use <code>ClientRequestToken</code> to prevent the same job from being accidentally started more than once. For more information, see <a href="https://docs.aws.amazon.com/textract/latest/dg/api-async.html">Calling Amazon Textract Asynchronous Operations</a> ',
-        }),
-    ).exactOptional(),
-    JobTag: JobTagSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "An identifier you specify that's included in the completion notification published to the Amazon SNS topic. For example, you can use <code>JobTag</code> to identify the type of document that the completion notification corresponds to (such as a tax form or a receipt).",
-        }),
-    ).exactOptional(),
-    NotificationChannel: NotificationChannelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon SNS topic ARN that you want Amazon Textract to publish the completion status of the operation to. ',
-        }),
-    ).exactOptional(),
-    OutputConfig: OutputConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Sets if the output will go to a customer defined bucket. By default, Amazon Textract will save the results internally to be accessed by the <code>GetExpenseAnalysis</code> operation.',
-        }),
-    ).exactOptional(),
-    KMSKeyId: KMSKeyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The KMS key used to encrypt the inference results. This can be in either Key ID or Key Alias format. When a KMS key is provided, the KMS key will be used for server-side encryption of the objects in the customer bucket. When this parameter is not enabled, the result will be encrypted server side,using SSE-S3.',
-        }),
-    ).exactOptional(),
+    DocumentLocation: DocumentLocationSchema.openapi({
+      description: 'The location of the document to be processed.',
+    }),
+    ClientRequestToken: ClientRequestTokenSchema.exactOptional().openapi({
+      description:
+        'The idempotent token that\'s used to identify the start request. If you use the same token with multiple <code>StartDocumentTextDetection</code> requests, the same <code>JobId</code> is returned. Use <code>ClientRequestToken</code> to prevent the same job from being accidentally started more than once. For more information, see <a href="https://docs.aws.amazon.com/textract/latest/dg/api-async.html">Calling Amazon Textract Asynchronous Operations</a> ',
+    }),
+    JobTag: JobTagSchema.exactOptional().openapi({
+      description:
+        "An identifier you specify that's included in the completion notification published to the Amazon SNS topic. For example, you can use <code>JobTag</code> to identify the type of document that the completion notification corresponds to (such as a tax form or a receipt).",
+    }),
+    NotificationChannel: NotificationChannelSchema.exactOptional().openapi({
+      description:
+        'The Amazon SNS topic ARN that you want Amazon Textract to publish the completion status of the operation to. ',
+    }),
+    OutputConfig: OutputConfigSchema.exactOptional().openapi({
+      description:
+        'Sets if the output will go to a customer defined bucket. By default, Amazon Textract will save the results internally to be accessed by the <code>GetExpenseAnalysis</code> operation.',
+    }),
+    KMSKeyId: KMSKeyIdSchema.exactOptional().openapi({
+      description:
+        'The KMS key used to encrypt the inference results. This can be in either Key ID or Key Alias format. When a KMS key is provided, the KMS key will be used for server-side encryption of the objects in the customer bucket. When this parameter is not enabled, the result will be encrypted server side,using SSE-S3.',
+    }),
   })
   .openapi({ required: ['DocumentLocation'], title: 'StartExpenseAnalysisRequest' })
   .openapi('StartExpenseAnalysisRequest')
 
 const StartLendingAnalysisResponseSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the lending or text-detection job. The <code>JobId</code> is returned from <code>StartLendingAnalysis</code>. A <code>JobId</code> value is only valid for 7 days.',
-        }),
-    ).exactOptional(),
+    JobId: JobIdSchema.exactOptional().openapi({
+      description:
+        'A unique identifier for the lending or text-detection job. The <code>JobId</code> is returned from <code>StartLendingAnalysis</code>. A <code>JobId</code> value is only valid for 7 days.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StartLendingAnalysisResponse')
@@ -2061,32 +1598,20 @@ const StartLendingAnalysisResponseSchema = z
 const StartLendingAnalysisRequestSchema = z
   .object({
     DocumentLocation: DocumentLocationSchema,
-    ClientRequestToken: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The idempotent token that you use to identify the start request. If you use the same token with multiple <code>StartLendingAnalysis</code> requests, the same <code>JobId</code> is returned. Use <code>ClientRequestToken</code> to prevent the same job from being accidentally started more than once. For more information, see <a href="https://docs.aws.amazon.com/textract/latest/dg/api-sync.html">Calling Amazon Textract Asynchronous Operations</a>.',
-        }),
-    ).exactOptional(),
-    JobTag: JobTagSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An identifier that you specify to be included in the completion notification published to the Amazon SNS topic. For example, you can use <code>JobTag</code> to identify the type of document that the completion notification corresponds to (such as a tax form or a receipt).',
-        }),
-    ).exactOptional(),
+    ClientRequestToken: ClientRequestTokenSchema.exactOptional().openapi({
+      description:
+        'The idempotent token that you use to identify the start request. If you use the same token with multiple <code>StartLendingAnalysis</code> requests, the same <code>JobId</code> is returned. Use <code>ClientRequestToken</code> to prevent the same job from being accidentally started more than once. For more information, see <a href="https://docs.aws.amazon.com/textract/latest/dg/api-sync.html">Calling Amazon Textract Asynchronous Operations</a>.',
+    }),
+    JobTag: JobTagSchema.exactOptional().openapi({
+      description:
+        'An identifier that you specify to be included in the completion notification published to the Amazon SNS topic. For example, you can use <code>JobTag</code> to identify the type of document that the completion notification corresponds to (such as a tax form or a receipt).',
+    }),
     NotificationChannel: NotificationChannelSchema.exactOptional(),
     OutputConfig: OutputConfigSchema.exactOptional(),
-    KMSKeyId: KMSKeyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The KMS key used to encrypt the inference results. This can be in either Key ID or Key Alias format. When a KMS key is provided, the KMS key will be used for server-side encryption of the objects in the customer bucket. When this parameter is not enabled, the result will be encrypted server side, using SSE-S3. ',
-        }),
-    ).exactOptional(),
+    KMSKeyId: KMSKeyIdSchema.exactOptional().openapi({
+      description:
+        'The KMS key used to encrypt the inference results. This can be in either Key ID or Key Alias format. When a KMS key is provided, the KMS key will be used for server-side encryption of the objects in the customer bucket. When this parameter is not enabled, the result will be encrypted server side, using SSE-S3. ',
+    }),
   })
   .openapi({ required: ['DocumentLocation'], title: 'StartLendingAnalysisRequest' })
   .openapi('StartLendingAnalysisRequest')

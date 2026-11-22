@@ -1231,8 +1231,26 @@ const IndexSettingsAsSearchParamsSchema: z.ZodType<IndexSettingsAsSearchParamsTy
   .openapi({ required: [] })
   .openapi('IndexSettingsAsSearchParams')
 
+const AllowReRankingOnPersonalizationSchema = z
+  .boolean()
+  .default(false)
+  .openapi({
+    description:
+      "Whether [Dynamic Re-Ranking](https://www.algolia.com/doc/guides/algolia-ai/re-ranking) runs concurrently with Personalization.\n\nDynamic Re-Ranking isn't applied when `distinct` > 1, even if `allowReRankingOnPersonalization` is `true`.\n",
+    'x-categories': ['Personalization'],
+  })
+  .openapi('AllowReRankingOnPersonalization')
+
+const SearchParamsAllowReRankingSchema = z
+  .strictObject({
+    allowReRankingOnPersonalization: AllowReRankingOnPersonalizationSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('SearchParamsAllowReRanking')
+
 type SearchParamsObjectType = z.infer<typeof BaseSearchParamsSchema> &
-  z.infer<typeof IndexSettingsAsSearchParamsSchema>
+  z.infer<typeof IndexSettingsAsSearchParamsSchema> &
+  z.infer<typeof SearchParamsAllowReRankingSchema>
 
 const ParamsAsStringSchema = z
   .string()
@@ -1256,6 +1274,7 @@ const SearchParamsStringSchema = z
 const SearchParamsObjectSchema: z.ZodType<SearchParamsObjectType> = BaseSearchParamsSchema.and(
   IndexSettingsAsSearchParamsSchema,
 )
+  .and(SearchParamsAllowReRankingSchema)
   .openapi({
     title: 'Search parameters as object',
     description: 'Each parameter value, including the `query` must not be larger than 512 bytes.',
@@ -2528,11 +2547,13 @@ const ParamsSchema: z.ZodType<ParamsType> = z
 
 type ConsequenceParamsType = z.infer<typeof BaseSearchParamsWithoutQuerySchema> &
   z.infer<typeof IndexSettingsAsSearchParamsSchema> &
-  z.infer<typeof ParamsSchema>
+  z.infer<typeof ParamsSchema> &
+  z.infer<typeof SearchParamsAllowReRankingSchema>
 
 const ConsequenceParamsSchema: z.ZodType<ConsequenceParamsType> =
   BaseSearchParamsWithoutQuerySchema.and(IndexSettingsAsSearchParamsSchema)
     .and(ParamsSchema)
+    .and(SearchParamsAllowReRankingSchema)
     .openapi('ConsequenceParams')
 
 const PromotePositionSchema = z
@@ -7606,6 +7627,21 @@ export const getBrowseObjectsRoute = createRoute({
             })
             .openapi({ required: [] }),
         )
+        .and(
+          z
+            .strictObject({
+              allowReRankingOnPersonalization: z
+                .preprocess(
+                  ((read) => (val: unknown) => {
+                    const result = read.safeParse(val)
+                    return result.success ? result.data : val
+                  })(z.stringbool()),
+                  AllowReRankingOnPersonalizationSchema,
+                )
+                .exactOptional(),
+            })
+            .openapi({ required: [] }),
+        )
         .openapi({
           title: 'Search parameters as object',
           description:
@@ -7926,6 +7962,15 @@ export const getBrowseObjectsRoute = createRoute({
                             { $ref: '#/components/schemas/reRankingApplyFilter' },
                             { type: 'null' },
                           ],
+                        },
+                      },
+                    },
+                    {
+                      type: 'object',
+                      additionalProperties: false,
+                      properties: {
+                        allowReRankingOnPersonalization: {
+                          $ref: '#/components/schemas/allowReRankingOnPersonalization',
                         },
                       },
                     },
@@ -8668,6 +8713,21 @@ export const getGenerateSecuredApiKeyRoute = createRoute({
                     })
                     .openapi({ required: [] }),
                 )
+                .and(
+                  z
+                    .strictObject({
+                      allowReRankingOnPersonalization: z
+                        .preprocess(
+                          ((read) => (val: unknown) => {
+                            const result = read.safeParse(val)
+                            return result.success ? result.data : val
+                          })(z.stringbool()),
+                          AllowReRankingOnPersonalizationSchema,
+                        )
+                        .exactOptional(),
+                    })
+                    .openapi({ required: [] }),
+                )
                 .exactOptional()
                 .openapi({
                   title: 'Search parameters as object',
@@ -9057,6 +9117,15 @@ export const getGenerateSecuredApiKeyRoute = createRoute({
                                 { $ref: '#/components/schemas/reRankingApplyFilter' },
                                 { type: 'null' },
                               ],
+                            },
+                          },
+                        },
+                        {
+                          type: 'object',
+                          additionalProperties: false,
+                          properties: {
+                            allowReRankingOnPersonalization: {
+                              $ref: '#/components/schemas/allowReRankingOnPersonalization',
                             },
                           },
                         },
@@ -9494,7 +9563,7 @@ export const getSaveObjectsRoute = createRoute({
             in: 'query',
             name: 'waitForTasks',
             description:
-              'Whether to wait until every `batch` task has been processed. This may take longer but is more reliable.',
+              "Whether to wait until every `batch` task has been processed. This may take longer but is more reliable. In Java, pass `waitForTasks` together with `batchSize` or `requestOptions`; there's no overload that takes `waitForTasks` on its own.",
             required: false,
             schema: { type: 'boolean', default: false },
           },
@@ -9682,7 +9751,7 @@ export const postDeleteObjectsRoute = createRoute({
             in: 'query',
             name: 'waitForTasks',
             description:
-              'Whether to wait until every `batch` task has been processed. This may take longer but is more reliable.',
+              "Whether to wait until every `batch` task has been processed. This may take longer but is more reliable. In Java, pass `waitForTasks` together with `batchSize` or `requestOptions`; there's no overload that takes `waitForTasks` on its own.",
             required: false,
             schema: { type: 'boolean' },
           },

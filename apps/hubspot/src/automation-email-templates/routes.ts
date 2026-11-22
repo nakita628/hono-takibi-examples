@@ -347,26 +347,26 @@ const PublicTemplateInputSchema = z
 const PublicTemplateUpdateSchema = z
   .object({
     body: z
-      .object({})
+      .looseObject({})
       .openapi({
         description: 'An object representing the body content of the email template.',
         example: null,
       }),
     folderId: z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'An object representing the identifier of the folder where the email template is stored.',
         example: null,
       }),
     name: z
-      .object({})
+      .looseObject({})
       .openapi({
         description: 'An object representing the name of the email template.',
         example: null,
       }),
     subject: z
-      .object({})
+      .looseObject({})
       .openapi({
         description: 'An object representing the subject line of the email template.',
         example: null,
@@ -388,14 +388,14 @@ const Oauth2SecurityScheme = {
     authorizationCode: {
       authorizationUrl: 'https://app.hubspot.com/oauth/authorize',
       tokenUrl: 'https://api.hubapi.com/oauth/v1/token',
-      scopes: {},
+      scopes: { 'automation.email_templates.read': '', 'automation.email_templates.write': '' },
     },
   },
+  'x-hubspot-app-availability': {
+    'automation.email_templates.read': { user: ['public', 'private'], developer: false },
+    'automation.email_templates.write': { user: ['public', 'private'], developer: false },
+  },
 }
-
-const PrivateAppsSecurityScheme = { type: 'apiKey', name: 'private-app', in: 'header' }
-
-const PrivateAppsLegacySecurityScheme = { type: 'apiKey', name: 'private-app-legacy', in: 'header' }
 
 export const getAutomationEmailTemplates202609Route = createRoute({
   method: 'get',
@@ -461,7 +461,7 @@ export const getAutomationEmailTemplates202609Route = createRoute({
     },
     default: ErrorResponse,
   },
-  security: [],
+  security: [{ oauth2: ['automation.email_templates.read'] }],
 })
 
 export const postAutomationEmailTemplates202609Route = createRoute({
@@ -483,23 +483,19 @@ export const postAutomationEmailTemplates202609Route = createRoute({
       description: 'successful operation',
       content: { 'application/json': { schema: PublicTemplateSchema, example: null } },
       headers: z.object({
-        Location: {
-          description: 'URL of the newly created resource',
-          style: 'simple',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'URL of the newly created resource',
-              param: { required: false },
-              example: null,
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'URL of the newly created resource',
+            param: { required: false },
+            example: null,
+          }),
       }),
     },
     default: ErrorResponse,
   },
-  security: [],
+  security: [{ oauth2: ['automation.email_templates.write'] }],
 })
 
 export const getAutomationEmailTemplates202609FoldersRoute = createRoute({
@@ -567,7 +563,7 @@ export const getAutomationEmailTemplates202609FoldersRoute = createRoute({
     },
     default: ErrorResponse,
   },
-  security: [],
+  security: [{ oauth2: ['automation.email_templates.read'] }],
 })
 
 export const getAutomationEmailTemplates202609TemplateIdRoute = createRoute({
@@ -610,7 +606,7 @@ export const getAutomationEmailTemplates202609TemplateIdRoute = createRoute({
     },
     default: ErrorResponse,
   },
-  security: [],
+  security: [{ oauth2: ['automation.email_templates.read'] }],
 })
 
 export const patchAutomationEmailTemplates202609TemplateIdRoute = createRoute({
@@ -657,5 +653,5 @@ export const patchAutomationEmailTemplates202609TemplateIdRoute = createRoute({
     },
     default: ErrorResponse,
   },
-  security: [],
+  security: [{ oauth2: ['automation.email_templates.write'] }],
 })

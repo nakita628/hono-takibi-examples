@@ -13836,6 +13836,361 @@ apiKeyAuth
 
 The Lend APIs enable you to deploy and manage vaults on top of existing catalog vaults, such as Morpho's Steakhouse USDC vault.
 
+## List lend positions
+
+<a id="opIdlistLendPositions"></a>
+
+> Code samples
+
+```bash
+curl 'https://api.cdp.coinbase.com/platform/v2/lend/positions?address=0x742d35Cc6634C0532925a3b844Bc454e4438f44e' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /v2/lend/positions`
+
+Lists non-zero lend positions for an EVM account or EVM Smart Account in the project. Each position reports the account's vault share balance and its current value in the vault's underlying asset.
+When `vaultIds` is omitted, only vaults where the address received shares through a Lend deposit are listed. Shares received any other way are not discovered, including transfers, deposits made outside the Lend deposit APIs, and fee shares CDP distributes to a vault's fee recipient, so an empty list does not mean the address holds no shares. Supply `vaultIds` to read specific project-owned vaults.
+Positions are ordered by vault ID. `pageSize` defaults to 20 and must be between 1 and 100. Keep the address and vault filter unchanged when following `nextPageToken`. Each page fetches fresh balances, so positions and balances may change between page requests as deposits, withdrawals, or yield accrual occur.
+
+<h3 id="list-lend-positions-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|address|query|string|true|The 0x-prefixed address of the EVM account or EVM Smart Account to list lend positions for.|
+|vaultIds|query|[[VaultId](#schemavaultid)]|false|Filter positions to these project-owned vaults. Provide 1 to 100 unique, comma-separated vault IDs. Omit to list positions in the vaults discovered for the address.|
+|pageSize|query|integer|false|The number of resources to return per page.|
+|pageToken|query|string|false|The token for the next page of resources, if any.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "lendPositions": [
+    {
+      "vaultId": "vault_019f5f10-096a-7a23-86df-f479650d813f",
+      "network": "base",
+      "underlyingAsset": "usdc",
+      "vaultShares": "1",
+      "assetBalance": "1.025"
+    }
+  ],
+  "nextPageToken": "MTpkY2Y0M2U4MzI5OTM2NTNiOTE1ZWUxZDUzYjY3YjI1MTVjODFiNWE3Yzg1OGI5ZWQyZTZjZmIxNDM3NjEzZjBjOjAxOWY1ZjEwLTA5NmEtN2EyMy04NmRmLWY0Nzk2NTBkODEzZg=="
+}
+```
+
+> 400 Response
+
+```json
+{
+  "errorType": "invalid_request",
+  "errorMessage": "Page size must be between 1 and 100."
+}
+```
+
+> 401 Response
+
+```json
+{
+  "errorType": "unauthorized",
+  "errorMessage": "The request is not properly authenticated."
+}
+```
+
+> 403 Response
+
+```json
+{
+  "errorType": "forbidden",
+  "errorMessage": "User forbidden from performing the action."
+}
+```
+
+> 404 Response
+
+```json
+{
+  "errorType": "not_found",
+  "errorMessage": "Vault not found."
+}
+```
+
+> 500 Response
+
+```json
+{
+  "errorType": "internal_server_error",
+  "errorMessage": "An internal server error occurred. Please try again later."
+}
+```
+
+> 502 Response
+
+```json
+{
+  "errorType": "bad_gateway",
+  "errorMessage": "Bad gateway. Please try again later."
+}
+```
+
+> 503 Response
+
+```json
+{
+  "errorType": "service_unavailable",
+  "errorMessage": "Service unavailable. Please try again later."
+}
+```
+
+> 504 Response
+
+```json
+{
+  "errorType": "timed_out",
+  "errorMessage": "The request timed out because the server did not respond in time."
+}
+```
+
+<h3 id="list-lend-positions-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Successfully listed lend positions.|Inline|
+|400|Bad Request|Invalid address, vault filter, page size, or page token.|[Error](#schemaerror)|
+|401|Unauthorized|Unauthorized.|[Error](#schemaerror)|
+|403|Forbidden|User forbidden from performing the action.|[Error](#schemaerror)|
+|404|Not Found|The address or an explicitly requested vault was not found in the authenticated project.|[Error](#schemaerror)|
+|500|Internal Server Error|Internal server error.|[Error](#schemaerror)|
+|502|Bad Gateway|Bad gateway.|[Error](#schemaerror)|
+|503|Service Unavailable|Service unavailable.|[Error](#schemaerror)|
+|504|Gateway Timeout|The request timed out.|[Error](#schemaerror)|
+
+<h3 id="list-lend-positions-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|lendPositions|[[LendPosition](#schemalendposition)]|true|none|The lend positions on this page. Empty when no matching positions remain.|
+|nextPageToken|string|false|none|The token for the next page of items, if any.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+apiKeyAuth
+</aside>
+
+## List vaults
+
+<a id="opIdlistVaults"></a>
+
+> Code samples
+
+```bash
+curl https://api.cdp.coinbase.com/platform/v2/lend/vaults \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /v2/lend/vaults`
+
+Lists the vaults created by the project. Use `pageSize` and `pageToken` to page through the results. Each vault includes its current metrics, when a metrics snapshot has been observed for it.
+
+<h3 id="list-vaults-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|pageSize|query|integer|false|The number of vaults to return per page.|
+|pageToken|query|string|false|The token for the next page of resources, if any.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "vaults": [
+    {
+      "vaultId": "vault_019f5f10-096a-7a23-86df-f479650d813f",
+      "address": "0x15966F1582CAEFB56CDB4Fba1dC622E41F2Ad33D",
+      "catalogVaultId": "cv_019ee022-3586-7473-8354-b2c32c18221a",
+      "underlyingAsset": "usdc",
+      "performanceFeeBps": 2000,
+      "feeRecipientAddress": "0x742d35Cc6634C0532925a3b844Bc454e4438f44e",
+      "network": "base",
+      "status": "active",
+      "createdAt": "2026-09-15T15:39:37Z",
+      "metrics": {
+        "apyBps": 500,
+        "apyUpdatedAt": "2026-09-22T00:00:00Z",
+        "tvl": "1000",
+        "tvlUpdatedAt": "2026-09-22T00:00:00Z"
+      }
+    }
+  ],
+  "nextPageToken": "eyJsYXN0X2lkIjogImFiYzEyMyIsICJ0aW1lc3RhbXAiOiAxNzA3ODIzNzAxfQ=="
+}
+```
+
+> 400 Response
+
+```json
+{
+  "errorType": "invalid_request",
+  "errorMessage": "pageSize must be between 1 and 1000."
+}
+```
+
+> 401 Response
+
+```json
+{
+  "errorType": "unauthorized",
+  "errorMessage": "The request is not properly authenticated."
+}
+```
+
+> 500 Response
+
+```json
+{
+  "errorType": "internal_server_error",
+  "errorMessage": "An internal server error occurred. Please try again later."
+}
+```
+
+> 503 Response
+
+```json
+{
+  "errorType": "service_unavailable",
+  "errorMessage": "Service unavailable. Please try again later."
+}
+```
+
+<h3 id="list-vaults-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Successfully retrieved vaults.|Inline|
+|400|Bad Request|Invalid request.|[Error](#schemaerror)|
+|401|Unauthorized|Unauthorized.|[Error](#schemaerror)|
+|500|Internal Server Error|Internal server error.|[Error](#schemaerror)|
+|503|Service Unavailable|Service unavailable.|[Error](#schemaerror)|
+
+<h3 id="list-vaults-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|vaults|[[Vault](#schemavault)]|true|none|The list of vaults created by the project.|
+|nextPageToken|string|false|none|The token for the next page of items, if any.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+apiKeyAuth
+</aside>
+
+## Get a vault
+
+<a id="opIdgetVault"></a>
+
+> Code samples
+
+```bash
+curl https://api.cdp.coinbase.com/platform/v2/lend/vaults/vault_019f5f10-096a-7a23-86df-f479650d813f \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /v2/lend/vaults/{vaultId}`
+
+Retrieves a vault created by the project, including its current metrics such as APY and TVL.
+
+<h3 id="get-a-vault-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|vaultId|path|[VaultId](#schemavaultid)|true|The ID of the vault to retrieve.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "vaultId": "vault_019f5f10-096a-7a23-86df-f479650d813f",
+  "address": "0x15966F1582CAEFB56CDB4Fba1dC622E41F2Ad33D",
+  "catalogVaultId": "cv_019ee022-3586-7473-8354-b2c32c18221a",
+  "underlyingAsset": "usdc",
+  "performanceFeeBps": 2000,
+  "feeRecipientAddress": "0x742d35Cc6634C0532925a3b844Bc454e4438f44e",
+  "network": "base",
+  "status": "active",
+  "createdAt": "2026-09-15T15:39:37Z",
+  "metrics": {
+    "apyBps": 500,
+    "apyUpdatedAt": "2026-09-22T00:00:00Z",
+    "tvl": "1000",
+    "tvlUpdatedAt": "2026-09-22T00:00:00Z"
+  }
+}
+```
+
+> 401 Response
+
+```json
+{
+  "errorType": "unauthorized",
+  "errorMessage": "The request is not properly authenticated."
+}
+```
+
+> 404 Response
+
+```json
+{
+  "errorType": "not_found",
+  "errorMessage": "Vault not found."
+}
+```
+
+> 500 Response
+
+```json
+{
+  "errorType": "internal_server_error",
+  "errorMessage": "An internal server error occurred. Please try again later."
+}
+```
+
+> 503 Response
+
+```json
+{
+  "errorType": "service_unavailable",
+  "errorMessage": "Service unavailable. Please try again later."
+}
+```
+
+<h3 id="get-a-vault-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Successfully retrieved the vault.|[Vault](#schemavault)|
+|401|Unauthorized|Unauthorized.|[Error](#schemaerror)|
+|404|Not Found|Not found. The vault does not exist or belongs to a different project.|[Error](#schemaerror)|
+|500|Internal Server Error|Internal server error.|[Error](#schemaerror)|
+|503|Service Unavailable|Service unavailable.|[Error](#schemaerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+apiKeyAuth
+</aside>
+
 ## Redeem vault fees with an EVM account
 
 <a id="opIdredeemVaultFeesWithEvmAccount"></a>
@@ -14163,6 +14518,693 @@ For fee recipients that are EVM accounts, use `redeemVaultFeesWithEvmAccount` in
 |403|Forbidden|User forbidden from performing the action.|[Error](#schemaerror)|
 |404|Not Found|Not found.|[Error](#schemaerror)|
 |409|Conflict|Conflict. A fee redemption or another lend operation for this account is already in progress.|[Error](#schemaerror)|
+|422|Unprocessable Entity|Idempotency key conflict.|[Error](#schemaerror)|
+|500|Internal Server Error|Internal server error.|[Error](#schemaerror)|
+|502|Bad Gateway|Bad gateway.|[Error](#schemaerror)|
+|503|Service Unavailable|Service unavailable.|[Error](#schemaerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+apiKeyAuth
+</aside>
+
+## Deposit into a vault with an EVM account
+
+<a id="opIddepositToVaultWithEvmAccount"></a>
+
+> Code samples
+
+```bash
+curl https://api.cdp.coinbase.com/platform/v2/evm/accounts/0x742d35Cc6634C0532925a3b844Bc454e4438f44e/lend/deposit \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -H 'X-Wallet-Auth: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEyMywicm9sZSI6ImFkbWluIiwiZXhwIjoxNzAxOTgwMDAwfQ.HWvMTKmCCTxHaxjvZyLaC6UQ6TV3ErTDWBf7zmdH0Lw' \
+  -d '{
+    "vaultId": "vault_019f5f10-096a-7a23-86df-f479650d813f",
+    "amount": "25.50",
+    "maxSlippageBps": 100
+  }'
+```
+
+`POST /v2/evm/accounts/{address}/lend/deposit`
+
+Deposits the vault's underlying asset (e.g. USDC) from an EVM account into a vault. The account signs an EIP-2612 permit authorizing the deposit, and the token approval and deposit are executed in a single transaction. The transaction hash is returned in the response.
+For deposits from EVM Smart Accounts, use `depositToVaultWithEvmSmartAccount` instead.
+The `amount` field accepts human-readable amounts as decimal strings (e.g., "1.5", "25.50") in the standard unit denomination of the vault's underlying asset.
+
+> Body parameter
+
+```json
+{
+  "vaultId": "vault_019f5f10-096a-7a23-86df-f479650d813f",
+  "amount": "25.50",
+  "maxSlippageBps": 100
+}
+```
+
+<h3 id="deposit-into-a-vault-with-an-evm-account-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|X-Wallet-Auth|header|string|true|A JWT signed using your Wallet Secret, encoded in base64. Refer to the<br>[Generate Wallet Token](https://docs.cdp.coinbase.com/api-reference/v2/authentication#2-generate-wallet-token)<br>section of our Authentication docs for more details on how to generate your Wallet Token.<br>|
+|X-Idempotency-Key|header|string|false|An optional string request header for making requests safely retryable.<br>When included, duplicate requests with the same key will return identical responses.<br>Refer to our [Idempotency docs](https://docs.cdp.coinbase.com/api-reference/v2/idempotency) for more information on using idempotency keys.<br>|
+|address|path|string|true|The 0x-prefixed address of the EVM account to deposit from.|
+|body|body|[DepositToVaultWithEvmAccountRequest](#schemadeposittovaultwithevmaccountrequest)|true|none|
+|» vaultId|body|[VaultId](#schemavaultid)|true|The globally unique ID of the vault, which is a UUID prefixed with the string `vault_`.|
+|» amount|body|[VaultDepositAmount](#schemavaultdepositamount)|true|The amount of the vault's underlying asset to deposit, as a decimal string in standard unit denomination of the asset (i.e. "25.50" for 25.50 USDC).|
+|» receiver|body|[VaultDepositReceiver](#schemavaultdepositreceiver)|false|The 0x-prefixed address that receives the minted vault shares. Defaults to the depositing account given in the path.|
+|» maxSlippageBps|body|[VaultDepositMaxSlippageBps](#schemavaultdepositmaxslippagebps)|false|The maximum share-price movement tolerated between calldata construction and onchain execution, in basis points. The deposit reverts if the vault's share price moves beyond this bound. A guard of 100 bps (i.e. 1%) is applied when omitted.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "transactionHash": "0xf8f98fb6726fc936f24b2007df5cb20e2b8444ff3dfaa2a929335f432a9be2e7"
+}
+```
+
+> 400 Response
+
+```json
+{
+  "errorType": "invalid_request",
+  "errorMessage": "Invalid amount format. Amount must be a valid decimal string."
+}
+```
+
+> 401 Response
+
+```json
+{
+  "errorType": "unauthorized",
+  "errorMessage": "The request is not properly authenticated."
+}
+```
+
+> 402 Response
+
+```json
+{
+  "errorType": "payment_method_required",
+  "errorMessage": "A valid payment method is required to complete this operation. Please add a payment method to your account at https://portal.cdp.coinbase.com."
+}
+```
+
+> 403 Response
+
+```json
+{
+  "errorType": "forbidden",
+  "errorMessage": "User forbidden from performing the action."
+}
+```
+
+> 404 Response
+
+```json
+{
+  "errorType": "not_found",
+  "errorMessage": "Vault not found."
+}
+```
+
+> 409 Response
+
+```json
+{
+  "errorType": "operation_in_progress",
+  "errorMessage": "A lend operation for this account and vault is already in progress. In-progress operations typically complete in under 30 seconds. Please wait for it to complete before retrying."
+}
+```
+
+> 422 Response
+
+```json
+{
+  "errorType": "idempotency_error",
+  "errorMessage": "Idempotency key '8e03978e-40d5-43e8-bc93-6894a57f9324' was already used with a different request payload. Please try again with a new idempotency key."
+}
+```
+
+> 500 Response
+
+```json
+{
+  "errorType": "internal_server_error",
+  "errorMessage": "An internal server error occurred. Please try again later."
+}
+```
+
+> 502 Response
+
+```json
+{
+  "errorType": "bad_gateway",
+  "errorMessage": "Bad gateway. Please try again later."
+}
+```
+
+> 503 Response
+
+```json
+{
+  "errorType": "service_unavailable",
+  "errorMessage": "Service unavailable. Please try again later."
+}
+```
+
+<h3 id="deposit-into-a-vault-with-an-evm-account-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Successfully broadcast the deposit.|[EoaVaultDepositResponse](#schemaeoavaultdepositresponse)|
+|400|Bad Request|Invalid request.|[Error](#schemaerror)|
+|401|Unauthorized|Unauthorized.|[Error](#schemaerror)|
+|402|Payment Required|A payment method is required to complete this operation.|[Error](#schemaerror)|
+|403|Forbidden|User forbidden from performing the action.|[Error](#schemaerror)|
+|404|Not Found|Not found.|[Error](#schemaerror)|
+|409|Conflict|Conflict. A deposit or another lend operation for this account and vault is already in progress.|[Error](#schemaerror)|
+|422|Unprocessable Entity|Idempotency key conflict.|[Error](#schemaerror)|
+|500|Internal Server Error|Internal server error.|[Error](#schemaerror)|
+|502|Bad Gateway|Bad gateway.|[Error](#schemaerror)|
+|503|Service Unavailable|Service unavailable.|[Error](#schemaerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+apiKeyAuth
+</aside>
+
+## Deposit into a vault with an EVM Smart Account
+
+<a id="opIddepositToVaultWithEvmSmartAccount"></a>
+
+> Code samples
+
+```bash
+curl https://api.cdp.coinbase.com/platform/v2/evm/smart-accounts/0x742d35Cc6634C0532925a3b844Bc454e4438f44e/lend/deposit \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -H 'X-Wallet-Auth: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEyMywicm9sZSI6ImFkbWluIiwiZXhwIjoxNzAxOTgwMDAwfQ.HWvMTKmCCTxHaxjvZyLaC6UQ6TV3ErTDWBf7zmdH0Lw' \
+  -d '{
+    "vaultId": "vault_019f5f10-096a-7a23-86df-f479650d813f",
+    "amount": "25.50"
+  }'
+```
+
+`POST /v2/evm/smart-accounts/{address}/lend/deposit`
+
+Deposits the vault's underlying asset (e.g. USDC) from an EVM Smart Account into a vault. The Smart Account's owner must be a CDP EVM account. The token approval and deposit are batched into a single user operation, whose hash is returned in `userOpHash`.
+Because the approval and deposit execute atomically in a single user operation, no share-price guard is required.
+Poll `getUserOperation` until the user operation reaches a terminal status.
+For deposits from EVM accounts, use `depositToVaultWithEvmAccount` instead.
+The `amount` field accepts human-readable amounts as decimal strings (e.g., "1.5", "25.50") in the standard unit denomination of the vault's underlying asset.
+
+> Body parameter
+
+```json
+{
+  "vaultId": "vault_019f5f10-096a-7a23-86df-f479650d813f",
+  "amount": "25.50"
+}
+```
+
+<h3 id="deposit-into-a-vault-with-an-evm-smart-account-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|X-Wallet-Auth|header|string|true|A JWT signed using your Wallet Secret, encoded in base64. Refer to the<br>[Generate Wallet Token](https://docs.cdp.coinbase.com/api-reference/v2/authentication#2-generate-wallet-token)<br>section of our Authentication docs for more details on how to generate your Wallet Token.<br>|
+|X-Idempotency-Key|header|string|false|An optional string request header for making requests safely retryable.<br>When included, duplicate requests with the same key will return identical responses.<br>Refer to our [Idempotency docs](https://docs.cdp.coinbase.com/api-reference/v2/idempotency) for more information on using idempotency keys.<br>|
+|address|path|string|true|The 0x-prefixed address of the EVM Smart Account to deposit from.|
+|body|body|[DepositToVaultWithEvmSmartAccountRequest](#schemadeposittovaultwithevmsmartaccountrequest)|true|none|
+|» vaultId|body|[VaultId](#schemavaultid)|true|The globally unique ID of the vault, which is a UUID prefixed with the string `vault_`.|
+|» amount|body|[VaultDepositAmount](#schemavaultdepositamount)|true|The amount of the vault's underlying asset to deposit, as a decimal string in standard unit denomination of the asset (i.e. "25.50" for 25.50 USDC).|
+|» receiver|body|[VaultDepositReceiver](#schemavaultdepositreceiver)|false|The 0x-prefixed address that receives the minted vault shares. Defaults to the depositing account given in the path.|
+|» useCdpPaymaster|body|[VaultDepositUseCdpPaymaster](#schemavaultdepositusecdppaymaster)|false|Whether to use CDP Paymaster to sponsor gas fees. When true, the user operation gas will be paid by the Paymaster, allowing the account to deposit without holding native gas tokens. Cannot be used together with `paymasterUrl`.|
+|» paymasterUrl|body|[VaultDepositPaymasterUrl](#schemavaultdepositpaymasterurl)|false|Optional custom Paymaster URL to use for gas sponsorship. This allows you to use your own Paymaster service instead of CDP's Paymaster. Cannot be used together with `useCdpPaymaster`.|
+|» paymasterContext|body|[PaymasterContext](#schemapaymastercontext)|false|The ERC-7677 `context` object forwarded to the paymaster service as part of the `paymasterService` capability. The fields in this object are defined by the paymaster service provider; CDP forwards them to the paymaster unchanged. This field is only valid when a paymaster is configured for the request. Providing `paymasterContext` without a paymaster configured results in an `invalid_request` error.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "userOpHash": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+}
+```
+
+> 400 Response
+
+```json
+{
+  "errorType": "invalid_request",
+  "errorMessage": "Invalid amount format. Amount must be a valid decimal string."
+}
+```
+
+> 401 Response
+
+```json
+{
+  "errorType": "unauthorized",
+  "errorMessage": "The request is not properly authenticated."
+}
+```
+
+> 402 Response
+
+```json
+{
+  "errorType": "payment_method_required",
+  "errorMessage": "A valid payment method is required to complete this operation. Please add a payment method to your account at https://portal.cdp.coinbase.com."
+}
+```
+
+> 403 Response
+
+```json
+{
+  "errorType": "forbidden",
+  "errorMessage": "User forbidden from performing the action."
+}
+```
+
+> 404 Response
+
+```json
+{
+  "errorType": "not_found",
+  "errorMessage": "Vault not found."
+}
+```
+
+> 409 Response
+
+```json
+{
+  "errorType": "operation_in_progress",
+  "errorMessage": "A lend operation for this account and vault is already in progress. In-progress operations typically complete in under 30 seconds. Please wait for it to complete before retrying."
+}
+```
+
+> 422 Response
+
+```json
+{
+  "errorType": "idempotency_error",
+  "errorMessage": "Idempotency key '8e03978e-40d5-43e8-bc93-6894a57f9324' was already used with a different request payload. Please try again with a new idempotency key."
+}
+```
+
+> 500 Response
+
+```json
+{
+  "errorType": "internal_server_error",
+  "errorMessage": "An internal server error occurred. Please try again later."
+}
+```
+
+> 502 Response
+
+```json
+{
+  "errorType": "bad_gateway",
+  "errorMessage": "Bad gateway. Please try again later."
+}
+```
+
+> 503 Response
+
+```json
+{
+  "errorType": "service_unavailable",
+  "errorMessage": "Service unavailable. Please try again later."
+}
+```
+
+<h3 id="deposit-into-a-vault-with-an-evm-smart-account-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Successfully broadcast the deposit user operation. Poll `getUserOperation` for its status.|[SmartAccountVaultDepositResponse](#schemasmartaccountvaultdepositresponse)|
+|400|Bad Request|Invalid request.|[Error](#schemaerror)|
+|401|Unauthorized|Unauthorized.|[Error](#schemaerror)|
+|402|Payment Required|A payment method is required to complete this operation.|[Error](#schemaerror)|
+|403|Forbidden|User forbidden from performing the action.|[Error](#schemaerror)|
+|404|Not Found|Not found.|[Error](#schemaerror)|
+|409|Conflict|Conflict. A deposit or another lend operation for this account and vault is already in progress.|[Error](#schemaerror)|
+|422|Unprocessable Entity|Idempotency key conflict.|[Error](#schemaerror)|
+|500|Internal Server Error|Internal server error.|[Error](#schemaerror)|
+|502|Bad Gateway|Bad gateway.|[Error](#schemaerror)|
+|503|Service Unavailable|Service unavailable.|[Error](#schemaerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+apiKeyAuth
+</aside>
+
+## Withdraw from a vault with an EVM account
+
+<a id="opIdwithdrawFromVaultWithEvmAccount"></a>
+
+> Code samples
+
+```bash
+curl https://api.cdp.coinbase.com/platform/v2/evm/accounts/0x742d35Cc6634C0532925a3b844Bc454e4438f44e/lend/withdraw \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -H 'X-Wallet-Auth: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEyMywicm9sZSI6ImFkbWluIiwiZXhwIjoxNzAxOTgwMDAwfQ.HWvMTKmCCTxHaxjvZyLaC6UQ6TV3ErTDWBf7zmdH0Lw' \
+  -d '{
+    "vaultId": "vault_019f5f10-096a-7a23-86df-f479650d813f",
+    "amount": "25.50",
+    "maxSlippageBps": 100
+  }'
+```
+
+`POST /v2/evm/accounts/{address}/lend/withdraw`
+
+Withdraws the vault's underlying asset (e.g. USDC) from an EVM account's position in a vault. The account signs an EIP-2612 permit over its vault shares authorizing the withdrawal, and the share approval and withdrawal are executed in a single transaction. The transaction hash is returned in the response.
+For withdrawals from EVM Smart Accounts, use `withdrawFromVaultWithEvmSmartAccount` instead.
+Provide either `amount` or `withdrawAll: true`. The `amount` field accepts human-readable amounts as decimal strings (e.g., "1.5", "25.50") in the standard unit denomination of the vault's underlying asset. Set `withdrawAll` to `true` to withdraw the entire position: every vault share held by the account is redeemed, so no residual shares remain from interest that accrues before execution.
+
+> Body parameter
+
+```json
+{
+  "vaultId": "vault_019f5f10-096a-7a23-86df-f479650d813f",
+  "amount": "25.50",
+  "maxSlippageBps": 100
+}
+```
+
+<h3 id="withdraw-from-a-vault-with-an-evm-account-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|X-Wallet-Auth|header|string|true|A JWT signed using your Wallet Secret, encoded in base64. Refer to the<br>[Generate Wallet Token](https://docs.cdp.coinbase.com/api-reference/v2/authentication#2-generate-wallet-token)<br>section of our Authentication docs for more details on how to generate your Wallet Token.<br>|
+|X-Idempotency-Key|header|string|false|An optional string request header for making requests safely retryable.<br>When included, duplicate requests with the same key will return identical responses.<br>Refer to our [Idempotency docs](https://docs.cdp.coinbase.com/api-reference/v2/idempotency) for more information on using idempotency keys.<br>|
+|address|path|string|true|The 0x-prefixed address of the EVM account to withdraw from.|
+|body|body|[WithdrawFromVaultWithEvmAccountRequest](#schemawithdrawfromvaultwithevmaccountrequest)|true|none|
+|» vaultId|body|[VaultId](#schemavaultid)|true|The globally unique ID of the vault, which is a UUID prefixed with the string `vault_`.|
+|» amount|body|[VaultWithdrawAmount](#schemavaultwithdrawamount)|false|The amount of the vault's underlying asset to withdraw, as a decimal string in standard unit denomination of the asset (i.e. "25.50" for 25.50 USDC). Cannot be used when `withdrawAll` is `true`.|
+|» withdrawAll|body|[VaultWithdrawAll](#schemavaultwithdrawall)|false|Whether to withdraw the account's entire position in the vault. When true, every vault share held by the account is redeemed for the underlying asset (e.g. USDC). Cannot be `true` when `amount` is set.|
+|» receiver|body|[VaultWithdrawReceiver](#schemavaultwithdrawreceiver)|false|The 0x-prefixed address that receives the withdrawn underlying asset. Defaults to the withdrawing account given in the path.|
+|» maxSlippageBps|body|[VaultWithdrawMaxSlippageBps](#schemavaultwithdrawmaxslippagebps)|false|The maximum share-price movement tolerated between calldata construction and onchain execution, in basis points. Defaults to 100 bps (1%) when omitted.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "transactionHash": "0xf8f98fb6726fc936f24b2007df5cb20e2b8444ff3dfaa2a929335f432a9be2e7"
+}
+```
+
+> 400 Response
+
+```json
+{
+  "errorType": "invalid_request",
+  "errorMessage": "Invalid amount format. Amount must be a valid decimal string."
+}
+```
+
+> 401 Response
+
+```json
+{
+  "errorType": "unauthorized",
+  "errorMessage": "The request is not properly authenticated."
+}
+```
+
+> 402 Response
+
+```json
+{
+  "errorType": "payment_method_required",
+  "errorMessage": "A valid payment method is required to complete this operation. Please add a payment method to your account at https://portal.cdp.coinbase.com."
+}
+```
+
+> 403 Response
+
+```json
+{
+  "errorType": "forbidden",
+  "errorMessage": "User forbidden from performing the action."
+}
+```
+
+> 404 Response
+
+```json
+{
+  "errorType": "not_found",
+  "errorMessage": "Vault not found."
+}
+```
+
+> 409 Response
+
+```json
+{
+  "errorType": "operation_in_progress",
+  "errorMessage": "A lend operation for this account and vault is already in progress. In-progress operations typically complete in under 30 seconds. Please wait for it to complete before retrying."
+}
+```
+
+> 422 Response
+
+```json
+{
+  "errorType": "idempotency_error",
+  "errorMessage": "Idempotency key '8e03978e-40d5-43e8-bc93-6894a57f9324' was already used with a different request payload. Please try again with a new idempotency key."
+}
+```
+
+> 500 Response
+
+```json
+{
+  "errorType": "internal_server_error",
+  "errorMessage": "An internal server error occurred. Please try again later."
+}
+```
+
+> 502 Response
+
+```json
+{
+  "errorType": "bad_gateway",
+  "errorMessage": "Bad gateway. Please try again later."
+}
+```
+
+> 503 Response
+
+```json
+{
+  "errorType": "service_unavailable",
+  "errorMessage": "Service unavailable. Please try again later."
+}
+```
+
+<h3 id="withdraw-from-a-vault-with-an-evm-account-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Successfully broadcast the withdrawal.|[EoaVaultWithdrawResponse](#schemaeoavaultwithdrawresponse)|
+|400|Bad Request|Invalid request.|[Error](#schemaerror)|
+|401|Unauthorized|Unauthorized.|[Error](#schemaerror)|
+|402|Payment Required|A payment method is required to complete this operation.|[Error](#schemaerror)|
+|403|Forbidden|User forbidden from performing the action.|[Error](#schemaerror)|
+|404|Not Found|Not found.|[Error](#schemaerror)|
+|409|Conflict|Conflict. A withdrawal or another lend operation for this account and vault is already in progress.|[Error](#schemaerror)|
+|422|Unprocessable Entity|Idempotency key conflict.|[Error](#schemaerror)|
+|500|Internal Server Error|Internal server error.|[Error](#schemaerror)|
+|502|Bad Gateway|Bad gateway.|[Error](#schemaerror)|
+|503|Service Unavailable|Service unavailable.|[Error](#schemaerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+apiKeyAuth
+</aside>
+
+## Withdraw from a vault with an EVM Smart Account
+
+<a id="opIdwithdrawFromVaultWithEvmSmartAccount"></a>
+
+> Code samples
+
+```bash
+curl https://api.cdp.coinbase.com/platform/v2/evm/smart-accounts/0x742d35Cc6634C0532925a3b844Bc454e4438f44e/lend/withdraw \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -H 'X-Wallet-Auth: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEyMywicm9sZSI6ImFkbWluIiwiZXhwIjoxNzAxOTgwMDAwfQ.HWvMTKmCCTxHaxjvZyLaC6UQ6TV3ErTDWBf7zmdH0Lw' \
+  -d '{
+    "vaultId": "vault_019f5f10-096a-7a23-86df-f479650d813f",
+    "amount": "25.50"
+  }'
+```
+
+`POST /v2/evm/smart-accounts/{address}/lend/withdraw`
+
+Withdraws the vault's underlying asset (e.g. USDC) from an EVM Smart Account's position in a vault. The Smart Account's owner must be a CDP EVM account. The share approval and withdrawal are batched into a single user operation, whose hash is returned in `userOpHash`.
+The withdrawal reverts if the vault's share price moves beyond `maxSlippageBps` before the user operation is included onchain.
+Poll `getUserOperation` until the user operation reaches a terminal status.
+For withdrawals from EVM accounts, use `withdrawFromVaultWithEvmAccount` instead.
+Provide either `amount` or `withdrawAll: true`. The `amount` field accepts human-readable amounts as decimal strings (e.g., "1.5", "25.50") in the standard unit denomination of the vault's underlying asset. Set `withdrawAll` to `true` to withdraw the entire position: every vault share held by the account is redeemed, so no residual shares remain from interest that accrues before execution.
+
+> Body parameter
+
+```json
+{
+  "vaultId": "vault_019f5f10-096a-7a23-86df-f479650d813f",
+  "amount": "25.50"
+}
+```
+
+<h3 id="withdraw-from-a-vault-with-an-evm-smart-account-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|X-Wallet-Auth|header|string|true|A JWT signed using your Wallet Secret, encoded in base64. Refer to the<br>[Generate Wallet Token](https://docs.cdp.coinbase.com/api-reference/v2/authentication#2-generate-wallet-token)<br>section of our Authentication docs for more details on how to generate your Wallet Token.<br>|
+|X-Idempotency-Key|header|string|false|An optional string request header for making requests safely retryable.<br>When included, duplicate requests with the same key will return identical responses.<br>Refer to our [Idempotency docs](https://docs.cdp.coinbase.com/api-reference/v2/idempotency) for more information on using idempotency keys.<br>|
+|address|path|string|true|The 0x-prefixed address of the EVM Smart Account to withdraw from.|
+|body|body|[WithdrawFromVaultWithEvmSmartAccountRequest](#schemawithdrawfromvaultwithevmsmartaccountrequest)|true|none|
+|» vaultId|body|[VaultId](#schemavaultid)|true|The globally unique ID of the vault, which is a UUID prefixed with the string `vault_`.|
+|» amount|body|[VaultWithdrawAmount](#schemavaultwithdrawamount)|false|The amount of the vault's underlying asset to withdraw, as a decimal string in standard unit denomination of the asset (i.e. "25.50" for 25.50 USDC). Cannot be used when `withdrawAll` is `true`.|
+|» withdrawAll|body|[VaultWithdrawAll](#schemavaultwithdrawall)|false|Whether to withdraw the account's entire position in the vault. When true, every vault share held by the account is redeemed for the underlying asset (e.g. USDC). Cannot be `true` when `amount` is set.|
+|» receiver|body|[VaultWithdrawReceiver](#schemavaultwithdrawreceiver)|false|The 0x-prefixed address that receives the withdrawn underlying asset. Defaults to the withdrawing account given in the path.|
+|» maxSlippageBps|body|[VaultWithdrawMaxSlippageBps](#schemavaultwithdrawmaxslippagebps)|false|The maximum share-price movement tolerated between calldata construction and onchain execution, in basis points. Defaults to 100 bps (1%) when omitted.|
+|» useCdpPaymaster|body|[VaultWithdrawUseCdpPaymaster](#schemavaultwithdrawusecdppaymaster)|false|Whether to use CDP Paymaster to sponsor gas fees. When true, the user operation gas will be paid by the Paymaster, allowing the account to withdraw without holding native gas tokens. Cannot be used together with `paymasterUrl`.|
+|» paymasterUrl|body|[VaultWithdrawPaymasterUrl](#schemavaultwithdrawpaymasterurl)|false|Optional custom Paymaster URL to use for gas sponsorship. This allows you to use your own Paymaster service instead of CDP's Paymaster. Cannot be used together with `useCdpPaymaster`.|
+|» paymasterContext|body|[PaymasterContext](#schemapaymastercontext)|false|The ERC-7677 `context` object forwarded to the paymaster service as part of the `paymasterService` capability. The fields in this object are defined by the paymaster service provider; CDP forwards them to the paymaster unchanged. This field is only valid when a paymaster is configured for the request. Providing `paymasterContext` without a paymaster configured results in an `invalid_request` error.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "userOpHash": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+}
+```
+
+> 400 Response
+
+```json
+{
+  "errorType": "invalid_request",
+  "errorMessage": "Invalid amount format. Amount must be a valid decimal string."
+}
+```
+
+> 401 Response
+
+```json
+{
+  "errorType": "unauthorized",
+  "errorMessage": "The request is not properly authenticated."
+}
+```
+
+> 402 Response
+
+```json
+{
+  "errorType": "payment_method_required",
+  "errorMessage": "A valid payment method is required to complete this operation. Please add a payment method to your account at https://portal.cdp.coinbase.com."
+}
+```
+
+> 403 Response
+
+```json
+{
+  "errorType": "forbidden",
+  "errorMessage": "User forbidden from performing the action."
+}
+```
+
+> 404 Response
+
+```json
+{
+  "errorType": "not_found",
+  "errorMessage": "Vault not found."
+}
+```
+
+> 409 Response
+
+```json
+{
+  "errorType": "operation_in_progress",
+  "errorMessage": "A lend operation for this account and vault is already in progress. In-progress operations typically complete in under 30 seconds. Please wait for it to complete before retrying."
+}
+```
+
+> 422 Response
+
+```json
+{
+  "errorType": "idempotency_error",
+  "errorMessage": "Idempotency key '8e03978e-40d5-43e8-bc93-6894a57f9324' was already used with a different request payload. Please try again with a new idempotency key."
+}
+```
+
+> 500 Response
+
+```json
+{
+  "errorType": "internal_server_error",
+  "errorMessage": "An internal server error occurred. Please try again later."
+}
+```
+
+> 502 Response
+
+```json
+{
+  "errorType": "bad_gateway",
+  "errorMessage": "Bad gateway. Please try again later."
+}
+```
+
+> 503 Response
+
+```json
+{
+  "errorType": "service_unavailable",
+  "errorMessage": "Service unavailable. Please try again later."
+}
+```
+
+<h3 id="withdraw-from-a-vault-with-an-evm-smart-account-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Successfully broadcast the withdrawal user operation. Poll `getUserOperation` for its status.|[SmartAccountVaultWithdrawResponse](#schemasmartaccountvaultwithdrawresponse)|
+|400|Bad Request|Invalid request.|[Error](#schemaerror)|
+|401|Unauthorized|Unauthorized.|[Error](#schemaerror)|
+|402|Payment Required|A payment method is required to complete this operation.|[Error](#schemaerror)|
+|403|Forbidden|User forbidden from performing the action.|[Error](#schemaerror)|
+|404|Not Found|Not found.|[Error](#schemaerror)|
+|409|Conflict|Conflict. A withdrawal or another lend operation for this account and vault is already in progress.|[Error](#schemaerror)|
 |422|Unprocessable Entity|Idempotency key conflict.|[Error](#schemaerror)|
 |500|Internal Server Error|Internal server error.|[Error](#schemaerror)|
 |502|Bad Gateway|Bad gateway.|[Error](#schemaerror)|
@@ -43592,6 +44634,135 @@ Request parameters for revoking a Spend Permission.
 |network|avalanche|
 |network|polygon|
 
+<h2 id="tocS_CatalogVaultId">CatalogVaultId</h2>
+<!-- backwards compatibility -->
+<a id="schemacatalogvaultid"></a>
+<a id="schema_CatalogVaultId"></a>
+<a id="tocScatalogvaultid"></a>
+<a id="tocscatalogvaultid"></a>
+
+```json
+"cv_019ee022-3586-7473-8354-b2c32c18221a"
+```
+
+The globally unique ID of the catalog vault, which is a UUID prefixed with the string `cv_`.
+
+<h2 id="tocS_VaultStatus">VaultStatus</h2>
+<!-- backwards compatibility -->
+<a id="schemavaultstatus"></a>
+<a id="schema_VaultStatus"></a>
+<a id="tocSvaultstatus"></a>
+<a id="tocsvaultstatus"></a>
+
+```json
+"pending"
+```
+
+The lifecycle status of the vault. A vault is `pending` from creation until its deployment user operation succeeds onchain, then `active`. If the deployment user operation fails onchain, then the status is `failed`.
+
+<h2 id="tocS_ApyMetrics">ApyMetrics</h2>
+<!-- backwards compatibility -->
+<a id="schemaapymetrics"></a>
+<a id="schema_ApyMetrics"></a>
+<a id="tocSapymetrics"></a>
+<a id="tocsapymetrics"></a>
+
+```json
+{
+  "apyBps": 500,
+  "apyUpdatedAt": "2026-09-22T00:00:00Z"
+}
+```
+
+The trailing 30-day net APY of a lend resource, along with the timestamp of observation.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|apyBps|integer|false|none|The trailing 30-day net APY, in basis points, after all applicable performance fees. For example, `500` equates to 5%. Only present once sufficient history has been observed.|
+|apyUpdatedAt|string(date-time)|false|none|The time the APY metrics were last updated, in RFC 3339 format. Only present when `apyBps` is present.|
+
+<h2 id="tocS_VaultMetrics">VaultMetrics</h2>
+<!-- backwards compatibility -->
+<a id="schemavaultmetrics"></a>
+<a id="schema_VaultMetrics"></a>
+<a id="tocSvaultmetrics"></a>
+<a id="tocsvaultmetrics"></a>
+
+```json
+{
+  "apyBps": 500,
+  "apyUpdatedAt": "2026-09-22T00:00:00Z",
+  "tvl": "1000",
+  "tvlUpdatedAt": "2026-09-22T00:00:00Z"
+}
+```
+
+The current performance metrics of a vault.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|apyBps|integer|false|none|The trailing 30-day net APY, in basis points, after all applicable performance fees. For example, `500` equates to 5%. Only present once sufficient history has been observed.|
+|apyUpdatedAt|string(date-time)|false|none|The time the APY metrics were last updated, in RFC 3339 format. Only present when `apyBps` is present.|
+|tvl|object|false|none|The total value locked in the vault, equivalent to the amount of funds deposited. It is expressed as a decimal string in standard unit denomination of the underlying asset. For example, `1000` equates to 1000 USDC. Only present once a TVL snapshot has been observed for the vault.|
+|tvlUpdatedAt|string(date-time)|false|none|The time the TVL metrics were last updated, in RFC 3339 format. Only present when `tvl` is present.|
+
+<h2 id="tocS_Vault">Vault</h2>
+<!-- backwards compatibility -->
+<a id="schemavault"></a>
+<a id="schema_Vault"></a>
+<a id="tocSvault"></a>
+<a id="tocsvault"></a>
+
+```json
+{
+  "vaultId": "vault_019f5f10-096a-7a23-86df-f479650d813f",
+  "address": "0x15966F1582CAEFB56CDB4Fba1dC622E41F2Ad33D",
+  "catalogVaultId": "cv_019ee022-3586-7473-8354-b2c32c18221a",
+  "performanceFeeBps": 2000,
+  "feeRecipientAddress": "0x742d35Cc6634C0532925a3b844Bc454e4438f44e",
+  "network": "base",
+  "status": "pending",
+  "createdAt": "2026-09-15T15:39:37Z",
+  "underlyingAsset": "usdc",
+  "metrics": {
+    "apyBps": 500,
+    "apyUpdatedAt": "2026-09-22T00:00:00Z",
+    "tvl": "1000",
+    "tvlUpdatedAt": "2026-09-22T00:00:00Z"
+  }
+}
+```
+
+A vault created on top of a catalog vault.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|vaultId|[VaultId](#schemavaultid)|true|none|The globally unique ID of the vault, which is a UUID prefixed with the string `vault_`.|
+|address|string|true|none|The 0x-prefixed onchain address of the vault. The address is deterministic and known at creation; the vault deploys at this address once the deployment user operation is included onchain.|
+|catalogVaultId|[CatalogVaultId](#schemacatalogvaultid)|true|none|The globally unique ID of the catalog vault, which is a UUID prefixed with the string `cv_`.|
+|performanceFeeBps|integer|true|none|Your performance fee, in basis points. CDP charges an additional fee equal to currently 10% (1000 bps) of your fee.|
+|feeRecipientAddress|string|true|none|The 0x-prefixed address that receives the vault's performance fees.|
+|network|[LendNetwork](#schemalendnetwork)|true|none|The network on which the lend resource (catalog vault or vault) is deployed.|
+|status|[VaultStatus](#schemavaultstatus)|true|none|The lifecycle status of the vault. A vault is `pending` from creation until its deployment user operation succeeds onchain, then `active`. If the deployment user operation fails onchain, then the status is `failed`.|
+|createdAt|string(date-time)|true|none|The time the vault was created, in RFC 3339 format.|
+|underlyingAsset|object|true|none|The symbol of the vault's underlying asset.|
+|metrics|object|false|none|The vault's current metrics. Only present once at least one metrics snapshot has been observed for the vault.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|network|base|
+|status|pending|
+|status|active|
+|status|failed|
+
 <h2 id="tocS_EvmSwapsNetwork">EvmSwapsNetwork</h2>
 <!-- backwards compatibility -->
 <a id="schemaevmswapsnetwork"></a>
@@ -59165,6 +60336,67 @@ Flat camelCase field name of a customer data requirement
 
 The globally unique ID of the vault, which is a UUID prefixed with the string `vault_`.
 
+<h2 id="tocS_LendNetwork">LendNetwork</h2>
+<!-- backwards compatibility -->
+<a id="schemalendnetwork"></a>
+<a id="schema_LendNetwork"></a>
+<a id="tocSlendnetwork"></a>
+<a id="tocslendnetwork"></a>
+
+```json
+"base"
+```
+
+The network on which the lend resource (catalog vault or vault) is deployed.
+
+<h2 id="tocS_LendPosition">LendPosition</h2>
+<!-- backwards compatibility -->
+<a id="schemalendposition"></a>
+<a id="schema_LendPosition"></a>
+<a id="tocSlendposition"></a>
+<a id="tocslendposition"></a>
+
+```json
+{
+  "vaultId": "vault_019f5f10-096a-7a23-86df-f479650d813f",
+  "network": "base",
+  "underlyingAsset": "usdc",
+  "vaultShares": "1",
+  "assetBalance": "1.025"
+}
+```
+
+An account's current share balance and underlying asset value in a lend vault.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|vaultId|[VaultId](#schemavaultid)|true|none|The globally unique ID of the vault, which is a UUID prefixed with the string `vault_`.|
+|network|[LendNetwork](#schemalendnetwork)|true|none|The network on which the lend resource (catalog vault or vault) is deployed.|
+|underlyingAsset|object|true|none|The symbol of the vault's underlying asset.|
+|vaultShares|object|true|none|The account's vault share balance in standard units of the share token.|
+|assetBalance|object|true|none|The current underlying asset value of the shares, in standard units of underlyingAsset.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|network|base|
+
+<h2 id="tocS_NonNegativeDecimal">NonNegativeDecimal</h2>
+<!-- backwards compatibility -->
+<a id="schemanonnegativedecimal"></a>
+<a id="schema_NonNegativeDecimal"></a>
+<a id="tocSnonnegativedecimal"></a>
+<a id="tocsnonnegativedecimal"></a>
+
+```json
+"100.00"
+```
+
+A non-negative decimal string without scientific notation, whitespace, leading zeros, or a trailing dot. Zero is allowed.
+
 <h2 id="tocS_VaultRedeemFeesRequest">VaultRedeemFeesRequest</h2>
 <!-- backwards compatibility -->
 <a id="schemavaultredeemfeesrequest"></a>
@@ -59275,3 +60507,394 @@ The result of a vault fee redemption from an EVM Smart Account after broadcast.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |userOpHash|string|true|none|The hash of the user operation executing the fee redemption, as a 0x-prefixed hex string. Poll `getUserOperation` for the operation's status.|
+
+<h2 id="tocS_DepositToVaultBaseRequest">DepositToVaultBaseRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemadeposittovaultbaserequest"></a>
+<a id="schema_DepositToVaultBaseRequest"></a>
+<a id="tocSdeposittovaultbaserequest"></a>
+<a id="tocsdeposittovaultbaserequest"></a>
+
+```json
+{
+  "vaultId": "vault_019f5f10-096a-7a23-86df-f479650d813f",
+  "amount": "25.50",
+  "receiver": "0x1234567890123456789012345678901234567890"
+}
+```
+
+Fields shared by the API-key requests that deposit into a vault from an EVM account or an EVM Smart Account. Composed into `DepositToVaultWithEvmAccountRequest` and `DepositToVaultWithEvmSmartAccountRequest`.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|vaultId|[VaultId](#schemavaultid)|false|none|The globally unique ID of the vault, which is a UUID prefixed with the string `vault_`.|
+|amount|[VaultDepositAmount](#schemavaultdepositamount)|false|none|The amount of the vault's underlying asset to deposit, as a decimal string in standard unit denomination of the asset (i.e. "25.50" for 25.50 USDC).|
+|receiver|[VaultDepositReceiver](#schemavaultdepositreceiver)|false|none|The 0x-prefixed address that receives the minted vault shares. Defaults to the depositing account given in the path.|
+
+<h2 id="tocS_DepositToVaultWithEvmAccountRequest">DepositToVaultWithEvmAccountRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemadeposittovaultwithevmaccountrequest"></a>
+<a id="schema_DepositToVaultWithEvmAccountRequest"></a>
+<a id="tocSdeposittovaultwithevmaccountrequest"></a>
+<a id="tocsdeposittovaultwithevmaccountrequest"></a>
+
+```json
+{
+  "vaultId": "vault_019f5f10-096a-7a23-86df-f479650d813f",
+  "amount": "25.50",
+  "receiver": "0x1234567890123456789012345678901234567890"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|vaultId|[VaultId](#schemavaultid)|true|none|The globally unique ID of the vault, which is a UUID prefixed with the string `vault_`.|
+|amount|[VaultDepositAmount](#schemavaultdepositamount)|true|none|The amount of the vault's underlying asset to deposit, as a decimal string in standard unit denomination of the asset (i.e. "25.50" for 25.50 USDC).|
+|receiver|[VaultDepositReceiver](#schemavaultdepositreceiver)|false|none|The 0x-prefixed address that receives the minted vault shares. Defaults to the depositing account given in the path.|
+|maxSlippageBps|[VaultDepositMaxSlippageBps](#schemavaultdepositmaxslippagebps)|false|none|The maximum share-price movement tolerated between calldata construction and onchain execution, in basis points. The deposit reverts if the vault's share price moves beyond this bound. A guard of 100 bps (i.e. 1%) is applied when omitted.|
+
+<h2 id="tocS_DepositToVaultWithEvmSmartAccountRequest">DepositToVaultWithEvmSmartAccountRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemadeposittovaultwithevmsmartaccountrequest"></a>
+<a id="schema_DepositToVaultWithEvmSmartAccountRequest"></a>
+<a id="tocSdeposittovaultwithevmsmartaccountrequest"></a>
+<a id="tocsdeposittovaultwithevmsmartaccountrequest"></a>
+
+```json
+{
+  "vaultId": "vault_019f5f10-096a-7a23-86df-f479650d813f",
+  "amount": "25.50",
+  "receiver": "0x1234567890123456789012345678901234567890",
+  "useCdpPaymaster": true
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|vaultId|[VaultId](#schemavaultid)|true|none|The globally unique ID of the vault, which is a UUID prefixed with the string `vault_`.|
+|amount|[VaultDepositAmount](#schemavaultdepositamount)|true|none|The amount of the vault's underlying asset to deposit, as a decimal string in standard unit denomination of the asset (i.e. "25.50" for 25.50 USDC).|
+|receiver|[VaultDepositReceiver](#schemavaultdepositreceiver)|false|none|The 0x-prefixed address that receives the minted vault shares. Defaults to the depositing account given in the path.|
+|useCdpPaymaster|[VaultDepositUseCdpPaymaster](#schemavaultdepositusecdppaymaster)|false|none|Whether to use CDP Paymaster to sponsor gas fees. When true, the user operation gas will be paid by the Paymaster, allowing the account to deposit without holding native gas tokens. Cannot be used together with `paymasterUrl`.|
+|paymasterUrl|[VaultDepositPaymasterUrl](#schemavaultdepositpaymasterurl)|false|none|Optional custom Paymaster URL to use for gas sponsorship. This allows you to use your own Paymaster service instead of CDP's Paymaster. Cannot be used together with `useCdpPaymaster`.|
+|paymasterContext|[PaymasterContext](#schemapaymastercontext)|false|none|The ERC-7677 `context` object forwarded to the paymaster service as part of the `paymasterService` capability. The fields in this object are defined by the paymaster service provider; CDP forwards them to the paymaster unchanged. This field is only valid when a paymaster is configured for the request. Providing `paymasterContext` without a paymaster configured results in an `invalid_request` error.|
+
+<h2 id="tocS_EoaVaultDepositResponse">EoaVaultDepositResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemaeoavaultdepositresponse"></a>
+<a id="schema_EoaVaultDepositResponse"></a>
+<a id="tocSeoavaultdepositresponse"></a>
+<a id="tocseoavaultdepositresponse"></a>
+
+```json
+{
+  "transactionHash": "0xf8f98fb6726fc936f24b2007df5cb20e2b8444ff3dfaa2a929335f432a9be2e7"
+}
+```
+
+The result of a vault deposit from an EOA after broadcast.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|transactionHash|string|true|none|The hash of the broadcast deposit transaction, as a 0x-prefixed hex string.|
+
+<h2 id="tocS_SmartAccountVaultDepositResponse">SmartAccountVaultDepositResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemasmartaccountvaultdepositresponse"></a>
+<a id="schema_SmartAccountVaultDepositResponse"></a>
+<a id="tocSsmartaccountvaultdepositresponse"></a>
+<a id="tocssmartaccountvaultdepositresponse"></a>
+
+```json
+{
+  "userOpHash": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+}
+```
+
+The result of a vault deposit from an EVM Smart Account after broadcast.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|userOpHash|string|true|none|The hash of the user operation executing the deposit, as a 0x-prefixed hex string.|
+
+<h2 id="tocS_VaultDepositAmount">VaultDepositAmount</h2>
+<!-- backwards compatibility -->
+<a id="schemavaultdepositamount"></a>
+<a id="schema_VaultDepositAmount"></a>
+<a id="tocSvaultdepositamount"></a>
+<a id="tocsvaultdepositamount"></a>
+
+```json
+"25.50"
+```
+
+The amount of the vault's underlying asset to deposit, as a decimal string in standard unit denomination of the asset (i.e. "25.50" for 25.50 USDC).
+
+<h2 id="tocS_VaultDepositMaxSlippageBps">VaultDepositMaxSlippageBps</h2>
+<!-- backwards compatibility -->
+<a id="schemavaultdepositmaxslippagebps"></a>
+<a id="schema_VaultDepositMaxSlippageBps"></a>
+<a id="tocSvaultdepositmaxslippagebps"></a>
+<a id="tocsvaultdepositmaxslippagebps"></a>
+
+```json
+100
+```
+
+The maximum share-price movement tolerated between calldata construction and onchain execution, in basis points. The deposit reverts if the vault's share price moves beyond this bound. A guard of 100 bps (i.e. 1%) is applied when omitted.
+
+<h2 id="tocS_VaultDepositPaymasterUrl">VaultDepositPaymasterUrl</h2>
+<!-- backwards compatibility -->
+<a id="schemavaultdepositpaymasterurl"></a>
+<a id="schema_VaultDepositPaymasterUrl"></a>
+<a id="tocSvaultdepositpaymasterurl"></a>
+<a id="tocsvaultdepositpaymasterurl"></a>
+
+```json
+"https://api.developer.coinbase.com/rpc/v1/base/AbCdEf123456"
+```
+
+Optional custom Paymaster URL to use for gas sponsorship. This allows you to use your own Paymaster service instead of CDP's Paymaster. Cannot be used together with `useCdpPaymaster`.
+
+<h2 id="tocS_VaultDepositReceiver">VaultDepositReceiver</h2>
+<!-- backwards compatibility -->
+<a id="schemavaultdepositreceiver"></a>
+<a id="schema_VaultDepositReceiver"></a>
+<a id="tocSvaultdepositreceiver"></a>
+<a id="tocsvaultdepositreceiver"></a>
+
+```json
+"0x1234567890123456789012345678901234567890"
+```
+
+The 0x-prefixed address that receives the minted vault shares. Defaults to the depositing account given in the path.
+
+<h2 id="tocS_VaultDepositUseCdpPaymaster">VaultDepositUseCdpPaymaster</h2>
+<!-- backwards compatibility -->
+<a id="schemavaultdepositusecdppaymaster"></a>
+<a id="schema_VaultDepositUseCdpPaymaster"></a>
+<a id="tocSvaultdepositusecdppaymaster"></a>
+<a id="tocsvaultdepositusecdppaymaster"></a>
+
+```json
+true
+```
+
+Whether to use CDP Paymaster to sponsor gas fees. When true, the user operation gas will be paid by the Paymaster, allowing the account to deposit without holding native gas tokens. Cannot be used together with `paymasterUrl`.
+
+<h2 id="tocS_EoaVaultWithdrawResponse">EoaVaultWithdrawResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemaeoavaultwithdrawresponse"></a>
+<a id="schema_EoaVaultWithdrawResponse"></a>
+<a id="tocSeoavaultwithdrawresponse"></a>
+<a id="tocseoavaultwithdrawresponse"></a>
+
+```json
+{
+  "transactionHash": "0xf8f98fb6726fc936f24b2007df5cb20e2b8444ff3dfaa2a929335f432a9be2e7"
+}
+```
+
+The result of a vault withdrawal from an EOA after broadcast.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|transactionHash|string|true|none|The hash of the broadcast withdrawal transaction, as a 0x-prefixed hex string.|
+
+<h2 id="tocS_SmartAccountVaultWithdrawResponse">SmartAccountVaultWithdrawResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemasmartaccountvaultwithdrawresponse"></a>
+<a id="schema_SmartAccountVaultWithdrawResponse"></a>
+<a id="tocSsmartaccountvaultwithdrawresponse"></a>
+<a id="tocssmartaccountvaultwithdrawresponse"></a>
+
+```json
+{
+  "userOpHash": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+}
+```
+
+The result of a vault withdrawal from an EVM Smart Account after broadcast.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|userOpHash|string|true|none|The hash of the user operation executing the withdrawal, as a 0x-prefixed hex string.|
+
+<h2 id="tocS_VaultWithdrawAll">VaultWithdrawAll</h2>
+<!-- backwards compatibility -->
+<a id="schemavaultwithdrawall"></a>
+<a id="schema_VaultWithdrawAll"></a>
+<a id="tocSvaultwithdrawall"></a>
+<a id="tocsvaultwithdrawall"></a>
+
+```json
+true
+```
+
+Whether to withdraw the account's entire position in the vault. When true, every vault share held by the account is redeemed for the underlying asset (e.g. USDC). Cannot be `true` when `amount` is set.
+
+<h2 id="tocS_VaultWithdrawAmount">VaultWithdrawAmount</h2>
+<!-- backwards compatibility -->
+<a id="schemavaultwithdrawamount"></a>
+<a id="schema_VaultWithdrawAmount"></a>
+<a id="tocSvaultwithdrawamount"></a>
+<a id="tocsvaultwithdrawamount"></a>
+
+```json
+"25.50"
+```
+
+The amount of the vault's underlying asset to withdraw, as a decimal string in standard unit denomination of the asset (i.e. "25.50" for 25.50 USDC). Cannot be used when `withdrawAll` is `true`.
+
+<h2 id="tocS_VaultWithdrawMaxSlippageBps">VaultWithdrawMaxSlippageBps</h2>
+<!-- backwards compatibility -->
+<a id="schemavaultwithdrawmaxslippagebps"></a>
+<a id="schema_VaultWithdrawMaxSlippageBps"></a>
+<a id="tocSvaultwithdrawmaxslippagebps"></a>
+<a id="tocsvaultwithdrawmaxslippagebps"></a>
+
+```json
+100
+```
+
+The maximum share-price movement tolerated between calldata construction and onchain execution, in basis points. Defaults to 100 bps (1%) when omitted.
+
+<h2 id="tocS_VaultWithdrawPaymasterUrl">VaultWithdrawPaymasterUrl</h2>
+<!-- backwards compatibility -->
+<a id="schemavaultwithdrawpaymasterurl"></a>
+<a id="schema_VaultWithdrawPaymasterUrl"></a>
+<a id="tocSvaultwithdrawpaymasterurl"></a>
+<a id="tocsvaultwithdrawpaymasterurl"></a>
+
+```json
+"https://api.developer.coinbase.com/rpc/v1/base/AbCdEf123456"
+```
+
+Optional custom Paymaster URL to use for gas sponsorship. This allows you to use your own Paymaster service instead of CDP's Paymaster. Cannot be used together with `useCdpPaymaster`.
+
+<h2 id="tocS_VaultWithdrawReceiver">VaultWithdrawReceiver</h2>
+<!-- backwards compatibility -->
+<a id="schemavaultwithdrawreceiver"></a>
+<a id="schema_VaultWithdrawReceiver"></a>
+<a id="tocSvaultwithdrawreceiver"></a>
+<a id="tocsvaultwithdrawreceiver"></a>
+
+```json
+"0x1234567890123456789012345678901234567890"
+```
+
+The 0x-prefixed address that receives the withdrawn underlying asset. Defaults to the withdrawing account given in the path.
+
+<h2 id="tocS_VaultWithdrawUseCdpPaymaster">VaultWithdrawUseCdpPaymaster</h2>
+<!-- backwards compatibility -->
+<a id="schemavaultwithdrawusecdppaymaster"></a>
+<a id="schema_VaultWithdrawUseCdpPaymaster"></a>
+<a id="tocSvaultwithdrawusecdppaymaster"></a>
+<a id="tocsvaultwithdrawusecdppaymaster"></a>
+
+```json
+true
+```
+
+Whether to use CDP Paymaster to sponsor gas fees. When true, the user operation gas will be paid by the Paymaster, allowing the account to withdraw without holding native gas tokens. Cannot be used together with `paymasterUrl`.
+
+<h2 id="tocS_WithdrawFromVaultBaseRequest">WithdrawFromVaultBaseRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemawithdrawfromvaultbaserequest"></a>
+<a id="schema_WithdrawFromVaultBaseRequest"></a>
+<a id="tocSwithdrawfromvaultbaserequest"></a>
+<a id="tocswithdrawfromvaultbaserequest"></a>
+
+```json
+{
+  "vaultId": "vault_019f5f10-096a-7a23-86df-f479650d813f",
+  "amount": "25.50",
+  "withdrawAll": true,
+  "receiver": "0x1234567890123456789012345678901234567890",
+  "maxSlippageBps": 100
+}
+```
+
+Fields shared by the API-key requests that withdraw from a vault with an EVM account or an EVM Smart Account. Composed into `WithdrawFromVaultWithEvmAccountRequest` and `WithdrawFromVaultWithEvmSmartAccountRequest`.
+Provide either `amount` or `withdrawAll: true`. `withdrawAll: false` is treated as omitted. Requests that set both `amount` and `withdrawAll: true`, or neither, are rejected with `invalid_request`.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|vaultId|[VaultId](#schemavaultid)|true|none|The globally unique ID of the vault, which is a UUID prefixed with the string `vault_`.|
+|amount|[VaultWithdrawAmount](#schemavaultwithdrawamount)|false|none|The amount of the vault's underlying asset to withdraw, as a decimal string in standard unit denomination of the asset (i.e. "25.50" for 25.50 USDC). Cannot be used when `withdrawAll` is `true`.|
+|withdrawAll|[VaultWithdrawAll](#schemavaultwithdrawall)|false|none|Whether to withdraw the account's entire position in the vault. When true, every vault share held by the account is redeemed for the underlying asset (e.g. USDC). Cannot be `true` when `amount` is set.|
+|receiver|[VaultWithdrawReceiver](#schemavaultwithdrawreceiver)|false|none|The 0x-prefixed address that receives the withdrawn underlying asset. Defaults to the withdrawing account given in the path.|
+|maxSlippageBps|[VaultWithdrawMaxSlippageBps](#schemavaultwithdrawmaxslippagebps)|false|none|The maximum share-price movement tolerated between calldata construction and onchain execution, in basis points. Defaults to 100 bps (1%) when omitted.|
+
+<h2 id="tocS_WithdrawFromVaultWithEvmAccountRequest">WithdrawFromVaultWithEvmAccountRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemawithdrawfromvaultwithevmaccountrequest"></a>
+<a id="schema_WithdrawFromVaultWithEvmAccountRequest"></a>
+<a id="tocSwithdrawfromvaultwithevmaccountrequest"></a>
+<a id="tocswithdrawfromvaultwithevmaccountrequest"></a>
+
+```json
+{
+  "vaultId": "vault_019f5f10-096a-7a23-86df-f479650d813f",
+  "amount": "25.50",
+  "withdrawAll": true,
+  "receiver": "0x1234567890123456789012345678901234567890",
+  "maxSlippageBps": 100
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|vaultId|[VaultId](#schemavaultid)|true|none|The globally unique ID of the vault, which is a UUID prefixed with the string `vault_`.|
+|amount|[VaultWithdrawAmount](#schemavaultwithdrawamount)|false|none|The amount of the vault's underlying asset to withdraw, as a decimal string in standard unit denomination of the asset (i.e. "25.50" for 25.50 USDC). Cannot be used when `withdrawAll` is `true`.|
+|withdrawAll|[VaultWithdrawAll](#schemavaultwithdrawall)|false|none|Whether to withdraw the account's entire position in the vault. When true, every vault share held by the account is redeemed for the underlying asset (e.g. USDC). Cannot be `true` when `amount` is set.|
+|receiver|[VaultWithdrawReceiver](#schemavaultwithdrawreceiver)|false|none|The 0x-prefixed address that receives the withdrawn underlying asset. Defaults to the withdrawing account given in the path.|
+|maxSlippageBps|[VaultWithdrawMaxSlippageBps](#schemavaultwithdrawmaxslippagebps)|false|none|The maximum share-price movement tolerated between calldata construction and onchain execution, in basis points. Defaults to 100 bps (1%) when omitted.|
+
+<h2 id="tocS_WithdrawFromVaultWithEvmSmartAccountRequest">WithdrawFromVaultWithEvmSmartAccountRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemawithdrawfromvaultwithevmsmartaccountrequest"></a>
+<a id="schema_WithdrawFromVaultWithEvmSmartAccountRequest"></a>
+<a id="tocSwithdrawfromvaultwithevmsmartaccountrequest"></a>
+<a id="tocswithdrawfromvaultwithevmsmartaccountrequest"></a>
+
+```json
+{
+  "vaultId": "vault_019f5f10-096a-7a23-86df-f479650d813f",
+  "amount": "25.50",
+  "withdrawAll": true,
+  "receiver": "0x1234567890123456789012345678901234567890",
+  "maxSlippageBps": 100,
+  "useCdpPaymaster": true
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|vaultId|[VaultId](#schemavaultid)|true|none|The globally unique ID of the vault, which is a UUID prefixed with the string `vault_`.|
+|amount|[VaultWithdrawAmount](#schemavaultwithdrawamount)|false|none|The amount of the vault's underlying asset to withdraw, as a decimal string in standard unit denomination of the asset (i.e. "25.50" for 25.50 USDC). Cannot be used when `withdrawAll` is `true`.|
+|withdrawAll|[VaultWithdrawAll](#schemavaultwithdrawall)|false|none|Whether to withdraw the account's entire position in the vault. When true, every vault share held by the account is redeemed for the underlying asset (e.g. USDC). Cannot be `true` when `amount` is set.|
+|receiver|[VaultWithdrawReceiver](#schemavaultwithdrawreceiver)|false|none|The 0x-prefixed address that receives the withdrawn underlying asset. Defaults to the withdrawing account given in the path.|
+|maxSlippageBps|[VaultWithdrawMaxSlippageBps](#schemavaultwithdrawmaxslippagebps)|false|none|The maximum share-price movement tolerated between calldata construction and onchain execution, in basis points. Defaults to 100 bps (1%) when omitted.|
+|useCdpPaymaster|[VaultWithdrawUseCdpPaymaster](#schemavaultwithdrawusecdppaymaster)|false|none|Whether to use CDP Paymaster to sponsor gas fees. When true, the user operation gas will be paid by the Paymaster, allowing the account to withdraw without holding native gas tokens. Cannot be used together with `paymasterUrl`.|
+|paymasterUrl|[VaultWithdrawPaymasterUrl](#schemavaultwithdrawpaymasterurl)|false|none|Optional custom Paymaster URL to use for gas sponsorship. This allows you to use your own Paymaster service instead of CDP's Paymaster. Cannot be used together with `useCdpPaymaster`.|
+|paymasterContext|[PaymasterContext](#schemapaymastercontext)|false|none|The ERC-7677 `context` object forwarded to the paymaster service as part of the `paymasterService` capability. The fields in this object are defined by the paymaster service provider; CDP forwards them to the paymaster unchanged. This field is only valid when a paymaster is configured for the request. Providing `paymasterContext` without a paymaster configured results in an `invalid_request` error.|

@@ -1,0 +1,11 @@
+import { OpenAPIHono } from '@hono/zod-openapi'
+import { postXAmzTargetSageMakerCreateSpaceRoute } from '../routes'
+
+const app = new OpenAPIHono()
+
+export const XAmzTargetSageMakerCreateSpaceHandler = app.openapi(
+  postXAmzTargetSageMakerCreateSpaceRoute,
+  (c) => {
+    throw new Error('Not implemented')
+  },
+)

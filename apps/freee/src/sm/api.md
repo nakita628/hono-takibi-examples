@@ -21074,7 +21074,6 @@ curl 'https://api.freee.co.jp/sm/master/custom_fields/business/definitions?compa
   <li><code>date</code>: 日付</li>
   <li><code>enum</code>: プルダウン</li>
   <li><code>partner</code>: 取引先</li>
-  <li><code>employee</code>: 従業員</li>
   <li><code>section</code>: 部門</li>
   <li><code>master_item</code>: 商品</li>
   <li><code>member</code>: メンバー</li>
@@ -21178,8 +21177,8 @@ curl 'https://api.freee.co.jp/sm/master/custom_fields/business/definitions?compa
     {
       "id": "01JPP4FD1CVQWCDSWA90VE1ZTX",
       "key": "custom_field_009",
-      "display_name": "担当従業員",
-      "type": "employee",
+      "display_name": "担当メンバー",
+      "type": "member",
       "required": false,
       "description": null
     },
@@ -21838,37 +21837,6 @@ charge_employee_id と同時に指定した場合は charge_member_id が優先�
 |---|---|
 |type|partner|
 
-<h2 id="tocS_CustomFieldEmployeeValue">CustomFieldEmployeeValue</h2>
-<!-- backwards compatibility -->
-<a id="schemacustomfieldemployeevalue"></a>
-<a id="schema_CustomFieldEmployeeValue"></a>
-<a id="tocScustomfieldemployeevalue"></a>
-<a id="tocscustomfieldemployeevalue"></a>
-
-```json
-{
-  "type": "employee",
-  "id": 101,
-  "name": "サンプル従業員"
-}
-```
-
-従業員型カスタム項目の値
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|type|string|true|none|マスタ型の種別|
-|id|integer(int64)|true|none|従業員ID|
-|name|string|true|none|従業員名|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|employee|
-
 <h2 id="tocS_CustomFieldSectionValue">CustomFieldSectionValue</h2>
 <!-- backwards compatibility -->
 <a id="schemacustomfieldsectionvalue"></a>
@@ -21987,7 +21955,6 @@ charge_employee_id と同時に指定した場合は charge_member_id が優先�
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |*oneOf*|[CustomFieldPartnerValue](#schemacustomfieldpartnervalue)|false|none|取引先型カスタム項目の値|
-|*oneOf*|[CustomFieldEmployeeValue](#schemacustomfieldemployeevalue)|false|none|従業員型カスタム項目の値|
 |*oneOf*|[CustomFieldSectionValue](#schemacustomfieldsectionvalue)|false|none|部門型カスタム項目の値|
 |*oneOf*|[CustomFieldMasterItemValue](#schemacustomfieldmasteritemvalue)|false|none|商品型カスタム項目の値|
 |*oneOf*|[CustomFieldMemberValue](#schemacustomfieldmembervalue)|false|none|メンバー型カスタム項目の値|
@@ -22013,7 +21980,7 @@ charge_employee_id と同時に指定した場合は charge_member_id が優先�
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|value|string \| number \| [CustomFieldMasterValue](#schemacustomfieldmastervalue) \| null|true|none|カスタム項目の値<br>* 文字列型（text, textarea, date）: 文字列<br>* 数値型（number, amount, quantity）: 数値<br>* プルダウン型（enum）: 選択肢の名称（文字列）<br>* マスタ型（partner, employee, section, master_item, member）: マスタ情報オブジェクト|
+|value|string \| number \| [CustomFieldMasterValue](#schemacustomfieldmastervalue) \| null|true|none|カスタム項目の値<br>* 文字列型（text, textarea, date）: 文字列<br>* 数値型（number, amount, quantity）: 数値<br>* プルダウン型（enum）: 選択肢の名称（文字列）<br>* マスタ型（partner, section, master_item, member）: マスタ情報オブジェクト|
 |definition_id|string|true|none|カスタム項目定義ID|
 |definition_name|string|true|none|カスタム項目定義名|
 
@@ -23170,7 +23137,7 @@ charge_employee_id と同時に指定した場合は charge_member_id が優先�
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |id|string|true|none|ID|
-|code|string \| null|false|none|商品コード|
+|code|string|true|none|商品コード|
 |name|string|true|none|商品名|
 |display_name|string|true|none|表示名|
 |uom_name|string \| null|false|none|単位|
@@ -23293,7 +23260,7 @@ charge_employee_id と同時に指定した場合は charge_member_id が優先�
 |id|string|true|none|カスタム項目定義のID|
 |key|string|true|none|カスタム項目定義のキー|
 |display_name|string|true|none|表示名|
-|type|string|true|none|カスタム項目の入力形式<br>* `text` - 一行テキスト<br>* `textarea` - 複数行テキスト<br>* `amount` - 金額<br>* `quantity` - 数量<br>* `number` - 数値<br>* `date` - 日付<br>* `enum` - プルダウン<br>* `partner` - 取引先<br>* `employee` - 従業員<br>* `section` - 部門<br>* `master_item` - 商品<br>* `member` - メンバー|
+|type|string|true|none|カスタム項目の入力形式<br>* `text` - 一行テキスト<br>* `textarea` - 複数行テキスト<br>* `amount` - 金額<br>* `quantity` - 数量<br>* `number` - 数値<br>* `date` - 日付<br>* `enum` - プルダウン<br>* `partner` - 取引先<br>* `section` - 部門<br>* `master_item` - 商品<br>* `member` - メンバー|
 |required|boolean|true|none|必須項目かどうか|
 |description|string \| null|false|none|項目の説明|
 
@@ -23309,7 +23276,6 @@ charge_employee_id と同時に指定した場合は charge_member_id が優先�
 |type|date|
 |type|enum|
 |type|partner|
-|type|employee|
 |type|section|
 |type|master_item|
 |type|member|
@@ -23339,7 +23305,7 @@ charge_employee_id と同時に指定した場合は charge_member_id が優先�
 |id|string|true|none|カスタム項目定義のID|
 |key|string|true|none|カスタム項目定義のキー|
 |display_name|string|true|none|表示名|
-|type|string|true|none|カスタム項目の入力形式<br>* `text` - 一行テキスト<br>* `textarea` - 複数行テキスト<br>* `amount` - 金額<br>* `quantity` - 数量<br>* `number` - 数値<br>* `date` - 日付<br>* `enum` - プルダウン<br>* `partner` - 取引先<br>* `employee` - 従業員<br>* `section` - 部門<br>* `master_item` - 商品<br>* `member` - メンバー|
+|type|string|true|none|カスタム項目の入力形式<br>* `text` - 一行テキスト<br>* `textarea` - 複数行テキスト<br>* `amount` - 金額<br>* `quantity` - 数量<br>* `number` - 数値<br>* `date` - 日付<br>* `enum` - プルダウン<br>* `partner` - 取引先<br>* `section` - 部門<br>* `master_item` - 商品<br>* `member` - メンバー|
 |required|boolean|true|none|必須項目かどうか|
 |description|string \| null|false|none|項目の説明|
 |type|string|true|none|none|
@@ -23356,7 +23322,6 @@ charge_employee_id と同時に指定した場合は charge_member_id が優先�
 |type|date|
 |type|enum|
 |type|partner|
-|type|employee|
 |type|section|
 |type|master_item|
 |type|member|
@@ -23387,7 +23352,7 @@ charge_employee_id と同時に指定した場合は charge_member_id が優先�
 |id|string|true|none|カスタム項目定義のID|
 |key|string|true|none|カスタム項目定義のキー|
 |display_name|string|true|none|表示名|
-|type|string|true|none|カスタム項目の入力形式<br>* `text` - 一行テキスト<br>* `textarea` - 複数行テキスト<br>* `amount` - 金額<br>* `quantity` - 数量<br>* `number` - 数値<br>* `date` - 日付<br>* `enum` - プルダウン<br>* `partner` - 取引先<br>* `employee` - 従業員<br>* `section` - 部門<br>* `master_item` - 商品<br>* `member` - メンバー|
+|type|string|true|none|カスタム項目の入力形式<br>* `text` - 一行テキスト<br>* `textarea` - 複数行テキスト<br>* `amount` - 金額<br>* `quantity` - 数量<br>* `number` - 数値<br>* `date` - 日付<br>* `enum` - プルダウン<br>* `partner` - 取引先<br>* `section` - 部門<br>* `master_item` - 商品<br>* `member` - メンバー|
 |required|boolean|true|none|必須項目かどうか|
 |description|string \| null|false|none|項目の説明|
 |type|string|true|none|none|
@@ -23404,7 +23369,6 @@ charge_employee_id と同時に指定した場合は charge_member_id が優先�
 |type|date|
 |type|enum|
 |type|partner|
-|type|employee|
 |type|section|
 |type|master_item|
 |type|member|
@@ -23435,7 +23399,7 @@ charge_employee_id と同時に指定した場合は charge_member_id が優先�
 |id|string|true|none|カスタム項目定義のID|
 |key|string|true|none|カスタム項目定義のキー|
 |display_name|string|true|none|表示名|
-|type|string|true|none|カスタム項目の入力形式<br>* `text` - 一行テキスト<br>* `textarea` - 複数行テキスト<br>* `amount` - 金額<br>* `quantity` - 数量<br>* `number` - 数値<br>* `date` - 日付<br>* `enum` - プルダウン<br>* `partner` - 取引先<br>* `employee` - 従業員<br>* `section` - 部門<br>* `master_item` - 商品<br>* `member` - メンバー|
+|type|string|true|none|カスタム項目の入力形式<br>* `text` - 一行テキスト<br>* `textarea` - 複数行テキスト<br>* `amount` - 金額<br>* `quantity` - 数量<br>* `number` - 数値<br>* `date` - 日付<br>* `enum` - プルダウン<br>* `partner` - 取引先<br>* `section` - 部門<br>* `master_item` - 商品<br>* `member` - メンバー|
 |required|boolean|true|none|必須項目かどうか|
 |description|string \| null|false|none|項目の説明|
 |type|string|true|none|none|
@@ -23452,7 +23416,6 @@ charge_employee_id と同時に指定した場合は charge_member_id が優先�
 |type|date|
 |type|enum|
 |type|partner|
-|type|employee|
 |type|section|
 |type|master_item|
 |type|member|
@@ -23483,7 +23446,7 @@ charge_employee_id と同時に指定した場合は charge_member_id が優先�
 |id|string|true|none|カスタム項目定義のID|
 |key|string|true|none|カスタム項目定義のキー|
 |display_name|string|true|none|表示名|
-|type|string|true|none|カスタム項目の入力形式<br>* `text` - 一行テキスト<br>* `textarea` - 複数行テキスト<br>* `amount` - 金額<br>* `quantity` - 数量<br>* `number` - 数値<br>* `date` - 日付<br>* `enum` - プルダウン<br>* `partner` - 取引先<br>* `employee` - 従業員<br>* `section` - 部門<br>* `master_item` - 商品<br>* `member` - メンバー|
+|type|string|true|none|カスタム項目の入力形式<br>* `text` - 一行テキスト<br>* `textarea` - 複数行テキスト<br>* `amount` - 金額<br>* `quantity` - 数量<br>* `number` - 数値<br>* `date` - 日付<br>* `enum` - プルダウン<br>* `partner` - 取引先<br>* `section` - 部門<br>* `master_item` - 商品<br>* `member` - メンバー|
 |required|boolean|true|none|必須項目かどうか|
 |description|string \| null|false|none|項目の説明|
 |type|string|true|none|none|
@@ -23500,7 +23463,6 @@ charge_employee_id と同時に指定した場合は charge_member_id が優先�
 |type|date|
 |type|enum|
 |type|partner|
-|type|employee|
 |type|section|
 |type|master_item|
 |type|member|
@@ -23532,7 +23494,7 @@ charge_employee_id と同時に指定した場合は charge_member_id が優先�
 |id|string|true|none|カスタム項目定義のID|
 |key|string|true|none|カスタム項目定義のキー|
 |display_name|string|true|none|表示名|
-|type|string|true|none|カスタム項目の入力形式<br>* `text` - 一行テキスト<br>* `textarea` - 複数行テキスト<br>* `amount` - 金額<br>* `quantity` - 数量<br>* `number` - 数値<br>* `date` - 日付<br>* `enum` - プルダウン<br>* `partner` - 取引先<br>* `employee` - 従業員<br>* `section` - 部門<br>* `master_item` - 商品<br>* `member` - メンバー|
+|type|string|true|none|カスタム項目の入力形式<br>* `text` - 一行テキスト<br>* `textarea` - 複数行テキスト<br>* `amount` - 金額<br>* `quantity` - 数量<br>* `number` - 数値<br>* `date` - 日付<br>* `enum` - プルダウン<br>* `partner` - 取引先<br>* `section` - 部門<br>* `master_item` - 商品<br>* `member` - メンバー|
 |required|boolean|true|none|必須項目かどうか|
 |description|string \| null|false|none|項目の説明|
 |type|string|true|none|none|
@@ -23550,7 +23512,6 @@ charge_employee_id と同時に指定した場合は charge_member_id が優先�
 |type|date|
 |type|enum|
 |type|partner|
-|type|employee|
 |type|section|
 |type|master_item|
 |type|member|
@@ -23581,7 +23542,7 @@ charge_employee_id と同時に指定した場合は charge_member_id が優先�
 |id|string|true|none|カスタム項目定義のID|
 |key|string|true|none|カスタム項目定義のキー|
 |display_name|string|true|none|表示名|
-|type|string|true|none|カスタム項目の入力形式<br>* `text` - 一行テキスト<br>* `textarea` - 複数行テキスト<br>* `amount` - 金額<br>* `quantity` - 数量<br>* `number` - 数値<br>* `date` - 日付<br>* `enum` - プルダウン<br>* `partner` - 取引先<br>* `employee` - 従業員<br>* `section` - 部門<br>* `master_item` - 商品<br>* `member` - メンバー|
+|type|string|true|none|カスタム項目の入力形式<br>* `text` - 一行テキスト<br>* `textarea` - 複数行テキスト<br>* `amount` - 金額<br>* `quantity` - 数量<br>* `number` - 数値<br>* `date` - 日付<br>* `enum` - プルダウン<br>* `partner` - 取引先<br>* `section` - 部門<br>* `master_item` - 商品<br>* `member` - メンバー|
 |required|boolean|true|none|必須項目かどうか|
 |description|string \| null|false|none|項目の説明|
 |type|string|true|none|none|
@@ -23598,7 +23559,6 @@ charge_employee_id と同時に指定した場合は charge_member_id が優先�
 |type|date|
 |type|enum|
 |type|partner|
-|type|employee|
 |type|section|
 |type|master_item|
 |type|member|
@@ -23636,7 +23596,7 @@ charge_employee_id と同時に指定した場合は charge_member_id が優先�
 |id|string|true|none|カスタム項目定義のID|
 |key|string|true|none|カスタム項目定義のキー|
 |display_name|string|true|none|表示名|
-|type|string|true|none|カスタム項目の入力形式<br>* `text` - 一行テキスト<br>* `textarea` - 複数行テキスト<br>* `amount` - 金額<br>* `quantity` - 数量<br>* `number` - 数値<br>* `date` - 日付<br>* `enum` - プルダウン<br>* `partner` - 取引先<br>* `employee` - 従業員<br>* `section` - 部門<br>* `master_item` - 商品<br>* `member` - メンバー|
+|type|string|true|none|カスタム項目の入力形式<br>* `text` - 一行テキスト<br>* `textarea` - 複数行テキスト<br>* `amount` - 金額<br>* `quantity` - 数量<br>* `number` - 数値<br>* `date` - 日付<br>* `enum` - プルダウン<br>* `partner` - 取引先<br>* `section` - 部門<br>* `master_item` - 商品<br>* `member` - メンバー|
 |required|boolean|true|none|必須項目かどうか|
 |description|string \| null|false|none|項目の説明|
 |type|string|true|none|none|
@@ -23654,7 +23614,6 @@ charge_employee_id と同時に指定した場合は charge_member_id が優先�
 |type|date|
 |type|enum|
 |type|partner|
-|type|employee|
 |type|section|
 |type|master_item|
 |type|member|
@@ -23685,7 +23644,7 @@ charge_employee_id と同時に指定した場合は charge_member_id が優先�
 |id|string|true|none|カスタム項目定義のID|
 |key|string|true|none|カスタム項目定義のキー|
 |display_name|string|true|none|表示名|
-|type|string|true|none|カスタム項目の入力形式<br>* `text` - 一行テキスト<br>* `textarea` - 複数行テキスト<br>* `amount` - 金額<br>* `quantity` - 数量<br>* `number` - 数値<br>* `date` - 日付<br>* `enum` - プルダウン<br>* `partner` - 取引先<br>* `employee` - 従業員<br>* `section` - 部門<br>* `master_item` - 商品<br>* `member` - メンバー|
+|type|string|true|none|カスタム項目の入力形式<br>* `text` - 一行テキスト<br>* `textarea` - 複数行テキスト<br>* `amount` - 金額<br>* `quantity` - 数量<br>* `number` - 数値<br>* `date` - 日付<br>* `enum` - プルダウン<br>* `partner` - 取引先<br>* `section` - 部門<br>* `master_item` - 商品<br>* `member` - メンバー|
 |required|boolean|true|none|必須項目かどうか|
 |description|string \| null|false|none|項目の説明|
 |type|string|true|none|none|
@@ -23702,59 +23661,10 @@ charge_employee_id と同時に指定した場合は charge_member_id が優先�
 |type|date|
 |type|enum|
 |type|partner|
-|type|employee|
 |type|section|
 |type|master_item|
 |type|member|
 |type|partner|
-
-<h2 id="tocS_EmployeeCustomFieldDefinition">EmployeeCustomFieldDefinition</h2>
-<!-- backwards compatibility -->
-<a id="schemaemployeecustomfielddefinition"></a>
-<a id="schema_EmployeeCustomFieldDefinition"></a>
-<a id="tocSemployeecustomfielddefinition"></a>
-<a id="tocsemployeecustomfielddefinition"></a>
-
-```json
-{
-  "id": "01JPP4FD1CVQWCDSWA90VE1ZTM",
-  "key": "custom_field_001",
-  "display_name": "プロジェクトコード",
-  "type": "employee",
-  "required": false,
-  "description": "プロジェクトを識別するためのコード"
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|id|string|true|none|カスタム項目定義のID|
-|key|string|true|none|カスタム項目定義のキー|
-|display_name|string|true|none|表示名|
-|type|string|true|none|カスタム項目の入力形式<br>* `text` - 一行テキスト<br>* `textarea` - 複数行テキスト<br>* `amount` - 金額<br>* `quantity` - 数量<br>* `number` - 数値<br>* `date` - 日付<br>* `enum` - プルダウン<br>* `partner` - 取引先<br>* `employee` - 従業員<br>* `section` - 部門<br>* `master_item` - 商品<br>* `member` - メンバー|
-|required|boolean|true|none|必須項目かどうか|
-|description|string \| null|false|none|項目の説明|
-|type|string|true|none|none|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|text|
-|type|textarea|
-|type|amount|
-|type|quantity|
-|type|number|
-|type|date|
-|type|enum|
-|type|partner|
-|type|employee|
-|type|section|
-|type|master_item|
-|type|member|
-|type|employee|
 
 <h2 id="tocS_SectionCustomFieldDefinition">SectionCustomFieldDefinition</h2>
 <!-- backwards compatibility -->
@@ -23781,7 +23691,7 @@ charge_employee_id と同時に指定した場合は charge_member_id が優先�
 |id|string|true|none|カスタム項目定義のID|
 |key|string|true|none|カスタム項目定義のキー|
 |display_name|string|true|none|表示名|
-|type|string|true|none|カスタム項目の入力形式<br>* `text` - 一行テキスト<br>* `textarea` - 複数行テキスト<br>* `amount` - 金額<br>* `quantity` - 数量<br>* `number` - 数値<br>* `date` - 日付<br>* `enum` - プルダウン<br>* `partner` - 取引先<br>* `employee` - 従業員<br>* `section` - 部門<br>* `master_item` - 商品<br>* `member` - メンバー|
+|type|string|true|none|カスタム項目の入力形式<br>* `text` - 一行テキスト<br>* `textarea` - 複数行テキスト<br>* `amount` - 金額<br>* `quantity` - 数量<br>* `number` - 数値<br>* `date` - 日付<br>* `enum` - プルダウン<br>* `partner` - 取引先<br>* `section` - 部門<br>* `master_item` - 商品<br>* `member` - メンバー|
 |required|boolean|true|none|必須項目かどうか|
 |description|string \| null|false|none|項目の説明|
 |type|string|true|none|none|
@@ -23798,7 +23708,6 @@ charge_employee_id と同時に指定した場合は charge_member_id が優先�
 |type|date|
 |type|enum|
 |type|partner|
-|type|employee|
 |type|section|
 |type|master_item|
 |type|member|
@@ -23829,7 +23738,7 @@ charge_employee_id と同時に指定した場合は charge_member_id が優先�
 |id|string|true|none|カスタム項目定義のID|
 |key|string|true|none|カスタム項目定義のキー|
 |display_name|string|true|none|表示名|
-|type|string|true|none|カスタム項目の入力形式<br>* `text` - 一行テキスト<br>* `textarea` - 複数行テキスト<br>* `amount` - 金額<br>* `quantity` - 数量<br>* `number` - 数値<br>* `date` - 日付<br>* `enum` - プルダウン<br>* `partner` - 取引先<br>* `employee` - 従業員<br>* `section` - 部門<br>* `master_item` - 商品<br>* `member` - メンバー|
+|type|string|true|none|カスタム項目の入力形式<br>* `text` - 一行テキスト<br>* `textarea` - 複数行テキスト<br>* `amount` - 金額<br>* `quantity` - 数量<br>* `number` - 数値<br>* `date` - 日付<br>* `enum` - プルダウン<br>* `partner` - 取引先<br>* `section` - 部門<br>* `master_item` - 商品<br>* `member` - メンバー|
 |required|boolean|true|none|必須項目かどうか|
 |description|string \| null|false|none|項目の説明|
 |type|string|true|none|none|
@@ -23846,7 +23755,6 @@ charge_employee_id と同時に指定した場合は charge_member_id が優先�
 |type|date|
 |type|enum|
 |type|partner|
-|type|employee|
 |type|section|
 |type|master_item|
 |type|member|
@@ -23877,7 +23785,7 @@ charge_employee_id と同時に指定した場合は charge_member_id が優先�
 |id|string|true|none|カスタム項目定義のID|
 |key|string|true|none|カスタム項目定義のキー|
 |display_name|string|true|none|表示名|
-|type|string|true|none|カスタム項目の入力形式<br>* `text` - 一行テキスト<br>* `textarea` - 複数行テキスト<br>* `amount` - 金額<br>* `quantity` - 数量<br>* `number` - 数値<br>* `date` - 日付<br>* `enum` - プルダウン<br>* `partner` - 取引先<br>* `employee` - 従業員<br>* `section` - 部門<br>* `master_item` - 商品<br>* `member` - メンバー|
+|type|string|true|none|カスタム項目の入力形式<br>* `text` - 一行テキスト<br>* `textarea` - 複数行テキスト<br>* `amount` - 金額<br>* `quantity` - 数量<br>* `number` - 数値<br>* `date` - 日付<br>* `enum` - プルダウン<br>* `partner` - 取引先<br>* `section` - 部門<br>* `master_item` - 商品<br>* `member` - メンバー|
 |required|boolean|true|none|必須項目かどうか|
 |description|string \| null|false|none|項目の説明|
 |type|string|true|none|none|
@@ -23894,7 +23802,6 @@ charge_employee_id と同時に指定した場合は charge_member_id が優先�
 |type|date|
 |type|enum|
 |type|partner|
-|type|employee|
 |type|section|
 |type|master_item|
 |type|member|
@@ -23930,7 +23837,6 @@ charge_employee_id と同時に指定した場合は charge_member_id が優先�
 |*oneOf*|[DateCustomFieldDefinition](#schemadatecustomfielddefinition)|false|none|none|
 |*oneOf*|[EnumCustomFieldDefinition](#schemaenumcustomfielddefinition)|false|none|none|
 |*oneOf*|[PartnerCustomFieldDefinition](#schemapartnercustomfielddefinition)|false|none|none|
-|*oneOf*|[EmployeeCustomFieldDefinition](#schemaemployeecustomfielddefinition)|false|none|none|
 |*oneOf*|[SectionCustomFieldDefinition](#schemasectioncustomfielddefinition)|false|none|none|
 |*oneOf*|[MasterItemCustomFieldDefinition](#schemamasteritemcustomfielddefinition)|false|none|none|
 |*oneOf*|[MemberCustomFieldDefinition](#schemamembercustomfielddefinition)|false|none|none|

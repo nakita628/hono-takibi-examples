@@ -1,192 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const BrokerageSessionStatusSchema = z
-  .object({
-    authenticated: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Returns whether your brokerage session is authenticated or not.' }),
-    established: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Returns whether your brokerage session is fully established and ready to handle requests. Set to true when the login message is received from underlying brokerage infrastructure, indicating authentication is complete and account information is loaded.',
-      }),
-    competing: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Returns whether you have a competing brokerage session in another connection.',
-      }),
-    connected: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Returns whether you are connected to the gateway or not.' }),
-    message: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'A message about your authenticate status if any.' }),
-    MAC: z.string().exactOptional().openapi({ description: 'Device MAC information.' }),
-    serverInfo: z
-      .object({
-        serverName: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'IBKR server information. Internal use only.' }),
-        serverVersion: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'IBKR version information. Internal use only.' }),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-    hardware_info: z.string().exactOptional().openapi({ description: 'Client Portal use only.' }),
-    fail: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Returns the reason for failing to retrieve authentication status.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('BrokerageSessionStatus')
-
-const SuccessfulTickleResponseSchema = z
-  .object({
-    session: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Returns the session token of the contract.' }),
-    ssoExpires: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'Returns the number of milliseconds until the current sso session expires.',
-      }),
-    collission: z.boolean().exactOptional().openapi({ description: '(Internal Use Only)' }),
-    userId: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64', description: '(Internal Use Only)' }),
-    hmds: z
-      .object({
-        error: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Relays any internal connection errors.' }),
-        authStatus: z
-          .object({
-            authenticated: z
-              .boolean()
-              .exactOptional()
-              .openapi({ description: 'Returns if the brokerage session is authenticated.' }),
-            connected: z
-              .boolean()
-              .exactOptional()
-              .openapi({ description: 'Returns if the system is connected with HMDS' }),
-          })
-          .exactOptional()
-          .openapi({ description: 'Returns authentication details.', required: [] }),
-      })
-      .exactOptional()
-      .openapi({
-        description: 'Returns connection details for the historical market data server.',
-        required: [],
-      }),
-    iserver: z
-      .object({ authStatus: BrokerageSessionStatusSchema.exactOptional() })
-      .exactOptional()
-      .openapi({ required: [] }),
-  })
-  .openapi({ required: [] })
-  .openapi('SuccessfulTickleResponse')
-
-const FailedTickleResponseSchema = z
-  .object({
-    error: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'reason why tickle was accepted by not processed' }),
-  })
-  .openapi({ required: [] })
-  .openapi('FailedTickleResponse')
-
-type TickleResponseType =
-  | z.infer<typeof SuccessfulTickleResponseSchema>
-  | z.infer<typeof FailedTickleResponseSchema>
-
-const ACHDetailsSchema = z
-  .object({ custInitAch: z.boolean().exactOptional(), bankName: z.string().exactOptional() })
-  .openapi({ required: [] })
-  .openapi('ACHDetails')
-
-const AUSExposureDetailsTypeSchema = z
-  .object({
-    ausExposureRelationship: z.string().exactOptional(),
-    personName: z.string().exactOptional(),
-    licenseNumber: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-  })
-  .openapi({ required: [] })
-  .openapi('AUSExposureDetailsType')
-
-const AbandonAccountSchema = z
-  .object({ accountId: z.string().exactOptional() })
-  .openapi({ required: [] })
-  .openapi('AbandonAccount')
-
-const AcatsPositionV2Schema = z
-  .xor([
-    z
-      .object({ conid: z.number().openapi({ example: 459200101 }) })
-      .openapi({ required: ['conid'] }),
-    z
-      .object({
-        tradingInstrumentDescription: z
-          .object({
-            securityIdType: z.enum(['CUSIP', 'ISIN', 'CASH']).openapi({ example: 'ISIN' }),
-            securityId: z.string().openapi({ example: '459200101' }),
-            assetType: z
-              .enum(['STK', 'CASH', 'UNKNOWN', 'BILL', 'BOND', 'FUND', 'OPT', 'WAR'])
-              .openapi({ example: 'STK' }),
-          })
-          .refine((val) => Object.keys(val).length <= 3)
-          .openapi({ required: ['assetType', 'securityId', 'securityIdType'] }),
-      })
-      .openapi({ required: ['tradingInstrumentDescription'] }),
-  ])
-  .openapi('AcatsPositionV2')
-
 const AccountConfigurationTypeSchema = z
   .object({
     type: z
@@ -646,7 +459,16 @@ const HighWaterMarkTypeSchema = z
   .openapi({ required: [] })
   .openapi('HighWaterMarkType')
 
-const AdvisorWrapFeesTypeSchema = z
+type AdvisorWrapFeesTypeType = {
+  automatedFeesDetails?: z.infer<typeof AutomatedWrapFeeDetailsTypeSchema>[]
+  highWaterMarkConfigHwma?: z.infer<typeof HighWaterMarkTypeSchema>
+  highWaterMarkConfigHwmq?: z.infer<typeof HighWaterMarkTypeSchema>
+  strategy?: 'AUTOMATED' | 'DIRECTBILLING' | 'NO_FEE'
+  chargeAdvisor?: boolean
+  chargeOtherFeesToAdvisor?: boolean
+}
+
+const AdvisorWrapFeesTypeSchema: z.ZodType<AdvisorWrapFeesTypeType> = z
   .object({
     automatedFeesDetails: z.array(AutomatedWrapFeeDetailsTypeSchema).exactOptional(),
     highWaterMarkConfigHwma: HighWaterMarkTypeSchema.exactOptional(),
@@ -1723,6 +1545,11 @@ const WireDetailsSchema = z
   .openapi({ required: [] })
   .openapi('WireDetails')
 
+const ACHDetailsSchema = z
+  .object({ custInitAch: z.boolean().exactOptional(), bankName: z.string().exactOptional() })
+  .openapi({ required: [] })
+  .openapi('ACHDetails')
+
 const IRADepositDetailsSchema = z
   .object({
     depositType: z.enum(['contribution', 'rollover']).exactOptional(),
@@ -1860,479 +1687,111 @@ const AccountRepSchema = z
   .openapi({ required: [] })
   .openapi('AccountRep')
 
-const AccountSchema = z
-  .object({
-    accountConfiguration: AccountConfigurationTypeSchema.exactOptional(),
-    investmentObjectives: z
-      .array(z.enum(['Trading', 'Growth', 'Speculation', 'Hedging', 'Preservation', 'Income']))
-      .exactOptional(),
-    brokerageServiceCodes: z
-      .array(z.enum(['IBClearing', 'IBExecution', 'IBPrime']))
-      .exactOptional(),
-    capabilities: z
-      .array(
-        z.enum([
-          'BOND',
-          'FOP',
-          'FUND',
-          'FUT',
-          'MRGN',
-          'MULT',
-          'OPT',
-          'SSF',
-          'CFD',
-          'STK',
-          'CLP',
-          'LEVFX',
-          'CMDTY',
-        ]),
-      )
-      .exactOptional(),
-    optionLevel: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    tradingPermissions: z.array(TradingPermissionSchema).exactOptional(),
-    commissionConfigs: z.array(CommissionConfigSchema).exactOptional(),
-    allExchangeAccess: z.array(ExchangeAccessSchema).exactOptional(),
-    dvpInstructions: z.array(DVPInstructionSchema).exactOptional(),
-    tradingLimits: TradingLimitsSchema.exactOptional(),
-    advisorWrapFees: AdvisorWrapFeesTypeSchema.exactOptional(),
-    feesTemplateName: z.string().exactOptional(),
-    clientCommissionSchedule: CommissionScheduleTypeSchema.exactOptional(),
-    clientInterestMarkupSchedules: z.array(InterestMarkupTypeSchema).exactOptional(),
-    decendent: IRADecedentSchema.exactOptional(),
-    iraBeneficiaries: IRABeneficiariesTypeSchema.exactOptional(),
-    extPositionsTransfers: z.array(ExtPositionsTransferTypeSchema).exactOptional(),
-    depositNotification: DepositNotificationSchema.exactOptional(),
-    custodian: CustodianTypeSchema.exactOptional(),
-    successorCustodian: CustodianTypeSchema.exactOptional(),
-    accountRep: AccountRepSchema.exactOptional(),
-    id: z.string().exactOptional(),
-    externalId: z.string().exactOptional(),
-    propertyProfile: z.string().exactOptional(),
-    baseCurrency: z
-      .enum([
-        'USD',
-        'EUR',
-        'GBP',
-        'CAD',
-        'JPY',
-        'HKD',
-        'AUD',
-        'CHF',
-        'MXN',
-        'SEK',
-        'NZD',
-        'HUF',
-        'CZK',
-        'CNH',
-        'DKK',
-        'RUB',
-        'ILS',
-        'NOK',
-        'SGD',
-        'PLN',
-        'ZAR',
-        'AED',
-        'KRW',
-        'SAR',
-        'TRY',
-        'RON',
-        'BGN',
-      ])
-      .exactOptional(),
-    employeePlan: z.string().exactOptional(),
-    multiCurrency: z.boolean().exactOptional(),
-    migration: z.boolean().exactOptional(),
-    sourceAccountId: z.string().exactOptional(),
-    margin: z.string().exactOptional(),
-    ira: z.boolean().exactOptional(),
-    iraType: z
-      .enum([
-        'RI',
-        'RO',
-        'RT',
-        'SP',
-        'ED',
-        'TH',
-        'RH',
-        'SH',
-        'RRSP',
-        'SRRSP',
-        'TFSA',
-        'SIMPLE',
-        'ISA',
-        'JISA',
-      ])
-      .exactOptional(),
-    iraOfficialTitle: z.string().exactOptional(),
-    clientActiveTrading: z.boolean().exactOptional(),
-    duplicate: z.boolean().exactOptional(),
-    numberOfDuplicates: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    stockYieldProgram: z.boolean().exactOptional(),
-    alias: z.string().exactOptional(),
-    accountType: z.enum(['Investment', 'Trading', 'SMSF']).exactOptional(),
-    drip: z.boolean().exactOptional(),
-    qiSubType: z.enum(['ISA', 'JISA', 'SIPP']).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('Account')
-
-const AccountCloseSchema = z
-  .object({ accountId: z.string().exactOptional(), closeReason: z.string().exactOptional() })
-  .openapi({ required: [] })
-  .openapi('AccountClose')
-
-const AccountConfigurationSchema = z
-  .object({
-    accountId: z.string().exactOptional(),
-    type: z.string().exactOptional(),
-    value: z.boolean().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('AccountConfiguration')
-
-const AccountDataSchema = z
-  .object({
-    accountId: z.string().exactOptional(),
-    masterAccountId: z.string().exactOptional(),
-    mainAccount: z.string().exactOptional(),
-    sourceAccountId: z.string().exactOptional(),
-    primaryUser: z.string().exactOptional(),
-    clearingStatus: z.string().exactOptional(),
-    clearingStatusDescription: z.string().exactOptional(),
-    stateCode: z.string().exactOptional(),
-    optionLevel: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    baseCurrency: z.string().exactOptional(),
-    dateBegun: z.iso.datetime({ offset: true }).exactOptional(),
-    dateApproved: z.iso.datetime({ offset: true }).exactOptional(),
-    dateOpened: z.iso.datetime({ offset: true }).exactOptional(),
-    dateFunded: z.iso.datetime({ offset: true }).exactOptional(),
-    dateClosed: z.iso.datetime({ offset: true }).exactOptional(),
-    dateLinked: z.iso.datetime({ offset: true }).exactOptional(),
-    dateDelinked: z.iso.datetime({ offset: true }).exactOptional(),
-    accountTitle: z.string().exactOptional(),
-    officialTitle: z.string().exactOptional(),
-    accountAlias: z.string().exactOptional(),
-    emailAddress: z.string().exactOptional(),
-    margin: z.string().exactOptional(),
-    applicantType: z.string().exactOptional(),
-    subType: z.string().exactOptional(),
-    stockYieldProgram: z.record(z.string(), z.string()).exactOptional(),
-    feeTemplate: z.record(z.string(), z.string()).exactOptional(),
-    capabilities: z
-      .record(
-        z.string(),
-        z.array(z.string()).superRefine((items, ctx) => {
-          const seen = new Map()
-          for (const [i, val] of items.entries()) {
-            const key = JSON.stringify(val)
-            if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-            else seen.set(key, i)
-          }
-        }),
-      )
-      .exactOptional(),
-    limitedOptionTrading: z.string().exactOptional(),
-    investmentObjectives: z
-      .array(z.string())
-      .superRefine((items, ctx) => {
-        const seen = new Map()
-        for (const [i, val] of items.entries()) {
-          const key = JSON.stringify(val)
-          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-          else seen.set(key, i)
-        }
-      })
-      .exactOptional(),
-    dividendReinvestment: z.record(z.string(), z.boolean()).exactOptional(),
-    externalId: z.string().exactOptional(),
-    mifidCategory: z.string().exactOptional(),
-    mifirStatus: z.string().exactOptional(),
-    equity: z.float64().exactOptional(),
-    household: z.string().exactOptional(),
-    propertyProfile: z.string().exactOptional(),
-    processType: z.string().exactOptional(),
-    riskScore: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    class_action_program: z.string().exactOptional(),
-    trustType: z.string().exactOptional(),
-    orgType: z.string().exactOptional(),
-    businessDescription: z.string().exactOptional(),
-    usTaxPurposeType: z.string().exactOptional(),
-    tradeIntentionType: z.string().exactOptional(),
-    registeredAddress: z.record(z.string(), z.string()).exactOptional(),
-    mailing: z.record(z.string(), z.string()).exactOptional(),
-    countryOfCorporation: z.string().exactOptional(),
-    lei: z.string().exactOptional(),
-    taxIds: z.array(z.record(z.string(), z.string())).exactOptional(),
-    taxTreatyDetails: z.array(z.record(z.string(), z.string())).exactOptional(),
-    signatures: z.array(z.string()).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('AccountData')
-
-const ErrorResponseSchema = z
-  .object({
-    status: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    error: z.string().exactOptional(),
-    message: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ErrorResponse')
-
-const AssociatedPersonSchema = z
-  .object({
-    entityId: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    externalCode: z.string().exactOptional(),
-    firstName: z.string().exactOptional(),
-    middleName: z.string().exactOptional(),
-    middleInitial: z.string().exactOptional(),
-    lastName: z.string().exactOptional(),
-    suffix: z.string().exactOptional(),
-    username: z.string().exactOptional(),
-    passwordDate: z.string().exactOptional(),
-    userStatus: z.string().exactOptional(),
-    userStatusTrading: z.string().exactOptional(),
-    lastLogin: z.string().exactOptional(),
-    gender: z.string().exactOptional(),
-    maritalStatus: z.string().exactOptional(),
-    salutation: z.string().exactOptional(),
-    ownershipPercentage: z.float64().exactOptional(),
-    email: z.string().exactOptional(),
-    countryOfCitizenship: z.string().exactOptional(),
-    countryOfBirth: z.string().exactOptional(),
-    dateOfBirth: z.string().exactOptional(),
-    motersMaidenName: z.string().exactOptional(),
-    numberOfDependents: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    securityDevice: z.string().exactOptional(),
-    commercial: z.string().exactOptional(),
-    countryOfLegalResidence: z.string().exactOptional(),
-    stateOfLegalResidence: z.string().exactOptional(),
-    mdSubscriberStatus: z.string().exactOptional(),
-    phones: z.record(z.string(), z.string()).exactOptional(),
-    residence: z.record(z.string(), z.string()).exactOptional(),
-    mailing: z.record(z.string(), z.string()).exactOptional(),
-    associations: z
-      .array(z.string())
-      .superRefine((items, ctx) => {
-        const seen = new Map()
-        for (const [i, val] of items.entries()) {
-          const key = JSON.stringify(val)
-          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-          else seen.set(key, i)
-        }
-      })
-      .exactOptional(),
-    identityDocuments: z.array(z.record(z.string(), z.string())).exactOptional(),
-    employmentType: z.string().exactOptional(),
-    employmentDetails: z.record(z.string(), z.object({})).exactOptional(),
-    subscribedServices: z.array(z.record(z.string(), z.object({}))).exactOptional(),
-    taxTreatyDetails: z.array(z.record(z.string(), z.string())).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('AssociatedPerson')
-
-const AssociatedEntitySchema = z
-  .object({
-    entityId: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    externalCode: z.string().exactOptional(),
-    name: z.string().exactOptional(),
-    email: z.string().exactOptional(),
-    organizationCountry: z.string().exactOptional(),
-    phones: z.record(z.string(), z.string()).exactOptional(),
-    residence: z.record(z.string(), z.string()).exactOptional(),
-    mailing: z.record(z.string(), z.string()).exactOptional(),
-    associations: z
-      .array(z.string())
-      .superRefine((items, ctx) => {
-        const seen = new Map()
-        for (const [i, val] of items.entries()) {
-          const key = JSON.stringify(val)
-          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-          else seen.set(key, i)
-        }
-      })
-      .exactOptional(),
-    identityDocuments: z.array(z.record(z.string(), z.string())).exactOptional(),
-    taxTreatyDetails: z.array(z.record(z.string(), z.string())).exactOptional(),
-    AssociatedPersons: z.array(AssociatedPersonSchema).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('AssociatedEntity')
-
-const IndividualIRABeneSchema = z
-  .object({
-    firstName: z.string().exactOptional(),
-    lastName: z.string().exactOptional(),
-    dateOfBirth: z.string().exactOptional(),
-    type: z.string().exactOptional(),
-    identification: z.record(z.string(), z.string()).exactOptional(),
-    location: z.record(z.string(), z.string()).exactOptional(),
-    relationship: z.string().exactOptional(),
-    ownership: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    perStripes: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('IndividualIRABene')
-
-const EntityIRABeneSchema = z
-  .object({
-    name: z.string().exactOptional(),
-    entityType: z.string().exactOptional(),
-    type: z.string().exactOptional(),
-    location: z.record(z.string(), z.string()).exactOptional(),
-    articleOfWill: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('EntityIRABene')
-
-const RestrictionInfoSchema = z
-  .object({
-    id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    byIB: z.boolean().exactOptional(),
-    name: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('RestrictionInfo')
-
-const AccountDetailsResponseSchema = z
-  .object({
-    error: ErrorResponseSchema.exactOptional(),
-    hasError: z.boolean().exactOptional(),
-    errorDescription: z.string().exactOptional(),
-    account: AccountDataSchema.exactOptional(),
-    associatedPersons: z.array(AssociatedPersonSchema).exactOptional(),
-    associatedEntities: z.array(AssociatedEntitySchema).exactOptional(),
-    withHoldingStatement: z.record(z.string(), z.string()).exactOptional(),
-    marketData: z.array(z.record(z.string(), z.string())).exactOptional(),
-    financialInformation: z.record(z.string(), z.object({})).exactOptional(),
-    sourcesOfWealth: z.array(z.record(z.string(), z.object({}))).exactOptional(),
-    tradeBundles: z.array(z.string()).exactOptional(),
-    individualIRABeneficiaries: z.array(IndividualIRABeneSchema).exactOptional(),
-    entityIRABeneficiaries: z.array(EntityIRABeneSchema).exactOptional(),
-    decedents: z.array(z.record(z.string(), z.string())).exactOptional(),
-    restrictions: z
-      .array(RestrictionInfoSchema)
-      .superRefine((items, ctx) => {
-        const seen = new Map()
-        for (const [i, val] of items.entries()) {
-          const key = JSON.stringify(val)
-          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-          else seen.set(key, i)
-        }
-      })
-      .exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('AccountDetailsResponse')
+type AccountType = {
+  accountConfiguration?: z.infer<typeof AccountConfigurationTypeSchema>
+  investmentObjectives?: (
+    | 'Trading'
+    | 'Growth'
+    | 'Speculation'
+    | 'Hedging'
+    | 'Preservation'
+    | 'Income'
+  )[]
+  brokerageServiceCodes?: ('IBClearing' | 'IBExecution' | 'IBPrime')[]
+  capabilities?: (
+    | 'BOND'
+    | 'FOP'
+    | 'FUND'
+    | 'FUT'
+    | 'MRGN'
+    | 'MULT'
+    | 'OPT'
+    | 'SSF'
+    | 'CFD'
+    | 'STK'
+    | 'CLP'
+    | 'LEVFX'
+    | 'CMDTY'
+  )[]
+  optionLevel?: bigint
+  tradingPermissions?: z.infer<typeof TradingPermissionSchema>[]
+  commissionConfigs?: z.infer<typeof CommissionConfigSchema>[]
+  allExchangeAccess?: z.infer<typeof ExchangeAccessSchema>[]
+  dvpInstructions?: z.infer<typeof DVPInstructionSchema>[]
+  tradingLimits?: z.infer<typeof TradingLimitsSchema>
+  advisorWrapFees?: z.infer<typeof AdvisorWrapFeesTypeSchema>
+  feesTemplateName?: string
+  clientCommissionSchedule?: z.infer<typeof CommissionScheduleTypeSchema>
+  clientInterestMarkupSchedules?: z.infer<typeof InterestMarkupTypeSchema>[]
+  decendent?: z.infer<typeof IRADecedentSchema>
+  iraBeneficiaries?: z.infer<typeof IRABeneficiariesTypeSchema>
+  extPositionsTransfers?: z.infer<typeof ExtPositionsTransferTypeSchema>[]
+  depositNotification?: z.infer<typeof DepositNotificationSchema>
+  custodian?: z.infer<typeof CustodianTypeSchema>
+  successorCustodian?: z.infer<typeof CustodianTypeSchema>
+  accountRep?: z.infer<typeof AccountRepSchema>
+  id?: string
+  externalId?: string
+  propertyProfile?: string
+  baseCurrency?:
+    | 'USD'
+    | 'EUR'
+    | 'GBP'
+    | 'CAD'
+    | 'JPY'
+    | 'HKD'
+    | 'AUD'
+    | 'CHF'
+    | 'MXN'
+    | 'SEK'
+    | 'NZD'
+    | 'HUF'
+    | 'CZK'
+    | 'CNH'
+    | 'DKK'
+    | 'RUB'
+    | 'ILS'
+    | 'NOK'
+    | 'SGD'
+    | 'PLN'
+    | 'ZAR'
+    | 'AED'
+    | 'KRW'
+    | 'SAR'
+    | 'TRY'
+    | 'RON'
+    | 'BGN'
+  employeePlan?: string
+  multiCurrency?: boolean
+  migration?: boolean
+  sourceAccountId?: string
+  margin?: string
+  ira?: boolean
+  iraType?:
+    | 'RI'
+    | 'RO'
+    | 'RT'
+    | 'SP'
+    | 'ED'
+    | 'TH'
+    | 'RH'
+    | 'SH'
+    | 'RRSP'
+    | 'SRRSP'
+    | 'TFSA'
+    | 'SIMPLE'
+    | 'ISA'
+    | 'JISA'
+  iraOfficialTitle?: string
+  clientActiveTrading?: boolean
+  duplicate?: boolean
+  numberOfDuplicates?: bigint
+  stockYieldProgram?: boolean
+  alias?: string
+  accountType?: 'Investment' | 'Trading' | 'SMSF'
+  drip?: boolean
+  qiSubType?: 'ISA' | 'JISA' | 'SIPP'
+}
 
 const UpdateExternalIdSchema = z
   .object({ accountId: z.string().exactOptional(), newExternalId: z.string().exactOptional() })
@@ -2353,6 +1812,11 @@ const ChangeBaseCurrencySchema = z
   .object({ accountId: z.string().exactOptional(), newBaseCurrency: z.string().exactOptional() })
   .openapi({ required: [] })
   .openapi('ChangeBaseCurrency')
+
+const AbandonAccountSchema = z
+  .object({ accountId: z.string().exactOptional() })
+  .openapi({ required: [] })
+  .openapi('AbandonAccount')
 
 const UserDetailsSchema = z
   .object({
@@ -3505,6 +2969,26 @@ const ORGRegulatoryInfoTypeSchema = z
   .openapi({ required: [] })
   .openapi('ORGRegulatoryInfoType')
 
+const AUSExposureDetailsTypeSchema = z
+  .object({
+    ausExposureRelationship: z.string().exactOptional(),
+    personName: z.string().exactOptional(),
+    licenseNumber: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+  })
+  .openapi({ required: [] })
+  .openapi('AUSExposureDetailsType')
+
 const PoliticalMilitaryDiplomaticDetailsTypeSchema = z
   .object({
     personName: z.string().exactOptional(),
@@ -3532,6 +3016,119 @@ const RegulatoryInformationSchema = z
   .openapi({ required: [] })
   .openapi('RegulatoryInformation')
 
+const AssociatedPersonSchema = z
+  .object({
+    entityId: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    externalCode: z.string().exactOptional(),
+    firstName: z.string().exactOptional(),
+    middleName: z.string().exactOptional(),
+    middleInitial: z.string().exactOptional(),
+    lastName: z.string().exactOptional(),
+    suffix: z.string().exactOptional(),
+    username: z.string().exactOptional(),
+    passwordDate: z.string().exactOptional(),
+    userStatus: z.string().exactOptional(),
+    userStatusTrading: z.string().exactOptional(),
+    lastLogin: z.string().exactOptional(),
+    gender: z.string().exactOptional(),
+    maritalStatus: z.string().exactOptional(),
+    salutation: z.string().exactOptional(),
+    ownershipPercentage: z.float64().exactOptional(),
+    email: z.string().exactOptional(),
+    countryOfCitizenship: z.string().exactOptional(),
+    countryOfBirth: z.string().exactOptional(),
+    dateOfBirth: z.string().exactOptional(),
+    motersMaidenName: z.string().exactOptional(),
+    numberOfDependents: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    securityDevice: z.string().exactOptional(),
+    commercial: z.string().exactOptional(),
+    countryOfLegalResidence: z.string().exactOptional(),
+    stateOfLegalResidence: z.string().exactOptional(),
+    mdSubscriberStatus: z.string().exactOptional(),
+    phones: z.record(z.string(), z.string()).exactOptional(),
+    residence: z.record(z.string(), z.string()).exactOptional(),
+    mailing: z.record(z.string(), z.string()).exactOptional(),
+    associations: z
+      .array(z.string())
+      .superRefine((items, ctx) => {
+        const seen = new Map()
+        for (const [i, val] of items.entries()) {
+          const key = JSON.stringify(val)
+          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+          else seen.set(key, i)
+        }
+      })
+      .exactOptional(),
+    identityDocuments: z.array(z.record(z.string(), z.string())).exactOptional(),
+    employmentType: z.string().exactOptional(),
+    employmentDetails: z.record(z.string(), z.looseObject({})).exactOptional(),
+    subscribedServices: z.array(z.record(z.string(), z.looseObject({}))).exactOptional(),
+    taxTreatyDetails: z.array(z.record(z.string(), z.string())).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('AssociatedPerson')
+
+const AssociatedEntitySchema = z
+  .object({
+    entityId: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    externalCode: z.string().exactOptional(),
+    name: z.string().exactOptional(),
+    email: z.string().exactOptional(),
+    organizationCountry: z.string().exactOptional(),
+    phones: z.record(z.string(), z.string()).exactOptional(),
+    residence: z.record(z.string(), z.string()).exactOptional(),
+    mailing: z.record(z.string(), z.string()).exactOptional(),
+    associations: z
+      .array(z.string())
+      .superRefine((items, ctx) => {
+        const seen = new Map()
+        for (const [i, val] of items.entries()) {
+          const key = JSON.stringify(val)
+          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+          else seen.set(key, i)
+        }
+      })
+      .exactOptional(),
+    identityDocuments: z.array(z.record(z.string(), z.string())).exactOptional(),
+    taxTreatyDetails: z.array(z.record(z.string(), z.string())).exactOptional(),
+    AssociatedPersons: z.array(AssociatedPersonSchema).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('AssociatedEntity')
+
 const AssociatedEntitiesSchema = z
   .object({
     associatedIndividuals: z.array(AssociatedIndividualSchema).exactOptional(),
@@ -3540,7 +3137,13 @@ const AssociatedEntitiesSchema = z
   .openapi({ required: [] })
   .openapi('AssociatedEntities')
 
-const OrganizationSchema = z
+type OrganizationType = {
+  identification?: z.infer<typeof OrganizationIdentificationSchema>
+  regulatoryInformation?: z.infer<typeof RegulatoryInformationSchema>
+  associatedEntities?: z.infer<typeof AssociatedEntitiesSchema>
+}
+
+const OrganizationSchema: z.ZodType<OrganizationType> = z
   .object({
     identification: OrganizationIdentificationSchema.exactOptional(),
     regulatoryInformation: RegulatoryInformationSchema.exactOptional(),
@@ -3549,7 +3152,15 @@ const OrganizationSchema = z
   .openapi({ required: [] })
   .openapi('Organization')
 
-const AddEntitySchema = z
+type AddEntityType = {
+  addRelationships?: z.infer<typeof AddRelationshipSchema>[]
+  individual?: z.infer<typeof IndividualSchema>
+  legalEntity?: z.infer<typeof LegalEntitySchema>
+  organization?: z.infer<typeof OrganizationSchema>
+  documents?: z.infer<typeof DocumentSchema>[]
+}
+
+const AddEntitySchema: z.ZodType<AddEntityType> = z
   .object({
     addRelationships: z.array(AddRelationshipSchema).exactOptional(),
     individual: IndividualSchema.exactOptional(),
@@ -3702,7 +3313,19 @@ const TrustSchema = z
   .openapi({ required: [] })
   .openapi('Trust')
 
-const UpdateEntitySchema = z
+type UpdateEntityType = {
+  addRelationships?: z.infer<typeof AddRelationshipSchema>[]
+  deleteRelationships?: z.infer<typeof DeleteRelationshipSchema>[]
+  individual?: z.infer<typeof IndividualSchema>
+  legalEntity?: z.infer<typeof LegalEntitySchema>
+  trust?: z.infer<typeof TrustSchema>
+  organization?: z.infer<typeof OrganizationSchema>
+  documents?: z.infer<typeof DocumentSchema>[]
+  ibEntityId?: bigint
+  externalId?: string
+}
+
+const UpdateEntitySchema: z.ZodType<UpdateEntityType> = z
   .object({
     addRelationships: z.array(AddRelationshipSchema).exactOptional(),
     deleteRelationships: z.array(DeleteRelationshipSchema).exactOptional(),
@@ -3747,7 +3370,14 @@ const DeleteEntitySchema = z
   .openapi({ required: [] })
   .openapi('DeleteEntity')
 
-const InformationChangeSchema = z
+type InformationChangeType = {
+  addEntities?: z.infer<typeof AddEntitySchema>[]
+  updateEntities?: z.infer<typeof UpdateEntitySchema>[]
+  deleteEntities?: z.infer<typeof DeleteEntitySchema>[]
+  ibAccountId?: string
+}
+
+const InformationChangeSchema: z.ZodType<InformationChangeType> = z
   .object({
     addEntities: z.array(AddEntitySchema).exactOptional(),
     updateEntities: z.array(UpdateEntitySchema).exactOptional(),
@@ -4183,7 +3813,32 @@ const WithholdingStatementTypeSchema = z
   .openapi({ required: [] })
   .openapi('WithholdingStatementType')
 
-const OrganizationApplicantSchema = z
+type OrganizationApplicantType = {
+  identifications?: z.infer<typeof OrganizationIdentificationSchema>[]
+  accountSupport?: z.infer<typeof AccountSupportTypeSchema>
+  financialInformation?: z.infer<typeof FinancialInformationSchema>[]
+  accreditedInvestorInformation?: z.infer<typeof AccreditedInvestorInformationSchema>
+  regulatoryInformation?: z.infer<typeof RegulatoryInformationSchema>[]
+  managingOwner?: z.infer<typeof ManagingOwnerSchema>
+  associatedEntities?: z.infer<typeof AssociatedEntitiesSchema>
+  regulatedMemberships?: z.infer<typeof RegulatedMembershipSchema>[]
+  taxResidencies?: z.infer<typeof TaxResidencySchema>[]
+  w8BenE?: z.infer<typeof FormW8BENESchema>
+  w8IMY?: z.infer<typeof FormW8IMYSchema>
+  withholdingStatement?: z.infer<typeof WithholdingStatementTypeSchema>
+  typeOfTrading?: 'FIRM' | 'CUSTOMER'
+  type?: 'LLC' | 'CORPORATION' | 'PARTNERSHIP' | 'UNINCORPORATED BUSINESS'
+  orgUsSubsidiary?: boolean
+  qualifiedIntermediary?: boolean
+  assumedPrimaryReporting?: boolean
+  acceptedPrimaryWithholding?: boolean
+  usTaxPurposeType?: 'C' | 'P' | 'E'
+  propAccount?: boolean
+  lei?: string
+  noLeiConfirmation?: boolean
+}
+
+const OrganizationApplicantSchema: z.ZodType<OrganizationApplicantType> = z
   .object({
     identifications: z.array(OrganizationIdentificationSchema).exactOptional(),
     accountSupport: AccountSupportTypeSchema.exactOptional(),
@@ -4321,7 +3976,12 @@ const TrusteeEntityTypeSchema = z
   .openapi({ required: [] })
   .openapi('TrusteeEntityType')
 
-const TrusteesTypeSchema = z
+type TrusteesTypeType = {
+  individuals?: z.infer<typeof TrusteeIndividualSchema>[]
+  entities?: z.infer<typeof TrusteeEntityTypeSchema>[]
+}
+
+const TrusteesTypeSchema: z.ZodType<TrusteesTypeType> = z
   .object({
     individuals: z.array(TrusteeIndividualSchema).exactOptional(),
     entities: z.array(TrusteeEntityTypeSchema).exactOptional(),
@@ -4337,7 +3997,24 @@ const AssociationTypeEntitiesSchema = z
   .openapi({ required: [] })
   .openapi('AssociationTypeEntities')
 
-const TrustApplicantSchema = z
+type TrustApplicantType = {
+  identification?: z.infer<typeof TrustIdentificationSchema>[]
+  financialInformation?: z.infer<typeof FinancialInformationSchema>[]
+  regulatoryInformation?: z.infer<typeof RegulatoryInformationSchema>[]
+  regulatedMemberships?: z.infer<typeof RegulatedMembershipSchema>[]
+  accreditedInvestorInformation?: z.infer<typeof AccreditedInvestorInformationSchema>
+  trustees?: z.infer<typeof TrusteesTypeSchema>
+  beneficiaries?: z.infer<typeof AssociationTypeEntitiesSchema>
+  grantors?: z.infer<typeof AssociationTypeEntitiesSchema>
+  taxResidencies?: z.infer<typeof TaxResidencySchema>[]
+  w8BenE?: z.infer<typeof FormW8BENESchema>
+  w8IMY?: z.infer<typeof FormW8IMYSchema>
+  withholdingStatement?: z.infer<typeof WithholdingStatementTypeSchema>
+  thirdPartyManagement?: boolean
+  trustType?: 'COMPLEX_TRUST' | 'SINGLE_TRUST' | 'GRANTOR_TRUST' | 'US_TAXABLE_TRUST'
+}
+
+const TrustApplicantSchema: z.ZodType<TrustApplicantType> = z
   .object({
     identification: z.array(TrustIdentificationSchema).exactOptional(),
     financialInformation: z.array(FinancialInformationSchema).exactOptional(),
@@ -4359,7 +4036,38 @@ const TrustApplicantSchema = z
   .openapi({ required: [] })
   .openapi('TrustApplicant')
 
-const CustomerSchema = z
+type CustomerType = {
+  organization?: z.infer<typeof OrganizationApplicantSchema>
+  accountHolder?: z.infer<typeof IndividualApplicantSchema>
+  jointHolders?: z.infer<typeof JointApplicantSchema>
+  trust?: z.infer<typeof TrustApplicantSchema>
+  id?: string
+  externalId?: string
+  transferUsMicroCapStock?: boolean
+  type?: 'INDIVIDUAL' | 'JOINT' | 'TRUST' | 'UGMA' | 'UTMA' | 'ORG' | 'IRA'
+  prefix?: string
+  userName?: string
+  userNameAlias?: string
+  userNameSource?: string
+  email?: string
+  mdStatusNonPro?: boolean
+  preferredPrimaryLanguage?: string
+  preferredSecondaryLanguage?: string
+  legalResidenceCountry?: string
+  taxTreatyCountry?: string
+  meetAmlStandard?: string
+  meetsAmlStandard?: string
+  directTradingAccess?: boolean
+  originCountry?: string
+  terminationAge?: bigint
+  governingState?: string
+  optForDebitCard?: boolean
+  roboFaClient?: boolean
+  independentAccount?: boolean
+  paperAccount?: boolean
+}
+
+const CustomerSchema: z.ZodType<CustomerType> = z
   .object({
     organization: OrganizationApplicantSchema.exactOptional(),
     accountHolder: IndividualApplicantSchema.exactOptional(),
@@ -4404,6 +4112,144 @@ const CustomerSchema = z
   .openapi({ required: [] })
   .openapi('Customer')
 
+const AccountSchema: z.ZodType<AccountType> = z
+  .object({
+    accountConfiguration: AccountConfigurationTypeSchema.exactOptional(),
+    investmentObjectives: z
+      .array(z.enum(['Trading', 'Growth', 'Speculation', 'Hedging', 'Preservation', 'Income']))
+      .exactOptional(),
+    brokerageServiceCodes: z
+      .array(z.enum(['IBClearing', 'IBExecution', 'IBPrime']))
+      .exactOptional(),
+    capabilities: z
+      .array(
+        z.enum([
+          'BOND',
+          'FOP',
+          'FUND',
+          'FUT',
+          'MRGN',
+          'MULT',
+          'OPT',
+          'SSF',
+          'CFD',
+          'STK',
+          'CLP',
+          'LEVFX',
+          'CMDTY',
+        ]),
+      )
+      .exactOptional(),
+    optionLevel: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    tradingPermissions: z.array(TradingPermissionSchema).exactOptional(),
+    commissionConfigs: z.array(CommissionConfigSchema).exactOptional(),
+    allExchangeAccess: z.array(ExchangeAccessSchema).exactOptional(),
+    dvpInstructions: z.array(DVPInstructionSchema).exactOptional(),
+    tradingLimits: TradingLimitsSchema.exactOptional(),
+    advisorWrapFees: AdvisorWrapFeesTypeSchema.exactOptional(),
+    feesTemplateName: z.string().exactOptional(),
+    clientCommissionSchedule: CommissionScheduleTypeSchema.exactOptional(),
+    clientInterestMarkupSchedules: z.array(InterestMarkupTypeSchema).exactOptional(),
+    decendent: IRADecedentSchema.exactOptional(),
+    iraBeneficiaries: IRABeneficiariesTypeSchema.exactOptional(),
+    extPositionsTransfers: z.array(ExtPositionsTransferTypeSchema).exactOptional(),
+    depositNotification: DepositNotificationSchema.exactOptional(),
+    custodian: CustodianTypeSchema.exactOptional(),
+    successorCustodian: CustodianTypeSchema.exactOptional(),
+    accountRep: AccountRepSchema.exactOptional(),
+    id: z.string().exactOptional(),
+    externalId: z.string().exactOptional(),
+    propertyProfile: z.string().exactOptional(),
+    baseCurrency: z
+      .enum([
+        'USD',
+        'EUR',
+        'GBP',
+        'CAD',
+        'JPY',
+        'HKD',
+        'AUD',
+        'CHF',
+        'MXN',
+        'SEK',
+        'NZD',
+        'HUF',
+        'CZK',
+        'CNH',
+        'DKK',
+        'RUB',
+        'ILS',
+        'NOK',
+        'SGD',
+        'PLN',
+        'ZAR',
+        'AED',
+        'KRW',
+        'SAR',
+        'TRY',
+        'RON',
+        'BGN',
+      ])
+      .exactOptional(),
+    employeePlan: z.string().exactOptional(),
+    multiCurrency: z.boolean().exactOptional(),
+    migration: z.boolean().exactOptional(),
+    sourceAccountId: z.string().exactOptional(),
+    margin: z.string().exactOptional(),
+    ira: z.boolean().exactOptional(),
+    iraType: z
+      .enum([
+        'RI',
+        'RO',
+        'RT',
+        'SP',
+        'ED',
+        'TH',
+        'RH',
+        'SH',
+        'RRSP',
+        'SRRSP',
+        'TFSA',
+        'SIMPLE',
+        'ISA',
+        'JISA',
+      ])
+      .exactOptional(),
+    iraOfficialTitle: z.string().exactOptional(),
+    clientActiveTrading: z.boolean().exactOptional(),
+    duplicate: z.boolean().exactOptional(),
+    numberOfDuplicates: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    stockYieldProgram: z.boolean().exactOptional(),
+    alias: z.string().exactOptional(),
+    accountType: z.enum(['Investment', 'Trading', 'SMSF']).exactOptional(),
+    drip: z.boolean().exactOptional(),
+    qiSubType: z.enum(['ISA', 'JISA', 'SIPP']).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('Account')
+
 const UserPrivilegeSchema = z
   .object({
     externalAccountId: z.string().exactOptional(),
@@ -4440,7 +4286,15 @@ const UserSchema = z
   .openapi({ required: [] })
   .openapi('User')
 
-const AddAdditionalAccountSchema = z
+type AddAdditionalAccountType = {
+  customer?: z.infer<typeof CustomerSchema>
+  account?: z.infer<typeof AccountSchema>
+  documents?: z.infer<typeof DocumentSchema>[]
+  users?: z.infer<typeof UserSchema>[]
+  accountId?: string
+}
+
+const AddAdditionalAccountSchema: z.ZodType<AddAdditionalAccountType> = z
   .object({
     customer: CustomerSchema.exactOptional(),
     account: AccountSchema.exactOptional(),
@@ -4450,6 +4304,15 @@ const AddAdditionalAccountSchema = z
   })
   .openapi({ required: [] })
   .openapi('AddAdditionalAccount')
+
+const AccountConfigurationSchema = z
+  .object({
+    accountId: z.string().exactOptional(),
+    type: z.string().exactOptional(),
+    value: z.boolean().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('AccountConfiguration')
 
 const AllocateVANSchema = z
   .object({
@@ -4605,6 +4468,11 @@ const ApplyFeeTemplateSchema = z
   .openapi({ required: [] })
   .openapi('ApplyFeeTemplate')
 
+const AccountCloseSchema = z
+  .object({ accountId: z.string().exactOptional(), closeReason: z.string().exactOptional() })
+  .openapi({ required: [] })
+  .openapi('AccountClose')
+
 const ServiceSchema = z
   .object({
     value: z
@@ -4660,7 +4528,57 @@ const QuizQuestionnairesSchema = z
   .openapi({ required: [] })
   .openapi('QuizQuestionnaires')
 
-const AccountManagementRequestsSchema = z
+type AccountManagementRequestsType = {
+  updateExternalId?: z.infer<typeof UpdateExternalIdSchema>
+  updatePropertyProfile?: z.infer<typeof UpdatePropertyProfileSchema>
+  updateAccountAlias?: z.infer<typeof UpdateAccountAliasSchema>
+  changeBaseCurrency?: z.infer<typeof ChangeBaseCurrencySchema>
+  abandonAccount?: z.infer<typeof AbandonAccountSchema>
+  addNewUser?: z.infer<typeof AddNewUserSchema>
+  addLevFxCapability?: z.infer<typeof AddLEVFXCapabilitySchema>
+  addMiFirData?: z.infer<typeof AddMiFIRDataSchema>
+  addTradingPermissions?: z.infer<typeof AddTradingPermissionsSchema>
+  removeTradingPermissions?: z.infer<typeof RemoveTradingPermissionsSchema>
+  changeMarginType?: z.infer<typeof ChangeMarginTypeSchema>
+  addCLPCapability?: z.infer<typeof AddCLPCapabilitySchema>
+  changeFinancialInformation?: z.infer<typeof ChangeFinancialInformationSchema>
+  resetAbandonedAccount?: z.infer<typeof ResetAbandonedAccountSchema>
+  updateCredentials?: z.infer<typeof UpdateCredentialsSchema>[]
+  updateAccountRepresentatives?: z.infer<typeof UpdateAccountRepresentativesSchema>
+  completeLoginMessage?: z.infer<typeof CompleteLoginMessageSchema>
+  reopenAccount?: z.infer<typeof ReopenAccountSchema>
+  enrollInSyep?: z.infer<typeof EnrollInSYEPSchema>
+  leaveSyep?: z.infer<typeof LeaveSYEPSchema>
+  enrollInDrip?: z.infer<typeof EnrollInDRIPSchema>
+  leaveDrip?: z.infer<typeof LeaveDRIPSchema>
+  updateW8Ben?: z.infer<typeof UpdateW8BENSchema>
+  enableAccountInBrokerage?: z.infer<typeof EnableAccountInBrokerageSchema>
+  disableAccountInBrokerage?: z.infer<typeof DisableAccountInBrokerageSchema>
+  linkDuplicateAccount?: z.infer<typeof LinkDuplicateAccountSchema>
+  duplicateAccount?: z.infer<typeof DuplicateAccountSchema>
+  documentSubmission?: z.infer<typeof DocumentSubmissionSchema>
+  processDocuments?: z.infer<typeof ProcessDocumentsSchema>
+  updateBcan?: z.infer<typeof UpdateBCANSchema>
+  prohibitedCountryQuestionnaire?: z.infer<typeof ProhibitedCountryQuestionnaireSchema>
+  updateWithholdingStatement?: z.infer<typeof UpdateWithholdingStatementSchema>
+  accreditedInvestor?: z.infer<typeof AccreditedInvestorSchema>
+  changeAccountHolderDetail?: z.infer<typeof ChangeAccountHolderDetailSchema>
+  updateUserAccessRights?: z.infer<typeof UpdateUserAccessRightsSchema>
+  informationChange?: z.infer<typeof InformationChangeSchema>
+  addAdditionalAccount?: z.infer<typeof AddAdditionalAccountSchema>
+  accountConfiguration?: z.infer<typeof AccountConfigurationSchema>
+  allocateVan?: z.infer<typeof AllocateVANSchema>
+  createUser?: z.infer<typeof CreateUserSchema>
+  updateTaxForm?: z.infer<typeof UpdateTaxFormSchema>
+  questionnaires?: z.infer<typeof QuestionnairesWithAccountSchema>
+  securityQuestions?: z.infer<typeof SecurityQuestionsSchema>
+  applyFeeTemplate?: z.infer<typeof ApplyFeeTemplateSchema>
+  accountClose?: z.infer<typeof AccountCloseSchema>
+  manageMarketDataSubscriptions?: z.infer<typeof ManageMarketDataSubscriptionsSchema>[]
+  quizQuestionnaires?: z.infer<typeof QuizQuestionnairesSchema>
+}
+
+const AccountManagementRequestsSchema: z.ZodType<AccountManagementRequestsType> = z
   .object({
     updateExternalId: UpdateExternalIdSchema.exactOptional(),
     updatePropertyProfile: UpdatePropertyProfileSchema.exactOptional(),
@@ -4713,7 +4631,451 @@ const AccountManagementRequestsSchema = z
   .openapi({ required: [] })
   .openapi('AccountManagementRequests')
 
-const AccountManagementRequestsPayloadSchema = z
+type AccountManagementRequestsPayloadType = {
+  accountManagementRequests?: z.infer<typeof AccountManagementRequestsSchema>
+}
+
+const QuestionnairesSchema = z
+  .object({ questionnaire: z.array(QuestionnaireSchema).exactOptional() })
+  .openapi({ required: [] })
+  .openapi('Questionnaires')
+
+type ApplicationType = {
+  customer?: z.infer<typeof CustomerSchema>
+  accounts?: z.infer<typeof AccountSchema>[]
+  users?: z.infer<typeof UserSchema>[]
+  documents?: z.infer<typeof DocumentSchema>[]
+  additionalAccounts?: z.infer<typeof AddAdditionalAccountSchema>[]
+  masterAccountId?: string
+  id?: string
+  inputLanguage?:
+    | 'en'
+    | 'zh-Hans'
+    | 'ja'
+    | 'ru'
+    | 'fr'
+    | 'pt'
+    | 'es'
+    | 'it'
+    | 'ar-AE'
+    | 'de'
+    | 'he-IL'
+    | 'hu'
+  translation?: boolean
+  paperAccount?: boolean
+  questionnaires?: z.infer<typeof QuestionnairesSchema>
+}
+
+const ApplicationSchema: z.ZodType<ApplicationType> = z
+  .object({
+    customer: CustomerSchema.exactOptional(),
+    accounts: z.array(AccountSchema).exactOptional(),
+    users: z.array(UserSchema).exactOptional(),
+    documents: z.array(DocumentSchema).exactOptional(),
+    additionalAccounts: z.array(AddAdditionalAccountSchema).exactOptional(),
+    masterAccountId: z.string().exactOptional(),
+    id: z.string().exactOptional(),
+    inputLanguage: z
+      .enum(['en', 'zh-Hans', 'ja', 'ru', 'fr', 'pt', 'es', 'it', 'ar-AE', 'de', 'he-IL', 'hu'])
+      .exactOptional(),
+    translation: z.boolean().exactOptional(),
+    paperAccount: z.boolean().exactOptional(),
+    questionnaires: QuestionnairesSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('Application')
+
+type ApplicationPayloadType = { application?: z.infer<typeof ApplicationSchema> }
+
+const ErrorResponseSchema = z
+  .object({
+    status: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    error: z.string().exactOptional(),
+    message: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ErrorResponse')
+
+const FileDataSchema = z
+  .object({ data: z.looseObject({}).exactOptional(), name: z.string().exactOptional() })
+  .openapi({ required: [] })
+  .openapi('FileData')
+
+const FormPayloadSchema = z
+  .object({ mimeType: z.string().exactOptional(), data: z.string().exactOptional() })
+  .openapi({ required: [] })
+  .openapi('FormPayload')
+
+const AnswerResponseSchema = z
+  .object({
+    answerId: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    answer: z.string().exactOptional(),
+    dependentQuestionId: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    dependentAnswerId: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    multiAnswerDetail: z.array(z.string()).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('AnswerResponse')
+
+const QuestionnaireResponseSchema = z
+  .object({
+    questionId: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    question: z.string().exactOptional(),
+    isMandatoryToAnswer: z.boolean().exactOptional(),
+    questionType: z.string().exactOptional(),
+    answers: z.array(AnswerResponseSchema).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('QuestionnaireResponse')
+
+const FormDetailsSchema = z
+  .object({
+    formNumber: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    sha1Checksum: z.string().exactOptional(),
+    dateModified: z.iso.datetime({ offset: true }).exactOptional(),
+    fileName: z.string().exactOptional(),
+    language: z.string().exactOptional(),
+    formName: z.string().exactOptional(),
+    payload: FormPayloadSchema.exactOptional(),
+    apiSupportedTask: z.boolean().exactOptional(),
+    type: z.string().exactOptional(),
+    action: z.string().exactOptional(),
+    acceptableDocs: z.array(z.string()).exactOptional(),
+    questionnaire: z.array(QuestionnaireResponseSchema).exactOptional(),
+    error: ErrorResponseSchema.exactOptional(),
+    hasError: z.boolean().exactOptional(),
+    errorDescription: z.string().exactOptional(),
+    fileLength: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+  })
+  .openapi({ required: [] })
+  .openapi('FormDetails')
+
+type FormFileResponseType = {
+  error?: z.infer<typeof ErrorResponseSchema>
+  hasError?: boolean
+  errorDescription?: string
+  fileData?: z.infer<typeof FileDataSchema>
+  formDetails?: z.infer<typeof FormDetailsSchema>[]
+  timestamp?: string
+}
+
+const AcatsPositionV2Schema = z
+  .xor([
+    z
+      .object({ conid: z.number().openapi({ example: 459200101 }) })
+      .openapi({ required: ['conid'] }),
+    z
+      .object({
+        tradingInstrumentDescription: z
+          .object({
+            securityIdType: z.enum(['CUSIP', 'ISIN', 'CASH']).openapi({ example: 'ISIN' }),
+            securityId: z.string().openapi({ example: '459200101' }),
+            assetType: z
+              .enum(['STK', 'CASH', 'UNKNOWN', 'BILL', 'BOND', 'FUND', 'OPT', 'WAR'])
+              .openapi({ example: 'STK' }),
+          })
+          .refine((val) => Object.keys(val).length <= 3)
+          .openapi({ required: ['assetType', 'securityId', 'securityIdType'] }),
+      })
+      .openapi({ required: ['tradingInstrumentDescription'] }),
+  ])
+  .and(
+    z
+      .object({
+        quantity: z
+          .number()
+          .exactOptional()
+          .openapi({
+            description:
+              'Send as a positive figure. A SHORT position is recorded as a negative quantity. Omit when transferAll is true, as the whole holding is transferred; otherwise required.',
+            example: 1000,
+          }),
+        type: z
+          .enum(['LONG', 'SHORT'])
+          .exactOptional()
+          .openapi({
+            description: 'Mandatory for ACATS and ATON, optional for other transfer methods.',
+            example: 'LONG',
+          }),
+        transferAll: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description:
+              'Transfer the whole holding of this security. Optional, defaults to false.',
+          }),
+      })
+      .openapi({ required: [] }),
+  )
+  .openapi('AcatsPositionV2')
+
+const AccountDataSchema = z
+  .object({
+    accountId: z.string().exactOptional(),
+    masterAccountId: z.string().exactOptional(),
+    mainAccount: z.string().exactOptional(),
+    sourceAccountId: z.string().exactOptional(),
+    primaryUser: z.string().exactOptional(),
+    clearingStatus: z.string().exactOptional(),
+    clearingStatusDescription: z.string().exactOptional(),
+    stateCode: z.string().exactOptional(),
+    optionLevel: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    baseCurrency: z.string().exactOptional(),
+    dateBegun: z.iso.datetime({ offset: true }).exactOptional(),
+    dateApproved: z.iso.datetime({ offset: true }).exactOptional(),
+    dateOpened: z.iso.datetime({ offset: true }).exactOptional(),
+    dateFunded: z.iso.datetime({ offset: true }).exactOptional(),
+    dateClosed: z.iso.datetime({ offset: true }).exactOptional(),
+    dateLinked: z.iso.datetime({ offset: true }).exactOptional(),
+    dateDelinked: z.iso.datetime({ offset: true }).exactOptional(),
+    accountTitle: z.string().exactOptional(),
+    officialTitle: z.string().exactOptional(),
+    accountAlias: z.string().exactOptional(),
+    emailAddress: z.string().exactOptional(),
+    margin: z.string().exactOptional(),
+    applicantType: z.string().exactOptional(),
+    subType: z.string().exactOptional(),
+    stockYieldProgram: z.record(z.string(), z.string()).exactOptional(),
+    feeTemplate: z.record(z.string(), z.string()).exactOptional(),
+    capabilities: z
+      .record(
+        z.string(),
+        z.array(z.string()).superRefine((items, ctx) => {
+          const seen = new Map()
+          for (const [i, val] of items.entries()) {
+            const key = JSON.stringify(val)
+            if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+            else seen.set(key, i)
+          }
+        }),
+      )
+      .exactOptional(),
+    limitedOptionTrading: z.string().exactOptional(),
+    investmentObjectives: z
+      .array(z.string())
+      .superRefine((items, ctx) => {
+        const seen = new Map()
+        for (const [i, val] of items.entries()) {
+          const key = JSON.stringify(val)
+          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+          else seen.set(key, i)
+        }
+      })
+      .exactOptional(),
+    dividendReinvestment: z.record(z.string(), z.boolean()).exactOptional(),
+    externalId: z.string().exactOptional(),
+    mifidCategory: z.string().exactOptional(),
+    mifirStatus: z.string().exactOptional(),
+    equity: z.float64().exactOptional(),
+    household: z.string().exactOptional(),
+    propertyProfile: z.string().exactOptional(),
+    processType: z.string().exactOptional(),
+    riskScore: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    class_action_program: z.string().exactOptional(),
+    trustType: z.string().exactOptional(),
+    orgType: z.string().exactOptional(),
+    businessDescription: z.string().exactOptional(),
+    usTaxPurposeType: z.string().exactOptional(),
+    tradeIntentionType: z.string().exactOptional(),
+    registeredAddress: z.record(z.string(), z.string()).exactOptional(),
+    mailing: z.record(z.string(), z.string()).exactOptional(),
+    countryOfCorporation: z.string().exactOptional(),
+    lei: z.string().exactOptional(),
+    taxIds: z.array(z.record(z.string(), z.string())).exactOptional(),
+    taxTreatyDetails: z.array(z.record(z.string(), z.string())).exactOptional(),
+    signatures: z.array(z.string()).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('AccountData')
+
+const IndividualIRABeneSchema = z
+  .object({
+    firstName: z.string().exactOptional(),
+    lastName: z.string().exactOptional(),
+    dateOfBirth: z.string().exactOptional(),
+    type: z.string().exactOptional(),
+    identification: z.record(z.string(), z.string()).exactOptional(),
+    location: z.record(z.string(), z.string()).exactOptional(),
+    relationship: z.string().exactOptional(),
+    ownership: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    perStripes: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('IndividualIRABene')
+
+const EntityIRABeneSchema = z
+  .object({
+    name: z.string().exactOptional(),
+    entityType: z.string().exactOptional(),
+    type: z.string().exactOptional(),
+    location: z.record(z.string(), z.string()).exactOptional(),
+    articleOfWill: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('EntityIRABene')
+
+const RestrictionInfoSchema = z
+  .object({
+    id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    byIB: z.boolean().exactOptional(),
+    name: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('RestrictionInfo')
+
+const AccountDetailsResponseSchema = z
+  .object({
+    error: ErrorResponseSchema.exactOptional(),
+    hasError: z.boolean().exactOptional(),
+    errorDescription: z.string().exactOptional(),
+    account: AccountDataSchema.exactOptional(),
+    associatedPersons: z.array(AssociatedPersonSchema).exactOptional(),
+    associatedEntities: z.array(AssociatedEntitySchema).exactOptional(),
+    withHoldingStatement: z.record(z.string(), z.string()).exactOptional(),
+    marketData: z.array(z.record(z.string(), z.string())).exactOptional(),
+    financialInformation: z.record(z.string(), z.looseObject({})).exactOptional(),
+    sourcesOfWealth: z.array(z.record(z.string(), z.looseObject({}))).exactOptional(),
+    tradeBundles: z.array(z.string()).exactOptional(),
+    individualIRABeneficiaries: z.array(IndividualIRABeneSchema).exactOptional(),
+    entityIRABeneficiaries: z.array(EntityIRABeneSchema).exactOptional(),
+    decedents: z.array(z.record(z.string(), z.string())).exactOptional(),
+    restrictions: z
+      .array(RestrictionInfoSchema)
+      .superRefine((items, ctx) => {
+        const seen = new Map()
+        for (const [i, val] of items.entries()) {
+          const key = JSON.stringify(val)
+          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+          else seen.set(key, i)
+        }
+      })
+      .exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('AccountDetailsResponse')
+
+const AccountManagementRequestsPayloadSchema: z.ZodType<AccountManagementRequestsPayloadType> = z
   .object({ accountManagementRequests: AccountManagementRequestsSchema.exactOptional() })
   .openapi({ required: [] })
   .openapi('AccountManagementRequestsPayload')
@@ -4942,80 +5304,12 @@ const AmRequestStatusResponseSchema = z
   .openapi({ required: [] })
   .openapi('AmRequestStatusResponse')
 
-const AnswerResponseSchema = z
-  .object({
-    answerId: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    answer: z.string().exactOptional(),
-    dependentQuestionId: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    dependentAnswerId: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    multiAnswerDetail: z.array(z.string()).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('AnswerResponse')
-
-const QuestionnairesSchema = z
-  .object({ questionnaire: z.array(QuestionnaireSchema).exactOptional() })
-  .openapi({ required: [] })
-  .openapi('Questionnaires')
-
-const ApplicationSchema = z
-  .object({
-    customer: CustomerSchema.exactOptional(),
-    accounts: z.array(AccountSchema).exactOptional(),
-    users: z.array(UserSchema).exactOptional(),
-    documents: z.array(DocumentSchema).exactOptional(),
-    additionalAccounts: z.array(AddAdditionalAccountSchema).exactOptional(),
-    masterAccountId: z.string().exactOptional(),
-    id: z.string().exactOptional(),
-    inputLanguage: z
-      .enum(['en', 'zh-Hans', 'ja', 'ru', 'fr', 'pt', 'es', 'it', 'ar-AE', 'de', 'he-IL', 'hu'])
-      .exactOptional(),
-    translation: z.boolean().exactOptional(),
-    paperAccount: z.boolean().exactOptional(),
-    questionnaires: QuestionnairesSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('Application')
-
-const ApplicationPayloadSchema = z
+const ApplicationPayloadSchema: z.ZodType<ApplicationPayloadType> = z
   .object({ application: ApplicationSchema.exactOptional() })
   .openapi({ required: [] })
   .openapi('ApplicationPayload')
 
-const ArrayNodeSchema = z.object({}).openapi('ArrayNode')
+const ArrayNodeSchema = z.looseObject({}).openapi('ArrayNode')
 
 const OpenBankingInstructionResultDetailsSchema = z
   .object({
@@ -5488,7 +5782,7 @@ const CSVResponseSchema = z
     message: z
       .xor([
         z.string().openapi({ example: 'OK' }),
-        z.object({}).openapi({ description: 'Structured bridge validation error detail.' }),
+        z.looseObject({}).openapi({ description: 'Structured bridge validation error detail.' }),
       ])
       .exactOptional()
       .openapi({
@@ -5599,6 +5893,17 @@ const TradingInstrumentRefSchema = z
       })
       .openapi({ required: ['tradingInstrumentDescription'] }),
   ])
+  .and(
+    z
+      .object({
+        currency: z
+          .string()
+          .min(1)
+          .max(3)
+          .openapi({ description: 'ISO 4217 currency code (e.g. "USD").', example: 'USD' }),
+      })
+      .openapi({ required: ['currency'] }),
+  )
   .openapi({
     required: ['currency'],
     description: 'Identifies a security by contract id or by security id and asset type.',
@@ -5835,6 +6140,13 @@ const TradingInstrumentV2Schema = z
       })
       .openapi({ required: ['tradingInstrumentDescription'] }),
   ])
+  .and(
+    z
+      .object({
+        quantity: z.number().openapi({ description: 'Quantity of the instrument.', example: 1000 }),
+      })
+      .openapi({ required: ['quantity'] }),
+  )
   .openapi({
     required: ['quantity'],
     description: 'Identifies a security by contract id or by security id and asset type (v2).',
@@ -6510,7 +6822,7 @@ const EchoResponseSchema = z
   .object({
     requestMethod: z.enum(['GET', 'POST', 'PATCH', 'PUT']).openapi({ example: 'GET' }),
     securityPolicy: z.enum(['HTTPS', 'SIGNED_JWT', 'ENCRYPTED_JWE']).openapi({ example: 'HTTPS' }),
-    queryParameters: z.object({}).exactOptional().openapi({ example: {} }),
+    queryParameters: z.looseObject({}).exactOptional().openapi({ example: {} }),
   })
   .openapi({ required: ['requestMethod', 'securityPolicy'] })
   .openapi('EchoResponse')
@@ -6730,11 +7042,6 @@ const ExternalPositionTransferV2Schema = z
   })
   .openapi('ExternalPositionTransferV2')
 
-const FileDataSchema = z
-  .object({ data: z.object({}).exactOptional(), name: z.string().exactOptional() })
-  .openapi({ required: [] })
-  .openapi('FileData')
-
 const FileDetailsResponseSchema = z
   .object({
     accountId: z.string().exactOptional(),
@@ -6910,78 +7217,7 @@ const ForbiddenInstructionResponseSchema = z
   })
   .openapi('ForbiddenInstructionResponse')
 
-const FormPayloadSchema = z
-  .object({ mimeType: z.string().exactOptional(), data: z.string().exactOptional() })
-  .openapi({ required: [] })
-  .openapi('FormPayload')
-
-const QuestionnaireResponseSchema = z
-  .object({
-    questionId: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    question: z.string().exactOptional(),
-    isMandatoryToAnswer: z.boolean().exactOptional(),
-    questionType: z.string().exactOptional(),
-    answers: z.array(AnswerResponseSchema).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('QuestionnaireResponse')
-
-const FormDetailsSchema = z
-  .object({
-    formNumber: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    sha1Checksum: z.string().exactOptional(),
-    dateModified: z.iso.datetime({ offset: true }).exactOptional(),
-    fileName: z.string().exactOptional(),
-    language: z.string().exactOptional(),
-    formName: z.string().exactOptional(),
-    payload: FormPayloadSchema.exactOptional(),
-    apiSupportedTask: z.boolean().exactOptional(),
-    type: z.string().exactOptional(),
-    action: z.string().exactOptional(),
-    acceptableDocs: z.array(z.string()).exactOptional(),
-    questionnaire: z.array(QuestionnaireResponseSchema).exactOptional(),
-    error: ErrorResponseSchema.exactOptional(),
-    hasError: z.boolean().exactOptional(),
-    errorDescription: z.string().exactOptional(),
-    fileLength: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-  })
-  .openapi({ required: [] })
-  .openapi('FormDetails')
-
-const FormFileResponseSchema = z
+const FormFileResponseSchema: z.ZodType<FormFileResponseType> = z
   .object({
     error: ErrorResponseSchema.exactOptional(),
     hasError: z.boolean().exactOptional(),
@@ -7414,6 +7650,7 @@ const ListEntryParamsSchema = z
   .openapi({
     description:
       'Instrument identifier parameters. Keys depend on entry type: ISSUER/CONID entries use `symbol`, `symboldesc`, `val`; INDUSTRY entries use `indgroup`; other types may use different keys.',
+    required: [],
   })
   .openapi('ListEntryParams')
 
@@ -8294,28 +8531,7 @@ const QueryRecentInstructionResultSchema = PollingInstructionResultSchema.and(
               description: 'Maximum number of instructions returned.',
             }),
           result: z
-            .object({
-              clientInstructionId: z
-                .number()
-                .openapi({
-                  description:
-                    'Client-assigned identifier for this instruction; must be a positive number and unique within the request.',
-                }),
-              ibInstructionId: z
-                .number()
-                .openapi({ description: 'Funds and Banking identifier of the instruction.' }),
-              instructionType: z.string().openapi({ description: 'Type of the instruction.' }),
-              requestDate: z.iso
-                .datetime({ offset: true })
-                .openapi({ description: 'Date-time when the instruction was requested.' }),
-              status: z.string().openapi({ description: 'Processing status.' }),
-              instructionSetId: z
-                .number()
-                .openapi({
-                  description:
-                    'Identifier of the instruction set grouping the submitted instructions.',
-                }),
-            })
+            .array(z.any())
             .openapi({
               required: [
                 'clientInstructionId',
@@ -9058,7 +9274,7 @@ const ResponseFileResponseSchema = z
   .object({
     isProcessed: z.boolean().exactOptional(),
     name: z.string().exactOptional(),
-    data: z.object({}).exactOptional(),
+    data: z.looseObject({}).exactOptional(),
     error: ErrorResponseSchema.exactOptional(),
     hasError: z.boolean().exactOptional(),
     errorDescription: z.string().exactOptional(),
@@ -9301,7 +9517,10 @@ const StatusResponseSchema = z
       )
       .exactOptional()
       .openapi({ type: 'integer', format: 'int64' }),
-    problemDetail: z.record(z.string(), z.object({})).exactOptional().openapi({ writeOnly: true }),
+    problemDetail: z
+      .record(z.string(), z.looseObject({}))
+      .exactOptional()
+      .openapi({ writeOnly: true }),
     dateSubmitted: z.iso.datetime({ offset: true }).exactOptional(),
     fileData: FileDataSchema.exactOptional(),
   })
@@ -11643,6 +11862,59 @@ const BrokerageSessionInitRequestSchema = z
   .openapi({ required: [] })
   .openapi('BrokerageSessionInitRequest')
 
+const BrokerageSessionStatusSchema = z
+  .object({
+    authenticated: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Returns whether your brokerage session is authenticated or not.' }),
+    established: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Returns whether your brokerage session is fully established and ready to handle requests. Set to true when the login message is received from underlying brokerage infrastructure, indicating authentication is complete and account information is loaded.',
+      }),
+    competing: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Returns whether you have a competing brokerage session in another connection.',
+      }),
+    connected: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Returns whether you are connected to the gateway or not.' }),
+    message: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'A message about your authenticate status if any.' }),
+    MAC: z.string().exactOptional().openapi({ description: 'Device MAC information.' }),
+    serverInfo: z
+      .object({
+        serverName: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'IBKR server information. Internal use only.' }),
+        serverVersion: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'IBKR version information. Internal use only.' }),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+    hardware_info: z.string().exactOptional().openapi({ description: 'Client Portal use only.' }),
+    fail: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Returns the reason for failing to retrieve authentication status.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('BrokerageSessionStatus')
+
 const TwsInvestDivestCashTransferSchema = z
   .object({
     account: z
@@ -11703,7 +11975,7 @@ const CashAnalyzerResponseSchema = z
       .exactOptional()
       .openapi({ description: 'Error message produced by the analyzer, or `null` if none.' }),
     fxconvorders: z
-      .array(z.object({}))
+      .array(z.looseObject({}))
       .exactOptional()
       .openapi({ description: 'FX conversion orders required to fund the plan.' }),
     marginWarning: z
@@ -11783,41 +12055,9 @@ const CategoryTreeResponseSchema = z
               .exactOptional()
               .openapi({ description: 'Identifier of parent category (if applicable).' }),
             markets: z
-              .object({
-                name: z
-                  .string()
-                  .exactOptional()
-                  .openapi({ description: "Market contract's full name." }),
-                symbol: z
-                  .string()
-                  .exactOptional()
-                  .openapi({ description: "Market contract's trading symbol." }),
-                exchange: z
-                  .string()
-                  .exactOptional()
-                  .openapi({ description: "Market contract's listing exchange." }),
-                conid: z
-                  .preprocess(
-                    (val) =>
-                      typeof val === 'number' && Number.isSafeInteger(val)
-                        ? BigInt(val)
-                        : typeof val === 'string' && /^-?\d+$/.test(val)
-                          ? BigInt(val)
-                          : val,
-                    z.int64(),
-                  )
-                  .exactOptional()
-                  .openapi({
-                    type: 'integer',
-                    format: 'int64',
-                    description: 'Market contract identifier.',
-                  }),
-              })
+              .array(z.any())
               .exactOptional()
-              .openapi({
-                description: 'List of affiliated markets (if applicable).',
-                required: [],
-              }),
+              .openapi({ description: 'List of affiliated markets (if applicable).' }),
           })
           .exactOptional()
           .openapi({ description: 'Category identifier.', required: [] }),
@@ -11876,7 +12116,7 @@ const IndividualComboPositionSchema = z
       .string()
       .exactOptional()
       .openapi({ description: 'Currency in which the instrument trades.' }),
-    exchs: z.object({}).nullable().exactOptional(),
+    exchs: z.looseObject({}).nullable().exactOptional(),
     exerciseStyle: z
       .string()
       .nullable()
@@ -12742,8 +12982,10 @@ const DetailedContractInformationSchema = z
       )
       .openapi({
         description: 'Contains the relevant performance data for the specified accountId.',
+        required: [],
       }),
   )
+  .openapi({ required: [] })
   .openapi('DetailedContractInformation')
 
 const DisclaimerInfoSchema = z
@@ -12822,6 +13064,16 @@ const ErrorResponse2Schema = z
   })
   .openapi({ required: [] })
   .openapi('ErrorResponse2')
+
+const FailedTickleResponseSchema = z
+  .object({
+    error: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'reason why tickle was accepted by not processed' }),
+  })
+  .openapi({ required: [] })
+  .openapi('FailedTickleResponse')
 
 const FeaturesSchema = z
   .object({
@@ -13624,7 +13876,7 @@ const IndividualPositionSchema = z
           'Object defining minimum increments used in displaying market data for the instrument.',
         required: [],
       }),
-    exchs: z.object({}).nullable().exactOptional(),
+    exchs: z.looseObject({}).nullable().exactOptional(),
     exerciseStyle: z
       .string()
       .nullable()
@@ -14781,7 +15033,7 @@ const IserverScannerParamsSchema = z
                 z
                   .object({
                     default: z.boolean().exactOptional(),
-                    vendor: z.object({}).exactOptional(),
+                    vendor: z.looseObject({}).exactOptional(),
                   })
                   .openapi({ required: [] }),
               )
@@ -17459,17 +17711,17 @@ const PortfolioSummaryValueSchema = z
 const PortfolioSummarySchema = z
   .object({
     accountcode: z
-      .object({})
+      .looseObject({})
       .openapi({ description: 'The Account ID of the requested account. (value)' })
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     accountready: z
-      .object({})
+      .looseObject({})
       .openapi({ description: 'Indicates whether the account is fully open and tradable. (value)' })
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     accounttype: z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'Identifies the type of client with which the account is associated, such as an individual or LLC. (value)',
@@ -17477,7 +17729,7 @@ const PortfolioSummarySchema = z
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     accruedcash: z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'Amount of cash accrued (not yet disbursed) for all segments in the account. (amount)',
@@ -17485,7 +17737,7 @@ const PortfolioSummarySchema = z
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     'accruedcash-c': z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'Amount of cash accrued (not yet disbursed) for the commodities segment in the account. (amount)',
@@ -17493,7 +17745,7 @@ const PortfolioSummarySchema = z
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     'accruedcash-s': z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'Amount of cash accrued (not yet disbursed) for the securities segment in the account. (amount)',
@@ -17501,7 +17753,7 @@ const PortfolioSummarySchema = z
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     accrueddividend: z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'Amount of dividends accrued (not yet disbursed) for all segments in the account. (amount)',
@@ -17509,7 +17761,7 @@ const PortfolioSummarySchema = z
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     'accrueddividend-c': z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'Amount of dividends accrued (not yet disbursed) for the commodities segment in the account. (amount)',
@@ -17517,7 +17769,7 @@ const PortfolioSummarySchema = z
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     'accrueddividend-s': z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'Amount of dividends accrued (not yet disbursed) for the securities segment in the account. (amount)',
@@ -17525,7 +17777,7 @@ const PortfolioSummarySchema = z
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     availablefunds: z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'Available funds (ELV minus Initial Margin) for all segments in the account. (amount)',
@@ -17533,7 +17785,7 @@ const PortfolioSummarySchema = z
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     'availablefunds-c': z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'Available funds (ELV minus Initial Margin) for the commodities segment in the account. (amount)',
@@ -17541,7 +17793,7 @@ const PortfolioSummarySchema = z
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     'availablefunds-s': z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'Available funds (ELV minus Initial Margin) for the securities segment in the account. (amount)',
@@ -17549,7 +17801,7 @@ const PortfolioSummarySchema = z
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     availabletotrade: z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'Funds available for trading (ELV minus Initial Margin) for all segments in the account. (amount)',
@@ -17557,7 +17809,7 @@ const PortfolioSummarySchema = z
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     'availabletotrade-c': z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'Funds available for trading (ELV minus Initial Margin) for the commodities segment in the account. (amount)',
@@ -17565,7 +17817,7 @@ const PortfolioSummarySchema = z
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     'availabletotrade-s': z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'Funds available for trading (ELV minus Initial Margin) for the securities segment in the account. (amount)',
@@ -17573,14 +17825,14 @@ const PortfolioSummarySchema = z
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     availabletowithdraw: z
-      .object({})
+      .looseObject({})
       .openapi({
         description: 'Funds available for withdrawal for all segments in the account. (amount)',
       })
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     'availabletowithdraw-c': z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'Funds available for withdrawal for the commodities segment in the account. (amount)',
@@ -17588,7 +17840,7 @@ const PortfolioSummarySchema = z
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     'availabletowithdraw-s': z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'Funds available for withdrawal for the securities segment in the account. (amount)',
@@ -17596,26 +17848,26 @@ const PortfolioSummarySchema = z
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     billable: z
-      .object({})
+      .looseObject({})
       .openapi({ description: 'Billable commissions for all segments in the account. (amount)' })
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     'billable-c': z
-      .object({})
+      .looseObject({})
       .openapi({
         description: 'Billable commissions for the commodities segment in the account. (amount)',
       })
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     'billable-s': z
-      .object({})
+      .looseObject({})
       .openapi({
         description: 'Billable commissions for the securities segment in the account. (amount)',
       })
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     buyingpower: z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'Buying power (maximum value of securities that can be bought without adding funds) for the account. (amount)',
@@ -17623,22 +17875,22 @@ const PortfolioSummarySchema = z
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     'columnprio-c': z
-      .object({})
+      .looseObject({})
       .openapi({ description: 'columnprio-c' })
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     'columnprio-s': z
-      .object({})
+      .looseObject({})
       .openapi({ description: 'columnprio-s' })
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     cushion: z
-      .object({})
+      .looseObject({})
       .openapi({ description: 'Margin cushion as a decimal ratio, (ELV-Maintenance)/ELV. (value)' })
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     daytradesremaining: z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'Number of day trades currently still available for 4-day pattern day trader period. (value)',
@@ -17646,7 +17898,7 @@ const PortfolioSummarySchema = z
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     'daytradesremainingt+1': z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'Number of day trades available tomorrow for 4-day pattern day trader period. (value)',
@@ -17654,7 +17906,7 @@ const PortfolioSummarySchema = z
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     'daytradesremainingt+2': z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'Number of day trades available in two days for 4-day pattern day trader period. (value)',
@@ -17662,7 +17914,7 @@ const PortfolioSummarySchema = z
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     'daytradesremainingt+3': z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'Number of day trades available in three days for 4-day pattern day trader period. (value)',
@@ -17670,7 +17922,7 @@ const PortfolioSummarySchema = z
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     'daytradesremainingt+4': z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'Number of day trades available in four days for 4-day pattern day trader period. (value)',
@@ -17678,36 +17930,36 @@ const PortfolioSummarySchema = z
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     'daytradingstatus-s': z
-      .object({})
+      .looseObject({})
       .openapi({ description: 'daytradingstatus-s' })
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     depositoncredithold: z
-      .object({})
+      .looseObject({})
       .openapi({ description: 'Indicates whether a deposit is on credit hold. (value)' })
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     equitywithloanvalue: z
-      .object({})
+      .looseObject({})
       .openapi({ description: 'Equity with Loan Value for all segments of the account. (amount)' })
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     'equitywithloanvalue-c': z
-      .object({})
+      .looseObject({})
       .openapi({
         description: 'Equity with Loan Value for the commodities segment of the account. (amount)',
       })
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     'equitywithloanvalue-s': z
-      .object({})
+      .looseObject({})
       .openapi({
         description: 'Equity with Loan Value for the securities segment of the account. (amount)',
       })
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     excessliquidity: z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'Excess liquidity (ELV minus Maintenance Margin) for all segments of the account. (amount)',
@@ -17715,7 +17967,7 @@ const PortfolioSummarySchema = z
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     'excessliquidity-c': z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'Excess liquidity (ELV minus Maintenance Margin) for the commodities segment of the account. (amount)',
@@ -17723,7 +17975,7 @@ const PortfolioSummarySchema = z
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     'excessliquidity-s': z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'Excess liquidity (ELV minus Maintenance Margin) for the securities segment of the account. (amount)',
@@ -17731,12 +17983,12 @@ const PortfolioSummarySchema = z
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     fullavailablefunds: z
-      .object({})
+      .looseObject({})
       .openapi({ description: 'Full available funds for all segments of the account. (amount)' })
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     'fullavailablefunds-c': z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'Full available funds (NLV minus Initial Margin) for the commodities segment of the account. (amount)',
@@ -17744,7 +17996,7 @@ const PortfolioSummarySchema = z
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     'fullavailablefunds-s': z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'Full available funds (ELV minus Initial Margin) for the securities segment of the account. (amount)',
@@ -17752,7 +18004,7 @@ const PortfolioSummarySchema = z
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     fullexcessliquidity: z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'Full excess liquidity (ELV minus Maintenance Margin) for all segments of the account. (amount)',
@@ -17760,7 +18012,7 @@ const PortfolioSummarySchema = z
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     'fullexcessliquidity-c': z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'Full excess liquidity (ELV minus Maintenance Margin) for the commodities segment of the account. (amount)',
@@ -17768,7 +18020,7 @@ const PortfolioSummarySchema = z
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     'fullexcessliquidity-s': z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'Full excess liquidity (ELV minus Maintenance Margin) for the securities segment of the account. (amount)',
@@ -17776,14 +18028,14 @@ const PortfolioSummarySchema = z
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     fullinitmarginreq: z
-      .object({})
+      .looseObject({})
       .openapi({
         description: 'Full Initial Margin requirement for all segments of the account. (amount)',
       })
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     'fullinitmarginreq-c': z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'Full Initial Margin requirement for the commodities segment of the account. (amount)',
@@ -17791,7 +18043,7 @@ const PortfolioSummarySchema = z
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     'fullinitmarginreq-s': z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'Full Initial Margin requirement for the securities segment of the account. (amount)',
@@ -17799,7 +18051,7 @@ const PortfolioSummarySchema = z
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     fullmaintmarginreq: z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'Full Maintenance Margin requirement for all segments of the account. (amount)',
@@ -17807,7 +18059,7 @@ const PortfolioSummarySchema = z
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     'fullmaintmarginreq-c': z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'Full Maintenance Margin requirement for the commodities segment of the account. (amount)',
@@ -17815,7 +18067,7 @@ const PortfolioSummarySchema = z
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     'fullmaintmarginreq-s': z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'Full Maintenance Margin requirement for the securities segment of the account. (amount)',
@@ -17823,7 +18075,7 @@ const PortfolioSummarySchema = z
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     grosspositionvalue: z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'Gross Position Value (sum of Long and Short position values for stocks and options) for all segments of the account. (amount)',
@@ -17831,12 +18083,12 @@ const PortfolioSummarySchema = z
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     'grosspositionvalue-s': z
-      .object({})
+      .looseObject({})
       .openapi({ description: 'grosspositionvalue-s' })
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     guarantee: z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'For accounts that clear away, value of Guarantee for all segments of the account. (amount)',
@@ -17844,7 +18096,7 @@ const PortfolioSummarySchema = z
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     'guarantee-c': z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'For accounts that clear away, value of Guarantee for the commodities segment of the account. (amount)',
@@ -17852,7 +18104,7 @@ const PortfolioSummarySchema = z
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     'guarantee-s': z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'For accounts that clear away, value of Guarantee for the securities segment of the account. (amount)',
@@ -17860,19 +18112,19 @@ const PortfolioSummarySchema = z
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     highestseverity: z
-      .object({})
+      .looseObject({})
       .openapi({ description: 'highestseverity' })
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     indianstockhaircut: z
-      .object({})
+      .looseObject({})
       .openapi({
         description: 'Indian Stock Haircut value for all segments of the account. (amount)',
       })
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     'indianstockhaircut-c': z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'Indian Stock Haircut value for the commodities segment of the account. (amount)',
@@ -17880,7 +18132,7 @@ const PortfolioSummarySchema = z
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     'indianstockhaircut-s': z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'Indian Stock Haircut value for the securities segment of the account. (amount)',
@@ -17888,14 +18140,14 @@ const PortfolioSummarySchema = z
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     initmarginreq: z
-      .object({})
+      .looseObject({})
       .openapi({
         description: 'Initial Margin requirement for all segments of the account. (amount)',
       })
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     'initmarginreq-c': z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'Initial Margin requirement for the commodities segment of the account. (amount)',
@@ -17903,7 +18155,7 @@ const PortfolioSummarySchema = z
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     'initmarginreq-s': z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'Initial Margin requirement for the securities segment of the account. (amount)',
@@ -17911,21 +18163,21 @@ const PortfolioSummarySchema = z
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     'leverage-s': z
-      .object({})
+      .looseObject({})
       .openapi({
         description: 'Leverage ratio (GPV/NLV) of the securities segment of the account. (value)',
       })
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     lookaheadavailablefunds: z
-      .object({})
+      .looseObject({})
       .openapi({
         description: 'Look-ahead Available Funds for all segments of the account. (amount)',
       })
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     'lookaheadavailablefunds-c': z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'Look-ahead Available Funds for the commodities segment of the account. (amount)',
@@ -17933,7 +18185,7 @@ const PortfolioSummarySchema = z
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     'lookaheadavailablefunds-s': z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'Look-ahead Available Funds for the securities segment of the account. (amount)',
@@ -17941,14 +18193,14 @@ const PortfolioSummarySchema = z
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     lookaheadexcessliquidity: z
-      .object({})
+      .looseObject({})
       .openapi({
         description: 'Look-ahead Excess Liquidity for all segments of the account. (amount)',
       })
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     'lookaheadexcessliquidity-c': z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'Look-ahead Excess Liquidity for the commodities segment of the account. (amount)',
@@ -17956,7 +18208,7 @@ const PortfolioSummarySchema = z
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     'lookaheadexcessliquidity-s': z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'Look-ahead Excess Liquidity for the securities segment of the account. (amount)',
@@ -17964,7 +18216,7 @@ const PortfolioSummarySchema = z
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     lookaheadinitmarginreq: z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'Look-ahead Intial Margin requirement (as of next margin period) for all segments of the account. (amount)',
@@ -17972,7 +18224,7 @@ const PortfolioSummarySchema = z
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     'lookaheadinitmarginreq-c': z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'Look-ahead Intial Margin requirement (as of next margin period) for the commodities segment of the account. (amount)',
@@ -17980,7 +18232,7 @@ const PortfolioSummarySchema = z
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     'lookaheadinitmarginreq-s': z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'Look-ahead Intial Margin requirement (as of next margin period) for the securities segment of the account. (amount)',
@@ -17988,7 +18240,7 @@ const PortfolioSummarySchema = z
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     lookaheadmaintmarginreq: z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'Look-ahead Maintenance Margin requirement (as of next margin period) for all segments of the account. (amount)',
@@ -17996,7 +18248,7 @@ const PortfolioSummarySchema = z
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     'lookaheadmaintmarginreq-c': z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'Look-ahead Maintenance Margin requirement (as of next margin period) for the commodities segment of the account. (amount)',
@@ -18004,7 +18256,7 @@ const PortfolioSummarySchema = z
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     'lookaheadmaintmarginreq-s': z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'Look-ahead Maintenance Margin requirement (as of next margin period) for the securities segment of the account. (amount)',
@@ -18012,21 +18264,21 @@ const PortfolioSummarySchema = z
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     lookaheadnextchange: z
-      .object({})
+      .looseObject({})
       .openapi({
         description: 'Unix epoch timestamp in seconds of start of next margin period. (value)',
       })
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     maintmarginreq: z
-      .object({})
+      .looseObject({})
       .openapi({
         description: 'Maintenance Margin requirement for all segments of the account. (amount)',
       })
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     'maintmarginreq-c': z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'Maintenance Margin requirement for the commodities segment of the account. (amount)',
@@ -18034,7 +18286,7 @@ const PortfolioSummarySchema = z
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     'maintmarginreq-s': z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'Maintenance Margin requirement for the securities segment of the account. (amount)',
@@ -18042,14 +18294,14 @@ const PortfolioSummarySchema = z
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     netliquidation: z
-      .object({})
+      .looseObject({})
       .openapi({
         description: 'Net Liquidation Value (NLV) for all segments of the account. (amount)',
       })
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     'netliquidation-c': z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'Net Liquidation Value (sum of values of cash and commodities options) for the commodities segment of the account. (amount)',
@@ -18057,7 +18309,7 @@ const PortfolioSummarySchema = z
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     'netliquidation-s': z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'Net Liquidation Value (sum of values of cash, stocks, securities options, bonds) for the securities segment of the account. (amount)',
@@ -18065,7 +18317,7 @@ const PortfolioSummarySchema = z
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     netliquidationuncertainty: z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'Uncertainty of Net Liquidation Value associated with after-hours price changes. (amount)',
@@ -18073,7 +18325,7 @@ const PortfolioSummarySchema = z
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     nlvandmargininreview: z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'Indicates whether the NLV and/or margin values for the account are in review. (value)',
@@ -18081,14 +18333,14 @@ const PortfolioSummarySchema = z
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     pasharesvalue: z
-      .object({})
+      .looseObject({})
       .openapi({
         description: 'Personal Account shares value for all segments of the account. (amount)',
       })
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     'pasharesvalue-c': z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'Personal Account shares value for the commodities segment of the account. (amount)',
@@ -18096,7 +18348,7 @@ const PortfolioSummarySchema = z
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     'pasharesvalue-s': z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'Personal Account shares value for the securities segment of the account. (amount)',
@@ -18104,14 +18356,14 @@ const PortfolioSummarySchema = z
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     physicalcertificatevalue: z
-      .object({})
+      .looseObject({})
       .openapi({
         description: 'Physical Certificate value for all segments of the account. (amount)',
       })
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     'physicalcertificatevalue-c': z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'Physical Certificate value for the commodities segment of the account. (amount)',
@@ -18119,7 +18371,7 @@ const PortfolioSummarySchema = z
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     'physicalcertificatevalue-s': z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'Physical Certificate value for the securities segment of the account. (amount)',
@@ -18127,7 +18379,7 @@ const PortfolioSummarySchema = z
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     postexpirationexcess: z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'Projected at-expiration Excess Liquidity for all segments of the account. (amount)',
@@ -18135,7 +18387,7 @@ const PortfolioSummarySchema = z
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     'postexpirationexcess-c': z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'Projected at-expiration Excess Liquidity for the commodities segment of the account. (amount)',
@@ -18143,7 +18395,7 @@ const PortfolioSummarySchema = z
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     'postexpirationexcess-s': z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'Projected at-expiration Excess Liquidity for the securities segment of the account. (amount)',
@@ -18151,7 +18403,7 @@ const PortfolioSummarySchema = z
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     postexpirationmargin: z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'Projected at-expiration margin requirement for all segments of the account. (amount)',
@@ -18159,7 +18411,7 @@ const PortfolioSummarySchema = z
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     'postexpirationmargin-c': z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'Projected at-expiration margin requirement for the commodities segment of the account. (amount)',
@@ -18167,7 +18419,7 @@ const PortfolioSummarySchema = z
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     'postexpirationmargin-s': z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'Projected at-expiration margin requirement for the securities segment of the account. (amount)',
@@ -18175,7 +18427,7 @@ const PortfolioSummarySchema = z
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     previousdayequitywithloanvalue: z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           "Previous day's Equity with Loan Value (as of 16:00 US Eastern) for all segments of the account. (amount)",
@@ -18183,7 +18435,7 @@ const PortfolioSummarySchema = z
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     'previousdayequitywithloanvalue-s': z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           "Previous day's Equity with Loan Value (as of 16:00 US Eastern) for the securities segment of the account. (amount)",
@@ -18191,7 +18443,7 @@ const PortfolioSummarySchema = z
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     regtequity: z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'Value of equity computed under Reg-T rules for all segments of the account. (amount)',
@@ -18199,7 +18451,7 @@ const PortfolioSummarySchema = z
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     'regtequity-s': z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'Value of equity computed under Reg-T rules for the securities segment of the account. (amount)',
@@ -18207,14 +18459,14 @@ const PortfolioSummarySchema = z
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     regtmargin: z
-      .object({})
+      .looseObject({})
       .openapi({
         description: 'Margin computed under Reg-T rules for all segments of the account. (amount)',
       })
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     'regtmargin-s': z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'Margin computed under Reg-T rules for the securities segment of the account. (amount)',
@@ -18222,7 +18474,7 @@ const PortfolioSummarySchema = z
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     'segmenttitle-c': z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           "Human-readable title of the commodities account segment to which the '-c' postfix character refers. (value)",
@@ -18230,7 +18482,7 @@ const PortfolioSummarySchema = z
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     'segmenttitle-s': z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           "Human-readable title of the securities account segment to which the '-s' postfix character refers. (value)",
@@ -18238,7 +18490,7 @@ const PortfolioSummarySchema = z
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     sma: z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           "Value of the Reg-T Special Memoradum Account for all account segments, reflecting credit extended when the market value of the account's positions increases. (amount)",
@@ -18246,7 +18498,7 @@ const PortfolioSummarySchema = z
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     'sma-s': z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           "Value of the Reg-T Special Memoradum Account for the securities account segment, reflecting credit extended when the market value of the account's positions increases. (amount)",
@@ -18254,7 +18506,7 @@ const PortfolioSummarySchema = z
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     totalcashvalue: z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'Total cash value for all segments of the account (cash balance plus Futures PnL). (amount)',
@@ -18262,26 +18514,26 @@ const PortfolioSummarySchema = z
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     'totalcashvalue-c': z
-      .object({})
+      .looseObject({})
       .openapi({
         description: 'Cash value of Futures PnL for the commodities account segment. (amount)',
       })
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     'totalcashvalue-s': z
-      .object({})
+      .looseObject({})
       .openapi({ description: 'Cash balance in the securities account segment. (amount)' })
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     totaldebitcardpendingcharges: z
-      .object({})
+      .looseObject({})
       .openapi({
         description: 'Total pending debit card charges for all segments of the account. (amount)',
       })
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     'totaldebitcardpendingcharges-c': z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'Total pending debit card charges for the commodities segment of the account. (amount)',
@@ -18289,7 +18541,7 @@ const PortfolioSummarySchema = z
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     'totaldebitcardpendingcharges-s': z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'Total pending debit card charges for the securities segment of the account. (amount)',
@@ -18297,7 +18549,7 @@ const PortfolioSummarySchema = z
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     'tradingtype-s': z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'Identifier used internally to reflect the trading capabilities of the account, with respect to asset classes. (value)',
@@ -18305,7 +18557,7 @@ const PortfolioSummarySchema = z
       .and(PortfolioSummaryValueSchema)
       .exactOptional(),
     whatifpmenabled: z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           "Indicates whether 'whatif' order preview functionality is enabled for a Portfolio-Margined account. (value)",
@@ -18566,7 +18818,7 @@ const RebalanceAllocationPreviewSchema = z
           'List of errors produced by the rebalancer. Empty when the preview is successful.',
       }),
     miPositionTransfers: z
-      .array(z.object({}))
+      .array(z.looseObject({}))
       .exactOptional()
       .openapi({
         description: 'Position transfers scheduled between managed-independent accounts.',
@@ -18576,7 +18828,7 @@ const RebalanceAllocationPreviewSchema = z
       .exactOptional()
       .openapi({ description: 'Name of the model that was rebalanced.' }),
     positionTransfers: z
-      .array(z.object({}))
+      .array(z.looseObject({}))
       .exactOptional()
       .openapi({ description: 'Position transfers scheduled between the model and its accounts.' }),
     reqID: z
@@ -19405,6 +19657,65 @@ const Subaccounts2ResponseSchema = z
   .openapi({ required: [] })
   .openapi('Subaccounts2Response')
 
+const SuccessfulTickleResponseSchema = z
+  .object({
+    session: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Returns the session token of the contract.' }),
+    ssoExpires: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Returns the number of milliseconds until the current sso session expires.',
+      }),
+    collission: z.boolean().exactOptional().openapi({ description: '(Internal Use Only)' }),
+    userId: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64', description: '(Internal Use Only)' }),
+    hmds: z
+      .object({
+        error: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Relays any internal connection errors.' }),
+        authStatus: z
+          .array(z.any())
+          .exactOptional()
+          .openapi({ description: 'Returns authentication details.' }),
+      })
+      .exactOptional()
+      .openapi({
+        description: 'Returns connection details for the historical market data server.',
+        required: [],
+      }),
+    iserver: z
+      .object({ authStatus: BrokerageSessionStatusSchema.exactOptional() })
+      .exactOptional()
+      .openapi({ required: [] }),
+  })
+  .openapi({ required: [] })
+  .openapi('SuccessfulTickleResponse')
+
 const SummaryMarketValueResponseSchema = z
   .object({
     currency: z
@@ -19843,8 +20154,8 @@ const SummaryOfAccountMarginResponseSchema = z
   .openapi({ required: [] })
   .openapi('SummaryOfAccountMarginResponse')
 
-const TickleResponseSchema: z.ZodType<TickleResponseType> = z
-  .lazy(() => z.xor([SuccessfulTickleResponseSchema, FailedTickleResponseSchema]))
+const TickleResponseSchema = z
+  .xor([SuccessfulTickleResponseSchema, FailedTickleResponseSchema])
   .openapi('TickleResponse')
 
 const TradesResponseSchema = z
@@ -20740,7 +21051,7 @@ const TwsInvestDivestResponseSchema = z
         description: 'Errors produced by the planner. `null` when the plan is successful.',
       }),
     positionTransfers: z
-      .array(z.object({}))
+      .array(z.looseObject({}))
       .exactOptional()
       .openapi({
         description: 'Position transfers scheduled between the source and destination models.',
@@ -21507,7 +21818,7 @@ export const getGwApiV1AccountsRoute = createRoute({
     },
     415: {
       description: 'Unsupported Media Type',
-      content: { '*/*': { schema: z.record(z.string(), z.object({})) } },
+      content: { '*/*': { schema: z.record(z.string(), z.looseObject({})) } },
     },
     500: {
       description: 'Returns error description representing internal server error',
@@ -21553,7 +21864,7 @@ export const postGwApiV1AccountsRoute = createRoute({
     },
     415: {
       description: 'Unsupported Media Type',
-      content: { '*/*': { schema: z.record(z.string(), z.object({})) } },
+      content: { '*/*': { schema: z.record(z.string(), z.looseObject({})) } },
     },
     422: {
       description: 'Request was rejected by the system due to a business rule or validation error.',
@@ -21604,7 +21915,7 @@ export const patchGwApiV1AccountsRoute = createRoute({
     },
     415: {
       description: 'Unsupported Media Type',
-      content: { '*/*': { schema: z.record(z.string(), z.object({})) } },
+      content: { '*/*': { schema: z.record(z.string(), z.looseObject({})) } },
     },
     422: {
       description: 'Request was rejected by the system due to a business rule or validation error.',
@@ -21651,7 +21962,7 @@ export const postGwApiV1AccountsDocumentsRoute = createRoute({
     },
     415: {
       description: 'Unsupported Media Type',
-      content: { '*/*': { schema: z.record(z.string(), z.object({})) } },
+      content: { '*/*': { schema: z.record(z.string(), z.looseObject({})) } },
     },
     422: {
       description: 'Request was rejected by the system due to a business rule or validation error.',
@@ -21729,7 +22040,7 @@ export const getGwApiV1AccountsAccountIdTasksRoute = createRoute({
     },
     415: {
       description: 'Unsupported Media Type',
-      content: { '*/*': { schema: z.record(z.string(), z.object({})) } },
+      content: { '*/*': { schema: z.record(z.string(), z.looseObject({})) } },
     },
     500: {
       description: 'Returns error description representing internal server error',
@@ -21783,7 +22094,7 @@ export const postGwApiV1AccountsAccountIdTasksRoute = createRoute({
     },
     415: {
       description: 'Unsupported Media Type',
-      content: { '*/*': { schema: z.record(z.string(), z.object({})) } },
+      content: { '*/*': { schema: z.record(z.string(), z.looseObject({})) } },
     },
     500: {
       description: 'Returns error description representing internal server error',
@@ -21837,7 +22148,7 @@ export const patchGwApiV1AccountsAccountIdTasksRoute = createRoute({
     },
     415: {
       description: 'Unsupported Media Type',
-      content: { '*/*': { schema: z.record(z.string(), z.object({})) } },
+      content: { '*/*': { schema: z.record(z.string(), z.looseObject({})) } },
     },
     500: {
       description: 'Returns error description representing internal server error',
@@ -31237,7 +31548,7 @@ export const postV1ApiIserverAccountModelCodeOrdersRoute = createRoute({
                         .exactOptional()
                         .openapi({ description: 'Optional algorithmic execution strategy name.' }),
                       strategyParameters: z
-                        .object({})
+                        .looseObject({})
                         .exactOptional()
                         .openapi({
                           description: 'Parameters passed to the selected algorithmic strategy.',
@@ -33987,7 +34298,7 @@ export const getGwApiV1AccountsAccountIdStatusRoute = createRoute({
     },
     415: {
       description: 'Unsupported Media Type',
-      content: { '*/*': { schema: z.record(z.string(), z.object({})) } },
+      content: { '*/*': { schema: z.record(z.string(), z.looseObject({})) } },
     },
     500: {
       description: 'Returns error description representing internal server error',
@@ -34041,7 +34352,7 @@ export const patchGwApiV1AccountsAccountIdStatusRoute = createRoute({
     },
     415: {
       description: 'Unsupported Media Type',
-      content: { '*/*': { schema: z.record(z.string(), z.object({})) } },
+      content: { '*/*': { schema: z.record(z.string(), z.looseObject({})) } },
     },
     500: {
       description: 'Returns error description representing internal server error',
@@ -34118,7 +34429,7 @@ export const getGwApiV1RequestsRequestIdStatusRoute = createRoute({
     },
     415: {
       description: 'Unsupported Media Type',
-      content: { '*/*': { schema: z.record(z.string(), z.object({})) } },
+      content: { '*/*': { schema: z.record(z.string(), z.looseObject({})) } },
     },
     500: {
       description: 'Returns error description representing internal server error',
@@ -34178,7 +34489,7 @@ export const patchGwApiV1RequestsRequestIdStatusRoute = createRoute({
     },
     415: {
       description: 'Unsupported Media Type',
-      content: { '*/*': { schema: z.record(z.string(), z.object({})) } },
+      content: { '*/*': { schema: z.record(z.string(), z.looseObject({})) } },
     },
     500: {
       description: 'Returns error description representing internal server error',
@@ -34284,7 +34595,7 @@ export const getGwApiV1AccountsLoginMessagesRoute = createRoute({
     },
     415: {
       description: 'Unsupported Media Type',
-      content: { '*/*': { schema: z.record(z.string(), z.object({})) } },
+      content: { '*/*': { schema: z.record(z.string(), z.looseObject({})) } },
     },
     500: {
       description: 'Returns error description representing internal server error',
@@ -34387,7 +34698,7 @@ export const getGwApiV1AccountsStatusRoute = createRoute({
     },
     415: {
       description: 'Unsupported Media Type',
-      content: { '*/*': { schema: z.record(z.string(), z.object({})) } },
+      content: { '*/*': { schema: z.record(z.string(), z.looseObject({})) } },
     },
     500: {
       description: 'Returns error description representing internal server error',
@@ -34440,7 +34751,7 @@ export const getGwApiV1AccountsAccountIdDetailsRoute = createRoute({
     },
     415: {
       description: 'Unsupported Media Type',
-      content: { '*/*': { schema: z.record(z.string(), z.object({})) } },
+      content: { '*/*': { schema: z.record(z.string(), z.looseObject({})) } },
     },
     500: {
       description: 'Returns error description representing internal server error',
@@ -34493,7 +34804,7 @@ export const getGwApiV1AccountsAccountIdKycRoute = createRoute({
     },
     415: {
       description: 'Unsupported Media Type',
-      content: { '*/*': { schema: z.record(z.string(), z.object({})) } },
+      content: { '*/*': { schema: z.record(z.string(), z.looseObject({})) } },
     },
     500: {
       description: 'Returns error description representing internal server error',
@@ -34561,7 +34872,7 @@ export const getGwApiV1AccountsAccountIdLoginMessagesRoute = createRoute({
     },
     415: {
       description: 'Unsupported Media Type',
-      content: { '*/*': { schema: z.record(z.string(), z.object({})) } },
+      content: { '*/*': { schema: z.record(z.string(), z.looseObject({})) } },
     },
     500: {
       description: 'Returns error description representing internal server error',
@@ -35168,7 +35479,7 @@ export const getGwApiV1EnumerationsEnumerationTypeRoute = createRoute({
     },
     415: {
       description: 'Unsupported Media Type',
-      content: { '*/*': { schema: z.record(z.string(), z.object({})) } },
+      content: { '*/*': { schema: z.record(z.string(), z.looseObject({})) } },
     },
     500: {
       description: 'Returns error description representing internal server error',
@@ -35306,7 +35617,7 @@ export const getGwApiV1FormsRoute = createRoute({
     },
     415: {
       description: 'Unsupported Media Type',
-      content: { '*/*': { schema: z.record(z.string(), z.object({})) } },
+      content: { '*/*': { schema: z.record(z.string(), z.looseObject({})) } },
     },
     500: {
       description: 'Returns error description representing internal server error',
@@ -35461,7 +35772,7 @@ export const getGwApiV1FormsRequiredFormsRoute = createRoute({
     },
     415: {
       description: 'Unsupported Media Type',
-      content: { '*/*': { schema: z.record(z.string(), z.object({})) } },
+      content: { '*/*': { schema: z.record(z.string(), z.looseObject({})) } },
     },
     500: {
       description: 'Returns error description representing internal server error',
@@ -36012,7 +36323,7 @@ export const getGwApiV1RequestsRoute = createRoute({
     },
     415: {
       description: 'Unsupported Media Type',
-      content: { '*/*': { schema: z.record(z.string(), z.object({})) } },
+      content: { '*/*': { schema: z.record(z.string(), z.looseObject({})) } },
     },
     500: {
       description: 'Returns error description representing internal server error',
@@ -37131,7 +37442,7 @@ export const getGwApiV1ValidationsUsernamesUsernameRoute = createRoute({
     },
     415: {
       description: 'Unsupported Media Type',
-      content: { '*/*': { schema: z.record(z.string(), z.object({})) } },
+      content: { '*/*': { schema: z.record(z.string(), z.looseObject({})) } },
     },
     500: {
       description: 'Returns error description representing internal server error',
@@ -44298,20 +44609,14 @@ export const getV1ApiWsRoute = createRoute({
     101: {
       description: 'Successful request to switch protocols.',
       headers: z.object({
-        Connection: {
-          style: 'simple',
-          schema: z
-            .literal('Upgrade')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        Upgrade: {
-          style: 'simple',
-          schema: z
-            .literal('websocket')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        Connection: z
+          .literal('Upgrade')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        Upgrade: z
+          .literal('websocket')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -44491,7 +44796,7 @@ export const deleteV1ApiIserverAccountAccountIdAlertAlertIdRoute = createRoute({
           example: '9876543210',
         }),
     }),
-    body: { content: { 'application/json': { schema: z.object({}) } }, required: true },
+    body: { content: { 'application/json': { schema: z.looseObject({}) } }, required: true },
   },
   responses: {
     200: {

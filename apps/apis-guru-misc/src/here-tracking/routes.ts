@@ -1,5 +1,421 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+type ResponseAllShadowsV4Type = {
+  count: number
+  items: {
+    appId?: string
+    externalId?: string
+    shadow: {
+      desired: {
+        payload?: { [key: string]: unknown }
+        system?: {
+          detectOutliers?: boolean
+          disableTracking?: {
+            periods?: { begin?: string; end?: string }[]
+            position?:
+              | 'all'
+              | ('bt' | 'country' | 'gsm' | 'wcdma' | 'tdscdma' | 'lte' | 'cdma' | 'wlan' | 'gps')[]
+              | ''
+            sensors?:
+              | 'all'
+              | (
+                  | 'accelerationG'
+                  | 'deviceIsAttached'
+                  | 'deviceIsStationary'
+                  | 'batteryIsCharging'
+                  | 'batteryLevel'
+                  | 'pressureHpa'
+                  | 'relativeHumidity'
+                  | 'deviceIsTampered'
+                  | 'temperatureC'
+                  | 'tiltDegree'
+                )[]
+              | ''
+          }
+          lastModifiedGeofenceTimestamp: string
+          rate?: { distanceM?: number; sampleMs?: number; sendMs?: number }
+          sensorAlarmConfig?: {
+            alertAccelerationGMax?: number
+            alertAccelerationGMin?: number
+            alertBatteryLevelPMax?: number
+            alertBatteryLevelPMin?: number
+            alertPressureHpaMax?: number
+            alertPressureHpaMin?: number
+            alertRelativeHumidityMax?: number
+            alertRelativeHumidityMin?: number
+            alertTemperatureCMax?: number
+            alertTemperatureCMin?: number
+            alertTiltDegreeMax?: number
+            alertTiltDegreeMin?: number
+            isAttachAlertEnabled?: boolean
+            isTamperAlertEnabled?: boolean
+          }
+          sensorLoggingConfigurations?: {
+            samplingFrequency?: number
+            type: 'acceleration' | 'pressure' | 'temperature' | 'humidity' | 'gnss'
+          }[]
+          sensorLoggingEnabled?: boolean
+          stateVersion: number
+          syncGeofences?: boolean
+          wlanConfigurations?: {
+            password?: string
+            securityMode: 'none' | 'wpa2psk'
+            ssid: string
+            ssidIsHidden?: boolean
+          }[]
+          wlanConnectivityEnabled?: boolean
+        }
+        timestamp?: string
+      }
+      reported: {
+        payload?: { [key: string]: unknown }
+        position?: {
+          accuracy: number
+          alt?: number
+          altaccuracy?: number
+          confidence?: number
+          floor?: { id: string; level: number; name: string }
+          heading?: number
+          lat: number
+          lng: number
+          satellitecount?: number
+          speed?: number
+          timestamp?: string
+          type?: string
+          wlancount?: number
+        }
+        system?: {
+          client?: {
+            accelerometerSensorRange?: number[]
+            diagnosticscode?: number
+            diskquota?: number
+            firmware?: string
+            hasAccelerometerSensor?: boolean
+            hasAttachSensor?: boolean
+            hasHumiditySensor?: boolean
+            hasNoBattery?: boolean
+            hasPressureSensor?: boolean
+            hasTamperSensor?: boolean
+            hasTemperatureSensor?: boolean
+            homenetwork?: { mcc?: number; mnc?: number; nid?: number; sid?: number }[]
+            manufacturer?: string
+            model?: string
+            modules?: { firmwareVersion?: string; manufacturer?: string; model?: string }[]
+            name?: string
+            platform?: string
+            version?: string
+          }
+          computed?: {
+            lastMovedTimestamp?: string
+            moving?: boolean
+            online?: boolean
+            outlier?: {
+              correctedPosition?: { accuracy: number; lat: number; lng: number; timestamp?: string }
+              reason: string
+            }
+          }
+          iccid?: string
+          imsi?: string
+          mode?: 'unknown' | 'normal' | 'flight' | 'transport' | 'sleep'
+          phoneNumber?: string
+          reportedSensorData?: {
+            accelerationG?: number
+            batteryIsCharging?: boolean
+            batteryLevel?: number
+            deviceIsAttached?: boolean
+            deviceIsStationary?: boolean
+            deviceIsTampered?: boolean
+            pressureHpa?: number
+            relativeHumidity?: number
+            temperatureC?: number
+            tiltDegree?: number
+          }
+          stateVersion?: number
+        }
+        timestamp?: string
+      }
+    }
+    trackingId?: string
+  }[]
+  limit: number
+  nextPageToken?: string
+}
+
+type ResponseListDevicesType = { count?: number; pageToken?: string } & {
+  data?: {
+    appId?: string
+    externalId?: string
+    shadow?: {
+      desired?: {
+        payload?: { [key: string]: unknown }
+        system?: {
+          detectOutliers?: boolean
+          disableTracking?: {
+            periods?: { begin?: number; end?: number }[]
+            position?:
+              | 'all'
+              | ('bt' | 'country' | 'gsm' | 'wcdma' | 'tdscdma' | 'lte' | 'cdma' | 'wlan' | 'gps')[]
+              | ''
+            sensors?:
+              | 'all'
+              | (
+                  | 'accelerationG'
+                  | 'deviceIsAttached'
+                  | 'deviceIsStationary'
+                  | 'batteryIsCharging'
+                  | 'batteryLevel'
+                  | 'pressureHpa'
+                  | 'relativeHumidity'
+                  | 'deviceIsTampered'
+                  | 'temperatureC'
+                  | 'tiltDegree'
+                )[]
+              | ''
+          }
+          lastModifiedGeofenceTimestamp: number
+          rate?: { distanceM?: number; sampleMs?: number; sendMs?: number }
+          sensorAlarmConfig?: {
+            alertAccelerationGMax?: number
+            alertAccelerationGMin?: number
+            alertBatteryLevelPMax?: number
+            alertBatteryLevelPMin?: number
+            alertPressureHpaMax?: number
+            alertPressureHpaMin?: number
+            alertRelativeHumidityMax?: number
+            alertRelativeHumidityMin?: number
+            alertTemperatureCMax?: number
+            alertTemperatureCMin?: number
+            alertTiltDegreeMax?: number
+            alertTiltDegreeMin?: number
+            isAttachAlertEnabled?: boolean
+            isTamperAlertEnabled?: boolean
+          }
+          sensorLoggingConfigurations?: {
+            samplingFrequency?: number
+            type: 'acceleration' | 'pressure' | 'temperature' | 'humidity' | 'gnss'
+          }[]
+          sensorLoggingEnabled?: boolean
+          stateVersion: number
+          syncGeofences?: boolean
+          wlanConfigurations?: {
+            password?: string
+            securityMode: 'none' | 'wpa2psk'
+            ssid: string
+            ssidIsHidden?: boolean
+          }[]
+          wlanConnectivityEnabled?: boolean
+        }
+        timestamp?: number
+      }
+      reported?: {
+        payload?: { [key: string]: unknown }
+        position?: {
+          accuracy: number
+          alt?: number
+          altaccuracy?: number
+          confidence?: number
+          floor?: { id: string; level: number; name: string }
+          heading?: number
+          lat: number
+          lng: number
+          satellitecount?: number
+          speed?: number
+          timestamp?: number
+          type?: string
+          wlancount?: number
+        }
+        system?: {
+          client?: {
+            accelerometerSensorRange?: number[]
+            diagnosticscode?: number
+            diskquota?: number
+            firmware?: string
+            hasAccelerometerSensor?: boolean
+            hasAttachSensor?: boolean
+            hasHumiditySensor?: boolean
+            hasNoBattery?: boolean
+            hasPressureSensor?: boolean
+            hasTamperSensor?: boolean
+            hasTemperatureSensor?: boolean
+            homenetwork?: { mcc?: number; mnc?: number; nid?: number; sid?: number }[]
+            manufacturer?: string
+            model?: string
+            modules?: { firmwareVersion?: string; manufacturer?: string; model?: string }[]
+            name?: string
+            platform?: string
+            version?: string
+          }
+          computed?: {
+            lastMovedTimestamp?: number
+            moving?: boolean
+            online?: boolean
+            outlier?: {
+              correctedPosition?: { accuracy: number; lat: number; lng: number; timestamp?: number }
+              reason: string
+            }
+          }
+          iccid?: string
+          imsi?: string
+          mode?: 'unknown' | 'normal' | 'flight' | 'transport' | 'sleep'
+          phoneNumber?: string
+          reportedSensorData?: {
+            accelerationG?: number
+            batteryIsCharging?: boolean
+            batteryLevel?: number
+            deviceIsAttached?: boolean
+            deviceIsStationary?: boolean
+            deviceIsTampered?: boolean
+            pressureHpa?: number
+            relativeHumidity?: number
+            temperatureC?: number
+            tiltDegree?: number
+          }
+          stateVersion?: number
+        }
+        timestamp?: number
+      }
+    }
+    trackingId?: string
+  }[]
+}
+
+type ResponseRetrieveBatchType = {
+  appId?: string
+  body?: {
+    desired?: {
+      payload?: { [key: string]: unknown }
+      system?: {
+        detectOutliers?: boolean
+        disableTracking?: {
+          periods?: { begin?: number; end?: number }[]
+          position?:
+            | 'all'
+            | ('bt' | 'country' | 'gsm' | 'wcdma' | 'tdscdma' | 'lte' | 'cdma' | 'wlan' | 'gps')[]
+            | ''
+          sensors?:
+            | 'all'
+            | (
+                | 'accelerationG'
+                | 'deviceIsAttached'
+                | 'deviceIsStationary'
+                | 'batteryIsCharging'
+                | 'batteryLevel'
+                | 'pressureHpa'
+                | 'relativeHumidity'
+                | 'deviceIsTampered'
+                | 'temperatureC'
+                | 'tiltDegree'
+              )[]
+            | ''
+        }
+        lastModifiedGeofenceTimestamp: number
+        rate?: { distanceM?: number; sampleMs?: number; sendMs?: number }
+        sensorAlarmConfig?: {
+          alertAccelerationGMax?: number
+          alertAccelerationGMin?: number
+          alertBatteryLevelPMax?: number
+          alertBatteryLevelPMin?: number
+          alertPressureHpaMax?: number
+          alertPressureHpaMin?: number
+          alertRelativeHumidityMax?: number
+          alertRelativeHumidityMin?: number
+          alertTemperatureCMax?: number
+          alertTemperatureCMin?: number
+          alertTiltDegreeMax?: number
+          alertTiltDegreeMin?: number
+          isAttachAlertEnabled?: boolean
+          isTamperAlertEnabled?: boolean
+        }
+        sensorLoggingConfigurations?: {
+          samplingFrequency?: number
+          type: 'acceleration' | 'pressure' | 'temperature' | 'humidity' | 'gnss'
+        }[]
+        sensorLoggingEnabled?: boolean
+        stateVersion: number
+        syncGeofences?: boolean
+        wlanConfigurations?: {
+          password?: string
+          securityMode: 'none' | 'wpa2psk'
+          ssid: string
+          ssidIsHidden?: boolean
+        }[]
+        wlanConnectivityEnabled?: boolean
+      }
+      timestamp?: number
+    }
+    reported?: {
+      payload?: { [key: string]: unknown }
+      position?: {
+        accuracy: number
+        alt?: number
+        altaccuracy?: number
+        confidence?: number
+        floor?: { id: string; level: number; name: string }
+        heading?: number
+        lat: number
+        lng: number
+        satellitecount?: number
+        speed?: number
+        timestamp?: number
+        type?: string
+        wlancount?: number
+      }
+      system?: {
+        client?: {
+          accelerometerSensorRange?: number[]
+          diagnosticscode?: number
+          diskquota?: number
+          firmware?: string
+          hasAccelerometerSensor?: boolean
+          hasAttachSensor?: boolean
+          hasHumiditySensor?: boolean
+          hasNoBattery?: boolean
+          hasPressureSensor?: boolean
+          hasTamperSensor?: boolean
+          hasTemperatureSensor?: boolean
+          homenetwork?: { mcc?: number; mnc?: number; nid?: number; sid?: number }[]
+          manufacturer?: string
+          model?: string
+          modules?: { firmwareVersion?: string; manufacturer?: string; model?: string }[]
+          name?: string
+          platform?: string
+          version?: string
+        }
+        computed?: {
+          lastMovedTimestamp?: number
+          moving?: boolean
+          online?: boolean
+          outlier?: {
+            correctedPosition?: { accuracy: number; lat: number; lng: number; timestamp?: number }
+            reason: string
+          }
+        }
+        iccid?: string
+        imsi?: string
+        mode?: 'unknown' | 'normal' | 'flight' | 'transport' | 'sleep'
+        phoneNumber?: string
+        reportedSensorData?: {
+          accelerationG?: number
+          batteryIsCharging?: boolean
+          batteryLevel?: number
+          deviceIsAttached?: boolean
+          deviceIsStationary?: boolean
+          deviceIsTampered?: boolean
+          pressureHpa?: number
+          relativeHumidity?: number
+          temperatureC?: number
+          tiltDegree?: number
+        }
+        stateVersion?: number
+      }
+      timestamp?: number
+    }
+  }
+  externalId?: string
+  statusCode?: number
+  trackingId?: string
+}[]
+
 const AbortFlagSchema = z
   .boolean()
   .default(false)
@@ -19,7 +435,7 @@ const AddConnectorExternalDevicesSchema = z
           }),
         externalDeviceId: z.string().min(1).max(50),
         externalDeviceInfo: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({
             description: 'Other extra information related to the external device or shipment ID.',
@@ -1036,7 +1452,7 @@ const CompleteConnectorInfoSchema = z
               'Enabled state of the connector. If set to false then the connector\nwill not execute periodically.\n',
           }),
         externalCloudInfo: z
-          .object({})
+          .looseObject({})
           .openapi({
             description:
               "An external cloud-specific object that the driver will use to login to the\nexternal cloud. The structure of this object varies per driver\nimplementation.\nIt is recommended to have dedicated credentials for logging in to\nthe external cloud in order not to violate possible concurrent users\npolicies of the external cloud.\nIn case of the HERE Tracking loopback driver, the maximum\nallowed concurrent user account tokens is 3 per account,\ntherefore it is recommended to create a separate HERE account\nand grant it the required privilege to update the connector's\nproject, and use that account in externalCloudInfo.\n",
@@ -1128,13 +1544,13 @@ const ConnectorExternalDevicesSchema = z
           .max(50)
           .openapi({ description: 'Identifier of the device on the external cloud.' }),
         externalDeviceInfo: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({
             description: 'Other extra information related to the external device or shipment ID.',
           }),
         info: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({
             description:
@@ -1183,7 +1599,7 @@ const ConnectorInfoSchema = z
           'Enabled state of the connector. If set to false then the connector\nwill not execute periodically.\n',
       }),
     externalCloudInfo: z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           "An external cloud-specific object that the driver will use to login to the\nexternal cloud. The structure of this object varies per driver\nimplementation.\nIt is recommended to have dedicated credentials for logging in to\nthe external cloud in order not to violate possible concurrent users\npolicies of the external cloud.\nIn case of the HERE Tracking loopback driver, the maximum\nallowed concurrent user account tokens is 3 per account,\ntherefore it is recommended to create a separate HERE account\nand grant it the required privilege to update the connector's\nproject, and use that account in externalCloudInfo.\n",
@@ -1857,7 +2273,7 @@ const CreateUploadResponseSchema = z
   .openapi('CreateUploadResponse')
 
 const DataSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Metadata JSON object\n', example: { priority: 'high' } })
   .openapi('Data')
 
@@ -2610,7 +3026,7 @@ const EventTypeDeviceCountSchema = z
   .openapi('EventTypeDeviceCount')
 
 const ExternalCloudInfoSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       "An external cloud-specific object that the driver will use to login to the\nexternal cloud. The structure of this object varies per driver\nimplementation.\nIt is recommended to have dedicated credentials for logging in to\nthe external cloud in order not to violate possible concurrent users\npolicies of the external cloud.\nIn case of the HERE Tracking loopback driver, the maximum\nallowed concurrent user account tokens is 3 per account,\ntherefore it is recommended to create a separate HERE account\nand grant it the required privilege to update the connector's\nproject, and use that account in externalCloudInfo.\n",
@@ -2655,7 +3071,7 @@ const ExternalDeviceSchema = z
       }),
     externalDeviceId: z.string().min(1).max(50),
     externalDeviceInfo: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'Other extra information related to the external device or shipment ID.',
@@ -2678,13 +3094,13 @@ const ExternalDeviceDetailsSchema = z
       .max(50)
       .openapi({ description: 'Identifier of the device on the external cloud.' }),
     externalDeviceInfo: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'Other extra information related to the external device or shipment ID.',
       }),
     info: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -2714,7 +3130,7 @@ const ExternalDeviceIdSchema = z
   .openapi('ExternalDeviceId')
 
 const ExternalDeviceInfoSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description: 'Other extra information related to the external device or shipment ID.',
   })
@@ -2817,13 +3233,13 @@ const GetConnectorExternalDevicesResponseSchema = z
             .max(50)
             .openapi({ description: 'Identifier of the device on the external cloud.' }),
           externalDeviceInfo: z
-            .object({})
+            .looseObject({})
             .exactOptional()
             .openapi({
               description: 'Other extra information related to the external device or shipment ID.',
             }),
           info: z
-            .object({})
+            .looseObject({})
             .exactOptional()
             .openapi({
               description:
@@ -4991,7 +5407,7 @@ const RequestBodyProjectFeaturesSchema = z
     z
       .object({
         data: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({ description: 'Object describing project features' }),
       })
@@ -5148,7 +5564,7 @@ const ResponseAliasesSchema = z
     z
       .object({
         data: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({
             description:
@@ -5192,7 +5608,7 @@ const ResponseAllAliasesSchema = z
             z
               .object({
                 aliases: z
-                  .object({})
+                  .looseObject({})
                   .openapi({
                     description:
                       'A map of key-value pairs where the key is the type of the alias\nand the value is an array of externalIds.\n',
@@ -5330,7 +5746,7 @@ const ResponseAllLocationsSchema = z
   .openapi({ required: ['limit', 'count', 'items'] })
   .openapi('ResponseAllLocations')
 
-const ResponseAllShadowsV4Schema = z
+const ResponseAllShadowsV4Schema: z.ZodType<ResponseAllShadowsV4Type> = z
   .strictObject({
     count: z
       .int()
@@ -5360,7 +5776,7 @@ const ResponseAllShadowsV4Schema = z
               desired: z
                 .object({
                   payload: z
-                    .object({})
+                    .looseObject({})
                     .exactOptional()
                     .openapi({
                       description: 'A free format JSON object.\nThe maximum size is 1000B.\n',
@@ -5738,7 +6154,7 @@ const ResponseAllShadowsV4Schema = z
               reported: z
                 .object({
                   payload: z
-                    .object({})
+                    .looseObject({})
                     .exactOptional()
                     .openapi({
                       description: 'A free format JSON object.\nThe maximum size is 1000B.\n',
@@ -6690,7 +7106,37 @@ const ResponseAllShipmentsSchema = z
       .openapi({ description: 'Token to fetch the next page (if exists)' }),
     total: z.int().exactOptional().openapi({ description: 'Total number of shipments for query' }),
   })
-  .openapi({ example: { count: 1, limit: 100 }, required: ['limit', 'count', 'items'] })
+  .openapi({
+    example: {
+      count: 1,
+      items: [
+        {
+          autoStart: true,
+          description: 'A shipment consisting of one segment',
+          name: 'From Portugal to Panama',
+          segments: [
+            {
+              description: 'From factory to port',
+              destination: 'LOC-7b6b15cc-2307-4875-9f66-99deb5227e92',
+              endedAt: '2020-05-27T11:40:01Z',
+              name: 'Truck transport',
+              origin: 'LOC-54531862-f87a-4b70-99a4-0e8224a56be4',
+              segmentId: 'SEG-156986fa-1ed9-42ab-a022-9ac1a70ae137',
+              startedAt: '2020-05-27T11:40:01Z',
+              status: 'pending',
+              trackingId: 'HERE-540bb24b-0d57-4f8c-aeaf-6c91cd0aff8d',
+              transportMode: 'truck',
+            },
+          ],
+          shipmentId: 'SHP-d306beb9-e110-450e-9f81-3db9de1ac001',
+          status: 'pending',
+          subShipment: false,
+        },
+      ],
+      limit: 100,
+    },
+    required: ['limit', 'count', 'items'],
+  })
   .openapi('ResponseAllShipments')
 
 const ResponseAssociationRuleSchema = z
@@ -6954,7 +7400,7 @@ const ResponseGetMetadataBatchDevicesSchema = z
           z
             .strictObject({
               data: z
-                .object({})
+                .looseObject({})
                 .openapi({ description: 'Metadata JSON object\n', example: { priority: 'high' } }),
               id: z
                 .string()
@@ -6996,7 +7442,7 @@ const ResponseGetMetadataBatchGeofencesSchema = z
           z
             .strictObject({
               data: z
-                .object({})
+                .looseObject({})
                 .openapi({ description: 'Metadata JSON object\n', example: { priority: 'high' } }),
               id: z.uuid().openapi({ description: 'Geofence ID' }),
             })
@@ -7031,7 +7477,7 @@ const ResponseGetMetadataBatchSensorRulesSchema = z
           z
             .strictObject({
               data: z
-                .object({})
+                .looseObject({})
                 .openapi({ description: 'Metadata JSON object\n', example: { priority: 'high' } }),
               id: z.uuid().openapi({ description: 'Sensor rule ID' }),
             })
@@ -7055,7 +7501,7 @@ const ResponseGetMetadataBatchSensorRulesSchema = z
 const ResponseGetMetadataDevicesSchema = z
   .strictObject({
     data: z
-      .object({})
+      .looseObject({})
       .openapi({ description: 'Metadata JSON object\n', example: { priority: 'high' } }),
     id: z
       .string()
@@ -7072,7 +7518,7 @@ const ResponseGetMetadataDevicesSchema = z
 const ResponseGetMetadataGeofencesSchema = z
   .strictObject({
     data: z
-      .object({})
+      .looseObject({})
       .openapi({ description: 'Metadata JSON object\n', example: { priority: 'high' } }),
     id: z.uuid().openapi({ description: 'Geofence ID' }),
   })
@@ -7082,7 +7528,7 @@ const ResponseGetMetadataGeofencesSchema = z
 const ResponseGetMetadataSensorRulesSchema = z
   .strictObject({
     data: z
-      .object({})
+      .looseObject({})
       .openapi({ description: 'Metadata JSON object\n', example: { priority: 'high' } }),
     id: z.uuid().openapi({ description: 'Sensor rule ID' }),
   })
@@ -7092,7 +7538,7 @@ const ResponseGetMetadataSensorRulesSchema = z
 const ResponseGetMetadataUserSchema = z
   .object({
     data: z
-      .object({})
+      .looseObject({})
       .openapi({ description: 'Metadata JSON object\n', example: { priority: 'high' } }),
     id: z
       .string()
@@ -7151,7 +7597,7 @@ const ResponseGetconnectorsSchema = z
                     'Enabled state of the connector. If set to false then the connector\nwill not execute periodically.\n',
                 }),
               externalCloudInfo: z
-                .object({})
+                .looseObject({})
                 .openapi({
                   description:
                     "An external cloud-specific object that the driver will use to login to the\nexternal cloud. The structure of this object varies per driver\nimplementation.\nIt is recommended to have dedicated credentials for logging in to\nthe external cloud in order not to violate possible concurrent users\npolicies of the external cloud.\nIn case of the HERE Tracking loopback driver, the maximum\nallowed concurrent user account tokens is 3 per account,\ntherefore it is recommended to create a separate HERE account\nand grant it the required privilege to update the connector's\nproject, and use that account in externalCloudInfo.\n",
@@ -7391,7 +7837,7 @@ const ResponseJobStatusSchema = z
 const ResponseLabelByJsonSchema = z
   .object({
     labels: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'An object containing label key-value pairs.' }),
     resourceId: z
@@ -7421,7 +7867,7 @@ const ResponseLabelsByJsonSchema = z
       z
         .object({
           labels: z
-            .object({})
+            .looseObject({})
             .exactOptional()
             .openapi({ description: 'An object containing label key-value pairs.' }),
           resourceId: z
@@ -7452,7 +7898,7 @@ const ResponseLabelsByJsonSchema = z
   .openapi({ required: ['limit', 'count', 'items'] })
   .openapi('ResponseLabelsByJson')
 
-const ResponseListDevicesSchema = z
+const ResponseListDevicesSchema: z.ZodType<ResponseListDevicesType> = z
   .object({
     count: z
       .int()
@@ -7498,7 +7944,7 @@ const ResponseListDevicesSchema = z
                     desired: z
                       .object({
                         payload: z
-                          .object({})
+                          .looseObject({})
                           .exactOptional()
                           .openapi({
                             description: 'A free format JSON object.\nThe maximum size is 1000B.\n',
@@ -7905,7 +8351,7 @@ const ResponseListDevicesSchema = z
                     reported: z
                       .object({
                         payload: z
-                          .object({})
+                          .looseObject({})
                           .exactOptional()
                           .openapi({
                             description: 'A free format JSON object.\nThe maximum size is 1000B.\n',
@@ -8585,7 +9031,7 @@ const ResponseLoginSchema = z
 const ResponseProjectFeaturesSchema = z
   .strictObject({
     data: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Project specific data that can be set by a project admin' }),
     indoorPositioning: z
@@ -9036,6 +9482,11 @@ const ResponseResourcesSchema = z
   .openapi({
     example: {
       count: 3,
+      items: [
+        { resourceId: 'SHP-ee73df84-0ab1-40fd-aac1-c39deb943de9' },
+        { resourceId: 'SHP-ee73df84-0ab1-40fd-aac1-c39deb943df0' },
+        { resourceId: 'SHP-ee73df84-0ab1-40fd-aac1-c39deb943df1' },
+      ],
       limit: 3,
       nextPageToken: 'skjfgWOF7162712JHAIW8FYBCASK!/EUQHSDkuhedf',
       total: 10,
@@ -9044,7 +9495,7 @@ const ResponseResourcesSchema = z
   })
   .openapi('ResponseResources')
 
-const ResponseRetrieveBatchSchema = z
+const ResponseRetrieveBatchSchema: z.ZodType<ResponseRetrieveBatchType> = z
   .array(
     z
       .object({
@@ -9060,7 +9511,7 @@ const ResponseRetrieveBatchSchema = z
             desired: z
               .object({
                 payload: z
-                  .object({})
+                  .looseObject({})
                   .exactOptional()
                   .openapi({
                     description: 'A free format JSON object.\nThe maximum size is 1000B.\n',
@@ -9438,7 +9889,7 @@ const ResponseRetrieveBatchSchema = z
             reported: z
               .object({
                 payload: z
-                  .object({})
+                  .looseObject({})
                   .exactOptional()
                   .openapi({
                     description: 'A free format JSON object.\nThe maximum size is 1000B.\n',
@@ -11057,7 +11508,7 @@ const ResponseShipmentsAssociatedWithRuleSchema = z
 const ResponseTelemetrySchema = z
   .object({
     payload: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'A free format JSON object.\nThe maximum size is 1000B.\n' }),
     system: z
@@ -11460,7 +11911,7 @@ const ResponseTracesSchema = z
       }),
   })
   .openapi({ required: [] })
-  .and(z.object({}))
+  .and(z.looseObject({}))
   .and(
     z
       .object({
@@ -11469,7 +11920,7 @@ const ResponseTracesSchema = z
             z
               .object({
                 payload: z
-                  .object({})
+                  .looseObject({})
                   .exactOptional()
                   .openapi({
                     description: 'A free format JSON object.\nThe maximum size is 1000B.\n',
@@ -13801,7 +14252,7 @@ const ShadowStateResponseSchema = z
     z
       .object({
         payload: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({ description: 'A free format JSON object.\nThe maximum size is 1000B.\n' }),
         system: z
@@ -14155,7 +14606,7 @@ const ShadowStateResponseSchema = z
     z
       .object({
         payload: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({ description: 'A free format JSON object.\nThe maximum size is 1000B.\n' }),
         position: z
@@ -14697,7 +15148,7 @@ const ShadowV4Schema = z
         desired: z
           .object({
             payload: z
-              .object({})
+              .looseObject({})
               .exactOptional()
               .openapi({ description: 'A free format JSON object.\nThe maximum size is 1000B.\n' }),
             system: z
@@ -15051,7 +15502,7 @@ const ShadowV4Schema = z
         reported: z
           .object({
             payload: z
-              .object({})
+              .looseObject({})
               .exactOptional()
               .openapi({ description: 'A free format JSON object.\nThe maximum size is 1000B.\n' }),
             position: z
@@ -15587,7 +16038,7 @@ const ShadowsUpdateBodySchema = z
     desired: z
       .strictObject({
         payload: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({ description: 'A free format JSON object.\nThe maximum size is 1000B.\n' }),
         system: z
@@ -16497,7 +16948,7 @@ const TagLabelsSchema = z
 const TelemetrySchema = z
   .object({
     payload: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'A free format JSON object.\nThe maximum size is 1000B.\n' }),
     position: z
@@ -18634,7 +19085,7 @@ export const getAliasesV2Route = createRoute({
                       z
                         .object({
                           aliases: z
-                            .object({})
+                            .looseObject({})
                             .openapi({
                               description:
                                 'A map of key-value pairs where the key is the type of the alias\nand the value is an array of externalIds.\n',
@@ -19210,7 +19661,7 @@ export const getAliasesV2TrackingId2Route = createRoute({
               z
                 .object({
                   data: z
-                    .object({})
+                    .looseObject({})
                     .exactOptional()
                     .openapi({
                       description:
@@ -19652,7 +20103,7 @@ export const putAliasesV2TrackingIdBatchRoute = createRoute({
           schema: z
             .object({
               aliases: z
-                .object({})
+                .looseObject({})
                 .openapi({
                   description:
                     'A map of key-value pairs where the key is the type of the\nalias and the value is an array of `externalId`s.\n',
@@ -19972,7 +20423,7 @@ export const getAliasesV2TrackingIdTypeRoute = createRoute({
               z
                 .object({
                   data: z
-                    .object({})
+                    .looseObject({})
                     .exactOptional()
                     .openapi({
                       description:
@@ -27186,7 +27637,7 @@ export const postC2cV4CallbackRoute = createRoute({
           },
         }),
     }),
-    body: { content: { 'application/json': { schema: z.object({}) } } },
+    body: { content: { 'application/json': { schema: z.looseObject({}) } } },
   },
   responses: {
     204: { description: 'Successful' },
@@ -27428,7 +27879,7 @@ export const getC2cV4ConnectorsRoute = createRoute({
                               'Enabled state of the connector. If set to false then the connector\nwill not execute periodically.\n',
                           }),
                         externalCloudInfo: z
-                          .object({})
+                          .looseObject({})
                           .openapi({
                             description:
                               "An external cloud-specific object that the driver will use to login to the\nexternal cloud. The structure of this object varies per driver\nimplementation.\nIt is recommended to have dedicated credentials for logging in to\nthe external cloud in order not to violate possible concurrent users\npolicies of the external cloud.\nIn case of the HERE Tracking loopback driver, the maximum\nallowed concurrent user account tokens is 3 per account,\ntherefore it is recommended to create a separate HERE account\nand grant it the required privilege to update the connector's\nproject, and use that account in externalCloudInfo.\n",
@@ -27685,7 +28136,7 @@ export const postC2cV4ConnectorsRoute = createRoute({
                     'Enabled state of the connector. If set to false then the connector\nwill not execute periodically.\n',
                 }),
               externalCloudInfo: z
-                .object({})
+                .looseObject({})
                 .openapi({
                   description:
                     "An external cloud-specific object that the driver will use to login to the\nexternal cloud. The structure of this object varies per driver\nimplementation.\nIt is recommended to have dedicated credentials for logging in to\nthe external cloud in order not to violate possible concurrent users\npolicies of the external cloud.\nIn case of the HERE Tracking loopback driver, the maximum\nallowed concurrent user account tokens is 3 per account,\ntherefore it is recommended to create a separate HERE account\nand grant it the required privilege to update the connector's\nproject, and use that account in externalCloudInfo.\n",
@@ -27724,7 +28175,7 @@ export const postC2cV4ConnectorsRoute = createRoute({
       description: 'Successful',
       content: {
         'application/json': {
-          schema: z.object({}).openapi({ description: 'Identifier of the connector.' }),
+          schema: z.looseObject({}).openapi({ description: 'Identifier of the connector.' }),
         },
       },
     },
@@ -28190,7 +28641,7 @@ export const getC2cV4ConnectorsConnectorIdRoute = createRoute({
                         'Enabled state of the connector. If set to false then the connector\nwill not execute periodically.\n',
                     }),
                   externalCloudInfo: z
-                    .object({})
+                    .looseObject({})
                     .openapi({
                       description:
                         "An external cloud-specific object that the driver will use to login to the\nexternal cloud. The structure of this object varies per driver\nimplementation.\nIt is recommended to have dedicated credentials for logging in to\nthe external cloud in order not to violate possible concurrent users\npolicies of the external cloud.\nIn case of the HERE Tracking loopback driver, the maximum\nallowed concurrent user account tokens is 3 per account,\ntherefore it is recommended to create a separate HERE account\nand grant it the required privilege to update the connector's\nproject, and use that account in externalCloudInfo.\n",
@@ -28442,7 +28893,7 @@ export const putC2cV4ConnectorsConnectorIdRoute = createRoute({
                     'Enabled state of the connector. If set to false then the connector\nwill not execute periodically.\n',
                 }),
               externalCloudInfo: z
-                .object({})
+                .looseObject({})
                 .openapi({
                   description:
                     "An external cloud-specific object that the driver will use to login to the\nexternal cloud. The structure of this object varies per driver\nimplementation.\nIt is recommended to have dedicated credentials for logging in to\nthe external cloud in order not to violate possible concurrent users\npolicies of the external cloud.\nIn case of the HERE Tracking loopback driver, the maximum\nallowed concurrent user account tokens is 3 per account,\ntherefore it is recommended to create a separate HERE account\nand grant it the required privilege to update the connector's\nproject, and use that account in externalCloudInfo.\n",
@@ -28481,7 +28932,7 @@ export const putC2cV4ConnectorsConnectorIdRoute = createRoute({
       description: 'Successful',
       content: {
         'application/json': {
-          schema: z.object({}).openapi({ description: 'Identifier of the connector.' }),
+          schema: z.looseObject({}).openapi({ description: 'Identifier of the connector.' }),
         },
       },
     },
@@ -28936,14 +29387,14 @@ export const getC2cV4ConnectorsConnectorIdExtDevicesRoute = createRoute({
                       .max(50)
                       .openapi({ description: 'Identifier of the device on the external cloud.' }),
                     externalDeviceInfo: z
-                      .object({})
+                      .looseObject({})
                       .exactOptional()
                       .openapi({
                         description:
                           'Other extra information related to the external device or shipment ID.',
                       }),
                     info: z
-                      .object({})
+                      .looseObject({})
                       .exactOptional()
                       .openapi({
                         description:
@@ -29171,7 +29622,7 @@ export const postC2cV4ConnectorsConnectorIdExtDevicesRoute = createRoute({
                     }),
                   externalDeviceId: z.string().min(1).max(50),
                   externalDeviceInfo: z
-                    .object({})
+                    .looseObject({})
                     .exactOptional()
                     .openapi({
                       description:
@@ -30024,7 +30475,7 @@ export const postC2cV4DriversDriverIdVerifyRoute = createRoute({
       content: {
         'application/json': {
           schema: z
-            .object({})
+            .looseObject({})
             .openapi({
               description:
                 "An external cloud-specific object that the driver will use to login to the\nexternal cloud. The structure of this object varies per driver\nimplementation.\nIt is recommended to have dedicated credentials for logging in to\nthe external cloud in order not to violate possible concurrent users\npolicies of the external cloud.\nIn case of the HERE Tracking loopback driver, the maximum\nallowed concurrent user account tokens is 3 per account,\ntherefore it is recommended to create a separate HERE account\nand grant it the required privilege to update the connector's\nproject, and use that account in externalCloudInfo.\n",
@@ -39412,7 +39863,7 @@ export const getLabelsV4ResourceTypeRoute = createRoute({
                 'Project ID.\nAny HERE Tracking user must be a member of a Tracking project.\nThe project ID can be implicitly resolved if the user calling the API is a member of a single project.\nIf the user is a member of multiple projects, the `projectId` query parameter needs to be specified explicitly.\n',
             }),
           labels: z
-            .object({})
+            .looseObject({})
             .exactOptional()
             .openapi({
               param: {
@@ -39502,7 +39953,7 @@ export const getLabelsV4ResourceTypeRoute = createRoute({
                 z
                   .object({
                     labels: z
-                      .object({})
+                      .looseObject({})
                       .exactOptional()
                       .openapi({ description: 'An object containing label key-value pairs.' }),
                     resourceId: z
@@ -40234,7 +40685,7 @@ export const getLabelsV4ResourceTypeResourceIdRoute = createRoute({
           schema: z
             .object({
               labels: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({ description: 'An object containing label key-value pairs.' }),
               resourceId: z
@@ -40680,7 +41131,7 @@ export const putLabelsV4ResourceTypeResourceIdBatchRoute = createRoute({
           schema: z
             .object({
               labels: z
-                .object({})
+                .looseObject({})
                 .openapi({
                   description:
                     'A map of key-value pairs where the key is the label key\nand the value is an array of label values.\n',
@@ -40700,7 +41151,7 @@ export const putLabelsV4ResourceTypeResourceIdBatchRoute = createRoute({
           schema: z
             .object({
               labels: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({ description: 'An object containing label key-value pairs.' }),
               resourceId: z
@@ -41216,7 +41667,7 @@ export const putLabelsV4ResourceTypeResourceIdKeyValueRoute = createRoute({
           schema: z
             .object({
               labels: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({ description: 'An object containing label key-value pairs.' }),
               resourceId: z
@@ -45464,7 +45915,7 @@ export const postMetadataV2DevicesBatchRoute = createRoute({
                     z
                       .strictObject({
                         data: z
-                          .object({})
+                          .looseObject({})
                           .openapi({
                             description: 'Metadata JSON object\n',
                             example: { priority: 'high' },
@@ -45694,7 +46145,7 @@ export const getMetadataV2DevicesTrackingIdRoute = createRoute({
           schema: z
             .strictObject({
               data: z
-                .object({})
+                .looseObject({})
                 .openapi({ description: 'Metadata JSON object\n', example: { priority: 'high' } }),
               id: z
                 .string()
@@ -45910,7 +46361,7 @@ export const putMetadataV2DevicesTrackingIdRoute = createRoute({
     }),
     body: {
       description: 'Metadata object associated with the resource. Max size 1k.',
-      content: { 'application/json': { schema: z.object({}), example: { priority: 'high' } } },
+      content: { 'application/json': { schema: z.looseObject({}), example: { priority: 'high' } } },
       required: true,
     },
   },
@@ -45922,7 +46373,7 @@ export const putMetadataV2DevicesTrackingIdRoute = createRoute({
           schema: z
             .strictObject({
               data: z
-                .object({})
+                .looseObject({})
                 .openapi({ description: 'Metadata JSON object\n', example: { priority: 'high' } }),
               id: z
                 .string()
@@ -46381,7 +46832,7 @@ export const postMetadataV2GeofencesBatchRoute = createRoute({
                     z
                       .strictObject({
                         data: z
-                          .object({})
+                          .looseObject({})
                           .openapi({
                             description: 'Metadata JSON object\n',
                             example: { priority: 'high' },
@@ -46578,7 +47029,7 @@ export const getMetadataV2GeofencesGeofenceIdRoute = createRoute({
           schema: z
             .strictObject({
               data: z
-                .object({})
+                .looseObject({})
                 .openapi({ description: 'Metadata JSON object\n', example: { priority: 'high' } }),
               id: z.uuid().openapi({ description: 'Geofence ID' }),
             })
@@ -46762,7 +47213,7 @@ export const putMetadataV2GeofencesGeofenceIdRoute = createRoute({
     }),
     body: {
       description: 'Metadata object associated with the resource. Max size 1k.',
-      content: { 'application/json': { schema: z.object({}), example: { priority: 'high' } } },
+      content: { 'application/json': { schema: z.looseObject({}), example: { priority: 'high' } } },
       required: true,
     },
   },
@@ -46774,7 +47225,7 @@ export const putMetadataV2GeofencesGeofenceIdRoute = createRoute({
           schema: z
             .strictObject({
               data: z
-                .object({})
+                .looseObject({})
                 .openapi({ description: 'Metadata JSON object\n', example: { priority: 'high' } }),
               id: z.uuid().openapi({ description: 'Geofence ID' }),
             })
@@ -47223,7 +47674,7 @@ export const postMetadataV2SensorRulesBatchRoute = createRoute({
                     z
                       .strictObject({
                         data: z
-                          .object({})
+                          .looseObject({})
                           .openapi({
                             description: 'Metadata JSON object\n',
                             example: { priority: 'high' },
@@ -47434,7 +47885,7 @@ export const getMetadataV2SensorRulesSensorRuleIdRoute = createRoute({
           schema: z
             .strictObject({
               data: z
-                .object({})
+                .looseObject({})
                 .openapi({ description: 'Metadata JSON object\n', example: { priority: 'high' } }),
               id: z.uuid().openapi({ description: 'Sensor rule ID' }),
             })
@@ -47619,7 +48070,7 @@ export const putMetadataV2SensorRulesSensorRuleIdRoute = createRoute({
     }),
     body: {
       description: 'Metadata object associated with the resource. Max size 1k.',
-      content: { 'application/json': { schema: z.object({}), example: { priority: 'high' } } },
+      content: { 'application/json': { schema: z.looseObject({}), example: { priority: 'high' } } },
       required: true,
     },
   },
@@ -47631,7 +48082,7 @@ export const putMetadataV2SensorRulesSensorRuleIdRoute = createRoute({
           schema: z
             .strictObject({
               data: z
-                .object({})
+                .looseObject({})
                 .openapi({ description: 'Metadata JSON object\n', example: { priority: 'high' } }),
               id: z.uuid().openapi({ description: 'Sensor rule ID' }),
             })
@@ -53725,6 +54176,11 @@ export const postRegistryV4ResourcesResourceTypeFindRoute = createRoute({
             .openapi({
               example: {
                 count: 3,
+                items: [
+                  { resourceId: 'SHP-ee73df84-0ab1-40fd-aac1-c39deb943de9' },
+                  { resourceId: 'SHP-ee73df84-0ab1-40fd-aac1-c39deb943df0' },
+                  { resourceId: 'SHP-ee73df84-0ab1-40fd-aac1-c39deb943df1' },
+                ],
                 limit: 3,
                 nextPageToken: 'skjfgWOF7162712JHAIW8FYBCASK!/EUQHSDkuhedf',
                 total: 10,
@@ -58426,7 +58882,7 @@ export const postShadowsV2BatchRoute = createRoute({
                       desired: z
                         .object({
                           payload: z
-                            .object({})
+                            .looseObject({})
                             .exactOptional()
                             .openapi({
                               description:
@@ -58837,7 +59293,7 @@ export const postShadowsV2BatchRoute = createRoute({
                       reported: z
                         .object({
                           payload: z
-                            .object({})
+                            .looseObject({})
                             .exactOptional()
                             .openapi({
                               description:
@@ -59671,7 +60127,7 @@ export const getShadowsV2TrackingIdRoute = createRoute({
               desired: z
                 .object({
                   payload: z
-                    .object({})
+                    .looseObject({})
                     .exactOptional()
                     .openapi({
                       description: 'A free format JSON object.\nThe maximum size is 1000B.\n',
@@ -60059,7 +60515,7 @@ export const getShadowsV2TrackingIdRoute = createRoute({
               reported: z
                 .object({
                   payload: z
-                    .object({})
+                    .looseObject({})
                     .exactOptional()
                     .openapi({
                       description: 'A free format JSON object.\nThe maximum size is 1000B.\n',
@@ -60845,7 +61301,7 @@ export const putShadowsV2TrackingIdRoute = createRoute({
               desired: z
                 .strictObject({
                   payload: z
-                    .object({})
+                    .looseObject({})
                     .exactOptional()
                     .openapi({
                       description: 'A free format JSON object.\nThe maximum size is 1000B.\n',
@@ -61124,7 +61580,7 @@ export const putShadowsV2TrackingIdRoute = createRoute({
               desired: z
                 .object({
                   payload: z
-                    .object({})
+                    .looseObject({})
                     .exactOptional()
                     .openapi({
                       description: 'A free format JSON object.\nThe maximum size is 1000B.\n',
@@ -61512,7 +61968,7 @@ export const putShadowsV2TrackingIdRoute = createRoute({
               reported: z
                 .object({
                   payload: z
-                    .object({})
+                    .looseObject({})
                     .exactOptional()
                     .openapi({
                       description: 'A free format JSON object.\nThe maximum size is 1000B.\n',
@@ -62557,7 +63013,7 @@ export const getShadowsV2TrackingIdStateRoute = createRoute({
             z
               .object({
                 payload: z
-                  .object({})
+                  .looseObject({})
                   .exactOptional()
                   .openapi({
                     description: 'A free format JSON object.\nThe maximum size is 1000B.\n',
@@ -62938,7 +63394,7 @@ export const getShadowsV2TrackingIdStateRoute = createRoute({
             z
               .object({
                 payload: z
-                  .object({})
+                  .looseObject({})
                   .exactOptional()
                   .openapi({
                     description: 'A free format JSON object.\nThe maximum size is 1000B.\n',
@@ -63706,7 +64162,7 @@ export const getShadowsV2TrackingIdStateSelectorRoute = createRoute({
         'Successful\n\nThe content type is defined as "text/plain" or "application/json"\ndepending on the type of the property.\n',
       content: {
         'application/json': {
-          schema: z.xor([z.object({}), z.array(z.any())]),
+          schema: z.xor([z.looseObject({}), z.array(z.any())]),
           example: {
             accuracy: '18',
             alt: '105',
@@ -64092,7 +64548,7 @@ export const getShadowsV4Route = createRoute({
                         desired: z
                           .object({
                             payload: z
-                              .object({})
+                              .looseObject({})
                               .exactOptional()
                               .openapi({
                                 description:
@@ -64495,7 +64951,7 @@ export const getShadowsV4Route = createRoute({
                         reported: z
                           .object({
                             payload: z
-                              .object({})
+                              .looseObject({})
                               .exactOptional()
                               .openapi({
                                 description:
@@ -66940,7 +67396,37 @@ export const getShipmentsV4Route = createRoute({
                 .exactOptional()
                 .openapi({ description: 'Total number of shipments for query' }),
             })
-            .openapi({ example: { count: 1, limit: 100 }, required: ['limit', 'count', 'items'] }),
+            .openapi({
+              example: {
+                count: 1,
+                items: [
+                  {
+                    autoStart: true,
+                    description: 'A shipment consisting of one segment',
+                    name: 'From Portugal to Panama',
+                    segments: [
+                      {
+                        description: 'From factory to port',
+                        destination: 'LOC-7b6b15cc-2307-4875-9f66-99deb5227e92',
+                        endedAt: '2020-05-27T11:40:01Z',
+                        name: 'Truck transport',
+                        origin: 'LOC-54531862-f87a-4b70-99a4-0e8224a56be4',
+                        segmentId: 'SEG-156986fa-1ed9-42ab-a022-9ac1a70ae137',
+                        startedAt: '2020-05-27T11:40:01Z',
+                        status: 'pending',
+                        trackingId: 'HERE-540bb24b-0d57-4f8c-aeaf-6c91cd0aff8d',
+                        transportMode: 'truck',
+                      },
+                    ],
+                    shipmentId: 'SHP-d306beb9-e110-450e-9f81-3db9de1ac001',
+                    status: 'pending',
+                    subShipment: false,
+                  },
+                ],
+                limit: 100,
+              },
+              required: ['limit', 'count', 'items'],
+            }),
         },
       },
     },
@@ -71760,7 +72246,7 @@ export const getTracesV2TrackingIdRoute = createRoute({
                 }),
             })
             .openapi({ required: [] })
-            .and(z.object({}))
+            .and(z.looseObject({}))
             .and(
               z
                 .object({
@@ -71769,7 +72255,7 @@ export const getTracesV2TrackingIdRoute = createRoute({
                       z
                         .object({
                           payload: z
-                            .object({})
+                            .looseObject({})
                             .exactOptional()
                             .openapi({
                               description:
@@ -73626,7 +74112,7 @@ export const getUsersV2DevicesRoute = createRoute({
                               desired: z
                                 .object({
                                   payload: z
-                                    .object({})
+                                    .looseObject({})
                                     .exactOptional()
                                     .openapi({
                                       description:
@@ -74045,7 +74531,7 @@ export const getUsersV2DevicesRoute = createRoute({
                               reported: z
                                 .object({
                                   payload: z
-                                    .object({})
+                                    .looseObject({})
                                     .exactOptional()
                                     .openapi({
                                       description:
@@ -75497,7 +75983,7 @@ export const postV2IndexRoute = createRoute({
             z
               .object({
                 payload: z
-                  .object({})
+                  .looseObject({})
                   .exactOptional()
                   .openapi({
                     description: 'A free format JSON object.\nThe maximum size is 1000B.\n',
@@ -76840,7 +77326,7 @@ export const postV2IndexRoute = createRoute({
           schema: z
             .object({
               payload: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description: 'A free format JSON object.\nThe maximum size is 1000B.\n',
@@ -77937,7 +78423,7 @@ export const postV3IndexRoute = createRoute({
                 z
                   .object({
                     payload: z
-                      .object({})
+                      .looseObject({})
                       .exactOptional()
                       .openapi({
                         description: 'A free format JSON object.\nThe maximum size is 1000B.\n',
@@ -79309,7 +79795,7 @@ export const postV3IndexRoute = createRoute({
           schema: z
             .object({
               payload: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description: 'A free format JSON object.\nThe maximum size is 1000B.\n',
@@ -79934,7 +80420,7 @@ export const postV3BatchRoute = createRoute({
                 z
                   .object({
                     payload: z
-                      .object({})
+                      .looseObject({})
                       .exactOptional()
                       .openapi({
                         description: 'A free format JSON object.\nThe maximum size is 1000B.\n',

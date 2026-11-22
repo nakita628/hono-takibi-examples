@@ -4707,6 +4707,185 @@ To perform this operation, you must be authenticated by means of one of the foll
 userBearerAuth, userApiKey
 </aside>
 
+## Create Contact Export
+
+<a id="opIdcontactExportCreate"></a>
+
+> Code samples
+
+```bash
+curl https://app.chatwoot.com/api/v1/accounts/0/data_exports \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "column_names": [
+      "name",
+      "email",
+      "phone_number"
+    ],
+    "payload": [
+      {
+        "attribute_key": "email",
+        "filter_operator": "contains",
+        "values": [
+          "example.com"
+        ],
+        "query_operator": null
+      }
+    ],
+    "scope_name": "Example customers"
+  }'
+```
+
+`POST /api/v1/accounts/{account_id}/data_exports`
+
+Create a tracked CSV export of contacts and queue it for background processing.
+Requires an administrator or a user with the `contact_manage` permission.
+
+Send export options only in the JSON request body. Query-string parameters are
+ignored: they neither supply options nor override body values. An empty body
+uses the default columns and exports all resolved contacts in the account.
+Unknown body options and invalid option values return 422 without creating
+an export or queuing a job.
+
+
+> Body parameter
+
+```json
+{
+  "column_names": [
+    "name",
+    "email",
+    "phone_number"
+  ],
+  "payload": [
+    {
+      "attribute_key": "email",
+      "filter_operator": "contains",
+      "values": [
+        "example.com"
+      ],
+      "query_operator": null
+    }
+  ],
+  "scope_name": "Example customers"
+}
+```
+
+<h3 id="create-contact-export-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|account_id|path|integer|true|The numeric ID of the account|
+|body|body|object|false|none|
+|» column_names|body|[string]|false|Contact column names to export. Omitted or empty uses the default columns.|
+|» payload|body|[object]|false|Contact filters, using the same format as POST /contacts/filter. A non-empty payload takes precedence over label.|
+|» » attribute_key|body|string|true|none|
+|» » attribute_model|body|string \| null|false|none|
+|» » filter_operator|body|string|true|none|
+|» » query_operator|body|string \| null|false|none|
+|» » custom_attribute_type|body|string \| null|false|none|
+|» » values|body|[string \| number \| boolean]|true|Values must match the selected attribute and operator; text attributes require strings.|
+|» » timezone|body|string|false|IANA timezone for date filters. Omit to use UTC.|
+|» label|body|string|false|An existing account label to select contacts when payload is absent or empty. Empty selects all resolved contacts.|
+|» scope_name|body|string|false|Display name for the selection. Does not filter contacts.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "id": 0,
+  "name": "Contacts - 2026-11-09",
+  "data_type": "contacts",
+  "status": "pending",
+  "export_options": {},
+  "processed_records": 0,
+  "total_records": 0,
+  "error_message": "string",
+  "initiated_by": {
+    "id": 0,
+    "name": "string",
+    "email": "string"
+  },
+  "created_at": "1970-01-01T00:00:00Z",
+  "updated_at": "1970-01-01T00:00:00Z",
+  "started_at": "1970-01-01T00:00:00Z",
+  "completed_at": "1970-01-01T00:00:00Z",
+  "artifacts_expired_at": "1970-01-01T00:00:00Z",
+  "stalled": true,
+  "downloadable": true,
+  "can_rerun": true
+}
+```
+
+> 422 Response
+
+```json
+{
+  "message": "Unsupported export options: unexpected."
+}
+```
+
+<h3 id="create-contact-export-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Export created and queued. The CSV becomes downloadable after processing completes.|Inline|
+|401|Unauthorized|Authentication required or insufficient permission to export contacts.|None|
+|422|Unprocessable Entity|Invalid export options. No export is created or queued.|Inline|
+
+<h3 id="create-contact-export-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|integer|true|none|none|
+|name|string|true|none|none|
+|data_type|string|true|none|none|
+|status|string|true|none|none|
+|export_options|object|true|none|Validated body options with default columns filled in and duplicate columns removed.|
+|processed_records|integer|true|none|none|
+|total_records|integer \| null|false|none|none|
+|error_message|string \| null|false|none|none|
+|initiated_by|object \| null|false|none|none|
+|» id|integer|false|none|none|
+|» name|string|false|none|none|
+|» email|string|false|none|none|
+|created_at|string(date-time)|false|none|none|
+|updated_at|string(date-time)|false|none|none|
+|started_at|string \| null(date-time)|false|none|none|
+|completed_at|string \| null(date-time)|false|none|none|
+|artifacts_expired_at|string \| null(date-time)|false|none|none|
+|stalled|boolean|false|none|none|
+|downloadable|boolean|true|none|none|
+|can_rerun|boolean|false|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|data_type|contacts|
+|status|pending|
+|status|processing|
+|status|completed|
+|status|failed|
+
+Status Code **422**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|message|string|true|none|none|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+userBearerAuth, userApiKey
+</aside>
+
 ## Merge Contacts
 
 <a id="opIdcontactMerge"></a>
@@ -10874,6 +11053,10 @@ curl https://app.chatwoot.com/api/v1/accounts/0/conversations/0/messages \
         }
       ]
     },
+    "source_id": "external-message-123",
+    "sender_type": "AgentBot",
+    "sender_id": 1,
+    "echo_id": "client-message-123",
     "campaign_id": 1,
     "template_params": {
       "name": "purchase_receipt",
@@ -10920,6 +11103,21 @@ curl -X POST "https://app.chatwoot.com/api/v1/accounts/{account_id}/conversation
   -F "message_type=outgoing" \
   -F "private=false" \
   -F "attachments[]=@/path/to/screenshot.png"
+```
+
+### Replying to a message
+
+Set `content_attributes.in_reply_to` to a Chatwoot message ID in this conversation,
+or `content_attributes.in_reply_to_external_id` to its `source_id`.
+Chatwoot resolves the other reference and displays the quoted message.
+
+```json
+{
+  "content": "Yes, that one is in stock",
+  "content_attributes": {
+    "in_reply_to_external_id": "external-message-123"
+  }
+}
 ```
 
 ## WhatsApp Template Messages
@@ -10994,6 +11192,10 @@ Chatwoot will substitute `processed_params.body` before saving the transcript.
       }
     ]
   },
+  "source_id": "external-message-123",
+  "sender_type": "AgentBot",
+  "sender_id": 1,
+  "echo_id": "client-message-123",
   "campaign_id": 1,
   "template_params": {
     "name": "purchase_receipt",
@@ -11032,7 +11234,11 @@ Chatwoot will substitute `processed_params.body` before saving the transcript.
 |» message_type|body|string|false|The type of the message|
 |» private|body|boolean|false|Flag to identify if it is a private note|
 |» content_type|body|string|false|Content type of the message|
-|» content_attributes|body|object|false|Attributes based on the content type. For `input_select`, provide an `items` array with<br>`title`, `value`, and optional `description`. WhatsApp list messages use `description`<br>as the row subtitle when present.<br>|
+|» content_attributes|body|object|false|Attributes based on the content type. For `input_select`, provide an `items` array with<br>`title`, `value`, and optional `description`. WhatsApp list messages use `description`<br>as the row subtitle when present.<br><br>For replies, set `in_reply_to` to a Chatwoot message ID in this conversation,<br>or `in_reply_to_external_id` to its `source_id`.<br>|
+|» source_id|body|string|false|External message ID, returned as `source_id`. Use it with<br>`content_attributes.in_reply_to_external_id` to reference this message in a reply.<br>|
+|» sender_type|body|string|false|Use `AgentBot` with `sender_id` to send an outgoing message as that bot.<br>|
+|» sender_id|body|integer|false|Agent bot ID when `sender_type` is `AgentBot`.|
+|» echo_id|body|string|false|Client-generated ID returned in the response and real-time event to match an optimistic message.<br>|
 |» campaign_id|body|integer|false|The campaign id to which the message belongs|
 |» template_params|body|object|false|WhatsApp template parameters for sending structured messages|
 |» » name|body|string|true|Name of the WhatsApp template (must be approved in WhatsApp Business Manager)|
@@ -11061,6 +11267,7 @@ Chatwoot will substitute `processed_params.body` before saving the transcript.
 |» content_type|input_select|
 |» content_type|form|
 |» content_type|article|
+|» sender_type|AgentBot|
 |» » category|UTILITY|
 |» » category|MARKETING|
 |» » category|SHIPPING_UPDATE|
@@ -15824,6 +16031,7 @@ List all conversations for the contact
 |---|---|---|---|---|
 |inbox_identifier|path|string|true|The identifier obtained from API inbox channel|
 |contact_identifier|path|string|true|The source id of contact obtained on contact create|
+|identifier_hash|query|string|false|HMAC-SHA256 of the contact identifier, signed with the inbox HMAC token. Required when the inbox enforces identity validation.|
 
 > Example responses
 
@@ -15980,6 +16188,7 @@ Create a conversation
 |---|---|---|---|---|
 |inbox_identifier|path|string|true|The identifier obtained from API inbox channel|
 |contact_identifier|path|string|true|The source id of contact obtained on contact create|
+|identifier_hash|query|string|false|HMAC-SHA256 of the contact identifier, signed with the inbox HMAC token. Required when the inbox enforces identity validation.|
 |body|body|[public_conversation_create_payload](#schemapublic_conversation_create_payload)|true|none|
 |» custom_attributes|body|object|false|Custom attributes of the conversation|
 
@@ -16115,6 +16324,7 @@ Retrieves the details of a specific conversation
 |---|---|---|---|---|
 |inbox_identifier|path|string|true|The identifier obtained from API inbox channel|
 |contact_identifier|path|string|true|The source id of contact obtained on contact create|
+|identifier_hash|query|string|false|HMAC-SHA256 of the contact identifier, signed with the inbox HMAC token. Required when the inbox enforces identity validation.|
 |conversation_id|path|integer|true|The numeric ID of the conversation|
 
 > Example responses
@@ -16266,6 +16476,7 @@ Marks a conversation as resolved
 |---|---|---|---|---|
 |inbox_identifier|path|string|true|The identifier obtained from API inbox channel|
 |contact_identifier|path|string|true|The source id of contact obtained on contact create|
+|identifier_hash|query|string|false|HMAC-SHA256 of the contact identifier, signed with the inbox HMAC token. Required when the inbox enforces identity validation.|
 |conversation_id|path|integer|true|The numeric ID of the conversation|
 
 > Example responses
@@ -16430,6 +16641,7 @@ Toggles the typing status in a conversation
 |typing_status|query|string|true|Typing status, either 'on' or 'off'|
 |inbox_identifier|path|string|true|The identifier obtained from API inbox channel|
 |contact_identifier|path|string|true|The source id of contact obtained on contact create|
+|identifier_hash|query|string|false|HMAC-SHA256 of the contact identifier, signed with the inbox HMAC token. Required when the inbox enforces identity validation.|
 |conversation_id|path|integer|true|The numeric ID of the conversation|
 |body|body|object|true|none|
 |» typing_status|body|string|false|The typing status to set|
@@ -16510,6 +16722,7 @@ built on the API channel, so agents can see when the contact has read their mess
 |---|---|---|---|---|
 |inbox_identifier|path|string|true|The identifier obtained from API inbox channel|
 |contact_identifier|path|string|true|The source id of contact obtained on contact create|
+|identifier_hash|query|string|false|HMAC-SHA256 of the contact identifier, signed with the inbox HMAC token. Required when the inbox enforces identity validation.|
 |conversation_id|path|integer|true|The numeric ID of the conversation|
 
 > Example responses
@@ -16581,6 +16794,7 @@ List all messages in the conversation
 |---|---|---|---|---|
 |inbox_identifier|path|string|true|The identifier obtained from API inbox channel|
 |contact_identifier|path|string|true|The source id of contact obtained on contact create|
+|identifier_hash|query|string|false|HMAC-SHA256 of the contact identifier, signed with the inbox HMAC token. Required when the inbox enforces identity validation.|
 |conversation_id|path|integer|true|The numeric ID of the conversation|
 
 > Example responses
@@ -16707,6 +16921,7 @@ Create a message
 |---|---|---|---|---|
 |inbox_identifier|path|string|true|The identifier obtained from API inbox channel|
 |contact_identifier|path|string|true|The source id of contact obtained on contact create|
+|identifier_hash|query|string|false|HMAC-SHA256 of the contact identifier, signed with the inbox HMAC token. Required when the inbox enforces identity validation.|
 |conversation_id|path|integer|true|The numeric ID of the conversation|
 |body|body|[public_message_create_payload](#schemapublic_message_create_payload)|true|none|
 |» content|body|string|false|Content for the message|
@@ -16840,6 +17055,7 @@ Update a message
 |---|---|---|---|---|
 |inbox_identifier|path|string|true|The identifier obtained from API inbox channel|
 |contact_identifier|path|string|true|The source id of contact obtained on contact create|
+|identifier_hash|query|string|false|HMAC-SHA256 of the contact identifier, signed with the inbox HMAC token. Required when the inbox enforces identity validation.|
 |conversation_id|path|integer|true|The numeric ID of the conversation|
 |message_id|path|integer|true|The numeric ID of the message|
 |body|body|[public_message_update_payload](#schemapublic_message_update_payload)|true|none|
@@ -20433,6 +20649,10 @@ Polymorphic sender payload returned by push_event_data. Available fields vary by
       }
     ]
   },
+  "source_id": "external-message-123",
+  "sender_type": "AgentBot",
+  "sender_id": 1,
+  "echo_id": "client-message-123",
   "campaign_id": 1,
   "template_params": {
     "name": "purchase_receipt",
@@ -20468,7 +20688,11 @@ Polymorphic sender payload returned by push_event_data. Available fields vary by
 |message_type|string|false|none|The type of the message|
 |private|boolean|false|none|Flag to identify if it is a private note|
 |content_type|string|false|none|Content type of the message|
-|content_attributes|object|false|none|Attributes based on the content type. For `input_select`, provide an `items` array with<br>`title`, `value`, and optional `description`. WhatsApp list messages use `description`<br>as the row subtitle when present.<br>|
+|content_attributes|object|false|none|Attributes based on the content type. For `input_select`, provide an `items` array with<br>`title`, `value`, and optional `description`. WhatsApp list messages use `description`<br>as the row subtitle when present.<br><br>For replies, set `in_reply_to` to a Chatwoot message ID in this conversation,<br>or `in_reply_to_external_id` to its `source_id`.<br>|
+|source_id|string|false|none|External message ID, returned as `source_id`. Use it with<br>`content_attributes.in_reply_to_external_id` to reference this message in a reply.<br>|
+|sender_type|string|false|none|Use `AgentBot` with `sender_id` to send an outgoing message as that bot.<br>|
+|sender_id|integer|false|none|Agent bot ID when `sender_type` is `AgentBot`.|
+|echo_id|string|false|none|Client-generated ID returned in the response and real-time event to match an optimistic message.<br>|
 |campaign_id|integer|false|none|The campaign id to which the message belongs|
 |template_params|object|false|none|WhatsApp template parameters for sending structured messages|
 
@@ -20484,6 +20708,7 @@ Polymorphic sender payload returned by push_event_data. Available fields vary by
 |content_type|input_select|
 |content_type|form|
 |content_type|article|
+|sender_type|AgentBot|
 
 <h2 id="tocS_inbox_create_payload">inbox_create_payload</h2>
 <!-- backwards compatibility -->
@@ -20943,7 +21168,8 @@ Polymorphic sender payload returned by push_event_data. Available fields vary by
   "provider_config": {
     "api_key": "your-api-key",
     "phone_number_id": "your-phone-number-id",
-    "business_account_id": "your-business-account-id"
+    "business_account_id": "your-business-account-id",
+    "app_secret": "your-app-secret"
   }
 }
 ```
@@ -20985,7 +21211,9 @@ Polymorphic sender payload returned by push_event_data. Available fields vary by
   "phone_number": "+15551234567",
   "provider_config": {
     "account_id": "your-account-id",
-    "application_id": "your-application-id"
+    "application_id": "your-application-id",
+    "client_id": "your-client-id",
+    "client_secret": "your-client-secret"
   }
 }
 ```
@@ -20996,7 +21224,7 @@ Polymorphic sender payload returned by push_event_data. Available fields vary by
 |---|---|---|---|---|
 |type|string|true|none|none|
 |phone_number|string|true|none|SMS phone number|
-|provider_config|object|false|none|Provider-specific SMS configuration|
+|provider_config|object|true|none|Bandwidth OAuth configuration. New SMS inboxes require client credentials.|
 
 #### Enumerated Values
 
@@ -21210,7 +21438,8 @@ Polymorphic sender payload returned by push_event_data. Available fields vary by
   "provider_config": {
     "api_key": "your-api-key",
     "phone_number_id": "your-phone-number-id",
-    "business_account_id": "your-business-account-id"
+    "business_account_id": "your-business-account-id",
+    "app_secret": "your-app-secret"
   }
 }
 ```
@@ -21221,7 +21450,7 @@ Polymorphic sender payload returned by push_event_data. Available fields vary by
 |---|---|---|---|---|
 |phone_number|string|false|none|WhatsApp phone number|
 |provider|string|false|none|WhatsApp provider. `default` is supported only for existing deprecated 360dialog setups.|
-|provider_config|object|false|none|WhatsApp provider configuration. Cloud channels use `api_key`, `phone_number_id`, and `business_account_id`; legacy 360dialog channels use `api_key`.|
+|provider_config|object|false|none|WhatsApp provider configuration. Cloud channels use `api_key`, `phone_number_id`, `business_account_id`, and `app_secret`; legacy 360dialog channels use `api_key`.|
 
 #### Enumerated Values
 

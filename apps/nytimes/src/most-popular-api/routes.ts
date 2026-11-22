@@ -307,9 +307,9 @@ export const getMostemailedSectionTimePeriodJsonRoute = createRoute({
     403: {
       description: '',
       content: {
-        'application/json': { schema: z.object({}) },
+        'application/json': { schema: z.looseObject({}) },
         'application/xml': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: { response: { value: '<h1>Developer Over Qps</h1>' } },
         },
       },

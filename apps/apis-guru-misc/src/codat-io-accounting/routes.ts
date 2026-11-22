@@ -468,6 +468,46 @@ const BillCreditNoteSchema = z
       .exactOptional(),
   })
   .openapi({ required: [] })
+  .and(
+    z
+      .looseObject({})
+      .openapi({
+        required: [
+          'totalAmount',
+          'totalDiscount',
+          'subTotal',
+          'totalTaxAmount',
+          'discountPercentage',
+          'remainingCredit',
+          'status',
+        ],
+      }),
+  )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'totalAmount')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'totalDiscount')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'subTotal')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'totalTaxAmount')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'discountPercentage')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'remainingCredit')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'status')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
   .and(ModifiedDatesSchema)
   .openapi({
     description:
@@ -987,6 +1027,30 @@ const BillSchema = z
       .exactOptional(),
   })
   .openapi({ required: [] })
+  .and(
+    z
+      .looseObject({})
+      .openapi({ required: ['issueDate', 'status', 'subTotal', 'taxAmount', 'totalAmount'] }),
+  )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'issueDate')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'status')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'subTotal')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'taxAmount')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'totalAmount')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
   .and(ModifiedDatesSchema)
   .openapi({
     description:
@@ -1409,6 +1473,46 @@ const CreditNoteSchema = z
       .exactOptional(),
   })
   .openapi({ required: [] })
+  .and(
+    z
+      .looseObject({})
+      .openapi({
+        required: [
+          'totalAmount',
+          'totalDiscount',
+          'subTotal',
+          'totalTaxAmount',
+          'discountPercentage',
+          'remainingCredit',
+          'status',
+        ],
+      }),
+  )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'totalAmount')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'totalDiscount')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'subTotal')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'totalTaxAmount')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'discountPercentage')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'remainingCredit')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'status')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
   .and(ModifiedDatesSchema)
   .openapi({
     description:
@@ -1810,6 +1914,46 @@ const DirectCostSchema = z
       .openapi({ description: 'The amount of the direct costs, inclusive of tax.' }),
   })
   .openapi({ required: [] })
+  .and(
+    z
+      .looseObject({})
+      .openapi({
+        required: [
+          'issueDate',
+          'currency',
+          'lineItems',
+          'paymentAllocations',
+          'subTotal',
+          'taxAmount',
+          'totalAmount',
+        ],
+      }),
+  )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'issueDate')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'currency')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'lineItems')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'paymentAllocations')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'subTotal')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'taxAmount')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'totalAmount')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
   .and(ModifiedDatesSchema)
   .openapi({
     description:
@@ -2230,6 +2374,30 @@ const InvoiceSchema = z
       .exactOptional(),
   })
   .openapi({ required: [] })
+  .and(
+    z
+      .looseObject({})
+      .openapi({ required: ['issueDate', 'totalTaxAmount', 'totalAmount', 'amountDue', 'status'] }),
+  )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'issueDate')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'totalTaxAmount')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'totalAmount')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'amountDue')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'status')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
   .and(ModifiedDatesSchema)
   .openapi({
     description:
@@ -3067,6 +3235,20 @@ const AccountSchema = z
       }),
   })
   .openapi({ required: [] })
+  .and(z.looseObject({}).openapi({ required: ['type', 'status', 'isBankAccount'] }))
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'status')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'isBankAccount')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
   .and(ModifiedDatesSchema)
   .openapi({
     description:
@@ -3722,6 +3904,32 @@ const BankAccountTransactionsSchema = z
               }),
           })
           .openapi({ required: [] })
+          .and(
+            z
+              .looseObject({})
+              .openapi({
+                required: ['amount', 'balance', 'date', 'reconciled', 'transactionType'],
+              }),
+          )
+          .superRefine((val, ctx) => {
+            if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+              if (!Object.hasOwn(val, 'amount')) {
+                ctx.addIssue({ code: 'custom' })
+              }
+              if (!Object.hasOwn(val, 'balance')) {
+                ctx.addIssue({ code: 'custom' })
+              }
+              if (!Object.hasOwn(val, 'date')) {
+                ctx.addIssue({ code: 'custom' })
+              }
+              if (!Object.hasOwn(val, 'reconciled')) {
+                ctx.addIssue({ code: 'custom' })
+              }
+              if (!Object.hasOwn(val, 'transactionType')) {
+                ctx.addIssue({ code: 'custom' })
+              }
+            }
+          })
           .and(ModifiedDatesSchema)
           .openapi({
             required: ['amount', 'balance', 'date', 'reconciled', 'transactionType'],
@@ -3820,6 +4028,32 @@ const BankTransactionsSchema = z
               }),
           })
           .openapi({ required: [] })
+          .and(
+            z
+              .looseObject({})
+              .openapi({
+                required: ['amount', 'balance', 'date', 'reconciled', 'transactionType'],
+              }),
+          )
+          .superRefine((val, ctx) => {
+            if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+              if (!Object.hasOwn(val, 'amount')) {
+                ctx.addIssue({ code: 'custom' })
+              }
+              if (!Object.hasOwn(val, 'balance')) {
+                ctx.addIssue({ code: 'custom' })
+              }
+              if (!Object.hasOwn(val, 'date')) {
+                ctx.addIssue({ code: 'custom' })
+              }
+              if (!Object.hasOwn(val, 'reconciled')) {
+                ctx.addIssue({ code: 'custom' })
+              }
+              if (!Object.hasOwn(val, 'transactionType')) {
+                ctx.addIssue({ code: 'custom' })
+              }
+            }
+          })
           .and(ModifiedDatesSchema)
           .openapi({
             required: ['amount', 'balance', 'date', 'reconciled', 'transactionType'],
@@ -4025,6 +4259,14 @@ const BillPaymentSchema = z
       }),
   })
   .openapi({ required: [] })
+  .and(z.looseObject({}).openapi({ required: ['date'] }))
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'date')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
   .and(ModifiedDatesSchema)
   .openapi({
     description:
@@ -4543,6 +4785,14 @@ const CustomerSchema = z
       .openapi({ description: 'Company tax number.' }),
   })
   .openapi({ required: [] })
+  .and(z.looseObject({}).openapi({ required: ['status'] }))
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'status')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
   .and(ModifiedDatesSchema)
   .openapi({
     description:
@@ -4861,6 +5111,46 @@ const DirectIncomeSchema = z
       .openapi({ description: 'The amount of the direct incomes, inclusive of tax.' }),
   })
   .openapi({ required: [] })
+  .and(
+    z
+      .looseObject({})
+      .openapi({
+        required: [
+          'issueDate',
+          'currency',
+          'lineItems',
+          'paymentAllocations',
+          'subTotal',
+          'taxAmount',
+          'totalAmount',
+        ],
+      }),
+  )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'issueDate')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'currency')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'lineItems')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'paymentAllocations')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'subTotal')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'taxAmount')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'totalAmount')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
   .and(ModifiedDatesSchema)
   .openapi({
     description:
@@ -5047,6 +5337,25 @@ const ItemSchema = z
     type: z.any().exactOptional(),
   })
   .openapi({ required: [] })
+  .and(
+    z.looseObject({}).openapi({ required: ['itemStatus', 'type', 'isBillItem', 'isInvoiceItem'] }),
+  )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'itemStatus')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'isBillItem')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'isInvoiceItem')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
   .and(ModifiedDatesSchema)
   .openapi({
     description:
@@ -5244,6 +5553,14 @@ const PaymentSchema = z
       }),
   })
   .openapi({ required: [] })
+  .and(z.looseObject({}).openapi({ required: ['date'] }))
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'date')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
   .and(ModifiedDatesSchema)
   .openapi({
     description:
@@ -5662,6 +5979,14 @@ const SupplierSchema = z
       .openapi({ description: "Supplier's company tax number." }),
   })
   .openapi({ required: [] })
+  .and(z.looseObject({}).openapi({ required: ['status'] }))
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'status')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
   .and(ModifiedDatesSchema)
   .openapi({
     description:

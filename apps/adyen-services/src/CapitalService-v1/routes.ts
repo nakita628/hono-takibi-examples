@@ -37,26 +37,42 @@ const BankAccountIdentificationSchema = z
   .openapi('BankAccountIdentification')
 
 const AULocalAccountIdentificationSchema = BankAccountIdentificationSchema.and(
-  z
-    .object({
-      accountNumber: z
-        .string()
-        .min(5)
-        .max(9)
-        .exactOptional()
-        .openapi({ description: 'The bank account number, without separators or whitespace.' }),
-      bsbCode: z
-        .string()
-        .length(6)
-        .exactOptional()
-        .openapi({
-          description:
-            'The 6-digit [Bank State Branch (BSB) code](https://en.wikipedia.org/wiki/Bank_state_branch), without separators or whitespace.',
-        }),
-      type: z.string().default('auLocal').exactOptional().openapi({ description: '**auLocal**' }),
-    })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['accountNumber', 'bsbCode', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'accountNumber')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'bsbCode')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        accountNumber: z
+          .string()
+          .min(5)
+          .max(9)
+          .exactOptional()
+          .openapi({ description: 'The bank account number, without separators or whitespace.' }),
+        bsbCode: z
+          .string()
+          .length(6)
+          .exactOptional()
+          .openapi({
+            description:
+              'The 6-digit [Bank State Branch (BSB) code](https://en.wikipedia.org/wiki/Bank_state_branch), without separators or whitespace.',
+          }),
+        type: z.string().default('auLocal').exactOptional().openapi({ description: '**auLocal**' }),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({ required: ['accountNumber', 'bsbCode', 'type'] })
   .openapi('AULocalAccountIdentification')
 
@@ -118,36 +134,55 @@ const AmountSchema = z
   .openapi('Amount')
 
 const BRLocalAccountIdentificationSchema = BankAccountIdentificationSchema.and(
-  z
-    .object({
-      accountNumber: z
-        .string()
-        .min(1)
-        .max(10)
-        .exactOptional()
-        .openapi({ description: 'The bank account number, without separators or whitespace.' }),
-      bankCode: z
-        .string()
-        .length(3)
-        .exactOptional()
-        .openapi({ description: 'The 3-digit bank code, with leading zeros.' }),
-      branchNumber: z
-        .string()
-        .min(1)
-        .max(4)
-        .exactOptional()
-        .openapi({
-          description: 'The bank account branch number, without separators or whitespace.',
-        }),
-      ispb: z
-        .string()
-        .length(8)
-        .exactOptional()
-        .openapi({ description: 'The 8-digit ISPB, with leading zeros.' }),
-      type: z.string().default('brLocal').exactOptional().openapi({ description: '**brLocal**' }),
-    })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['accountNumber', 'bankCode', 'branchNumber', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'accountNumber')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'bankCode')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'branchNumber')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        accountNumber: z
+          .string()
+          .min(1)
+          .max(10)
+          .exactOptional()
+          .openapi({ description: 'The bank account number, without separators or whitespace.' }),
+        bankCode: z
+          .string()
+          .length(3)
+          .exactOptional()
+          .openapi({ description: 'The 3-digit bank code, with leading zeros.' }),
+        branchNumber: z
+          .string()
+          .min(1)
+          .max(4)
+          .exactOptional()
+          .openapi({
+            description: 'The bank account branch number, without separators or whitespace.',
+          }),
+        ispb: z
+          .string()
+          .length(8)
+          .exactOptional()
+          .openapi({ description: 'The 8-digit ISPB, with leading zeros.' }),
+        type: z.string().default('brLocal').exactOptional().openapi({ description: '**brLocal**' }),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({ required: ['accountNumber', 'bankCode', 'branchNumber', 'type'] })
   .openapi('BRLocalAccountIdentification')
 
@@ -211,63 +246,103 @@ const CALocalBankAccountTypeSchema = z
 
 const CALocalAccountIdentificationSchema = BankAccountIdentificationSchema.and(
   z
-    .object({
-      accountNumber: z
-        .string()
-        .min(5)
-        .max(12)
-        .exactOptional()
-        .openapi({
-          description: 'The 5- to 12-digit bank account number, without separators or whitespace.',
-        }),
-      accountType: CALocalBankAccountTypeSchema.default('checking')
-        .exactOptional()
-        .openapi({
-          description:
-            'The bank account type.\n\nPossible values: **checking** or **savings**. Defaults to **checking**.',
-        }),
-      institutionNumber: z
-        .string()
-        .length(3)
-        .exactOptional()
-        .openapi({
-          description: 'The 3-digit institution number, without separators or whitespace.',
-        }),
-      transitNumber: z
-        .string()
-        .length(5)
-        .exactOptional()
-        .openapi({ description: 'The 5-digit transit number, without separators or whitespace.' }),
-      type: z.string().default('caLocal').exactOptional().openapi({ description: '**caLocal**' }),
-    })
-    .openapi({ required: [] }),
+    .looseObject({})
+    .openapi({ required: ['accountNumber', 'institutionNumber', 'transitNumber', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'accountNumber')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'institutionNumber')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'transitNumber')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        accountNumber: z
+          .string()
+          .min(5)
+          .max(12)
+          .exactOptional()
+          .openapi({
+            description:
+              'The 5- to 12-digit bank account number, without separators or whitespace.',
+          }),
+        accountType: CALocalBankAccountTypeSchema.default('checking')
+          .exactOptional()
+          .openapi({
+            description:
+              'The bank account type.\n\nPossible values: **checking** or **savings**. Defaults to **checking**.',
+          }),
+        institutionNumber: z
+          .string()
+          .length(3)
+          .exactOptional()
+          .openapi({
+            description: 'The 3-digit institution number, without separators or whitespace.',
+          }),
+        transitNumber: z
+          .string()
+          .length(5)
+          .exactOptional()
+          .openapi({
+            description: 'The 5-digit transit number, without separators or whitespace.',
+          }),
+        type: z.string().default('caLocal').exactOptional().openapi({ description: '**caLocal**' }),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({ required: ['accountNumber', 'institutionNumber', 'transitNumber', 'type'] })
   .openapi('CALocalAccountIdentification')
 
 const CZLocalAccountIdentificationSchema = BankAccountIdentificationSchema.and(
-  z
-    .object({
-      accountNumber: z
-        .string()
-        .min(2)
-        .max(17)
-        .exactOptional()
-        .openapi({
-          description:
-            'The 2- to 16-digit bank account number (Číslo účtu) in the following format:\n\n- The optional prefix (předčíslí).\n\n- The required second part (základní část) which must be at least two non-zero digits.\n\nExamples:\n\n- **19-123457** (with prefix)\n\n- **123457** (without prefix)\n\n- **000019-0000123457** (with prefix, normalized)\n\n- **000000-0000123457** (without prefix, normalized)',
-        }),
-      bankCode: z
-        .string()
-        .length(4)
-        .exactOptional()
-        .openapi({
-          description: 'The 4-digit bank code (Kód banky), without separators or whitespace.',
-        }),
-      type: z.string().default('czLocal').exactOptional().openapi({ description: '**czLocal**' }),
-    })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['accountNumber', 'bankCode', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'accountNumber')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'bankCode')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        accountNumber: z
+          .string()
+          .min(2)
+          .max(17)
+          .exactOptional()
+          .openapi({
+            description:
+              'The 2- to 16-digit bank account number (Číslo účtu) in the following format:\n\n- The optional prefix (předčíslí).\n\n- The required second part (základní část) which must be at least two non-zero digits.\n\nExamples:\n\n- **19-123457** (with prefix)\n\n- **123457** (without prefix)\n\n- **000019-0000123457** (with prefix, normalized)\n\n- **000000-0000123457** (without prefix, normalized)',
+          }),
+        bankCode: z
+          .string()
+          .length(4)
+          .exactOptional()
+          .openapi({
+            description: 'The 4-digit bank code (Kód banky), without separators or whitespace.',
+          }),
+        type: z.string().default('czLocal').exactOptional().openapi({ description: '**czLocal**' }),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({ required: ['accountNumber', 'bankCode', 'type'] })
   .openapi('CZLocalAccountIdentification')
 
@@ -393,29 +468,45 @@ const CreateGrantOfferRequestSchema = z
   .openapi('CreateGrantOfferRequest')
 
 const DKLocalAccountIdentificationSchema = BankAccountIdentificationSchema.and(
-  z
-    .object({
-      accountNumber: z
-        .string()
-        .min(4)
-        .max(10)
-        .exactOptional()
-        .openapi({
-          description:
-            'The 4-10 digits bank account number (Kontonummer) (without separators or whitespace).',
-        }),
-      bankCode: z
-        .string()
-        .length(4)
-        .exactOptional()
-        .openapi({
-          description:
-            'The 4-digit bank code (Registreringsnummer) (without separators or whitespace).',
-        }),
-      type: z.string().default('dkLocal').exactOptional().openapi({ description: '**dkLocal**' }),
-    })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['accountNumber', 'bankCode', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'accountNumber')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'bankCode')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        accountNumber: z
+          .string()
+          .min(4)
+          .max(10)
+          .exactOptional()
+          .openapi({
+            description:
+              'The 4-10 digits bank account number (Kontonummer) (without separators or whitespace).',
+          }),
+        bankCode: z
+          .string()
+          .length(4)
+          .exactOptional()
+          .openapi({
+            description:
+              'The 4-digit bank code (Registreringsnummer) (without separators or whitespace).',
+          }),
+        type: z.string().default('dkLocal').exactOptional().openapi({ description: '**dkLocal**' }),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({ required: ['accountNumber', 'bankCode', 'type'] })
   .openapi('DKLocalAccountIdentification')
 
@@ -893,227 +984,370 @@ const GrantsSchema = z
   .openapi('Grants')
 
 const HKLocalAccountIdentificationSchema = BankAccountIdentificationSchema.and(
-  z
-    .object({
-      accountNumber: z
-        .string()
-        .min(9)
-        .max(17)
-        .exactOptional()
-        .openapi({
-          description:
-            'The 9- to 17-digit bank account number, without separators or whitespace. Starts with the 3-digit branch code.',
-        }),
-      clearingCode: z
-        .string()
-        .length(3)
-        .exactOptional()
-        .openapi({ description: 'The 3-digit clearing code, without separators or whitespace.' }),
-      type: z.string().default('hkLocal').exactOptional().openapi({ description: '**hkLocal**' }),
-    })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['accountNumber', 'clearingCode', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'accountNumber')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'clearingCode')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        accountNumber: z
+          .string()
+          .min(9)
+          .max(17)
+          .exactOptional()
+          .openapi({
+            description:
+              'The 9- to 17-digit bank account number, without separators or whitespace. Starts with the 3-digit branch code.',
+          }),
+        clearingCode: z
+          .string()
+          .length(3)
+          .exactOptional()
+          .openapi({ description: 'The 3-digit clearing code, without separators or whitespace.' }),
+        type: z.string().default('hkLocal').exactOptional().openapi({ description: '**hkLocal**' }),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({ required: ['accountNumber', 'clearingCode', 'type'] })
   .openapi('HKLocalAccountIdentification')
 
 const HULocalAccountIdentificationSchema = BankAccountIdentificationSchema.and(
-  z
-    .object({
-      accountNumber: z
-        .string()
-        .length(24)
-        .exactOptional()
-        .openapi({
-          description: 'The 24-digit bank account number, without separators or whitespace.',
-        }),
-      type: z.string().default('huLocal').exactOptional().openapi({ description: '**huLocal**' }),
-    })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['accountNumber', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'accountNumber')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        accountNumber: z
+          .string()
+          .length(24)
+          .exactOptional()
+          .openapi({
+            description: 'The 24-digit bank account number, without separators or whitespace.',
+          }),
+        type: z.string().default('huLocal').exactOptional().openapi({ description: '**huLocal**' }),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({ required: ['accountNumber', 'type'] })
   .openapi('HULocalAccountIdentification')
 
 const IbanAccountIdentificationSchema = BankAccountIdentificationSchema.and(
-  z
-    .object({
-      bic: z
-        .string()
-        .exactOptional()
-        .openapi({ description: "The bank's 8- or 11-character BIC or SWIFT code." }),
-      iban: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description:
-            'The international bank account number as defined in the [ISO-13616](https://www.iso.org/standard/81090.html) standard.',
-        }),
-      type: z.string().default('iban').exactOptional().openapi({ description: '**iban**' }),
-    })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['iban', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'iban')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        bic: z
+          .string()
+          .exactOptional()
+          .openapi({ description: "The bank's 8- or 11-character BIC or SWIFT code." }),
+        iban: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The international bank account number as defined in the [ISO-13616](https://www.iso.org/standard/81090.html) standard.',
+          }),
+        type: z.string().default('iban').exactOptional().openapi({ description: '**iban**' }),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({ required: ['iban', 'type'] })
   .openapi('IbanAccountIdentification')
 
 const NOLocalAccountIdentificationSchema = BankAccountIdentificationSchema.and(
-  z
-    .object({
-      accountNumber: z
-        .string()
-        .length(11)
-        .exactOptional()
-        .openapi({
-          description: 'The 11-digit bank account number, without separators or whitespace.',
-        }),
-      type: z.string().default('noLocal').exactOptional().openapi({ description: '**noLocal**' }),
-    })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['accountNumber', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'accountNumber')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        accountNumber: z
+          .string()
+          .length(11)
+          .exactOptional()
+          .openapi({
+            description: 'The 11-digit bank account number, without separators or whitespace.',
+          }),
+        type: z.string().default('noLocal').exactOptional().openapi({ description: '**noLocal**' }),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({ required: ['accountNumber', 'type'] })
   .openapi('NOLocalAccountIdentification')
 
 const NZLocalAccountIdentificationSchema = BankAccountIdentificationSchema.and(
-  z
-    .object({
-      accountNumber: z
-        .string()
-        .min(15)
-        .max(16)
-        .exactOptional()
-        .openapi({
-          description:
-            'The 15-16 digit bank account number. The first 2 digits are the bank number, the next 4 digits are the branch number, the next 7 digits are the account number, and the final 2-3 digits are the suffix.',
-        }),
-      type: z.string().default('nzLocal').exactOptional().openapi({ description: '**nzLocal**' }),
-    })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['accountNumber', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'accountNumber')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        accountNumber: z
+          .string()
+          .min(15)
+          .max(16)
+          .exactOptional()
+          .openapi({
+            description:
+              'The 15-16 digit bank account number. The first 2 digits are the bank number, the next 4 digits are the branch number, the next 7 digits are the account number, and the final 2-3 digits are the suffix.',
+          }),
+        type: z.string().default('nzLocal').exactOptional().openapi({ description: '**nzLocal**' }),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({ required: ['accountNumber', 'type'] })
   .openapi('NZLocalAccountIdentification')
 
 const NumberAndBicAccountIdentificationSchema = BankAccountIdentificationSchema.and(
-  z
-    .object({
-      accountNumber: z
-        .string()
-        .max(34)
-        .exactOptional()
-        .openapi({
-          description:
-            'The bank account number, without separators or whitespace. The length and format depends on the bank or country.',
-        }),
-      additionalBankIdentification: AdditionalBankIdentificationSchema.exactOptional().openapi({
-        description:
-          'Additional identification codes of the bank. Some banks may require these identifiers for cross-border transfers.',
-      }),
-      bic: z
-        .string()
-        .min(8)
-        .max(11)
-        .exactOptional()
-        .openapi({ description: "The bank's 8- or 11-character BIC or SWIFT code." }),
-      type: z
-        .string()
-        .default('numberAndBic')
-        .exactOptional()
-        .openapi({ description: '**numberAndBic**' }),
-    })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['accountNumber', 'bic', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'accountNumber')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'bic')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        accountNumber: z
+          .string()
+          .max(34)
+          .exactOptional()
+          .openapi({
+            description:
+              'The bank account number, without separators or whitespace. The length and format depends on the bank or country.',
+          }),
+        additionalBankIdentification: AdditionalBankIdentificationSchema.exactOptional().openapi({
+          description:
+            'Additional identification codes of the bank. Some banks may require these identifiers for cross-border transfers.',
+        }),
+        bic: z
+          .string()
+          .min(8)
+          .max(11)
+          .exactOptional()
+          .openapi({ description: "The bank's 8- or 11-character BIC or SWIFT code." }),
+        type: z
+          .string()
+          .default('numberAndBic')
+          .exactOptional()
+          .openapi({ description: '**numberAndBic**' }),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({ required: ['accountNumber', 'bic', 'type'] })
   .openapi('NumberAndBicAccountIdentification')
 
 const PLLocalAccountIdentificationSchema = BankAccountIdentificationSchema.and(
-  z
-    .object({
-      accountNumber: z
-        .string()
-        .length(26)
-        .exactOptional()
-        .openapi({
-          description:
-            'The 26-digit bank account number ([Numer rachunku](https://pl.wikipedia.org/wiki/Numer_Rachunku_Bankowego)), without separators or whitespace.',
-        }),
-      type: z.string().default('plLocal').exactOptional().openapi({ description: '**plLocal**' }),
-    })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['accountNumber', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'accountNumber')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        accountNumber: z
+          .string()
+          .length(26)
+          .exactOptional()
+          .openapi({
+            description:
+              'The 26-digit bank account number ([Numer rachunku](https://pl.wikipedia.org/wiki/Numer_Rachunku_Bankowego)), without separators or whitespace.',
+          }),
+        type: z.string().default('plLocal').exactOptional().openapi({ description: '**plLocal**' }),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({ required: ['accountNumber', 'type'] })
   .openapi('PLLocalAccountIdentification')
 
 const SELocalAccountIdentificationSchema = BankAccountIdentificationSchema.and(
-  z
-    .object({
-      accountNumber: z
-        .string()
-        .min(7)
-        .max(10)
-        .exactOptional()
-        .openapi({
-          description:
-            'The 7- to 10-digit bank account number ([Bankkontonummer](https://sv.wikipedia.org/wiki/Bankkonto)), without the clearing number, separators, or whitespace.',
-        }),
-      clearingNumber: z
-        .string()
-        .min(4)
-        .max(5)
-        .exactOptional()
-        .openapi({
-          description:
-            'The 4- to 5-digit clearing number ([Clearingnummer](https://sv.wikipedia.org/wiki/Clearingnummer)), without separators or whitespace.',
-        }),
-      type: z.string().default('seLocal').exactOptional().openapi({ description: '**seLocal**' }),
-    })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['accountNumber', 'clearingNumber', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'accountNumber')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'clearingNumber')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        accountNumber: z
+          .string()
+          .min(7)
+          .max(10)
+          .exactOptional()
+          .openapi({
+            description:
+              'The 7- to 10-digit bank account number ([Bankkontonummer](https://sv.wikipedia.org/wiki/Bankkonto)), without the clearing number, separators, or whitespace.',
+          }),
+        clearingNumber: z
+          .string()
+          .min(4)
+          .max(5)
+          .exactOptional()
+          .openapi({
+            description:
+              'The 4- to 5-digit clearing number ([Clearingnummer](https://sv.wikipedia.org/wiki/Clearingnummer)), without separators or whitespace.',
+          }),
+        type: z.string().default('seLocal').exactOptional().openapi({ description: '**seLocal**' }),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({ required: ['accountNumber', 'clearingNumber', 'type'] })
   .openapi('SELocalAccountIdentification')
 
 const SGLocalAccountIdentificationSchema = BankAccountIdentificationSchema.and(
-  z
-    .object({
-      accountNumber: z
-        .string()
-        .min(4)
-        .max(19)
-        .exactOptional()
-        .openapi({
-          description: 'The 4- to 19-digit bank account number, without separators or whitespace.',
-        }),
-      bic: z
-        .string()
-        .min(8)
-        .max(11)
-        .exactOptional()
-        .openapi({ description: "The bank's 8- or 11-character BIC or SWIFT code." }),
-      type: z.string().default('sgLocal').exactOptional().openapi({ description: '**sgLocal**' }),
-    })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['accountNumber', 'bic'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'accountNumber')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'bic')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        accountNumber: z
+          .string()
+          .min(4)
+          .max(19)
+          .exactOptional()
+          .openapi({
+            description:
+              'The 4- to 19-digit bank account number, without separators or whitespace.',
+          }),
+        bic: z
+          .string()
+          .min(8)
+          .max(11)
+          .exactOptional()
+          .openapi({ description: "The bank's 8- or 11-character BIC or SWIFT code." }),
+        type: z.string().default('sgLocal').exactOptional().openapi({ description: '**sgLocal**' }),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({ required: ['accountNumber', 'bic'] })
   .openapi('SGLocalAccountIdentification')
 
 const UKLocalAccountIdentificationSchema = BankAccountIdentificationSchema.and(
-  z
-    .object({
-      accountNumber: z
-        .string()
-        .length(8)
-        .exactOptional()
-        .openapi({
-          description: 'The 8-digit bank account number, without separators or whitespace.',
-        }),
-      sortCode: z
-        .string()
-        .length(6)
-        .exactOptional()
-        .openapi({
-          description:
-            'The 6-digit [sort code](https://en.wikipedia.org/wiki/Sort_code), without separators or whitespace.',
-        }),
-      type: z.string().default('ukLocal').exactOptional().openapi({ description: '**ukLocal**' }),
-    })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['accountNumber', 'sortCode', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'accountNumber')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'sortCode')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        accountNumber: z
+          .string()
+          .length(8)
+          .exactOptional()
+          .openapi({
+            description: 'The 8-digit bank account number, without separators or whitespace.',
+          }),
+        sortCode: z
+          .string()
+          .length(6)
+          .exactOptional()
+          .openapi({
+            description:
+              'The 6-digit [sort code](https://en.wikipedia.org/wiki/Sort_code), without separators or whitespace.',
+          }),
+        type: z.string().default('ukLocal').exactOptional().openapi({ description: '**ukLocal**' }),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({ required: ['accountNumber', 'sortCode', 'type'] })
   .openapi('UKLocalAccountIdentification')
 
@@ -1122,32 +1356,48 @@ const USLocalBankAccountTypeSchema = z
   .openapi('USLocalBankAccountType')
 
 const USLocalAccountIdentificationSchema = BankAccountIdentificationSchema.and(
-  z
-    .object({
-      accountNumber: z
-        .string()
-        .min(2)
-        .max(18)
-        .exactOptional()
-        .openapi({ description: 'The bank account number, without separators or whitespace.' }),
-      accountType: USLocalBankAccountTypeSchema.default('checking')
-        .exactOptional()
-        .openapi({
-          description:
-            'The bank account type.\n\nPossible values: **checking** or **savings**. Defaults to **checking**.',
-        }),
-      routingNumber: z
-        .string()
-        .length(9)
-        .exactOptional()
-        .openapi({
-          description:
-            'The 9-digit [routing number](https://en.wikipedia.org/wiki/ABA_routing_transit_number), without separators or whitespace.',
-        }),
-      type: z.string().default('usLocal').exactOptional().openapi({ description: '**usLocal**' }),
-    })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['accountNumber', 'routingNumber', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'accountNumber')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'routingNumber')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        accountNumber: z
+          .string()
+          .min(2)
+          .max(18)
+          .exactOptional()
+          .openapi({ description: 'The bank account number, without separators or whitespace.' }),
+        accountType: USLocalBankAccountTypeSchema.default('checking')
+          .exactOptional()
+          .openapi({
+            description:
+              'The bank account type.\n\nPossible values: **checking** or **savings**. Defaults to **checking**.',
+          }),
+        routingNumber: z
+          .string()
+          .length(9)
+          .exactOptional()
+          .openapi({
+            description:
+              'The 9-digit [routing number](https://en.wikipedia.org/wiki/ABA_routing_transit_number), without separators or whitespace.',
+          }),
+        type: z.string().default('usLocal').exactOptional().openapi({ description: '**usLocal**' }),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({ required: ['accountNumber', 'routingNumber', 'type'] })
   .openapi('USLocalAccountIdentification')
 

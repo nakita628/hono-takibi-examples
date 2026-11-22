@@ -166,6 +166,7 @@ const EmailSendStatusViewSchema = z
         'QUARANTINED_ADDRESS',
         'QUEUED',
         'RECIPIENT_FATIGUE_SUPPRESSED',
+        'RECIPIENT_SEND_LIMIT_EXCEEDED',
         'SENT',
         'TEMPLATE_RENDER_EXCEPTION',
         'THROTTLED',
@@ -331,7 +332,7 @@ const PublicSingleSendRequestEggSchema = z
         example: null,
       }),
     customProperties: z
-      .record(z.string(), z.object({}).openapi({ example: null }))
+      .record(z.string(), z.looseObject({}).openapi({ example: null }))
       .openapi({
         description:
           'The customProperties field is a map of property values. Each property value contains a name and value property. Each property will be visible in the template under {{ custom.NAME }}.\nNote: Custom properties do not currently support arrays. To provide a listing in an email, one workaround is to build an HTML list (either with tables or ul) and specify it as a custom property.',
@@ -396,11 +397,10 @@ const Oauth2SecurityScheme = {
       scopes: { 'transactional-email': '' },
     },
   },
+  'x-hubspot-app-availability': {
+    'transactional-email': { portal: ['public', 'private'], developer: false },
+  },
 }
-
-const PrivateAppsSecurityScheme = { type: 'apiKey', name: 'private-app', in: 'header' }
-
-const PrivateAppsLegacySecurityScheme = { type: 'apiKey', name: 'private-app-legacy', in: 'header' }
 
 export const postMarketingTransactional202609SingleEmailSendRoute = createRoute({
   method: 'post',
@@ -542,18 +542,14 @@ export const postMarketingTransactional202609SmtpTokensRoute = createRoute({
       description: 'successful operation',
       content: { 'application/json': { schema: SmtpApiTokenViewSchema, example: null } },
       headers: z.object({
-        Location: {
-          description: 'URL of the newly created resource',
-          style: 'simple',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'URL of the newly created resource',
-              param: { required: false },
-              example: null,
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'URL of the newly created resource',
+            param: { required: false },
+            example: null,
+          }),
       }),
     },
     default: ErrorResponse,

@@ -1,5 +1,662 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const ActivityEventIdSchema = z
+  .string()
+  .regex(/^[0-9]{1,19}$/)
+  .openapi({
+    description: 'The unique identifier of an Activity event.',
+    example: '1146654567674912769',
+  })
+  .openapi('ActivityEventId')
+
+const KeywordSchema = z
+  .string()
+  .min(1)
+  .max(150)
+  .openapi({ description: 'A keyword to filter on.', example: 'The President' })
+  .openapi('Keyword')
+
+const UserIdSchema = z
+  .string()
+  .regex(/^[0-9]{1,19}$/)
+  .openapi({ description: 'Unique identifier of a User', example: '2244994945' })
+  .openapi('UserId')
+
+const ActivitySubscriptionFilterSchema = z
+  .strictObject({
+    direction: z
+      .enum(['inbound', 'outbound'])
+      .exactOptional()
+      .openapi({ description: 'Optional direction filter for directional events.' }),
+    keyword: KeywordSchema.exactOptional(),
+    qualifiers: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({ description: 'Event-specific string predicates applied to the subscription.' }),
+    user_id: UserIdSchema.exactOptional(),
+  })
+  .openapi({ description: 'An XAA subscription filter.', required: [] })
+  .openapi('ActivitySubscriptionFilter')
+
+const CallSchema = z
+  .object({
+    conversation_id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'XChat conversation the call belongs to, if any.' }),
+    created_at: z.string().exactOptional().openapi({ description: 'Creation time (RFC 3339).' }),
+    host_id: z.string().exactOptional().openapi({ description: "X user id of the call's host." }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Unique identifier of the call; also its join secret.' }),
+    join_policy: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Who may join: open (anyone with the link), closed (the host admits people), or trusted (the host's Verified Organization).",
+      }),
+    join_url: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Link people open to join the call on X.' }),
+    participant_count: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'People in the call right now.' }),
+    title: z.string().exactOptional().openapi({ description: 'Title of the call.' }),
+    viewer_may_join: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether the authenticated user may join without asking the host.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('Call')
+
+const MediaNonPublicMetricsSchema = z
+  .object({
+    playback_0_count: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description: 'Number of users who started playback (0% quartile) of this video.',
+      }),
+    playback_100_count: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description: 'Number of users who completed playback (100% quartile) of this video.',
+      }),
+    playback_25_count: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description: 'Number of users who watched at least 25% of this video.',
+      }),
+    playback_50_count: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description: 'Number of users who watched at least 50% of this video.',
+      }),
+    playback_75_count: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description: 'Number of users who watched at least 75% of this video.',
+      }),
+  })
+  .openapi({
+    description: 'Nonpublic engagement metrics for the media at the time of the request.',
+    required: [],
+  })
+  .openapi('MediaNonPublicMetrics')
+
+const MediaOrganicMetricsSchema = z
+  .object({
+    cta_url_click_count: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description: "Number of clicks on the video's call-to-action URL.",
+      }),
+    cta_watch_click_count: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description: 'Number of clicks on the video\'s "watch" call to action.',
+      }),
+    playback_0_count: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description: 'Number of users who started playback (0% quartile) of this video.',
+      }),
+    playback_100_count: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description: 'Number of users who completed playback (100% quartile) of this video.',
+      }),
+    playback_25_count: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description: 'Number of users who watched at least 25% of this video.',
+      }),
+    playback_50_count: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description: 'Number of users who watched at least 50% of this video.',
+      }),
+    playback_75_count: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description: 'Number of users who watched at least 75% of this video.',
+      }),
+    view_count: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description: 'The number of organic views of this video.',
+      }),
+    watch_time_ms: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description: 'Total time this video has been watched, in milliseconds.',
+      }),
+  })
+  .openapi({
+    description:
+      'Lifetime organic engagement metrics for the media at the time of the request.\nOnly available to the user who uploaded the video.',
+    required: [],
+  })
+  .openapi('MediaOrganicMetrics')
+
+const MediaPromotedMetricsSchema = z
+  .object({
+    playback_0_count: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description: 'Number of users who started playback (0% quartile) of this video.',
+      }),
+    playback_100_count: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description: 'Number of users who completed playback (100% quartile) of this video.',
+      }),
+    playback_25_count: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description: 'Number of users who watched at least 25% of this video.',
+      }),
+    playback_50_count: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description: 'Number of users who watched at least 50% of this video.',
+      }),
+    playback_75_count: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description: 'Number of users who watched at least 75% of this video.',
+      }),
+    view_count: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description:
+          'The number of promoted views of this video. Null when the backend returns quartile data without a view count.',
+      }),
+  })
+  .openapi({
+    description: 'Promoted nonpublic engagement metrics for the media at the time of the request.',
+    required: [],
+  })
+  .openapi('MediaPromotedMetrics')
+
+const MediaPublicMetricsSchema = z
+  .object({
+    view_count: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The number of times this video has been viewed.',
+      }),
+  })
+  .openapi({
+    description: 'Public engagement metrics for the media at the time of the request.',
+    required: ['view_count'],
+  })
+  .openapi('MediaPublicMetrics')
+
+const MediaRevenueSchema = z
+  .object({
+    amount_micros: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'Revenue earned by this video, in micro-units (1/1,000,000) of `currency_code`.',
+      }),
+    currency_code: z
+      .string()
+      .openapi({ description: 'ISO 4217 code of the currency `amount_micros` is denominated in.' }),
+  })
+  .openapi({
+    description:
+      'Lifetime revenue earned by the media. Only available to the user who\nuploaded the video, and only to apps holding the `media.library.read` scope.',
+    required: ['amount_micros', 'currency_code'],
+  })
+  .openapi('MediaRevenue')
+
+const MediaVariantsSchema = z
+  .array(
+    z
+      .object({
+        bit_rate: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .nullable()
+          .exactOptional()
+          .openapi({
+            type: ['integer', 'null'],
+            format: 'int64',
+            description:
+              'The bit rate of this variant, in bits per second. Absent for playlist variants.',
+          }),
+        content_type: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'The MIME type of this variant, for example "video/mp4" or "application/x-mpegURL".',
+          }),
+        url: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'The URL to this media variant.' }),
+      })
+      .openapi({
+        description: 'A single playback or display variant of a media object.',
+        required: [],
+      }),
+  )
+  .openapi({
+    description:
+      'Each media object may have multiple display or playback variants, with different resolutions or formats.',
+  })
+  .openapi('MediaVariants')
+
+const MediaSchema = z
+  .object({
+    alt_text: z.string().exactOptional(),
+    duration_ms: z.int().exactOptional(),
+    height: z.int().exactOptional(),
+    media_key: z.string().exactOptional(),
+    non_public_metrics: MediaNonPublicMetricsSchema.exactOptional(),
+    organic_metrics: MediaOrganicMetricsSchema.exactOptional(),
+    preview_image_url: z.string().exactOptional(),
+    promoted_metrics: MediaPromotedMetricsSchema.exactOptional(),
+    public_metrics: MediaPublicMetricsSchema.exactOptional(),
+    revenue: MediaRevenueSchema.exactOptional(),
+    type: z.string().exactOptional(),
+    url: z.string().exactOptional(),
+    variants: MediaVariantsSchema.exactOptional(),
+    width: z.int().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('Media')
+
+const PlaceContainedWithinSchema = z
+  .array(z.string())
+  .openapi({ description: 'A list of unique identifiers of the Places that contain this place.' })
+  .openapi('PlaceContainedWithin')
+
+const PlaceGeoSchema = z
+  .object({
+    bbox: z
+      .array(z.float64())
+      .length(4)
+      .openapi({
+        description:
+          'The bounding box as [southwest_longitude, southwest_latitude, northeast_longitude, northeast_latitude].',
+      }),
+    properties: z
+      .looseObject({})
+      .openapi({ description: 'Additional GeoJSON feature properties.' }),
+    type: z.xor([z.literal('Feature')]).openapi({ description: 'The GeoJSON feature type.' }),
+  })
+  .openapi({
+    description: 'The geographic location of this place, expressed as a GeoJSON Feature.',
+    required: ['type', 'bbox', 'properties'],
+  })
+  .openapi('PlaceGeo')
+
+const PlaceSchema = z
+  .object({
+    contained_within: PlaceContainedWithinSchema.exactOptional(),
+    country: z.string().exactOptional(),
+    country_code: z.string().exactOptional(),
+    full_name: z.string().exactOptional(),
+    geo: PlaceGeoSchema.exactOptional(),
+    id: z.string().exactOptional(),
+    name: z.string().exactOptional(),
+    place_type: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('Place')
+
+const PollOptionsSchema = z
+  .array(
+    z
+      .object({
+        label: z.string().openapi({ description: 'The text label of this poll option.' }),
+        position: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({
+            type: 'integer',
+            format: 'int64',
+            description: 'The 1-based position of this option within the poll.',
+          }),
+        votes: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({
+            type: 'integer',
+            format: 'int64',
+            description: 'The number of votes this option has received.',
+          }),
+      })
+      .openapi({
+        description: 'A single option (choice) available in a poll.',
+        required: ['position', 'label', 'votes'],
+      }),
+  )
+  .openapi({ description: 'The list of options (choices) available in this poll.' })
+  .openapi('PollOptions')
+
+const PollSchema = z
+  .object({
+    duration_minutes: z.int().exactOptional(),
+    end_datetime: z.string().exactOptional(),
+    id: z.string().exactOptional(),
+    options: PollOptionsSchema.exactOptional(),
+    voting_status: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('Poll')
+
 const PostAttachmentsSchema = z
   .object({
     media_keys: z
@@ -853,1717 +1510,114 @@ const PostWithheldSchema = z
   })
   .openapi('PostWithheld')
 
-type PostType = {
-  article?: { [key: string]: unknown }
-  article_title?: { [key: string]: unknown }
-  attachments?: z.infer<typeof PostAttachmentsSchema>
-  author_id?: string
-  card_uri?: string
-  community_id?: string
-  context_annotations?: z.infer<typeof PostContextAnnotationsSchema>
-  conversation_id?: string
-  created_at?: string
-  display_text_range?: z.infer<typeof PostDisplayTextRangeSchema>
-  edit_controls?: z.infer<typeof PostEditControlsSchema>
-  edit_history_post_ids?: string[]
-  entities?: z.infer<typeof PostEntitiesSchema>
-  geo?: z.infer<typeof PostGeoSchema>
-  id?: string
-  in_reply_to_user_id?: string
-  lang?: string
-  matched_media_notes?: z.infer<typeof PostMatchedMediaNotesSchema>
-  media_metadata?: z.infer<typeof PostMediaMetadataSchema>
-  non_public_metrics?: { [key: string]: unknown }
-  note_post?: z.infer<typeof PostNotePostSchema>
-  note_request_suggestions?: z.infer<typeof PostNoteRequestSuggestionsSchema>
-  organic_metrics?: { [key: string]: unknown }
-  paid_partnership?: boolean
-  possibly_sensitive?: boolean
-  promoted_metrics?: { [key: string]: unknown }
-  public_metrics?: z.infer<typeof PostPublicMetricsSchema>
-  referenced_posts?: z.infer<typeof PostReferencedPostsSchema>
-  reply_settings?: string
-  scopes?: z.infer<typeof PostScopesSchema>
-  source?: string
-  suggested_source_links?: z.infer<typeof PostSuggestedSourceLinksSchema>
-  suggested_source_links_with_counts?: z.infer<typeof PostSuggestedSourceLinksWithCountsSchema>
-  text?: string
-  username?: string
-  withheld?: z.infer<typeof PostWithheldSchema>
-}
-
-const ResourceNotFoundProblemSchema = z
+const PostSchema = z
   .object({
-    detail: z.string(),
-    parameter: z.string().exactOptional(),
-    resource_id: z.string().exactOptional(),
-    resource_type: z.string(),
-    status: z.int().exactOptional(),
-    title: z.string(),
-    type: z.literal('https://api.x.com/2/problems/resource-not-found'),
-    value: z.string().exactOptional(),
-  })
-  .openapi({ required: ['type', 'title', 'detail', 'resource_type'] })
-  .openapi('ResourceNotFoundProblem')
-
-const InvalidRequestProblemSchema = z
-  .object({
-    detail: z.string(),
-    parameter: z.string().exactOptional(),
-    status: z.int().exactOptional(),
-    title: z.string(),
-    type: z.literal('https://api.x.com/2/problems/invalid-request'),
-    value: z.string().exactOptional(),
-  })
-  .openapi({ required: ['type', 'title', 'detail'] })
-  .openapi('InvalidRequestProblem')
-
-const NotAuthorizedForResourceProblemSchema = z
-  .object({
-    detail: z.string(),
-    parameter: z.string().exactOptional(),
-    resource_id: z.string().exactOptional(),
-    resource_type: z.string(),
-    section: z.string().exactOptional(),
-    status: z.int().exactOptional(),
-    title: z.string(),
-    type: z.literal('https://api.x.com/2/problems/not-authorized-for-resource'),
-    value: z.string().exactOptional(),
-  })
-  .openapi({ required: ['type', 'title', 'detail', 'resource_type'] })
-  .openapi('NotAuthorizedForResourceProblem')
-
-const NotAuthorizedForFieldProblemSchema = z
-  .object({
-    detail: z.string(),
-    field: z.string(),
-    parameter: z.string().exactOptional(),
-    resource_id: z.string().exactOptional(),
-    resource_type: z.string().exactOptional(),
-    section: z.string().exactOptional(),
-    status: z.int().exactOptional(),
-    title: z.string(),
-    type: z.literal('https://api.x.com/2/problems/not-authorized-for-field'),
-    value: z.string().exactOptional(),
-  })
-  .openapi({ required: ['type', 'title', 'detail', 'field'] })
-  .openapi('NotAuthorizedForFieldProblem')
-
-const FieldUnauthorizedProblemSchema = z
-  .object({
-    detail: z.string(),
-    field: z.string(),
-    resource_type: z.string().exactOptional(),
-    section: z.string().exactOptional(),
-    status: z.int().exactOptional(),
-    title: z.string(),
-    type: z.literal('https://api.x.com/2/problems/field-unauthorized'),
-  })
-  .openapi({ required: ['type', 'title', 'detail', 'field'] })
-  .openapi('FieldUnauthorizedProblem')
-
-const FieldHydrationFailureProblemSchema = z
-  .object({
-    detail: z.string(),
-    field: z.string(),
-    resource_type: z.string().exactOptional(),
-    section: z.string().exactOptional(),
-    status: z.int().exactOptional(),
-    title: z.string(),
-    type: z.literal('https://api.x.com/2/problems/field-hydration-failure'),
-  })
-  .openapi({ required: ['type', 'title', 'detail', 'field'] })
-  .openapi('FieldHydrationFailureProblem')
-
-const ResourceUnavailableProblemSchema = z
-  .object({
-    detail: z.string(),
-    resource_id: z.string().exactOptional(),
-    resource_type: z.string(),
-    status: z.int().exactOptional(),
-    title: z.string(),
-    type: z.literal('https://api.x.com/2/problems/resource-unavailable'),
-  })
-  .openapi({ required: ['type', 'title', 'detail', 'resource_type'] })
-  .openapi('ResourceUnavailableProblem')
-
-const DisallowedResourceProblemSchema = z
-  .object({
-    detail: z.string(),
-    resource_id: z.string().exactOptional(),
-    resource_type: z.string().exactOptional(),
-    section: z.string().exactOptional(),
-    status: z.int().exactOptional(),
-    title: z.string(),
-    type: z.literal('https://api.x.com/2/problems/disallowed-resource'),
-  })
-  .openapi({ required: ['type', 'title', 'detail'] })
-  .openapi('DisallowedResourceProblem')
-
-const RecipientNotMessageableProblemSchema = z
-  .object({
-    detail: z.string(),
-    status: z.int().exactOptional(),
-    title: z.string(),
-    type: z.literal('https://api.x.com/2/problems/recipient-not-messageable'),
-  })
-  .openapi({ required: ['type', 'title', 'detail'] })
-  .openapi('RecipientNotMessageableProblem')
-
-const InternalErrorProblemSchema = z
-  .object({
-    detail: z.string(),
-    status: z.int().exactOptional(),
-    title: z.string(),
-    type: z.literal('https://api.x.com/2/problems/internal-error'),
-  })
-  .openapi({ required: ['type', 'title', 'detail'] })
-  .openapi('InternalErrorProblem')
-
-const DmBadAttachmentProblemSchema = z
-  .object({
-    detail: z.string(),
-    status: z.int().exactOptional(),
-    title: z.string(),
-    type: z.literal('https://api.x.com/2/problems/dm-bad-attachment'),
-  })
-  .openapi({ required: ['type', 'title', 'detail'] })
-  .openapi('DmBadAttachmentProblem')
-
-const DmBadCtaProblemSchema = z
-  .object({
-    detail: z.string(),
-    status: z.int().exactOptional(),
-    title: z.string(),
-    type: z.literal('https://api.x.com/2/problems/dm-bad-cta'),
-  })
-  .openapi({ required: ['type', 'title', 'detail'] })
-  .openapi('DmBadCtaProblem')
-
-const DmBadCustomProfileProblemSchema = z
-  .object({
-    detail: z.string(),
-    status: z.int().exactOptional(),
-    title: z.string(),
-    type: z.literal('https://api.x.com/2/problems/dm-bad-custom-profile'),
-  })
-  .openapi({ required: ['type', 'title', 'detail'] })
-  .openapi('DmBadCustomProfileProblem')
-
-const DmBadMediaProblemSchema = z
-  .object({
-    detail: z.string(),
-    status: z.int().exactOptional(),
-    title: z.string(),
-    type: z.literal('https://api.x.com/2/problems/dm-bad-media'),
-  })
-  .openapi({ required: ['type', 'title', 'detail'] })
-  .openapi('DmBadMediaProblem')
-
-const DmBadQuickReplyProblemSchema = z
-  .object({
-    detail: z.string(),
-    status: z.int().exactOptional(),
-    title: z.string(),
-    type: z.literal('https://api.x.com/2/problems/dm-bad-quick-reply'),
-  })
-  .openapi({ required: ['type', 'title', 'detail'] })
-  .openapi('DmBadQuickReplyProblem')
-
-const DmBadUrlProblemSchema = z
-  .object({
-    detail: z.string(),
-    status: z.int().exactOptional(),
-    title: z.string(),
-    type: z.literal('https://api.x.com/2/problems/dm-bad-url'),
-  })
-  .openapi({ required: ['type', 'title', 'detail'] })
-  .openapi('DmBadUrlProblem')
-
-const DmConversationNameTooLongProblemSchema = z
-  .object({
-    detail: z.string(),
-    status: z.int().exactOptional(),
-    title: z.string(),
-    type: z.literal('https://api.x.com/2/problems/dm-conversation-name-too-long'),
-  })
-  .openapi({ required: ['type', 'title', 'detail'] })
-  .openapi('DmConversationNameTooLongProblem')
-
-const DmConversationNotFoundProblemSchema = z
-  .object({
-    detail: z.string(),
-    status: z.int().exactOptional(),
-    title: z.string(),
-    type: z.literal('https://api.x.com/2/problems/dm-conversation-not-found'),
-  })
-  .openapi({ required: ['type', 'title', 'detail'] })
-  .openapi('DmConversationNotFoundProblem')
-
-const DmDuplicateProblemSchema = z
-  .object({
-    detail: z.string(),
-    status: z.int().exactOptional(),
-    title: z.string(),
-    type: z.literal('https://api.x.com/2/problems/dm-duplicate'),
-  })
-  .openapi({ required: ['type', 'title', 'detail'] })
-  .openapi('DmDuplicateProblem')
-
-const DmInactiveDeviceProblemSchema = z
-  .object({
-    detail: z.string(),
-    status: z.int().exactOptional(),
-    title: z.string(),
-    type: z.literal('https://api.x.com/2/problems/dm-inactive-device'),
-  })
-  .openapi({ required: ['type', 'title', 'detail'] })
-  .openapi('DmInactiveDeviceProblem')
-
-const DmNotDeliveredProblemSchema = z
-  .object({
-    detail: z.string(),
-    status: z.int().exactOptional(),
-    title: z.string(),
-    type: z.literal('https://api.x.com/2/problems/dm-not-delivered'),
-  })
-  .openapi({ required: ['type', 'title', 'detail'] })
-  .openapi('DmNotDeliveredProblem')
-
-const DmNotFoundProblemSchema = z
-  .object({
-    detail: z.string(),
-    status: z.int().exactOptional(),
-    title: z.string(),
-    type: z.literal('https://api.x.com/2/problems/dm-not-found'),
-  })
-  .openapi({ required: ['type', 'title', 'detail'] })
-  .openapi('DmNotFoundProblem')
-
-const DmNotOwnerProblemSchema = z
-  .object({
-    detail: z.string(),
-    status: z.int().exactOptional(),
-    title: z.string(),
-    type: z.literal('https://api.x.com/2/problems/dm-not-owner'),
-  })
-  .openapi({ required: ['type', 'title', 'detail'] })
-  .openapi('DmNotOwnerProblem')
-
-const DmParticipantNotAddedProblemSchema = z
-  .object({
-    detail: z.string(),
-    status: z.int().exactOptional(),
-    title: z.string(),
-    type: z.literal('https://api.x.com/2/problems/dm-participant-not-added'),
-  })
-  .openapi({ required: ['type', 'title', 'detail'] })
-  .openapi('DmParticipantNotAddedProblem')
-
-const DmParticipantNotFoundProblemSchema = z
-  .object({
-    detail: z.string(),
-    status: z.int().exactOptional(),
-    title: z.string(),
-    type: z.literal('https://api.x.com/2/problems/dm-participant-not-found'),
-  })
-  .openapi({ required: ['type', 'title', 'detail'] })
-  .openapi('DmParticipantNotFoundProblem')
-
-const DmParticipantRestrictedProblemSchema = z
-  .object({
-    detail: z.string(),
-    status: z.int().exactOptional(),
-    title: z.string(),
-    type: z.literal('https://api.x.com/2/problems/dm-participant-restricted'),
-  })
-  .openapi({ required: ['type', 'title', 'detail'] })
-  .openapi('DmParticipantRestrictedProblem')
-
-const DmParticipantUnavailableProblemSchema = z
-  .object({
-    detail: z.string(),
-    status: z.int().exactOptional(),
-    title: z.string(),
-    type: z.literal('https://api.x.com/2/problems/dm-participant-unavailable'),
-  })
-  .openapi({ required: ['type', 'title', 'detail'] })
-  .openapi('DmParticipantUnavailableProblem')
-
-const DmRateLimitedProblemSchema = z
-  .object({
-    detail: z.string(),
-    status: z.int().exactOptional(),
-    title: z.string(),
-    type: z.literal('https://api.x.com/2/problems/dm-rate-limited'),
-  })
-  .openapi({ required: ['type', 'title', 'detail'] })
-  .openapi('DmRateLimitedProblem')
-
-const DmRecipientBlocksSenderProblemSchema = z
-  .object({
-    detail: z.string(),
-    status: z.int().exactOptional(),
-    title: z.string(),
-    type: z.literal('https://api.x.com/2/problems/dm-recipient-blocks-sender'),
-  })
-  .openapi({ required: ['type', 'title', 'detail'] })
-  .openapi('DmRecipientBlocksSenderProblem')
-
-const DmRecipientCannotReceiveProblemSchema = z
-  .object({
-    detail: z.string(),
-    status: z.int().exactOptional(),
-    title: z.string(),
-    type: z.literal('https://api.x.com/2/problems/dm-recipient-cannot-receive'),
-  })
-  .openapi({ required: ['type', 'title', 'detail'] })
-  .openapi('DmRecipientCannotReceiveProblem')
-
-const DmRecipientEncryptedUnavailableProblemSchema = z
-  .object({
-    detail: z.string(),
-    status: z.int().exactOptional(),
-    title: z.string(),
-    type: z.literal('https://api.x.com/2/problems/dm-recipient-encrypted-unavailable'),
-  })
-  .openapi({ required: ['type', 'title', 'detail'] })
-  .openapi('DmRecipientEncryptedUnavailableProblem')
-
-const DmRecipientNotAcceptingProblemSchema = z
-  .object({
-    detail: z.string(),
-    status: z.int().exactOptional(),
-    title: z.string(),
-    type: z.literal('https://api.x.com/2/problems/dm-recipient-not-accepting'),
-  })
-  .openapi({ required: ['type', 'title', 'detail'] })
-  .openapi('DmRecipientNotAcceptingProblem')
-
-const DmRecipientNotFoundProblemSchema = z
-  .object({
-    detail: z.string(),
-    status: z.int().exactOptional(),
-    title: z.string(),
-    type: z.literal('https://api.x.com/2/problems/dm-recipient-not-found'),
-  })
-  .openapi({ required: ['type', 'title', 'detail'] })
-  .openapi('DmRecipientNotFoundProblem')
-
-const DmRecipientRestrictsGroupsProblemSchema = z
-  .object({
-    detail: z.string(),
-    status: z.int().exactOptional(),
-    title: z.string(),
-    type: z.literal('https://api.x.com/2/problems/dm-recipient-restricts-groups'),
-  })
-  .openapi({ required: ['type', 'title', 'detail'] })
-  .openapi('DmRecipientRestrictsGroupsProblem')
-
-const DmRecipientUnavailableProblemSchema = z
-  .object({
-    detail: z.string(),
-    status: z.int().exactOptional(),
-    title: z.string(),
-    type: z.literal('https://api.x.com/2/problems/dm-recipient-unavailable'),
-  })
-  .openapi({ required: ['type', 'title', 'detail'] })
-  .openapi('DmRecipientUnavailableProblem')
-
-const DmRequestInProgressProblemSchema = z
-  .object({
-    detail: z.string(),
-    status: z.int().exactOptional(),
-    title: z.string(),
-    type: z.literal('https://api.x.com/2/problems/dm-request-in-progress'),
-  })
-  .openapi({ required: ['type', 'title', 'detail'] })
-  .openapi('DmRequestInProgressProblem')
-
-const DmSafetyLimitedProblemSchema = z
-  .object({
-    detail: z.string(),
-    status: z.int().exactOptional(),
-    title: z.string(),
-    type: z.literal('https://api.x.com/2/problems/dm-safety-limited'),
-  })
-  .openapi({ required: ['type', 'title', 'detail'] })
-  .openapi('DmSafetyLimitedProblem')
-
-const DmSafetyRejectedProblemSchema = z
-  .object({
-    detail: z.string(),
-    status: z.int().exactOptional(),
-    title: z.string(),
-    type: z.literal('https://api.x.com/2/problems/dm-safety-rejected'),
-  })
-  .openapi({ required: ['type', 'title', 'detail'] })
-  .openapi('DmSafetyRejectedProblem')
-
-const DmSenderBlocksRecipientProblemSchema = z
-  .object({
-    detail: z.string(),
-    status: z.int().exactOptional(),
-    title: z.string(),
-    type: z.literal('https://api.x.com/2/problems/dm-sender-blocks-recipient'),
-  })
-  .openapi({ required: ['type', 'title', 'detail'] })
-  .openapi('DmSenderBlocksRecipientProblem')
-
-const DmSenderDeclinedDmsProblemSchema = z
-  .object({
-    detail: z.string(),
-    status: z.int().exactOptional(),
-    title: z.string(),
-    type: z.literal('https://api.x.com/2/problems/dm-sender-declined-dms'),
-  })
-  .openapi({ required: ['type', 'title', 'detail'] })
-  .openapi('DmSenderDeclinedDmsProblem')
-
-const DmSenderDmsClosedProblemSchema = z
-  .object({
-    detail: z.string(),
-    status: z.int().exactOptional(),
-    title: z.string(),
-    type: z.literal('https://api.x.com/2/problems/dm-sender-dms-closed'),
-  })
-  .openapi({ required: ['type', 'title', 'detail'] })
-  .openapi('DmSenderDmsClosedProblem')
-
-const DmSenderEncryptedUnavailableProblemSchema = z
-  .object({
-    detail: z.string(),
-    status: z.int().exactOptional(),
-    title: z.string(),
-    type: z.literal('https://api.x.com/2/problems/dm-sender-encrypted-unavailable'),
-  })
-  .openapi({ required: ['type', 'title', 'detail'] })
-  .openapi('DmSenderEncryptedUnavailableProblem')
-
-const DmSenderNotInConversationProblemSchema = z
-  .object({
-    detail: z.string(),
-    status: z.int().exactOptional(),
-    title: z.string(),
-    type: z.literal('https://api.x.com/2/problems/dm-sender-not-in-conversation'),
-  })
-  .openapi({ required: ['type', 'title', 'detail'] })
-  .openapi('DmSenderNotInConversationProblem')
-
-const DmSenderNotPermittedProblemSchema = z
-  .object({
-    detail: z.string(),
-    status: z.int().exactOptional(),
-    title: z.string(),
-    type: z.literal('https://api.x.com/2/problems/dm-sender-not-permitted'),
-  })
-  .openapi({ required: ['type', 'title', 'detail'] })
-  .openapi('DmSenderNotPermittedProblem')
-
-const DmSenderNotVerifiedProblemSchema = z
-  .object({
-    detail: z.string(),
-    status: z.int().exactOptional(),
-    title: z.string(),
-    type: z.literal('https://api.x.com/2/problems/dm-sender-not-verified'),
-  })
-  .openapi({ required: ['type', 'title', 'detail'] })
-  .openapi('DmSenderNotVerifiedProblem')
-
-const DmSenderPhoneRequiredProblemSchema = z
-  .object({
-    detail: z.string(),
-    status: z.int().exactOptional(),
-    title: z.string(),
-    type: z.literal('https://api.x.com/2/problems/dm-sender-phone-required'),
-  })
-  .openapi({ required: ['type', 'title', 'detail'] })
-  .openapi('DmSenderPhoneRequiredProblem')
-
-const DmSenderReadOnlyProblemSchema = z
-  .object({
-    detail: z.string(),
-    status: z.int().exactOptional(),
-    title: z.string(),
-    type: z.literal('https://api.x.com/2/problems/dm-sender-read-only'),
-  })
-  .openapi({ required: ['type', 'title', 'detail'] })
-  .openapi('DmSenderReadOnlyProblem')
-
-const DmSenderUnavailableProblemSchema = z
-  .object({
-    detail: z.string(),
-    status: z.int().exactOptional(),
-    title: z.string(),
-    type: z.literal('https://api.x.com/2/problems/dm-sender-unavailable'),
-  })
-  .openapi({ required: ['type', 'title', 'detail'] })
-  .openapi('DmSenderUnavailableProblem')
-
-const DmTextEmptyProblemSchema = z
-  .object({
-    detail: z.string(),
-    status: z.int().exactOptional(),
-    title: z.string(),
-    type: z.literal('https://api.x.com/2/problems/dm-text-empty'),
-  })
-  .openapi({ required: ['type', 'title', 'detail'] })
-  .openapi('DmTextEmptyProblem')
-
-const DmTextTooLongProblemSchema = z
-  .object({
-    detail: z.string(),
-    status: z.int().exactOptional(),
-    title: z.string(),
-    type: z.literal('https://api.x.com/2/problems/dm-text-too-long'),
-  })
-  .openapi({ required: ['type', 'title', 'detail'] })
-  .openapi('DmTextTooLongProblem')
-
-const DmTooFewParticipantsProblemSchema = z
-  .object({
-    detail: z.string(),
-    status: z.int().exactOptional(),
-    title: z.string(),
-    type: z.literal('https://api.x.com/2/problems/dm-too-few-participants'),
-  })
-  .openapi({ required: ['type', 'title', 'detail'] })
-  .openapi('DmTooFewParticipantsProblem')
-
-const DmTooManyParticipantsProblemSchema = z
-  .object({
-    detail: z.string(),
-    status: z.int().exactOptional(),
-    title: z.string(),
-    type: z.literal('https://api.x.com/2/problems/dm-too-many-participants'),
-  })
-  .openapi({ required: ['type', 'title', 'detail'] })
-  .openapi('DmTooManyParticipantsProblem')
-
-const DmUnsupportedMessageProblemSchema = z
-  .object({
-    detail: z.string(),
-    status: z.int().exactOptional(),
-    title: z.string(),
-    type: z.literal('https://api.x.com/2/problems/dm-unsupported-message'),
-  })
-  .openapi({ required: ['type', 'title', 'detail'] })
-  .openapi('DmUnsupportedMessageProblem')
-
-const DuplicateRuleProblemSchema = z
-  .object({
-    detail: z.string().exactOptional(),
-    id: z.string().exactOptional(),
-    title: z.string(),
-    type: z.literal('https://api.twitter.com/2/problems/duplicate-rules'),
-    value: z.string(),
-  })
-  .openapi({ required: ['type', 'title', 'value'] })
-  .openapi('DuplicateRuleProblem')
-
-const InvalidRuleProblemSchema = z
-  .object({
-    detail: z.string().exactOptional(),
-    details: z.array(z.string()),
-    title: z.string(),
-    type: z.literal('https://api.twitter.com/2/problems/invalid-rules'),
-    value: z.string().exactOptional(),
-  })
-  .openapi({ required: ['type', 'title', 'details'] })
-  .openapi('InvalidRuleProblem')
-
-type ProblemType =
-  | z.infer<typeof ResourceNotFoundProblemSchema>
-  | z.infer<typeof InvalidRequestProblemSchema>
-  | z.infer<typeof NotAuthorizedForResourceProblemSchema>
-  | z.infer<typeof NotAuthorizedForFieldProblemSchema>
-  | z.infer<typeof FieldUnauthorizedProblemSchema>
-  | z.infer<typeof FieldHydrationFailureProblemSchema>
-  | z.infer<typeof ResourceUnavailableProblemSchema>
-  | z.infer<typeof DisallowedResourceProblemSchema>
-  | z.infer<typeof RecipientNotMessageableProblemSchema>
-  | z.infer<typeof InternalErrorProblemSchema>
-  | z.infer<typeof DmBadAttachmentProblemSchema>
-  | z.infer<typeof DmBadCtaProblemSchema>
-  | z.infer<typeof DmBadCustomProfileProblemSchema>
-  | z.infer<typeof DmBadMediaProblemSchema>
-  | z.infer<typeof DmBadQuickReplyProblemSchema>
-  | z.infer<typeof DmBadUrlProblemSchema>
-  | z.infer<typeof DmConversationNameTooLongProblemSchema>
-  | z.infer<typeof DmConversationNotFoundProblemSchema>
-  | z.infer<typeof DmDuplicateProblemSchema>
-  | z.infer<typeof DmInactiveDeviceProblemSchema>
-  | z.infer<typeof DmNotDeliveredProblemSchema>
-  | z.infer<typeof DmNotFoundProblemSchema>
-  | z.infer<typeof DmNotOwnerProblemSchema>
-  | z.infer<typeof DmParticipantNotAddedProblemSchema>
-  | z.infer<typeof DmParticipantNotFoundProblemSchema>
-  | z.infer<typeof DmParticipantRestrictedProblemSchema>
-  | z.infer<typeof DmParticipantUnavailableProblemSchema>
-  | z.infer<typeof DmRateLimitedProblemSchema>
-  | z.infer<typeof DmRecipientBlocksSenderProblemSchema>
-  | z.infer<typeof DmRecipientCannotReceiveProblemSchema>
-  | z.infer<typeof DmRecipientEncryptedUnavailableProblemSchema>
-  | z.infer<typeof DmRecipientNotAcceptingProblemSchema>
-  | z.infer<typeof DmRecipientNotFoundProblemSchema>
-  | z.infer<typeof DmRecipientRestrictsGroupsProblemSchema>
-  | z.infer<typeof DmRecipientUnavailableProblemSchema>
-  | z.infer<typeof DmRequestInProgressProblemSchema>
-  | z.infer<typeof DmSafetyLimitedProblemSchema>
-  | z.infer<typeof DmSafetyRejectedProblemSchema>
-  | z.infer<typeof DmSenderBlocksRecipientProblemSchema>
-  | z.infer<typeof DmSenderDeclinedDmsProblemSchema>
-  | z.infer<typeof DmSenderDmsClosedProblemSchema>
-  | z.infer<typeof DmSenderEncryptedUnavailableProblemSchema>
-  | z.infer<typeof DmSenderNotInConversationProblemSchema>
-  | z.infer<typeof DmSenderNotPermittedProblemSchema>
-  | z.infer<typeof DmSenderNotVerifiedProblemSchema>
-  | z.infer<typeof DmSenderPhoneRequiredProblemSchema>
-  | z.infer<typeof DmSenderReadOnlyProblemSchema>
-  | z.infer<typeof DmSenderUnavailableProblemSchema>
-  | z.infer<typeof DmTextEmptyProblemSchema>
-  | z.infer<typeof DmTextTooLongProblemSchema>
-  | z.infer<typeof DmTooFewParticipantsProblemSchema>
-  | z.infer<typeof DmTooManyParticipantsProblemSchema>
-  | z.infer<typeof DmUnsupportedMessageProblemSchema>
-  | z.infer<typeof DuplicateRuleProblemSchema>
-  | z.infer<typeof InvalidRuleProblemSchema>
-
-const RulesCountAllProjectClientAppsSchema = z
-  .array(
-    z
-      .object({
-        client_app_id: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Unique identifier of the client application.' }),
-        rule_count: z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({
-            type: 'integer',
-            format: 'int64',
-            description: 'Number of rules configured for the client application.',
-          }),
-      })
+    article: z.looseObject({}).exactOptional(),
+    article_title: z
+      .looseObject({})
+      .exactOptional()
       .openapi({
-        description: 'A count of filtered-stream rules for a single client application.',
-        required: ['rule_count'],
+        description: 'Metadata about the long-form Article attached to this Post, if any.',
       }),
-  )
-  .openapi('RulesCountAllProjectClientApps')
-
-const RulesCountClientAppRulesCountSchema = z
-  .object({
-    client_app_id: z
+    attachments: PostAttachmentsSchema.exactOptional(),
+    author_id: z
       .string()
-      .nullable()
       .exactOptional()
-      .openapi({ description: 'Unique identifier of the client application.' }),
-    rule_count: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'Number of rules configured for the client application.',
-      }),
-  })
-  .openapi({
-    description: 'A count of filtered-stream rules for a single client application.',
-    required: ['rule_count'],
-  })
-  .openapi('RulesCountClientAppRulesCount')
-
-type RulesCountType = {
-  all_project_client_apps?: z.infer<typeof RulesCountAllProjectClientAppsSchema>
-  cap_per_client_app?: string
-  cap_per_project?: string
-  client_app_rules_count?: z.infer<typeof RulesCountClientAppRulesCountSchema>
-  project_rules_count?: string
-}
-
-const UsageDailyClientAppUsageSchema = z
-  .array(
-    z
-      .object({
-        client_app_id: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Unique identifier of the client app.' }),
-        usage: z
-          .array(
-            z
-              .object({
-                date: z
-                  .string()
-                  .openapi({
-                    description: 'The day of the usage entry, as an ISO 8601 date-time.',
-                  }),
-                usage: z
-                  .string()
-                  .nullable()
-                  .exactOptional()
-                  .openapi({ description: 'Number of Posts used on this day.' }),
-              })
-              .openapi({ description: "A single day's usage entry.", required: ['date'] }),
-          )
-          .exactOptional()
-          .openapi({ description: 'Daily usage entries for this client app.' }),
-        usage_result_count: z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({
-            type: 'integer',
-            format: 'int64',
-            description: 'Number of daily usage entries returned for this client app.',
-          }),
-      })
-      .openapi({
-        description: 'Per-client-app daily Post usage entry.',
-        required: ['usage_result_count'],
-      }),
-  )
-  .openapi({ description: "Per-client-app daily Post usage for the caller's project." })
-  .openapi('UsageDailyClientAppUsage')
-
-const UsageDailyProjectUsageSchema = z
-  .object({
-    project_id: z
+      .openapi({ description: 'Unique identifier of the author of this Post.' }),
+    card_uri: z.string().exactOptional(),
+    community_id: z
       .string()
-      .nullable()
       .exactOptional()
-      .openapi({ description: 'Unique identifier of the project.' }),
-    usage: z
-      .array(
-        z
-          .object({
-            date: z
-              .string()
-              .openapi({ description: 'The day of the usage entry, as an ISO 8601 date-time.' }),
-            usage: z
-              .string()
-              .nullable()
-              .exactOptional()
-              .openapi({ description: 'Number of Posts used on this day.' }),
-          })
-          .openapi({ description: "A single day's usage entry.", required: ['date'] }),
-      )
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Daily usage entries for the project.' }),
-  })
-  .openapi({
-    description: "Project-level daily Post usage for the caller's project.",
-    required: [],
-  })
-  .openapi('UsageDailyProjectUsage')
-
-type UsageType = {
-  cap_reset_day?: number
-  daily_client_app_usage?: z.infer<typeof UsageDailyClientAppUsageSchema>
-  daily_project_usage?: z.infer<typeof UsageDailyProjectUsageSchema>
-  project_cap?: string
-  project_id?: string
-  project_usage?: string
-}
-
-const AcceptChatMessageRequestResponseDataSchema = z
-  .object({
-    accepted: z.boolean().openapi({ description: 'Whether the message request was accepted.' }),
-  })
-  .openapi({ required: ['accepted'] })
-  .openapi('AcceptChatMessageRequestResponseData')
-
-const ProblemSchema: z.ZodType<ProblemType> = z
-  .lazy(() =>
-    z
-      .discriminatedUnion('type', [
-        ResourceNotFoundProblemSchema,
-        InvalidRequestProblemSchema,
-        NotAuthorizedForResourceProblemSchema,
-        NotAuthorizedForFieldProblemSchema,
-        FieldUnauthorizedProblemSchema,
-        FieldHydrationFailureProblemSchema,
-        ResourceUnavailableProblemSchema,
-        DisallowedResourceProblemSchema,
-        RecipientNotMessageableProblemSchema,
-        InternalErrorProblemSchema,
-        DmBadAttachmentProblemSchema,
-        DmBadCtaProblemSchema,
-        DmBadCustomProfileProblemSchema,
-        DmBadMediaProblemSchema,
-        DmBadQuickReplyProblemSchema,
-        DmBadUrlProblemSchema,
-        DmConversationNameTooLongProblemSchema,
-        DmConversationNotFoundProblemSchema,
-        DmDuplicateProblemSchema,
-        DmInactiveDeviceProblemSchema,
-        DmNotDeliveredProblemSchema,
-        DmNotFoundProblemSchema,
-        DmNotOwnerProblemSchema,
-        DmParticipantNotAddedProblemSchema,
-        DmParticipantNotFoundProblemSchema,
-        DmParticipantRestrictedProblemSchema,
-        DmParticipantUnavailableProblemSchema,
-        DmRateLimitedProblemSchema,
-        DmRecipientBlocksSenderProblemSchema,
-        DmRecipientCannotReceiveProblemSchema,
-        DmRecipientEncryptedUnavailableProblemSchema,
-        DmRecipientNotAcceptingProblemSchema,
-        DmRecipientNotFoundProblemSchema,
-        DmRecipientRestrictsGroupsProblemSchema,
-        DmRecipientUnavailableProblemSchema,
-        DmRequestInProgressProblemSchema,
-        DmSafetyLimitedProblemSchema,
-        DmSafetyRejectedProblemSchema,
-        DmSenderBlocksRecipientProblemSchema,
-        DmSenderDeclinedDmsProblemSchema,
-        DmSenderDmsClosedProblemSchema,
-        DmSenderEncryptedUnavailableProblemSchema,
-        DmSenderNotInConversationProblemSchema,
-        DmSenderNotPermittedProblemSchema,
-        DmSenderNotVerifiedProblemSchema,
-        DmSenderPhoneRequiredProblemSchema,
-        DmSenderReadOnlyProblemSchema,
-        DmSenderUnavailableProblemSchema,
-        DmTextEmptyProblemSchema,
-        DmTextTooLongProblemSchema,
-        DmTooFewParticipantsProblemSchema,
-        DmTooManyParticipantsProblemSchema,
-        DmUnsupportedMessageProblemSchema,
-        DuplicateRuleProblemSchema,
-        InvalidRuleProblemSchema,
-      ])
       .openapi({
-        discriminator: {
-          propertyName: 'type',
-          mapping: {
-            'https://api.twitter.com/2/problems/duplicate-rules':
-              '#/components/schemas/DuplicateRuleProblem',
-            'https://api.twitter.com/2/problems/invalid-rules':
-              '#/components/schemas/InvalidRuleProblem',
-            'https://api.x.com/2/problems/disallowed-resource':
-              '#/components/schemas/DisallowedResourceProblem',
-            'https://api.x.com/2/problems/dm-bad-attachment':
-              '#/components/schemas/DmBadAttachmentProblem',
-            'https://api.x.com/2/problems/dm-bad-cta': '#/components/schemas/DmBadCtaProblem',
-            'https://api.x.com/2/problems/dm-bad-custom-profile':
-              '#/components/schemas/DmBadCustomProfileProblem',
-            'https://api.x.com/2/problems/dm-bad-media': '#/components/schemas/DmBadMediaProblem',
-            'https://api.x.com/2/problems/dm-bad-quick-reply':
-              '#/components/schemas/DmBadQuickReplyProblem',
-            'https://api.x.com/2/problems/dm-bad-url': '#/components/schemas/DmBadUrlProblem',
-            'https://api.x.com/2/problems/dm-conversation-name-too-long':
-              '#/components/schemas/DmConversationNameTooLongProblem',
-            'https://api.x.com/2/problems/dm-conversation-not-found':
-              '#/components/schemas/DmConversationNotFoundProblem',
-            'https://api.x.com/2/problems/dm-duplicate': '#/components/schemas/DmDuplicateProblem',
-            'https://api.x.com/2/problems/dm-inactive-device':
-              '#/components/schemas/DmInactiveDeviceProblem',
-            'https://api.x.com/2/problems/dm-not-delivered':
-              '#/components/schemas/DmNotDeliveredProblem',
-            'https://api.x.com/2/problems/dm-not-found': '#/components/schemas/DmNotFoundProblem',
-            'https://api.x.com/2/problems/dm-not-owner': '#/components/schemas/DmNotOwnerProblem',
-            'https://api.x.com/2/problems/dm-participant-not-added':
-              '#/components/schemas/DmParticipantNotAddedProblem',
-            'https://api.x.com/2/problems/dm-participant-not-found':
-              '#/components/schemas/DmParticipantNotFoundProblem',
-            'https://api.x.com/2/problems/dm-participant-restricted':
-              '#/components/schemas/DmParticipantRestrictedProblem',
-            'https://api.x.com/2/problems/dm-participant-unavailable':
-              '#/components/schemas/DmParticipantUnavailableProblem',
-            'https://api.x.com/2/problems/dm-rate-limited':
-              '#/components/schemas/DmRateLimitedProblem',
-            'https://api.x.com/2/problems/dm-recipient-blocks-sender':
-              '#/components/schemas/DmRecipientBlocksSenderProblem',
-            'https://api.x.com/2/problems/dm-recipient-cannot-receive':
-              '#/components/schemas/DmRecipientCannotReceiveProblem',
-            'https://api.x.com/2/problems/dm-recipient-encrypted-unavailable':
-              '#/components/schemas/DmRecipientEncryptedUnavailableProblem',
-            'https://api.x.com/2/problems/dm-recipient-not-accepting':
-              '#/components/schemas/DmRecipientNotAcceptingProblem',
-            'https://api.x.com/2/problems/dm-recipient-not-found':
-              '#/components/schemas/DmRecipientNotFoundProblem',
-            'https://api.x.com/2/problems/dm-recipient-restricts-groups':
-              '#/components/schemas/DmRecipientRestrictsGroupsProblem',
-            'https://api.x.com/2/problems/dm-recipient-unavailable':
-              '#/components/schemas/DmRecipientUnavailableProblem',
-            'https://api.x.com/2/problems/dm-request-in-progress':
-              '#/components/schemas/DmRequestInProgressProblem',
-            'https://api.x.com/2/problems/dm-safety-limited':
-              '#/components/schemas/DmSafetyLimitedProblem',
-            'https://api.x.com/2/problems/dm-safety-rejected':
-              '#/components/schemas/DmSafetyRejectedProblem',
-            'https://api.x.com/2/problems/dm-sender-blocks-recipient':
-              '#/components/schemas/DmSenderBlocksRecipientProblem',
-            'https://api.x.com/2/problems/dm-sender-declined-dms':
-              '#/components/schemas/DmSenderDeclinedDmsProblem',
-            'https://api.x.com/2/problems/dm-sender-dms-closed':
-              '#/components/schemas/DmSenderDmsClosedProblem',
-            'https://api.x.com/2/problems/dm-sender-encrypted-unavailable':
-              '#/components/schemas/DmSenderEncryptedUnavailableProblem',
-            'https://api.x.com/2/problems/dm-sender-not-in-conversation':
-              '#/components/schemas/DmSenderNotInConversationProblem',
-            'https://api.x.com/2/problems/dm-sender-not-permitted':
-              '#/components/schemas/DmSenderNotPermittedProblem',
-            'https://api.x.com/2/problems/dm-sender-not-verified':
-              '#/components/schemas/DmSenderNotVerifiedProblem',
-            'https://api.x.com/2/problems/dm-sender-phone-required':
-              '#/components/schemas/DmSenderPhoneRequiredProblem',
-            'https://api.x.com/2/problems/dm-sender-read-only':
-              '#/components/schemas/DmSenderReadOnlyProblem',
-            'https://api.x.com/2/problems/dm-sender-unavailable':
-              '#/components/schemas/DmSenderUnavailableProblem',
-            'https://api.x.com/2/problems/dm-text-empty': '#/components/schemas/DmTextEmptyProblem',
-            'https://api.x.com/2/problems/dm-text-too-long':
-              '#/components/schemas/DmTextTooLongProblem',
-            'https://api.x.com/2/problems/dm-too-few-participants':
-              '#/components/schemas/DmTooFewParticipantsProblem',
-            'https://api.x.com/2/problems/dm-too-many-participants':
-              '#/components/schemas/DmTooManyParticipantsProblem',
-            'https://api.x.com/2/problems/dm-unsupported-message':
-              '#/components/schemas/DmUnsupportedMessageProblem',
-            'https://api.x.com/2/problems/field-hydration-failure':
-              '#/components/schemas/FieldHydrationFailureProblem',
-            'https://api.x.com/2/problems/field-unauthorized':
-              '#/components/schemas/FieldUnauthorizedProblem',
-            'https://api.x.com/2/problems/internal-error':
-              '#/components/schemas/InternalErrorProblem',
-            'https://api.x.com/2/problems/invalid-request':
-              '#/components/schemas/InvalidRequestProblem',
-            'https://api.x.com/2/problems/not-authorized-for-field':
-              '#/components/schemas/NotAuthorizedForFieldProblem',
-            'https://api.x.com/2/problems/not-authorized-for-resource':
-              '#/components/schemas/NotAuthorizedForResourceProblem',
-            'https://api.x.com/2/problems/recipient-not-messageable':
-              '#/components/schemas/RecipientNotMessageableProblem',
-            'https://api.x.com/2/problems/resource-not-found':
-              '#/components/schemas/ResourceNotFoundProblem',
-            'https://api.x.com/2/problems/resource-unavailable':
-              '#/components/schemas/ResourceUnavailableProblem',
-          },
-        },
+        description: 'The unique identifier of the Community this Post belongs to, if any.',
       }),
-  )
-  .openapi('Problem')
-
-const AcceptChatMessageRequestResponseSchema = z
-  .object({
-    data: AcceptChatMessageRequestResponseDataSchema.exactOptional(),
-    errors: z.array(ProblemSchema).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('AcceptChatMessageRequestResponse')
-
-const ActivityEventIdSchema = z
-  .string()
-  .regex(/^[0-9]{1,19}$/)
-  .openapi({
-    description: 'The unique identifier of an Activity event.',
-    example: '1146654567674912769',
-  })
-  .openapi('ActivityEventId')
-
-const KeywordSchema = z
-  .string()
-  .min(1)
-  .max(150)
-  .openapi({ description: 'A keyword to filter on.', example: 'The President' })
-  .openapi('Keyword')
-
-const UserIdSchema = z
-  .string()
-  .regex(/^[0-9]{1,19}$/)
-  .openapi({ description: 'Unique identifier of a User', example: '2244994945' })
-  .openapi('UserId')
-
-const ActivitySubscriptionFilterSchema = z
-  .strictObject({
-    direction: z
-      .enum(['inbound', 'outbound'])
-      .exactOptional()
-      .openapi({ description: 'Optional direction filter for directional events.' }),
-    keyword: KeywordSchema.exactOptional(),
-    user_id: UserIdSchema.exactOptional(),
-  })
-  .openapi({ description: 'An XAA subscription filter.', required: [] })
-  .openapi('ActivitySubscriptionFilter')
-
-const CallSchema = z
-  .object({
+    context_annotations: PostContextAnnotationsSchema.exactOptional(),
     conversation_id: z
       .string()
       .exactOptional()
-      .openapi({ description: 'XChat conversation the call belongs to, if any.' }),
-    created_at: z.string().exactOptional().openapi({ description: 'Creation time (RFC 3339).' }),
-    host_id: z.string().exactOptional().openapi({ description: "X user id of the call's host." }),
-    id: z
+      .openapi({
+        description:
+          "The ID of the conversation this Post belongs to (matches the root Post's ID).",
+      }),
+    created_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'Creation time of the Post.' }),
+    display_text_range: PostDisplayTextRangeSchema.exactOptional(),
+    edit_controls: PostEditControlsSchema.exactOptional(),
+    edit_history_post_ids: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: "A list of Post IDs in this Post's edit history chain." }),
+    entities: PostEntitiesSchema.exactOptional(),
+    geo: PostGeoSchema.exactOptional(),
+    id: z.string().exactOptional().openapi({ description: 'Unique identifier of this Post.' }),
+    in_reply_to_user_id: z
       .string()
       .exactOptional()
-      .openapi({ description: 'Unique identifier of the call; also its join secret.' }),
-    join_policy: z
+      .openapi({ description: 'Unique identifier of the User this Post is replying to.' }),
+    lang: z
       .string()
       .exactOptional()
       .openapi({
-        description:
-          "Who may join: open (anyone with the link), closed (the host admits people), or trusted (the host's Verified Organization).",
+        description: 'Language of the Post, if detected by X. Returned as a BCP47 language tag.',
       }),
-    join_url: z
-      .string()
+    matched_media_notes: PostMatchedMediaNotesSchema.exactOptional(),
+    media_metadata: PostMediaMetadataSchema.exactOptional(),
+    non_public_metrics: z
+      .looseObject({})
       .exactOptional()
-      .openapi({ description: 'Link people open to join the call on X.' }),
-    participant_count: z
-      .int()
+      .openapi({
+        description: 'Nonpublic engagement metrics for the Post at the time of the request.',
+      }),
+    note_post: PostNotePostSchema.exactOptional(),
+    note_request_suggestions: PostNoteRequestSuggestionsSchema.exactOptional(),
+    organic_metrics: z
+      .looseObject({})
       .exactOptional()
-      .openapi({ description: 'People in the call right now.' }),
-    title: z.string().exactOptional().openapi({ description: 'Title of the call.' }),
-    viewer_may_join: z
+      .openapi({
+        description:
+          'Organic nonpublic engagement metrics for the Post at the time of the request.',
+      }),
+    paid_partnership: z
       .boolean()
       .exactOptional()
-      .openapi({ description: 'Whether the authenticated user may join without asking the host.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('Call')
-
-const MediaNonPublicMetricsSchema = z
-  .object({
-    playback_0_count: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .nullable()
-      .exactOptional()
-      .openapi({
-        type: ['integer', 'null'],
-        format: 'int64',
-        description: 'Number of users who started playback (0% quartile) of this video.',
-      }),
-    playback_100_count: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .nullable()
-      .exactOptional()
-      .openapi({
-        type: ['integer', 'null'],
-        format: 'int64',
-        description: 'Number of users who completed playback (100% quartile) of this video.',
-      }),
-    playback_25_count: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .nullable()
-      .exactOptional()
-      .openapi({
-        type: ['integer', 'null'],
-        format: 'int64',
-        description: 'Number of users who watched at least 25% of this video.',
-      }),
-    playback_50_count: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .nullable()
-      .exactOptional()
-      .openapi({
-        type: ['integer', 'null'],
-        format: 'int64',
-        description: 'Number of users who watched at least 50% of this video.',
-      }),
-    playback_75_count: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .nullable()
-      .exactOptional()
-      .openapi({
-        type: ['integer', 'null'],
-        format: 'int64',
-        description: 'Number of users who watched at least 75% of this video.',
-      }),
-  })
-  .openapi({
-    description: 'Nonpublic engagement metrics for the media at the time of the request.',
-    required: [],
-  })
-  .openapi('MediaNonPublicMetrics')
-
-const MediaOrganicMetricsSchema = z
-  .object({
-    playback_0_count: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .nullable()
-      .exactOptional()
-      .openapi({
-        type: ['integer', 'null'],
-        format: 'int64',
-        description: 'Number of users who started playback (0% quartile) of this video.',
-      }),
-    playback_100_count: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .nullable()
-      .exactOptional()
-      .openapi({
-        type: ['integer', 'null'],
-        format: 'int64',
-        description: 'Number of users who completed playback (100% quartile) of this video.',
-      }),
-    playback_25_count: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .nullable()
-      .exactOptional()
-      .openapi({
-        type: ['integer', 'null'],
-        format: 'int64',
-        description: 'Number of users who watched at least 25% of this video.',
-      }),
-    playback_50_count: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .nullable()
-      .exactOptional()
-      .openapi({
-        type: ['integer', 'null'],
-        format: 'int64',
-        description: 'Number of users who watched at least 50% of this video.',
-      }),
-    playback_75_count: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .nullable()
-      .exactOptional()
-      .openapi({
-        type: ['integer', 'null'],
-        format: 'int64',
-        description: 'Number of users who watched at least 75% of this video.',
-      }),
-    view_count: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .nullable()
-      .exactOptional()
-      .openapi({
-        type: ['integer', 'null'],
-        format: 'int64',
-        description:
-          'The number of organic views of this video. Null when the backend returns quartile data without a view count.',
-      }),
-  })
-  .openapi({
-    description: 'Organic nonpublic engagement metrics for the media at the time of the request.',
-    required: [],
-  })
-  .openapi('MediaOrganicMetrics')
-
-const MediaPromotedMetricsSchema = z
-  .object({
-    playback_0_count: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .nullable()
-      .exactOptional()
-      .openapi({
-        type: ['integer', 'null'],
-        format: 'int64',
-        description: 'Number of users who started playback (0% quartile) of this video.',
-      }),
-    playback_100_count: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .nullable()
-      .exactOptional()
-      .openapi({
-        type: ['integer', 'null'],
-        format: 'int64',
-        description: 'Number of users who completed playback (100% quartile) of this video.',
-      }),
-    playback_25_count: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .nullable()
-      .exactOptional()
-      .openapi({
-        type: ['integer', 'null'],
-        format: 'int64',
-        description: 'Number of users who watched at least 25% of this video.',
-      }),
-    playback_50_count: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .nullable()
-      .exactOptional()
-      .openapi({
-        type: ['integer', 'null'],
-        format: 'int64',
-        description: 'Number of users who watched at least 50% of this video.',
-      }),
-    playback_75_count: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .nullable()
-      .exactOptional()
-      .openapi({
-        type: ['integer', 'null'],
-        format: 'int64',
-        description: 'Number of users who watched at least 75% of this video.',
-      }),
-    view_count: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .nullable()
-      .exactOptional()
-      .openapi({
-        type: ['integer', 'null'],
-        format: 'int64',
-        description:
-          'The number of promoted views of this video. Null when the backend returns quartile data without a view count.',
-      }),
-  })
-  .openapi({
-    description: 'Promoted nonpublic engagement metrics for the media at the time of the request.',
-    required: [],
-  })
-  .openapi('MediaPromotedMetrics')
-
-const MediaPublicMetricsSchema = z
-  .object({
-    view_count: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'The number of times this video has been viewed.',
-      }),
-  })
-  .openapi({
-    description: 'Public engagement metrics for the media at the time of the request.',
-    required: ['view_count'],
-  })
-  .openapi('MediaPublicMetrics')
-
-const MediaVariantsSchema = z
-  .array(
-    z
-      .object({
-        bit_rate: z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .nullable()
-          .exactOptional()
-          .openapi({
-            type: ['integer', 'null'],
-            format: 'int64',
-            description:
-              'The bit rate of this variant, in bits per second. Absent for playlist variants.',
-          }),
-        content_type: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'The MIME type of this variant, for example "video/mp4" or "application/x-mpegURL".',
-          }),
-        url: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'The URL to this media variant.' }),
-      })
-      .openapi({
-        description: 'A single playback or display variant of a media object.',
-        required: [],
-      }),
-  )
-  .openapi({
-    description:
-      'Each media object may have multiple display or playback variants, with different resolutions or formats.',
-  })
-  .openapi('MediaVariants')
-
-const MediaSchema = z
-  .object({
-    alt_text: z.string().exactOptional(),
-    duration_ms: z.int().exactOptional(),
-    height: z.int().exactOptional(),
-    media_key: z.string().exactOptional(),
-    non_public_metrics: MediaNonPublicMetricsSchema.exactOptional(),
-    organic_metrics: MediaOrganicMetricsSchema.exactOptional(),
-    preview_image_url: z.string().exactOptional(),
-    promoted_metrics: MediaPromotedMetricsSchema.exactOptional(),
-    public_metrics: MediaPublicMetricsSchema.exactOptional(),
-    type: z.string().exactOptional(),
-    url: z.string().exactOptional(),
-    variants: MediaVariantsSchema.exactOptional(),
-    width: z.int().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('Media')
-
-const PlaceContainedWithinSchema = z
-  .array(z.string())
-  .openapi({ description: 'A list of unique identifiers of the Places that contain this place.' })
-  .openapi('PlaceContainedWithin')
-
-const PlaceGeoSchema = z
-  .object({
-    bbox: z
-      .array(z.float64())
-      .length(4)
       .openapi({
         description:
-          'The bounding box as [southwest_longitude, southwest_latitude, northeast_longitude, northeast_latitude].',
+          'Indicates if this Post is a paid partnership, i.e. it has been disclosed by the author as containing paid promotion.',
       }),
-    properties: z.object({}).openapi({ description: 'Additional GeoJSON feature properties.' }),
-    type: z.xor([z.literal('Feature')]).openapi({ description: 'The GeoJSON feature type.' }),
-  })
-  .openapi({
-    description: 'The geographic location of this place, expressed as a GeoJSON Feature.',
-    required: ['type', 'bbox', 'properties'],
-  })
-  .openapi('PlaceGeo')
-
-const PlaceSchema = z
-  .object({
-    contained_within: PlaceContainedWithinSchema.exactOptional(),
-    country: z.string().exactOptional(),
-    country_code: z.string().exactOptional(),
-    full_name: z.string().exactOptional(),
-    geo: PlaceGeoSchema.exactOptional(),
-    id: z.string().exactOptional(),
-    name: z.string().exactOptional(),
-    place_type: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('Place')
-
-const PollOptionsSchema = z
-  .array(
-    z
-      .object({
-        label: z.string().openapi({ description: 'The text label of this poll option.' }),
-        position: z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({
-            type: 'integer',
-            format: 'int64',
-            description: 'The 1-based position of this option within the poll.',
-          }),
-        votes: z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({
-            type: 'integer',
-            format: 'int64',
-            description: 'The number of votes this option has received.',
-          }),
-      })
+    possibly_sensitive: z
+      .boolean()
+      .exactOptional()
       .openapi({
-        description: 'A single option (choice) available in a poll.',
-        required: ['position', 'label', 'votes'],
+        description:
+          'Indicates if this Post contains URLs marked as sensitive, for example content suitable for mature audiences.',
       }),
-  )
-  .openapi({ description: 'The list of options (choices) available in this poll.' })
-  .openapi('PollOptions')
-
-const PollSchema = z
-  .object({
-    duration_minutes: z.int().exactOptional(),
-    end_datetime: z.string().exactOptional(),
-    id: z.string().exactOptional(),
-    options: PollOptionsSchema.exactOptional(),
-    voting_status: z.string().exactOptional(),
+    promoted_metrics: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({
+        description:
+          'Promoted nonpublic engagement metrics for the Post at the time of the request.',
+      }),
+    public_metrics: PostPublicMetricsSchema.exactOptional(),
+    referenced_posts: PostReferencedPostsSchema.exactOptional(),
+    reply_settings: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Shows who can reply to this Post.' }),
+    scopes: PostScopesSchema.exactOptional(),
+    source: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the app the user posted from. This is deprecated.' }),
+    suggested_source_links: PostSuggestedSourceLinksSchema.exactOptional(),
+    suggested_source_links_with_counts: PostSuggestedSourceLinksWithCountsSchema.exactOptional(),
+    text: z.string().exactOptional().openapi({ description: 'The content of the Post.' }),
+    username: z.string().exactOptional(),
+    withheld: PostWithheldSchema.exactOptional(),
   })
   .openapi({ required: [] })
-  .openapi('Poll')
-
-const PostSchema: z.ZodType<PostType> = z
-  .lazy(() =>
-    z
-      .object({
-        article: z.object({}).exactOptional(),
-        article_title: z
-          .object({})
-          .exactOptional()
-          .openapi({
-            description: 'Metadata about the long-form Article attached to this Post, if any.',
-          }),
-        attachments: PostAttachmentsSchema.exactOptional(),
-        author_id: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Unique identifier of the author of this Post.' }),
-        card_uri: z.string().exactOptional(),
-        community_id: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'The unique identifier of the Community this Post belongs to, if any.',
-          }),
-        context_annotations: PostContextAnnotationsSchema.exactOptional(),
-        conversation_id: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              "The ID of the conversation this Post belongs to (matches the root Post's ID).",
-          }),
-        created_at: z.iso
-          .datetime({ offset: true })
-          .exactOptional()
-          .openapi({ description: 'Creation time of the Post.' }),
-        display_text_range: PostDisplayTextRangeSchema.exactOptional(),
-        edit_controls: PostEditControlsSchema.exactOptional(),
-        edit_history_post_ids: z
-          .array(z.string())
-          .exactOptional()
-          .openapi({ description: "A list of Post IDs in this Post's edit history chain." }),
-        entities: PostEntitiesSchema.exactOptional(),
-        geo: PostGeoSchema.exactOptional(),
-        id: z.string().exactOptional().openapi({ description: 'Unique identifier of this Post.' }),
-        in_reply_to_user_id: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Unique identifier of the User this Post is replying to.' }),
-        lang: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Language of the Post, if detected by X. Returned as a BCP47 language tag.',
-          }),
-        matched_media_notes: PostMatchedMediaNotesSchema.exactOptional(),
-        media_metadata: PostMediaMetadataSchema.exactOptional(),
-        non_public_metrics: z
-          .object({})
-          .exactOptional()
-          .openapi({
-            description: 'Nonpublic engagement metrics for the Post at the time of the request.',
-          }),
-        note_post: PostNotePostSchema.exactOptional(),
-        note_request_suggestions: PostNoteRequestSuggestionsSchema.exactOptional(),
-        organic_metrics: z
-          .object({})
-          .exactOptional()
-          .openapi({
-            description:
-              'Organic nonpublic engagement metrics for the Post at the time of the request.',
-          }),
-        paid_partnership: z
-          .boolean()
-          .exactOptional()
-          .openapi({
-            description:
-              'Indicates if this Post is a paid partnership, i.e. it has been disclosed by the author as containing paid promotion.',
-          }),
-        possibly_sensitive: z
-          .boolean()
-          .exactOptional()
-          .openapi({
-            description:
-              'Indicates if this Post contains URLs marked as sensitive, for example content suitable for mature audiences.',
-          }),
-        promoted_metrics: z
-          .object({})
-          .exactOptional()
-          .openapi({
-            description:
-              'Promoted nonpublic engagement metrics for the Post at the time of the request.',
-          }),
-        public_metrics: PostPublicMetricsSchema.exactOptional(),
-        referenced_posts: PostReferencedPostsSchema.exactOptional(),
-        reply_settings: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Shows who can reply to this Post.' }),
-        scopes: PostScopesSchema.exactOptional(),
-        source: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'The name of the app the user posted from. This is deprecated.',
-          }),
-        suggested_source_links: PostSuggestedSourceLinksSchema.exactOptional(),
-        suggested_source_links_with_counts:
-          PostSuggestedSourceLinksWithCountsSchema.exactOptional(),
-        text: z.string().exactOptional().openapi({ description: 'The content of the Post.' }),
-        username: z.string().exactOptional(),
-        withheld: PostWithheldSchema.exactOptional(),
-      })
-      .openapi({ required: [] }),
-  )
   .openapi('Post')
 
 const TopicSchema = z
@@ -3173,6 +2227,13 @@ const UserSchema = z
       .string()
       .exactOptional()
       .openapi({ description: 'The friendly name of this User, as shown on their profile.' }),
+    org_only: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          "Indicates if this User is an org-only bot, which only members of its developer account can add to group chats. Omitted when it can't be determined for you, so it is never reported as false in that case. A bot can read its own value with its own token.",
+      }),
     parody: z
       .boolean()
       .exactOptional()
@@ -3197,10 +2258,20 @@ const UserSchema = z
           "Indicates if this User has chosen to protect their Posts (in other words, if this User's Posts are private).",
       }),
     public_metrics: UserPublicMetricsSchema.exactOptional(),
+    receives_your_chat: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "How you can send a Chat message to this User: encrypted (end-to-end, the default), unencrypted (X Chat can't encrypt your 1:1 chat, so send plaintext `content` instead), or none (you can't message them).",
+      }),
     receives_your_dm: z
       .boolean()
       .exactOptional()
-      .openapi({ description: 'Indicates if you can send a DM to this User.' }),
+      .openapi({
+        description:
+          "Indicates if you can send a DM to this User. Omitted when the DM permission can't be determined, so it is never reported as false in that case.",
+      }),
     subscriber_count: z
       .int()
       .exactOptional()
@@ -3245,7 +2316,17 @@ const UserSchema = z
   .openapi({ required: [] })
   .openapi('User')
 
-const ExpansionsSchema = z
+type ExpansionsType = {
+  calls?: z.infer<typeof CallSchema>[]
+  media?: z.infer<typeof MediaSchema>[]
+  places?: z.infer<typeof PlaceSchema>[]
+  polls?: z.infer<typeof PollSchema>[]
+  posts?: z.infer<typeof PostSchema>[]
+  topics?: z.infer<typeof TopicSchema>[]
+  users?: z.infer<typeof UserSchema>[]
+}
+
+const ExpansionsSchema: z.ZodType<ExpansionsType> = z
   .object({
     calls: z.array(CallSchema).exactOptional(),
     media: z.array(MediaSchema).exactOptional(),
@@ -3273,7 +2354,36 @@ const NewsActivityResponsePayloadSchema = z
   .openapi({ required: [] })
   .openapi('NewsActivityResponsePayload')
 
-const FollowActivityResponsePayloadSchema = z
+const TrendActivityLocationSchema = z
+  .strictObject({
+    country: z.string().exactOptional(),
+    country_code: z.string().exactOptional(),
+    name: z.string(),
+    parent_id: z.int().exactOptional(),
+    place_type: z.enum(['town', 'country', 'supername']).exactOptional(),
+    woeid: z.int(),
+  })
+  .openapi({ description: 'The location where the trend surfaced.', required: ['woeid', 'name'] })
+  .openapi('TrendActivityLocation')
+
+const TrendActivityResponsePayloadSchema = z
+  .strictObject({
+    location: TrendActivityLocationSchema,
+    trend_name: z.string(),
+    tweet_count: z.int().exactOptional(),
+  })
+  .openapi({
+    description: 'A newly surfaced trend in a WOEID location.',
+    required: ['trend_name', 'location'],
+  })
+  .openapi('TrendActivityResponsePayload')
+
+type FollowActivityResponsePayloadType = {
+  source?: z.infer<typeof UserSchema>
+  target?: z.infer<typeof UserSchema>
+}
+
+const FollowActivityResponsePayloadSchema: z.ZodType<FollowActivityResponsePayloadType> = z
   .strictObject({ source: UserSchema.exactOptional(), target: UserSchema.exactOptional() })
   .openapi({ required: [] })
   .openapi('FollowActivityResponsePayload')
@@ -3318,10 +2428,20 @@ const LikeWithPostAuthorSchema = z
   })
   .openapi('LikeWithPostAuthor')
 
-const ActivityStreamingResponsePayloadSchema = z
+type ActivityStreamingResponsePayloadType =
+  | z.infer<typeof ProfileUpdateActivityResponsePayloadSchema>
+  | z.infer<typeof NewsActivityResponsePayloadSchema>
+  | z.infer<typeof TrendActivityResponsePayloadSchema>
+  | z.infer<typeof FollowActivityResponsePayloadSchema>
+  | z.infer<typeof PostSchema>
+  | z.infer<typeof PostDeleteActivityResponsePayloadSchema>
+  | z.infer<typeof LikeWithPostAuthorSchema>
+
+const ActivityStreamingResponsePayloadSchema: z.ZodType<ActivityStreamingResponsePayloadType> = z
   .xor([
     ProfileUpdateActivityResponsePayloadSchema,
     NewsActivityResponsePayloadSchema,
+    TrendActivityResponsePayloadSchema,
     FollowActivityResponsePayloadSchema,
     PostSchema,
     PostDeleteActivityResponsePayloadSchema,
@@ -3356,12 +2476,2548 @@ const ActivityStreamingResponsePayloadSchema = z
           '#/components/schemas/ProfileUpdateActivityResponsePayload',
         'subscriptions.subscribe': '#/components/schemas/FollowActivityResponsePayload',
         'subscriptions.unsubscribe': '#/components/schemas/FollowActivityResponsePayload',
+        'trends.new': '#/components/schemas/TrendActivityResponsePayload',
       },
     },
   })
   .openapi('ActivityStreamingResponsePayload')
 
-const ActivityStreamResponseSchema = z
+const ResourceNotFoundProblemSchema = z
+  .object({
+    detail: z.string(),
+    parameter: z.string().exactOptional(),
+    resource_id: z.string().exactOptional(),
+    resource_type: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/resource-not-found'),
+    value: z.string().exactOptional(),
+  })
+  .openapi({ required: ['type', 'title', 'detail', 'resource_type'] })
+  .openapi('ResourceNotFoundProblem')
+
+const InvalidRequestProblemSchema = z
+  .object({
+    detail: z.string(),
+    parameter: z.string().exactOptional(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/invalid-request'),
+    value: z.string().exactOptional(),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('InvalidRequestProblem')
+
+const NotAuthorizedForResourceProblemSchema = z
+  .object({
+    detail: z.string(),
+    parameter: z.string().exactOptional(),
+    resource_id: z.string().exactOptional(),
+    resource_type: z.string(),
+    section: z.string().exactOptional(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/not-authorized-for-resource'),
+    value: z.string().exactOptional(),
+  })
+  .openapi({ required: ['type', 'title', 'detail', 'resource_type'] })
+  .openapi('NotAuthorizedForResourceProblem')
+
+const NotAuthorizedForFieldProblemSchema = z
+  .object({
+    detail: z.string(),
+    field: z.string(),
+    parameter: z.string().exactOptional(),
+    resource_id: z.string().exactOptional(),
+    resource_type: z.string().exactOptional(),
+    section: z.string().exactOptional(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/not-authorized-for-field'),
+    value: z.string().exactOptional(),
+  })
+  .openapi({ required: ['type', 'title', 'detail', 'field'] })
+  .openapi('NotAuthorizedForFieldProblem')
+
+const FieldUnauthorizedProblemSchema = z
+  .object({
+    detail: z.string(),
+    field: z.string(),
+    resource_type: z.string().exactOptional(),
+    section: z.string().exactOptional(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/field-unauthorized'),
+  })
+  .openapi({ required: ['type', 'title', 'detail', 'field'] })
+  .openapi('FieldUnauthorizedProblem')
+
+const FieldHydrationFailureProblemSchema = z
+  .object({
+    detail: z.string(),
+    field: z.string(),
+    resource_type: z.string().exactOptional(),
+    section: z.string().exactOptional(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/field-hydration-failure'),
+  })
+  .openapi({ required: ['type', 'title', 'detail', 'field'] })
+  .openapi('FieldHydrationFailureProblem')
+
+const ResourceUnavailableProblemSchema = z
+  .object({
+    detail: z.string(),
+    resource_id: z.string().exactOptional(),
+    resource_type: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/resource-unavailable'),
+  })
+  .openapi({ required: ['type', 'title', 'detail', 'resource_type'] })
+  .openapi('ResourceUnavailableProblem')
+
+const DisallowedResourceProblemSchema = z
+  .object({
+    detail: z.string(),
+    resource_id: z.string().exactOptional(),
+    resource_type: z.string().exactOptional(),
+    section: z.string().exactOptional(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/disallowed-resource'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('DisallowedResourceProblem')
+
+const RecipientNotMessageableProblemSchema = z
+  .object({
+    detail: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/recipient-not-messageable'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('RecipientNotMessageableProblem')
+
+const InternalErrorProblemSchema = z
+  .object({
+    detail: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/internal-error'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('InternalErrorProblem')
+
+const ChatPermissionsUnavailableProblemSchema = z
+  .object({
+    detail: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/chat-permissions-unavailable'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('ChatPermissionsUnavailableProblem')
+
+const EncryptionRequiredProblemSchema = z
+  .object({
+    detail: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/encryption-required'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('EncryptionRequiredProblem')
+
+const MessageRequestNotSupportedProblemSchema = z
+  .object({
+    detail: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/message-request-not-supported'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('MessageRequestNotSupportedProblem')
+
+const RecipientXchatSetupRequiredProblemSchema = z
+  .object({
+    detail: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/recipient-xchat-setup-required'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('RecipientXchatSetupRequiredProblem')
+
+const UnencryptedSendNotAllowedProblemSchema = z
+  .object({
+    detail: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/unencrypted-send-not-allowed'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('UnencryptedSendNotAllowedProblem')
+
+const XchatSetupRequiredProblemSchema = z
+  .object({
+    detail: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/xchat-setup-required'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('XchatSetupRequiredProblem')
+
+const DmBadAttachmentProblemSchema = z
+  .object({
+    detail: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/dm-bad-attachment'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('DmBadAttachmentProblem')
+
+const DmBadCtaProblemSchema = z
+  .object({
+    detail: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/dm-bad-cta'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('DmBadCtaProblem')
+
+const DmBadCustomProfileProblemSchema = z
+  .object({
+    detail: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/dm-bad-custom-profile'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('DmBadCustomProfileProblem')
+
+const DmBadMediaProblemSchema = z
+  .object({
+    detail: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/dm-bad-media'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('DmBadMediaProblem')
+
+const DmBadQuickReplyProblemSchema = z
+  .object({
+    detail: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/dm-bad-quick-reply'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('DmBadQuickReplyProblem')
+
+const DmBadUrlProblemSchema = z
+  .object({
+    detail: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/dm-bad-url'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('DmBadUrlProblem')
+
+const DmConversationNameTooLongProblemSchema = z
+  .object({
+    detail: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/dm-conversation-name-too-long'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('DmConversationNameTooLongProblem')
+
+const DmConversationNotFoundProblemSchema = z
+  .object({
+    detail: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/dm-conversation-not-found'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('DmConversationNotFoundProblem')
+
+const DmDuplicateProblemSchema = z
+  .object({
+    detail: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/dm-duplicate'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('DmDuplicateProblem')
+
+const DmInactiveDeviceProblemSchema = z
+  .object({
+    detail: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/dm-inactive-device'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('DmInactiveDeviceProblem')
+
+const DmNotDeliveredProblemSchema = z
+  .object({
+    detail: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/dm-not-delivered'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('DmNotDeliveredProblem')
+
+const DmNotFoundProblemSchema = z
+  .object({
+    detail: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/dm-not-found'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('DmNotFoundProblem')
+
+const DmNotOwnerProblemSchema = z
+  .object({
+    detail: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/dm-not-owner'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('DmNotOwnerProblem')
+
+const DmParticipantNotAddedProblemSchema = z
+  .object({
+    detail: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/dm-participant-not-added'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('DmParticipantNotAddedProblem')
+
+const DmParticipantNotFoundProblemSchema = z
+  .object({
+    detail: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/dm-participant-not-found'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('DmParticipantNotFoundProblem')
+
+const DmParticipantRestrictedProblemSchema = z
+  .object({
+    detail: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/dm-participant-restricted'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('DmParticipantRestrictedProblem')
+
+const DmParticipantUnavailableProblemSchema = z
+  .object({
+    detail: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/dm-participant-unavailable'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('DmParticipantUnavailableProblem')
+
+const DmRateLimitedProblemSchema = z
+  .object({
+    detail: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/dm-rate-limited'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('DmRateLimitedProblem')
+
+const DmRecipientBlocksSenderProblemSchema = z
+  .object({
+    detail: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/dm-recipient-blocks-sender'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('DmRecipientBlocksSenderProblem')
+
+const DmRecipientCannotReceiveProblemSchema = z
+  .object({
+    detail: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/dm-recipient-cannot-receive'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('DmRecipientCannotReceiveProblem')
+
+const DmRecipientEncryptedUnavailableProblemSchema = z
+  .object({
+    detail: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/dm-recipient-encrypted-unavailable'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('DmRecipientEncryptedUnavailableProblem')
+
+const DmRecipientNotAcceptingProblemSchema = z
+  .object({
+    detail: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/dm-recipient-not-accepting'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('DmRecipientNotAcceptingProblem')
+
+const DmRecipientNotFoundProblemSchema = z
+  .object({
+    detail: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/dm-recipient-not-found'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('DmRecipientNotFoundProblem')
+
+const DmRecipientRestrictsGroupsProblemSchema = z
+  .object({
+    detail: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/dm-recipient-restricts-groups'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('DmRecipientRestrictsGroupsProblem')
+
+const DmRecipientUnavailableProblemSchema = z
+  .object({
+    detail: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/dm-recipient-unavailable'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('DmRecipientUnavailableProblem')
+
+const DmRequestInProgressProblemSchema = z
+  .object({
+    detail: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/dm-request-in-progress'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('DmRequestInProgressProblem')
+
+const DmSafetyLimitedProblemSchema = z
+  .object({
+    detail: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/dm-safety-limited'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('DmSafetyLimitedProblem')
+
+const DmSafetyRejectedProblemSchema = z
+  .object({
+    detail: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/dm-safety-rejected'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('DmSafetyRejectedProblem')
+
+const DmSenderBlocksRecipientProblemSchema = z
+  .object({
+    detail: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/dm-sender-blocks-recipient'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('DmSenderBlocksRecipientProblem')
+
+const DmSenderDeclinedDmsProblemSchema = z
+  .object({
+    detail: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/dm-sender-declined-dms'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('DmSenderDeclinedDmsProblem')
+
+const DmSenderDmsClosedProblemSchema = z
+  .object({
+    detail: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/dm-sender-dms-closed'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('DmSenderDmsClosedProblem')
+
+const DmSenderEncryptedUnavailableProblemSchema = z
+  .object({
+    detail: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/dm-sender-encrypted-unavailable'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('DmSenderEncryptedUnavailableProblem')
+
+const DmSenderNotInConversationProblemSchema = z
+  .object({
+    detail: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/dm-sender-not-in-conversation'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('DmSenderNotInConversationProblem')
+
+const DmSenderNotPermittedProblemSchema = z
+  .object({
+    detail: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/dm-sender-not-permitted'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('DmSenderNotPermittedProblem')
+
+const DmSenderNotVerifiedProblemSchema = z
+  .object({
+    detail: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/dm-sender-not-verified'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('DmSenderNotVerifiedProblem')
+
+const DmSenderPhoneRequiredProblemSchema = z
+  .object({
+    detail: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/dm-sender-phone-required'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('DmSenderPhoneRequiredProblem')
+
+const DmSenderReadOnlyProblemSchema = z
+  .object({
+    detail: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/dm-sender-read-only'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('DmSenderReadOnlyProblem')
+
+const DmSenderUnavailableProblemSchema = z
+  .object({
+    detail: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/dm-sender-unavailable'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('DmSenderUnavailableProblem')
+
+const DmTextEmptyProblemSchema = z
+  .object({
+    detail: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/dm-text-empty'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('DmTextEmptyProblem')
+
+const DmTextTooLongProblemSchema = z
+  .object({
+    detail: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/dm-text-too-long'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('DmTextTooLongProblem')
+
+const DmTooFewParticipantsProblemSchema = z
+  .object({
+    detail: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/dm-too-few-participants'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('DmTooFewParticipantsProblem')
+
+const DmTooManyParticipantsProblemSchema = z
+  .object({
+    detail: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/dm-too-many-participants'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('DmTooManyParticipantsProblem')
+
+const DmUnsupportedMessageProblemSchema = z
+  .object({
+    detail: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/dm-unsupported-message'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('DmUnsupportedMessageProblem')
+
+const DuplicateRuleProblemSchema = z
+  .object({
+    detail: z.string().exactOptional(),
+    id: z.string().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.twitter.com/2/problems/duplicate-rules'),
+    value: z.string(),
+  })
+  .openapi({ required: ['type', 'title', 'value'] })
+  .openapi('DuplicateRuleProblem')
+
+const InvalidRuleProblemSchema = z
+  .object({
+    detail: z.string().exactOptional(),
+    details: z.array(z.string()),
+    title: z.string(),
+    type: z.literal('https://api.twitter.com/2/problems/invalid-rules'),
+    value: z.string().exactOptional(),
+  })
+  .openapi({ required: ['type', 'title', 'details'] })
+  .openapi('InvalidRuleProblem')
+
+const ProblemSchema = z
+  .discriminatedUnion('type', [
+    ResourceNotFoundProblemSchema,
+    InvalidRequestProblemSchema,
+    NotAuthorizedForResourceProblemSchema,
+    NotAuthorizedForFieldProblemSchema,
+    FieldUnauthorizedProblemSchema,
+    FieldHydrationFailureProblemSchema,
+    ResourceUnavailableProblemSchema,
+    DisallowedResourceProblemSchema,
+    RecipientNotMessageableProblemSchema,
+    InternalErrorProblemSchema,
+    ChatPermissionsUnavailableProblemSchema,
+    EncryptionRequiredProblemSchema,
+    MessageRequestNotSupportedProblemSchema,
+    RecipientXchatSetupRequiredProblemSchema,
+    UnencryptedSendNotAllowedProblemSchema,
+    XchatSetupRequiredProblemSchema,
+    DmBadAttachmentProblemSchema,
+    DmBadCtaProblemSchema,
+    DmBadCustomProfileProblemSchema,
+    DmBadMediaProblemSchema,
+    DmBadQuickReplyProblemSchema,
+    DmBadUrlProblemSchema,
+    DmConversationNameTooLongProblemSchema,
+    DmConversationNotFoundProblemSchema,
+    DmDuplicateProblemSchema,
+    DmInactiveDeviceProblemSchema,
+    DmNotDeliveredProblemSchema,
+    DmNotFoundProblemSchema,
+    DmNotOwnerProblemSchema,
+    DmParticipantNotAddedProblemSchema,
+    DmParticipantNotFoundProblemSchema,
+    DmParticipantRestrictedProblemSchema,
+    DmParticipantUnavailableProblemSchema,
+    DmRateLimitedProblemSchema,
+    DmRecipientBlocksSenderProblemSchema,
+    DmRecipientCannotReceiveProblemSchema,
+    DmRecipientEncryptedUnavailableProblemSchema,
+    DmRecipientNotAcceptingProblemSchema,
+    DmRecipientNotFoundProblemSchema,
+    DmRecipientRestrictsGroupsProblemSchema,
+    DmRecipientUnavailableProblemSchema,
+    DmRequestInProgressProblemSchema,
+    DmSafetyLimitedProblemSchema,
+    DmSafetyRejectedProblemSchema,
+    DmSenderBlocksRecipientProblemSchema,
+    DmSenderDeclinedDmsProblemSchema,
+    DmSenderDmsClosedProblemSchema,
+    DmSenderEncryptedUnavailableProblemSchema,
+    DmSenderNotInConversationProblemSchema,
+    DmSenderNotPermittedProblemSchema,
+    DmSenderNotVerifiedProblemSchema,
+    DmSenderPhoneRequiredProblemSchema,
+    DmSenderReadOnlyProblemSchema,
+    DmSenderUnavailableProblemSchema,
+    DmTextEmptyProblemSchema,
+    DmTextTooLongProblemSchema,
+    DmTooFewParticipantsProblemSchema,
+    DmTooManyParticipantsProblemSchema,
+    DmUnsupportedMessageProblemSchema,
+    DuplicateRuleProblemSchema,
+    InvalidRuleProblemSchema,
+  ])
+  .openapi({
+    discriminator: {
+      propertyName: 'type',
+      mapping: {
+        'https://api.twitter.com/2/problems/duplicate-rules':
+          '#/components/schemas/DuplicateRuleProblem',
+        'https://api.twitter.com/2/problems/invalid-rules':
+          '#/components/schemas/InvalidRuleProblem',
+        'https://api.x.com/2/problems/chat-permissions-unavailable':
+          '#/components/schemas/ChatPermissionsUnavailableProblem',
+        'https://api.x.com/2/problems/disallowed-resource':
+          '#/components/schemas/DisallowedResourceProblem',
+        'https://api.x.com/2/problems/dm-bad-attachment':
+          '#/components/schemas/DmBadAttachmentProblem',
+        'https://api.x.com/2/problems/dm-bad-cta': '#/components/schemas/DmBadCtaProblem',
+        'https://api.x.com/2/problems/dm-bad-custom-profile':
+          '#/components/schemas/DmBadCustomProfileProblem',
+        'https://api.x.com/2/problems/dm-bad-media': '#/components/schemas/DmBadMediaProblem',
+        'https://api.x.com/2/problems/dm-bad-quick-reply':
+          '#/components/schemas/DmBadQuickReplyProblem',
+        'https://api.x.com/2/problems/dm-bad-url': '#/components/schemas/DmBadUrlProblem',
+        'https://api.x.com/2/problems/dm-conversation-name-too-long':
+          '#/components/schemas/DmConversationNameTooLongProblem',
+        'https://api.x.com/2/problems/dm-conversation-not-found':
+          '#/components/schemas/DmConversationNotFoundProblem',
+        'https://api.x.com/2/problems/dm-duplicate': '#/components/schemas/DmDuplicateProblem',
+        'https://api.x.com/2/problems/dm-inactive-device':
+          '#/components/schemas/DmInactiveDeviceProblem',
+        'https://api.x.com/2/problems/dm-not-delivered':
+          '#/components/schemas/DmNotDeliveredProblem',
+        'https://api.x.com/2/problems/dm-not-found': '#/components/schemas/DmNotFoundProblem',
+        'https://api.x.com/2/problems/dm-not-owner': '#/components/schemas/DmNotOwnerProblem',
+        'https://api.x.com/2/problems/dm-participant-not-added':
+          '#/components/schemas/DmParticipantNotAddedProblem',
+        'https://api.x.com/2/problems/dm-participant-not-found':
+          '#/components/schemas/DmParticipantNotFoundProblem',
+        'https://api.x.com/2/problems/dm-participant-restricted':
+          '#/components/schemas/DmParticipantRestrictedProblem',
+        'https://api.x.com/2/problems/dm-participant-unavailable':
+          '#/components/schemas/DmParticipantUnavailableProblem',
+        'https://api.x.com/2/problems/dm-rate-limited': '#/components/schemas/DmRateLimitedProblem',
+        'https://api.x.com/2/problems/dm-recipient-blocks-sender':
+          '#/components/schemas/DmRecipientBlocksSenderProblem',
+        'https://api.x.com/2/problems/dm-recipient-cannot-receive':
+          '#/components/schemas/DmRecipientCannotReceiveProblem',
+        'https://api.x.com/2/problems/dm-recipient-encrypted-unavailable':
+          '#/components/schemas/DmRecipientEncryptedUnavailableProblem',
+        'https://api.x.com/2/problems/dm-recipient-not-accepting':
+          '#/components/schemas/DmRecipientNotAcceptingProblem',
+        'https://api.x.com/2/problems/dm-recipient-not-found':
+          '#/components/schemas/DmRecipientNotFoundProblem',
+        'https://api.x.com/2/problems/dm-recipient-restricts-groups':
+          '#/components/schemas/DmRecipientRestrictsGroupsProblem',
+        'https://api.x.com/2/problems/dm-recipient-unavailable':
+          '#/components/schemas/DmRecipientUnavailableProblem',
+        'https://api.x.com/2/problems/dm-request-in-progress':
+          '#/components/schemas/DmRequestInProgressProblem',
+        'https://api.x.com/2/problems/dm-safety-limited':
+          '#/components/schemas/DmSafetyLimitedProblem',
+        'https://api.x.com/2/problems/dm-safety-rejected':
+          '#/components/schemas/DmSafetyRejectedProblem',
+        'https://api.x.com/2/problems/dm-sender-blocks-recipient':
+          '#/components/schemas/DmSenderBlocksRecipientProblem',
+        'https://api.x.com/2/problems/dm-sender-declined-dms':
+          '#/components/schemas/DmSenderDeclinedDmsProblem',
+        'https://api.x.com/2/problems/dm-sender-dms-closed':
+          '#/components/schemas/DmSenderDmsClosedProblem',
+        'https://api.x.com/2/problems/dm-sender-encrypted-unavailable':
+          '#/components/schemas/DmSenderEncryptedUnavailableProblem',
+        'https://api.x.com/2/problems/dm-sender-not-in-conversation':
+          '#/components/schemas/DmSenderNotInConversationProblem',
+        'https://api.x.com/2/problems/dm-sender-not-permitted':
+          '#/components/schemas/DmSenderNotPermittedProblem',
+        'https://api.x.com/2/problems/dm-sender-not-verified':
+          '#/components/schemas/DmSenderNotVerifiedProblem',
+        'https://api.x.com/2/problems/dm-sender-phone-required':
+          '#/components/schemas/DmSenderPhoneRequiredProblem',
+        'https://api.x.com/2/problems/dm-sender-read-only':
+          '#/components/schemas/DmSenderReadOnlyProblem',
+        'https://api.x.com/2/problems/dm-sender-unavailable':
+          '#/components/schemas/DmSenderUnavailableProblem',
+        'https://api.x.com/2/problems/dm-text-empty': '#/components/schemas/DmTextEmptyProblem',
+        'https://api.x.com/2/problems/dm-text-too-long':
+          '#/components/schemas/DmTextTooLongProblem',
+        'https://api.x.com/2/problems/dm-too-few-participants':
+          '#/components/schemas/DmTooFewParticipantsProblem',
+        'https://api.x.com/2/problems/dm-too-many-participants':
+          '#/components/schemas/DmTooManyParticipantsProblem',
+        'https://api.x.com/2/problems/dm-unsupported-message':
+          '#/components/schemas/DmUnsupportedMessageProblem',
+        'https://api.x.com/2/problems/encryption-required':
+          '#/components/schemas/EncryptionRequiredProblem',
+        'https://api.x.com/2/problems/field-hydration-failure':
+          '#/components/schemas/FieldHydrationFailureProblem',
+        'https://api.x.com/2/problems/field-unauthorized':
+          '#/components/schemas/FieldUnauthorizedProblem',
+        'https://api.x.com/2/problems/internal-error': '#/components/schemas/InternalErrorProblem',
+        'https://api.x.com/2/problems/invalid-request':
+          '#/components/schemas/InvalidRequestProblem',
+        'https://api.x.com/2/problems/message-request-not-supported':
+          '#/components/schemas/MessageRequestNotSupportedProblem',
+        'https://api.x.com/2/problems/not-authorized-for-field':
+          '#/components/schemas/NotAuthorizedForFieldProblem',
+        'https://api.x.com/2/problems/not-authorized-for-resource':
+          '#/components/schemas/NotAuthorizedForResourceProblem',
+        'https://api.x.com/2/problems/recipient-not-messageable':
+          '#/components/schemas/RecipientNotMessageableProblem',
+        'https://api.x.com/2/problems/recipient-xchat-setup-required':
+          '#/components/schemas/RecipientXchatSetupRequiredProblem',
+        'https://api.x.com/2/problems/resource-not-found':
+          '#/components/schemas/ResourceNotFoundProblem',
+        'https://api.x.com/2/problems/resource-unavailable':
+          '#/components/schemas/ResourceUnavailableProblem',
+        'https://api.x.com/2/problems/unencrypted-send-not-allowed':
+          '#/components/schemas/UnencryptedSendNotAllowedProblem',
+        'https://api.x.com/2/problems/xchat-setup-required':
+          '#/components/schemas/XchatSetupRequiredProblem',
+      },
+    },
+  })
+  .openapi('Problem')
+
+type ActivityStreamResponseType = {
+  data?: {
+    created_at?: string
+    event_type?: string
+    event_uuid?: z.infer<typeof ActivityEventIdSchema>
+    filter?: z.infer<typeof ActivitySubscriptionFilterSchema>
+    includes?: z.infer<typeof ExpansionsSchema>
+    payload?: z.infer<typeof ActivityStreamingResponsePayloadSchema>
+    tag?: string
+  }
+  errors?: z.infer<typeof ProblemSchema>[]
+}
+
+const ArticleCreateDraftContentStateBlocksDataCashtagsSchema = z
+  .strictObject({
+    from_index: z.int().min(0).openapi({ description: 'Start index of the tagged span.' }),
+    text: z.string().openapi({ description: 'The tagged text.' }),
+    to_index: z.int().min(0).openapi({ description: 'End index of the tagged span.' }),
+  })
+  .openapi({ required: ['from_index', 'to_index', 'text'] })
+  .openapi('ArticleCreateDraftContentStateBlocksDataCashtags')
+
+const ArticleCreateDraftContentStateBlocksDataHashtagsSchema = z
+  .strictObject({
+    from_index: z.int().min(0).openapi({ description: 'Start index of the tagged span.' }),
+    text: z.string().openapi({ description: 'The tagged text.' }),
+    to_index: z.int().min(0).openapi({ description: 'End index of the tagged span.' }),
+  })
+  .openapi({ required: ['from_index', 'to_index', 'text'] })
+  .openapi('ArticleCreateDraftContentStateBlocksDataHashtags')
+
+const ArticleCreateDraftContentStateBlocksDataMentionsSchema = z
+  .strictObject({
+    from_index: z.int().min(0).openapi({ description: 'Start index of the tagged span.' }),
+    text: z.string().openapi({ description: 'The tagged text.' }),
+    to_index: z.int().min(0).openapi({ description: 'End index of the tagged span.' }),
+  })
+  .openapi({ required: ['from_index', 'to_index', 'text'] })
+  .openapi('ArticleCreateDraftContentStateBlocksDataMentions')
+
+const ArticleCreateDraftContentStateBlocksDataUrlsSchema = z
+  .strictObject({
+    from_index: z.int().min(0).openapi({ description: 'Start index of the tagged span.' }),
+    text: z.string().openapi({ description: 'The tagged text.' }),
+    to_index: z.int().min(0).openapi({ description: 'End index of the tagged span.' }),
+  })
+  .openapi({ required: ['from_index', 'to_index', 'text'] })
+  .openapi('ArticleCreateDraftContentStateBlocksDataUrls')
+
+const ArticleCreateDraftContentStateBlocksDataSchema = z
+  .strictObject({
+    cashtags: z
+      .array(ArticleCreateDraftContentStateBlocksDataCashtagsSchema)
+      .exactOptional()
+      .openapi({ description: 'Cashtag spans in this block.' }),
+    hashtags: z
+      .array(ArticleCreateDraftContentStateBlocksDataHashtagsSchema)
+      .exactOptional()
+      .openapi({ description: 'Hashtag spans in this block.' }),
+    mentions: z
+      .array(ArticleCreateDraftContentStateBlocksDataMentionsSchema)
+      .exactOptional()
+      .openapi({ description: 'Mention spans in this block.' }),
+    urls: z
+      .array(ArticleCreateDraftContentStateBlocksDataUrlsSchema)
+      .exactOptional()
+      .openapi({ description: 'URL spans in this block.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('ArticleCreateDraftContentStateBlocksData')
+
+const ArticleCreateDraftContentStateBlocksEntityRangesSchema = z
+  .strictObject({
+    key: z
+      .int()
+      .min(0)
+      .openapi({ description: 'The key of the referenced entity, as an integer.' }),
+    length: z.int().min(0).openapi({ description: 'Length of the entity range.' }),
+    offset: z.int().min(0).openapi({ description: 'Start offset in the text.' }),
+  })
+  .openapi({ required: ['key', 'offset', 'length'] })
+  .openapi('ArticleCreateDraftContentStateBlocksEntityRanges')
+
+const ArticleCreateDraftContentStateBlocksInlineStyleRangesSchema = z
+  .strictObject({
+    length: z.int().min(0).openapi({ description: 'Length of the styled range.' }),
+    offset: z.int().min(0).openapi({ description: 'Start offset in the text.' }),
+    style: z
+      .enum(['bold', 'italic', 'strikethrough'])
+      .openapi({ description: 'The inline style.' }),
+  })
+  .openapi({ required: ['offset', 'length', 'style'] })
+  .openapi('ArticleCreateDraftContentStateBlocksInlineStyleRanges')
+
+const ArticleCreateDraftContentStateBlocksSchema = z
+  .strictObject({
+    data: ArticleCreateDraftContentStateBlocksDataSchema.exactOptional().openapi({
+      description: 'Block-level metadata for mentions, hashtags, cashtags, and URLs.',
+    }),
+    entity_ranges: z
+      .array(ArticleCreateDraftContentStateBlocksEntityRangesSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Entity references. Each item has offset, length and key, the entity\'s key as an integer (0 for "0").',
+      }),
+    inline_style_ranges: z
+      .array(ArticleCreateDraftContentStateBlocksInlineStyleRangesSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Inline styles. Each item has offset, length and style: bold, italic or strikethrough, in lowercase.',
+      }),
+    key: z.string().exactOptional().openapi({ description: 'Optional block key.' }),
+    text: z
+      .string()
+      .openapi({
+        description:
+          'The text content of this block. For latex entities, this holds the LaTeX source; for divider/markdown/image/post atomic placeholders, typically a single space.',
+      }),
+    type: z
+      .enum([
+        'unstyled',
+        'header-one',
+        'header-two',
+        'unordered-list-item',
+        'ordered-list-item',
+        'blockquote',
+        'atomic',
+      ])
+      .openapi({
+        description:
+          'The block type. Articles have two heading levels, header-one and header-two. Use atomic for non-text embeds (image, post, markdown, divider, latex).',
+      }),
+  })
+  .openapi({ required: ['text', 'type'] })
+  .openapi('ArticleCreateDraftContentStateBlocks')
+
+const ArticleCreateDraftContentStateEntitiesValueDataMediaItemsSchema = z
+  .strictObject({ media_category: z.string(), media_id: z.string() })
+  .openapi({ required: ['media_category', 'media_id'] })
+  .openapi('ArticleCreateDraftContentStateEntitiesValueDataMediaItems')
+
+const ArticleCreateDraftContentStateEntitiesValueDataSchema = z
+  .strictObject({
+    caption: z.string().exactOptional().openapi({ description: 'Caption text.' }),
+    entity_key: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Opaque entity key. Used with type emoji (and reserved for other keyed embeds) to match in-app Articles composer payloads.',
+      }),
+    markdown: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Markdown body for type markdown. Use fenced code blocks (```lang ... ```) for code. Max weighted length is enforced by the Articles backend (10,000 per article).',
+      }),
+    media_items: z
+      .array(ArticleCreateDraftContentStateEntitiesValueDataMediaItemsSchema)
+      .exactOptional()
+      .openapi({ description: 'Media keys. Used with type image.' }),
+    post_id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The ID of the post to embed. Used with type post.' }),
+    url: z.string().exactOptional().openapi({ description: 'The URL. Used with type link.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('ArticleCreateDraftContentStateEntitiesValueData')
+
+const ArticleCreateDraftContentStateEntitiesValueSchema = z
+  .strictObject({
+    data: ArticleCreateDraftContentStateEntitiesValueDataSchema.openapi({
+      description:
+        'Fields: post_id (post), url (link), media_items (image), markdown (markdown), entity_key (emoji). divider and latex use an empty data object; latex source is the block text, and emoji uses the block text for the character(s). Tables are markdown; article storage has no table entity type.',
+    }),
+    mutability: z
+      .enum(['immutable', 'mutable', 'segmented'])
+      .openapi({
+        description:
+          'Whether the entity can be edited. Recommended: immutable for post, image, divider, latex; mutable for link and markdown (matches the in-app Articles composer).',
+      }),
+    type: z
+      .enum(['post', 'link', 'image', 'emoji', 'markdown', 'divider', 'latex'])
+      .openapi({
+        description:
+          'The entity type. markdown carries code blocks, GFM tables, and other Markdown; emoji maps to backend TWEMOJI (Twemoji is internal); divider is a horizontal rule; latex renders TeX from the block text. Tables are not a separate enum value — use type markdown with a pipe table in data.markdown.',
+      }),
+  })
+  .openapi({ required: ['type', 'mutability', 'data'] })
+  .openapi('ArticleCreateDraftContentStateEntitiesValue')
+
+const ArticleCreateDraftContentStateEntitiesSchema = z
+  .strictObject({
+    key: z
+      .string()
+      .openapi({
+        description:
+          'The entity\'s key, a string such as "0". entity_ranges refer to it as an integer.',
+      }),
+    value: ArticleCreateDraftContentStateEntitiesValueSchema,
+  })
+  .openapi({ required: ['key', 'value'] })
+  .openapi('ArticleCreateDraftContentStateEntities')
+
+const ArticleCreateDraftContentStateSchema = z
+  .strictObject({
+    blocks: z
+      .array(ArticleCreateDraftContentStateBlocksSchema)
+      .openapi({ description: 'The text blocks that make up the article body.' }),
+    entities: z
+      .array(ArticleCreateDraftContentStateEntitiesSchema)
+      .openapi({
+        description:
+          'Non-text entities referenced by blocks (links, embedded posts, images, emoji, markdown/code/tables, dividers, LaTeX). Full set matches article storage.',
+      }),
+  })
+  .openapi({ required: ['blocks', 'entities'] })
+  .openapi('ArticleCreateDraftContentState')
+
+const ArticleCreateDraftCoverMediaSchema = z
+  .strictObject({
+    media_category: z.string().openapi({ description: 'The media category (e.g. tweet_image).' }),
+    media_id: z.string().openapi({ description: 'The media ID from the media upload endpoint.' }),
+  })
+  .openapi({ required: ['media_category', 'media_id'] })
+  .openapi('ArticleCreateDraftCoverMedia')
+
+type ArticleCreateDraftRequestType = {
+  content_state: z.infer<typeof ArticleCreateDraftContentStateSchema>
+  cover_media?: z.infer<typeof ArticleCreateDraftCoverMediaSchema>
+  title: string
+}
+
+type GetBotsResponseType = {
+  data?: z.infer<typeof UserSchema>[]
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+  meta?: { max_bots?: number; result_count?: number }
+}
+
+const BroadcastChatMessageSchema = z
+  .object({
+    author_id: z.string().exactOptional(),
+    author_name: z.string().exactOptional(),
+    author_username: z.string().exactOptional(),
+    broadcast_id: z.string().exactOptional(),
+    created_at_ms: z.string().exactOptional(),
+    id: z.string().exactOptional(),
+    relay_source: z.string().exactOptional(),
+    reply_to: z.string().exactOptional(),
+    text: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('BroadcastChatMessage')
+
+type GetBroadcastChatResponseType = {
+  data?: z.infer<typeof BroadcastChatMessageSchema>[]
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+  meta?: { next_token?: string; result_count?: number }
+}
+
+type GetCallResponseType = {
+  data?: z.infer<typeof CallSchema>
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+}
+
+const ChatConversationAdminSettingsSchema = z
+  .object({
+    add_member: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Whether only admins may add members.' }),
+    block_screen_capture: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether only admins may block screen capture. Through the API, only admins can change\nscreen capture in a group, whatever this setting says.',
+      }),
+    edit_group_info: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Whether only admins may edit group info.' }),
+    edit_message_ttl: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Whether only admins may edit the message TTL.' }),
+    send_message: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Whether only admins may send messages.' }),
+    start_call: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Whether only admins may start a call.' }),
+  })
+  .openapi({
+    description:
+      'Group actions restricted to admins. true means only admins can perform the action.',
+    required: [],
+  })
+  .openapi('ChatConversationAdminSettings')
+
+const ChatConversationInviteSchema = z
+  .object({
+    admin_user_id: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Unique identifier of the admin who turned on the invite link.' }),
+    expires_at: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'When the invite link stops working.' }),
+    invite_url: z.string().openapi({ description: 'The shareable invite link.' }),
+    token: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Token identifying this invite link.' }),
+    welcome_message: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Message shown to Users who join through the invite link.' }),
+  })
+  .openapi({
+    description: 'An active invite link for a group Chat conversation.',
+    required: ['invite_url'],
+  })
+  .openapi('ChatConversationInvite')
+
+const ChatConversationPendingMemberIdsSchema = z
+  .array(z.string())
+  .openapi({
+    description:
+      'Unique identifiers of Users who asked to join this group and are awaiting approval. Returned only to callers who can add members.',
+  })
+  .openapi('ChatConversationPendingMemberIds')
+
+const ChatConversationSchema = z
+  .object({
+    admin_ids: z.array(z.string()).exactOptional(),
+    admin_settings: ChatConversationAdminSettingsSchema.exactOptional(),
+    created_at: z.iso.datetime({ offset: true }).exactOptional(),
+    group_avatar_url: z.string().exactOptional(),
+    group_description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The group description, encrypted with the conversation key like group_name.',
+      }),
+    group_description_key_version: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The conversation key version that group_description is encrypted with.',
+      }),
+    group_name: z.string().exactOptional(),
+    id: z.string().exactOptional(),
+    invite: ChatConversationInviteSchema.exactOptional(),
+    is_archived: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether the authenticated user archived this conversation.' }),
+    is_muted: z.boolean().exactOptional(),
+    last_read_event_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The event ID you have read up to: the seen_until_sequence_id of your latest read receipt. Absent when you have no read receipt.',
+      }),
+    member_ids: z.array(z.string()).exactOptional(),
+    message_ttl_ms: z.int().exactOptional(),
+    newest_event_id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The ID of the latest notifying message in the conversation.' }),
+    participant_ids: z.array(z.string()).exactOptional(),
+    pending_member_ids: ChatConversationPendingMemberIdsSchema.exactOptional(),
+    screen_capture_blocking_enabled: z.boolean().exactOptional(),
+    screen_capture_detection_enabled: z.boolean().exactOptional(),
+    type: z.string().exactOptional(),
+    unread: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether the conversation is unread for you: its latest notifying message was sent by someone else after last_read_event_id, or you have no read receipt. Marking the conversation unread does not set it.',
+      }),
+    updated_at: z.iso.datetime({ offset: true }).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ChatConversation')
+
+type GetChatConversationResponseType = {
+  data?: z.infer<typeof ChatConversationSchema>
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+}
+
+type GetChatConversationsResponseType = {
+  data?: z.infer<typeof ChatConversationSchema>[]
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+  meta?: {
+    has_message_requests?: boolean
+    has_more?: boolean
+    next_token?: string
+    result_count?: number
+  }
+}
+
+type GetChatGroupAdminRequestsResponseType = {
+  data?: z.infer<typeof UserSchema>[]
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+  meta?: { next_token?: string; result_count?: number; total_count?: number }
+}
+
+type GetChatModeratorsResponseType = {
+  data?: z.infer<typeof UserSchema>[]
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+  meta?: { result_count?: number }
+}
+
+const BroadcastChatMuteSchema = z
+  .object({
+    end_at_ms: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The Unix timestamp in milliseconds when the mute expires. Absent for indefinite mutes.',
+      }),
+    user_id: z.string().exactOptional().openapi({ description: "The muted user's ID." }),
+  })
+  .openapi({ required: [] })
+  .openapi('BroadcastChatMute')
+
+type GetChatMutedUsersResponseType = {
+  data?: z.infer<typeof BroadcastChatMuteSchema>[]
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+  meta?: { next_token?: string; result_count?: number }
+}
+
+const DmEventAttachmentsSchema = z
+  .object({
+    card_ids: z
+      .array(z.string())
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'IDs of cards attached to this Direct Message.' }),
+    media_keys: z
+      .array(z.string())
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Media keys of media (including audio) attached to this Direct Message.',
+      }),
+  })
+  .openapi({
+    description: 'Media and card attachments present in this Direct Message event.',
+    required: [],
+  })
+  .openapi('DmEventAttachments')
+
+const DmEventEntitiesSchema = z
+  .object({
+    cashtags: z
+      .array(
+        z
+          .object({
+            end: z
+              .preprocess(
+                (val) =>
+                  typeof val === 'number' && Number.isSafeInteger(val)
+                    ? BigInt(val)
+                    : typeof val === 'string' && /^-?\d+$/.test(val)
+                      ? BigInt(val)
+                      : val,
+                z.int64(),
+              )
+              .openapi({
+                type: 'integer',
+                format: 'int64',
+                description: 'End index in the text (exclusive).',
+              }),
+            start: z
+              .preprocess(
+                (val) =>
+                  typeof val === 'number' && Number.isSafeInteger(val)
+                    ? BigInt(val)
+                    : typeof val === 'string' && /^-?\d+$/.test(val)
+                      ? BigInt(val)
+                      : val,
+                z.int64(),
+              )
+              .openapi({
+                type: 'integer',
+                format: 'int64',
+                description: 'Start index in the text (inclusive).',
+              }),
+            tag: z.string(),
+          })
+          .openapi({
+            description: 'A hashtag or cashtag entity.',
+            required: ['start', 'end', 'tag'],
+          }),
+      )
+      .nullable()
+      .exactOptional(),
+    hashtags: z
+      .array(
+        z
+          .object({
+            end: z
+              .preprocess(
+                (val) =>
+                  typeof val === 'number' && Number.isSafeInteger(val)
+                    ? BigInt(val)
+                    : typeof val === 'string' && /^-?\d+$/.test(val)
+                      ? BigInt(val)
+                      : val,
+                z.int64(),
+              )
+              .openapi({
+                type: 'integer',
+                format: 'int64',
+                description: 'End index in the text (exclusive).',
+              }),
+            start: z
+              .preprocess(
+                (val) =>
+                  typeof val === 'number' && Number.isSafeInteger(val)
+                    ? BigInt(val)
+                    : typeof val === 'string' && /^-?\d+$/.test(val)
+                      ? BigInt(val)
+                      : val,
+                z.int64(),
+              )
+              .openapi({
+                type: 'integer',
+                format: 'int64',
+                description: 'Start index in the text (inclusive).',
+              }),
+            tag: z.string(),
+          })
+          .openapi({
+            description: 'A hashtag or cashtag entity.',
+            required: ['start', 'end', 'tag'],
+          }),
+      )
+      .nullable()
+      .exactOptional(),
+    mentions: z
+      .array(
+        z
+          .object({
+            end: z
+              .preprocess(
+                (val) =>
+                  typeof val === 'number' && Number.isSafeInteger(val)
+                    ? BigInt(val)
+                    : typeof val === 'string' && /^-?\d+$/.test(val)
+                      ? BigInt(val)
+                      : val,
+                z.int64(),
+              )
+              .openapi({ type: 'integer', format: 'int64' }),
+            id: z.string().nullable().exactOptional(),
+            start: z
+              .preprocess(
+                (val) =>
+                  typeof val === 'number' && Number.isSafeInteger(val)
+                    ? BigInt(val)
+                    : typeof val === 'string' && /^-?\d+$/.test(val)
+                      ? BigInt(val)
+                      : val,
+                z.int64(),
+              )
+              .openapi({ type: 'integer', format: 'int64' }),
+            username: z.string(),
+          })
+          .openapi({
+            description: 'A user mention entity.',
+            required: ['start', 'end', 'username'],
+          }),
+      )
+      .nullable()
+      .exactOptional(),
+    urls: z
+      .array(
+        z
+          .object({
+            display_url: z
+              .string()
+              .nullable()
+              .exactOptional()
+              .openapi({ description: 'The URL as displayed in the Direct Message text.' }),
+            end: z
+              .preprocess(
+                (val) =>
+                  typeof val === 'number' && Number.isSafeInteger(val)
+                    ? BigInt(val)
+                    : typeof val === 'string' && /^-?\d+$/.test(val)
+                      ? BigInt(val)
+                      : val,
+                z.int64(),
+              )
+              .openapi({ type: 'integer', format: 'int64' }),
+            expanded_url: z
+              .string()
+              .nullable()
+              .exactOptional()
+              .openapi({ description: 'The fully resolved URL.' }),
+            start: z
+              .preprocess(
+                (val) =>
+                  typeof val === 'number' && Number.isSafeInteger(val)
+                    ? BigInt(val)
+                    : typeof val === 'string' && /^-?\d+$/.test(val)
+                      ? BigInt(val)
+                      : val,
+                z.int64(),
+              )
+              .openapi({ type: 'integer', format: 'int64' }),
+            url: z.string().openapi({ description: 'The t.co shortened URL.' }),
+          })
+          .openapi({ description: 'A URL entity.', required: ['start', 'end', 'url'] }),
+      )
+      .nullable()
+      .exactOptional(),
+  })
+  .openapi({
+    description:
+      'A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Direct Message text.',
+    required: [],
+  })
+  .openapi('DmEventEntities')
+
+const DmEventReferencedPostsSchema = z
+  .array(
+    z
+      .object({
+        id: z.string().openapi({ description: 'Unique identifier of the referenced Post.' }),
+      })
+      .openapi({ description: 'A reference from this event to a Post.', required: ['id'] }),
+  )
+  .openapi('DmEventReferencedPosts')
+
+const DmEventSchema = z
+  .object({
+    attachments: DmEventAttachmentsSchema.exactOptional(),
+    created_at: z.iso.datetime({ offset: true }).exactOptional(),
+    dm_conversation_id: z.string().exactOptional(),
+    entities: DmEventEntitiesSchema.exactOptional(),
+    event_type: z.string().exactOptional(),
+    id: z.string().exactOptional(),
+    participant_ids: z.array(z.string()).exactOptional(),
+    referenced_posts: DmEventReferencedPostsSchema.exactOptional(),
+    sender_id: z.string().exactOptional(),
+    text: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('DmEvent')
+
+type GetDirectMessagesEventsByConversationIdResponseType = {
+  data?: z.infer<typeof DmEventSchema>[]
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+  meta?: { next_token?: string; previous_token?: string; result_count?: number }
+}
+
+type GetDirectMessagesEventsByIdResponseType = {
+  data?: z.infer<typeof DmEventSchema>
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+}
+
+type GetDirectMessagesEventsByParticipantIdResponseType = {
+  data?: z.infer<typeof DmEventSchema>[]
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+  meta?: { next_token?: string; previous_token?: string; result_count?: number }
+}
+
+type GetDirectMessagesEventsResponseType = {
+  data?: z.infer<typeof DmEventSchema>[]
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+  meta?: { next_token?: string; previous_token?: string; result_count?: number }
+}
+
+const ListFollowerCountSchema = z
+  .preprocess(
+    (val) =>
+      typeof val === 'number' && Number.isSafeInteger(val)
+        ? BigInt(val)
+        : typeof val === 'string' && /^-?\d+$/.test(val)
+          ? BigInt(val)
+          : val,
+    z.int64(),
+  )
+  .openapi({
+    type: 'integer',
+    format: 'int64',
+    description: 'The number of users who follow this List.',
+  })
+  .openapi('ListFollowerCount')
+
+const ListMemberCountSchema = z
+  .preprocess(
+    (val) =>
+      typeof val === 'number' && Number.isSafeInteger(val)
+        ? BigInt(val)
+        : typeof val === 'string' && /^-?\d+$/.test(val)
+          ? BigInt(val)
+          : val,
+    z.int64(),
+  )
+  .openapi({ type: 'integer', format: 'int64', description: 'The number of members in this List.' })
+  .openapi('ListMemberCount')
+
+const ListSchema = z
+  .object({
+    created_at: z.string().exactOptional(),
+    description: z.string().exactOptional(),
+    follower_count: ListFollowerCountSchema.exactOptional(),
+    id: z.string().exactOptional(),
+    member_count: ListMemberCountSchema.exactOptional(),
+    name: z.string().exactOptional(),
+    owner_id: z.string().exactOptional(),
+    private: z.boolean().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('List')
+
+type GetListsByIdResponseType = {
+  data?: z.infer<typeof ListSchema>
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+}
+
+type GetListsFollowersResponseType = {
+  data?: z.infer<typeof UserSchema>[]
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+  meta?: { next_token?: string; previous_token?: string; result_count?: number }
+}
+
+type GetListsMembersResponseType = {
+  data?: z.infer<typeof UserSchema>[]
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+  meta?: { next_token?: string; previous_token?: string; result_count?: number }
+}
+
+type GetListsPostsResponseType = {
+  data?: z.infer<typeof PostSchema>[]
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+  meta?: { next_token?: string; previous_token?: string; result_count?: number }
+}
+
+type GetPostsByIdResponseType = {
+  data?: z.infer<typeof PostSchema>
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+}
+
+type GetPostsByIdsResponseType = {
+  data?: z.infer<typeof PostSchema>[]
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+  meta?: { result_count?: number }
+}
+
+type GetPostsLikingUsersResponseType = {
+  data?: z.infer<typeof UserSchema>[]
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+  meta?: { next_token?: string; previous_token?: string; result_count?: number }
+}
+
+type GetPostsQuotedPostsResponseType = {
+  data?: z.infer<typeof PostSchema>[]
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+  meta?: { next_token?: string; result_count?: number }
+}
+
+type GetPostsRepostedByResponseType = {
+  data?: z.infer<typeof UserSchema>[]
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+  meta?: { next_token?: string; previous_token?: string; result_count?: number }
+}
+
+type GetPostsRepostsResponseType = {
+  data?: z.infer<typeof PostSchema>[]
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+  meta?: { next_token?: string; previous_token?: string; result_count?: number }
+}
+
+const ScheduledCallInviteesSchema = z
+  .array(
+    z
+      .object({
+        id: z.string().openapi({ description: 'X user id of the invitee.' }),
+        response: z
+          .string()
+          .openapi({ description: 'accepted, declined, tentative, or none for no answer yet.' }),
+      })
+      .openapi({
+        description: 'Someone invited to a scheduled call, other than the organizer.',
+        required: ['id', 'response'],
+      }),
+  )
+  .openapi({ description: 'Everyone invited, except the organizer. Not set for linked calendars.' })
+  .openapi('ScheduledCallInvitees')
+
+const ScheduledCallSchema = z
+  .object({
+    calendar: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Where the call lives: x (X Calls), or outlook for a Microsoft Outlook calendar the user linked to X, whose calls are changed there.',
+      }),
+    call_id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The X call people join; also its join secret.' }),
+    description: z.string().exactOptional().openapi({ description: 'What the call is about.' }),
+    end_time: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'End of this occurrence (RFC 3339).' }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Unique identifier of the scheduled call: what PUT, DELETE and rsvp take. Calls on linked calendars have none.',
+      }),
+    invitees: ScheduledCallInviteesSchema.exactOptional(),
+    join_url: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Link people open to join the call on X.' }),
+    occurrence_start_time: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "For a recurring call, this occurrence's original start (RFC 3339): pass it as occurrence_start_time to change, cancel or answer just this occurrence.",
+      }),
+    organizer_id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "X user id of the call's organizer." }),
+    recurrence: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'RFC 5545 RRULE the call repeats by, such as FREQ=WEEKLY;BYDAY=MO.',
+      }),
+    start_time: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Start of this occurrence (RFC 3339).' }),
+    status: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'scheduled, or cancelled for a cancelled occurrence.' }),
+    time_zone: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'IANA time zone the recurrence follows.' }),
+    title: z.string().exactOptional().openapi({ description: 'Title of the call.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('ScheduledCall')
+
+type GetScheduledCallResponseType = {
+  data?: z.infer<typeof ScheduledCallSchema>
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+}
+
+type GetSpacesBuyersResponseType = {
+  data?: z.infer<typeof UserSchema>[]
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+  meta?: { next_token?: string; previous_token?: string; result_count?: number }
+}
+
+const SpaceHostIdsSchema = z
+  .array(z.string())
+  .openapi({ description: 'A list of unique identifiers of the Users who host this Space.' })
+  .openapi('SpaceHostIds')
+
+const SpaceInvitedUserIdsSchema = z
+  .array(z.string())
+  .openapi({ description: 'A list of unique identifiers of the Users invited to this Space.' })
+  .openapi('SpaceInvitedUserIds')
+
+const SpaceSpeakerIdsSchema = z
+  .array(z.string())
+  .openapi({
+    description: 'A list of unique identifiers of the Users who are speakers in this Space.',
+  })
+  .openapi('SpaceSpeakerIds')
+
+const SpaceTopicIdsSchema = z
+  .array(z.string())
+  .openapi({
+    description: 'A list of unique identifiers of the Topics associated with this Space.',
+  })
+  .openapi('SpaceTopicIds')
+
+const SpaceSchema = z
+  .object({
+    created_at: z.iso.datetime({ offset: true }).exactOptional(),
+    creator_id: z.string().exactOptional(),
+    ended_at: z.iso.datetime({ offset: true }).exactOptional(),
+    host_ids: SpaceHostIdsSchema.exactOptional(),
+    id: z.string().exactOptional(),
+    invited_user_ids: SpaceInvitedUserIdsSchema.exactOptional(),
+    is_ticketed: z.boolean().exactOptional(),
+    lang: z.string().exactOptional(),
+    participant_count: z.int().exactOptional(),
+    scheduled_start: z.iso.datetime({ offset: true }).exactOptional(),
+    speaker_ids: SpaceSpeakerIdsSchema.exactOptional(),
+    started_at: z.iso.datetime({ offset: true }).exactOptional(),
+    state: z.string().exactOptional(),
+    subscriber_count: z.int().exactOptional(),
+    title: z.string().exactOptional(),
+    topic_ids: SpaceTopicIdsSchema.exactOptional(),
+    updated_at: z.iso.datetime({ offset: true }).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('Space')
+
+type GetSpacesByCreatorIdsResponseType = {
+  data?: z.infer<typeof SpaceSchema>[]
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+  meta?: { result_count?: number }
+}
+
+type GetSpacesByIdResponseType = {
+  data?: z.infer<typeof SpaceSchema>
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+}
+
+type GetSpacesByIdsResponseType = {
+  data?: z.infer<typeof SpaceSchema>[]
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+}
+
+type GetSpacesPostsResponseType = {
+  data?: z.infer<typeof PostSchema>[]
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+  meta?: { next_token?: string; previous_token?: string; result_count?: number }
+}
+
+type GetUsersAffiliatesResponseType = {
+  data?: z.infer<typeof UserSchema>[]
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+  meta?: { next_token?: string; previous_token?: string; result_count?: number }
+}
+
+type GetUsersBlockingResponseType = {
+  data?: z.infer<typeof UserSchema>[]
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+  meta?: { next_token?: string; previous_token?: string; result_count?: number }
+}
+
+type GetUsersBookmarksResponseType = {
+  data?: z.infer<typeof PostSchema>[]
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+  meta?: { next_token?: string; previous_token?: string; result_count?: number }
+}
+
+type GetUsersByIdResponseType = {
+  data?: z.infer<typeof UserSchema>
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+}
+
+type GetUsersByIdsResponseType = {
+  data?: z.infer<typeof UserSchema>[]
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+}
+
+type GetUsersByUsernameResponseType = {
+  data?: z.infer<typeof UserSchema>
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+}
+
+type GetUsersByUsernamesResponseType = {
+  data?: z.infer<typeof UserSchema>[]
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+}
+
+type GetUsersFollowedListsResponseType = {
+  data?: z.infer<typeof ListSchema>[]
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+  meta?: { next_token?: string; previous_token?: string; result_count?: number }
+}
+
+type GetUsersFollowersResponseType = {
+  data?: z.infer<typeof UserSchema>[]
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+  meta?: { next_token?: string; previous_token?: string; result_count?: number }
+}
+
+type GetUsersFollowingResponseType = {
+  data?: z.infer<typeof UserSchema>[]
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+  meta?: { next_token?: string; previous_token?: string; result_count?: number }
+}
+
+type GetUsersLikedPostsResponseType = {
+  data?: z.infer<typeof PostSchema>[]
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+  meta?: { next_token?: string; previous_token?: string; result_count?: number }
+}
+
+type GetUsersListMembershipsResponseType = {
+  data?: z.infer<typeof ListSchema>[]
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+  meta?: { next_token?: string; previous_token?: string; result_count?: number }
+}
+
+type GetUsersMeFollowersResponseType = {
+  data?: z.infer<typeof UserSchema>[]
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+  meta?: { next_token?: string; previous_token?: string; result_count?: number }
+}
+
+type GetUsersMeFollowingResponseType = {
+  data?: z.infer<typeof UserSchema>[]
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+  meta?: { next_token?: string; previous_token?: string; result_count?: number }
+}
+
+type GetUsersMeResponseType = {
+  data?: z.infer<typeof UserSchema>
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+}
+
+type GetUsersMentionsResponseType = {
+  data?: z.infer<typeof PostSchema>[]
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+  meta?: {
+    newest_id?: string
+    next_token?: string
+    oldest_id?: string
+    previous_token?: string
+    result_count?: number
+  }
+}
+
+type GetUsersMutingResponseType = {
+  data?: z.infer<typeof UserSchema>[]
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+  meta?: { next_token?: string; previous_token?: string; result_count?: number }
+}
+
+type GetUsersOwnedListsResponseType = {
+  data?: z.infer<typeof ListSchema>[]
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+  meta?: { next_token?: string; previous_token?: string; result_count?: number }
+}
+
+type GetUsersPinnedListsResponseType = {
+  data?: z.infer<typeof ListSchema>[]
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+  meta?: { result_count?: number }
+}
+
+type GetUsersPostsResponseType = {
+  data?: z.infer<typeof PostSchema>[]
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+  meta?: {
+    newest_id?: string
+    next_token?: string
+    oldest_id?: string
+    previous_token?: string
+    result_count?: number
+  }
+}
+
+type GetUsersRepostsOfMeResponseType = {
+  data?: z.infer<typeof PostSchema>[]
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+  meta?: { next_token?: string; previous_token?: string; result_count?: number }
+}
+
+type GetUsersTimelineResponseType = {
+  data?: z.infer<typeof PostSchema>[]
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+  meta?: {
+    newest_id?: string
+    next_token?: string
+    oldest_id?: string
+    previous_token?: string
+    result_count?: number
+  }
+}
+
+type ListScheduledCallsResponseType = {
+  data?: z.infer<typeof ScheduledCallSchema>[]
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+  meta?: { result_count?: number }
+}
+
+const NoteInfoSchema = z
+  .object({
+    classification: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'How the noted Post was classified (snake_case).' }),
+    misleading_tags: z
+      .array(z.string())
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Reasons the noted Post may be misleading (snake_case).' }),
+    post_id: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Unique identifier of the Post this note is about.' }),
+    rating_status: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Current rating status of the note.' }),
+    text: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The text of the Community Note.' }),
+    trustworthy_sources: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Whether the note cites trustworthy sources.' }),
+  })
+  .openapi({
+    description: "Details about the Community Note's content, classification and source.",
+    required: [],
+  })
+  .openapi('NoteInfo')
+
+const NoteScoringStatusSchema = z
+  .object({
+    has_access: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Whether the caller has access to the scoring details.' }),
+    rating_counts_per_model: z
+      .array(
+        z
+          .object({
+            model_name: z
+              .string()
+              .nullable()
+              .exactOptional()
+              .openapi({ description: 'Name of the scoring model.' }),
+            value: z
+              .object({
+                negative_factor_bucket_counts: z
+                  .object({
+                    helpful_count: z
+                      .preprocess(
+                        (val) =>
+                          typeof val === 'number' && Number.isSafeInteger(val)
+                            ? BigInt(val)
+                            : typeof val === 'string' && /^-?\d+$/.test(val)
+                              ? BigInt(val)
+                              : val,
+                        z.int64(),
+                      )
+                      .nullable()
+                      .exactOptional()
+                      .openapi({ type: ['integer', 'null'], format: 'int64' }),
+                    helpful_tag_counts: z
+                      .array(
+                        z
+                          .object({
+                            tag_count: z
+                              .preprocess(
+                                (val) =>
+                                  typeof val === 'number' && Number.isSafeInteger(val)
+                                    ? BigInt(val)
+                                    : typeof val === 'string' && /^-?\d+$/.test(val)
+                                      ? BigInt(val)
+                                      : val,
+                                z.int64(),
+                              )
+                              .nullable()
+                              .exactOptional()
+                              .openapi({ type: ['integer', 'null'], format: 'int64' }),
+                            tag_name: z.string().nullable().exactOptional(),
+                          })
+                          .openapi({ description: 'A tag and its count.', required: [] }),
+                      )
+                      .nullable()
+                      .exactOptional(),
+                    not_helpful_count: z
+                      .preprocess(
+                        (val) =>
+                          typeof val === 'number' && Number.isSafeInteger(val)
+                            ? BigInt(val)
+                            : typeof val === 'string' && /^-?\d+$/.test(val)
+                              ? BigInt(val)
+                              : val,
+                        z.int64(),
+                      )
+                      .nullable()
+                      .exactOptional()
+                      .openapi({ type: ['integer', 'null'], format: 'int64' }),
+                    not_helpful_tag_counts: z
+                      .array(
+                        z
+                          .object({
+                            tag_count: z
+                              .preprocess(
+                                (val) =>
+                                  typeof val === 'number' && Number.isSafeInteger(val)
+                                    ? BigInt(val)
+                                    : typeof val === 'string' && /^-?\d+$/.test(val)
+                                      ? BigInt(val)
+                                      : val,
+                                z.int64(),
+                              )
+                              .nullable()
+                              .exactOptional()
+                              .openapi({ type: ['integer', 'null'], format: 'int64' }),
+                            tag_name: z.string().nullable().exactOptional(),
+                          })
+                          .openapi({ description: 'A tag and its count.', required: [] }),
+                      )
+                      .nullable()
+                      .exactOptional(),
+                    somewhat_helpful_count: z
+                      .preprocess(
+                        (val) =>
+                          typeof val === 'number' && Number.isSafeInteger(val)
+                            ? BigInt(val)
+                            : typeof val === 'string' && /^-?\d+$/.test(val)
+                              ? BigInt(val)
+                              : val,
+                        z.int64(),
+                      )
+                      .nullable()
+                      .exactOptional()
+                      .openapi({ type: ['integer', 'null'], format: 'int64' }),
+                  })
+                  .nullable()
+                  .exactOptional()
+                  .openapi({
+                    description: 'Helpfulness counts for one rating factor bucket.',
+                    required: [],
+                  }),
+                neutral_factor_bucket_counts: z
+                  .object({
+                    helpful_count: z
+                      .preprocess(
+                        (val) =>
+                          typeof val === 'number' && Number.isSafeInteger(val)
+                            ? BigInt(val)
+                            : typeof val === 'string' && /^-?\d+$/.test(val)
+                              ? BigInt(val)
+                              : val,
+                        z.int64(),
+                      )
+                      .nullable()
+                      .exactOptional()
+                      .openapi({ type: ['integer', 'null'], format: 'int64' }),
+                    helpful_tag_counts: z
+                      .array(
+                        z
+                          .object({
+                            tag_count: z
+                              .preprocess(
+                                (val) =>
+                                  typeof val === 'number' && Number.isSafeInteger(val)
+                                    ? BigInt(val)
+                                    : typeof val === 'string' && /^-?\d+$/.test(val)
+                                      ? BigInt(val)
+                                      : val,
+                                z.int64(),
+                              )
+                              .nullable()
+                              .exactOptional()
+                              .openapi({ type: ['integer', 'null'], format: 'int64' }),
+                            tag_name: z.string().nullable().exactOptional(),
+                          })
+                          .openapi({ description: 'A tag and its count.', required: [] }),
+                      )
+                      .nullable()
+                      .exactOptional(),
+                    not_helpful_count: z
+                      .preprocess(
+                        (val) =>
+                          typeof val === 'number' && Number.isSafeInteger(val)
+                            ? BigInt(val)
+                            : typeof val === 'string' && /^-?\d+$/.test(val)
+                              ? BigInt(val)
+                              : val,
+                        z.int64(),
+                      )
+                      .nullable()
+                      .exactOptional()
+                      .openapi({ type: ['integer', 'null'], format: 'int64' }),
+                    not_helpful_tag_counts: z
+                      .array(
+                        z
+                          .object({
+                            tag_count: z
+                              .preprocess(
+                                (val) =>
+                                  typeof val === 'number' && Number.isSafeInteger(val)
+                                    ? BigInt(val)
+                                    : typeof val === 'string' && /^-?\d+$/.test(val)
+                                      ? BigInt(val)
+                                      : val,
+                                z.int64(),
+                              )
+                              .nullable()
+                              .exactOptional()
+                              .openapi({ type: ['integer', 'null'], format: 'int64' }),
+                            tag_name: z.string().nullable().exactOptional(),
+                          })
+                          .openapi({ description: 'A tag and its count.', required: [] }),
+                      )
+                      .nullable()
+                      .exactOptional(),
+                    somewhat_helpful_count: z
+                      .preprocess(
+                        (val) =>
+                          typeof val === 'number' && Number.isSafeInteger(val)
+                            ? BigInt(val)
+                            : typeof val === 'string' && /^-?\d+$/.test(val)
+                              ? BigInt(val)
+                              : val,
+                        z.int64(),
+                      )
+                      .nullable()
+                      .exactOptional()
+                      .openapi({ type: ['integer', 'null'], format: 'int64' }),
+                  })
+                  .nullable()
+                  .exactOptional()
+                  .openapi({
+                    description: 'Helpfulness counts for one rating factor bucket.',
+                    required: [],
+                  }),
+                positive_factor_bucket_counts: z
+                  .object({
+                    helpful_count: z
+                      .preprocess(
+                        (val) =>
+                          typeof val === 'number' && Number.isSafeInteger(val)
+                            ? BigInt(val)
+                            : typeof val === 'string' && /^-?\d+$/.test(val)
+                              ? BigInt(val)
+                              : val,
+                        z.int64(),
+                      )
+                      .nullable()
+                      .exactOptional()
+                      .openapi({ type: ['integer', 'null'], format: 'int64' }),
+                    helpful_tag_counts: z
+                      .array(
+                        z
+                          .object({
+                            tag_count: z
+                              .preprocess(
+                                (val) =>
+                                  typeof val === 'number' && Number.isSafeInteger(val)
+                                    ? BigInt(val)
+                                    : typeof val === 'string' && /^-?\d+$/.test(val)
+                                      ? BigInt(val)
+                                      : val,
+                                z.int64(),
+                              )
+                              .nullable()
+                              .exactOptional()
+                              .openapi({ type: ['integer', 'null'], format: 'int64' }),
+                            tag_name: z.string().nullable().exactOptional(),
+                          })
+                          .openapi({ description: 'A tag and its count.', required: [] }),
+                      )
+                      .nullable()
+                      .exactOptional(),
+                    not_helpful_count: z
+                      .preprocess(
+                        (val) =>
+                          typeof val === 'number' && Number.isSafeInteger(val)
+                            ? BigInt(val)
+                            : typeof val === 'string' && /^-?\d+$/.test(val)
+                              ? BigInt(val)
+                              : val,
+                        z.int64(),
+                      )
+                      .nullable()
+                      .exactOptional()
+                      .openapi({ type: ['integer', 'null'], format: 'int64' }),
+                    not_helpful_tag_counts: z
+                      .array(
+                        z
+                          .object({
+                            tag_count: z
+                              .preprocess(
+                                (val) =>
+                                  typeof val === 'number' && Number.isSafeInteger(val)
+                                    ? BigInt(val)
+                                    : typeof val === 'string' && /^-?\d+$/.test(val)
+                                      ? BigInt(val)
+                                      : val,
+                                z.int64(),
+                              )
+                              .nullable()
+                              .exactOptional()
+                              .openapi({ type: ['integer', 'null'], format: 'int64' }),
+                            tag_name: z.string().nullable().exactOptional(),
+                          })
+                          .openapi({ description: 'A tag and its count.', required: [] }),
+                      )
+                      .nullable()
+                      .exactOptional(),
+                    somewhat_helpful_count: z
+                      .preprocess(
+                        (val) =>
+                          typeof val === 'number' && Number.isSafeInteger(val)
+                            ? BigInt(val)
+                            : typeof val === 'string' && /^-?\d+$/.test(val)
+                              ? BigInt(val)
+                              : val,
+                        z.int64(),
+                      )
+                      .nullable()
+                      .exactOptional()
+                      .openapi({ type: ['integer', 'null'], format: 'int64' }),
+                  })
+                  .nullable()
+                  .exactOptional()
+                  .openapi({
+                    description: 'Helpfulness counts for one rating factor bucket.',
+                    required: [],
+                  }),
+              })
+              .nullable()
+              .exactOptional()
+              .openapi({
+                description: 'Per-factor bucket counts for a scoring model.',
+                required: [],
+              }),
+          })
+          .openapi({ description: 'Rating counts for one scoring model.', required: [] }),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Rating counts broken down per scoring model.' }),
+  })
+  .openapi({ description: 'Per-model scoring breakdown for the Community Note.', required: [] })
+  .openapi('NoteScoringStatus')
+
+const NoteTestResultSchema = z
+  .object({
+    evaluation_outcome: z
+      .array(
+        z
+          .object({
+            evaluator_score_bucket: z
+              .string()
+              .openapi({ description: 'The score bucket the evaluator assigned.' }),
+            evaluator_type: z
+              .string()
+              .openapi({ description: 'The type of evaluator that produced this outcome.' }),
+          })
+          .openapi({
+            description: "A single evaluator's outcome for a Community Note.",
+            required: ['evaluator_type', 'evaluator_score_bucket'],
+          }),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Per-evaluator outcomes for the note.' }),
+  })
+  .openapi({
+    description: 'AI evaluation results for the Community Note (returned in test mode).',
+    required: [],
+  })
+  .openapi('NoteTestResult')
+
+type NoteType = {
+  id?: string
+  info?: z.infer<typeof NoteInfoSchema>
+  scoring_status?: z.infer<typeof NoteScoringStatusSchema>
+  status?: string
+  test_result?: z.infer<typeof NoteTestResultSchema>
+}
+
+const NoteSchema: z.ZodType<NoteType> = z
+  .object({
+    id: z.string().exactOptional(),
+    info: NoteInfoSchema.exactOptional(),
+    scoring_status: NoteScoringStatusSchema.exactOptional(),
+    status: z.string().exactOptional(),
+    test_result: NoteTestResultSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('Note')
+
+type SearchCommunityNotesWrittenResponseType = {
+  data?: z.infer<typeof NoteSchema>[]
+  errors?: z.infer<typeof ProblemSchema>[]
+  meta?: { next_token?: string; result_count?: number }
+}
+
+type SearchEligiblePostsResponseType = {
+  data?: z.infer<typeof PostSchema>[]
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+  meta?: { next_token?: string; result_count?: number }
+}
+
+type SearchPostsAllResponseType = {
+  data?: z.infer<typeof PostSchema>[]
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+  meta?: {
+    newest_id?: string
+    next_token?: string
+    oldest_id?: string
+    previous_token?: string
+    result_count?: number
+  }
+}
+
+type SearchPostsRecentResponseType = {
+  data?: z.infer<typeof PostSchema>[]
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+  meta?: {
+    newest_id?: string
+    next_token?: string
+    oldest_id?: string
+    previous_token?: string
+    result_count?: number
+  }
+}
+
+type SearchSpacesResponseType = {
+  data?: z.infer<typeof SpaceSchema>[]
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+  meta?: { result_count?: number }
+}
+
+type SearchUsersResponseType = {
+  data?: z.infer<typeof UserSchema>[]
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+  meta?: { next_token?: string; previous_token?: string }
+}
+
+type StreamLikesFirehoseResponseType = {
+  data?: z.infer<typeof LikeWithPostAuthorSchema>
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+}
+
+type StreamLikesSample10ResponseType = {
+  data?: z.infer<typeof LikeWithPostAuthorSchema>
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+}
+
+type StreamPostsFirehoseEnResponseType = {
+  data?: z.infer<typeof PostSchema>
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+}
+
+type StreamPostsFirehoseJaResponseType = {
+  data?: z.infer<typeof PostSchema>
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+}
+
+type StreamPostsFirehoseKoResponseType = {
+  data?: z.infer<typeof PostSchema>
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+}
+
+type StreamPostsFirehosePtResponseType = {
+  data?: z.infer<typeof PostSchema>
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+}
+
+type StreamPostsFirehoseResponseType = {
+  data?: z.infer<typeof PostSchema>
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+}
+
+const RuleIdSchema = z
+  .string()
+  .regex(/^[0-9]{1,19}$/)
+  .openapi({ description: 'Unique identifier of this rule.', example: '120897978112909812' })
+  .openapi('RuleId')
+
+const RuleTagSchema = z
+  .string()
+  .openapi({
+    description: 'A tag meant for the labeling of user provided rules.',
+    example: 'Non-retweeted coffee Posts',
+  })
+  .openapi('RuleTag')
+
+type StreamPostsResponseType = {
+  data?: z.infer<typeof PostSchema>
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+  matching_rules?: { id: z.infer<typeof RuleIdSchema>; tag?: z.infer<typeof RuleTagSchema> }[]
+}
+
+type StreamPostsSample10ResponseType = {
+  data?: z.infer<typeof PostSchema>
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+}
+
+type StreamPostsSampleResponseType = {
+  data?: z.infer<typeof PostSchema>
+  errors?: z.infer<typeof ProblemSchema>[]
+  includes?: z.infer<typeof ExpansionsSchema>
+}
+
+const AcceptChatMessageRequestResponseDataSchema = z
+  .object({
+    accepted: z.boolean().openapi({ description: 'Whether the message request was accepted.' }),
+  })
+  .openapi({ required: ['accepted'] })
+  .openapi('AcceptChatMessageRequestResponseData')
+
+const AcceptChatMessageRequestResponseSchema = z
+  .object({
+    data: AcceptChatMessageRequestResponseDataSchema.exactOptional(),
+    errors: z.array(ProblemSchema).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('AcceptChatMessageRequestResponse')
+
+const ActivityStreamResponseSchema: z.ZodType<ActivityStreamResponseType> = z
   .object({
     data: z
       .object({
@@ -3562,15 +5218,13 @@ const AddChatGroupMembersConversationParticipantKeysSchema = z
   .object({
     encrypted_conversation_key: z
       .string()
-      .exactOptional()
       .openapi({ description: "Conversation key encrypted with this participant's public key." }),
     public_key_version: z
       .string()
-      .exactOptional()
       .openapi({ description: "Version of the participant's public key used for encryption." }),
-    user_id: z.string().exactOptional().openapi({ description: 'Participant user ID.' }),
+    user_id: z.string().openapi({ description: 'Participant user ID.' }),
   })
-  .openapi({ required: [] })
+  .openapi({ required: ['user_id', 'encrypted_conversation_key', 'public_key_version'] })
   .openapi('AddChatGroupMembersConversationParticipantKeys')
 
 const AddChatGroupMembersRequestSchema = z
@@ -3711,15 +5365,13 @@ const AddConversationKeysConversationParticipantKeysSchema = z
   .object({
     encrypted_conversation_key: z
       .string()
-      .exactOptional()
       .openapi({ description: "Conversation key encrypted with this participant's public key." }),
     public_key_version: z
       .string()
-      .exactOptional()
       .openapi({ description: "Version of the participant's public key used for encryption." }),
-    user_id: z.string().exactOptional().openapi({ description: 'Participant user ID.' }),
+    user_id: z.string().openapi({ description: 'Participant user ID.' }),
   })
-  .openapi({ required: [] })
+  .openapi({ required: ['user_id', 'encrypted_conversation_key', 'public_key_version'] })
   .openapi('AddConversationKeysConversationParticipantKeys')
 
 const AddConversationKeysRequestSchema = z
@@ -3793,6 +5445,129 @@ const AddListsMemberResponseSchema = z
   .openapi({ required: [] })
   .openapi('AddListsMemberResponse')
 
+const AddMediaToLibraryMonetizationSchema = z
+  .strictObject({
+    allowed_countries: z
+      .array(z.string().regex(/^[A-Za-z]{2}$/))
+      .exactOptional()
+      .openapi({
+        description:
+          'ISO 3166-1 alpha-2 codes of the only countries the video is monetized in. Omit to monetize everywhere.',
+      }),
+    blocked_advertiser_category_ids: z
+      .array(z.int())
+      .exactOptional()
+      .openapi({
+        description:
+          'Advertiser categories (from the categories endpoint) whose ads may not run against the video.',
+      }),
+    blocked_advertiser_ids: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'Advertiser account ids whose ads may not run against the video.' }),
+    enabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether ads may run against the video. Requires the account to be enrolled in video monetization.',
+      }),
+    program_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Amplify program to monetize the video through, instead of `video_category_ids`.',
+      }),
+    video_category_ids: z
+      .array(z.int())
+      .max(2)
+      .exactOptional()
+      .openapi({
+        description:
+          'Video category ids (from the categories endpoint) describing the content; at most one when creating. Required when enabled, unless `program_id` is set.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('AddMediaToLibraryMonetization')
+
+const AddMediaToLibraryRequestSchema = z
+  .object({
+    description: z
+      .string()
+      .max(200)
+      .exactOptional()
+      .openapi({ description: 'Description shown with the video in the player card.' }),
+    label: z.string().exactOptional().openapi({ description: 'Label of the item in the library.' }),
+    media_key: z
+      .string()
+      .regex(/^[0-9]+_[0-9]+$/)
+      .openapi({ description: 'The media key of the uploaded image, GIF or video to add.' }),
+    monetization: AddMediaToLibraryMonetizationSchema.exactOptional().openapi({
+      description: 'Monetization settings. Videos only.',
+    }),
+    name: z.string().exactOptional().openapi({ description: 'Name of the item in the library.' }),
+    title: z
+      .string()
+      .max(70)
+      .exactOptional()
+      .openapi({ description: 'Title shown with the video in the player card.' }),
+  })
+  .openapi({ required: ['media_key'] })
+  .openapi('AddMediaToLibraryRequest')
+
+const AddMediaToLibraryResponseDataSchema = z
+  .object({ media_key: z.string().openapi({ description: 'The media key of the library item.' }) })
+  .openapi({ required: ['media_key'] })
+  .openapi('AddMediaToLibraryResponseData')
+
+const AddMediaToLibraryResponseSchema = z
+  .object({
+    data: AddMediaToLibraryResponseDataSchema.exactOptional(),
+    errors: z.array(ProblemSchema).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('AddMediaToLibraryResponse')
+
+const AddPostToAmplifyProgramsRequestSchema = z
+  .object({
+    blocked_advertiser_ids: z
+      .array(z.string().regex(/^[0-9]{1,19}$/))
+      .exactOptional()
+      .openapi({ description: 'Advertiser account ids whose pre-rolls may not run on this post.' }),
+    post_id: z
+      .string()
+      .regex(/^[0-9]{1,19}$/)
+      .openapi({ description: 'The post to publish. It must belong to the user.' }),
+    program_ids: z
+      .array(z.string().regex(/^[A-Za-z0-9_-]{1,64}$/))
+      .min(1)
+      .openapi({ description: 'The programs to publish the post into.' }),
+    promotion_ends_at: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'When promotion of the post ends (ISO 8601).' }),
+  })
+  .openapi({ required: ['post_id', 'program_ids'] })
+  .openapi('AddPostToAmplifyProgramsRequest')
+
+const AddPostToAmplifyProgramsResponseDataSchema = z
+  .object({
+    added: z
+      .boolean()
+      .openapi({ description: 'Whether the post was published into the programs.' }),
+  })
+  .openapi({ required: ['added'] })
+  .openapi('AddPostToAmplifyProgramsResponseData')
+
+const AddPostToAmplifyProgramsResponseSchema = z
+  .object({
+    data: AddPostToAmplifyProgramsResponseDataSchema.exactOptional(),
+    errors: z.array(ProblemSchema).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('AddPostToAmplifyProgramsResponse')
+
 const AddUserPublicKeyPublicKeySchema = z
   .object({
     identity_public_key_signature: z
@@ -3835,7 +5610,7 @@ const AddUserPublicKeyRequestSchema = z
 const AddUserPublicKeyResponseDataSchema = z
   .object({
     juicebox_config: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Juicebox recovery-service configuration for this key.' }),
     public_key_version: z
@@ -4176,12 +5951,15 @@ const AppendMediaUploadRequestSchema = z
   .strictObject({
     media: z
       .union([z.file().openapi({ type: 'string', format: 'binary' }), z.string()])
-      .openapi({ description: 'The media chunk to upload.' }),
+      .openapi({
+        description:
+          'One segment of the file: base64-encoded in JSON bodies, raw bytes in multipart bodies.',
+      }),
     segment_index: z
       .int()
       .min(0)
       .max(9999)
-      .openapi({ description: 'The index of this segment in the upload sequence.' }),
+      .openapi({ description: "The segment's position in the file, counting from 0." }),
   })
   .openapi({ required: ['media', 'segment_index'] })
   .openapi('AppendMediaUploadRequest')
@@ -4410,216 +6188,11 @@ const ArchiveChatConversationResponseSchema = z
   .openapi({ required: [] })
   .openapi('ArchiveChatConversationResponse')
 
-const ArticleCreateDraftContentStateBlocksDataCashtagsSchema = z
-  .strictObject({
-    from_index: z.int().min(0).openapi({ description: 'Start index of the tagged span.' }),
-    text: z.string().openapi({ description: 'The tagged text.' }),
-    to_index: z.int().min(0).openapi({ description: 'End index of the tagged span.' }),
-  })
-  .openapi({ required: ['from_index', 'to_index', 'text'] })
-  .openapi('ArticleCreateDraftContentStateBlocksDataCashtags')
-
-const ArticleCreateDraftContentStateBlocksDataHashtagsSchema = z
-  .strictObject({
-    from_index: z.int().min(0).openapi({ description: 'Start index of the tagged span.' }),
-    text: z.string().openapi({ description: 'The tagged text.' }),
-    to_index: z.int().min(0).openapi({ description: 'End index of the tagged span.' }),
-  })
-  .openapi({ required: ['from_index', 'to_index', 'text'] })
-  .openapi('ArticleCreateDraftContentStateBlocksDataHashtags')
-
-const ArticleCreateDraftContentStateBlocksDataMentionsSchema = z
-  .strictObject({
-    from_index: z.int().min(0).openapi({ description: 'Start index of the tagged span.' }),
-    text: z.string().openapi({ description: 'The tagged text.' }),
-    to_index: z.int().min(0).openapi({ description: 'End index of the tagged span.' }),
-  })
-  .openapi({ required: ['from_index', 'to_index', 'text'] })
-  .openapi('ArticleCreateDraftContentStateBlocksDataMentions')
-
-const ArticleCreateDraftContentStateBlocksDataUrlsSchema = z
-  .strictObject({
-    from_index: z.int().min(0).openapi({ description: 'Start index of the tagged span.' }),
-    text: z.string().openapi({ description: 'The tagged text.' }),
-    to_index: z.int().min(0).openapi({ description: 'End index of the tagged span.' }),
-  })
-  .openapi({ required: ['from_index', 'to_index', 'text'] })
-  .openapi('ArticleCreateDraftContentStateBlocksDataUrls')
-
-const ArticleCreateDraftContentStateBlocksDataSchema = z
-  .strictObject({
-    cashtags: z
-      .array(ArticleCreateDraftContentStateBlocksDataCashtagsSchema)
-      .exactOptional()
-      .openapi({ description: 'Cashtag spans in this block.' }),
-    hashtags: z
-      .array(ArticleCreateDraftContentStateBlocksDataHashtagsSchema)
-      .exactOptional()
-      .openapi({ description: 'Hashtag spans in this block.' }),
-    mentions: z
-      .array(ArticleCreateDraftContentStateBlocksDataMentionsSchema)
-      .exactOptional()
-      .openapi({ description: 'Mention spans in this block.' }),
-    urls: z
-      .array(ArticleCreateDraftContentStateBlocksDataUrlsSchema)
-      .exactOptional()
-      .openapi({ description: 'URL spans in this block.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('ArticleCreateDraftContentStateBlocksData')
-
-const ArticleCreateDraftContentStateBlocksEntityRangesSchema = z
-  .strictObject({
-    key: z.int().min(0).openapi({ description: 'Index into the entities array.' }),
-    length: z.int().min(0).openapi({ description: 'Length of the entity range.' }),
-    offset: z.int().min(0).openapi({ description: 'Start offset in the text.' }),
-  })
-  .openapi({ required: ['key', 'offset', 'length'] })
-  .openapi('ArticleCreateDraftContentStateBlocksEntityRanges')
-
-const ArticleCreateDraftContentStateBlocksInlineStyleRangesSchema = z
-  .strictObject({
-    length: z.int().min(0).openapi({ description: 'Length of the styled range.' }),
-    offset: z.int().min(0).openapi({ description: 'Start offset in the text.' }),
-    style: z
-      .enum(['bold', 'italic', 'strikethrough'])
-      .openapi({ description: 'The inline style.' }),
-  })
-  .openapi({ required: ['offset', 'length', 'style'] })
-  .openapi('ArticleCreateDraftContentStateBlocksInlineStyleRanges')
-
-const ArticleCreateDraftContentStateBlocksSchema = z
-  .strictObject({
-    data: ArticleCreateDraftContentStateBlocksDataSchema.exactOptional().openapi({
-      description: 'Block-level metadata for mentions, hashtags, cashtags, and URLs.',
-    }),
-    entity_ranges: z
-      .array(ArticleCreateDraftContentStateBlocksEntityRangesSchema)
-      .exactOptional()
-      .openapi({ description: 'References to entries in entities.' }),
-    inline_style_ranges: z
-      .array(ArticleCreateDraftContentStateBlocksInlineStyleRangesSchema)
-      .exactOptional()
-      .openapi({ description: 'Inline formatting ranges.' }),
-    key: z.string().exactOptional().openapi({ description: 'Optional block key.' }),
-    text: z
-      .string()
-      .openapi({
-        description:
-          'The text content of this block. For latex entities, this holds the LaTeX source;          for divider/markdown/image/post atomic placeholders, typically a single space.',
-      }),
-    type: z
-      .enum([
-        'unstyled',
-        'header-one',
-        'header-two',
-        'header-three',
-        'unordered-list-item',
-        'ordered-list-item',
-        'blockquote',
-        'atomic',
-      ])
-      .openapi({
-        description:
-          'The block type. Use atomic for non-text embeds (image, post, markdown, divider, latex).',
-      }),
-  })
-  .openapi({ required: ['text', 'type'] })
-  .openapi('ArticleCreateDraftContentStateBlocks')
-
-const ArticleCreateDraftContentStateEntitiesValueDataMediaItemsSchema = z
-  .strictObject({ media_category: z.string(), media_id: z.string() })
-  .openapi({ required: ['media_category', 'media_id'] })
-  .openapi('ArticleCreateDraftContentStateEntitiesValueDataMediaItems')
-
-const ArticleCreateDraftContentStateEntitiesValueDataSchema = z
-  .strictObject({
-    caption: z.string().exactOptional().openapi({ description: 'Caption text.' }),
-    entity_key: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Opaque entity key. Used with type emoji (and reserved for other keyed embeds) to match in-app Articles composer payloads.',
-      }),
-    markdown: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Markdown body for type markdown. Use fenced code blocks (```lang ... ```) for code. Max weighted length is enforced by the Articles backend (10,000 per article).',
-      }),
-    media_items: z
-      .array(ArticleCreateDraftContentStateEntitiesValueDataMediaItemsSchema)
-      .exactOptional()
-      .openapi({ description: 'Media keys. Used with type image.' }),
-    post_id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The ID of the post to embed. Used with type post.' }),
-    url: z.string().exactOptional().openapi({ description: 'The URL. Used with type link.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('ArticleCreateDraftContentStateEntitiesValueData')
-
-const ArticleCreateDraftContentStateEntitiesValueSchema = z
-  .strictObject({
-    data: ArticleCreateDraftContentStateEntitiesValueDataSchema.openapi({
-      description:
-        'Entity payload. Fields depend on the entity type: post_id (post), url (link),          media_items (image), entity_key (emoji and other opaque keys), markdown (markdown /          code blocks / GFM tables). divider and latex use an empty data object; latex source          is the block text; emoji uses block text for the character(s). There is no separate          table entity type in article storage; tables are markdown.',
-    }),
-    mutability: z
-      .enum(['immutable', 'mutable', 'segmented'])
-      .openapi({
-        description:
-          'Whether the entity can be edited. Recommended: immutable for post, image, divider, latex; mutable for link and markdown (matches the in-app Articles composer).',
-      }),
-    type: z
-      .enum(['post', 'link', 'image', 'emoji', 'markdown', 'divider', 'latex'])
-      .openapi({
-        description:
-          'The entity type. markdown carries code blocks, GFM tables, and other Markdown;          emoji maps to backend TWEMOJI (Twemoji is internal); divider is a horizontal rule;          latex renders TeX from the block text. Tables are not a separate enum value — use          type markdown with a pipe table in data.markdown.',
-      }),
-  })
-  .openapi({ required: ['type', 'mutability', 'data'] })
-  .openapi('ArticleCreateDraftContentStateEntitiesValue')
-
-const ArticleCreateDraftContentStateEntitiesSchema = z
-  .strictObject({
-    key: z.string().openapi({ description: 'The entity key referenced by entity_ranges.' }),
-    value: ArticleCreateDraftContentStateEntitiesValueSchema,
-  })
-  .openapi({ required: ['key', 'value'] })
-  .openapi('ArticleCreateDraftContentStateEntities')
-
-const ArticleCreateDraftContentStateSchema = z
-  .strictObject({
-    blocks: z
-      .array(ArticleCreateDraftContentStateBlocksSchema)
-      .openapi({ description: 'The text blocks that make up the article body.' }),
-    entities: z
-      .array(ArticleCreateDraftContentStateEntitiesSchema)
-      .openapi({
-        description:
-          'Non-text entities referenced by blocks (links, embedded posts, images, emoji,          markdown/code/tables, dividers, LaTeX). Full set matches article storage.',
-      }),
-  })
-  .openapi({ required: ['blocks', 'entities'] })
-  .openapi('ArticleCreateDraftContentState')
-
-const ArticleCreateDraftCoverMediaSchema = z
-  .strictObject({
-    media_category: z.string().openapi({ description: 'The media category (e.g. tweet_image).' }),
-    media_id: z.string().openapi({ description: 'The media ID from the media upload endpoint.' }),
-  })
-  .openapi({ required: ['media_category', 'media_id'] })
-  .openapi('ArticleCreateDraftCoverMedia')
-
-const ArticleCreateDraftRequestSchema = z
+const ArticleCreateDraftRequestSchema: z.ZodType<ArticleCreateDraftRequestType> = z
   .strictObject({
     content_state: ArticleCreateDraftContentStateSchema.openapi({
       description:
-        'DraftJS content state representing the article body. Special formatting          (markdown/code/tables, dividers, LaTeX, emoji, images, embedded posts) uses atomic          blocks with entity_ranges pointing into entities.',
+        'DraftJS content state representing the article body. Special formatting (markdown/code/tables, dividers, LaTeX, emoji, images, embedded posts) uses atomic blocks with entity_ranges pointing into entities.',
     }),
     cover_media: ArticleCreateDraftCoverMediaSchema.exactOptional().openapi({
       description: 'Optional cover media for the Article.',
@@ -4702,11 +6275,23 @@ const BroadcastSchema = z
     image_url_small: z.string().exactOptional(),
     is_high_latency: z.boolean().exactOptional(),
     language: z.string().exactOptional(),
+    live_category_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Id of the live category the host picked for the broadcast, as listed by GET /2/broadcasts/categories. Omitted when the broadcast has none.',
+      }),
     media_key: z.string().exactOptional(),
     scheduled_end_ms: z.string().exactOptional(),
     scheduled_start_ms: z.string().exactOptional(),
     share_url: z.string().exactOptional(),
-    source_id: z.string().exactOptional(),
+    source_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Id of the source the broadcast streams from, as returned by GET /2/sources.',
+      }),
     start_ms: z.string().exactOptional(),
     state: z.string().exactOptional(),
     title: z.string().exactOptional(),
@@ -4719,34 +6304,6 @@ const BroadcastSchema = z
   })
   .openapi({ required: [] })
   .openapi('Broadcast')
-
-const BroadcastChatMessageSchema = z
-  .object({
-    author_id: z.string().exactOptional(),
-    author_name: z.string().exactOptional(),
-    author_username: z.string().exactOptional(),
-    broadcast_id: z.string().exactOptional(),
-    created_at_ms: z.string().exactOptional(),
-    id: z.string().exactOptional(),
-    reply_to: z.string().exactOptional(),
-    text: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('BroadcastChatMessage')
-
-const BroadcastChatMuteSchema = z
-  .object({
-    end_at_ms: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The Unix timestamp in milliseconds when the mute expires. Absent for indefinite mutes.',
-      }),
-    user_id: z.string().exactOptional().openapi({ description: "The muted user's ID." }),
-  })
-  .openapi({ required: [] })
-  .openapi('BroadcastChatMute')
 
 const CancelScheduledCallResponseDataSchema = z
   .strictObject({
@@ -4765,143 +6322,6 @@ const CancelScheduledCallResponseSchema = z
   })
   .openapi({ required: [] })
   .openapi('CancelScheduledCallResponse')
-
-const ChatConversationAdminSettingsSchema = z
-  .object({
-    add_member: z
-      .boolean()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Whether only admins may add members.' }),
-    block_screen_capture: z
-      .boolean()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether only admins may block screen capture. Through the API, only admins can change\nscreen capture in a group, whatever this setting says.',
-      }),
-    edit_group_info: z
-      .boolean()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Whether only admins may edit group info.' }),
-    edit_message_ttl: z
-      .boolean()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Whether only admins may edit the message TTL.' }),
-    send_message: z
-      .boolean()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Whether only admins may send messages.' }),
-    start_call: z
-      .boolean()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Whether only admins may start a call.' }),
-  })
-  .openapi({
-    description:
-      'Group actions restricted to admins. true means only admins can perform the action.',
-    required: [],
-  })
-  .openapi('ChatConversationAdminSettings')
-
-const ChatConversationInviteSchema = z
-  .object({
-    admin_user_id: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Unique identifier of the admin who turned on the invite link.' }),
-    expires_at: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'When the invite link stops working.' }),
-    invite_url: z.string().openapi({ description: 'The shareable invite link.' }),
-    token: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Token identifying this invite link.' }),
-    welcome_message: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Message shown to Users who join through the invite link.' }),
-  })
-  .openapi({
-    description: 'An active invite link for a group Chat conversation.',
-    required: ['invite_url'],
-  })
-  .openapi('ChatConversationInvite')
-
-const ChatConversationPendingMemberIdsSchema = z
-  .array(z.string())
-  .openapi({
-    description:
-      'Unique identifiers of Users who asked to join this group and are awaiting approval. Returned only to callers who can add members.',
-  })
-  .openapi('ChatConversationPendingMemberIds')
-
-const ChatConversationSchema = z
-  .object({
-    admin_ids: z.array(z.string()).exactOptional(),
-    admin_settings: ChatConversationAdminSettingsSchema.exactOptional(),
-    created_at: z.iso.datetime({ offset: true }).exactOptional(),
-    group_avatar_url: z.string().exactOptional(),
-    group_description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The group description, encrypted with the conversation key like group_name.',
-      }),
-    group_description_key_version: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The conversation key version that group_description is encrypted with.',
-      }),
-    group_name: z.string().exactOptional(),
-    id: z.string().exactOptional(),
-    invite: ChatConversationInviteSchema.exactOptional(),
-    is_archived: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether the authenticated user archived this conversation.' }),
-    is_muted: z.boolean().exactOptional(),
-    last_read_event_id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The event ID you have read up to: the seen_until_sequence_id of your latest read receipt. Absent when you have no read receipt.',
-      }),
-    member_ids: z.array(z.string()).exactOptional(),
-    message_ttl_ms: z.int().exactOptional(),
-    newest_event_id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The ID of the latest notifying message in the conversation.' }),
-    participant_ids: z.array(z.string()).exactOptional(),
-    pending_member_ids: ChatConversationPendingMemberIdsSchema.exactOptional(),
-    screen_capture_blocking_enabled: z.boolean().exactOptional(),
-    screen_capture_detection_enabled: z.boolean().exactOptional(),
-    type: z.string().exactOptional(),
-    unread: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether the conversation is unread for you: its latest notifying message was sent by someone else after last_read_event_id, or you have no read receipt. Marking the conversation unread does not set it.',
-      }),
-    updated_at: z.iso.datetime({ offset: true }).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ChatConversation')
 
 const ChatGroupInviteSchema = z
   .object({
@@ -5080,7 +6500,7 @@ const ChatMessageEventSchema = z
     id: z.string().exactOptional(),
     is_trusted: z.boolean().exactOptional(),
     message_event_signature: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -5342,7 +6762,7 @@ const CountryCodeSchema = z
   .openapi('CountryCode')
 
 const CreateAccountActivitySubscriptionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi('CreateAccountActivitySubscriptionRequest')
 
 const CreateAccountActivitySubscriptionResponseDataSchema = z
@@ -5371,7 +6791,7 @@ const CreateActivitySubscriptionFilterSchema = z
       }),
     keyword: z.string().exactOptional().openapi({ description: 'Optional keyword filter.' }),
     qualifiers: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Optional event-specific string predicates.' }),
     user_id: z
@@ -5398,6 +6818,7 @@ const CreateActivitySubscriptionRequestSchema = z
         'profile.update.verified_badge',
         'profile.update.affiliate_badge',
         'profile.update.handle',
+        'trends.new',
         'news.new',
         'follow.follow',
         'follow.unfollow',
@@ -5473,7 +6894,7 @@ const CreateActivitySubscriptionResponseDataSubscriptionFilterSchema = z
       }),
     keyword: z.string().exactOptional().openapi({ description: 'Optional keyword filter.' }),
     qualifiers: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Event-specific string predicates applied to the subscription.' }),
     user_id: z
@@ -5547,6 +6968,13 @@ const CreateBotRequestSchema = z
         description:
           "The bot's handle (X screen name): 5-15 characters, letters, numbers, or underscores.",
       }),
+    org_only: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          "Whether only members of the bot's developer account can add it to group chats. An org-only bot has no public profile and doesn't appear in public search. Everyone in its developer account should be able to message it, so leave its Direct Messages open to everyone rather than premium senders only. Defaults to false. Applies only when the request creates the bot: a handle that already names one of the project's bots keeps that bot's setting, which the response's org_only reports.",
+      }),
     scopes: z
       .array(z.string())
       .exactOptional()
@@ -5565,6 +6993,13 @@ const CreateBotResponseDataSchema = z
       .regex(/^[0-9]{1,19}$/)
       .openapi({ description: "Unique identifier of the bot's User account." }),
     name: z.string().exactOptional().openapi({ description: "The bot's display name." }),
+    org_only: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          "Whether the bot is org only. For a handle that already names one of the project's bots, this is that bot's current setting. Absent when X couldn't read the setting back.",
+      }),
     scopes: z
       .array(z.string())
       .exactOptional()
@@ -5593,6 +7028,96 @@ const CreateBotResponseSchema = z
   })
   .openapi({ required: [] })
   .openapi('CreateBotResponse')
+
+const CreateBroadcastRequestSchema = z
+  .strictObject({
+    additional_source_ids: z
+      .array(z.string())
+      .min(1)
+      .max(2)
+      .exactOptional()
+      .openapi({
+        description:
+          "Ids of further sources to go live on together with `source_id`, one per video format, at most 2, each a source's `id` from GET /2/sources. `source_id` comes first; duplicates are ignored.",
+      }),
+    chat_option: z
+      .int()
+      .min(0)
+      .max(6)
+      .exactOptional()
+      .openapi({
+        description:
+          "Who can chat: 0 default, 1 chat off, 2 everyone, 3 verified accounts, 4 accounts the host follows, 5 the host's subscribers, 6 accounts followed by an account the host follows.",
+      }),
+    live_category_id: z
+      .string()
+      .max(64)
+      .exactOptional()
+      .openapi({
+        description:
+          'The live category the host picked, e.g. `gaming`. Ids come from GET /2/broadcasts/categories; an unknown id is a 400. Ignored when the source already has a live broadcast.',
+      }),
+    locale: z.string().exactOptional().openapi({ description: 'Broadcast language, e.g. `en`.' }),
+    should_not_tweet: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Skip the Post announcing the broadcast. Defaults to false.' }),
+    source_id: z
+      .string()
+      .openapi({
+        description:
+          "Id of the source to go live on: a source's `id` (19 digits) from GET /2/sources.",
+      }),
+    title: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "Broadcast title. Defaults to the user's display name." }),
+  })
+  .openapi({ required: ['source_id'] })
+  .openapi('CreateBroadcastRequest')
+
+const CreateBroadcastResponseDataSchema = z
+  .object({
+    broadcast_id: z.string().openapi({ description: 'Broadcast id; the same as `id`.' }),
+    chat_option: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          "Who can chat: 0 default, 1 chat off, 2 everyone, 3 verified accounts, 4 accounts the host follows, 5 the host's subscribers, 6 accounts followed by an account the host follows.",
+      }),
+    id: z.string().openapi({ description: 'Broadcast id.' }),
+    language: z.string().exactOptional().openapi({ description: 'Broadcast language.' }),
+    live_category_id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "The broadcast's live category. Missing when it has none." }),
+    media_key: z.string().exactOptional().openapi({ description: 'Media key of the broadcast.' }),
+    share_url: z.string().openapi({ description: "The broadcast's watch page." }),
+    start_ms: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Start time, milliseconds since Unix epoch (decimal string).' }),
+    state: z.string().openapi({ description: 'Broadcast state, `RUNNING` once live.' }),
+    title: z.string().exactOptional().openapi({ description: 'Broadcast title.' }),
+    tweet_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Id of the Post announcing the broadcast. Missing when the Post hasn't been created yet, was suppressed with `should_not_tweet`, or could not be created.",
+      }),
+  })
+  .openapi({ required: ['id', 'broadcast_id', 'state', 'share_url'] })
+  .openapi('CreateBroadcastResponseData')
+
+const CreateBroadcastResponseSchema = z
+  .object({
+    data: CreateBroadcastResponseDataSchema.exactOptional(),
+    errors: z.array(ProblemSchema).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('CreateBroadcastResponse')
 
 const CreateCallRequestSchema = z
   .strictObject({
@@ -5739,15 +7264,13 @@ const CreateChatConversationConversationParticipantKeysSchema = z
   .object({
     encrypted_conversation_key: z
       .string()
-      .exactOptional()
       .openapi({ description: "Conversation key encrypted with this participant's public key." }),
     public_key_version: z
       .string()
-      .exactOptional()
       .openapi({ description: "Version of the participant's public key used for encryption." }),
-    user_id: z.string().exactOptional().openapi({ description: 'Participant user ID.' }),
+    user_id: z.string().openapi({ description: 'Participant user ID.' }),
   })
-  .openapi({ required: [] })
+  .openapi({ required: ['user_id', 'encrypted_conversation_key', 'public_key_version'] })
   .openapi('CreateChatConversationConversationParticipantKeys')
 
 const CreateChatConversationRequestSchema = z
@@ -6376,7 +7899,7 @@ const CreateMediaMetadataMetadataManagementInfoSchema = z
   .openapi('CreateMediaMetadataMetadataManagementInfo')
 
 const CreateMediaMetadataMetadataPreviewImageSchema = z
-  .object({ media_key: z.object({}) })
+  .object({ media_key: z.looseObject({}) })
   .openapi({ required: ['media_key'] })
   .openapi('CreateMediaMetadataMetadataPreviewImage')
 
@@ -6386,7 +7909,7 @@ const CreateMediaMetadataMetadataSharedInfoSchema = z
   .openapi('CreateMediaMetadataMetadataSharedInfo')
 
 const CreateMediaMetadataMetadataStickerInfoStickersSchema = z
-  .object({})
+  .looseObject({})
   .openapi('CreateMediaMetadataMetadataStickerInfoStickers')
 
 const CreateMediaMetadataMetadataStickerInfoSchema = z
@@ -6403,14 +7926,14 @@ const CreateMediaMetadataMetadataSchema = z
   .object({
     allow_download_status: CreateMediaMetadataMetadataAllowDownloadStatusSchema.exactOptional(),
     alt_text: CreateMediaMetadataMetadataAltTextSchema.exactOptional(),
-    audience_policy: z.object({}).exactOptional(),
+    audience_policy: z.looseObject({}).exactOptional(),
     content_expiration: CreateMediaMetadataMetadataContentExpirationSchema.exactOptional(),
     domain_restrictions: CreateMediaMetadataMetadataDomainRestrictionsSchema.exactOptional(),
     found_media_origin: CreateMediaMetadataMetadataFoundMediaOriginSchema.exactOptional(),
-    geo_restrictions: z.object({}).exactOptional(),
+    geo_restrictions: z.looseObject({}).exactOptional(),
     management_info: CreateMediaMetadataMetadataManagementInfoSchema.exactOptional(),
     preview_image: CreateMediaMetadataMetadataPreviewImageSchema.exactOptional(),
-    sensitive_media_warning: z.object({}).exactOptional(),
+    sensitive_media_warning: z.looseObject({}).exactOptional(),
     shared_info: CreateMediaMetadataMetadataSharedInfoSchema.exactOptional(),
     sticker_info: CreateMediaMetadataMetadataStickerInfoSchema.exactOptional(),
     upload_source: CreateMediaMetadataMetadataUploadSourceSchema.exactOptional(),
@@ -6434,7 +7957,7 @@ const CreateMediaMetadataRequestSchema = z
 const CreateMediaMetadataResponseDataSchema = z
   .object({
     associated_metadata: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'The metadata now associated with the media.' }),
     id: z.string().openapi({ description: 'The media id the metadata was attached to.' }),
@@ -6489,7 +8012,7 @@ const CreateMediaSubtitlesRequestSchema = z
 const CreateMediaSubtitlesResponseDataSchema = z
   .object({
     associated_subtitles: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'The subtitles now associated with the media.' }),
     id: z.string().exactOptional().openapi({ description: 'The media id.' }),
@@ -6505,6 +8028,287 @@ const CreateMediaSubtitlesResponseSchema = z
   })
   .openapi({ required: [] })
   .openapi('CreateMediaSubtitlesResponse')
+
+const CreatePostDraftClipSchema = z
+  .strictObject({
+    end_seconds: z
+      .int()
+      .min(1)
+      .openapi({
+        description:
+          'Second of the video at which the clip ends. A clip is 5 to 60 seconds long and at most 30% of the video.',
+      }),
+    post_id: z
+      .string()
+      .regex(/^[0-9]{1,19}$/)
+      .openapi({
+        description:
+          'The ID of the Post whose video is clipped. The Post must have exactly one video, longer than 2 minutes.',
+      }),
+    start_seconds: z
+      .int()
+      .min(0)
+      .openapi({ description: 'Second of the video at which the clip starts.' }),
+  })
+  .openapi({ required: ['post_id', 'start_seconds', 'end_seconds'] })
+  .openapi('CreatePostDraftClip')
+
+const CreatePostDraftEditOptionsSchema = z
+  .strictObject({
+    previous_post_id: z
+      .string()
+      .regex(/^[0-9]{1,19}$/)
+      .openapi({ description: 'The ID of the Post being edited.' }),
+  })
+  .openapi({ required: ['previous_post_id'] })
+  .openapi('CreatePostDraftEditOptions')
+
+const CreatePostDraftGeoSchema = z
+  .strictObject({ place_id: z.string().openapi({ description: 'Place ID for geo tagging.' }) })
+  .openapi({ required: ['place_id'] })
+  .openapi('CreatePostDraftGeo')
+
+const CreatePostDraftMediaCallToActionsAppInstallSchema = z
+  .strictObject({
+    app_store_id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Apple App Store iPhone app id.' }),
+    ipad_app_store_id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Apple App Store iPad app id.' }),
+    play_store_id: z.string().exactOptional().openapi({ description: 'Google Play Store app id.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('CreatePostDraftMediaCallToActionsAppInstall')
+
+const CreatePostDraftMediaCallToActionsVisitSiteSchema = z
+  .strictObject({ url: z.string().openapi({ description: 'HTTPS URL the CTA links to.' }) })
+  .openapi({ required: ['url'] })
+  .openapi('CreatePostDraftMediaCallToActionsVisitSite')
+
+const CreatePostDraftMediaCallToActionsWatchNowSchema = z
+  .strictObject({ url: z.string().openapi({ description: 'HTTPS URL the CTA links to.' }) })
+  .openapi({ required: ['url'] })
+  .openapi('CreatePostDraftMediaCallToActionsWatchNow')
+
+const CreatePostDraftMediaCallToActionsSchema = z
+  .strictObject({
+    app_install: CreatePostDraftMediaCallToActionsAppInstallSchema.exactOptional().openapi({
+      description: 'App Install CTA. At least one store id should be provided.',
+    }),
+    visit_site: CreatePostDraftMediaCallToActionsVisitSiteSchema.exactOptional().openapi({
+      description: 'Visit Site CTA.',
+    }),
+    watch_now: CreatePostDraftMediaCallToActionsWatchNowSchema.exactOptional().openapi({
+      description: 'Watch Now CTA.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('CreatePostDraftMediaCallToActions')
+
+const CreatePostDraftMediaSchema = z
+  .strictObject({
+    call_to_actions: CreatePostDraftMediaCallToActionsSchema.exactOptional().openapi({
+      description: 'Call-to-action button rendered on the media entity.',
+    }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Description for the media, rendered on the Post card for video and Amplify content.',
+      }),
+    embeddable: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          "When true, the media's asset URLs do not expire and external syndicated playback is allowed.",
+      }),
+    media_ids: z
+      .array(z.string().regex(/^[0-9]{1,19}$/))
+      .min(1)
+      .max(20)
+      .openapi({ description: 'Media IDs to attach to the Post, in the order given.' }),
+    preview_media_id: z
+      .string()
+      .regex(/^[0-9]{1,19}$/)
+      .exactOptional()
+      .openapi({ description: 'Media id whose asset is used as the preview image.' }),
+    tagged_user_ids: z
+      .array(z.string().regex(/^[0-9]{1,19}$/))
+      .max(10)
+      .exactOptional()
+      .openapi({ description: 'User IDs tagged in the media.' }),
+    title: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Title for the media, rendered on the Post card for video and Amplify content.',
+      }),
+  })
+  .openapi({ required: ['media_ids'] })
+  .openapi('CreatePostDraftMedia')
+
+const CreatePostDraftPollSchema = z
+  .strictObject({
+    duration_minutes: z
+      .int()
+      .min(5)
+      .max(10080)
+      .openapi({ description: 'Duration of the poll in minutes.' }),
+    options: z
+      .array(z.string().min(1).max(25))
+      .min(2)
+      .max(4)
+      .openapi({ description: 'Poll options (2-4 choices, 1-25 characters each).' }),
+    reply_settings: z
+      .enum(['following', 'mentionedUsers', 'subscribers', 'verified'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Who can reply to the poll Tweet. Accepted for compatibility; it carries no backend argument and is dropped before the mutation is issued (see `translate_body`).',
+      }),
+  })
+  .openapi({ required: ['options', 'duration_minutes'] })
+  .openapi('CreatePostDraftPoll')
+
+const CreatePostDraftReplySchema = z
+  .strictObject({
+    auto_populate_reply_metadata: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'If true, reply metadata is automatically populated. Accepted for compatibility; it carries no backend argument and is dropped before the mutation is issued (see `translate_body`).',
+      }),
+    exclude_reply_user_ids: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'User IDs to exclude from the reply thread.' }),
+    in_reply_to_tweet_id: z
+      .string()
+      .regex(/^[0-9]{1,19}$/)
+      .openapi({ description: 'The ID of the tweet being replied to.' }),
+  })
+  .openapi({ required: ['in_reply_to_tweet_id'] })
+  .openapi('CreatePostDraftReply')
+
+const CreatePostDraftRequestSchema = z
+  .strictObject({
+    card_uri: z.string().exactOptional().openapi({ description: 'Card URI parameter.' }),
+    clip: CreatePostDraftClipSchema.exactOptional().openapi({
+      description:
+        "Clip of another Post's video to share. Cannot be combined with media, a poll, a card, a quoted Post or a direct message deep link.",
+    }),
+    community_id: z
+      .string()
+      .regex(/^[0-9]{1,19}$/)
+      .exactOptional()
+      .openapi({ description: 'Community to post the tweet to.' }),
+    direct_message_deep_link: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Direct message deep link.' }),
+    edit_options: CreatePostDraftEditOptionsSchema.exactOptional().openapi({
+      description: 'Edit an existing tweet rather than creating a new one.',
+    }),
+    for_super_followers_only: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Restrict tweet to super followers.' }),
+    geo: CreatePostDraftGeoSchema.exactOptional().openapi({
+      description: 'Geo location for the tweet.',
+    }),
+    made_with_ai: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Disclose that the tweet contains AI-generated media.' }),
+    media: CreatePostDraftMediaSchema.exactOptional().openapi({
+      description: 'Media attachments.',
+    }),
+    nullcast: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'If true, the tweet is not shown in the public timeline.' }),
+    paid_partnership: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Disclose that the tweet is a paid partnership.' }),
+    poll: CreatePostDraftPollSchema.exactOptional().openapi({ description: 'Poll configuration.' }),
+    quote_tweet_id: z
+      .string()
+      .regex(/^[0-9]{1,19}$/)
+      .exactOptional()
+      .openapi({ description: 'Tweet ID to quote.' }),
+    reply: CreatePostDraftReplySchema.exactOptional().openapi({
+      description: 'Tweet reply configuration.',
+    }),
+    reply_settings: z
+      .enum(['following', 'mentionedUsers', 'subscribers', 'verified'])
+      .exactOptional()
+      .openapi({ description: 'Who can reply to this tweet.' }),
+    share_with_followers: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Share an exclusive (super-follower) tweet with all followers.' }),
+    text: z
+      .string()
+      .default('')
+      .exactOptional()
+      .openapi({
+        description:
+          'Text of the Post. Required unless media is provided. At most 280 characters unless the account has X Premium.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('CreatePostDraftRequest')
+
+const CreatePostDraftResponseDataSchema = z
+  .object({
+    id: z
+      .string()
+      .regex(/^[0-9]{1,19}$/)
+      .openapi({ description: 'Unique identifier of the saved draft.' }),
+    text: z.string().openapi({ description: 'The text of the saved draft.' }),
+  })
+  .openapi({ required: ['id', 'text'] })
+  .openapi('CreatePostDraftResponseData')
+
+const CreatePostDraftResponseSchema = z
+  .object({
+    data: CreatePostDraftResponseDataSchema.exactOptional(),
+    errors: z.array(ProblemSchema).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('CreatePostDraftResponse')
+
+const CreatePostsClipSchema = z
+  .strictObject({
+    end_seconds: z
+      .int()
+      .min(1)
+      .openapi({
+        description:
+          'Second of the video at which the clip ends. A clip is 5 to 60 seconds long and at most 30% of the video.',
+      }),
+    post_id: z
+      .string()
+      .regex(/^[0-9]{1,19}$/)
+      .openapi({
+        description:
+          'The ID of the Post whose video is clipped. The Post must have exactly one video, longer than 2 minutes.',
+      }),
+    start_seconds: z
+      .int()
+      .min(0)
+      .openapi({ description: 'Second of the video at which the clip starts.' }),
+  })
+  .openapi({ required: ['post_id', 'start_seconds', 'end_seconds'] })
+  .openapi('CreatePostsClip')
 
 const CreatePostsEditOptionsSchema = z
   .strictObject({
@@ -6583,8 +8387,8 @@ const CreatePostsMediaSchema = z
     media_ids: z
       .array(z.string().regex(/^[0-9]{1,19}$/))
       .min(1)
-      .max(4)
-      .openapi({ description: 'Media IDs to attach to the tweet.' }),
+      .max(20)
+      .openapi({ description: 'Media IDs to attach to the Post, in the order given.' }),
     preview_media_id: z
       .string()
       .regex(/^[0-9]{1,19}$/)
@@ -6653,6 +8457,10 @@ const CreatePostsReplySchema = z
 const CreatePostsRequestSchema = z
   .strictObject({
     card_uri: z.string().exactOptional().openapi({ description: 'Card URI parameter.' }),
+    clip: CreatePostsClipSchema.exactOptional().openapi({
+      description:
+        "Clip of another Post's video to share. Cannot be combined with media, a poll, a card, a quoted Post or a direct message deep link.",
+    }),
     community_id: z
       .string()
       .regex(/^[0-9]{1,19}$/)
@@ -6708,7 +8516,7 @@ const CreatePostsRequestSchema = z
       .exactOptional()
       .openapi({
         description:
-          "Text of the tweet. Required unless media is provided.  Defaulted to an empty string so it is always sent: the backend's `tweet_text` variable is non-null and rejects an absent value.",
+          'Text of the Post. Required unless media is provided. At most 280 characters unless the account has X Premium.',
       }),
   })
   .openapi({ required: [] })
@@ -6787,7 +8595,10 @@ const CreateScheduledBroadcastRequestSchema = z
     source_id: z
       .string()
       .min(1)
-      .openapi({ description: 'Ingest / source id to bind (same as sources `rtmp_stream_key`).' }),
+      .openapi({
+        description:
+          "Source to bind: a source's `id` from GET /2/sources. A stream key is also accepted but deprecated; stream keys stop being accepted when the /2/users/:id/sources and /2/users/:id/broadcasts routes reach end of life on January 1, 2027.",
+      }),
     telecast_id: z
       .string()
       .regex(/^[0-9]{1,19}$/)
@@ -6852,7 +8663,9 @@ const CreateScheduledBroadcastResponseDataSchema = z
     source_id: z
       .string()
       .exactOptional()
-      .openapi({ description: 'Bound ingest / source id (`rtmp_stream_key`).' }),
+      .openapi({
+        description: 'Id of the bound source, as returned by GET /2/sources. Omitted when unknown.',
+      }),
     state: z
       .string()
       .exactOptional()
@@ -6889,7 +8702,7 @@ const CreateSourceRequestSchema = z
       .min(1)
       .openapi({
         description:
-          'Ingest region: us-east-1, us-east-2, us-west-1, us-west-2, ca-central-1, sa-east-1, eu-west-1, eu-west-3, eu-central-1, ap-south-1, ap-southeast-1, ap-southeast-2, ap-northeast-1 or ap-northeast-2.',
+          "Ingest region, as returned by GET /2/region. us-west-1 and us-west-2 ingest in US West; us-east-1, us-east-2, ca-central-1, sa-east-1, eu-west-1, eu-west-2, eu-west-3, eu-central-1, eu-north-1, ap-south-1, ap-northeast-1, ap-northeast-2, ap-southeast-1 and ap-southeast-2 ingest in US East. The response's `region` is the serving location (`us-east-1` or `us-west-2`).",
       }),
   })
   .openapi({ required: ['name', 'region'] })
@@ -6905,28 +8718,35 @@ const CreateSourceResponseDataSchema = z
       .string()
       .openapi({
         description:
-          'Source id; the `source_id` a scheduled broadcast binds to. Currently equal to `stream_key`.',
+          'Source id, 19 decimal digits; the `source_id` that POST /2/broadcasts and scheduled broadcasts take. Not a credential: read the stream key with GET /2/sources/:id/stream_key.',
       }),
     is_stream_active: z
       .boolean()
       .exactOptional()
-      .openapi({
-        description:
-          'Whether an encoder is currently sending video to the source. Publishing a broadcast on the source needs it.',
-      }),
+      .openapi({ description: 'Whether an encoder is currently sending video to the source.' }),
     name: z.string().exactOptional().openapi({ description: 'Label for the source.' }),
     region: z
       .string()
       .exactOptional()
       .openapi({
         description:
-          'Ingest region: `atla` or `pdxa` for on-prem sources, the AWS region (e.g. `us-east-1`) for sources created before the move to on-prem.',
+          'Region of the ingest location serving the source: `us-east-1` or `us-west-2`. Sources created before October 31, 2026 keep the AWS region they were created in.',
       }),
-    rtmp_url: z.string().exactOptional().openapi({ description: 'RTMP ingest URL.' }),
-    rtmps_url: z.string().exactOptional().openapi({ description: 'RTMPS ingest URL (port 443).' }),
-    stream_key: z.string().exactOptional().openapi({ description: 'RTMP stream key.' }),
+    rtmp_url: z.string().exactOptional().openapi({ description: 'Ingest URL.' }),
+    rtmps_url: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "RTMPS ingest URL (port 443). Configure your encoder with this URL and the source's stream key.",
+      }),
+    stream_key: z
+      .string()
+      .openapi({
+        description: 'Stream key. A credential: anyone with it can stream to the source.',
+      }),
   })
-  .openapi({ required: ['id'] })
+  .openapi({ required: ['id', 'stream_key'] })
   .openapi('CreateSourceResponseData')
 
 const CreateSourceResponseSchema = z
@@ -6939,7 +8759,10 @@ const CreateSourceResponseSchema = z
 
 const CreateUserBroadcastRequestSchema = z
   .object({
-    is_low_latency: z.boolean().exactOptional().openapi({ description: 'Ignored.' }),
+    is_low_latency: z
+      .union([z.boolean(), z.string(), z.int()])
+      .exactOptional()
+      .openapi({ description: 'Ignored.' }),
     region: z
       .string()
       .exactOptional()
@@ -8008,6 +9831,23 @@ const DeleteMediaSubtitlesResponseSchema = z
   .openapi({ required: [] })
   .openapi('DeleteMediaSubtitlesResponse')
 
+const DeletePostDraftResponseDataSchema = z
+  .object({
+    deleted: z
+      .boolean()
+      .openapi({ description: "Whether the draft is gone from the user's drafts." }),
+  })
+  .openapi({ required: ['deleted'] })
+  .openapi('DeletePostDraftResponseData')
+
+const DeletePostDraftResponseSchema = z
+  .object({
+    data: DeletePostDraftResponseDataSchema.exactOptional(),
+    errors: z.array(ProblemSchema).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('DeletePostDraftResponse')
+
 const DeletePostsResponseDataSchema = z
   .object({ deleted: z.boolean().openapi({ description: 'Whether the Post was deleted.' }) })
   .openapi({ required: ['deleted'] })
@@ -8062,7 +9902,7 @@ const DeleteUserBroadcastResponseSchema = z
   .openapi({ required: [] })
   .openapi('DeleteUserBroadcastResponse')
 
-const DeleteUserSourceResponseDataSchema = z.object({}).openapi('DeleteUserSourceResponseData')
+const DeleteUserSourceResponseDataSchema = z.looseObject({}).openapi('DeleteUserSourceResponseData')
 
 const DeleteUserSourceResponseSchema = z
   .object({
@@ -8215,227 +10055,6 @@ const DisableChatGroupInviteResponseSchema = z
   })
   .openapi({ required: [] })
   .openapi('DisableChatGroupInviteResponse')
-
-const DmEventAttachmentsSchema = z
-  .object({
-    card_ids: z
-      .array(z.string())
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'IDs of cards attached to this Direct Message.' }),
-    media_keys: z
-      .array(z.string())
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Media keys of media (including audio) attached to this Direct Message.',
-      }),
-  })
-  .openapi({
-    description: 'Media and card attachments present in this Direct Message event.',
-    required: [],
-  })
-  .openapi('DmEventAttachments')
-
-const DmEventEntitiesSchema = z
-  .object({
-    cashtags: z
-      .array(
-        z
-          .object({
-            end: z
-              .preprocess(
-                (val) =>
-                  typeof val === 'number' && Number.isSafeInteger(val)
-                    ? BigInt(val)
-                    : typeof val === 'string' && /^-?\d+$/.test(val)
-                      ? BigInt(val)
-                      : val,
-                z.int64(),
-              )
-              .openapi({
-                type: 'integer',
-                format: 'int64',
-                description: 'End index in the text (exclusive).',
-              }),
-            start: z
-              .preprocess(
-                (val) =>
-                  typeof val === 'number' && Number.isSafeInteger(val)
-                    ? BigInt(val)
-                    : typeof val === 'string' && /^-?\d+$/.test(val)
-                      ? BigInt(val)
-                      : val,
-                z.int64(),
-              )
-              .openapi({
-                type: 'integer',
-                format: 'int64',
-                description: 'Start index in the text (inclusive).',
-              }),
-            tag: z.string(),
-          })
-          .openapi({
-            description: 'A hashtag or cashtag entity.',
-            required: ['start', 'end', 'tag'],
-          }),
-      )
-      .nullable()
-      .exactOptional(),
-    hashtags: z
-      .array(
-        z
-          .object({
-            end: z
-              .preprocess(
-                (val) =>
-                  typeof val === 'number' && Number.isSafeInteger(val)
-                    ? BigInt(val)
-                    : typeof val === 'string' && /^-?\d+$/.test(val)
-                      ? BigInt(val)
-                      : val,
-                z.int64(),
-              )
-              .openapi({
-                type: 'integer',
-                format: 'int64',
-                description: 'End index in the text (exclusive).',
-              }),
-            start: z
-              .preprocess(
-                (val) =>
-                  typeof val === 'number' && Number.isSafeInteger(val)
-                    ? BigInt(val)
-                    : typeof val === 'string' && /^-?\d+$/.test(val)
-                      ? BigInt(val)
-                      : val,
-                z.int64(),
-              )
-              .openapi({
-                type: 'integer',
-                format: 'int64',
-                description: 'Start index in the text (inclusive).',
-              }),
-            tag: z.string(),
-          })
-          .openapi({
-            description: 'A hashtag or cashtag entity.',
-            required: ['start', 'end', 'tag'],
-          }),
-      )
-      .nullable()
-      .exactOptional(),
-    mentions: z
-      .array(
-        z
-          .object({
-            end: z
-              .preprocess(
-                (val) =>
-                  typeof val === 'number' && Number.isSafeInteger(val)
-                    ? BigInt(val)
-                    : typeof val === 'string' && /^-?\d+$/.test(val)
-                      ? BigInt(val)
-                      : val,
-                z.int64(),
-              )
-              .openapi({ type: 'integer', format: 'int64' }),
-            id: z.string().nullable().exactOptional(),
-            start: z
-              .preprocess(
-                (val) =>
-                  typeof val === 'number' && Number.isSafeInteger(val)
-                    ? BigInt(val)
-                    : typeof val === 'string' && /^-?\d+$/.test(val)
-                      ? BigInt(val)
-                      : val,
-                z.int64(),
-              )
-              .openapi({ type: 'integer', format: 'int64' }),
-            username: z.string(),
-          })
-          .openapi({
-            description: 'A user mention entity.',
-            required: ['start', 'end', 'username'],
-          }),
-      )
-      .nullable()
-      .exactOptional(),
-    urls: z
-      .array(
-        z
-          .object({
-            display_url: z
-              .string()
-              .nullable()
-              .exactOptional()
-              .openapi({ description: 'The URL as displayed in the Direct Message text.' }),
-            end: z
-              .preprocess(
-                (val) =>
-                  typeof val === 'number' && Number.isSafeInteger(val)
-                    ? BigInt(val)
-                    : typeof val === 'string' && /^-?\d+$/.test(val)
-                      ? BigInt(val)
-                      : val,
-                z.int64(),
-              )
-              .openapi({ type: 'integer', format: 'int64' }),
-            expanded_url: z
-              .string()
-              .nullable()
-              .exactOptional()
-              .openapi({ description: 'The fully resolved URL.' }),
-            start: z
-              .preprocess(
-                (val) =>
-                  typeof val === 'number' && Number.isSafeInteger(val)
-                    ? BigInt(val)
-                    : typeof val === 'string' && /^-?\d+$/.test(val)
-                      ? BigInt(val)
-                      : val,
-                z.int64(),
-              )
-              .openapi({ type: 'integer', format: 'int64' }),
-            url: z.string().openapi({ description: 'The t.co shortened URL.' }),
-          })
-          .openapi({ description: 'A URL entity.', required: ['start', 'end', 'url'] }),
-      )
-      .nullable()
-      .exactOptional(),
-  })
-  .openapi({
-    description:
-      'A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Direct Message text.',
-    required: [],
-  })
-  .openapi('DmEventEntities')
-
-const DmEventReferencedPostsSchema = z
-  .array(
-    z
-      .object({
-        id: z.string().openapi({ description: 'Unique identifier of the referenced Post.' }),
-      })
-      .openapi({ description: 'A reference from this event to a Post.', required: ['id'] }),
-  )
-  .openapi('DmEventReferencedPosts')
-
-const DmEventSchema = z
-  .object({
-    attachments: DmEventAttachmentsSchema.exactOptional(),
-    created_at: z.iso.datetime({ offset: true }).exactOptional(),
-    dm_conversation_id: z.string().exactOptional(),
-    entities: DmEventEntitiesSchema.exactOptional(),
-    event_type: z.string().exactOptional(),
-    id: z.string().exactOptional(),
-    participant_ids: z.array(z.string()).exactOptional(),
-    referenced_posts: DmEventReferencedPostsSchema.exactOptional(),
-    sender_id: z.string().exactOptional(),
-    text: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('DmEvent')
 
 const EnableChatGroupInviteActionSignaturesMessageEventSignatureMessageSigningKeyInfoListSchema = z
   .object({
@@ -8868,7 +10487,7 @@ const GetActivitySubscriptionsResponseDataFilterSchema = z
       }),
     keyword: z.string().exactOptional().openapi({ description: 'Optional keyword filter.' }),
     qualifiers: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Event-specific string predicates applied to the subscription.' }),
     user_id: z
@@ -8916,7 +10535,83 @@ const GetActivitySubscriptionsResponseSchema = z
   .openapi({ required: [] })
   .openapi('GetActivitySubscriptionsResponse')
 
-const GetBotsResponseSchema = z
+const GetAmplifyProgramPostsResponseDataSchema = z
+  .object({
+    added_at: z
+      .string()
+      .openapi({ description: 'When the post was published into the program (ISO 8601).' }),
+    post_id: z.string().openapi({ description: 'Identifier of the post.' }),
+    promotion_ends_at: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'When promotion of the post ends (ISO 8601), when one was set.' }),
+  })
+  .openapi({ required: ['post_id', 'added_at'] })
+  .openapi('GetAmplifyProgramPostsResponseData')
+
+const GetAmplifyProgramPostsResponseSchema = z
+  .object({
+    data: z.array(GetAmplifyProgramPostsResponseDataSchema).exactOptional(),
+    errors: z.array(ProblemSchema).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('GetAmplifyProgramPostsResponse')
+
+const GetAmplifyProgramResponseDataSchema = z
+  .object({
+    advertiser_ids: z
+      .array(z.string())
+      .openapi({ description: 'Advertiser account ids sponsoring the program.' }),
+    id: z.string().openapi({ description: 'Identifier of the program.' }),
+    name: z.string().openapi({ description: 'Display name of the program.' }),
+    publisher_ids: z
+      .array(z.string())
+      .openapi({ description: 'User ids of the publishers enrolled in the program.' }),
+    state: z
+      .enum(['active', 'inactive', 'deleted'])
+      .openapi({
+        description: 'Lifecycle state of the program. Only `active` programs accept posts.',
+      }),
+  })
+  .openapi({ required: ['id', 'name', 'state', 'advertiser_ids', 'publisher_ids'] })
+  .openapi('GetAmplifyProgramResponseData')
+
+const GetAmplifyProgramResponseSchema = z
+  .object({
+    data: GetAmplifyProgramResponseDataSchema.exactOptional(),
+    errors: z.array(ProblemSchema).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('GetAmplifyProgramResponse')
+
+const GetAmplifyProgramsResponseDataSchema = z
+  .object({
+    advertiser_ids: z
+      .array(z.string())
+      .openapi({ description: 'Advertiser account ids sponsoring the program.' }),
+    id: z.string().openapi({ description: 'Identifier of the program.' }),
+    name: z.string().openapi({ description: 'Display name of the program.' }),
+    publisher_ids: z
+      .array(z.string())
+      .openapi({ description: 'User ids of the publishers enrolled in the program.' }),
+    state: z
+      .enum(['active', 'inactive', 'deleted'])
+      .openapi({
+        description: 'Lifecycle state of the program. Only `active` programs accept posts.',
+      }),
+  })
+  .openapi({ required: ['id', 'name', 'state', 'advertiser_ids', 'publisher_ids'] })
+  .openapi('GetAmplifyProgramsResponseData')
+
+const GetAmplifyProgramsResponseSchema = z
+  .object({
+    data: z.array(GetAmplifyProgramsResponseDataSchema).exactOptional(),
+    errors: z.array(ProblemSchema).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('GetAmplifyProgramsResponse')
+
+const GetBotsResponseSchema: z.ZodType<GetBotsResponseType> = z
   .object({
     data: z.array(UserSchema).exactOptional(),
     errors: z.array(ProblemSchema).exactOptional(),
@@ -8935,7 +10630,7 @@ const GetBotsResponseSchema = z
   .openapi({ required: [] })
   .openapi('GetBotsResponse')
 
-const GetBroadcastChatResponseSchema = z
+const GetBroadcastChatResponseSchema: z.ZodType<GetBroadcastChatResponseType> = z
   .object({
     data: z.array(BroadcastChatMessageSchema).exactOptional(),
     errors: z.array(ProblemSchema).exactOptional(),
@@ -8962,7 +10657,7 @@ const GetBroadcastResponseSchema = z
   .openapi({ required: [] })
   .openapi('GetBroadcastResponse')
 
-const GetCallResponseSchema = z
+const GetCallResponseSchema: z.ZodType<GetCallResponseType> = z
   .object({
     data: CallSchema.exactOptional(),
     errors: z.array(ProblemSchema).exactOptional(),
@@ -9015,7 +10710,7 @@ const GetChatConversationPinnedMessagesResponseSchema = z
   .openapi({ required: [] })
   .openapi('GetChatConversationPinnedMessagesResponse')
 
-const GetChatConversationResponseSchema = z
+const GetChatConversationResponseSchema: z.ZodType<GetChatConversationResponseType> = z
   .object({
     data: ChatConversationSchema.exactOptional(),
     errors: z.array(ProblemSchema).exactOptional(),
@@ -9024,7 +10719,7 @@ const GetChatConversationResponseSchema = z
   .openapi({ required: [] })
   .openapi('GetChatConversationResponse')
 
-const GetChatConversationsResponseSchema = z
+const GetChatConversationsResponseSchema: z.ZodType<GetChatConversationsResponseType> = z
   .object({
     data: z.array(ChatConversationSchema).exactOptional(),
     errors: z.array(ProblemSchema).exactOptional(),
@@ -9048,7 +10743,7 @@ const GetChatConversationsResponseSchema = z
   .openapi({ required: [] })
   .openapi('GetChatConversationsResponse')
 
-const GetChatGroupAdminRequestsResponseSchema = z
+const GetChatGroupAdminRequestsResponseSchema: z.ZodType<GetChatGroupAdminRequestsResponseType> = z
   .object({
     data: z.array(UserSchema).exactOptional(),
     errors: z.array(ProblemSchema).exactOptional(),
@@ -9109,7 +10804,7 @@ const GetChatMessageRequestsResponseSchema = z
   .openapi({ required: [] })
   .openapi('GetChatMessageRequestsResponse')
 
-const GetChatModeratorsResponseSchema = z
+const GetChatModeratorsResponseSchema: z.ZodType<GetChatModeratorsResponseType> = z
   .object({
     data: z.array(UserSchema).exactOptional(),
     errors: z.array(ProblemSchema).exactOptional(),
@@ -9127,7 +10822,7 @@ const GetChatModeratorsResponseSchema = z
   .openapi({ required: [] })
   .openapi('GetChatModeratorsResponse')
 
-const GetChatMutedUsersResponseSchema = z
+const GetChatMutedUsersResponseSchema: z.ZodType<GetChatMutedUsersResponseType> = z
   .object({
     data: z.array(BroadcastChatMuteSchema).exactOptional(),
     errors: z.array(ProblemSchema).exactOptional(),
@@ -9225,68 +10920,71 @@ const GetDeveloperAccountResponseSchema = z
   .openapi({ required: [] })
   .openapi('GetDeveloperAccountResponse')
 
-const GetDirectMessagesEventsByConversationIdResponseSchema = z
-  .object({
-    data: z.array(DmEventSchema).exactOptional(),
-    errors: z.array(ProblemSchema).exactOptional(),
-    includes: ExpansionsSchema.exactOptional(),
-    meta: z
-      .object({
-        next_token: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Pagination token for the next page of results.' }),
-        previous_token: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Pagination token for the previous page of results.' }),
-        result_count: z
-          .int32()
-          .exactOptional()
-          .openapi({ description: 'Number of items in the data array.' }),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-  })
-  .openapi({ required: [] })
-  .openapi('GetDirectMessagesEventsByConversationIdResponse')
+const GetDirectMessagesEventsByConversationIdResponseSchema: z.ZodType<GetDirectMessagesEventsByConversationIdResponseType> =
+  z
+    .object({
+      data: z.array(DmEventSchema).exactOptional(),
+      errors: z.array(ProblemSchema).exactOptional(),
+      includes: ExpansionsSchema.exactOptional(),
+      meta: z
+        .object({
+          next_token: z
+            .string()
+            .exactOptional()
+            .openapi({ description: 'Pagination token for the next page of results.' }),
+          previous_token: z
+            .string()
+            .exactOptional()
+            .openapi({ description: 'Pagination token for the previous page of results.' }),
+          result_count: z
+            .int32()
+            .exactOptional()
+            .openapi({ description: 'Number of items in the data array.' }),
+        })
+        .exactOptional()
+        .openapi({ required: [] }),
+    })
+    .openapi({ required: [] })
+    .openapi('GetDirectMessagesEventsByConversationIdResponse')
 
-const GetDirectMessagesEventsByIdResponseSchema = z
-  .object({
-    data: DmEventSchema.exactOptional(),
-    errors: z.array(ProblemSchema).exactOptional(),
-    includes: ExpansionsSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('GetDirectMessagesEventsByIdResponse')
+const GetDirectMessagesEventsByIdResponseSchema: z.ZodType<GetDirectMessagesEventsByIdResponseType> =
+  z
+    .object({
+      data: DmEventSchema.exactOptional(),
+      errors: z.array(ProblemSchema).exactOptional(),
+      includes: ExpansionsSchema.exactOptional(),
+    })
+    .openapi({ required: [] })
+    .openapi('GetDirectMessagesEventsByIdResponse')
 
-const GetDirectMessagesEventsByParticipantIdResponseSchema = z
-  .object({
-    data: z.array(DmEventSchema).exactOptional(),
-    errors: z.array(ProblemSchema).exactOptional(),
-    includes: ExpansionsSchema.exactOptional(),
-    meta: z
-      .object({
-        next_token: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Pagination token for the next page of results.' }),
-        previous_token: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Pagination token for the previous page of results.' }),
-        result_count: z
-          .int32()
-          .exactOptional()
-          .openapi({ description: 'Number of items in the data array.' }),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-  })
-  .openapi({ required: [] })
-  .openapi('GetDirectMessagesEventsByParticipantIdResponse')
+const GetDirectMessagesEventsByParticipantIdResponseSchema: z.ZodType<GetDirectMessagesEventsByParticipantIdResponseType> =
+  z
+    .object({
+      data: z.array(DmEventSchema).exactOptional(),
+      errors: z.array(ProblemSchema).exactOptional(),
+      includes: ExpansionsSchema.exactOptional(),
+      meta: z
+        .object({
+          next_token: z
+            .string()
+            .exactOptional()
+            .openapi({ description: 'Pagination token for the next page of results.' }),
+          previous_token: z
+            .string()
+            .exactOptional()
+            .openapi({ description: 'Pagination token for the previous page of results.' }),
+          result_count: z
+            .int32()
+            .exactOptional()
+            .openapi({ description: 'Number of items in the data array.' }),
+        })
+        .exactOptional()
+        .openapi({ required: [] }),
+    })
+    .openapi({ required: [] })
+    .openapi('GetDirectMessagesEventsByParticipantIdResponse')
 
-const GetDirectMessagesEventsResponseSchema = z
+const GetDirectMessagesEventsResponseSchema: z.ZodType<GetDirectMessagesEventsResponseType> = z
   .object({
     data: z.array(DmEventSchema).exactOptional(),
     errors: z.array(ProblemSchema).exactOptional(),
@@ -9312,51 +11010,7 @@ const GetDirectMessagesEventsResponseSchema = z
   .openapi({ required: [] })
   .openapi('GetDirectMessagesEventsResponse')
 
-const ListFollowerCountSchema = z
-  .preprocess(
-    (val) =>
-      typeof val === 'number' && Number.isSafeInteger(val)
-        ? BigInt(val)
-        : typeof val === 'string' && /^-?\d+$/.test(val)
-          ? BigInt(val)
-          : val,
-    z.int64(),
-  )
-  .openapi({
-    type: 'integer',
-    format: 'int64',
-    description: 'The number of users who follow this List.',
-  })
-  .openapi('ListFollowerCount')
-
-const ListMemberCountSchema = z
-  .preprocess(
-    (val) =>
-      typeof val === 'number' && Number.isSafeInteger(val)
-        ? BigInt(val)
-        : typeof val === 'string' && /^-?\d+$/.test(val)
-          ? BigInt(val)
-          : val,
-    z.int64(),
-  )
-  .openapi({ type: 'integer', format: 'int64', description: 'The number of members in this List.' })
-  .openapi('ListMemberCount')
-
-const ListSchema = z
-  .object({
-    created_at: z.string().exactOptional(),
-    description: z.string().exactOptional(),
-    follower_count: ListFollowerCountSchema.exactOptional(),
-    id: z.string().exactOptional(),
-    member_count: ListMemberCountSchema.exactOptional(),
-    name: z.string().exactOptional(),
-    owner_id: z.string().exactOptional(),
-    private: z.boolean().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('List')
-
-const GetListsByIdResponseSchema = z
+const GetListsByIdResponseSchema: z.ZodType<GetListsByIdResponseType> = z
   .object({
     data: ListSchema.exactOptional(),
     errors: z.array(ProblemSchema).exactOptional(),
@@ -9365,7 +11019,7 @@ const GetListsByIdResponseSchema = z
   .openapi({ required: [] })
   .openapi('GetListsByIdResponse')
 
-const GetListsFollowersResponseSchema = z
+const GetListsFollowersResponseSchema: z.ZodType<GetListsFollowersResponseType> = z
   .object({
     data: z.array(UserSchema).exactOptional(),
     errors: z.array(ProblemSchema).exactOptional(),
@@ -9391,7 +11045,7 @@ const GetListsFollowersResponseSchema = z
   .openapi({ required: [] })
   .openapi('GetListsFollowersResponse')
 
-const GetListsMembersResponseSchema = z
+const GetListsMembersResponseSchema: z.ZodType<GetListsMembersResponseType> = z
   .object({
     data: z.array(UserSchema).exactOptional(),
     errors: z.array(ProblemSchema).exactOptional(),
@@ -9417,7 +11071,7 @@ const GetListsMembersResponseSchema = z
   .openapi({ required: [] })
   .openapi('GetListsMembersResponse')
 
-const GetListsPostsResponseSchema = z
+const GetListsPostsResponseSchema: z.ZodType<GetListsPostsResponseType> = z
   .object({
     data: z.array(PostSchema).exactOptional(),
     errors: z.array(ProblemSchema).exactOptional(),
@@ -9720,6 +11374,60 @@ const GetMediaByMediaKeysResponseSchema = z
   .openapi({ required: [] })
   .openapi('GetMediaByMediaKeysResponse')
 
+const GetMediaLibraryCategoriesResponseDataAdvertiserCategoriesSchema = z
+  .strictObject({
+    description: z
+      .string()
+      .openapi({
+        description: 'Human readable name, localized to `lang` when a translation exists.',
+      }),
+    id: z
+      .int()
+      .openapi({
+        description:
+          'Identifier used in `monetization.video_category_ids` / `monetization.blocked_advertiser_category_ids`.',
+      }),
+  })
+  .openapi({ required: ['id', 'description'] })
+  .openapi('GetMediaLibraryCategoriesResponseDataAdvertiserCategories')
+
+const GetMediaLibraryCategoriesResponseDataVideoCategoriesSchema = z
+  .strictObject({
+    description: z
+      .string()
+      .openapi({
+        description: 'Human readable name, localized to `lang` when a translation exists.',
+      }),
+    id: z
+      .int()
+      .openapi({
+        description:
+          'Identifier used in `monetization.video_category_ids` / `monetization.blocked_advertiser_category_ids`.',
+      }),
+  })
+  .openapi({ required: ['id', 'description'] })
+  .openapi('GetMediaLibraryCategoriesResponseDataVideoCategories')
+
+const GetMediaLibraryCategoriesResponseDataSchema = z
+  .object({
+    advertiser_categories: z
+      .array(GetMediaLibraryCategoriesResponseDataAdvertiserCategoriesSchema)
+      .openapi({ description: 'Advertiser categories that can be blocked.' }),
+    video_categories: z
+      .array(GetMediaLibraryCategoriesResponseDataVideoCategoriesSchema)
+      .openapi({ description: 'Video categories a library item can be assigned.' }),
+  })
+  .openapi({ required: ['video_categories', 'advertiser_categories'] })
+  .openapi('GetMediaLibraryCategoriesResponseData')
+
+const GetMediaLibraryCategoriesResponseSchema = z
+  .object({
+    data: GetMediaLibraryCategoriesResponseDataSchema.exactOptional(),
+    errors: z.array(ProblemSchema).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('GetMediaLibraryCategoriesResponse')
+
 const GetMediaUploadStatusResponseDataImageSchema = z
   .strictObject({
     h: z.int().exactOptional().openapi({ description: 'Height in pixels.' }),
@@ -9802,11 +11510,11 @@ const NewsSchema = z
   .object({
     category: z.string().exactOptional(),
     cluster_posts_results: NewsClusterPostsResultsSchema.exactOptional(),
-    contexts: z.object({}).exactOptional(),
+    contexts: z.looseObject({}).exactOptional(),
     disclaimer: z.string().exactOptional(),
     hook: z.string().exactOptional(),
     id: z.string().exactOptional(),
-    keywords: z.object({}).exactOptional(),
+    keywords: z.looseObject({}).exactOptional(),
     name: z.string().exactOptional(),
     summary: z.string().exactOptional(),
     updated_at: z.string().exactOptional(),
@@ -9819,6 +11527,144 @@ const GetNewsResponseSchema = z
   .openapi({ required: [] })
   .openapi('GetNewsResponse')
 
+const GetPostDraftsResponseDataMediaSchema = z
+  .strictObject({
+    media_ids: z
+      .array(z.string())
+      .openapi({ description: 'Media IDs attached to the Post, in order.' }),
+    tagged_user_ids: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'IDs of the users tagged in any of the media.' }),
+  })
+  .openapi({ required: ['media_ids'] })
+  .openapi('GetPostDraftsResponseDataMedia')
+
+const GetPostDraftsResponseDataReplySchema = z
+  .strictObject({
+    exclude_reply_user_ids: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'IDs of the users the reply does not mention.' }),
+    in_reply_to_tweet_id: z
+      .string()
+      .openapi({ description: 'The ID of the Post the draft replies to.' }),
+  })
+  .openapi({ required: ['in_reply_to_tweet_id'] })
+  .openapi('GetPostDraftsResponseDataReply')
+
+const GetPostDraftsResponseDataThreadMediaSchema = z
+  .strictObject({
+    media_ids: z
+      .array(z.string())
+      .openapi({ description: 'Media IDs attached to the Post, in order.' }),
+    tagged_user_ids: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'IDs of the users tagged in any of the media.' }),
+  })
+  .openapi({ required: ['media_ids'] })
+  .openapi('GetPostDraftsResponseDataThreadMedia')
+
+const GetPostDraftsResponseDataThreadSchema = z
+  .strictObject({
+    media: GetPostDraftsResponseDataThreadMediaSchema.exactOptional().openapi({
+      description: 'Media attached to the Post.',
+    }),
+    quote_tweet_id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The ID of the Post this Post quotes.' }),
+    text: z
+      .string()
+      .openapi({ description: 'The text of the Post. Empty when it only has media.' }),
+  })
+  .openapi({ required: ['text'] })
+  .openapi('GetPostDraftsResponseDataThread')
+
+const GetPostDraftsResponseDataSchema = z
+  .object({
+    created_at: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'When the draft was saved (RFC 3339).' }),
+    id: z
+      .string()
+      .regex(/^[0-9]{1,19}$/)
+      .openapi({ description: 'Unique identifier of the draft.' }),
+    made_with_ai: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether the draft discloses AI-generated media.' }),
+    media: GetPostDraftsResponseDataMediaSchema.exactOptional().openapi({
+      description: 'Media attached to the Post.',
+    }),
+    paid_partnership: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether the draft discloses a paid partnership.' }),
+    quote_tweet_id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The ID of the Post this Post quotes.' }),
+    reply: GetPostDraftsResponseDataReplySchema.exactOptional().openapi({
+      description: 'Present when the draft is a reply.',
+    }),
+    text: z
+      .string()
+      .openapi({ description: 'The text of the draft. Empty for a draft that only has media.' }),
+    thread: z
+      .array(GetPostDraftsResponseDataThreadSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'For a draft that is a thread, the Posts after the first one, in order. Each replies to the Post before it.',
+      }),
+    unsupported_content: z
+      .array(
+        z.enum([
+          'text_formatting',
+          'inline_media',
+          'media_tags',
+          'possibly_sensitive',
+          'attachment',
+          'cashtag_attachment',
+        ]),
+      )
+      .exactOptional()
+      .openapi({
+        description:
+          'Parts of the draft that the other fields do not carry. Present only when the draft holds more than is listed.',
+      }),
+    updated_at: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'When the draft last changed (RFC 3339).' }),
+  })
+  .openapi({ required: ['id', 'text'] })
+  .openapi('GetPostDraftsResponseData')
+
+const GetPostDraftsResponseSchema = z
+  .object({
+    data: z.array(GetPostDraftsResponseDataSchema).exactOptional(),
+    errors: z.array(ProblemSchema).exactOptional(),
+    meta: z
+      .object({
+        next_token: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Pagination token for the next page of results.' }),
+        result_count: z
+          .int32()
+          .exactOptional()
+          .openapi({ description: 'Number of items in the data array.' }),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+  })
+  .openapi({ required: [] })
+  .openapi('GetPostDraftsResponse')
+
 const GetPostsAnalyticsResponseSchema = z
   .object({
     data: z.array(AnalyticsSchema).exactOptional(),
@@ -9827,7 +11673,7 @@ const GetPostsAnalyticsResponseSchema = z
   .openapi({ required: [] })
   .openapi('GetPostsAnalyticsResponse')
 
-const GetPostsByIdResponseSchema = z
+const GetPostsByIdResponseSchema: z.ZodType<GetPostsByIdResponseType> = z
   .object({
     data: PostSchema.exactOptional(),
     errors: z.array(ProblemSchema).exactOptional(),
@@ -9836,7 +11682,7 @@ const GetPostsByIdResponseSchema = z
   .openapi({ required: [] })
   .openapi('GetPostsByIdResponse')
 
-const GetPostsByIdsResponseSchema = z
+const GetPostsByIdsResponseSchema: z.ZodType<GetPostsByIdsResponseType> = z
   .object({
     data: z.array(PostSchema).exactOptional(),
     errors: z.array(ProblemSchema).exactOptional(),
@@ -9930,7 +11776,7 @@ const GetPostsCountsRecentResponseSchema = z
   .openapi({ required: [] })
   .openapi('GetPostsCountsRecentResponse')
 
-const GetPostsLikingUsersResponseSchema = z
+const GetPostsLikingUsersResponseSchema: z.ZodType<GetPostsLikingUsersResponseType> = z
   .object({
     data: z.array(UserSchema).exactOptional(),
     errors: z.array(ProblemSchema).exactOptional(),
@@ -9956,7 +11802,7 @@ const GetPostsLikingUsersResponseSchema = z
   .openapi({ required: [] })
   .openapi('GetPostsLikingUsersResponse')
 
-const GetPostsQuotedPostsResponseSchema = z
+const GetPostsQuotedPostsResponseSchema: z.ZodType<GetPostsQuotedPostsResponseType> = z
   .object({
     data: z.array(PostSchema).exactOptional(),
     errors: z.array(ProblemSchema).exactOptional(),
@@ -9978,7 +11824,7 @@ const GetPostsQuotedPostsResponseSchema = z
   .openapi({ required: [] })
   .openapi('GetPostsQuotedPostsResponse')
 
-const GetPostsRepostedByResponseSchema = z
+const GetPostsRepostedByResponseSchema: z.ZodType<GetPostsRepostedByResponseType> = z
   .object({
     data: z.array(UserSchema).exactOptional(),
     errors: z.array(ProblemSchema).exactOptional(),
@@ -10004,7 +11850,7 @@ const GetPostsRepostedByResponseSchema = z
   .openapi({ required: [] })
   .openapi('GetPostsRepostedByResponse')
 
-const GetPostsRepostsResponseSchema = z
+const GetPostsRepostsResponseSchema: z.ZodType<GetPostsRepostsResponseType> = z
   .object({
     data: z.array(PostSchema).exactOptional(),
     errors: z.array(ProblemSchema).exactOptional(),
@@ -10183,7 +12029,9 @@ const GetScheduledBroadcastResponseDataSchema = z
     source_id: z
       .string()
       .exactOptional()
-      .openapi({ description: 'Bound ingest / source id (`rtmp_stream_key`).' }),
+      .openapi({
+        description: 'Id of the bound source, as returned by GET /2/sources. Omitted when unknown.',
+      }),
     state: z
       .string()
       .exactOptional()
@@ -10212,88 +12060,7 @@ const GetScheduledBroadcastResponseSchema = z
   .openapi({ required: [] })
   .openapi('GetScheduledBroadcastResponse')
 
-const ScheduledCallInviteesSchema = z
-  .array(
-    z
-      .object({
-        id: z.string().openapi({ description: 'X user id of the invitee.' }),
-        response: z
-          .string()
-          .openapi({ description: 'accepted, declined, tentative, or none for no answer yet.' }),
-      })
-      .openapi({
-        description: 'Someone invited to a scheduled call, other than the organizer.',
-        required: ['id', 'response'],
-      }),
-  )
-  .openapi({ description: 'Everyone invited, except the organizer. Not set for linked calendars.' })
-  .openapi('ScheduledCallInvitees')
-
-const ScheduledCallSchema = z
-  .object({
-    calendar: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Where the call lives: x (X Calls), or outlook for a Microsoft Outlook calendar the user linked to X, whose calls are changed there.',
-      }),
-    call_id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The X call people join; also its join secret.' }),
-    description: z.string().exactOptional().openapi({ description: 'What the call is about.' }),
-    end_time: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'End of this occurrence (RFC 3339).' }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Unique identifier of the scheduled call: what PUT, DELETE and rsvp take. Calls on linked calendars have none.',
-      }),
-    invitees: ScheduledCallInviteesSchema.exactOptional(),
-    join_url: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Link people open to join the call on X.' }),
-    occurrence_start_time: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "For a recurring call, this occurrence's original start (RFC 3339): pass it as occurrence_start_time to change, cancel or answer just this occurrence.",
-      }),
-    organizer_id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "X user id of the call's organizer." }),
-    recurrence: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'RFC 5545 RRULE the call repeats by, such as FREQ=WEEKLY;BYDAY=MO.',
-      }),
-    start_time: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Start of this occurrence (RFC 3339).' }),
-    status: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'scheduled, or cancelled for a cancelled occurrence.' }),
-    time_zone: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'IANA time zone the recurrence follows.' }),
-    title: z.string().exactOptional().openapi({ description: 'Title of the call.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('ScheduledCall')
-
-const GetScheduledCallResponseSchema = z
+const GetScheduledCallResponseSchema: z.ZodType<GetScheduledCallResponseType> = z
   .object({
     data: ScheduledCallSchema.exactOptional(),
     errors: z.array(ProblemSchema).exactOptional(),
@@ -10312,26 +12079,28 @@ const GetSourceResponseDataSchema = z
       .string()
       .openapi({
         description:
-          'Source id; the `source_id` a scheduled broadcast binds to. Currently equal to `stream_key`.',
+          'Source id, 19 decimal digits; the `source_id` that POST /2/broadcasts and scheduled broadcasts take. Not a credential: read the stream key with GET /2/sources/:id/stream_key.',
       }),
     is_stream_active: z
       .boolean()
       .exactOptional()
-      .openapi({
-        description:
-          'Whether an encoder is currently sending video to the source. Publishing a broadcast on the source needs it.',
-      }),
+      .openapi({ description: 'Whether an encoder is currently sending video to the source.' }),
     name: z.string().exactOptional().openapi({ description: 'Label for the source.' }),
     region: z
       .string()
       .exactOptional()
       .openapi({
         description:
-          'Ingest region: `atla` or `pdxa` for on-prem sources, the AWS region (e.g. `us-east-1`) for sources created before the move to on-prem.',
+          'Region of the ingest location serving the source: `us-east-1` or `us-west-2`. Sources created before October 31, 2026 keep the AWS region they were created in.',
       }),
-    rtmp_url: z.string().exactOptional().openapi({ description: 'RTMP ingest URL.' }),
-    rtmps_url: z.string().exactOptional().openapi({ description: 'RTMPS ingest URL (port 443).' }),
-    stream_key: z.string().exactOptional().openapi({ description: 'RTMP stream key.' }),
+    rtmp_url: z.string().exactOptional().openapi({ description: 'Ingest URL.' }),
+    rtmps_url: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "RTMPS ingest URL (port 443). Configure your encoder with this URL and the source's stream key.",
+      }),
   })
   .openapi({ required: ['id'] })
   .openapi('GetSourceResponseData')
@@ -10344,7 +12113,27 @@ const GetSourceResponseSchema = z
   .openapi({ required: [] })
   .openapi('GetSourceResponse')
 
-const GetSpacesBuyersResponseSchema = z
+const GetSourceStreamKeyResponseDataSchema = z
+  .object({
+    id: z.string().openapi({ description: 'Source id.' }),
+    stream_key: z
+      .string()
+      .openapi({
+        description: 'Stream key. A credential: anyone with it can stream to the source.',
+      }),
+  })
+  .openapi({ required: ['id', 'stream_key'] })
+  .openapi('GetSourceStreamKeyResponseData')
+
+const GetSourceStreamKeyResponseSchema = z
+  .object({
+    data: GetSourceStreamKeyResponseDataSchema.exactOptional(),
+    errors: z.array(ProblemSchema).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('GetSourceStreamKeyResponse')
+
+const GetSpacesBuyersResponseSchema: z.ZodType<GetSpacesBuyersResponseType> = z
   .object({
     data: z.array(UserSchema).exactOptional(),
     errors: z.array(ProblemSchema).exactOptional(),
@@ -10370,54 +12159,7 @@ const GetSpacesBuyersResponseSchema = z
   .openapi({ required: [] })
   .openapi('GetSpacesBuyersResponse')
 
-const SpaceHostIdsSchema = z
-  .array(z.string())
-  .openapi({ description: 'A list of unique identifiers of the Users who host this Space.' })
-  .openapi('SpaceHostIds')
-
-const SpaceInvitedUserIdsSchema = z
-  .array(z.string())
-  .openapi({ description: 'A list of unique identifiers of the Users invited to this Space.' })
-  .openapi('SpaceInvitedUserIds')
-
-const SpaceSpeakerIdsSchema = z
-  .array(z.string())
-  .openapi({
-    description: 'A list of unique identifiers of the Users who are speakers in this Space.',
-  })
-  .openapi('SpaceSpeakerIds')
-
-const SpaceTopicIdsSchema = z
-  .array(z.string())
-  .openapi({
-    description: 'A list of unique identifiers of the Topics associated with this Space.',
-  })
-  .openapi('SpaceTopicIds')
-
-const SpaceSchema = z
-  .object({
-    created_at: z.iso.datetime({ offset: true }).exactOptional(),
-    creator_id: z.string().exactOptional(),
-    ended_at: z.iso.datetime({ offset: true }).exactOptional(),
-    host_ids: SpaceHostIdsSchema.exactOptional(),
-    id: z.string().exactOptional(),
-    invited_user_ids: SpaceInvitedUserIdsSchema.exactOptional(),
-    is_ticketed: z.boolean().exactOptional(),
-    lang: z.string().exactOptional(),
-    participant_count: z.int().exactOptional(),
-    scheduled_start: z.iso.datetime({ offset: true }).exactOptional(),
-    speaker_ids: SpaceSpeakerIdsSchema.exactOptional(),
-    started_at: z.iso.datetime({ offset: true }).exactOptional(),
-    state: z.string().exactOptional(),
-    subscriber_count: z.int().exactOptional(),
-    title: z.string().exactOptional(),
-    topic_ids: SpaceTopicIdsSchema.exactOptional(),
-    updated_at: z.iso.datetime({ offset: true }).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('Space')
-
-const GetSpacesByCreatorIdsResponseSchema = z
+const GetSpacesByCreatorIdsResponseSchema: z.ZodType<GetSpacesByCreatorIdsResponseType> = z
   .object({
     data: z.array(SpaceSchema).exactOptional(),
     errors: z.array(ProblemSchema).exactOptional(),
@@ -10435,7 +12177,7 @@ const GetSpacesByCreatorIdsResponseSchema = z
   .openapi({ required: [] })
   .openapi('GetSpacesByCreatorIdsResponse')
 
-const GetSpacesByIdResponseSchema = z
+const GetSpacesByIdResponseSchema: z.ZodType<GetSpacesByIdResponseType> = z
   .object({
     data: SpaceSchema.exactOptional(),
     errors: z.array(ProblemSchema).exactOptional(),
@@ -10444,7 +12186,7 @@ const GetSpacesByIdResponseSchema = z
   .openapi({ required: [] })
   .openapi('GetSpacesByIdResponse')
 
-const GetSpacesByIdsResponseSchema = z
+const GetSpacesByIdsResponseSchema: z.ZodType<GetSpacesByIdsResponseType> = z
   .object({
     data: z.array(SpaceSchema).exactOptional(),
     errors: z.array(ProblemSchema).exactOptional(),
@@ -10453,7 +12195,7 @@ const GetSpacesByIdsResponseSchema = z
   .openapi({ required: [] })
   .openapi('GetSpacesByIdsResponse')
 
-const GetSpacesPostsResponseSchema = z
+const GetSpacesPostsResponseSchema: z.ZodType<GetSpacesPostsResponseType> = z
   .object({
     data: z.array(PostSchema).exactOptional(),
     errors: z.array(ProblemSchema).exactOptional(),
@@ -10488,9 +12230,62 @@ const GetTrendsByWoeidResponseSchema = z
   .object({
     data: z.array(TrendSchema).exactOptional(),
     errors: z.array(ProblemSchema).exactOptional(),
+    meta: z
+      .object({ location: z.looseObject({}).exactOptional() })
+      .exactOptional()
+      .openapi({ required: [] }),
   })
   .openapi({ required: [] })
   .openapi('GetTrendsByWoeidResponse')
+
+const TrendLocationSchema = z
+  .object({
+    country: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The country the location is in. Omitted for a location that is not in one country, such as Worldwide.',
+      }),
+    country_code: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The two-letter code of the location's country, such as `US`. Omitted when `country` is.",
+      }),
+    name: z.string().exactOptional().openapi({ description: "The location's name." }),
+    parent_id: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          "The WOEID of the location that contains this one, such as a town's country. Omitted for a location with no parent.",
+      }),
+    place_type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The kind of place: `town`, `country`, or `supername` (Worldwide). Omitted for a location whose kind is not known.',
+      }),
+    woeid: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: "The location's WOEID. Pass it to `GET /2/trends/by/woeid/{woeid}`.",
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('TrendLocation')
+
+const GetTrendsLocationsResponseSchema = z
+  .object({
+    data: z.array(TrendLocationSchema).exactOptional(),
+    errors: z.array(ProblemSchema).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('GetTrendsLocationsResponse')
 
 const PersonalizedTrendSchema = z
   .object({
@@ -10556,19 +12351,100 @@ const GetUsageCreditsResponseSchema = z
   .openapi({ required: [] })
   .openapi('GetUsageCreditsResponse')
 
-const UsageSchema: z.ZodType<UsageType> = z
-  .lazy(() =>
+const UsageDailyClientAppUsageSchema = z
+  .array(
     z
       .object({
-        cap_reset_day: z.int().exactOptional(),
-        daily_client_app_usage: UsageDailyClientAppUsageSchema.exactOptional(),
-        daily_project_usage: UsageDailyProjectUsageSchema.exactOptional(),
-        project_cap: z.string().exactOptional(),
-        project_id: z.string().exactOptional(),
-        project_usage: z.string().exactOptional(),
+        client_app_id: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Unique identifier of the client app.' }),
+        usage: z
+          .array(
+            z
+              .object({
+                date: z
+                  .string()
+                  .openapi({
+                    description: 'The day of the usage entry, as an ISO 8601 date-time.',
+                  }),
+                usage: z
+                  .string()
+                  .nullable()
+                  .exactOptional()
+                  .openapi({ description: 'Number of Posts used on this day.' }),
+              })
+              .openapi({ description: "A single day's usage entry.", required: ['date'] }),
+          )
+          .exactOptional()
+          .openapi({ description: 'Daily usage entries for this client app.' }),
+        usage_result_count: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({
+            type: 'integer',
+            format: 'int64',
+            description: 'Number of daily usage entries returned for this client app.',
+          }),
       })
-      .openapi({ required: [] }),
+      .openapi({
+        description: 'Per-client-app daily Post usage entry.',
+        required: ['usage_result_count'],
+      }),
   )
+  .openapi({ description: "Per-client-app daily Post usage for the caller's project." })
+  .openapi('UsageDailyClientAppUsage')
+
+const UsageDailyProjectUsageSchema = z
+  .object({
+    project_id: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Unique identifier of the project.' }),
+    usage: z
+      .array(
+        z
+          .object({
+            date: z
+              .string()
+              .openapi({ description: 'The day of the usage entry, as an ISO 8601 date-time.' }),
+            usage: z
+              .string()
+              .nullable()
+              .exactOptional()
+              .openapi({ description: 'Number of Posts used on this day.' }),
+          })
+          .openapi({ description: "A single day's usage entry.", required: ['date'] }),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Daily usage entries for the project.' }),
+  })
+  .openapi({
+    description: "Project-level daily Post usage for the caller's project.",
+    required: [],
+  })
+  .openapi('UsageDailyProjectUsage')
+
+const UsageSchema = z
+  .object({
+    cap_reset_day: z.int().exactOptional(),
+    daily_client_app_usage: UsageDailyClientAppUsageSchema.exactOptional(),
+    daily_project_usage: UsageDailyProjectUsageSchema.exactOptional(),
+    project_cap: z.string().exactOptional(),
+    project_id: z.string().exactOptional(),
+    project_usage: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
   .openapi('Usage')
 
 const GetUsageResponseSchema = z
@@ -10762,7 +12638,7 @@ const GetUserSourceResponseSchema = z
   .openapi({ required: [] })
   .openapi('GetUserSourceResponse')
 
-const GetUsersAffiliatesResponseSchema = z
+const GetUsersAffiliatesResponseSchema: z.ZodType<GetUsersAffiliatesResponseType> = z
   .object({
     data: z.array(UserSchema).exactOptional(),
     errors: z.array(ProblemSchema).exactOptional(),
@@ -10788,7 +12664,7 @@ const GetUsersAffiliatesResponseSchema = z
   .openapi({ required: [] })
   .openapi('GetUsersAffiliatesResponse')
 
-const GetUsersBlockingResponseSchema = z
+const GetUsersBlockingResponseSchema: z.ZodType<GetUsersBlockingResponseType> = z
   .object({
     data: z.array(UserSchema).exactOptional(),
     errors: z.array(ProblemSchema).exactOptional(),
@@ -10841,7 +12717,7 @@ const GetUsersBookmarksByFolderIdResponseSchema = z
   .openapi({ required: [] })
   .openapi('GetUsersBookmarksByFolderIdResponse')
 
-const GetUsersBookmarksResponseSchema = z
+const GetUsersBookmarksResponseSchema: z.ZodType<GetUsersBookmarksResponseType> = z
   .object({
     data: z.array(PostSchema).exactOptional(),
     errors: z.array(ProblemSchema).exactOptional(),
@@ -10867,7 +12743,7 @@ const GetUsersBookmarksResponseSchema = z
   .openapi({ required: [] })
   .openapi('GetUsersBookmarksResponse')
 
-const GetUsersByIdResponseSchema = z
+const GetUsersByIdResponseSchema: z.ZodType<GetUsersByIdResponseType> = z
   .object({
     data: UserSchema.exactOptional(),
     errors: z.array(ProblemSchema).exactOptional(),
@@ -10876,7 +12752,7 @@ const GetUsersByIdResponseSchema = z
   .openapi({ required: [] })
   .openapi('GetUsersByIdResponse')
 
-const GetUsersByIdsResponseSchema = z
+const GetUsersByIdsResponseSchema: z.ZodType<GetUsersByIdsResponseType> = z
   .object({
     data: z.array(UserSchema).exactOptional(),
     errors: z.array(ProblemSchema).exactOptional(),
@@ -10885,7 +12761,7 @@ const GetUsersByIdsResponseSchema = z
   .openapi({ required: [] })
   .openapi('GetUsersByIdsResponse')
 
-const GetUsersByUsernameResponseSchema = z
+const GetUsersByUsernameResponseSchema: z.ZodType<GetUsersByUsernameResponseType> = z
   .object({
     data: UserSchema.exactOptional(),
     errors: z.array(ProblemSchema).exactOptional(),
@@ -10894,7 +12770,7 @@ const GetUsersByUsernameResponseSchema = z
   .openapi({ required: [] })
   .openapi('GetUsersByUsernameResponse')
 
-const GetUsersByUsernamesResponseSchema = z
+const GetUsersByUsernamesResponseSchema: z.ZodType<GetUsersByUsernamesResponseType> = z
   .object({
     data: z.array(UserSchema).exactOptional(),
     errors: z.array(ProblemSchema).exactOptional(),
@@ -10903,7 +12779,7 @@ const GetUsersByUsernamesResponseSchema = z
   .openapi({ required: [] })
   .openapi('GetUsersByUsernamesResponse')
 
-const GetUsersFollowedListsResponseSchema = z
+const GetUsersFollowedListsResponseSchema: z.ZodType<GetUsersFollowedListsResponseType> = z
   .object({
     data: z.array(ListSchema).exactOptional(),
     errors: z.array(ProblemSchema).exactOptional(),
@@ -10929,7 +12805,7 @@ const GetUsersFollowedListsResponseSchema = z
   .openapi({ required: [] })
   .openapi('GetUsersFollowedListsResponse')
 
-const GetUsersFollowersResponseSchema = z
+const GetUsersFollowersResponseSchema: z.ZodType<GetUsersFollowersResponseType> = z
   .object({
     data: z.array(UserSchema).exactOptional(),
     errors: z.array(ProblemSchema).exactOptional(),
@@ -10955,7 +12831,7 @@ const GetUsersFollowersResponseSchema = z
   .openapi({ required: [] })
   .openapi('GetUsersFollowersResponse')
 
-const GetUsersFollowingResponseSchema = z
+const GetUsersFollowingResponseSchema: z.ZodType<GetUsersFollowingResponseType> = z
   .object({
     data: z.array(UserSchema).exactOptional(),
     errors: z.array(ProblemSchema).exactOptional(),
@@ -10981,7 +12857,7 @@ const GetUsersFollowingResponseSchema = z
   .openapi({ required: [] })
   .openapi('GetUsersFollowingResponse')
 
-const GetUsersLikedPostsResponseSchema = z
+const GetUsersLikedPostsResponseSchema: z.ZodType<GetUsersLikedPostsResponseType> = z
   .object({
     data: z.array(PostSchema).exactOptional(),
     errors: z.array(ProblemSchema).exactOptional(),
@@ -11007,7 +12883,7 @@ const GetUsersLikedPostsResponseSchema = z
   .openapi({ required: [] })
   .openapi('GetUsersLikedPostsResponse')
 
-const GetUsersListMembershipsResponseSchema = z
+const GetUsersListMembershipsResponseSchema: z.ZodType<GetUsersListMembershipsResponseType> = z
   .object({
     data: z.array(ListSchema).exactOptional(),
     errors: z.array(ProblemSchema).exactOptional(),
@@ -11033,7 +12909,7 @@ const GetUsersListMembershipsResponseSchema = z
   .openapi({ required: [] })
   .openapi('GetUsersListMembershipsResponse')
 
-const GetUsersMeFollowersResponseSchema = z
+const GetUsersMeFollowersResponseSchema: z.ZodType<GetUsersMeFollowersResponseType> = z
   .object({
     data: z.array(UserSchema).exactOptional(),
     errors: z.array(ProblemSchema).exactOptional(),
@@ -11059,7 +12935,7 @@ const GetUsersMeFollowersResponseSchema = z
   .openapi({ required: [] })
   .openapi('GetUsersMeFollowersResponse')
 
-const GetUsersMeFollowingResponseSchema = z
+const GetUsersMeFollowingResponseSchema: z.ZodType<GetUsersMeFollowingResponseType> = z
   .object({
     data: z.array(UserSchema).exactOptional(),
     errors: z.array(ProblemSchema).exactOptional(),
@@ -11085,7 +12961,7 @@ const GetUsersMeFollowingResponseSchema = z
   .openapi({ required: [] })
   .openapi('GetUsersMeFollowingResponse')
 
-const GetUsersMeResponseSchema = z
+const GetUsersMeResponseSchema: z.ZodType<GetUsersMeResponseType> = z
   .object({
     data: UserSchema.exactOptional(),
     errors: z.array(ProblemSchema).exactOptional(),
@@ -11094,7 +12970,7 @@ const GetUsersMeResponseSchema = z
   .openapi({ required: [] })
   .openapi('GetUsersMeResponse')
 
-const GetUsersMentionsResponseSchema = z
+const GetUsersMentionsResponseSchema: z.ZodType<GetUsersMentionsResponseType> = z
   .object({
     data: z.array(PostSchema).exactOptional(),
     errors: z.array(ProblemSchema).exactOptional(),
@@ -11128,7 +13004,7 @@ const GetUsersMentionsResponseSchema = z
   .openapi({ required: [] })
   .openapi('GetUsersMentionsResponse')
 
-const GetUsersMutingResponseSchema = z
+const GetUsersMutingResponseSchema: z.ZodType<GetUsersMutingResponseType> = z
   .object({
     data: z.array(UserSchema).exactOptional(),
     errors: z.array(ProblemSchema).exactOptional(),
@@ -11154,7 +13030,7 @@ const GetUsersMutingResponseSchema = z
   .openapi({ required: [] })
   .openapi('GetUsersMutingResponse')
 
-const GetUsersOwnedListsResponseSchema = z
+const GetUsersOwnedListsResponseSchema: z.ZodType<GetUsersOwnedListsResponseType> = z
   .object({
     data: z.array(ListSchema).exactOptional(),
     errors: z.array(ProblemSchema).exactOptional(),
@@ -11180,7 +13056,7 @@ const GetUsersOwnedListsResponseSchema = z
   .openapi({ required: [] })
   .openapi('GetUsersOwnedListsResponse')
 
-const GetUsersPinnedListsResponseSchema = z
+const GetUsersPinnedListsResponseSchema: z.ZodType<GetUsersPinnedListsResponseType> = z
   .object({
     data: z.array(ListSchema).exactOptional(),
     errors: z.array(ProblemSchema).exactOptional(),
@@ -11198,7 +13074,7 @@ const GetUsersPinnedListsResponseSchema = z
   .openapi({ required: [] })
   .openapi('GetUsersPinnedListsResponse')
 
-const GetUsersPostsResponseSchema = z
+const GetUsersPostsResponseSchema: z.ZodType<GetUsersPostsResponseType> = z
   .object({
     data: z.array(PostSchema).exactOptional(),
     errors: z.array(ProblemSchema).exactOptional(),
@@ -11235,10 +13111,17 @@ const GetUsersPostsResponseSchema = z
 const PublicKeySchema = z
   .object({
     identity_public_key_signature: z.string().exactOptional(),
-    juicebox_config: z.object({}).exactOptional(),
+    juicebox_config: z.looseObject({}).exactOptional(),
     public_key: z.string().exactOptional(),
     public_key_version: z.string().exactOptional(),
     signing_public_key: z.string().exactOptional(),
+    user_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'ID of the user the key belongs to. Returned by Get Public Keys for Multiple Users.',
+      }),
   })
   .openapi({ required: [] })
   .openapi('PublicKey')
@@ -11259,7 +13142,7 @@ const GetUsersPublicKeysResponseSchema = z
   .openapi({ required: [] })
   .openapi('GetUsersPublicKeysResponse')
 
-const GetUsersRepostsOfMeResponseSchema = z
+const GetUsersRepostsOfMeResponseSchema: z.ZodType<GetUsersRepostsOfMeResponseType> = z
   .object({
     data: z.array(PostSchema).exactOptional(),
     errors: z.array(ProblemSchema).exactOptional(),
@@ -11285,7 +13168,7 @@ const GetUsersRepostsOfMeResponseSchema = z
   .openapi({ required: [] })
   .openapi('GetUsersRepostsOfMeResponse')
 
-const GetUsersTimelineResponseSchema = z
+const GetUsersTimelineResponseSchema: z.ZodType<GetUsersTimelineResponseType> = z
   .object({
     data: z.array(PostSchema).exactOptional(),
     errors: z.array(ProblemSchema).exactOptional(),
@@ -11424,7 +13307,9 @@ const GoLiveScheduledBroadcastResponseDataSchema = z
     source_id: z
       .string()
       .exactOptional()
-      .openapi({ description: 'Bound ingest / source id (`rtmp_stream_key`).' }),
+      .openapi({
+        description: 'Id of the bound source, as returned by GET /2/sources. Omitted when unknown.',
+      }),
     state: z
       .string()
       .exactOptional()
@@ -11751,6 +13636,36 @@ const ListIdSchema = z
   .openapi({ description: 'Unique identifier of a List', example: '1146654567674912769' })
   .openapi('ListId')
 
+const ListLiveCategoriesResponseDataSchema = z
+  .object({
+    id: z
+      .string()
+      .openapi({
+        description:
+          'Category id, e.g. `gaming`. Permanent. Pass it as `live_category_id` on POST /2/broadcasts.',
+      }),
+    name: z.string().openapi({ description: 'Display name, e.g. `Gaming`. Can change.' }),
+  })
+  .openapi({ required: ['id', 'name'] })
+  .openapi('ListLiveCategoriesResponseData')
+
+const ListLiveCategoriesResponseSchema = z
+  .object({
+    data: z.array(ListLiveCategoriesResponseDataSchema).exactOptional(),
+    errors: z.array(ProblemSchema).exactOptional(),
+    meta: z
+      .object({
+        result_count: z
+          .int32()
+          .exactOptional()
+          .openapi({ description: 'Number of items in the data array.' }),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+  })
+  .openapi({ required: [] })
+  .openapi('ListLiveCategoriesResponse')
+
 const ListScheduledBroadcastsResponseDataSchema = z
   .object({
     available_for_replay: z
@@ -11797,7 +13712,9 @@ const ListScheduledBroadcastsResponseDataSchema = z
     source_id: z
       .string()
       .exactOptional()
-      .openapi({ description: 'Bound ingest / source id (`rtmp_stream_key`).' }),
+      .openapi({
+        description: 'Id of the bound source, as returned by GET /2/sources. Omitted when unknown.',
+      }),
     state: z
       .string()
       .exactOptional()
@@ -11826,7 +13743,7 @@ const ListScheduledBroadcastsResponseSchema = z
   .openapi({ required: [] })
   .openapi('ListScheduledBroadcastsResponse')
 
-const ListScheduledCallsResponseSchema = z
+const ListScheduledCallsResponseSchema: z.ZodType<ListScheduledCallsResponseType> = z
   .object({
     data: z.array(ScheduledCallSchema).exactOptional(),
     errors: z.array(ProblemSchema).exactOptional(),
@@ -11854,26 +13771,28 @@ const ListSourcesResponseDataSchema = z
       .string()
       .openapi({
         description:
-          'Source id; the `source_id` a scheduled broadcast binds to. Currently equal to `stream_key`.',
+          'Source id, 19 decimal digits; the `source_id` that POST /2/broadcasts and scheduled broadcasts take. Not a credential: read the stream key with GET /2/sources/:id/stream_key.',
       }),
     is_stream_active: z
       .boolean()
       .exactOptional()
-      .openapi({
-        description:
-          'Whether an encoder is currently sending video to the source. Publishing a broadcast on the source needs it.',
-      }),
+      .openapi({ description: 'Whether an encoder is currently sending video to the source.' }),
     name: z.string().exactOptional().openapi({ description: 'Label for the source.' }),
     region: z
       .string()
       .exactOptional()
       .openapi({
         description:
-          'Ingest region: `atla` or `pdxa` for on-prem sources, the AWS region (e.g. `us-east-1`) for sources created before the move to on-prem.',
+          'Region of the ingest location serving the source: `us-east-1` or `us-west-2`. Sources created before October 31, 2026 keep the AWS region they were created in.',
       }),
-    rtmp_url: z.string().exactOptional().openapi({ description: 'RTMP ingest URL.' }),
-    rtmps_url: z.string().exactOptional().openapi({ description: 'RTMPS ingest URL (port 443).' }),
-    stream_key: z.string().exactOptional().openapi({ description: 'RTMP stream key.' }),
+    rtmp_url: z.string().exactOptional().openapi({ description: 'Ingest URL.' }),
+    rtmps_url: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "RTMPS ingest URL (port 443). Configure your encoder with this URL and the source's stream key.",
+      }),
   })
   .openapi({ required: ['id'] })
   .openapi('ListSourcesResponseData')
@@ -12526,401 +14445,6 @@ const MuteUserResponseSchema = z
   .openapi({ required: [] })
   .openapi('MuteUserResponse')
 
-const NoteInfoSchema = z
-  .object({
-    classification: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'How the noted Post was classified (snake_case).' }),
-    misleading_tags: z
-      .array(z.string())
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Reasons the noted Post may be misleading (snake_case).' }),
-    post_id: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Unique identifier of the Post this note is about.' }),
-    rating_status: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Current rating status of the note.' }),
-    text: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The text of the Community Note.' }),
-    trustworthy_sources: z
-      .boolean()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Whether the note cites trustworthy sources.' }),
-  })
-  .openapi({
-    description: "Details about the Community Note's content, classification and source.",
-    required: [],
-  })
-  .openapi('NoteInfo')
-
-const NoteScoringStatusSchema = z
-  .object({
-    has_access: z
-      .boolean()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Whether the caller has access to the scoring details.' }),
-    rating_counts_per_model: z
-      .array(
-        z
-          .object({
-            model_name: z
-              .string()
-              .nullable()
-              .exactOptional()
-              .openapi({ description: 'Name of the scoring model.' }),
-            value: z
-              .object({
-                negative_factor_bucket_counts: z
-                  .object({
-                    helpful_count: z
-                      .preprocess(
-                        (val) =>
-                          typeof val === 'number' && Number.isSafeInteger(val)
-                            ? BigInt(val)
-                            : typeof val === 'string' && /^-?\d+$/.test(val)
-                              ? BigInt(val)
-                              : val,
-                        z.int64(),
-                      )
-                      .nullable()
-                      .exactOptional()
-                      .openapi({ type: ['integer', 'null'], format: 'int64' }),
-                    helpful_tag_counts: z
-                      .array(
-                        z
-                          .object({
-                            tag_count: z
-                              .preprocess(
-                                (val) =>
-                                  typeof val === 'number' && Number.isSafeInteger(val)
-                                    ? BigInt(val)
-                                    : typeof val === 'string' && /^-?\d+$/.test(val)
-                                      ? BigInt(val)
-                                      : val,
-                                z.int64(),
-                              )
-                              .nullable()
-                              .exactOptional()
-                              .openapi({ type: ['integer', 'null'], format: 'int64' }),
-                            tag_name: z.string().nullable().exactOptional(),
-                          })
-                          .openapi({ description: 'A tag and its count.', required: [] }),
-                      )
-                      .nullable()
-                      .exactOptional(),
-                    not_helpful_count: z
-                      .preprocess(
-                        (val) =>
-                          typeof val === 'number' && Number.isSafeInteger(val)
-                            ? BigInt(val)
-                            : typeof val === 'string' && /^-?\d+$/.test(val)
-                              ? BigInt(val)
-                              : val,
-                        z.int64(),
-                      )
-                      .nullable()
-                      .exactOptional()
-                      .openapi({ type: ['integer', 'null'], format: 'int64' }),
-                    not_helpful_tag_counts: z
-                      .array(
-                        z
-                          .object({
-                            tag_count: z
-                              .preprocess(
-                                (val) =>
-                                  typeof val === 'number' && Number.isSafeInteger(val)
-                                    ? BigInt(val)
-                                    : typeof val === 'string' && /^-?\d+$/.test(val)
-                                      ? BigInt(val)
-                                      : val,
-                                z.int64(),
-                              )
-                              .nullable()
-                              .exactOptional()
-                              .openapi({ type: ['integer', 'null'], format: 'int64' }),
-                            tag_name: z.string().nullable().exactOptional(),
-                          })
-                          .openapi({ description: 'A tag and its count.', required: [] }),
-                      )
-                      .nullable()
-                      .exactOptional(),
-                    somewhat_helpful_count: z
-                      .preprocess(
-                        (val) =>
-                          typeof val === 'number' && Number.isSafeInteger(val)
-                            ? BigInt(val)
-                            : typeof val === 'string' && /^-?\d+$/.test(val)
-                              ? BigInt(val)
-                              : val,
-                        z.int64(),
-                      )
-                      .nullable()
-                      .exactOptional()
-                      .openapi({ type: ['integer', 'null'], format: 'int64' }),
-                  })
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    description: 'Helpfulness counts for one rating factor bucket.',
-                    required: [],
-                  }),
-                neutral_factor_bucket_counts: z
-                  .object({
-                    helpful_count: z
-                      .preprocess(
-                        (val) =>
-                          typeof val === 'number' && Number.isSafeInteger(val)
-                            ? BigInt(val)
-                            : typeof val === 'string' && /^-?\d+$/.test(val)
-                              ? BigInt(val)
-                              : val,
-                        z.int64(),
-                      )
-                      .nullable()
-                      .exactOptional()
-                      .openapi({ type: ['integer', 'null'], format: 'int64' }),
-                    helpful_tag_counts: z
-                      .array(
-                        z
-                          .object({
-                            tag_count: z
-                              .preprocess(
-                                (val) =>
-                                  typeof val === 'number' && Number.isSafeInteger(val)
-                                    ? BigInt(val)
-                                    : typeof val === 'string' && /^-?\d+$/.test(val)
-                                      ? BigInt(val)
-                                      : val,
-                                z.int64(),
-                              )
-                              .nullable()
-                              .exactOptional()
-                              .openapi({ type: ['integer', 'null'], format: 'int64' }),
-                            tag_name: z.string().nullable().exactOptional(),
-                          })
-                          .openapi({ description: 'A tag and its count.', required: [] }),
-                      )
-                      .nullable()
-                      .exactOptional(),
-                    not_helpful_count: z
-                      .preprocess(
-                        (val) =>
-                          typeof val === 'number' && Number.isSafeInteger(val)
-                            ? BigInt(val)
-                            : typeof val === 'string' && /^-?\d+$/.test(val)
-                              ? BigInt(val)
-                              : val,
-                        z.int64(),
-                      )
-                      .nullable()
-                      .exactOptional()
-                      .openapi({ type: ['integer', 'null'], format: 'int64' }),
-                    not_helpful_tag_counts: z
-                      .array(
-                        z
-                          .object({
-                            tag_count: z
-                              .preprocess(
-                                (val) =>
-                                  typeof val === 'number' && Number.isSafeInteger(val)
-                                    ? BigInt(val)
-                                    : typeof val === 'string' && /^-?\d+$/.test(val)
-                                      ? BigInt(val)
-                                      : val,
-                                z.int64(),
-                              )
-                              .nullable()
-                              .exactOptional()
-                              .openapi({ type: ['integer', 'null'], format: 'int64' }),
-                            tag_name: z.string().nullable().exactOptional(),
-                          })
-                          .openapi({ description: 'A tag and its count.', required: [] }),
-                      )
-                      .nullable()
-                      .exactOptional(),
-                    somewhat_helpful_count: z
-                      .preprocess(
-                        (val) =>
-                          typeof val === 'number' && Number.isSafeInteger(val)
-                            ? BigInt(val)
-                            : typeof val === 'string' && /^-?\d+$/.test(val)
-                              ? BigInt(val)
-                              : val,
-                        z.int64(),
-                      )
-                      .nullable()
-                      .exactOptional()
-                      .openapi({ type: ['integer', 'null'], format: 'int64' }),
-                  })
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    description: 'Helpfulness counts for one rating factor bucket.',
-                    required: [],
-                  }),
-                positive_factor_bucket_counts: z
-                  .object({
-                    helpful_count: z
-                      .preprocess(
-                        (val) =>
-                          typeof val === 'number' && Number.isSafeInteger(val)
-                            ? BigInt(val)
-                            : typeof val === 'string' && /^-?\d+$/.test(val)
-                              ? BigInt(val)
-                              : val,
-                        z.int64(),
-                      )
-                      .nullable()
-                      .exactOptional()
-                      .openapi({ type: ['integer', 'null'], format: 'int64' }),
-                    helpful_tag_counts: z
-                      .array(
-                        z
-                          .object({
-                            tag_count: z
-                              .preprocess(
-                                (val) =>
-                                  typeof val === 'number' && Number.isSafeInteger(val)
-                                    ? BigInt(val)
-                                    : typeof val === 'string' && /^-?\d+$/.test(val)
-                                      ? BigInt(val)
-                                      : val,
-                                z.int64(),
-                              )
-                              .nullable()
-                              .exactOptional()
-                              .openapi({ type: ['integer', 'null'], format: 'int64' }),
-                            tag_name: z.string().nullable().exactOptional(),
-                          })
-                          .openapi({ description: 'A tag and its count.', required: [] }),
-                      )
-                      .nullable()
-                      .exactOptional(),
-                    not_helpful_count: z
-                      .preprocess(
-                        (val) =>
-                          typeof val === 'number' && Number.isSafeInteger(val)
-                            ? BigInt(val)
-                            : typeof val === 'string' && /^-?\d+$/.test(val)
-                              ? BigInt(val)
-                              : val,
-                        z.int64(),
-                      )
-                      .nullable()
-                      .exactOptional()
-                      .openapi({ type: ['integer', 'null'], format: 'int64' }),
-                    not_helpful_tag_counts: z
-                      .array(
-                        z
-                          .object({
-                            tag_count: z
-                              .preprocess(
-                                (val) =>
-                                  typeof val === 'number' && Number.isSafeInteger(val)
-                                    ? BigInt(val)
-                                    : typeof val === 'string' && /^-?\d+$/.test(val)
-                                      ? BigInt(val)
-                                      : val,
-                                z.int64(),
-                              )
-                              .nullable()
-                              .exactOptional()
-                              .openapi({ type: ['integer', 'null'], format: 'int64' }),
-                            tag_name: z.string().nullable().exactOptional(),
-                          })
-                          .openapi({ description: 'A tag and its count.', required: [] }),
-                      )
-                      .nullable()
-                      .exactOptional(),
-                    somewhat_helpful_count: z
-                      .preprocess(
-                        (val) =>
-                          typeof val === 'number' && Number.isSafeInteger(val)
-                            ? BigInt(val)
-                            : typeof val === 'string' && /^-?\d+$/.test(val)
-                              ? BigInt(val)
-                              : val,
-                        z.int64(),
-                      )
-                      .nullable()
-                      .exactOptional()
-                      .openapi({ type: ['integer', 'null'], format: 'int64' }),
-                  })
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    description: 'Helpfulness counts for one rating factor bucket.',
-                    required: [],
-                  }),
-              })
-              .nullable()
-              .exactOptional()
-              .openapi({
-                description: 'Per-factor bucket counts for a scoring model.',
-                required: [],
-              }),
-          })
-          .openapi({ description: 'Rating counts for one scoring model.', required: [] }),
-      )
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Rating counts broken down per scoring model.' }),
-  })
-  .openapi({ description: 'Per-model scoring breakdown for the Community Note.', required: [] })
-  .openapi('NoteScoringStatus')
-
-const NoteTestResultSchema = z
-  .object({
-    evaluation_outcome: z
-      .array(
-        z
-          .object({
-            evaluator_score_bucket: z
-              .string()
-              .openapi({ description: 'The score bucket the evaluator assigned.' }),
-            evaluator_type: z
-              .string()
-              .openapi({ description: 'The type of evaluator that produced this outcome.' }),
-          })
-          .openapi({
-            description: "A single evaluator's outcome for a Community Note.",
-            required: ['evaluator_type', 'evaluator_score_bucket'],
-          }),
-      )
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Per-evaluator outcomes for the note.' }),
-  })
-  .openapi({
-    description: 'AI evaluation results for the Community Note (returned in test mode).',
-    required: [],
-  })
-  .openapi('NoteTestResult')
-
-const NoteSchema = z
-  .object({
-    id: z.string().exactOptional(),
-    info: NoteInfoSchema.exactOptional(),
-    scoring_status: NoteScoringStatusSchema.exactOptional(),
-    status: z.string().exactOptional(),
-    test_result: NoteTestResultSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('Note')
-
 const NoteIdSchema = z
   .string()
   .regex(/^[0-9]{1,19}$/)
@@ -13483,15 +15007,13 @@ const RemoveChatGroupMembersGroupKeyRotationDataConversationParticipantKeysSchem
   .object({
     encrypted_conversation_key: z
       .string()
-      .exactOptional()
       .openapi({ description: "Conversation key encrypted with this participant's public key." }),
     public_key_version: z
       .string()
-      .exactOptional()
       .openapi({ description: "Version of the participant's public key used for encryption." }),
-    user_id: z.string().exactOptional().openapi({ description: 'Participant user ID.' }),
+    user_id: z.string().openapi({ description: 'Participant user ID.' }),
   })
-  .openapi({ required: [] })
+  .openapi({ required: ['user_id', 'encrypted_conversation_key', 'public_key_version'] })
   .openapi('RemoveChatGroupMembersGroupKeyRotationDataConversationParticipantKeys')
 
 const RemoveChatGroupMembersGroupKeyRotationDataRotatedPmkBundleSchema = z
@@ -13614,6 +15136,25 @@ const RemoveListsMemberByUserIdResponseSchema = z
   .openapi({ required: [] })
   .openapi('RemoveListsMemberByUserIdResponse')
 
+const RemoveMediaFromLibraryRequestSchema = z
+  .looseObject({})
+  .openapi('RemoveMediaFromLibraryRequest')
+
+const RemoveMediaFromLibraryResponseDataSchema = z
+  .object({
+    deleted: z.boolean().openapi({ description: 'Whether the library item was removed.' }),
+  })
+  .openapi({ required: ['deleted'] })
+  .openapi('RemoveMediaFromLibraryResponseData')
+
+const RemoveMediaFromLibraryResponseSchema = z
+  .object({
+    data: RemoveMediaFromLibraryResponseDataSchema.exactOptional(),
+    errors: z.array(ProblemSchema).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('RemoveMediaFromLibraryResponse')
+
 const RepostPostRequestSchema = z
   .strictObject({ tweet_id: z.string().regex(/^[0-9]{1,19}$/) })
   .openapi({ required: ['tweet_id'] })
@@ -13713,7 +15254,10 @@ const RotateBotTokenResponseDataSchema = z
       .string()
       .regex(/^[0-9]{1,19}$/)
       .openapi({ description: "Unique identifier of the bot's User account." }),
-    name: z.string().exactOptional().openapi({ description: "The bot's display name." }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "The bot's display name. May be absent for an org-only bot." }),
     scopes: z
       .array(z.string())
       .exactOptional()
@@ -13731,7 +15275,9 @@ const RotateBotTokenResponseDataSchema = z
     username: z
       .string()
       .exactOptional()
-      .openapi({ description: "The bot's X handle (screen name)." }),
+      .openapi({
+        description: "The bot's X handle (screen name). May be absent for an org-only bot.",
+      }),
   })
   .openapi({ required: ['id', 'token'] })
   .openapi('RotateBotTokenResponseData')
@@ -13744,32 +15290,76 @@ const RotateBotTokenResponseSchema = z
   .openapi({ required: [] })
   .openapi('RotateBotTokenResponse')
 
-const RuleIdSchema = z
-  .string()
-  .regex(/^[0-9]{1,19}$/)
-  .openapi({ description: 'Unique identifier of this rule.', example: '120897978112909812' })
-  .openapi('RuleId')
-
-const RuleTagSchema = z
-  .string()
-  .openapi({
-    description: 'A tag meant for the labeling of user provided rules.',
-    example: 'Non-retweeted coffee Posts',
-  })
-  .openapi('RuleTag')
-
-const RulesCountSchema: z.ZodType<RulesCountType> = z
-  .lazy(() =>
+const RulesCountAllProjectClientAppsSchema = z
+  .array(
     z
       .object({
-        all_project_client_apps: RulesCountAllProjectClientAppsSchema.exactOptional(),
-        cap_per_client_app: z.string().exactOptional(),
-        cap_per_project: z.string().exactOptional(),
-        client_app_rules_count: RulesCountClientAppRulesCountSchema.exactOptional(),
-        project_rules_count: z.string().exactOptional(),
+        client_app_id: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Unique identifier of the client application.' }),
+        rule_count: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({
+            type: 'integer',
+            format: 'int64',
+            description: 'Number of rules configured for the client application.',
+          }),
       })
-      .openapi({ required: [] }),
+      .openapi({
+        description: 'A count of filtered-stream rules for a single client application.',
+        required: ['rule_count'],
+      }),
   )
+  .openapi('RulesCountAllProjectClientApps')
+
+const RulesCountClientAppRulesCountSchema = z
+  .object({
+    client_app_id: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Unique identifier of the client application.' }),
+    rule_count: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Number of rules configured for the client application.',
+      }),
+  })
+  .openapi({
+    description: 'A count of filtered-stream rules for a single client application.',
+    required: ['rule_count'],
+  })
+  .openapi('RulesCountClientAppRulesCount')
+
+const RulesCountSchema = z
+  .object({
+    all_project_client_apps: RulesCountAllProjectClientAppsSchema.exactOptional(),
+    cap_per_client_app: z.string().exactOptional(),
+    cap_per_project: z.string().exactOptional(),
+    client_app_rules_count: RulesCountClientAppRulesCountSchema.exactOptional(),
+    project_rules_count: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
   .openapi('RulesCount')
 
 const ScheduleCallRequestSchema = z
@@ -13927,28 +15517,29 @@ const SearchCommunitiesResponseSchema = z
   .openapi({ required: [] })
   .openapi('SearchCommunitiesResponse')
 
-const SearchCommunityNotesWrittenResponseSchema = z
-  .object({
-    data: z.array(NoteSchema).exactOptional(),
-    errors: z.array(ProblemSchema).exactOptional(),
-    meta: z
-      .object({
-        next_token: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Pagination token for the next page of results.' }),
-        result_count: z
-          .int32()
-          .exactOptional()
-          .openapi({ description: 'Number of items in the data array.' }),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-  })
-  .openapi({ required: [] })
-  .openapi('SearchCommunityNotesWrittenResponse')
+const SearchCommunityNotesWrittenResponseSchema: z.ZodType<SearchCommunityNotesWrittenResponseType> =
+  z
+    .object({
+      data: z.array(NoteSchema).exactOptional(),
+      errors: z.array(ProblemSchema).exactOptional(),
+      meta: z
+        .object({
+          next_token: z
+            .string()
+            .exactOptional()
+            .openapi({ description: 'Pagination token for the next page of results.' }),
+          result_count: z
+            .int32()
+            .exactOptional()
+            .openapi({ description: 'Number of items in the data array.' }),
+        })
+        .exactOptional()
+        .openapi({ required: [] }),
+    })
+    .openapi({ required: [] })
+    .openapi('SearchCommunityNotesWrittenResponse')
 
-const SearchEligiblePostsResponseSchema = z
+const SearchEligiblePostsResponseSchema: z.ZodType<SearchEligiblePostsResponseType> = z
   .object({
     data: z.array(PostSchema).exactOptional(),
     errors: z.array(ProblemSchema).exactOptional(),
@@ -13987,7 +15578,7 @@ const SearchNewsResponseSchema = z
   .openapi({ required: [] })
   .openapi('SearchNewsResponse')
 
-const SearchPostsAllResponseSchema = z
+const SearchPostsAllResponseSchema: z.ZodType<SearchPostsAllResponseType> = z
   .object({
     data: z.array(PostSchema).exactOptional(),
     errors: z.array(ProblemSchema).exactOptional(),
@@ -14021,7 +15612,7 @@ const SearchPostsAllResponseSchema = z
   .openapi({ required: [] })
   .openapi('SearchPostsAllResponse')
 
-const SearchPostsRecentResponseSchema = z
+const SearchPostsRecentResponseSchema: z.ZodType<SearchPostsRecentResponseType> = z
   .object({
     data: z.array(PostSchema).exactOptional(),
     errors: z.array(ProblemSchema).exactOptional(),
@@ -14055,7 +15646,7 @@ const SearchPostsRecentResponseSchema = z
   .openapi({ required: [] })
   .openapi('SearchPostsRecentResponse')
 
-const SearchSpacesResponseSchema = z
+const SearchSpacesResponseSchema: z.ZodType<SearchSpacesResponseType> = z
   .object({
     data: z.array(SpaceSchema).exactOptional(),
     errors: z.array(ProblemSchema).exactOptional(),
@@ -14073,7 +15664,7 @@ const SearchSpacesResponseSchema = z
   .openapi({ required: [] })
   .openapi('SearchSpacesResponse')
 
-const SearchUsersResponseSchema = z
+const SearchUsersResponseSchema: z.ZodType<SearchUsersResponseType> = z
   .object({
     data: z.array(UserSchema).exactOptional(),
     errors: z.array(ProblemSchema).exactOptional(),
@@ -14097,6 +15688,14 @@ const SearchUsersResponseSchema = z
 
 const SendBroadcastChatRequestSchema = z
   .strictObject({
+    relay_source: z
+      .string()
+      .max(32)
+      .exactOptional()
+      .openapi({
+        description:
+          "The platform this message was relayed from, shown as that platform's icon next to the message: `youtube`, `twitch`, `kick`, `facebook`, `rumble`, `tiktok` or `instagram`. Only apps approved for chat relay may set it.",
+      }),
     reply_to: z
       .string()
       .regex(/^[0-9]{1,19}$/)
@@ -14125,31 +15724,107 @@ const SendBroadcastChatResponseSchema = z
   .openapi({ required: [] })
   .openapi('SendBroadcastChatResponse')
 
-const SendChatMessageRequestSchema = z
-  .object({
-    conversation_token: z
+const SendChatMessageContentMessageSchema = z
+  .strictObject({ text: z.string().min(1).openapi({ description: 'Text of the message.' }) })
+  .openapi({ required: ['text'] })
+  .openapi('SendChatMessageContentMessage')
+
+const SendChatMessageContentReactionAddSchema = z
+  .strictObject({
+    emoji: z.string().min(1).openapi({ description: 'Emoji of the reaction.' }),
+    event_id: z
       .string()
-      .exactOptional()
-      .openapi({ description: 'Optional conversation token.' }),
-    encoded_message_create_event: z
-      .string()
-      .openapi({
-        description:
-          'Base64-encoded Thrift MessageCreateEvent containing encrypted message contents.',
-      }),
-    encoded_message_event_signature: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Base64-encoded Thrift MessageEventSignature for message verification.',
-      }),
-    message_id: z.string().openapi({ description: 'Unique identifier for this message.' }),
-    xdk_version: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Version of the Chat XDK that produced the payload.' }),
+      .regex(/^[0-9]{1,19}$/)
+      .openapi({ description: 'ID of the message event the reaction is on.' }),
   })
-  .openapi({ required: ['message_id', 'encoded_message_create_event'] })
+  .openapi({ required: ['event_id', 'emoji'] })
+  .openapi('SendChatMessageContentReactionAdd')
+
+const SendChatMessageContentReactionRemoveSchema = z
+  .strictObject({
+    emoji: z.string().min(1).openapi({ description: 'Emoji of the reaction.' }),
+    event_id: z
+      .string()
+      .regex(/^[0-9]{1,19}$/)
+      .openapi({ description: 'ID of the message event the reaction is on.' }),
+  })
+  .openapi({ required: ['event_id', 'emoji'] })
+  .openapi('SendChatMessageContentReactionRemove')
+
+const SendChatMessageContentSchema = z
+  .strictObject({
+    message: SendChatMessageContentMessageSchema.exactOptional().openapi({
+      description: 'A text message.',
+    }),
+    reaction_add: SendChatMessageContentReactionAddSchema.exactOptional().openapi({
+      description: 'Adds a reaction to a message.',
+    }),
+    reaction_remove: SendChatMessageContentReactionRemoveSchema.exactOptional().openapi({
+      description: 'Removes a reaction from a message.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('SendChatMessageContent')
+
+const SendChatMessageRequestSchema = z
+  .union([
+    z
+      .unknown()
+      .superRefine((val, ctx) => {
+        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+          if (!Object.hasOwn(val, 'encoded_message_create_event')) {
+            ctx.addIssue({ code: 'custom' })
+          }
+        }
+      })
+      .openapi({ required: ['encoded_message_create_event'] }),
+    z
+      .unknown()
+      .superRefine((val, ctx) => {
+        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+          if (!Object.hasOwn(val, 'content')) {
+            ctx.addIssue({ code: 'custom' })
+          }
+        }
+      })
+      .openapi({ required: ['content'] }),
+  ])
+  .and(
+    z
+      .object({
+        content: SendChatMessageContentSchema.exactOptional().openapi({
+          description:
+            "Unencrypted fallback: use only when the recipient's `receives_your_chat` is `unencrypted`.",
+        }),
+        conversation_token: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Optional conversation token.' }),
+        encoded_message_create_event: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Default. The end-to-end encrypted message: a base64 Thrift MessageCreateEvent from the Chat XDK.',
+          }),
+        encoded_message_event_signature: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Base64-encoded Thrift MessageEventSignature for message verification.',
+          }),
+        message_id: z.string().openapi({ description: 'Unique identifier for this message.' }),
+        xdk_version: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Version of the Chat XDK that produced the payload.' }),
+      })
+      .openapi({ required: ['message_id'] }),
+  )
+  .openapi({
+    description: 'At least one of `encoded_message_create_event`, `content` is required.',
+    required: ['message_id'],
+  })
   .openapi('SendChatMessageRequest')
 
 const SendChatMessageResponseDataSchema = z
@@ -14204,7 +15879,7 @@ const StreamLikesComplianceResponseSchema = z
   .openapi({ description: 'Likes compliance stream events.' })
   .openapi('StreamLikesComplianceResponse')
 
-const StreamLikesFirehoseResponseSchema = z
+const StreamLikesFirehoseResponseSchema: z.ZodType<StreamLikesFirehoseResponseType> = z
   .object({
     data: LikeWithPostAuthorSchema.exactOptional(),
     errors: z.array(ProblemSchema).min(1).exactOptional(),
@@ -14213,7 +15888,7 @@ const StreamLikesFirehoseResponseSchema = z
   .openapi({ required: [] })
   .openapi('StreamLikesFirehoseResponse')
 
-const StreamLikesSample10ResponseSchema = z
+const StreamLikesSample10ResponseSchema: z.ZodType<StreamLikesSample10ResponseType> = z
   .object({
     data: LikeWithPostAuthorSchema.exactOptional(),
     errors: z.array(ProblemSchema).min(1).exactOptional(),
@@ -14232,7 +15907,7 @@ const StreamPostsComplianceResponseSchema = z
   .openapi({ description: 'Tweet compliance stream events.' })
   .openapi('StreamPostsComplianceResponse')
 
-const StreamPostsFirehoseEnResponseSchema = z
+const StreamPostsFirehoseEnResponseSchema: z.ZodType<StreamPostsFirehoseEnResponseType> = z
   .object({
     data: PostSchema.exactOptional(),
     errors: z.array(ProblemSchema).min(1).exactOptional(),
@@ -14241,7 +15916,7 @@ const StreamPostsFirehoseEnResponseSchema = z
   .openapi({ required: [] })
   .openapi('StreamPostsFirehoseEnResponse')
 
-const StreamPostsFirehoseJaResponseSchema = z
+const StreamPostsFirehoseJaResponseSchema: z.ZodType<StreamPostsFirehoseJaResponseType> = z
   .object({
     data: PostSchema.exactOptional(),
     errors: z.array(ProblemSchema).min(1).exactOptional(),
@@ -14250,7 +15925,7 @@ const StreamPostsFirehoseJaResponseSchema = z
   .openapi({ required: [] })
   .openapi('StreamPostsFirehoseJaResponse')
 
-const StreamPostsFirehoseKoResponseSchema = z
+const StreamPostsFirehoseKoResponseSchema: z.ZodType<StreamPostsFirehoseKoResponseType> = z
   .object({
     data: PostSchema.exactOptional(),
     errors: z.array(ProblemSchema).min(1).exactOptional(),
@@ -14259,7 +15934,7 @@ const StreamPostsFirehoseKoResponseSchema = z
   .openapi({ required: [] })
   .openapi('StreamPostsFirehoseKoResponse')
 
-const StreamPostsFirehosePtResponseSchema = z
+const StreamPostsFirehosePtResponseSchema: z.ZodType<StreamPostsFirehosePtResponseType> = z
   .object({
     data: PostSchema.exactOptional(),
     errors: z.array(ProblemSchema).min(1).exactOptional(),
@@ -14268,7 +15943,7 @@ const StreamPostsFirehosePtResponseSchema = z
   .openapi({ required: [] })
   .openapi('StreamPostsFirehosePtResponse')
 
-const StreamPostsFirehoseResponseSchema = z
+const StreamPostsFirehoseResponseSchema: z.ZodType<StreamPostsFirehoseResponseType> = z
   .object({
     data: PostSchema.exactOptional(),
     errors: z.array(ProblemSchema).min(1).exactOptional(),
@@ -14277,7 +15952,7 @@ const StreamPostsFirehoseResponseSchema = z
   .openapi({ required: [] })
   .openapi('StreamPostsFirehoseResponse')
 
-const StreamPostsResponseSchema = z
+const StreamPostsResponseSchema: z.ZodType<StreamPostsResponseType> = z
   .object({
     data: PostSchema.exactOptional(),
     errors: z.array(ProblemSchema).min(1).exactOptional(),
@@ -14298,7 +15973,7 @@ const StreamPostsResponseSchema = z
   })
   .openapi('StreamPostsResponse')
 
-const StreamPostsSample10ResponseSchema = z
+const StreamPostsSample10ResponseSchema: z.ZodType<StreamPostsSample10ResponseType> = z
   .object({
     data: PostSchema.exactOptional(),
     errors: z.array(ProblemSchema).min(1).exactOptional(),
@@ -14307,7 +15982,7 @@ const StreamPostsSample10ResponseSchema = z
   .openapi({ required: [] })
   .openapi('StreamPostsSample10Response')
 
-const StreamPostsSampleResponseSchema = z
+const StreamPostsSampleResponseSchema: z.ZodType<StreamPostsSampleResponseType> = z
   .object({
     data: PostSchema.exactOptional(),
     errors: z.array(ProblemSchema).min(1).exactOptional(),
@@ -14800,7 +16475,7 @@ const UpdateActivitySubscriptionResponseDataSubscriptionFilterSchema = z
       }),
     keyword: z.string().exactOptional().openapi({ description: 'Optional keyword filter.' }),
     qualifiers: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Event-specific string predicates applied to the subscription.' }),
     user_id: z
@@ -14872,7 +16547,10 @@ const UpdateBotRequestSchema = z
     dm_permission: z
       .enum(['everyone', 'premium', 'no_one'])
       .exactOptional()
-      .openapi({ description: 'Who may send Direct Messages to the bot.' }),
+      .openapi({
+        description:
+          "Who may send the bot Direct Messages: everyone, or premium for verified senders only. Premium isn't meant for org-only bots, since everyone in an org-only bot's developer account should be able to message it, verified or not; requesting premium for one may be refused with a 400. The no_one value is deprecated and kept only so bots that already use it can keep it; choosing it for any other bot may be refused with a 400.",
+      }),
     handle: z
       .string()
       .regex(/^[A-Za-z0-9_]{5,15}$/)
@@ -14899,6 +16577,73 @@ const UpdateBotResponseSchema = z
   })
   .openapi({ required: [] })
   .openapi('UpdateBotResponse')
+
+const UpdateBroadcastRequestSchema = z
+  .strictObject({
+    chat_option: z
+      .int()
+      .min(0)
+      .max(6)
+      .exactOptional()
+      .openapi({
+        description:
+          "Who can chat: 0 default, 1 chat off, 2 everyone, 3 verified accounts, 4 accounts the host follows, 5 the host's subscribers, 6 accounts followed by an account the host follows.",
+      }),
+    live_category_id: z
+      .string()
+      .max(64)
+      .exactOptional()
+      .openapi({
+        description:
+          "New live category, e.g. `gaming`. Ids come from GET /2/broadcasts/categories; an unknown id is a 400. An empty string removes the broadcast's category.",
+      }),
+    title: z.string().min(1).exactOptional().openapi({ description: 'New broadcast title.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('UpdateBroadcastRequest')
+
+const UpdateBroadcastResponseDataSchema = z
+  .object({
+    broadcast_id: z.string().openapi({ description: 'Broadcast id; the same as `id`.' }),
+    chat_option: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          "Who can chat: 0 default, 1 chat off, 2 everyone, 3 verified accounts, 4 accounts the host follows, 5 the host's subscribers, 6 accounts followed by an account the host follows.",
+      }),
+    id: z.string().openapi({ description: 'Broadcast id.' }),
+    language: z.string().exactOptional().openapi({ description: 'Broadcast language.' }),
+    live_category_id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "The broadcast's live category. Missing when it has none." }),
+    media_key: z.string().exactOptional().openapi({ description: 'Media key of the broadcast.' }),
+    share_url: z.string().openapi({ description: "The broadcast's watch page." }),
+    start_ms: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Start time, milliseconds since Unix epoch (decimal string).' }),
+    state: z.string().openapi({ description: 'Broadcast state, `RUNNING` once live.' }),
+    title: z.string().exactOptional().openapi({ description: 'Broadcast title.' }),
+    tweet_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Id of the Post announcing the broadcast. Missing when the Post hasn't been created yet, was suppressed with `should_not_tweet`, or could not be created.",
+      }),
+  })
+  .openapi({ required: ['id', 'broadcast_id', 'state', 'share_url'] })
+  .openapi('UpdateBroadcastResponseData')
+
+const UpdateBroadcastResponseSchema = z
+  .object({
+    data: UpdateBroadcastResponseDataSchema.exactOptional(),
+    errors: z.array(ProblemSchema).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('UpdateBroadcastResponse')
 
 const UpdateBroadcastStateRequestSchema = z
   .object({
@@ -15539,15 +17284,13 @@ const UpdateChatGroupConversationParticipantKeysSchema = z
   .object({
     encrypted_conversation_key: z
       .string()
-      .exactOptional()
       .openapi({ description: "Conversation key encrypted with this participant's public key." }),
     public_key_version: z
       .string()
-      .exactOptional()
       .openapi({ description: "Version of the participant's public key used for encryption." }),
-    user_id: z.string().exactOptional().openapi({ description: 'Participant user ID.' }),
+    user_id: z.string().openapi({ description: 'Participant user ID.' }),
   })
-  .openapi({ required: [] })
+  .openapi({ required: ['user_id', 'encrypted_conversation_key', 'public_key_version'] })
   .openapi('UpdateChatGroupConversationParticipantKeys')
 
 const UpdateChatGroupRotatedPmkBundleSchema = z
@@ -15729,7 +17472,7 @@ const UpdateChatSettingsRequestSchema = z
           .exactOptional()
           .openapi({
             description:
-              'Who can send the user messages: `all` (anyone), `verified` (verified accounts only), or `following` (accounts the user follows).',
+              "Who can send the user messages: `all` (anyone), `verified` (verified accounts only), or `following` (accounts the user follows). A bot may get a 400 for choosing `following` when it doesn't already have it, and an org-only bot for choosing `verified`.",
           }),
         always_allow_dms_from_subscribers: z
           .boolean()
@@ -15811,7 +17554,7 @@ const UpdateChatSettingsResponseDataSchema = z
       .exactOptional()
       .openapi({
         description:
-          'Who can send the user messages: `all` (anyone), `verified` (verified accounts only), or `following` (accounts the user follows).',
+          "Who can send the user messages: `all` (anyone), `verified` (verified accounts only), or `following` (accounts the user follows). A bot may get a 400 for choosing `following` when it doesn't already have it, and an org-only bot for choosing `verified`.",
       }),
     always_allow_dms_from_subscribers: z
       .boolean()
@@ -15882,6 +17625,88 @@ const UpdateListsResponseSchema = z
   .openapi({ required: [] })
   .openapi('UpdateListsResponse')
 
+const UpdateMediaInLibraryMonetizationSchema = z
+  .strictObject({
+    allowed_countries: z
+      .array(z.string().regex(/^[A-Za-z]{2}$/))
+      .exactOptional()
+      .openapi({
+        description:
+          'ISO 3166-1 alpha-2 codes of the only countries the video is monetized in. Omit to monetize everywhere.',
+      }),
+    blocked_advertiser_category_ids: z
+      .array(z.int())
+      .exactOptional()
+      .openapi({
+        description:
+          'Advertiser categories (from the categories endpoint) whose ads may not run against the video.',
+      }),
+    blocked_advertiser_ids: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'Advertiser account ids whose ads may not run against the video.' }),
+    enabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether ads may run against the video. Requires the account to be enrolled in video monetization.',
+      }),
+    program_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Amplify program to monetize the video through, instead of `video_category_ids`.',
+      }),
+    video_category_ids: z
+      .array(z.int())
+      .max(2)
+      .exactOptional()
+      .openapi({
+        description:
+          'Video category ids (from the categories endpoint) describing the content; at most one when creating. Required when enabled, unless `program_id` is set.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('UpdateMediaInLibraryMonetization')
+
+const UpdateMediaInLibraryRequestSchema = z
+  .object({
+    description: z
+      .string()
+      .max(200)
+      .exactOptional()
+      .openapi({ description: 'Description shown with the video in the player card.' }),
+    label: z.string().exactOptional().openapi({ description: 'Label of the item in the library.' }),
+    monetization: UpdateMediaInLibraryMonetizationSchema.exactOptional().openapi({
+      description: 'Monetization settings. Videos only.',
+    }),
+    name: z.string().exactOptional().openapi({ description: 'Name of the item in the library.' }),
+    title: z
+      .string()
+      .max(70)
+      .exactOptional()
+      .openapi({ description: 'Title shown with the video in the player card.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('UpdateMediaInLibraryRequest')
+
+const UpdateMediaInLibraryResponseDataSchema = z
+  .object({
+    updated: z.boolean().openapi({ description: 'Whether the library item was updated.' }),
+  })
+  .openapi({ required: ['updated'] })
+  .openapi('UpdateMediaInLibraryResponseData')
+
+const UpdateMediaInLibraryResponseSchema = z
+  .object({
+    data: UpdateMediaInLibraryResponseDataSchema.exactOptional(),
+    errors: z.array(ProblemSchema).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('UpdateMediaInLibraryResponse')
+
 const UpdateRulesAddSchema = z
   .strictObject({
     tag: z
@@ -15931,7 +17756,7 @@ const UpdateRulesResponseSchema = z
     data: z.array(UpdateRulesResponseDataSchema).exactOptional(),
     errors: z.array(ProblemSchema).exactOptional(),
     meta: z
-      .object({ sent: z.string().exactOptional(), summary: z.object({}).exactOptional() })
+      .object({ sent: z.string().exactOptional(), summary: z.looseObject({}).exactOptional() })
       .exactOptional()
       .openapi({ required: [] }),
   })
@@ -15977,7 +17802,13 @@ const UpdateScheduledBroadcastRequestSchema = z
       .string()
       .regex(/^[0-9]{1,19}$/)
       .openapi({ description: 'Start time, ms since Unix epoch (decimal string).' }),
-    source_id: z.string().exactOptional().openapi({ description: 'Ingest / source id.' }),
+    source_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Source to bind: a source's `id` from GET /2/sources. A stream key is also accepted but deprecated; stream keys stop being accepted when the /2/users/:id/sources and /2/users/:id/broadcasts routes reach end of life on January 1, 2027.",
+      }),
     thumbnail_media_id: z
       .string()
       .regex(/^[0-9]{1,19}$/)
@@ -16034,7 +17865,9 @@ const UpdateScheduledBroadcastResponseDataSchema = z
     source_id: z
       .string()
       .exactOptional()
-      .openapi({ description: 'Bound ingest / source id (`rtmp_stream_key`).' }),
+      .openapi({
+        description: 'Id of the bound source, as returned by GET /2/sources. Omitted when unknown.',
+      }),
     state: z
       .string()
       .exactOptional()
@@ -16247,26 +18080,28 @@ const UpdateSourceResponseDataSchema = z
       .string()
       .openapi({
         description:
-          'Source id; the `source_id` a scheduled broadcast binds to. Currently equal to `stream_key`.',
+          'Source id, 19 decimal digits; the `source_id` that POST /2/broadcasts and scheduled broadcasts take. Not a credential: read the stream key with GET /2/sources/:id/stream_key.',
       }),
     is_stream_active: z
       .boolean()
       .exactOptional()
-      .openapi({
-        description:
-          'Whether an encoder is currently sending video to the source. Publishing a broadcast on the source needs it.',
-      }),
+      .openapi({ description: 'Whether an encoder is currently sending video to the source.' }),
     name: z.string().exactOptional().openapi({ description: 'Label for the source.' }),
     region: z
       .string()
       .exactOptional()
       .openapi({
         description:
-          'Ingest region: `atla` or `pdxa` for on-prem sources, the AWS region (e.g. `us-east-1`) for sources created before the move to on-prem.',
+          'Region of the ingest location serving the source: `us-east-1` or `us-west-2`. Sources created before October 31, 2026 keep the AWS region they were created in.',
       }),
-    rtmp_url: z.string().exactOptional().openapi({ description: 'RTMP ingest URL.' }),
-    rtmps_url: z.string().exactOptional().openapi({ description: 'RTMPS ingest URL (port 443).' }),
-    stream_key: z.string().exactOptional().openapi({ description: 'RTMP stream key.' }),
+    rtmp_url: z.string().exactOptional().openapi({ description: 'Ingest URL.' }),
+    rtmps_url: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "RTMPS ingest URL (port 443). Configure your encoder with this URL and the source's stream key.",
+      }),
   })
   .openapi({ required: ['id'] })
   .openapi('UpdateSourceResponseData')
@@ -16282,22 +18117,22 @@ const UpdateSourceResponseSchema = z
 const UpdateUserBroadcastStateRequestSchema = z
   .object({
     chat_option: z
-      .int()
+      .union([z.int(), z.string()])
       .exactOptional()
       .openapi({
         description:
-          "Who can chat: 0 default, 1 chat off, 2 everyone, 3 verified accounts, 4 accounts the host follows, 5 the host's subscribers, 6 accounts followed by an account the host follows. `PUBLISH` only.",
+          "Who can chat: 0 default, 1 chat off, 2 everyone, 3 verified accounts, 4 accounts the host follows, 5 the host's subscribers, 6 accounts followed by an account the host follows. A numeric string is also accepted. `PUBLISH` only.",
       }),
     locale: z
       .string()
       .exactOptional()
       .openapi({ description: 'Broadcast language. `PUBLISH` only.' }),
     should_not_tweet: z
-      .boolean()
+      .union([z.boolean(), z.string(), z.int()])
       .exactOptional()
       .openapi({
         description:
-          "Skip the announcing Post. Unset keeps the broadcast's setting, which defaults to posting. `PUBLISH` only.",
+          'Skip the announcing Post. Unset keeps the broadcast\'s setting, which defaults to posting. `"true"`, `"false"`, `1` and `0` are also accepted. `PUBLISH` only.',
       }),
     state: z.string().openapi({ description: '`PUBLISH` or `END`.' }),
     title: z.string().exactOptional().openapi({ description: 'Broadcast title. `PUBLISH` only.' }),
@@ -16757,6 +18592,7 @@ const BroadcastChatMessageFieldsParameterParamsSchema = z
           'broadcast_id',
           'created_at_ms',
           'id',
+          'relay_source',
           'reply_to',
           'text',
         ]),
@@ -16791,6 +18627,7 @@ const BroadcastChatMessageFieldsParameterParamsSchema = z
             'broadcast_id',
             'created_at_ms',
             'id',
+            'relay_source',
             'reply_to',
             'text',
           ],
@@ -16903,6 +18740,7 @@ const BroadcastFieldsParameterParamsSchema = z
           'image_url_small',
           'is_high_latency',
           'language',
+          'live_category_id',
           'media_key',
           'scheduled_end_ms',
           'scheduled_start_ms',
@@ -16956,6 +18794,7 @@ const BroadcastFieldsParameterParamsSchema = z
             'image_url_small',
             'is_high_latency',
             'language',
+            'live_category_id',
             'media_key',
             'scheduled_end_ms',
             'scheduled_start_ms',
@@ -18049,6 +19888,7 @@ const MediaFieldsParameterParamsSchema = z
           'preview_image_url',
           'promoted_metrics',
           'public_metrics',
+          'revenue',
           'type',
           'url',
           'variants',
@@ -18089,6 +19929,7 @@ const MediaFieldsParameterParamsSchema = z
             'preview_image_url',
             'promoted_metrics',
             'public_metrics',
+            'revenue',
             'type',
             'url',
             'variants',
@@ -18555,6 +20396,7 @@ const PublicKeyFieldsParameterParamsSchema = z
           'public_key',
           'public_key_version',
           'signing_public_key',
+          'user_id',
         ]),
       )
       .min(1)
@@ -18587,6 +20429,7 @@ const PublicKeyFieldsParameterParamsSchema = z
             'public_key',
             'public_key_version',
             'signing_public_key',
+            'user_id',
           ],
         },
       },
@@ -18954,6 +20797,49 @@ const TrendFieldsParameterParamsSchema = z
     description: 'The fields available for a Trend object.',
   })
 
+const TrendLocationFieldsParameterParamsSchema = z
+  .preprocess(
+    (val) =>
+      val === undefined
+        ? val
+        : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+            typeof item === 'string' ? item.split(',') : [item],
+          ),
+    z
+      .array(z.enum(['country', 'country_code', 'name', 'parent_id', 'place_type', 'woeid']))
+      .min(1)
+      .superRefine((items, ctx) => {
+        const seen = new Map()
+        for (const [i, val] of items.entries()) {
+          const key = JSON.stringify(val)
+          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+          else seen.set(key, i)
+        }
+      }),
+  )
+  .exactOptional()
+  .openapi({
+    param: {
+      name: 'trend_location.fields',
+      in: 'query',
+      description: 'A comma separated list of TrendLocation fields to display.',
+      required: false,
+      schema: {
+        type: 'array',
+        description: 'The fields available for a TrendLocation object.',
+        minItems: 1,
+        uniqueItems: true,
+        items: {
+          type: 'string',
+          enum: ['country', 'country_code', 'name', 'parent_id', 'place_type', 'woeid'],
+        },
+      },
+      explode: false,
+      style: 'form',
+    },
+    description: 'The fields available for a TrendLocation object.',
+  })
+
 const UsageFieldsParameterParamsSchema = z
   .preprocess(
     (val) =>
@@ -19072,11 +20958,13 @@ const UserFieldsParameterParamsSchema = z
           'is_identity_verified',
           'location',
           'name',
+          'org_only',
           'parody',
           'profile_banner_url',
           'profile_image_url',
           'protected',
           'public_metrics',
+          'receives_your_chat',
           'receives_your_dm',
           'subscriber_count',
           'subscribes_to_you',
@@ -19125,11 +21013,13 @@ const UserFieldsParameterParamsSchema = z
             'is_identity_verified',
             'location',
             'name',
+            'org_only',
             'parody',
             'profile_banner_url',
             'profile_image_url',
             'protected',
             'public_metrics',
+            'receives_your_chat',
             'receives_your_dm',
             'subscriber_count',
             'subscribes_to_you',
@@ -19251,9 +21141,9 @@ export const get2AccountRoute = createRoute({
   method: 'get',
   path: '/2/account',
   tags: ['Account'],
-  summary: 'Get developer account',
+  summary: 'Get Developer Account',
   description:
-    "Returns the authenticated user's X Developer Platform account. A user without an account gets a resource-not-found error entry.",
+    "Returns the X Developer Platform account that is billed for the authenticated user's API access. A user with no such account gets a resource-not-found error entry.",
   operationId: 'getDeveloperAccount',
   responses: {
     200: {
@@ -19275,7 +21165,7 @@ export const post2AccountRoute = createRoute({
   method: 'post',
   path: '/2/account',
   tags: ['Account'],
-  summary: 'Ensure developer account',
+  summary: 'Ensure Developer Account',
   description:
     'Creates an X Developer Platform account for the authenticated user if they do not already have one, and returns it. Idempotent: when the user already has an account it is returned unchanged with `created` false.',
   operationId: 'ensureAccount',
@@ -19305,7 +21195,8 @@ export const get2AccountActivitySubscriptionsCountRoute = createRoute({
   method: 'get',
   path: '/2/account_activity/subscriptions/count',
   tags: ['Account Activity'],
-  summary: 'Get Account Activity Subscription Count',
+  summary: 'Get Subscription Count',
+  description: 'Retrieves a count of currently active Account Activity subscriptions.',
   operationId: 'getAccountActivitySubscriptionCount',
   responses: {
     200: {
@@ -19329,7 +21220,8 @@ export const get2AccountActivityWebhooksWebhookIdSubscriptionsAllRoute = createR
   method: 'get',
   path: '/2/account_activity/webhooks/{webhook_id}/subscriptions/all',
   tags: ['Account Activity'],
-  summary: 'Validate Account Activity Subscription',
+  summary: 'Validate Subscription',
+  description: "Checks a user's Account Activity subscription for a given webhook.",
   operationId: 'validateAccountActivitySubscription',
   request: {
     params: z.object({
@@ -19360,7 +21252,7 @@ export const get2AccountActivityWebhooksWebhookIdSubscriptionsAllRoute = createR
     },
   },
   security: [
-    { OAuth2UserToken: ['users.read', 'dm.write', 'tweet.read', 'dm.read'] },
+    { OAuth2UserToken: ['users.read', 'dm.read', 'tweet.read', 'dm.write'] },
     { UserToken: [] },
   ],
 })
@@ -19369,7 +21261,7 @@ export const post2AccountActivityWebhooksWebhookIdSubscriptionsAllRoute = create
   method: 'post',
   path: '/2/account_activity/webhooks/{webhook_id}/subscriptions/all',
   tags: ['Account Activity'],
-  summary: 'Create subscription',
+  summary: 'Create Subscription',
   description: 'Creates an Account Activity subscription for the user and the given webhook.',
   externalDocs: { url: 'https://docs.x.com/x-api/account-activity/introduction' },
   operationId: 'createAccountActivitySubscription',
@@ -19404,7 +21296,7 @@ export const post2AccountActivityWebhooksWebhookIdSubscriptionsAllRoute = create
     },
   },
   security: [
-    { OAuth2UserToken: ['dm.read', 'users.read', 'dm.write', 'tweet.read'] },
+    { OAuth2UserToken: ['users.read', 'dm.write', 'tweet.read', 'dm.read'] },
     { UserToken: [] },
   ],
 })
@@ -19413,7 +21305,8 @@ export const get2AccountActivityWebhooksWebhookIdSubscriptionsAllListRoute = cre
   method: 'get',
   path: '/2/account_activity/webhooks/{webhook_id}/subscriptions/all/list',
   tags: ['Account Activity'],
-  summary: 'Get Account Activity Subscriptions',
+  summary: 'Get Subscriptions',
+  description: 'Retrieves a list of all active subscriptions for a given webhook.',
   operationId: 'getAccountActivitySubscriptions',
   request: {
     params: z.object({
@@ -19448,7 +21341,7 @@ export const delete2AccountActivityWebhooksWebhookIdSubscriptionsUserIdAllRoute 
   method: 'delete',
   path: '/2/account_activity/webhooks/{webhook_id}/subscriptions/{user_id}/all',
   tags: ['Account Activity'],
-  summary: 'Delete subscription',
+  summary: 'Delete Subscription',
   description: 'Deletes an Account Activity subscription for the given webhook and user ID.',
   externalDocs: { url: 'https://docs.x.com/x-api/account-activity/introduction' },
   operationId: 'deleteAccountActivitySubscription',
@@ -19571,7 +21464,7 @@ export const get2ActivitySubscriptionsRoute = createRoute({
   method: 'get',
   path: '/2/activity/subscriptions',
   tags: ['Activity'],
-  summary: 'Get X activity subscriptions',
+  summary: 'Get X Activity Subscriptions',
   description:
     'Get a list of active subscriptions for XAA. Optional user_id narrows the list to subscriptions whose filter.user_id matches; with a user-context token it must identify the authenticated user.',
   externalDocs: { url: 'https://docs.x.com/x-api/activity/get-x-activity-subscriptions' },
@@ -19649,9 +21542,9 @@ export const post2ActivitySubscriptionsRoute = createRoute({
   method: 'post',
   path: '/2/activity/subscriptions',
   tags: ['Activity'],
-  summary: 'Create X activity subscription',
+  summary: 'Create X Activity Subscription',
   description:
-    'Creates a subscription for an X activity event. OAuth2 user-context tokens must hold the scope matching the requested event_type: dm.read for chat.* and dm.* events, like.read for like.* events, mute.read for mute.* events, block.read for block.* events, follows.read for subscriptions.* events, and tweet.read for all other event types. Mute and block subscriptions are actor-only: filter.user_id must identify the authenticated user and direction is not supported. subscriptions.* events require a user-context token and filter.user_id must identify the authenticated user. Optional filter.qualifiers further narrow supported chat, follow, unfollow, like, and subscriptions events.',
+    'Creates a subscription for an X activity event. OAuth2 user-context tokens must hold the scope matching the requested event_type: dm.read for chat.* and dm.* events, like.read for like.* events, mute.read for mute.* events, block.read for block.* events, follows.read for subscriptions.* events, and tweet.read for all other event types. Mute and block subscriptions are actor-only: filter.user_id must identify the authenticated user and direction is not supported. subscriptions.* events require a user-context token and filter.user_id must identify the authenticated user. Optional filter.qualifiers further narrow supported chat, follow, unfollow, like, subscriptions, and trends events.',
   externalDocs: { url: 'https://docs.x.com/x-api/activity/create-x-activity-subscription' },
   operationId: 'createActivitySubscription',
   request: {
@@ -19680,7 +21573,7 @@ export const delete2ActivitySubscriptionsRoute = createRoute({
   method: 'delete',
   path: '/2/activity/subscriptions',
   tags: ['Activity'],
-  summary: 'Delete X activity subscriptions by IDs',
+  summary: 'Delete X Activity Subscriptions by IDs',
   description: 'Deletes multiple subscriptions for X activity events by their IDs',
   externalDocs: { url: 'https://docs.x.com/x-api/activity/delete-x-activity-subscriptions-by-ids' },
   operationId: 'deleteActivitySubscriptionsByIds',
@@ -19736,7 +21629,7 @@ export const put2ActivitySubscriptionsSubscriptionIdRoute = createRoute({
   method: 'put',
   path: '/2/activity/subscriptions/{subscription_id}',
   tags: ['Activity'],
-  summary: 'Update X activity subscription',
+  summary: 'Update X Activity Subscription',
   description: 'Updates a subscription for an X activity event',
   externalDocs: { url: 'https://docs.x.com/x-api/activity/update-x-activity-subscription' },
   operationId: 'updateActivitySubscription',
@@ -19780,7 +21673,7 @@ export const delete2ActivitySubscriptionsSubscriptionIdRoute = createRoute({
   method: 'delete',
   path: '/2/activity/subscriptions/{subscription_id}',
   tags: ['Activity'],
-  summary: 'Deletes X activity subscription',
+  summary: 'Delete X Activity Subscription',
   description: 'Deletes a subscription for an X activity event',
   externalDocs: { url: 'https://docs.x.com/x-api/activity/deletes-x-activity-subscription' },
   operationId: 'deleteActivitySubscription',
@@ -19820,7 +21713,7 @@ export const post2ArticlesDraftRoute = createRoute({
   method: 'post',
   path: '/2/articles/draft',
   tags: ['Articles'],
-  summary: 'Create draft Article',
+  summary: 'Create Draft Article',
   description: 'Creates a new Article draft that can later be published.',
   operationId: 'articleCreateDraft',
   request: {
@@ -19889,6 +21782,8 @@ export const get2BotsRoute = createRoute({
   path: '/2/bots',
   tags: ['Bots'],
   summary: 'Get Bots',
+  description:
+    "Retrieves the bot accounts in the calling app's project. meta.max_bots is the most bots the project can have.",
   operationId: 'getBots',
   request: {
     query: z.object({
@@ -19917,9 +21812,9 @@ export const post2BotsRoute = createRoute({
   method: 'post',
   path: '/2/bots',
   tags: ['Bots'],
-  summary: 'Create a bot',
+  summary: 'Create a Bot',
   description:
-    "Creates a bot account in the calling app's project and returns its bearer token. Idempotent on handle: repeating the request for a handle that already names one of the project's bots returns that bot with a freshly minted token, revoking the previous one — safe to retry when a response was lost, since the replaced token was never seen.",
+    "Creates a bot account in the calling app's project and returns its bearer token. Idempotent on handle: repeating the request for a handle that already names one of the project's bots returns that bot with a freshly minted token, revoking the previous one — safe to retry when a response was lost, since the replaced token was never seen. With an OAuth 2.0 user token, the user must be an admin of the project's developer account. On API Connect, where the request bills the user's own account, the bot is created in the user's project instead; its token is still minted for the calling app.",
   operationId: 'createBot',
   request: {
     body: { content: { 'application/json': { schema: CreateBotRequestSchema } }, required: true },
@@ -19937,7 +21832,7 @@ export const post2BotsRoute = createRoute({
       },
     },
   },
-  security: [{ BearerToken: [] }],
+  security: [{ OAuth2UserToken: [] }, { BearerToken: [] }],
 })
 
 export const put2BotsIdRoute = createRoute({
@@ -19945,6 +21840,7 @@ export const put2BotsIdRoute = createRoute({
   path: '/2/bots/{id}',
   tags: ['Bots'],
   summary: 'Update Bot',
+  description: "Updates a bot's handle, display name, or who may send it Direct Messages.",
   operationId: 'updateBot',
   request: {
     params: z.object({
@@ -19984,6 +21880,8 @@ export const delete2BotsIdRoute = createRoute({
   path: '/2/bots/{id}',
   tags: ['Bots'],
   summary: 'Delete Bot',
+  description:
+    "Deletes a bot account from the calling app's project. With an OAuth 2.0 user token, the user must be an admin of the project's developer account. On API Connect, where the request bills the user's own account, the bot is deleted from the user's project instead.",
   operationId: 'deleteBot',
   request: {
     params: z.object({
@@ -20014,7 +21912,7 @@ export const delete2BotsIdRoute = createRoute({
       },
     },
   },
-  security: [{ BearerToken: [] }],
+  security: [{ OAuth2UserToken: [] }, { BearerToken: [] }],
 })
 
 export const post2BotsIdTokenRoute = createRoute({
@@ -20022,6 +21920,8 @@ export const post2BotsIdTokenRoute = createRoute({
   path: '/2/bots/{id}/token',
   tags: ['Bots'],
   summary: 'Rotate Bot Token',
+  description:
+    'Mints a new bearer token for a bot and invalidates every token previously issued for it. The new token is returned only once.',
   operationId: 'rotateBotToken',
   request: {
     params: z.object({
@@ -20056,7 +21956,7 @@ export const post2BotsIdTokenRoute = createRoute({
       },
     },
   },
-  security: [{ BearerToken: [] }],
+  security: [{ OAuth2UserToken: [] }, { BearerToken: [] }],
 })
 
 export const delete2BotsIdTokenRoute = createRoute({
@@ -20064,6 +21964,8 @@ export const delete2BotsIdTokenRoute = createRoute({
   path: '/2/bots/{id}/token',
   tags: ['Bots'],
   summary: 'Revoke Bot Token',
+  description:
+    "Revokes a bot's bearer token. The bot account is kept, and rotating its token mints a new one.",
   operationId: 'revokeBotToken',
   request: {
     params: z.object({
@@ -20101,7 +22003,7 @@ export const get2BroadcastsRoute = createRoute({
   method: 'get',
   path: '/2/broadcasts',
   tags: ['Broadcasts'],
-  summary: 'List broadcasts',
+  summary: 'List Broadcasts',
   description:
     "Returns the authenticated user's live-video broadcasts, or selected owned broadcasts when ids are provided.\n\nAt most one of `ids`, `max_results` may be provided. At most one of `ids`, `pagination_token` may be provided.",
   operationId: 'listBroadcasts',
@@ -20189,11 +22091,65 @@ export const get2BroadcastsRoute = createRoute({
   security: [{ OAuth2UserToken: ['broadcast.read'] }, { UserToken: [] }],
 })
 
+export const post2BroadcastsRoute = createRoute({
+  method: 'post',
+  path: '/2/broadcasts',
+  tags: ['Broadcasts'],
+  summary: 'Go Live on a Source',
+  description:
+    "Takes one or more of the authenticated user's sources live and returns 201 with the new broadcast. Several sources (`source_id` plus `additional_source_ids`, one per video format) go live together as one broadcast; they must all be RTMP sources in one region, and when one of them is already live its broadcast is returned only if it holds every listed source. The broadcast goes live immediately (state `RUNNING`), even before the encoder sends video, and is ended (`TIMED_OUT`) if no video arrives within 5 minutes. It is announced in a Post unless `should_not_tweet` is true. When the source already has a live broadcast, returns 200 with that broadcast unchanged and ignores the request's `title`, `locale`, `chat_option` and `should_not_tweet`. A missing `tweet_id` means the Post hasn't been created yet, was suppressed with `should_not_tweet`, or could not be created; read it later with GET /2/broadcasts/:id. A 409 `conflict` means the source can't go live right now: either it can't take video before the encoder connects (external HLS sources, or regions where this isn't available), so retry once video is flowing, or another broadcast is live on it, so END that broadcast first. The `detail` says which, and names the live broadcast when known.",
+  operationId: 'createBroadcast',
+  request: {
+    body: {
+      content: { 'application/json': { schema: CreateBroadcastRequestSchema } },
+      required: true,
+    },
+  },
+  responses: {
+    201: {
+      description: 'The request has succeeded.',
+      content: { 'application/json': { schema: CreateBroadcastResponseSchema } },
+    },
+    default: {
+      description: 'The request has failed.',
+      content: {
+        'application/json': { schema: ErrorSchema },
+        'application/problem+json': { schema: ProblemSchema },
+      },
+    },
+  },
+  security: [{ OAuth2UserToken: ['broadcast.read', 'broadcast.write'] }, { UserToken: [] }],
+})
+
+export const get2BroadcastsCategoriesRoute = createRoute({
+  method: 'get',
+  path: '/2/broadcasts/categories',
+  tags: ['Broadcasts'],
+  summary: 'List Live Categories',
+  description:
+    "Returns the live categories a host can pick when going live, in display order. Pass a category's `id` as `live_category_id` on POST /2/broadcasts. Ids are permanent; names can change, so store the id and show the current name. The whole list is returned in one response, without paging.",
+  operationId: 'listLiveCategories',
+  responses: {
+    200: {
+      description: 'The request has succeeded.',
+      content: { 'application/json': { schema: ListLiveCategoriesResponseSchema } },
+    },
+    default: {
+      description: 'The request has failed.',
+      content: {
+        'application/json': { schema: ErrorSchema },
+        'application/problem+json': { schema: ProblemSchema },
+      },
+    },
+  },
+  security: [{ OAuth2UserToken: ['broadcast.read'] }, { UserToken: [] }],
+})
+
 export const get2BroadcastsChatModeratorsRoute = createRoute({
   method: 'get',
   path: '/2/broadcasts/chat/moderators',
   tags: ['Broadcasts'],
-  summary: 'Get chat moderators',
+  summary: 'Get Chat Moderators',
   description:
     "Returns the authenticated broadcaster's persistent moderators as User resources. The list applies to all of their current and future broadcast chats.",
   operationId: 'getChatModerators',
@@ -20218,7 +22174,7 @@ export const get2BroadcastsChatModeratorsRoute = createRoute({
     },
   },
   security: [
-    { OAuth2UserToken: ['tweet.read', 'users.read', 'broadcast.read'] },
+    { OAuth2UserToken: ['users.read', 'broadcast.read', 'tweet.read'] },
     { UserToken: [] },
   ],
 })
@@ -20227,7 +22183,7 @@ export const post2BroadcastsChatModeratorsRoute = createRoute({
   method: 'post',
   path: '/2/broadcasts/chat/moderators',
   tags: ['Broadcasts'],
-  summary: 'Add a chat moderator',
+  summary: 'Add a Chat Moderator',
   description:
     "Adds a moderator to the authenticated broadcaster's persistent list and returns the updated moderator user IDs. The list applies to all current and future broadcast chats.",
   operationId: 'addChatModerator',
@@ -20257,7 +22213,7 @@ export const delete2BroadcastsChatModeratorsUserIdRoute = createRoute({
   method: 'delete',
   path: '/2/broadcasts/chat/moderators/{user_id}',
   tags: ['Broadcasts'],
-  summary: 'Remove a chat moderator',
+  summary: 'Remove a Chat Moderator',
   description:
     "Removes a moderator from the authenticated broadcaster's persistent list and returns the updated moderator user IDs.",
   operationId: 'removeChatModerator',
@@ -20291,14 +22247,14 @@ export const delete2BroadcastsChatModeratorsUserIdRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['broadcast.write', 'broadcast.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['broadcast.read', 'broadcast.write'] }, { UserToken: [] }],
 })
 
 export const get2BroadcastsChatMutesRoute = createRoute({
   method: 'get',
   path: '/2/broadcasts/chat/mutes',
   tags: ['Broadcasts'],
-  summary: 'Get muted chat users',
+  summary: 'Get Muted Chat Users',
   description:
     "Returns the users muted in the authenticated broadcaster's chat, with the expiry time of timed mutes. Mutes apply to all of their broadcasts. Expired timed mutes are omitted. Use `expansions=user_id` to include the muted users.",
   operationId: 'getChatMutedUsers',
@@ -20362,7 +22318,7 @@ export const post2BroadcastsChatMutesRoute = createRoute({
   method: 'post',
   path: '/2/broadcasts/chat/mutes',
   tags: ['Broadcasts'],
-  summary: 'Mute or time out a user in chat',
+  summary: 'Mute or Time Out a User in Chat',
   description:
     "Prevents a user from posting messages in all of a broadcaster's chats. Without `broadcast_id`, the user is muted in the authenticated user's own chats. Moderators pass `broadcast_id` to mute the user in that broadcast host's chats. When `end_at_ms` is provided, the mute expires at that time.",
   operationId: 'muteChatUser',
@@ -20392,7 +22348,7 @@ export const delete2BroadcastsChatMutesUserIdRoute = createRoute({
   method: 'delete',
   path: '/2/broadcasts/chat/mutes/{user_id}',
   tags: ['Broadcasts'],
-  summary: 'Unmute a user in chat',
+  summary: 'Unmute a User in Chat',
   description:
     "Allows a muted user to post messages in a broadcaster's chats again. Without `broadcast_id`, the user is unmuted in the authenticated user's own chats. Moderators pass `broadcast_id` to unmute the user in that broadcast host's chats.",
   operationId: 'unmuteChatUser',
@@ -20449,7 +22405,7 @@ export const get2BroadcastsScheduledRoute = createRoute({
   method: 'get',
   path: '/2/broadcasts/scheduled',
   tags: ['Broadcasts'],
-  summary: 'List scheduled broadcasts',
+  summary: 'List Scheduled Broadcasts',
   description: 'Returns scheduled broadcasts owned by the authenticated user.',
   operationId: 'listScheduledBroadcasts',
   request: {
@@ -20532,9 +22488,9 @@ export const post2BroadcastsScheduledRoute = createRoute({
   method: 'post',
   path: '/2/broadcasts/scheduled',
   tags: ['Broadcasts'],
-  summary: 'Create a scheduled broadcast',
+  summary: 'Create a Scheduled Broadcast',
   description:
-    'Schedules a broadcast for the authenticated user. A `source_id` (ingest) is required at create time.',
+    "Schedules a broadcast for the authenticated user on one of their sources: `source_id` is required. Passing a stream key as `source_id` is deprecated and stops working when the /2/users/:id/sources and /2/users/:id/broadcasts routes reach end of life on January 1, 2027; pass the source's `id` from GET /2/sources instead.",
   operationId: 'createScheduledBroadcast',
   request: {
     body: {
@@ -20555,14 +22511,14 @@ export const post2BroadcastsScheduledRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['broadcast.write', 'broadcast.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['broadcast.read', 'broadcast.write'] }, { UserToken: [] }],
 })
 
 export const get2BroadcastsScheduledIdRoute = createRoute({
   method: 'get',
   path: '/2/broadcasts/scheduled/{id}',
   tags: ['Broadcasts'],
-  summary: 'Get a scheduled broadcast',
+  summary: 'Get a Scheduled Broadcast',
   description: 'Returns a single scheduled broadcast by its alphanumeric broadcast id.',
   operationId: 'getScheduledBroadcast',
   request: {
@@ -20601,9 +22557,9 @@ export const put2BroadcastsScheduledIdRoute = createRoute({
   method: 'put',
   path: '/2/broadcasts/scheduled/{id}',
   tags: ['Broadcasts'],
-  summary: 'Update a scheduled broadcast',
+  summary: 'Update a Scheduled Broadcast',
   description:
-    'Updates a scheduled broadcast. Path `:id` is the broadcast id; the body must include `scheduled_broadcast_id`. Re-send every field that should be kept.',
+    "Updates a scheduled broadcast. Path `:id` is the broadcast id; the body must include `scheduled_broadcast_id`. Re-send every field that should be kept. Passing a stream key as `source_id` is deprecated and stops working when the /2/users/:id/sources and /2/users/:id/broadcasts routes reach end of life on January 1, 2027; pass the source's `id` from GET /2/sources instead.",
   operationId: 'updateScheduledBroadcast',
   request: {
     params: z.object({
@@ -20645,7 +22601,7 @@ export const delete2BroadcastsScheduledIdRoute = createRoute({
   method: 'delete',
   path: '/2/broadcasts/scheduled/{id}',
   tags: ['Broadcasts'],
-  summary: 'Delete a scheduled broadcast',
+  summary: 'Delete a Scheduled Broadcast',
   description: 'Deletes a scheduled broadcast by its alphanumeric broadcast id.',
   operationId: 'deleteScheduledBroadcast',
   request: {
@@ -20693,14 +22649,14 @@ export const delete2BroadcastsScheduledIdRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['broadcast.write', 'broadcast.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['broadcast.read', 'broadcast.write'] }, { UserToken: [] }],
 })
 
 export const post2BroadcastsScheduledIdLiveRoute = createRoute({
   method: 'post',
   path: '/2/broadcasts/scheduled/{id}/live',
   tags: ['Broadcasts'],
-  summary: 'Go live on a scheduled broadcast',
+  summary: 'Go Live on a Scheduled Broadcast',
   description:
     'Publishes a schedule that was created or updated with `manual_publish: true`. Without that flag the coordinator auto-publishes at start and this call is rejected.',
   operationId: 'goLiveScheduledBroadcast',
@@ -20733,14 +22689,14 @@ export const post2BroadcastsScheduledIdLiveRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['broadcast.read', 'broadcast.write'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['broadcast.write', 'broadcast.read'] }, { UserToken: [] }],
 })
 
 export const get2BroadcastsIdRoute = createRoute({
   method: 'get',
   path: '/2/broadcasts/{id}',
   tags: ['Broadcasts'],
-  summary: 'Get a broadcast',
+  summary: 'Get a Broadcast',
   description: 'Returns a broadcast owned by the authenticated user.',
   operationId: 'getBroadcast',
   request: {
@@ -20776,11 +22732,55 @@ export const get2BroadcastsIdRoute = createRoute({
   security: [{ OAuth2UserToken: ['broadcast.read'] }, { UserToken: [] }],
 })
 
+export const put2BroadcastsIdRoute = createRoute({
+  method: 'put',
+  path: '/2/broadcasts/{id}',
+  tags: ['Broadcasts'],
+  summary: 'Update a Broadcast',
+  description:
+    "Changes the title, chat option or live category of one of the authenticated user's broadcasts and returns the broadcast. Send at least one of `title`, `chat_option` and `live_category_id`; fields left out keep their values. A broadcast can be updated before it starts, while it is live and after it has ended. A 409 `conflict` means the broadcast can't be edited, for example because it was deleted or moderated.",
+  operationId: 'updateBroadcast',
+  request: {
+    params: z.object({
+      id: z
+        .string()
+        .regex(/^[a-zA-Z0-9]{1,24}$/)
+        .openapi({
+          param: {
+            name: 'id',
+            in: 'path',
+            required: true,
+            schema: { type: 'string', pattern: '^[a-zA-Z0-9]{1,24}$' },
+            style: 'simple',
+          },
+        }),
+    }),
+    body: {
+      content: { 'application/json': { schema: UpdateBroadcastRequestSchema } },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'The request has succeeded.',
+      content: { 'application/json': { schema: UpdateBroadcastResponseSchema } },
+    },
+    default: {
+      description: 'The request has failed.',
+      content: {
+        'application/json': { schema: ErrorSchema },
+        'application/problem+json': { schema: ProblemSchema },
+      },
+    },
+  },
+  security: [{ OAuth2UserToken: ['broadcast.read', 'broadcast.write'] }, { UserToken: [] }],
+})
+
 export const delete2BroadcastsIdRoute = createRoute({
   method: 'delete',
   path: '/2/broadcasts/{id}',
   tags: ['Broadcasts'],
-  summary: 'Delete a broadcast',
+  summary: 'Delete a Broadcast',
   description:
     "Deletes one of the authenticated user's broadcasts, scheduled or ended, including its replay. A running broadcast must be ended first.",
   operationId: 'deleteBroadcast',
@@ -20820,7 +22820,7 @@ export const get2BroadcastsIdChatRoute = createRoute({
   method: 'get',
   path: '/2/broadcasts/{id}/chat',
   tags: ['Broadcasts'],
-  summary: 'Get broadcast chat history',
+  summary: 'Get Broadcast Chat History',
   description:
     'Returns newest-first chat messages for a broadcast owned by the authenticated user.',
   operationId: 'getBroadcastChat',
@@ -20899,7 +22899,7 @@ export const post2BroadcastsIdChatRoute = createRoute({
   method: 'post',
   path: '/2/broadcasts/{id}/chat',
   tags: ['Broadcasts'],
-  summary: 'Send a chat message to a live broadcast',
+  summary: 'Send a Chat Message to a Live Broadcast',
   description: 'Posts a chat message to a running broadcast, attributed to the authenticated user.',
   operationId: 'sendBroadcastChat',
   request: {
@@ -20935,14 +22935,14 @@ export const post2BroadcastsIdChatRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['broadcast.write', 'broadcast.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['broadcast.read', 'broadcast.write'] }, { UserToken: [] }],
 })
 
 export const post2BroadcastsIdChatMutesRoute = createRoute({
   method: 'post',
   path: '/2/broadcasts/{id}/chat/mutes',
   tags: ['Broadcasts'],
-  summary: 'Mute or time out a user in a broadcast chat',
+  summary: 'Mute or Time Out a User in a Broadcast Chat',
   description:
     'Prevents a user from posting further messages in a running broadcast chat. When `end_at_ms` is provided, the mute expires at that time. The authenticated user must be the broadcast host or a moderator.',
   operationId: 'muteBroadcastChatUser',
@@ -20986,7 +22986,7 @@ export const delete2BroadcastsIdChatMutesUserIdRoute = createRoute({
   method: 'delete',
   path: '/2/broadcasts/{id}/chat/mutes/{user_id}',
   tags: ['Broadcasts'],
-  summary: 'Unmute a user in a broadcast chat',
+  summary: 'Unmute a User in a Broadcast Chat',
   description:
     'Allows a muted user to post messages in a running broadcast chat again. The authenticated user must be the broadcast host or a moderator.',
   operationId: 'unmuteBroadcastChatUser',
@@ -21032,14 +23032,14 @@ export const delete2BroadcastsIdChatMutesUserIdRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['broadcast.write', 'broadcast.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['broadcast.read', 'broadcast.write'] }, { UserToken: [] }],
 })
 
 export const delete2BroadcastsIdChatMessageIdRoute = createRoute({
   method: 'delete',
   path: '/2/broadcasts/{id}/chat/{message_id}',
   tags: ['Broadcasts'],
-  summary: 'Remove a chat message from a live broadcast',
+  summary: 'Remove a Chat Message from a Live Broadcast',
   description:
     'Removes a specific chat message from a running broadcast where the authenticated user is the host or a moderator.',
   operationId: 'deleteBroadcastChatMessage',
@@ -21091,7 +23091,7 @@ export const put2BroadcastsIdStateRoute = createRoute({
   method: 'put',
   path: '/2/broadcasts/{id}/state',
   tags: ['Broadcasts'],
-  summary: 'End a broadcast',
+  summary: 'End a Broadcast',
   description: "Ends one of the authenticated user's broadcasts. Only `state: END` is supported.",
   operationId: 'updateBroadcastState',
   request: {
@@ -21127,14 +23127,14 @@ export const put2BroadcastsIdStateRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['broadcast.read', 'broadcast.write'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['broadcast.write', 'broadcast.read'] }, { UserToken: [] }],
 })
 
 export const post2CallsRoute = createRoute({
   method: 'post',
   path: '/2/calls',
   tags: ['Calls'],
-  summary: 'Create a call',
+  summary: 'Create a Call',
   description:
     'Starts an X call hosted by the authenticated user (typically a bot). Pass an XChat conversation_id to start the call in that conversation, or omit it for a standalone call anyone can join with the returned join_url (subject to join_policy). The call starts empty: put an agent in it with POST /2/calls/:id/join. When the host joins a conversation call, the other members are rung.',
   operationId: 'createCall',
@@ -21161,7 +23161,7 @@ export const get2CallsScheduledRoute = createRoute({
   method: 'get',
   path: '/2/calls/scheduled',
   tags: ['Calls'],
-  summary: 'List scheduled calls',
+  summary: 'List Scheduled Calls',
   description:
     "Returns the X calls on the authenticated user's calendar, earliest first: events on their X Calls calendar, and events on the Microsoft Outlook calendars they linked to X whose conference is an X call. Calls still running at start_time are included. The window defaults to the next 24 hours and may span at most 7 days. Use scheduled_call.fields to select which fields are returned.\n\nWhen both are provided, `start_time` must be earlier than `end_time`.",
   operationId: 'listScheduledCalls',
@@ -21242,7 +23242,7 @@ export const post2CallsScheduledRoute = createRoute({
   method: 'post',
   path: '/2/calls/scheduled',
   tags: ['Calls'],
-  summary: 'Schedule a call',
+  summary: 'Schedule a Call',
   description:
     "Puts an X call on the authenticated user's X Calls calendar, with them as its organizer, and invites people to it. The call exists right away: share its join_url, or put an agent in it at start time with POST /2/calls/:id/join. A recurrence (an RFC 5545 RRULE) repeats it. Invitees get an email unless notify_invitees is false.",
   operationId: 'scheduleCall',
@@ -21272,7 +23272,7 @@ export const get2CallsScheduledIdRoute = createRoute({
   method: 'get',
   path: '/2/calls/scheduled/{id}',
   tags: ['Calls'],
-  summary: 'Get a scheduled call',
+  summary: 'Get a Scheduled Call',
   description:
     'Returns a scheduled call the authenticated user organizes or is invited to, at its occurrence running now or its next one within a year: its time, call, recurrence and who is invited and how they answered. Changes can take a few seconds to show here. Use scheduled_call.fields to select which fields are returned.',
   operationId: 'getScheduledCall',
@@ -21318,7 +23318,7 @@ export const put2CallsScheduledIdRoute = createRoute({
   method: 'put',
   path: '/2/calls/scheduled/{id}',
   tags: ['Calls'],
-  summary: 'Update a scheduled call',
+  summary: 'Update a Scheduled Call',
   description:
     'Moves, renames or re-invites a scheduled call the authenticated user organizes. Only the fields sent change. For a recurring call, scope and occurrence_start_time pick the occurrences: all of them (the default), one, or one and every one after it.',
   operationId: 'updateScheduledCall',
@@ -21362,7 +23362,7 @@ export const delete2CallsScheduledIdRoute = createRoute({
   method: 'delete',
   path: '/2/calls/scheduled/{id}',
   tags: ['Calls'],
-  summary: 'Cancel a scheduled call',
+  summary: 'Cancel a Scheduled Call',
   description:
     "Cancels a scheduled call the authenticated user organizes, and takes it off invitees' calendars. For a recurring call, scope and occurrence_start_time pick the occurrences: all of them (the default), one, or one and every one after it. Cancelling what is already cancelled succeeds.",
   operationId: 'cancelScheduledCall',
@@ -21445,7 +23445,7 @@ export const post2CallsScheduledIdRsvpRoute = createRoute({
   method: 'post',
   path: '/2/calls/scheduled/{id}/rsvp',
   tags: ['Calls'],
-  summary: 'Respond to a scheduled call',
+  summary: 'Respond to a Scheduled Call',
   description:
     'Accepts, declines or tentatively accepts an invitation to a scheduled call for the authenticated user. For a recurring call, scope and occurrence_start_time pick the occurrences the answer is for: all of them (the default), one, or one and every one after it.',
   operationId: 'respondToScheduledCall',
@@ -21489,7 +23489,7 @@ export const get2CallsIdRoute = createRoute({
   method: 'get',
   path: '/2/calls/{id}',
   tags: ['Calls'],
-  summary: 'Get a call',
+  summary: 'Get a Call',
   description:
     "Returns a call's title, join policy, host and participant count, and whether the authenticated user may join it without asking the host.",
   operationId: 'getCall',
@@ -21534,7 +23534,7 @@ export const post2CallsIdJoinRoute = createRoute({
   method: 'post',
   path: '/2/calls/{id}/join',
   tags: ['Calls'],
-  summary: 'Join a call',
+  summary: 'Join a Call',
   description:
     'Starts a media session that takes part in the call as the authenticated user. The response carries a media_url and a short-lived media_token: open a WebSocket to media_url with the token as a Bearer credential to exchange PCM16 audio and events with the call; the user enters the call when the WebSocket connects. On a closed or trusted call the session asks the host first (admission: requires_approval).',
   operationId: 'joinCall',
@@ -21575,7 +23575,7 @@ export const post2CallsIdLeaveRoute = createRoute({
   method: 'post',
   path: '/2/calls/{id}/leave',
   tags: ['Calls'],
-  summary: 'Leave a call',
+  summary: 'Leave a Call',
   description:
     "Ends the authenticated user's media session in the call (its WebSocket receives session.ended with reason left) and removes the user from the call.",
   operationId: 'leaveCall',
@@ -21615,10 +23615,9 @@ export const get2ChatConversationsRoute = createRoute({
   method: 'get',
   path: '/2/chat/conversations',
   tags: ['Chat'],
-  summary:
-    'Get Chat Conversations, newest first. All filters must match (AND). A page can hold fewer than max_results while meta.next_token is set: keep paging. Read state: chat_conversation.fields=unread,last_read_event_id,newest_event_id',
+  summary: 'Get Chat Conversations',
   description:
-    "Retrieves a list of Chat conversations for the authenticated user's inbox, most recently active first. The unread, last_read_event_id and newest_event_id fields give your read state, computed from your latest read receipt and each conversation's latest notifying message.\n\nThe filters unread_only, type, is_archived, is_muted, participant_ids, participant_query, start_time and end_time are optional and combine with AND. participant_query keeps conversations where another participant's username, or a word of their display name, starts with the query, ignoring case and accents; with a leading @ it matches usernames only. It considers the 100 people who best match the query, uses only public profile information, and never matches group names, nicknames or messages. start_time and end_time apply to the time of each conversation's latest message. Each page covers max_results conversations and returns those that match, so a page can hold fewer than max_results, or none, while has_more is true: keep paging with next_token. Once a page reaches a conversation whose latest message is older than start_time, has_more is false.\n\nA pagination_token only works with the same filters as the request that returned it; with other filters, the request fails with a 400.\n\nWhen both are provided, `start_time` must be earlier than `end_time`.",
+    "Retrieves a list of Chat conversations for the authenticated user's inbox, newest first: the most recently active conversation comes first. To find the chat with a particular person, start with participant_query set to their @username or name; with expansions=participant_ids, user.fields=receives_your_chat says how you can message each match. The unread, last_read_event_id and newest_event_id fields give your read state, computed from your latest read receipt and each conversation's latest notifying message. Request them with chat_conversation.fields=unread,last_read_event_id,newest_event_id.\n\nThe filters unread_only, type, is_archived, is_muted, participant_ids, participant_query, start_time and end_time are optional, and all filters must match (AND). participant_query keeps conversations where another participant's username, or a word of their display name, starts with the query, ignoring case and accents; with a leading @ it matches usernames only. It considers the 100 people who best match the query, uses only public profile information, and never matches group names, nicknames or messages. start_time and end_time apply to the time of each conversation's latest message.\n\nEach page covers max_results conversations and returns those that match, so a page can hold fewer than max_results, or none, while meta.next_token is set and has_more is true: keep paging, passing meta.next_token as pagination_token. Once a page reaches a conversation whose latest message is older than start_time, has_more is false. A pagination_token only works with the same filters as the request that returned it; with other filters, the request fails with a 400.\n\nWhen both are provided, `start_time` must be earlier than `end_time`.",
   externalDocs: { url: 'https://developer.x.com/' },
   operationId: 'getChatConversations',
   request: {
@@ -21764,7 +23763,7 @@ export const get2ChatConversationsRoute = createRoute({
             name: 'participant_query',
             in: 'query',
             description:
-              'Name or @username prefix (1-50 chars); keeps chats where any other participant matches it.',
+              "Start here to find someone's chat: their @username or a word of their name (1-50 chars).",
             required: false,
             schema: { type: 'string', minLength: 1, maxLength: 50 },
             style: 'form',
@@ -21847,7 +23846,7 @@ export const post2ChatConversationsGroupRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['tweet.read', 'users.read', 'dm.write'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['tweet.read', 'dm.write', 'users.read'] }, { UserToken: [] }],
 })
 
 export const post2ChatConversationsGroupInitializeRoute = createRoute({
@@ -21879,10 +23878,9 @@ export const get2ChatConversationsIdRoute = createRoute({
   method: 'get',
   path: '/2/chat/conversations/{id}',
   tags: ['Chat'],
-  summary:
-    'Get Chat Conversation; unread state via chat_conversation.fields=unread,last_read_event_id,newest_event_id',
+  summary: 'Get Chat Conversation',
   description:
-    "Returns metadata for a Chat conversation including type, muted status, and group details. Use chat_conversation.fields to select which fields are returned. Use expansions to hydrate member, admin, or participant user objects. Use user.fields to control which profile fields are returned for expanded users. The unread, last_read_event_id and newest_event_id fields give your read state, computed from your latest read receipt and the conversation's latest notifying message.",
+    "Returns metadata for a Chat conversation including type, muted status, group details, and your unread state. For the unread state, request chat_conversation.fields=unread,last_read_event_id,newest_event_id: those fields give your read state, computed from your latest read receipt and the conversation's latest notifying message. Use chat_conversation.fields to select which fields are returned. Use expansions to hydrate member, admin, or participant user objects. Use user.fields to control which profile fields are returned for expanded users; in a 1:1 chat, user.fields=receives_your_chat on the participant says how you can message them: encrypted, unencrypted, or none.",
   externalDocs: { url: 'https://developer.x.com/' },
   operationId: 'getChatConversation',
   request: {
@@ -21929,7 +23927,7 @@ export const put2ChatConversationsIdRoute = createRoute({
   method: 'put',
   path: '/2/chat/conversations/{id}',
   tags: ['Chat'],
-  summary: 'Update a Chat group conversation',
+  summary: 'Update a Chat Group Conversation',
   description:
     'Renames an encrypted Chat group conversation, changes its avatar, or sets its description. The client encrypts each value with the conversation key and lists the values it changed in modified_fields.',
   externalDocs: { url: 'https://developer.x.com/' },
@@ -21975,7 +23973,7 @@ export const delete2ChatConversationsIdRoute = createRoute({
   method: 'delete',
   path: '/2/chat/conversations/{id}',
   tags: ['Chat'],
-  summary: 'Delete a Chat conversation',
+  summary: 'Delete a Chat Conversation',
   description:
     "Deletes a Chat conversation for the authenticated user only; other participants keep it. Works for group and 1:1 conversations. For 1:1 conversations, provide the recipient's user ID; the server constructs the canonical conversation ID from the authenticated user and recipient. Deleting a pending message request's conversation deletes the request, like Delete in the X app.",
   externalDocs: { url: 'https://developer.x.com/' },
@@ -22018,14 +24016,14 @@ export const delete2ChatConversationsIdRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['tweet.read', 'users.read', 'dm.write'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['tweet.read', 'dm.write', 'users.read'] }, { UserToken: [] }],
 })
 
 export const get2ChatConversationsIdAdminRequestsRoute = createRoute({
   method: 'get',
   path: '/2/chat/conversations/{id}/admin_requests',
   tags: ['Chat'],
-  summary: 'Get pending admin requests for a Chat group conversation',
+  summary: 'Get Pending Admin Requests for a Chat Group Conversation',
   description:
     'Returns the users who have asked to become admins of an encrypted Chat group conversation. Only a group admin can list admin requests. Use user.fields to select which profile fields are returned.',
   externalDocs: { url: 'https://developer.x.com/' },
@@ -22085,7 +24083,7 @@ export const post2ChatConversationsIdAdminRequestsRoute = createRoute({
   method: 'post',
   path: '/2/chat/conversations/{id}/admin_requests',
   tags: ['Chat'],
-  summary: 'Request admin permissions in a Chat group conversation',
+  summary: 'Request Admin Permissions in a Chat Group Conversation',
   description:
     'Asks the admins of an encrypted Chat group conversation to make the authenticated user an admin. An admin approves or rejects the request.',
   externalDocs: { url: 'https://developer.x.com/' },
@@ -22124,14 +24122,14 @@ export const post2ChatConversationsIdAdminRequestsRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['users.read', 'dm.write', 'tweet.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['tweet.read', 'users.read', 'dm.write'] }, { UserToken: [] }],
 })
 
 export const post2ChatConversationsIdAdminRequestsUserIdApproveRoute = createRoute({
   method: 'post',
   path: '/2/chat/conversations/{id}/admin_requests/{user_id}/approve',
   tags: ['Chat'],
-  summary: 'Approve an admin request in a Chat group conversation',
+  summary: 'Approve an Admin Request in a Chat Group Conversation',
   description:
     'Makes the user who requested admin permissions an admin of an encrypted Chat group conversation. Only a group admin can approve.',
   externalDocs: { url: 'https://developer.x.com/' },
@@ -22190,7 +24188,7 @@ export const post2ChatConversationsIdAdminRequestsUserIdRejectRoute = createRout
   method: 'post',
   path: '/2/chat/conversations/{id}/admin_requests/{user_id}/reject',
   tags: ['Chat'],
-  summary: 'Reject an admin request in a Chat group conversation',
+  summary: 'Reject an Admin Request in a Chat Group Conversation',
   description:
     "Declines a user's pending request for admin permissions in an encrypted Chat group conversation. Only a group admin can reject.",
   externalDocs: { url: 'https://developer.x.com/' },
@@ -22242,14 +24240,14 @@ export const post2ChatConversationsIdAdminRequestsUserIdRejectRoute = createRout
       },
     },
   },
-  security: [{ OAuth2UserToken: ['users.read', 'dm.write', 'tweet.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['tweet.read', 'users.read', 'dm.write'] }, { UserToken: [] }],
 })
 
 export const put2ChatConversationsIdAdminSettingsRoute = createRoute({
   method: 'put',
   path: '/2/chat/conversations/{id}/admin_settings',
   tags: ['Chat'],
-  summary: 'Update the admin-only settings of a Chat group conversation',
+  summary: 'Update the Admin-Only Settings of a Chat Group Conversation',
   description:
     "Sets which actions only admins can perform in an existing encrypted Chat group conversation. A setting set to true restricts that action to admins, and false opens it to all members. Setting `send_message` to true makes the group announcement-only. Omitted settings keep their stored value. When sending `action_signatures`, sign over the full merged settings: the stored values with this request's changes applied, not only the settings in the request.",
   externalDocs: { url: 'https://developer.x.com/' },
@@ -22288,14 +24286,14 @@ export const put2ChatConversationsIdAdminSettingsRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['users.read', 'dm.write', 'tweet.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['dm.write', 'users.read', 'tweet.read'] }, { UserToken: [] }],
 })
 
 export const post2ChatConversationsIdAdminsRoute = createRoute({
   method: 'post',
   path: '/2/chat/conversations/{id}/admins',
   tags: ['Chat'],
-  summary: 'Add admins to a Chat group conversation',
+  summary: 'Add Admins to a Chat Group Conversation',
   description:
     'Grants admin rights to one or more members of an existing encrypted Chat group conversation.',
   externalDocs: { url: 'https://developer.x.com/' },
@@ -22334,14 +24332,14 @@ export const post2ChatConversationsIdAdminsRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['users.read', 'dm.write', 'tweet.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['dm.write', 'users.read', 'tweet.read'] }, { UserToken: [] }],
 })
 
 export const post2ChatConversationsIdAdminsRemoveRoute = createRoute({
   method: 'post',
   path: '/2/chat/conversations/{id}/admins/remove',
   tags: ['Chat'],
-  summary: 'Remove admins from a Chat group conversation',
+  summary: 'Remove Admins from a Chat Group Conversation',
   description:
     'Revokes admin rights from one or more admins of an existing encrypted Chat group conversation. They stay members of the group.',
   externalDocs: { url: 'https://developer.x.com/' },
@@ -22380,14 +24378,14 @@ export const post2ChatConversationsIdAdminsRemoveRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['users.read', 'dm.write', 'tweet.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['dm.write', 'users.read', 'tweet.read'] }, { UserToken: [] }],
 })
 
 export const post2ChatConversationsIdArchiveRoute = createRoute({
   method: 'post',
   path: '/2/chat/conversations/{id}/archive',
   tags: ['Chat'],
-  summary: 'Archive a Chat conversation',
+  summary: 'Archive a Chat Conversation',
   description:
     "Archives a Chat conversation for the authenticated user only. Archiving an archived conversation changes nothing. Works for group and 1:1 conversations. For 1:1 conversations, provide the recipient's user ID; the server constructs the canonical conversation ID from the authenticated user and recipient.",
   externalDocs: { url: 'https://developer.x.com/' },
@@ -22437,7 +24435,7 @@ export const delete2ChatConversationsIdArchiveRoute = createRoute({
   method: 'delete',
   path: '/2/chat/conversations/{id}/archive',
   tags: ['Chat'],
-  summary: 'Unarchive a Chat conversation',
+  summary: 'Unarchive a Chat Conversation',
   description:
     "Unarchives a Chat conversation for the authenticated user only. Unarchiving a conversation that is not archived changes nothing. Works for group and 1:1 conversations. For 1:1 conversations, provide the recipient's user ID; the server constructs the canonical conversation ID from the authenticated user and recipient.",
   externalDocs: { url: 'https://developer.x.com/' },
@@ -22480,17 +24478,16 @@ export const delete2ChatConversationsIdArchiveRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['users.read', 'tweet.read', 'dm.write'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['tweet.read', 'users.read', 'dm.write'] }, { UserToken: [] }],
 })
 
 export const get2ChatConversationsIdEventsRoute = createRoute({
   method: 'get',
   path: '/2/chat/conversations/{id}/events',
   tags: ['Chat'],
-  summary:
-    'Get Chat Conversation Events, newest first; unread ones have an id above last_read_event_id',
+  summary: 'Get Chat Conversation Events',
   description:
-    "Retrieves the events of a specific Chat conversation, newest first, with pagination support: messages, key changes, group changes, and read receipts. Events with an id above the conversation's last_read_event_id come after the point you read up to; to collect them, page until an event's id is at or below it. Only `id` and `encoded_event` are always present. Events are either end-to-end encrypted or unencrypted, such as messages sent before the conversation was encrypted. Encrypted events carry `conversation_key_version`, and usually `conversation_token` and `message_event_signature`; treat an encrypted event without `message_event_signature` as unverified. An event without `conversation_key_version` is unencrypted. Decode each `encoded_event` client-side, and decrypt it with the conversation key named by `conversation_key_version` when that is present. A page holds up to `max_results` events and can hold fewer while `has_more` is true. For 1:1 conversations, provide the recipient's user ID; the server constructs the canonical conversation ID from the authenticated user and recipient.",
+    "Retrieves the events of a specific Chat conversation, newest first, with pagination support: messages, key changes, group changes, and read receipts. Events with an id above the conversation's last_read_event_id are unread: they come after the point you read up to. To collect them, page until an event's id is at or below it. Only `id` and `encoded_event` are always present. Events are either end-to-end encrypted or unencrypted, such as messages sent before the conversation was encrypted. Encrypted events carry `conversation_key_version`, and usually `conversation_token` and `message_event_signature`; treat an encrypted event without `message_event_signature` as unverified. An event without `conversation_key_version` is unencrypted. Decode each `encoded_event` client-side, and decrypt it with the conversation key named by `conversation_key_version` when that is present. A page holds up to `max_results` events and can hold fewer while `has_more` is true. For 1:1 conversations, provide the recipient's user ID; the server constructs the canonical conversation ID from the authenticated user and recipient.",
   externalDocs: { url: 'https://developer.x.com/' },
   operationId: 'getChatConversationEvents',
   request: {
@@ -22570,7 +24567,7 @@ export const post2ChatConversationsIdInviteRoute = createRoute({
   method: 'post',
   path: '/2/chat/conversations/{id}/invite',
   tags: ['Chat'],
-  summary: 'Enable a Chat group invite link',
+  summary: 'Enable a Chat Group Invite Link',
   description:
     "Turns on the invite link for an encrypted Chat group conversation and returns the link details. The client builds the link and sends it as invite_url, in the form https://x.com/i/chat/group_join/<conversation_id>/<token>, where the token is exactly 10 letters, digits, '-' or '_'. invite_url is required when action_signatures is sent. To make the link expire, send validity_duration_msec or validity_expiry_timestamp_msec. With action_signatures, send validity_expiry_timestamp_msec, because the signed payload carries the expiry. The group name and avatar sent here are stored unencrypted and shown to anyone who opens the link.",
   externalDocs: { url: 'https://developer.x.com/' },
@@ -22609,14 +24606,14 @@ export const post2ChatConversationsIdInviteRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['dm.write', 'users.read', 'tweet.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['users.read', 'dm.write', 'tweet.read'] }, { UserToken: [] }],
 })
 
 export const delete2ChatConversationsIdInviteRoute = createRoute({
   method: 'delete',
   path: '/2/chat/conversations/{id}/invite',
   tags: ['Chat'],
-  summary: 'Disable a Chat group invite link',
+  summary: 'Disable a Chat Group Invite Link',
   description:
     'Turns off the invite link for an encrypted Chat group conversation. The existing link stops working.',
   externalDocs: { url: 'https://developer.x.com/' },
@@ -22662,7 +24659,7 @@ export const get2ChatConversationsIdInvitesTokenRoute = createRoute({
   method: 'get',
   path: '/2/chat/conversations/{id}/invites/{token}',
   tags: ['Chat'],
-  summary: 'Get a Chat group invite link',
+  summary: 'Get a Chat Group Invite Link',
   description:
     "Returns the preview of an encrypted Chat group conversation from its invite link: group name, avatar, member count, and the authenticated user's join state. The conversation ID and the token both come from the invite link.",
   externalDocs: { url: 'https://developer.x.com/' },
@@ -22711,14 +24708,14 @@ export const get2ChatConversationsIdInvitesTokenRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['dm.read', 'tweet.read', 'users.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['dm.read', 'users.read', 'tweet.read'] }, { UserToken: [] }],
 })
 
 export const post2ChatConversationsIdJoinRequestsRoute = createRoute({
   method: 'post',
   path: '/2/chat/conversations/{id}/join_requests',
   tags: ['Chat'],
-  summary: 'Request to join a Chat group',
+  summary: 'Request to Join a Chat Group',
   description:
     'Asks to join an encrypted Chat group conversation through its invite link. The request stays pending until a group admin adds the user to the group.',
   externalDocs: { url: 'https://developer.x.com/' },
@@ -22757,14 +24754,14 @@ export const post2ChatConversationsIdJoinRequestsRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['dm.write', 'users.read', 'tweet.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['users.read', 'dm.write', 'tweet.read'] }, { UserToken: [] }],
 })
 
 export const post2ChatConversationsIdJoinRequestsRejectRoute = createRoute({
   method: 'post',
   path: '/2/chat/conversations/{id}/join_requests/reject',
   tags: ['Chat'],
-  summary: 'Reject join requests for a Chat group conversation',
+  summary: 'Reject Join Requests for a Chat Group Conversation',
   description:
     'Rejects pending requests to join an encrypted Chat group conversation. Only group admins can reject requests. To approve a request instead, add the requesting users with addChatGroupMembers; adding a user clears their pending request.',
   externalDocs: { url: 'https://developer.x.com/' },
@@ -22803,7 +24800,7 @@ export const post2ChatConversationsIdJoinRequestsRejectRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['dm.write', 'tweet.read', 'users.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['users.read', 'dm.write', 'tweet.read'] }, { UserToken: [] }],
 })
 
 export const post2ChatConversationsIdKeysRoute = createRoute({
@@ -22858,7 +24855,7 @@ export const post2ChatConversationsIdMembersRoute = createRoute({
   method: 'post',
   path: '/2/chat/conversations/{id}/members',
   tags: ['Chat'],
-  summary: 'Add members to a Chat group conversation',
+  summary: 'Add Members to a Chat Group Conversation',
   description:
     'Adds one or more members to an existing encrypted Chat group conversation, rotating the conversation key. Adding a user who has a pending join request approves that request; approval needs the same key-rotation body as adding any member.',
   externalDocs: { url: 'https://developer.x.com/' },
@@ -22906,7 +24903,7 @@ export const post2ChatConversationsIdMembersRemoveRoute = createRoute({
   method: 'post',
   path: '/2/chat/conversations/{id}/members/remove',
   tags: ['Chat'],
-  summary: 'Remove members from a Chat group conversation',
+  summary: 'Remove Members from a Chat Group Conversation',
   description:
     'Removes one or more members from an existing encrypted Chat group conversation. To leave a group, pass your own user ID. Leaving does not delete the conversation for the caller. When the removal rotates the conversation key, send group_key_rotation_data and the action signatures for the removal and the key change, in that order.',
   externalDocs: { url: 'https://developer.x.com/' },
@@ -22954,7 +24951,7 @@ export const put2ChatConversationsIdMessageTtlRoute = createRoute({
   method: 'put',
   path: '/2/chat/conversations/{id}/message_ttl',
   tags: ['Chat'],
-  summary: 'Turn on disappearing messages in a Chat conversation',
+  summary: 'Turn On Disappearing Messages in a Chat Conversation',
   description:
     "Sets how long new messages in a 1:1 or group Chat conversation last before they disappear, for every participant. For 1:1 conversations, provide the recipient's user ID; the server constructs the canonical conversation ID from the authenticated user and recipient.",
   externalDocs: { url: 'https://developer.x.com/' },
@@ -22997,14 +24994,14 @@ export const put2ChatConversationsIdMessageTtlRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['users.read', 'dm.write', 'tweet.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['tweet.read', 'dm.write', 'users.read'] }, { UserToken: [] }],
 })
 
 export const delete2ChatConversationsIdMessageTtlRoute = createRoute({
   method: 'delete',
   path: '/2/chat/conversations/{id}/message_ttl',
   tags: ['Chat'],
-  summary: 'Turn off disappearing messages in a Chat conversation',
+  summary: 'Turn Off Disappearing Messages in a Chat Conversation',
   description:
     "Stops new messages in a 1:1 or group Chat conversation from disappearing, for every participant. For 1:1 conversations, provide the recipient's user ID; the server constructs the canonical conversation ID from the authenticated user and recipient.",
   externalDocs: { url: 'https://developer.x.com/' },
@@ -23047,7 +25044,7 @@ export const delete2ChatConversationsIdMessageTtlRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['users.read', 'tweet.read', 'dm.write'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['tweet.read', 'users.read', 'dm.write'] }, { UserToken: [] }],
 })
 
 export const post2ChatConversationsIdMessagesRoute = createRoute({
@@ -23056,7 +25053,7 @@ export const post2ChatConversationsIdMessagesRoute = createRoute({
   tags: ['Chat'],
   summary: 'Send Chat Message',
   description:
-    "Sends an encrypted message to a specific Chat conversation. For 1:1 conversations, provide the recipient's user ID; the server constructs the canonical conversation ID from the authenticated user and recipient. A recipient who cannot be messaged (closed inbox, system/notification account, or a 1:1 block) returns HTTP 403 with type https://api.x.com/2/problems/recipient-not-messageable.",
+    "Sends a message or reaction to a Chat conversation, which you can find with `participant_query` on Get Chat Conversations. Send it end-to-end encrypted by default: `encoded_message_create_event`, built with the Chat XDK. Plaintext `content` is only a fallback for a 1:1 chat that X Chat can't encrypt: use it only when the recipient's `receives_your_chat` user field (`user.fields=receives_your_chat`) is `unencrypted`. When `content` is refused, nothing is sent and the problem's `detail` says why; HTTP 400 https://api.x.com/2/problems/encryption-required means the chat can be encrypted or is a group, so send it encrypted instead. A recipient you can't message (closed inbox, system account, or a block) returns HTTP 403 https://api.x.com/2/problems/recipient-not-messageable.",
   externalDocs: { url: 'https://developer.x.com/' },
   operationId: 'sendChatMessage',
   request: {
@@ -23068,6 +25065,8 @@ export const post2ChatConversationsIdMessagesRoute = createRoute({
           param: {
             name: 'id',
             in: 'path',
+            description:
+              "A conversation's id from Get Chat Conversations, or the recipient's user ID for a 1:1 chat.",
             required: true,
             schema: {
               type: 'string',
@@ -23095,14 +25094,14 @@ export const post2ChatConversationsIdMessagesRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['dm.write', 'users.read', 'tweet.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['dm.write', 'tweet.read', 'users.read'] }, { UserToken: [] }],
 })
 
 export const post2ChatConversationsIdMessagesDeleteRoute = createRoute({
   method: 'post',
   path: '/2/chat/conversations/{id}/messages/delete',
   tags: ['Chat'],
-  summary: 'Delete Chat messages',
+  summary: 'Delete Chat Messages',
   description:
     "Deletes one or more messages from a Chat conversation. For 1:1 conversations, provide the recipient's user ID; the server constructs the canonical conversation ID from the authenticated user and recipient. Delete for all removes a message you sent (or, in groups you administer, any message) for every participant; delete for self removes any message only from your own view.",
   externalDocs: { url: 'https://developer.x.com/' },
@@ -23143,14 +25142,14 @@ export const post2ChatConversationsIdMessagesDeleteRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['users.read', 'dm.write', 'tweet.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['tweet.read', 'users.read', 'dm.write'] }, { UserToken: [] }],
 })
 
 export const post2ChatConversationsIdMuteRoute = createRoute({
   method: 'post',
   path: '/2/chat/conversations/{id}/mute',
   tags: ['Chat'],
-  summary: 'Mute a Chat conversation',
+  summary: 'Mute a Chat Conversation',
   description:
     "Mutes notifications for a Chat conversation for the authenticated user only. Works for group and 1:1 conversations. For 1:1 conversations, provide the recipient's user ID; the server constructs the canonical conversation ID from the authenticated user and recipient.",
   externalDocs: { url: 'https://developer.x.com/' },
@@ -23193,14 +25192,14 @@ export const post2ChatConversationsIdMuteRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['dm.write', 'tweet.read', 'users.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['tweet.read', 'users.read', 'dm.write'] }, { UserToken: [] }],
 })
 
 export const delete2ChatConversationsIdMuteRoute = createRoute({
   method: 'delete',
   path: '/2/chat/conversations/{id}/mute',
   tags: ['Chat'],
-  summary: 'Unmute a Chat conversation',
+  summary: 'Unmute a Chat Conversation',
   description:
     "Unmutes notifications for a Chat conversation for the authenticated user only. Works for group and 1:1 conversations. For 1:1 conversations, provide the recipient's user ID; the server constructs the canonical conversation ID from the authenticated user and recipient.",
   externalDocs: { url: 'https://developer.x.com/' },
@@ -23243,7 +25242,7 @@ export const delete2ChatConversationsIdMuteRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['users.read', 'tweet.read', 'dm.write'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['dm.write', 'users.read', 'tweet.read'] }, { UserToken: [] }],
 })
 
 export const get2ChatConversationsIdPinnedMessagesRoute = createRoute({
@@ -23306,7 +25305,7 @@ export const get2ChatConversationsIdPinnedMessagesRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['tweet.read', 'dm.read', 'users.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['tweet.read', 'users.read', 'dm.read'] }, { UserToken: [] }],
 })
 
 export const post2ChatConversationsIdReadRoute = createRoute({
@@ -23354,14 +25353,14 @@ export const post2ChatConversationsIdReadRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['tweet.read', 'dm.write', 'users.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['users.read', 'dm.write', 'tweet.read'] }, { UserToken: [] }],
 })
 
 export const put2ChatConversationsIdScreenCaptureRoute = createRoute({
   method: 'put',
   path: '/2/chat/conversations/{id}/screen_capture',
   tags: ['Chat'],
-  summary: 'Update screen capture settings for a Chat conversation',
+  summary: 'Update Screen Capture Settings for a Chat Conversation',
   description:
     "Turns screenshot blocking or screenshot detection on or off in a Chat conversation, for every participant. In a group conversation, only admins can change these settings. Each request changes one setting: send either blocking or detection. For 1:1 conversations, provide the recipient's user ID; the server constructs the canonical conversation ID from the authenticated user and recipient.",
   externalDocs: { url: 'https://developer.x.com/' },
@@ -23406,7 +25405,7 @@ export const put2ChatConversationsIdScreenCaptureRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['tweet.read', 'dm.write', 'users.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['users.read', 'tweet.read', 'dm.write'] }, { UserToken: [] }],
 })
 
 export const post2ChatConversationsIdTypingRoute = createRoute({
@@ -23450,7 +25449,7 @@ export const post2ChatConversationsIdTypingRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['tweet.read', 'users.read', 'dm.write'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['dm.write', 'tweet.read', 'users.read'] }, { UserToken: [] }],
 })
 
 export const post2ChatConversationsIdUnreadRoute = createRoute({
@@ -23494,7 +25493,7 @@ export const post2ChatConversationsIdUnreadRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['dm.write', 'users.read', 'tweet.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['users.read', 'dm.write', 'tweet.read'] }, { UserToken: [] }],
 })
 
 export const post2ChatMediaUploadInitializeRoute = createRoute({
@@ -23651,7 +25650,7 @@ export const get2ChatMediaIdMediaHashKeyRoute = createRoute({
   tags: ['Chat'],
   summary: 'Download Chat Media',
   description:
-    'Downloads encrypted media bytes from an XChat conversation. The response body contains raw binary bytes.',
+    'Downloads encrypted media bytes from an XChat conversation. The response body contains raw binary bytes. A media item too large to return in one response fails with a 413 problem of type `https://api.x.com/2/problems/response-too-large`, and a retry fails the same way.',
   operationId: 'chatMediaDownload',
   request: {
     params: z.object({
@@ -23786,7 +25785,7 @@ export const get2ChatMessageRequestsRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['users.read', 'tweet.read', 'dm.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['dm.read', 'users.read', 'tweet.read'] }, { UserToken: [] }],
 })
 
 export const get2ChatMessageRequestsIdRoute = createRoute({
@@ -23831,14 +25830,14 @@ export const get2ChatMessageRequestsIdRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['tweet.read', 'users.read', 'dm.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['dm.read', 'tweet.read', 'users.read'] }, { UserToken: [] }],
 })
 
 export const post2ChatMessageRequestsIdAcceptRoute = createRoute({
   method: 'post',
   path: '/2/chat/message_requests/{id}/accept',
   tags: ['Chat'],
-  summary: 'Accept a Chat message request',
+  summary: 'Accept a Chat Message Request',
   description:
     "Accepts the other user's pending message request in a 1:1 Chat conversation, which moves to the authenticated user's inbox. Without a pending request, including after a successful accept, the response is 404. Replying to a request does not accept it.",
   externalDocs: { url: 'https://developer.x.com/' },
@@ -23873,14 +25872,14 @@ export const post2ChatMessageRequestsIdAcceptRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['dm.write', 'users.read', 'tweet.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['users.read', 'dm.write', 'tweet.read'] }, { UserToken: [] }],
 })
 
 export const get2ChatSettingsRoute = createRoute({
   method: 'get',
   path: '/2/chat/settings',
   tags: ['Chat'],
-  summary: 'Get Chat settings',
+  summary: 'Get Chat Settings',
   description:
     "Returns the authenticated user's Chat privacy settings: who can message them, read receipts, the message quality filter, and audio/video call permissions.",
   externalDocs: { url: 'https://developer.x.com/' },
@@ -23899,14 +25898,14 @@ export const get2ChatSettingsRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['dm.read', 'tweet.read', 'users.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['users.read', 'tweet.read', 'dm.read'] }, { UserToken: [] }],
 })
 
 export const put2ChatSettingsRoute = createRoute({
   method: 'put',
   path: '/2/chat/settings',
   tags: ['Chat'],
-  summary: 'Update Chat settings',
+  summary: 'Update Chat Settings',
   description:
     "Updates the authenticated user's Chat privacy settings: who can message them, read receipts, the message quality filter, and audio/video call permissions. allow_dms_from, dm_receipt_settings, and dm_quality_filter accept only their listed values, matched exactly and case-sensitively; anything else is a 400. av_settings must set at least one of its settings. Whether settings omitted from a partial av_settings keep their values or are reset is not yet confirmed; send every av_settings field you want to keep.",
   externalDocs: { url: 'https://developer.x.com/' },
@@ -23930,7 +25929,7 @@ export const put2ChatSettingsRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['users.read', 'tweet.read', 'dm.write'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['users.read', 'dm.write', 'tweet.read'] }, { UserToken: [] }],
 })
 
 export const get2CommunitiesSearchRoute = createRoute({
@@ -23938,6 +25937,7 @@ export const get2CommunitiesSearchRoute = createRoute({
   path: '/2/communities/search',
   tags: ['Communities'],
   summary: 'Search Communities',
+  description: 'Retrieves a list of Communities matching the specified search query.',
   operationId: 'searchCommunities',
   request: {
     query: z.object({
@@ -24017,14 +26017,15 @@ export const get2CommunitiesSearchRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['tweet.read', 'users.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['users.read', 'tweet.read'] }, { UserToken: [] }],
 })
 
 export const get2CommunitiesIdRoute = createRoute({
   method: 'get',
   path: '/2/communities/{id}',
   tags: ['Communities'],
-  summary: 'Get Communities by ID',
+  summary: 'Get Community by ID',
+  description: 'Retrieves details of a specific Community by its ID.',
   operationId: 'getCommunitiesById',
   request: {
     params: z.object({
@@ -24510,7 +26511,7 @@ export const delete2ConnectionsRoute = createRoute({
   method: 'delete',
   path: '/2/connections',
   tags: ['Connections'],
-  summary: 'Terminate multiple connections',
+  summary: 'Terminate Multiple Connections',
   description:
     'Terminates multiple streaming connections by their UUIDs for the authenticated application.',
   operationId: 'deleteConnectionsByUuids',
@@ -24540,7 +26541,7 @@ export const delete2ConnectionsAllRoute = createRoute({
   method: 'delete',
   path: '/2/connections/all',
   tags: ['Connections'],
-  summary: 'Terminate all connections',
+  summary: 'Terminate All Connections',
   description: 'Terminates all active streaming connections for the authenticated application.',
   externalDocs: { url: 'https://docs.x.com/x-api/connections/terminate-all-connections' },
   operationId: 'deleteAllConnections',
@@ -24564,7 +26565,7 @@ export const delete2ConnectionsEndpointIdRoute = createRoute({
   method: 'delete',
   path: '/2/connections/{endpoint_id}',
   tags: ['Connections'],
-  summary: 'Terminate connections by endpoint',
+  summary: 'Terminate Connections by Endpoint',
   description:
     'Terminates all streaming connections for a specific endpoint ID for the authenticated application.',
   operationId: 'deleteConnectionsByEndpoint',
@@ -24636,7 +26637,7 @@ export const post2DmConversationsRoute = createRoute({
   method: 'post',
   path: '/2/dm_conversations',
   tags: ['Direct Messages'],
-  summary: 'Create DM conversation',
+  summary: 'Create DM Conversation',
   description: 'Initiates a new direct message conversation with specified participants.',
   operationId: 'createDirectMessagesConversation',
   request: {
@@ -24730,7 +26731,9 @@ export const get2DmConversationsWithParticipantIdDmEventsRoute = createRoute({
   method: 'get',
   path: '/2/dm_conversations/with/{participant_id}/dm_events',
   tags: ['Direct Messages'],
-  summary: 'Get Direct Messages Events by Participant ID',
+  summary: 'Get DM Events by Participant ID',
+  description:
+    'Retrieves direct message events for the one-to-one conversation between the authenticated user and a specific participant.',
   operationId: 'getDirectMessagesEventsByParticipantId',
   request: {
     params: z.object({
@@ -24846,14 +26849,14 @@ export const get2DmConversationsWithParticipantIdDmEventsRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['tweet.read', 'dm.read', 'users.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['users.read', 'dm.read', 'tweet.read'] }, { UserToken: [] }],
 })
 
 export const post2DmConversationsWithParticipantIdMessagesRoute = createRoute({
   method: 'post',
   path: '/2/dm_conversations/with/{participant_id}/messages',
   tags: ['Direct Messages'],
-  summary: 'Create DM message by participant ID',
+  summary: 'Create DM Message by Participant ID',
   description: 'Sends a new direct message to a specific participant by their ID.',
   operationId: 'createDirectMessagesByParticipantId',
   request: {
@@ -24891,14 +26894,15 @@ export const post2DmConversationsWithParticipantIdMessagesRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['users.read', 'tweet.read', 'dm.write'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['tweet.read', 'dm.write', 'users.read'] }, { UserToken: [] }],
 })
 
 export const post2DmConversationsDmConversationIdMessagesRoute = createRoute({
   method: 'post',
   path: '/2/dm_conversations/{dm_conversation_id}/messages',
   tags: ['Direct Messages'],
-  summary: 'Create Direct Messages by Conversation ID',
+  summary: 'Create DM Message by Conversation ID',
+  description: 'Sends a new direct message to a specific conversation by its ID.',
   operationId: 'createDirectMessagesByConversationId',
   request: {
     params: z.object({
@@ -24936,14 +26940,15 @@ export const post2DmConversationsDmConversationIdMessagesRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['tweet.read', 'users.read', 'dm.write'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['dm.write', 'users.read', 'tweet.read'] }, { UserToken: [] }],
 })
 
 export const get2DmConversationsIdDmEventsRoute = createRoute({
   method: 'get',
   path: '/2/dm_conversations/{id}/dm_events',
   tags: ['Direct Messages'],
-  summary: 'Get Direct Messages Events by Conversation ID',
+  summary: 'Get DM Events by Conversation ID',
+  description: 'Retrieves direct message events for a specific conversation by its ID.',
   operationId: 'getDirectMessagesEventsByConversationId',
   request: {
     params: z.object({
@@ -25059,14 +27064,15 @@ export const get2DmConversationsIdDmEventsRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['tweet.read', 'users.read', 'dm.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['dm.read', 'tweet.read', 'users.read'] }, { UserToken: [] }],
 })
 
 export const get2DmEventsRoute = createRoute({
   method: 'get',
   path: '/2/dm_events',
   tags: ['Direct Messages'],
-  summary: 'Get Direct Messages Events',
+  summary: 'Get DM Events',
+  description: 'Retrieves a list of recent direct message events across all conversations.',
   operationId: 'getDirectMessagesEvents',
   request: {
     query: z.object({
@@ -25166,14 +27172,15 @@ export const get2DmEventsRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['tweet.read', 'users.read', 'dm.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['users.read', 'tweet.read', 'dm.read'] }, { UserToken: [] }],
 })
 
 export const get2DmEventsEventIdRoute = createRoute({
   method: 'get',
   path: '/2/dm_events/{event_id}',
   tags: ['Direct Messages'],
-  summary: 'Get Direct Messages Events by ID',
+  summary: 'Get DM Event by ID',
+  description: 'Retrieves details of a specific direct message event by its ID.',
   operationId: 'getDirectMessagesEventsById',
   request: {
     params: z.object({
@@ -25211,14 +27218,14 @@ export const get2DmEventsEventIdRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['users.read', 'tweet.read', 'dm.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['tweet.read', 'users.read', 'dm.read'] }, { UserToken: [] }],
 })
 
 export const delete2DmEventsEventIdRoute = createRoute({
   method: 'delete',
   path: '/2/dm_events/{event_id}',
   tags: ['Direct Messages'],
-  summary: 'Delete DM event',
+  summary: 'Delete DM Event',
   description:
     'Deletes a specific direct message event by its ID, if owned by the authenticated user.',
   operationId: 'deleteDirectMessagesEvents',
@@ -25258,7 +27265,7 @@ export const get2LikesComplianceStreamRoute = createRoute({
   method: 'get',
   path: '/2/likes/compliance/stream',
   tags: ['Stream'],
-  summary: 'Stream Likes compliance data',
+  summary: 'Stream Likes Compliance Data',
   description: 'Streams all compliance data related to Likes for Users.',
   operationId: 'streamLikesCompliance',
   request: {
@@ -25334,7 +27341,7 @@ export const get2LikesFirehoseStreamRoute = createRoute({
   method: 'get',
   path: '/2/likes/firehose/stream',
   tags: ['Stream'],
-  summary: 'Stream all Likes',
+  summary: 'Stream All Likes',
   description: 'Streams all public Likes in real-time.',
   operationId: 'streamLikesFirehose',
   request: {
@@ -25804,7 +27811,7 @@ export const get2LikesSample10StreamRoute = createRoute({
   method: 'get',
   path: '/2/likes/sample10/stream',
   tags: ['Stream'],
-  summary: 'Stream sampled Likes',
+  summary: 'Stream Sampled Likes',
   description: 'Streams a 10% sample of public Likes in real-time.',
   operationId: 'streamLikesSample10',
   request: {
@@ -26274,7 +28281,8 @@ export const post2ListsRoute = createRoute({
   method: 'post',
   path: '/2/lists',
   tags: ['Lists'],
-  summary: 'Create Lists',
+  summary: 'Create List',
+  description: 'Creates a new List for the authenticated user.',
   operationId: 'createLists',
   request: {
     body: { content: { 'application/json': { schema: CreateListsRequestSchema } }, required: true },
@@ -26293,7 +28301,7 @@ export const post2ListsRoute = createRoute({
     },
   },
   security: [
-    { OAuth2UserToken: ['tweet.read', 'list.read', 'list.write', 'users.read'] },
+    { OAuth2UserToken: ['list.read', 'users.read', 'tweet.read', 'list.write'] },
     { UserToken: [] },
   ],
 })
@@ -26302,7 +28310,8 @@ export const get2ListsIdRoute = createRoute({
   method: 'get',
   path: '/2/lists/{id}',
   tags: ['Lists'],
-  summary: 'Get Lists by ID',
+  summary: 'Get List by ID',
+  description: 'Retrieves details of a specific List by its ID.',
   operationId: 'getListsById',
   request: {
     params: z.object({
@@ -26418,14 +28427,15 @@ export const delete2ListsIdRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['list.write', 'tweet.read', 'users.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['users.read', 'list.write', 'tweet.read'] }, { UserToken: [] }],
 })
 
 export const get2ListsIdFollowersRoute = createRoute({
   method: 'get',
   path: '/2/lists/{id}/followers',
   tags: ['Lists'],
-  summary: 'Get Lists Followers',
+  summary: 'Get List Followers',
+  description: 'Retrieves a list of Users who follow a specific List by its ID.',
   operationId: 'getListsFollowers',
   request: {
     params: z.object({
@@ -26493,7 +28503,7 @@ export const get2ListsIdFollowersRoute = createRoute({
     },
   },
   security: [
-    { OAuth2UserToken: ['list.read', 'users.read', 'tweet.read'] },
+    { OAuth2UserToken: ['tweet.read', 'list.read', 'users.read'] },
     { UserToken: [] },
     { BearerToken: [] },
   ],
@@ -26503,7 +28513,8 @@ export const get2ListsIdMembersRoute = createRoute({
   method: 'get',
   path: '/2/lists/{id}/members',
   tags: ['Lists'],
-  summary: 'Get Lists Members',
+  summary: 'Get List Members',
+  description: 'Retrieves a list of Users who are members of a specific List by its ID.',
   operationId: 'getListsMembers',
   request: {
     params: z.object({
@@ -26571,7 +28582,7 @@ export const get2ListsIdMembersRoute = createRoute({
     },
   },
   security: [
-    { OAuth2UserToken: ['list.read', 'tweet.read', 'users.read'] },
+    { OAuth2UserToken: ['users.read', 'tweet.read', 'list.read'] },
     { UserToken: [] },
     { BearerToken: [] },
   ],
@@ -26581,7 +28592,8 @@ export const post2ListsIdMembersRoute = createRoute({
   method: 'post',
   path: '/2/lists/{id}/members',
   tags: ['Lists'],
-  summary: 'Add Lists Member',
+  summary: 'Add List Member',
+  description: 'Adds a User to a specific List by its ID.',
   operationId: 'addListsMember',
   request: {
     params: z.object({
@@ -26613,14 +28625,14 @@ export const post2ListsIdMembersRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['users.read', 'list.write', 'tweet.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['list.write', 'users.read', 'tweet.read'] }, { UserToken: [] }],
 })
 
 export const delete2ListsIdMembersUserIdRoute = createRoute({
   method: 'delete',
   path: '/2/lists/{id}/members/{user_id}',
   tags: ['Lists'],
-  summary: 'Remove a List member',
+  summary: 'Remove List Member',
   description: 'Removes a User from a List by their ID.',
   externalDocs: {
     url: 'https://developer.twitter.com/en/docs/twitter-api/lists/list-members/api-reference/delete-lists-id-members-user_id',
@@ -26661,14 +28673,15 @@ export const delete2ListsIdMembersUserIdRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['tweet.read', 'users.read', 'list.write'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['list.write', 'tweet.read', 'users.read'] }, { UserToken: [] }],
 })
 
 export const get2ListsIdTweetsRoute = createRoute({
   method: 'get',
   path: '/2/lists/{id}/tweets',
   tags: ['Lists'],
-  summary: 'Get Lists Posts',
+  summary: 'Get List Posts',
+  description: 'Retrieves a list of Posts associated with a specific List by its ID.',
   operationId: 'getListsPosts',
   request: {
     params: z.object({
@@ -26740,7 +28753,7 @@ export const get2ListsIdTweetsRoute = createRoute({
     },
   },
   security: [
-    { OAuth2UserToken: ['users.read', 'tweet.read', 'list.read'] },
+    { OAuth2UserToken: ['list.read', 'users.read', 'tweet.read'] },
     { UserToken: [] },
     { BearerToken: [] },
   ],
@@ -26750,7 +28763,8 @@ export const get2MediaRoute = createRoute({
   method: 'get',
   path: '/2/media',
   tags: ['Media'],
-  summary: 'Get Media by media keys',
+  summary: 'Get Media by Media Keys',
+  description: 'Retrieves details of Media files by their media keys.',
   operationId: 'getMediaByMediaKeys',
   request: {
     query: z.object({
@@ -26801,11 +28815,148 @@ export const get2MediaRoute = createRoute({
   security: [{ OAuth2UserToken: ['tweet.read'] }, { UserToken: [] }, { BearerToken: [] }],
 })
 
+export const post2MediaAmplifyPostsRoute = createRoute({
+  method: 'post',
+  path: '/2/media/amplify/posts',
+  tags: ['Media'],
+  summary: 'Add Post to Amplify Programs',
+  description:
+    "Publishes one of the authenticated user's video posts into one or more active Amplify pre-roll programs the user is enrolled in as a publisher.",
+  operationId: 'addPostToAmplifyPrograms',
+  request: {
+    body: {
+      content: { 'application/json': { schema: AddPostToAmplifyProgramsRequestSchema } },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'The request has succeeded.',
+      content: { 'application/json': { schema: AddPostToAmplifyProgramsResponseSchema } },
+    },
+    default: {
+      description: 'The request has failed.',
+      content: {
+        'application/json': { schema: ErrorSchema },
+        'application/problem+json': { schema: ProblemSchema },
+      },
+    },
+  },
+  security: [{ OAuth2UserToken: ['media.library.write'] }, { UserToken: [] }],
+})
+
+export const get2MediaAmplifyProgramsRoute = createRoute({
+  method: 'get',
+  path: '/2/media/amplify/programs',
+  tags: ['Media'],
+  summary: 'Get Amplify Programs',
+  description:
+    'Returns the Amplify pre-roll programs the authenticated user is enrolled in as a publisher.',
+  operationId: 'getAmplifyPrograms',
+  responses: {
+    200: {
+      description: 'The request has succeeded.',
+      content: { 'application/json': { schema: GetAmplifyProgramsResponseSchema } },
+    },
+    default: {
+      description: 'The request has failed.',
+      content: {
+        'application/json': { schema: ErrorSchema },
+        'application/problem+json': { schema: ProblemSchema },
+      },
+    },
+  },
+  security: [{ OAuth2UserToken: ['media.library.read'] }, { UserToken: [] }],
+})
+
+export const get2MediaAmplifyProgramsProgramIdRoute = createRoute({
+  method: 'get',
+  path: '/2/media/amplify/programs/{program_id}',
+  tags: ['Media'],
+  summary: 'Get Amplify Program',
+  description:
+    'Returns one Amplify pre-roll program the authenticated user is enrolled in as a publisher. A program the user is not enrolled in is reported as not found.',
+  operationId: 'getAmplifyProgram',
+  request: {
+    params: z.object({
+      program_id: z
+        .string()
+        .regex(/^[A-Za-z0-9_-]{1,64}$/)
+        .openapi({
+          param: {
+            name: 'program_id',
+            in: 'path',
+            description: 'Identifier of the program.',
+            required: true,
+            schema: { type: 'string', pattern: '^[A-Za-z0-9_-]{1,64}$' },
+            style: 'simple',
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'The request has succeeded.',
+      content: { 'application/json': { schema: GetAmplifyProgramResponseSchema } },
+    },
+    default: {
+      description: 'The request has failed.',
+      content: {
+        'application/json': { schema: ErrorSchema },
+        'application/problem+json': { schema: ProblemSchema },
+      },
+    },
+  },
+  security: [{ OAuth2UserToken: ['media.library.read'] }, { UserToken: [] }],
+})
+
+export const get2MediaAmplifyProgramsProgramIdPostsRoute = createRoute({
+  method: 'get',
+  path: '/2/media/amplify/programs/{program_id}/posts',
+  tags: ['Media'],
+  summary: 'Get Amplify Program Posts',
+  description:
+    'Returns the posts published into an Amplify pre-roll program the authenticated user is enrolled in as a publisher.',
+  operationId: 'getAmplifyProgramPosts',
+  request: {
+    params: z.object({
+      program_id: z
+        .string()
+        .regex(/^[A-Za-z0-9_-]{1,64}$/)
+        .openapi({
+          param: {
+            name: 'program_id',
+            in: 'path',
+            description: 'Identifier of the program.',
+            required: true,
+            schema: { type: 'string', pattern: '^[A-Za-z0-9_-]{1,64}$' },
+            style: 'simple',
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'The request has succeeded.',
+      content: { 'application/json': { schema: GetAmplifyProgramPostsResponseSchema } },
+    },
+    default: {
+      description: 'The request has failed.',
+      content: {
+        'application/json': { schema: ErrorSchema },
+        'application/problem+json': { schema: ProblemSchema },
+      },
+    },
+  },
+  security: [{ OAuth2UserToken: ['media.library.read'] }, { UserToken: [] }],
+})
+
 export const get2MediaAnalyticsRoute = createRoute({
   method: 'get',
   path: '/2/media/analytics',
   tags: ['Media'],
-  summary: 'Get Media analytics',
+  summary: 'Get Media Analytics',
+  description: 'Retrieves analytics data for media.',
   operationId: 'getMediaAnalytics',
   request: {
     query: z.object({
@@ -26891,11 +29042,173 @@ export const get2MediaAnalyticsRoute = createRoute({
   security: [{ OAuth2UserToken: ['tweet.read'] }, { UserToken: [] }],
 })
 
+export const post2MediaLibraryRoute = createRoute({
+  method: 'post',
+  path: '/2/media/library',
+  tags: ['Media'],
+  summary: 'Add Media to Library',
+  description:
+    "Adds previously uploaded media to the authenticated user's Media Library with its library metadata. The user must own the media. Geo restrictions, content expiry, the preview image and the audience policy are set with the Media metadata endpoint.",
+  operationId: 'addMediaToLibrary',
+  request: {
+    body: {
+      content: { 'application/json': { schema: AddMediaToLibraryRequestSchema } },
+      required: true,
+    },
+  },
+  responses: {
+    201: {
+      description: 'The request has succeeded.',
+      content: { 'application/json': { schema: AddMediaToLibraryResponseSchema } },
+    },
+    default: {
+      description: 'The request has failed.',
+      content: {
+        'application/json': { schema: ErrorSchema },
+        'application/problem+json': { schema: ProblemSchema },
+      },
+    },
+  },
+  security: [{ OAuth2UserToken: ['media.library.write'] }, { UserToken: [] }],
+})
+
+export const get2MediaLibraryCategoriesRoute = createRoute({
+  method: 'get',
+  path: '/2/media/library/categories',
+  tags: ['Media'],
+  summary: 'Get Media Library Categories',
+  description:
+    'Returns the video categories a publisher can assign to a media library item and the advertiser categories whose ads can be blocked from running against it.',
+  operationId: 'getMediaLibraryCategories',
+  request: {
+    query: z.object({
+      lang: z
+        .string()
+        .regex(/^[A-Za-z]{2,3}(-[A-Za-z0-9]{2,8})*$/)
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'lang',
+            in: 'query',
+            description: 'Language tag for category descriptions, e.g. `en` or `pt-BR`.',
+            required: false,
+            schema: { type: 'string', pattern: '^[A-Za-z]{2,3}(-[A-Za-z0-9]{2,8})*$' },
+            style: 'form',
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'The request has succeeded.',
+      content: { 'application/json': { schema: GetMediaLibraryCategoriesResponseSchema } },
+    },
+    default: {
+      description: 'The request has failed.',
+      content: {
+        'application/json': { schema: ErrorSchema },
+        'application/problem+json': { schema: ProblemSchema },
+      },
+    },
+  },
+  security: [{ OAuth2UserToken: ['media.library.read'] }, { UserToken: [] }],
+})
+
+export const put2MediaLibraryMediaKeyRoute = createRoute({
+  method: 'put',
+  path: '/2/media/library/{media_key}',
+  tags: ['Media'],
+  summary: 'Update Media Library Item',
+  description:
+    "Updates the library metadata of an item in the authenticated user's Media Library. Only the fields sent are changed; the others keep their values. Geo restrictions, content expiry, the preview image and the audience policy are set with the Media metadata endpoint.",
+  operationId: 'updateMediaInLibrary',
+  request: {
+    params: z.object({
+      media_key: z
+        .string()
+        .regex(/^[0-9]+_[0-9]+$/)
+        .openapi({
+          param: {
+            name: 'media_key',
+            in: 'path',
+            description: 'The media key of the library item to update.',
+            required: true,
+            schema: { type: 'string', pattern: '^[0-9]+_[0-9]+$' },
+            style: 'simple',
+          },
+        }),
+    }),
+    body: {
+      content: { 'application/json': { schema: UpdateMediaInLibraryRequestSchema } },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'The request has succeeded.',
+      content: { 'application/json': { schema: UpdateMediaInLibraryResponseSchema } },
+    },
+    default: {
+      description: 'The request has failed.',
+      content: {
+        'application/json': { schema: ErrorSchema },
+        'application/problem+json': { schema: ProblemSchema },
+      },
+    },
+  },
+  security: [{ OAuth2UserToken: ['media.library.write'] }, { UserToken: [] }],
+})
+
+export const delete2MediaLibraryMediaKeyRoute = createRoute({
+  method: 'delete',
+  path: '/2/media/library/{media_key}',
+  tags: ['Media'],
+  summary: 'Remove Media Library Item',
+  description:
+    "Removes an item from the authenticated user's Media Library. Posts scheduled through the API that have not yet been published and still use the media are cancelled. Published posts and the underlying media are not affected.",
+  operationId: 'removeMediaFromLibrary',
+  request: {
+    params: z.object({
+      media_key: z
+        .string()
+        .regex(/^[0-9]+_[0-9]+$/)
+        .openapi({
+          param: {
+            name: 'media_key',
+            in: 'path',
+            description: 'The media key of the library item to remove.',
+            required: true,
+            schema: { type: 'string', pattern: '^[0-9]+_[0-9]+$' },
+            style: 'simple',
+          },
+        }),
+    }),
+    body: {
+      content: { 'application/json': { schema: RemoveMediaFromLibraryRequestSchema } },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'The request has succeeded.',
+      content: { 'application/json': { schema: RemoveMediaFromLibraryResponseSchema } },
+    },
+    default: {
+      description: 'The request has failed.',
+      content: {
+        'application/json': { schema: ErrorSchema },
+        'application/problem+json': { schema: ProblemSchema },
+      },
+    },
+  },
+  security: [{ OAuth2UserToken: ['media.library.write'] }, { UserToken: [] }],
+})
+
 export const post2MediaMetadataRoute = createRoute({
   method: 'post',
   path: '/2/media/metadata',
   tags: ['Media'],
-  summary: 'Create Media metadata',
+  summary: 'Create Media Metadata',
   description: 'Creates metadata for a Media file.',
   externalDocs: { url: 'https://docs.x.com/x-api/media/media-metadata-create#metadata-create' },
   operationId: 'createMediaMetadata',
@@ -26925,7 +29238,7 @@ export const post2MediaSubtitlesRoute = createRoute({
   method: 'post',
   path: '/2/media/subtitles',
   tags: ['Media'],
-  summary: 'Create Media subtitles',
+  summary: 'Create Media Subtitles',
   description: 'Creates subtitles for a specific Media file.',
   externalDocs: { url: 'https://docs.x.com/x-api/media/media-subtitles-create' },
   operationId: 'createMediaSubtitles',
@@ -26955,7 +29268,7 @@ export const delete2MediaSubtitlesRoute = createRoute({
   method: 'delete',
   path: '/2/media/subtitles',
   tags: ['Media'],
-  summary: 'Delete Media subtitles',
+  summary: 'Delete Media Subtitles',
   description: 'Deletes subtitles for a specific Media file.',
   externalDocs: { url: 'https://docs.x.com/x-api/media/media-subtitles-delete' },
   operationId: 'deleteMediaSubtitles',
@@ -26985,8 +29298,9 @@ export const get2MediaUploadRoute = createRoute({
   method: 'get',
   path: '/2/media/upload',
   tags: ['Media'],
-  summary: 'Get Media upload status',
-  description: 'Retrieves the status of a Media upload by its ID.',
+  summary: 'Get Media Upload Status',
+  description:
+    "Returns how far X has processed an uploaded media file, in processing_info.state: pending, in_progress, succeeded or failed. Call it after Finalize Media Upload returns processing_info, waiting check_after_secs between calls, until the state is succeeded. A failed state means the media can't be used.",
   externalDocs: { url: 'https://docs.x.com/x-api/media/media-upload-status#media-upload-status' },
   operationId: 'getMediaUploadStatus',
   request: {
@@ -26995,6 +29309,7 @@ export const get2MediaUploadRoute = createRoute({
         param: {
           name: 'media_id',
           in: 'query',
+          description: 'The media id from Initialize Media Upload.',
           required: true,
           schema: { $ref: '#/components/schemas/MediaId' },
           style: 'form',
@@ -27007,6 +29322,7 @@ export const get2MediaUploadRoute = createRoute({
           param: {
             name: 'command',
             in: 'query',
+            description: 'Always STATUS; can be left out.',
             required: false,
             schema: { type: 'string', enum: ['STATUS'] },
             style: 'form',
@@ -27034,9 +29350,9 @@ export const post2MediaUploadRoute = createRoute({
   method: 'post',
   path: '/2/media/upload',
   tags: ['Media'],
-  summary: 'Upload media',
+  summary: 'Upload Media',
   description:
-    "Uploads a media file for use in posts, direct messages, or ads. The response carries the media identifiers, including the media_key used to reference the asset in later calls. The media field carries the file content base64-encoded in JSON bodies (raw bytes in multipart bodies); media_category is tweet_image, tweet_video, or tweet_gif for posts and ads, dm_image/dm_video/dm_gif for DMs, or subtitles. For X Ads accounts, register the returned media_key via create_media_library_item to add it to the account's media library and use it in campaigns.",
+    'Uploads a media file in one request and returns its id. Send the file base64-encoded in media (raw bytes in multipart bodies). For a Post, set media_category to tweet_image (JPG, PNG, GIF or WEBP, up to 5 MB) or tweet_gif, then pass the returned id in media.media_ids on Create or Edit Post. DM media uses dm_image or dm_gif. For video, use Initialize Media Upload.',
   externalDocs: { url: 'https://docs.x.com/x-api/media/media-upload' },
   operationId: 'mediaUpload',
   request: {
@@ -27068,8 +29384,9 @@ export const post2MediaUploadInitializeRoute = createRoute({
   method: 'post',
   path: '/2/media/upload/initialize',
   tags: ['Media'],
-  summary: 'Initialize media upload',
-  description: 'Initializes a media upload.',
+  summary: 'Initialize Media Upload',
+  description:
+    "Starts a chunked media upload and returns its id. Use it for video and for other files too large for one request. For a video on a Post, set media_category to tweet_video, media_type to the file's type (for example video/mp4) and total_bytes to the file's size. Send the file with Append Media Upload, call Finalize Media Upload, then pass the id in media.media_ids on Create or Edit Post.",
   externalDocs: { url: 'https://docs.x.com/x-api/media/media-upload' },
   operationId: 'initializeMediaUpload',
   request: {
@@ -27099,6 +29416,8 @@ export const post2MediaUploadIdAppendRoute = createRoute({
   path: '/2/media/upload/{id}/append',
   tags: ['Media'],
   summary: 'Append Media Upload',
+  description:
+    'Appends one segment of the file to a chunked upload. Send the segment base64-encoded in media (raw bytes in multipart bodies) and its position in the file in segment_index, counting from 0. A segment can be up to 8 MB; in a JSON body keep it to 4 MB or less, because base64 adds a third. After the last segment, call Finalize Media Upload.',
   operationId: 'appendMediaUpload',
   request: {
     params: z.object({
@@ -27109,6 +29428,7 @@ export const post2MediaUploadIdAppendRoute = createRoute({
           param: {
             name: 'id',
             in: 'path',
+            description: 'The upload id from Initialize Media Upload.',
             required: true,
             schema: { type: 'string', pattern: '^[0-9]{1,19}$' },
             style: 'simple',
@@ -27123,7 +29443,10 @@ export const post2MediaUploadIdAppendRoute = createRoute({
             .strictObject({
               media: z
                 .union([z.file().openapi({ type: 'string', format: 'binary' }), z.string()])
-                .openapi({ description: 'The media chunk to upload.' }),
+                .openapi({
+                  description:
+                    'One segment of the file: base64-encoded in JSON bodies, raw bytes in multipart bodies.',
+                }),
               segment_index: z
                 .preprocess(
                   (val) =>
@@ -27134,7 +29457,7 @@ export const post2MediaUploadIdAppendRoute = createRoute({
                       : val,
                   z.int().min(0).max(9999),
                 )
-                .openapi({ description: 'The index of this segment in the upload sequence.' }),
+                .openapi({ description: "The segment's position in the file, counting from 0." }),
             })
             .openapi({ required: ['media', 'segment_index'] }),
         },
@@ -27162,8 +29485,9 @@ export const post2MediaUploadIdFinalizeRoute = createRoute({
   method: 'post',
   path: '/2/media/upload/{id}/finalize',
   tags: ['Media'],
-  summary: 'Finalize Media upload',
-  description: 'Finalizes a Media upload request.',
+  summary: 'Finalize Media Upload',
+  description:
+    'Completes a chunked upload once every segment is appended. For video the result carries processing_info: the media can go on a Post only when its state is succeeded, so call Get Media Upload Status until it is. A result without processing_info is ready to use.',
   externalDocs: { url: 'https://docs.x.com/x-api/media/media-upload' },
   operationId: 'finalizeMediaUpload',
   request: {
@@ -27175,6 +29499,7 @@ export const post2MediaUploadIdFinalizeRoute = createRoute({
           param: {
             name: 'id',
             in: 'path',
+            description: 'The upload id from Initialize Media Upload.',
             required: true,
             schema: { type: 'string', pattern: '^[0-9]{1,19}$' },
             style: 'simple',
@@ -27202,7 +29527,8 @@ export const get2MediaMediaKeyRoute = createRoute({
   method: 'get',
   path: '/2/media/{media_key}',
   tags: ['Media'],
-  summary: 'Get Media by media key',
+  summary: 'Get Media by Media Key',
+  description: 'Retrieves details of a specific Media file by its media key.',
   operationId: 'getMediaByMediaKey',
   request: {
     params: z.object({
@@ -27242,6 +29568,7 @@ export const get2NewsSearchRoute = createRoute({
   path: '/2/news/search',
   tags: ['News'],
   summary: 'Search News',
+  description: 'Retrieves a list of News stories matching the specified search query.',
   operationId: 'searchNews',
   request: {
     query: z.object({
@@ -27327,7 +29654,7 @@ export const get2NewsIdRoute = createRoute({
   method: 'get',
   path: '/2/news/{id}',
   tags: ['News'],
-  summary: 'Get news stories by ID',
+  summary: 'Get News Stories by ID',
   description: 'Retrieves news story by its ID.',
   externalDocs: { url: 'https://docs.x.com/x-api/news/introduction' },
   operationId: 'getNews',
@@ -27362,7 +29689,7 @@ export const get2NewsIdRoute = createRoute({
     },
   },
   security: [
-    { OAuth2UserToken: ['users.read', 'tweet.read'] },
+    { OAuth2UserToken: ['tweet.read', 'users.read'] },
     { UserToken: [] },
     { BearerToken: [] },
   ],
@@ -27372,7 +29699,9 @@ export const post2NotesRoute = createRoute({
   method: 'post',
   path: '/2/notes',
   tags: ['Community Notes'],
-  summary: 'Create Community Notes',
+  summary: 'Create a Community Note',
+  description:
+    'Creates a Community Note on a Post. With test_mode set to true, the note is only for testing and is not publicly visible.',
   operationId: 'createCommunityNotes',
   request: {
     body: {
@@ -27400,7 +29729,9 @@ export const post2NotesEvaluateRoute = createRoute({
   method: 'post',
   path: '/2/notes/evaluate',
   tags: ['Community Notes'],
-  summary: 'Evaluate Community Notes',
+  summary: 'Evaluate a Community Note',
+  description:
+    'Evaluates the text of a proposed Community Note on a Post and returns its claim-opinion score.',
   operationId: 'evaluateCommunityNotes',
   request: {
     body: {
@@ -27428,7 +29759,8 @@ export const get2NotesSearchNotesWrittenRoute = createRoute({
   method: 'get',
   path: '/2/notes/search/notes_written',
   tags: ['Community Notes'],
-  summary: 'Search Community Notes Written',
+  summary: 'Search for Community Notes Written',
+  description: 'Retrieves the Community Notes written by the authenticated user.',
   operationId: 'searchCommunityNotesWritten',
   request: {
     query: z.object({
@@ -27499,7 +29831,8 @@ export const get2NotesSearchPostsEligibleForNotesRoute = createRoute({
   method: 'get',
   path: '/2/notes/search/posts_eligible_for_notes',
   tags: ['Community Notes'],
-  summary: 'Search Eligible Posts',
+  summary: 'Search for Posts Eligible for Community Notes',
+  description: 'Retrieves Posts that are eligible for Community Notes.',
   operationId: 'searchEligiblePosts',
   request: {
     query: z.object({
@@ -27624,23 +29957,158 @@ export const get2OpenapiJsonRoute = createRoute({
   method: 'get',
   path: '/2/openapi.json',
   tags: ['General'],
-  summary: 'Get OpenAPI Spec.',
+  summary: 'Get OpenAPI Spec',
   description:
     'Retrieves the full OpenAPI Specification in JSON format. (See https://github.com/OAI/OpenAPI-Specification/blob/master/README.md)',
   operationId: 'getOpenApiSpec',
   responses: {
     200: {
       description: 'The request was successful',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
   },
+})
+
+export const get2PostsDraftsRoute = createRoute({
+  method: 'get',
+  path: '/2/posts/drafts',
+  tags: ['Posts'],
+  summary: 'Get Post Drafts',
+  description:
+    "Returns the authenticated user's Post drafts, newest first, in the fields of the Create or Edit Post body. thread holds the Posts after the first. A draft with unsupported_content is not listed in full: do not publish it from this list or delete it unless the user asks. Needs the tweet.write scope.",
+  operationId: 'getPostDrafts',
+  request: {
+    query: z.object({
+      max_results: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int32().min(1).max(100),
+        )
+        .default(20)
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'max_results',
+            in: 'query',
+            description: 'The maximum number of drafts to return.',
+            required: false,
+            schema: { type: 'integer', minimum: 1, maximum: 100, format: 'int32', default: 20 },
+            style: 'form',
+          },
+        }),
+      pagination_token: z
+        .string()
+        .regex(/^[0-9]{1,19}$/)
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'pagination_token',
+            in: 'query',
+            description: 'The meta.next_token of the previous page.',
+            required: false,
+            schema: { type: 'string', pattern: '^[0-9]{1,19}$' },
+            style: 'form',
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'The request has succeeded.',
+      content: { 'application/json': { schema: GetPostDraftsResponseSchema } },
+    },
+    default: {
+      description: 'The request has failed.',
+      content: {
+        'application/json': { schema: ErrorSchema },
+        'application/problem+json': { schema: ProblemSchema },
+      },
+    },
+  },
+  security: [{ OAuth2UserToken: ['tweet.read', 'users.read', 'tweet.write'] }, { UserToken: [] }],
+})
+
+export const post2PostsDraftsRoute = createRoute({
+  method: 'post',
+  path: '/2/posts/drafts',
+  tags: ['Posts'],
+  summary: 'Create Post Draft',
+  description:
+    "Saves a Post draft to the authenticated user's X account without publishing it. Takes the body of Create or Edit Post, of which a draft stores text, media with tagged users, a reply and the AI and paid partnership disclosures. Any other field that is set is a 400 that names it.",
+  operationId: 'createPostDraft',
+  request: {
+    body: {
+      content: { 'application/json': { schema: CreatePostDraftRequestSchema } },
+      required: true,
+    },
+  },
+  responses: {
+    201: {
+      description: 'The request has succeeded.',
+      content: { 'application/json': { schema: CreatePostDraftResponseSchema } },
+    },
+    default: {
+      description: 'The request has failed.',
+      content: {
+        'application/json': { schema: ErrorSchema },
+        'application/problem+json': { schema: ProblemSchema },
+      },
+    },
+  },
+  security: [{ OAuth2UserToken: ['tweet.write', 'users.read', 'tweet.read'] }, { UserToken: [] }],
+})
+
+export const delete2PostsDraftsIdRoute = createRoute({
+  method: 'delete',
+  path: '/2/posts/drafts/{id}',
+  tags: ['Posts'],
+  summary: 'Delete Post Draft',
+  description:
+    "Deletes one of the authenticated user's Post drafts by its ID. The whole draft is deleted, including any part Get Post Drafts does not list, and cannot be restored. An ID that is not one of the user's drafts also returns deleted: true.",
+  operationId: 'deletePostDraft',
+  request: {
+    params: z.object({
+      id: z
+        .string()
+        .regex(/^[0-9]{1,19}$/)
+        .openapi({
+          param: {
+            name: 'id',
+            in: 'path',
+            description: 'The ID of the draft to delete.',
+            required: true,
+            schema: { type: 'string', pattern: '^[0-9]{1,19}$' },
+            style: 'simple',
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'The request has succeeded.',
+      content: { 'application/json': { schema: DeletePostDraftResponseSchema } },
+    },
+    default: {
+      description: 'The request has failed.',
+      content: {
+        'application/json': { schema: ErrorSchema },
+        'application/problem+json': { schema: ProblemSchema },
+      },
+    },
+  },
+  security: [{ OAuth2UserToken: ['tweet.write', 'users.read', 'tweet.read'] }, { UserToken: [] }],
 })
 
 export const get2RegionRoute = createRoute({
   method: 'get',
   path: '/2/region',
   tags: ['Broadcasts'],
-  summary: 'Get the ingest region',
+  summary: 'Get the Ingest Region',
   description:
     'Returns the ingest region nearest the server handling the request. Pass it as `region` when creating a stream source to ingest there.',
   operationId: 'getRegion',
@@ -27664,9 +30132,9 @@ export const get2SourcesRoute = createRoute({
   method: 'get',
   path: '/2/sources',
   tags: ['Broadcasts'],
-  summary: 'List stream sources',
+  summary: 'List Stream Sources',
   description:
-    "Returns the authenticated user's RTMP/RTMPS stream sources. A source's `id` is the `source_id` a scheduled broadcast binds to.",
+    "Returns the authenticated user's RTMP/RTMPS stream sources. A source's `id` is the `source_id` that POST /2/broadcasts and scheduled broadcasts take. Stream keys are not included; read one with GET /2/sources/:id/stream_key.",
   operationId: 'listSources',
   responses: {
     200: {
@@ -27688,9 +30156,9 @@ export const post2SourcesRoute = createRoute({
   method: 'post',
   path: '/2/sources',
   tags: ['Broadcasts'],
-  summary: 'Create a stream source',
+  summary: 'Create a Stream Source',
   description:
-    "Creates a persistent RTMP/RTMPS ingest point for the authenticated user. Push an encoder to `rtmps_url` with the source's stream key.",
+    'Creates a persistent RTMP/RTMPS ingest point for the authenticated user. Push an encoder to `rtmps_url` with the returned `stream_key`. This is the only response that includes the stream key; read it later with GET /2/sources/:id/stream_key.',
   operationId: 'createSource',
   request: {
     body: {
@@ -27711,27 +30179,28 @@ export const post2SourcesRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['broadcast.read', 'broadcast.write'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['broadcast.write', 'broadcast.read'] }, { UserToken: [] }],
 })
 
 export const get2SourcesIdRoute = createRoute({
   method: 'get',
   path: '/2/sources/{id}',
   tags: ['Broadcasts'],
-  summary: 'Get a stream source',
-  description: "Returns one of the authenticated user's stream sources.",
+  summary: 'Get a Stream Source',
+  description:
+    "Returns one of the authenticated user's stream sources. Poll it after starting an encoder and wait for `is_stream_active` before going live. The stream key is not included; read it with GET /2/sources/:id/stream_key.",
   operationId: 'getSource',
   request: {
     params: z.object({
       id: z
         .string()
-        .regex(/^[a-zA-Z0-9]{1,32}$/)
         .openapi({
           param: {
             name: 'id',
             in: 'path',
+            description: 'Source id (19 digits), from GET /2/sources.',
             required: true,
-            schema: { type: 'string', pattern: '^[a-zA-Z0-9]{1,32}$' },
+            schema: { type: 'string' },
             style: 'simple',
           },
         }),
@@ -27757,20 +30226,20 @@ export const put2SourcesIdRoute = createRoute({
   method: 'put',
   path: '/2/sources/{id}',
   tags: ['Broadcasts'],
-  summary: 'Rename a stream source',
+  summary: 'Rename a Stream Source',
   description: "Renames one of the authenticated user's stream sources.",
   operationId: 'updateSource',
   request: {
     params: z.object({
       id: z
         .string()
-        .regex(/^[a-zA-Z0-9]{1,32}$/)
         .openapi({
           param: {
             name: 'id',
             in: 'path',
+            description: 'Source id (19 digits), from GET /2/sources.',
             required: true,
-            schema: { type: 'string', pattern: '^[a-zA-Z0-9]{1,32}$' },
+            schema: { type: 'string' },
             style: 'simple',
           },
         }),
@@ -27800,20 +30269,20 @@ export const delete2SourcesIdRoute = createRoute({
   method: 'delete',
   path: '/2/sources/{id}',
   tags: ['Broadcasts'],
-  summary: 'Delete a stream source',
+  summary: 'Delete a Stream Source',
   description: "Deletes one of the authenticated user's stream sources.",
   operationId: 'deleteSource',
   request: {
     params: z.object({
       id: z
         .string()
-        .regex(/^[a-zA-Z0-9]{1,32}$/)
         .openapi({
           param: {
             name: 'id',
             in: 'path',
+            description: 'Source id (19 digits), from GET /2/sources.',
             required: true,
-            schema: { type: 'string', pattern: '^[a-zA-Z0-9]{1,32}$' },
+            schema: { type: 'string' },
             style: 'simple',
           },
         }),
@@ -27832,7 +30301,47 @@ export const delete2SourcesIdRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['broadcast.read', 'broadcast.write'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['broadcast.write', 'broadcast.read'] }, { UserToken: [] }],
+})
+
+export const get2SourcesIdStreamKeyRoute = createRoute({
+  method: 'get',
+  path: '/2/sources/{id}/stream_key',
+  tags: ['Broadcasts'],
+  summary: "Get a Stream Source's Stream Key",
+  description:
+    "Returns the stream key of one of the authenticated user's stream sources. The stream key is a credential: anyone with it can stream to the source, so keep it out of logs, URLs and client-side code.",
+  operationId: 'getSourceStreamKey',
+  request: {
+    params: z.object({
+      id: z
+        .string()
+        .openapi({
+          param: {
+            name: 'id',
+            in: 'path',
+            description: 'Source id (19 digits), from GET /2/sources.',
+            required: true,
+            schema: { type: 'string' },
+            style: 'simple',
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'The request has succeeded.',
+      content: { 'application/json': { schema: GetSourceStreamKeyResponseSchema } },
+    },
+    default: {
+      description: 'The request has failed.',
+      content: {
+        'application/json': { schema: ErrorSchema },
+        'application/problem+json': { schema: ProblemSchema },
+      },
+    },
+  },
+  security: [{ OAuth2UserToken: ['broadcast.write', 'broadcast.read'] }, { UserToken: [] }],
 })
 
 export const get2SpacesRoute = createRoute({
@@ -27840,6 +30349,7 @@ export const get2SpacesRoute = createRoute({
   path: '/2/spaces',
   tags: ['Spaces'],
   summary: 'Get Spaces by IDs',
+  description: 'Retrieves details of multiple Spaces by their IDs.',
   operationId: 'getSpacesByIds',
   request: {
     query: z.object({
@@ -27852,7 +30362,7 @@ export const get2SpacesRoute = createRoute({
                   typeof item === 'string' ? item.split(',') : [item],
                 ),
           z
-            .array(z.string().regex(/^[a-zA-Z0-9]{1,13}$/))
+            .array(z.string().regex(/^[a-zA-Z0-9]{1,24}$/))
             .min(1)
             .max(100),
         )
@@ -27865,7 +30375,7 @@ export const get2SpacesRoute = createRoute({
               type: 'array',
               minItems: 1,
               maxItems: 100,
-              items: { type: 'string', pattern: '^[a-zA-Z0-9]{1,13}$' },
+              items: { type: 'string', pattern: '^[a-zA-Z0-9]{1,24}$' },
             },
             explode: false,
             style: 'form',
@@ -27890,7 +30400,7 @@ export const get2SpacesRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['space.read', 'users.read', 'tweet.read'] }, { BearerToken: [] }],
+  security: [{ OAuth2UserToken: ['tweet.read', 'space.read', 'users.read'] }, { BearerToken: [] }],
 })
 
 export const get2SpacesByCreatorIdsRoute = createRoute({
@@ -27898,6 +30408,7 @@ export const get2SpacesByCreatorIdsRoute = createRoute({
   path: '/2/spaces/by/creator_ids',
   tags: ['Spaces'],
   summary: 'Get Spaces by Creator IDs',
+  description: 'Retrieves details of Spaces created by specified User IDs.',
   operationId: 'getSpacesByCreatorIds',
   request: {
     query: z.object({
@@ -27948,7 +30459,7 @@ export const get2SpacesByCreatorIdsRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['tweet.read', 'users.read', 'space.read'] }, { BearerToken: [] }],
+  security: [{ OAuth2UserToken: ['space.read', 'tweet.read', 'users.read'] }, { BearerToken: [] }],
 })
 
 export const get2SpacesSearchRoute = createRoute({
@@ -28029,26 +30540,27 @@ export const get2SpacesSearchRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['users.read', 'space.read', 'tweet.read'] }, { BearerToken: [] }],
+  security: [{ OAuth2UserToken: ['space.read', 'users.read', 'tweet.read'] }, { BearerToken: [] }],
 })
 
 export const get2SpacesIdRoute = createRoute({
   method: 'get',
   path: '/2/spaces/{id}',
   tags: ['Spaces'],
-  summary: 'Get Spaces by ID',
+  summary: 'Get Space by ID',
+  description: 'Retrieves details of a specific Space by its ID.',
   operationId: 'getSpacesById',
   request: {
     params: z.object({
       id: z
         .string()
-        .regex(/^[a-zA-Z0-9]{1,13}$/)
+        .regex(/^[a-zA-Z0-9]{1,24}$/)
         .openapi({
           param: {
             name: 'id',
             in: 'path',
             required: true,
-            schema: { type: 'string', pattern: '^[a-zA-Z0-9]{1,13}$' },
+            schema: { type: 'string', pattern: '^[a-zA-Z0-9]{1,24}$' },
             style: 'simple',
           },
         }),
@@ -28073,14 +30585,14 @@ export const get2SpacesIdRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['tweet.read', 'users.read', 'space.read'] }, { BearerToken: [] }],
+  security: [{ OAuth2UserToken: ['users.read', 'tweet.read', 'space.read'] }, { BearerToken: [] }],
 })
 
 export const get2SpacesIdBuyersRoute = createRoute({
   method: 'get',
   path: '/2/spaces/{id}/buyers',
   tags: ['Spaces'],
-  summary: 'Get Space ticket buyers',
+  summary: 'Get Space Ticket Buyers',
   description: 'Retrieves a list of Users who purchased tickets to a specific Space by its ID.',
   externalDocs: {
     url: 'https://developer.twitter.com/en/docs/twitter-api/spaces/lookup/api-reference/get-spaces-id-buyers',
@@ -28090,13 +30602,13 @@ export const get2SpacesIdBuyersRoute = createRoute({
     params: z.object({
       id: z
         .string()
-        .regex(/^[a-zA-Z0-9]{1,13}$/)
+        .regex(/^[a-zA-Z0-9]{1,24}$/)
         .openapi({
           param: {
             name: 'id',
             in: 'path',
             required: true,
-            schema: { type: 'string', pattern: '^[a-zA-Z0-9]{1,13}$' },
+            schema: { type: 'string', pattern: '^[a-zA-Z0-9]{1,24}$' },
             style: 'simple',
           },
         }),
@@ -28155,7 +30667,7 @@ export const get2SpacesIdBuyersRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['space.read', 'tweet.read', 'users.read'] }],
+  security: [{ OAuth2UserToken: ['tweet.read', 'space.read', 'users.read'] }],
 })
 
 export const get2SpacesIdTweetsRoute = createRoute({
@@ -28172,13 +30684,13 @@ export const get2SpacesIdTweetsRoute = createRoute({
     params: z.object({
       id: z
         .string()
-        .regex(/^[a-zA-Z0-9]{1,13}$/)
+        .regex(/^[a-zA-Z0-9]{1,24}$/)
         .openapi({
           param: {
             name: 'id',
             in: 'path',
             required: true,
-            schema: { type: 'string', pattern: '^[a-zA-Z0-9]{1,13}$' },
+            schema: { type: 'string', pattern: '^[a-zA-Z0-9]{1,24}$' },
             style: 'simple',
           },
         }),
@@ -28239,14 +30751,16 @@ export const get2SpacesIdTweetsRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['users.read', 'tweet.read', 'space.read'] }, { BearerToken: [] }],
+  security: [{ OAuth2UserToken: ['space.read', 'tweet.read', 'users.read'] }, { BearerToken: [] }],
 })
 
 export const get2TrendsByWoeidWoeidRoute = createRoute({
   method: 'get',
   path: '/2/trends/by/woeid/{woeid}',
   tags: ['Trends'],
-  summary: 'Get Trends by Woeid',
+  summary: 'Get Trends by WOEID',
+  description:
+    'Retrieves trending topics for a specific location identified by its WOEID. `meta.location` describes that location: its `woeid` and `name`, and when they are known its `country`, `country_code`, `place_type` (`town`, `country` or `supername`) and `parent_id`, the WOEID of the place that contains it.',
   operationId: 'getTrendsByWoeid',
   request: {
     params: z.object({
@@ -28311,11 +30825,39 @@ export const get2TrendsByWoeidWoeidRoute = createRoute({
   security: [{ OAuth2UserToken: [] }, { BearerToken: [] }],
 })
 
+export const get2TrendsLocationsRoute = createRoute({
+  method: 'get',
+  path: '/2/trends/locations',
+  tags: ['Trends'],
+  summary: 'Get Trend Locations',
+  description:
+    'Retrieves every location that has trends. Each location has a WOEID to pass to `GET /2/trends/by/woeid/{woeid}`. The list is short and is returned whole, so the route takes no paging parameters.',
+  operationId: 'getTrendsLocations',
+  request: {
+    query: z.object({ 'trend_location.fields': TrendLocationFieldsParameterParamsSchema }),
+  },
+  responses: {
+    200: {
+      description: 'The request has succeeded.',
+      content: { 'application/json': { schema: GetTrendsLocationsResponseSchema } },
+    },
+    default: {
+      description: 'The request has failed.',
+      content: {
+        'application/json': { schema: ErrorSchema },
+        'application/problem+json': { schema: ProblemSchema },
+      },
+    },
+  },
+  security: [{ OAuth2UserToken: [] }, { BearerToken: [] }],
+})
+
 export const get2TweetsRoute = createRoute({
   method: 'get',
   path: '/2/tweets',
   tags: ['Posts'],
   summary: 'Get Posts by IDs',
+  description: 'Retrieves details of multiple Posts by their IDs.',
   operationId: 'getPostsByIds',
   request: {
     query: z.object({
@@ -28366,7 +30908,7 @@ export const get2TweetsRoute = createRoute({
     },
   },
   security: [
-    { OAuth2UserToken: ['tweet.read', 'users.read'] },
+    { OAuth2UserToken: ['users.read', 'tweet.read'] },
     { UserToken: [] },
     { BearerToken: [] },
   ],
@@ -28376,7 +30918,9 @@ export const post2TweetsRoute = createRoute({
   method: 'post',
   path: '/2/tweets',
   tags: ['Posts'],
-  summary: 'Create Posts',
+  summary: 'Create or Edit Post',
+  description:
+    "Creates a new Post for the authenticated user, or edits an existing Post when edit_options are provided. Media in media.media_ids is attached in the order given; get the ids by uploading each image with Upload Media, or a video with Initialize Media Upload. Supports paid partnership disclosure via the paid_partnership field. To share a clip of another Post's video, set clip to that Post's id and a range of 5 to 60 seconds.",
   operationId: 'createPosts',
   request: {
     body: { content: { 'application/json': { schema: CreatePostsRequestSchema } }, required: true },
@@ -28401,7 +30945,8 @@ export const get2TweetsAnalyticsRoute = createRoute({
   method: 'get',
   path: '/2/tweets/analytics',
   tags: ['Posts'],
-  summary: 'Get Posts Analytics',
+  summary: 'Get Post Analytics',
+  description: 'Retrieves analytics data for specified Posts within a defined time range.',
   operationId: 'getPostsAnalytics',
   request: {
     query: z.object({
@@ -28492,7 +31037,7 @@ export const get2TweetsComplianceStreamRoute = createRoute({
   method: 'get',
   path: '/2/tweets/compliance/stream',
   tags: ['Stream'],
-  summary: 'Stream Posts compliance data',
+  summary: 'Stream Posts Compliance Data',
   description: 'Streams all compliance data related to Posts.',
   operationId: 'streamPostsCompliance',
   request: {
@@ -28588,8 +31133,9 @@ export const get2TweetsCountsAllRoute = createRoute({
   method: 'get',
   path: '/2/tweets/counts/all',
   tags: ['Posts'],
-  summary: 'Get Posts Counts All',
-  description: 'At most one of `pagination_token`, `next_token` may be provided.',
+  summary: 'Get Count of All Posts',
+  description:
+    'Retrieves the count of Posts matching a search query from the full archive.\n\nAt most one of `pagination_token`, `next_token` may be provided.',
   operationId: 'getPostsCountsAll',
   request: {
     query: z.object({
@@ -28731,8 +31277,9 @@ export const get2TweetsCountsRecentRoute = createRoute({
   method: 'get',
   path: '/2/tweets/counts/recent',
   tags: ['Posts'],
-  summary: 'Get Posts Counts Recent',
-  description: 'At most one of `pagination_token`, `next_token` may be provided.',
+  summary: 'Get Count of Recent Posts',
+  description:
+    'Retrieves the count of Posts from the last 7 days matching a search query.\n\nAt most one of `pagination_token`, `next_token` may be provided.',
   operationId: 'getPostsCountsRecent',
   request: {
     query: z.object({
@@ -28875,7 +31422,7 @@ export const get2TweetsFirehoseStreamRoute = createRoute({
   method: 'get',
   path: '/2/tweets/firehose/stream',
   tags: ['Stream'],
-  summary: 'Stream all Posts',
+  summary: 'Stream All Posts',
   description: 'Streams all public Posts in real-time.',
   operationId: 'streamPostsFirehose',
   request: {
@@ -31605,7 +34152,7 @@ export const get2TweetsLabelStreamRoute = createRoute({
   method: 'get',
   path: '/2/tweets/label/stream',
   tags: ['Stream'],
-  summary: 'Stream Post labels',
+  summary: 'Stream Post Labels',
   description: 'Streams all labeling events applied to Posts.',
   operationId: 'streamLabelsCompliance',
   request: {
@@ -31681,7 +34228,7 @@ export const get2TweetsSampleStreamRoute = createRoute({
   method: 'get',
   path: '/2/tweets/sample/stream',
   tags: ['Stream'],
-  summary: 'Stream sampled Posts',
+  summary: 'Stream Sampled Posts',
   description: 'Streams a 1% sample of public Posts in real-time.',
   externalDocs: { url: 'https://docs.x.com/x-api/posts/volume-streams/introduction' },
   operationId: 'streamPostsSample',
@@ -32180,7 +34727,7 @@ export const get2TweetsSample10StreamRoute = createRoute({
   method: 'get',
   path: '/2/tweets/sample10/stream',
   tags: ['Stream'],
-  summary: 'Stream 10% sampled Posts',
+  summary: 'Stream 10% Sampled Posts',
   description: 'Streams a 10% sample of public Posts in real-time.',
   operationId: 'streamPostsSample10',
   request: {
@@ -32726,9 +35273,9 @@ export const get2TweetsSearchAllRoute = createRoute({
   method: 'get',
   path: '/2/tweets/search/all',
   tags: ['Posts'],
-  summary: 'Search Posts All',
+  summary: 'Search All Posts',
   description:
-    'At most one of `start_time`, `since_id` may be provided. At most one of `end_time`, `until_id` may be provided. At most one of `pagination_token`, `next_token` may be provided.',
+    'Retrieves Posts from the full archive matching a search query.\n\nAt most one of `start_time`, `since_id` may be provided. At most one of `end_time`, `until_id` may be provided. At most one of `pagination_token`, `next_token` may be provided.',
   operationId: 'searchPostsAll',
   request: {
     query: z.object({
@@ -32888,9 +35435,9 @@ export const get2TweetsSearchRecentRoute = createRoute({
   method: 'get',
   path: '/2/tweets/search/recent',
   tags: ['Posts'],
-  summary: 'Search Posts Recent',
+  summary: 'Search Recent Posts',
   description:
-    'At most one of `start_time`, `since_id` may be provided. At most one of `end_time`, `until_id` may be provided. At most one of `pagination_token`, `next_token` may be provided.',
+    'Retrieves Posts from the last 7 days matching a search query.\n\nAt most one of `start_time`, `since_id` may be provided. At most one of `end_time`, `until_id` may be provided. At most one of `pagination_token`, `next_token` may be provided.',
   operationId: 'searchPostsRecent',
   request: {
     query: z.object({
@@ -33051,7 +35598,7 @@ export const get2TweetsSearchStreamRoute = createRoute({
   method: 'get',
   path: '/2/tweets/search/stream',
   tags: ['Stream'],
-  summary: 'Stream filtered Posts',
+  summary: 'Stream Filtered Posts',
   description: 'Streams Posts in real-time matching the active rule set.',
   externalDocs: { url: 'https://docs.x.com/x-api/posts/filtered-stream/introduction' },
   operationId: 'streamPosts',
@@ -33578,7 +36125,7 @@ export const get2TweetsSearchStreamRulesRoute = createRoute({
   method: 'get',
   path: '/2/tweets/search/stream/rules',
   tags: ['Stream'],
-  summary: 'Get filtered-stream rules',
+  summary: 'Get Stream Rules',
   description:
     'Returns the active filtered-stream rules for the authenticated app. Provide `ids` to fetch specific rules; omit it to list all rules.',
   externalDocs: { url: 'https://docs.x.com/x-api/posts/rules-lookup' },
@@ -33667,7 +36214,7 @@ export const post2TweetsSearchStreamRulesRoute = createRoute({
   method: 'post',
   path: '/2/tweets/search/stream/rules',
   tags: ['Stream'],
-  summary: 'Update stream rules',
+  summary: 'Update Stream Rules',
   description:
     'Adds or deletes rules from the active rule set for the filtered stream. Exactly one of `add`, `delete`, or `?delete_all=true` must be specified. Use `?dry_run=true` to validate without committing.',
   externalDocs: {
@@ -33723,7 +36270,8 @@ export const get2TweetsSearchStreamRulesCountsRoute = createRoute({
   method: 'get',
   path: '/2/tweets/search/stream/rules/counts',
   tags: ['Stream'],
-  summary: 'Get Rule Counts',
+  summary: 'Get Stream Rule Counts',
+  description: 'Retrieves the count of rules in the active rule set for the filtered stream.',
   operationId: 'getRuleCounts',
   request: {
     query: z.object({
@@ -33761,7 +36309,7 @@ export const get2TweetsSearchWebhooksRoute = createRoute({
   method: 'get',
   path: '/2/tweets/search/webhooks',
   tags: ['Webhooks'],
-  summary: 'Get stream links',
+  summary: 'Get Stream Links',
   description: 'Get a list of webhook links associated with a filtered stream ruleset.',
   externalDocs: { url: 'https://docs.x.com/x-api/webhooks/introduction' },
   operationId: 'getWebhooksStreamLinks',
@@ -33785,7 +36333,7 @@ export const post2TweetsSearchWebhooksWebhookIdRoute = createRoute({
   method: 'post',
   path: '/2/tweets/search/webhooks/{webhook_id}',
   tags: ['Webhooks'],
-  summary: 'Create stream link',
+  summary: 'Create Stream Link',
   description: 'Creates a link to deliver FilteredStream events to the given webhook.',
   externalDocs: { url: 'https://docs.x.com/x-api/webhooks/introduction' },
   operationId: 'createWebhooksStreamLink',
@@ -33825,7 +36373,7 @@ export const delete2TweetsSearchWebhooksWebhookIdRoute = createRoute({
   method: 'delete',
   path: '/2/tweets/search/webhooks/{webhook_id}',
   tags: ['Webhooks'],
-  summary: 'Delete stream link',
+  summary: 'Delete Stream Link',
   description: 'Deletes the link delivering FilteredStream events to the given webhook.',
   externalDocs: { url: 'https://docs.x.com/x-api/webhooks/introduction' },
   operationId: 'deleteWebhooksStreamLink',
@@ -33865,7 +36413,8 @@ export const get2TweetsIdRoute = createRoute({
   method: 'get',
   path: '/2/tweets/{id}',
   tags: ['Posts'],
-  summary: 'Get Posts by ID',
+  summary: 'Get Post by ID',
+  description: 'Retrieves details of a specific Post by its ID.',
   operationId: 'getPostsById',
   request: {
     params: z.object({
@@ -33902,7 +36451,7 @@ export const get2TweetsIdRoute = createRoute({
     },
   },
   security: [
-    { OAuth2UserToken: ['tweet.read', 'users.read'] },
+    { OAuth2UserToken: ['users.read', 'tweet.read'] },
     { UserToken: [] },
     { BearerToken: [] },
   ],
@@ -33912,7 +36461,8 @@ export const delete2TweetsIdRoute = createRoute({
   method: 'delete',
   path: '/2/tweets/{id}',
   tags: ['Posts'],
-  summary: 'Delete Posts',
+  summary: 'Delete Post',
+  description: 'Deletes a specific Post by its ID, if owned by the authenticated user.',
   operationId: 'deletePosts',
   request: {
     params: z.object({
@@ -33940,14 +36490,15 @@ export const delete2TweetsIdRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['tweet.read', 'tweet.write', 'users.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['tweet.read', 'users.read', 'tweet.write'] }, { UserToken: [] }],
 })
 
 export const get2TweetsIdLikingUsersRoute = createRoute({
   method: 'get',
   path: '/2/tweets/{id}/liking_users',
   tags: ['Posts'],
-  summary: 'Get Posts Liking Users',
+  summary: 'Get Liking Users',
+  description: 'Retrieves a list of Users who liked a specific Post by its ID.',
   operationId: 'getPostsLikingUsers',
   request: {
     params: z.object({
@@ -34015,14 +36566,15 @@ export const get2TweetsIdLikingUsersRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['users.read', 'like.read', 'tweet.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['like.read', 'users.read', 'tweet.read'] }, { UserToken: [] }],
 })
 
 export const get2TweetsIdQuoteTweetsRoute = createRoute({
   method: 'get',
   path: '/2/tweets/{id}/quote_tweets',
   tags: ['Posts'],
-  summary: 'Get Posts Quoted Posts',
+  summary: 'Get Quoted Posts',
+  description: 'Retrieves a list of Posts that quote a specific Post by its ID.',
   operationId: 'getPostsQuotedPosts',
   request: {
     params: z.object({
@@ -34140,7 +36692,8 @@ export const get2TweetsIdRetweetedByRoute = createRoute({
   method: 'get',
   path: '/2/tweets/{id}/retweeted_by',
   tags: ['Posts'],
-  summary: 'Get Posts Reposted by',
+  summary: 'Get Reposted By',
+  description: 'Retrieves a list of Users who reposted a specific Post by its ID.',
   operationId: 'getPostsRepostedBy',
   request: {
     params: z.object({
@@ -34209,7 +36762,7 @@ export const get2TweetsIdRetweetedByRoute = createRoute({
     },
   },
   security: [
-    { OAuth2UserToken: ['users.read', 'tweet.read'] },
+    { OAuth2UserToken: ['tweet.read', 'users.read'] },
     { UserToken: [] },
     { BearerToken: [] },
   ],
@@ -34219,7 +36772,8 @@ export const get2TweetsIdRetweetsRoute = createRoute({
   method: 'get',
   path: '/2/tweets/{id}/retweets',
   tags: ['Posts'],
-  summary: 'Get Posts Reposts',
+  summary: 'Get Reposts',
+  description: 'Retrieves a list of Posts that repost a specific Post by its ID.',
   operationId: 'getPostsReposts',
   request: {
     params: z.object({
@@ -34301,7 +36855,7 @@ export const put2TweetsTweetIdHiddenRoute = createRoute({
   method: 'put',
   path: '/2/tweets/{tweet_id}/hidden',
   tags: ['Posts'],
-  summary: 'Hide reply',
+  summary: 'Hide Reply',
   description: 'Hides or unhides a reply to a conversation owned by the authenticated user.',
   externalDocs: {
     url: 'https://developer.twitter.com/en/docs/twitter-api/tweets/hide-replies/api-reference/put-tweets-id-hidden',
@@ -34338,7 +36892,7 @@ export const put2TweetsTweetIdHiddenRoute = createRoute({
     },
   },
   security: [
-    { OAuth2UserToken: ['tweet.moderate.write', 'tweet.read', 'users.read'] },
+    { OAuth2UserToken: ['tweet.read', 'tweet.moderate.write', 'users.read'] },
     { UserToken: [] },
   ],
 })
@@ -34347,7 +36901,7 @@ export const get2UsageCreditsRoute = createRoute({
   method: 'get',
   path: '/2/usage/credits',
   tags: ['Usage'],
-  summary: 'Get usage credits',
+  summary: 'Get Usage Credits',
   description:
     "Returns the payer's developer-platform credit balance in USD. total_balance is max(0, prepaid_balance + free_balance); prepaid_balance may be negative.",
   operationId: 'getUsageCredits',
@@ -34372,6 +36926,7 @@ export const get2UsageTweetsRoute = createRoute({
   path: '/2/usage/tweets',
   tags: ['Usage'],
   summary: 'Get Usage',
+  description: 'Retrieves usage statistics for Posts over a specified number of days.',
   operationId: 'getUsage',
   request: {
     query: z.object({
@@ -34420,6 +36975,7 @@ export const get2UsersRoute = createRoute({
   path: '/2/users',
   tags: ['Users'],
   summary: 'Get Users by IDs',
+  description: 'Retrieves details of multiple Users by their IDs.',
   operationId: 'getUsersByIds',
   request: {
     query: z.object({
@@ -34467,7 +37023,7 @@ export const get2UsersRoute = createRoute({
     },
   },
   security: [
-    { OAuth2UserToken: ['users.read', 'tweet.read'] },
+    { OAuth2UserToken: ['tweet.read', 'users.read'] },
     { UserToken: [] },
     { BearerToken: [] },
   ],
@@ -34478,6 +37034,7 @@ export const get2UsersByRoute = createRoute({
   path: '/2/users/by',
   tags: ['Users'],
   summary: 'Get Users by Usernames',
+  description: 'Retrieves details of multiple Users by their usernames.',
   operationId: 'getUsersByUsernames',
   request: {
     query: z.object({
@@ -34538,7 +37095,8 @@ export const get2UsersByUsernameUsernameRoute = createRoute({
   method: 'get',
   path: '/2/users/by/username/{username}',
   tags: ['Users'],
-  summary: 'Get Users by Username',
+  summary: 'Get User by Username',
+  description: 'Retrieves details of a specific User by their username.',
   operationId: 'getUsersByUsername',
   request: {
     params: z.object({
@@ -34585,7 +37143,7 @@ export const get2UsersComplianceStreamRoute = createRoute({
   method: 'get',
   path: '/2/users/compliance/stream',
   tags: ['Stream'],
-  summary: 'Stream Users compliance data',
+  summary: 'Stream Users Compliance Data',
   description: 'Streams all compliance data related to Users.',
   operationId: 'streamUsersCompliance',
   request: {
@@ -34681,7 +37239,8 @@ export const get2UsersMeRoute = createRoute({
   method: 'get',
   path: '/2/users/me',
   tags: ['Users'],
-  summary: 'Get Users Me',
+  summary: 'Get My User',
+  description: 'Retrieves details of the authenticated user.',
   operationId: 'getUsersMe',
   request: {
     query: z.object({
@@ -34703,15 +37262,16 @@ export const get2UsersMeRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['tweet.read', 'users.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['users.read', 'tweet.read'] }, { UserToken: [] }],
 })
 
 export const get2UsersMeFollowersRoute = createRoute({
   method: 'get',
   path: '/2/users/me/followers',
   tags: ['Users'],
-  summary: "Get the authenticated user's followers",
-  description: "Same results as `GET /2/users/{id}/followers` with the authenticated user's ID.",
+  summary: "Get the Authenticated User's Followers",
+  description:
+    'Returns the Users who follow the authenticated user. Same results as `GET /2/users/{id}/followers` with your own user ID, without looking it up.',
   operationId: 'getUsersMeFollowers',
   request: {
     query: z.object({
@@ -34769,15 +37329,16 @@ export const get2UsersMeFollowersRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['follows.read', 'tweet.read', 'users.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['tweet.read', 'users.read', 'follows.read'] }, { UserToken: [] }],
 })
 
 export const get2UsersMeFollowingRoute = createRoute({
   method: 'get',
   path: '/2/users/me/following',
   tags: ['Users'],
-  summary: 'Get the users the authenticated user follows',
-  description: "Same results as `GET /2/users/{id}/following` with the authenticated user's ID.",
+  summary: 'Get the Users the Authenticated User Follows',
+  description:
+    'Returns the Users the authenticated user follows. Same results as `GET /2/users/{id}/following` with your own user ID, without looking it up.',
   operationId: 'getUsersMeFollowing',
   request: {
     query: z.object({
@@ -34835,14 +37396,15 @@ export const get2UsersMeFollowingRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['tweet.read', 'users.read', 'follows.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['follows.read', 'tweet.read', 'users.read'] }, { UserToken: [] }],
 })
 
 export const get2UsersPersonalizedTrendsRoute = createRoute({
   method: 'get',
   path: '/2/users/personalized_trends',
   tags: ['Trends'],
-  summary: 'Get Trends Personalized Trends',
+  summary: 'Get Personalized Trends',
+  description: 'Retrieves personalized trending topics for the authenticated user.',
   operationId: 'getTrendsPersonalizedTrends',
   request: {
     query: z.object({ 'personalized_trend.fields': PersonalizedTrendFieldsParameterParamsSchema }),
@@ -34867,8 +37429,9 @@ export const get2UsersPublicKeysRoute = createRoute({
   method: 'get',
   path: '/2/users/public_keys',
   tags: ['Users'],
-  summary: 'Get public keys',
-  description: 'Returns registered public keys for X Chat encryption for the specified users.',
+  summary: 'Get Public Keys for Multiple Users',
+  description:
+    'Returns the public keys that up to 100 users registered for X Chat encryption, looked up by numeric user ID. Each key carries the user_id of the user it belongs to.\n\nEvery key field is returned by default, so public_key.fields can be left out. It takes public_key, signing_public_key, identity_public_key_signature, public_key_version, juicebox_config and user_id.',
   externalDocs: { url: 'https://developer.x.com/' },
   operationId: 'getUsersPublicKeys',
   request: {
@@ -34887,6 +37450,7 @@ export const get2UsersPublicKeysRoute = createRoute({
           param: {
             name: 'ids',
             in: 'query',
+            description: 'Comma-separated numeric user IDs (1-100), not @usernames.',
             required: true,
             schema: {
               type: 'array',
@@ -34914,14 +37478,15 @@ export const get2UsersPublicKeysRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['users.read', 'dm.read', 'tweet.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['tweet.read', 'dm.read', 'users.read'] }, { UserToken: [] }],
 })
 
 export const get2UsersRepostsOfMeRoute = createRoute({
   method: 'get',
   path: '/2/users/reposts_of_me',
   tags: ['Users'],
-  summary: 'Get Users Reposts of Me',
+  summary: 'Get Reposts of Me',
+  description: 'Retrieves a list of Posts that repost content from the authenticated user.',
   operationId: 'getUsersRepostsOfMe',
   request: {
     query: z.object({
@@ -34981,7 +37546,7 @@ export const get2UsersRepostsOfMeRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['timeline.read', 'tweet.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['tweet.read', 'timeline.read'] }, { UserToken: [] }],
 })
 
 export const get2UsersSearchRoute = createRoute({
@@ -34989,18 +37554,26 @@ export const get2UsersSearchRoute = createRoute({
   path: '/2/users/search',
   tags: ['Users'],
   summary: 'Search Users',
+  description: 'Retrieves a list of Users matching a search query.',
   operationId: 'searchUsers',
   request: {
     query: z.object({
       query: z
         .string()
-        .regex(/^[A-Za-z0-9_' ]{1,50}$/)
+        .regex(/^[\p{L}\p{M}\p{N}\p{Zs}_'’.@&"-]+$/u)
+        .max(50)
         .openapi({
           param: {
             name: 'query',
             in: 'query',
+            description:
+              'A name or @username (1-50 chars): letters and digits in any language, spaces, and _ \' . - @ & "',
             required: true,
-            schema: { type: 'string', pattern: "^[A-Za-z0-9_' ]{1,50}$" },
+            schema: {
+              type: 'string',
+              maxLength: 50,
+              pattern: '^[\\p{L}\\p{M}\\p{N}\\p{Zs}_\'’.@&"-]+$',
+            },
             style: 'form',
           },
         }),
@@ -35056,14 +37629,19 @@ export const get2UsersSearchRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['tweet.read', 'users.read'] }, { UserToken: [] }],
+  security: [
+    { OAuth2UserToken: ['users.read', 'tweet.read'] },
+    { UserToken: [] },
+    { BearerToken: [] },
+  ],
 })
 
 export const get2UsersIdRoute = createRoute({
   method: 'get',
   path: '/2/users/{id}',
   tags: ['Users'],
-  summary: 'Get Users by ID',
+  summary: 'Get User by ID',
+  description: 'Retrieves details of a specific User by their ID.',
   operationId: 'getUsersById',
   request: {
     params: z.object({
@@ -35097,7 +37675,7 @@ export const get2UsersIdRoute = createRoute({
     },
   },
   security: [
-    { OAuth2UserToken: ['users.read', 'tweet.read'] },
+    { OAuth2UserToken: ['tweet.read', 'users.read'] },
     { UserToken: [] },
     { BearerToken: [] },
   ],
@@ -35107,7 +37685,9 @@ export const get2UsersIdAffiliatesRoute = createRoute({
   method: 'get',
   path: '/2/users/{id}/affiliates',
   tags: ['Users'],
-  summary: 'Get Users Affiliates',
+  summary: 'Get Affiliates',
+  description:
+    'Retrieves a list of Users who are affiliated with a specific organization User by their ID.',
   operationId: 'getUsersAffiliates',
   request: {
     params: z.object({
@@ -35184,7 +37764,7 @@ export const get2UsersIdBlockingRoute = createRoute({
   method: 'get',
   path: '/2/users/{id}/blocking',
   tags: ['Users'],
-  summary: 'Get blocked Users',
+  summary: 'Get Blocked Users',
   description: 'Returns the Users that the given User is blocking.',
   operationId: 'getUsersBlocking',
   request: {
@@ -35251,7 +37831,7 @@ export const get2UsersIdBlockingRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['block.read', 'tweet.read', 'users.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['block.read', 'users.read', 'tweet.read'] }, { UserToken: [] }],
 })
 
 export const post2UsersIdBlockingRoute = createRoute({
@@ -35259,7 +37839,8 @@ export const post2UsersIdBlockingRoute = createRoute({
   path: '/2/users/{id}/blocking',
   tags: ['Users'],
   summary: 'Block User',
-  description: 'Causes the source User to block the target User.',
+  description:
+    'Causes the source User to block the target User. A block also removes any follow between the two Users, in both directions, and unblocking does not restore it. Each call blocks one account: block only accounts the authenticated User named or approved, because finding or reviewing accounts is not approval to block them.',
   operationId: 'usersIdBlock',
   request: {
     params: z.object({
@@ -35291,14 +37872,15 @@ export const post2UsersIdBlockingRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['block.write', 'tweet.read', 'users.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['users.read', 'tweet.read', 'block.write'] }, { UserToken: [] }],
 })
 
 export const get2UsersIdBookmarksRoute = createRoute({
   method: 'get',
   path: '/2/users/{id}/bookmarks',
   tags: ['Users'],
-  summary: 'Get Users Bookmarks',
+  summary: 'Get Bookmarks',
+  description: 'Retrieves a list of Posts bookmarked by the authenticated user.',
   operationId: 'getUsersBookmarks',
   request: {
     params: z.object({
@@ -35306,6 +37888,8 @@ export const get2UsersIdBookmarksRoute = createRoute({
         param: {
           name: 'id',
           in: 'path',
+          description:
+            "The authenticated user's numeric ID, not `me`: the `id` from Get My User (`GET /2/users/me`).",
           required: true,
           schema: { $ref: '#/components/schemas/UserId' },
           style: 'simple',
@@ -35368,7 +37952,7 @@ export const get2UsersIdBookmarksRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['users.read', 'tweet.read', 'bookmark.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['tweet.read', 'bookmark.read', 'users.read'] }, { UserToken: [] }],
 })
 
 export const post2UsersIdBookmarksRoute = createRoute({
@@ -35385,6 +37969,8 @@ export const post2UsersIdBookmarksRoute = createRoute({
         param: {
           name: 'id',
           in: 'path',
+          description:
+            "The authenticated user's numeric ID, not `me`: the `id` from Get My User (`GET /2/users/me`).",
           required: true,
           schema: { $ref: '#/components/schemas/UserId' },
           style: 'simple',
@@ -35409,14 +37995,15 @@ export const post2UsersIdBookmarksRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['bookmark.write', 'tweet.read', 'users.read'] }],
+  security: [{ OAuth2UserToken: ['users.read', 'bookmark.write', 'tweet.read'] }],
 })
 
 export const get2UsersIdBookmarksFoldersRoute = createRoute({
   method: 'get',
   path: '/2/users/{id}/bookmarks/folders',
   tags: ['Users'],
-  summary: 'Get Users Bookmark Folders',
+  summary: 'Get Bookmark Folders',
+  description: 'Retrieves a list of Bookmark folders created by the authenticated user.',
   operationId: 'getUsersBookmarkFolders',
   request: {
     params: z.object({
@@ -35424,6 +38011,8 @@ export const get2UsersIdBookmarksFoldersRoute = createRoute({
         param: {
           name: 'id',
           in: 'path',
+          description:
+            "The authenticated user's numeric ID, not `me`: the `id` from Get My User (`GET /2/users/me`).",
           required: true,
           schema: { $ref: '#/components/schemas/UserId' },
           style: 'simple',
@@ -35496,6 +38085,8 @@ export const post2UsersIdBookmarksFoldersRoute = createRoute({
         param: {
           name: 'id',
           in: 'path',
+          description:
+            "The authenticated user's numeric ID, not `me`: the `id` from Get My User (`GET /2/users/me`).",
           required: true,
           schema: { $ref: '#/components/schemas/UserId' },
           style: 'simple',
@@ -35527,7 +38118,9 @@ export const get2UsersIdBookmarksFoldersFolderIdRoute = createRoute({
   method: 'get',
   path: '/2/users/{id}/bookmarks/folders/{folder_id}',
   tags: ['Users'],
-  summary: 'Get Users Bookmarks by Folder ID',
+  summary: 'Get Bookmarks by Folder ID',
+  description:
+    'Retrieves Posts in a specific Bookmark folder by its ID for the authenticated user.',
   operationId: 'getUsersBookmarksByFolderId',
   request: {
     params: z.object({
@@ -35535,6 +38128,8 @@ export const get2UsersIdBookmarksFoldersFolderIdRoute = createRoute({
         param: {
           name: 'id',
           in: 'path',
+          description:
+            "The authenticated user's numeric ID, not `me`: the `id` from Get My User (`GET /2/users/me`).",
           required: true,
           schema: { $ref: '#/components/schemas/UserId' },
           style: 'simple',
@@ -35621,6 +38216,8 @@ export const delete2UsersIdBookmarksTweetIdRoute = createRoute({
         param: {
           name: 'id',
           in: 'path',
+          description:
+            "The authenticated user's numeric ID, not `me`: the `id` from Get My User (`GET /2/users/me`).",
           required: true,
           schema: { $ref: '#/components/schemas/UserId' },
           style: 'simple',
@@ -35650,14 +38247,14 @@ export const delete2UsersIdBookmarksTweetIdRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['tweet.read', 'bookmark.write', 'users.read'] }],
+  security: [{ OAuth2UserToken: ['users.read', 'tweet.read', 'bookmark.write'] }],
 })
 
 export const get2UsersIdBroadcastsRoute = createRoute({
   method: 'get',
   path: '/2/users/{id}/broadcasts',
   tags: ['Broadcasts'],
-  summary: "List a user's broadcasts",
+  summary: "List a User's Broadcasts",
   description:
     "Returns the authenticated user's broadcasts, 100 per page. `id` must be the authenticated user. Deprecated: use GET /2/broadcasts.",
   operationId: 'listUserBroadcasts',
@@ -35676,15 +38273,14 @@ export const get2UsersIdBroadcastsRoute = createRoute({
     query: z.object({
       pagination_token: z
         .string()
-        .min(1)
         .exactOptional()
         .openapi({
           param: {
             name: 'pagination_token',
             in: 'query',
-            description: '`next_token.offset` from the previous page.',
+            description: '`next_token.offset` from the previous page. Empty reads the first page.',
             required: false,
-            schema: { type: 'string', minLength: 1 },
+            schema: { type: 'string' },
             style: 'form',
           },
         }),
@@ -35710,7 +38306,7 @@ export const post2UsersIdBroadcastsRoute = createRoute({
   method: 'post',
   path: '/2/users/{id}/broadcasts',
   tags: ['Broadcasts'],
-  summary: "Create a broadcast on a user's source",
+  summary: "Create a Broadcast on a User's Source",
   description:
     "Creates a broadcast on one of the authenticated user's sources. `id` must be the authenticated user. The broadcast is `NOT_STARTED` and posts nothing until it is published with PUT /2/users/:id/broadcasts/:broadcast_id/state; one that is never published is deleted after 7 days. When the source already has a running broadcast, that broadcast is returned.",
   operationId: 'createUserBroadcast',
@@ -35744,14 +38340,14 @@ export const post2UsersIdBroadcastsRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['broadcast.read', 'broadcast.write'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['broadcast.write', 'broadcast.read'] }, { UserToken: [] }],
 })
 
 export const get2UsersIdBroadcastsBroadcastIdRoute = createRoute({
   method: 'get',
   path: '/2/users/{id}/broadcasts/{broadcast_id}',
   tags: ['Broadcasts'],
-  summary: "Get a user's broadcast",
+  summary: "Get a User's Broadcast",
   description:
     "Returns one of the authenticated user's broadcasts. `id` must be the authenticated user. Deprecated: use GET /2/broadcasts/:id.",
   operationId: 'getUserBroadcast',
@@ -35800,7 +38396,7 @@ export const delete2UsersIdBroadcastsBroadcastIdRoute = createRoute({
   method: 'delete',
   path: '/2/users/{id}/broadcasts/{broadcast_id}',
   tags: ['Broadcasts'],
-  summary: "Delete a user's broadcast",
+  summary: "Delete a User's Broadcast",
   description:
     "Deletes one of the authenticated user's broadcasts. `id` must be the authenticated user. Deprecated: use DELETE /2/broadcasts/:id.",
   operationId: 'deleteUserBroadcast',
@@ -35842,14 +38438,14 @@ export const delete2UsersIdBroadcastsBroadcastIdRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['broadcast.read', 'broadcast.write'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['broadcast.write', 'broadcast.read'] }, { UserToken: [] }],
 })
 
 export const put2UsersIdBroadcastsBroadcastIdStateRoute = createRoute({
   method: 'put',
   path: '/2/users/{id}/broadcasts/{broadcast_id}/state',
   tags: ['Broadcasts'],
-  summary: "Publish or end a user's broadcast",
+  summary: "Publish or End a User's Broadcast",
   description:
     "Publishes or ends one of the authenticated user's broadcasts. `id` must be the authenticated user. `PUBLISH` takes a broadcast created with POST /2/users/:id/broadcasts live once its source is receiving video, and posts it unless `should_not_tweet` is true. `END` ends the broadcast. Deprecated: use PUT /2/broadcasts/:id/state to end a broadcast.",
   operationId: 'updateUserBroadcastState',
@@ -35902,7 +38498,9 @@ export const post2UsersIdDmBlockRoute = createRoute({
   method: 'post',
   path: '/2/users/{id}/dm/block',
   tags: ['Users'],
-  summary: 'Block Users Dms',
+  summary: 'Block DMs',
+  description:
+    'Blocks direct messages to or from a specific User by their ID for the authenticated user.',
   operationId: 'blockUsersDms',
   request: {
     params: z.object({
@@ -35930,14 +38528,16 @@ export const post2UsersIdDmBlockRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['dm.write', 'tweet.read', 'users.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['users.read', 'dm.write', 'tweet.read'] }, { UserToken: [] }],
 })
 
 export const post2UsersIdDmUnblockRoute = createRoute({
   method: 'post',
   path: '/2/users/{id}/dm/unblock',
   tags: ['Users'],
-  summary: 'Unblock Users Dms',
+  summary: 'Unblock DMs',
+  description:
+    'Unblocks direct messages to or from a specific User by their ID for the authenticated user.',
   operationId: 'unblockUsersDms',
   request: {
     params: z.object({
@@ -35965,14 +38565,15 @@ export const post2UsersIdDmUnblockRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['users.read', 'tweet.read', 'dm.write'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['dm.write', 'users.read', 'tweet.read'] }, { UserToken: [] }],
 })
 
 export const get2UsersIdFollowedListsRoute = createRoute({
   method: 'get',
   path: '/2/users/{id}/followed_lists',
   tags: ['Users'],
-  summary: 'Get Users Followed Lists',
+  summary: 'Get Followed Lists',
+  description: 'Retrieves a list of Lists followed by a specific User by their ID.',
   operationId: 'getUsersFollowedLists',
   request: {
     params: z.object({
@@ -36040,7 +38641,7 @@ export const get2UsersIdFollowedListsRoute = createRoute({
     },
   },
   security: [
-    { OAuth2UserToken: ['list.read', 'tweet.read', 'users.read'] },
+    { OAuth2UserToken: ['users.read', 'tweet.read', 'list.read'] },
     { UserToken: [] },
     { BearerToken: [] },
   ],
@@ -36051,6 +38652,7 @@ export const post2UsersIdFollowedListsRoute = createRoute({
   path: '/2/users/{id}/followed_lists',
   tags: ['Users'],
   summary: 'Follow List',
+  description: 'Causes the authenticated user to follow a specific List by its ID.',
   operationId: 'followList',
   request: {
     params: z.object({
@@ -36086,7 +38688,7 @@ export const delete2UsersIdFollowedListsListIdRoute = createRoute({
   method: 'delete',
   path: '/2/users/{id}/followed_lists/{list_id}',
   tags: ['Users'],
-  summary: 'Unfollow a List',
+  summary: 'Unfollow List',
   description: 'Causes the authenticated user to unfollow a List by its ID.',
   externalDocs: {
     url: 'https://developer.twitter.com/en/docs/twitter-api/lists/list-follows/api-reference/delete-users-id-followed-lists-list_id',
@@ -36134,7 +38736,8 @@ export const get2UsersIdFollowersRoute = createRoute({
   method: 'get',
   path: '/2/users/{id}/followers',
   tags: ['Users'],
-  summary: 'Get Users Followers',
+  summary: 'Get Followers',
+  description: 'Retrieves a list of Users who follow a specific User by their ID.',
   operationId: 'getUsersFollowers',
   request: {
     params: z.object({
@@ -36204,7 +38807,7 @@ export const get2UsersIdFollowersRoute = createRoute({
     },
   },
   security: [
-    { OAuth2UserToken: ['users.read', 'follows.read', 'tweet.read'] },
+    { OAuth2UserToken: ['follows.read', 'tweet.read', 'users.read'] },
     { UserToken: [] },
     { BearerToken: [] },
   ],
@@ -36214,7 +38817,8 @@ export const get2UsersIdFollowingRoute = createRoute({
   method: 'get',
   path: '/2/users/{id}/following',
   tags: ['Users'],
-  summary: 'Get Users Following',
+  summary: 'Get Following',
+  description: 'Retrieves a list of Users followed by a specific User by their ID.',
   operationId: 'getUsersFollowing',
   request: {
     params: z.object({
@@ -36284,7 +38888,7 @@ export const get2UsersIdFollowingRoute = createRoute({
     },
   },
   security: [
-    { OAuth2UserToken: ['users.read', 'follows.read', 'tweet.read'] },
+    { OAuth2UserToken: ['tweet.read', 'follows.read', 'users.read'] },
     { UserToken: [] },
     { BearerToken: [] },
   ],
@@ -36295,6 +38899,7 @@ export const post2UsersIdFollowingRoute = createRoute({
   path: '/2/users/{id}/following',
   tags: ['Users'],
   summary: 'Follow User',
+  description: 'Causes the authenticated user to follow a specific User by their ID.',
   operationId: 'followUser',
   request: {
     params: z.object({
@@ -36323,14 +38928,15 @@ export const post2UsersIdFollowingRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['tweet.read', 'follows.write', 'users.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['users.read', 'tweet.read', 'follows.write'] }, { UserToken: [] }],
 })
 
 export const get2UsersIdLikedTweetsRoute = createRoute({
   method: 'get',
   path: '/2/users/{id}/liked_tweets',
   tags: ['Users'],
-  summary: 'Get Users Liked Posts',
+  summary: 'Get Liked Posts',
+  description: 'Retrieves a list of Posts liked by a specific User by their ID.',
   operationId: 'getUsersLikedPosts',
   request: {
     params: z.object({
@@ -36400,7 +39006,7 @@ export const get2UsersIdLikedTweetsRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['tweet.read', 'users.read', 'like.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['like.read', 'tweet.read', 'users.read'] }, { UserToken: [] }],
 })
 
 export const post2UsersIdLikesRoute = createRoute({
@@ -36408,6 +39014,7 @@ export const post2UsersIdLikesRoute = createRoute({
   path: '/2/users/{id}/likes',
   tags: ['Users'],
   summary: 'Like Post',
+  description: 'Causes the authenticated user to like a specific Post by its ID.',
   operationId: 'likePost',
   request: {
     params: z.object({
@@ -36436,7 +39043,7 @@ export const post2UsersIdLikesRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['users.read', 'tweet.read', 'like.write'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['like.write', 'users.read', 'tweet.read'] }, { UserToken: [] }],
 })
 
 export const delete2UsersIdLikesTweetIdRoute = createRoute({
@@ -36444,6 +39051,7 @@ export const delete2UsersIdLikesTweetIdRoute = createRoute({
   path: '/2/users/{id}/likes/{tweet_id}',
   tags: ['Users'],
   summary: 'Unlike Post',
+  description: 'Causes the authenticated user to unlike a specific Post by its ID.',
   operationId: 'unlikePost',
   request: {
     params: z.object({
@@ -36480,14 +39088,15 @@ export const delete2UsersIdLikesTweetIdRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['users.read', 'tweet.read', 'like.write'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['tweet.read', 'like.write', 'users.read'] }, { UserToken: [] }],
 })
 
 export const get2UsersIdListMembershipsRoute = createRoute({
   method: 'get',
   path: '/2/users/{id}/list_memberships',
   tags: ['Users'],
-  summary: 'Get Users List Memberships',
+  summary: 'Get List Memberships',
+  description: 'Retrieves a list of Lists that a specific User is a member of by their ID.',
   operationId: 'getUsersListMemberships',
   request: {
     params: z.object({
@@ -36554,7 +39163,7 @@ export const get2UsersIdListMembershipsRoute = createRoute({
     },
   },
   security: [
-    { OAuth2UserToken: ['users.read', 'list.read', 'tweet.read'] },
+    { OAuth2UserToken: ['list.read', 'users.read', 'tweet.read'] },
     { UserToken: [] },
     { BearerToken: [] },
   ],
@@ -36564,9 +39173,9 @@ export const get2UsersIdMentionsRoute = createRoute({
   method: 'get',
   path: '/2/users/{id}/mentions',
   tags: ['Users'],
-  summary: 'Get Users Mentions',
+  summary: 'Get Mentions',
   description:
-    'When both are provided, `start_time` must be earlier than `end_time`. When both are provided, `since_id` must be less than `until_id`.',
+    'Retrieves a list of Posts that mention a specific User by their ID.\n\nWhen both are provided, `start_time` must be earlier than `end_time`. When both are provided, `since_id` must be less than `until_id`.',
   operationId: 'getUsersMentions',
   request: {
     params: z.object({
@@ -36699,7 +39308,8 @@ export const get2UsersIdMutingRoute = createRoute({
   method: 'get',
   path: '/2/users/{id}/muting',
   tags: ['Users'],
-  summary: 'Get Users Muting',
+  summary: 'Get Muting',
+  description: 'Retrieves a list of Users muted by the authenticated user.',
   operationId: 'getUsersMuting',
   request: {
     params: z.object({
@@ -36765,7 +39375,7 @@ export const get2UsersIdMutingRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['mute.read', 'users.read', 'tweet.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['users.read', 'mute.read', 'tweet.read'] }, { UserToken: [] }],
 })
 
 export const post2UsersIdMutingRoute = createRoute({
@@ -36773,6 +39383,7 @@ export const post2UsersIdMutingRoute = createRoute({
   path: '/2/users/{id}/muting',
   tags: ['Users'],
   summary: 'Mute User',
+  description: 'Causes the authenticated user to mute a specific User by their ID.',
   operationId: 'muteUser',
   request: {
     params: z.object({
@@ -36801,14 +39412,15 @@ export const post2UsersIdMutingRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['users.read', 'mute.write', 'tweet.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['users.read', 'tweet.read', 'mute.write'] }, { UserToken: [] }],
 })
 
 export const get2UsersIdOwnedListsRoute = createRoute({
   method: 'get',
   path: '/2/users/{id}/owned_lists',
   tags: ['Users'],
-  summary: 'Get Users Owned Lists',
+  summary: 'Get Owned Lists',
+  description: 'Retrieves a list of Lists owned by a specific User by their ID.',
   operationId: 'getUsersOwnedLists',
   request: {
     params: z.object({
@@ -36876,7 +39488,7 @@ export const get2UsersIdOwnedListsRoute = createRoute({
     },
   },
   security: [
-    { OAuth2UserToken: ['tweet.read', 'users.read', 'list.read'] },
+    { OAuth2UserToken: ['users.read', 'list.read', 'tweet.read'] },
     { UserToken: [] },
     { BearerToken: [] },
   ],
@@ -36886,7 +39498,8 @@ export const get2UsersIdPinnedListsRoute = createRoute({
   method: 'get',
   path: '/2/users/{id}/pinned_lists',
   tags: ['Users'],
-  summary: 'Get Users Pinned Lists',
+  summary: 'Get Pinned Lists',
+  description: 'Retrieves a list of Lists pinned by the authenticated user.',
   operationId: 'getUsersPinnedLists',
   request: {
     params: z.object({
@@ -36966,7 +39579,7 @@ export const delete2UsersIdPinnedListsListIdRoute = createRoute({
   method: 'delete',
   path: '/2/users/{id}/pinned_lists/{list_id}',
   tags: ['Users'],
-  summary: 'Unpin a List',
+  summary: 'Unpin List',
   description: 'Causes the authenticated user to unpin a List by its ID.',
   externalDocs: {
     url: 'https://developer.twitter.com/en/docs/twitter-api/lists/pinned-lists/api-reference/delete-users-id-pinned-lists-list_id',
@@ -37014,8 +39627,9 @@ export const get2UsersIdPublicKeysRoute = createRoute({
   method: 'get',
   path: '/2/users/{id}/public_keys',
   tags: ['Users'],
-  summary: 'Get public keys',
-  description: "Returns a user's registered public keys for X Chat encryption.",
+  summary: 'Get User Public Keys',
+  description:
+    "Returns a user's registered public keys for X Chat encryption.\n\nEvery key field is returned by default, so public_key.fields can be left out. It takes public_key, signing_public_key, identity_public_key_signature, public_key_version and juicebox_config.",
   externalDocs: { url: 'https://developer.x.com/' },
   operationId: 'getUsersPublicKey',
   request: {
@@ -37024,6 +39638,8 @@ export const get2UsersIdPublicKeysRoute = createRoute({
         param: {
           name: 'id',
           in: 'path',
+          description:
+            'Numeric user ID, not `me`. For your own keys, use the `id` from Get My User (`GET /2/users/me`).',
           required: true,
           schema: { $ref: '#/components/schemas/UserId' },
           style: 'simple',
@@ -37045,14 +39661,14 @@ export const get2UsersIdPublicKeysRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['dm.read', 'tweet.read', 'users.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['tweet.read', 'users.read', 'dm.read'] }, { UserToken: [] }],
 })
 
 export const post2UsersIdPublicKeysRoute = createRoute({
   method: 'post',
   path: '/2/users/{id}/public_keys',
   tags: ['Chat'],
-  summary: 'Add public key',
+  summary: 'Add Public Key',
   description: "Registers a user's public key for X Chat encryption.",
   externalDocs: { url: 'https://developer.x.com/' },
   operationId: 'addUserPublicKey',
@@ -37086,7 +39702,7 @@ export const post2UsersIdPublicKeysRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['tweet.read', 'users.read', 'dm.write'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['tweet.read', 'dm.write', 'users.read'] }, { UserToken: [] }],
 })
 
 export const post2UsersIdRetweetsRoute = createRoute({
@@ -37184,7 +39800,7 @@ export const get2UsersIdSourcesRoute = createRoute({
   method: 'get',
   path: '/2/users/{id}/sources',
   tags: ['Broadcasts'],
-  summary: "List a user's stream sources",
+  summary: "List a User's Stream Sources",
   description:
     "Returns the authenticated user's RTMP/RTMPS stream sources (empty array if none). `id` must be the authenticated user.",
   operationId: 'listUserSources',
@@ -37221,7 +39837,7 @@ export const post2UsersIdSourcesRoute = createRoute({
   method: 'post',
   path: '/2/users/{id}/sources',
   tags: ['Broadcasts'],
-  summary: 'Create a stream source for a user',
+  summary: 'Create a Stream Source for a User',
   description:
     'Creates a persistent RTMP/RTMPS ingest point for the authenticated user. `id` must be the authenticated user.',
   operationId: 'createUserSource',
@@ -37255,14 +39871,14 @@ export const post2UsersIdSourcesRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['broadcast.read', 'broadcast.write'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['broadcast.write', 'broadcast.read'] }, { UserToken: [] }],
 })
 
 export const get2UsersIdSourcesSourceIdRoute = createRoute({
   method: 'get',
   path: '/2/users/{id}/sources/{source_id}',
   tags: ['Broadcasts'],
-  summary: "Get a user's stream source",
+  summary: "Get a User's Stream Source",
   description:
     "Returns one of the authenticated user's stream sources. `id` must be the authenticated user.",
   operationId: 'getUserSource',
@@ -37311,7 +39927,7 @@ export const put2UsersIdSourcesSourceIdRoute = createRoute({
   method: 'put',
   path: '/2/users/{id}/sources/{source_id}',
   tags: ['Broadcasts'],
-  summary: "Rename a user's stream source",
+  summary: "Rename a User's Stream Source",
   description:
     "Renames one of the authenticated user's stream sources. `id` must be the authenticated user.",
   operationId: 'updateUserSource',
@@ -37364,7 +39980,7 @@ export const delete2UsersIdSourcesSourceIdRoute = createRoute({
   method: 'delete',
   path: '/2/users/{id}/sources/{source_id}',
   tags: ['Broadcasts'],
-  summary: "Delete a user's stream source",
+  summary: "Delete a User's Stream Source",
   description:
     "Deletes one of the authenticated user's stream sources. `id` must be the authenticated user. Success is an empty object.",
   operationId: 'deleteUserSource',
@@ -37413,9 +40029,9 @@ export const get2UsersIdTimelinesReverseChronologicalRoute = createRoute({
   method: 'get',
   path: '/2/users/{id}/timelines/reverse_chronological',
   tags: ['Users'],
-  summary: 'Get Users Timeline',
+  summary: 'Get Timeline',
   description:
-    'When both are provided, `start_time` must be earlier than `end_time`. When both are provided, `since_id` must be less than `until_id`.',
+    "Retrieves a reverse chronological list of Posts in the authenticated user's Timeline.\n\nWhen both are provided, `start_time` must be earlier than `end_time`. When both are provided, `since_id` must be less than `until_id`.",
   operationId: 'getUsersTimeline',
   request: {
     params: z.object({
@@ -37569,16 +40185,16 @@ export const get2UsersIdTimelinesReverseChronologicalRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['users.read', 'tweet.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['tweet.read', 'users.read'] }, { UserToken: [] }],
 })
 
 export const get2UsersIdTweetsRoute = createRoute({
   method: 'get',
   path: '/2/users/{id}/tweets',
   tags: ['Users'],
-  summary: 'Get Users Posts',
+  summary: 'Get Posts',
   description:
-    'When both are provided, `start_time` must be earlier than `end_time`. When both are provided, `since_id` must be less than `until_id`.',
+    'Retrieves a list of Posts authored by a specific User by their ID.\n\nWhen both are provided, `start_time` must be earlier than `end_time`. When both are provided, `since_id` must be less than `until_id`.',
   operationId: 'getUsersPosts',
   request: {
     params: z.object({
@@ -37737,7 +40353,7 @@ export const get2UsersIdTweetsRoute = createRoute({
     },
   },
   security: [
-    { OAuth2UserToken: ['users.read', 'tweet.read'] },
+    { OAuth2UserToken: ['tweet.read', 'users.read'] },
     { UserToken: [] },
     { BearerToken: [] },
   ],
@@ -37748,7 +40364,8 @@ export const delete2UsersSourceUserIdBlockingTargetUserIdRoute = createRoute({
   path: '/2/users/{source_user_id}/blocking/{target_user_id}',
   tags: ['Users'],
   summary: 'Unblock User',
-  description: 'Causes the source User to unblock the target User.',
+  description:
+    'Causes the source User to unblock the target User. Unblocking does not restore any follow the block removed, so blocking and then unblocking a follower removes them as a follower: do that only for followers the authenticated User approved removing.',
   externalDocs: {
     url: 'https://developer.twitter.com/en/docs/twitter-api/users/blocks/api-reference/delete-users-user_id-blocking',
   },
@@ -37788,7 +40405,7 @@ export const delete2UsersSourceUserIdBlockingTargetUserIdRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['tweet.read', 'block.write', 'users.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['block.write', 'tweet.read', 'users.read'] }, { UserToken: [] }],
 })
 
 export const delete2UsersSourceUserIdFollowingTargetUserIdRoute = createRoute({
@@ -37836,7 +40453,7 @@ export const delete2UsersSourceUserIdFollowingTargetUserIdRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['follows.write', 'users.read', 'tweet.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['users.read', 'follows.write', 'tweet.read'] }, { UserToken: [] }],
 })
 
 export const delete2UsersSourceUserIdMutingTargetUserIdRoute = createRoute({
@@ -37884,14 +40501,14 @@ export const delete2UsersSourceUserIdMutingTargetUserIdRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['mute.write', 'tweet.read', 'users.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['users.read', 'mute.write', 'tweet.read'] }, { UserToken: [] }],
 })
 
 export const get2WebhooksRoute = createRoute({
   method: 'get',
   path: '/2/webhooks',
   tags: ['Webhooks'],
-  summary: 'Get webhook',
+  summary: 'Get Webhook',
   description: 'Get a list of webhook configs associated with a client app.',
   externalDocs: { url: 'https://docs.x.com/x-api/webhooks/introduction' },
   operationId: 'getWebhooks',
@@ -37918,7 +40535,7 @@ export const post2WebhooksRoute = createRoute({
   method: 'post',
   path: '/2/webhooks',
   tags: ['Webhooks'],
-  summary: 'Create webhook',
+  summary: 'Create Webhook',
   description: 'Creates a new webhook configuration.',
   externalDocs: { url: 'https://docs.x.com/x-api/webhooks/introduction' },
   operationId: 'createWebhooks',
@@ -37948,7 +40565,7 @@ export const post2WebhooksReplayRoute = createRoute({
   method: 'post',
   path: '/2/webhooks/replay',
   tags: ['Webhooks'],
-  summary: 'Create replay job for webhook',
+  summary: 'Create Replay Job for Webhook',
   description:
     'Creates a replay job to retrieve events from up to the past 24 hours for all events delivered or attempted to be delivered to the webhook.',
   externalDocs: { url: 'https://docs.x.com/x-api/webhooks/introduction' },
@@ -37979,7 +40596,7 @@ export const put2WebhooksWebhookIdRoute = createRoute({
   method: 'put',
   path: '/2/webhooks/{webhook_id}',
   tags: ['Webhooks'],
-  summary: 'Validate webhook',
+  summary: 'Validate Webhook',
   description: 'Triggers a CRC check for a given webhook.',
   externalDocs: { url: 'https://docs.x.com/x-api/webhooks/introduction' },
   operationId: 'validateWebhooks',
@@ -38019,7 +40636,7 @@ export const delete2WebhooksWebhookIdRoute = createRoute({
   method: 'delete',
   path: '/2/webhooks/{webhook_id}',
   tags: ['Webhooks'],
-  summary: 'Delete webhook',
+  summary: 'Delete Webhook',
   description: 'Deletes an existing webhook configuration.',
   externalDocs: { url: 'https://docs.x.com/x-api/webhooks/introduction' },
   operationId: 'deleteWebhooks',

@@ -1,94 +1,2811 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const StylesSchema: z.ZodType<StylesType> = z
+const LayoutSectionSchema: z.ZodType<LayoutSectionType> = z
   .lazy(() =>
     z
       .object({
-        backgroundColor: RGBAColorSchema,
-        backgroundGradient: GradientSchema,
-        backgroundImage: BackgroundImageSchema,
-        breakpointStyles: z
-          .record(z.string(), BreakpointStylesSchema)
-          .exactOptional()
+        cells: z
+          .array(LayoutSectionSchema)
           .openapi({
             description:
-              'Contains style settings specific to different breakpoints. This property allows for responsive design adjustments based on screen size.',
+              'The individual cells within the section, each representing a distinct area for content placement.',
             example: null,
           }),
-        flexboxPositioning: z
-          .enum([
-            'BOTTOM_CENTER',
-            'BOTTOM_LEFT',
-            'BOTTOM_RIGHT',
-            'MIDDLE_CENTER',
-            'MIDDLE_LEFT',
-            'MIDDLE_RIGHT',
-            'TOP_CENTER',
-            'TOP_LEFT',
-            'TOP_RIGHT',
-          ])
+        cssClass: z
+          .string()
+          .openapi({ description: 'The CSS class applied to the layout section.', example: null }),
+        cssId: z
+          .string()
+          .openapi({ description: 'The CSS ID applied to the layout section.', example: null }),
+        cssStyle: z
+          .string()
           .openapi({
-            description: 'Indicates whether flexbox positioning is enabled for the section.',
+            description: 'Custom CSS styles applied to the layout section.',
             example: null,
           }),
-        forceFullWidthSection: z
-          .boolean()
+        label: z
+          .string()
+          .openapi({ description: 'The label for the layout section.', example: null }),
+        name: z.string().openapi({ description: 'The internal name of the page.', example: null }),
+        params: z
+          .record(z.string(), z.looseObject({}).openapi({ example: null }))
           .openapi({
-            description: 'Determines if the section should be forced to full width.',
+            description: 'Parameters associated with the layout section.',
             example: null,
           }),
-        maxWidthSectionCentering: z
+        rowMetaData: z
+          .array(RowMetaDataSchema)
+          .openapi({
+            description:
+              'Metadata about the rows within the section, such as styling or configuration details.',
+            example: null,
+          }),
+        rows: z
+          .array(z.record(z.string(), LayoutSectionSchema).openapi({ example: null }))
+          .openapi({
+            description:
+              'The number of rows contained within the section, used to organize content vertically.',
+            example: null,
+          }),
+        styles: StylesSchema,
+        type: z.string().openapi({ description: 'The type of the layout section.', example: null }),
+        w: z.int32().openapi({ description: 'The width of the layout section.', example: null }),
+        x: z
           .int32()
           .openapi({
-            description: 'Defines the maximum width for centering the section.',
-            example: null,
-          }),
-        verticalAlignment: z
-          .enum(['BOTTOM', 'MIDDLE', 'TOP'])
-          .openapi({
-            description: 'Specifies the vertical alignment of elements within the section.',
+            description: 'The x-coordinate position of the layout section.',
             example: null,
           }),
       })
       .openapi({
         required: [
-          'backgroundColor',
-          'backgroundGradient',
-          'backgroundImage',
-          'flexboxPositioning',
-          'forceFullWidthSection',
-          'maxWidthSectionCentering',
-          'verticalAlignment',
+          'cells',
+          'cssClass',
+          'cssId',
+          'cssStyle',
+          'label',
+          'name',
+          'params',
+          'rowMetaData',
+          'rows',
+          'styles',
+          'type',
+          'w',
+          'x',
         ],
         example: null,
       }),
   )
-  .openapi('Styles')
+  .openapi('LayoutSection')
 
-const RowMetaDataSchema = z
+const PublicAccessRuleSchema = z
+  .looseObject({})
+  .openapi({ example: null })
+  .openapi('PublicAccessRule')
+
+const ContentLanguageVariationSchema = z
   .object({
-    cssClass: z
+    archivedInDashboard: z
+      .boolean()
+      .openapi({
+        description:
+          'Indicates if the page is hidden from the dashboard, though it may still be live.',
+        example: null,
+      }),
+    authorName: z
       .string()
-      .openapi({ description: 'The CSS class applied to the row metadata.', example: null }),
-    styles: StylesSchema,
+      .openapi({ description: 'The name of the user that updated this page.', example: null }),
+    campaign: z
+      .string()
+      .openapi({
+        description: 'The GUID of the marketing campaign this page is a part of.',
+        example: null,
+      }),
+    campaignName: z
+      .string()
+      .openapi({
+        description: 'The name of the campaign associated with this language variation.',
+        example: null,
+      }),
+    created: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'The date and time when the content language variation was created.',
+        example: null,
+      }),
+    id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'ID of object to set as primary in multi-language group.',
+        example: null,
+      }),
+    name: z.string().openapi({ description: 'The internal name of the page.', example: null }),
+    password: z
+      .string()
+      .openapi({ description: 'A password required to view the page, if set.', example: null }),
+    publicAccessRules: z
+      .array(PublicAccessRuleSchema)
+      .openapi({
+        description:
+          'A list of rules defining public access permissions for this language variation.',
+        example: null,
+      }),
+    publicAccessRulesEnabled: z
+      .boolean()
+      .openapi({
+        description: 'Determines if public access rules should be respected.',
+        example: null,
+      }),
+    publishDate: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'The date and time when the page is scheduled to be published.',
+        example: null,
+      }),
+    slug: z
+      .string()
+      .openapi({
+        description: 'The path of this page, appended to the domain to construct the URL.',
+        example: null,
+      }),
+    state: z
+      .string()
+      .openapi({ description: 'An ENUM descibing the current state of this page.', example: null }),
+    tagIds: z
+      .array(
+        z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({ type: 'integer', format: 'int64', example: null }),
+      )
+      .exactOptional()
+      .openapi({
+        description: 'A list of tag IDs associated with this language variation.',
+        example: null,
+      }),
+    updated: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'The date and time when the content language variation was last updated.',
+        example: null,
+      }),
   })
-  .openapi({ required: ['cssClass', 'styles'], example: null })
-  .openapi('RowMetaData')
+  .openapi({
+    required: [
+      'archivedInDashboard',
+      'authorName',
+      'campaign',
+      'campaignName',
+      'created',
+      'id',
+      'name',
+      'password',
+      'publicAccessRules',
+      'publicAccessRulesEnabled',
+      'publishDate',
+      'slug',
+      'state',
+      'updated',
+    ],
+    example: null,
+  })
+  .openapi('ContentLanguageVariation')
 
-type LayoutSectionType = {
-  cells: LayoutSectionType[]
-  cssClass: string
-  cssId: string
-  cssStyle: string
-  label: string
+type PageType = {
+  abStatus:
+    | 'automated_loser_variant'
+    | 'automated_master'
+    | 'automated_variant'
+    | 'loser_variant'
+    | 'mab_master'
+    | 'mab_variant'
+    | 'master'
+    | 'variant'
+  abTestId: string
+  archivedAt: string
+  archivedInDashboard: boolean
+  attachedStylesheets: { [key: string]: { [key: string]: unknown } }[]
+  authorName: string
+  campaign: string
+  categoryId: number
+  contentGroupId: string
+  contentTypeCategory:
+    | '0'
+    | '1'
+    | '10'
+    | '11'
+    | '12'
+    | '13'
+    | '14'
+    | '15'
+    | '16'
+    | '17'
+    | '18'
+    | '19'
+    | '2'
+    | '20'
+    | '21'
+    | '22'
+    | '3'
+    | '4'
+    | '5'
+    | '6'
+    | '7'
+    | '8'
+    | '9'
+  created: string
+  createdById: string
+  currentState:
+    | 'AGENT_GENERATED'
+    | 'AUTOMATED'
+    | 'AUTOMATED_AB'
+    | 'AUTOMATED_AB_VARIANT'
+    | 'AUTOMATED_DRAFT'
+    | 'AUTOMATED_DRAFT_AB'
+    | 'AUTOMATED_DRAFT_ABVARIANT'
+    | 'AUTOMATED_FOR_FORM'
+    | 'AUTOMATED_FOR_FORM_BUFFER'
+    | 'AUTOMATED_FOR_FORM_DRAFT'
+    | 'AUTOMATED_FOR_FORM_LEGACY'
+    | 'AUTOMATED_LOSER_ABVARIANT'
+    | 'AUTOMATED_SENDING'
+    | 'BLOG_EMAIL_DRAFT'
+    | 'BLOG_EMAIL_PUBLISHED'
+    | 'DRAFT'
+    | 'DRAFT_AB'
+    | 'DRAFT_AB_VARIANT'
+    | 'ERROR'
+    | 'LOSER_AB_VARIANT'
+    | 'PAGE_STUB'
+    | 'PRE_PROCESSING'
+    | 'PROCESSING'
+    | 'PUBLISHED'
+    | 'PUBLISHED_AB'
+    | 'PUBLISHED_AB_VARIANT'
+    | 'PUBLISHED_OR_SCHEDULED'
+    | 'RSS_TO_EMAIL_DRAFT'
+    | 'RSS_TO_EMAIL_PUBLISHED'
+    | 'SCHEDULED'
+    | 'SCHEDULED_AB'
+    | 'SCHEDULED_OR_PUBLISHED'
+  currentlyPublished: boolean
+  domain: string
+  dynamicPageDataSourceId: string
+  dynamicPageDataSourceType: number
+  dynamicPageHubDbTableId: string
+  enableDomainStylesheets: boolean
+  enableLayoutStylesheets: boolean
+  featuredImage: string
+  featuredImageAltText: string
+  folderId: string
+  footerHtml: string
+  headHtml: string
+  htmlTitle: string
+  id: string
+  includeDefaultCustomCss: boolean
+  language:
+    | 'aa'
+    | 'ab'
+    | 'ae'
+    | 'af'
+    | 'af-na'
+    | 'af-za'
+    | 'agq'
+    | 'agq-cm'
+    | 'ak'
+    | 'ak-gh'
+    | 'am'
+    | 'am-et'
+    | 'an'
+    | 'ann'
+    | 'ann-ng'
+    | 'ar'
+    | 'ar-001'
+    | 'ar-ae'
+    | 'ar-bh'
+    | 'ar-dj'
+    | 'ar-dz'
+    | 'ar-eg'
+    | 'ar-eh'
+    | 'ar-er'
+    | 'ar-il'
+    | 'ar-iq'
+    | 'ar-jo'
+    | 'ar-km'
+    | 'ar-kw'
+    | 'ar-lb'
+    | 'ar-ly'
+    | 'ar-ma'
+    | 'ar-mr'
+    | 'ar-om'
+    | 'ar-ps'
+    | 'ar-qa'
+    | 'ar-sa'
+    | 'ar-sd'
+    | 'ar-so'
+    | 'ar-ss'
+    | 'ar-sy'
+    | 'ar-td'
+    | 'ar-tn'
+    | 'ar-ye'
+    | 'as'
+    | 'as-in'
+    | 'asa'
+    | 'asa-tz'
+    | 'ast'
+    | 'ast-es'
+    | 'av'
+    | 'ay'
+    | 'az'
+    | 'az-az'
+    | 'ba'
+    | 'bal'
+    | 'bal-pk'
+    | 'bas'
+    | 'bas-cm'
+    | 'be'
+    | 'be-by'
+    | 'bem'
+    | 'bem-zm'
+    | 'bez'
+    | 'bez-tz'
+    | 'bg'
+    | 'bg-bg'
+    | 'bgc'
+    | 'bgc-in'
+    | 'bho'
+    | 'bho-in'
+    | 'bi'
+    | 'blo'
+    | 'blo-bj'
+    | 'bm'
+    | 'bm-ml'
+    | 'bn'
+    | 'bn-bd'
+    | 'bn-in'
+    | 'bo'
+    | 'bo-cn'
+    | 'bo-in'
+    | 'br'
+    | 'br-fr'
+    | 'brx'
+    | 'brx-in'
+    | 'bs'
+    | 'bs-ba'
+    | 'ca'
+    | 'ca-ad'
+    | 'ca-es'
+    | 'ca-fr'
+    | 'ca-it'
+    | 'ccp'
+    | 'ccp-bd'
+    | 'ccp-in'
+    | 'ce'
+    | 'ce-ru'
+    | 'ceb'
+    | 'ceb-ph'
+    | 'cgg'
+    | 'cgg-ug'
+    | 'ch'
+    | 'chr'
+    | 'chr-us'
+    | 'ckb'
+    | 'ckb-iq'
+    | 'ckb-ir'
+    | 'co'
+    | 'cr'
+    | 'cs'
+    | 'cs-cz'
+    | 'csw'
+    | 'csw-ca'
+    | 'cu'
+    | 'cu-ru'
+    | 'cv'
+    | 'cv-ru'
+    | 'cy'
+    | 'cy-gb'
+    | 'da'
+    | 'da-dk'
+    | 'da-gl'
+    | 'dav'
+    | 'dav-ke'
+    | 'de'
+    | 'de-at'
+    | 'de-be'
+    | 'de-ch'
+    | 'de-de'
+    | 'de-gr'
+    | 'de-it'
+    | 'de-li'
+    | 'de-lu'
+    | 'dje'
+    | 'dje-ne'
+    | 'doi'
+    | 'doi-in'
+    | 'dsb'
+    | 'dsb-de'
+    | 'dua'
+    | 'dua-cm'
+    | 'dv'
+    | 'dyo'
+    | 'dyo-sn'
+    | 'dz'
+    | 'dz-bt'
+    | 'ebu'
+    | 'ebu-ke'
+    | 'ee'
+    | 'ee-gh'
+    | 'ee-tg'
+    | 'el'
+    | 'el-cy'
+    | 'el-gr'
+    | 'en'
+    | 'en-001'
+    | 'en-150'
+    | 'en-ae'
+    | 'en-ag'
+    | 'en-ai'
+    | 'en-as'
+    | 'en-at'
+    | 'en-au'
+    | 'en-bb'
+    | 'en-be'
+    | 'en-bi'
+    | 'en-bm'
+    | 'en-bs'
+    | 'en-bw'
+    | 'en-bz'
+    | 'en-ca'
+    | 'en-cc'
+    | 'en-ch'
+    | 'en-ck'
+    | 'en-cm'
+    | 'en-cn'
+    | 'en-cx'
+    | 'en-cy'
+    | 'en-cz'
+    | 'en-de'
+    | 'en-dg'
+    | 'en-dk'
+    | 'en-dm'
+    | 'en-ee'
+    | 'en-eg'
+    | 'en-er'
+    | 'en-es'
+    | 'en-fi'
+    | 'en-fj'
+    | 'en-fk'
+    | 'en-fm'
+    | 'en-fr'
+    | 'en-gb'
+    | 'en-gd'
+    | 'en-gg'
+    | 'en-gh'
+    | 'en-gi'
+    | 'en-gm'
+    | 'en-gs'
+    | 'en-gu'
+    | 'en-gy'
+    | 'en-hk'
+    | 'en-hu'
+    | 'en-id'
+    | 'en-ie'
+    | 'en-il'
+    | 'en-im'
+    | 'en-in'
+    | 'en-io'
+    | 'en-it'
+    | 'en-je'
+    | 'en-jm'
+    | 'en-ke'
+    | 'en-ki'
+    | 'en-kn'
+    | 'en-ky'
+    | 'en-lc'
+    | 'en-lr'
+    | 'en-ls'
+    | 'en-lu'
+    | 'en-mg'
+    | 'en-mh'
+    | 'en-mo'
+    | 'en-mp'
+    | 'en-ms'
+    | 'en-mt'
+    | 'en-mu'
+    | 'en-mv'
+    | 'en-mw'
+    | 'en-mx'
+    | 'en-my'
+    | 'en-na'
+    | 'en-nf'
+    | 'en-ng'
+    | 'en-nl'
+    | 'en-no'
+    | 'en-nr'
+    | 'en-nu'
+    | 'en-nz'
+    | 'en-pg'
+    | 'en-ph'
+    | 'en-pk'
+    | 'en-pl'
+    | 'en-pn'
+    | 'en-pr'
+    | 'en-pt'
+    | 'en-pw'
+    | 'en-ro'
+    | 'en-rw'
+    | 'en-sb'
+    | 'en-sc'
+    | 'en-sd'
+    | 'en-se'
+    | 'en-sg'
+    | 'en-sh'
+    | 'en-si'
+    | 'en-sk'
+    | 'en-sl'
+    | 'en-ss'
+    | 'en-sx'
+    | 'en-sz'
+    | 'en-tc'
+    | 'en-th'
+    | 'en-tk'
+    | 'en-tn'
+    | 'en-to'
+    | 'en-tt'
+    | 'en-tv'
+    | 'en-tz'
+    | 'en-ug'
+    | 'en-um'
+    | 'en-us'
+    | 'en-vc'
+    | 'en-vg'
+    | 'en-vi'
+    | 'en-vn'
+    | 'en-vu'
+    | 'en-ws'
+    | 'en-za'
+    | 'en-zm'
+    | 'en-zw'
+    | 'eo'
+    | 'eo-001'
+    | 'es'
+    | 'es-419'
+    | 'es-ar'
+    | 'es-bo'
+    | 'es-br'
+    | 'es-bz'
+    | 'es-cl'
+    | 'es-co'
+    | 'es-cr'
+    | 'es-cu'
+    | 'es-do'
+    | 'es-ea'
+    | 'es-ec'
+    | 'es-es'
+    | 'es-gq'
+    | 'es-gt'
+    | 'es-hn'
+    | 'es-ic'
+    | 'es-mx'
+    | 'es-ni'
+    | 'es-pa'
+    | 'es-pe'
+    | 'es-ph'
+    | 'es-pr'
+    | 'es-py'
+    | 'es-sv'
+    | 'es-us'
+    | 'es-uy'
+    | 'es-ve'
+    | 'et'
+    | 'et-ee'
+    | 'eu'
+    | 'eu-es'
+    | 'ewo'
+    | 'ewo-cm'
+    | 'fa'
+    | 'fa-af'
+    | 'fa-ir'
+    | 'ff'
+    | 'ff-bf'
+    | 'ff-cm'
+    | 'ff-gh'
+    | 'ff-gm'
+    | 'ff-gn'
+    | 'ff-gw'
+    | 'ff-lr'
+    | 'ff-mr'
+    | 'ff-ne'
+    | 'ff-ng'
+    | 'ff-sl'
+    | 'ff-sn'
+    | 'fi'
+    | 'fi-fi'
+    | 'fil'
+    | 'fil-ph'
+    | 'fj'
+    | 'fo'
+    | 'fo-dk'
+    | 'fo-fo'
+    | 'fr'
+    | 'fr-be'
+    | 'fr-bf'
+    | 'fr-bi'
+    | 'fr-bj'
+    | 'fr-bl'
+    | 'fr-ca'
+    | 'fr-cd'
+    | 'fr-cf'
+    | 'fr-cg'
+    | 'fr-ch'
+    | 'fr-ci'
+    | 'fr-cm'
+    | 'fr-dj'
+    | 'fr-dz'
+    | 'fr-fr'
+    | 'fr-ga'
+    | 'fr-gf'
+    | 'fr-gn'
+    | 'fr-gp'
+    | 'fr-gq'
+    | 'fr-ht'
+    | 'fr-km'
+    | 'fr-lu'
+    | 'fr-ma'
+    | 'fr-mc'
+    | 'fr-mf'
+    | 'fr-mg'
+    | 'fr-ml'
+    | 'fr-mq'
+    | 'fr-mr'
+    | 'fr-mu'
+    | 'fr-nc'
+    | 'fr-ne'
+    | 'fr-pf'
+    | 'fr-pm'
+    | 'fr-re'
+    | 'fr-rw'
+    | 'fr-sc'
+    | 'fr-sn'
+    | 'fr-sy'
+    | 'fr-td'
+    | 'fr-tg'
+    | 'fr-tn'
+    | 'fr-vu'
+    | 'fr-wf'
+    | 'fr-yt'
+    | 'frr'
+    | 'frr-de'
+    | 'fur'
+    | 'fur-it'
+    | 'fy'
+    | 'fy-nl'
+    | 'ga'
+    | 'ga-gb'
+    | 'ga-ie'
+    | 'gaa'
+    | 'gaa-gh'
+    | 'gd'
+    | 'gd-gb'
+    | 'gl'
+    | 'gl-es'
+    | 'gn'
+    | 'gsw'
+    | 'gsw-ch'
+    | 'gsw-fr'
+    | 'gsw-li'
+    | 'gu'
+    | 'gu-in'
+    | 'guz'
+    | 'guz-ke'
+    | 'gv'
+    | 'gv-im'
+    | 'ha'
+    | 'ha-gh'
+    | 'ha-ne'
+    | 'ha-ng'
+    | 'haw'
+    | 'haw-us'
+    | 'he'
+    | 'he-il'
+    | 'hi'
+    | 'hi-in'
+    | 'hmn'
+    | 'ho'
+    | 'hr'
+    | 'hr-ba'
+    | 'hr-hr'
+    | 'hsb'
+    | 'hsb-de'
+    | 'ht'
+    | 'ht-ht'
+    | 'hu'
+    | 'hu-hu'
+    | 'hy'
+    | 'hy-am'
+    | 'hz'
+    | 'ia'
+    | 'ia-001'
+    | 'id'
+    | 'id-id'
+    | 'ie'
+    | 'ie-ee'
+    | 'ig'
+    | 'ig-ng'
+    | 'ii'
+    | 'ii-cn'
+    | 'ik'
+    | 'io'
+    | 'is'
+    | 'is-is'
+    | 'it'
+    | 'it-ch'
+    | 'it-it'
+    | 'it-sm'
+    | 'it-va'
+    | 'iu'
+    | 'ja'
+    | 'ja-jp'
+    | 'jgo'
+    | 'jgo-cm'
+    | 'jmc'
+    | 'jmc-tz'
+    | 'jv'
+    | 'jv-id'
+    | 'ka'
+    | 'ka-ge'
+    | 'kab'
+    | 'kab-dz'
+    | 'kam'
+    | 'kam-ke'
+    | 'kar'
+    | 'kde'
+    | 'kde-tz'
+    | 'kea'
+    | 'kea-cv'
+    | 'kg'
+    | 'kgp'
+    | 'kgp-br'
+    | 'kh'
+    | 'khq'
+    | 'khq-ml'
+    | 'ki'
+    | 'ki-ke'
+    | 'kj'
+    | 'kk'
+    | 'kk-kz'
+    | 'kkj'
+    | 'kkj-cm'
+    | 'kl'
+    | 'kl-gl'
+    | 'kln'
+    | 'kln-ke'
+    | 'km'
+    | 'km-kh'
+    | 'kn'
+    | 'kn-in'
+    | 'ko'
+    | 'ko-cn'
+    | 'ko-kp'
+    | 'ko-kr'
+    | 'kok'
+    | 'kok-in'
+    | 'kr'
+    | 'ks'
+    | 'ks-in'
+    | 'ksb'
+    | 'ksb-tz'
+    | 'ksf'
+    | 'ksf-cm'
+    | 'ksh'
+    | 'ksh-de'
+    | 'ku'
+    | 'ku-tr'
+    | 'kv'
+    | 'kw'
+    | 'kw-gb'
+    | 'kxv'
+    | 'kxv-in'
+    | 'ky'
+    | 'ky-kg'
+    | 'la'
+    | 'lag'
+    | 'lag-tz'
+    | 'lb'
+    | 'lb-lu'
+    | 'lg'
+    | 'lg-ug'
+    | 'li'
+    | 'lij'
+    | 'lij-it'
+    | 'lkt'
+    | 'lkt-us'
+    | 'lmo'
+    | 'lmo-it'
+    | 'ln'
+    | 'ln-ao'
+    | 'ln-cd'
+    | 'ln-cf'
+    | 'ln-cg'
+    | 'lo'
+    | 'lo-la'
+    | 'lrc'
+    | 'lrc-iq'
+    | 'lrc-ir'
+    | 'lt'
+    | 'lt-lt'
+    | 'lu'
+    | 'lu-cd'
+    | 'luo'
+    | 'luo-ke'
+    | 'luy'
+    | 'luy-ke'
+    | 'lv'
+    | 'lv-lv'
+    | 'mai'
+    | 'mai-in'
+    | 'mas'
+    | 'mas-ke'
+    | 'mas-tz'
+    | 'mdf'
+    | 'mdf-ru'
+    | 'mer'
+    | 'mer-ke'
+    | 'mfe'
+    | 'mfe-mu'
+    | 'mg'
+    | 'mg-mg'
+    | 'mgh'
+    | 'mgh-mz'
+    | 'mgo'
+    | 'mgo-cm'
+    | 'mh'
+    | 'mi'
+    | 'mi-nz'
+    | 'mk'
+    | 'mk-mk'
+    | 'ml'
+    | 'ml-in'
+    | 'mn'
+    | 'mn-mn'
+    | 'mni'
+    | 'mni-in'
+    | 'mr'
+    | 'mr-in'
+    | 'ms'
+    | 'ms-bn'
+    | 'ms-id'
+    | 'ms-my'
+    | 'ms-sg'
+    | 'mt'
+    | 'mt-mt'
+    | 'mua'
+    | 'mua-cm'
+    | 'my'
+    | 'my-mm'
+    | 'mzn'
+    | 'mzn-ir'
+    | 'na'
+    | 'naq'
+    | 'naq-na'
+    | 'nb'
+    | 'nb-no'
+    | 'nb-sj'
+    | 'nd'
+    | 'nd-zw'
+    | 'nds'
+    | 'nds-de'
+    | 'nds-nl'
+    | 'ne'
+    | 'ne-in'
+    | 'ne-np'
+    | 'ng'
+    | 'nl'
+    | 'nl-aw'
+    | 'nl-be'
+    | 'nl-bq'
+    | 'nl-ch'
+    | 'nl-cw'
+    | 'nl-lu'
+    | 'nl-nl'
+    | 'nl-sr'
+    | 'nl-sx'
+    | 'nmg'
+    | 'nmg-cm'
+    | 'nn'
+    | 'nn-no'
+    | 'nnh'
+    | 'nnh-cm'
+    | 'no'
+    | 'no-no'
+    | 'nqo'
+    | 'nqo-gn'
+    | 'nr'
+    | 'nso'
+    | 'nso-za'
+    | 'nus'
+    | 'nus-ss'
+    | 'nv'
+    | 'ny'
+    | 'nyn'
+    | 'nyn-ug'
+    | 'oc'
+    | 'oc-es'
+    | 'oc-fr'
+    | 'oj'
+    | 'om'
+    | 'om-et'
+    | 'om-ke'
+    | 'or'
+    | 'or-in'
+    | 'os'
+    | 'os-ge'
+    | 'os-ru'
+    | 'pa'
+    | 'pa-in'
+    | 'pa-pk'
+    | 'pcm'
+    | 'pcm-ng'
+    | 'pi'
+    | 'pis'
+    | 'pis-sb'
+    | 'pl'
+    | 'pl-pl'
+    | 'prg'
+    | 'prg-001'
+    | 'ps'
+    | 'ps-af'
+    | 'ps-pk'
+    | 'pt'
+    | 'pt-ao'
+    | 'pt-br'
+    | 'pt-ch'
+    | 'pt-cv'
+    | 'pt-gq'
+    | 'pt-gw'
+    | 'pt-lu'
+    | 'pt-mo'
+    | 'pt-mz'
+    | 'pt-pt'
+    | 'pt-st'
+    | 'pt-tl'
+    | 'qu'
+    | 'qu-bo'
+    | 'qu-ec'
+    | 'qu-pe'
+    | 'raj'
+    | 'raj-in'
+    | 'rm'
+    | 'rm-ch'
+    | 'rn'
+    | 'rn-bi'
+    | 'ro'
+    | 'ro-md'
+    | 'ro-ro'
+    | 'rof'
+    | 'rof-tz'
+    | 'ru'
+    | 'ru-by'
+    | 'ru-kg'
+    | 'ru-kz'
+    | 'ru-md'
+    | 'ru-ru'
+    | 'ru-ua'
+    | 'rw'
+    | 'rw-rw'
+    | 'rwk'
+    | 'rwk-tz'
+    | 'sa'
+    | 'sa-in'
+    | 'sah'
+    | 'sah-ru'
+    | 'saq'
+    | 'saq-ke'
+    | 'sat'
+    | 'sat-in'
+    | 'sbp'
+    | 'sbp-tz'
+    | 'sc'
+    | 'sc-it'
+    | 'sd'
+    | 'sd-in'
+    | 'sd-pk'
+    | 'se'
+    | 'se-fi'
+    | 'se-no'
+    | 'se-se'
+    | 'seh'
+    | 'seh-mz'
+    | 'ses'
+    | 'ses-ml'
+    | 'sg'
+    | 'sg-cf'
+    | 'shi'
+    | 'shi-ma'
+    | 'si'
+    | 'si-lk'
+    | 'sk'
+    | 'sk-sk'
+    | 'sl'
+    | 'sl-si'
+    | 'sm'
+    | 'smn'
+    | 'smn-fi'
+    | 'sms'
+    | 'sms-fi'
+    | 'sn'
+    | 'sn-zw'
+    | 'so'
+    | 'so-dj'
+    | 'so-et'
+    | 'so-ke'
+    | 'so-so'
+    | 'sq'
+    | 'sq-al'
+    | 'sq-mk'
+    | 'sq-xk'
+    | 'sr'
+    | 'sr-ba'
+    | 'sr-cs'
+    | 'sr-me'
+    | 'sr-rs'
+    | 'sr-xk'
+    | 'ss'
+    | 'st'
+    | 'st-ls'
+    | 'st-za'
+    | 'su'
+    | 'su-id'
+    | 'sv'
+    | 'sv-ax'
+    | 'sv-fi'
+    | 'sv-se'
+    | 'sw'
+    | 'sw-cd'
+    | 'sw-ke'
+    | 'sw-tz'
+    | 'sw-ug'
+    | 'sy'
+    | 'syr'
+    | 'syr-iq'
+    | 'syr-sy'
+    | 'szl'
+    | 'szl-pl'
+    | 'ta'
+    | 'ta-in'
+    | 'ta-lk'
+    | 'ta-my'
+    | 'ta-sg'
+    | 'te'
+    | 'te-in'
+    | 'teo'
+    | 'teo-ke'
+    | 'teo-ug'
+    | 'tg'
+    | 'tg-tj'
+    | 'th'
+    | 'th-th'
+    | 'ti'
+    | 'ti-er'
+    | 'ti-et'
+    | 'tk'
+    | 'tk-tm'
+    | 'tl'
+    | 'tn'
+    | 'tn-bw'
+    | 'tn-za'
+    | 'to'
+    | 'to-to'
+    | 'tok'
+    | 'tok-001'
+    | 'tr'
+    | 'tr-cy'
+    | 'tr-tr'
+    | 'ts'
+    | 'tt'
+    | 'tt-ru'
+    | 'tw'
+    | 'twq'
+    | 'twq-ne'
+    | 'ty'
+    | 'tzm'
+    | 'tzm-ma'
+    | 'ug'
+    | 'ug-cn'
+    | 'uk'
+    | 'uk-ua'
+    | 'ur'
+    | 'ur-in'
+    | 'ur-pk'
+    | 'uz'
+    | 'uz-af'
+    | 'uz-uz'
+    | 'vai'
+    | 'vai-lr'
+    | 've'
+    | 'vec'
+    | 'vec-it'
+    | 'vi'
+    | 'vi-vn'
+    | 'vmw'
+    | 'vmw-mz'
+    | 'vo'
+    | 'vo-001'
+    | 'vun'
+    | 'vun-tz'
+    | 'wa'
+    | 'wae'
+    | 'wae-ch'
+    | 'wo'
+    | 'wo-sn'
+    | 'xh'
+    | 'xh-za'
+    | 'xnr'
+    | 'xnr-in'
+    | 'xog'
+    | 'xog-ug'
+    | 'yav'
+    | 'yav-cm'
+    | 'yi'
+    | 'yi-001'
+    | 'yi-ua'
+    | 'yo'
+    | 'yo-bj'
+    | 'yo-ng'
+    | 'yrl'
+    | 'yrl-br'
+    | 'yrl-co'
+    | 'yrl-ve'
+    | 'yue'
+    | 'yue-cn'
+    | 'yue-hk'
+    | 'yue-mo'
+    | 'za'
+    | 'za-cn'
+    | 'zgh'
+    | 'zgh-ma'
+    | 'zh'
+    | 'zh-cn'
+    | 'zh-hans'
+    | 'zh-hant'
+    | 'zh-hk'
+    | 'zh-mo'
+    | 'zh-my'
+    | 'zh-sg'
+    | 'zh-tw'
+    | 'zu'
+    | 'zu-za'
+  layoutSections: { [key: string]: z.infer<typeof LayoutSectionSchema> }
+  linkRelCanonicalUrl: string
+  mabExperimentId: string
+  metaDescription: string
   name: string
-  params: { [key: string]: { [key: string]: unknown } }
-  rowMetaData: z.infer<typeof RowMetaDataSchema>[]
-  rows: { [key: string]: LayoutSectionType }[]
-  styles: z.infer<typeof StylesSchema>
-  type: string
-  w: number
-  x: number
+  pageExpiryDate: bigint
+  pageExpiryEnabled: boolean
+  pageExpiryRedirectId: bigint
+  pageExpiryRedirectUrl: string
+  pageRedirected: boolean
+  password: string
+  publicAccessRules: z.infer<typeof PublicAccessRuleSchema>[]
+  publicAccessRulesEnabled: boolean
+  publishDate: string
+  publishImmediately: boolean
+  slug: string
+  state: string
+  subcategory: string
+  templatePath: string
+  themeSettingsValues: { [key: string]: { [key: string]: unknown } }
+  translatedFromId: string
+  translations: { [key: string]: z.infer<typeof ContentLanguageVariationSchema> }
+  updated: string
+  updatedById: string
+  url: string
+  useFeaturedImage: boolean
+  widgetContainers: { [key: string]: { [key: string]: unknown } }
+  widgets: { [key: string]: { [key: string]: unknown } }
+}
+
+const PageSchema: z.ZodType<PageType> = z
+  .object({
+    abStatus: z
+      .enum([
+        'automated_loser_variant',
+        'automated_master',
+        'automated_variant',
+        'loser_variant',
+        'mab_master',
+        'mab_variant',
+        'master',
+        'variant',
+      ])
+      .openapi({
+        description: 'The status of the AB test associated with this page, if applicable',
+        example: null,
+      }),
+    abTestId: z
+      .string()
+      .openapi({
+        description: 'The ID of the AB test associated with this page, if applicable',
+        example: null,
+      }),
+    archivedAt: z.iso
+      .datetime({ offset: true })
+      .openapi({ description: 'The timestamp when this page was deleted.', example: null }),
+    archivedInDashboard: z
+      .boolean()
+      .openapi({
+        description:
+          'If True, the page will not show up in your dashboard, although the page could still be live.',
+        example: null,
+      }),
+    attachedStylesheets: z
+      .array(
+        z
+          .record(z.string(), z.looseObject({}).openapi({ example: null }))
+          .openapi({ example: null }),
+      )
+      .openapi({
+        description:
+          'List of stylesheets to attach to this page. These stylesheets are attached to just this page. Order of precedence is bottom to top, just like in the HTML.',
+        example: null,
+      }),
+    authorName: z
+      .string()
+      .openapi({ description: 'The name of the user that updated this page.', example: null }),
+    campaign: z
+      .string()
+      .openapi({
+        description: 'The GUID of the marketing campaign this page is a part of.',
+        example: null,
+      }),
+    categoryId: z
+      .int32()
+      .openapi({ description: 'ID of the type of object this is. Should always .', example: null }),
+    contentGroupId: z
+      .string()
+      .openapi({
+        description:
+          'Required when creating or cloning blog posts. The unique identifier for the content group associated with the blog. ',
+        example: null,
+      }),
+    contentTypeCategory: z
+      .enum([
+        '0',
+        '1',
+        '10',
+        '11',
+        '12',
+        '13',
+        '14',
+        '15',
+        '16',
+        '17',
+        '18',
+        '19',
+        '2',
+        '20',
+        '21',
+        '22',
+        '3',
+        '4',
+        '5',
+        '6',
+        '7',
+        '8',
+        '9',
+      ])
+      .openapi({
+        description:
+          'An ENUM descibing the type of this object. Should be either LANDING_PAGE or SITE_PAGE.',
+        example: null,
+      }),
+    created: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'The timestamp indicating when the page was created.',
+        example: null,
+      }),
+    createdById: z
+      .string()
+      .openapi({ description: 'The ID of the user that created this page.', example: null }),
+    currentState: z
+      .enum([
+        'AGENT_GENERATED',
+        'AUTOMATED',
+        'AUTOMATED_AB',
+        'AUTOMATED_AB_VARIANT',
+        'AUTOMATED_DRAFT',
+        'AUTOMATED_DRAFT_AB',
+        'AUTOMATED_DRAFT_ABVARIANT',
+        'AUTOMATED_FOR_FORM',
+        'AUTOMATED_FOR_FORM_BUFFER',
+        'AUTOMATED_FOR_FORM_DRAFT',
+        'AUTOMATED_FOR_FORM_LEGACY',
+        'AUTOMATED_LOSER_ABVARIANT',
+        'AUTOMATED_SENDING',
+        'BLOG_EMAIL_DRAFT',
+        'BLOG_EMAIL_PUBLISHED',
+        'DRAFT',
+        'DRAFT_AB',
+        'DRAFT_AB_VARIANT',
+        'ERROR',
+        'LOSER_AB_VARIANT',
+        'PAGE_STUB',
+        'PRE_PROCESSING',
+        'PROCESSING',
+        'PUBLISHED',
+        'PUBLISHED_AB',
+        'PUBLISHED_AB_VARIANT',
+        'PUBLISHED_OR_SCHEDULED',
+        'RSS_TO_EMAIL_DRAFT',
+        'RSS_TO_EMAIL_PUBLISHED',
+        'SCHEDULED',
+        'SCHEDULED_AB',
+        'SCHEDULED_OR_PUBLISHED',
+      ])
+      .openapi({
+        description: 'A generated ENUM descibing the current state of this page.',
+        example: null,
+      }),
+    currentlyPublished: z
+      .boolean()
+      .openapi({
+        description: 'Indicates whether the page is currently published.',
+        example: null,
+      }),
+    domain: z
+      .string()
+      .openapi({
+        description:
+          'The domain this page will resolve to. If null, the page will default to the primary domain for this content type.',
+        example: null,
+      }),
+    dynamicPageDataSourceId: z
+      .string()
+      .openapi({
+        description: 'The identifier for the data source used by the dynamic page.',
+        example: null,
+      }),
+    dynamicPageDataSourceType: z
+      .int32()
+      .openapi({ description: 'The type of data source used by the dynamic page.', example: null }),
+    dynamicPageHubDbTableId: z
+      .string()
+      .openapi({
+        description: 'The ID of the HubDB table this page references, if applicable',
+        example: null,
+      }),
+    enableDomainStylesheets: z
+      .boolean()
+      .openapi({
+        description:
+          'Boolean to determine whether or not the styles from the template should be applied.',
+        example: null,
+      }),
+    enableLayoutStylesheets: z
+      .boolean()
+      .openapi({
+        description:
+          'Boolean to determine whether or not the styles from the template should be applied.',
+        example: null,
+      }),
+    featuredImage: z
+      .string()
+      .openapi({ description: 'The featuredImage of this page.', example: null }),
+    featuredImageAltText: z
+      .string()
+      .openapi({ description: 'Alt Text of the featuredImage.', example: null }),
+    folderId: z
+      .string()
+      .openapi({
+        description:
+          'The ID of the associated folder this landing page is organized under in the app dashboard.',
+        example: null,
+      }),
+    footerHtml: z
+      .string()
+      .openapi({
+        description:
+          'Custom HTML for embed codes, javascript that should be placed before the </body> tag of the page.',
+        example: null,
+      }),
+    headHtml: z
+      .string()
+      .openapi({
+        description:
+          'Custom HTML for embed codes, javascript, etc. that goes in the <head> tag of the page.',
+        example: null,
+      }),
+    htmlTitle: z.string().openapi({ description: 'The html title of this page.', example: null }),
+    id: z.string().openapi({ description: 'The unique ID of the page.', example: null }),
+    includeDefaultCustomCss: z
+      .boolean()
+      .openapi({
+        description: 'Boolean to determine whether or not the Primary CSS Files should be applied.',
+        example: null,
+      }),
+    language: z
+      .enum([
+        'aa',
+        'ab',
+        'ae',
+        'af',
+        'af-na',
+        'af-za',
+        'agq',
+        'agq-cm',
+        'ak',
+        'ak-gh',
+        'am',
+        'am-et',
+        'an',
+        'ann',
+        'ann-ng',
+        'ar',
+        'ar-001',
+        'ar-ae',
+        'ar-bh',
+        'ar-dj',
+        'ar-dz',
+        'ar-eg',
+        'ar-eh',
+        'ar-er',
+        'ar-il',
+        'ar-iq',
+        'ar-jo',
+        'ar-km',
+        'ar-kw',
+        'ar-lb',
+        'ar-ly',
+        'ar-ma',
+        'ar-mr',
+        'ar-om',
+        'ar-ps',
+        'ar-qa',
+        'ar-sa',
+        'ar-sd',
+        'ar-so',
+        'ar-ss',
+        'ar-sy',
+        'ar-td',
+        'ar-tn',
+        'ar-ye',
+        'as',
+        'as-in',
+        'asa',
+        'asa-tz',
+        'ast',
+        'ast-es',
+        'av',
+        'ay',
+        'az',
+        'az-az',
+        'ba',
+        'bal',
+        'bal-pk',
+        'bas',
+        'bas-cm',
+        'be',
+        'be-by',
+        'bem',
+        'bem-zm',
+        'bez',
+        'bez-tz',
+        'bg',
+        'bg-bg',
+        'bgc',
+        'bgc-in',
+        'bho',
+        'bho-in',
+        'bi',
+        'blo',
+        'blo-bj',
+        'bm',
+        'bm-ml',
+        'bn',
+        'bn-bd',
+        'bn-in',
+        'bo',
+        'bo-cn',
+        'bo-in',
+        'br',
+        'br-fr',
+        'brx',
+        'brx-in',
+        'bs',
+        'bs-ba',
+        'ca',
+        'ca-ad',
+        'ca-es',
+        'ca-fr',
+        'ca-it',
+        'ccp',
+        'ccp-bd',
+        'ccp-in',
+        'ce',
+        'ce-ru',
+        'ceb',
+        'ceb-ph',
+        'cgg',
+        'cgg-ug',
+        'ch',
+        'chr',
+        'chr-us',
+        'ckb',
+        'ckb-iq',
+        'ckb-ir',
+        'co',
+        'cr',
+        'cs',
+        'cs-cz',
+        'csw',
+        'csw-ca',
+        'cu',
+        'cu-ru',
+        'cv',
+        'cv-ru',
+        'cy',
+        'cy-gb',
+        'da',
+        'da-dk',
+        'da-gl',
+        'dav',
+        'dav-ke',
+        'de',
+        'de-at',
+        'de-be',
+        'de-ch',
+        'de-de',
+        'de-gr',
+        'de-it',
+        'de-li',
+        'de-lu',
+        'dje',
+        'dje-ne',
+        'doi',
+        'doi-in',
+        'dsb',
+        'dsb-de',
+        'dua',
+        'dua-cm',
+        'dv',
+        'dyo',
+        'dyo-sn',
+        'dz',
+        'dz-bt',
+        'ebu',
+        'ebu-ke',
+        'ee',
+        'ee-gh',
+        'ee-tg',
+        'el',
+        'el-cy',
+        'el-gr',
+        'en',
+        'en-001',
+        'en-150',
+        'en-ae',
+        'en-ag',
+        'en-ai',
+        'en-as',
+        'en-at',
+        'en-au',
+        'en-bb',
+        'en-be',
+        'en-bi',
+        'en-bm',
+        'en-bs',
+        'en-bw',
+        'en-bz',
+        'en-ca',
+        'en-cc',
+        'en-ch',
+        'en-ck',
+        'en-cm',
+        'en-cn',
+        'en-cx',
+        'en-cy',
+        'en-cz',
+        'en-de',
+        'en-dg',
+        'en-dk',
+        'en-dm',
+        'en-ee',
+        'en-eg',
+        'en-er',
+        'en-es',
+        'en-fi',
+        'en-fj',
+        'en-fk',
+        'en-fm',
+        'en-fr',
+        'en-gb',
+        'en-gd',
+        'en-gg',
+        'en-gh',
+        'en-gi',
+        'en-gm',
+        'en-gs',
+        'en-gu',
+        'en-gy',
+        'en-hk',
+        'en-hu',
+        'en-id',
+        'en-ie',
+        'en-il',
+        'en-im',
+        'en-in',
+        'en-io',
+        'en-it',
+        'en-je',
+        'en-jm',
+        'en-ke',
+        'en-ki',
+        'en-kn',
+        'en-ky',
+        'en-lc',
+        'en-lr',
+        'en-ls',
+        'en-lu',
+        'en-mg',
+        'en-mh',
+        'en-mo',
+        'en-mp',
+        'en-ms',
+        'en-mt',
+        'en-mu',
+        'en-mv',
+        'en-mw',
+        'en-mx',
+        'en-my',
+        'en-na',
+        'en-nf',
+        'en-ng',
+        'en-nl',
+        'en-no',
+        'en-nr',
+        'en-nu',
+        'en-nz',
+        'en-pg',
+        'en-ph',
+        'en-pk',
+        'en-pl',
+        'en-pn',
+        'en-pr',
+        'en-pt',
+        'en-pw',
+        'en-ro',
+        'en-rw',
+        'en-sb',
+        'en-sc',
+        'en-sd',
+        'en-se',
+        'en-sg',
+        'en-sh',
+        'en-si',
+        'en-sk',
+        'en-sl',
+        'en-ss',
+        'en-sx',
+        'en-sz',
+        'en-tc',
+        'en-th',
+        'en-tk',
+        'en-tn',
+        'en-to',
+        'en-tt',
+        'en-tv',
+        'en-tz',
+        'en-ug',
+        'en-um',
+        'en-us',
+        'en-vc',
+        'en-vg',
+        'en-vi',
+        'en-vn',
+        'en-vu',
+        'en-ws',
+        'en-za',
+        'en-zm',
+        'en-zw',
+        'eo',
+        'eo-001',
+        'es',
+        'es-419',
+        'es-ar',
+        'es-bo',
+        'es-br',
+        'es-bz',
+        'es-cl',
+        'es-co',
+        'es-cr',
+        'es-cu',
+        'es-do',
+        'es-ea',
+        'es-ec',
+        'es-es',
+        'es-gq',
+        'es-gt',
+        'es-hn',
+        'es-ic',
+        'es-mx',
+        'es-ni',
+        'es-pa',
+        'es-pe',
+        'es-ph',
+        'es-pr',
+        'es-py',
+        'es-sv',
+        'es-us',
+        'es-uy',
+        'es-ve',
+        'et',
+        'et-ee',
+        'eu',
+        'eu-es',
+        'ewo',
+        'ewo-cm',
+        'fa',
+        'fa-af',
+        'fa-ir',
+        'ff',
+        'ff-bf',
+        'ff-cm',
+        'ff-gh',
+        'ff-gm',
+        'ff-gn',
+        'ff-gw',
+        'ff-lr',
+        'ff-mr',
+        'ff-ne',
+        'ff-ng',
+        'ff-sl',
+        'ff-sn',
+        'fi',
+        'fi-fi',
+        'fil',
+        'fil-ph',
+        'fj',
+        'fo',
+        'fo-dk',
+        'fo-fo',
+        'fr',
+        'fr-be',
+        'fr-bf',
+        'fr-bi',
+        'fr-bj',
+        'fr-bl',
+        'fr-ca',
+        'fr-cd',
+        'fr-cf',
+        'fr-cg',
+        'fr-ch',
+        'fr-ci',
+        'fr-cm',
+        'fr-dj',
+        'fr-dz',
+        'fr-fr',
+        'fr-ga',
+        'fr-gf',
+        'fr-gn',
+        'fr-gp',
+        'fr-gq',
+        'fr-ht',
+        'fr-km',
+        'fr-lu',
+        'fr-ma',
+        'fr-mc',
+        'fr-mf',
+        'fr-mg',
+        'fr-ml',
+        'fr-mq',
+        'fr-mr',
+        'fr-mu',
+        'fr-nc',
+        'fr-ne',
+        'fr-pf',
+        'fr-pm',
+        'fr-re',
+        'fr-rw',
+        'fr-sc',
+        'fr-sn',
+        'fr-sy',
+        'fr-td',
+        'fr-tg',
+        'fr-tn',
+        'fr-vu',
+        'fr-wf',
+        'fr-yt',
+        'frr',
+        'frr-de',
+        'fur',
+        'fur-it',
+        'fy',
+        'fy-nl',
+        'ga',
+        'ga-gb',
+        'ga-ie',
+        'gaa',
+        'gaa-gh',
+        'gd',
+        'gd-gb',
+        'gl',
+        'gl-es',
+        'gn',
+        'gsw',
+        'gsw-ch',
+        'gsw-fr',
+        'gsw-li',
+        'gu',
+        'gu-in',
+        'guz',
+        'guz-ke',
+        'gv',
+        'gv-im',
+        'ha',
+        'ha-gh',
+        'ha-ne',
+        'ha-ng',
+        'haw',
+        'haw-us',
+        'he',
+        'he-il',
+        'hi',
+        'hi-in',
+        'hmn',
+        'ho',
+        'hr',
+        'hr-ba',
+        'hr-hr',
+        'hsb',
+        'hsb-de',
+        'ht',
+        'ht-ht',
+        'hu',
+        'hu-hu',
+        'hy',
+        'hy-am',
+        'hz',
+        'ia',
+        'ia-001',
+        'id',
+        'id-id',
+        'ie',
+        'ie-ee',
+        'ig',
+        'ig-ng',
+        'ii',
+        'ii-cn',
+        'ik',
+        'io',
+        'is',
+        'is-is',
+        'it',
+        'it-ch',
+        'it-it',
+        'it-sm',
+        'it-va',
+        'iu',
+        'ja',
+        'ja-jp',
+        'jgo',
+        'jgo-cm',
+        'jmc',
+        'jmc-tz',
+        'jv',
+        'jv-id',
+        'ka',
+        'ka-ge',
+        'kab',
+        'kab-dz',
+        'kam',
+        'kam-ke',
+        'kar',
+        'kde',
+        'kde-tz',
+        'kea',
+        'kea-cv',
+        'kg',
+        'kgp',
+        'kgp-br',
+        'kh',
+        'khq',
+        'khq-ml',
+        'ki',
+        'ki-ke',
+        'kj',
+        'kk',
+        'kk-kz',
+        'kkj',
+        'kkj-cm',
+        'kl',
+        'kl-gl',
+        'kln',
+        'kln-ke',
+        'km',
+        'km-kh',
+        'kn',
+        'kn-in',
+        'ko',
+        'ko-cn',
+        'ko-kp',
+        'ko-kr',
+        'kok',
+        'kok-in',
+        'kr',
+        'ks',
+        'ks-in',
+        'ksb',
+        'ksb-tz',
+        'ksf',
+        'ksf-cm',
+        'ksh',
+        'ksh-de',
+        'ku',
+        'ku-tr',
+        'kv',
+        'kw',
+        'kw-gb',
+        'kxv',
+        'kxv-in',
+        'ky',
+        'ky-kg',
+        'la',
+        'lag',
+        'lag-tz',
+        'lb',
+        'lb-lu',
+        'lg',
+        'lg-ug',
+        'li',
+        'lij',
+        'lij-it',
+        'lkt',
+        'lkt-us',
+        'lmo',
+        'lmo-it',
+        'ln',
+        'ln-ao',
+        'ln-cd',
+        'ln-cf',
+        'ln-cg',
+        'lo',
+        'lo-la',
+        'lrc',
+        'lrc-iq',
+        'lrc-ir',
+        'lt',
+        'lt-lt',
+        'lu',
+        'lu-cd',
+        'luo',
+        'luo-ke',
+        'luy',
+        'luy-ke',
+        'lv',
+        'lv-lv',
+        'mai',
+        'mai-in',
+        'mas',
+        'mas-ke',
+        'mas-tz',
+        'mdf',
+        'mdf-ru',
+        'mer',
+        'mer-ke',
+        'mfe',
+        'mfe-mu',
+        'mg',
+        'mg-mg',
+        'mgh',
+        'mgh-mz',
+        'mgo',
+        'mgo-cm',
+        'mh',
+        'mi',
+        'mi-nz',
+        'mk',
+        'mk-mk',
+        'ml',
+        'ml-in',
+        'mn',
+        'mn-mn',
+        'mni',
+        'mni-in',
+        'mr',
+        'mr-in',
+        'ms',
+        'ms-bn',
+        'ms-id',
+        'ms-my',
+        'ms-sg',
+        'mt',
+        'mt-mt',
+        'mua',
+        'mua-cm',
+        'my',
+        'my-mm',
+        'mzn',
+        'mzn-ir',
+        'na',
+        'naq',
+        'naq-na',
+        'nb',
+        'nb-no',
+        'nb-sj',
+        'nd',
+        'nd-zw',
+        'nds',
+        'nds-de',
+        'nds-nl',
+        'ne',
+        'ne-in',
+        'ne-np',
+        'ng',
+        'nl',
+        'nl-aw',
+        'nl-be',
+        'nl-bq',
+        'nl-ch',
+        'nl-cw',
+        'nl-lu',
+        'nl-nl',
+        'nl-sr',
+        'nl-sx',
+        'nmg',
+        'nmg-cm',
+        'nn',
+        'nn-no',
+        'nnh',
+        'nnh-cm',
+        'no',
+        'no-no',
+        'nqo',
+        'nqo-gn',
+        'nr',
+        'nso',
+        'nso-za',
+        'nus',
+        'nus-ss',
+        'nv',
+        'ny',
+        'nyn',
+        'nyn-ug',
+        'oc',
+        'oc-es',
+        'oc-fr',
+        'oj',
+        'om',
+        'om-et',
+        'om-ke',
+        'or',
+        'or-in',
+        'os',
+        'os-ge',
+        'os-ru',
+        'pa',
+        'pa-in',
+        'pa-pk',
+        'pcm',
+        'pcm-ng',
+        'pi',
+        'pis',
+        'pis-sb',
+        'pl',
+        'pl-pl',
+        'prg',
+        'prg-001',
+        'ps',
+        'ps-af',
+        'ps-pk',
+        'pt',
+        'pt-ao',
+        'pt-br',
+        'pt-ch',
+        'pt-cv',
+        'pt-gq',
+        'pt-gw',
+        'pt-lu',
+        'pt-mo',
+        'pt-mz',
+        'pt-pt',
+        'pt-st',
+        'pt-tl',
+        'qu',
+        'qu-bo',
+        'qu-ec',
+        'qu-pe',
+        'raj',
+        'raj-in',
+        'rm',
+        'rm-ch',
+        'rn',
+        'rn-bi',
+        'ro',
+        'ro-md',
+        'ro-ro',
+        'rof',
+        'rof-tz',
+        'ru',
+        'ru-by',
+        'ru-kg',
+        'ru-kz',
+        'ru-md',
+        'ru-ru',
+        'ru-ua',
+        'rw',
+        'rw-rw',
+        'rwk',
+        'rwk-tz',
+        'sa',
+        'sa-in',
+        'sah',
+        'sah-ru',
+        'saq',
+        'saq-ke',
+        'sat',
+        'sat-in',
+        'sbp',
+        'sbp-tz',
+        'sc',
+        'sc-it',
+        'sd',
+        'sd-in',
+        'sd-pk',
+        'se',
+        'se-fi',
+        'se-no',
+        'se-se',
+        'seh',
+        'seh-mz',
+        'ses',
+        'ses-ml',
+        'sg',
+        'sg-cf',
+        'shi',
+        'shi-ma',
+        'si',
+        'si-lk',
+        'sk',
+        'sk-sk',
+        'sl',
+        'sl-si',
+        'sm',
+        'smn',
+        'smn-fi',
+        'sms',
+        'sms-fi',
+        'sn',
+        'sn-zw',
+        'so',
+        'so-dj',
+        'so-et',
+        'so-ke',
+        'so-so',
+        'sq',
+        'sq-al',
+        'sq-mk',
+        'sq-xk',
+        'sr',
+        'sr-ba',
+        'sr-cs',
+        'sr-me',
+        'sr-rs',
+        'sr-xk',
+        'ss',
+        'st',
+        'st-ls',
+        'st-za',
+        'su',
+        'su-id',
+        'sv',
+        'sv-ax',
+        'sv-fi',
+        'sv-se',
+        'sw',
+        'sw-cd',
+        'sw-ke',
+        'sw-tz',
+        'sw-ug',
+        'sy',
+        'syr',
+        'syr-iq',
+        'syr-sy',
+        'szl',
+        'szl-pl',
+        'ta',
+        'ta-in',
+        'ta-lk',
+        'ta-my',
+        'ta-sg',
+        'te',
+        'te-in',
+        'teo',
+        'teo-ke',
+        'teo-ug',
+        'tg',
+        'tg-tj',
+        'th',
+        'th-th',
+        'ti',
+        'ti-er',
+        'ti-et',
+        'tk',
+        'tk-tm',
+        'tl',
+        'tn',
+        'tn-bw',
+        'tn-za',
+        'to',
+        'to-to',
+        'tok',
+        'tok-001',
+        'tr',
+        'tr-cy',
+        'tr-tr',
+        'ts',
+        'tt',
+        'tt-ru',
+        'tw',
+        'twq',
+        'twq-ne',
+        'ty',
+        'tzm',
+        'tzm-ma',
+        'ug',
+        'ug-cn',
+        'uk',
+        'uk-ua',
+        'ur',
+        'ur-in',
+        'ur-pk',
+        'uz',
+        'uz-af',
+        'uz-uz',
+        'vai',
+        'vai-lr',
+        've',
+        'vec',
+        'vec-it',
+        'vi',
+        'vi-vn',
+        'vmw',
+        'vmw-mz',
+        'vo',
+        'vo-001',
+        'vun',
+        'vun-tz',
+        'wa',
+        'wae',
+        'wae-ch',
+        'wo',
+        'wo-sn',
+        'xh',
+        'xh-za',
+        'xnr',
+        'xnr-in',
+        'xog',
+        'xog-ug',
+        'yav',
+        'yav-cm',
+        'yi',
+        'yi-001',
+        'yi-ua',
+        'yo',
+        'yo-bj',
+        'yo-ng',
+        'yrl',
+        'yrl-br',
+        'yrl-co',
+        'yrl-ve',
+        'yue',
+        'yue-cn',
+        'yue-hk',
+        'yue-mo',
+        'za',
+        'za-cn',
+        'zgh',
+        'zgh-ma',
+        'zh',
+        'zh-cn',
+        'zh-hans',
+        'zh-hant',
+        'zh-hk',
+        'zh-mo',
+        'zh-my',
+        'zh-sg',
+        'zh-tw',
+        'zu',
+        'zu-za',
+      ])
+      .openapi({
+        description:
+          'The explicitly defined ISO 639 language code of the page. If null, the page will default to the language of the Domain.',
+        example: null,
+      }),
+    layoutSections: z
+      .record(z.string(), LayoutSectionSchema)
+      .openapi({
+        description: 'A structure detailing the layout sections of the page.',
+        example: null,
+      }),
+    linkRelCanonicalUrl: z
+      .string()
+      .openapi({
+        description:
+          'Optional override to set the URL to be used in the rel=canonical link tag on the page.',
+        example: null,
+      }),
+    mabExperimentId: z
+      .string()
+      .openapi({
+        description:
+          'The ID of the MAB test (or dynamic test) associated with this page, if applicable',
+        example: null,
+      }),
+    metaDescription: z
+      .string()
+      .openapi({
+        description: 'A description that goes in <meta> tag on the page.',
+        example: null,
+      }),
+    name: z.string().openapi({ description: 'The internal name of the page.', example: null }),
+    pageExpiryDate: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'The date at which this page should expire and begin redirecting to another url or page.',
+        example: null,
+      }),
+    pageExpiryEnabled: z
+      .boolean()
+      .openapi({
+        description: 'Boolean describing if the page expiration feature is enabled for this page',
+        example: null,
+      }),
+    pageExpiryRedirectId: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          "The ID of another page this page's url should redirect to once this page expires. Should only set this or pageExpiryRedirectUrl.",
+        example: null,
+      }),
+    pageExpiryRedirectUrl: z
+      .string()
+      .openapi({
+        description:
+          "The URL this page's url should redirect to once this page expires. Should only set this or pageExpiryRedirectId.",
+        example: null,
+      }),
+    pageRedirected: z
+      .boolean()
+      .openapi({
+        description:
+          'A generated Boolean describing whether or not this page is currently expired and being redirected.',
+        example: null,
+      }),
+    password: z
+      .string()
+      .openapi({
+        description:
+          'Set this to create a password protected page. Entering the password will be required to view the page.',
+        example: null,
+      }),
+    publicAccessRules: z
+      .array(PublicAccessRuleSchema)
+      .openapi({
+        description: 'Rules for require member registration to access private content.',
+        example: null,
+      }),
+    publicAccessRulesEnabled: z
+      .boolean()
+      .openapi({
+        description: 'Boolean to determine whether or not to respect publicAccessRules.',
+        example: null,
+      }),
+    publishDate: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'The date (ISO8601 format) the page is to be published at.',
+        example: null,
+      }),
+    publishImmediately: z
+      .boolean()
+      .openapi({
+        description:
+          'Set this to true if you want to be published immediately when the schedule publish endpoint is called, and to ignore the publish_date setting.',
+        example: null,
+      }),
+    slug: z
+      .string()
+      .openapi({
+        description:
+          'The path of the this page. This field is appended to the domain to construct the url of this page.',
+        example: null,
+      }),
+    state: z
+      .string()
+      .max(25)
+      .openapi({ description: 'An ENUM descibing the current state of this page.', example: null }),
+    subcategory: z
+      .string()
+      .openapi({
+        description: 'Details the type of page this is. Should always be landing_page or site_page',
+        example: null,
+      }),
+    templatePath: z
+      .string()
+      .openapi({
+        description: 'String detailing the path of the template used for this page.',
+        example: null,
+      }),
+    themeSettingsValues: z
+      .record(z.string(), z.looseObject({}).openapi({ example: null }))
+      .openapi({
+        description: 'A collection of settings specific to the theme applied to the page.',
+        example: null,
+      }),
+    translatedFromId: z
+      .string()
+      .openapi({
+        description: 'ID of the primary page this object was translated from.',
+        example: null,
+      }),
+    translations: z
+      .record(z.string(), ContentLanguageVariationSchema)
+      .openapi({
+        description:
+          'A map of translations for the page, each associated with a specific language variation.',
+        example: null,
+      }),
+    updated: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'The timestamp indicating when the page was last updated.',
+        example: null,
+      }),
+    updatedById: z
+      .string()
+      .openapi({ description: 'The ID of the user that updated this page.', example: null }),
+    url: z
+      .string()
+      .openapi({
+        description: 'A generated field representing the URL of this page.',
+        example: null,
+      }),
+    useFeaturedImage: z
+      .boolean()
+      .openapi({
+        description: 'Boolean to determine if this page should use a featuredImage.',
+        example: null,
+      }),
+    widgetContainers: z
+      .record(z.string(), z.looseObject({}).openapi({ example: null }))
+      .openapi({
+        description:
+          'A data structure containing the data for all the modules inside the containers for this page. This will only be populated if the page has widget containers.',
+        example: null,
+      }),
+    widgets: z
+      .record(z.string(), z.looseObject({}).openapi({ example: null }))
+      .openapi({
+        description: 'A data structure containing the data for all the modules for this page.',
+        example: null,
+      }),
+  })
+  .openapi({
+    required: [
+      'abStatus',
+      'abTestId',
+      'archivedAt',
+      'archivedInDashboard',
+      'attachedStylesheets',
+      'authorName',
+      'campaign',
+      'categoryId',
+      'contentGroupId',
+      'contentTypeCategory',
+      'created',
+      'createdById',
+      'currentState',
+      'currentlyPublished',
+      'domain',
+      'dynamicPageDataSourceId',
+      'dynamicPageDataSourceType',
+      'dynamicPageHubDbTableId',
+      'enableDomainStylesheets',
+      'enableLayoutStylesheets',
+      'featuredImage',
+      'featuredImageAltText',
+      'folderId',
+      'footerHtml',
+      'headHtml',
+      'htmlTitle',
+      'id',
+      'includeDefaultCustomCss',
+      'language',
+      'layoutSections',
+      'linkRelCanonicalUrl',
+      'mabExperimentId',
+      'metaDescription',
+      'name',
+      'pageExpiryDate',
+      'pageExpiryEnabled',
+      'pageExpiryRedirectId',
+      'pageExpiryRedirectUrl',
+      'pageRedirected',
+      'password',
+      'publicAccessRules',
+      'publicAccessRulesEnabled',
+      'publishDate',
+      'publishImmediately',
+      'slug',
+      'state',
+      'subcategory',
+      'templatePath',
+      'themeSettingsValues',
+      'translatedFromId',
+      'translations',
+      'updated',
+      'updatedById',
+      'url',
+      'useFeaturedImage',
+      'widgetContainers',
+      'widgets',
+    ],
+    example: null,
+  })
+  .openapi('Page')
+
+type BatchInputPageType = { inputs: z.infer<typeof PageSchema>[] }
+
+type BatchResponsePageType = {
+  completedAt: string
+  links?: { [key: string]: string }
+  requestedAt?: string
+  results: z.infer<typeof PageSchema>[]
+  startedAt: string
+  status: 'CANCELED' | 'COMPLETE' | 'PENDING' | 'PROCESSING'
+}
+
+const ErrorDetailSchema = z
+  .object({
+    code: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The status code associated with the error detail', example: null }),
+    context: z
+      .record(z.string(), z.array(z.string().openapi({ example: null })).openapi({ example: null }))
+      .exactOptional()
+      .openapi({
+        description: 'Context about the error condition',
+        example: '{missingScopes=[scope1, scope2]}',
+      }),
+    in: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The name of the field or parameter in which the error was found.',
+        example: null,
+      }),
+    message: z
+      .string()
+      .openapi({
+        description:
+          'A human readable message describing the error along with remediation steps where appropriate',
+        example: null,
+      }),
+    subCategory: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'A specific category that contains more specific detail about the error',
+        example: null,
+      }),
+  })
+  .openapi({
+    required: ['message'],
+    description:
+      'Represents detailed information about an error that occurred in the API. This component is used to provide additional context and specifics about errors, typically as part of an error response.',
+    example: null,
+  })
+  .openapi('ErrorDetail')
+
+const StandardErrorSchema = z
+  .object({
+    category: z.string().openapi({ description: 'Error category.', example: null }),
+    context: z
+      .record(z.string(), z.array(z.string().openapi({ example: null })).openapi({ example: null }))
+      .openapi({ description: 'Error context.', example: null }),
+    errors: z
+      .array(ErrorDetailSchema)
+      .openapi({ description: 'List of error details.', example: null }),
+    id: z.string().exactOptional().openapi({ description: 'Error ID.', example: null }),
+    links: z
+      .record(z.string(), z.string().openapi({ example: null }))
+      .openapi({ description: 'Error links.', example: null }),
+    message: z.string().openapi({ description: 'Error message.', example: null }),
+    status: z.string().openapi({ description: 'Error status.', example: null }),
+    subCategory: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({ description: 'Error subcategory.', example: null }),
+  })
+  .openapi({
+    required: ['category', 'context', 'errors', 'links', 'message', 'status'],
+    description: 'Ye olde error',
+    example: null,
+  })
+  .openapi('StandardError')
+
+type BatchResponsePageWithErrorsType = {
+  completedAt: string
+  errors?: z.infer<typeof StandardErrorSchema>[]
+  links?: { [key: string]: string }
+  numErrors?: number
+  requestedAt?: string
+  results: z.infer<typeof PageSchema>[]
+  startedAt: string
+  status: 'CANCELED' | 'COMPLETE' | 'PENDING' | 'PROCESSING'
+}
+
+const NextPageSchema = z
+  .object({
+    after: z
+      .string()
+      .openapi({
+        description:
+          'A string that serves as the paging cursor token, indicating the position after the last successfully read resource. It is used to fetch the next set of results in a paginated response.',
+        example: null,
+      }),
+    link: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A string containing the URL link to the next page of results in a paginated response.',
+        example: null,
+      }),
+  })
+  .openapi({
+    required: ['after'],
+    description:
+      'Specifies the paging information needed to retrieve the next set of results in a paginated API response',
+    example: null,
+  })
+  .openapi('NextPage')
+
+const ForwardPagingSchema = z
+  .object({ next: NextPageSchema.exactOptional() })
+  .openapi({
+    description:
+      'Paging information for forward-only pagination. Contains the next page reference when more results are available; omitted or empty on the last page.',
+    example: null,
+    required: [],
+  })
+  .openapi('ForwardPaging')
+
+type CollectionResponseWithTotalPageForwardPagingType = {
+  paging?: z.infer<typeof ForwardPagingSchema>
+  results: z.infer<typeof PageSchema>[]
+  total: number
+}
+
+const PreviousPageSchema = z
+  .object({
+    before: z
+      .string()
+      .openapi({
+        description:
+          'A string token used as a cursor to retrieve the previous set of results in a paginated response.',
+        example: null,
+      }),
+    link: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A URL that provides access to the previous page of results in a paginated response.',
+        example: null,
+      }),
+  })
+  .openapi({
+    required: ['before'],
+    description:
+      'specifies the paging information needed to retrieve the previous set of results in a paginated API response',
+    example: null,
+  })
+  .openapi('PreviousPage')
+
+const PagingSchema = z
+  .object({ next: NextPageSchema.exactOptional(), prev: PreviousPageSchema.exactOptional() })
+  .openapi({
+    description:
+      'Represents the pagination information for navigating through a list of results in the API. It provides details on how to access the previous or next set of results.',
+    example: null,
+    required: [],
+  })
+  .openapi('Paging')
+
+const VersionUserSchema = z
+  .object({
+    email: z.string().openapi({ description: 'Email address of the user.', example: null }),
+    fullName: z
+      .string()
+      .openapi({ description: 'First and last name of the user.', example: null }),
+    id: z.string().openapi({ description: 'ID of the user.', example: null }),
+  })
+  .openapi({ required: ['email', 'fullName', 'id'], example: null })
+  .openapi('VersionUser')
+
+type PageVersionType = {
+  id: string
+  object: z.infer<typeof PageSchema>
+  updatedAt: string
+  user: z.infer<typeof VersionUserSchema>
+}
+
+const PageVersionSchema: z.ZodType<PageVersionType> = z
+  .object({
+    id: z
+      .string()
+      .openapi({
+        description: 'The unique identifier for this specific version of the page.',
+        example: null,
+      }),
+    object: PageSchema,
+    updatedAt: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'The date and time when this version was last updated, in ISO 8601 format.',
+        example: null,
+      }),
+    user: VersionUserSchema,
+  })
+  .openapi({ required: ['id', 'object', 'updatedAt', 'user'], example: null })
+  .openapi('PageVersion')
+
+type CollectionResponseWithTotalPageVersionType = {
+  paging?: z.infer<typeof PagingSchema>
+  results: z.infer<typeof PageVersionSchema>[]
+  total: number
 }
 
 const RGBAColorSchema = z
@@ -223,24 +2940,92 @@ const BreakpointStylesSchema = z
   .openapi({ required: ['hidden', 'margin', 'padding'], example: null })
   .openapi('BreakpointStyles')
 
-type StylesType = {
-  backgroundColor: z.infer<typeof RGBAColorSchema>
-  backgroundGradient: z.infer<typeof GradientSchema>
-  backgroundImage: z.infer<typeof BackgroundImageSchema>
-  breakpointStyles?: { [key: string]: z.infer<typeof BreakpointStylesSchema> }
-  flexboxPositioning:
-    | 'BOTTOM_CENTER'
-    | 'BOTTOM_LEFT'
-    | 'BOTTOM_RIGHT'
-    | 'MIDDLE_CENTER'
-    | 'MIDDLE_LEFT'
-    | 'MIDDLE_RIGHT'
-    | 'TOP_CENTER'
-    | 'TOP_LEFT'
-    | 'TOP_RIGHT'
-  forceFullWidthSection: boolean
-  maxWidthSectionCentering: number
-  verticalAlignment: 'BOTTOM' | 'MIDDLE' | 'TOP'
+const StylesSchema = z
+  .object({
+    backgroundColor: RGBAColorSchema,
+    backgroundGradient: GradientSchema,
+    backgroundImage: BackgroundImageSchema,
+    breakpointStyles: z
+      .record(z.string(), BreakpointStylesSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Contains style settings specific to different breakpoints. This property allows for responsive design adjustments based on screen size.',
+        example: null,
+      }),
+    flexboxPositioning: z
+      .enum([
+        'BOTTOM_CENTER',
+        'BOTTOM_LEFT',
+        'BOTTOM_RIGHT',
+        'MIDDLE_CENTER',
+        'MIDDLE_LEFT',
+        'MIDDLE_RIGHT',
+        'TOP_CENTER',
+        'TOP_LEFT',
+        'TOP_RIGHT',
+      ])
+      .openapi({
+        description: 'Indicates whether flexbox positioning is enabled for the section.',
+        example: null,
+      }),
+    forceFullWidthSection: z
+      .boolean()
+      .openapi({
+        description: 'Determines if the section should be forced to full width.',
+        example: null,
+      }),
+    maxWidthSectionCentering: z
+      .int32()
+      .openapi({
+        description: 'Defines the maximum width for centering the section.',
+        example: null,
+      }),
+    verticalAlignment: z
+      .enum(['BOTTOM', 'MIDDLE', 'TOP'])
+      .openapi({
+        description: 'Specifies the vertical alignment of elements within the section.',
+        example: null,
+      }),
+  })
+  .openapi({
+    required: [
+      'backgroundColor',
+      'backgroundGradient',
+      'backgroundImage',
+      'flexboxPositioning',
+      'forceFullWidthSection',
+      'maxWidthSectionCentering',
+      'verticalAlignment',
+    ],
+    example: null,
+  })
+  .openapi('Styles')
+
+const RowMetaDataSchema = z
+  .object({
+    cssClass: z
+      .string()
+      .openapi({ description: 'The CSS class applied to the row metadata.', example: null }),
+    styles: StylesSchema,
+  })
+  .openapi({ required: ['cssClass', 'styles'], example: null })
+  .openapi('RowMetaData')
+
+type LayoutSectionType = {
+  cells: LayoutSectionType[]
+  cssClass: string
+  cssId: string
+  cssStyle: string
+  label: string
+  name: string
+  params: { [key: string]: { [key: string]: unknown } }
+  rowMetaData: z.infer<typeof RowMetaDataSchema>[]
+  rows: { [key: string]: LayoutSectionType }[]
+  styles: z.infer<typeof StylesSchema>
+  type: string
+  w: number
+  x: number
 }
 
 const AbTestCreateRequestVNextSchema = z
@@ -2158,1588 +4943,13 @@ const BatchInputContentFolderSchema = z
 const BatchInputJsonNodeSchema = z
   .object({
     inputs: z
-      .array(z.object({}).openapi({ example: null }))
+      .array(z.looseObject({}).openapi({ example: null }))
       .openapi({ description: 'JSON nodes to input.', example: null }),
   })
   .openapi({ required: ['inputs'], example: null })
   .openapi('BatchInputJsonNode')
 
-const LayoutSectionSchema: z.ZodType<LayoutSectionType> = z
-  .lazy(() =>
-    z
-      .object({
-        cells: z
-          .array(LayoutSectionSchema)
-          .openapi({
-            description:
-              'The individual cells within the section, each representing a distinct area for content placement.',
-            example: null,
-          }),
-        cssClass: z
-          .string()
-          .openapi({ description: 'The CSS class applied to the layout section.', example: null }),
-        cssId: z
-          .string()
-          .openapi({ description: 'The CSS ID applied to the layout section.', example: null }),
-        cssStyle: z
-          .string()
-          .openapi({
-            description: 'Custom CSS styles applied to the layout section.',
-            example: null,
-          }),
-        label: z
-          .string()
-          .openapi({ description: 'The label for the layout section.', example: null }),
-        name: z.string().openapi({ description: 'The internal name of the page.', example: null }),
-        params: z
-          .record(z.string(), z.object({}).openapi({ example: null }))
-          .openapi({
-            description: 'Parameters associated with the layout section.',
-            example: null,
-          }),
-        rowMetaData: z
-          .array(RowMetaDataSchema)
-          .openapi({
-            description:
-              'Metadata about the rows within the section, such as styling or configuration details.',
-            example: null,
-          }),
-        rows: z
-          .array(z.record(z.string(), LayoutSectionSchema).openapi({ example: null }))
-          .openapi({
-            description:
-              'The number of rows contained within the section, used to organize content vertically.',
-            example: null,
-          }),
-        styles: StylesSchema,
-        type: z.string().openapi({ description: 'The type of the layout section.', example: null }),
-        w: z.int32().openapi({ description: 'The width of the layout section.', example: null }),
-        x: z
-          .int32()
-          .openapi({
-            description: 'The x-coordinate position of the layout section.',
-            example: null,
-          }),
-      })
-      .openapi({
-        required: [
-          'cells',
-          'cssClass',
-          'cssId',
-          'cssStyle',
-          'label',
-          'name',
-          'params',
-          'rowMetaData',
-          'rows',
-          'styles',
-          'type',
-          'w',
-          'x',
-        ],
-        example: null,
-      }),
-  )
-  .openapi('LayoutSection')
-
-const PublicAccessRuleSchema = z.object({}).openapi({ example: null }).openapi('PublicAccessRule')
-
-const ContentLanguageVariationSchema = z
-  .object({
-    archivedInDashboard: z
-      .boolean()
-      .openapi({
-        description:
-          'Indicates if the page is hidden from the dashboard, though it may still be live.',
-        example: null,
-      }),
-    authorName: z
-      .string()
-      .openapi({ description: 'The name of the user that updated this page.', example: null }),
-    campaign: z
-      .string()
-      .openapi({
-        description: 'The GUID of the marketing campaign this page is a part of.',
-        example: null,
-      }),
-    campaignName: z
-      .string()
-      .openapi({
-        description: 'The name of the campaign associated with this language variation.',
-        example: null,
-      }),
-    created: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'The date and time when the content language variation was created.',
-        example: null,
-      }),
-    id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'ID of object to set as primary in multi-language group.',
-        example: null,
-      }),
-    name: z.string().openapi({ description: 'The internal name of the page.', example: null }),
-    password: z
-      .string()
-      .openapi({ description: 'A password required to view the page, if set.', example: null }),
-    publicAccessRules: z
-      .array(PublicAccessRuleSchema)
-      .openapi({
-        description:
-          'A list of rules defining public access permissions for this language variation.',
-        example: null,
-      }),
-    publicAccessRulesEnabled: z
-      .boolean()
-      .openapi({
-        description: 'Determines if public access rules should be respected.',
-        example: null,
-      }),
-    publishDate: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'The date and time when the page is scheduled to be published.',
-        example: null,
-      }),
-    slug: z
-      .string()
-      .openapi({
-        description: 'The path of this page, appended to the domain to construct the URL.',
-        example: null,
-      }),
-    state: z
-      .string()
-      .openapi({ description: 'An ENUM descibing the current state of this page.', example: null }),
-    tagIds: z
-      .array(
-        z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({ type: 'integer', format: 'int64', example: null }),
-      )
-      .exactOptional()
-      .openapi({
-        description: 'A list of tag IDs associated with this language variation.',
-        example: null,
-      }),
-    updated: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'The date and time when the content language variation was last updated.',
-        example: null,
-      }),
-  })
-  .openapi({
-    required: [
-      'archivedInDashboard',
-      'authorName',
-      'campaign',
-      'campaignName',
-      'created',
-      'id',
-      'name',
-      'password',
-      'publicAccessRules',
-      'publicAccessRulesEnabled',
-      'publishDate',
-      'slug',
-      'state',
-      'updated',
-    ],
-    example: null,
-  })
-  .openapi('ContentLanguageVariation')
-
-const PageSchema = z
-  .object({
-    abStatus: z
-      .enum([
-        'automated_loser_variant',
-        'automated_master',
-        'automated_variant',
-        'loser_variant',
-        'mab_master',
-        'mab_variant',
-        'master',
-        'variant',
-      ])
-      .openapi({
-        description: 'The status of the AB test associated with this page, if applicable',
-        example: null,
-      }),
-    abTestId: z
-      .string()
-      .openapi({
-        description: 'The ID of the AB test associated with this page, if applicable',
-        example: null,
-      }),
-    archivedAt: z.iso
-      .datetime({ offset: true })
-      .openapi({ description: 'The timestamp when this page was deleted.', example: null }),
-    archivedInDashboard: z
-      .boolean()
-      .openapi({
-        description:
-          'If True, the page will not show up in your dashboard, although the page could still be live.',
-        example: null,
-      }),
-    attachedStylesheets: z
-      .array(
-        z.record(z.string(), z.object({}).openapi({ example: null })).openapi({ example: null }),
-      )
-      .openapi({
-        description:
-          'List of stylesheets to attach to this page. These stylesheets are attached to just this page. Order of precedence is bottom to top, just like in the HTML.',
-        example: null,
-      }),
-    authorName: z
-      .string()
-      .openapi({ description: 'The name of the user that updated this page.', example: null }),
-    campaign: z
-      .string()
-      .openapi({
-        description: 'The GUID of the marketing campaign this page is a part of.',
-        example: null,
-      }),
-    categoryId: z
-      .int32()
-      .openapi({ description: 'ID of the type of object this is. Should always .', example: null }),
-    contentGroupId: z
-      .string()
-      .openapi({
-        description:
-          'Required when creating or cloning blog posts. The unique identifier for the content group associated with the blog. ',
-        example: null,
-      }),
-    contentTypeCategory: z
-      .enum([
-        '0',
-        '1',
-        '10',
-        '11',
-        '12',
-        '13',
-        '14',
-        '15',
-        '16',
-        '17',
-        '18',
-        '19',
-        '2',
-        '20',
-        '21',
-        '22',
-        '3',
-        '4',
-        '5',
-        '6',
-        '7',
-        '8',
-        '9',
-      ])
-      .openapi({
-        description:
-          'An ENUM descibing the type of this object. Should be either LANDING_PAGE or SITE_PAGE.',
-        example: null,
-      }),
-    created: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'The timestamp indicating when the page was created.',
-        example: null,
-      }),
-    createdById: z
-      .string()
-      .openapi({ description: 'The ID of the user that created this page.', example: null }),
-    currentState: z
-      .enum([
-        'AGENT_GENERATED',
-        'AUTOMATED',
-        'AUTOMATED_AB',
-        'AUTOMATED_AB_VARIANT',
-        'AUTOMATED_DRAFT',
-        'AUTOMATED_DRAFT_AB',
-        'AUTOMATED_DRAFT_ABVARIANT',
-        'AUTOMATED_FOR_FORM',
-        'AUTOMATED_FOR_FORM_BUFFER',
-        'AUTOMATED_FOR_FORM_DRAFT',
-        'AUTOMATED_FOR_FORM_LEGACY',
-        'AUTOMATED_LOSER_ABVARIANT',
-        'AUTOMATED_SENDING',
-        'BLOG_EMAIL_DRAFT',
-        'BLOG_EMAIL_PUBLISHED',
-        'DRAFT',
-        'DRAFT_AB',
-        'DRAFT_AB_VARIANT',
-        'ERROR',
-        'LOSER_AB_VARIANT',
-        'PAGE_STUB',
-        'PRE_PROCESSING',
-        'PROCESSING',
-        'PUBLISHED',
-        'PUBLISHED_AB',
-        'PUBLISHED_AB_VARIANT',
-        'PUBLISHED_OR_SCHEDULED',
-        'RSS_TO_EMAIL_DRAFT',
-        'RSS_TO_EMAIL_PUBLISHED',
-        'SCHEDULED',
-        'SCHEDULED_AB',
-        'SCHEDULED_OR_PUBLISHED',
-      ])
-      .openapi({
-        description: 'A generated ENUM descibing the current state of this page.',
-        example: null,
-      }),
-    currentlyPublished: z
-      .boolean()
-      .openapi({
-        description: 'Indicates whether the page is currently published.',
-        example: null,
-      }),
-    domain: z
-      .string()
-      .openapi({
-        description:
-          'The domain this page will resolve to. If null, the page will default to the primary domain for this content type.',
-        example: null,
-      }),
-    dynamicPageDataSourceId: z
-      .string()
-      .openapi({
-        description: 'The identifier for the data source used by the dynamic page.',
-        example: null,
-      }),
-    dynamicPageDataSourceType: z
-      .int32()
-      .openapi({ description: 'The type of data source used by the dynamic page.', example: null }),
-    dynamicPageHubDbTableId: z
-      .string()
-      .openapi({
-        description: 'The ID of the HubDB table this page references, if applicable',
-        example: null,
-      }),
-    enableDomainStylesheets: z
-      .boolean()
-      .openapi({
-        description:
-          'Boolean to determine whether or not the styles from the template should be applied.',
-        example: null,
-      }),
-    enableLayoutStylesheets: z
-      .boolean()
-      .openapi({
-        description:
-          'Boolean to determine whether or not the styles from the template should be applied.',
-        example: null,
-      }),
-    featuredImage: z
-      .string()
-      .openapi({ description: 'The featuredImage of this page.', example: null }),
-    featuredImageAltText: z
-      .string()
-      .openapi({ description: 'Alt Text of the featuredImage.', example: null }),
-    folderId: z
-      .string()
-      .openapi({
-        description:
-          'The ID of the associated folder this landing page is organized under in the app dashboard.',
-        example: null,
-      }),
-    footerHtml: z
-      .string()
-      .openapi({
-        description:
-          'Custom HTML for embed codes, javascript that should be placed before the </body> tag of the page.',
-        example: null,
-      }),
-    headHtml: z
-      .string()
-      .openapi({
-        description:
-          'Custom HTML for embed codes, javascript, etc. that goes in the <head> tag of the page.',
-        example: null,
-      }),
-    htmlTitle: z.string().openapi({ description: 'The html title of this page.', example: null }),
-    id: z.string().openapi({ description: 'The unique ID of the page.', example: null }),
-    includeDefaultCustomCss: z
-      .boolean()
-      .openapi({
-        description: 'Boolean to determine whether or not the Primary CSS Files should be applied.',
-        example: null,
-      }),
-    language: z
-      .enum([
-        'aa',
-        'ab',
-        'ae',
-        'af',
-        'af-na',
-        'af-za',
-        'agq',
-        'agq-cm',
-        'ak',
-        'ak-gh',
-        'am',
-        'am-et',
-        'an',
-        'ann',
-        'ann-ng',
-        'ar',
-        'ar-001',
-        'ar-ae',
-        'ar-bh',
-        'ar-dj',
-        'ar-dz',
-        'ar-eg',
-        'ar-eh',
-        'ar-er',
-        'ar-il',
-        'ar-iq',
-        'ar-jo',
-        'ar-km',
-        'ar-kw',
-        'ar-lb',
-        'ar-ly',
-        'ar-ma',
-        'ar-mr',
-        'ar-om',
-        'ar-ps',
-        'ar-qa',
-        'ar-sa',
-        'ar-sd',
-        'ar-so',
-        'ar-ss',
-        'ar-sy',
-        'ar-td',
-        'ar-tn',
-        'ar-ye',
-        'as',
-        'as-in',
-        'asa',
-        'asa-tz',
-        'ast',
-        'ast-es',
-        'av',
-        'ay',
-        'az',
-        'az-az',
-        'ba',
-        'bal',
-        'bal-pk',
-        'bas',
-        'bas-cm',
-        'be',
-        'be-by',
-        'bem',
-        'bem-zm',
-        'bez',
-        'bez-tz',
-        'bg',
-        'bg-bg',
-        'bgc',
-        'bgc-in',
-        'bho',
-        'bho-in',
-        'bi',
-        'blo',
-        'blo-bj',
-        'bm',
-        'bm-ml',
-        'bn',
-        'bn-bd',
-        'bn-in',
-        'bo',
-        'bo-cn',
-        'bo-in',
-        'br',
-        'br-fr',
-        'brx',
-        'brx-in',
-        'bs',
-        'bs-ba',
-        'ca',
-        'ca-ad',
-        'ca-es',
-        'ca-fr',
-        'ca-it',
-        'ccp',
-        'ccp-bd',
-        'ccp-in',
-        'ce',
-        'ce-ru',
-        'ceb',
-        'ceb-ph',
-        'cgg',
-        'cgg-ug',
-        'ch',
-        'chr',
-        'chr-us',
-        'ckb',
-        'ckb-iq',
-        'ckb-ir',
-        'co',
-        'cr',
-        'cs',
-        'cs-cz',
-        'csw',
-        'csw-ca',
-        'cu',
-        'cu-ru',
-        'cv',
-        'cv-ru',
-        'cy',
-        'cy-gb',
-        'da',
-        'da-dk',
-        'da-gl',
-        'dav',
-        'dav-ke',
-        'de',
-        'de-at',
-        'de-be',
-        'de-ch',
-        'de-de',
-        'de-gr',
-        'de-it',
-        'de-li',
-        'de-lu',
-        'dje',
-        'dje-ne',
-        'doi',
-        'doi-in',
-        'dsb',
-        'dsb-de',
-        'dua',
-        'dua-cm',
-        'dv',
-        'dyo',
-        'dyo-sn',
-        'dz',
-        'dz-bt',
-        'ebu',
-        'ebu-ke',
-        'ee',
-        'ee-gh',
-        'ee-tg',
-        'el',
-        'el-cy',
-        'el-gr',
-        'en',
-        'en-001',
-        'en-150',
-        'en-ae',
-        'en-ag',
-        'en-ai',
-        'en-as',
-        'en-at',
-        'en-au',
-        'en-bb',
-        'en-be',
-        'en-bi',
-        'en-bm',
-        'en-bs',
-        'en-bw',
-        'en-bz',
-        'en-ca',
-        'en-cc',
-        'en-ch',
-        'en-ck',
-        'en-cm',
-        'en-cn',
-        'en-cx',
-        'en-cy',
-        'en-cz',
-        'en-de',
-        'en-dg',
-        'en-dk',
-        'en-dm',
-        'en-ee',
-        'en-eg',
-        'en-er',
-        'en-es',
-        'en-fi',
-        'en-fj',
-        'en-fk',
-        'en-fm',
-        'en-fr',
-        'en-gb',
-        'en-gd',
-        'en-gg',
-        'en-gh',
-        'en-gi',
-        'en-gm',
-        'en-gs',
-        'en-gu',
-        'en-gy',
-        'en-hk',
-        'en-hu',
-        'en-id',
-        'en-ie',
-        'en-il',
-        'en-im',
-        'en-in',
-        'en-io',
-        'en-it',
-        'en-je',
-        'en-jm',
-        'en-ke',
-        'en-ki',
-        'en-kn',
-        'en-ky',
-        'en-lc',
-        'en-lr',
-        'en-ls',
-        'en-lu',
-        'en-mg',
-        'en-mh',
-        'en-mo',
-        'en-mp',
-        'en-ms',
-        'en-mt',
-        'en-mu',
-        'en-mv',
-        'en-mw',
-        'en-mx',
-        'en-my',
-        'en-na',
-        'en-nf',
-        'en-ng',
-        'en-nl',
-        'en-no',
-        'en-nr',
-        'en-nu',
-        'en-nz',
-        'en-pg',
-        'en-ph',
-        'en-pk',
-        'en-pl',
-        'en-pn',
-        'en-pr',
-        'en-pt',
-        'en-pw',
-        'en-ro',
-        'en-rw',
-        'en-sb',
-        'en-sc',
-        'en-sd',
-        'en-se',
-        'en-sg',
-        'en-sh',
-        'en-si',
-        'en-sk',
-        'en-sl',
-        'en-ss',
-        'en-sx',
-        'en-sz',
-        'en-tc',
-        'en-th',
-        'en-tk',
-        'en-tn',
-        'en-to',
-        'en-tt',
-        'en-tv',
-        'en-tz',
-        'en-ug',
-        'en-um',
-        'en-us',
-        'en-vc',
-        'en-vg',
-        'en-vi',
-        'en-vn',
-        'en-vu',
-        'en-ws',
-        'en-za',
-        'en-zm',
-        'en-zw',
-        'eo',
-        'eo-001',
-        'es',
-        'es-419',
-        'es-ar',
-        'es-bo',
-        'es-br',
-        'es-bz',
-        'es-cl',
-        'es-co',
-        'es-cr',
-        'es-cu',
-        'es-do',
-        'es-ea',
-        'es-ec',
-        'es-es',
-        'es-gq',
-        'es-gt',
-        'es-hn',
-        'es-ic',
-        'es-mx',
-        'es-ni',
-        'es-pa',
-        'es-pe',
-        'es-ph',
-        'es-pr',
-        'es-py',
-        'es-sv',
-        'es-us',
-        'es-uy',
-        'es-ve',
-        'et',
-        'et-ee',
-        'eu',
-        'eu-es',
-        'ewo',
-        'ewo-cm',
-        'fa',
-        'fa-af',
-        'fa-ir',
-        'ff',
-        'ff-bf',
-        'ff-cm',
-        'ff-gh',
-        'ff-gm',
-        'ff-gn',
-        'ff-gw',
-        'ff-lr',
-        'ff-mr',
-        'ff-ne',
-        'ff-ng',
-        'ff-sl',
-        'ff-sn',
-        'fi',
-        'fi-fi',
-        'fil',
-        'fil-ph',
-        'fj',
-        'fo',
-        'fo-dk',
-        'fo-fo',
-        'fr',
-        'fr-be',
-        'fr-bf',
-        'fr-bi',
-        'fr-bj',
-        'fr-bl',
-        'fr-ca',
-        'fr-cd',
-        'fr-cf',
-        'fr-cg',
-        'fr-ch',
-        'fr-ci',
-        'fr-cm',
-        'fr-dj',
-        'fr-dz',
-        'fr-fr',
-        'fr-ga',
-        'fr-gf',
-        'fr-gn',
-        'fr-gp',
-        'fr-gq',
-        'fr-ht',
-        'fr-km',
-        'fr-lu',
-        'fr-ma',
-        'fr-mc',
-        'fr-mf',
-        'fr-mg',
-        'fr-ml',
-        'fr-mq',
-        'fr-mr',
-        'fr-mu',
-        'fr-nc',
-        'fr-ne',
-        'fr-pf',
-        'fr-pm',
-        'fr-re',
-        'fr-rw',
-        'fr-sc',
-        'fr-sn',
-        'fr-sy',
-        'fr-td',
-        'fr-tg',
-        'fr-tn',
-        'fr-vu',
-        'fr-wf',
-        'fr-yt',
-        'frr',
-        'frr-de',
-        'fur',
-        'fur-it',
-        'fy',
-        'fy-nl',
-        'ga',
-        'ga-gb',
-        'ga-ie',
-        'gaa',
-        'gaa-gh',
-        'gd',
-        'gd-gb',
-        'gl',
-        'gl-es',
-        'gn',
-        'gsw',
-        'gsw-ch',
-        'gsw-fr',
-        'gsw-li',
-        'gu',
-        'gu-in',
-        'guz',
-        'guz-ke',
-        'gv',
-        'gv-im',
-        'ha',
-        'ha-gh',
-        'ha-ne',
-        'ha-ng',
-        'haw',
-        'haw-us',
-        'he',
-        'he-il',
-        'hi',
-        'hi-in',
-        'hmn',
-        'ho',
-        'hr',
-        'hr-ba',
-        'hr-hr',
-        'hsb',
-        'hsb-de',
-        'ht',
-        'ht-ht',
-        'hu',
-        'hu-hu',
-        'hy',
-        'hy-am',
-        'hz',
-        'ia',
-        'ia-001',
-        'id',
-        'id-id',
-        'ie',
-        'ie-ee',
-        'ig',
-        'ig-ng',
-        'ii',
-        'ii-cn',
-        'ik',
-        'io',
-        'is',
-        'is-is',
-        'it',
-        'it-ch',
-        'it-it',
-        'it-sm',
-        'it-va',
-        'iu',
-        'ja',
-        'ja-jp',
-        'jgo',
-        'jgo-cm',
-        'jmc',
-        'jmc-tz',
-        'jv',
-        'jv-id',
-        'ka',
-        'ka-ge',
-        'kab',
-        'kab-dz',
-        'kam',
-        'kam-ke',
-        'kar',
-        'kde',
-        'kde-tz',
-        'kea',
-        'kea-cv',
-        'kg',
-        'kgp',
-        'kgp-br',
-        'kh',
-        'khq',
-        'khq-ml',
-        'ki',
-        'ki-ke',
-        'kj',
-        'kk',
-        'kk-kz',
-        'kkj',
-        'kkj-cm',
-        'kl',
-        'kl-gl',
-        'kln',
-        'kln-ke',
-        'km',
-        'km-kh',
-        'kn',
-        'kn-in',
-        'ko',
-        'ko-cn',
-        'ko-kp',
-        'ko-kr',
-        'kok',
-        'kok-in',
-        'kr',
-        'ks',
-        'ks-in',
-        'ksb',
-        'ksb-tz',
-        'ksf',
-        'ksf-cm',
-        'ksh',
-        'ksh-de',
-        'ku',
-        'ku-tr',
-        'kv',
-        'kw',
-        'kw-gb',
-        'kxv',
-        'kxv-in',
-        'ky',
-        'ky-kg',
-        'la',
-        'lag',
-        'lag-tz',
-        'lb',
-        'lb-lu',
-        'lg',
-        'lg-ug',
-        'li',
-        'lij',
-        'lij-it',
-        'lkt',
-        'lkt-us',
-        'lmo',
-        'lmo-it',
-        'ln',
-        'ln-ao',
-        'ln-cd',
-        'ln-cf',
-        'ln-cg',
-        'lo',
-        'lo-la',
-        'lrc',
-        'lrc-iq',
-        'lrc-ir',
-        'lt',
-        'lt-lt',
-        'lu',
-        'lu-cd',
-        'luo',
-        'luo-ke',
-        'luy',
-        'luy-ke',
-        'lv',
-        'lv-lv',
-        'mai',
-        'mai-in',
-        'mas',
-        'mas-ke',
-        'mas-tz',
-        'mdf',
-        'mdf-ru',
-        'mer',
-        'mer-ke',
-        'mfe',
-        'mfe-mu',
-        'mg',
-        'mg-mg',
-        'mgh',
-        'mgh-mz',
-        'mgo',
-        'mgo-cm',
-        'mh',
-        'mi',
-        'mi-nz',
-        'mk',
-        'mk-mk',
-        'ml',
-        'ml-in',
-        'mn',
-        'mn-mn',
-        'mni',
-        'mni-in',
-        'mr',
-        'mr-in',
-        'ms',
-        'ms-bn',
-        'ms-id',
-        'ms-my',
-        'ms-sg',
-        'mt',
-        'mt-mt',
-        'mua',
-        'mua-cm',
-        'my',
-        'my-mm',
-        'mzn',
-        'mzn-ir',
-        'na',
-        'naq',
-        'naq-na',
-        'nb',
-        'nb-no',
-        'nb-sj',
-        'nd',
-        'nd-zw',
-        'nds',
-        'nds-de',
-        'nds-nl',
-        'ne',
-        'ne-in',
-        'ne-np',
-        'ng',
-        'nl',
-        'nl-aw',
-        'nl-be',
-        'nl-bq',
-        'nl-ch',
-        'nl-cw',
-        'nl-lu',
-        'nl-nl',
-        'nl-sr',
-        'nl-sx',
-        'nmg',
-        'nmg-cm',
-        'nn',
-        'nn-no',
-        'nnh',
-        'nnh-cm',
-        'no',
-        'no-no',
-        'nqo',
-        'nqo-gn',
-        'nr',
-        'nso',
-        'nso-za',
-        'nus',
-        'nus-ss',
-        'nv',
-        'ny',
-        'nyn',
-        'nyn-ug',
-        'oc',
-        'oc-es',
-        'oc-fr',
-        'oj',
-        'om',
-        'om-et',
-        'om-ke',
-        'or',
-        'or-in',
-        'os',
-        'os-ge',
-        'os-ru',
-        'pa',
-        'pa-in',
-        'pa-pk',
-        'pcm',
-        'pcm-ng',
-        'pi',
-        'pis',
-        'pis-sb',
-        'pl',
-        'pl-pl',
-        'prg',
-        'prg-001',
-        'ps',
-        'ps-af',
-        'ps-pk',
-        'pt',
-        'pt-ao',
-        'pt-br',
-        'pt-ch',
-        'pt-cv',
-        'pt-gq',
-        'pt-gw',
-        'pt-lu',
-        'pt-mo',
-        'pt-mz',
-        'pt-pt',
-        'pt-st',
-        'pt-tl',
-        'qu',
-        'qu-bo',
-        'qu-ec',
-        'qu-pe',
-        'raj',
-        'raj-in',
-        'rm',
-        'rm-ch',
-        'rn',
-        'rn-bi',
-        'ro',
-        'ro-md',
-        'ro-ro',
-        'rof',
-        'rof-tz',
-        'ru',
-        'ru-by',
-        'ru-kg',
-        'ru-kz',
-        'ru-md',
-        'ru-ru',
-        'ru-ua',
-        'rw',
-        'rw-rw',
-        'rwk',
-        'rwk-tz',
-        'sa',
-        'sa-in',
-        'sah',
-        'sah-ru',
-        'saq',
-        'saq-ke',
-        'sat',
-        'sat-in',
-        'sbp',
-        'sbp-tz',
-        'sc',
-        'sc-it',
-        'sd',
-        'sd-in',
-        'sd-pk',
-        'se',
-        'se-fi',
-        'se-no',
-        'se-se',
-        'seh',
-        'seh-mz',
-        'ses',
-        'ses-ml',
-        'sg',
-        'sg-cf',
-        'shi',
-        'shi-ma',
-        'si',
-        'si-lk',
-        'sk',
-        'sk-sk',
-        'sl',
-        'sl-si',
-        'sm',
-        'smn',
-        'smn-fi',
-        'sms',
-        'sms-fi',
-        'sn',
-        'sn-zw',
-        'so',
-        'so-dj',
-        'so-et',
-        'so-ke',
-        'so-so',
-        'sq',
-        'sq-al',
-        'sq-mk',
-        'sq-xk',
-        'sr',
-        'sr-ba',
-        'sr-cs',
-        'sr-me',
-        'sr-rs',
-        'sr-xk',
-        'ss',
-        'st',
-        'st-ls',
-        'st-za',
-        'su',
-        'su-id',
-        'sv',
-        'sv-ax',
-        'sv-fi',
-        'sv-se',
-        'sw',
-        'sw-cd',
-        'sw-ke',
-        'sw-tz',
-        'sw-ug',
-        'sy',
-        'syr',
-        'syr-iq',
-        'syr-sy',
-        'szl',
-        'szl-pl',
-        'ta',
-        'ta-in',
-        'ta-lk',
-        'ta-my',
-        'ta-sg',
-        'te',
-        'te-in',
-        'teo',
-        'teo-ke',
-        'teo-ug',
-        'tg',
-        'tg-tj',
-        'th',
-        'th-th',
-        'ti',
-        'ti-er',
-        'ti-et',
-        'tk',
-        'tk-tm',
-        'tl',
-        'tn',
-        'tn-bw',
-        'tn-za',
-        'to',
-        'to-to',
-        'tok',
-        'tok-001',
-        'tr',
-        'tr-cy',
-        'tr-tr',
-        'ts',
-        'tt',
-        'tt-ru',
-        'tw',
-        'twq',
-        'twq-ne',
-        'ty',
-        'tzm',
-        'tzm-ma',
-        'ug',
-        'ug-cn',
-        'uk',
-        'uk-ua',
-        'ur',
-        'ur-in',
-        'ur-pk',
-        'uz',
-        'uz-af',
-        'uz-uz',
-        'vai',
-        'vai-lr',
-        've',
-        'vec',
-        'vec-it',
-        'vi',
-        'vi-vn',
-        'vmw',
-        'vmw-mz',
-        'vo',
-        'vo-001',
-        'vun',
-        'vun-tz',
-        'wa',
-        'wae',
-        'wae-ch',
-        'wo',
-        'wo-sn',
-        'xh',
-        'xh-za',
-        'xnr',
-        'xnr-in',
-        'xog',
-        'xog-ug',
-        'yav',
-        'yav-cm',
-        'yi',
-        'yi-001',
-        'yi-ua',
-        'yo',
-        'yo-bj',
-        'yo-ng',
-        'yrl',
-        'yrl-br',
-        'yrl-co',
-        'yrl-ve',
-        'yue',
-        'yue-cn',
-        'yue-hk',
-        'yue-mo',
-        'za',
-        'za-cn',
-        'zgh',
-        'zgh-ma',
-        'zh',
-        'zh-cn',
-        'zh-hans',
-        'zh-hant',
-        'zh-hk',
-        'zh-mo',
-        'zh-my',
-        'zh-sg',
-        'zh-tw',
-        'zu',
-        'zu-za',
-      ])
-      .openapi({
-        description:
-          'The explicitly defined ISO 639 language code of the page. If null, the page will default to the language of the Domain.',
-        example: null,
-      }),
-    layoutSections: z
-      .record(z.string(), LayoutSectionSchema)
-      .openapi({
-        description: 'A structure detailing the layout sections of the page.',
-        example: null,
-      }),
-    linkRelCanonicalUrl: z
-      .string()
-      .openapi({
-        description:
-          'Optional override to set the URL to be used in the rel=canonical link tag on the page.',
-        example: null,
-      }),
-    mabExperimentId: z
-      .string()
-      .openapi({
-        description:
-          'The ID of the MAB test (or dynamic test) associated with this page, if applicable',
-        example: null,
-      }),
-    metaDescription: z
-      .string()
-      .openapi({
-        description: 'A description that goes in <meta> tag on the page.',
-        example: null,
-      }),
-    name: z.string().openapi({ description: 'The internal name of the page.', example: null }),
-    pageExpiryDate: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'The date at which this page should expire and begin redirecting to another url or page.',
-        example: null,
-      }),
-    pageExpiryEnabled: z
-      .boolean()
-      .openapi({
-        description: 'Boolean describing if the page expiration feature is enabled for this page',
-        example: null,
-      }),
-    pageExpiryRedirectId: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          "The ID of another page this page's url should redirect to once this page expires. Should only set this or pageExpiryRedirectUrl.",
-        example: null,
-      }),
-    pageExpiryRedirectUrl: z
-      .string()
-      .openapi({
-        description:
-          "The URL this page's url should redirect to once this page expires. Should only set this or pageExpiryRedirectId.",
-        example: null,
-      }),
-    pageRedirected: z
-      .boolean()
-      .openapi({
-        description:
-          'A generated Boolean describing whether or not this page is currently expired and being redirected.',
-        example: null,
-      }),
-    password: z
-      .string()
-      .openapi({
-        description:
-          'Set this to create a password protected page. Entering the password will be required to view the page.',
-        example: null,
-      }),
-    publicAccessRules: z
-      .array(PublicAccessRuleSchema)
-      .openapi({
-        description: 'Rules for require member registration to access private content.',
-        example: null,
-      }),
-    publicAccessRulesEnabled: z
-      .boolean()
-      .openapi({
-        description: 'Boolean to determine whether or not to respect publicAccessRules.',
-        example: null,
-      }),
-    publishDate: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'The date (ISO8601 format) the page is to be published at.',
-        example: null,
-      }),
-    publishImmediately: z
-      .boolean()
-      .openapi({
-        description:
-          'Set this to true if you want to be published immediately when the schedule publish endpoint is called, and to ignore the publish_date setting.',
-        example: null,
-      }),
-    slug: z
-      .string()
-      .openapi({
-        description:
-          'The path of the this page. This field is appended to the domain to construct the url of this page.',
-        example: null,
-      }),
-    state: z
-      .string()
-      .max(25)
-      .openapi({ description: 'An ENUM descibing the current state of this page.', example: null }),
-    subcategory: z
-      .string()
-      .openapi({
-        description: 'Details the type of page this is. Should always be landing_page or site_page',
-        example: null,
-      }),
-    templatePath: z
-      .string()
-      .openapi({
-        description: 'String detailing the path of the template used for this page.',
-        example: null,
-      }),
-    themeSettingsValues: z
-      .record(z.string(), z.object({}).openapi({ example: null }))
-      .openapi({
-        description: 'A collection of settings specific to the theme applied to the page.',
-        example: null,
-      }),
-    translatedFromId: z
-      .string()
-      .openapi({
-        description: 'ID of the primary page this object was translated from.',
-        example: null,
-      }),
-    translations: z
-      .record(z.string(), ContentLanguageVariationSchema)
-      .openapi({
-        description:
-          'A map of translations for the page, each associated with a specific language variation.',
-        example: null,
-      }),
-    updated: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'The timestamp indicating when the page was last updated.',
-        example: null,
-      }),
-    updatedById: z
-      .string()
-      .openapi({ description: 'The ID of the user that updated this page.', example: null }),
-    url: z
-      .string()
-      .openapi({
-        description: 'A generated field representing the URL of this page.',
-        example: null,
-      }),
-    useFeaturedImage: z
-      .boolean()
-      .openapi({
-        description: 'Boolean to determine if this page should use a featuredImage.',
-        example: null,
-      }),
-    widgetContainers: z
-      .record(z.string(), z.object({}).openapi({ example: null }))
-      .openapi({
-        description:
-          'A data structure containing the data for all the modules inside the containers for this page. This will only be populated if the page has widget containers.',
-        example: null,
-      }),
-    widgets: z
-      .record(z.string(), z.object({}).openapi({ example: null }))
-      .openapi({
-        description: 'A data structure containing the data for all the modules for this page.',
-        example: null,
-      }),
-  })
-  .openapi({
-    required: [
-      'abStatus',
-      'abTestId',
-      'archivedAt',
-      'archivedInDashboard',
-      'attachedStylesheets',
-      'authorName',
-      'campaign',
-      'categoryId',
-      'contentGroupId',
-      'contentTypeCategory',
-      'created',
-      'createdById',
-      'currentState',
-      'currentlyPublished',
-      'domain',
-      'dynamicPageDataSourceId',
-      'dynamicPageDataSourceType',
-      'dynamicPageHubDbTableId',
-      'enableDomainStylesheets',
-      'enableLayoutStylesheets',
-      'featuredImage',
-      'featuredImageAltText',
-      'folderId',
-      'footerHtml',
-      'headHtml',
-      'htmlTitle',
-      'id',
-      'includeDefaultCustomCss',
-      'language',
-      'layoutSections',
-      'linkRelCanonicalUrl',
-      'mabExperimentId',
-      'metaDescription',
-      'name',
-      'pageExpiryDate',
-      'pageExpiryEnabled',
-      'pageExpiryRedirectId',
-      'pageExpiryRedirectUrl',
-      'pageRedirected',
-      'password',
-      'publicAccessRules',
-      'publicAccessRulesEnabled',
-      'publishDate',
-      'publishImmediately',
-      'slug',
-      'state',
-      'subcategory',
-      'templatePath',
-      'themeSettingsValues',
-      'translatedFromId',
-      'translations',
-      'updated',
-      'updatedById',
-      'url',
-      'useFeaturedImage',
-      'widgetContainers',
-      'widgets',
-    ],
-    example: null,
-  })
-  .openapi('Page')
-
-const BatchInputPageSchema = z
+const BatchInputPageSchema: z.ZodType<BatchInputPageType> = z
   .object({
     inputs: z.array(PageSchema).openapi({ description: 'Pages to input.', example: null }),
   })
@@ -3781,76 +4991,6 @@ const BatchResponseContentFolderSchema = z
   .openapi({ required: ['completedAt', 'results', 'startedAt', 'status'], example: null })
   .openapi('BatchResponseContentFolder')
 
-const ErrorDetailSchema = z
-  .object({
-    code: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The status code associated with the error detail', example: null }),
-    context: z
-      .record(z.string(), z.array(z.string().openapi({ example: null })).openapi({ example: null }))
-      .exactOptional()
-      .openapi({
-        description: 'Context about the error condition',
-        example: '{missingScopes=[scope1, scope2]}',
-      }),
-    in: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The name of the field or parameter in which the error was found.',
-        example: null,
-      }),
-    message: z
-      .string()
-      .openapi({
-        description:
-          'A human readable message describing the error along with remediation steps where appropriate',
-        example: null,
-      }),
-    subCategory: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'A specific category that contains more specific detail about the error',
-        example: null,
-      }),
-  })
-  .openapi({
-    required: ['message'],
-    description:
-      'Represents detailed information about an error that occurred in the API. This component is used to provide additional context and specifics about errors, typically as part of an error response.',
-    example: null,
-  })
-  .openapi('ErrorDetail')
-
-const StandardErrorSchema = z
-  .object({
-    category: z.string().openapi({ description: 'Error category.', example: null }),
-    context: z
-      .record(z.string(), z.array(z.string().openapi({ example: null })).openapi({ example: null }))
-      .openapi({ description: 'Error context.', example: null }),
-    errors: z
-      .array(ErrorDetailSchema)
-      .openapi({ description: 'List of error details.', example: null }),
-    id: z.string().exactOptional().openapi({ description: 'Error ID.', example: null }),
-    links: z
-      .record(z.string(), z.string().openapi({ example: null }))
-      .openapi({ description: 'Error links.', example: null }),
-    message: z.string().openapi({ description: 'Error message.', example: null }),
-    status: z.string().openapi({ description: 'Error status.', example: null }),
-    subCategory: z
-      .object({})
-      .exactOptional()
-      .openapi({ description: 'Error subcategory.', example: null }),
-  })
-  .openapi({
-    required: ['category', 'context', 'errors', 'links', 'message', 'status'],
-    description: 'Ye olde error',
-    example: null,
-  })
-  .openapi('StandardError')
-
 const BatchResponseContentFolderWithErrorsSchema = z
   .object({
     completedAt: z.iso
@@ -3885,7 +5025,7 @@ const BatchResponseContentFolderWithErrorsSchema = z
   .openapi({ required: ['completedAt', 'results', 'startedAt', 'status'], example: null })
   .openapi('BatchResponseContentFolderWithErrors')
 
-const BatchResponsePageSchema = z
+const BatchResponsePageSchema: z.ZodType<BatchResponsePageType> = z
   .object({
     completedAt: z.iso
       .datetime({ offset: true })
@@ -3911,7 +5051,7 @@ const BatchResponsePageSchema = z
   .openapi({ required: ['completedAt', 'results', 'startedAt', 'status'], example: null })
   .openapi('BatchResponsePage')
 
-const BatchResponsePageWithErrorsSchema = z
+const BatchResponsePageWithErrorsSchema: z.ZodType<BatchResponsePageWithErrorsType> = z
   .object({
     completedAt: z.iso
       .datetime({ offset: true })
@@ -3945,42 +5085,6 @@ const BatchResponsePageWithErrorsSchema = z
   .openapi({ required: ['completedAt', 'results', 'startedAt', 'status'], example: null })
   .openapi('BatchResponsePageWithErrors')
 
-const NextPageSchema = z
-  .object({
-    after: z
-      .string()
-      .openapi({
-        description:
-          'A string that serves as the paging cursor token, indicating the position after the last successfully read resource. It is used to fetch the next set of results in a paginated response.',
-        example: null,
-      }),
-    link: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A string containing the URL link to the next page of results in a paginated response.',
-        example: null,
-      }),
-  })
-  .openapi({
-    required: ['after'],
-    description:
-      'Specifies the paging information needed to retrieve the next set of results in a paginated API response',
-    example: null,
-  })
-  .openapi('NextPage')
-
-const ForwardPagingSchema = z
-  .object({ next: NextPageSchema.exactOptional() })
-  .openapi({
-    description:
-      'Paging information for forward-only pagination. Contains the next page reference when more results are available; omitted or empty on the last page.',
-    example: null,
-    required: [],
-  })
-  .openapi('ForwardPaging')
-
 const CollectionResponseWithTotalContentFolderForwardPagingSchema = z
   .object({
     paging: ForwardPagingSchema.exactOptional(),
@@ -3991,53 +5095,6 @@ const CollectionResponseWithTotalContentFolderForwardPagingSchema = z
   })
   .openapi({ required: ['results', 'total'], example: null })
   .openapi('CollectionResponseWithTotalContentFolderForwardPaging')
-
-const PreviousPageSchema = z
-  .object({
-    before: z
-      .string()
-      .openapi({
-        description:
-          'A string token used as a cursor to retrieve the previous set of results in a paginated response.',
-        example: null,
-      }),
-    link: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A URL that provides access to the previous page of results in a paginated response.',
-        example: null,
-      }),
-  })
-  .openapi({
-    required: ['before'],
-    description:
-      'specifies the paging information needed to retrieve the previous set of results in a paginated API response',
-    example: null,
-  })
-  .openapi('PreviousPage')
-
-const PagingSchema = z
-  .object({ next: NextPageSchema.exactOptional(), prev: PreviousPageSchema.exactOptional() })
-  .openapi({
-    description:
-      'Represents the pagination information for navigating through a list of results in the API. It provides details on how to access the previous or next set of results.',
-    example: null,
-    required: [],
-  })
-  .openapi('Paging')
-
-const VersionUserSchema = z
-  .object({
-    email: z.string().openapi({ description: 'Email address of the user.', example: null }),
-    fullName: z
-      .string()
-      .openapi({ description: 'First and last name of the user.', example: null }),
-    id: z.string().openapi({ description: 'ID of the user.', example: null }),
-  })
-  .openapi({ required: ['email', 'fullName', 'id'], example: null })
-  .openapi('VersionUser')
 
 const ContentFolderVersionSchema = z
   .object({
@@ -4080,53 +5137,35 @@ const CollectionResponseWithTotalContentFolderVersionSchema = z
   .openapi({ required: ['results', 'total'], example: null })
   .openapi('CollectionResponseWithTotalContentFolderVersion')
 
-const CollectionResponseWithTotalPageForwardPagingSchema = z
-  .object({
-    paging: ForwardPagingSchema.exactOptional(),
-    results: z.array(PageSchema).openapi({ description: 'Collection of pages.', example: null }),
-    total: z.int32().openapi({ description: 'Total number of pages.', example: null }),
-  })
-  .openapi({ required: ['results', 'total'], example: null })
-  .openapi('CollectionResponseWithTotalPageForwardPaging')
+const CollectionResponseWithTotalPageForwardPagingSchema: z.ZodType<CollectionResponseWithTotalPageForwardPagingType> =
+  z
+    .object({
+      paging: ForwardPagingSchema.exactOptional(),
+      results: z.array(PageSchema).openapi({ description: 'Collection of pages.', example: null }),
+      total: z.int32().openapi({ description: 'Total number of pages.', example: null }),
+    })
+    .openapi({ required: ['results', 'total'], example: null })
+    .openapi('CollectionResponseWithTotalPageForwardPaging')
 
-const PageVersionSchema = z
-  .object({
-    id: z
-      .string()
-      .openapi({
-        description: 'The unique identifier for this specific version of the page.',
-        example: null,
-      }),
-    object: PageSchema,
-    updatedAt: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'The date and time when this version was last updated, in ISO 8601 format.',
-        example: null,
-      }),
-    user: VersionUserSchema,
-  })
-  .openapi({ required: ['id', 'object', 'updatedAt', 'user'], example: null })
-  .openapi('PageVersion')
-
-const CollectionResponseWithTotalPageVersionSchema = z
-  .object({
-    paging: PagingSchema.exactOptional(),
-    results: z
-      .array(PageVersionSchema)
-      .openapi({
-        description: 'An array containing the individual items or results of the collection.',
-        example: null,
-      }),
-    total: z
-      .int32()
-      .openapi({
-        description: 'An integer representing the total number of items in the collection.',
-        example: null,
-      }),
-  })
-  .openapi({ required: ['results', 'total'], example: null })
-  .openapi('CollectionResponseWithTotalPageVersion')
+const CollectionResponseWithTotalPageVersionSchema: z.ZodType<CollectionResponseWithTotalPageVersionType> =
+  z
+    .object({
+      paging: PagingSchema.exactOptional(),
+      results: z
+        .array(PageVersionSchema)
+        .openapi({
+          description: 'An array containing the individual items or results of the collection.',
+          example: null,
+        }),
+      total: z
+        .int32()
+        .openapi({
+          description: 'An integer representing the total number of items in the collection.',
+          example: null,
+        }),
+    })
+    .openapi({ required: ['results', 'total'], example: null })
+    .openapi('CollectionResponseWithTotalPageVersion')
 
 const ContentCloneRequestVNextSchema = z
   .object({
@@ -5185,14 +6224,21 @@ const Oauth2SecurityScheme = {
     authorizationCode: {
       authorizationUrl: 'https://app.hubspot.com/oauth/authorize',
       tokenUrl: 'https://api.hubapi.com/oauth/v1/token',
-      scopes: { content: '' },
+      scopes: {
+        'cms.pages.landing_pages.read': '',
+        'cms.pages.site_pages.read': '',
+        content: '',
+        marketplace_validation: '',
+      },
     },
   },
+  'x-hubspot-app-availability': {
+    'cms.pages.landing_pages.read': { user: ['public', 'private'], developer: true },
+    'cms.pages.site_pages.read': { user: ['public', 'private'], developer: true },
+    content: { portal: ['public', 'private'], developer: false },
+    marketplace_validation: { developer: true },
+  },
 }
-
-const PrivateAppsSecurityScheme = { type: 'apiKey', name: 'private-app', in: 'header' }
-
-const PrivateAppsLegacySecurityScheme = { type: 'apiKey', name: 'private-app-legacy', in: 'header' }
 
 export const getCmsPages202609LandingPagesRoute = createRoute({
   method: 'get',
@@ -5403,7 +6449,7 @@ export const getCmsPages202609LandingPagesRoute = createRoute({
     },
     default: ErrorResponse,
   },
-  security: [{ oauth2: ['content'] }],
+  security: [{ oauth2: ['cms.pages.landing_pages.read'] }, { oauth2: ['content'] }],
 })
 
 export const postCmsPages202609LandingPagesRoute = createRoute({
@@ -5413,24 +6459,25 @@ export const postCmsPages202609LandingPagesRoute = createRoute({
   summary: 'Create a landing page',
   description: 'Create a new landing page.',
   operationId: 'post-/cms/pages/2026-09/landing-pages_create',
-  request: { body: { content: { '*/*': { schema: PageSchema, example: null } }, required: true } },
+  request: {
+    body: {
+      content: { 'application/json': { schema: PageSchema, example: null } },
+      required: true,
+    },
+  },
   responses: {
     201: {
       description: 'successful operation',
       content: { 'application/json': { schema: PageSchema, example: null } },
       headers: z.object({
-        Location: {
-          description: 'URL of the newly created resource',
-          style: 'simple',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'URL of the newly created resource',
-              param: { required: false },
-              example: null,
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'URL of the newly created resource',
+            param: { required: false },
+            example: null,
+          }),
       }),
     },
     default: ErrorResponse,
@@ -5449,7 +6496,7 @@ export const postCmsPages202609LandingPagesAbTestCreateVariationRoute = createRo
     'post-/cms/pages/2026-09/landing-pages/ab-test/create-variation_createABTestVariation',
   request: {
     body: {
-      content: { '*/*': { schema: AbTestCreateRequestVNextSchema, example: null } },
+      content: { 'application/json': { schema: AbTestCreateRequestVNextSchema, example: null } },
       required: true,
     },
   },
@@ -5458,18 +6505,14 @@ export const postCmsPages202609LandingPagesAbTestCreateVariationRoute = createRo
       description: 'successful operation',
       content: { 'application/json': { schema: PageSchema, example: null } },
       headers: z.object({
-        Location: {
-          description: 'URL of the newly created resource',
-          style: 'simple',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'URL of the newly created resource',
-              param: { required: false },
-              example: null,
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'URL of the newly created resource',
+            param: { required: false },
+            example: null,
+          }),
       }),
     },
     default: ErrorResponse,
@@ -5486,7 +6529,7 @@ export const postCmsPages202609LandingPagesAbTestEndRoute = createRoute({
   operationId: 'post-/cms/pages/2026-09/landing-pages/ab-test/end_endActiveABTest',
   request: {
     body: {
-      content: { '*/*': { schema: AbTestEndRequestVNextSchema, example: null } },
+      content: { 'application/json': { schema: AbTestEndRequestVNextSchema, example: null } },
       required: true,
     },
   },
@@ -5503,7 +6546,7 @@ export const postCmsPages202609LandingPagesAbTestRerunRoute = createRoute({
   operationId: 'post-/cms/pages/2026-09/landing-pages/ab-test/rerun_rerunPreviousABTest',
   request: {
     body: {
-      content: { '*/*': { schema: AbTestRerunRequestVNextSchema, example: null } },
+      content: { 'application/json': { schema: AbTestRerunRequestVNextSchema, example: null } },
       required: true,
     },
   },
@@ -5520,9 +6563,19 @@ export const postCmsPages202609LandingPagesBatchArchiveRoute = createRoute({
     'Delete landing pages specified by ID in the request body. Note: this is not the same as the dashboard `archive` function. To perform a dashboard `archive` send an normal update with the `archivedInDashboard` field set to `true`.',
   operationId: 'post-/cms/pages/2026-09/landing-pages/batch/archive_archiveBatch',
   request: {
-    body: { content: { '*/*': { schema: BatchInputStringSchema, example: null } }, required: true },
+    body: {
+      content: { 'application/json': { schema: BatchInputStringSchema, example: null } },
+      required: true,
+    },
   },
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+  responses: {
+    204: { description: 'No content', content: {} },
+    207: {
+      description: 'multiple statuses',
+      content: { 'application/json': { schema: BatchResponsePageWithErrorsSchema, example: null } },
+    },
+    default: ErrorResponse,
+  },
   security: [{ oauth2: ['content'] }],
 })
 
@@ -5534,7 +6587,10 @@ export const postCmsPages202609LandingPagesBatchCreateRoute = createRoute({
   description: 'Create a batch of landing pages as detailed in the request body.',
   operationId: 'post-/cms/pages/2026-09/landing-pages/batch/create_createBatch',
   request: {
-    body: { content: { '*/*': { schema: BatchInputPageSchema, example: null } }, required: true },
+    body: {
+      content: { 'application/json': { schema: BatchInputPageSchema, example: null } },
+      required: true,
+    },
   },
   responses: {
     201: {
@@ -5575,7 +6631,10 @@ export const postCmsPages202609LandingPagesBatchReadRoute = createRoute({
           example: null,
         }),
     }),
-    body: { content: { '*/*': { schema: BatchInputStringSchema, example: null } }, required: true },
+    body: {
+      content: { 'application/json': { schema: BatchInputStringSchema, example: null } },
+      required: true,
+    },
   },
   responses: {
     200: {
@@ -5588,7 +6647,7 @@ export const postCmsPages202609LandingPagesBatchReadRoute = createRoute({
     },
     default: ErrorResponse,
   },
-  security: [{ oauth2: ['content'] }],
+  security: [{ oauth2: ['cms.pages.landing_pages.read'] }, { oauth2: ['content'] }],
 })
 
 export const postCmsPages202609LandingPagesBatchUpdateRoute = createRoute({
@@ -5617,7 +6676,7 @@ export const postCmsPages202609LandingPagesBatchUpdateRoute = createRoute({
         }),
     }),
     body: {
-      content: { '*/*': { schema: BatchInputJsonNodeSchema, example: null } },
+      content: { 'application/json': { schema: BatchInputJsonNodeSchema, example: null } },
       required: true,
     },
   },
@@ -5644,7 +6703,7 @@ export const postCmsPages202609LandingPagesCloneRoute = createRoute({
   operationId: 'post-/cms/pages/2026-09/landing-pages/clone_clone',
   request: {
     body: {
-      content: { '*/*': { schema: ContentCloneRequestVNextSchema, example: null } },
+      content: { 'application/json': { schema: ContentCloneRequestVNextSchema, example: null } },
       required: true,
     },
   },
@@ -5859,7 +6918,7 @@ export const getCmsPages202609LandingPagesFoldersRoute = createRoute({
     },
     default: ErrorResponse,
   },
-  security: [{ oauth2: ['content'] }],
+  security: [{ oauth2: ['cms.pages.landing_pages.read'] }, { oauth2: ['content'] }],
 })
 
 export const postCmsPages202609LandingPagesFoldersRoute = createRoute({
@@ -5870,25 +6929,24 @@ export const postCmsPages202609LandingPagesFoldersRoute = createRoute({
   description: 'Create a new folder for landing pages.',
   operationId: 'post-/cms/pages/2026-09/landing-pages/folders_createFolder',
   request: {
-    body: { content: { '*/*': { schema: ContentFolderSchema, example: null } }, required: true },
+    body: {
+      content: { 'application/json': { schema: ContentFolderSchema, example: null } },
+      required: true,
+    },
   },
   responses: {
     201: {
       description: 'successful operation',
       content: { 'application/json': { schema: ContentFolderSchema, example: null } },
       headers: z.object({
-        Location: {
-          description: 'URL of the newly created resource',
-          style: 'simple',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'URL of the newly created resource',
-              param: { required: false },
-              example: null,
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'URL of the newly created resource',
+            param: { required: false },
+            example: null,
+          }),
       }),
     },
     default: ErrorResponse,
@@ -5904,9 +6962,21 @@ export const postCmsPages202609LandingPagesFoldersBatchArchiveRoute = createRout
   description: 'Delete a batch of folders as specified in the request body.',
   operationId: 'post-/cms/pages/2026-09/landing-pages/folders/batch/archive_archiveFolders',
   request: {
-    body: { content: { '*/*': { schema: BatchInputStringSchema, example: null } }, required: true },
+    body: {
+      content: { 'application/json': { schema: BatchInputStringSchema, example: null } },
+      required: true,
+    },
   },
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+  responses: {
+    204: { description: 'No content', content: {} },
+    207: {
+      description: 'multiple statuses',
+      content: {
+        'application/json': { schema: BatchResponseContentFolderWithErrorsSchema, example: null },
+      },
+    },
+    default: ErrorResponse,
+  },
   security: [{ oauth2: ['content'] }],
 })
 
@@ -5919,7 +6989,7 @@ export const postCmsPages202609LandingPagesFoldersBatchCreateRoute = createRoute
   operationId: 'post-/cms/pages/2026-09/landing-pages/folders/batch/create_createFolders',
   request: {
     body: {
-      content: { '*/*': { schema: BatchInputContentFolderSchema, example: null } },
+      content: { 'application/json': { schema: BatchInputContentFolderSchema, example: null } },
       required: true,
     },
   },
@@ -5964,7 +7034,10 @@ export const postCmsPages202609LandingPagesFoldersBatchReadRoute = createRoute({
           example: null,
         }),
     }),
-    body: { content: { '*/*': { schema: BatchInputStringSchema, example: null } }, required: true },
+    body: {
+      content: { 'application/json': { schema: BatchInputStringSchema, example: null } },
+      required: true,
+    },
   },
   responses: {
     200: {
@@ -5979,7 +7052,7 @@ export const postCmsPages202609LandingPagesFoldersBatchReadRoute = createRoute({
     },
     default: ErrorResponse,
   },
-  security: [{ oauth2: ['content'] }],
+  security: [{ oauth2: ['cms.pages.landing_pages.read'] }, { oauth2: ['content'] }],
 })
 
 export const postCmsPages202609LandingPagesFoldersBatchUpdateRoute = createRoute({
@@ -6008,7 +7081,7 @@ export const postCmsPages202609LandingPagesFoldersBatchUpdateRoute = createRoute
         }),
     }),
     body: {
-      content: { '*/*': { schema: BatchInputJsonNodeSchema, example: null } },
+      content: { 'application/json': { schema: BatchInputJsonNodeSchema, example: null } },
       required: true,
     },
   },
@@ -6093,7 +7166,7 @@ export const getCmsPages202609LandingPagesFoldersObjectIdRoute = createRoute({
     },
     default: ErrorResponse,
   },
-  security: [{ oauth2: ['content'] }],
+  security: [{ oauth2: ['cms.pages.landing_pages.read'] }, { oauth2: ['content'] }],
 })
 
 export const deleteCmsPages202609LandingPagesFoldersObjectIdRoute = createRoute({
@@ -6184,7 +7257,10 @@ export const patchCmsPages202609LandingPagesFoldersObjectIdRoute = createRoute({
           example: null,
         }),
     }),
-    body: { content: { '*/*': { schema: ContentFolderSchema, example: null } }, required: true },
+    body: {
+      content: { 'application/json': { schema: ContentFolderSchema, example: null } },
+      required: true,
+    },
   },
   responses: {
     200: {
@@ -6291,7 +7367,7 @@ export const getCmsPages202609LandingPagesFoldersObjectIdRevisionsRoute = create
     },
     default: ErrorResponse,
   },
-  security: [{ oauth2: ['content'] }],
+  security: [{ oauth2: ['cms.pages.landing_pages.read'] }, { oauth2: ['content'] }],
 })
 
 export const getCmsPages202609LandingPagesFoldersObjectIdRevisionsRevisionIdRoute = createRoute({
@@ -6342,7 +7418,7 @@ export const getCmsPages202609LandingPagesFoldersObjectIdRevisionsRevisionIdRout
     },
     default: ErrorResponse,
   },
-  security: [{ oauth2: ['content'] }],
+  security: [{ oauth2: ['cms.pages.landing_pages.read'] }, { oauth2: ['content'] }],
 })
 
 export const postCmsPages202609LandingPagesFoldersObjectIdRevisionsRevisionIdRestoreRoute =
@@ -6406,7 +7482,9 @@ export const postCmsPages202609LandingPagesMultiLanguageAttachToLangGroupRoute =
     'post-/cms/pages/2026-09/landing-pages/multi-language/attach-to-lang-group_attachToLangGroup',
   request: {
     body: {
-      content: { '*/*': { schema: AttachToLangPrimaryRequestVNextSchema, example: null } },
+      content: {
+        'application/json': { schema: AttachToLangPrimaryRequestVNextSchema, example: null },
+      },
       required: true,
     },
   },
@@ -6425,7 +7503,9 @@ export const postCmsPages202609LandingPagesMultiLanguageCreateLanguageVariationR
     'post-/cms/pages/2026-09/landing-pages/multi-language/create-language-variation_createLangVariation',
   request: {
     body: {
-      content: { '*/*': { schema: ContentLanguageCloneRequestVNextSchema, example: null } },
+      content: {
+        'application/json': { schema: ContentLanguageCloneRequestVNextSchema, example: null },
+      },
       required: true,
     },
   },
@@ -6449,7 +7529,9 @@ export const postCmsPages202609LandingPagesMultiLanguageDetachFromLangGroupRoute
     'post-/cms/pages/2026-09/landing-pages/multi-language/detach-from-lang-group_detachFromLangGroup',
   request: {
     body: {
-      content: { '*/*': { schema: DetachFromLangGroupRequestVNextSchema, example: null } },
+      content: {
+        'application/json': { schema: DetachFromLangGroupRequestVNextSchema, example: null },
+      },
       required: true,
     },
   },
@@ -6467,7 +7549,9 @@ export const putCmsPages202609LandingPagesMultiLanguageSetNewLangPrimaryRoute = 
     'put-/cms/pages/2026-09/landing-pages/multi-language/set-new-lang-primary_setLangPrimary',
   request: {
     body: {
-      content: { '*/*': { schema: SetNewLanguagePrimaryRequestVNextSchema, example: null } },
+      content: {
+        'application/json': { schema: SetNewLanguagePrimaryRequestVNextSchema, example: null },
+      },
       required: true,
     },
   },
@@ -6484,7 +7568,7 @@ export const postCmsPages202609LandingPagesMultiLanguageUpdateLanguagesRoute = c
   operationId: 'post-/cms/pages/2026-09/landing-pages/multi-language/update-languages_updateLangs',
   request: {
     body: {
-      content: { '*/*': { schema: UpdateLanguagesRequestVNextSchema, example: null } },
+      content: { 'application/json': { schema: UpdateLanguagesRequestVNextSchema, example: null } },
       required: true,
     },
   },
@@ -6501,7 +7585,7 @@ export const postCmsPages202609LandingPagesScheduleRoute = createRoute({
   operationId: 'post-/cms/pages/2026-09/landing-pages/schedule_schedule',
   request: {
     body: {
-      content: { '*/*': { schema: ContentScheduleRequestVNextSchema, example: null } },
+      content: { 'application/json': { schema: ContentScheduleRequestVNextSchema, example: null } },
       required: true,
     },
   },
@@ -6573,7 +7657,7 @@ export const getCmsPages202609LandingPagesObjectIdRoute = createRoute({
     },
     default: ErrorResponse,
   },
-  security: [{ oauth2: ['content'] }],
+  security: [{ oauth2: ['cms.pages.landing_pages.read'] }, { oauth2: ['content'] }],
 })
 
 export const deleteCmsPages202609LandingPagesObjectIdRoute = createRoute({
@@ -6664,7 +7748,10 @@ export const patchCmsPages202609LandingPagesObjectIdRoute = createRoute({
           example: null,
         }),
     }),
-    body: { content: { '*/*': { schema: PageSchema, example: null } }, required: true },
+    body: {
+      content: { 'application/json': { schema: PageSchema, example: null } },
+      required: true,
+    },
   },
   responses: {
     200: {
@@ -6709,7 +7796,7 @@ export const getCmsPages202609LandingPagesObjectIdDraftRoute = createRoute({
     },
     default: ErrorResponse,
   },
-  security: [{ oauth2: ['content'] }],
+  security: [{ oauth2: ['cms.pages.landing_pages.read'] }, { oauth2: ['content'] }],
 })
 
 export const patchCmsPages202609LandingPagesObjectIdDraftRoute = createRoute({
@@ -6737,7 +7824,10 @@ export const patchCmsPages202609LandingPagesObjectIdDraftRoute = createRoute({
           example: null,
         }),
     }),
-    body: { content: { '*/*': { schema: PageSchema, example: null } }, required: true },
+    body: {
+      content: { 'application/json': { schema: PageSchema, example: null } },
+      required: true,
+    },
   },
   responses: {
     200: {
@@ -6900,7 +7990,7 @@ export const getCmsPages202609LandingPagesObjectIdRevisionsRoute = createRoute({
     },
     default: ErrorResponse,
   },
-  security: [{ oauth2: ['content'] }],
+  security: [{ oauth2: ['cms.pages.landing_pages.read'] }, { oauth2: ['content'] }],
 })
 
 export const getCmsPages202609LandingPagesObjectIdRevisionsRevisionIdRoute = createRoute({
@@ -6952,7 +8042,7 @@ export const getCmsPages202609LandingPagesObjectIdRevisionsRevisionIdRoute = cre
     },
     default: ErrorResponse,
   },
-  security: [{ oauth2: ['content'] }],
+  security: [{ oauth2: ['cms.pages.landing_pages.read'] }, { oauth2: ['content'] }],
 })
 
 export const postCmsPages202609LandingPagesObjectIdRevisionsRevisionIdRestoreRoute = createRoute({
@@ -7267,7 +8357,11 @@ export const getCmsPages202609SitePagesRoute = createRoute({
     },
     default: ErrorResponse,
   },
-  security: [{ oauth2: ['content'] }],
+  security: [
+    { oauth2: ['cms.pages.site_pages.read'] },
+    { oauth2: ['marketplace_validation'] },
+    { oauth2: ['content'] },
+  ],
 })
 
 export const postCmsPages202609SitePagesRoute = createRoute({
@@ -7277,29 +8371,30 @@ export const postCmsPages202609SitePagesRoute = createRoute({
   summary: 'Create a website page',
   description: 'Create a new website page.',
   operationId: 'post-/cms/pages/2026-09/site-pages_create',
-  request: { body: { content: { '*/*': { schema: PageSchema, example: null } }, required: true } },
+  request: {
+    body: {
+      content: { 'application/json': { schema: PageSchema, example: null } },
+      required: true,
+    },
+  },
   responses: {
     201: {
       description: 'successful operation',
       content: { 'application/json': { schema: PageSchema, example: null } },
       headers: z.object({
-        Location: {
-          description: 'URL of the newly created resource',
-          style: 'simple',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'URL of the newly created resource',
-              param: { required: false },
-              example: null,
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'URL of the newly created resource',
+            param: { required: false },
+            example: null,
+          }),
       }),
     },
     default: ErrorResponse,
   },
-  security: [{ oauth2: ['content'] }],
+  security: [{ oauth2: ['marketplace_validation'] }, { oauth2: ['content'] }],
 })
 
 export const postCmsPages202609SitePagesAbTestCreateVariationRoute = createRoute({
@@ -7312,7 +8407,7 @@ export const postCmsPages202609SitePagesAbTestCreateVariationRoute = createRoute
   operationId: 'post-/cms/pages/2026-09/site-pages/ab-test/create-variation_createABTestVariation',
   request: {
     body: {
-      content: { '*/*': { schema: AbTestCreateRequestVNextSchema, example: null } },
+      content: { 'application/json': { schema: AbTestCreateRequestVNextSchema, example: null } },
       required: true,
     },
   },
@@ -7321,23 +8416,19 @@ export const postCmsPages202609SitePagesAbTestCreateVariationRoute = createRoute
       description: 'successful operation',
       content: { 'application/json': { schema: PageSchema, example: null } },
       headers: z.object({
-        Location: {
-          description: 'URL of the newly created resource',
-          style: 'simple',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'URL of the newly created resource',
-              param: { required: false },
-              example: null,
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'URL of the newly created resource',
+            param: { required: false },
+            example: null,
+          }),
       }),
     },
     default: ErrorResponse,
   },
-  security: [{ oauth2: ['content'] }],
+  security: [{ oauth2: ['marketplace_validation'] }, { oauth2: ['content'] }],
 })
 
 export const postCmsPages202609SitePagesAbTestEndRoute = createRoute({
@@ -7349,12 +8440,12 @@ export const postCmsPages202609SitePagesAbTestEndRoute = createRoute({
   operationId: 'post-/cms/pages/2026-09/site-pages/ab-test/end_endActiveABTest',
   request: {
     body: {
-      content: { '*/*': { schema: AbTestEndRequestVNextSchema, example: null } },
+      content: { 'application/json': { schema: AbTestEndRequestVNextSchema, example: null } },
       required: true,
     },
   },
   responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
-  security: [{ oauth2: ['content'] }],
+  security: [{ oauth2: ['marketplace_validation'] }, { oauth2: ['content'] }],
 })
 
 export const postCmsPages202609SitePagesAbTestRerunRoute = createRoute({
@@ -7366,12 +8457,12 @@ export const postCmsPages202609SitePagesAbTestRerunRoute = createRoute({
   operationId: 'post-/cms/pages/2026-09/site-pages/ab-test/rerun_rerunPreviousABTest',
   request: {
     body: {
-      content: { '*/*': { schema: AbTestRerunRequestVNextSchema, example: null } },
+      content: { 'application/json': { schema: AbTestRerunRequestVNextSchema, example: null } },
       required: true,
     },
   },
   responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
-  security: [{ oauth2: ['content'] }],
+  security: [{ oauth2: ['marketplace_validation'] }, { oauth2: ['content'] }],
 })
 
 export const postCmsPages202609SitePagesBatchArchiveRoute = createRoute({
@@ -7383,10 +8474,20 @@ export const postCmsPages202609SitePagesBatchArchiveRoute = createRoute({
     'Delete a batch of website pages as specified in the request body. Note that this is not the same as the dashboard `archive` function. To perform a dashboard `archive` send an normal update with the `archivedInDashboard` field set to `true`.',
   operationId: 'post-/cms/pages/2026-09/site-pages/batch/archive_archiveBatch',
   request: {
-    body: { content: { '*/*': { schema: BatchInputStringSchema, example: null } }, required: true },
+    body: {
+      content: { 'application/json': { schema: BatchInputStringSchema, example: null } },
+      required: true,
+    },
   },
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
-  security: [{ oauth2: ['content'] }],
+  responses: {
+    204: { description: 'No content', content: {} },
+    207: {
+      description: 'multiple statuses',
+      content: { 'application/json': { schema: BatchResponsePageWithErrorsSchema, example: null } },
+    },
+    default: ErrorResponse,
+  },
+  security: [{ oauth2: ['marketplace_validation'] }, { oauth2: ['content'] }],
 })
 
 export const postCmsPages202609SitePagesBatchCreateRoute = createRoute({
@@ -7397,7 +8498,10 @@ export const postCmsPages202609SitePagesBatchCreateRoute = createRoute({
   description: 'Create a batch of website pages as specified in the request body.',
   operationId: 'post-/cms/pages/2026-09/site-pages/batch/create_createBatch',
   request: {
-    body: { content: { '*/*': { schema: BatchInputPageSchema, example: null } }, required: true },
+    body: {
+      content: { 'application/json': { schema: BatchInputPageSchema, example: null } },
+      required: true,
+    },
   },
   responses: {
     201: {
@@ -7410,7 +8514,7 @@ export const postCmsPages202609SitePagesBatchCreateRoute = createRoute({
     },
     default: ErrorResponse,
   },
-  security: [{ oauth2: ['content'] }],
+  security: [{ oauth2: ['marketplace_validation'] }, { oauth2: ['content'] }],
 })
 
 export const postCmsPages202609SitePagesBatchReadRoute = createRoute({
@@ -7438,7 +8542,10 @@ export const postCmsPages202609SitePagesBatchReadRoute = createRoute({
           example: null,
         }),
     }),
-    body: { content: { '*/*': { schema: BatchInputStringSchema, example: null } }, required: true },
+    body: {
+      content: { 'application/json': { schema: BatchInputStringSchema, example: null } },
+      required: true,
+    },
   },
   responses: {
     200: {
@@ -7451,7 +8558,11 @@ export const postCmsPages202609SitePagesBatchReadRoute = createRoute({
     },
     default: ErrorResponse,
   },
-  security: [{ oauth2: ['content'] }],
+  security: [
+    { oauth2: ['cms.pages.site_pages.read'] },
+    { oauth2: ['marketplace_validation'] },
+    { oauth2: ['content'] },
+  ],
 })
 
 export const postCmsPages202609SitePagesBatchUpdateRoute = createRoute({
@@ -7480,7 +8591,7 @@ export const postCmsPages202609SitePagesBatchUpdateRoute = createRoute({
         }),
     }),
     body: {
-      content: { '*/*': { schema: BatchInputJsonNodeSchema, example: null } },
+      content: { 'application/json': { schema: BatchInputJsonNodeSchema, example: null } },
       required: true,
     },
   },
@@ -7495,7 +8606,7 @@ export const postCmsPages202609SitePagesBatchUpdateRoute = createRoute({
     },
     default: ErrorResponse,
   },
-  security: [{ oauth2: ['content'] }],
+  security: [{ oauth2: ['marketplace_validation'] }, { oauth2: ['content'] }],
 })
 
 export const postCmsPages202609SitePagesCloneRoute = createRoute({
@@ -7507,7 +8618,7 @@ export const postCmsPages202609SitePagesCloneRoute = createRoute({
   operationId: 'post-/cms/pages/2026-09/site-pages/clone_clone',
   request: {
     body: {
-      content: { '*/*': { schema: ContentCloneRequestVNextSchema, example: null } },
+      content: { 'application/json': { schema: ContentCloneRequestVNextSchema, example: null } },
       required: true,
     },
   },
@@ -7518,7 +8629,7 @@ export const postCmsPages202609SitePagesCloneRoute = createRoute({
     },
     default: ErrorResponse,
   },
-  security: [{ oauth2: ['content'] }],
+  security: [{ oauth2: ['marketplace_validation'] }, { oauth2: ['content'] }],
 })
 
 export const postCmsPages202609SitePagesMultiLanguageAttachToLangGroupRoute = createRoute({
@@ -7531,7 +8642,9 @@ export const postCmsPages202609SitePagesMultiLanguageAttachToLangGroupRoute = cr
     'post-/cms/pages/2026-09/site-pages/multi-language/attach-to-lang-group_attachToLangGroup',
   request: {
     body: {
-      content: { '*/*': { schema: AttachToLangPrimaryRequestVNextSchema, example: null } },
+      content: {
+        'application/json': { schema: AttachToLangPrimaryRequestVNextSchema, example: null },
+      },
       required: true,
     },
   },
@@ -7550,7 +8663,9 @@ export const postCmsPages202609SitePagesMultiLanguageCreateLanguageVariationRout
     'post-/cms/pages/2026-09/site-pages/multi-language/create-language-variation_createLangVariation',
   request: {
     body: {
-      content: { '*/*': { schema: ContentLanguageCloneRequestVNextSchema, example: null } },
+      content: {
+        'application/json': { schema: ContentLanguageCloneRequestVNextSchema, example: null },
+      },
       required: true,
     },
   },
@@ -7574,7 +8689,9 @@ export const postCmsPages202609SitePagesMultiLanguageDetachFromLangGroupRoute = 
     'post-/cms/pages/2026-09/site-pages/multi-language/detach-from-lang-group_detachFromLangGroup',
   request: {
     body: {
-      content: { '*/*': { schema: DetachFromLangGroupRequestVNextSchema, example: null } },
+      content: {
+        'application/json': { schema: DetachFromLangGroupRequestVNextSchema, example: null },
+      },
       required: true,
     },
   },
@@ -7592,7 +8709,9 @@ export const putCmsPages202609SitePagesMultiLanguageSetNewLangPrimaryRoute = cre
     'put-/cms/pages/2026-09/site-pages/multi-language/set-new-lang-primary_setLangPrimary',
   request: {
     body: {
-      content: { '*/*': { schema: SetNewLanguagePrimaryRequestVNextSchema, example: null } },
+      content: {
+        'application/json': { schema: SetNewLanguagePrimaryRequestVNextSchema, example: null },
+      },
       required: true,
     },
   },
@@ -7609,7 +8728,7 @@ export const postCmsPages202609SitePagesMultiLanguageUpdateLanguagesRoute = crea
   operationId: 'post-/cms/pages/2026-09/site-pages/multi-language/update-languages_updateLangs',
   request: {
     body: {
-      content: { '*/*': { schema: UpdateLanguagesRequestVNextSchema, example: null } },
+      content: { 'application/json': { schema: UpdateLanguagesRequestVNextSchema, example: null } },
       required: true,
     },
   },
@@ -7626,12 +8745,12 @@ export const postCmsPages202609SitePagesScheduleRoute = createRoute({
   operationId: 'post-/cms/pages/2026-09/site-pages/schedule_schedule',
   request: {
     body: {
-      content: { '*/*': { schema: ContentScheduleRequestVNextSchema, example: null } },
+      content: { 'application/json': { schema: ContentScheduleRequestVNextSchema, example: null } },
       required: true,
     },
   },
   responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
-  security: [{ oauth2: ['content'] }],
+  security: [{ oauth2: ['marketplace_validation'] }, { oauth2: ['content'] }],
 })
 
 export const getCmsPages202609SitePagesObjectIdRoute = createRoute({
@@ -7699,7 +8818,11 @@ export const getCmsPages202609SitePagesObjectIdRoute = createRoute({
     },
     default: ErrorResponse,
   },
-  security: [{ oauth2: ['content'] }],
+  security: [
+    { oauth2: ['cms.pages.site_pages.read'] },
+    { oauth2: ['marketplace_validation'] },
+    { oauth2: ['content'] },
+  ],
 })
 
 export const deleteCmsPages202609SitePagesObjectIdRoute = createRoute({
@@ -7745,7 +8868,7 @@ export const deleteCmsPages202609SitePagesObjectIdRoute = createRoute({
     }),
   },
   responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
-  security: [{ oauth2: ['content'] }],
+  security: [{ oauth2: ['marketplace_validation'] }, { oauth2: ['content'] }],
 })
 
 export const patchCmsPages202609SitePagesObjectIdRoute = createRoute({
@@ -7790,7 +8913,10 @@ export const patchCmsPages202609SitePagesObjectIdRoute = createRoute({
           example: null,
         }),
     }),
-    body: { content: { '*/*': { schema: PageSchema, example: null } }, required: true },
+    body: {
+      content: { 'application/json': { schema: PageSchema, example: null } },
+      required: true,
+    },
   },
   responses: {
     200: {
@@ -7799,7 +8925,7 @@ export const patchCmsPages202609SitePagesObjectIdRoute = createRoute({
     },
     default: ErrorResponse,
   },
-  security: [{ oauth2: ['content'] }],
+  security: [{ oauth2: ['marketplace_validation'] }, { oauth2: ['content'] }],
 })
 
 export const getCmsPages202609SitePagesObjectIdDraftRoute = createRoute({
@@ -7835,7 +8961,11 @@ export const getCmsPages202609SitePagesObjectIdDraftRoute = createRoute({
     },
     default: ErrorResponse,
   },
-  security: [{ oauth2: ['content'] }],
+  security: [
+    { oauth2: ['cms.pages.site_pages.read'] },
+    { oauth2: ['marketplace_validation'] },
+    { oauth2: ['content'] },
+  ],
 })
 
 export const patchCmsPages202609SitePagesObjectIdDraftRoute = createRoute({
@@ -7863,7 +8993,10 @@ export const patchCmsPages202609SitePagesObjectIdDraftRoute = createRoute({
           example: null,
         }),
     }),
-    body: { content: { '*/*': { schema: PageSchema, example: null } }, required: true },
+    body: {
+      content: { 'application/json': { schema: PageSchema, example: null } },
+      required: true,
+    },
   },
   responses: {
     200: {
@@ -7872,7 +9005,7 @@ export const patchCmsPages202609SitePagesObjectIdDraftRoute = createRoute({
     },
     default: ErrorResponse,
   },
-  security: [{ oauth2: ['content'] }],
+  security: [{ oauth2: ['marketplace_validation'] }, { oauth2: ['content'] }],
 })
 
 export const postCmsPages202609SitePagesObjectIdDraftPushLiveRoute = createRoute({
@@ -7903,7 +9036,7 @@ export const postCmsPages202609SitePagesObjectIdDraftPushLiveRoute = createRoute
     }),
   },
   responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
-  security: [{ oauth2: ['content'] }],
+  security: [{ oauth2: ['marketplace_validation'] }, { oauth2: ['content'] }],
 })
 
 export const postCmsPages202609SitePagesObjectIdDraftResetRoute = createRoute({
@@ -7932,7 +9065,7 @@ export const postCmsPages202609SitePagesObjectIdDraftResetRoute = createRoute({
     }),
   },
   responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
-  security: [{ oauth2: ['content'] }],
+  security: [{ oauth2: ['marketplace_validation'] }, { oauth2: ['content'] }],
 })
 
 export const getCmsPages202609SitePagesObjectIdRevisionsRoute = createRoute({
@@ -8025,7 +9158,11 @@ export const getCmsPages202609SitePagesObjectIdRevisionsRoute = createRoute({
     },
     default: ErrorResponse,
   },
-  security: [{ oauth2: ['content'] }],
+  security: [
+    { oauth2: ['cms.pages.site_pages.read'] },
+    { oauth2: ['marketplace_validation'] },
+    { oauth2: ['content'] },
+  ],
 })
 
 export const getCmsPages202609SitePagesObjectIdRevisionsRevisionIdRoute = createRoute({
@@ -8077,7 +9214,11 @@ export const getCmsPages202609SitePagesObjectIdRevisionsRevisionIdRoute = create
     },
     default: ErrorResponse,
   },
-  security: [{ oauth2: ['content'] }],
+  security: [
+    { oauth2: ['cms.pages.site_pages.read'] },
+    { oauth2: ['marketplace_validation'] },
+    { oauth2: ['content'] },
+  ],
 })
 
 export const postCmsPages202609SitePagesObjectIdRevisionsRevisionIdRestoreRoute = createRoute({
@@ -8128,7 +9269,7 @@ export const postCmsPages202609SitePagesObjectIdRevisionsRevisionIdRestoreRoute 
     },
     default: ErrorResponse,
   },
-  security: [{ oauth2: ['content'] }],
+  security: [{ oauth2: ['marketplace_validation'] }, { oauth2: ['content'] }],
 })
 
 export const postCmsPages202609SitePagesObjectIdRevisionsRevisionIdRestoreToDraftRoute =
@@ -8187,5 +9328,5 @@ export const postCmsPages202609SitePagesObjectIdRevisionsRevisionIdRestoreToDraf
       },
       default: ErrorResponse,
     },
-    security: [{ oauth2: ['content'] }],
+    security: [{ oauth2: ['marketplace_validation'] }, { oauth2: ['content'] }],
   })

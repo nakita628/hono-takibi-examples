@@ -1,4 +1,4 @@
-<h1 id="figma-api">Figma API v0.46.0</h1>
+<h1 id="figma-api">Figma API v0.47.0</h1>
 
 > Scroll down for code samples, example requests and responses. Select a language for code samples from the tabs above or the mobile navigation menu.
 
@@ -15053,6 +15053,7 @@ PersonalAccessToken, OAuth2 ( Scopes: file_metadata:read )
     "paragraphIndent": 0,
     "listSpacing": 0,
     "textDecoration": "NONE",
+    "fontVariantPosition": "NORMAL",
     "textAutoResize": "NONE",
     "textTruncation": "DISABLED",
     "maxLines": 0,
@@ -15147,6 +15148,7 @@ PersonalAccessToken, OAuth2 ( Scopes: file_metadata:read )
       "paragraphIndent": 0,
       "listSpacing": 0,
       "textDecoration": "NONE",
+      "fontVariantPosition": "NORMAL",
       "textAutoResize": "NONE",
       "textTruncation": "DISABLED",
       "maxLines": 0,
@@ -15236,6 +15238,7 @@ PersonalAccessToken, OAuth2 ( Scopes: file_metadata:read )
       "paragraphIndent": 0,
       "listSpacing": 0,
       "textDecoration": "NONE",
+      "fontVariantPosition": "NORMAL",
       "textAutoResize": "NONE",
       "textTruncation": "DISABLED",
       "maxLines": 0,
@@ -28930,6 +28933,7 @@ PersonalAccessToken, OAuth2 ( Scopes: file_metadata:read )
     "paragraphIndent": 0,
     "listSpacing": 0,
     "textDecoration": "NONE",
+    "fontVariantPosition": "NORMAL",
     "textAutoResize": "NONE",
     "textTruncation": "DISABLED",
     "maxLines": 0,
@@ -29024,6 +29028,7 @@ PersonalAccessToken, OAuth2 ( Scopes: file_metadata:read )
       "paragraphIndent": 0,
       "listSpacing": 0,
       "textDecoration": "NONE",
+      "fontVariantPosition": "NORMAL",
       "textAutoResize": "NONE",
       "textTruncation": "DISABLED",
       "maxLines": 0,
@@ -29113,6 +29118,7 @@ PersonalAccessToken, OAuth2 ( Scopes: file_metadata:read )
       "paragraphIndent": 0,
       "listSpacing": 0,
       "textDecoration": "NONE",
+      "fontVariantPosition": "NORMAL",
       "textAutoResize": "NONE",
       "textTruncation": "DISABLED",
       "maxLines": 0,
@@ -38049,6 +38055,7 @@ A link to either a URL or another frame (node) in the document.
   "paragraphIndent": 0,
   "listSpacing": 0,
   "textDecoration": "NONE",
+  "fontVariantPosition": "NORMAL",
   "textAutoResize": "NONE",
   "textTruncation": "DISABLED",
   "maxLines": 0,
@@ -38143,6 +38150,7 @@ A link to either a URL or another frame (node) in the document.
 |paragraphIndent|number|false|none|Paragraph indentation in px, 0 if not present.|
 |listSpacing|number|false|none|Space between list items in px, 0 if not present.|
 |textDecoration|string|false|none|Text decoration applied to the node, default is none.|
+|fontVariantPosition|string|false|none|Whether the text is formatted as superscript or subscript.|
 |textAutoResize|string|false|none|Dimensions along which text will auto resize, default is that the text does not auto-resize. TRUNCATE means that the text will be shortened and trailing text will be replaced with "…" if the text contents is larger than the bounds. `TRUNCATE` as a return value is deprecated and will be removed in a future version. Read from `textTruncation` instead.|
 |textTruncation|string|false|none|Whether this text node will truncate with an ellipsis when the text contents is larger than the text node.|
 |maxLines|number|false|none|When `textTruncation: "ENDING"` is set, `maxLines` determines how many lines a text node can grow to before it truncates.|
@@ -38175,6 +38183,9 @@ A link to either a URL or another frame (node) in the document.
 |textDecoration|NONE|
 |textDecoration|STRIKETHROUGH|
 |textDecoration|UNDERLINE|
+|fontVariantPosition|NORMAL|
+|fontVariantPosition|SUPER|
+|fontVariantPosition|SUB|
 |textAutoResize|NONE|
 |textAutoResize|WIDTH_AND_HEIGHT|
 |textAutoResize|HEIGHT|

@@ -792,7 +792,7 @@ const StandardErrorSchema = z
       .string()
       .openapi({ description: 'The HTTP status code associated with the error.', example: null }),
     subCategory: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'A more specific error category within each main category.',
@@ -1821,11 +1821,19 @@ const Oauth2SecurityScheme = {
       },
     },
   },
+  'x-hubspot-app-availability': {
+    'cpq.quotes.read': { portal: ['public'], user: ['public'], developer: false },
+    'cpq.quotes.write': { portal: ['public'], user: ['public'], developer: false },
+    'crm.objects.quotes.read': {
+      portal: ['public', 'private'],
+      user: ['public', 'private'],
+      developer: false,
+    },
+    'crm.objects.quotes.write': { portal: ['public', 'private'], developer: false },
+    'settings.currencies.read': { portal: ['public', 'private'], developer: false },
+    'settings.currencies.write': { portal: ['public', 'private'], developer: false },
+  },
 }
-
-const PrivateAppsSecurityScheme = { type: 'apiKey', name: 'private-app', in: 'header' }
-
-const PrivateAppsLegacySecurityScheme = { type: 'apiKey', name: 'private-app-legacy', in: 'header' }
 
 export const postSettingsCurrencies202609CentralFxRatesAddCurrencyRoute = createRoute({
   method: 'post',

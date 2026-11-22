@@ -473,6 +473,2753 @@ type BillingInvoiceMetadataType = {
   updated?: string
 }
 
+const ClusterDescriptionProcessArgs20240805Schema = z
+  .object({
+    changeStreamOptionsPreAndPostImagesExpireAfterSeconds: z
+      .int32()
+      .default(-1)
+      .exactOptional()
+      .openapi({
+        description: 'The minimum pre- and post-image retention time in seconds.',
+        externalDocs: {
+          description:
+            'This option corresponds to the ``changeStreamOptions.preAndPostImages.expireAfterSeconds`` cluster parameter. This setting controls the retention policy of change stream pre- and post-images. Pre- and post-images are the versions of a document before and after document modification, respectively. ``expireAfterSeconds`` controls how long MongoDB retains pre- and post-images. When set to -1 (off), MongoDB uses the default retention policy: pre- and post-images are retained until the corresponding change stream events are removed from the oplog. To set the minimum pre- and post-image retention time, specify an integer value greater than zero. Setting this too low could increase the risk of interrupting Realm sync or triggers processing. The default value is -1 (off).',
+          url: 'https://www.mongodb.com/docs/upcoming/reference/cluster-parameters/changeStreamOptions/#mongodb-parameter-param.changeStreamOptions.preAndPostImages.expireAfterSeconds',
+        },
+      }),
+    chunkMigrationConcurrency: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Number of threads on the source shard and the receiving shard for chunk migration. The number of threads should not exceed the half the total number of CPU cores in the sharded cluster.',
+        externalDocs: {
+          description:
+            'This option corresponds to the `chunkMigrationConcurrency` `mongod` configuration file option.',
+          url: 'https://www.mongodb.com/docs/manual/reference/parameters/#mongodb-parameter-param.chunkMigrationConcurrency',
+        },
+      }),
+    customOpensslCipherConfigTls12: z
+      .array(
+        z.enum(['TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384', 'TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256']),
+      )
+      .exactOptional()
+      .openapi({
+        description:
+          'The custom OpenSSL cipher suite list for TLS 1.2. Requires `tlsCipherConfigMode` = `CUSTOM`; when `tlsCipherConfigMode` is omitted, supplying a non-empty list infers `CUSTOM`.',
+        externalDocs: {
+          description:
+            'This option corresponds to the `opensslCipherConfig` `mongod` configuration file option.',
+          url: 'https://www.mongodb.com/docs/manual/reference/parameters/#mongodb-parameter-param.opensslCipherConfig',
+        },
+      }),
+    customOpensslCipherConfigTls13: z
+      .array(
+        z.enum([
+          'TLS_AES_256_GCM_SHA384',
+          'TLS_CHACHA20_POLY1305_SHA256',
+          'TLS_AES_128_GCM_SHA256',
+          'TLS_AES_128_CCM_SHA256',
+        ]),
+      )
+      .max(4)
+      .exactOptional()
+      .openapi({
+        description:
+          'The custom OpenSSL cipher suite list for TLS 1.3. Requires `tlsCipherConfigMode` = `CUSTOM`; when `tlsCipherConfigMode` is omitted, supplying a non-empty list infers `CUSTOM`.',
+        externalDocs: {
+          description:
+            'This option corresponds to the `opensslCipherSuiteConfig` `mongod` configuration file option.',
+          url: 'https://www.mongodb.com/docs/manual/reference/parameters/#mongodb-parameter-param.opensslCipherSuiteConfig',
+        },
+      }),
+    defaultMaxTimeMS: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Default time limit in milliseconds for individual read operations to complete.',
+        externalDocs: {
+          description: 'This option corresponds to the `defaultMaxTimeMS` cluster parameter.',
+          url: 'https://www.mongodb.com/docs/upcoming/reference/cluster-parameters/defaultMaxTimeMS/',
+        },
+      }),
+    defaultWriteConcern: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Default level of acknowledgment requested from MongoDB for write operations when none is specified by the driver.',
+        externalDocs: {
+          description: 'This option corresponds to the the implicit default write concern.',
+          url: 'https://docs.mongodb.com/manual/reference/write-concern/',
+        },
+      }),
+    javascriptEnabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Flag that indicates whether the cluster allows execution of operations that perform server-side executions of JavaScript. When using 8.0+, we recommend disabling server-side JavaScript and using operators of aggregation pipeline as more performant alternative.',
+        externalDocs: {
+          description:
+            'This option corresponds to modifying the `security.javascriptEnabled` configuration file option for each `mongod` and `mongos` in the cluster.',
+          url: 'https://docs.mongodb.com/upcoming/reference/configuration-options/#mongodb-setting-security.javascriptEnabled',
+        },
+      }),
+    minimumEnabledTlsProtocol: z
+      .enum(['TLS1_2', 'TLS1_3'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Minimum Transport Layer Security (TLS) version that the cluster accepts for incoming connections.',
+        externalDocs: {
+          description:
+            'This option corresponds to the `net.ssl.disabledProtocols` `mongod` configuration file option.',
+          url: 'https://docs.mongodb.com/upcoming/reference/configuration-options/#mongodb-setting-net.ssl.disabledProtocols',
+        },
+      }),
+    noTableScan: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Flag that indicates whether the cluster disables executing any query that requires a collection scan to return results.',
+        externalDocs: {
+          description:
+            'This option corresponds to the `notablescan` `mongod` configuration file option.',
+          url: 'https://docs.mongodb.com/upcoming/reference/parameters/#mongodb-parameter-param.notablescan',
+        },
+      }),
+    oplogMinRetentionHours: z
+      .float64()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          "Minimum retention window for cluster's oplog expressed in hours. A value of null indicates that the cluster uses the default minimum oplog window that MongoDB Cloud calculates.",
+        externalDocs: {
+          description:
+            'This option corresponds to the `storage.oplogMinRetentionHours` `mongod` configuration file option.',
+          url: 'https://docs.mongodb.com/upcoming/reference/configuration-options/#mongodb-setting-storage.oplogMinRetentionHours',
+        },
+      }),
+    oplogSizeMB: z
+      .int32()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          "Storage limit of cluster's oplog expressed in megabytes. A value of null indicates that the cluster uses the default oplog size that MongoDB Cloud calculates.",
+        externalDocs: {
+          description:
+            'This option corresponds to the `replication.oplogSizeMB` `mongod` configuration file option.',
+          url: 'https://docs.mongodb.com/upcoming/reference/configuration-options/#mongodb-setting-replication.oplogSizeMB',
+        },
+      }),
+    queryStatsLogVerbosity: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'May be set to 1 (disabled) or 3 (enabled). When set to 3, Atlas will include redacted and anonymized `$queryStats` output in MongoDB logs. `$queryStats` output does not contain literals or field values. Enabling this setting might impact the performance of your cluster.',
+        externalDocs: {
+          description:
+            'This option corresponds to the `queryStats` component for the `logComponentVerbosity` server parameter.',
+          url: 'https://www.mongodb.com/docs/manual/reference/parameters/#mongodb-parameter-param.logComponentVerbosity',
+        },
+      }),
+    sampleRefreshIntervalBIConnector: z
+      .int32()
+      .min(0)
+      .default(0)
+      .exactOptional()
+      .openapi({
+        description:
+          'Interval in seconds at which the mongosqld process re-samples data to create its relational schema.',
+        externalDocs: {
+          description:
+            'This option corresponds to the `sampleRefreshIntervalSecs` `mongosqld` option.',
+          url: 'https://docs.mongodb.com/bi-connector/current/reference/mongosqld/#std-option-mongosqld.--schemaRefreshIntervalSecs',
+        },
+      }),
+    sampleSizeBIConnector: z
+      .int32()
+      .min(0)
+      .exactOptional()
+      .openapi({
+        description:
+          'Number of documents per database to sample when gathering schema information.',
+        externalDocs: {
+          description: 'This option corresponds to the `sampleSize` `mongosqld` option.',
+          url: 'https://docs.mongodb.com/bi-connector/current/reference/mongosqld/#std-option-mongosqld.--sampleSize',
+        },
+      }),
+    tlsCipherConfigMode: z
+      .enum(['CUSTOM', 'DEFAULT'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The TLS cipher suite configuration mode. The default mode uses the default cipher suites. The custom mode allows you to specify custom cipher suites for both TLS 1.2 and TLS 1.3.',
+      }),
+    transactionLifetimeLimitSeconds: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64().min(1n),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        minimum: 1,
+        description:
+          'Lifetime, in seconds, of multi-document transactions. Atlas considers the transactions that exceed this limit as expired and so aborts them through a periodic clean-up process.',
+        externalDocs: {
+          description:
+            'This option corresponds to the `transactionLifetimeLimitSeconds` `mongod` configuration file option.',
+          url: 'https://www.mongodb.com/docs/upcoming/reference/parameters/#mongodb-parameter-param.transactionLifetimeLimitSeconds',
+        },
+      }),
+  })
+  .openapi({
+    description: 'Advanced MongoDB process configuration options applied to the cluster.',
+    required: [],
+  })
+  .openapi('ClusterDescriptionProcessArgs20240805')
+
+const ApiAtlasClusterAdvancedConfigurationViewSchema = z
+  .object({
+    customOpensslCipherConfigTls12: z
+      .array(
+        z.enum(['TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384', 'TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256']),
+      )
+      .exactOptional()
+      .openapi({
+        description:
+          'The custom OpenSSL cipher suite list for TLS 1.2. Requires `tlsCipherConfigMode` = `CUSTOM`; when `tlsCipherConfigMode` is omitted, supplying a non-empty list infers `CUSTOM`.',
+        externalDocs: {
+          description:
+            'This option corresponds to the `opensslCipherConfig` `mongod` configuration file option.',
+          url: 'https://www.mongodb.com/docs/manual/reference/parameters/#mongodb-parameter-param.opensslCipherConfig',
+        },
+      }),
+    customOpensslCipherConfigTls13: z
+      .array(
+        z.enum([
+          'TLS_AES_256_GCM_SHA384',
+          'TLS_CHACHA20_POLY1305_SHA256',
+          'TLS_AES_128_GCM_SHA256',
+          'TLS_AES_128_CCM_SHA256',
+        ]),
+      )
+      .max(4)
+      .exactOptional()
+      .openapi({
+        description:
+          'The custom OpenSSL cipher suite list for TLS 1.3. Requires `tlsCipherConfigMode` = `CUSTOM`; when `tlsCipherConfigMode` is omitted, supplying a non-empty list infers `CUSTOM`.',
+        externalDocs: {
+          description:
+            'This option corresponds to the `opensslCipherSuiteConfig` `mongod` configuration file option.',
+          url: 'https://www.mongodb.com/docs/manual/reference/parameters/#mongodb-parameter-param.opensslCipherSuiteConfig',
+        },
+      }),
+    minimumEnabledTlsProtocol: z
+      .enum(['TLS1_2', 'TLS1_3'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Minimum Transport Layer Security (TLS) version that the cluster accepts for incoming connections.',
+        externalDocs: {
+          description:
+            'This option corresponds to the `net.ssl.disabledProtocols` `mongod` configuration file option.',
+          url: 'https://docs.mongodb.com/upcoming/reference/configuration-options/#mongodb-setting-net.ssl.disabledProtocols',
+        },
+      }),
+    tlsCipherConfigMode: z
+      .enum(['CUSTOM', 'DEFAULT'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The TLS cipher suite configuration mode. The default mode uses the default cipher suites. The custom mode allows you to specify custom cipher suites for both TLS 1.2 and TLS 1.3.',
+      }),
+  })
+  .openapi({
+    description:
+      'Group of settings that configures a subset of the advanced configuration details.',
+    required: [],
+  })
+  .openapi('ApiAtlasClusterAdvancedConfigurationView')
+
+const BiConnectorSchema = z
+  .object({
+    enabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Flag that indicates whether MongoDB Connector for Business Intelligence is enabled on the specified cluster.',
+      }),
+    readPreference: z
+      .enum(['PRIMARY', 'SECONDARY', 'ANALYTICS'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Data source node designated for the MongoDB Connector for Business Intelligence on MongoDB Cloud. The MongoDB Connector for Business Intelligence on MongoDB Cloud reads data from the primary, secondary, or analytics node based on your read preferences. Defaults to `ANALYTICS` node, or `SECONDARY` if there are no `ANALYTICS` nodes.',
+        externalDocs: {
+          description: 'Read preferences for BI Connector',
+          url: 'https://docs.atlas.mongodb.com/cluster-config/enable-bic/#std-label-bic-read-preferences',
+        },
+      }),
+  })
+  .openapi({
+    description:
+      'Settings needed to configure the MongoDB Connector for Business Intelligence for this cluster.',
+    externalDocs: {
+      description: 'MongoDB Connector for Business Intelligence',
+      url: 'https://docs.mongodb.com/bi-connector/current/',
+    },
+    title: 'MongoDB Connector for Business Intelligence Settings',
+    required: [],
+  })
+  .openapi('BiConnector')
+
+const ClusterDescriptionConnectionStringsPrivateEndpointEndpointSchema = z
+  .object({
+    endpointId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Unique string that the cloud provider uses to identify the private endpoint.',
+        readOnly: true,
+      }),
+    providerName: z
+      .enum(['AWS', 'AZURE', 'GCP'])
+      .exactOptional()
+      .openapi({
+        description: 'Cloud provider in which MongoDB Cloud deploys the private endpoint.',
+        readOnly: true,
+      }),
+    region: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Region where the private endpoint is deployed.', readOnly: true }),
+  })
+  .openapi({
+    description: 'Details of a private endpoint deployed for this cluster.',
+    title: 'Cluster Private Endpoint Connection Strings Endpoint',
+    required: [],
+  })
+  .openapi('ClusterDescriptionConnectionStringsPrivateEndpointEndpoint')
+
+const ClusterDescriptionConnectionStringsPrivateEndpointSchema = z
+  .object({
+    connectionString: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Private endpoint-aware connection string that uses the `mongodb://` protocol to connect to MongoDB Cloud through a private endpoint.',
+        readOnly: true,
+      }),
+    endpoints: z
+      .array(ClusterDescriptionConnectionStringsPrivateEndpointEndpointSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'List that contains the private endpoints through which you connect to MongoDB Cloud when you use `connectionStrings.privateEndpoint[n].connectionString` or `connectionStrings.privateEndpoint[n].srvConnectionString`.',
+        readOnly: true,
+      }),
+    srvConnectionString: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Private endpoint-aware connection string that uses the `mongodb+srv://` protocol to connect to MongoDB Cloud through a private endpoint. The `mongodb+srv` protocol tells the driver to look up the seed list of hosts in the Domain Name System (DNS). This list synchronizes with the nodes in a cluster. If the connection string uses this Uniform Resource Identifier (URI) format, you don't need to append the seed list or change the Uniform Resource Identifier (URI) if the nodes change. Use this Uniform Resource Identifier (URI) format if your application supports it. If it doesn't, use `connectionStrings.privateEndpoint[n].connectionString`.",
+        readOnly: true,
+      }),
+    srvShardOptimizedConnectionString: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Private endpoint-aware connection string optimized for sharded clusters that uses the `mongodb+srv://` protocol to connect to MongoDB Cloud through a private endpoint. If the connection string uses this Uniform Resource Identifier (URI) format, you don't need to change the Uniform Resource Identifier (URI) if the nodes change. Use this Uniform Resource Identifier (URI) format if your application and Atlas cluster supports it. If it doesn't, use and consult the documentation for `connectionStrings.privateEndpoint[n].srvConnectionString`.",
+        readOnly: true,
+      }),
+    type: z
+      .enum(['MONGOD', 'MONGOS'])
+      .exactOptional()
+      .openapi({
+        description:
+          'MongoDB process type to which your application connects. Use `MONGOD` for replica sets and `MONGOS` for sharded clusters.',
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    description:
+      'Private endpoint-aware connection string that you can use to connect to this cluster through a private endpoint.',
+    externalDocs: {
+      description: 'Private Endpoint for Dedicated Cluster',
+      url: 'https://docs.atlas.mongodb.com/security-private-endpoint/',
+    },
+    title: 'Cluster Private Endpoint Connection String',
+    required: [],
+  })
+  .openapi('ClusterDescriptionConnectionStringsPrivateEndpoint')
+
+const ClusterConnectionStringsSchema = z
+  .object({
+    awsPrivateLink: z
+      .record(
+        z.string(),
+        z
+          .string()
+          .openapi({
+            deprecated: true,
+            description:
+              'Deprecated: Use the Private Endpoint Connection Strings resource instead. Private endpoint-aware connection strings that use AWS-hosted clusters with Amazon Web Services (AWS) PrivateLink. Each key identifies an Amazon Web Services (AWS) interface endpoint. Each value identifies the related `mongodb://` connection string that you use to connect to MongoDB Cloud through the interface endpoint that the key names.',
+            externalDocs: {
+              description: 'Private Endpoints',
+              url: 'https://www.mongodb.com/docs/atlas/security-private-endpoint',
+            },
+            readOnly: true,
+          }),
+      )
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          'Deprecated: Use the Private Endpoint Connection Strings resource instead. Private endpoint-aware connection strings that use AWS-hosted clusters with Amazon Web Services (AWS) PrivateLink. Each key identifies an Amazon Web Services (AWS) interface endpoint. Each value identifies the related `mongodb://` connection string that you use to connect to MongoDB Cloud through the interface endpoint that the key names.',
+        externalDocs: {
+          description: 'Private Endpoints',
+          url: 'https://www.mongodb.com/docs/atlas/security-private-endpoint',
+        },
+        readOnly: true,
+      }),
+    awsPrivateLinkSrv: z
+      .record(
+        z.string(),
+        z
+          .string()
+          .openapi({
+            deprecated: true,
+            description:
+              'Deprecated: Use the Private Endpoint Connection Strings resource instead. Private endpoint-aware connection strings that use AWS-hosted clusters with Amazon Web Services (AWS) PrivateLink. Each key identifies an Amazon Web Services (AWS) interface endpoint. Each value identifies the related `mongodb://` connection string that you use to connect to Atlas through the interface endpoint that the key names. If the cluster uses an optimized connection string, `awsPrivateLinkSrv` contains the optimized connection string. If the cluster has the non-optimized (legacy) connection string, `awsPrivateLinkSrv` contains the non-optimized connection string even if an optimized connection string is also present.',
+            externalDocs: {
+              description: 'Private Endpoints',
+              url: 'https://www.mongodb.com/docs/atlas/security-private-endpoint',
+            },
+            readOnly: true,
+          }),
+      )
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          'Deprecated: Use the Private Endpoint Connection Strings resource instead. Private endpoint-aware connection strings that use AWS-hosted clusters with Amazon Web Services (AWS) PrivateLink. Each key identifies an Amazon Web Services (AWS) interface endpoint. Each value identifies the related `mongodb://` connection string that you use to connect to Atlas through the interface endpoint that the key names. If the cluster uses an optimized connection string, `awsPrivateLinkSrv` contains the optimized connection string. If the cluster has the non-optimized (legacy) connection string, `awsPrivateLinkSrv` contains the non-optimized connection string even if an optimized connection string is also present.',
+        externalDocs: {
+          description: 'Private Endpoints',
+          url: 'https://www.mongodb.com/docs/atlas/security-private-endpoint',
+        },
+        readOnly: true,
+      }),
+    private: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Network peering connection strings for each interface Virtual Private Cloud (VPC) endpoint that you configured to connect to this cluster. This connection string uses the `mongodb+srv://` protocol. The resource returns this parameter once someone creates a network peering connection to this cluster. This protocol tells the application to look up the host seed list in the Domain Name System (DNS). This list synchronizes with the nodes in a cluster. If the connection string uses this Uniform Resource Identifier (URI) format, you don't need to append the seed list or change the URI if the nodes change. Use this URI format if your driver supports it. If it doesn't, use `connectionStrings.private`. For Amazon Web Services (AWS) clusters, this resource returns this parameter only if you enable custom DNS.",
+        externalDocs: {
+          description: 'Network Peering Connection',
+          url: 'https://docs.atlas.mongodb.com/security-vpc-peering/#std-label-vpc-peering/',
+        },
+        readOnly: true,
+      }),
+    privateEndpoint: z
+      .array(ClusterDescriptionConnectionStringsPrivateEndpointSchema)
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          "Deprecated: Use the Private Endpoint Connection Strings resource instead. List of private endpoint-aware connection strings that you can use to connect to this cluster through a private endpoint. This parameter returns only if you deployed a private endpoint to all regions to which you deployed this clusters' nodes.",
+        externalDocs: {
+          description: 'Private Endpoints',
+          url: 'https://www.mongodb.com/docs/atlas/security-private-endpoint',
+        },
+        readOnly: true,
+      }),
+    privateSrv: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Network peering connection strings for each interface Virtual Private Cloud (VPC) endpoint that you configured to connect to this cluster. This connection string uses the `mongodb+srv://` protocol. The resource returns this parameter when someone creates a network peering connection to this cluster. This protocol tells the application to look up the host seed list in the Domain Name System (DNS). This list synchronizes with the nodes in a cluster. If the connection string uses this Uniform Resource Identifier (URI) format, you don't need to append the seed list or change the Uniform Resource Identifier (URI) if the nodes change. Use this Uniform Resource Identifier (URI) format if your driver supports it. If it doesn't, use `connectionStrings.private`. For Amazon Web Services (AWS) clusters, this parameter returns only if you [enable custom DNS](https://docs.atlas.mongodb.com/reference/api/aws-custom-dns-update/).",
+        externalDocs: {
+          description: 'Network Peering Connection',
+          url: 'https://docs.atlas.mongodb.com/security-vpc-peering/#std-label-vpc-peering/',
+        },
+        readOnly: true,
+      }),
+    standard: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Public connection string that you can use to connect to this cluster. This connection string uses the `mongodb://` protocol.',
+        externalDocs: {
+          description: 'Connection String URI Format',
+          url: 'https://docs.mongodb.com/manual/reference/connection-string/',
+        },
+        readOnly: true,
+      }),
+    standardSrv: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Public connection string that you can use to connect to this cluster. This connection string uses the `mongodb+srv://` protocol.',
+        externalDocs: {
+          description: 'Connection String URI Format',
+          url: 'https://docs.mongodb.com/manual/reference/connection-string/',
+        },
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    description: 'Collection of Uniform Resource Locators that point to the MongoDB database.',
+    externalDocs: {
+      description: 'Connection string URI format.',
+      url: 'https://docs.mongodb.com/manual/reference/connection-string/',
+    },
+    readOnly: true,
+    title: 'Cluster Connection Strings',
+    required: [],
+  })
+  .openapi('ClusterConnectionStrings')
+
+const AWSHardwareSpec20240805Schema = z
+  .object({
+    diskIOPS: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          "Target IOPS (Input/Output Operations Per Second) desired for storage attached to this hardware.\n\n You can set different IOPS values on different shards when provisioned IOPS are supported.\n\n Change this parameter if you:\n\n- set `replicationSpecs[n].regionConfigs[m].providerName` to `AWS`.\n- set `replicationSpecs[n].regionConfigs[m].electableSpecs.instanceSize` to `M30` or greater (not including `Mxx_NVME` tiers).\n\n- set `replicationSpecs[n].regionConfigs[m].electableSpecs.ebsVolumeType` to `PROVISIONED`.\n\nThe maximum input/output operations per second (IOPS) depend on the selected `.instanceSize` and `.diskSizeGB`.\nThis parameter defaults to the cluster tier's standard IOPS value.\nChanging this value impacts cluster cost.\nMongoDB Cloud enforces minimum ratios of storage capacity to system memory for given cluster tiers. This keeps cluster performance consistent with large datasets.\n\n- Instance sizes `M10` to `M40` have a ratio of disk capacity to system memory of 60:1.\n- Instance sizes greater than `M40` have a ratio of 120:1.",
+      }),
+    diskSizeGB: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description:
+          'Storage capacity of instance data volumes expressed in gigabytes. Increase this number to add capacity.\n\n This value must be equal for all shards and node types.\n\n This value is not configurable on M0/M2/M5 clusters.\n\n MongoDB Cloud requires this parameter if you set `replicationSpecs`.\n\n If you specify a disk size below the minimum (10 GB), this parameter defaults to the minimum disk size value. \n\n Storage charge calculations depend on whether you choose the default value or a custom value.\n\n The maximum value for disk storage cannot exceed 50 times the maximum RAM for the selected cluster. If you require more storage space, consider upgrading your cluster to a higher tier.',
+        externalDocs: {
+          description: 'Customize Storage',
+          url: 'https://dochub.mongodb.org/core/customize-storage',
+        },
+      }),
+    diskThroughput: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Target throughput desired for storage attached to this hardware. Only returned for Gen 2 instance sizes with Standard (GP3) volume type.',
+        readOnly: true,
+      }),
+    ebsVolumeType: z
+      .enum(['STANDARD', 'PROVISIONED', 'HIGH_PERFORMANCE'])
+      .default('STANDARD')
+      .exactOptional()
+      .openapi({
+        description:
+          "Type of storage you want to attach to your AWS-provisioned cluster.\n\n- `STANDARD` volume types can't exceed the default input/output operations per second (IOPS) rate for the selected volume size. \n\n- `PROVISIONED` volume types must fall within the allowable IOPS range for the selected volume size.\n\n- `HIGH_PERFORMANCE` volume types use IO2 EBS volumes and must fall within the allowable IOPS range for the selected volume size.\n\nNVMe clusters require either `PROVISIONED` or `HIGH_PERFORMANCE`.",
+      }),
+    instanceSize: z
+      .enum([
+        'M10',
+        'M20',
+        'M30',
+        'M40',
+        'M50',
+        'M60',
+        'M80',
+        'M100',
+        'M140',
+        'M200',
+        'M300',
+        'R40',
+        'R50',
+        'R60',
+        'R80',
+        'R200',
+        'R300',
+        'R400',
+        'R700',
+        'M40_NVME',
+        'M50_NVME',
+        'M60_NVME',
+        'M80_NVME',
+        'M200_NVME',
+        'M400_NVME',
+        'M30_GEN_2',
+        'M40_GEN_2',
+        'M50_GEN_2',
+        'M60_GEN_2',
+        'M80_GEN_2',
+        'M140_GEN_2',
+        'M200_GEN_2',
+        'M300_GEN_2',
+        'M700_GEN_2',
+        'R40_GEN_2',
+        'R50_GEN_2',
+        'R60_GEN_2',
+        'R80_GEN_2',
+        'R200_GEN_2',
+        'R300_GEN_2',
+        'R400_GEN_2',
+        'R700_GEN_2',
+        'M40_NVME_GEN_2',
+        'M50_NVME_GEN_2',
+        'M60_NVME_GEN_2',
+        'M80_NVME_GEN_2',
+        'M200_NVME_GEN_2',
+        'M400_NVME_GEN_2',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'Hardware specification for the instance sizes in this region in this shard. Each instance size has a default storage and memory capacity. Electable nodes and read-only nodes (known as "base nodes") within a single shard must use the same instance size. Analytics nodes can scale independently from base nodes within a shard. Both base nodes and analytics nodes can scale independently from their equivalents in other shards.',
+        title: 'AWS Instance Sizes',
+      }),
+    nodeCount: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'Number of nodes of the given type for MongoDB Cloud to deploy to the region.',
+        example: 3,
+      }),
+  })
+  .openapi({
+    description: 'Hardware specifications for nodes deployed in the region.',
+    title: 'AWS Cluster Hardware Settings',
+    required: [],
+  })
+  .openapi('AWSHardwareSpec20240805')
+
+const AzureHardwareSpec20240805Schema = z
+  .object({
+    diskIOPS: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          "Target throughput desired for storage attached to your Azure-provisioned cluster. Change this parameter if you:\n\n- set `replicationSpecs[n].regionConfigs[m].providerName` : `Azure`.\n- set `replicationSpecs[n].regionConfigs[m].electableSpecs.instanceSize` : `M40` or greater not including `Mxx_NVME` tiers.\n\nThe maximum input/output operations per second (IOPS) depend on the selected `.instanceSize` and `.diskSizeGB`.\nThis parameter defaults to the cluster tier's standard IOPS value.\nChanging this value impacts cluster cost.",
+        externalDocs: {
+          description: 'Programmatic API Keys',
+          url: 'https://www.mongodb.com/docs/atlas/customize-storage/#extend-iops-on-azure',
+        },
+      }),
+    diskSizeGB: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description:
+          'Storage capacity of instance data volumes expressed in gigabytes. Increase this number to add capacity.\n\n This value must be equal for all shards and node types.\n\n This value is not configurable on M0/M2/M5 clusters.\n\n MongoDB Cloud requires this parameter if you set `replicationSpecs`.\n\n If you specify a disk size below the minimum (10 GB), this parameter defaults to the minimum disk size value. \n\n Storage charge calculations depend on whether you choose the default value or a custom value.\n\n The maximum value for disk storage cannot exceed 50 times the maximum RAM for the selected cluster. If you require more storage space, consider upgrading your cluster to a higher tier.',
+        externalDocs: {
+          description: 'Customize Storage',
+          url: 'https://dochub.mongodb.org/core/customize-storage',
+        },
+      }),
+    instanceSize: z
+      .enum([
+        'M10',
+        'M20',
+        'M30',
+        'M40',
+        'M50',
+        'M60',
+        'M80',
+        'M90',
+        'M200',
+        'R40',
+        'R50',
+        'R60',
+        'R80',
+        'R200',
+        'R300',
+        'R400',
+        'M60_NVME',
+        'M80_NVME',
+        'M200_NVME',
+        'M300_NVME',
+        'M400_NVME',
+        'M600_NVME',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'Hardware specification for the instance sizes in this region in this shard. Each instance size has a default storage and memory capacity. Electable nodes and read-only nodes (known as "base nodes") within a single shard must use the same instance size. Analytics nodes can scale independently from base nodes within a shard. Both base nodes and analytics nodes can scale independently from their equivalents in other shards.',
+        title: 'Azure Instance Sizes',
+      }),
+    nodeCount: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'Number of nodes of the given type for MongoDB Cloud to deploy to the region.',
+        example: 3,
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('AzureHardwareSpec20240805')
+
+const GCPHardwareSpec20240805Schema = z
+  .object({
+    diskIOPS: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Target IOPS (Input/Output Operations Per Second) desired for storage attached to this hardware. Only configurable for Gen 2 instance sizes.\n\n Change this parameter if you:\n\n- set `"replicationSpecs[n].regionConfigs[m].providerName" : "GCP"`.\n- set `"replicationSpecs[n].regionConfigs[m].electableSpecs.instanceSize"` to a Gen 2 instance size (`"M30_GEN_2"` or greater).\n\nThe maximum input/output operations per second (IOPS) depend on the selected `.instanceSize` and `.diskSizeGB`.\nThis parameter defaults to the standard IOPS value for the selected `.diskSizeGB`.\nChanging this value impacts cluster cost.',
+      }),
+    diskSizeGB: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description:
+          'Storage capacity of instance data volumes expressed in gigabytes. Increase this number to add capacity.\n\n This value must be equal for all shards and node types.\n\n This value is not configurable on M0/M2/M5 clusters.\n\n MongoDB Cloud requires this parameter if you set `replicationSpecs`.\n\n If you specify a disk size below the minimum (10 GB), this parameter defaults to the minimum disk size value. \n\n Storage charge calculations depend on whether you choose the default value or a custom value.\n\n The maximum value for disk storage cannot exceed 50 times the maximum RAM for the selected cluster. If you require more storage space, consider upgrading your cluster to a higher tier.',
+        externalDocs: {
+          description: 'Customize Storage',
+          url: 'https://dochub.mongodb.org/core/customize-storage',
+        },
+      }),
+    diskThroughput: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Throughput (in MiB/s) provisioned for storage attached to this hardware. Only returned for Gen 2 instance sizes.',
+        readOnly: true,
+      }),
+    instanceSize: z
+      .enum([
+        'M10',
+        'M20',
+        'M30',
+        'M40',
+        'M50',
+        'M60',
+        'M80',
+        'M140',
+        'M200',
+        'M250',
+        'M300',
+        'M400',
+        'R40',
+        'R50',
+        'R60',
+        'R80',
+        'R200',
+        'R300',
+        'R400',
+        'R600',
+        'M30_GEN_2',
+        'M40_GEN_2',
+        'M50_GEN_2',
+        'M60_GEN_2',
+        'M80_GEN_2',
+        'M140_GEN_2',
+        'M200_GEN_2',
+        'M300_GEN_2',
+        'M700_GEN_2',
+        'R40_GEN_2',
+        'R50_GEN_2',
+        'R60_GEN_2',
+        'R80_GEN_2',
+        'R200_GEN_2',
+        'R300_GEN_2',
+        'R400_GEN_2',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'Hardware specification for the instance sizes in this region in this shard. Each instance size has a default storage and memory capacity. Electable nodes and read-only nodes (known as "base nodes") within a single shard must use the same instance size. Analytics nodes can scale independently from base nodes within a shard. Both base nodes and analytics nodes can scale independently from their equivalents in other shards.',
+        title: 'GCP Instance Sizes',
+      }),
+    nodeCount: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'Number of nodes of the given type for MongoDB Cloud to deploy to the region.',
+        example: 3,
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('GCPHardwareSpec20240805')
+
+const TenantHardwareSpec20240805Schema = z
+  .object({
+    diskSizeGB: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description:
+          'Storage capacity of instance data volumes expressed in gigabytes. Increase this number to add capacity.\n\n This value must be equal for all shards and node types.\n\n This value is not configurable on M0/M2/M5 clusters.\n\n MongoDB Cloud requires this parameter if you set `replicationSpecs`.\n\n If you specify a disk size below the minimum (10 GB), this parameter defaults to the minimum disk size value. \n\n Storage charge calculations depend on whether you choose the default value or a custom value.\n\n The maximum value for disk storage cannot exceed 50 times the maximum RAM for the selected cluster. If you require more storage space, consider upgrading your cluster to a higher tier.',
+        externalDocs: {
+          description: 'Customize Storage',
+          url: 'https://dochub.mongodb.org/core/customize-storage',
+        },
+      }),
+    effectiveInstanceSize: z
+      .enum(['FLEX', 'M2', 'M5', 'M0'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The true tenant instance size. This is present to support backwards compatibility for deprecated provider types and/or instance sizes.',
+        readOnly: true,
+      }),
+    instanceSize: z
+      .enum(['M0', 'M2', 'M5'])
+      .exactOptional()
+      .openapi({
+        description: 'Hardware specification for the instances in this M0/M2/M5 tier cluster.',
+        title: 'Tenant Instance Sizes',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('TenantHardwareSpec20240805')
+
+const HardwareSpec20240805Schema = z
+  .xor([
+    AWSHardwareSpec20240805Schema,
+    AzureHardwareSpec20240805Schema,
+    GCPHardwareSpec20240805Schema,
+    TenantHardwareSpec20240805Schema,
+  ])
+  .and(
+    z
+      .object({
+        diskSizeGB: z
+          .float64()
+          .exactOptional()
+          .openapi({
+            description:
+              'Storage capacity of instance data volumes expressed in gigabytes. Increase this number to add capacity.\n\n This value must be equal for all shards and node types.\n\n This value is not configurable on M0/M2/M5 clusters.\n\n MongoDB Cloud requires this parameter if you set `replicationSpecs`.\n\n If you specify a disk size below the minimum (10 GB), this parameter defaults to the minimum disk size value. \n\n Storage charge calculations depend on whether you choose the default value or a custom value.\n\n The maximum value for disk storage cannot exceed 50 times the maximum RAM for the selected cluster. If you require more storage space, consider upgrading your cluster to a higher tier.',
+            externalDocs: {
+              description: 'Customize Storage',
+              url: 'https://dochub.mongodb.org/core/customize-storage',
+            },
+          }),
+      })
+      .openapi({ required: [] }),
+  )
+  .openapi({
+    description:
+      "Hardware specifications for all electable nodes deployed in the region. Electable nodes can become the primary and can enable local reads. If you don't specify this option, MongoDB Cloud deploys no electable nodes to the region.",
+  })
+  .openapi('HardwareSpec20240805')
+
+const BaseCloudProviderInstanceSizeSchema = z
+  .xor([
+    z
+      .looseObject({})
+      .and(
+        z
+          .enum([
+            'M10',
+            'M20',
+            'M30',
+            'M40',
+            'M50',
+            'M60',
+            'M80',
+            'M100',
+            'M140',
+            'M200',
+            'M300',
+            'R40',
+            'R50',
+            'R60',
+            'R80',
+            'R200',
+            'R300',
+            'R400',
+            'R700',
+            'M40_NVME',
+            'M50_NVME',
+            'M60_NVME',
+            'M80_NVME',
+            'M200_NVME',
+            'M400_NVME',
+            'M30_GEN_2',
+            'M40_GEN_2',
+            'M50_GEN_2',
+            'M60_GEN_2',
+            'M80_GEN_2',
+            'M140_GEN_2',
+            'M200_GEN_2',
+            'M300_GEN_2',
+            'M700_GEN_2',
+            'R40_GEN_2',
+            'R50_GEN_2',
+            'R60_GEN_2',
+            'R80_GEN_2',
+            'R200_GEN_2',
+            'R300_GEN_2',
+            'R400_GEN_2',
+            'R700_GEN_2',
+            'M40_NVME_GEN_2',
+            'M50_NVME_GEN_2',
+            'M60_NVME_GEN_2',
+            'M80_NVME_GEN_2',
+            'M200_NVME_GEN_2',
+            'M400_NVME_GEN_2',
+          ])
+          .openapi({ title: 'AWS Instance Sizes' }),
+      ),
+    z
+      .looseObject({})
+      .and(
+        z
+          .enum([
+            'M10',
+            'M20',
+            'M30',
+            'M40',
+            'M50',
+            'M60',
+            'M80',
+            'M90',
+            'M200',
+            'R40',
+            'R50',
+            'R60',
+            'R80',
+            'R200',
+            'R300',
+            'R400',
+            'M60_NVME',
+            'M80_NVME',
+            'M200_NVME',
+            'M300_NVME',
+            'M400_NVME',
+            'M600_NVME',
+          ])
+          .openapi({ title: 'Azure Instance Sizes' }),
+      ),
+    z
+      .looseObject({})
+      .and(
+        z
+          .enum([
+            'M10',
+            'M20',
+            'M30',
+            'M40',
+            'M50',
+            'M60',
+            'M80',
+            'M140',
+            'M200',
+            'M250',
+            'M300',
+            'M400',
+            'R40',
+            'R50',
+            'R60',
+            'R80',
+            'R200',
+            'R300',
+            'R400',
+            'R600',
+            'M30_GEN_2',
+            'M40_GEN_2',
+            'M50_GEN_2',
+            'M60_GEN_2',
+            'M80_GEN_2',
+            'M140_GEN_2',
+            'M200_GEN_2',
+            'M300_GEN_2',
+            'M700_GEN_2',
+            'R40_GEN_2',
+            'R50_GEN_2',
+            'R60_GEN_2',
+            'R80_GEN_2',
+            'R200_GEN_2',
+            'R300_GEN_2',
+            'R400_GEN_2',
+          ])
+          .openapi({ title: 'GCP Instance Sizes' }),
+      ),
+  ])
+  .openapi({
+    description: 'Instance size boundary to which your cluster can automatically scale.',
+    readOnly: true,
+  })
+  .openapi('BaseCloudProviderInstanceSize')
+
+const AdvancedComputeAutoScalingSchema = z
+  .object({
+    enabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Flag that indicates whether instance size reactive auto-scaling is enabled.\n\n- Set to `true` to enable instance size reactive auto-scaling. If enabled, you must specify a value for `replicationSpecs[n].regionConfigs[m].autoScaling.compute.maxInstanceSize`.\n- Set to `false` to disable instance size reactive auto-scaling.',
+      }),
+    maxInstanceSize: BaseCloudProviderInstanceSizeSchema.exactOptional(),
+    minInstanceSize: BaseCloudProviderInstanceSizeSchema.exactOptional(),
+    scaleDownEnabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Flag that indicates whether the instance size may scale down via reactive auto-scaling. MongoDB Cloud requires this parameter if `replicationSpecs[n].regionConfigs[m].autoScaling.compute.enabled` is `true`. If you enable this option, specify a value for `replicationSpecs[n].regionConfigs[m].autoScaling.compute.minInstanceSize`.',
+      }),
+  })
+  .openapi({
+    description: 'Options that determine how this cluster handles CPU scaling.',
+    title: 'Automatic Compute Scaling Settings',
+    required: [],
+  })
+  .openapi('AdvancedComputeAutoScaling')
+
+const DiskGBAutoScalingSchema = z
+  .object({
+    enabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Flag that indicates whether this cluster enables disk auto-scaling. The maximum memory allowed for the selected cluster tier and the oplog size can limit storage auto-scaling.',
+      }),
+  })
+  .openapi({ description: 'Setting that enables disk auto-scaling.', required: [] })
+  .openapi('DiskGBAutoScaling')
+
+const StorageConfigSchema = z
+  .object({
+    shardSizeLimitGB: z
+      .int32()
+      .min(1)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          "Available in Public Preview: Maximum data size that MongoDB Cloud allows each shard of this cluster to reach, expressed in gigabytes. MongoDB Cloud rejects writes to a shard that reaches the limit that it enforces. In `replicationSpecs`, this field reports the limit that you configured, and MongoDB Cloud omits it when you never configured one. In `effectiveReplicationSpecs`, this field reports the limit that MongoDB Cloud enforces: usually the limit that you configured, otherwise the default limit that MongoDB Cloud assigns when it creates or updates the cluster. This value may differ from the limit that you configured due to system-managed changes. This limit applies to every shard of the cluster; set the same value on each region configuration's `autoScaling`, as MongoDB Cloud rejects requests that specify differing values. You can set this only on Atlas INFINITE clusters: MongoDB Cloud rejects any request that names this field, including as `null`, for a cluster or node type that doesn't support it. In a request that includes `replicationSpecs`, omitting `shardSizeLimitGB` or sending it as `null` clears the limit. Omitting `replicationSpecs` preserves it.",
+      }),
+  })
+  .nullable()
+  .openapi({ required: [] })
+  .openapi('StorageConfig')
+
+const AdvancedAutoScalingSettingsSchema = z
+  .object({
+    compute: AdvancedComputeAutoScalingSchema.exactOptional(),
+    diskGB: DiskGBAutoScalingSchema.exactOptional(),
+    storageConfig: StorageConfigSchema.nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Available in Public Preview: Settings that determine the per-shard data-size limit for this cluster. Applies only to Atlas INFINITE clusters. MongoDB Cloud accepts these settings only on `autoScaling` and rejects them on `analyticsAutoScaling`, including when you send them as `null`. In a request that includes `replicationSpecs`, omitting `storageConfig` or sending it as `null` or `{}` clears the limit. Omitting `replicationSpecs` preserves it.',
+      }),
+  })
+  .openapi({
+    description: 'Options that determine how this cluster handles resource scaling.',
+    title: 'Automatic Scaling Settings',
+    required: [],
+  })
+  .openapi('AdvancedAutoScalingSettings')
+
+const DedicatedHardwareSpec20240805Schema = z
+  .xor([
+    AWSHardwareSpec20240805Schema,
+    AzureHardwareSpec20240805Schema,
+    GCPHardwareSpec20240805Schema,
+  ])
+  .and(
+    z
+      .object({
+        diskSizeGB: z
+          .float64()
+          .exactOptional()
+          .openapi({
+            description:
+              'Storage capacity of instance data volumes expressed in gigabytes. Increase this number to add capacity.\n\n This value must be equal for all shards and node types.\n\n This value is not configurable on M0/M2/M5 clusters.\n\n MongoDB Cloud requires this parameter if you set `replicationSpecs`.\n\n If you specify a disk size below the minimum (10 GB), this parameter defaults to the minimum disk size value. \n\n Storage charge calculations depend on whether you choose the default value or a custom value.\n\n The maximum value for disk storage cannot exceed 50 times the maximum RAM for the selected cluster. If you require more storage space, consider upgrading your cluster to a higher tier.',
+            externalDocs: {
+              description: 'Customize Storage',
+              url: 'https://dochub.mongodb.org/core/customize-storage',
+            },
+          }),
+        nodeCount: z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description:
+              'Number of nodes of the given type for MongoDB Cloud to deploy to the region.',
+            example: 3,
+          }),
+      })
+      .openapi({ required: [] }),
+  )
+  .openapi({
+    description: 'The current hardware specifications for read only nodes in the region.',
+    readOnly: true,
+  })
+  .openapi('DedicatedHardwareSpec20240805')
+
+const AWSRegionConfig20240805Schema = z
+  .object({
+    electableSpecs: HardwareSpec20240805Schema.exactOptional(),
+    priority: z
+      .int32()
+      .min(0)
+      .max(7)
+      .exactOptional()
+      .openapi({
+        description:
+          'Precedence is given to this region when a primary election occurs. If your `regionConfigs` has only `readOnlySpecs`, `analyticsSpecs`, or both, set this value to `0`. If you have multiple `regionConfigs` objects (your cluster is multi-region or multi-cloud), they must have priorities in descending order. The highest priority is `7`.\n\n**Example:** If you have three regions, their priorities would be `7`, `6`, and `5` respectively. If you added two more regions for supporting electable nodes, the priorities of those regions would be `4` and `3` respectively.',
+        example: 7,
+      }),
+    providerName: z
+      .enum(['AWS', 'AZURE', 'GCP', 'TENANT'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Cloud service provider on which MongoDB Cloud provisions the hosts. Set dedicated clusters to `AWS`, `GCP`, `AZURE` or `TENANT`.',
+      }),
+    regionName: z
+      .xor([
+        z
+          .looseObject({})
+          .and(
+            z
+              .enum([
+                'US_GOV_WEST_1',
+                'US_GOV_EAST_1',
+                'US_EAST_1',
+                'US_EAST_2',
+                'US_WEST_1',
+                'US_WEST_2',
+                'CA_CENTRAL_1',
+                'EU_NORTH_1',
+                'EU_WEST_1',
+                'EU_WEST_2',
+                'EU_WEST_3',
+                'EU_CENTRAL_1',
+                'EU_CENTRAL_2',
+                'AP_EAST_1',
+                'AP_EAST_2',
+                'AP_NORTHEAST_1',
+                'AP_NORTHEAST_2',
+                'AP_NORTHEAST_3',
+                'AP_SOUTHEAST_1',
+                'AP_SOUTHEAST_2',
+                'AP_SOUTHEAST_3',
+                'AP_SOUTHEAST_4',
+                'AP_SOUTHEAST_5',
+                'AP_SOUTHEAST_6',
+                'AP_SOUTHEAST_7',
+                'AP_SOUTH_1',
+                'AP_SOUTH_2',
+                'SA_EAST_1',
+                'CN_NORTH_1',
+                'CN_NORTHWEST_1',
+                'ME_SOUTH_1',
+                'ME_CENTRAL_1',
+                'AF_SOUTH_1',
+                'EU_SOUTH_1',
+                'EU_SOUTH_2',
+                'IL_CENTRAL_1',
+                'CA_WEST_1',
+                'MX_CENTRAL_1',
+                'GLOBAL',
+              ])
+              .openapi({
+                description:
+                  'Physical location where MongoDB Cloud deploys your AWS-hosted MongoDB cluster nodes. The region you choose can affect network latency for clients accessing your databases. When MongoDB Cloud deploys a dedicated cluster, it checks if a VPC or VPC connection exists for that provider and region. If not, MongoDB Cloud creates them as part of the deployment. MongoDB Cloud assigns the VPC a CIDR block. To limit a new VPC peering connection to one CIDR block and region, create the connection first. Deploy the cluster after the connection starts.',
+                title: 'AWS Regions',
+              }),
+          ),
+        z
+          .looseObject({})
+          .and(
+            z
+              .enum([
+                'US_CENTRAL',
+                'US_EAST',
+                'US_EAST_2',
+                'US_NORTH_CENTRAL',
+                'US_WEST',
+                'US_SOUTH_CENTRAL',
+                'EUROPE_NORTH',
+                'EUROPE_WEST',
+                'US_WEST_CENTRAL',
+                'US_WEST_2',
+                'US_WEST_3',
+                'CANADA_EAST',
+                'CANADA_CENTRAL',
+                'BRAZIL_SOUTH',
+                'BRAZIL_SOUTHEAST',
+                'AUSTRALIA_CENTRAL',
+                'AUSTRALIA_CENTRAL_2',
+                'AUSTRALIA_EAST',
+                'AUSTRALIA_SOUTH_EAST',
+                'GERMANY_WEST_CENTRAL',
+                'GERMANY_NORTH',
+                'SWEDEN_CENTRAL',
+                'SWEDEN_SOUTH',
+                'SWITZERLAND_NORTH',
+                'SWITZERLAND_WEST',
+                'UK_SOUTH',
+                'UK_WEST',
+                'NORWAY_EAST',
+                'NORWAY_WEST',
+                'INDIA_CENTRAL',
+                'INDIA_SOUTH',
+                'INDIA_WEST',
+                'CHINA_EAST',
+                'CHINA_NORTH',
+                'ASIA_EAST',
+                'JAPAN_EAST',
+                'JAPAN_WEST',
+                'ASIA_SOUTH_EAST',
+                'KOREA_CENTRAL',
+                'KOREA_SOUTH',
+                'FRANCE_CENTRAL',
+                'FRANCE_SOUTH',
+                'SOUTH_AFRICA_NORTH',
+                'SOUTH_AFRICA_WEST',
+                'UAE_CENTRAL',
+                'UAE_NORTH',
+                'QATAR_CENTRAL',
+                'POLAND_CENTRAL',
+                'ISRAEL_CENTRAL',
+                'ITALY_NORTH',
+                'SPAIN_CENTRAL',
+                'MEXICO_CENTRAL',
+                'NEW_ZEALAND_NORTH',
+                'US_GOV_VIRGINIA',
+                'US_GOV_ARIZONA',
+                'US_GOV_TEXAS',
+              ])
+              .openapi({ description: 'Microsoft Azure Regions.', title: 'Azure Regions' }),
+          ),
+        z
+          .looseObject({})
+          .and(
+            z
+              .enum([
+                'EASTERN_US',
+                'EASTERN_US_AW',
+                'US_EAST_4',
+                'US_EAST_4_AW',
+                'US_EAST_5',
+                'US_EAST_5_AW',
+                'US_WEST_2',
+                'US_WEST_2_AW',
+                'US_WEST_3',
+                'US_WEST_3_AW',
+                'US_WEST_4',
+                'US_WEST_4_AW',
+                'US_SOUTH_1',
+                'US_SOUTH_1_AW',
+                'CENTRAL_US',
+                'CENTRAL_US_AW',
+                'WESTERN_US',
+                'WESTERN_US_AW',
+                'NORTH_AMERICA_NORTHEAST_1',
+                'NORTH_AMERICA_NORTHEAST_2',
+                'NORTH_AMERICA_SOUTH_1',
+                'SOUTH_AMERICA_EAST_1',
+                'SOUTH_AMERICA_WEST_1',
+                'WESTERN_EUROPE',
+                'EUROPE_NORTH_1',
+                'EUROPE_WEST_2',
+                'EUROPE_WEST_3',
+                'EUROPE_WEST_4',
+                'EUROPE_WEST_6',
+                'EUROPE_WEST_8',
+                'EUROPE_WEST_9',
+                'EUROPE_WEST_10',
+                'EUROPE_WEST_12',
+                'EUROPE_SOUTHWEST_1',
+                'EUROPE_CENTRAL_2',
+                'MIDDLE_EAST_CENTRAL_1',
+                'MIDDLE_EAST_CENTRAL_2',
+                'MIDDLE_EAST_WEST_1',
+                'AUSTRALIA_SOUTHEAST_1',
+                'AUSTRALIA_SOUTHEAST_2',
+                'AFRICA_SOUTH_1',
+                'EASTERN_ASIA_PACIFIC',
+                'NORTHEASTERN_ASIA_PACIFIC',
+                'SOUTHEASTERN_ASIA_PACIFIC',
+                'ASIA_EAST_2',
+                'ASIA_NORTHEAST_2',
+                'ASIA_NORTHEAST_3',
+                'ASIA_SOUTH_1',
+                'ASIA_SOUTH_2',
+                'ASIA_SOUTHEAST_2',
+              ])
+              .openapi({ description: 'Google Compute Regions.', title: 'GCP Regions' }),
+          ),
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'Physical location of your MongoDB cluster nodes. The region you choose can affect network latency for clients accessing your databases. The region name is only returned in the response for single-region clusters. When MongoDB Cloud deploys a dedicated cluster, it checks if a VPC or VPC connection exists for that provider and region. If not, MongoDB Cloud creates them as part of the deployment. It assigns the VPC a Classless Inter-Domain Routing (CIDR) block. To limit a new VPC peering connection to one Classless Inter-Domain Routing (CIDR) block and region, create the connection first. Deploy the cluster after the connection starts. GCP Clusters and Multi-region clusters require one VPC peering connection for each region. MongoDB nodes can use only the peering connection that resides in the same region as the nodes to communicate with the peered VPC.',
+      }),
+  })
+  .openapi({ required: [] })
+  .and(
+    z
+      .object({
+        analyticsAutoScaling: AdvancedAutoScalingSettingsSchema.exactOptional(),
+        analyticsSpecs: DedicatedHardwareSpec20240805Schema.exactOptional(),
+        autoScaling: AdvancedAutoScalingSettingsSchema.exactOptional(),
+        effectiveAnalyticsSpecs: DedicatedHardwareSpec20240805Schema.exactOptional(),
+        effectiveElectableSpecs: DedicatedHardwareSpec20240805Schema.exactOptional(),
+        effectiveReadOnlySpecs: DedicatedHardwareSpec20240805Schema.exactOptional(),
+        readOnlySpecs: DedicatedHardwareSpec20240805Schema.exactOptional(),
+      })
+      .openapi({ required: [] }),
+  )
+  .openapi({
+    description:
+      'Details that explain how MongoDB Cloud replicates data in one region on the specified MongoDB database.',
+    title: 'AWS Regional Replication Specifications',
+  })
+  .openapi('AWSRegionConfig20240805')
+
+const AzureRegionConfig20240805Schema = z
+  .object({
+    electableSpecs: HardwareSpec20240805Schema.exactOptional(),
+    priority: z
+      .int32()
+      .min(0)
+      .max(7)
+      .exactOptional()
+      .openapi({
+        description:
+          'Precedence is given to this region when a primary election occurs. If your `regionConfigs` has only `readOnlySpecs`, `analyticsSpecs`, or both, set this value to `0`. If you have multiple `regionConfigs` objects (your cluster is multi-region or multi-cloud), they must have priorities in descending order. The highest priority is `7`.\n\n**Example:** If you have three regions, their priorities would be `7`, `6`, and `5` respectively. If you added two more regions for supporting electable nodes, the priorities of those regions would be `4` and `3` respectively.',
+        example: 7,
+      }),
+    providerName: z
+      .enum(['AWS', 'AZURE', 'GCP', 'TENANT'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Cloud service provider on which MongoDB Cloud provisions the hosts. Set dedicated clusters to `AWS`, `GCP`, `AZURE` or `TENANT`.',
+      }),
+    regionName: z
+      .xor([
+        z
+          .looseObject({})
+          .and(
+            z
+              .enum([
+                'US_GOV_WEST_1',
+                'US_GOV_EAST_1',
+                'US_EAST_1',
+                'US_EAST_2',
+                'US_WEST_1',
+                'US_WEST_2',
+                'CA_CENTRAL_1',
+                'EU_NORTH_1',
+                'EU_WEST_1',
+                'EU_WEST_2',
+                'EU_WEST_3',
+                'EU_CENTRAL_1',
+                'EU_CENTRAL_2',
+                'AP_EAST_1',
+                'AP_EAST_2',
+                'AP_NORTHEAST_1',
+                'AP_NORTHEAST_2',
+                'AP_NORTHEAST_3',
+                'AP_SOUTHEAST_1',
+                'AP_SOUTHEAST_2',
+                'AP_SOUTHEAST_3',
+                'AP_SOUTHEAST_4',
+                'AP_SOUTHEAST_5',
+                'AP_SOUTHEAST_6',
+                'AP_SOUTHEAST_7',
+                'AP_SOUTH_1',
+                'AP_SOUTH_2',
+                'SA_EAST_1',
+                'CN_NORTH_1',
+                'CN_NORTHWEST_1',
+                'ME_SOUTH_1',
+                'ME_CENTRAL_1',
+                'AF_SOUTH_1',
+                'EU_SOUTH_1',
+                'EU_SOUTH_2',
+                'IL_CENTRAL_1',
+                'CA_WEST_1',
+                'MX_CENTRAL_1',
+                'GLOBAL',
+              ])
+              .openapi({
+                description:
+                  'Physical location where MongoDB Cloud deploys your AWS-hosted MongoDB cluster nodes. The region you choose can affect network latency for clients accessing your databases. When MongoDB Cloud deploys a dedicated cluster, it checks if a VPC or VPC connection exists for that provider and region. If not, MongoDB Cloud creates them as part of the deployment. MongoDB Cloud assigns the VPC a CIDR block. To limit a new VPC peering connection to one CIDR block and region, create the connection first. Deploy the cluster after the connection starts.',
+                title: 'AWS Regions',
+              }),
+          ),
+        z
+          .looseObject({})
+          .and(
+            z
+              .enum([
+                'US_CENTRAL',
+                'US_EAST',
+                'US_EAST_2',
+                'US_NORTH_CENTRAL',
+                'US_WEST',
+                'US_SOUTH_CENTRAL',
+                'EUROPE_NORTH',
+                'EUROPE_WEST',
+                'US_WEST_CENTRAL',
+                'US_WEST_2',
+                'US_WEST_3',
+                'CANADA_EAST',
+                'CANADA_CENTRAL',
+                'BRAZIL_SOUTH',
+                'BRAZIL_SOUTHEAST',
+                'AUSTRALIA_CENTRAL',
+                'AUSTRALIA_CENTRAL_2',
+                'AUSTRALIA_EAST',
+                'AUSTRALIA_SOUTH_EAST',
+                'GERMANY_WEST_CENTRAL',
+                'GERMANY_NORTH',
+                'SWEDEN_CENTRAL',
+                'SWEDEN_SOUTH',
+                'SWITZERLAND_NORTH',
+                'SWITZERLAND_WEST',
+                'UK_SOUTH',
+                'UK_WEST',
+                'NORWAY_EAST',
+                'NORWAY_WEST',
+                'INDIA_CENTRAL',
+                'INDIA_SOUTH',
+                'INDIA_WEST',
+                'CHINA_EAST',
+                'CHINA_NORTH',
+                'ASIA_EAST',
+                'JAPAN_EAST',
+                'JAPAN_WEST',
+                'ASIA_SOUTH_EAST',
+                'KOREA_CENTRAL',
+                'KOREA_SOUTH',
+                'FRANCE_CENTRAL',
+                'FRANCE_SOUTH',
+                'SOUTH_AFRICA_NORTH',
+                'SOUTH_AFRICA_WEST',
+                'UAE_CENTRAL',
+                'UAE_NORTH',
+                'QATAR_CENTRAL',
+                'POLAND_CENTRAL',
+                'ISRAEL_CENTRAL',
+                'ITALY_NORTH',
+                'SPAIN_CENTRAL',
+                'MEXICO_CENTRAL',
+                'NEW_ZEALAND_NORTH',
+                'US_GOV_VIRGINIA',
+                'US_GOV_ARIZONA',
+                'US_GOV_TEXAS',
+              ])
+              .openapi({ description: 'Microsoft Azure Regions.', title: 'Azure Regions' }),
+          ),
+        z
+          .looseObject({})
+          .and(
+            z
+              .enum([
+                'EASTERN_US',
+                'EASTERN_US_AW',
+                'US_EAST_4',
+                'US_EAST_4_AW',
+                'US_EAST_5',
+                'US_EAST_5_AW',
+                'US_WEST_2',
+                'US_WEST_2_AW',
+                'US_WEST_3',
+                'US_WEST_3_AW',
+                'US_WEST_4',
+                'US_WEST_4_AW',
+                'US_SOUTH_1',
+                'US_SOUTH_1_AW',
+                'CENTRAL_US',
+                'CENTRAL_US_AW',
+                'WESTERN_US',
+                'WESTERN_US_AW',
+                'NORTH_AMERICA_NORTHEAST_1',
+                'NORTH_AMERICA_NORTHEAST_2',
+                'NORTH_AMERICA_SOUTH_1',
+                'SOUTH_AMERICA_EAST_1',
+                'SOUTH_AMERICA_WEST_1',
+                'WESTERN_EUROPE',
+                'EUROPE_NORTH_1',
+                'EUROPE_WEST_2',
+                'EUROPE_WEST_3',
+                'EUROPE_WEST_4',
+                'EUROPE_WEST_6',
+                'EUROPE_WEST_8',
+                'EUROPE_WEST_9',
+                'EUROPE_WEST_10',
+                'EUROPE_WEST_12',
+                'EUROPE_SOUTHWEST_1',
+                'EUROPE_CENTRAL_2',
+                'MIDDLE_EAST_CENTRAL_1',
+                'MIDDLE_EAST_CENTRAL_2',
+                'MIDDLE_EAST_WEST_1',
+                'AUSTRALIA_SOUTHEAST_1',
+                'AUSTRALIA_SOUTHEAST_2',
+                'AFRICA_SOUTH_1',
+                'EASTERN_ASIA_PACIFIC',
+                'NORTHEASTERN_ASIA_PACIFIC',
+                'SOUTHEASTERN_ASIA_PACIFIC',
+                'ASIA_EAST_2',
+                'ASIA_NORTHEAST_2',
+                'ASIA_NORTHEAST_3',
+                'ASIA_SOUTH_1',
+                'ASIA_SOUTH_2',
+                'ASIA_SOUTHEAST_2',
+              ])
+              .openapi({ description: 'Google Compute Regions.', title: 'GCP Regions' }),
+          ),
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'Physical location of your MongoDB cluster nodes. The region you choose can affect network latency for clients accessing your databases. The region name is only returned in the response for single-region clusters. When MongoDB Cloud deploys a dedicated cluster, it checks if a VPC or VPC connection exists for that provider and region. If not, MongoDB Cloud creates them as part of the deployment. It assigns the VPC a Classless Inter-Domain Routing (CIDR) block. To limit a new VPC peering connection to one Classless Inter-Domain Routing (CIDR) block and region, create the connection first. Deploy the cluster after the connection starts. GCP Clusters and Multi-region clusters require one VPC peering connection for each region. MongoDB nodes can use only the peering connection that resides in the same region as the nodes to communicate with the peered VPC.',
+      }),
+  })
+  .openapi({ required: [] })
+  .and(
+    z
+      .object({
+        analyticsAutoScaling: AdvancedAutoScalingSettingsSchema.exactOptional(),
+        analyticsSpecs: DedicatedHardwareSpec20240805Schema.exactOptional(),
+        autoScaling: AdvancedAutoScalingSettingsSchema.exactOptional(),
+        effectiveAnalyticsSpecs: DedicatedHardwareSpec20240805Schema.exactOptional(),
+        effectiveElectableSpecs: DedicatedHardwareSpec20240805Schema.exactOptional(),
+        effectiveReadOnlySpecs: DedicatedHardwareSpec20240805Schema.exactOptional(),
+        readOnlySpecs: DedicatedHardwareSpec20240805Schema.exactOptional(),
+      })
+      .openapi({ required: [] }),
+  )
+  .openapi({
+    description:
+      'Details that explain how MongoDB Cloud replicates data in one region on the specified MongoDB database.',
+    title: 'Azure Regional Replication Specifications',
+  })
+  .openapi('AzureRegionConfig20240805')
+
+const GCPRegionConfig20240805Schema = z
+  .object({
+    electableSpecs: HardwareSpec20240805Schema.exactOptional(),
+    priority: z
+      .int32()
+      .min(0)
+      .max(7)
+      .exactOptional()
+      .openapi({
+        description:
+          'Precedence is given to this region when a primary election occurs. If your `regionConfigs` has only `readOnlySpecs`, `analyticsSpecs`, or both, set this value to `0`. If you have multiple `regionConfigs` objects (your cluster is multi-region or multi-cloud), they must have priorities in descending order. The highest priority is `7`.\n\n**Example:** If you have three regions, their priorities would be `7`, `6`, and `5` respectively. If you added two more regions for supporting electable nodes, the priorities of those regions would be `4` and `3` respectively.',
+        example: 7,
+      }),
+    providerName: z
+      .enum(['AWS', 'AZURE', 'GCP', 'TENANT'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Cloud service provider on which MongoDB Cloud provisions the hosts. Set dedicated clusters to `AWS`, `GCP`, `AZURE` or `TENANT`.',
+      }),
+    regionName: z
+      .xor([
+        z
+          .looseObject({})
+          .and(
+            z
+              .enum([
+                'US_GOV_WEST_1',
+                'US_GOV_EAST_1',
+                'US_EAST_1',
+                'US_EAST_2',
+                'US_WEST_1',
+                'US_WEST_2',
+                'CA_CENTRAL_1',
+                'EU_NORTH_1',
+                'EU_WEST_1',
+                'EU_WEST_2',
+                'EU_WEST_3',
+                'EU_CENTRAL_1',
+                'EU_CENTRAL_2',
+                'AP_EAST_1',
+                'AP_EAST_2',
+                'AP_NORTHEAST_1',
+                'AP_NORTHEAST_2',
+                'AP_NORTHEAST_3',
+                'AP_SOUTHEAST_1',
+                'AP_SOUTHEAST_2',
+                'AP_SOUTHEAST_3',
+                'AP_SOUTHEAST_4',
+                'AP_SOUTHEAST_5',
+                'AP_SOUTHEAST_6',
+                'AP_SOUTHEAST_7',
+                'AP_SOUTH_1',
+                'AP_SOUTH_2',
+                'SA_EAST_1',
+                'CN_NORTH_1',
+                'CN_NORTHWEST_1',
+                'ME_SOUTH_1',
+                'ME_CENTRAL_1',
+                'AF_SOUTH_1',
+                'EU_SOUTH_1',
+                'EU_SOUTH_2',
+                'IL_CENTRAL_1',
+                'CA_WEST_1',
+                'MX_CENTRAL_1',
+                'GLOBAL',
+              ])
+              .openapi({
+                description:
+                  'Physical location where MongoDB Cloud deploys your AWS-hosted MongoDB cluster nodes. The region you choose can affect network latency for clients accessing your databases. When MongoDB Cloud deploys a dedicated cluster, it checks if a VPC or VPC connection exists for that provider and region. If not, MongoDB Cloud creates them as part of the deployment. MongoDB Cloud assigns the VPC a CIDR block. To limit a new VPC peering connection to one CIDR block and region, create the connection first. Deploy the cluster after the connection starts.',
+                title: 'AWS Regions',
+              }),
+          ),
+        z
+          .looseObject({})
+          .and(
+            z
+              .enum([
+                'US_CENTRAL',
+                'US_EAST',
+                'US_EAST_2',
+                'US_NORTH_CENTRAL',
+                'US_WEST',
+                'US_SOUTH_CENTRAL',
+                'EUROPE_NORTH',
+                'EUROPE_WEST',
+                'US_WEST_CENTRAL',
+                'US_WEST_2',
+                'US_WEST_3',
+                'CANADA_EAST',
+                'CANADA_CENTRAL',
+                'BRAZIL_SOUTH',
+                'BRAZIL_SOUTHEAST',
+                'AUSTRALIA_CENTRAL',
+                'AUSTRALIA_CENTRAL_2',
+                'AUSTRALIA_EAST',
+                'AUSTRALIA_SOUTH_EAST',
+                'GERMANY_WEST_CENTRAL',
+                'GERMANY_NORTH',
+                'SWEDEN_CENTRAL',
+                'SWEDEN_SOUTH',
+                'SWITZERLAND_NORTH',
+                'SWITZERLAND_WEST',
+                'UK_SOUTH',
+                'UK_WEST',
+                'NORWAY_EAST',
+                'NORWAY_WEST',
+                'INDIA_CENTRAL',
+                'INDIA_SOUTH',
+                'INDIA_WEST',
+                'CHINA_EAST',
+                'CHINA_NORTH',
+                'ASIA_EAST',
+                'JAPAN_EAST',
+                'JAPAN_WEST',
+                'ASIA_SOUTH_EAST',
+                'KOREA_CENTRAL',
+                'KOREA_SOUTH',
+                'FRANCE_CENTRAL',
+                'FRANCE_SOUTH',
+                'SOUTH_AFRICA_NORTH',
+                'SOUTH_AFRICA_WEST',
+                'UAE_CENTRAL',
+                'UAE_NORTH',
+                'QATAR_CENTRAL',
+                'POLAND_CENTRAL',
+                'ISRAEL_CENTRAL',
+                'ITALY_NORTH',
+                'SPAIN_CENTRAL',
+                'MEXICO_CENTRAL',
+                'NEW_ZEALAND_NORTH',
+                'US_GOV_VIRGINIA',
+                'US_GOV_ARIZONA',
+                'US_GOV_TEXAS',
+              ])
+              .openapi({ description: 'Microsoft Azure Regions.', title: 'Azure Regions' }),
+          ),
+        z
+          .looseObject({})
+          .and(
+            z
+              .enum([
+                'EASTERN_US',
+                'EASTERN_US_AW',
+                'US_EAST_4',
+                'US_EAST_4_AW',
+                'US_EAST_5',
+                'US_EAST_5_AW',
+                'US_WEST_2',
+                'US_WEST_2_AW',
+                'US_WEST_3',
+                'US_WEST_3_AW',
+                'US_WEST_4',
+                'US_WEST_4_AW',
+                'US_SOUTH_1',
+                'US_SOUTH_1_AW',
+                'CENTRAL_US',
+                'CENTRAL_US_AW',
+                'WESTERN_US',
+                'WESTERN_US_AW',
+                'NORTH_AMERICA_NORTHEAST_1',
+                'NORTH_AMERICA_NORTHEAST_2',
+                'NORTH_AMERICA_SOUTH_1',
+                'SOUTH_AMERICA_EAST_1',
+                'SOUTH_AMERICA_WEST_1',
+                'WESTERN_EUROPE',
+                'EUROPE_NORTH_1',
+                'EUROPE_WEST_2',
+                'EUROPE_WEST_3',
+                'EUROPE_WEST_4',
+                'EUROPE_WEST_6',
+                'EUROPE_WEST_8',
+                'EUROPE_WEST_9',
+                'EUROPE_WEST_10',
+                'EUROPE_WEST_12',
+                'EUROPE_SOUTHWEST_1',
+                'EUROPE_CENTRAL_2',
+                'MIDDLE_EAST_CENTRAL_1',
+                'MIDDLE_EAST_CENTRAL_2',
+                'MIDDLE_EAST_WEST_1',
+                'AUSTRALIA_SOUTHEAST_1',
+                'AUSTRALIA_SOUTHEAST_2',
+                'AFRICA_SOUTH_1',
+                'EASTERN_ASIA_PACIFIC',
+                'NORTHEASTERN_ASIA_PACIFIC',
+                'SOUTHEASTERN_ASIA_PACIFIC',
+                'ASIA_EAST_2',
+                'ASIA_NORTHEAST_2',
+                'ASIA_NORTHEAST_3',
+                'ASIA_SOUTH_1',
+                'ASIA_SOUTH_2',
+                'ASIA_SOUTHEAST_2',
+              ])
+              .openapi({ description: 'Google Compute Regions.', title: 'GCP Regions' }),
+          ),
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'Physical location of your MongoDB cluster nodes. The region you choose can affect network latency for clients accessing your databases. The region name is only returned in the response for single-region clusters. When MongoDB Cloud deploys a dedicated cluster, it checks if a VPC or VPC connection exists for that provider and region. If not, MongoDB Cloud creates them as part of the deployment. It assigns the VPC a Classless Inter-Domain Routing (CIDR) block. To limit a new VPC peering connection to one Classless Inter-Domain Routing (CIDR) block and region, create the connection first. Deploy the cluster after the connection starts. GCP Clusters and Multi-region clusters require one VPC peering connection for each region. MongoDB nodes can use only the peering connection that resides in the same region as the nodes to communicate with the peered VPC.',
+      }),
+  })
+  .openapi({ required: [] })
+  .and(
+    z
+      .object({
+        analyticsAutoScaling: AdvancedAutoScalingSettingsSchema.exactOptional(),
+        analyticsSpecs: DedicatedHardwareSpec20240805Schema.exactOptional(),
+        autoScaling: AdvancedAutoScalingSettingsSchema.exactOptional(),
+        effectiveAnalyticsSpecs: DedicatedHardwareSpec20240805Schema.exactOptional(),
+        effectiveElectableSpecs: DedicatedHardwareSpec20240805Schema.exactOptional(),
+        effectiveReadOnlySpecs: DedicatedHardwareSpec20240805Schema.exactOptional(),
+        readOnlySpecs: DedicatedHardwareSpec20240805Schema.exactOptional(),
+      })
+      .openapi({ required: [] }),
+  )
+  .openapi({
+    description:
+      'Details that explain how MongoDB Cloud replicates data in one region on the specified MongoDB database.',
+    title: 'GCP Regional Replication Specifications',
+  })
+  .openapi('GCPRegionConfig20240805')
+
+const TenantRegionConfig20240805Schema = z
+  .object({
+    electableSpecs: HardwareSpec20240805Schema.exactOptional(),
+    priority: z
+      .int32()
+      .min(0)
+      .max(7)
+      .exactOptional()
+      .openapi({
+        description:
+          'Precedence is given to this region when a primary election occurs. If your `regionConfigs` has only `readOnlySpecs`, `analyticsSpecs`, or both, set this value to `0`. If you have multiple `regionConfigs` objects (your cluster is multi-region or multi-cloud), they must have priorities in descending order. The highest priority is `7`.\n\n**Example:** If you have three regions, their priorities would be `7`, `6`, and `5` respectively. If you added two more regions for supporting electable nodes, the priorities of those regions would be `4` and `3` respectively.',
+        example: 7,
+      }),
+    providerName: z
+      .enum(['AWS', 'AZURE', 'GCP', 'TENANT'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Cloud service provider on which MongoDB Cloud provisions the hosts. Set dedicated clusters to `AWS`, `GCP`, `AZURE` or `TENANT`.',
+      }),
+    regionName: z
+      .xor([
+        z
+          .looseObject({})
+          .and(
+            z
+              .enum([
+                'US_GOV_WEST_1',
+                'US_GOV_EAST_1',
+                'US_EAST_1',
+                'US_EAST_2',
+                'US_WEST_1',
+                'US_WEST_2',
+                'CA_CENTRAL_1',
+                'EU_NORTH_1',
+                'EU_WEST_1',
+                'EU_WEST_2',
+                'EU_WEST_3',
+                'EU_CENTRAL_1',
+                'EU_CENTRAL_2',
+                'AP_EAST_1',
+                'AP_EAST_2',
+                'AP_NORTHEAST_1',
+                'AP_NORTHEAST_2',
+                'AP_NORTHEAST_3',
+                'AP_SOUTHEAST_1',
+                'AP_SOUTHEAST_2',
+                'AP_SOUTHEAST_3',
+                'AP_SOUTHEAST_4',
+                'AP_SOUTHEAST_5',
+                'AP_SOUTHEAST_6',
+                'AP_SOUTHEAST_7',
+                'AP_SOUTH_1',
+                'AP_SOUTH_2',
+                'SA_EAST_1',
+                'CN_NORTH_1',
+                'CN_NORTHWEST_1',
+                'ME_SOUTH_1',
+                'ME_CENTRAL_1',
+                'AF_SOUTH_1',
+                'EU_SOUTH_1',
+                'EU_SOUTH_2',
+                'IL_CENTRAL_1',
+                'CA_WEST_1',
+                'MX_CENTRAL_1',
+                'GLOBAL',
+              ])
+              .openapi({
+                description:
+                  'Physical location where MongoDB Cloud deploys your AWS-hosted MongoDB cluster nodes. The region you choose can affect network latency for clients accessing your databases. When MongoDB Cloud deploys a dedicated cluster, it checks if a VPC or VPC connection exists for that provider and region. If not, MongoDB Cloud creates them as part of the deployment. MongoDB Cloud assigns the VPC a CIDR block. To limit a new VPC peering connection to one CIDR block and region, create the connection first. Deploy the cluster after the connection starts.',
+                title: 'AWS Regions',
+              }),
+          ),
+        z
+          .looseObject({})
+          .and(
+            z
+              .enum([
+                'US_CENTRAL',
+                'US_EAST',
+                'US_EAST_2',
+                'US_NORTH_CENTRAL',
+                'US_WEST',
+                'US_SOUTH_CENTRAL',
+                'EUROPE_NORTH',
+                'EUROPE_WEST',
+                'US_WEST_CENTRAL',
+                'US_WEST_2',
+                'US_WEST_3',
+                'CANADA_EAST',
+                'CANADA_CENTRAL',
+                'BRAZIL_SOUTH',
+                'BRAZIL_SOUTHEAST',
+                'AUSTRALIA_CENTRAL',
+                'AUSTRALIA_CENTRAL_2',
+                'AUSTRALIA_EAST',
+                'AUSTRALIA_SOUTH_EAST',
+                'GERMANY_WEST_CENTRAL',
+                'GERMANY_NORTH',
+                'SWEDEN_CENTRAL',
+                'SWEDEN_SOUTH',
+                'SWITZERLAND_NORTH',
+                'SWITZERLAND_WEST',
+                'UK_SOUTH',
+                'UK_WEST',
+                'NORWAY_EAST',
+                'NORWAY_WEST',
+                'INDIA_CENTRAL',
+                'INDIA_SOUTH',
+                'INDIA_WEST',
+                'CHINA_EAST',
+                'CHINA_NORTH',
+                'ASIA_EAST',
+                'JAPAN_EAST',
+                'JAPAN_WEST',
+                'ASIA_SOUTH_EAST',
+                'KOREA_CENTRAL',
+                'KOREA_SOUTH',
+                'FRANCE_CENTRAL',
+                'FRANCE_SOUTH',
+                'SOUTH_AFRICA_NORTH',
+                'SOUTH_AFRICA_WEST',
+                'UAE_CENTRAL',
+                'UAE_NORTH',
+                'QATAR_CENTRAL',
+                'POLAND_CENTRAL',
+                'ISRAEL_CENTRAL',
+                'ITALY_NORTH',
+                'SPAIN_CENTRAL',
+                'MEXICO_CENTRAL',
+                'NEW_ZEALAND_NORTH',
+                'US_GOV_VIRGINIA',
+                'US_GOV_ARIZONA',
+                'US_GOV_TEXAS',
+              ])
+              .openapi({ description: 'Microsoft Azure Regions.', title: 'Azure Regions' }),
+          ),
+        z
+          .looseObject({})
+          .and(
+            z
+              .enum([
+                'EASTERN_US',
+                'EASTERN_US_AW',
+                'US_EAST_4',
+                'US_EAST_4_AW',
+                'US_EAST_5',
+                'US_EAST_5_AW',
+                'US_WEST_2',
+                'US_WEST_2_AW',
+                'US_WEST_3',
+                'US_WEST_3_AW',
+                'US_WEST_4',
+                'US_WEST_4_AW',
+                'US_SOUTH_1',
+                'US_SOUTH_1_AW',
+                'CENTRAL_US',
+                'CENTRAL_US_AW',
+                'WESTERN_US',
+                'WESTERN_US_AW',
+                'NORTH_AMERICA_NORTHEAST_1',
+                'NORTH_AMERICA_NORTHEAST_2',
+                'NORTH_AMERICA_SOUTH_1',
+                'SOUTH_AMERICA_EAST_1',
+                'SOUTH_AMERICA_WEST_1',
+                'WESTERN_EUROPE',
+                'EUROPE_NORTH_1',
+                'EUROPE_WEST_2',
+                'EUROPE_WEST_3',
+                'EUROPE_WEST_4',
+                'EUROPE_WEST_6',
+                'EUROPE_WEST_8',
+                'EUROPE_WEST_9',
+                'EUROPE_WEST_10',
+                'EUROPE_WEST_12',
+                'EUROPE_SOUTHWEST_1',
+                'EUROPE_CENTRAL_2',
+                'MIDDLE_EAST_CENTRAL_1',
+                'MIDDLE_EAST_CENTRAL_2',
+                'MIDDLE_EAST_WEST_1',
+                'AUSTRALIA_SOUTHEAST_1',
+                'AUSTRALIA_SOUTHEAST_2',
+                'AFRICA_SOUTH_1',
+                'EASTERN_ASIA_PACIFIC',
+                'NORTHEASTERN_ASIA_PACIFIC',
+                'SOUTHEASTERN_ASIA_PACIFIC',
+                'ASIA_EAST_2',
+                'ASIA_NORTHEAST_2',
+                'ASIA_NORTHEAST_3',
+                'ASIA_SOUTH_1',
+                'ASIA_SOUTH_2',
+                'ASIA_SOUTHEAST_2',
+              ])
+              .openapi({ description: 'Google Compute Regions.', title: 'GCP Regions' }),
+          ),
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'Physical location of your MongoDB cluster nodes. The region you choose can affect network latency for clients accessing your databases. The region name is only returned in the response for single-region clusters. When MongoDB Cloud deploys a dedicated cluster, it checks if a VPC or VPC connection exists for that provider and region. If not, MongoDB Cloud creates them as part of the deployment. It assigns the VPC a Classless Inter-Domain Routing (CIDR) block. To limit a new VPC peering connection to one Classless Inter-Domain Routing (CIDR) block and region, create the connection first. Deploy the cluster after the connection starts. GCP Clusters and Multi-region clusters require one VPC peering connection for each region. MongoDB nodes can use only the peering connection that resides in the same region as the nodes to communicate with the peered VPC.',
+      }),
+  })
+  .openapi({ required: [] })
+  .and(
+    z
+      .object({
+        backingProviderName: z
+          .enum(['AWS', 'GCP', 'AZURE'])
+          .exactOptional()
+          .openapi({
+            description:
+              'Cloud service provider on which MongoDB Cloud provisioned the multi-tenant cluster. The resource returns this parameter when `providerName` is `TENANT` and `electableSpecs.instanceSize` is `M0`, `M2` or `M5`. \n\nPlease note that  using an `instanceSize` of `M2` or `M5` will create a Flex cluster instead. Support for the `instanceSize` of `M2` or `M5` will be discontinued in January 2026. We recommend using the Create Flex Cluster API for such configurations moving forward.',
+            externalDocs: {
+              description: 'Create Flex Cluster API',
+              url: 'https://www.mongodb.com/docs/atlas/reference/api-resources-spec/v2/#tag/Flex-Clusters/operation/createFlexCluster',
+            },
+          }),
+      })
+      .openapi({ required: [] }),
+  )
+  .openapi({
+    description:
+      'Details that explain how MongoDB Cloud replicates data in one region on the specified MongoDB database.',
+    title: 'Tenant Regional Replication Specifications',
+  })
+  .openapi('TenantRegionConfig20240805')
+
+const CloudRegionConfig20240805Schema = z
+  .xor([
+    AWSRegionConfig20240805Schema,
+    AzureRegionConfig20240805Schema,
+    GCPRegionConfig20240805Schema,
+    TenantRegionConfig20240805Schema,
+  ])
+  .and(
+    z
+      .object({
+        electableSpecs: HardwareSpec20240805Schema.exactOptional(),
+        priority: z
+          .int32()
+          .min(0)
+          .max(7)
+          .exactOptional()
+          .openapi({
+            description:
+              'Precedence is given to this region when a primary election occurs. If your `regionConfigs` has only `readOnlySpecs`, `analyticsSpecs`, or both, set this value to `0`. If you have multiple `regionConfigs` objects (your cluster is multi-region or multi-cloud), they must have priorities in descending order. The highest priority is `7`.\n\n**Example:** If you have three regions, their priorities would be `7`, `6`, and `5` respectively. If you added two more regions for supporting electable nodes, the priorities of those regions would be `4` and `3` respectively.',
+            example: 7,
+          }),
+        providerName: z
+          .enum(['AWS', 'AZURE', 'GCP', 'TENANT'])
+          .exactOptional()
+          .openapi({
+            description:
+              'Cloud service provider on which MongoDB Cloud provisions the hosts. Set dedicated clusters to `AWS`, `GCP`, `AZURE` or `TENANT`.',
+          }),
+        regionName: z
+          .xor([
+            z
+              .looseObject({})
+              .and(
+                z
+                  .enum([
+                    'US_GOV_WEST_1',
+                    'US_GOV_EAST_1',
+                    'US_EAST_1',
+                    'US_EAST_2',
+                    'US_WEST_1',
+                    'US_WEST_2',
+                    'CA_CENTRAL_1',
+                    'EU_NORTH_1',
+                    'EU_WEST_1',
+                    'EU_WEST_2',
+                    'EU_WEST_3',
+                    'EU_CENTRAL_1',
+                    'EU_CENTRAL_2',
+                    'AP_EAST_1',
+                    'AP_EAST_2',
+                    'AP_NORTHEAST_1',
+                    'AP_NORTHEAST_2',
+                    'AP_NORTHEAST_3',
+                    'AP_SOUTHEAST_1',
+                    'AP_SOUTHEAST_2',
+                    'AP_SOUTHEAST_3',
+                    'AP_SOUTHEAST_4',
+                    'AP_SOUTHEAST_5',
+                    'AP_SOUTHEAST_6',
+                    'AP_SOUTHEAST_7',
+                    'AP_SOUTH_1',
+                    'AP_SOUTH_2',
+                    'SA_EAST_1',
+                    'CN_NORTH_1',
+                    'CN_NORTHWEST_1',
+                    'ME_SOUTH_1',
+                    'ME_CENTRAL_1',
+                    'AF_SOUTH_1',
+                    'EU_SOUTH_1',
+                    'EU_SOUTH_2',
+                    'IL_CENTRAL_1',
+                    'CA_WEST_1',
+                    'MX_CENTRAL_1',
+                    'GLOBAL',
+                  ])
+                  .openapi({
+                    description:
+                      'Physical location where MongoDB Cloud deploys your AWS-hosted MongoDB cluster nodes. The region you choose can affect network latency for clients accessing your databases. When MongoDB Cloud deploys a dedicated cluster, it checks if a VPC or VPC connection exists for that provider and region. If not, MongoDB Cloud creates them as part of the deployment. MongoDB Cloud assigns the VPC a CIDR block. To limit a new VPC peering connection to one CIDR block and region, create the connection first. Deploy the cluster after the connection starts.',
+                    title: 'AWS Regions',
+                  }),
+              ),
+            z
+              .looseObject({})
+              .and(
+                z
+                  .enum([
+                    'US_CENTRAL',
+                    'US_EAST',
+                    'US_EAST_2',
+                    'US_NORTH_CENTRAL',
+                    'US_WEST',
+                    'US_SOUTH_CENTRAL',
+                    'EUROPE_NORTH',
+                    'EUROPE_WEST',
+                    'US_WEST_CENTRAL',
+                    'US_WEST_2',
+                    'US_WEST_3',
+                    'CANADA_EAST',
+                    'CANADA_CENTRAL',
+                    'BRAZIL_SOUTH',
+                    'BRAZIL_SOUTHEAST',
+                    'AUSTRALIA_CENTRAL',
+                    'AUSTRALIA_CENTRAL_2',
+                    'AUSTRALIA_EAST',
+                    'AUSTRALIA_SOUTH_EAST',
+                    'GERMANY_WEST_CENTRAL',
+                    'GERMANY_NORTH',
+                    'SWEDEN_CENTRAL',
+                    'SWEDEN_SOUTH',
+                    'SWITZERLAND_NORTH',
+                    'SWITZERLAND_WEST',
+                    'UK_SOUTH',
+                    'UK_WEST',
+                    'NORWAY_EAST',
+                    'NORWAY_WEST',
+                    'INDIA_CENTRAL',
+                    'INDIA_SOUTH',
+                    'INDIA_WEST',
+                    'CHINA_EAST',
+                    'CHINA_NORTH',
+                    'ASIA_EAST',
+                    'JAPAN_EAST',
+                    'JAPAN_WEST',
+                    'ASIA_SOUTH_EAST',
+                    'KOREA_CENTRAL',
+                    'KOREA_SOUTH',
+                    'FRANCE_CENTRAL',
+                    'FRANCE_SOUTH',
+                    'SOUTH_AFRICA_NORTH',
+                    'SOUTH_AFRICA_WEST',
+                    'UAE_CENTRAL',
+                    'UAE_NORTH',
+                    'QATAR_CENTRAL',
+                    'POLAND_CENTRAL',
+                    'ISRAEL_CENTRAL',
+                    'ITALY_NORTH',
+                    'SPAIN_CENTRAL',
+                    'MEXICO_CENTRAL',
+                    'NEW_ZEALAND_NORTH',
+                    'US_GOV_VIRGINIA',
+                    'US_GOV_ARIZONA',
+                    'US_GOV_TEXAS',
+                  ])
+                  .openapi({ description: 'Microsoft Azure Regions.', title: 'Azure Regions' }),
+              ),
+            z
+              .looseObject({})
+              .and(
+                z
+                  .enum([
+                    'EASTERN_US',
+                    'EASTERN_US_AW',
+                    'US_EAST_4',
+                    'US_EAST_4_AW',
+                    'US_EAST_5',
+                    'US_EAST_5_AW',
+                    'US_WEST_2',
+                    'US_WEST_2_AW',
+                    'US_WEST_3',
+                    'US_WEST_3_AW',
+                    'US_WEST_4',
+                    'US_WEST_4_AW',
+                    'US_SOUTH_1',
+                    'US_SOUTH_1_AW',
+                    'CENTRAL_US',
+                    'CENTRAL_US_AW',
+                    'WESTERN_US',
+                    'WESTERN_US_AW',
+                    'NORTH_AMERICA_NORTHEAST_1',
+                    'NORTH_AMERICA_NORTHEAST_2',
+                    'NORTH_AMERICA_SOUTH_1',
+                    'SOUTH_AMERICA_EAST_1',
+                    'SOUTH_AMERICA_WEST_1',
+                    'WESTERN_EUROPE',
+                    'EUROPE_NORTH_1',
+                    'EUROPE_WEST_2',
+                    'EUROPE_WEST_3',
+                    'EUROPE_WEST_4',
+                    'EUROPE_WEST_6',
+                    'EUROPE_WEST_8',
+                    'EUROPE_WEST_9',
+                    'EUROPE_WEST_10',
+                    'EUROPE_WEST_12',
+                    'EUROPE_SOUTHWEST_1',
+                    'EUROPE_CENTRAL_2',
+                    'MIDDLE_EAST_CENTRAL_1',
+                    'MIDDLE_EAST_CENTRAL_2',
+                    'MIDDLE_EAST_WEST_1',
+                    'AUSTRALIA_SOUTHEAST_1',
+                    'AUSTRALIA_SOUTHEAST_2',
+                    'AFRICA_SOUTH_1',
+                    'EASTERN_ASIA_PACIFIC',
+                    'NORTHEASTERN_ASIA_PACIFIC',
+                    'SOUTHEASTERN_ASIA_PACIFIC',
+                    'ASIA_EAST_2',
+                    'ASIA_NORTHEAST_2',
+                    'ASIA_NORTHEAST_3',
+                    'ASIA_SOUTH_1',
+                    'ASIA_SOUTH_2',
+                    'ASIA_SOUTHEAST_2',
+                  ])
+                  .openapi({ description: 'Google Compute Regions.', title: 'GCP Regions' }),
+              ),
+          ])
+          .exactOptional()
+          .openapi({
+            description:
+              'Physical location of your MongoDB cluster nodes. The region you choose can affect network latency for clients accessing your databases. The region name is only returned in the response for single-region clusters. When MongoDB Cloud deploys a dedicated cluster, it checks if a VPC or VPC connection exists for that provider and region. If not, MongoDB Cloud creates them as part of the deployment. It assigns the VPC a Classless Inter-Domain Routing (CIDR) block. To limit a new VPC peering connection to one Classless Inter-Domain Routing (CIDR) block and region, create the connection first. Deploy the cluster after the connection starts. GCP Clusters and Multi-region clusters require one VPC peering connection for each region. MongoDB nodes can use only the peering connection that resides in the same region as the nodes to communicate with the peered VPC.',
+          }),
+      })
+      .openapi({ required: [] }),
+  )
+  .openapi({
+    description: 'Cloud service provider on which MongoDB Cloud provisions the hosts.',
+    discriminator: {
+      propertyName: 'providerName',
+      mapping: {
+        AWS: '#/components/schemas/AWSRegionConfig20240805',
+        AZURE: '#/components/schemas/AzureRegionConfig20240805',
+        GCP: '#/components/schemas/GCPRegionConfig20240805',
+        TENANT: '#/components/schemas/TenantRegionConfig20240805',
+      },
+    },
+    title: 'Cloud Service Provider Settings',
+  })
+  .openapi('CloudRegionConfig20240805')
+
+const ReplicationSpec20240805Schema = z
+  .object({
+    id: z
+      .string()
+      .regex(/^([a-f0-9]{24})$/)
+      .exactOptional()
+      .openapi({
+        description:
+          'Unique 24-hexadecimal digit string that identifies the replication object for a shard in a Cluster. If you include existing shard replication configurations in the request, you must specify this parameter. If you add a new shard to an existing Cluster, you may specify this parameter. The request deletes any existing shards  in the Cluster that you exclude from the request. This corresponds to Shard ID displayed in the UI.',
+        example: '32b6e34b3d91647abb20e7b8',
+        readOnly: true,
+      }),
+    regionConfigs: z
+      .array(CloudRegionConfig20240805Schema)
+      .exactOptional()
+      .openapi({
+        description:
+          "Hardware specifications for nodes set for a given region. Each `regionConfigs` object must be unique by region and cloud provider within the `replicationSpec`. Each `regionConfigs` object describes the region's priority in elections and the number and type of MongoDB nodes that MongoDB Cloud deploys to the region. Each `regionConfigs` object must have either an `analyticsSpecs` object, `electableSpecs` object, or `readOnlySpecs` object. Tenant clusters only require `electableSpecs`. Dedicated clusters can specify any of these specifications, but must have at least one `electableSpecs` object within a `replicationSpec`.\n\n**Example:**\n\nIf you set `replicationSpecs[n].regionConfigs[m].analyticsSpecs.instanceSize` : `M30`, set `replicationSpecs[n].regionConfigs[m].electableSpecs.instanceSize` : `M30` if you have electable nodes and `replicationSpecs[n].regionConfigs[m].readOnlySpecs.instanceSize` : `M30` if you have read-only nodes.",
+      }),
+    zoneId: z
+      .string()
+      .regex(/^([a-f0-9]{24})$/)
+      .exactOptional()
+      .openapi({
+        description:
+          'Unique 24-hexadecimal digit string that identifies the zone in a Global Cluster. This value can be used to configure Global Cluster backup policies.',
+        example: '32b6e34b3d91647abb20e7b8',
+        readOnly: true,
+      }),
+    zoneName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Human-readable label that describes the zone this shard belongs to in a Global Cluster. Provide this value only if `clusterType` : `GEOSHARDED` but not `selfManagedSharding` : `true`.',
+      }),
+  })
+  .openapi({
+    description:
+      'Details that explain how MongoDB Cloud replicates data on the specified MongoDB database.',
+    title: 'Replication Specifications',
+    required: [],
+  })
+  .openapi('ReplicationSpec20240805')
+
+const ComponentLabelSchema = z
+  .object({
+    key: z
+      .string()
+      .min(1)
+      .max(255)
+      .exactOptional()
+      .openapi({ description: 'Key applied to tag and categorize this component.' }),
+    value: z
+      .string()
+      .min(1)
+      .max(255)
+      .exactOptional()
+      .openapi({
+        description: 'Value set to the Key applied to tag and categorize this component.',
+      }),
+  })
+  .openapi({
+    description: 'Human-readable labels applied to this MongoDB Cloud component.',
+    title: 'Component Label',
+    required: [],
+  })
+  .openapi('ComponentLabel')
+
+const EmployeeAccessGrantViewSchema = z
+  .object({
+    expirationTime: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description:
+          'Expiration date for the employee access grant. This parameter expresses its value in the ISO 8601 timestamp format in UTC.',
+      }),
+    grantType: z
+      .enum([
+        'CLUSTER_DATABASE_LOGS',
+        'CLUSTER_INFRASTRUCTURE',
+        'CLUSTER_INFRASTRUCTURE_AND_APP_SERVICES_SYNC_DATA',
+      ])
+      .openapi({ description: 'Level of access to grant to MongoDB Employees.' }),
+    links: z
+      .array(LinkSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'List of one or more Uniform Resource Locators (URLs) that point to API sub-resources, related API resources, or both. RFC 5988 outlines these relationships.',
+        externalDocs: {
+          description: 'Web Linking Specification (RFC 5988)',
+          url: 'https://datatracker.ietf.org/doc/html/rfc5988',
+        },
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    description: 'MongoDB employee granted access level and expiration for a cluster.',
+    readOnly: true,
+    required: ['expirationTime', 'grantType'],
+  })
+  .openapi('EmployeeAccessGrantView')
+
+const SearchAutoMigrationSchema = z
+  .object({
+    disabled: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description:
+          'Flag that disables future automatic Search Node provisioning. Defaults to false on creation. Omission on update preserves the stored choice. Disabling retains existing Search Nodes and allows in-flight migrations to continue. Enabling does not bypass resource policies; if indexes exceed the migration threshold, the next eligible evaluation may start provisioning.',
+      }),
+  })
+  .openapi({
+    description:
+      'Configuration for automatically adding Dedicated Search Nodes on eligible Atlas Infinite clusters. This setting has no effect on Atlas Core clusters.',
+    required: [],
+  })
+  .openapi('SearchAutoMigration')
+
+const ResourceTagSchema = z
+  .object({
+    key: z
+      .string()
+      .min(1)
+      .max(255)
+      .openapi({
+        description:
+          'Constant that defines the set of the tag. For example, `environment` in the `environment : production` tag.',
+      }),
+    value: z
+      .string()
+      .min(1)
+      .max(255)
+      .openapi({
+        description:
+          'Variable that belongs to the set of the tag. For example, `production` in the `environment : production` tag.',
+      }),
+  })
+  .openapi({
+    description:
+      'Key-value pair that tags and categorizes a MongoDB Cloud organization, project, or cluster. For example, `environment : production`.',
+    required: ['key', 'value'],
+    title: 'Resource Tag',
+  })
+  .openapi('ResourceTag')
+
+const ClusterDescription20240805Schema = z
+  .object({
+    acceptDataRisksAndForceReplicaSetReconfig: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'If reconfiguration is necessary to regain a primary due to a regional outage, submit this field alongside your topology reconfiguration to request a new regional outage resistant topology. Forced reconfigurations during an outage of the majority of electable nodes carry a risk of data loss if replicated writes (even majority committed writes) have not been replicated to the new primary node. MongoDB Atlas docs contain more information. To proceed with an operation which carries that risk, set `acceptDataRisksAndForceReplicaSetReconfig` to the current date. This parameter expresses its value in the ISO 8601 timestamp format in UTC.',
+        externalDocs: {
+          description: 'Reconfiguring a Replica Set during a regional outage',
+          url: 'https://dochub.mongodb.org/core/regional-outage-reconfigure-replica-set',
+        },
+      }),
+    adaptiveCapacity: z
+      .enum(['ENABLED', 'DISABLED'])
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          "Governs adaptive capacity behavior of nodes in clusters on providers that support fallback hardware, including those providers' nodes in multi-cloud clusters. Adaptive capacity enables fallback hardware selection when the primary instance family is unavailable. ``ENABLED`` means the cluster explicitly opts in to adaptive capacity. ``DISABLED`` means the cluster explicitly opts out; the cluster receives capacity errors instead of being placed on fallback hardware. ``null`` means the field is unset; clusters use adaptive capacity by default on a provider that supports it.",
+      }),
+    advancedConfiguration: ApiAtlasClusterAdvancedConfigurationViewSchema.exactOptional(),
+    backupEnabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          "Flag that indicates whether Atlas backs up the cluster.\n\nOn Atlas Core clusters, dedicated clusters use [Cloud Backups](https://www.mongodb.com/docs/atlas/backup/cloud-backup/overview/) and Flex clusters use [Flex Cluster Backups](https://www.mongodb.com/docs/atlas/backup/cloud-backup/flex-cluster-backup/). Default value is `false`. For clusters that use local [NVMe SSDs](https://www.mongodb.com/docs/atlas/manage-clusters/#nvme-storage) for storage, you can't disable backup, so you must set `backupEnabled` to `true`.\n\nOn Atlas Infinite clusters, the `backupEnabled` flag controls Additional Backup Retention, not whether backups run. To retain snapshots beyond the 24-hour window, set `backupEnabled` to `true`. For Atlas Infinite clusters, continuous cloud backups are enabled by default, always run, and include a 24-hour window in which you can restore to any point in time. Atlas then applies your snapshot retention policies. To keep only the included window under an Atlas-managed retention policy that you can't edit, set `backupEnabled` to `false`. A cluster covered by a Data Protection policy has this flag set to `true` regardless of the requested value. Default value is `true`.",
+        externalDocs: {
+          description: 'Cloud Backups',
+          url: 'https://www.mongodb.com/docs/atlas/backup/cloud-backup/overview/',
+        },
+      }),
+    biConnector: BiConnectorSchema.exactOptional(),
+    clusterType: z
+      .enum(['REPLICASET', 'SHARDED', 'GEOSHARDED'])
+      .exactOptional()
+      .openapi({ description: 'Configuration of nodes that comprise the cluster.' }),
+    configServerManagementMode: z
+      .enum(['ATLAS_MANAGED', 'FIXED_TO_DEDICATED'])
+      .default('ATLAS_MANAGED')
+      .exactOptional()
+      .openapi({
+        description:
+          "Config Server Management Mode for creating or updating a sharded cluster. When configured as `ATLAS_MANAGED`, Atlas may automatically switch the cluster's config server type for optimal performance and savings. When configured as `FIXED_TO_DEDICATED`, the cluster will always use a dedicated config server.",
+        externalDocs: {
+          description: 'MongoDB Sharded Cluster Config Servers',
+          url: 'https://dochub.mongodb.org/docs/manual/core/sharded-cluster-config-servers',
+        },
+      }),
+    configServerType: z
+      .enum(['DEDICATED', 'EMBEDDED'])
+      .exactOptional()
+      .openapi({
+        description: "Describes a sharded cluster's config server type.",
+        externalDocs: {
+          description: 'MongoDB Sharded Cluster Config Servers',
+          url: 'https://dochub.mongodb.org/docs/manual/core/sharded-cluster-config-servers',
+        },
+        readOnly: true,
+      }),
+    connectionStrings: ClusterConnectionStringsSchema.exactOptional(),
+    createDate: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'Date and time when MongoDB Cloud created this cluster. This parameter expresses its value in ISO 8601 format in UTC.',
+        readOnly: true,
+      }),
+    databaseEdition: z
+      .enum(['CORE', 'INFINITE'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Available in Public Preview: Optional field that indicates whether your cluster will be Atlas INFINITE or CORE. You can set it only when you create the cluster, or when you upgrade a Free or Flex cluster to a dedicated cluster. This value is immutable once the dedicated cluster exists; attempting to change it on an update request returns an error.',
+      }),
+    diskWarmingMode: z
+      .enum(['FULLY_WARMED', 'VISIBLE_EARLIER'])
+      .default('FULLY_WARMED')
+      .exactOptional()
+      .openapi({
+        description: 'Disk warming mode selection.',
+        externalDocs: {
+          description: 'Reduce Secondary Disk Warming Impact',
+          url: 'https://docs.atlas.mongodb.com/reference/replica-set-tags/#reduce-secondary-disk-warming-impact',
+        },
+      }),
+    effectiveDatabaseEdition: z
+      .enum(['CORE', 'INFINITE'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Available in Public Preview: Field that represents whether your cluster is Atlas INFINITE or CORE. This is read-only and always returned in the response. It reflects the actual cluster state. This value matches `databaseEdition` if it was set, otherwise it reflects the default database edition assigned to the cluster.',
+        readOnly: true,
+      }),
+    effectiveReplicationSpecs: z
+      .array(ReplicationSpec20240805Schema)
+      .exactOptional()
+      .openapi({
+        description:
+          'List of settings that represent the actual cluster state. This is read-only and always returned in the response. It reflects the current cluster configuration, which may differ from `replicationSpecs` due to system-managed changes.',
+        readOnly: true,
+      }),
+    encryptionAtRestProvider: z
+      .enum(['NONE', 'AWS', 'AZURE', 'GCP'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Cloud service provider that manages your customer keys to provide an additional layer of encryption at rest for the cluster. To enable customer key management for encryption at rest, the cluster `replicationSpecs[n].regionConfigs[m].{type}Specs.instanceSize` setting must be `M10` or higher and `"backupEnabled" : false` or omitted entirely.',
+        externalDocs: {
+          description: 'Encryption at Rest using Customer Key Management',
+          url: 'https://www.mongodb.com/docs/atlas/security-kms-encryption/',
+        },
+      }),
+    featureCompatibilityVersion: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Feature compatibility version of the cluster. This will always appear regardless of whether FCV is pinned.',
+        readOnly: true,
+      }),
+    featureCompatibilityVersionExpirationDate: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'Feature compatibility version expiration date. Will only appear if FCV is pinned. This parameter expresses its value in the ISO 8601 timestamp format in UTC.',
+        readOnly: true,
+      }),
+    globalClusterSelfManagedSharding: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Set this field to configure the Sharding Management Mode when creating a new Global Cluster.\n\nWhen set to false, the management mode is set to Atlas-Managed Sharding. This mode fully manages the sharding of your Global Cluster and is built to provide a seamless deployment experience.\n\nWhen set to true, the management mode is set to Self-Managed Sharding. This mode leaves the management of shards in your hands and is built to provide an advanced and flexible deployment experience.\n\nThis setting cannot be changed once the cluster is deployed.',
+        externalDocs: {
+          description: 'Creating a Global Cluster',
+          url: 'https://dochub.mongodb.org/core/global-cluster-management',
+        },
+      }),
+    groupId: z
+      .string()
+      .regex(/^([a-f0-9]{24})$/)
+      .exactOptional()
+      .openapi({
+        description: 'Unique 24-hexadecimal character string that identifies the project.',
+        example: '32b6e34b3d91647abb20e7b8',
+        readOnly: true,
+      }),
+    id: z
+      .string()
+      .regex(/^([a-f0-9]{24})$/)
+      .exactOptional()
+      .openapi({
+        description: 'Unique 24-hexadecimal digit string that identifies the cluster.',
+        example: '32b6e34b3d91647abb20e7b8',
+        readOnly: true,
+      }),
+    internalClusterRole: z
+      .enum(['NONE', 'SYSTEM_CLUSTER', 'INTERNAL_SHADOW_CLUSTER'])
+      .exactOptional()
+      .openapi({
+        description:
+          "Internal classification of the cluster's role. Possible values: `NONE` (regular user cluster), `SYSTEM_CLUSTER` (system cluster for backup), `INTERNAL_SHADOW_CLUSTER` (internal use shadow cluster for testing).",
+        readOnly: true,
+      }),
+    labels: z
+      .array(ComponentLabelSchema)
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          "Deprecated: Cluster labels will be removed in a future release. We strongly recommend that you use Resource Tags instead.\n\nCollection of key-value pairs between 1 to 255 characters in length that tag and categorize the cluster. The MongoDB Cloud console doesn't display your labels.",
+        externalDocs: {
+          description: 'Resource Tags',
+          url: 'https://dochub.mongodb.org/core/add-cluster-tag-atlas',
+        },
+      }),
+    links: z
+      .array(LinkSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'List of one or more Uniform Resource Locators (URLs) that point to API sub-resources, related API resources, or both. RFC 5988 outlines these relationships.',
+        externalDocs: {
+          description: 'Web Linking Specification (RFC 5988)',
+          url: 'https://datatracker.ietf.org/doc/html/rfc5988',
+        },
+        readOnly: true,
+      }),
+    mongoDBEmployeeAccessGrant: EmployeeAccessGrantViewSchema.exactOptional(),
+    mongoDBMajorVersion: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'MongoDB major version of the cluster. Set to the binary major version. \n\nOn creation: Choose from the available versions of MongoDB, or leave unspecified for the current recommended default in the MongoDB Cloud platform. The recommended version is a recent Long Term Support version. The default is not guaranteed to be the most recently released version throughout the entire release cycle. For versions available in a specific project, see the linked documentation or use the API endpoint for [project LTS versions endpoint](#tag/Projects/operation/getProjectLtsVersions).\n\n On update: Increase version only by 1 major version at a time. If the cluster is pinned to a MongoDB feature compatibility version exactly one major version below the current MongoDB version, the MongoDB version can be downgraded to the previous major version.',
+        externalDocs: {
+          description: 'Available MongoDB Versions in Atlas',
+          url: 'https://www.mongodb.com/docs/atlas/reference/faq/database/#which-versions-of-mongodb-do-service-clusters-use-',
+        },
+      }),
+    mongoDBVersion: z
+      .string()
+      .regex(/([\d]+\.[\d]+\.[\d]+)/)
+      .exactOptional()
+      .openapi({ description: 'Version of MongoDB that the cluster runs.', readOnly: true }),
+    name: z
+      .string()
+      .regex(/^[a-zA-Z0-9][a-zA-Z0-9-]*$/)
+      .exactOptional()
+      .openapi({ description: 'Human-readable label that identifies the cluster.' }),
+    paused: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Flag that indicates whether the cluster is paused.' }),
+    pitEnabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Flag that indicates whether the cluster uses continuous cloud backups.\n\nFor Atlas Infinite clusters, continuous cloud backups always run. Omit this field or set it to `true`. Setting it to `false` returns an invalid attribute error.',
+        externalDocs: {
+          description: 'Continuous Cloud Backups',
+          url: 'https://www.mongodb.com/docs/atlas/backup/cloud-backup/overview/',
+        },
+      }),
+    redactClientLogData: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Enable or disable log redaction.\n\nThis setting configures the ``mongod`` or ``mongos`` to redact any document field contents from a message accompanying a given log event before logging. This prevents the program from writing potentially sensitive data stored on the database to the diagnostic log. Metadata such as error or operation codes, line numbers, and source file names are still visible in the logs.\n\nUse ``redactClientLogData`` in conjunction with Encryption at Rest and TLS/SSL (Transport Encryption) to assist compliance with regulatory requirements.\n\n*Note*: changing this setting on a cluster will trigger a rolling restart as soon as the cluster is updated.',
+        externalDocs: {
+          description: 'Log Redaction',
+          url: 'https://www.mongodb.com/docs/manual/administration/monitoring/#log-redaction',
+        },
+      }),
+    replicaSetScalingStrategy: z
+      .enum(['SEQUENTIAL', 'WORKLOAD_TYPE', 'NODE_TYPE'])
+      .default('WORKLOAD_TYPE')
+      .exactOptional()
+      .openapi({
+        description:
+          'Set this field to configure the replica set scaling mode for your cluster.\n\nBy default, Atlas scales under `WORKLOAD_TYPE`. This mode allows Atlas to scale your analytics nodes in parallel to your operational nodes.\n\nWhen configured as `SEQUENTIAL`, Atlas scales all nodes sequentially. This mode is intended for steady-state workloads and applications performing latency-sensitive secondary reads.\n\nWhen configured as `NODE_TYPE`, Atlas scales your electable nodes in parallel with your read-only and analytics nodes. This mode is intended for large, dynamic workloads requiring frequent and timely cluster tier scaling. This is the fastest scaling strategy, but it might impact latency of workloads when performing extensive secondary reads.',
+        externalDocs: {
+          description: 'Modify the Replica Set Scaling Mode',
+          url: 'https://dochub.mongodb.org/core/scale-nodes',
+        },
+      }),
+    replicationSpecs: z
+      .array(ReplicationSpec20240805Schema)
+      .exactOptional()
+      .openapi({
+        description:
+          'List of settings that configure your cluster regions. This array has one object per shard representing node configurations in each shard. For replica sets there is only one object representing node configurations.',
+      }),
+    retainBackups: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({ description: 'Flag that indicates whether the cluster retains backups.' }),
+    rootCertType: z
+      .literal('ISRGROOTX1')
+      .default('ISRGROOTX1')
+      .exactOptional()
+      .openapi({
+        description:
+          'Root Certificate Authority that MongoDB Atlas cluster uses. MongoDB Cloud supports Internet Security Research Group.',
+      }),
+    searchAutoMigration: SearchAutoMigrationSchema.exactOptional(),
+    stateName: z
+      .enum(['IDLE', 'CREATING', 'UPDATING', 'DELETING', 'REPAIRING'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Human-readable label that indicates any current activity being taken on this cluster by the Atlas control plane. With the exception of CREATING and DELETING states, clusters should always be available and have a Primary node even when in states indicating ongoing activity.\n\n - `IDLE`: Atlas is making no changes to this cluster and all changes requested via the UI or API can be assumed to have been applied.\n - `CREATING`: A cluster being provisioned for the very first time returns state CREATING until it is ready for connections. Ensure IP Access List and DB Users are configured before attempting to connect.\n - `UPDATING`: A change requested via the UI, API, AutoScaling, or other scheduled activity is taking place.\n - `DELETING`: The cluster is in the process of deletion and will soon be deleted.\n - `REPAIRING`: One or more nodes in the cluster are being returned to service by the Atlas control plane. Other nodes should continue to provide service as normal.',
+        readOnly: true,
+      }),
+    tags: z
+      .array(ResourceTagSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'List that contains key-value pairs between 1 to 255 characters in length for tagging and categorizing the cluster.',
+        externalDocs: {
+          description: 'Resource Tags',
+          url: 'https://dochub.mongodb.org/core/add-cluster-tag-atlas',
+        },
+      }),
+    terminationProtectionEnabled: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description:
+          "Flag that indicates whether termination protection is enabled on the cluster. If set to `true`, MongoDB Cloud won't delete the cluster. If set to `false`, MongoDB Cloud will delete the cluster.",
+      }),
+    useAwsTimeBasedSnapshotCopyForFastInitialSync: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description:
+          'Flag that indicates whether AWS time-based snapshot copies will be used instead of slower standard snapshot copies during fast Atlas cross-region initial syncs. This flag is only relevant for clusters containing AWS nodes.',
+      }),
+    versionReleaseSystem: z
+      .enum(['LTS', 'CONTINUOUS'])
+      .default('LTS')
+      .exactOptional()
+      .openapi({
+        description:
+          'Method by which the cluster maintains the MongoDB versions. If value is `CONTINUOUS`, you must not specify `mongoDBMajorVersion`.',
+      }),
+  })
+  .openapi({
+    description:
+      'Configuration of a MongoDB Atlas cluster, including its replication topology, instance sizing, storage, and operational settings.',
+    required: [],
+  })
+  .openapi('ClusterDescription20240805')
+
+const ApiSearchDeploymentSpecViewSchema = z
+  .object({
+    instanceSize: z
+      .enum([
+        'S10_HIGHCPU',
+        'S20_HIGHCPU_NVME',
+        'S30_HIGHCPU_NVME',
+        'S40_HIGHCPU_NVME',
+        'S50_HIGHCPU_NVME',
+        'S60_HIGHCPU_NVME',
+        'S70_HIGHCPU_NVME',
+        'S80_HIGHCPU_NVME',
+        'S30_LOWCPU_NVME',
+        'S40_LOWCPU_NVME',
+        'S50_LOWCPU_NVME',
+        'S60_LOWCPU_NVME',
+        'S70_LOWCPU_NVME',
+        'S80_LOWCPU_NVME',
+        'S90_LOWCPU_NVME',
+        'S100_LOWCPU_NVME',
+        'S110_LOWCPU_NVME',
+        'S120_LOWCPU_NVME',
+        'S130_LOWCPU_NVME',
+        'S135_LOWCPU_NVME',
+        'S140_LOWCPU_NVME',
+        'S40_STORAGE_NVME',
+        'S50_STORAGE_NVME',
+        'S60_STORAGE_NVME',
+        'S70_STORAGE_NVME',
+        'S80_STORAGE_NVME',
+        'S90_STORAGE_NVME',
+      ])
+      .openapi({ description: 'Hardware specification for the Search Node instance sizes.' }),
+    nodeCount: z
+      .int32()
+      .min(2)
+      .max(32)
+      .openapi({ description: 'Number of Search Nodes in the cluster.', example: 2 }),
+  })
+  .openapi({
+    description: 'Hardware specification for the Search Nodes that back a search deployment.',
+    required: ['instanceSize', 'nodeCount'],
+  })
+  .openapi('ApiSearchDeploymentSpecView')
+
+type ClusterConfigurationValidationType = {
+  advancedConfiguration?: z.infer<typeof ClusterDescriptionProcessArgs20240805Schema>
+  clusterDescription: z.infer<typeof ClusterDescription20240805Schema>
+  clusterName?: string
+  editing: boolean
+  searchDeploymentSpec?: z.infer<typeof ApiSearchDeploymentSpecViewSchema>
+  tags?: z.infer<typeof ResourceTagSchema>[]
+}
+
 const DataLakeDatabaseDataSourceSettingsSchema = z
   .object({
     allowInsecure: z
@@ -1340,6 +4087,20 @@ const DataLakeStoreSettingsSchema = z
     DataLakeAzureBlobStoreSchema,
     DataLakeGoogleCloudStorageStoreSchema,
   ])
+  .and(
+    z
+      .object({
+        name: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Human-readable label that identifies the data store. The **databases.[n].collections.[n].dataSources.[n].storeName** field references this values as part of the mapping configuration. To use MongoDB Cloud as a data store, the data lake requires a serverless instance or an `M10` or higher cluster.',
+          }),
+        provider: z.string(),
+      })
+      .openapi({ required: ['provider'] }),
+  )
   .openapi({
     description: 'Group of settings that define where the data is stored.',
     discriminator: {
@@ -1523,9 +4284,9 @@ const AtlasDataFederationGCPRegionSchema = z
 
 const BaseAtlasDataLakeRegionSchema = z
   .xor([
-    ApiAtlasDataLakeAWSRegionViewSchema,
-    AtlasDataFederationAzureRegionSchema,
-    AtlasDataFederationGCPRegionSchema,
+    z.looseObject({}).and(ApiAtlasDataLakeAWSRegionViewSchema),
+    z.looseObject({}).and(AtlasDataFederationAzureRegionSchema),
+    z.looseObject({}).and(AtlasDataFederationGCPRegionSchema),
   ])
   .openapi({ description: 'Name of the region to which the data lake routes client connections.' })
   .openapi('BaseAtlasDataLakeRegion')
@@ -1741,374 +4502,6 @@ type EnvelopedSchemaAdvisorResponseType = {
   locations?: string[]
   status: number
 }
-
-const ApiAtlasClusterAdvancedConfigurationViewSchema = z
-  .object({
-    customOpensslCipherConfigTls12: z
-      .array(
-        z.enum(['TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384', 'TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256']),
-      )
-      .exactOptional()
-      .openapi({
-        description:
-          'The custom OpenSSL cipher suite list for TLS 1.2. Requires `tlsCipherConfigMode` = `CUSTOM`; when `tlsCipherConfigMode` is omitted, supplying a non-empty list infers `CUSTOM`.',
-        externalDocs: {
-          description:
-            'This option corresponds to the `opensslCipherConfig` `mongod` configuration file option.',
-          url: 'https://www.mongodb.com/docs/manual/reference/parameters/#mongodb-parameter-param.opensslCipherConfig',
-        },
-      }),
-    customOpensslCipherConfigTls13: z
-      .array(
-        z.enum([
-          'TLS_AES_256_GCM_SHA384',
-          'TLS_CHACHA20_POLY1305_SHA256',
-          'TLS_AES_128_GCM_SHA256',
-          'TLS_AES_128_CCM_SHA256',
-        ]),
-      )
-      .max(4)
-      .exactOptional()
-      .openapi({
-        description:
-          'The custom OpenSSL cipher suite list for TLS 1.3. Requires `tlsCipherConfigMode` = `CUSTOM`; when `tlsCipherConfigMode` is omitted, supplying a non-empty list infers `CUSTOM`.',
-        externalDocs: {
-          description:
-            'This option corresponds to the `opensslCipherSuiteConfig` `mongod` configuration file option.',
-          url: 'https://www.mongodb.com/docs/manual/reference/parameters/#mongodb-parameter-param.opensslCipherSuiteConfig',
-        },
-      }),
-    minimumEnabledTlsProtocol: z
-      .enum(['TLS1_2', 'TLS1_3'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Minimum Transport Layer Security (TLS) version that the cluster accepts for incoming connections.',
-        externalDocs: {
-          description:
-            'This option corresponds to the `net.ssl.disabledProtocols` `mongod` configuration file option.',
-          url: 'https://docs.mongodb.com/upcoming/reference/configuration-options/#mongodb-setting-net.ssl.disabledProtocols',
-        },
-      }),
-    tlsCipherConfigMode: z
-      .enum(['CUSTOM', 'DEFAULT'])
-      .exactOptional()
-      .openapi({
-        description:
-          'The TLS cipher suite configuration mode. The default mode uses the default cipher suites. The custom mode allows you to specify custom cipher suites for both TLS 1.2 and TLS 1.3.',
-      }),
-  })
-  .openapi({
-    description:
-      'Group of settings that configures a subset of the advanced configuration details.',
-    required: [],
-  })
-  .openapi('ApiAtlasClusterAdvancedConfigurationView')
-
-const BiConnectorSchema = z
-  .object({
-    enabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Flag that indicates whether MongoDB Connector for Business Intelligence is enabled on the specified cluster.',
-      }),
-    readPreference: z
-      .enum(['PRIMARY', 'SECONDARY', 'ANALYTICS'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Data source node designated for the MongoDB Connector for Business Intelligence on MongoDB Cloud. The MongoDB Connector for Business Intelligence on MongoDB Cloud reads data from the primary, secondary, or analytics node based on your read preferences. Defaults to `ANALYTICS` node, or `SECONDARY` if there are no `ANALYTICS` nodes.',
-        externalDocs: {
-          description: 'Read preferences for BI Connector',
-          url: 'https://docs.atlas.mongodb.com/cluster-config/enable-bic/#std-label-bic-read-preferences',
-        },
-      }),
-  })
-  .openapi({
-    description:
-      'Settings needed to configure the MongoDB Connector for Business Intelligence for this cluster.',
-    externalDocs: {
-      description: 'MongoDB Connector for Business Intelligence',
-      url: 'https://docs.mongodb.com/bi-connector/current/',
-    },
-    title: 'MongoDB Connector for Business Intelligence Settings',
-    required: [],
-  })
-  .openapi('BiConnector')
-
-const ClusterDescriptionConnectionStringsPrivateEndpointEndpointSchema = z
-  .object({
-    endpointId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Unique string that the cloud provider uses to identify the private endpoint.',
-        readOnly: true,
-      }),
-    providerName: z
-      .enum(['AWS', 'AZURE', 'GCP'])
-      .exactOptional()
-      .openapi({
-        description: 'Cloud provider in which MongoDB Cloud deploys the private endpoint.',
-        readOnly: true,
-      }),
-    region: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Region where the private endpoint is deployed.', readOnly: true }),
-  })
-  .openapi({
-    description: 'Details of a private endpoint deployed for this cluster.',
-    title: 'Cluster Private Endpoint Connection Strings Endpoint',
-    required: [],
-  })
-  .openapi('ClusterDescriptionConnectionStringsPrivateEndpointEndpoint')
-
-const ClusterDescriptionConnectionStringsPrivateEndpointSchema = z
-  .object({
-    connectionString: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Private endpoint-aware connection string that uses the `mongodb://` protocol to connect to MongoDB Cloud through a private endpoint.',
-        readOnly: true,
-      }),
-    endpoints: z
-      .array(ClusterDescriptionConnectionStringsPrivateEndpointEndpointSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'List that contains the private endpoints through which you connect to MongoDB Cloud when you use `connectionStrings.privateEndpoint[n].connectionString` or `connectionStrings.privateEndpoint[n].srvConnectionString`.',
-        readOnly: true,
-      }),
-    srvConnectionString: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Private endpoint-aware connection string that uses the `mongodb+srv://` protocol to connect to MongoDB Cloud through a private endpoint. The `mongodb+srv` protocol tells the driver to look up the seed list of hosts in the Domain Name System (DNS). This list synchronizes with the nodes in a cluster. If the connection string uses this Uniform Resource Identifier (URI) format, you don't need to append the seed list or change the Uniform Resource Identifier (URI) if the nodes change. Use this Uniform Resource Identifier (URI) format if your application supports it. If it doesn't, use `connectionStrings.privateEndpoint[n].connectionString`.",
-        readOnly: true,
-      }),
-    srvShardOptimizedConnectionString: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Private endpoint-aware connection string optimized for sharded clusters that uses the `mongodb+srv://` protocol to connect to MongoDB Cloud through a private endpoint. If the connection string uses this Uniform Resource Identifier (URI) format, you don't need to change the Uniform Resource Identifier (URI) if the nodes change. Use this Uniform Resource Identifier (URI) format if your application and Atlas cluster supports it. If it doesn't, use and consult the documentation for `connectionStrings.privateEndpoint[n].srvConnectionString`.",
-        readOnly: true,
-      }),
-    type: z
-      .enum(['MONGOD', 'MONGOS'])
-      .exactOptional()
-      .openapi({
-        description:
-          'MongoDB process type to which your application connects. Use `MONGOD` for replica sets and `MONGOS` for sharded clusters.',
-        readOnly: true,
-      }),
-  })
-  .openapi({
-    description:
-      'Private endpoint-aware connection string that you can use to connect to this cluster through a private endpoint.',
-    externalDocs: {
-      description: 'Private Endpoint for Dedicated Cluster',
-      url: 'https://docs.atlas.mongodb.com/security-private-endpoint/',
-    },
-    title: 'Cluster Private Endpoint Connection String',
-    required: [],
-  })
-  .openapi('ClusterDescriptionConnectionStringsPrivateEndpoint')
-
-const ClusterConnectionStringsSchema = z
-  .object({
-    awsPrivateLink: z
-      .record(
-        z.string(),
-        z
-          .string()
-          .openapi({
-            deprecated: true,
-            description:
-              'Private endpoint-aware connection strings that use AWS-hosted clusters with Amazon Web Services (AWS) PrivateLink. Each key identifies an Amazon Web Services (AWS) interface endpoint. Each value identifies the related `mongodb://` connection string that you use to connect to MongoDB Cloud through the interface endpoint that the key names. This field is deprecated. Use the Private Endpoint Connection Strings resource instead.',
-            externalDocs: {
-              description: 'Private Endpoints',
-              url: 'https://www.mongodb.com/docs/atlas/security-private-endpoint',
-            },
-            readOnly: true,
-          }),
-      )
-      .exactOptional()
-      .openapi({
-        deprecated: true,
-        description:
-          'Private endpoint-aware connection strings that use AWS-hosted clusters with Amazon Web Services (AWS) PrivateLink. Each key identifies an Amazon Web Services (AWS) interface endpoint. Each value identifies the related `mongodb://` connection string that you use to connect to MongoDB Cloud through the interface endpoint that the key names. This field is deprecated. Use the Private Endpoint Connection Strings resource instead.',
-        externalDocs: {
-          description: 'Private Endpoints',
-          url: 'https://www.mongodb.com/docs/atlas/security-private-endpoint',
-        },
-        readOnly: true,
-      }),
-    awsPrivateLinkSrv: z
-      .record(
-        z.string(),
-        z
-          .string()
-          .openapi({
-            deprecated: true,
-            description:
-              'Private endpoint-aware connection strings that use AWS-hosted clusters with Amazon Web Services (AWS) PrivateLink. Each key identifies an Amazon Web Services (AWS) interface endpoint. Each value identifies the related `mongodb://` connection string that you use to connect to Atlas through the interface endpoint that the key names. If the cluster uses an optimized connection string, `awsPrivateLinkSrv` contains the optimized connection string. If the cluster has the non-optimized (legacy) connection string, `awsPrivateLinkSrv` contains the non-optimized connection string even if an optimized connection string is also present. This field is deprecated. Use the Private Endpoint Connection Strings resource instead.',
-            externalDocs: {
-              description: 'Private Endpoints',
-              url: 'https://www.mongodb.com/docs/atlas/security-private-endpoint',
-            },
-            readOnly: true,
-          }),
-      )
-      .exactOptional()
-      .openapi({
-        deprecated: true,
-        description:
-          'Private endpoint-aware connection strings that use AWS-hosted clusters with Amazon Web Services (AWS) PrivateLink. Each key identifies an Amazon Web Services (AWS) interface endpoint. Each value identifies the related `mongodb://` connection string that you use to connect to Atlas through the interface endpoint that the key names. If the cluster uses an optimized connection string, `awsPrivateLinkSrv` contains the optimized connection string. If the cluster has the non-optimized (legacy) connection string, `awsPrivateLinkSrv` contains the non-optimized connection string even if an optimized connection string is also present. This field is deprecated. Use the Private Endpoint Connection Strings resource instead.',
-        externalDocs: {
-          description: 'Private Endpoints',
-          url: 'https://www.mongodb.com/docs/atlas/security-private-endpoint',
-        },
-        readOnly: true,
-      }),
-    private: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Network peering connection strings for each interface Virtual Private Cloud (VPC) endpoint that you configured to connect to this cluster. This connection string uses the `mongodb+srv://` protocol. The resource returns this parameter once someone creates a network peering connection to this cluster. This protocol tells the application to look up the host seed list in the Domain Name System (DNS). This list synchronizes with the nodes in a cluster. If the connection string uses this Uniform Resource Identifier (URI) format, you don't need to append the seed list or change the URI if the nodes change. Use this URI format if your driver supports it. If it doesn't, use `connectionStrings.private`. For Amazon Web Services (AWS) clusters, this resource returns this parameter only if you enable custom DNS.",
-        externalDocs: {
-          description: 'Network Peering Connection',
-          url: 'https://docs.atlas.mongodb.com/security-vpc-peering/#std-label-vpc-peering/',
-        },
-        readOnly: true,
-      }),
-    privateEndpoint: z
-      .array(ClusterDescriptionConnectionStringsPrivateEndpointSchema)
-      .exactOptional()
-      .openapi({
-        deprecated: true,
-        description:
-          "List of private endpoint-aware connection strings that you can use to connect to this cluster through a private endpoint. This parameter returns only if you deployed a private endpoint to all regions to which you deployed this clusters' nodes. This field is deprecated. Use the Private Endpoint Connection Strings resource instead.",
-        externalDocs: {
-          description: 'Private Endpoints',
-          url: 'https://www.mongodb.com/docs/atlas/security-private-endpoint',
-        },
-        readOnly: true,
-      }),
-    privateSrv: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Network peering connection strings for each interface Virtual Private Cloud (VPC) endpoint that you configured to connect to this cluster. This connection string uses the `mongodb+srv://` protocol. The resource returns this parameter when someone creates a network peering connection to this cluster. This protocol tells the application to look up the host seed list in the Domain Name System (DNS). This list synchronizes with the nodes in a cluster. If the connection string uses this Uniform Resource Identifier (URI) format, you don't need to append the seed list or change the Uniform Resource Identifier (URI) if the nodes change. Use this Uniform Resource Identifier (URI) format if your driver supports it. If it doesn't, use `connectionStrings.private`. For Amazon Web Services (AWS) clusters, this parameter returns only if you [enable custom DNS](https://docs.atlas.mongodb.com/reference/api/aws-custom-dns-update/).",
-        externalDocs: {
-          description: 'Network Peering Connection',
-          url: 'https://docs.atlas.mongodb.com/security-vpc-peering/#std-label-vpc-peering/',
-        },
-        readOnly: true,
-      }),
-    standard: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Public connection string that you can use to connect to this cluster. This connection string uses the `mongodb://` protocol.',
-        externalDocs: {
-          description: 'Connection String URI Format',
-          url: 'https://docs.mongodb.com/manual/reference/connection-string/',
-        },
-        readOnly: true,
-      }),
-    standardSrv: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Public connection string that you can use to connect to this cluster. This connection string uses the `mongodb+srv://` protocol.',
-        externalDocs: {
-          description: 'Connection String URI Format',
-          url: 'https://docs.mongodb.com/manual/reference/connection-string/',
-        },
-        readOnly: true,
-      }),
-  })
-  .openapi({
-    description: 'Collection of Uniform Resource Locators that point to the MongoDB database.',
-    externalDocs: {
-      description: 'Connection string URI format.',
-      url: 'https://docs.mongodb.com/manual/reference/connection-string/',
-    },
-    readOnly: true,
-    title: 'Cluster Connection Strings',
-    required: [],
-  })
-  .openapi('ClusterConnectionStrings')
-
-const ComponentLabelSchema = z
-  .object({
-    key: z
-      .string()
-      .min(1)
-      .max(255)
-      .exactOptional()
-      .openapi({ description: 'Key applied to tag and categorize this component.' }),
-    value: z
-      .string()
-      .min(1)
-      .max(255)
-      .exactOptional()
-      .openapi({
-        description: 'Value set to the Key applied to tag and categorize this component.',
-      }),
-  })
-  .openapi({
-    description: 'Human-readable labels applied to this MongoDB Cloud component.',
-    title: 'Component Label',
-    required: [],
-  })
-  .openapi('ComponentLabel')
-
-const EmployeeAccessGrantViewSchema = z
-  .object({
-    expirationTime: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description:
-          'Expiration date for the employee access grant. This parameter expresses its value in the ISO 8601 timestamp format in UTC.',
-      }),
-    grantType: z
-      .enum([
-        'CLUSTER_DATABASE_LOGS',
-        'CLUSTER_INFRASTRUCTURE',
-        'CLUSTER_INFRASTRUCTURE_AND_APP_SERVICES_SYNC_DATA',
-      ])
-      .openapi({ description: 'Level of access to grant to MongoDB Employees.' }),
-    links: z
-      .array(LinkSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'List of one or more Uniform Resource Locators (URLs) that point to API sub-resources, related API resources, or both. RFC 5988 outlines these relationships.',
-        externalDocs: {
-          description: 'Web Linking Specification (RFC 5988)',
-          url: 'https://datatracker.ietf.org/doc/html/rfc5988',
-        },
-        readOnly: true,
-      }),
-  })
-  .openapi({
-    description: 'MongoDB employee granted access level and expiration for a cluster.',
-    readOnly: true,
-    required: ['expirationTime', 'grantType'],
-  })
-  .openapi('EmployeeAccessGrantView')
 
 const AWSHardwareSpecSchema = z
   .object({
@@ -2366,172 +4759,6 @@ const HardwareSpecSchema = z
   })
   .openapi('HardwareSpec')
 
-const BaseCloudProviderInstanceSizeSchema = z
-  .xor([
-    z
-      .enum([
-        'M10',
-        'M20',
-        'M30',
-        'M40',
-        'M50',
-        'M60',
-        'M80',
-        'M100',
-        'M140',
-        'M200',
-        'M300',
-        'R40',
-        'R50',
-        'R60',
-        'R80',
-        'R200',
-        'R300',
-        'R400',
-        'R700',
-        'M40_NVME',
-        'M50_NVME',
-        'M60_NVME',
-        'M80_NVME',
-        'M200_NVME',
-        'M400_NVME',
-        'M30_GEN_2',
-        'M40_GEN_2',
-        'M50_GEN_2',
-        'M60_GEN_2',
-        'M80_GEN_2',
-        'M140_GEN_2',
-        'M200_GEN_2',
-        'M300_GEN_2',
-        'M700_GEN_2',
-        'R40_GEN_2',
-        'R50_GEN_2',
-        'R60_GEN_2',
-        'R80_GEN_2',
-        'R200_GEN_2',
-        'R300_GEN_2',
-        'R400_GEN_2',
-        'R700_GEN_2',
-        'M40_NVME_GEN_2',
-        'M50_NVME_GEN_2',
-        'M60_NVME_GEN_2',
-        'M80_NVME_GEN_2',
-        'M200_NVME_GEN_2',
-        'M400_NVME_GEN_2',
-      ])
-      .openapi({ title: 'AWS Instance Sizes' }),
-    z
-      .enum([
-        'M10',
-        'M20',
-        'M30',
-        'M40',
-        'M50',
-        'M60',
-        'M80',
-        'M90',
-        'M200',
-        'R40',
-        'R50',
-        'R60',
-        'R80',
-        'R200',
-        'R300',
-        'R400',
-        'M60_NVME',
-        'M80_NVME',
-        'M200_NVME',
-        'M300_NVME',
-        'M400_NVME',
-        'M600_NVME',
-      ])
-      .openapi({ title: 'Azure Instance Sizes' }),
-    z
-      .enum([
-        'M10',
-        'M20',
-        'M30',
-        'M40',
-        'M50',
-        'M60',
-        'M80',
-        'M140',
-        'M200',
-        'M250',
-        'M300',
-        'M400',
-        'R40',
-        'R50',
-        'R60',
-        'R80',
-        'R200',
-        'R300',
-        'R400',
-        'R600',
-        'M30_GEN_2',
-        'M40_GEN_2',
-        'M50_GEN_2',
-        'M60_GEN_2',
-        'M80_GEN_2',
-        'M140_GEN_2',
-        'M200_GEN_2',
-        'M300_GEN_2',
-        'M700_GEN_2',
-        'R40_GEN_2',
-        'R50_GEN_2',
-        'R60_GEN_2',
-        'R80_GEN_2',
-        'R200_GEN_2',
-        'R300_GEN_2',
-        'R400_GEN_2',
-      ])
-      .openapi({ title: 'GCP Instance Sizes' }),
-  ])
-  .openapi({
-    description: 'Instance size boundary to which your cluster can automatically scale.',
-    readOnly: true,
-  })
-  .openapi('BaseCloudProviderInstanceSize')
-
-const AdvancedComputeAutoScalingSchema = z
-  .object({
-    enabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Flag that indicates whether instance size reactive auto-scaling is enabled.\n\n- Set to `true` to enable instance size reactive auto-scaling. If enabled, you must specify a value for `replicationSpecs[n].regionConfigs[m].autoScaling.compute.maxInstanceSize`.\n- Set to `false` to disable instance size reactive auto-scaling.',
-      }),
-    maxInstanceSize: BaseCloudProviderInstanceSizeSchema.exactOptional(),
-    minInstanceSize: BaseCloudProviderInstanceSizeSchema.exactOptional(),
-    scaleDownEnabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Flag that indicates whether the instance size may scale down via reactive auto-scaling. MongoDB Cloud requires this parameter if `replicationSpecs[n].regionConfigs[m].autoScaling.compute.enabled` is `true`. If you enable this option, specify a value for `replicationSpecs[n].regionConfigs[m].autoScaling.compute.minInstanceSize`.',
-      }),
-  })
-  .openapi({
-    description: 'Options that determine how this cluster handles CPU scaling.',
-    title: 'Automatic Compute Scaling Settings',
-    required: [],
-  })
-  .openapi('AdvancedComputeAutoScaling')
-
-const DiskGBAutoScalingSchema = z
-  .object({
-    enabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Flag that indicates whether this cluster enables disk auto-scaling. The maximum memory allowed for the selected cluster tier and the oplog size can limit storage auto-scaling.',
-      }),
-  })
-  .openapi({ description: 'Setting that enables disk auto-scaling.', required: [] })
-  .openapi('DiskGBAutoScaling')
-
 const AutoScalingSettingsSchema = z
   .object({
     compute: AdvancedComputeAutoScalingSchema.exactOptional(),
@@ -2546,6 +4773,19 @@ const AutoScalingSettingsSchema = z
 
 const DedicatedHardwareSpecSchema = z
   .xor([AWSHardwareSpecSchema, AzureHardwareSpecSchema, GCPHardwareSpecSchema])
+  .and(
+    z
+      .object({
+        nodeCount: z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description:
+              'Number of nodes of the given type for MongoDB Cloud to deploy to the region.',
+          }),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description:
       "Hardware specifications for read-only nodes in the region. Read-only nodes can never become the primary member, but can enable local reads. If you don't specify this parameter, no read-only nodes are deployed to the region.",
@@ -2574,166 +4814,178 @@ const AWSRegionConfigSchema = z
     regionName: z
       .xor([
         z
-          .enum([
-            'US_GOV_WEST_1',
-            'US_GOV_EAST_1',
-            'US_EAST_1',
-            'US_EAST_2',
-            'US_WEST_1',
-            'US_WEST_2',
-            'CA_CENTRAL_1',
-            'EU_NORTH_1',
-            'EU_WEST_1',
-            'EU_WEST_2',
-            'EU_WEST_3',
-            'EU_CENTRAL_1',
-            'EU_CENTRAL_2',
-            'AP_EAST_1',
-            'AP_EAST_2',
-            'AP_NORTHEAST_1',
-            'AP_NORTHEAST_2',
-            'AP_NORTHEAST_3',
-            'AP_SOUTHEAST_1',
-            'AP_SOUTHEAST_2',
-            'AP_SOUTHEAST_3',
-            'AP_SOUTHEAST_4',
-            'AP_SOUTHEAST_5',
-            'AP_SOUTHEAST_6',
-            'AP_SOUTHEAST_7',
-            'AP_SOUTH_1',
-            'AP_SOUTH_2',
-            'SA_EAST_1',
-            'CN_NORTH_1',
-            'CN_NORTHWEST_1',
-            'ME_SOUTH_1',
-            'ME_CENTRAL_1',
-            'AF_SOUTH_1',
-            'EU_SOUTH_1',
-            'EU_SOUTH_2',
-            'IL_CENTRAL_1',
-            'CA_WEST_1',
-            'MX_CENTRAL_1',
-            'GLOBAL',
-          ])
-          .openapi({
-            description:
-              'Physical location where MongoDB Cloud deploys your AWS-hosted MongoDB cluster nodes. The region you choose can affect network latency for clients accessing your databases. When MongoDB Cloud deploys a dedicated cluster, it checks if a VPC or VPC connection exists for that provider and region. If not, MongoDB Cloud creates them as part of the deployment. MongoDB Cloud assigns the VPC a CIDR block. To limit a new VPC peering connection to one CIDR block and region, create the connection first. Deploy the cluster after the connection starts.',
-            title: 'AWS Regions',
-          }),
+          .looseObject({})
+          .and(
+            z
+              .enum([
+                'US_GOV_WEST_1',
+                'US_GOV_EAST_1',
+                'US_EAST_1',
+                'US_EAST_2',
+                'US_WEST_1',
+                'US_WEST_2',
+                'CA_CENTRAL_1',
+                'EU_NORTH_1',
+                'EU_WEST_1',
+                'EU_WEST_2',
+                'EU_WEST_3',
+                'EU_CENTRAL_1',
+                'EU_CENTRAL_2',
+                'AP_EAST_1',
+                'AP_EAST_2',
+                'AP_NORTHEAST_1',
+                'AP_NORTHEAST_2',
+                'AP_NORTHEAST_3',
+                'AP_SOUTHEAST_1',
+                'AP_SOUTHEAST_2',
+                'AP_SOUTHEAST_3',
+                'AP_SOUTHEAST_4',
+                'AP_SOUTHEAST_5',
+                'AP_SOUTHEAST_6',
+                'AP_SOUTHEAST_7',
+                'AP_SOUTH_1',
+                'AP_SOUTH_2',
+                'SA_EAST_1',
+                'CN_NORTH_1',
+                'CN_NORTHWEST_1',
+                'ME_SOUTH_1',
+                'ME_CENTRAL_1',
+                'AF_SOUTH_1',
+                'EU_SOUTH_1',
+                'EU_SOUTH_2',
+                'IL_CENTRAL_1',
+                'CA_WEST_1',
+                'MX_CENTRAL_1',
+                'GLOBAL',
+              ])
+              .openapi({
+                description:
+                  'Physical location where MongoDB Cloud deploys your AWS-hosted MongoDB cluster nodes. The region you choose can affect network latency for clients accessing your databases. When MongoDB Cloud deploys a dedicated cluster, it checks if a VPC or VPC connection exists for that provider and region. If not, MongoDB Cloud creates them as part of the deployment. MongoDB Cloud assigns the VPC a CIDR block. To limit a new VPC peering connection to one CIDR block and region, create the connection first. Deploy the cluster after the connection starts.',
+                title: 'AWS Regions',
+              }),
+          ),
         z
-          .enum([
-            'US_CENTRAL',
-            'US_EAST',
-            'US_EAST_2',
-            'US_NORTH_CENTRAL',
-            'US_WEST',
-            'US_SOUTH_CENTRAL',
-            'EUROPE_NORTH',
-            'EUROPE_WEST',
-            'US_WEST_CENTRAL',
-            'US_WEST_2',
-            'US_WEST_3',
-            'CANADA_EAST',
-            'CANADA_CENTRAL',
-            'BRAZIL_SOUTH',
-            'BRAZIL_SOUTHEAST',
-            'AUSTRALIA_CENTRAL',
-            'AUSTRALIA_CENTRAL_2',
-            'AUSTRALIA_EAST',
-            'AUSTRALIA_SOUTH_EAST',
-            'GERMANY_WEST_CENTRAL',
-            'GERMANY_NORTH',
-            'SWEDEN_CENTRAL',
-            'SWEDEN_SOUTH',
-            'SWITZERLAND_NORTH',
-            'SWITZERLAND_WEST',
-            'UK_SOUTH',
-            'UK_WEST',
-            'NORWAY_EAST',
-            'NORWAY_WEST',
-            'INDIA_CENTRAL',
-            'INDIA_SOUTH',
-            'INDIA_WEST',
-            'CHINA_EAST',
-            'CHINA_NORTH',
-            'ASIA_EAST',
-            'JAPAN_EAST',
-            'JAPAN_WEST',
-            'ASIA_SOUTH_EAST',
-            'KOREA_CENTRAL',
-            'KOREA_SOUTH',
-            'FRANCE_CENTRAL',
-            'FRANCE_SOUTH',
-            'SOUTH_AFRICA_NORTH',
-            'SOUTH_AFRICA_WEST',
-            'UAE_CENTRAL',
-            'UAE_NORTH',
-            'QATAR_CENTRAL',
-            'POLAND_CENTRAL',
-            'ISRAEL_CENTRAL',
-            'ITALY_NORTH',
-            'SPAIN_CENTRAL',
-            'MEXICO_CENTRAL',
-            'NEW_ZEALAND_NORTH',
-            'US_GOV_VIRGINIA',
-            'US_GOV_ARIZONA',
-            'US_GOV_TEXAS',
-          ])
-          .openapi({ description: 'Microsoft Azure Regions.', title: 'Azure Regions' }),
+          .looseObject({})
+          .and(
+            z
+              .enum([
+                'US_CENTRAL',
+                'US_EAST',
+                'US_EAST_2',
+                'US_NORTH_CENTRAL',
+                'US_WEST',
+                'US_SOUTH_CENTRAL',
+                'EUROPE_NORTH',
+                'EUROPE_WEST',
+                'US_WEST_CENTRAL',
+                'US_WEST_2',
+                'US_WEST_3',
+                'CANADA_EAST',
+                'CANADA_CENTRAL',
+                'BRAZIL_SOUTH',
+                'BRAZIL_SOUTHEAST',
+                'AUSTRALIA_CENTRAL',
+                'AUSTRALIA_CENTRAL_2',
+                'AUSTRALIA_EAST',
+                'AUSTRALIA_SOUTH_EAST',
+                'GERMANY_WEST_CENTRAL',
+                'GERMANY_NORTH',
+                'SWEDEN_CENTRAL',
+                'SWEDEN_SOUTH',
+                'SWITZERLAND_NORTH',
+                'SWITZERLAND_WEST',
+                'UK_SOUTH',
+                'UK_WEST',
+                'NORWAY_EAST',
+                'NORWAY_WEST',
+                'INDIA_CENTRAL',
+                'INDIA_SOUTH',
+                'INDIA_WEST',
+                'CHINA_EAST',
+                'CHINA_NORTH',
+                'ASIA_EAST',
+                'JAPAN_EAST',
+                'JAPAN_WEST',
+                'ASIA_SOUTH_EAST',
+                'KOREA_CENTRAL',
+                'KOREA_SOUTH',
+                'FRANCE_CENTRAL',
+                'FRANCE_SOUTH',
+                'SOUTH_AFRICA_NORTH',
+                'SOUTH_AFRICA_WEST',
+                'UAE_CENTRAL',
+                'UAE_NORTH',
+                'QATAR_CENTRAL',
+                'POLAND_CENTRAL',
+                'ISRAEL_CENTRAL',
+                'ITALY_NORTH',
+                'SPAIN_CENTRAL',
+                'MEXICO_CENTRAL',
+                'NEW_ZEALAND_NORTH',
+                'US_GOV_VIRGINIA',
+                'US_GOV_ARIZONA',
+                'US_GOV_TEXAS',
+              ])
+              .openapi({ description: 'Microsoft Azure Regions.', title: 'Azure Regions' }),
+          ),
         z
-          .enum([
-            'EASTERN_US',
-            'EASTERN_US_AW',
-            'US_EAST_4',
-            'US_EAST_4_AW',
-            'US_EAST_5',
-            'US_EAST_5_AW',
-            'US_WEST_2',
-            'US_WEST_2_AW',
-            'US_WEST_3',
-            'US_WEST_3_AW',
-            'US_WEST_4',
-            'US_WEST_4_AW',
-            'US_SOUTH_1',
-            'US_SOUTH_1_AW',
-            'CENTRAL_US',
-            'CENTRAL_US_AW',
-            'WESTERN_US',
-            'WESTERN_US_AW',
-            'NORTH_AMERICA_NORTHEAST_1',
-            'NORTH_AMERICA_NORTHEAST_2',
-            'NORTH_AMERICA_SOUTH_1',
-            'SOUTH_AMERICA_EAST_1',
-            'SOUTH_AMERICA_WEST_1',
-            'WESTERN_EUROPE',
-            'EUROPE_NORTH_1',
-            'EUROPE_WEST_2',
-            'EUROPE_WEST_3',
-            'EUROPE_WEST_4',
-            'EUROPE_WEST_6',
-            'EUROPE_WEST_8',
-            'EUROPE_WEST_9',
-            'EUROPE_WEST_10',
-            'EUROPE_WEST_12',
-            'EUROPE_SOUTHWEST_1',
-            'EUROPE_CENTRAL_2',
-            'MIDDLE_EAST_CENTRAL_1',
-            'MIDDLE_EAST_CENTRAL_2',
-            'MIDDLE_EAST_WEST_1',
-            'AUSTRALIA_SOUTHEAST_1',
-            'AUSTRALIA_SOUTHEAST_2',
-            'AFRICA_SOUTH_1',
-            'EASTERN_ASIA_PACIFIC',
-            'NORTHEASTERN_ASIA_PACIFIC',
-            'SOUTHEASTERN_ASIA_PACIFIC',
-            'ASIA_EAST_2',
-            'ASIA_NORTHEAST_2',
-            'ASIA_NORTHEAST_3',
-            'ASIA_SOUTH_1',
-            'ASIA_SOUTH_2',
-            'ASIA_SOUTHEAST_2',
-          ])
-          .openapi({ description: 'Google Compute Regions.', title: 'GCP Regions' }),
+          .looseObject({})
+          .and(
+            z
+              .enum([
+                'EASTERN_US',
+                'EASTERN_US_AW',
+                'US_EAST_4',
+                'US_EAST_4_AW',
+                'US_EAST_5',
+                'US_EAST_5_AW',
+                'US_WEST_2',
+                'US_WEST_2_AW',
+                'US_WEST_3',
+                'US_WEST_3_AW',
+                'US_WEST_4',
+                'US_WEST_4_AW',
+                'US_SOUTH_1',
+                'US_SOUTH_1_AW',
+                'CENTRAL_US',
+                'CENTRAL_US_AW',
+                'WESTERN_US',
+                'WESTERN_US_AW',
+                'NORTH_AMERICA_NORTHEAST_1',
+                'NORTH_AMERICA_NORTHEAST_2',
+                'NORTH_AMERICA_SOUTH_1',
+                'SOUTH_AMERICA_EAST_1',
+                'SOUTH_AMERICA_WEST_1',
+                'WESTERN_EUROPE',
+                'EUROPE_NORTH_1',
+                'EUROPE_WEST_2',
+                'EUROPE_WEST_3',
+                'EUROPE_WEST_4',
+                'EUROPE_WEST_6',
+                'EUROPE_WEST_8',
+                'EUROPE_WEST_9',
+                'EUROPE_WEST_10',
+                'EUROPE_WEST_12',
+                'EUROPE_SOUTHWEST_1',
+                'EUROPE_CENTRAL_2',
+                'MIDDLE_EAST_CENTRAL_1',
+                'MIDDLE_EAST_CENTRAL_2',
+                'MIDDLE_EAST_WEST_1',
+                'AUSTRALIA_SOUTHEAST_1',
+                'AUSTRALIA_SOUTHEAST_2',
+                'AFRICA_SOUTH_1',
+                'EASTERN_ASIA_PACIFIC',
+                'NORTHEASTERN_ASIA_PACIFIC',
+                'SOUTHEASTERN_ASIA_PACIFIC',
+                'ASIA_EAST_2',
+                'ASIA_NORTHEAST_2',
+                'ASIA_NORTHEAST_3',
+                'ASIA_SOUTH_1',
+                'ASIA_SOUTH_2',
+                'ASIA_SOUTHEAST_2',
+              ])
+              .openapi({ description: 'Google Compute Regions.', title: 'GCP Regions' }),
+          ),
       ])
       .exactOptional()
       .openapi({
@@ -2781,166 +5033,178 @@ const AzureRegionConfigSchema = z
     regionName: z
       .xor([
         z
-          .enum([
-            'US_GOV_WEST_1',
-            'US_GOV_EAST_1',
-            'US_EAST_1',
-            'US_EAST_2',
-            'US_WEST_1',
-            'US_WEST_2',
-            'CA_CENTRAL_1',
-            'EU_NORTH_1',
-            'EU_WEST_1',
-            'EU_WEST_2',
-            'EU_WEST_3',
-            'EU_CENTRAL_1',
-            'EU_CENTRAL_2',
-            'AP_EAST_1',
-            'AP_EAST_2',
-            'AP_NORTHEAST_1',
-            'AP_NORTHEAST_2',
-            'AP_NORTHEAST_3',
-            'AP_SOUTHEAST_1',
-            'AP_SOUTHEAST_2',
-            'AP_SOUTHEAST_3',
-            'AP_SOUTHEAST_4',
-            'AP_SOUTHEAST_5',
-            'AP_SOUTHEAST_6',
-            'AP_SOUTHEAST_7',
-            'AP_SOUTH_1',
-            'AP_SOUTH_2',
-            'SA_EAST_1',
-            'CN_NORTH_1',
-            'CN_NORTHWEST_1',
-            'ME_SOUTH_1',
-            'ME_CENTRAL_1',
-            'AF_SOUTH_1',
-            'EU_SOUTH_1',
-            'EU_SOUTH_2',
-            'IL_CENTRAL_1',
-            'CA_WEST_1',
-            'MX_CENTRAL_1',
-            'GLOBAL',
-          ])
-          .openapi({
-            description:
-              'Physical location where MongoDB Cloud deploys your AWS-hosted MongoDB cluster nodes. The region you choose can affect network latency for clients accessing your databases. When MongoDB Cloud deploys a dedicated cluster, it checks if a VPC or VPC connection exists for that provider and region. If not, MongoDB Cloud creates them as part of the deployment. MongoDB Cloud assigns the VPC a CIDR block. To limit a new VPC peering connection to one CIDR block and region, create the connection first. Deploy the cluster after the connection starts.',
-            title: 'AWS Regions',
-          }),
+          .looseObject({})
+          .and(
+            z
+              .enum([
+                'US_GOV_WEST_1',
+                'US_GOV_EAST_1',
+                'US_EAST_1',
+                'US_EAST_2',
+                'US_WEST_1',
+                'US_WEST_2',
+                'CA_CENTRAL_1',
+                'EU_NORTH_1',
+                'EU_WEST_1',
+                'EU_WEST_2',
+                'EU_WEST_3',
+                'EU_CENTRAL_1',
+                'EU_CENTRAL_2',
+                'AP_EAST_1',
+                'AP_EAST_2',
+                'AP_NORTHEAST_1',
+                'AP_NORTHEAST_2',
+                'AP_NORTHEAST_3',
+                'AP_SOUTHEAST_1',
+                'AP_SOUTHEAST_2',
+                'AP_SOUTHEAST_3',
+                'AP_SOUTHEAST_4',
+                'AP_SOUTHEAST_5',
+                'AP_SOUTHEAST_6',
+                'AP_SOUTHEAST_7',
+                'AP_SOUTH_1',
+                'AP_SOUTH_2',
+                'SA_EAST_1',
+                'CN_NORTH_1',
+                'CN_NORTHWEST_1',
+                'ME_SOUTH_1',
+                'ME_CENTRAL_1',
+                'AF_SOUTH_1',
+                'EU_SOUTH_1',
+                'EU_SOUTH_2',
+                'IL_CENTRAL_1',
+                'CA_WEST_1',
+                'MX_CENTRAL_1',
+                'GLOBAL',
+              ])
+              .openapi({
+                description:
+                  'Physical location where MongoDB Cloud deploys your AWS-hosted MongoDB cluster nodes. The region you choose can affect network latency for clients accessing your databases. When MongoDB Cloud deploys a dedicated cluster, it checks if a VPC or VPC connection exists for that provider and region. If not, MongoDB Cloud creates them as part of the deployment. MongoDB Cloud assigns the VPC a CIDR block. To limit a new VPC peering connection to one CIDR block and region, create the connection first. Deploy the cluster after the connection starts.',
+                title: 'AWS Regions',
+              }),
+          ),
         z
-          .enum([
-            'US_CENTRAL',
-            'US_EAST',
-            'US_EAST_2',
-            'US_NORTH_CENTRAL',
-            'US_WEST',
-            'US_SOUTH_CENTRAL',
-            'EUROPE_NORTH',
-            'EUROPE_WEST',
-            'US_WEST_CENTRAL',
-            'US_WEST_2',
-            'US_WEST_3',
-            'CANADA_EAST',
-            'CANADA_CENTRAL',
-            'BRAZIL_SOUTH',
-            'BRAZIL_SOUTHEAST',
-            'AUSTRALIA_CENTRAL',
-            'AUSTRALIA_CENTRAL_2',
-            'AUSTRALIA_EAST',
-            'AUSTRALIA_SOUTH_EAST',
-            'GERMANY_WEST_CENTRAL',
-            'GERMANY_NORTH',
-            'SWEDEN_CENTRAL',
-            'SWEDEN_SOUTH',
-            'SWITZERLAND_NORTH',
-            'SWITZERLAND_WEST',
-            'UK_SOUTH',
-            'UK_WEST',
-            'NORWAY_EAST',
-            'NORWAY_WEST',
-            'INDIA_CENTRAL',
-            'INDIA_SOUTH',
-            'INDIA_WEST',
-            'CHINA_EAST',
-            'CHINA_NORTH',
-            'ASIA_EAST',
-            'JAPAN_EAST',
-            'JAPAN_WEST',
-            'ASIA_SOUTH_EAST',
-            'KOREA_CENTRAL',
-            'KOREA_SOUTH',
-            'FRANCE_CENTRAL',
-            'FRANCE_SOUTH',
-            'SOUTH_AFRICA_NORTH',
-            'SOUTH_AFRICA_WEST',
-            'UAE_CENTRAL',
-            'UAE_NORTH',
-            'QATAR_CENTRAL',
-            'POLAND_CENTRAL',
-            'ISRAEL_CENTRAL',
-            'ITALY_NORTH',
-            'SPAIN_CENTRAL',
-            'MEXICO_CENTRAL',
-            'NEW_ZEALAND_NORTH',
-            'US_GOV_VIRGINIA',
-            'US_GOV_ARIZONA',
-            'US_GOV_TEXAS',
-          ])
-          .openapi({ description: 'Microsoft Azure Regions.', title: 'Azure Regions' }),
+          .looseObject({})
+          .and(
+            z
+              .enum([
+                'US_CENTRAL',
+                'US_EAST',
+                'US_EAST_2',
+                'US_NORTH_CENTRAL',
+                'US_WEST',
+                'US_SOUTH_CENTRAL',
+                'EUROPE_NORTH',
+                'EUROPE_WEST',
+                'US_WEST_CENTRAL',
+                'US_WEST_2',
+                'US_WEST_3',
+                'CANADA_EAST',
+                'CANADA_CENTRAL',
+                'BRAZIL_SOUTH',
+                'BRAZIL_SOUTHEAST',
+                'AUSTRALIA_CENTRAL',
+                'AUSTRALIA_CENTRAL_2',
+                'AUSTRALIA_EAST',
+                'AUSTRALIA_SOUTH_EAST',
+                'GERMANY_WEST_CENTRAL',
+                'GERMANY_NORTH',
+                'SWEDEN_CENTRAL',
+                'SWEDEN_SOUTH',
+                'SWITZERLAND_NORTH',
+                'SWITZERLAND_WEST',
+                'UK_SOUTH',
+                'UK_WEST',
+                'NORWAY_EAST',
+                'NORWAY_WEST',
+                'INDIA_CENTRAL',
+                'INDIA_SOUTH',
+                'INDIA_WEST',
+                'CHINA_EAST',
+                'CHINA_NORTH',
+                'ASIA_EAST',
+                'JAPAN_EAST',
+                'JAPAN_WEST',
+                'ASIA_SOUTH_EAST',
+                'KOREA_CENTRAL',
+                'KOREA_SOUTH',
+                'FRANCE_CENTRAL',
+                'FRANCE_SOUTH',
+                'SOUTH_AFRICA_NORTH',
+                'SOUTH_AFRICA_WEST',
+                'UAE_CENTRAL',
+                'UAE_NORTH',
+                'QATAR_CENTRAL',
+                'POLAND_CENTRAL',
+                'ISRAEL_CENTRAL',
+                'ITALY_NORTH',
+                'SPAIN_CENTRAL',
+                'MEXICO_CENTRAL',
+                'NEW_ZEALAND_NORTH',
+                'US_GOV_VIRGINIA',
+                'US_GOV_ARIZONA',
+                'US_GOV_TEXAS',
+              ])
+              .openapi({ description: 'Microsoft Azure Regions.', title: 'Azure Regions' }),
+          ),
         z
-          .enum([
-            'EASTERN_US',
-            'EASTERN_US_AW',
-            'US_EAST_4',
-            'US_EAST_4_AW',
-            'US_EAST_5',
-            'US_EAST_5_AW',
-            'US_WEST_2',
-            'US_WEST_2_AW',
-            'US_WEST_3',
-            'US_WEST_3_AW',
-            'US_WEST_4',
-            'US_WEST_4_AW',
-            'US_SOUTH_1',
-            'US_SOUTH_1_AW',
-            'CENTRAL_US',
-            'CENTRAL_US_AW',
-            'WESTERN_US',
-            'WESTERN_US_AW',
-            'NORTH_AMERICA_NORTHEAST_1',
-            'NORTH_AMERICA_NORTHEAST_2',
-            'NORTH_AMERICA_SOUTH_1',
-            'SOUTH_AMERICA_EAST_1',
-            'SOUTH_AMERICA_WEST_1',
-            'WESTERN_EUROPE',
-            'EUROPE_NORTH_1',
-            'EUROPE_WEST_2',
-            'EUROPE_WEST_3',
-            'EUROPE_WEST_4',
-            'EUROPE_WEST_6',
-            'EUROPE_WEST_8',
-            'EUROPE_WEST_9',
-            'EUROPE_WEST_10',
-            'EUROPE_WEST_12',
-            'EUROPE_SOUTHWEST_1',
-            'EUROPE_CENTRAL_2',
-            'MIDDLE_EAST_CENTRAL_1',
-            'MIDDLE_EAST_CENTRAL_2',
-            'MIDDLE_EAST_WEST_1',
-            'AUSTRALIA_SOUTHEAST_1',
-            'AUSTRALIA_SOUTHEAST_2',
-            'AFRICA_SOUTH_1',
-            'EASTERN_ASIA_PACIFIC',
-            'NORTHEASTERN_ASIA_PACIFIC',
-            'SOUTHEASTERN_ASIA_PACIFIC',
-            'ASIA_EAST_2',
-            'ASIA_NORTHEAST_2',
-            'ASIA_NORTHEAST_3',
-            'ASIA_SOUTH_1',
-            'ASIA_SOUTH_2',
-            'ASIA_SOUTHEAST_2',
-          ])
-          .openapi({ description: 'Google Compute Regions.', title: 'GCP Regions' }),
+          .looseObject({})
+          .and(
+            z
+              .enum([
+                'EASTERN_US',
+                'EASTERN_US_AW',
+                'US_EAST_4',
+                'US_EAST_4_AW',
+                'US_EAST_5',
+                'US_EAST_5_AW',
+                'US_WEST_2',
+                'US_WEST_2_AW',
+                'US_WEST_3',
+                'US_WEST_3_AW',
+                'US_WEST_4',
+                'US_WEST_4_AW',
+                'US_SOUTH_1',
+                'US_SOUTH_1_AW',
+                'CENTRAL_US',
+                'CENTRAL_US_AW',
+                'WESTERN_US',
+                'WESTERN_US_AW',
+                'NORTH_AMERICA_NORTHEAST_1',
+                'NORTH_AMERICA_NORTHEAST_2',
+                'NORTH_AMERICA_SOUTH_1',
+                'SOUTH_AMERICA_EAST_1',
+                'SOUTH_AMERICA_WEST_1',
+                'WESTERN_EUROPE',
+                'EUROPE_NORTH_1',
+                'EUROPE_WEST_2',
+                'EUROPE_WEST_3',
+                'EUROPE_WEST_4',
+                'EUROPE_WEST_6',
+                'EUROPE_WEST_8',
+                'EUROPE_WEST_9',
+                'EUROPE_WEST_10',
+                'EUROPE_WEST_12',
+                'EUROPE_SOUTHWEST_1',
+                'EUROPE_CENTRAL_2',
+                'MIDDLE_EAST_CENTRAL_1',
+                'MIDDLE_EAST_CENTRAL_2',
+                'MIDDLE_EAST_WEST_1',
+                'AUSTRALIA_SOUTHEAST_1',
+                'AUSTRALIA_SOUTHEAST_2',
+                'AFRICA_SOUTH_1',
+                'EASTERN_ASIA_PACIFIC',
+                'NORTHEASTERN_ASIA_PACIFIC',
+                'SOUTHEASTERN_ASIA_PACIFIC',
+                'ASIA_EAST_2',
+                'ASIA_NORTHEAST_2',
+                'ASIA_NORTHEAST_3',
+                'ASIA_SOUTH_1',
+                'ASIA_SOUTH_2',
+                'ASIA_SOUTHEAST_2',
+              ])
+              .openapi({ description: 'Google Compute Regions.', title: 'GCP Regions' }),
+          ),
       ])
       .exactOptional()
       .openapi({
@@ -2988,166 +5252,178 @@ const GCPRegionConfigSchema = z
     regionName: z
       .xor([
         z
-          .enum([
-            'US_GOV_WEST_1',
-            'US_GOV_EAST_1',
-            'US_EAST_1',
-            'US_EAST_2',
-            'US_WEST_1',
-            'US_WEST_2',
-            'CA_CENTRAL_1',
-            'EU_NORTH_1',
-            'EU_WEST_1',
-            'EU_WEST_2',
-            'EU_WEST_3',
-            'EU_CENTRAL_1',
-            'EU_CENTRAL_2',
-            'AP_EAST_1',
-            'AP_EAST_2',
-            'AP_NORTHEAST_1',
-            'AP_NORTHEAST_2',
-            'AP_NORTHEAST_3',
-            'AP_SOUTHEAST_1',
-            'AP_SOUTHEAST_2',
-            'AP_SOUTHEAST_3',
-            'AP_SOUTHEAST_4',
-            'AP_SOUTHEAST_5',
-            'AP_SOUTHEAST_6',
-            'AP_SOUTHEAST_7',
-            'AP_SOUTH_1',
-            'AP_SOUTH_2',
-            'SA_EAST_1',
-            'CN_NORTH_1',
-            'CN_NORTHWEST_1',
-            'ME_SOUTH_1',
-            'ME_CENTRAL_1',
-            'AF_SOUTH_1',
-            'EU_SOUTH_1',
-            'EU_SOUTH_2',
-            'IL_CENTRAL_1',
-            'CA_WEST_1',
-            'MX_CENTRAL_1',
-            'GLOBAL',
-          ])
-          .openapi({
-            description:
-              'Physical location where MongoDB Cloud deploys your AWS-hosted MongoDB cluster nodes. The region you choose can affect network latency for clients accessing your databases. When MongoDB Cloud deploys a dedicated cluster, it checks if a VPC or VPC connection exists for that provider and region. If not, MongoDB Cloud creates them as part of the deployment. MongoDB Cloud assigns the VPC a CIDR block. To limit a new VPC peering connection to one CIDR block and region, create the connection first. Deploy the cluster after the connection starts.',
-            title: 'AWS Regions',
-          }),
+          .looseObject({})
+          .and(
+            z
+              .enum([
+                'US_GOV_WEST_1',
+                'US_GOV_EAST_1',
+                'US_EAST_1',
+                'US_EAST_2',
+                'US_WEST_1',
+                'US_WEST_2',
+                'CA_CENTRAL_1',
+                'EU_NORTH_1',
+                'EU_WEST_1',
+                'EU_WEST_2',
+                'EU_WEST_3',
+                'EU_CENTRAL_1',
+                'EU_CENTRAL_2',
+                'AP_EAST_1',
+                'AP_EAST_2',
+                'AP_NORTHEAST_1',
+                'AP_NORTHEAST_2',
+                'AP_NORTHEAST_3',
+                'AP_SOUTHEAST_1',
+                'AP_SOUTHEAST_2',
+                'AP_SOUTHEAST_3',
+                'AP_SOUTHEAST_4',
+                'AP_SOUTHEAST_5',
+                'AP_SOUTHEAST_6',
+                'AP_SOUTHEAST_7',
+                'AP_SOUTH_1',
+                'AP_SOUTH_2',
+                'SA_EAST_1',
+                'CN_NORTH_1',
+                'CN_NORTHWEST_1',
+                'ME_SOUTH_1',
+                'ME_CENTRAL_1',
+                'AF_SOUTH_1',
+                'EU_SOUTH_1',
+                'EU_SOUTH_2',
+                'IL_CENTRAL_1',
+                'CA_WEST_1',
+                'MX_CENTRAL_1',
+                'GLOBAL',
+              ])
+              .openapi({
+                description:
+                  'Physical location where MongoDB Cloud deploys your AWS-hosted MongoDB cluster nodes. The region you choose can affect network latency for clients accessing your databases. When MongoDB Cloud deploys a dedicated cluster, it checks if a VPC or VPC connection exists for that provider and region. If not, MongoDB Cloud creates them as part of the deployment. MongoDB Cloud assigns the VPC a CIDR block. To limit a new VPC peering connection to one CIDR block and region, create the connection first. Deploy the cluster after the connection starts.',
+                title: 'AWS Regions',
+              }),
+          ),
         z
-          .enum([
-            'US_CENTRAL',
-            'US_EAST',
-            'US_EAST_2',
-            'US_NORTH_CENTRAL',
-            'US_WEST',
-            'US_SOUTH_CENTRAL',
-            'EUROPE_NORTH',
-            'EUROPE_WEST',
-            'US_WEST_CENTRAL',
-            'US_WEST_2',
-            'US_WEST_3',
-            'CANADA_EAST',
-            'CANADA_CENTRAL',
-            'BRAZIL_SOUTH',
-            'BRAZIL_SOUTHEAST',
-            'AUSTRALIA_CENTRAL',
-            'AUSTRALIA_CENTRAL_2',
-            'AUSTRALIA_EAST',
-            'AUSTRALIA_SOUTH_EAST',
-            'GERMANY_WEST_CENTRAL',
-            'GERMANY_NORTH',
-            'SWEDEN_CENTRAL',
-            'SWEDEN_SOUTH',
-            'SWITZERLAND_NORTH',
-            'SWITZERLAND_WEST',
-            'UK_SOUTH',
-            'UK_WEST',
-            'NORWAY_EAST',
-            'NORWAY_WEST',
-            'INDIA_CENTRAL',
-            'INDIA_SOUTH',
-            'INDIA_WEST',
-            'CHINA_EAST',
-            'CHINA_NORTH',
-            'ASIA_EAST',
-            'JAPAN_EAST',
-            'JAPAN_WEST',
-            'ASIA_SOUTH_EAST',
-            'KOREA_CENTRAL',
-            'KOREA_SOUTH',
-            'FRANCE_CENTRAL',
-            'FRANCE_SOUTH',
-            'SOUTH_AFRICA_NORTH',
-            'SOUTH_AFRICA_WEST',
-            'UAE_CENTRAL',
-            'UAE_NORTH',
-            'QATAR_CENTRAL',
-            'POLAND_CENTRAL',
-            'ISRAEL_CENTRAL',
-            'ITALY_NORTH',
-            'SPAIN_CENTRAL',
-            'MEXICO_CENTRAL',
-            'NEW_ZEALAND_NORTH',
-            'US_GOV_VIRGINIA',
-            'US_GOV_ARIZONA',
-            'US_GOV_TEXAS',
-          ])
-          .openapi({ description: 'Microsoft Azure Regions.', title: 'Azure Regions' }),
+          .looseObject({})
+          .and(
+            z
+              .enum([
+                'US_CENTRAL',
+                'US_EAST',
+                'US_EAST_2',
+                'US_NORTH_CENTRAL',
+                'US_WEST',
+                'US_SOUTH_CENTRAL',
+                'EUROPE_NORTH',
+                'EUROPE_WEST',
+                'US_WEST_CENTRAL',
+                'US_WEST_2',
+                'US_WEST_3',
+                'CANADA_EAST',
+                'CANADA_CENTRAL',
+                'BRAZIL_SOUTH',
+                'BRAZIL_SOUTHEAST',
+                'AUSTRALIA_CENTRAL',
+                'AUSTRALIA_CENTRAL_2',
+                'AUSTRALIA_EAST',
+                'AUSTRALIA_SOUTH_EAST',
+                'GERMANY_WEST_CENTRAL',
+                'GERMANY_NORTH',
+                'SWEDEN_CENTRAL',
+                'SWEDEN_SOUTH',
+                'SWITZERLAND_NORTH',
+                'SWITZERLAND_WEST',
+                'UK_SOUTH',
+                'UK_WEST',
+                'NORWAY_EAST',
+                'NORWAY_WEST',
+                'INDIA_CENTRAL',
+                'INDIA_SOUTH',
+                'INDIA_WEST',
+                'CHINA_EAST',
+                'CHINA_NORTH',
+                'ASIA_EAST',
+                'JAPAN_EAST',
+                'JAPAN_WEST',
+                'ASIA_SOUTH_EAST',
+                'KOREA_CENTRAL',
+                'KOREA_SOUTH',
+                'FRANCE_CENTRAL',
+                'FRANCE_SOUTH',
+                'SOUTH_AFRICA_NORTH',
+                'SOUTH_AFRICA_WEST',
+                'UAE_CENTRAL',
+                'UAE_NORTH',
+                'QATAR_CENTRAL',
+                'POLAND_CENTRAL',
+                'ISRAEL_CENTRAL',
+                'ITALY_NORTH',
+                'SPAIN_CENTRAL',
+                'MEXICO_CENTRAL',
+                'NEW_ZEALAND_NORTH',
+                'US_GOV_VIRGINIA',
+                'US_GOV_ARIZONA',
+                'US_GOV_TEXAS',
+              ])
+              .openapi({ description: 'Microsoft Azure Regions.', title: 'Azure Regions' }),
+          ),
         z
-          .enum([
-            'EASTERN_US',
-            'EASTERN_US_AW',
-            'US_EAST_4',
-            'US_EAST_4_AW',
-            'US_EAST_5',
-            'US_EAST_5_AW',
-            'US_WEST_2',
-            'US_WEST_2_AW',
-            'US_WEST_3',
-            'US_WEST_3_AW',
-            'US_WEST_4',
-            'US_WEST_4_AW',
-            'US_SOUTH_1',
-            'US_SOUTH_1_AW',
-            'CENTRAL_US',
-            'CENTRAL_US_AW',
-            'WESTERN_US',
-            'WESTERN_US_AW',
-            'NORTH_AMERICA_NORTHEAST_1',
-            'NORTH_AMERICA_NORTHEAST_2',
-            'NORTH_AMERICA_SOUTH_1',
-            'SOUTH_AMERICA_EAST_1',
-            'SOUTH_AMERICA_WEST_1',
-            'WESTERN_EUROPE',
-            'EUROPE_NORTH_1',
-            'EUROPE_WEST_2',
-            'EUROPE_WEST_3',
-            'EUROPE_WEST_4',
-            'EUROPE_WEST_6',
-            'EUROPE_WEST_8',
-            'EUROPE_WEST_9',
-            'EUROPE_WEST_10',
-            'EUROPE_WEST_12',
-            'EUROPE_SOUTHWEST_1',
-            'EUROPE_CENTRAL_2',
-            'MIDDLE_EAST_CENTRAL_1',
-            'MIDDLE_EAST_CENTRAL_2',
-            'MIDDLE_EAST_WEST_1',
-            'AUSTRALIA_SOUTHEAST_1',
-            'AUSTRALIA_SOUTHEAST_2',
-            'AFRICA_SOUTH_1',
-            'EASTERN_ASIA_PACIFIC',
-            'NORTHEASTERN_ASIA_PACIFIC',
-            'SOUTHEASTERN_ASIA_PACIFIC',
-            'ASIA_EAST_2',
-            'ASIA_NORTHEAST_2',
-            'ASIA_NORTHEAST_3',
-            'ASIA_SOUTH_1',
-            'ASIA_SOUTH_2',
-            'ASIA_SOUTHEAST_2',
-          ])
-          .openapi({ description: 'Google Compute Regions.', title: 'GCP Regions' }),
+          .looseObject({})
+          .and(
+            z
+              .enum([
+                'EASTERN_US',
+                'EASTERN_US_AW',
+                'US_EAST_4',
+                'US_EAST_4_AW',
+                'US_EAST_5',
+                'US_EAST_5_AW',
+                'US_WEST_2',
+                'US_WEST_2_AW',
+                'US_WEST_3',
+                'US_WEST_3_AW',
+                'US_WEST_4',
+                'US_WEST_4_AW',
+                'US_SOUTH_1',
+                'US_SOUTH_1_AW',
+                'CENTRAL_US',
+                'CENTRAL_US_AW',
+                'WESTERN_US',
+                'WESTERN_US_AW',
+                'NORTH_AMERICA_NORTHEAST_1',
+                'NORTH_AMERICA_NORTHEAST_2',
+                'NORTH_AMERICA_SOUTH_1',
+                'SOUTH_AMERICA_EAST_1',
+                'SOUTH_AMERICA_WEST_1',
+                'WESTERN_EUROPE',
+                'EUROPE_NORTH_1',
+                'EUROPE_WEST_2',
+                'EUROPE_WEST_3',
+                'EUROPE_WEST_4',
+                'EUROPE_WEST_6',
+                'EUROPE_WEST_8',
+                'EUROPE_WEST_9',
+                'EUROPE_WEST_10',
+                'EUROPE_WEST_12',
+                'EUROPE_SOUTHWEST_1',
+                'EUROPE_CENTRAL_2',
+                'MIDDLE_EAST_CENTRAL_1',
+                'MIDDLE_EAST_CENTRAL_2',
+                'MIDDLE_EAST_WEST_1',
+                'AUSTRALIA_SOUTHEAST_1',
+                'AUSTRALIA_SOUTHEAST_2',
+                'AFRICA_SOUTH_1',
+                'EASTERN_ASIA_PACIFIC',
+                'NORTHEASTERN_ASIA_PACIFIC',
+                'SOUTHEASTERN_ASIA_PACIFIC',
+                'ASIA_EAST_2',
+                'ASIA_NORTHEAST_2',
+                'ASIA_NORTHEAST_3',
+                'ASIA_SOUTH_1',
+                'ASIA_SOUTH_2',
+                'ASIA_SOUTHEAST_2',
+              ])
+              .openapi({ description: 'Google Compute Regions.', title: 'GCP Regions' }),
+          ),
       ])
       .exactOptional()
       .openapi({
@@ -3195,166 +5471,178 @@ const TenantRegionConfigSchema = z
     regionName: z
       .xor([
         z
-          .enum([
-            'US_GOV_WEST_1',
-            'US_GOV_EAST_1',
-            'US_EAST_1',
-            'US_EAST_2',
-            'US_WEST_1',
-            'US_WEST_2',
-            'CA_CENTRAL_1',
-            'EU_NORTH_1',
-            'EU_WEST_1',
-            'EU_WEST_2',
-            'EU_WEST_3',
-            'EU_CENTRAL_1',
-            'EU_CENTRAL_2',
-            'AP_EAST_1',
-            'AP_EAST_2',
-            'AP_NORTHEAST_1',
-            'AP_NORTHEAST_2',
-            'AP_NORTHEAST_3',
-            'AP_SOUTHEAST_1',
-            'AP_SOUTHEAST_2',
-            'AP_SOUTHEAST_3',
-            'AP_SOUTHEAST_4',
-            'AP_SOUTHEAST_5',
-            'AP_SOUTHEAST_6',
-            'AP_SOUTHEAST_7',
-            'AP_SOUTH_1',
-            'AP_SOUTH_2',
-            'SA_EAST_1',
-            'CN_NORTH_1',
-            'CN_NORTHWEST_1',
-            'ME_SOUTH_1',
-            'ME_CENTRAL_1',
-            'AF_SOUTH_1',
-            'EU_SOUTH_1',
-            'EU_SOUTH_2',
-            'IL_CENTRAL_1',
-            'CA_WEST_1',
-            'MX_CENTRAL_1',
-            'GLOBAL',
-          ])
-          .openapi({
-            description:
-              'Physical location where MongoDB Cloud deploys your AWS-hosted MongoDB cluster nodes. The region you choose can affect network latency for clients accessing your databases. When MongoDB Cloud deploys a dedicated cluster, it checks if a VPC or VPC connection exists for that provider and region. If not, MongoDB Cloud creates them as part of the deployment. MongoDB Cloud assigns the VPC a CIDR block. To limit a new VPC peering connection to one CIDR block and region, create the connection first. Deploy the cluster after the connection starts.',
-            title: 'AWS Regions',
-          }),
+          .looseObject({})
+          .and(
+            z
+              .enum([
+                'US_GOV_WEST_1',
+                'US_GOV_EAST_1',
+                'US_EAST_1',
+                'US_EAST_2',
+                'US_WEST_1',
+                'US_WEST_2',
+                'CA_CENTRAL_1',
+                'EU_NORTH_1',
+                'EU_WEST_1',
+                'EU_WEST_2',
+                'EU_WEST_3',
+                'EU_CENTRAL_1',
+                'EU_CENTRAL_2',
+                'AP_EAST_1',
+                'AP_EAST_2',
+                'AP_NORTHEAST_1',
+                'AP_NORTHEAST_2',
+                'AP_NORTHEAST_3',
+                'AP_SOUTHEAST_1',
+                'AP_SOUTHEAST_2',
+                'AP_SOUTHEAST_3',
+                'AP_SOUTHEAST_4',
+                'AP_SOUTHEAST_5',
+                'AP_SOUTHEAST_6',
+                'AP_SOUTHEAST_7',
+                'AP_SOUTH_1',
+                'AP_SOUTH_2',
+                'SA_EAST_1',
+                'CN_NORTH_1',
+                'CN_NORTHWEST_1',
+                'ME_SOUTH_1',
+                'ME_CENTRAL_1',
+                'AF_SOUTH_1',
+                'EU_SOUTH_1',
+                'EU_SOUTH_2',
+                'IL_CENTRAL_1',
+                'CA_WEST_1',
+                'MX_CENTRAL_1',
+                'GLOBAL',
+              ])
+              .openapi({
+                description:
+                  'Physical location where MongoDB Cloud deploys your AWS-hosted MongoDB cluster nodes. The region you choose can affect network latency for clients accessing your databases. When MongoDB Cloud deploys a dedicated cluster, it checks if a VPC or VPC connection exists for that provider and region. If not, MongoDB Cloud creates them as part of the deployment. MongoDB Cloud assigns the VPC a CIDR block. To limit a new VPC peering connection to one CIDR block and region, create the connection first. Deploy the cluster after the connection starts.',
+                title: 'AWS Regions',
+              }),
+          ),
         z
-          .enum([
-            'US_CENTRAL',
-            'US_EAST',
-            'US_EAST_2',
-            'US_NORTH_CENTRAL',
-            'US_WEST',
-            'US_SOUTH_CENTRAL',
-            'EUROPE_NORTH',
-            'EUROPE_WEST',
-            'US_WEST_CENTRAL',
-            'US_WEST_2',
-            'US_WEST_3',
-            'CANADA_EAST',
-            'CANADA_CENTRAL',
-            'BRAZIL_SOUTH',
-            'BRAZIL_SOUTHEAST',
-            'AUSTRALIA_CENTRAL',
-            'AUSTRALIA_CENTRAL_2',
-            'AUSTRALIA_EAST',
-            'AUSTRALIA_SOUTH_EAST',
-            'GERMANY_WEST_CENTRAL',
-            'GERMANY_NORTH',
-            'SWEDEN_CENTRAL',
-            'SWEDEN_SOUTH',
-            'SWITZERLAND_NORTH',
-            'SWITZERLAND_WEST',
-            'UK_SOUTH',
-            'UK_WEST',
-            'NORWAY_EAST',
-            'NORWAY_WEST',
-            'INDIA_CENTRAL',
-            'INDIA_SOUTH',
-            'INDIA_WEST',
-            'CHINA_EAST',
-            'CHINA_NORTH',
-            'ASIA_EAST',
-            'JAPAN_EAST',
-            'JAPAN_WEST',
-            'ASIA_SOUTH_EAST',
-            'KOREA_CENTRAL',
-            'KOREA_SOUTH',
-            'FRANCE_CENTRAL',
-            'FRANCE_SOUTH',
-            'SOUTH_AFRICA_NORTH',
-            'SOUTH_AFRICA_WEST',
-            'UAE_CENTRAL',
-            'UAE_NORTH',
-            'QATAR_CENTRAL',
-            'POLAND_CENTRAL',
-            'ISRAEL_CENTRAL',
-            'ITALY_NORTH',
-            'SPAIN_CENTRAL',
-            'MEXICO_CENTRAL',
-            'NEW_ZEALAND_NORTH',
-            'US_GOV_VIRGINIA',
-            'US_GOV_ARIZONA',
-            'US_GOV_TEXAS',
-          ])
-          .openapi({ description: 'Microsoft Azure Regions.', title: 'Azure Regions' }),
+          .looseObject({})
+          .and(
+            z
+              .enum([
+                'US_CENTRAL',
+                'US_EAST',
+                'US_EAST_2',
+                'US_NORTH_CENTRAL',
+                'US_WEST',
+                'US_SOUTH_CENTRAL',
+                'EUROPE_NORTH',
+                'EUROPE_WEST',
+                'US_WEST_CENTRAL',
+                'US_WEST_2',
+                'US_WEST_3',
+                'CANADA_EAST',
+                'CANADA_CENTRAL',
+                'BRAZIL_SOUTH',
+                'BRAZIL_SOUTHEAST',
+                'AUSTRALIA_CENTRAL',
+                'AUSTRALIA_CENTRAL_2',
+                'AUSTRALIA_EAST',
+                'AUSTRALIA_SOUTH_EAST',
+                'GERMANY_WEST_CENTRAL',
+                'GERMANY_NORTH',
+                'SWEDEN_CENTRAL',
+                'SWEDEN_SOUTH',
+                'SWITZERLAND_NORTH',
+                'SWITZERLAND_WEST',
+                'UK_SOUTH',
+                'UK_WEST',
+                'NORWAY_EAST',
+                'NORWAY_WEST',
+                'INDIA_CENTRAL',
+                'INDIA_SOUTH',
+                'INDIA_WEST',
+                'CHINA_EAST',
+                'CHINA_NORTH',
+                'ASIA_EAST',
+                'JAPAN_EAST',
+                'JAPAN_WEST',
+                'ASIA_SOUTH_EAST',
+                'KOREA_CENTRAL',
+                'KOREA_SOUTH',
+                'FRANCE_CENTRAL',
+                'FRANCE_SOUTH',
+                'SOUTH_AFRICA_NORTH',
+                'SOUTH_AFRICA_WEST',
+                'UAE_CENTRAL',
+                'UAE_NORTH',
+                'QATAR_CENTRAL',
+                'POLAND_CENTRAL',
+                'ISRAEL_CENTRAL',
+                'ITALY_NORTH',
+                'SPAIN_CENTRAL',
+                'MEXICO_CENTRAL',
+                'NEW_ZEALAND_NORTH',
+                'US_GOV_VIRGINIA',
+                'US_GOV_ARIZONA',
+                'US_GOV_TEXAS',
+              ])
+              .openapi({ description: 'Microsoft Azure Regions.', title: 'Azure Regions' }),
+          ),
         z
-          .enum([
-            'EASTERN_US',
-            'EASTERN_US_AW',
-            'US_EAST_4',
-            'US_EAST_4_AW',
-            'US_EAST_5',
-            'US_EAST_5_AW',
-            'US_WEST_2',
-            'US_WEST_2_AW',
-            'US_WEST_3',
-            'US_WEST_3_AW',
-            'US_WEST_4',
-            'US_WEST_4_AW',
-            'US_SOUTH_1',
-            'US_SOUTH_1_AW',
-            'CENTRAL_US',
-            'CENTRAL_US_AW',
-            'WESTERN_US',
-            'WESTERN_US_AW',
-            'NORTH_AMERICA_NORTHEAST_1',
-            'NORTH_AMERICA_NORTHEAST_2',
-            'NORTH_AMERICA_SOUTH_1',
-            'SOUTH_AMERICA_EAST_1',
-            'SOUTH_AMERICA_WEST_1',
-            'WESTERN_EUROPE',
-            'EUROPE_NORTH_1',
-            'EUROPE_WEST_2',
-            'EUROPE_WEST_3',
-            'EUROPE_WEST_4',
-            'EUROPE_WEST_6',
-            'EUROPE_WEST_8',
-            'EUROPE_WEST_9',
-            'EUROPE_WEST_10',
-            'EUROPE_WEST_12',
-            'EUROPE_SOUTHWEST_1',
-            'EUROPE_CENTRAL_2',
-            'MIDDLE_EAST_CENTRAL_1',
-            'MIDDLE_EAST_CENTRAL_2',
-            'MIDDLE_EAST_WEST_1',
-            'AUSTRALIA_SOUTHEAST_1',
-            'AUSTRALIA_SOUTHEAST_2',
-            'AFRICA_SOUTH_1',
-            'EASTERN_ASIA_PACIFIC',
-            'NORTHEASTERN_ASIA_PACIFIC',
-            'SOUTHEASTERN_ASIA_PACIFIC',
-            'ASIA_EAST_2',
-            'ASIA_NORTHEAST_2',
-            'ASIA_NORTHEAST_3',
-            'ASIA_SOUTH_1',
-            'ASIA_SOUTH_2',
-            'ASIA_SOUTHEAST_2',
-          ])
-          .openapi({ description: 'Google Compute Regions.', title: 'GCP Regions' }),
+          .looseObject({})
+          .and(
+            z
+              .enum([
+                'EASTERN_US',
+                'EASTERN_US_AW',
+                'US_EAST_4',
+                'US_EAST_4_AW',
+                'US_EAST_5',
+                'US_EAST_5_AW',
+                'US_WEST_2',
+                'US_WEST_2_AW',
+                'US_WEST_3',
+                'US_WEST_3_AW',
+                'US_WEST_4',
+                'US_WEST_4_AW',
+                'US_SOUTH_1',
+                'US_SOUTH_1_AW',
+                'CENTRAL_US',
+                'CENTRAL_US_AW',
+                'WESTERN_US',
+                'WESTERN_US_AW',
+                'NORTH_AMERICA_NORTHEAST_1',
+                'NORTH_AMERICA_NORTHEAST_2',
+                'NORTH_AMERICA_SOUTH_1',
+                'SOUTH_AMERICA_EAST_1',
+                'SOUTH_AMERICA_WEST_1',
+                'WESTERN_EUROPE',
+                'EUROPE_NORTH_1',
+                'EUROPE_WEST_2',
+                'EUROPE_WEST_3',
+                'EUROPE_WEST_4',
+                'EUROPE_WEST_6',
+                'EUROPE_WEST_8',
+                'EUROPE_WEST_9',
+                'EUROPE_WEST_10',
+                'EUROPE_WEST_12',
+                'EUROPE_SOUTHWEST_1',
+                'EUROPE_CENTRAL_2',
+                'MIDDLE_EAST_CENTRAL_1',
+                'MIDDLE_EAST_CENTRAL_2',
+                'MIDDLE_EAST_WEST_1',
+                'AUSTRALIA_SOUTHEAST_1',
+                'AUSTRALIA_SOUTHEAST_2',
+                'AFRICA_SOUTH_1',
+                'EASTERN_ASIA_PACIFIC',
+                'NORTHEASTERN_ASIA_PACIFIC',
+                'SOUTHEASTERN_ASIA_PACIFIC',
+                'ASIA_EAST_2',
+                'ASIA_NORTHEAST_2',
+                'ASIA_NORTHEAST_3',
+                'ASIA_SOUTH_1',
+                'ASIA_SOUTH_2',
+                'ASIA_SOUTHEAST_2',
+              ])
+              .openapi({ description: 'Google Compute Regions.', title: 'GCP Regions' }),
+          ),
       ])
       .exactOptional()
       .openapi({
@@ -3394,6 +5682,210 @@ const CloudRegionConfigSchema = z
     GCPRegionConfigSchema,
     TenantRegionConfigSchema,
   ])
+  .and(
+    z
+      .object({
+        electableSpecs: HardwareSpecSchema.exactOptional(),
+        priority: z
+          .int32()
+          .min(0)
+          .max(7)
+          .exactOptional()
+          .openapi({
+            description:
+              'Precedence is given to this region when a primary election occurs. If your `regionConfigs` has only `readOnlySpecs`, `analyticsSpecs`, or both, set this value to `0`. If you have multiple `regionConfigs` objects (your cluster is multi-region or multi-cloud), they must have priorities in descending order. The highest priority is `7`.\n\n**Example:** If you have three regions, their priorities would be `7`, `6`, and `5` respectively. If you added two more regions for supporting electable nodes, the priorities of those regions would be `4` and `3` respectively.',
+          }),
+        providerName: z
+          .enum(['AWS', 'AZURE', 'GCP', 'TENANT'])
+          .exactOptional()
+          .openapi({
+            description:
+              'Cloud service provider on which MongoDB Cloud provisions the hosts. Set dedicated clusters to `AWS`, `GCP`, `AZURE` or `TENANT`.',
+          }),
+        regionName: z
+          .xor([
+            z
+              .looseObject({})
+              .and(
+                z
+                  .enum([
+                    'US_GOV_WEST_1',
+                    'US_GOV_EAST_1',
+                    'US_EAST_1',
+                    'US_EAST_2',
+                    'US_WEST_1',
+                    'US_WEST_2',
+                    'CA_CENTRAL_1',
+                    'EU_NORTH_1',
+                    'EU_WEST_1',
+                    'EU_WEST_2',
+                    'EU_WEST_3',
+                    'EU_CENTRAL_1',
+                    'EU_CENTRAL_2',
+                    'AP_EAST_1',
+                    'AP_EAST_2',
+                    'AP_NORTHEAST_1',
+                    'AP_NORTHEAST_2',
+                    'AP_NORTHEAST_3',
+                    'AP_SOUTHEAST_1',
+                    'AP_SOUTHEAST_2',
+                    'AP_SOUTHEAST_3',
+                    'AP_SOUTHEAST_4',
+                    'AP_SOUTHEAST_5',
+                    'AP_SOUTHEAST_6',
+                    'AP_SOUTHEAST_7',
+                    'AP_SOUTH_1',
+                    'AP_SOUTH_2',
+                    'SA_EAST_1',
+                    'CN_NORTH_1',
+                    'CN_NORTHWEST_1',
+                    'ME_SOUTH_1',
+                    'ME_CENTRAL_1',
+                    'AF_SOUTH_1',
+                    'EU_SOUTH_1',
+                    'EU_SOUTH_2',
+                    'IL_CENTRAL_1',
+                    'CA_WEST_1',
+                    'MX_CENTRAL_1',
+                    'GLOBAL',
+                  ])
+                  .openapi({
+                    description:
+                      'Physical location where MongoDB Cloud deploys your AWS-hosted MongoDB cluster nodes. The region you choose can affect network latency for clients accessing your databases. When MongoDB Cloud deploys a dedicated cluster, it checks if a VPC or VPC connection exists for that provider and region. If not, MongoDB Cloud creates them as part of the deployment. MongoDB Cloud assigns the VPC a CIDR block. To limit a new VPC peering connection to one CIDR block and region, create the connection first. Deploy the cluster after the connection starts.',
+                    title: 'AWS Regions',
+                  }),
+              ),
+            z
+              .looseObject({})
+              .and(
+                z
+                  .enum([
+                    'US_CENTRAL',
+                    'US_EAST',
+                    'US_EAST_2',
+                    'US_NORTH_CENTRAL',
+                    'US_WEST',
+                    'US_SOUTH_CENTRAL',
+                    'EUROPE_NORTH',
+                    'EUROPE_WEST',
+                    'US_WEST_CENTRAL',
+                    'US_WEST_2',
+                    'US_WEST_3',
+                    'CANADA_EAST',
+                    'CANADA_CENTRAL',
+                    'BRAZIL_SOUTH',
+                    'BRAZIL_SOUTHEAST',
+                    'AUSTRALIA_CENTRAL',
+                    'AUSTRALIA_CENTRAL_2',
+                    'AUSTRALIA_EAST',
+                    'AUSTRALIA_SOUTH_EAST',
+                    'GERMANY_WEST_CENTRAL',
+                    'GERMANY_NORTH',
+                    'SWEDEN_CENTRAL',
+                    'SWEDEN_SOUTH',
+                    'SWITZERLAND_NORTH',
+                    'SWITZERLAND_WEST',
+                    'UK_SOUTH',
+                    'UK_WEST',
+                    'NORWAY_EAST',
+                    'NORWAY_WEST',
+                    'INDIA_CENTRAL',
+                    'INDIA_SOUTH',
+                    'INDIA_WEST',
+                    'CHINA_EAST',
+                    'CHINA_NORTH',
+                    'ASIA_EAST',
+                    'JAPAN_EAST',
+                    'JAPAN_WEST',
+                    'ASIA_SOUTH_EAST',
+                    'KOREA_CENTRAL',
+                    'KOREA_SOUTH',
+                    'FRANCE_CENTRAL',
+                    'FRANCE_SOUTH',
+                    'SOUTH_AFRICA_NORTH',
+                    'SOUTH_AFRICA_WEST',
+                    'UAE_CENTRAL',
+                    'UAE_NORTH',
+                    'QATAR_CENTRAL',
+                    'POLAND_CENTRAL',
+                    'ISRAEL_CENTRAL',
+                    'ITALY_NORTH',
+                    'SPAIN_CENTRAL',
+                    'MEXICO_CENTRAL',
+                    'NEW_ZEALAND_NORTH',
+                    'US_GOV_VIRGINIA',
+                    'US_GOV_ARIZONA',
+                    'US_GOV_TEXAS',
+                  ])
+                  .openapi({ description: 'Microsoft Azure Regions.', title: 'Azure Regions' }),
+              ),
+            z
+              .looseObject({})
+              .and(
+                z
+                  .enum([
+                    'EASTERN_US',
+                    'EASTERN_US_AW',
+                    'US_EAST_4',
+                    'US_EAST_4_AW',
+                    'US_EAST_5',
+                    'US_EAST_5_AW',
+                    'US_WEST_2',
+                    'US_WEST_2_AW',
+                    'US_WEST_3',
+                    'US_WEST_3_AW',
+                    'US_WEST_4',
+                    'US_WEST_4_AW',
+                    'US_SOUTH_1',
+                    'US_SOUTH_1_AW',
+                    'CENTRAL_US',
+                    'CENTRAL_US_AW',
+                    'WESTERN_US',
+                    'WESTERN_US_AW',
+                    'NORTH_AMERICA_NORTHEAST_1',
+                    'NORTH_AMERICA_NORTHEAST_2',
+                    'NORTH_AMERICA_SOUTH_1',
+                    'SOUTH_AMERICA_EAST_1',
+                    'SOUTH_AMERICA_WEST_1',
+                    'WESTERN_EUROPE',
+                    'EUROPE_NORTH_1',
+                    'EUROPE_WEST_2',
+                    'EUROPE_WEST_3',
+                    'EUROPE_WEST_4',
+                    'EUROPE_WEST_6',
+                    'EUROPE_WEST_8',
+                    'EUROPE_WEST_9',
+                    'EUROPE_WEST_10',
+                    'EUROPE_WEST_12',
+                    'EUROPE_SOUTHWEST_1',
+                    'EUROPE_CENTRAL_2',
+                    'MIDDLE_EAST_CENTRAL_1',
+                    'MIDDLE_EAST_CENTRAL_2',
+                    'MIDDLE_EAST_WEST_1',
+                    'AUSTRALIA_SOUTHEAST_1',
+                    'AUSTRALIA_SOUTHEAST_2',
+                    'AFRICA_SOUTH_1',
+                    'EASTERN_ASIA_PACIFIC',
+                    'NORTHEASTERN_ASIA_PACIFIC',
+                    'SOUTHEASTERN_ASIA_PACIFIC',
+                    'ASIA_EAST_2',
+                    'ASIA_NORTHEAST_2',
+                    'ASIA_NORTHEAST_3',
+                    'ASIA_SOUTH_1',
+                    'ASIA_SOUTH_2',
+                    'ASIA_SOUTHEAST_2',
+                  ])
+                  .openapi({ description: 'Google Compute Regions.', title: 'GCP Regions' }),
+              ),
+          ])
+          .exactOptional()
+          .openapi({
+            description:
+              'Physical location of your MongoDB cluster nodes. The region you choose can affect network latency for clients accessing your databases. The region name is only returned in the response for single-region clusters. When MongoDB Cloud deploys a dedicated cluster, it checks if a VPC or VPC connection exists for that provider and region. If not, MongoDB Cloud creates them as part of the deployment. It assigns the VPC a Classless Inter-Domain Routing (CIDR) block. To limit a new VPC peering connection to one Classless Inter-Domain Routing (CIDR) block and region, create the connection first. Deploy the cluster after the connection starts. GCP Clusters and Multi-region clusters require one VPC peering connection for each region. MongoDB nodes can use only the peering connection that resides in the same region as the nodes to communicate with the peered VPC.',
+          }),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Cloud service provider on which MongoDB Cloud provisions the hosts.',
     discriminator: {
@@ -3461,33 +5953,6 @@ const ReplicationSpecSchema = z
     required: [],
   })
   .openapi('ReplicationSpec')
-
-const ResourceTagSchema = z
-  .object({
-    key: z
-      .string()
-      .min(1)
-      .max(255)
-      .openapi({
-        description:
-          'Constant that defines the set of the tag. For example, `environment` in the `environment : production` tag.',
-      }),
-    value: z
-      .string()
-      .min(1)
-      .max(255)
-      .openapi({
-        description:
-          'Variable that belongs to the set of the tag. For example, `production` in the `environment : production` tag.',
-      }),
-  })
-  .openapi({
-    description:
-      'Key-value pair that tags and categorizes a MongoDB Cloud organization, project, or cluster. For example, `environment : production`.',
-    required: ['key', 'value'],
-    title: 'Resource Tag',
-  })
-  .openapi('ResourceTag')
 
 const AdvancedClusterDescriptionSchema = z
   .object({
@@ -3628,7 +6093,7 @@ const AdvancedClusterDescriptionSchema = z
       .openapi({
         deprecated: true,
         description:
-          "Collection of key-value pairs between 1 to 255 characters in length that tag and categorize the cluster. The MongoDB Cloud console doesn't display your labels.\n\nCluster labels are deprecated and will be removed in a future release. We strongly recommend that you use Resource tags instead.",
+          "Deprecated: Cluster labels will be removed in a future release. We strongly recommend that you use Resource tags instead.\n\nCollection of key-value pairs between 1 to 255 characters in length that tag and categorize the cluster. The MongoDB Cloud console doesn't display your labels.",
         externalDocs: {
           description: 'Resource Tags',
           url: 'https://dochub.mongodb.org/core/add-cluster-tag-atlas',
@@ -4551,6 +7016,20 @@ const ConfluentUserInfoAuthenticationSchema = z
       }),
   })
   .openapi({ required: ['type'] })
+  .and(z.looseObject({}).openapi({ required: ['password', 'type', 'username'] }))
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'password')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'username')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
   .and(
     z
       .object({
@@ -4582,6 +7061,14 @@ const ConfluentSaslInheritAuthenticationSchema = z
       }),
   })
   .openapi({ required: ['type'] })
+  .and(z.looseObject({}).openapi({ required: ['type'] }))
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
   .openapi({
     description:
       'Inherits the authentication configuration from Kafka for the Confluent Schema Registry.',
@@ -4591,6 +7078,18 @@ const ConfluentSaslInheritAuthenticationSchema = z
 
 const SchemaRegistryAuthenticationSchema = z
   .xor([ConfluentUserInfoAuthenticationSchema, ConfluentSaslInheritAuthenticationSchema])
+  .and(
+    z
+      .object({
+        type: z
+          .enum(['USER_INFO', 'SASL_INHERIT'])
+          .openapi({
+            description:
+              'Authentication type discriminator. Specifies the authentication mechanism for Confluent Schema Registry.',
+          }),
+      })
+      .openapi({ required: ['type'] }),
+  )
   .openapi({
     description: 'Authentication configuration for Schema Registry.',
     discriminator: {
@@ -4657,6 +7156,24 @@ const StreamsSchemaRegistryConnectionSchema = z
   .openapi({ required: [] })
   .and(
     z
+      .looseObject({})
+      .openapi({ required: ['provider', 'schemaRegistryAuthentication', 'schemaRegistryUrls'] }),
+  )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'provider')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'schemaRegistryAuthentication')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'schemaRegistryUrls')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
       .object({
         provider: z
           .literal('CONFLUENT')
@@ -4707,7 +7224,7 @@ const AzureConnectionSchema = z
       .exactOptional()
       .openapi({
         deprecated: true,
-        description: 'Azure region where the storage account is located.',
+        description: 'Deprecated: Azure region where the storage account is located.',
       }),
     servicePrincipalId: z
       .string()
@@ -4873,70 +7390,3046 @@ const StreamsGCPPubSubConnectionSchema = z
   .openapi({ description: 'The configuration for GCP Pub/Sub connections.' })
   .openapi('StreamsGCPPubSubConnection')
 
-const StreamsDataCatalogConnectionSchema = z
+const StreamsDatabricksAuthenticationSchema = z
   .object({
-    errorMessage: z
+    clientId: z
       .string()
-      .exactOptional()
-      .openapi({ description: 'Connection error message.', readOnly: true }),
-    id: z
+      .openapi({ description: 'OAuth client ID of the Databricks service principal.' }),
+    clientSecret: z
       .string()
-      .exactOptional()
-      .openapi({ description: 'Unique identifier of the connection.', readOnly: true }),
-    links: z
-      .array(LinkSchema)
-      .exactOptional()
       .openapi({
         description:
-          'List of one or more Uniform Resource Locators (URLs) that point to API sub-resources, related API resources, or both. RFC 5988 outlines these relationships.',
-        externalDocs: {
-          description: 'Web Linking Specification (RFC 5988)',
-          url: 'https://datatracker.ietf.org/doc/html/rfc5988',
-        },
-        readOnly: true,
+          'OAuth client secret of the Databricks service principal. Never returned in responses; omit or leave blank on update to keep the stored secret.',
+        writeOnly: true,
       }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Human-readable label that identifies the stream connection. For the Sample type, this is the name of the sample source.',
-      }),
-    region: z.string().exactOptional().openapi({ description: 'Connection region.' }),
-    state: z
-      .enum(['PENDING', 'READY', 'DELETING', 'FAILED'])
-      .exactOptional()
-      .openapi({ description: 'Connection state.', readOnly: true }),
-    type: z
-      .enum([
-        'Kafka',
-        'Cluster',
-        'Sample',
-        'Https',
-        'AzureBlobStorage',
-        'AWSLambda',
-        'AWSKinesisDataStreams',
-        'SchemaRegistry',
-        'GCPPubSub',
-        'DataCatalog',
-      ])
-      .exactOptional()
-      .openapi({ description: 'Connection type.' }),
   })
-  .openapi({ required: [] })
+  .openapi({
+    description: 'Databricks service principal credentials used to obtain an OAuth token.',
+    required: ['clientId', 'clientSecret'],
+  })
+  .openapi('StreamsDatabricksAuthentication')
+
+const StreamsDatabricksConnectionConfigSchema = z
+  .object({ authentication: StreamsDatabricksAuthenticationSchema })
+  .openapi({ description: 'Databricks settings for a connection.', required: ['authentication'] })
+  .openapi('StreamsDatabricksConnectionConfig')
+
+const StreamsDatabricksUnityCatalogConnectionSchema = z
+  .looseObject({})
+  .openapi({ required: ['catalogUrl'] })
+  .and(z.looseObject({}).openapi({ required: ['catalogProvider', 'catalogUrl', 'databricks'] }))
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'catalogProvider')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'catalogUrl')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'databricks')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
   .and(
     z
       .object({
-        catalogUrl: z
-          .url()
+        catalogProvider: z
+          .literal('DATABRICKS_UNITY')
           .exactOptional()
           .openapi({
             description:
-              "Base HTTPS URL of the catalog. Must be on the provider's domain: `*.cloud.databricks.com` or `*.azuredatabricks.net` for Databricks Unity, and `*.snowflakecomputing.com` for Snowflake Horizon.",
+              'Catalog system the connection points at. Cannot be changed after creation.',
           }),
+        databricks: StreamsDatabricksConnectionConfigSchema.exactOptional(),
       })
       .openapi({ required: [] }),
   )
+  .openapi({
+    description: 'The configuration for a Databricks Unity Catalog connection.',
+    required: ['catalogProvider', 'catalogUrl', 'databricks'],
+  })
+  .openapi('StreamsDatabricksUnityCatalogConnection')
+
+const StreamsSnowflakeAuthenticationSchema = z
+  .object({
+    account: z.string().openapi({ description: 'Snowflake account identifier.' }),
+    privateKey: z
+      .string()
+      .openapi({
+        description:
+          "Private key of the service user's key pair. Never returned in responses; omit or leave blank on update to keep the stored key.",
+        writeOnly: true,
+      }),
+    role: z.string().openapi({ description: 'Snowflake role the service user assumes.' }),
+    user: z.string().openapi({ description: 'Snowflake service user.' }),
+  })
+  .openapi({
+    description: 'Snowflake service user and key pair used to authenticate to Snowflake.',
+    required: ['account', 'privateKey', 'role', 'user'],
+  })
+  .openapi('StreamsSnowflakeAuthentication')
+
+const StreamsSnowflakeConnectionConfigSchema = z
+  .object({ authentication: StreamsSnowflakeAuthenticationSchema })
+  .openapi({ description: 'Snowflake settings for a connection.', required: ['authentication'] })
+  .openapi('StreamsSnowflakeConnectionConfig')
+
+const StreamsSnowflakeHorizonCatalogConnectionSchema = z
+  .looseObject({})
+  .openapi({ required: ['catalogUrl'] })
+  .and(z.looseObject({}).openapi({ required: ['catalogProvider', 'catalogUrl', 'snowflake'] }))
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'catalogProvider')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'catalogUrl')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'snowflake')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        catalogProvider: z
+          .literal('SNOWFLAKE_HORIZON')
+          .exactOptional()
+          .openapi({
+            description:
+              'Catalog system the connection points at. Cannot be changed after creation.',
+          }),
+        snowflake: StreamsSnowflakeConnectionConfigSchema.exactOptional(),
+      })
+      .openapi({ required: [] }),
+  )
+  .openapi({
+    description: 'The configuration for a Snowflake Horizon catalog connection.',
+    required: ['catalogProvider', 'catalogUrl', 'snowflake'],
+  })
+  .openapi('StreamsSnowflakeHorizonCatalogConnection')
+
+const StreamsDataCatalogConnectionSchema = (() => {
+  const Schema = z
+    .object({
+      errorMessage: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'Connection error message.', readOnly: true }),
+      id: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'Unique identifier of the connection.', readOnly: true }),
+      links: z
+        .array(LinkSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'List of one or more Uniform Resource Locators (URLs) that point to API sub-resources, related API resources, or both. RFC 5988 outlines these relationships.',
+          externalDocs: {
+            description: 'Web Linking Specification (RFC 5988)',
+            url: 'https://datatracker.ietf.org/doc/html/rfc5988',
+          },
+          readOnly: true,
+        }),
+      name: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Human-readable label that identifies the stream connection. For the Sample type, this is the name of the sample source.',
+        }),
+      region: z.string().exactOptional().openapi({ description: 'Connection region.' }),
+      state: z
+        .enum(['PENDING', 'READY', 'DELETING', 'FAILED'])
+        .exactOptional()
+        .openapi({ description: 'Connection state.', readOnly: true }),
+      type: z
+        .enum([
+          'Kafka',
+          'Cluster',
+          'Sample',
+          'Https',
+          'AzureBlobStorage',
+          'AWSLambda',
+          'AWSKinesisDataStreams',
+          'SchemaRegistry',
+          'GCPPubSub',
+          'DataCatalog',
+        ])
+        .exactOptional()
+        .openapi({ description: 'Connection type.' }),
+    })
+    .openapi({ required: [] })
+    .and(z.looseObject({}).openapi({ required: ['catalogUrl'] }))
+    .superRefine((val, ctx) => {
+      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+        if (!Object.hasOwn(val, 'catalogUrl')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+      }
+    })
+    .and(
+      z
+        .object({
+          catalogUrl: z
+            .url()
+            .exactOptional()
+            .openapi({
+              description:
+                "Base HTTPS URL of the catalog. Must be on the provider's domain: `*.cloud.databricks.com` or `*.azuredatabricks.net` for Databricks Unity, and `*.snowflakecomputing.com` for Snowflake Horizon.",
+            }),
+        })
+        .openapi({ required: [] }),
+    )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    const reported = ctx.issues.length
+    try {
+      ;((ctx) => {
+        const val = ctx.value
+        if (
+          (StreamsDatabricksUnityCatalogConnectionSchema.safeParse(val).success ? 1 : 0) +
+            (StreamsSnowflakeHorizonCatalogConnectionSchema.safeParse(val).success ? 1 : 0) !==
+          1
+        ) {
+          ctx.issues.push({ code: 'custom', input: val })
+        }
+      })(ctx)
+    } catch (error) {
+      if (!(error instanceof z.core.$ZodAsyncError)) throw error
+      ctx.issues.length = reported
+      return (async (ctx) => {
+        const val = ctx.value
+        if (
+          ((await StreamsDatabricksUnityCatalogConnectionSchema.safeParseAsync(val)).success
+            ? 1
+            : 0) +
+            ((await StreamsSnowflakeHorizonCatalogConnectionSchema.safeParseAsync(val)).success
+              ? 1
+              : 0) !==
+          1
+        ) {
+          ctx.issues.push({ code: 'custom', input: val })
+        }
+      })(ctx).then(() => val)
+    }
+    return val
+  }, Schema)
+})()
+  .openapi({
+    oneOf: [
+      {
+        allOf: [
+          {
+            allOf: [
+              {
+                description: 'Settings that define a connection to an external data store.',
+                discriminator: {
+                  propertyName: 'type',
+                  mapping: {
+                    AWSKinesisDataStreams:
+                      '#/components/schemas/StreamsAWSKinesisDataStreamsConnection',
+                    AWSLambda: '#/components/schemas/StreamsAWSLambdaConnection',
+                    AzureBlobStorage: '#/components/schemas/StreamsAzureBlobStorageConnection',
+                    Cluster: '#/components/schemas/StreamsClusterConnection',
+                    DataCatalog: '#/components/schemas/StreamsDataCatalogConnection',
+                    GCPPubSub: '#/components/schemas/StreamsGCPPubSubConnection',
+                    Https: '#/components/schemas/StreamsHttpsConnection',
+                    Kafka: '#/components/schemas/StreamsKafkaConnection',
+                    S3: '#/components/schemas/StreamsS3Connection',
+                    Sample: '#/components/schemas/StreamsSampleConnection',
+                    SchemaRegistry: '#/components/schemas/StreamsSchemaRegistryConnection',
+                  },
+                },
+                oneOf: [
+                  { allOf: [{}], type: 'object' },
+                  {
+                    allOf: [
+                      {},
+                      {
+                        properties: {
+                          clusterGroupId: {
+                            description:
+                              'Unique 24-hexadecimal digit string that identifies the project that contains the configured cluster. Required if the ID does not match the project containing the streams workspace. You must first enable the organization setting.',
+                            nullable: true,
+                            type: 'string',
+                          },
+                          clusterName: {
+                            description: 'Name of the cluster configured for this connection.',
+                            type: 'string',
+                          },
+                          dbRoleToExecute: {
+                            description:
+                              'Name of a built-in or custom DB Role to connect to a MongoDB Cloud Cluster.',
+                            externalDocs: {
+                              description: 'Built-in Roles',
+                              url: 'https://www.mongodb.com/docs/atlas/mongodb-users-roles-and-privileges/#mongodb-atlasrole-atlasAdmin',
+                            },
+                            properties: {
+                              links: {
+                                description:
+                                  'List of one or more Uniform Resource Locators (URLs) that point to API sub-resources, related API resources, or both. RFC 5988 outlines these relationships.',
+                                externalDocs: {
+                                  description: 'Web Linking Specification (RFC 5988)',
+                                  url: 'https://datatracker.ietf.org/doc/html/rfc5988',
+                                },
+                                items: {
+                                  properties: {
+                                    href: {
+                                      description:
+                                        'Uniform Resource Locator (URL) that points another API resource to which this response has some relationship. This URL often begins with `https://cloud.mongodb.com/api/atlas`.',
+                                      example: 'https://cloud.mongodb.com/api/atlas',
+                                      type: 'string',
+                                    },
+                                    rel: {
+                                      description:
+                                        'Uniform Resource Locator (URL) that defines the semantic relationship between this resource and another API resource. This URL often begins with `https://cloud.mongodb.com/api/atlas`.',
+                                      example: 'self',
+                                      type: 'string',
+                                    },
+                                  },
+                                  type: 'object',
+                                },
+                                readOnly: true,
+                                type: 'array',
+                              },
+                              role: {
+                                description:
+                                  'The name of the role to use. Can be a built in role or a custom role.',
+                                type: 'string',
+                              },
+                              type: {
+                                description:
+                                  'Type of the DB role. Can be either Built In or Custom.',
+                                enum: ['BUILT_IN', 'CUSTOM'],
+                                title: 'DB Role Type',
+                                type: 'string',
+                              },
+                            },
+                            type: 'object',
+                          },
+                        },
+                        type: 'object',
+                      },
+                    ],
+                    type: 'object',
+                  },
+                  {
+                    allOf: [
+                      {},
+                      {
+                        properties: {
+                          authentication: {
+                            description:
+                              'User credentials required to connect to a Kafka Cluster. Includes the authentication type, as well as the parameters for that authentication mode.',
+                            properties: {
+                              aws: {
+                                description: 'AWS configurations for AWS-based connection types.',
+                                properties: {
+                                  links: {
+                                    description:
+                                      'List of one or more Uniform Resource Locators (URLs) that point to API sub-resources, related API resources, or both. RFC 5988 outlines these relationships.',
+                                    externalDocs: {
+                                      description: 'Web Linking Specification (RFC 5988)',
+                                      url: 'https://datatracker.ietf.org/doc/html/rfc5988',
+                                    },
+                                    items: {
+                                      properties: {
+                                        href: {
+                                          description:
+                                            'Uniform Resource Locator (URL) that points another API resource to which this response has some relationship. This URL often begins with `https://cloud.mongodb.com/api/atlas`.',
+                                          example: 'https://cloud.mongodb.com/api/atlas',
+                                          type: 'string',
+                                        },
+                                        rel: {
+                                          description:
+                                            'Uniform Resource Locator (URL) that defines the semantic relationship between this resource and another API resource. This URL often begins with `https://cloud.mongodb.com/api/atlas`.',
+                                          example: 'self',
+                                          type: 'string',
+                                        },
+                                      },
+                                      type: 'object',
+                                    },
+                                    readOnly: true,
+                                    type: 'array',
+                                  },
+                                  roleArn: {
+                                    description:
+                                      'Amazon Resource Name (ARN) that identifies the Amazon Web Services (AWS) Identity and Access Management (IAM) role that MongoDB Cloud assumes when it accesses resources in your AWS account.',
+                                    type: 'string',
+                                  },
+                                  testBucket: {
+                                    description:
+                                      'The name of an S3 bucket used to check authorization of the passed-in IAM role ARN. This field applies only to S3 connections and is ignored for all other connection types and configurations.',
+                                    type: 'string',
+                                  },
+                                },
+                                type: 'object',
+                              },
+                              clientId: {
+                                description:
+                                  'OIDC client identifier for authentication to the Kafka cluster.',
+                                type: 'string',
+                              },
+                              clientSecret: {
+                                description:
+                                  'OIDC client secret for authentication to the Kafka cluster.',
+                                format: 'password',
+                                type: 'string',
+                                writeOnly: true,
+                              },
+                              links: {
+                                description:
+                                  'List of one or more Uniform Resource Locators (URLs) that point to API sub-resources, related API resources, or both. RFC 5988 outlines these relationships.',
+                                externalDocs: {
+                                  description: 'Web Linking Specification (RFC 5988)',
+                                  url: 'https://datatracker.ietf.org/doc/html/rfc5988',
+                                },
+                                items: {
+                                  properties: {
+                                    href: {
+                                      description:
+                                        'Uniform Resource Locator (URL) that points another API resource to which this response has some relationship. This URL often begins with `https://cloud.mongodb.com/api/atlas`.',
+                                      example: 'https://cloud.mongodb.com/api/atlas',
+                                      type: 'string',
+                                    },
+                                    rel: {
+                                      description:
+                                        'Uniform Resource Locator (URL) that defines the semantic relationship between this resource and another API resource. This URL often begins with `https://cloud.mongodb.com/api/atlas`.',
+                                      example: 'self',
+                                      type: 'string',
+                                    },
+                                  },
+                                  type: 'object',
+                                },
+                                readOnly: true,
+                                type: 'array',
+                              },
+                              mechanism: {
+                                description:
+                                  'Style of authentication. Can be one of PLAIN, SCRAM-256, SCRAM-512, or OAUTHBEARER.',
+                                type: 'string',
+                              },
+                              method: {
+                                description:
+                                  'SASL OAUTHBEARER authentication method. Currently, only OIDC is supported.',
+                                type: 'string',
+                              },
+                              password: {
+                                description:
+                                  'Password of the account to connect to the Kafka cluster.',
+                                format: 'password',
+                                type: 'string',
+                                writeOnly: true,
+                              },
+                              saslOauthbearerExtensions: {
+                                description:
+                                  'SASL OAUTHBEARER extensions parameter for additional OAuth2 configuration.',
+                                type: 'string',
+                              },
+                              scope: {
+                                description:
+                                  'OIDC scope parameter defining the access permissions requested.',
+                                type: 'string',
+                              },
+                              sslCertificate: {
+                                description: 'SSL certificate for client authentication to Kafka.',
+                                type: 'string',
+                              },
+                              sslKey: {
+                                description: 'SSL key for client authentication to Kafka.',
+                                format: 'password',
+                                type: 'string',
+                                writeOnly: true,
+                              },
+                              sslKeyPassword: {
+                                description:
+                                  'Password for the SSL key, if it is password protected.',
+                                format: 'password',
+                                type: 'string',
+                                writeOnly: true,
+                              },
+                              tokenEndpointUrl: {
+                                description: 'OIDC token endpoint URL for obtaining access tokens.',
+                                type: 'string',
+                              },
+                              username: {
+                                description:
+                                  'Username of the account to connect to the Kafka cluster.',
+                                type: 'string',
+                              },
+                            },
+                            type: 'object',
+                          },
+                          bootstrapServers: {
+                            description: 'Comma separated list of server addresses.',
+                            type: 'string',
+                          },
+                          config: {
+                            additionalProperties: {
+                              description:
+                                "Map of Kafka key-value pairs for optional configuration. This object is flat, and keys can have '.' characters.",
+                              example:
+                                '{"group.protocol.type":"consumer","debug":"queue, msg, protocol"}',
+                              type: 'string',
+                            },
+                            description:
+                              "Map of Kafka key-value pairs for optional configuration. This object is flat, and keys can have '.' characters.",
+                            example: {
+                              debug: 'queue, msg, protocol',
+                              'group.protocol.type': 'consumer',
+                            },
+                            type: 'object',
+                          },
+                          networking: {
+                            description: 'Networking configuration for Streams connections.',
+                            properties: {
+                              access: {
+                                description: 'Information about networking access.',
+                                properties: {
+                                  connectionId: {
+                                    description:
+                                      'Reserved. Will be used by `PRIVATE_LINK` connection type. Setting this field with any other networking access type returns a validation error.',
+                                    example: '32b6e34b3d91647abb20e7b8',
+                                    pattern: '^([a-f0-9]{24})$',
+                                    type: 'string',
+                                  },
+                                  links: {
+                                    description:
+                                      'List of one or more Uniform Resource Locators (URLs) that point to API sub-resources, related API resources, or both. RFC 5988 outlines these relationships.',
+                                    externalDocs: {
+                                      description: 'Web Linking Specification (RFC 5988)',
+                                      url: 'https://datatracker.ietf.org/doc/html/rfc5988',
+                                    },
+                                    items: {
+                                      properties: {
+                                        href: {
+                                          description:
+                                            'Uniform Resource Locator (URL) that points another API resource to which this response has some relationship. This URL often begins with `https://cloud.mongodb.com/api/atlas`.',
+                                          example: 'https://cloud.mongodb.com/api/atlas',
+                                          type: 'string',
+                                        },
+                                        rel: {
+                                          description:
+                                            'Uniform Resource Locator (URL) that defines the semantic relationship between this resource and another API resource. This URL often begins with `https://cloud.mongodb.com/api/atlas`.',
+                                          example: 'self',
+                                          type: 'string',
+                                        },
+                                      },
+                                      type: 'object',
+                                    },
+                                    readOnly: true,
+                                    type: 'array',
+                                  },
+                                  name: {
+                                    description:
+                                      'Reserved. Will be used by `PRIVATE_LINK` connection type.',
+                                    type: 'string',
+                                  },
+                                  tgwRouteId: {
+                                    description:
+                                      'Reserved. Will be used by `TRANSIT_GATEWAY` connection type.',
+                                    example: '32b6e34b3d91647abb20e7b8',
+                                    pattern: '^([a-f0-9]{24})$',
+                                    type: 'string',
+                                  },
+                                  type: {
+                                    description:
+                                      'Selected networking type. Either `PUBLIC`, `VPC`, `PRIVATE_LINK`, or `TRANSIT_GATEWAY`. Defaults to `PUBLIC`. For VPC, ensure that VPC peering exists and connectivity has been established between Atlas VPC and the VPC where Kafka cluster is hosted for the connection to function properly. `TRANSIT_GATEWAY` support is coming soon.',
+                                    enum: ['PUBLIC', 'VPC', 'PRIVATE_LINK', 'TRANSIT_GATEWAY'],
+                                    title: 'Networking Access Type',
+                                    type: 'string',
+                                  },
+                                },
+                                type: 'object',
+                              },
+                              links: {
+                                description:
+                                  'List of one or more Uniform Resource Locators (URLs) that point to API sub-resources, related API resources, or both. RFC 5988 outlines these relationships.',
+                                externalDocs: {
+                                  description: 'Web Linking Specification (RFC 5988)',
+                                  url: 'https://datatracker.ietf.org/doc/html/rfc5988',
+                                },
+                                items: {
+                                  properties: {
+                                    href: {
+                                      description:
+                                        'Uniform Resource Locator (URL) that points another API resource to which this response has some relationship. This URL often begins with `https://cloud.mongodb.com/api/atlas`.',
+                                      example: 'https://cloud.mongodb.com/api/atlas',
+                                      type: 'string',
+                                    },
+                                    rel: {
+                                      description:
+                                        'Uniform Resource Locator (URL) that defines the semantic relationship between this resource and another API resource. This URL often begins with `https://cloud.mongodb.com/api/atlas`.',
+                                      example: 'self',
+                                      type: 'string',
+                                    },
+                                  },
+                                  type: 'object',
+                                },
+                                readOnly: true,
+                                type: 'array',
+                              },
+                            },
+                            type: 'object',
+                          },
+                          security: {
+                            description:
+                              'Properties for the secure transport connection to Kafka. For SSL, this can include the trusted certificate to use.',
+                            properties: {
+                              brokerPublicCertificate: {
+                                description:
+                                  'A trusted, public x509 certificate for connecting to Kafka over SSL.',
+                                type: 'string',
+                              },
+                              links: {
+                                description:
+                                  'List of one or more Uniform Resource Locators (URLs) that point to API sub-resources, related API resources, or both. RFC 5988 outlines these relationships.',
+                                externalDocs: {
+                                  description: 'Web Linking Specification (RFC 5988)',
+                                  url: 'https://datatracker.ietf.org/doc/html/rfc5988',
+                                },
+                                items: {
+                                  properties: {
+                                    href: {
+                                      description:
+                                        'Uniform Resource Locator (URL) that points another API resource to which this response has some relationship. This URL often begins with `https://cloud.mongodb.com/api/atlas`.',
+                                      example: 'https://cloud.mongodb.com/api/atlas',
+                                      type: 'string',
+                                    },
+                                    rel: {
+                                      description:
+                                        'Uniform Resource Locator (URL) that defines the semantic relationship between this resource and another API resource. This URL often begins with `https://cloud.mongodb.com/api/atlas`.',
+                                      example: 'self',
+                                      type: 'string',
+                                    },
+                                  },
+                                  type: 'object',
+                                },
+                                readOnly: true,
+                                type: 'array',
+                              },
+                              protocol: {
+                                description:
+                                  'Describes the transport type. Can be either `SASL_PLAINTEXT`, `SASL_SSL`, or `SSL`.',
+                                type: 'string',
+                              },
+                            },
+                            type: 'object',
+                          },
+                        },
+                        type: 'object',
+                      },
+                    ],
+                    type: 'object',
+                  },
+                  {
+                    allOf: [
+                      {},
+                      {
+                        properties: {
+                          headers: {
+                            additionalProperties: {
+                              description:
+                                'A map of key-value pairs that will be passed as headers for the request.',
+                              type: 'string',
+                            },
+                            description:
+                              'A map of key-value pairs that will be passed as headers for the request.',
+                            type: 'object',
+                          },
+                          url: {
+                            description: 'The URL to be used for the request.',
+                            type: 'string',
+                          },
+                        },
+                        type: 'object',
+                      },
+                    ],
+                    type: 'object',
+                  },
+                  {
+                    allOf: [
+                      {},
+                      {
+                        properties: {
+                          aws: {
+                            description: 'AWS configurations for AWS-based connection types.',
+                            properties: {
+                              links: {
+                                description:
+                                  'List of one or more Uniform Resource Locators (URLs) that point to API sub-resources, related API resources, or both. RFC 5988 outlines these relationships.',
+                                externalDocs: {
+                                  description: 'Web Linking Specification (RFC 5988)',
+                                  url: 'https://datatracker.ietf.org/doc/html/rfc5988',
+                                },
+                                items: {
+                                  properties: {
+                                    href: {
+                                      description:
+                                        'Uniform Resource Locator (URL) that points another API resource to which this response has some relationship. This URL often begins with `https://cloud.mongodb.com/api/atlas`.',
+                                      example: 'https://cloud.mongodb.com/api/atlas',
+                                      type: 'string',
+                                    },
+                                    rel: {
+                                      description:
+                                        'Uniform Resource Locator (URL) that defines the semantic relationship between this resource and another API resource. This URL often begins with `https://cloud.mongodb.com/api/atlas`.',
+                                      example: 'self',
+                                      type: 'string',
+                                    },
+                                  },
+                                  type: 'object',
+                                },
+                                readOnly: true,
+                                type: 'array',
+                              },
+                              roleArn: {
+                                description:
+                                  'Amazon Resource Name (ARN) that identifies the Amazon Web Services (AWS) Identity and Access Management (IAM) role that MongoDB Cloud assumes when it accesses resources in your AWS account.',
+                                type: 'string',
+                              },
+                              testBucket: {
+                                description:
+                                  'The name of an S3 bucket used to check authorization of the passed-in IAM role ARN. This field applies only to S3 connections and is ignored for all other connection types and configurations.',
+                                type: 'string',
+                              },
+                            },
+                            type: 'object',
+                          },
+                          publicPrivateNetworking: {
+                            description:
+                              'Networking configuration for connections that support `PUBLIC` and `PRIVATE_LINK` access types. For GCP connections, use `PRIVATE_LINK` for GCP Private Service Connect (PSC).',
+                            properties: {
+                              access: {
+                                description: 'Information about networking access.',
+                                properties: {
+                                  connectionId: {
+                                    description:
+                                      'The ID of the Private Link connection. Required for `PRIVATE_LINK` type. For GCP connections using Private Service Connect (PSC), this is the PSC connection ID.',
+                                    example: '32b6e34b3d91647abb20e7b8',
+                                    pattern: '^([a-f0-9]{24})$',
+                                    type: 'string',
+                                  },
+                                  links: {
+                                    description:
+                                      'List of one or more Uniform Resource Locators (URLs) that point to API sub-resources, related API resources, or both. RFC 5988 outlines these relationships.',
+                                    externalDocs: {
+                                      description: 'Web Linking Specification (RFC 5988)',
+                                      url: 'https://datatracker.ietf.org/doc/html/rfc5988',
+                                    },
+                                    items: {
+                                      properties: {
+                                        href: {
+                                          description:
+                                            'Uniform Resource Locator (URL) that points another API resource to which this response has some relationship. This URL often begins with `https://cloud.mongodb.com/api/atlas`.',
+                                          example: 'https://cloud.mongodb.com/api/atlas',
+                                          type: 'string',
+                                        },
+                                        rel: {
+                                          description:
+                                            'Uniform Resource Locator (URL) that defines the semantic relationship between this resource and another API resource. This URL often begins with `https://cloud.mongodb.com/api/atlas`.',
+                                          example: 'self',
+                                          type: 'string',
+                                        },
+                                      },
+                                      type: 'object',
+                                    },
+                                    readOnly: true,
+                                    type: 'array',
+                                  },
+                                  type: {
+                                    description:
+                                      'Selected networking type. Either `PUBLIC` or `PRIVATE_LINK`. Defaults to `PUBLIC`. For AWS, Azure, and GCP connections, use `PRIVATE_LINK` for AWS PrivateLink, Azure Private Link, or GCP Private Service Connect (PSC) respectively.',
+                                    enum: ['PUBLIC', 'PRIVATE_LINK'],
+                                    title: 'Networking Access Type',
+                                    type: 'string',
+                                  },
+                                },
+                                type: 'object',
+                              },
+                              links: {
+                                description:
+                                  'List of one or more Uniform Resource Locators (URLs) that point to API sub-resources, related API resources, or both. RFC 5988 outlines these relationships.',
+                                externalDocs: {
+                                  description: 'Web Linking Specification (RFC 5988)',
+                                  url: 'https://datatracker.ietf.org/doc/html/rfc5988',
+                                },
+                                items: {
+                                  properties: {
+                                    href: {
+                                      description:
+                                        'Uniform Resource Locator (URL) that points another API resource to which this response has some relationship. This URL often begins with `https://cloud.mongodb.com/api/atlas`.',
+                                      example: 'https://cloud.mongodb.com/api/atlas',
+                                      type: 'string',
+                                    },
+                                    rel: {
+                                      description:
+                                        'Uniform Resource Locator (URL) that defines the semantic relationship between this resource and another API resource. This URL often begins with `https://cloud.mongodb.com/api/atlas`.',
+                                      example: 'self',
+                                      type: 'string',
+                                    },
+                                  },
+                                  type: 'object',
+                                },
+                                readOnly: true,
+                                type: 'array',
+                              },
+                            },
+                            type: 'object',
+                          },
+                        },
+                        type: 'object',
+                      },
+                    ],
+                    description: 'The configuration for AWS Lambda connections.',
+                    type: 'object',
+                  },
+                  {
+                    allOf: [
+                      {},
+                      {
+                        properties: {
+                          aws: {
+                            description: 'AWS configurations for AWS-based connection types.',
+                            properties: {
+                              links: {
+                                description:
+                                  'List of one or more Uniform Resource Locators (URLs) that point to API sub-resources, related API resources, or both. RFC 5988 outlines these relationships.',
+                                externalDocs: {
+                                  description: 'Web Linking Specification (RFC 5988)',
+                                  url: 'https://datatracker.ietf.org/doc/html/rfc5988',
+                                },
+                                items: {
+                                  properties: {
+                                    href: {
+                                      description:
+                                        'Uniform Resource Locator (URL) that points another API resource to which this response has some relationship. This URL often begins with `https://cloud.mongodb.com/api/atlas`.',
+                                      example: 'https://cloud.mongodb.com/api/atlas',
+                                      type: 'string',
+                                    },
+                                    rel: {
+                                      description:
+                                        'Uniform Resource Locator (URL) that defines the semantic relationship between this resource and another API resource. This URL often begins with `https://cloud.mongodb.com/api/atlas`.',
+                                      example: 'self',
+                                      type: 'string',
+                                    },
+                                  },
+                                  type: 'object',
+                                },
+                                readOnly: true,
+                                type: 'array',
+                              },
+                              roleArn: {
+                                description:
+                                  'Amazon Resource Name (ARN) that identifies the Amazon Web Services (AWS) Identity and Access Management (IAM) role that MongoDB Cloud assumes when it accesses resources in your AWS account.',
+                                type: 'string',
+                              },
+                              testBucket: {
+                                description:
+                                  'The name of an S3 bucket used to check authorization of the passed-in IAM role ARN. This field applies only to S3 connections and is ignored for all other connection types and configurations.',
+                                type: 'string',
+                              },
+                            },
+                            type: 'object',
+                          },
+                          networking: {
+                            description: 'Networking configuration for Streams connections.',
+                            properties: {
+                              access: {
+                                description: 'Information about networking access.',
+                                properties: {
+                                  connectionId: {
+                                    description:
+                                      'Reserved. Will be used by `PRIVATE_LINK` connection type. Setting this field with any other networking access type returns a validation error.',
+                                    example: '32b6e34b3d91647abb20e7b8',
+                                    pattern: '^([a-f0-9]{24})$',
+                                    type: 'string',
+                                  },
+                                  links: {
+                                    description:
+                                      'List of one or more Uniform Resource Locators (URLs) that point to API sub-resources, related API resources, or both. RFC 5988 outlines these relationships.',
+                                    externalDocs: {
+                                      description: 'Web Linking Specification (RFC 5988)',
+                                      url: 'https://datatracker.ietf.org/doc/html/rfc5988',
+                                    },
+                                    items: {
+                                      properties: {
+                                        href: {
+                                          description:
+                                            'Uniform Resource Locator (URL) that points another API resource to which this response has some relationship. This URL often begins with `https://cloud.mongodb.com/api/atlas`.',
+                                          example: 'https://cloud.mongodb.com/api/atlas',
+                                          type: 'string',
+                                        },
+                                        rel: {
+                                          description:
+                                            'Uniform Resource Locator (URL) that defines the semantic relationship between this resource and another API resource. This URL often begins with `https://cloud.mongodb.com/api/atlas`.',
+                                          example: 'self',
+                                          type: 'string',
+                                        },
+                                      },
+                                      type: 'object',
+                                    },
+                                    readOnly: true,
+                                    type: 'array',
+                                  },
+                                  name: {
+                                    description:
+                                      'Reserved. Will be used by `PRIVATE_LINK` connection type.',
+                                    type: 'string',
+                                  },
+                                  tgwRouteId: {
+                                    description:
+                                      'Reserved. Will be used by `TRANSIT_GATEWAY` connection type.',
+                                    example: '32b6e34b3d91647abb20e7b8',
+                                    pattern: '^([a-f0-9]{24})$',
+                                    type: 'string',
+                                  },
+                                  type: {
+                                    description:
+                                      'Selected networking type. Either `PUBLIC`, `VPC`, `PRIVATE_LINK`, or `TRANSIT_GATEWAY`. Defaults to `PUBLIC`. For VPC, ensure that VPC peering exists and connectivity has been established between Atlas VPC and the VPC where Kafka cluster is hosted for the connection to function properly. `TRANSIT_GATEWAY` support is coming soon.',
+                                    enum: ['PUBLIC', 'VPC', 'PRIVATE_LINK', 'TRANSIT_GATEWAY'],
+                                    title: 'Networking Access Type',
+                                    type: 'string',
+                                  },
+                                },
+                                type: 'object',
+                              },
+                              links: {
+                                description:
+                                  'List of one or more Uniform Resource Locators (URLs) that point to API sub-resources, related API resources, or both. RFC 5988 outlines these relationships.',
+                                externalDocs: {
+                                  description: 'Web Linking Specification (RFC 5988)',
+                                  url: 'https://datatracker.ietf.org/doc/html/rfc5988',
+                                },
+                                items: {
+                                  properties: {
+                                    href: {
+                                      description:
+                                        'Uniform Resource Locator (URL) that points another API resource to which this response has some relationship. This URL often begins with `https://cloud.mongodb.com/api/atlas`.',
+                                      example: 'https://cloud.mongodb.com/api/atlas',
+                                      type: 'string',
+                                    },
+                                    rel: {
+                                      description:
+                                        'Uniform Resource Locator (URL) that defines the semantic relationship between this resource and another API resource. This URL often begins with `https://cloud.mongodb.com/api/atlas`.',
+                                      example: 'self',
+                                      type: 'string',
+                                    },
+                                  },
+                                  type: 'object',
+                                },
+                                readOnly: true,
+                                type: 'array',
+                              },
+                            },
+                            type: 'object',
+                          },
+                        },
+                        type: 'object',
+                      },
+                    ],
+                    description: 'The configuration for S3 connections.',
+                    type: 'object',
+                  },
+                  {
+                    allOf: [
+                      {},
+                      {
+                        properties: {
+                          aws: {
+                            description: 'AWS configurations for AWS-based connection types.',
+                            properties: {
+                              links: {
+                                description:
+                                  'List of one or more Uniform Resource Locators (URLs) that point to API sub-resources, related API resources, or both. RFC 5988 outlines these relationships.',
+                                externalDocs: {
+                                  description: 'Web Linking Specification (RFC 5988)',
+                                  url: 'https://datatracker.ietf.org/doc/html/rfc5988',
+                                },
+                                items: {
+                                  properties: {
+                                    href: {
+                                      description:
+                                        'Uniform Resource Locator (URL) that points another API resource to which this response has some relationship. This URL often begins with `https://cloud.mongodb.com/api/atlas`.',
+                                      example: 'https://cloud.mongodb.com/api/atlas',
+                                      type: 'string',
+                                    },
+                                    rel: {
+                                      description:
+                                        'Uniform Resource Locator (URL) that defines the semantic relationship between this resource and another API resource. This URL often begins with `https://cloud.mongodb.com/api/atlas`.',
+                                      example: 'self',
+                                      type: 'string',
+                                    },
+                                  },
+                                  type: 'object',
+                                },
+                                readOnly: true,
+                                type: 'array',
+                              },
+                              roleArn: {
+                                description:
+                                  'Amazon Resource Name (ARN) that identifies the Amazon Web Services (AWS) Identity and Access Management (IAM) role that MongoDB Cloud assumes when it accesses resources in your AWS account.',
+                                type: 'string',
+                              },
+                              testBucket: {
+                                description:
+                                  'The name of an S3 bucket used to check authorization of the passed-in IAM role ARN. This field applies only to S3 connections and is ignored for all other connection types and configurations.',
+                                type: 'string',
+                              },
+                            },
+                            type: 'object',
+                          },
+                          networking: {
+                            description: 'Networking configuration for Streams connections.',
+                            properties: {
+                              access: {
+                                description: 'Information about networking access.',
+                                properties: {
+                                  connectionId: {
+                                    description:
+                                      'Reserved. Will be used by `PRIVATE_LINK` connection type. Setting this field with any other networking access type returns a validation error.',
+                                    example: '32b6e34b3d91647abb20e7b8',
+                                    pattern: '^([a-f0-9]{24})$',
+                                    type: 'string',
+                                  },
+                                  links: {
+                                    description:
+                                      'List of one or more Uniform Resource Locators (URLs) that point to API sub-resources, related API resources, or both. RFC 5988 outlines these relationships.',
+                                    externalDocs: {
+                                      description: 'Web Linking Specification (RFC 5988)',
+                                      url: 'https://datatracker.ietf.org/doc/html/rfc5988',
+                                    },
+                                    items: {
+                                      properties: {
+                                        href: {
+                                          description:
+                                            'Uniform Resource Locator (URL) that points another API resource to which this response has some relationship. This URL often begins with `https://cloud.mongodb.com/api/atlas`.',
+                                          example: 'https://cloud.mongodb.com/api/atlas',
+                                          type: 'string',
+                                        },
+                                        rel: {
+                                          description:
+                                            'Uniform Resource Locator (URL) that defines the semantic relationship between this resource and another API resource. This URL often begins with `https://cloud.mongodb.com/api/atlas`.',
+                                          example: 'self',
+                                          type: 'string',
+                                        },
+                                      },
+                                      type: 'object',
+                                    },
+                                    readOnly: true,
+                                    type: 'array',
+                                  },
+                                  name: {
+                                    description:
+                                      'Reserved. Will be used by `PRIVATE_LINK` connection type.',
+                                    type: 'string',
+                                  },
+                                  tgwRouteId: {
+                                    description:
+                                      'Reserved. Will be used by `TRANSIT_GATEWAY` connection type.',
+                                    example: '32b6e34b3d91647abb20e7b8',
+                                    pattern: '^([a-f0-9]{24})$',
+                                    type: 'string',
+                                  },
+                                  type: {
+                                    description:
+                                      'Selected networking type. Either `PUBLIC`, `VPC`, `PRIVATE_LINK`, or `TRANSIT_GATEWAY`. Defaults to `PUBLIC`. For VPC, ensure that VPC peering exists and connectivity has been established between Atlas VPC and the VPC where Kafka cluster is hosted for the connection to function properly. `TRANSIT_GATEWAY` support is coming soon.',
+                                    enum: ['PUBLIC', 'VPC', 'PRIVATE_LINK', 'TRANSIT_GATEWAY'],
+                                    title: 'Networking Access Type',
+                                    type: 'string',
+                                  },
+                                },
+                                type: 'object',
+                              },
+                              links: {
+                                description:
+                                  'List of one or more Uniform Resource Locators (URLs) that point to API sub-resources, related API resources, or both. RFC 5988 outlines these relationships.',
+                                externalDocs: {
+                                  description: 'Web Linking Specification (RFC 5988)',
+                                  url: 'https://datatracker.ietf.org/doc/html/rfc5988',
+                                },
+                                items: {
+                                  properties: {
+                                    href: {
+                                      description:
+                                        'Uniform Resource Locator (URL) that points another API resource to which this response has some relationship. This URL often begins with `https://cloud.mongodb.com/api/atlas`.',
+                                      example: 'https://cloud.mongodb.com/api/atlas',
+                                      type: 'string',
+                                    },
+                                    rel: {
+                                      description:
+                                        'Uniform Resource Locator (URL) that defines the semantic relationship between this resource and another API resource. This URL often begins with `https://cloud.mongodb.com/api/atlas`.',
+                                      example: 'self',
+                                      type: 'string',
+                                    },
+                                  },
+                                  type: 'object',
+                                },
+                                readOnly: true,
+                                type: 'array',
+                              },
+                            },
+                            type: 'object',
+                          },
+                        },
+                        type: 'object',
+                      },
+                    ],
+                    description: 'The configuration for AWS Kinesis Data Stream connections.',
+                    type: 'object',
+                  },
+                  {
+                    allOf: [
+                      {},
+                      {
+                        properties: {
+                          provider: {
+                            description: 'The Schema Registry provider.',
+                            enum: ['CONFLUENT'],
+                            type: 'string',
+                          },
+                          schemaRegistryAuthentication: {
+                            description: 'Authentication configuration for Schema Registry.',
+                            discriminator: {
+                              propertyName: 'type',
+                              mapping: {
+                                SASL_INHERIT:
+                                  '#/components/schemas/ConfluentSaslInheritAuthentication',
+                                USER_INFO: '#/components/schemas/ConfluentUserInfoAuthentication',
+                              },
+                            },
+                            oneOf: [
+                              {
+                                allOf: [
+                                  {},
+                                  {
+                                    properties: {
+                                      password: {
+                                        description: 'Password or Private Key for authentication.',
+                                        type: 'string',
+                                        writeOnly: true,
+                                      },
+                                      username: {
+                                        description: 'Username or Public Key for authentication.',
+                                        type: 'string',
+                                      },
+                                    },
+                                    type: 'object',
+                                  },
+                                ],
+                                description:
+                                  'Authentication details for type `USER_INFO` with username and password for Confluent Schema Registry.',
+                                required: ['password', 'type', 'username'],
+                                type: 'object',
+                              },
+                              {
+                                allOf: [{}],
+                                description:
+                                  'Inherits the authentication configuration from Kafka for the Confluent Schema Registry.',
+                                required: ['type'],
+                                type: 'object',
+                              },
+                            ],
+                            properties: {
+                              type: {
+                                description:
+                                  'Authentication type discriminator. Specifies the authentication mechanism for Confluent Schema Registry.',
+                                enum: ['USER_INFO', 'SASL_INHERIT'],
+                                type: 'string',
+                              },
+                            },
+                            required: ['type'],
+                            type: 'object',
+                          },
+                          schemaRegistryUrls: {
+                            description:
+                              'List of Schema Registry endpoint URLs used by this connection. Each URL must use the http or https scheme and specify a valid host and optional port.',
+                            items: {
+                              description: 'Schema Registry URL.',
+                              format: 'uri',
+                              type: 'string',
+                            },
+                            maxItems: 10,
+                            type: 'array',
+                            uniqueItems: true,
+                          },
+                        },
+                        type: 'object',
+                      },
+                    ],
+                    description: 'The configuration for Schema Registry connections.',
+                    required: ['provider', 'schemaRegistryAuthentication', 'schemaRegistryUrls'],
+                    type: 'object',
+                  },
+                  {
+                    allOf: [
+                      {},
+                      {
+                        properties: {
+                          azure: {
+                            description: 'Azure-specific configuration for the connection.',
+                            properties: {
+                              links: {
+                                description:
+                                  'List of one or more Uniform Resource Locators (URLs) that point to API sub-resources, related API resources, or both. RFC 5988 outlines these relationships.',
+                                externalDocs: {
+                                  description: 'Web Linking Specification (RFC 5988)',
+                                  url: 'https://datatracker.ietf.org/doc/html/rfc5988',
+                                },
+                                items: {
+                                  properties: {
+                                    href: {
+                                      description:
+                                        'Uniform Resource Locator (URL) that points another API resource to which this response has some relationship. This URL often begins with `https://cloud.mongodb.com/api/atlas`.',
+                                      example: 'https://cloud.mongodb.com/api/atlas',
+                                      type: 'string',
+                                    },
+                                    rel: {
+                                      description:
+                                        'Uniform Resource Locator (URL) that defines the semantic relationship between this resource and another API resource. This URL often begins with `https://cloud.mongodb.com/api/atlas`.',
+                                      example: 'self',
+                                      type: 'string',
+                                    },
+                                  },
+                                  type: 'object',
+                                },
+                                readOnly: true,
+                                type: 'array',
+                              },
+                              region: {
+                                deprecated: true,
+                                description:
+                                  'Deprecated: Azure region where the storage account is located.',
+                                type: 'string',
+                              },
+                              servicePrincipalId: {
+                                description:
+                                  'Unique ID of the Azure Service Principal that has access to the storage account.',
+                                type: 'string',
+                              },
+                              storageAccountName: {
+                                description: 'Name of the Azure Storage Account to connect to.',
+                                type: 'string',
+                              },
+                            },
+                            type: 'object',
+                          },
+                          publicPrivateNetworking: {
+                            description:
+                              'Networking configuration for connections that support `PUBLIC` and `PRIVATE_LINK` access types. For GCP connections, use `PRIVATE_LINK` for GCP Private Service Connect (PSC).',
+                            properties: {
+                              access: {
+                                description: 'Information about networking access.',
+                                properties: {
+                                  connectionId: {
+                                    description:
+                                      'The ID of the Private Link connection. Required for `PRIVATE_LINK` type. For GCP connections using Private Service Connect (PSC), this is the PSC connection ID.',
+                                    example: '32b6e34b3d91647abb20e7b8',
+                                    pattern: '^([a-f0-9]{24})$',
+                                    type: 'string',
+                                  },
+                                  links: {
+                                    description:
+                                      'List of one or more Uniform Resource Locators (URLs) that point to API sub-resources, related API resources, or both. RFC 5988 outlines these relationships.',
+                                    externalDocs: {
+                                      description: 'Web Linking Specification (RFC 5988)',
+                                      url: 'https://datatracker.ietf.org/doc/html/rfc5988',
+                                    },
+                                    items: {
+                                      properties: {
+                                        href: {
+                                          description:
+                                            'Uniform Resource Locator (URL) that points another API resource to which this response has some relationship. This URL often begins with `https://cloud.mongodb.com/api/atlas`.',
+                                          example: 'https://cloud.mongodb.com/api/atlas',
+                                          type: 'string',
+                                        },
+                                        rel: {
+                                          description:
+                                            'Uniform Resource Locator (URL) that defines the semantic relationship between this resource and another API resource. This URL often begins with `https://cloud.mongodb.com/api/atlas`.',
+                                          example: 'self',
+                                          type: 'string',
+                                        },
+                                      },
+                                      type: 'object',
+                                    },
+                                    readOnly: true,
+                                    type: 'array',
+                                  },
+                                  type: {
+                                    description:
+                                      'Selected networking type. Either `PUBLIC` or `PRIVATE_LINK`. Defaults to `PUBLIC`. For AWS, Azure, and GCP connections, use `PRIVATE_LINK` for AWS PrivateLink, Azure Private Link, or GCP Private Service Connect (PSC) respectively.',
+                                    enum: ['PUBLIC', 'PRIVATE_LINK'],
+                                    title: 'Networking Access Type',
+                                    type: 'string',
+                                  },
+                                },
+                                type: 'object',
+                              },
+                              links: {
+                                description:
+                                  'List of one or more Uniform Resource Locators (URLs) that point to API sub-resources, related API resources, or both. RFC 5988 outlines these relationships.',
+                                externalDocs: {
+                                  description: 'Web Linking Specification (RFC 5988)',
+                                  url: 'https://datatracker.ietf.org/doc/html/rfc5988',
+                                },
+                                items: {
+                                  properties: {
+                                    href: {
+                                      description:
+                                        'Uniform Resource Locator (URL) that points another API resource to which this response has some relationship. This URL often begins with `https://cloud.mongodb.com/api/atlas`.',
+                                      example: 'https://cloud.mongodb.com/api/atlas',
+                                      type: 'string',
+                                    },
+                                    rel: {
+                                      description:
+                                        'Uniform Resource Locator (URL) that defines the semantic relationship between this resource and another API resource. This URL often begins with `https://cloud.mongodb.com/api/atlas`.',
+                                      example: 'self',
+                                      type: 'string',
+                                    },
+                                  },
+                                  type: 'object',
+                                },
+                                readOnly: true,
+                                type: 'array',
+                              },
+                            },
+                            type: 'object',
+                          },
+                        },
+                        type: 'object',
+                      },
+                    ],
+                    description: 'The configuration for Azure Blob Storage connections.',
+                    type: 'object',
+                  },
+                  {
+                    allOf: [
+                      {},
+                      {
+                        properties: {
+                          gcp: {
+                            description: 'GCP-specific configuration for the connection.',
+                            properties: {
+                              links: {
+                                description:
+                                  'List of one or more Uniform Resource Locators (URLs) that point to API sub-resources, related API resources, or both. RFC 5988 outlines these relationships.',
+                                externalDocs: {
+                                  description: 'Web Linking Specification (RFC 5988)',
+                                  url: 'https://datatracker.ietf.org/doc/html/rfc5988',
+                                },
+                                items: {
+                                  properties: {
+                                    href: {
+                                      description:
+                                        'Uniform Resource Locator (URL) that points another API resource to which this response has some relationship. This URL often begins with `https://cloud.mongodb.com/api/atlas`.',
+                                      example: 'https://cloud.mongodb.com/api/atlas',
+                                      type: 'string',
+                                    },
+                                    rel: {
+                                      description:
+                                        'Uniform Resource Locator (URL) that defines the semantic relationship between this resource and another API resource. This URL often begins with `https://cloud.mongodb.com/api/atlas`.',
+                                      example: 'self',
+                                      type: 'string',
+                                    },
+                                  },
+                                  type: 'object',
+                                },
+                                readOnly: true,
+                                type: 'array',
+                              },
+                              serviceAccountId: {
+                                description:
+                                  'Email address of the Google Cloud Platform (GCP) service account that Atlas Streams uses to connect to the GCP Pub/Sub resources.',
+                                type: 'string',
+                              },
+                            },
+                            type: 'object',
+                          },
+                          publicPrivateNetworking: {
+                            description:
+                              'Networking configuration for connections that support `PUBLIC` and `PRIVATE_LINK` access types. For GCP connections, use `PRIVATE_LINK` for GCP Private Service Connect (PSC).',
+                            properties: {
+                              access: {
+                                description: 'Information about networking access.',
+                                properties: {
+                                  connectionId: {
+                                    description:
+                                      'The ID of the Private Link connection. Required for `PRIVATE_LINK` type. For GCP connections using Private Service Connect (PSC), this is the PSC connection ID.',
+                                    example: '32b6e34b3d91647abb20e7b8',
+                                    pattern: '^([a-f0-9]{24})$',
+                                    type: 'string',
+                                  },
+                                  links: {
+                                    description:
+                                      'List of one or more Uniform Resource Locators (URLs) that point to API sub-resources, related API resources, or both. RFC 5988 outlines these relationships.',
+                                    externalDocs: {
+                                      description: 'Web Linking Specification (RFC 5988)',
+                                      url: 'https://datatracker.ietf.org/doc/html/rfc5988',
+                                    },
+                                    items: {
+                                      properties: {
+                                        href: {
+                                          description:
+                                            'Uniform Resource Locator (URL) that points another API resource to which this response has some relationship. This URL often begins with `https://cloud.mongodb.com/api/atlas`.',
+                                          example: 'https://cloud.mongodb.com/api/atlas',
+                                          type: 'string',
+                                        },
+                                        rel: {
+                                          description:
+                                            'Uniform Resource Locator (URL) that defines the semantic relationship between this resource and another API resource. This URL often begins with `https://cloud.mongodb.com/api/atlas`.',
+                                          example: 'self',
+                                          type: 'string',
+                                        },
+                                      },
+                                      type: 'object',
+                                    },
+                                    readOnly: true,
+                                    type: 'array',
+                                  },
+                                  type: {
+                                    description:
+                                      'Selected networking type. Either `PUBLIC` or `PRIVATE_LINK`. Defaults to `PUBLIC`. For AWS, Azure, and GCP connections, use `PRIVATE_LINK` for AWS PrivateLink, Azure Private Link, or GCP Private Service Connect (PSC) respectively.',
+                                    enum: ['PUBLIC', 'PRIVATE_LINK'],
+                                    title: 'Networking Access Type',
+                                    type: 'string',
+                                  },
+                                },
+                                type: 'object',
+                              },
+                              links: {
+                                description:
+                                  'List of one or more Uniform Resource Locators (URLs) that point to API sub-resources, related API resources, or both. RFC 5988 outlines these relationships.',
+                                externalDocs: {
+                                  description: 'Web Linking Specification (RFC 5988)',
+                                  url: 'https://datatracker.ietf.org/doc/html/rfc5988',
+                                },
+                                items: {
+                                  properties: {
+                                    href: {
+                                      description:
+                                        'Uniform Resource Locator (URL) that points another API resource to which this response has some relationship. This URL often begins with `https://cloud.mongodb.com/api/atlas`.',
+                                      example: 'https://cloud.mongodb.com/api/atlas',
+                                      type: 'string',
+                                    },
+                                    rel: {
+                                      description:
+                                        'Uniform Resource Locator (URL) that defines the semantic relationship between this resource and another API resource. This URL often begins with `https://cloud.mongodb.com/api/atlas`.',
+                                      example: 'self',
+                                      type: 'string',
+                                    },
+                                  },
+                                  type: 'object',
+                                },
+                                readOnly: true,
+                                type: 'array',
+                              },
+                            },
+                            type: 'object',
+                          },
+                        },
+                        type: 'object',
+                      },
+                    ],
+                    description: 'The configuration for GCP Pub/Sub connections.',
+                    type: 'object',
+                  },
+                  {},
+                ],
+                properties: {
+                  errorMessage: {
+                    description: 'Connection error message.',
+                    readOnly: true,
+                    type: 'string',
+                  },
+                  id: {
+                    description: 'Unique identifier of the connection.',
+                    readOnly: true,
+                    type: 'string',
+                  },
+                  links: {
+                    description:
+                      'List of one or more Uniform Resource Locators (URLs) that point to API sub-resources, related API resources, or both. RFC 5988 outlines these relationships.',
+                    externalDocs: {
+                      description: 'Web Linking Specification (RFC 5988)',
+                      url: 'https://datatracker.ietf.org/doc/html/rfc5988',
+                    },
+                    items: {
+                      properties: {
+                        href: {
+                          description:
+                            'Uniform Resource Locator (URL) that points another API resource to which this response has some relationship. This URL often begins with `https://cloud.mongodb.com/api/atlas`.',
+                          example: 'https://cloud.mongodb.com/api/atlas',
+                          type: 'string',
+                        },
+                        rel: {
+                          description:
+                            'Uniform Resource Locator (URL) that defines the semantic relationship between this resource and another API resource. This URL often begins with `https://cloud.mongodb.com/api/atlas`.',
+                          example: 'self',
+                          type: 'string',
+                        },
+                      },
+                      type: 'object',
+                    },
+                    readOnly: true,
+                    type: 'array',
+                  },
+                  name: {
+                    description:
+                      'Human-readable label that identifies the stream connection. For the Sample type, this is the name of the sample source.',
+                    type: 'string',
+                  },
+                  region: { description: 'Connection region.', type: 'string' },
+                  state: {
+                    description: 'Connection state.',
+                    enum: ['PENDING', 'READY', 'DELETING', 'FAILED'],
+                    readOnly: true,
+                    type: 'string',
+                  },
+                  type: {
+                    description: 'Connection type.',
+                    enum: [
+                      'Kafka',
+                      'Cluster',
+                      'Sample',
+                      'Https',
+                      'AzureBlobStorage',
+                      'AWSLambda',
+                      'AWSKinesisDataStreams',
+                      'SchemaRegistry',
+                      'GCPPubSub',
+                      'DataCatalog',
+                    ],
+                    type: 'string',
+                  },
+                },
+                readOnly: true,
+                type: 'object',
+              },
+              {
+                properties: {
+                  catalogUrl: {
+                    description:
+                      "Base HTTPS URL of the catalog. Must be on the provider's domain: `*.cloud.databricks.com` or `*.azuredatabricks.net` for Databricks Unity, and `*.snowflakecomputing.com` for Snowflake Horizon.",
+                    format: 'uri',
+                    type: 'string',
+                  },
+                },
+                type: 'object',
+              },
+            ],
+            description: 'The configuration for Iceberg Data Catalog connections.',
+            discriminator: {
+              propertyName: 'catalogProvider',
+              mapping: {
+                DATABRICKS_UNITY: '#/components/schemas/StreamsDatabricksUnityCatalogConnection',
+                SNOWFLAKE_HORIZON: '#/components/schemas/StreamsSnowflakeHorizonCatalogConnection',
+              },
+            },
+            oneOf: [
+              {},
+              {
+                allOf: [
+                  {},
+                  {
+                    properties: {
+                      catalogProvider: {
+                        description:
+                          'Catalog system the connection points at. Cannot be changed after creation.',
+                        enum: ['SNOWFLAKE_HORIZON'],
+                        type: 'string',
+                      },
+                      snowflake: {
+                        description: 'Snowflake settings for a connection.',
+                        properties: {
+                          authentication: {
+                            description:
+                              'Snowflake service user and key pair used to authenticate to Snowflake.',
+                            properties: {
+                              account: {
+                                description: 'Snowflake account identifier.',
+                                type: 'string',
+                              },
+                              privateKey: {
+                                description:
+                                  "Private key of the service user's key pair. Never returned in responses; omit or leave blank on update to keep the stored key.",
+                                format: 'password',
+                                type: 'string',
+                                writeOnly: true,
+                              },
+                              role: {
+                                description: 'Snowflake role the service user assumes.',
+                                type: 'string',
+                              },
+                              user: { description: 'Snowflake service user.', type: 'string' },
+                            },
+                            required: ['account', 'privateKey', 'role', 'user'],
+                            type: 'object',
+                          },
+                        },
+                        required: ['authentication'],
+                        type: 'object',
+                      },
+                    },
+                    type: 'object',
+                  },
+                ],
+                description: 'The configuration for a Snowflake Horizon catalog connection.',
+                required: ['catalogProvider', 'catalogUrl', 'snowflake'],
+                type: 'object',
+              },
+            ],
+            required: ['catalogUrl'],
+            type: 'object',
+          },
+          {
+            properties: {
+              catalogProvider: {
+                description:
+                  'Catalog system the connection points at. Cannot be changed after creation.',
+                enum: ['DATABRICKS_UNITY'],
+                type: 'string',
+              },
+              databricks: {
+                description: 'Databricks settings for a connection.',
+                properties: {
+                  authentication: {
+                    description:
+                      'Databricks service principal credentials used to obtain an OAuth token.',
+                    properties: {
+                      clientId: {
+                        description: 'OAuth client ID of the Databricks service principal.',
+                        type: 'string',
+                      },
+                      clientSecret: {
+                        description:
+                          'OAuth client secret of the Databricks service principal. Never returned in responses; omit or leave blank on update to keep the stored secret.',
+                        format: 'password',
+                        type: 'string',
+                        writeOnly: true,
+                      },
+                    },
+                    required: ['clientId', 'clientSecret'],
+                    type: 'object',
+                  },
+                },
+                required: ['authentication'],
+                type: 'object',
+              },
+            },
+            type: 'object',
+          },
+        ],
+        description: 'The configuration for a Databricks Unity Catalog connection.',
+        required: ['catalogProvider', 'catalogUrl', 'databricks'],
+        type: 'object',
+      },
+      {
+        allOf: [
+          {
+            allOf: [
+              {
+                description: 'Settings that define a connection to an external data store.',
+                discriminator: {
+                  propertyName: 'type',
+                  mapping: {
+                    AWSKinesisDataStreams:
+                      '#/components/schemas/StreamsAWSKinesisDataStreamsConnection',
+                    AWSLambda: '#/components/schemas/StreamsAWSLambdaConnection',
+                    AzureBlobStorage: '#/components/schemas/StreamsAzureBlobStorageConnection',
+                    Cluster: '#/components/schemas/StreamsClusterConnection',
+                    DataCatalog: '#/components/schemas/StreamsDataCatalogConnection',
+                    GCPPubSub: '#/components/schemas/StreamsGCPPubSubConnection',
+                    Https: '#/components/schemas/StreamsHttpsConnection',
+                    Kafka: '#/components/schemas/StreamsKafkaConnection',
+                    S3: '#/components/schemas/StreamsS3Connection',
+                    Sample: '#/components/schemas/StreamsSampleConnection',
+                    SchemaRegistry: '#/components/schemas/StreamsSchemaRegistryConnection',
+                  },
+                },
+                oneOf: [
+                  { allOf: [{}], type: 'object' },
+                  {
+                    allOf: [
+                      {},
+                      {
+                        properties: {
+                          clusterGroupId: {
+                            description:
+                              'Unique 24-hexadecimal digit string that identifies the project that contains the configured cluster. Required if the ID does not match the project containing the streams workspace. You must first enable the organization setting.',
+                            nullable: true,
+                            type: 'string',
+                          },
+                          clusterName: {
+                            description: 'Name of the cluster configured for this connection.',
+                            type: 'string',
+                          },
+                          dbRoleToExecute: {
+                            description:
+                              'Name of a built-in or custom DB Role to connect to a MongoDB Cloud Cluster.',
+                            externalDocs: {
+                              description: 'Built-in Roles',
+                              url: 'https://www.mongodb.com/docs/atlas/mongodb-users-roles-and-privileges/#mongodb-atlasrole-atlasAdmin',
+                            },
+                            properties: {
+                              links: {
+                                description:
+                                  'List of one or more Uniform Resource Locators (URLs) that point to API sub-resources, related API resources, or both. RFC 5988 outlines these relationships.',
+                                externalDocs: {
+                                  description: 'Web Linking Specification (RFC 5988)',
+                                  url: 'https://datatracker.ietf.org/doc/html/rfc5988',
+                                },
+                                items: {
+                                  properties: {
+                                    href: {
+                                      description:
+                                        'Uniform Resource Locator (URL) that points another API resource to which this response has some relationship. This URL often begins with `https://cloud.mongodb.com/api/atlas`.',
+                                      example: 'https://cloud.mongodb.com/api/atlas',
+                                      type: 'string',
+                                    },
+                                    rel: {
+                                      description:
+                                        'Uniform Resource Locator (URL) that defines the semantic relationship between this resource and another API resource. This URL often begins with `https://cloud.mongodb.com/api/atlas`.',
+                                      example: 'self',
+                                      type: 'string',
+                                    },
+                                  },
+                                  type: 'object',
+                                },
+                                readOnly: true,
+                                type: 'array',
+                              },
+                              role: {
+                                description:
+                                  'The name of the role to use. Can be a built in role or a custom role.',
+                                type: 'string',
+                              },
+                              type: {
+                                description:
+                                  'Type of the DB role. Can be either Built In or Custom.',
+                                enum: ['BUILT_IN', 'CUSTOM'],
+                                title: 'DB Role Type',
+                                type: 'string',
+                              },
+                            },
+                            type: 'object',
+                          },
+                        },
+                        type: 'object',
+                      },
+                    ],
+                    type: 'object',
+                  },
+                  {
+                    allOf: [
+                      {},
+                      {
+                        properties: {
+                          authentication: {
+                            description:
+                              'User credentials required to connect to a Kafka Cluster. Includes the authentication type, as well as the parameters for that authentication mode.',
+                            properties: {
+                              aws: {
+                                description: 'AWS configurations for AWS-based connection types.',
+                                properties: {
+                                  links: {
+                                    description:
+                                      'List of one or more Uniform Resource Locators (URLs) that point to API sub-resources, related API resources, or both. RFC 5988 outlines these relationships.',
+                                    externalDocs: {
+                                      description: 'Web Linking Specification (RFC 5988)',
+                                      url: 'https://datatracker.ietf.org/doc/html/rfc5988',
+                                    },
+                                    items: {
+                                      properties: {
+                                        href: {
+                                          description:
+                                            'Uniform Resource Locator (URL) that points another API resource to which this response has some relationship. This URL often begins with `https://cloud.mongodb.com/api/atlas`.',
+                                          example: 'https://cloud.mongodb.com/api/atlas',
+                                          type: 'string',
+                                        },
+                                        rel: {
+                                          description:
+                                            'Uniform Resource Locator (URL) that defines the semantic relationship between this resource and another API resource. This URL often begins with `https://cloud.mongodb.com/api/atlas`.',
+                                          example: 'self',
+                                          type: 'string',
+                                        },
+                                      },
+                                      type: 'object',
+                                    },
+                                    readOnly: true,
+                                    type: 'array',
+                                  },
+                                  roleArn: {
+                                    description:
+                                      'Amazon Resource Name (ARN) that identifies the Amazon Web Services (AWS) Identity and Access Management (IAM) role that MongoDB Cloud assumes when it accesses resources in your AWS account.',
+                                    type: 'string',
+                                  },
+                                  testBucket: {
+                                    description:
+                                      'The name of an S3 bucket used to check authorization of the passed-in IAM role ARN. This field applies only to S3 connections and is ignored for all other connection types and configurations.',
+                                    type: 'string',
+                                  },
+                                },
+                                type: 'object',
+                              },
+                              clientId: {
+                                description:
+                                  'OIDC client identifier for authentication to the Kafka cluster.',
+                                type: 'string',
+                              },
+                              clientSecret: {
+                                description:
+                                  'OIDC client secret for authentication to the Kafka cluster.',
+                                format: 'password',
+                                type: 'string',
+                                writeOnly: true,
+                              },
+                              links: {
+                                description:
+                                  'List of one or more Uniform Resource Locators (URLs) that point to API sub-resources, related API resources, or both. RFC 5988 outlines these relationships.',
+                                externalDocs: {
+                                  description: 'Web Linking Specification (RFC 5988)',
+                                  url: 'https://datatracker.ietf.org/doc/html/rfc5988',
+                                },
+                                items: {
+                                  properties: {
+                                    href: {
+                                      description:
+                                        'Uniform Resource Locator (URL) that points another API resource to which this response has some relationship. This URL often begins with `https://cloud.mongodb.com/api/atlas`.',
+                                      example: 'https://cloud.mongodb.com/api/atlas',
+                                      type: 'string',
+                                    },
+                                    rel: {
+                                      description:
+                                        'Uniform Resource Locator (URL) that defines the semantic relationship between this resource and another API resource. This URL often begins with `https://cloud.mongodb.com/api/atlas`.',
+                                      example: 'self',
+                                      type: 'string',
+                                    },
+                                  },
+                                  type: 'object',
+                                },
+                                readOnly: true,
+                                type: 'array',
+                              },
+                              mechanism: {
+                                description:
+                                  'Style of authentication. Can be one of PLAIN, SCRAM-256, SCRAM-512, or OAUTHBEARER.',
+                                type: 'string',
+                              },
+                              method: {
+                                description:
+                                  'SASL OAUTHBEARER authentication method. Currently, only OIDC is supported.',
+                                type: 'string',
+                              },
+                              password: {
+                                description:
+                                  'Password of the account to connect to the Kafka cluster.',
+                                format: 'password',
+                                type: 'string',
+                                writeOnly: true,
+                              },
+                              saslOauthbearerExtensions: {
+                                description:
+                                  'SASL OAUTHBEARER extensions parameter for additional OAuth2 configuration.',
+                                type: 'string',
+                              },
+                              scope: {
+                                description:
+                                  'OIDC scope parameter defining the access permissions requested.',
+                                type: 'string',
+                              },
+                              sslCertificate: {
+                                description: 'SSL certificate for client authentication to Kafka.',
+                                type: 'string',
+                              },
+                              sslKey: {
+                                description: 'SSL key for client authentication to Kafka.',
+                                format: 'password',
+                                type: 'string',
+                                writeOnly: true,
+                              },
+                              sslKeyPassword: {
+                                description:
+                                  'Password for the SSL key, if it is password protected.',
+                                format: 'password',
+                                type: 'string',
+                                writeOnly: true,
+                              },
+                              tokenEndpointUrl: {
+                                description: 'OIDC token endpoint URL for obtaining access tokens.',
+                                type: 'string',
+                              },
+                              username: {
+                                description:
+                                  'Username of the account to connect to the Kafka cluster.',
+                                type: 'string',
+                              },
+                            },
+                            type: 'object',
+                          },
+                          bootstrapServers: {
+                            description: 'Comma separated list of server addresses.',
+                            type: 'string',
+                          },
+                          config: {
+                            additionalProperties: {
+                              description:
+                                "Map of Kafka key-value pairs for optional configuration. This object is flat, and keys can have '.' characters.",
+                              example:
+                                '{"group.protocol.type":"consumer","debug":"queue, msg, protocol"}',
+                              type: 'string',
+                            },
+                            description:
+                              "Map of Kafka key-value pairs for optional configuration. This object is flat, and keys can have '.' characters.",
+                            example: {
+                              debug: 'queue, msg, protocol',
+                              'group.protocol.type': 'consumer',
+                            },
+                            type: 'object',
+                          },
+                          networking: {
+                            description: 'Networking configuration for Streams connections.',
+                            properties: {
+                              access: {
+                                description: 'Information about networking access.',
+                                properties: {
+                                  connectionId: {
+                                    description:
+                                      'Reserved. Will be used by `PRIVATE_LINK` connection type. Setting this field with any other networking access type returns a validation error.',
+                                    example: '32b6e34b3d91647abb20e7b8',
+                                    pattern: '^([a-f0-9]{24})$',
+                                    type: 'string',
+                                  },
+                                  links: {
+                                    description:
+                                      'List of one or more Uniform Resource Locators (URLs) that point to API sub-resources, related API resources, or both. RFC 5988 outlines these relationships.',
+                                    externalDocs: {
+                                      description: 'Web Linking Specification (RFC 5988)',
+                                      url: 'https://datatracker.ietf.org/doc/html/rfc5988',
+                                    },
+                                    items: {
+                                      properties: {
+                                        href: {
+                                          description:
+                                            'Uniform Resource Locator (URL) that points another API resource to which this response has some relationship. This URL often begins with `https://cloud.mongodb.com/api/atlas`.',
+                                          example: 'https://cloud.mongodb.com/api/atlas',
+                                          type: 'string',
+                                        },
+                                        rel: {
+                                          description:
+                                            'Uniform Resource Locator (URL) that defines the semantic relationship between this resource and another API resource. This URL often begins with `https://cloud.mongodb.com/api/atlas`.',
+                                          example: 'self',
+                                          type: 'string',
+                                        },
+                                      },
+                                      type: 'object',
+                                    },
+                                    readOnly: true,
+                                    type: 'array',
+                                  },
+                                  name: {
+                                    description:
+                                      'Reserved. Will be used by `PRIVATE_LINK` connection type.',
+                                    type: 'string',
+                                  },
+                                  tgwRouteId: {
+                                    description:
+                                      'Reserved. Will be used by `TRANSIT_GATEWAY` connection type.',
+                                    example: '32b6e34b3d91647abb20e7b8',
+                                    pattern: '^([a-f0-9]{24})$',
+                                    type: 'string',
+                                  },
+                                  type: {
+                                    description:
+                                      'Selected networking type. Either `PUBLIC`, `VPC`, `PRIVATE_LINK`, or `TRANSIT_GATEWAY`. Defaults to `PUBLIC`. For VPC, ensure that VPC peering exists and connectivity has been established between Atlas VPC and the VPC where Kafka cluster is hosted for the connection to function properly. `TRANSIT_GATEWAY` support is coming soon.',
+                                    enum: ['PUBLIC', 'VPC', 'PRIVATE_LINK', 'TRANSIT_GATEWAY'],
+                                    title: 'Networking Access Type',
+                                    type: 'string',
+                                  },
+                                },
+                                type: 'object',
+                              },
+                              links: {
+                                description:
+                                  'List of one or more Uniform Resource Locators (URLs) that point to API sub-resources, related API resources, or both. RFC 5988 outlines these relationships.',
+                                externalDocs: {
+                                  description: 'Web Linking Specification (RFC 5988)',
+                                  url: 'https://datatracker.ietf.org/doc/html/rfc5988',
+                                },
+                                items: {
+                                  properties: {
+                                    href: {
+                                      description:
+                                        'Uniform Resource Locator (URL) that points another API resource to which this response has some relationship. This URL often begins with `https://cloud.mongodb.com/api/atlas`.',
+                                      example: 'https://cloud.mongodb.com/api/atlas',
+                                      type: 'string',
+                                    },
+                                    rel: {
+                                      description:
+                                        'Uniform Resource Locator (URL) that defines the semantic relationship between this resource and another API resource. This URL often begins with `https://cloud.mongodb.com/api/atlas`.',
+                                      example: 'self',
+                                      type: 'string',
+                                    },
+                                  },
+                                  type: 'object',
+                                },
+                                readOnly: true,
+                                type: 'array',
+                              },
+                            },
+                            type: 'object',
+                          },
+                          security: {
+                            description:
+                              'Properties for the secure transport connection to Kafka. For SSL, this can include the trusted certificate to use.',
+                            properties: {
+                              brokerPublicCertificate: {
+                                description:
+                                  'A trusted, public x509 certificate for connecting to Kafka over SSL.',
+                                type: 'string',
+                              },
+                              links: {
+                                description:
+                                  'List of one or more Uniform Resource Locators (URLs) that point to API sub-resources, related API resources, or both. RFC 5988 outlines these relationships.',
+                                externalDocs: {
+                                  description: 'Web Linking Specification (RFC 5988)',
+                                  url: 'https://datatracker.ietf.org/doc/html/rfc5988',
+                                },
+                                items: {
+                                  properties: {
+                                    href: {
+                                      description:
+                                        'Uniform Resource Locator (URL) that points another API resource to which this response has some relationship. This URL often begins with `https://cloud.mongodb.com/api/atlas`.',
+                                      example: 'https://cloud.mongodb.com/api/atlas',
+                                      type: 'string',
+                                    },
+                                    rel: {
+                                      description:
+                                        'Uniform Resource Locator (URL) that defines the semantic relationship between this resource and another API resource. This URL often begins with `https://cloud.mongodb.com/api/atlas`.',
+                                      example: 'self',
+                                      type: 'string',
+                                    },
+                                  },
+                                  type: 'object',
+                                },
+                                readOnly: true,
+                                type: 'array',
+                              },
+                              protocol: {
+                                description:
+                                  'Describes the transport type. Can be either `SASL_PLAINTEXT`, `SASL_SSL`, or `SSL`.',
+                                type: 'string',
+                              },
+                            },
+                            type: 'object',
+                          },
+                        },
+                        type: 'object',
+                      },
+                    ],
+                    type: 'object',
+                  },
+                  {
+                    allOf: [
+                      {},
+                      {
+                        properties: {
+                          headers: {
+                            additionalProperties: {
+                              description:
+                                'A map of key-value pairs that will be passed as headers for the request.',
+                              type: 'string',
+                            },
+                            description:
+                              'A map of key-value pairs that will be passed as headers for the request.',
+                            type: 'object',
+                          },
+                          url: {
+                            description: 'The URL to be used for the request.',
+                            type: 'string',
+                          },
+                        },
+                        type: 'object',
+                      },
+                    ],
+                    type: 'object',
+                  },
+                  {
+                    allOf: [
+                      {},
+                      {
+                        properties: {
+                          aws: {
+                            description: 'AWS configurations for AWS-based connection types.',
+                            properties: {
+                              links: {
+                                description:
+                                  'List of one or more Uniform Resource Locators (URLs) that point to API sub-resources, related API resources, or both. RFC 5988 outlines these relationships.',
+                                externalDocs: {
+                                  description: 'Web Linking Specification (RFC 5988)',
+                                  url: 'https://datatracker.ietf.org/doc/html/rfc5988',
+                                },
+                                items: {
+                                  properties: {
+                                    href: {
+                                      description:
+                                        'Uniform Resource Locator (URL) that points another API resource to which this response has some relationship. This URL often begins with `https://cloud.mongodb.com/api/atlas`.',
+                                      example: 'https://cloud.mongodb.com/api/atlas',
+                                      type: 'string',
+                                    },
+                                    rel: {
+                                      description:
+                                        'Uniform Resource Locator (URL) that defines the semantic relationship between this resource and another API resource. This URL often begins with `https://cloud.mongodb.com/api/atlas`.',
+                                      example: 'self',
+                                      type: 'string',
+                                    },
+                                  },
+                                  type: 'object',
+                                },
+                                readOnly: true,
+                                type: 'array',
+                              },
+                              roleArn: {
+                                description:
+                                  'Amazon Resource Name (ARN) that identifies the Amazon Web Services (AWS) Identity and Access Management (IAM) role that MongoDB Cloud assumes when it accesses resources in your AWS account.',
+                                type: 'string',
+                              },
+                              testBucket: {
+                                description:
+                                  'The name of an S3 bucket used to check authorization of the passed-in IAM role ARN. This field applies only to S3 connections and is ignored for all other connection types and configurations.',
+                                type: 'string',
+                              },
+                            },
+                            type: 'object',
+                          },
+                          publicPrivateNetworking: {
+                            description:
+                              'Networking configuration for connections that support `PUBLIC` and `PRIVATE_LINK` access types. For GCP connections, use `PRIVATE_LINK` for GCP Private Service Connect (PSC).',
+                            properties: {
+                              access: {
+                                description: 'Information about networking access.',
+                                properties: {
+                                  connectionId: {
+                                    description:
+                                      'The ID of the Private Link connection. Required for `PRIVATE_LINK` type. For GCP connections using Private Service Connect (PSC), this is the PSC connection ID.',
+                                    example: '32b6e34b3d91647abb20e7b8',
+                                    pattern: '^([a-f0-9]{24})$',
+                                    type: 'string',
+                                  },
+                                  links: {
+                                    description:
+                                      'List of one or more Uniform Resource Locators (URLs) that point to API sub-resources, related API resources, or both. RFC 5988 outlines these relationships.',
+                                    externalDocs: {
+                                      description: 'Web Linking Specification (RFC 5988)',
+                                      url: 'https://datatracker.ietf.org/doc/html/rfc5988',
+                                    },
+                                    items: {
+                                      properties: {
+                                        href: {
+                                          description:
+                                            'Uniform Resource Locator (URL) that points another API resource to which this response has some relationship. This URL often begins with `https://cloud.mongodb.com/api/atlas`.',
+                                          example: 'https://cloud.mongodb.com/api/atlas',
+                                          type: 'string',
+                                        },
+                                        rel: {
+                                          description:
+                                            'Uniform Resource Locator (URL) that defines the semantic relationship between this resource and another API resource. This URL often begins with `https://cloud.mongodb.com/api/atlas`.',
+                                          example: 'self',
+                                          type: 'string',
+                                        },
+                                      },
+                                      type: 'object',
+                                    },
+                                    readOnly: true,
+                                    type: 'array',
+                                  },
+                                  type: {
+                                    description:
+                                      'Selected networking type. Either `PUBLIC` or `PRIVATE_LINK`. Defaults to `PUBLIC`. For AWS, Azure, and GCP connections, use `PRIVATE_LINK` for AWS PrivateLink, Azure Private Link, or GCP Private Service Connect (PSC) respectively.',
+                                    enum: ['PUBLIC', 'PRIVATE_LINK'],
+                                    title: 'Networking Access Type',
+                                    type: 'string',
+                                  },
+                                },
+                                type: 'object',
+                              },
+                              links: {
+                                description:
+                                  'List of one or more Uniform Resource Locators (URLs) that point to API sub-resources, related API resources, or both. RFC 5988 outlines these relationships.',
+                                externalDocs: {
+                                  description: 'Web Linking Specification (RFC 5988)',
+                                  url: 'https://datatracker.ietf.org/doc/html/rfc5988',
+                                },
+                                items: {
+                                  properties: {
+                                    href: {
+                                      description:
+                                        'Uniform Resource Locator (URL) that points another API resource to which this response has some relationship. This URL often begins with `https://cloud.mongodb.com/api/atlas`.',
+                                      example: 'https://cloud.mongodb.com/api/atlas',
+                                      type: 'string',
+                                    },
+                                    rel: {
+                                      description:
+                                        'Uniform Resource Locator (URL) that defines the semantic relationship between this resource and another API resource. This URL often begins with `https://cloud.mongodb.com/api/atlas`.',
+                                      example: 'self',
+                                      type: 'string',
+                                    },
+                                  },
+                                  type: 'object',
+                                },
+                                readOnly: true,
+                                type: 'array',
+                              },
+                            },
+                            type: 'object',
+                          },
+                        },
+                        type: 'object',
+                      },
+                    ],
+                    description: 'The configuration for AWS Lambda connections.',
+                    type: 'object',
+                  },
+                  {
+                    allOf: [
+                      {},
+                      {
+                        properties: {
+                          aws: {
+                            description: 'AWS configurations for AWS-based connection types.',
+                            properties: {
+                              links: {
+                                description:
+                                  'List of one or more Uniform Resource Locators (URLs) that point to API sub-resources, related API resources, or both. RFC 5988 outlines these relationships.',
+                                externalDocs: {
+                                  description: 'Web Linking Specification (RFC 5988)',
+                                  url: 'https://datatracker.ietf.org/doc/html/rfc5988',
+                                },
+                                items: {
+                                  properties: {
+                                    href: {
+                                      description:
+                                        'Uniform Resource Locator (URL) that points another API resource to which this response has some relationship. This URL often begins with `https://cloud.mongodb.com/api/atlas`.',
+                                      example: 'https://cloud.mongodb.com/api/atlas',
+                                      type: 'string',
+                                    },
+                                    rel: {
+                                      description:
+                                        'Uniform Resource Locator (URL) that defines the semantic relationship between this resource and another API resource. This URL often begins with `https://cloud.mongodb.com/api/atlas`.',
+                                      example: 'self',
+                                      type: 'string',
+                                    },
+                                  },
+                                  type: 'object',
+                                },
+                                readOnly: true,
+                                type: 'array',
+                              },
+                              roleArn: {
+                                description:
+                                  'Amazon Resource Name (ARN) that identifies the Amazon Web Services (AWS) Identity and Access Management (IAM) role that MongoDB Cloud assumes when it accesses resources in your AWS account.',
+                                type: 'string',
+                              },
+                              testBucket: {
+                                description:
+                                  'The name of an S3 bucket used to check authorization of the passed-in IAM role ARN. This field applies only to S3 connections and is ignored for all other connection types and configurations.',
+                                type: 'string',
+                              },
+                            },
+                            type: 'object',
+                          },
+                          networking: {
+                            description: 'Networking configuration for Streams connections.',
+                            properties: {
+                              access: {
+                                description: 'Information about networking access.',
+                                properties: {
+                                  connectionId: {
+                                    description:
+                                      'Reserved. Will be used by `PRIVATE_LINK` connection type. Setting this field with any other networking access type returns a validation error.',
+                                    example: '32b6e34b3d91647abb20e7b8',
+                                    pattern: '^([a-f0-9]{24})$',
+                                    type: 'string',
+                                  },
+                                  links: {
+                                    description:
+                                      'List of one or more Uniform Resource Locators (URLs) that point to API sub-resources, related API resources, or both. RFC 5988 outlines these relationships.',
+                                    externalDocs: {
+                                      description: 'Web Linking Specification (RFC 5988)',
+                                      url: 'https://datatracker.ietf.org/doc/html/rfc5988',
+                                    },
+                                    items: {
+                                      properties: {
+                                        href: {
+                                          description:
+                                            'Uniform Resource Locator (URL) that points another API resource to which this response has some relationship. This URL often begins with `https://cloud.mongodb.com/api/atlas`.',
+                                          example: 'https://cloud.mongodb.com/api/atlas',
+                                          type: 'string',
+                                        },
+                                        rel: {
+                                          description:
+                                            'Uniform Resource Locator (URL) that defines the semantic relationship between this resource and another API resource. This URL often begins with `https://cloud.mongodb.com/api/atlas`.',
+                                          example: 'self',
+                                          type: 'string',
+                                        },
+                                      },
+                                      type: 'object',
+                                    },
+                                    readOnly: true,
+                                    type: 'array',
+                                  },
+                                  name: {
+                                    description:
+                                      'Reserved. Will be used by `PRIVATE_LINK` connection type.',
+                                    type: 'string',
+                                  },
+                                  tgwRouteId: {
+                                    description:
+                                      'Reserved. Will be used by `TRANSIT_GATEWAY` connection type.',
+                                    example: '32b6e34b3d91647abb20e7b8',
+                                    pattern: '^([a-f0-9]{24})$',
+                                    type: 'string',
+                                  },
+                                  type: {
+                                    description:
+                                      'Selected networking type. Either `PUBLIC`, `VPC`, `PRIVATE_LINK`, or `TRANSIT_GATEWAY`. Defaults to `PUBLIC`. For VPC, ensure that VPC peering exists and connectivity has been established between Atlas VPC and the VPC where Kafka cluster is hosted for the connection to function properly. `TRANSIT_GATEWAY` support is coming soon.',
+                                    enum: ['PUBLIC', 'VPC', 'PRIVATE_LINK', 'TRANSIT_GATEWAY'],
+                                    title: 'Networking Access Type',
+                                    type: 'string',
+                                  },
+                                },
+                                type: 'object',
+                              },
+                              links: {
+                                description:
+                                  'List of one or more Uniform Resource Locators (URLs) that point to API sub-resources, related API resources, or both. RFC 5988 outlines these relationships.',
+                                externalDocs: {
+                                  description: 'Web Linking Specification (RFC 5988)',
+                                  url: 'https://datatracker.ietf.org/doc/html/rfc5988',
+                                },
+                                items: {
+                                  properties: {
+                                    href: {
+                                      description:
+                                        'Uniform Resource Locator (URL) that points another API resource to which this response has some relationship. This URL often begins with `https://cloud.mongodb.com/api/atlas`.',
+                                      example: 'https://cloud.mongodb.com/api/atlas',
+                                      type: 'string',
+                                    },
+                                    rel: {
+                                      description:
+                                        'Uniform Resource Locator (URL) that defines the semantic relationship between this resource and another API resource. This URL often begins with `https://cloud.mongodb.com/api/atlas`.',
+                                      example: 'self',
+                                      type: 'string',
+                                    },
+                                  },
+                                  type: 'object',
+                                },
+                                readOnly: true,
+                                type: 'array',
+                              },
+                            },
+                            type: 'object',
+                          },
+                        },
+                        type: 'object',
+                      },
+                    ],
+                    description: 'The configuration for S3 connections.',
+                    type: 'object',
+                  },
+                  {
+                    allOf: [
+                      {},
+                      {
+                        properties: {
+                          aws: {
+                            description: 'AWS configurations for AWS-based connection types.',
+                            properties: {
+                              links: {
+                                description:
+                                  'List of one or more Uniform Resource Locators (URLs) that point to API sub-resources, related API resources, or both. RFC 5988 outlines these relationships.',
+                                externalDocs: {
+                                  description: 'Web Linking Specification (RFC 5988)',
+                                  url: 'https://datatracker.ietf.org/doc/html/rfc5988',
+                                },
+                                items: {
+                                  properties: {
+                                    href: {
+                                      description:
+                                        'Uniform Resource Locator (URL) that points another API resource to which this response has some relationship. This URL often begins with `https://cloud.mongodb.com/api/atlas`.',
+                                      example: 'https://cloud.mongodb.com/api/atlas',
+                                      type: 'string',
+                                    },
+                                    rel: {
+                                      description:
+                                        'Uniform Resource Locator (URL) that defines the semantic relationship between this resource and another API resource. This URL often begins with `https://cloud.mongodb.com/api/atlas`.',
+                                      example: 'self',
+                                      type: 'string',
+                                    },
+                                  },
+                                  type: 'object',
+                                },
+                                readOnly: true,
+                                type: 'array',
+                              },
+                              roleArn: {
+                                description:
+                                  'Amazon Resource Name (ARN) that identifies the Amazon Web Services (AWS) Identity and Access Management (IAM) role that MongoDB Cloud assumes when it accesses resources in your AWS account.',
+                                type: 'string',
+                              },
+                              testBucket: {
+                                description:
+                                  'The name of an S3 bucket used to check authorization of the passed-in IAM role ARN. This field applies only to S3 connections and is ignored for all other connection types and configurations.',
+                                type: 'string',
+                              },
+                            },
+                            type: 'object',
+                          },
+                          networking: {
+                            description: 'Networking configuration for Streams connections.',
+                            properties: {
+                              access: {
+                                description: 'Information about networking access.',
+                                properties: {
+                                  connectionId: {
+                                    description:
+                                      'Reserved. Will be used by `PRIVATE_LINK` connection type. Setting this field with any other networking access type returns a validation error.',
+                                    example: '32b6e34b3d91647abb20e7b8',
+                                    pattern: '^([a-f0-9]{24})$',
+                                    type: 'string',
+                                  },
+                                  links: {
+                                    description:
+                                      'List of one or more Uniform Resource Locators (URLs) that point to API sub-resources, related API resources, or both. RFC 5988 outlines these relationships.',
+                                    externalDocs: {
+                                      description: 'Web Linking Specification (RFC 5988)',
+                                      url: 'https://datatracker.ietf.org/doc/html/rfc5988',
+                                    },
+                                    items: {
+                                      properties: {
+                                        href: {
+                                          description:
+                                            'Uniform Resource Locator (URL) that points another API resource to which this response has some relationship. This URL often begins with `https://cloud.mongodb.com/api/atlas`.',
+                                          example: 'https://cloud.mongodb.com/api/atlas',
+                                          type: 'string',
+                                        },
+                                        rel: {
+                                          description:
+                                            'Uniform Resource Locator (URL) that defines the semantic relationship between this resource and another API resource. This URL often begins with `https://cloud.mongodb.com/api/atlas`.',
+                                          example: 'self',
+                                          type: 'string',
+                                        },
+                                      },
+                                      type: 'object',
+                                    },
+                                    readOnly: true,
+                                    type: 'array',
+                                  },
+                                  name: {
+                                    description:
+                                      'Reserved. Will be used by `PRIVATE_LINK` connection type.',
+                                    type: 'string',
+                                  },
+                                  tgwRouteId: {
+                                    description:
+                                      'Reserved. Will be used by `TRANSIT_GATEWAY` connection type.',
+                                    example: '32b6e34b3d91647abb20e7b8',
+                                    pattern: '^([a-f0-9]{24})$',
+                                    type: 'string',
+                                  },
+                                  type: {
+                                    description:
+                                      'Selected networking type. Either `PUBLIC`, `VPC`, `PRIVATE_LINK`, or `TRANSIT_GATEWAY`. Defaults to `PUBLIC`. For VPC, ensure that VPC peering exists and connectivity has been established between Atlas VPC and the VPC where Kafka cluster is hosted for the connection to function properly. `TRANSIT_GATEWAY` support is coming soon.',
+                                    enum: ['PUBLIC', 'VPC', 'PRIVATE_LINK', 'TRANSIT_GATEWAY'],
+                                    title: 'Networking Access Type',
+                                    type: 'string',
+                                  },
+                                },
+                                type: 'object',
+                              },
+                              links: {
+                                description:
+                                  'List of one or more Uniform Resource Locators (URLs) that point to API sub-resources, related API resources, or both. RFC 5988 outlines these relationships.',
+                                externalDocs: {
+                                  description: 'Web Linking Specification (RFC 5988)',
+                                  url: 'https://datatracker.ietf.org/doc/html/rfc5988',
+                                },
+                                items: {
+                                  properties: {
+                                    href: {
+                                      description:
+                                        'Uniform Resource Locator (URL) that points another API resource to which this response has some relationship. This URL often begins with `https://cloud.mongodb.com/api/atlas`.',
+                                      example: 'https://cloud.mongodb.com/api/atlas',
+                                      type: 'string',
+                                    },
+                                    rel: {
+                                      description:
+                                        'Uniform Resource Locator (URL) that defines the semantic relationship between this resource and another API resource. This URL often begins with `https://cloud.mongodb.com/api/atlas`.',
+                                      example: 'self',
+                                      type: 'string',
+                                    },
+                                  },
+                                  type: 'object',
+                                },
+                                readOnly: true,
+                                type: 'array',
+                              },
+                            },
+                            type: 'object',
+                          },
+                        },
+                        type: 'object',
+                      },
+                    ],
+                    description: 'The configuration for AWS Kinesis Data Stream connections.',
+                    type: 'object',
+                  },
+                  {
+                    allOf: [
+                      {},
+                      {
+                        properties: {
+                          provider: {
+                            description: 'The Schema Registry provider.',
+                            enum: ['CONFLUENT'],
+                            type: 'string',
+                          },
+                          schemaRegistryAuthentication: {
+                            description: 'Authentication configuration for Schema Registry.',
+                            discriminator: {
+                              propertyName: 'type',
+                              mapping: {
+                                SASL_INHERIT:
+                                  '#/components/schemas/ConfluentSaslInheritAuthentication',
+                                USER_INFO: '#/components/schemas/ConfluentUserInfoAuthentication',
+                              },
+                            },
+                            oneOf: [
+                              {
+                                allOf: [
+                                  {},
+                                  {
+                                    properties: {
+                                      password: {
+                                        description: 'Password or Private Key for authentication.',
+                                        type: 'string',
+                                        writeOnly: true,
+                                      },
+                                      username: {
+                                        description: 'Username or Public Key for authentication.',
+                                        type: 'string',
+                                      },
+                                    },
+                                    type: 'object',
+                                  },
+                                ],
+                                description:
+                                  'Authentication details for type `USER_INFO` with username and password for Confluent Schema Registry.',
+                                required: ['password', 'type', 'username'],
+                                type: 'object',
+                              },
+                              {
+                                allOf: [{}],
+                                description:
+                                  'Inherits the authentication configuration from Kafka for the Confluent Schema Registry.',
+                                required: ['type'],
+                                type: 'object',
+                              },
+                            ],
+                            properties: {
+                              type: {
+                                description:
+                                  'Authentication type discriminator. Specifies the authentication mechanism for Confluent Schema Registry.',
+                                enum: ['USER_INFO', 'SASL_INHERIT'],
+                                type: 'string',
+                              },
+                            },
+                            required: ['type'],
+                            type: 'object',
+                          },
+                          schemaRegistryUrls: {
+                            description:
+                              'List of Schema Registry endpoint URLs used by this connection. Each URL must use the http or https scheme and specify a valid host and optional port.',
+                            items: {
+                              description: 'Schema Registry URL.',
+                              format: 'uri',
+                              type: 'string',
+                            },
+                            maxItems: 10,
+                            type: 'array',
+                            uniqueItems: true,
+                          },
+                        },
+                        type: 'object',
+                      },
+                    ],
+                    description: 'The configuration for Schema Registry connections.',
+                    required: ['provider', 'schemaRegistryAuthentication', 'schemaRegistryUrls'],
+                    type: 'object',
+                  },
+                  {
+                    allOf: [
+                      {},
+                      {
+                        properties: {
+                          azure: {
+                            description: 'Azure-specific configuration for the connection.',
+                            properties: {
+                              links: {
+                                description:
+                                  'List of one or more Uniform Resource Locators (URLs) that point to API sub-resources, related API resources, or both. RFC 5988 outlines these relationships.',
+                                externalDocs: {
+                                  description: 'Web Linking Specification (RFC 5988)',
+                                  url: 'https://datatracker.ietf.org/doc/html/rfc5988',
+                                },
+                                items: {
+                                  properties: {
+                                    href: {
+                                      description:
+                                        'Uniform Resource Locator (URL) that points another API resource to which this response has some relationship. This URL often begins with `https://cloud.mongodb.com/api/atlas`.',
+                                      example: 'https://cloud.mongodb.com/api/atlas',
+                                      type: 'string',
+                                    },
+                                    rel: {
+                                      description:
+                                        'Uniform Resource Locator (URL) that defines the semantic relationship between this resource and another API resource. This URL often begins with `https://cloud.mongodb.com/api/atlas`.',
+                                      example: 'self',
+                                      type: 'string',
+                                    },
+                                  },
+                                  type: 'object',
+                                },
+                                readOnly: true,
+                                type: 'array',
+                              },
+                              region: {
+                                deprecated: true,
+                                description:
+                                  'Deprecated: Azure region where the storage account is located.',
+                                type: 'string',
+                              },
+                              servicePrincipalId: {
+                                description:
+                                  'Unique ID of the Azure Service Principal that has access to the storage account.',
+                                type: 'string',
+                              },
+                              storageAccountName: {
+                                description: 'Name of the Azure Storage Account to connect to.',
+                                type: 'string',
+                              },
+                            },
+                            type: 'object',
+                          },
+                          publicPrivateNetworking: {
+                            description:
+                              'Networking configuration for connections that support `PUBLIC` and `PRIVATE_LINK` access types. For GCP connections, use `PRIVATE_LINK` for GCP Private Service Connect (PSC).',
+                            properties: {
+                              access: {
+                                description: 'Information about networking access.',
+                                properties: {
+                                  connectionId: {
+                                    description:
+                                      'The ID of the Private Link connection. Required for `PRIVATE_LINK` type. For GCP connections using Private Service Connect (PSC), this is the PSC connection ID.',
+                                    example: '32b6e34b3d91647abb20e7b8',
+                                    pattern: '^([a-f0-9]{24})$',
+                                    type: 'string',
+                                  },
+                                  links: {
+                                    description:
+                                      'List of one or more Uniform Resource Locators (URLs) that point to API sub-resources, related API resources, or both. RFC 5988 outlines these relationships.',
+                                    externalDocs: {
+                                      description: 'Web Linking Specification (RFC 5988)',
+                                      url: 'https://datatracker.ietf.org/doc/html/rfc5988',
+                                    },
+                                    items: {
+                                      properties: {
+                                        href: {
+                                          description:
+                                            'Uniform Resource Locator (URL) that points another API resource to which this response has some relationship. This URL often begins with `https://cloud.mongodb.com/api/atlas`.',
+                                          example: 'https://cloud.mongodb.com/api/atlas',
+                                          type: 'string',
+                                        },
+                                        rel: {
+                                          description:
+                                            'Uniform Resource Locator (URL) that defines the semantic relationship between this resource and another API resource. This URL often begins with `https://cloud.mongodb.com/api/atlas`.',
+                                          example: 'self',
+                                          type: 'string',
+                                        },
+                                      },
+                                      type: 'object',
+                                    },
+                                    readOnly: true,
+                                    type: 'array',
+                                  },
+                                  type: {
+                                    description:
+                                      'Selected networking type. Either `PUBLIC` or `PRIVATE_LINK`. Defaults to `PUBLIC`. For AWS, Azure, and GCP connections, use `PRIVATE_LINK` for AWS PrivateLink, Azure Private Link, or GCP Private Service Connect (PSC) respectively.',
+                                    enum: ['PUBLIC', 'PRIVATE_LINK'],
+                                    title: 'Networking Access Type',
+                                    type: 'string',
+                                  },
+                                },
+                                type: 'object',
+                              },
+                              links: {
+                                description:
+                                  'List of one or more Uniform Resource Locators (URLs) that point to API sub-resources, related API resources, or both. RFC 5988 outlines these relationships.',
+                                externalDocs: {
+                                  description: 'Web Linking Specification (RFC 5988)',
+                                  url: 'https://datatracker.ietf.org/doc/html/rfc5988',
+                                },
+                                items: {
+                                  properties: {
+                                    href: {
+                                      description:
+                                        'Uniform Resource Locator (URL) that points another API resource to which this response has some relationship. This URL often begins with `https://cloud.mongodb.com/api/atlas`.',
+                                      example: 'https://cloud.mongodb.com/api/atlas',
+                                      type: 'string',
+                                    },
+                                    rel: {
+                                      description:
+                                        'Uniform Resource Locator (URL) that defines the semantic relationship between this resource and another API resource. This URL often begins with `https://cloud.mongodb.com/api/atlas`.',
+                                      example: 'self',
+                                      type: 'string',
+                                    },
+                                  },
+                                  type: 'object',
+                                },
+                                readOnly: true,
+                                type: 'array',
+                              },
+                            },
+                            type: 'object',
+                          },
+                        },
+                        type: 'object',
+                      },
+                    ],
+                    description: 'The configuration for Azure Blob Storage connections.',
+                    type: 'object',
+                  },
+                  {
+                    allOf: [
+                      {},
+                      {
+                        properties: {
+                          gcp: {
+                            description: 'GCP-specific configuration for the connection.',
+                            properties: {
+                              links: {
+                                description:
+                                  'List of one or more Uniform Resource Locators (URLs) that point to API sub-resources, related API resources, or both. RFC 5988 outlines these relationships.',
+                                externalDocs: {
+                                  description: 'Web Linking Specification (RFC 5988)',
+                                  url: 'https://datatracker.ietf.org/doc/html/rfc5988',
+                                },
+                                items: {
+                                  properties: {
+                                    href: {
+                                      description:
+                                        'Uniform Resource Locator (URL) that points another API resource to which this response has some relationship. This URL often begins with `https://cloud.mongodb.com/api/atlas`.',
+                                      example: 'https://cloud.mongodb.com/api/atlas',
+                                      type: 'string',
+                                    },
+                                    rel: {
+                                      description:
+                                        'Uniform Resource Locator (URL) that defines the semantic relationship between this resource and another API resource. This URL often begins with `https://cloud.mongodb.com/api/atlas`.',
+                                      example: 'self',
+                                      type: 'string',
+                                    },
+                                  },
+                                  type: 'object',
+                                },
+                                readOnly: true,
+                                type: 'array',
+                              },
+                              serviceAccountId: {
+                                description:
+                                  'Email address of the Google Cloud Platform (GCP) service account that Atlas Streams uses to connect to the GCP Pub/Sub resources.',
+                                type: 'string',
+                              },
+                            },
+                            type: 'object',
+                          },
+                          publicPrivateNetworking: {
+                            description:
+                              'Networking configuration for connections that support `PUBLIC` and `PRIVATE_LINK` access types. For GCP connections, use `PRIVATE_LINK` for GCP Private Service Connect (PSC).',
+                            properties: {
+                              access: {
+                                description: 'Information about networking access.',
+                                properties: {
+                                  connectionId: {
+                                    description:
+                                      'The ID of the Private Link connection. Required for `PRIVATE_LINK` type. For GCP connections using Private Service Connect (PSC), this is the PSC connection ID.',
+                                    example: '32b6e34b3d91647abb20e7b8',
+                                    pattern: '^([a-f0-9]{24})$',
+                                    type: 'string',
+                                  },
+                                  links: {
+                                    description:
+                                      'List of one or more Uniform Resource Locators (URLs) that point to API sub-resources, related API resources, or both. RFC 5988 outlines these relationships.',
+                                    externalDocs: {
+                                      description: 'Web Linking Specification (RFC 5988)',
+                                      url: 'https://datatracker.ietf.org/doc/html/rfc5988',
+                                    },
+                                    items: {
+                                      properties: {
+                                        href: {
+                                          description:
+                                            'Uniform Resource Locator (URL) that points another API resource to which this response has some relationship. This URL often begins with `https://cloud.mongodb.com/api/atlas`.',
+                                          example: 'https://cloud.mongodb.com/api/atlas',
+                                          type: 'string',
+                                        },
+                                        rel: {
+                                          description:
+                                            'Uniform Resource Locator (URL) that defines the semantic relationship between this resource and another API resource. This URL often begins with `https://cloud.mongodb.com/api/atlas`.',
+                                          example: 'self',
+                                          type: 'string',
+                                        },
+                                      },
+                                      type: 'object',
+                                    },
+                                    readOnly: true,
+                                    type: 'array',
+                                  },
+                                  type: {
+                                    description:
+                                      'Selected networking type. Either `PUBLIC` or `PRIVATE_LINK`. Defaults to `PUBLIC`. For AWS, Azure, and GCP connections, use `PRIVATE_LINK` for AWS PrivateLink, Azure Private Link, or GCP Private Service Connect (PSC) respectively.',
+                                    enum: ['PUBLIC', 'PRIVATE_LINK'],
+                                    title: 'Networking Access Type',
+                                    type: 'string',
+                                  },
+                                },
+                                type: 'object',
+                              },
+                              links: {
+                                description:
+                                  'List of one or more Uniform Resource Locators (URLs) that point to API sub-resources, related API resources, or both. RFC 5988 outlines these relationships.',
+                                externalDocs: {
+                                  description: 'Web Linking Specification (RFC 5988)',
+                                  url: 'https://datatracker.ietf.org/doc/html/rfc5988',
+                                },
+                                items: {
+                                  properties: {
+                                    href: {
+                                      description:
+                                        'Uniform Resource Locator (URL) that points another API resource to which this response has some relationship. This URL often begins with `https://cloud.mongodb.com/api/atlas`.',
+                                      example: 'https://cloud.mongodb.com/api/atlas',
+                                      type: 'string',
+                                    },
+                                    rel: {
+                                      description:
+                                        'Uniform Resource Locator (URL) that defines the semantic relationship between this resource and another API resource. This URL often begins with `https://cloud.mongodb.com/api/atlas`.',
+                                      example: 'self',
+                                      type: 'string',
+                                    },
+                                  },
+                                  type: 'object',
+                                },
+                                readOnly: true,
+                                type: 'array',
+                              },
+                            },
+                            type: 'object',
+                          },
+                        },
+                        type: 'object',
+                      },
+                    ],
+                    description: 'The configuration for GCP Pub/Sub connections.',
+                    type: 'object',
+                  },
+                  {},
+                ],
+                properties: {
+                  errorMessage: {
+                    description: 'Connection error message.',
+                    readOnly: true,
+                    type: 'string',
+                  },
+                  id: {
+                    description: 'Unique identifier of the connection.',
+                    readOnly: true,
+                    type: 'string',
+                  },
+                  links: {
+                    description:
+                      'List of one or more Uniform Resource Locators (URLs) that point to API sub-resources, related API resources, or both. RFC 5988 outlines these relationships.',
+                    externalDocs: {
+                      description: 'Web Linking Specification (RFC 5988)',
+                      url: 'https://datatracker.ietf.org/doc/html/rfc5988',
+                    },
+                    items: {
+                      properties: {
+                        href: {
+                          description:
+                            'Uniform Resource Locator (URL) that points another API resource to which this response has some relationship. This URL often begins with `https://cloud.mongodb.com/api/atlas`.',
+                          example: 'https://cloud.mongodb.com/api/atlas',
+                          type: 'string',
+                        },
+                        rel: {
+                          description:
+                            'Uniform Resource Locator (URL) that defines the semantic relationship between this resource and another API resource. This URL often begins with `https://cloud.mongodb.com/api/atlas`.',
+                          example: 'self',
+                          type: 'string',
+                        },
+                      },
+                      type: 'object',
+                    },
+                    readOnly: true,
+                    type: 'array',
+                  },
+                  name: {
+                    description:
+                      'Human-readable label that identifies the stream connection. For the Sample type, this is the name of the sample source.',
+                    type: 'string',
+                  },
+                  region: { description: 'Connection region.', type: 'string' },
+                  state: {
+                    description: 'Connection state.',
+                    enum: ['PENDING', 'READY', 'DELETING', 'FAILED'],
+                    readOnly: true,
+                    type: 'string',
+                  },
+                  type: {
+                    description: 'Connection type.',
+                    enum: [
+                      'Kafka',
+                      'Cluster',
+                      'Sample',
+                      'Https',
+                      'AzureBlobStorage',
+                      'AWSLambda',
+                      'AWSKinesisDataStreams',
+                      'SchemaRegistry',
+                      'GCPPubSub',
+                      'DataCatalog',
+                    ],
+                    type: 'string',
+                  },
+                },
+                readOnly: true,
+                type: 'object',
+              },
+              {
+                properties: {
+                  catalogUrl: {
+                    description:
+                      "Base HTTPS URL of the catalog. Must be on the provider's domain: `*.cloud.databricks.com` or `*.azuredatabricks.net` for Databricks Unity, and `*.snowflakecomputing.com` for Snowflake Horizon.",
+                    format: 'uri',
+                    type: 'string',
+                  },
+                },
+                type: 'object',
+              },
+            ],
+            description: 'The configuration for Iceberg Data Catalog connections.',
+            discriminator: {
+              propertyName: 'catalogProvider',
+              mapping: {
+                DATABRICKS_UNITY: '#/components/schemas/StreamsDatabricksUnityCatalogConnection',
+                SNOWFLAKE_HORIZON: '#/components/schemas/StreamsSnowflakeHorizonCatalogConnection',
+              },
+            },
+            oneOf: [
+              {
+                allOf: [
+                  {},
+                  {
+                    properties: {
+                      catalogProvider: {
+                        description:
+                          'Catalog system the connection points at. Cannot be changed after creation.',
+                        enum: ['DATABRICKS_UNITY'],
+                        type: 'string',
+                      },
+                      databricks: {
+                        description: 'Databricks settings for a connection.',
+                        properties: {
+                          authentication: {
+                            description:
+                              'Databricks service principal credentials used to obtain an OAuth token.',
+                            properties: {
+                              clientId: {
+                                description: 'OAuth client ID of the Databricks service principal.',
+                                type: 'string',
+                              },
+                              clientSecret: {
+                                description:
+                                  'OAuth client secret of the Databricks service principal. Never returned in responses; omit or leave blank on update to keep the stored secret.',
+                                format: 'password',
+                                type: 'string',
+                                writeOnly: true,
+                              },
+                            },
+                            required: ['clientId', 'clientSecret'],
+                            type: 'object',
+                          },
+                        },
+                        required: ['authentication'],
+                        type: 'object',
+                      },
+                    },
+                    type: 'object',
+                  },
+                ],
+                description: 'The configuration for a Databricks Unity Catalog connection.',
+                required: ['catalogProvider', 'catalogUrl', 'databricks'],
+                type: 'object',
+              },
+              {},
+            ],
+            required: ['catalogUrl'],
+            type: 'object',
+          },
+          {
+            properties: {
+              catalogProvider: {
+                description:
+                  'Catalog system the connection points at. Cannot be changed after creation.',
+                enum: ['SNOWFLAKE_HORIZON'],
+                type: 'string',
+              },
+              snowflake: {
+                description: 'Snowflake settings for a connection.',
+                properties: {
+                  authentication: {
+                    description:
+                      'Snowflake service user and key pair used to authenticate to Snowflake.',
+                    properties: {
+                      account: { description: 'Snowflake account identifier.', type: 'string' },
+                      privateKey: {
+                        description:
+                          "Private key of the service user's key pair. Never returned in responses; omit or leave blank on update to keep the stored key.",
+                        format: 'password',
+                        type: 'string',
+                        writeOnly: true,
+                      },
+                      role: {
+                        description: 'Snowflake role the service user assumes.',
+                        type: 'string',
+                      },
+                      user: { description: 'Snowflake service user.', type: 'string' },
+                    },
+                    required: ['account', 'privateKey', 'role', 'user'],
+                    type: 'object',
+                  },
+                },
+                required: ['authentication'],
+                type: 'object',
+              },
+            },
+            type: 'object',
+          },
+        ],
+        description: 'The configuration for a Snowflake Horizon catalog connection.',
+        required: ['catalogProvider', 'catalogUrl', 'snowflake'],
+        type: 'object',
+      },
+    ],
+  })
   .openapi({
     description: 'The configuration for Iceberg Data Catalog connections.',
     discriminator: {
@@ -4964,6 +10457,59 @@ const StreamsConnectionSchema = z
     StreamsGCPPubSubConnectionSchema,
     StreamsDataCatalogConnectionSchema,
   ])
+  .and(
+    z
+      .object({
+        errorMessage: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Connection error message.', readOnly: true }),
+        id: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Unique identifier of the connection.', readOnly: true }),
+        links: z
+          .array(LinkSchema)
+          .exactOptional()
+          .openapi({
+            description:
+              'List of one or more Uniform Resource Locators (URLs) that point to API sub-resources, related API resources, or both. RFC 5988 outlines these relationships.',
+            externalDocs: {
+              description: 'Web Linking Specification (RFC 5988)',
+              url: 'https://datatracker.ietf.org/doc/html/rfc5988',
+            },
+            readOnly: true,
+          }),
+        name: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Human-readable label that identifies the stream connection. For the Sample type, this is the name of the sample source.',
+          }),
+        region: z.string().exactOptional().openapi({ description: 'Connection region.' }),
+        state: z
+          .enum(['PENDING', 'READY', 'DELETING', 'FAILED'])
+          .exactOptional()
+          .openapi({ description: 'Connection state.', readOnly: true }),
+        type: z
+          .enum([
+            'Kafka',
+            'Cluster',
+            'Sample',
+            'Https',
+            'AzureBlobStorage',
+            'AWSLambda',
+            'AWSKinesisDataStreams',
+            'SchemaRegistry',
+            'GCPPubSub',
+            'DataCatalog',
+          ])
+          .exactOptional()
+          .openapi({ description: 'Connection type.' }),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Settings that define a connection to an external data store.',
     discriminator: {
@@ -5028,9 +10574,9 @@ const ApiStreamsGCPRegionViewSchema = z
 
 const BaseStreamsRegionSchema = z
   .xor([
-    ApiStreamsAWSRegionViewSchema,
-    ApiStreamsAzureRegionViewSchema,
-    ApiStreamsGCPRegionViewSchema,
+    z.looseObject({}).and(ApiStreamsAWSRegionViewSchema),
+    z.looseObject({}).and(ApiStreamsAzureRegionViewSchema),
+    z.looseObject({}).and(ApiStreamsGCPRegionViewSchema),
   ])
   .openapi({ description: 'Name of the cloud provider region hosting Atlas Stream Processing.' })
   .openapi('BaseStreamsRegion')
@@ -5198,1612 +10744,6 @@ type PaginatedApiStreamsTenantViewType = {
   results: z.infer<typeof StreamsTenantSchema>[]
   totalCount?: number
 }
-
-const AWSHardwareSpec20240805Schema = z
-  .object({
-    diskIOPS: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          "Target IOPS (Input/Output Operations Per Second) desired for storage attached to this hardware.\n\n You can set different IOPS values on different shards when provisioned IOPS are supported.\n\n Change this parameter if you:\n\n- set `replicationSpecs[n].regionConfigs[m].providerName` to `AWS`.\n- set `replicationSpecs[n].regionConfigs[m].electableSpecs.instanceSize` to `M30` or greater (not including `Mxx_NVME` tiers).\n\n- set `replicationSpecs[n].regionConfigs[m].electableSpecs.ebsVolumeType` to `PROVISIONED`.\n\nThe maximum input/output operations per second (IOPS) depend on the selected `.instanceSize` and `.diskSizeGB`.\nThis parameter defaults to the cluster tier's standard IOPS value.\nChanging this value impacts cluster cost.\nMongoDB Cloud enforces minimum ratios of storage capacity to system memory for given cluster tiers. This keeps cluster performance consistent with large datasets.\n\n- Instance sizes `M10` to `M40` have a ratio of disk capacity to system memory of 60:1.\n- Instance sizes greater than `M40` have a ratio of 120:1.",
-      }),
-    diskSizeGB: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description:
-          'Storage capacity of instance data volumes expressed in gigabytes. Increase this number to add capacity.\n\n This value must be equal for all shards and node types.\n\n This value is not configurable on M0/M2/M5 clusters.\n\n MongoDB Cloud requires this parameter if you set `replicationSpecs`.\n\n If you specify a disk size below the minimum (10 GB), this parameter defaults to the minimum disk size value. \n\n Storage charge calculations depend on whether you choose the default value or a custom value.\n\n The maximum value for disk storage cannot exceed 50 times the maximum RAM for the selected cluster. If you require more storage space, consider upgrading your cluster to a higher tier.',
-        externalDocs: {
-          description: 'Customize Storage',
-          url: 'https://dochub.mongodb.org/core/customize-storage',
-        },
-      }),
-    diskThroughput: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Target throughput desired for storage attached to this hardware. Only returned for Gen 2 instance sizes with Standard (GP3) volume type.',
-        readOnly: true,
-      }),
-    ebsVolumeType: z
-      .enum(['STANDARD', 'PROVISIONED', 'HIGH_PERFORMANCE'])
-      .default('STANDARD')
-      .exactOptional()
-      .openapi({
-        description:
-          "Type of storage you want to attach to your AWS-provisioned cluster.\n\n- `STANDARD` volume types can't exceed the default input/output operations per second (IOPS) rate for the selected volume size. \n\n- `PROVISIONED` volume types must fall within the allowable IOPS range for the selected volume size.\n\n- `HIGH_PERFORMANCE` volume types use IO2 EBS volumes and must fall within the allowable IOPS range for the selected volume size.\n\nNVMe clusters require either `PROVISIONED` or `HIGH_PERFORMANCE`.",
-      }),
-    instanceSize: z
-      .enum([
-        'M10',
-        'M20',
-        'M30',
-        'M40',
-        'M50',
-        'M60',
-        'M80',
-        'M100',
-        'M140',
-        'M200',
-        'M300',
-        'R40',
-        'R50',
-        'R60',
-        'R80',
-        'R200',
-        'R300',
-        'R400',
-        'R700',
-        'M40_NVME',
-        'M50_NVME',
-        'M60_NVME',
-        'M80_NVME',
-        'M200_NVME',
-        'M400_NVME',
-        'M30_GEN_2',
-        'M40_GEN_2',
-        'M50_GEN_2',
-        'M60_GEN_2',
-        'M80_GEN_2',
-        'M140_GEN_2',
-        'M200_GEN_2',
-        'M300_GEN_2',
-        'M700_GEN_2',
-        'R40_GEN_2',
-        'R50_GEN_2',
-        'R60_GEN_2',
-        'R80_GEN_2',
-        'R200_GEN_2',
-        'R300_GEN_2',
-        'R400_GEN_2',
-        'R700_GEN_2',
-        'M40_NVME_GEN_2',
-        'M50_NVME_GEN_2',
-        'M60_NVME_GEN_2',
-        'M80_NVME_GEN_2',
-        'M200_NVME_GEN_2',
-        'M400_NVME_GEN_2',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'Hardware specification for the instance sizes in this region in this shard. Each instance size has a default storage and memory capacity. Electable nodes and read-only nodes (known as "base nodes") within a single shard must use the same instance size. Analytics nodes can scale independently from base nodes within a shard. Both base nodes and analytics nodes can scale independently from their equivalents in other shards.',
-        title: 'AWS Instance Sizes',
-      }),
-    nodeCount: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'Number of nodes of the given type for MongoDB Cloud to deploy to the region.',
-        example: 3,
-      }),
-  })
-  .openapi({
-    description: 'Hardware specifications for nodes deployed in the region.',
-    title: 'AWS Cluster Hardware Settings',
-    required: [],
-  })
-  .openapi('AWSHardwareSpec20240805')
-
-const AzureHardwareSpec20240805Schema = z
-  .object({
-    diskIOPS: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          "Target throughput desired for storage attached to your Azure-provisioned cluster. Change this parameter if you:\n\n- set `replicationSpecs[n].regionConfigs[m].providerName` : `Azure`.\n- set `replicationSpecs[n].regionConfigs[m].electableSpecs.instanceSize` : `M40` or greater not including `Mxx_NVME` tiers.\n\nThe maximum input/output operations per second (IOPS) depend on the selected `.instanceSize` and `.diskSizeGB`.\nThis parameter defaults to the cluster tier's standard IOPS value.\nChanging this value impacts cluster cost.",
-        externalDocs: {
-          description: 'Programmatic API Keys',
-          url: 'https://www.mongodb.com/docs/atlas/customize-storage/#extend-iops-on-azure',
-        },
-      }),
-    diskSizeGB: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description:
-          'Storage capacity of instance data volumes expressed in gigabytes. Increase this number to add capacity.\n\n This value must be equal for all shards and node types.\n\n This value is not configurable on M0/M2/M5 clusters.\n\n MongoDB Cloud requires this parameter if you set `replicationSpecs`.\n\n If you specify a disk size below the minimum (10 GB), this parameter defaults to the minimum disk size value. \n\n Storage charge calculations depend on whether you choose the default value or a custom value.\n\n The maximum value for disk storage cannot exceed 50 times the maximum RAM for the selected cluster. If you require more storage space, consider upgrading your cluster to a higher tier.',
-        externalDocs: {
-          description: 'Customize Storage',
-          url: 'https://dochub.mongodb.org/core/customize-storage',
-        },
-      }),
-    instanceSize: z
-      .enum([
-        'M10',
-        'M20',
-        'M30',
-        'M40',
-        'M50',
-        'M60',
-        'M80',
-        'M90',
-        'M200',
-        'R40',
-        'R50',
-        'R60',
-        'R80',
-        'R200',
-        'R300',
-        'R400',
-        'M60_NVME',
-        'M80_NVME',
-        'M200_NVME',
-        'M300_NVME',
-        'M400_NVME',
-        'M600_NVME',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'Hardware specification for the instance sizes in this region in this shard. Each instance size has a default storage and memory capacity. Electable nodes and read-only nodes (known as "base nodes") within a single shard must use the same instance size. Analytics nodes can scale independently from base nodes within a shard. Both base nodes and analytics nodes can scale independently from their equivalents in other shards.',
-        title: 'Azure Instance Sizes',
-      }),
-    nodeCount: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'Number of nodes of the given type for MongoDB Cloud to deploy to the region.',
-        example: 3,
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('AzureHardwareSpec20240805')
-
-const GCPHardwareSpec20240805Schema = z
-  .object({
-    diskIOPS: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Target IOPS (Input/Output Operations Per Second) desired for storage attached to this hardware. Only configurable for Gen 2 instance sizes.\n\n Change this parameter if you:\n\n- set `"replicationSpecs[n].regionConfigs[m].providerName" : "GCP"`.\n- set `"replicationSpecs[n].regionConfigs[m].electableSpecs.instanceSize"` to a Gen 2 instance size (`"M30_GEN_2"` or greater).\n\nThe maximum input/output operations per second (IOPS) depend on the selected `.instanceSize` and `.diskSizeGB`.\nThis parameter defaults to the standard IOPS value for the selected `.diskSizeGB`.\nChanging this value impacts cluster cost.',
-      }),
-    diskSizeGB: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description:
-          'Storage capacity of instance data volumes expressed in gigabytes. Increase this number to add capacity.\n\n This value must be equal for all shards and node types.\n\n This value is not configurable on M0/M2/M5 clusters.\n\n MongoDB Cloud requires this parameter if you set `replicationSpecs`.\n\n If you specify a disk size below the minimum (10 GB), this parameter defaults to the minimum disk size value. \n\n Storage charge calculations depend on whether you choose the default value or a custom value.\n\n The maximum value for disk storage cannot exceed 50 times the maximum RAM for the selected cluster. If you require more storage space, consider upgrading your cluster to a higher tier.',
-        externalDocs: {
-          description: 'Customize Storage',
-          url: 'https://dochub.mongodb.org/core/customize-storage',
-        },
-      }),
-    diskThroughput: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Throughput (in MiB/s) provisioned for storage attached to this hardware. Only returned for Gen 2 instance sizes.',
-        readOnly: true,
-      }),
-    instanceSize: z
-      .enum([
-        'M10',
-        'M20',
-        'M30',
-        'M40',
-        'M50',
-        'M60',
-        'M80',
-        'M140',
-        'M200',
-        'M250',
-        'M300',
-        'M400',
-        'R40',
-        'R50',
-        'R60',
-        'R80',
-        'R200',
-        'R300',
-        'R400',
-        'R600',
-        'M30_GEN_2',
-        'M40_GEN_2',
-        'M50_GEN_2',
-        'M60_GEN_2',
-        'M80_GEN_2',
-        'M140_GEN_2',
-        'M200_GEN_2',
-        'M300_GEN_2',
-        'M700_GEN_2',
-        'R40_GEN_2',
-        'R50_GEN_2',
-        'R60_GEN_2',
-        'R80_GEN_2',
-        'R200_GEN_2',
-        'R300_GEN_2',
-        'R400_GEN_2',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'Hardware specification for the instance sizes in this region in this shard. Each instance size has a default storage and memory capacity. Electable nodes and read-only nodes (known as "base nodes") within a single shard must use the same instance size. Analytics nodes can scale independently from base nodes within a shard. Both base nodes and analytics nodes can scale independently from their equivalents in other shards.',
-        title: 'GCP Instance Sizes',
-      }),
-    nodeCount: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'Number of nodes of the given type for MongoDB Cloud to deploy to the region.',
-        example: 3,
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('GCPHardwareSpec20240805')
-
-const TenantHardwareSpec20240805Schema = z
-  .object({
-    diskSizeGB: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description:
-          'Storage capacity of instance data volumes expressed in gigabytes. Increase this number to add capacity.\n\n This value must be equal for all shards and node types.\n\n This value is not configurable on M0/M2/M5 clusters.\n\n MongoDB Cloud requires this parameter if you set `replicationSpecs`.\n\n If you specify a disk size below the minimum (10 GB), this parameter defaults to the minimum disk size value. \n\n Storage charge calculations depend on whether you choose the default value or a custom value.\n\n The maximum value for disk storage cannot exceed 50 times the maximum RAM for the selected cluster. If you require more storage space, consider upgrading your cluster to a higher tier.',
-        externalDocs: {
-          description: 'Customize Storage',
-          url: 'https://dochub.mongodb.org/core/customize-storage',
-        },
-      }),
-    effectiveInstanceSize: z
-      .enum(['FLEX', 'M2', 'M5', 'M0'])
-      .exactOptional()
-      .openapi({
-        description:
-          'The true tenant instance size. This is present to support backwards compatibility for deprecated provider types and/or instance sizes.',
-        readOnly: true,
-      }),
-    instanceSize: z
-      .enum(['M0', 'M2', 'M5'])
-      .exactOptional()
-      .openapi({
-        description: 'Hardware specification for the instances in this M0/M2/M5 tier cluster.',
-        title: 'Tenant Instance Sizes',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('TenantHardwareSpec20240805')
-
-const HardwareSpec20240805Schema = z
-  .xor([
-    AWSHardwareSpec20240805Schema,
-    AzureHardwareSpec20240805Schema,
-    GCPHardwareSpec20240805Schema,
-    TenantHardwareSpec20240805Schema,
-  ])
-  .openapi({
-    description:
-      "Hardware specifications for all electable nodes deployed in the region. Electable nodes can become the primary and can enable local reads. If you don't specify this option, MongoDB Cloud deploys no electable nodes to the region.",
-  })
-  .openapi('HardwareSpec20240805')
-
-const StorageConfigSchema = z
-  .object({
-    shardSizeLimitGB: z
-      .int32()
-      .min(1)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          "Available in Public Preview: Maximum data size that MongoDB Cloud allows each shard of this cluster to reach, expressed in gigabytes. MongoDB Cloud rejects writes to a shard that reaches the limit that it enforces. In `replicationSpecs`, this field reports the limit that you configured, and MongoDB Cloud omits it when you never configured one. In `effectiveReplicationSpecs`, this field reports the limit that MongoDB Cloud enforces: usually the limit that you configured, otherwise the default limit that MongoDB Cloud assigns when it creates or updates the cluster. This value may differ from the limit that you configured due to system-managed changes. This limit applies to every shard of the cluster; set the same value on each region configuration's `autoScaling`, as MongoDB Cloud rejects requests that specify differing values. You can set this only on Atlas INFINITE clusters: MongoDB Cloud rejects any request that names this field, including as `null`, for a cluster or node type that doesn't support it. In a request that includes `replicationSpecs`, omitting `shardSizeLimitGB` or sending it as `null` clears the limit. Omitting `replicationSpecs` preserves it.",
-      }),
-  })
-  .nullable()
-  .openapi({ required: [] })
-  .openapi('StorageConfig')
-
-const AdvancedAutoScalingSettingsSchema = z
-  .object({
-    compute: AdvancedComputeAutoScalingSchema.exactOptional(),
-    diskGB: DiskGBAutoScalingSchema.exactOptional(),
-    storageConfig: StorageConfigSchema.nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Available in Public Preview: Settings that determine the per-shard data-size limit for this cluster. Applies only to Atlas INFINITE clusters. MongoDB Cloud accepts these settings only on `autoScaling` and rejects them on `analyticsAutoScaling`, including when you send them as `null`. In a request that includes `replicationSpecs`, omitting `storageConfig` or sending it as `null` or `{}` clears the limit. Omitting `replicationSpecs` preserves it.',
-      }),
-  })
-  .openapi({
-    description: 'Options that determine how this cluster handles resource scaling.',
-    title: 'Automatic Scaling Settings',
-    required: [],
-  })
-  .openapi('AdvancedAutoScalingSettings')
-
-const DedicatedHardwareSpec20240805Schema = z
-  .xor([
-    AWSHardwareSpec20240805Schema,
-    AzureHardwareSpec20240805Schema,
-    GCPHardwareSpec20240805Schema,
-  ])
-  .openapi({
-    description: 'The current hardware specifications for read only nodes in the region.',
-    readOnly: true,
-  })
-  .openapi('DedicatedHardwareSpec20240805')
-
-const AWSRegionConfig20240805Schema = z
-  .object({
-    electableSpecs: HardwareSpec20240805Schema.exactOptional(),
-    priority: z
-      .int32()
-      .min(0)
-      .max(7)
-      .exactOptional()
-      .openapi({
-        description:
-          'Precedence is given to this region when a primary election occurs. If your `regionConfigs` has only `readOnlySpecs`, `analyticsSpecs`, or both, set this value to `0`. If you have multiple `regionConfigs` objects (your cluster is multi-region or multi-cloud), they must have priorities in descending order. The highest priority is `7`.\n\n**Example:** If you have three regions, their priorities would be `7`, `6`, and `5` respectively. If you added two more regions for supporting electable nodes, the priorities of those regions would be `4` and `3` respectively.',
-        example: 7,
-      }),
-    providerName: z
-      .enum(['AWS', 'AZURE', 'GCP', 'TENANT'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Cloud service provider on which MongoDB Cloud provisions the hosts. Set dedicated clusters to `AWS`, `GCP`, `AZURE` or `TENANT`.',
-      }),
-    regionName: z
-      .xor([
-        z
-          .enum([
-            'US_GOV_WEST_1',
-            'US_GOV_EAST_1',
-            'US_EAST_1',
-            'US_EAST_2',
-            'US_WEST_1',
-            'US_WEST_2',
-            'CA_CENTRAL_1',
-            'EU_NORTH_1',
-            'EU_WEST_1',
-            'EU_WEST_2',
-            'EU_WEST_3',
-            'EU_CENTRAL_1',
-            'EU_CENTRAL_2',
-            'AP_EAST_1',
-            'AP_EAST_2',
-            'AP_NORTHEAST_1',
-            'AP_NORTHEAST_2',
-            'AP_NORTHEAST_3',
-            'AP_SOUTHEAST_1',
-            'AP_SOUTHEAST_2',
-            'AP_SOUTHEAST_3',
-            'AP_SOUTHEAST_4',
-            'AP_SOUTHEAST_5',
-            'AP_SOUTHEAST_6',
-            'AP_SOUTHEAST_7',
-            'AP_SOUTH_1',
-            'AP_SOUTH_2',
-            'SA_EAST_1',
-            'CN_NORTH_1',
-            'CN_NORTHWEST_1',
-            'ME_SOUTH_1',
-            'ME_CENTRAL_1',
-            'AF_SOUTH_1',
-            'EU_SOUTH_1',
-            'EU_SOUTH_2',
-            'IL_CENTRAL_1',
-            'CA_WEST_1',
-            'MX_CENTRAL_1',
-            'GLOBAL',
-          ])
-          .openapi({
-            description:
-              'Physical location where MongoDB Cloud deploys your AWS-hosted MongoDB cluster nodes. The region you choose can affect network latency for clients accessing your databases. When MongoDB Cloud deploys a dedicated cluster, it checks if a VPC or VPC connection exists for that provider and region. If not, MongoDB Cloud creates them as part of the deployment. MongoDB Cloud assigns the VPC a CIDR block. To limit a new VPC peering connection to one CIDR block and region, create the connection first. Deploy the cluster after the connection starts.',
-            title: 'AWS Regions',
-          }),
-        z
-          .enum([
-            'US_CENTRAL',
-            'US_EAST',
-            'US_EAST_2',
-            'US_NORTH_CENTRAL',
-            'US_WEST',
-            'US_SOUTH_CENTRAL',
-            'EUROPE_NORTH',
-            'EUROPE_WEST',
-            'US_WEST_CENTRAL',
-            'US_WEST_2',
-            'US_WEST_3',
-            'CANADA_EAST',
-            'CANADA_CENTRAL',
-            'BRAZIL_SOUTH',
-            'BRAZIL_SOUTHEAST',
-            'AUSTRALIA_CENTRAL',
-            'AUSTRALIA_CENTRAL_2',
-            'AUSTRALIA_EAST',
-            'AUSTRALIA_SOUTH_EAST',
-            'GERMANY_WEST_CENTRAL',
-            'GERMANY_NORTH',
-            'SWEDEN_CENTRAL',
-            'SWEDEN_SOUTH',
-            'SWITZERLAND_NORTH',
-            'SWITZERLAND_WEST',
-            'UK_SOUTH',
-            'UK_WEST',
-            'NORWAY_EAST',
-            'NORWAY_WEST',
-            'INDIA_CENTRAL',
-            'INDIA_SOUTH',
-            'INDIA_WEST',
-            'CHINA_EAST',
-            'CHINA_NORTH',
-            'ASIA_EAST',
-            'JAPAN_EAST',
-            'JAPAN_WEST',
-            'ASIA_SOUTH_EAST',
-            'KOREA_CENTRAL',
-            'KOREA_SOUTH',
-            'FRANCE_CENTRAL',
-            'FRANCE_SOUTH',
-            'SOUTH_AFRICA_NORTH',
-            'SOUTH_AFRICA_WEST',
-            'UAE_CENTRAL',
-            'UAE_NORTH',
-            'QATAR_CENTRAL',
-            'POLAND_CENTRAL',
-            'ISRAEL_CENTRAL',
-            'ITALY_NORTH',
-            'SPAIN_CENTRAL',
-            'MEXICO_CENTRAL',
-            'NEW_ZEALAND_NORTH',
-            'US_GOV_VIRGINIA',
-            'US_GOV_ARIZONA',
-            'US_GOV_TEXAS',
-          ])
-          .openapi({ description: 'Microsoft Azure Regions.', title: 'Azure Regions' }),
-        z
-          .enum([
-            'EASTERN_US',
-            'EASTERN_US_AW',
-            'US_EAST_4',
-            'US_EAST_4_AW',
-            'US_EAST_5',
-            'US_EAST_5_AW',
-            'US_WEST_2',
-            'US_WEST_2_AW',
-            'US_WEST_3',
-            'US_WEST_3_AW',
-            'US_WEST_4',
-            'US_WEST_4_AW',
-            'US_SOUTH_1',
-            'US_SOUTH_1_AW',
-            'CENTRAL_US',
-            'CENTRAL_US_AW',
-            'WESTERN_US',
-            'WESTERN_US_AW',
-            'NORTH_AMERICA_NORTHEAST_1',
-            'NORTH_AMERICA_NORTHEAST_2',
-            'NORTH_AMERICA_SOUTH_1',
-            'SOUTH_AMERICA_EAST_1',
-            'SOUTH_AMERICA_WEST_1',
-            'WESTERN_EUROPE',
-            'EUROPE_NORTH_1',
-            'EUROPE_WEST_2',
-            'EUROPE_WEST_3',
-            'EUROPE_WEST_4',
-            'EUROPE_WEST_6',
-            'EUROPE_WEST_8',
-            'EUROPE_WEST_9',
-            'EUROPE_WEST_10',
-            'EUROPE_WEST_12',
-            'EUROPE_SOUTHWEST_1',
-            'EUROPE_CENTRAL_2',
-            'MIDDLE_EAST_CENTRAL_1',
-            'MIDDLE_EAST_CENTRAL_2',
-            'MIDDLE_EAST_WEST_1',
-            'AUSTRALIA_SOUTHEAST_1',
-            'AUSTRALIA_SOUTHEAST_2',
-            'AFRICA_SOUTH_1',
-            'EASTERN_ASIA_PACIFIC',
-            'NORTHEASTERN_ASIA_PACIFIC',
-            'SOUTHEASTERN_ASIA_PACIFIC',
-            'ASIA_EAST_2',
-            'ASIA_NORTHEAST_2',
-            'ASIA_NORTHEAST_3',
-            'ASIA_SOUTH_1',
-            'ASIA_SOUTH_2',
-            'ASIA_SOUTHEAST_2',
-          ])
-          .openapi({ description: 'Google Compute Regions.', title: 'GCP Regions' }),
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'Physical location of your MongoDB cluster nodes. The region you choose can affect network latency for clients accessing your databases. The region name is only returned in the response for single-region clusters. When MongoDB Cloud deploys a dedicated cluster, it checks if a VPC or VPC connection exists for that provider and region. If not, MongoDB Cloud creates them as part of the deployment. It assigns the VPC a Classless Inter-Domain Routing (CIDR) block. To limit a new VPC peering connection to one Classless Inter-Domain Routing (CIDR) block and region, create the connection first. Deploy the cluster after the connection starts. GCP Clusters and Multi-region clusters require one VPC peering connection for each region. MongoDB nodes can use only the peering connection that resides in the same region as the nodes to communicate with the peered VPC.',
-      }),
-  })
-  .openapi({ required: [] })
-  .and(
-    z
-      .object({
-        analyticsAutoScaling: AdvancedAutoScalingSettingsSchema.exactOptional(),
-        analyticsSpecs: DedicatedHardwareSpec20240805Schema.exactOptional(),
-        autoScaling: AdvancedAutoScalingSettingsSchema.exactOptional(),
-        effectiveAnalyticsSpecs: DedicatedHardwareSpec20240805Schema.exactOptional(),
-        effectiveElectableSpecs: DedicatedHardwareSpec20240805Schema.exactOptional(),
-        effectiveReadOnlySpecs: DedicatedHardwareSpec20240805Schema.exactOptional(),
-        readOnlySpecs: DedicatedHardwareSpec20240805Schema.exactOptional(),
-      })
-      .openapi({ required: [] }),
-  )
-  .openapi({
-    description:
-      'Details that explain how MongoDB Cloud replicates data in one region on the specified MongoDB database.',
-    title: 'AWS Regional Replication Specifications',
-  })
-  .openapi('AWSRegionConfig20240805')
-
-const AzureRegionConfig20240805Schema = z
-  .object({
-    electableSpecs: HardwareSpec20240805Schema.exactOptional(),
-    priority: z
-      .int32()
-      .min(0)
-      .max(7)
-      .exactOptional()
-      .openapi({
-        description:
-          'Precedence is given to this region when a primary election occurs. If your `regionConfigs` has only `readOnlySpecs`, `analyticsSpecs`, or both, set this value to `0`. If you have multiple `regionConfigs` objects (your cluster is multi-region or multi-cloud), they must have priorities in descending order. The highest priority is `7`.\n\n**Example:** If you have three regions, their priorities would be `7`, `6`, and `5` respectively. If you added two more regions for supporting electable nodes, the priorities of those regions would be `4` and `3` respectively.',
-        example: 7,
-      }),
-    providerName: z
-      .enum(['AWS', 'AZURE', 'GCP', 'TENANT'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Cloud service provider on which MongoDB Cloud provisions the hosts. Set dedicated clusters to `AWS`, `GCP`, `AZURE` or `TENANT`.',
-      }),
-    regionName: z
-      .xor([
-        z
-          .enum([
-            'US_GOV_WEST_1',
-            'US_GOV_EAST_1',
-            'US_EAST_1',
-            'US_EAST_2',
-            'US_WEST_1',
-            'US_WEST_2',
-            'CA_CENTRAL_1',
-            'EU_NORTH_1',
-            'EU_WEST_1',
-            'EU_WEST_2',
-            'EU_WEST_3',
-            'EU_CENTRAL_1',
-            'EU_CENTRAL_2',
-            'AP_EAST_1',
-            'AP_EAST_2',
-            'AP_NORTHEAST_1',
-            'AP_NORTHEAST_2',
-            'AP_NORTHEAST_3',
-            'AP_SOUTHEAST_1',
-            'AP_SOUTHEAST_2',
-            'AP_SOUTHEAST_3',
-            'AP_SOUTHEAST_4',
-            'AP_SOUTHEAST_5',
-            'AP_SOUTHEAST_6',
-            'AP_SOUTHEAST_7',
-            'AP_SOUTH_1',
-            'AP_SOUTH_2',
-            'SA_EAST_1',
-            'CN_NORTH_1',
-            'CN_NORTHWEST_1',
-            'ME_SOUTH_1',
-            'ME_CENTRAL_1',
-            'AF_SOUTH_1',
-            'EU_SOUTH_1',
-            'EU_SOUTH_2',
-            'IL_CENTRAL_1',
-            'CA_WEST_1',
-            'MX_CENTRAL_1',
-            'GLOBAL',
-          ])
-          .openapi({
-            description:
-              'Physical location where MongoDB Cloud deploys your AWS-hosted MongoDB cluster nodes. The region you choose can affect network latency for clients accessing your databases. When MongoDB Cloud deploys a dedicated cluster, it checks if a VPC or VPC connection exists for that provider and region. If not, MongoDB Cloud creates them as part of the deployment. MongoDB Cloud assigns the VPC a CIDR block. To limit a new VPC peering connection to one CIDR block and region, create the connection first. Deploy the cluster after the connection starts.',
-            title: 'AWS Regions',
-          }),
-        z
-          .enum([
-            'US_CENTRAL',
-            'US_EAST',
-            'US_EAST_2',
-            'US_NORTH_CENTRAL',
-            'US_WEST',
-            'US_SOUTH_CENTRAL',
-            'EUROPE_NORTH',
-            'EUROPE_WEST',
-            'US_WEST_CENTRAL',
-            'US_WEST_2',
-            'US_WEST_3',
-            'CANADA_EAST',
-            'CANADA_CENTRAL',
-            'BRAZIL_SOUTH',
-            'BRAZIL_SOUTHEAST',
-            'AUSTRALIA_CENTRAL',
-            'AUSTRALIA_CENTRAL_2',
-            'AUSTRALIA_EAST',
-            'AUSTRALIA_SOUTH_EAST',
-            'GERMANY_WEST_CENTRAL',
-            'GERMANY_NORTH',
-            'SWEDEN_CENTRAL',
-            'SWEDEN_SOUTH',
-            'SWITZERLAND_NORTH',
-            'SWITZERLAND_WEST',
-            'UK_SOUTH',
-            'UK_WEST',
-            'NORWAY_EAST',
-            'NORWAY_WEST',
-            'INDIA_CENTRAL',
-            'INDIA_SOUTH',
-            'INDIA_WEST',
-            'CHINA_EAST',
-            'CHINA_NORTH',
-            'ASIA_EAST',
-            'JAPAN_EAST',
-            'JAPAN_WEST',
-            'ASIA_SOUTH_EAST',
-            'KOREA_CENTRAL',
-            'KOREA_SOUTH',
-            'FRANCE_CENTRAL',
-            'FRANCE_SOUTH',
-            'SOUTH_AFRICA_NORTH',
-            'SOUTH_AFRICA_WEST',
-            'UAE_CENTRAL',
-            'UAE_NORTH',
-            'QATAR_CENTRAL',
-            'POLAND_CENTRAL',
-            'ISRAEL_CENTRAL',
-            'ITALY_NORTH',
-            'SPAIN_CENTRAL',
-            'MEXICO_CENTRAL',
-            'NEW_ZEALAND_NORTH',
-            'US_GOV_VIRGINIA',
-            'US_GOV_ARIZONA',
-            'US_GOV_TEXAS',
-          ])
-          .openapi({ description: 'Microsoft Azure Regions.', title: 'Azure Regions' }),
-        z
-          .enum([
-            'EASTERN_US',
-            'EASTERN_US_AW',
-            'US_EAST_4',
-            'US_EAST_4_AW',
-            'US_EAST_5',
-            'US_EAST_5_AW',
-            'US_WEST_2',
-            'US_WEST_2_AW',
-            'US_WEST_3',
-            'US_WEST_3_AW',
-            'US_WEST_4',
-            'US_WEST_4_AW',
-            'US_SOUTH_1',
-            'US_SOUTH_1_AW',
-            'CENTRAL_US',
-            'CENTRAL_US_AW',
-            'WESTERN_US',
-            'WESTERN_US_AW',
-            'NORTH_AMERICA_NORTHEAST_1',
-            'NORTH_AMERICA_NORTHEAST_2',
-            'NORTH_AMERICA_SOUTH_1',
-            'SOUTH_AMERICA_EAST_1',
-            'SOUTH_AMERICA_WEST_1',
-            'WESTERN_EUROPE',
-            'EUROPE_NORTH_1',
-            'EUROPE_WEST_2',
-            'EUROPE_WEST_3',
-            'EUROPE_WEST_4',
-            'EUROPE_WEST_6',
-            'EUROPE_WEST_8',
-            'EUROPE_WEST_9',
-            'EUROPE_WEST_10',
-            'EUROPE_WEST_12',
-            'EUROPE_SOUTHWEST_1',
-            'EUROPE_CENTRAL_2',
-            'MIDDLE_EAST_CENTRAL_1',
-            'MIDDLE_EAST_CENTRAL_2',
-            'MIDDLE_EAST_WEST_1',
-            'AUSTRALIA_SOUTHEAST_1',
-            'AUSTRALIA_SOUTHEAST_2',
-            'AFRICA_SOUTH_1',
-            'EASTERN_ASIA_PACIFIC',
-            'NORTHEASTERN_ASIA_PACIFIC',
-            'SOUTHEASTERN_ASIA_PACIFIC',
-            'ASIA_EAST_2',
-            'ASIA_NORTHEAST_2',
-            'ASIA_NORTHEAST_3',
-            'ASIA_SOUTH_1',
-            'ASIA_SOUTH_2',
-            'ASIA_SOUTHEAST_2',
-          ])
-          .openapi({ description: 'Google Compute Regions.', title: 'GCP Regions' }),
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'Physical location of your MongoDB cluster nodes. The region you choose can affect network latency for clients accessing your databases. The region name is only returned in the response for single-region clusters. When MongoDB Cloud deploys a dedicated cluster, it checks if a VPC or VPC connection exists for that provider and region. If not, MongoDB Cloud creates them as part of the deployment. It assigns the VPC a Classless Inter-Domain Routing (CIDR) block. To limit a new VPC peering connection to one Classless Inter-Domain Routing (CIDR) block and region, create the connection first. Deploy the cluster after the connection starts. GCP Clusters and Multi-region clusters require one VPC peering connection for each region. MongoDB nodes can use only the peering connection that resides in the same region as the nodes to communicate with the peered VPC.',
-      }),
-  })
-  .openapi({ required: [] })
-  .and(
-    z
-      .object({
-        analyticsAutoScaling: AdvancedAutoScalingSettingsSchema.exactOptional(),
-        analyticsSpecs: DedicatedHardwareSpec20240805Schema.exactOptional(),
-        autoScaling: AdvancedAutoScalingSettingsSchema.exactOptional(),
-        effectiveAnalyticsSpecs: DedicatedHardwareSpec20240805Schema.exactOptional(),
-        effectiveElectableSpecs: DedicatedHardwareSpec20240805Schema.exactOptional(),
-        effectiveReadOnlySpecs: DedicatedHardwareSpec20240805Schema.exactOptional(),
-        readOnlySpecs: DedicatedHardwareSpec20240805Schema.exactOptional(),
-      })
-      .openapi({ required: [] }),
-  )
-  .openapi({
-    description:
-      'Details that explain how MongoDB Cloud replicates data in one region on the specified MongoDB database.',
-    title: 'Azure Regional Replication Specifications',
-  })
-  .openapi('AzureRegionConfig20240805')
-
-const GCPRegionConfig20240805Schema = z
-  .object({
-    electableSpecs: HardwareSpec20240805Schema.exactOptional(),
-    priority: z
-      .int32()
-      .min(0)
-      .max(7)
-      .exactOptional()
-      .openapi({
-        description:
-          'Precedence is given to this region when a primary election occurs. If your `regionConfigs` has only `readOnlySpecs`, `analyticsSpecs`, or both, set this value to `0`. If you have multiple `regionConfigs` objects (your cluster is multi-region or multi-cloud), they must have priorities in descending order. The highest priority is `7`.\n\n**Example:** If you have three regions, their priorities would be `7`, `6`, and `5` respectively. If you added two more regions for supporting electable nodes, the priorities of those regions would be `4` and `3` respectively.',
-        example: 7,
-      }),
-    providerName: z
-      .enum(['AWS', 'AZURE', 'GCP', 'TENANT'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Cloud service provider on which MongoDB Cloud provisions the hosts. Set dedicated clusters to `AWS`, `GCP`, `AZURE` or `TENANT`.',
-      }),
-    regionName: z
-      .xor([
-        z
-          .enum([
-            'US_GOV_WEST_1',
-            'US_GOV_EAST_1',
-            'US_EAST_1',
-            'US_EAST_2',
-            'US_WEST_1',
-            'US_WEST_2',
-            'CA_CENTRAL_1',
-            'EU_NORTH_1',
-            'EU_WEST_1',
-            'EU_WEST_2',
-            'EU_WEST_3',
-            'EU_CENTRAL_1',
-            'EU_CENTRAL_2',
-            'AP_EAST_1',
-            'AP_EAST_2',
-            'AP_NORTHEAST_1',
-            'AP_NORTHEAST_2',
-            'AP_NORTHEAST_3',
-            'AP_SOUTHEAST_1',
-            'AP_SOUTHEAST_2',
-            'AP_SOUTHEAST_3',
-            'AP_SOUTHEAST_4',
-            'AP_SOUTHEAST_5',
-            'AP_SOUTHEAST_6',
-            'AP_SOUTHEAST_7',
-            'AP_SOUTH_1',
-            'AP_SOUTH_2',
-            'SA_EAST_1',
-            'CN_NORTH_1',
-            'CN_NORTHWEST_1',
-            'ME_SOUTH_1',
-            'ME_CENTRAL_1',
-            'AF_SOUTH_1',
-            'EU_SOUTH_1',
-            'EU_SOUTH_2',
-            'IL_CENTRAL_1',
-            'CA_WEST_1',
-            'MX_CENTRAL_1',
-            'GLOBAL',
-          ])
-          .openapi({
-            description:
-              'Physical location where MongoDB Cloud deploys your AWS-hosted MongoDB cluster nodes. The region you choose can affect network latency for clients accessing your databases. When MongoDB Cloud deploys a dedicated cluster, it checks if a VPC or VPC connection exists for that provider and region. If not, MongoDB Cloud creates them as part of the deployment. MongoDB Cloud assigns the VPC a CIDR block. To limit a new VPC peering connection to one CIDR block and region, create the connection first. Deploy the cluster after the connection starts.',
-            title: 'AWS Regions',
-          }),
-        z
-          .enum([
-            'US_CENTRAL',
-            'US_EAST',
-            'US_EAST_2',
-            'US_NORTH_CENTRAL',
-            'US_WEST',
-            'US_SOUTH_CENTRAL',
-            'EUROPE_NORTH',
-            'EUROPE_WEST',
-            'US_WEST_CENTRAL',
-            'US_WEST_2',
-            'US_WEST_3',
-            'CANADA_EAST',
-            'CANADA_CENTRAL',
-            'BRAZIL_SOUTH',
-            'BRAZIL_SOUTHEAST',
-            'AUSTRALIA_CENTRAL',
-            'AUSTRALIA_CENTRAL_2',
-            'AUSTRALIA_EAST',
-            'AUSTRALIA_SOUTH_EAST',
-            'GERMANY_WEST_CENTRAL',
-            'GERMANY_NORTH',
-            'SWEDEN_CENTRAL',
-            'SWEDEN_SOUTH',
-            'SWITZERLAND_NORTH',
-            'SWITZERLAND_WEST',
-            'UK_SOUTH',
-            'UK_WEST',
-            'NORWAY_EAST',
-            'NORWAY_WEST',
-            'INDIA_CENTRAL',
-            'INDIA_SOUTH',
-            'INDIA_WEST',
-            'CHINA_EAST',
-            'CHINA_NORTH',
-            'ASIA_EAST',
-            'JAPAN_EAST',
-            'JAPAN_WEST',
-            'ASIA_SOUTH_EAST',
-            'KOREA_CENTRAL',
-            'KOREA_SOUTH',
-            'FRANCE_CENTRAL',
-            'FRANCE_SOUTH',
-            'SOUTH_AFRICA_NORTH',
-            'SOUTH_AFRICA_WEST',
-            'UAE_CENTRAL',
-            'UAE_NORTH',
-            'QATAR_CENTRAL',
-            'POLAND_CENTRAL',
-            'ISRAEL_CENTRAL',
-            'ITALY_NORTH',
-            'SPAIN_CENTRAL',
-            'MEXICO_CENTRAL',
-            'NEW_ZEALAND_NORTH',
-            'US_GOV_VIRGINIA',
-            'US_GOV_ARIZONA',
-            'US_GOV_TEXAS',
-          ])
-          .openapi({ description: 'Microsoft Azure Regions.', title: 'Azure Regions' }),
-        z
-          .enum([
-            'EASTERN_US',
-            'EASTERN_US_AW',
-            'US_EAST_4',
-            'US_EAST_4_AW',
-            'US_EAST_5',
-            'US_EAST_5_AW',
-            'US_WEST_2',
-            'US_WEST_2_AW',
-            'US_WEST_3',
-            'US_WEST_3_AW',
-            'US_WEST_4',
-            'US_WEST_4_AW',
-            'US_SOUTH_1',
-            'US_SOUTH_1_AW',
-            'CENTRAL_US',
-            'CENTRAL_US_AW',
-            'WESTERN_US',
-            'WESTERN_US_AW',
-            'NORTH_AMERICA_NORTHEAST_1',
-            'NORTH_AMERICA_NORTHEAST_2',
-            'NORTH_AMERICA_SOUTH_1',
-            'SOUTH_AMERICA_EAST_1',
-            'SOUTH_AMERICA_WEST_1',
-            'WESTERN_EUROPE',
-            'EUROPE_NORTH_1',
-            'EUROPE_WEST_2',
-            'EUROPE_WEST_3',
-            'EUROPE_WEST_4',
-            'EUROPE_WEST_6',
-            'EUROPE_WEST_8',
-            'EUROPE_WEST_9',
-            'EUROPE_WEST_10',
-            'EUROPE_WEST_12',
-            'EUROPE_SOUTHWEST_1',
-            'EUROPE_CENTRAL_2',
-            'MIDDLE_EAST_CENTRAL_1',
-            'MIDDLE_EAST_CENTRAL_2',
-            'MIDDLE_EAST_WEST_1',
-            'AUSTRALIA_SOUTHEAST_1',
-            'AUSTRALIA_SOUTHEAST_2',
-            'AFRICA_SOUTH_1',
-            'EASTERN_ASIA_PACIFIC',
-            'NORTHEASTERN_ASIA_PACIFIC',
-            'SOUTHEASTERN_ASIA_PACIFIC',
-            'ASIA_EAST_2',
-            'ASIA_NORTHEAST_2',
-            'ASIA_NORTHEAST_3',
-            'ASIA_SOUTH_1',
-            'ASIA_SOUTH_2',
-            'ASIA_SOUTHEAST_2',
-          ])
-          .openapi({ description: 'Google Compute Regions.', title: 'GCP Regions' }),
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'Physical location of your MongoDB cluster nodes. The region you choose can affect network latency for clients accessing your databases. The region name is only returned in the response for single-region clusters. When MongoDB Cloud deploys a dedicated cluster, it checks if a VPC or VPC connection exists for that provider and region. If not, MongoDB Cloud creates them as part of the deployment. It assigns the VPC a Classless Inter-Domain Routing (CIDR) block. To limit a new VPC peering connection to one Classless Inter-Domain Routing (CIDR) block and region, create the connection first. Deploy the cluster after the connection starts. GCP Clusters and Multi-region clusters require one VPC peering connection for each region. MongoDB nodes can use only the peering connection that resides in the same region as the nodes to communicate with the peered VPC.',
-      }),
-  })
-  .openapi({ required: [] })
-  .and(
-    z
-      .object({
-        analyticsAutoScaling: AdvancedAutoScalingSettingsSchema.exactOptional(),
-        analyticsSpecs: DedicatedHardwareSpec20240805Schema.exactOptional(),
-        autoScaling: AdvancedAutoScalingSettingsSchema.exactOptional(),
-        effectiveAnalyticsSpecs: DedicatedHardwareSpec20240805Schema.exactOptional(),
-        effectiveElectableSpecs: DedicatedHardwareSpec20240805Schema.exactOptional(),
-        effectiveReadOnlySpecs: DedicatedHardwareSpec20240805Schema.exactOptional(),
-        readOnlySpecs: DedicatedHardwareSpec20240805Schema.exactOptional(),
-      })
-      .openapi({ required: [] }),
-  )
-  .openapi({
-    description:
-      'Details that explain how MongoDB Cloud replicates data in one region on the specified MongoDB database.',
-    title: 'GCP Regional Replication Specifications',
-  })
-  .openapi('GCPRegionConfig20240805')
-
-const TenantRegionConfig20240805Schema = z
-  .object({
-    electableSpecs: HardwareSpec20240805Schema.exactOptional(),
-    priority: z
-      .int32()
-      .min(0)
-      .max(7)
-      .exactOptional()
-      .openapi({
-        description:
-          'Precedence is given to this region when a primary election occurs. If your `regionConfigs` has only `readOnlySpecs`, `analyticsSpecs`, or both, set this value to `0`. If you have multiple `regionConfigs` objects (your cluster is multi-region or multi-cloud), they must have priorities in descending order. The highest priority is `7`.\n\n**Example:** If you have three regions, their priorities would be `7`, `6`, and `5` respectively. If you added two more regions for supporting electable nodes, the priorities of those regions would be `4` and `3` respectively.',
-        example: 7,
-      }),
-    providerName: z
-      .enum(['AWS', 'AZURE', 'GCP', 'TENANT'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Cloud service provider on which MongoDB Cloud provisions the hosts. Set dedicated clusters to `AWS`, `GCP`, `AZURE` or `TENANT`.',
-      }),
-    regionName: z
-      .xor([
-        z
-          .enum([
-            'US_GOV_WEST_1',
-            'US_GOV_EAST_1',
-            'US_EAST_1',
-            'US_EAST_2',
-            'US_WEST_1',
-            'US_WEST_2',
-            'CA_CENTRAL_1',
-            'EU_NORTH_1',
-            'EU_WEST_1',
-            'EU_WEST_2',
-            'EU_WEST_3',
-            'EU_CENTRAL_1',
-            'EU_CENTRAL_2',
-            'AP_EAST_1',
-            'AP_EAST_2',
-            'AP_NORTHEAST_1',
-            'AP_NORTHEAST_2',
-            'AP_NORTHEAST_3',
-            'AP_SOUTHEAST_1',
-            'AP_SOUTHEAST_2',
-            'AP_SOUTHEAST_3',
-            'AP_SOUTHEAST_4',
-            'AP_SOUTHEAST_5',
-            'AP_SOUTHEAST_6',
-            'AP_SOUTHEAST_7',
-            'AP_SOUTH_1',
-            'AP_SOUTH_2',
-            'SA_EAST_1',
-            'CN_NORTH_1',
-            'CN_NORTHWEST_1',
-            'ME_SOUTH_1',
-            'ME_CENTRAL_1',
-            'AF_SOUTH_1',
-            'EU_SOUTH_1',
-            'EU_SOUTH_2',
-            'IL_CENTRAL_1',
-            'CA_WEST_1',
-            'MX_CENTRAL_1',
-            'GLOBAL',
-          ])
-          .openapi({
-            description:
-              'Physical location where MongoDB Cloud deploys your AWS-hosted MongoDB cluster nodes. The region you choose can affect network latency for clients accessing your databases. When MongoDB Cloud deploys a dedicated cluster, it checks if a VPC or VPC connection exists for that provider and region. If not, MongoDB Cloud creates them as part of the deployment. MongoDB Cloud assigns the VPC a CIDR block. To limit a new VPC peering connection to one CIDR block and region, create the connection first. Deploy the cluster after the connection starts.',
-            title: 'AWS Regions',
-          }),
-        z
-          .enum([
-            'US_CENTRAL',
-            'US_EAST',
-            'US_EAST_2',
-            'US_NORTH_CENTRAL',
-            'US_WEST',
-            'US_SOUTH_CENTRAL',
-            'EUROPE_NORTH',
-            'EUROPE_WEST',
-            'US_WEST_CENTRAL',
-            'US_WEST_2',
-            'US_WEST_3',
-            'CANADA_EAST',
-            'CANADA_CENTRAL',
-            'BRAZIL_SOUTH',
-            'BRAZIL_SOUTHEAST',
-            'AUSTRALIA_CENTRAL',
-            'AUSTRALIA_CENTRAL_2',
-            'AUSTRALIA_EAST',
-            'AUSTRALIA_SOUTH_EAST',
-            'GERMANY_WEST_CENTRAL',
-            'GERMANY_NORTH',
-            'SWEDEN_CENTRAL',
-            'SWEDEN_SOUTH',
-            'SWITZERLAND_NORTH',
-            'SWITZERLAND_WEST',
-            'UK_SOUTH',
-            'UK_WEST',
-            'NORWAY_EAST',
-            'NORWAY_WEST',
-            'INDIA_CENTRAL',
-            'INDIA_SOUTH',
-            'INDIA_WEST',
-            'CHINA_EAST',
-            'CHINA_NORTH',
-            'ASIA_EAST',
-            'JAPAN_EAST',
-            'JAPAN_WEST',
-            'ASIA_SOUTH_EAST',
-            'KOREA_CENTRAL',
-            'KOREA_SOUTH',
-            'FRANCE_CENTRAL',
-            'FRANCE_SOUTH',
-            'SOUTH_AFRICA_NORTH',
-            'SOUTH_AFRICA_WEST',
-            'UAE_CENTRAL',
-            'UAE_NORTH',
-            'QATAR_CENTRAL',
-            'POLAND_CENTRAL',
-            'ISRAEL_CENTRAL',
-            'ITALY_NORTH',
-            'SPAIN_CENTRAL',
-            'MEXICO_CENTRAL',
-            'NEW_ZEALAND_NORTH',
-            'US_GOV_VIRGINIA',
-            'US_GOV_ARIZONA',
-            'US_GOV_TEXAS',
-          ])
-          .openapi({ description: 'Microsoft Azure Regions.', title: 'Azure Regions' }),
-        z
-          .enum([
-            'EASTERN_US',
-            'EASTERN_US_AW',
-            'US_EAST_4',
-            'US_EAST_4_AW',
-            'US_EAST_5',
-            'US_EAST_5_AW',
-            'US_WEST_2',
-            'US_WEST_2_AW',
-            'US_WEST_3',
-            'US_WEST_3_AW',
-            'US_WEST_4',
-            'US_WEST_4_AW',
-            'US_SOUTH_1',
-            'US_SOUTH_1_AW',
-            'CENTRAL_US',
-            'CENTRAL_US_AW',
-            'WESTERN_US',
-            'WESTERN_US_AW',
-            'NORTH_AMERICA_NORTHEAST_1',
-            'NORTH_AMERICA_NORTHEAST_2',
-            'NORTH_AMERICA_SOUTH_1',
-            'SOUTH_AMERICA_EAST_1',
-            'SOUTH_AMERICA_WEST_1',
-            'WESTERN_EUROPE',
-            'EUROPE_NORTH_1',
-            'EUROPE_WEST_2',
-            'EUROPE_WEST_3',
-            'EUROPE_WEST_4',
-            'EUROPE_WEST_6',
-            'EUROPE_WEST_8',
-            'EUROPE_WEST_9',
-            'EUROPE_WEST_10',
-            'EUROPE_WEST_12',
-            'EUROPE_SOUTHWEST_1',
-            'EUROPE_CENTRAL_2',
-            'MIDDLE_EAST_CENTRAL_1',
-            'MIDDLE_EAST_CENTRAL_2',
-            'MIDDLE_EAST_WEST_1',
-            'AUSTRALIA_SOUTHEAST_1',
-            'AUSTRALIA_SOUTHEAST_2',
-            'AFRICA_SOUTH_1',
-            'EASTERN_ASIA_PACIFIC',
-            'NORTHEASTERN_ASIA_PACIFIC',
-            'SOUTHEASTERN_ASIA_PACIFIC',
-            'ASIA_EAST_2',
-            'ASIA_NORTHEAST_2',
-            'ASIA_NORTHEAST_3',
-            'ASIA_SOUTH_1',
-            'ASIA_SOUTH_2',
-            'ASIA_SOUTHEAST_2',
-          ])
-          .openapi({ description: 'Google Compute Regions.', title: 'GCP Regions' }),
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'Physical location of your MongoDB cluster nodes. The region you choose can affect network latency for clients accessing your databases. The region name is only returned in the response for single-region clusters. When MongoDB Cloud deploys a dedicated cluster, it checks if a VPC or VPC connection exists for that provider and region. If not, MongoDB Cloud creates them as part of the deployment. It assigns the VPC a Classless Inter-Domain Routing (CIDR) block. To limit a new VPC peering connection to one Classless Inter-Domain Routing (CIDR) block and region, create the connection first. Deploy the cluster after the connection starts. GCP Clusters and Multi-region clusters require one VPC peering connection for each region. MongoDB nodes can use only the peering connection that resides in the same region as the nodes to communicate with the peered VPC.',
-      }),
-  })
-  .openapi({ required: [] })
-  .and(
-    z
-      .object({
-        backingProviderName: z
-          .enum(['AWS', 'GCP', 'AZURE'])
-          .exactOptional()
-          .openapi({
-            description:
-              'Cloud service provider on which MongoDB Cloud provisioned the multi-tenant cluster. The resource returns this parameter when `providerName` is `TENANT` and `electableSpecs.instanceSize` is `M0`, `M2` or `M5`. \n\nPlease note that  using an `instanceSize` of `M2` or `M5` will create a Flex cluster instead. Support for the `instanceSize` of `M2` or `M5` will be discontinued in January 2026. We recommend using the Create Flex Cluster API for such configurations moving forward.',
-            externalDocs: {
-              description: 'Create Flex Cluster API',
-              url: 'https://www.mongodb.com/docs/atlas/reference/api-resources-spec/v2/#tag/Flex-Clusters/operation/createFlexCluster',
-            },
-          }),
-      })
-      .openapi({ required: [] }),
-  )
-  .openapi({
-    description:
-      'Details that explain how MongoDB Cloud replicates data in one region on the specified MongoDB database.',
-    title: 'Tenant Regional Replication Specifications',
-  })
-  .openapi('TenantRegionConfig20240805')
-
-const CloudRegionConfig20240805Schema = z
-  .xor([
-    AWSRegionConfig20240805Schema,
-    AzureRegionConfig20240805Schema,
-    GCPRegionConfig20240805Schema,
-    TenantRegionConfig20240805Schema,
-  ])
-  .openapi({
-    description: 'Cloud service provider on which MongoDB Cloud provisions the hosts.',
-    discriminator: {
-      propertyName: 'providerName',
-      mapping: {
-        AWS: '#/components/schemas/AWSRegionConfig20240805',
-        AZURE: '#/components/schemas/AzureRegionConfig20240805',
-        GCP: '#/components/schemas/GCPRegionConfig20240805',
-        TENANT: '#/components/schemas/TenantRegionConfig20240805',
-      },
-    },
-    title: 'Cloud Service Provider Settings',
-  })
-  .openapi('CloudRegionConfig20240805')
-
-const ReplicationSpec20240805Schema = z
-  .object({
-    id: z
-      .string()
-      .regex(/^([a-f0-9]{24})$/)
-      .exactOptional()
-      .openapi({
-        description:
-          'Unique 24-hexadecimal digit string that identifies the replication object for a shard in a Cluster. If you include existing shard replication configurations in the request, you must specify this parameter. If you add a new shard to an existing Cluster, you may specify this parameter. The request deletes any existing shards  in the Cluster that you exclude from the request. This corresponds to Shard ID displayed in the UI.',
-        example: '32b6e34b3d91647abb20e7b8',
-        readOnly: true,
-      }),
-    regionConfigs: z
-      .array(CloudRegionConfig20240805Schema)
-      .exactOptional()
-      .openapi({
-        description:
-          "Hardware specifications for nodes set for a given region. Each `regionConfigs` object must be unique by region and cloud provider within the `replicationSpec`. Each `regionConfigs` object describes the region's priority in elections and the number and type of MongoDB nodes that MongoDB Cloud deploys to the region. Each `regionConfigs` object must have either an `analyticsSpecs` object, `electableSpecs` object, or `readOnlySpecs` object. Tenant clusters only require `electableSpecs`. Dedicated clusters can specify any of these specifications, but must have at least one `electableSpecs` object within a `replicationSpec`.\n\n**Example:**\n\nIf you set `replicationSpecs[n].regionConfigs[m].analyticsSpecs.instanceSize` : `M30`, set `replicationSpecs[n].regionConfigs[m].electableSpecs.instanceSize` : `M30` if you have electable nodes and `replicationSpecs[n].regionConfigs[m].readOnlySpecs.instanceSize` : `M30` if you have read-only nodes.",
-      }),
-    zoneId: z
-      .string()
-      .regex(/^([a-f0-9]{24})$/)
-      .exactOptional()
-      .openapi({
-        description:
-          'Unique 24-hexadecimal digit string that identifies the zone in a Global Cluster. This value can be used to configure Global Cluster backup policies.',
-        example: '32b6e34b3d91647abb20e7b8',
-        readOnly: true,
-      }),
-    zoneName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Human-readable label that describes the zone this shard belongs to in a Global Cluster. Provide this value only if `clusterType` : `GEOSHARDED` but not `selfManagedSharding` : `true`.',
-      }),
-  })
-  .openapi({
-    description:
-      'Details that explain how MongoDB Cloud replicates data on the specified MongoDB database.',
-    title: 'Replication Specifications',
-    required: [],
-  })
-  .openapi('ReplicationSpec20240805')
-
-const SearchAutoMigrationSchema = z
-  .object({
-    disabled: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({
-        description:
-          'Flag that disables future automatic Search Node provisioning. Defaults to false on creation. Omission on update preserves the stored choice. Disabling retains existing Search Nodes and allows in-flight migrations to continue. Enabling does not bypass resource policies; if indexes exceed the migration threshold, the next eligible evaluation may start provisioning.',
-      }),
-  })
-  .openapi({
-    description:
-      'Configuration for automatically adding Dedicated Search Nodes on eligible Atlas Infinite clusters. This setting has no effect on Atlas Core clusters.',
-    required: [],
-  })
-  .openapi('SearchAutoMigration')
-
-const ClusterDescription20240805Schema = z
-  .object({
-    acceptDataRisksAndForceReplicaSetReconfig: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description:
-          'If reconfiguration is necessary to regain a primary due to a regional outage, submit this field alongside your topology reconfiguration to request a new regional outage resistant topology. Forced reconfigurations during an outage of the majority of electable nodes carry a risk of data loss if replicated writes (even majority committed writes) have not been replicated to the new primary node. MongoDB Atlas docs contain more information. To proceed with an operation which carries that risk, set `acceptDataRisksAndForceReplicaSetReconfig` to the current date. This parameter expresses its value in the ISO 8601 timestamp format in UTC.',
-        externalDocs: {
-          description: 'Reconfiguring a Replica Set during a regional outage',
-          url: 'https://dochub.mongodb.org/core/regional-outage-reconfigure-replica-set',
-        },
-      }),
-    adaptiveCapacity: z
-      .enum(['ENABLED', 'DISABLED'])
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          "Governs adaptive capacity behavior of nodes in clusters on providers that support fallback hardware, including those providers' nodes in multi-cloud clusters. Adaptive capacity enables fallback hardware selection when the primary instance family is unavailable. ``ENABLED`` means the cluster explicitly opts in to adaptive capacity. ``DISABLED`` means the cluster explicitly opts out; the cluster receives capacity errors instead of being placed on fallback hardware. ``null`` means the field is unset; clusters use adaptive capacity by default on a provider that supports it.",
-      }),
-    advancedConfiguration: ApiAtlasClusterAdvancedConfigurationViewSchema.exactOptional(),
-    backupEnabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          "Flag that indicates whether Atlas backs up the cluster.\n\nOn Atlas Core clusters, dedicated clusters use [Cloud Backups](https://www.mongodb.com/docs/atlas/backup/cloud-backup/overview/) and Flex clusters use [Flex Cluster Backups](https://www.mongodb.com/docs/atlas/backup/cloud-backup/flex-cluster-backup/). Default value is `false`. For clusters that use local [NVMe SSDs](https://www.mongodb.com/docs/atlas/manage-clusters/#nvme-storage) for storage, you can't disable backup, so you must set `backupEnabled` to `true`.\n\nOn Atlas Infinite clusters, the `backupEnabled` flag controls Additional Backup Retention, not whether backups run. To retain snapshots beyond the 24-hour window, set `backupEnabled` to `true`. For Atlas Infinite clusters, continuous cloud backups are enabled by default, always run, and include a 24-hour window in which you can restore to any point in time. Atlas then applies your snapshot retention policies. To keep only the included window under an Atlas-managed retention policy that you can't edit, set `backupEnabled` to `false`. A cluster covered by a Data Protection policy has this flag set to `true` regardless of the requested value. Default value is `true`.",
-        externalDocs: {
-          description: 'Cloud Backups',
-          url: 'https://www.mongodb.com/docs/atlas/backup/cloud-backup/overview/',
-        },
-      }),
-    biConnector: BiConnectorSchema.exactOptional(),
-    clusterType: z
-      .enum(['REPLICASET', 'SHARDED', 'GEOSHARDED'])
-      .exactOptional()
-      .openapi({ description: 'Configuration of nodes that comprise the cluster.' }),
-    configServerManagementMode: z
-      .enum(['ATLAS_MANAGED', 'FIXED_TO_DEDICATED'])
-      .default('ATLAS_MANAGED')
-      .exactOptional()
-      .openapi({
-        description:
-          "Config Server Management Mode for creating or updating a sharded cluster. When configured as `ATLAS_MANAGED`, Atlas may automatically switch the cluster's config server type for optimal performance and savings. When configured as `FIXED_TO_DEDICATED`, the cluster will always use a dedicated config server.",
-        externalDocs: {
-          description: 'MongoDB Sharded Cluster Config Servers',
-          url: 'https://dochub.mongodb.org/docs/manual/core/sharded-cluster-config-servers',
-        },
-      }),
-    configServerType: z
-      .enum(['DEDICATED', 'EMBEDDED'])
-      .exactOptional()
-      .openapi({
-        description: "Describes a sharded cluster's config server type.",
-        externalDocs: {
-          description: 'MongoDB Sharded Cluster Config Servers',
-          url: 'https://dochub.mongodb.org/docs/manual/core/sharded-cluster-config-servers',
-        },
-        readOnly: true,
-      }),
-    connectionStrings: ClusterConnectionStringsSchema.exactOptional(),
-    createDate: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description:
-          'Date and time when MongoDB Cloud created this cluster. This parameter expresses its value in ISO 8601 format in UTC.',
-        readOnly: true,
-      }),
-    databaseEdition: z
-      .enum(['CORE', 'INFINITE'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Available in Public Preview: Optional field that indicates whether your cluster will be Atlas INFINITE or CORE. You can set it only when you create the cluster, or when you upgrade a Free or Flex cluster to a dedicated cluster. This value is immutable once the dedicated cluster exists; attempting to change it on an update request returns an error.',
-      }),
-    diskWarmingMode: z
-      .enum(['FULLY_WARMED', 'VISIBLE_EARLIER'])
-      .default('FULLY_WARMED')
-      .exactOptional()
-      .openapi({
-        description: 'Disk warming mode selection.',
-        externalDocs: {
-          description: 'Reduce Secondary Disk Warming Impact',
-          url: 'https://docs.atlas.mongodb.com/reference/replica-set-tags/#reduce-secondary-disk-warming-impact',
-        },
-      }),
-    effectiveDatabaseEdition: z
-      .enum(['CORE', 'INFINITE'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Available in Public Preview: Field that represents whether your cluster is Atlas INFINITE or CORE. This is read-only and always returned in the response. It reflects the actual cluster state. This value matches `databaseEdition` if it was set, otherwise it reflects the default database edition assigned to the cluster.',
-        readOnly: true,
-      }),
-    effectiveReplicationSpecs: z
-      .array(ReplicationSpec20240805Schema)
-      .exactOptional()
-      .openapi({
-        description:
-          'List of settings that represent the actual cluster state. This is read-only and always returned in the response. It reflects the current cluster configuration, which may differ from `replicationSpecs` due to system-managed changes.',
-        readOnly: true,
-      }),
-    encryptionAtRestProvider: z
-      .enum(['NONE', 'AWS', 'AZURE', 'GCP'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Cloud service provider that manages your customer keys to provide an additional layer of encryption at rest for the cluster. To enable customer key management for encryption at rest, the cluster `replicationSpecs[n].regionConfigs[m].{type}Specs.instanceSize` setting must be `M10` or higher and `"backupEnabled" : false` or omitted entirely.',
-        externalDocs: {
-          description: 'Encryption at Rest using Customer Key Management',
-          url: 'https://www.mongodb.com/docs/atlas/security-kms-encryption/',
-        },
-      }),
-    featureCompatibilityVersion: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Feature compatibility version of the cluster. This will always appear regardless of whether FCV is pinned.',
-        readOnly: true,
-      }),
-    featureCompatibilityVersionExpirationDate: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description:
-          'Feature compatibility version expiration date. Will only appear if FCV is pinned. This parameter expresses its value in the ISO 8601 timestamp format in UTC.',
-        readOnly: true,
-      }),
-    globalClusterSelfManagedSharding: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Set this field to configure the Sharding Management Mode when creating a new Global Cluster.\n\nWhen set to false, the management mode is set to Atlas-Managed Sharding. This mode fully manages the sharding of your Global Cluster and is built to provide a seamless deployment experience.\n\nWhen set to true, the management mode is set to Self-Managed Sharding. This mode leaves the management of shards in your hands and is built to provide an advanced and flexible deployment experience.\n\nThis setting cannot be changed once the cluster is deployed.',
-        externalDocs: {
-          description: 'Creating a Global Cluster',
-          url: 'https://dochub.mongodb.org/core/global-cluster-management',
-        },
-      }),
-    groupId: z
-      .string()
-      .regex(/^([a-f0-9]{24})$/)
-      .exactOptional()
-      .openapi({
-        description: 'Unique 24-hexadecimal character string that identifies the project.',
-        example: '32b6e34b3d91647abb20e7b8',
-        readOnly: true,
-      }),
-    id: z
-      .string()
-      .regex(/^([a-f0-9]{24})$/)
-      .exactOptional()
-      .openapi({
-        description: 'Unique 24-hexadecimal digit string that identifies the cluster.',
-        example: '32b6e34b3d91647abb20e7b8',
-        readOnly: true,
-      }),
-    internalClusterRole: z
-      .enum(['NONE', 'SYSTEM_CLUSTER', 'INTERNAL_SHADOW_CLUSTER'])
-      .exactOptional()
-      .openapi({
-        description:
-          "Internal classification of the cluster's role. Possible values: `NONE` (regular user cluster), `SYSTEM_CLUSTER` (system cluster for backup), `INTERNAL_SHADOW_CLUSTER` (internal use shadow cluster for testing).",
-        readOnly: true,
-      }),
-    labels: z
-      .array(ComponentLabelSchema)
-      .exactOptional()
-      .openapi({
-        deprecated: true,
-        description:
-          "Collection of key-value pairs between 1 to 255 characters in length that tag and categorize the cluster. The MongoDB Cloud console doesn't display your labels.\n\nCluster labels are deprecated and will be removed in a future release. We strongly recommend that you use Resource Tags instead.",
-        externalDocs: {
-          description: 'Resource Tags',
-          url: 'https://dochub.mongodb.org/core/add-cluster-tag-atlas',
-        },
-      }),
-    links: z
-      .array(LinkSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'List of one or more Uniform Resource Locators (URLs) that point to API sub-resources, related API resources, or both. RFC 5988 outlines these relationships.',
-        externalDocs: {
-          description: 'Web Linking Specification (RFC 5988)',
-          url: 'https://datatracker.ietf.org/doc/html/rfc5988',
-        },
-        readOnly: true,
-      }),
-    mongoDBEmployeeAccessGrant: EmployeeAccessGrantViewSchema.exactOptional(),
-    mongoDBMajorVersion: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'MongoDB major version of the cluster. Set to the binary major version. \n\nOn creation: Choose from the available versions of MongoDB, or leave unspecified for the current recommended default in the MongoDB Cloud platform. The recommended version is a recent Long Term Support version. The default is not guaranteed to be the most recently released version throughout the entire release cycle. For versions available in a specific project, see the linked documentation or use the API endpoint for [project LTS versions endpoint](#tag/Projects/operation/getProjectLtsVersions).\n\n On update: Increase version only by 1 major version at a time. If the cluster is pinned to a MongoDB feature compatibility version exactly one major version below the current MongoDB version, the MongoDB version can be downgraded to the previous major version.',
-        externalDocs: {
-          description: 'Available MongoDB Versions in Atlas',
-          url: 'https://www.mongodb.com/docs/atlas/reference/faq/database/#which-versions-of-mongodb-do-service-clusters-use-',
-        },
-      }),
-    mongoDBVersion: z
-      .string()
-      .regex(/([\d]+\.[\d]+\.[\d]+)/)
-      .exactOptional()
-      .openapi({ description: 'Version of MongoDB that the cluster runs.', readOnly: true }),
-    name: z
-      .string()
-      .regex(/^[a-zA-Z0-9][a-zA-Z0-9-]*$/)
-      .exactOptional()
-      .openapi({ description: 'Human-readable label that identifies the cluster.' }),
-    paused: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Flag that indicates whether the cluster is paused.' }),
-    pitEnabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Flag that indicates whether the cluster uses continuous cloud backups.\n\nFor Atlas Infinite clusters, continuous cloud backups always run. Omit this field or set it to `true`. Setting it to `false` returns an invalid attribute error.',
-        externalDocs: {
-          description: 'Continuous Cloud Backups',
-          url: 'https://www.mongodb.com/docs/atlas/backup/cloud-backup/overview/',
-        },
-      }),
-    redactClientLogData: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Enable or disable log redaction.\n\nThis setting configures the ``mongod`` or ``mongos`` to redact any document field contents from a message accompanying a given log event before logging. This prevents the program from writing potentially sensitive data stored on the database to the diagnostic log. Metadata such as error or operation codes, line numbers, and source file names are still visible in the logs.\n\nUse ``redactClientLogData`` in conjunction with Encryption at Rest and TLS/SSL (Transport Encryption) to assist compliance with regulatory requirements.\n\n*Note*: changing this setting on a cluster will trigger a rolling restart as soon as the cluster is updated.',
-        externalDocs: {
-          description: 'Log Redaction',
-          url: 'https://www.mongodb.com/docs/manual/administration/monitoring/#log-redaction',
-        },
-      }),
-    replicaSetScalingStrategy: z
-      .enum(['SEQUENTIAL', 'WORKLOAD_TYPE', 'NODE_TYPE'])
-      .default('WORKLOAD_TYPE')
-      .exactOptional()
-      .openapi({
-        description:
-          'Set this field to configure the replica set scaling mode for your cluster.\n\nBy default, Atlas scales under `WORKLOAD_TYPE`. This mode allows Atlas to scale your analytics nodes in parallel to your operational nodes.\n\nWhen configured as `SEQUENTIAL`, Atlas scales all nodes sequentially. This mode is intended for steady-state workloads and applications performing latency-sensitive secondary reads.\n\nWhen configured as `NODE_TYPE`, Atlas scales your electable nodes in parallel with your read-only and analytics nodes. This mode is intended for large, dynamic workloads requiring frequent and timely cluster tier scaling. This is the fastest scaling strategy, but it might impact latency of workloads when performing extensive secondary reads.',
-        externalDocs: {
-          description: 'Modify the Replica Set Scaling Mode',
-          url: 'https://dochub.mongodb.org/core/scale-nodes',
-        },
-      }),
-    replicationSpecs: z
-      .array(ReplicationSpec20240805Schema)
-      .exactOptional()
-      .openapi({
-        description:
-          'List of settings that configure your cluster regions. This array has one object per shard representing node configurations in each shard. For replica sets there is only one object representing node configurations.',
-      }),
-    retainBackups: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({ description: 'Flag that indicates whether the cluster retains backups.' }),
-    rootCertType: z
-      .literal('ISRGROOTX1')
-      .default('ISRGROOTX1')
-      .exactOptional()
-      .openapi({
-        description:
-          'Root Certificate Authority that MongoDB Atlas cluster uses. MongoDB Cloud supports Internet Security Research Group.',
-      }),
-    searchAutoMigration: SearchAutoMigrationSchema.exactOptional(),
-    stateName: z
-      .enum(['IDLE', 'CREATING', 'UPDATING', 'DELETING', 'REPAIRING'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Human-readable label that indicates any current activity being taken on this cluster by the Atlas control plane. With the exception of CREATING and DELETING states, clusters should always be available and have a Primary node even when in states indicating ongoing activity.\n\n - `IDLE`: Atlas is making no changes to this cluster and all changes requested via the UI or API can be assumed to have been applied.\n - `CREATING`: A cluster being provisioned for the very first time returns state CREATING until it is ready for connections. Ensure IP Access List and DB Users are configured before attempting to connect.\n - `UPDATING`: A change requested via the UI, API, AutoScaling, or other scheduled activity is taking place.\n - `DELETING`: The cluster is in the process of deletion and will soon be deleted.\n - `REPAIRING`: One or more nodes in the cluster are being returned to service by the Atlas control plane. Other nodes should continue to provide service as normal.',
-        readOnly: true,
-      }),
-    tags: z
-      .array(ResourceTagSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'List that contains key-value pairs between 1 to 255 characters in length for tagging and categorizing the cluster.',
-        externalDocs: {
-          description: 'Resource Tags',
-          url: 'https://dochub.mongodb.org/core/add-cluster-tag-atlas',
-        },
-      }),
-    terminationProtectionEnabled: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({
-        description:
-          "Flag that indicates whether termination protection is enabled on the cluster. If set to `true`, MongoDB Cloud won't delete the cluster. If set to `false`, MongoDB Cloud will delete the cluster.",
-      }),
-    useAwsTimeBasedSnapshotCopyForFastInitialSync: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({
-        description:
-          'Flag that indicates whether AWS time-based snapshot copies will be used instead of slower standard snapshot copies during fast Atlas cross-region initial syncs. This flag is only relevant for clusters containing AWS nodes.',
-      }),
-    versionReleaseSystem: z
-      .enum(['LTS', 'CONTINUOUS'])
-      .default('LTS')
-      .exactOptional()
-      .openapi({
-        description:
-          'Method by which the cluster maintains the MongoDB versions. If value is `CONTINUOUS`, you must not specify `mongoDBMajorVersion`.',
-      }),
-  })
-  .openapi({
-    description:
-      'Configuration of a MongoDB Atlas cluster, including its replication topology, instance sizing, storage, and operational settings.',
-    required: [],
-  })
-  .openapi('ClusterDescription20240805')
 
 type PaginatedClusterDescription20240805Type = {
   links?: z.infer<typeof LinkSchema>[]
@@ -7472,6 +11412,91 @@ const FederationIdentityProviderSchema = z
     FederationOidcWorkforceIdentityProviderSchema,
     FederationOidcWorkloadIdentityProviderSchema,
   ])
+  .and(
+    z
+      .object({
+        associatedOrgs: z
+          .array(ConnectedOrgConfigSchema)
+          .superRefine((items, ctx) => {
+            const seen = new Map()
+            for (const [i, val] of items.entries()) {
+              const key = JSON.stringify(val)
+              if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+              else seen.set(key, i)
+            }
+          })
+          .exactOptional()
+          .openapi({
+            description:
+              'List that contains the connected organization configurations associated with the identity provider.',
+          }),
+        createdAt: z.iso
+          .datetime({ offset: true })
+          .exactOptional()
+          .openapi({
+            description:
+              'Date that the identity provider was created on. This parameter expresses its value in the ISO 8601 timestamp format in UTC.',
+            readOnly: true,
+          }),
+        description: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'The description of the identity provider.' }),
+        displayName: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Human-readable label that identifies the identity provider.' }),
+        id: z
+          .string()
+          .regex(/^([a-f0-9]{24})$/)
+          .openapi({
+            description:
+              'Unique 24-hexadecimal digit string that identifies the identity provider.',
+            example: '32b6e34b3d91647abb20e7b8',
+            readOnly: true,
+          }),
+        idpType: z
+          .enum(['WORKFORCE', 'WORKLOAD'])
+          .exactOptional()
+          .openapi({
+            description:
+              'String enum that indicates the type of the identity provider. Default is WORKFORCE.',
+          }),
+        issuerUri: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Unique string that identifies the issuer of the SAML Assertion or OIDC metadata/discovery document URL.',
+          }),
+        oktaIdpId: z
+          .string()
+          .regex(/^([a-f0-9]{20})$/)
+          .nullable()
+          .openapi({
+            description:
+              'Legacy 20-hexadecimal digit string that identifies the identity provider.',
+          }),
+        protocol: z
+          .enum(['SAML', 'OIDC'])
+          .exactOptional()
+          .openapi({
+            description:
+              'String enum that indicates the protocol of the identity provider. Either SAML or OIDC.',
+          }),
+        updatedAt: z.iso
+          .datetime({ offset: true })
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'Date that the identity provider was last updated on. This parameter expresses its value in the ISO 8601 timestamp format in UTC.',
+            readOnly: true,
+          }),
+      })
+      .openapi({ required: ['id', 'oktaIdpId'] }),
+  )
   .openapi({ required: ['id', 'oktaIdpId'] })
   .openapi('FederationIdentityProvider')
 
@@ -7682,7 +11707,7 @@ const AWSCloudProviderSettingsSchema = z
           .openapi({
             deprecated: true,
             description:
-              "Flag that indicates whether the Amazon Elastic Block Store (EBS) encryption feature encrypts the host's root volume for both data at rest within the volume and for data moving between the volume and the cluster. Clusters always have this setting enabled.",
+              "Deprecated: Flag that indicates whether the Amazon Elastic Block Store (EBS) encryption feature encrypts the host's root volume for both data at rest within the volume and for data moving between the volume and the cluster. Clusters always have this setting enabled.",
           }),
         instanceSizeName: z
           .enum([
@@ -8352,6 +12377,7 @@ const ClusterProviderSettingsSchema = z
     ClusterFreeProviderSettingsSchema,
     ClusterFlexProviderSettingsSchema,
   ])
+  .and(z.object({ providerName: z.string() }).openapi({ required: ['providerName'] }))
   .openapi({
     description: 'Group of cloud provider settings that configure the provisioned MongoDB hosts.',
     discriminator: {
@@ -8615,7 +12641,7 @@ const LegacyAtlasClusterSchema = z
       .openapi({
         deprecated: true,
         description:
-          "Collection of key-value pairs between 1 to 255 characters in length that tag and categorize the cluster. The MongoDB Cloud console doesn't display your labels.\n\nCluster labels are deprecated and will be removed in a future release. We strongly recommend that you use Resource Tags instead.",
+          "Deprecated: Cluster labels will be removed in a future release. We strongly recommend that you use Resource Tags instead.\n\nCollection of key-value pairs between 1 to 255 characters in length that tag and categorize the cluster. The MongoDB Cloud console doesn't display your labels.",
         externalDocs: {
           description: 'Resource Tags',
           url: 'https://dochub.mongodb.org/core/add-cluster-tag-atlas',
@@ -8740,7 +12766,7 @@ const LegacyAtlasClusterSchema = z
       .openapi({
         deprecated: true,
         description:
-          'Number of members that belong to the replica set. Each member retains a copy of your databases, providing high availability and data redundancy. Use `replicationSpecs` instead.',
+          'Deprecated: Use `replicationSpecs` instead. Number of members that belong to the replica set. Each member retains a copy of your databases, providing high availability and data redundancy.',
       }),
     replicationSpec: z
       .record(z.string(), RegionSpecSchema)
@@ -9819,6 +13845,14 @@ const AWSCloudProviderContainerSchema = z
       }),
   })
   .openapi({ required: [] })
+  .and(z.looseObject({}).openapi({ required: ['regionName'] }))
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'regionName')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
   .and(
     z
       .object({
@@ -10225,112 +14259,120 @@ const AWSKMSEARPrivateEndpointSchema = z
     regionName: z
       .xor([
         z
-          .enum([
-            'US_CENTRAL',
-            'US_EAST',
-            'US_EAST_2',
-            'US_NORTH_CENTRAL',
-            'US_WEST',
-            'US_SOUTH_CENTRAL',
-            'EUROPE_NORTH',
-            'EUROPE_WEST',
-            'US_WEST_CENTRAL',
-            'US_WEST_2',
-            'US_WEST_3',
-            'CANADA_EAST',
-            'CANADA_CENTRAL',
-            'BRAZIL_SOUTH',
-            'BRAZIL_SOUTHEAST',
-            'AUSTRALIA_CENTRAL',
-            'AUSTRALIA_CENTRAL_2',
-            'AUSTRALIA_EAST',
-            'AUSTRALIA_SOUTH_EAST',
-            'GERMANY_WEST_CENTRAL',
-            'GERMANY_NORTH',
-            'SWEDEN_CENTRAL',
-            'SWEDEN_SOUTH',
-            'SWITZERLAND_NORTH',
-            'SWITZERLAND_WEST',
-            'UK_SOUTH',
-            'UK_WEST',
-            'NORWAY_EAST',
-            'NORWAY_WEST',
-            'INDIA_CENTRAL',
-            'INDIA_SOUTH',
-            'INDIA_WEST',
-            'CHINA_EAST',
-            'CHINA_NORTH',
-            'ASIA_EAST',
-            'JAPAN_EAST',
-            'JAPAN_WEST',
-            'ASIA_SOUTH_EAST',
-            'KOREA_CENTRAL',
-            'KOREA_SOUTH',
-            'FRANCE_CENTRAL',
-            'FRANCE_SOUTH',
-            'SOUTH_AFRICA_NORTH',
-            'SOUTH_AFRICA_WEST',
-            'UAE_CENTRAL',
-            'UAE_NORTH',
-            'QATAR_CENTRAL',
-            'POLAND_CENTRAL',
-            'ISRAEL_CENTRAL',
-            'ITALY_NORTH',
-            'SPAIN_CENTRAL',
-            'MEXICO_CENTRAL',
-            'NEW_ZEALAND_NORTH',
-            'US_GOV_VIRGINIA',
-            'US_GOV_ARIZONA',
-            'US_GOV_TEXAS',
-          ])
-          .openapi({ description: 'Microsoft Azure Regions.', title: 'Azure Regions' }),
+          .looseObject({})
+          .and(
+            z
+              .enum([
+                'US_CENTRAL',
+                'US_EAST',
+                'US_EAST_2',
+                'US_NORTH_CENTRAL',
+                'US_WEST',
+                'US_SOUTH_CENTRAL',
+                'EUROPE_NORTH',
+                'EUROPE_WEST',
+                'US_WEST_CENTRAL',
+                'US_WEST_2',
+                'US_WEST_3',
+                'CANADA_EAST',
+                'CANADA_CENTRAL',
+                'BRAZIL_SOUTH',
+                'BRAZIL_SOUTHEAST',
+                'AUSTRALIA_CENTRAL',
+                'AUSTRALIA_CENTRAL_2',
+                'AUSTRALIA_EAST',
+                'AUSTRALIA_SOUTH_EAST',
+                'GERMANY_WEST_CENTRAL',
+                'GERMANY_NORTH',
+                'SWEDEN_CENTRAL',
+                'SWEDEN_SOUTH',
+                'SWITZERLAND_NORTH',
+                'SWITZERLAND_WEST',
+                'UK_SOUTH',
+                'UK_WEST',
+                'NORWAY_EAST',
+                'NORWAY_WEST',
+                'INDIA_CENTRAL',
+                'INDIA_SOUTH',
+                'INDIA_WEST',
+                'CHINA_EAST',
+                'CHINA_NORTH',
+                'ASIA_EAST',
+                'JAPAN_EAST',
+                'JAPAN_WEST',
+                'ASIA_SOUTH_EAST',
+                'KOREA_CENTRAL',
+                'KOREA_SOUTH',
+                'FRANCE_CENTRAL',
+                'FRANCE_SOUTH',
+                'SOUTH_AFRICA_NORTH',
+                'SOUTH_AFRICA_WEST',
+                'UAE_CENTRAL',
+                'UAE_NORTH',
+                'QATAR_CENTRAL',
+                'POLAND_CENTRAL',
+                'ISRAEL_CENTRAL',
+                'ITALY_NORTH',
+                'SPAIN_CENTRAL',
+                'MEXICO_CENTRAL',
+                'NEW_ZEALAND_NORTH',
+                'US_GOV_VIRGINIA',
+                'US_GOV_ARIZONA',
+                'US_GOV_TEXAS',
+              ])
+              .openapi({ description: 'Microsoft Azure Regions.', title: 'Azure Regions' }),
+          ),
         z
-          .enum([
-            'US_GOV_WEST_1',
-            'US_GOV_EAST_1',
-            'US_EAST_1',
-            'US_EAST_2',
-            'US_WEST_1',
-            'US_WEST_2',
-            'CA_CENTRAL_1',
-            'EU_NORTH_1',
-            'EU_WEST_1',
-            'EU_WEST_2',
-            'EU_WEST_3',
-            'EU_CENTRAL_1',
-            'EU_CENTRAL_2',
-            'AP_EAST_1',
-            'AP_EAST_2',
-            'AP_NORTHEAST_1',
-            'AP_NORTHEAST_2',
-            'AP_NORTHEAST_3',
-            'AP_SOUTHEAST_1',
-            'AP_SOUTHEAST_2',
-            'AP_SOUTHEAST_3',
-            'AP_SOUTHEAST_4',
-            'AP_SOUTHEAST_5',
-            'AP_SOUTHEAST_6',
-            'AP_SOUTHEAST_7',
-            'AP_SOUTH_1',
-            'AP_SOUTH_2',
-            'SA_EAST_1',
-            'CN_NORTH_1',
-            'CN_NORTHWEST_1',
-            'ME_SOUTH_1',
-            'ME_CENTRAL_1',
-            'AF_SOUTH_1',
-            'EU_SOUTH_1',
-            'EU_SOUTH_2',
-            'IL_CENTRAL_1',
-            'CA_WEST_1',
-            'MX_CENTRAL_1',
-            'GLOBAL',
-          ])
-          .openapi({
-            description:
-              'Physical location where MongoDB Cloud deploys your AWS-hosted MongoDB cluster nodes. The region you choose can affect network latency for clients accessing your databases. When MongoDB Cloud deploys a dedicated cluster, it checks if a VPC or VPC connection exists for that provider and region. If not, MongoDB Cloud creates them as part of the deployment. MongoDB Cloud assigns the VPC a CIDR block. To limit a new VPC peering connection to one CIDR block and region, create the connection first. Deploy the cluster after the connection starts.',
-            title: 'AWS Regions',
-          }),
+          .looseObject({})
+          .and(
+            z
+              .enum([
+                'US_GOV_WEST_1',
+                'US_GOV_EAST_1',
+                'US_EAST_1',
+                'US_EAST_2',
+                'US_WEST_1',
+                'US_WEST_2',
+                'CA_CENTRAL_1',
+                'EU_NORTH_1',
+                'EU_WEST_1',
+                'EU_WEST_2',
+                'EU_WEST_3',
+                'EU_CENTRAL_1',
+                'EU_CENTRAL_2',
+                'AP_EAST_1',
+                'AP_EAST_2',
+                'AP_NORTHEAST_1',
+                'AP_NORTHEAST_2',
+                'AP_NORTHEAST_3',
+                'AP_SOUTHEAST_1',
+                'AP_SOUTHEAST_2',
+                'AP_SOUTHEAST_3',
+                'AP_SOUTHEAST_4',
+                'AP_SOUTHEAST_5',
+                'AP_SOUTHEAST_6',
+                'AP_SOUTHEAST_7',
+                'AP_SOUTH_1',
+                'AP_SOUTH_2',
+                'SA_EAST_1',
+                'CN_NORTH_1',
+                'CN_NORTHWEST_1',
+                'ME_SOUTH_1',
+                'ME_CENTRAL_1',
+                'AF_SOUTH_1',
+                'EU_SOUTH_1',
+                'EU_SOUTH_2',
+                'IL_CENTRAL_1',
+                'CA_WEST_1',
+                'MX_CENTRAL_1',
+                'GLOBAL',
+              ])
+              .openapi({
+                description:
+                  'Physical location where MongoDB Cloud deploys your AWS-hosted MongoDB cluster nodes. The region you choose can affect network latency for clients accessing your databases. When MongoDB Cloud deploys a dedicated cluster, it checks if a VPC or VPC connection exists for that provider and region. If not, MongoDB Cloud creates them as part of the deployment. MongoDB Cloud assigns the VPC a CIDR block. To limit a new VPC peering connection to one CIDR block and region, create the connection first. Deploy the cluster after the connection starts.',
+                title: 'AWS Regions',
+              }),
+          ),
       ])
       .exactOptional()
       .openapi({
@@ -10831,7 +14873,7 @@ const AiModelApiKeyCreateRequestSchema = z
         writeOnly: true,
       }),
     geography: z
-      .literal('ANY')
+      .enum(['ANY', 'EU', 'US'])
       .openapi({
         description:
           'Geography scope for this API key. Use "ANY" for a geography-agnostic scope. Additional geography values will be supported in future API versions.',
@@ -13118,215 +17160,310 @@ const DefaultAlertViewForNdsGroupSchema = z
     eventTypeName: z
       .xor([
         z
-          .enum([
-            'CREDIT_CARD_ABOUT_TO_EXPIRE',
-            'PENDING_INVOICE_OVER_THRESHOLD',
-            'DAILY_BILL_OVER_THRESHOLD',
-            'DAILY_BILLING_CHANGE_OVER_THRESHOLD',
-            'WEEKLY_BILLING_CHANGE_OVER_THRESHOLD',
-            'MONTHLY_BILLING_CHANGE_OVER_THRESHOLD',
-          ])
-          .openapi({ title: 'Billing Event Types' }),
+          .looseObject({})
+          .and(
+            z
+              .enum([
+                'CREDIT_CARD_ABOUT_TO_EXPIRE',
+                'PENDING_INVOICE_OVER_THRESHOLD',
+                'DAILY_BILL_OVER_THRESHOLD',
+                'DAILY_BILLING_CHANGE_OVER_THRESHOLD',
+                'WEEKLY_BILLING_CHANGE_OVER_THRESHOLD',
+                'MONTHLY_BILLING_CHANGE_OVER_THRESHOLD',
+              ])
+              .openapi({ title: 'Billing Event Types' }),
+          ),
         z
-          .enum([
-            'CPS_SNAPSHOT_STARTED',
-            'CPS_SNAPSHOT_SUCCESSFUL',
-            'CPS_SNAPSHOT_FAILED',
-            'CPS_CONCURRENT_SNAPSHOT_FAILED_WILL_RETRY',
-            'CPS_SNAPSHOT_BEHIND',
-            'CPS_COPY_SNAPSHOT_STARTED',
-            'CPS_COPY_SNAPSHOT_FAILED',
-            'CPS_COPY_SNAPSHOT_FAILED_WILL_RETRY',
-            'CPS_COPY_SNAPSHOT_SUCCESSFUL',
-            'CPS_PREV_SNAPSHOT_OLD',
-            'CPS_SNAPSHOT_FALLBACK_SUCCESSFUL',
-            'CPS_SNAPSHOT_FALLBACK_FAILED',
-            'CPS_RESTORE_SUCCESSFUL',
-            'CPS_EXPORT_SUCCESSFUL',
-            'CPS_RESTORE_FAILED',
-            'CPS_EXPORT_FAILED',
-            'CPS_COLLECTION_RESTORE_SUCCESSFUL',
-            'CPS_COLLECTION_RESTORE_FAILED',
-            'CPS_COLLECTION_RESTORE_PARTIAL_SUCCESS',
-            'CPS_COLLECTION_RESTORE_CANCELED',
-            'CPS_AUTO_EXPORT_FAILED',
-            'CPS_SNAPSHOT_DOWNLOAD_REQUEST_FAILED',
-            'CPS_OPLOG_BEHIND',
-            'CPS_OPLOG_CAUGHT_UP',
-          ])
-          .openapi({ title: 'Cps Backup Event Types' }),
+          .looseObject({})
+          .and(
+            z
+              .enum([
+                'CPS_SNAPSHOT_STARTED',
+                'CPS_SNAPSHOT_SUCCESSFUL',
+                'CPS_SNAPSHOT_FAILED',
+                'CPS_CONCURRENT_SNAPSHOT_FAILED_WILL_RETRY',
+                'CPS_SNAPSHOT_BEHIND',
+                'CPS_COPY_SNAPSHOT_STARTED',
+                'CPS_COPY_SNAPSHOT_FAILED',
+                'CPS_COPY_SNAPSHOT_FAILED_WILL_RETRY',
+                'CPS_COPY_SNAPSHOT_SUCCESSFUL',
+                'CPS_PREV_SNAPSHOT_OLD',
+                'CPS_SNAPSHOT_FALLBACK_SUCCESSFUL',
+                'CPS_SNAPSHOT_FALLBACK_FAILED',
+                'CPS_RESTORE_SUCCESSFUL',
+                'CPS_EXPORT_SUCCESSFUL',
+                'CPS_RESTORE_FAILED',
+                'CPS_EXPORT_FAILED',
+                'CPS_COLLECTION_RESTORE_SUCCESSFUL',
+                'CPS_COLLECTION_RESTORE_FAILED',
+                'CPS_COLLECTION_RESTORE_PARTIAL_SUCCESS',
+                'CPS_COLLECTION_RESTORE_CANCELED',
+                'CPS_AUTO_EXPORT_FAILED',
+                'CPS_SNAPSHOT_DOWNLOAD_REQUEST_FAILED',
+                'CPS_OPLOG_BEHIND',
+                'CPS_OPLOG_CAUGHT_UP',
+              ])
+              .openapi({ title: 'Cps Backup Event Types' }),
+          ),
         z
-          .enum([
-            'AWS_ENCRYPTION_KEY_NEEDS_ROTATION',
-            'AZURE_ENCRYPTION_KEY_NEEDS_ROTATION',
-            'GCP_ENCRYPTION_KEY_NEEDS_ROTATION',
-            'AWS_ENCRYPTION_KEY_INVALID',
-            'AZURE_ENCRYPTION_KEY_INVALID',
-            'GCP_ENCRYPTION_KEY_INVALID',
-          ])
-          .openapi({ title: 'Encryption Event Types' }),
+          .looseObject({})
+          .and(
+            z
+              .enum([
+                'AWS_ENCRYPTION_KEY_NEEDS_ROTATION',
+                'AZURE_ENCRYPTION_KEY_NEEDS_ROTATION',
+                'GCP_ENCRYPTION_KEY_NEEDS_ROTATION',
+                'AWS_ENCRYPTION_KEY_INVALID',
+                'AZURE_ENCRYPTION_KEY_INVALID',
+                'GCP_ENCRYPTION_KEY_INVALID',
+              ])
+              .openapi({ title: 'Encryption Event Types' }),
+          ),
         z
-          .enum([
-            'FTS_INDEX_DELETION_FAILED',
-            'FTS_INDEX_BUILD_COMPLETE',
-            'FTS_INDEX_BUILD_FAILED',
-            'FTS_INDEX_CLEANED_UP',
-            'FTS_INDEX_STALE',
-            'FTS_INDEXES_RESTORE_FAILED',
-            'FTS_INDEXES_SYNONYM_MAPPING_INVALID',
-          ])
-          .openapi({ title: 'FTS Index Audit Types' }),
+          .looseObject({})
+          .and(
+            z
+              .enum([
+                'FTS_INDEX_DELETION_FAILED',
+                'FTS_INDEX_BUILD_COMPLETE',
+                'FTS_INDEX_BUILD_FAILED',
+                'FTS_INDEX_CLEANED_UP',
+                'FTS_INDEX_STALE',
+                'FTS_INDEXES_RESTORE_FAILED',
+                'FTS_INDEXES_SYNONYM_MAPPING_INVALID',
+              ])
+              .openapi({ title: 'FTS Index Audit Types' }),
+          ),
         z
-          .enum([
-            'SEARCH_AUTO_MIGRATION_ADVISORY',
-            'SEARCH_AUTO_MIGRATION_STARTED',
-            'SEARCH_AUTO_MIGRATION_FAILED',
-          ])
-          .openapi({ title: 'Search Auto Migration Event Types' }),
+          .looseObject({})
+          .and(
+            z
+              .literal('PROJECT_OPERATIONS_CONTACT_MODIFIED')
+              .openapi({ title: 'Group Audit Types' }),
+          ),
         z
-          .enum([
-            'USERS_WITHOUT_MULTI_FACTOR_AUTH',
-            'ENCRYPTION_AT_REST_KMS_NETWORK_ACCESS_DENIED',
-            'ENCRYPTION_AT_REST_CONFIG_NO_LONGER_VALID',
-            'GROUP_SERVICE_ACCOUNT_SECRETS_EXPIRING',
-            'GROUP_SERVICE_ACCOUNT_SECRETS_EXPIRED',
-            'ACTIVE_LEGACY_TLS_CONNECTIONS',
-            'WEBHOOK_TEMPLATE_RENDER_FAILED',
-            'ENCRYPTION_AT_REST_CONFIG_UPDATE_STALLED',
-          ])
-          .openapi({ title: 'Group Event Types' }),
-        z.literal('MONGOTUNE_ALERT').openapi({ title: 'Mongotune Event Types' }),
+          .looseObject({})
+          .and(
+            z
+              .enum([
+                'SEARCH_AUTO_MIGRATION_ADVISORY',
+                'SEARCH_AUTO_MIGRATION_STARTED',
+                'SEARCH_AUTO_MIGRATION_FAILED',
+              ])
+              .openapi({ title: 'Search Auto Migration Event Types' }),
+          ),
         z
-          .enum([
-            'CLUSTER_INSTANCE_STOP_START',
-            'CLUSTER_INSTANCE_RESYNC_REQUESTED',
-            'CLUSTER_INSTANCE_UPDATE_REQUESTED',
-            'SAMPLE_DATASET_LOAD_REQUESTED',
-            'TENANT_UPGRADE_TO_SERVERLESS_SUCCESSFUL',
-            'TENANT_UPGRADE_TO_SERVERLESS_FAILED',
-            'NETWORK_PERMISSION_ENTRY_ADDED',
-            'NETWORK_PERMISSION_ENTRY_REMOVED',
-            'NETWORK_PERMISSION_ENTRY_UPDATED',
-            'CLUSTER_BLOCK_WRITE',
-            'CLUSTER_UNBLOCK_WRITE',
-            'LOG_STREAMING_EXPORT_FAILED_NONRETRYABLE',
-            'LOG_STREAMING_EXPORT_FAILED_RETRIES_EXHAUSTED',
-            'LOG_STREAMING_REPLAY_FAILED',
-          ])
-          .openapi({ title: 'Atlas Audit Types' }),
+          .looseObject({})
+          .and(
+            z
+              .enum([
+                'USERS_WITHOUT_MULTI_FACTOR_AUTH',
+                'ENCRYPTION_AT_REST_KMS_NETWORK_ACCESS_DENIED',
+                'ENCRYPTION_AT_REST_CONFIG_NO_LONGER_VALID',
+                'GROUP_SERVICE_ACCOUNT_SECRETS_EXPIRING',
+                'GROUP_SERVICE_ACCOUNT_SECRETS_EXPIRED',
+                'ACTIVE_LEGACY_TLS_CONNECTIONS',
+                'WEBHOOK_TEMPLATE_RENDER_FAILED',
+                'ENCRYPTION_AT_REST_CONFIG_UPDATE_STALLED',
+              ])
+              .openapi({ title: 'Group Event Types' }),
+          ),
         z
-          .enum([
-            'MAINTENANCE_IN_ADVANCED',
-            'MAINTENANCE_AUTO_DEFERRED',
-            'MAINTENANCE_STARTED',
-            'MAINTENANCE_COMPLETED',
-            'MAINTENANCE_NO_LONGER_NEEDED',
-          ])
-          .openapi({ title: 'Maintenance Window Audit Types' }),
+          .looseObject({})
+          .and(z.literal('MONGOTUNE_ALERT').openapi({ title: 'Mongotune Event Types' })),
         z
-          .enum([
-            'NDS_X509_USER_AUTHENTICATION_CUSTOMER_CA_EXPIRATION_CHECK',
-            'NDS_X509_USER_AUTHENTICATION_CUSTOMER_CRL_EXPIRATION_CHECK',
-            'NDS_X509_USER_AUTHENTICATION_MANAGED_USER_CERTS_EXPIRATION_CHECK',
-          ])
-          .openapi({ title: 'x509 User Auth Event Types' }),
+          .looseObject({})
+          .and(
+            z
+              .enum([
+                'CLUSTER_INSTANCE_STOP_START',
+                'CLUSTER_INSTANCE_RESYNC_REQUESTED',
+                'CLUSTER_INSTANCE_UPDATE_REQUESTED',
+                'SAMPLE_DATASET_LOAD_REQUESTED',
+                'TENANT_UPGRADE_TO_SERVERLESS_SUCCESSFUL',
+                'TENANT_UPGRADE_TO_SERVERLESS_FAILED',
+                'NETWORK_PERMISSION_ENTRY_ADDED',
+                'NETWORK_PERMISSION_ENTRY_REMOVED',
+                'NETWORK_PERMISSION_ENTRY_UPDATED',
+                'CLUSTER_BLOCK_WRITE',
+                'CLUSTER_UNBLOCK_WRITE',
+                'LOG_STREAMING_EXPORT_FAILED_NONRETRYABLE',
+                'LOG_STREAMING_EXPORT_FAILED_RETRIES_EXHAUSTED',
+                'LOG_STREAMING_REPLAY_FAILED',
+              ])
+              .openapi({ title: 'Atlas Audit Types' }),
+          ),
         z
-          .enum([
-            'ONLINE_ARCHIVE_INSUFFICIENT_INDEXES_CHECK',
-            'ONLINE_ARCHIVE_MAX_CONSECUTIVE_OFFLOAD_WINDOWS_CHECK',
-          ])
-          .openapi({ title: 'Online Archive Event Types' }),
+          .looseObject({})
+          .and(
+            z
+              .enum([
+                'MAINTENANCE_IN_ADVANCED',
+                'MAINTENANCE_AUTO_DEFERRED',
+                'MAINTENANCE_STARTED',
+                'MAINTENANCE_COMPLETED',
+                'MAINTENANCE_NO_LONGER_NEEDED',
+              ])
+              .openapi({ title: 'Maintenance Window Audit Types' }),
+          ),
         z
-          .literal('OUTSIDE_SERVERLESS_METRIC_THRESHOLD')
-          .openapi({ title: 'Serverless Event Types' }),
-        z.literal('OUTSIDE_FLEX_METRIC_THRESHOLD').openapi({ title: 'Flex Metric Event Types' }),
+          .looseObject({})
+          .and(
+            z
+              .enum([
+                'NDS_X509_USER_AUTHENTICATION_CUSTOMER_CA_EXPIRATION_CHECK',
+                'NDS_X509_USER_AUTHENTICATION_CUSTOMER_CRL_EXPIRATION_CHECK',
+                'NDS_X509_USER_AUTHENTICATION_MANAGED_USER_CERTS_EXPIRATION_CHECK',
+              ])
+              .openapi({ title: 'x509 User Auth Event Types' }),
+          ),
         z
-          .enum(['JOINED_GROUP', 'REMOVED_FROM_GROUP', 'USER_ROLES_CHANGED_AUDIT'])
-          .openapi({ title: 'User Event Types' }),
+          .looseObject({})
+          .and(
+            z
+              .enum([
+                'ONLINE_ARCHIVE_INSUFFICIENT_INDEXES_CHECK',
+                'ONLINE_ARCHIVE_MAX_CONSECUTIVE_OFFLOAD_WINDOWS_CHECK',
+              ])
+              .openapi({ title: 'Online Archive Event Types' }),
+          ),
         z
-          .enum(['TAGS_MODIFIED', 'CLUSTER_TAGS_MODIFIED', 'GROUP_TAGS_MODIFIED'])
-          .openapi({ title: 'Resource Event Types' }),
+          .looseObject({})
+          .and(
+            z
+              .literal('OUTSIDE_SERVERLESS_METRIC_THRESHOLD')
+              .openapi({ title: 'Serverless Event Types' }),
+          ),
         z
-          .enum([
-            'STREAM_PROCESSOR_STATE_IS_FAILED',
-            'STREAM_PROCESSOR_AUTOSCALE_INITIATED',
-            'OUTSIDE_STREAM_PROCESSOR_METRIC_THRESHOLD',
-          ])
-          .openapi({ title: 'Stream Processor Event Types' }),
+          .looseObject({})
+          .and(
+            z
+              .literal('OUTSIDE_FLEX_METRIC_THRESHOLD')
+              .openapi({ title: 'Flex Metric Event Types' }),
+          ),
         z
-          .enum([
-            'COMPUTE_AUTO_SCALE_INITIATED_BASE',
-            'COMPUTE_AUTO_SCALE_INITIATED_ANALYTICS',
-            'COMPUTE_AUTO_SCALE_SCALE_DOWN_FAIL_BASE',
-            'COMPUTE_AUTO_SCALE_SCALE_DOWN_FAIL_ANALYTICS',
-            'COMPUTE_AUTO_SCALE_MAX_INSTANCE_SIZE_FAIL_BASE',
-            'COMPUTE_AUTO_SCALE_MAX_INSTANCE_SIZE_FAIL_ANALYTICS',
-            'COMPUTE_AUTO_SCALE_OPLOG_FAIL_BASE',
-            'COMPUTE_AUTO_SCALE_OPLOG_FAIL_ANALYTICS',
-            'COMPUTE_AUTO_SCALE_CAPACITY_CONSTRAINT_FAIL_BASE',
-            'COMPUTE_AUTO_SCALE_CAPACITY_CONSTRAINT_FAIL_ANALYTICS',
-            'DISK_AUTO_SCALE_INITIATED',
-            'DISK_AUTO_SCALE_MAX_DISK_SIZE_FAIL',
-            'DISK_AUTO_SCALE_OPLOG_FAIL',
-            'COMPUTE_AUTO_SCALE_DOWNSCALE_SKIPPED_FALLBACK_BASE',
-            'COMPUTE_AUTO_SCALE_DOWNSCALE_SKIPPED_FALLBACK_ANALYTICS',
-            'CLUSTER_AUTO_SHARDING_INITIATED',
-            'CLUSTER_RESHARDING_COMPLETED',
-            'PREDICTIVE_COMPUTE_AUTO_SCALE_INITIATED_BASE',
-            'PREDICTIVE_COMPUTE_AUTO_SCALE_MAX_INSTANCE_SIZE_FAIL_BASE',
-            'PREDICTIVE_COMPUTE_AUTO_SCALE_OPLOG_FAIL_BASE',
-            'PREDICTIVE_COMPUTE_AUTO_SCALE_CAPACITY_CONSTRAINT_FAIL_BASE',
-          ])
-          .openapi({ title: 'Auto Scaling Audit Types' }),
+          .looseObject({})
+          .and(
+            z
+              .enum(['JOINED_GROUP', 'REMOVED_FROM_GROUP', 'USER_ROLES_CHANGED_AUDIT'])
+              .openapi({ title: 'User Event Types' }),
+          ),
         z
-          .enum([
-            'CPS_DATA_PROTECTION_ENABLE_REQUESTED',
-            'CPS_DATA_PROTECTION_ENABLED',
-            'CPS_DATA_PROTECTION_UPDATE_REQUESTED',
-            'CPS_DATA_PROTECTION_UPDATED',
-            'CPS_DATA_PROTECTION_DISABLE_REQUESTED',
-            'CPS_DATA_PROTECTION_DISABLED',
-            'CPS_DATA_PROTECTION_APPROVED_FOR_DISABLEMENT',
-          ])
-          .openapi({ title: 'Data Protection Event Types' }),
+          .looseObject({})
+          .and(
+            z
+              .enum(['TAGS_MODIFIED', 'CLUSTER_TAGS_MODIFIED', 'GROUP_TAGS_MODIFIED'])
+              .openapi({ title: 'Resource Event Types' }),
+          ),
         z
-          .literal('RESOURCE_POLICY_VIOLATED')
-          .openapi({ title: 'Atlas Resource Policy Audit Types' }),
+          .looseObject({})
+          .and(
+            z
+              .enum([
+                'STREAM_PROCESSOR_STATE_IS_FAILED',
+                'STREAM_PROCESSOR_AUTOSCALE_INITIATED',
+                'OUTSIDE_STREAM_PROCESSOR_METRIC_THRESHOLD',
+              ])
+              .openapi({ title: 'Stream Processor Event Types' }),
+          ),
         z
-          .enum([
-            'HOST_DOWN',
-            'HOST_HAS_INDEX_SUGGESTIONS',
-            'HOST_MONGOT_CRASHING_OOM',
-            'HOST_MONGOT_STOP_REPLICATION',
-            'HOST_MONGOT_APPROACHING_STOP_REPLICATION',
-            'HOST_MONGOT_PAUSE_INITIAL_SYNC',
-            'HOST_SEARCH_NODE_INDEX_FAILED',
-            'HOST_SEARCH_PROCESS_THROTTLING',
-            'HOST_EXTERNAL_LOG_SINK_EXPORT_DOWN',
-            'HOST_NOT_ENOUGH_DISK_SPACE',
-            'SSH_KEY_NDS_HOST_ACCESS_REQUESTED',
-            'SSH_KEY_NDS_HOST_ACCESS_REFRESHED',
-            'PUSH_BASED_LOG_EXPORT_STOPPED',
-            'PUSH_BASED_LOG_EXPORT_DROPPED_LOG',
-            'HOST_VERSION_BEHIND',
-            'VERSION_BEHIND',
-            'HOST_EXPOSED',
-            'HOST_SSL_CERTIFICATE_STALE',
-            'HOST_SECURITY_CHECKUP_NOT_MET',
-            'ALERT_HOST_SSH_SESSION_STARTED',
-            'PROFILER_CONFIGURED_TOO_WIDELY',
-          ])
-          .openapi({ title: 'Host Event Types' }),
+          .looseObject({})
+          .and(
+            z
+              .enum([
+                'COMPUTE_AUTO_SCALE_INITIATED_BASE',
+                'COMPUTE_AUTO_SCALE_INITIATED_ANALYTICS',
+                'COMPUTE_AUTO_SCALE_SCALE_DOWN_FAIL_BASE',
+                'COMPUTE_AUTO_SCALE_SCALE_DOWN_FAIL_ANALYTICS',
+                'COMPUTE_AUTO_SCALE_MAX_INSTANCE_SIZE_FAIL_BASE',
+                'COMPUTE_AUTO_SCALE_MAX_INSTANCE_SIZE_FAIL_ANALYTICS',
+                'COMPUTE_AUTO_SCALE_OPLOG_FAIL_BASE',
+                'COMPUTE_AUTO_SCALE_OPLOG_FAIL_ANALYTICS',
+                'COMPUTE_AUTO_SCALE_CAPACITY_CONSTRAINT_FAIL_BASE',
+                'COMPUTE_AUTO_SCALE_CAPACITY_CONSTRAINT_FAIL_ANALYTICS',
+                'DISK_AUTO_SCALE_INITIATED',
+                'DISK_AUTO_SCALE_MAX_DISK_SIZE_FAIL',
+                'DISK_AUTO_SCALE_OPLOG_FAIL',
+                'COMPUTE_AUTO_SCALE_DOWNSCALE_SKIPPED_FALLBACK_BASE',
+                'COMPUTE_AUTO_SCALE_DOWNSCALE_SKIPPED_FALLBACK_ANALYTICS',
+                'CLUSTER_AUTO_SHARDING_INITIATED',
+                'CLUSTER_RESHARDING_COMPLETED',
+                'PREDICTIVE_COMPUTE_AUTO_SCALE_INITIATED_BASE',
+                'PREDICTIVE_COMPUTE_AUTO_SCALE_MAX_INSTANCE_SIZE_FAIL_BASE',
+                'PREDICTIVE_COMPUTE_AUTO_SCALE_OPLOG_FAIL_BASE',
+                'PREDICTIVE_COMPUTE_AUTO_SCALE_CAPACITY_CONSTRAINT_FAIL_BASE',
+              ])
+              .openapi({ title: 'Auto Scaling Audit Types' }),
+          ),
         z
-          .literal('PROACTIVE_REMEDIATION_NEEDED')
-          .openapi({ title: 'Proactive Remediation Event Types' }),
+          .looseObject({})
+          .and(
+            z
+              .enum([
+                'CPS_DATA_PROTECTION_ENABLE_REQUESTED',
+                'CPS_DATA_PROTECTION_ENABLED',
+                'CPS_DATA_PROTECTION_UPDATE_REQUESTED',
+                'CPS_DATA_PROTECTION_UPDATED',
+                'CPS_DATA_PROTECTION_DISABLE_REQUESTED',
+                'CPS_DATA_PROTECTION_DISABLED',
+                'CPS_DATA_PROTECTION_APPROVED_FOR_DISABLEMENT',
+              ])
+              .openapi({ title: 'Data Protection Event Types' }),
+          ),
         z
-          .enum([
-            'STREAMS_PRIVATE_LINK_ENDPOINT_UNUSED_FIRST_WARNING',
-            'STREAMS_PRIVATE_LINK_ENDPOINT_UNUSED_SECOND_WARNING',
-            'STREAMS_PRIVATE_LINK_ENDPOINT_UNUSED_DELETED',
-          ])
-          .openapi({ title: 'Stream Processing Private Link Endpoint Event Types' }),
+          .looseObject({})
+          .and(
+            z
+              .literal('RESOURCE_POLICY_VIOLATED')
+              .openapi({ title: 'Atlas Resource Policy Audit Types' }),
+          ),
+        z
+          .looseObject({})
+          .and(
+            z
+              .enum([
+                'HOST_DOWN',
+                'HOST_HAS_INDEX_SUGGESTIONS',
+                'HOST_MONGOT_CRASHING_OOM',
+                'HOST_MONGOT_STOP_REPLICATION',
+                'HOST_MONGOT_APPROACHING_STOP_REPLICATION',
+                'HOST_MONGOT_PAUSE_INITIAL_SYNC',
+                'HOST_SEARCH_NODE_INDEX_FAILED',
+                'HOST_SEARCH_PROCESS_THROTTLING',
+                'HOST_EXTERNAL_LOG_SINK_EXPORT_DOWN',
+                'HOST_NOT_ENOUGH_DISK_SPACE',
+                'SSH_KEY_NDS_HOST_ACCESS_REQUESTED',
+                'SSH_KEY_NDS_HOST_ACCESS_REFRESHED',
+                'PUSH_BASED_LOG_EXPORT_STOPPED',
+                'PUSH_BASED_LOG_EXPORT_DROPPED_LOG',
+                'HOST_VERSION_BEHIND',
+                'VERSION_BEHIND',
+                'HOST_EXPOSED',
+                'HOST_SSL_CERTIFICATE_STALE',
+                'HOST_SECURITY_CHECKUP_NOT_MET',
+                'ALERT_HOST_SSH_SESSION_STARTED',
+                'PROFILER_CONFIGURED_TOO_WIDELY',
+              ])
+              .openapi({ title: 'Host Event Types' }),
+          ),
+        z
+          .looseObject({})
+          .and(
+            z
+              .literal('PROACTIVE_REMEDIATION_NEEDED')
+              .openapi({ title: 'Proactive Remediation Event Types' }),
+          ),
+        z
+          .looseObject({})
+          .and(
+            z
+              .enum([
+                'STREAMS_PRIVATE_LINK_ENDPOINT_UNUSED_FIRST_WARNING',
+                'STREAMS_PRIVATE_LINK_ENDPOINT_UNUSED_SECOND_WARNING',
+                'STREAMS_PRIVATE_LINK_ENDPOINT_UNUSED_DELETED',
+              ])
+              .openapi({ title: 'Stream Processing Private Link Endpoint Event Types' }),
+          ),
       ])
       .openapi({ description: 'Incident that triggered this alert.', readOnly: true }),
     groupId: z
@@ -16971,6 +21108,14 @@ const ApiMeasurementsGeneralViewAtlasSchema = z
           "Date and time that specifies when to start retrieving measurements. If you set **start**, you must set **end**. You can't set this parameter and **period** in the same request. This parameter expresses its value in the ISO 8601 timestamp format in UTC.",
         readOnly: true,
       }),
+    warningMessage: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Explanation of why the response contains no measurement data points, when applicable.',
+        readOnly: true,
+      }),
   })
   .openapi({ required: [] })
   .openapi('ApiMeasurementsGeneralViewAtlas')
@@ -17219,6 +21364,7 @@ const ApiSearchDeploymentEffectiveSpecViewSchema = z
         'S40_STORAGE_NVME',
         'S50_STORAGE_NVME',
         'S60_STORAGE_NVME',
+        'S70_STORAGE_NVME',
         'S80_STORAGE_NVME',
         'S90_STORAGE_NVME',
       ])
@@ -17252,50 +21398,6 @@ const ApiSearchDeploymentEffectiveSpecViewSchema = z
   })
   .openapi({ required: [] })
   .openapi('ApiSearchDeploymentEffectiveSpecView')
-
-const ApiSearchDeploymentSpecViewSchema = z
-  .object({
-    instanceSize: z
-      .enum([
-        'S10_HIGHCPU',
-        'S20_HIGHCPU_NVME',
-        'S30_HIGHCPU_NVME',
-        'S40_HIGHCPU_NVME',
-        'S50_HIGHCPU_NVME',
-        'S60_HIGHCPU_NVME',
-        'S70_HIGHCPU_NVME',
-        'S80_HIGHCPU_NVME',
-        'S30_LOWCPU_NVME',
-        'S40_LOWCPU_NVME',
-        'S50_LOWCPU_NVME',
-        'S60_LOWCPU_NVME',
-        'S70_LOWCPU_NVME',
-        'S80_LOWCPU_NVME',
-        'S90_LOWCPU_NVME',
-        'S100_LOWCPU_NVME',
-        'S110_LOWCPU_NVME',
-        'S120_LOWCPU_NVME',
-        'S130_LOWCPU_NVME',
-        'S135_LOWCPU_NVME',
-        'S140_LOWCPU_NVME',
-        'S40_STORAGE_NVME',
-        'S50_STORAGE_NVME',
-        'S60_STORAGE_NVME',
-        'S80_STORAGE_NVME',
-        'S90_STORAGE_NVME',
-      ])
-      .openapi({ description: 'Hardware specification for the Search Node instance sizes.' }),
-    nodeCount: z
-      .int32()
-      .min(2)
-      .max(32)
-      .openapi({ description: 'Number of Search Nodes in the cluster.', example: 2 }),
-  })
-  .openapi({
-    description: 'Hardware specification for the Search Nodes that back a search deployment.',
-    required: ['instanceSize', 'nodeCount'],
-  })
-  .openapi('ApiSearchDeploymentSpecView')
 
 const ApiSearchDeploymentPreviewResponseViewSchema = z
   .object({
@@ -17355,7 +21457,7 @@ const ApiSearchDeploymentPreviewResponseViewSchema = z
       .openapi({
         deprecated: true,
         description:
-          'Deprecated. `specs` will be removed in a future release. We strongly recommend that you use `effectiveSpecs` instead.',
+          'Deprecated: `specs` will be removed in a future release. We strongly recommend that you use `effectiveSpecs` instead.',
         readOnly: true,
       }),
     stateName: z
@@ -17406,6 +21508,7 @@ const ApiSearchDeploymentRequestSpecViewSchema = z
         'S40_STORAGE_NVME',
         'S50_STORAGE_NVME',
         'S60_STORAGE_NVME',
+        'S70_STORAGE_NVME',
         'S80_STORAGE_NVME',
         'S90_STORAGE_NVME',
       ])
@@ -17520,7 +21623,7 @@ const ApiSearchDeploymentResponseViewSchema = z
       .openapi({
         deprecated: true,
         description:
-          'Deprecated. `specs` will be removed in a future release. We strongly recommend that you use `effectiveSpecs` instead.',
+          'Deprecated: `specs` will be removed in a future release. We strongly recommend that you use `effectiveSpecs` instead.',
         readOnly: true,
       }),
     stateName: z
@@ -18434,6 +22537,78 @@ const TimeMetricThresholdViewSchema = z
 
 const AppServiceMetricThresholdSchema = z
   .xor([RawMetricThresholdViewSchema, DataMetricThresholdViewSchema, TimeMetricThresholdViewSchema])
+  .and(
+    z
+      .object({
+        metricName: z
+          .string()
+          .openapi({
+            description:
+              'Human-readable label that identifies the metric against which MongoDB Cloud checks the configured `metricThreshold.threshold`.',
+          }),
+        mode: z
+          .literal('AVERAGE')
+          .exactOptional()
+          .openapi({
+            description: 'MongoDB Cloud computes the current metric value as an average.',
+          }),
+        operator: z
+          .enum(['LESS_THAN', 'GREATER_THAN'])
+          .exactOptional()
+          .openapi({
+            description: 'Comparison operator to apply when checking the current metric value.',
+          }),
+        threshold: z
+          .float64()
+          .exactOptional()
+          .openapi({ description: 'Value of metric that, when exceeded, triggers an alert.' }),
+        units: z
+          .enum([
+            'bits',
+            'Kbits',
+            'Mbits',
+            'Gbits',
+            'bytes',
+            'KB',
+            'MB',
+            'GB',
+            'TB',
+            'PB',
+            'nsec',
+            'msec',
+            'sec',
+            'min',
+            'hours',
+            'million minutes',
+            'days',
+            'requests',
+            '1000 requests',
+            'tokens',
+            'million tokens',
+            'pixels',
+            'billion pixels',
+            'GB seconds',
+            'GB hours',
+            'GB days',
+            'RPU',
+            'thousand RPU',
+            'million RPU',
+            'WPU',
+            'thousand WPU',
+            'million WPU',
+            'count',
+            'thousand',
+            'million',
+            'billion',
+          ])
+          .exactOptional()
+          .openapi({
+            description:
+              'Element used to express the quantity. This can be an element of time, storage capacity, and the like.',
+          }),
+      })
+      .openapi({ required: ['metricName'] }),
+  )
   .openapi({
     description:
       'Threshold for the metric that, when exceeded, triggers an alert. The metric threshold pertains to event types which reflects changes of measurements and metrics in the app services.',
@@ -19223,7 +23398,7 @@ const AtlasTenantClusterUpgradeRequest20240805Schema = z
       .openapi({
         deprecated: true,
         description:
-          "Collection of key-value pairs between 1 to 255 characters in length that tag and categorize the cluster. The MongoDB Cloud console doesn't display your labels.\n\nCluster labels are deprecated and will be removed in a future release. We strongly recommend that you use Resource Tags instead.",
+          "Deprecated: Cluster labels will be removed in a future release. We strongly recommend that you use Resource Tags instead.\n\nCollection of key-value pairs between 1 to 255 characters in length that tag and categorize the cluster. The MongoDB Cloud console doesn't display your labels.",
         externalDocs: {
           description: 'Resource Tags',
           url: 'https://dochub.mongodb.org/core/add-cluster-tag-atlas',
@@ -19994,6 +24169,17 @@ const AzureCloudProviderContainerSchema = z
       }),
   })
   .openapi({ required: [] })
+  .and(z.looseObject({}).openapi({ required: ['atlasCidrBlock', 'region'] }))
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'atlasCidrBlock')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'region')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
   .and(
     z
       .object({
@@ -20272,112 +24458,120 @@ const AzureKeyVaultEARPrivateEndpointSchema = z
     regionName: z
       .xor([
         z
-          .enum([
-            'US_CENTRAL',
-            'US_EAST',
-            'US_EAST_2',
-            'US_NORTH_CENTRAL',
-            'US_WEST',
-            'US_SOUTH_CENTRAL',
-            'EUROPE_NORTH',
-            'EUROPE_WEST',
-            'US_WEST_CENTRAL',
-            'US_WEST_2',
-            'US_WEST_3',
-            'CANADA_EAST',
-            'CANADA_CENTRAL',
-            'BRAZIL_SOUTH',
-            'BRAZIL_SOUTHEAST',
-            'AUSTRALIA_CENTRAL',
-            'AUSTRALIA_CENTRAL_2',
-            'AUSTRALIA_EAST',
-            'AUSTRALIA_SOUTH_EAST',
-            'GERMANY_WEST_CENTRAL',
-            'GERMANY_NORTH',
-            'SWEDEN_CENTRAL',
-            'SWEDEN_SOUTH',
-            'SWITZERLAND_NORTH',
-            'SWITZERLAND_WEST',
-            'UK_SOUTH',
-            'UK_WEST',
-            'NORWAY_EAST',
-            'NORWAY_WEST',
-            'INDIA_CENTRAL',
-            'INDIA_SOUTH',
-            'INDIA_WEST',
-            'CHINA_EAST',
-            'CHINA_NORTH',
-            'ASIA_EAST',
-            'JAPAN_EAST',
-            'JAPAN_WEST',
-            'ASIA_SOUTH_EAST',
-            'KOREA_CENTRAL',
-            'KOREA_SOUTH',
-            'FRANCE_CENTRAL',
-            'FRANCE_SOUTH',
-            'SOUTH_AFRICA_NORTH',
-            'SOUTH_AFRICA_WEST',
-            'UAE_CENTRAL',
-            'UAE_NORTH',
-            'QATAR_CENTRAL',
-            'POLAND_CENTRAL',
-            'ISRAEL_CENTRAL',
-            'ITALY_NORTH',
-            'SPAIN_CENTRAL',
-            'MEXICO_CENTRAL',
-            'NEW_ZEALAND_NORTH',
-            'US_GOV_VIRGINIA',
-            'US_GOV_ARIZONA',
-            'US_GOV_TEXAS',
-          ])
-          .openapi({ description: 'Microsoft Azure Regions.', title: 'Azure Regions' }),
+          .looseObject({})
+          .and(
+            z
+              .enum([
+                'US_CENTRAL',
+                'US_EAST',
+                'US_EAST_2',
+                'US_NORTH_CENTRAL',
+                'US_WEST',
+                'US_SOUTH_CENTRAL',
+                'EUROPE_NORTH',
+                'EUROPE_WEST',
+                'US_WEST_CENTRAL',
+                'US_WEST_2',
+                'US_WEST_3',
+                'CANADA_EAST',
+                'CANADA_CENTRAL',
+                'BRAZIL_SOUTH',
+                'BRAZIL_SOUTHEAST',
+                'AUSTRALIA_CENTRAL',
+                'AUSTRALIA_CENTRAL_2',
+                'AUSTRALIA_EAST',
+                'AUSTRALIA_SOUTH_EAST',
+                'GERMANY_WEST_CENTRAL',
+                'GERMANY_NORTH',
+                'SWEDEN_CENTRAL',
+                'SWEDEN_SOUTH',
+                'SWITZERLAND_NORTH',
+                'SWITZERLAND_WEST',
+                'UK_SOUTH',
+                'UK_WEST',
+                'NORWAY_EAST',
+                'NORWAY_WEST',
+                'INDIA_CENTRAL',
+                'INDIA_SOUTH',
+                'INDIA_WEST',
+                'CHINA_EAST',
+                'CHINA_NORTH',
+                'ASIA_EAST',
+                'JAPAN_EAST',
+                'JAPAN_WEST',
+                'ASIA_SOUTH_EAST',
+                'KOREA_CENTRAL',
+                'KOREA_SOUTH',
+                'FRANCE_CENTRAL',
+                'FRANCE_SOUTH',
+                'SOUTH_AFRICA_NORTH',
+                'SOUTH_AFRICA_WEST',
+                'UAE_CENTRAL',
+                'UAE_NORTH',
+                'QATAR_CENTRAL',
+                'POLAND_CENTRAL',
+                'ISRAEL_CENTRAL',
+                'ITALY_NORTH',
+                'SPAIN_CENTRAL',
+                'MEXICO_CENTRAL',
+                'NEW_ZEALAND_NORTH',
+                'US_GOV_VIRGINIA',
+                'US_GOV_ARIZONA',
+                'US_GOV_TEXAS',
+              ])
+              .openapi({ description: 'Microsoft Azure Regions.', title: 'Azure Regions' }),
+          ),
         z
-          .enum([
-            'US_GOV_WEST_1',
-            'US_GOV_EAST_1',
-            'US_EAST_1',
-            'US_EAST_2',
-            'US_WEST_1',
-            'US_WEST_2',
-            'CA_CENTRAL_1',
-            'EU_NORTH_1',
-            'EU_WEST_1',
-            'EU_WEST_2',
-            'EU_WEST_3',
-            'EU_CENTRAL_1',
-            'EU_CENTRAL_2',
-            'AP_EAST_1',
-            'AP_EAST_2',
-            'AP_NORTHEAST_1',
-            'AP_NORTHEAST_2',
-            'AP_NORTHEAST_3',
-            'AP_SOUTHEAST_1',
-            'AP_SOUTHEAST_2',
-            'AP_SOUTHEAST_3',
-            'AP_SOUTHEAST_4',
-            'AP_SOUTHEAST_5',
-            'AP_SOUTHEAST_6',
-            'AP_SOUTHEAST_7',
-            'AP_SOUTH_1',
-            'AP_SOUTH_2',
-            'SA_EAST_1',
-            'CN_NORTH_1',
-            'CN_NORTHWEST_1',
-            'ME_SOUTH_1',
-            'ME_CENTRAL_1',
-            'AF_SOUTH_1',
-            'EU_SOUTH_1',
-            'EU_SOUTH_2',
-            'IL_CENTRAL_1',
-            'CA_WEST_1',
-            'MX_CENTRAL_1',
-            'GLOBAL',
-          ])
-          .openapi({
-            description:
-              'Physical location where MongoDB Cloud deploys your AWS-hosted MongoDB cluster nodes. The region you choose can affect network latency for clients accessing your databases. When MongoDB Cloud deploys a dedicated cluster, it checks if a VPC or VPC connection exists for that provider and region. If not, MongoDB Cloud creates them as part of the deployment. MongoDB Cloud assigns the VPC a CIDR block. To limit a new VPC peering connection to one CIDR block and region, create the connection first. Deploy the cluster after the connection starts.',
-            title: 'AWS Regions',
-          }),
+          .looseObject({})
+          .and(
+            z
+              .enum([
+                'US_GOV_WEST_1',
+                'US_GOV_EAST_1',
+                'US_EAST_1',
+                'US_EAST_2',
+                'US_WEST_1',
+                'US_WEST_2',
+                'CA_CENTRAL_1',
+                'EU_NORTH_1',
+                'EU_WEST_1',
+                'EU_WEST_2',
+                'EU_WEST_3',
+                'EU_CENTRAL_1',
+                'EU_CENTRAL_2',
+                'AP_EAST_1',
+                'AP_EAST_2',
+                'AP_NORTHEAST_1',
+                'AP_NORTHEAST_2',
+                'AP_NORTHEAST_3',
+                'AP_SOUTHEAST_1',
+                'AP_SOUTHEAST_2',
+                'AP_SOUTHEAST_3',
+                'AP_SOUTHEAST_4',
+                'AP_SOUTHEAST_5',
+                'AP_SOUTHEAST_6',
+                'AP_SOUTHEAST_7',
+                'AP_SOUTH_1',
+                'AP_SOUTH_2',
+                'SA_EAST_1',
+                'CN_NORTH_1',
+                'CN_NORTHWEST_1',
+                'ME_SOUTH_1',
+                'ME_CENTRAL_1',
+                'AF_SOUTH_1',
+                'EU_SOUTH_1',
+                'EU_SOUTH_2',
+                'IL_CENTRAL_1',
+                'CA_WEST_1',
+                'MX_CENTRAL_1',
+                'GLOBAL',
+              ])
+              .openapi({
+                description:
+                  'Physical location where MongoDB Cloud deploys your AWS-hosted MongoDB cluster nodes. The region you choose can affect network latency for clients accessing your databases. When MongoDB Cloud deploys a dedicated cluster, it checks if a VPC or VPC connection exists for that provider and region. If not, MongoDB Cloud creates them as part of the deployment. MongoDB Cloud assigns the VPC a CIDR block. To limit a new VPC peering connection to one CIDR block and region, create the connection first. Deploy the cluster after the connection starts.',
+                title: 'AWS Regions',
+              }),
+          ),
       ])
       .exactOptional()
       .openapi({
@@ -20438,6 +24632,42 @@ const AzureLogIntegrationRequestSchema = z
       }),
   })
   .openapi({ required: ['logTypes', 'type'] })
+  .and(
+    z
+      .looseObject({})
+      .openapi({
+        required: [
+          'logTypes',
+          'prefixPath',
+          'roleId',
+          'storageAccountName',
+          'storageContainerName',
+          'type',
+        ],
+      }),
+  )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'logTypes')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'prefixPath')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'roleId')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'storageAccountName')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'storageContainerName')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
   .and(
     z
       .object({
@@ -20536,6 +24766,46 @@ const AzureLogIntegrationResponseSchema = z
       }),
   })
   .openapi({ required: ['id', 'logTypes', 'type'] })
+  .and(
+    z
+      .looseObject({})
+      .openapi({
+        required: [
+          'id',
+          'logTypes',
+          'prefixPath',
+          'roleId',
+          'storageAccountName',
+          'storageContainerName',
+          'type',
+        ],
+      }),
+  )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'logTypes')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'prefixPath')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'roleId')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'storageAccountName')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'storageContainerName')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
   .and(
     z
       .object({
@@ -21080,6 +25350,14 @@ const DefaultScheduleViewSchema = z
       .openapi({ description: 'Type of schedule.' }),
   })
   .openapi({ required: ['type'] })
+  .and(z.looseObject({}).openapi({ required: ['type'] }))
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
   .openapi({ required: ['type'] })
   .openapi('DefaultScheduleView')
 
@@ -21090,6 +25368,14 @@ const DailyScheduleViewSchema = z
       .openapi({ description: 'Type of schedule.' }),
   })
   .openapi({ required: ['type'] })
+  .and(z.looseObject({}).openapi({ required: ['type'] }))
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
   .and(
     z
       .object({
@@ -21142,6 +25428,14 @@ const WeeklyScheduleViewSchema = z
       .openapi({ description: 'Type of schedule.' }),
   })
   .openapi({ required: ['type'] })
+  .and(z.looseObject({}).openapi({ required: ['type'] }))
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
   .and(
     z
       .object({
@@ -21203,6 +25497,14 @@ const MonthlyScheduleViewSchema = z
       .openapi({ description: 'Type of schedule.' }),
   })
   .openapi({ required: ['type'] })
+  .and(z.looseObject({}).openapi({ required: ['type'] }))
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
   .and(
     z
       .object({
@@ -21261,6 +25563,15 @@ const OnlineArchiveScheduleSchema = z
     WeeklyScheduleViewSchema,
     MonthlyScheduleViewSchema,
   ])
+  .and(
+    z
+      .object({
+        type: z
+          .enum(['DEFAULT', 'DAILY', 'WEEKLY', 'MONTHLY'])
+          .openapi({ description: 'Type of schedule.' }),
+      })
+      .openapi({ required: ['type'] }),
+  )
   .openapi({
     description: 'Regular frequency and duration when archiving process occurs.',
     discriminator: {
@@ -21571,7 +25882,7 @@ const BackupRestoreJobDeliverySchema = z
       .openapi({
         deprecated: true,
         description:
-          'Uniform Resource Locator (URL) from which you can download the restored snapshot data. URL includes the verification key. The resource returns this parameter when `"delivery.methodName" : "HTTP"`.',
+          'Deprecated: Uniform Resource Locator (URL) from which you can download the restored snapshot data. URL includes the verification key. The resource returns this parameter when `"delivery.methodName" : "HTTP"`.',
         readOnly: true,
       }),
     urlV2: z
@@ -22160,6 +26471,37 @@ const BaseNetworkPeeringConnectionSettingsSchema = z
     AzureNetworkPeeringConnectionSettingsSchema,
     GCPNetworkPeeringConnectionSettingsSchema,
   ])
+  .and(
+    z
+      .object({
+        containerId: z
+          .string()
+          .regex(/^([a-f0-9]{24})$/)
+          .openapi({
+            description:
+              'Unique 24-hexadecimal digit string that identifies the MongoDB Cloud network container that contains the specified network peering connection.',
+            example: '32b6e34b3d91647abb20e7b8',
+          }),
+        id: z
+          .string()
+          .regex(/^([a-f0-9]{24})$/)
+          .exactOptional()
+          .openapi({
+            description:
+              'Unique 24-hexadecimal digit string that identifies the network peering connection.',
+            example: '32b6e34b3d91647abb20e7b8',
+            readOnly: true,
+          }),
+        providerName: z
+          .enum(['AWS', 'AZURE', 'GCP'])
+          .exactOptional()
+          .openapi({
+            description:
+              'Cloud service provider that serves the requested network peering connection.',
+          }),
+      })
+      .openapi({ required: ['containerId'] }),
+  )
   .openapi({
     discriminator: {
       propertyName: 'providerName',
@@ -23366,7 +27708,7 @@ const CloudAppUserSchema = z
       .email()
       .openapi({
         deprecated: true,
-        description: 'Email address that belongs to the MongoDB Cloud user.',
+        description: 'Deprecated: Email address that belongs to the MongoDB Cloud user.',
         readOnly: true,
       }),
     firstName: z
@@ -23740,7 +28082,7 @@ const CloudDatabaseUserSchema = z
       .max(1024)
       .openapi({
         description:
-          'Human-readable label that represents the user that authenticates to MongoDB. The format of this label depends on the method of authentication:\n\n| Authentication Method | Parameter Needed | Parameter Value | username Format |\n|---|---|---|---|\n| AWS IAM | `awsIAMType` | `ROLE` | <abbr title="Amazon Resource Name">ARN</abbr> |\n| AWS IAM | `awsIAMType` | `USER` | <abbr title="Amazon Resource Name">ARN</abbr> |\n| x.509 | `x509Type` | `CUSTOMER` | [RFC 2253](https://tools.ietf.org/html/2253) Distinguished Name |\n| x.509 | `x509Type` | `MANAGED` | [RFC 2253](https://tools.ietf.org/html/2253) Distinguished Name |\n| LDAP | `ldapAuthType` | `USER` | [RFC 2253](https://tools.ietf.org/html/2253) Distinguished Name |\n| LDAP | `ldapAuthType` | `GROUP` | [RFC 2253](https://tools.ietf.org/html/2253) Distinguished Name |\n| OIDC Workforce | `oidcAuthType` | `IDP_GROUP` | Atlas OIDC IdP ID (found in federation settings), followed by a \'/\', followed by the IdP group name |\n| OIDC Workload | `oidcAuthType` | `USER` | Atlas OIDC IdP ID (found in federation settings), followed by a \'/\', followed by the IdP user name |\n| SCRAM-SHA | `awsIAMType`, `x509Type`, `ldapAuthType`, `oidcAuthType` | `NONE` | Alphanumeric string |\n',
+          "Human-readable label that represents the user that authenticates to MongoDB. The format of this label depends on the method of authentication:\n\n| Authentication Method | Parameter Needed | Parameter Value | username Format |\n|---|---|---|---|\n| AWS IAM | `awsIAMType` | `ROLE` | <abbr title=\"Amazon Resource Name\">ARN</abbr> |\n| AWS IAM | `awsIAMType` | `USER` | <abbr title=\"Amazon Resource Name\">ARN</abbr> |\n| x.509 | `x509Type` | `CUSTOMER` | [RFC 2253](https://tools.ietf.org/html/2253) Distinguished Name |\n| x.509 | `x509Type` | `MANAGED` | [RFC 2253](https://tools.ietf.org/html/2253) Distinguished Name |\n| LDAP | `ldapAuthType` | `USER` | [RFC 2253](https://tools.ietf.org/html/2253) Distinguished Name |\n| LDAP | `ldapAuthType` | `GROUP` | [RFC 2253](https://tools.ietf.org/html/2253) Distinguished Name |\n| OIDC Workforce or Workload | `oidcAuthType` | `IDP_GROUP` | Atlas OIDC IdP ID (found in federation settings), followed by a '/', followed by a group identifier from the IdP's configured `groupsClaim`. Use when the IdP's `authorizationType` is `GROUP`. The groups claim can be a custom claim, such as `roles`. |\n| OIDC Workforce or Workload | `oidcAuthType` | `USER` | Atlas OIDC IdP ID (found in federation settings), followed by a '/', followed by a user identifier from the IdP's configured `userClaim`. Use when the IdP's `authorizationType` is `USER`. |\n| SCRAM-SHA | `awsIAMType`, `x509Type`, `ldapAuthType`, `oidcAuthType` | `NONE` | Alphanumeric string |\n",
       }),
     x509Type: z
       .enum(['NONE', 'CUSTOMER', 'MANAGED'])
@@ -23763,6 +28105,7 @@ const CloudProviderAccessFeatureUsageSchema = z
         'EXPORT_SNAPSHOT',
         'PUSH_BASED_LOG_EXPORT',
         'ATLAS_LOG_INTEGRATION',
+        'OBJECT_STORAGE_PRIVATE_ENDPOINT',
       ])
       .exactOptional()
       .openapi({
@@ -23782,6 +28125,8 @@ const CloudProviderAccessFeatureUsageSchema = z
           '#/components/schemas/CloudProviderAccessAtlasLogIntegrationFeatureUsage',
         ENCRYPTION_AT_REST: '#/components/schemas/CloudProviderAccessEncryptionAtRestFeatureUsage',
         EXPORT_SNAPSHOT: '#/components/schemas/CloudProviderAccessExportSnapshotFeatureUsage',
+        OBJECT_STORAGE_PRIVATE_ENDPOINT:
+          '#/components/schemas/CloudProviderAccessObjectStoragePrivateEndpointFeatureUsage',
         PUSH_BASED_LOG_EXPORT:
           '#/components/schemas/CloudProviderAccessPushBasedLogExportFeatureUsage',
       },
@@ -23799,6 +28144,14 @@ const CloudProviderAccessAWSIAMRoleSchema = z
       }),
   })
   .openapi({ required: ['providerName'] })
+  .and(z.looseObject({}).openapi({ required: ['providerName'] }))
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'providerName')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
   .and(
     z
       .object({
@@ -23965,73 +28318,83 @@ const CloudProviderAccessRoleRequestUpdateSchema = z
 
 const CloudProviderAccessAWSIAMRoleRequestUpdateSchema =
   CloudProviderAccessRoleRequestUpdateSchema.and(
-    z
-      .object({
-        atlasAWSAccountArn: z
-          .string()
-          .min(20)
-          .max(2048)
-          .exactOptional()
-          .openapi({
-            description:
-              'Amazon Resource Name that identifies the Amazon Web Services (AWS) user account that MongoDB Cloud uses when it assumes the Identity and Access Management (IAM) role.',
-            example: 'arn:aws:iam::772401394250:role/my-test-aws-role',
-            readOnly: true,
-          }),
-        atlasAssumedRoleExternalId: z
-          .uuid()
-          .exactOptional()
-          .openapi({
-            description:
-              'Unique external ID that MongoDB Cloud uses when it assumes the IAM role in your Amazon Web Services (AWS) account.',
-            readOnly: true,
-          }),
-        authorizedDate: z.iso
-          .datetime({ offset: true })
-          .exactOptional()
-          .openapi({
-            description:
-              'Date and time when someone authorized this role for the specified cloud service provider. This parameter expresses its value in the ISO 8601 timestamp format in UTC.',
-            readOnly: true,
-          }),
-        createdDate: z.iso
-          .datetime({ offset: true })
-          .exactOptional()
-          .openapi({
-            description:
-              'Date and time when someone created this role for the specified cloud service provider. This parameter expresses its value in the ISO 8601 timestamp format in UTC.',
-            readOnly: true,
-          }),
-        featureUsages: z
-          .array(CloudProviderAccessFeatureUsageSchema)
-          .exactOptional()
-          .openapi({
-            description:
-              'List that contains application features associated with this Amazon Web Services (AWS) Identity and Access Management (IAM) role.',
-            readOnly: true,
-          }),
-        iamAssumedRoleArn: z
-          .string()
-          .min(20)
-          .max(2048)
-          .exactOptional()
-          .openapi({
-            description:
-              'Amazon Resource Name (ARN) that identifies the Amazon Web Services (AWS) Identity and Access Management (IAM) role that MongoDB Cloud assumes when it accesses resources in your AWS account.',
-            example: 'arn:aws:iam::123456789012:root',
-          }),
-        roleId: z
-          .string()
-          .regex(/^([a-f0-9]{24})$/)
-          .exactOptional()
-          .openapi({
-            description: 'Unique 24-hexadecimal digit string that identifies the role.',
-            example: '32b6e34b3d91647abb20e7b8',
-            readOnly: true,
-          }),
-      })
-      .openapi({ required: [] }),
+    z.looseObject({}).openapi({ required: ['providerName'] }),
   )
+    .superRefine((val, ctx) => {
+      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+        if (!Object.hasOwn(val, 'providerName')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+      }
+    })
+    .and(
+      z
+        .object({
+          atlasAWSAccountArn: z
+            .string()
+            .min(20)
+            .max(2048)
+            .exactOptional()
+            .openapi({
+              description:
+                'Amazon Resource Name that identifies the Amazon Web Services (AWS) user account that MongoDB Cloud uses when it assumes the Identity and Access Management (IAM) role.',
+              example: 'arn:aws:iam::772401394250:role/my-test-aws-role',
+              readOnly: true,
+            }),
+          atlasAssumedRoleExternalId: z
+            .uuid()
+            .exactOptional()
+            .openapi({
+              description:
+                'Unique external ID that MongoDB Cloud uses when it assumes the IAM role in your Amazon Web Services (AWS) account.',
+              readOnly: true,
+            }),
+          authorizedDate: z.iso
+            .datetime({ offset: true })
+            .exactOptional()
+            .openapi({
+              description:
+                'Date and time when someone authorized this role for the specified cloud service provider. This parameter expresses its value in the ISO 8601 timestamp format in UTC.',
+              readOnly: true,
+            }),
+          createdDate: z.iso
+            .datetime({ offset: true })
+            .exactOptional()
+            .openapi({
+              description:
+                'Date and time when someone created this role for the specified cloud service provider. This parameter expresses its value in the ISO 8601 timestamp format in UTC.',
+              readOnly: true,
+            }),
+          featureUsages: z
+            .array(CloudProviderAccessFeatureUsageSchema)
+            .exactOptional()
+            .openapi({
+              description:
+                'List that contains application features associated with this Amazon Web Services (AWS) Identity and Access Management (IAM) role.',
+              readOnly: true,
+            }),
+          iamAssumedRoleArn: z
+            .string()
+            .min(20)
+            .max(2048)
+            .exactOptional()
+            .openapi({
+              description:
+                'Amazon Resource Name (ARN) that identifies the Amazon Web Services (AWS) Identity and Access Management (IAM) role that MongoDB Cloud assumes when it accesses resources in your AWS account.',
+              example: 'arn:aws:iam::123456789012:root',
+            }),
+          roleId: z
+            .string()
+            .regex(/^([a-f0-9]{24})$/)
+            .exactOptional()
+            .openapi({
+              description: 'Unique 24-hexadecimal digit string that identifies the role.',
+              example: '32b6e34b3d91647abb20e7b8',
+              readOnly: true,
+            }),
+        })
+        .openapi({ required: [] }),
+    )
     .openapi({
       description:
         'Details that describe the features linked to the Amazon Web Services (AWS) Identity and Access Management (IAM) role.',
@@ -24100,6 +28463,14 @@ const CloudProviderAccessAzureServicePrincipalSchema = z
       }),
   })
   .openapi({ required: ['providerName'] })
+  .and(z.looseObject({}).openapi({ required: ['providerName'] }))
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'providerName')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
   .and(
     z
       .object({
@@ -24229,61 +28600,71 @@ const CloudProviderAccessAzureServicePrincipalRequestSchema = z
 
 const CloudProviderAccessAzureServicePrincipalRequestUpdateSchema =
   CloudProviderAccessRoleRequestUpdateSchema.and(
-    z
-      .object({
-        _id: z
-          .string()
-          .regex(/^([a-f0-9]{24})$/)
-          .exactOptional()
-          .openapi({
-            description: 'Unique 24-hexadecimal digit string that identifies the role.',
-            example: '32b6e34b3d91647abb20e7b8',
-            readOnly: true,
-          }),
-        atlasAzureAppId: z
-          .uuid()
-          .exactOptional()
-          .openapi({
-            description:
-              'Azure Active Directory Application ID of Atlas. This field is optional and will be derived from the Azure subscription if not provided.',
-          }),
-        createdDate: z.iso
-          .datetime({ offset: true })
-          .exactOptional()
-          .openapi({
-            description:
-              'Date and time when this Azure Service Principal was created. This parameter expresses its value in the ISO 8601 timestamp format in UTC.',
-            readOnly: true,
-          }),
-        featureUsages: z
-          .array(CloudProviderAccessFeatureUsageSchema)
-          .exactOptional()
-          .openapi({
-            description:
-              'List that contains application features associated with this Azure Service Principal.',
-            readOnly: true,
-          }),
-        lastUpdatedDate: z.iso
-          .datetime({ offset: true })
-          .exactOptional()
-          .openapi({
-            description:
-              'Date and time when this Azure Service Principal was last updated. This parameter expresses its value in the ISO 8601 timestamp format in UTC.',
-            readOnly: true,
-          }),
-        servicePrincipalId: z
-          .uuid()
-          .exactOptional()
-          .openapi({ description: 'UUID string that identifies the Azure Service Principal.' }),
-        tenantId: z
-          .uuid()
-          .exactOptional()
-          .openapi({
-            description: 'UUID String that identifies the Azure Active Directory Tenant ID.',
-          }),
-      })
-      .openapi({ required: [] }),
+    z.looseObject({}).openapi({ required: ['providerName'] }),
   )
+    .superRefine((val, ctx) => {
+      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+        if (!Object.hasOwn(val, 'providerName')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+      }
+    })
+    .and(
+      z
+        .object({
+          _id: z
+            .string()
+            .regex(/^([a-f0-9]{24})$/)
+            .exactOptional()
+            .openapi({
+              description: 'Unique 24-hexadecimal digit string that identifies the role.',
+              example: '32b6e34b3d91647abb20e7b8',
+              readOnly: true,
+            }),
+          atlasAzureAppId: z
+            .uuid()
+            .exactOptional()
+            .openapi({
+              description:
+                'Azure Active Directory Application ID of Atlas. This field is optional and will be derived from the Azure subscription if not provided.',
+            }),
+          createdDate: z.iso
+            .datetime({ offset: true })
+            .exactOptional()
+            .openapi({
+              description:
+                'Date and time when this Azure Service Principal was created. This parameter expresses its value in the ISO 8601 timestamp format in UTC.',
+              readOnly: true,
+            }),
+          featureUsages: z
+            .array(CloudProviderAccessFeatureUsageSchema)
+            .exactOptional()
+            .openapi({
+              description:
+                'List that contains application features associated with this Azure Service Principal.',
+              readOnly: true,
+            }),
+          lastUpdatedDate: z.iso
+            .datetime({ offset: true })
+            .exactOptional()
+            .openapi({
+              description:
+                'Date and time when this Azure Service Principal was last updated. This parameter expresses its value in the ISO 8601 timestamp format in UTC.',
+              readOnly: true,
+            }),
+          servicePrincipalId: z
+            .uuid()
+            .exactOptional()
+            .openapi({ description: 'UUID string that identifies the Azure Service Principal.' }),
+          tenantId: z
+            .uuid()
+            .exactOptional()
+            .openapi({
+              description: 'UUID String that identifies the Azure Active Directory Tenant ID.',
+            }),
+        })
+        .openapi({ required: [] }),
+    )
     .openapi({
       description: 'Details that describe the features linked to the Azure Service Principal.',
       required: ['providerName'],
@@ -24381,6 +28762,35 @@ const CloudProviderAccessExportSnapshotFeatureUsageSchema =
     })
     .openapi('CloudProviderAccessExportSnapshotFeatureUsage')
 
+const CloudProviderAccessFeatureUsageObjectStoragePrivateEndpointFeatureIdSchema = z
+  .object({
+    groupId: z
+      .string()
+      .regex(/^([a-f0-9]{24})$/)
+      .exactOptional()
+      .openapi({
+        description: 'Unique 24-hexadecimal digit string that identifies your project.',
+        example: '32b6e34b3d91647abb20e7b8',
+        readOnly: true,
+      }),
+    privateEndpointId: z
+      .string()
+      .regex(/^([a-f0-9]{24})$/)
+      .exactOptional()
+      .openapi({
+        description:
+          'Unique 24-hexadecimal digit string that identifies the object storage private endpoint.',
+        example: '32b6e34b3d91647abb20e7b8',
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    description:
+      'Identifying characteristics about the object storage private endpoint linked to this Azure Service Principal.',
+    required: [],
+  })
+  .openapi('CloudProviderAccessFeatureUsageObjectStoragePrivateEndpointFeatureId')
+
 const CloudProviderAccessFeatureUsagePushBasedLogExportFeatureIdSchema = z
   .object({
     bucketName: z
@@ -24416,6 +28826,14 @@ const CloudProviderAccessGCPServiceAccountSchema = z
       }),
   })
   .openapi({ required: ['providerName'] })
+  .and(z.looseObject({}).openapi({ required: ['providerName'] }))
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'providerName')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
   .and(
     z
       .object({
@@ -24511,10 +28929,36 @@ const CloudProviderAccessGCPServiceAccountRequestSchema = z
   .openapi('CloudProviderAccessGCPServiceAccountRequest')
 
 const CloudProviderAccessGCPServiceAccountRequestUpdateSchema =
-  CloudProviderAccessRoleRequestUpdateSchema.openapi({
-    description: 'Details that describe the features linked to the GCP Service Account.',
-    required: ['providerName'],
-  }).openapi('CloudProviderAccessGCPServiceAccountRequestUpdate')
+  CloudProviderAccessRoleRequestUpdateSchema.and(
+    z.looseObject({}).openapi({ required: ['providerName'] }),
+  )
+    .superRefine((val, ctx) => {
+      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+        if (!Object.hasOwn(val, 'providerName')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+      }
+    })
+    .openapi({
+      description: 'Details that describe the features linked to the GCP Service Account.',
+      required: ['providerName'],
+    })
+    .openapi('CloudProviderAccessGCPServiceAccountRequestUpdate')
+
+const CloudProviderAccessObjectStoragePrivateEndpointFeatureUsageSchema =
+  CloudProviderAccessFeatureUsageSchema.and(
+    z
+      .object({
+        featureId:
+          CloudProviderAccessFeatureUsageObjectStoragePrivateEndpointFeatureIdSchema.exactOptional(),
+      })
+      .openapi({ required: [] }),
+  )
+    .openapi({
+      description:
+        'Details that describe the object storage private endpoints linked to this Azure Service Principal. This capability is in limited early access: it is enabled per project via a feature flag and is not generally available. Contact MongoDB to become an early adopter.',
+    })
+    .openapi('CloudProviderAccessObjectStoragePrivateEndpointFeatureUsage')
 
 const CloudProviderAccessPushBasedLogExportFeatureUsageSchema =
   CloudProviderAccessFeatureUsageSchema.and(
@@ -24536,6 +28980,17 @@ const CloudProviderAccessRoleSchema = z
     CloudProviderAccessAzureServicePrincipalSchema,
     CloudProviderAccessGCPServiceAccountSchema,
   ])
+  .and(
+    z
+      .object({
+        providerName: z
+          .enum(['AWS', 'AZURE', 'GCP'])
+          .openapi({
+            description: 'Human-readable label that identifies the cloud provider of the role.',
+          }),
+      })
+      .openapi({ required: ['providerName'] }),
+  )
   .openapi({
     description: 'Cloud provider access role.',
     discriminator: {
@@ -24556,6 +29011,17 @@ const CloudProviderAccessRoleRequestSchema = z
     CloudProviderAccessAzureServicePrincipalRequestSchema,
     CloudProviderAccessGCPServiceAccountRequestSchema,
   ])
+  .and(
+    z
+      .object({
+        providerName: z
+          .enum(['AWS', 'AZURE', 'GCP'])
+          .openapi({
+            description: 'Human-readable label that identifies the cloud provider of the role.',
+          }),
+      })
+      .openapi({ required: ['providerName'] }),
+  )
   .openapi({
     description: 'Cloud provider access role.',
     discriminator: {
@@ -24625,6 +29091,17 @@ const GCPCloudProviderContainerSchema = z
       }),
   })
   .openapi({ required: [] })
+  .and(z.looseObject({}).openapi({ required: ['atlasCidrBlock', 'regions'] }))
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'atlasCidrBlock')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'regions')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
   .and(
     z
       .object({
@@ -24726,6 +29203,37 @@ const CloudProviderContainerSchema = z
     GCPCloudProviderContainerSchema,
     AWSCloudProviderContainerSchema,
   ])
+  .and(
+    z
+      .object({
+        id: z
+          .string()
+          .regex(/^([a-f0-9]{24})$/)
+          .exactOptional()
+          .openapi({
+            description:
+              'Unique 24-hexadecimal digit string that identifies the network peering container.',
+            example: '32b6e34b3d91647abb20e7b8',
+            readOnly: true,
+          }),
+        providerName: z
+          .enum(['AWS', 'GCP', 'AZURE', 'TENANT', 'SERVERLESS'])
+          .exactOptional()
+          .openapi({
+            description:
+              'Cloud service provider that serves the requested network peering containers.',
+          }),
+        provisioned: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description:
+              'Flag that indicates whether MongoDB Cloud clusters exist in the specified network peering container.',
+            readOnly: true,
+          }),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description:
       'Collection of settings that configures the network container for a virtual private connection on Amazon Web Services.',
@@ -25060,6 +29568,64 @@ const ClusterAlertConfigViewForNdsGroupSchema = z
   })
   .openapi('ClusterAlertConfigViewForNdsGroup')
 
+const ClusterConfigurationValidationSchema: z.ZodType<ClusterConfigurationValidationType> = z
+  .object({
+    advancedConfiguration: ClusterDescriptionProcessArgs20240805Schema.exactOptional(),
+    clusterDescription: ClusterDescription20240805Schema,
+    clusterName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Name of the existing cluster to validate against when editing is true.',
+      }),
+    editing: z
+      .boolean()
+      .openapi({
+        description:
+          'When true, validates the configuration as an update to an existing cluster. When false, validates as a new cluster create.',
+      }),
+    searchDeploymentSpec: ApiSearchDeploymentSpecViewSchema.exactOptional(),
+    tags: z
+      .array(ResourceTagSchema)
+      .max(50)
+      .exactOptional()
+      .openapi({ description: 'Optional list of resource tags.' }),
+  })
+  .openapi({ required: ['clusterDescription', 'editing'] })
+  .openapi('ClusterConfigurationValidation')
+
+const ClusterConfigurationValidationErrorSchema = z
+  .object({
+    errorCode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Machine-readable error code identifying the type of validation failure.',
+        example: 'CLUSTER_NOT_FOUND',
+      }),
+    validationIssue: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Description of the validation failure.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('ClusterConfigurationValidationError')
+
+const ClusterConfigurationValidationResultSchema = z
+  .object({
+    errors: z
+      .array(ClusterConfigurationValidationErrorSchema)
+      .max(100)
+      .exactOptional()
+      .openapi({ description: 'List of validation errors, present only when valid is false.' }),
+    valid: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether the cluster configuration is valid.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('ClusterConfigurationValidationResult')
+
 const ClusterDescriptionAutoScalingModeConfigurationSchema = z
   .object({
     autoScalingMode: z
@@ -25178,7 +29744,7 @@ const ClusterDescriptionProcessArgsSchema = z
       .openapi({
         deprecated: true,
         description:
-          "Flag that indicates whether you can insert or update documents where all indexed entries don't exceed 1024 bytes. If you set this to false, [mongod](https://docs.mongodb.com/upcoming/reference/program/mongod/#mongodb-binary-bin.mongod) writes documents that exceed this limit but doesn't index them. This parameter has been removed as of [MongoDB 4.4](https://www.mongodb.com/docs/manual/reference/parameters/#mongodb-parameter-param.failIndexKeyTooLong).",
+          "Deprecated: This parameter has been removed as of [MongoDB 4.4](https://www.mongodb.com/docs/manual/reference/parameters/#mongodb-parameter-param.failIndexKeyTooLong). Flag that indicates whether you can insert or update documents where all indexed entries don't exceed 1024 bytes. If you set this to false, [mongod](https://docs.mongodb.com/upcoming/reference/program/mongod/#mongodb-binary-bin.mongod) writes documents that exceed this limit but doesn't index them.",
         externalDocs: {
           description:
             'This option corresponds to the `failIndexKeyTooLong` `mongod` configuration file option.',
@@ -25318,225 +29884,6 @@ const ClusterDescriptionProcessArgsSchema = z
   })
   .openapi({ required: [] })
   .openapi('ClusterDescriptionProcessArgs')
-
-const ClusterDescriptionProcessArgs20240805Schema = z
-  .object({
-    changeStreamOptionsPreAndPostImagesExpireAfterSeconds: z
-      .int32()
-      .default(-1)
-      .exactOptional()
-      .openapi({
-        description: 'The minimum pre- and post-image retention time in seconds.',
-        externalDocs: {
-          description:
-            'This option corresponds to the ``changeStreamOptions.preAndPostImages.expireAfterSeconds`` cluster parameter. This setting controls the retention policy of change stream pre- and post-images. Pre- and post-images are the versions of a document before and after document modification, respectively. ``expireAfterSeconds`` controls how long MongoDB retains pre- and post-images. When set to -1 (off), MongoDB uses the default retention policy: pre- and post-images are retained until the corresponding change stream events are removed from the oplog. To set the minimum pre- and post-image retention time, specify an integer value greater than zero. Setting this too low could increase the risk of interrupting Realm sync or triggers processing. The default value is -1 (off).',
-          url: 'https://www.mongodb.com/docs/upcoming/reference/cluster-parameters/changeStreamOptions/#mongodb-parameter-param.changeStreamOptions.preAndPostImages.expireAfterSeconds',
-        },
-      }),
-    chunkMigrationConcurrency: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Number of threads on the source shard and the receiving shard for chunk migration. The number of threads should not exceed the half the total number of CPU cores in the sharded cluster.',
-        externalDocs: {
-          description:
-            'This option corresponds to the `chunkMigrationConcurrency` `mongod` configuration file option.',
-          url: 'https://www.mongodb.com/docs/manual/reference/parameters/#mongodb-parameter-param.chunkMigrationConcurrency',
-        },
-      }),
-    customOpensslCipherConfigTls12: z
-      .array(
-        z.enum(['TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384', 'TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256']),
-      )
-      .exactOptional()
-      .openapi({
-        description:
-          'The custom OpenSSL cipher suite list for TLS 1.2. Requires `tlsCipherConfigMode` = `CUSTOM`; when `tlsCipherConfigMode` is omitted, supplying a non-empty list infers `CUSTOM`.',
-        externalDocs: {
-          description:
-            'This option corresponds to the `opensslCipherConfig` `mongod` configuration file option.',
-          url: 'https://www.mongodb.com/docs/manual/reference/parameters/#mongodb-parameter-param.opensslCipherConfig',
-        },
-      }),
-    customOpensslCipherConfigTls13: z
-      .array(
-        z.enum([
-          'TLS_AES_256_GCM_SHA384',
-          'TLS_CHACHA20_POLY1305_SHA256',
-          'TLS_AES_128_GCM_SHA256',
-          'TLS_AES_128_CCM_SHA256',
-        ]),
-      )
-      .max(4)
-      .exactOptional()
-      .openapi({
-        description:
-          'The custom OpenSSL cipher suite list for TLS 1.3. Requires `tlsCipherConfigMode` = `CUSTOM`; when `tlsCipherConfigMode` is omitted, supplying a non-empty list infers `CUSTOM`.',
-        externalDocs: {
-          description:
-            'This option corresponds to the `opensslCipherSuiteConfig` `mongod` configuration file option.',
-          url: 'https://www.mongodb.com/docs/manual/reference/parameters/#mongodb-parameter-param.opensslCipherSuiteConfig',
-        },
-      }),
-    defaultMaxTimeMS: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Default time limit in milliseconds for individual read operations to complete.',
-        externalDocs: {
-          description: 'This option corresponds to the `defaultMaxTimeMS` cluster parameter.',
-          url: 'https://www.mongodb.com/docs/upcoming/reference/cluster-parameters/defaultMaxTimeMS/',
-        },
-      }),
-    defaultWriteConcern: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Default level of acknowledgment requested from MongoDB for write operations when none is specified by the driver.',
-        externalDocs: {
-          description: 'This option corresponds to the the implicit default write concern.',
-          url: 'https://docs.mongodb.com/manual/reference/write-concern/',
-        },
-      }),
-    javascriptEnabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Flag that indicates whether the cluster allows execution of operations that perform server-side executions of JavaScript. When using 8.0+, we recommend disabling server-side JavaScript and using operators of aggregation pipeline as more performant alternative.',
-        externalDocs: {
-          description:
-            'This option corresponds to modifying the `security.javascriptEnabled` configuration file option for each `mongod` and `mongos` in the cluster.',
-          url: 'https://docs.mongodb.com/upcoming/reference/configuration-options/#mongodb-setting-security.javascriptEnabled',
-        },
-      }),
-    minimumEnabledTlsProtocol: z
-      .enum(['TLS1_2', 'TLS1_3'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Minimum Transport Layer Security (TLS) version that the cluster accepts for incoming connections.',
-        externalDocs: {
-          description:
-            'This option corresponds to the `net.ssl.disabledProtocols` `mongod` configuration file option.',
-          url: 'https://docs.mongodb.com/upcoming/reference/configuration-options/#mongodb-setting-net.ssl.disabledProtocols',
-        },
-      }),
-    noTableScan: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Flag that indicates whether the cluster disables executing any query that requires a collection scan to return results.',
-        externalDocs: {
-          description:
-            'This option corresponds to the `notablescan` `mongod` configuration file option.',
-          url: 'https://docs.mongodb.com/upcoming/reference/parameters/#mongodb-parameter-param.notablescan',
-        },
-      }),
-    oplogMinRetentionHours: z
-      .float64()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          "Minimum retention window for cluster's oplog expressed in hours. A value of null indicates that the cluster uses the default minimum oplog window that MongoDB Cloud calculates.",
-        externalDocs: {
-          description:
-            'This option corresponds to the `storage.oplogMinRetentionHours` `mongod` configuration file option.',
-          url: 'https://docs.mongodb.com/upcoming/reference/configuration-options/#mongodb-setting-storage.oplogMinRetentionHours',
-        },
-      }),
-    oplogSizeMB: z
-      .int32()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          "Storage limit of cluster's oplog expressed in megabytes. A value of null indicates that the cluster uses the default oplog size that MongoDB Cloud calculates.",
-        externalDocs: {
-          description:
-            'This option corresponds to the `replication.oplogSizeMB` `mongod` configuration file option.',
-          url: 'https://docs.mongodb.com/upcoming/reference/configuration-options/#mongodb-setting-replication.oplogSizeMB',
-        },
-      }),
-    queryStatsLogVerbosity: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'May be set to 1 (disabled) or 3 (enabled). When set to 3, Atlas will include redacted and anonymized `$queryStats` output in MongoDB logs. `$queryStats` output does not contain literals or field values. Enabling this setting might impact the performance of your cluster.',
-        externalDocs: {
-          description:
-            'This option corresponds to the `queryStats` component for the `logComponentVerbosity` server parameter.',
-          url: 'https://www.mongodb.com/docs/manual/reference/parameters/#mongodb-parameter-param.logComponentVerbosity',
-        },
-      }),
-    sampleRefreshIntervalBIConnector: z
-      .int32()
-      .min(0)
-      .default(0)
-      .exactOptional()
-      .openapi({
-        description:
-          'Interval in seconds at which the mongosqld process re-samples data to create its relational schema.',
-        externalDocs: {
-          description:
-            'This option corresponds to the `sampleRefreshIntervalSecs` `mongosqld` option.',
-          url: 'https://docs.mongodb.com/bi-connector/current/reference/mongosqld/#std-option-mongosqld.--schemaRefreshIntervalSecs',
-        },
-      }),
-    sampleSizeBIConnector: z
-      .int32()
-      .min(0)
-      .exactOptional()
-      .openapi({
-        description:
-          'Number of documents per database to sample when gathering schema information.',
-        externalDocs: {
-          description: 'This option corresponds to the `sampleSize` `mongosqld` option.',
-          url: 'https://docs.mongodb.com/bi-connector/current/reference/mongosqld/#std-option-mongosqld.--sampleSize',
-        },
-      }),
-    tlsCipherConfigMode: z
-      .enum(['CUSTOM', 'DEFAULT'])
-      .exactOptional()
-      .openapi({
-        description:
-          'The TLS cipher suite configuration mode. The default mode uses the default cipher suites. The custom mode allows you to specify custom cipher suites for both TLS 1.2 and TLS 1.3.',
-      }),
-    transactionLifetimeLimitSeconds: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64().min(1n),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        minimum: 1,
-        description:
-          'Lifetime, in seconds, of multi-document transactions. Atlas considers the transactions that exceed this limit as expired and so aborts them through a periodic clean-up process.',
-        externalDocs: {
-          description:
-            'This option corresponds to the `transactionLifetimeLimitSeconds` `mongod` configuration file option.',
-          url: 'https://www.mongodb.com/docs/upcoming/reference/parameters/#mongodb-parameter-param.transactionLifetimeLimitSeconds',
-        },
-      }),
-  })
-  .openapi({
-    description: 'Advanced MongoDB process configuration options applied to the cluster.',
-    required: [],
-  })
-  .openapi('ClusterDescriptionProcessArgs20240805')
 
 const ClusterEventTypeViewForNdsGroupSchema = z
   .enum(['CLUSTER_MONGOS_IS_PRESENT', 'CLUSTER_MONGOS_IS_MISSING'])
@@ -26847,6 +31194,14 @@ const CreateAWSEndpointRequestSchema = z
       .openapi({ description: 'Cloud service provider that manages this private endpoint.' }),
   })
   .openapi({ required: [] })
+  .and(z.looseObject({}).openapi({ required: ['id'] }))
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
   .and(
     z
       .object({
@@ -26935,6 +31290,17 @@ const CreateAzureEndpointRequestSchema = z
       .openapi({ description: 'Cloud service provider that manages this private endpoint.' }),
   })
   .openapi({ required: [] })
+  .and(z.looseObject({}).openapi({ required: ['id', 'privateEndpointIPAddress'] }))
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'privateEndpointIPAddress')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
   .and(
     z
       .object({
@@ -27003,6 +31369,17 @@ const CreateGCPEndpointGroupRequestSchema = z
       .openapi({ description: 'Cloud service provider that manages this private endpoint.' }),
   })
   .openapi({ required: [] })
+  .and(z.looseObject({}).openapi({ required: ['endpointGroupName', 'gcpProjectId'] }))
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'endpointGroupName')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'gcpProjectId')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
   .and(
     z
       .object({
@@ -27055,6 +31432,16 @@ const CreateEndpointRequestSchema = z
     CreateAzureEndpointRequestSchema,
     CreateGCPEndpointGroupRequestSchema,
   ])
+  .and(
+    z
+      .object({
+        cloudProvider: z
+          .enum(['AWS', 'AZURE', 'GCP'])
+          .exactOptional()
+          .openapi({ description: 'Cloud service provider that manages this private endpoint.' }),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({
     discriminator: {
       propertyName: 'cloudProvider',
@@ -27585,18 +31972,28 @@ const CursorsTotalTimedOutRawMetricThresholdViewSchema = z
   .openapi('CursorsTotalTimedOutRawMetricThresholdView')
 
 const CustomCriteriaViewSchema = CriteriaViewSchema.and(
-  z
-    .object({
-      query: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description:
-            'MongoDB find query that selects documents to archive. The specified query follows the syntax of the `db.collection.find(query)` command. This query can\'t use the empty document (`{}`) to return all documents. Set this parameter when `"criteria.type" : "CUSTOM"`.',
-        }),
-    })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['query'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'query')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        query: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'MongoDB find query that selects documents to archive. The specified query follows the syntax of the `db.collection.find(query)` command. This query can\'t use the empty document (`{}`) to return all documents. Set this parameter when `"criteria.type" : "CUSTOM"`.',
+          }),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Custom archival criteria.',
     required: ['query'],
@@ -29355,6 +33752,23 @@ const DatadogLogIntegrationRequestSchema = z
       }),
   })
   .openapi({ required: ['logTypes', 'type'] })
+  .and(z.looseObject({}).openapi({ required: ['apiKey', 'logTypes', 'region', 'type'] }))
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'apiKey')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'logTypes')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'region')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
   .and(
     z
       .object({
@@ -29429,6 +33843,26 @@ const DatadogLogIntegrationResponseSchema = z
       }),
   })
   .openapi({ required: ['id', 'logTypes', 'type'] })
+  .and(z.looseObject({}).openapi({ required: ['apiKey', 'id', 'logTypes', 'region', 'type'] }))
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'apiKey')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'logTypes')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'region')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
   .and(
     z
       .object({
@@ -29624,183 +34058,258 @@ const DefaultAlertConfigViewForNdsGroupSchema = z
       }),
     eventTypeName: z
       .xor([
-        z.literal('CREDIT_CARD_ABOUT_TO_EXPIRE').openapi({ title: 'Billing Event Types' }),
         z
-          .enum([
-            'CPS_SNAPSHOT_STARTED',
-            'CPS_SNAPSHOT_SUCCESSFUL',
-            'CPS_SNAPSHOT_FAILED',
-            'CPS_CONCURRENT_SNAPSHOT_FAILED_WILL_RETRY',
-            'CPS_SNAPSHOT_FALLBACK_SUCCESSFUL',
-            'CPS_SNAPSHOT_FALLBACK_FAILED',
-            'CPS_COPY_SNAPSHOT_STARTED',
-            'CPS_COPY_SNAPSHOT_FAILED',
-            'CPS_COPY_SNAPSHOT_FAILED_WILL_RETRY',
-            'CPS_COPY_SNAPSHOT_SUCCESSFUL',
-            'CPS_RESTORE_SUCCESSFUL',
-            'CPS_EXPORT_SUCCESSFUL',
-            'CPS_RESTORE_FAILED',
-            'CPS_EXPORT_FAILED',
-            'CPS_COLLECTION_RESTORE_SUCCESSFUL',
-            'CPS_COLLECTION_RESTORE_FAILED',
-            'CPS_COLLECTION_RESTORE_PARTIAL_SUCCESS',
-            'CPS_COLLECTION_RESTORE_CANCELED',
-            'CPS_AUTO_EXPORT_FAILED',
-            'CPS_SNAPSHOT_DOWNLOAD_REQUEST_FAILED',
-            'CPS_OPLOG_CAUGHT_UP',
-          ])
-          .openapi({ title: 'Cps Backup Event Types' }),
+          .looseObject({})
+          .and(z.literal('CREDIT_CARD_ABOUT_TO_EXPIRE').openapi({ title: 'Billing Event Types' })),
         z
-          .enum([
-            'CPS_DATA_PROTECTION_ENABLE_REQUESTED',
-            'CPS_DATA_PROTECTION_ENABLED',
-            'CPS_DATA_PROTECTION_UPDATE_REQUESTED',
-            'CPS_DATA_PROTECTION_UPDATED',
-            'CPS_DATA_PROTECTION_DISABLE_REQUESTED',
-            'CPS_DATA_PROTECTION_DISABLED',
-            'CPS_DATA_PROTECTION_APPROVED_FOR_DISABLEMENT',
-          ])
-          .openapi({ title: 'Data Protection Event Types' }),
+          .looseObject({})
+          .and(
+            z
+              .enum([
+                'CPS_SNAPSHOT_STARTED',
+                'CPS_SNAPSHOT_SUCCESSFUL',
+                'CPS_SNAPSHOT_FAILED',
+                'CPS_CONCURRENT_SNAPSHOT_FAILED_WILL_RETRY',
+                'CPS_SNAPSHOT_FALLBACK_SUCCESSFUL',
+                'CPS_SNAPSHOT_FALLBACK_FAILED',
+                'CPS_COPY_SNAPSHOT_STARTED',
+                'CPS_COPY_SNAPSHOT_FAILED',
+                'CPS_COPY_SNAPSHOT_FAILED_WILL_RETRY',
+                'CPS_COPY_SNAPSHOT_SUCCESSFUL',
+                'CPS_RESTORE_SUCCESSFUL',
+                'CPS_EXPORT_SUCCESSFUL',
+                'CPS_RESTORE_FAILED',
+                'CPS_EXPORT_FAILED',
+                'CPS_COLLECTION_RESTORE_SUCCESSFUL',
+                'CPS_COLLECTION_RESTORE_FAILED',
+                'CPS_COLLECTION_RESTORE_PARTIAL_SUCCESS',
+                'CPS_COLLECTION_RESTORE_CANCELED',
+                'CPS_AUTO_EXPORT_FAILED',
+                'CPS_SNAPSHOT_DOWNLOAD_REQUEST_FAILED',
+                'CPS_OPLOG_CAUGHT_UP',
+              ])
+              .openapi({ title: 'Cps Backup Event Types' }),
+          ),
         z
-          .enum([
-            'FTS_INDEX_DELETION_FAILED',
-            'FTS_INDEX_BUILD_COMPLETE',
-            'FTS_INDEX_BUILD_FAILED',
-            'FTS_INDEX_CLEANED_UP',
-            'FTS_INDEX_STALE',
-            'FTS_INDEXES_RESTORE_FAILED',
-            'FTS_INDEXES_SYNONYM_MAPPING_INVALID',
-          ])
-          .openapi({ title: 'FTS Index Audit Types' }),
+          .looseObject({})
+          .and(
+            z
+              .enum([
+                'CPS_DATA_PROTECTION_ENABLE_REQUESTED',
+                'CPS_DATA_PROTECTION_ENABLED',
+                'CPS_DATA_PROTECTION_UPDATE_REQUESTED',
+                'CPS_DATA_PROTECTION_UPDATED',
+                'CPS_DATA_PROTECTION_DISABLE_REQUESTED',
+                'CPS_DATA_PROTECTION_DISABLED',
+                'CPS_DATA_PROTECTION_APPROVED_FOR_DISABLEMENT',
+              ])
+              .openapi({ title: 'Data Protection Event Types' }),
+          ),
         z
-          .enum([
-            'SEARCH_AUTO_MIGRATION_ADVISORY',
-            'SEARCH_AUTO_MIGRATION_STARTED',
-            'SEARCH_AUTO_MIGRATION_FAILED',
-          ])
-          .openapi({ title: 'Search Auto Migration Event Types' }),
+          .looseObject({})
+          .and(
+            z
+              .enum([
+                'FTS_INDEX_DELETION_FAILED',
+                'FTS_INDEX_BUILD_COMPLETE',
+                'FTS_INDEX_BUILD_FAILED',
+                'FTS_INDEX_CLEANED_UP',
+                'FTS_INDEX_STALE',
+                'FTS_INDEXES_RESTORE_FAILED',
+                'FTS_INDEXES_SYNONYM_MAPPING_INVALID',
+              ])
+              .openapi({ title: 'FTS Index Audit Types' }),
+          ),
         z
-          .enum([
-            'USERS_WITHOUT_MULTI_FACTOR_AUTH',
-            'ENCRYPTION_AT_REST_KMS_NETWORK_ACCESS_DENIED',
-            'ENCRYPTION_AT_REST_CONFIG_NO_LONGER_VALID',
-            'GROUP_SERVICE_ACCOUNT_SECRETS_EXPIRING',
-            'GROUP_SERVICE_ACCOUNT_SECRETS_EXPIRED',
-            'ACTIVE_LEGACY_TLS_CONNECTIONS',
-            'WEBHOOK_TEMPLATE_RENDER_FAILED',
-            'ENCRYPTION_AT_REST_CONFIG_UPDATE_STALLED',
-          ])
-          .openapi({ title: 'Group Event Types' }),
-        z.literal('MONGOTUNE_ALERT').openapi({ title: 'Mongotune Event Types' }),
+          .looseObject({})
+          .and(
+            z
+              .literal('PROJECT_OPERATIONS_CONTACT_MODIFIED')
+              .openapi({ title: 'Group Audit Types' }),
+          ),
         z
-          .enum([
-            'CLUSTER_INSTANCE_STOP_START',
-            'CLUSTER_INSTANCE_RESYNC_REQUESTED',
-            'CLUSTER_INSTANCE_UPDATE_REQUESTED',
-            'SAMPLE_DATASET_LOAD_REQUESTED',
-            'TENANT_UPGRADE_TO_SERVERLESS_SUCCESSFUL',
-            'TENANT_UPGRADE_TO_SERVERLESS_FAILED',
-            'NETWORK_PERMISSION_ENTRY_ADDED',
-            'NETWORK_PERMISSION_ENTRY_REMOVED',
-            'NETWORK_PERMISSION_ENTRY_UPDATED',
-            'CLUSTER_BLOCK_WRITE',
-            'CLUSTER_UNBLOCK_WRITE',
-            'LOG_STREAMING_EXPORT_FAILED_NONRETRYABLE',
-            'LOG_STREAMING_EXPORT_FAILED_RETRIES_EXHAUSTED',
-            'LOG_STREAMING_REPLAY_FAILED',
-          ])
-          .openapi({ title: 'Atlas Audit Types' }),
+          .looseObject({})
+          .and(
+            z
+              .enum([
+                'SEARCH_AUTO_MIGRATION_ADVISORY',
+                'SEARCH_AUTO_MIGRATION_STARTED',
+                'SEARCH_AUTO_MIGRATION_FAILED',
+              ])
+              .openapi({ title: 'Search Auto Migration Event Types' }),
+          ),
         z
-          .enum([
-            'MAINTENANCE_IN_ADVANCED',
-            'MAINTENANCE_AUTO_DEFERRED',
-            'MAINTENANCE_STARTED',
-            'MAINTENANCE_COMPLETED',
-            'MAINTENANCE_NO_LONGER_NEEDED',
-          ])
-          .openapi({ title: 'Maintenance Window Audit Types' }),
+          .looseObject({})
+          .and(
+            z
+              .enum([
+                'USERS_WITHOUT_MULTI_FACTOR_AUTH',
+                'ENCRYPTION_AT_REST_KMS_NETWORK_ACCESS_DENIED',
+                'ENCRYPTION_AT_REST_CONFIG_NO_LONGER_VALID',
+                'GROUP_SERVICE_ACCOUNT_SECRETS_EXPIRING',
+                'GROUP_SERVICE_ACCOUNT_SECRETS_EXPIRED',
+                'ACTIVE_LEGACY_TLS_CONNECTIONS',
+                'WEBHOOK_TEMPLATE_RENDER_FAILED',
+                'ENCRYPTION_AT_REST_CONFIG_UPDATE_STALLED',
+              ])
+              .openapi({ title: 'Group Event Types' }),
+          ),
         z
-          .enum([
-            'ONLINE_ARCHIVE_INSUFFICIENT_INDEXES_CHECK',
-            'ONLINE_ARCHIVE_MAX_CONSECUTIVE_OFFLOAD_WINDOWS_CHECK',
-          ])
-          .openapi({ title: 'Online Archive Event Types' }),
+          .looseObject({})
+          .and(z.literal('MONGOTUNE_ALERT').openapi({ title: 'Mongotune Event Types' })),
         z
-          .enum(['JOINED_GROUP', 'REMOVED_FROM_GROUP', 'USER_ROLES_CHANGED_AUDIT'])
-          .openapi({ title: 'User Event Types' }),
+          .looseObject({})
+          .and(
+            z
+              .enum([
+                'CLUSTER_INSTANCE_STOP_START',
+                'CLUSTER_INSTANCE_RESYNC_REQUESTED',
+                'CLUSTER_INSTANCE_UPDATE_REQUESTED',
+                'SAMPLE_DATASET_LOAD_REQUESTED',
+                'TENANT_UPGRADE_TO_SERVERLESS_SUCCESSFUL',
+                'TENANT_UPGRADE_TO_SERVERLESS_FAILED',
+                'NETWORK_PERMISSION_ENTRY_ADDED',
+                'NETWORK_PERMISSION_ENTRY_REMOVED',
+                'NETWORK_PERMISSION_ENTRY_UPDATED',
+                'CLUSTER_BLOCK_WRITE',
+                'CLUSTER_UNBLOCK_WRITE',
+                'LOG_STREAMING_EXPORT_FAILED_NONRETRYABLE',
+                'LOG_STREAMING_EXPORT_FAILED_RETRIES_EXHAUSTED',
+                'LOG_STREAMING_REPLAY_FAILED',
+              ])
+              .openapi({ title: 'Atlas Audit Types' }),
+          ),
         z
-          .enum(['TAGS_MODIFIED', 'CLUSTER_TAGS_MODIFIED', 'GROUP_TAGS_MODIFIED'])
-          .openapi({ title: 'Resource Event Types' }),
+          .looseObject({})
+          .and(
+            z
+              .enum([
+                'MAINTENANCE_IN_ADVANCED',
+                'MAINTENANCE_AUTO_DEFERRED',
+                'MAINTENANCE_STARTED',
+                'MAINTENANCE_COMPLETED',
+                'MAINTENANCE_NO_LONGER_NEEDED',
+              ])
+              .openapi({ title: 'Maintenance Window Audit Types' }),
+          ),
         z
-          .enum([
-            'STREAM_PROCESSOR_STATE_IS_FAILED',
-            'STREAM_PROCESSOR_AUTOSCALE_INITIATED',
-            'OUTSIDE_STREAM_PROCESSOR_METRIC_THRESHOLD',
-          ])
-          .openapi({ title: 'Stream Processor Event Types' }),
+          .looseObject({})
+          .and(
+            z
+              .enum([
+                'ONLINE_ARCHIVE_INSUFFICIENT_INDEXES_CHECK',
+                'ONLINE_ARCHIVE_MAX_CONSECUTIVE_OFFLOAD_WINDOWS_CHECK',
+              ])
+              .openapi({ title: 'Online Archive Event Types' }),
+          ),
         z
-          .enum([
-            'COMPUTE_AUTO_SCALE_INITIATED_BASE',
-            'COMPUTE_AUTO_SCALE_INITIATED_ANALYTICS',
-            'COMPUTE_AUTO_SCALE_SCALE_DOWN_FAIL_BASE',
-            'COMPUTE_AUTO_SCALE_SCALE_DOWN_FAIL_ANALYTICS',
-            'COMPUTE_AUTO_SCALE_DOWNSCALE_SKIPPED_FALLBACK_BASE',
-            'COMPUTE_AUTO_SCALE_DOWNSCALE_SKIPPED_FALLBACK_ANALYTICS',
-            'COMPUTE_AUTO_SCALE_MAX_INSTANCE_SIZE_FAIL_BASE',
-            'COMPUTE_AUTO_SCALE_MAX_INSTANCE_SIZE_FAIL_ANALYTICS',
-            'COMPUTE_AUTO_SCALE_OPLOG_FAIL_BASE',
-            'COMPUTE_AUTO_SCALE_OPLOG_FAIL_ANALYTICS',
-            'COMPUTE_AUTO_SCALE_CAPACITY_CONSTRAINT_FAIL_BASE',
-            'COMPUTE_AUTO_SCALE_CAPACITY_CONSTRAINT_FAIL_ANALYTICS',
-            'DISK_AUTO_SCALE_INITIATED',
-            'DISK_AUTO_SCALE_MAX_DISK_SIZE_FAIL',
-            'DISK_AUTO_SCALE_OPLOG_FAIL',
-            'CLUSTER_AUTO_SHARDING_INITIATED',
-            'CLUSTER_RESHARDING_COMPLETED',
-            'PREDICTIVE_COMPUTE_AUTO_SCALE_INITIATED_BASE',
-            'PREDICTIVE_COMPUTE_AUTO_SCALE_MAX_INSTANCE_SIZE_FAIL_BASE',
-            'PREDICTIVE_COMPUTE_AUTO_SCALE_OPLOG_FAIL_BASE',
-            'PREDICTIVE_COMPUTE_AUTO_SCALE_CAPACITY_CONSTRAINT_FAIL_BASE',
-          ])
-          .openapi({ title: 'Auto Scaling Audit Types' }),
+          .looseObject({})
+          .and(
+            z
+              .enum(['JOINED_GROUP', 'REMOVED_FROM_GROUP', 'USER_ROLES_CHANGED_AUDIT'])
+              .openapi({ title: 'User Event Types' }),
+          ),
         z
-          .literal('RESOURCE_POLICY_VIOLATED')
-          .openapi({ title: 'Atlas Resource Policy Audit Types' }),
+          .looseObject({})
+          .and(
+            z
+              .enum(['TAGS_MODIFIED', 'CLUSTER_TAGS_MODIFIED', 'GROUP_TAGS_MODIFIED'])
+              .openapi({ title: 'Resource Event Types' }),
+          ),
         z
-          .enum([
-            'HOST_DOWN',
-            'HOST_HAS_INDEX_SUGGESTIONS',
-            'HOST_MONGOT_CRASHING_OOM',
-            'HOST_MONGOT_STOP_REPLICATION',
-            'HOST_MONGOT_APPROACHING_STOP_REPLICATION',
-            'HOST_MONGOT_PAUSE_INITIAL_SYNC',
-            'HOST_SEARCH_NODE_INDEX_FAILED',
-            'HOST_SEARCH_PROCESS_THROTTLING',
-            'HOST_EXTERNAL_LOG_SINK_EXPORT_DOWN',
-            'HOST_NOT_ENOUGH_DISK_SPACE',
-            'SSH_KEY_NDS_HOST_ACCESS_REQUESTED',
-            'SSH_KEY_NDS_HOST_ACCESS_REFRESHED',
-            'PUSH_BASED_LOG_EXPORT_STOPPED',
-            'PUSH_BASED_LOG_EXPORT_DROPPED_LOG',
-            'HOST_VERSION_BEHIND',
-            'VERSION_BEHIND',
-            'HOST_EXPOSED',
-            'HOST_SSL_CERTIFICATE_STALE',
-            'HOST_SECURITY_CHECKUP_NOT_MET',
-            'ALERT_HOST_SSH_SESSION_STARTED',
-            'PROFILER_CONFIGURED_TOO_WIDELY',
-          ])
-          .openapi({ title: 'Host Event Types' }),
+          .looseObject({})
+          .and(
+            z
+              .enum([
+                'STREAM_PROCESSOR_STATE_IS_FAILED',
+                'STREAM_PROCESSOR_AUTOSCALE_INITIATED',
+                'OUTSIDE_STREAM_PROCESSOR_METRIC_THRESHOLD',
+              ])
+              .openapi({ title: 'Stream Processor Event Types' }),
+          ),
         z
-          .literal('PROACTIVE_REMEDIATION_NEEDED')
-          .openapi({ title: 'Proactive Remediation Event Types' }),
+          .looseObject({})
+          .and(
+            z
+              .enum([
+                'COMPUTE_AUTO_SCALE_INITIATED_BASE',
+                'COMPUTE_AUTO_SCALE_INITIATED_ANALYTICS',
+                'COMPUTE_AUTO_SCALE_SCALE_DOWN_FAIL_BASE',
+                'COMPUTE_AUTO_SCALE_SCALE_DOWN_FAIL_ANALYTICS',
+                'COMPUTE_AUTO_SCALE_DOWNSCALE_SKIPPED_FALLBACK_BASE',
+                'COMPUTE_AUTO_SCALE_DOWNSCALE_SKIPPED_FALLBACK_ANALYTICS',
+                'COMPUTE_AUTO_SCALE_MAX_INSTANCE_SIZE_FAIL_BASE',
+                'COMPUTE_AUTO_SCALE_MAX_INSTANCE_SIZE_FAIL_ANALYTICS',
+                'COMPUTE_AUTO_SCALE_OPLOG_FAIL_BASE',
+                'COMPUTE_AUTO_SCALE_OPLOG_FAIL_ANALYTICS',
+                'COMPUTE_AUTO_SCALE_CAPACITY_CONSTRAINT_FAIL_BASE',
+                'COMPUTE_AUTO_SCALE_CAPACITY_CONSTRAINT_FAIL_ANALYTICS',
+                'DISK_AUTO_SCALE_INITIATED',
+                'DISK_AUTO_SCALE_MAX_DISK_SIZE_FAIL',
+                'DISK_AUTO_SCALE_OPLOG_FAIL',
+                'CLUSTER_AUTO_SHARDING_INITIATED',
+                'CLUSTER_RESHARDING_COMPLETED',
+                'PREDICTIVE_COMPUTE_AUTO_SCALE_INITIATED_BASE',
+                'PREDICTIVE_COMPUTE_AUTO_SCALE_MAX_INSTANCE_SIZE_FAIL_BASE',
+                'PREDICTIVE_COMPUTE_AUTO_SCALE_OPLOG_FAIL_BASE',
+                'PREDICTIVE_COMPUTE_AUTO_SCALE_CAPACITY_CONSTRAINT_FAIL_BASE',
+              ])
+              .openapi({ title: 'Auto Scaling Audit Types' }),
+          ),
         z
-          .enum([
-            'STREAMS_PRIVATE_LINK_ENDPOINT_UNUSED_FIRST_WARNING',
-            'STREAMS_PRIVATE_LINK_ENDPOINT_UNUSED_SECOND_WARNING',
-            'STREAMS_PRIVATE_LINK_ENDPOINT_UNUSED_DELETED',
-          ])
-          .openapi({ title: 'Stream Processing Private Link Endpoint Event Types' }),
+          .looseObject({})
+          .and(
+            z
+              .literal('RESOURCE_POLICY_VIOLATED')
+              .openapi({ title: 'Atlas Resource Policy Audit Types' }),
+          ),
+        z
+          .looseObject({})
+          .and(
+            z
+              .enum([
+                'HOST_DOWN',
+                'HOST_HAS_INDEX_SUGGESTIONS',
+                'HOST_MONGOT_CRASHING_OOM',
+                'HOST_MONGOT_STOP_REPLICATION',
+                'HOST_MONGOT_APPROACHING_STOP_REPLICATION',
+                'HOST_MONGOT_PAUSE_INITIAL_SYNC',
+                'HOST_SEARCH_NODE_INDEX_FAILED',
+                'HOST_SEARCH_PROCESS_THROTTLING',
+                'HOST_EXTERNAL_LOG_SINK_EXPORT_DOWN',
+                'HOST_NOT_ENOUGH_DISK_SPACE',
+                'SSH_KEY_NDS_HOST_ACCESS_REQUESTED',
+                'SSH_KEY_NDS_HOST_ACCESS_REFRESHED',
+                'PUSH_BASED_LOG_EXPORT_STOPPED',
+                'PUSH_BASED_LOG_EXPORT_DROPPED_LOG',
+                'HOST_VERSION_BEHIND',
+                'VERSION_BEHIND',
+                'HOST_EXPOSED',
+                'HOST_SSL_CERTIFICATE_STALE',
+                'HOST_SECURITY_CHECKUP_NOT_MET',
+                'ALERT_HOST_SSH_SESSION_STARTED',
+                'PROFILER_CONFIGURED_TOO_WIDELY',
+              ])
+              .openapi({ title: 'Host Event Types' }),
+          ),
+        z
+          .looseObject({})
+          .and(
+            z
+              .literal('PROACTIVE_REMEDIATION_NEEDED')
+              .openapi({ title: 'Proactive Remediation Event Types' }),
+          ),
+        z
+          .looseObject({})
+          .and(
+            z
+              .enum([
+                'STREAMS_PRIVATE_LINK_ENDPOINT_UNUSED_FIRST_WARNING',
+                'STREAMS_PRIVATE_LINK_ENDPOINT_UNUSED_SECOND_WARNING',
+                'STREAMS_PRIVATE_LINK_ENDPOINT_UNUSED_DELETED',
+              ])
+              .openapi({ title: 'Stream Processing Private Link Endpoint Event Types' }),
+          ),
       ])
       .openapi({
         description: 'Incident that triggered this alert.',
@@ -29897,389 +34406,568 @@ const DefaultEventViewForNdsGroupSchema = z
     eventTypeName: z
       .xor([
         z
-          .enum([
-            'AUTO_INDEXING_ENABLED',
-            'AUTO_INDEXING_DISABLED',
-            'AUTO_INDEXING_INDEX_BUILD_SUBMITTED',
-            'AUTO_INDEXING_SLOW_INDEX_BUILD',
-            'AUTO_INDEXING_STALLED_INDEX_BUILD',
-            'AUTO_INDEXING_FAILED_INDEX_BUILD',
-            'AUTO_INDEXING_COMPLETED_INDEX_BUILD',
-            'AUTO_INDEXING_STARTED_INDEX_BUILD',
-          ])
-          .openapi({ title: 'Auto Indexing Event Types' }),
+          .looseObject({})
+          .and(
+            z
+              .enum([
+                'AUTO_INDEXING_ENABLED',
+                'AUTO_INDEXING_DISABLED',
+                'AUTO_INDEXING_INDEX_BUILD_SUBMITTED',
+                'AUTO_INDEXING_SLOW_INDEX_BUILD',
+                'AUTO_INDEXING_STALLED_INDEX_BUILD',
+                'AUTO_INDEXING_FAILED_INDEX_BUILD',
+                'AUTO_INDEXING_COMPLETED_INDEX_BUILD',
+                'AUTO_INDEXING_STARTED_INDEX_BUILD',
+              ])
+              .openapi({ title: 'Auto Indexing Event Types' }),
+          ),
         z
-          .enum(['PEER_CREATED', 'PEER_DELETED', 'PEER_UPDATED'])
-          .openapi({ title: 'AWS Peer Vpc Audit Types' }),
+          .looseObject({})
+          .and(
+            z
+              .enum(['PEER_CREATED', 'PEER_DELETED', 'PEER_UPDATED'])
+              .openapi({ title: 'AWS Peer Vpc Audit Types' }),
+          ),
         z
-          .enum([
-            'AZURE_PEER_CREATED',
-            'AZURE_PEER_UPDATED',
-            'AZURE_PEER_ACTIVE',
-            'AZURE_PEER_DELETED',
-          ])
-          .openapi({ title: 'Azure Peer Network Audit Types' }),
+          .looseObject({})
+          .and(
+            z
+              .enum([
+                'AZURE_PEER_CREATED',
+                'AZURE_PEER_UPDATED',
+                'AZURE_PEER_ACTIVE',
+                'AZURE_PEER_DELETED',
+              ])
+              .openapi({ title: 'Azure Peer Network Audit Types' }),
+          ),
         z
-          .enum([
-            'CLUSTER_CONNECTION_GET_DATABASES',
-            'CLUSTER_CONNECTION_GET_DATABASE_COLLECTIONS',
-            'CLUSTER_CONNECTION_GET_DATABASE_NAMESPACES',
-            'CLUSTER_CONNECTION_GET_NAMESPACES_WITH_UUID',
-            'CLUSTER_CONNECTION_GET_AGGREGATED_VIEW_INFOS',
-            'CLUSTER_CONNECTION_AGGREGATE',
-            'CLUSTER_CONNECTION_CREATE_COLLECTION',
-            'CLUSTER_CONNECTION_SAMPLE_COLLECTION_FIELD_NAMES',
-            'CLUSTER_CONNECTION_SAMPLE_COLLECTION_FIELD_NAMES_AND_TYPES',
-            'CLUSTER_CONNECTION_FIND_DOCUMENTS',
-            'CLUSTER_CONNECTION_GET_NAMESPACES_AND_PROJECT_SQL_SCHEMA_DATA',
-          ])
-          .openapi({ title: 'Cluster Connection Audit Types' }),
+          .looseObject({})
+          .and(
+            z
+              .enum([
+                'CLUSTER_CONNECTION_GET_DATABASES',
+                'CLUSTER_CONNECTION_GET_DATABASE_COLLECTIONS',
+                'CLUSTER_CONNECTION_GET_DATABASE_NAMESPACES',
+                'CLUSTER_CONNECTION_GET_NAMESPACES_WITH_UUID',
+                'CLUSTER_CONNECTION_GET_AGGREGATED_VIEW_INFOS',
+                'CLUSTER_CONNECTION_AGGREGATE',
+                'CLUSTER_CONNECTION_CREATE_COLLECTION',
+                'CLUSTER_CONNECTION_SAMPLE_COLLECTION_FIELD_NAMES',
+                'CLUSTER_CONNECTION_SAMPLE_COLLECTION_FIELD_NAMES_AND_TYPES',
+                'CLUSTER_CONNECTION_FIND_DOCUMENTS',
+                'CLUSTER_CONNECTION_GET_NAMESPACES_AND_PROJECT_SQL_SCHEMA_DATA',
+              ])
+              .openapi({ title: 'Cluster Connection Audit Types' }),
+          ),
         z
-          .enum([
-            'CPS_SNAPSHOT_STARTED',
-            'CPS_SNAPSHOT_SUCCESSFUL',
-            'CPS_SNAPSHOT_FAILED',
-            'CPS_CONCURRENT_SNAPSHOT_FAILED_WILL_RETRY',
-            'CPS_SNAPSHOT_FALLBACK_SUCCESSFUL',
-            'CPS_SNAPSHOT_BEHIND',
-            'CPS_COPY_SNAPSHOT_STARTED',
-            'CPS_COPY_SNAPSHOT_FAILED',
-            'CPS_COPY_SNAPSHOT_FAILED_WILL_RETRY',
-            'CPS_COPY_SNAPSHOT_SUCCESSFUL',
-            'CPS_PREV_SNAPSHOT_OLD',
-            'CPS_SNAPSHOT_FALLBACK_FAILED',
-            'CPS_RESTORE_SUCCESSFUL',
-            'CPS_EXPORT_SUCCESSFUL',
-            'CPS_RESTORE_FAILED',
-            'CPS_EXPORT_FAILED',
-            'CPS_COLLECTION_RESTORE_SUCCESSFUL',
-            'CPS_COLLECTION_RESTORE_FAILED',
-            'CPS_COLLECTION_RESTORE_PARTIAL_SUCCESS',
-            'CPS_COLLECTION_RESTORE_CANCELED',
-            'CPS_AUTO_EXPORT_FAILED',
-            'CPS_SNAPSHOT_DOWNLOAD_REQUEST_FAILED',
-            'CPS_OPLOG_BEHIND',
-            'CPS_OPLOG_CAUGHT_UP',
-          ])
-          .openapi({ title: 'Cps Backup Event Types' }),
+          .looseObject({})
+          .and(
+            z
+              .enum([
+                'CPS_SNAPSHOT_STARTED',
+                'CPS_SNAPSHOT_SUCCESSFUL',
+                'CPS_SNAPSHOT_FAILED',
+                'CPS_CONCURRENT_SNAPSHOT_FAILED_WILL_RETRY',
+                'CPS_SNAPSHOT_FALLBACK_SUCCESSFUL',
+                'CPS_SNAPSHOT_BEHIND',
+                'CPS_COPY_SNAPSHOT_STARTED',
+                'CPS_COPY_SNAPSHOT_FAILED',
+                'CPS_COPY_SNAPSHOT_FAILED_WILL_RETRY',
+                'CPS_COPY_SNAPSHOT_SUCCESSFUL',
+                'CPS_PREV_SNAPSHOT_OLD',
+                'CPS_SNAPSHOT_FALLBACK_FAILED',
+                'CPS_RESTORE_SUCCESSFUL',
+                'CPS_EXPORT_SUCCESSFUL',
+                'CPS_RESTORE_FAILED',
+                'CPS_EXPORT_FAILED',
+                'CPS_COLLECTION_RESTORE_SUCCESSFUL',
+                'CPS_COLLECTION_RESTORE_FAILED',
+                'CPS_COLLECTION_RESTORE_PARTIAL_SUCCESS',
+                'CPS_COLLECTION_RESTORE_CANCELED',
+                'CPS_AUTO_EXPORT_FAILED',
+                'CPS_SNAPSHOT_DOWNLOAD_REQUEST_FAILED',
+                'CPS_OPLOG_BEHIND',
+                'CPS_OPLOG_CAUGHT_UP',
+              ])
+              .openapi({ title: 'Cps Backup Event Types' }),
+          ),
         z
-          .enum([
-            'CPS_DATA_PROTECTION_ENABLE_REQUESTED',
-            'CPS_DATA_PROTECTION_ENABLED',
-            'CPS_DATA_PROTECTION_UPDATE_REQUESTED',
-            'CPS_DATA_PROTECTION_UPDATED',
-            'CPS_DATA_PROTECTION_DISABLE_REQUESTED',
-            'CPS_DATA_PROTECTION_DISABLED',
-            'CPS_DATA_PROTECTION_APPROVED_FOR_DISABLEMENT',
-          ])
-          .openapi({ title: 'CPS Backup Compliance Policy Event Types' }),
+          .looseObject({})
+          .and(
+            z
+              .enum([
+                'CPS_DATA_PROTECTION_ENABLE_REQUESTED',
+                'CPS_DATA_PROTECTION_ENABLED',
+                'CPS_DATA_PROTECTION_UPDATE_REQUESTED',
+                'CPS_DATA_PROTECTION_UPDATED',
+                'CPS_DATA_PROTECTION_DISABLE_REQUESTED',
+                'CPS_DATA_PROTECTION_DISABLED',
+                'CPS_DATA_PROTECTION_APPROVED_FOR_DISABLEMENT',
+              ])
+              .openapi({ title: 'CPS Backup Compliance Policy Event Types' }),
+          ),
         z
-          .enum([
-            'CPS_RESTORE_REQUESTED_AUDIT',
-            'CPS_RESTORE_AUTH_AUDIT',
-            'CPS_SNAPSHOT_SCHEDULE_UPDATED_AUDIT',
-            'CPS_SNAPSHOT_FASTER_RESTORES_START_AUDIT',
-            'CPS_SNAPSHOT_FASTER_RESTORES_SUCCESS_AUDIT',
-            'CPS_SNAPSHOT_FASTER_RESTORES_FAILED_AUDIT',
-            'CPS_SNAPSHOT_DELETED_AUDIT',
-            'CPS_SNAPSHOT_RETENTION_MODIFIED_AUDIT',
-            'CPS_SNAPSHOT_IN_PROGRESS_AUDIT',
-            'CPS_SNAPSHOT_COMPLETED_AUDIT',
-            'CPS_ON_DEMAND_SNAPSHOT_REQUESTED',
-            'CPS_OPLOG_CAUGHT_UP_AUDIT',
-            'CPS_OPLOG_BEHIND_AUDIT',
-          ])
-          .openapi({ title: 'Disk Backup Event Types' }),
+          .looseObject({})
+          .and(
+            z
+              .enum([
+                'CPS_RESTORE_REQUESTED_AUDIT',
+                'CPS_RESTORE_AUTH_AUDIT',
+                'CPS_SNAPSHOT_SCHEDULE_UPDATED_AUDIT',
+                'CPS_SNAPSHOT_FASTER_RESTORES_START_AUDIT',
+                'CPS_SNAPSHOT_FASTER_RESTORES_SUCCESS_AUDIT',
+                'CPS_SNAPSHOT_FASTER_RESTORES_FAILED_AUDIT',
+                'CPS_SNAPSHOT_DELETED_AUDIT',
+                'CPS_SNAPSHOT_RETENTION_MODIFIED_AUDIT',
+                'CPS_SNAPSHOT_IN_PROGRESS_AUDIT',
+                'CPS_SNAPSHOT_COMPLETED_AUDIT',
+                'CPS_ON_DEMAND_SNAPSHOT_REQUESTED',
+                'CPS_OPLOG_CAUGHT_UP_AUDIT',
+                'CPS_OPLOG_BEHIND_AUDIT',
+              ])
+              .openapi({ title: 'Disk Backup Event Types' }),
+          ),
         z
-          .enum([
-            'AWS_ENCRYPTION_KEY_ROTATED',
-            'AWS_ENCRYPTION_KEY_NEEDS_ROTATION',
-            'AZURE_ENCRYPTION_KEY_ROTATED',
-            'AZURE_ENCRYPTION_KEY_NEEDS_ROTATION',
-            'GCP_ENCRYPTION_KEY_ROTATED',
-            'GCP_ENCRYPTION_KEY_NEEDS_ROTATION',
-            'AWS_ENCRYPTION_KEY_VALID',
-            'AWS_ENCRYPTION_KEY_INVALID',
-            'AZURE_ENCRYPTION_KEY_VALID',
-            'AZURE_ENCRYPTION_KEY_INVALID',
-            'GCP_ENCRYPTION_KEY_VALID',
-            'GCP_ENCRYPTION_KEY_INVALID',
-          ])
-          .openapi({ title: 'Encryption Event Types' }),
+          .looseObject({})
+          .and(
+            z
+              .enum([
+                'AWS_ENCRYPTION_KEY_ROTATED',
+                'AWS_ENCRYPTION_KEY_NEEDS_ROTATION',
+                'AZURE_ENCRYPTION_KEY_ROTATED',
+                'AZURE_ENCRYPTION_KEY_NEEDS_ROTATION',
+                'GCP_ENCRYPTION_KEY_ROTATED',
+                'GCP_ENCRYPTION_KEY_NEEDS_ROTATION',
+                'AWS_ENCRYPTION_KEY_VALID',
+                'AWS_ENCRYPTION_KEY_INVALID',
+                'AZURE_ENCRYPTION_KEY_VALID',
+                'AZURE_ENCRYPTION_KEY_INVALID',
+                'GCP_ENCRYPTION_KEY_VALID',
+                'GCP_ENCRYPTION_KEY_INVALID',
+              ])
+              .openapi({ title: 'Encryption Event Types' }),
+          ),
         z
-          .enum(['ENCRYPTION_KEY_TRANSITION_STARTED', 'ENCRYPTION_KEY_TRANSITION_COMPLETED'])
-          .openapi({ title: 'Encryption Key Transition Event Types' }),
+          .looseObject({})
+          .and(
+            z
+              .enum(['BUCKET_CREATED_AUDIT', 'BUCKET_DELETED_AUDIT'])
+              .openapi({ title: 'Export Bucket Audit Types' }),
+          ),
         z
-          .enum(['BUCKET_CREATED_AUDIT', 'BUCKET_DELETED_AUDIT'])
-          .openapi({ title: 'Export Bucket Audit Types' }),
+          .looseObject({})
+          .and(
+            z
+              .enum([
+                'GCP_PEER_CREATED',
+                'GCP_PEER_DELETED',
+                'GCP_PEER_UPDATED',
+                'GCP_PEER_ACTIVE',
+                'GCP_PEER_INACTIVE',
+              ])
+              .openapi({ title: 'GCP Peer Vpc Audit Types' }),
+          ),
         z
-          .enum([
-            'GCP_PEER_CREATED',
-            'GCP_PEER_DELETED',
-            'GCP_PEER_UPDATED',
-            'GCP_PEER_ACTIVE',
-            'GCP_PEER_INACTIVE',
-          ])
-          .openapi({ title: 'GCP Peer Vpc Audit Types' }),
+          .looseObject({})
+          .and(
+            z
+              .enum([
+                'DATA_EXPLORER_ENABLED',
+                'DATA_EXPLORER_DISABLED',
+                'CREDIT_CARD_ADDED',
+                'CREDIT_CARD_UPDATED',
+                'GROUP_DELETED',
+                'GROUP_CREATED',
+                'GROUP_MOVED',
+                'GROUP_TEMPORARILY_ACTIVATED',
+                'GROUP_ACTIVATED',
+                'GROUP_LOCKED',
+                'GROUP_SUSPENDED',
+                'GROUP_FLUSHED',
+                'GROUP_NAME_CHANGED',
+                'GROUP_CHARTS_ACTIVATION_REQUESTED',
+                'GROUP_CHARTS_ACTIVATED',
+                'GROUP_CHARTS_UPGRADED',
+                'GROUP_CHARTS_RESET',
+                'PROJECT_OPERATIONS_CONTACT_MODIFIED',
+                'PROJECT_OPERATIONS_CONTACT_ALERTS_ENABLED',
+                'PROJECT_OPERATIONS_CONTACT_ALERTS_DISABLED',
+                'GROUP_DEFAULT_ALERTS_SETTINGS_CHANGED',
+              ])
+              .openapi({ title: 'Group Audit Types' }),
+          ),
         z
-          .enum([
-            'DATA_EXPLORER_ENABLED',
-            'DATA_EXPLORER_DISABLED',
-            'CREDIT_CARD_ADDED',
-            'CREDIT_CARD_UPDATED',
-            'GROUP_DELETED',
-            'GROUP_CREATED',
-            'GROUP_MOVED',
-            'GROUP_TEMPORARILY_ACTIVATED',
-            'GROUP_ACTIVATED',
-            'GROUP_LOCKED',
-            'GROUP_SUSPENDED',
-            'GROUP_FLUSHED',
-            'GROUP_NAME_CHANGED',
-            'GROUP_CHARTS_ACTIVATION_REQUESTED',
-            'GROUP_CHARTS_ACTIVATED',
-            'GROUP_CHARTS_UPGRADED',
-            'GROUP_CHARTS_RESET',
-            'GROUP_DEFAULT_ALERTS_SETTINGS_CHANGED',
-          ])
-          .openapi({ title: 'Group Audit Types' }),
+          .looseObject({})
+          .and(
+            z
+              .enum([
+                'PAID_IN_FULL',
+                'DELINQUENT',
+                'ALL_USERS_HAVE_MULTI_FACTOR_AUTH',
+                'USERS_WITHOUT_MULTI_FACTOR_AUTH',
+                'ENCRYPTION_AT_REST_KMS_NETWORK_ACCESS_DENIED',
+                'ENCRYPTION_AT_REST_KMS_NETWORK_ACCESS_RESTORED',
+                'ENCRYPTION_AT_REST_CONFIG_NO_LONGER_VALID',
+                'ENCRYPTION_AT_REST_CONFIG_IS_VALID',
+                'GROUP_SERVICE_ACCOUNT_SECRETS_NO_LONGER_EXPIRING',
+                'GROUP_SERVICE_ACCOUNT_SECRETS_EXPIRING',
+                'GROUP_SERVICE_ACCOUNT_SECRETS_NO_LONGER_EXPIRED',
+                'GROUP_SERVICE_ACCOUNT_SECRETS_EXPIRED',
+                'ACTIVE_LEGACY_TLS_CONNECTIONS',
+                'NO_ACTIVE_LEGACY_TLS_CONNECTIONS',
+                'WEBHOOK_TEMPLATE_RENDER_FAILED',
+                'ENCRYPTION_AT_REST_CONFIG_UPDATE_NO_LONGER_STALLED',
+                'ENCRYPTION_AT_REST_CONFIG_UPDATE_STALLED',
+              ])
+              .openapi({ title: 'Group Event Types' }),
+          ),
         z
-          .enum([
-            'PAID_IN_FULL',
-            'DELINQUENT',
-            'ALL_USERS_HAVE_MULTI_FACTOR_AUTH',
-            'USERS_WITHOUT_MULTI_FACTOR_AUTH',
-            'ENCRYPTION_AT_REST_KMS_NETWORK_ACCESS_DENIED',
-            'ENCRYPTION_AT_REST_KMS_NETWORK_ACCESS_RESTORED',
-            'ENCRYPTION_AT_REST_CONFIG_NO_LONGER_VALID',
-            'ENCRYPTION_AT_REST_CONFIG_IS_VALID',
-            'GROUP_SERVICE_ACCOUNT_SECRETS_NO_LONGER_EXPIRING',
-            'GROUP_SERVICE_ACCOUNT_SECRETS_EXPIRING',
-            'GROUP_SERVICE_ACCOUNT_SECRETS_NO_LONGER_EXPIRED',
-            'GROUP_SERVICE_ACCOUNT_SECRETS_EXPIRED',
-            'ACTIVE_LEGACY_TLS_CONNECTIONS',
-            'NO_ACTIVE_LEGACY_TLS_CONNECTIONS',
-            'WEBHOOK_TEMPLATE_RENDER_FAILED',
-            'ENCRYPTION_AT_REST_CONFIG_UPDATE_NO_LONGER_STALLED',
-            'ENCRYPTION_AT_REST_CONFIG_UPDATE_STALLED',
-          ])
-          .openapi({ title: 'Group Event Types' }),
+          .looseObject({})
+          .and(
+            z
+              .enum(['INTEGRATION_CONFIGURED', 'INTEGRATION_REMOVED'])
+              .openapi({ title: 'Group Integration Event Types' }),
+          ),
         z
-          .enum(['INTEGRATION_CONFIGURED', 'INTEGRATION_REMOVED'])
-          .openapi({ title: 'Group Integration Event Types' }),
+          .looseObject({})
+          .and(
+            z
+              .enum([
+                'ROLLING_INDEX_FAILED_INDEX_BUILD',
+                'ROLLING_INDEX_SUCCESS_INDEX_BUILD',
+                'INDEX_FAILED_INDEX_BUILD',
+                'INDEX_SUCCESS_INDEX_BUILD',
+              ])
+              .openapi({ title: 'Index Build Audit Types' }),
+          ),
         z
-          .enum([
-            'ROLLING_INDEX_FAILED_INDEX_BUILD',
-            'ROLLING_INDEX_SUCCESS_INDEX_BUILD',
-            'INDEX_FAILED_INDEX_BUILD',
-            'INDEX_SUCCESS_INDEX_BUILD',
-          ])
-          .openapi({ title: 'Index Build Audit Types' }),
+          .looseObject({})
+          .and(
+            z
+              .enum([
+                'DB_CHECK_UPDATED',
+                'CLUSTER_SAMPLED_FOR_DB_CHECK',
+                'DB_CHECK_SCHEDULED_FOR_CLUSTER',
+                'DB_CHECK_DEFERRED_FOR_CLUSTER',
+                'CLUSTER_OPTED_OUT_OF_DB_CHECK',
+              ])
+              .openapi({ title: 'DB Check Audit Types' }),
+          ),
         z
-          .enum([
-            'DB_CHECK_UPDATED',
-            'CLUSTER_SAMPLED_FOR_DB_CHECK',
-            'DB_CHECK_SCHEDULED_FOR_CLUSTER',
-            'DB_CHECK_DEFERRED_FOR_CLUSTER',
-            'CLUSTER_OPTED_OUT_OF_DB_CHECK',
-          ])
-          .openapi({ title: 'DB Check Audit Types' }),
+          .looseObject({})
+          .and(
+            z
+              .enum([
+                'CLUSTER_SAMPLED_FOR_DATA_VALIDATION',
+                'DATA_VALIDATION_SUBMITTED_FOR_CLUSTER',
+                'CLUSTER_OPTED_OUT_OF_DATA_VALIDATION',
+                'REPLICA_SET_SAMPLED_FOR_INTER_NODE_DATA_VALIDATION',
+                'REPLICA_SET_OPTED_OUT_OF_INTER_NODE_DATA_VALIDATION',
+                'INTER_NODE_DATA_VALIDATION_SUBMITTED_FOR_REPLICA_SET',
+              ])
+              .openapi({ title: 'Data Validation Audit Types' }),
+          ),
         z
-          .enum([
-            'CLUSTER_SAMPLED_FOR_DATA_VALIDATION',
-            'DATA_VALIDATION_SUBMITTED_FOR_CLUSTER',
-            'CLUSTER_OPTED_OUT_OF_DATA_VALIDATION',
-            'REPLICA_SET_SAMPLED_FOR_INTER_NODE_DATA_VALIDATION',
-            'REPLICA_SET_OPTED_OUT_OF_INTER_NODE_DATA_VALIDATION',
-            'INTER_NODE_DATA_VALIDATION_SUBMITTED_FOR_REPLICA_SET',
-          ])
-          .openapi({ title: 'Data Validation Audit Types' }),
+          .looseObject({})
+          .and(
+            z
+              .enum([
+                'MAINTENANCE_IN_ADVANCED',
+                'MAINTENANCE_AUTO_DEFERRED',
+                'MAINTENANCE_STARTED',
+                'MAINTENANCE_COMPLETED',
+                'MAINTENANCE_NO_LONGER_NEEDED',
+              ])
+              .openapi({ title: 'Maintenance Window Audit Types' }),
+          ),
         z
-          .enum([
-            'MAINTENANCE_IN_ADVANCED',
-            'MAINTENANCE_AUTO_DEFERRED',
-            'MAINTENANCE_STARTED',
-            'MAINTENANCE_COMPLETED',
-            'MAINTENANCE_NO_LONGER_NEEDED',
-          ])
-          .openapi({ title: 'Maintenance Window Audit Types' }),
+          .looseObject({})
+          .and(
+            z
+              .enum([
+                'SERVERLESS_AUTO_SCALING_INITIATED',
+                'SERVERLESS_VERTICAL_SCALING_INITIATED',
+                'SERVERLESS_HORIZONTAL_SCALING_INITIATED',
+                'SERVERLESS_MTM_DRAIN_REQUESTED',
+                'SERVERLESS_MTM_DRAIN_INITIATED',
+                'SERVERLESS_MTM_DRAIN_COMPLETED',
+                'SERVERLESS_MTM_DRAIN_STOPPED',
+              ])
+              .openapi({ title: 'Serverless Auto Scaling Audit Types' }),
+          ),
         z
-          .enum([
-            'SERVERLESS_AUTO_SCALING_INITIATED',
-            'SERVERLESS_VERTICAL_SCALING_INITIATED',
-            'SERVERLESS_HORIZONTAL_SCALING_INITIATED',
-            'SERVERLESS_MTM_DRAIN_REQUESTED',
-            'SERVERLESS_MTM_DRAIN_INITIATED',
-            'SERVERLESS_MTM_DRAIN_COMPLETED',
-            'SERVERLESS_MTM_DRAIN_STOPPED',
-          ])
-          .openapi({ title: 'Serverless Auto Scaling Audit Types' }),
+          .looseObject({})
+          .and(
+            z
+              .enum([
+                'TENANT_ENDPOINT_SERVICE_DEPLOYMENT_CREATED',
+                'TENANT_ENDPOINT_SERVICE_CREATED',
+                'TENANT_ENDPOINT_SERVICE_AVAILABLE',
+                'TENANT_ENDPOINT_SERVICE_DEPLOYMENT_DELETE_REQUESTED',
+                'TENANT_ENDPOINT_SERVICE_DELETED',
+                'TENANT_ENDPOINT_SERVICE_DEPLOYMENT_DELETED',
+                'TENANT_ENDPOINT_SERVICE_DEPLOYMENT_NUM_DESIRED_ENDPOINT_SERVICES_INCREASED',
+              ])
+              .openapi({ title: 'Tenant Endpoint Service Deployment Audit Types' }),
+          ),
         z
-          .enum([
-            'TENANT_ENDPOINT_SERVICE_DEPLOYMENT_CREATED',
-            'TENANT_ENDPOINT_SERVICE_CREATED',
-            'TENANT_ENDPOINT_SERVICE_AVAILABLE',
-            'TENANT_ENDPOINT_SERVICE_DEPLOYMENT_DELETE_REQUESTED',
-            'TENANT_ENDPOINT_SERVICE_DELETED',
-            'TENANT_ENDPOINT_SERVICE_DEPLOYMENT_DELETED',
-            'TENANT_ENDPOINT_SERVICE_DEPLOYMENT_NUM_DESIRED_ENDPOINT_SERVICES_INCREASED',
-          ])
-          .openapi({ title: 'Tenant Endpoint Service Deployment Audit Types' }),
+          .looseObject({})
+          .and(
+            z
+              .enum([
+                'NDS_X509_USER_AUTHENTICATION_CUSTOMER_CA_EXPIRATION_RESOLVED',
+                'NDS_X509_USER_AUTHENTICATION_CUSTOMER_CA_EXPIRATION_CHECK',
+                'NDS_X509_USER_AUTHENTICATION_CUSTOMER_CRL_EXPIRATION_RESOLVED',
+                'NDS_X509_USER_AUTHENTICATION_CUSTOMER_CRL_EXPIRATION_CHECK',
+                'NDS_X509_USER_AUTHENTICATION_MANAGED_USER_CERTS_EXPIRATION_RESOLVED',
+                'NDS_X509_USER_AUTHENTICATION_MANAGED_USER_CERTS_EXPIRATION_CHECK',
+              ])
+              .openapi({ title: 'x509 User Auth Event Types' }),
+          ),
         z
-          .enum([
-            'NDS_X509_USER_AUTHENTICATION_CUSTOMER_CA_EXPIRATION_RESOLVED',
-            'NDS_X509_USER_AUTHENTICATION_CUSTOMER_CA_EXPIRATION_CHECK',
-            'NDS_X509_USER_AUTHENTICATION_CUSTOMER_CRL_EXPIRATION_RESOLVED',
-            'NDS_X509_USER_AUTHENTICATION_CUSTOMER_CRL_EXPIRATION_CHECK',
-            'NDS_X509_USER_AUTHENTICATION_MANAGED_USER_CERTS_EXPIRATION_RESOLVED',
-            'NDS_X509_USER_AUTHENTICATION_MANAGED_USER_CERTS_EXPIRATION_CHECK',
-          ])
-          .openapi({ title: 'x509 User Auth Event Types' }),
+          .looseObject({})
+          .and(
+            z
+              .enum([
+                'ONLINE_ARCHIVE_INSUFFICIENT_INDEXES_CHECK',
+                'ONLINE_ARCHIVE_INSUFFICIENT_INDEXES_RESOLVED',
+                'ONLINE_ARCHIVE_UP_TO_DATE',
+                'ONLINE_ARCHIVE_DATA_EXPIRATION_RESOLVED',
+                'ONLINE_ARCHIVE_MAX_CONSECUTIVE_OFFLOAD_WINDOWS_CHECK',
+              ])
+              .openapi({ title: 'Online Archive Event Types' }),
+          ),
         z
-          .enum([
-            'ONLINE_ARCHIVE_INSUFFICIENT_INDEXES_CHECK',
-            'ONLINE_ARCHIVE_INSUFFICIENT_INDEXES_RESOLVED',
-            'ONLINE_ARCHIVE_UP_TO_DATE',
-            'ONLINE_ARCHIVE_DATA_EXPIRATION_RESOLVED',
-            'ONLINE_ARCHIVE_MAX_CONSECUTIVE_OFFLOAD_WINDOWS_CHECK',
-          ])
-          .openapi({ title: 'Online Archive Event Types' }),
+          .looseObject({})
+          .and(
+            z
+              .enum([
+                'PRIVATE_ENDPOINT_CONNECTION_STRING_AVAILABLE',
+                'PRIVATE_ENDPOINT_CONNECTION_STRING_CREATED',
+                'PRIVATE_ENDPOINT_CONNECTION_STRING_DELETED',
+                'PRIVATE_ENDPOINT_CONNECTION_STRING_MISCONFIGURED',
+                'PRIVATE_ENDPOINT_CONNECTION_STRING_OPT_IN',
+                'PRIVATE_ENDPOINT_CONNECTION_STRING_OPT_OUT',
+                'PRIVATE_ENDPOINT_CONNECTION_STRING_UPDATED',
+              ])
+              .openapi({ title: 'Private Endpoint Connection String Audit Types' }),
+          ),
         z
-          .enum([
-            'PRIVATE_ENDPOINT_CONNECTION_STRING_AVAILABLE',
-            'PRIVATE_ENDPOINT_CONNECTION_STRING_CREATED',
-            'PRIVATE_ENDPOINT_CONNECTION_STRING_DELETED',
-            'PRIVATE_ENDPOINT_CONNECTION_STRING_MISCONFIGURED',
-            'PRIVATE_ENDPOINT_CONNECTION_STRING_OPT_IN',
-            'PRIVATE_ENDPOINT_CONNECTION_STRING_OPT_OUT',
-            'PRIVATE_ENDPOINT_CONNECTION_STRING_UPDATED',
-          ])
-          .openapi({ title: 'Private Endpoint Connection String Audit Types' }),
+          .looseObject({})
+          .and(
+            z
+              .enum([
+                'CROSS_REGION_SUPPORTED_REGION_MODIFIED',
+                'ENDPOINT_SERVICE_CREATED',
+                'ENDPOINT_SERVICE_CREATION_RETRIED',
+                'ENDPOINT_SERVICE_DELETED',
+                'INTERFACE_ENDPOINT_CREATED',
+                'INTERFACE_ENDPOINT_DELETED',
+                'INTERFACE_ENDPOINT_PATCHED',
+                'INTERFACE_ENDPOINT_RETRIED',
+              ])
+              .openapi({ title: 'Private Link Audit Types' }),
+          ),
         z
-          .enum([
-            'CROSS_REGION_SUPPORTED_REGION_MODIFIED',
-            'ENDPOINT_SERVICE_CREATED',
-            'ENDPOINT_SERVICE_CREATION_RETRIED',
-            'ENDPOINT_SERVICE_DELETED',
-            'INTERFACE_ENDPOINT_CREATED',
-            'INTERFACE_ENDPOINT_DELETED',
-            'INTERFACE_ENDPOINT_PATCHED',
-            'INTERFACE_ENDPOINT_RETRIED',
-          ])
-          .openapi({ title: 'Private Link Audit Types' }),
+          .looseObject({})
+          .and(
+            z
+              .literal('PROACTIVE_OPERATION_EVENT_LOGGED')
+              .openapi({ title: 'Proactive Operation Event Types' }),
+          ),
         z
-          .literal('PROACTIVE_OPERATION_EVENT_LOGGED')
-          .openapi({ title: 'Proactive Operation Event Types' }),
+          .looseObject({})
+          .and(
+            z
+              .enum([
+                'SEARCH_DEPLOYMENT_CREATED',
+                'SEARCH_DEPLOYMENT_UPDATED',
+                'SEARCH_DEPLOYMENT_DELETED',
+              ])
+              .openapi({ title: 'Search Deployment Audit Types' }),
+          ),
         z
-          .enum([
-            'SEARCH_DEPLOYMENT_CREATED',
-            'SEARCH_DEPLOYMENT_UPDATED',
-            'SEARCH_DEPLOYMENT_DELETED',
-          ])
-          .openapi({ title: 'Search Deployment Audit Types' }),
+          .looseObject({})
+          .and(
+            z
+              .enum([
+                'SERVERLESS_DEPLOYMENT_CREATED',
+                'SERVERLESS_DEPLOYMENT_DELETED',
+                'SERVERLESS_DEPLOYMENT_UPDATED',
+                'SERVERLESS_DEPLOYMENT_INSTANCE_REPLACED',
+                'SERVERLESS_DEPLOYMENT_INSTANCE_REBOOTED',
+                'SERVERLESS_DEPLOYMENT_ENDPOINT_SERVICE_LINKED',
+                'SERVERLESS_DEPLOYMENT_ENDPOINT_SERVICE_UNLINKED',
+                'SERVERLESS_DEPLOYMENT_ENVOY_INSTANCE_UIS_KEYS_ROTATED',
+              ])
+              .openapi({ title: 'Serverless Deployment Audit Types' }),
+          ),
         z
-          .enum([
-            'SERVERLESS_DEPLOYMENT_CREATED',
-            'SERVERLESS_DEPLOYMENT_DELETED',
-            'SERVERLESS_DEPLOYMENT_UPDATED',
-            'SERVERLESS_DEPLOYMENT_INSTANCE_REPLACED',
-            'SERVERLESS_DEPLOYMENT_INSTANCE_REBOOTED',
-            'SERVERLESS_DEPLOYMENT_ENDPOINT_SERVICE_LINKED',
-            'SERVERLESS_DEPLOYMENT_ENDPOINT_SERVICE_UNLINKED',
-            'SERVERLESS_DEPLOYMENT_ENVOY_INSTANCE_UIS_KEYS_ROTATED',
-          ])
-          .openapi({ title: 'Serverless Deployment Audit Types' }),
+          .looseObject({})
+          .and(
+            z
+              .enum(['INSIDE_SERVERLESS_METRIC_THRESHOLD', 'OUTSIDE_SERVERLESS_METRIC_THRESHOLD'])
+              .openapi({ title: 'Serverless Event Types' }),
+          ),
         z
-          .enum(['INSIDE_SERVERLESS_METRIC_THRESHOLD', 'OUTSIDE_SERVERLESS_METRIC_THRESHOLD'])
-          .openapi({ title: 'Serverless Event Types' }),
+          .looseObject({})
+          .and(
+            z
+              .enum(['INSIDE_FLEX_METRIC_THRESHOLD', 'OUTSIDE_FLEX_METRIC_THRESHOLD'])
+              .openapi({ title: 'Flex Metric Event Types' }),
+          ),
         z
-          .enum(['INSIDE_FLEX_METRIC_THRESHOLD', 'OUTSIDE_FLEX_METRIC_THRESHOLD'])
-          .openapi({ title: 'Flex Metric Event Types' }),
-        z.literal('SETUP_SERVERLESS_INITIATED').openapi({ title: 'Setup Serverless Audit Types' }),
-        z.literal('MAX_PROCESSOR_COUNT_REACHED').openapi({ title: 'Streams Event Types' }),
+          .looseObject({})
+          .and(
+            z
+              .literal('SETUP_SERVERLESS_INITIATED')
+              .openapi({ title: 'Setup Serverless Audit Types' }),
+          ),
         z
-          .enum([
-            'STREAM_PROCESSOR_STATE_IS_FAILED',
-            'STREAM_PROCESSOR_STARTED',
-            'STREAM_PROCESSOR_AUTOSCALE_INITIATED',
-            'STREAM_PROCESSOR_CREATED',
-            'STREAM_PROCESSOR_STOPPED',
-            'STREAM_PROCESSOR_DROPPED',
-            'STREAM_PROCESSOR_MODIFIED',
-            'INSIDE_STREAM_PROCESSOR_METRIC_THRESHOLD',
-            'OUTSIDE_STREAM_PROCESSOR_METRIC_THRESHOLD',
-          ])
-          .openapi({ title: 'Stream Processor Event Types' }),
-        z.literal('CASE_CREATED').openapi({ title: 'Support Case Event Types' }),
+          .looseObject({})
+          .and(z.literal('MAX_PROCESSOR_COUNT_REACHED').openapi({ title: 'Streams Event Types' })),
         z
-          .enum(['SUPPORT_EMAILS_SENT_SUCCESSFULLY', 'SUPPORT_EMAILS_SENT_FAILURE'])
-          .openapi({ title: 'Support Event Types' }),
+          .looseObject({})
+          .and(
+            z
+              .enum([
+                'STREAM_PROCESSOR_STATE_IS_FAILED',
+                'STREAM_PROCESSOR_STARTED',
+                'STREAM_PROCESSOR_AUTOSCALE_INITIATED',
+                'STREAM_PROCESSOR_CREATED',
+                'STREAM_PROCESSOR_STOPPED',
+                'STREAM_PROCESSOR_DROPPED',
+                'STREAM_PROCESSOR_MODIFIED',
+                'INSIDE_STREAM_PROCESSOR_METRIC_THRESHOLD',
+                'OUTSIDE_STREAM_PROCESSOR_METRIC_THRESHOLD',
+              ])
+              .openapi({ title: 'Stream Processor Event Types' }),
+          ),
         z
-          .enum([
-            'TENANT_SNAPSHOT_STARTED_AUDIT',
-            'TENANT_SNAPSHOT_COMPLETED_AUDIT',
-            'TENANT_SNAPSHOT_DELETED_AUDIT',
-            'TENANT_RESTORE_REQUESTED_AUDIT',
-            'TENANT_RESTORE_COMPLETED_AUDIT',
-            'TENANT_SNAPSHOT_DOWNLOAD_REQUESTED_AUDIT',
-            'M0_BACKUP_SUBSCRIPTION_ENABLED',
-            'M0_BACKUP_SUBSCRIPTION_CANCELLED',
-            'M0_BACKUP_SUBSCRIPTION_PAUSED',
-            'M0_BACKUP_SUBSCRIPTION_RESUMED',
-          ])
-          .openapi({ title: 'Tenant Backup Event Types' }),
+          .looseObject({})
+          .and(z.literal('CASE_CREATED').openapi({ title: 'Support Case Event Types' })),
         z
-          .enum([
-            'CLUSTER_FCV_FIXED',
-            'CLUSTER_FCV_UNFIXED',
-            'CLUSTER_FCV_EXPIRATION_DATE_UPDATED',
-            'CLUSTER_FCV_DOWNGRADED',
-            'CLUSTER_BINARY_VERSION_DOWNGRADED',
-            'CLUSTER_BINARY_VERSION_UPGRADED',
-            'CLUSTER_OS_FIXED',
-            'CLUSTER_OS_UNFIXED',
-          ])
-          .openapi({ title: 'Version Audit Types' }),
-        z.literal('EMPLOYEE_DOWNLOADED_CLUSTER_LOGS').openapi({ title: 'Access Event Types' }),
+          .looseObject({})
+          .and(
+            z
+              .enum(['SUPPORT_EMAILS_SENT_SUCCESSFULLY', 'SUPPORT_EMAILS_SENT_FAILURE'])
+              .openapi({ title: 'Support Event Types' }),
+          ),
         z
-          .enum(['QUERY_SHAPE_BLOCKED', 'QUERY_SHAPE_UNBLOCKED'])
-          .openapi({ title: 'Query Shape Event Types' }),
+          .looseObject({})
+          .and(
+            z
+              .enum([
+                'TENANT_SNAPSHOT_STARTED_AUDIT',
+                'TENANT_SNAPSHOT_COMPLETED_AUDIT',
+                'TENANT_SNAPSHOT_DELETED_AUDIT',
+                'TENANT_RESTORE_REQUESTED_AUDIT',
+                'TENANT_RESTORE_COMPLETED_AUDIT',
+                'TENANT_SNAPSHOT_DOWNLOAD_REQUESTED_AUDIT',
+                'M0_BACKUP_SUBSCRIPTION_ENABLED',
+                'M0_BACKUP_SUBSCRIPTION_CANCELLED',
+                'M0_BACKUP_SUBSCRIPTION_PAUSED',
+                'M0_BACKUP_SUBSCRIPTION_RESUMED',
+              ])
+              .openapi({ title: 'Tenant Backup Event Types' }),
+          ),
         z
-          .enum([
-            'SHARD_KEY_ANALYSIS_STARTED',
-            'SHARD_KEY_ANALYSIS_FINISHED',
-            'QUERY_SAMPLING_STARTED',
-            'QUERY_SAMPLING_STOPPED',
-          ])
-          .openapi({ title: 'Shard Key Advisor Event Types' }),
-        z.enum(['MONGOTUNE_INFO', 'MONGOTUNE_ALERT']).openapi({ title: 'Mongotune Event Types' }),
+          .looseObject({})
+          .and(
+            z
+              .enum([
+                'CLUSTER_FCV_FIXED',
+                'CLUSTER_FCV_UNFIXED',
+                'CLUSTER_FCV_EXPIRATION_DATE_UPDATED',
+                'CLUSTER_FCV_DOWNGRADED',
+                'CLUSTER_BINARY_VERSION_DOWNGRADED',
+                'CLUSTER_BINARY_VERSION_UPGRADED',
+                'CLUSTER_OS_FIXED',
+                'CLUSTER_OS_UNFIXED',
+              ])
+              .openapi({ title: 'Version Audit Types' }),
+          ),
         z
-          .enum([
-            'AI_MODELS_APIS_API_KEY_CREATED',
-            'AI_MODELS_APIS_API_KEY_DELETED',
-            'AI_MODELS_APIS_API_KEY_UPDATED',
-            'AI_MODELS_APIS_RATE_LIMIT_UPDATED',
-            'AI_MODELS_APIS_RATE_LIMIT_RESET',
-            'AI_MODELS_APIS_RATE_LIMIT_ADMIN_OVERRIDE',
-          ])
-          .openapi({ title: 'AI Models APIs Event Types' }),
+          .looseObject({})
+          .and(
+            z.literal('EMPLOYEE_DOWNLOADED_CLUSTER_LOGS').openapi({ title: 'Access Event Types' }),
+          ),
         z
-          .literal('PROACTIVE_REMEDIATION_NEEDED')
-          .openapi({ title: 'Proactive Remediation Event Types' }),
+          .looseObject({})
+          .and(
+            z
+              .enum(['QUERY_SHAPE_BLOCKED', 'QUERY_SHAPE_UNBLOCKED'])
+              .openapi({ title: 'Query Shape Event Types' }),
+          ),
         z
-          .enum([
-            'STREAMS_PRIVATE_LINK_ENDPOINT_UNUSED_FIRST_WARNING',
-            'STREAMS_PRIVATE_LINK_ENDPOINT_UNUSED_SECOND_WARNING',
-            'STREAMS_PRIVATE_LINK_ENDPOINT_UNUSED_DELETED',
-          ])
-          .openapi({ title: 'Stream Processing Private Link Endpoint Event Types' }),
+          .looseObject({})
+          .and(
+            z
+              .enum([
+                'SHARD_KEY_ANALYSIS_STARTED',
+                'SHARD_KEY_ANALYSIS_FINISHED',
+                'QUERY_SAMPLING_STARTED',
+                'QUERY_SAMPLING_STOPPED',
+              ])
+              .openapi({ title: 'Shard Key Advisor Event Types' }),
+          ),
         z
-          .enum([
-            'SEARCH_AUTO_MIGRATION_ADVISORY',
-            'SEARCH_AUTO_MIGRATION_STARTED',
-            'SEARCH_AUTO_MIGRATION_FAILED',
-          ])
-          .openapi({ title: 'Search Auto Migration Event Types' }),
+          .looseObject({})
+          .and(
+            z
+              .enum(['MONGOTUNE_INFO', 'MONGOTUNE_ALERT'])
+              .openapi({ title: 'Mongotune Event Types' }),
+          ),
+        z
+          .looseObject({})
+          .and(
+            z
+              .enum([
+                'AI_MODELS_APIS_API_KEY_CREATED',
+                'AI_MODELS_APIS_API_KEY_DELETED',
+                'AI_MODELS_APIS_API_KEY_UPDATED',
+                'AI_MODELS_APIS_RATE_LIMIT_UPDATED',
+                'AI_MODELS_APIS_RATE_LIMIT_RESET',
+                'AI_MODELS_APIS_RATE_LIMIT_ADMIN_OVERRIDE',
+              ])
+              .openapi({ title: 'AI Models APIs Event Types' }),
+          ),
+        z
+          .looseObject({})
+          .and(
+            z
+              .enum(['ENCRYPTION_KEY_TRANSITION_STARTED', 'ENCRYPTION_KEY_TRANSITION_COMPLETED'])
+              .openapi({ title: 'Encryption Key Transition Event Types' }),
+          ),
+        z
+          .looseObject({})
+          .and(
+            z
+              .literal('PROACTIVE_REMEDIATION_NEEDED')
+              .openapi({ title: 'Proactive Remediation Event Types' }),
+          ),
+        z
+          .looseObject({})
+          .and(
+            z
+              .enum([
+                'STREAMS_PRIVATE_LINK_ENDPOINT_UNUSED_FIRST_WARNING',
+                'STREAMS_PRIVATE_LINK_ENDPOINT_UNUSED_SECOND_WARNING',
+                'STREAMS_PRIVATE_LINK_ENDPOINT_UNUSED_DELETED',
+              ])
+              .openapi({ title: 'Stream Processing Private Link Endpoint Event Types' }),
+          ),
+        z
+          .looseObject({})
+          .and(
+            z
+              .enum([
+                'SEARCH_AUTO_MIGRATION_ADVISORY',
+                'SEARCH_AUTO_MIGRATION_STARTED',
+                'SEARCH_AUTO_MIGRATION_FAILED',
+              ])
+              .openapi({ title: 'Search Auto Migration Event Types' }),
+          ),
       ])
       .openapi({ description: 'Unique identifier of event type.' }),
     groupId: z
@@ -30403,112 +35091,147 @@ const DefaultEventViewForOrgSchema = z
     eventTypeName: z
       .xor([
         z
-          .enum([
-            'FEDERATION_SETTINGS_CREATED',
-            'FEDERATION_SETTINGS_DELETED',
-            'FEDERATION_SETTINGS_UPDATED',
-            'IDENTITY_PROVIDER_CREATED',
-            'IDENTITY_PROVIDER_UPDATED',
-            'IDENTITY_PROVIDER_DELETED',
-            'IDENTITY_PROVIDER_ACTIVATED',
-            'OIDC_IDENTITY_PROVIDER_UPDATED',
-            'IDENTITY_PROVIDER_DEACTIVATED',
-            'IDENTITY_PROVIDER_JWKS_REVOKED',
-            'OIDC_IDENTITY_PROVIDER_ENABLED',
-            'OIDC_IDENTITY_PROVIDER_DISABLED',
-            'DOMAINS_ASSOCIATED',
-            'DOMAIN_CREATED',
-            'DOMAIN_DELETED',
-            'DOMAIN_VERIFIED',
-            'ORG_SETTINGS_CONFIGURED',
-            'ORG_SETTINGS_UPDATED',
-            'ORG_SETTINGS_DELETED',
-            'ORG_ACCESS_PROVISIONING_METHOD_UPDATED',
-            'RESTRICT_ORG_MEMBERSHIP_ENABLED',
-            'RESTRICT_ORG_MEMBERSHIP_DISABLED',
-            'ROLE_MAPPING_CREATED',
-            'ROLE_MAPPING_UPDATED',
-            'ROLE_MAPPING_DELETED',
-            'SCIM_CLIENT_CREATED',
-            'SCIM_CLIENT_UPDATED',
-            'SCIM_CLIENT_DELETED',
-            'SCIM_CLIENT_SECRET_CREATED',
-            'SCIM_CLIENT_SECRET_DELETED',
-          ])
-          .openapi({ title: 'Federation Settings Event Types' }),
+          .looseObject({})
+          .and(
+            z
+              .enum([
+                'FEDERATION_SETTINGS_CREATED',
+                'FEDERATION_SETTINGS_DELETED',
+                'FEDERATION_SETTINGS_UPDATED',
+                'IDENTITY_PROVIDER_CREATED',
+                'IDENTITY_PROVIDER_UPDATED',
+                'IDENTITY_PROVIDER_DELETED',
+                'IDENTITY_PROVIDER_ACTIVATED',
+                'OIDC_IDENTITY_PROVIDER_UPDATED',
+                'IDENTITY_PROVIDER_DEACTIVATED',
+                'IDENTITY_PROVIDER_JWKS_REVOKED',
+                'OIDC_IDENTITY_PROVIDER_ENABLED',
+                'OIDC_IDENTITY_PROVIDER_DISABLED',
+                'DOMAINS_ASSOCIATED',
+                'DOMAIN_CREATED',
+                'DOMAIN_DELETED',
+                'DOMAIN_VERIFIED',
+                'ORG_SETTINGS_CONFIGURED',
+                'ORG_SETTINGS_UPDATED',
+                'ORG_SETTINGS_DELETED',
+                'ORG_ACCESS_PROVISIONING_METHOD_UPDATED',
+                'RESTRICT_ORG_MEMBERSHIP_ENABLED',
+                'RESTRICT_ORG_MEMBERSHIP_DISABLED',
+                'ROLE_MAPPING_CREATED',
+                'ROLE_MAPPING_UPDATED',
+                'ROLE_MAPPING_DELETED',
+                'SCIM_CLIENT_CREATED',
+                'SCIM_CLIENT_UPDATED',
+                'SCIM_CLIENT_DELETED',
+                'SCIM_CLIENT_SECRET_CREATED',
+                'SCIM_CLIENT_SECRET_DELETED',
+              ])
+              .openapi({ title: 'Federation Settings Event Types' }),
+          ),
         z
-          .enum(['GROUP_DELETED', 'GROUP_CREATED', 'GROUP_MOVED'])
-          .openapi({ title: 'Group Audit Types' }),
+          .looseObject({})
+          .and(
+            z
+              .enum([
+                'GROUP_DELETED',
+                'GROUP_CREATED',
+                'GROUP_MOVED',
+                'PROJECT_OPERATIONS_CONTACT_MODIFIED',
+                'PROJECT_OPERATIONS_CONTACT_ALERTS_ENABLED',
+                'PROJECT_OPERATIONS_CONTACT_ALERTS_DISABLED',
+              ])
+              .openapi({ title: 'Group Audit Types' }),
+          ),
         z
-          .enum([
-            'MLAB_MIGRATION_COMPLETED',
-            'MLAB_MIGRATION_TARGET_CLUSTER_CREATED',
-            'MLAB_MIGRATION_DATABASE_USERS_IMPORTED',
-            'MLAB_MIGRATION_IP_WHITELIST_IMPORTED',
-            'MLAB_MIGRATION_TARGET_CLUSTER_SET',
-            'MLAB_MIGRATION_DATABASE_RENAMED',
-            'MLAB_MIGRATION_LIVE_IMPORT_STARTED',
-            'MLAB_MIGRATION_LIVE_IMPORT_READY_FOR_CUTOVER',
-            'MLAB_MIGRATION_LIVE_IMPORT_CUTOVER_COMPLETE',
-            'MLAB_MIGRATION_LIVE_IMPORT_ERROR',
-            'MLAB_MIGRATION_LIVE_IMPORT_CANCELLED',
-            'MLAB_MIGRATION_DUMP_AND_RESTORE_TEST_STARTED',
-            'MLAB_MIGRATION_DUMP_AND_RESTORE_TEST_SKIPPED',
-            'MLAB_MIGRATION_DUMP_AND_RESTORE_STARTED',
-            'MLAB_MIGRATION_SUPPORT_PLAN_SELECTED',
-            'MLAB_MIGRATION_SUPPORT_PLAN_OPTED_OUT',
-          ])
-          .openapi({ title: 'Mlab Migration Audit Types' }),
+          .looseObject({})
+          .and(
+            z
+              .enum([
+                'MLAB_MIGRATION_COMPLETED',
+                'MLAB_MIGRATION_TARGET_CLUSTER_CREATED',
+                'MLAB_MIGRATION_DATABASE_USERS_IMPORTED',
+                'MLAB_MIGRATION_IP_WHITELIST_IMPORTED',
+                'MLAB_MIGRATION_TARGET_CLUSTER_SET',
+                'MLAB_MIGRATION_DATABASE_RENAMED',
+                'MLAB_MIGRATION_LIVE_IMPORT_STARTED',
+                'MLAB_MIGRATION_LIVE_IMPORT_READY_FOR_CUTOVER',
+                'MLAB_MIGRATION_LIVE_IMPORT_CUTOVER_COMPLETE',
+                'MLAB_MIGRATION_LIVE_IMPORT_ERROR',
+                'MLAB_MIGRATION_LIVE_IMPORT_CANCELLED',
+                'MLAB_MIGRATION_DUMP_AND_RESTORE_TEST_STARTED',
+                'MLAB_MIGRATION_DUMP_AND_RESTORE_TEST_SKIPPED',
+                'MLAB_MIGRATION_DUMP_AND_RESTORE_STARTED',
+                'MLAB_MIGRATION_SUPPORT_PLAN_SELECTED',
+                'MLAB_MIGRATION_SUPPORT_PLAN_OPTED_OUT',
+              ])
+              .openapi({ title: 'Mlab Migration Audit Types' }),
+          ),
         z
-          .enum([
-            'AWS_SELF_SERVE_ACCOUNT_LINKED',
-            'AWS_SELF_SERVE_ACCOUNT_LINK_PENDING',
-            'AWS_SELF_SERVE_ACCOUNT_CANCELLED',
-            'AWS_SELF_SERVE_ACCOUNT_LINK_FAILED',
-            'GCP_SELF_SERVE_ACCOUNT_LINK_PENDING',
-            'GCP_SELF_SERVE_ACCOUNT_LINK_FAILED',
-            'AZURE_SELF_SERVE_ACCOUNT_LINKED',
-            'AZURE_SELF_SERVE_ACCOUNT_LINK_PENDING',
-            'AZURE_SELF_SERVE_ACCOUNT_CANCELLED',
-            'AZURE_SELF_SERVE_ACCOUNT_LINK_FAILED',
-            'GCP_SELF_SERVE_ACCOUNT_LINKED',
-            'GCP_SELF_SERVE_ACCOUNT_CANCELLED',
-            'VERCEL_SELF_SERVE_ACCOUNT_LINKED',
-            'VERCEL_SELF_SERVE_ACCOUNT_LINK_PENDING',
-            'VERCEL_SELF_SERVE_ACCOUNT_CANCELLED',
-            'VERCEL_SELF_SERVE_ACCOUNT_LINK_FAILED',
-            'VERCEL_INVOICE_CREATED',
-            'VERCEL_INVOICE_NOT_PAID',
-            'VERCEL_INVOICE_OVERDUE',
-            'VERCEL_INVOICE_PAID',
-            'VERCEL_INVOICE_REFUNDED',
-          ])
-          .openapi({ title: 'Partner Event Types' }),
+          .looseObject({})
+          .and(
+            z
+              .enum([
+                'AWS_SELF_SERVE_ACCOUNT_LINKED',
+                'AWS_SELF_SERVE_ACCOUNT_LINK_PENDING',
+                'AWS_SELF_SERVE_ACCOUNT_CANCELLED',
+                'AWS_SELF_SERVE_ACCOUNT_LINK_FAILED',
+                'GCP_SELF_SERVE_ACCOUNT_LINK_PENDING',
+                'GCP_SELF_SERVE_ACCOUNT_LINK_FAILED',
+                'AZURE_SELF_SERVE_ACCOUNT_LINKED',
+                'AZURE_SELF_SERVE_ACCOUNT_LINK_PENDING',
+                'AZURE_SELF_SERVE_ACCOUNT_CANCELLED',
+                'AZURE_SELF_SERVE_ACCOUNT_LINK_FAILED',
+                'GCP_SELF_SERVE_ACCOUNT_LINKED',
+                'GCP_SELF_SERVE_ACCOUNT_CANCELLED',
+                'VERCEL_SELF_SERVE_ACCOUNT_LINKED',
+                'VERCEL_SELF_SERVE_ACCOUNT_LINK_PENDING',
+                'VERCEL_SELF_SERVE_ACCOUNT_CANCELLED',
+                'VERCEL_SELF_SERVE_ACCOUNT_LINK_FAILED',
+                'VERCEL_INVOICE_CREATED',
+                'VERCEL_INVOICE_NOT_PAID',
+                'VERCEL_INVOICE_OVERDUE',
+                'VERCEL_INVOICE_PAID',
+                'VERCEL_INVOICE_REFUNDED',
+              ])
+              .openapi({ title: 'Partner Event Types' }),
+          ),
         z
-          .enum(['SUPPORT_EMAILS_SENT_SUCCESSFULLY', 'SUPPORT_EMAILS_SENT_FAILURE'])
-          .openapi({ title: 'Support Event Types' }),
+          .looseObject({})
+          .and(
+            z
+              .enum(['SUPPORT_EMAILS_SENT_SUCCESSFULLY', 'SUPPORT_EMAILS_SENT_FAILURE'])
+              .openapi({ title: 'Support Event Types' }),
+          ),
         z
-          .enum([
-            'AI_MODELS_APIS_USAGE_TIER_UPDATED',
-            'AI_MODELS_APIS_RATE_LIMIT_ADMIN_OVERRIDE',
-            'AI_MODELS_APIS_FREE_TOKENS_ADMIN_ADJUSTED',
-          ])
-          .openapi({ title: 'AI Models APIs Event Types' }),
+          .looseObject({})
+          .and(
+            z
+              .enum([
+                'AI_MODELS_APIS_USAGE_TIER_UPDATED',
+                'AI_MODELS_APIS_RATE_LIMIT_ADMIN_OVERRIDE',
+                'AI_MODELS_APIS_FREE_TOKENS_ADMIN_ADJUSTED',
+              ])
+              .openapi({ title: 'AI Models APIs Event Types' }),
+          ),
         z
-          .enum([
-            'OAUTH_CLIENT_CREATED',
-            'OAUTH_CLIENT_UPDATED',
-            'OAUTH_CLIENT_DELETED',
-            'OAUTH_CLIENT_SECRET_CREATED',
-            'OAUTH_CLIENT_SECRET_DELETED',
-            'OAUTH_AUTHORIZATION_GRANTED',
-            'OAUTH_AUTHORIZATION_DENIED',
-            'OAUTH_TOKEN_ISSUED',
-            'OAUTH_TOKEN_REVOKED',
-            'OAUTH_USER_CONSENT_GRANTED',
-            'OAUTH_USER_CONSENT_REVOKED',
-          ])
-          .openapi({ title: 'OAuth Audit Types' }),
+          .looseObject({})
+          .and(
+            z
+              .enum([
+                'OAUTH_CLIENT_CREATED',
+                'OAUTH_CLIENT_UPDATED',
+                'OAUTH_CLIENT_DELETED',
+                'OAUTH_CLIENT_SECRET_CREATED',
+                'OAUTH_CLIENT_SECRET_DELETED',
+                'OAUTH_AUTHORIZATION_GRANTED',
+                'OAUTH_AUTHORIZATION_DENIED',
+                'OAUTH_TOKEN_ISSUED',
+                'OAUTH_TOKEN_REVOKED',
+                'OAUTH_USER_CONSENT_GRANTED',
+                'OAUTH_USER_CONSENT_REVOKED',
+              ])
+              .openapi({ title: 'OAuth Audit Types' }),
+          ),
       ])
       .openapi({ description: 'Unique identifier of event type.' }),
     groupId: z
@@ -30902,6 +35625,14 @@ const DiskBackupOnDemandCopyPolicyItemSchema = z
       }),
   })
   .openapi({ required: ['frequencyType'] })
+  .and(z.looseObject({}).openapi({ required: ['frequencyType'] }))
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'frequencyType')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
   .openapi({
     description: 'Specifications for one on-demand copy policy item.',
     required: ['frequencyType'],
@@ -30927,6 +35658,22 @@ const DiskBackupTimeBasedCopyPolicyItemSchema = z
       }),
   })
   .openapi({ required: ['frequencyType'] })
+  .and(
+    z.looseObject({}).openapi({ required: ['frequencyType', 'retentionUnit', 'retentionValue'] }),
+  )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'frequencyType')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'retentionUnit')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'retentionValue')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
   .and(
     z
       .object({
@@ -30954,6 +35701,28 @@ const DiskBackupTimeBasedCopyPolicyItemSchema = z
 
 const DiskBackupCopyPolicyItemSchema = z
   .xor([DiskBackupOnDemandCopyPolicyItemSchema, DiskBackupTimeBasedCopyPolicyItemSchema])
+  .and(
+    z
+      .object({
+        frequencyType: z
+          .enum(['daily', 'hourly', 'weekly', 'monthly', 'yearly', 'ondemand'])
+          .openapi({
+            description:
+              'Human-readable label that identifies the frequency type associated with the copy policy.',
+          }),
+        id: z
+          .string()
+          .regex(/^([a-f0-9]{24})$/)
+          .exactOptional()
+          .openapi({
+            description:
+              'Unique 24-hexadecimal digit string that identifies this copy policy item.',
+            example: '32b6e34b3d91647abb20e7b8',
+            readOnly: true,
+          }),
+      })
+      .openapi({ required: ['frequencyType'] }),
+  )
   .openapi({
     description: 'Specifications for one copy policy item.',
     discriminator: {
@@ -31906,41 +36675,57 @@ const DiskBackupSnapshotExportBucketRequestSchema = z
 
 const DiskBackupSnapshotAWSExportBucketRequestSchema =
   DiskBackupSnapshotExportBucketRequestSchema.and(
-    z
-      .object({
-        bucketName: z
-          .string()
-          .min(3)
-          .max(63)
-          .exactOptional()
-          .openapi({
-            description:
-              'Human-readable label that identifies the AWS S3 Bucket that the role is authorized to export to.',
-            example: 'export-bucket',
-          }),
-        iamRoleId: z
-          .string()
-          .regex(/^([a-f0-9]{24})$/)
-          .exactOptional()
-          .openapi({
-            description:
-              'Unique 24-hexadecimal character string that identifies the Unified AWS Access role ID that MongoDB Cloud uses to access the AWS S3 bucket.',
-            example: '32b6e34b3d91647abb20e7b8',
-            externalDocs: {
-              description: 'Unified AWS Access role ID',
-              url: 'https://www.mongodb.com/docs/atlas/security/set-up-unified-aws-access/',
-            },
-          }),
-        requirePrivateNetworking: z
-          .boolean()
-          .exactOptional()
-          .openapi({
-            description:
-              'Indicates whether to do exports over PrivateLink as opposed to public IPs. Defaults to False.',
-          }),
-      })
-      .openapi({ required: [] }),
+    z.looseObject({}).openapi({ required: ['bucketName', 'cloudProvider', 'iamRoleId'] }),
   )
+    .superRefine((val, ctx) => {
+      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+        if (!Object.hasOwn(val, 'bucketName')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+        if (!Object.hasOwn(val, 'cloudProvider')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+        if (!Object.hasOwn(val, 'iamRoleId')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+      }
+    })
+    .and(
+      z
+        .object({
+          bucketName: z
+            .string()
+            .min(3)
+            .max(63)
+            .exactOptional()
+            .openapi({
+              description:
+                'Human-readable label that identifies the AWS S3 Bucket that the role is authorized to export to.',
+              example: 'export-bucket',
+            }),
+          iamRoleId: z
+            .string()
+            .regex(/^([a-f0-9]{24})$/)
+            .exactOptional()
+            .openapi({
+              description:
+                'Unique 24-hexadecimal character string that identifies the Unified AWS Access role ID that MongoDB Cloud uses to access the AWS S3 bucket.',
+              example: '32b6e34b3d91647abb20e7b8',
+              externalDocs: {
+                description: 'Unified AWS Access role ID',
+                url: 'https://www.mongodb.com/docs/atlas/security/set-up-unified-aws-access/',
+              },
+            }),
+          requirePrivateNetworking: z
+            .boolean()
+            .exactOptional()
+            .openapi({
+              description:
+                'Indicates whether to do exports over PrivateLink as opposed to public IPs. Defaults to False.',
+            }),
+        })
+        .openapi({ required: [] }),
+    )
     .openapi({ required: ['bucketName', 'cloudProvider', 'iamRoleId'] })
     .openapi('DiskBackupSnapshotAWSExportBucketRequest')
 
@@ -32008,48 +36793,64 @@ const DiskBackupSnapshotAWSExportBucketResponseSchema = z
 
 const DiskBackupSnapshotAzureExportBucketRequestSchema =
   DiskBackupSnapshotExportBucketRequestSchema.and(
-    z
-      .object({
-        bucketName: z
-          .string()
-          .min(3)
-          .max(63)
-          .exactOptional()
-          .openapi({
-            description:
-              'The name of the Azure Storage Container to export to. This can be omitted and computed from the `serviceUrl` if the `serviceUrl` includes a Azure Storage Container name. For example a `serviceUrl` of `https://examplestorageaccount.blob.core.windows.net/exportcontainer` will yield a computed `bucketName` of `exportcontainer`. If the `serviceUrl` does not include a Container name, this field is required.',
-            example: 'exportcontainer',
-          }),
-        roleId: z
-          .string()
-          .regex(/^([a-f0-9]{24})$/)
-          .exactOptional()
-          .openapi({
-            description:
-              'Unique 24-hexadecimal digit string that identifies the Azure Cloud Provider Access Role that MongoDB Cloud uses to access the Azure Blob Storage Container.',
-            example: '32b6e34b3d91647abb20e7b8',
-          }),
-        serviceUrl: z
-          .string()
-          .min(33)
-          .max(2048)
-          .exactOptional()
-          .openapi({
-            description:
-              'URL of the Azure Storage Account to export to. For example: `https://examplestorageaccount.blob.core.windows.net/exportcontainer`. Only standard endpoints (with `blob.core.windows.net`) are supported.',
-            example: 'https://examplestorageaccount.blob.core.windows.net/exportcontainer',
-          }),
-        tenantId: z
-          .uuid()
-          .exactOptional()
-          .openapi({
-            deprecated: true,
-            description:
-              'UUID that identifies the Azure Active Directory Tenant ID. Deprecated: this field is ignored; the `tenantId` of the Cloud Provider Access role (from `roleId`) is used.',
-          }),
-      })
-      .openapi({ required: [] }),
+    z.looseObject({}).openapi({ required: ['cloudProvider', 'roleId', 'serviceUrl'] }),
   )
+    .superRefine((val, ctx) => {
+      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+        if (!Object.hasOwn(val, 'cloudProvider')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+        if (!Object.hasOwn(val, 'roleId')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+        if (!Object.hasOwn(val, 'serviceUrl')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+      }
+    })
+    .and(
+      z
+        .object({
+          bucketName: z
+            .string()
+            .min(3)
+            .max(63)
+            .exactOptional()
+            .openapi({
+              description:
+                'The name of the Azure Storage Container to export to. This can be omitted and computed from the `serviceUrl` if the `serviceUrl` includes a Azure Storage Container name. For example a `serviceUrl` of `https://examplestorageaccount.blob.core.windows.net/exportcontainer` will yield a computed `bucketName` of `exportcontainer`. If the `serviceUrl` does not include a Container name, this field is required.',
+              example: 'exportcontainer',
+            }),
+          roleId: z
+            .string()
+            .regex(/^([a-f0-9]{24})$/)
+            .exactOptional()
+            .openapi({
+              description:
+                'Unique 24-hexadecimal digit string that identifies the Azure Cloud Provider Access Role that MongoDB Cloud uses to access the Azure Blob Storage Container.',
+              example: '32b6e34b3d91647abb20e7b8',
+            }),
+          serviceUrl: z
+            .string()
+            .min(33)
+            .max(2048)
+            .exactOptional()
+            .openapi({
+              description:
+                'URL of the Azure Storage Account to export to. For example: `https://examplestorageaccount.blob.core.windows.net/exportcontainer`. Only standard endpoints (with `blob.core.windows.net`) are supported.',
+              example: 'https://examplestorageaccount.blob.core.windows.net/exportcontainer',
+            }),
+          tenantId: z
+            .uuid()
+            .exactOptional()
+            .openapi({
+              deprecated: true,
+              description:
+                'Deprecated: The `tenantId` of the Cloud Provider Access role (from `roleId`) is used instead. UUID that identifies the Azure Active Directory Tenant ID.',
+            }),
+        })
+        .openapi({ required: [] }),
+    )
     .openapi({ required: ['cloudProvider', 'roleId', 'serviceUrl'] })
     .openapi('DiskBackupSnapshotAzureExportBucketRequest')
 
@@ -32104,36 +36905,65 @@ const DiskBackupSnapshotExportBucketResponseSchema = z
 const DiskBackupSnapshotAzureExportBucketResponseSchema =
   DiskBackupSnapshotExportBucketResponseSchema.and(
     z
-      .object({
-        roleId: z
-          .string()
-          .regex(/^([a-f0-9]{24})$/)
-          .exactOptional()
-          .openapi({
-            description:
-              'Unique 24-hexadecimal digit string that identifies the Azure Cloud Provider Access Role that MongoDB Cloud uses to access the Azure Blob Storage Container.',
-            example: '32b6e34b3d91647abb20e7b8',
-          }),
-        serviceUrl: z
-          .string()
-          .min(33)
-          .max(2048)
-          .exactOptional()
-          .openapi({
-            description:
-              'URL of the Azure Storage Account to export to. Only standard endpoints (with `blob.core.windows.net`) are supported.',
-            example: 'https://examplestorageaccount.blob.core.windows.net/exportcontainer',
-          }),
-        tenantId: z
-          .uuid()
-          .exactOptional()
-          .openapi({
-            description:
-              'UUID that identifies the Azure Active Directory Tenant ID used during exports.',
-          }),
-      })
-      .openapi({ required: [] }),
+      .looseObject({})
+      .openapi({
+        required: ['_id', 'bucketName', 'cloudProvider', 'roleId', 'serviceUrl', 'tenantId'],
+      }),
   )
+    .superRefine((val, ctx) => {
+      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+        if (!Object.hasOwn(val, '_id')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+        if (!Object.hasOwn(val, 'bucketName')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+        if (!Object.hasOwn(val, 'cloudProvider')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+        if (!Object.hasOwn(val, 'roleId')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+        if (!Object.hasOwn(val, 'serviceUrl')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+        if (!Object.hasOwn(val, 'tenantId')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+      }
+    })
+    .and(
+      z
+        .object({
+          roleId: z
+            .string()
+            .regex(/^([a-f0-9]{24})$/)
+            .exactOptional()
+            .openapi({
+              description:
+                'Unique 24-hexadecimal digit string that identifies the Azure Cloud Provider Access Role that MongoDB Cloud uses to access the Azure Blob Storage Container.',
+              example: '32b6e34b3d91647abb20e7b8',
+            }),
+          serviceUrl: z
+            .string()
+            .min(33)
+            .max(2048)
+            .exactOptional()
+            .openapi({
+              description:
+                'URL of the Azure Storage Account to export to. Only standard endpoints (with `blob.core.windows.net`) are supported.',
+              example: 'https://examplestorageaccount.blob.core.windows.net/exportcontainer',
+            }),
+          tenantId: z
+            .uuid()
+            .exactOptional()
+            .openapi({
+              description:
+                'UUID that identifies the Azure Active Directory Tenant ID used during exports.',
+            }),
+        })
+        .openapi({ required: [] }),
+    )
     .openapi({
       required: ['_id', 'bucketName', 'cloudProvider', 'roleId', 'serviceUrl', 'tenantId'],
     })
@@ -32141,49 +36971,84 @@ const DiskBackupSnapshotAzureExportBucketResponseSchema =
 
 const DiskBackupSnapshotGCPExportBucketRequestSchema =
   DiskBackupSnapshotExportBucketRequestSchema.and(
-    z
-      .object({
-        bucketName: z
-          .string()
-          .min(3)
-          .max(63)
-          .exactOptional()
-          .openapi({
-            description:
-              'Human-readable label that identifies the Google Cloud Storage Bucket that the role is authorized to export to.',
-            example: 'export-bucket',
-          }),
-        roleId: z
-          .string()
-          .regex(/^([a-f0-9]{24})$/)
-          .exactOptional()
-          .openapi({
-            description:
-              'Unique 24-hexadecimal digit string that identifies the GCP Cloud Provider Access Role that MongoDB Cloud uses to access the Google Cloud Storage Bucket.',
-            example: '32b6e34b3d91647abb20e7b8',
-          }),
-      })
-      .openapi({ required: [] }),
+    z.looseObject({}).openapi({ required: ['bucketName', 'cloudProvider', 'roleId'] }),
   )
+    .superRefine((val, ctx) => {
+      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+        if (!Object.hasOwn(val, 'bucketName')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+        if (!Object.hasOwn(val, 'cloudProvider')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+        if (!Object.hasOwn(val, 'roleId')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+      }
+    })
+    .and(
+      z
+        .object({
+          bucketName: z
+            .string()
+            .min(3)
+            .max(63)
+            .exactOptional()
+            .openapi({
+              description:
+                'Human-readable label that identifies the Google Cloud Storage Bucket that the role is authorized to export to.',
+              example: 'export-bucket',
+            }),
+          roleId: z
+            .string()
+            .regex(/^([a-f0-9]{24})$/)
+            .exactOptional()
+            .openapi({
+              description:
+                'Unique 24-hexadecimal digit string that identifies the GCP Cloud Provider Access Role that MongoDB Cloud uses to access the Google Cloud Storage Bucket.',
+              example: '32b6e34b3d91647abb20e7b8',
+            }),
+        })
+        .openapi({ required: [] }),
+    )
     .openapi({ required: ['bucketName', 'cloudProvider', 'roleId'] })
     .openapi('DiskBackupSnapshotGCPExportBucketRequest')
 
 const DiskBackupSnapshotGCPExportBucketResponseSchema =
   DiskBackupSnapshotExportBucketResponseSchema.and(
-    z
-      .object({
-        roleId: z
-          .string()
-          .regex(/^([a-f0-9]{24})$/)
-          .exactOptional()
-          .openapi({
-            description:
-              'Unique 24-hexadecimal digit string that identifies the GCP Cloud Provider Access Role that MongoDB Cloud uses to access the Google Cloud Storage Bucket.',
-            example: '32b6e34b3d91647abb20e7b8',
-          }),
-      })
-      .openapi({ required: [] }),
+    z.looseObject({}).openapi({ required: ['_id', 'bucketName', 'cloudProvider', 'roleId'] }),
   )
+    .superRefine((val, ctx) => {
+      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+        if (!Object.hasOwn(val, '_id')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+        if (!Object.hasOwn(val, 'bucketName')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+        if (!Object.hasOwn(val, 'cloudProvider')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+        if (!Object.hasOwn(val, 'roleId')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+      }
+    })
+    .and(
+      z
+        .object({
+          roleId: z
+            .string()
+            .regex(/^([a-f0-9]{24})$/)
+            .exactOptional()
+            .openapi({
+              description:
+                'Unique 24-hexadecimal digit string that identifies the GCP Cloud Provider Access Role that MongoDB Cloud uses to access the Google Cloud Storage Bucket.',
+              example: '32b6e34b3d91647abb20e7b8',
+            }),
+        })
+        .openapi({ required: [] }),
+    )
     .openapi({ required: ['_id', 'bucketName', 'cloudProvider', 'roleId'] })
     .openapi('DiskBackupSnapshotGCPExportBucketResponse')
 
@@ -33378,6 +38243,175 @@ const DropIndexSuggestionsResponseSchema = z
 
 const EARPrivateEndpointSchema = z
   .xor([AzureKeyVaultEARPrivateEndpointSchema, AWSKMSEARPrivateEndpointSchema])
+  .and(
+    z
+      .object({
+        cloudProvider: z
+          .enum(['AZURE', 'AWS'])
+          .exactOptional()
+          .openapi({
+            description:
+              'Human-readable label that identifies the cloud provider for the Encryption At Rest private endpoint.',
+            readOnly: true,
+          }),
+        errorMessage: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Error message for failures associated with the Encryption At Rest private endpoint.',
+            readOnly: true,
+          }),
+        id: z
+          .string()
+          .regex(/^([a-f0-9]{24})$/)
+          .exactOptional()
+          .openapi({
+            description:
+              'Unique 24-hexadecimal digit string that identifies the Private Endpoint Service.',
+            example: '32b6e34b3d91647abb20e7b8',
+            readOnly: true,
+          }),
+        regionName: z
+          .xor([
+            z
+              .looseObject({})
+              .and(
+                z
+                  .enum([
+                    'US_CENTRAL',
+                    'US_EAST',
+                    'US_EAST_2',
+                    'US_NORTH_CENTRAL',
+                    'US_WEST',
+                    'US_SOUTH_CENTRAL',
+                    'EUROPE_NORTH',
+                    'EUROPE_WEST',
+                    'US_WEST_CENTRAL',
+                    'US_WEST_2',
+                    'US_WEST_3',
+                    'CANADA_EAST',
+                    'CANADA_CENTRAL',
+                    'BRAZIL_SOUTH',
+                    'BRAZIL_SOUTHEAST',
+                    'AUSTRALIA_CENTRAL',
+                    'AUSTRALIA_CENTRAL_2',
+                    'AUSTRALIA_EAST',
+                    'AUSTRALIA_SOUTH_EAST',
+                    'GERMANY_WEST_CENTRAL',
+                    'GERMANY_NORTH',
+                    'SWEDEN_CENTRAL',
+                    'SWEDEN_SOUTH',
+                    'SWITZERLAND_NORTH',
+                    'SWITZERLAND_WEST',
+                    'UK_SOUTH',
+                    'UK_WEST',
+                    'NORWAY_EAST',
+                    'NORWAY_WEST',
+                    'INDIA_CENTRAL',
+                    'INDIA_SOUTH',
+                    'INDIA_WEST',
+                    'CHINA_EAST',
+                    'CHINA_NORTH',
+                    'ASIA_EAST',
+                    'JAPAN_EAST',
+                    'JAPAN_WEST',
+                    'ASIA_SOUTH_EAST',
+                    'KOREA_CENTRAL',
+                    'KOREA_SOUTH',
+                    'FRANCE_CENTRAL',
+                    'FRANCE_SOUTH',
+                    'SOUTH_AFRICA_NORTH',
+                    'SOUTH_AFRICA_WEST',
+                    'UAE_CENTRAL',
+                    'UAE_NORTH',
+                    'QATAR_CENTRAL',
+                    'POLAND_CENTRAL',
+                    'ISRAEL_CENTRAL',
+                    'ITALY_NORTH',
+                    'SPAIN_CENTRAL',
+                    'MEXICO_CENTRAL',
+                    'NEW_ZEALAND_NORTH',
+                    'US_GOV_VIRGINIA',
+                    'US_GOV_ARIZONA',
+                    'US_GOV_TEXAS',
+                  ])
+                  .openapi({ description: 'Microsoft Azure Regions.', title: 'Azure Regions' }),
+              ),
+            z
+              .looseObject({})
+              .and(
+                z
+                  .enum([
+                    'US_GOV_WEST_1',
+                    'US_GOV_EAST_1',
+                    'US_EAST_1',
+                    'US_EAST_2',
+                    'US_WEST_1',
+                    'US_WEST_2',
+                    'CA_CENTRAL_1',
+                    'EU_NORTH_1',
+                    'EU_WEST_1',
+                    'EU_WEST_2',
+                    'EU_WEST_3',
+                    'EU_CENTRAL_1',
+                    'EU_CENTRAL_2',
+                    'AP_EAST_1',
+                    'AP_EAST_2',
+                    'AP_NORTHEAST_1',
+                    'AP_NORTHEAST_2',
+                    'AP_NORTHEAST_3',
+                    'AP_SOUTHEAST_1',
+                    'AP_SOUTHEAST_2',
+                    'AP_SOUTHEAST_3',
+                    'AP_SOUTHEAST_4',
+                    'AP_SOUTHEAST_5',
+                    'AP_SOUTHEAST_6',
+                    'AP_SOUTHEAST_7',
+                    'AP_SOUTH_1',
+                    'AP_SOUTH_2',
+                    'SA_EAST_1',
+                    'CN_NORTH_1',
+                    'CN_NORTHWEST_1',
+                    'ME_SOUTH_1',
+                    'ME_CENTRAL_1',
+                    'AF_SOUTH_1',
+                    'EU_SOUTH_1',
+                    'EU_SOUTH_2',
+                    'IL_CENTRAL_1',
+                    'CA_WEST_1',
+                    'MX_CENTRAL_1',
+                    'GLOBAL',
+                  ])
+                  .openapi({
+                    description:
+                      'Physical location where MongoDB Cloud deploys your AWS-hosted MongoDB cluster nodes. The region you choose can affect network latency for clients accessing your databases. When MongoDB Cloud deploys a dedicated cluster, it checks if a VPC or VPC connection exists for that provider and region. If not, MongoDB Cloud creates them as part of the deployment. MongoDB Cloud assigns the VPC a CIDR block. To limit a new VPC peering connection to one CIDR block and region, create the connection first. Deploy the cluster after the connection starts.',
+                    title: 'AWS Regions',
+                  }),
+              ),
+          ])
+          .exactOptional()
+          .openapi({
+            description:
+              'Cloud provider region in which the Encryption At Rest private endpoint is located.',
+          }),
+        status: z
+          .enum([
+            'INITIATING',
+            'PENDING_ACCEPTANCE',
+            'ACTIVE',
+            'FAILED',
+            'PENDING_RECREATION',
+            'DELETING',
+          ])
+          .exactOptional()
+          .openapi({
+            description: 'State of the Encryption At Rest private endpoint.',
+            readOnly: true,
+          }),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Encryption At Rest Private Endpoint.',
     discriminator: {
@@ -34281,1319 +39315,1674 @@ const EventTypeDetailsSchema = z
 const EventTypeForNdsGroupSchema = z
   .xor([
     z
-      .enum(['ALERT_ACKNOWLEDGED_AUDIT', 'ALERT_UNACKNOWLEDGED_AUDIT'])
-      .openapi({ title: 'Alert Audit Types' }),
+      .looseObject({})
+      .and(
+        z
+          .enum(['ALERT_ACKNOWLEDGED_AUDIT', 'ALERT_UNACKNOWLEDGED_AUDIT'])
+          .openapi({ title: 'Alert Audit Types' }),
+      ),
     z
-      .enum([
-        'ALERT_CONFIG_DISABLED_AUDIT',
-        'ALERT_CONFIG_ENABLED_AUDIT',
-        'ALERT_CONFIG_ADDED_AUDIT',
-        'ALERT_CONFIG_DELETED_AUDIT',
-        'ALERT_CONFIG_CHANGED_AUDIT',
-      ])
-      .openapi({ title: 'Alert Audit Types' }),
+      .looseObject({})
+      .and(
+        z
+          .enum([
+            'ALERT_CONFIG_DISABLED_AUDIT',
+            'ALERT_CONFIG_ENABLED_AUDIT',
+            'ALERT_CONFIG_ADDED_AUDIT',
+            'ALERT_CONFIG_DELETED_AUDIT',
+            'ALERT_CONFIG_CHANGED_AUDIT',
+          ])
+          .openapi({ title: 'Alert Audit Types' }),
+      ),
     z
-      .enum([
-        'API_KEY_CREATED',
-        'API_KEY_DELETED',
-        'API_KEY_ACCESS_LIST_ENTRY_ADDED',
-        'API_KEY_ACCESS_LIST_ENTRY_DELETED',
-        'API_KEY_ROLES_CHANGED',
-        'API_KEY_DESCRIPTION_CHANGED',
-        'API_KEY_ADDED_TO_GROUP',
-        'API_KEY_REMOVED_FROM_GROUP',
-        'API_KEY_UI_IP_ACCESS_LIST_INHERITANCE_ENABLED',
-        'API_KEY_UI_IP_ACCESS_LIST_INHERITANCE_DISABLED',
-      ])
-      .openapi({ title: 'API User Event Types' }),
+      .looseObject({})
+      .and(
+        z
+          .enum([
+            'API_KEY_CREATED',
+            'API_KEY_DELETED',
+            'API_KEY_ACCESS_LIST_ENTRY_ADDED',
+            'API_KEY_ACCESS_LIST_ENTRY_DELETED',
+            'API_KEY_ROLES_CHANGED',
+            'API_KEY_DESCRIPTION_CHANGED',
+            'API_KEY_ADDED_TO_GROUP',
+            'API_KEY_REMOVED_FROM_GROUP',
+            'API_KEY_UI_IP_ACCESS_LIST_INHERITANCE_ENABLED',
+            'API_KEY_UI_IP_ACCESS_LIST_INHERITANCE_DISABLED',
+          ])
+          .openapi({ title: 'API User Event Types' }),
+      ),
     z
-      .enum([
-        'SERVICE_ACCOUNT_CREATED',
-        'SERVICE_ACCOUNT_DELETED',
-        'SERVICE_ACCOUNT_ROLES_CHANGED',
-        'SERVICE_ACCOUNT_DETAILS_CHANGED',
-        'SERVICE_ACCOUNT_ADDED_TO_GROUP',
-        'SERVICE_ACCOUNT_REMOVED_FROM_GROUP',
-        'SERVICE_ACCOUNT_ACCESS_LIST_ENTRY_ADDED',
-        'SERVICE_ACCOUNT_ACCESS_LIST_ENTRY_DELETED',
-        'SERVICE_ACCOUNT_SECRET_ADDED',
-        'SERVICE_ACCOUNT_SECRET_DELETED',
-        'SERVICE_ACCOUNT_UI_IP_ACCESS_LIST_INHERITANCE_ENABLED',
-        'SERVICE_ACCOUNT_UI_IP_ACCESS_LIST_INHERITANCE_DISABLED',
-      ])
-      .openapi({ title: 'Service Account Event Types' }),
+      .looseObject({})
+      .and(
+        z
+          .enum([
+            'SERVICE_ACCOUNT_CREATED',
+            'SERVICE_ACCOUNT_DELETED',
+            'SERVICE_ACCOUNT_ROLES_CHANGED',
+            'SERVICE_ACCOUNT_DETAILS_CHANGED',
+            'SERVICE_ACCOUNT_ADDED_TO_GROUP',
+            'SERVICE_ACCOUNT_REMOVED_FROM_GROUP',
+            'SERVICE_ACCOUNT_ACCESS_LIST_ENTRY_ADDED',
+            'SERVICE_ACCOUNT_ACCESS_LIST_ENTRY_DELETED',
+            'SERVICE_ACCOUNT_SECRET_ADDED',
+            'SERVICE_ACCOUNT_SECRET_DELETED',
+            'SERVICE_ACCOUNT_UI_IP_ACCESS_LIST_INHERITANCE_ENABLED',
+            'SERVICE_ACCOUNT_UI_IP_ACCESS_LIST_INHERITANCE_DISABLED',
+          ])
+          .openapi({ title: 'Service Account Event Types' }),
+      ),
     z
-      .enum([
-        'URL_CONFIRMATION',
-        'SUCCESSFUL_DEPLOY',
-        'DEPLOYMENT_FAILURE',
-        'DEPLOYMENT_MODEL_CHANGE_SUCCESS',
-        'DEPLOYMENT_MODEL_CHANGE_FAILURE',
-        'REQUEST_RATE_LIMIT',
-        'LOG_FORWARDER_FAILURE',
-        'INSIDE_REALM_METRIC_THRESHOLD',
-        'OUTSIDE_REALM_METRIC_THRESHOLD',
-        'SYNC_FAILURE',
-        'TRIGGER_FAILURE',
-        'TRIGGER_AUTO_RESUMED',
-      ])
-      .openapi({ title: 'App Services Event Types' }),
+      .looseObject({})
+      .and(
+        z
+          .enum([
+            'URL_CONFIRMATION',
+            'SUCCESSFUL_DEPLOY',
+            'DEPLOYMENT_FAILURE',
+            'DEPLOYMENT_MODEL_CHANGE_SUCCESS',
+            'DEPLOYMENT_MODEL_CHANGE_FAILURE',
+            'REQUEST_RATE_LIMIT',
+            'LOG_FORWARDER_FAILURE',
+            'INSIDE_REALM_METRIC_THRESHOLD',
+            'OUTSIDE_REALM_METRIC_THRESHOLD',
+            'SYNC_FAILURE',
+            'TRIGGER_FAILURE',
+            'TRIGGER_AUTO_RESUMED',
+          ])
+          .openapi({ title: 'App Services Event Types' }),
+      ),
     z
-      .enum([
-        'AUTO_INDEXING_ENABLED',
-        'AUTO_INDEXING_DISABLED',
-        'AUTO_INDEXING_INDEX_BUILD_SUBMITTED',
-        'AUTO_INDEXING_SLOW_INDEX_BUILD',
-        'AUTO_INDEXING_STALLED_INDEX_BUILD',
-        'AUTO_INDEXING_FAILED_INDEX_BUILD',
-        'AUTO_INDEXING_COMPLETED_INDEX_BUILD',
-        'AUTO_INDEXING_STARTED_INDEX_BUILD',
-      ])
-      .openapi({ title: 'Auto Indexing Event Types' }),
+      .looseObject({})
+      .and(
+        z
+          .enum([
+            'AUTO_INDEXING_ENABLED',
+            'AUTO_INDEXING_DISABLED',
+            'AUTO_INDEXING_INDEX_BUILD_SUBMITTED',
+            'AUTO_INDEXING_SLOW_INDEX_BUILD',
+            'AUTO_INDEXING_STALLED_INDEX_BUILD',
+            'AUTO_INDEXING_FAILED_INDEX_BUILD',
+            'AUTO_INDEXING_COMPLETED_INDEX_BUILD',
+            'AUTO_INDEXING_STARTED_INDEX_BUILD',
+          ])
+          .openapi({ title: 'Auto Indexing Event Types' }),
+      ),
     z
-      .literal('AUTOMATION_CONFIG_PUBLISHED_AUDIT')
-      .openapi({ title: 'Automation Config Event Types' }),
+      .looseObject({})
+      .and(
+        z
+          .literal('AUTOMATION_CONFIG_PUBLISHED_AUDIT')
+          .openapi({ title: 'Automation Config Event Types' }),
+      ),
     z
-      .enum(['PEER_CREATED', 'PEER_DELETED', 'PEER_UPDATED'])
-      .openapi({ title: 'AWS Peer Vpc Audit Types' }),
+      .looseObject({})
+      .and(
+        z
+          .enum(['PEER_CREATED', 'PEER_DELETED', 'PEER_UPDATED'])
+          .openapi({ title: 'AWS Peer Vpc Audit Types' }),
+      ),
     z
-      .enum(['AZURE_PEER_CREATED', 'AZURE_PEER_UPDATED', 'AZURE_PEER_ACTIVE', 'AZURE_PEER_DELETED'])
-      .openapi({ title: 'Azure Peer Network Audit Types' }),
+      .looseObject({})
+      .and(
+        z
+          .enum([
+            'AZURE_PEER_CREATED',
+            'AZURE_PEER_UPDATED',
+            'AZURE_PEER_ACTIVE',
+            'AZURE_PEER_DELETED',
+          ])
+          .openapi({ title: 'Azure Peer Network Audit Types' }),
+      ),
     z
-      .enum([
-        'CREDIT_CARD_CURRENT',
-        'CREDIT_CARD_ABOUT_TO_EXPIRE',
-        'PENDING_INVOICE_UNDER_THRESHOLD',
-        'PENDING_INVOICE_OVER_THRESHOLD',
-        'DAILY_BILL_UNDER_THRESHOLD',
-        'DAILY_BILL_OVER_THRESHOLD',
-        'DAILY_BILLING_CHANGE_NORMAL',
-        'DAILY_BILLING_CHANGE_OVER_THRESHOLD',
-        'WEEKLY_BILLING_CHANGE_NORMAL',
-        'WEEKLY_BILLING_CHANGE_OVER_THRESHOLD',
-        'MONTHLY_BILLING_CHANGE_NORMAL',
-        'MONTHLY_BILLING_CHANGE_OVER_THRESHOLD',
-      ])
-      .openapi({ title: 'Billing Event Types' }),
+      .looseObject({})
+      .and(
+        z
+          .enum([
+            'CREDIT_CARD_CURRENT',
+            'CREDIT_CARD_ABOUT_TO_EXPIRE',
+            'PENDING_INVOICE_UNDER_THRESHOLD',
+            'PENDING_INVOICE_OVER_THRESHOLD',
+            'DAILY_BILL_UNDER_THRESHOLD',
+            'DAILY_BILL_OVER_THRESHOLD',
+            'DAILY_BILLING_CHANGE_NORMAL',
+            'DAILY_BILLING_CHANGE_OVER_THRESHOLD',
+            'WEEKLY_BILLING_CHANGE_NORMAL',
+            'WEEKLY_BILLING_CHANGE_OVER_THRESHOLD',
+            'MONTHLY_BILLING_CHANGE_NORMAL',
+            'MONTHLY_BILLING_CHANGE_OVER_THRESHOLD',
+          ])
+          .openapi({ title: 'Billing Event Types' }),
+      ),
     z
-      .enum([
-        'CLUSTER_CONNECTION_GET_DATABASES',
-        'CLUSTER_CONNECTION_GET_DATABASE_COLLECTIONS',
-        'CLUSTER_CONNECTION_GET_DATABASE_NAMESPACES',
-        'CLUSTER_CONNECTION_GET_NAMESPACES_WITH_UUID',
-        'CLUSTER_CONNECTION_GET_AGGREGATED_VIEW_INFOS',
-        'CLUSTER_CONNECTION_AGGREGATE',
-        'CLUSTER_CONNECTION_CREATE_COLLECTION',
-        'CLUSTER_CONNECTION_SAMPLE_COLLECTION_FIELD_NAMES',
-        'CLUSTER_CONNECTION_SAMPLE_COLLECTION_FIELD_NAMES_AND_TYPES',
-        'CLUSTER_CONNECTION_FIND_DOCUMENTS',
-        'CLUSTER_CONNECTION_GET_NAMESPACES_AND_PROJECT_SQL_SCHEMA_DATA',
-      ])
-      .openapi({ title: 'Cluster Connection Audit Types' }),
+      .looseObject({})
+      .and(
+        z
+          .enum([
+            'CLUSTER_CONNECTION_GET_DATABASES',
+            'CLUSTER_CONNECTION_GET_DATABASE_COLLECTIONS',
+            'CLUSTER_CONNECTION_GET_DATABASE_NAMESPACES',
+            'CLUSTER_CONNECTION_GET_NAMESPACES_WITH_UUID',
+            'CLUSTER_CONNECTION_GET_AGGREGATED_VIEW_INFOS',
+            'CLUSTER_CONNECTION_AGGREGATE',
+            'CLUSTER_CONNECTION_CREATE_COLLECTION',
+            'CLUSTER_CONNECTION_SAMPLE_COLLECTION_FIELD_NAMES',
+            'CLUSTER_CONNECTION_SAMPLE_COLLECTION_FIELD_NAMES_AND_TYPES',
+            'CLUSTER_CONNECTION_FIND_DOCUMENTS',
+            'CLUSTER_CONNECTION_GET_NAMESPACES_AND_PROJECT_SQL_SCHEMA_DATA',
+          ])
+          .openapi({ title: 'Cluster Connection Audit Types' }),
+      ),
     z
-      .enum(['CLUSTER_MONGOS_IS_PRESENT', 'CLUSTER_MONGOS_IS_MISSING'])
-      .openapi({ title: 'Cluster Event Types' }),
+      .looseObject({})
+      .and(
+        z
+          .enum(['CLUSTER_MONGOS_IS_PRESENT', 'CLUSTER_MONGOS_IS_MISSING'])
+          .openapi({ title: 'Cluster Event Types' }),
+      ),
     z
-      .enum([
-        'CPS_SNAPSHOT_STARTED',
-        'CPS_SNAPSHOT_SUCCESSFUL',
-        'CPS_SNAPSHOT_FAILED',
-        'CPS_CONCURRENT_SNAPSHOT_FAILED_WILL_RETRY',
-        'CPS_SNAPSHOT_FALLBACK_SUCCESSFUL',
-        'CPS_SNAPSHOT_BEHIND',
-        'CPS_COPY_SNAPSHOT_STARTED',
-        'CPS_COPY_SNAPSHOT_FAILED',
-        'CPS_COPY_SNAPSHOT_FAILED_WILL_RETRY',
-        'CPS_COPY_SNAPSHOT_SUCCESSFUL',
-        'CPS_PREV_SNAPSHOT_OLD',
-        'CPS_SNAPSHOT_FALLBACK_FAILED',
-        'CPS_RESTORE_SUCCESSFUL',
-        'CPS_EXPORT_SUCCESSFUL',
-        'CPS_RESTORE_FAILED',
-        'CPS_EXPORT_FAILED',
-        'CPS_COLLECTION_RESTORE_SUCCESSFUL',
-        'CPS_COLLECTION_RESTORE_FAILED',
-        'CPS_COLLECTION_RESTORE_PARTIAL_SUCCESS',
-        'CPS_COLLECTION_RESTORE_CANCELED',
-        'CPS_AUTO_EXPORT_FAILED',
-        'CPS_SNAPSHOT_DOWNLOAD_REQUEST_FAILED',
-        'CPS_OPLOG_BEHIND',
-        'CPS_OPLOG_CAUGHT_UP',
-      ])
-      .openapi({ title: 'Cps Backup Event Types' }),
+      .looseObject({})
+      .and(
+        z
+          .enum([
+            'CPS_SNAPSHOT_STARTED',
+            'CPS_SNAPSHOT_SUCCESSFUL',
+            'CPS_SNAPSHOT_FAILED',
+            'CPS_CONCURRENT_SNAPSHOT_FAILED_WILL_RETRY',
+            'CPS_SNAPSHOT_FALLBACK_SUCCESSFUL',
+            'CPS_SNAPSHOT_BEHIND',
+            'CPS_COPY_SNAPSHOT_STARTED',
+            'CPS_COPY_SNAPSHOT_FAILED',
+            'CPS_COPY_SNAPSHOT_FAILED_WILL_RETRY',
+            'CPS_COPY_SNAPSHOT_SUCCESSFUL',
+            'CPS_PREV_SNAPSHOT_OLD',
+            'CPS_SNAPSHOT_FALLBACK_FAILED',
+            'CPS_RESTORE_SUCCESSFUL',
+            'CPS_EXPORT_SUCCESSFUL',
+            'CPS_RESTORE_FAILED',
+            'CPS_EXPORT_FAILED',
+            'CPS_COLLECTION_RESTORE_SUCCESSFUL',
+            'CPS_COLLECTION_RESTORE_FAILED',
+            'CPS_COLLECTION_RESTORE_PARTIAL_SUCCESS',
+            'CPS_COLLECTION_RESTORE_CANCELED',
+            'CPS_AUTO_EXPORT_FAILED',
+            'CPS_SNAPSHOT_DOWNLOAD_REQUEST_FAILED',
+            'CPS_OPLOG_BEHIND',
+            'CPS_OPLOG_CAUGHT_UP',
+          ])
+          .openapi({ title: 'Cps Backup Event Types' }),
+      ),
     z
-      .enum([
-        'DATA_EXPLORER',
-        'DATA_EXPLORER_CRUD_ATTEMPT',
-        'DATA_EXPLORER_CRUD_ERROR',
-        'DATA_EXPLORER_CRUD',
-      ])
-      .openapi({ title: 'Data Explorer Accessed Event Types' }),
-    z.literal('DATA_EXPLORER_SESSION_CREATED').openapi({ title: 'Data Explorer Event Types' }),
+      .looseObject({})
+      .and(
+        z
+          .enum([
+            'DATA_EXPLORER',
+            'DATA_EXPLORER_CRUD_ATTEMPT',
+            'DATA_EXPLORER_CRUD_ERROR',
+            'DATA_EXPLORER_CRUD',
+          ])
+          .openapi({ title: 'Data Explorer Accessed Event Types' }),
+      ),
     z
-      .enum([
-        'CPS_DATA_PROTECTION_ENABLE_REQUESTED',
-        'CPS_DATA_PROTECTION_ENABLED',
-        'CPS_DATA_PROTECTION_UPDATE_REQUESTED',
-        'CPS_DATA_PROTECTION_UPDATED',
-        'CPS_DATA_PROTECTION_DISABLE_REQUESTED',
-        'CPS_DATA_PROTECTION_DISABLED',
-        'CPS_DATA_PROTECTION_APPROVED_FOR_DISABLEMENT',
-      ])
-      .openapi({ title: 'CPS Backup Compliance Policy Event Types' }),
+      .looseObject({})
+      .and(
+        z.literal('DATA_EXPLORER_SESSION_CREATED').openapi({ title: 'Data Explorer Event Types' }),
+      ),
     z
-      .enum([
-        'CPS_RESTORE_REQUESTED_AUDIT',
-        'CPS_RESTORE_AUTH_AUDIT',
-        'CPS_SNAPSHOT_SCHEDULE_UPDATED_AUDIT',
-        'CPS_SNAPSHOT_FASTER_RESTORES_START_AUDIT',
-        'CPS_SNAPSHOT_FASTER_RESTORES_SUCCESS_AUDIT',
-        'CPS_SNAPSHOT_FASTER_RESTORES_FAILED_AUDIT',
-        'CPS_SNAPSHOT_DELETED_AUDIT',
-        'CPS_SNAPSHOT_RETENTION_MODIFIED_AUDIT',
-        'CPS_SNAPSHOT_IN_PROGRESS_AUDIT',
-        'CPS_SNAPSHOT_COMPLETED_AUDIT',
-        'CPS_ON_DEMAND_SNAPSHOT_REQUESTED',
-        'CPS_OPLOG_CAUGHT_UP_AUDIT',
-        'CPS_OPLOG_BEHIND_AUDIT',
-      ])
-      .openapi({ title: 'Disk Backup Event Types' }),
+      .looseObject({})
+      .and(
+        z
+          .enum([
+            'CPS_DATA_PROTECTION_ENABLE_REQUESTED',
+            'CPS_DATA_PROTECTION_ENABLED',
+            'CPS_DATA_PROTECTION_UPDATE_REQUESTED',
+            'CPS_DATA_PROTECTION_UPDATED',
+            'CPS_DATA_PROTECTION_DISABLE_REQUESTED',
+            'CPS_DATA_PROTECTION_DISABLED',
+            'CPS_DATA_PROTECTION_APPROVED_FOR_DISABLEMENT',
+          ])
+          .openapi({ title: 'CPS Backup Compliance Policy Event Types' }),
+      ),
     z
-      .enum([
-        'AWS_ENCRYPTION_KEY_ROTATED',
-        'AWS_ENCRYPTION_KEY_NEEDS_ROTATION',
-        'AZURE_ENCRYPTION_KEY_ROTATED',
-        'AZURE_ENCRYPTION_KEY_NEEDS_ROTATION',
-        'GCP_ENCRYPTION_KEY_ROTATED',
-        'GCP_ENCRYPTION_KEY_NEEDS_ROTATION',
-        'AWS_ENCRYPTION_KEY_VALID',
-        'AWS_ENCRYPTION_KEY_INVALID',
-        'AZURE_ENCRYPTION_KEY_VALID',
-        'AZURE_ENCRYPTION_KEY_INVALID',
-        'GCP_ENCRYPTION_KEY_VALID',
-        'GCP_ENCRYPTION_KEY_INVALID',
-      ])
-      .openapi({ title: 'Encryption Event Types' }),
+      .looseObject({})
+      .and(
+        z
+          .enum([
+            'CPS_RESTORE_REQUESTED_AUDIT',
+            'CPS_RESTORE_AUTH_AUDIT',
+            'CPS_SNAPSHOT_SCHEDULE_UPDATED_AUDIT',
+            'CPS_SNAPSHOT_FASTER_RESTORES_START_AUDIT',
+            'CPS_SNAPSHOT_FASTER_RESTORES_SUCCESS_AUDIT',
+            'CPS_SNAPSHOT_FASTER_RESTORES_FAILED_AUDIT',
+            'CPS_SNAPSHOT_DELETED_AUDIT',
+            'CPS_SNAPSHOT_RETENTION_MODIFIED_AUDIT',
+            'CPS_SNAPSHOT_IN_PROGRESS_AUDIT',
+            'CPS_SNAPSHOT_COMPLETED_AUDIT',
+            'CPS_ON_DEMAND_SNAPSHOT_REQUESTED',
+            'CPS_OPLOG_CAUGHT_UP_AUDIT',
+            'CPS_OPLOG_BEHIND_AUDIT',
+          ])
+          .openapi({ title: 'Disk Backup Event Types' }),
+      ),
     z
-      .enum(['ENCRYPTION_KEY_TRANSITION_STARTED', 'ENCRYPTION_KEY_TRANSITION_COMPLETED'])
-      .openapi({ title: 'Encryption Key Transition Event Types' }),
+      .looseObject({})
+      .and(
+        z
+          .enum([
+            'AWS_ENCRYPTION_KEY_ROTATED',
+            'AWS_ENCRYPTION_KEY_NEEDS_ROTATION',
+            'AZURE_ENCRYPTION_KEY_ROTATED',
+            'AZURE_ENCRYPTION_KEY_NEEDS_ROTATION',
+            'GCP_ENCRYPTION_KEY_ROTATED',
+            'GCP_ENCRYPTION_KEY_NEEDS_ROTATION',
+            'AWS_ENCRYPTION_KEY_VALID',
+            'AWS_ENCRYPTION_KEY_INVALID',
+            'AZURE_ENCRYPTION_KEY_VALID',
+            'AZURE_ENCRYPTION_KEY_INVALID',
+            'GCP_ENCRYPTION_KEY_VALID',
+            'GCP_ENCRYPTION_KEY_INVALID',
+          ])
+          .openapi({ title: 'Encryption Event Types' }),
+      ),
     z
-      .enum(['BUCKET_CREATED_AUDIT', 'BUCKET_DELETED_AUDIT'])
-      .openapi({ title: 'Export Bucket Audit Types' }),
+      .looseObject({})
+      .and(
+        z
+          .enum(['BUCKET_CREATED_AUDIT', 'BUCKET_DELETED_AUDIT'])
+          .openapi({ title: 'Export Bucket Audit Types' }),
+      ),
     z
-      .enum([
-        'FTS_INDEX_DELETION_FAILED',
-        'FTS_INDEX_BUILD_COMPLETE',
-        'FTS_INDEX_BUILD_FAILED',
-        'FTS_INDEX_CREATED',
-        'FTS_INDEX_UPDATED',
-        'FTS_INDEX_PARTITIONS_CHANGED',
-        'FTS_INDEX_REBUILT',
-        'FTS_INDEX_DEFINITION_ROLLED_BACK',
-        'FTS_INDEX_DELETED',
-        'FTS_INDEX_CLEANED_UP',
-        'FTS_INDEX_STALE',
-        'FTS_INDEXES_RESTORED',
-        'FTS_INDEXES_RESTORE_FAILED',
-        'FTS_INDEXES_SYNONYM_MAPPING_INVALID',
-      ])
-      .openapi({ title: 'FTS Index Audit Types' }),
+      .looseObject({})
+      .and(
+        z
+          .enum([
+            'FTS_INDEX_DELETION_FAILED',
+            'FTS_INDEX_BUILD_COMPLETE',
+            'FTS_INDEX_BUILD_FAILED',
+            'FTS_INDEX_CREATED',
+            'FTS_INDEX_UPDATED',
+            'FTS_INDEX_PARTITIONS_CHANGED',
+            'FTS_INDEX_REBUILT',
+            'FTS_INDEX_DEFINITION_ROLLED_BACK',
+            'FTS_INDEX_DELETED',
+            'FTS_INDEX_CLEANED_UP',
+            'FTS_INDEX_STALE',
+            'FTS_INDEXES_RESTORED',
+            'FTS_INDEXES_RESTORE_FAILED',
+            'FTS_INDEXES_SYNONYM_MAPPING_INVALID',
+          ])
+          .openapi({ title: 'FTS Index Audit Types' }),
+      ),
     z
-      .enum([
-        'GCP_PEER_CREATED',
-        'GCP_PEER_DELETED',
-        'GCP_PEER_UPDATED',
-        'GCP_PEER_ACTIVE',
-        'GCP_PEER_INACTIVE',
-      ])
-      .openapi({ title: 'GCP Peer Vpc Audit Types' }),
+      .looseObject({})
+      .and(
+        z
+          .enum([
+            'GCP_PEER_CREATED',
+            'GCP_PEER_DELETED',
+            'GCP_PEER_UPDATED',
+            'GCP_PEER_ACTIVE',
+            'GCP_PEER_INACTIVE',
+          ])
+          .openapi({ title: 'GCP Peer Vpc Audit Types' }),
+      ),
     z
-      .enum([
-        'DATA_EXPLORER_ENABLED',
-        'DATA_EXPLORER_DISABLED',
-        'CREDIT_CARD_ADDED',
-        'CREDIT_CARD_UPDATED',
-        'GROUP_DELETED',
-        'GROUP_CREATED',
-        'GROUP_MOVED',
-        'GROUP_TEMPORARILY_ACTIVATED',
-        'GROUP_ACTIVATED',
-        'GROUP_LOCKED',
-        'GROUP_SUSPENDED',
-        'GROUP_FLUSHED',
-        'GROUP_NAME_CHANGED',
-        'GROUP_CHARTS_ACTIVATION_REQUESTED',
-        'GROUP_CHARTS_ACTIVATED',
-        'GROUP_CHARTS_UPGRADED',
-        'GROUP_CHARTS_RESET',
-        'GROUP_DEFAULT_ALERTS_SETTINGS_CHANGED',
-      ])
-      .openapi({ title: 'Group Audit Types' }),
+      .looseObject({})
+      .and(
+        z
+          .enum([
+            'DATA_EXPLORER_ENABLED',
+            'DATA_EXPLORER_DISABLED',
+            'CREDIT_CARD_ADDED',
+            'CREDIT_CARD_UPDATED',
+            'GROUP_DELETED',
+            'GROUP_CREATED',
+            'GROUP_MOVED',
+            'GROUP_TEMPORARILY_ACTIVATED',
+            'GROUP_ACTIVATED',
+            'GROUP_LOCKED',
+            'GROUP_SUSPENDED',
+            'GROUP_FLUSHED',
+            'GROUP_NAME_CHANGED',
+            'GROUP_CHARTS_ACTIVATION_REQUESTED',
+            'GROUP_CHARTS_ACTIVATED',
+            'GROUP_CHARTS_UPGRADED',
+            'GROUP_CHARTS_RESET',
+            'PROJECT_OPERATIONS_CONTACT_MODIFIED',
+            'PROJECT_OPERATIONS_CONTACT_ALERTS_ENABLED',
+            'PROJECT_OPERATIONS_CONTACT_ALERTS_DISABLED',
+            'GROUP_DEFAULT_ALERTS_SETTINGS_CHANGED',
+          ])
+          .openapi({ title: 'Group Audit Types' }),
+      ),
     z
-      .enum([
-        'PAID_IN_FULL',
-        'DELINQUENT',
-        'ALL_USERS_HAVE_MULTI_FACTOR_AUTH',
-        'USERS_WITHOUT_MULTI_FACTOR_AUTH',
-        'ENCRYPTION_AT_REST_KMS_NETWORK_ACCESS_DENIED',
-        'ENCRYPTION_AT_REST_KMS_NETWORK_ACCESS_RESTORED',
-        'ENCRYPTION_AT_REST_CONFIG_NO_LONGER_VALID',
-        'ENCRYPTION_AT_REST_CONFIG_IS_VALID',
-        'GROUP_SERVICE_ACCOUNT_SECRETS_NO_LONGER_EXPIRING',
-        'GROUP_SERVICE_ACCOUNT_SECRETS_EXPIRING',
-        'GROUP_SERVICE_ACCOUNT_SECRETS_NO_LONGER_EXPIRED',
-        'GROUP_SERVICE_ACCOUNT_SECRETS_EXPIRED',
-        'ACTIVE_LEGACY_TLS_CONNECTIONS',
-        'NO_ACTIVE_LEGACY_TLS_CONNECTIONS',
-        'WEBHOOK_TEMPLATE_RENDER_FAILED',
-        'ENCRYPTION_AT_REST_CONFIG_UPDATE_NO_LONGER_STALLED',
-        'ENCRYPTION_AT_REST_CONFIG_UPDATE_STALLED',
-      ])
-      .openapi({ title: 'Group Event Types' }),
+      .looseObject({})
+      .and(
+        z
+          .enum([
+            'PAID_IN_FULL',
+            'DELINQUENT',
+            'ALL_USERS_HAVE_MULTI_FACTOR_AUTH',
+            'USERS_WITHOUT_MULTI_FACTOR_AUTH',
+            'ENCRYPTION_AT_REST_KMS_NETWORK_ACCESS_DENIED',
+            'ENCRYPTION_AT_REST_KMS_NETWORK_ACCESS_RESTORED',
+            'ENCRYPTION_AT_REST_CONFIG_NO_LONGER_VALID',
+            'ENCRYPTION_AT_REST_CONFIG_IS_VALID',
+            'GROUP_SERVICE_ACCOUNT_SECRETS_NO_LONGER_EXPIRING',
+            'GROUP_SERVICE_ACCOUNT_SECRETS_EXPIRING',
+            'GROUP_SERVICE_ACCOUNT_SECRETS_NO_LONGER_EXPIRED',
+            'GROUP_SERVICE_ACCOUNT_SECRETS_EXPIRED',
+            'ACTIVE_LEGACY_TLS_CONNECTIONS',
+            'NO_ACTIVE_LEGACY_TLS_CONNECTIONS',
+            'WEBHOOK_TEMPLATE_RENDER_FAILED',
+            'ENCRYPTION_AT_REST_CONFIG_UPDATE_NO_LONGER_STALLED',
+            'ENCRYPTION_AT_REST_CONFIG_UPDATE_STALLED',
+          ])
+          .openapi({ title: 'Group Event Types' }),
+      ),
     z
-      .enum(['INTEGRATION_CONFIGURED', 'INTEGRATION_REMOVED'])
-      .openapi({ title: 'Group Integration Event Types' }),
+      .looseObject({})
+      .and(
+        z
+          .enum(['INTEGRATION_CONFIGURED', 'INTEGRATION_REMOVED'])
+          .openapi({ title: 'Group Integration Event Types' }),
+      ),
     z
-      .enum([
-        'ATTEMPT_KILLOP_AUDIT',
-        'ATTEMPT_KILLSESSION_AUDIT',
-        'HOST_UP',
-        'HOST_DOWN',
-        'HOST_HAS_INDEX_SUGGESTIONS',
-        'HOST_MONGOT_RECOVERED_OOM',
-        'HOST_MONGOT_CRASHING_OOM',
-        'HOST_MONGOT_RESUME_REPLICATION',
-        'HOST_MONGOT_STOP_REPLICATION',
-        'HOST_MONGOT_UNPAUSE_INITIAL_SYNC',
-        'HOST_MONGOT_PAUSE_INITIAL_SYNC',
-        'HOST_MONGOT_SUFFICIENT_DISK_SPACE',
-        'HOST_MONGOT_APPROACHING_STOP_REPLICATION',
-        'HOST_MONGOT_RESTARTED',
-        'HOST_SEARCH_NODE_UNBLOCKED',
-        'HOST_SEARCH_NODE_INDEX_FAILED',
-        'HOST_SEARCH_PROCESS_NOT_THROTTLING',
-        'HOST_SEARCH_PROCESS_THROTTLING',
-        'HOST_EXTERNAL_LOG_SINK_EXPORT_DOWN',
-        'HOST_EXTERNAL_LOG_SINK_EXPORT_RESUMED',
-        'HOST_ENOUGH_DISK_SPACE',
-        'HOST_NOT_ENOUGH_DISK_SPACE',
-        'SSH_KEY_NDS_HOST_ACCESS_REQUESTED',
-        'SSH_KEY_NDS_HOST_ACCESS_REFRESHED',
-        'SSH_KEY_NDS_HOST_ACCESS_ATTEMPT',
-        'SSH_KEY_NDS_HOST_ACCESS_GRANTED',
-        'SSH_KEY_NDS_HOST_ACCESS_LEVEL_CHANGED',
-        'ALERT_HOST_SSH_SESSION_STARTED',
-        'HOST_SSH_SESSION_ENDED',
-        'HOST_X509_CERTIFICATE_CERTIFICATE_GENERATED_FOR_SUPPORT_ACCESS',
-        'PUSH_BASED_LOG_EXPORT_RESUMED',
-        'PUSH_BASED_LOG_EXPORT_STOPPED',
-        'PUSH_BASED_LOG_EXPORT_DROPPED_LOG',
-        'HOST_VERSION_BEHIND',
-        'VERSION_BEHIND',
-        'HOST_EXPOSED',
-        'HOST_SSL_CERTIFICATE_STALE',
-        'HOST_SECURITY_CHECKUP_NOT_MET',
-        'PROFILER_CONFIGURED_TOO_WIDELY',
-      ])
-      .openapi({ title: 'Host Event Types' }),
+      .looseObject({})
+      .and(
+        z
+          .enum([
+            'ATTEMPT_KILLOP_AUDIT',
+            'ATTEMPT_KILLSESSION_AUDIT',
+            'HOST_UP',
+            'HOST_DOWN',
+            'HOST_HAS_INDEX_SUGGESTIONS',
+            'HOST_MONGOT_RECOVERED_OOM',
+            'HOST_MONGOT_CRASHING_OOM',
+            'HOST_MONGOT_RESUME_REPLICATION',
+            'HOST_MONGOT_STOP_REPLICATION',
+            'HOST_MONGOT_UNPAUSE_INITIAL_SYNC',
+            'HOST_MONGOT_PAUSE_INITIAL_SYNC',
+            'HOST_MONGOT_SUFFICIENT_DISK_SPACE',
+            'HOST_MONGOT_APPROACHING_STOP_REPLICATION',
+            'HOST_MONGOT_RESTARTED',
+            'HOST_SEARCH_NODE_UNBLOCKED',
+            'HOST_SEARCH_NODE_INDEX_FAILED',
+            'HOST_SEARCH_PROCESS_NOT_THROTTLING',
+            'HOST_SEARCH_PROCESS_THROTTLING',
+            'HOST_EXTERNAL_LOG_SINK_EXPORT_DOWN',
+            'HOST_EXTERNAL_LOG_SINK_EXPORT_RESUMED',
+            'HOST_ENOUGH_DISK_SPACE',
+            'HOST_NOT_ENOUGH_DISK_SPACE',
+            'SSH_KEY_NDS_HOST_ACCESS_REQUESTED',
+            'SSH_KEY_NDS_HOST_ACCESS_REFRESHED',
+            'SSH_KEY_NDS_HOST_ACCESS_ATTEMPT',
+            'SSH_KEY_NDS_HOST_ACCESS_GRANTED',
+            'SSH_KEY_NDS_HOST_ACCESS_LEVEL_CHANGED',
+            'ALERT_HOST_SSH_SESSION_STARTED',
+            'HOST_SSH_SESSION_ENDED',
+            'HOST_X509_CERTIFICATE_CERTIFICATE_GENERATED_FOR_SUPPORT_ACCESS',
+            'PUSH_BASED_LOG_EXPORT_RESUMED',
+            'PUSH_BASED_LOG_EXPORT_STOPPED',
+            'PUSH_BASED_LOG_EXPORT_DROPPED_LOG',
+            'HOST_VERSION_BEHIND',
+            'VERSION_BEHIND',
+            'HOST_EXPOSED',
+            'HOST_SSL_CERTIFICATE_STALE',
+            'HOST_SECURITY_CHECKUP_NOT_MET',
+            'PROFILER_CONFIGURED_TOO_WIDELY',
+          ])
+          .openapi({ title: 'Host Event Types' }),
+      ),
     z
-      .enum(['INSIDE_METRIC_THRESHOLD', 'OUTSIDE_METRIC_THRESHOLD'])
-      .openapi({ title: 'Host Metric Event Types' }),
+      .looseObject({})
+      .and(
+        z
+          .enum(['INSIDE_METRIC_THRESHOLD', 'OUTSIDE_METRIC_THRESHOLD'])
+          .openapi({ title: 'Host Metric Event Types' }),
+      ),
     z
-      .enum([
-        'ROLLING_INDEX_FAILED_INDEX_BUILD',
-        'ROLLING_INDEX_SUCCESS_INDEX_BUILD',
-        'INDEX_FAILED_INDEX_BUILD',
-        'INDEX_SUCCESS_INDEX_BUILD',
-      ])
-      .openapi({ title: 'Index Build Audit Types' }),
-    z.enum(['MONGOTUNE_INFO', 'MONGOTUNE_ALERT']).openapi({ title: 'Mongotune Event Types' }),
+      .looseObject({})
+      .and(
+        z
+          .enum([
+            'ROLLING_INDEX_FAILED_INDEX_BUILD',
+            'ROLLING_INDEX_SUCCESS_INDEX_BUILD',
+            'INDEX_FAILED_INDEX_BUILD',
+            'INDEX_SUCCESS_INDEX_BUILD',
+          ])
+          .openapi({ title: 'Index Build Audit Types' }),
+      ),
     z
-      .enum([
-        'CLUSTER_CREATED',
-        'CLUSTER_RESURRECTED',
-        'CLUSTER_READY',
-        'CLUSTER_UPDATE_SUBMITTED',
-        'CLUSTER_PROCESS_ARGS_UPDATE_SUBMITTED',
-        'CLUSTER_MONGOT_PROCESS_ARGS_UPDATE_SUBMITTED',
-        'CLUSTER_SERVER_PARAMETERS_UPDATE_SUBMITTED',
-        'CLUSTER_AUTOMATICALLY_PAUSED',
-        'CLUSTER_UPDATE_STARTED',
-        'CLUSTER_UPDATE_STARTED_INTERNAL',
-        'CLUSTER_UPDATE_COMPLETED',
-        'MATERIAL_CLUSTER_UPDATE_COMPLETED_INTERNAL',
-        'CLUSTER_DELETE_SUBMITTED',
-        'CLUSTER_DELETE_SUBMITTED_INTERNAL',
-        'CLUSTER_DELETED',
-        'CLUSTER_IMPORT_STARTED',
-        'CLUSTER_IMPORT_CANCELLED',
-        'CLUSTER_IMPORT_EXPIRED',
-        'CLUSTER_IMPORT_CUTOVER',
-        'CLUSTER_IMPORT_COMPLETED',
-        'CLUSTER_IMPORT_FAILED',
-        'CLUSTER_IMPORT_RESTART_REQUESTED',
-        'PROJECT_LIVE_IMPORT_OVERRIDES_ADDED',
-        'PROJECT_LIVE_IMPORT_OVERRIDES_UPDATED',
-        'PROJECT_LIVE_IMPORT_OVERRIDES_DELETED',
-        'CLUSTER_OPLOG_RESIZED',
-        'CLUSTER_INSTANCE_RESTARTED',
-        'CLUSTER_INSTANCE_STOP_START',
-        'CLUSTER_INSTANCE_RESYNC_REQUESTED',
-        'CLUSTER_INSTANCE_RESYNC_CLEARED',
-        'CLUSTER_INSTANCE_UPDATE_REQUESTED',
-        'CLUSTER_INSTANCE_REPLACED',
-        'CLUSTER_INSTANCE_REPLACE_CLEARED',
-        'CLUSTER_INSTANCE_SWAPPED',
-        'CLUSTER_INSTANCE_SWAP_CLEARED',
-        'CLUSTER_INSTANCE_VM_RESTART_CLEARED',
-        'CLUSTER_INSTANCE_VM_REBOOT_CLEARED',
-        'CLUSTER_INSTANCE_CONFIG_UPDATED',
-        'CLUSTER_INSTANCE_AGENT_API_KEY_ROTATED',
-        'CLUSTER_INSTANCE_SSL_ROTATED',
-        'CLUSTER_INSTANCE_SSL_ROTATED_PER_CLUSTER',
-        'CLUSTER_INSTANCE_SSL_REVOKED',
-        'RELOAD_SSL_ON_PROCESSES',
-        'RELOAD_SSL_ON_PROCESSES_REQUESTED',
-        'CLUSTER_INSTANCE_ADMIN_BACKUP_SNAPSHOT_REQUESTED',
-        'DATA_LAKE_QUERY_LOGS_DOWNLOADED',
-        'FEDERATED_DATABASE_QUERY_LOGS_DOWNLOADED',
-        'ONLINE_ARCHIVE_QUERY_LOGS_DOWNLOADED',
-        'MONGODB_LOGS_DOWNLOADED',
-        'MONGOSQLD_LOGS_DOWNLOADED',
-        'MONGOT_LOGS_DOWNLOADED',
-        'MONGODB_USER_ADDED',
-        'MONGODB_USER_DELETED',
-        'MONGODB_USER_X509_CERT_CREATED',
-        'MONGODB_USER_X509_CERT_REVOKED',
-        'MONGODB_USER_UPDATED',
-        'MONGODB_ROLE_ADDED',
-        'MONGODB_ROLE_DELETED',
-        'MONGODB_ROLE_UPDATED',
-        'NETWORK_PERMISSION_ENTRY_ADDED',
-        'NETWORK_PERMISSION_ENTRY_REMOVED',
-        'NETWORK_PERMISSION_ENTRY_UPDATED',
-        'PRIVATE_NETWORK_ENDPOINT_ENTRY_ADDED',
-        'PRIVATE_NETWORK_ENDPOINT_ENTRY_REMOVED',
-        'PRIVATE_NETWORK_ENDPOINT_ENTRY_UPDATED',
-        'PLAN_STARTED',
-        'PLAN_COMPLETED',
-        'PLAN_ABANDONED',
-        'PLAN_DECLINED',
-        'PLAN_FAILURE_COUNT_RESET',
-        'CAPACITY_RETRY_OVERRIDE_SET',
-        'CAPACITY_RETRY_OVERRIDE_REMOVED',
-        'PLAN_ASAP_REQUESTED',
-        'INDEPENDENT_SHARD_AUTO_SCALING_AVAILABLE',
-        'INDEPENDENT_SHARD_SCALING_CLUSTER_MIGRATED',
-        'INDEPENDENT_SHARD_SCALING_CLUSTER_ROLLED_BACK',
-        'MOVE_SKIPPED',
-        'STEP_SKIPPED',
-        'PROXY_RESTARTED',
-        'PROXY_PANICKED',
-        'ATLAS_MAINTENANCE_PROTECTED_HOURS_CREATED',
-        'ATLAS_MAINTENANCE_PROTECTED_HOURS_MODIFIED',
-        'ATLAS_MAINTENANCE_PROTECTED_HOURS_REMOVED',
-        'ATLAS_MAINTENANCE_WINDOW_ADDED',
-        'ATLAS_MAINTENANCE_WINDOW_MODIFIED',
-        'ATLAS_MAINTENANCE_WINDOW_REMOVED',
-        'ATLAS_MAINTENANCE_START_ASAP',
-        'ATLAS_MAINTENANCE_SCHEDULED_FOR_NEXT_WINDOW',
-        'ATLAS_MAINTENANCE_DEFERRED',
-        'ATLAS_MAINTENANCE_AUTO_DEFER_ENABLED',
-        'ATLAS_MAINTENANCE_AUTO_DEFER_DISABLED',
-        'ATLAS_MAINTENANCE_RESET_BY_ADMIN',
-        'ATLAS_MAINTENANCE_DEFERRED_BY_ADMIN',
-        'SCHEDULED_MAINTENANCE',
-        'PROJECT_SCHEDULED_MAINTENANCE',
-        'PROJECT_LIMIT_UPDATED',
-        'PROJECT_ENABLE_EXTENDED_STORAGE_SIZES_UPDATED',
-        'PROJECT_ENABLE_DATA_VALIDATION_UPDATED',
-        'PROJECT_COLLECT_DATABASE_STATISTICS_UPDATED',
-        'OS_MAINTENANCE',
-        'OS_MAINTENANCE_RESTART',
-        'OS_MAINTENANCE_REPLACEMENT',
-        'FREE_UPGRADE_STARTED',
-        'FLEX_UPGRADE_STARTED',
-        'SERVERLESS_UPGRADE_STARTED',
-        'TEST_FAILOVER_REQUESTED',
-        'USER_SECURITY_SETTINGS_UPDATED',
-        'AUDIT_LOG_CONFIGURATION_UPDATED',
-        'STREAMS_AUDIT_LOG_CONFIGURATION_UPDATED',
-        'ENCRYPTION_AT_REST_CONFIGURATION_UPDATED',
-        'ENCRYPTION_AT_REST_CONFIGURATION_VALIDATION_FAILED',
-        'ENCRYPTION_AT_REST_CONFIGURATION_VALIDATION_SUCCEEDED',
-        'ENCRYPTION_AT_REST_KEY_ROTATION_STARTED',
-        'ENCRYPTION_AT_REST_PRIVATE_ENDPOINT_CREATED',
-        'ENCRYPTION_AT_REST_PRIVATE_ENDPOINT_DELETED',
-        'NDS_SET_IMAGE_OVERRIDES',
-        'NDS_SET_CHEF_TARBALL_URI',
-        'RESTRICTED_EMPLOYEE_ACCESS_BYPASS',
-        'REVOKED_EMPLOYEE_ACCESS_BYPASS',
-        'DEVICE_SYNC_DEBUG_ACCESS_GRANTED',
-        'DEVICE_SYNC_DEBUG_ACCESS_REVOKED',
-        'DEVICE_SYNC_DEBUG_X509_CERT_CREATED',
-        'EMPLOYEE_ACCESS_GRANTED',
-        'EMPLOYEE_ACCESS_REVOKED',
-        'QUERY_ENGINE_TENANT_CREATED',
-        'QUERY_ENGINE_TENANT_UPDATED',
-        'QUERY_ENGINE_TENANT_REMOVED',
-        'FEDERATED_DATABASE_CREATED',
-        'FEDERATED_DATABASE_UPDATED',
-        'FEDERATED_DATABASE_REMOVED',
-        'TENANT_SNAPSHOT_FAILED',
-        'TENANT_RESTORE_FAILED',
-        'SAMPLE_DATASET_LOAD_REQUESTED',
-        'CUSTOMER_X509_CRL_UPDATED',
-        'CONTAINER_SUBNETS_UPDATE_REQUESTED',
-        'ONLINE_ARCHIVE_CREATED',
-        'ONLINE_ARCHIVE_DELETED',
-        'ONLINE_ARCHIVE_UPDATED',
-        'ONLINE_ARCHIVE_PAUSE_REQUESTED',
-        'ONLINE_ARCHIVE_PAUSED',
-        'ONLINE_ARCHIVE_ACTIVE',
-        'ONLINE_ARCHIVE_ORPHANED',
-        'ONLINE_ARCHIVE_DATA_EXPIRATION_RULE_ENABLED',
-        'ONLINE_ARCHIVE_DATA_EXPIRATION_RULE_UPDATED',
-        'ONLINE_ARCHIVE_DATA_EXPIRATION_RULE_DISABLED',
-        'ONLINE_ARCHIVE_DELETE_AFTER_DATE_UPDATED',
-        'CLOUD_PROVIDER_ACCESS_AWS_IAM_ROLE_ADDED',
-        'CLOUD_PROVIDER_ACCESS_AWS_IAM_ROLE_DELETED',
-        'CLOUD_PROVIDER_ACCESS_AWS_IAM_ROLE_UPDATED',
-        'CLOUD_PROVIDER_ACCESS_AZURE_SERVICE_PRINCIPAL_ADDED',
-        'CLOUD_PROVIDER_ACCESS_AZURE_SERVICE_PRINCIPAL_DELETED',
-        'CLOUD_PROVIDER_ACCESS_AZURE_SERVICE_PRINCIPAL_UPDATED',
-        'CLOUD_PROVIDER_ACCESS_GCP_SERVICE_ACCOUNT_ADDED',
-        'CLOUD_PROVIDER_ACCESS_GCP_SERVICE_ACCOUNT_DELETED',
-        'CLOUD_PROVIDER_ACCESS_GCP_SERVICE_ACCOUNT_UPDATED',
-        'PENDING_INDEXES_DELETED',
-        'PENDING_INDEXES_CANCELED',
-        'PROCESS_RESTART_REQUESTED',
-        'AUTO_HEALING_ACTION',
-        'AUTO_HEALING_REQUESTED_CRITICAL_INSTANCE_POWER_CYCLE',
-        'AUTO_HEALING_REQUESTED_INSTANCE_REPLACEMENT',
-        'AUTO_HEALING_REQUESTED_NODE_RESYNC',
-        'EXTRA_MAINTENANCE_DEFERRAL_GRANTED',
-        'GROUP_AUTOMATION_CONFIG_PUBLISHED',
-        'CLUSTER_AUTOMATION_CONFIG_PUBLISHED',
-        'SET_ENSURE_CLUSTER_CONNECTIVITY_AFTER_FOR_CLUSTER',
-        'CLUSTER_LINKED_TO_VERCEL',
-        'CLUSTER_UNLINKED_FROM_VERCEL',
-        'INGESTION_PIPELINE_DELETED',
-        'INGESTION_PIPELINE_DESTROYED',
-        'INGESTION_PIPELINE_CREATED',
-        'INGESTION_PIPELINE_UPDATED',
-        'OS_TUNE_FILE_OVERRIDES',
-        'MONITORING_AGENT_OVERRIDES',
-        'MONITORING_AGENT_REBALANCE_FLAG',
-        'MONITORING_AGENT_REBALANCE_TRIGGERED',
-        'CLUSTER_PREFERRED_CPU_ARCHITECTURE_MODIFIED',
-        'CLUSTER_FORCE_PLANNED',
-        'CLUSTER_REGIONAL_OUTAGE_SIMULATION_STARTED',
-        'CLUSTER_REGIONAL_OUTAGE_SIMULATION_FAILED_TO_START',
-        'CLUSTER_REGIONAL_OUTAGE_SIMULATION_END_REQUESTED',
-        'CLUSTER_REGIONAL_OUTAGE_SIMULATION_COMPLETED',
-        'CLUSTER_REGIONAL_OUTAGE_SIMULATION_CANCELLED_CLUSTER_PAUSE',
-        'UIS_PANICKED',
-        'TENANT_UPGRADE_TO_SERVERLESS_SUCCESSFUL',
-        'TENANT_UPGRADE_TO_SERVERLESS_FAILED',
-        'SERVERLESS_UPGRADE_TO_DEDICATED_SUCCESSFUL',
-        'SERVERLESS_UPGRADE_TO_DEDICATED_FAILED',
-        'CLUSTER_FORCE_RECONFIG_REQUESTED',
-        'SLS_LOG_AND_MONGOD_NODES_RECREATION_REQUESTED',
-        'AGENT_FORCE_RESTART_REQUESTED',
-        'CLUSTER_RESET_FORCE_RECONFIG_REQUESTED',
-        'CLUSTER_FORCE_PAUSE_REQUESTED',
-        'PROJECT_BYPASSED_MAINTENANCE',
-        'FEATURE_FLAG_MAINTENANCE',
-        'DATA_FEDERATION_QUERY_LIMIT_CONFIGURED',
-        'DATA_FEDERATION_QUERY_LIMIT_DELETED',
-        'DATA_API_SETUP_FOR_VERCEL',
-        'ADMIN_CLUSTER_LOCK_UPDATED',
-        'CLUSTER_ROLLING_RESYNC_STARTED',
-        'CLUSTER_ROLLING_RESYNC_COMPLETED',
-        'CLUSTER_ROLLING_RESYNC_FAILED',
-        'NODE_ROLLING_RESYNC_SCHEDULED',
-        'CLUSTER_ROLLING_RESYNC_CANCELED',
-        'CLUSTER_OS_UPDATED',
-        'CLUSTER_INSTANCE_FAMILY_UPDATED',
-        'PUSH_BASED_LOG_EXPORT_ENABLED',
-        'PUSH_BASED_LOG_EXPORT_CONFIGURATION_UPDATED',
-        'PUSH_BASED_LOG_EXPORT_DISABLED',
-        'LOG_STREAMING_ENABLED',
-        'LOG_STREAMING_CONFIGURATION_UPDATED',
-        'LOG_STREAMING_DISABLED',
-        'DATADOG_LOG_STREAMING_ENABLED',
-        'DATADOG_LOG_STREAMING_CONFIGURATION_UPDATED',
-        'DATADOG_LOG_STREAMING_DISABLED',
-        'SPLUNK_LOG_STREAMING_ENABLED',
-        'SPLUNK_LOG_STREAMING_CONFIGURATION_UPDATED',
-        'SPLUNK_LOG_STREAMING_DISABLED',
-        'S3_LOG_STREAMING_ENABLED',
-        'S3_LOG_STREAMING_CONFIGURATION_UPDATED',
-        'S3_LOG_STREAMING_DISABLED',
-        'AZURE_LOG_STREAMING_ENABLED',
-        'AZURE_LOG_STREAMING_CONFIGURATION_UPDATED',
-        'AZURE_LOG_STREAMING_DISABLED',
-        'GCP_LOG_STREAMING_ENABLED',
-        'GCP_LOG_STREAMING_CONFIGURATION_UPDATED',
-        'GCP_LOG_STREAMING_DISABLED',
-        'OTEL_LOG_STREAMING_ENABLED',
-        'OTEL_LOG_STREAMING_CONFIGURATION_UPDATED',
-        'OTEL_LOG_STREAMING_DISABLED',
-        'LOG_STREAMING_EXPORT_FAILED_NONRETRYABLE',
-        'LOG_STREAMING_EXPORT_FAILED_RETRIES_EXHAUSTED',
-        'LOG_STREAMING_EXPORT_RECOVERED',
-        'LOG_STREAMING_REPLAY_STARTED',
-        'LOG_STREAMING_REPLAY_COMPLETE',
-        'LOG_STREAMING_REPLAY_FAILED',
-        'OTEL_METRIC_INTEGRATION_ENABLED',
-        'OTEL_METRIC_INTEGRATION_CONFIGURATION_UPDATED',
-        'OTEL_METRIC_INTEGRATION_DISABLED',
-        'AZURE_CLUSTER_PREFERRED_STORAGE_TYPE_UPDATED',
-        'CONTAINER_DELETED',
-        'REGIONALIZED_PRIVATE_ENDPOINT_MODE_ENABLED',
-        'REGIONALIZED_PRIVATE_ENDPOINT_MODE_DISABLED',
-        'STREAM_TENANT_CREATED',
-        'STREAM_TENANT_UPDATED',
-        'STREAM_TENANT_DELETED',
-        'STREAM_TENANT_CONNECTIONS_LISTED',
-        'STREAM_TENANT_CONNECTION_UPDATED',
-        'STREAM_TENANT_CONNECTION_DELETED',
-        'STREAM_TENANT_CONNECTION_CREATED',
-        'STREAM_TENANT_CONNECTION_VIEWED',
-        'STREAM_TENANT_OPERATIONAL_LOGS',
-        'STREAM_TENANT_AUDIT_LOGS',
-        'STREAM_TENANT_AUDIT_LOGS_DELETED',
-        'STREAM_WORKSPACE_PRIVATE_ENDPOINT_CREATED',
-        'STREAM_WORKSPACE_PRIVATE_ENDPOINT_DELETED',
-        'QUEUED_ADMIN_ACTION_CREATED',
-        'QUEUED_ADMIN_ACTION_COMPLETED',
-        'QUEUED_ADMIN_ACTION_CANCELLED',
-        'ATLAS_SQL_SCHEDULED_UPDATE_CREATED',
-        'ATLAS_SQL_SCHEDULED_UPDATE_MODIFIED',
-        'ATLAS_SQL_SCHEDULED_UPDATE_REMOVED',
-        'CLUSTER_INSTANCE_DISABLED',
-        'CLUSTER_INSTANCE_ENABLED',
-        'SEARCH_HOST_PAUSE_ALL_INITIAL_SYNCS',
-        'SEARCH_HOST_DISABLE_FTS',
-        'SEARCH_HOST_PAUSE_INITIAL_SYNC_ON_INDEX_IDS',
-        'SEARCH_AUTOSCALING_ADMIN_OVERRIDES_UPDATED',
-        'CLUSTER_BLOCK_WRITE',
-        'CLUSTER_UNBLOCK_WRITE',
-        'KMIP_KEY_ROTATION_SCHEDULED',
-        'SSL_CERTIFICATE_ISSUED',
-        'PROJECT_SCHEDULED_MAINTENANCE_OUTSIDE_OF_PROTECTED_HOURS',
-        'CLUSTER_CANCELING_SHARD_DRAIN_REQUESTED',
-        'CLUSTER_CANCELING_CONFIG_SERVER_TRANSITION_REQUESTED',
-        'CLUSTER_MIGRATE_BACK_TO_AWS_MANAGED_IP_REQUESTED',
-        'CLUSTER_IP_MIGRATED_FIRST_ROUND',
-        'CLUSTER_IP_MIGRATED_SECOND_ROUND',
-        'CLUSTER_IP_MIGRATED_FINAL_ROUND',
-        'CLUSTER_IP_ROLLED_BACK',
-        'AZ_BALANCING_OVERRIDE_MODIFIED',
-        'FTDC_SETTINGS_UPDATED',
-        'PROXY_PROTOCOL_FOR_PRIVATE_LINK_MODE_UPDATED',
-        'MONGOTUNE_WRITE_BLOCK_POLICY_ELIGIBLE',
-        'MONGOTUNE_WRITE_BLOCK_POLICY_INELIGIBLE',
-        'PREDICTIVE_AUTOSCALING_ENABLED',
-        'PREDICTIVE_AUTOSCALING_DISABLED',
-        'ADAPTIVE_SETTINGS_LOAD_SHEDDING_UPDATED',
-        'SHADOW_CLUSTER_CREATE_EXPOSURE',
-        'SHADOW_CLUSTER_DELETE_EXPOSURE',
-        'SHADOW_CLUSTER_RECORDING_STATUS_UPDATE',
-        'SHADOW_CLUSTER_REPLAY_STATUS_UPDATE',
-        'NODE_HIDDEN_BY_ADMIN',
-        'NODE_UNHIDDEN_BY_ADMIN',
-        'DISK_WARMING_PROCESS_NODE_HIDDEN_BY_ADMIN',
-        'DISK_WARMING_PROCESS_NODE_UNHIDDEN_BY_ADMIN',
-        'DISK_WARMING_PROCESS_INSTANCE_CANCELLED_BY_ADMIN',
-        'DISK_WARMING_PROCESS_DISK_TAG_READY_BY_ADMIN',
-        'NODE_FROZEN_BY_ADMIN',
-        'NODE_UNFROZEN_BY_ADMIN',
-        'CLUSTER_CREATED_VIA_ANIS',
-        'MAINTENANCE_WAVE_ASSIGNMENT_ADDED',
-        'MAINTENANCE_WAVE_ASSIGNMENT_MODIFIED',
-        'MAINTENANCE_WAVE_ASSIGNMENT_REMOVED',
-        'CLUSTER_MONGUARD_ENABLED',
-        'CLUSTER_MONGUARD_DISABLED',
-        'CLUSTER_MONGODB_VERSION_UPDATED',
-        'VOLUME_IMPAIRED',
-        'VOLUME_IMPAIRED_RESOLVED',
-        'SQL_INTERFACE_ENABLED',
-        'SQL_INTERFACE_DISABLED',
-        'AUTO_EMBEDDING_INFERENCE_SCOPE_UPDATED',
-        'CLUSTER_OVERLOAD_PROTECTION_SIMULATION_REQUESTED',
-        'CLUSTER_OVERLOAD_PROTECTION_SIMULATION_STARTED',
-        'CLUSTER_OVERLOAD_PROTECTION_SIMULATION_FAILED_TO_START',
-        'CLUSTER_OVERLOAD_PROTECTION_SIMULATION_END_REQUESTED',
-        'CLUSTER_OVERLOAD_PROTECTION_SIMULATION_ENDED',
-      ])
-      .openapi({ title: 'Atlas Audit Types' }),
+      .looseObject({})
+      .and(
+        z.enum(['MONGOTUNE_INFO', 'MONGOTUNE_ALERT']).openapi({ title: 'Mongotune Event Types' }),
+      ),
     z
-      .enum([
-        'DB_CHECK_UPDATED',
-        'CLUSTER_SAMPLED_FOR_DB_CHECK',
-        'DB_CHECK_SCHEDULED_FOR_CLUSTER',
-        'DB_CHECK_DEFERRED_FOR_CLUSTER',
-        'CLUSTER_OPTED_OUT_OF_DB_CHECK',
-      ])
-      .openapi({ title: 'DB Check Audit Types' }),
+      .looseObject({})
+      .and(
+        z
+          .enum([
+            'CLUSTER_CREATED',
+            'CLUSTER_RESURRECTED',
+            'CLUSTER_READY',
+            'CLUSTER_UPDATE_SUBMITTED',
+            'CLUSTER_PROCESS_ARGS_UPDATE_SUBMITTED',
+            'CLUSTER_MONGOT_PROCESS_ARGS_UPDATE_SUBMITTED',
+            'CLUSTER_SERVER_PARAMETERS_UPDATE_SUBMITTED',
+            'CLUSTER_AUTOMATICALLY_PAUSED',
+            'CLUSTER_UPDATE_STARTED',
+            'CLUSTER_UPDATE_STARTED_INTERNAL',
+            'CLUSTER_UPDATE_COMPLETED',
+            'MATERIAL_CLUSTER_UPDATE_COMPLETED_INTERNAL',
+            'CLUSTER_DELETE_SUBMITTED',
+            'CLUSTER_DELETE_SUBMITTED_INTERNAL',
+            'CLUSTER_DELETED',
+            'CLUSTER_IMPORT_STARTED',
+            'CLUSTER_IMPORT_CANCELLED',
+            'CLUSTER_IMPORT_EXPIRED',
+            'CLUSTER_IMPORT_CUTOVER',
+            'CLUSTER_IMPORT_COMPLETED',
+            'CLUSTER_IMPORT_FAILED',
+            'CLUSTER_IMPORT_RESTART_REQUESTED',
+            'PROJECT_LIVE_IMPORT_OVERRIDES_ADDED',
+            'PROJECT_LIVE_IMPORT_OVERRIDES_UPDATED',
+            'PROJECT_LIVE_IMPORT_OVERRIDES_DELETED',
+            'CLUSTER_OPLOG_RESIZED',
+            'CLUSTER_INSTANCE_RESTARTED',
+            'CLUSTER_INSTANCE_STOP_START',
+            'CLUSTER_INSTANCE_RESYNC_REQUESTED',
+            'CLUSTER_INSTANCE_RESYNC_CLEARED',
+            'CLUSTER_INSTANCE_UPDATE_REQUESTED',
+            'CLUSTER_INSTANCE_REPLACED',
+            'CLUSTER_INSTANCE_REPLACE_CLEARED',
+            'CLUSTER_INSTANCE_SWAPPED',
+            'CLUSTER_INSTANCE_SWAP_CLEARED',
+            'CLUSTER_INSTANCE_VM_RESTART_CLEARED',
+            'CLUSTER_INSTANCE_VM_REBOOT_CLEARED',
+            'CLUSTER_INSTANCE_CONFIG_UPDATED',
+            'CLUSTER_INSTANCE_AGENT_API_KEY_ROTATED',
+            'CLUSTER_INSTANCE_SSL_ROTATED',
+            'CLUSTER_INSTANCE_SSL_ROTATED_PER_CLUSTER',
+            'CLUSTER_INSTANCE_SSL_REVOKED',
+            'RELOAD_SSL_ON_PROCESSES',
+            'RELOAD_SSL_ON_PROCESSES_REQUESTED',
+            'CLUSTER_INSTANCE_ADMIN_BACKUP_SNAPSHOT_REQUESTED',
+            'DATA_LAKE_QUERY_LOGS_DOWNLOADED',
+            'FEDERATED_DATABASE_QUERY_LOGS_DOWNLOADED',
+            'ONLINE_ARCHIVE_QUERY_LOGS_DOWNLOADED',
+            'MONGODB_LOGS_DOWNLOADED',
+            'MONGOSQLD_LOGS_DOWNLOADED',
+            'MONGOT_LOGS_DOWNLOADED',
+            'MONGODB_USER_ADDED',
+            'MONGODB_USER_DELETED',
+            'MONGODB_USER_X509_CERT_CREATED',
+            'MONGODB_USER_X509_CERT_REVOKED',
+            'MONGODB_USER_UPDATED',
+            'MONGODB_USER_PASSWORD_UPDATED',
+            'MONGODB_ROLE_ADDED',
+            'MONGODB_ROLE_DELETED',
+            'MONGODB_ROLE_UPDATED',
+            'NETWORK_PERMISSION_ENTRY_ADDED',
+            'NETWORK_PERMISSION_ENTRY_REMOVED',
+            'NETWORK_PERMISSION_ENTRY_UPDATED',
+            'PRIVATE_NETWORK_ENDPOINT_ENTRY_ADDED',
+            'PRIVATE_NETWORK_ENDPOINT_ENTRY_REMOVED',
+            'PRIVATE_NETWORK_ENDPOINT_ENTRY_UPDATED',
+            'PLAN_STARTED',
+            'PLAN_COMPLETED',
+            'PLAN_ABANDONED',
+            'PLAN_DECLINED',
+            'PLAN_FAILURE_COUNT_RESET',
+            'CAPACITY_RETRY_OVERRIDE_SET',
+            'CAPACITY_RETRY_OVERRIDE_REMOVED',
+            'PLAN_ASAP_REQUESTED',
+            'INDEPENDENT_SHARD_AUTO_SCALING_AVAILABLE',
+            'INDEPENDENT_SHARD_SCALING_CLUSTER_MIGRATED',
+            'INDEPENDENT_SHARD_SCALING_CLUSTER_ROLLED_BACK',
+            'MOVE_SKIPPED',
+            'STEP_SKIPPED',
+            'PROXY_RESTARTED',
+            'PROXY_PANICKED',
+            'ATLAS_MAINTENANCE_PROTECTED_HOURS_CREATED',
+            'ATLAS_MAINTENANCE_PROTECTED_HOURS_MODIFIED',
+            'ATLAS_MAINTENANCE_PROTECTED_HOURS_REMOVED',
+            'ATLAS_MAINTENANCE_WINDOW_ADDED',
+            'ATLAS_MAINTENANCE_WINDOW_MODIFIED',
+            'ATLAS_MAINTENANCE_WINDOW_REMOVED',
+            'ATLAS_MAINTENANCE_START_ASAP',
+            'ATLAS_MAINTENANCE_SCHEDULED_FOR_NEXT_WINDOW',
+            'ATLAS_MAINTENANCE_DEFERRED',
+            'ATLAS_MAINTENANCE_AUTO_DEFER_ENABLED',
+            'ATLAS_MAINTENANCE_AUTO_DEFER_DISABLED',
+            'ATLAS_MAINTENANCE_RESET_BY_ADMIN',
+            'ATLAS_MAINTENANCE_DEFERRED_BY_ADMIN',
+            'SCHEDULED_MAINTENANCE',
+            'PROJECT_SCHEDULED_MAINTENANCE',
+            'PROJECT_LIMIT_UPDATED',
+            'PROJECT_ENABLE_EXTENDED_STORAGE_SIZES_UPDATED',
+            'PROJECT_ENABLE_DATA_VALIDATION_UPDATED',
+            'PROJECT_COLLECT_DATABASE_STATISTICS_UPDATED',
+            'OS_MAINTENANCE',
+            'OS_MAINTENANCE_RESTART',
+            'OS_MAINTENANCE_REPLACEMENT',
+            'FREE_UPGRADE_STARTED',
+            'FLEX_UPGRADE_STARTED',
+            'SERVERLESS_UPGRADE_STARTED',
+            'TEST_FAILOVER_REQUESTED',
+            'USER_SECURITY_SETTINGS_UPDATED',
+            'AUDIT_LOG_CONFIGURATION_UPDATED',
+            'STREAMS_AUDIT_LOG_CONFIGURATION_UPDATED',
+            'ENCRYPTION_AT_REST_CONFIGURATION_UPDATED',
+            'ENCRYPTION_AT_REST_CONFIGURATION_VALIDATION_FAILED',
+            'ENCRYPTION_AT_REST_CONFIGURATION_VALIDATION_SUCCEEDED',
+            'ENCRYPTION_AT_REST_KEY_ROTATION_STARTED',
+            'ENCRYPTION_AT_REST_PRIVATE_ENDPOINT_CREATED',
+            'ENCRYPTION_AT_REST_PRIVATE_ENDPOINT_DELETED',
+            'NDS_SET_IMAGE_OVERRIDES',
+            'NDS_SET_CHEF_TARBALL_URI',
+            'RESTRICTED_EMPLOYEE_ACCESS_BYPASS',
+            'REVOKED_EMPLOYEE_ACCESS_BYPASS',
+            'DEVICE_SYNC_DEBUG_ACCESS_GRANTED',
+            'DEVICE_SYNC_DEBUG_ACCESS_REVOKED',
+            'DEVICE_SYNC_DEBUG_X509_CERT_CREATED',
+            'EMPLOYEE_ACCESS_GRANTED',
+            'EMPLOYEE_ACCESS_REVOKED',
+            'QUERY_ENGINE_TENANT_CREATED',
+            'QUERY_ENGINE_TENANT_UPDATED',
+            'QUERY_ENGINE_TENANT_REMOVED',
+            'FEDERATED_DATABASE_CREATED',
+            'FEDERATED_DATABASE_UPDATED',
+            'FEDERATED_DATABASE_REMOVED',
+            'TENANT_SNAPSHOT_FAILED',
+            'TENANT_RESTORE_FAILED',
+            'SAMPLE_DATASET_LOAD_REQUESTED',
+            'CUSTOMER_X509_CRL_UPDATED',
+            'CONTAINER_SUBNETS_UPDATE_REQUESTED',
+            'ONLINE_ARCHIVE_CREATED',
+            'ONLINE_ARCHIVE_DELETED',
+            'ONLINE_ARCHIVE_UPDATED',
+            'ONLINE_ARCHIVE_PAUSE_REQUESTED',
+            'ONLINE_ARCHIVE_PAUSED',
+            'ONLINE_ARCHIVE_ACTIVE',
+            'ONLINE_ARCHIVE_ORPHANED',
+            'ONLINE_ARCHIVE_DATA_EXPIRATION_RULE_ENABLED',
+            'ONLINE_ARCHIVE_DATA_EXPIRATION_RULE_UPDATED',
+            'ONLINE_ARCHIVE_DATA_EXPIRATION_RULE_DISABLED',
+            'ONLINE_ARCHIVE_DELETE_AFTER_DATE_UPDATED',
+            'CLOUD_PROVIDER_ACCESS_AWS_IAM_ROLE_ADDED',
+            'CLOUD_PROVIDER_ACCESS_AWS_IAM_ROLE_DELETED',
+            'CLOUD_PROVIDER_ACCESS_AWS_IAM_ROLE_UPDATED',
+            'CLOUD_PROVIDER_ACCESS_AZURE_SERVICE_PRINCIPAL_ADDED',
+            'CLOUD_PROVIDER_ACCESS_AZURE_SERVICE_PRINCIPAL_DELETED',
+            'CLOUD_PROVIDER_ACCESS_AZURE_SERVICE_PRINCIPAL_UPDATED',
+            'CLOUD_PROVIDER_ACCESS_GCP_SERVICE_ACCOUNT_ADDED',
+            'CLOUD_PROVIDER_ACCESS_GCP_SERVICE_ACCOUNT_DELETED',
+            'CLOUD_PROVIDER_ACCESS_GCP_SERVICE_ACCOUNT_UPDATED',
+            'PENDING_INDEXES_DELETED',
+            'PENDING_INDEXES_CANCELED',
+            'PROCESS_RESTART_REQUESTED',
+            'AUTO_HEALING_ACTION',
+            'AUTO_HEALING_REQUESTED_CRITICAL_INSTANCE_POWER_CYCLE',
+            'AUTO_HEALING_REQUESTED_INSTANCE_REPLACEMENT',
+            'AUTO_HEALING_REQUESTED_NODE_RESYNC',
+            'EXTRA_MAINTENANCE_DEFERRAL_GRANTED',
+            'GROUP_AUTOMATION_CONFIG_PUBLISHED',
+            'CLUSTER_AUTOMATION_CONFIG_PUBLISHED',
+            'SET_ENSURE_CLUSTER_CONNECTIVITY_AFTER_FOR_CLUSTER',
+            'CLUSTER_LINKED_TO_VERCEL',
+            'CLUSTER_UNLINKED_FROM_VERCEL',
+            'INGESTION_PIPELINE_DELETED',
+            'INGESTION_PIPELINE_DESTROYED',
+            'INGESTION_PIPELINE_CREATED',
+            'INGESTION_PIPELINE_UPDATED',
+            'OS_TUNE_FILE_OVERRIDES',
+            'MONITORING_AGENT_OVERRIDES',
+            'MONITORING_AGENT_REBALANCE_FLAG',
+            'MONITORING_AGENT_REBALANCE_TRIGGERED',
+            'CLUSTER_PREFERRED_CPU_ARCHITECTURE_MODIFIED',
+            'CLUSTER_FORCE_PLANNED',
+            'CLUSTER_REGIONAL_OUTAGE_SIMULATION_STARTED',
+            'CLUSTER_REGIONAL_OUTAGE_SIMULATION_FAILED_TO_START',
+            'CLUSTER_REGIONAL_OUTAGE_SIMULATION_END_REQUESTED',
+            'CLUSTER_REGIONAL_OUTAGE_SIMULATION_COMPLETED',
+            'CLUSTER_REGIONAL_OUTAGE_SIMULATION_CANCELLED_CLUSTER_PAUSE',
+            'UIS_PANICKED',
+            'TENANT_UPGRADE_TO_SERVERLESS_SUCCESSFUL',
+            'TENANT_UPGRADE_TO_SERVERLESS_FAILED',
+            'SERVERLESS_UPGRADE_TO_DEDICATED_SUCCESSFUL',
+            'SERVERLESS_UPGRADE_TO_DEDICATED_FAILED',
+            'CLUSTER_FORCE_RECONFIG_REQUESTED',
+            'SLS_LOG_AND_MONGOD_NODES_RECREATION_REQUESTED',
+            'AGENT_FORCE_RESTART_REQUESTED',
+            'CLUSTER_RESET_FORCE_RECONFIG_REQUESTED',
+            'CLUSTER_FORCE_PAUSE_REQUESTED',
+            'PROJECT_BYPASSED_MAINTENANCE',
+            'FEATURE_FLAG_MAINTENANCE',
+            'DATA_FEDERATION_QUERY_LIMIT_CONFIGURED',
+            'DATA_FEDERATION_QUERY_LIMIT_DELETED',
+            'DATA_API_SETUP_FOR_VERCEL',
+            'ADMIN_CLUSTER_LOCK_UPDATED',
+            'CLUSTER_ROLLING_RESYNC_STARTED',
+            'CLUSTER_ROLLING_RESYNC_COMPLETED',
+            'CLUSTER_ROLLING_RESYNC_FAILED',
+            'NODE_ROLLING_RESYNC_SCHEDULED',
+            'CLUSTER_ROLLING_RESYNC_CANCELED',
+            'CLUSTER_OS_UPDATED',
+            'CLUSTER_INSTANCE_FAMILY_UPDATED',
+            'PUSH_BASED_LOG_EXPORT_ENABLED',
+            'PUSH_BASED_LOG_EXPORT_CONFIGURATION_UPDATED',
+            'PUSH_BASED_LOG_EXPORT_DISABLED',
+            'LOG_STREAMING_ENABLED',
+            'LOG_STREAMING_CONFIGURATION_UPDATED',
+            'LOG_STREAMING_DISABLED',
+            'DATADOG_LOG_STREAMING_ENABLED',
+            'DATADOG_LOG_STREAMING_CONFIGURATION_UPDATED',
+            'DATADOG_LOG_STREAMING_DISABLED',
+            'SPLUNK_LOG_STREAMING_ENABLED',
+            'SPLUNK_LOG_STREAMING_CONFIGURATION_UPDATED',
+            'SPLUNK_LOG_STREAMING_DISABLED',
+            'S3_LOG_STREAMING_ENABLED',
+            'S3_LOG_STREAMING_CONFIGURATION_UPDATED',
+            'S3_LOG_STREAMING_DISABLED',
+            'AZURE_LOG_STREAMING_ENABLED',
+            'AZURE_LOG_STREAMING_CONFIGURATION_UPDATED',
+            'AZURE_LOG_STREAMING_DISABLED',
+            'GCP_LOG_STREAMING_ENABLED',
+            'GCP_LOG_STREAMING_CONFIGURATION_UPDATED',
+            'GCP_LOG_STREAMING_DISABLED',
+            'OTEL_LOG_STREAMING_ENABLED',
+            'OTEL_LOG_STREAMING_CONFIGURATION_UPDATED',
+            'OTEL_LOG_STREAMING_DISABLED',
+            'LOG_STREAMING_EXPORT_FAILED_NONRETRYABLE',
+            'LOG_STREAMING_EXPORT_FAILED_RETRIES_EXHAUSTED',
+            'LOG_STREAMING_EXPORT_RECOVERED',
+            'LOG_STREAMING_REPLAY_STARTED',
+            'LOG_STREAMING_REPLAY_COMPLETE',
+            'LOG_STREAMING_REPLAY_FAILED',
+            'OTEL_METRIC_INTEGRATION_ENABLED',
+            'OTEL_METRIC_INTEGRATION_CONFIGURATION_UPDATED',
+            'OTEL_METRIC_INTEGRATION_DISABLED',
+            'AZURE_CLUSTER_PREFERRED_STORAGE_TYPE_UPDATED',
+            'CONTAINER_DELETED',
+            'REGIONALIZED_PRIVATE_ENDPOINT_MODE_ENABLED',
+            'REGIONALIZED_PRIVATE_ENDPOINT_MODE_DISABLED',
+            'STREAM_TENANT_CREATED',
+            'STREAM_TENANT_UPDATED',
+            'STREAM_TENANT_DELETED',
+            'STREAM_TENANT_CONNECTIONS_LISTED',
+            'STREAM_TENANT_CONNECTION_UPDATED',
+            'STREAM_TENANT_CONNECTION_DELETED',
+            'STREAM_TENANT_CONNECTION_CREATED',
+            'STREAM_TENANT_CONNECTION_VIEWED',
+            'STREAM_TENANT_OPERATIONAL_LOGS',
+            'STREAM_TENANT_AUDIT_LOGS',
+            'STREAM_TENANT_AUDIT_LOGS_DELETED',
+            'STREAM_WORKSPACE_PRIVATE_ENDPOINT_CREATED',
+            'STREAM_WORKSPACE_PRIVATE_ENDPOINT_DELETED',
+            'QUEUED_ADMIN_ACTION_CREATED',
+            'QUEUED_ADMIN_ACTION_COMPLETED',
+            'QUEUED_ADMIN_ACTION_CANCELLED',
+            'ATLAS_SQL_SCHEDULED_UPDATE_CREATED',
+            'ATLAS_SQL_SCHEDULED_UPDATE_MODIFIED',
+            'ATLAS_SQL_SCHEDULED_UPDATE_REMOVED',
+            'CLUSTER_INSTANCE_DISABLED',
+            'CLUSTER_INSTANCE_ENABLED',
+            'SEARCH_HOST_PAUSE_ALL_INITIAL_SYNCS',
+            'SEARCH_HOST_DISABLE_FTS',
+            'SEARCH_HOST_PAUSE_INITIAL_SYNC_ON_INDEX_IDS',
+            'SEARCH_AUTOSCALING_ADMIN_OVERRIDES_UPDATED',
+            'SEARCH_CLUSTER_MONGOT_VERSION_OVERRIDE_UPDATED',
+            'CLUSTER_BLOCK_WRITE',
+            'CLUSTER_UNBLOCK_WRITE',
+            'KMIP_KEY_ROTATION_SCHEDULED',
+            'SSL_CERTIFICATE_ISSUED',
+            'PROJECT_SCHEDULED_MAINTENANCE_OUTSIDE_OF_PROTECTED_HOURS',
+            'CLUSTER_CANCELING_SHARD_DRAIN_REQUESTED',
+            'CLUSTER_CANCELING_CONFIG_SERVER_TRANSITION_REQUESTED',
+            'CLUSTER_MIGRATE_BACK_TO_AWS_MANAGED_IP_REQUESTED',
+            'CLUSTER_IP_MIGRATED_FIRST_ROUND',
+            'CLUSTER_IP_MIGRATED_SECOND_ROUND',
+            'CLUSTER_IP_MIGRATED_FINAL_ROUND',
+            'CLUSTER_IP_ROLLED_BACK',
+            'AZ_BALANCING_OVERRIDE_MODIFIED',
+            'FTDC_SETTINGS_UPDATED',
+            'PROXY_PROTOCOL_FOR_PRIVATE_LINK_MODE_UPDATED',
+            'MONGOTUNE_WRITE_BLOCK_POLICY_ELIGIBLE',
+            'MONGOTUNE_WRITE_BLOCK_POLICY_INELIGIBLE',
+            'PREDICTIVE_AUTOSCALING_ENABLED',
+            'PREDICTIVE_AUTOSCALING_DISABLED',
+            'ADAPTIVE_SETTINGS_LOAD_SHEDDING_UPDATED',
+            'SHADOW_CLUSTER_CREATE_EXPOSURE',
+            'SHADOW_CLUSTER_DELETE_EXPOSURE',
+            'SHADOW_CLUSTER_RECORDING_STATUS_UPDATE',
+            'SHADOW_CLUSTER_REPLAY_STATUS_UPDATE',
+            'NODE_HIDDEN_BY_ADMIN',
+            'NODE_UNHIDDEN_BY_ADMIN',
+            'DISK_WARMING_PROCESS_NODE_HIDDEN_BY_ADMIN',
+            'DISK_WARMING_PROCESS_NODE_UNHIDDEN_BY_ADMIN',
+            'DISK_WARMING_PROCESS_INSTANCE_CANCELLED_BY_ADMIN',
+            'DISK_WARMING_PROCESS_DISK_TAG_READY_BY_ADMIN',
+            'NODE_FROZEN_BY_ADMIN',
+            'NODE_UNFROZEN_BY_ADMIN',
+            'CLUSTER_CREATED_VIA_ANIS',
+            'MAINTENANCE_WAVE_ASSIGNMENT_ADDED',
+            'MAINTENANCE_WAVE_ASSIGNMENT_MODIFIED',
+            'MAINTENANCE_WAVE_ASSIGNMENT_REMOVED',
+            'CLUSTER_MONGUARD_ENABLED',
+            'CLUSTER_MONGUARD_DISABLED',
+            'CLUSTER_MONGODB_VERSION_UPDATED',
+            'VOLUME_IMPAIRED',
+            'VOLUME_IMPAIRED_RESOLVED',
+            'SQL_INTERFACE_ENABLED',
+            'SQL_INTERFACE_DISABLED',
+            'AUTO_EMBEDDING_INFERENCE_SCOPE_UPDATED',
+            'CLUSTER_OVERLOAD_PROTECTION_SIMULATION_REQUESTED',
+            'CLUSTER_OVERLOAD_PROTECTION_SIMULATION_STARTED',
+            'CLUSTER_OVERLOAD_PROTECTION_SIMULATION_FAILED_TO_START',
+            'CLUSTER_OVERLOAD_PROTECTION_SIMULATION_END_REQUESTED',
+            'CLUSTER_OVERLOAD_PROTECTION_SIMULATION_ENDED',
+          ])
+          .openapi({ title: 'Atlas Audit Types' }),
+      ),
     z
-      .enum([
-        'CLUSTER_SAMPLED_FOR_DATA_VALIDATION',
-        'DATA_VALIDATION_SUBMITTED_FOR_CLUSTER',
-        'CLUSTER_OPTED_OUT_OF_DATA_VALIDATION',
-        'REPLICA_SET_SAMPLED_FOR_INTER_NODE_DATA_VALIDATION',
-        'REPLICA_SET_OPTED_OUT_OF_INTER_NODE_DATA_VALIDATION',
-        'INTER_NODE_DATA_VALIDATION_SUBMITTED_FOR_REPLICA_SET',
-      ])
-      .openapi({ title: 'Data Validation Audit Types' }),
+      .looseObject({})
+      .and(
+        z
+          .enum([
+            'DB_CHECK_UPDATED',
+            'CLUSTER_SAMPLED_FOR_DB_CHECK',
+            'DB_CHECK_SCHEDULED_FOR_CLUSTER',
+            'DB_CHECK_DEFERRED_FOR_CLUSTER',
+            'CLUSTER_OPTED_OUT_OF_DB_CHECK',
+          ])
+          .openapi({ title: 'DB Check Audit Types' }),
+      ),
     z
-      .enum([
-        'COMPUTE_AUTO_SCALE_INITIATED',
-        'DISK_AUTO_SCALE_INITIATED',
-        'COMPUTE_AUTO_SCALE_INITIATED_BASE',
-        'COMPUTE_AUTO_SCALE_INITIATED_ANALYTICS',
-        'COMPUTE_AUTO_SCALE_SCALE_DOWN_FAIL_BASE',
-        'COMPUTE_AUTO_SCALE_SCALE_DOWN_FAIL_ANALYTICS',
-        'COMPUTE_AUTO_SCALE_DOWNSCALE_SKIPPED_FALLBACK_BASE',
-        'COMPUTE_AUTO_SCALE_DOWNSCALE_SKIPPED_FALLBACK_ANALYTICS',
-        'COMPUTE_AUTO_SCALE_MAX_INSTANCE_SIZE_FAIL_BASE',
-        'COMPUTE_AUTO_SCALE_MAX_INSTANCE_SIZE_FAIL_ANALYTICS',
-        'COMPUTE_AUTO_SCALE_OPLOG_FAIL_BASE',
-        'COMPUTE_AUTO_SCALE_OPLOG_FAIL_ANALYTICS',
-        'COMPUTE_AUTO_SCALE_CAPACITY_CONSTRAINT_FAIL_BASE',
-        'COMPUTE_AUTO_SCALE_CAPACITY_CONSTRAINT_FAIL_ANALYTICS',
-        'DISK_AUTO_SCALE_MAX_DISK_SIZE_FAIL',
-        'DISK_AUTO_SCALE_OPLOG_FAIL',
-        'CLUSTER_AUTO_SHARDING_INITIATED',
-        'CLUSTER_RESHARDING_COMPLETED',
-        'PREDICTIVE_COMPUTE_AUTO_SCALE_INITIATED_BASE',
-        'PREDICTIVE_COMPUTE_AUTO_SCALE_MAX_INSTANCE_SIZE_FAIL_BASE',
-        'PREDICTIVE_COMPUTE_AUTO_SCALE_OPLOG_FAIL_BASE',
-        'PREDICTIVE_COMPUTE_AUTO_SCALE_CAPACITY_CONSTRAINT_FAIL_BASE',
-      ])
-      .openapi({ title: 'Auto Scaling Audit Types' }),
+      .looseObject({})
+      .and(
+        z
+          .enum([
+            'CLUSTER_SAMPLED_FOR_DATA_VALIDATION',
+            'DATA_VALIDATION_SUBMITTED_FOR_CLUSTER',
+            'CLUSTER_OPTED_OUT_OF_DATA_VALIDATION',
+            'REPLICA_SET_SAMPLED_FOR_INTER_NODE_DATA_VALIDATION',
+            'REPLICA_SET_OPTED_OUT_OF_INTER_NODE_DATA_VALIDATION',
+            'INTER_NODE_DATA_VALIDATION_SUBMITTED_FOR_REPLICA_SET',
+          ])
+          .openapi({ title: 'Data Validation Audit Types' }),
+      ),
     z
-      .enum([
-        'MAINTENANCE_IN_ADVANCED',
-        'MAINTENANCE_AUTO_DEFERRED',
-        'MAINTENANCE_STARTED',
-        'MAINTENANCE_COMPLETED',
-        'MAINTENANCE_NO_LONGER_NEEDED',
-      ])
-      .openapi({ title: 'Maintenance Window Audit Types' }),
+      .looseObject({})
+      .and(
+        z
+          .enum([
+            'COMPUTE_AUTO_SCALE_INITIATED',
+            'DISK_AUTO_SCALE_INITIATED',
+            'COMPUTE_AUTO_SCALE_INITIATED_BASE',
+            'COMPUTE_AUTO_SCALE_INITIATED_ANALYTICS',
+            'COMPUTE_AUTO_SCALE_SCALE_DOWN_FAIL_BASE',
+            'COMPUTE_AUTO_SCALE_SCALE_DOWN_FAIL_ANALYTICS',
+            'COMPUTE_AUTO_SCALE_DOWNSCALE_SKIPPED_FALLBACK_BASE',
+            'COMPUTE_AUTO_SCALE_DOWNSCALE_SKIPPED_FALLBACK_ANALYTICS',
+            'COMPUTE_AUTO_SCALE_MAX_INSTANCE_SIZE_FAIL_BASE',
+            'COMPUTE_AUTO_SCALE_MAX_INSTANCE_SIZE_FAIL_ANALYTICS',
+            'COMPUTE_AUTO_SCALE_OPLOG_FAIL_BASE',
+            'COMPUTE_AUTO_SCALE_OPLOG_FAIL_ANALYTICS',
+            'COMPUTE_AUTO_SCALE_CAPACITY_CONSTRAINT_FAIL_BASE',
+            'COMPUTE_AUTO_SCALE_CAPACITY_CONSTRAINT_FAIL_ANALYTICS',
+            'DISK_AUTO_SCALE_MAX_DISK_SIZE_FAIL',
+            'DISK_AUTO_SCALE_OPLOG_FAIL',
+            'CLUSTER_AUTO_SHARDING_INITIATED',
+            'CLUSTER_RESHARDING_COMPLETED',
+            'PREDICTIVE_COMPUTE_AUTO_SCALE_INITIATED_BASE',
+            'PREDICTIVE_COMPUTE_AUTO_SCALE_MAX_INSTANCE_SIZE_FAIL_BASE',
+            'PREDICTIVE_COMPUTE_AUTO_SCALE_OPLOG_FAIL_BASE',
+            'PREDICTIVE_COMPUTE_AUTO_SCALE_CAPACITY_CONSTRAINT_FAIL_BASE',
+          ])
+          .openapi({ title: 'Auto Scaling Audit Types' }),
+      ),
     z
-      .enum([
-        'SERVERLESS_AUTO_SCALING_INITIATED',
-        'SERVERLESS_VERTICAL_SCALING_INITIATED',
-        'SERVERLESS_HORIZONTAL_SCALING_INITIATED',
-        'SERVERLESS_MTM_DRAIN_REQUESTED',
-        'SERVERLESS_MTM_DRAIN_INITIATED',
-        'SERVERLESS_MTM_DRAIN_COMPLETED',
-        'SERVERLESS_MTM_DRAIN_STOPPED',
-      ])
-      .openapi({ title: 'Serverless Auto Scaling Audit Types' }),
+      .looseObject({})
+      .and(
+        z
+          .enum([
+            'MAINTENANCE_IN_ADVANCED',
+            'MAINTENANCE_AUTO_DEFERRED',
+            'MAINTENANCE_STARTED',
+            'MAINTENANCE_COMPLETED',
+            'MAINTENANCE_NO_LONGER_NEEDED',
+          ])
+          .openapi({ title: 'Maintenance Window Audit Types' }),
+      ),
     z
-      .enum([
-        'SERVERLESS_INSTANCE_CREATED',
-        'SERVERLESS_INSTANCE_READY',
-        'SERVERLESS_INSTANCE_UPDATE_SUBMITTED',
-        'SERVERLESS_INSTANCE_UPDATE_STARTED',
-        'SERVERLESS_INSTANCE_UPDATE_COMPLETED',
-        'SERVERLESS_INSTANCE_DELETE_SUBMITTED',
-        'SERVERLESS_INSTANCE_DELETED',
-        'SERVERLESS_INSTANCE_UNBLOCKED',
-      ])
-      .openapi({ title: 'Serverless Instance Audit Types' }),
+      .looseObject({})
+      .and(
+        z
+          .enum([
+            'SERVERLESS_AUTO_SCALING_INITIATED',
+            'SERVERLESS_VERTICAL_SCALING_INITIATED',
+            'SERVERLESS_HORIZONTAL_SCALING_INITIATED',
+            'SERVERLESS_MTM_DRAIN_REQUESTED',
+            'SERVERLESS_MTM_DRAIN_INITIATED',
+            'SERVERLESS_MTM_DRAIN_COMPLETED',
+            'SERVERLESS_MTM_DRAIN_STOPPED',
+          ])
+          .openapi({ title: 'Serverless Auto Scaling Audit Types' }),
+      ),
     z
-      .enum([
-        'TENANT_ENDPOINT_CREATED',
-        'TENANT_ENDPOINT_RESERVED',
-        'TENANT_ENDPOINT_RESERVATION_FAILED',
-        'TENANT_ENDPOINT_UPDATED',
-        'TENANT_ENDPOINT_INITIATING',
-        'TENANT_ENDPOINT_AVAILABLE',
-        'TENANT_ENDPOINT_FAILED',
-        'TENANT_ENDPOINT_DELETING',
-        'TENANT_ENDPOINT_DELETED',
-        'TENANT_ENDPOINT_EXPIRED',
-      ])
-      .openapi({ title: 'Auto Scaling Audit Types' }),
+      .looseObject({})
+      .and(
+        z
+          .enum([
+            'SERVERLESS_INSTANCE_CREATED',
+            'SERVERLESS_INSTANCE_READY',
+            'SERVERLESS_INSTANCE_UPDATE_SUBMITTED',
+            'SERVERLESS_INSTANCE_UPDATE_STARTED',
+            'SERVERLESS_INSTANCE_UPDATE_COMPLETED',
+            'SERVERLESS_INSTANCE_DELETE_SUBMITTED',
+            'SERVERLESS_INSTANCE_DELETED',
+            'SERVERLESS_INSTANCE_UNBLOCKED',
+          ])
+          .openapi({ title: 'Serverless Instance Audit Types' }),
+      ),
     z
-      .enum([
-        'TENANT_ENDPOINT_SERVICE_DEPLOYMENT_CREATED',
-        'TENANT_ENDPOINT_SERVICE_CREATED',
-        'TENANT_ENDPOINT_SERVICE_AVAILABLE',
-        'TENANT_ENDPOINT_SERVICE_DEPLOYMENT_DELETE_REQUESTED',
-        'TENANT_ENDPOINT_SERVICE_DELETED',
-        'TENANT_ENDPOINT_SERVICE_DEPLOYMENT_DELETED',
-        'TENANT_ENDPOINT_SERVICE_DEPLOYMENT_NUM_DESIRED_ENDPOINT_SERVICES_INCREASED',
-      ])
-      .openapi({ title: 'Tenant Endpoint Service Deployment Audit Types' }),
+      .looseObject({})
+      .and(
+        z
+          .enum([
+            'TENANT_ENDPOINT_CREATED',
+            'TENANT_ENDPOINT_RESERVED',
+            'TENANT_ENDPOINT_RESERVATION_FAILED',
+            'TENANT_ENDPOINT_UPDATED',
+            'TENANT_ENDPOINT_INITIATING',
+            'TENANT_ENDPOINT_AVAILABLE',
+            'TENANT_ENDPOINT_FAILED',
+            'TENANT_ENDPOINT_DELETING',
+            'TENANT_ENDPOINT_DELETED',
+            'TENANT_ENDPOINT_EXPIRED',
+          ])
+          .openapi({ title: 'Auto Scaling Audit Types' }),
+      ),
     z
-      .enum([
-        'NDS_X509_USER_AUTHENTICATION_CUSTOMER_CA_EXPIRATION_RESOLVED',
-        'NDS_X509_USER_AUTHENTICATION_CUSTOMER_CA_EXPIRATION_CHECK',
-        'NDS_X509_USER_AUTHENTICATION_CUSTOMER_CRL_EXPIRATION_RESOLVED',
-        'NDS_X509_USER_AUTHENTICATION_CUSTOMER_CRL_EXPIRATION_CHECK',
-        'NDS_X509_USER_AUTHENTICATION_MANAGED_USER_CERTS_EXPIRATION_RESOLVED',
-        'NDS_X509_USER_AUTHENTICATION_MANAGED_USER_CERTS_EXPIRATION_CHECK',
-      ])
-      .openapi({ title: 'x509 User Auth Event Types' }),
+      .looseObject({})
+      .and(
+        z
+          .enum([
+            'TENANT_ENDPOINT_SERVICE_DEPLOYMENT_CREATED',
+            'TENANT_ENDPOINT_SERVICE_CREATED',
+            'TENANT_ENDPOINT_SERVICE_AVAILABLE',
+            'TENANT_ENDPOINT_SERVICE_DEPLOYMENT_DELETE_REQUESTED',
+            'TENANT_ENDPOINT_SERVICE_DELETED',
+            'TENANT_ENDPOINT_SERVICE_DEPLOYMENT_DELETED',
+            'TENANT_ENDPOINT_SERVICE_DEPLOYMENT_NUM_DESIRED_ENDPOINT_SERVICES_INCREASED',
+          ])
+          .openapi({ title: 'Tenant Endpoint Service Deployment Audit Types' }),
+      ),
     z
-      .enum([
-        'ONLINE_ARCHIVE_INSUFFICIENT_INDEXES_CHECK',
-        'ONLINE_ARCHIVE_INSUFFICIENT_INDEXES_RESOLVED',
-        'ONLINE_ARCHIVE_UP_TO_DATE',
-        'ONLINE_ARCHIVE_DATA_EXPIRATION_RESOLVED',
-        'ONLINE_ARCHIVE_MAX_CONSECUTIVE_OFFLOAD_WINDOWS_CHECK',
-      ])
-      .openapi({ title: 'Online Archive Event Types' }),
+      .looseObject({})
+      .and(
+        z
+          .enum([
+            'NDS_X509_USER_AUTHENTICATION_CUSTOMER_CA_EXPIRATION_RESOLVED',
+            'NDS_X509_USER_AUTHENTICATION_CUSTOMER_CA_EXPIRATION_CHECK',
+            'NDS_X509_USER_AUTHENTICATION_CUSTOMER_CRL_EXPIRATION_RESOLVED',
+            'NDS_X509_USER_AUTHENTICATION_CUSTOMER_CRL_EXPIRATION_CHECK',
+            'NDS_X509_USER_AUTHENTICATION_MANAGED_USER_CERTS_EXPIRATION_RESOLVED',
+            'NDS_X509_USER_AUTHENTICATION_MANAGED_USER_CERTS_EXPIRATION_CHECK',
+          ])
+          .openapi({ title: 'x509 User Auth Event Types' }),
+      ),
     z
-      .enum([
-        'PRIVATE_ENDPOINT_CONNECTION_STRING_AVAILABLE',
-        'PRIVATE_ENDPOINT_CONNECTION_STRING_CREATED',
-        'PRIVATE_ENDPOINT_CONNECTION_STRING_DELETED',
-        'PRIVATE_ENDPOINT_CONNECTION_STRING_MISCONFIGURED',
-        'PRIVATE_ENDPOINT_CONNECTION_STRING_OPT_IN',
-        'PRIVATE_ENDPOINT_CONNECTION_STRING_OPT_OUT',
-        'PRIVATE_ENDPOINT_CONNECTION_STRING_UPDATED',
-      ])
-      .openapi({ title: 'Private Endpoint Connection String Audit Types' }),
+      .looseObject({})
+      .and(
+        z
+          .enum([
+            'ONLINE_ARCHIVE_INSUFFICIENT_INDEXES_CHECK',
+            'ONLINE_ARCHIVE_INSUFFICIENT_INDEXES_RESOLVED',
+            'ONLINE_ARCHIVE_UP_TO_DATE',
+            'ONLINE_ARCHIVE_DATA_EXPIRATION_RESOLVED',
+            'ONLINE_ARCHIVE_MAX_CONSECUTIVE_OFFLOAD_WINDOWS_CHECK',
+          ])
+          .openapi({ title: 'Online Archive Event Types' }),
+      ),
     z
-      .enum([
-        'CROSS_REGION_SUPPORTED_REGION_MODIFIED',
-        'ENDPOINT_SERVICE_CREATED',
-        'ENDPOINT_SERVICE_CREATION_RETRIED',
-        'ENDPOINT_SERVICE_DELETED',
-        'INTERFACE_ENDPOINT_CREATED',
-        'INTERFACE_ENDPOINT_DELETED',
-        'INTERFACE_ENDPOINT_PATCHED',
-        'INTERFACE_ENDPOINT_RETRIED',
-      ])
-      .openapi({ title: 'Private Link Audit Types' }),
+      .looseObject({})
+      .and(
+        z
+          .enum([
+            'PRIVATE_ENDPOINT_CONNECTION_STRING_AVAILABLE',
+            'PRIVATE_ENDPOINT_CONNECTION_STRING_CREATED',
+            'PRIVATE_ENDPOINT_CONNECTION_STRING_DELETED',
+            'PRIVATE_ENDPOINT_CONNECTION_STRING_MISCONFIGURED',
+            'PRIVATE_ENDPOINT_CONNECTION_STRING_OPT_IN',
+            'PRIVATE_ENDPOINT_CONNECTION_STRING_OPT_OUT',
+            'PRIVATE_ENDPOINT_CONNECTION_STRING_UPDATED',
+          ])
+          .openapi({ title: 'Private Endpoint Connection String Audit Types' }),
+      ),
     z
-      .literal('PROACTIVE_OPERATION_EVENT_LOGGED')
-      .openapi({ title: 'Proactive Operation Event Types' }),
+      .looseObject({})
+      .and(
+        z
+          .enum([
+            'CROSS_REGION_SUPPORTED_REGION_MODIFIED',
+            'ENDPOINT_SERVICE_CREATED',
+            'ENDPOINT_SERVICE_CREATION_RETRIED',
+            'ENDPOINT_SERVICE_DELETED',
+            'INTERFACE_ENDPOINT_CREATED',
+            'INTERFACE_ENDPOINT_DELETED',
+            'INTERFACE_ENDPOINT_PATCHED',
+            'INTERFACE_ENDPOINT_RETRIED',
+          ])
+          .openapi({ title: 'Private Link Audit Types' }),
+      ),
     z
-      .enum([
-        'PRIMARY_ELECTED',
-        'REPLICATION_OPLOG_WINDOW_HEALTHY',
-        'REPLICATION_OPLOG_WINDOW_RUNNING_OUT',
-        'ONE_PRIMARY',
-        'NO_PRIMARY',
-        'TOO_MANY_ELECTIONS',
-        'TOO_FEW_HEALTHY_MEMBERS',
-        'TOO_MANY_UNHEALTHY_MEMBERS',
-      ])
-      .openapi({ title: 'ReplicaSet Event Types' }),
+      .looseObject({})
+      .and(
+        z
+          .literal('PROACTIVE_OPERATION_EVENT_LOGGED')
+          .openapi({ title: 'Proactive Operation Event Types' }),
+      ),
     z
-      .enum(['SEARCH_DEPLOYMENT_CREATED', 'SEARCH_DEPLOYMENT_UPDATED', 'SEARCH_DEPLOYMENT_DELETED'])
-      .openapi({ title: 'Search Deployment Audit Types' }),
+      .looseObject({})
+      .and(
+        z
+          .enum([
+            'PRIMARY_ELECTED',
+            'REPLICATION_OPLOG_WINDOW_HEALTHY',
+            'REPLICATION_OPLOG_WINDOW_RUNNING_OUT',
+            'ONE_PRIMARY',
+            'NO_PRIMARY',
+            'TOO_MANY_ELECTIONS',
+            'TOO_FEW_HEALTHY_MEMBERS',
+            'TOO_MANY_UNHEALTHY_MEMBERS',
+          ])
+          .openapi({ title: 'ReplicaSet Event Types' }),
+      ),
     z
-      .enum([
-        'SERVERLESS_DEPLOYMENT_CREATED',
-        'SERVERLESS_DEPLOYMENT_DELETED',
-        'SERVERLESS_DEPLOYMENT_UPDATED',
-        'SERVERLESS_DEPLOYMENT_INSTANCE_REPLACED',
-        'SERVERLESS_DEPLOYMENT_INSTANCE_REBOOTED',
-        'SERVERLESS_DEPLOYMENT_ENDPOINT_SERVICE_LINKED',
-        'SERVERLESS_DEPLOYMENT_ENDPOINT_SERVICE_UNLINKED',
-        'SERVERLESS_DEPLOYMENT_ENVOY_INSTANCE_UIS_KEYS_ROTATED',
-      ])
-      .openapi({ title: 'Serverless Deployment Audit Types' }),
+      .looseObject({})
+      .and(
+        z
+          .enum([
+            'SEARCH_DEPLOYMENT_CREATED',
+            'SEARCH_DEPLOYMENT_UPDATED',
+            'SEARCH_DEPLOYMENT_DELETED',
+          ])
+          .openapi({ title: 'Search Deployment Audit Types' }),
+      ),
     z
-      .enum(['INSIDE_SERVERLESS_METRIC_THRESHOLD', 'OUTSIDE_SERVERLESS_METRIC_THRESHOLD'])
-      .openapi({ title: 'Serverless Event Types' }),
+      .looseObject({})
+      .and(
+        z
+          .enum([
+            'SERVERLESS_DEPLOYMENT_CREATED',
+            'SERVERLESS_DEPLOYMENT_DELETED',
+            'SERVERLESS_DEPLOYMENT_UPDATED',
+            'SERVERLESS_DEPLOYMENT_INSTANCE_REPLACED',
+            'SERVERLESS_DEPLOYMENT_INSTANCE_REBOOTED',
+            'SERVERLESS_DEPLOYMENT_ENDPOINT_SERVICE_LINKED',
+            'SERVERLESS_DEPLOYMENT_ENDPOINT_SERVICE_UNLINKED',
+            'SERVERLESS_DEPLOYMENT_ENVOY_INSTANCE_UIS_KEYS_ROTATED',
+          ])
+          .openapi({ title: 'Serverless Deployment Audit Types' }),
+      ),
     z
-      .enum(['INSIDE_FLEX_METRIC_THRESHOLD', 'OUTSIDE_FLEX_METRIC_THRESHOLD'])
-      .openapi({ title: 'Flex Metric Event Types' }),
-    z.literal('SETUP_SERVERLESS_INITIATED').openapi({ title: 'Setup Serverless Audit Types' }),
-    z.literal('MAX_PROCESSOR_COUNT_REACHED').openapi({ title: 'Streams Event Types' }),
+      .looseObject({})
+      .and(
+        z
+          .enum(['INSIDE_SERVERLESS_METRIC_THRESHOLD', 'OUTSIDE_SERVERLESS_METRIC_THRESHOLD'])
+          .openapi({ title: 'Serverless Event Types' }),
+      ),
     z
-      .enum([
-        'STREAM_PROCESSOR_STATE_IS_FAILED',
-        'STREAM_PROCESSOR_STARTED',
-        'STREAM_PROCESSOR_AUTOSCALE_INITIATED',
-        'STREAM_PROCESSOR_CREATED',
-        'STREAM_PROCESSOR_STOPPED',
-        'STREAM_PROCESSOR_DROPPED',
-        'STREAM_PROCESSOR_MODIFIED',
-        'INSIDE_STREAM_PROCESSOR_METRIC_THRESHOLD',
-        'OUTSIDE_STREAM_PROCESSOR_METRIC_THRESHOLD',
-      ])
-      .openapi({ title: 'Stream Processor Event Types' }),
-    z.literal('CASE_CREATED').openapi({ title: 'Support Case Event Types' }),
+      .looseObject({})
+      .and(
+        z
+          .enum(['INSIDE_FLEX_METRIC_THRESHOLD', 'OUTSIDE_FLEX_METRIC_THRESHOLD'])
+          .openapi({ title: 'Flex Metric Event Types' }),
+      ),
     z
-      .enum(['SUPPORT_EMAILS_SENT_SUCCESSFULLY', 'SUPPORT_EMAILS_SENT_FAILURE'])
-      .openapi({ title: 'Support Event Types' }),
+      .looseObject({})
+      .and(
+        z.literal('SETUP_SERVERLESS_INITIATED').openapi({ title: 'Setup Serverless Audit Types' }),
+      ),
     z
-      .enum(['TEAM_ADDED_TO_GROUP', 'TEAM_REMOVED_FROM_GROUP', 'TEAM_ROLES_MODIFIED'])
-      .openapi({ title: 'Team Event Types' }),
+      .looseObject({})
+      .and(z.literal('MAX_PROCESSOR_COUNT_REACHED').openapi({ title: 'Streams Event Types' })),
     z
-      .enum([
-        'TENANT_SNAPSHOT_STARTED_AUDIT',
-        'TENANT_SNAPSHOT_COMPLETED_AUDIT',
-        'TENANT_SNAPSHOT_DELETED_AUDIT',
-        'TENANT_RESTORE_REQUESTED_AUDIT',
-        'TENANT_RESTORE_COMPLETED_AUDIT',
-        'TENANT_SNAPSHOT_DOWNLOAD_REQUESTED_AUDIT',
-        'M0_BACKUP_SUBSCRIPTION_ENABLED',
-        'M0_BACKUP_SUBSCRIPTION_CANCELLED',
-        'M0_BACKUP_SUBSCRIPTION_PAUSED',
-        'M0_BACKUP_SUBSCRIPTION_RESUMED',
-      ])
-      .openapi({ title: 'Tenant Backup Event Types' }),
+      .looseObject({})
+      .and(
+        z
+          .enum([
+            'STREAM_PROCESSOR_STATE_IS_FAILED',
+            'STREAM_PROCESSOR_STARTED',
+            'STREAM_PROCESSOR_AUTOSCALE_INITIATED',
+            'STREAM_PROCESSOR_CREATED',
+            'STREAM_PROCESSOR_STOPPED',
+            'STREAM_PROCESSOR_DROPPED',
+            'STREAM_PROCESSOR_MODIFIED',
+            'INSIDE_STREAM_PROCESSOR_METRIC_THRESHOLD',
+            'OUTSIDE_STREAM_PROCESSOR_METRIC_THRESHOLD',
+          ])
+          .openapi({ title: 'Stream Processor Event Types' }),
+      ),
+    z.looseObject({}).and(z.literal('CASE_CREATED').openapi({ title: 'Support Case Event Types' })),
     z
-      .enum([
-        'JOINED_GROUP',
-        'REMOVED_FROM_GROUP',
-        'INVITED_TO_GROUP',
-        'REQUESTED_TO_JOIN_GROUP',
-        'GROUP_INVITATION_DELETED',
-        'USER_ROLES_CHANGED_AUDIT',
-        'JOIN_GROUP_REQUEST_DENIED_AUDIT',
-        'JOIN_GROUP_REQUEST_APPROVED_AUDIT',
-      ])
-      .openapi({ title: 'User Event Types' }),
+      .looseObject({})
+      .and(
+        z
+          .enum(['SUPPORT_EMAILS_SENT_SUCCESSFULLY', 'SUPPORT_EMAILS_SENT_FAILURE'])
+          .openapi({ title: 'Support Event Types' }),
+      ),
     z
-      .enum([
-        'CLUSTER_FCV_FIXED',
-        'CLUSTER_FCV_UNFIXED',
-        'CLUSTER_FCV_EXPIRATION_DATE_UPDATED',
-        'CLUSTER_FCV_DOWNGRADED',
-        'CLUSTER_BINARY_VERSION_DOWNGRADED',
-        'CLUSTER_BINARY_VERSION_UPGRADED',
-        'CLUSTER_OS_FIXED',
-        'CLUSTER_OS_UNFIXED',
-      ])
-      .openapi({ title: 'Version Audit Types' }),
+      .looseObject({})
+      .and(
+        z
+          .enum(['TEAM_ADDED_TO_GROUP', 'TEAM_REMOVED_FROM_GROUP', 'TEAM_ROLES_MODIFIED'])
+          .openapi({ title: 'Team Event Types' }),
+      ),
     z
-      .enum(['TAGS_MODIFIED', 'CLUSTER_TAGS_MODIFIED', 'GROUP_TAGS_MODIFIED'])
-      .openapi({ title: 'Resource Event Types' }),
-    z.literal('EMPLOYEE_DOWNLOADED_CLUSTER_LOGS').openapi({ title: 'Access Event Types' }),
+      .looseObject({})
+      .and(
+        z
+          .enum([
+            'TENANT_SNAPSHOT_STARTED_AUDIT',
+            'TENANT_SNAPSHOT_COMPLETED_AUDIT',
+            'TENANT_SNAPSHOT_DELETED_AUDIT',
+            'TENANT_RESTORE_REQUESTED_AUDIT',
+            'TENANT_RESTORE_COMPLETED_AUDIT',
+            'TENANT_SNAPSHOT_DOWNLOAD_REQUESTED_AUDIT',
+            'M0_BACKUP_SUBSCRIPTION_ENABLED',
+            'M0_BACKUP_SUBSCRIPTION_CANCELLED',
+            'M0_BACKUP_SUBSCRIPTION_PAUSED',
+            'M0_BACKUP_SUBSCRIPTION_RESUMED',
+          ])
+          .openapi({ title: 'Tenant Backup Event Types' }),
+      ),
     z
-      .enum([
-        'CHARTS_API_SUCCESS',
-        'CHARTS_API_FAILURE',
-        'CHARTS_DASHBOARD_EXPORTED',
-        'CHARTS_DASHBOARD_EXPORT_FAILED',
-        'CHARTS_DASHBOARD_IMPORTED',
-        'CHARTS_DASHBOARD_IMPORT_FAILED',
-      ])
-      .openapi({ title: 'Charts Api Call Audit Types' }),
-    z.literal('RESOURCE_POLICY_VIOLATED').openapi({ title: 'Atlas Resource Policy Audit Types' }),
+      .looseObject({})
+      .and(
+        z
+          .enum([
+            'JOINED_GROUP',
+            'REMOVED_FROM_GROUP',
+            'INVITED_TO_GROUP',
+            'REQUESTED_TO_JOIN_GROUP',
+            'GROUP_INVITATION_DELETED',
+            'USER_ROLES_CHANGED_AUDIT',
+            'JOIN_GROUP_REQUEST_DENIED_AUDIT',
+            'JOIN_GROUP_REQUEST_APPROVED_AUDIT',
+          ])
+          .openapi({ title: 'User Event Types' }),
+      ),
     z
-      .enum(['QUERY_SHAPE_BLOCKED', 'QUERY_SHAPE_UNBLOCKED'])
-      .openapi({ title: 'Query Shape Event Types' }),
+      .looseObject({})
+      .and(
+        z
+          .enum([
+            'CLUSTER_FCV_FIXED',
+            'CLUSTER_FCV_UNFIXED',
+            'CLUSTER_FCV_EXPIRATION_DATE_UPDATED',
+            'CLUSTER_FCV_DOWNGRADED',
+            'CLUSTER_BINARY_VERSION_DOWNGRADED',
+            'CLUSTER_BINARY_VERSION_UPGRADED',
+            'CLUSTER_OS_FIXED',
+            'CLUSTER_OS_UNFIXED',
+          ])
+          .openapi({ title: 'Version Audit Types' }),
+      ),
     z
-      .enum([
-        'SHARD_KEY_ANALYSIS_STARTED',
-        'SHARD_KEY_ANALYSIS_FINISHED',
-        'QUERY_SAMPLING_STARTED',
-        'QUERY_SAMPLING_STOPPED',
-      ])
-      .openapi({ title: 'Shard Key Advisor Event Types' }),
+      .looseObject({})
+      .and(
+        z
+          .enum(['TAGS_MODIFIED', 'CLUSTER_TAGS_MODIFIED', 'GROUP_TAGS_MODIFIED'])
+          .openapi({ title: 'Resource Event Types' }),
+      ),
     z
-      .enum([
-        'AI_MODELS_APIS_API_KEY_CREATED',
-        'AI_MODELS_APIS_API_KEY_DELETED',
-        'AI_MODELS_APIS_API_KEY_UPDATED',
-        'AI_MODELS_APIS_RATE_LIMIT_UPDATED',
-        'AI_MODELS_APIS_RATE_LIMIT_RESET',
-        'AI_MODELS_APIS_RATE_LIMIT_ADMIN_OVERRIDE',
-      ])
-      .openapi({ title: 'AI Models APIs Event Types' }),
+      .looseObject({})
+      .and(z.literal('EMPLOYEE_DOWNLOADED_CLUSTER_LOGS').openapi({ title: 'Access Event Types' })),
     z
-      .literal('PROACTIVE_REMEDIATION_NEEDED')
-      .openapi({ title: 'Proactive Remediation Event Types' }),
+      .looseObject({})
+      .and(
+        z
+          .enum([
+            'CHARTS_API_SUCCESS',
+            'CHARTS_API_FAILURE',
+            'CHARTS_DASHBOARD_EXPORTED',
+            'CHARTS_DASHBOARD_EXPORT_FAILED',
+            'CHARTS_DASHBOARD_IMPORTED',
+            'CHARTS_DASHBOARD_IMPORT_FAILED',
+          ])
+          .openapi({ title: 'Charts Api Call Audit Types' }),
+      ),
     z
-      .enum([
-        'STREAMS_PRIVATE_LINK_ENDPOINT_UNUSED_FIRST_WARNING',
-        'STREAMS_PRIVATE_LINK_ENDPOINT_UNUSED_SECOND_WARNING',
-        'STREAMS_PRIVATE_LINK_ENDPOINT_UNUSED_DELETED',
-      ])
-      .openapi({ title: 'Stream Processing Private Link Endpoint Event Types' }),
+      .looseObject({})
+      .and(
+        z
+          .literal('RESOURCE_POLICY_VIOLATED')
+          .openapi({ title: 'Atlas Resource Policy Audit Types' }),
+      ),
     z
-      .enum([
-        'SEARCH_AUTO_MIGRATION_ADVISORY',
-        'SEARCH_AUTO_MIGRATION_STARTED',
-        'SEARCH_AUTO_MIGRATION_FAILED',
-      ])
-      .openapi({ title: 'Search Auto Migration Event Types' }),
+      .looseObject({})
+      .and(
+        z
+          .enum(['QUERY_SHAPE_BLOCKED', 'QUERY_SHAPE_UNBLOCKED'])
+          .openapi({ title: 'Query Shape Event Types' }),
+      ),
+    z
+      .looseObject({})
+      .and(
+        z
+          .enum([
+            'SHARD_KEY_ANALYSIS_STARTED',
+            'SHARD_KEY_ANALYSIS_FINISHED',
+            'QUERY_SAMPLING_STARTED',
+            'QUERY_SAMPLING_STOPPED',
+          ])
+          .openapi({ title: 'Shard Key Advisor Event Types' }),
+      ),
+    z
+      .looseObject({})
+      .and(
+        z
+          .enum([
+            'AI_MODELS_APIS_API_KEY_CREATED',
+            'AI_MODELS_APIS_API_KEY_DELETED',
+            'AI_MODELS_APIS_API_KEY_UPDATED',
+            'AI_MODELS_APIS_RATE_LIMIT_UPDATED',
+            'AI_MODELS_APIS_RATE_LIMIT_RESET',
+            'AI_MODELS_APIS_RATE_LIMIT_ADMIN_OVERRIDE',
+          ])
+          .openapi({ title: 'AI Models APIs Event Types' }),
+      ),
+    z
+      .looseObject({})
+      .and(
+        z
+          .enum(['ENCRYPTION_KEY_TRANSITION_STARTED', 'ENCRYPTION_KEY_TRANSITION_COMPLETED'])
+          .openapi({ title: 'Encryption Key Transition Event Types' }),
+      ),
+    z
+      .looseObject({})
+      .and(
+        z
+          .literal('PROACTIVE_REMEDIATION_NEEDED')
+          .openapi({ title: 'Proactive Remediation Event Types' }),
+      ),
+    z
+      .looseObject({})
+      .and(
+        z
+          .enum([
+            'STREAMS_PRIVATE_LINK_ENDPOINT_UNUSED_FIRST_WARNING',
+            'STREAMS_PRIVATE_LINK_ENDPOINT_UNUSED_SECOND_WARNING',
+            'STREAMS_PRIVATE_LINK_ENDPOINT_UNUSED_DELETED',
+          ])
+          .openapi({ title: 'Stream Processing Private Link Endpoint Event Types' }),
+      ),
+    z
+      .looseObject({})
+      .and(
+        z
+          .enum([
+            'SEARCH_AUTO_MIGRATION_ADVISORY',
+            'SEARCH_AUTO_MIGRATION_STARTED',
+            'SEARCH_AUTO_MIGRATION_FAILED',
+          ])
+          .openapi({ title: 'Search Auto Migration Event Types' }),
+      ),
   ])
   .openapi('EventTypeForNdsGroup')
 
 const EventTypeForOrgSchema = z
   .xor([
     z
-      .enum(['ALERT_ACKNOWLEDGED_AUDIT', 'ALERT_UNACKNOWLEDGED_AUDIT'])
-      .openapi({ title: 'Alert Audit Types' }),
+      .looseObject({})
+      .and(
+        z
+          .enum(['ALERT_ACKNOWLEDGED_AUDIT', 'ALERT_UNACKNOWLEDGED_AUDIT'])
+          .openapi({ title: 'Alert Audit Types' }),
+      ),
     z
-      .enum([
-        'ALERT_CONFIG_DISABLED_AUDIT',
-        'ALERT_CONFIG_ENABLED_AUDIT',
-        'ALERT_CONFIG_ADDED_AUDIT',
-        'ALERT_CONFIG_DELETED_AUDIT',
-        'ALERT_CONFIG_CHANGED_AUDIT',
-      ])
-      .openapi({ title: 'Alert Audit Types' }),
+      .looseObject({})
+      .and(
+        z
+          .enum([
+            'ALERT_CONFIG_DISABLED_AUDIT',
+            'ALERT_CONFIG_ENABLED_AUDIT',
+            'ALERT_CONFIG_ADDED_AUDIT',
+            'ALERT_CONFIG_DELETED_AUDIT',
+            'ALERT_CONFIG_CHANGED_AUDIT',
+          ])
+          .openapi({ title: 'Alert Audit Types' }),
+      ),
     z
-      .enum([
-        'API_KEY_CREATED',
-        'API_KEY_DELETED',
-        'API_KEY_ACCESS_LIST_ENTRY_ADDED',
-        'API_KEY_ACCESS_LIST_ENTRY_DELETED',
-        'API_KEY_ROLES_CHANGED',
-        'API_KEY_DESCRIPTION_CHANGED',
-        'API_KEY_ADDED_TO_GROUP',
-        'API_KEY_REMOVED_FROM_GROUP',
-        'API_KEY_UI_IP_ACCESS_LIST_INHERITANCE_ENABLED',
-        'API_KEY_UI_IP_ACCESS_LIST_INHERITANCE_DISABLED',
-      ])
-      .openapi({ title: 'API User Event Types' }),
+      .looseObject({})
+      .and(
+        z
+          .enum([
+            'API_KEY_CREATED',
+            'API_KEY_DELETED',
+            'API_KEY_ACCESS_LIST_ENTRY_ADDED',
+            'API_KEY_ACCESS_LIST_ENTRY_DELETED',
+            'API_KEY_ROLES_CHANGED',
+            'API_KEY_DESCRIPTION_CHANGED',
+            'API_KEY_ADDED_TO_GROUP',
+            'API_KEY_REMOVED_FROM_GROUP',
+            'API_KEY_UI_IP_ACCESS_LIST_INHERITANCE_ENABLED',
+            'API_KEY_UI_IP_ACCESS_LIST_INHERITANCE_DISABLED',
+          ])
+          .openapi({ title: 'API User Event Types' }),
+      ),
     z
-      .enum([
-        'SERVICE_ACCOUNT_CREATED',
-        'SERVICE_ACCOUNT_DELETED',
-        'SERVICE_ACCOUNT_ROLES_CHANGED',
-        'SERVICE_ACCOUNT_DETAILS_CHANGED',
-        'SERVICE_ACCOUNT_ADDED_TO_GROUP',
-        'SERVICE_ACCOUNT_REMOVED_FROM_GROUP',
-        'SERVICE_ACCOUNT_ACCESS_LIST_ENTRY_ADDED',
-        'SERVICE_ACCOUNT_ACCESS_LIST_ENTRY_DELETED',
-        'SERVICE_ACCOUNT_SECRET_ADDED',
-        'SERVICE_ACCOUNT_SECRET_DELETED',
-        'SERVICE_ACCOUNT_UI_IP_ACCESS_LIST_INHERITANCE_ENABLED',
-        'SERVICE_ACCOUNT_UI_IP_ACCESS_LIST_INHERITANCE_DISABLED',
-      ])
-      .openapi({ title: 'Service Account Event Types' }),
+      .looseObject({})
+      .and(
+        z
+          .enum([
+            'SERVICE_ACCOUNT_CREATED',
+            'SERVICE_ACCOUNT_DELETED',
+            'SERVICE_ACCOUNT_ROLES_CHANGED',
+            'SERVICE_ACCOUNT_DETAILS_CHANGED',
+            'SERVICE_ACCOUNT_ADDED_TO_GROUP',
+            'SERVICE_ACCOUNT_REMOVED_FROM_GROUP',
+            'SERVICE_ACCOUNT_ACCESS_LIST_ENTRY_ADDED',
+            'SERVICE_ACCOUNT_ACCESS_LIST_ENTRY_DELETED',
+            'SERVICE_ACCOUNT_SECRET_ADDED',
+            'SERVICE_ACCOUNT_SECRET_DELETED',
+            'SERVICE_ACCOUNT_UI_IP_ACCESS_LIST_INHERITANCE_ENABLED',
+            'SERVICE_ACCOUNT_UI_IP_ACCESS_LIST_INHERITANCE_DISABLED',
+          ])
+          .openapi({ title: 'Service Account Event Types' }),
+      ),
     z
-      .enum([
-        'AWS_PAYMENT_PAID',
-        'CHARGE_SUCCEEDED',
-        'CHARGE_FAILED',
-        'CHARGE_PROCESSING',
-        'CHARGE_PENDING_REVERSAL',
-        'BRAINTREE_CHARGE_FAILED',
-        'INVOICE_CLOSED',
-        'CHECK_PAYMENT_RECEIVED',
-        'WIRE_TRANSFER_PAYMENT_RECEIVED',
-        'DISCOUNT_APPLIED',
-        'CREDIT_ISSUED',
-        'CREDIT_PULLED_FWD',
-        'CREDIT_END_DATE_MODIFIED',
-        'PROMO_CODE_APPLIED',
-        'PAYMENT_METHOD_DEACTIVATED',
-        'PAYMENT_FORGIVEN',
-        'REFUND_ISSUED',
-        'ACCOUNT_DOWNGRADED',
-        'ACCOUNT_UPGRADED',
-        'ACCOUNT_MODIFIED',
-        'SUPPORT_PLAN_ACTIVATED',
-        'SUPPORT_PLAN_CANCELLED',
-        'SUPPORT_PLAN_CANCELLATION_SCHEDULED',
-        'INITIATE_SALESFORCE_SERVICE_CLOUD_SYNC',
-        'INVOICE_ADDRESS_CHANGED',
-        'INVOICE_ADDRESS_ADDED',
-        'PREPAID_PLAN_ACTIVATED',
-        'ELASTIC_INVOICING_MODE_ACTIVATED',
-        'ELASTIC_INVOICING_MODE_DEACTIVATED',
-        'TERMINATE_PAID_SERVICES',
-        'BILLING_EMAIL_ADDRESS_ADDED',
-        'BILLING_EMAIL_ADDRESS_CHANGED',
-        'BILLING_EMAIL_ADDRESS_REMOVED',
-        'AWS_BILLING_ACCOUNT_CREDIT_ISSUED',
-        'GCP_BILLING_ACCOUNT_CREDIT_ISSUED',
-        'CREDIT_SFOLID_MODIFIED',
-        'PREPAID_PLAN_MODIFIED',
-        'AWS_USAGE_REPORTED',
-        'AZURE_USAGE_REPORTED',
-        'GCP_USAGE_REPORTED',
-        'VERCEL_USAGE_REPORTED',
-        'BECAME_PAYING_ORG',
-        'BECAME_LINKED_ORG',
-        'NEW_LINKED_ORG',
-        'UNLINKED_ORG',
-        'ORG_LINKED_TO_PAYING_ORG',
-        'ORG_UNLINKED_FROM_PAYING_ORG',
-        'ORG_UNLINK_REQUESTED',
-        'ORG_UNLINK_CANCELLED',
-        'PAYMENT_UPDATED_THROUGH_API',
-        'AZURE_BILLING_ACCOUNT_CREDIT_ISSUED',
-        'CREDIT_START_DATE_MODIFIED',
-        'CREDIT_ELASTIC_INVOICING_MODIFIED',
-        'CREDIT_TYPE_MODIFIED',
-        'CREDIT_AMOUNT_CENTS_MODIFIED',
-        'CREDIT_AMOUNT_REMAINING_CENTS_MODIFIED',
-        'CREDIT_TOTAL_BILLED_CENTS_MODIFIED',
-        'CREDIT_AWS_CUSTOMER_ID_MODIFIED',
-        'CREDIT_AWS_PRODUCT_CODE_MODIFIED',
-        'CREDIT_AWS_LICENSE_ARN_MODIFIED',
-        'CREDIT_AWS_ACCOUNT_ID_MODIFIED',
-        'CREDIT_GCP_MARKETPLACE_ENTITLEMENT_ID_MODIFIED',
-        'CREDIT_AZURE_SUBSCRIPTION_ID_MODIFIED',
-        'CREDIT_AZURE_PRIVATE_PLAN_ID_MODIFIED',
-        'TARGETED_REBILL_EXECUTED',
-        'LEGACY_REBILL_EXECUTED',
-        'EVERGREEN_DEAL_CANCELLED',
-        'GRACE_PERIOD_ACTIVATED',
-        'GRACE_PERIOD_NO_LONGER_IN_EFFECT',
-        'PENDING_DEAL_ACTIVATION_ADDED',
-        'PENDING_DEAL_ACTIVATION_CANCELED',
-        'PENDING_DEAL_APPLIED',
-        'PENDING_DEAL_ACTIVATION_FAILED',
-        'EVERGREEN_PRIORITY_MODIFIED',
-        'CROSS_ORG_OPERATION_TICKET_TRACKING',
-        'ADMIN_OVERRIDE_PAYMENT_METHOD_DELETED',
-        'ADMIN_OVERRIDE_PAYMENT_METHOD_EXPIRED',
-        'PAYMENT_METHOD_FLAGGED',
-        'PAYMENT_METHOD_UNFLAGGED',
-        'MARKETPLACE_REFUND_ISSUED',
-        'PAYMENT_DUE_DATE_EXTENDED',
-      ])
-      .openapi({ title: 'Billing Event Types' }),
+      .looseObject({})
+      .and(
+        z
+          .enum([
+            'AWS_PAYMENT_PAID',
+            'CHARGE_SUCCEEDED',
+            'CHARGE_FAILED',
+            'CHARGE_PROCESSING',
+            'CHARGE_PENDING_REVERSAL',
+            'BRAINTREE_CHARGE_FAILED',
+            'INVOICE_CLOSED',
+            'CHECK_PAYMENT_RECEIVED',
+            'WIRE_TRANSFER_PAYMENT_RECEIVED',
+            'DISCOUNT_APPLIED',
+            'CREDIT_ISSUED',
+            'CREDIT_PULLED_FWD',
+            'CREDIT_END_DATE_MODIFIED',
+            'PROMO_CODE_APPLIED',
+            'PAYMENT_METHOD_DEACTIVATED',
+            'PAYMENT_FORGIVEN',
+            'REFUND_ISSUED',
+            'ACCOUNT_DOWNGRADED',
+            'ACCOUNT_UPGRADED',
+            'ACCOUNT_MODIFIED',
+            'SUPPORT_PLAN_ACTIVATED',
+            'SUPPORT_PLAN_CANCELLED',
+            'SUPPORT_PLAN_CANCELLATION_SCHEDULED',
+            'INITIATE_SALESFORCE_SERVICE_CLOUD_SYNC',
+            'INVOICE_ADDRESS_CHANGED',
+            'INVOICE_ADDRESS_ADDED',
+            'PREPAID_PLAN_ACTIVATED',
+            'ELASTIC_INVOICING_MODE_ACTIVATED',
+            'ELASTIC_INVOICING_MODE_DEACTIVATED',
+            'TERMINATE_PAID_SERVICES',
+            'BILLING_EMAIL_ADDRESS_ADDED',
+            'BILLING_EMAIL_ADDRESS_CHANGED',
+            'BILLING_EMAIL_ADDRESS_REMOVED',
+            'AWS_BILLING_ACCOUNT_CREDIT_ISSUED',
+            'GCP_BILLING_ACCOUNT_CREDIT_ISSUED',
+            'CREDIT_SFOLID_MODIFIED',
+            'PREPAID_PLAN_MODIFIED',
+            'AWS_USAGE_REPORTED',
+            'AZURE_USAGE_REPORTED',
+            'GCP_USAGE_REPORTED',
+            'VERCEL_USAGE_REPORTED',
+            'BECAME_PAYING_ORG',
+            'BECAME_LINKED_ORG',
+            'NEW_LINKED_ORG',
+            'UNLINKED_ORG',
+            'ORG_LINKED_TO_PAYING_ORG',
+            'ORG_UNLINKED_FROM_PAYING_ORG',
+            'ORG_UNLINK_REQUESTED',
+            'ORG_UNLINK_CANCELLED',
+            'PAYMENT_UPDATED_THROUGH_API',
+            'AZURE_BILLING_ACCOUNT_CREDIT_ISSUED',
+            'CREDIT_START_DATE_MODIFIED',
+            'CREDIT_ELASTIC_INVOICING_MODIFIED',
+            'CREDIT_TYPE_MODIFIED',
+            'CREDIT_AMOUNT_CENTS_MODIFIED',
+            'CREDIT_AMOUNT_REMAINING_CENTS_MODIFIED',
+            'CREDIT_TOTAL_BILLED_CENTS_MODIFIED',
+            'CREDIT_AWS_CUSTOMER_ID_MODIFIED',
+            'CREDIT_AWS_PRODUCT_CODE_MODIFIED',
+            'CREDIT_AWS_LICENSE_ARN_MODIFIED',
+            'CREDIT_AWS_ACCOUNT_ID_MODIFIED',
+            'CREDIT_GCP_MARKETPLACE_ENTITLEMENT_ID_MODIFIED',
+            'CREDIT_AZURE_SUBSCRIPTION_ID_MODIFIED',
+            'CREDIT_AZURE_PRIVATE_PLAN_ID_MODIFIED',
+            'TARGETED_REBILL_EXECUTED',
+            'LEGACY_REBILL_EXECUTED',
+            'EVERGREEN_DEAL_CANCELLED',
+            'GRACE_PERIOD_ACTIVATED',
+            'GRACE_PERIOD_NO_LONGER_IN_EFFECT',
+            'PENDING_DEAL_ACTIVATION_ADDED',
+            'PENDING_DEAL_ACTIVATION_CANCELED',
+            'PENDING_DEAL_APPLIED',
+            'PENDING_DEAL_ACTIVATION_FAILED',
+            'EVERGREEN_PRIORITY_MODIFIED',
+            'CROSS_ORG_OPERATION_TICKET_TRACKING',
+            'ADMIN_OVERRIDE_PAYMENT_METHOD_DELETED',
+            'ADMIN_OVERRIDE_PAYMENT_METHOD_EXPIRED',
+            'PAYMENT_METHOD_FLAGGED',
+            'PAYMENT_METHOD_UNFLAGGED',
+            'MARKETPLACE_REFUND_ISSUED',
+            'PAYMENT_DUE_DATE_EXTENDED',
+          ])
+          .openapi({ title: 'Billing Event Types' }),
+      ),
     z
-      .enum([
-        'FEDERATION_SETTINGS_CREATED',
-        'FEDERATION_SETTINGS_DELETED',
-        'FEDERATION_SETTINGS_UPDATED',
-        'IDENTITY_PROVIDER_CREATED',
-        'IDENTITY_PROVIDER_UPDATED',
-        'IDENTITY_PROVIDER_DELETED',
-        'IDENTITY_PROVIDER_ACTIVATED',
-        'OIDC_IDENTITY_PROVIDER_UPDATED',
-        'IDENTITY_PROVIDER_DEACTIVATED',
-        'IDENTITY_PROVIDER_JWKS_REVOKED',
-        'OIDC_IDENTITY_PROVIDER_ENABLED',
-        'OIDC_IDENTITY_PROVIDER_DISABLED',
-        'DOMAINS_ASSOCIATED',
-        'DOMAIN_CREATED',
-        'DOMAIN_DELETED',
-        'DOMAIN_VERIFIED',
-        'ORG_SETTINGS_CONFIGURED',
-        'ORG_SETTINGS_UPDATED',
-        'ORG_SETTINGS_DELETED',
-        'ORG_ACCESS_PROVISIONING_METHOD_UPDATED',
-        'RESTRICT_ORG_MEMBERSHIP_ENABLED',
-        'RESTRICT_ORG_MEMBERSHIP_DISABLED',
-        'ROLE_MAPPING_CREATED',
-        'ROLE_MAPPING_UPDATED',
-        'ROLE_MAPPING_DELETED',
-        'SCIM_CLIENT_CREATED',
-        'SCIM_CLIENT_UPDATED',
-        'SCIM_CLIENT_DELETED',
-        'SCIM_CLIENT_SECRET_CREATED',
-        'SCIM_CLIENT_SECRET_DELETED',
-      ])
-      .openapi({ title: 'Federation Settings Event Types' }),
+      .looseObject({})
+      .and(
+        z
+          .enum([
+            'FEDERATION_SETTINGS_CREATED',
+            'FEDERATION_SETTINGS_DELETED',
+            'FEDERATION_SETTINGS_UPDATED',
+            'IDENTITY_PROVIDER_CREATED',
+            'IDENTITY_PROVIDER_UPDATED',
+            'IDENTITY_PROVIDER_DELETED',
+            'IDENTITY_PROVIDER_ACTIVATED',
+            'OIDC_IDENTITY_PROVIDER_UPDATED',
+            'IDENTITY_PROVIDER_DEACTIVATED',
+            'IDENTITY_PROVIDER_JWKS_REVOKED',
+            'OIDC_IDENTITY_PROVIDER_ENABLED',
+            'OIDC_IDENTITY_PROVIDER_DISABLED',
+            'DOMAINS_ASSOCIATED',
+            'DOMAIN_CREATED',
+            'DOMAIN_DELETED',
+            'DOMAIN_VERIFIED',
+            'ORG_SETTINGS_CONFIGURED',
+            'ORG_SETTINGS_UPDATED',
+            'ORG_SETTINGS_DELETED',
+            'ORG_ACCESS_PROVISIONING_METHOD_UPDATED',
+            'RESTRICT_ORG_MEMBERSHIP_ENABLED',
+            'RESTRICT_ORG_MEMBERSHIP_DISABLED',
+            'ROLE_MAPPING_CREATED',
+            'ROLE_MAPPING_UPDATED',
+            'ROLE_MAPPING_DELETED',
+            'SCIM_CLIENT_CREATED',
+            'SCIM_CLIENT_UPDATED',
+            'SCIM_CLIENT_DELETED',
+            'SCIM_CLIENT_SECRET_CREATED',
+            'SCIM_CLIENT_SECRET_DELETED',
+          ])
+          .openapi({ title: 'Federation Settings Event Types' }),
+      ),
     z
-      .enum(['GROUP_DELETED', 'GROUP_CREATED', 'GROUP_MOVED'])
-      .openapi({ title: 'Group Audit Types' }),
+      .looseObject({})
+      .and(
+        z
+          .enum([
+            'GROUP_DELETED',
+            'GROUP_CREATED',
+            'GROUP_MOVED',
+            'PROJECT_OPERATIONS_CONTACT_MODIFIED',
+            'PROJECT_OPERATIONS_CONTACT_ALERTS_ENABLED',
+            'PROJECT_OPERATIONS_CONTACT_ALERTS_DISABLED',
+          ])
+          .openapi({ title: 'Group Audit Types' }),
+      ),
     z
-      .enum([
-        'MLAB_MIGRATION_COMPLETED',
-        'MLAB_MIGRATION_TARGET_CLUSTER_CREATED',
-        'MLAB_MIGRATION_DATABASE_USERS_IMPORTED',
-        'MLAB_MIGRATION_IP_WHITELIST_IMPORTED',
-        'MLAB_MIGRATION_TARGET_CLUSTER_SET',
-        'MLAB_MIGRATION_DATABASE_RENAMED',
-        'MLAB_MIGRATION_LIVE_IMPORT_STARTED',
-        'MLAB_MIGRATION_LIVE_IMPORT_READY_FOR_CUTOVER',
-        'MLAB_MIGRATION_LIVE_IMPORT_CUTOVER_COMPLETE',
-        'MLAB_MIGRATION_LIVE_IMPORT_ERROR',
-        'MLAB_MIGRATION_LIVE_IMPORT_CANCELLED',
-        'MLAB_MIGRATION_DUMP_AND_RESTORE_TEST_STARTED',
-        'MLAB_MIGRATION_DUMP_AND_RESTORE_TEST_SKIPPED',
-        'MLAB_MIGRATION_DUMP_AND_RESTORE_STARTED',
-        'MLAB_MIGRATION_SUPPORT_PLAN_SELECTED',
-        'MLAB_MIGRATION_SUPPORT_PLAN_OPTED_OUT',
-      ])
-      .openapi({ title: 'Mlab Migration Audit Types' }),
+      .looseObject({})
+      .and(
+        z
+          .enum([
+            'MLAB_MIGRATION_COMPLETED',
+            'MLAB_MIGRATION_TARGET_CLUSTER_CREATED',
+            'MLAB_MIGRATION_DATABASE_USERS_IMPORTED',
+            'MLAB_MIGRATION_IP_WHITELIST_IMPORTED',
+            'MLAB_MIGRATION_TARGET_CLUSTER_SET',
+            'MLAB_MIGRATION_DATABASE_RENAMED',
+            'MLAB_MIGRATION_LIVE_IMPORT_STARTED',
+            'MLAB_MIGRATION_LIVE_IMPORT_READY_FOR_CUTOVER',
+            'MLAB_MIGRATION_LIVE_IMPORT_CUTOVER_COMPLETE',
+            'MLAB_MIGRATION_LIVE_IMPORT_ERROR',
+            'MLAB_MIGRATION_LIVE_IMPORT_CANCELLED',
+            'MLAB_MIGRATION_DUMP_AND_RESTORE_TEST_STARTED',
+            'MLAB_MIGRATION_DUMP_AND_RESTORE_TEST_SKIPPED',
+            'MLAB_MIGRATION_DUMP_AND_RESTORE_STARTED',
+            'MLAB_MIGRATION_SUPPORT_PLAN_SELECTED',
+            'MLAB_MIGRATION_SUPPORT_PLAN_OPTED_OUT',
+          ])
+          .openapi({ title: 'Mlab Migration Audit Types' }),
+      ),
     z
-      .enum([
-        'ORG_LIMIT_UPDATED',
-        'SHADOW_CLUSTER_ORG_OPT_IN',
-        'SHADOW_CLUSTER_ORG_OPT_OUT',
-        'ATLAS_MAINTENANCE_FLEET_ACTIVE_WAVE_CLOSED_BY_ADMIN',
-        'ATLAS_MAINTENANCE_FLEET_ACTIVE_WAVE_AUTO_CLOSED',
-        'MAINTENANCE_WAVE_ASSIGNMENT_ADDED',
-        'MAINTENANCE_WAVE_ASSIGNMENT_MODIFIED',
-        'MAINTENANCE_WAVE_ASSIGNMENT_REMOVED',
-      ])
-      .openapi({ title: 'Atlas Audit Types' }),
+      .looseObject({})
+      .and(
+        z
+          .enum([
+            'ORG_LIMIT_UPDATED',
+            'SHADOW_CLUSTER_ORG_OPT_IN',
+            'SHADOW_CLUSTER_ORG_OPT_OUT',
+            'ATLAS_MAINTENANCE_FLEET_ACTIVE_WAVE_CLOSED_BY_ADMIN',
+            'ATLAS_MAINTENANCE_FLEET_ACTIVE_WAVE_AUTO_CLOSED',
+            'MAINTENANCE_WAVE_ASSIGNMENT_ADDED',
+            'MAINTENANCE_WAVE_ASSIGNMENT_MODIFIED',
+            'MAINTENANCE_WAVE_ASSIGNMENT_REMOVED',
+          ])
+          .openapi({ title: 'Atlas Audit Types' }),
+      ),
     z
-      .enum([
-        'ORG_CREATED',
-        'CUSTOM_SESSION_TIMEOUT_MODIFIED',
-        'SECURITY_CONTACT_MODIFIED',
-        'OPERATIONS_CONTACT_MODIFIED',
-        'ORG_CREDIT_CARD_ADDED',
-        'ORG_CREDIT_CARD_UPDATED',
-        'ORG_CREDIT_CARD_CURRENT',
-        'ORG_CREDIT_CARD_ABOUT_TO_EXPIRE',
-        'ORG_PAYPAL_LINKED',
-        'ORG_PAYPAL_UPDATED',
-        'ORG_PAYPAL_CANCELLED',
-        'ORG_OVERRIDE_PAYMENT_METHOD_ADDED',
-        'ORG_BANK_ACCOUNT_ADDED',
-        'ORG_BANK_ACCOUNT_UPDATED',
-        'ORG_WALLET_ADDED',
-        'ORG_WALLET_UPDATED',
-        'ORG_ACTIVATED',
-        'ORG_TEMPORARILY_ACTIVATED',
-        'ORG_SUSPENSION_DATE_CHANGED',
-        'ORG_SUSPENDED',
-        'ORG_ADMIN_SUSPENDED',
-        'ORG_ADMIN_LOCKED',
-        'ORG_CLUSTERS_DELETED',
-        'ORG_CLUSTERS_PAUSED',
-        'ORG_LOCKED',
-        'ORG_LOCKED_ACCELERATED',
-        'ORG_UNDER_FINANCIAL_PROTECTION',
-        'ORG_NO_FINANCIAL_PROTECTION',
-        'ORG_RENAMED',
-        'ALL_ORG_USERS_HAVE_MFA',
-        'ORG_USERS_WITHOUT_MFA',
-        'ORG_INVOICE_UNDER_THRESHOLD',
-        'ORG_INVOICE_OVER_THRESHOLD',
-        'ORG_DAILY_BILL_UNDER_THRESHOLD',
-        'ORG_DAILY_BILL_OVER_THRESHOLD',
-        'ORG_DAILY_BILLING_CHANGE_NORMAL',
-        'ORG_DAILY_BILLING_CHANGE_OVER_THRESHOLD',
-        'ORG_WEEKLY_BILLING_CHANGE_NORMAL',
-        'ORG_WEEKLY_BILLING_CHANGE_OVER_THRESHOLD',
-        'ORG_MONTHLY_BILLING_CHANGE_NORMAL',
-        'ORG_MONTHLY_BILLING_CHANGE_OVER_THRESHOLD',
-        'ORG_GROUP_CHARGES_UNDER_THRESHOLD',
-        'ORG_GROUP_CHARGES_OVER_THRESHOLD',
-        'ORG_TWO_FACTOR_AUTH_REQUIRED',
-        'ORG_TWO_FACTOR_AUTH_OPTIONAL',
-        'ORG_PUBLIC_API_ACCESS_LIST_REQUIRED',
-        'ORG_PUBLIC_API_ACCESS_LIST_NOT_REQUIRED',
-        'ORG_EMPLOYEE_ACCESS_RESTRICTED',
-        'ORG_EMPLOYEE_ACCESS_UNRESTRICTED',
-        'ORG_CONNECTED_TO_MLAB',
-        'ORG_DISCONNECTED_FROM_MLAB',
-        'ORG_IDP_CERTIFICATE_CURRENT',
-        'ORG_IDP_CERTIFICATE_ABOUT_TO_EXPIRE',
-        'ORG_CONNECTED_TO_VERCEL',
-        'ORG_DISCONNECTED_TO_VERCEL',
-        'ORG_CONNECTION_UNINSTALLED_FROM_VERCEL',
-        'ORG_UI_IP_ACCESS_LIST_ENABLED',
-        'ORG_UI_IP_ACCESS_LIST_DISABLED',
-        'ORG_EDITED_UI_IP_ACCESS_LIST_ENTRIES',
-        'ORG_SERVICE_ACCOUNT_MAX_SECRET_VALIDITY_EDITED',
-        'ORG_SERVICE_ACCOUNT_SECRETS_EXPIRED',
-        'ORG_SERVICE_ACCOUNT_SECRETS_NO_LONGER_EXPIRED',
-        'ORG_SERVICE_ACCOUNT_SECRETS_EXPIRING',
-        'ORG_SERVICE_ACCOUNT_SECRETS_NO_LONGER_EXPIRING',
-        'ORG_MONGODB_VERSION_EOL_EXTENSION_ACCEPTED',
-        'ORG_MONGODB_VERSION_EOL_EXTENSION_PENDING',
-        'ORG_MONGODB_VERSION_EOL_EXTENSION_CANCELLED',
-        'ORG_BAAS_EOL_EXTENSION_ACCEPTED',
-        'ORG_BAAS_EOL_EXTENSION_PENDING',
-        'ORG_BAAS_EOL_EXTENSION_CANCELED',
-        'GROUP_MOVED_FROM_ORG',
-        'SANDBOX_ENABLED_FOR_ORG',
-        'SANDBOX_DISABLED_FOR_ORG',
-        'SANDBOX_CONFIG_DELETED',
-        'SANDBOX_TEMPLATE_UPDATED',
-        'ORG_DELEGATION_SETTINGS_UPDATED',
-        'ORGANIZATION_VOYAGE_SETTINGS_CREATED',
-        'ORGANIZATION_VOYAGE_SETTINGS_DELETED',
-        'ORG_DATA_SHARING_AI_MODELS_ENABLED',
-        'ORG_DATA_SHARING_AI_MODELS_DISABLED',
-        'ORG_WAVE_ASSIGNMENT_MODE_MANUAL',
-        'ORG_WAVE_ASSIGNMENT_MODE_ENV_TAG_MAPPING',
-        'PROJECT_CREATED_VIA_ANIS',
-      ])
-      .openapi({ title: 'Org Event Types' }),
+      .looseObject({})
+      .and(
+        z
+          .enum([
+            'ORG_CREATED',
+            'CUSTOM_SESSION_TIMEOUT_MODIFIED',
+            'SECURITY_CONTACT_MODIFIED',
+            'OPERATIONS_CONTACT_MODIFIED',
+            'ORG_CREDIT_CARD_ADDED',
+            'ORG_CREDIT_CARD_UPDATED',
+            'ORG_CREDIT_CARD_CURRENT',
+            'ORG_CREDIT_CARD_ABOUT_TO_EXPIRE',
+            'ORG_PAYPAL_LINKED',
+            'ORG_PAYPAL_UPDATED',
+            'ORG_PAYPAL_CANCELLED',
+            'ORG_OVERRIDE_PAYMENT_METHOD_ADDED',
+            'ORG_BANK_ACCOUNT_ADDED',
+            'ORG_BANK_ACCOUNT_UPDATED',
+            'ORG_WALLET_ADDED',
+            'ORG_WALLET_UPDATED',
+            'ORG_ACTIVATED',
+            'ORG_TEMPORARILY_ACTIVATED',
+            'ORG_SUSPENSION_DATE_CHANGED',
+            'ORG_SUSPENDED',
+            'ORG_ADMIN_SUSPENDED',
+            'ORG_ADMIN_LOCKED',
+            'ORG_CLUSTERS_DELETED',
+            'ORG_CLUSTERS_PAUSED',
+            'ORG_LOCKED',
+            'ORG_LOCKED_ACCELERATED',
+            'ORG_UNDER_FINANCIAL_PROTECTION',
+            'ORG_NO_FINANCIAL_PROTECTION',
+            'ORG_RENAMED',
+            'ALL_ORG_USERS_HAVE_MFA',
+            'ORG_USERS_WITHOUT_MFA',
+            'ORG_INVOICE_UNDER_THRESHOLD',
+            'ORG_INVOICE_OVER_THRESHOLD',
+            'ORG_DAILY_BILL_UNDER_THRESHOLD',
+            'ORG_DAILY_BILL_OVER_THRESHOLD',
+            'ORG_DAILY_BILLING_CHANGE_NORMAL',
+            'ORG_DAILY_BILLING_CHANGE_OVER_THRESHOLD',
+            'ORG_WEEKLY_BILLING_CHANGE_NORMAL',
+            'ORG_WEEKLY_BILLING_CHANGE_OVER_THRESHOLD',
+            'ORG_MONTHLY_BILLING_CHANGE_NORMAL',
+            'ORG_MONTHLY_BILLING_CHANGE_OVER_THRESHOLD',
+            'ORG_GROUP_CHARGES_UNDER_THRESHOLD',
+            'ORG_GROUP_CHARGES_OVER_THRESHOLD',
+            'ORG_TWO_FACTOR_AUTH_REQUIRED',
+            'ORG_TWO_FACTOR_AUTH_OPTIONAL',
+            'ORG_PUBLIC_API_ACCESS_LIST_REQUIRED',
+            'ORG_PUBLIC_API_ACCESS_LIST_NOT_REQUIRED',
+            'ORG_EMPLOYEE_ACCESS_RESTRICTED',
+            'ORG_EMPLOYEE_ACCESS_UNRESTRICTED',
+            'ORG_CONNECTED_TO_MLAB',
+            'ORG_DISCONNECTED_FROM_MLAB',
+            'ORG_IDP_CERTIFICATE_CURRENT',
+            'ORG_IDP_CERTIFICATE_ABOUT_TO_EXPIRE',
+            'ORG_CONNECTED_TO_VERCEL',
+            'ORG_DISCONNECTED_TO_VERCEL',
+            'ORG_CONNECTION_UNINSTALLED_FROM_VERCEL',
+            'ORG_UI_IP_ACCESS_LIST_ENABLED',
+            'ORG_UI_IP_ACCESS_LIST_DISABLED',
+            'ORG_EDITED_UI_IP_ACCESS_LIST_ENTRIES',
+            'ORG_SERVICE_ACCOUNT_MAX_SECRET_VALIDITY_EDITED',
+            'ORG_SERVICE_ACCOUNT_SECRETS_EXPIRED',
+            'ORG_SERVICE_ACCOUNT_SECRETS_NO_LONGER_EXPIRED',
+            'ORG_SERVICE_ACCOUNT_SECRETS_EXPIRING',
+            'ORG_SERVICE_ACCOUNT_SECRETS_NO_LONGER_EXPIRING',
+            'ORG_MONGODB_VERSION_EOL_EXTENSION_ACCEPTED',
+            'ORG_MONGODB_VERSION_EOL_EXTENSION_PENDING',
+            'ORG_MONGODB_VERSION_EOL_EXTENSION_CANCELLED',
+            'ORG_BAAS_EOL_EXTENSION_ACCEPTED',
+            'ORG_BAAS_EOL_EXTENSION_PENDING',
+            'ORG_BAAS_EOL_EXTENSION_CANCELED',
+            'GROUP_MOVED_FROM_ORG',
+            'SANDBOX_ENABLED_FOR_ORG',
+            'SANDBOX_DISABLED_FOR_ORG',
+            'SANDBOX_CONFIG_DELETED',
+            'SANDBOX_TEMPLATE_UPDATED',
+            'ORG_DELEGATION_SETTINGS_UPDATED',
+            'ORGANIZATION_VOYAGE_SETTINGS_CREATED',
+            'ORGANIZATION_VOYAGE_SETTINGS_DELETED',
+            'ORG_DATA_SHARING_AI_MODELS_ENABLED',
+            'ORG_DATA_SHARING_AI_MODELS_DISABLED',
+            'ORG_WAVE_ASSIGNMENT_MODE_MANUAL',
+            'ORG_WAVE_ASSIGNMENT_MODE_ENV_TAG_MAPPING',
+            'PROJECT_CREATED_VIA_ANIS',
+          ])
+          .openapi({ title: 'Org Event Types' }),
+      ),
     z
-      .enum([
-        'AWS_SELF_SERVE_ACCOUNT_LINKED',
-        'AWS_SELF_SERVE_ACCOUNT_LINK_PENDING',
-        'AWS_SELF_SERVE_ACCOUNT_CANCELLED',
-        'AWS_SELF_SERVE_ACCOUNT_LINK_FAILED',
-        'GCP_SELF_SERVE_ACCOUNT_LINK_PENDING',
-        'GCP_SELF_SERVE_ACCOUNT_LINK_FAILED',
-        'AZURE_SELF_SERVE_ACCOUNT_LINKED',
-        'AZURE_SELF_SERVE_ACCOUNT_LINK_PENDING',
-        'AZURE_SELF_SERVE_ACCOUNT_CANCELLED',
-        'AZURE_SELF_SERVE_ACCOUNT_LINK_FAILED',
-        'GCP_SELF_SERVE_ACCOUNT_LINKED',
-        'GCP_SELF_SERVE_ACCOUNT_CANCELLED',
-        'VERCEL_SELF_SERVE_ACCOUNT_LINKED',
-        'VERCEL_SELF_SERVE_ACCOUNT_LINK_PENDING',
-        'VERCEL_SELF_SERVE_ACCOUNT_CANCELLED',
-        'VERCEL_SELF_SERVE_ACCOUNT_LINK_FAILED',
-        'VERCEL_INVOICE_CREATED',
-        'VERCEL_INVOICE_NOT_PAID',
-        'VERCEL_INVOICE_OVERDUE',
-        'VERCEL_INVOICE_PAID',
-        'VERCEL_INVOICE_REFUNDED',
-      ])
-      .openapi({ title: 'Partner Event Types' }),
+      .looseObject({})
+      .and(
+        z
+          .enum([
+            'AWS_SELF_SERVE_ACCOUNT_LINKED',
+            'AWS_SELF_SERVE_ACCOUNT_LINK_PENDING',
+            'AWS_SELF_SERVE_ACCOUNT_CANCELLED',
+            'AWS_SELF_SERVE_ACCOUNT_LINK_FAILED',
+            'GCP_SELF_SERVE_ACCOUNT_LINK_PENDING',
+            'GCP_SELF_SERVE_ACCOUNT_LINK_FAILED',
+            'AZURE_SELF_SERVE_ACCOUNT_LINKED',
+            'AZURE_SELF_SERVE_ACCOUNT_LINK_PENDING',
+            'AZURE_SELF_SERVE_ACCOUNT_CANCELLED',
+            'AZURE_SELF_SERVE_ACCOUNT_LINK_FAILED',
+            'GCP_SELF_SERVE_ACCOUNT_LINKED',
+            'GCP_SELF_SERVE_ACCOUNT_CANCELLED',
+            'VERCEL_SELF_SERVE_ACCOUNT_LINKED',
+            'VERCEL_SELF_SERVE_ACCOUNT_LINK_PENDING',
+            'VERCEL_SELF_SERVE_ACCOUNT_CANCELLED',
+            'VERCEL_SELF_SERVE_ACCOUNT_LINK_FAILED',
+            'VERCEL_INVOICE_CREATED',
+            'VERCEL_INVOICE_NOT_PAID',
+            'VERCEL_INVOICE_OVERDUE',
+            'VERCEL_INVOICE_PAID',
+            'VERCEL_INVOICE_REFUNDED',
+          ])
+          .openapi({ title: 'Partner Event Types' }),
+      ),
     z
-      .enum(['SUPPORT_EMAILS_SENT_SUCCESSFULLY', 'SUPPORT_EMAILS_SENT_FAILURE'])
-      .openapi({ title: 'Support Event Types' }),
+      .looseObject({})
+      .and(
+        z
+          .enum(['SUPPORT_EMAILS_SENT_SUCCESSFULLY', 'SUPPORT_EMAILS_SENT_FAILURE'])
+          .openapi({ title: 'Support Event Types' }),
+      ),
     z
-      .enum([
-        'TEAM_CREATED',
-        'TEAM_DELETED',
-        'TEAM_UPDATED',
-        'TEAM_NAME_CHANGED',
-        'TEAM_ADDED_TO_GROUP',
-        'TEAM_REMOVED_FROM_GROUP',
-        'TEAM_ROLES_MODIFIED',
-      ])
-      .openapi({ title: 'Team Event Types' }),
+      .looseObject({})
+      .and(
+        z
+          .enum([
+            'TEAM_CREATED',
+            'TEAM_DELETED',
+            'TEAM_UPDATED',
+            'TEAM_NAME_CHANGED',
+            'TEAM_ADDED_TO_GROUP',
+            'TEAM_REMOVED_FROM_GROUP',
+            'TEAM_ROLES_MODIFIED',
+          ])
+          .openapi({ title: 'Team Event Types' }),
+      ),
     z
-      .enum([
-        'JOINED_ORG',
-        'JOINED_TEAM',
-        'INVITED_TO_ORG',
-        'ORG_INVITATION_DELETED',
-        'REMOVED_FROM_ORG',
-        'REMOVED_FROM_TEAM',
-        'USER_ROLES_CHANGED_AUDIT',
-        'ORG_FLEX_CONSULTING_PURCHASED',
-        'ORG_FLEX_CONSULTING_PURCHASE_FAILED',
-        'INVITED_TO_TEAM',
-      ])
-      .openapi({ title: 'User Event Types' }),
-    z.enum(['TAGS_MODIFIED', 'GROUP_TAGS_MODIFIED']).openapi({ title: 'Resource Event Types' }),
+      .looseObject({})
+      .and(
+        z
+          .enum([
+            'JOINED_ORG',
+            'JOINED_TEAM',
+            'INVITED_TO_ORG',
+            'ORG_INVITATION_DELETED',
+            'REMOVED_FROM_ORG',
+            'REMOVED_FROM_TEAM',
+            'USER_ROLES_CHANGED_AUDIT',
+            'ORG_FLEX_CONSULTING_PURCHASED',
+            'ORG_FLEX_CONSULTING_PURCHASE_FAILED',
+            'INVITED_TO_TEAM',
+          ])
+          .openapi({ title: 'User Event Types' }),
+      ),
     z
-      .enum([
-        'RESOURCE_POLICY_CREATED',
-        'RESOURCE_POLICY_MODIFIED',
-        'RESOURCE_POLICY_DELETED',
-        'RESOURCE_POLICY_VIOLATED',
-      ])
-      .openapi({ title: 'Atlas Resource Policy Audit Types' }),
+      .looseObject({})
+      .and(
+        z.enum(['TAGS_MODIFIED', 'GROUP_TAGS_MODIFIED']).openapi({ title: 'Resource Event Types' }),
+      ),
     z
-      .enum([
-        'AI_MODELS_APIS_USAGE_TIER_UPDATED',
-        'AI_MODELS_APIS_RATE_LIMIT_ADMIN_OVERRIDE',
-        'AI_MODELS_APIS_FREE_TOKENS_ADMIN_ADJUSTED',
-      ])
-      .openapi({ title: 'AI Models APIs Event Types' }),
+      .looseObject({})
+      .and(
+        z
+          .enum([
+            'RESOURCE_POLICY_CREATED',
+            'RESOURCE_POLICY_MODIFIED',
+            'RESOURCE_POLICY_DELETED',
+            'RESOURCE_POLICY_VIOLATED',
+          ])
+          .openapi({ title: 'Atlas Resource Policy Audit Types' }),
+      ),
     z
-      .enum([
-        'OAUTH_CLIENT_CREATED',
-        'OAUTH_CLIENT_UPDATED',
-        'OAUTH_CLIENT_DELETED',
-        'OAUTH_CLIENT_SECRET_CREATED',
-        'OAUTH_CLIENT_SECRET_DELETED',
-        'OAUTH_AUTHORIZATION_GRANTED',
-        'OAUTH_AUTHORIZATION_DENIED',
-        'OAUTH_TOKEN_ISSUED',
-        'OAUTH_TOKEN_REVOKED',
-        'OAUTH_USER_CONSENT_GRANTED',
-        'OAUTH_USER_CONSENT_REVOKED',
-      ])
-      .openapi({ title: 'OAuth Audit Types' }),
+      .looseObject({})
+      .and(
+        z
+          .enum([
+            'AI_MODELS_APIS_USAGE_TIER_UPDATED',
+            'AI_MODELS_APIS_RATE_LIMIT_ADMIN_OVERRIDE',
+            'AI_MODELS_APIS_FREE_TOKENS_ADMIN_ADJUSTED',
+          ])
+          .openapi({ title: 'AI Models APIs Event Types' }),
+      ),
+    z
+      .looseObject({})
+      .and(
+        z
+          .enum([
+            'OAUTH_CLIENT_CREATED',
+            'OAUTH_CLIENT_UPDATED',
+            'OAUTH_CLIENT_DELETED',
+            'OAUTH_CLIENT_SECRET_CREATED',
+            'OAUTH_CLIENT_SECRET_DELETED',
+            'OAUTH_AUTHORIZATION_GRANTED',
+            'OAUTH_AUTHORIZATION_DENIED',
+            'OAUTH_TOKEN_ISSUED',
+            'OAUTH_TOKEN_REVOKED',
+            'OAUTH_USER_CONSENT_GRANTED',
+            'OAUTH_USER_CONSENT_REVOKED',
+          ])
+          .openapi({ title: 'OAuth Audit Types' }),
+      ),
   ])
   .openapi('EventTypeForOrg')
 
@@ -36485,6 +41874,7 @@ const NDSAuditTypeViewForNdsGroupSchema = z
     'MONGODB_USER_X509_CERT_CREATED',
     'MONGODB_USER_X509_CERT_REVOKED',
     'MONGODB_USER_UPDATED',
+    'MONGODB_USER_PASSWORD_UPDATED',
     'MONGODB_ROLE_ADDED',
     'MONGODB_ROLE_DELETED',
     'MONGODB_ROLE_UPDATED',
@@ -36697,6 +42087,7 @@ const NDSAuditTypeViewForNdsGroupSchema = z
     'SEARCH_HOST_DISABLE_FTS',
     'SEARCH_HOST_PAUSE_INITIAL_SYNC_ON_INDEX_IDS',
     'SEARCH_AUTOSCALING_ADMIN_OVERRIDES_UPDATED',
+    'SEARCH_CLUSTER_MONGOT_VERSION_OVERRIDE_UPDATED',
     'CLUSTER_BLOCK_WRITE',
     'CLUSTER_UNBLOCK_WRITE',
     'KMIP_KEY_ROTATION_SCHEDULED',
@@ -39538,6 +44929,45 @@ const FederationIdentityProviderUpdateSchema = z
     FederationOidcWorkforceIdentityProviderUpdateSchema,
     FederationOidcWorkloadIdentityProviderUpdateSchema,
   ])
+  .and(
+    z
+      .object({
+        description: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'The description of the identity provider.' }),
+        displayName: z
+          .string()
+          .min(1)
+          .max(50)
+          .exactOptional()
+          .openapi({ description: 'Human-readable label that identifies the identity provider.' }),
+        idpType: z
+          .enum(['WORKFORCE', 'WORKLOAD'])
+          .exactOptional()
+          .openapi({
+            description:
+              'String enum that indicates the type of the identity provider. Default is WORKFORCE.',
+          }),
+        issuerUri: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Unique string that identifies the issuer of the SAML Assertion or OIDC metadata/discovery document URL.',
+            example: 'urn:idp:default',
+          }),
+        protocol: z
+          .enum(['SAML', 'OIDC'])
+          .exactOptional()
+          .openapi({
+            description:
+              'String enum that indicates the protocol of the identity provider. Either SAML or OIDC.',
+          }),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi('FederationIdentityProviderUpdate')
 
 const FederationOidcIdentityProviderSchema = z
@@ -39545,6 +44975,116 @@ const FederationOidcIdentityProviderSchema = z
     FederationOidcWorkforceIdentityProviderSchema,
     FederationOidcWorkloadIdentityProviderSchema,
   ])
+  .and(
+    z
+      .object({
+        associatedOrgs: z
+          .array(ConnectedOrgConfigSchema)
+          .superRefine((items, ctx) => {
+            const seen = new Map()
+            for (const [i, val] of items.entries()) {
+              const key = JSON.stringify(val)
+              if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+              else seen.set(key, i)
+            }
+          })
+          .exactOptional()
+          .openapi({
+            description:
+              'List that contains the connected organization configurations associated with the identity provider.',
+          }),
+        audience: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Identifier of the intended recipient of the token.' }),
+        authorizationType: z
+          .enum(['GROUP', 'USER'])
+          .exactOptional()
+          .openapi({
+            description:
+              'Indicates whether authorization is granted based on group membership or user ID.',
+          }),
+        createdAt: z.iso
+          .datetime({ offset: true })
+          .exactOptional()
+          .openapi({
+            description:
+              'Date that the identity provider was created on. This parameter expresses its value in the ISO 8601 timestamp format in UTC.',
+            readOnly: true,
+          }),
+        description: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'The description of the identity provider.' }),
+        displayName: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Human-readable label that identifies the identity provider.' }),
+        groupsClaim: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: 'Identifier of the claim which contains IdP Group IDs in the token.',
+          }),
+        id: z
+          .string()
+          .regex(/^([a-f0-9]{24})$/)
+          .openapi({
+            description:
+              'Unique 24-hexadecimal digit string that identifies the identity provider.',
+            example: '32b6e34b3d91647abb20e7b8',
+            readOnly: true,
+          }),
+        idpType: z
+          .enum(['WORKFORCE', 'WORKLOAD'])
+          .exactOptional()
+          .openapi({
+            description:
+              'String enum that indicates the type of the identity provider. Default is WORKFORCE.',
+          }),
+        issuerUri: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Unique string that identifies the issuer of the SAML Assertion or OIDC metadata/discovery document URL.',
+          }),
+        oktaIdpId: z
+          .string()
+          .regex(/^([a-f0-9]{20})$/)
+          .nullable()
+          .openapi({
+            description:
+              'Legacy 20-hexadecimal digit string that identifies the identity provider.',
+          }),
+        protocol: z
+          .enum(['SAML', 'OIDC'])
+          .exactOptional()
+          .openapi({
+            description:
+              'String enum that indicates the protocol of the identity provider. Either SAML or OIDC.',
+          }),
+        updatedAt: z.iso
+          .datetime({ offset: true })
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'Date that the identity provider was last updated on. This parameter expresses its value in the ISO 8601 timestamp format in UTC.',
+            readOnly: true,
+          }),
+        userClaim: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Identifier of the claim which contains the user ID in the token.',
+          }),
+      })
+      .openapi({ required: ['id', 'oktaIdpId'] }),
+  )
   .openapi({ required: ['id', 'oktaIdpId'] })
   .openapi('FederationOidcIdentityProvider')
 
@@ -39553,6 +45093,68 @@ const FederationOidcIdentityProviderUpdateSchema = z
     FederationOidcWorkforceIdentityProviderUpdateSchema,
     FederationOidcWorkloadIdentityProviderUpdateSchema,
   ])
+  .and(
+    z
+      .object({
+        audience: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Identifier of the intended recipient of the token.' }),
+        authorizationType: z
+          .enum(['GROUP', 'USER'])
+          .exactOptional()
+          .openapi({
+            description:
+              'Indicates whether authorization is granted based on group membership or user ID.',
+          }),
+        description: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'The description of the identity provider.' }),
+        displayName: z
+          .string()
+          .min(1)
+          .max(50)
+          .exactOptional()
+          .openapi({ description: 'Human-readable label that identifies the identity provider.' }),
+        groupsClaim: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Identifier of the claim which contains IdP Group IDs in the token.',
+          }),
+        idpType: z
+          .enum(['WORKFORCE', 'WORKLOAD'])
+          .exactOptional()
+          .openapi({
+            description:
+              'String enum that indicates the type of the identity provider. Default is WORKFORCE.',
+          }),
+        issuerUri: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Unique string that identifies the issuer of the SAML Assertion or OIDC metadata/discovery document URL.',
+            example: 'urn:idp:default',
+          }),
+        protocol: z
+          .enum(['SAML', 'OIDC'])
+          .exactOptional()
+          .openapi({
+            description:
+              'String enum that indicates the protocol of the identity provider. Either SAML or OIDC.',
+          }),
+        userClaim: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Identifier of the claim which contains the user ID in the token.',
+          }),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi('FederationOidcIdentityProviderUpdate')
 
 const FlexAVGCommandExecutionTimeMetricThresholdViewSchema = z
@@ -40626,6 +46228,78 @@ const FlexClusterMetricThresholdSchema = z
     FlexAVGWriteExecutionTimeMetricThresholdViewSchema,
     FlexAVGCommandExecutionTimeMetricThresholdViewSchema,
   ])
+  .and(
+    z
+      .object({
+        metricName: z
+          .string()
+          .openapi({
+            description:
+              'Human-readable label that identifies the metric against which MongoDB Cloud checks the configured `metricThreshold.threshold`.',
+          }),
+        mode: z
+          .literal('AVERAGE')
+          .exactOptional()
+          .openapi({
+            description: 'MongoDB Cloud computes the current metric value as an average.',
+          }),
+        operator: z
+          .enum(['LESS_THAN', 'GREATER_THAN'])
+          .exactOptional()
+          .openapi({
+            description: 'Comparison operator to apply when checking the current metric value.',
+          }),
+        threshold: z
+          .float64()
+          .exactOptional()
+          .openapi({ description: 'Value of metric that, when exceeded, triggers an alert.' }),
+        units: z
+          .enum([
+            'bits',
+            'Kbits',
+            'Mbits',
+            'Gbits',
+            'bytes',
+            'KB',
+            'MB',
+            'GB',
+            'TB',
+            'PB',
+            'nsec',
+            'msec',
+            'sec',
+            'min',
+            'hours',
+            'million minutes',
+            'days',
+            'requests',
+            '1000 requests',
+            'tokens',
+            'million tokens',
+            'pixels',
+            'billion pixels',
+            'GB seconds',
+            'GB hours',
+            'GB days',
+            'RPU',
+            'thousand RPU',
+            'million RPU',
+            'WPU',
+            'thousand WPU',
+            'million WPU',
+            'count',
+            'thousand',
+            'million',
+            'billion',
+          ])
+          .exactOptional()
+          .openapi({
+            description:
+              'Element used to express the quantity. This can be an element of time, storage capacity, and the like.',
+          }),
+      })
+      .openapi({ required: ['metricName'] }),
+  )
   .openapi({
     description:
       'Threshold for the metric that, when exceeded, triggers an alert. The metric threshold pertains to event types which reflects changes of measurements and metrics about the serverless database.',
@@ -41148,6 +46822,30 @@ const GcsLogIntegrationRequestSchema = z
   .openapi({ required: ['logTypes', 'type'] })
   .and(
     z
+      .looseObject({})
+      .openapi({ required: ['bucketName', 'logTypes', 'prefixPath', 'roleId', 'type'] }),
+  )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'bucketName')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'logTypes')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'prefixPath')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'roleId')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
       .object({
         bucketName: z
           .string()
@@ -41230,6 +46928,33 @@ const GcsLogIntegrationResponseSchema = z
       }),
   })
   .openapi({ required: ['id', 'logTypes', 'type'] })
+  .and(
+    z
+      .looseObject({})
+      .openapi({ required: ['bucketName', 'id', 'logTypes', 'prefixPath', 'roleId', 'type'] }),
+  )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'bucketName')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'logTypes')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'prefixPath')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'roleId')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
   .and(
     z
       .object({
@@ -41872,6 +47597,46 @@ const GroupActiveUserResponseSchema = z
       }),
   })
   .openapi({ required: ['id', 'orgMembershipStatus', 'roles', 'username'] })
+  .and(
+    z
+      .looseObject({})
+      .openapi({
+        required: [
+          'createdAt',
+          'firstName',
+          'id',
+          'lastName',
+          'orgMembershipStatus',
+          'roles',
+          'username',
+        ],
+      }),
+  )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'createdAt')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'firstName')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'lastName')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'orgMembershipStatus')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'roles')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'username')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
   .and(
     z
       .object({
@@ -44982,6 +50747,78 @@ const HostMetricThresholdSchema = z
     FtsJvmMaxMemoryDataMetricThresholdViewSchema,
     FtsJvmCurrentMemoryDataMetricThresholdViewSchema,
   ])
+  .and(
+    z
+      .object({
+        metricName: z
+          .string()
+          .openapi({
+            description:
+              'Human-readable label that identifies the metric against which MongoDB Cloud checks the configured `metricThreshold.threshold`.',
+          }),
+        mode: z
+          .literal('AVERAGE')
+          .exactOptional()
+          .openapi({
+            description: 'MongoDB Cloud computes the current metric value as an average.',
+          }),
+        operator: z
+          .enum(['LESS_THAN', 'GREATER_THAN'])
+          .exactOptional()
+          .openapi({
+            description: 'Comparison operator to apply when checking the current metric value.',
+          }),
+        threshold: z
+          .float64()
+          .exactOptional()
+          .openapi({ description: 'Value of metric that, when exceeded, triggers an alert.' }),
+        units: z
+          .enum([
+            'bits',
+            'Kbits',
+            'Mbits',
+            'Gbits',
+            'bytes',
+            'KB',
+            'MB',
+            'GB',
+            'TB',
+            'PB',
+            'nsec',
+            'msec',
+            'sec',
+            'min',
+            'hours',
+            'million minutes',
+            'days',
+            'requests',
+            '1000 requests',
+            'tokens',
+            'million tokens',
+            'pixels',
+            'billion pixels',
+            'GB seconds',
+            'GB hours',
+            'GB days',
+            'RPU',
+            'thousand RPU',
+            'million RPU',
+            'WPU',
+            'thousand WPU',
+            'million WPU',
+            'count',
+            'thousand',
+            'million',
+            'billion',
+          ])
+          .exactOptional()
+          .openapi({
+            description:
+              'Element used to express the quantity. This can be an element of time, storage capacity, and the like.',
+          }),
+      })
+      .openapi({ required: ['metricName'] }),
+  )
   .openapi({
     description:
       'Threshold for the metric that, when exceeded, triggers an alert. The metric threshold pertains to event types which reflects changes of measurements and metrics about mongod host.',
@@ -46315,6 +52152,78 @@ const ServerlessMetricThresholdSchema = z
     ServerlessConnectionPercentageRawMetricThresholdViewSchema,
     RawMetricThresholdViewSchema,
   ])
+  .and(
+    z
+      .object({
+        metricName: z
+          .string()
+          .openapi({
+            description:
+              'Human-readable label that identifies the metric against which MongoDB Cloud checks the configured `metricThreshold.threshold`.',
+          }),
+        mode: z
+          .literal('AVERAGE')
+          .exactOptional()
+          .openapi({
+            description: 'MongoDB Cloud computes the current metric value as an average.',
+          }),
+        operator: z
+          .enum(['LESS_THAN', 'GREATER_THAN'])
+          .exactOptional()
+          .openapi({
+            description: 'Comparison operator to apply when checking the current metric value.',
+          }),
+        threshold: z
+          .float64()
+          .exactOptional()
+          .openapi({ description: 'Value of metric that, when exceeded, triggers an alert.' }),
+        units: z
+          .enum([
+            'bits',
+            'Kbits',
+            'Mbits',
+            'Gbits',
+            'bytes',
+            'KB',
+            'MB',
+            'GB',
+            'TB',
+            'PB',
+            'nsec',
+            'msec',
+            'sec',
+            'min',
+            'hours',
+            'million minutes',
+            'days',
+            'requests',
+            '1000 requests',
+            'tokens',
+            'million tokens',
+            'pixels',
+            'billion pixels',
+            'GB seconds',
+            'GB hours',
+            'GB days',
+            'RPU',
+            'thousand RPU',
+            'million RPU',
+            'WPU',
+            'thousand WPU',
+            'million WPU',
+            'count',
+            'thousand',
+            'million',
+            'billion',
+          ])
+          .exactOptional()
+          .openapi({
+            description:
+              'Element used to express the quantity. This can be an element of time, storage capacity, and the like.',
+          }),
+      })
+      .openapi({ required: ['metricName'] }),
+  )
   .openapi({
     description:
       'Threshold for the metric that, when exceeded, triggers an alert. The metric threshold pertains to event types which reflects changes of measurements and metrics about the serverless database.',
@@ -46626,6 +52535,78 @@ const StreamProcessorMetricThresholdSchema = z
     DLQRawMetricThresholdViewSchema,
     RawMetricThresholdViewSchema,
   ])
+  .and(
+    z
+      .object({
+        metricName: z
+          .string()
+          .openapi({
+            description:
+              'Human-readable label that identifies the metric against which MongoDB Cloud checks the configured `metricThreshold.threshold`.',
+          }),
+        mode: z
+          .literal('AVERAGE')
+          .exactOptional()
+          .openapi({
+            description: 'MongoDB Cloud computes the current metric value as an average.',
+          }),
+        operator: z
+          .enum(['LESS_THAN', 'GREATER_THAN'])
+          .exactOptional()
+          .openapi({
+            description: 'Comparison operator to apply when checking the current metric value.',
+          }),
+        threshold: z
+          .float64()
+          .exactOptional()
+          .openapi({ description: 'Value of metric that, when exceeded, triggers an alert.' }),
+        units: z
+          .enum([
+            'bits',
+            'Kbits',
+            'Mbits',
+            'Gbits',
+            'bytes',
+            'KB',
+            'MB',
+            'GB',
+            'TB',
+            'PB',
+            'nsec',
+            'msec',
+            'sec',
+            'min',
+            'hours',
+            'million minutes',
+            'days',
+            'requests',
+            '1000 requests',
+            'tokens',
+            'million tokens',
+            'pixels',
+            'billion pixels',
+            'GB seconds',
+            'GB hours',
+            'GB days',
+            'RPU',
+            'thousand RPU',
+            'million RPU',
+            'WPU',
+            'thousand WPU',
+            'million WPU',
+            'count',
+            'thousand',
+            'million',
+            'billion',
+          ])
+          .exactOptional()
+          .openapi({
+            description:
+              'Element used to express the quantity. This can be an element of time, storage capacity, and the like.',
+          }),
+      })
+      .openapi({ required: ['metricName'] }),
+  )
   .openapi({
     description:
       'Threshold for the metric that, when exceeded, triggers an alert. The metric threshold pertains to event types which reflects changes of measurements and metrics in stream processors.',
@@ -47525,6 +53506,42 @@ const GroupPendingUserResponseSchema = z
   .openapi({ required: ['id', 'orgMembershipStatus', 'roles', 'username'] })
   .and(
     z
+      .looseObject({})
+      .openapi({
+        required: [
+          'id',
+          'invitationCreatedAt',
+          'inviterUsername',
+          'orgMembershipStatus',
+          'roles',
+          'username',
+        ],
+      }),
+  )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'invitationCreatedAt')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'inviterUsername')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'orgMembershipStatus')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'roles')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'username')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
       .object({
         invitationCreatedAt: z.iso
           .datetime({ offset: true })
@@ -48058,6 +54075,52 @@ const GroupUserRequestSchema = z
 
 const GroupUserResponseSchema = z
   .xor([GroupPendingUserResponseSchema, GroupActiveUserResponseSchema])
+  .and(
+    z
+      .object({
+        id: z
+          .string()
+          .regex(/^([a-f0-9]{24})$/)
+          .openapi({
+            description:
+              'Unique 24-hexadecimal digit string that identifies the MongoDB Cloud user.',
+            example: '32b6e34b3d91647abb20e7b8',
+            readOnly: true,
+          }),
+        orgMembershipStatus: z
+          .enum(['PENDING', 'ACTIVE', 'INVITATION_EXPIRED', 'INVITATION_REJECTED'])
+          .openapi({
+            description:
+              "String enum that indicates the user's organization membership status: ACTIVE (member), PENDING (invited), `INVITATION_EXPIRED` (invitation expired), or `INVITATION_REJECTED` (invitation declined).",
+            readOnly: true,
+          }),
+        roles: z
+          .array(z.string())
+          .superRefine((items, ctx) => {
+            const seen = new Map()
+            for (const [i, val] of items.entries()) {
+              const key = JSON.stringify(val)
+              if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+              else seen.set(key, i)
+            }
+          })
+          .openapi({
+            description: 'One or more project-level roles assigned to the MongoDB Cloud user.',
+            externalDocs: {
+              description: 'MongoDB Cloud User Roles',
+              url: 'https://www.mongodb.com/docs/atlas/reference/user-roles/',
+            },
+            readOnly: true,
+          }),
+        username: z
+          .email()
+          .openapi({
+            description: 'Email address that represents the username of the MongoDB Cloud user.',
+            readOnly: true,
+          }),
+      })
+      .openapi({ required: ['id', 'orgMembershipStatus', 'roles', 'username'] }),
+  )
   .openapi({
     discriminator: {
       propertyName: 'orgMembershipStatus',
@@ -48606,7 +54669,7 @@ const LegacyAtlasTenantClusterUpgradeRequestSchema = z
       .openapi({
         deprecated: true,
         description:
-          "Collection of key-value pairs between 1 to 255 characters in length that tag and categorize the cluster. The MongoDB Cloud console doesn't display your labels.\n\nCluster labels are deprecated and will be removed in a future release. We strongly recommend that you use Resource Tags instead.",
+          "Deprecated: Cluster labels will be removed in a future release. We strongly recommend that you use Resource Tags instead.\n\nCollection of key-value pairs between 1 to 255 characters in length that tag and categorize the cluster. The MongoDB Cloud console doesn't display your labels.",
         externalDocs: {
           description: 'Resource Tags',
           url: 'https://dochub.mongodb.org/core/add-cluster-tag-atlas',
@@ -48730,7 +54793,7 @@ const LegacyAtlasTenantClusterUpgradeRequestSchema = z
       .openapi({
         deprecated: true,
         description:
-          'Number of members that belong to the replica set. Each member retains a copy of your databases, providing high availability and data redundancy. Use `replicationSpecs` instead.',
+          'Deprecated: Use `replicationSpecs` instead. Number of members that belong to the replica set. Each member retains a copy of your databases, providing high availability and data redundancy.',
       }),
     replicationSpec: z
       .record(z.string(), RegionSpecSchema)
@@ -49298,6 +55361,30 @@ const S3LogIntegrationRequestSchema = z
   .openapi({ required: ['logTypes', 'type'] })
   .and(
     z
+      .looseObject({})
+      .openapi({ required: ['bucketName', 'iamRoleId', 'logTypes', 'prefixPath', 'type'] }),
+  )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'bucketName')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'iamRoleId')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'logTypes')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'prefixPath')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
       .object({
         bucketName: z
           .string()
@@ -49390,6 +55477,27 @@ const OtelLogIntegrationRequestSchema = z
   .openapi({ required: ['logTypes', 'type'] })
   .and(
     z
+      .looseObject({})
+      .openapi({ required: ['logTypes', 'otelEndpoint', 'otelSuppliedHeaders', 'type'] }),
+  )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'logTypes')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'otelEndpoint')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'otelSuppliedHeaders')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
       .object({
         otelEndpoint: z
           .string()
@@ -49457,6 +55565,23 @@ const SplunkLogIntegrationRequestSchema = z
       }),
   })
   .openapi({ required: ['logTypes', 'type'] })
+  .and(z.looseObject({}).openapi({ required: ['hecToken', 'hecUrl', 'logTypes', 'type'] }))
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'hecToken')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'hecUrl')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'logTypes')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
   .and(
     z
       .object({
@@ -49500,6 +55625,40 @@ const LogIntegrationRequestSchema = z
     SplunkLogIntegrationRequestSchema,
     AzureLogIntegrationRequestSchema,
   ])
+  .and(
+    z
+      .object({
+        logTypes: z
+          .array(z.enum(['MONGOD', 'MONGOS', 'MONGOD_AUDIT', 'MONGOS_AUDIT', 'EVENTS']))
+          .max(10)
+          .superRefine((items, ctx) => {
+            const seen = new Map()
+            for (const [i, val] of items.entries()) {
+              const key = JSON.stringify(val)
+              if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+              else seen.set(key, i)
+            }
+          })
+          .openapi({
+            description: 'Array of log types exported by this integration.',
+            example: ['MONGOD', 'MONGOS'],
+          }),
+        type: z
+          .enum([
+            'S3_LOG_EXPORT',
+            'DATADOG_LOG_EXPORT',
+            'GCS_LOG_EXPORT',
+            'OTEL_LOG_EXPORT',
+            'SPLUNK_LOG_EXPORT',
+            'AZURE_LOG_EXPORT',
+          ])
+          .openapi({
+            description:
+              'Type of log integration. Identifies which service will receive the exported logs. This value cannot be modified after the integration is created.',
+          }),
+      })
+      .openapi({ required: ['logTypes', 'type'] }),
+  )
   .openapi({
     description: 'Request schema for creating or updating a log integration.',
     discriminator: {
@@ -49557,6 +55716,33 @@ const S3LogIntegrationResponseSchema = z
       }),
   })
   .openapi({ required: ['id', 'logTypes', 'type'] })
+  .and(
+    z
+      .looseObject({})
+      .openapi({ required: ['bucketName', 'iamRoleId', 'id', 'logTypes', 'prefixPath', 'type'] }),
+  )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'bucketName')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'iamRoleId')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'logTypes')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'prefixPath')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
   .and(
     z
       .object({
@@ -49658,6 +55844,30 @@ const OtelLogIntegrationResponseSchema = z
   .openapi({ required: ['id', 'logTypes', 'type'] })
   .and(
     z
+      .looseObject({})
+      .openapi({ required: ['id', 'logTypes', 'otelEndpoint', 'otelSuppliedHeaders', 'type'] }),
+  )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'logTypes')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'otelEndpoint')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'otelSuppliedHeaders')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
       .object({
         otelEndpoint: z
           .string()
@@ -49731,6 +55941,26 @@ const SplunkLogIntegrationResponseSchema = z
       }),
   })
   .openapi({ required: ['id', 'logTypes', 'type'] })
+  .and(z.looseObject({}).openapi({ required: ['hecToken', 'hecUrl', 'id', 'logTypes', 'type'] }))
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'hecToken')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'hecUrl')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'logTypes')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
   .and(
     z
       .object({
@@ -49774,6 +56004,47 @@ const LogIntegrationResponseSchema = z
     SplunkLogIntegrationResponseSchema,
     AzureLogIntegrationResponseSchema,
   ])
+  .and(
+    z
+      .object({
+        id: z
+          .string()
+          .openapi({
+            description:
+              'Unique 24-character hexadecimal digit string that identifies the log integration configuration.',
+            example: '507f1f77bcf86cd799439011',
+          }),
+        logTypes: z
+          .array(z.enum(['MONGOD', 'MONGOS', 'MONGOD_AUDIT', 'MONGOS_AUDIT', 'EVENTS']))
+          .max(10)
+          .superRefine((items, ctx) => {
+            const seen = new Map()
+            for (const [i, val] of items.entries()) {
+              const key = JSON.stringify(val)
+              if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+              else seen.set(key, i)
+            }
+          })
+          .openapi({
+            description: 'Array of log types exported by this integration.',
+            example: ['MONGOD', 'MONGOS'],
+          }),
+        type: z
+          .enum([
+            'S3_LOG_EXPORT',
+            'DATADOG_LOG_EXPORT',
+            'GCS_LOG_EXPORT',
+            'OTEL_LOG_EXPORT',
+            'SPLUNK_LOG_EXPORT',
+            'AZURE_LOG_EXPORT',
+          ])
+          .openapi({
+            description:
+              'Type of log integration. Identifies which service will receive the exported logs. This value cannot be modified after the integration is created.',
+          }),
+      })
+      .openapi({ required: ['id', 'logTypes', 'type'] }),
+  )
   .openapi({
     description: 'Response schema for log integration operations.',
     discriminator: {
@@ -49794,26 +56065,48 @@ const LogIntegrationResponseSchema = z
 
 const MatcherFieldViewSchema = z
   .xor([
-    z.literal('APPLICATION_ID').openapi({ title: 'App Services Metric Matcher Fields' }),
-    z.literal('CLUSTER_NAME').openapi({ title: 'Cluster Matcher Fields' }),
     z
-      .enum([
-        'TYPE_NAME',
-        'HOSTNAME',
-        'PORT',
-        'HOSTNAME_AND_PORT',
-        'REPLICA_SET_NAME',
-        'ATLAS_NODE_TYPE',
-      ])
-      .openapi({ title: 'Host Matcher Fields' }),
+      .looseObject({})
+      .and(z.literal('APPLICATION_ID').openapi({ title: 'App Services Metric Matcher Fields' })),
+    z.looseObject({}).and(z.literal('CLUSTER_NAME').openapi({ title: 'Cluster Matcher Fields' })),
     z
-      .enum(['REPLICA_SET_NAME', 'SHARD_NAME', 'CLUSTER_NAME'])
-      .openapi({ title: 'Replica Set Matcher Fields' }),
-    z.enum(['INSTANCE_NAME', 'PROCESSOR_NAME']).openapi({ title: 'Streams Matcher Fields' }),
-    z.literal('ENDPOINT_ID').openapi({ title: 'Streams Private Link Endpoint Matcher Fields' }),
-    z.literal('RULE_ID').openapi({ title: 'Log Ingestion Matcher Fields' }),
-    z.literal('SOFTWARE_TYPE').openapi({ title: 'Global Software Type Matcher Fields' }),
-    z.literal('CLUSTER_NAME').openapi({ title: 'NDS Autoscaling Matcher Fields' }),
+      .looseObject({})
+      .and(
+        z
+          .enum([
+            'TYPE_NAME',
+            'HOSTNAME',
+            'PORT',
+            'HOSTNAME_AND_PORT',
+            'REPLICA_SET_NAME',
+            'ATLAS_NODE_TYPE',
+          ])
+          .openapi({ title: 'Host Matcher Fields' }),
+      ),
+    z
+      .looseObject({})
+      .and(
+        z
+          .enum(['REPLICA_SET_NAME', 'SHARD_NAME', 'CLUSTER_NAME'])
+          .openapi({ title: 'Replica Set Matcher Fields' }),
+      ),
+    z
+      .looseObject({})
+      .and(
+        z.enum(['INSTANCE_NAME', 'PROCESSOR_NAME']).openapi({ title: 'Streams Matcher Fields' }),
+      ),
+    z
+      .looseObject({})
+      .and(
+        z.literal('ENDPOINT_ID').openapi({ title: 'Streams Private Link Endpoint Matcher Fields' }),
+      ),
+    z.looseObject({}).and(z.literal('RULE_ID').openapi({ title: 'Log Ingestion Matcher Fields' })),
+    z
+      .looseObject({})
+      .and(z.literal('SOFTWARE_TYPE').openapi({ title: 'Global Software Type Matcher Fields' })),
+    z
+      .looseObject({})
+      .and(z.literal('CLUSTER_NAME').openapi({ title: 'NDS Autoscaling Matcher Fields' })),
   ])
   .openapi('MatcherFieldView')
 
@@ -50876,7 +57169,7 @@ const MongoDBAccessLogsListSchema = z
   .openapi({ required: [] })
   .openapi('MongoDBAccessLogsList')
 
-const MongosTopologyResourceRegionConfigSchema = z
+const MongosRegionPlacementSchema = z
   .object({
     nodeCount: z
       .int32()
@@ -50892,7 +57185,7 @@ const MongosTopologyResourceRegionConfigSchema = z
       .openapi({ description: 'Region in which the dedicated mongos run.' }),
   })
   .openapi({ description: 'Dedicated mongos placement in one region.', required: [] })
-  .openapi('MongosTopologyResourceRegionConfig')
+  .openapi('MongosRegionPlacement')
 
 const MongosTopologyCreateRequestSchema = z
   .object({
@@ -50910,7 +57203,7 @@ const MongosTopologyCreateRequestSchema = z
         description: 'Instance size of the dedicated mongos hosts (for example, `M30`).',
       }),
     regionPlacements: z
-      .array(MongosTopologyResourceRegionConfigSchema)
+      .array(MongosRegionPlacementSchema)
       .exactOptional()
       .openapi({ description: 'Per-region placement of the dedicated mongos hosts.' }),
   })
@@ -50920,7 +57213,7 @@ const MongosTopologyCreateRequestSchema = z
   })
   .openapi('MongosTopologyCreateRequest')
 
-const MongosTopologyResourceResponseSchema = z
+const MongosTopologyResponseSchema = z
   .object({
     clusterName: z
       .string()
@@ -50936,7 +57229,7 @@ const MongosTopologyResourceResponseSchema = z
         description: 'Instance size of the dedicated mongos hosts (for example, `M30`).',
       }),
     regionPlacements: z
-      .array(MongosTopologyResourceRegionConfigSchema)
+      .array(MongosRegionPlacementSchema)
       .exactOptional()
       .openapi({ description: 'Per-region placement of the dedicated mongos hosts.' }),
     status: z
@@ -50952,7 +57245,7 @@ const MongosTopologyResourceResponseSchema = z
       'Configuration of the dedicated mongos routers for a sharded cluster, identified by the name of its associated cluster.',
     required: [],
   })
-  .openapi('MongosTopologyResourceResponse')
+  .openapi('MongosTopologyResponse')
 
 const MongosTopologyUpdateRequestSchema = z
   .object({
@@ -50970,7 +57263,7 @@ const MongosTopologyUpdateRequestSchema = z
         description: 'Instance size of the dedicated mongos hosts (for example, `M30`).',
       }),
     regionPlacements: z
-      .array(MongosTopologyResourceRegionConfigSchema)
+      .array(MongosRegionPlacementSchema)
       .exactOptional()
       .openapi({ description: 'Per-region placement of the dedicated mongos hosts.' }),
   })
@@ -51546,39 +57839,43 @@ const ObjectStoragePrivateEndpointRequestSchema = z
     regionName: z
       .xor([
         z
-          .enum([
-            'US_GOV_WEST_1',
-            'US_GOV_EAST_1',
-            'US_EAST_1',
-            'US_EAST_2',
-            'US_WEST_1',
-            'US_WEST_2',
-            'CA_CENTRAL_1',
-            'EU_NORTH_1',
-            'EU_WEST_1',
-            'EU_WEST_2',
-            'EU_WEST_3',
-            'EU_CENTRAL_1',
-            'AP_EAST_1',
-            'AP_NORTHEAST_1',
-            'AP_NORTHEAST_2',
-            'AP_NORTHEAST_3',
-            'AP_SOUTHEAST_1',
-            'AP_SOUTHEAST_2',
-            'AP_SOUTHEAST_3',
-            'AP_SOUTH_1',
-            'SA_EAST_1',
-            'CN_NORTH_1',
-            'CN_NORTHWEST_1',
-            'ME_SOUTH_1',
-            'AF_SOUTH_1',
-            'EU_SOUTH_1',
-            'GLOBAL',
-          ])
-          .openapi({
-            description:
-              'Physical location where MongoDB Cloud deploys your AWS-hosted MongoDB cluster nodes. The region you choose can affect network latency for clients accessing your databases.\nWhen MongoDB Cloud deploys a dedicated cluster, it checks if a VPC or VPC connection exists for that provider and region. If not, MongoDB Cloud creates them as part of the deployment. MongoDB Cloud assigns the VPC a CIDR block.\nTo limit a new VPC peering connection to one CIDR block and region, create the connection first. Deploy the cluster after the connection starts.',
-          }),
+          .looseObject({})
+          .and(
+            z
+              .enum([
+                'US_GOV_WEST_1',
+                'US_GOV_EAST_1',
+                'US_EAST_1',
+                'US_EAST_2',
+                'US_WEST_1',
+                'US_WEST_2',
+                'CA_CENTRAL_1',
+                'EU_NORTH_1',
+                'EU_WEST_1',
+                'EU_WEST_2',
+                'EU_WEST_3',
+                'EU_CENTRAL_1',
+                'AP_EAST_1',
+                'AP_NORTHEAST_1',
+                'AP_NORTHEAST_2',
+                'AP_NORTHEAST_3',
+                'AP_SOUTHEAST_1',
+                'AP_SOUTHEAST_2',
+                'AP_SOUTHEAST_3',
+                'AP_SOUTH_1',
+                'SA_EAST_1',
+                'CN_NORTH_1',
+                'CN_NORTHWEST_1',
+                'ME_SOUTH_1',
+                'AF_SOUTH_1',
+                'EU_SOUTH_1',
+                'GLOBAL',
+              ])
+              .openapi({
+                description:
+                  'Physical location where MongoDB Cloud deploys your AWS-hosted MongoDB cluster nodes. The region you choose can affect network latency for clients accessing your databases.\nWhen MongoDB Cloud deploys a dedicated cluster, it checks if a VPC or VPC connection exists for that provider and region. If not, MongoDB Cloud creates them as part of the deployment. MongoDB Cloud assigns the VPC a CIDR block.\nTo limit a new VPC peering connection to one CIDR block and region, create the connection first. Deploy the cluster after the connection starts.',
+              }),
+          ),
       ])
       .exactOptional()
       .openapi({
@@ -51588,39 +57885,43 @@ const ObjectStoragePrivateEndpointRequestSchema = z
     vpcRegionName: z
       .xor([
         z
-          .enum([
-            'US_GOV_WEST_1',
-            'US_GOV_EAST_1',
-            'US_EAST_1',
-            'US_EAST_2',
-            'US_WEST_1',
-            'US_WEST_2',
-            'CA_CENTRAL_1',
-            'EU_NORTH_1',
-            'EU_WEST_1',
-            'EU_WEST_2',
-            'EU_WEST_3',
-            'EU_CENTRAL_1',
-            'AP_EAST_1',
-            'AP_NORTHEAST_1',
-            'AP_NORTHEAST_2',
-            'AP_NORTHEAST_3',
-            'AP_SOUTHEAST_1',
-            'AP_SOUTHEAST_2',
-            'AP_SOUTHEAST_3',
-            'AP_SOUTH_1',
-            'SA_EAST_1',
-            'CN_NORTH_1',
-            'CN_NORTHWEST_1',
-            'ME_SOUTH_1',
-            'AF_SOUTH_1',
-            'EU_SOUTH_1',
-            'GLOBAL',
-          ])
-          .openapi({
-            description:
-              'Physical location where MongoDB Cloud deploys your AWS-hosted MongoDB cluster nodes. The region you choose can affect network latency for clients accessing your databases.\nWhen MongoDB Cloud deploys a dedicated cluster, it checks if a VPC or VPC connection exists for that provider and region. If not, MongoDB Cloud creates them as part of the deployment. MongoDB Cloud assigns the VPC a CIDR block.\nTo limit a new VPC peering connection to one CIDR block and region, create the connection first. Deploy the cluster after the connection starts.',
-          }),
+          .looseObject({})
+          .and(
+            z
+              .enum([
+                'US_GOV_WEST_1',
+                'US_GOV_EAST_1',
+                'US_EAST_1',
+                'US_EAST_2',
+                'US_WEST_1',
+                'US_WEST_2',
+                'CA_CENTRAL_1',
+                'EU_NORTH_1',
+                'EU_WEST_1',
+                'EU_WEST_2',
+                'EU_WEST_3',
+                'EU_CENTRAL_1',
+                'AP_EAST_1',
+                'AP_NORTHEAST_1',
+                'AP_NORTHEAST_2',
+                'AP_NORTHEAST_3',
+                'AP_SOUTHEAST_1',
+                'AP_SOUTHEAST_2',
+                'AP_SOUTHEAST_3',
+                'AP_SOUTH_1',
+                'SA_EAST_1',
+                'CN_NORTH_1',
+                'CN_NORTHWEST_1',
+                'ME_SOUTH_1',
+                'AF_SOUTH_1',
+                'EU_SOUTH_1',
+                'GLOBAL',
+              ])
+              .openapi({
+                description:
+                  'Physical location where MongoDB Cloud deploys your AWS-hosted MongoDB cluster nodes. The region you choose can affect network latency for clients accessing your databases.\nWhen MongoDB Cloud deploys a dedicated cluster, it checks if a VPC or VPC connection exists for that provider and region. If not, MongoDB Cloud creates them as part of the deployment. MongoDB Cloud assigns the VPC a CIDR block.\nTo limit a new VPC peering connection to one CIDR block and region, create the connection first. Deploy the cluster after the connection starts.',
+              }),
+          ),
       ])
       .exactOptional()
       .openapi({
@@ -51662,39 +57963,43 @@ const ObjectStoragePrivateEndpointResponseSchema = z
     regionName: z
       .xor([
         z
-          .enum([
-            'US_GOV_WEST_1',
-            'US_GOV_EAST_1',
-            'US_EAST_1',
-            'US_EAST_2',
-            'US_WEST_1',
-            'US_WEST_2',
-            'CA_CENTRAL_1',
-            'EU_NORTH_1',
-            'EU_WEST_1',
-            'EU_WEST_2',
-            'EU_WEST_3',
-            'EU_CENTRAL_1',
-            'AP_EAST_1',
-            'AP_NORTHEAST_1',
-            'AP_NORTHEAST_2',
-            'AP_NORTHEAST_3',
-            'AP_SOUTHEAST_1',
-            'AP_SOUTHEAST_2',
-            'AP_SOUTHEAST_3',
-            'AP_SOUTH_1',
-            'SA_EAST_1',
-            'CN_NORTH_1',
-            'CN_NORTHWEST_1',
-            'ME_SOUTH_1',
-            'AF_SOUTH_1',
-            'EU_SOUTH_1',
-            'GLOBAL',
-          ])
-          .openapi({
-            description:
-              'Physical location where MongoDB Cloud deploys your AWS-hosted MongoDB cluster nodes. The region you choose can affect network latency for clients accessing your databases.\nWhen MongoDB Cloud deploys a dedicated cluster, it checks if a VPC or VPC connection exists for that provider and region. If not, MongoDB Cloud creates them as part of the deployment. MongoDB Cloud assigns the VPC a CIDR block.\nTo limit a new VPC peering connection to one CIDR block and region, create the connection first. Deploy the cluster after the connection starts.',
-          }),
+          .looseObject({})
+          .and(
+            z
+              .enum([
+                'US_GOV_WEST_1',
+                'US_GOV_EAST_1',
+                'US_EAST_1',
+                'US_EAST_2',
+                'US_WEST_1',
+                'US_WEST_2',
+                'CA_CENTRAL_1',
+                'EU_NORTH_1',
+                'EU_WEST_1',
+                'EU_WEST_2',
+                'EU_WEST_3',
+                'EU_CENTRAL_1',
+                'AP_EAST_1',
+                'AP_NORTHEAST_1',
+                'AP_NORTHEAST_2',
+                'AP_NORTHEAST_3',
+                'AP_SOUTHEAST_1',
+                'AP_SOUTHEAST_2',
+                'AP_SOUTHEAST_3',
+                'AP_SOUTH_1',
+                'SA_EAST_1',
+                'CN_NORTH_1',
+                'CN_NORTHWEST_1',
+                'ME_SOUTH_1',
+                'AF_SOUTH_1',
+                'EU_SOUTH_1',
+                'GLOBAL',
+              ])
+              .openapi({
+                description:
+                  'Physical location where MongoDB Cloud deploys your AWS-hosted MongoDB cluster nodes. The region you choose can affect network latency for clients accessing your databases.\nWhen MongoDB Cloud deploys a dedicated cluster, it checks if a VPC or VPC connection exists for that provider and region. If not, MongoDB Cloud creates them as part of the deployment. MongoDB Cloud assigns the VPC a CIDR block.\nTo limit a new VPC peering connection to one CIDR block and region, create the connection first. Deploy the cluster after the connection starts.',
+              }),
+          ),
       ])
       .exactOptional()
       .openapi({
@@ -51715,39 +58020,43 @@ const ObjectStoragePrivateEndpointResponseSchema = z
     vpcRegionName: z
       .xor([
         z
-          .enum([
-            'US_GOV_WEST_1',
-            'US_GOV_EAST_1',
-            'US_EAST_1',
-            'US_EAST_2',
-            'US_WEST_1',
-            'US_WEST_2',
-            'CA_CENTRAL_1',
-            'EU_NORTH_1',
-            'EU_WEST_1',
-            'EU_WEST_2',
-            'EU_WEST_3',
-            'EU_CENTRAL_1',
-            'AP_EAST_1',
-            'AP_NORTHEAST_1',
-            'AP_NORTHEAST_2',
-            'AP_NORTHEAST_3',
-            'AP_SOUTHEAST_1',
-            'AP_SOUTHEAST_2',
-            'AP_SOUTHEAST_3',
-            'AP_SOUTH_1',
-            'SA_EAST_1',
-            'CN_NORTH_1',
-            'CN_NORTHWEST_1',
-            'ME_SOUTH_1',
-            'AF_SOUTH_1',
-            'EU_SOUTH_1',
-            'GLOBAL',
-          ])
-          .openapi({
-            description:
-              'Physical location where MongoDB Cloud deploys your AWS-hosted MongoDB cluster nodes. The region you choose can affect network latency for clients accessing your databases.\nWhen MongoDB Cloud deploys a dedicated cluster, it checks if a VPC or VPC connection exists for that provider and region. If not, MongoDB Cloud creates them as part of the deployment. MongoDB Cloud assigns the VPC a CIDR block.\nTo limit a new VPC peering connection to one CIDR block and region, create the connection first. Deploy the cluster after the connection starts.',
-          }),
+          .looseObject({})
+          .and(
+            z
+              .enum([
+                'US_GOV_WEST_1',
+                'US_GOV_EAST_1',
+                'US_EAST_1',
+                'US_EAST_2',
+                'US_WEST_1',
+                'US_WEST_2',
+                'CA_CENTRAL_1',
+                'EU_NORTH_1',
+                'EU_WEST_1',
+                'EU_WEST_2',
+                'EU_WEST_3',
+                'EU_CENTRAL_1',
+                'AP_EAST_1',
+                'AP_NORTHEAST_1',
+                'AP_NORTHEAST_2',
+                'AP_NORTHEAST_3',
+                'AP_SOUTHEAST_1',
+                'AP_SOUTHEAST_2',
+                'AP_SOUTHEAST_3',
+                'AP_SOUTH_1',
+                'SA_EAST_1',
+                'CN_NORTH_1',
+                'CN_NORTHWEST_1',
+                'ME_SOUTH_1',
+                'AF_SOUTH_1',
+                'EU_SOUTH_1',
+                'GLOBAL',
+              ])
+              .openapi({
+                description:
+                  'Physical location where MongoDB Cloud deploys your AWS-hosted MongoDB cluster nodes. The region you choose can affect network latency for clients accessing your databases.\nWhen MongoDB Cloud deploys a dedicated cluster, it checks if a VPC or VPC connection exists for that provider and region. If not, MongoDB Cloud creates them as part of the deployment. MongoDB Cloud assigns the VPC a CIDR block.\nTo limit a new VPC peering connection to one CIDR block and region, create the connection first. Deploy the cluster after the connection starts.',
+              }),
+          ),
       ])
       .exactOptional()
       .openapi({
@@ -51994,6 +58303,46 @@ const OrgActiveUserResponseSchema = z
       }),
   })
   .openapi({ required: ['id', 'orgMembershipStatus', 'roles', 'username'] })
+  .and(
+    z
+      .looseObject({})
+      .openapi({
+        required: [
+          'createdAt',
+          'firstName',
+          'id',
+          'lastName',
+          'orgMembershipStatus',
+          'roles',
+          'username',
+        ],
+      }),
+  )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'createdAt')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'firstName')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'lastName')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'orgMembershipStatus')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'roles')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'username')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
   .and(
     z
       .object({
@@ -52370,6 +58719,27 @@ const OrgOtelLogIntegrationRequestSchema = z
   .openapi({ required: ['logTypes', 'type'] })
   .and(
     z
+      .looseObject({})
+      .openapi({ required: ['logTypes', 'otelEndpoint', 'otelSuppliedHeaders', 'type'] }),
+  )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'logTypes')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'otelEndpoint')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'otelSuppliedHeaders')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
       .object({
         otelEndpoint: z
           .string()
@@ -52407,6 +58777,33 @@ const OrgOtelLogIntegrationRequestSchema = z
 
 const OrgLogIntegrationRequestSchema = z
   .xor([OrgOtelLogIntegrationRequestSchema])
+  .and(
+    z
+      .object({
+        logTypes: z
+          .array(z.literal('EVENTS'))
+          .max(1)
+          .superRefine((items, ctx) => {
+            const seen = new Map()
+            for (const [i, val] of items.entries()) {
+              const key = JSON.stringify(val)
+              if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+              else seen.set(key, i)
+            }
+          })
+          .openapi({
+            description: 'Array of log types exported by this integration.',
+            example: ['EVENTS'],
+          }),
+        type: z
+          .literal('OTEL_LOG_EXPORT')
+          .openapi({
+            description:
+              'Type of log integration. Identifies which service will receive the exported events. This value cannot be modified after the integration is created.',
+          }),
+      })
+      .openapi({ required: ['logTypes', 'type'] }),
+  )
   .openapi({
     description: 'Request schema for creating an organization-level log integration.',
     discriminator: {
@@ -52453,6 +58850,30 @@ const OrgOtelLogIntegrationResponseSchema = z
   .openapi({ required: ['id', 'logTypes', 'type'] })
   .and(
     z
+      .looseObject({})
+      .openapi({ required: ['id', 'logTypes', 'otelEndpoint', 'otelSuppliedHeaders', 'type'] }),
+  )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'logTypes')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'otelEndpoint')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'otelSuppliedHeaders')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
       .object({
         otelEndpoint: z
           .string()
@@ -52489,6 +58910,41 @@ const OrgOtelLogIntegrationResponseSchema = z
 
 const OrgLogIntegrationResponseSchema = z
   .xor([OrgOtelLogIntegrationResponseSchema])
+  .and(
+    z
+      .object({
+        id: z
+          .string()
+          .openapi({
+            description:
+              'Unique 24-character hexadecimal digit string that identifies the log integration configuration.',
+            example: '507f1f77bcf86cd799439011',
+            readOnly: true,
+          }),
+        logTypes: z
+          .array(z.literal('EVENTS'))
+          .max(1)
+          .superRefine((items, ctx) => {
+            const seen = new Map()
+            for (const [i, val] of items.entries()) {
+              const key = JSON.stringify(val)
+              if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+              else seen.set(key, i)
+            }
+          })
+          .openapi({
+            description: 'Array of log types exported by this integration.',
+            example: ['EVENTS'],
+          }),
+        type: z
+          .literal('OTEL_LOG_EXPORT')
+          .openapi({
+            description:
+              'Type of log integration. Identifies which service will receive the exported events. This value cannot be modified after the integration is created.',
+          }),
+      })
+      .openapi({ required: ['id', 'logTypes', 'type'] }),
+  )
   .openapi({
     description: 'Response schema for organization-level log integration operations.',
     discriminator: {
@@ -52525,6 +58981,27 @@ const OrgOtelLogIntegrationUpdateRequestSchema = z
       }),
   })
   .openapi({ required: ['logTypes', 'type'] })
+  .and(
+    z
+      .looseObject({})
+      .openapi({ required: ['logTypes', 'otelEndpoint', 'otelSuppliedHeaders', 'type'] }),
+  )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'logTypes')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'otelEndpoint')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'otelSuppliedHeaders')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
   .and(
     z
       .object({
@@ -52564,6 +59041,33 @@ const OrgOtelLogIntegrationUpdateRequestSchema = z
 
 const OrgLogIntegrationUpdateRequestSchema = z
   .xor([OrgOtelLogIntegrationUpdateRequestSchema])
+  .and(
+    z
+      .object({
+        logTypes: z
+          .array(z.literal('EVENTS'))
+          .max(1)
+          .superRefine((items, ctx) => {
+            const seen = new Map()
+            for (const [i, val] of items.entries()) {
+              const key = JSON.stringify(val)
+              if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+              else seen.set(key, i)
+            }
+          })
+          .openapi({
+            description: 'Array of log types exported by this integration.',
+            example: ['EVENTS'],
+          }),
+        type: z
+          .literal('OTEL_LOG_EXPORT')
+          .openapi({
+            description:
+              'Type of log integration. Identifies which service will receive the exported events. This value cannot be modified after the integration is created.',
+          }),
+      })
+      .openapi({ required: ['logTypes', 'type'] }),
+  )
   .openapi({
     description: 'Request schema for updating an organization-level log integration.',
     discriminator: {
@@ -52773,6 +59277,42 @@ const OrgPendingUserResponseSchema = z
   .openapi({ required: ['id', 'orgMembershipStatus', 'roles', 'username'] })
   .and(
     z
+      .looseObject({})
+      .openapi({
+        required: [
+          'id',
+          'invitationCreatedAt',
+          'inviterUsername',
+          'orgMembershipStatus',
+          'roles',
+          'username',
+        ],
+      }),
+  )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'invitationCreatedAt')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'inviterUsername')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'orgMembershipStatus')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'roles')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'username')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
       .object({
         invitationCreatedAt: z.iso
           .datetime({ offset: true })
@@ -52929,6 +59469,56 @@ const OrgUserRequestSchema = z
 
 const OrgUserResponseSchema = z
   .xor([OrgPendingUserResponseSchema, OrgActiveUserResponseSchema])
+  .and(
+    z
+      .object({
+        id: z
+          .string()
+          .regex(/^([a-f0-9]{24})$/)
+          .openapi({
+            description:
+              'Unique 24-hexadecimal digit string that identifies the MongoDB Cloud user.',
+            example: '32b6e34b3d91647abb20e7b8',
+            readOnly: true,
+          }),
+        orgMembershipStatus: z
+          .enum(['PENDING', 'ACTIVE', 'INVITATION_EXPIRED', 'INVITATION_REJECTED'])
+          .openapi({
+            description:
+              "String enum that indicates the user's organization membership status: ACTIVE (member), PENDING (invited), `INVITATION_EXPIRED` (invitation expired), or `INVITATION_REJECTED` (invitation declined).",
+            readOnly: true,
+          }),
+        roles: OrgUserRolesResponseSchema,
+        teamIds: z
+          .array(
+            z
+              .string()
+              .regex(/^([a-f0-9]{24})$/)
+              .openapi({ example: '32b6e34b3d91647abb20e7b8' }),
+          )
+          .superRefine((items, ctx) => {
+            const seen = new Map()
+            for (const [i, val] of items.entries()) {
+              const key = JSON.stringify(val)
+              if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+              else seen.set(key, i)
+            }
+          })
+          .exactOptional()
+          .openapi({
+            description:
+              'List of unique 24-hexadecimal digit strings that identifies the teams to which this MongoDB Cloud user belongs.',
+            readOnly: true,
+          }),
+        username: z
+          .email()
+          .openapi({
+            description: 'Email address that represents the username of the MongoDB Cloud user.',
+            readOnly: true,
+          }),
+      })
+      .openapi({ required: ['id', 'orgMembershipStatus', 'roles', 'username'] }),
+  )
   .openapi({
     discriminator: {
       propertyName: 'orgMembershipStatus',
@@ -54440,6 +61030,41 @@ const StreamsFailoverKafkaConnectionSchema = z
 
 const StreamsFailoverConnectionSchema = z
   .xor([StreamsFailoverClusterConnectionSchema, StreamsFailoverKafkaConnectionSchema])
+  .and(
+    z
+      .object({
+        id: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Unique identifier of the connection.', readOnly: true }),
+        links: z
+          .array(LinkSchema)
+          .exactOptional()
+          .openapi({
+            description:
+              'List of one or more Uniform Resource Locators (URLs) that point to API sub-resources, related API resources, or both. RFC 5988 outlines these relationships.',
+            externalDocs: {
+              description: 'Web Linking Specification (RFC 5988)',
+              url: 'https://datatracker.ietf.org/doc/html/rfc5988',
+            },
+            readOnly: true,
+          }),
+        name: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Human-readable label that identifies the stream connection.' }),
+        region: z.string().exactOptional().openapi({ description: 'Connection region.' }),
+        state: z
+          .enum(['PENDING', 'READY', 'DELETING', 'FAILED'])
+          .exactOptional()
+          .openapi({ description: 'Connection state.', readOnly: true }),
+        type: z
+          .enum(['Kafka', 'Cluster'])
+          .exactOptional()
+          .openapi({ description: 'Connection type.' }),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Settings that define a failover connection to an external data store.',
     discriminator: {
@@ -56176,6 +62801,28 @@ const ThirdPartyIntegrationSchema = z
     PrometheusSchema,
     MicrosoftTeamsSchema,
   ])
+  .and(
+    z
+      .object({
+        id: z.string().nullable().exactOptional().openapi({ description: 'Integration id.' }),
+        type: z
+          .enum([
+            'PAGER_DUTY',
+            'SLACK',
+            'DATADOG',
+            'NEW_RELIC',
+            'OPS_GENIE',
+            'VICTOR_OPS',
+            'WEBHOOK',
+            'HIP_CHAT',
+            'PROMETHEUS',
+            'MICROSOFT_TEAMS',
+          ])
+          .exactOptional()
+          .openapi({ description: 'Integration type.', title: 'Integration Type' }),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Collection of settings that describe third-party integrations.',
     discriminator: {
@@ -56400,7 +63047,7 @@ const PaginatedMetricIntegrationResponseSchema = z
   .openapi({ required: ['results'] })
   .openapi('PaginatedMetricIntegrationResponse')
 
-const PaginatedMongosTopologyResourceResponseSchema = z
+const PaginatedMongosTopologyResponseSchema = z
   .object({
     links: z
       .array(LinkSchema)
@@ -56415,7 +63062,7 @@ const PaginatedMongosTopologyResourceResponseSchema = z
         readOnly: true,
       }),
     results: z
-      .array(MongosTopologyResourceResponseSchema)
+      .array(MongosTopologyResponseSchema)
       .openapi({
         description:
           'List of returned documents that MongoDB Cloud provides when completing this request.',
@@ -56432,7 +63079,7 @@ const PaginatedMongosTopologyResourceResponseSchema = z
       }),
   })
   .openapi({ required: ['results'] })
-  .openapi('PaginatedMongosTopologyResourceResponse')
+  .openapi('PaginatedMongosTopologyResponse')
 
 const PaginatedNetworkAccessViewSchema = z
   .object({
@@ -57728,6 +64375,7 @@ const ShardKeyAnalysisErrorSchema = z
       .enum([
         'NAMESPACE_NOT_FOUND',
         'COLLECTION_EMPTY',
+        'TIMESERIES_COLLECTION_UNSUPPORTED',
         'SHARD_KEY_MISSING_SUPPORTING_INDEX',
         'INSUFFICIENT_CARDINALITY_FOR_DISTRIBUTION',
         'SHARD_KEY_CONTAINS_ARRAY_FIELD',
@@ -59798,6 +66446,17 @@ const QueryStatsCollectionRateLimitedResponseSchema = z
       }),
   })
   .openapi({ required: ['mode'] })
+  .and(z.looseObject({}).openapi({ required: ['mode', 'rateLimitPerSecond'] }))
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'mode')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'rateLimitPerSecond')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
   .and(
     z
       .object({
@@ -59828,6 +66487,17 @@ const QueryStatsCollectionSampledResponseSchema = z
       }),
   })
   .openapi({ required: ['mode'] })
+  .and(z.looseObject({}).openapi({ required: ['mode', 'sampleRate'] }))
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'mode')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'sampleRate')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
   .and(
     z
       .object({
@@ -59851,6 +66521,18 @@ const QueryStatsCollectionSampledResponseSchema = z
 
 const QueryStatsCollectionResponseSchema = z
   .xor([QueryStatsCollectionSampledResponseSchema, QueryStatsCollectionRateLimitedResponseSchema])
+  .and(
+    z
+      .object({
+        mode: z
+          .enum(['RATE_LIMITED', 'SAMPLED'])
+          .openapi({
+            description: "Method used to collect `queryStats` entries on the cluster's processes.",
+            readOnly: true,
+          }),
+      })
+      .openapi({ required: ['mode'] }),
+  )
   .openapi({
     description:
       "How `queryStats` entries were collected on this cluster's processes. Reflects the collection mode of the cluster's processes regardless of any host or process type filters in the request. Omitted when the collection mode cannot be determined. Sample-based collection requires MongoDB 9.0 or later but may not be enabled on every such cluster; this reflects the mode in effect on the cluster.",
@@ -60020,7 +66702,7 @@ const QueryStatsSummarySchema = z
       .openapi({
         deprecated: true,
         description:
-          'The 50th percentile value of execution time in microseconds. This field is deprecated as the values it reports may be inaccurate. It will be removed in a future release.',
+          'Deprecated: The values it reports may be inaccurate. It will be removed in a future release. The 50th percentile value of execution time in microseconds.',
       }),
     p90ExecMicros: z
       .float64()
@@ -60028,7 +66710,7 @@ const QueryStatsSummarySchema = z
       .openapi({
         deprecated: true,
         description:
-          'The 90th percentile value of execution time in microseconds. This field is deprecated as the values it reports may be inaccurate. It will be removed in a future release.',
+          'Deprecated: The values it reports may be inaccurate. It will be removed in a future release. The 90th percentile value of execution time in microseconds.',
       }),
     p99ExecMicros: z
       .float64()
@@ -60036,7 +66718,7 @@ const QueryStatsSummarySchema = z
       .openapi({
         deprecated: true,
         description:
-          'The 99th percentile value of execution time in microseconds. This field is deprecated as the values it reports may be inaccurate. It will be removed in a future release.',
+          'Deprecated: The values it reports may be inaccurate. It will be removed in a future release. The 99th percentile value of execution time in microseconds.',
       }),
     queryShape: z
       .string()
@@ -60565,144 +67247,160 @@ const SandboxConfigUpdateRequestSchema = z
   .openapi('SandboxConfigUpdateRequest')
 
 const SearchIndexSchema = ClusterSearchIndexSchema.and(
-  z
-    .object({
-      analyzer: z
-        .enum([
-          'lucene.standard',
-          'lucene.simple',
-          'lucene.whitespace',
-          'lucene.keyword',
-          'lucene.arabic',
-          'lucene.armenian',
-          'lucene.basque',
-          'lucene.bengali',
-          'lucene.brazilian',
-          'lucene.bulgarian',
-          'lucene.catalan',
-          'lucene.chinese',
-          'lucene.cjk',
-          'lucene.czech',
-          'lucene.danish',
-          'lucene.dutch',
-          'lucene.english',
-          'lucene.finnish',
-          'lucene.french',
-          'lucene.galician',
-          'lucene.german',
-          'lucene.greek',
-          'lucene.hindi',
-          'lucene.hungarian',
-          'lucene.indonesian',
-          'lucene.irish',
-          'lucene.italian',
-          'lucene.japanese',
-          'lucene.korean',
-          'lucene.kuromoji',
-          'lucene.latvian',
-          'lucene.lithuanian',
-          'lucene.morfologik',
-          'lucene.nori',
-          'lucene.norwegian',
-          'lucene.persian',
-          'lucene.portuguese',
-          'lucene.romanian',
-          'lucene.russian',
-          'lucene.smartcn',
-          'lucene.sorani',
-          'lucene.spanish',
-          'lucene.swedish',
-          'lucene.thai',
-          'lucene.turkish',
-          'lucene.ukrainian',
-        ])
-        .default('lucene.standard')
-        .exactOptional()
-        .openapi({
-          description:
-            'Specific pre-defined method chosen to convert database field text into searchable words. This conversion reduces the text of fields into the smallest units of text. These units are called a **term** or **token**. This process, known as tokenization, involves a variety of changes made to the text in fields:\n\n- extracting words\n- removing punctuation\n- removing accents\n- changing to lowercase\n- removing common words\n- reducing words to their root form (stemming)\n- changing words to their base form (lemmatization)\n MongoDB Cloud uses the selected process to build the Atlas Search index.',
-          externalDocs: {
-            description: 'Atlas Search Analyzers',
-            url: 'https://dochub.mongodb.org/core/analyzers--fts',
-          },
-        }),
-      analyzers: z
-        .array(ApiAtlasFTSAnalyzersViewManualSchema)
-        .exactOptional()
-        .openapi({
-          description:
-            'List of user-defined methods to convert database field text into searchable words.',
-          externalDocs: {
-            description: 'Custom Atlas Search Analyzers',
-            url: 'https://dochub.mongodb.org/core/custom-fts',
-          },
-        }),
-      mappings: ApiAtlasFTSMappingsViewManualSchema.exactOptional(),
-      searchAnalyzer: z
-        .enum([
-          'lucene.standard',
-          'lucene.simple',
-          'lucene.whitespace',
-          'lucene.keyword',
-          'lucene.arabic',
-          'lucene.armenian',
-          'lucene.basque',
-          'lucene.bengali',
-          'lucene.brazilian',
-          'lucene.bulgarian',
-          'lucene.catalan',
-          'lucene.chinese',
-          'lucene.cjk',
-          'lucene.czech',
-          'lucene.danish',
-          'lucene.dutch',
-          'lucene.english',
-          'lucene.finnish',
-          'lucene.french',
-          'lucene.galician',
-          'lucene.german',
-          'lucene.greek',
-          'lucene.hindi',
-          'lucene.hungarian',
-          'lucene.indonesian',
-          'lucene.irish',
-          'lucene.italian',
-          'lucene.japanese',
-          'lucene.korean',
-          'lucene.kuromoji',
-          'lucene.latvian',
-          'lucene.lithuanian',
-          'lucene.morfologik',
-          'lucene.nori',
-          'lucene.norwegian',
-          'lucene.persian',
-          'lucene.portuguese',
-          'lucene.romanian',
-          'lucene.russian',
-          'lucene.smartcn',
-          'lucene.sorani',
-          'lucene.spanish',
-          'lucene.swedish',
-          'lucene.thai',
-          'lucene.turkish',
-          'lucene.ukrainian',
-        ])
-        .default('lucene.standard')
-        .exactOptional()
-        .openapi({ description: 'Method applied to identify words when searching this index.' }),
-      synonyms: z
-        .array(SearchSynonymMappingDefinitionSchema)
-        .exactOptional()
-        .openapi({
-          description: 'Rule sets that map words to their synonyms in this index.',
-          externalDocs: {
-            description: 'Synonym Mapping',
-            url: 'https://dochub.mongodb.org/core/fts-synonym-mappings',
-          },
-        }),
-    })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['collectionName', 'database', 'name'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'collectionName')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'database')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'name')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        analyzer: z
+          .enum([
+            'lucene.standard',
+            'lucene.simple',
+            'lucene.whitespace',
+            'lucene.keyword',
+            'lucene.arabic',
+            'lucene.armenian',
+            'lucene.basque',
+            'lucene.bengali',
+            'lucene.brazilian',
+            'lucene.bulgarian',
+            'lucene.catalan',
+            'lucene.chinese',
+            'lucene.cjk',
+            'lucene.czech',
+            'lucene.danish',
+            'lucene.dutch',
+            'lucene.english',
+            'lucene.finnish',
+            'lucene.french',
+            'lucene.galician',
+            'lucene.german',
+            'lucene.greek',
+            'lucene.hindi',
+            'lucene.hungarian',
+            'lucene.indonesian',
+            'lucene.irish',
+            'lucene.italian',
+            'lucene.japanese',
+            'lucene.korean',
+            'lucene.kuromoji',
+            'lucene.latvian',
+            'lucene.lithuanian',
+            'lucene.morfologik',
+            'lucene.nori',
+            'lucene.norwegian',
+            'lucene.persian',
+            'lucene.portuguese',
+            'lucene.romanian',
+            'lucene.russian',
+            'lucene.smartcn',
+            'lucene.sorani',
+            'lucene.spanish',
+            'lucene.swedish',
+            'lucene.thai',
+            'lucene.turkish',
+            'lucene.ukrainian',
+          ])
+          .default('lucene.standard')
+          .exactOptional()
+          .openapi({
+            description:
+              'Specific pre-defined method chosen to convert database field text into searchable words. This conversion reduces the text of fields into the smallest units of text. These units are called a **term** or **token**. This process, known as tokenization, involves a variety of changes made to the text in fields:\n\n- extracting words\n- removing punctuation\n- removing accents\n- changing to lowercase\n- removing common words\n- reducing words to their root form (stemming)\n- changing words to their base form (lemmatization)\n MongoDB Cloud uses the selected process to build the Atlas Search index.',
+            externalDocs: {
+              description: 'Atlas Search Analyzers',
+              url: 'https://dochub.mongodb.org/core/analyzers--fts',
+            },
+          }),
+        analyzers: z
+          .array(ApiAtlasFTSAnalyzersViewManualSchema)
+          .exactOptional()
+          .openapi({
+            description:
+              'List of user-defined methods to convert database field text into searchable words.',
+            externalDocs: {
+              description: 'Custom Atlas Search Analyzers',
+              url: 'https://dochub.mongodb.org/core/custom-fts',
+            },
+          }),
+        mappings: ApiAtlasFTSMappingsViewManualSchema.exactOptional(),
+        searchAnalyzer: z
+          .enum([
+            'lucene.standard',
+            'lucene.simple',
+            'lucene.whitespace',
+            'lucene.keyword',
+            'lucene.arabic',
+            'lucene.armenian',
+            'lucene.basque',
+            'lucene.bengali',
+            'lucene.brazilian',
+            'lucene.bulgarian',
+            'lucene.catalan',
+            'lucene.chinese',
+            'lucene.cjk',
+            'lucene.czech',
+            'lucene.danish',
+            'lucene.dutch',
+            'lucene.english',
+            'lucene.finnish',
+            'lucene.french',
+            'lucene.galician',
+            'lucene.german',
+            'lucene.greek',
+            'lucene.hindi',
+            'lucene.hungarian',
+            'lucene.indonesian',
+            'lucene.irish',
+            'lucene.italian',
+            'lucene.japanese',
+            'lucene.korean',
+            'lucene.kuromoji',
+            'lucene.latvian',
+            'lucene.lithuanian',
+            'lucene.morfologik',
+            'lucene.nori',
+            'lucene.norwegian',
+            'lucene.persian',
+            'lucene.portuguese',
+            'lucene.romanian',
+            'lucene.russian',
+            'lucene.smartcn',
+            'lucene.sorani',
+            'lucene.spanish',
+            'lucene.swedish',
+            'lucene.thai',
+            'lucene.turkish',
+            'lucene.ukrainian',
+          ])
+          .default('lucene.standard')
+          .exactOptional()
+          .openapi({ description: 'Method applied to identify words when searching this index.' }),
+        synonyms: z
+          .array(SearchSynonymMappingDefinitionSchema)
+          .exactOptional()
+          .openapi({
+            description: 'Rule sets that map words to their synonyms in this index.',
+            externalDocs: {
+              description: 'Synonym Mapping',
+              url: 'https://dochub.mongodb.org/core/fts-synonym-mappings',
+            },
+          }),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({ required: ['collectionName', 'database', 'name'] })
   .openapi('SearchIndex')
 
@@ -60895,19 +67593,29 @@ const ServerlessTenantEndpointUpdateSchema = z
   .openapi('ServerlessTenantEndpointUpdate')
 
 const ServerlessAWSTenantEndpointUpdateSchema = ServerlessTenantEndpointUpdateSchema.and(
-  z
-    .object({
-      cloudProviderEndpointId: z
-        .string()
-        .regex(/^vpce-[0-9a-f]{17}$/)
-        .exactOptional()
-        .openapi({
-          description: "Unique string that identifies the private endpoint's network interface.",
-          writeOnly: true,
-        }),
-    })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['providerName'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'providerName')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        cloudProviderEndpointId: z
+          .string()
+          .regex(/^vpce-[0-9a-f]{17}$/)
+          .exactOptional()
+          .openapi({
+            description: "Unique string that identifies the private endpoint's network interface.",
+            writeOnly: true,
+          }),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Updates to a serverless AWS tenant endpoint.',
     required: ['providerName'],
@@ -61003,31 +67711,43 @@ const ServerlessAzureTenantEndpointSchema = z
   .openapi('ServerlessAzureTenantEndpoint')
 
 const ServerlessAzureTenantEndpointUpdateSchema = ServerlessTenantEndpointUpdateSchema.and(
-  z
-    .object({
-      cloudProviderEndpointId: z
-        .string()
-        .regex(
-          /^\/subscriptions\/[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}\/resource[gG]roups\/private[Ll]ink\/providers\/Microsoft\.Network\/privateEndpoints\/[-\w._()]+$/,
-        )
-        .exactOptional()
-        .openapi({
-          description:
-            "Unique string that identifies the Azure private endpoint's network interface for this private endpoint service.",
-          writeOnly: true,
-        }),
-      privateEndpointIpAddress: z
-        .string()
-        .regex(/^((25[0-5]|(2[0-4]|1\d|[1-9]|)\d)(\.(?!$)|$)){4}|([0-9a-f]{1,4}:){7}[0-9a-f]{1,4}$/)
-        .exactOptional()
-        .openapi({
-          description:
-            'IPv4 address of the private endpoint in your Azure VNet that someone added to this private endpoint service.',
-          writeOnly: true,
-        }),
-    })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['providerName'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'providerName')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        cloudProviderEndpointId: z
+          .string()
+          .regex(
+            /^\/subscriptions\/[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}\/resource[gG]roups\/private[Ll]ink\/providers\/Microsoft\.Network\/privateEndpoints\/[-\w._()]+$/,
+          )
+          .exactOptional()
+          .openapi({
+            description:
+              "Unique string that identifies the Azure private endpoint's network interface for this private endpoint service.",
+            writeOnly: true,
+          }),
+        privateEndpointIpAddress: z
+          .string()
+          .regex(
+            /^((25[0-5]|(2[0-4]|1\d|[1-9]|)\d)(\.(?!$)|$)){4}|([0-9a-f]{1,4}:){7}[0-9a-f]{1,4}$/,
+          )
+          .exactOptional()
+          .openapi({
+            description:
+              'IPv4 address of the private endpoint in your Azure VNet that someone added to this private endpoint service.',
+            writeOnly: true,
+          }),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Updates to a serverless Azure tenant endpoint.',
     required: ['providerName'],
@@ -61051,6 +67771,68 @@ const ServerlessTenantCreateRequestSchema = z
 
 const ServerlessTenantEndpointSchema = z
   .xor([ServerlessAWSTenantEndpointSchema, ServerlessAzureTenantEndpointSchema])
+  .and(
+    z
+      .object({
+        _id: z
+          .string()
+          .regex(/^([a-f0-9]{24})$/)
+          .exactOptional()
+          .openapi({
+            description: 'Unique 24-hexadecimal digit string that identifies the private endpoint.',
+            example: '32b6e34b3d91647abb20e7b8',
+            readOnly: true,
+          }),
+        cloudProviderEndpointId: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: "Unique string that identifies the private endpoint's network interface.",
+            readOnly: true,
+          }),
+        comment: z
+          .string()
+          .max(80)
+          .exactOptional()
+          .openapi({
+            description: 'Human-readable comment associated with the private endpoint.',
+            readOnly: true,
+          }),
+        endpointServiceName: z
+          .string()
+          .regex(/^com\.amazonaws\.vpce\.[a-z-0-9]+\.vpce-svc-[0-9a-f]{17}|pls_[0-9a-f]{24}$/)
+          .exactOptional()
+          .openapi({
+            description:
+              'Unique string that identifies the PrivateLink endpoint service. MongoDB Cloud returns null while it creates the endpoint service.',
+            readOnly: true,
+          }),
+        errorMessage: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Human-readable error message that indicates error condition associated with establishing the private endpoint connection.',
+            readOnly: true,
+          }),
+        status: z
+          .enum([
+            'RESERVATION_REQUESTED',
+            'RESERVED',
+            'INITIATING',
+            'AVAILABLE',
+            'FAILED',
+            'DELETING',
+          ])
+          .exactOptional()
+          .openapi({
+            description:
+              'Human-readable label that indicates the current operating status of the private endpoint.',
+            readOnly: true,
+          }),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi('ServerlessTenantEndpoint')
 
 const ServiceAccountSecretRequestSchema = z
@@ -61382,6 +68164,20 @@ const ShardingRecommendationAddShardsSchema = z
       }),
   })
   .openapi({ required: ['triggers', 'type'] })
+  .and(z.looseObject({}).openapi({ required: ['recommendedShardCount', 'triggers', 'type'] }))
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'recommendedShardCount')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'triggers')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
   .and(
     z
       .object({
@@ -61425,6 +68221,20 @@ const ShardingRecommendationShardCollectionSchema = z
       }),
   })
   .openapi({ required: ['triggers', 'type'] })
+  .and(z.looseObject({}).openapi({ required: ['namespace', 'triggers', 'type'] }))
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'namespace')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'triggers')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
   .and(
     z
       .object({
@@ -61468,6 +68278,17 @@ const ShardingRecommendationShardClusterSchema = z
       }),
   })
   .openapi({ required: ['triggers', 'type'] })
+  .and(z.looseObject({}).openapi({ required: ['triggers', 'type'] }))
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'triggers')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
   .and(
     z
       .object({
@@ -61493,6 +68314,25 @@ const ShardingRecommendationSchema = z
     ShardingRecommendationShardCollectionSchema,
     ShardingRecommendationShardClusterSchema,
   ])
+  .and(
+    z
+      .object({
+        triggers: z
+          .array(ShardingRecommendationTriggerSchema)
+          .max(100)
+          .openapi({
+            description: 'Monitored conditions that fired and produced this recommendation.',
+            readOnly: true,
+          }),
+        type: z
+          .string()
+          .openapi({
+            description: 'Recommendation type that produced this recommendation.',
+            readOnly: true,
+          }),
+      })
+      .openapi({ required: ['triggers', 'type'] }),
+  )
   .openapi({
     description: 'One sharding recommendation for the cluster or one of its collections.',
     discriminator: {
@@ -61564,53 +68404,6 @@ const SqlInterfaceStatusUpdateRequestSchema = z
   })
   .openapi({ required: ['status'] })
   .openapi('SqlInterfaceStatusUpdateRequest')
-
-const StreamsDatabricksAuthenticationSchema = z
-  .object({
-    clientId: z
-      .string()
-      .openapi({ description: 'OAuth client ID of the Databricks service principal.' }),
-    clientSecret: z
-      .string()
-      .openapi({
-        description:
-          'OAuth client secret of the Databricks service principal. Never returned in responses; omit or leave blank on update to keep the stored secret.',
-        writeOnly: true,
-      }),
-  })
-  .openapi({
-    description: 'Databricks service principal credentials used to obtain an OAuth token.',
-    required: ['clientId', 'clientSecret'],
-  })
-  .openapi('StreamsDatabricksAuthentication')
-
-const StreamsDatabricksConnectionConfigSchema = z
-  .object({ authentication: StreamsDatabricksAuthenticationSchema })
-  .openapi({ description: 'Databricks settings for a connection.', required: ['authentication'] })
-  .openapi('StreamsDatabricksConnectionConfig')
-
-const StreamsDatabricksUnityCatalogConnectionSchema = z
-  .looseObject({})
-  .openapi({ required: ['catalogUrl'] })
-  .and(
-    z
-      .object({
-        catalogProvider: z
-          .literal('DATABRICKS_UNITY')
-          .exactOptional()
-          .openapi({
-            description:
-              'Catalog system the connection points at. Cannot be changed after creation.',
-          }),
-        databricks: StreamsDatabricksConnectionConfigSchema.exactOptional(),
-      })
-      .openapi({ required: [] }),
-  )
-  .openapi({
-    description: 'The configuration for a Databricks Unity Catalog connection.',
-    required: ['catalogProvider', 'catalogUrl', 'databricks'],
-  })
-  .openapi('StreamsDatabricksUnityCatalogConnection')
 
 const StreamsModifyStreamProcessorOptionsSchema = z
   .object({
@@ -61817,53 +68610,6 @@ const StreamsProcessorStatusSchema = z
     required: ['status'],
   })
   .openapi('StreamsProcessorStatus')
-
-const StreamsSnowflakeAuthenticationSchema = z
-  .object({
-    account: z.string().openapi({ description: 'Snowflake account identifier.' }),
-    privateKey: z
-      .string()
-      .openapi({
-        description:
-          "Private key of the service user's key pair. Never returned in responses; omit or leave blank on update to keep the stored key.",
-        writeOnly: true,
-      }),
-    role: z.string().openapi({ description: 'Snowflake role the service user assumes.' }),
-    user: z.string().openapi({ description: 'Snowflake service user.' }),
-  })
-  .openapi({
-    description: 'Snowflake service user and key pair used to authenticate to Snowflake.',
-    required: ['account', 'privateKey', 'role', 'user'],
-  })
-  .openapi('StreamsSnowflakeAuthentication')
-
-const StreamsSnowflakeConnectionConfigSchema = z
-  .object({ authentication: StreamsSnowflakeAuthenticationSchema })
-  .openapi({ description: 'Snowflake settings for a connection.', required: ['authentication'] })
-  .openapi('StreamsSnowflakeConnectionConfig')
-
-const StreamsSnowflakeHorizonCatalogConnectionSchema = z
-  .looseObject({})
-  .openapi({ required: ['catalogUrl'] })
-  .and(
-    z
-      .object({
-        catalogProvider: z
-          .literal('SNOWFLAKE_HORIZON')
-          .exactOptional()
-          .openapi({
-            description:
-              'Catalog system the connection points at. Cannot be changed after creation.',
-          }),
-        snowflake: StreamsSnowflakeConnectionConfigSchema.exactOptional(),
-      })
-      .openapi({ required: [] }),
-  )
-  .openapi({
-    description: 'The configuration for a Snowflake Horizon catalog connection.',
-    required: ['catalogProvider', 'catalogUrl', 'snowflake'],
-  })
-  .openapi('StreamsSnowflakeHorizonCatalogConnection')
 
 const StreamsStartProcessorFailoverSchema = z
   .object({
@@ -62140,10 +68886,29 @@ const TeamUpdateSchema = z
 const TenantWithSampleConnectionsSchema = z.looseObject({}).openapi('TenantWithSampleConnections')
 
 const TextSearchIndexCreateRequestSchema = SearchIndexCreateRequestSchema.and(
-  z
-    .object({ definition: TextSearchIndexDefinitionSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['collectionName', 'database', 'definition', 'name'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'collectionName')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'database')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'definition')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'name')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ definition: TextSearchIndexDefinitionSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Text Search Index Create Request.',
     required: ['collectionName', 'database', 'definition', 'name'],
@@ -62880,38 +69645,73 @@ const VectorSearchHostStatusDetailSchema = z
   .openapi('VectorSearchHostStatusDetail')
 
 const VectorSearchIndexSchema = ClusterSearchIndexSchema.and(
-  z
-    .object({
-      fields: z
-        .array(BasicDBObjectSchema)
-        .exactOptional()
-        .openapi({
-          description:
-            'Settings that configure the fields, one per object, to index. You must define at least one "vector" type field. You can optionally define "filter" type fields also.',
-          externalDocs: {
-            description: 'Vector Search Fields',
-            url: 'https://dochub.mongodb.org/core/avs-vector-type',
-          },
-        }),
-      nestedRoot: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description:
-            'Top-level path to the array that contains vector fields. When provided, vector fields under this path are treated as nested.',
-          example: 'sections',
-        }),
-    })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['collectionName', 'database', 'name'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'collectionName')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'database')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'name')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        fields: z
+          .array(BasicDBObjectSchema)
+          .exactOptional()
+          .openapi({
+            description:
+              'Settings that configure the fields, one per object, to index. You must define at least one "vector" type field. You can optionally define "filter" type fields also.',
+            externalDocs: {
+              description: 'Vector Search Fields',
+              url: 'https://dochub.mongodb.org/core/avs-vector-type',
+            },
+          }),
+        nestedRoot: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Top-level path to the array that contains vector fields. When provided, vector fields under this path are treated as nested.',
+            example: 'sections',
+          }),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({ required: ['collectionName', 'database', 'name'] })
   .openapi('VectorSearchIndex')
 
 const VectorSearchIndexCreateRequestSchema = SearchIndexCreateRequestSchema.and(
-  z
-    .object({ definition: VectorSearchIndexDefinitionSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['collectionName', 'database', 'definition', 'name'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'collectionName')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'database')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'definition')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'name')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ definition: VectorSearchIndexDefinitionSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Vector Search Index Create Request.',
     required: ['collectionName', 'database', 'definition', 'name'],
@@ -67714,6 +74514,77 @@ export const patchApiAtlasV2GroupsGroupIdCloudProviderAccessRoleIdRoute = create
   },
 })
 
+export const postApiAtlasV2GroupsGroupIdClusterConfigurationsValidateRoute = createRoute({
+  method: 'post',
+  path: '/api/atlas/v2/groups/{groupId}/clusterConfigurations:validate',
+  tags: ['Clusters'],
+  summary: 'Validate One Cluster Configuration',
+  description:
+    'Checks if the given cluster configuration is valid and ready to be used to create or edit a cluster.',
+  operationId: 'validateGroupClusterConfigurations',
+  request: {
+    query: z.object({ envelope: EnvelopeParamsSchema, pretty: PrettyParamsSchema }),
+    params: z.object({ groupId: GroupIdParamsSchema }),
+    headers: z.object({
+      'Use-Effective-Instance-Fields': z
+        .stringbool()
+        .default(false)
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'When true, hardware specification fields for autoscaling-enabled clusters are resolved to their effective (current operational) values before validating an edit. When false (default), the client-specified values are validated. Set this to match the header sent on the corresponding cluster update.',
+            in: 'header',
+            name: 'Use-Effective-Instance-Fields',
+            schema: { default: false, type: 'boolean' },
+            required: false,
+          },
+        }),
+      'Use-Effective-Fields-Replication-Specs': z
+        .stringbool()
+        .default(false)
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'Controls how `replicationSpecs` are interpreted for auto-sharded clusters when validating an edit. When false (default), `replicationSpecs` is treated as the actual cluster state.',
+            in: 'header',
+            name: 'Use-Effective-Fields-Replication-Specs',
+            schema: { default: false, type: 'boolean' },
+            required: false,
+          },
+        }),
+    }),
+    body: {
+      description: 'Cluster configuration to validate.',
+      content: {
+        'application/vnd.atlas.2025-03-12+json': { schema: ClusterConfigurationValidationSchema },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'Ok',
+      content: {
+        'application/vnd.atlas.2025-03-12+json': {
+          schema: ClusterConfigurationValidationResultSchema,
+        },
+      },
+      headers: z.object({
+        'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
+        'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
+      }),
+    },
+    400: BadRequestResponse,
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    404: NotFoundResponse,
+    429: TooManyRequestsResponse,
+    500: InternalServerErrorResponse,
+  },
+})
+
 export const getApiAtlasV2GroupsGroupIdClustersRoute = createRoute({
   method: 'get',
   path: '/api/atlas/v2/groups/{groupId}/clusters',
@@ -68001,7 +74872,7 @@ export const postApiAtlasV2GroupsGroupIdClustersRoute = createRoute({
     400: BadRequestResponse,
     401: UnauthorizedResponse,
     402: PaymentRequiredResponse,
-    403: ForbiddenResponse,
+    403: ForbiddenOrResourcePolicyViolationResponse,
     404: NotFoundResponse,
     409: ConflictResponse,
     429: TooManyRequestsResponse,
@@ -73934,6 +80805,7 @@ export const getApiAtlasV2GroupsGroupIdClustersClusterNameQueryShapeInsightsSumm
               schema: { default: 100, format: 'int64', maximum: 100, minimum: 1, type: 'integer' },
               required: false,
             },
+            default: 100,
           }),
         series: z
           .preprocess(
@@ -77147,7 +84019,7 @@ export const postApiAtlasV2GroupsGroupIdClustersTenantUpgradeRoute = createRoute
     400: BadRequestResponse,
     401: UnauthorizedResponse,
     402: PaymentRequiredResponse,
-    403: ForbiddenResponse,
+    403: ForbiddenOrResourcePolicyViolationResponse,
     404: NotFoundResponse,
     409: ConflictResponse,
     429: TooManyRequestsResponse,
@@ -78538,7 +85410,7 @@ export const getApiAtlasV2GroupsGroupIdDatabaseUsersDatabaseNameUsernameRoute = 
         .openapi({
           param: {
             description:
-              'Human-readable label that represents the user that authenticates to MongoDB. The format of this label depends on the method of authentication:\n\n| Authentication Method | Parameter Needed | Parameter Value | username Format |\n|---|---|---|---|\n| AWS IAM | `awsIAMType` | `ROLE` | <abbr title="Amazon Resource Name">ARN</abbr> |\n| AWS IAM | `awsIAMType` | `USER` | <abbr title="Amazon Resource Name">ARN</abbr> |\n| x.509 | `x509Type` | `CUSTOMER` | [RFC 2253](https://tools.ietf.org/html/2253) Distinguished Name |\n| x.509 | `x509Type` | `MANAGED` | [RFC 2253](https://tools.ietf.org/html/2253) Distinguished Name |\n| LDAP | `ldapAuthType` | `USER` | [RFC 2253](https://tools.ietf.org/html/2253) Distinguished Name |\n| LDAP | `ldapAuthType` | `GROUP` | [RFC 2253](https://tools.ietf.org/html/2253) Distinguished Name |\n| OIDC Workforce | `oidcAuthType` | `IDP_GROUP` | Atlas OIDC IdP ID (found in federation settings), followed by a \'/\', followed by the IdP group name |\n| OIDC Workload | `oidcAuthType` | `USER` | Atlas OIDC IdP ID (found in federation settings), followed by a \'/\', followed by the IdP user name |\n| SCRAM-SHA | `awsIAMType`, `x509Type`, `ldapAuthType`, `oidcAuthType` | `NONE` | Alphanumeric string |\n',
+              "Human-readable label that represents the user that authenticates to MongoDB. The format of this label depends on the method of authentication:\n\n| Authentication Method | Parameter Needed | Parameter Value | username Format |\n|---|---|---|---|\n| AWS IAM | `awsIAMType` | `ROLE` | <abbr title=\"Amazon Resource Name\">ARN</abbr> |\n| AWS IAM | `awsIAMType` | `USER` | <abbr title=\"Amazon Resource Name\">ARN</abbr> |\n| x.509 | `x509Type` | `CUSTOMER` | [RFC 2253](https://tools.ietf.org/html/2253) Distinguished Name |\n| x.509 | `x509Type` | `MANAGED` | [RFC 2253](https://tools.ietf.org/html/2253) Distinguished Name |\n| LDAP | `ldapAuthType` | `USER` | [RFC 2253](https://tools.ietf.org/html/2253) Distinguished Name |\n| LDAP | `ldapAuthType` | `GROUP` | [RFC 2253](https://tools.ietf.org/html/2253) Distinguished Name |\n| OIDC Workforce or Workload | `oidcAuthType` | `IDP_GROUP` | Atlas OIDC IdP ID (found in federation settings), followed by a '/', followed by a group identifier from the IdP's configured `groupsClaim`. Use when the IdP's `authorizationType` is `GROUP`. The groups claim can be a custom claim, such as `roles`. |\n| OIDC Workforce or Workload | `oidcAuthType` | `USER` | Atlas OIDC IdP ID (found in federation settings), followed by a '/', followed by a user identifier from the IdP's configured `userClaim`. Use when the IdP's `authorizationType` is `USER`. |\n| SCRAM-SHA | `awsIAMType`, `x509Type`, `ldapAuthType`, `oidcAuthType` | `NONE` | Alphanumeric string |\n",
             in: 'path',
             name: 'username',
             required: true,
@@ -78598,7 +85470,7 @@ export const deleteApiAtlasV2GroupsGroupIdDatabaseUsersDatabaseNameUsernameRoute
         .openapi({
           param: {
             description:
-              'Human-readable label that represents the user that authenticates to MongoDB. The format of this label depends on the method of authentication:\n\n| Authentication Method | Parameter Needed | Parameter Value | username Format |\n|---|---|---|---|\n| AWS IAM | `awsIAMType` | `ROLE` | <abbr title="Amazon Resource Name">ARN</abbr> |\n| AWS IAM | `awsIAMType` | `USER` | <abbr title="Amazon Resource Name">ARN</abbr> |\n| x.509 | `x509Type` | `CUSTOMER` | [RFC 2253](https://tools.ietf.org/html/2253) Distinguished Name |\n| x.509 | `x509Type` | `MANAGED` | [RFC 2253](https://tools.ietf.org/html/2253) Distinguished Name |\n| LDAP | `ldapAuthType` | `USER` | [RFC 2253](https://tools.ietf.org/html/2253) Distinguished Name |\n| LDAP | `ldapAuthType` | `GROUP` | [RFC 2253](https://tools.ietf.org/html/2253) Distinguished Name |\n| OIDC Workforce | `oidcAuthType` | `IDP_GROUP` | Atlas OIDC IdP ID (found in federation settings), followed by a \'/\', followed by the IdP group name |\n| OIDC Workload | `oidcAuthType` | `USER` | Atlas OIDC IdP ID (found in federation settings), followed by a \'/\', followed by the IdP user name |\n| SCRAM-SHA | `awsIAMType`, `x509Type`, `ldapAuthType`, `oidcAuthType` | `NONE` | Alphanumeric string |\n',
+              "Human-readable label that represents the user that authenticates to MongoDB. The format of this label depends on the method of authentication:\n\n| Authentication Method | Parameter Needed | Parameter Value | username Format |\n|---|---|---|---|\n| AWS IAM | `awsIAMType` | `ROLE` | <abbr title=\"Amazon Resource Name\">ARN</abbr> |\n| AWS IAM | `awsIAMType` | `USER` | <abbr title=\"Amazon Resource Name\">ARN</abbr> |\n| x.509 | `x509Type` | `CUSTOMER` | [RFC 2253](https://tools.ietf.org/html/2253) Distinguished Name |\n| x.509 | `x509Type` | `MANAGED` | [RFC 2253](https://tools.ietf.org/html/2253) Distinguished Name |\n| LDAP | `ldapAuthType` | `USER` | [RFC 2253](https://tools.ietf.org/html/2253) Distinguished Name |\n| LDAP | `ldapAuthType` | `GROUP` | [RFC 2253](https://tools.ietf.org/html/2253) Distinguished Name |\n| OIDC Workforce or Workload | `oidcAuthType` | `IDP_GROUP` | Atlas OIDC IdP ID (found in federation settings), followed by a '/', followed by a group identifier from the IdP's configured `groupsClaim`. Use when the IdP's `authorizationType` is `GROUP`. The groups claim can be a custom claim, such as `roles`. |\n| OIDC Workforce or Workload | `oidcAuthType` | `USER` | Atlas OIDC IdP ID (found in federation settings), followed by a '/', followed by a user identifier from the IdP's configured `userClaim`. Use when the IdP's `authorizationType` is `USER`. |\n| SCRAM-SHA | `awsIAMType`, `x509Type`, `ldapAuthType`, `oidcAuthType` | `NONE` | Alphanumeric string |\n",
             in: 'path',
             name: 'username',
             required: true,
@@ -78658,7 +85530,7 @@ export const patchApiAtlasV2GroupsGroupIdDatabaseUsersDatabaseNameUsernameRoute 
         .openapi({
           param: {
             description:
-              'Human-readable label that represents the user that authenticates to MongoDB. The format of this label depends on the method of authentication:\n\n| Authentication Method | Parameter Needed | Parameter Value | username Format |\n|---|---|---|---|\n| AWS IAM | `awsIAMType` | `ROLE` | <abbr title="Amazon Resource Name">ARN</abbr> |\n| AWS IAM | `awsIAMType` | `USER` | <abbr title="Amazon Resource Name">ARN</abbr> |\n| x.509 | `x509Type` | `CUSTOMER` | [RFC 2253](https://tools.ietf.org/html/2253) Distinguished Name |\n| x.509 | `x509Type` | `MANAGED` | [RFC 2253](https://tools.ietf.org/html/2253) Distinguished Name |\n| LDAP | `ldapAuthType` | `USER` | [RFC 2253](https://tools.ietf.org/html/2253) Distinguished Name |\n| LDAP | `ldapAuthType` | `GROUP` | [RFC 2253](https://tools.ietf.org/html/2253) Distinguished Name |\n| OIDC Workforce | `oidcAuthType` | `IDP_GROUP` | Atlas OIDC IdP ID (found in federation settings), followed by a \'/\', followed by the IdP group name |\n| OIDC Workload | `oidcAuthType` | `USER` | Atlas OIDC IdP ID (found in federation settings), followed by a \'/\', followed by the IdP user name |\n| SCRAM-SHA | `awsIAMType`, `x509Type`, `ldapAuthType`, `oidcAuthType` | `NONE` | Alphanumeric string |\n',
+              "Human-readable label that represents the user that authenticates to MongoDB. The format of this label depends on the method of authentication:\n\n| Authentication Method | Parameter Needed | Parameter Value | username Format |\n|---|---|---|---|\n| AWS IAM | `awsIAMType` | `ROLE` | <abbr title=\"Amazon Resource Name\">ARN</abbr> |\n| AWS IAM | `awsIAMType` | `USER` | <abbr title=\"Amazon Resource Name\">ARN</abbr> |\n| x.509 | `x509Type` | `CUSTOMER` | [RFC 2253](https://tools.ietf.org/html/2253) Distinguished Name |\n| x.509 | `x509Type` | `MANAGED` | [RFC 2253](https://tools.ietf.org/html/2253) Distinguished Name |\n| LDAP | `ldapAuthType` | `USER` | [RFC 2253](https://tools.ietf.org/html/2253) Distinguished Name |\n| LDAP | `ldapAuthType` | `GROUP` | [RFC 2253](https://tools.ietf.org/html/2253) Distinguished Name |\n| OIDC Workforce or Workload | `oidcAuthType` | `IDP_GROUP` | Atlas OIDC IdP ID (found in federation settings), followed by a '/', followed by a group identifier from the IdP's configured `groupsClaim`. Use when the IdP's `authorizationType` is `GROUP`. The groups claim can be a custom claim, such as `roles`. |\n| OIDC Workforce or Workload | `oidcAuthType` | `USER` | Atlas OIDC IdP ID (found in federation settings), followed by a '/', followed by a user identifier from the IdP's configured `userClaim`. Use when the IdP's `authorizationType` is `USER`. |\n| SCRAM-SHA | `awsIAMType`, `x509Type`, `ldapAuthType`, `oidcAuthType` | `NONE` | Alphanumeric string |\n",
             in: 'path',
             name: 'username',
             required: true,
@@ -82935,6 +89807,7 @@ export const getApiAtlasV2GroupsGroupIdMongoDBVersionsRoute = createRoute({
             required: false,
           },
           example: 100,
+          default: 100,
         }),
       pageNum: PageNumParamsSchema,
     }),
@@ -82983,9 +89856,7 @@ export const getApiAtlasV2GroupsGroupIdMongosTopologiesRoute = createRoute({
     200: {
       description: 'OK',
       content: {
-        'application/vnd.atlas.preview+json': {
-          schema: PaginatedMongosTopologyResourceResponseSchema,
-        },
+        'application/vnd.atlas.preview+json': { schema: PaginatedMongosTopologyResponseSchema },
       },
       headers: z.object({
         'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
@@ -83022,9 +89893,7 @@ export const postApiAtlasV2GroupsGroupIdMongosTopologiesRoute = createRoute({
   responses: {
     202: {
       description: 'Accepted',
-      content: {
-        'application/vnd.atlas.preview+json': { schema: MongosTopologyResourceResponseSchema },
-      },
+      content: { 'application/vnd.atlas.preview+json': { schema: MongosTopologyResponseSchema } },
       headers: z.object({
         Location: z
           .url()
@@ -83040,7 +89909,7 @@ export const postApiAtlasV2GroupsGroupIdMongosTopologiesRoute = createRoute({
     },
     400: BadRequestResponse,
     401: UnauthorizedResponse,
-    403: ForbiddenResponse,
+    403: ForbiddenOrResourcePolicyViolationResponse,
     404: NotFoundResponse,
     409: ConflictResponse,
     429: TooManyRequestsResponse,
@@ -83077,9 +89946,7 @@ export const getApiAtlasV2GroupsGroupIdMongosTopologiesClusterNameRoute = create
   responses: {
     200: {
       description: 'OK',
-      content: {
-        'application/vnd.atlas.preview+json': { schema: MongosTopologyResourceResponseSchema },
-      },
+      content: { 'application/vnd.atlas.preview+json': { schema: MongosTopologyResponseSchema } },
       headers: z.object({
         'RateLimit-Limit': HeaderRateLimitLimitHeaderSchema,
         'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
@@ -83129,7 +89996,7 @@ export const deleteApiAtlasV2GroupsGroupIdMongosTopologiesClusterNameRoute = cre
       }),
     },
     401: UnauthorizedResponse,
-    403: ForbiddenResponse,
+    403: ForbiddenOrResourcePolicyViolationResponse,
     404: NotFoundResponse,
     409: ConflictResponse,
     429: TooManyRequestsResponse,
@@ -83173,9 +90040,7 @@ export const patchApiAtlasV2GroupsGroupIdMongosTopologiesClusterNameRoute = crea
   responses: {
     202: {
       description: 'Accepted',
-      content: {
-        'application/vnd.atlas.preview+json': { schema: MongosTopologyResourceResponseSchema },
-      },
+      content: { 'application/vnd.atlas.preview+json': { schema: MongosTopologyResponseSchema } },
       headers: z.object({
         Location: z
           .url()
@@ -83191,7 +90056,7 @@ export const patchApiAtlasV2GroupsGroupIdMongosTopologiesClusterNameRoute = crea
     },
     400: BadRequestResponse,
     401: UnauthorizedResponse,
-    403: ForbiddenResponse,
+    403: ForbiddenOrResourcePolicyViolationResponse,
     404: NotFoundResponse,
     409: ConflictResponse,
     429: TooManyRequestsResponse,
@@ -83672,7 +90537,7 @@ export const postApiAtlasV2GroupsGroupIdPrivateEndpointCloudProviderEndpointServ
       400: BadRequestResponse,
       401: UnauthorizedResponse,
       402: PaymentRequiredResponse,
-      403: ForbiddenResponse,
+      403: ForbiddenOrResourcePolicyViolationResponse,
       404: NotFoundResponse,
       409: ConflictResponse,
       429: TooManyRequestsResponse,
@@ -83827,7 +90692,7 @@ export const deleteApiAtlasV2GroupsGroupIdPrivateEndpointCloudProviderEndpointSe
       },
       400: BadRequestResponse,
       401: UnauthorizedResponse,
-      403: ForbiddenResponse,
+      403: ForbiddenOrResourcePolicyViolationResponse,
       404: NotFoundResponse,
       429: TooManyRequestsResponse,
       500: InternalServerErrorResponse,
@@ -85983,6 +92848,7 @@ export const getApiAtlasV2GroupsGroupIdProcessesProcessIdPerformanceAdvisorSlowQ
               },
               required: false,
             },
+            default: 20000,
           }),
         since: z
           .preprocess((val) => {
@@ -86161,6 +93027,7 @@ export const getApiAtlasV2GroupsGroupIdProcessesProcessIdPerformanceAdvisorSugge
               schema: { default: 5, format: 'int64', type: 'integer' },
               required: false,
             },
+            default: 5,
           }),
         nIndexes: z
           .preprocess((val) => {
@@ -87378,6 +94245,7 @@ export const patchApiAtlasV2GroupsGroupIdSettingsRoute = createRoute({
         'RateLimit-Remaining': HeaderRateLimitRemainingHeaderSchema,
       }),
     },
+    400: BadRequestResponse,
     401: UnauthorizedResponse,
     403: ForbiddenOrResourcePolicyViolationResponse,
     404: NotFoundResponse,

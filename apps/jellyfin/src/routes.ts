@@ -1,5 +1,1804 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const BaseItemDtoSchema: z.ZodType<BaseItemDtoType> = z
+  .lazy(() =>
+    z
+      .strictObject({
+        Name: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets the name.' }),
+        OriginalTitle: z.string().nullable().exactOptional(),
+        ServerId: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets the server identifier.' }),
+        Id: z.uuid().exactOptional().openapi({ description: 'Gets or sets the id.' }),
+        Etag: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets the etag.' }),
+        SourceType: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets the type of the source.' }),
+        PlaylistItemId: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets the playlist item identifier.' }),
+        DateCreated: z.iso
+          .datetime({ offset: true })
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets the date created.' }),
+        DateLastMediaAdded: z.iso.datetime({ offset: true }).nullable().exactOptional(),
+        ExtraType: ExtraTypeSchema.nullable().exactOptional(),
+        AirsBeforeSeasonNumber: z.int32().nullable().exactOptional(),
+        AirsAfterSeasonNumber: z.int32().nullable().exactOptional(),
+        AirsBeforeEpisodeNumber: z.int32().nullable().exactOptional(),
+        CanDelete: z.boolean().nullable().exactOptional(),
+        CanDownload: z.boolean().nullable().exactOptional(),
+        HasLyrics: z.boolean().nullable().exactOptional(),
+        HasSubtitles: z.boolean().nullable().exactOptional(),
+        PreferredMetadataLanguage: z.string().nullable().exactOptional(),
+        PreferredMetadataCountryCode: z.string().nullable().exactOptional(),
+        Container: z.string().nullable().exactOptional(),
+        SortName: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets the name of the sort.' }),
+        ForcedSortName: z.string().nullable().exactOptional(),
+        Video3DFormat: Video3DFormatSchema.nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets the video3 D format.' }),
+        PremiereDate: z.iso
+          .datetime({ offset: true })
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets the premiere date.' }),
+        ExternalUrls: z
+          .array(ExternalUrlSchema)
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets the external urls.' }),
+        MediaSources: z
+          .array(MediaSourceInfoSchema)
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets the media versions.' }),
+        CriticRating: z
+          .float32()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets the critic rating.' }),
+        ProductionLocations: z.array(z.string()).nullable().exactOptional(),
+        Path: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets the path.' }),
+        EnableMediaSourceDisplay: z.boolean().nullable().exactOptional(),
+        OfficialRating: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets the official rating.' }),
+        CustomRating: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets the custom rating.' }),
+        ChannelId: z
+          .uuid()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets the channel identifier.' }),
+        ChannelName: z.string().nullable().exactOptional(),
+        Overview: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets the overview.' }),
+        Taglines: z
+          .array(z.string())
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets the taglines.' }),
+        Genres: z
+          .array(z.string())
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets the genres.' }),
+        CommunityRating: z
+          .float32()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets the community rating.' }),
+        CumulativeRunTimeTicks: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .nullable()
+          .exactOptional()
+          .openapi({
+            type: ['integer', 'null'],
+            format: 'int64',
+            description: 'Gets or sets the cumulative run time ticks.',
+          }),
+        RunTimeTicks: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .nullable()
+          .exactOptional()
+          .openapi({
+            type: ['integer', 'null'],
+            format: 'int64',
+            description: 'Gets or sets the run time ticks.',
+          }),
+        PlayAccess: PlayAccessSchema.nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets the play access.' }),
+        AspectRatio: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets the aspect ratio.' }),
+        ProductionYear: z
+          .int32()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets the production year.' }),
+        IsPlaceHolder: z
+          .boolean()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: 'Gets or sets a value indicating whether this instance is place holder.',
+          }),
+        Number: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets the number.' }),
+        ChannelNumber: z.string().nullable().exactOptional(),
+        IndexNumber: z
+          .int32()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets the index number.' }),
+        IndexNumberEnd: z
+          .int32()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets the index number end.' }),
+        ParentIndexNumber: z
+          .int32()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets the parent index number.' }),
+        RemoteTrailers: z
+          .array(MediaUrlSchema)
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets the trailer urls.' }),
+        ProviderIds: z
+          .record(z.string(), z.string().nullable())
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets the provider ids.' }),
+        IsHD: z
+          .boolean()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets a value indicating whether this instance is HD.' }),
+        IsFolder: z
+          .boolean()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: 'Gets or sets a value indicating whether this instance is folder.',
+          }),
+        ParentId: z
+          .uuid()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets the parent id.' }),
+        Type: BaseItemKindSchema.exactOptional().openapi({ description: 'The base item kind.' }),
+        People: z
+          .array(BaseItemPersonSchema)
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets the people.' }),
+        Studios: z
+          .array(NameGuidPairSchema)
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets the studios.' }),
+        GenreItems: z.array(NameGuidPairSchema).nullable().exactOptional(),
+        ParentLogoItemId: z
+          .uuid()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'Gets or sets whether the item has a logo, this will hold the Id of the Parent that has one.',
+          }),
+        ParentBackdropItemId: z
+          .uuid()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'Gets or sets whether the item has any backdrops, this will hold the Id of the Parent that has one.',
+          }),
+        ParentBackdropImageTags: z
+          .array(z.string())
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets the parent backdrop image tags.' }),
+        LocalTrailerCount: z
+          .int32()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets the local trailer count.' }),
+        UserData: UserItemDataDtoSchema.nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              "Gets or sets the user data for this item based on the user it's being requested for.",
+          }),
+        RecursiveItemCount: z
+          .int32()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets the recursive item count.' }),
+        ChildCount: z
+          .int32()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets the child count.' }),
+        SeriesName: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets the name of the series.' }),
+        SeriesId: z
+          .uuid()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets the series id.' }),
+        SeasonId: z
+          .uuid()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets the season identifier.' }),
+        SpecialFeatureCount: z
+          .int32()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets the special feature count.' }),
+        DisplayPreferencesId: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets the display preferences id.' }),
+        Status: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets the status.' }),
+        AirTime: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets the air time.' }),
+        AirDays: z
+          .array(DayOfWeekSchema)
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets the air days.' }),
+        Tags: z
+          .array(z.string())
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets the tags.' }),
+        PrimaryImageAspectRatio: z
+          .float64()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: 'Gets or sets the primary image aspect ratio, after image enhancements.',
+          }),
+        Artists: z
+          .array(z.string())
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets the artists.' }),
+        ArtistItems: z
+          .array(NameGuidPairSchema)
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets the artist items.' }),
+        Album: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets the album.' }),
+        CollectionType: CollectionTypeSchema.nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets the type of the collection.' }),
+        DisplayOrder: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets the display order.' }),
+        AlbumId: z
+          .uuid()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets the album id.' }),
+        AlbumPrimaryImageTag: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets the album image tag.' }),
+        SeriesPrimaryImageTag: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets the series primary image tag.' }),
+        AlbumArtist: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets the album artist.' }),
+        AlbumArtists: z
+          .array(NameGuidPairSchema)
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets the album artists.' }),
+        SeasonName: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets the name of the season.' }),
+        MediaStreams: z
+          .array(MediaStreamSchema)
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets the media streams.' }),
+        VideoType: VideoTypeSchema.nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets the type of the video.' }),
+        PartCount: z
+          .int32()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets the part count.' }),
+        MediaSourceCount: z.int32().nullable().exactOptional(),
+        ImageTags: z
+          .record(z.string(), z.string().nullable())
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets the image tags.' }),
+        BackdropImageTags: z
+          .array(z.string())
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets the backdrop image tags.' }),
+        ScreenshotImageTags: z
+          .array(z.string())
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets the screenshot image tags.' }),
+        ParentLogoImageTag: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets the parent logo image tag.' }),
+        ParentArtItemId: z
+          .uuid()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'Gets or sets whether the item has fan art, this will hold the Id of the Parent that has one.',
+          }),
+        ParentArtImageTag: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets the parent art image tag.' }),
+        SeriesThumbImageTag: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets the series thumb image tag.' }),
+        ImageBlurHashes: z
+          .strictObject({
+            Primary: z.record(z.string(), z.string().nullable()).exactOptional(),
+            Art: z.record(z.string(), z.string().nullable()).exactOptional(),
+            Backdrop: z.record(z.string(), z.string().nullable()).exactOptional(),
+            Banner: z.record(z.string(), z.string().nullable()).exactOptional(),
+            Logo: z.record(z.string(), z.string().nullable()).exactOptional(),
+            Thumb: z.record(z.string(), z.string().nullable()).exactOptional(),
+            Disc: z.record(z.string(), z.string().nullable()).exactOptional(),
+            Box: z.record(z.string(), z.string().nullable()).exactOptional(),
+            Screenshot: z.record(z.string(), z.string().nullable()).exactOptional(),
+            Menu: z.record(z.string(), z.string().nullable()).exactOptional(),
+            Chapter: z.record(z.string(), z.string().nullable()).exactOptional(),
+            BoxRear: z.record(z.string(), z.string().nullable()).exactOptional(),
+            Profile: z.record(z.string(), z.string().nullable()).exactOptional(),
+          })
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'Gets or sets the blurhashes for the image tags.\nMaps image type to dictionary mapping image tag to blurhash value.',
+            required: [],
+          }),
+        SeriesStudio: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets the series studio.' }),
+        ParentThumbItemId: z
+          .uuid()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets the parent thumb item id.' }),
+        ParentThumbImageTag: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets the parent thumb image tag.' }),
+        ParentPrimaryImageItemId: z
+          .uuid()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets the parent primary image item identifier.' }),
+        ParentPrimaryImageTag: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets the parent primary image tag.' }),
+        Chapters: z
+          .array(ChapterInfoSchema)
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets the chapters.' }),
+        Trickplay: z
+          .record(z.string(), z.record(z.string(), TrickplayInfoDtoSchema).nullable())
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets the trickplay manifest.' }),
+        LocationType: LocationTypeSchema.nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets the type of the location.' }),
+        IsoType: IsoTypeSchema.nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets the type of the iso.' }),
+        MediaType: MediaTypeSchema.default('Unknown')
+          .exactOptional()
+          .openapi({ description: 'Media types.' }),
+        EndDate: z.iso
+          .datetime({ offset: true })
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets the end date.' }),
+        LockedFields: z
+          .array(MetadataFieldSchema)
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets the locked fields.' }),
+        TrailerCount: z
+          .int32()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets the trailer count.' }),
+        MovieCount: z
+          .int32()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets the movie count.' }),
+        SeriesCount: z
+          .int32()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets the series count.' }),
+        ProgramCount: z.int32().nullable().exactOptional(),
+        EpisodeCount: z
+          .int32()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets the episode count.' }),
+        SongCount: z
+          .int32()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets the song count.' }),
+        AlbumCount: z
+          .int32()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets the album count.' }),
+        ArtistCount: z.int32().nullable().exactOptional(),
+        MusicVideoCount: z
+          .int32()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets the music video count.' }),
+        LockData: z
+          .boolean()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: 'Gets or sets a value indicating whether [enable internet providers].',
+          }),
+        Width: z.int32().nullable().exactOptional(),
+        Height: z.int32().nullable().exactOptional(),
+        CameraMake: z.string().nullable().exactOptional(),
+        CameraModel: z.string().nullable().exactOptional(),
+        Software: z.string().nullable().exactOptional(),
+        ExposureTime: z.float64().nullable().exactOptional(),
+        FocalLength: z.float64().nullable().exactOptional(),
+        ImageOrientation: ImageOrientationSchema.nullable().exactOptional(),
+        Aperture: z.float64().nullable().exactOptional(),
+        ShutterSpeed: z.float64().nullable().exactOptional(),
+        Latitude: z.float64().nullable().exactOptional(),
+        Longitude: z.float64().nullable().exactOptional(),
+        Altitude: z.float64().nullable().exactOptional(),
+        IsoSpeedRating: z.int32().nullable().exactOptional(),
+        SeriesTimerId: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets the series timer identifier.' }),
+        ProgramId: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets the program identifier.' }),
+        ChannelPrimaryImageTag: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets the channel primary image tag.' }),
+        StartDate: z.iso
+          .datetime({ offset: true })
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets the start date of the recording, in UTC.' }),
+        CompletionPercentage: z
+          .float64()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets the completion percentage.' }),
+        IsRepeat: z
+          .boolean()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: 'Gets or sets a value indicating whether this instance is repeat.',
+          }),
+        EpisodeTitle: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets the episode title.' }),
+        ChannelType: ChannelTypeSchema.nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets the type of the channel.' }),
+        Audio: ProgramAudioSchema.nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets the audio.' }),
+        IsMovie: z
+          .boolean()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: 'Gets or sets a value indicating whether this instance is movie.',
+          }),
+        IsSports: z
+          .boolean()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: 'Gets or sets a value indicating whether this instance is sports.',
+          }),
+        IsSeries: z
+          .boolean()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: 'Gets or sets a value indicating whether this instance is series.',
+          }),
+        IsLive: z
+          .boolean()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: 'Gets or sets a value indicating whether this instance is live.',
+          }),
+        IsNews: z
+          .boolean()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: 'Gets or sets a value indicating whether this instance is news.',
+          }),
+        IsKids: z
+          .boolean()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: 'Gets or sets a value indicating whether this instance is kids.',
+          }),
+        IsPremiere: z
+          .boolean()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: 'Gets or sets a value indicating whether this instance is premiere.',
+          }),
+        TimerId: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets the timer identifier.' }),
+        NormalizationGain: z
+          .float32()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets the gain required for audio normalization.' }),
+        AlbumNormalizationGain: z
+          .float32()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'Gets or sets the gain required for audio normalization. This field is inherited from music album normalization gain.',
+          }),
+        CurrentProgram: BaseItemDtoSchema.nullable()
+          .exactOptional()
+          .openapi({ description: 'Gets or sets the current program.' }),
+        OriginalLanguage: z.string().nullable().exactOptional(),
+      })
+      .openapi({
+        description:
+          'This is strictly used as a data transfer object from the api layer.\nThis holds information about a BaseItem in a format that is convenient for the client.',
+        required: [],
+      }),
+  )
+  .openapi('BaseItemDto')
+
+const ThemeMediaResultSchema = z
+  .strictObject({
+    Items: z
+      .array(BaseItemDtoSchema)
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the items.' }),
+    TotalRecordCount: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the total number of records available.' }),
+    StartIndex: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the index of the first record in Items.' }),
+    OwnerId: z.uuid().exactOptional().openapi({ description: 'Gets or sets the owner id.' }),
+  })
+  .openapi({ description: 'Class ThemeMediaResult.', required: [] })
+  .openapi('ThemeMediaResult')
+
+type AllThemeMediaResultType = {
+  ThemeVideosResult?: z.infer<typeof ThemeMediaResultSchema> | null
+  ThemeSongsResult?: z.infer<typeof ThemeMediaResultSchema> | null
+  SoundtrackSongsResult?: z.infer<typeof ThemeMediaResultSchema> | null
+}
+
+const SubtitlePlaybackModeSchema = z
+  .enum(['Default', 'Always', 'OnlyForced', 'None', 'Smart'])
+  .openapi({ description: 'An enum representing a subtitle playback mode.' })
+  .openapi('SubtitlePlaybackMode')
+
+const UserConfigurationSchema = z
+  .strictObject({
+    AudioLanguagePreference: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the audio language preference.' }),
+    PlayDefaultAudioTrack: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Gets or sets a value indicating whether [play default audio track].',
+      }),
+    SubtitleLanguagePreference: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the subtitle language preference.' }),
+    DisplayMissingEpisodes: z.boolean().exactOptional(),
+    GroupedFolders: z.array(z.uuid()).exactOptional(),
+    SubtitleMode: SubtitlePlaybackModeSchema.exactOptional().openapi({
+      description: 'An enum representing a subtitle playback mode.',
+    }),
+    DisplayCollectionsView: z.boolean().exactOptional(),
+    EnableLocalPassword: z.boolean().exactOptional(),
+    OrderedViews: z.array(z.uuid()).exactOptional(),
+    LatestItemsExcludes: z.array(z.uuid()).exactOptional(),
+    MyMediaExcludes: z.array(z.uuid()).exactOptional(),
+    HidePlayedInLatest: z.boolean().exactOptional(),
+    RememberAudioSelections: z.boolean().exactOptional(),
+    RememberSubtitleSelections: z.boolean().exactOptional(),
+    EnableNextEpisodeAutoPlay: z.boolean().exactOptional(),
+    CastReceiverId: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the id of the selected cast receiver.' }),
+  })
+  .openapi({ description: 'Class UserConfiguration.', required: [] })
+  .openapi('UserConfiguration')
+
+const DynamicDayOfWeekSchema = z
+  .enum([
+    'Sunday',
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday',
+    'Everyday',
+    'Weekday',
+    'Weekend',
+  ])
+  .openapi({
+    description: 'An enum that represents a day of the week, weekdays, weekends, or all days.',
+  })
+  .openapi('DynamicDayOfWeek')
+
+const AccessScheduleSchema = z
+  .strictObject({
+    Id: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Gets the id of this instance.', readOnly: true }),
+    UserId: z
+      .uuid()
+      .exactOptional()
+      .openapi({ description: 'Gets the id of the associated user.' }),
+    DayOfWeek: DynamicDayOfWeekSchema.exactOptional().openapi({
+      description: 'Gets or sets the day of week.',
+    }),
+    StartHour: z.float64().exactOptional().openapi({ description: 'Gets or sets the start hour.' }),
+    EndHour: z.float64().exactOptional().openapi({ description: 'Gets or sets the end hour.' }),
+  })
+  .openapi({ description: "An entity representing a user's access schedule.", required: [] })
+  .openapi('AccessSchedule')
+
+const UnratedItemSchema = z
+  .enum([
+    'Movie',
+    'Trailer',
+    'Series',
+    'Music',
+    'Book',
+    'LiveTvChannel',
+    'LiveTvProgram',
+    'ChannelContent',
+    'Other',
+  ])
+  .openapi({ description: 'An enum representing an unrated item.' })
+  .openapi('UnratedItem')
+
+const SyncPlayUserAccessTypeSchema = z
+  .enum(['CreateAndJoinGroups', 'JoinGroups', 'None'])
+  .openapi({ description: 'Enum SyncPlayUserAccessType.' })
+  .openapi('SyncPlayUserAccessType')
+
+const UserPolicySchema = z
+  .strictObject({
+    IsAdministrator: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Gets or sets a value indicating whether this instance is administrator.',
+      }),
+    IsHidden: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets a value indicating whether this instance is hidden.' }),
+    EnableCollectionManagement: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description:
+          'Gets or sets a value indicating whether this instance can manage collections.',
+      }),
+    EnableSubtitleManagement: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description: 'Gets or sets a value indicating whether this instance can manage subtitles.',
+      }),
+    EnableLyricManagement: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description: 'Gets or sets a value indicating whether this user can manage lyrics.',
+      }),
+    IsDisabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Gets or sets a value indicating whether this instance is disabled.',
+      }),
+    MaxParentalRating: z
+      .int32()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the max parental rating.' }),
+    MaxParentalSubRating: z.int32().nullable().exactOptional(),
+    BlockedTags: z.array(z.string()).nullable().exactOptional(),
+    AllowedTags: z.array(z.string()).nullable().exactOptional(),
+    EnableUserPreferenceAccess: z.boolean().exactOptional(),
+    AccessSchedules: z.array(AccessScheduleSchema).nullable().exactOptional(),
+    BlockUnratedItems: z.array(UnratedItemSchema).nullable().exactOptional(),
+    EnableRemoteControlOfOtherUsers: z.boolean().exactOptional(),
+    EnableSharedDeviceControl: z.boolean().exactOptional(),
+    EnableRemoteAccess: z.boolean().exactOptional(),
+    EnableLiveTvManagement: z.boolean().exactOptional(),
+    EnableLiveTvAccess: z.boolean().exactOptional(),
+    EnableMediaPlayback: z.boolean().exactOptional(),
+    EnableAudioPlaybackTranscoding: z.boolean().exactOptional(),
+    EnableVideoPlaybackTranscoding: z.boolean().exactOptional(),
+    EnablePlaybackRemuxing: z.boolean().exactOptional(),
+    ForceRemoteSourceTranscoding: z.boolean().exactOptional(),
+    EnableContentDeletion: z.boolean().exactOptional(),
+    EnableContentDeletionFromFolders: z.array(z.string()).nullable().exactOptional(),
+    EnableContentDownloading: z.boolean().exactOptional(),
+    EnableSyncTranscoding: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets a value indicating whether [enable synchronize].' }),
+    EnableMediaConversion: z.boolean().exactOptional(),
+    EnabledDevices: z.array(z.string()).nullable().exactOptional(),
+    EnableAllDevices: z.boolean().exactOptional(),
+    EnabledChannels: z.array(z.uuid()).nullable().exactOptional(),
+    EnableAllChannels: z.boolean().exactOptional(),
+    EnabledFolders: z.array(z.uuid()).nullable().exactOptional(),
+    EnableAllFolders: z.boolean().exactOptional(),
+    InvalidLoginAttemptCount: z.int32().exactOptional(),
+    LoginAttemptsBeforeLockout: z.int32().exactOptional(),
+    MaxActiveSessions: z.int32().exactOptional(),
+    EnablePublicSharing: z.boolean().exactOptional(),
+    BlockedMediaFolders: z.array(z.uuid()).nullable().exactOptional(),
+    BlockedChannels: z.array(z.uuid()).nullable().exactOptional(),
+    RemoteClientBitrateLimit: z.int32().exactOptional(),
+    AuthenticationProviderId: z.string().min(1),
+    PasswordResetProviderId: z.string().min(1),
+    SyncPlayAccess: SyncPlayUserAccessTypeSchema.exactOptional().openapi({
+      description: 'Gets or sets a value indicating what SyncPlay features the user can access.',
+    }),
+  })
+  .openapi({ required: ['AuthenticationProviderId', 'PasswordResetProviderId'] })
+  .openapi('UserPolicy')
+
+const UserDtoSchema = z
+  .strictObject({
+    Name: z.string().nullable().exactOptional().openapi({ description: 'Gets or sets the name.' }),
+    ServerId: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the server identifier.' }),
+    ServerName: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Gets or sets the name of the server.\nThis is not used by the server and is for client-side usage only.',
+      }),
+    Id: z.uuid().exactOptional().openapi({ description: 'Gets or sets the id.' }),
+    PrimaryImageTag: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the primary image tag.' }),
+    HasPassword: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Gets or sets a value indicating whether this instance has password.',
+        deprecated: true,
+      }),
+    HasConfiguredPassword: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Gets or sets a value indicating whether this instance has configured password.',
+        deprecated: true,
+      }),
+    HasConfiguredEasyPassword: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Gets or sets a value indicating whether this instance has configured easy password.',
+        deprecated: true,
+      }),
+    EnableAutoLogin: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets whether async login is enabled or not.' }),
+    LastLoginDate: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the last login date.' }),
+    LastActivityDate: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the last activity date.' }),
+    Configuration: UserConfigurationSchema.nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the configuration.' }),
+    Policy: UserPolicySchema.nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the policy.' }),
+    PrimaryImageAspectRatio: z
+      .float64()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the primary image aspect ratio.' }),
+  })
+  .openapi({ description: 'Class UserDto.', required: [] })
+  .openapi('UserDto')
+
+const PlayMethodSchema = z
+  .enum(['Transcode', 'DirectStream', 'DirectPlay'])
+  .openapi({ description: 'The play method.' })
+  .openapi('PlayMethod')
+
+const RepeatModeSchema = z
+  .enum(['RepeatNone', 'RepeatAll', 'RepeatOne'])
+  .openapi({ description: 'The repeat mode of a play queue.' })
+  .openapi('RepeatMode')
+
+const PlaybackOrderSchema = z
+  .enum(['Default', 'Shuffle'])
+  .openapi({ description: 'Enum PlaybackOrder.' })
+  .openapi('PlaybackOrder')
+
+const PlayerStateInfoSchema = z
+  .strictObject({
+    PositionTicks: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description: 'Gets or sets the now playing position ticks.',
+      }),
+    CanSeek: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets a value indicating whether this instance can seek.' }),
+    IsPaused: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets a value indicating whether this instance is paused.' }),
+    IsMuted: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets a value indicating whether this instance is muted.' }),
+    VolumeLevel: z
+      .int32()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the volume level.' }),
+    AudioStreamIndex: z
+      .int32()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the index of the now playing audio stream.' }),
+    SubtitleStreamIndex: z
+      .int32()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the index of the now playing subtitle stream.' }),
+    MediaSourceId: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the now playing media version identifier.' }),
+    PlayMethod: PlayMethodSchema.nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the play method.' }),
+    RepeatMode: RepeatModeSchema.exactOptional().openapi({
+      description: 'Gets or sets the repeat mode.',
+    }),
+    PlaybackOrder: PlaybackOrderSchema.exactOptional().openapi({
+      description: 'Gets or sets the playback order.',
+    }),
+    LiveStreamId: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the now playing live stream identifier.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('PlayerStateInfo')
+
+const SessionUserInfoSchema = z
+  .strictObject({
+    UserId: z.uuid().exactOptional().openapi({ description: 'Gets or sets the user identifier.' }),
+    UserName: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the name of the user.' }),
+  })
+  .openapi({ description: 'Class SessionUserInfo.', required: [] })
+  .openapi('SessionUserInfo')
+
+const MediaTypeSchema = z
+  .enum(['Unknown', 'Video', 'Audio', 'Photo', 'Book'])
+  .openapi({ description: 'Media types.' })
+  .openapi('MediaType')
+
+const GeneralCommandTypeSchema = z
+  .enum([
+    'MoveUp',
+    'MoveDown',
+    'MoveLeft',
+    'MoveRight',
+    'PageUp',
+    'PageDown',
+    'PreviousLetter',
+    'NextLetter',
+    'ToggleOsd',
+    'ToggleContextMenu',
+    'Select',
+    'Back',
+    'TakeScreenshot',
+    'SendKey',
+    'SendString',
+    'GoHome',
+    'GoToSettings',
+    'VolumeUp',
+    'VolumeDown',
+    'Mute',
+    'Unmute',
+    'ToggleMute',
+    'SetVolume',
+    'SetAudioStreamIndex',
+    'SetSubtitleStreamIndex',
+    'ToggleFullscreen',
+    'DisplayContent',
+    'GoToSearch',
+    'DisplayMessage',
+    'SetRepeatMode',
+    'ChannelUp',
+    'ChannelDown',
+    'Guide',
+    'ToggleStats',
+    'PlayMediaSource',
+    'PlayTrailers',
+    'SetShuffleQueue',
+    'PlayState',
+    'PlayNext',
+    'ToggleOsdMenu',
+    'Play',
+    'SetMaxStreamingBitrate',
+    'SetPlaybackOrder',
+  ])
+  .openapi({ description: 'This exists simply to identify a set of known commands.' })
+  .openapi('GeneralCommandType')
+
+const DlnaProfileTypeSchema = z
+  .enum(['Audio', 'Video', 'Photo', 'Subtitle', 'Lyric'])
+  .openapi('DlnaProfileType')
+
+const DirectPlayProfileSchema = z
+  .strictObject({
+    Container: z.string().exactOptional().openapi({ description: 'Gets or sets the container.' }),
+    AudioCodec: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the audio codec.' }),
+    VideoCodec: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the video codec.' }),
+    Type: DlnaProfileTypeSchema.exactOptional().openapi({
+      description: 'Gets or sets the Dlna profile type.',
+    }),
+  })
+  .openapi({ description: 'Defines the MediaBrowser.Model.Dlna.DirectPlayProfile.', required: [] })
+  .openapi('DirectPlayProfile')
+
+const MediaStreamProtocolSchema = z
+  .enum(['http', 'hls'])
+  .openapi({ description: 'Media streaming protocol.\nLowercase for backwards compatibility.' })
+  .openapi('MediaStreamProtocol')
+
+const TranscodeSeekInfoSchema = z
+  .enum(['Auto', 'Bytes'])
+  .openapi({ description: 'The transcode seek info.' })
+  .openapi('TranscodeSeekInfo')
+
+const EncodingContextSchema = z
+  .enum(['Streaming', 'Static'])
+  .openapi({ description: 'The encoding context.' })
+  .openapi('EncodingContext')
+
+const ProfileConditionTypeSchema = z
+  .enum(['Equals', 'NotEquals', 'LessThanEqual', 'GreaterThanEqual', 'EqualsAny'])
+  .openapi('ProfileConditionType')
+
+const ProfileConditionValueSchema = z
+  .enum([
+    'AudioChannels',
+    'AudioBitrate',
+    'AudioProfile',
+    'Width',
+    'Height',
+    'Has64BitOffsets',
+    'PacketLength',
+    'VideoBitDepth',
+    'VideoBitrate',
+    'VideoFramerate',
+    'VideoLevel',
+    'VideoProfile',
+    'VideoTimestamp',
+    'IsAnamorphic',
+    'RefFrames',
+    'NumAudioStreams',
+    'NumVideoStreams',
+    'IsSecondaryAudio',
+    'VideoCodecTag',
+    'IsAvc',
+    'IsInterlaced',
+    'AudioSampleRate',
+    'AudioBitDepth',
+    'VideoRangeType',
+    'NumStreams',
+    'VideoRotation',
+  ])
+  .openapi('ProfileConditionValue')
+
+const ProfileConditionSchema = z
+  .strictObject({
+    Condition: ProfileConditionTypeSchema.exactOptional(),
+    Property: ProfileConditionValueSchema.exactOptional(),
+    Value: z.string().nullable().exactOptional(),
+    IsRequired: z.boolean().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ProfileCondition')
+
+const TranscodingProfileSchema = z
+  .strictObject({
+    Container: z.string().exactOptional().openapi({ description: 'Gets or sets the container.' }),
+    Type: DlnaProfileTypeSchema.exactOptional().openapi({
+      description: 'Gets or sets the DLNA profile type.',
+    }),
+    VideoCodec: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the video codec.' }),
+    AudioCodec: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the audio codec.' }),
+    Protocol: MediaStreamProtocolSchema.exactOptional().openapi({
+      description: 'Media streaming protocol.\nLowercase for backwards compatibility.',
+    }),
+    EstimateContentLength: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description:
+          'Gets or sets a value indicating whether the content length should be estimated.',
+      }),
+    EnableMpegtsM2TsMode: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({ description: 'Gets or sets a value indicating whether M2TS mode is enabled.' }),
+    TranscodeSeekInfo: TranscodeSeekInfoSchema.default('Auto')
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the transcoding seek info mode.' }),
+    CopyTimestamps: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description: 'Gets or sets a value indicating whether timestamps should be copied.',
+      }),
+    Context: EncodingContextSchema.default('Streaming')
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the encoding context.' }),
+    EnableSubtitlesInManifest: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description:
+          'Gets or sets a value indicating whether subtitles are allowed in the manifest.',
+      }),
+    MaxAudioChannels: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the maximum audio channels.' }),
+    MinSegments: z
+      .int32()
+      .default(0)
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the minimum amount of segments.' }),
+    SegmentLength: z
+      .int32()
+      .default(0)
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the segment length.' }),
+    BreakOnNonKeyFrames: z
+      .boolean()
+      .nullable()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description:
+          'Gets or sets a value indicating whether breaking the video stream on non-keyframes is supported.',
+        deprecated: true,
+      }),
+    Conditions: z
+      .array(ProfileConditionSchema)
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the profile conditions.' }),
+    EnableAudioVbrEncoding: z
+      .boolean()
+      .default(true)
+      .exactOptional()
+      .openapi({
+        description:
+          'Gets or sets a value indicating whether variable bitrate encoding is supported.',
+      }),
+  })
+  .openapi({
+    description:
+      'A class for transcoding profile information.\nNote for client developers: Conditions defined in MediaBrowser.Model.Dlna.CodecProfile has higher priority and can override values defined here.',
+    required: [],
+  })
+  .openapi('TranscodingProfile')
+
+const ContainerProfileSchema = z
+  .strictObject({
+    Type: DlnaProfileTypeSchema.exactOptional().openapi({
+      description:
+        'Gets or sets the MediaBrowser.Model.Dlna.DlnaProfileType which this container must meet.',
+    }),
+    Conditions: z
+      .array(ProfileConditionSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Gets or sets the list of MediaBrowser.Model.Dlna.ProfileCondition which this container will be applied to.',
+      }),
+    Container: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the container(s) which this container must meet.' }),
+    SubContainer: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Gets or sets the sub container(s) which this container must meet.',
+      }),
+  })
+  .openapi({ description: 'Defines the MediaBrowser.Model.Dlna.ContainerProfile.', required: [] })
+  .openapi('ContainerProfile')
+
+const CodecTypeSchema = z
+  .enum(['Video', 'VideoAudio', 'Audio'])
+  .openapi({ description: 'The codec type of a codec profile.' })
+  .openapi('CodecType')
+
+const CodecProfileSchema = z
+  .strictObject({
+    Type: CodecTypeSchema.exactOptional().openapi({
+      description:
+        'Gets or sets the MediaBrowser.Model.Dlna.CodecType which this container must meet.',
+    }),
+    Conditions: z
+      .array(ProfileConditionSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Gets or sets the list of MediaBrowser.Model.Dlna.ProfileCondition which this profile must meet.',
+      }),
+    ApplyConditions: z
+      .array(ProfileConditionSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Gets or sets the list of MediaBrowser.Model.Dlna.ProfileCondition to apply if this profile is met.',
+      }),
+    Codec: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the codec(s) that this profile applies to.' }),
+    Container: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Gets or sets the container(s) which this profile will be applied to.',
+      }),
+    SubContainer: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Gets or sets the sub-container(s) which this profile will be applied to.',
+      }),
+  })
+  .openapi({ description: 'Defines the MediaBrowser.Model.Dlna.CodecProfile.', required: [] })
+  .openapi('CodecProfile')
+
+const SubtitleDeliveryMethodSchema = z
+  .enum(['Encode', 'Embed', 'External', 'Hls', 'Drop'])
+  .openapi({ description: 'Delivery method to use during playback of a specific subtitle format.' })
+  .openapi('SubtitleDeliveryMethod')
+
+const SubtitleProfileSchema = z
+  .strictObject({
+    Format: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the format.' }),
+    Method: SubtitleDeliveryMethodSchema.exactOptional().openapi({
+      description: 'Gets or sets the delivery method.',
+    }),
+    DidlMode: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the DIDL mode.' }),
+    Language: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the language.' }),
+    Container: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the container.' }),
+  })
+  .openapi({ description: 'A class for subtitle profile information.', required: [] })
+  .openapi('SubtitleProfile')
+
+const DeviceProfileSchema = z
+  .strictObject({
+    Name: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Gets or sets the name of this device profile. User profiles must have a unique name.',
+      }),
+    Id: z
+      .uuid()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the unique internal identifier.' }),
+    MaxStreamingBitrate: z
+      .int32()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Gets or sets the maximum allowed bitrate for all streamed content.',
+      }),
+    MaxStaticBitrate: z
+      .int32()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Gets or sets the maximum allowed bitrate for statically streamed content (= direct played files).',
+      }),
+    MusicStreamingTranscodingBitrate: z
+      .int32()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Gets or sets the maximum allowed bitrate for transcoded music streams.',
+      }),
+    MaxStaticMusicBitrate: z
+      .int32()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Gets or sets the maximum allowed bitrate for statically streamed (= direct played) music files.',
+      }),
+    DirectPlayProfiles: z
+      .array(DirectPlayProfileSchema)
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the direct play profiles.' }),
+    TranscodingProfiles: z
+      .array(TranscodingProfileSchema)
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the transcoding profiles.' }),
+    ContainerProfiles: z
+      .array(ContainerProfileSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Gets or sets the container profiles. Failing to meet these optional conditions causes transcoding to occur.',
+      }),
+    CodecProfiles: z
+      .array(CodecProfileSchema)
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the codec profiles.' }),
+    SubtitleProfiles: z
+      .array(SubtitleProfileSchema)
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the subtitle profiles.' }),
+  })
+  .openapi({
+    description:
+      'A MediaBrowser.Model.Dlna.DeviceProfile represents a set of metadata which determines which content a certain device is able to play.\n\n\nSpecifically, it defines the supported <see cref="P:MediaBrowser.Model.Dlna.DeviceProfile.ContainerProfiles">containers</see> and\n<see cref="P:MediaBrowser.Model.Dlna.DeviceProfile.CodecProfiles">codecs</see> (video and/or audio, including codec profiles and levels)\nthe device is able to direct play (without transcoding or remuxing),\nas well as which <see cref="P:MediaBrowser.Model.Dlna.DeviceProfile.TranscodingProfiles">containers/codecs to transcode to</see> in case it isn\'t.',
+    required: [],
+  })
+  .openapi('DeviceProfile')
+
+const ClientCapabilitiesDtoSchema = z
+  .strictObject({
+    PlayableMediaTypes: z
+      .array(MediaTypeSchema)
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the list of playable media types.' }),
+    SupportedCommands: z
+      .array(GeneralCommandTypeSchema)
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the list of supported commands.' }),
+    SupportsMediaControl: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Gets or sets a value indicating whether session supports media control.',
+      }),
+    SupportsPersistentIdentifier: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Gets or sets a value indicating whether session supports a persistent identifier.',
+      }),
+    DeviceProfile: DeviceProfileSchema.nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the device profile.' }),
+    AppStoreUrl: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the app store url.' }),
+    IconUrl: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the icon url.' }),
+  })
+  .openapi({ description: 'Client capabilities dto.', required: [] })
+  .openapi('ClientCapabilitiesDto')
+
+const HardwareAccelerationTypeSchema = z
+  .enum(['none', 'amf', 'qsv', 'nvenc', 'v4l2m2m', 'vaapi', 'videotoolbox', 'rkmpp'])
+  .openapi({ description: 'Enum containing hardware acceleration types.' })
+  .openapi('HardwareAccelerationType')
+
+const TranscodeReasonSchema = z
+  .enum([
+    'ContainerNotSupported',
+    'VideoCodecNotSupported',
+    'AudioCodecNotSupported',
+    'SubtitleCodecNotSupported',
+    'AudioIsExternal',
+    'SecondaryAudioNotSupported',
+    'VideoProfileNotSupported',
+    'VideoLevelNotSupported',
+    'VideoResolutionNotSupported',
+    'VideoBitDepthNotSupported',
+    'VideoFramerateNotSupported',
+    'RefFramesNotSupported',
+    'AnamorphicVideoNotSupported',
+    'InterlacedVideoNotSupported',
+    'AudioChannelsNotSupported',
+    'AudioProfileNotSupported',
+    'AudioSampleRateNotSupported',
+    'AudioBitDepthNotSupported',
+    'ContainerBitrateExceedsLimit',
+    'VideoBitrateNotSupported',
+    'AudioBitrateNotSupported',
+    'UnknownVideoStreamInfo',
+    'UnknownAudioStreamInfo',
+    'DirectPlayError',
+    'VideoRangeTypeNotSupported',
+    'VideoCodecTagNotSupported',
+    'StreamCountExceedsLimit',
+    'VideoRotationNotSupported',
+  ])
+  .openapi('TranscodeReason')
+
+const TranscodingInfoSchema = z
+  .strictObject({
+    AudioCodec: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the thread count used for encoding.' }),
+    VideoCodec: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the thread count used for encoding.' }),
+    Container: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the thread count used for encoding.' }),
+    IsVideoDirect: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Gets or sets a value indicating whether the video is passed through.',
+      }),
+    IsAudioDirect: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Gets or sets a value indicating whether the audio is passed through.',
+      }),
+    Bitrate: z
+      .int32()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the bitrate.' }),
+    Framerate: z
+      .float32()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the framerate.' }),
+    CompletionPercentage: z
+      .float64()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the completion percentage.' }),
+    Width: z
+      .int32()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the video width.' }),
+    Height: z
+      .int32()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the video height.' }),
+    AudioChannels: z
+      .int32()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the audio channels.' }),
+    HardwareAccelerationType: HardwareAccelerationTypeSchema.nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the hardware acceleration type.' }),
+    TranscodeReasons: z
+      .array(TranscodeReasonSchema)
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the transcode reasons.' }),
+  })
+  .openapi({ description: 'Class holding information on a running transcode.', required: [] })
+  .openapi('TranscodingInfo')
+
+const QueueItemSchema = z
+  .strictObject({
+    Id: z.uuid().exactOptional().openapi({ description: 'Gets or sets the item id.' }),
+    PlaylistItemId: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the playlist item id.' }),
+  })
+  .openapi({ description: 'An item in a play queue.', required: [] })
+  .openapi('QueueItem')
+
+const SessionInfoDtoSchema = z
+  .strictObject({
+    PlayState: PlayerStateInfoSchema.nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the play state.' }),
+    AdditionalUsers: z
+      .array(SessionUserInfoSchema)
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the additional users.' }),
+    Capabilities: ClientCapabilitiesDtoSchema.nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the client capabilities.' }),
+    RemoteEndPoint: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the remote end point.' }),
+    PlayableMediaTypes: z
+      .array(MediaTypeSchema)
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the playable media types.' }),
+    Id: z.string().nullable().exactOptional().openapi({ description: 'Gets or sets the id.' }),
+    UserId: z.uuid().exactOptional().openapi({ description: 'Gets or sets the user id.' }),
+    UserName: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the username.' }),
+    Client: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the type of the client.' }),
+    LastActivityDate: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the last activity date.' }),
+    LastPlaybackCheckIn: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the last playback check in.' }),
+    LastPausedDate: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the last paused date.' }),
+    DeviceName: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the name of the device.' }),
+    DeviceType: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the type of the device.' }),
+    NowPlayingItem: BaseItemDtoSchema.nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the now playing item.' }),
+    NowViewingItem: BaseItemDtoSchema.nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the now viewing item.' }),
+    DeviceId: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the device id.' }),
+    ApplicationVersion: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the application version.' }),
+    TranscodingInfo: TranscodingInfoSchema.nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the transcoding info.' }),
+    IsActive: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets a value indicating whether this session is active.' }),
+    SupportsMediaControl: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Gets or sets a value indicating whether the session supports media control.',
+      }),
+    SupportsRemoteControl: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Gets or sets a value indicating whether the session supports remote control.',
+      }),
+    NowPlayingQueue: z
+      .array(QueueItemSchema)
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the now playing queue.' }),
+    HasCustomDeviceName: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Gets or sets a value indicating whether this session has a custom device name.',
+      }),
+    PlaylistItemId: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the playlist item id.' }),
+    ServerId: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the server id.' }),
+    UserPrimaryImageTag: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the user primary image tag.' }),
+    SupportedCommands: z
+      .array(GeneralCommandTypeSchema)
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the supported commands.' }),
+  })
+  .openapi({ description: 'Session info DTO.', required: [] })
+  .openapi('SessionInfoDto')
+
+type AuthenticationResultType = {
+  User?: z.infer<typeof UserDtoSchema> | null
+  SessionInfo?: z.infer<typeof SessionInfoDtoSchema> | null
+  AccessToken?: string | null
+  ServerId?: string | null
+}
+
 const ExtraTypeSchema = z
   .enum([
     'Unknown',
@@ -85,11 +1884,6 @@ const MediaStreamTypeSchema = z
   .enum(['Audio', 'Video', 'Subtitle', 'EmbeddedImage', 'Data', 'Lyric'])
   .openapi({ description: 'Enum MediaStreamType.' })
   .openapi('MediaStreamType')
-
-const SubtitleDeliveryMethodSchema = z
-  .enum(['Encode', 'Embed', 'External', 'Hls', 'Drop'])
-  .openapi({ description: 'Delivery method to use during playback of a specific subtitle format.' })
-  .openapi('SubtitleDeliveryMethod')
 
 const MediaStreamSchema = z
   .strictObject({
@@ -413,11 +2207,6 @@ const TransportStreamTimestampSchema = z
   .enum(['None', 'Zero', 'Valid'])
   .openapi({ description: 'The type of timestamps used in a transport stream.' })
   .openapi('TransportStreamTimestamp')
-
-const MediaStreamProtocolSchema = z
-  .enum(['http', 'hls'])
-  .openapi({ description: 'Media streaming protocol.\nLowercase for backwards compatibility.' })
-  .openapi('MediaStreamProtocol')
 
 const MediaSourceInfoSchema = z
   .strictObject({
@@ -796,11 +2585,6 @@ const LocationTypeSchema = z
   .openapi({ description: 'Enum LocationType.' })
   .openapi('LocationType')
 
-const MediaTypeSchema = z
-  .enum(['Unknown', 'Video', 'Audio', 'Photo', 'Book'])
-  .openapi({ description: 'Media types.' })
-  .openapi('MediaType')
-
 const MetadataFieldSchema = z
   .enum([
     'Cast',
@@ -1012,502 +2796,66 @@ type BaseItemDtoType = {
   OriginalLanguage?: string | null
 }
 
-const GroupUpdateTypeSchema = z
-  .enum([
-    'UserJoined',
-    'UserLeft',
-    'GroupJoined',
-    'GroupLeft',
-    'StateUpdate',
-    'PlayQueue',
-    'NotInGroup',
-    'GroupDoesNotExist',
-    'LibraryAccessDenied',
-  ])
-  .openapi({ description: 'Enum GroupUpdateType.' })
-  .openapi('GroupUpdateType')
-
-const SyncPlayGroupDoesNotExistUpdateSchema = z
+const DeviceInfoDtoSchema = z
   .strictObject({
-    GroupId: z
-      .uuid()
-      .exactOptional()
-      .openapi({ description: 'Gets the group identifier.', readOnly: true }),
-    Data: z
+    Name: z.string().nullable().exactOptional().openapi({ description: 'Gets or sets the name.' }),
+    CustomName: z
       .string()
+      .nullable()
       .exactOptional()
-      .openapi({ description: 'Gets the update data.', readOnly: true }),
-    Type: GroupUpdateTypeSchema.default('GroupDoesNotExist')
+      .openapi({ description: 'Gets or sets the custom name.' }),
+    AccessToken: z
+      .string()
+      .nullable()
       .exactOptional()
-      .openapi({ description: 'Enum GroupUpdateType.', readOnly: true }),
-  })
-  .openapi({ required: [] })
-  .openapi('SyncPlayGroupDoesNotExistUpdate')
-
-const GroupStateTypeSchema = z
-  .enum(['Idle', 'Waiting', 'Paused', 'Playing'])
-  .openapi({ description: 'Enum GroupState.' })
-  .openapi('GroupStateType')
-
-const GroupInfoDtoSchema = z
-  .strictObject({
-    GroupId: z.uuid().exactOptional().openapi({ description: 'Gets the group identifier.' }),
-    GroupName: z.string().exactOptional().openapi({ description: 'Gets the group name.' }),
-    State: GroupStateTypeSchema.exactOptional().openapi({ description: 'Gets the group state.' }),
-    Participants: z
-      .array(z.string())
+      .openapi({ description: 'Gets or sets the access token.' }),
+    Id: z
+      .string()
+      .nullable()
       .exactOptional()
-      .openapi({ description: 'Gets the participants.' }),
-    LastUpdatedAt: z.iso
+      .openapi({ description: 'Gets or sets the identifier.' }),
+    LastUserName: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the last name of the user.' }),
+    AppName: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the name of the application.' }),
+    AppVersion: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the application version.' }),
+    LastUserId: z
+      .uuid()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the last user identifier.' }),
+    DateLastActivity: z.iso
       .datetime({ offset: true })
+      .nullable()
       .exactOptional()
-      .openapi({ description: 'Gets the date when this DTO has been created.' }),
-  })
-  .openapi({ description: 'Class GroupInfoDto.', required: [] })
-  .openapi('GroupInfoDto')
-
-const SyncPlayGroupJoinedUpdateSchema = z
-  .strictObject({
-    GroupId: z
-      .uuid()
-      .exactOptional()
-      .openapi({ description: 'Gets the group identifier.', readOnly: true }),
-    Data: GroupInfoDtoSchema.exactOptional().openapi({
-      description: 'Gets the update data.',
-      readOnly: true,
+      .openapi({ description: 'Gets or sets the date last modified.' }),
+    Capabilities: ClientCapabilitiesDtoSchema.exactOptional().openapi({
+      description: 'Gets or sets the capabilities.',
     }),
-    Type: GroupUpdateTypeSchema.default('GroupJoined')
-      .exactOptional()
-      .openapi({ description: 'Enum GroupUpdateType.', readOnly: true }),
-  })
-  .openapi({ required: [] })
-  .openapi('SyncPlayGroupJoinedUpdate')
-
-const SyncPlayGroupLeftUpdateSchema = z
-  .strictObject({
-    GroupId: z
-      .uuid()
-      .exactOptional()
-      .openapi({ description: 'Gets the group identifier.', readOnly: true }),
-    Data: z
+    IconUrl: z
       .string()
+      .nullable()
       .exactOptional()
-      .openapi({ description: 'Gets the update data.', readOnly: true }),
-    Type: GroupUpdateTypeSchema.default('GroupLeft')
-      .exactOptional()
-      .openapi({ description: 'Enum GroupUpdateType.', readOnly: true }),
+      .openapi({ description: 'Gets or sets the icon URL.' }),
   })
-  .openapi({ required: [] })
-  .openapi('SyncPlayGroupLeftUpdate')
+  .openapi({ description: 'A DTO representing device information.', required: [] })
+  .openapi('DeviceInfoDto')
 
-const SyncPlayLibraryAccessDeniedUpdateSchema = z
-  .strictObject({
-    GroupId: z
-      .uuid()
-      .exactOptional()
-      .openapi({ description: 'Gets the group identifier.', readOnly: true }),
-    Data: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Gets the update data.', readOnly: true }),
-    Type: GroupUpdateTypeSchema.default('LibraryAccessDenied')
-      .exactOptional()
-      .openapi({ description: 'Enum GroupUpdateType.', readOnly: true }),
-  })
-  .openapi({ required: [] })
-  .openapi('SyncPlayLibraryAccessDeniedUpdate')
-
-const SyncPlayNotInGroupUpdateSchema = z
-  .strictObject({
-    GroupId: z
-      .uuid()
-      .exactOptional()
-      .openapi({ description: 'Gets the group identifier.', readOnly: true }),
-    Data: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Gets the update data.', readOnly: true }),
-    Type: GroupUpdateTypeSchema.default('NotInGroup')
-      .exactOptional()
-      .openapi({ description: 'Enum GroupUpdateType.', readOnly: true }),
-  })
-  .openapi({ required: [] })
-  .openapi('SyncPlayNotInGroupUpdate')
-
-const PlayQueueUpdateReasonSchema = z
-  .enum([
-    'NewPlaylist',
-    'SetCurrentItem',
-    'RemoveItems',
-    'MoveItem',
-    'Queue',
-    'QueueNext',
-    'NextItem',
-    'PreviousItem',
-    'RepeatMode',
-    'ShuffleMode',
-  ])
-  .openapi({ description: 'Enum PlayQueueUpdateReason.' })
-  .openapi('PlayQueueUpdateReason')
-
-const SyncPlayQueueItemSchema = z
-  .strictObject({
-    ItemId: z.uuid().exactOptional().openapi({ description: 'Gets the item identifier.' }),
-    PlaylistItemId: z
-      .uuid()
-      .exactOptional()
-      .openapi({ description: 'Gets the playlist identifier of the item.', readOnly: true }),
-  })
-  .openapi({ description: 'Class QueueItem.', required: [] })
-  .openapi('SyncPlayQueueItem')
-
-const GroupShuffleModeSchema = z
-  .enum(['Sorted', 'Shuffle'])
-  .openapi({ description: 'Enum GroupShuffleMode.' })
-  .openapi('GroupShuffleMode')
-
-const GroupRepeatModeSchema = z
-  .enum(['RepeatOne', 'RepeatAll', 'RepeatNone'])
-  .openapi({ description: 'Enum GroupRepeatMode.' })
-  .openapi('GroupRepeatMode')
-
-const PlayQueueUpdateSchema = z
-  .strictObject({
-    Reason: PlayQueueUpdateReasonSchema.exactOptional().openapi({
-      description: 'Gets the request type that originated this update.',
-    }),
-    LastUpdate: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'Gets the UTC time of the last change to the playing queue.' }),
-    Playlist: z
-      .array(SyncPlayQueueItemSchema)
-      .exactOptional()
-      .openapi({ description: 'Gets the playlist.' }),
-    PlayingItemIndex: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'Gets the playing item index in the playlist.' }),
-    StartPositionTicks: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64', description: 'Gets the start position ticks.' }),
-    IsPlaying: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Gets a value indicating whether the current item is playing.' }),
-    ShuffleMode: GroupShuffleModeSchema.exactOptional().openapi({
-      description: 'Gets the shuffle mode.',
-    }),
-    RepeatMode: GroupRepeatModeSchema.exactOptional().openapi({
-      description: 'Gets the repeat mode.',
-    }),
-  })
-  .openapi({ description: 'Class PlayQueueUpdate.', required: [] })
-  .openapi('PlayQueueUpdate')
-
-const SyncPlayPlayQueueUpdateSchema = z
-  .strictObject({
-    GroupId: z
-      .uuid()
-      .exactOptional()
-      .openapi({ description: 'Gets the group identifier.', readOnly: true }),
-    Data: PlayQueueUpdateSchema.exactOptional().openapi({
-      description: 'Gets the update data.',
-      readOnly: true,
-    }),
-    Type: GroupUpdateTypeSchema.default('PlayQueue')
-      .exactOptional()
-      .openapi({ description: 'Enum GroupUpdateType.', readOnly: true }),
-  })
-  .openapi({ required: [] })
-  .openapi('SyncPlayPlayQueueUpdate')
-
-const PlaybackRequestTypeSchema = z
-  .enum([
-    'Play',
-    'SetPlaylistItem',
-    'RemoveFromPlaylist',
-    'MovePlaylistItem',
-    'Queue',
-    'Unpause',
-    'Pause',
-    'Stop',
-    'Seek',
-    'Buffer',
-    'Ready',
-    'NextItem',
-    'PreviousItem',
-    'SetRepeatMode',
-    'SetShuffleMode',
-    'Ping',
-    'IgnoreWait',
-  ])
-  .openapi({ description: 'Enum PlaybackRequestType.' })
-  .openapi('PlaybackRequestType')
-
-const GroupStateUpdateSchema = z
-  .strictObject({
-    State: GroupStateTypeSchema.exactOptional().openapi({
-      description: 'Gets the state of the group.',
-    }),
-    Reason: PlaybackRequestTypeSchema.exactOptional().openapi({
-      description: 'Gets the reason of the state change.',
-    }),
-  })
-  .openapi({ description: 'Class GroupStateUpdate.', required: [] })
-  .openapi('GroupStateUpdate')
-
-const SyncPlayStateUpdateSchema = z
-  .strictObject({
-    GroupId: z
-      .uuid()
-      .exactOptional()
-      .openapi({ description: 'Gets the group identifier.', readOnly: true }),
-    Data: GroupStateUpdateSchema.exactOptional().openapi({
-      description: 'Gets the update data.',
-      readOnly: true,
-    }),
-    Type: GroupUpdateTypeSchema.default('StateUpdate')
-      .exactOptional()
-      .openapi({ description: 'Enum GroupUpdateType.', readOnly: true }),
-  })
-  .openapi({ required: [] })
-  .openapi('SyncPlayStateUpdate')
-
-const SyncPlayUserJoinedUpdateSchema = z
-  .strictObject({
-    GroupId: z
-      .uuid()
-      .exactOptional()
-      .openapi({ description: 'Gets the group identifier.', readOnly: true }),
-    Data: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Gets the update data.', readOnly: true }),
-    Type: GroupUpdateTypeSchema.default('UserJoined')
-      .exactOptional()
-      .openapi({ description: 'Enum GroupUpdateType.', readOnly: true }),
-  })
-  .openapi({ required: [] })
-  .openapi('SyncPlayUserJoinedUpdate')
-
-const SyncPlayUserLeftUpdateSchema = z
-  .strictObject({
-    GroupId: z
-      .uuid()
-      .exactOptional()
-      .openapi({ description: 'Gets the group identifier.', readOnly: true }),
-    Data: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Gets the update data.', readOnly: true }),
-    Type: GroupUpdateTypeSchema.default('UserLeft')
-      .exactOptional()
-      .openapi({ description: 'Enum GroupUpdateType.', readOnly: true }),
-  })
-  .openapi({ required: [] })
-  .openapi('SyncPlayUserLeftUpdate')
-
-type GroupUpdateType =
-  | z.infer<typeof SyncPlayGroupDoesNotExistUpdateSchema>
-  | z.infer<typeof SyncPlayGroupJoinedUpdateSchema>
-  | z.infer<typeof SyncPlayGroupLeftUpdateSchema>
-  | z.infer<typeof SyncPlayLibraryAccessDeniedUpdateSchema>
-  | z.infer<typeof SyncPlayNotInGroupUpdateSchema>
-  | z.infer<typeof SyncPlayPlayQueueUpdateSchema>
-  | z.infer<typeof SyncPlayStateUpdateSchema>
-  | z.infer<typeof SyncPlayUserJoinedUpdateSchema>
-  | z.infer<typeof SyncPlayUserLeftUpdateSchema>
-
-type RemoteSearchResultType = {
-  Name?: string | null
-  ProviderIds?: { [key: string]: string }
-  ProductionYear?: number | null
-  IndexNumber?: number | null
-  IndexNumberEnd?: number | null
-  ParentIndexNumber?: number | null
-  PremiereDate?: string | null
-  ImageUrl?: string | null
-  SearchProviderName?: string | null
-  Overview?: string | null
-  AlbumArtist?: RemoteSearchResultType | null
-  Artists?: RemoteSearchResultType[]
+type DeviceInfoDtoQueryResultType = {
+  Items?: z.infer<typeof DeviceInfoDtoSchema>[]
+  TotalRecordCount?: number
+  StartIndex?: number
 }
-
-const SessionMessageTypeSchema = z
-  .enum([
-    'ForceKeepAlive',
-    'GeneralCommand',
-    'UserDataChanged',
-    'Sessions',
-    'Play',
-    'SyncPlayCommand',
-    'SyncPlayGroupUpdate',
-    'Playstate',
-    'RestartRequired',
-    'ServerShuttingDown',
-    'ServerRestarting',
-    'LibraryChanged',
-    'UserDeleted',
-    'UserUpdated',
-    'SeriesTimerCreated',
-    'TimerCreated',
-    'SeriesTimerCancelled',
-    'TimerCancelled',
-    'RefreshProgress',
-    'ScheduledTaskEnded',
-    'PackageInstallationCancelled',
-    'PackageInstallationFailed',
-    'PackageInstallationCompleted',
-    'PackageInstalling',
-    'PackageUninstalled',
-    'ActivityLogEntry',
-    'ScheduledTasksInfo',
-    'ActivityLogEntryStart',
-    'ActivityLogEntryStop',
-    'SessionsStart',
-    'SessionsStop',
-    'ScheduledTasksInfoStart',
-    'ScheduledTasksInfoStop',
-    'KeepAlive',
-  ])
-  .openapi({ description: 'The different kinds of messages that are used in the WebSocket api.' })
-  .openapi('SessionMessageType')
-
-const ActivityLogEntryStartMessageSchema = z
-  .strictObject({
-    Data: z.string().nullable().exactOptional().openapi({ description: 'Gets or sets the data.' }),
-    MessageType: SessionMessageTypeSchema.default('ActivityLogEntryStart')
-      .exactOptional()
-      .openapi({
-        description: 'The different kinds of messages that are used in the WebSocket api.',
-        readOnly: true,
-      }),
-  })
-  .openapi({
-    description:
-      'Activity log entry start message.\nData is the timing data encoded as "$initialDelay,$interval" in ms.',
-    required: [],
-  })
-  .openapi('ActivityLogEntryStartMessage')
-
-const ActivityLogEntryStopMessageSchema = z
-  .strictObject({
-    MessageType: SessionMessageTypeSchema.default('ActivityLogEntryStop')
-      .exactOptional()
-      .openapi({
-        description: 'The different kinds of messages that are used in the WebSocket api.',
-        readOnly: true,
-      }),
-  })
-  .openapi({ description: 'Activity log entry stop message.', required: [] })
-  .openapi('ActivityLogEntryStopMessage')
-
-const InboundKeepAliveMessageSchema = z
-  .strictObject({
-    MessageType: SessionMessageTypeSchema.default('KeepAlive')
-      .exactOptional()
-      .openapi({
-        description: 'The different kinds of messages that are used in the WebSocket api.',
-        readOnly: true,
-      }),
-  })
-  .openapi({ description: 'Keep alive websocket messages.', required: [] })
-  .openapi('InboundKeepAliveMessage')
-
-const ScheduledTasksInfoStartMessageSchema = z
-  .strictObject({
-    Data: z.string().nullable().exactOptional().openapi({ description: 'Gets or sets the data.' }),
-    MessageType: SessionMessageTypeSchema.default('ScheduledTasksInfoStart')
-      .exactOptional()
-      .openapi({
-        description: 'The different kinds of messages that are used in the WebSocket api.',
-        readOnly: true,
-      }),
-  })
-  .openapi({
-    description:
-      'Scheduled tasks info start message.\nData is the timing data encoded as "$initialDelay,$interval" in ms.',
-    required: [],
-  })
-  .openapi('ScheduledTasksInfoStartMessage')
-
-const ScheduledTasksInfoStopMessageSchema = z
-  .strictObject({
-    MessageType: SessionMessageTypeSchema.default('ScheduledTasksInfoStop')
-      .exactOptional()
-      .openapi({
-        description: 'The different kinds of messages that are used in the WebSocket api.',
-        readOnly: true,
-      }),
-  })
-  .openapi({ description: 'Scheduled tasks info stop message.', required: [] })
-  .openapi('ScheduledTasksInfoStopMessage')
-
-const SessionsStartMessageSchema = z
-  .strictObject({
-    Data: z.string().nullable().exactOptional().openapi({ description: 'Gets or sets the data.' }),
-    MessageType: SessionMessageTypeSchema.default('SessionsStart')
-      .exactOptional()
-      .openapi({
-        description: 'The different kinds of messages that are used in the WebSocket api.',
-        readOnly: true,
-      }),
-  })
-  .openapi({
-    description:
-      'Sessions start message.\nData is the timing data encoded as "$initialDelay,$interval" in ms.',
-    required: [],
-  })
-  .openapi('SessionsStartMessage')
-
-const SessionsStopMessageSchema = z
-  .strictObject({
-    MessageType: SessionMessageTypeSchema.default('SessionsStop')
-      .exactOptional()
-      .openapi({
-        description: 'The different kinds of messages that are used in the WebSocket api.',
-        readOnly: true,
-      }),
-  })
-  .openapi({ description: 'Sessions stop message.', required: [] })
-  .openapi('SessionsStopMessage')
-
-const InboundWebSocketMessageSchema = z
-  .xor([
-    ActivityLogEntryStartMessageSchema,
-    ActivityLogEntryStopMessageSchema,
-    InboundKeepAliveMessageSchema,
-    ScheduledTasksInfoStartMessageSchema,
-    ScheduledTasksInfoStopMessageSchema,
-    SessionsStartMessageSchema,
-    SessionsStopMessageSchema,
-  ])
-  .openapi({
-    description: 'Represents the list of possible inbound websocket types',
-    discriminator: {
-      propertyName: 'MessageType',
-      mapping: {
-        ActivityLogEntryStart: '#/components/schemas/ActivityLogEntryStartMessage',
-        ActivityLogEntryStop: '#/components/schemas/ActivityLogEntryStopMessage',
-        KeepAlive: '#/components/schemas/InboundKeepAliveMessage',
-        ScheduledTasksInfoStart: '#/components/schemas/ScheduledTasksInfoStartMessage',
-        ScheduledTasksInfoStop: '#/components/schemas/ScheduledTasksInfoStopMessage',
-        SessionsStart: '#/components/schemas/SessionsStartMessage',
-        SessionsStop: '#/components/schemas/SessionsStopMessage',
-      },
-    },
-  })
-  .openapi('InboundWebSocketMessage')
 
 const LogLevelSchema = z
   .enum(['Trace', 'Debug', 'Information', 'Warning', 'Error', 'Critical', 'None'])
@@ -1561,6 +2909,46 @@ const ActivityLogEntrySchema = z
   .openapi({ description: 'An activity log entry.', required: [] })
   .openapi('ActivityLogEntry')
 
+const SessionMessageTypeSchema = z
+  .enum([
+    'ForceKeepAlive',
+    'GeneralCommand',
+    'UserDataChanged',
+    'Sessions',
+    'Play',
+    'SyncPlayCommand',
+    'SyncPlayGroupUpdate',
+    'Playstate',
+    'RestartRequired',
+    'ServerShuttingDown',
+    'ServerRestarting',
+    'LibraryChanged',
+    'UserDeleted',
+    'UserUpdated',
+    'SeriesTimerCreated',
+    'TimerCreated',
+    'SeriesTimerCancelled',
+    'TimerCancelled',
+    'RefreshProgress',
+    'ScheduledTaskEnded',
+    'PackageInstallationCancelled',
+    'PackageInstallationFailed',
+    'PackageInstallationCompleted',
+    'PackageInstalling',
+    'PackageUninstalled',
+    'ActivityLogEntry',
+    'ScheduledTasksInfo',
+    'ActivityLogEntryStart',
+    'ActivityLogEntryStop',
+    'SessionsStart',
+    'SessionsStop',
+    'ScheduledTasksInfoStart',
+    'ScheduledTasksInfoStop',
+    'KeepAlive',
+  ])
+  .openapi({ description: 'The different kinds of messages that are used in the WebSocket api.' })
+  .openapi('SessionMessageType')
+
 const ActivityLogEntryMessageSchema = z
   .strictObject({
     Data: z
@@ -1596,55 +2984,6 @@ const ForceKeepAliveMessageSchema = z
     required: [],
   })
   .openapi('ForceKeepAliveMessage')
-
-const GeneralCommandTypeSchema = z
-  .enum([
-    'MoveUp',
-    'MoveDown',
-    'MoveLeft',
-    'MoveRight',
-    'PageUp',
-    'PageDown',
-    'PreviousLetter',
-    'NextLetter',
-    'ToggleOsd',
-    'ToggleContextMenu',
-    'Select',
-    'Back',
-    'TakeScreenshot',
-    'SendKey',
-    'SendString',
-    'GoHome',
-    'GoToSettings',
-    'VolumeUp',
-    'VolumeDown',
-    'Mute',
-    'Unmute',
-    'ToggleMute',
-    'SetVolume',
-    'SetAudioStreamIndex',
-    'SetSubtitleStreamIndex',
-    'ToggleFullscreen',
-    'DisplayContent',
-    'GoToSearch',
-    'DisplayMessage',
-    'SetRepeatMode',
-    'ChannelUp',
-    'ChannelDown',
-    'Guide',
-    'ToggleStats',
-    'PlayMediaSource',
-    'PlayTrailers',
-    'SetShuffleQueue',
-    'PlayState',
-    'PlayNext',
-    'ToggleOsdMenu',
-    'Play',
-    'SetMaxStreamingBitrate',
-    'SetPlaybackOrder',
-  ])
-  .openapi({ description: 'This exists simply to identify a set of known commands.' })
-  .openapi('GeneralCommandType')
 
 const GeneralCommandSchema = z
   .strictObject({
@@ -2376,1438 +3715,13 @@ const ServerShuttingDownMessageSchema = z
   .openapi({ description: 'Server shutting down message.', required: [] })
   .openapi('ServerShuttingDownMessage')
 
-const PlayMethodSchema = z
-  .enum(['Transcode', 'DirectStream', 'DirectPlay'])
-  .openapi({ description: 'The play method.' })
-  .openapi('PlayMethod')
+type SessionsMessageType = {
+  Data?: z.infer<typeof SessionInfoDtoSchema>[] | null
+  MessageId?: string
+  MessageType?: z.infer<typeof SessionMessageTypeSchema>
+}
 
-const RepeatModeSchema = z
-  .enum(['RepeatNone', 'RepeatAll', 'RepeatOne'])
-  .openapi({ description: 'The repeat mode of a play queue.' })
-  .openapi('RepeatMode')
-
-const PlaybackOrderSchema = z
-  .enum(['Default', 'Shuffle'])
-  .openapi({ description: 'Enum PlaybackOrder.' })
-  .openapi('PlaybackOrder')
-
-const PlayerStateInfoSchema = z
-  .strictObject({
-    PositionTicks: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .nullable()
-      .exactOptional()
-      .openapi({
-        type: ['integer', 'null'],
-        format: 'int64',
-        description: 'Gets or sets the now playing position ticks.',
-      }),
-    CanSeek: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets a value indicating whether this instance can seek.' }),
-    IsPaused: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets a value indicating whether this instance is paused.' }),
-    IsMuted: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets a value indicating whether this instance is muted.' }),
-    VolumeLevel: z
-      .int32()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the volume level.' }),
-    AudioStreamIndex: z
-      .int32()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the index of the now playing audio stream.' }),
-    SubtitleStreamIndex: z
-      .int32()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the index of the now playing subtitle stream.' }),
-    MediaSourceId: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the now playing media version identifier.' }),
-    PlayMethod: PlayMethodSchema.nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the play method.' }),
-    RepeatMode: RepeatModeSchema.exactOptional().openapi({
-      description: 'Gets or sets the repeat mode.',
-    }),
-    PlaybackOrder: PlaybackOrderSchema.exactOptional().openapi({
-      description: 'Gets or sets the playback order.',
-    }),
-    LiveStreamId: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the now playing live stream identifier.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('PlayerStateInfo')
-
-const SessionUserInfoSchema = z
-  .strictObject({
-    UserId: z.uuid().exactOptional().openapi({ description: 'Gets or sets the user identifier.' }),
-    UserName: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the name of the user.' }),
-  })
-  .openapi({ description: 'Class SessionUserInfo.', required: [] })
-  .openapi('SessionUserInfo')
-
-const DlnaProfileTypeSchema = z
-  .enum(['Audio', 'Video', 'Photo', 'Subtitle', 'Lyric'])
-  .openapi('DlnaProfileType')
-
-const DirectPlayProfileSchema = z
-  .strictObject({
-    Container: z.string().exactOptional().openapi({ description: 'Gets or sets the container.' }),
-    AudioCodec: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the audio codec.' }),
-    VideoCodec: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the video codec.' }),
-    Type: DlnaProfileTypeSchema.exactOptional().openapi({
-      description: 'Gets or sets the Dlna profile type.',
-    }),
-  })
-  .openapi({ description: 'Defines the MediaBrowser.Model.Dlna.DirectPlayProfile.', required: [] })
-  .openapi('DirectPlayProfile')
-
-const TranscodeSeekInfoSchema = z
-  .enum(['Auto', 'Bytes'])
-  .openapi({ description: 'The transcode seek info.' })
-  .openapi('TranscodeSeekInfo')
-
-const EncodingContextSchema = z
-  .enum(['Streaming', 'Static'])
-  .openapi({ description: 'The encoding context.' })
-  .openapi('EncodingContext')
-
-const ProfileConditionTypeSchema = z
-  .enum(['Equals', 'NotEquals', 'LessThanEqual', 'GreaterThanEqual', 'EqualsAny'])
-  .openapi('ProfileConditionType')
-
-const ProfileConditionValueSchema = z
-  .enum([
-    'AudioChannels',
-    'AudioBitrate',
-    'AudioProfile',
-    'Width',
-    'Height',
-    'Has64BitOffsets',
-    'PacketLength',
-    'VideoBitDepth',
-    'VideoBitrate',
-    'VideoFramerate',
-    'VideoLevel',
-    'VideoProfile',
-    'VideoTimestamp',
-    'IsAnamorphic',
-    'RefFrames',
-    'NumAudioStreams',
-    'NumVideoStreams',
-    'IsSecondaryAudio',
-    'VideoCodecTag',
-    'IsAvc',
-    'IsInterlaced',
-    'AudioSampleRate',
-    'AudioBitDepth',
-    'VideoRangeType',
-    'NumStreams',
-    'VideoRotation',
-  ])
-  .openapi('ProfileConditionValue')
-
-const ProfileConditionSchema = z
-  .strictObject({
-    Condition: ProfileConditionTypeSchema.exactOptional(),
-    Property: ProfileConditionValueSchema.exactOptional(),
-    Value: z.string().nullable().exactOptional(),
-    IsRequired: z.boolean().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ProfileCondition')
-
-const TranscodingProfileSchema = z
-  .strictObject({
-    Container: z.string().exactOptional().openapi({ description: 'Gets or sets the container.' }),
-    Type: DlnaProfileTypeSchema.exactOptional().openapi({
-      description: 'Gets or sets the DLNA profile type.',
-    }),
-    VideoCodec: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the video codec.' }),
-    AudioCodec: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the audio codec.' }),
-    Protocol: MediaStreamProtocolSchema.exactOptional().openapi({
-      description: 'Media streaming protocol.\nLowercase for backwards compatibility.',
-    }),
-    EstimateContentLength: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({
-        description:
-          'Gets or sets a value indicating whether the content length should be estimated.',
-      }),
-    EnableMpegtsM2TsMode: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({ description: 'Gets or sets a value indicating whether M2TS mode is enabled.' }),
-    TranscodeSeekInfo: TranscodeSeekInfoSchema.default('Auto')
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the transcoding seek info mode.' }),
-    CopyTimestamps: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({
-        description: 'Gets or sets a value indicating whether timestamps should be copied.',
-      }),
-    Context: EncodingContextSchema.default('Streaming')
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the encoding context.' }),
-    EnableSubtitlesInManifest: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({
-        description:
-          'Gets or sets a value indicating whether subtitles are allowed in the manifest.',
-      }),
-    MaxAudioChannels: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the maximum audio channels.' }),
-    MinSegments: z
-      .int32()
-      .default(0)
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the minimum amount of segments.' }),
-    SegmentLength: z
-      .int32()
-      .default(0)
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the segment length.' }),
-    BreakOnNonKeyFrames: z
-      .boolean()
-      .nullable()
-      .default(false)
-      .exactOptional()
-      .openapi({
-        description:
-          'Gets or sets a value indicating whether breaking the video stream on non-keyframes is supported.',
-        deprecated: true,
-      }),
-    Conditions: z
-      .array(ProfileConditionSchema)
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the profile conditions.' }),
-    EnableAudioVbrEncoding: z
-      .boolean()
-      .default(true)
-      .exactOptional()
-      .openapi({
-        description:
-          'Gets or sets a value indicating whether variable bitrate encoding is supported.',
-      }),
-  })
-  .openapi({
-    description:
-      'A class for transcoding profile information.\nNote for client developers: Conditions defined in MediaBrowser.Model.Dlna.CodecProfile has higher priority and can override values defined here.',
-    required: [],
-  })
-  .openapi('TranscodingProfile')
-
-const ContainerProfileSchema = z
-  .strictObject({
-    Type: DlnaProfileTypeSchema.exactOptional().openapi({
-      description:
-        'Gets or sets the MediaBrowser.Model.Dlna.DlnaProfileType which this container must meet.',
-    }),
-    Conditions: z
-      .array(ProfileConditionSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Gets or sets the list of MediaBrowser.Model.Dlna.ProfileCondition which this container will be applied to.',
-      }),
-    Container: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the container(s) which this container must meet.' }),
-    SubContainer: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Gets or sets the sub container(s) which this container must meet.',
-      }),
-  })
-  .openapi({ description: 'Defines the MediaBrowser.Model.Dlna.ContainerProfile.', required: [] })
-  .openapi('ContainerProfile')
-
-const CodecTypeSchema = z
-  .enum(['Video', 'VideoAudio', 'Audio'])
-  .openapi({ description: 'The codec type of a codec profile.' })
-  .openapi('CodecType')
-
-const CodecProfileSchema = z
-  .strictObject({
-    Type: CodecTypeSchema.exactOptional().openapi({
-      description:
-        'Gets or sets the MediaBrowser.Model.Dlna.CodecType which this container must meet.',
-    }),
-    Conditions: z
-      .array(ProfileConditionSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Gets or sets the list of MediaBrowser.Model.Dlna.ProfileCondition which this profile must meet.',
-      }),
-    ApplyConditions: z
-      .array(ProfileConditionSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Gets or sets the list of MediaBrowser.Model.Dlna.ProfileCondition to apply if this profile is met.',
-      }),
-    Codec: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the codec(s) that this profile applies to.' }),
-    Container: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Gets or sets the container(s) which this profile will be applied to.',
-      }),
-    SubContainer: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Gets or sets the sub-container(s) which this profile will be applied to.',
-      }),
-  })
-  .openapi({ description: 'Defines the MediaBrowser.Model.Dlna.CodecProfile.', required: [] })
-  .openapi('CodecProfile')
-
-const SubtitleProfileSchema = z
-  .strictObject({
-    Format: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the format.' }),
-    Method: SubtitleDeliveryMethodSchema.exactOptional().openapi({
-      description: 'Gets or sets the delivery method.',
-    }),
-    DidlMode: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the DIDL mode.' }),
-    Language: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the language.' }),
-    Container: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the container.' }),
-  })
-  .openapi({ description: 'A class for subtitle profile information.', required: [] })
-  .openapi('SubtitleProfile')
-
-const DeviceProfileSchema = z
-  .strictObject({
-    Name: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Gets or sets the name of this device profile. User profiles must have a unique name.',
-      }),
-    Id: z
-      .uuid()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the unique internal identifier.' }),
-    MaxStreamingBitrate: z
-      .int32()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Gets or sets the maximum allowed bitrate for all streamed content.',
-      }),
-    MaxStaticBitrate: z
-      .int32()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Gets or sets the maximum allowed bitrate for statically streamed content (= direct played files).',
-      }),
-    MusicStreamingTranscodingBitrate: z
-      .int32()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Gets or sets the maximum allowed bitrate for transcoded music streams.',
-      }),
-    MaxStaticMusicBitrate: z
-      .int32()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Gets or sets the maximum allowed bitrate for statically streamed (= direct played) music files.',
-      }),
-    DirectPlayProfiles: z
-      .array(DirectPlayProfileSchema)
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the direct play profiles.' }),
-    TranscodingProfiles: z
-      .array(TranscodingProfileSchema)
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the transcoding profiles.' }),
-    ContainerProfiles: z
-      .array(ContainerProfileSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Gets or sets the container profiles. Failing to meet these optional conditions causes transcoding to occur.',
-      }),
-    CodecProfiles: z
-      .array(CodecProfileSchema)
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the codec profiles.' }),
-    SubtitleProfiles: z
-      .array(SubtitleProfileSchema)
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the subtitle profiles.' }),
-  })
-  .openapi({
-    description:
-      'A MediaBrowser.Model.Dlna.DeviceProfile represents a set of metadata which determines which content a certain device is able to play.\n\n\nSpecifically, it defines the supported <see cref="P:MediaBrowser.Model.Dlna.DeviceProfile.ContainerProfiles">containers</see> and\n<see cref="P:MediaBrowser.Model.Dlna.DeviceProfile.CodecProfiles">codecs</see> (video and/or audio, including codec profiles and levels)\nthe device is able to direct play (without transcoding or remuxing),\nas well as which <see cref="P:MediaBrowser.Model.Dlna.DeviceProfile.TranscodingProfiles">containers/codecs to transcode to</see> in case it isn\'t.',
-    required: [],
-  })
-  .openapi('DeviceProfile')
-
-const ClientCapabilitiesDtoSchema = z
-  .strictObject({
-    PlayableMediaTypes: z
-      .array(MediaTypeSchema)
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the list of playable media types.' }),
-    SupportedCommands: z
-      .array(GeneralCommandTypeSchema)
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the list of supported commands.' }),
-    SupportsMediaControl: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Gets or sets a value indicating whether session supports media control.',
-      }),
-    SupportsPersistentIdentifier: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Gets or sets a value indicating whether session supports a persistent identifier.',
-      }),
-    DeviceProfile: DeviceProfileSchema.nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the device profile.' }),
-    AppStoreUrl: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the app store url.' }),
-    IconUrl: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the icon url.' }),
-  })
-  .openapi({ description: 'Client capabilities dto.', required: [] })
-  .openapi('ClientCapabilitiesDto')
-
-const BaseItemDtoSchema: z.ZodType<BaseItemDtoType> = z
-  .lazy(() =>
-    z
-      .strictObject({
-        Name: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets the name.' }),
-        OriginalTitle: z.string().nullable().exactOptional(),
-        ServerId: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets the server identifier.' }),
-        Id: z.uuid().exactOptional().openapi({ description: 'Gets or sets the id.' }),
-        Etag: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets the etag.' }),
-        SourceType: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets the type of the source.' }),
-        PlaylistItemId: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets the playlist item identifier.' }),
-        DateCreated: z.iso
-          .datetime({ offset: true })
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets the date created.' }),
-        DateLastMediaAdded: z.iso.datetime({ offset: true }).nullable().exactOptional(),
-        ExtraType: ExtraTypeSchema.nullable().exactOptional(),
-        AirsBeforeSeasonNumber: z.int32().nullable().exactOptional(),
-        AirsAfterSeasonNumber: z.int32().nullable().exactOptional(),
-        AirsBeforeEpisodeNumber: z.int32().nullable().exactOptional(),
-        CanDelete: z.boolean().nullable().exactOptional(),
-        CanDownload: z.boolean().nullable().exactOptional(),
-        HasLyrics: z.boolean().nullable().exactOptional(),
-        HasSubtitles: z.boolean().nullable().exactOptional(),
-        PreferredMetadataLanguage: z.string().nullable().exactOptional(),
-        PreferredMetadataCountryCode: z.string().nullable().exactOptional(),
-        Container: z.string().nullable().exactOptional(),
-        SortName: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets the name of the sort.' }),
-        ForcedSortName: z.string().nullable().exactOptional(),
-        Video3DFormat: Video3DFormatSchema.nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets the video3 D format.' }),
-        PremiereDate: z.iso
-          .datetime({ offset: true })
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets the premiere date.' }),
-        ExternalUrls: z
-          .array(ExternalUrlSchema)
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets the external urls.' }),
-        MediaSources: z
-          .array(MediaSourceInfoSchema)
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets the media versions.' }),
-        CriticRating: z
-          .float32()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets the critic rating.' }),
-        ProductionLocations: z.array(z.string()).nullable().exactOptional(),
-        Path: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets the path.' }),
-        EnableMediaSourceDisplay: z.boolean().nullable().exactOptional(),
-        OfficialRating: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets the official rating.' }),
-        CustomRating: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets the custom rating.' }),
-        ChannelId: z
-          .uuid()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets the channel identifier.' }),
-        ChannelName: z.string().nullable().exactOptional(),
-        Overview: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets the overview.' }),
-        Taglines: z
-          .array(z.string())
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets the taglines.' }),
-        Genres: z
-          .array(z.string())
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets the genres.' }),
-        CommunityRating: z
-          .float32()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets the community rating.' }),
-        CumulativeRunTimeTicks: z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .nullable()
-          .exactOptional()
-          .openapi({
-            type: ['integer', 'null'],
-            format: 'int64',
-            description: 'Gets or sets the cumulative run time ticks.',
-          }),
-        RunTimeTicks: z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .nullable()
-          .exactOptional()
-          .openapi({
-            type: ['integer', 'null'],
-            format: 'int64',
-            description: 'Gets or sets the run time ticks.',
-          }),
-        PlayAccess: PlayAccessSchema.nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets the play access.' }),
-        AspectRatio: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets the aspect ratio.' }),
-        ProductionYear: z
-          .int32()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets the production year.' }),
-        IsPlaceHolder: z
-          .boolean()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description: 'Gets or sets a value indicating whether this instance is place holder.',
-          }),
-        Number: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets the number.' }),
-        ChannelNumber: z.string().nullable().exactOptional(),
-        IndexNumber: z
-          .int32()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets the index number.' }),
-        IndexNumberEnd: z
-          .int32()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets the index number end.' }),
-        ParentIndexNumber: z
-          .int32()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets the parent index number.' }),
-        RemoteTrailers: z
-          .array(MediaUrlSchema)
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets the trailer urls.' }),
-        ProviderIds: z
-          .record(z.string(), z.string().nullable())
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets the provider ids.' }),
-        IsHD: z
-          .boolean()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets a value indicating whether this instance is HD.' }),
-        IsFolder: z
-          .boolean()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description: 'Gets or sets a value indicating whether this instance is folder.',
-          }),
-        ParentId: z
-          .uuid()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets the parent id.' }),
-        Type: BaseItemKindSchema.exactOptional().openapi({ description: 'The base item kind.' }),
-        People: z
-          .array(BaseItemPersonSchema)
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets the people.' }),
-        Studios: z
-          .array(NameGuidPairSchema)
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets the studios.' }),
-        GenreItems: z.array(NameGuidPairSchema).nullable().exactOptional(),
-        ParentLogoItemId: z
-          .uuid()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'Gets or sets whether the item has a logo, this will hold the Id of the Parent that has one.',
-          }),
-        ParentBackdropItemId: z
-          .uuid()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'Gets or sets whether the item has any backdrops, this will hold the Id of the Parent that has one.',
-          }),
-        ParentBackdropImageTags: z
-          .array(z.string())
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets the parent backdrop image tags.' }),
-        LocalTrailerCount: z
-          .int32()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets the local trailer count.' }),
-        UserData: UserItemDataDtoSchema.nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              "Gets or sets the user data for this item based on the user it's being requested for.",
-          }),
-        RecursiveItemCount: z
-          .int32()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets the recursive item count.' }),
-        ChildCount: z
-          .int32()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets the child count.' }),
-        SeriesName: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets the name of the series.' }),
-        SeriesId: z
-          .uuid()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets the series id.' }),
-        SeasonId: z
-          .uuid()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets the season identifier.' }),
-        SpecialFeatureCount: z
-          .int32()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets the special feature count.' }),
-        DisplayPreferencesId: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets the display preferences id.' }),
-        Status: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets the status.' }),
-        AirTime: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets the air time.' }),
-        AirDays: z
-          .array(DayOfWeekSchema)
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets the air days.' }),
-        Tags: z
-          .array(z.string())
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets the tags.' }),
-        PrimaryImageAspectRatio: z
-          .float64()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description: 'Gets or sets the primary image aspect ratio, after image enhancements.',
-          }),
-        Artists: z
-          .array(z.string())
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets the artists.' }),
-        ArtistItems: z
-          .array(NameGuidPairSchema)
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets the artist items.' }),
-        Album: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets the album.' }),
-        CollectionType: CollectionTypeSchema.nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets the type of the collection.' }),
-        DisplayOrder: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets the display order.' }),
-        AlbumId: z
-          .uuid()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets the album id.' }),
-        AlbumPrimaryImageTag: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets the album image tag.' }),
-        SeriesPrimaryImageTag: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets the series primary image tag.' }),
-        AlbumArtist: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets the album artist.' }),
-        AlbumArtists: z
-          .array(NameGuidPairSchema)
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets the album artists.' }),
-        SeasonName: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets the name of the season.' }),
-        MediaStreams: z
-          .array(MediaStreamSchema)
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets the media streams.' }),
-        VideoType: VideoTypeSchema.nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets the type of the video.' }),
-        PartCount: z
-          .int32()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets the part count.' }),
-        MediaSourceCount: z.int32().nullable().exactOptional(),
-        ImageTags: z
-          .record(z.string(), z.string().nullable())
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets the image tags.' }),
-        BackdropImageTags: z
-          .array(z.string())
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets the backdrop image tags.' }),
-        ScreenshotImageTags: z
-          .array(z.string())
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets the screenshot image tags.' }),
-        ParentLogoImageTag: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets the parent logo image tag.' }),
-        ParentArtItemId: z
-          .uuid()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'Gets or sets whether the item has fan art, this will hold the Id of the Parent that has one.',
-          }),
-        ParentArtImageTag: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets the parent art image tag.' }),
-        SeriesThumbImageTag: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets the series thumb image tag.' }),
-        ImageBlurHashes: z
-          .strictObject({
-            Primary: z.record(z.string(), z.string().nullable()).exactOptional(),
-            Art: z.record(z.string(), z.string().nullable()).exactOptional(),
-            Backdrop: z.record(z.string(), z.string().nullable()).exactOptional(),
-            Banner: z.record(z.string(), z.string().nullable()).exactOptional(),
-            Logo: z.record(z.string(), z.string().nullable()).exactOptional(),
-            Thumb: z.record(z.string(), z.string().nullable()).exactOptional(),
-            Disc: z.record(z.string(), z.string().nullable()).exactOptional(),
-            Box: z.record(z.string(), z.string().nullable()).exactOptional(),
-            Screenshot: z.record(z.string(), z.string().nullable()).exactOptional(),
-            Menu: z.record(z.string(), z.string().nullable()).exactOptional(),
-            Chapter: z.record(z.string(), z.string().nullable()).exactOptional(),
-            BoxRear: z.record(z.string(), z.string().nullable()).exactOptional(),
-            Profile: z.record(z.string(), z.string().nullable()).exactOptional(),
-          })
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'Gets or sets the blurhashes for the image tags.\nMaps image type to dictionary mapping image tag to blurhash value.',
-            required: [],
-          }),
-        SeriesStudio: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets the series studio.' }),
-        ParentThumbItemId: z
-          .uuid()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets the parent thumb item id.' }),
-        ParentThumbImageTag: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets the parent thumb image tag.' }),
-        ParentPrimaryImageItemId: z
-          .uuid()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets the parent primary image item identifier.' }),
-        ParentPrimaryImageTag: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets the parent primary image tag.' }),
-        Chapters: z
-          .array(ChapterInfoSchema)
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets the chapters.' }),
-        Trickplay: z
-          .record(z.string(), z.record(z.string(), TrickplayInfoDtoSchema).nullable())
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets the trickplay manifest.' }),
-        LocationType: LocationTypeSchema.nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets the type of the location.' }),
-        IsoType: IsoTypeSchema.nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets the type of the iso.' }),
-        MediaType: MediaTypeSchema.default('Unknown')
-          .exactOptional()
-          .openapi({ description: 'Media types.' }),
-        EndDate: z.iso
-          .datetime({ offset: true })
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets the end date.' }),
-        LockedFields: z
-          .array(MetadataFieldSchema)
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets the locked fields.' }),
-        TrailerCount: z
-          .int32()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets the trailer count.' }),
-        MovieCount: z
-          .int32()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets the movie count.' }),
-        SeriesCount: z
-          .int32()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets the series count.' }),
-        ProgramCount: z.int32().nullable().exactOptional(),
-        EpisodeCount: z
-          .int32()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets the episode count.' }),
-        SongCount: z
-          .int32()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets the song count.' }),
-        AlbumCount: z
-          .int32()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets the album count.' }),
-        ArtistCount: z.int32().nullable().exactOptional(),
-        MusicVideoCount: z
-          .int32()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets the music video count.' }),
-        LockData: z
-          .boolean()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description: 'Gets or sets a value indicating whether [enable internet providers].',
-          }),
-        Width: z.int32().nullable().exactOptional(),
-        Height: z.int32().nullable().exactOptional(),
-        CameraMake: z.string().nullable().exactOptional(),
-        CameraModel: z.string().nullable().exactOptional(),
-        Software: z.string().nullable().exactOptional(),
-        ExposureTime: z.float64().nullable().exactOptional(),
-        FocalLength: z.float64().nullable().exactOptional(),
-        ImageOrientation: ImageOrientationSchema.nullable().exactOptional(),
-        Aperture: z.float64().nullable().exactOptional(),
-        ShutterSpeed: z.float64().nullable().exactOptional(),
-        Latitude: z.float64().nullable().exactOptional(),
-        Longitude: z.float64().nullable().exactOptional(),
-        Altitude: z.float64().nullable().exactOptional(),
-        IsoSpeedRating: z.int32().nullable().exactOptional(),
-        SeriesTimerId: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets the series timer identifier.' }),
-        ProgramId: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets the program identifier.' }),
-        ChannelPrimaryImageTag: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets the channel primary image tag.' }),
-        StartDate: z.iso
-          .datetime({ offset: true })
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets the start date of the recording, in UTC.' }),
-        CompletionPercentage: z
-          .float64()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets the completion percentage.' }),
-        IsRepeat: z
-          .boolean()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description: 'Gets or sets a value indicating whether this instance is repeat.',
-          }),
-        EpisodeTitle: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets the episode title.' }),
-        ChannelType: ChannelTypeSchema.nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets the type of the channel.' }),
-        Audio: ProgramAudioSchema.nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets the audio.' }),
-        IsMovie: z
-          .boolean()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description: 'Gets or sets a value indicating whether this instance is movie.',
-          }),
-        IsSports: z
-          .boolean()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description: 'Gets or sets a value indicating whether this instance is sports.',
-          }),
-        IsSeries: z
-          .boolean()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description: 'Gets or sets a value indicating whether this instance is series.',
-          }),
-        IsLive: z
-          .boolean()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description: 'Gets or sets a value indicating whether this instance is live.',
-          }),
-        IsNews: z
-          .boolean()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description: 'Gets or sets a value indicating whether this instance is news.',
-          }),
-        IsKids: z
-          .boolean()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description: 'Gets or sets a value indicating whether this instance is kids.',
-          }),
-        IsPremiere: z
-          .boolean()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description: 'Gets or sets a value indicating whether this instance is premiere.',
-          }),
-        TimerId: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets the timer identifier.' }),
-        NormalizationGain: z
-          .float32()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets the gain required for audio normalization.' }),
-        AlbumNormalizationGain: z
-          .float32()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'Gets or sets the gain required for audio normalization. This field is inherited from music album normalization gain.',
-          }),
-        CurrentProgram: BaseItemDtoSchema.nullable()
-          .exactOptional()
-          .openapi({ description: 'Gets or sets the current program.' }),
-        OriginalLanguage: z.string().nullable().exactOptional(),
-      })
-      .openapi({
-        description:
-          'This is strictly used as a data transfer object from the api layer.\nThis holds information about a BaseItem in a format that is convenient for the client.',
-        required: [],
-      }),
-  )
-  .openapi('BaseItemDto')
-
-const HardwareAccelerationTypeSchema = z
-  .enum(['none', 'amf', 'qsv', 'nvenc', 'v4l2m2m', 'vaapi', 'videotoolbox', 'rkmpp'])
-  .openapi({ description: 'Enum containing hardware acceleration types.' })
-  .openapi('HardwareAccelerationType')
-
-const TranscodeReasonSchema = z
-  .enum([
-    'ContainerNotSupported',
-    'VideoCodecNotSupported',
-    'AudioCodecNotSupported',
-    'SubtitleCodecNotSupported',
-    'AudioIsExternal',
-    'SecondaryAudioNotSupported',
-    'VideoProfileNotSupported',
-    'VideoLevelNotSupported',
-    'VideoResolutionNotSupported',
-    'VideoBitDepthNotSupported',
-    'VideoFramerateNotSupported',
-    'RefFramesNotSupported',
-    'AnamorphicVideoNotSupported',
-    'InterlacedVideoNotSupported',
-    'AudioChannelsNotSupported',
-    'AudioProfileNotSupported',
-    'AudioSampleRateNotSupported',
-    'AudioBitDepthNotSupported',
-    'ContainerBitrateExceedsLimit',
-    'VideoBitrateNotSupported',
-    'AudioBitrateNotSupported',
-    'UnknownVideoStreamInfo',
-    'UnknownAudioStreamInfo',
-    'DirectPlayError',
-    'VideoRangeTypeNotSupported',
-    'VideoCodecTagNotSupported',
-    'StreamCountExceedsLimit',
-    'VideoRotationNotSupported',
-  ])
-  .openapi('TranscodeReason')
-
-const TranscodingInfoSchema = z
-  .strictObject({
-    AudioCodec: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the thread count used for encoding.' }),
-    VideoCodec: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the thread count used for encoding.' }),
-    Container: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the thread count used for encoding.' }),
-    IsVideoDirect: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Gets or sets a value indicating whether the video is passed through.',
-      }),
-    IsAudioDirect: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Gets or sets a value indicating whether the audio is passed through.',
-      }),
-    Bitrate: z
-      .int32()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the bitrate.' }),
-    Framerate: z
-      .float32()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the framerate.' }),
-    CompletionPercentage: z
-      .float64()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the completion percentage.' }),
-    Width: z
-      .int32()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the video width.' }),
-    Height: z
-      .int32()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the video height.' }),
-    AudioChannels: z
-      .int32()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the audio channels.' }),
-    HardwareAccelerationType: HardwareAccelerationTypeSchema.nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the hardware acceleration type.' }),
-    TranscodeReasons: z
-      .array(TranscodeReasonSchema)
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the transcode reasons.' }),
-  })
-  .openapi({ description: 'Class holding information on a running transcode.', required: [] })
-  .openapi('TranscodingInfo')
-
-const QueueItemSchema = z
-  .strictObject({
-    Id: z.uuid().exactOptional().openapi({ description: 'Gets or sets the item id.' }),
-    PlaylistItemId: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the playlist item id.' }),
-  })
-  .openapi({ description: 'An item in a play queue.', required: [] })
-  .openapi('QueueItem')
-
-const SessionInfoDtoSchema = z
-  .strictObject({
-    PlayState: PlayerStateInfoSchema.nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the play state.' }),
-    AdditionalUsers: z
-      .array(SessionUserInfoSchema)
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the additional users.' }),
-    Capabilities: ClientCapabilitiesDtoSchema.nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the client capabilities.' }),
-    RemoteEndPoint: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the remote end point.' }),
-    PlayableMediaTypes: z
-      .array(MediaTypeSchema)
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the playable media types.' }),
-    Id: z.string().nullable().exactOptional().openapi({ description: 'Gets or sets the id.' }),
-    UserId: z.uuid().exactOptional().openapi({ description: 'Gets or sets the user id.' }),
-    UserName: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the username.' }),
-    Client: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the type of the client.' }),
-    LastActivityDate: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the last activity date.' }),
-    LastPlaybackCheckIn: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the last playback check in.' }),
-    LastPausedDate: z.iso
-      .datetime({ offset: true })
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the last paused date.' }),
-    DeviceName: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the name of the device.' }),
-    DeviceType: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the type of the device.' }),
-    NowPlayingItem: BaseItemDtoSchema.nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the now playing item.' }),
-    NowViewingItem: BaseItemDtoSchema.nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the now viewing item.' }),
-    DeviceId: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the device id.' }),
-    ApplicationVersion: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the application version.' }),
-    TranscodingInfo: TranscodingInfoSchema.nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the transcoding info.' }),
-    IsActive: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets a value indicating whether this session is active.' }),
-    SupportsMediaControl: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Gets or sets a value indicating whether the session supports media control.',
-      }),
-    SupportsRemoteControl: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Gets or sets a value indicating whether the session supports remote control.',
-      }),
-    NowPlayingQueue: z
-      .array(QueueItemSchema)
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the now playing queue.' }),
-    HasCustomDeviceName: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Gets or sets a value indicating whether this session has a custom device name.',
-      }),
-    PlaylistItemId: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the playlist item id.' }),
-    ServerId: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the server id.' }),
-    UserPrimaryImageTag: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the user primary image tag.' }),
-    SupportedCommands: z
-      .array(GeneralCommandTypeSchema)
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the supported commands.' }),
-  })
-  .openapi({ description: 'Session info DTO.', required: [] })
-  .openapi('SessionInfoDto')
-
-const SessionsMessageSchema = z
+const SessionsMessageSchema: z.ZodType<SessionsMessageType> = z
   .strictObject({
     Data: z
       .array(SessionInfoDtoSchema)
@@ -3955,278 +3869,6 @@ const UserDeletedMessageSchema = z
   .openapi({ description: 'User deleted message.', required: [] })
   .openapi('UserDeletedMessage')
 
-const SubtitlePlaybackModeSchema = z
-  .enum(['Default', 'Always', 'OnlyForced', 'None', 'Smart'])
-  .openapi({ description: 'An enum representing a subtitle playback mode.' })
-  .openapi('SubtitlePlaybackMode')
-
-const UserConfigurationSchema = z
-  .strictObject({
-    AudioLanguagePreference: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the audio language preference.' }),
-    PlayDefaultAudioTrack: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Gets or sets a value indicating whether [play default audio track].',
-      }),
-    SubtitleLanguagePreference: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the subtitle language preference.' }),
-    DisplayMissingEpisodes: z.boolean().exactOptional(),
-    GroupedFolders: z.array(z.uuid()).exactOptional(),
-    SubtitleMode: SubtitlePlaybackModeSchema.exactOptional().openapi({
-      description: 'An enum representing a subtitle playback mode.',
-    }),
-    DisplayCollectionsView: z.boolean().exactOptional(),
-    EnableLocalPassword: z.boolean().exactOptional(),
-    OrderedViews: z.array(z.uuid()).exactOptional(),
-    LatestItemsExcludes: z.array(z.uuid()).exactOptional(),
-    MyMediaExcludes: z.array(z.uuid()).exactOptional(),
-    HidePlayedInLatest: z.boolean().exactOptional(),
-    RememberAudioSelections: z.boolean().exactOptional(),
-    RememberSubtitleSelections: z.boolean().exactOptional(),
-    EnableNextEpisodeAutoPlay: z.boolean().exactOptional(),
-    CastReceiverId: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the id of the selected cast receiver.' }),
-  })
-  .openapi({ description: 'Class UserConfiguration.', required: [] })
-  .openapi('UserConfiguration')
-
-const DynamicDayOfWeekSchema = z
-  .enum([
-    'Sunday',
-    'Monday',
-    'Tuesday',
-    'Wednesday',
-    'Thursday',
-    'Friday',
-    'Saturday',
-    'Everyday',
-    'Weekday',
-    'Weekend',
-  ])
-  .openapi({
-    description: 'An enum that represents a day of the week, weekdays, weekends, or all days.',
-  })
-  .openapi('DynamicDayOfWeek')
-
-const AccessScheduleSchema = z
-  .strictObject({
-    Id: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'Gets the id of this instance.', readOnly: true }),
-    UserId: z
-      .uuid()
-      .exactOptional()
-      .openapi({ description: 'Gets the id of the associated user.' }),
-    DayOfWeek: DynamicDayOfWeekSchema.exactOptional().openapi({
-      description: 'Gets or sets the day of week.',
-    }),
-    StartHour: z.float64().exactOptional().openapi({ description: 'Gets or sets the start hour.' }),
-    EndHour: z.float64().exactOptional().openapi({ description: 'Gets or sets the end hour.' }),
-  })
-  .openapi({ description: "An entity representing a user's access schedule.", required: [] })
-  .openapi('AccessSchedule')
-
-const UnratedItemSchema = z
-  .enum([
-    'Movie',
-    'Trailer',
-    'Series',
-    'Music',
-    'Book',
-    'LiveTvChannel',
-    'LiveTvProgram',
-    'ChannelContent',
-    'Other',
-  ])
-  .openapi({ description: 'An enum representing an unrated item.' })
-  .openapi('UnratedItem')
-
-const SyncPlayUserAccessTypeSchema = z
-  .enum(['CreateAndJoinGroups', 'JoinGroups', 'None'])
-  .openapi({ description: 'Enum SyncPlayUserAccessType.' })
-  .openapi('SyncPlayUserAccessType')
-
-const UserPolicySchema = z
-  .strictObject({
-    IsAdministrator: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Gets or sets a value indicating whether this instance is administrator.',
-      }),
-    IsHidden: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets a value indicating whether this instance is hidden.' }),
-    EnableCollectionManagement: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({
-        description:
-          'Gets or sets a value indicating whether this instance can manage collections.',
-      }),
-    EnableSubtitleManagement: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({
-        description: 'Gets or sets a value indicating whether this instance can manage subtitles.',
-      }),
-    EnableLyricManagement: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({
-        description: 'Gets or sets a value indicating whether this user can manage lyrics.',
-      }),
-    IsDisabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Gets or sets a value indicating whether this instance is disabled.',
-      }),
-    MaxParentalRating: z
-      .int32()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the max parental rating.' }),
-    MaxParentalSubRating: z.int32().nullable().exactOptional(),
-    BlockedTags: z.array(z.string()).nullable().exactOptional(),
-    AllowedTags: z.array(z.string()).nullable().exactOptional(),
-    EnableUserPreferenceAccess: z.boolean().exactOptional(),
-    AccessSchedules: z.array(AccessScheduleSchema).nullable().exactOptional(),
-    BlockUnratedItems: z.array(UnratedItemSchema).nullable().exactOptional(),
-    EnableRemoteControlOfOtherUsers: z.boolean().exactOptional(),
-    EnableSharedDeviceControl: z.boolean().exactOptional(),
-    EnableRemoteAccess: z.boolean().exactOptional(),
-    EnableLiveTvManagement: z.boolean().exactOptional(),
-    EnableLiveTvAccess: z.boolean().exactOptional(),
-    EnableMediaPlayback: z.boolean().exactOptional(),
-    EnableAudioPlaybackTranscoding: z.boolean().exactOptional(),
-    EnableVideoPlaybackTranscoding: z.boolean().exactOptional(),
-    EnablePlaybackRemuxing: z.boolean().exactOptional(),
-    ForceRemoteSourceTranscoding: z.boolean().exactOptional(),
-    EnableContentDeletion: z.boolean().exactOptional(),
-    EnableContentDeletionFromFolders: z.array(z.string()).nullable().exactOptional(),
-    EnableContentDownloading: z.boolean().exactOptional(),
-    EnableSyncTranscoding: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets a value indicating whether [enable synchronize].' }),
-    EnableMediaConversion: z.boolean().exactOptional(),
-    EnabledDevices: z.array(z.string()).nullable().exactOptional(),
-    EnableAllDevices: z.boolean().exactOptional(),
-    EnabledChannels: z.array(z.uuid()).nullable().exactOptional(),
-    EnableAllChannels: z.boolean().exactOptional(),
-    EnabledFolders: z.array(z.uuid()).nullable().exactOptional(),
-    EnableAllFolders: z.boolean().exactOptional(),
-    InvalidLoginAttemptCount: z.int32().exactOptional(),
-    LoginAttemptsBeforeLockout: z.int32().exactOptional(),
-    MaxActiveSessions: z.int32().exactOptional(),
-    EnablePublicSharing: z.boolean().exactOptional(),
-    BlockedMediaFolders: z.array(z.uuid()).nullable().exactOptional(),
-    BlockedChannels: z.array(z.uuid()).nullable().exactOptional(),
-    RemoteClientBitrateLimit: z.int32().exactOptional(),
-    AuthenticationProviderId: z.string().min(1),
-    PasswordResetProviderId: z.string().min(1),
-    SyncPlayAccess: SyncPlayUserAccessTypeSchema.exactOptional().openapi({
-      description: 'Gets or sets a value indicating what SyncPlay features the user can access.',
-    }),
-  })
-  .openapi({ required: ['AuthenticationProviderId', 'PasswordResetProviderId'] })
-  .openapi('UserPolicy')
-
-const UserDtoSchema = z
-  .strictObject({
-    Name: z.string().nullable().exactOptional().openapi({ description: 'Gets or sets the name.' }),
-    ServerId: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the server identifier.' }),
-    ServerName: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Gets or sets the name of the server.\nThis is not used by the server and is for client-side usage only.',
-      }),
-    Id: z.uuid().exactOptional().openapi({ description: 'Gets or sets the id.' }),
-    PrimaryImageTag: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the primary image tag.' }),
-    HasPassword: z
-      .boolean()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Gets or sets a value indicating whether this instance has password.',
-        deprecated: true,
-      }),
-    HasConfiguredPassword: z
-      .boolean()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Gets or sets a value indicating whether this instance has configured password.',
-        deprecated: true,
-      }),
-    HasConfiguredEasyPassword: z
-      .boolean()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Gets or sets a value indicating whether this instance has configured easy password.',
-        deprecated: true,
-      }),
-    EnableAutoLogin: z
-      .boolean()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets whether async login is enabled or not.' }),
-    LastLoginDate: z.iso
-      .datetime({ offset: true })
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the last login date.' }),
-    LastActivityDate: z.iso
-      .datetime({ offset: true })
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the last activity date.' }),
-    Configuration: UserConfigurationSchema.nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the configuration.' }),
-    Policy: UserPolicySchema.nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the policy.' }),
-    PrimaryImageAspectRatio: z
-      .float64()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the primary image aspect ratio.' }),
-  })
-  .openapi({ description: 'Class UserDto.', required: [] })
-  .openapi('UserDto')
-
 const UserUpdatedMessageSchema = z
   .strictObject({
     Data: UserDtoSchema.nullable().exactOptional().openapi({ description: 'Class UserDto.' }),
@@ -4241,38 +3883,340 @@ const UserUpdatedMessageSchema = z
   .openapi({ description: 'User updated message.', required: [] })
   .openapi('UserUpdatedMessage')
 
-const GroupUpdateSchema: z.ZodType<GroupUpdateType> = z
-  .lazy(() =>
-    z
-      .xor([
-        SyncPlayGroupDoesNotExistUpdateSchema,
-        SyncPlayGroupJoinedUpdateSchema,
-        SyncPlayGroupLeftUpdateSchema,
-        SyncPlayLibraryAccessDeniedUpdateSchema,
-        SyncPlayNotInGroupUpdateSchema,
-        SyncPlayPlayQueueUpdateSchema,
-        SyncPlayStateUpdateSchema,
-        SyncPlayUserJoinedUpdateSchema,
-        SyncPlayUserLeftUpdateSchema,
-      ])
-      .openapi({
-        description: 'Represents the list of possible group update types',
-        discriminator: {
-          propertyName: 'Type',
-          mapping: {
-            GroupDoesNotExist: '#/components/schemas/SyncPlayGroupDoesNotExistUpdate',
-            GroupJoined: '#/components/schemas/SyncPlayGroupJoinedUpdate',
-            GroupLeft: '#/components/schemas/SyncPlayGroupLeftUpdate',
-            LibraryAccessDenied: '#/components/schemas/SyncPlayLibraryAccessDeniedUpdate',
-            NotInGroup: '#/components/schemas/SyncPlayNotInGroupUpdate',
-            PlayQueue: '#/components/schemas/SyncPlayPlayQueueUpdate',
-            StateUpdate: '#/components/schemas/SyncPlayStateUpdate',
-            UserJoined: '#/components/schemas/SyncPlayUserJoinedUpdate',
-            UserLeft: '#/components/schemas/SyncPlayUserLeftUpdate',
-          },
-        },
-      }),
-  )
+const GroupUpdateTypeSchema = z
+  .enum([
+    'UserJoined',
+    'UserLeft',
+    'GroupJoined',
+    'GroupLeft',
+    'StateUpdate',
+    'PlayQueue',
+    'NotInGroup',
+    'GroupDoesNotExist',
+    'LibraryAccessDenied',
+  ])
+  .openapi({ description: 'Enum GroupUpdateType.' })
+  .openapi('GroupUpdateType')
+
+const SyncPlayGroupDoesNotExistUpdateSchema = z
+  .strictObject({
+    GroupId: z
+      .uuid()
+      .exactOptional()
+      .openapi({ description: 'Gets the group identifier.', readOnly: true }),
+    Data: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Gets the update data.', readOnly: true }),
+    Type: GroupUpdateTypeSchema.default('GroupDoesNotExist')
+      .exactOptional()
+      .openapi({ description: 'Enum GroupUpdateType.', readOnly: true }),
+  })
+  .openapi({ required: [] })
+  .openapi('SyncPlayGroupDoesNotExistUpdate')
+
+const GroupStateTypeSchema = z
+  .enum(['Idle', 'Waiting', 'Paused', 'Playing'])
+  .openapi({ description: 'Enum GroupState.' })
+  .openapi('GroupStateType')
+
+const GroupInfoDtoSchema = z
+  .strictObject({
+    GroupId: z.uuid().exactOptional().openapi({ description: 'Gets the group identifier.' }),
+    GroupName: z.string().exactOptional().openapi({ description: 'Gets the group name.' }),
+    State: GroupStateTypeSchema.exactOptional().openapi({ description: 'Gets the group state.' }),
+    Participants: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'Gets the participants.' }),
+    LastUpdatedAt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'Gets the date when this DTO has been created.' }),
+  })
+  .openapi({ description: 'Class GroupInfoDto.', required: [] })
+  .openapi('GroupInfoDto')
+
+const SyncPlayGroupJoinedUpdateSchema = z
+  .strictObject({
+    GroupId: z
+      .uuid()
+      .exactOptional()
+      .openapi({ description: 'Gets the group identifier.', readOnly: true }),
+    Data: GroupInfoDtoSchema.exactOptional().openapi({
+      description: 'Gets the update data.',
+      readOnly: true,
+    }),
+    Type: GroupUpdateTypeSchema.default('GroupJoined')
+      .exactOptional()
+      .openapi({ description: 'Enum GroupUpdateType.', readOnly: true }),
+  })
+  .openapi({ required: [] })
+  .openapi('SyncPlayGroupJoinedUpdate')
+
+const SyncPlayGroupLeftUpdateSchema = z
+  .strictObject({
+    GroupId: z
+      .uuid()
+      .exactOptional()
+      .openapi({ description: 'Gets the group identifier.', readOnly: true }),
+    Data: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Gets the update data.', readOnly: true }),
+    Type: GroupUpdateTypeSchema.default('GroupLeft')
+      .exactOptional()
+      .openapi({ description: 'Enum GroupUpdateType.', readOnly: true }),
+  })
+  .openapi({ required: [] })
+  .openapi('SyncPlayGroupLeftUpdate')
+
+const SyncPlayLibraryAccessDeniedUpdateSchema = z
+  .strictObject({
+    GroupId: z
+      .uuid()
+      .exactOptional()
+      .openapi({ description: 'Gets the group identifier.', readOnly: true }),
+    Data: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Gets the update data.', readOnly: true }),
+    Type: GroupUpdateTypeSchema.default('LibraryAccessDenied')
+      .exactOptional()
+      .openapi({ description: 'Enum GroupUpdateType.', readOnly: true }),
+  })
+  .openapi({ required: [] })
+  .openapi('SyncPlayLibraryAccessDeniedUpdate')
+
+const SyncPlayNotInGroupUpdateSchema = z
+  .strictObject({
+    GroupId: z
+      .uuid()
+      .exactOptional()
+      .openapi({ description: 'Gets the group identifier.', readOnly: true }),
+    Data: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Gets the update data.', readOnly: true }),
+    Type: GroupUpdateTypeSchema.default('NotInGroup')
+      .exactOptional()
+      .openapi({ description: 'Enum GroupUpdateType.', readOnly: true }),
+  })
+  .openapi({ required: [] })
+  .openapi('SyncPlayNotInGroupUpdate')
+
+const PlayQueueUpdateReasonSchema = z
+  .enum([
+    'NewPlaylist',
+    'SetCurrentItem',
+    'RemoveItems',
+    'MoveItem',
+    'Queue',
+    'QueueNext',
+    'NextItem',
+    'PreviousItem',
+    'RepeatMode',
+    'ShuffleMode',
+  ])
+  .openapi({ description: 'Enum PlayQueueUpdateReason.' })
+  .openapi('PlayQueueUpdateReason')
+
+const SyncPlayQueueItemSchema = z
+  .strictObject({
+    ItemId: z.uuid().exactOptional().openapi({ description: 'Gets the item identifier.' }),
+    PlaylistItemId: z
+      .uuid()
+      .exactOptional()
+      .openapi({ description: 'Gets the playlist identifier of the item.', readOnly: true }),
+  })
+  .openapi({ description: 'Class QueueItem.', required: [] })
+  .openapi('SyncPlayQueueItem')
+
+const GroupShuffleModeSchema = z
+  .enum(['Sorted', 'Shuffle'])
+  .openapi({ description: 'Enum GroupShuffleMode.' })
+  .openapi('GroupShuffleMode')
+
+const GroupRepeatModeSchema = z
+  .enum(['RepeatOne', 'RepeatAll', 'RepeatNone'])
+  .openapi({ description: 'Enum GroupRepeatMode.' })
+  .openapi('GroupRepeatMode')
+
+const PlayQueueUpdateSchema = z
+  .strictObject({
+    Reason: PlayQueueUpdateReasonSchema.exactOptional().openapi({
+      description: 'Gets the request type that originated this update.',
+    }),
+    LastUpdate: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'Gets the UTC time of the last change to the playing queue.' }),
+    Playlist: z
+      .array(SyncPlayQueueItemSchema)
+      .exactOptional()
+      .openapi({ description: 'Gets the playlist.' }),
+    PlayingItemIndex: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Gets the playing item index in the playlist.' }),
+    StartPositionTicks: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64', description: 'Gets the start position ticks.' }),
+    IsPlaying: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Gets a value indicating whether the current item is playing.' }),
+    ShuffleMode: GroupShuffleModeSchema.exactOptional().openapi({
+      description: 'Gets the shuffle mode.',
+    }),
+    RepeatMode: GroupRepeatModeSchema.exactOptional().openapi({
+      description: 'Gets the repeat mode.',
+    }),
+  })
+  .openapi({ description: 'Class PlayQueueUpdate.', required: [] })
+  .openapi('PlayQueueUpdate')
+
+const SyncPlayPlayQueueUpdateSchema = z
+  .strictObject({
+    GroupId: z
+      .uuid()
+      .exactOptional()
+      .openapi({ description: 'Gets the group identifier.', readOnly: true }),
+    Data: PlayQueueUpdateSchema.exactOptional().openapi({
+      description: 'Gets the update data.',
+      readOnly: true,
+    }),
+    Type: GroupUpdateTypeSchema.default('PlayQueue')
+      .exactOptional()
+      .openapi({ description: 'Enum GroupUpdateType.', readOnly: true }),
+  })
+  .openapi({ required: [] })
+  .openapi('SyncPlayPlayQueueUpdate')
+
+const PlaybackRequestTypeSchema = z
+  .enum([
+    'Play',
+    'SetPlaylistItem',
+    'RemoveFromPlaylist',
+    'MovePlaylistItem',
+    'Queue',
+    'Unpause',
+    'Pause',
+    'Stop',
+    'Seek',
+    'Buffer',
+    'Ready',
+    'NextItem',
+    'PreviousItem',
+    'SetRepeatMode',
+    'SetShuffleMode',
+    'Ping',
+    'IgnoreWait',
+  ])
+  .openapi({ description: 'Enum PlaybackRequestType.' })
+  .openapi('PlaybackRequestType')
+
+const GroupStateUpdateSchema = z
+  .strictObject({
+    State: GroupStateTypeSchema.exactOptional().openapi({
+      description: 'Gets the state of the group.',
+    }),
+    Reason: PlaybackRequestTypeSchema.exactOptional().openapi({
+      description: 'Gets the reason of the state change.',
+    }),
+  })
+  .openapi({ description: 'Class GroupStateUpdate.', required: [] })
+  .openapi('GroupStateUpdate')
+
+const SyncPlayStateUpdateSchema = z
+  .strictObject({
+    GroupId: z
+      .uuid()
+      .exactOptional()
+      .openapi({ description: 'Gets the group identifier.', readOnly: true }),
+    Data: GroupStateUpdateSchema.exactOptional().openapi({
+      description: 'Gets the update data.',
+      readOnly: true,
+    }),
+    Type: GroupUpdateTypeSchema.default('StateUpdate')
+      .exactOptional()
+      .openapi({ description: 'Enum GroupUpdateType.', readOnly: true }),
+  })
+  .openapi({ required: [] })
+  .openapi('SyncPlayStateUpdate')
+
+const SyncPlayUserJoinedUpdateSchema = z
+  .strictObject({
+    GroupId: z
+      .uuid()
+      .exactOptional()
+      .openapi({ description: 'Gets the group identifier.', readOnly: true }),
+    Data: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Gets the update data.', readOnly: true }),
+    Type: GroupUpdateTypeSchema.default('UserJoined')
+      .exactOptional()
+      .openapi({ description: 'Enum GroupUpdateType.', readOnly: true }),
+  })
+  .openapi({ required: [] })
+  .openapi('SyncPlayUserJoinedUpdate')
+
+const SyncPlayUserLeftUpdateSchema = z
+  .strictObject({
+    GroupId: z
+      .uuid()
+      .exactOptional()
+      .openapi({ description: 'Gets the group identifier.', readOnly: true }),
+    Data: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Gets the update data.', readOnly: true }),
+    Type: GroupUpdateTypeSchema.default('UserLeft')
+      .exactOptional()
+      .openapi({ description: 'Enum GroupUpdateType.', readOnly: true }),
+  })
+  .openapi({ required: [] })
+  .openapi('SyncPlayUserLeftUpdate')
+
+const GroupUpdateSchema = z
+  .xor([
+    SyncPlayGroupDoesNotExistUpdateSchema,
+    SyncPlayGroupJoinedUpdateSchema,
+    SyncPlayGroupLeftUpdateSchema,
+    SyncPlayLibraryAccessDeniedUpdateSchema,
+    SyncPlayNotInGroupUpdateSchema,
+    SyncPlayPlayQueueUpdateSchema,
+    SyncPlayStateUpdateSchema,
+    SyncPlayUserJoinedUpdateSchema,
+    SyncPlayUserLeftUpdateSchema,
+  ])
+  .openapi({
+    description: 'Represents the list of possible group update types',
+    discriminator: {
+      propertyName: 'Type',
+      mapping: {
+        GroupDoesNotExist: '#/components/schemas/SyncPlayGroupDoesNotExistUpdate',
+        GroupJoined: '#/components/schemas/SyncPlayGroupJoinedUpdate',
+        GroupLeft: '#/components/schemas/SyncPlayGroupLeftUpdate',
+        LibraryAccessDenied: '#/components/schemas/SyncPlayLibraryAccessDeniedUpdate',
+        NotInGroup: '#/components/schemas/SyncPlayNotInGroupUpdate',
+        PlayQueue: '#/components/schemas/SyncPlayPlayQueueUpdate',
+        StateUpdate: '#/components/schemas/SyncPlayStateUpdate',
+        UserJoined: '#/components/schemas/SyncPlayUserJoinedUpdate',
+        UserLeft: '#/components/schemas/SyncPlayUserLeftUpdate',
+      },
+    },
+  })
   .openapi('GroupUpdate')
 
 const SyncPlayGroupUpdateMessageSchema = z
@@ -4289,7 +4233,332 @@ const SyncPlayGroupUpdateMessageSchema = z
   .openapi({ description: 'Untyped sync play command.', required: [] })
   .openapi('SyncPlayGroupUpdateMessage')
 
-const OutboundWebSocketMessageSchema = z
+type OutboundWebSocketMessageType =
+  | z.infer<typeof ActivityLogEntryMessageSchema>
+  | z.infer<typeof ForceKeepAliveMessageSchema>
+  | z.infer<typeof GeneralCommandMessageSchema>
+  | z.infer<typeof LibraryChangedMessageSchema>
+  | z.infer<typeof OutboundKeepAliveMessageSchema>
+  | z.infer<typeof PlayMessageSchema>
+  | z.infer<typeof PlaystateMessageSchema>
+  | z.infer<typeof PluginInstallationCancelledMessageSchema>
+  | z.infer<typeof PluginInstallationCompletedMessageSchema>
+  | z.infer<typeof PluginInstallationFailedMessageSchema>
+  | z.infer<typeof PluginInstallingMessageSchema>
+  | z.infer<typeof PluginUninstalledMessageSchema>
+  | z.infer<typeof RefreshProgressMessageSchema>
+  | z.infer<typeof RestartRequiredMessageSchema>
+  | z.infer<typeof ScheduledTaskEndedMessageSchema>
+  | z.infer<typeof ScheduledTasksInfoMessageSchema>
+  | z.infer<typeof SeriesTimerCancelledMessageSchema>
+  | z.infer<typeof SeriesTimerCreatedMessageSchema>
+  | z.infer<typeof ServerRestartingMessageSchema>
+  | z.infer<typeof ServerShuttingDownMessageSchema>
+  | z.infer<typeof SessionsMessageSchema>
+  | z.infer<typeof SyncPlayCommandMessageSchema>
+  | z.infer<typeof TimerCancelledMessageSchema>
+  | z.infer<typeof TimerCreatedMessageSchema>
+  | z.infer<typeof UserDataChangedMessageSchema>
+  | z.infer<typeof UserDeletedMessageSchema>
+  | z.infer<typeof UserUpdatedMessageSchema>
+  | z.infer<typeof SyncPlayGroupUpdateMessageSchema>
+
+type RemoteSearchResultType = {
+  Name?: string | null
+  ProviderIds?: { [key: string]: string }
+  ProductionYear?: number | null
+  IndexNumber?: number | null
+  IndexNumberEnd?: number | null
+  ParentIndexNumber?: number | null
+  PremiereDate?: string | null
+  ImageUrl?: string | null
+  SearchProviderName?: string | null
+  Overview?: string | null
+  AlbumArtist?: RemoteSearchResultType | null
+  Artists?: RemoteSearchResultType[]
+}
+
+const KeepUntilSchema = z
+  .enum(['UntilDeleted', 'UntilSpaceNeeded', 'UntilWatched', 'UntilDate'])
+  .openapi('KeepUntil')
+
+const RecordingStatusSchema = z
+  .enum(['New', 'InProgress', 'Completed', 'Cancelled', 'ConflictedOk', 'ConflictedNotOk', 'Error'])
+  .openapi('RecordingStatus')
+
+const TimerInfoDtoSchema = z
+  .strictObject({
+    Id: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the Id of the recording.' }),
+    Type: z.string().nullable().exactOptional(),
+    ServerId: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the server identifier.' }),
+    ExternalId: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the external identifier.' }),
+    ChannelId: z
+      .uuid()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the channel id of the recording.' }),
+    ExternalChannelId: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the external channel identifier.' }),
+    ChannelName: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the channel name of the recording.' }),
+    ChannelPrimaryImageTag: z.string().nullable().exactOptional(),
+    ProgramId: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the program identifier.' }),
+    ExternalProgramId: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the external program identifier.' }),
+    Name: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the name of the recording.' }),
+    Overview: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the description of the recording.' }),
+    StartDate: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the start date of the recording, in UTC.' }),
+    EndDate: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the end date of the recording, in UTC.' }),
+    ServiceName: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the name of the service.' }),
+    Priority: z.int32().exactOptional().openapi({ description: 'Gets or sets the priority.' }),
+    PrePaddingSeconds: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the pre padding seconds.' }),
+    PostPaddingSeconds: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the post padding seconds.' }),
+    IsPrePaddingRequired: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Gets or sets a value indicating whether this instance is pre padding required.',
+      }),
+    ParentBackdropItemId: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Gets or sets the Id of the Parent that has a backdrop if the item does not have one.',
+      }),
+    ParentBackdropImageTags: z
+      .array(z.string())
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the parent backdrop image tags.' }),
+    IsPostPaddingRequired: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Gets or sets a value indicating whether this instance is post padding required.',
+      }),
+    KeepUntil: KeepUntilSchema.exactOptional(),
+    Status: RecordingStatusSchema.exactOptional().openapi({
+      description: 'Gets or sets the status.',
+    }),
+    SeriesTimerId: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the series timer identifier.' }),
+    ExternalSeriesTimerId: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the external series timer identifier.' }),
+    RunTimeTicks: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description: 'Gets or sets the run time ticks.',
+      }),
+    ProgramInfo: BaseItemDtoSchema.nullable()
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the program information.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('TimerInfoDto')
+
+type TimerInfoDtoQueryResultType = {
+  Items?: z.infer<typeof TimerInfoDtoSchema>[]
+  TotalRecordCount?: number
+  StartIndex?: number
+}
+
+const ActivityLogEntryStartMessageSchema = z
+  .strictObject({
+    Data: z.string().nullable().exactOptional().openapi({ description: 'Gets or sets the data.' }),
+    MessageType: SessionMessageTypeSchema.default('ActivityLogEntryStart')
+      .exactOptional()
+      .openapi({
+        description: 'The different kinds of messages that are used in the WebSocket api.',
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    description:
+      'Activity log entry start message.\nData is the timing data encoded as "$initialDelay,$interval" in ms.',
+    required: [],
+  })
+  .openapi('ActivityLogEntryStartMessage')
+
+const ActivityLogEntryStopMessageSchema = z
+  .strictObject({
+    MessageType: SessionMessageTypeSchema.default('ActivityLogEntryStop')
+      .exactOptional()
+      .openapi({
+        description: 'The different kinds of messages that are used in the WebSocket api.',
+        readOnly: true,
+      }),
+  })
+  .openapi({ description: 'Activity log entry stop message.', required: [] })
+  .openapi('ActivityLogEntryStopMessage')
+
+const InboundKeepAliveMessageSchema = z
+  .strictObject({
+    MessageType: SessionMessageTypeSchema.default('KeepAlive')
+      .exactOptional()
+      .openapi({
+        description: 'The different kinds of messages that are used in the WebSocket api.',
+        readOnly: true,
+      }),
+  })
+  .openapi({ description: 'Keep alive websocket messages.', required: [] })
+  .openapi('InboundKeepAliveMessage')
+
+const ScheduledTasksInfoStartMessageSchema = z
+  .strictObject({
+    Data: z.string().nullable().exactOptional().openapi({ description: 'Gets or sets the data.' }),
+    MessageType: SessionMessageTypeSchema.default('ScheduledTasksInfoStart')
+      .exactOptional()
+      .openapi({
+        description: 'The different kinds of messages that are used in the WebSocket api.',
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    description:
+      'Scheduled tasks info start message.\nData is the timing data encoded as "$initialDelay,$interval" in ms.',
+    required: [],
+  })
+  .openapi('ScheduledTasksInfoStartMessage')
+
+const ScheduledTasksInfoStopMessageSchema = z
+  .strictObject({
+    MessageType: SessionMessageTypeSchema.default('ScheduledTasksInfoStop')
+      .exactOptional()
+      .openapi({
+        description: 'The different kinds of messages that are used in the WebSocket api.',
+        readOnly: true,
+      }),
+  })
+  .openapi({ description: 'Scheduled tasks info stop message.', required: [] })
+  .openapi('ScheduledTasksInfoStopMessage')
+
+const SessionsStartMessageSchema = z
+  .strictObject({
+    Data: z.string().nullable().exactOptional().openapi({ description: 'Gets or sets the data.' }),
+    MessageType: SessionMessageTypeSchema.default('SessionsStart')
+      .exactOptional()
+      .openapi({
+        description: 'The different kinds of messages that are used in the WebSocket api.',
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    description:
+      'Sessions start message.\nData is the timing data encoded as "$initialDelay,$interval" in ms.',
+    required: [],
+  })
+  .openapi('SessionsStartMessage')
+
+const SessionsStopMessageSchema = z
+  .strictObject({
+    MessageType: SessionMessageTypeSchema.default('SessionsStop')
+      .exactOptional()
+      .openapi({
+        description: 'The different kinds of messages that are used in the WebSocket api.',
+        readOnly: true,
+      }),
+  })
+  .openapi({ description: 'Sessions stop message.', required: [] })
+  .openapi('SessionsStopMessage')
+
+const InboundWebSocketMessageSchema = z
+  .xor([
+    ActivityLogEntryStartMessageSchema,
+    ActivityLogEntryStopMessageSchema,
+    InboundKeepAliveMessageSchema,
+    ScheduledTasksInfoStartMessageSchema,
+    ScheduledTasksInfoStopMessageSchema,
+    SessionsStartMessageSchema,
+    SessionsStopMessageSchema,
+  ])
+  .openapi({
+    description: 'Represents the list of possible inbound websocket types',
+    discriminator: {
+      propertyName: 'MessageType',
+      mapping: {
+        ActivityLogEntryStart: '#/components/schemas/ActivityLogEntryStartMessage',
+        ActivityLogEntryStop: '#/components/schemas/ActivityLogEntryStopMessage',
+        KeepAlive: '#/components/schemas/InboundKeepAliveMessage',
+        ScheduledTasksInfoStart: '#/components/schemas/ScheduledTasksInfoStartMessage',
+        ScheduledTasksInfoStop: '#/components/schemas/ScheduledTasksInfoStopMessage',
+        SessionsStart: '#/components/schemas/SessionsStartMessage',
+        SessionsStop: '#/components/schemas/SessionsStopMessage',
+      },
+    },
+  })
+  .openapi('InboundWebSocketMessage')
+
+const OutboundWebSocketMessageSchema: z.ZodType<OutboundWebSocketMessageType> = z
   .xor([
     ActivityLogEntryMessageSchema,
     ForceKeepAliveMessageSchema,
@@ -4602,26 +4871,7 @@ const AlbumInfoRemoteSearchQuerySchema = z
   .openapi({ required: [] })
   .openapi('AlbumInfoRemoteSearchQuery')
 
-const ThemeMediaResultSchema = z
-  .strictObject({
-    Items: z
-      .array(BaseItemDtoSchema)
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the items.' }),
-    TotalRecordCount: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the total number of records available.' }),
-    StartIndex: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the index of the first record in Items.' }),
-    OwnerId: z.uuid().exactOptional().openapi({ description: 'Gets or sets the owner id.' }),
-  })
-  .openapi({ description: 'Class ThemeMediaResult.', required: [] })
-  .openapi('ThemeMediaResult')
-
-const AllThemeMediaResultSchema = z
+const AllThemeMediaResultSchema: z.ZodType<AllThemeMediaResultType> = z
   .strictObject({
     ThemeVideosResult: ThemeMediaResultSchema.nullable()
       .exactOptional()
@@ -4783,7 +5033,7 @@ const AuthenticationInfoQueryResultSchema = z
   .openapi({ description: 'Query result container.', required: [] })
   .openapi('AuthenticationInfoQueryResult')
 
-const AuthenticationResultSchema = z
+const AuthenticationResultSchema: z.ZodType<AuthenticationResultType> = z
   .strictObject({
     User: UserDtoSchema.nullable().exactOptional().openapi({ description: 'Class UserDto.' }),
     SessionInfo: SessionInfoDtoSchema.nullable()
@@ -5445,62 +5695,7 @@ const DeinterlaceMethodSchema = z
   .openapi({ description: 'Enum containing deinterlace methods.' })
   .openapi('DeinterlaceMethod')
 
-const DeviceInfoDtoSchema = z
-  .strictObject({
-    Name: z.string().nullable().exactOptional().openapi({ description: 'Gets or sets the name.' }),
-    CustomName: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the custom name.' }),
-    AccessToken: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the access token.' }),
-    Id: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the identifier.' }),
-    LastUserName: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the last name of the user.' }),
-    AppName: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the name of the application.' }),
-    AppVersion: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the application version.' }),
-    LastUserId: z
-      .uuid()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the last user identifier.' }),
-    DateLastActivity: z.iso
-      .datetime({ offset: true })
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the date last modified.' }),
-    Capabilities: ClientCapabilitiesDtoSchema.exactOptional().openapi({
-      description: 'Gets or sets the capabilities.',
-    }),
-    IconUrl: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the icon URL.' }),
-  })
-  .openapi({ description: 'A DTO representing device information.', required: [] })
-  .openapi('DeviceInfoDto')
-
-const DeviceInfoDtoQueryResultSchema = z
+const DeviceInfoDtoQueryResultSchema: z.ZodType<DeviceInfoDtoQueryResultType> = z
   .strictObject({
     Items: z
       .array(DeviceInfoDtoSchema)
@@ -6547,10 +6742,6 @@ const JoinGroupRequestDtoSchema = z
   })
   .openapi({ description: 'Class JoinGroupRequestDto.', required: [] })
   .openapi('JoinGroupRequestDto')
-
-const KeepUntilSchema = z
-  .enum(['UntilDeleted', 'UntilSpaceNeeded', 'UntilWatched', 'UntilDate'])
-  .openapi('KeepUntil')
 
 const LibraryOptionInfoDtoSchema = z
   .strictObject({
@@ -8138,6 +8329,7 @@ const ProblemDetailsSchema = z
     instance: z.string().nullable().exactOptional(),
   })
   .catchall(z.any())
+  .openapi({ required: [] })
   .openapi('ProblemDetails')
 
 const ProcessPriorityClassSchema = z
@@ -8322,10 +8514,6 @@ const RecommendationDtoSchema = z
   })
   .openapi({ required: [] })
   .openapi('RecommendationDto')
-
-const RecordingStatusSchema = z
-  .enum(['New', 'InProgress', 'Completed', 'Cancelled', 'ConflictedOk', 'ConflictedNotOk', 'Error'])
-  .openapi('RecordingStatus')
 
 const RemoteImageInfoSchema = z
   .strictObject({
@@ -9541,147 +9729,7 @@ const SystemStorageDtoSchema = z
   })
   .openapi('SystemStorageDto')
 
-const TimerInfoDtoSchema = z
-  .strictObject({
-    Id: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the Id of the recording.' }),
-    Type: z.string().nullable().exactOptional(),
-    ServerId: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the server identifier.' }),
-    ExternalId: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the external identifier.' }),
-    ChannelId: z
-      .uuid()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the channel id of the recording.' }),
-    ExternalChannelId: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the external channel identifier.' }),
-    ChannelName: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the channel name of the recording.' }),
-    ChannelPrimaryImageTag: z.string().nullable().exactOptional(),
-    ProgramId: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the program identifier.' }),
-    ExternalProgramId: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the external program identifier.' }),
-    Name: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the name of the recording.' }),
-    Overview: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the description of the recording.' }),
-    StartDate: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the start date of the recording, in UTC.' }),
-    EndDate: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the end date of the recording, in UTC.' }),
-    ServiceName: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the name of the service.' }),
-    Priority: z.int32().exactOptional().openapi({ description: 'Gets or sets the priority.' }),
-    PrePaddingSeconds: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the pre padding seconds.' }),
-    PostPaddingSeconds: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the post padding seconds.' }),
-    IsPrePaddingRequired: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Gets or sets a value indicating whether this instance is pre padding required.',
-      }),
-    ParentBackdropItemId: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Gets or sets the Id of the Parent that has a backdrop if the item does not have one.',
-      }),
-    ParentBackdropImageTags: z
-      .array(z.string())
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the parent backdrop image tags.' }),
-    IsPostPaddingRequired: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Gets or sets a value indicating whether this instance is post padding required.',
-      }),
-    KeepUntil: KeepUntilSchema.exactOptional(),
-    Status: RecordingStatusSchema.exactOptional().openapi({
-      description: 'Gets or sets the status.',
-    }),
-    SeriesTimerId: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the series timer identifier.' }),
-    ExternalSeriesTimerId: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the external series timer identifier.' }),
-    RunTimeTicks: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .nullable()
-      .exactOptional()
-      .openapi({
-        type: ['integer', 'null'],
-        format: 'int64',
-        description: 'Gets or sets the run time ticks.',
-      }),
-    ProgramInfo: BaseItemDtoSchema.nullable()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the program information.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('TimerInfoDto')
-
-const TimerInfoDtoQueryResultSchema = z
+const TimerInfoDtoQueryResultSchema: z.ZodType<TimerInfoDtoQueryResultType> = z
   .strictObject({
     Items: z
       .array(TimerInfoDtoSchema)
@@ -10011,11 +10059,8 @@ const VirtualFolderInfoSchema = z
   .openapi('VirtualFolderInfo')
 
 const WebSocketMessageSchema: z.ZodType<WebSocketMessageType> = z
-  .lazy(() =>
-    z
-      .xor([InboundWebSocketMessageSchema, OutboundWebSocketMessageSchema])
-      .openapi({ description: 'Represents the possible websocket types' }),
-  )
+  .xor([InboundWebSocketMessageSchema, OutboundWebSocketMessageSchema])
+  .openapi({ description: 'Represents the possible websocket types' })
   .openapi('WebSocketMessage')
 
 const XbmcMetadataOptionsSchema = z
@@ -10252,26 +10297,20 @@ export const getSystemActivityLogEntriesRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -10299,26 +10338,20 @@ export const getAuthKeysRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -10354,26 +10387,20 @@ export const postAuthKeysRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -10409,26 +10436,20 @@ export const deleteAuthKeysKeyRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -10957,26 +10978,20 @@ export const getArtistsRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -11034,26 +11049,20 @@ export const getArtistsNameRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -11583,26 +11592,20 @@ export const getArtistsAlbumArtistsRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -12514,26 +12517,20 @@ export const getAudioItemIdStreamRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -13443,26 +13440,20 @@ export const headAudioItemIdStreamRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -14371,26 +14362,20 @@ export const getAudioItemIdStreamContainerRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -15299,26 +15284,20 @@ export const headAudioItemIdStreamContainerRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -15352,26 +15331,20 @@ export const getBackupRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -15428,26 +15401,20 @@ export const postBackupCreateRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -15506,26 +15473,20 @@ export const getBackupManifestRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -15584,26 +15545,20 @@ export const postBackupRestoreRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -15629,26 +15584,20 @@ export const getBrandingConfigurationRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -15675,26 +15624,20 @@ export const getBrandingCssRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -15721,26 +15664,20 @@ export const getBrandingCssCssRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -15860,26 +15797,20 @@ export const getChannelsRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -15922,26 +15853,20 @@ export const getChannelsChannelIdFeaturesRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -16113,26 +16038,20 @@ export const getChannelsChannelIdItemsRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -16160,26 +16079,20 @@ export const getChannelsFeaturesRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -16310,26 +16223,20 @@ export const getChannelsItemsLatestRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -16377,26 +16284,20 @@ export const postClientLogDocumentRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -16480,26 +16381,20 @@ export const postCollectionsRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -16551,26 +16446,20 @@ export const postCollectionsCollectionIdItemsRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -16622,26 +16511,20 @@ export const deleteCollectionsCollectionIdItemsRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -16669,26 +16552,20 @@ export const getSystemConfigurationRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -16732,26 +16609,20 @@ export const postSystemConfigurationRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -16792,26 +16663,20 @@ export const getSystemConfigurationKeyRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -16856,26 +16721,20 @@ export const postSystemConfigurationKeyRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -16922,26 +16781,20 @@ export const postSystemConfigurationBrandingRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -16969,26 +16822,20 @@ export const getSystemConfigurationMetadataOptionsDefaultRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -17039,26 +16886,20 @@ export const getWebConfigurationPageRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -17109,26 +16950,20 @@ export const getWebConfigurationPagesRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -17172,26 +17007,20 @@ export const getDevicesRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -17239,26 +17068,20 @@ export const deleteDevicesRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -17309,26 +17132,20 @@ export const getDevicesInfoRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -17379,26 +17196,20 @@ export const getDevicesOptionsRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -17455,26 +17266,20 @@ export const postDevicesOptionsRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -17542,26 +17347,20 @@ export const getDisplayPreferencesDisplayPreferencesIdRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -17646,26 +17445,20 @@ export const postDisplayPreferencesDisplayPreferencesIdRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -17693,26 +17486,20 @@ export const getEnvironmentDefaultDirectoryBrowserRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -17783,26 +17570,20 @@ export const getEnvironmentDirectoryContentsRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -17830,26 +17611,20 @@ export const getEnvironmentDrivesRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -17892,26 +17667,20 @@ export const getEnvironmentParentPathRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -17957,26 +17726,20 @@ export const postEnvironmentValidatePathRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -18063,26 +17826,20 @@ export const getItemsFiltersRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -18239,26 +17996,20 @@ export const getItemsFilters2Route = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -18558,26 +18309,20 @@ export const getGenresRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -18634,26 +18379,20 @@ export const getGenresGenreNameRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -18996,26 +18735,20 @@ export const getArtistsNameImagesImageTypeImageIndexRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -19357,26 +19090,20 @@ export const headArtistsNameImagesImageTypeImageIndexRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -19426,26 +19153,20 @@ export const getBrandingSplashscreenRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -19486,26 +19207,20 @@ export const postBrandingSplashscreenRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -19526,26 +19241,20 @@ export const deleteBrandingSplashscreenRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -19889,26 +19598,20 @@ export const getGenresNameImagesImageTypeRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -20251,26 +19954,20 @@ export const headGenresNameImagesImageTypeRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -20612,26 +20309,20 @@ export const getGenresNameImagesImageTypeImageIndexRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -20973,26 +20664,20 @@ export const headGenresNameImagesImageTypeImageIndexRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -21042,26 +20727,20 @@ export const getItemsItemIdImagesRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -21406,26 +21085,20 @@ export const getItemsItemIdImagesImageTypeRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -21506,26 +21179,20 @@ export const postItemsItemIdImagesImageTypeRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -21618,26 +21285,20 @@ export const deleteItemsItemIdImagesImageTypeRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -21982,26 +21643,20 @@ export const headItemsItemIdImagesImageTypeRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -22344,26 +21999,20 @@ export const getItemsItemIdImagesImageTypeImageIndexRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -22463,26 +22112,20 @@ export const postItemsItemIdImagesImageTypeImageIndexRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -22572,26 +22215,20 @@ export const deleteItemsItemIdImagesImageTypeImageIndexRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -22935,26 +22572,20 @@ export const headItemsItemIdImagesImageTypeImageIndexRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -23293,26 +22924,20 @@ export const getItemsItemIdImagesImageTypeImageIndexTagFormatMaxWidthMaxHeightPe
         description: 'The server is currently starting or is temporarily not available.',
         content: {},
         headers: z.object({
-          'Retry-After': {
-            description: 'A hint for when to retry the operation in full seconds.',
-            schema: z
-              .int32()
-              .exactOptional()
-              .openapi({
-                description: 'A hint for when to retry the operation in full seconds.',
-                param: { required: false },
-              }),
-          },
-          Message: {
-            description: 'A short plain-text reason why the server is not available.',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'A short plain-text reason why the server is not available.',
-                param: { required: false },
-              }),
-          },
+          'Retry-After': z
+            .int32()
+            .exactOptional()
+            .openapi({
+              description: 'A hint for when to retry the operation in full seconds.',
+              param: { required: false },
+            }),
+          Message: z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'A short plain-text reason why the server is not available.',
+              param: { required: false },
+            }),
         }),
       },
     },
@@ -23651,26 +23276,20 @@ export const headItemsItemIdImagesImageTypeImageIndexTagFormatMaxWidthMaxHeightP
         description: 'The server is currently starting or is temporarily not available.',
         content: {},
         headers: z.object({
-          'Retry-After': {
-            description: 'A hint for when to retry the operation in full seconds.',
-            schema: z
-              .int32()
-              .exactOptional()
-              .openapi({
-                description: 'A hint for when to retry the operation in full seconds.',
-                param: { required: false },
-              }),
-          },
-          Message: {
-            description: 'A short plain-text reason why the server is not available.',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'A short plain-text reason why the server is not available.',
-                param: { required: false },
-              }),
-          },
+          'Retry-After': z
+            .int32()
+            .exactOptional()
+            .openapi({
+              description: 'A hint for when to retry the operation in full seconds.',
+              param: { required: false },
+            }),
+          Message: z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'A short plain-text reason why the server is not available.',
+              param: { required: false },
+            }),
         }),
       },
     },
@@ -23780,26 +23399,20 @@ export const postItemsItemIdImagesImageTypeImageIndexIndexRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -24143,26 +23756,20 @@ export const getMusicGenresNameImagesImageTypeRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -24505,26 +24112,20 @@ export const headMusicGenresNameImagesImageTypeRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -24866,26 +24467,20 @@ export const getMusicGenresNameImagesImageTypeImageIndexRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -25227,26 +24822,20 @@ export const headMusicGenresNameImagesImageTypeImageIndexRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -25589,26 +25178,20 @@ export const getPersonsNameImagesImageTypeRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -25951,26 +25534,20 @@ export const headPersonsNameImagesImageTypeRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -26312,26 +25889,20 @@ export const getPersonsNameImagesImageTypeImageIndexRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -26673,26 +26244,20 @@ export const headPersonsNameImagesImageTypeImageIndexRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -27035,26 +26600,20 @@ export const getStudiosNameImagesImageTypeRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -27397,26 +26956,20 @@ export const headStudiosNameImagesImageTypeRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -27758,26 +27311,20 @@ export const getStudiosNameImagesImageTypeImageIndexRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -28119,26 +27666,20 @@ export const headStudiosNameImagesImageTypeImageIndexRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -28216,26 +27757,20 @@ export const getUserImageRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -28297,26 +27832,20 @@ export const postUserImageRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -28360,26 +27889,20 @@ export const deleteUserImageRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -28458,26 +27981,20 @@ export const headUserImageRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -28636,26 +28153,20 @@ export const getAlbumsItemIdInstantMixRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -28815,26 +28326,20 @@ export const getArtistsItemIdInstantMixRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -28994,26 +28499,20 @@ export const getItemsItemIdInstantMixRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -29165,26 +28664,20 @@ export const getMusicGenresNameInstantMixRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -29343,26 +28836,20 @@ export const getMusicGenresInstantMixRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -29523,26 +29010,20 @@ export const getPlaylistsItemIdInstantMixRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -29702,26 +29183,20 @@ export const getSongsItemIdInstantMixRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -29772,26 +29247,20 @@ export const getItemsItemIdExternalIdInfosRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -29859,26 +29328,20 @@ export const postItemsRemoteSearchApplyItemIdRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -29917,26 +29380,20 @@ export const postItemsRemoteSearchBookRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -29975,26 +29432,20 @@ export const postItemsRemoteSearchBoxSetRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -30033,26 +29484,20 @@ export const postItemsRemoteSearchMovieRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -30091,26 +29536,20 @@ export const postItemsRemoteSearchMusicAlbumRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -30149,26 +29588,20 @@ export const postItemsRemoteSearchMusicArtistRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -30207,26 +29640,20 @@ export const postItemsRemoteSearchMusicVideoRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -30265,26 +29692,20 @@ export const postItemsRemoteSearchPersonRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -30323,26 +29744,20 @@ export const postItemsRemoteSearchSeriesRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -30381,26 +29796,20 @@ export const postItemsRemoteSearchTrailerRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -30518,26 +29927,20 @@ export const postItemsItemIdRefreshRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -31862,26 +31265,20 @@ export const getItemsRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -31936,26 +31333,20 @@ export const deleteItemsRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -32020,26 +31411,20 @@ export const getUserItemsItemIdUserDataRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -32125,26 +31510,20 @@ export const postUserItemsItemIdUserDataRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -32402,26 +31781,20 @@ export const getUserItemsResumeRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -32478,26 +31851,20 @@ export const getItemsItemIdRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -32565,26 +31932,20 @@ export const postItemsItemIdRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -32635,26 +31996,20 @@ export const deleteItemsItemIdRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -32712,26 +32067,20 @@ export const postItemsItemIdContentTypeRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -32782,26 +32131,20 @@ export const getItemsItemIdMetadataEditorRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -32909,26 +32252,20 @@ export const getAlbumsItemIdSimilarRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -33036,26 +32373,20 @@ export const getArtistsItemIdSimilarRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -33120,26 +32451,20 @@ export const getItemsItemIdAncestorsRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -33260,26 +32585,20 @@ export const getItemsItemIdCollectionsRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -33329,26 +32648,20 @@ export const getItemsItemIdDownloadRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -33398,26 +32711,20 @@ export const getItemsItemIdFileRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -33525,26 +32832,20 @@ export const getItemsItemIdSimilarRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -33647,26 +32948,20 @@ export const getItemsItemIdThemeMediaRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -33776,26 +33071,20 @@ export const getItemsItemIdThemeSongsRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -33905,26 +33194,20 @@ export const getItemsItemIdThemeVideosRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -33980,26 +33263,20 @@ export const getItemsCountsRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -34070,26 +33347,20 @@ export const getLibrariesAvailableOptionsRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -34127,26 +33398,20 @@ export const postLibraryMediaUpdatedRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -34190,26 +33455,20 @@ export const getLibraryMediaFoldersRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -34258,26 +33517,20 @@ export const postLibraryMoviesAddedRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -34326,26 +33579,20 @@ export const postLibraryMoviesUpdatedRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -34373,26 +33620,20 @@ export const getLibraryPhysicalPathsRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -34413,26 +33654,20 @@ export const postLibraryRefreshRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -34469,26 +33704,20 @@ export const postLibrarySeriesAddedRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -34525,26 +33754,20 @@ export const postLibrarySeriesUpdatedRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -34652,26 +33875,20 @@ export const getMoviesItemIdSimilarRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -34779,26 +33996,20 @@ export const getShowsItemIdSimilarRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -34906,26 +34117,20 @@ export const getTrailersItemIdSimilarRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -34953,26 +34158,20 @@ export const getLibraryVirtualFoldersRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -35073,26 +34272,20 @@ export const postLibraryVirtualFoldersRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -35143,26 +34336,20 @@ export const deleteLibraryVirtualFoldersRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -35213,26 +34400,20 @@ export const postLibraryVirtualFoldersLibraryOptionsRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -35318,26 +34499,20 @@ export const postLibraryVirtualFoldersNameRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -35388,26 +34563,20 @@ export const postLibraryVirtualFoldersPathsRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -35469,26 +34638,20 @@ export const deleteLibraryVirtualFoldersPathsRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -35532,26 +34695,20 @@ export const postLibraryVirtualFoldersPathsUpdateRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -35595,26 +34752,20 @@ export const getLiveTvChannelMappingOptionsRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -35659,26 +34810,20 @@ export const postLiveTvChannelMappingsRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -35996,26 +35141,20 @@ export const getLiveTvChannelsRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -36080,26 +35219,20 @@ export const getLiveTvChannelsChannelIdRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -36127,26 +35260,20 @@ export const getLiveTvGuideInfoRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -36174,26 +35301,20 @@ export const getLiveTvInfoRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -36271,26 +35392,20 @@ export const postLiveTvListingProvidersRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -36327,26 +35442,20 @@ export const deleteLiveTvListingProvidersRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -36374,26 +35483,20 @@ export const getLiveTvListingProvidersDefaultRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -36473,26 +35576,20 @@ export const getLiveTvListingProvidersLineupsRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -36518,26 +35615,20 @@ export const getLiveTvListingProvidersSchedulesDirectCountriesRoute = createRout
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -36582,26 +35673,20 @@ export const getLiveTvLiveRecordingsRecordingIdStreamRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -36657,26 +35742,20 @@ export const getLiveTvLiveStreamFilesStreamIdStreamContainerRoute = createRoute(
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -37080,26 +36159,20 @@ export const getLiveTvProgramsRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -37141,26 +36214,20 @@ export const postLiveTvProgramsRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -37225,26 +36292,20 @@ export const getLiveTvProgramsProgramIdRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -37516,26 +36577,20 @@ export const getLiveTvProgramsRecommendedRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -37836,26 +36891,20 @@ export const getLiveTvRecordingsRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -37920,26 +36969,20 @@ export const getLiveTvRecordingsRecordingIdRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -37983,26 +37026,20 @@ export const deleteLiveTvRecordingsRecordingIdRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -38046,26 +37083,20 @@ export const getLiveTvRecordingsFoldersRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -38121,26 +37152,20 @@ export const getLiveTvSeriesTimersRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -38177,26 +37202,20 @@ export const postLiveTvSeriesTimersRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -38247,26 +37266,20 @@ export const getLiveTvSeriesTimersTimerIdRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -38316,26 +37329,20 @@ export const postLiveTvSeriesTimersTimerIdRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -38371,26 +37378,20 @@ export const deleteLiveTvSeriesTimersTimerIdRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -38470,26 +37471,20 @@ export const getLiveTvTimersRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -38520,26 +37515,20 @@ export const postLiveTvTimersRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -38582,26 +37571,20 @@ export const getLiveTvTimersTimerIdRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -38645,26 +37628,20 @@ export const postLiveTvTimersTimerIdRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -38700,26 +37677,20 @@ export const deleteLiveTvTimersTimerIdRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -38763,26 +37734,20 @@ export const getLiveTvTimersDefaultsRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -38820,26 +37785,20 @@ export const postLiveTvTunerHostsRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -38876,26 +37835,20 @@ export const deleteLiveTvTunerHostsRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -38923,26 +37876,20 @@ export const getLiveTvTunerHostsTypesRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -38978,26 +37925,20 @@ export const postLiveTvTunersTunerIdResetRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -39042,26 +37983,20 @@ export const getLiveTvTunersDiscoverRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -39106,26 +38041,20 @@ export const getLiveTvTunersDiscvoverRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -39153,26 +38082,20 @@ export const getLocalizationCountriesRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -39200,26 +38123,20 @@ export const getLocalizationCulturesRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -39247,26 +38164,20 @@ export const getLocalizationOptionsRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -39294,26 +38205,20 @@ export const getLocalizationParentalRatingsRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -39364,26 +38269,20 @@ export const getAudioItemIdLyricsRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -39458,26 +38357,20 @@ export const postAudioItemIdLyricsRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -39521,26 +38414,20 @@ export const deleteAudioItemIdLyricsRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -39591,26 +38478,20 @@ export const getAudioItemIdRemoteSearchLyricsRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -39672,26 +38553,20 @@ export const postAudioItemIdRemoteSearchLyricsLyricIdRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -39742,26 +38617,20 @@ export const getProvidersLyricsLyricIdRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -39826,26 +38695,20 @@ export const getItemsItemIdPlaybackInfoRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -40134,26 +38997,20 @@ export const postItemsItemIdPlaybackInfoRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -40189,26 +39046,20 @@ export const postLiveStreamsCloseRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -40436,26 +39287,20 @@ export const postLiveStreamsOpenRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -40514,26 +39359,20 @@ export const getPlaybackBitrateTestRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -40601,26 +39440,20 @@ export const getMediaSegmentsItemIdRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -40734,26 +39567,20 @@ export const getMoviesRecommendationsRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -40810,26 +39637,20 @@ export const getMusicGenresGenreNameRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -40858,26 +39679,20 @@ export const getPackagesRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -40934,26 +39749,20 @@ export const getPackagesNameRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -41035,26 +39844,20 @@ export const postPackagesInstalledNameRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -41090,26 +39893,20 @@ export const deletePackagesInstallingPackageIdRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -41137,26 +39934,20 @@ export const getRepositoriesRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -41188,26 +39979,20 @@ export const postRepositoriesRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -41504,26 +40289,20 @@ export const getPersonsRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -41588,26 +40367,20 @@ export const getPersonsNameRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -41710,26 +40483,20 @@ export const postPlaylistsRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -41780,26 +40547,20 @@ export const getPlaylistsPlaylistIdRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -41874,26 +40635,20 @@ export const postPlaylistsPlaylistIdRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -42081,26 +40836,20 @@ export const getPlaylistsPlaylistIdItemsRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -42201,26 +40950,20 @@ export const postPlaylistsPlaylistIdItemsRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -42288,26 +41031,20 @@ export const deletePlaylistsPlaylistIdItemsRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -42388,26 +41125,20 @@ export const postPlaylistsPlaylistIdItemsItemIdMoveNewIndexRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -42467,26 +41198,20 @@ export const getPlaylistsPlaylistIdUsersRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -42555,26 +41280,20 @@ export const getPlaylistsPlaylistIdUsersUserIdRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -42660,26 +41379,20 @@ export const postPlaylistsPlaylistIdUsersUserIdRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -42741,26 +41454,20 @@ export const deletePlaylistsPlaylistIdUsersUserIdRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -42797,26 +41504,20 @@ export const postSessionsPlayingRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -42852,26 +41553,20 @@ export const postSessionsPlayingPingRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -42914,26 +41609,20 @@ export const postSessionsPlayingProgressRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -42970,26 +41659,20 @@ export const postSessionsPlayingStoppedRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -43066,26 +41749,20 @@ export const postUserPlayedItemsItemIdRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -43150,26 +41827,20 @@ export const deleteUserPlayedItemsItemIdRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -43197,26 +41868,20 @@ export const getPluginsRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -43260,26 +41925,20 @@ export const deletePluginsPluginIdRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -43334,26 +41993,20 @@ export const deletePluginsPluginIdVersionRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -43408,26 +42061,20 @@ export const postPluginsPluginIdVersionDisableRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -43482,26 +42129,20 @@ export const postPluginsPluginIdVersionEnableRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -43559,26 +42200,20 @@ export const getPluginsPluginIdVersionImageRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -43629,26 +42264,20 @@ export const getPluginsPluginIdConfigurationRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -43693,26 +42322,20 @@ export const postPluginsPluginIdConfigurationRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -43756,26 +42379,20 @@ export const postPluginsPluginIdManifestRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -43837,26 +42454,20 @@ export const postQuickConnectAuthorizeRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -43905,26 +42516,20 @@ export const getQuickConnectConnectRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -43949,26 +42554,20 @@ export const getQuickConnectEnabledRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -44001,26 +42600,20 @@ export const postQuickConnectInitiateRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -44164,26 +42757,20 @@ export const getItemsItemIdRemoteImagesRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -44268,26 +42855,20 @@ export const postItemsItemIdRemoteImagesDownloadRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -44338,26 +42919,20 @@ export const getItemsItemIdRemoteImagesProvidersRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -44413,26 +42988,20 @@ export const getScheduledTasksRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -44483,26 +43052,20 @@ export const getScheduledTasksTaskIdRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -44555,26 +43118,20 @@ export const postScheduledTasksTaskIdTriggersRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -44618,26 +43175,20 @@ export const postScheduledTasksRunningTaskIdRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -44681,26 +43232,20 @@ export const deleteScheduledTasksRunningTaskIdRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -44982,26 +43527,20 @@ export const getSearchHintsRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -45029,26 +43568,20 @@ export const getAuthPasswordResetProvidersRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -45076,26 +43609,20 @@ export const getAuthProvidersRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -45171,26 +43698,20 @@ export const getSessionsRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -45235,26 +43756,20 @@ export const postSessionsSessionIdCommandRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -45347,26 +43862,20 @@ export const postSessionsSessionIdCommandCommandRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -45424,26 +43933,20 @@ export const postSessionsSessionIdMessageRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -45599,26 +44102,20 @@ export const postSessionsSessionIdPlayingRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -45709,26 +44206,20 @@ export const postSessionsSessionIdPlayingCommandRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -45821,26 +44312,20 @@ export const postSessionsSessionIdSystemCommandRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -45887,26 +44372,20 @@ export const postSessionsSessionIdUserUserIdRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -45953,26 +44432,20 @@ export const deleteSessionsSessionIdUserUserIdRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -46083,26 +44556,20 @@ export const postSessionsSessionIdViewingRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -46196,26 +44663,20 @@ export const postSessionsCapabilitiesRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -46267,26 +44728,20 @@ export const postSessionsCapabilitiesFullRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -46307,26 +44762,20 @@ export const postSessionsLogoutRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -46374,26 +44823,20 @@ export const postSessionsViewingRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -46414,26 +44857,20 @@ export const postStartupCompleteRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -46461,26 +44898,20 @@ export const getStartupConfigurationRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -46525,26 +44956,20 @@ export const postStartupConfigurationRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -46573,26 +44998,20 @@ export const getStartupFirstUserRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -46637,26 +45056,20 @@ export const postStartupRemoteAccessRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -46685,26 +45098,20 @@ export const getStartupUserRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -46742,26 +45149,20 @@ export const postStartupUserRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -47043,26 +45444,20 @@ export const getStudiosRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -47119,26 +45514,20 @@ export const getStudiosNameRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -47166,26 +45555,20 @@ export const getFallbackFontFontsRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -47224,26 +45607,20 @@ export const getFallbackFontFontsNameRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -47319,26 +45696,20 @@ export const getItemsItemIdRemoteSearchSubtitlesLanguageRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -47393,26 +45764,20 @@ export const postItemsItemIdRemoteSearchSubtitlesSubtitleIdRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -47451,26 +45816,20 @@ export const getProvidersSubtitlesSubtitlesSubtitleIdRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -47570,26 +45929,20 @@ export const getVideosItemIdMediaSourceIdSubtitlesIndexSubtitlesM3u8Route = crea
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -47648,26 +46001,20 @@ export const postVideosItemIdSubtitlesRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -47730,26 +46077,20 @@ export const deleteVideosItemIdSubtitlesIndexRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -47970,26 +46311,20 @@ export const getVideosRouteItemIdRouteMediaSourceIdSubtitlesRouteIndexRouteStart
         description: 'The server is currently starting or is temporarily not available.',
         content: {},
         headers: z.object({
-          'Retry-After': {
-            description: 'A hint for when to retry the operation in full seconds.',
-            schema: z
-              .int32()
-              .exactOptional()
-              .openapi({
-                description: 'A hint for when to retry the operation in full seconds.',
-                param: { required: false },
-              }),
-          },
-          Message: {
-            description: 'A short plain-text reason why the server is not available.',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'A short plain-text reason why the server is not available.',
-                param: { required: false },
-              }),
-          },
+          'Retry-After': z
+            .int32()
+            .exactOptional()
+            .openapi({
+              description: 'A hint for when to retry the operation in full seconds.',
+              param: { required: false },
+            }),
+          Message: z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'A short plain-text reason why the server is not available.',
+              param: { required: false },
+            }),
         }),
       },
     },
@@ -48192,26 +46527,20 @@ export const getVideosRouteItemIdRouteMediaSourceIdSubtitlesRouteIndexStreamRout
         description: 'The server is currently starting or is temporarily not available.',
         content: {},
         headers: z.object({
-          'Retry-After': {
-            description: 'A hint for when to retry the operation in full seconds.',
-            schema: z
-              .int32()
-              .exactOptional()
-              .openapi({
-                description: 'A hint for when to retry the operation in full seconds.',
-                param: { required: false },
-              }),
-          },
-          Message: {
-            description: 'A short plain-text reason why the server is not available.',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'A short plain-text reason why the server is not available.',
-                param: { required: false },
-              }),
-          },
+          'Retry-After': z
+            .int32()
+            .exactOptional()
+            .openapi({
+              description: 'A hint for when to retry the operation in full seconds.',
+              param: { required: false },
+            }),
+          Message: z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'A short plain-text reason why the server is not available.',
+              param: { required: false },
+            }),
         }),
       },
     },
@@ -48337,26 +46666,20 @@ export const getItemsSuggestionsRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -48407,26 +46730,20 @@ export const getSyncPlayIdRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -48466,26 +46783,20 @@ export const postSyncPlayBufferingRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -48525,26 +46836,20 @@ export const postSyncPlayJoinRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -48567,26 +46872,20 @@ export const postSyncPlayLeaveRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -48616,26 +46915,20 @@ export const getSyncPlayListRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -48681,26 +46974,20 @@ export const postSyncPlayMovePlaylistItemRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -48748,26 +47035,20 @@ export const postSyncPlayNewRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -48807,26 +47088,20 @@ export const postSyncPlayNextItemRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -48849,26 +47124,20 @@ export const postSyncPlayPauseRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -48908,26 +47177,20 @@ export const postSyncPlayPingRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -48971,26 +47234,20 @@ export const postSyncPlayPreviousItemRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -49030,26 +47287,20 @@ export const postSyncPlayQueueRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -49089,26 +47340,20 @@ export const postSyncPlayReadyRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -49154,26 +47399,20 @@ export const postSyncPlayRemoveFromPlaylistRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -49213,26 +47452,20 @@ export const postSyncPlaySeekRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -49278,26 +47511,20 @@ export const postSyncPlaySetIgnoreWaitRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -49337,26 +47564,20 @@ export const postSyncPlaySetNewQueueRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -49402,26 +47623,20 @@ export const postSyncPlaySetPlaylistItemRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -49467,26 +47682,20 @@ export const postSyncPlaySetRepeatModeRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -49532,26 +47741,20 @@ export const postSyncPlaySetShuffleModeRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -49574,26 +47777,20 @@ export const postSyncPlayStopRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -49616,26 +47813,20 @@ export const postSyncPlayUnpauseRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -49672,26 +47863,20 @@ export const getSystemEndpointRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -49726,26 +47911,20 @@ export const getSystemInfoRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -49773,26 +47952,20 @@ export const getSystemInfoPublicRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -49826,26 +47999,20 @@ export const getSystemInfoStorageRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -49880,26 +48047,20 @@ export const getSystemLogsRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -49953,26 +48114,20 @@ export const getSystemLogsLogRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -49998,26 +48153,20 @@ export const getSystemPingRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -50042,26 +48191,20 @@ export const postSystemPingRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -50088,26 +48231,20 @@ export const postSystemRestartRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -50135,26 +48272,20 @@ export const postSystemShutdownRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -50180,26 +48311,20 @@ export const getGetUtcTimeRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -51487,26 +49612,20 @@ export const getTrailersRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -51606,26 +49725,20 @@ export const getVideosItemIdTrickplayWidthIndexJpgRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -51707,26 +49820,20 @@ export const getVideosItemIdTrickplayWidthTilesM3u8Route = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -52019,26 +50126,20 @@ export const getShowsSeriesIdEpisodesRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -52214,26 +50315,20 @@ export const getShowsSeriesIdSeasonsRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -52469,26 +50564,20 @@ export const getShowsNextUpRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -52661,26 +50750,20 @@ export const getShowsUpcomingRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -52997,26 +51080,20 @@ export const getAudioItemIdUniversalRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -53333,26 +51410,20 @@ export const headAudioItemIdUniversalRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -53408,26 +51479,20 @@ export const getUsersRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -53488,26 +51553,20 @@ export const postUsersRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -53558,26 +51617,20 @@ export const getUsersUserIdRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -53621,26 +51674,20 @@ export const deleteUsersUserIdRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -53700,26 +51747,20 @@ export const postUsersUserIdPolicyRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -53769,26 +51810,20 @@ export const postUsersAuthenticateByNameRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -53831,26 +51866,20 @@ export const postUsersAuthenticateWithQuickConnectRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -53908,26 +51937,20 @@ export const postUsersConfigurationRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -53976,26 +51999,20 @@ export const postUsersForgotPasswordRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -54043,26 +52060,20 @@ export const postUsersForgotPasswordPinRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -54097,26 +52108,20 @@ export const getUsersMeRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -54167,26 +52172,20 @@ export const postUsersNewRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -54260,26 +52259,20 @@ export const postUsersPasswordRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -54305,26 +52298,20 @@ export const getUsersPublicRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -54380,26 +52367,20 @@ export const getItemsItemIdIntrosRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -54456,26 +52437,20 @@ export const getItemsItemIdLocalTrailersRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -54532,26 +52507,20 @@ export const getItemsItemIdSpecialFeaturesRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -54745,26 +52714,20 @@ export const getItemsLatestRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -54808,26 +52771,20 @@ export const getItemsRootRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -54884,26 +52841,20 @@ export const postUserFavoriteItemsItemIdRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -54960,26 +52911,20 @@ export const deleteUserFavoriteItemsItemIdRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -55049,26 +52994,20 @@ export const postUserItemsItemIdRatingRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -55125,26 +53064,20 @@ export const deleteUserItemsItemIdRatingRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -55228,26 +53161,20 @@ export const getUserViewsRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -55299,26 +53226,20 @@ export const getUserViewsGroupingOptionsRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -55397,26 +53318,20 @@ export const getVideosVideoIdMediaSourceIdAttachmentsIndexRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -55472,26 +53387,20 @@ export const getVideosItemIdAdditionalPartsRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -55535,26 +53444,20 @@ export const deleteVideosItemIdAlternateSourcesRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -56506,26 +54409,20 @@ export const getVideosItemIdStreamRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -57476,26 +55373,20 @@ export const headVideosItemIdStreamRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -58444,26 +56335,20 @@ export const getVideosItemIdStreamContainerRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -59412,26 +57297,20 @@ export const headVideosItemIdStreamContainerRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -59477,26 +57356,20 @@ export const postVideosMergeVersionsRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -59760,26 +57633,20 @@ export const getYearsRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -59852,26 +57719,20 @@ export const getYearsYearRoute = createRoute({
       description: 'The server is currently starting or is temporarily not available.',
       content: {},
       headers: z.object({
-        'Retry-After': {
-          description: 'A hint for when to retry the operation in full seconds.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'A hint for when to retry the operation in full seconds.',
-              param: { required: false },
-            }),
-        },
-        Message: {
-          description: 'A short plain-text reason why the server is not available.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A short plain-text reason why the server is not available.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'A hint for when to retry the operation in full seconds.',
+            param: { required: false },
+          }),
+        Message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A short plain-text reason why the server is not available.',
+            param: { required: false },
+          }),
       }),
     },
   },

@@ -507,7 +507,7 @@ Create a new account for a *merchant* and the *merchant* could be a seller or re
   "merchant_name": "NewAge Retailer",
   "return_url": "https://www.example.com/success",
   "enable_payment_response_hash": true,
-  "payment_response_hash_key": "xkkdf909012sdjki2dkh5sdf",
+  "payment_response_hash_key": "xkkd",
   "redirect_to_merchant_with_http_post": true,
   "merchant_details": {
     "primary_contact_person": "John Doe",
@@ -663,7 +663,7 @@ Retrieve a *merchant* account details.
   "merchant_name": "NewAge Retailer",
   "return_url": "https://www.example.com/success",
   "enable_payment_response_hash": true,
-  "payment_response_hash_key": "xkkdf909012sdjki2dkh5sdf",
+  "payment_response_hash_key": "xkkd",
   "redirect_to_merchant_with_http_post": true,
   "merchant_details": {
     "primary_contact_person": "John Doe",
@@ -979,7 +979,7 @@ Updates details of an existing merchant account. Helpful in updating merchant de
   "merchant_name": "NewAge Retailer",
   "return_url": "https://www.example.com/success",
   "enable_payment_response_hash": true,
-  "payment_response_hash_key": "xkkdf909012sdjki2dkh5sdf",
+  "payment_response_hash_key": "xkkd",
   "redirect_to_merchant_with_http_post": true,
   "merchant_details": {
     "primary_contact_person": "John Doe",
@@ -1248,7 +1248,7 @@ Lists all the *profiles* under a merchant
     "profile_name": "string",
     "return_url": "https://www.example.com/success",
     "enable_payment_response_hash": true,
-    "payment_response_hash_key": "string",
+    "payment_response_hash_key": "xkkd",
     "redirect_to_merchant_with_http_post": true,
     "webhook_details": {
       "webhook_version": "1.0.2",
@@ -2900,7 +2900,7 @@ Creates a new *profile* for a merchant
   "profile_name": "string",
   "return_url": "https://www.example.com/success",
   "enable_payment_response_hash": true,
-  "payment_response_hash_key": "string",
+  "payment_response_hash_key": "xkkd",
   "redirect_to_merchant_with_http_post": true,
   "webhook_details": {
     "webhook_version": "1.0.2",
@@ -3414,7 +3414,7 @@ Retrieve existing *profile*
   "profile_name": "string",
   "return_url": "https://www.example.com/success",
   "enable_payment_response_hash": true,
-  "payment_response_hash_key": "string",
+  "payment_response_hash_key": "xkkd",
   "redirect_to_merchant_with_http_post": true,
   "webhook_details": {
     "webhook_version": "1.0.2",
@@ -5063,7 +5063,7 @@ Update the *profile*
   "profile_name": "string",
   "return_url": "https://www.example.com/success",
   "enable_payment_response_hash": true,
-  "payment_response_hash_key": "string",
+  "payment_response_hash_key": "xkkd",
   "redirect_to_merchant_with_http_post": true,
   "webhook_details": {
     "webhook_version": "1.0.2",
@@ -5746,8 +5746,8 @@ Creates a new Merchant Connector for the merchant account. The connector could b
 |» » metadata|body|object \| null|false|Metadata is useful for storing additional, unstructured information on an object.|
 |» payment_methods_enabled|body|[[PaymentMethodsEnabled](#schemapaymentmethodsenabled)]|false|An object containing the details about the payment methods that need to be enabled under this merchant connector account|
 |» connector_webhook_details|body|object \| null|false|none|
-|» » merchant_secret|body|string|true|none|
-|» » additional_secret|body|string|true|none|
+|» » merchant_secret|body|string|true|Webhook verification secret. Must contain at least one non-whitespace character.|
+|» » additional_secret|body|string|true|Optional additional secret. When supplied, must contain a non-whitespace character.|
 |» metadata|body|object \| null|false|Metadata is useful for storing additional, unstructured information on an object.|
 |» test_mode|body|boolean \| null|false|A boolean value to indicate if the connector is in Test mode. By default, its value is false.|
 |» disabled|body|boolean \| null|false|A boolean value to indicate if the connector is disabled. By default, its value is false.|
@@ -5896,6 +5896,7 @@ Creates a new Merchant Connector for the merchant account. The connector could b
 |» connector_name|opennode|
 |» connector_name|paybox|
 |» connector_name|paydotcom|
+|» connector_name|payhound|
 |» connector_name|payload|
 |» connector_name|payme|
 |» connector_name|paynearme|
@@ -6234,8 +6235,8 @@ To update an existing Merchant Connector account. Helpful in enabling/disabling 
 |» » metadata|body|object \| null|false|Metadata is useful for storing additional, unstructured information on an object.|
 |» payment_methods_enabled|body|[[PaymentMethodsEnabled](#schemapaymentmethodsenabled)]|false|An object containing the details about the payment methods that need to be enabled under this merchant connector account|
 |» connector_webhook_details|body|object \| null|false|none|
-|» » merchant_secret|body|string|true|none|
-|» » additional_secret|body|string|true|none|
+|» » merchant_secret|body|string|true|Webhook verification secret. Must contain at least one non-whitespace character.|
+|» » additional_secret|body|string|true|Optional additional secret. When supplied, must contain a non-whitespace character.|
 |» metadata|body|object \| null|false|Metadata is useful for storing additional, unstructured information on an object.|
 |» test_mode|body|boolean \| null|false|A boolean value to indicate if the connector is in Test mode. By default, its value is false.|
 |» disabled|body|boolean \| null|false|A boolean value to indicate if the connector is disabled. By default, its value is false.|
@@ -7220,6 +7221,49 @@ This endpoint is the starting point for various payment flows:
 |» » » first_name|body|string \| null|false|The first name for the address|
 |» » » last_name|body|string \| null|false|The last name for the address|
 |» » » origin_zip|body|string \| null|false|The zip/postal code of the origin|
+|» sender_details|body|object \| null|false|none|
+|» » *oneOf*|body|object|false|none|
+|» » first_name|body|string \| null|false|The sender's first name. When neither the first nor the last name is provided, the name<br>from the billing address of the payment method is used instead.|
+|» » last_name|body|string \| null|false|The sender's last name. When neither the first nor the last name is provided, the name<br>from the billing address of the payment method is used instead.|
+|» » date_of_birth|body|string(date) \| null|false|The sender's date of birth, in the format yyyy-mm-dd.|
+|» » address|body|object \| null|false|none|
+|» » » city|body|string \| null|false|The city, district, suburb, town, or village of the address.|
+|» » » country|body|object \| null|false|none|
+|» » » line1|body|string \| null|false|The first line of the street address or P.O. Box.|
+|» » » line2|body|string \| null|false|The second line of the street address or P.O. Box (e.g., apartment, suite, unit, or building).|
+|» » » line3|body|string \| null|false|The third line of the street address, if applicable.|
+|» » » zip|body|string \| null|false|The zip/postal code for the address|
+|» » » state|body|string \| null|false|The address state|
+|» » » first_name|body|string \| null|false|The first name for the address|
+|» » » last_name|body|string \| null|false|The last name for the address|
+|» » » origin_zip|body|string \| null|false|The zip/postal code of the origin|
+|» » email|body|string \| null|false|The sender's email address.|
+|» » phone|body|object \| null|false|none|
+|» » » number|body|string \| null|false|The contact number|
+|» » » country_code|body|string \| null|false|The country code attached to the number|
+|» » reference_id|body|string \| null|false|The merchant's stable identifier for the sender|
+|» » source_of_funds|body|object \| null|false|none|
+|» » type|body|string|true|none|
+|» » *oneOf*|body|object|false|none|
+|» » company_name|body|string|true|The sender's legal company name.|
+|» » address|body|object \| null|false|none|
+|» » » city|body|string \| null|false|The city, district, suburb, town, or village of the address.|
+|» » » country|body|object \| null|false|none|
+|» » » line1|body|string \| null|false|The first line of the street address or P.O. Box.|
+|» » » line2|body|string \| null|false|The second line of the street address or P.O. Box (e.g., apartment, suite, unit, or building).|
+|» » » line3|body|string \| null|false|The third line of the street address, if applicable.|
+|» » » zip|body|string \| null|false|The zip/postal code for the address|
+|» » » state|body|string \| null|false|The address state|
+|» » » first_name|body|string \| null|false|The first name for the address|
+|» » » last_name|body|string \| null|false|The last name for the address|
+|» » » origin_zip|body|string \| null|false|The zip/postal code of the origin|
+|» » email|body|string \| null|false|The sender's email address.|
+|» » phone|body|object \| null|false|none|
+|» » » number|body|string \| null|false|The contact number|
+|» » » country_code|body|string \| null|false|The country code attached to the number|
+|» » reference_id|body|string \| null|false|The merchant's stable identifier for the sender.|
+|» » source_of_funds|body|object \| null|false|none|
+|» » type|body|string|true|none|
 |» tokenization|body|object \| null|false|none|
 |» partner_merchant_identifier_details|body|object \| null|false|none|
 |» » partner_details|body|object \| null|false|none|
@@ -7515,6 +7559,7 @@ This endpoint is the starting point for various payment flows:
 |» connector|opennode|
 |» connector|paybox|
 |» connector|paydotcom|
+|» connector|payhound|
 |» connector|payload|
 |» connector|payme|
 |» connector|paynearme|
@@ -7916,6 +7961,8 @@ This endpoint is the starting point for various payment flows:
 |» » » type|email|
 |» » » type|phone|
 |» » » type|social_network|
+|» » type|individual|
+|» » type|corporate|
 |» » billing_frequency|month|
 
 > Example responses
@@ -8844,6 +8891,28 @@ Retrieves a Payment. This API can also be used to get the status of a previously
       "origin_zip": "08807"
     }
   },
+  "sender_details": {
+    "first_name": "John",
+    "last_name": "Doe",
+    "address": {
+      "city": "New York",
+      "country": {},
+      "line1": "123, King Street",
+      "line2": "Powelson Avenue",
+      "line3": "Bridgewater",
+      "zip": "08807",
+      "state": "New York",
+      "first_name": "John",
+      "last_name": "Doe",
+      "origin_zip": "08807"
+    },
+    "phone": {
+      "number": "********89",
+      "country_code": "+44"
+    },
+    "email": "jo******@example.com",
+    "type": "individual"
+  },
   "tokenization": {},
   "partner_merchant_identifier_details": {
     "partner_details": {
@@ -9385,6 +9454,49 @@ To update the properties of a *PaymentIntent* object. This may include attaching
 |» » » first_name|body|string \| null|false|The first name for the address|
 |» » » last_name|body|string \| null|false|The last name for the address|
 |» » » origin_zip|body|string \| null|false|The zip/postal code of the origin|
+|» sender_details|body|object \| null|false|none|
+|» » *oneOf*|body|object|false|none|
+|» » first_name|body|string \| null|false|The sender's first name. When neither the first nor the last name is provided, the name<br>from the billing address of the payment method is used instead.|
+|» » last_name|body|string \| null|false|The sender's last name. When neither the first nor the last name is provided, the name<br>from the billing address of the payment method is used instead.|
+|» » date_of_birth|body|string(date) \| null|false|The sender's date of birth, in the format yyyy-mm-dd.|
+|» » address|body|object \| null|false|none|
+|» » » city|body|string \| null|false|The city, district, suburb, town, or village of the address.|
+|» » » country|body|object \| null|false|none|
+|» » » line1|body|string \| null|false|The first line of the street address or P.O. Box.|
+|» » » line2|body|string \| null|false|The second line of the street address or P.O. Box (e.g., apartment, suite, unit, or building).|
+|» » » line3|body|string \| null|false|The third line of the street address, if applicable.|
+|» » » zip|body|string \| null|false|The zip/postal code for the address|
+|» » » state|body|string \| null|false|The address state|
+|» » » first_name|body|string \| null|false|The first name for the address|
+|» » » last_name|body|string \| null|false|The last name for the address|
+|» » » origin_zip|body|string \| null|false|The zip/postal code of the origin|
+|» » email|body|string \| null|false|The sender's email address.|
+|» » phone|body|object \| null|false|none|
+|» » » number|body|string \| null|false|The contact number|
+|» » » country_code|body|string \| null|false|The country code attached to the number|
+|» » reference_id|body|string \| null|false|The merchant's stable identifier for the sender|
+|» » source_of_funds|body|object \| null|false|none|
+|» » type|body|string|true|none|
+|» » *oneOf*|body|object|false|none|
+|» » company_name|body|string|true|The sender's legal company name.|
+|» » address|body|object \| null|false|none|
+|» » » city|body|string \| null|false|The city, district, suburb, town, or village of the address.|
+|» » » country|body|object \| null|false|none|
+|» » » line1|body|string \| null|false|The first line of the street address or P.O. Box.|
+|» » » line2|body|string \| null|false|The second line of the street address or P.O. Box (e.g., apartment, suite, unit, or building).|
+|» » » line3|body|string \| null|false|The third line of the street address, if applicable.|
+|» » » zip|body|string \| null|false|The zip/postal code for the address|
+|» » » state|body|string \| null|false|The address state|
+|» » » first_name|body|string \| null|false|The first name for the address|
+|» » » last_name|body|string \| null|false|The last name for the address|
+|» » » origin_zip|body|string \| null|false|The zip/postal code of the origin|
+|» » email|body|string \| null|false|The sender's email address.|
+|» » phone|body|object \| null|false|none|
+|» » » number|body|string \| null|false|The contact number|
+|» » » country_code|body|string \| null|false|The country code attached to the number|
+|» » reference_id|body|string \| null|false|The merchant's stable identifier for the sender.|
+|» » source_of_funds|body|object \| null|false|none|
+|» » type|body|string|true|none|
 |» tokenization|body|object \| null|false|none|
 |» partner_merchant_identifier_details|body|object \| null|false|none|
 |» » partner_details|body|object \| null|false|none|
@@ -9520,6 +9632,7 @@ To update the properties of a *PaymentIntent* object. This may include attaching
 |» connector|opennode|
 |» connector|paybox|
 |» connector|paydotcom|
+|» connector|payhound|
 |» connector|payload|
 |» connector|payme|
 |» connector|paynearme|
@@ -9921,6 +10034,8 @@ To update the properties of a *PaymentIntent* object. This may include attaching
 |» » » type|email|
 |» » » type|phone|
 |» » » type|social_network|
+|» » type|individual|
+|» » type|corporate|
 |» » billing_frequency|month|
 
 > Example responses
@@ -10609,6 +10724,7 @@ prefetch, retry records, address updates, or other confirmation side effects.
 |» connector|opennode|
 |» connector|paybox|
 |» connector|paydotcom|
+|» connector|payhound|
 |» connector|payload|
 |» connector|payme|
 |» connector|paynearme|
@@ -11843,6 +11959,28 @@ prefetch, retry records, address updates, or other confirmation side effects.
       "last_name": "Doe",
       "origin_zip": "08807"
     }
+  },
+  "sender_details": {
+    "first_name": "John",
+    "last_name": "Doe",
+    "address": {
+      "city": "New York",
+      "country": {},
+      "line1": "123, King Street",
+      "line2": "Powelson Avenue",
+      "line3": "Bridgewater",
+      "zip": "08807",
+      "state": "New York",
+      "first_name": "John",
+      "last_name": "Doe",
+      "origin_zip": "08807"
+    },
+    "phone": {
+      "number": "********89",
+      "country_code": "+44"
+    },
+    "email": "jo******@example.com",
+    "type": "individual"
   },
   "tokenization": {},
   "partner_merchant_identifier_details": {
@@ -13041,6 +13179,28 @@ Payments outside the authenticated merchant/profile scope are treated as not fou
       "last_name": "Doe",
       "origin_zip": "08807"
     }
+  },
+  "sender_details": {
+    "first_name": "John",
+    "last_name": "Doe",
+    "address": {
+      "city": "New York",
+      "country": {},
+      "line1": "123, King Street",
+      "line2": "Powelson Avenue",
+      "line3": "Bridgewater",
+      "zip": "08807",
+      "state": "New York",
+      "first_name": "John",
+      "last_name": "Doe",
+      "origin_zip": "08807"
+    },
+    "phone": {
+      "number": "********89",
+      "country_code": "+44"
+    },
+    "email": "jo******@example.com",
+    "type": "individual"
   },
   "tokenization": {},
   "partner_merchant_identifier_details": {
@@ -14380,6 +14540,28 @@ Retrieves a canceled Payment post capture
       "origin_zip": "08807"
     }
   },
+  "sender_details": {
+    "first_name": "John",
+    "last_name": "Doe",
+    "address": {
+      "city": "New York",
+      "country": {},
+      "line1": "123, King Street",
+      "line2": "Powelson Avenue",
+      "line3": "Bridgewater",
+      "zip": "08807",
+      "state": "New York",
+      "first_name": "John",
+      "last_name": "Doe",
+      "origin_zip": "08807"
+    },
+    "phone": {
+      "number": "********89",
+      "country_code": "+44"
+    },
+    "email": "jo******@example.com",
+    "type": "individual"
+  },
   "tokenization": {},
   "partner_merchant_identifier_details": {
     "partner_details": {
@@ -15395,6 +15577,28 @@ A Payment could can be cancelled when it is in one of these statuses: `succeeded
       "origin_zip": "08807"
     }
   },
+  "sender_details": {
+    "first_name": "John",
+    "last_name": "Doe",
+    "address": {
+      "city": "New York",
+      "country": {},
+      "line1": "123, King Street",
+      "line2": "Powelson Avenue",
+      "line3": "Bridgewater",
+      "zip": "08807",
+      "state": "New York",
+      "first_name": "John",
+      "last_name": "Doe",
+      "origin_zip": "08807"
+    },
+    "phone": {
+      "number": "********89",
+      "country_code": "+44"
+    },
+    "email": "jo******@example.com",
+    "type": "individual"
+  },
   "tokenization": {},
   "partner_merchant_identifier_details": {
     "partner_details": {
@@ -16401,6 +16605,28 @@ To list the *payments*
             "last_name": "Doe",
             "origin_zip": "08807"
           }
+        },
+        "sender_details": {
+          "first_name": "John",
+          "last_name": "Doe",
+          "address": {
+            "city": "New York",
+            "country": {},
+            "line1": "123, King Street",
+            "line2": "Powelson Avenue",
+            "line3": "Bridgewater",
+            "zip": "08807",
+            "state": "New York",
+            "first_name": "John",
+            "last_name": "Doe",
+            "origin_zip": "08807"
+          },
+          "phone": {
+            "number": "********89",
+            "country_code": "+44"
+          },
+          "email": "jo******@example.com",
+          "type": "individual"
         },
         "tokenization": {},
         "partner_merchant_identifier_details": {
@@ -17458,6 +17684,28 @@ Authorized amount for a payment can be incremented if it is in status: requires_
       "last_name": "Doe",
       "origin_zip": "08807"
     }
+  },
+  "sender_details": {
+    "first_name": "John",
+    "last_name": "Doe",
+    "address": {
+      "city": "New York",
+      "country": {},
+      "line1": "123, King Street",
+      "line2": "Powelson Avenue",
+      "line3": "Bridgewater",
+      "zip": "08807",
+      "state": "New York",
+      "first_name": "John",
+      "last_name": "Doe",
+      "origin_zip": "08807"
+    },
+    "phone": {
+      "number": "********89",
+      "country_code": "+44"
+    },
+    "email": "jo******@example.com",
+    "type": "individual"
   },
   "tokenization": {},
   "partner_merchant_identifier_details": {
@@ -18676,6 +18924,28 @@ curl https://sandbox.hyperswitch.io/payments/string/complete_authorize \
       "last_name": "Doe",
       "origin_zip": "08807"
     }
+  },
+  "sender_details": {
+    "first_name": "John",
+    "last_name": "Doe",
+    "address": {
+      "city": "New York",
+      "country": {},
+      "line1": "123, King Street",
+      "line2": "Powelson Avenue",
+      "line3": "Bridgewater",
+      "zip": "08807",
+      "state": "New York",
+      "first_name": "John",
+      "last_name": "Doe",
+      "origin_zip": "08807"
+    },
+    "phone": {
+      "number": "********89",
+      "country_code": "+44"
+    },
+    "email": "jo******@example.com",
+    "type": "individual"
   },
   "tokenization": {},
   "partner_merchant_identifier_details": {
@@ -26692,7 +26962,7 @@ curl https://sandbox.hyperswitch.io/payouts/create \
 |» » » country_code|body|string \| null|false|The country code attached to the number|
 |» » email|body|string \| null|false|none|
 |» auto_fulfill|body|boolean \| null|false|Set to true to confirm the payout without review, no further action required|
-|» customer_id|body|string \| null|false|**Deprecated.** Customer identifier for normal and proxy payouts; normal creates may generate it when omitted, while proxy creates require this or customer.id owning payout_method_id. _Deprecated: Use customer.id instead._|
+|» customer_id|body|string \| null|false|**Deprecated.** Existing customer ID used at creation. Ignored on update and confirm.<br>_Deprecated: Use customer.id instead._|
 |» customer|body|object \| null|false|none|
 |» » id|body|string \| null|false|The identifier for the customer.|
 |» » name|body|string \| null|false|The customer's name|
@@ -26715,6 +26985,7 @@ curl https://sandbox.hyperswitch.io/payouts/create \
 |» recurring|body|boolean \| null|false|Specifies whether or not the payout request is recurring|
 |» metadata|body|object \| null|false|Legacy vendor/individual details in metadata are a compatibility fallback for Stripe.<br>Explicit sender_details takes precedence and is never merged with that identity.<br>You can specify up to 50 keys, with key names up to 40 characters long and values up to 500 characters long. Metadata is useful for storing additional, structured information on an object.|
 |» funds_transfer_type|body|object \| null|false|none|
+|» purpose|body|object \| null|false|none|
 |» sender_details|body|object \| null|false|none|
 |» » *oneOf*|body|object|false|none|
 |» » first_name|body|string \| null|false|The sender's first name. When neither the first nor the last name is provided, the name<br>from the billing address of the payment method is used instead.|
@@ -26771,10 +27042,10 @@ curl https://sandbox.hyperswitch.io/payouts/create \
 |» » form_layout|body|object \| null|false|none|
 |» » test_mode|body|boolean \| null|false|`test_mode` allows for opening payout links without any restrictions. This removes<br>- domain name validations<br>- check for making sure link is accessed within an iframe|
 |» session_expiry|body|integer(int32) \| null|false|Lifetime of the payout link in seconds, for example 900 for 15 minutes.|
-|» email|body|string \| null|false|**Deprecated.** Customer's email. _Deprecated: Use customer object instead._|
-|» name|body|string \| null|false|**Deprecated.** Customer's name. _Deprecated: Use customer object instead._|
-|» phone|body|string \| null|false|**Deprecated.** Customer's phone. _Deprecated: Use customer object instead._|
-|» phone_country_code|body|string \| null|false|**Deprecated.** Customer's phone country code. _Deprecated: Use customer object instead._|
+|» email|body|string \| null|false|**Deprecated.** Ignored. _Deprecated: Manage customer details through the Customers API._|
+|» name|body|string \| null|false|**Deprecated.** Ignored. _Deprecated: Manage customer details through the Customers API._|
+|» phone|body|string \| null|false|**Deprecated.** Ignored. _Deprecated: Manage customer details through the Customers API._|
+|» phone_country_code|body|string \| null|false|**Deprecated.** Ignored. _Deprecated: Manage customer details through the Customers API._|
 |» payout_method_id|body|string \| null|false|Saved payment-method identifier, resolved internally for normal payouts and to vault tokens for proxy payouts.|
 |» browser_info|body|object \| null|false|none|
 |» » color_depth|body|integer(int32) \| null|false|Color depth supported by the browser|
@@ -27340,6 +27611,7 @@ curl https://sandbox.hyperswitch.io/payouts/create \
   "recurring": false,
   "metadata": {},
   "funds_transfer_type": {},
+  "purpose": {},
   "sender_details": {
     "first_name": "John",
     "last_name": "Doe",
@@ -27420,6 +27692,7 @@ curl https://sandbox.hyperswitch.io/payouts/create \
 |---|---|---|---|
 |200|OK|Payout created|[PayoutCreateResponse](#schemapayoutcreateresponse)|
 |400|Bad Request|Missing mandatory fields or invalid request|None|
+|404|Not Found|Customer does not exist in the merchant's records|None|
 |501|Not Implemented|External-vault proxy payout execution is not implemented yet|None|
 
 <aside class="warning">
@@ -27536,6 +27809,7 @@ curl https://sandbox.hyperswitch.io/payouts/string \
   "recurring": false,
   "metadata": {},
   "funds_transfer_type": {},
+  "purpose": {},
   "sender_details": {
     "first_name": "John",
     "last_name": "Doe",
@@ -27715,6 +27989,7 @@ curl https://sandbox.hyperswitch.io/payouts/string \
     "recurring": false,
     "metadata": {},
     "funds_transfer_type": {},
+    "purpose": {},
     "sender_details": {
       "first_name": "John",
       "last_name": "Doe",
@@ -27865,6 +28140,7 @@ curl https://sandbox.hyperswitch.io/payouts/string \
   "recurring": false,
   "metadata": {},
   "funds_transfer_type": {},
+  "purpose": {},
   "sender_details": {
     "first_name": "John",
     "last_name": "Doe",
@@ -28057,7 +28333,7 @@ curl https://sandbox.hyperswitch.io/payouts/string \
 |» » » country_code|body|string \| null|false|The country code attached to the number|
 |» » email|body|string \| null|false|none|
 |» auto_fulfill|body|boolean \| null|false|Set to true to confirm the payout without review, no further action required|
-|» customer_id|body|string \| null|false|**Deprecated.** Customer identifier for normal and proxy payouts; normal creates may generate it when omitted, while proxy creates require this or customer.id owning payout_method_id. _Deprecated: Use customer.id instead._|
+|» customer_id|body|string \| null|false|**Deprecated.** Existing customer ID used at creation. Ignored on update and confirm.<br>_Deprecated: Use customer.id instead._|
 |» customer|body|object \| null|false|none|
 |» » id|body|string \| null|false|The identifier for the customer.|
 |» » name|body|string \| null|false|The customer's name|
@@ -28080,6 +28356,7 @@ curl https://sandbox.hyperswitch.io/payouts/string \
 |» recurring|body|boolean \| null|false|Specifies whether or not the payout request is recurring|
 |» metadata|body|object \| null|false|Legacy vendor/individual details in metadata are a compatibility fallback for Stripe.<br>Explicit sender_details takes precedence and is never merged with that identity.<br>You can specify up to 50 keys, with key names up to 40 characters long and values up to 500 characters long. Metadata is useful for storing additional, structured information on an object.|
 |» funds_transfer_type|body|object \| null|false|none|
+|» purpose|body|object \| null|false|none|
 |» sender_details|body|object \| null|false|none|
 |» » *oneOf*|body|object|false|none|
 |» » first_name|body|string \| null|false|The sender's first name. When neither the first nor the last name is provided, the name<br>from the billing address of the payment method is used instead.|
@@ -28136,10 +28413,10 @@ curl https://sandbox.hyperswitch.io/payouts/string \
 |» » form_layout|body|object \| null|false|none|
 |» » test_mode|body|boolean \| null|false|`test_mode` allows for opening payout links without any restrictions. This removes<br>- domain name validations<br>- check for making sure link is accessed within an iframe|
 |» session_expiry|body|integer(int32) \| null|false|Lifetime of the payout link in seconds, for example 900 for 15 minutes.|
-|» email|body|string \| null|false|**Deprecated.** Customer's email. _Deprecated: Use customer object instead._|
-|» name|body|string \| null|false|**Deprecated.** Customer's name. _Deprecated: Use customer object instead._|
-|» phone|body|string \| null|false|**Deprecated.** Customer's phone. _Deprecated: Use customer object instead._|
-|» phone_country_code|body|string \| null|false|**Deprecated.** Customer's phone country code. _Deprecated: Use customer object instead._|
+|» email|body|string \| null|false|**Deprecated.** Ignored. _Deprecated: Manage customer details through the Customers API._|
+|» name|body|string \| null|false|**Deprecated.** Ignored. _Deprecated: Manage customer details through the Customers API._|
+|» phone|body|string \| null|false|**Deprecated.** Ignored. _Deprecated: Manage customer details through the Customers API._|
+|» phone_country_code|body|string \| null|false|**Deprecated.** Ignored. _Deprecated: Manage customer details through the Customers API._|
 |» payout_method_id|body|string \| null|false|Saved payment-method identifier, resolved internally for normal payouts and to vault tokens for proxy payouts.|
 |» browser_info|body|object \| null|false|none|
 |» » color_depth|body|integer(int32) \| null|false|Color depth supported by the browser|
@@ -28545,6 +28822,7 @@ curl https://sandbox.hyperswitch.io/payouts/string \
   "recurring": false,
   "metadata": {},
   "funds_transfer_type": {},
+  "purpose": {},
   "sender_details": {
     "first_name": "John",
     "last_name": "Doe",
@@ -28624,7 +28902,8 @@ curl https://sandbox.hyperswitch.io/payouts/string \
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Payout updated|[PayoutCreateResponse](#schemapayoutcreateresponse)|
-|400|Bad Request|Missing Mandatory fields|None|
+|400|Bad Request|Missing mandatory fields or invalid request|None|
+|404|Not Found|Payout does not exist in the merchant's records|None|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -28754,6 +29033,7 @@ curl https://sandbox.hyperswitch.io/payouts/string/cancel \
   "recurring": false,
   "metadata": {},
   "funds_transfer_type": {},
+  "purpose": {},
   "sender_details": {
     "first_name": "John",
     "last_name": "Doe",
@@ -28963,6 +29243,7 @@ curl https://sandbox.hyperswitch.io/payouts/string/fulfill \
   "recurring": false,
   "metadata": {},
   "funds_transfer_type": {},
+  "purpose": {},
   "sender_details": {
     "first_name": "John",
     "last_name": "Doe",
@@ -29165,6 +29446,7 @@ curl 'https://sandbox.hyperswitch.io/payouts/list?customer_id=string&starting_af
       "recurring": false,
       "metadata": {},
       "funds_transfer_type": {},
+      "purpose": {},
       "sender_details": {
         "first_name": "John",
         "last_name": "Doe",
@@ -29646,6 +29928,7 @@ curl https://sandbox.hyperswitch.io/payouts/list \
       "recurring": false,
       "metadata": {},
       "funds_transfer_type": {},
+      "purpose": {},
       "sender_details": {
         "first_name": "John",
         "last_name": "Doe",
@@ -29827,6 +30110,7 @@ curl https://sandbox.hyperswitch.io/payouts/string/confirm \
     "recurring": false,
     "metadata": {},
     "funds_transfer_type": {},
+    "purpose": {},
     "sender_details": {
       "first_name": "John",
       "last_name": "Doe",
@@ -29976,6 +30260,7 @@ curl https://sandbox.hyperswitch.io/payouts/string/confirm \
   "recurring": false,
   "metadata": {},
   "funds_transfer_type": {},
+  "purpose": {},
   "sender_details": {
     "first_name": "John",
     "last_name": "Doe",
@@ -30167,7 +30452,7 @@ curl https://sandbox.hyperswitch.io/payouts/string/confirm \
 |» » » country_code|body|string \| null|false|The country code attached to the number|
 |» » email|body|string \| null|false|none|
 |» auto_fulfill|body|boolean \| null|false|Set to true to confirm the payout without review, no further action required|
-|» customer_id|body|string \| null|false|**Deprecated.** Customer identifier for normal and proxy payouts; normal creates may generate it when omitted, while proxy creates require this or customer.id owning payout_method_id. _Deprecated: Use customer.id instead._|
+|» customer_id|body|string \| null|false|**Deprecated.** Existing customer ID used at creation. Ignored on update and confirm.<br>_Deprecated: Use customer.id instead._|
 |» customer|body|object \| null|false|none|
 |» » id|body|string \| null|false|The identifier for the customer.|
 |» » name|body|string \| null|false|The customer's name|
@@ -30190,6 +30475,7 @@ curl https://sandbox.hyperswitch.io/payouts/string/confirm \
 |» recurring|body|boolean \| null|false|Specifies whether or not the payout request is recurring|
 |» metadata|body|object \| null|false|Legacy vendor/individual details in metadata are a compatibility fallback for Stripe.<br>Explicit sender_details takes precedence and is never merged with that identity.<br>You can specify up to 50 keys, with key names up to 40 characters long and values up to 500 characters long. Metadata is useful for storing additional, structured information on an object.|
 |» funds_transfer_type|body|object \| null|false|none|
+|» purpose|body|object \| null|false|none|
 |» sender_details|body|object \| null|false|none|
 |» » *oneOf*|body|object|false|none|
 |» » first_name|body|string \| null|false|The sender's first name. When neither the first nor the last name is provided, the name<br>from the billing address of the payment method is used instead.|
@@ -30246,10 +30532,10 @@ curl https://sandbox.hyperswitch.io/payouts/string/confirm \
 |» » form_layout|body|object \| null|false|none|
 |» » test_mode|body|boolean \| null|false|`test_mode` allows for opening payout links without any restrictions. This removes<br>- domain name validations<br>- check for making sure link is accessed within an iframe|
 |» session_expiry|body|integer(int32) \| null|false|Lifetime of the payout link in seconds, for example 900 for 15 minutes.|
-|» email|body|string \| null|false|**Deprecated.** Customer's email. _Deprecated: Use customer object instead._|
-|» name|body|string \| null|false|**Deprecated.** Customer's name. _Deprecated: Use customer object instead._|
-|» phone|body|string \| null|false|**Deprecated.** Customer's phone. _Deprecated: Use customer object instead._|
-|» phone_country_code|body|string \| null|false|**Deprecated.** Customer's phone country code. _Deprecated: Use customer object instead._|
+|» email|body|string \| null|false|**Deprecated.** Ignored. _Deprecated: Manage customer details through the Customers API._|
+|» name|body|string \| null|false|**Deprecated.** Ignored. _Deprecated: Manage customer details through the Customers API._|
+|» phone|body|string \| null|false|**Deprecated.** Ignored. _Deprecated: Manage customer details through the Customers API._|
+|» phone_country_code|body|string \| null|false|**Deprecated.** Ignored. _Deprecated: Manage customer details through the Customers API._|
 |» payout_method_id|body|string \| null|false|Saved payment-method identifier, resolved internally for normal payouts and to vault tokens for proxy payouts.|
 |» browser_info|body|object \| null|false|none|
 |» » color_depth|body|integer(int32) \| null|false|Color depth supported by the browser|
@@ -30655,6 +30941,7 @@ curl https://sandbox.hyperswitch.io/payouts/string/confirm \
   "recurring": false,
   "metadata": {},
   "funds_transfer_type": {},
+  "purpose": {},
   "sender_details": {
     "first_name": "John",
     "last_name": "Doe",
@@ -30734,7 +31021,8 @@ curl https://sandbox.hyperswitch.io/payouts/string/confirm \
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Payout updated|[PayoutCreateResponse](#schemapayoutcreateresponse)|
-|400|Bad Request|Missing Mandatory fields|None|
+|400|Bad Request|Missing mandatory fields or invalid request|None|
+|404|Not Found|Payout does not exist in the merchant's records|None|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -36424,6 +36712,7 @@ Creates a GSM (Global Status Mapping) Rule. A GSM rule is used to map a connecto
 |» connector|opennode|
 |» connector|paybox|
 |» connector|paydotcom|
+|» connector|payhound|
 |» connector|payload|
 |» connector|payme|
 |» connector|paynearme|
@@ -36694,6 +36983,7 @@ Retrieves a Gsm Rule
 |» connector|opennode|
 |» connector|paybox|
 |» connector|paydotcom|
+|» connector|payhound|
 |» connector|payload|
 |» connector|payme|
 |» connector|paynearme|
@@ -51505,6 +51795,47 @@ A company providing the funds.
 |reference_id|string \| null|false|none|The merchant's stable identifier for the sender.|
 |source_of_funds|object \| null|false|none|none|
 
+<h2 id="tocS_CorporateSenderDetailsResponse">CorporateSenderDetailsResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemacorporatesenderdetailsresponse"></a>
+<a id="schema_CorporateSenderDetailsResponse"></a>
+<a id="tocScorporatesenderdetailsresponse"></a>
+<a id="tocscorporatesenderdetailsresponse"></a>
+
+```json
+{
+  "company_name": "Acme Ltd",
+  "address": {
+    "city": "New York",
+    "country": {},
+    "line1": "123, King Street",
+    "line2": "Powelson Avenue",
+    "line3": "Bridgewater",
+    "zip": "08807",
+    "state": "New York",
+    "first_name": "John",
+    "last_name": "Doe",
+    "origin_zip": "08807"
+  },
+  "phone": {
+    "number": "********89",
+    "country_code": "+44"
+  },
+  "email": "tr******@acme.com"
+}
+```
+
+A partially masked view of `CorporateSenderDetails`, safe to return in API responses.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|company_name|string|true|none|The sender's legal company name.|
+|address|object \| null|false|none|none|
+|phone|object \| null|false|none|none|
+|email|string \| null|false|none|The sender's masked email address.|
+
 <h2 id="tocS_Country">Country</h2>
 <!-- backwards compatibility -->
 <a id="schemacountry"></a>
@@ -53329,6 +53660,7 @@ Represents a Merchant Connector Account.
 |gateway_name|opennode|
 |gateway_name|paybox|
 |gateway_name|paydotcom|
+|gateway_name|payhound|
 |gateway_name|payme|
 |gateway_name|paynearme|
 |gateway_name|payload|
@@ -56482,6 +56814,7 @@ External surcharge details from InterPayments (stored as JSONB)
 |connectors|opennode|
 |connectors|paybox|
 |connectors|paydotcom|
+|connectors|payhound|
 |connectors|payload|
 |connectors|payme|
 |connectors|paynearme|
@@ -58819,6 +59152,7 @@ This enum is used to represent the Gpay payment data, which can either be encryp
 |connector|opennode|
 |connector|paybox|
 |connector|paydotcom|
+|connector|payhound|
 |connector|payload|
 |connector|payme|
 |connector|paynearme|
@@ -59195,6 +59529,7 @@ details specific to the retry behavior.
 |connector|opennode|
 |connector|paybox|
 |connector|paydotcom|
+|connector|payhound|
 |connector|payload|
 |connector|payme|
 |connector|paynearme|
@@ -59577,6 +59912,49 @@ An individual providing the funds.
 |phone|object \| null|false|none|none|
 |reference_id|string \| null|false|none|The merchant's stable identifier for the sender|
 |source_of_funds|object \| null|false|none|none|
+
+<h2 id="tocS_IndividualSenderDetailsResponse">IndividualSenderDetailsResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemaindividualsenderdetailsresponse"></a>
+<a id="schema_IndividualSenderDetailsResponse"></a>
+<a id="tocSindividualsenderdetailsresponse"></a>
+<a id="tocsindividualsenderdetailsresponse"></a>
+
+```json
+{
+  "first_name": "John",
+  "last_name": "Doe",
+  "address": {
+    "city": "New York",
+    "country": {},
+    "line1": "123, King Street",
+    "line2": "Powelson Avenue",
+    "line3": "Bridgewater",
+    "zip": "08807",
+    "state": "New York",
+    "first_name": "John",
+    "last_name": "Doe",
+    "origin_zip": "08807"
+  },
+  "phone": {
+    "number": "********89",
+    "country_code": "+44"
+  },
+  "email": "jo******@example.com"
+}
+```
+
+A partially masked view of `IndividualSenderDetails`, safe to return in API responses.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|first_name|string \| null|false|none|The sender's first name.|
+|last_name|string \| null|false|none|The sender's last name.|
+|address|object \| null|false|none|none|
+|phone|object \| null|false|none|none|
+|email|string \| null|false|none|The sender's masked email address.|
 
 <h2 id="tocS_IndomaretVoucherData">IndomaretVoucherData</h2>
 <!-- backwards compatibility -->
@@ -61291,6 +61669,29 @@ A partially masked view of `RecipientDetails`, safe to return in API responses.
 |tax_id|string \| null|false|none|The recipient's partially masked tax identifier.|
 |address|object \| null|false|none|none|
 
+<h2 id="tocS_MaskedSenderPhoneDetails">MaskedSenderPhoneDetails</h2>
+<!-- backwards compatibility -->
+<a id="schemamaskedsenderphonedetails"></a>
+<a id="schema_MaskedSenderPhoneDetails"></a>
+<a id="tocSmaskedsenderphonedetails"></a>
+<a id="tocsmaskedsenderphonedetails"></a>
+
+```json
+{
+  "number": "********89",
+  "country_code": "+44"
+}
+```
+
+A partially masked view of [`PhoneDetails`], safe to return in API responses.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|number|string \| null|false|none|The sender's partially masked phone number.|
+|country_code|string \| null|false|none|The country code of the sender's phone number.|
+
 <h2 id="tocS_MasterCardEligibilityCheckData">MasterCardEligibilityCheckData</h2>
 <!-- backwards compatibility -->
 <a id="schemamastercardeligibilitycheckdata"></a>
@@ -61413,7 +61814,7 @@ A partially masked view of `RecipientDetails`, safe to return in API responses.
   "sub_merchants_enabled": false,
   "parent_merchant_id": "xkkdf909012sdjki2dkh5sdf",
   "enable_payment_response_hash": true,
-  "payment_response_hash_key": "string",
+  "payment_response_hash_key": "stringstringstringstringstringst",
   "redirect_to_merchant_with_http_post": true,
   "metadata": {},
   "publishable_key": "AH3423bkjbkjdsfbkj",
@@ -61556,7 +61957,7 @@ A partially masked view of `RecipientDetails`, safe to return in API responses.
   "merchant_name": "NewAge Retailer",
   "return_url": "https://www.example.com/success",
   "enable_payment_response_hash": true,
-  "payment_response_hash_key": "xkkdf909012sdjki2dkh5sdf",
+  "payment_response_hash_key": "xkkd",
   "redirect_to_merchant_with_http_post": true,
   "merchant_details": {
     "primary_contact_person": "John Doe",
@@ -61676,7 +62077,7 @@ A partially masked view of `RecipientDetails`, safe to return in API responses.
 |merchant_name|string \| null|false|none|Name of the Merchant Account|
 |return_url|string \| null|false|none|The URL to redirect after completion of the payment|
 |enable_payment_response_hash|boolean|true|none|A boolean value to indicate if payment response hash needs to be enabled|
-|payment_response_hash_key|string \| null|false|none|Refers to the hash key used for calculating the signature for webhooks and redirect response. If the value is not provided, a value is automatically generated.|
+|payment_response_hash_key|string \| null|false|none|The first 4 characters of the hash key used to sign webhooks and redirect responses.|
 |redirect_to_merchant_with_http_post|boolean|true|none|A boolean value to indicate if redirect to merchant with http post needs to be enabled|
 |merchant_details|object \| null|false|none|none|
 |webhook_details|object \| null|false|none|none|
@@ -61800,7 +62201,7 @@ A partially masked view of `RecipientDetails`, safe to return in API responses.
   "sub_merchants_enabled": false,
   "parent_merchant_id": "xkkdf909012sdjki2dkh5sdf",
   "enable_payment_response_hash": true,
-  "payment_response_hash_key": "string",
+  "payment_response_hash_key": "stringstringstringstringstringst",
   "redirect_to_merchant_with_http_post": true,
   "metadata": {},
   "publishable_key": "AH3423bkjbkjdsfbkj",
@@ -62146,6 +62547,7 @@ Create a new Merchant Connector for the merchant account. The connector could be
 |connector_name|opennode|
 |connector_name|paybox|
 |connector_name|paydotcom|
+|connector_name|payhound|
 |connector_name|payload|
 |connector_name|payme|
 |connector_name|paynearme|
@@ -62551,6 +62953,7 @@ Merchant connector details used to make payments.
 |connector_name|opennode|
 |connector_name|paybox|
 |connector_name|paydotcom|
+|connector_name|payhound|
 |connector_name|payload|
 |connector_name|payme|
 |connector_name|paynearme|
@@ -62860,6 +63263,7 @@ Response of creating a new Merchant Connector for the merchant account."
 |connector_name|opennode|
 |connector_name|paybox|
 |connector_name|paydotcom|
+|connector_name|payhound|
 |connector_name|payload|
 |connector_name|payme|
 |connector_name|paynearme|
@@ -63059,8 +63463,8 @@ Create a new Merchant Connector for the merchant account. The connector could be
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|merchant_secret|string|true|none|none|
-|additional_secret|string|true|none|none|
+|merchant_secret|string|true|none|Webhook verification secret. Must contain at least one non-whitespace character.|
+|additional_secret|string|true|none|Optional additional secret. When supplied, must contain a non-whitespace character.|
 
 <h2 id="tocS_MerchantCountryCode">MerchantCountryCode</h2>
 <!-- backwards compatibility -->
@@ -65976,6 +66380,28 @@ Masked payout method details for OpenBankingUK bank redirect payout method
           "origin_zip": "08807"
         }
       },
+      "sender_details": {
+        "first_name": "John",
+        "last_name": "Doe",
+        "address": {
+          "city": "New York",
+          "country": {},
+          "line1": "123, King Street",
+          "line2": "Powelson Avenue",
+          "line3": "Bridgewater",
+          "zip": "08807",
+          "state": "New York",
+          "first_name": "John",
+          "last_name": "Doe",
+          "origin_zip": "08807"
+        },
+        "phone": {
+          "number": "********89",
+          "country_code": "+44"
+        },
+        "email": "jo******@example.com",
+        "type": "individual"
+      },
       "tokenization": {},
       "partner_merchant_identifier_details": {
         "partner_details": {
@@ -66934,6 +67360,28 @@ Masked payout method details for OpenBankingUK bank redirect payout method
         "last_name": "Doe",
         "origin_zip": "08807"
       }
+    },
+    "sender_details": {
+      "first_name": "John",
+      "last_name": "Doe",
+      "address": {
+        "city": "New York",
+        "country": {},
+        "line1": "123, King Street",
+        "line2": "Powelson Avenue",
+        "line3": "Bridgewater",
+        "zip": "08807",
+        "state": "New York",
+        "first_name": "John",
+        "last_name": "Doe",
+        "origin_zip": "08807"
+      },
+      "phone": {
+        "number": "********89",
+        "country_code": "+44"
+      },
+      "email": "jo******@example.com",
+      "type": "individual"
     },
     "tokenization": {},
     "partner_merchant_identifier_details": {
@@ -69693,6 +70141,28 @@ Status Of the Payment Link
           "last_name": "Doe",
           "origin_zip": "08807"
         }
+      },
+      "sender_details": {
+        "first_name": "John",
+        "last_name": "Doe",
+        "address": {
+          "city": "New York",
+          "country": {},
+          "line1": "123, King Street",
+          "line2": "Powelson Avenue",
+          "line3": "Bridgewater",
+          "zip": "08807",
+          "state": "New York",
+          "first_name": "John",
+          "last_name": "Doe",
+          "origin_zip": "08807"
+        },
+        "phone": {
+          "number": "********89",
+          "country_code": "+44"
+        },
+        "email": "jo******@example.com",
+        "type": "individual"
       },
       "tokenization": {},
       "partner_merchant_identifier_details": {
@@ -73832,6 +74302,7 @@ Request to cancel a payment when the payment is already captured
 |connector|opennode|
 |connector|paybox|
 |connector|paydotcom|
+|connector|payhound|
 |connector|payload|
 |connector|payme|
 |connector|paynearme|
@@ -74463,6 +74934,31 @@ Request to cancel a payment when the payment is already captured
       "origin_zip": "08807"
     }
   },
+  "sender_details": {
+    "first_name": "John",
+    "last_name": "Doe",
+    "date_of_birth": "1990-01-31",
+    "address": {
+      "city": "New York",
+      "country": {},
+      "line1": "123, King Street",
+      "line2": "Powelson Avenue",
+      "line3": "Bridgewater",
+      "zip": "08807",
+      "state": "New York",
+      "first_name": "John",
+      "last_name": "Doe",
+      "origin_zip": "08807"
+    },
+    "email": "john.doe@example.com",
+    "phone": {
+      "number": "9123456789",
+      "country_code": "+1"
+    },
+    "reference_id": "string",
+    "source_of_funds": {},
+    "type": "individual"
+  },
   "tokenization": {},
   "partner_merchant_identifier_details": {
     "partner_details": {
@@ -74580,6 +75076,7 @@ Request to cancel a payment when the payment is already captured
 |billing_descriptor|object \| null|false|none|none|
 |is_account_funded_transaction|boolean \| null|false|none|Indicates whether this payment is an account funded transaction.|
 |recipient_details|object \| null|false|none|none|
+|sender_details|object \| null|false|none|none|
 |tokenization|object \| null|false|none|none|
 |partner_merchant_identifier_details|object \| null|false|none|none|
 |installment_options|[[InstallmentOption](#schemainstallmentoption)]|false|none|Installment payment options grouped by payment method. When provided, the payment is treated as an installment payment.|
@@ -74863,6 +75360,7 @@ Request to cancel a payment when the payment is already captured
 |connector|opennode|
 |connector|paybox|
 |connector|paydotcom|
+|connector|payhound|
 |connector|payload|
 |connector|payme|
 |connector|paynearme|
@@ -75896,6 +76394,28 @@ Request to cancel a payment when the payment is already captured
       "origin_zip": "08807"
     }
   },
+  "sender_details": {
+    "first_name": "John",
+    "last_name": "Doe",
+    "address": {
+      "city": "New York",
+      "country": {},
+      "line1": "123, King Street",
+      "line2": "Powelson Avenue",
+      "line3": "Bridgewater",
+      "zip": "08807",
+      "state": "New York",
+      "first_name": "John",
+      "last_name": "Doe",
+      "origin_zip": "08807"
+    },
+    "phone": {
+      "number": "********89",
+      "country_code": "+44"
+    },
+    "email": "jo******@example.com",
+    "type": "individual"
+  },
   "tokenization": {},
   "partner_merchant_identifier_details": {
     "partner_details": {
@@ -76057,6 +76577,7 @@ Request to cancel a payment when the payment is already captured
 |billing_descriptor|object \| null|false|none|none|
 |is_account_funded_transaction|boolean \| null|false|none|Indicates whether this payment is an account funded transaction, where funds are pulled<br>from a card account to fund another account rather than to pay for goods or services.|
 |recipient_details|object \| null|false|none|none|
+|sender_details|object \| null|false|none|none|
 |tokenization|object \| null|false|none|none|
 |partner_merchant_identifier_details|object \| null|false|none|none|
 |payment_method_tokenization_details|object \| null|false|none|none|
@@ -77767,6 +78288,31 @@ Response body for the eligibility endpoint.
       "origin_zip": "08807"
     }
   },
+  "sender_details": {
+    "first_name": "John",
+    "last_name": "Doe",
+    "date_of_birth": "1990-01-31",
+    "address": {
+      "city": "New York",
+      "country": {},
+      "line1": "123, King Street",
+      "line2": "Powelson Avenue",
+      "line3": "Bridgewater",
+      "zip": "08807",
+      "state": "New York",
+      "first_name": "John",
+      "last_name": "Doe",
+      "origin_zip": "08807"
+    },
+    "email": "john.doe@example.com",
+    "phone": {
+      "number": "9123456789",
+      "country_code": "+1"
+    },
+    "reference_id": "string",
+    "source_of_funds": {},
+    "type": "individual"
+  },
   "tokenization": {},
   "partner_merchant_identifier_details": {
     "partner_details": {
@@ -77895,6 +78441,7 @@ Response body for the eligibility endpoint.
 |billing_descriptor|object \| null|false|none|none|
 |is_account_funded_transaction|boolean \| null|false|none|Indicates whether this payment is an account funded transaction.|
 |recipient_details|object \| null|false|none|none|
+|sender_details|object \| null|false|none|none|
 |tokenization|object \| null|false|none|none|
 |partner_merchant_identifier_details|object \| null|false|none|none|
 |installment_options|[[InstallmentOption](#schemainstallmentoption)]|false|none|Installment payment options grouped by payment method. When provided, the payment is treated as an installment payment.|
@@ -78018,6 +78565,7 @@ Response body for the eligibility endpoint.
 |connector|opennode|
 |connector|paybox|
 |connector|paydotcom|
+|connector|payhound|
 |connector|payload|
 |connector|payme|
 |connector|paynearme|
@@ -79065,6 +79613,28 @@ Response body for the eligibility endpoint.
       "origin_zip": "08807"
     }
   },
+  "sender_details": {
+    "first_name": "John",
+    "last_name": "Doe",
+    "address": {
+      "city": "New York",
+      "country": {},
+      "line1": "123, King Street",
+      "line2": "Powelson Avenue",
+      "line3": "Bridgewater",
+      "zip": "08807",
+      "state": "New York",
+      "first_name": "John",
+      "last_name": "Doe",
+      "origin_zip": "08807"
+    },
+    "phone": {
+      "number": "********89",
+      "country_code": "+44"
+    },
+    "email": "jo******@example.com",
+    "type": "individual"
+  },
   "tokenization": {},
   "partner_merchant_identifier_details": {
     "partner_details": {
@@ -79230,6 +79800,7 @@ Response body for the eligibility endpoint.
 |billing_descriptor|object \| null|false|none|none|
 |is_account_funded_transaction|boolean \| null|false|none|Indicates whether this payment is an account funded transaction, where funds are pulled<br>from a card account to fund another account rather than to pay for goods or services.|
 |recipient_details|object \| null|false|none|none|
+|sender_details|object \| null|false|none|none|
 |tokenization|object \| null|false|none|none|
 |partner_merchant_identifier_details|object \| null|false|none|none|
 |payment_method_tokenization_details|object \| null|false|none|none|
@@ -80476,6 +81047,31 @@ Response body for the eligibility endpoint.
       "origin_zip": "08807"
     }
   },
+  "sender_details": {
+    "first_name": "John",
+    "last_name": "Doe",
+    "date_of_birth": "1990-01-31",
+    "address": {
+      "city": "New York",
+      "country": {},
+      "line1": "123, King Street",
+      "line2": "Powelson Avenue",
+      "line3": "Bridgewater",
+      "zip": "08807",
+      "state": "New York",
+      "first_name": "John",
+      "last_name": "Doe",
+      "origin_zip": "08807"
+    },
+    "email": "john.doe@example.com",
+    "phone": {
+      "number": "9123456789",
+      "country_code": "+1"
+    },
+    "reference_id": "string",
+    "source_of_funds": {},
+    "type": "individual"
+  },
   "tokenization": {},
   "partner_merchant_identifier_details": {
     "partner_details": {
@@ -80590,6 +81186,7 @@ Response body for the eligibility endpoint.
 |billing_descriptor|object \| null|false|none|none|
 |is_account_funded_transaction|boolean \| null|false|none|Indicates whether this payment is an account funded transaction.|
 |recipient_details|object \| null|false|none|none|
+|sender_details|object \| null|false|none|none|
 |tokenization|object \| null|false|none|none|
 |partner_merchant_identifier_details|object \| null|false|none|none|
 |installment_options|[[InstallmentOption](#schemainstallmentoption)]|false|none|Installment payment options grouped by payment method. When provided, the payment is treated as an installment payment.|
@@ -80713,6 +81310,7 @@ Response body for the eligibility endpoint.
 |connector|opennode|
 |connector|paybox|
 |connector|paydotcom|
+|connector|payhound|
 |connector|payload|
 |connector|payme|
 |connector|paynearme|
@@ -81069,6 +81667,7 @@ Response body for the eligibility endpoint.
   "recurring": false,
   "metadata": {},
   "funds_transfer_type": {},
+  "purpose": {},
   "sender_details": {
     "first_name": "John",
     "last_name": "Doe",
@@ -81147,7 +81746,7 @@ Response body for the eligibility endpoint.
 |source_bank_data|object \| null|false|none|none|
 |billing|object \| null|false|none|none|
 |auto_fulfill|boolean \| null|false|none|Set to true to confirm the payout without review, no further action required|
-|customer_id|string \| null|false|none|**Deprecated.** Customer identifier for normal and proxy payouts; normal creates may generate it when omitted, while proxy creates require this or customer.id owning payout_method_id. _Deprecated: Use customer.id instead._|
+|customer_id|string \| null|false|none|**Deprecated.** Existing customer ID used at creation. Ignored on update and confirm.<br>_Deprecated: Use customer.id instead._|
 |customer|object \| null|false|none|none|
 |return_url|string \| null|false|none|The URL to redirect after the completion of the operation|
 |business_country|object \| null|false|none|none|
@@ -81158,6 +81757,7 @@ Response body for the eligibility endpoint.
 |recurring|boolean \| null|false|none|Specifies whether or not the payout request is recurring|
 |metadata|object \| null|false|none|Legacy vendor/individual details in metadata are a compatibility fallback for Stripe.<br>Explicit sender_details takes precedence and is never merged with that identity.<br>You can specify up to 50 keys, with key names up to 40 characters long and values up to 500 characters long. Metadata is useful for storing additional, structured information on an object.|
 |funds_transfer_type|object \| null|false|none|none|
+|purpose|object \| null|false|none|none|
 |sender_details|object \| null|false|none|none|
 |payout_token|string \| null|false|none|Provide a reference to a stored payout method, used to process the payout.|
 |profile_id|string \| null|false|none|The business profile to use for this payout, especially if there are multiple business profiles associated with the account, otherwise default business profile associated with the merchant account will be used.|
@@ -81165,10 +81765,10 @@ Response body for the eligibility endpoint.
 |payout_link|boolean \| null|false|none|Whether to get the payout link (if applicable). Merchant need to specify this during the Payout _Create_, this field can not be updated during Payout _Update_.|
 |payout_link_config|object \| null|false|none|none|
 |session_expiry|integer(int32) \| null|false|none|Lifetime of the payout link in seconds, for example 900 for 15 minutes.|
-|email|string \| null|false|none|**Deprecated.** Customer's email. _Deprecated: Use customer object instead._|
-|name|string \| null|false|none|**Deprecated.** Customer's name. _Deprecated: Use customer object instead._|
-|phone|string \| null|false|none|**Deprecated.** Customer's phone. _Deprecated: Use customer object instead._|
-|phone_country_code|string \| null|false|none|**Deprecated.** Customer's phone country code. _Deprecated: Use customer object instead._|
+|email|string \| null|false|none|**Deprecated.** Ignored. _Deprecated: Manage customer details through the Customers API._|
+|name|string \| null|false|none|**Deprecated.** Ignored. _Deprecated: Manage customer details through the Customers API._|
+|phone|string \| null|false|none|**Deprecated.** Ignored. _Deprecated: Manage customer details through the Customers API._|
+|phone_country_code|string \| null|false|none|**Deprecated.** Ignored. _Deprecated: Manage customer details through the Customers API._|
 |payout_method_id|string \| null|false|none|Saved payment-method identifier, resolved internally for normal payouts and to vault tokens for proxy payouts.|
 |browser_info|object \| null|false|none|none|
 
@@ -81335,6 +81935,7 @@ Custom payout link config for the particular payout, if payout link is to be gen
   "recurring": false,
   "metadata": {},
   "funds_transfer_type": {},
+  "purpose": {},
   "sender_details": {
     "first_name": "John",
     "last_name": "Doe",
@@ -81424,7 +82025,7 @@ Custom payout link config for the particular payout, if payout link is to be gen
 |source_bank_data|object \| null|false|none|none|
 |billing|object \| null|false|none|none|
 |auto_fulfill|boolean|true|none|Set to true to confirm the payout without review, no further action required|
-|customer_id|string|true|none|**Deprecated.** The identifier for the customer object. If not provided the customer ID will be autogenerated. _Deprecated: Use the customer object instead._|
+|customer_id|string|true|none|**Deprecated.** Attached customer ID, if any. _Deprecated: Use customer.id instead._|
 |customer|object \| null|false|none|none|
 |client_secret|string|true|none|Legacy client secret retained for compatibility. Payout execution requires an API key.|
 |return_url|string|true|none|The URL to redirect after the completion of the operation|
@@ -81436,6 +82037,7 @@ Custom payout link config for the particular payout, if payout link is to be gen
 |recurring|boolean|true|none|Specifies whether or not the payout request is recurring|
 |metadata|object \| null|false|none|You can specify up to 50 keys, with key names up to 40 characters long and values up to 500 characters long. Metadata is useful for storing additional, structured information on an object.|
 |funds_transfer_type|object \| null|false|none|none|
+|purpose|object \| null|false|none|none|
 |sender_details|object \| null|false|none|none|
 |merchant_connector_id|string \| null|false|none|Unique identifier of the merchant connector account|
 |status|[PayoutStatus](#schemapayoutstatus)|true|none|none|
@@ -82608,6 +83210,7 @@ The category of funds transfer to use when processing a payout.
       "recurring": false,
       "metadata": {},
       "funds_transfer_type": {},
+      "purpose": {},
       "sender_details": {
         "first_name": "John",
         "last_name": "Doe",
@@ -82772,6 +83375,19 @@ The payout method information for response
 |bank_redirect|[BankRedirectAdditionalData](#schemabankredirectadditionaldata)|true|none|Masked payout method details for wallet payout method|
 |*oneOf*|object|false|none|none|
 |passthrough|[PassthroughAdditionalData](#schemapassthroughadditionaldata)|true|none|additional payout method details for passthrough payout method|
+
+<h2 id="tocS_PayoutPurpose">PayoutPurpose</h2>
+<!-- backwards compatibility -->
+<a id="schemapayoutpurpose"></a>
+<a id="schema_PayoutPurpose"></a>
+<a id="tocSpayoutpurpose"></a>
+<a id="tocspayoutpurpose"></a>
+
+```json
+"donations"
+```
+
+The purpose for which a payout is being carried out.
 
 <h2 id="tocS_PayoutRetrieveBody">PayoutRetrieveBody</h2>
 <!-- backwards compatibility -->
@@ -82947,6 +83563,7 @@ The payout_type of the payout request is a mandatory field for confirming the pa
   "recurring": false,
   "metadata": {},
   "funds_transfer_type": {},
+  "purpose": {},
   "sender_details": {
     "first_name": "John",
     "last_name": "Doe",
@@ -83026,7 +83643,7 @@ The payout_type of the payout request is a mandatory field for confirming the pa
 |source_bank_data|object \| null|false|none|none|
 |billing|object \| null|false|none|none|
 |auto_fulfill|boolean \| null|false|none|Set to true to confirm the payout without review, no further action required|
-|customer_id|string \| null|false|none|**Deprecated.** Customer identifier for normal and proxy payouts; normal creates may generate it when omitted, while proxy creates require this or customer.id owning payout_method_id. _Deprecated: Use customer.id instead._|
+|customer_id|string \| null|false|none|**Deprecated.** Existing customer ID used at creation. Ignored on update and confirm.<br>_Deprecated: Use customer.id instead._|
 |customer|object \| null|false|none|none|
 |return_url|string \| null|false|none|The URL to redirect after the completion of the operation|
 |business_country|object \| null|false|none|none|
@@ -83037,6 +83654,7 @@ The payout_type of the payout request is a mandatory field for confirming the pa
 |recurring|boolean \| null|false|none|Specifies whether or not the payout request is recurring|
 |metadata|object \| null|false|none|Legacy vendor/individual details in metadata are a compatibility fallback for Stripe.<br>Explicit sender_details takes precedence and is never merged with that identity.<br>You can specify up to 50 keys, with key names up to 40 characters long and values up to 500 characters long. Metadata is useful for storing additional, structured information on an object.|
 |funds_transfer_type|object \| null|false|none|none|
+|purpose|object \| null|false|none|none|
 |sender_details|object \| null|false|none|none|
 |payout_token|string \| null|false|none|Provide a reference to a stored payout method, used to process the payout.|
 |profile_id|string \| null|false|none|The business profile to use for this payout, especially if there are multiple business profiles associated with the account, otherwise default business profile associated with the merchant account will be used.|
@@ -83044,10 +83662,10 @@ The payout_type of the payout request is a mandatory field for confirming the pa
 |payout_link|boolean \| null|false|none|Whether to get the payout link (if applicable). Merchant need to specify this during the Payout _Create_, this field can not be updated during Payout _Update_.|
 |payout_link_config|object \| null|false|none|none|
 |session_expiry|integer(int32) \| null|false|none|Lifetime of the payout link in seconds, for example 900 for 15 minutes.|
-|email|string \| null|false|none|**Deprecated.** Customer's email. _Deprecated: Use customer object instead._|
-|name|string \| null|false|none|**Deprecated.** Customer's name. _Deprecated: Use customer object instead._|
-|phone|string \| null|false|none|**Deprecated.** Customer's phone. _Deprecated: Use customer object instead._|
-|phone_country_code|string \| null|false|none|**Deprecated.** Customer's phone country code. _Deprecated: Use customer object instead._|
+|email|string \| null|false|none|**Deprecated.** Ignored. _Deprecated: Manage customer details through the Customers API._|
+|name|string \| null|false|none|**Deprecated.** Ignored. _Deprecated: Manage customer details through the Customers API._|
+|phone|string \| null|false|none|**Deprecated.** Ignored. _Deprecated: Manage customer details through the Customers API._|
+|phone_country_code|string \| null|false|none|**Deprecated.** Ignored. _Deprecated: Manage customer details through the Customers API._|
 |payout_method_id|string \| null|false|none|Saved payment-method identifier, resolved internally for normal payouts and to vault tokens for proxy payouts.|
 |browser_info|object \| null|false|none|none|
 
@@ -83191,6 +83809,7 @@ Billing descriptor information for a payout.
   "recurring": false,
   "metadata": {},
   "funds_transfer_type": {},
+  "purpose": {},
   "sender_details": {
     "first_name": "John",
     "last_name": "Doe",
@@ -83270,7 +83889,7 @@ Billing descriptor information for a payout.
 |source_bank_data|object \| null|false|none|none|
 |billing|object \| null|false|none|none|
 |auto_fulfill|boolean \| null|false|none|Set to true to confirm the payout without review, no further action required|
-|customer_id|string \| null|false|none|**Deprecated.** Customer identifier for normal and proxy payouts; normal creates may generate it when omitted, while proxy creates require this or customer.id owning payout_method_id. _Deprecated: Use customer.id instead._|
+|customer_id|string \| null|false|none|**Deprecated.** Existing customer ID used at creation. Ignored on update and confirm.<br>_Deprecated: Use customer.id instead._|
 |customer|object \| null|false|none|none|
 |return_url|string \| null|false|none|The URL to redirect after the completion of the operation|
 |business_country|object \| null|false|none|none|
@@ -83281,6 +83900,7 @@ Billing descriptor information for a payout.
 |recurring|boolean \| null|false|none|Specifies whether or not the payout request is recurring|
 |metadata|object \| null|false|none|Legacy vendor/individual details in metadata are a compatibility fallback for Stripe.<br>Explicit sender_details takes precedence and is never merged with that identity.<br>You can specify up to 50 keys, with key names up to 40 characters long and values up to 500 characters long. Metadata is useful for storing additional, structured information on an object.|
 |funds_transfer_type|object \| null|false|none|none|
+|purpose|object \| null|false|none|none|
 |sender_details|object \| null|false|none|none|
 |payout_token|string \| null|false|none|Provide a reference to a stored payout method, used to process the payout.|
 |profile_id|string \| null|false|none|The business profile to use for this payout, especially if there are multiple business profiles associated with the account, otherwise default business profile associated with the merchant account will be used.|
@@ -83288,10 +83908,10 @@ Billing descriptor information for a payout.
 |payout_link|boolean \| null|false|none|Whether to get the payout link (if applicable). Merchant need to specify this during the Payout _Create_, this field can not be updated during Payout _Update_.|
 |payout_link_config|object \| null|false|none|none|
 |session_expiry|integer(int32) \| null|false|none|Lifetime of the payout link in seconds, for example 900 for 15 minutes.|
-|email|string \| null|false|none|**Deprecated.** Customer's email. _Deprecated: Use customer object instead._|
-|name|string \| null|false|none|**Deprecated.** Customer's name. _Deprecated: Use customer object instead._|
-|phone|string \| null|false|none|**Deprecated.** Customer's phone. _Deprecated: Use customer object instead._|
-|phone_country_code|string \| null|false|none|**Deprecated.** Customer's phone country code. _Deprecated: Use customer object instead._|
+|email|string \| null|false|none|**Deprecated.** Ignored. _Deprecated: Manage customer details through the Customers API._|
+|name|string \| null|false|none|**Deprecated.** Ignored. _Deprecated: Manage customer details through the Customers API._|
+|phone|string \| null|false|none|**Deprecated.** Ignored. _Deprecated: Manage customer details through the Customers API._|
+|phone_country_code|string \| null|false|none|**Deprecated.** Ignored. _Deprecated: Manage customer details through the Customers API._|
 |payout_method_id|string \| null|false|none|Saved payment-method identifier, resolved internally for normal payouts and to vault tokens for proxy payouts.|
 |browser_info|object \| null|false|none|none|
 
@@ -85213,7 +85833,13 @@ The status of a post-capture void operation
 ```json
 {
   "processor_payment_token": "string",
-  "merchant_connector_id": "string"
+  "merchant_connector_id": "string",
+  "processor_payment_token_details": {
+    "card_exp_month": "12",
+    "card_exp_year": "2030",
+    "network_transaction_id": "string",
+    "transaction_link_id": "string"
+  }
 }
 ```
 
@@ -85225,6 +85851,34 @@ Processor payment token for MIT payments where payment_method_data is not availa
 |---|---|---|---|---|
 |processor_payment_token|string|true|none|none|
 |merchant_connector_id|string \| null|false|none|none|
+|processor_payment_token_details|object \| null|false|none|none|
+
+<h2 id="tocS_ProcessorPaymentTokenDetails">ProcessorPaymentTokenDetails</h2>
+<!-- backwards compatibility -->
+<a id="schemaprocessorpaymenttokendetails"></a>
+<a id="schema_ProcessorPaymentTokenDetails"></a>
+<a id="tocSprocessorpaymenttokendetails"></a>
+<a id="tocsprocessorpaymenttokendetails"></a>
+
+```json
+{
+  "card_exp_month": "12",
+  "card_exp_year": "2030",
+  "network_transaction_id": "string",
+  "transaction_link_id": "string"
+}
+```
+
+Card and network reference details associated with a processor payment token.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|card_exp_month|string \| null|false|none|The card's expiry month.|
+|card_exp_year|string \| null|false|none|The card's expiry year.|
+|network_transaction_id|string \| null|false|none|The network transaction ID from the original customer initiated transaction.|
+|transaction_link_id|string \| null|false|none|The Mastercard Transaction Link Identifier from the original transaction.|
 
 <h2 id="tocS_ProductType">ProductType</h2>
 <!-- backwards compatibility -->
@@ -85475,7 +86129,7 @@ Progress of one target profile within a profile-clone job.
   "profile_name": "string",
   "return_url": "https://www.example.com/success",
   "enable_payment_response_hash": true,
-  "payment_response_hash_key": "string",
+  "payment_response_hash_key": "stringstringstringstringstringst",
   "redirect_to_merchant_with_http_post": true,
   "webhook_details": {
     "webhook_version": "1.0.2",
@@ -86012,7 +86666,7 @@ A type for profile_id that can be used for business profile ids
   "profile_name": "string",
   "return_url": "https://www.example.com/success",
   "enable_payment_response_hash": true,
-  "payment_response_hash_key": "string",
+  "payment_response_hash_key": "xkkd",
   "redirect_to_merchant_with_http_post": true,
   "webhook_details": {
     "webhook_version": "1.0.2",
@@ -86489,7 +87143,7 @@ A type for profile_id that can be used for business profile ids
 |profile_name|string|true|none|Name of the profile|
 |return_url|string \| null|false|none|The URL to redirect after the completion of the operation|
 |enable_payment_response_hash|boolean|true|none|A boolean value to indicate if payment response hash needs to be enabled|
-|payment_response_hash_key|string \| null|false|none|Refers to the hash key used for calculating the signature for webhooks and redirect response. If the value is not provided, a value is automatically generated.|
+|payment_response_hash_key|string \| null|false|none|The first 4 characters of the hash key used to sign webhooks and redirect responses.|
 |redirect_to_merchant_with_http_post|boolean|true|none|A boolean value to indicate if redirect to merchant with http post needs to be enabled|
 |webhook_details|object \| null|false|none|none|
 |metadata|object \| null|false|none|Metadata is useful for storing additional, unstructured information on an object.|
@@ -90713,6 +91367,7 @@ Routable Connector chosen for a payment
 |connector|opennode|
 |connector|paybox|
 |connector|paydotcom|
+|connector|payhound|
 |connector|payme|
 |connector|paynearme|
 |connector|payload|
@@ -92744,6 +93399,66 @@ Details of the party providing the funds.
 |phone|object \| null|false|none|none|
 |reference_id|string \| null|false|none|The merchant's stable identifier for the sender.|
 |source_of_funds|object \| null|false|none|none|
+|type|string|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|individual|
+|type|corporate|
+
+<h2 id="tocS_SenderDetailsResponse">SenderDetailsResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemasenderdetailsresponse"></a>
+<a id="schema_SenderDetailsResponse"></a>
+<a id="tocSsenderdetailsresponse"></a>
+<a id="tocssenderdetailsresponse"></a>
+
+```json
+{
+  "first_name": "John",
+  "last_name": "Doe",
+  "address": {
+    "city": "New York",
+    "country": {},
+    "line1": "123, King Street",
+    "line2": "Powelson Avenue",
+    "line3": "Bridgewater",
+    "zip": "08807",
+    "state": "New York",
+    "first_name": "John",
+    "last_name": "Doe",
+    "origin_zip": "08807"
+  },
+  "phone": {
+    "number": "********89",
+    "country_code": "+44"
+  },
+  "email": "jo******@example.com",
+  "type": "individual"
+}
+```
+
+A partially masked view of `SenderDetails`, safe to return in API responses. The sender's
+date of birth is never returned.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*oneOf*|object|false|none|none|
+|first_name|string \| null|false|none|The sender's first name.|
+|last_name|string \| null|false|none|The sender's last name.|
+|address|object \| null|false|none|none|
+|phone|object \| null|false|none|none|
+|email|string \| null|false|none|The sender's masked email address.|
+|type|string|true|none|none|
+|*oneOf*|object|false|none|none|
+|company_name|string|true|none|The sender's legal company name.|
+|address|object \| null|false|none|none|
+|phone|object \| null|false|none|none|
+|email|string \| null|false|none|The sender's masked email address.|
 |type|string|true|none|none|
 
 #### Enumerated Values

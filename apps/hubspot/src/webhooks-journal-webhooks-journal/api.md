@@ -19,12 +19,6 @@ Base URLs:
     - Authorization URL = [https://app.hubspot.com/oauth/authorize](https://app.hubspot.com/oauth/authorize)
     - Token URL = [https://api.hubapi.com/oauth/v1/token](https://api.hubapi.com/oauth/v1/token)
 
-* API Key (private_apps)
-    - Parameter Name: **private-app**, in: header.
-
-* API Key (private_apps_legacy)
-    - Parameter Name: **private-app-legacy**, in: header.
-
 <h1 id="webhooks-journal-webhooks-journal-advanced">Advanced</h1>
 
 ## Create Snapshot
@@ -43,7 +37,7 @@ curl https://api.hubapi.com/webhooks-journal/snapshots/2026-09/crm \
 
 `POST /webhooks-journal/snapshots/2026-09/crm`
 
-Create a batch of CRM object snapshots in HubSpot. This endpoint is used to capture the current state of specified CRM objects for later reference or analysis. It requires a JSON payload containing the details of the CRM objects to snapshot. This operation is exempt from daily and ten-secondly rate limits.
+Capture the current state of up to 200 CRM objects. Each snapshot is written to your journal as a `SNAPSHOT` entry, and its progress can be checked with the status endpoint using the returned `snapshotStatusId`. This operation is exempt from daily and ten-secondly rate limits.
 
 > Body parameter
 
@@ -99,7 +93,7 @@ curl https://api.hubapi.com/webhooks-journal/subscriptions/2026-09/filters \
 
 `POST /webhooks-journal/subscriptions/2026-09/filters`
 
-Create a new filter for a specific webhook subscription in the HubSpot account. This endpoint allows you to define conditions that determine when a webhook should be triggered. The filter is associated with a subscription identified by its ID, and the request must include the filter details.
+Add a filter to a subscription. When a subscription has filters, only events that match at least one of them are recorded in your journal.
 
 > Body parameter
 
@@ -149,12 +143,13 @@ This operation does not require authentication
 > Code samples
 
 ```bash
-curl https://api.hubapi.com/webhooks-journal/journal-local/2026-09/earliest
+curl https://api.hubapi.com/webhooks-journal/journal-local/2026-09/earliest \
+  -H 'Accept: application/json'
 ```
 
 `GET /webhooks-journal/journal-local/2026-09/earliest`
 
-Retrieve the earliest webhook journal entries for the specified portal. This endpoint can be used to access the oldest records available in the webhook journal, which may be useful for auditing or historical analysis.
+Retrieve the oldest entry still available in your app's journal. Use `installPortalId` to limit it to one account.
 
 <h3 id="retrieve-earliest-parameters">Parameters</h3>
 
@@ -163,6 +158,12 @@ Retrieve the earliest webhook journal entries for the specified portal. This end
 |installPortalId|query|integer(int32)|false|The ID of the installation portal to filter the journal entries by. This is an integer value.|
 
 > Example responses
+
+> 200 Response
+
+```json
+null
+```
 
 > default Response
 
@@ -174,6 +175,8 @@ null
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
+|200|OK|successful operation|[JournalFetchResponse](#schemajournalfetchresponse)|
+|204|No Content|The journal has no entries|None|
 |default|Default|An error occurred.|[Error](#schemaerror)|
 
 <aside class="success">
@@ -187,12 +190,13 @@ This operation does not require authentication
 > Code samples
 
 ```bash
-curl https://api.hubapi.com/webhooks-journal/journal-local/2026-09/latest
+curl https://api.hubapi.com/webhooks-journal/journal-local/2026-09/latest \
+  -H 'Accept: application/json'
 ```
 
 `GET /webhooks-journal/journal-local/2026-09/latest`
 
-Retrieve the latest entries from the webhooks journal for the specified portal. This endpoint is useful for accessing the most recent webhook events that have been logged, allowing for real-time monitoring or debugging of webhook activities.
+Retrieve the most recent entry in your app's journal. Use `installPortalId` to limit it to one account.
 
 <h3 id="retrieve-latest-parameters">Parameters</h3>
 
@@ -201,6 +205,12 @@ Retrieve the latest entries from the webhooks journal for the specified portal. 
 |installPortalId|query|integer(int32)|false|The ID of the portal for which to retrieve the latest webhook journal entries. It is an integer value.|
 
 > Example responses
+
+> 200 Response
+
+```json
+null
+```
 
 > default Response
 
@@ -212,6 +222,8 @@ null
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
+|200|OK|successful operation|[JournalFetchResponse](#schemajournalfetchresponse)|
+|204|No Content|The journal has no entries|None|
 |default|Default|An error occurred.|[Error](#schemaerror)|
 
 <aside class="success">
@@ -225,21 +237,28 @@ This operation does not require authentication
 > Code samples
 
 ```bash
-curl 'https://api.hubapi.com/webhooks-journal/journal-local/2026-09/offset/{offset}/next'
+curl 'https://api.hubapi.com/webhooks-journal/journal-local/2026-09/offset/{offset}/next' \
+  -H 'Accept: application/json'
 ```
 
 `GET /webhooks-journal/journal-local/2026-09/offset/{offset}/next`
 
-Retrieve the next set of webhook journal entries starting from a specified offset. This endpoint is useful for paginating through large sets of webhook data, allowing you to continue from where a previous request left off.
+Retrieve the entry that follows the given offset. Fails with a `404` if the offset has expired or doesn't exist.
 
 <h3 id="retrieve-next-batch-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|offset|path|string|true|The offset from which to start retrieving the next batch of webhook journal entries. This is a string value that indicates the starting point for fetching entries.|
+|offset|path|string|true|The `currentOffset` of the last entry you processed. The entry after this offset is returned.|
 |installPortalId|query|integer(int32)|false|The ID of the portal installation. This is an integer value used to identify the specific portal installation for which the webhook journal entries are being retrieved.|
 
 > Example responses
+
+> 200 Response
+
+```json
+null
+```
 
 > default Response
 
@@ -251,6 +270,8 @@ null
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
+|200|OK|successful operation|[JournalFetchResponse](#schemajournalfetchresponse)|
+|204|No Content|No journal entry exists after the given offset|None|
 |default|Default|An error occurred.|[Error](#schemaerror)|
 
 <aside class="success">
@@ -270,13 +291,13 @@ curl 'https://api.hubapi.com/webhooks-journal/journal-local/2026-09/status/{stat
 
 `GET /webhooks-journal/journal-local/2026-09/status/{statusId}`
 
-Retrieve the status of a specific webhook journal entry using its unique status ID. This endpoint is useful for monitoring the progress or outcome of webhook journal entries, allowing you to check if an entry is pending, in progress, completed, failed, or expired.
+Retrieve the status of a snapshot request. Use the `snapshotStatusId` returned when the snapshot was requested.
 
 <h3 id="retrieve-status-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|statusId|path|string(uuid)|true|The unique identifier (UUID) of the webhook journal status to retrieve.|
+|statusId|path|string(uuid)|true|The `snapshotStatusId` returned when the snapshot was requested.|
 
 > Example responses
 
@@ -310,12 +331,13 @@ This operation does not require authentication
 > Code samples
 
 ```bash
-curl https://api.hubapi.com/webhooks-journal/journal/2026-09/earliest
+curl https://api.hubapi.com/webhooks-journal/journal/2026-09/earliest \
+  -H 'Accept: application/json'
 ```
 
 `GET /webhooks-journal/journal/2026-09/earliest`
 
-Retrieve the earliest entry from the webhooks journal for the specified portal. This endpoint is useful for accessing the first recorded webhook event in the journal, which can be helpful for auditing or debugging purposes.
+Retrieve the oldest entry still available in your app's journal. Use `installPortalId` to limit it to one account.
 
 <h3 id="retrieve-earliest-entry-parameters">Parameters</h3>
 
@@ -324,6 +346,12 @@ Retrieve the earliest entry from the webhooks journal for the specified portal. 
 |installPortalId|query|integer(int32)|false|The ID of the portal for which to retrieve the earliest webhook journal entry. This is an integer value.|
 
 > Example responses
+
+> 200 Response
+
+```json
+null
+```
 
 > default Response
 
@@ -335,6 +363,8 @@ null
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
+|200|OK|successful operation|[JournalFetchResponse](#schemajournalfetchresponse)|
+|204|No Content|The journal has no entries|None|
 |default|Default|An error occurred.|[Error](#schemaerror)|
 
 <aside class="success">
@@ -348,12 +378,13 @@ This operation does not require authentication
 > Code samples
 
 ```bash
-curl https://api.hubapi.com/webhooks-journal/journal/2026-09/latest
+curl https://api.hubapi.com/webhooks-journal/journal/2026-09/latest \
+  -H 'Accept: application/json'
 ```
 
 `GET /webhooks-journal/journal/2026-09/latest`
 
-Retrieve the latest entries from the webhooks journal for the specified portal. This endpoint is useful for accessing the most recent webhook events and their statuses, allowing you to monitor and debug webhook activity effectively.
+Retrieve the most recent entry in your app's journal. Use `installPortalId` to limit it to one account.
 
 <h3 id="retrieve-latest-journal-parameters">Parameters</h3>
 
@@ -362,6 +393,12 @@ Retrieve the latest entries from the webhooks journal for the specified portal. 
 |installPortalId|query|integer(int32)|false|The ID of the portal for which the latest journal entries are to be retrieved. This parameter is optional and should be an integer.|
 
 > Example responses
+
+> 200 Response
+
+```json
+null
+```
 
 > default Response
 
@@ -373,6 +410,8 @@ null
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
+|200|OK|successful operation|[JournalFetchResponse](#schemajournalfetchresponse)|
+|204|No Content|The journal has no entries|None|
 |default|Default|An error occurred.|[Error](#schemaerror)|
 
 <aside class="success">
@@ -386,21 +425,28 @@ This operation does not require authentication
 > Code samples
 
 ```bash
-curl 'https://api.hubapi.com/webhooks-journal/journal/2026-09/offset/{offset}/next'
+curl 'https://api.hubapi.com/webhooks-journal/journal/2026-09/offset/{offset}/next' \
+  -H 'Accept: application/json'
 ```
 
 `GET /webhooks-journal/journal/2026-09/offset/{offset}/next`
 
-Retrieve the next set of entries from the webhooks journal starting from a specified offset. This endpoint is useful for paginating through journal entries to process or analyze webhook events sequentially.
+Retrieve the entry that follows the given offset. Fails with a `404` if the offset has expired or doesn't exist.
 
 <h3 id="retrieve-next-entries-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|offset|path|string|true|The offset from which to start retrieving the next set of journal entries. This is a string value.|
-|installPortalId|query|integer(int32)|false|The ID of the portal where the webhook is installed. This is an integer value.|
+|offset|path|string|true|The `currentOffset` of the last entry you processed. The entry after this offset is returned.|
+|installPortalId|query|integer(int32)|false|The ID of an account that has installed your app. When set, only entries for that account are returned.|
 
 > Example responses
+
+> 200 Response
+
+```json
+null
+```
 
 > default Response
 
@@ -412,6 +458,8 @@ null
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
+|200|OK|successful operation|[JournalFetchResponse](#schemajournalfetchresponse)|
+|204|No Content|No journal entry exists after the given offset|None|
 |default|Default|An error occurred.|[Error](#schemaerror)|
 
 <aside class="success">
@@ -431,13 +479,13 @@ curl 'https://api.hubapi.com/webhooks-journal/journal/2026-09/status/{statusId}'
 
 `GET /webhooks-journal/journal/2026-09/status/{statusId}`
 
-Retrieve the status of a specific webhook journal entry using its unique status ID. This endpoint provides detailed information about the status, including whether it is pending, in progress, completed, failed, or expired. It is useful for monitoring and managing the state of webhook journal entries.
+Retrieve the status of a snapshot request. Use the `snapshotStatusId` returned when the snapshot was requested.
 
 <h3 id="retrieve-status-1-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|statusId|path|string(uuid)|true|The unique identifier (UUID) of the webhook journal status to retrieve.|
+|statusId|path|string(uuid)|true|The `snapshotStatusId` returned when the snapshot was requested.|
 
 > Example responses
 
@@ -477,7 +525,7 @@ curl https://api.hubapi.com/webhooks-journal/subscriptions/2026-09 \
 
 `GET /webhooks-journal/subscriptions/2026-09`
 
-Retrieve a list of webhook journal subscriptions. This endpoint provides access to subscription details without pagination, allowing you to view all current subscriptions in a single request. It is useful for managing and reviewing webhook subscriptions for your app.
+Retrieve all of your app's subscriptions.
 
 > Example responses
 
@@ -497,7 +545,7 @@ null
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|OK|successful operation|[CollectionResponseSubscriptionResponseMarch2027NoPaging](#schemacollectionresponsesubscriptionresponsemarch2027nopaging)|
+|200|OK|successful operation|[CollectionResponseSubscriptionResponseNoPaging](#schemacollectionresponsesubscriptionresponsenopaging)|
 |default|Default|An error occurred.|[Error](#schemaerror)|
 
 <aside class="success">
@@ -520,7 +568,7 @@ curl https://api.hubapi.com/webhooks-journal/subscriptions/2026-09 \
 
 `POST /webhooks-journal/subscriptions/2026-09`
 
-Create a new webhook journal subscription for the specified portal. This endpoint allows you to define the actions and object types that the subscription will monitor. It requires a request body with the subscription details.
+Create a subscription, or update the existing one with the same subscription type, object type, and account. The request body sets which actions and objects are recorded in your journal.
 
 > Body parameter
 
@@ -577,7 +625,7 @@ curl 'https://api.hubapi.com/webhooks-journal/subscriptions/2026-09/filters/subs
 
 `GET /webhooks-journal/subscriptions/2026-09/filters/subscription/{subscriptionId}`
 
-Retrieve the filters associated with a specific webhook subscription. This endpoint allows you to view the filters applied to a subscription, which can help in managing and understanding the conditions set for webhook events.
+Retrieve all filters attached to a subscription.
 
 <h3 id="retrieve-filters-parameters">Parameters</h3>
 
@@ -631,7 +679,7 @@ curl 'https://api.hubapi.com/webhooks-journal/subscriptions/2026-09/filters/{fil
 
 `GET /webhooks-journal/subscriptions/2026-09/filters/{filterId}`
 
-Retrieve a specific filter associated with a webhook journal subscription. This endpoint allows you to access the details of the filter identified by the filterId, which is useful for managing and understanding the conditions applied to webhook events.
+Retrieve a filter by its ID.
 
 <h3 id="retrieve-filter-parameters">Parameters</h3>
 
@@ -677,7 +725,7 @@ curl 'https://api.hubapi.com/webhooks-journal/subscriptions/2026-09/filters/{fil
 
 `DELETE /webhooks-journal/subscriptions/2026-09/filters/{filterId}`
 
-Remove a specific filter from the webhooks journal subscriptions. This operation is useful for managing and cleaning up filters that are no longer needed. Once deleted, the filter cannot be recovered.
+Delete a filter from its subscription. This can't be undone.
 
 <h3 id="delete-filter-parameters">Parameters</h3>
 
@@ -717,7 +765,7 @@ curl 'https://api.hubapi.com/webhooks-journal/subscriptions/2026-09/portals/{por
 
 `DELETE /webhooks-journal/subscriptions/2026-09/portals/{portalId}`
 
-Delete a webhook journal subscription for a specific portal. This operation removes the subscription associated with the given portalId, ensuring that no further webhook events are sent for this portal. Use this endpoint to manage and clean up subscriptions that are no longer needed.
+Delete all of your app's subscriptions for an account, along with their filters. Changes in that account are no longer recorded in your journal.
 
 <h3 id="delete-subscription-parameters">Parameters</h3>
 
@@ -757,7 +805,7 @@ curl 'https://api.hubapi.com/webhooks-journal/subscriptions/2026-09/{subscriptio
 
 `GET /webhooks-journal/subscriptions/2026-09/{subscriptionId}`
 
-Retrieve details of a specific webhook subscription using its unique identifier. This endpoint is useful for obtaining information about a particular subscription, such as its actions, object type, and associated properties.
+Retrieve a subscription by its ID.
 
 <h3 id="retrieve-subscription-parameters">Parameters</h3>
 
@@ -803,7 +851,7 @@ curl 'https://api.hubapi.com/webhooks-journal/subscriptions/2026-09/{subscriptio
 
 `DELETE /webhooks-journal/subscriptions/2026-09/{subscriptionId}`
 
-Delete a specific webhook journal subscription using its unique identifier. This operation is useful for managing and cleaning up subscriptions that are no longer needed in your HubSpot account.
+Delete a subscription by its ID.
 
 <h3 id="delete-subscription-1-parameters">Parameters</h3>
 
@@ -845,13 +893,13 @@ curl 'https://api.hubapi.com/webhooks-journal/journal-local/2026-09/batch/earlie
 
 `GET /webhooks-journal/journal-local/2026-09/batch/earliest/{count}`
 
-Retrieve the earliest batch of webhook journal entries. This endpoint is useful for accessing the oldest available data in the webhook journal, allowing users to process or analyze historical webhook events. The number of entries to fetch is specified by the 'count' path parameter.
+Retrieve the oldest entries still available in your app's journal, up to `count`.
 
 <h3 id="fetch-earliest-batch-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|count|path|integer(int32)|true|The number of webhook journal entries to retrieve. Must be an integer with a minimum value of 1.|
+|count|path|integer(int32)|true|The number of entries to return, from 1 to 100.|
 |installPortalId|query|integer(int32)|false|The ID of the installation portal for which to retrieve the webhook journal entries.|
 
 > Example responses
@@ -892,14 +940,14 @@ curl 'https://api.hubapi.com/webhooks-journal/journal-local/2026-09/batch/latest
 
 `GET /webhooks-journal/journal-local/2026-09/batch/latest/{count}`
 
-Retrieve the latest batch of webhook journal entries. This endpoint allows you to specify the number of entries to fetch, providing a way to access the most recent webhook events processed by your HubSpot account.
+Retrieve the most recent entries in your app's journal, up to `count`. Entries are returned oldest first.
 
 <h3 id="retrieve-latest-batch-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|count|path|integer(int32)|true|The number of journal entries to retrieve. Must be an integer with a minimum value of 1.|
-|installPortalId|query|integer(int32)|false|The ID of the portal installation. This parameter is optional and can be used to filter results by a specific portal.|
+|count|path|integer(int32)|true|The number of entries to return, from 1 to 100.|
+|installPortalId|query|integer(int32)|false|The ID of an account that has installed your app. When set, only entries for that account are returned.|
 
 > Example responses
 
@@ -942,7 +990,7 @@ curl https://api.hubapi.com/webhooks-journal/journal-local/2026-09/batch/read \
 
 `POST /webhooks-journal/journal-local/2026-09/batch/read`
 
-Execute a batch read operation on the webhooks journal. This endpoint allows you to retrieve a batch of webhook journal entries by providing the necessary input data. It is useful for processing multiple records in a single request, streamlining data retrieval tasks.
+Fetch up to 100 journal entries by offset in a single request. Offsets that can't be fetched don't fail the request; they're listed in `errors` and counted in `numErrors`.
 
 > Body parameter
 
@@ -954,9 +1002,9 @@ null
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|installPortalId|query|integer(int32)|false|An integer representing the ID of the portal where the installation occurred. This parameter is optional.|
+|installPortalId|query|integer(int32)|false|The ID of an account that has installed your app. When set, only entries for that account are returned.|
 |body|body|[BatchInputString](#schemabatchinputstring)|true|none|
-|» inputs|body|[string]|true|An array of strings that are to be processed in the batch operation. This property is required.|
+|» inputs|body|[string]|true|The offsets (UUIDs) of the journal entries to fetch, up to 100 per request. Use the `currentOffset` values returned by other journal endpoints. If any value is not a valid UUID, the whole request is rejected with a `400`. Offsets that can't be fetched, including ones with no matching entry for your app (or for `installPortalId` when it is set), don't fail the request: each one appears in `errors` with the offset in `context.offset`, and `numErrors` counts them. An empty list returns an empty result.|
 
 > Example responses
 
@@ -1003,15 +1051,15 @@ curl 'https://api.hubapi.com/webhooks-journal/journal-local/2026-09/batch/{offse
 
 `GET /webhooks-journal/journal-local/2026-09/batch/{offset}/next/{count}`
 
-Retrieve a batch of webhook journal entries starting from a specified offset. This endpoint is useful for paginating through large sets of webhook data. The number of entries returned is determined by the 'count' parameter.
+Retrieve up to `count` entries that follow the given offset. Pass the last entry's `currentOffset` to fetch the next page.
 
 <h3 id="fetch-batch-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|count|path|integer(int32)|true|An integer specifying the number of journal entries to retrieve. Must be at least 1.|
-|offset|path|string|true|A string representing the starting point for fetching the batch of journal entries.|
-|installPortalId|query|integer(int32)|false|An integer representing the ID of the portal installation to filter the webhook journal entries.|
+|count|path|integer(int32)|true|The number of entries to return, from 1 to 100.|
+|offset|path|string|true|The `currentOffset` of the last entry you processed. Entries after this offset are returned. If the offset has expired or doesn't exist, the batch is empty.|
+|installPortalId|query|integer(int32)|false|The ID of an account that has installed your app. When set, only entries for that account are returned.|
 
 > Example responses
 
@@ -1051,13 +1099,13 @@ curl 'https://api.hubapi.com/webhooks-journal/journal/2026-09/batch/earliest/{co
 
 `GET /webhooks-journal/journal/2026-09/batch/earliest/{count}`
 
-Retrieve the earliest batch of webhook journal entries for a specified count. This endpoint is useful for accessing historical webhook data in batches, allowing you to process or analyze older entries. The number of entries retrieved is determined by the count parameter.
+Retrieve the oldest entries still available in your app's journal, up to `count`.
 
 <h3 id="fetch-earliest-batch-1-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|count|path|integer(int32)|true|The number of earliest webhook journal entries to retrieve. Must be an integer with a minimum value of 1.|
+|count|path|integer(int32)|true|The number of entries to return, from 1 to 100.|
 |installPortalId|query|integer(int32)|false|The ID of the portal installation to filter the webhook journal entries.|
 
 > Example responses
@@ -1085,7 +1133,7 @@ null
 This operation does not require authentication
 </aside>
 
-## Retrieve batch
+## Retrieve latest batch
 
 <a id="opIdget-/webhooks-journal/journal/2026-09/batch/latest/{count}"></a>
 
@@ -1098,14 +1146,14 @@ curl 'https://api.hubapi.com/webhooks-journal/journal/2026-09/batch/latest/{coun
 
 `GET /webhooks-journal/journal/2026-09/batch/latest/{count}`
 
-Retrieve the latest batch of webhook journal entries up to the specified count. This endpoint is useful for fetching recent webhook data for analysis or processing. The count parameter determines the maximum number of entries to return.
+Retrieve the most recent entries in your app's journal, up to `count`. Entries are returned oldest first.
 
-<h3 id="retrieve-batch-parameters">Parameters</h3>
+<h3 id="retrieve-latest-batch-1-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|count|path|integer(int32)|true|The number of journal entries to retrieve. This must be an integer with a minimum value of 1.|
-|installPortalId|query|integer(int32)|false|The ID of the portal installation. This parameter is optional and used to filter the results by a specific portal.|
+|count|path|integer(int32)|true|The number of entries to return, from 1 to 100.|
+|installPortalId|query|integer(int32)|false|The ID of an account that has installed your app. When set, only entries for that account are returned.|
 
 > Example responses
 
@@ -1121,7 +1169,7 @@ null
 null
 ```
 
-<h3 id="retrieve-batch-responses">Responses</h3>
+<h3 id="retrieve-latest-batch-1-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -1148,7 +1196,7 @@ curl https://api.hubapi.com/webhooks-journal/journal/2026-09/batch/read \
 
 `POST /webhooks-journal/journal/2026-09/batch/read`
 
-Execute a batch read operation on the webhooks journal for the specified date, 2026-03. This endpoint allows you to retrieve multiple entries from the webhooks journal in a single request, which can be useful for processing large amounts of data efficiently. Ensure that the request body is provided in the required format.
+Fetch up to 100 journal entries by offset in a single request. Offsets that can't be fetched don't fail the request; they're listed in `errors` and counted in `numErrors`.
 
 > Body parameter
 
@@ -1162,7 +1210,7 @@ null
 |---|---|---|---|---|
 |installPortalId|query|integer(int32)|false|An integer representing the ID of the portal installation to filter the webhook journal entries.|
 |body|body|[BatchInputString](#schemabatchinputstring)|true|none|
-|» inputs|body|[string]|true|An array of strings that are to be processed in the batch operation. This property is required.|
+|» inputs|body|[string]|true|The offsets (UUIDs) of the journal entries to fetch, up to 100 per request. Use the `currentOffset` values returned by other journal endpoints. If any value is not a valid UUID, the whole request is rejected with a `400`. Offsets that can't be fetched, including ones with no matching entry for your app (or for `installPortalId` when it is set), don't fail the request: each one appears in `errors` with the offset in `context.offset`, and `numErrors` counts them. An empty list returns an empty result.|
 
 > Example responses
 
@@ -1209,15 +1257,15 @@ curl 'https://api.hubapi.com/webhooks-journal/journal/2026-09/batch/{offset}/nex
 
 `GET /webhooks-journal/journal/2026-09/batch/{offset}/next/{count}`
 
-Retrieve a batch of webhook journal entries starting from a specified offset. This endpoint allows you to fetch a defined number of entries, which can be useful for processing large datasets in manageable chunks.
+Retrieve up to `count` entries that follow the given offset. Pass the last entry's `currentOffset` to fetch the next page.
 
 <h3 id="fetch-batch-1-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|count|path|integer(int32)|true|The number of journal entries to retrieve. This must be an integer with a minimum value of 1.|
-|offset|path|string|true|The offset from which to start fetching the journal entries. This is a string value.|
-|installPortalId|query|integer(int32)|false|The ID of the portal where the webhook is installed. This is an integer value.|
+|count|path|integer(int32)|true|The number of entries to return, from 1 to 100.|
+|offset|path|string|true|The `currentOffset` of the last entry you processed. Entries after this offset are returned. If the offset has expired or doesn't exist, the batch is empty.|
+|installPortalId|query|integer(int32)|false|The ID of an account that has installed your app. When set, only entries for that account are returned.|
 
 > Example responses
 
@@ -1306,9 +1354,9 @@ null
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|actions|[string]|true|none|An array of strings specifying the actions that trigger the subscription. Valid actions include 'CREATE', 'UPDATE', 'DELETE', 'MERGE', 'RESTORE', 'ASSOCIATION_ADDED', 'ASSOCIATION_REMOVED', 'SNAPSHOT', 'APP_INSTALL', 'APP_UNINSTALL', 'ADDED_TO_LIST', 'REMOVED_FROM_LIST', and 'GDPR_DELETE'.|
+|actions|[string]|true|none|The actions to track: `ASSOCIATION_ADDED` or `ASSOCIATION_REMOVED`.|
 |associatedObjectTypeIds|[string]|true|none|An array of strings representing the type identifiers of the associated objects in the subscription.|
-|objectIds|[integer(int64)]|true|none|An array of integers representing the unique identifiers of the objects involved in the subscription.|
+|objectIds|[integer(int64)]|true|none|The IDs of specific objects to track. Use an empty array to track all objects of this type.|
 |objectTypeId|string|true|none|A string representing the type identifier of the object involved in the subscription.|
 |portalId|integer(int64)|true|none|An integer representing the unique identifier of the HubSpot portal.|
 |subscriptionType|string|true|none|A string indicating the type of subscription, which is 'ASSOCIATION' for this component.|
@@ -1347,7 +1395,7 @@ null
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|inputs|[string]|true|none|An array of strings that are to be processed in the batch operation. This property is required.|
+|inputs|[string]|true|none|The offsets (UUIDs) of the journal entries to fetch, up to 100 per request. Use the `currentOffset` values returned by other journal endpoints. If any value is not a valid UUID, the whole request is rejected with a `400`. Offsets that can't be fetched, including ones with no matching entry for your app (or for `installPortalId` when it is set), don't fail the request: each one appears in `errors` with the offset in `context.offset`, and `numErrors` counts them. An empty list returns an empty result.|
 
 <h2 id="tocS_BatchResponseJournalFetchResponse">BatchResponseJournalFetchResponse</h2>
 <!-- backwards compatibility -->
@@ -1413,12 +1461,12 @@ null
 |status|PENDING|
 |status|PROCESSING|
 
-<h2 id="tocS_CollectionResponseSubscriptionResponseMarch2027NoPaging">CollectionResponseSubscriptionResponseMarch2027NoPaging</h2>
+<h2 id="tocS_CollectionResponseSubscriptionResponseNoPaging">CollectionResponseSubscriptionResponseNoPaging</h2>
 <!-- backwards compatibility -->
-<a id="schemacollectionresponsesubscriptionresponsemarch2027nopaging"></a>
-<a id="schema_CollectionResponseSubscriptionResponseMarch2027NoPaging"></a>
-<a id="tocScollectionresponsesubscriptionresponsemarch2027nopaging"></a>
-<a id="tocscollectionresponsesubscriptionresponsemarch2027nopaging"></a>
+<a id="schemacollectionresponsesubscriptionresponsenopaging"></a>
+<a id="schema_CollectionResponseSubscriptionResponseNoPaging"></a>
+<a id="tocScollectionresponsesubscriptionresponsenopaging"></a>
+<a id="tocscollectionresponsesubscriptionresponsenopaging"></a>
 
 ```json
 null
@@ -1428,7 +1476,7 @@ null
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|results|[[SubscriptionResponseMarch2027](#schemasubscriptionresponsemarch2027)]|true|none|none|
+|results|[[SubscriptionResponse](#schemasubscriptionresponse)]|true|none|An array of subscription responses, where each item contains details about a specific subscription. Each item follows the SubscriptionResponse schema.|
 
 <h2 id="tocS_Condition">Condition</h2>
 <!-- backwards compatibility -->
@@ -1542,7 +1590,7 @@ null
 |objectId|integer(int64)|true|none|An integer representing the unique identifier of the CRM object for which the snapshot was taken. It is in int64 format.|
 |objectTypeId|string|true|none|A string representing the type identifier of the CRM object involved in the snapshot.|
 |portalId|integer(int64)|true|none|An integer representing the unique identifier of the HubSpot portal associated with the CRM object snapshot. It is in int64 format.|
-|snapshotStatusId|string(uuid)|true|none|A string in UUID format representing the status identifier of the snapshot operation.|
+|snapshotStatusId|string(uuid)|true|none|The ID for tracking this snapshot. Pass it to the status endpoint to check progress.|
 
 <h2 id="tocS_Error">Error</h2>
 <!-- backwards compatibility -->
@@ -1616,7 +1664,7 @@ Defines a single condition for searching CRM objects, specifying the property to
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|conditions|[[Condition](#schemacondition)]|true|none|An array of conditions that define the criteria for the filter. Each condition specifies a filter type, operator, property, and optional values.|
+|conditions|[[Condition](#schemacondition)]|true|none|The conditions that define the filter. An event matches the filter only if it matches every condition.|
 
 <h2 id="tocS_FilterCreateRequest">FilterCreateRequest</h2>
 <!-- backwards compatibility -->
@@ -1687,7 +1735,7 @@ null
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|actions|[string]|true|none|An array of actions that can trigger the subscription, such as 'CREATE', 'UPDATE', 'DELETE', and 'GDPR_DELETE'.|
+|actions|[string]|true|none|The actions to track. The only valid action is `GDPR_DELETE`.|
 |objectTypeId|string|true|none|A string representing the unique identifier for the object type associated with the subscription.|
 |portalId|integer(int64)|true|none|The unique identifier for the HubSpot portal, represented as a 64-bit integer.|
 |subscriptionType|string|true|none|The type of subscription, which is fixed as 'GDPR_PRIVACY_DELETION'.|
@@ -1728,7 +1776,7 @@ null
 |---|---|---|---|---|
 |currentOffset|string(uuid)|true|none|A UUID string indicating the current offset for pagination purposes.|
 |expiresAt|string(date-time)|true|none|The date and time when the URL will expire, in ISO 8601 format.|
-|url|string|true|none|A string representing the URL where the journal data can be accessed.|
+|url|string|true|none|A temporary, pre-signed URL for downloading this entry's JSON file. Request it without an `Authorization` header.|
 
 <h2 id="tocS_ListMembershipSubscriptionUpsertRequest">ListMembershipSubscriptionUpsertRequest</h2>
 <!-- backwards compatibility -->
@@ -1745,9 +1793,9 @@ null
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|actions|[string]|true|none|An array of strings specifying the actions that trigger the subscription. Valid actions include 'CREATE', 'UPDATE', 'DELETE', 'MERGE', 'RESTORE', 'ASSOCIATION_ADDED', 'ASSOCIATION_REMOVED', 'SNAPSHOT', 'APP_INSTALL', 'APP_UNINSTALL', 'ADDED_TO_LIST', 'REMOVED_FROM_LIST', and 'GDPR_DELETE'.|
-|listIds|[integer(int64)]|true|none|An array of integers representing the unique identifiers of the lists involved in the subscription.|
-|objectIds|[integer(int64)]|true|none|An array of integers representing the unique identifiers of the objects involved in the subscription.|
+|actions|[string]|true|none|The actions to track: `ADDED_TO_LIST` or `REMOVED_FROM_LIST`.|
+|listIds|[integer(int64)]|true|none|The IDs of the lists to track. Use an empty array to track all lists.|
+|objectIds|[integer(int64)]|true|none|The IDs of specific records to track. Use an empty array to track all records.|
 |portalId|integer(int64)|true|none|An integer representing the unique identifier of the portal in which the subscription is being managed.|
 |subscriptionType|string|true|none|A string indicating the type of subscription. The default and only valid value is 'LIST_MEMBERSHIP'.|
 
@@ -1785,11 +1833,11 @@ null
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|actions|[string]|true|none|An array of strings specifying the actions that trigger the subscription. Valid actions include 'CREATE', 'UPDATE', 'DELETE', 'MERGE', 'RESTORE', 'ASSOCIATION_ADDED', 'ASSOCIATION_REMOVED', 'SNAPSHOT', 'APP_INSTALL', 'APP_UNINSTALL', 'ADDED_TO_LIST', 'REMOVED_FROM_LIST', and 'GDPR_DELETE'.|
-|objectIds|[integer(int64)]|true|none|An array of integers specifying the unique identifiers of the objects involved in the subscription.|
+|actions|[string]|true|none|The actions to track: `CREATE`, `UPDATE`, `DELETE`, `MERGE`, or `RESTORE`.|
+|objectIds|[integer(int64)]|true|none|The IDs of specific objects to track. Use an empty array to track all objects of this type.|
 |objectTypeId|string|true|none|A string representing the unique identifier of the object type for which the subscription is being created or updated.|
 |portalId|integer(int64)|true|none|An integer representing the unique identifier of the HubSpot portal.|
-|properties|[string]|true|none|An array of strings listing the properties of the objects that are relevant to the subscription.|
+|properties|[string]|true|none|The properties to track. When set, updates are only recorded if one of these properties changed. Use an empty array to track all properties.|
 |subscriptionType|string|true|none|A string indicating the type of subscription, which is always 'OBJECT' for this request.|
 
 #### Enumerated Values
@@ -1826,12 +1874,12 @@ null
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|completedAt|integer(int64)|false|none|The timestamp when the snapshot was completed, represented as an integer in int64 format. This field may be null if the snapshot is not yet completed.|
+|completedAt|integer(int64)|false|none|When the snapshot finished, in milliseconds since the Unix epoch. Absent until the snapshot finishes.|
 |errorCode|string|false|none|An optional code indicating the error that occurred, if any. Possible values are 'TIMEOUT', 'VALIDATION_ERROR', 'INTERNAL_ERROR', and 'PERMISSION_DENIED'.|
 |id|string(uuid)|true|none|A unique identifier for the snapshot, represented as a UUID.|
-|initiatedAt|integer(int64)|true|none|The timestamp when the snapshot was initiated, represented as an integer in int64 format.|
+|initiatedAt|integer(int64)|true|none|When the snapshot was requested, in milliseconds since the Unix epoch.|
 |message|string|false|none|A descriptive message providing additional information about the snapshot status or error.|
-|status|string|true|none|The current status of the snapshot. Valid values include 'PENDING', 'IN_PROGRESS', 'COMPLETED', 'FAILED', and 'EXPIRED'.|
+|status|string|true|none|The current status of the snapshot: `PENDING`, `IN_PROGRESS`, `SUCCESS`, `FAILED`, or `EXPIRED`.|
 
 #### Enumerated Values
 
@@ -1903,62 +1951,6 @@ null
 |properties|[string]|false|none|An array of strings representing the properties associated with the subscription.|
 |subscriptionType|string|true|none|The type of subscription, indicating the nature of events it pertains to. Valid values include 'OBJECT', 'ASSOCIATION', 'EVENT', 'APP_LIFECYCLE_EVENT', 'LIST_MEMBERSHIP', and 'GDPR_PRIVACY_DELETION'.|
 |updatedAt|string(date-time)|true|none|The date and time when the subscription was last updated, in ISO 8601 format.|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|actions|CREATE|
-|actions|UPDATE|
-|actions|DELETE|
-|actions|MERGE|
-|actions|RESTORE|
-|actions|ASSOCIATION_ADDED|
-|actions|ASSOCIATION_REMOVED|
-|actions|SNAPSHOT|
-|actions|APP_INSTALL|
-|actions|APP_UNINSTALL|
-|actions|ADDED_TO_LIST|
-|actions|REMOVED_FROM_LIST|
-|actions|GDPR_DELETE|
-|subscriptionType|APP_LIFECYCLE_EVENT|
-|subscriptionType|ASSOCIATION|
-|subscriptionType|EVENT|
-|subscriptionType|GDPR_PRIVACY_DELETION|
-|subscriptionType|LIST_MEMBERSHIP|
-|subscriptionType|OBJECT|
-
-<h2 id="tocS_SubscriptionResponseMarch2027">SubscriptionResponseMarch2027</h2>
-<!-- backwards compatibility -->
-<a id="schemasubscriptionresponsemarch2027"></a>
-<a id="schema_SubscriptionResponseMarch2027"></a>
-<a id="tocSsubscriptionresponsemarch2027"></a>
-<a id="tocssubscriptionresponsemarch2027"></a>
-
-```json
-null
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|actionOverrides|object|false|none|none|
-|actions|[string]|true|none|none|
-|appId|integer(int64)|true|none|none|
-|associatedObjectTypeIds|[string]|false|none|none|
-|createdAt|string(date-time)|true|none|none|
-|createdBy|integer(int64)|false|none|none|
-|deletedAt|string(date-time)|false|none|none|
-|id|integer(int64)|true|none|none|
-|includeSensitivePropertiesChanged|boolean|false|none|none|
-|listIds|[integer(int64)]|false|none|none|
-|objectIds|[integer(int64)]|false|none|none|
-|objectTypeId|string|true|none|none|
-|portalId|integer(int64)|false|none|none|
-|properties|[string]|false|none|none|
-|subscriptionType|string|true|none|none|
-|updatedAt|string(date-time)|true|none|none|
 
 #### Enumerated Values
 

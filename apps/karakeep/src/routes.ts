@@ -188,6 +188,7 @@ const BookmarkSchema = z
             'unknown',
           ]),
           fileName: z.string().nullable().exactOptional(),
+          size: z.number().nullable().exactOptional(),
         })
         .openapi({ required: ['id', 'assetType'] }),
     ),
@@ -307,6 +308,8 @@ const HighlightSchema = z
     endOffset: z.number(),
     color: z.enum(['yellow', 'red', 'green', 'blue']).default('yellow').exactOptional(),
     text: z.string().nullable(),
+    prefix: z.string().nullable(),
+    suffix: z.string().nullable(),
     note: z.string().nullable(),
     id: z.string(),
     userId: z.string(),
@@ -318,6 +321,8 @@ const HighlightSchema = z
       'startOffset',
       'endOffset',
       'text',
+      'prefix',
+      'suffix',
       'note',
       'id',
       'userId',
@@ -338,9 +343,43 @@ const TagSchema = z
   .openapi({ required: ['id', 'name', 'numBookmarks', 'numBookmarksByAttachedType'] })
   .openapi('Tag')
 
+const HighlightWithBookmarkSchema = z
+  .object({
+    bookmarkId: z.string(),
+    startOffset: z.number(),
+    endOffset: z.number(),
+    color: z.enum(['yellow', 'red', 'green', 'blue']).default('yellow').exactOptional(),
+    text: z.string().nullable(),
+    prefix: z.string().nullable(),
+    suffix: z.string().nullable(),
+    note: z.string().nullable(),
+    id: z.string(),
+    userId: z.string(),
+    createdAt: z.iso.datetime({ offset: true }),
+    bookmark: z
+      .object({ title: z.string().nullable(), url: z.string().nullable() })
+      .openapi({ required: ['title', 'url'] }),
+  })
+  .openapi({
+    required: [
+      'bookmarkId',
+      'startOffset',
+      'endOffset',
+      'text',
+      'prefix',
+      'suffix',
+      'note',
+      'id',
+      'userId',
+      'createdAt',
+      'bookmark',
+    ],
+  })
+  .openapi('HighlightWithBookmark')
+
 const PaginatedHighlightsSchema = z
   .object({
-    highlights: z.array(HighlightSchema),
+    highlights: z.array(HighlightWithBookmarkSchema),
     nextCursor: z
       .string()
       .nullable()
@@ -1488,6 +1527,7 @@ export const postBookmarksBookmarkIdAssetsRoute = createRoute({
                 'unknown',
               ]),
               fileName: z.string().nullable().exactOptional(),
+              size: z.number().nullable().exactOptional(),
             })
             .openapi({ required: ['id', 'assetType'] }),
         },
@@ -2271,6 +2311,8 @@ export const postHighlightsRoute = createRoute({
               endOffset: z.number(),
               color: z.enum(['yellow', 'red', 'green', 'blue']).default('yellow').exactOptional(),
               text: z.string().nullable(),
+              prefix: z.string().nullable().exactOptional(),
+              suffix: z.string().nullable().exactOptional(),
               note: z.string().nullable(),
             })
             .openapi({ required: ['bookmarkId', 'startOffset', 'endOffset', 'text', 'note'] }),

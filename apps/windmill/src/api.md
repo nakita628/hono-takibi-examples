@@ -1,4 +1,4 @@
-<h1 id="windmill-api">Windmill API v1.855.1</h1>
+<h1 id="windmill-api">Windmill API v1.881.1</h1>
 
 > Scroll down for code samples, example requests and responses. Select a language for code samples from the tabs above or the mobile navigation menu.
 
@@ -489,8 +489,10 @@ curl http://localhost:8000/api/w/string/audit/list \
 |exclude_operations|query|string|false|comma separated list of operations to exclude|
 |resource|query|string|false|filter on exact or prefix name of resource|
 |action_kind|query|string|false|filter on type of operation|
-|before_id|query|integer(int64)|false|only return logs with an id strictly lower than this one. Logs are ordered by descending id, so this is a keyset cursor to stream a page in several batches without paying a growing offset.<br>|
+|before_id|query|integer(int64)|false|the id half of a keyset cursor. Logs are ordered by descending timestamp then id: pass the last row's id here and its timestamp as before_id_timestamp to stream a page in several batches without paying a growing offset. Alone, it only filters on id < before_id, which can skip or repeat rows across pages.<br>|
+|before_id_timestamp|query|string(date-time)|false|the timestamp of the row whose id is before_id: with it, only logs strictly before that row in (timestamp, id) order are returned<br>|
 |all_workspaces|query|boolean|false|get audit logs for all workspaces|
+|job_id|query|string(uuid)|false|only the entries about this run and the jobs under it (steps, loop iterations and subflows at any depth): who started, viewed, cancelled, approved, resumed or deleted each<br>|
 
 #### Enumerated Values
 
@@ -1064,6 +1066,7 @@ curl http://localhost:8000/api/w/string/users/get/string \
   "is_super_admin": true,
   "created_at": "1970-01-01T00:00:00Z",
   "operator": true,
+  "role": "string",
   "disabled": true,
   "groups": [
     "string"
@@ -2803,6 +2806,7 @@ curl http://localhost:8000/api/w/string/users/whoami \
   "is_super_admin": true,
   "created_at": "1970-01-01T00:00:00Z",
   "operator": true,
+  "role": "string",
   "disabled": true,
   "groups": [
     "string"
@@ -3052,6 +3056,7 @@ curl http://localhost:8000/api/w/string/users/whois/string \
   "is_super_admin": true,
   "created_at": "1970-01-01T00:00:00Z",
   "operator": true,
+  "role": "string",
   "disabled": true,
   "groups": [
     "string"
@@ -3225,6 +3230,7 @@ curl http://localhost:8000/api/w/string/users/list \
     "is_super_admin": true,
     "created_at": "1970-01-01T00:00:00Z",
     "operator": true,
+    "role": "string",
     "disabled": true,
     "groups": [
       "string"
@@ -3474,7 +3480,8 @@ curl http://localhost:8000/api/users/tokens/create \
       "string"
     ],
     "workspace_id": "string",
-    "read_only": true
+    "read_only": true,
+    "super_admin": true
   }'
 ```
 
@@ -3490,7 +3497,8 @@ curl http://localhost:8000/api/users/tokens/create \
     "string"
   ],
   "workspace_id": "string",
-  "read_only": true
+  "read_only": true,
+  "super_admin": true
 }
 ```
 
@@ -3504,6 +3512,7 @@ curl http://localhost:8000/api/users/tokens/create \
 |» scopes|body|[string]|false|none|
 |» workspace_id|body|string|false|none|
 |» read_only|body|boolean|false|If true, the token is restricted to read-only HTTP methods<br>(GET/HEAD/OPTIONS). Mutating endpoints and job-run actions are<br>rejected with 403, regardless of the scopes attached.<br>|
+|» super_admin|body|boolean|false|For an MCP token (an `mcp:` scope) owned by a superadmin: carry the owner's<br>superadmin rights, reaching every workspace rather than only their<br>memberships. Ignored for other tokens, which always carry them.<br>|
 
 <h3 id="create-token-responses">Responses</h3>
 
@@ -4932,6 +4941,7 @@ curl http://localhost:8000/api/workspaces/users \
         "apps": "none",
         "manage_schedules": true,
         "manage_triggers": true,
+        "run": true,
         "fork": true,
         "visibility": {
           "runs": true,
@@ -6573,6 +6583,7 @@ The roles members of this workspace can hold, as they apply here (instance defin
         "apps": "none",
         "manage_schedules": true,
         "manage_triggers": true,
+        "run": true,
         "fork": true,
         "visibility": {
           "runs": true,
@@ -6600,6 +6611,7 @@ The roles members of this workspace can hold, as they apply here (instance defin
         "apps": "none",
         "manage_schedules": true,
         "manage_triggers": true,
+        "run": true,
         "fork": true,
         "visibility": {
           "property1": true,
@@ -6615,6 +6627,7 @@ The roles members of this workspace can hold, as they apply here (instance defin
         "apps": "none",
         "manage_schedules": true,
         "manage_triggers": true,
+        "run": true,
         "fork": true,
         "visibility": {
           "property1": true,
@@ -6631,6 +6644,7 @@ The roles members of this workspace can hold, as they apply here (instance defin
     "apps": "none",
     "manage_schedules": true,
     "manage_triggers": true,
+    "run": true,
     "fork": true,
     "visibility": {
       "runs": true,
@@ -6679,6 +6693,7 @@ curl http://localhost:8000/api/w/string/workspaces/role_overrides \
         "apps": "none",
         "manage_schedules": true,
         "manage_triggers": true,
+        "run": true,
         "fork": true,
         "visibility": {
           "property1": true,
@@ -6694,6 +6709,7 @@ curl http://localhost:8000/api/w/string/workspaces/role_overrides \
         "apps": "none",
         "manage_schedules": true,
         "manage_triggers": true,
+        "run": true,
         "fork": true,
         "visibility": {
           "property1": true,
@@ -6720,6 +6736,7 @@ Replaces the workspace's overrides of instance roles, and its workspace-only rol
       "apps": "none",
       "manage_schedules": true,
       "manage_triggers": true,
+      "run": true,
       "fork": true,
       "visibility": {
         "property1": true,
@@ -6735,6 +6752,7 @@ Replaces the workspace's overrides of instance roles, and its workspace-only rol
       "apps": "none",
       "manage_schedules": true,
       "manage_triggers": true,
+      "run": true,
       "fork": true,
       "visibility": {
         "property1": true,
@@ -7221,6 +7239,9 @@ Returns the full workspace settings including admin-managed integration credenti
   "plan": "string",
   "customer_id": "string",
   "webhook": "string",
+  "webhook_events": [
+    "CreateApp"
+  ],
   "ai_config": {
     "providers": {
       "property1": {
@@ -7282,7 +7303,11 @@ Returns the full workspace settings including admin-managed integration credenti
     },
     "copilot_disabled": true,
     "sessions_storage_disabled": true,
-    "sessions_retention_days": 1
+    "sessions_retention_days": 1,
+    "web_search": {
+      "provider": "exa",
+      "resource_path": "string"
+    }
   },
   "error_handler": {
     "path": "string",
@@ -7456,6 +7481,7 @@ Returns the full workspace settings including admin-managed integration credenti
           "webhook_secret": "string",
           "webhook_url": "string",
           "webhook_error": "string",
+          "webhook_verified_id": 0,
           "last_synced_sha": {
             "property1": "string",
             "property2": "string"
@@ -7560,6 +7586,7 @@ Status Code **200**
 |plan|string|false|none|none|
 |customer_id|string|false|none|none|
 |webhook|string|false|none|none|
+|webhook_events|[[WorkspaceWebhookEventType](#schemaworkspacewebhookeventtype)]|false|none|event types the webhook is sent; absent sends every event|
 |ai_config|[AIConfig](#schemaaiconfig)|false|none|none|
 |error_handler|[ErrorHandlerConfig](#schemaerrorhandlerconfig)|false|none|Configuration for the workspace error handler|
 |success_handler|[SuccessHandlerConfig](#schemasuccesshandlerconfig)|false|none|Configuration for the workspace success handler|
@@ -7580,6 +7607,36 @@ Status Code **200**
 |guest_jwt_public_key|string|false|none|PEM public key a guest JWT (`jwt_guest_`) is verified against for this workspace. Mutually exclusive with `guest_jwt_jwks_url`.|
 |guest_jwt_jwks_url|string|false|none|JWKS URL a guest JWT (`jwt_guest_`) is verified against for this workspace. Mutually exclusive with `guest_jwt_public_key`.|
 |add_admins_and_developers_to_forks|boolean|false|none|Whether every new fork of this workspace starts with its admins and developers as members, keeping their role.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|webhook_events|CreateApp|
+|webhook_events|DeleteApp|
+|webhook_events|UpdateApp|
+|webhook_events|CreateFlow|
+|webhook_events|UpdateFlow|
+|webhook_events|ArchiveFlow|
+|webhook_events|DeleteFlow|
+|webhook_events|CreateFolder|
+|webhook_events|UpdateFolder|
+|webhook_events|DeleteFolder|
+|webhook_events|DeleteResource|
+|webhook_events|CreateResource|
+|webhook_events|UpdateResource|
+|webhook_events|CreateResourceType|
+|webhook_events|DeleteResourceType|
+|webhook_events|UpdateResourceType|
+|webhook_events|CreateScript|
+|webhook_events|UpdateScript|
+|webhook_events|DeleteScript|
+|webhook_events|DeleteScriptPath|
+|webhook_events|CreateVariable|
+|webhook_events|UpdateVariable|
+|webhook_events|DeleteVariable|
+|webhook_events|TokenExpiringSoon|
+|webhook_events|TokenExpired|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -9087,7 +9144,10 @@ curl http://localhost:8000/api/w/string/workspaces/edit_webhook \
   -H 'Content-Type: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
-    "webhook": "string"
+    "webhook": "string",
+    "events": [
+      "CreateApp"
+    ]
   }'
 ```
 
@@ -9097,7 +9157,10 @@ curl http://localhost:8000/api/w/string/workspaces/edit_webhook \
 
 ```json
 {
-  "webhook": "string"
+  "webhook": "string",
+  "events": [
+    "CreateApp"
+  ]
 }
 ```
 
@@ -9107,7 +9170,38 @@ curl http://localhost:8000/api/w/string/workspaces/edit_webhook \
 |---|---|---|---|---|
 |workspace|path|string|true|none|
 |body|body|object|true|WorkspaceWebhook|
-|» webhook|body|string|false|none|
+|» webhook|body|string|false|the URL to POST events to. Omitted or empty removes the webhook.|
+|» events|body|[[WorkspaceWebhookEventType](#schemaworkspacewebhookeventtype)]|false|event types to send, at least one. Omitted keeps the stored filter, null sends every event.<br>|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|» events|CreateApp|
+|» events|DeleteApp|
+|» events|UpdateApp|
+|» events|CreateFlow|
+|» events|UpdateFlow|
+|» events|ArchiveFlow|
+|» events|DeleteFlow|
+|» events|CreateFolder|
+|» events|UpdateFolder|
+|» events|DeleteFolder|
+|» events|DeleteResource|
+|» events|CreateResource|
+|» events|UpdateResource|
+|» events|CreateResourceType|
+|» events|DeleteResourceType|
+|» events|UpdateResourceType|
+|» events|CreateScript|
+|» events|UpdateScript|
+|» events|DeleteScript|
+|» events|DeleteScriptPath|
+|» events|CreateVariable|
+|» events|UpdateVariable|
+|» events|DeleteVariable|
+|» events|TokenExpiringSoon|
+|» events|TokenExpired|
 
 <h3 id="edit-webhook-responses">Responses</h3>
 
@@ -9193,7 +9287,11 @@ curl http://localhost:8000/api/w/string/workspaces/edit_copilot_config \
     },
     "copilot_disabled": true,
     "sessions_storage_disabled": true,
-    "sessions_retention_days": 1
+    "sessions_retention_days": 1,
+    "web_search": {
+      "provider": "exa",
+      "resource_path": "string"
+    }
   }'
 ```
 
@@ -9263,7 +9361,11 @@ curl http://localhost:8000/api/w/string/workspaces/edit_copilot_config \
   },
   "copilot_disabled": true,
   "sessions_storage_disabled": true,
-  "sessions_retention_days": 1
+  "sessions_retention_days": 1,
+  "web_search": {
+    "provider": "exa",
+    "resource_path": "string"
+  }
 }
 ```
 
@@ -9290,6 +9392,7 @@ curl http://localhost:8000/api/w/string/workspaces/edit_copilot_config \
 |» copilot_disabled|body|boolean|false|Hides the Windmill AI assistant (chat, sessions, code generation, completion, fixes) from the workspace UI. Read from the workspace's own settings even when the providers served fall back to the instance config. AI agent steps and the AI sandbox in flows are unaffected.|
 |» sessions_storage_disabled|body|boolean|false|Stops browsers from backing their AI sessions up to the workspace's object storage. Read from the workspace's own settings like `copilot_disabled`.|
 |» sessions_retention_days|body|integer|false|The server deletes the backup of a session no push has reached for this many days. Unset keeps backups until the user deletes the session. Read from the workspace's own settings like `copilot_disabled`.|
+|» web_search|body|[AIWebSearchConfig](#schemaaiwebsearchconfig)|false|The search API the AI chat searches the web and reads pages through when the model's provider has no built-in web search. Read from the workspace's own settings like `copilot_disabled`.|
 
 > Example responses
 
@@ -9358,7 +9461,11 @@ curl http://localhost:8000/api/w/string/workspaces/edit_copilot_config \
     },
     "copilot_disabled": true,
     "sessions_storage_disabled": true,
-    "sessions_retention_days": 1
+    "sessions_retention_days": 1,
+    "web_search": {
+      "provider": "exa",
+      "resource_path": "string"
+    }
   },
   "has_instance_ai_config": true,
   "uses_instance_ai_config": true,
@@ -9705,7 +9812,11 @@ curl http://localhost:8000/api/w/string/workspaces/get_copilot_info \
   },
   "copilot_disabled": true,
   "sessions_storage_disabled": true,
-  "sessions_retention_days": 1
+  "sessions_retention_days": 1,
+  "web_search": {
+    "provider": "exa",
+    "resource_path": "string"
+  }
 }
 ```
 
@@ -12311,6 +12422,7 @@ curl http://localhost:8000/api/w/string/workspaces/edit_git_sync_config \
             "webhook_secret": "string",
             "webhook_url": "string",
             "webhook_error": "string",
+            "webhook_verified_id": 0,
             "last_synced_sha": {
               "property1": "string",
               "property2": "string"
@@ -12385,6 +12497,7 @@ curl http://localhost:8000/api/w/string/workspaces/edit_git_sync_config \
           "webhook_secret": "string",
           "webhook_url": "string",
           "webhook_error": "string",
+          "webhook_verified_id": 0,
           "last_synced_sha": {
             "property1": "string",
             "property2": "string"
@@ -12492,6 +12605,7 @@ curl http://localhost:8000/api/w/string/workspaces/edit_git_sync_repository \
         "webhook_secret": "string",
         "webhook_url": "string",
         "webhook_error": "string",
+        "webhook_verified_id": 0,
         "last_synced_sha": {
           "property1": "string",
           "property2": "string"
@@ -12563,6 +12677,7 @@ curl http://localhost:8000/api/w/string/workspaces/edit_git_sync_repository \
       "webhook_secret": "string",
       "webhook_url": "string",
       "webhook_error": "string",
+      "webhook_verified_id": 0,
       "last_synced_sha": {
         "property1": "string",
         "property2": "string"
@@ -16933,6 +17048,7 @@ curl http://localhost:8000/api/settings/test_secret_backend \
     "jwt_role": "string",
     "jwt_mount_path": "string",
     "approle_role_id": "string",
+    "approle_secret_id": "string",
     "approle_mount_path": "string",
     "namespace": "string",
     "token": "string",
@@ -16952,6 +17068,7 @@ curl http://localhost:8000/api/settings/test_secret_backend \
   "jwt_role": "string",
   "jwt_mount_path": "string",
   "approle_role_id": "string",
+  "approle_secret_id": "string",
   "approle_mount_path": "string",
   "namespace": "string",
   "token": "string",
@@ -16969,7 +17086,8 @@ curl http://localhost:8000/api/settings/test_secret_backend \
 |» kv_secret_path_prefix|body|string|false|Optional path prefix inserted between the KV data/metadata segment and the workspace id (e.g., "apps/windmill"). When set, secrets are stored at `<mount>/data/<prefix>/<workspace>/<secret>`, allowing a Vault policy scoped to exactly `<mount>/data/<prefix>/*`.|
 |» jwt_role|body|string|false|Vault JWT auth role name for Windmill (optional, if not provided token auth is used)|
 |» jwt_mount_path|body|string|false|Mount path for the JWT auth method in Vault (optional, defaults to "jwt"). Set this when the JWT auth method is mounted at a non-default path, e.g. via `vault auth enable -path=<mount> jwt`.|
-|» approle_role_id|body|string|false|AppRole role_id (optional). When set and no static token is given, Windmill logs in with AppRole; the secret_id is read from the `VAULT_APPROLE_SECRET_ID` environment variable of servers and workers.|
+|» approle_role_id|body|string|false|AppRole role_id (optional). When set and no static token is given, Windmill logs in with AppRole.|
+|» approle_secret_id|body|string|false|AppRole secret_id (optional). When empty, the `VAULT_APPROLE_SECRET_ID` environment variable of servers and workers is used; when that is unset too, no secret_id is sent (a role with `bind_secret_id=false`).|
 |» approle_mount_path|body|string|false|Mount path of the AppRole auth method (optional, defaults to "approle").|
 |» namespace|body|string|false|Vault Enterprise namespace (optional)|
 |» token|body|string|false|Static Vault token for testing/development (optional, if provided this is used instead of JWT authentication)|
@@ -17005,6 +17123,7 @@ curl http://localhost:8000/api/settings/migrate_secrets_to_vault \
     "jwt_role": "string",
     "jwt_mount_path": "string",
     "approle_role_id": "string",
+    "approle_secret_id": "string",
     "approle_mount_path": "string",
     "namespace": "string",
     "token": "string",
@@ -17024,6 +17143,7 @@ curl http://localhost:8000/api/settings/migrate_secrets_to_vault \
   "jwt_role": "string",
   "jwt_mount_path": "string",
   "approle_role_id": "string",
+  "approle_secret_id": "string",
   "approle_mount_path": "string",
   "namespace": "string",
   "token": "string",
@@ -17041,7 +17161,8 @@ curl http://localhost:8000/api/settings/migrate_secrets_to_vault \
 |» kv_secret_path_prefix|body|string|false|Optional path prefix inserted between the KV data/metadata segment and the workspace id (e.g., "apps/windmill"). When set, secrets are stored at `<mount>/data/<prefix>/<workspace>/<secret>`, allowing a Vault policy scoped to exactly `<mount>/data/<prefix>/*`.|
 |» jwt_role|body|string|false|Vault JWT auth role name for Windmill (optional, if not provided token auth is used)|
 |» jwt_mount_path|body|string|false|Mount path for the JWT auth method in Vault (optional, defaults to "jwt"). Set this when the JWT auth method is mounted at a non-default path, e.g. via `vault auth enable -path=<mount> jwt`.|
-|» approle_role_id|body|string|false|AppRole role_id (optional). When set and no static token is given, Windmill logs in with AppRole; the secret_id is read from the `VAULT_APPROLE_SECRET_ID` environment variable of servers and workers.|
+|» approle_role_id|body|string|false|AppRole role_id (optional). When set and no static token is given, Windmill logs in with AppRole.|
+|» approle_secret_id|body|string|false|AppRole secret_id (optional). When empty, the `VAULT_APPROLE_SECRET_ID` environment variable of servers and workers is used; when that is unset too, no secret_id is sent (a role with `bind_secret_id=false`).|
 |» approle_mount_path|body|string|false|Mount path of the AppRole auth method (optional, defaults to "approle").|
 |» namespace|body|string|false|Vault Enterprise namespace (optional)|
 |» token|body|string|false|Static Vault token for testing/development (optional, if provided this is used instead of JWT authentication)|
@@ -17096,6 +17217,7 @@ curl http://localhost:8000/api/settings/migrate_secrets_to_database \
     "jwt_role": "string",
     "jwt_mount_path": "string",
     "approle_role_id": "string",
+    "approle_secret_id": "string",
     "approle_mount_path": "string",
     "namespace": "string",
     "token": "string",
@@ -17115,6 +17237,7 @@ curl http://localhost:8000/api/settings/migrate_secrets_to_database \
   "jwt_role": "string",
   "jwt_mount_path": "string",
   "approle_role_id": "string",
+  "approle_secret_id": "string",
   "approle_mount_path": "string",
   "namespace": "string",
   "token": "string",
@@ -17132,7 +17255,8 @@ curl http://localhost:8000/api/settings/migrate_secrets_to_database \
 |» kv_secret_path_prefix|body|string|false|Optional path prefix inserted between the KV data/metadata segment and the workspace id (e.g., "apps/windmill"). When set, secrets are stored at `<mount>/data/<prefix>/<workspace>/<secret>`, allowing a Vault policy scoped to exactly `<mount>/data/<prefix>/*`.|
 |» jwt_role|body|string|false|Vault JWT auth role name for Windmill (optional, if not provided token auth is used)|
 |» jwt_mount_path|body|string|false|Mount path for the JWT auth method in Vault (optional, defaults to "jwt"). Set this when the JWT auth method is mounted at a non-default path, e.g. via `vault auth enable -path=<mount> jwt`.|
-|» approle_role_id|body|string|false|AppRole role_id (optional). When set and no static token is given, Windmill logs in with AppRole; the secret_id is read from the `VAULT_APPROLE_SECRET_ID` environment variable of servers and workers.|
+|» approle_role_id|body|string|false|AppRole role_id (optional). When set and no static token is given, Windmill logs in with AppRole.|
+|» approle_secret_id|body|string|false|AppRole secret_id (optional). When empty, the `VAULT_APPROLE_SECRET_ID` environment variable of servers and workers is used; when that is unset too, no secret_id is sent (a role with `bind_secret_id=false`).|
 |» approle_mount_path|body|string|false|Mount path of the AppRole auth method (optional, defaults to "approle").|
 |» namespace|body|string|false|Vault Enterprise namespace (optional)|
 |» token|body|string|false|Static Vault token for testing/development (optional, if provided this is used instead of JWT authentication)|
@@ -19871,7 +19995,7 @@ Status Code **200**
 |*anonymous*|[object]|false|none|none|
 |» name|string|true|none|none|
 |» supports_client_credentials|boolean|true|none|none|
-|» has_shared_credentials|boolean|true|none|none|
+|» has_shared_credentials|boolean|true|none|The instance entry holds a client id and secret users can connect with, for sign-in or as a shared service account. Whether client credentials are shared is get_connect's client_credentials_configured.|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -19931,6 +20055,55 @@ Status Code **200**
 |scopes|[string]|false|none|none|
 |grant_types|[string]|false|none|none|
 |client_credentials_configured|boolean|false|none|The instance OAuth entry carries shared client-credentials, so the connect dialog can skip the bring-your-own form and run the exchange server-side|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth, cookieAuth
+</aside>
+
+## test an instance OAuth entry's client credentials
+
+<a id="opIdtestOAuthClientCredentials"></a>
+
+> Code samples
+
+```bash
+curl http://localhost:8000/api/oauth/test_client_credentials \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "name": "string",
+    "entry": {}
+  }'
+```
+
+`POST /oauth/test_client_credentials`
+
+Runs the client-credentials token exchange with an instance OAuth entry, saved or not. Superadmin only.
+
+> Body parameter
+
+```json
+{
+  "name": "string",
+  "entry": {}
+}
+```
+
+<h3 id="test-an-instance-oauth-entrys-client-credentials-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|body|body|object|true|none|
+|» name|body|string|true|client name, the key of the entry in the instance OAuth setting|
+|» entry|body|object|true|the entry as stored in the instance OAuth setting|
+
+<h3 id="test-an-instance-oauth-entrys-client-credentials-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|the exchange returned a token|Inline|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -20044,6 +20217,7 @@ curl http://localhost:8000/api/w/string/resources/create \
 |---|---|---|---|---|
 |workspace|path|string|true|none|
 |update_if_exists|query|boolean|false|update the resource if it already exists (default false)|
+|skip_ci_tests|query|boolean|false|Do not queue the CI tests of this deploy. Set by a caller deploying several items in a row, which queues them with triggerCiTestsBatch once the whole batch has landed.|
 |body|body|[CreateResource](#schemacreateresource)|true|new resource|
 |» path|body|string|true|The path to the resource|
 |» value|body|object|true|none|
@@ -20212,6 +20386,7 @@ curl http://localhost:8000/api/w/string/resources/update/string \
 |---|---|---|---|---|
 |workspace|path|string|true|none|
 |path|path|string|true|none|
+|skip_ci_tests|query|boolean|false|Do not queue the CI tests of this deploy. Set by a caller deploying several items in a row, which queues them with triggerCiTestsBatch once the whole batch has landed.|
 |body|body|[EditResource](#schemaeditresource)|true|updated resource|
 |» path|body|string|false|The path to the resource|
 |» description|body|string|false|The new description of the resource|
@@ -20506,6 +20681,9 @@ curl http://localhost:8000/api/w/string/resources/get/string \
   "is_linked": true,
   "is_refreshed": true,
   "account": 0,
+  "scopes": [
+    "string"
+  ],
   "created_by": "string",
   "edited_at": "1970-01-01T00:00:00Z",
   "labels": [
@@ -20519,6 +20697,7 @@ curl http://localhost:8000/api/w/string/resources/get/string \
   "is_draft": true,
   "agent_memory": null,
   "draft_path": "string",
+  "grant_type": "string",
   "draft_saved_at": "1970-01-01T00:00:00Z",
   "draft_base": "string",
   "no_deployed": true,
@@ -20557,6 +20736,7 @@ Status Code **200**
 |is_linked|boolean|true|none|none|
 |is_refreshed|boolean|true|none|none|
 |account|number|false|none|none|
+|scopes|[string]|false|none|OAuth scopes the linked account was connected with|
 |created_by|string|false|none|none|
 |edited_at|string(date-time)|false|none|none|
 |labels|[string]|false|none|none|
@@ -20566,6 +20746,7 @@ Status Code **200**
 |is_draft|boolean|true|none|True when the authed user has a per-user draft at this path<br>(over a deployed row or a synthesized draft-only row).<br>Frontend appends a `*` to the displayed name.<br>|
 |agent_memory|object|false|none|For an `ai_agent` resource only, its `memory` setting: the one part<br>of the value a listing returns, since it decides whether the agent<br>keeps a conversation.<br>|
 |draft_path|string|false|none|On a draft-only row, the path its editor has staged when it<br>differs from the storage path (e.g. a never-deployed item parked at<br>`u/{user}/draft_{uuid}`).<br>|
+|grant_type|string|false|none|The grant of the linked OAuth account: `client_credentials`<br>connects as the app, `authorization_code` as the user who<br>connected it.<br>|
 |is_draft|boolean|true|none|none|
 |draft_saved_at|string(date-time)|false|none|none|
 |draft_base|string|false|none|The deployed version the draft forked from, as text whatever the<br>kind (script hash, flow version id, app version id). Compare to the<br>deployed head to tell a draft that is behind. Absent when there is<br>no draft or it was never forked from a deploy.<br>|
@@ -20807,6 +20988,9 @@ curl http://localhost:8000/api/w/string/resources/list \
     "is_linked": true,
     "is_refreshed": true,
     "account": 0,
+    "scopes": [
+      "string"
+    ],
     "created_by": "string",
     "edited_at": "1970-01-01T00:00:00Z",
     "labels": [
@@ -20819,7 +21003,8 @@ curl http://localhost:8000/api/w/string/resources/list \
     "draft_only": true,
     "is_draft": true,
     "agent_memory": null,
-    "draft_path": "string"
+    "draft_path": "string",
+    "grant_type": "string"
   }
 ]
 ```
@@ -22344,7 +22529,8 @@ curl http://localhost:8000/api/flows/hub/get/0 \
           "summary": "string",
           "mock": {
             "enabled": true,
-            "return_value": null
+            "return_value": null,
+            "preview_only": true
           },
           "suspend": {
             "required_events": 0,
@@ -22425,7 +22611,8 @@ curl http://localhost:8000/api/flows/hub/get/0 \
         "summary": "string",
         "mock": {
           "enabled": true,
-          "return_value": null
+          "return_value": null,
+          "preview_only": true
         },
         "suspend": {
           "required_events": 0,
@@ -22505,7 +22692,8 @@ curl http://localhost:8000/api/flows/hub/get/0 \
         "summary": "string",
         "mock": {
           "enabled": true,
-          "return_value": null
+          "return_value": null,
+          "preview_only": true
         },
         "suspend": {
           "required_events": 0,
@@ -22558,6 +22746,7 @@ curl http://localhost:8000/api/flows/hub/get/0 \
       "concurrent_limit": 0,
       "concurrency_key": "string",
       "concurrency_time_window_s": 0,
+      "on_concurrency_limit": "queue",
       "debounce_delay_s": 0,
       "debounce_key": "string",
       "debounce_args_to_accumulate": [
@@ -22569,6 +22758,7 @@ curl http://localhost:8000/api/flows/hub/get/0 \
       "cache_ttl": 0,
       "cache_ignore_s3_path": true,
       "delete_after_secs": 0,
+      "timeout": 0,
       "flow_env": {
         "property1": null,
         "property2": null
@@ -22801,7 +22991,8 @@ curl http://localhost:8000/api/w/string/flows/list \
           "summary": "string",
           "mock": {
             "enabled": true,
-            "return_value": null
+            "return_value": null,
+            "preview_only": true
           },
           "suspend": {
             "required_events": 0,
@@ -22882,7 +23073,8 @@ curl http://localhost:8000/api/w/string/flows/list \
         "summary": "string",
         "mock": {
           "enabled": true,
-          "return_value": null
+          "return_value": null,
+          "preview_only": true
         },
         "suspend": {
           "required_events": 0,
@@ -22962,7 +23154,8 @@ curl http://localhost:8000/api/w/string/flows/list \
         "summary": "string",
         "mock": {
           "enabled": true,
-          "return_value": null
+          "return_value": null,
+          "preview_only": true
         },
         "suspend": {
           "required_events": 0,
@@ -23015,6 +23208,7 @@ curl http://localhost:8000/api/w/string/flows/list \
       "concurrent_limit": 0,
       "concurrency_key": "string",
       "concurrency_time_window_s": 0,
+      "on_concurrency_limit": "queue",
       "debounce_delay_s": 0,
       "debounce_key": "string",
       "debounce_args_to_accumulate": [
@@ -23026,6 +23220,7 @@ curl http://localhost:8000/api/w/string/flows/list \
       "cache_ttl": 0,
       "cache_ignore_s3_path": true,
       "delete_after_secs": 0,
+      "timeout": 0,
       "flow_env": {
         "property1": null,
         "property2": null
@@ -23431,7 +23626,8 @@ curl http://localhost:8000/api/w/string/flows/get/v/0 \
         "summary": "string",
         "mock": {
           "enabled": true,
-          "return_value": null
+          "return_value": null,
+          "preview_only": true
         },
         "suspend": {
           "required_events": 0,
@@ -23512,7 +23708,8 @@ curl http://localhost:8000/api/w/string/flows/get/v/0 \
       "summary": "string",
       "mock": {
         "enabled": true,
-        "return_value": null
+        "return_value": null,
+        "preview_only": true
       },
       "suspend": {
         "required_events": 0,
@@ -23592,7 +23789,8 @@ curl http://localhost:8000/api/w/string/flows/get/v/0 \
       "summary": "string",
       "mock": {
         "enabled": true,
-        "return_value": null
+        "return_value": null,
+        "preview_only": true
       },
       "suspend": {
         "required_events": 0,
@@ -23645,6 +23843,7 @@ curl http://localhost:8000/api/w/string/flows/get/v/0 \
     "concurrent_limit": 0,
     "concurrency_key": "string",
     "concurrency_time_window_s": 0,
+    "on_concurrency_limit": "queue",
     "debounce_delay_s": 0,
     "debounce_key": "string",
     "debounce_args_to_accumulate": [
@@ -23656,6 +23855,7 @@ curl http://localhost:8000/api/w/string/flows/get/v/0 \
     "cache_ttl": 0,
     "cache_ignore_s3_path": true,
     "delete_after_secs": 0,
+    "timeout": 0,
     "flow_env": {
       "property1": null,
       "property2": null
@@ -23848,7 +24048,8 @@ curl http://localhost:8000/api/w/string/flows/get/string \
         "summary": "string",
         "mock": {
           "enabled": true,
-          "return_value": null
+          "return_value": null,
+          "preview_only": true
         },
         "suspend": {
           "required_events": 0,
@@ -23929,7 +24130,8 @@ curl http://localhost:8000/api/w/string/flows/get/string \
       "summary": "string",
       "mock": {
         "enabled": true,
-        "return_value": null
+        "return_value": null,
+        "preview_only": true
       },
       "suspend": {
         "required_events": 0,
@@ -24009,7 +24211,8 @@ curl http://localhost:8000/api/w/string/flows/get/string \
       "summary": "string",
       "mock": {
         "enabled": true,
-        "return_value": null
+        "return_value": null,
+        "preview_only": true
       },
       "suspend": {
         "required_events": 0,
@@ -24062,6 +24265,7 @@ curl http://localhost:8000/api/w/string/flows/get/string \
     "concurrent_limit": 0,
     "concurrency_key": "string",
     "concurrency_time_window_s": 0,
+    "on_concurrency_limit": "queue",
     "debounce_delay_s": 0,
     "debounce_key": "string",
     "debounce_args_to_accumulate": [
@@ -24073,6 +24277,7 @@ curl http://localhost:8000/api/w/string/flows/get/string \
     "cache_ttl": 0,
     "cache_ignore_s3_path": true,
     "delete_after_secs": 0,
+    "timeout": 0,
     "flow_env": {
       "property1": null,
       "property2": null
@@ -24516,7 +24721,8 @@ curl http://localhost:8000/api/w/string/flows/create \
           "summary": "string",
           "mock": {
             "enabled": true,
-            "return_value": null
+            "return_value": null,
+            "preview_only": true
           },
           "suspend": {
             "required_events": 0,
@@ -24597,7 +24803,8 @@ curl http://localhost:8000/api/w/string/flows/create \
         "summary": "string",
         "mock": {
           "enabled": true,
-          "return_value": null
+          "return_value": null,
+          "preview_only": true
         },
         "suspend": {
           "required_events": 0,
@@ -24677,7 +24884,8 @@ curl http://localhost:8000/api/w/string/flows/create \
         "summary": "string",
         "mock": {
           "enabled": true,
-          "return_value": null
+          "return_value": null,
+          "preview_only": true
         },
         "suspend": {
           "required_events": 0,
@@ -24730,6 +24938,7 @@ curl http://localhost:8000/api/w/string/flows/create \
       "concurrent_limit": 0,
       "concurrency_key": "string",
       "concurrency_time_window_s": 0,
+      "on_concurrency_limit": "queue",
       "debounce_delay_s": 0,
       "debounce_key": "string",
       "debounce_args_to_accumulate": [
@@ -24741,6 +24950,7 @@ curl http://localhost:8000/api/w/string/flows/create \
       "cache_ttl": 0,
       "cache_ignore_s3_path": true,
       "delete_after_secs": 0,
+      "timeout": 0,
       "flow_env": {
         "property1": null,
         "property2": null
@@ -24843,7 +25053,8 @@ curl http://localhost:8000/api/w/string/flows/create \
         "summary": "string",
         "mock": {
           "enabled": true,
-          "return_value": null
+          "return_value": null,
+          "preview_only": true
         },
         "suspend": {
           "required_events": 0,
@@ -24924,7 +25135,8 @@ curl http://localhost:8000/api/w/string/flows/create \
       "summary": "string",
       "mock": {
         "enabled": true,
-        "return_value": null
+        "return_value": null,
+        "preview_only": true
       },
       "suspend": {
         "required_events": 0,
@@ -25004,7 +25216,8 @@ curl http://localhost:8000/api/w/string/flows/create \
       "summary": "string",
       "mock": {
         "enabled": true,
-        "return_value": null
+        "return_value": null,
+        "preview_only": true
       },
       "suspend": {
         "required_events": 0,
@@ -25057,6 +25270,7 @@ curl http://localhost:8000/api/w/string/flows/create \
     "concurrent_limit": 0,
     "concurrency_key": "string",
     "concurrency_time_window_s": 0,
+    "on_concurrency_limit": "queue",
     "debounce_delay_s": 0,
     "debounce_key": "string",
     "debounce_args_to_accumulate": [
@@ -25068,6 +25282,7 @@ curl http://localhost:8000/api/w/string/flows/create \
     "cache_ttl": 0,
     "cache_ignore_s3_path": true,
     "delete_after_secs": 0,
+    "timeout": 0,
     "flow_env": {
       "property1": null,
       "property2": null
@@ -25133,6 +25348,7 @@ curl http://localhost:8000/api/w/string/flows/create \
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |workspace|path|string|true|none|
+|skip_ci_tests|query|boolean|false|Do not queue the CI tests of this deploy. Set by a caller deploying several items in a row, which queues them with triggerCiTestsBatch once the whole batch has landed.|
 |body|body|object|true|Partially filled flow|
 |» summary|body|string|true|Short description of what this flow does|
 |» description|body|string|false|Detailed documentation for this flow|
@@ -25214,7 +25430,8 @@ curl http://localhost:8000/api/w/string/flows/update/string \
           "summary": "string",
           "mock": {
             "enabled": true,
-            "return_value": null
+            "return_value": null,
+            "preview_only": true
           },
           "suspend": {
             "required_events": 0,
@@ -25295,7 +25512,8 @@ curl http://localhost:8000/api/w/string/flows/update/string \
         "summary": "string",
         "mock": {
           "enabled": true,
-          "return_value": null
+          "return_value": null,
+          "preview_only": true
         },
         "suspend": {
           "required_events": 0,
@@ -25375,7 +25593,8 @@ curl http://localhost:8000/api/w/string/flows/update/string \
         "summary": "string",
         "mock": {
           "enabled": true,
-          "return_value": null
+          "return_value": null,
+          "preview_only": true
         },
         "suspend": {
           "required_events": 0,
@@ -25428,6 +25647,7 @@ curl http://localhost:8000/api/w/string/flows/update/string \
       "concurrent_limit": 0,
       "concurrency_key": "string",
       "concurrency_time_window_s": 0,
+      "on_concurrency_limit": "queue",
       "debounce_delay_s": 0,
       "debounce_key": "string",
       "debounce_args_to_accumulate": [
@@ -25439,6 +25659,7 @@ curl http://localhost:8000/api/w/string/flows/update/string \
       "cache_ttl": 0,
       "cache_ignore_s3_path": true,
       "delete_after_secs": 0,
+      "timeout": 0,
       "flow_env": {
         "property1": null,
         "property2": null
@@ -25541,7 +25762,8 @@ curl http://localhost:8000/api/w/string/flows/update/string \
         "summary": "string",
         "mock": {
           "enabled": true,
-          "return_value": null
+          "return_value": null,
+          "preview_only": true
         },
         "suspend": {
           "required_events": 0,
@@ -25622,7 +25844,8 @@ curl http://localhost:8000/api/w/string/flows/update/string \
       "summary": "string",
       "mock": {
         "enabled": true,
-        "return_value": null
+        "return_value": null,
+        "preview_only": true
       },
       "suspend": {
         "required_events": 0,
@@ -25702,7 +25925,8 @@ curl http://localhost:8000/api/w/string/flows/update/string \
       "summary": "string",
       "mock": {
         "enabled": true,
-        "return_value": null
+        "return_value": null,
+        "preview_only": true
       },
       "suspend": {
         "required_events": 0,
@@ -25755,6 +25979,7 @@ curl http://localhost:8000/api/w/string/flows/update/string \
     "concurrent_limit": 0,
     "concurrency_key": "string",
     "concurrency_time_window_s": 0,
+    "on_concurrency_limit": "queue",
     "debounce_delay_s": 0,
     "debounce_key": "string",
     "debounce_args_to_accumulate": [
@@ -25766,6 +25991,7 @@ curl http://localhost:8000/api/w/string/flows/update/string \
     "cache_ttl": 0,
     "cache_ignore_s3_path": true,
     "delete_after_secs": 0,
+    "timeout": 0,
     "flow_env": {
       "property1": null,
       "property2": null
@@ -25832,6 +26058,7 @@ curl http://localhost:8000/api/w/string/flows/update/string \
 |---|---|---|---|---|
 |workspace|path|string|true|none|
 |path|path|string|true|none|
+|skip_ci_tests|query|boolean|false|Do not queue the CI tests of this deploy. Set by a caller deploying several items in a row, which queues them with triggerCiTestsBatch once the whole batch has landed.|
 |body|body|object|true|Partially filled flow|
 |» summary|body|string|true|Short description of what this flow does|
 |» description|body|string|false|Detailed documentation for this flow|
@@ -29276,73 +29503,27 @@ curl http://localhost:8000/api/w/string/scripts/list \
 ```json
 [
   {
-    "workspace_id": "string",
     "hash": "string",
     "path": "string",
-    "parent_hashes": [
-      "string"
-    ],
     "summary": "string",
     "description": "string",
-    "content": "string",
-    "created_by": "string",
     "created_at": "1970-01-01T00:00:00Z",
     "archived": true,
-    "schema": {},
-    "deleted": true,
-    "is_template": true,
     "extra_perms": {
       "property1": true,
       "property2": true
     },
-    "lock": "string",
-    "lock_error_logs": "string",
     "language": "python3",
     "kind": "script",
     "starred": true,
     "tag": "string",
     "draft_only": true,
-    "envs": [
-      "string"
-    ],
-    "concurrent_limit": 0,
-    "concurrency_time_window_s": 0,
-    "concurrency_key": "string",
-    "debounce_key": "string",
-    "debounce_delay_s": 0,
-    "debounce_args_to_accumulate": [
-      "string"
-    ],
-    "max_total_debouncing_time": 0,
-    "max_total_debounces_amount": 0,
-    "cache_ttl": 0,
-    "cache_ignore_s3_path": true,
-    "dedicated_worker": true,
+    "has_deploy_errors": true,
     "ws_error_handler_muted": true,
-    "priority": 0,
-    "restart_unless_cancelled": true,
-    "timeout": 0,
-    "delete_after_secs": 0,
-    "visible_to_runner_only": true,
     "auto_kind": "string",
-    "codebase": "string",
-    "has_preprocessor": true,
-    "on_behalf_of_email": "string",
-    "on_behalf_of": "string",
-    "modules": {
-      "property1": {
-        "content": "string",
-        "language": "python3",
-        "lock": "string"
-      },
-      "property2": {
-        "content": "string",
-        "language": "python3",
-        "lock": "string"
-      }
-    },
-    "labels": [],
-    "job_token_scopes": [
+    "use_codebase": true,
+    "deployment_msg": "string",
+    "labels": [
       "string"
     ],
     "inherited_labels": [
@@ -29371,97 +29552,7 @@ Status Code **200**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|*anonymous*|[object]|false|none|none|
-|» workspace_id|string|false|none|none|
-|» hash|string|true|none|none|
-|» path|string|true|none|none|
-|» parent_hashes|[string]|false|none|The first element is the direct parent of the script, the second is the parent of the first, etc<br>|
-|» summary|string|true|none|none|
-|» description|string|true|none|none|
-|» content|string|true|none|none|
-|» created_by|string|true|none|none|
-|» created_at|string(date-time)|true|none|none|
-|» archived|boolean|true|none|none|
-|» schema|object|false|none|none|
-|» deleted|boolean|true|none|none|
-|» is_template|boolean|true|none|none|
-|» extra_perms|object|true|none|none|
-|» » **additionalProperties**|boolean|false|none|none|
-|» lock|string|false|none|none|
-|» lock_error_logs|string|false|none|none|
-|» language|[ScriptLang](#schemascriptlang)|true|none|none|
-|» kind|string|true|none|none|
-|» starred|boolean|true|none|none|
-|» tag|string|false|none|none|
-|» draft_only|boolean|false|none|none|
-|» envs|[string]|false|none|none|
-|» concurrent_limit|integer|false|none|none|
-|» concurrency_time_window_s|integer|false|none|none|
-|» concurrency_key|string|false|none|none|
-|» debounce_key|string|false|none|none|
-|» debounce_delay_s|integer|false|none|none|
-|» debounce_args_to_accumulate|[string]|false|none|none|
-|» max_total_debouncing_time|integer|false|none|none|
-|» max_total_debounces_amount|integer|false|none|none|
-|» cache_ttl|number|false|none|none|
-|» cache_ignore_s3_path|boolean|false|none|none|
-|» dedicated_worker|boolean|false|none|none|
-|» ws_error_handler_muted|boolean|false|none|none|
-|» priority|integer|false|none|none|
-|» restart_unless_cancelled|boolean|false|none|none|
-|» timeout|integer|false|none|none|
-|» delete_after_secs|integer|false|none|If set, delete the job's args, result and logs after this many seconds following job completion|
-|» visible_to_runner_only|boolean|false|none|none|
-|» auto_kind|string|false|none|none|
-|» codebase|string|false|none|none|
-|» has_preprocessor|boolean|true|none|none|
-|» on_behalf_of_email|string|false|none|none|
-|» on_behalf_of|string|false|none|Authorization identity the runnable runs as: u/{username}, g/{group}, or a bare email when the username is itself email-shaped. The only stored half of the identity; on_behalf_of_email is derived from it.|
-|» modules|object \| null|false|none|Additional script modules keyed by relative file path|
-|» » **additionalProperties**|[ScriptModule](#schemascriptmodule)|false|none|An additional module file associated with a script|
-|» labels|[string]|false|none|none|
-|» job_token_scopes|[string]|false|none|Scopes the token of every job of this runnable is restricted to (domain:action[:resource], e.g. oidc:write). Jobs it starts, flow steps and AI agent tools inherit the restriction. Unset, the job token carries the full permissions of the identity the job runs as; an empty list leaves it no API access beyond its own job.|
-|» inherited_labels|[string]|false|none|Labels inherited from the parent folder, computed at read time. Read-only — edit them on the folder.<br>|
-|» is_draft|boolean|false|none|True when the authed user has a draft for this<br>script — either no deployed row exists at this<br>path (draft-only) or the user saved a per-user<br>draft on top of the deployed row.<br>|
-|» draft_path|string|false|none|User-typed path the editor has staged but not<br>yet deployed. Surfaced for draft-only rows so<br>the home list can render the meaningful name<br>instead of the autogenerated<br>`u/{user}/draft_{uuid}` URL path. Omitted<br>when unchanged.<br>|
-|» draft_users|[object]|false|none|Workspace users (including the authed user, and<br>the legacy NULL-email row if any) who have a<br>per-user draft at this path. Drives the home<br>page's user-avatar circles inside the Draft<br>badge. Omitted when no drafts exist.<br>|
-|» » username|string \| null|false|none|none|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|» language|python3|
-|» language|deno|
-|» language|go|
-|» language|bash|
-|» language|powershell|
-|» language|postgresql|
-|» language|mysql|
-|» language|bigquery|
-|» language|snowflake|
-|» language|mssql|
-|» language|oracledb|
-|» language|graphql|
-|» language|nativets|
-|» language|bun|
-|» language|php|
-|» language|rust|
-|» language|ansible|
-|» language|csharp|
-|» language|nu|
-|» language|java|
-|» language|ruby|
-|» language|rlang|
-|» language|duckdb|
-|» language|bunnative|
-|» language|dbt|
-|» kind|script|
-|» kind|failure|
-|» kind|trigger|
-|» kind|command|
-|» kind|approval|
-|» kind|preprocessor|
+|*anonymous*|[[ListableScript](#schemalistablescript)]|false|none|none|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -29535,6 +29626,7 @@ curl http://localhost:8000/api/w/string/scripts/create \
     ],
     "concurrent_limit": 0,
     "concurrency_time_window_s": 0,
+    "on_concurrency_limit": "queue",
     "cache_ttl": 0,
     "cache_ignore_s3_path": true,
     "dedicated_worker": true,
@@ -29616,6 +29708,7 @@ Supplying `parent_hash` instead deploys a new version of the script that hash na
   ],
   "concurrent_limit": 0,
   "concurrency_time_window_s": 0,
+  "on_concurrency_limit": "queue",
   "cache_ttl": 0,
   "cache_ignore_s3_path": true,
   "dedicated_worker": true,
@@ -29675,6 +29768,7 @@ Supplying `parent_hash` instead deploys a new version of the script that hash na
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |workspace|path|string|true|none|
+|skip_ci_tests|query|boolean|false|Do not queue the CI tests of this deploy. Set by a caller deploying several items in a row, which queues them with triggerCiTestsBatch once the whole batch has landed.|
 |body|body|[NewScript](#schemanewscript)|true|Partially filled script|
 |» path|body|string|true|none|
 |» parent_hash|body|string|false|The hash of the version this one supersedes: deploying with it archives that version and chains the new one onto its history, and a `path` differing from the superseded version's moves the script there.|
@@ -29691,6 +29785,7 @@ Supplying `parent_hash` instead deploys a new version of the script that hash na
 |» envs|body|[string]|false|none|
 |» concurrent_limit|body|integer|false|none|
 |» concurrency_time_window_s|body|integer|false|none|
+|» on_concurrency_limit|body|string|false|What a run does when its concurrency limit is reached when a worker picks it up. `queue` (default) re-queues it to a later slot, `fail` ends it immediately as failed.|
 |» cache_ttl|body|number|false|none|
 |» cache_ignore_s3_path|body|boolean|false|none|
 |» dedicated_worker|body|boolean|false|none|
@@ -29759,6 +29854,8 @@ Supplying `parent_hash` instead deploys a new version of the script that hash na
 |» kind|command|
 |» kind|approval|
 |» kind|preprocessor|
+|» on_concurrency_limit|queue|
+|» on_concurrency_limit|fail|
 |» » kind|s3object|
 |» » kind|resource|
 |» » kind|ducklake|
@@ -29812,6 +29909,7 @@ curl http://localhost:8000/api/w/string/scripts/update/string \
     ],
     "concurrent_limit": 0,
     "concurrency_time_window_s": 0,
+    "on_concurrency_limit": "queue",
     "cache_ttl": 0,
     "cache_ignore_s3_path": true,
     "dedicated_worker": true,
@@ -29894,6 +29992,7 @@ is, a different one moves it there and archives the old path.
   ],
   "concurrent_limit": 0,
   "concurrency_time_window_s": 0,
+  "on_concurrency_limit": "queue",
   "cache_ttl": 0,
   "cache_ignore_s3_path": true,
   "dedicated_worker": true,
@@ -29954,6 +30053,7 @@ is, a different one moves it there and archives the old path.
 |---|---|---|---|---|
 |workspace|path|string|true|none|
 |path|path|string|true|none|
+|skip_ci_tests|query|boolean|false|Do not queue the CI tests of this deploy. Set by a caller deploying several items in a row, which queues them with triggerCiTestsBatch once the whole batch has landed.|
 |body|body|[NewScript](#schemanewscript)|true|The new version of the script, whose `path` is where it should end up.|
 |» path|body|string|true|none|
 |» parent_hash|body|string|false|The hash of the version this one supersedes: deploying with it archives that version and chains the new one onto its history, and a `path` differing from the superseded version's moves the script there.|
@@ -29970,6 +30070,7 @@ is, a different one moves it there and archives the old path.
 |» envs|body|[string]|false|none|
 |» concurrent_limit|body|integer|false|none|
 |» concurrency_time_window_s|body|integer|false|none|
+|» on_concurrency_limit|body|string|false|What a run does when its concurrency limit is reached when a worker picks it up. `queue` (default) re-queues it to a later slot, `fail` ends it immediately as failed.|
 |» cache_ttl|body|number|false|none|
 |» cache_ignore_s3_path|body|boolean|false|none|
 |» dedicated_worker|body|boolean|false|none|
@@ -30038,6 +30139,8 @@ is, a different one moves it there and archives the old path.
 |» kind|command|
 |» kind|approval|
 |» kind|preprocessor|
+|» on_concurrency_limit|queue|
+|» on_concurrency_limit|fail|
 |» » kind|s3object|
 |» » kind|resource|
 |» » kind|ducklake|
@@ -30199,6 +30302,7 @@ curl http://localhost:8000/api/w/string/scripts/archive/h/string \
   ],
   "concurrent_limit": 0,
   "concurrency_time_window_s": 0,
+  "on_concurrency_limit": "queue",
   "concurrency_key": "string",
   "debounce_key": "string",
   "debounce_delay_s": 0,
@@ -30313,6 +30417,7 @@ curl http://localhost:8000/api/w/string/scripts/delete/h/string \
   ],
   "concurrent_limit": 0,
   "concurrency_time_window_s": 0,
+  "on_concurrency_limit": "queue",
   "concurrency_key": "string",
   "debounce_key": "string",
   "debounce_delay_s": 0,
@@ -30538,6 +30643,7 @@ curl http://localhost:8000/api/w/string/scripts/get/p/string \
   ],
   "concurrent_limit": 0,
   "concurrency_time_window_s": 0,
+  "on_concurrency_limit": "queue",
   "concurrency_key": "string",
   "debounce_key": "string",
   "debounce_delay_s": 0,
@@ -30630,6 +30736,7 @@ Status Code **200**
 |envs|[string]|false|none|none|
 |concurrent_limit|integer|false|none|none|
 |concurrency_time_window_s|integer|false|none|none|
+|on_concurrency_limit|string|false|none|What a run does when its concurrency limit is reached when a worker picks it up. `queue` (default) re-queues it to a later slot, `fail` ends it immediately as failed.|
 |concurrency_key|string|false|none|none|
 |debounce_key|string|false|none|none|
 |debounce_delay_s|integer|false|none|none|
@@ -30699,6 +30806,8 @@ Status Code **200**
 |kind|command|
 |kind|approval|
 |kind|preprocessor|
+|on_concurrency_limit|queue|
+|on_concurrency_limit|fail|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -31275,6 +31384,7 @@ curl http://localhost:8000/api/w/string/scripts/get/h/string \
   ],
   "concurrent_limit": 0,
   "concurrency_time_window_s": 0,
+  "on_concurrency_limit": "queue",
   "concurrency_key": "string",
   "debounce_key": "string",
   "debounce_delay_s": 0,
@@ -31578,6 +31688,106 @@ To perform this operation, you must be authenticated by means of one of the foll
 bearerAuth, cookieAuth
 </aside>
 
+## queue the CI tests of a batch of deploys
+
+<a id="opIdtriggerCiTestsBatch"></a>
+
+> Code samples
+
+```bash
+curl http://localhost:8000/api/w/string/scripts/trigger_ci_tests_batch \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "items": [
+      {
+        "path": "string",
+        "kind": "script"
+      }
+    ],
+    "ignore_pending": true
+  }'
+```
+
+`POST /w/{workspace}/scripts/trigger_ci_tests_batch`
+
+Queues the CI tests of items deployed with `skip_ci_tests`, plus those of the scripts
+importing them, once nothing those tests read (the tested items, the test scripts and
+their imports) still has a dependency job queued or running. While one does, nothing is
+queued and `pending` lists those paths: call again later, or pass `ignore_pending` to
+queue them anyway. The tests run as the caller, who must be able to deploy each item.
+
+
+> Body parameter
+
+```json
+{
+  "items": [
+    {
+      "path": "string",
+      "kind": "script"
+    }
+  ],
+  "ignore_pending": true
+}
+```
+
+<h3 id="queue-the-ci-tests-of-a-batch-of-deploys-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|workspace|path|string|true|none|
+|body|body|object|true|none|
+|» items|body|[object]|true|none|
+|» » path|body|string|true|none|
+|» » kind|body|string|true|none|
+|» ignore_pending|body|boolean|false|none|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|» » kind|script|
+|» » kind|flow|
+|» » kind|resource|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "pending": [
+    "string"
+  ],
+  "job_ids": [
+    "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+  ]
+}
+```
+
+<h3 id="queue-the-ci-tests-of-a-batch-of-deploys-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|the paths still pending, and the CI test jobs queued|Inline|
+
+<h3 id="queue-the-ci-tests-of-a-batch-of-deploys-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|pending|[string]|true|none|none|
+|job_ids|[string(uuid)]|true|none|none|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth, cookieAuth
+</aside>
+
 ## check a script's asset references against captured producer schemas
 
 <a id="opIdcheckSchemaContracts"></a>
@@ -31592,7 +31802,8 @@ curl http://localhost:8000/api/w/string/scripts/check_schema_contracts \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "language": "python3",
-    "content": "string"
+    "content": "string",
+    "path": "string"
   }'
 ```
 
@@ -31611,7 +31822,8 @@ informational entry.
 ```json
 {
   "language": "python3",
-  "content": "string"
+  "content": "string",
+  "path": "string"
 }
 ```
 
@@ -31623,6 +31835,7 @@ informational entry.
 |body|body|object|true|none|
 |» language|body|[ScriptLang](#schemascriptlang)|true|none|
 |» content|body|string|true|none|
+|» path|body|string|false|The script's path. A `// materialize` that names no table writes the<br>table named after the script, so without it such a target is not checked.<br>|
 
 #### Enumerated Values
 
@@ -31890,8 +32103,10 @@ curl http://localhost:8000/api/w/string/runnables/list \
 |show_archived|query|boolean|false|none|
 |include_without_main|query|boolean|false|include library scripts (no runnable main)|
 |path_start|query|string|false|restrict to paths under this prefix|
+|paths|query|string|false|comma-separated exact paths, to list only the rows at one of them|
 |label|query|string|false|none|
 |search|query|string|false|case-insensitive fuzzy match on "summary (path)": the query is split into terms on runs of anything but ASCII letters, digits and apostrophes, and each of the first 8 must appear whole and in order, with anything in between. Terms past the 8th are ignored, so an over-long query matches more rows rather than fewer. Omitted or empty filters nothing; a query holding no ASCII-alphanumeric character at all (a lone space, "_", or text in a non-Latin script) yields no terms and matches nothing, mirroring the homepage, whose matcher discards those queries too.|
+|search_any_order|query|boolean|false|when true, each search term must appear anywhere in "summary (path)", in any order, rather than in the order given, and terms are split on anything but letters, digits and apostrophes in any script, not only ASCII ones.|
 |per_page|query|integer|false|number of items to return for a given page (default 30, max 100)|
 |cursor|query|string|false|opaque keyset cursor from a previous page's next_cursor|
 |include_draft_only|query|boolean|false|also list the caller's drafts at paths with no deployed row, sorted and paginated with the deployed ones. Ignored for operators, in the archived view, and under a label filter (a draft carries no labels).|
@@ -32065,6 +32280,7 @@ curl http://localhost:8000/api/w/string/drafts/list \
     "path": "string",
     "summary": "string",
     "draft_path": "string",
+    "resource_type": "string",
     "draft_only": true,
     "legacy_draft": true,
     "created_at": "1970-01-01T00:00:00Z",
@@ -32095,8 +32311,9 @@ Status Code **200**
 |*anonymous*|[object]|false|none|none|
 |» kind|[UserDraftItemKind](#schemauserdraftitemkind)|true|none|Closed set of item kinds a user can autosave as a draft. Mirrors the<br>Postgres `DRAFT_KIND` enum and the backend `UserDraftItemKind`.<br>|
 |» path|string|true|none|none|
-|» summary|string|false|none|Best-effort, read from the draft JSON's `summary` field when the editor shape carries one.|
+|» summary|string|false|none|Best-effort, read from the draft JSON's `summary` field when the editor shape carries one, or its `description` for an agent's draft.|
 |» draft_path|string|false|none|User-typed friendly path from the draft JSON's `draft_path`, when set and different from the storage path (e.g. a never-deployed item parked at `u/{user}/draft_{uuid}`).|
+|» resource_type|string|false|none|A `resource` draft's type, the deployed row's when there is one, else the one the draft names. `ai_agent` marks an agent's draft.|
 |» draft_only|boolean|true|none|No deployed counterpart exists at this path — the draft is the whole item.|
 |» legacy_draft|boolean|true|none|The listed draft is a legacy workspace-level row (email NULL) predating the per-user drafts migration. Only true when no per-user draft exists at this path.|
 |» created_at|string(date-time)|true|none|none|
@@ -32561,6 +32778,110 @@ To perform this operation, you must be authenticated by means of one of the foll
 bearerAuth, cookieAuth
 </aside>
 
+## copy the current user's drafts into another workspace of the family and/or remove them here
+
+<a id="opIdtransferDrafts"></a>
+
+> Code samples
+
+```bash
+curl http://localhost:8000/api/w/string/drafts/transfer \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "target_workspace": "string",
+    "items": [
+      {
+        "kind": "script",
+        "path": "string"
+      }
+    ],
+    "remove_from_source": true,
+    "replace_existing": true
+  }'
+```
+
+`POST /w/{workspace}/drafts/transfer`
+
+In one transaction, copies the authed user's own drafts of `items` into `target_workspace` (another workspace of this one's family, with the same root through `parent_workspace_id`) and, with `remove_from_source`, deletes them here. Without `target_workspace` it only removes. If the user already has a draft of any item in the target, nothing is written and the items are returned in `conflicts`, unless `replace_existing` is set. A user who can only compose flows or apps in the target is held to the same rules as a direct draft save there.
+
+> Body parameter
+
+```json
+{
+  "target_workspace": "string",
+  "items": [
+    {
+      "kind": "script",
+      "path": "string"
+    }
+  ],
+  "remove_from_source": true,
+  "replace_existing": true
+}
+```
+
+<h3 id="copy-the-current-users-drafts-into-another-workspace-of-the-family-andor-remove-them-here-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|workspace|path|string|true|none|
+|body|body|object|true|none|
+|» target_workspace|body|string|false|none|
+|» items|body|[[DraftItemRef](#schemadraftitemref)]|true|none|
+|» remove_from_source|body|boolean|false|none|
+|» replace_existing|body|boolean|false|Overwrite the user's own drafts of `items` already in the target instead of returning them as conflicts.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "copied": [
+    {
+      "kind": "script",
+      "path": "string"
+    }
+  ],
+  "removed": [
+    {
+      "kind": "script",
+      "path": "string"
+    }
+  ],
+  "conflicts": [
+    {
+      "kind": "script",
+      "path": "string"
+    }
+  ]
+}
+```
+
+<h3 id="copy-the-current-users-drafts-into-another-workspace-of-the-family-andor-remove-them-here-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|transfer result|Inline|
+
+<h3 id="copy-the-current-users-drafts-into-another-workspace-of-the-family-andor-remove-them-here-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|copied|[[DraftItemRef](#schemadraftitemref)]|true|none|none|
+|removed|[[DraftItemRef](#schemadraftitemref)]|true|none|none|
+|conflicts|[[DraftItemRef](#schemadraftitemref)]|true|none|none|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth, cookieAuth
+</aside>
+
 ## resolve a legacy (workspace-level) draft (admin only)
 
 <a id="opIdmigrateLegacyDraft"></a>
@@ -32918,7 +33239,21 @@ curl http://localhost:8000/api/workers/list \
     "wm_memory_usage": 0,
     "job_isolation": "string",
     "native_mode": true,
-    "draining": true
+    "draining": true,
+    "job_stats": {
+      "total": {
+        "executed": 0,
+        "failed": 0
+      },
+      "last_24h": {
+        "executed": 0,
+        "failed": 0
+      },
+      "last_100": {
+        "executed": 0,
+        "failed": 0
+      }
+    }
   }
 ]
 ```
@@ -34012,6 +34347,7 @@ curl http://localhost:8000/api/w/string/jobs/run_wait_result/f/string \
 |job_id|query|string(uuid)|false|The job id to assign to the created job. if missing, job is chosen randomly using the ULID scheme. If a job id already exists in the queue or as a completed job, the request to create one will fail (Bad Request)|
 |skip_preprocessor|query|boolean|false|skip the preprocessor|
 |memory_id|query|string|false|Memory id for the flow's AI agent steps. A uuid is used as is; any other string is hashed within the workspace and flow, so the same string always names the same memory of that flow.|
+|take_over|query|boolean|false|Stop the run that holds `memory_id`, if any, and run this one instead of being refused with a 409. Only who started that run, or an admin, can stop it; a restricted token also needs an unconfined `jobs:cancel` scope.|
 |body|body|[ScriptArgs](#schemascriptargs)|true|script args|
 
 > Example responses
@@ -34027,7 +34363,7 @@ null
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|job result|Inline|
-|409|Conflict|Chat-enabled flow only: the conversation named by `memory_id` is still answering a message. The body is JSON: `{ "error": string, "running_turn": { "job_id", "user_seq" } }`.|None|
+|409|Conflict|Another run with this `memory_id` is still running (for a chat-enabled flow, the conversation is still answering a message). The body is JSON: `{ "error": string, "running_turn": { "job_id", "user_seq"? } }`, `user_seq` for a chat conversation. Pass `take_over=true` to stop it instead.|None|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -34060,6 +34396,7 @@ curl http://localhost:8000/api/w/string/jobs/run_wait_result/fv/0 \
 |job_id|query|string(uuid)|false|The job id to assign to the created job. if missing, job is chosen randomly using the ULID scheme. If a job id already exists in the queue or as a completed job, the request to create one will fail (Bad Request)|
 |skip_preprocessor|query|boolean|false|skip the preprocessor|
 |memory_id|query|string|false|Memory id for the flow's AI agent steps. A uuid is used as is; any other string is hashed within the workspace and flow, so the same string always names the same memory of that flow.|
+|take_over|query|boolean|false|Stop the run that holds `memory_id`, if any, and run this one instead of being refused with a 409. Only who started that run, or an admin, can stop it; a restricted token also needs an unconfined `jobs:cancel` scope.|
 
 > Example responses
 
@@ -34074,7 +34411,7 @@ null
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|job result|Inline|
-|409|Conflict|Chat-enabled flow only: the conversation named by `memory_id` is still answering a message. The body is JSON: `{ "error": string, "running_turn": { "job_id", "user_seq" } }`.|None|
+|409|Conflict|Another run with this `memory_id` is still running (for a chat-enabled flow, the conversation is still answering a message). The body is JSON: `{ "error": string, "running_turn": { "job_id", "user_seq"? } }`, `user_seq` for a chat conversation. Pass `take_over=true` to stop it instead.|None|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -34115,6 +34452,7 @@ curl http://localhost:8000/api/w/string/jobs/run_wait_result/fv/0 \
 |job_id|query|string(uuid)|false|The job id to assign to the created job. if missing, job is chosen randomly using the ULID scheme. If a job id already exists in the queue or as a completed job, the request to create one will fail (Bad Request)|
 |skip_preprocessor|query|boolean|false|skip the preprocessor|
 |memory_id|query|string|false|Memory id for the flow's AI agent steps. A uuid is used as is; any other string is hashed within the workspace and flow, so the same string always names the same memory of that flow.|
+|take_over|query|boolean|false|Stop the run that holds `memory_id`, if any, and run this one instead of being refused with a 409. Only who started that run, or an admin, can stop it; a restricted token also needs an unconfined `jobs:cancel` scope.|
 |body|body|[ScriptArgs](#schemascriptargs)|true|script args|
 
 > Example responses
@@ -34130,7 +34468,7 @@ null
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|job result|Inline|
-|409|Conflict|Chat-enabled flow only: the conversation named by `memory_id` is still answering a message. The body is JSON: `{ "error": string, "running_turn": { "job_id", "user_seq" } }`.|None|
+|409|Conflict|Another run with this `memory_id` is still running (for a chat-enabled flow, the conversation is still answering a message). The body is JSON: `{ "error": string, "running_turn": { "job_id", "user_seq"? } }`, `user_seq` for a chat conversation. Pass `take_over=true` to stop it instead.|None|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -34162,6 +34500,7 @@ curl http://localhost:8000/api/w/string/jobs/run_and_stream/f/string \
 |job_id|query|string(uuid)|false|The job id to assign to the created job. if missing, job is chosen randomly using the ULID scheme. If a job id already exists in the queue or as a completed job, the request to create one will fail (Bad Request)|
 |skip_preprocessor|query|boolean|false|skip the preprocessor|
 |memory_id|query|string|false|Memory id for the flow's AI agent steps. A uuid is used as is; any other string is hashed within the workspace and flow, so the same string always names the same memory of that flow.|
+|take_over|query|boolean|false|Stop the run that holds `memory_id`, if any, and run this one instead of being refused with a 409. Only who started that run, or an admin, can stop it; a restricted token also needs an unconfined `jobs:cancel` scope.|
 |poll_delay_ms|query|integer(int64)|false|delay between polling for job updates in milliseconds|
 
 <h3 id="run-flow-by-path-with-get-and-stream-updates-via-sse-responses">Responses</h3>
@@ -34169,7 +34508,7 @@ curl http://localhost:8000/api/w/string/jobs/run_and_stream/f/string \
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|server-sent events stream of job updates|Inline|
-|409|Conflict|Chat-enabled flow only: the conversation named by `memory_id` is still answering a message. The body is JSON: `{ "error": string, "running_turn": { "job_id", "user_seq" } }`.|None|
+|409|Conflict|Another run with this `memory_id` is still running (for a chat-enabled flow, the conversation is still answering a message). The body is JSON: `{ "error": string, "running_turn": { "job_id", "user_seq"? } }`, `user_seq` for a chat conversation. Pass `take_over=true` to stop it instead.|None|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -34209,6 +34548,7 @@ curl http://localhost:8000/api/w/string/jobs/run_and_stream/f/string \
 |job_id|query|string(uuid)|false|The job id to assign to the created job. if missing, job is chosen randomly using the ULID scheme. If a job id already exists in the queue or as a completed job, the request to create one will fail (Bad Request)|
 |skip_preprocessor|query|boolean|false|skip the preprocessor|
 |memory_id|query|string|false|Memory id for the flow's AI agent steps. A uuid is used as is; any other string is hashed within the workspace and flow, so the same string always names the same memory of that flow.|
+|take_over|query|boolean|false|Stop the run that holds `memory_id`, if any, and run this one instead of being refused with a 409. Only who started that run, or an admin, can stop it; a restricted token also needs an unconfined `jobs:cancel` scope.|
 |poll_delay_ms|query|integer(int64)|false|delay between polling for job updates in milliseconds|
 |body|body|[ScriptArgs](#schemascriptargs)|true|flow args|
 
@@ -34217,7 +34557,7 @@ curl http://localhost:8000/api/w/string/jobs/run_and_stream/f/string \
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|server-sent events stream of job updates|Inline|
-|409|Conflict|Chat-enabled flow only: the conversation named by `memory_id` is still answering a message. The body is JSON: `{ "error": string, "running_turn": { "job_id", "user_seq" } }`.|None|
+|409|Conflict|Another run with this `memory_id` is still running (for a chat-enabled flow, the conversation is still answering a message). The body is JSON: `{ "error": string, "running_turn": { "job_id", "user_seq"? } }`, `user_seq` for a chat conversation. Pass `take_over=true` to stop it instead.|None|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -34249,6 +34589,7 @@ curl http://localhost:8000/api/w/string/jobs/run_and_stream/fv/0 \
 |job_id|query|string(uuid)|false|The job id to assign to the created job. if missing, job is chosen randomly using the ULID scheme. If a job id already exists in the queue or as a completed job, the request to create one will fail (Bad Request)|
 |skip_preprocessor|query|boolean|false|skip the preprocessor|
 |memory_id|query|string|false|Memory id for the flow's AI agent steps. A uuid is used as is; any other string is hashed within the workspace and flow, so the same string always names the same memory of that flow.|
+|take_over|query|boolean|false|Stop the run that holds `memory_id`, if any, and run this one instead of being refused with a 409. Only who started that run, or an admin, can stop it; a restricted token also needs an unconfined `jobs:cancel` scope.|
 |poll_delay_ms|query|integer(int64)|false|delay between polling for job updates in milliseconds|
 
 <h3 id="run-flow-by-version-with-get-and-stream-updates-via-sse-responses">Responses</h3>
@@ -34256,7 +34597,7 @@ curl http://localhost:8000/api/w/string/jobs/run_and_stream/fv/0 \
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|server-sent events stream of job updates|Inline|
-|409|Conflict|Chat-enabled flow only: the conversation named by `memory_id` is still answering a message. The body is JSON: `{ "error": string, "running_turn": { "job_id", "user_seq" } }`.|None|
+|409|Conflict|Another run with this `memory_id` is still running (for a chat-enabled flow, the conversation is still answering a message). The body is JSON: `{ "error": string, "running_turn": { "job_id", "user_seq"? } }`, `user_seq` for a chat conversation. Pass `take_over=true` to stop it instead.|None|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -34296,6 +34637,7 @@ curl http://localhost:8000/api/w/string/jobs/run_and_stream/fv/0 \
 |job_id|query|string(uuid)|false|The job id to assign to the created job. if missing, job is chosen randomly using the ULID scheme. If a job id already exists in the queue or as a completed job, the request to create one will fail (Bad Request)|
 |skip_preprocessor|query|boolean|false|skip the preprocessor|
 |memory_id|query|string|false|Memory id for the flow's AI agent steps. A uuid is used as is; any other string is hashed within the workspace and flow, so the same string always names the same memory of that flow.|
+|take_over|query|boolean|false|Stop the run that holds `memory_id`, if any, and run this one instead of being refused with a 409. Only who started that run, or an admin, can stop it; a restricted token also needs an unconfined `jobs:cancel` scope.|
 |poll_delay_ms|query|integer(int64)|false|delay between polling for job updates in milliseconds|
 |body|body|[ScriptArgs](#schemascriptargs)|true|flow args|
 
@@ -34304,7 +34646,7 @@ curl http://localhost:8000/api/w/string/jobs/run_and_stream/fv/0 \
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|server-sent events stream of job updates|Inline|
-|409|Conflict|Chat-enabled flow only: the conversation named by `memory_id` is still answering a message. The body is JSON: `{ "error": string, "running_turn": { "job_id", "user_seq" } }`.|None|
+|409|Conflict|Another run with this `memory_id` is still running (for a chat-enabled flow, the conversation is still answering a message). The body is JSON: `{ "error": string, "running_turn": { "job_id", "user_seq"? } }`, `user_seq` for a chat conversation. Pass `take_over=true` to stop it instead.|None|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -34530,6 +34872,131 @@ To perform this operation, you must be authenticated by means of one of the foll
 bearerAuth, cookieAuth
 </aside>
 
+## get the approval detail of one step of a flow run
+
+<a id="opIdgetApprovalStepDetail"></a>
+
+> Code samples
+
+```bash
+curl http://localhost:8000/api/w/string/jobs/flow/approval_step_detail/497f6eca-6276-4993-bfeb-53cbbbba6f08/string \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /w/{workspace}/jobs/flow/approval_step_detail/{job_id}/{step_id}`
+
+Get the approval state of an approval (suspend) step of a flow run, by the flow run id and the step id, in a single query: where the step stands, its approval settings, the approvals received and, while it waits, whether the caller can approve. Only the run's own steps are searched: for a step inside a branch or loop, pass the id of the branch's or iteration's run.
+
+
+<h3 id="get-the-approval-detail-of-one-step-of-a-flow-run-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|workspace|path|string|true|none|
+|job_id|path|string(uuid)|true|id of the flow run|
+|step_id|path|string|true|id of the approval step in the flow|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "flow_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "step_id": "string",
+  "status": "not_reached",
+  "step_job": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "step_summary": "string",
+  "required_events": 0,
+  "timeout": 0,
+  "suspended_until": "1970-01-01T00:00:00Z",
+  "form_schema": null,
+  "hide_cancel": true,
+  "continue_on_disapprove_timeout": true,
+  "skin": "detailed",
+  "approval_conditions": {
+    "user_auth_required": true,
+    "user_groups_required": [
+      "string"
+    ],
+    "self_approval_disabled": true
+  },
+  "can_approve": true,
+  "description": null,
+  "default_args": null,
+  "enums": null,
+  "approvals": [
+    {
+      "resume_id": 0,
+      "approver": "string",
+      "approved": true,
+      "value": null,
+      "created_at": "1970-01-01T00:00:00Z"
+    }
+  ],
+  "error": null
+}
+```
+
+<h3 id="get-the-approval-detail-of-one-step-of-a-flow-run-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|approval step detail|Inline|
+
+<h3 id="get-the-approval-detail-of-one-step-of-a-flow-run-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|flow_id|string(uuid)|true|none|none|
+|step_id|string|true|none|none|
+|status|string|true|none|not_reached: the step's own script has not finished yet. failed: the step failed before asking for approval. waiting: the run is suspended on this step. resumed: the run moved past this step. not_resumed: the run ended while waiting (denied, timed out or cancelled).<br>|
+|step_job|string(uuid)|false|none|the job of the approval step, once it ran|
+|step_summary|string|false|none|none|
+|required_events|integer|true|none|number of approvals required to resume|
+|timeout|integer|false|none|seconds the run waits for approvals|
+|suspended_until|string(date-time)|false|none|when the wait times out, while waiting|
+|form_schema|object|false|none|form schema for the approval step|
+|hide_cancel|boolean|true|none|none|
+|continue_on_disapprove_timeout|boolean|true|none|none|
+|skin|string|true|none|none|
+|approval_conditions|object|false|none|none|
+|» user_auth_required|boolean|true|none|none|
+|» user_groups_required|[string]|true|none|none|
+|» self_approval_disabled|boolean|true|none|none|
+|can_approve|boolean|false|none|whether the caller can approve, set only while waiting|
+|description|object|false|none|description returned by the approval step's script|
+|default_args|object|false|none|default form values returned by the approval step's script|
+|enums|object|false|none|form enums returned by the approval step's script|
+|approvals|[object]|true|none|approvals received. approved, value and created_at are known only while the run is live; a finished run keeps approver names alone.<br>|
+|» resume_id|integer|true|none|none|
+|» approver|string|true|none|none|
+|» approved|boolean|false|none|none|
+|» value|object|false|none|none|
+|» created_at|string(date-time)|false|none|none|
+|error|object|false|none|the run's error, when status is not_resumed|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|status|not_reached|
+|status|skipped|
+|status|failed|
+|status|waiting|
+|status|resumed|
+|status|not_resumed|
+|skin|detailed|
+|skin|minimal|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth, cookieAuth
+</aside>
+
 ## mint a read-only share token for a job
 
 <a id="opIdgetJobViewToken"></a>
@@ -34635,6 +35102,7 @@ curl http://localhost:8000/api/w/string/jobs/run/f/string \
 |include_header|query|string|false|List of headers's keys (separated with ',') whove value are added to the args<br>Header's key lowercased and '-'' replaced to '_' such that 'Content-Type' becomes the 'content_type' arg key<br>|
 |invisible_to_owner|query|boolean|false|make the run invisible to the the flow owner (default false)|
 |memory_id|query|string|false|Memory id for the flow's AI agent steps. A uuid is used as is; any other string is hashed within the workspace and flow, so the same string always names the same memory of that flow.|
+|take_over|query|boolean|false|Stop the run that holds `memory_id`, if any, and run this one instead of being refused with a 409. Only who started that run, or an admin, can stop it; a restricted token also needs an unconfined `jobs:cancel` scope.|
 |body|body|[ScriptArgs](#schemascriptargs)|true|flow args|
 
 <h3 id="run-flow-by-path-responses">Responses</h3>
@@ -34642,7 +35110,7 @@ curl http://localhost:8000/api/w/string/jobs/run/f/string \
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created|job created|Inline|
-|409|Conflict|Chat-enabled flow only: the conversation named by `memory_id` is still answering a message. The body is JSON: `{ "error": string, "running_turn": { "job_id", "user_seq" } }`.|None|
+|409|Conflict|Another run with this `memory_id` is still running (for a chat-enabled flow, the conversation is still answering a message). The body is JSON: `{ "error": string, "running_turn": { "job_id", "user_seq"? } }`, `user_seq` for a chat conversation. Pass `take_over=true` to stop it instead.|None|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -34686,6 +35154,7 @@ curl http://localhost:8000/api/w/string/jobs/run/fv/0 \
 |include_header|query|string|false|List of headers's keys (separated with ',') whove value are added to the args<br>Header's key lowercased and '-'' replaced to '_' such that 'Content-Type' becomes the 'content_type' arg key<br>|
 |invisible_to_owner|query|boolean|false|make the run invisible to the the flow owner (default false)|
 |memory_id|query|string|false|Memory id for the flow's AI agent steps. A uuid is used as is; any other string is hashed within the workspace and flow, so the same string always names the same memory of that flow.|
+|take_over|query|boolean|false|Stop the run that holds `memory_id`, if any, and run this one instead of being refused with a 409. Only who started that run, or an admin, can stop it; a restricted token also needs an unconfined `jobs:cancel` scope.|
 |body|body|[ScriptArgs](#schemascriptargs)|true|flow args|
 
 <h3 id="run-flow-by-version-responses">Responses</h3>
@@ -34693,7 +35162,7 @@ curl http://localhost:8000/api/w/string/jobs/run/fv/0 \
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created|job created|Inline|
-|409|Conflict|Chat-enabled flow only: the conversation named by `memory_id` is still answering a message. The body is JSON: `{ "error": string, "running_turn": { "job_id", "user_seq" } }`.|None|
+|409|Conflict|Another run with this `memory_id` is still running (for a chat-enabled flow, the conversation is still answering a message). The body is JSON: `{ "error": string, "running_turn": { "job_id", "user_seq"? } }`, `user_seq` for a chat conversation. Pass `take_over=true` to stop it instead.|None|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -35738,7 +36207,8 @@ curl http://localhost:8000/api/w/string/jobs/run/flow_dependencies_async \
           "summary": "string",
           "mock": {
             "enabled": true,
-            "return_value": null
+            "return_value": null,
+            "preview_only": true
           },
           "suspend": {
             "required_events": 0,
@@ -35819,7 +36289,8 @@ curl http://localhost:8000/api/w/string/jobs/run/flow_dependencies_async \
         "summary": "string",
         "mock": {
           "enabled": true,
-          "return_value": null
+          "return_value": null,
+          "preview_only": true
         },
         "suspend": {
           "required_events": 0,
@@ -35899,7 +36370,8 @@ curl http://localhost:8000/api/w/string/jobs/run/flow_dependencies_async \
         "summary": "string",
         "mock": {
           "enabled": true,
-          "return_value": null
+          "return_value": null,
+          "preview_only": true
         },
         "suspend": {
           "required_events": 0,
@@ -35952,6 +36424,7 @@ curl http://localhost:8000/api/w/string/jobs/run/flow_dependencies_async \
       "concurrent_limit": 0,
       "concurrency_key": "string",
       "concurrency_time_window_s": 0,
+      "on_concurrency_limit": "queue",
       "debounce_delay_s": 0,
       "debounce_key": "string",
       "debounce_args_to_accumulate": [
@@ -35963,6 +36436,7 @@ curl http://localhost:8000/api/w/string/jobs/run/flow_dependencies_async \
       "cache_ttl": 0,
       "cache_ignore_s3_path": true,
       "delete_after_secs": 0,
+      "timeout": 0,
       "flow_env": {
         "property1": null,
         "property2": null
@@ -36045,7 +36519,8 @@ curl http://localhost:8000/api/w/string/jobs/run/flow_dependencies_async \
         "summary": "string",
         "mock": {
           "enabled": true,
-          "return_value": null
+          "return_value": null,
+          "preview_only": true
         },
         "suspend": {
           "required_events": 0,
@@ -36126,7 +36601,8 @@ curl http://localhost:8000/api/w/string/jobs/run/flow_dependencies_async \
       "summary": "string",
       "mock": {
         "enabled": true,
-        "return_value": null
+        "return_value": null,
+        "preview_only": true
       },
       "suspend": {
         "required_events": 0,
@@ -36206,7 +36682,8 @@ curl http://localhost:8000/api/w/string/jobs/run/flow_dependencies_async \
       "summary": "string",
       "mock": {
         "enabled": true,
-        "return_value": null
+        "return_value": null,
+        "preview_only": true
       },
       "suspend": {
         "required_events": 0,
@@ -36259,6 +36736,7 @@ curl http://localhost:8000/api/w/string/jobs/run/flow_dependencies_async \
     "concurrent_limit": 0,
     "concurrency_key": "string",
     "concurrency_time_window_s": 0,
+    "on_concurrency_limit": "queue",
     "debounce_delay_s": 0,
     "debounce_key": "string",
     "debounce_args_to_accumulate": [
@@ -36270,6 +36748,7 @@ curl http://localhost:8000/api/w/string/jobs/run/flow_dependencies_async \
     "cache_ttl": 0,
     "cache_ignore_s3_path": true,
     "delete_after_secs": 0,
+    "timeout": 0,
     "flow_env": {
       "property1": null,
       "property2": null
@@ -36331,6 +36810,82 @@ To perform this operation, you must be authenticated by means of one of the foll
 bearerAuth, cookieAuth
 </aside>
 
+## run a deployed flow with some steps overridden, for tests
+
+<a id="opIdrunFlowTest"></a>
+
+> Code samples
+
+```bash
+curl http://localhost:8000/api/w/string/jobs/run/flow_test/string \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "args": {},
+    "steps": {
+      "property1": {
+        "return_value": null,
+        "function": "string"
+      },
+      "property2": {
+        "return_value": null,
+        "function": "string"
+      }
+    },
+    "caller_job_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+  }'
+```
+
+`POST /w/{workspace}/jobs/run/flow_test/{path}`
+
+Runs the latest deployed version of the flow as a flow preview, with each step named in `steps` either mocked (`{"return_value": ...}`) or replaced by a function of the code of `caller_job_id` (`{"function": "<name>"}`), called with the step's inputs. Needs the same rights as a flow preview.
+
+> Body parameter
+
+```json
+{
+  "args": {},
+  "steps": {
+    "property1": {
+      "return_value": null,
+      "function": "string"
+    },
+    "property2": {
+      "return_value": null,
+      "function": "string"
+    }
+  },
+  "caller_job_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+}
+```
+
+<h3 id="run-a-deployed-flow-with-some-steps-overridden-for-tests-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|workspace|path|string|true|none|
+|path|path|string|true|none|
+|job_id|query|string(uuid)|false|The job id to assign to the created job. if missing, job is chosen randomly using the ULID scheme. If a job id already exists in the queue or as a completed job, the request to create one will fail (Bad Request)|
+|body|body|object|true|none|
+|» args|body|[ScriptArgs](#schemascriptargs)|false|The arguments to pass to the script or flow|
+|» steps|body|object|false|step id -> override. A step inside a subflow is named by the path of step ids to it, `sub:inner` for step `inner` of the subflow that step `sub` calls.|
+|» » **additionalProperties**|body|object|false|none|
+|» » » return_value|body|object|false|the step is skipped and returns this value|
+|» » » function|body|string|false|name of a function of the code of `caller_job_id` that runs instead of the step (exported, in TypeScript)|
+|» caller_job_id|body|string(uuid)|false|the job whose code defines the replacing functions, usually the calling test; a script run or a script preview. Required with a `function` override.|
+
+<h3 id="run-a-deployed-flow-with-some-steps-overridden-for-tests-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|201|Created|job created|Inline|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth, cookieAuth
+</aside>
+
 ## run flow preview
 
 <a id="opIdrunFlowPreview"></a>
@@ -36377,7 +36932,8 @@ curl http://localhost:8000/api/w/string/jobs/run/preview_flow \
           "summary": "string",
           "mock": {
             "enabled": true,
-            "return_value": null
+            "return_value": null,
+            "preview_only": true
           },
           "suspend": {
             "required_events": 0,
@@ -36458,7 +37014,8 @@ curl http://localhost:8000/api/w/string/jobs/run/preview_flow \
         "summary": "string",
         "mock": {
           "enabled": true,
-          "return_value": null
+          "return_value": null,
+          "preview_only": true
         },
         "suspend": {
           "required_events": 0,
@@ -36538,7 +37095,8 @@ curl http://localhost:8000/api/w/string/jobs/run/preview_flow \
         "summary": "string",
         "mock": {
           "enabled": true,
-          "return_value": null
+          "return_value": null,
+          "preview_only": true
         },
         "suspend": {
           "required_events": 0,
@@ -36591,6 +37149,7 @@ curl http://localhost:8000/api/w/string/jobs/run/preview_flow \
       "concurrent_limit": 0,
       "concurrency_key": "string",
       "concurrency_time_window_s": 0,
+      "on_concurrency_limit": "queue",
       "debounce_delay_s": 0,
       "debounce_key": "string",
       "debounce_args_to_accumulate": [
@@ -36602,6 +37161,7 @@ curl http://localhost:8000/api/w/string/jobs/run/preview_flow \
       "cache_ttl": 0,
       "cache_ignore_s3_path": true,
       "delete_after_secs": 0,
+      "timeout": 0,
       "flow_env": {
         "property1": null,
         "property2": null
@@ -36702,7 +37262,8 @@ curl http://localhost:8000/api/w/string/jobs/run/preview_flow \
         "summary": "string",
         "mock": {
           "enabled": true,
-          "return_value": null
+          "return_value": null,
+          "preview_only": true
         },
         "suspend": {
           "required_events": 0,
@@ -36783,7 +37344,8 @@ curl http://localhost:8000/api/w/string/jobs/run/preview_flow \
       "summary": "string",
       "mock": {
         "enabled": true,
-        "return_value": null
+        "return_value": null,
+        "preview_only": true
       },
       "suspend": {
         "required_events": 0,
@@ -36863,7 +37425,8 @@ curl http://localhost:8000/api/w/string/jobs/run/preview_flow \
       "summary": "string",
       "mock": {
         "enabled": true,
-        "return_value": null
+        "return_value": null,
+        "preview_only": true
       },
       "suspend": {
         "required_events": 0,
@@ -36916,6 +37479,7 @@ curl http://localhost:8000/api/w/string/jobs/run/preview_flow \
     "concurrent_limit": 0,
     "concurrency_key": "string",
     "concurrency_time_window_s": 0,
+    "on_concurrency_limit": "queue",
     "debounce_delay_s": 0,
     "debounce_key": "string",
     "debounce_args_to_accumulate": [
@@ -36927,6 +37491,7 @@ curl http://localhost:8000/api/w/string/jobs/run/preview_flow \
     "cache_ttl": 0,
     "cache_ignore_s3_path": true,
     "delete_after_secs": 0,
+    "timeout": 0,
     "flow_env": {
       "property1": null,
       "property2": null
@@ -36996,6 +37561,7 @@ curl http://localhost:8000/api/w/string/jobs/run/preview_flow \
 |invisible_to_owner|query|boolean|false|make the run invisible to the the script owner (default false)|
 |job_id|query|string(uuid)|false|The job id to assign to the created job. if missing, job is chosen randomly using the ULID scheme. If a job id already exists in the queue or as a completed job, the request to create one will fail (Bad Request)|
 |memory_id|query|string|false|Memory id for the flow's AI agent steps. A uuid is used as is; any other string is hashed within the workspace and flow, so the same string always names the same memory of that flow.|
+|take_over|query|boolean|false|Stop the run that holds `memory_id`, if any, and run this one instead of being refused with a 409. Only who started that run, or an admin, can stop it; a restricted token also needs an unconfined `jobs:cancel` scope.|
 |body|body|[FlowPreview](#schemaflowpreview)|true|preview|
 |» value|body|[FlowValue](#schemaflowvalue)|true|The flow structure containing modules and optional preprocessor/failure handlers|
 |» path|body|string|false|none|
@@ -37011,7 +37577,7 @@ curl http://localhost:8000/api/w/string/jobs/run/preview_flow \
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created|job created|Inline|
-|409|Conflict|Chat-enabled flow only: the conversation named by `memory_id` is still answering a message. The body is JSON: `{ "error": string, "running_turn": { "job_id", "user_seq" } }`.|None|
+|409|Conflict|Another run with this `memory_id` is still running (for a chat-enabled flow, the conversation is still answering a message). The body is JSON: `{ "error": string, "running_turn": { "job_id", "user_seq"? } }`, `user_seq` for a chat conversation. Pass `take_over=true` to stop it instead.|None|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -37070,6 +37636,7 @@ of the caller's conversation with the agent; without, a single run.
 |workspace|path|string|true|none|
 |path|path|string|true|none|
 |memory_id|query|string|false|The conversation this turn belongs to. A uuid is used as is; any other string is hashed within the workspace and agent.|
+|take_over|query|boolean|false|Stop the run that holds `memory_id`, if any, and run this one instead of being refused with a 409. Only who started that run, or an admin, can stop it; a restricted token also needs an unconfined `jobs:cancel` scope.|
 |body|body|object|true|the run's inputs|
 |» user_message|body|string|false|none|
 |» user_attachments|body|[object]|false|none|
@@ -37133,7 +37700,8 @@ curl http://localhost:8000/api/w/string/jobs/run_wait_result/preview_flow \
           "summary": "string",
           "mock": {
             "enabled": true,
-            "return_value": null
+            "return_value": null,
+            "preview_only": true
           },
           "suspend": {
             "required_events": 0,
@@ -37214,7 +37782,8 @@ curl http://localhost:8000/api/w/string/jobs/run_wait_result/preview_flow \
         "summary": "string",
         "mock": {
           "enabled": true,
-          "return_value": null
+          "return_value": null,
+          "preview_only": true
         },
         "suspend": {
           "required_events": 0,
@@ -37294,7 +37863,8 @@ curl http://localhost:8000/api/w/string/jobs/run_wait_result/preview_flow \
         "summary": "string",
         "mock": {
           "enabled": true,
-          "return_value": null
+          "return_value": null,
+          "preview_only": true
         },
         "suspend": {
           "required_events": 0,
@@ -37347,6 +37917,7 @@ curl http://localhost:8000/api/w/string/jobs/run_wait_result/preview_flow \
       "concurrent_limit": 0,
       "concurrency_key": "string",
       "concurrency_time_window_s": 0,
+      "on_concurrency_limit": "queue",
       "debounce_delay_s": 0,
       "debounce_key": "string",
       "debounce_args_to_accumulate": [
@@ -37358,6 +37929,7 @@ curl http://localhost:8000/api/w/string/jobs/run_wait_result/preview_flow \
       "cache_ttl": 0,
       "cache_ignore_s3_path": true,
       "delete_after_secs": 0,
+      "timeout": 0,
       "flow_env": {
         "property1": null,
         "property2": null
@@ -37458,7 +38030,8 @@ curl http://localhost:8000/api/w/string/jobs/run_wait_result/preview_flow \
         "summary": "string",
         "mock": {
           "enabled": true,
-          "return_value": null
+          "return_value": null,
+          "preview_only": true
         },
         "suspend": {
           "required_events": 0,
@@ -37539,7 +38112,8 @@ curl http://localhost:8000/api/w/string/jobs/run_wait_result/preview_flow \
       "summary": "string",
       "mock": {
         "enabled": true,
-        "return_value": null
+        "return_value": null,
+        "preview_only": true
       },
       "suspend": {
         "required_events": 0,
@@ -37619,7 +38193,8 @@ curl http://localhost:8000/api/w/string/jobs/run_wait_result/preview_flow \
       "summary": "string",
       "mock": {
         "enabled": true,
-        "return_value": null
+        "return_value": null,
+        "preview_only": true
       },
       "suspend": {
         "required_events": 0,
@@ -37672,6 +38247,7 @@ curl http://localhost:8000/api/w/string/jobs/run_wait_result/preview_flow \
     "concurrent_limit": 0,
     "concurrency_key": "string",
     "concurrency_time_window_s": 0,
+    "on_concurrency_limit": "queue",
     "debounce_delay_s": 0,
     "debounce_key": "string",
     "debounce_args_to_accumulate": [
@@ -37683,6 +38259,7 @@ curl http://localhost:8000/api/w/string/jobs/run_wait_result/preview_flow \
     "cache_ttl": 0,
     "cache_ignore_s3_path": true,
     "delete_after_secs": 0,
+    "timeout": 0,
     "flow_env": {
       "property1": null,
       "property2": null
@@ -37749,6 +38326,7 @@ curl http://localhost:8000/api/w/string/jobs/run_wait_result/preview_flow \
 |---|---|---|---|---|
 |workspace|path|string|true|none|
 |memory_id|query|string|false|Memory id for the flow's AI agent steps. A uuid is used as is; any other string is hashed within the workspace and flow, so the same string always names the same memory of that flow.|
+|take_over|query|boolean|false|Stop the run that holds `memory_id`, if any, and run this one instead of being refused with a 409. Only who started that run, or an admin, can stop it; a restricted token also needs an unconfined `jobs:cancel` scope.|
 |body|body|[FlowPreview](#schemaflowpreview)|true|preview|
 |» value|body|[FlowValue](#schemaflowvalue)|true|The flow structure containing modules and optional preprocessor/failure handlers|
 |» path|body|string|false|none|
@@ -37772,7 +38350,7 @@ null
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|job result|Inline|
-|409|Conflict|Chat-enabled flow only: the conversation named by `memory_id` is still answering a message. The body is JSON: `{ "error": string, "running_turn": { "job_id", "user_seq" } }`.|None|
+|409|Conflict|Another run with this `memory_id` is still running (for a chat-enabled flow, the conversation is still answering a message). The body is JSON: `{ "error": string, "running_turn": { "job_id", "user_seq"? } }`, `user_seq` for a chat conversation. Pass `take_over=true` to stop it instead.|None|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -37975,6 +38553,9 @@ curl http://localhost:8000/api/w/string/jobs/queue/list \
           "flow_jobs_success": [
             true
           ],
+          "flow_jobs_labels": [
+            "string"
+          ],
           "flow_jobs_duration": {
             "started_at": [
               "string"
@@ -38035,6 +38616,9 @@ curl http://localhost:8000/api/w/string/jobs/queue/list \
         "flow_jobs_success": [
           true
         ],
+        "flow_jobs_labels": [
+          "string"
+        ],
         "flow_jobs_duration": {
           "started_at": [
             "string"
@@ -38093,6 +38677,9 @@ curl http://localhost:8000/api/w/string/jobs/queue/list \
         "flow_jobs_success": [
           true
         ],
+        "flow_jobs_labels": [
+          "string"
+        ],
         "flow_jobs_duration": {
           "started_at": [
             "string"
@@ -38137,6 +38724,16 @@ curl http://localhost:8000/api/w/string/jobs/queue/list \
         "failed_jobs": [
           "497f6eca-6276-4993-bfeb-53cbbbba6f08"
         ]
+      },
+      "continued_on_error": [
+        {
+          "id": "string",
+          "job": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+        }
+      ],
+      "test_subflows": {
+        "property1": {},
+        "property2": {}
       }
     },
     "workflow_as_code_status": {
@@ -38179,7 +38776,8 @@ curl http://localhost:8000/api/w/string/jobs/queue/list \
           "summary": "string",
           "mock": {
             "enabled": true,
-            "return_value": null
+            "return_value": null,
+            "preview_only": true
           },
           "suspend": {
             "required_events": 0,
@@ -38260,7 +38858,8 @@ curl http://localhost:8000/api/w/string/jobs/queue/list \
         "summary": "string",
         "mock": {
           "enabled": true,
-          "return_value": null
+          "return_value": null,
+          "preview_only": true
         },
         "suspend": {
           "required_events": 0,
@@ -38340,7 +38939,8 @@ curl http://localhost:8000/api/w/string/jobs/queue/list \
         "summary": "string",
         "mock": {
           "enabled": true,
-          "return_value": null
+          "return_value": null,
+          "preview_only": true
         },
         "suspend": {
           "required_events": 0,
@@ -38393,6 +38993,7 @@ curl http://localhost:8000/api/w/string/jobs/queue/list \
       "concurrent_limit": 0,
       "concurrency_key": "string",
       "concurrency_time_window_s": 0,
+      "on_concurrency_limit": "queue",
       "debounce_delay_s": 0,
       "debounce_key": "string",
       "debounce_args_to_accumulate": [
@@ -38404,6 +39005,7 @@ curl http://localhost:8000/api/w/string/jobs/queue/list \
       "cache_ttl": 0,
       "cache_ignore_s3_path": true,
       "delete_after_secs": 0,
+      "timeout": 0,
       "flow_env": {
         "property1": null,
         "property2": null
@@ -38455,6 +39057,7 @@ curl http://localhost:8000/api/w/string/jobs/queue/list \
     "preprocessed": true,
     "is_retry": true,
     "trigger_kind": "webhook",
+    "trigger_path": "string",
     "worker": "string"
   }
 ]
@@ -38805,6 +39408,7 @@ curl http://localhost:8000/api/w/string/jobs/queue/list_filtered_uuids \
 |page|query|integer|false|which page to return (start at 1, default 1)|
 |per_page|query|integer|false|number of items to return for a given page (default 30, max 100)|
 |concurrency_key|query|string|false|none|
+|has_null_parent|query|boolean|false|has null parent|
 |all_workspaces|query|boolean|false|get jobs from all workspaces (only valid if request come from the `admins` workspace)|
 |is_not_schedule|query|boolean|false|is not a scheduled job|
 
@@ -39097,6 +39701,9 @@ curl http://localhost:8000/api/w/string/jobs/completed/list \
           "flow_jobs_success": [
             true
           ],
+          "flow_jobs_labels": [
+            "string"
+          ],
           "flow_jobs_duration": {
             "started_at": [
               "string"
@@ -39157,6 +39764,9 @@ curl http://localhost:8000/api/w/string/jobs/completed/list \
         "flow_jobs_success": [
           true
         ],
+        "flow_jobs_labels": [
+          "string"
+        ],
         "flow_jobs_duration": {
           "started_at": [
             "string"
@@ -39215,6 +39825,9 @@ curl http://localhost:8000/api/w/string/jobs/completed/list \
         "flow_jobs_success": [
           true
         ],
+        "flow_jobs_labels": [
+          "string"
+        ],
         "flow_jobs_duration": {
           "started_at": [
             "string"
@@ -39259,6 +39872,16 @@ curl http://localhost:8000/api/w/string/jobs/completed/list \
         "failed_jobs": [
           "497f6eca-6276-4993-bfeb-53cbbbba6f08"
         ]
+      },
+      "continued_on_error": [
+        {
+          "id": "string",
+          "job": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+        }
+      ],
+      "test_subflows": {
+        "property1": {},
+        "property2": {}
       }
     },
     "workflow_as_code_status": {
@@ -39301,7 +39924,8 @@ curl http://localhost:8000/api/w/string/jobs/completed/list \
           "summary": "string",
           "mock": {
             "enabled": true,
-            "return_value": null
+            "return_value": null,
+            "preview_only": true
           },
           "suspend": {
             "required_events": 0,
@@ -39382,7 +40006,8 @@ curl http://localhost:8000/api/w/string/jobs/completed/list \
         "summary": "string",
         "mock": {
           "enabled": true,
-          "return_value": null
+          "return_value": null,
+          "preview_only": true
         },
         "suspend": {
           "required_events": 0,
@@ -39462,7 +40087,8 @@ curl http://localhost:8000/api/w/string/jobs/completed/list \
         "summary": "string",
         "mock": {
           "enabled": true,
-          "return_value": null
+          "return_value": null,
+          "preview_only": true
         },
         "suspend": {
           "required_events": 0,
@@ -39515,6 +40141,7 @@ curl http://localhost:8000/api/w/string/jobs/completed/list \
       "concurrent_limit": 0,
       "concurrency_key": "string",
       "concurrency_time_window_s": 0,
+      "on_concurrency_limit": "queue",
       "debounce_delay_s": 0,
       "debounce_key": "string",
       "debounce_args_to_accumulate": [
@@ -39526,6 +40153,7 @@ curl http://localhost:8000/api/w/string/jobs/completed/list \
       "cache_ttl": 0,
       "cache_ignore_s3_path": true,
       "delete_after_secs": 0,
+      "timeout": 0,
       "flow_env": {
         "property1": null,
         "property2": null
@@ -39585,6 +40213,7 @@ curl http://localhost:8000/api/w/string/jobs/completed/list \
     "resolution_note": "string",
     "resolved_automatically": true,
     "trigger_kind": "webhook",
+    "trigger_path": "string",
     "worker": "string"
   }
 ]
@@ -40122,6 +40751,264 @@ To perform this operation, you must be authenticated by means of one of the foll
 bearerAuth, cookieAuth
 </aside>
 
+## list what ran recently, one entry per script, flow or agent
+
+<a id="opIdlistRecentRuns"></a>
+
+> Code samples
+
+```bash
+curl http://localhost:8000/api/w/string/jobs/recent_runs \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /w/{workspace}/jobs/recent_runs`
+
+<h3 id="list-what-ran-recently-one-entry-per-script-flow-or-agent-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|workspace|path|string|true|none|
+|folder|query|string|false|only runs of items in this folder|
+|failed_ids_kind|query|string|false|with failed_ids_path, the item whose unresolved failed run ids to list in failed_run_ids|
+|failed_ids_path|query|string|false|with failed_ids_kind, the path of that item|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|failed_ids_kind|script|
+|failed_ids_kind|flow|
+|failed_ids_kind|agent|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "window_hours": 0,
+  "capped": true,
+  "total_runs": 0,
+  "failed_runs": 0,
+  "failing_items": 0,
+  "running_items": 0,
+  "items": [
+    {
+      "path": "string",
+      "kind": "script",
+      "summary": "string",
+      "status": "success",
+      "failed_runs": 0,
+      "failed_run_ids": [
+        "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+      ],
+      "runs": [
+        {
+          "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+          "status": "success",
+          "ran_at": "1970-01-01T00:00:00Z",
+          "duration_ms": 0
+        }
+      ]
+    }
+  ],
+  "hidden_items": [
+    {
+      "kind": "script",
+      "path": "string",
+      "summary": "string"
+    }
+  ]
+}
+```
+
+<h3 id="list-what-ran-recently-one-entry-per-script-flow-or-agent-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|runs that completed in the window or are running, grouped by item, newest run first|Inline|
+
+<h3 id="list-what-ran-recently-one-entry-per-script-flow-or-agent-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|window_hours|integer|true|none|none|
+|capped|boolean|true|none|the window holds more runs than were read, so counts cover the newest ones only|
+|total_runs|integer|true|none|none|
+|failed_runs|integer|true|none|none|
+|failing_items|integer|true|none|none|
+|running_items|integer|true|none|none|
+|items|[object]|true|none|none|
+|» path|string|true|none|none|
+|» kind|string|true|none|none|
+|» summary|string|false|none|none|
+|» status|[RecentRunStatus](#schemarecentrunstatus)|true|none|a failure someone or something marked as handled is `resolved`, not `failure`|
+|» failed_runs|integer|true|none|unresolved failed runs of the item over the whole window, not only those in runs|
+|» failed_run_ids|[string(uuid)]|false|none|the ids of those failed runs, only for the item named by failed_ids_kind and failed_ids_path|
+|» runs|[object]|true|none|none|
+|» » id|string(uuid)|true|none|none|
+|» » status|[RecentRunStatus](#schemarecentrunstatus)|true|none|a failure someone or something marked as handled is `resolved`, not `failure`|
+|» » ran_at|string(date-time)|true|none|when the run started, or was created for one that has not reported a start|
+|» » duration_ms|integer|false|none|none|
+|hidden_items|[[RecentRunHiddenItem](#schemarecentrunhiddenitem)]|true|none|the items the caller hid, within the folder, whether or not they ran in the window; their runs are left out of items and of every count|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|» kind|script|
+|» kind|flow|
+|» kind|agent|
+|» status|success|
+|» status|failure|
+|» status|resolved|
+|» status|canceled|
+|» status|running|
+|» » status|success|
+|» » status|failure|
+|» » status|resolved|
+|» » status|canceled|
+|» » status|running|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth, cookieAuth
+</aside>
+
+## hide items from the caller's recently run list
+
+<a id="opIdhideRecentRunItems"></a>
+
+> Code samples
+
+```bash
+curl http://localhost:8000/api/w/string/jobs/recent_runs/hide \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "items": [
+      {
+        "kind": "script",
+        "path": "string"
+      }
+    ]
+  }'
+```
+
+`POST /w/{workspace}/jobs/recent_runs/hide`
+
+> Body parameter
+
+```json
+{
+  "items": [
+    {
+      "kind": "script",
+      "path": "string"
+    }
+  ]
+}
+```
+
+<h3 id="hide-items-from-the-callers-recently-run-list-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|workspace|path|string|true|none|
+|body|body|[RecentRunItemRefs](#schemarecentrunitemrefs)|true|none|
+|» items|body|[object]|true|none|
+|» » kind|body|string|true|none|
+|» » path|body|string|true|none|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|» » kind|script|
+|» » kind|flow|
+|» » kind|agent|
+
+<h3 id="hide-items-from-the-callers-recently-run-list-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|items hidden|Inline|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth, cookieAuth
+</aside>
+
+## bring items back to the caller's recently run list
+
+<a id="opIdunhideRecentRunItems"></a>
+
+> Code samples
+
+```bash
+curl http://localhost:8000/api/w/string/jobs/recent_runs/unhide \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "items": [
+      {
+        "kind": "script",
+        "path": "string"
+      }
+    ]
+  }'
+```
+
+`POST /w/{workspace}/jobs/recent_runs/unhide`
+
+> Body parameter
+
+```json
+{
+  "items": [
+    {
+      "kind": "script",
+      "path": "string"
+    }
+  ]
+}
+```
+
+<h3 id="bring-items-back-to-the-callers-recently-run-list-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|workspace|path|string|true|none|
+|body|body|[RecentRunItemRefs](#schemarecentrunitemrefs)|true|none|
+|» items|body|[object]|true|none|
+|» » kind|body|string|true|none|
+|» » path|body|string|true|none|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|» » kind|script|
+|» » kind|flow|
+|» » kind|agent|
+
+<h3 id="bring-items-back-to-the-callers-recently-run-list-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|items brought back|Inline|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth, cookieAuth
+</aside>
+
 ## list all jobs
 
 <a id="opIdlistJobs"></a>
@@ -40239,6 +41126,9 @@ curl http://localhost:8000/api/w/string/jobs/list \
           "flow_jobs_success": [
             true
           ],
+          "flow_jobs_labels": [
+            "string"
+          ],
           "flow_jobs_duration": {
             "started_at": [
               "string"
@@ -40299,6 +41189,9 @@ curl http://localhost:8000/api/w/string/jobs/list \
         "flow_jobs_success": [
           true
         ],
+        "flow_jobs_labels": [
+          "string"
+        ],
         "flow_jobs_duration": {
           "started_at": [
             "string"
@@ -40357,6 +41250,9 @@ curl http://localhost:8000/api/w/string/jobs/list \
         "flow_jobs_success": [
           true
         ],
+        "flow_jobs_labels": [
+          "string"
+        ],
         "flow_jobs_duration": {
           "started_at": [
             "string"
@@ -40401,6 +41297,16 @@ curl http://localhost:8000/api/w/string/jobs/list \
         "failed_jobs": [
           "497f6eca-6276-4993-bfeb-53cbbbba6f08"
         ]
+      },
+      "continued_on_error": [
+        {
+          "id": "string",
+          "job": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+        }
+      ],
+      "test_subflows": {
+        "property1": {},
+        "property2": {}
       }
     },
     "workflow_as_code_status": {
@@ -40443,7 +41349,8 @@ curl http://localhost:8000/api/w/string/jobs/list \
           "summary": "string",
           "mock": {
             "enabled": true,
-            "return_value": null
+            "return_value": null,
+            "preview_only": true
           },
           "suspend": {
             "required_events": 0,
@@ -40524,7 +41431,8 @@ curl http://localhost:8000/api/w/string/jobs/list \
         "summary": "string",
         "mock": {
           "enabled": true,
-          "return_value": null
+          "return_value": null,
+          "preview_only": true
         },
         "suspend": {
           "required_events": 0,
@@ -40604,7 +41512,8 @@ curl http://localhost:8000/api/w/string/jobs/list \
         "summary": "string",
         "mock": {
           "enabled": true,
-          "return_value": null
+          "return_value": null,
+          "preview_only": true
         },
         "suspend": {
           "required_events": 0,
@@ -40657,6 +41566,7 @@ curl http://localhost:8000/api/w/string/jobs/list \
       "concurrent_limit": 0,
       "concurrency_key": "string",
       "concurrency_time_window_s": 0,
+      "on_concurrency_limit": "queue",
       "debounce_delay_s": 0,
       "debounce_key": "string",
       "debounce_args_to_accumulate": [
@@ -40668,6 +41578,7 @@ curl http://localhost:8000/api/w/string/jobs/list \
       "cache_ttl": 0,
       "cache_ignore_s3_path": true,
       "delete_after_secs": 0,
+      "timeout": 0,
       "flow_env": {
         "property1": null,
         "property2": null
@@ -40727,6 +41638,7 @@ curl http://localhost:8000/api/w/string/jobs/list \
     "resolution_note": "string",
     "resolved_automatically": true,
     "trigger_kind": "webhook",
+    "trigger_path": "string",
     "worker": "string",
     "type": "CompletedJob"
   }
@@ -40915,6 +41827,9 @@ curl http://localhost:8000/api/w/string/jobs_u/get/497f6eca-6276-4993-bfeb-53cbb
         "flow_jobs_success": [
           true
         ],
+        "flow_jobs_labels": [
+          "string"
+        ],
         "flow_jobs_duration": {
           "started_at": [
             "string"
@@ -40975,6 +41890,9 @@ curl http://localhost:8000/api/w/string/jobs_u/get/497f6eca-6276-4993-bfeb-53cbb
       "flow_jobs_success": [
         true
       ],
+      "flow_jobs_labels": [
+        "string"
+      ],
       "flow_jobs_duration": {
         "started_at": [
           "string"
@@ -41033,6 +41951,9 @@ curl http://localhost:8000/api/w/string/jobs_u/get/497f6eca-6276-4993-bfeb-53cbb
       "flow_jobs_success": [
         true
       ],
+      "flow_jobs_labels": [
+        "string"
+      ],
       "flow_jobs_duration": {
         "started_at": [
           "string"
@@ -41077,6 +41998,16 @@ curl http://localhost:8000/api/w/string/jobs_u/get/497f6eca-6276-4993-bfeb-53cbb
       "failed_jobs": [
         "497f6eca-6276-4993-bfeb-53cbbbba6f08"
       ]
+    },
+    "continued_on_error": [
+      {
+        "id": "string",
+        "job": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+      }
+    ],
+    "test_subflows": {
+      "property1": {},
+      "property2": {}
     }
   },
   "workflow_as_code_status": {
@@ -41119,7 +42050,8 @@ curl http://localhost:8000/api/w/string/jobs_u/get/497f6eca-6276-4993-bfeb-53cbb
         "summary": "string",
         "mock": {
           "enabled": true,
-          "return_value": null
+          "return_value": null,
+          "preview_only": true
         },
         "suspend": {
           "required_events": 0,
@@ -41200,7 +42132,8 @@ curl http://localhost:8000/api/w/string/jobs_u/get/497f6eca-6276-4993-bfeb-53cbb
       "summary": "string",
       "mock": {
         "enabled": true,
-        "return_value": null
+        "return_value": null,
+        "preview_only": true
       },
       "suspend": {
         "required_events": 0,
@@ -41280,7 +42213,8 @@ curl http://localhost:8000/api/w/string/jobs_u/get/497f6eca-6276-4993-bfeb-53cbb
       "summary": "string",
       "mock": {
         "enabled": true,
-        "return_value": null
+        "return_value": null,
+        "preview_only": true
       },
       "suspend": {
         "required_events": 0,
@@ -41333,6 +42267,7 @@ curl http://localhost:8000/api/w/string/jobs_u/get/497f6eca-6276-4993-bfeb-53cbb
     "concurrent_limit": 0,
     "concurrency_key": "string",
     "concurrency_time_window_s": 0,
+    "on_concurrency_limit": "queue",
     "debounce_delay_s": 0,
     "debounce_key": "string",
     "debounce_args_to_accumulate": [
@@ -41344,6 +42279,7 @@ curl http://localhost:8000/api/w/string/jobs_u/get/497f6eca-6276-4993-bfeb-53cbb
     "cache_ttl": 0,
     "cache_ignore_s3_path": true,
     "delete_after_secs": 0,
+    "timeout": 0,
     "flow_env": {
       "property1": null,
       "property2": null
@@ -41403,6 +42339,7 @@ curl http://localhost:8000/api/w/string/jobs_u/get/497f6eca-6276-4993-bfeb-53cbb
   "resolution_note": "string",
   "resolved_automatically": true,
   "trigger_kind": "webhook",
+  "trigger_path": "string",
   "worker": "string",
   "type": "CompletedJob"
 }
@@ -41940,6 +42877,9 @@ curl http://localhost:8000/api/w/string/jobs_u/getupdate/497f6eca-6276-4993-bfeb
         "flow_jobs_success": [
           true
         ],
+        "flow_jobs_labels": [
+          "string"
+        ],
         "flow_jobs_duration": {
           "started_at": [
             "string"
@@ -42000,6 +42940,9 @@ curl http://localhost:8000/api/w/string/jobs_u/getupdate/497f6eca-6276-4993-bfeb
       "flow_jobs_success": [
         true
       ],
+      "flow_jobs_labels": [
+        "string"
+      ],
       "flow_jobs_duration": {
         "started_at": [
           "string"
@@ -42058,6 +43001,9 @@ curl http://localhost:8000/api/w/string/jobs_u/getupdate/497f6eca-6276-4993-bfeb
       "flow_jobs_success": [
         true
       ],
+      "flow_jobs_labels": [
+        "string"
+      ],
       "flow_jobs_duration": {
         "started_at": [
           "string"
@@ -42102,6 +43048,16 @@ curl http://localhost:8000/api/w/string/jobs_u/getupdate/497f6eca-6276-4993-bfeb
       "failed_jobs": [
         "497f6eca-6276-4993-bfeb-53cbbbba6f08"
       ]
+    },
+    "continued_on_error": [
+      {
+        "id": "string",
+        "job": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+      }
+    ],
+    "test_subflows": {
+      "property1": {},
+      "property2": {}
     }
   },
   "workflow_as_code_status": {
@@ -42322,6 +43278,9 @@ curl http://localhost:8000/api/w/string/jobs_u/completed/get/497f6eca-6276-4993-
         "flow_jobs_success": [
           true
         ],
+        "flow_jobs_labels": [
+          "string"
+        ],
         "flow_jobs_duration": {
           "started_at": [
             "string"
@@ -42382,6 +43341,9 @@ curl http://localhost:8000/api/w/string/jobs_u/completed/get/497f6eca-6276-4993-
       "flow_jobs_success": [
         true
       ],
+      "flow_jobs_labels": [
+        "string"
+      ],
       "flow_jobs_duration": {
         "started_at": [
           "string"
@@ -42440,6 +43402,9 @@ curl http://localhost:8000/api/w/string/jobs_u/completed/get/497f6eca-6276-4993-
       "flow_jobs_success": [
         true
       ],
+      "flow_jobs_labels": [
+        "string"
+      ],
       "flow_jobs_duration": {
         "started_at": [
           "string"
@@ -42484,6 +43449,16 @@ curl http://localhost:8000/api/w/string/jobs_u/completed/get/497f6eca-6276-4993-
       "failed_jobs": [
         "497f6eca-6276-4993-bfeb-53cbbbba6f08"
       ]
+    },
+    "continued_on_error": [
+      {
+        "id": "string",
+        "job": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+      }
+    ],
+    "test_subflows": {
+      "property1": {},
+      "property2": {}
     }
   },
   "workflow_as_code_status": {
@@ -42526,7 +43501,8 @@ curl http://localhost:8000/api/w/string/jobs_u/completed/get/497f6eca-6276-4993-
         "summary": "string",
         "mock": {
           "enabled": true,
-          "return_value": null
+          "return_value": null,
+          "preview_only": true
         },
         "suspend": {
           "required_events": 0,
@@ -42607,7 +43583,8 @@ curl http://localhost:8000/api/w/string/jobs_u/completed/get/497f6eca-6276-4993-
       "summary": "string",
       "mock": {
         "enabled": true,
-        "return_value": null
+        "return_value": null,
+        "preview_only": true
       },
       "suspend": {
         "required_events": 0,
@@ -42687,7 +43664,8 @@ curl http://localhost:8000/api/w/string/jobs_u/completed/get/497f6eca-6276-4993-
       "summary": "string",
       "mock": {
         "enabled": true,
-        "return_value": null
+        "return_value": null,
+        "preview_only": true
       },
       "suspend": {
         "required_events": 0,
@@ -42740,6 +43718,7 @@ curl http://localhost:8000/api/w/string/jobs_u/completed/get/497f6eca-6276-4993-
     "concurrent_limit": 0,
     "concurrency_key": "string",
     "concurrency_time_window_s": 0,
+    "on_concurrency_limit": "queue",
     "debounce_delay_s": 0,
     "debounce_key": "string",
     "debounce_args_to_accumulate": [
@@ -42751,6 +43730,7 @@ curl http://localhost:8000/api/w/string/jobs_u/completed/get/497f6eca-6276-4993-
     "cache_ttl": 0,
     "cache_ignore_s3_path": true,
     "delete_after_secs": 0,
+    "timeout": 0,
     "flow_env": {
       "property1": null,
       "property2": null
@@ -42810,6 +43790,7 @@ curl http://localhost:8000/api/w/string/jobs_u/completed/get/497f6eca-6276-4993-
   "resolution_note": "string",
   "resolved_automatically": true,
   "trigger_kind": "webhook",
+  "trigger_path": "string",
   "worker": "string"
 }
 ```
@@ -42900,7 +43881,8 @@ curl http://localhost:8000/api/w/string/jobs_u/completed/get_result_maybe/497f6e
   "completed": true,
   "result": null,
   "success": true,
-  "started": true
+  "started": true,
+  "is_skipped": true
 }
 ```
 
@@ -42920,6 +43902,7 @@ Status Code **200**
 |result|object|true|none|none|
 |success|boolean|false|none|none|
 |started|boolean|false|none|none|
+|is_skipped|boolean|false|none|set when the job is completed; true if it ended as skipped (also counted as success)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -43227,6 +44210,9 @@ curl http://localhost:8000/api/w/string/jobs/completed/delete/497f6eca-6276-4993
         "flow_jobs_success": [
           true
         ],
+        "flow_jobs_labels": [
+          "string"
+        ],
         "flow_jobs_duration": {
           "started_at": [
             "string"
@@ -43287,6 +44273,9 @@ curl http://localhost:8000/api/w/string/jobs/completed/delete/497f6eca-6276-4993
       "flow_jobs_success": [
         true
       ],
+      "flow_jobs_labels": [
+        "string"
+      ],
       "flow_jobs_duration": {
         "started_at": [
           "string"
@@ -43345,6 +44334,9 @@ curl http://localhost:8000/api/w/string/jobs/completed/delete/497f6eca-6276-4993
       "flow_jobs_success": [
         true
       ],
+      "flow_jobs_labels": [
+        "string"
+      ],
       "flow_jobs_duration": {
         "started_at": [
           "string"
@@ -43389,6 +44381,16 @@ curl http://localhost:8000/api/w/string/jobs/completed/delete/497f6eca-6276-4993
       "failed_jobs": [
         "497f6eca-6276-4993-bfeb-53cbbbba6f08"
       ]
+    },
+    "continued_on_error": [
+      {
+        "id": "string",
+        "job": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+      }
+    ],
+    "test_subflows": {
+      "property1": {},
+      "property2": {}
     }
   },
   "workflow_as_code_status": {
@@ -43431,7 +44433,8 @@ curl http://localhost:8000/api/w/string/jobs/completed/delete/497f6eca-6276-4993
         "summary": "string",
         "mock": {
           "enabled": true,
-          "return_value": null
+          "return_value": null,
+          "preview_only": true
         },
         "suspend": {
           "required_events": 0,
@@ -43512,7 +44515,8 @@ curl http://localhost:8000/api/w/string/jobs/completed/delete/497f6eca-6276-4993
       "summary": "string",
       "mock": {
         "enabled": true,
-        "return_value": null
+        "return_value": null,
+        "preview_only": true
       },
       "suspend": {
         "required_events": 0,
@@ -43592,7 +44596,8 @@ curl http://localhost:8000/api/w/string/jobs/completed/delete/497f6eca-6276-4993
       "summary": "string",
       "mock": {
         "enabled": true,
-        "return_value": null
+        "return_value": null,
+        "preview_only": true
       },
       "suspend": {
         "required_events": 0,
@@ -43645,6 +44650,7 @@ curl http://localhost:8000/api/w/string/jobs/completed/delete/497f6eca-6276-4993
     "concurrent_limit": 0,
     "concurrency_key": "string",
     "concurrency_time_window_s": 0,
+    "on_concurrency_limit": "queue",
     "debounce_delay_s": 0,
     "debounce_key": "string",
     "debounce_args_to_accumulate": [
@@ -43656,6 +44662,7 @@ curl http://localhost:8000/api/w/string/jobs/completed/delete/497f6eca-6276-4993
     "cache_ttl": 0,
     "cache_ignore_s3_path": true,
     "delete_after_secs": 0,
+    "timeout": 0,
     "flow_env": {
       "property1": null,
       "property2": null
@@ -43715,6 +44722,7 @@ curl http://localhost:8000/api/w/string/jobs/completed/delete/497f6eca-6276-4993
   "resolution_note": "string",
   "resolved_automatically": true,
   "trigger_kind": "webhook",
+  "trigger_path": "string",
   "worker": "string"
 }
 ```
@@ -44368,7 +45376,7 @@ Resume or cancel a suspended flow/WAC job. Uses approval rules to determine auth
 |workspace|path|string|true|none|
 |job_id|path|string(uuid)|true|none|
 |body|body|object|true|none|
-|» payload|body|object|false|payload to send to the resumed job|
+|» payload|body|object|false|payload to send to the resumed job. On a denial, a string `reason` in it is shown in the step's error and the audit log.<br>|
 |» approval_token|body|string|false|approval token for unauthenticated access|
 |» approved|body|boolean|false|whether to approve (true) or cancel (false) the job|
 
@@ -44839,6 +45847,9 @@ curl http://localhost:8000/api/w/string/jobs_u/get_flow/497f6eca-6276-4993-bfeb-
           "flow_jobs_success": [
             true
           ],
+          "flow_jobs_labels": [
+            "string"
+          ],
           "flow_jobs_duration": {
             "started_at": [
               "string"
@@ -44899,6 +45910,9 @@ curl http://localhost:8000/api/w/string/jobs_u/get_flow/497f6eca-6276-4993-bfeb-
         "flow_jobs_success": [
           true
         ],
+        "flow_jobs_labels": [
+          "string"
+        ],
         "flow_jobs_duration": {
           "started_at": [
             "string"
@@ -44957,6 +45971,9 @@ curl http://localhost:8000/api/w/string/jobs_u/get_flow/497f6eca-6276-4993-bfeb-
         "flow_jobs_success": [
           true
         ],
+        "flow_jobs_labels": [
+          "string"
+        ],
         "flow_jobs_duration": {
           "started_at": [
             "string"
@@ -45001,6 +46018,16 @@ curl http://localhost:8000/api/w/string/jobs_u/get_flow/497f6eca-6276-4993-bfeb-
         "failed_jobs": [
           "497f6eca-6276-4993-bfeb-53cbbbba6f08"
         ]
+      },
+      "continued_on_error": [
+        {
+          "id": "string",
+          "job": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+        }
+      ],
+      "test_subflows": {
+        "property1": {},
+        "property2": {}
       }
     },
     "workflow_as_code_status": {
@@ -45043,7 +46070,8 @@ curl http://localhost:8000/api/w/string/jobs_u/get_flow/497f6eca-6276-4993-bfeb-
           "summary": "string",
           "mock": {
             "enabled": true,
-            "return_value": null
+            "return_value": null,
+            "preview_only": true
           },
           "suspend": {
             "required_events": 0,
@@ -45124,7 +46152,8 @@ curl http://localhost:8000/api/w/string/jobs_u/get_flow/497f6eca-6276-4993-bfeb-
         "summary": "string",
         "mock": {
           "enabled": true,
-          "return_value": null
+          "return_value": null,
+          "preview_only": true
         },
         "suspend": {
           "required_events": 0,
@@ -45204,7 +46233,8 @@ curl http://localhost:8000/api/w/string/jobs_u/get_flow/497f6eca-6276-4993-bfeb-
         "summary": "string",
         "mock": {
           "enabled": true,
-          "return_value": null
+          "return_value": null,
+          "preview_only": true
         },
         "suspend": {
           "required_events": 0,
@@ -45257,6 +46287,7 @@ curl http://localhost:8000/api/w/string/jobs_u/get_flow/497f6eca-6276-4993-bfeb-
       "concurrent_limit": 0,
       "concurrency_key": "string",
       "concurrency_time_window_s": 0,
+      "on_concurrency_limit": "queue",
       "debounce_delay_s": 0,
       "debounce_key": "string",
       "debounce_args_to_accumulate": [
@@ -45268,6 +46299,7 @@ curl http://localhost:8000/api/w/string/jobs_u/get_flow/497f6eca-6276-4993-bfeb-
       "cache_ttl": 0,
       "cache_ignore_s3_path": true,
       "delete_after_secs": 0,
+      "timeout": 0,
       "flow_env": {
         "property1": null,
         "property2": null
@@ -45327,6 +46359,7 @@ curl http://localhost:8000/api/w/string/jobs_u/get_flow/497f6eca-6276-4993-bfeb-
     "resolution_note": "string",
     "resolved_automatically": true,
     "trigger_kind": "webhook",
+    "trigger_path": "string",
     "worker": "string",
     "type": "CompletedJob"
   },
@@ -46391,7 +47424,7 @@ Sends a system and a user message to the configured provider and returns the tex
 |body|body|object|true|none|
 |» system|body|string|true|none|
 |» user|body|string|true|none|
-|» model|body|[AIProviderModel](#schemaaiprovidermodel)|false|defaults to the AI config's default model|
+|» model|body|[AIProviderModel](#schemaaiprovidermodel)|false|defaults to the AI config's default model. Must be enabled in the AI settings, or be the default, metadata or code-completion model.<br>|
 |» max_tokens|body|integer|false|none|
 
 > Example responses
@@ -46422,6 +47455,160 @@ Status Code **200**
 |---|---|---|---|---|
 |text|string|true|none|none|
 |model|[AIProviderModel](#schemaaiprovidermodel)|true|none|none|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth, cookieAuth
+</aside>
+
+## search the web through the workspace's web search API
+
+<a id="opIdaiWebSearch"></a>
+
+> Code samples
+
+```bash
+curl http://localhost:8000/api/w/string/ai/web_search \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "query": "string",
+    "max_results": 1
+  }'
+```
+
+`POST /w/{workspace}/ai/web_search`
+
+Runs a query against the search API (Exa, Tavily, Linkup or DeepSeek) set in the workspace's AI settings, with the key of its resource. The AI chat uses it when the model's provider has no built-in web search.
+
+
+> Body parameter
+
+```json
+{
+  "query": "string",
+  "max_results": 1
+}
+```
+
+<h3 id="search-the-web-through-the-workspaces-web-search-api-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|workspace|path|string|true|none|
+|body|body|object|true|none|
+|» query|body|string|true|none|
+|» max_results|body|integer|false|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "results": [
+    {
+      "title": "string",
+      "url": "string",
+      "published_date": "string",
+      "content": "string"
+    }
+  ]
+}
+```
+
+<h3 id="search-the-web-through-the-workspaces-web-search-api-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|the results, each with an excerpt of its page|Inline|
+
+<h3 id="search-the-web-through-the-workspaces-web-search-api-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|results|[object]|true|none|none|
+|» title|string|true|none|none|
+|» url|string|true|none|none|
+|» published_date|string|false|none|none|
+|» content|string|true|none|none|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth, cookieAuth
+</aside>
+
+## read a web page through the workspace's web search API
+
+<a id="opIdaiWebFetch"></a>
+
+> Code samples
+
+```bash
+curl http://localhost:8000/api/w/string/ai/web_fetch \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "url": "string"
+  }'
+```
+
+`POST /w/{workspace}/ai/web_fetch`
+
+Has the search API set in the workspace's AI settings fetch a page and returns its text as markdown. The page is fetched from the search API's servers, not Windmill's.
+
+
+> Body parameter
+
+```json
+{
+  "url": "string"
+}
+```
+
+<h3 id="read-a-web-page-through-the-workspaces-web-search-api-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|workspace|path|string|true|none|
+|body|body|object|true|none|
+|» url|body|string|true|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "url": "string",
+  "title": "string",
+  "content": "string",
+  "truncated": true
+}
+```
+
+<h3 id="read-a-web-page-through-the-workspaces-web-search-api-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|the page's text|Inline|
+
+<h3 id="read-a-web-page-through-the-workspaces-web-search-api-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|url|string|true|none|none|
+|title|string|false|none|none|
+|content|string|true|none|none|
+|truncated|boolean|true|none|none|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -46567,6 +47754,120 @@ curl http://localhost:8000/api/w/string/ai/usage \
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |204|No Content|usage recorded|None|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth, cookieAuth
+</aside>
+
+## run one of the AI session's tools as the calling user
+
+<a id="opIdcallAiSessionTool"></a>
+
+> Code samples
+
+```bash
+curl http://localhost:8000/api/w/string/ai_session_tools/string \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "args": null,
+    "context": {
+      "live_editors": [
+        {
+          "kind": "string",
+          "storage_path": "string",
+          "effective_path": "string"
+        }
+      ],
+      "cells": [
+        {
+          "kind": "string",
+          "storage_path": "string",
+          "value": null
+        }
+      ]
+    }
+  }'
+```
+
+`POST /w/{workspace}/ai_session_tools/{name}`
+
+The in-app chat's entry to the session toolset the MCP server also serves. Refused for job tokens and scoped tokens.
+
+> Body parameter
+
+```json
+{
+  "args": null,
+  "context": {
+    "live_editors": [
+      {
+        "kind": "string",
+        "storage_path": "string",
+        "effective_path": "string"
+      }
+    ],
+    "cells": [
+      {
+        "kind": "string",
+        "storage_path": "string",
+        "value": null
+      }
+    ]
+  }
+}
+```
+
+<h3 id="run-one-of-the-ai-sessions-tools-as-the-calling-user-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|workspace|path|string|true|none|
+|name|path|string|true|none|
+|body|body|object|true|none|
+|» args|body|object|false|the tool's arguments, as the model sent them|
+|» context|body|object|false|browser-held state the tool reads|
+|» » live_editors|body|[object]|false|none|
+|» » » kind|body|string|true|none|
+|» » » storage_path|body|string|true|none|
+|» » » effective_path|body|string|false|none|
+|» » cells|body|[object]|false|none|
+|» » » kind|body|string|true|none|
+|» » » storage_path|body|string|true|none|
+|» » » value|body|object|true|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "text": "string",
+  "is_error": true,
+  "effects": [
+    {}
+  ]
+}
+```
+
+<h3 id="run-one-of-the-ai-sessions-tools-as-the-calling-user-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|what the model reads, and what the chat applies|Inline|
+
+<h3 id="run-one-of-the-ai-sessions-tools-as-the-calling-user-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|text|string|true|none|none|
+|is_error|boolean|true|none|none|
+|effects|[object]|true|none|none|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -47056,6 +48357,66 @@ To perform this operation, you must be authenticated by means of one of the foll
 bearerAuth, cookieAuth
 </aside>
 
+## list the workspace's live shared AI session artifacts
+
+<a id="opIdlistSharedAiArtifacts"></a>
+
+> Code samples
+
+```bash
+curl http://localhost:8000/api/w/string/ai/shared_artifacts/list \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /w/{workspace}/ai/shared_artifacts/list`
+
+Every share still inside its retention window, newest first, without its content. Capped at 500.
+
+
+<h3 id="list-the-workspaces-live-shared-ai-session-artifacts-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|workspace|path|string|true|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+[
+  {
+    "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+    "name": "string",
+    "kind": "md",
+    "version": 0,
+    "created_by": "string",
+    "shared_at": "1970-01-01T00:00:00Z",
+    "expires_at": "1970-01-01T00:00:00Z"
+  }
+]
+```
+
+<h3 id="list-the-workspaces-live-shared-ai-session-artifacts-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|the live shares|Inline|
+
+<h3 id="list-the-workspaces-live-shared-ai-session-artifacts-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*anonymous*|[[SharedAiArtifactInfo](#schemasharedaiartifactinfo)]|false|none|none|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth, cookieAuth
+</aside>
+
 ## get a shared AI session artifact
 
 <a id="opIdgetSharedAiArtifact"></a>
@@ -47294,6 +48655,77 @@ To perform this operation, you must be authenticated by means of one of the foll
 bearerAuth, cookieAuth
 </aside>
 
+## list the caller's shared AI sessions
+
+<a id="opIdlistSharedAiSessions"></a>
+
+> Code samples
+
+```bash
+curl http://localhost:8000/api/w/string/ai/shared_sessions/list \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /w/{workspace}/ai/shared_sessions/list`
+
+The caller's own shares and the ones they opened by link, most recently shared or opened first, without their snapshot. Capped at 500. `session_id` is set on the caller's own shares only, `opened_at` on the others.
+
+
+<h3 id="list-the-callers-shared-ai-sessions-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|workspace|path|string|true|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+[
+  {
+    "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+    "name": "string",
+    "is_public": true,
+    "message_count": 0,
+    "created_by": "string",
+    "shared_at": "1970-01-01T00:00:00Z",
+    "mine": true,
+    "session_id": "string",
+    "opened_at": "1970-01-01T00:00:00Z"
+  }
+]
+```
+
+<h3 id="list-the-callers-shared-ai-sessions-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|the shares|Inline|
+
+<h3 id="list-the-callers-shared-ai-sessions-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*anonymous*|[object]|false|none|none|
+|» id|string(uuid)|true|none|none|
+|» name|string|true|none|none|
+|» is_public|boolean|true|none|none|
+|» message_count|integer|true|none|none|
+|» created_by|string|true|none|none|
+|» shared_at|string(date-time)|true|none|none|
+|» mine|boolean|true|none|none|
+|» session_id|string|false|none|none|
+|» opened_at|string(date-time)|false|none|when the caller last opened this share by link|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth, cookieAuth
+</aside>
+
 ## make a shared AI session public, or reserve it to workspace members
 
 <a id="opIdsetAiSessionSharePublic"></a>
@@ -47393,7 +48825,8 @@ A public share is served without authentication; any other one only to a member 
   "created_by": "string",
   "shared_at": "1970-01-01T00:00:00Z",
   "snapshot": {},
-  "can_unshare": true
+  "can_unshare": true,
+  "mine": true
 }
 ```
 
@@ -47417,6 +48850,42 @@ Status Code **200**
 |shared_at|string(date-time)|true|none|none|
 |snapshot|object|true|none|none|
 |can_unshare|boolean|true|none|whether the caller authored the share or is a workspace admin|
+|mine|boolean|true|none|whether the caller authored the share|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth, cookieAuth
+</aside>
+
+## remove a shared AI session from the caller's list
+
+<a id="opIdforgetOpenedAiSession"></a>
+
+> Code samples
+
+```bash
+curl http://localhost:8000/api/w/string/ai/shared_sessions/opened/497f6eca-6276-4993-bfeb-53cbbbba6f08 \
+  -X DELETE \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`DELETE /w/{workspace}/ai/shared_sessions/opened/{id}`
+
+The share stays readable by link; opening it again lists it again.
+
+
+<h3 id="remove-a-shared-ai-session-from-the-callers-list-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|workspace|path|string|true|none|
+|id|path|string(uuid)|true|none|
+
+<h3 id="remove-a-shared-ai-session-from-the-callers-list-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|removed from the list|Inline|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -51053,6 +52522,7 @@ curl http://localhost:8000/api/w/string/websocket_triggers/create \
       }
     ],
     "filter_logic": "and",
+    "run_on_filter_error": false,
     "initial_messages": [
       {
         "raw_message": "string"
@@ -51109,6 +52579,7 @@ curl http://localhost:8000/api/w/string/websocket_triggers/create \
     }
   ],
   "filter_logic": "and",
+  "run_on_filter_error": false,
   "initial_messages": [
     {
       "raw_message": "string"
@@ -51160,6 +52631,7 @@ curl http://localhost:8000/api/w/string/websocket_triggers/create \
 |» mode|body|[TriggerMode](#schematriggermode)|false|job trigger mode|
 |» filters|body|[[TriggerFilter](#schematriggerfilter)]|true|Filters to match incoming messages (only matching messages trigger the script). Each entry is either a leaf `{key, value}` (top-level field) or `{path, value}` (dotted path into nested objects), or a group `{any_of: [...]}` / `{all_of: [...]}` / `{none_of: [...]}` nesting more entries. Entries at the top level are combined with `filter_logic`.|
 |» filter_logic|body|string|false|Logic to apply when evaluating the top-level filters. 'and' requires all of them to match, 'or' requires any of them to match. Nested `any_of`/`all_of`/`none_of` groups carry their own logic.|
+|» run_on_filter_error|body|boolean|false|Whether a message the filters cannot read (not UTF-8, or not JSON) still runs the target, as if the trigger had no filters. A preprocessor then finds the reason in `event.filter_error`. When false, such a message is skipped.|
 |» initial_messages|body|[[WebsocketTriggerInitialMessage](#schemawebsockettriggerinitialmessage)]|false|Messages to send immediately after connecting (can be raw strings or computed by runnables)|
 |» url_runnable_args|body|[ScriptArgs](#schemascriptargs)|false|Arguments to pass to the script/flow that computes the WebSocket URL|
 |» can_return_message|body|boolean|true|If true, the script can return a message to send back through the WebSocket|
@@ -51216,6 +52688,7 @@ curl http://localhost:8000/api/w/string/websocket_triggers/update/string \
       }
     ],
     "filter_logic": "and",
+    "run_on_filter_error": false,
     "initial_messages": [
       {
         "raw_message": "string"
@@ -51271,6 +52744,7 @@ curl http://localhost:8000/api/w/string/websocket_triggers/update/string \
     }
   ],
   "filter_logic": "and",
+  "run_on_filter_error": false,
   "initial_messages": [
     {
       "raw_message": "string"
@@ -51322,6 +52796,7 @@ curl http://localhost:8000/api/w/string/websocket_triggers/update/string \
 |» is_flow|body|boolean|true|True if script_path points to a flow, false if it points to a script|
 |» filters|body|[[TriggerFilter](#schematriggerfilter)]|true|Filters to match incoming messages (only matching messages trigger the script). Each entry is either a leaf `{key, value}` (top-level field) or `{path, value}` (dotted path into nested objects), or a group `{any_of: [...]}` / `{all_of: [...]}` / `{none_of: [...]}` nesting more entries. Entries at the top level are combined with `filter_logic`.|
 |» filter_logic|body|string|false|Logic to apply when evaluating the top-level filters. 'and' requires all of them to match, 'or' requires any of them to match. Nested `any_of`/`all_of`/`none_of` groups carry their own logic.|
+|» run_on_filter_error|body|boolean|false|Whether a message the filters cannot read (not UTF-8, or not JSON) still runs the target, as if the trigger had no filters. A preprocessor then finds the reason in `event.filter_error`. When false, such a message is skipped.|
 |» initial_messages|body|[[WebsocketTriggerInitialMessage](#schemawebsockettriggerinitialmessage)]|false|Messages to send immediately after connecting (can be raw strings or computed by runnables)|
 |» url_runnable_args|body|[ScriptArgs](#schemascriptargs)|false|Arguments to pass to the script/flow that computes the WebSocket URL|
 |» can_return_message|body|boolean|true|If true, the script can return a message to send back through the WebSocket|
@@ -51438,6 +52913,7 @@ curl http://localhost:8000/api/w/string/websocket_triggers/get/string \
     }
   ],
   "filter_logic": "and",
+  "run_on_filter_error": false,
   "initial_messages": [
     {
       "raw_message": "string"
@@ -51512,6 +52988,7 @@ Status Code **200**
 |error|string|false|none|Last error message if the trigger failed|
 |filters|[[TriggerFilter](#schematriggerfilter)]|true|none|Filters to match incoming messages (only matching messages trigger the script). Each entry is either a leaf `{key, value}` (top-level field) or `{path, value}` (dotted path into nested objects), or a group `{any_of: [...]}` / `{all_of: [...]}` / `{none_of: [...]}` nesting more entries. Entries at the top level are combined with `filter_logic`.|
 |filter_logic|string|false|none|Logic to apply when evaluating the top-level filters. 'and' requires all of them to match, 'or' requires any of them to match. Nested `any_of`/`all_of`/`none_of` groups carry their own logic.|
+|run_on_filter_error|boolean|false|none|Whether a message the filters cannot read (not UTF-8, or not JSON) still runs the target, as if the trigger had no filters. A preprocessor then finds the reason in `event.filter_error`. When false, such a message is skipped.|
 |initial_messages|[[WebsocketTriggerInitialMessage](#schemawebsockettriggerinitialmessage)]|false|none|Messages to send immediately after connecting (can be raw strings or computed by runnables)|
 |url_runnable_args|[ScriptArgs](#schemascriptargs)|false|none|Arguments to pass to the script/flow that computes the WebSocket URL|
 |can_return_message|boolean|true|none|If true, the script can return a message to send back through the WebSocket|
@@ -51604,6 +53081,7 @@ curl http://localhost:8000/api/w/string/websocket_triggers/list \
       }
     ],
     "filter_logic": "and",
+    "run_on_filter_error": false,
     "initial_messages": [
       {
         "raw_message": "string"
@@ -51834,6 +53312,7 @@ curl http://localhost:8000/api/w/string/kafka_triggers/create \
       }
     ],
     "filter_logic": "and",
+    "run_on_filter_error": false,
     "auto_offset_reset": "latest",
     "auto_commit": true,
     "mode": "enabled",
@@ -51883,6 +53362,7 @@ curl http://localhost:8000/api/w/string/kafka_triggers/create \
     }
   ],
   "filter_logic": "and",
+  "run_on_filter_error": false,
   "auto_offset_reset": "latest",
   "auto_commit": true,
   "mode": "enabled",
@@ -51925,6 +53405,7 @@ curl http://localhost:8000/api/w/string/kafka_triggers/create \
 |» topics|body|[string]|true|Array of Kafka topic names to subscribe to|
 |» filters|body|[[TriggerFilter](#schematriggerfilter)]|true|Filters to match incoming messages (only matching messages trigger the script). Each entry is either a leaf `{key, value}` (top-level field) or `{path, value}` (dotted path into nested objects), or a group `{any_of: [...]}` / `{all_of: [...]}` / `{none_of: [...]}` nesting more entries. Entries at the top level are combined with `filter_logic`.|
 |» filter_logic|body|string|false|Logic to apply when evaluating the top-level filters. 'and' requires all of them to match, 'or' requires any of them to match. Nested `any_of`/`all_of`/`none_of` groups carry their own logic.|
+|» run_on_filter_error|body|boolean|false|Whether a message the filters cannot read (not UTF-8, or not JSON) still runs the target, as if the trigger had no filters. A preprocessor then finds the reason in `event.filter_error`. When false, such a message is skipped.|
 |» auto_offset_reset|body|string|false|Initial offset behavior when consumer group has no committed offset.|
 |» auto_commit|body|boolean|false|When true (default), offsets are committed automatically after receiving each message. When false, you must manually commit offsets using the commit_offsets endpoint.|
 |» mode|body|[TriggerMode](#schematriggermode)|false|job trigger mode|
@@ -51982,6 +53463,7 @@ curl http://localhost:8000/api/w/string/kafka_triggers/update/string \
       }
     ],
     "filter_logic": "and",
+    "run_on_filter_error": false,
     "auto_offset_reset": "latest",
     "auto_commit": true,
     "path": "string",
@@ -52030,6 +53512,7 @@ curl http://localhost:8000/api/w/string/kafka_triggers/update/string \
     }
   ],
   "filter_logic": "and",
+  "run_on_filter_error": false,
   "auto_offset_reset": "latest",
   "auto_commit": true,
   "path": "string",
@@ -52072,6 +53555,7 @@ curl http://localhost:8000/api/w/string/kafka_triggers/update/string \
 |» topics|body|[string]|true|Array of Kafka topic names to subscribe to|
 |» filters|body|[[TriggerFilter](#schematriggerfilter)]|true|Filters to match incoming messages (only matching messages trigger the script). Each entry is either a leaf `{key, value}` (top-level field) or `{path, value}` (dotted path into nested objects), or a group `{any_of: [...]}` / `{all_of: [...]}` / `{none_of: [...]}` nesting more entries. Entries at the top level are combined with `filter_logic`.|
 |» filter_logic|body|string|false|Logic to apply when evaluating the top-level filters. 'and' requires all of them to match, 'or' requires any of them to match. Nested `any_of`/`all_of`/`none_of` groups carry their own logic.|
+|» run_on_filter_error|body|boolean|false|Whether a message the filters cannot read (not UTF-8, or not JSON) still runs the target, as if the trigger had no filters. A preprocessor then finds the reason in `event.filter_error`. When false, such a message is skipped.|
 |» auto_offset_reset|body|string|false|Initial offset behavior when consumer group has no committed offset.|
 |» auto_commit|body|boolean|false|When true (default), offsets are committed automatically after receiving each message. When false, you must manually commit offsets using the commit_offsets endpoint.|
 |» path|body|string|true|The unique Windmill path for this trigger. Must be of the form `u/<user>/<path>` or `f/<folder>/<path>`. This is the trigger object path, not the HTTP route path.|
@@ -52191,6 +53675,7 @@ curl http://localhost:8000/api/w/string/kafka_triggers/get/string \
     }
   ],
   "filter_logic": "and",
+  "run_on_filter_error": false,
   "auto_offset_reset": "latest",
   "auto_commit": true,
   "server_id": "string",
@@ -52256,6 +53741,7 @@ Status Code **200**
 |topics|[string]|true|none|Array of Kafka topic names to subscribe to|
 |filters|[[TriggerFilter](#schematriggerfilter)]|true|none|Filters to match incoming messages (only matching messages trigger the script). Each entry is either a leaf `{key, value}` (top-level field) or `{path, value}` (dotted path into nested objects), or a group `{any_of: [...]}` / `{all_of: [...]}` / `{none_of: [...]}` nesting more entries. Entries at the top level are combined with `filter_logic`.|
 |filter_logic|string|false|none|Logic to apply when evaluating the top-level filters. 'and' requires all of them to match, 'or' requires any of them to match. Nested `any_of`/`all_of`/`none_of` groups carry their own logic.|
+|run_on_filter_error|boolean|false|none|Whether a message the filters cannot read (not UTF-8, or not JSON) still runs the target, as if the trigger had no filters. A preprocessor then finds the reason in `event.filter_error`. When false, such a message is skipped.|
 |auto_offset_reset|string|false|none|Initial offset behavior when consumer group has no committed offset. 'latest' starts from new messages only, 'earliest' starts from the beginning.|
 |auto_commit|boolean|false|none|When true (default), offsets are committed automatically after receiving each message. When false, you must manually commit offsets using the commit_offsets endpoint.|
 |server_id|string|false|none|ID of the server currently handling this trigger (internal)|
@@ -52351,6 +53837,7 @@ curl http://localhost:8000/api/w/string/kafka_triggers/list \
       }
     ],
     "filter_logic": "and",
+    "run_on_filter_error": false,
     "auto_offset_reset": "latest",
     "auto_commit": true,
     "server_id": "string",
@@ -54115,7 +55602,7 @@ curl http://localhost:8000/api/w/string/native_triggers/integrations/nextcloud/c
 |» client_id|body|string|true|The OAuth client ID for the workspace|
 |» client_secret|body|string|true|The OAuth client secret for the workspace|
 |» base_url|body|string(uri)|true|The base URL of the workspace|
-|» redirect_uri|body|string(uri)|true|The OAuth redirect URI|
+|» redirect_uri|body|string(uri)|false|The redirect URI registered on the OAuth app. Absent for an app saved before it was stored, which uses the workspace settings page.|
 
 #### Enumerated Values
 
@@ -54149,7 +55636,6 @@ curl http://localhost:8000/api/w/string/native_triggers/integrations/nextcloud/g
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
-    "redirect_uri": "string",
     "resource_path": "string"
   }'
 ```
@@ -54160,7 +55646,6 @@ curl http://localhost:8000/api/w/string/native_triggers/integrations/nextcloud/g
 
 ```json
 {
-  "redirect_uri": "string",
   "resource_path": "string"
 }
 ```
@@ -54171,8 +55656,7 @@ curl http://localhost:8000/api/w/string/native_triggers/integrations/nextcloud/g
 |---|---|---|---|---|
 |workspace|path|string|true|none|
 |service_name|path|[NativeServiceName](#schemanativeservicename)|true|none|
-|body|body|object|true|redirect_uri, and where to save the connection (defaults to u/{caller}/native_{resource_type}). Uses the workspace OAuth client, or the instance one when the instance shares it.|
-|» redirect_uri|body|string|true|none|
+|body|body|object|true|Where to save the connection (defaults to u/{caller}/native_{resource_type}). Uses the workspace OAuth client, or the instance one when the instance shares it, and the redirect URI registered on that client.|
 |» resource_path|body|string|false|none|
 
 #### Enumerated Values
@@ -54288,7 +55772,14 @@ curl http://localhost:8000/api/w/string/native_triggers/integrations/nextcloud/c
   {
     "path": "string",
     "owner": "string",
-    "workspace": true
+    "workspace": true,
+    "managed": true,
+    "scopes": [
+      "string"
+    ],
+    "missing_scopes": [
+      "string"
+    ]
   }
 ]
 ```
@@ -54479,8 +55970,7 @@ curl http://localhost:8000/api/w/string/native_triggers/integrations/nextcloud/c
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "code": "string",
-    "state": "string",
-    "redirect_uri": "string"
+    "state": "string"
   }'
 ```
 
@@ -54491,8 +55981,7 @@ curl http://localhost:8000/api/w/string/native_triggers/integrations/nextcloud/c
 ```json
 {
   "code": "string",
-  "state": "string",
-  "redirect_uri": "string"
+  "state": "string"
 }
 ```
 
@@ -54505,7 +55994,6 @@ curl http://localhost:8000/api/w/string/native_triggers/integrations/nextcloud/c
 |body|body|object|true|OAuth callback data|
 |» code|body|string|true|none|
 |» state|body|string|true|none|
-|» redirect_uri|body|string|true|none|
 
 #### Enumerated Values
 
@@ -60916,7 +62404,9 @@ curl http://localhost:8000/api/groups/list \
     "emails": [
       "string"
     ],
-    "instance_role": "superadmin"
+    "instance_role": "superadmin",
+    "external_id": "string",
+    "scim_managed": true
   }
 ]
 ```
@@ -60967,6 +62457,8 @@ curl http://localhost:8000/api/groups/list_with_workspaces \
       "string"
     ],
     "instance_role": "superadmin",
+    "external_id": "string",
+    "scim_managed": true,
     "workspaces": [
       {
         "workspace_id": "string",
@@ -61029,6 +62521,8 @@ curl http://localhost:8000/api/groups/get/string \
     "string"
   ],
   "instance_role": "superadmin",
+  "external_id": "string",
+  "scim_managed": true,
   "workspaces": [
     {
       "workspace_id": "string",
@@ -61063,7 +62557,8 @@ curl http://localhost:8000/api/groups/create \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "name": "string",
-    "summary": "string"
+    "summary": "string",
+    "external_id": "string"
   }'
 ```
 
@@ -61074,7 +62569,8 @@ curl http://localhost:8000/api/groups/create \
 ```json
 {
   "name": "string",
-  "summary": "string"
+  "summary": "string",
+  "external_id": "string"
 }
 ```
 
@@ -61085,6 +62581,7 @@ curl http://localhost:8000/api/groups/create \
 |body|body|object|true|create instance group|
 |» name|body|string|true|none|
 |» summary|body|string|false|none|
+|» external_id|body|string|false|IdP group the SSO groups claim links this group to: a group id or a full path such as /operators/network-team. Blank or omitted leaves it unlinked.|
 
 <h3 id="create-instance-group-responses">Responses</h3>
 
@@ -61110,7 +62607,8 @@ curl http://localhost:8000/api/groups/update/string \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "new_summary": "string",
-    "instance_role": "string"
+    "instance_role": "string",
+    "external_id": "string"
   }'
 ```
 
@@ -61121,7 +62619,8 @@ curl http://localhost:8000/api/groups/update/string \
 ```json
 {
   "new_summary": "string",
-  "instance_role": "string"
+  "instance_role": "string",
+  "external_id": "string"
 }
 ```
 
@@ -61133,6 +62632,7 @@ curl http://localhost:8000/api/groups/update/string \
 |body|body|object|true|update instance group|
 |» new_summary|body|string|true|none|
 |» instance_role|body|string \| null|false|Instance-level role for group members. 'superadmin', 'devops', 'user' or empty to clear.|
+|» external_id|body|string|false|IdP group the SSO groups claim links this group to: a group id or a full path such as /operators/network-team. Omitted keeps the current link, blank clears it. Refused on a group SCIM provisioned.|
 
 <h3 id="update-instance-group-responses">Responses</h3>
 
@@ -61856,6 +63356,7 @@ curl http://localhost:8000/api/w/string/folders/list \
 [
   {
     "name": "string",
+    "display_name": "string",
     "owners": [
       "string"
     ],
@@ -61963,6 +63464,7 @@ curl http://localhost:8000/api/w/string/folders/create \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "name": "string",
+    "display_name": "string",
     "summary": "string",
     "owners": [
       "string"
@@ -61990,6 +63492,7 @@ curl http://localhost:8000/api/w/string/folders/create \
 ```json
 {
   "name": "string",
+  "display_name": "string",
   "summary": "string",
   "owners": [
     "string"
@@ -62017,6 +63520,7 @@ curl http://localhost:8000/api/w/string/folders/create \
 |workspace|path|string|true|none|
 |body|body|object|true|create folder|
 |» name|body|string|true|none|
+|» display_name|body|string|false|Defaults to the name.|
 |» summary|body|string|false|none|
 |» owners|body|[string]|false|none|
 |» extra_perms|body|object|false|none|
@@ -62048,6 +63552,7 @@ curl http://localhost:8000/api/w/string/folders/update/string \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "summary": "string",
+    "display_name": "string",
     "owners": [
       "string"
     ],
@@ -62074,6 +63579,7 @@ curl http://localhost:8000/api/w/string/folders/update/string \
 ```json
 {
   "summary": "string",
+  "display_name": "string",
   "owners": [
     "string"
   ],
@@ -62101,6 +63607,7 @@ curl http://localhost:8000/api/w/string/folders/update/string \
 |name|path|string|true|none|
 |body|body|object|true|update folder|
 |» summary|body|string|false|none|
+|» display_name|body|string|false|none|
 |» owners|body|[string]|false|none|
 |» extra_perms|body|object|false|none|
 |» » **additionalProperties**|body|boolean|false|none|
@@ -62178,6 +63685,7 @@ curl http://localhost:8000/api/w/string/folders/get/string \
 ```json
 {
   "name": "string",
+  "display_name": "string",
   "owners": [
     "string"
   ],
@@ -62282,6 +63790,7 @@ curl http://localhost:8000/api/w/string/folders/getusage/string \
   "flows": 0,
   "apps": 0,
   "resources": 0,
+  "agents": 0,
   "variables": 0,
   "schedules": 0
 }
@@ -62302,7 +63811,8 @@ Status Code **200**
 |scripts|number|true|none|none|
 |flows|number|true|none|none|
 |apps|number|true|none|none|
-|resources|number|true|none|none|
+|resources|number|true|none|resources other than AI agents|
+|agents|number|true|none|saved AI agents (resources of type `ai_agent`)|
 |variables|number|true|none|none|
 |schedules|number|true|none|none|
 
@@ -62739,6 +64249,109 @@ Status Code **200**
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |*anonymous*|[[AutoscalingEvent](#schemaautoscalingevent)]|false|none|none|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth, cookieAuth
+</aside>
+
+## Get the recorded autoscaling decisions of a worker group, and whether a recording is running
+
+<a id="opIdgetAutoscalingDiagnostics"></a>
+
+> Code samples
+
+```bash
+curl http://localhost:8000/api/configs/autoscaling_diagnostics/string \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /configs/autoscaling_diagnostics/{worker_group}`
+
+<h3 id="get-the-recorded-autoscaling-decisions-of-a-worker-group-and-whether-a-recording-is-running-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|worker_group|path|string|true|none|
+|include_decisions|query|boolean|false|false returns the recording state and the decision count only|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "recording_until": "1970-01-01T00:00:00Z",
+  "recording_started_by": "string",
+  "decision_count": 0,
+  "decisions": [
+    {
+      "recorded_at": "1970-01-01T00:00:00Z",
+      "worker_count": 0,
+      "occupancy_rate_15s": 0,
+      "occupancy_rate_5m": 0,
+      "occupancy_rate_30m": 0,
+      "jobs_waiting": {
+        "property1": 0,
+        "property2": 0
+      },
+      "decision": "string"
+    }
+  ]
+}
+```
+
+<h3 id="get-the-recorded-autoscaling-decisions-of-a-worker-group-and-whether-a-recording-is-running-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|The recording state and the recorded decisions, oldest first|[AutoscalingDiagnostics](#schemaautoscalingdiagnostics)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth, cookieAuth
+</aside>
+
+## Start recording the autoscaling decisions of a worker group for 24 hours, or stop
+
+<a id="opIdsetAutoscalingRecording"></a>
+
+> Code samples
+
+```bash
+curl http://localhost:8000/api/configs/autoscaling_recording/string \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "record": true
+  }'
+```
+
+`POST /configs/autoscaling_recording/{worker_group}`
+
+> Body parameter
+
+```json
+{
+  "record": true
+}
+```
+
+<h3 id="start-recording-the-autoscaling-decisions-of-a-worker-group-for-24-hours-or-stop-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|worker_group|path|string|true|none|
+|body|body|object|true|none|
+|» record|body|boolean|true|none|
+
+<h3 id="start-recording-the-autoscaling-decisions-of-a-worker-group-for-24-hours-or-stop-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Recording started or stopped|Inline|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -63311,6 +64924,81 @@ bearerAuth, cookieAuth
 </aside>
 
 <h1 id="windmill-api-granularacl">granular_acl</h1>
+
+## list what a workspace member or group can reach, and why
+
+<a id="opIdgetPrincipalAccess"></a>
+
+> Code samples
+
+```bash
+curl 'http://localhost:8000/api/w/string/access/get?principal=string' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /w/{workspace}/access/get`
+
+Workspace admins can query any principal; other members only themselves and the groups
+they belong to. An admin principal reaches everything, so `items` is empty.
+
+
+<h3 id="list-what-a-workspace-member-or-group-can-reach-and-why-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|workspace|path|string|true|none|
+|principal|query|string|true|`u/<username>` or `g/<group>`|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "principal": "string",
+  "is_admin": true,
+  "groups": [
+    "string"
+  ],
+  "folders": [
+    {
+      "name": "string",
+      "write": true,
+      "owner": true,
+      "via": [
+        "string"
+      ]
+    }
+  ],
+  "items": [
+    {
+      "kind": "string",
+      "path": "string",
+      "write": true,
+      "reasons": [
+        {
+          "type": "own",
+          "group": "string",
+          "folder": "string",
+          "write": true
+        }
+      ]
+    }
+  ]
+}
+```
+
+<h3 id="list-what-a-workspace-member-or-group-can-reach-and-why-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|the principal's access|[PrincipalAccess](#schemaprincipalaccess)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth, cookieAuth
+</aside>
 
 ## get granular acls
 
@@ -66342,6 +68030,9 @@ curl http://localhost:8000/api/w/string/concurrency_groups/list_jobs \
             "flow_jobs_success": [
               true
             ],
+            "flow_jobs_labels": [
+              "string"
+            ],
             "flow_jobs_duration": {
               "started_at": [
                 "string"
@@ -66402,6 +68093,9 @@ curl http://localhost:8000/api/w/string/concurrency_groups/list_jobs \
           "flow_jobs_success": [
             true
           ],
+          "flow_jobs_labels": [
+            "string"
+          ],
           "flow_jobs_duration": {
             "started_at": [
               "string"
@@ -66460,6 +68154,9 @@ curl http://localhost:8000/api/w/string/concurrency_groups/list_jobs \
           "flow_jobs_success": [
             true
           ],
+          "flow_jobs_labels": [
+            "string"
+          ],
           "flow_jobs_duration": {
             "started_at": [
               "string"
@@ -66504,6 +68201,16 @@ curl http://localhost:8000/api/w/string/concurrency_groups/list_jobs \
           "failed_jobs": [
             "497f6eca-6276-4993-bfeb-53cbbbba6f08"
           ]
+        },
+        "continued_on_error": [
+          {
+            "id": "string",
+            "job": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+          }
+        ],
+        "test_subflows": {
+          "property1": {},
+          "property2": {}
         }
       },
       "workflow_as_code_status": {
@@ -66546,7 +68253,8 @@ curl http://localhost:8000/api/w/string/concurrency_groups/list_jobs \
             "summary": "string",
             "mock": {
               "enabled": true,
-              "return_value": null
+              "return_value": null,
+              "preview_only": true
             },
             "suspend": {
               "required_events": 0,
@@ -66627,7 +68335,8 @@ curl http://localhost:8000/api/w/string/concurrency_groups/list_jobs \
           "summary": "string",
           "mock": {
             "enabled": true,
-            "return_value": null
+            "return_value": null,
+            "preview_only": true
           },
           "suspend": {
             "required_events": 0,
@@ -66707,7 +68416,8 @@ curl http://localhost:8000/api/w/string/concurrency_groups/list_jobs \
           "summary": "string",
           "mock": {
             "enabled": true,
-            "return_value": null
+            "return_value": null,
+            "preview_only": true
           },
           "suspend": {
             "required_events": 0,
@@ -66760,6 +68470,7 @@ curl http://localhost:8000/api/w/string/concurrency_groups/list_jobs \
         "concurrent_limit": 0,
         "concurrency_key": "string",
         "concurrency_time_window_s": 0,
+        "on_concurrency_limit": "queue",
         "debounce_delay_s": 0,
         "debounce_key": "string",
         "debounce_args_to_accumulate": [
@@ -66771,6 +68482,7 @@ curl http://localhost:8000/api/w/string/concurrency_groups/list_jobs \
         "cache_ttl": 0,
         "cache_ignore_s3_path": true,
         "delete_after_secs": 0,
+        "timeout": 0,
         "flow_env": {
           "property1": null,
           "property2": null
@@ -66830,6 +68542,7 @@ curl http://localhost:8000/api/w/string/concurrency_groups/list_jobs \
       "resolution_note": "string",
       "resolved_automatically": true,
       "trigger_kind": "webhook",
+      "trigger_path": "string",
       "worker": "string",
       "type": "CompletedJob"
     }
@@ -69822,6 +71535,58 @@ the draft, and only `draft` is canonical. Callers should disable
 |draft|object|false|none|none|
 |other_drafts_users|[object]|false|none|Other workspace users (and the legacy NULL-email row, if any)<br>with a saved draft at the same path. Populated only on the<br>authed user's "get by path" responses for kinds the editor<br>surfaces a fork banner for (script, flow, app, raw_app).<br>Empty / omitted for kinds without that UI.<br>|
 
+<h2 id="tocS_DraftItemRef">DraftItemRef</h2>
+<!-- backwards compatibility -->
+<a id="schemadraftitemref"></a>
+<a id="schema_DraftItemRef"></a>
+<a id="tocSdraftitemref"></a>
+<a id="tocsdraftitemref"></a>
+
+```json
+{
+  "kind": "script",
+  "path": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|kind|[UserDraftItemKind](#schemauserdraftitemkind)|true|none|Closed set of item kinds a user can autosave as a draft. Mirrors the<br>Postgres `DRAFT_KIND` enum and the backend `UserDraftItemKind`.<br>|
+|path|string|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|kind|script|
+|kind|flow|
+|kind|app|
+|kind|raw_app|
+|kind|resource|
+|kind|variable|
+|kind|trigger_schedule|
+|kind|trigger_webhook|
+|kind|trigger_default_email|
+|kind|trigger_email|
+|kind|trigger_http|
+|kind|trigger_websocket|
+|kind|trigger_postgres|
+|kind|trigger_kafka|
+|kind|trigger_nats|
+|kind|trigger_mqtt|
+|kind|trigger_amqp|
+|kind|trigger_sqs|
+|kind|trigger_gcp|
+|kind|trigger_azure|
+|kind|trigger_poll|
+|kind|trigger_cli|
+|kind|trigger_nextcloud|
+|kind|trigger_google|
+|kind|trigger_github|
+|kind|data_pipeline|
+
 <h2 id="tocS_UserDraftItemKind">UserDraftItemKind</h2>
 <!-- backwards compatibility -->
 <a id="schemauserdraftitemkind"></a>
@@ -69881,7 +71646,8 @@ Postgres `DRAFT_KIND` enum and the backend `UserDraftItemKind`.
         "summary": "string",
         "mock": {
           "enabled": true,
-          "return_value": null
+          "return_value": null,
+          "preview_only": true
         },
         "suspend": {
           "required_events": 0,
@@ -69962,7 +71728,8 @@ Postgres `DRAFT_KIND` enum and the backend `UserDraftItemKind`.
       "summary": "string",
       "mock": {
         "enabled": true,
-        "return_value": null
+        "return_value": null,
+        "preview_only": true
       },
       "suspend": {
         "required_events": 0,
@@ -70042,7 +71809,8 @@ Postgres `DRAFT_KIND` enum and the backend `UserDraftItemKind`.
       "summary": "string",
       "mock": {
         "enabled": true,
-        "return_value": null
+        "return_value": null,
+        "preview_only": true
       },
       "suspend": {
         "required_events": 0,
@@ -70095,6 +71863,7 @@ Postgres `DRAFT_KIND` enum and the backend `UserDraftItemKind`.
     "concurrent_limit": 0,
     "concurrency_key": "string",
     "concurrency_time_window_s": 0,
+    "on_concurrency_limit": "queue",
     "debounce_delay_s": 0,
     "debounce_key": "string",
     "debounce_args_to_accumulate": [
@@ -70106,6 +71875,7 @@ Postgres `DRAFT_KIND` enum and the backend `UserDraftItemKind`.
     "cache_ttl": 0,
     "cache_ignore_s3_path": true,
     "delete_after_secs": 0,
+    "timeout": 0,
     "flow_env": {
       "property1": null,
       "property2": null
@@ -70205,7 +71975,8 @@ Top-level flow definition containing metadata, configuration, and the flow struc
       "summary": "string",
       "mock": {
         "enabled": true,
-        "return_value": null
+        "return_value": null,
+        "preview_only": true
       },
       "suspend": {
         "required_events": 0,
@@ -70286,7 +72057,8 @@ Top-level flow definition containing metadata, configuration, and the flow struc
     "summary": "string",
     "mock": {
       "enabled": true,
-      "return_value": null
+      "return_value": null,
+      "preview_only": true
     },
     "suspend": {
       "required_events": 0,
@@ -70366,7 +72138,8 @@ Top-level flow definition containing metadata, configuration, and the flow struc
     "summary": "string",
     "mock": {
       "enabled": true,
-      "return_value": null
+      "return_value": null,
+      "preview_only": true
     },
     "suspend": {
       "required_events": 0,
@@ -70419,6 +72192,7 @@ Top-level flow definition containing metadata, configuration, and the flow struc
   "concurrent_limit": 0,
   "concurrency_key": "string",
   "concurrency_time_window_s": 0,
+  "on_concurrency_limit": "queue",
   "debounce_delay_s": 0,
   "debounce_key": "string",
   "debounce_args_to_accumulate": [
@@ -70430,6 +72204,7 @@ Top-level flow definition containing metadata, configuration, and the flow struc
   "cache_ttl": 0,
   "cache_ignore_s3_path": true,
   "delete_after_secs": 0,
+  "timeout": 0,
   "flow_env": {
     "property1": null,
     "property2": null
@@ -70484,6 +72259,7 @@ The flow structure containing modules and optional preprocessor/failure handlers
 |concurrent_limit|number|false|none|Maximum number of concurrent executions of this flow|
 |concurrency_key|string|false|none|Expression to group concurrent executions (e.g., by user ID)|
 |concurrency_time_window_s|number|false|none|Time window in seconds for concurrent_limit|
+|on_concurrency_limit|string|false|none|What a run of this flow does when its concurrency limit is reached. `queue` (default) re-queues it to a later slot, `fail` ends it immediately as failed, like any failed step.|
 |debounce_delay_s|integer|false|none|Delay in seconds to debounce flow executions|
 |debounce_key|string|false|none|Expression to group debounced executions|
 |debounce_args_to_accumulate|[string]|false|none|Arguments to accumulate across debounced executions|
@@ -70493,12 +72269,20 @@ The flow structure containing modules and optional preprocessor/failure handlers
 |cache_ttl|number|false|none|Cache duration in seconds for flow results|
 |cache_ignore_s3_path|boolean|false|none|none|
 |delete_after_secs|integer|false|none|If set, delete the flow job's args, result and logs after this many seconds following job completion|
+|timeout|integer|false|none|Wall-clock limit in seconds for the whole flow run, counted from its start and including time spent sleeping or suspended at an approval. It also applies when the flow is called as a subflow step, unless that step sets its own timeout, which replaces it. It is checked periodically, so a run can go a few seconds past it. When it expires, the running steps are cancelled, the failure module runs if there is one, and the flow ends cancelled with a timeout error. A calling flow sees the subflow step fail with that error.|
 |flow_env|object|false|none|Environment variables available to all steps. Values can be strings, JSON values, or special references: '$var:path' (workspace variable) or '$res:path' (resource).|
 |priority|number|false|none|Execution priority (higher numbers run first)|
 |early_return|string|false|none|Id of the step whose result a sync webhook returns as soon as that step completes, while the rest of the flow keeps running. When the step does not run, or fails while the flow has a failure module, the flow's final result is returned instead.|
 |chat_input_enabled|boolean|false|none|Whether this flow accepts chat-style input|
 |notes|[[FlowNote](#schemaflownote)]|false|none|Sticky notes attached to the flow|
 |groups|[object]|false|none|Semantic groups of modules for organizational purposes|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|on_concurrency_limit|queue|
+|on_concurrency_limit|fail|
 
 <h2 id="tocS_Retry">Retry</h2>
 <!-- backwards compatibility -->
@@ -70591,6 +72375,7 @@ Early termination condition for a module
     "tag": "string",
     "concurrent_limit": 0,
     "concurrency_time_window_s": 0,
+    "on_concurrency_limit": "queue",
     "custom_concurrency_key": "string",
     "is_trigger": true,
     "assets": [
@@ -70631,7 +72416,8 @@ Early termination condition for a module
   "summary": "string",
   "mock": {
     "enabled": true,
-    "return_value": null
+    "return_value": null,
+    "preview_only": true
   },
   "suspend": {
     "required_events": 0,
@@ -70970,6 +72756,7 @@ Managed memory, stored by Windmill and replayed with each request. The memory is
   "tag": "string",
   "concurrent_limit": 0,
   "concurrency_time_window_s": 0,
+  "on_concurrency_limit": "queue",
   "custom_concurrency_key": "string",
   "is_trigger": true,
   "assets": [
@@ -70998,7 +72785,7 @@ The actual implementation of a flow step. Can be a script (inline or referenced)
 |*oneOf*|[BranchAll](#schemabranchall)|false|none|Parallel branching where all branches execute simultaneously. Unlike BranchOne, all branches run regardless of conditions. Useful for executing independent tasks concurrently|
 |*oneOf*|[Identity](#schemaidentity)|false|none|Pass-through module that returns its input unchanged. Useful for flow structure or as a placeholder|
 |*oneOf*|[AiAgent](#schemaaiagent)|false|none|AI agent step that can use tools to accomplish tasks. The agent receives inputs and can call any of its configured tools to complete the task|
-|*oneOf*|[AiDecision](#schemaaidecision)|false|none|AI decision step: one call to a decision model (TypeSafe's Jev, Cloudflare's<br>Jev-compatible Clef, or OpenAI's Decisions API) that answers typed questions about a<br>state with calibrated probabilities, instead of generating text.<br>Prefer it over an AI agent to classify, route, score or check something: it is fast,<br>cheap and its answers are structured. Its result is { output: { <question name>: answer },<br>model, usage }, so a later step reads e.g. results.<id>.output.intent.choice. To route on<br>the answers, follow it with a branchone whose branch exprs read<br>results.<id>.output.<question>.choice. Usable as an AI agent tool, where the calling agent<br>supplies the state.<br>|
+|*oneOf*|[AiDecision](#schemaaidecision)|false|none|AI decision step: one call to a decision model (TypeSafe's Jev, Cloudflare's<br>Jev-compatible Clef, or OpenAI's or Gemini's Decisions API) that answers typed questions about a<br>state with calibrated probabilities, instead of generating text.<br>Prefer it over an AI agent to classify, route, score or check something: it is fast,<br>cheap and its answers are structured. Its result is { output: { <question name>: answer },<br>model, usage }, so a later step reads e.g. results.<id>.output.intent.choice. To route on<br>the answers, follow it with a branchone whose branch exprs read<br>results.<id>.output.<question>.choice. Usable as an AI agent tool, where the calling agent<br>supplies the state.<br>|
 
 <h2 id="tocS_RawScript">RawScript</h2>
 <!-- backwards compatibility -->
@@ -71027,6 +72814,7 @@ The actual implementation of a flow step. Can be a script (inline or referenced)
   "tag": "string",
   "concurrent_limit": 0,
   "concurrency_time_window_s": 0,
+  "on_concurrency_limit": "queue",
   "custom_concurrency_key": "string",
   "is_trigger": true,
   "assets": [
@@ -71055,6 +72843,7 @@ Inline script with code defined directly in the flow. Use 'bun' as default langu
 |tag|string|false|none|Worker group tag for execution routing|
 |concurrent_limit|number|false|none|Maximum concurrent executions of this script|
 |concurrency_time_window_s|number|false|none|Time window for concurrent_limit|
+|on_concurrency_limit|string|false|none|What a run of this step does when its concurrency limit is reached. `queue` (default) re-queues it to a later slot, `fail` ends it immediately as failed.|
 |custom_concurrency_key|string|false|none|Custom key for grouping concurrent executions|
 |is_trigger|boolean|false|none|If true, this script is a trigger that can start the flow|
 |assets|[object]|false|none|External resources this script accesses (S3 objects, resources, etc.)|
@@ -71088,6 +72877,8 @@ Inline script with code defined directly in the flow. Use 'bun' as default langu
 |language|rlang|
 |language|duckdb|
 |type|rawscript|
+|on_concurrency_limit|queue|
+|on_concurrency_limit|fail|
 
 <h2 id="tocS_PathScript">PathScript</h2>
 <!-- backwards compatibility -->
@@ -71155,6 +72946,7 @@ Reference to an existing script by path. Use this when calling a previously save
     }
   },
   "path": "string",
+  "tag_override": "string",
   "type": "flow"
 }
 ```
@@ -71167,6 +72959,7 @@ Reference to an existing flow by path. Use this to call another flow as a subflo
 |---|---|---|---|---|
 |input_transforms|object|true|none|Map of parameter names to their values (static or JavaScript expressions). These become the subflow's input arguments|
 |path|string|true|none|Path to the flow in the workspace (e.g., 'f/flows/process_user')|
+|tag_override|string|false|none|Override the subflow's worker group tag. Its steps run on this tag unless the subflow sets preserve_step_tags|
 |type|string|true|none|none|
 
 #### Enumerated Values
@@ -71217,7 +73010,8 @@ Reference to an existing flow by path. Use this to call another flow as a subflo
       "summary": "string",
       "mock": {
         "enabled": true,
-        "return_value": null
+        "return_value": null,
+        "preview_only": true
       },
       "suspend": {
         "required_events": 0,
@@ -71277,7 +73071,11 @@ Reference to an existing flow by path. Use this to call another flow as a subflo
     "value": null,
     "type": "static"
   },
-  "squash": true
+  "squash": true,
+  "iteration_label": {
+    "value": null,
+    "type": "static"
+  }
 }
 ```
 
@@ -71294,6 +73092,7 @@ Executes nested modules in a loop over an iterator. Inside the loop, use 'flow_i
 |parallel|boolean|false|none|If true, iterations run concurrently (faster for I/O-bound operations). Use with parallelism to control concurrency|
 |parallelism|[InputTransform](#schemainputtransform)|false|none|Maximum number of concurrent iterations when parallel=true. Limits resource usage. Can be static number or expression|
 |squash|boolean|false|none|none|
+|iteration_label|[InputTransform](#schemainputtransform)|false|none|Optional expression evaluated once per iteration into the label the run viewers show for it, e.g. 'flow_input.iter.value.name'. It can reference 'flow_input.iter' and 'results'. Purely informational, a failing expression leaves the iteration unlabelled and never fails it. Labels are capped at 100 characters|
 
 #### Enumerated Values
 
@@ -71343,7 +73142,8 @@ Executes nested modules in a loop over an iterator. Inside the loop, use 'flow_i
       "summary": "string",
       "mock": {
         "enabled": true,
-        "return_value": null
+        "return_value": null,
+        "preview_only": true
       },
       "suspend": {
         "required_events": 0,
@@ -71399,7 +73199,9 @@ Executes nested modules in a loop over an iterator. Inside the loop, use 'flow_i
     "value": null,
     "type": "static"
   },
-  "squash": true
+  "squash": true,
+  "max_iterations": 1,
+  "max_duration_secs": 1
 }
 ```
 
@@ -71415,6 +73217,8 @@ Executes nested modules repeatedly until stopped. The implicit iterator is the i
 |parallel|boolean|false|none|If true, iterations run concurrently (use with caution in while loops)|
 |parallelism|[InputTransform](#schemainputtransform)|false|none|Maximum number of concurrent iterations when parallel=true|
 |squash|boolean|false|none|none|
+|max_iterations|integer|false|none|Maximum number of iterations. Checked after each iteration; when reached and stop_after_if did not stop the loop, the loop fails with an error named 'LoopExhausted'|
+|max_duration_secs|integer|false|none|Maximum wall-clock seconds since the first iteration started, checked after each iteration. A running iteration is not interrupted, so the loop can exceed the limit by up to one iteration; the timeout of the body's steps caps an iteration. When reached and stop_after_if did not stop the loop, the loop fails with an error named 'LoopExhausted'|
 
 #### Enumerated Values
 
@@ -71468,7 +73272,8 @@ Executes nested modules repeatedly until stopped. The implicit iterator is the i
           "summary": "string",
           "mock": {
             "enabled": true,
-            "return_value": null
+            "return_value": null,
+            "preview_only": true
           },
           "suspend": {
             "required_events": 0,
@@ -71552,7 +73357,8 @@ Executes nested modules repeatedly until stopped. The implicit iterator is the i
       "summary": "string",
       "mock": {
         "enabled": true,
-        "return_value": null
+        "return_value": null,
+        "preview_only": true
       },
       "suspend": {
         "required_events": 0,
@@ -71667,7 +73473,8 @@ Conditional branching where only the first matching branch executes. Branches ar
           "summary": "string",
           "mock": {
             "enabled": true,
-            "return_value": null
+            "return_value": null,
+            "preview_only": true
           },
           "suspend": {
             "required_events": 0,
@@ -71719,7 +73526,11 @@ Conditional branching where only the first matching branch executes. Branches ar
     }
   ],
   "type": "branchall",
-  "parallel": true
+  "parallel": true,
+  "parallelism": {
+    "value": null,
+    "type": "static"
+  }
 }
 ```
 
@@ -71732,6 +73543,7 @@ Parallel branching where all branches execute simultaneously. Unlike BranchOne, 
 |branches|[object]|true|none|Array of branches that all execute (either in parallel or sequentially)|
 |type|string|true|none|none|
 |parallel|boolean|false|none|If true, all branches execute concurrently. If false, they execute sequentially|
+|parallelism|[InputTransform](#schemainputtransform)|false|none|Maximum number of branches running at once when parallel=true. Can be static number or expression|
 
 #### Enumerated Values
 
@@ -71830,6 +73642,8 @@ Parallel branching where all branches execute simultaneously. Unlike BranchOne, 
         "string"
       ],
       "requires_approval": true,
+      "background": true,
+      "background_after_secs": 1,
       "value": {
         "tool_type": "flowmodule",
         "input_transforms": {
@@ -71850,6 +73664,7 @@ Parallel branching where all branches execute simultaneously. Unlike BranchOne, 
         "tag": "string",
         "concurrent_limit": 0,
         "concurrency_time_window_s": 0,
+        "on_concurrency_limit": "queue",
         "custom_concurrency_key": "string",
         "is_trigger": true,
         "assets": [
@@ -71948,7 +73763,7 @@ AI agent step that can use tools to accomplish tasks. The agent receives inputs 
 ```
 
 AI decision step: one call to a decision model (TypeSafe's Jev, Cloudflare's
-Jev-compatible Clef, or OpenAI's Decisions API) that answers typed questions about a
+Jev-compatible Clef, or OpenAI's or Gemini's Decisions API) that answers typed questions about a
 state with calibrated probabilities, instead of generating text.
 Prefer it over an AI agent to classify, route, score or check something: it is fast,
 cheap and its answers are structured. Its result is { output: { <question name>: answer },
@@ -72031,6 +73846,9 @@ Pass-through module that returns its input unchanged. Useful for flow structure 
       "flow_jobs_success": [
         true
       ],
+      "flow_jobs_labels": [
+        "string"
+      ],
       "flow_jobs_duration": {
         "started_at": [
           "string"
@@ -72091,6 +73909,9 @@ Pass-through module that returns its input unchanged. Useful for flow structure 
     "flow_jobs_success": [
       true
     ],
+    "flow_jobs_labels": [
+      "string"
+    ],
     "flow_jobs_duration": {
       "started_at": [
         "string"
@@ -72149,6 +73970,9 @@ Pass-through module that returns its input unchanged. Useful for flow structure 
     "flow_jobs_success": [
       true
     ],
+    "flow_jobs_labels": [
+      "string"
+    ],
     "flow_jobs_duration": {
       "started_at": [
         "string"
@@ -72193,6 +74017,16 @@ Pass-through module that returns its input unchanged. Useful for flow structure 
     "failed_jobs": [
       "497f6eca-6276-4993-bfeb-53cbbbba6f08"
     ]
+  },
+  "continued_on_error": [
+    {
+      "id": "string",
+      "job": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+    }
+  ],
+  "test_subflows": {
+    "property1": {},
+    "property2": {}
   }
 }
 ```
@@ -72207,6 +74041,8 @@ Pass-through module that returns its input unchanged. Useful for flow structure 
 |preprocessor_module|object|false|none|none|
 |failure_module|object|true|none|none|
 |retry|object|false|none|none|
+|continued_on_error|[object]|false|none|On a root flow, the steps at any depth that failed and that the flow went past because of continue_on_error (at most 100).|
+|test_subflows|object|false|none|In a flow test run, deployed subflow path -> the flow value with the test's step overrides applied, run in place of the deployed subflow.|
 
 <h2 id="tocS_FlowStatusModule">FlowStatusModule</h2>
 <!-- backwards compatibility -->
@@ -72235,6 +74071,9 @@ Pass-through module that returns its input unchanged. Useful for flow structure 
   ],
   "flow_jobs_success": [
     true
+  ],
+  "flow_jobs_labels": [
+    "string"
   ],
   "flow_jobs_duration": {
     "started_at": [
@@ -72288,6 +74127,7 @@ Pass-through module that returns its input unchanged. Useful for flow structure 
 |iterator|object|false|none|none|
 |flow_jobs|[string]|false|none|none|
 |flow_jobs_success|[boolean]|false|none|none|
+|flow_jobs_labels|[string \| null]|false|none|For a for-loop step whose iteration_label is set, each iteration's label, aligned with flow_jobs. An entry is null when its label evaluated to nothing|
 |flow_jobs_duration|object|false|none|none|
 |branch_chosen|object|false|none|none|
 |branchall|object|false|none|none|
@@ -72295,7 +74135,7 @@ Pass-through module that returns its input unchanged. Useful for flow structure 
 |failed_retries|[string(uuid)]|false|none|none|
 |skipped|boolean|false|none|none|
 |agent_actions|[object]|false|none|none|
-|agent_actions_success|[boolean]|false|none|none|
+|agent_actions_success|[boolean \| null]|false|none|The outcome of each agent action, by position. null while a background tool call is still running.|
 
 #### Enumerated Values
 
@@ -72977,6 +74817,7 @@ Legacy flat format for editing success handler (deprecated, use new format)
   "jwt_role": "string",
   "jwt_mount_path": "string",
   "approle_role_id": "string",
+  "approle_secret_id": "string",
   "approle_mount_path": "string",
   "namespace": "string",
   "token": "string",
@@ -72993,7 +74834,8 @@ Legacy flat format for editing success handler (deprecated, use new format)
 |kv_secret_path_prefix|string|false|none|Optional path prefix inserted between the KV data/metadata segment and the workspace id (e.g., "apps/windmill"). When set, secrets are stored at `<mount>/data/<prefix>/<workspace>/<secret>`, allowing a Vault policy scoped to exactly `<mount>/data/<prefix>/*`.|
 |jwt_role|string|false|none|Vault JWT auth role name for Windmill (optional, if not provided token auth is used)|
 |jwt_mount_path|string|false|none|Mount path for the JWT auth method in Vault (optional, defaults to "jwt"). Set this when the JWT auth method is mounted at a non-default path, e.g. via `vault auth enable -path=<mount> jwt`.|
-|approle_role_id|string|false|none|AppRole role_id (optional). When set and no static token is given, Windmill logs in with AppRole; the secret_id is read from the `VAULT_APPROLE_SECRET_ID` environment variable of servers and workers.|
+|approle_role_id|string|false|none|AppRole role_id (optional). When set and no static token is given, Windmill logs in with AppRole.|
+|approle_secret_id|string|false|none|AppRole secret_id (optional). When empty, the `VAULT_APPROLE_SECRET_ID` environment variable of servers and workers is used; when that is unset too, no secret_id is sent (a role with `bind_secret_id=false`).|
 |approle_mount_path|string|false|none|Mount path of the AppRole auth method (optional, defaults to "approle").|
 |namespace|string|false|none|Vault Enterprise namespace (optional)|
 |token|string|false|none|Static Vault token for testing/development (optional, if provided this is used instead of JWT authentication)|
@@ -74035,7 +75877,11 @@ A column's summary. There is no single number for a dataset: averaging a judge w
   },
   "copilot_disabled": true,
   "sessions_storage_disabled": true,
-  "sessions_retention_days": 1
+  "sessions_retention_days": 1,
+  "web_search": {
+    "provider": "exa",
+    "resource_path": "string"
+  }
 }
 ```
 
@@ -74055,6 +75901,39 @@ A column's summary. There is no single number for a dataset: averaging a judge w
 |copilot_disabled|boolean|false|none|Hides the Windmill AI assistant (chat, sessions, code generation, completion, fixes) from the workspace UI. Read from the workspace's own settings even when the providers served fall back to the instance config. AI agent steps and the AI sandbox in flows are unaffected.|
 |sessions_storage_disabled|boolean|false|none|Stops browsers from backing their AI sessions up to the workspace's object storage. Read from the workspace's own settings like `copilot_disabled`.|
 |sessions_retention_days|integer|false|none|The server deletes the backup of a session no push has reached for this many days. Unset keeps backups until the user deletes the session. Read from the workspace's own settings like `copilot_disabled`.|
+|web_search|[AIWebSearchConfig](#schemaaiwebsearchconfig)|false|none|The search API the AI chat searches the web and reads pages through when the model's provider has no built-in web search. Read from the workspace's own settings like `copilot_disabled`.|
+
+<h2 id="tocS_AIWebSearchConfig">AIWebSearchConfig</h2>
+<!-- backwards compatibility -->
+<a id="schemaaiwebsearchconfig"></a>
+<a id="schema_AIWebSearchConfig"></a>
+<a id="tocSaiwebsearchconfig"></a>
+<a id="tocsaiwebsearchconfig"></a>
+
+```json
+{
+  "provider": "exa",
+  "resource_path": "string"
+}
+```
+
+The search API the AI chat searches the web and reads pages through when the model's provider has no built-in web search. Read from the workspace's own settings like `copilot_disabled`.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|provider|string|true|none|none|
+|resource_path|string|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|provider|exa|
+|provider|tavily|
+|provider|linkup|
+|provider|deepseek|
 
 <h2 id="tocS_AISessionBackupListing">AISessionBackupListing</h2>
 <!-- backwards compatibility -->
@@ -74820,6 +76699,116 @@ script's created_at, a flow/app/agent's edit time).
 |type|app|
 |type|agent|
 
+<h2 id="tocS_ListableScript">ListableScript</h2>
+<!-- backwards compatibility -->
+<a id="schemalistablescript"></a>
+<a id="schema_ListableScript"></a>
+<a id="tocSlistablescript"></a>
+<a id="tocslistablescript"></a>
+
+```json
+{
+  "hash": "string",
+  "path": "string",
+  "summary": "string",
+  "description": "string",
+  "created_at": "1970-01-01T00:00:00Z",
+  "archived": true,
+  "extra_perms": {
+    "property1": true,
+    "property2": true
+  },
+  "language": "python3",
+  "kind": "script",
+  "starred": true,
+  "tag": "string",
+  "draft_only": true,
+  "has_deploy_errors": true,
+  "ws_error_handler_muted": true,
+  "auto_kind": "string",
+  "use_codebase": true,
+  "deployment_msg": "string",
+  "labels": [
+    "string"
+  ],
+  "inherited_labels": [
+    "string"
+  ],
+  "is_draft": true,
+  "draft_path": "string",
+  "draft_users": [
+    {
+      "username": "string"
+    }
+  ]
+}
+```
+
+A script as returned by the list endpoint: the deployed row's summary
+fields, without its content, lock or schema.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|hash|string|true|none|none|
+|path|string|true|none|none|
+|summary|string|true|none|none|
+|description|string|false|none|none|
+|created_at|string(date-time)|true|none|none|
+|archived|boolean|true|none|none|
+|extra_perms|object|true|none|none|
+|language|[ScriptLang](#schemascriptlang)|true|none|none|
+|kind|string|true|none|none|
+|starred|boolean|true|none|none|
+|tag|string \| null|true|none|none|
+|draft_only|boolean|false|none|True on rows built from a draft that was never deployed. Omitted<br>on deployed rows.<br>|
+|has_deploy_errors|boolean|true|none|none|
+|ws_error_handler_muted|boolean \| null|true|none|none|
+|auto_kind|string|false|none|none|
+|use_codebase|boolean|false|none|Omitted when false.|
+|deployment_msg|string|false|none|Only returned with `with_deployment_msg=true`.|
+|labels|[string]|false|none|none|
+|inherited_labels|[string]|false|none|none|
+|is_draft|boolean|false|none|True when the authed user has a draft for this<br>script — either no deployed row exists at this<br>path (draft-only) or the user saved a per-user<br>draft on top of the deployed row. Omitted when false.<br>|
+|draft_path|string|false|none|User-typed path the editor has staged but not<br>yet deployed. Surfaced for draft-only rows so<br>the home list can render the meaningful name<br>instead of the autogenerated<br>`u/{user}/draft_{uuid}` URL path. Omitted<br>when unchanged.<br>|
+|draft_users|[object]|false|none|Workspace users (including the authed user, and<br>the legacy NULL-email row if any) who have a<br>per-user draft at this path. Drives the home<br>page's user-avatar circles inside the Draft<br>badge. Omitted when no drafts exist.<br>|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|language|python3|
+|language|deno|
+|language|go|
+|language|bash|
+|language|powershell|
+|language|postgresql|
+|language|mysql|
+|language|bigquery|
+|language|snowflake|
+|language|mssql|
+|language|oracledb|
+|language|graphql|
+|language|nativets|
+|language|bun|
+|language|php|
+|language|rust|
+|language|ansible|
+|language|csharp|
+|language|nu|
+|language|java|
+|language|ruby|
+|language|rlang|
+|language|duckdb|
+|language|bunnative|
+|language|dbt|
+|kind|script|
+|kind|failure|
+|kind|trigger|
+|kind|approval|
+|kind|preprocessor|
+
 <h2 id="tocS_Script">Script</h2>
 <!-- backwards compatibility -->
 <a id="schemascript"></a>
@@ -74860,6 +76849,7 @@ script's created_at, a flow/app/agent's edit time).
   ],
   "concurrent_limit": 0,
   "concurrency_time_window_s": 0,
+  "on_concurrency_limit": "queue",
   "concurrency_key": "string",
   "debounce_key": "string",
   "debounce_delay_s": 0,
@@ -74932,6 +76922,7 @@ script's created_at, a flow/app/agent's edit time).
 |envs|[string]|false|none|none|
 |concurrent_limit|integer|false|none|none|
 |concurrency_time_window_s|integer|false|none|none|
+|on_concurrency_limit|string|false|none|What a run does when its concurrency limit is reached when a worker picks it up. `queue` (default) re-queues it to a later slot, `fail` ends it immediately as failed.|
 |concurrency_key|string|false|none|none|
 |debounce_key|string|false|none|none|
 |debounce_delay_s|integer|false|none|none|
@@ -74992,6 +76983,8 @@ script's created_at, a flow/app/agent's edit time).
 |kind|command|
 |kind|approval|
 |kind|preprocessor|
+|on_concurrency_limit|queue|
+|on_concurrency_limit|fail|
 
 <h2 id="tocS_NewScript">NewScript</h2>
 <!-- backwards compatibility -->
@@ -75019,6 +77012,7 @@ script's created_at, a flow/app/agent's edit time).
   ],
   "concurrent_limit": 0,
   "concurrency_time_window_s": 0,
+  "on_concurrency_limit": "queue",
   "cache_ttl": 0,
   "cache_ignore_s3_path": true,
   "dedicated_worker": true,
@@ -75092,6 +77086,7 @@ script's created_at, a flow/app/agent's edit time).
 |envs|[string]|false|none|none|
 |concurrent_limit|integer|false|none|none|
 |concurrency_time_window_s|integer|false|none|none|
+|on_concurrency_limit|string|false|none|What a run does when its concurrency limit is reached when a worker picks it up. `queue` (default) re-queues it to a later slot, `fail` ends it immediately as failed.|
 |cache_ttl|number|false|none|none|
 |cache_ignore_s3_path|boolean|false|none|none|
 |dedicated_worker|boolean|false|none|none|
@@ -75155,6 +77150,8 @@ script's created_at, a flow/app/agent's edit time).
 |kind|command|
 |kind|approval|
 |kind|preprocessor|
+|on_concurrency_limit|queue|
+|on_concurrency_limit|fail|
 
 <h2 id="tocS_ScriptHistory">ScriptHistory</h2>
 <!-- backwards compatibility -->
@@ -75330,6 +77327,9 @@ The arguments to pass to the script or flow
         "flow_jobs_success": [
           true
         ],
+        "flow_jobs_labels": [
+          "string"
+        ],
         "flow_jobs_duration": {
           "started_at": [
             "string"
@@ -75390,6 +77390,9 @@ The arguments to pass to the script or flow
       "flow_jobs_success": [
         true
       ],
+      "flow_jobs_labels": [
+        "string"
+      ],
       "flow_jobs_duration": {
         "started_at": [
           "string"
@@ -75448,6 +77451,9 @@ The arguments to pass to the script or flow
       "flow_jobs_success": [
         true
       ],
+      "flow_jobs_labels": [
+        "string"
+      ],
       "flow_jobs_duration": {
         "started_at": [
           "string"
@@ -75492,6 +77498,16 @@ The arguments to pass to the script or flow
       "failed_jobs": [
         "497f6eca-6276-4993-bfeb-53cbbbba6f08"
       ]
+    },
+    "continued_on_error": [
+      {
+        "id": "string",
+        "job": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+      }
+    ],
+    "test_subflows": {
+      "property1": {},
+      "property2": {}
     }
   },
   "workflow_as_code_status": {
@@ -75534,7 +77550,8 @@ The arguments to pass to the script or flow
         "summary": "string",
         "mock": {
           "enabled": true,
-          "return_value": null
+          "return_value": null,
+          "preview_only": true
         },
         "suspend": {
           "required_events": 0,
@@ -75615,7 +77632,8 @@ The arguments to pass to the script or flow
       "summary": "string",
       "mock": {
         "enabled": true,
-        "return_value": null
+        "return_value": null,
+        "preview_only": true
       },
       "suspend": {
         "required_events": 0,
@@ -75695,7 +77713,8 @@ The arguments to pass to the script or flow
       "summary": "string",
       "mock": {
         "enabled": true,
-        "return_value": null
+        "return_value": null,
+        "preview_only": true
       },
       "suspend": {
         "required_events": 0,
@@ -75748,6 +77767,7 @@ The arguments to pass to the script or flow
     "concurrent_limit": 0,
     "concurrency_key": "string",
     "concurrency_time_window_s": 0,
+    "on_concurrency_limit": "queue",
     "debounce_delay_s": 0,
     "debounce_key": "string",
     "debounce_args_to_accumulate": [
@@ -75759,6 +77779,7 @@ The arguments to pass to the script or flow
     "cache_ttl": 0,
     "cache_ignore_s3_path": true,
     "delete_after_secs": 0,
+    "timeout": 0,
     "flow_env": {
       "property1": null,
       "property2": null
@@ -75810,6 +77831,7 @@ The arguments to pass to the script or flow
   "preprocessed": true,
   "is_retry": true,
   "trigger_kind": "webhook",
+  "trigger_path": "string",
   "worker": "string"
 }
 ```
@@ -75854,6 +77876,7 @@ The arguments to pass to the script or flow
 |preprocessed|boolean|false|none|none|
 |is_retry|boolean|false|none|none|
 |trigger_kind|[JobTriggerKind](#schemajobtriggerkind)|false|none|job trigger kind (schedule, http, websocket...)|
+|trigger_path|string|false|none|Path of the trigger, schedule or app that started the job, if any|
 |worker|string|false|none|none|
 
 #### Enumerated Values
@@ -75978,6 +78001,9 @@ The arguments to pass to the script or flow
         "flow_jobs_success": [
           true
         ],
+        "flow_jobs_labels": [
+          "string"
+        ],
         "flow_jobs_duration": {
           "started_at": [
             "string"
@@ -76038,6 +78064,9 @@ The arguments to pass to the script or flow
       "flow_jobs_success": [
         true
       ],
+      "flow_jobs_labels": [
+        "string"
+      ],
       "flow_jobs_duration": {
         "started_at": [
           "string"
@@ -76096,6 +78125,9 @@ The arguments to pass to the script or flow
       "flow_jobs_success": [
         true
       ],
+      "flow_jobs_labels": [
+        "string"
+      ],
       "flow_jobs_duration": {
         "started_at": [
           "string"
@@ -76140,6 +78172,16 @@ The arguments to pass to the script or flow
       "failed_jobs": [
         "497f6eca-6276-4993-bfeb-53cbbbba6f08"
       ]
+    },
+    "continued_on_error": [
+      {
+        "id": "string",
+        "job": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+      }
+    ],
+    "test_subflows": {
+      "property1": {},
+      "property2": {}
     }
   },
   "workflow_as_code_status": {
@@ -76182,7 +78224,8 @@ The arguments to pass to the script or flow
         "summary": "string",
         "mock": {
           "enabled": true,
-          "return_value": null
+          "return_value": null,
+          "preview_only": true
         },
         "suspend": {
           "required_events": 0,
@@ -76263,7 +78306,8 @@ The arguments to pass to the script or flow
       "summary": "string",
       "mock": {
         "enabled": true,
-        "return_value": null
+        "return_value": null,
+        "preview_only": true
       },
       "suspend": {
         "required_events": 0,
@@ -76343,7 +78387,8 @@ The arguments to pass to the script or flow
       "summary": "string",
       "mock": {
         "enabled": true,
-        "return_value": null
+        "return_value": null,
+        "preview_only": true
       },
       "suspend": {
         "required_events": 0,
@@ -76396,6 +78441,7 @@ The arguments to pass to the script or flow
     "concurrent_limit": 0,
     "concurrency_key": "string",
     "concurrency_time_window_s": 0,
+    "on_concurrency_limit": "queue",
     "debounce_delay_s": 0,
     "debounce_key": "string",
     "debounce_args_to_accumulate": [
@@ -76407,6 +78453,7 @@ The arguments to pass to the script or flow
     "cache_ttl": 0,
     "cache_ignore_s3_path": true,
     "delete_after_secs": 0,
+    "timeout": 0,
     "flow_env": {
       "property1": null,
       "property2": null
@@ -76466,6 +78513,7 @@ The arguments to pass to the script or flow
   "resolution_note": "string",
   "resolved_automatically": true,
   "trigger_kind": "webhook",
+  "trigger_path": "string",
   "worker": "string"
 }
 ```
@@ -76518,6 +78566,7 @@ The arguments to pass to the script or flow
 |resolution_note|string|false|none|none|
 |resolved_automatically|boolean|false|none|true when a succeeding retry resolved this rather than a person. Explicit rather than inferred from an absent resolved_by, which is also absent for a manual resolution outside enterprise|
 |trigger_kind|[JobTriggerKind](#schemajobtriggerkind)|false|none|job trigger kind (schedule, http, websocket...)|
+|trigger_path|string|false|none|Path of the trigger, schedule or app that started the job, if any|
 |worker|string|false|none|none|
 
 #### Enumerated Values
@@ -77001,6 +79050,9 @@ Queued job with full data for export/import operations
         "flow_jobs_success": [
           true
         ],
+        "flow_jobs_labels": [
+          "string"
+        ],
         "flow_jobs_duration": {
           "started_at": [
             "string"
@@ -77061,6 +79113,9 @@ Queued job with full data for export/import operations
       "flow_jobs_success": [
         true
       ],
+      "flow_jobs_labels": [
+        "string"
+      ],
       "flow_jobs_duration": {
         "started_at": [
           "string"
@@ -77119,6 +79174,9 @@ Queued job with full data for export/import operations
       "flow_jobs_success": [
         true
       ],
+      "flow_jobs_labels": [
+        "string"
+      ],
       "flow_jobs_duration": {
         "started_at": [
           "string"
@@ -77163,6 +79221,16 @@ Queued job with full data for export/import operations
       "failed_jobs": [
         "497f6eca-6276-4993-bfeb-53cbbbba6f08"
       ]
+    },
+    "continued_on_error": [
+      {
+        "id": "string",
+        "job": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+      }
+    ],
+    "test_subflows": {
+      "property1": {},
+      "property2": {}
     }
   },
   "workflow_as_code_status": {
@@ -77205,7 +79273,8 @@ Queued job with full data for export/import operations
         "summary": "string",
         "mock": {
           "enabled": true,
-          "return_value": null
+          "return_value": null,
+          "preview_only": true
         },
         "suspend": {
           "required_events": 0,
@@ -77286,7 +79355,8 @@ Queued job with full data for export/import operations
       "summary": "string",
       "mock": {
         "enabled": true,
-        "return_value": null
+        "return_value": null,
+        "preview_only": true
       },
       "suspend": {
         "required_events": 0,
@@ -77366,7 +79436,8 @@ Queued job with full data for export/import operations
       "summary": "string",
       "mock": {
         "enabled": true,
-        "return_value": null
+        "return_value": null,
+        "preview_only": true
       },
       "suspend": {
         "required_events": 0,
@@ -77419,6 +79490,7 @@ Queued job with full data for export/import operations
     "concurrent_limit": 0,
     "concurrency_key": "string",
     "concurrency_time_window_s": 0,
+    "on_concurrency_limit": "queue",
     "debounce_delay_s": 0,
     "debounce_key": "string",
     "debounce_args_to_accumulate": [
@@ -77430,6 +79502,7 @@ Queued job with full data for export/import operations
     "cache_ttl": 0,
     "cache_ignore_s3_path": true,
     "delete_after_secs": 0,
+    "timeout": 0,
     "flow_env": {
       "property1": null,
       "property2": null
@@ -77489,6 +79562,7 @@ Queued job with full data for export/import operations
   "resolution_note": "string",
   "resolved_automatically": true,
   "trigger_kind": "webhook",
+  "trigger_path": "string",
   "worker": "string",
   "type": "CompletedJob"
 }
@@ -77543,6 +79617,7 @@ Queued job with full data for export/import operations
 |resolution_note|string|false|none|none|
 |resolved_automatically|boolean|false|none|true when a succeeding retry resolved this rather than a person. Explicit rather than inferred from an absent resolved_by, which is also absent for a manual resolution outside enterprise|
 |trigger_kind|[JobTriggerKind](#schemajobtriggerkind)|false|none|job trigger kind (schedule, http, websocket...)|
+|trigger_path|string|false|none|Path of the trigger, schedule or app that started the job, if any|
 |worker|string|false|none|none|
 |type|string|false|none|none|
 |*oneOf*|object|false|none|none|
@@ -77582,6 +79657,7 @@ Queued job with full data for export/import operations
 |preprocessed|boolean|false|none|none|
 |is_retry|boolean|false|none|none|
 |trigger_kind|[JobTriggerKind](#schemajobtriggerkind)|false|none|job trigger kind (schedule, http, websocket...)|
+|trigger_path|string|false|none|Path of the trigger, schedule or app that started the job, if any|
 |worker|string|false|none|none|
 |type|string|false|none|none|
 
@@ -77734,6 +79810,7 @@ Queued job with full data for export/import operations
   "is_super_admin": true,
   "created_at": "1970-01-01T00:00:00Z",
   "operator": true,
+  "role": "string",
   "disabled": true,
   "groups": [
     "string"
@@ -77768,6 +79845,7 @@ Queued job with full data for export/import operations
 |is_super_admin|boolean|true|none|none|
 |created_at|string(date-time)|true|none|none|
 |operator|boolean|true|none|none|
+|role|string|false|none|The member's workspace role by name (`developer`, `operator` or a custom role). Admin is the separate `is_admin` flag.|
 |disabled|boolean|true|none|none|
 |groups|[string]|false|none|none|
 |folders|[string]|true|none|none|
@@ -78653,7 +80731,8 @@ Guests are free up to `free_allowance` distinct emails over the trailing `window
     "string"
   ],
   "workspace_id": "string",
-  "read_only": true
+  "read_only": true,
+  "super_admin": true
 }
 ```
 
@@ -78666,6 +80745,7 @@ Guests are free up to `free_allowance` distinct emails over the trailing `window
 |scopes|[string]|false|none|none|
 |workspace_id|string|false|none|none|
 |read_only|boolean|false|none|If true, the token is restricted to read-only HTTP methods<br>(GET/HEAD/OPTIONS). Mutating endpoints and job-run actions are<br>rejected with 403, regardless of the scopes attached.<br>|
+|super_admin|boolean|false|none|For an MCP token (an `mcp:` scope) owned by a superadmin: carry the owner's<br>superadmin rights, reaching every workspace rather than only their<br>memberships. Ignored for other tokens, which always carry them.<br>|
 
 <h2 id="tocS_NewTokenImpersonate">NewTokenImpersonate</h2>
 <!-- backwards compatibility -->
@@ -79098,6 +81178,74 @@ Guests are free up to `free_allowance` distinct emails over the trailing `window
 |---|---|
 |type|Valid|
 |type|Invalid|
+
+<h2 id="tocS_RecentRunStatus">RecentRunStatus</h2>
+<!-- backwards compatibility -->
+<a id="schemarecentrunstatus"></a>
+<a id="schema_RecentRunStatus"></a>
+<a id="tocSrecentrunstatus"></a>
+<a id="tocsrecentrunstatus"></a>
+
+```json
+"success"
+```
+
+a failure someone or something marked as handled is `resolved`, not `failure`
+
+<h2 id="tocS_RecentRunHiddenItem">RecentRunHiddenItem</h2>
+<!-- backwards compatibility -->
+<a id="schemarecentrunhiddenitem"></a>
+<a id="schema_RecentRunHiddenItem"></a>
+<a id="tocSrecentrunhiddenitem"></a>
+<a id="tocsrecentrunhiddenitem"></a>
+
+```json
+{
+  "kind": "script",
+  "path": "string",
+  "summary": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|kind|string|true|none|none|
+|path|string|true|none|none|
+|summary|string|false|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|kind|script|
+|kind|flow|
+|kind|agent|
+
+<h2 id="tocS_RecentRunItemRefs">RecentRunItemRefs</h2>
+<!-- backwards compatibility -->
+<a id="schemarecentrunitemrefs"></a>
+<a id="schema_RecentRunItemRefs"></a>
+<a id="tocSrecentrunitemrefs"></a>
+<a id="tocsrecentrunitemrefs"></a>
+
+```json
+{
+  "items": [
+    {
+      "kind": "script",
+      "path": "string"
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|items|[object]|true|none|none|
 
 <h2 id="tocS_ScriptLang">ScriptLang</h2>
 <!-- backwards compatibility -->
@@ -79566,6 +81714,9 @@ An additional module file associated with a script
   "is_linked": true,
   "is_refreshed": true,
   "account": 0,
+  "scopes": [
+    "string"
+  ],
   "created_by": "string",
   "edited_at": "1970-01-01T00:00:00Z",
   "labels": [
@@ -79578,7 +81729,8 @@ An additional module file associated with a script
   "draft_only": true,
   "is_draft": true,
   "agent_memory": null,
-  "draft_path": "string"
+  "draft_path": "string",
+  "grant_type": "string"
 }
 ```
 
@@ -79598,6 +81750,7 @@ An additional module file associated with a script
 |is_linked|boolean|true|none|none|
 |is_refreshed|boolean|true|none|none|
 |account|number|false|none|none|
+|scopes|[string]|false|none|OAuth scopes the linked account was connected with|
 |created_by|string|false|none|none|
 |edited_at|string(date-time)|false|none|none|
 |labels|[string]|false|none|none|
@@ -79607,6 +81760,7 @@ An additional module file associated with a script
 |is_draft|boolean|false|none|True when the authed user has a per-user draft at this path<br>(over a deployed row or a synthesized draft-only row).<br>Frontend appends a `*` to the displayed name.<br>|
 |agent_memory|object|false|none|For an `ai_agent` resource only, its `memory` setting: the one part<br>of the value a listing returns, since it decides whether the agent<br>keeps a conversation.<br>|
 |draft_path|string|false|none|On a draft-only row, the path its editor has staged when it<br>differs from the storage path (e.g. a never-deployed item parked at<br>`u/{user}/draft_{uuid}`).<br>|
+|grant_type|string|false|none|The grant of the linked OAuth account: `client_credentials`<br>connects as the app, `authorization_code` as the user who<br>connected it.<br>|
 
 <h2 id="tocS_ResourceType">ResourceType</h2>
 <!-- backwards compatibility -->
@@ -80892,6 +83046,7 @@ Either a leaf filter, matching a field of the message (parsed as JSON) against a
     }
   ],
   "filter_logic": "and",
+  "run_on_filter_error": false,
   "initial_messages": [
     {
       "raw_message": "string"
@@ -80947,6 +83102,7 @@ Either a leaf filter, matching a field of the message (parsed as JSON) against a
 |error|string|false|none|Last error message if the trigger failed|
 |filters|[[TriggerFilter](#schematriggerfilter)]|true|none|Filters to match incoming messages (only matching messages trigger the script). Each entry is either a leaf `{key, value}` (top-level field) or `{path, value}` (dotted path into nested objects), or a group `{any_of: [...]}` / `{all_of: [...]}` / `{none_of: [...]}` nesting more entries. Entries at the top level are combined with `filter_logic`.|
 |filter_logic|string|false|none|Logic to apply when evaluating the top-level filters. 'and' requires all of them to match, 'or' requires any of them to match. Nested `any_of`/`all_of`/`none_of` groups carry their own logic.|
+|run_on_filter_error|boolean|false|none|Whether a message the filters cannot read (not UTF-8, or not JSON) still runs the target, as if the trigger had no filters. A preprocessor then finds the reason in `event.filter_error`. When false, such a message is skipped.|
 |initial_messages|[[WebsocketTriggerInitialMessage](#schemawebsockettriggerinitialmessage)]|false|none|Messages to send immediately after connecting (can be raw strings or computed by runnables)|
 |url_runnable_args|[ScriptArgs](#schemascriptargs)|false|none|Arguments to pass to the script/flow that computes the WebSocket URL|
 |can_return_message|boolean|true|none|If true, the script can return a message to send back through the WebSocket|
@@ -80987,6 +83143,7 @@ Either a leaf filter, matching a field of the message (parsed as JSON) against a
     }
   ],
   "filter_logic": "and",
+  "run_on_filter_error": false,
   "initial_messages": [
     {
       "raw_message": "string"
@@ -81036,6 +83193,7 @@ Either a leaf filter, matching a field of the message (parsed as JSON) against a
 |mode|[TriggerMode](#schematriggermode)|false|none|job trigger mode|
 |filters|[[TriggerFilter](#schematriggerfilter)]|true|none|Filters to match incoming messages (only matching messages trigger the script). Each entry is either a leaf `{key, value}` (top-level field) or `{path, value}` (dotted path into nested objects), or a group `{any_of: [...]}` / `{all_of: [...]}` / `{none_of: [...]}` nesting more entries. Entries at the top level are combined with `filter_logic`.|
 |filter_logic|string|false|none|Logic to apply when evaluating the top-level filters. 'and' requires all of them to match, 'or' requires any of them to match. Nested `any_of`/`all_of`/`none_of` groups carry their own logic.|
+|run_on_filter_error|boolean|false|none|Whether a message the filters cannot read (not UTF-8, or not JSON) still runs the target, as if the trigger had no filters. A preprocessor then finds the reason in `event.filter_error`. When false, such a message is skipped.|
 |initial_messages|[[WebsocketTriggerInitialMessage](#schemawebsockettriggerinitialmessage)]|false|none|Messages to send immediately after connecting (can be raw strings or computed by runnables)|
 |url_runnable_args|[ScriptArgs](#schemascriptargs)|false|none|Arguments to pass to the script/flow that computes the WebSocket URL|
 |can_return_message|boolean|true|none|If true, the script can return a message to send back through the WebSocket|
@@ -81078,6 +83236,7 @@ Either a leaf filter, matching a field of the message (parsed as JSON) against a
     }
   ],
   "filter_logic": "and",
+  "run_on_filter_error": false,
   "initial_messages": [
     {
       "raw_message": "string"
@@ -81126,6 +83285,7 @@ Either a leaf filter, matching a field of the message (parsed as JSON) against a
 |is_flow|boolean|true|none|True if script_path points to a flow, false if it points to a script|
 |filters|[[TriggerFilter](#schematriggerfilter)]|true|none|Filters to match incoming messages (only matching messages trigger the script). Each entry is either a leaf `{key, value}` (top-level field) or `{path, value}` (dotted path into nested objects), or a group `{any_of: [...]}` / `{all_of: [...]}` / `{none_of: [...]}` nesting more entries. Entries at the top level are combined with `filter_logic`.|
 |filter_logic|string|false|none|Logic to apply when evaluating the top-level filters. 'and' requires all of them to match, 'or' requires any of them to match. Nested `any_of`/`all_of`/`none_of` groups carry their own logic.|
+|run_on_filter_error|boolean|false|none|Whether a message the filters cannot read (not UTF-8, or not JSON) still runs the target, as if the trigger had no filters. A preprocessor then finds the reason in `event.filter_error`. When false, such a message is skipped.|
 |initial_messages|[[WebsocketTriggerInitialMessage](#schemawebsockettriggerinitialmessage)]|false|none|Messages to send immediately after connecting (can be raw strings or computed by runnables)|
 |url_runnable_args|[ScriptArgs](#schemascriptargs)|false|none|Arguments to pass to the script/flow that computes the WebSocket URL|
 |can_return_message|boolean|true|none|If true, the script can return a message to send back through the WebSocket|
@@ -83964,6 +86124,7 @@ hands the target to role — for a schema, with everything already in it but an 
     }
   ],
   "filter_logic": "and",
+  "run_on_filter_error": false,
   "auto_offset_reset": "latest",
   "auto_commit": true,
   "server_id": "string",
@@ -84010,6 +86171,7 @@ hands the target to role — for a schema, with everything already in it but an 
 |topics|[string]|true|none|Array of Kafka topic names to subscribe to|
 |filters|[[TriggerFilter](#schematriggerfilter)]|true|none|Filters to match incoming messages (only matching messages trigger the script). Each entry is either a leaf `{key, value}` (top-level field) or `{path, value}` (dotted path into nested objects), or a group `{any_of: [...]}` / `{all_of: [...]}` / `{none_of: [...]}` nesting more entries. Entries at the top level are combined with `filter_logic`.|
 |filter_logic|string|false|none|Logic to apply when evaluating the top-level filters. 'and' requires all of them to match, 'or' requires any of them to match. Nested `any_of`/`all_of`/`none_of` groups carry their own logic.|
+|run_on_filter_error|boolean|false|none|Whether a message the filters cannot read (not UTF-8, or not JSON) still runs the target, as if the trigger had no filters. A preprocessor then finds the reason in `event.filter_error`. When false, such a message is skipped.|
 |auto_offset_reset|string|false|none|Initial offset behavior when consumer group has no committed offset. 'latest' starts from new messages only, 'earliest' starts from the beginning.|
 |auto_commit|boolean|false|none|When true (default), offsets are committed automatically after receiving each message. When false, you must manually commit offsets using the commit_offsets endpoint.|
 |server_id|string|false|none|ID of the server currently handling this trigger (internal)|
@@ -84055,6 +86217,7 @@ hands the target to role — for a schema, with everything already in it but an 
     }
   ],
   "filter_logic": "and",
+  "run_on_filter_error": false,
   "auto_offset_reset": "latest",
   "auto_commit": true,
   "mode": "enabled",
@@ -84095,6 +86258,7 @@ hands the target to role — for a schema, with everything already in it but an 
 |topics|[string]|true|none|Array of Kafka topic names to subscribe to|
 |filters|[[TriggerFilter](#schematriggerfilter)]|true|none|Filters to match incoming messages (only matching messages trigger the script). Each entry is either a leaf `{key, value}` (top-level field) or `{path, value}` (dotted path into nested objects), or a group `{any_of: [...]}` / `{all_of: [...]}` / `{none_of: [...]}` nesting more entries. Entries at the top level are combined with `filter_logic`.|
 |filter_logic|string|false|none|Logic to apply when evaluating the top-level filters. 'and' requires all of them to match, 'or' requires any of them to match. Nested `any_of`/`all_of`/`none_of` groups carry their own logic.|
+|run_on_filter_error|boolean|false|none|Whether a message the filters cannot read (not UTF-8, or not JSON) still runs the target, as if the trigger had no filters. A preprocessor then finds the reason in `event.filter_error`. When false, such a message is skipped.|
 |auto_offset_reset|string|false|none|Initial offset behavior when consumer group has no committed offset.|
 |auto_commit|boolean|false|none|When true (default), offsets are committed automatically after receiving each message. When false, you must manually commit offsets using the commit_offsets endpoint.|
 |mode|[TriggerMode](#schematriggermode)|false|none|job trigger mode|
@@ -84138,6 +86302,7 @@ hands the target to role — for a schema, with everything already in it but an 
     }
   ],
   "filter_logic": "and",
+  "run_on_filter_error": false,
   "auto_offset_reset": "latest",
   "auto_commit": true,
   "path": "string",
@@ -84177,6 +86342,7 @@ hands the target to role — for a schema, with everything already in it but an 
 |topics|[string]|true|none|Array of Kafka topic names to subscribe to|
 |filters|[[TriggerFilter](#schematriggerfilter)]|true|none|Filters to match incoming messages (only matching messages trigger the script). Each entry is either a leaf `{key, value}` (top-level field) or `{path, value}` (dotted path into nested objects), or a group `{any_of: [...]}` / `{all_of: [...]}` / `{none_of: [...]}` nesting more entries. Entries at the top level are combined with `filter_logic`.|
 |filter_logic|string|false|none|Logic to apply when evaluating the top-level filters. 'and' requires all of them to match, 'or' requires any of them to match. Nested `any_of`/`all_of`/`none_of` groups carry their own logic.|
+|run_on_filter_error|boolean|false|none|Whether a message the filters cannot read (not UTF-8, or not JSON) still runs the target, as if the trigger had no filters. A preprocessor then finds the reason in `event.filter_error`. When false, such a message is skipped.|
 |auto_offset_reset|string|false|none|Initial offset behavior when consumer group has no committed offset.|
 |auto_commit|boolean|false|none|When true (default), offsets are committed automatically after receiving each message. When false, you must manually commit offsets using the commit_offsets endpoint.|
 |path|string|true|none|The unique Windmill path for this trigger. Must be of the form `u/<user>/<path>` or `f/<folder>/<path>`. This is the trigger object path, not the HTTP route path.|
@@ -84620,6 +86786,93 @@ hands the target to role — for a schema, with everything already in it but an 
 |preserve_permissioned_as|boolean|false|none|When true and the caller is a member of the 'wm_deployers' group, preserves the original permissioned_as value instead of overwriting it.|
 |labels|[string]|false|none|none|
 
+<h2 id="tocS_PrincipalAccess">PrincipalAccess</h2>
+<!-- backwards compatibility -->
+<a id="schemaprincipalaccess"></a>
+<a id="schema_PrincipalAccess"></a>
+<a id="tocSprincipalaccess"></a>
+<a id="tocsprincipalaccess"></a>
+
+```json
+{
+  "principal": "string",
+  "is_admin": true,
+  "groups": [
+    "string"
+  ],
+  "folders": [
+    {
+      "name": "string",
+      "write": true,
+      "owner": true,
+      "via": [
+        "string"
+      ]
+    }
+  ],
+  "items": [
+    {
+      "kind": "string",
+      "path": "string",
+      "write": true,
+      "reasons": [
+        {
+          "type": "own",
+          "group": "string",
+          "folder": "string",
+          "write": true
+        }
+      ]
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|principal|string|true|none|none|
+|is_admin|boolean|true|none|none|
+|groups|[string]|true|none|none|
+|folders|[object]|true|none|none|
+|items|[object]|true|none|none|
+
+<h2 id="tocS_AccessReason">AccessReason</h2>
+<!-- backwards compatibility -->
+<a id="schemaaccessreason"></a>
+<a id="schema_AccessReason"></a>
+<a id="tocSaccessreason"></a>
+<a id="tocsaccessreason"></a>
+
+```json
+{
+  "type": "own",
+  "group": "string",
+  "folder": "string",
+  "write": true
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|type|string|true|none|none|
+|group|string|false|none|none|
+|folder|string|false|none|none|
+|write|boolean|false|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|own|
+|type|group_path|
+|type|user|
+|type|group|
+|type|folder|
+
 <h2 id="tocS_Group">Group</h2>
 <!-- backwards compatibility -->
 <a id="schemagroup"></a>
@@ -84664,7 +86917,9 @@ hands the target to role — for a schema, with everything already in it but an 
   "emails": [
     "string"
   ],
-  "instance_role": "superadmin"
+  "instance_role": "superadmin",
+  "external_id": "string",
+  "scim_managed": true
 }
 ```
 
@@ -84676,6 +86931,8 @@ hands the target to role — for a schema, with everything already in it but an 
 |summary|string|false|none|none|
 |emails|[string]|false|none|none|
 |instance_role|string \| null|false|none|none|
+|external_id|string \| null|false|none|IdP group this group is linked to; its membership then follows the SSO groups claim|
+|scim_managed|boolean|false|none|Provisioned by SCIM, which then owns external_id|
 
 #### Enumerated Values
 
@@ -84699,6 +86956,8 @@ hands the target to role — for a schema, with everything already in it but an 
     "string"
   ],
   "instance_role": "superadmin",
+  "external_id": "string",
+  "scim_managed": true,
   "workspaces": [
     {
       "workspace_id": "string",
@@ -84717,6 +86976,8 @@ hands the target to role — for a schema, with everything already in it but an 
 |summary|string|false|none|none|
 |emails|[string]|false|none|none|
 |instance_role|string \| null|false|none|none|
+|external_id|string \| null|false|none|IdP group this group is linked to; its membership then follows the SSO groups claim|
+|scim_managed|boolean|false|none|Provisioned by SCIM, which then owns external_id|
 |workspaces|[[WorkspaceInfo](#schemaworkspaceinfo)]|false|none|none|
 
 #### Enumerated Values
@@ -84759,6 +87020,7 @@ hands the target to role — for a schema, with everything already in it but an 
 ```json
 {
   "name": "string",
+  "display_name": "string",
   "owners": [
     "string"
   ],
@@ -84786,6 +87048,7 @@ hands the target to role — for a schema, with everything already in it but an 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |name|string|true|none|none|
+|display_name|string|false|none|none|
 |owners|[string]|true|none|none|
 |extra_perms|object|true|none|none|
 |summary|string|false|none|none|
@@ -84881,7 +87144,21 @@ Resource usage of the jobs of one runnable on one worker group. Memory and CPU a
   "wm_memory_usage": 0,
   "job_isolation": "string",
   "native_mode": true,
-  "draining": true
+  "draining": true,
+  "job_stats": {
+    "total": {
+      "executed": 0,
+      "failed": 0
+    },
+    "last_24h": {
+      "executed": 0,
+      "failed": 0
+    },
+    "last_100": {
+      "executed": 0,
+      "failed": 0
+    }
+  }
 }
 ```
 
@@ -84911,6 +87188,28 @@ Resource usage of the jobs of one runnable on one worker group. Memory and CPU a
 |job_isolation|string|false|none|none|
 |native_mode|boolean|false|none|none|
 |draining|boolean|false|none|the worker received its shutdown signal and exits once its current job is done|
+|job_stats|object|false|none|script and flow-step jobs this worker ran and how many of them failed, over its whole life, the last 24 hours and its last 100 jobs. A flow's own outcome is not counted, since its failure is that of a step already counted on the worker that ran it. Canceled jobs count as executed, not failed.|
+
+<h2 id="tocS_WorkerJobCounts">WorkerJobCounts</h2>
+<!-- backwards compatibility -->
+<a id="schemaworkerjobcounts"></a>
+<a id="schema_WorkerJobCounts"></a>
+<a id="tocSworkerjobcounts"></a>
+<a id="tocsworkerjobcounts"></a>
+
+```json
+{
+  "executed": 0,
+  "failed": 0
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|executed|integer|true|none|none|
+|failed|integer|true|none|none|
 
 <h2 id="tocS_UserWorkspaceList">UserWorkspaceList</h2>
 <!-- backwards compatibility -->
@@ -84957,6 +87256,7 @@ Resource usage of the jobs of one runnable on one worker group. Memory and CPU a
         "apps": "none",
         "manage_schedules": true,
         "manage_triggers": true,
+        "run": true,
         "fork": true,
         "visibility": {
           "runs": true,
@@ -84982,6 +87282,19 @@ Resource usage of the jobs of one runnable on one worker group. Memory and CPU a
 |---|---|---|---|---|
 |email|string|true|none|none|
 |workspaces|[object]|true|none|none|
+
+<h2 id="tocS_WorkspaceWebhookEventType">WorkspaceWebhookEventType</h2>
+<!-- backwards compatibility -->
+<a id="schemaworkspacewebhookeventtype"></a>
+<a id="schema_WorkspaceWebhookEventType"></a>
+<a id="tocSworkspacewebhookeventtype"></a>
+<a id="tocsworkspacewebhookeventtype"></a>
+
+```json
+"CreateApp"
+```
+
+the `type` of a workspace webhook message
 
 <h2 id="tocS_CreateWorkspace">CreateWorkspace</h2>
 <!-- backwards compatibility -->
@@ -85319,7 +87632,8 @@ Resource usage of the jobs of one runnable on one worker group. Memory and CPU a
         "summary": "string",
         "mock": {
           "enabled": true,
-          "return_value": null
+          "return_value": null,
+          "preview_only": true
         },
         "suspend": {
           "required_events": 0,
@@ -85400,7 +87714,8 @@ Resource usage of the jobs of one runnable on one worker group. Memory and CPU a
       "summary": "string",
       "mock": {
         "enabled": true,
-        "return_value": null
+        "return_value": null,
+        "preview_only": true
       },
       "suspend": {
         "required_events": 0,
@@ -85480,7 +87795,8 @@ Resource usage of the jobs of one runnable on one worker group. Memory and CPU a
       "summary": "string",
       "mock": {
         "enabled": true,
-        "return_value": null
+        "return_value": null,
+        "preview_only": true
       },
       "suspend": {
         "required_events": 0,
@@ -85533,6 +87849,7 @@ Resource usage of the jobs of one runnable on one worker group. Memory and CPU a
     "concurrent_limit": 0,
     "concurrency_key": "string",
     "concurrency_time_window_s": 0,
+    "on_concurrency_limit": "queue",
     "debounce_delay_s": 0,
     "debounce_key": "string",
     "debounce_args_to_accumulate": [
@@ -85544,6 +87861,7 @@ Resource usage of the jobs of one runnable on one worker group. Memory and CPU a
     "cache_ttl": 0,
     "cache_ignore_s3_path": true,
     "delete_after_secs": 0,
+    "timeout": 0,
     "flow_env": {
       "property1": null,
       "property2": null
@@ -85773,7 +88091,8 @@ Resource usage of the jobs of one runnable on one worker group. Memory and CPU a
         "summary": "string",
         "mock": {
           "enabled": true,
-          "return_value": null
+          "return_value": null,
+          "preview_only": true
         },
         "suspend": {
           "required_events": 0,
@@ -85854,7 +88173,8 @@ Resource usage of the jobs of one runnable on one worker group. Memory and CPU a
       "summary": "string",
       "mock": {
         "enabled": true,
-        "return_value": null
+        "return_value": null,
+        "preview_only": true
       },
       "suspend": {
         "required_events": 0,
@@ -85934,7 +88254,8 @@ Resource usage of the jobs of one runnable on one worker group. Memory and CPU a
       "summary": "string",
       "mock": {
         "enabled": true,
-        "return_value": null
+        "return_value": null,
+        "preview_only": true
       },
       "suspend": {
         "required_events": 0,
@@ -85987,6 +88308,7 @@ Resource usage of the jobs of one runnable on one worker group. Memory and CPU a
     "concurrent_limit": 0,
     "concurrency_key": "string",
     "concurrency_time_window_s": 0,
+    "on_concurrency_limit": "queue",
     "debounce_delay_s": 0,
     "debounce_key": "string",
     "debounce_args_to_accumulate": [
@@ -85998,6 +88320,7 @@ Resource usage of the jobs of one runnable on one worker group. Memory and CPU a
     "cache_ttl": 0,
     "cache_ignore_s3_path": true,
     "delete_after_secs": 0,
+    "timeout": 0,
     "flow_env": {
       "property1": null,
       "property2": null
@@ -86124,7 +88447,8 @@ Resource usage of the jobs of one runnable on one worker group. Memory and CPU a
         "summary": "string",
         "mock": {
           "enabled": true,
-          "return_value": null
+          "return_value": null,
+          "preview_only": true
         },
         "suspend": {
           "required_events": 0,
@@ -86205,7 +88529,8 @@ Resource usage of the jobs of one runnable on one worker group. Memory and CPU a
       "summary": "string",
       "mock": {
         "enabled": true,
-        "return_value": null
+        "return_value": null,
+        "preview_only": true
       },
       "suspend": {
         "required_events": 0,
@@ -86285,7 +88610,8 @@ Resource usage of the jobs of one runnable on one worker group. Memory and CPU a
       "summary": "string",
       "mock": {
         "enabled": true,
-        "return_value": null
+        "return_value": null,
+        "preview_only": true
       },
       "suspend": {
         "required_events": 0,
@@ -86338,6 +88664,7 @@ Resource usage of the jobs of one runnable on one worker group. Memory and CPU a
     "concurrent_limit": 0,
     "concurrency_key": "string",
     "concurrency_time_window_s": 0,
+    "on_concurrency_limit": "queue",
     "debounce_delay_s": 0,
     "debounce_key": "string",
     "debounce_args_to_accumulate": [
@@ -86349,6 +88676,7 @@ Resource usage of the jobs of one runnable on one worker group. Memory and CPU a
     "cache_ttl": 0,
     "cache_ignore_s3_path": true,
     "delete_after_secs": 0,
+    "timeout": 0,
     "flow_env": {
       "property1": null,
       "property2": null
@@ -86473,7 +88801,8 @@ Resource usage of the jobs of one runnable on one worker group. Memory and CPU a
         "summary": "string",
         "mock": {
           "enabled": true,
-          "return_value": null
+          "return_value": null,
+          "preview_only": true
         },
         "suspend": {
           "required_events": 0,
@@ -86554,7 +88883,8 @@ Resource usage of the jobs of one runnable on one worker group. Memory and CPU a
       "summary": "string",
       "mock": {
         "enabled": true,
-        "return_value": null
+        "return_value": null,
+        "preview_only": true
       },
       "suspend": {
         "required_events": 0,
@@ -86634,7 +88964,8 @@ Resource usage of the jobs of one runnable on one worker group. Memory and CPU a
       "summary": "string",
       "mock": {
         "enabled": true,
-        "return_value": null
+        "return_value": null,
+        "preview_only": true
       },
       "suspend": {
         "required_events": 0,
@@ -86687,6 +89018,7 @@ Resource usage of the jobs of one runnable on one worker group. Memory and CPU a
     "concurrent_limit": 0,
     "concurrency_key": "string",
     "concurrency_time_window_s": 0,
+    "on_concurrency_limit": "queue",
     "debounce_delay_s": 0,
     "debounce_key": "string",
     "debounce_args_to_accumulate": [
@@ -86698,6 +89030,7 @@ Resource usage of the jobs of one runnable on one worker group. Memory and CPU a
     "cache_ttl": 0,
     "cache_ignore_s3_path": true,
     "delete_after_secs": 0,
+    "timeout": 0,
     "flow_env": {
       "property1": null,
       "property2": null
@@ -87952,6 +90285,7 @@ Warehouses a dbt project may run against, by name. `main` is the one a project g
         "webhook_secret": "string",
         "webhook_url": "string",
         "webhook_error": "string",
+        "webhook_verified_id": 0,
         "last_synced_sha": {
           "property1": "string",
           "property2": "string"
@@ -88200,6 +90534,7 @@ Warehouses a dbt project may run against, by name. `main` is the one a project g
     "webhook_secret": "string",
     "webhook_url": "string",
     "webhook_error": "string",
+    "webhook_verified_id": 0,
     "last_synced_sha": {
       "property1": "string",
       "property2": "string"
@@ -88391,6 +90726,7 @@ a GitLab project a token can sync, as the resource form needs it
   "webhook_secret": "string",
   "webhook_url": "string",
   "webhook_error": "string",
+  "webhook_verified_id": 0,
   "last_synced_sha": {
     "property1": "string",
     "property2": "string"
@@ -88418,6 +90754,7 @@ a GitLab project a token can sync, as the resource form needs it
 |webhook_secret|string|false|none|none|
 |webhook_url|string|false|none|none|
 |webhook_error|string|false|none|none|
+|webhook_verified_id|integer(int64)|false|none|The webhook_id a delivery from the host last arrived for. Polling relaxes to about every 10 minutes only while it matches webhook_id. Set by the server.|
 |last_synced_sha|object|false|none|none|
 |last_pull_status|[AutoPullStatus](#schemaautopullstatus)|false|none|none|
 |enabled_by|string|false|none|Email of the admin automatic pulls apply changes as. Set by the server when the settings are saved.|
@@ -88649,6 +90986,9 @@ a GitLab project a token can sync, as the resource form needs it
             "flow_jobs_success": [
               true
             ],
+            "flow_jobs_labels": [
+              "string"
+            ],
             "flow_jobs_duration": {
               "started_at": [
                 "string"
@@ -88709,6 +91049,9 @@ a GitLab project a token can sync, as the resource form needs it
           "flow_jobs_success": [
             true
           ],
+          "flow_jobs_labels": [
+            "string"
+          ],
           "flow_jobs_duration": {
             "started_at": [
               "string"
@@ -88767,6 +91110,9 @@ a GitLab project a token can sync, as the resource form needs it
           "flow_jobs_success": [
             true
           ],
+          "flow_jobs_labels": [
+            "string"
+          ],
           "flow_jobs_duration": {
             "started_at": [
               "string"
@@ -88811,6 +91157,16 @@ a GitLab project a token can sync, as the resource form needs it
           "failed_jobs": [
             "497f6eca-6276-4993-bfeb-53cbbbba6f08"
           ]
+        },
+        "continued_on_error": [
+          {
+            "id": "string",
+            "job": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+          }
+        ],
+        "test_subflows": {
+          "property1": {},
+          "property2": {}
         }
       },
       "workflow_as_code_status": {
@@ -88853,7 +91209,8 @@ a GitLab project a token can sync, as the resource form needs it
             "summary": "string",
             "mock": {
               "enabled": true,
-              "return_value": null
+              "return_value": null,
+              "preview_only": true
             },
             "suspend": {
               "required_events": 0,
@@ -88934,7 +91291,8 @@ a GitLab project a token can sync, as the resource form needs it
           "summary": "string",
           "mock": {
             "enabled": true,
-            "return_value": null
+            "return_value": null,
+            "preview_only": true
           },
           "suspend": {
             "required_events": 0,
@@ -89014,7 +91372,8 @@ a GitLab project a token can sync, as the resource form needs it
           "summary": "string",
           "mock": {
             "enabled": true,
-            "return_value": null
+            "return_value": null,
+            "preview_only": true
           },
           "suspend": {
             "required_events": 0,
@@ -89067,6 +91426,7 @@ a GitLab project a token can sync, as the resource form needs it
         "concurrent_limit": 0,
         "concurrency_key": "string",
         "concurrency_time_window_s": 0,
+        "on_concurrency_limit": "queue",
         "debounce_delay_s": 0,
         "debounce_key": "string",
         "debounce_args_to_accumulate": [
@@ -89078,6 +91438,7 @@ a GitLab project a token can sync, as the resource form needs it
         "cache_ttl": 0,
         "cache_ignore_s3_path": true,
         "delete_after_secs": 0,
+        "timeout": 0,
         "flow_env": {
           "property1": null,
           "property2": null
@@ -89137,6 +91498,7 @@ a GitLab project a token can sync, as the resource form needs it
       "resolution_note": "string",
       "resolved_automatically": true,
       "trigger_kind": "webhook",
+      "trigger_path": "string",
       "worker": "string",
       "type": "CompletedJob"
     }
@@ -89390,6 +91752,78 @@ Unified instance configuration combining global settings and worker group config
 |reason|string|false|none|none|
 |applied_at|string(date-time)|false|none|none|
 
+<h2 id="tocS_AutoscalingDiagnostics">AutoscalingDiagnostics</h2>
+<!-- backwards compatibility -->
+<a id="schemaautoscalingdiagnostics"></a>
+<a id="schema_AutoscalingDiagnostics"></a>
+<a id="tocSautoscalingdiagnostics"></a>
+<a id="tocsautoscalingdiagnostics"></a>
+
+```json
+{
+  "recording_until": "1970-01-01T00:00:00Z",
+  "recording_started_by": "string",
+  "decision_count": 0,
+  "decisions": [
+    {
+      "recorded_at": "1970-01-01T00:00:00Z",
+      "worker_count": 0,
+      "occupancy_rate_15s": 0,
+      "occupancy_rate_5m": 0,
+      "occupancy_rate_30m": 0,
+      "jobs_waiting": {
+        "property1": 0,
+        "property2": 0
+      },
+      "decision": "string"
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|recording_until|string(date-time) \| null|false|none|none|
+|recording_started_by|string \| null|false|none|none|
+|decision_count|integer(int64)|true|none|none|
+|decisions|[[AutoscalingDecision](#schemaautoscalingdecision)]|true|none|none|
+
+<h2 id="tocS_AutoscalingDecision">AutoscalingDecision</h2>
+<!-- backwards compatibility -->
+<a id="schemaautoscalingdecision"></a>
+<a id="schema_AutoscalingDecision"></a>
+<a id="tocSautoscalingdecision"></a>
+<a id="tocsautoscalingdecision"></a>
+
+```json
+{
+  "recorded_at": "1970-01-01T00:00:00Z",
+  "worker_count": 0,
+  "occupancy_rate_15s": 0,
+  "occupancy_rate_5m": 0,
+  "occupancy_rate_30m": 0,
+  "jobs_waiting": {
+    "property1": 0,
+    "property2": 0
+  },
+  "decision": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|recorded_at|string(date-time)|true|none|none|
+|worker_count|integer|true|none|none|
+|occupancy_rate_15s|number \| null|false|none|none|
+|occupancy_rate_5m|number \| null|false|none|none|
+|occupancy_rate_30m|number \| null|false|none|none|
+|jobs_waiting|object|true|none|none|
+|decision|string|true|none|none|
+
 <h2 id="tocS_CriticalAlert">CriticalAlert</h2>
 <!-- backwards compatibility -->
 <a id="schemacriticalalert"></a>
@@ -89629,6 +92063,7 @@ Pages a role sees. Not enforced.
   "apps": "none",
   "manage_schedules": true,
   "manage_triggers": true,
+  "run": true,
   "fork": true,
   "visibility": {
     "runs": true,
@@ -89649,11 +92084,12 @@ Pages a role sees. Not enforced.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|code|boolean|true|none|Author scripts and run code of one's own (previews, dependency jobs, dynamic selects, resolving jobs, data table migrations). Required by `full` flows or apps.|
+|code|boolean|true|none|Author scripts and run code of one's own (previews, dependency jobs, dynamic selects, resolving jobs, data table migrations). Required by `full` flows or apps. Previews also need `run`.|
 |flows|[AuthorLevel](#schemaauthorlevel)|true|none|How much of a kind of runnable a role may author. `compose` assembles already-deployed runnables with no code of one's own.|
 |apps|[AuthorLevel](#schemaauthorlevel)|true|none|How much of a kind of runnable a role may author. `compose` assembles already-deployed runnables with no code of one's own.|
 |manage_schedules|boolean|true|none|none|
 |manage_triggers|boolean|true|none|none|
+|run|boolean|true|none|Start runs of scripts, flows and AI agents (by path, hash or version, restarts, previews, MCP run tools). Without it a role is view-only. Schedules and triggers keep their own rights; resuming a suspended step is not a run.|
 |fork|boolean|true|none|Fork the workspace.|
 |visibility|[RoleVisibility](#schemarolevisibility)|true|none|Pages a role sees. Not enforced.|
 
@@ -89682,6 +92118,7 @@ Pages a role sees. Not enforced.
   "apps": "none",
   "manage_schedules": true,
   "manage_triggers": true,
+  "run": true,
   "fork": true,
   "visibility": {
     "property1": true,
@@ -89701,6 +92138,7 @@ A partial RoleCapabilities; an unset key falls through to the layer below.
 |apps|[AuthorLevel](#schemaauthorlevel)|false|none|How much of a kind of runnable a role may author. `compose` assembles already-deployed runnables with no code of one's own.|
 |manage_schedules|boolean|false|none|none|
 |manage_triggers|boolean|false|none|none|
+|run|boolean|false|none|none|
 |fork|boolean|false|none|none|
 |visibility|object|false|none|none|
 
@@ -89732,6 +92170,7 @@ A partial RoleCapabilities; an unset key falls through to the layer below.
     "apps": "none",
     "manage_schedules": true,
     "manage_triggers": true,
+    "run": true,
     "fork": true,
     "visibility": {
       "property1": true,
@@ -89767,6 +92206,7 @@ One entry of the `workspace_roles` instance setting.
     "apps": "none",
     "manage_schedules": true,
     "manage_triggers": true,
+    "run": true,
     "fork": true,
     "visibility": {
       "property1": true,
@@ -89800,6 +92240,7 @@ One entry of the `workspace_roles` instance setting.
       "apps": "none",
       "manage_schedules": true,
       "manage_triggers": true,
+      "run": true,
       "fork": true,
       "visibility": {
         "property1": true,
@@ -89815,6 +92256,7 @@ One entry of the `workspace_roles` instance setting.
       "apps": "none",
       "manage_schedules": true,
       "manage_triggers": true,
+      "run": true,
       "fork": true,
       "visibility": {
         "property1": true,
@@ -89850,6 +92292,7 @@ A workspace's overrides keyed by role name; a name the instance does not define 
     "apps": "none",
     "manage_schedules": true,
     "manage_triggers": true,
+    "run": true,
     "fork": true,
     "visibility": {
       "runs": true,
@@ -89905,6 +92348,7 @@ A workspace's overrides keyed by role name; a name the instance does not define 
         "apps": "none",
         "manage_schedules": true,
         "manage_triggers": true,
+        "run": true,
         "fork": true,
         "visibility": {
           "runs": true,
@@ -89932,6 +92376,7 @@ A workspace's overrides keyed by role name; a name the instance does not define 
         "apps": "none",
         "manage_schedules": true,
         "manage_triggers": true,
+        "run": true,
         "fork": true,
         "visibility": {
           "property1": true,
@@ -89947,6 +92392,7 @@ A workspace's overrides keyed by role name; a name the instance does not define 
         "apps": "none",
         "manage_schedules": true,
         "manage_triggers": true,
+        "run": true,
         "fork": true,
         "visibility": {
           "property1": true,
@@ -89963,6 +92409,7 @@ A workspace's overrides keyed by role name; a name the instance does not define 
     "apps": "none",
     "manage_schedules": true,
     "manage_triggers": true,
+    "run": true,
     "fork": true,
     "visibility": {
       "runs": true,
@@ -91254,7 +93701,7 @@ Full trigger response containing both Windmill data and external service data
 |client_id|string|true|none|The OAuth client ID for the workspace|
 |client_secret|string|true|none|The OAuth client secret for the workspace|
 |base_url|string(uri)|true|none|The base URL of the workspace|
-|redirect_uri|string(uri)|true|none|The OAuth redirect URI|
+|redirect_uri|string(uri)|false|none|The redirect URI registered on the OAuth app. Absent for an app saved before it was stored, which uses the workspace settings page.|
 
 <h2 id="tocS_WebhookEvent">WebhookEvent</h2>
 <!-- backwards compatibility -->
@@ -91340,7 +93787,14 @@ Data for creating or updating a native trigger
 {
   "path": "string",
   "owner": "string",
-  "workspace": true
+  "workspace": true,
+  "managed": true,
+  "scopes": [
+    "string"
+  ],
+  "missing_scopes": [
+    "string"
+  ]
 }
 ```
 
@@ -91353,6 +93807,9 @@ An account connected for native triggers, stored as an OAuth resource
 |path|string|true|none|Path of the resource and variable holding the connection|
 |owner|string \| null|false|none|Username of whoever connected the account, when the caller can read its resource|
 |workspace|boolean|true|none|Whether this is the workspace connection, which every member may use|
+|managed|boolean|true|none|Whether the integration trigger connect flow made it. Any other connection is a resource connected from Resources, which triggers can use but only Resources can replace or delete.|
+|scopes|[string]|false|none|Scopes the account was connected with; absent when unknown|
+|missing_scopes|[string]|false|none|Scopes the service's triggers need that the account lacks; absent when unknown|
 
 <h2 id="tocS_CreateTriggerResponse">CreateTriggerResponse</h2>
 <!-- backwards compatibility -->

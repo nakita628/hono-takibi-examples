@@ -61,16 +61,13 @@ export const getPetsRoute = createRoute({
       description: 'An paged array of pets',
       content: { 'application/json': { schema: PetsSchema } },
       headers: z.object({
-        'x-next': {
-          description: 'A link to the next page of responses',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A link to the next page of responses',
-              param: { required: false },
-            }),
-        },
+        'x-next': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A link to the next page of responses',
+            param: { required: false },
+          }),
       }),
     },
     default: {

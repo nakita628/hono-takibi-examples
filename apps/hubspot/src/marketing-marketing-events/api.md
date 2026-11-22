@@ -24,12 +24,6 @@ Base URLs:
 |crm.objects.marketing_events.read||
 |crm.objects.marketing_events.write||
 
-* API Key (private_apps)
-    - Parameter Name: **private-app**, in: header.
-
-* API Key (private_apps_legacy)
-    - Parameter Name: **private-app-legacy**, in: header.
-
 <h1 id="marketing-marketing-events-basic">Basic</h1>
 
 ## List

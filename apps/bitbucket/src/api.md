@@ -476,6 +476,7 @@ repository.
             "slug": "string",
             "is_private": true,
             "is_personal": true,
+            "enforced_signed_commits": true,
             "is_privacy_enforced": true,
             "forking_mode": "allow_forks",
             "created_on": "1970-01-01T00:00:00Z",
@@ -651,6 +652,7 @@ curl https://api.bitbucket.org/2.0/repositories/string/string/branch-restriction
           "slug": "string",
           "is_private": true,
           "is_personal": true,
+          "enforced_signed_commits": true,
           "is_privacy_enforced": true,
           "forking_mode": "allow_forks",
           "created_on": "1970-01-01T00:00:00Z",
@@ -812,6 +814,7 @@ but the resulting behavior may be surprising.
         "slug": "string",
         "is_private": true,
         "is_personal": true,
+        "enforced_signed_commits": true,
         "is_privacy_enforced": true,
         "forking_mode": "allow_forks",
         "created_on": "1970-01-01T00:00:00Z",
@@ -980,6 +983,7 @@ but the resulting behavior may be surprising.
         "slug": "string",
         "is_private": true,
         "is_personal": true,
+        "enforced_signed_commits": true,
         "is_privacy_enforced": true,
         "forking_mode": "allow_forks",
         "created_on": "1970-01-01T00:00:00Z",
@@ -1170,6 +1174,7 @@ Returns a specific branch restriction rule.
         "slug": "string",
         "is_private": true,
         "is_personal": true,
+        "enforced_signed_commits": true,
         "is_privacy_enforced": true,
         "forking_mode": "allow_forks",
         "created_on": "1970-01-01T00:00:00Z",
@@ -1343,6 +1348,7 @@ curl https://api.bitbucket.org/2.0/repositories/string/string/branch-restriction
           "slug": "string",
           "is_private": true,
           "is_personal": true,
+          "enforced_signed_commits": true,
           "is_privacy_enforced": true,
           "forking_mode": "allow_forks",
           "created_on": "1970-01-01T00:00:00Z",
@@ -1464,6 +1470,7 @@ See [`POST`](/cloud/bitbucket/rest/api-group-branch-restrictions/#api-repositori
         "slug": "string",
         "is_private": true,
         "is_personal": true,
+        "enforced_signed_commits": true,
         "is_privacy_enforced": true,
         "forking_mode": "allow_forks",
         "created_on": "1970-01-01T00:00:00Z",
@@ -1633,6 +1640,7 @@ See [`POST`](/cloud/bitbucket/rest/api-group-branch-restrictions/#api-repositori
         "slug": "string",
         "is_private": true,
         "is_personal": true,
+        "enforced_signed_commits": true,
         "is_privacy_enforced": true,
         "forking_mode": "allow_forks",
         "created_on": "1970-01-01T00:00:00Z",
@@ -7702,6 +7710,7 @@ Lists pullrequests currently associated with a merge queue.
           "has_issues": true,
           "has_wiki": true,
           "fork_policy": "allow_forks",
+          "enforced_signed_commits": true,
           "project": {
             "type": "string",
             "links": {
@@ -7753,7 +7762,8 @@ Lists pullrequests currently associated with a merge queue.
             "is_private": true,
             "created_on": "1970-01-01T00:00:00Z",
             "updated_on": "1970-01-01T00:00:00Z",
-            "has_publicly_visible_repos": true
+            "has_publicly_visible_repos": true,
+            "enforced_signed_commits": true
           },
           "mainbranch": {}
         },
@@ -7954,6 +7964,7 @@ Lists pullrequests currently associated with a merge queue.
             "has_issues": true,
             "has_wiki": true,
             "fork_policy": "allow_forks",
+            "enforced_signed_commits": true,
             "project": {
               "type": "string",
               "links": {
@@ -8005,7 +8016,8 @@ Lists pullrequests currently associated with a merge queue.
               "is_private": true,
               "created_on": "1970-01-01T00:00:00Z",
               "updated_on": "1970-01-01T00:00:00Z",
-              "has_publicly_visible_repos": true
+              "has_publicly_visible_repos": true,
+              "enforced_signed_commits": true
             },
             "mainbranch": {}
           },
@@ -8093,6 +8105,7 @@ Lists pullrequests currently associated with a merge queue.
             "has_issues": true,
             "has_wiki": true,
             "fork_policy": "allow_forks",
+            "enforced_signed_commits": true,
             "project": {
               "type": "string",
               "links": {
@@ -8144,7 +8157,8 @@ Lists pullrequests currently associated with a merge queue.
               "is_private": true,
               "created_on": "1970-01-01T00:00:00Z",
               "updated_on": "1970-01-01T00:00:00Z",
-              "has_publicly_visible_repos": true
+              "has_publicly_visible_repos": true,
+              "enforced_signed_commits": true
             },
             "mainbranch": {}
           },
@@ -8418,6 +8432,7 @@ Gets a specific pullrequest in a merge queue.
       "has_issues": true,
       "has_wiki": true,
       "fork_policy": "allow_forks",
+      "enforced_signed_commits": true,
       "project": {
         "type": "string",
         "links": {
@@ -8469,7 +8484,8 @@ Gets a specific pullrequest in a merge queue.
         "is_private": true,
         "created_on": "1970-01-01T00:00:00Z",
         "updated_on": "1970-01-01T00:00:00Z",
-        "has_publicly_visible_repos": true
+        "has_publicly_visible_repos": true,
+        "enforced_signed_commits": true
       },
       "mainbranch": {}
     },
@@ -8670,6 +8686,7 @@ Gets a specific pullrequest in a merge queue.
         "has_issues": true,
         "has_wiki": true,
         "fork_policy": "allow_forks",
+        "enforced_signed_commits": true,
         "project": {
           "type": "string",
           "links": {
@@ -8721,7 +8738,8 @@ Gets a specific pullrequest in a merge queue.
           "is_private": true,
           "created_on": "1970-01-01T00:00:00Z",
           "updated_on": "1970-01-01T00:00:00Z",
-          "has_publicly_visible_repos": true
+          "has_publicly_visible_repos": true,
+          "enforced_signed_commits": true
         },
         "mainbranch": {}
       },
@@ -8809,6 +8827,7 @@ Gets a specific pullrequest in a merge queue.
         "has_issues": true,
         "has_wiki": true,
         "fork_policy": "allow_forks",
+        "enforced_signed_commits": true,
         "project": {
           "type": "string",
           "links": {
@@ -8860,7 +8879,8 @@ Gets a specific pullrequest in a merge queue.
           "is_private": true,
           "created_on": "1970-01-01T00:00:00Z",
           "updated_on": "1970-01-01T00:00:00Z",
-          "has_publicly_visible_repos": true
+          "has_publicly_visible_repos": true,
+          "enforced_signed_commits": true
         },
         "mainbranch": {}
       },
@@ -9585,6 +9605,7 @@ for specific details.
         "has_issues": true,
         "has_wiki": true,
         "fork_policy": "allow_forks",
+        "enforced_signed_commits": true,
         "project": {
           "type": "string",
           "links": {
@@ -9636,7 +9657,8 @@ for specific details.
           "is_private": true,
           "created_on": "1970-01-01T00:00:00Z",
           "updated_on": "1970-01-01T00:00:00Z",
-          "has_publicly_visible_repos": true
+          "has_publicly_visible_repos": true,
+          "enforced_signed_commits": true
         },
         "mainbranch": {}
       },
@@ -9798,6 +9820,7 @@ curl https://api.bitbucket.org/2.0/repositories/string/string/pipelines \
       "has_issues": true,
       "has_wiki": true,
       "fork_policy": "allow_forks",
+      "enforced_signed_commits": true,
       "project": {
         "type": "string",
         "links": {
@@ -9849,7 +9872,8 @@ curl https://api.bitbucket.org/2.0/repositories/string/string/pipelines \
         "is_private": true,
         "created_on": "1970-01-01T00:00:00Z",
         "updated_on": "1970-01-01T00:00:00Z",
-        "has_publicly_visible_repos": true
+        "has_publicly_visible_repos": true,
+        "enforced_signed_commits": true
       },
       "mainbranch": {}
     },
@@ -10301,6 +10325,7 @@ pipelines:
     "has_issues": true,
     "has_wiki": true,
     "fork_policy": "allow_forks",
+    "enforced_signed_commits": true,
     "project": {
       "type": "string",
       "links": {
@@ -10352,7 +10377,8 @@ pipelines:
       "is_private": true,
       "created_on": "1970-01-01T00:00:00Z",
       "updated_on": "1970-01-01T00:00:00Z",
-      "has_publicly_visible_repos": true
+      "has_publicly_visible_repos": true,
+      "enforced_signed_commits": true
     },
     "mainbranch": {}
   },
@@ -10514,6 +10540,7 @@ pipelines:
     "has_issues": true,
     "has_wiki": true,
     "fork_policy": "allow_forks",
+    "enforced_signed_commits": true,
     "project": {
       "type": "string",
       "links": {
@@ -10565,7 +10592,8 @@ pipelines:
       "is_private": true,
       "created_on": "1970-01-01T00:00:00Z",
       "updated_on": "1970-01-01T00:00:00Z",
-      "has_publicly_visible_repos": true
+      "has_publicly_visible_repos": true,
+      "enforced_signed_commits": true
     },
     "mainbranch": {}
   },
@@ -10652,7 +10680,7 @@ pipelines:
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: pipeline ), basic, api_key
+oauth2 ( Scopes: pipeline:write ), basic, api_key
 </aside>
 
 ## List caches
@@ -11407,6 +11435,7 @@ Retrieve a specified pipeline
     "has_issues": true,
     "has_wiki": true,
     "fork_policy": "allow_forks",
+    "enforced_signed_commits": true,
     "project": {
       "type": "string",
       "links": {
@@ -11458,7 +11487,8 @@ Retrieve a specified pipeline
       "is_private": true,
       "created_on": "1970-01-01T00:00:00Z",
       "updated_on": "1970-01-01T00:00:00Z",
-      "has_publicly_visible_repos": true
+      "has_publicly_visible_repos": true,
+      "enforced_signed_commits": true
     },
     "mainbranch": {}
   },
@@ -12091,6 +12121,7 @@ Retrieve the repository pipelines configuration.
     "has_issues": true,
     "has_wiki": true,
     "fork_policy": "allow_forks",
+    "enforced_signed_commits": true,
     "project": {
       "type": "string",
       "links": {
@@ -12142,7 +12173,8 @@ Retrieve the repository pipelines configuration.
       "is_private": true,
       "created_on": "1970-01-01T00:00:00Z",
       "updated_on": "1970-01-01T00:00:00Z",
-      "has_publicly_visible_repos": true
+      "has_publicly_visible_repos": true,
+      "enforced_signed_commits": true
     },
     "mainbranch": {}
   }
@@ -12247,6 +12279,7 @@ curl https://api.bitbucket.org/2.0/repositories/string/string/pipelines_config \
       "has_issues": true,
       "has_wiki": true,
       "fork_policy": "allow_forks",
+      "enforced_signed_commits": true,
       "project": {
         "type": "string",
         "links": {
@@ -12298,7 +12331,8 @@ curl https://api.bitbucket.org/2.0/repositories/string/string/pipelines_config \
         "is_private": true,
         "created_on": "1970-01-01T00:00:00Z",
         "updated_on": "1970-01-01T00:00:00Z",
-        "has_publicly_visible_repos": true
+        "has_publicly_visible_repos": true,
+        "enforced_signed_commits": true
       },
       "mainbranch": {}
     }
@@ -12387,6 +12421,7 @@ Update the pipelines configuration for a repository.
     "has_issues": true,
     "has_wiki": true,
     "fork_policy": "allow_forks",
+    "enforced_signed_commits": true,
     "project": {
       "type": "string",
       "links": {
@@ -12438,7 +12473,8 @@ Update the pipelines configuration for a repository.
       "is_private": true,
       "created_on": "1970-01-01T00:00:00Z",
       "updated_on": "1970-01-01T00:00:00Z",
-      "has_publicly_visible_repos": true
+      "has_publicly_visible_repos": true,
+      "enforced_signed_commits": true
     },
     "mainbranch": {}
   }
@@ -12536,6 +12572,7 @@ Update the pipelines configuration for a repository.
     "has_issues": true,
     "has_wiki": true,
     "fork_policy": "allow_forks",
+    "enforced_signed_commits": true,
     "project": {
       "type": "string",
       "links": {
@@ -12587,7 +12624,8 @@ Update the pipelines configuration for a repository.
       "is_private": true,
       "created_on": "1970-01-01T00:00:00Z",
       "updated_on": "1970-01-01T00:00:00Z",
-      "has_publicly_visible_repos": true
+      "has_publicly_visible_repos": true,
+      "enforced_signed_commits": true
     },
     "mainbranch": {}
   }
@@ -15987,13 +16025,18 @@ curl https://api.bitbucket.org/2.0/workspaces/string/projects \
     "is_private": true,
     "created_on": "1970-01-01T00:00:00Z",
     "updated_on": "1970-01-01T00:00:00Z",
-    "has_publicly_visible_repos": true
+    "has_publicly_visible_repos": true,
+    "enforced_signed_commits": true
   }'
 ```
 
 `POST /workspaces/{workspace}/projects`
 
 Creates a new project.
+
+Note: Setting `enforced_signed_commits` requires the workspace to be on a
+Premium plan. Cannot be disabled while the setting is enforced at the
+workspace level.
 
 Note that the avatar has to be embedded as either a data-url
 or a URL to an external image as shown in the examples below:
@@ -16102,7 +16145,8 @@ $ curl -H "Content-Type: application/json" \
   "is_private": true,
   "created_on": "1970-01-01T00:00:00Z",
   "updated_on": "1970-01-01T00:00:00Z",
-  "has_publicly_visible_repos": true
+  "has_publicly_visible_repos": true,
+  "enforced_signed_commits": true
 }
 ```
 
@@ -16129,6 +16173,7 @@ $ curl -H "Content-Type: application/json" \
 |» created_on|body|string(date-time)|false|none|
 |» updated_on|body|string(date-time)|false|none|
 |» has_publicly_visible_repos|body|boolean|false|<br>Indicates whether the project contains publicly visible repositories.<br>Note that private projects cannot contain public repositories.|
+|» enforced_signed_commits|body|boolean|false|Whether signed commits are required for this project:<br><br>- true when the workspace is on a Premium plan and enforcement is enabled at the project or the<br>  workspace level;<br>- otherwise false.|
 
 > Example responses
 
@@ -16186,7 +16231,21 @@ $ curl -H "Content-Type: application/json" \
   "is_private": true,
   "created_on": "1970-01-01T00:00:00Z",
   "updated_on": "1970-01-01T00:00:00Z",
-  "has_publicly_visible_repos": true
+  "has_publicly_visible_repos": true,
+  "enforced_signed_commits": true
+}
+```
+
+> 400 Response
+
+```json
+{
+  "type": "string",
+  "error": {
+    "message": "string",
+    "detail": "string",
+    "data": {}
+  }
 }
 ```
 
@@ -16221,6 +16280,7 @@ $ curl -H "Content-Type: application/json" \
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created|A new project has been created.|[project](#schemaproject)|
+|400|Bad Request|The request body is invalid, or `enforced_signed_commits` can't be set.|[error](#schemaerror)|
 |403|Forbidden|The user requesting to create a project does not have the necessary permissions.|[error](#schemaerror)|
 |404|Not Found|A workspace doesn't exist at this location.|[error](#schemaerror)|
 
@@ -16312,7 +16372,8 @@ Returns the requested project.
   "is_private": true,
   "created_on": "1970-01-01T00:00:00Z",
   "updated_on": "1970-01-01T00:00:00Z",
-  "has_publicly_visible_repos": true
+  "has_publicly_visible_repos": true,
+  "enforced_signed_commits": true
 }
 ```
 
@@ -16430,7 +16491,8 @@ curl https://api.bitbucket.org/2.0/workspaces/string/projects/string \
     "is_private": true,
     "created_on": "1970-01-01T00:00:00Z",
     "updated_on": "1970-01-01T00:00:00Z",
-    "has_publicly_visible_repos": true
+    "has_publicly_visible_repos": true,
+    "enforced_signed_commits": true
   }'
 ```
 
@@ -16458,6 +16520,10 @@ the URL). The key may be specified in the body, if the intent is
 to change the key itself. In such a scenario, the location of the
 project is changed and is returned in the `Location` header of the
 response.
+
+Note: Changing the `enforced_signed_commits` setting requires the workspace
+to be on a Premium plan. Cannot be disabled while the setting is enforced
+at the workspace level.
 
 > Body parameter
 
@@ -16513,7 +16579,8 @@ response.
   "is_private": true,
   "created_on": "1970-01-01T00:00:00Z",
   "updated_on": "1970-01-01T00:00:00Z",
-  "has_publicly_visible_repos": true
+  "has_publicly_visible_repos": true,
+  "enforced_signed_commits": true
 }
 ```
 
@@ -16541,6 +16608,7 @@ response.
 |» created_on|body|string(date-time)|false|none|
 |» updated_on|body|string(date-time)|false|none|
 |» has_publicly_visible_repos|body|boolean|false|<br>Indicates whether the project contains publicly visible repositories.<br>Note that private projects cannot contain public repositories.|
+|» enforced_signed_commits|body|boolean|false|Whether signed commits are required for this project:<br><br>- true when the workspace is on a Premium plan and enforcement is enabled at the project or the<br>  workspace level;<br>- otherwise false.|
 
 > Example responses
 
@@ -16598,7 +16666,8 @@ response.
   "is_private": true,
   "created_on": "1970-01-01T00:00:00Z",
   "updated_on": "1970-01-01T00:00:00Z",
-  "has_publicly_visible_repos": true
+  "has_publicly_visible_repos": true,
+  "enforced_signed_commits": true
 }
 ```
 
@@ -16656,7 +16725,21 @@ response.
   "is_private": true,
   "created_on": "1970-01-01T00:00:00Z",
   "updated_on": "1970-01-01T00:00:00Z",
-  "has_publicly_visible_repos": true
+  "has_publicly_visible_repos": true,
+  "enforced_signed_commits": true
+}
+```
+
+> 400 Response
+
+```json
+{
+  "type": "string",
+  "error": {
+    "message": "string",
+    "detail": "string",
+    "data": {}
+  }
 }
 ```
 
@@ -16692,6 +16775,7 @@ response.
 |---|---|---|---|
 |200|OK|The existing project is has been updated.|[project](#schemaproject)|
 |201|Created|A new project has been created.|[project](#schemaproject)|
+|400|Bad Request|The request body is invalid, or `enforced_signed_commits` can't be changed.|[error](#schemaerror)|
 |403|Forbidden|The requesting user isn't authorized to update or create the project.|[error](#schemaerror)|
 |404|Not Found|A workspace doesn't exist at the location. Note that the project's absence from this location doesn't raise a 404, since a PUT at a non-existent location can be used to create a new project.|[error](#schemaerror)|
 
@@ -18282,6 +18366,7 @@ Returns a paginated list of all pull requests as part of which this commit was r
           "has_issues": true,
           "has_wiki": true,
           "fork_policy": "allow_forks",
+          "enforced_signed_commits": true,
           "project": {
             "type": "string",
             "links": {
@@ -18333,7 +18418,8 @@ Returns a paginated list of all pull requests as part of which this commit was r
             "is_private": true,
             "created_on": "1970-01-01T00:00:00Z",
             "updated_on": "1970-01-01T00:00:00Z",
-            "has_publicly_visible_repos": true
+            "has_publicly_visible_repos": true,
+            "enforced_signed_commits": true
           },
           "mainbranch": {}
         },
@@ -18421,6 +18507,7 @@ Returns a paginated list of all pull requests as part of which this commit was r
           "has_issues": true,
           "has_wiki": true,
           "fork_policy": "allow_forks",
+          "enforced_signed_commits": true,
           "project": {
             "type": "string",
             "links": {
@@ -18472,7 +18559,8 @@ Returns a paginated list of all pull requests as part of which this commit was r
             "is_private": true,
             "created_on": "1970-01-01T00:00:00Z",
             "updated_on": "1970-01-01T00:00:00Z",
-            "has_publicly_visible_repos": true
+            "has_publicly_visible_repos": true,
+            "enforced_signed_commits": true
           },
           "mainbranch": {}
         },
@@ -18718,6 +18806,7 @@ Returns a paginated list of all pull requests as part of which this commit was r
           "has_issues": true,
           "has_wiki": true,
           "fork_policy": "allow_forks",
+          "enforced_signed_commits": true,
           "project": {
             "type": "string",
             "links": {
@@ -18769,7 +18858,8 @@ Returns a paginated list of all pull requests as part of which this commit was r
             "is_private": true,
             "created_on": "1970-01-01T00:00:00Z",
             "updated_on": "1970-01-01T00:00:00Z",
-            "has_publicly_visible_repos": true
+            "has_publicly_visible_repos": true,
+            "enforced_signed_commits": true
           },
           "mainbranch": {}
         },
@@ -18857,6 +18947,7 @@ Returns a paginated list of all pull requests as part of which this commit was r
           "has_issues": true,
           "has_wiki": true,
           "fork_policy": "allow_forks",
+          "enforced_signed_commits": true,
           "project": {
             "type": "string",
             "links": {
@@ -18908,7 +18999,8 @@ Returns a paginated list of all pull requests as part of which this commit was r
             "is_private": true,
             "created_on": "1970-01-01T00:00:00Z",
             "updated_on": "1970-01-01T00:00:00Z",
-            "has_publicly_visible_repos": true
+            "has_publicly_visible_repos": true,
+            "enforced_signed_commits": true
           },
           "mainbranch": {}
         },
@@ -19626,6 +19718,7 @@ This endpoint also supports filtering and sorting of the results. See
           "has_issues": true,
           "has_wiki": true,
           "fork_policy": "allow_forks",
+          "enforced_signed_commits": true,
           "project": {
             "type": "string",
             "links": {
@@ -19677,7 +19770,8 @@ This endpoint also supports filtering and sorting of the results. See
             "is_private": true,
             "created_on": "1970-01-01T00:00:00Z",
             "updated_on": "1970-01-01T00:00:00Z",
-            "has_publicly_visible_repos": true
+            "has_publicly_visible_repos": true,
+            "enforced_signed_commits": true
           },
           "mainbranch": {}
         },
@@ -19765,6 +19859,7 @@ This endpoint also supports filtering and sorting of the results. See
           "has_issues": true,
           "has_wiki": true,
           "fork_policy": "allow_forks",
+          "enforced_signed_commits": true,
           "project": {
             "type": "string",
             "links": {
@@ -19816,7 +19911,8 @@ This endpoint also supports filtering and sorting of the results. See
             "is_private": true,
             "created_on": "1970-01-01T00:00:00Z",
             "updated_on": "1970-01-01T00:00:00Z",
-            "has_publicly_visible_repos": true
+            "has_publicly_visible_repos": true,
+            "enforced_signed_commits": true
           },
           "mainbranch": {}
         },
@@ -20088,6 +20184,7 @@ curl https://api.bitbucket.org/2.0/repositories/string/string/pullrequests \
         "has_issues": true,
         "has_wiki": true,
         "fork_policy": "allow_forks",
+        "enforced_signed_commits": true,
         "project": {
           "type": "string",
           "links": {
@@ -20139,7 +20236,8 @@ curl https://api.bitbucket.org/2.0/repositories/string/string/pullrequests \
           "is_private": true,
           "created_on": "1970-01-01T00:00:00Z",
           "updated_on": "1970-01-01T00:00:00Z",
-          "has_publicly_visible_repos": true
+          "has_publicly_visible_repos": true,
+          "enforced_signed_commits": true
         },
         "mainbranch": {}
       },
@@ -20227,6 +20325,7 @@ curl https://api.bitbucket.org/2.0/repositories/string/string/pullrequests \
         "has_issues": true,
         "has_wiki": true,
         "fork_policy": "allow_forks",
+        "enforced_signed_commits": true,
         "project": {
           "type": "string",
           "links": {
@@ -20278,7 +20377,8 @@ curl https://api.bitbucket.org/2.0/repositories/string/string/pullrequests \
           "is_private": true,
           "created_on": "1970-01-01T00:00:00Z",
           "updated_on": "1970-01-01T00:00:00Z",
-          "has_publicly_visible_repos": true
+          "has_publicly_visible_repos": true,
+          "enforced_signed_commits": true
         },
         "mainbranch": {}
       },
@@ -20584,6 +20684,7 @@ Other fields:
       "has_issues": true,
       "has_wiki": true,
       "fork_policy": "allow_forks",
+      "enforced_signed_commits": true,
       "project": {
         "type": "string",
         "links": {
@@ -20635,7 +20736,8 @@ Other fields:
         "is_private": true,
         "created_on": "1970-01-01T00:00:00Z",
         "updated_on": "1970-01-01T00:00:00Z",
-        "has_publicly_visible_repos": true
+        "has_publicly_visible_repos": true,
+        "enforced_signed_commits": true
       },
       "mainbranch": {}
     },
@@ -20723,6 +20825,7 @@ Other fields:
       "has_issues": true,
       "has_wiki": true,
       "fork_policy": "allow_forks",
+      "enforced_signed_commits": true,
       "project": {
         "type": "string",
         "links": {
@@ -20774,7 +20877,8 @@ Other fields:
         "is_private": true,
         "created_on": "1970-01-01T00:00:00Z",
         "updated_on": "1970-01-01T00:00:00Z",
-        "has_publicly_visible_repos": true
+        "has_publicly_visible_repos": true,
+        "enforced_signed_commits": true
       },
       "mainbranch": {}
     },
@@ -21113,6 +21217,7 @@ Other fields:
       "has_issues": true,
       "has_wiki": true,
       "fork_policy": "allow_forks",
+      "enforced_signed_commits": true,
       "project": {
         "type": "string",
         "links": {
@@ -21164,7 +21269,8 @@ Other fields:
         "is_private": true,
         "created_on": "1970-01-01T00:00:00Z",
         "updated_on": "1970-01-01T00:00:00Z",
-        "has_publicly_visible_repos": true
+        "has_publicly_visible_repos": true,
+        "enforced_signed_commits": true
       },
       "mainbranch": {}
     },
@@ -21252,6 +21358,7 @@ Other fields:
       "has_issues": true,
       "has_wiki": true,
       "fork_policy": "allow_forks",
+      "enforced_signed_commits": true,
       "project": {
         "type": "string",
         "links": {
@@ -21303,7 +21410,8 @@ Other fields:
         "is_private": true,
         "created_on": "1970-01-01T00:00:00Z",
         "updated_on": "1970-01-01T00:00:00Z",
-        "has_publicly_visible_repos": true
+        "has_publicly_visible_repos": true,
+        "enforced_signed_commits": true
       },
       "mainbranch": {}
     },
@@ -21943,6 +22051,7 @@ Returns the specified pull request.
       "has_issues": true,
       "has_wiki": true,
       "fork_policy": "allow_forks",
+      "enforced_signed_commits": true,
       "project": {
         "type": "string",
         "links": {
@@ -21994,7 +22103,8 @@ Returns the specified pull request.
         "is_private": true,
         "created_on": "1970-01-01T00:00:00Z",
         "updated_on": "1970-01-01T00:00:00Z",
-        "has_publicly_visible_repos": true
+        "has_publicly_visible_repos": true,
+        "enforced_signed_commits": true
       },
       "mainbranch": {}
     },
@@ -22082,6 +22192,7 @@ Returns the specified pull request.
       "has_issues": true,
       "has_wiki": true,
       "fork_policy": "allow_forks",
+      "enforced_signed_commits": true,
       "project": {
         "type": "string",
         "links": {
@@ -22133,7 +22244,8 @@ Returns the specified pull request.
         "is_private": true,
         "created_on": "1970-01-01T00:00:00Z",
         "updated_on": "1970-01-01T00:00:00Z",
-        "has_publicly_visible_repos": true
+        "has_publicly_visible_repos": true,
+        "enforced_signed_commits": true
       },
       "mainbranch": {}
     },
@@ -22403,6 +22515,7 @@ curl https://api.bitbucket.org/2.0/repositories/string/string/pullrequests/0 \
         "has_issues": true,
         "has_wiki": true,
         "fork_policy": "allow_forks",
+        "enforced_signed_commits": true,
         "project": {
           "type": "string",
           "links": {
@@ -22454,7 +22567,8 @@ curl https://api.bitbucket.org/2.0/repositories/string/string/pullrequests/0 \
           "is_private": true,
           "created_on": "1970-01-01T00:00:00Z",
           "updated_on": "1970-01-01T00:00:00Z",
-          "has_publicly_visible_repos": true
+          "has_publicly_visible_repos": true,
+          "enforced_signed_commits": true
         },
         "mainbranch": {}
       },
@@ -22542,6 +22656,7 @@ curl https://api.bitbucket.org/2.0/repositories/string/string/pullrequests/0 \
         "has_issues": true,
         "has_wiki": true,
         "fork_policy": "allow_forks",
+        "enforced_signed_commits": true,
         "project": {
           "type": "string",
           "links": {
@@ -22593,7 +22708,8 @@ curl https://api.bitbucket.org/2.0/repositories/string/string/pullrequests/0 \
           "is_private": true,
           "created_on": "1970-01-01T00:00:00Z",
           "updated_on": "1970-01-01T00:00:00Z",
-          "has_publicly_visible_repos": true
+          "has_publicly_visible_repos": true,
+          "enforced_signed_commits": true
         },
         "mainbranch": {}
       },
@@ -22838,6 +22954,7 @@ Only open pull requests can be mutated.
       "has_issues": true,
       "has_wiki": true,
       "fork_policy": "allow_forks",
+      "enforced_signed_commits": true,
       "project": {
         "type": "string",
         "links": {
@@ -22889,7 +23006,8 @@ Only open pull requests can be mutated.
         "is_private": true,
         "created_on": "1970-01-01T00:00:00Z",
         "updated_on": "1970-01-01T00:00:00Z",
-        "has_publicly_visible_repos": true
+        "has_publicly_visible_repos": true,
+        "enforced_signed_commits": true
       },
       "mainbranch": {}
     },
@@ -22977,6 +23095,7 @@ Only open pull requests can be mutated.
       "has_issues": true,
       "has_wiki": true,
       "fork_policy": "allow_forks",
+      "enforced_signed_commits": true,
       "project": {
         "type": "string",
         "links": {
@@ -23028,7 +23147,8 @@ Only open pull requests can be mutated.
         "is_private": true,
         "created_on": "1970-01-01T00:00:00Z",
         "updated_on": "1970-01-01T00:00:00Z",
-        "has_publicly_visible_repos": true
+        "has_publicly_visible_repos": true,
+        "enforced_signed_commits": true
       },
       "mainbranch": {}
     },
@@ -23368,6 +23488,7 @@ Only open pull requests can be mutated.
       "has_issues": true,
       "has_wiki": true,
       "fork_policy": "allow_forks",
+      "enforced_signed_commits": true,
       "project": {
         "type": "string",
         "links": {
@@ -23419,7 +23540,8 @@ Only open pull requests can be mutated.
         "is_private": true,
         "created_on": "1970-01-01T00:00:00Z",
         "updated_on": "1970-01-01T00:00:00Z",
-        "has_publicly_visible_repos": true
+        "has_publicly_visible_repos": true,
+        "enforced_signed_commits": true
       },
       "mainbranch": {}
     },
@@ -23507,6 +23629,7 @@ Only open pull requests can be mutated.
       "has_issues": true,
       "has_wiki": true,
       "fork_policy": "allow_forks",
+      "enforced_signed_commits": true,
       "project": {
         "type": "string",
         "links": {
@@ -23558,7 +23681,8 @@ Only open pull requests can be mutated.
         "is_private": true,
         "created_on": "1970-01-01T00:00:00Z",
         "updated_on": "1970-01-01T00:00:00Z",
-        "has_publicly_visible_repos": true
+        "has_publicly_visible_repos": true,
+        "enforced_signed_commits": true
       },
       "mainbranch": {}
     },
@@ -24435,6 +24559,7 @@ details.
             "has_issues": true,
             "has_wiki": true,
             "fork_policy": "allow_forks",
+            "enforced_signed_commits": true,
             "project": {
               "type": "string",
               "links": {
@@ -24486,7 +24611,8 @@ details.
               "is_private": true,
               "created_on": "1970-01-01T00:00:00Z",
               "updated_on": "1970-01-01T00:00:00Z",
-              "has_publicly_visible_repos": true
+              "has_publicly_visible_repos": true,
+              "enforced_signed_commits": true
             },
             "mainbranch": {}
           },
@@ -24574,6 +24700,7 @@ details.
             "has_issues": true,
             "has_wiki": true,
             "fork_policy": "allow_forks",
+            "enforced_signed_commits": true,
             "project": {
               "type": "string",
               "links": {
@@ -24625,7 +24752,8 @@ details.
               "is_private": true,
               "created_on": "1970-01-01T00:00:00Z",
               "updated_on": "1970-01-01T00:00:00Z",
-              "has_publicly_visible_repos": true
+              "has_publicly_visible_repos": true,
+              "enforced_signed_commits": true
             },
             "mainbranch": {}
           },
@@ -24973,6 +25101,7 @@ curl https://api.bitbucket.org/2.0/repositories/string/string/pullrequests/0/com
           "has_issues": true,
           "has_wiki": true,
           "fork_policy": "allow_forks",
+          "enforced_signed_commits": true,
           "project": {
             "type": "string",
             "links": {
@@ -25024,7 +25153,8 @@ curl https://api.bitbucket.org/2.0/repositories/string/string/pullrequests/0/com
             "is_private": true,
             "created_on": "1970-01-01T00:00:00Z",
             "updated_on": "1970-01-01T00:00:00Z",
-            "has_publicly_visible_repos": true
+            "has_publicly_visible_repos": true,
+            "enforced_signed_commits": true
           },
           "mainbranch": {}
         },
@@ -25112,6 +25242,7 @@ curl https://api.bitbucket.org/2.0/repositories/string/string/pullrequests/0/com
           "has_issues": true,
           "has_wiki": true,
           "fork_policy": "allow_forks",
+          "enforced_signed_commits": true,
           "project": {
             "type": "string",
             "links": {
@@ -25163,7 +25294,8 @@ curl https://api.bitbucket.org/2.0/repositories/string/string/pullrequests/0/com
             "is_private": true,
             "created_on": "1970-01-01T00:00:00Z",
             "updated_on": "1970-01-01T00:00:00Z",
-            "has_publicly_visible_repos": true
+            "has_publicly_visible_repos": true,
+            "enforced_signed_commits": true
           },
           "mainbranch": {}
         },
@@ -25469,6 +25601,7 @@ Returns the newly created pull request comment.
         "has_issues": true,
         "has_wiki": true,
         "fork_policy": "allow_forks",
+        "enforced_signed_commits": true,
         "project": {
           "type": "string",
           "links": {
@@ -25520,7 +25653,8 @@ Returns the newly created pull request comment.
           "is_private": true,
           "created_on": "1970-01-01T00:00:00Z",
           "updated_on": "1970-01-01T00:00:00Z",
-          "has_publicly_visible_repos": true
+          "has_publicly_visible_repos": true,
+          "enforced_signed_commits": true
         },
         "mainbranch": {}
       },
@@ -25608,6 +25742,7 @@ Returns the newly created pull request comment.
         "has_issues": true,
         "has_wiki": true,
         "fork_policy": "allow_forks",
+        "enforced_signed_commits": true,
         "project": {
           "type": "string",
           "links": {
@@ -25659,7 +25794,8 @@ Returns the newly created pull request comment.
           "is_private": true,
           "created_on": "1970-01-01T00:00:00Z",
           "updated_on": "1970-01-01T00:00:00Z",
-          "has_publicly_visible_repos": true
+          "has_publicly_visible_repos": true,
+          "enforced_signed_commits": true
         },
         "mainbranch": {}
       },
@@ -26008,6 +26144,7 @@ Returns the newly created pull request comment.
         "has_issues": true,
         "has_wiki": true,
         "fork_policy": "allow_forks",
+        "enforced_signed_commits": true,
         "project": {
           "type": "string",
           "links": {
@@ -26059,7 +26196,8 @@ Returns the newly created pull request comment.
           "is_private": true,
           "created_on": "1970-01-01T00:00:00Z",
           "updated_on": "1970-01-01T00:00:00Z",
-          "has_publicly_visible_repos": true
+          "has_publicly_visible_repos": true,
+          "enforced_signed_commits": true
         },
         "mainbranch": {}
       },
@@ -26147,6 +26285,7 @@ Returns the newly created pull request comment.
         "has_issues": true,
         "has_wiki": true,
         "fork_policy": "allow_forks",
+        "enforced_signed_commits": true,
         "project": {
           "type": "string",
           "links": {
@@ -26198,7 +26337,8 @@ Returns the newly created pull request comment.
           "is_private": true,
           "created_on": "1970-01-01T00:00:00Z",
           "updated_on": "1970-01-01T00:00:00Z",
-          "has_publicly_visible_repos": true
+          "has_publicly_visible_repos": true,
+          "enforced_signed_commits": true
         },
         "mainbranch": {}
       },
@@ -26568,6 +26708,7 @@ Returns a specific pull request comment.
         "has_issues": true,
         "has_wiki": true,
         "fork_policy": "allow_forks",
+        "enforced_signed_commits": true,
         "project": {
           "type": "string",
           "links": {
@@ -26619,7 +26760,8 @@ Returns a specific pull request comment.
           "is_private": true,
           "created_on": "1970-01-01T00:00:00Z",
           "updated_on": "1970-01-01T00:00:00Z",
-          "has_publicly_visible_repos": true
+          "has_publicly_visible_repos": true,
+          "enforced_signed_commits": true
         },
         "mainbranch": {}
       },
@@ -26707,6 +26849,7 @@ Returns a specific pull request comment.
         "has_issues": true,
         "has_wiki": true,
         "fork_policy": "allow_forks",
+        "enforced_signed_commits": true,
         "project": {
           "type": "string",
           "links": {
@@ -26758,7 +26901,8 @@ Returns a specific pull request comment.
           "is_private": true,
           "created_on": "1970-01-01T00:00:00Z",
           "updated_on": "1970-01-01T00:00:00Z",
-          "has_publicly_visible_repos": true
+          "has_publicly_visible_repos": true,
+          "enforced_signed_commits": true
         },
         "mainbranch": {}
       },
@@ -27104,6 +27248,7 @@ curl https://api.bitbucket.org/2.0/repositories/string/string/pullrequests/0/com
           "has_issues": true,
           "has_wiki": true,
           "fork_policy": "allow_forks",
+          "enforced_signed_commits": true,
           "project": {
             "type": "string",
             "links": {
@@ -27155,7 +27300,8 @@ curl https://api.bitbucket.org/2.0/repositories/string/string/pullrequests/0/com
             "is_private": true,
             "created_on": "1970-01-01T00:00:00Z",
             "updated_on": "1970-01-01T00:00:00Z",
-            "has_publicly_visible_repos": true
+            "has_publicly_visible_repos": true,
+            "enforced_signed_commits": true
           },
           "mainbranch": {}
         },
@@ -27243,6 +27389,7 @@ curl https://api.bitbucket.org/2.0/repositories/string/string/pullrequests/0/com
           "has_issues": true,
           "has_wiki": true,
           "fork_policy": "allow_forks",
+          "enforced_signed_commits": true,
           "project": {
             "type": "string",
             "links": {
@@ -27294,7 +27441,8 @@ curl https://api.bitbucket.org/2.0/repositories/string/string/pullrequests/0/com
             "is_private": true,
             "created_on": "1970-01-01T00:00:00Z",
             "updated_on": "1970-01-01T00:00:00Z",
-            "has_publicly_visible_repos": true
+            "has_publicly_visible_repos": true,
+            "enforced_signed_commits": true
           },
           "mainbranch": {}
         },
@@ -27598,6 +27746,7 @@ Updates a specific pull request comment.
         "has_issues": true,
         "has_wiki": true,
         "fork_policy": "allow_forks",
+        "enforced_signed_commits": true,
         "project": {
           "type": "string",
           "links": {
@@ -27649,7 +27798,8 @@ Updates a specific pull request comment.
           "is_private": true,
           "created_on": "1970-01-01T00:00:00Z",
           "updated_on": "1970-01-01T00:00:00Z",
-          "has_publicly_visible_repos": true
+          "has_publicly_visible_repos": true,
+          "enforced_signed_commits": true
         },
         "mainbranch": {}
       },
@@ -27737,6 +27887,7 @@ Updates a specific pull request comment.
         "has_issues": true,
         "has_wiki": true,
         "fork_policy": "allow_forks",
+        "enforced_signed_commits": true,
         "project": {
           "type": "string",
           "links": {
@@ -27788,7 +27939,8 @@ Updates a specific pull request comment.
           "is_private": true,
           "created_on": "1970-01-01T00:00:00Z",
           "updated_on": "1970-01-01T00:00:00Z",
-          "has_publicly_visible_repos": true
+          "has_publicly_visible_repos": true,
+          "enforced_signed_commits": true
         },
         "mainbranch": {}
       },
@@ -28138,6 +28290,7 @@ Updates a specific pull request comment.
         "has_issues": true,
         "has_wiki": true,
         "fork_policy": "allow_forks",
+        "enforced_signed_commits": true,
         "project": {
           "type": "string",
           "links": {
@@ -28189,7 +28342,8 @@ Updates a specific pull request comment.
           "is_private": true,
           "created_on": "1970-01-01T00:00:00Z",
           "updated_on": "1970-01-01T00:00:00Z",
-          "has_publicly_visible_repos": true
+          "has_publicly_visible_repos": true,
+          "enforced_signed_commits": true
         },
         "mainbranch": {}
       },
@@ -28277,6 +28431,7 @@ Updates a specific pull request comment.
         "has_issues": true,
         "has_wiki": true,
         "fork_policy": "allow_forks",
+        "enforced_signed_commits": true,
         "project": {
           "type": "string",
           "links": {
@@ -28328,7 +28483,8 @@ Updates a specific pull request comment.
           "is_private": true,
           "created_on": "1970-01-01T00:00:00Z",
           "updated_on": "1970-01-01T00:00:00Z",
-          "has_publicly_visible_repos": true
+          "has_publicly_visible_repos": true,
+          "enforced_signed_commits": true
         },
         "mainbranch": {}
       },
@@ -28972,6 +29128,7 @@ Declines the pull request.
       "has_issues": true,
       "has_wiki": true,
       "fork_policy": "allow_forks",
+      "enforced_signed_commits": true,
       "project": {
         "type": "string",
         "links": {
@@ -29023,7 +29180,8 @@ Declines the pull request.
         "is_private": true,
         "created_on": "1970-01-01T00:00:00Z",
         "updated_on": "1970-01-01T00:00:00Z",
-        "has_publicly_visible_repos": true
+        "has_publicly_visible_repos": true,
+        "enforced_signed_commits": true
       },
       "mainbranch": {}
     },
@@ -29111,6 +29269,7 @@ Declines the pull request.
       "has_issues": true,
       "has_wiki": true,
       "fork_policy": "allow_forks",
+      "enforced_signed_commits": true,
       "project": {
         "type": "string",
         "links": {
@@ -29162,7 +29321,8 @@ Declines the pull request.
         "is_private": true,
         "created_on": "1970-01-01T00:00:00Z",
         "updated_on": "1970-01-01T00:00:00Z",
-        "has_publicly_visible_repos": true
+        "has_publicly_visible_repos": true,
+        "enforced_signed_commits": true
       },
       "mainbranch": {}
     },
@@ -29559,6 +29719,7 @@ strategies. If no strategy is given, the queue's default is used.
       "has_issues": true,
       "has_wiki": true,
       "fork_policy": "allow_forks",
+      "enforced_signed_commits": true,
       "project": {
         "type": "string",
         "links": {
@@ -29610,7 +29771,8 @@ strategies. If no strategy is given, the queue's default is used.
         "is_private": true,
         "created_on": "1970-01-01T00:00:00Z",
         "updated_on": "1970-01-01T00:00:00Z",
-        "has_publicly_visible_repos": true
+        "has_publicly_visible_repos": true,
+        "enforced_signed_commits": true
       },
       "mainbranch": {}
     },
@@ -29698,6 +29860,7 @@ strategies. If no strategy is given, the queue's default is used.
       "has_issues": true,
       "has_wiki": true,
       "fork_policy": "allow_forks",
+      "enforced_signed_commits": true,
       "project": {
         "type": "string",
         "links": {
@@ -29749,7 +29912,8 @@ strategies. If no strategy is given, the queue's default is used.
         "is_private": true,
         "created_on": "1970-01-01T00:00:00Z",
         "updated_on": "1970-01-01T00:00:00Z",
-        "has_publicly_visible_repos": true
+        "has_publicly_visible_repos": true,
+        "enforced_signed_commits": true
       },
       "mainbranch": {}
     },
@@ -33664,6 +33828,7 @@ This endpoint also supports filtering and sorting of the results. See
       "has_issues": true,
       "has_wiki": true,
       "fork_policy": "allow_forks",
+      "enforced_signed_commits": true,
       "project": {
         "type": "string",
         "links": {
@@ -33715,7 +33880,8 @@ This endpoint also supports filtering and sorting of the results. See
         "is_private": true,
         "created_on": "1970-01-01T00:00:00Z",
         "updated_on": "1970-01-01T00:00:00Z",
-        "has_publicly_visible_repos": true
+        "has_publicly_visible_repos": true,
+        "enforced_signed_commits": true
       },
       "mainbranch": {}
     }
@@ -33860,6 +34026,7 @@ Returns the object describing this repository.
   "has_issues": true,
   "has_wiki": true,
   "fork_policy": "allow_forks",
+  "enforced_signed_commits": true,
   "project": {
     "type": "string",
     "links": {
@@ -33911,7 +34078,8 @@ Returns the object describing this repository.
     "is_private": true,
     "created_on": "1970-01-01T00:00:00Z",
     "updated_on": "1970-01-01T00:00:00Z",
-    "has_publicly_visible_repos": true
+    "has_publicly_visible_repos": true,
+    "enforced_signed_commits": true
   },
   "mainbranch": {}
 }
@@ -34038,6 +34206,7 @@ curl https://api.bitbucket.org/2.0/repositories/string/string \
     "has_issues": true,
     "has_wiki": true,
     "fork_policy": "allow_forks",
+    "enforced_signed_commits": true,
     "project": {
       "type": "string",
       "links": {
@@ -34089,7 +34258,8 @@ curl https://api.bitbucket.org/2.0/repositories/string/string \
       "is_private": true,
       "created_on": "1970-01-01T00:00:00Z",
       "updated_on": "1970-01-01T00:00:00Z",
-      "has_publicly_visible_repos": true
+      "has_publicly_visible_repos": true,
+      "enforced_signed_commits": true
     },
     "mainbranch": {}
   }'
@@ -34114,6 +34284,10 @@ possible for the request to fail if the newly created slug conflicts
 with an existing repository's slug. But if there is no conflict,
 the new location will be returned in the `Location` header of the
 response.
+
+Note: Changing the `enforced_signed_commits` setting requires the workspace
+to be on a Premium plan. Cannot be disabled while the setting is enforced
+at the project or workspace level.
 
 > Body parameter
 
@@ -34190,6 +34364,7 @@ response.
   "has_issues": true,
   "has_wiki": true,
   "fork_policy": "allow_forks",
+  "enforced_signed_commits": true,
   "project": {
     "type": "string",
     "links": {
@@ -34241,7 +34416,8 @@ response.
     "is_private": true,
     "created_on": "1970-01-01T00:00:00Z",
     "updated_on": "1970-01-01T00:00:00Z",
-    "has_publicly_visible_repos": true
+    "has_publicly_visible_repos": true,
+    "enforced_signed_commits": true
   },
   "mainbranch": {}
 }
@@ -34301,6 +34477,7 @@ response.
 |» has_issues|body|boolean|false|<br>The issue tracker for this repository is enabled. Issue Tracker<br>features are not supported for repositories in workspaces<br>administered through admin.atlassian.com.<br>|
 |» has_wiki|body|boolean|false|<br>The wiki for this repository is enabled. Wiki<br>features are not supported for repositories in workspaces<br>administered through admin.atlassian.com.<br>|
 |» fork_policy|body|string|false|<br>Controls the rules for forking this repository.<br><br>* **allow_forks**: unrestricted forking<br>* **no_public_forks**: restrict forking to private forks (forks cannot<br>  be made public later)<br>* **no_forks**: deny all forking<br>|
+|» enforced_signed_commits|body|boolean|false|Whether signed commits are required for this repository:<br><br>- true when the workspace is on a Premium plan and enforcement is enabled at the repository, project,<br>  or workspace level;<br>- otherwise false.|
 |» project|body|[project](#schemaproject)|false|none|
 |» mainbranch|body|[branch](#schemabranch)|false|none|
 
@@ -34390,6 +34567,7 @@ response.
   "has_issues": true,
   "has_wiki": true,
   "fork_policy": "allow_forks",
+  "enforced_signed_commits": true,
   "project": {
     "type": "string",
     "links": {
@@ -34441,7 +34619,8 @@ response.
     "is_private": true,
     "created_on": "1970-01-01T00:00:00Z",
     "updated_on": "1970-01-01T00:00:00Z",
-    "has_publicly_visible_repos": true
+    "has_publicly_visible_repos": true,
+    "enforced_signed_commits": true
   },
   "mainbranch": {}
 }
@@ -34522,6 +34701,7 @@ response.
   "has_issues": true,
   "has_wiki": true,
   "fork_policy": "allow_forks",
+  "enforced_signed_commits": true,
   "project": {
     "type": "string",
     "links": {
@@ -34573,7 +34753,8 @@ response.
     "is_private": true,
     "created_on": "1970-01-01T00:00:00Z",
     "updated_on": "1970-01-01T00:00:00Z",
-    "has_publicly_visible_repos": true
+    "has_publicly_visible_repos": true,
+    "enforced_signed_commits": true
   },
   "mainbranch": {}
 }
@@ -34611,7 +34792,7 @@ response.
 |---|---|---|---|
 |200|OK|The existing repository has been updated|[repository](#schemarepository)|
 |201|Created|A new repository has been created|[repository](#schemarepository)|
-|400|Bad Request|If the input document was invalid, or if the caller lacks the privilege to create repositories under the targeted account.|[error](#schemaerror)|
+|400|Bad Request|If the input document was invalid, if the caller lacks the privilege to create repositories under the targeted account, or if `enforced_signed_commits` cannot be changed.|[error](#schemaerror)|
 |401|Unauthorized|If the request was not authenticated.|[error](#schemaerror)|
 
 ### Response Headers
@@ -34708,6 +34889,7 @@ curl https://api.bitbucket.org/2.0/repositories/string/string \
     "has_issues": true,
     "has_wiki": true,
     "fork_policy": "allow_forks",
+    "enforced_signed_commits": true,
     "project": {
       "type": "string",
       "links": {
@@ -34759,7 +34941,8 @@ curl https://api.bitbucket.org/2.0/repositories/string/string \
       "is_private": true,
       "created_on": "1970-01-01T00:00:00Z",
       "updated_on": "1970-01-01T00:00:00Z",
-      "has_publicly_visible_repos": true
+      "has_publicly_visible_repos": true,
+      "enforced_signed_commits": true
     },
     "mainbranch": {}
   }'
@@ -34795,6 +34978,18 @@ $ curl -X POST -H "Content-Type: application/json" -d '{
 
 The project must be assigned for all repositories. If the project is not provided,
 the repository is automatically assigned to the oldest project in the workspace.
+
+Note: In order to require signed commits for the newly created repository,
+pass in `enforced_signed_commits` as part of the request body as shown in
+the example below. This requires the workspace to be on a Premium plan.
+Cannot be disabled while the setting is enforced at the project or
+workspace level.
+
+```
+$ curl -X POST -H "Content-Type: application/json" -d '{
+    "enforced_signed_commits": true
+}' https://api.bitbucket.org/2.0/repositories/teamsinspace/hablanding
+```
 
 Note: In the examples above, the workspace ID `teamsinspace`,
 and/or the repository name `hablanding` can be replaced by UUIDs.
@@ -34874,6 +35069,7 @@ and/or the repository name `hablanding` can be replaced by UUIDs.
   "has_issues": true,
   "has_wiki": true,
   "fork_policy": "allow_forks",
+  "enforced_signed_commits": true,
   "project": {
     "type": "string",
     "links": {
@@ -34925,7 +35121,8 @@ and/or the repository name `hablanding` can be replaced by UUIDs.
     "is_private": true,
     "created_on": "1970-01-01T00:00:00Z",
     "updated_on": "1970-01-01T00:00:00Z",
-    "has_publicly_visible_repos": true
+    "has_publicly_visible_repos": true,
+    "enforced_signed_commits": true
   },
   "mainbranch": {}
 }
@@ -34985,6 +35182,7 @@ and/or the repository name `hablanding` can be replaced by UUIDs.
 |» has_issues|body|boolean|false|<br>The issue tracker for this repository is enabled. Issue Tracker<br>features are not supported for repositories in workspaces<br>administered through admin.atlassian.com.<br>|
 |» has_wiki|body|boolean|false|<br>The wiki for this repository is enabled. Wiki<br>features are not supported for repositories in workspaces<br>administered through admin.atlassian.com.<br>|
 |» fork_policy|body|string|false|<br>Controls the rules for forking this repository.<br><br>* **allow_forks**: unrestricted forking<br>* **no_public_forks**: restrict forking to private forks (forks cannot<br>  be made public later)<br>* **no_forks**: deny all forking<br>|
+|» enforced_signed_commits|body|boolean|false|Whether signed commits are required for this repository:<br><br>- true when the workspace is on a Premium plan and enforcement is enabled at the repository, project,<br>  or workspace level;<br>- otherwise false.|
 |» project|body|[project](#schemaproject)|false|none|
 |» mainbranch|body|[branch](#schemabranch)|false|none|
 
@@ -35074,6 +35272,7 @@ and/or the repository name `hablanding` can be replaced by UUIDs.
   "has_issues": true,
   "has_wiki": true,
   "fork_policy": "allow_forks",
+  "enforced_signed_commits": true,
   "project": {
     "type": "string",
     "links": {
@@ -35125,7 +35324,8 @@ and/or the repository name `hablanding` can be replaced by UUIDs.
     "is_private": true,
     "created_on": "1970-01-01T00:00:00Z",
     "updated_on": "1970-01-01T00:00:00Z",
-    "has_publicly_visible_repos": true
+    "has_publicly_visible_repos": true,
+    "enforced_signed_commits": true
   },
   "mainbranch": {}
 }
@@ -35162,7 +35362,7 @@ and/or the repository name `hablanding` can be replaced by UUIDs.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|The newly created repository.|[repository](#schemarepository)|
-|400|Bad Request|If the input document was invalid, or if the caller lacks the privilege to create repositories under the targeted account.|[error](#schemaerror)|
+|400|Bad Request|If the input document was invalid, if the caller lacks the privilege to create repositories under the targeted account, or if `enforced_signed_commits` cannot be changed.|[error](#schemaerror)|
 |401|Unauthorized|If the request was not authenticated.|[error](#schemaerror)|
 
 <aside class="warning">
@@ -35354,6 +35554,7 @@ repository.
       "has_issues": true,
       "has_wiki": true,
       "fork_policy": "allow_forks",
+      "enforced_signed_commits": true,
       "project": {
         "type": "string",
         "links": {
@@ -35405,7 +35606,8 @@ repository.
         "is_private": true,
         "created_on": "1970-01-01T00:00:00Z",
         "updated_on": "1970-01-01T00:00:00Z",
-        "has_publicly_visible_repos": true
+        "has_publicly_visible_repos": true,
+        "enforced_signed_commits": true
       },
       "mainbranch": {}
     }
@@ -35506,6 +35708,7 @@ curl https://api.bitbucket.org/2.0/repositories/string/string/forks \
     "has_issues": true,
     "has_wiki": true,
     "fork_policy": "allow_forks",
+    "enforced_signed_commits": true,
     "project": {
       "type": "string",
       "links": {
@@ -35557,7 +35760,8 @@ curl https://api.bitbucket.org/2.0/repositories/string/string/forks \
       "is_private": true,
       "created_on": "1970-01-01T00:00:00Z",
       "updated_on": "1970-01-01T00:00:00Z",
-      "has_publicly_visible_repos": true
+      "has_publicly_visible_repos": true,
+      "enforced_signed_commits": true
     },
     "mainbranch": {}
   }'
@@ -35698,6 +35902,7 @@ Properties that cannot be modified include:
   "has_issues": true,
   "has_wiki": true,
   "fork_policy": "allow_forks",
+  "enforced_signed_commits": true,
   "project": {
     "type": "string",
     "links": {
@@ -35749,7 +35954,8 @@ Properties that cannot be modified include:
     "is_private": true,
     "created_on": "1970-01-01T00:00:00Z",
     "updated_on": "1970-01-01T00:00:00Z",
-    "has_publicly_visible_repos": true
+    "has_publicly_visible_repos": true,
+    "enforced_signed_commits": true
   },
   "mainbranch": {}
 }
@@ -35809,6 +36015,7 @@ Properties that cannot be modified include:
 |» has_issues|body|boolean|false|<br>The issue tracker for this repository is enabled. Issue Tracker<br>features are not supported for repositories in workspaces<br>administered through admin.atlassian.com.<br>|
 |» has_wiki|body|boolean|false|<br>The wiki for this repository is enabled. Wiki<br>features are not supported for repositories in workspaces<br>administered through admin.atlassian.com.<br>|
 |» fork_policy|body|string|false|<br>Controls the rules for forking this repository.<br><br>* **allow_forks**: unrestricted forking<br>* **no_public_forks**: restrict forking to private forks (forks cannot<br>  be made public later)<br>* **no_forks**: deny all forking<br>|
+|» enforced_signed_commits|body|boolean|false|Whether signed commits are required for this repository:<br><br>- true when the workspace is on a Premium plan and enforcement is enabled at the repository, project,<br>  or workspace level;<br>- otherwise false.|
 |» project|body|[project](#schemaproject)|false|none|
 |» mainbranch|body|[branch](#schemabranch)|false|none|
 
@@ -35898,6 +36105,7 @@ Properties that cannot be modified include:
   "has_issues": true,
   "has_wiki": true,
   "fork_policy": "allow_forks",
+  "enforced_signed_commits": true,
   "project": {
     "type": "string",
     "links": {
@@ -35949,7 +36157,8 @@ Properties that cannot be modified include:
     "is_private": true,
     "created_on": "1970-01-01T00:00:00Z",
     "updated_on": "1970-01-01T00:00:00Z",
-    "has_publicly_visible_repos": true
+    "has_publicly_visible_repos": true,
+    "enforced_signed_commits": true
   },
   "mainbranch": {}
 }
@@ -43035,6 +43244,7 @@ Permissions can be:
     "slug": "string",
     "is_private": true,
     "is_personal": true,
+    "enforced_signed_commits": true,
     "is_privacy_enforced": true,
     "forking_mode": "allow_forks",
     "created_on": "1970-01-01T00:00:00Z",
@@ -43148,6 +43358,7 @@ Returns the requested workspace.
   "slug": "string",
   "is_private": true,
   "is_personal": true,
+  "enforced_signed_commits": true,
   "is_privacy_enforced": true,
   "forking_mode": "allow_forks",
   "created_on": "1970-01-01T00:00:00Z",
@@ -43380,7 +43591,8 @@ the standard Bitbucket error envelope:
 `{"type": "error", "error": {"message": ..., "code": ...}}`.
 A backend error keeps its status code, except that a backend 5xx is
 returned as `502 Bad Gateway`. The backend's own error code, when there
-is one, is in `error.detail.upstream_code`.
+is one, is in `error.detail.upstream_code`. A `429` includes the
+backend's `Retry-After` header when the backend sends one.
 
 <h3 id="search-code-in-a-workspace-parameters">Parameters</h3>
 
@@ -44100,6 +44312,7 @@ Once again, all query parameter values must be URL escaped.
         "slug": "string",
         "is_private": true,
         "is_personal": true,
+        "enforced_signed_commits": true,
         "is_privacy_enforced": true,
         "forking_mode": "allow_forks",
         "created_on": "1970-01-01T00:00:00Z",
@@ -44238,6 +44451,7 @@ for the requested workspace.
     "slug": "string",
     "is_private": true,
     "is_personal": true,
+    "enforced_signed_commits": true,
     "is_privacy_enforced": true,
     "forking_mode": "allow_forks",
     "created_on": "1970-01-01T00:00:00Z",
@@ -44719,7 +44933,8 @@ Returns the list of projects in this workspace.
       "is_private": true,
       "created_on": "1970-01-01T00:00:00Z",
       "updated_on": "1970-01-01T00:00:00Z",
-      "has_publicly_visible_repos": true
+      "has_publicly_visible_repos": true,
+      "enforced_signed_commits": true
     }
   ]
 }
@@ -44959,6 +45174,7 @@ This endpoint also supports filtering and sorting of the results. See
           "has_issues": true,
           "has_wiki": true,
           "fork_policy": "allow_forks",
+          "enforced_signed_commits": true,
           "project": {
             "type": "string",
             "links": {
@@ -45010,7 +45226,8 @@ This endpoint also supports filtering and sorting of the results. See
             "is_private": true,
             "created_on": "1970-01-01T00:00:00Z",
             "updated_on": "1970-01-01T00:00:00Z",
-            "has_publicly_visible_repos": true
+            "has_publicly_visible_repos": true,
+            "enforced_signed_commits": true
           },
           "mainbranch": {}
         },
@@ -45098,6 +45315,7 @@ This endpoint also supports filtering and sorting of the results. See
           "has_issues": true,
           "has_wiki": true,
           "fork_policy": "allow_forks",
+          "enforced_signed_commits": true,
           "project": {
             "type": "string",
             "links": {
@@ -45149,7 +45367,8 @@ This endpoint also supports filtering and sorting of the results. See
             "is_private": true,
             "created_on": "1970-01-01T00:00:00Z",
             "updated_on": "1970-01-01T00:00:00Z",
-            "has_publicly_visible_repos": true
+            "has_publicly_visible_repos": true,
+            "enforced_signed_commits": true
           },
           "mainbranch": {}
         },
@@ -47778,6 +47997,7 @@ A paginated list of annotations.
     "has_issues": true,
     "has_wiki": true,
     "fork_policy": "allow_forks",
+    "enforced_signed_commits": true,
     "project": {
       "type": "string",
       "links": {
@@ -47829,7 +48049,8 @@ A paginated list of annotations.
       "is_private": true,
       "created_on": "1970-01-01T00:00:00Z",
       "updated_on": "1970-01-01T00:00:00Z",
-      "has_publicly_visible_repos": true
+      "has_publicly_visible_repos": true,
+      "enforced_signed_commits": true
     },
     "mainbranch": {}
   }
@@ -47940,6 +48161,7 @@ A paginated list of annotations.
     "has_issues": true,
     "has_wiki": true,
     "fork_policy": "allow_forks",
+    "enforced_signed_commits": true,
     "project": {
       "type": "string",
       "links": {
@@ -47991,7 +48213,8 @@ A paginated list of annotations.
       "is_private": true,
       "created_on": "1970-01-01T00:00:00Z",
       "updated_on": "1970-01-01T00:00:00Z",
-      "has_publicly_visible_repos": true
+      "has_publicly_visible_repos": true,
+      "enforced_signed_commits": true
     },
     "mainbranch": {}
   },
@@ -49174,6 +49397,7 @@ A paged list of schedules
       "has_issues": true,
       "has_wiki": true,
       "fork_policy": "allow_forks",
+      "enforced_signed_commits": true,
       "project": {
         "type": "string",
         "links": {
@@ -49225,7 +49449,8 @@ A paged list of schedules
         "is_private": true,
         "created_on": "1970-01-01T00:00:00Z",
         "updated_on": "1970-01-01T00:00:00Z",
-        "has_publicly_visible_repos": true
+        "has_publicly_visible_repos": true,
+        "enforced_signed_commits": true
       },
       "mainbranch": {}
     },
@@ -49926,6 +50151,7 @@ An executable pipeline command.
         "has_issues": true,
         "has_wiki": true,
         "fork_policy": "allow_forks",
+        "enforced_signed_commits": true,
         "project": {
           "type": "string",
           "links": {
@@ -49977,7 +50203,8 @@ An executable pipeline command.
           "is_private": true,
           "created_on": "1970-01-01T00:00:00Z",
           "updated_on": "1970-01-01T00:00:00Z",
-          "has_publicly_visible_repos": true
+          "has_publicly_visible_repos": true,
+          "enforced_signed_commits": true
         },
         "mainbranch": {}
       },
@@ -50601,6 +50828,7 @@ A reference to the merge queue holding a pullrequest.
       "has_issues": true,
       "has_wiki": true,
       "fork_policy": "allow_forks",
+      "enforced_signed_commits": true,
       "project": {
         "type": "string",
         "links": {
@@ -50652,7 +50880,8 @@ A reference to the merge queue holding a pullrequest.
         "is_private": true,
         "created_on": "1970-01-01T00:00:00Z",
         "updated_on": "1970-01-01T00:00:00Z",
-        "has_publicly_visible_repos": true
+        "has_publicly_visible_repos": true,
+        "enforced_signed_commits": true
       },
       "mainbranch": {}
     },
@@ -50853,6 +51082,7 @@ A reference to the merge queue holding a pullrequest.
         "has_issues": true,
         "has_wiki": true,
         "fork_policy": "allow_forks",
+        "enforced_signed_commits": true,
         "project": {
           "type": "string",
           "links": {
@@ -50904,7 +51134,8 @@ A reference to the merge queue holding a pullrequest.
           "is_private": true,
           "created_on": "1970-01-01T00:00:00Z",
           "updated_on": "1970-01-01T00:00:00Z",
-          "has_publicly_visible_repos": true
+          "has_publicly_visible_repos": true,
+          "enforced_signed_commits": true
         },
         "mainbranch": {}
       },
@@ -50992,6 +51223,7 @@ A reference to the merge queue holding a pullrequest.
         "has_issues": true,
         "has_wiki": true,
         "fork_policy": "allow_forks",
+        "enforced_signed_commits": true,
         "project": {
           "type": "string",
           "links": {
@@ -51043,7 +51275,8 @@ A reference to the merge queue holding a pullrequest.
           "is_private": true,
           "created_on": "1970-01-01T00:00:00Z",
           "updated_on": "1970-01-01T00:00:00Z",
-          "has_publicly_visible_repos": true
+          "has_publicly_visible_repos": true,
+          "enforced_signed_commits": true
         },
         "mainbranch": {}
       },
@@ -51258,6 +51491,7 @@ The pullrequest object in a merge queue.
           "has_issues": true,
           "has_wiki": true,
           "fork_policy": "allow_forks",
+          "enforced_signed_commits": true,
           "project": {
             "type": "string",
             "links": {
@@ -51309,7 +51543,8 @@ The pullrequest object in a merge queue.
             "is_private": true,
             "created_on": "1970-01-01T00:00:00Z",
             "updated_on": "1970-01-01T00:00:00Z",
-            "has_publicly_visible_repos": true
+            "has_publicly_visible_repos": true,
+            "enforced_signed_commits": true
           },
           "mainbranch": {}
         },
@@ -51510,6 +51745,7 @@ The pullrequest object in a merge queue.
             "has_issues": true,
             "has_wiki": true,
             "fork_policy": "allow_forks",
+            "enforced_signed_commits": true,
             "project": {
               "type": "string",
               "links": {
@@ -51561,7 +51797,8 @@ The pullrequest object in a merge queue.
               "is_private": true,
               "created_on": "1970-01-01T00:00:00Z",
               "updated_on": "1970-01-01T00:00:00Z",
-              "has_publicly_visible_repos": true
+              "has_publicly_visible_repos": true,
+              "enforced_signed_commits": true
             },
             "mainbranch": {}
           },
@@ -51649,6 +51886,7 @@ The pullrequest object in a merge queue.
             "has_issues": true,
             "has_wiki": true,
             "fork_policy": "allow_forks",
+            "enforced_signed_commits": true,
             "project": {
               "type": "string",
               "links": {
@@ -51700,7 +51938,8 @@ The pullrequest object in a merge queue.
               "is_private": true,
               "created_on": "1970-01-01T00:00:00Z",
               "updated_on": "1970-01-01T00:00:00Z",
-              "has_publicly_visible_repos": true
+              "has_publicly_visible_repos": true,
+              "enforced_signed_commits": true
             },
             "mainbranch": {}
           },
@@ -52199,6 +52438,7 @@ The pullrequest object in a merge queue.
           "has_issues": true,
           "has_wiki": true,
           "fork_policy": "allow_forks",
+          "enforced_signed_commits": true,
           "project": {
             "type": "string",
             "links": {
@@ -52250,7 +52490,8 @@ The pullrequest object in a merge queue.
             "is_private": true,
             "created_on": "1970-01-01T00:00:00Z",
             "updated_on": "1970-01-01T00:00:00Z",
-            "has_publicly_visible_repos": true
+            "has_publicly_visible_repos": true,
+            "enforced_signed_commits": true
           },
           "mainbranch": {}
         },
@@ -52338,6 +52579,7 @@ The pullrequest object in a merge queue.
           "has_issues": true,
           "has_wiki": true,
           "fork_policy": "allow_forks",
+          "enforced_signed_commits": true,
           "project": {
             "type": "string",
             "links": {
@@ -52389,7 +52631,8 @@ The pullrequest object in a merge queue.
             "is_private": true,
             "created_on": "1970-01-01T00:00:00Z",
             "updated_on": "1970-01-01T00:00:00Z",
-            "has_publicly_visible_repos": true
+            "has_publicly_visible_repos": true,
+            "enforced_signed_commits": true
           },
           "mainbranch": {}
         },
@@ -53452,6 +53695,7 @@ A paginated list of accounts.
       "has_issues": true,
       "has_wiki": true,
       "fork_policy": "allow_forks",
+      "enforced_signed_commits": true,
       "project": {
         "type": "string",
         "links": {
@@ -53503,7 +53747,8 @@ A paginated list of accounts.
         "is_private": true,
         "created_on": "1970-01-01T00:00:00Z",
         "updated_on": "1970-01-01T00:00:00Z",
-        "has_publicly_visible_repos": true
+        "has_publicly_visible_repos": true,
+        "enforced_signed_commits": true
       },
       "mainbranch": {}
     }
@@ -53676,6 +53921,7 @@ A json object representing the repository's inheritance state values
     "has_issues": true,
     "has_wiki": true,
     "fork_policy": "allow_forks",
+    "enforced_signed_commits": true,
     "project": {
       "type": "string",
       "links": {
@@ -53727,7 +53973,8 @@ A json object representing the repository's inheritance state values
       "is_private": true,
       "created_on": "1970-01-01T00:00:00Z",
       "updated_on": "1970-01-01T00:00:00Z",
-      "has_publicly_visible_repos": true
+      "has_publicly_visible_repos": true,
+      "enforced_signed_commits": true
     },
     "mainbranch": {}
   },
@@ -53753,6 +54000,7 @@ A json object representing the repository's inheritance state values
   "has_issues": true,
   "has_wiki": true,
   "fork_policy": "allow_forks",
+  "enforced_signed_commits": true,
   "project": {
     "type": "string",
     "links": {
@@ -53804,7 +54052,8 @@ A json object representing the repository's inheritance state values
     "is_private": true,
     "created_on": "1970-01-01T00:00:00Z",
     "updated_on": "1970-01-01T00:00:00Z",
-    "has_publicly_visible_repos": true
+    "has_publicly_visible_repos": true,
+    "enforced_signed_commits": true
   },
   "mainbranch": {
     "merge_strategies": [
@@ -53836,6 +54085,7 @@ A json object representing the repository's inheritance state values
 |has_issues|boolean|false|none|<br>The issue tracker for this repository is enabled. Issue Tracker<br>features are not supported for repositories in workspaces<br>administered through admin.atlassian.com.<br>|
 |has_wiki|boolean|false|none|<br>The wiki for this repository is enabled. Wiki<br>features are not supported for repositories in workspaces<br>administered through admin.atlassian.com.<br>|
 |fork_policy|string|false|none|<br>Controls the rules for forking this repository.<br><br>* **allow_forks**: unrestricted forking<br>* **no_public_forks**: restrict forking to private forks (forks cannot<br>  be made public later)<br>* **no_forks**: deny all forking<br>|
+|enforced_signed_commits|boolean|false|none|Whether signed commits are required for this repository:<br><br>- true when the workspace is on a Premium plan and enforcement is enabled at the repository, project,<br>  or workspace level;<br>- otherwise false.|
 |project|[project](#schemaproject)|false|none|none|
 |mainbranch|[branch](#schemabranch)|false|none|none|
 
@@ -54139,6 +54389,7 @@ A json object representing the repository's inheritance state values
             "slug": "string",
             "is_private": true,
             "is_personal": true,
+            "enforced_signed_commits": true,
             "is_privacy_enforced": true,
             "forking_mode": "allow_forks",
             "created_on": "1970-01-01T00:00:00Z",
@@ -54464,6 +54715,7 @@ A paginated list of commit status objects.
     "slug": "string",
     "is_private": true,
     "is_personal": true,
+    "enforced_signed_commits": true,
     "is_privacy_enforced": true,
     "forking_mode": "allow_forks",
     "created_on": "1970-01-01T00:00:00Z",
@@ -54569,6 +54821,7 @@ A paginated list of commit status objects.
       "slug": "string",
       "is_private": true,
       "is_personal": true,
+      "enforced_signed_commits": true,
       "is_privacy_enforced": true,
       "forking_mode": "allow_forks",
       "created_on": "1970-01-01T00:00:00Z",
@@ -54629,7 +54882,8 @@ A paginated list of commit status objects.
     "is_private": true,
     "created_on": "1970-01-01T00:00:00Z",
     "updated_on": "1970-01-01T00:00:00Z",
-    "has_publicly_visible_repos": true
+    "has_publicly_visible_repos": true,
+    "enforced_signed_commits": true
   }
 }
 ```
@@ -54738,6 +54992,7 @@ A group's permission for a given project.
       "slug": "string",
       "is_private": true,
       "is_personal": true,
+      "enforced_signed_commits": true,
       "is_privacy_enforced": true,
       "forking_mode": "allow_forks",
       "created_on": "1970-01-01T00:00:00Z",
@@ -54819,6 +55074,7 @@ A group's permission for a given project.
     "has_issues": true,
     "has_wiki": true,
     "fork_policy": "allow_forks",
+    "enforced_signed_commits": true,
     "project": {
       "type": "string",
       "links": {
@@ -54870,7 +55126,8 @@ A group's permission for a given project.
       "is_private": true,
       "created_on": "1970-01-01T00:00:00Z",
       "updated_on": "1970-01-01T00:00:00Z",
-      "has_publicly_visible_repos": true
+      "has_publicly_visible_repos": true,
+      "enforced_signed_commits": true
     },
     "mainbranch": {}
   }
@@ -54987,6 +55244,7 @@ A group's permission for a given repository.
           "slug": "string",
           "is_private": true,
           "is_personal": true,
+          "enforced_signed_commits": true,
           "is_privacy_enforced": true,
           "forking_mode": "allow_forks",
           "created_on": "1970-01-01T00:00:00Z",
@@ -55047,7 +55305,8 @@ A group's permission for a given repository.
         "is_private": true,
         "created_on": "1970-01-01T00:00:00Z",
         "updated_on": "1970-01-01T00:00:00Z",
-        "has_publicly_visible_repos": true
+        "has_publicly_visible_repos": true,
+        "enforced_signed_commits": true
       }
     }
   ]
@@ -55171,7 +55430,8 @@ A paginated list of project group permissions.
         "is_private": true,
         "created_on": "1970-01-01T00:00:00Z",
         "updated_on": "1970-01-01T00:00:00Z",
-        "has_publicly_visible_repos": true
+        "has_publicly_visible_repos": true,
+        "enforced_signed_commits": true
       }
     }
   ]
@@ -55280,6 +55540,7 @@ A paginated list of project user permissions.
           "slug": "string",
           "is_private": true,
           "is_personal": true,
+          "enforced_signed_commits": true,
           "is_privacy_enforced": true,
           "forking_mode": "allow_forks",
           "created_on": "1970-01-01T00:00:00Z",
@@ -55361,6 +55622,7 @@ A paginated list of project user permissions.
         "has_issues": true,
         "has_wiki": true,
         "fork_policy": "allow_forks",
+        "enforced_signed_commits": true,
         "project": {
           "type": "string",
           "links": {
@@ -55412,7 +55674,8 @@ A paginated list of project user permissions.
           "is_private": true,
           "created_on": "1970-01-01T00:00:00Z",
           "updated_on": "1970-01-01T00:00:00Z",
-          "has_publicly_visible_repos": true
+          "has_publicly_visible_repos": true,
+          "enforced_signed_commits": true
         },
         "mainbranch": {}
       }
@@ -55553,6 +55816,7 @@ A paginated list of repository group permissions.
         "has_issues": true,
         "has_wiki": true,
         "fork_policy": "allow_forks",
+        "enforced_signed_commits": true,
         "project": {
           "type": "string",
           "links": {
@@ -55604,7 +55868,8 @@ A paginated list of repository group permissions.
           "is_private": true,
           "created_on": "1970-01-01T00:00:00Z",
           "updated_on": "1970-01-01T00:00:00Z",
-          "has_publicly_visible_repos": true
+          "has_publicly_visible_repos": true,
+          "enforced_signed_commits": true
         },
         "mainbranch": {}
       }
@@ -55745,6 +56010,7 @@ A paginated list of repository permissions.
         "has_issues": true,
         "has_wiki": true,
         "fork_policy": "allow_forks",
+        "enforced_signed_commits": true,
         "project": {
           "type": "string",
           "links": {
@@ -55796,7 +56062,8 @@ A paginated list of repository permissions.
           "is_private": true,
           "created_on": "1970-01-01T00:00:00Z",
           "updated_on": "1970-01-01T00:00:00Z",
-          "has_publicly_visible_repos": true
+          "has_publicly_visible_repos": true,
+          "enforced_signed_commits": true
         },
         "mainbranch": {}
       },
@@ -55936,6 +56203,7 @@ A paginated list of repository user permissions.
     "has_issues": true,
     "has_wiki": true,
     "fork_policy": "allow_forks",
+    "enforced_signed_commits": true,
     "project": {
       "type": "string",
       "links": {
@@ -55987,7 +56255,8 @@ A paginated list of repository user permissions.
       "is_private": true,
       "created_on": "1970-01-01T00:00:00Z",
       "updated_on": "1970-01-01T00:00:00Z",
-      "has_publicly_visible_repos": true
+      "has_publicly_visible_repos": true,
+      "enforced_signed_commits": true
     },
     "mainbranch": {}
   }
@@ -56111,7 +56380,8 @@ A user's permission for a given repository.
     "is_private": true,
     "created_on": "1970-01-01T00:00:00Z",
     "updated_on": "1970-01-01T00:00:00Z",
-    "has_publicly_visible_repos": true
+    "has_publicly_visible_repos": true,
+    "enforced_signed_commits": true
   }
 }
 ```
@@ -56204,7 +56474,8 @@ A user's direct permission for a given project.
       "is_private": true,
       "created_on": "1970-01-01T00:00:00Z",
       "updated_on": "1970-01-01T00:00:00Z",
-      "has_publicly_visible_repos": true
+      "has_publicly_visible_repos": true,
+      "enforced_signed_commits": true
     }
   ]
 }
@@ -56382,7 +56653,8 @@ A paginated list of projects
   "is_private": true,
   "created_on": "1970-01-01T00:00:00Z",
   "updated_on": "1970-01-01T00:00:00Z",
-  "has_publicly_visible_repos": true
+  "has_publicly_visible_repos": true,
+  "enforced_signed_commits": true
 }
 ```
 
@@ -56401,6 +56673,7 @@ A paginated list of projects
 |created_on|string(date-time)|false|none|none|
 |updated_on|string(date-time)|false|none|none|
 |has_publicly_visible_repos|boolean|false|none|<br>Indicates whether the project contains publicly visible repositories.<br>Note that private projects cannot contain public repositories.|
+|enforced_signed_commits|boolean|false|none|Whether signed commits are required for this project:<br><br>- true when the workspace is on a Premium plan and enforcement is enabled at the project or the<br>  workspace level;<br>- otherwise false.|
 
 <h2 id="tocS_comment_resolution">comment_resolution</h2>
 <!-- backwards compatibility -->
@@ -56774,6 +57047,7 @@ A paginated list of default reviewers with reviewer type.
             "has_issues": true,
             "has_wiki": true,
             "fork_policy": "allow_forks",
+            "enforced_signed_commits": true,
             "project": {
               "type": "string",
               "links": {
@@ -56825,7 +57099,8 @@ A paginated list of default reviewers with reviewer type.
               "is_private": true,
               "created_on": "1970-01-01T00:00:00Z",
               "updated_on": "1970-01-01T00:00:00Z",
-              "has_publicly_visible_repos": true
+              "has_publicly_visible_repos": true,
+              "enforced_signed_commits": true
             },
             "mainbranch": {}
           },
@@ -56913,6 +57188,7 @@ A paginated list of default reviewers with reviewer type.
             "has_issues": true,
             "has_wiki": true,
             "fork_policy": "allow_forks",
+            "enforced_signed_commits": true,
             "project": {
               "type": "string",
               "links": {
@@ -56964,7 +57240,8 @@ A paginated list of default reviewers with reviewer type.
               "is_private": true,
               "created_on": "1970-01-01T00:00:00Z",
               "updated_on": "1970-01-01T00:00:00Z",
-              "has_publicly_visible_repos": true
+              "has_publicly_visible_repos": true,
+              "enforced_signed_commits": true
             },
             "mainbranch": {}
           },
@@ -57367,6 +57644,7 @@ The metadata that describes a pull request merge.
     "has_issues": true,
     "has_wiki": true,
     "fork_policy": "allow_forks",
+    "enforced_signed_commits": true,
     "project": {
       "type": "string",
       "links": {
@@ -57418,7 +57696,8 @@ The metadata that describes a pull request merge.
       "is_private": true,
       "created_on": "1970-01-01T00:00:00Z",
       "updated_on": "1970-01-01T00:00:00Z",
-      "has_publicly_visible_repos": true
+      "has_publicly_visible_repos": true,
+      "enforced_signed_commits": true
     },
     "mainbranch": {}
   },
@@ -57609,6 +57888,7 @@ The metadata that describes a pull request merge.
       "has_issues": true,
       "has_wiki": true,
       "fork_policy": "allow_forks",
+      "enforced_signed_commits": true,
       "project": {
         "type": "string",
         "links": {
@@ -57660,7 +57940,8 @@ The metadata that describes a pull request merge.
         "is_private": true,
         "created_on": "1970-01-01T00:00:00Z",
         "updated_on": "1970-01-01T00:00:00Z",
-        "has_publicly_visible_repos": true
+        "has_publicly_visible_repos": true,
+        "enforced_signed_commits": true
       },
       "mainbranch": {}
     },
@@ -57748,6 +58029,7 @@ The metadata that describes a pull request merge.
       "has_issues": true,
       "has_wiki": true,
       "fork_policy": "allow_forks",
+      "enforced_signed_commits": true,
       "project": {
         "type": "string",
         "links": {
@@ -57799,7 +58081,8 @@ The metadata that describes a pull request merge.
         "is_private": true,
         "created_on": "1970-01-01T00:00:00Z",
         "updated_on": "1970-01-01T00:00:00Z",
-        "has_publicly_visible_repos": true
+        "has_publicly_visible_repos": true,
+        "enforced_signed_commits": true
       },
       "mainbranch": {}
     },
@@ -59459,6 +59742,7 @@ A paginated list of snippets.
     "has_issues": true,
     "has_wiki": true,
     "fork_policy": "allow_forks",
+    "enforced_signed_commits": true,
     "project": {
       "type": "string",
       "links": {
@@ -59510,7 +59794,8 @@ A paginated list of snippets.
       "is_private": true,
       "created_on": "1970-01-01T00:00:00Z",
       "updated_on": "1970-01-01T00:00:00Z",
-      "has_publicly_visible_repos": true
+      "has_publicly_visible_repos": true,
+      "enforced_signed_commits": true
     },
     "mainbranch": {}
   },
@@ -59736,6 +60021,7 @@ A paginated list of snippets.
         "has_issues": true,
         "has_wiki": true,
         "fork_policy": "allow_forks",
+        "enforced_signed_commits": true,
         "project": {
           "type": "string",
           "links": {
@@ -59787,7 +60073,8 @@ A paginated list of snippets.
           "is_private": true,
           "created_on": "1970-01-01T00:00:00Z",
           "updated_on": "1970-01-01T00:00:00Z",
-          "has_publicly_visible_repos": true
+          "has_publicly_visible_repos": true,
+          "enforced_signed_commits": true
         },
         "mainbranch": {}
       },
@@ -59965,7 +60252,8 @@ A paginated list of GPG keys.
         "is_private": true,
         "created_on": "1970-01-01T00:00:00Z",
         "updated_on": "1970-01-01T00:00:00Z",
-        "has_publicly_visible_repos": true
+        "has_publicly_visible_repos": true,
+        "enforced_signed_commits": true
       },
       "comment": "string",
       "label": "string",
@@ -60130,7 +60418,8 @@ A paginated list of SSH keys.
     "is_private": true,
     "created_on": "1970-01-01T00:00:00Z",
     "updated_on": "1970-01-01T00:00:00Z",
-    "has_publicly_visible_repos": true
+    "has_publicly_visible_repos": true,
+    "enforced_signed_commits": true
   },
   "comment": "string",
   "label": "string",
@@ -60407,6 +60696,7 @@ A paginated list of workspace permissions.
         "slug": "string",
         "is_private": true,
         "is_personal": true,
+        "enforced_signed_commits": true,
         "is_privacy_enforced": true,
         "forking_mode": "allow_forks",
         "created_on": "1970-01-01T00:00:00Z",
@@ -60499,6 +60789,7 @@ A paginated list of workspace memberships.
     "slug": "string",
     "is_private": true,
     "is_personal": true,
+    "enforced_signed_commits": true,
     "is_privacy_enforced": true,
     "forking_mode": "allow_forks",
     "created_on": "1970-01-01T00:00:00Z",
@@ -60565,6 +60856,7 @@ A paginated list of workspace memberships.
   "slug": "string",
   "is_private": true,
   "is_personal": true,
+  "enforced_signed_commits": true,
   "is_privacy_enforced": true,
   "forking_mode": "allow_forks",
   "created_on": "1970-01-01T00:00:00Z",
@@ -60583,6 +60875,7 @@ A paginated list of workspace memberships.
 |slug|string|false|none|The short label that identifies this workspace.|
 |is_private|boolean|false|none|Indicates whether the workspace is publicly accessible, or whether it is<br>private to the members and consequently only visible to members.|
 |is_personal|boolean|false|none|Indicates whether the workspace belongs to an individual user.|
+|enforced_signed_commits|boolean|false|none|Whether signed commits are required for this workspace:<br><br>- true when enforcement is enabled at the workspace level, even if the workspace is no longer on a<br>  Premium plan. Signed commits are only enforced on a Premium plan;<br>- otherwise false.|
 |is_privacy_enforced|boolean|false|none|Indicates whether the workspace enforces private content, or whether it allows public content.|
 |forking_mode|string|false|none|Controls the rules for forking repositories within this workspace.<br><br>* **allow_forks**: unrestricted forking<br>* **internal_only**: prevents forking of private repositories outside the workspace or to public repositories<br>|
 |created_on|string(date-time)|false|none|none|
@@ -60830,6 +61123,7 @@ A paginated list of workspace memberships.
         "slug": "string",
         "is_private": true,
         "is_personal": true,
+        "enforced_signed_commits": true,
         "is_privacy_enforced": true,
         "forking_mode": "allow_forks",
         "created_on": "1970-01-01T00:00:00Z",
@@ -61002,6 +61296,7 @@ A paginated list of workspace memberships.
     "has_issues": true,
     "has_wiki": true,
     "fork_policy": "allow_forks",
+    "enforced_signed_commits": true,
     "project": {
       "type": "string",
       "links": {
@@ -61053,7 +61348,8 @@ A paginated list of workspace memberships.
       "is_private": true,
       "created_on": "1970-01-01T00:00:00Z",
       "updated_on": "1970-01-01T00:00:00Z",
-      "has_publicly_visible_repos": true
+      "has_publicly_visible_repos": true,
+      "enforced_signed_commits": true
     },
     "mainbranch": {}
   },
@@ -61298,6 +61594,7 @@ A user's direct permission for a given repository.
         "has_issues": true,
         "has_wiki": true,
         "fork_policy": "allow_forks",
+        "enforced_signed_commits": true,
         "project": {
           "type": "string",
           "links": {
@@ -61349,7 +61646,8 @@ A user's direct permission for a given repository.
           "is_private": true,
           "created_on": "1970-01-01T00:00:00Z",
           "updated_on": "1970-01-01T00:00:00Z",
-          "has_publicly_visible_repos": true
+          "has_publicly_visible_repos": true,
+          "enforced_signed_commits": true
         },
         "mainbranch": {}
       },
@@ -61437,6 +61735,7 @@ A user's direct permission for a given repository.
         "has_issues": true,
         "has_wiki": true,
         "fork_policy": "allow_forks",
+        "enforced_signed_commits": true,
         "project": {
           "type": "string",
           "links": {
@@ -61488,7 +61787,8 @@ A user's direct permission for a given repository.
           "is_private": true,
           "created_on": "1970-01-01T00:00:00Z",
           "updated_on": "1970-01-01T00:00:00Z",
-          "has_publicly_visible_repos": true
+          "has_publicly_visible_repos": true,
+          "enforced_signed_commits": true
         },
         "mainbranch": {}
       },
@@ -62109,6 +62409,7 @@ A paginated list of tags.
     "has_issues": true,
     "has_wiki": true,
     "fork_policy": "allow_forks",
+    "enforced_signed_commits": true,
     "project": {
       "type": "string",
       "links": {
@@ -62160,7 +62461,8 @@ A paginated list of tags.
       "is_private": true,
       "created_on": "1970-01-01T00:00:00Z",
       "updated_on": "1970-01-01T00:00:00Z",
-      "has_publicly_visible_repos": true
+      "has_publicly_visible_repos": true,
+      "enforced_signed_commits": true
     },
     "mainbranch": {}
   },

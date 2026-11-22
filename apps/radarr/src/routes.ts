@@ -1,5 +1,452 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const LanguageSchema = z
+  .strictObject({ id: z.int32().exactOptional(), name: z.string().nullable().exactOptional() })
+  .openapi({ required: [] })
+  .openapi('Language')
+
+const QualitySourceSchema = z
+  .enum([
+    'unknown',
+    'cam',
+    'telesync',
+    'telecine',
+    'workprint',
+    'dvd',
+    'tv',
+    'webdl',
+    'webrip',
+    'bluray',
+  ])
+  .openapi('QualitySource')
+
+const ModifierSchema = z
+  .enum(['none', 'regional', 'screener', 'rawhd', 'brdisk', 'remux'])
+  .openapi('Modifier')
+
+const QualitySchema = z
+  .strictObject({
+    id: z.int32().exactOptional(),
+    name: z.string().nullable().exactOptional(),
+    source: QualitySourceSchema.exactOptional(),
+    resolution: z.int32().exactOptional(),
+    modifier: ModifierSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('Quality')
+
+const RevisionSchema = z
+  .strictObject({
+    version: z.int32().exactOptional(),
+    real: z.int32().exactOptional(),
+    isRepack: z.boolean().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('Revision')
+
+const QualityModelSchema = z
+  .strictObject({
+    quality: QualitySchema.exactOptional(),
+    revision: RevisionSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('QualityModel')
+
+const CustomFormatSpecificationSchemaSchema: z.ZodType<CustomFormatSpecificationSchemaType> = z
+  .lazy(() =>
+    z
+      .strictObject({
+        id: z.int32().exactOptional(),
+        name: z.string().nullable().exactOptional(),
+        implementation: z.string().nullable().exactOptional(),
+        implementationName: z.string().nullable().exactOptional(),
+        infoLink: z.string().nullable().exactOptional(),
+        negate: z.boolean().exactOptional(),
+        required: z.boolean().exactOptional(),
+        fields: z.array(FieldSchema).nullable().exactOptional(),
+        presets: z.array(CustomFormatSpecificationSchemaSchema).nullable().exactOptional(),
+      })
+      .openapi({ required: [] }),
+  )
+  .openapi('CustomFormatSpecificationSchema')
+
+const CustomFormatResourceSchema = z
+  .strictObject({
+    id: z.int32().exactOptional(),
+    name: z.string().nullable().exactOptional(),
+    includeCustomFormatWhenRenaming: z.boolean().nullable().exactOptional(),
+    specifications: z.array(CustomFormatSpecificationSchemaSchema).nullable().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('CustomFormatResource')
+
+const DownloadProtocolSchema = z.enum(['unknown', 'usenet', 'torrent']).openapi('DownloadProtocol')
+
+const SourceTypeSchema = z.enum(['tmdb', 'mappings', 'user', 'indexer']).openapi('SourceType')
+
+const AlternativeTitleResourceSchema = z
+  .strictObject({
+    id: z.int32().exactOptional(),
+    sourceType: SourceTypeSchema.exactOptional(),
+    movieMetadataId: z.int32().exactOptional(),
+    title: z.string().nullable().exactOptional(),
+    cleanTitle: z.string().nullable().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('AlternativeTitleResource')
+
+const MovieStatusTypeSchema = z
+  .enum(['tba', 'announced', 'inCinemas', 'released', 'deleted'])
+  .openapi('MovieStatusType')
+
+const MediaCoverTypesSchema = z
+  .enum(['unknown', 'poster', 'banner', 'fanart', 'screenshot', 'headshot', 'clearlogo'])
+  .openapi('MediaCoverTypes')
+
+const MediaCoverSchema = z
+  .strictObject({
+    coverType: MediaCoverTypesSchema.exactOptional(),
+    url: z.string().nullable().exactOptional(),
+    remoteUrl: z.string().nullable().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('MediaCover')
+
+const MonitorTypesSchema = z
+  .enum(['movieOnly', 'movieAndCollection', 'none'])
+  .openapi('MonitorTypes')
+
+const AddMovieMethodSchema = z.enum(['manual', 'list', 'collection']).openapi('AddMovieMethod')
+
+const AddMovieOptionsSchema = z
+  .strictObject({
+    ignoreEpisodesWithFiles: z.boolean().exactOptional(),
+    ignoreEpisodesWithoutFiles: z.boolean().exactOptional(),
+    monitor: MonitorTypesSchema.exactOptional(),
+    searchForMovie: z.boolean().exactOptional(),
+    addMethod: AddMovieMethodSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('AddMovieOptions')
+
+const RatingTypeSchema = z.enum(['user', 'critic']).openapi('RatingType')
+
+const RatingChildSchema = z
+  .strictObject({
+    votes: z.int32().exactOptional(),
+    value: z.float64().exactOptional(),
+    type: RatingTypeSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('RatingChild')
+
+const RatingsSchema = z
+  .strictObject({
+    imdb: RatingChildSchema.exactOptional(),
+    tmdb: RatingChildSchema.exactOptional(),
+    metacritic: RatingChildSchema.exactOptional(),
+    rottenTomatoes: RatingChildSchema.exactOptional(),
+    trakt: RatingChildSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('Ratings')
+
+const MediaInfoResourceSchema = z
+  .strictObject({
+    id: z.int32().exactOptional(),
+    audioBitrate: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    audioChannels: z.float64().exactOptional(),
+    audioCodec: z.string().nullable().exactOptional(),
+    audioLanguages: z.string().nullable().exactOptional(),
+    audioStreamCount: z.int32().exactOptional(),
+    videoBitDepth: z.int32().exactOptional(),
+    videoBitrate: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    videoCodec: z.string().nullable().exactOptional(),
+    videoFps: z.float64().exactOptional(),
+    videoDynamicRange: z.string().nullable().exactOptional(),
+    videoDynamicRangeType: z.string().nullable().exactOptional(),
+    resolution: z.string().nullable().exactOptional(),
+    runTime: z.string().nullable().exactOptional(),
+    scanType: z.string().nullable().exactOptional(),
+    subtitles: z.string().nullable().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('MediaInfoResource')
+
+type MovieFileResourceType = {
+  id?: number
+  movieId?: number
+  relativePath?: string | null
+  path?: string | null
+  size?: bigint
+  dateAdded?: string
+  sceneName?: string | null
+  releaseGroup?: string | null
+  edition?: string | null
+  languages?: z.infer<typeof LanguageSchema>[] | null
+  quality?: z.infer<typeof QualityModelSchema>
+  customFormats?: z.infer<typeof CustomFormatResourceSchema>[] | null
+  customFormatScore?: number | null
+  indexerFlags?: number | null
+  mediaInfo?: z.infer<typeof MediaInfoResourceSchema>
+  originalFilePath?: string | null
+  qualityCutoffNotMet?: boolean
+}
+
+const MovieFileResourceSchema: z.ZodType<MovieFileResourceType> = z
+  .strictObject({
+    id: z.int32().exactOptional(),
+    movieId: z.int32().exactOptional(),
+    relativePath: z.string().nullable().exactOptional(),
+    path: z.string().nullable().exactOptional(),
+    size: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    dateAdded: z.iso.datetime({ offset: true }).exactOptional(),
+    sceneName: z.string().nullable().exactOptional(),
+    releaseGroup: z.string().nullable().exactOptional(),
+    edition: z.string().nullable().exactOptional(),
+    languages: z.array(LanguageSchema).nullable().exactOptional(),
+    quality: QualityModelSchema.exactOptional(),
+    customFormats: z.array(CustomFormatResourceSchema).nullable().exactOptional(),
+    customFormatScore: z.int32().nullable().exactOptional(),
+    indexerFlags: z.int32().nullable().exactOptional(),
+    mediaInfo: MediaInfoResourceSchema.exactOptional(),
+    originalFilePath: z.string().nullable().exactOptional(),
+    qualityCutoffNotMet: z.boolean().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('MovieFileResource')
+
+const MovieCollectionResourceSchema = z
+  .strictObject({ title: z.string().nullable().exactOptional(), tmdbId: z.int32().exactOptional() })
+  .openapi({ required: [] })
+  .openapi('MovieCollectionResource')
+
+const MovieStatisticsResourceSchema = z
+  .strictObject({
+    movieFileCount: z.int32().exactOptional(),
+    sizeOnDisk: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    releaseGroups: z.array(z.string()).nullable().exactOptional(),
+    movieFileQualities: z.array(QualitySchema).nullable().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('MovieStatisticsResource')
+
+type MovieResourceType = {
+  id?: number
+  title?: string | null
+  originalTitle?: string | null
+  originalLanguage?: z.infer<typeof LanguageSchema>
+  alternateTitles?: z.infer<typeof AlternativeTitleResourceSchema>[] | null
+  secondaryYear?: number | null
+  secondaryYearSourceId?: number
+  sortTitle?: string | null
+  sizeOnDisk?: bigint | null
+  status?: z.infer<typeof MovieStatusTypeSchema>
+  overview?: string | null
+  inCinemas?: string | null
+  physicalRelease?: string | null
+  digitalRelease?: string | null
+  releaseDate?: string | null
+  physicalReleaseNote?: string | null
+  images?: z.infer<typeof MediaCoverSchema>[] | null
+  website?: string | null
+  remotePoster?: string | null
+  year?: number
+  youTubeTrailerId?: string | null
+  studio?: string | null
+  path?: string | null
+  qualityProfileId?: number
+  hasFile?: boolean | null
+  movieFileId?: number
+  monitored?: boolean
+  minimumAvailability?: z.infer<typeof MovieStatusTypeSchema>
+  isAvailable?: boolean
+  folderName?: string | null
+  runtime?: number
+  cleanTitle?: string | null
+  imdbId?: string | null
+  tmdbId?: number
+  titleSlug?: string | null
+  rootFolderPath?: string | null
+  folder?: string | null
+  certification?: string | null
+  genres?: string[] | null
+  keywords?: string[] | null
+  tags?: number[] | null
+  added?: string
+  addOptions?: z.infer<typeof AddMovieOptionsSchema>
+  ratings?: z.infer<typeof RatingsSchema>
+  movieFile?: z.infer<typeof MovieFileResourceSchema>
+  collection?: z.infer<typeof MovieCollectionResourceSchema>
+  popularity?: number
+  lastSearchTime?: string | null
+  statistics?: z.infer<typeof MovieStatisticsResourceSchema>
+}
+
+const MovieResourceSchema: z.ZodType<MovieResourceType> = z
+  .strictObject({
+    id: z.int32().exactOptional(),
+    title: z.string().nullable().exactOptional(),
+    originalTitle: z.string().nullable().exactOptional(),
+    originalLanguage: LanguageSchema.exactOptional(),
+    alternateTitles: z.array(AlternativeTitleResourceSchema).nullable().exactOptional(),
+    secondaryYear: z.int32().nullable().exactOptional(),
+    secondaryYearSourceId: z.int32().exactOptional(),
+    sortTitle: z.string().nullable().exactOptional(),
+    sizeOnDisk: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({ type: ['integer', 'null'], format: 'int64' }),
+    status: MovieStatusTypeSchema.exactOptional(),
+    overview: z.string().nullable().exactOptional(),
+    inCinemas: z.iso.datetime({ offset: true }).nullable().exactOptional(),
+    physicalRelease: z.iso.datetime({ offset: true }).nullable().exactOptional(),
+    digitalRelease: z.iso.datetime({ offset: true }).nullable().exactOptional(),
+    releaseDate: z.iso.datetime({ offset: true }).nullable().exactOptional(),
+    physicalReleaseNote: z.string().nullable().exactOptional(),
+    images: z.array(MediaCoverSchema).nullable().exactOptional(),
+    website: z.string().nullable().exactOptional(),
+    remotePoster: z.string().nullable().exactOptional(),
+    year: z.int32().exactOptional(),
+    youTubeTrailerId: z.string().nullable().exactOptional(),
+    studio: z.string().nullable().exactOptional(),
+    path: z.string().nullable().exactOptional(),
+    qualityProfileId: z.int32().exactOptional(),
+    hasFile: z.boolean().nullable().exactOptional(),
+    movieFileId: z.int32().exactOptional(),
+    monitored: z.boolean().exactOptional(),
+    minimumAvailability: MovieStatusTypeSchema.exactOptional(),
+    isAvailable: z.boolean().exactOptional(),
+    folderName: z.string().nullable().exactOptional(),
+    runtime: z.int32().exactOptional(),
+    cleanTitle: z.string().nullable().exactOptional(),
+    imdbId: z.string().nullable().exactOptional(),
+    tmdbId: z.int32().exactOptional(),
+    titleSlug: z.string().nullable().exactOptional(),
+    rootFolderPath: z.string().nullable().exactOptional(),
+    folder: z.string().nullable().exactOptional(),
+    certification: z.string().nullable().exactOptional(),
+    genres: z.array(z.string()).nullable().exactOptional(),
+    keywords: z.array(z.string()).nullable().exactOptional(),
+    tags: z
+      .array(z.int32())
+      .superRefine((items, ctx) => {
+        const seen = new Map()
+        for (const [i, val] of items.entries()) {
+          const key = JSON.stringify(val)
+          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+          else seen.set(key, i)
+        }
+      })
+      .nullable()
+      .exactOptional(),
+    added: z.iso.datetime({ offset: true }).exactOptional(),
+    addOptions: AddMovieOptionsSchema.exactOptional(),
+    ratings: RatingsSchema.exactOptional(),
+    movieFile: MovieFileResourceSchema.exactOptional(),
+    collection: MovieCollectionResourceSchema.exactOptional(),
+    popularity: z.float32().exactOptional(),
+    lastSearchTime: z.iso.datetime({ offset: true }).nullable().exactOptional(),
+    statistics: MovieStatisticsResourceSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('MovieResource')
+
+type BlocklistResourceType = {
+  id?: number
+  movieId?: number
+  sourceTitle?: string | null
+  languages?: z.infer<typeof LanguageSchema>[] | null
+  quality?: z.infer<typeof QualityModelSchema>
+  customFormats?: z.infer<typeof CustomFormatResourceSchema>[] | null
+  date?: string
+  protocol?: z.infer<typeof DownloadProtocolSchema>
+  indexer?: string | null
+  message?: string | null
+  movie?: z.infer<typeof MovieResourceSchema>
+}
+
+const SortDirectionSchema = z.enum(['default', 'ascending', 'descending']).openapi('SortDirection')
+
+const BlocklistResourceSchema: z.ZodType<BlocklistResourceType> = z
+  .strictObject({
+    id: z.int32().exactOptional(),
+    movieId: z.int32().exactOptional(),
+    sourceTitle: z.string().nullable().exactOptional(),
+    languages: z.array(LanguageSchema).nullable().exactOptional(),
+    quality: QualityModelSchema.exactOptional(),
+    customFormats: z.array(CustomFormatResourceSchema).nullable().exactOptional(),
+    date: z.iso.datetime({ offset: true }).exactOptional(),
+    protocol: DownloadProtocolSchema.exactOptional(),
+    indexer: z.string().nullable().exactOptional(),
+    message: z.string().nullable().exactOptional(),
+    movie: MovieResourceSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('BlocklistResource')
+
+type BlocklistResourcePagingResourceType = {
+  page?: number
+  pageSize?: number
+  sortKey?: string | null
+  sortDirection?: z.infer<typeof SortDirectionSchema>
+  totalRecords?: number
+  records?: z.infer<typeof BlocklistResourceSchema>[] | null
+}
+
 const SelectOptionSchema = z
   .strictObject({
     value: z.int32().exactOptional(),
@@ -62,8 +509,6 @@ const ProviderMessageSchema = z
   .openapi({ required: [] })
   .openapi('ProviderMessage')
 
-const DownloadProtocolSchema = z.enum(['unknown', 'usenet', 'torrent']).openapi('DownloadProtocol')
-
 type DownloadClientResourceType = {
   id?: number
   name?: string | null
@@ -82,6 +527,63 @@ type DownloadClientResourceType = {
   removeFailedDownloads?: boolean
 }
 
+const MovieHistoryEventTypeSchema = z
+  .enum([
+    'unknown',
+    'grabbed',
+    'downloadFolderImported',
+    'downloadFailed',
+    'movieFileDeleted',
+    'movieFolderImported',
+    'movieFileRenamed',
+    'downloadIgnored',
+  ])
+  .openapi('MovieHistoryEventType')
+
+type HistoryResourceType = {
+  id?: number
+  movieId?: number
+  sourceTitle?: string | null
+  languages?: z.infer<typeof LanguageSchema>[] | null
+  quality?: z.infer<typeof QualityModelSchema>
+  customFormats?: z.infer<typeof CustomFormatResourceSchema>[] | null
+  customFormatScore?: number
+  qualityCutoffNotMet?: boolean
+  date?: string
+  downloadId?: string | null
+  eventType?: z.infer<typeof MovieHistoryEventTypeSchema>
+  data?: { [key: string]: string | null } | null
+  movie?: z.infer<typeof MovieResourceSchema>
+}
+
+const HistoryResourceSchema: z.ZodType<HistoryResourceType> = z
+  .strictObject({
+    id: z.int32().exactOptional(),
+    movieId: z.int32().exactOptional(),
+    sourceTitle: z.string().nullable().exactOptional(),
+    languages: z.array(LanguageSchema).nullable().exactOptional(),
+    quality: QualityModelSchema.exactOptional(),
+    customFormats: z.array(CustomFormatResourceSchema).nullable().exactOptional(),
+    customFormatScore: z.int32().exactOptional(),
+    qualityCutoffNotMet: z.boolean().exactOptional(),
+    date: z.iso.datetime({ offset: true }).exactOptional(),
+    downloadId: z.string().nullable().exactOptional(),
+    eventType: MovieHistoryEventTypeSchema.exactOptional(),
+    data: z.record(z.string(), z.string().nullable()).nullable().exactOptional(),
+    movie: MovieResourceSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('HistoryResource')
+
+type HistoryResourcePagingResourceType = {
+  page?: number
+  pageSize?: number
+  sortKey?: string | null
+  sortDirection?: z.infer<typeof SortDirectionSchema>
+  totalRecords?: number
+  records?: z.infer<typeof HistoryResourceSchema>[] | null
+}
+
 type ImportListExclusionResourceType = {
   id?: number
   name?: string | null
@@ -97,14 +599,6 @@ type ImportListExclusionResourceType = {
   movieTitle?: string | null
   movieYear?: number
 }
-
-const MonitorTypesSchema = z
-  .enum(['movieOnly', 'movieAndCollection', 'none'])
-  .openapi('MonitorTypes')
-
-const MovieStatusTypeSchema = z
-  .enum(['tba', 'announced', 'inCinemas', 'released', 'deleted'])
-  .openapi('MovieStatusType')
 
 const ImportListTypeSchema = z
   .enum(['program', 'tmdb', 'trakt', 'plex', 'simkl', 'other', 'advanced'])
@@ -154,6 +648,51 @@ type IndexerResourceType = {
   downloadClientId?: number
 }
 
+const RejectionTypeSchema = z.enum(['permanent', 'temporary']).openapi('RejectionType')
+
+const ImportRejectionResourceSchema = z
+  .strictObject({
+    reason: z.string().nullable().exactOptional(),
+    type: RejectionTypeSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ImportRejectionResource')
+
+type ManualImportReprocessResourceType = {
+  id?: number
+  path?: string | null
+  movieId?: number
+  movie?: z.infer<typeof MovieResourceSchema>
+  quality?: z.infer<typeof QualityModelSchema>
+  languages?: z.infer<typeof LanguageSchema>[] | null
+  releaseGroup?: string | null
+  downloadId?: string | null
+  customFormats?: z.infer<typeof CustomFormatResourceSchema>[] | null
+  customFormatScore?: number
+  indexerFlags?: number
+  rejections?: z.infer<typeof ImportRejectionResourceSchema>[] | null
+}
+
+type ManualImportResourceType = {
+  id?: number
+  path?: string | null
+  relativePath?: string | null
+  folderName?: string | null
+  name?: string | null
+  size?: bigint
+  movie?: z.infer<typeof MovieResourceSchema>
+  movieFileId?: number | null
+  releaseGroup?: string | null
+  quality?: z.infer<typeof QualityModelSchema>
+  languages?: z.infer<typeof LanguageSchema>[] | null
+  qualityWeight?: number
+  downloadId?: string | null
+  customFormats?: z.infer<typeof CustomFormatResourceSchema>[] | null
+  customFormatScore?: number
+  indexerFlags?: number
+  rejections?: z.infer<typeof ImportRejectionResourceSchema>[] | null
+}
+
 type MetadataResourceType = {
   id?: number
   name?: string | null
@@ -166,6 +705,15 @@ type MetadataResourceType = {
   tags?: number[] | null
   presets?: MetadataResourceType[] | null
   enable?: boolean
+}
+
+type MovieResourcePagingResourceType = {
+  page?: number
+  pageSize?: number
+  sortKey?: string | null
+  sortDirection?: z.infer<typeof SortDirectionSchema>
+  totalRecords?: number
+  records?: z.infer<typeof MovieResourceSchema>[] | null
 }
 
 type NotificationResourceType = {
@@ -208,35 +756,36 @@ type NotificationResourceType = {
   testCommand?: string | null
 }
 
-const QualitySourceSchema = z
-  .enum([
-    'unknown',
-    'cam',
-    'telesync',
-    'telecine',
-    'workprint',
-    'dvd',
-    'tv',
-    'webdl',
-    'webrip',
-    'bluray',
-  ])
-  .openapi('QualitySource')
-
-const ModifierSchema = z
-  .enum(['none', 'regional', 'screener', 'rawhd', 'brdisk', 'remux'])
-  .openapi('Modifier')
-
-const QualitySchema = z
+const ParsedMovieInfoSchema = z
   .strictObject({
-    id: z.int32().exactOptional(),
-    name: z.string().nullable().exactOptional(),
-    source: QualitySourceSchema.exactOptional(),
-    resolution: z.int32().exactOptional(),
-    modifier: ModifierSchema.exactOptional(),
+    movieTitles: z.array(z.string()).nullable().exactOptional(),
+    originalTitle: z.string().nullable().exactOptional(),
+    releaseTitle: z.string().nullable().exactOptional(),
+    simpleReleaseTitle: z.string().nullable().exactOptional(),
+    quality: QualityModelSchema.exactOptional(),
+    languages: z.array(LanguageSchema).nullable().exactOptional(),
+    releaseGroup: z.string().nullable().exactOptional(),
+    releaseHash: z.string().nullable().exactOptional(),
+    edition: z.string().nullable().exactOptional(),
+    year: z.int32().exactOptional(),
+    imdbId: z.string().nullable().exactOptional(),
+    tmdbId: z.int32().exactOptional(),
+    hardcodedSubs: z.string().nullable().exactOptional(),
+    movieTitle: z.string().nullable().exactOptional().openapi({ readOnly: true }),
+    primaryMovieTitle: z.string().nullable().exactOptional().openapi({ readOnly: true }),
   })
   .openapi({ required: [] })
-  .openapi('Quality')
+  .openapi('ParsedMovieInfo')
+
+type ParseResourceType = {
+  id?: number
+  title?: string | null
+  parsedMovieInfo?: z.infer<typeof ParsedMovieInfoSchema>
+  movie?: z.infer<typeof MovieResourceSchema>
+  languages?: z.infer<typeof LanguageSchema>[] | null
+  customFormats?: z.infer<typeof CustomFormatResourceSchema>[] | null
+  customFormatScore?: number
+}
 
 type QualityProfileQualityItemResourceType = {
   id?: number
@@ -246,20 +795,167 @@ type QualityProfileQualityItemResourceType = {
   allowed?: boolean
 }
 
-const AddMovieMethodSchema = z.enum(['manual', 'list', 'collection']).openapi('AddMovieMethod')
+const QueueStatusSchema = z
+  .enum([
+    'unknown',
+    'queued',
+    'paused',
+    'downloading',
+    'completed',
+    'failed',
+    'warning',
+    'delay',
+    'downloadClientUnavailable',
+    'fallback',
+  ])
+  .openapi('QueueStatus')
 
-const AddMovieOptionsSchema = z
+const TrackedDownloadStatusSchema = z
+  .enum(['ok', 'warning', 'error'])
+  .openapi('TrackedDownloadStatus')
+
+const TrackedDownloadStateSchema = z
+  .enum([
+    'downloading',
+    'importBlocked',
+    'importPending',
+    'importing',
+    'imported',
+    'failedPending',
+    'failed',
+    'ignored',
+  ])
+  .openapi('TrackedDownloadState')
+
+const TrackedDownloadStatusMessageSchema = z
   .strictObject({
-    ignoreEpisodesWithFiles: z.boolean().exactOptional(),
-    ignoreEpisodesWithoutFiles: z.boolean().exactOptional(),
-    monitor: MonitorTypesSchema.exactOptional(),
-    searchForMovie: z.boolean().exactOptional(),
-    addMethod: AddMovieMethodSchema.exactOptional(),
+    title: z.string().nullable().exactOptional(),
+    messages: z.array(z.string()).nullable().exactOptional(),
   })
   .openapi({ required: [] })
-  .openapi('AddMovieOptions')
+  .openapi('TrackedDownloadStatusMessage')
 
-const SourceTypeSchema = z.enum(['tmdb', 'mappings', 'user', 'indexer']).openapi('SourceType')
+type QueueResourceType = {
+  id?: number
+  movieId?: number | null
+  movie?: z.infer<typeof MovieResourceSchema>
+  languages?: z.infer<typeof LanguageSchema>[] | null
+  quality?: z.infer<typeof QualityModelSchema>
+  customFormats?: z.infer<typeof CustomFormatResourceSchema>[] | null
+  customFormatScore?: number
+  size?: number
+  title?: string | null
+  estimatedCompletionTime?: string | null
+  added?: string | null
+  status?: z.infer<typeof QueueStatusSchema>
+  trackedDownloadStatus?: z.infer<typeof TrackedDownloadStatusSchema>
+  trackedDownloadState?: z.infer<typeof TrackedDownloadStateSchema>
+  statusMessages?: z.infer<typeof TrackedDownloadStatusMessageSchema>[] | null
+  errorMessage?: string | null
+  downloadId?: string | null
+  protocol?: z.infer<typeof DownloadProtocolSchema>
+  downloadClient?: string | null
+  downloadClientHasPostImportCategory?: boolean
+  indexer?: string | null
+  outputPath?: string | null
+  sizeleft?: number
+  timeleft?: string | null
+}
+
+const QueueResourceSchema: z.ZodType<QueueResourceType> = z
+  .strictObject({
+    id: z.int32().exactOptional(),
+    movieId: z.int32().nullable().exactOptional(),
+    movie: MovieResourceSchema.exactOptional(),
+    languages: z.array(LanguageSchema).nullable().exactOptional(),
+    quality: QualityModelSchema.exactOptional(),
+    customFormats: z.array(CustomFormatResourceSchema).nullable().exactOptional(),
+    customFormatScore: z.int32().exactOptional(),
+    size: z.float64().exactOptional(),
+    title: z.string().nullable().exactOptional(),
+    estimatedCompletionTime: z.iso.datetime({ offset: true }).nullable().exactOptional(),
+    added: z.iso.datetime({ offset: true }).nullable().exactOptional(),
+    status: QueueStatusSchema.exactOptional(),
+    trackedDownloadStatus: TrackedDownloadStatusSchema.exactOptional(),
+    trackedDownloadState: TrackedDownloadStateSchema.exactOptional(),
+    statusMessages: z.array(TrackedDownloadStatusMessageSchema).nullable().exactOptional(),
+    errorMessage: z.string().nullable().exactOptional(),
+    downloadId: z.string().nullable().exactOptional(),
+    protocol: DownloadProtocolSchema.exactOptional(),
+    downloadClient: z.string().nullable().exactOptional(),
+    downloadClientHasPostImportCategory: z.boolean().exactOptional(),
+    indexer: z.string().nullable().exactOptional(),
+    outputPath: z.string().nullable().exactOptional(),
+    sizeleft: z.float64().exactOptional().openapi({ deprecated: true }),
+    timeleft: z.string().nullable().exactOptional().openapi({ deprecated: true }),
+  })
+  .openapi({ required: [] })
+  .openapi('QueueResource')
+
+type QueueResourcePagingResourceType = {
+  page?: number
+  pageSize?: number
+  sortKey?: string | null
+  sortDirection?: z.infer<typeof SortDirectionSchema>
+  totalRecords?: number
+  records?: z.infer<typeof QueueResourceSchema>[] | null
+}
+
+const ReleaseHistoryResourceSchema = z
+  .strictObject({
+    grabbed: z.iso.datetime({ offset: true }).nullable().exactOptional(),
+    failed: z.iso.datetime({ offset: true }).nullable().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ReleaseHistoryResource')
+
+type ReleaseResourceType = {
+  id?: number
+  guid?: string | null
+  quality?: z.infer<typeof QualityModelSchema>
+  customFormats?: z.infer<typeof CustomFormatResourceSchema>[] | null
+  customFormatScore?: number
+  history?: z.infer<typeof ReleaseHistoryResourceSchema>
+  qualityWeight?: number
+  age?: number
+  ageHours?: number
+  ageMinutes?: number
+  size?: bigint
+  indexerId?: number
+  indexer?: string | null
+  releaseGroup?: string | null
+  subGroup?: string | null
+  releaseHash?: string | null
+  title?: string | null
+  sceneSource?: boolean
+  movieTitles?: string[] | null
+  languages?: z.infer<typeof LanguageSchema>[] | null
+  mappedMovieId?: number | null
+  approved?: boolean
+  temporarilyRejected?: boolean
+  rejected?: boolean
+  tmdbId?: number
+  imdbId?: number
+  rejections?: string[] | null
+  publishDate?: string
+  commentUrl?: string | null
+  downloadUrl?: string | null
+  infoUrl?: string | null
+  movieRequested?: boolean
+  downloadAllowed?: boolean
+  releaseWeight?: number
+  edition?: string | null
+  magnetUrl?: string | null
+  infoHash?: string | null
+  seeders?: number | null
+  leechers?: number | null
+  protocol?: z.infer<typeof DownloadProtocolSchema>
+  indexerFlags?: unknown
+  movieId?: number | null
+  downloadClientId?: number | null
+  downloadClient?: string | null
+  shouldOverride?: boolean | null
+}
 
 const AlternativeTitleSchema = z
   .strictObject({
@@ -271,17 +967,6 @@ const AlternativeTitleSchema = z
   })
   .openapi({ required: [] })
   .openapi('AlternativeTitle')
-
-const AlternativeTitleResourceSchema = z
-  .strictObject({
-    id: z.int32().exactOptional(),
-    sourceType: SourceTypeSchema.exactOptional(),
-    movieMetadataId: z.int32().exactOptional(),
-    title: z.string().nullable().exactOptional(),
-    cleanTitle: z.string().nullable().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('AlternativeTitleResource')
 
 const ApiInfoResourceSchema = z
   .strictObject({
@@ -376,293 +1061,7 @@ const BlocklistBulkResourceSchema = z
   .openapi({ required: [] })
   .openapi('BlocklistBulkResource')
 
-const LanguageSchema = z
-  .strictObject({ id: z.int32().exactOptional(), name: z.string().nullable().exactOptional() })
-  .openapi({ required: [] })
-  .openapi('Language')
-
-const RevisionSchema = z
-  .strictObject({
-    version: z.int32().exactOptional(),
-    real: z.int32().exactOptional(),
-    isRepack: z.boolean().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('Revision')
-
-const QualityModelSchema = z
-  .strictObject({
-    quality: QualitySchema.exactOptional(),
-    revision: RevisionSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('QualityModel')
-
-const CustomFormatSpecificationSchemaSchema: z.ZodType<CustomFormatSpecificationSchemaType> = z
-  .lazy(() =>
-    z
-      .strictObject({
-        id: z.int32().exactOptional(),
-        name: z.string().nullable().exactOptional(),
-        implementation: z.string().nullable().exactOptional(),
-        implementationName: z.string().nullable().exactOptional(),
-        infoLink: z.string().nullable().exactOptional(),
-        negate: z.boolean().exactOptional(),
-        required: z.boolean().exactOptional(),
-        fields: z.array(FieldSchema).nullable().exactOptional(),
-        presets: z.array(CustomFormatSpecificationSchemaSchema).nullable().exactOptional(),
-      })
-      .openapi({ required: [] }),
-  )
-  .openapi('CustomFormatSpecificationSchema')
-
-const CustomFormatResourceSchema = z
-  .strictObject({
-    id: z.int32().exactOptional(),
-    name: z.string().nullable().exactOptional(),
-    includeCustomFormatWhenRenaming: z.boolean().nullable().exactOptional(),
-    specifications: z.array(CustomFormatSpecificationSchemaSchema).nullable().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('CustomFormatResource')
-
-const MediaCoverTypesSchema = z
-  .enum(['unknown', 'poster', 'banner', 'fanart', 'screenshot', 'headshot', 'clearlogo'])
-  .openapi('MediaCoverTypes')
-
-const MediaCoverSchema = z
-  .strictObject({
-    coverType: MediaCoverTypesSchema.exactOptional(),
-    url: z.string().nullable().exactOptional(),
-    remoteUrl: z.string().nullable().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('MediaCover')
-
-const RatingTypeSchema = z.enum(['user', 'critic']).openapi('RatingType')
-
-const RatingChildSchema = z
-  .strictObject({
-    votes: z.int32().exactOptional(),
-    value: z.float64().exactOptional(),
-    type: RatingTypeSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('RatingChild')
-
-const RatingsSchema = z
-  .strictObject({
-    imdb: RatingChildSchema.exactOptional(),
-    tmdb: RatingChildSchema.exactOptional(),
-    metacritic: RatingChildSchema.exactOptional(),
-    rottenTomatoes: RatingChildSchema.exactOptional(),
-    trakt: RatingChildSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('Ratings')
-
-const MediaInfoResourceSchema = z
-  .strictObject({
-    id: z.int32().exactOptional(),
-    audioBitrate: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    audioChannels: z.float64().exactOptional(),
-    audioCodec: z.string().nullable().exactOptional(),
-    audioLanguages: z.string().nullable().exactOptional(),
-    audioStreamCount: z.int32().exactOptional(),
-    videoBitDepth: z.int32().exactOptional(),
-    videoBitrate: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    videoCodec: z.string().nullable().exactOptional(),
-    videoFps: z.float64().exactOptional(),
-    videoDynamicRange: z.string().nullable().exactOptional(),
-    videoDynamicRangeType: z.string().nullable().exactOptional(),
-    resolution: z.string().nullable().exactOptional(),
-    runTime: z.string().nullable().exactOptional(),
-    scanType: z.string().nullable().exactOptional(),
-    subtitles: z.string().nullable().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('MediaInfoResource')
-
-const MovieFileResourceSchema = z
-  .strictObject({
-    id: z.int32().exactOptional(),
-    movieId: z.int32().exactOptional(),
-    relativePath: z.string().nullable().exactOptional(),
-    path: z.string().nullable().exactOptional(),
-    size: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    dateAdded: z.iso.datetime({ offset: true }).exactOptional(),
-    sceneName: z.string().nullable().exactOptional(),
-    releaseGroup: z.string().nullable().exactOptional(),
-    edition: z.string().nullable().exactOptional(),
-    languages: z.array(LanguageSchema).nullable().exactOptional(),
-    quality: QualityModelSchema.exactOptional(),
-    customFormats: z.array(CustomFormatResourceSchema).nullable().exactOptional(),
-    customFormatScore: z.int32().nullable().exactOptional(),
-    indexerFlags: z.int32().nullable().exactOptional(),
-    mediaInfo: MediaInfoResourceSchema.exactOptional(),
-    originalFilePath: z.string().nullable().exactOptional(),
-    qualityCutoffNotMet: z.boolean().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('MovieFileResource')
-
-const MovieCollectionResourceSchema = z
-  .strictObject({ title: z.string().nullable().exactOptional(), tmdbId: z.int32().exactOptional() })
-  .openapi({ required: [] })
-  .openapi('MovieCollectionResource')
-
-const MovieStatisticsResourceSchema = z
-  .strictObject({
-    movieFileCount: z.int32().exactOptional(),
-    sizeOnDisk: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    releaseGroups: z.array(z.string()).nullable().exactOptional(),
-    movieFileQualities: z.array(QualitySchema).nullable().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('MovieStatisticsResource')
-
-const MovieResourceSchema = z
-  .strictObject({
-    id: z.int32().exactOptional(),
-    title: z.string().nullable().exactOptional(),
-    originalTitle: z.string().nullable().exactOptional(),
-    originalLanguage: LanguageSchema.exactOptional(),
-    alternateTitles: z.array(AlternativeTitleResourceSchema).nullable().exactOptional(),
-    secondaryYear: z.int32().nullable().exactOptional(),
-    secondaryYearSourceId: z.int32().exactOptional(),
-    sortTitle: z.string().nullable().exactOptional(),
-    sizeOnDisk: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .nullable()
-      .exactOptional()
-      .openapi({ type: ['integer', 'null'], format: 'int64' }),
-    status: MovieStatusTypeSchema.exactOptional(),
-    overview: z.string().nullable().exactOptional(),
-    inCinemas: z.iso.datetime({ offset: true }).nullable().exactOptional(),
-    physicalRelease: z.iso.datetime({ offset: true }).nullable().exactOptional(),
-    digitalRelease: z.iso.datetime({ offset: true }).nullable().exactOptional(),
-    releaseDate: z.iso.datetime({ offset: true }).nullable().exactOptional(),
-    physicalReleaseNote: z.string().nullable().exactOptional(),
-    images: z.array(MediaCoverSchema).nullable().exactOptional(),
-    website: z.string().nullable().exactOptional(),
-    remotePoster: z.string().nullable().exactOptional(),
-    year: z.int32().exactOptional(),
-    youTubeTrailerId: z.string().nullable().exactOptional(),
-    studio: z.string().nullable().exactOptional(),
-    path: z.string().nullable().exactOptional(),
-    qualityProfileId: z.int32().exactOptional(),
-    hasFile: z.boolean().nullable().exactOptional(),
-    movieFileId: z.int32().exactOptional(),
-    monitored: z.boolean().exactOptional(),
-    minimumAvailability: MovieStatusTypeSchema.exactOptional(),
-    isAvailable: z.boolean().exactOptional(),
-    folderName: z.string().nullable().exactOptional(),
-    runtime: z.int32().exactOptional(),
-    cleanTitle: z.string().nullable().exactOptional(),
-    imdbId: z.string().nullable().exactOptional(),
-    tmdbId: z.int32().exactOptional(),
-    titleSlug: z.string().nullable().exactOptional(),
-    rootFolderPath: z.string().nullable().exactOptional(),
-    folder: z.string().nullable().exactOptional(),
-    certification: z.string().nullable().exactOptional(),
-    genres: z.array(z.string()).nullable().exactOptional(),
-    keywords: z.array(z.string()).nullable().exactOptional(),
-    tags: z
-      .array(z.int32())
-      .superRefine((items, ctx) => {
-        const seen = new Map()
-        for (const [i, val] of items.entries()) {
-          const key = JSON.stringify(val)
-          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-          else seen.set(key, i)
-        }
-      })
-      .nullable()
-      .exactOptional(),
-    added: z.iso.datetime({ offset: true }).exactOptional(),
-    addOptions: AddMovieOptionsSchema.exactOptional(),
-    ratings: RatingsSchema.exactOptional(),
-    movieFile: MovieFileResourceSchema.exactOptional(),
-    collection: MovieCollectionResourceSchema.exactOptional(),
-    popularity: z.float32().exactOptional(),
-    lastSearchTime: z.iso.datetime({ offset: true }).nullable().exactOptional(),
-    statistics: MovieStatisticsResourceSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('MovieResource')
-
-const BlocklistResourceSchema = z
-  .strictObject({
-    id: z.int32().exactOptional(),
-    movieId: z.int32().exactOptional(),
-    sourceTitle: z.string().nullable().exactOptional(),
-    languages: z.array(LanguageSchema).nullable().exactOptional(),
-    quality: QualityModelSchema.exactOptional(),
-    customFormats: z.array(CustomFormatResourceSchema).nullable().exactOptional(),
-    date: z.iso.datetime({ offset: true }).exactOptional(),
-    protocol: DownloadProtocolSchema.exactOptional(),
-    indexer: z.string().nullable().exactOptional(),
-    message: z.string().nullable().exactOptional(),
-    movie: MovieResourceSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('BlocklistResource')
-
-const SortDirectionSchema = z.enum(['default', 'ascending', 'descending']).openapi('SortDirection')
-
-const BlocklistResourcePagingResourceSchema = z
+const BlocklistResourcePagingResourceSchema: z.ZodType<BlocklistResourcePagingResourceType> = z
   .strictObject({
     page: z.int32().exactOptional(),
     pageSize: z.int32().exactOptional(),
@@ -1063,39 +1462,7 @@ const HealthResourceSchema = z
   .openapi({ required: [] })
   .openapi('HealthResource')
 
-const MovieHistoryEventTypeSchema = z
-  .enum([
-    'unknown',
-    'grabbed',
-    'downloadFolderImported',
-    'downloadFailed',
-    'movieFileDeleted',
-    'movieFolderImported',
-    'movieFileRenamed',
-    'downloadIgnored',
-  ])
-  .openapi('MovieHistoryEventType')
-
-const HistoryResourceSchema = z
-  .strictObject({
-    id: z.int32().exactOptional(),
-    movieId: z.int32().exactOptional(),
-    sourceTitle: z.string().nullable().exactOptional(),
-    languages: z.array(LanguageSchema).nullable().exactOptional(),
-    quality: QualityModelSchema.exactOptional(),
-    customFormats: z.array(CustomFormatResourceSchema).nullable().exactOptional(),
-    customFormatScore: z.int32().exactOptional(),
-    qualityCutoffNotMet: z.boolean().exactOptional(),
-    date: z.iso.datetime({ offset: true }).exactOptional(),
-    downloadId: z.string().nullable().exactOptional(),
-    eventType: MovieHistoryEventTypeSchema.exactOptional(),
-    data: z.record(z.string(), z.string().nullable()).nullable().exactOptional(),
-    movie: MovieResourceSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('HistoryResource')
-
-const HistoryResourcePagingResourceSchema = z
+const HistoryResourcePagingResourceSchema: z.ZodType<HistoryResourcePagingResourceType> = z
   .strictObject({
     page: z.int32().exactOptional(),
     pageSize: z.int32().exactOptional(),
@@ -1421,16 +1788,6 @@ const ImportListResourceSchema: z.ZodType<ImportListResourceType> = z
   )
   .openapi('ImportListResource')
 
-const RejectionTypeSchema = z.enum(['permanent', 'temporary']).openapi('RejectionType')
-
-const ImportRejectionResourceSchema = z
-  .strictObject({
-    reason: z.string().nullable().exactOptional(),
-    type: RejectionTypeSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ImportRejectionResource')
-
 const IndexerBulkResourceSchema = z
   .strictObject({
     ids: z.array(z.int32()).nullable().exactOptional(),
@@ -1557,7 +1914,7 @@ const LogResourcePagingResourceSchema = z
   .openapi({ required: [] })
   .openapi('LogResourcePagingResource')
 
-const ManualImportReprocessResourceSchema = z
+const ManualImportReprocessResourceSchema: z.ZodType<ManualImportReprocessResourceType> = z
   .strictObject({
     id: z.int32().exactOptional(),
     path: z.string().nullable().exactOptional(),
@@ -1575,7 +1932,7 @@ const ManualImportReprocessResourceSchema = z
   .openapi({ required: [] })
   .openapi('ManualImportReprocessResource')
 
-const ManualImportResourceSchema = z
+const ManualImportResourceSchema: z.ZodType<ManualImportResourceType> = z
   .strictObject({
     id: z.int32().exactOptional(),
     path: z.string().nullable().exactOptional(),
@@ -1722,7 +2079,7 @@ const MovieFolderResourceSchema = z
   .openapi({ required: [] })
   .openapi('MovieFolderResource')
 
-const MovieResourcePagingResourceSchema = z
+const MovieResourcePagingResourceSchema: z.ZodType<MovieResourcePagingResourceType> = z
   .strictObject({
     page: z.int32().exactOptional(),
     pageSize: z.int32().exactOptional(),
@@ -1815,28 +2172,7 @@ const NotificationResourceSchema: z.ZodType<NotificationResourceType> = z
   )
   .openapi('NotificationResource')
 
-const ParsedMovieInfoSchema = z
-  .strictObject({
-    movieTitles: z.array(z.string()).nullable().exactOptional(),
-    originalTitle: z.string().nullable().exactOptional(),
-    releaseTitle: z.string().nullable().exactOptional(),
-    simpleReleaseTitle: z.string().nullable().exactOptional(),
-    quality: QualityModelSchema.exactOptional(),
-    languages: z.array(LanguageSchema).nullable().exactOptional(),
-    releaseGroup: z.string().nullable().exactOptional(),
-    releaseHash: z.string().nullable().exactOptional(),
-    edition: z.string().nullable().exactOptional(),
-    year: z.int32().exactOptional(),
-    imdbId: z.string().nullable().exactOptional(),
-    tmdbId: z.int32().exactOptional(),
-    hardcodedSubs: z.string().nullable().exactOptional(),
-    movieTitle: z.string().nullable().exactOptional().openapi({ readOnly: true }),
-    primaryMovieTitle: z.string().nullable().exactOptional().openapi({ readOnly: true }),
-  })
-  .openapi({ required: [] })
-  .openapi('ParsedMovieInfo')
-
-const ParseResourceSchema = z
+const ParseResourceSchema: z.ZodType<ParseResourceType> = z
   .strictObject({
     id: z.int32().exactOptional(),
     title: z.string().nullable().exactOptional(),
@@ -1863,6 +2199,7 @@ const ProblemDetailsSchema = z
     instance: z.string().nullable().exactOptional(),
   })
   .catchall(z.any())
+  .openapi({ required: [] })
   .openapi('ProblemDetails')
 
 const ProfileFormatItemResourceSchema = z
@@ -1957,77 +2294,7 @@ const QueueBulkResourceSchema = z
   .openapi({ required: [] })
   .openapi('QueueBulkResource')
 
-const QueueStatusSchema = z
-  .enum([
-    'unknown',
-    'queued',
-    'paused',
-    'downloading',
-    'completed',
-    'failed',
-    'warning',
-    'delay',
-    'downloadClientUnavailable',
-    'fallback',
-  ])
-  .openapi('QueueStatus')
-
-const TrackedDownloadStatusSchema = z
-  .enum(['ok', 'warning', 'error'])
-  .openapi('TrackedDownloadStatus')
-
-const TrackedDownloadStateSchema = z
-  .enum([
-    'downloading',
-    'importBlocked',
-    'importPending',
-    'importing',
-    'imported',
-    'failedPending',
-    'failed',
-    'ignored',
-  ])
-  .openapi('TrackedDownloadState')
-
-const TrackedDownloadStatusMessageSchema = z
-  .strictObject({
-    title: z.string().nullable().exactOptional(),
-    messages: z.array(z.string()).nullable().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('TrackedDownloadStatusMessage')
-
-const QueueResourceSchema = z
-  .strictObject({
-    id: z.int32().exactOptional(),
-    movieId: z.int32().nullable().exactOptional(),
-    movie: MovieResourceSchema.exactOptional(),
-    languages: z.array(LanguageSchema).nullable().exactOptional(),
-    quality: QualityModelSchema.exactOptional(),
-    customFormats: z.array(CustomFormatResourceSchema).nullable().exactOptional(),
-    customFormatScore: z.int32().exactOptional(),
-    size: z.float64().exactOptional(),
-    title: z.string().nullable().exactOptional(),
-    estimatedCompletionTime: z.iso.datetime({ offset: true }).nullable().exactOptional(),
-    added: z.iso.datetime({ offset: true }).nullable().exactOptional(),
-    status: QueueStatusSchema.exactOptional(),
-    trackedDownloadStatus: TrackedDownloadStatusSchema.exactOptional(),
-    trackedDownloadState: TrackedDownloadStateSchema.exactOptional(),
-    statusMessages: z.array(TrackedDownloadStatusMessageSchema).nullable().exactOptional(),
-    errorMessage: z.string().nullable().exactOptional(),
-    downloadId: z.string().nullable().exactOptional(),
-    protocol: DownloadProtocolSchema.exactOptional(),
-    downloadClient: z.string().nullable().exactOptional(),
-    downloadClientHasPostImportCategory: z.boolean().exactOptional(),
-    indexer: z.string().nullable().exactOptional(),
-    outputPath: z.string().nullable().exactOptional(),
-    sizeleft: z.float64().exactOptional().openapi({ deprecated: true }),
-    timeleft: z.string().nullable().exactOptional().openapi({ deprecated: true }),
-  })
-  .openapi({ required: [] })
-  .openapi('QueueResource')
-
-const QueueResourcePagingResourceSchema = z
+const QueueResourcePagingResourceSchema: z.ZodType<QueueResourcePagingResourceType> = z
   .strictObject({
     page: z.int32().exactOptional(),
     pageSize: z.int32().exactOptional(),
@@ -2053,14 +2320,6 @@ const QueueStatusResourceSchema = z
   .openapi({ required: [] })
   .openapi('QueueStatusResource')
 
-const ReleaseHistoryResourceSchema = z
-  .strictObject({
-    grabbed: z.iso.datetime({ offset: true }).nullable().exactOptional(),
-    failed: z.iso.datetime({ offset: true }).nullable().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ReleaseHistoryResource')
-
 const ReleaseProfileResourceSchema = z
   .strictObject({
     id: z.int32().exactOptional(),
@@ -2085,7 +2344,7 @@ const ReleaseProfileResourceSchema = z
   .openapi({ required: [] })
   .openapi('ReleaseProfileResource')
 
-const ReleaseResourceSchema = z
+const ReleaseResourceSchema: z.ZodType<ReleaseResourceType> = z
   .strictObject({
     id: z.int32().exactOptional(),
     guid: z.string().nullable().exactOptional(),

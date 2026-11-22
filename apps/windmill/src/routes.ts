@@ -1,5 +1,457 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const FlowModuleSchema: z.ZodType<FlowModuleType> = z
+  .lazy(() =>
+    z
+      .object({
+        id: z
+          .string()
+          .openapi({
+            description:
+              "Unique identifier for this step. Used to reference results via 'results.step_id'. Must be a valid identifier (alphanumeric, underscore, hyphen)",
+          }),
+        value: FlowModuleValueSchema,
+        stop_after_if: StopAfterIfSchema.exactOptional().openapi({
+          description: 'Early termination condition evaluated after this step completes',
+        }),
+        stop_after_all_iters_if: StopAfterIfSchema.exactOptional().openapi({
+          description:
+            'For loops only - early termination condition evaluated after all iterations complete',
+        }),
+        skip_if: z
+          .object({
+            expr: z
+              .string()
+              .openapi({
+                description:
+                  "JavaScript expression that returns true to skip. Can use 'flow_input' or 'results.<step_id>'",
+              }),
+          })
+          .exactOptional()
+          .openapi({
+            description: 'Conditionally skip this step based on previous results or flow inputs',
+            required: ['expr'],
+          }),
+        sleep: InputTransformSchema.exactOptional().openapi({
+          description:
+            'Delay after this step completes, before the next step starts (in seconds or as expression)',
+        }),
+        cache_ttl: z
+          .number()
+          .exactOptional()
+          .openapi({ description: "Cache duration in seconds for this step's results" }),
+        cache_ignore_s3_path: z.boolean().exactOptional(),
+        timeout: InputTransformSchema.exactOptional().openapi({
+          description: 'Maximum execution time in seconds (static value or expression)',
+        }),
+        delete_after_secs: z
+          .int()
+          .exactOptional()
+          .openapi({
+            description:
+              "If set, delete the step's args, result and logs after this many seconds following job completion",
+          }),
+        summary: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Short description of what this step does' }),
+        mock: z
+          .object({
+            enabled: z
+              .boolean()
+              .exactOptional()
+              .openapi({ description: 'If true, return mock value instead of executing' }),
+            return_value: z
+              .any()
+              .exactOptional()
+              .openapi({ description: 'Value to return when mocked' }),
+            preview_only: z
+              .boolean()
+              .exactOptional()
+              .openapi({
+                description:
+                  'If true, the mock applies only to runs started as a flow preview (from the editor, and every job under it, subflows included). Absent or false, it applies to every run.',
+              }),
+          })
+          .exactOptional()
+          .openapi({
+            description: 'Mock configuration for testing without executing the actual step',
+            required: [],
+          }),
+        suspend: z
+          .object({
+            required_events: z
+              .int()
+              .exactOptional()
+              .openapi({ description: 'Number of approvals required before continuing' }),
+            timeout: z
+              .int()
+              .exactOptional()
+              .openapi({ description: 'Timeout in seconds before auto-continuing or canceling' }),
+            resume_form: z
+              .object({
+                schema: z
+                  .looseObject({})
+                  .exactOptional()
+                  .openapi({ description: 'JSON Schema for the resume form' }),
+              })
+              .exactOptional()
+              .openapi({
+                description: 'Form schema for collecting input when resuming',
+                required: [],
+              }),
+            user_auth_required: z
+              .boolean()
+              .exactOptional()
+              .openapi({ description: 'If true, only authenticated users can approve' }),
+            user_groups_required: InputTransformSchema.exactOptional().openapi({
+              description: 'Expression or list of groups that can approve',
+            }),
+            self_approval_disabled: z
+              .boolean()
+              .exactOptional()
+              .openapi({ description: 'If true, the user who started the flow cannot approve' }),
+            hide_cancel: z
+              .boolean()
+              .exactOptional()
+              .openapi({ description: 'If true, hide the cancel button on the approval form' }),
+            continue_on_disapprove_timeout: z
+              .boolean()
+              .exactOptional()
+              .openapi({ description: 'If true, continue flow on timeout instead of canceling' }),
+            skin: z
+              .enum(['detailed', 'minimal'])
+              .exactOptional()
+              .openapi({
+                description:
+                  "How the approval request is presented, on the approval page and in Slack/Teams approval messages. 'detailed' (used when unset) shows the flow details (arguments, graph, approvers); 'minimal' shows only the request: the step description, form and approve/reject actions",
+              }),
+          })
+          .exactOptional()
+          .openapi({
+            description: 'Configuration for approval/resume steps that wait for user input',
+            required: [],
+          }),
+        priority: z
+          .number()
+          .exactOptional()
+          .openapi({ description: 'Execution priority for this step (higher numbers run first)' }),
+        continue_on_error: z
+          .boolean()
+          .exactOptional()
+          .openapi({ description: 'If true, flow continues even if this step fails' }),
+        job_token_scopes: z
+          .array(z.string())
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              "Scopes the token of this step's jobs is restricted to (domain:action[:resource], e.g. oidc:write), on top of the flow's own restriction: a step can only narrow it. Applies to everything the step runs (loop and branch bodies, AI agent tools).",
+          }),
+        retry: RetrySchema.exactOptional().openapi({
+          description: 'Retry configuration if this step fails',
+        }),
+        debouncing: z
+          .object({
+            debounce_delay_s: z
+              .int()
+              .exactOptional()
+              .openapi({
+                description: "Delay in seconds to debounce this step's executions across flow runs",
+              }),
+            debounce_key: z
+              .string()
+              .exactOptional()
+              .openapi({
+                description:
+                  'Expression to group debounced executions. Supports $workspace and $args[name]. Default: $workspace/flow/<flow_path>-<step_id>',
+              }),
+            debounce_args_to_accumulate: z
+              .array(z.string())
+              .exactOptional()
+              .openapi({
+                description: 'Array-type arguments to accumulate across debounced executions',
+              }),
+            max_total_debouncing_time: z
+              .int()
+              .exactOptional()
+              .openapi({ description: 'Maximum total time in seconds before forced execution' }),
+            max_total_debounces_amount: z
+              .int()
+              .exactOptional()
+              .openapi({ description: 'Maximum number of debounces before forced execution' }),
+          })
+          .exactOptional()
+          .openapi({ description: 'Debounce configuration for this step (EE only)', required: [] }),
+      })
+      .openapi({
+        description: 'A single step in a flow. Can be a script, subflow, loop, or branch',
+        required: ['value', 'id'],
+      }),
+  )
+  .openapi('FlowModule')
+
+const FlowNoteSchema = z
+  .object({
+    id: z.string().openapi({ description: 'Unique identifier for the note' }),
+    text: z.string().openapi({ description: 'Content of the note' }),
+    position: z
+      .object({
+        x: z.number().openapi({ description: 'X coordinate' }),
+        y: z.number().openapi({ description: 'Y coordinate' }),
+      })
+      .exactOptional()
+      .openapi({ description: 'Position of the note in the flow editor', required: ['x', 'y'] }),
+    size: z
+      .object({
+        width: z.number().openapi({ description: 'Width in pixels' }),
+        height: z.number().openapi({ description: 'Height in pixels' }),
+      })
+      .exactOptional()
+      .openapi({
+        description: 'Size of the note in the flow editor',
+        required: ['width', 'height'],
+      }),
+    color: z
+      .string()
+      .openapi({
+        description:
+          'Color of the note, one of: yellow, blue, green, purple, pink, orange, red, cyan, lime, gray. Any other value renders unstyled.',
+      }),
+    type: z
+      .enum(['free', 'group'])
+      .openapi({
+        description:
+          "Type of note - 'free' for standalone notes. 'group' notes are deprecated; segment a flow with FlowValue.groups instead.",
+      }),
+    locked: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({ description: 'Whether the note is locked and cannot be edited or moved' }),
+    contained_node_ids: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'For group notes, the IDs of nodes contained within this group' }),
+  })
+  .openapi({
+    description: 'A sticky note attached to a flow for documentation and annotation',
+    required: ['id', 'text', 'color', 'type'],
+  })
+  .openapi('FlowNote')
+
+type FlowValueType = {
+  modules: z.infer<typeof FlowModuleSchema>[]
+  failure_module?: z.infer<typeof FlowModuleSchema>
+  preprocessor_module?: z.infer<typeof FlowModuleSchema>
+  same_worker?: boolean
+  preserve_step_tags?: boolean
+  concurrent_limit?: number
+  concurrency_key?: string
+  concurrency_time_window_s?: number
+  on_concurrency_limit?: 'queue' | 'fail'
+  debounce_delay_s?: number
+  debounce_key?: string
+  debounce_args_to_accumulate?: string[]
+  max_total_debouncing_time?: number
+  max_total_debounces_amount?: number
+  skip_expr?: string
+  cache_ttl?: number
+  cache_ignore_s3_path?: boolean
+  delete_after_secs?: number
+  timeout?: number
+  flow_env?: { [key: string]: unknown }
+  priority?: number
+  early_return?: string
+  chat_input_enabled?: boolean
+  notes?: z.infer<typeof FlowNoteSchema>[]
+  groups?: {
+    summary?: string
+    note?: string
+    autocollapse?: boolean
+    start_id: string
+    end_id: string
+    color?: string
+  }[]
+}
+
+const FlowValueSchema: z.ZodType<FlowValueType> = z
+  .object({
+    modules: z
+      .array(FlowModuleSchema)
+      .openapi({
+        description:
+          'Array of steps that execute in sequence. Each step can be a script, subflow, loop, or branch',
+      }),
+    failure_module: FlowModuleSchema.exactOptional().openapi({
+      description:
+        "Special module that executes when the flow fails. Receives error object with message, name, stack, and step_id. Must have id 'failure'. Only supports script/rawscript types",
+    }),
+    preprocessor_module: FlowModuleSchema.exactOptional().openapi({
+      description:
+        "Special module that runs before the first step on external triggers. Must have id 'preprocessor'. Only supports script/rawscript types. Cannot reference other step results",
+    }),
+    same_worker: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'If true, all steps run on the same worker for better performance' }),
+    preserve_step_tags: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'If true and the flow runs on a custom worker tag, steps that declare their own non-empty tag run on it instead of inheriting the flow tag. Steps without their own tag still inherit the flow tag.',
+      }),
+    concurrent_limit: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Maximum number of concurrent executions of this flow' }),
+    concurrency_key: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Expression to group concurrent executions (e.g., by user ID)' }),
+    concurrency_time_window_s: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Time window in seconds for concurrent_limit' }),
+    on_concurrency_limit: z
+      .enum(['queue', 'fail'])
+      .exactOptional()
+      .openapi({
+        description:
+          'What a run of this flow does when its concurrency limit is reached. `queue` (default) re-queues it to a later slot, `fail` ends it immediately as failed, like any failed step.',
+      }),
+    debounce_delay_s: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'Delay in seconds to debounce flow executions' }),
+    debounce_key: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Expression to group debounced executions' }),
+    debounce_args_to_accumulate: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'Arguments to accumulate across debounced executions' }),
+    max_total_debouncing_time: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'Maximum total time in seconds that a job can be debounced' }),
+    max_total_debounces_amount: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'Maximum number of times a job can be debounced' }),
+    skip_expr: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'JavaScript expression to conditionally skip the entire flow' }),
+    cache_ttl: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Cache duration in seconds for flow results' }),
+    cache_ignore_s3_path: z.boolean().exactOptional(),
+    delete_after_secs: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          "If set, delete the flow job's args, result and logs after this many seconds following job completion",
+      }),
+    timeout: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          'Wall-clock limit in seconds for the whole flow run, counted from its start and including time spent sleeping or suspended at an approval. It also applies when the flow is called as a subflow step, unless that step sets its own timeout, which replaces it. It is checked periodically, so a run can go a few seconds past it. When it expires, the running steps are cancelled, the failure module runs if there is one, and the flow ends cancelled with a timeout error. A calling flow sees the subflow step fail with that error.',
+      }),
+    flow_env: z
+      .record(z.string(), z.any())
+      .exactOptional()
+      .openapi({
+        description:
+          "Environment variables available to all steps. Values can be strings, JSON values, or special references: '$var:path' (workspace variable) or '$res:path' (resource).",
+      }),
+    priority: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Execution priority (higher numbers run first)' }),
+    early_return: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Id of the step whose result a sync webhook returns as soon as that step completes, while the rest of the flow keeps running. When the step does not run, or fails while the flow has a failure module, the flow's final result is returned instead.",
+      }),
+    chat_input_enabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether this flow accepts chat-style input' }),
+    notes: z
+      .array(FlowNoteSchema)
+      .exactOptional()
+      .openapi({ description: 'Sticky notes attached to the flow' }),
+    groups: z
+      .array(
+        z
+          .object({
+            summary: z
+              .string()
+              .exactOptional()
+              .openapi({ description: 'Display name for this group' }),
+            note: z
+              .string()
+              .exactOptional()
+              .openapi({ description: 'Markdown note shown below the group header' }),
+            autocollapse: z
+              .boolean()
+              .default(false)
+              .exactOptional()
+              .openapi({
+                description:
+                  'If true, this group is collapsed by default in the flow editor. UI hint only.',
+              }),
+            start_id: z
+              .string()
+              .openapi({
+                description: 'ID of the first flow module in this group (topological entry point)',
+              }),
+            end_id: z
+              .string()
+              .openapi({
+                description: 'ID of the last flow module in this group (topological exit point)',
+              }),
+            color: z
+              .string()
+              .exactOptional()
+              .openapi({
+                description:
+                  'Color for the group in the flow editor, one of: yellow, blue, green, purple, pink, orange, red, cyan, lime, gray. Omit it to let the editor pick one.',
+              }),
+          })
+          .openapi({
+            description:
+              'A semantic group of flow modules for organizational purposes. Does not affect execution — modules remain in their original position in the flow. Groups provide naming and collapsibility in the editor. Members are computed dynamically from all nodes on paths between start_id and end_id.',
+            required: ['start_id', 'end_id'],
+          }),
+      )
+      .exactOptional()
+      .openapi({ description: 'Semantic groups of modules for organizational purposes' }),
+  })
+  .openapi({
+    description: 'The flow structure containing modules and optional preprocessor/failure handlers',
+    required: ['modules'],
+  })
+  .openapi('FlowValue')
+
+type OpenFlowType = {
+  summary: string
+  description?: string
+  value: z.infer<typeof FlowValueSchema>
+  schema?: { [key: string]: unknown }
+  on_behalf_of_email?: string
+  on_behalf_of?: string
+}
+
 type RetryType = {
   constant?: { attempts?: number; seconds?: number }
   exponential?: { attempts?: number; multiplier?: number; seconds?: number; random_factor?: number }
@@ -218,7 +670,7 @@ type FlowModuleType = {
   timeout?: z.infer<typeof InputTransformSchema>
   delete_after_secs?: number
   summary?: string
-  mock?: { enabled?: boolean; return_value?: { [key: string]: unknown } }
+  mock?: { enabled?: boolean; return_value?: unknown; preview_only?: boolean }
   suspend?: {
     required_events?: number
     timeout?: number
@@ -334,6 +786,7 @@ type RawScriptType = {
   tag?: string
   concurrent_limit?: number
   concurrency_time_window_s?: number
+  on_concurrency_limit?: 'queue' | 'fail'
   custom_concurrency_key?: string
   is_trigger?: boolean
   assets?: {
@@ -401,6 +854,13 @@ const RawScriptSchema: z.ZodType<RawScriptType> & z.core.$ZodTypeDiscriminable =
       .number()
       .exactOptional()
       .openapi({ description: 'Time window for concurrent_limit' }),
+    on_concurrency_limit: z
+      .enum(['queue', 'fail'])
+      .exactOptional()
+      .openapi({
+        description:
+          'What a run of this step does when its concurrency limit is reached. `queue` (default) re-queues it to a later slot, `fail` ends it immediately as failed.',
+      }),
     custom_concurrency_key: z
       .string()
       .exactOptional()
@@ -488,6 +948,7 @@ const PathScriptSchema: z.ZodType<PathScriptType> & z.core.$ZodTypeDiscriminable
 type PathFlowType = {
   input_transforms: { [key: string]: z.infer<typeof InputTransformSchema> }
   path: string
+  tag_override?: string
   type: 'flow'
 }
 
@@ -502,6 +963,13 @@ const PathFlowSchema: z.ZodType<PathFlowType> & z.core.$ZodTypeDiscriminable = z
     path: z
       .string()
       .openapi({ description: "Path to the flow in the workspace (e.g., 'f/flows/process_user')" }),
+    tag_override: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Override the subflow's worker group tag. Its steps run on this tag unless the subflow sets preserve_step_tags",
+      }),
     type: z.literal('flow'),
   })
   .openapi({
@@ -544,6 +1012,10 @@ const ForloopFlowSchema: z.ZodType<ForloopFlowType> & z.core.$ZodTypeDiscriminab
             'Maximum number of concurrent iterations when parallel=true. Limits resource usage. Can be static number or expression',
         }),
         squash: z.boolean().exactOptional(),
+        iteration_label: InputTransformSchema.exactOptional().openapi({
+          description:
+            "Optional expression evaluated once per iteration into the label the run viewers show for it, e.g. 'flow_input.iter.value.name'. It can reference 'flow_input.iter' and 'results'. Purely informational, a failing expression leaves the iteration unlabelled and never fails it. Labels are capped at 100 characters",
+        }),
       })
       .openapi({
         description:
@@ -577,6 +1049,22 @@ const WhileloopFlowSchema: z.ZodType<WhileloopFlowType> & z.core.$ZodTypeDiscrim
           description: 'Maximum number of concurrent iterations when parallel=true',
         }),
         squash: z.boolean().exactOptional(),
+        max_iterations: z
+          .int()
+          .min(1)
+          .exactOptional()
+          .openapi({
+            description:
+              "Maximum number of iterations. Checked after each iteration; when reached and stop_after_if did not stop the loop, the loop fails with an error named 'LoopExhausted'",
+          }),
+        max_duration_secs: z
+          .int()
+          .min(1)
+          .exactOptional()
+          .openapi({
+            description:
+              "Maximum wall-clock seconds since the first iteration started, checked after each iteration. A running iteration is not interrupted, so the loop can exceed the limit by up to one iteration; the timeout of the body's steps caps an iteration. When reached and stop_after_if did not stop the loop, the loop fails with an error named 'LoopExhausted'",
+          }),
       })
       .openapi({
         description:
@@ -662,6 +1150,10 @@ const BranchAllSchema: z.ZodType<BranchAllType> & z.core.$ZodTypeDiscriminable =
             description:
               'If true, all branches execute concurrently. If false, they execute sequentially',
           }),
+        parallelism: InputTransformSchema.exactOptional().openapi({
+          description:
+            'Maximum number of branches running at once when parallel=true. Can be static number or expression',
+        }),
       })
       .openapi({
         description:
@@ -818,6 +1310,21 @@ const AiAgentSchema: z.ZodType<AiAgentType> & z.core.$ZodTypeDiscriminable = z
                   .openapi({
                     description:
                       "Flowmodule and mcp tools only. Each call waits for a person to approve or reject it from the flow's run page or chat, without the agent holding a worker. Calls in the same turn that do not require approval run right away. A rejected call, or one nobody answers within 30 minutes, is reported to the AI as not run.",
+                  }),
+                background: z
+                  .boolean()
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      "Flowmodule tools only. The agent is answered as soon as the tool's job starts and keeps working; the job's result reaches it in a later message. If the agent finishes its answer first, it stops without holding a worker until the job is done, then continues with the result.",
+                  }),
+                background_after_secs: z
+                  .int()
+                  .min(1)
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      "Flowmodule tools only, with background unset. The agent waits up to this many seconds for the tool's job and gets its result as usual; a job still running then continues as a background one, its result reaching the agent in a later message.",
                   }),
                 value: z
                   .xor([
@@ -1014,7 +1521,7 @@ const AiDecisionSchema: z.ZodType<AiDecisionType> & z.core.$ZodTypeDiscriminable
   })
   .openapi({
     description:
-      "AI decision step: one call to a decision model (TypeSafe's Jev, Cloudflare's\nJev-compatible Clef, or OpenAI's Decisions API) that answers typed questions about a\nstate with calibrated probabilities, instead of generating text.\nPrefer it over an AI agent to classify, route, score or check something: it is fast,\ncheap and its answers are structured. Its result is { output: { <question name>: answer },\nmodel, usage }, so a later step reads e.g. results.<id>.output.intent.choice. To route on\nthe answers, follow it with a branchone whose branch exprs read\nresults.<id>.output.<question>.choice. Usable as an AI agent tool, where the calling agent\nsupplies the state.\n",
+      "AI decision step: one call to a decision model (TypeSafe's Jev, Cloudflare's\nJev-compatible Clef, or OpenAI's or Gemini's Decisions API) that answers typed questions about a\nstate with calibrated probabilities, instead of generating text.\nPrefer it over an AI agent to classify, route, score or check something: it is fast,\ncheap and its answers are structured. Its result is { output: { <question name>: answer },\nmodel, usage }, so a later step reads e.g. results.<id>.output.intent.choice. To route on\nthe answers, follow it with a branchone whose branch exprs read\nresults.<id>.output.<question>.choice. Usable as an AI agent tool, where the calling agent\nsupplies the state.\n",
     required: ['type', 'input_transforms'],
   })
   .openapi('AiDecision')
@@ -1031,190 +1538,6 @@ type FlowModuleValueType =
   | z.infer<typeof AiAgentSchema>
   | z.infer<typeof AiDecisionSchema>
 
-const FlowModuleSchema: z.ZodType<FlowModuleType> = z
-  .lazy(() =>
-    z
-      .object({
-        id: z
-          .string()
-          .openapi({
-            description:
-              "Unique identifier for this step. Used to reference results via 'results.step_id'. Must be a valid identifier (alphanumeric, underscore, hyphen)",
-          }),
-        value: FlowModuleValueSchema,
-        stop_after_if: StopAfterIfSchema.exactOptional().openapi({
-          description: 'Early termination condition evaluated after this step completes',
-        }),
-        stop_after_all_iters_if: StopAfterIfSchema.exactOptional().openapi({
-          description:
-            'For loops only - early termination condition evaluated after all iterations complete',
-        }),
-        skip_if: z
-          .object({
-            expr: z
-              .string()
-              .openapi({
-                description:
-                  "JavaScript expression that returns true to skip. Can use 'flow_input' or 'results.<step_id>'",
-              }),
-          })
-          .exactOptional()
-          .openapi({
-            description: 'Conditionally skip this step based on previous results or flow inputs',
-            required: ['expr'],
-          }),
-        sleep: InputTransformSchema.exactOptional().openapi({
-          description:
-            'Delay after this step completes, before the next step starts (in seconds or as expression)',
-        }),
-        cache_ttl: z
-          .number()
-          .exactOptional()
-          .openapi({ description: "Cache duration in seconds for this step's results" }),
-        cache_ignore_s3_path: z.boolean().exactOptional(),
-        timeout: InputTransformSchema.exactOptional().openapi({
-          description: 'Maximum execution time in seconds (static value or expression)',
-        }),
-        delete_after_secs: z
-          .int()
-          .exactOptional()
-          .openapi({
-            description:
-              "If set, delete the step's args, result and logs after this many seconds following job completion",
-          }),
-        summary: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Short description of what this step does' }),
-        mock: z
-          .object({
-            enabled: z
-              .boolean()
-              .exactOptional()
-              .openapi({ description: 'If true, return mock value instead of executing' }),
-            return_value: z
-              .any()
-              .exactOptional()
-              .openapi({ description: 'Value to return when mocked' }),
-          })
-          .exactOptional()
-          .openapi({
-            description: 'Mock configuration for testing without executing the actual step',
-            required: [],
-          }),
-        suspend: z
-          .object({
-            required_events: z
-              .int()
-              .exactOptional()
-              .openapi({ description: 'Number of approvals required before continuing' }),
-            timeout: z
-              .int()
-              .exactOptional()
-              .openapi({ description: 'Timeout in seconds before auto-continuing or canceling' }),
-            resume_form: z
-              .object({
-                schema: z
-                  .object({})
-                  .exactOptional()
-                  .openapi({ description: 'JSON Schema for the resume form' }),
-              })
-              .exactOptional()
-              .openapi({
-                description: 'Form schema for collecting input when resuming',
-                required: [],
-              }),
-            user_auth_required: z
-              .boolean()
-              .exactOptional()
-              .openapi({ description: 'If true, only authenticated users can approve' }),
-            user_groups_required: InputTransformSchema.exactOptional().openapi({
-              description: 'Expression or list of groups that can approve',
-            }),
-            self_approval_disabled: z
-              .boolean()
-              .exactOptional()
-              .openapi({ description: 'If true, the user who started the flow cannot approve' }),
-            hide_cancel: z
-              .boolean()
-              .exactOptional()
-              .openapi({ description: 'If true, hide the cancel button on the approval form' }),
-            continue_on_disapprove_timeout: z
-              .boolean()
-              .exactOptional()
-              .openapi({ description: 'If true, continue flow on timeout instead of canceling' }),
-            skin: z
-              .enum(['detailed', 'minimal'])
-              .exactOptional()
-              .openapi({
-                description:
-                  "How the approval request is presented, on the approval page and in Slack/Teams approval messages. 'detailed' (used when unset) shows the flow details (arguments, graph, approvers); 'minimal' shows only the request: the step description, form and approve/reject actions",
-              }),
-          })
-          .exactOptional()
-          .openapi({
-            description: 'Configuration for approval/resume steps that wait for user input',
-            required: [],
-          }),
-        priority: z
-          .number()
-          .exactOptional()
-          .openapi({ description: 'Execution priority for this step (higher numbers run first)' }),
-        continue_on_error: z
-          .boolean()
-          .exactOptional()
-          .openapi({ description: 'If true, flow continues even if this step fails' }),
-        job_token_scopes: z
-          .array(z.string())
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              "Scopes the token of this step's jobs is restricted to (domain:action[:resource], e.g. oidc:write), on top of the flow's own restriction: a step can only narrow it. Applies to everything the step runs (loop and branch bodies, AI agent tools).",
-          }),
-        retry: RetrySchema.exactOptional().openapi({
-          description: 'Retry configuration if this step fails',
-        }),
-        debouncing: z
-          .object({
-            debounce_delay_s: z
-              .int()
-              .exactOptional()
-              .openapi({
-                description: "Delay in seconds to debounce this step's executions across flow runs",
-              }),
-            debounce_key: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description:
-                  'Expression to group debounced executions. Supports $workspace and $args[name]. Default: $workspace/flow/<flow_path>-<step_id>',
-              }),
-            debounce_args_to_accumulate: z
-              .array(z.string())
-              .exactOptional()
-              .openapi({
-                description: 'Array-type arguments to accumulate across debounced executions',
-              }),
-            max_total_debouncing_time: z
-              .int()
-              .exactOptional()
-              .openapi({ description: 'Maximum total time in seconds before forced execution' }),
-            max_total_debounces_amount: z
-              .int()
-              .exactOptional()
-              .openapi({ description: 'Maximum number of debounces before forced execution' }),
-          })
-          .exactOptional()
-          .openapi({ description: 'Debounce configuration for this step (EE only)', required: [] }),
-      })
-      .openapi({
-        description: 'A single step in a flow. Can be a script, subflow, loop, or branch',
-        required: ['value', 'id'],
-      }),
-  )
-  .openapi('FlowModule')
-
 type ForloopFlowType = {
   modules: z.infer<typeof FlowModuleSchema>[]
   iterator: z.infer<typeof InputTransformSchema>
@@ -1223,6 +1546,7 @@ type ForloopFlowType = {
   parallel?: boolean
   parallelism?: z.infer<typeof InputTransformSchema>
   squash?: boolean
+  iteration_label?: z.infer<typeof InputTransformSchema>
 }
 
 type WhileloopFlowType = {
@@ -1232,6 +1556,8 @@ type WhileloopFlowType = {
   parallel?: boolean
   parallelism?: z.infer<typeof InputTransformSchema>
   squash?: boolean
+  max_iterations?: number
+  max_duration_secs?: number
 }
 
 type BranchOneType = {
@@ -1248,6 +1574,7 @@ type BranchAllType = {
   }[]
   type: 'branchall'
   parallel?: boolean
+  parallelism?: z.infer<typeof InputTransformSchema>
 }
 
 const MemoryConfigSchema: z.ZodType<MemoryConfigType> = z
@@ -1366,6 +1693,8 @@ type AiAgentType = {
     description?: string
     job_token_scopes?: string[] | null
     requires_approval?: boolean
+    background?: boolean
+    background_after_secs?: number
     value:
       | ({ tool_type: 'flowmodule' } & z.infer<typeof FlowModuleValueSchema>)
       | {
@@ -1384,29 +1713,6 @@ type AiAgentType = {
   tool_inputs?: { [key: string]: { [key: string]: z.infer<typeof InputTransformSchema> } }
   parallel?: boolean
 }
-
-const EvalCaseInputSchema = z
-  .object({
-    user_message: z.string().exactOptional(),
-    user_attachments: z.array(z.object({})).exactOptional(),
-  })
-  .openapi({ description: 'The inputs a standalone run feeds the agent.', required: [] })
-  .openapi('EvalCaseInput')
-
-const NewEvalCaseSchema = z
-  .object({
-    input: EvalCaseInputSchema.exactOptional(),
-    expected: z
-      .any()
-      .exactOptional()
-      .openapi({ description: 'Reference output a scorer compares a rerun against.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('NewEvalCase')
-
-type EvalCaseType = { id: string; created_at: string; created_by: string } & z.infer<
-  typeof NewEvalCaseSchema
->
 
 const ScriptArgsSchema = z
   .looseObject({})
@@ -1438,6 +1744,13 @@ const FlowStatusModuleSchema = z
       .openapi({ required: [] }),
     flow_jobs: z.array(z.string()).exactOptional(),
     flow_jobs_success: z.array(z.boolean()).exactOptional(),
+    flow_jobs_labels: z
+      .array(z.string().nullable())
+      .exactOptional()
+      .openapi({
+        description:
+          "For a for-loop step whose iteration_label is set, each iteration's label, aligned with flow_jobs. An entry is null when its label evaluated to nothing",
+      }),
     flow_jobs_duration: z
       .object({
         started_at: z.array(z.string()).exactOptional(),
@@ -1479,7 +1792,7 @@ const FlowStatusModuleSchema = z
               function_name: z.string(),
               resource_path: z.string(),
               type: z.literal('mcp_tool_call'),
-              arguments: z.object({}).exactOptional(),
+              arguments: z.looseObject({}).exactOptional(),
             })
             .openapi({ required: ['call_id', 'function_name', 'resource_path', 'type'] }),
           z.object({ type: z.literal('web_search') }).openapi({ required: ['type'] }),
@@ -1517,7 +1830,13 @@ const FlowStatusModuleSchema = z
         ]),
       )
       .exactOptional(),
-    agent_actions_success: z.array(z.boolean()).exactOptional(),
+    agent_actions_success: z
+      .array(z.boolean().nullable())
+      .exactOptional()
+      .openapi({
+        description:
+          'The outcome of each agent action, by position. null while a background tool call is still running.',
+      }),
   })
   .openapi({ required: ['type'] })
   .openapi('FlowStatusModule')
@@ -1538,6 +1857,20 @@ const FlowStatusSchema = z
       })
       .exactOptional()
       .openapi({ required: [] }),
+    continued_on_error: z
+      .array(z.object({ id: z.string(), job: z.uuid() }).openapi({ required: ['id', 'job'] }))
+      .exactOptional()
+      .openapi({
+        description:
+          'On a root flow, the steps at any depth that failed and that the flow went past because of continue_on_error (at most 100).',
+      }),
+    test_subflows: z
+      .record(z.string(), z.looseObject({}))
+      .exactOptional()
+      .openapi({
+        description:
+          "In a flow test run, deployed subflow path -> the flow value with the test's step overrides applied, run in place of the deployed subflow.",
+      }),
   })
   .openapi({ required: ['step', 'modules', 'failure_module'] })
   .openapi('FlowStatus')
@@ -1551,209 +1884,6 @@ const WorkflowStatusSchema = z
   })
   .openapi({ required: [] })
   .openapi('WorkflowStatus')
-
-const FlowNoteSchema = z
-  .object({
-    id: z.string().openapi({ description: 'Unique identifier for the note' }),
-    text: z.string().openapi({ description: 'Content of the note' }),
-    position: z
-      .object({
-        x: z.number().openapi({ description: 'X coordinate' }),
-        y: z.number().openapi({ description: 'Y coordinate' }),
-      })
-      .exactOptional()
-      .openapi({ description: 'Position of the note in the flow editor', required: ['x', 'y'] }),
-    size: z
-      .object({
-        width: z.number().openapi({ description: 'Width in pixels' }),
-        height: z.number().openapi({ description: 'Height in pixels' }),
-      })
-      .exactOptional()
-      .openapi({
-        description: 'Size of the note in the flow editor',
-        required: ['width', 'height'],
-      }),
-    color: z
-      .string()
-      .openapi({
-        description:
-          'Color of the note, one of: yellow, blue, green, purple, pink, orange, red, cyan, lime, gray. Any other value renders unstyled.',
-      }),
-    type: z
-      .enum(['free', 'group'])
-      .openapi({
-        description:
-          "Type of note - 'free' for standalone notes. 'group' notes are deprecated; segment a flow with FlowValue.groups instead.",
-      }),
-    locked: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({ description: 'Whether the note is locked and cannot be edited or moved' }),
-    contained_node_ids: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'For group notes, the IDs of nodes contained within this group' }),
-  })
-  .openapi({
-    description: 'A sticky note attached to a flow for documentation and annotation',
-    required: ['id', 'text', 'color', 'type'],
-  })
-  .openapi('FlowNote')
-
-const FlowValueSchema = z
-  .object({
-    modules: z
-      .array(FlowModuleSchema)
-      .openapi({
-        description:
-          'Array of steps that execute in sequence. Each step can be a script, subflow, loop, or branch',
-      }),
-    failure_module: FlowModuleSchema.exactOptional().openapi({
-      description:
-        "Special module that executes when the flow fails. Receives error object with message, name, stack, and step_id. Must have id 'failure'. Only supports script/rawscript types",
-    }),
-    preprocessor_module: FlowModuleSchema.exactOptional().openapi({
-      description:
-        "Special module that runs before the first step on external triggers. Must have id 'preprocessor'. Only supports script/rawscript types. Cannot reference other step results",
-    }),
-    same_worker: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'If true, all steps run on the same worker for better performance' }),
-    preserve_step_tags: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'If true and the flow runs on a custom worker tag, steps that declare their own non-empty tag run on it instead of inheriting the flow tag. Steps without their own tag still inherit the flow tag.',
-      }),
-    concurrent_limit: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Maximum number of concurrent executions of this flow' }),
-    concurrency_key: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Expression to group concurrent executions (e.g., by user ID)' }),
-    concurrency_time_window_s: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Time window in seconds for concurrent_limit' }),
-    debounce_delay_s: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'Delay in seconds to debounce flow executions' }),
-    debounce_key: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Expression to group debounced executions' }),
-    debounce_args_to_accumulate: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'Arguments to accumulate across debounced executions' }),
-    max_total_debouncing_time: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'Maximum total time in seconds that a job can be debounced' }),
-    max_total_debounces_amount: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'Maximum number of times a job can be debounced' }),
-    skip_expr: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'JavaScript expression to conditionally skip the entire flow' }),
-    cache_ttl: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Cache duration in seconds for flow results' }),
-    cache_ignore_s3_path: z.boolean().exactOptional(),
-    delete_after_secs: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description:
-          "If set, delete the flow job's args, result and logs after this many seconds following job completion",
-      }),
-    flow_env: z
-      .record(z.string(), z.any())
-      .exactOptional()
-      .openapi({
-        description:
-          "Environment variables available to all steps. Values can be strings, JSON values, or special references: '$var:path' (workspace variable) or '$res:path' (resource).",
-      }),
-    priority: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Execution priority (higher numbers run first)' }),
-    early_return: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Id of the step whose result a sync webhook returns as soon as that step completes, while the rest of the flow keeps running. When the step does not run, or fails while the flow has a failure module, the flow's final result is returned instead.",
-      }),
-    chat_input_enabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether this flow accepts chat-style input' }),
-    notes: z
-      .array(FlowNoteSchema)
-      .exactOptional()
-      .openapi({ description: 'Sticky notes attached to the flow' }),
-    groups: z
-      .array(
-        z
-          .object({
-            summary: z
-              .string()
-              .exactOptional()
-              .openapi({ description: 'Display name for this group' }),
-            note: z
-              .string()
-              .exactOptional()
-              .openapi({ description: 'Markdown note shown below the group header' }),
-            autocollapse: z
-              .boolean()
-              .default(false)
-              .exactOptional()
-              .openapi({
-                description:
-                  'If true, this group is collapsed by default in the flow editor. UI hint only.',
-              }),
-            start_id: z
-              .string()
-              .openapi({
-                description: 'ID of the first flow module in this group (topological entry point)',
-              }),
-            end_id: z
-              .string()
-              .openapi({
-                description: 'ID of the last flow module in this group (topological exit point)',
-              }),
-            color: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description:
-                  'Color for the group in the flow editor, one of: yellow, blue, green, purple, pink, orange, red, cyan, lime, gray. Omit it to let the editor pick one.',
-              }),
-          })
-          .openapi({
-            description:
-              'A semantic group of flow modules for organizational purposes. Does not affect execution — modules remain in their original position in the flow. Groups provide naming and collapsibility in the editor. Members are computed dynamically from all nodes on paths between start_id and end_id.',
-            required: ['start_id', 'end_id'],
-          }),
-      )
-      .exactOptional()
-      .openapi({ description: 'Semantic groups of modules for organizational purposes' }),
-  })
-  .openapi({
-    description: 'The flow structure containing modules and optional preprocessor/failure handlers',
-    required: ['modules'],
-  })
-  .openapi('FlowValue')
 
 const ScriptLangSchema = z
   .enum([
@@ -1811,7 +1941,133 @@ const JobTriggerKindSchema = z
   .openapi({ description: 'job trigger kind (schedule, http, websocket...)' })
   .openapi('JobTriggerKind')
 
-const CompletedJobSchema = z
+type QueuedJobType = {
+  workspace_id?: string
+  id: string
+  parent_job?: string
+  created_by?: string
+  created_at?: string
+  started_at?: string
+  scheduled_for?: string
+  running: boolean
+  script_path?: string
+  script_hash?: string
+  args?: z.infer<typeof ScriptArgsSchema>
+  logs?: string
+  raw_code?: string
+  canceled: boolean
+  canceled_by?: string
+  canceled_reason?: string
+  last_ping?: string
+  job_kind:
+    | 'script'
+    | 'preview'
+    | 'dependencies'
+    | 'flowdependencies'
+    | 'appdependencies'
+    | 'flow'
+    | 'flowpreview'
+    | 'script_hub'
+    | 'identity'
+    | 'deploymentcallback'
+    | 'singlestepflow'
+    | 'flowscript'
+    | 'flownode'
+    | 'appscript'
+    | 'aiagent'
+    | 'unassigned_script'
+    | 'unassigned_flow'
+    | 'unassigned_singlestepflow'
+  schedule_path?: string
+  permissioned_as: string
+  flow_status?: z.infer<typeof FlowStatusSchema>
+  workflow_as_code_status?: z.infer<typeof WorkflowStatusSchema>
+  raw_flow?: z.infer<typeof FlowValueSchema>
+  is_flow_step: boolean
+  language?: z.infer<typeof ScriptLangSchema>
+  email: string
+  visible_to_owner: boolean
+  mem_peak?: number
+  tag: string
+  priority?: number
+  self_wait_time_ms?: number
+  aggregate_wait_time_ms?: number
+  suspend?: number
+  preprocessed?: boolean
+  is_retry?: boolean
+  trigger_kind?: z.infer<typeof JobTriggerKindSchema>
+  trigger_path?: string
+  worker?: string
+}
+
+type CompletedJobType = {
+  workspace_id?: string
+  id: string
+  parent_job?: string
+  created_by: string
+  created_at: string
+  started_at: string
+  completed_at?: string
+  duration_ms: number
+  success: boolean
+  script_path?: string
+  script_hash?: string
+  args?: z.infer<typeof ScriptArgsSchema>
+  result?: unknown
+  logs?: string
+  deleted?: boolean
+  raw_code?: string
+  canceled: boolean
+  canceled_by?: string
+  canceled_reason?: string
+  job_kind:
+    | 'script'
+    | 'preview'
+    | 'dependencies'
+    | 'flow'
+    | 'flowdependencies'
+    | 'appdependencies'
+    | 'flowpreview'
+    | 'script_hub'
+    | 'identity'
+    | 'deploymentcallback'
+    | 'singlestepflow'
+    | 'flowscript'
+    | 'flownode'
+    | 'appscript'
+    | 'aiagent'
+    | 'unassigned_script'
+    | 'unassigned_flow'
+    | 'unassigned_singlestepflow'
+  schedule_path?: string
+  permissioned_as: string
+  flow_status?: z.infer<typeof FlowStatusSchema>
+  workflow_as_code_status?: z.infer<typeof WorkflowStatusSchema>
+  raw_flow?: z.infer<typeof FlowValueSchema>
+  is_flow_step: boolean
+  language?: z.infer<typeof ScriptLangSchema>
+  is_skipped: boolean
+  email: string
+  visible_to_owner: boolean
+  mem_peak?: number
+  tag: string
+  priority?: number
+  labels?: string[]
+  self_wait_time_ms?: number
+  aggregate_wait_time_ms?: number
+  preprocessed?: boolean
+  is_retry?: boolean
+  resolved?: boolean
+  resolved_by?: string
+  resolved_at?: string
+  resolution_note?: string
+  resolved_automatically?: boolean
+  trigger_kind?: z.infer<typeof JobTriggerKindSchema>
+  trigger_path?: string
+  worker?: string
+}
+
+const CompletedJobSchema: z.ZodType<CompletedJobType> = z
   .object({
     workspace_id: z.string().exactOptional(),
     id: z.uuid(),
@@ -1902,6 +2158,12 @@ const CompletedJobSchema = z
           'true when a succeeding retry resolved this rather than a person. Explicit rather than inferred from an absent resolved_by, which is also absent for a manual resolution outside enterprise',
       }),
     trigger_kind: JobTriggerKindSchema.exactOptional(),
+    trigger_path: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Path of the trigger, schedule or app that started the job, if any',
+      }),
     worker: z.string().exactOptional(),
   })
   .openapi({
@@ -1924,7 +2186,7 @@ const CompletedJobSchema = z
   })
   .openapi('CompletedJob')
 
-const QueuedJobSchema = z
+const QueuedJobSchema: z.ZodType<QueuedJobType> = z
   .object({
     workspace_id: z.string().exactOptional(),
     id: z.uuid(),
@@ -1986,6 +2248,12 @@ const QueuedJobSchema = z
     preprocessed: z.boolean().exactOptional(),
     is_retry: z.boolean().exactOptional(),
     trigger_kind: JobTriggerKindSchema.exactOptional(),
+    trigger_path: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Path of the trigger, schedule or app that started the job, if any',
+      }),
     worker: z.string().exactOptional(),
   })
   .openapi({
@@ -2006,6 +2274,67 @@ const QueuedJobSchema = z
 type JobType =
   | (z.infer<typeof CompletedJobSchema> & { type?: 'CompletedJob' })
   | (z.infer<typeof QueuedJobSchema> & { type?: 'QueuedJob' })
+
+type MainArgSignatureType = {
+  type: 'Valid' | 'Invalid'
+  error: string
+  star_args: boolean
+  star_kwargs?: boolean
+  args: {
+    name: string
+    typ:
+      | 'float'
+      | 'int'
+      | 'bool'
+      | 'email'
+      | 'unknown'
+      | 'bytes'
+      | 'dict'
+      | 'datetime'
+      | 'sql'
+      | { resource: string | null }
+      | { str: string[] | null }
+      | {
+          object: {
+            name?: string
+            props?: {
+              key: string
+              typ:
+                | 'float'
+                | 'int'
+                | 'bool'
+                | 'email'
+                | 'unknown'
+                | 'bytes'
+                | 'dict'
+                | 'datetime'
+                | 'sql'
+                | { str: unknown }
+            }[]
+          }
+        }
+      | {
+          list:
+            | (
+                | 'float'
+                | 'int'
+                | 'bool'
+                | 'email'
+                | 'unknown'
+                | 'bytes'
+                | 'dict'
+                | 'datetime'
+                | 'sql'
+                | { str: unknown }
+              )
+            | null
+        }
+    has_default?: boolean
+    default?: unknown
+  }[]
+  auto_kind: string | null
+  has_preprocessor: boolean | null
+}
 
 type TriggerFilterType =
   | { key: string; value: unknown }
@@ -2034,7 +2363,7 @@ type AclTargetType =
   | z.infer<typeof AclTargetSchemaSchema>
   | z.infer<typeof AclTargetTableSchema>
 
-const OpenFlowSchema = z
+const OpenFlowSchema: z.ZodType<OpenFlowType> = z
   .object({
     summary: z.string().openapi({ description: 'Short description of what this flow does' }),
     description: z
@@ -2043,7 +2372,7 @@ const OpenFlowSchema = z
       .openapi({ description: 'Detailed documentation for this flow' }),
     value: FlowValueSchema,
     schema: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -2120,6 +2449,80 @@ const FlowMetadataSchema = z
 type FlowType = z.infer<typeof OpenFlowSchema> &
   z.infer<typeof FlowMetadataSchema> & { lock_error_logs?: string; version_id?: number }
 
+type OpenFlowWPathType = z.infer<typeof OpenFlowSchema> & {
+  path: string
+  tag?: string
+  ws_error_handler_muted?: boolean
+  priority?: number
+  dedicated_worker?: boolean
+  timeout?: number
+  visible_to_runner_only?: boolean
+  on_behalf_of_email?: string
+  on_behalf_of?: string
+  preserve_on_behalf_of?: boolean
+  labels?: string[]
+  job_token_scopes?: string[] | null
+}
+
+type EditFlowType = z.infer<typeof OpenFlowSchema> & {
+  path?: string
+  tag?: string
+  ws_error_handler_muted?: boolean
+  priority?: number
+  dedicated_worker?: boolean
+  timeout?: number
+  visible_to_runner_only?: boolean
+  on_behalf_of_email?: string
+  on_behalf_of?: string
+  preserve_on_behalf_of?: boolean
+  labels?: string[]
+  job_token_scopes?: string[] | null
+}
+
+const RestartedFromSchema: z.ZodType<RestartedFromType> = z
+  .lazy(() =>
+    z
+      .object({
+        flow_job_id: z.uuid().exactOptional(),
+        step_id: z.string().exactOptional(),
+        branch_or_iteration_n: z
+          .int()
+          .exactOptional()
+          .openapi({
+            description:
+              '0-based iteration index for ForLoop / branch index for BranchAll. Iterations 0..n-1 are preserved; iteration n is restarted.',
+          }),
+        flow_version: z.int().exactOptional(),
+        branch_chosen: z
+          .object({
+            type: z.enum(['default', 'branch']).exactOptional(),
+            branch: z.int().exactOptional(),
+          })
+          .exactOptional()
+          .openapi({
+            description:
+              'For BranchOne nested restart — the branch that was originally chosen, used to lock branch evaluation.',
+            required: [],
+          }),
+        nested: RestartedFromSchema.exactOptional().openapi({
+          description:
+            'When set, the worker spawns the child for `step_id` as a `RestartedFlow` against `nested.flow_job_id` instead of fresh-launching it.',
+        }),
+      })
+      .openapi({ required: [] }),
+  )
+  .openapi('RestartedFrom')
+
+type FlowPreviewType = {
+  value: z.infer<typeof FlowValueSchema>
+  path?: string
+  args: z.infer<typeof ScriptArgsSchema>
+  tag?: string
+  restarted_from?: z.infer<typeof RestartedFromSchema>
+  temp_script_refs?: { [key: string]: string } | null
+  on_behalf_of?: string | null
+}
+
 type RestartedFromType = {
   flow_job_id?: string
   step_id?: string
@@ -2127,6 +2530,33 @@ type RestartedFromType = {
   flow_version?: number
   branch_chosen?: { type?: 'default' | 'branch'; branch?: number }
   nested?: RestartedFromType
+}
+
+const JobSchema: z.ZodType<JobType> = z
+  .xor([
+    CompletedJobSchema.and(
+      z.object({ type: z.literal('CompletedJob').exactOptional() }).openapi({ required: [] }),
+    ),
+    QueuedJobSchema.and(
+      z.object({ type: z.literal('QueuedJob').exactOptional() }).openapi({ required: [] }),
+    ),
+  ])
+  .openapi({ discriminator: { propertyName: 'type' } })
+  .openapi('Job')
+
+const ObscuredJobSchema = z
+  .object({
+    typ: z.string().exactOptional(),
+    started_at: z.iso.datetime({ offset: true }).exactOptional(),
+    duration_ms: z.number().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ObscuredJob')
+
+type ExtendedJobsType = {
+  jobs: z.infer<typeof JobSchema>[]
+  obscured_jobs: z.infer<typeof ObscuredJobSchema>[]
+  omitted_obscured_jobs?: boolean
 }
 
 const AssetKindSchema = z
@@ -2531,6 +2961,11 @@ const UserDraftItemKindSchema = z
   })
   .openapi('UserDraftItemKind')
 
+const DraftItemRefSchema = z
+  .object({ kind: UserDraftItemKindSchema, path: z.string() })
+  .openapi({ required: ['kind', 'path'] })
+  .openapi('DraftItemRef')
+
 const CiTestResultSchema = z
   .object({
     test_script_path: z.string(),
@@ -2918,7 +3353,14 @@ const VaultSettingsSchema = z
       .exactOptional()
       .openapi({
         description:
-          'AppRole role_id (optional). When set and no static token is given, Windmill logs in with AppRole; the secret_id is read from the `VAULT_APPROLE_SECRET_ID` environment variable of servers and workers.',
+          'AppRole role_id (optional). When set and no static token is given, Windmill logs in with AppRole.',
+      }),
+    approle_secret_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'AppRole secret_id (optional). When empty, the `VAULT_APPROLE_SECRET_ID` environment variable of servers and workers is used; when that is unset too, no secret_id is sent (a role with `bind_secret_id=false`).',
       }),
     approle_mount_path: z
       .string()
@@ -3242,6 +3684,25 @@ const EvalDatasetSchema = z
   .openapi({ required: ['path', 'created_at', 'created_by', 'edited_at', 'edited_by'] })
   .openapi('EvalDataset')
 
+const EvalCaseInputSchema = z
+  .object({
+    user_message: z.string().exactOptional(),
+    user_attachments: z.array(z.looseObject({})).exactOptional(),
+  })
+  .openapi({ description: 'The inputs a standalone run feeds the agent.', required: [] })
+  .openapi('EvalCaseInput')
+
+const NewEvalCaseSchema = z
+  .object({
+    input: EvalCaseInputSchema.exactOptional(),
+    expected: z
+      .any()
+      .exactOptional()
+      .openapi({ description: 'Reference output a scorer compares a rerun against.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('NewEvalCase')
+
 const SaveEvalCaseSchema = z
   .object({
     id: z
@@ -3253,17 +3714,10 @@ const SaveEvalCaseSchema = z
   .and(NewEvalCaseSchema)
   .openapi('SaveEvalCase')
 
-const EvalCaseSchema: z.ZodType<EvalCaseType> = z
-  .lazy(() =>
-    z
-      .object({
-        id: z.uuid(),
-        created_at: z.iso.datetime({ offset: true }),
-        created_by: z.string(),
-      })
-      .openapi({ required: ['id', 'created_at', 'created_by'] })
-      .and(NewEvalCaseSchema),
-  )
+const EvalCaseSchema = z
+  .object({ id: z.uuid(), created_at: z.iso.datetime({ offset: true }), created_by: z.string() })
+  .openapi({ required: ['id', 'created_at', 'created_by'] })
+  .and(NewEvalCaseSchema)
   .openapi('EvalCase')
 
 const ExperimentScoreSchema = z
@@ -3649,17 +4103,17 @@ const EndpointToolSchema = z
     path: z.string().openapi({ description: 'API endpoint path' }),
     method: z.string().openapi({ description: 'HTTP method (GET, POST, etc.)' }),
     path_params_schema: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({ description: 'JSON schema for path parameters' }),
     query_params_schema: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({ description: 'JSON schema for query parameters' }),
     body_schema: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({ description: 'JSON schema for request body' }),
@@ -3751,6 +4205,15 @@ const ModelPriceOverrideSchema = z
   })
   .openapi('ModelPriceOverride')
 
+const AIWebSearchConfigSchema = z
+  .object({ provider: z.enum(['exa', 'tavily', 'linkup', 'deepseek']), resource_path: z.string() })
+  .openapi({
+    description:
+      "The search API the AI chat searches the web and reads pages through when the model's provider has no built-in web search. Read from the workspace's own settings like `copilot_disabled`.",
+    required: ['provider', 'resource_path'],
+  })
+  .openapi('AIWebSearchConfig')
+
 const AIConfigSchema = z
   .object({
     providers: z.record(z.string(), AIProviderConfigSchema).exactOptional(),
@@ -3791,6 +4254,7 @@ const AIConfigSchema = z
         description:
           "The server deletes the backup of a session no push has reached for this many days. Unset keeps backups until the user deletes the session. Read from the workspace's own settings like `copilot_disabled`.",
       }),
+    web_search: AIWebSearchConfigSchema.exactOptional(),
   })
   .openapi({ required: [] })
   .openapi('AIConfig')
@@ -4052,7 +4516,7 @@ const RunnableItemSchema = z
     is_draft: z.boolean().exactOptional(),
     draft_only: z.boolean().nullable().exactOptional(),
     draft_path: z.string().exactOptional(),
-    draft_users: z.array(z.object({})).exactOptional(),
+    draft_users: z.array(z.looseObject({})).exactOptional(),
     labels: z.array(z.string()).exactOptional(),
     inherited_labels: z.array(z.string()).exactOptional(),
     ws_error_handler_muted: z.boolean().exactOptional(),
@@ -4118,6 +4582,80 @@ const RunnableItemSchema = z
   })
   .openapi('RunnableItem')
 
+const ListableScriptSchema = z
+  .object({
+    hash: z.string(),
+    path: z.string(),
+    summary: z.string(),
+    description: z.string().exactOptional(),
+    created_at: z.iso.datetime({ offset: true }),
+    archived: z.boolean(),
+    extra_perms: z.record(z.string(), z.boolean()),
+    language: ScriptLangSchema,
+    kind: z.enum(['script', 'failure', 'trigger', 'approval', 'preprocessor']),
+    starred: z.boolean(),
+    tag: z.string().nullable(),
+    draft_only: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'True on rows built from a draft that was never deployed. Omitted\non deployed rows.\n',
+      }),
+    has_deploy_errors: z.boolean(),
+    ws_error_handler_muted: z.boolean().nullable(),
+    auto_kind: z.string().exactOptional(),
+    use_codebase: z.boolean().exactOptional().openapi({ description: 'Omitted when false.' }),
+    deployment_msg: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Only returned with `with_deployment_msg=true`.' }),
+    labels: z.array(z.string()).exactOptional(),
+    inherited_labels: z.array(z.string()).exactOptional(),
+    is_draft: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'True when the authed user has a draft for this\nscript — either no deployed row exists at this\npath (draft-only) or the user saved a per-user\ndraft on top of the deployed row. Omitted when false.\n',
+      }),
+    draft_path: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'User-typed path the editor has staged but not\nyet deployed. Surfaced for draft-only rows so\nthe home list can render the meaningful name\ninstead of the autogenerated\n`u/{user}/draft_{uuid}` URL path. Omitted\nwhen unchanged.\n',
+      }),
+    draft_users: z
+      .array(
+        z.object({ username: z.string().nullable().exactOptional() }).openapi({ required: [] }),
+      )
+      .exactOptional()
+      .openapi({
+        description:
+          "Workspace users (including the authed user, and\nthe legacy NULL-email row if any) who have a\nper-user draft at this path. Drives the home\npage's user-avatar circles inside the Draft\nbadge. Omitted when no drafts exist.\n",
+      }),
+  })
+  .openapi({
+    description:
+      "A script as returned by the list endpoint: the deployed row's summary\nfields, without its content, lock or schema.\n",
+    required: [
+      'hash',
+      'path',
+      'summary',
+      'created_at',
+      'archived',
+      'extra_perms',
+      'language',
+      'kind',
+      'starred',
+      'tag',
+      'has_deploy_errors',
+      'ws_error_handler_muted',
+    ],
+  })
+  .openapi('ListableScript')
+
 const ScriptModuleSchema = z
   .object({
     content: z.string().openapi({ description: 'The source code content of this module' }),
@@ -4152,7 +4690,7 @@ const ScriptSchema = z
     created_by: z.string(),
     created_at: z.iso.datetime({ offset: true }),
     archived: z.boolean(),
-    schema: z.object({}).exactOptional(),
+    schema: z.looseObject({}).exactOptional(),
     deleted: z.boolean(),
     is_template: z.boolean(),
     extra_perms: z.record(z.string(), z.boolean()),
@@ -4166,6 +4704,13 @@ const ScriptSchema = z
     envs: z.array(z.string()).exactOptional(),
     concurrent_limit: z.int().exactOptional(),
     concurrency_time_window_s: z.int().exactOptional(),
+    on_concurrency_limit: z
+      .enum(['queue', 'fail'])
+      .exactOptional()
+      .openapi({
+        description:
+          'What a run does when its concurrency limit is reached when a worker picks it up. `queue` (default) re-queues it to a later slot, `fail` ends it immediately as failed.',
+      }),
     concurrency_key: z.string().exactOptional(),
     debounce_key: z.string().exactOptional(),
     debounce_delay_s: z.int().exactOptional(),
@@ -4262,7 +4807,7 @@ const NewScriptSchema = z
     description: z.string().exactOptional(),
     content: z.string(),
     schema: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -4278,6 +4823,13 @@ const NewScriptSchema = z
     envs: z.array(z.string()).exactOptional(),
     concurrent_limit: z.int().exactOptional(),
     concurrency_time_window_s: z.int().exactOptional(),
+    on_concurrency_limit: z
+      .enum(['queue', 'fail'])
+      .exactOptional()
+      .openapi({
+        description:
+          'What a run does when its concurrency limit is reached when a worker picks it up. `queue` (default) re-queues it to a later slot, `fail` ends it immediately as failed.',
+      }),
     cache_ttl: z.number().exactOptional(),
     cache_ignore_s3_path: z.boolean().exactOptional(),
     dedicated_worker: z.boolean().exactOptional(),
@@ -4378,7 +4930,7 @@ const InputSchema = z
   .openapi('Input')
 
 const CreateInputSchema = z
-  .object({ name: z.string(), args: z.object({}) })
+  .object({ name: z.string(), args: z.looseObject({}) })
   .openapi({ required: ['name', 'args', 'created_by'] })
   .openapi('CreateInput')
 
@@ -4401,11 +4953,11 @@ const ExportableCompletedJobSchema = z
     script_path: z.string().exactOptional(),
     script_hash: z.string().exactOptional(),
     args: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Full job arguments without size restrictions' }),
     result: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Full job result without size restrictions' }),
     logs: z
@@ -4459,11 +5011,11 @@ const ExportableCompletedJobSchema = z
     permissioned_as: z.string(),
     permissioned_as_email: z.string().exactOptional(),
     flow_status: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Flow status from v2_job_status table' }),
-    workflow_as_code_status: z.object({}).exactOptional(),
-    raw_flow: z.object({}).exactOptional(),
+    workflow_as_code_status: z.looseObject({}).exactOptional(),
+    raw_flow: z.looseObject({}).exactOptional(),
     is_flow_step: z.boolean().exactOptional(),
     language: ScriptLangSchema.exactOptional(),
     is_skipped: z.boolean().exactOptional(),
@@ -4511,7 +5063,7 @@ const ExportableQueuedJobSchema = z
     script_path: z.string().exactOptional(),
     script_hash: z.string().exactOptional(),
     args: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Full job arguments without size restrictions' }),
     logs: z
@@ -4565,11 +5117,11 @@ const ExportableQueuedJobSchema = z
     permissioned_as: z.string(),
     permissioned_as_email: z.string().exactOptional(),
     flow_status: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Flow status from v2_job_status table' }),
-    workflow_as_code_status: z.object({}).exactOptional(),
-    raw_flow: z.object({}).exactOptional(),
+    workflow_as_code_status: z.looseObject({}).exactOptional(),
+    raw_flow: z.looseObject({}).exactOptional(),
     is_flow_step: z.boolean().exactOptional(),
     language: ScriptLangSchema.exactOptional(),
     email: z.string(),
@@ -4605,30 +5157,6 @@ const ExportableQueuedJobSchema = z
   })
   .openapi('ExportableQueuedJob')
 
-const ObscuredJobSchema = z
-  .object({
-    typ: z.string().exactOptional(),
-    started_at: z.iso.datetime({ offset: true }).exactOptional(),
-    duration_ms: z.number().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ObscuredJob')
-
-const JobSchema: z.ZodType<JobType> = z
-  .lazy(() =>
-    z
-      .xor([
-        CompletedJobSchema.and(
-          z.object({ type: z.literal('CompletedJob').exactOptional() }).openapi({ required: [] }),
-        ),
-        QueuedJobSchema.and(
-          z.object({ type: z.literal('QueuedJob').exactOptional() }).openapi({ required: [] }),
-        ),
-      ])
-      .openapi({ discriminator: { propertyName: 'type' } }),
-  )
-  .openapi('Job')
-
 const UserSourceSchema = z
   .object({
     source: z
@@ -4655,6 +5183,13 @@ const UserSchema = z
     is_super_admin: z.boolean(),
     created_at: z.iso.datetime({ offset: true }),
     operator: z.boolean(),
+    role: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The member's workspace role by name (`developer`, `operator` or a custom role). Admin is the separate `is_admin` flag.",
+      }),
     disabled: z.boolean(),
     groups: z.array(z.string()).exactOptional(),
     folders: z.array(z.string()),
@@ -5014,6 +5549,13 @@ const NewTokenSchema = z
         description:
           'If true, the token is restricted to read-only HTTP methods\n(GET/HEAD/OPTIONS). Mutating endpoints and job-run actions are\nrejected with 403, regardless of the scopes attached.\n',
       }),
+    super_admin: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          "For an MCP token (an `mcp:` scope) owned by a superadmin: carry the owner's\nsuperadmin rights, reaching every workspace rather than only their\nmemberships. Ignored for other tokens, which always carry them.\n",
+      }),
   })
   .openapi({ required: [] })
   .openapi('NewToken')
@@ -5254,7 +5796,7 @@ const AuditLogSchema = z
     ]),
     action_kind: z.enum(['Created', 'Updated', 'Delete', 'Execute']),
     resource: z.string().exactOptional(),
-    parameters: z.object({}).exactOptional(),
+    parameters: z.looseObject({}).exactOptional(),
     span: z.string().exactOptional(),
   })
   .openapi({
@@ -5315,7 +5857,7 @@ const TrashItemWithDataSchema = TrashItemSchema.and(
     .openapi({ required: ['item_data'] }),
 ).openapi('TrashItemWithData')
 
-const MainArgSignatureSchema = z
+const MainArgSignatureSchema: z.ZodType<MainArgSignatureType> = z
   .object({
     type: z.enum(['Valid', 'Invalid']),
     error: z.string(),
@@ -5412,6 +5954,33 @@ const MainArgSignatureSchema = z
     ],
   })
   .openapi('MainArgSignature')
+
+const RecentRunStatusSchema = z
+  .enum(['success', 'failure', 'resolved', 'canceled', 'running'])
+  .openapi({
+    description: 'a failure someone or something marked as handled is `resolved`, not `failure`',
+  })
+  .openapi('RecentRunStatus')
+
+const RecentRunHiddenItemSchema = z
+  .object({
+    kind: z.enum(['script', 'flow', 'agent']),
+    path: z.string(),
+    summary: z.string().exactOptional(),
+  })
+  .openapi({ required: ['kind', 'path'] })
+  .openapi('RecentRunHiddenItem')
+
+const RecentRunItemRefsSchema = z
+  .object({
+    items: z.array(
+      z
+        .object({ kind: z.enum(['script', 'flow', 'agent']), path: z.string() })
+        .openapi({ required: ['kind', 'path'] }),
+    ),
+  })
+  .openapi({ required: ['items'] })
+  .openapi('RecentRunItemRefs')
 
 const PreviewSchema = z
   .object({
@@ -5608,6 +6177,10 @@ const ListableResourceSchema = z
     is_linked: z.boolean(),
     is_refreshed: z.boolean(),
     account: z.number().exactOptional(),
+    scopes: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'OAuth scopes the linked account was connected with' }),
     created_by: z.string().exactOptional(),
     edited_at: z.iso.datetime({ offset: true }).exactOptional(),
     labels: z.array(z.string()).exactOptional(),
@@ -5646,6 +6219,13 @@ const ListableResourceSchema = z
       .openapi({
         description:
           'On a draft-only row, the path its editor has staged when it\ndiffers from the storage path (e.g. a never-deployed item parked at\n`u/{user}/draft_{uuid}`).\n',
+      }),
+    grant_type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The grant of the linked OAuth account: `client_credentials`\nconnects as the app, `authorization_code` as the user who\nconnected it.\n',
       }),
   })
   .openapi({ required: ['path', 'resource_type', 'is_oauth', 'is_linked', 'is_refreshed'] })
@@ -6922,6 +7502,14 @@ const WebsocketTriggerSchema = TriggerExtraPropertySchema.and(
           description:
             "Logic to apply when evaluating the top-level filters. 'and' requires all of them to match, 'or' requires any of them to match. Nested `any_of`/`all_of`/`none_of` groups carry their own logic.",
         }),
+      run_on_filter_error: z
+        .boolean()
+        .default(false)
+        .exactOptional()
+        .openapi({
+          description:
+            'Whether a message the filters cannot read (not UTF-8, or not JSON) still runs the target, as if the trigger had no filters. A preprocessor then finds the reason in `event.filter_error`. When false, such a message is skipped.',
+        }),
       initial_messages: z
         .array(WebsocketTriggerInitialMessageSchema)
         .nullable()
@@ -7002,6 +7590,14 @@ const NewWebsocketTriggerSchema = z
       .openapi({
         description:
           "Logic to apply when evaluating the top-level filters. 'and' requires all of them to match, 'or' requires any of them to match. Nested `any_of`/`all_of`/`none_of` groups carry their own logic.",
+      }),
+    run_on_filter_error: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether a message the filters cannot read (not UTF-8, or not JSON) still runs the target, as if the trigger had no filters. A preprocessor then finds the reason in `event.filter_error`. When false, such a message is skipped.',
       }),
     initial_messages: z
       .array(WebsocketTriggerInitialMessageSchema)
@@ -7104,6 +7700,14 @@ const EditWebsocketTriggerSchema = z
       .openapi({
         description:
           "Logic to apply when evaluating the top-level filters. 'and' requires all of them to match, 'or' requires any of them to match. Nested `any_of`/`all_of`/`none_of` groups carry their own logic.",
+      }),
+    run_on_filter_error: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether a message the filters cannot read (not UTF-8, or not JSON) still runs the target, as if the trigger had no filters. A preprocessor then finds the reason in `event.filter_error`. When false, such a message is skipped.',
       }),
     initial_messages: z
       .array(WebsocketTriggerInitialMessageSchema)
@@ -8775,6 +9379,14 @@ const KafkaTriggerSchema = TriggerExtraPropertySchema.and(
           description:
             "Logic to apply when evaluating the top-level filters. 'and' requires all of them to match, 'or' requires any of them to match. Nested `any_of`/`all_of`/`none_of` groups carry their own logic.",
         }),
+      run_on_filter_error: z
+        .boolean()
+        .default(false)
+        .exactOptional()
+        .openapi({
+          description:
+            'Whether a message the filters cannot read (not UTF-8, or not JSON) still runs the target, as if the trigger had no filters. A preprocessor then finds the reason in `event.filter_error`. When false, such a message is skipped.',
+        }),
       auto_offset_reset: z
         .enum(['latest', 'earliest'])
         .default('latest')
@@ -8859,6 +9471,14 @@ const NewKafkaTriggerSchema = z
         description:
           "Logic to apply when evaluating the top-level filters. 'and' requires all of them to match, 'or' requires any of them to match. Nested `any_of`/`all_of`/`none_of` groups carry their own logic.",
       }),
+    run_on_filter_error: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether a message the filters cannot read (not UTF-8, or not JSON) still runs the target, as if the trigger had no filters. A preprocessor then finds the reason in `event.filter_error`. When false, such a message is skipped.',
+      }),
     auto_offset_reset: z
       .enum(['latest', 'earliest'])
       .default('latest')
@@ -8939,6 +9559,14 @@ const EditKafkaTriggerSchema = z
       .openapi({
         description:
           "Logic to apply when evaluating the top-level filters. 'and' requires all of them to match, 'or' requires any of them to match. Nested `any_of`/`all_of`/`none_of` groups carry their own logic.",
+      }),
+    run_on_filter_error: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether a message the filters cannot read (not UTF-8, or not JSON) still runs the target, as if the trigger had no filters. A preprocessor then finds the reason in `event.filter_error`. When false, such a message is skipped.',
       }),
     auto_offset_reset: z
       .enum(['latest', 'earliest'])
@@ -9276,6 +9904,50 @@ const EditEmailTriggerSchema = z
   .openapi({ required: ['path', 'script_path', 'is_flow'] })
   .openapi('EditEmailTrigger')
 
+const AccessReasonSchema = z
+  .object({
+    type: z.enum(['own', 'group_path', 'user', 'group', 'folder']),
+    group: z.string().exactOptional(),
+    folder: z.string().exactOptional(),
+    write: z.boolean().exactOptional(),
+  })
+  .openapi({ required: ['type'] })
+  .openapi('AccessReason')
+
+const PrincipalAccessSchema = z
+  .object({
+    principal: z.string(),
+    is_admin: z.boolean(),
+    groups: z.array(z.string()),
+    folders: z.array(
+      z
+        .object({
+          name: z.string(),
+          write: z.boolean(),
+          owner: z.boolean(),
+          via: z
+            .array(z.string())
+            .openapi({
+              description:
+                'the `u/<user>` or `g/<group>` grants on the folder that reach the principal',
+            }),
+        })
+        .openapi({ required: ['name', 'write', 'owner', 'via'] }),
+    ),
+    items: z.array(
+      z
+        .object({
+          kind: z.string(),
+          path: z.string(),
+          write: z.boolean(),
+          reasons: z.array(AccessReasonSchema),
+        })
+        .openapi({ required: ['kind', 'path', 'write', 'reasons'] }),
+    ),
+  })
+  .openapi({ required: ['principal', 'is_admin', 'groups', 'folders', 'items'] })
+  .openapi('PrincipalAccess')
+
 const GroupSchema = z
   .object({
     name: z.string(),
@@ -9292,6 +9964,18 @@ const InstanceGroupSchema = z
     summary: z.string().exactOptional(),
     emails: z.array(z.string()).exactOptional(),
     instance_role: z.enum(['superadmin', 'devops']).nullable().exactOptional(),
+    external_id: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'IdP group this group is linked to; its membership then follows the SSO groups claim',
+      }),
+    scim_managed: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Provisioned by SCIM, which then owns external_id' }),
   })
   .openapi({ required: ['name'] })
   .openapi('InstanceGroup')
@@ -9311,6 +9995,18 @@ const InstanceGroupWithWorkspacesSchema = z
     summary: z.string().exactOptional(),
     emails: z.array(z.string()).exactOptional(),
     instance_role: z.enum(['superadmin', 'devops']).nullable().exactOptional(),
+    external_id: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'IdP group this group is linked to; its membership then follows the SSO groups claim',
+      }),
+    scim_managed: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Provisioned by SCIM, which then owns external_id' }),
     workspaces: z.array(WorkspaceInfoSchema).exactOptional(),
   })
   .openapi({ required: ['name'] })
@@ -9344,6 +10040,7 @@ const FolderDefaultPermissionedAsSchema = z
 const FolderSchema = z
   .object({
     name: z.string(),
+    display_name: z.string().exactOptional(),
     owners: z.array(z.string()),
     extra_perms: z.record(z.string(), z.boolean()),
     summary: z.string().exactOptional(),
@@ -9399,6 +10096,11 @@ const RunnableStatsSchema = z
   })
   .openapi('RunnableStats')
 
+const WorkerJobCountsSchema = z
+  .object({ executed: z.int(), failed: z.int() })
+  .openapi({ required: ['executed', 'failed'] })
+  .openapi('WorkerJobCounts')
+
 const WorkerPingSchema = z
   .object({
     worker: z.string(),
@@ -9428,6 +10130,18 @@ const WorkerPingSchema = z
       .openapi({
         description:
           'the worker received its shutdown signal and exits once its current job is done',
+      }),
+    job_stats: z
+      .object({
+        total: WorkerJobCountsSchema,
+        last_24h: WorkerJobCountsSchema,
+        last_100: WorkerJobCountsSchema,
+      })
+      .exactOptional()
+      .openapi({
+        description:
+          "script and flow-step jobs this worker ran and how many of them failed, over its whole life, the last 24 hours and its last 100 jobs. A flow's own outcome is not counted, since its failure is that of a step already counted on the worker that ran it. Canceled jobs count as executed, not failed.",
+        required: ['total', 'last_24h', 'last_100'],
       }),
   })
   .openapi({
@@ -9546,12 +10260,18 @@ const RoleCapabilitiesSchema = z
       .boolean()
       .openapi({
         description:
-          "Author scripts and run code of one's own (previews, dependency jobs, dynamic selects, resolving jobs, data table migrations). Required by `full` flows or apps.",
+          "Author scripts and run code of one's own (previews, dependency jobs, dynamic selects, resolving jobs, data table migrations). Required by `full` flows or apps. Previews also need `run`.",
       }),
     flows: AuthorLevelSchema,
     apps: AuthorLevelSchema,
     manage_schedules: z.boolean(),
     manage_triggers: z.boolean(),
+    run: z
+      .boolean()
+      .openapi({
+        description:
+          'Start runs of scripts, flows and AI agents (by path, hash or version, restarts, previews, MCP run tools). Without it a role is view-only. Schedules and triggers keep their own rights; resuming a suspended step is not a run.',
+      }),
     fork: z.boolean().openapi({ description: 'Fork the workspace.' }),
     visibility: RoleVisibilitySchema,
   })
@@ -9562,6 +10282,7 @@ const RoleCapabilitiesSchema = z
       'apps',
       'manage_schedules',
       'manage_triggers',
+      'run',
       'fork',
       'visibility',
     ],
@@ -9614,6 +10335,37 @@ const UserWorkspaceListSchema = z
   })
   .openapi({ required: ['email', 'workspaces'] })
   .openapi('UserWorkspaceList')
+
+const WorkspaceWebhookEventTypeSchema = z
+  .enum([
+    'CreateApp',
+    'DeleteApp',
+    'UpdateApp',
+    'CreateFlow',
+    'UpdateFlow',
+    'ArchiveFlow',
+    'DeleteFlow',
+    'CreateFolder',
+    'UpdateFolder',
+    'DeleteFolder',
+    'DeleteResource',
+    'CreateResource',
+    'UpdateResource',
+    'CreateResourceType',
+    'DeleteResourceType',
+    'UpdateResourceType',
+    'CreateScript',
+    'UpdateScript',
+    'DeleteScript',
+    'DeleteScriptPath',
+    'CreateVariable',
+    'UpdateVariable',
+    'DeleteVariable',
+    'TokenExpiringSoon',
+    'TokenExpired',
+  ])
+  .openapi({ description: 'the `type` of a workspace webhook message' })
+  .openapi('WorkspaceWebhookEventType')
 
 const CreateWorkspaceSchema = z
   .object({
@@ -9816,20 +10568,18 @@ const GlobalUserInfoSchema = z
   })
   .openapi('GlobalUserInfo')
 
-const FlowSchema: z.ZodType<FlowType> = z
-  .lazy(() =>
-    OpenFlowSchema.and(FlowMetadataSchema).and(
-      z
-        .object({
-          lock_error_logs: z.string().exactOptional(),
-          version_id: z.number().exactOptional(),
-        })
-        .openapi({ required: [] }),
-    ),
+const FlowSchema: z.ZodType<FlowType> = OpenFlowSchema.and(FlowMetadataSchema)
+  .and(
+    z
+      .object({
+        lock_error_logs: z.string().exactOptional(),
+        version_id: z.number().exactOptional(),
+      })
+      .openapi({ required: [] }),
   )
   .openapi('Flow')
 
-const OpenFlowWPathSchema = OpenFlowSchema.and(
+const OpenFlowWPathSchema: z.ZodType<OpenFlowWPathType> = OpenFlowSchema.and(
   z
     .object({
       path: z.string(),
@@ -9867,7 +10617,7 @@ const OpenFlowWPathSchema = OpenFlowSchema.and(
     .openapi({ required: ['path'] }),
 ).openapi('OpenFlowWPath')
 
-const EditFlowSchema = OpenFlowSchema.and(
+const EditFlowSchema: z.ZodType<EditFlowType> = OpenFlowSchema.and(
   z
     .object({
       path: z.string().exactOptional(),
@@ -9905,41 +10655,7 @@ const EditFlowSchema = OpenFlowSchema.and(
     .openapi({ required: [] }),
 ).openapi('EditFlow')
 
-const RestartedFromSchema: z.ZodType<RestartedFromType> = z
-  .lazy(() =>
-    z
-      .object({
-        flow_job_id: z.uuid().exactOptional(),
-        step_id: z.string().exactOptional(),
-        branch_or_iteration_n: z
-          .int()
-          .exactOptional()
-          .openapi({
-            description:
-              '0-based iteration index for ForLoop / branch index for BranchAll. Iterations 0..n-1 are preserved; iteration n is restarted.',
-          }),
-        flow_version: z.int().exactOptional(),
-        branch_chosen: z
-          .object({
-            type: z.enum(['default', 'branch']).exactOptional(),
-            branch: z.int().exactOptional(),
-          })
-          .exactOptional()
-          .openapi({
-            description:
-              'For BranchOne nested restart — the branch that was originally chosen, used to lock branch evaluation.',
-            required: [],
-          }),
-        nested: RestartedFromSchema.exactOptional().openapi({
-          description:
-            'When set, the worker spawns the child for `step_id` as a `RestartedFlow` against `nested.flow_job_id` instead of fresh-launching it.',
-        }),
-      })
-      .openapi({ required: [] }),
-  )
-  .openapi('RestartedFrom')
-
-const FlowPreviewSchema = z
+const FlowPreviewSchema: z.ZodType<FlowPreviewType> = z
   .object({
     value: FlowValueSchema,
     path: z.string().exactOptional(),
@@ -9968,9 +10684,9 @@ const FlowPreviewSchema = z
 
 const PolicySchema = z
   .object({
-    triggerables: z.record(z.string(), z.object({})).exactOptional(),
-    triggerables_v2: z.record(z.string(), z.object({})).exactOptional(),
-    s3_inputs: z.array(z.object({})).exactOptional(),
+    triggerables: z.record(z.string(), z.looseObject({})).exactOptional(),
+    triggerables_v2: z.record(z.string(), z.looseObject({})).exactOptional(),
+    s3_inputs: z.array(z.looseObject({})).exactOptional(),
     allowed_s3_keys: z
       .array(
         z
@@ -10667,7 +11383,7 @@ const DynamicInputDataSchema = z
       .string()
       .openapi({ description: 'Name of the function to execute for dynamic select' }),
     args: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Arguments to pass to the function' }),
     runnable_ref: z.xor([
@@ -10790,6 +11506,23 @@ const AutoPullSettingsSchema = z
     webhook_secret: z.string().exactOptional(),
     webhook_url: z.string().exactOptional(),
     webhook_error: z.string().exactOptional(),
+    webhook_verified_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'The webhook_id a delivery from the host last arrived for. Polling relaxes to about every 10 minutes only while it matches webhook_id. Set by the server.',
+      }),
     last_synced_sha: z.record(z.string(), z.string()).exactOptional(),
     last_pull_status: AutoPullStatusSchema.exactOptional(),
     enabled_by: z
@@ -10986,7 +11719,7 @@ const ConcurrencyGroupSchema = z
   .openapi({ required: ['concurrency_key', 'total_running'] })
   .openapi('ConcurrencyGroup')
 
-const ExtendedJobsSchema = z
+const ExtendedJobsSchema: z.ZodType<ExtendedJobsType> = z
   .object({
     jobs: z.array(JobSchema),
     obscured_jobs: z.array(ObscuredJobSchema),
@@ -11044,7 +11777,7 @@ const InstanceConfigSchema = z
   .openapi('InstanceConfig')
 
 const ConfigSchema = z
-  .object({ name: z.string(), config: z.object({}).exactOptional() })
+  .object({ name: z.string(), config: z.looseObject({}).exactOptional() })
   .openapi({ required: ['name'] })
   .openapi('Config')
 
@@ -11107,6 +11840,39 @@ const AutoscalingEventSchema = z
   })
   .openapi({ required: [] })
   .openapi('AutoscalingEvent')
+
+const AutoscalingDecisionSchema = z
+  .object({
+    recorded_at: z.iso.datetime({ offset: true }),
+    worker_count: z.int(),
+    occupancy_rate_15s: z.number().nullable().exactOptional(),
+    occupancy_rate_5m: z.number().nullable().exactOptional(),
+    occupancy_rate_30m: z.number().nullable().exactOptional(),
+    jobs_waiting: z.record(z.string(), z.int()),
+    decision: z.string(),
+  })
+  .openapi({ required: ['recorded_at', 'worker_count', 'jobs_waiting', 'decision'] })
+  .openapi('AutoscalingDecision')
+
+const AutoscalingDiagnosticsSchema = z
+  .object({
+    recording_until: z.iso.datetime({ offset: true }).nullable().exactOptional(),
+    recording_started_by: z.string().nullable().exactOptional(),
+    decision_count: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64' }),
+    decisions: z.array(AutoscalingDecisionSchema),
+  })
+  .openapi({ required: ['decision_count', 'decisions'] })
+  .openapi('AutoscalingDiagnostics')
 
 const CriticalAlertSchema = z
   .object({
@@ -11185,6 +11951,7 @@ const RoleCapabilitiesPatchSchema = z
     apps: AuthorLevelSchema.exactOptional(),
     manage_schedules: z.boolean().exactOptional(),
     manage_triggers: z.boolean().exactOptional(),
+    run: z.boolean().exactOptional(),
     fork: z.boolean().exactOptional(),
     visibility: z.record(z.string(), z.boolean()).exactOptional(),
   })
@@ -12036,9 +12803,15 @@ const WorkspaceOAuthConfigSchema = z
     client_id: z.string().openapi({ description: 'The OAuth client ID for the workspace' }),
     client_secret: z.string().openapi({ description: 'The OAuth client secret for the workspace' }),
     base_url: z.url().openapi({ description: 'The base URL of the workspace' }),
-    redirect_uri: z.url().openapi({ description: 'The OAuth redirect URI' }),
+    redirect_uri: z
+      .url()
+      .exactOptional()
+      .openapi({
+        description:
+          'The redirect URI registered on the OAuth app. Absent for an app saved before it was stored, which uses the workspace settings page.',
+      }),
   })
-  .openapi({ required: ['client_id', 'client_secret', 'base_url', 'redirect_uri'] })
+  .openapi({ required: ['client_id', 'client_secret', 'base_url'] })
   .openapi('WorkspaceOAuthConfig')
 
 const WorkspaceIntegrationsSchema = z
@@ -12115,10 +12888,29 @@ const NativeTriggerConnectionSchema = z
       .openapi({
         description: 'Whether this is the workspace connection, which every member may use',
       }),
+    managed: z
+      .boolean()
+      .openapi({
+        description:
+          'Whether the integration trigger connect flow made it. Any other connection is a resource connected from Resources, which triggers can use but only Resources can replace or delete.',
+      }),
+    scopes: z
+      .array(z.string())
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Scopes the account was connected with; absent when unknown' }),
+    missing_scopes: z
+      .array(z.string())
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          "Scopes the service's triggers need that the account lacks; absent when unknown",
+      }),
   })
   .openapi({
     description: 'An account connected for native triggers, stored as an OAuth resource',
-    required: ['path', 'workspace'],
+    required: ['path', 'workspace', 'managed'],
   })
   .openapi('NativeTriggerConnection')
 
@@ -12227,7 +13019,7 @@ const PublishScriptBodySchema = z
     kind: z.string().exactOptional(),
     content: z.string(),
     language: z.string(),
-    schema: z.object({}).exactOptional(),
+    schema: z.looseObject({}).exactOptional(),
     lockfile: z.string().exactOptional(),
     path: z.string().exactOptional(),
     source_path: z.string().exactOptional(),
@@ -12240,8 +13032,8 @@ const PublishFlowInnerSchema = z
   .object({
     summary: z.string(),
     description: z.string().exactOptional(),
-    value: z.object({}),
-    schema: z.object({}).exactOptional(),
+    value: z.looseObject({}),
+    schema: z.looseObject({}).exactOptional(),
   })
   .openapi({ required: ['summary', 'value'] })
   .openapi('PublishFlowInner')
@@ -12259,7 +13051,7 @@ const PublishFlowBodySchema = z
 
 const PublishAppBodySchema = z
   .object({
-    app: z.object({}),
+    app: z.looseObject({}),
     apps: z.array(z.string()),
     description: z.string().exactOptional(),
     summary: z.string(),
@@ -12284,12 +13076,12 @@ const PublishRawAppBodySchema = z
   .openapi('PublishRawAppBody')
 
 const RecordingBodySchema = z
-  .object({ recording: z.object({}).exactOptional(), project_slug: HubProjectSlugSchema })
+  .object({ recording: z.looseObject({}).exactOptional(), project_slug: HubProjectSlugSchema })
   .openapi({ required: ['project_slug'] })
   .openapi('RecordingBody')
 
 const PipelineRecordingBodySchema = z
-  .object({ recording: z.object({}).exactOptional() })
+  .object({ recording: z.looseObject({}).exactOptional() })
   .openapi({ required: [] })
   .openapi('PipelineRecordingBody')
 
@@ -12314,7 +13106,7 @@ const ProjectLogoBodySchema = z
 const PublishResourceTypeBodySchema = z
   .object({
     name: z.string(),
-    schema: z.object({}).exactOptional(),
+    schema: z.looseObject({}).exactOptional(),
     description: z.string().exactOptional(),
     project_slug: HubProjectSlugSchema,
   })
@@ -12337,7 +13129,7 @@ const PublishTriggerBodySchema = z
     kind: z.string(),
     summary: z.string().nullable().exactOptional(),
     description: z.string().nullable().exactOptional(),
-    config: z.object({}),
+    config: z.looseObject({}),
     script_ask_id: z
       .preprocess(
         (val) =>
@@ -12432,6 +13224,20 @@ const KeyParamsSchema = z
 const WorkspaceIdParamsSchema = z
   .string()
   .openapi({ param: { name: 'workspace', in: 'path', required: true, schema: { type: 'string' } } })
+
+const SkipCiTestsParamsSchema = z
+  .stringbool()
+  .exactOptional()
+  .openapi({
+    param: {
+      name: 'skip_ci_tests',
+      description:
+        'Do not queue the CI tests of this deploy. Set by a caller deploying several items in a row, which queues them with triggerCiTestsBatch once the whole batch has landed.',
+      in: 'query',
+      schema: { type: 'boolean' },
+      required: false,
+    },
+  })
 
 const TablePreviewS3ResourcePathParamsSchema = z
   .string()
@@ -13575,8 +14381,21 @@ export const getWWorkspaceAuditListRoute = createRoute({
             name: 'before_id',
             in: 'query',
             description:
-              'only return logs with an id strictly lower than this one. Logs are ordered by descending id, so this is a keyset cursor to stream a page in several batches without paying a growing offset.\n',
+              "the id half of a keyset cursor. Logs are ordered by descending timestamp then id: pass the last row's id here and its timestamp as before_id_timestamp to stream a page in several batches without paying a growing offset. Alone, it only filters on id < before_id, which can skip or repeat rows across pages.\n",
             schema: { type: 'integer', format: 'int64' },
+            required: false,
+          },
+        }),
+      before_id_timestamp: z.iso
+        .datetime({ offset: true })
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'before_id_timestamp',
+            in: 'query',
+            description:
+              'the timestamp of the row whose id is before_id: with it, only logs strictly before that row in (timestamp, id) order are returned\n',
+            schema: { type: 'string', format: 'date-time' },
             required: false,
           },
         }),
@@ -13589,6 +14408,19 @@ export const getWWorkspaceAuditListRoute = createRoute({
             in: 'query',
             description: 'get audit logs for all workspaces',
             schema: { type: 'boolean' },
+            required: false,
+          },
+        }),
+      job_id: z
+        .uuid()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'job_id',
+            in: 'query',
+            description:
+              'only the entries about this run and the jobs under it (steps, loop iterations and subflows at any depth): who started, viewed, cancelled, approved, resumed or deleted each\n',
+            schema: { type: 'string', format: 'uuid' },
             required: false,
           },
         }),
@@ -13747,12 +14579,10 @@ export const postAuthLoginRoute = createRoute({
         'Successfully authenticated. The session ID is returned in a cookie named `token` and as plaintext response. Preferred method of authorization is through the bearer token. The cookie is only for browser convenience.\n',
       content: { 'text/plain': { schema: z.string() } },
       headers: z.object({
-        'Set-Cookie': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'token=abcde12345; Path=/; HttpOnly' }),
-        },
+        'Set-Cookie': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'token=abcde12345; Path=/; HttpOnly' }),
       }),
     },
   },
@@ -13770,12 +14600,10 @@ export const postAuthLogoutRoute = createRoute({
       description: 'clear cookies and clear token (if applicable)',
       content: { 'text/plain': { schema: z.string() } },
       headers: z.object({
-        'Set-Cookie': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Set-Cookie': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -14970,7 +15798,7 @@ export const postSettingsRefreshCustomInstanceUserPwdRoute = createRoute({
     'Refreshes the passwords for the custom_instance_user and the custom_instance_replication_user (used by postgres triggers)',
   operationId: 'refreshCustomInstanceUserPwd',
   responses: {
-    200: { description: 'Success', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: 'Success', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
 })
 
@@ -16814,16 +17642,13 @@ export const getWWorkspaceGithubAppRepoArchivePathRoute = createRoute({
         'application/gzip': { schema: z.file().openapi({ type: 'string', format: 'binary' }) },
       },
       headers: z.object({
-        'x-commit-sha': {
-          description: 'the commit the archive was taken at',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'the commit the archive was taken at',
-              param: { required: false },
-            }),
-        },
+        'x-commit-sha': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'the commit the archive was taken at',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -17952,6 +18777,12 @@ export const getWWorkspaceWorkspacesGetSettingsRoute = createRoute({
               plan: z.string().exactOptional(),
               customer_id: z.string().exactOptional(),
               webhook: z.string().exactOptional(),
+              webhook_events: z
+                .array(WorkspaceWebhookEventTypeSchema)
+                .exactOptional()
+                .openapi({
+                  description: 'event types the webhook is sent; absent sends every event',
+                }),
               ai_config: AIConfigSchema.exactOptional(),
               error_handler: ErrorHandlerConfigSchema.exactOptional(),
               success_handler: SuccessHandlerConfigSchema.exactOptional(),
@@ -18827,7 +19658,24 @@ export const postWWorkspaceWorkspacesEditWebhookRoute = createRoute({
       description: 'WorkspaceWebhook',
       content: {
         'application/json': {
-          schema: z.object({ webhook: z.string().exactOptional() }).openapi({ required: [] }),
+          schema: z
+            .object({
+              webhook: z
+                .string()
+                .exactOptional()
+                .openapi({
+                  description: 'the URL to POST events to. Omitted or empty removes the webhook.',
+                }),
+              events: z
+                .array(WorkspaceWebhookEventTypeSchema)
+                .nullable()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'event types to send, at least one. Omitted keeps the stored filter, null sends every event.\n',
+                }),
+            })
+            .openapi({ required: [] }),
         },
       },
       required: true,
@@ -21254,7 +22102,7 @@ export const postUsersOnboardingProfileRoute = createRoute({
             .object({
               email: z.string(),
               profile: z
-                .object({})
+                .looseObject({})
                 .openapi({
                   description:
                     "free-form context from the invite, every key optional. The frontend reads `touch_point` (answers onboarding's source question), `company` and `workspace_name` (prefill the first workspace's name), `hub_projects` (slugs surfaced first on an empty workspace), `tools` (integrations, used to pick hub projects when none are named) and `starter_prompts` (`[{label, prompt}]`, replacing the home page's example prompts); unknown keys are kept and ignored",
@@ -22655,12 +23503,10 @@ export const postOauthLoginCallbackClientNameRoute = createRoute({
         'Successfully authenticated. The session ID is returned in a cookie named `token` and as plaintext response. Preferred method of authorization is through the bearer token. The cookie is only for browser convenience.\n',
       content: { 'text/plain': { schema: z.string() } },
       headers: z.object({
-        'Set-Cookie': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'token=abcde12345; Path=/; HttpOnly' }),
-        },
+        'Set-Cookie': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'token=abcde12345; Path=/; HttpOnly' }),
       }),
     },
   },
@@ -23039,7 +23885,12 @@ export const getOauthListConnectsRoute = createRoute({
               .object({
                 name: z.string(),
                 supports_client_credentials: z.boolean(),
-                has_shared_credentials: z.boolean(),
+                has_shared_credentials: z
+                  .boolean()
+                  .openapi({
+                    description:
+                      "The instance entry holds a client id and secret users can connect with, for sign-in or as a shared service account. Whether client credentials are shared is get_connect's client_credentials_configured.",
+                  }),
               })
               .openapi({
                 required: ['name', 'supports_client_credentials', 'has_shared_credentials'],
@@ -23079,7 +23930,7 @@ export const getOauthGetConnectClientRoute = createRoute({
         'application/json': {
           schema: z
             .object({
-              extra_params: z.object({}).exactOptional(),
+              extra_params: z.looseObject({}).exactOptional(),
               scopes: z.array(z.string()).exactOptional(),
               grant_types: z.array(z.string()).exactOptional(),
               client_credentials_configured: z
@@ -23093,6 +23944,43 @@ export const getOauthGetConnectClientRoute = createRoute({
             .openapi({ required: [] }),
         },
       },
+    },
+  },
+})
+
+export const postOauthTestClientCredentialsRoute = createRoute({
+  method: 'post',
+  path: '/oauth/test_client_credentials',
+  tags: ['oauth'],
+  summary: "test an instance OAuth entry's client credentials",
+  description:
+    'Runs the client-credentials token exchange with an instance OAuth entry, saved or not. Superadmin only.',
+  operationId: 'testOAuthClientCredentials',
+  request: {
+    body: {
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              name: z
+                .string()
+                .openapi({
+                  description: 'client name, the key of the entry in the instance OAuth setting',
+                }),
+              entry: z
+                .looseObject({})
+                .openapi({ description: 'the entry as stored in the instance OAuth setting' }),
+            })
+            .openapi({ required: ['name', 'entry'] }),
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'the exchange returned a token',
+      content: { 'text/plain': { schema: z.string() } },
     },
   },
 })
@@ -23122,7 +24010,7 @@ export const postTeamsActivitiesRoute = createRoute({
                 .string()
                 .openapi({ description: 'The message text to be sent in the Teams card' }),
               card_block: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({ description: 'The card block to be sent in the Teams card' }),
             })
@@ -23156,6 +24044,7 @@ export const postWWorkspaceResourcesCreateRoute = createRoute({
             required: false,
           },
         }),
+      skip_ci_tests: SkipCiTestsParamsSchema,
     }),
     body: {
       description: 'new resource',
@@ -23214,6 +24103,7 @@ export const postWWorkspaceResourcesUpdatePathRoute = createRoute({
   operationId: 'updateResource',
   request: {
     params: z.object({ workspace: WorkspaceIdParamsSchema, path: PathParamsSchema }),
+    query: z.object({ skip_ci_tests: SkipCiTestsParamsSchema }),
     body: {
       description: 'updated resource',
       content: { 'application/json': { schema: EditResourceSchema } },
@@ -23681,7 +24571,7 @@ export const getWWorkspaceResourcesMcpToolsPathRoute = createRoute({
               .object({
                 name: z.string(),
                 description: z.string().exactOptional(),
-                inputSchema: z.object({}),
+                inputSchema: z.looseObject({}),
                 annotations: z
                   .object({
                     title: z.string().exactOptional(),
@@ -23716,7 +24606,7 @@ export const postWWorkspaceResourcesMcpCallToolPathRoute = createRoute({
           schema: z
             .object({
               tool: z.string(),
-              arguments: z.object({}).exactOptional(),
+              arguments: z.looseObject({}).exactOptional(),
               read_only: z
                 .boolean()
                 .exactOptional()
@@ -23739,8 +24629,8 @@ export const postWWorkspaceResourcesMcpCallToolPathRoute = createRoute({
         'application/json': {
           schema: z
             .object({
-              content: z.array(z.object({})).exactOptional(),
-              structuredContent: z.object({}).exactOptional(),
+              content: z.array(z.looseObject({})).exactOptional(),
+              structuredContent: z.looseObject({}).exactOptional(),
               isError: z.boolean().exactOptional(),
             })
             .openapi({ required: [] }),
@@ -25170,43 +26060,7 @@ export const getWWorkspaceScriptsListRoute = createRoute({
   responses: {
     200: {
       description: 'All scripts',
-      content: {
-        'application/json': {
-          schema: z.array(
-            ScriptSchema.and(
-              z
-                .object({
-                  is_draft: z
-                    .boolean()
-                    .exactOptional()
-                    .openapi({
-                      description:
-                        'True when the authed user has a draft for this\nscript — either no deployed row exists at this\npath (draft-only) or the user saved a per-user\ndraft on top of the deployed row.\n',
-                    }),
-                  draft_path: z
-                    .string()
-                    .exactOptional()
-                    .openapi({
-                      description:
-                        'User-typed path the editor has staged but not\nyet deployed. Surfaced for draft-only rows so\nthe home list can render the meaningful name\ninstead of the autogenerated\n`u/{user}/draft_{uuid}` URL path. Omitted\nwhen unchanged.\n',
-                    }),
-                  draft_users: z
-                    .array(
-                      z
-                        .object({ username: z.string().nullable().exactOptional() })
-                        .openapi({ required: [] }),
-                    )
-                    .exactOptional()
-                    .openapi({
-                      description:
-                        "Workspace users (including the authed user, and\nthe legacy NULL-email row if any) who have a\nper-user draft at this path. Drives the home\npage's user-avatar circles inside the Draft\nbadge. Omitted when no drafts exist.\n",
-                    }),
-                })
-                .openapi({ required: [] }),
-            ),
-          ),
-        },
-      },
+      content: { 'application/json': { schema: z.array(ListableScriptSchema) } },
     },
   },
 })
@@ -25278,7 +26132,7 @@ export const getWWorkspaceDraftsListRoute = createRoute({
                   .exactOptional()
                   .openapi({
                     description:
-                      "Best-effort, read from the draft JSON's `summary` field when the editor shape carries one.",
+                      "Best-effort, read from the draft JSON's `summary` field when the editor shape carries one, or its `description` for an agent's draft.",
                   }),
                 draft_path: z
                   .string()
@@ -25286,6 +26140,13 @@ export const getWWorkspaceDraftsListRoute = createRoute({
                   .openapi({
                     description:
                       "User-typed friendly path from the draft JSON's `draft_path`, when set and different from the storage path (e.g. a never-deployed item parked at `u/{user}/draft_{uuid}`).",
+                  }),
+                resource_type: z
+                  .string()
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      "A `resource` draft's type, the deployed row's when there is one, else the one the draft names. `ai_agent` marks an agent's draft.",
                   }),
                 draft_only: z
                   .boolean()
@@ -25612,6 +26473,57 @@ export const postWWorkspaceDraftsMoveKindPathRoute = createRoute({
   },
 })
 
+export const postWWorkspaceDraftsTransferRoute = createRoute({
+  method: 'post',
+  path: '/w/{workspace}/drafts/transfer',
+  tags: ['draft'],
+  summary:
+    "copy the current user's drafts into another workspace of the family and/or remove them here",
+  description:
+    "In one transaction, copies the authed user's own drafts of `items` into `target_workspace` (another workspace of this one's family, with the same root through `parent_workspace_id`) and, with `remove_from_source`, deletes them here. Without `target_workspace` it only removes. If the user already has a draft of any item in the target, nothing is written and the items are returned in `conflicts`, unless `replace_existing` is set. A user who can only compose flows or apps in the target is held to the same rules as a direct draft save there.",
+  operationId: 'transferDrafts',
+  request: {
+    params: z.object({ workspace: WorkspaceIdParamsSchema }),
+    body: {
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              target_workspace: z.string().exactOptional(),
+              items: z.array(DraftItemRefSchema),
+              remove_from_source: z.boolean().exactOptional(),
+              replace_existing: z
+                .boolean()
+                .exactOptional()
+                .openapi({
+                  description:
+                    "Overwrite the user's own drafts of `items` already in the target instead of returning them as conflicts.",
+                }),
+            })
+            .openapi({ required: ['items'] }),
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'transfer result',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              copied: z.array(DraftItemRefSchema),
+              removed: z.array(DraftItemRefSchema),
+              conflicts: z.array(DraftItemRefSchema),
+            })
+            .openapi({ required: ['copied', 'removed', 'conflicts'] }),
+        },
+      },
+    },
+  },
+})
+
 export const postWWorkspaceDraftsMigrateLegacyKindPathRoute = createRoute({
   method: 'post',
   path: '/w/{workspace}/drafts/migrate_legacy/{kind}/{path}',
@@ -25663,6 +26575,7 @@ export const postWWorkspaceScriptsCreateRoute = createRoute({
   operationId: 'createScript',
   request: {
     params: z.object({ workspace: WorkspaceIdParamsSchema }),
+    query: z.object({ skip_ci_tests: SkipCiTestsParamsSchema }),
     body: {
       description: 'Partially filled script',
       content: { 'application/json': { schema: NewScriptSchema } },
@@ -25684,6 +26597,7 @@ export const postWWorkspaceScriptsUpdatePathRoute = createRoute({
   operationId: 'updateScript',
   request: {
     params: z.object({ workspace: WorkspaceIdParamsSchema, path: ScriptPathParamsSchema }),
+    query: z.object({ skip_ci_tests: SkipCiTestsParamsSchema }),
     body: {
       description: 'The new version of the script, whose `path` is where it should end up.',
       content: { 'application/json': { schema: NewScriptSchema } },
@@ -26465,6 +27379,48 @@ export const postWWorkspaceScriptsCiTestResultsBatchRoute = createRoute({
   },
 })
 
+export const postWWorkspaceScriptsTriggerCiTestsBatchRoute = createRoute({
+  method: 'post',
+  path: '/w/{workspace}/scripts/trigger_ci_tests_batch',
+  tags: ['script'],
+  summary: 'queue the CI tests of a batch of deploys',
+  description:
+    'Queues the CI tests of items deployed with `skip_ci_tests`, plus those of the scripts\nimporting them, once nothing those tests read (the tested items, the test scripts and\ntheir imports) still has a dependency job queued or running. While one does, nothing is\nqueued and `pending` lists those paths: call again later, or pass `ignore_pending` to\nqueue them anyway. The tests run as the caller, who must be able to deploy each item.\n',
+  operationId: 'triggerCiTestsBatch',
+  request: {
+    params: z.object({ workspace: WorkspaceIdParamsSchema }),
+    body: {
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              items: z.array(
+                z
+                  .object({ path: z.string(), kind: z.enum(['script', 'flow', 'resource']) })
+                  .openapi({ required: ['path', 'kind'] }),
+              ),
+              ignore_pending: z.boolean().exactOptional(),
+            })
+            .openapi({ required: ['items'] }),
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'the paths still pending, and the CI test jobs queued',
+      content: {
+        'application/json': {
+          schema: z
+            .object({ pending: z.array(z.string()), job_ids: z.array(z.uuid()) })
+            .openapi({ required: ['pending', 'job_ids'] }),
+        },
+      },
+    },
+  },
+})
+
 export const postWWorkspaceScriptsCheckSchemaContractsRoute = createRoute({
   method: 'post',
   path: '/w/{workspace}/scripts/check_schema_contracts',
@@ -26479,7 +27435,17 @@ export const postWWorkspaceScriptsCheckSchemaContractsRoute = createRoute({
       content: {
         'application/json': {
           schema: z
-            .object({ language: ScriptLangSchema, content: z.string() })
+            .object({
+              language: ScriptLangSchema,
+              content: z.string(),
+              path: z
+                .string()
+                .exactOptional()
+                .openapi({
+                  description:
+                    "The script's path. A `// materialize` that names no table writes the\ntable named after the script, so without it such a target is not checked.\n",
+                }),
+            })
             .openapi({ required: ['language', 'content'] }),
         },
       },
@@ -26596,11 +27562,11 @@ export const postWWorkspaceJobsListSelectedJobGroupsRoute = createRoute({
               .object({
                 kind: z.enum(['script', 'flow']),
                 script_path: z.string(),
-                latest_schema: z.object({}),
+                latest_schema: z.looseObject({}),
                 schemas: z.array(
                   z
                     .object({
-                      schema: z.object({}),
+                      schema: z.looseObject({}),
                       script_hash: z.string(),
                       job_ids: z.array(z.string()),
                     })
@@ -26775,6 +27741,19 @@ export const postWWorkspaceJobsRunWaitResultFPathRoute = createRoute({
             required: false,
           },
         }),
+      take_over: z
+        .stringbool()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'take_over',
+            description:
+              'Stop the run that holds `memory_id`, if any, and run this one instead of being refused with a 409. Only who started that run, or an admin, can stop it; a restricted token also needs an unconfined `jobs:cancel` scope.',
+            in: 'query',
+            schema: { type: 'boolean' },
+            required: false,
+          },
+        }),
     }),
     body: {
       description: 'script args',
@@ -26786,7 +27765,7 @@ export const postWWorkspaceJobsRunWaitResultFPathRoute = createRoute({
     200: { description: 'job result', content: { 'application/json': { schema: z.any() } } },
     409: {
       description:
-        'Chat-enabled flow only: the conversation named by `memory_id` is still answering a message. The body is JSON: `{ "error": string, "running_turn": { "job_id", "user_seq" } }`.',
+        'Another run with this `memory_id` is still running (for a chat-enabled flow, the conversation is still answering a message). The body is JSON: `{ "error": string, "running_turn": { "job_id", "user_seq"? } }`, `user_seq` for a chat conversation. Pass `take_over=true` to stop it instead.',
     },
   },
 })
@@ -26837,13 +27816,26 @@ export const getWWorkspaceJobsRunWaitResultFvVersionRoute = createRoute({
             required: false,
           },
         }),
+      take_over: z
+        .stringbool()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'take_over',
+            description:
+              'Stop the run that holds `memory_id`, if any, and run this one instead of being refused with a 409. Only who started that run, or an admin, can stop it; a restricted token also needs an unconfined `jobs:cancel` scope.',
+            in: 'query',
+            schema: { type: 'boolean' },
+            required: false,
+          },
+        }),
     }),
   },
   responses: {
     200: { description: 'job result', content: { 'application/json': { schema: z.any() } } },
     409: {
       description:
-        'Chat-enabled flow only: the conversation named by `memory_id` is still answering a message. The body is JSON: `{ "error": string, "running_turn": { "job_id", "user_seq" } }`.',
+        'Another run with this `memory_id` is still running (for a chat-enabled flow, the conversation is still answering a message). The body is JSON: `{ "error": string, "running_turn": { "job_id", "user_seq"? } }`, `user_seq` for a chat conversation. Pass `take_over=true` to stop it instead.',
     },
   },
 })
@@ -26893,6 +27885,19 @@ export const postWWorkspaceJobsRunWaitResultFvVersionRoute = createRoute({
             required: false,
           },
         }),
+      take_over: z
+        .stringbool()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'take_over',
+            description:
+              'Stop the run that holds `memory_id`, if any, and run this one instead of being refused with a 409. Only who started that run, or an admin, can stop it; a restricted token also needs an unconfined `jobs:cancel` scope.',
+            in: 'query',
+            schema: { type: 'boolean' },
+            required: false,
+          },
+        }),
     }),
     body: {
       description: 'script args',
@@ -26904,7 +27909,7 @@ export const postWWorkspaceJobsRunWaitResultFvVersionRoute = createRoute({
     200: { description: 'job result', content: { 'application/json': { schema: z.any() } } },
     409: {
       description:
-        'Chat-enabled flow only: the conversation named by `memory_id` is still answering a message. The body is JSON: `{ "error": string, "running_turn": { "job_id", "user_seq" } }`.',
+        'Another run with this `memory_id` is still running (for a chat-enabled flow, the conversation is still answering a message). The body is JSON: `{ "error": string, "running_turn": { "job_id", "user_seq"? } }`, `user_seq` for a chat conversation. Pass `take_over=true` to stop it instead.',
     },
   },
 })
@@ -26936,6 +27941,19 @@ export const getWWorkspaceJobsRunAndStreamFPathRoute = createRoute({
             required: false,
           },
         }),
+      take_over: z
+        .stringbool()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'take_over',
+            description:
+              'Stop the run that holds `memory_id`, if any, and run this one instead of being refused with a 409. Only who started that run, or an admin, can stop it; a restricted token also needs an unconfined `jobs:cancel` scope.',
+            in: 'query',
+            schema: { type: 'boolean' },
+            required: false,
+          },
+        }),
       poll_delay_ms: z
         .preprocess((val) => {
           if (typeof val !== 'string' || !/^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val))
@@ -26963,7 +27981,7 @@ export const getWWorkspaceJobsRunAndStreamFPathRoute = createRoute({
     },
     409: {
       description:
-        'Chat-enabled flow only: the conversation named by `memory_id` is still answering a message. The body is JSON: `{ "error": string, "running_turn": { "job_id", "user_seq" } }`.',
+        'Another run with this `memory_id` is still running (for a chat-enabled flow, the conversation is still answering a message). The body is JSON: `{ "error": string, "running_turn": { "job_id", "user_seq"? } }`, `user_seq` for a chat conversation. Pass `take_over=true` to stop it instead.',
     },
   },
 })
@@ -26991,6 +28009,19 @@ export const postWWorkspaceJobsRunAndStreamFPathRoute = createRoute({
               "Memory id for the flow's AI agent steps. A uuid is used as is; any other string is hashed within the workspace and flow, so the same string always names the same memory of that flow.",
             in: 'query',
             schema: { type: 'string' },
+            required: false,
+          },
+        }),
+      take_over: z
+        .stringbool()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'take_over',
+            description:
+              'Stop the run that holds `memory_id`, if any, and run this one instead of being refused with a 409. Only who started that run, or an admin, can stop it; a restricted token also needs an unconfined `jobs:cancel` scope.',
+            in: 'query',
+            schema: { type: 'boolean' },
             required: false,
           },
         }),
@@ -27026,7 +28057,7 @@ export const postWWorkspaceJobsRunAndStreamFPathRoute = createRoute({
     },
     409: {
       description:
-        'Chat-enabled flow only: the conversation named by `memory_id` is still answering a message. The body is JSON: `{ "error": string, "running_turn": { "job_id", "user_seq" } }`.',
+        'Another run with this `memory_id` is still running (for a chat-enabled flow, the conversation is still answering a message). The body is JSON: `{ "error": string, "running_turn": { "job_id", "user_seq"? } }`, `user_seq` for a chat conversation. Pass `take_over=true` to stop it instead.',
     },
   },
 })
@@ -27077,6 +28108,19 @@ export const getWWorkspaceJobsRunAndStreamFvVersionRoute = createRoute({
             required: false,
           },
         }),
+      take_over: z
+        .stringbool()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'take_over',
+            description:
+              'Stop the run that holds `memory_id`, if any, and run this one instead of being refused with a 409. Only who started that run, or an admin, can stop it; a restricted token also needs an unconfined `jobs:cancel` scope.',
+            in: 'query',
+            schema: { type: 'boolean' },
+            required: false,
+          },
+        }),
       poll_delay_ms: z
         .preprocess((val) => {
           if (typeof val !== 'string' || !/^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val))
@@ -27104,7 +28148,7 @@ export const getWWorkspaceJobsRunAndStreamFvVersionRoute = createRoute({
     },
     409: {
       description:
-        'Chat-enabled flow only: the conversation named by `memory_id` is still answering a message. The body is JSON: `{ "error": string, "running_turn": { "job_id", "user_seq" } }`.',
+        'Another run with this `memory_id` is still running (for a chat-enabled flow, the conversation is still answering a message). The body is JSON: `{ "error": string, "running_turn": { "job_id", "user_seq"? } }`, `user_seq` for a chat conversation. Pass `take_over=true` to stop it instead.',
     },
   },
 })
@@ -27154,6 +28198,19 @@ export const postWWorkspaceJobsRunAndStreamFvVersionRoute = createRoute({
             required: false,
           },
         }),
+      take_over: z
+        .stringbool()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'take_over',
+            description:
+              'Stop the run that holds `memory_id`, if any, and run this one instead of being refused with a 409. Only who started that run, or an admin, can stop it; a restricted token also needs an unconfined `jobs:cancel` scope.',
+            in: 'query',
+            schema: { type: 'boolean' },
+            required: false,
+          },
+        }),
       poll_delay_ms: z
         .preprocess((val) => {
           if (typeof val !== 'string' || !/^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val))
@@ -27186,7 +28243,7 @@ export const postWWorkspaceJobsRunAndStreamFvVersionRoute = createRoute({
     },
     409: {
       description:
-        'Chat-enabled flow only: the conversation named by `memory_id` is still answering a message. The body is JSON: `{ "error": string, "running_turn": { "job_id", "user_seq" } }`.',
+        'Another run with this `memory_id` is still running (for a chat-enabled flow, the conversation is still answering a message). The body is JSON: `{ "error": string, "running_turn": { "job_id", "user_seq"? } }`, `user_seq` for a chat conversation. Pass `take_over=true` to stop it instead.',
     },
   },
 })
@@ -27419,6 +28476,150 @@ export const getWWorkspaceJobsResultByIdFlowJobIdNodeIdRoute = createRoute({
   },
 })
 
+export const getWWorkspaceJobsFlowApprovalStepDetailJobIdStepIdRoute = createRoute({
+  method: 'get',
+  path: '/w/{workspace}/jobs/flow/approval_step_detail/{job_id}/{step_id}',
+  tags: ['job'],
+  summary: 'get the approval detail of one step of a flow run',
+  description:
+    "Get the approval state of an approval (suspend) step of a flow run, by the flow run id and the step id, in a single query: where the step stands, its approval settings, the approvals received and, while it waits, whether the caller can approve. Only the run's own steps are searched: for a step inside a branch or loop, pass the id of the branch's or iteration's run.\n",
+  operationId: 'getApprovalStepDetail',
+  request: {
+    params: z.object({
+      workspace: WorkspaceIdParamsSchema,
+      job_id: z
+        .uuid()
+        .openapi({
+          param: {
+            name: 'job_id',
+            in: 'path',
+            required: true,
+            description: 'id of the flow run',
+            schema: { type: 'string', format: 'uuid' },
+          },
+        }),
+      step_id: z
+        .string()
+        .openapi({
+          param: {
+            name: 'step_id',
+            in: 'path',
+            required: true,
+            description: 'id of the approval step in the flow',
+            schema: { type: 'string' },
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'approval step detail',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              flow_id: z.uuid(),
+              step_id: z.string(),
+              status: z
+                .enum(['not_reached', 'skipped', 'failed', 'waiting', 'resumed', 'not_resumed'])
+                .openapi({
+                  description:
+                    "not_reached: the step's own script has not finished yet. failed: the step failed before asking for approval. waiting: the run is suspended on this step. resumed: the run moved past this step. not_resumed: the run ended while waiting (denied, timed out or cancelled).\n",
+                }),
+              step_job: z
+                .uuid()
+                .exactOptional()
+                .openapi({ description: 'the job of the approval step, once it ran' }),
+              step_summary: z.string().exactOptional(),
+              required_events: z
+                .int()
+                .openapi({ description: 'number of approvals required to resume' }),
+              timeout: z
+                .int()
+                .exactOptional()
+                .openapi({ description: 'seconds the run waits for approvals' }),
+              suspended_until: z.iso
+                .datetime({ offset: true })
+                .exactOptional()
+                .openapi({ description: 'when the wait times out, while waiting' }),
+              form_schema: z
+                .any()
+                .exactOptional()
+                .openapi({ description: 'form schema for the approval step' }),
+              hide_cancel: z.boolean(),
+              continue_on_disapprove_timeout: z.boolean(),
+              skin: z.enum(['detailed', 'minimal']),
+              approval_conditions: z
+                .object({
+                  user_auth_required: z.boolean(),
+                  user_groups_required: z.array(z.string()),
+                  self_approval_disabled: z.boolean(),
+                })
+                .exactOptional()
+                .openapi({
+                  required: [
+                    'user_auth_required',
+                    'user_groups_required',
+                    'self_approval_disabled',
+                  ],
+                }),
+              can_approve: z
+                .boolean()
+                .exactOptional()
+                .openapi({ description: 'whether the caller can approve, set only while waiting' }),
+              description: z
+                .any()
+                .exactOptional()
+                .openapi({ description: "description returned by the approval step's script" }),
+              default_args: z
+                .any()
+                .exactOptional()
+                .openapi({
+                  description: "default form values returned by the approval step's script",
+                }),
+              enums: z
+                .any()
+                .exactOptional()
+                .openapi({ description: "form enums returned by the approval step's script" }),
+              approvals: z
+                .array(
+                  z
+                    .object({
+                      resume_id: z.int(),
+                      approver: z.string(),
+                      approved: z.boolean().exactOptional(),
+                      value: z.any().exactOptional(),
+                      created_at: z.iso.datetime({ offset: true }).exactOptional(),
+                    })
+                    .openapi({ required: ['resume_id', 'approver'] }),
+                )
+                .openapi({
+                  description:
+                    'approvals received. approved, value and created_at are known only while the run is live; a finished run keeps approver names alone.\n',
+                }),
+              error: z
+                .any()
+                .exactOptional()
+                .openapi({ description: "the run's error, when status is not_resumed" }),
+            })
+            .openapi({
+              required: [
+                'flow_id',
+                'step_id',
+                'status',
+                'required_events',
+                'hide_cancel',
+                'continue_on_disapprove_timeout',
+                'skin',
+                'approvals',
+              ],
+            }),
+        },
+      },
+    },
+  },
+})
+
 export const getWWorkspaceJobsJobViewTokenIdRoute = createRoute({
   method: 'get',
   path: '/w/{workspace}/jobs/job_view_token/{id}',
@@ -27583,6 +28784,18 @@ export const getWWorkspaceRunnablesListRoute = createRoute({
             required: false,
           },
         }),
+      paths: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'paths',
+            in: 'query',
+            description: 'comma-separated exact paths, to list only the rows at one of them',
+            schema: { type: 'string' },
+            required: false,
+          },
+        }),
       label: z
         .string()
         .exactOptional()
@@ -27599,6 +28812,19 @@ export const getWWorkspaceRunnablesListRoute = createRoute({
             description:
               'case-insensitive fuzzy match on "summary (path)": the query is split into terms on runs of anything but ASCII letters, digits and apostrophes, and each of the first 8 must appear whole and in order, with anything in between. Terms past the 8th are ignored, so an over-long query matches more rows rather than fewer. Omitted or empty filters nothing; a query holding no ASCII-alphanumeric character at all (a lone space, "_", or text in a non-Latin script) yields no terms and matches nothing, mirroring the homepage, whose matcher discards those queries too.',
             schema: { type: 'string' },
+            required: false,
+          },
+        }),
+      search_any_order: z
+        .stringbool()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'search_any_order',
+            in: 'query',
+            description:
+              'when true, each search term must appear anywhere in "summary (path)", in any order, rather than in the order given, and terms are split on anything but letters, digits and apostrophes in any script, not only ASCII ones.',
+            schema: { type: 'boolean' },
             required: false,
           },
         }),
@@ -28179,6 +29405,7 @@ export const postWWorkspaceFlowsCreateRoute = createRoute({
   operationId: 'createFlow',
   request: {
     params: z.object({ workspace: WorkspaceIdParamsSchema }),
+    query: z.object({ skip_ci_tests: SkipCiTestsParamsSchema }),
     body: {
       description: 'Partially filled flow',
       content: {
@@ -28215,6 +29442,7 @@ export const postWWorkspaceFlowsUpdatePathRoute = createRoute({
   operationId: 'updateFlow',
   request: {
     params: z.object({ workspace: WorkspaceIdParamsSchema, path: ScriptPathParamsSchema }),
+    query: z.object({ skip_ci_tests: SkipCiTestsParamsSchema }),
     body: {
       description: 'Partially filled flow',
       content: {
@@ -28708,7 +29936,8 @@ export const postWWorkspaceAiCompleteRoute = createRoute({
               system: z.string(),
               user: z.string(),
               model: AIProviderModelSchema.exactOptional().openapi({
-                description: "defaults to the AI config's default model",
+                description:
+                  "defaults to the AI config's default model. Must be enabled in the AI settings, or be the default, metadata or code-completion model.\n",
               }),
               max_tokens: z.int().exactOptional(),
             })
@@ -28726,6 +29955,90 @@ export const postWWorkspaceAiCompleteRoute = createRoute({
           schema: z
             .object({ text: z.string(), model: AIProviderModelSchema })
             .openapi({ required: ['text', 'model'] }),
+        },
+      },
+    },
+  },
+})
+
+export const postWWorkspaceAiWebSearchRoute = createRoute({
+  method: 'post',
+  path: '/w/{workspace}/ai/web_search',
+  tags: ['ai'],
+  summary: "search the web through the workspace's web search API",
+  description:
+    "Runs a query against the search API (Exa, Tavily, Linkup or DeepSeek) set in the workspace's AI settings, with the key of its resource. The AI chat uses it when the model's provider has no built-in web search.\n",
+  operationId: 'aiWebSearch',
+  request: {
+    params: z.object({ workspace: WorkspaceIdParamsSchema }),
+    body: {
+      content: {
+        'application/json': {
+          schema: z
+            .object({ query: z.string(), max_results: z.int().min(1).max(10).exactOptional() })
+            .openapi({ required: ['query'] }),
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'the results, each with an excerpt of its page',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              results: z.array(
+                z
+                  .object({
+                    title: z.string(),
+                    url: z.string(),
+                    published_date: z.string().exactOptional(),
+                    content: z.string(),
+                  })
+                  .openapi({ required: ['title', 'url', 'content'] }),
+              ),
+            })
+            .openapi({ required: ['results'] }),
+        },
+      },
+    },
+  },
+})
+
+export const postWWorkspaceAiWebFetchRoute = createRoute({
+  method: 'post',
+  path: '/w/{workspace}/ai/web_fetch',
+  tags: ['ai'],
+  summary: "read a web page through the workspace's web search API",
+  description:
+    "Has the search API set in the workspace's AI settings fetch a page and returns its text as markdown. The page is fetched from the search API's servers, not Windmill's.\n",
+  operationId: 'aiWebFetch',
+  request: {
+    params: z.object({ workspace: WorkspaceIdParamsSchema }),
+    body: {
+      content: {
+        'application/json': {
+          schema: z.object({ url: z.string() }).openapi({ required: ['url'] }),
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: "the page's text",
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              url: z.string(),
+              title: z.string().exactOptional(),
+              content: z.string(),
+              truncated: z.boolean(),
+            })
+            .openapi({ required: ['url', 'content', 'truncated'] }),
         },
       },
     },
@@ -28969,7 +30282,7 @@ export const getWWorkspaceAiEvalsRunPayloadRoute = createRoute({
           schema: z
             .object({
               run: z
-                .object({})
+                .looseObject({})
                 .openapi({
                   description: 'The case, the answer, and every tool call the agent made.',
                 }),
@@ -29584,6 +30897,80 @@ export const postWWorkspaceAiUsageRoute = createRoute({
   responses: { 204: { description: 'usage recorded' } },
 })
 
+export const postWWorkspaceAiSessionToolsNameRoute = createRoute({
+  method: 'post',
+  path: '/w/{workspace}/ai_session_tools/{name}',
+  tags: ['ai'],
+  summary: "run one of the AI session's tools as the calling user",
+  description:
+    "The in-app chat's entry to the session toolset the MCP server also serves. Refused for job tokens and scoped tokens.",
+  operationId: 'callAiSessionTool',
+  request: {
+    params: z.object({
+      workspace: WorkspaceIdParamsSchema,
+      name: z
+        .string()
+        .openapi({
+          param: { name: 'name', in: 'path', required: true, schema: { type: 'string' } },
+        }),
+    }),
+    body: {
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              args: z
+                .any()
+                .exactOptional()
+                .openapi({ description: "the tool's arguments, as the model sent them" }),
+              context: z
+                .looseObject({
+                  live_editors: z
+                    .array(
+                      z
+                        .object({
+                          kind: z.string(),
+                          storage_path: z.string(),
+                          effective_path: z.string().exactOptional(),
+                        })
+                        .openapi({ required: ['kind', 'storage_path'] }),
+                    )
+                    .exactOptional(),
+                  cells: z
+                    .array(
+                      z
+                        .object({ kind: z.string(), storage_path: z.string(), value: z.any() })
+                        .openapi({ required: ['kind', 'storage_path', 'value'] }),
+                    )
+                    .exactOptional(),
+                })
+                .exactOptional()
+                .openapi({ description: 'browser-held state the tool reads', required: [] }),
+            })
+            .openapi({ required: [] }),
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'what the model reads, and what the chat applies',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              text: z.string(),
+              is_error: z.boolean(),
+              effects: z.array(z.looseObject({})),
+            })
+            .openapi({ required: ['text', 'is_error', 'effects'] }),
+        },
+      },
+    },
+  },
+})
+
 export const getWWorkspaceAiSessionsListRoute = createRoute({
   method: 'get',
   path: '/w/{workspace}/ai/sessions/list',
@@ -29808,6 +31195,23 @@ export const getWWorkspaceAiSharedArtifactsStatusRoute = createRoute({
   },
 })
 
+export const getWWorkspaceAiSharedArtifactsListRoute = createRoute({
+  method: 'get',
+  path: '/w/{workspace}/ai/shared_artifacts/list',
+  tags: ['ai'],
+  summary: "list the workspace's live shared AI session artifacts",
+  description:
+    'Every share still inside its retention window, newest first, without its content. Capped at 500.\n',
+  operationId: 'listSharedAiArtifacts',
+  request: { params: z.object({ workspace: WorkspaceIdParamsSchema }) },
+  responses: {
+    200: {
+      description: 'the live shares',
+      content: { 'application/json': { schema: z.array(SharedAiArtifactInfoSchema) } },
+    },
+  },
+})
+
 export const getWWorkspaceAiSharedArtifactsGetIdRoute = createRoute({
   method: 'get',
   path: '/w/{workspace}/ai/shared_artifacts/get/{id}',
@@ -29951,6 +31355,40 @@ export const getWWorkspaceAiSharedSessionsStatusRoute = createRoute({
   },
 })
 
+export const getWWorkspaceAiSharedSessionsListRoute = createRoute({
+  method: 'get',
+  path: '/w/{workspace}/ai/shared_sessions/list',
+  tags: ['ai'],
+  summary: "list the caller's shared AI sessions",
+  description:
+    "The caller's own shares and the ones they opened by link, most recently shared or opened first, without their snapshot. Capped at 500. `session_id` is set on the caller's own shares only, `opened_at` on the others.\n",
+  operationId: 'listSharedAiSessions',
+  request: { params: z.object({ workspace: WorkspaceIdParamsSchema }) },
+  responses: {
+    200: {
+      description: 'the shares',
+      content: {
+        'application/json': {
+          schema: z.array(
+            SharedAiSessionInfoSchema.and(
+              z
+                .object({
+                  mine: z.boolean(),
+                  session_id: z.string().exactOptional(),
+                  opened_at: z.iso
+                    .datetime({ offset: true })
+                    .exactOptional()
+                    .openapi({ description: 'when the caller last opened this share by link' }),
+                })
+                .openapi({ required: ['mine'] }),
+            ),
+          ),
+        },
+      },
+    },
+  },
+})
+
 export const postWWorkspaceAiSharedSessionsSetPublicIdRoute = createRoute({
   method: 'post',
   path: '/w/{workspace}/ai/shared_sessions/set_public/{id}',
@@ -30025,11 +31463,42 @@ export const getWWorkspaceAiUSharedSessionsGetIdRoute = createRoute({
                   .openapi({
                     description: 'whether the caller authored the share or is a workspace admin',
                   }),
+                mine: z.boolean().openapi({ description: 'whether the caller authored the share' }),
               })
-              .openapi({ required: ['snapshot', 'can_unshare'] }),
+              .openapi({ required: ['snapshot', 'can_unshare', 'mine'] }),
           ),
         },
       },
+    },
+  },
+})
+
+export const deleteWWorkspaceAiSharedSessionsOpenedIdRoute = createRoute({
+  method: 'delete',
+  path: '/w/{workspace}/ai/shared_sessions/opened/{id}',
+  tags: ['ai'],
+  summary: "remove a shared AI session from the caller's list",
+  description: 'The share stays readable by link; opening it again lists it again.\n',
+  operationId: 'forgetOpenedAiSession',
+  request: {
+    params: z.object({
+      workspace: WorkspaceIdParamsSchema,
+      id: z
+        .uuid()
+        .openapi({
+          param: {
+            name: 'id',
+            in: 'path',
+            required: true,
+            schema: { type: 'string', format: 'uuid' },
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'removed from the list',
+      content: { 'text/plain': { schema: z.string() } },
     },
   },
 })
@@ -30279,12 +31748,12 @@ export const postWWorkspaceAppsCreateRawRoute = createRoute({
                   summary: z.string(),
                   policy: z
                     .object({
-                      triggerables: z.record(z.string(), z.object({})).exactOptional(),
-                      triggerables_v2: z.record(z.string(), z.object({})).exactOptional(),
+                      triggerables: z.record(z.string(), z.looseObject({})).exactOptional(),
+                      triggerables_v2: z.record(z.string(), z.looseObject({})).exactOptional(),
                       s3_inputs: z
                         .preprocess(
                           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-                          z.array(z.object({})),
+                          z.array(z.looseObject({})),
                         )
                         .exactOptional(),
                       allowed_s3_keys: z
@@ -30811,8 +32280,8 @@ export const postWWorkspaceAppsCreateRawSourceRoute = createRoute({
               value: z
                 .object({
                   files: z.record(z.string(), z.string()),
-                  runnables: z.object({}).exactOptional(),
-                  data: z.object({}).exactOptional(),
+                  runnables: z.looseObject({}).exactOptional(),
+                  data: z.looseObject({}).exactOptional(),
                 })
                 .openapi({
                   description:
@@ -30869,8 +32338,8 @@ export const postWWorkspaceAppsUpdateRawSourcePathRoute = createRoute({
               value: z
                 .object({
                   files: z.record(z.string(), z.string()),
-                  runnables: z.object({}).exactOptional(),
-                  data: z.object({}).exactOptional(),
+                  runnables: z.looseObject({}).exactOptional(),
+                  data: z.looseObject({}).exactOptional(),
                 })
                 .openapi({
                   description:
@@ -30938,12 +32407,12 @@ export const postWWorkspaceAppsUpdateRawPathRoute = createRoute({
                   value: z.any().exactOptional(),
                   policy: z
                     .object({
-                      triggerables: z.record(z.string(), z.object({})).exactOptional(),
-                      triggerables_v2: z.record(z.string(), z.object({})).exactOptional(),
+                      triggerables: z.record(z.string(), z.looseObject({})).exactOptional(),
+                      triggerables_v2: z.record(z.string(), z.looseObject({})).exactOptional(),
                       s3_inputs: z
                         .preprocess(
                           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-                          z.array(z.object({})),
+                          z.array(z.looseObject({})),
                         )
                         .exactOptional(),
                       allowed_s3_keys: z
@@ -31176,13 +32645,13 @@ export const postWWorkspaceAppsUExecuteComponentPathRoute = createRoute({
                 .exactOptional()
                 .openapi({ required: ['content', 'language'] }),
               id: z.int().exactOptional(),
-              force_viewer_static_fields: z.object({}).exactOptional(),
-              force_viewer_one_of_fields: z.object({}).exactOptional(),
+              force_viewer_static_fields: z.looseObject({}).exactOptional(),
+              force_viewer_one_of_fields: z.looseObject({}).exactOptional(),
               force_viewer_allow_user_resources: z.array(z.string()).exactOptional(),
               force_viewer_sensitive_inputs: z.array(z.string()).exactOptional(),
               force_viewer_delete_after_secs: z.int().exactOptional(),
               run_query_params: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({ description: 'Runnable query parameters' }),
               temp_script_refs: z
@@ -31807,6 +33276,19 @@ export const postWWorkspaceJobsRunFPathRoute = createRoute({
             required: false,
           },
         }),
+      take_over: z
+        .stringbool()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'take_over',
+            description:
+              'Stop the run that holds `memory_id`, if any, and run this one instead of being refused with a 409. Only who started that run, or an admin, can stop it; a restricted token also needs an unconfined `jobs:cancel` scope.',
+            in: 'query',
+            schema: { type: 'boolean' },
+            required: false,
+          },
+        }),
     }),
     body: {
       description: 'flow args',
@@ -31818,7 +33300,7 @@ export const postWWorkspaceJobsRunFPathRoute = createRoute({
     201: { description: 'job created', content: { 'text/plain': { schema: z.uuid() } } },
     409: {
       description:
-        'Chat-enabled flow only: the conversation named by `memory_id` is still answering a message. The body is JSON: `{ "error": string, "running_turn": { "job_id", "user_seq" } }`.',
+        'Another run with this `memory_id` is still running (for a chat-enabled flow, the conversation is still answering a message). The body is JSON: `{ "error": string, "running_turn": { "job_id", "user_seq"? } }`, `user_seq` for a chat conversation. Pass `take_over=true` to stop it instead.',
     },
   },
 })
@@ -31913,6 +33395,19 @@ export const postWWorkspaceJobsRunFvVersionRoute = createRoute({
             required: false,
           },
         }),
+      take_over: z
+        .stringbool()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'take_over',
+            description:
+              'Stop the run that holds `memory_id`, if any, and run this one instead of being refused with a 409. Only who started that run, or an admin, can stop it; a restricted token also needs an unconfined `jobs:cancel` scope.',
+            in: 'query',
+            schema: { type: 'boolean' },
+            required: false,
+          },
+        }),
     }),
     body: {
       description: 'flow args',
@@ -31924,7 +33419,7 @@ export const postWWorkspaceJobsRunFvVersionRoute = createRoute({
     201: { description: 'job created', content: { 'text/plain': { schema: z.uuid() } } },
     409: {
       description:
-        'Chat-enabled flow only: the conversation named by `memory_id` is still answering a message. The body is JSON: `{ "error": string, "running_turn": { "job_id", "user_seq" } }`.',
+        'Another run with this `memory_id` is still running (for a chat-enabled flow, the conversation is still answering a message). The body is JSON: `{ "error": string, "running_turn": { "job_id", "user_seq"? } }`, `user_seq` for a chat conversation. Pass `take_over=true` to stop it instead.',
     },
   },
 })
@@ -32158,7 +33653,7 @@ export const postWWorkspaceJobsRunHHashRoute = createRoute({
     }),
     body: {
       description: 'Partially filled args',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
       required: true,
     },
   },
@@ -32420,6 +33915,66 @@ export const postWWorkspaceJobsRunFlowDependenciesAsyncRoute = createRoute({
   },
 })
 
+export const postWWorkspaceJobsRunFlowTestPathRoute = createRoute({
+  method: 'post',
+  path: '/w/{workspace}/jobs/run/flow_test/{path}',
+  tags: ['job'],
+  summary: 'run a deployed flow with some steps overridden, for tests',
+  description:
+    'Runs the latest deployed version of the flow as a flow preview, with each step named in `steps` either mocked (`{"return_value": ...}`) or replaced by a function of the code of `caller_job_id` (`{"function": "<name>"}`), called with the step\'s inputs. Needs the same rights as a flow preview.',
+  operationId: 'runFlowTest',
+  request: {
+    params: z.object({ workspace: WorkspaceIdParamsSchema, path: ScriptPathParamsSchema }),
+    query: z.object({ job_id: NewJobIdParamsSchema }),
+    body: {
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              args: ScriptArgsSchema.exactOptional(),
+              steps: z
+                .record(
+                  z.string(),
+                  z
+                    .object({
+                      return_value: z
+                        .any()
+                        .exactOptional()
+                        .openapi({ description: 'the step is skipped and returns this value' }),
+                      function: z
+                        .string()
+                        .exactOptional()
+                        .openapi({
+                          description:
+                            'name of a function of the code of `caller_job_id` that runs instead of the step (exported, in TypeScript)',
+                        }),
+                    })
+                    .openapi({ required: [] }),
+                )
+                .exactOptional()
+                .openapi({
+                  description:
+                    'step id -> override. A step inside a subflow is named by the path of step ids to it, `sub:inner` for step `inner` of the subflow that step `sub` calls.',
+                }),
+              caller_job_id: z
+                .uuid()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'the job whose code defines the replacing functions, usually the calling test; a script run or a script preview. Required with a `function` override.',
+                }),
+            })
+            .openapi({ required: [] }),
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    201: { description: 'job created', content: { 'text/plain': { schema: z.uuid() } } },
+  },
+})
+
 export const postWWorkspaceJobsRunPreviewFlowRoute = createRoute({
   method: 'post',
   path: '/w/{workspace}/jobs/run/preview_flow',
@@ -32456,6 +34011,19 @@ export const postWWorkspaceJobsRunPreviewFlowRoute = createRoute({
             required: false,
           },
         }),
+      take_over: z
+        .stringbool()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'take_over',
+            description:
+              'Stop the run that holds `memory_id`, if any, and run this one instead of being refused with a 409. Only who started that run, or an admin, can stop it; a restricted token also needs an unconfined `jobs:cancel` scope.',
+            in: 'query',
+            schema: { type: 'boolean' },
+            required: false,
+          },
+        }),
     }),
     body: {
       description: 'preview',
@@ -32467,7 +34035,7 @@ export const postWWorkspaceJobsRunPreviewFlowRoute = createRoute({
     201: { description: 'job created', content: { 'text/plain': { schema: z.uuid() } } },
     409: {
       description:
-        'Chat-enabled flow only: the conversation named by `memory_id` is still answering a message. The body is JSON: `{ "error": string, "running_turn": { "job_id", "user_seq" } }`.',
+        'Another run with this `memory_id` is still running (for a chat-enabled flow, the conversation is still answering a message). The body is JSON: `{ "error": string, "running_turn": { "job_id", "user_seq"? } }`, `user_seq` for a chat conversation. Pass `take_over=true` to stop it instead.',
     },
   },
 })
@@ -32493,6 +34061,19 @@ export const postWWorkspaceJobsRunAgentPathRoute = createRoute({
               'The conversation this turn belongs to. A uuid is used as is; any other string is hashed within the workspace and agent.',
             in: 'query',
             schema: { type: 'string' },
+            required: false,
+          },
+        }),
+      take_over: z
+        .stringbool()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'take_over',
+            description:
+              'Stop the run that holds `memory_id`, if any, and run this one instead of being refused with a 409. Only who started that run, or an admin, can stop it; a restricted token also needs an unconfined `jobs:cancel` scope.',
+            in: 'query',
+            schema: { type: 'boolean' },
             required: false,
           },
         }),
@@ -32546,6 +34127,19 @@ export const postWWorkspaceJobsRunWaitResultPreviewFlowRoute = createRoute({
             required: false,
           },
         }),
+      take_over: z
+        .stringbool()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'take_over',
+            description:
+              'Stop the run that holds `memory_id`, if any, and run this one instead of being refused with a 409. Only who started that run, or an admin, can stop it; a restricted token also needs an unconfined `jobs:cancel` scope.',
+            in: 'query',
+            schema: { type: 'boolean' },
+            required: false,
+          },
+        }),
     }),
     body: {
       description: 'preview',
@@ -32557,7 +34151,7 @@ export const postWWorkspaceJobsRunWaitResultPreviewFlowRoute = createRoute({
     200: { description: 'job result', content: { 'application/json': { schema: z.any() } } },
     409: {
       description:
-        'Chat-enabled flow only: the conversation named by `memory_id` is still answering a message. The body is JSON: `{ "error": string, "running_turn": { "job_id", "user_seq" } }`.',
+        'Another run with this `memory_id` is still running (for a chat-enabled flow, the conversation is still answering a message). The body is JSON: `{ "error": string, "running_turn": { "job_id", "user_seq"? } }`, `user_seq` for a chat conversation. Pass `take_over=true` to stop it instead.',
     },
   },
 })
@@ -32991,6 +34585,18 @@ export const getWWorkspaceJobsQueueListFilteredUuidsRoute = createRoute({
             schema: { type: 'string' },
           },
         }),
+      has_null_parent: z
+        .stringbool()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'has_null_parent',
+            description: 'has null parent',
+            in: 'query',
+            schema: { type: 'boolean' },
+            required: false,
+          },
+        }),
       all_workspaces: z
         .stringbool()
         .exactOptional()
@@ -33094,7 +34700,7 @@ export const getWWorkspaceJobsGetOtelTracesIdRoute = createRoute({
   responses: {
     200: {
       description: 'list of OTEL Span objects (compatible with OpenTelemetry Span proto)',
-      content: { 'application/json': { schema: z.array(z.object({})) } },
+      content: { 'application/json': { schema: z.array(z.looseObject({})) } },
     },
   },
 })
@@ -33435,6 +35041,166 @@ export const postWWorkspaceJobsDeleteRoute = createRoute({
         },
       },
     },
+  },
+})
+
+export const getWWorkspaceJobsRecentRunsRoute = createRoute({
+  method: 'get',
+  path: '/w/{workspace}/jobs/recent_runs',
+  tags: ['job'],
+  summary: 'list what ran recently, one entry per script, flow or agent',
+  operationId: 'listRecentRuns',
+  request: {
+    params: z.object({ workspace: WorkspaceIdParamsSchema }),
+    query: z.object({
+      folder: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'folder',
+            description: 'only runs of items in this folder',
+            in: 'query',
+            schema: { type: 'string' },
+            required: false,
+          },
+        }),
+      failed_ids_kind: z
+        .enum(['script', 'flow', 'agent'])
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'failed_ids_kind',
+            description:
+              'with failed_ids_path, the item whose unresolved failed run ids to list in failed_run_ids',
+            in: 'query',
+            schema: { type: 'string', enum: ['script', 'flow', 'agent'] },
+            required: false,
+          },
+        }),
+      failed_ids_path: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'failed_ids_path',
+            description: 'with failed_ids_kind, the path of that item',
+            in: 'query',
+            schema: { type: 'string' },
+            required: false,
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description:
+        'runs that completed in the window or are running, grouped by item, newest run first',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              window_hours: z.int(),
+              capped: z
+                .boolean()
+                .openapi({
+                  description:
+                    'the window holds more runs than were read, so counts cover the newest ones only',
+                }),
+              total_runs: z.int(),
+              failed_runs: z.int(),
+              failing_items: z.int(),
+              running_items: z.int(),
+              items: z.array(
+                z
+                  .object({
+                    path: z.string(),
+                    kind: z.enum(['script', 'flow', 'agent']),
+                    summary: z.string().exactOptional(),
+                    status: RecentRunStatusSchema,
+                    failed_runs: z
+                      .int()
+                      .openapi({
+                        description:
+                          'unresolved failed runs of the item over the whole window, not only those in runs',
+                      }),
+                    failed_run_ids: z
+                      .array(z.uuid())
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          'the ids of those failed runs, only for the item named by failed_ids_kind and failed_ids_path',
+                      }),
+                    runs: z.array(
+                      z
+                        .object({
+                          id: z.uuid(),
+                          status: RecentRunStatusSchema,
+                          ran_at: z.iso
+                            .datetime({ offset: true })
+                            .openapi({
+                              description:
+                                'when the run started, or was created for one that has not reported a start',
+                            }),
+                          duration_ms: z.int().exactOptional(),
+                        })
+                        .openapi({ required: ['id', 'status', 'ran_at'] }),
+                    ),
+                  })
+                  .openapi({ required: ['path', 'kind', 'status', 'failed_runs', 'runs'] }),
+              ),
+              hidden_items: z
+                .array(RecentRunHiddenItemSchema)
+                .openapi({
+                  description:
+                    'the items the caller hid, within the folder, whether or not they ran in the window; their runs are left out of items and of every count',
+                }),
+            })
+            .openapi({
+              required: [
+                'window_hours',
+                'capped',
+                'total_runs',
+                'failed_runs',
+                'failing_items',
+                'running_items',
+                'items',
+                'hidden_items',
+              ],
+            }),
+        },
+      },
+    },
+  },
+})
+
+export const postWWorkspaceJobsRecentRunsHideRoute = createRoute({
+  method: 'post',
+  path: '/w/{workspace}/jobs/recent_runs/hide',
+  tags: ['job'],
+  summary: "hide items from the caller's recently run list",
+  operationId: 'hideRecentRunItems',
+  request: {
+    params: z.object({ workspace: WorkspaceIdParamsSchema }),
+    body: { content: { 'application/json': { schema: RecentRunItemRefsSchema } }, required: true },
+  },
+  responses: {
+    200: { description: 'items hidden', content: { 'text/plain': { schema: z.string() } } },
+  },
+})
+
+export const postWWorkspaceJobsRecentRunsUnhideRoute = createRoute({
+  method: 'post',
+  path: '/w/{workspace}/jobs/recent_runs/unhide',
+  tags: ['job'],
+  summary: "bring items back to the caller's recently run list",
+  operationId: 'unhideRecentRunItems',
+  request: {
+    params: z.object({ workspace: WorkspaceIdParamsSchema }),
+    body: { content: { 'application/json': { schema: RecentRunItemRefsSchema } }, required: true },
+  },
+  responses: {
+    200: { description: 'items brought back', content: { 'text/plain': { schema: z.string() } } },
   },
 })
 
@@ -34387,6 +36153,13 @@ export const getWWorkspaceJobsUCompletedGetResultMaybeIdRoute = createRoute({
               result: z.any(),
               success: z.boolean().exactOptional(),
               started: z.boolean().exactOptional(),
+              is_skipped: z
+                .boolean()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'set when the job is completed; true if it ended as skipped (also counted as success)',
+                }),
             })
             .openapi({ required: ['completed', 'result'] }),
         },
@@ -35126,7 +36899,10 @@ export const postWWorkspaceJobsUFlowResumeSuspendedJobIdRoute = createRoute({
               payload: z
                 .any()
                 .exactOptional()
-                .openapi({ description: 'payload to send to the resumed job' }),
+                .openapi({
+                  description:
+                    "payload to send to the resumed job. On a denial, a string `reason` in it is shown in the step's error and the audit log.\n",
+                }),
               approval_token: z
                 .string()
                 .exactOptional()
@@ -35341,7 +37117,7 @@ export const postWWorkspaceJobsUResumeIdResumeIdSignatureRoute = createRoute({
           param: { name: 'approver', in: 'query', schema: { type: 'string' }, required: false },
         }),
     }),
-    body: { content: { 'application/json': { schema: z.object({}) } }, required: true },
+    body: { content: { 'application/json': { schema: z.looseObject({}) } }, required: true },
   },
   responses: {
     201: { description: 'job resumed', content: { 'text/plain': { schema: z.string() } } },
@@ -35411,7 +37187,7 @@ export const postWWorkspaceJobsFlowResumeIdRoute = createRoute({
   operationId: 'resumeSuspendedFlowAsOwner',
   request: {
     params: z.object({ workspace: WorkspaceIdParamsSchema, id: JobIdParamsSchema }),
-    body: { content: { 'application/json': { schema: z.object({}) } }, required: true },
+    body: { content: { 'application/json': { schema: z.looseObject({}) } }, required: true },
   },
   responses: {
     201: { description: 'job resumed', content: { 'text/plain': { schema: z.string() } } },
@@ -35498,7 +37274,7 @@ export const postWWorkspaceJobsUCancelIdResumeIdSignatureRoute = createRoute({
           param: { name: 'approver', in: 'query', schema: { type: 'string' }, required: false },
         }),
     }),
-    body: { content: { 'application/json': { schema: z.object({}) } }, required: true },
+    body: { content: { 'application/json': { schema: z.looseObject({}) } }, required: true },
   },
   responses: {
     201: { description: 'job canceled', content: { 'text/plain': { schema: z.string() } } },
@@ -35885,7 +37661,7 @@ export const postWWorkspaceSchedulesSetdefaulthandlerRoute = createRoute({
               handler_type: z.enum(['error', 'recovery', 'success']),
               override_existing: z.boolean(),
               path: z.string().exactOptional(),
-              extra_args: z.object({}).exactOptional(),
+              extra_args: z.looseObject({}).exactOptional(),
               number_of_occurence: z.int().exactOptional(),
               number_of_occurence_exact: z.boolean().exactOptional(),
               workspace_handler_muted: z.boolean().exactOptional(),
@@ -36588,7 +38364,7 @@ export const postWWorkspaceKafkaTriggersTestRoute = createRoute({
       description: 'test kafka connection',
       content: {
         'application/json': {
-          schema: z.object({ connection: z.object({}) }).openapi({ required: ['connection'] }),
+          schema: z.object({ connection: z.looseObject({}) }).openapi({ required: ['connection'] }),
         },
       },
       required: true,
@@ -36839,7 +38615,7 @@ export const postWWorkspaceNatsTriggersTestRoute = createRoute({
       description: 'test nats connection',
       content: {
         'application/json': {
-          schema: z.object({ connection: z.object({}) }).openapi({ required: ['connection'] }),
+          schema: z.object({ connection: z.looseObject({}) }).openapi({ required: ['connection'] }),
         },
       },
       required: true,
@@ -37043,7 +38819,7 @@ export const postWWorkspaceSqsTriggersTestRoute = createRoute({
       description: 'test sqs connection',
       content: {
         'application/json': {
-          schema: z.object({ connection: z.object({}) }).openapi({ required: ['connection'] }),
+          schema: z.object({ connection: z.looseObject({}) }).openapi({ required: ['connection'] }),
         },
       },
       required: true,
@@ -37152,12 +38928,12 @@ export const postWWorkspaceNativeTriggersIntegrationsServiceNameGenerateConnectU
       }),
       body: {
         description:
-          'redirect_uri, and where to save the connection (defaults to u/{caller}/native_{resource_type}). Uses the workspace OAuth client, or the instance one when the instance shares it.',
+          'Where to save the connection (defaults to u/{caller}/native_{resource_type}). Uses the workspace OAuth client, or the instance one when the instance shares it, and the redirect URI registered on that client.',
         content: {
           'application/json': {
             schema: z
-              .object({ redirect_uri: z.string(), resource_path: z.string().exactOptional() })
-              .openapi({ required: ['redirect_uri'] }),
+              .object({ resource_path: z.string().exactOptional() })
+              .openapi({ required: [] }),
           },
         },
         required: true,
@@ -37356,8 +39132,8 @@ export const postWWorkspaceNativeTriggersIntegrationsServiceNameCallbackRoute = 
       content: {
         'application/json': {
           schema: z
-            .object({ code: z.string(), state: z.string(), redirect_uri: z.string() })
-            .openapi({ required: ['code', 'state', 'redirect_uri'] }),
+            .object({ code: z.string(), state: z.string() })
+            .openapi({ required: ['code', 'state'] }),
         },
       },
       required: true,
@@ -38188,7 +39964,7 @@ export const postWWorkspaceMqttTriggersTestRoute = createRoute({
       description: 'test mqtt connection',
       content: {
         'application/json': {
-          schema: z.object({ connection: z.object({}) }).openapi({ required: ['connection'] }),
+          schema: z.object({ connection: z.looseObject({}) }).openapi({ required: ['connection'] }),
         },
       },
       required: true,
@@ -38605,7 +40381,7 @@ export const postWWorkspaceGcpTriggersTestRoute = createRoute({
       description: 'test gcp connection',
       content: {
         'application/json': {
-          schema: z.object({ connection: z.object({}) }).openapi({ required: ['connection'] }),
+          schema: z.object({ connection: z.looseObject({}) }).openapi({ required: ['connection'] }),
         },
       },
       required: true,
@@ -38932,7 +40708,7 @@ export const postWWorkspaceAzureTriggersNamespacesTopicsListPathRoute = createRo
   responses: {
     200: {
       description: 'topic list',
-      content: { 'application/json': { schema: z.array(z.object({})) } },
+      content: { 'application/json': { schema: z.array(z.looseObject({})) } },
     },
   },
 })
@@ -38953,7 +40729,7 @@ export const postWWorkspaceAzureTriggersNamespacesSubscriptionsListPathRoute = c
   responses: {
     200: {
       description: 'subscription list',
-      content: { 'application/json': { schema: z.array(z.object({})) } },
+      content: { 'application/json': { schema: z.array(z.looseObject({})) } },
     },
   },
 })
@@ -39717,7 +41493,17 @@ export const postGroupsCreateRoute = createRoute({
       content: {
         'application/json': {
           schema: z
-            .object({ name: z.string(), summary: z.string().exactOptional() })
+            .object({
+              name: z.string(),
+              summary: z.string().exactOptional(),
+              external_id: z
+                .string()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'IdP group the SSO groups claim links this group to: a group id or a full path such as /operators/network-team. Blank or omitted leaves it unlinked.',
+                }),
+            })
             .openapi({ required: ['name'] }),
         },
       },
@@ -39754,6 +41540,13 @@ export const postGroupsUpdateNameRoute = createRoute({
                 .openapi({
                   description:
                     "Instance-level role for group members. 'superadmin', 'devops', 'user' or empty to clear.",
+                }),
+              external_id: z
+                .string()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'IdP group the SSO groups claim links this group to: a group id or a full path such as /operators/network-team. Omitted keeps the current link, blank clears it. Refused on a group SCIM provisioned.',
                 }),
             })
             .openapi({ required: ['new_summary'] }),
@@ -40182,6 +41975,10 @@ export const postWWorkspaceFoldersCreateRoute = createRoute({
           schema: z
             .object({
               name: z.string(),
+              display_name: z
+                .string()
+                .exactOptional()
+                .openapi({ description: 'Defaults to the name.' }),
               summary: z.string().exactOptional(),
               owners: z.array(z.string()).exactOptional(),
               extra_perms: z.record(z.string(), z.boolean()).exactOptional(),
@@ -40214,6 +42011,7 @@ export const postWWorkspaceFoldersUpdateNameRoute = createRoute({
           schema: z
             .object({
               summary: z.string().exactOptional(),
+              display_name: z.string().exactOptional(),
               owners: z.array(z.string()).exactOptional(),
               extra_perms: z.record(z.string(), z.boolean()).exactOptional(),
               default_permissioned_as: FolderDefaultPermissionedAsSchema.exactOptional(),
@@ -40283,12 +42081,23 @@ export const getWWorkspaceFoldersGetusageNameRoute = createRoute({
               scripts: z.number(),
               flows: z.number(),
               apps: z.number(),
-              resources: z.number(),
+              resources: z.number().openapi({ description: 'resources other than AI agents' }),
+              agents: z
+                .number()
+                .openapi({ description: 'saved AI agents (resources of type `ai_agent`)' }),
               variables: z.number(),
               schedules: z.number(),
             })
             .openapi({
-              required: ['scripts', 'flows', 'apps', 'resources', 'variables', 'schedules'],
+              required: [
+                'scripts',
+                'flows',
+                'apps',
+                'resources',
+                'agents',
+                'variables',
+                'schedules',
+              ],
             }),
         },
       },
@@ -40859,6 +42668,75 @@ export const getConfigsListAutoscalingEventsWorkerGroupRoute = createRoute({
   },
 })
 
+export const getConfigsAutoscalingDiagnosticsWorkerGroupRoute = createRoute({
+  method: 'get',
+  path: '/configs/autoscaling_diagnostics/{worker_group}',
+  tags: ['config'],
+  summary:
+    'Get the recorded autoscaling decisions of a worker group, and whether a recording is running',
+  operationId: 'getAutoscalingDiagnostics',
+  request: {
+    params: z.object({
+      worker_group: z
+        .string()
+        .openapi({
+          param: { name: 'worker_group', in: 'path', required: true, schema: { type: 'string' } },
+        }),
+    }),
+    query: z.object({
+      include_decisions: z
+        .stringbool()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'include_decisions',
+            description: 'false returns the recording state and the decision count only',
+            in: 'query',
+            schema: { type: 'boolean' },
+            required: false,
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'The recording state and the recorded decisions, oldest first',
+      content: { 'application/json': { schema: AutoscalingDiagnosticsSchema } },
+    },
+  },
+})
+
+export const postConfigsAutoscalingRecordingWorkerGroupRoute = createRoute({
+  method: 'post',
+  path: '/configs/autoscaling_recording/{worker_group}',
+  tags: ['config'],
+  summary: 'Start recording the autoscaling decisions of a worker group for 24 hours, or stop',
+  operationId: 'setAutoscalingRecording',
+  request: {
+    params: z.object({
+      worker_group: z
+        .string()
+        .openapi({
+          param: { name: 'worker_group', in: 'path', required: true, schema: { type: 'string' } },
+        }),
+    }),
+    body: {
+      content: {
+        'application/json': {
+          schema: z.object({ record: z.boolean() }).openapi({ required: ['record'] }),
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'Recording started or stopped',
+      content: { 'text/plain': { schema: z.string() } },
+    },
+  },
+})
+
 export const postConfigsTestAutoscalingWorkerGroupRoute = createRoute({
   method: 'post',
   path: '/configs/test_autoscaling/{worker_group}',
@@ -41146,6 +43024,38 @@ export const getAgentWorkersGetMinVersionRoute = createRoute({
   },
 })
 
+export const getWWorkspaceAccessGetRoute = createRoute({
+  method: 'get',
+  path: '/w/{workspace}/access/get',
+  tags: ['granular_acl'],
+  summary: 'list what a workspace member or group can reach, and why',
+  description:
+    'Workspace admins can query any principal; other members only themselves and the groups\nthey belong to. An admin principal reaches everything, so `items` is empty.\n',
+  operationId: 'getPrincipalAccess',
+  request: {
+    params: z.object({ workspace: WorkspaceIdParamsSchema }),
+    query: z.object({
+      principal: z
+        .string()
+        .openapi({
+          param: {
+            name: 'principal',
+            description: '`u/<username>` or `g/<group>`',
+            in: 'query',
+            required: true,
+            schema: { type: 'string' },
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: "the principal's access",
+      content: { 'application/json': { schema: PrincipalAccessSchema } },
+    },
+  },
+})
+
 export const getWWorkspaceAclsGetKindPathRoute = createRoute({
   method: 'get',
   path: '/w/{workspace}/acls/get/{kind}/{path}',
@@ -41408,7 +43318,7 @@ export const postWWorkspaceCaptureSetConfigRoute = createRoute({
               trigger_kind: CaptureTriggerKindSchema,
               path: z.string(),
               is_flow: z.boolean(),
-              trigger_config: z.object({}).exactOptional(),
+              trigger_config: z.looseObject({}).exactOptional(),
             })
             .openapi({ required: ['trigger_kind', 'path', 'is_flow'] }),
         },
@@ -41419,7 +43329,7 @@ export const postWWorkspaceCaptureSetConfigRoute = createRoute({
   responses: {
     200: {
       description: 'capture config set',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
   },
 })
@@ -43560,7 +45470,7 @@ export const deleteConcurrencyGroupsPruneConcurrencyIdRoute = createRoute({
   responses: {
     200: {
       description: 'concurrency group removed',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
   },
 })
@@ -43955,7 +45865,7 @@ export const getSrchIndexSearchCountServiceLogsRoute = createRoute({
                   description: "a list of the terms that couldn't be parsed (and thus ignored)",
                 }),
               count_per_host: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({ description: 'count of log lines that matched the query per hostname' }),
             })

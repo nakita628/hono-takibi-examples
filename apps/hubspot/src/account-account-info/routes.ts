@@ -292,14 +292,14 @@ const Oauth2SecurityScheme = {
     authorizationCode: {
       authorizationUrl: 'https://app.hubspot.com/oauth/authorize',
       tokenUrl: 'https://api.hubapi.com/oauth/v1/token',
-      scopes: { 'account-info.security.read': '' },
+      scopes: { 'account-info.security.read': '', oauth: '' },
     },
   },
+  'x-hubspot-app-availability': {
+    'account-info.security.read': { portal: ['public', 'private'], developer: false },
+    oauth: { portal: ['public', 'private'], user: ['public', 'private'], developer: false },
+  },
 }
-
-const PrivateAppsSecurityScheme = { type: 'apiKey', name: 'private-app', in: 'header' }
-
-const PrivateAppsLegacySecurityScheme = { type: 'apiKey', name: 'private-app-legacy', in: 'header' }
 
 export const getAccountInfo202609ApiUsageDailyPrivateAppsRoute = createRoute({
   method: 'get',
@@ -318,7 +318,7 @@ export const getAccountInfo202609ApiUsageDailyPrivateAppsRoute = createRoute({
     },
     default: ErrorResponse,
   },
-  security: [],
+  security: [{ oauth2: ['oauth'] }],
 })
 
 export const getAccountInfo202609DetailsRoute = createRoute({
@@ -338,5 +338,5 @@ export const getAccountInfo202609DetailsRoute = createRoute({
     },
     default: ErrorResponse,
   },
-  security: [],
+  security: [{ oauth2: ['oauth'] }],
 })

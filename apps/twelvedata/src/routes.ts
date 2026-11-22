@@ -6925,7 +6925,7 @@ const MoneyMarketFundsWorldResponseItemSchema = z
   .object({
     summary: MoneyMarketFundsWorldResponseItemSummarySchema,
     key_facts: z
-      .record(z.string(), z.object({}))
+      .record(z.string(), z.looseObject({}))
       .exactOptional()
       .openapi({
         description: 'Key facts about the fund. Contents vary by fund and source document.',
@@ -6963,7 +6963,7 @@ const MoneyMarketFundsWorldResponseItemSchema = z
         'x-order': 20,
       }),
     risk_indicator: z
-      .record(z.string(), z.object({}))
+      .record(z.string(), z.looseObject({}))
       .exactOptional()
       .openapi({
         description: 'Risk indicator details. Contents vary by fund and source document.',
@@ -7291,6 +7291,57 @@ const GetMutualFundsWorld_200ResponseMutualFundCompositionMajorMarketSectorsInne
   .openapi({ required: [] })
   .openapi('GetMutualFundsWorld_200ResponseMutualFundCompositionMajorMarketSectorsInner')
 
+const GetMutualFundsWorld_200ResponseMutualFundCompositionTopHoldingsInnerSchema = z
+  .object({
+    symbol: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Symbol ticker of a holding instrument',
+        examples: ['BBWI'],
+        'x-go-name': 'Symbol',
+        'x-order': 10,
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Name of a holding instrument',
+        examples: ['Bath & Body Works Inc'],
+        'x-go-name': 'Name',
+        'x-order': 20,
+      }),
+    exchange: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Exchange where instrument is traded',
+        examples: ['NASDAQ'],
+        'x-go-name': 'Exchange',
+        'x-order': 30,
+      }),
+    mic_code: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Market Identifier Code (MIC) under ISO 10383 standard',
+        examples: ['XNAS'],
+        'x-go-name': 'MicCode',
+        'x-order': 40,
+      }),
+    weight: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description: 'Weight of a holding instrument in overall portfolio composition',
+        examples: [0.00624],
+        'x-go-name': 'Weight',
+        'x-order': 50,
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('GetMutualFundsWorld_200ResponseMutualFundCompositionTopHoldingsInner')
+
 const GetMutualFundsWorld_200ResponseMutualFundCompositionAssetAllocationSchema = z
   .object({
     cash: z
@@ -7356,57 +7407,6 @@ const GetMutualFundsWorld_200ResponseMutualFundCompositionAssetAllocationSchema 
     required: [],
   })
   .openapi('GetMutualFundsWorld_200ResponseMutualFundCompositionAssetAllocation')
-
-const GetMutualFundsWorld_200ResponseMutualFundCompositionTopHoldingsInnerSchema = z
-  .object({
-    symbol: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Symbol ticker of a holding instrument',
-        examples: ['BBWI'],
-        'x-go-name': 'Symbol',
-        'x-order': 10,
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Name of a holding instrument',
-        examples: ['Bath & Body Works Inc'],
-        'x-go-name': 'Name',
-        'x-order': 20,
-      }),
-    exchange: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Exchange where instrument is traded',
-        examples: ['NASDAQ'],
-        'x-go-name': 'Exchange',
-        'x-order': 30,
-      }),
-    mic_code: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Market Identifier Code (MIC) under ISO 10383 standard',
-        examples: ['XNAS'],
-        'x-go-name': 'MicCode',
-        'x-order': 40,
-      }),
-    weight: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description: 'Weight of a holding instrument in overall portfolio composition',
-        examples: [0.00624],
-        'x-go-name': 'Weight',
-        'x-order': 50,
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('GetMutualFundsWorld_200ResponseMutualFundCompositionTopHoldingsInner')
 
 const GetMutualFundsWorld_200ResponseMutualFundCompositionBondBreakdownAverageMaturitySchema = z
   .object({
@@ -7525,8 +7525,6 @@ const ResponseMutualFundWorldCompositionSchema = z
         'x-go-name': 'MajorMarketSectors',
         'x-order': 10,
       }),
-    asset_allocation:
-      GetMutualFundsWorld_200ResponseMutualFundCompositionAssetAllocationSchema.exactOptional(),
     top_holdings: z
       .array(GetMutualFundsWorld_200ResponseMutualFundCompositionTopHoldingsInnerSchema)
       .exactOptional()
@@ -7536,6 +7534,8 @@ const ResponseMutualFundWorldCompositionSchema = z
         'x-go-name': 'TopHoldings',
         'x-order': 20,
       }),
+    asset_allocation:
+      GetMutualFundsWorld_200ResponseMutualFundCompositionAssetAllocationSchema.exactOptional(),
     bond_breakdown:
       GetMutualFundsWorld_200ResponseMutualFundCompositionBondBreakdownSchema.exactOptional(),
   })
@@ -9225,7 +9225,7 @@ const TechnicalIndicatorsResponseMacdTintingSchema = z
         'x-order': 30,
       }),
     lower_bound: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'Lower bound of tinting, can be a number or a return parameter name',
@@ -9233,7 +9233,7 @@ const TechnicalIndicatorsResponseMacdTintingSchema = z
         'x-go-name': 'LowerBound',
       }),
     upper_bound: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'Upper bound of tinting, can be a number or a return parameter name',
@@ -9452,10 +9452,29 @@ const TimeSeriesIndicatorMetaSchema = z
   .openapi('TimeSeriesIndicatorMeta')
 
 const GetTimeSeriesAd_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesAd_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: GetTimeSeriesAd_200ResponseMetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -9589,10 +9608,29 @@ const GetTimeSeriesAdd_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesAdd_200ResponseMetaIndicator')
 
 const GetTimeSeriesAdd_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesAdd_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: GetTimeSeriesAdd_200ResponseMetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -9750,10 +9788,29 @@ const GetTimeSeriesAdOsc_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesAdOsc_200ResponseMetaIndicator')
 
 const GetTimeSeriesAdOsc_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesAdOsc_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: GetTimeSeriesAdOsc_200ResponseMetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -9893,10 +9950,29 @@ const GetTimeSeriesAdx_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesAdx_200ResponseMetaIndicator')
 
 const GetTimeSeriesAdx_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesAdx_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: GetTimeSeriesAdx_200ResponseMetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -10036,10 +10112,29 @@ const GetTimeSeriesAdxr_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesAdxr_200ResponseMetaIndicator')
 
 const GetTimeSeriesAdxr_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesAdxr_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: GetTimeSeriesAdxr_200ResponseMetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -10415,7 +10510,7 @@ const GetApiUsage_200ResponseSchema = z
         type: 'integer',
         format: 'int64',
         description: 'Number of requests made in last minute',
-        examples: [4003],
+        examples: [3],
         'x-go-name': 'CurrentUsage',
         'x-order': 20,
       }),
@@ -10433,7 +10528,7 @@ const GetApiUsage_200ResponseSchema = z
         type: 'integer',
         format: 'int64',
         description: 'Your personal API limit (requests/minute) depending on the plan',
-        examples: [20000],
+        examples: [8],
         'x-go-name': 'PlanLimit',
         'x-order': 30,
       }),
@@ -10452,8 +10547,8 @@ const GetApiUsage_200ResponseSchema = z
         type: 'integer',
         format: 'int64',
         description:
-          'Number of requests made in the current day. Returned only when the plan has a daily limit.',
-        examples: [12500],
+          'API credits used today, counted from midnight UTC. Returned only on the Basic plan; paid plans have no daily limit.',
+        examples: [120],
         'x-go-name': 'DailyUsage',
         'x-order': 35,
       }),
@@ -10472,8 +10567,8 @@ const GetApiUsage_200ResponseSchema = z
         type: 'integer',
         format: 'int64',
         description:
-          'Your personal API limit (requests/day) depending on the plan. Returned only when the plan has a daily limit.',
-        examples: [100000],
+          'Daily cap of API credits. Returned only on the Basic plan, where it is 800; paid plans have no daily limit.',
+        examples: [800],
         'x-go-name': 'PlanDailyLimit',
         'x-order': 36,
       }),
@@ -10482,7 +10577,7 @@ const GetApiUsage_200ResponseSchema = z
       .exactOptional()
       .openapi({
         description: 'Plan category name',
-        examples: ['enterprise'],
+        examples: ['basic'],
         'x-go-name': 'PlanCategory',
         'x-order': 40,
       }),
@@ -10562,10 +10657,29 @@ const GetTimeSeriesApo_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesApo_200ResponseMetaIndicator')
 
 const GetTimeSeriesApo_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesApo_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: GetTimeSeriesApo_200ResponseMetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -10705,10 +10819,29 @@ const GetTimeSeriesAroon_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesAroon_200ResponseMetaIndicator')
 
 const GetTimeSeriesAroon_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesAroon_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: GetTimeSeriesAroon_200ResponseMetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -10856,10 +10989,29 @@ const GetTimeSeriesAroonOsc_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesAroonOsc_200ResponseMetaIndicator')
 
 const GetTimeSeriesAroonOsc_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesAroonOsc_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: GetTimeSeriesAroonOsc_200ResponseMetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -10999,10 +11151,29 @@ const GetTimeSeriesAtr_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesAtr_200ResponseMetaIndicator')
 
 const GetTimeSeriesAtr_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesAtr_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: GetTimeSeriesAtr_200ResponseMetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -11150,10 +11321,29 @@ const GetTimeSeriesAvg_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesAvg_200ResponseMetaIndicator')
 
 const GetTimeSeriesAvg_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesAvg_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: GetTimeSeriesAvg_200ResponseMetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -11275,10 +11465,29 @@ const GetTimeSeriesAvgPrice_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesAvgPrice_200ResponseMetaIndicator')
 
 const GetTimeSeriesAvgPrice_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesAvgPrice_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: GetTimeSeriesAvgPrice_200ResponseMetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -12113,7 +12322,7 @@ const Advanced_200ResponseSchema = z
         'x-order': 20,
       }),
     data: z
-      .record(z.string(), z.object({}))
+      .record(z.string(), z.looseObject({}))
       .exactOptional()
       .openapi({
         description: 'Response data containing individual request results',
@@ -12236,10 +12445,29 @@ const GetTimeSeriesBBands_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesBBands_200ResponseMetaIndicator')
 
 const GetTimeSeriesBBands_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesBBands_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: GetTimeSeriesBBands_200ResponseMetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -12411,10 +12639,29 @@ const GetTimeSeriesBeta_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesBeta_200ResponseMetaIndicator')
 
 const GetTimeSeriesBeta_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesBeta_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: GetTimeSeriesBeta_200ResponseMetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -12572,10 +12819,29 @@ const GetTimeSeriesBop_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesBop_200ResponseMetaIndicator')
 
 const GetTimeSeriesBop_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesBop_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: GetTimeSeriesBop_200ResponseMetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -12810,10 +13076,29 @@ const GetTimeSeriesCci_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesCci_200ResponseMetaIndicator')
 
 const GetTimeSeriesCci_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesCci_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: GetTimeSeriesCci_200ResponseMetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -12943,10 +13228,29 @@ const GetTimeSeriesCeil_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesCeil_200ResponseMetaIndicator')
 
 const GetTimeSeriesCeil_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesCeil_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: GetTimeSeriesCeil_200ResponseMetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -13094,10 +13398,29 @@ const GetTimeSeriesCmo_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesCmo_200ResponseMetaIndicator')
 
 const GetTimeSeriesCmo_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesCmo_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: GetTimeSeriesCmo_200ResponseMetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -13333,10 +13656,29 @@ const GetTimeSeriesCoppock_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesCoppock_200ResponseMetaIndicator')
 
 const GetTimeSeriesCoppock_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesCoppock_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: GetTimeSeriesCoppock_200ResponseMetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -13492,10 +13834,29 @@ const GetTimeSeriesCorrel_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesCorrel_200ResponseMetaIndicator')
 
 const GetTimeSeriesCorrel_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesCorrel_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: GetTimeSeriesCorrel_200ResponseMetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -13697,10 +14058,29 @@ const GetTimeSeriesCrsi_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesCrsi_200ResponseMetaIndicator')
 
 const GetTimeSeriesCrsi_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesCrsi_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: GetTimeSeriesCrsi_200ResponseMetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -13944,10 +14324,29 @@ const GetTimeSeriesDema_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesDema_200ResponseMetaIndicator')
 
 const GetTimeSeriesDema_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesDema_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: GetTimeSeriesDema_200ResponseMetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -14158,10 +14557,29 @@ const GetTimeSeriesDiv_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesDiv_200ResponseMetaIndicator')
 
 const GetTimeSeriesDiv_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesDiv_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: GetTimeSeriesDiv_200ResponseMetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -14414,10 +14832,29 @@ const GetTimeSeriesDpo_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesDpo_200ResponseMetaIndicator')
 
 const GetTimeSeriesDpo_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesDpo_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: GetTimeSeriesDpo_200ResponseMetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -14557,10 +14994,29 @@ const GetTimeSeriesDx_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesDx_200ResponseMetaIndicator')
 
 const GetTimeSeriesDx_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesDx_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: GetTimeSeriesDx_200ResponseMetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -15165,10 +15621,29 @@ const GetTimeSeriesEma_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesEma_200ResponseMetaIndicator')
 
 const GetTimeSeriesEma_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesEma_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: GetTimeSeriesEma_200ResponseMetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -16867,10 +17342,29 @@ const GetTimeSeriesExp_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesExp_200ResponseMetaIndicator')
 
 const GetTimeSeriesExp_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesExp_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: GetTimeSeriesExp_200ResponseMetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -17000,10 +17494,29 @@ const GetTimeSeriesFloor_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesFloor_200ResponseMetaIndicator')
 
 const GetTimeSeriesFloor_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesFloor_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: GetTimeSeriesFloor_200ResponseMetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -17249,7 +17762,8 @@ const GetGrowthEstimates_200ResponseGrowthEstimatesSchema = z
       .float64()
       .exactOptional()
       .openapi({
-        description: 'Projected growth of the current quarter in percentage (%)',
+        description:
+          'Estimated EPS growth for the current quarter vs a year ago, as a decimal (0.1 = 10%)',
         examples: [0.016],
         'x-go-name': 'CurrentQuarter',
         'x-order': 10,
@@ -17258,7 +17772,8 @@ const GetGrowthEstimates_200ResponseGrowthEstimatesSchema = z
       .float64()
       .exactOptional()
       .openapi({
-        description: 'Projected growth of the next quarter in percentage (%)',
+        description:
+          'Estimated EPS growth for the next quarter vs a year ago, as a decimal (0.1 = 10%)',
         examples: [0.01],
         'x-go-name': 'NextQuarter',
         'x-order': 20,
@@ -17267,7 +17782,8 @@ const GetGrowthEstimates_200ResponseGrowthEstimatesSchema = z
       .float64()
       .exactOptional()
       .openapi({
-        description: 'Projected growth of the current year in percentage (%)',
+        description:
+          'Estimated EPS growth for the current fiscal year vs a year ago, as a decimal (0.1 = 10%)',
         examples: [0.087],
         'x-go-name': 'CurrentYear',
         'x-order': 30,
@@ -17276,7 +17792,8 @@ const GetGrowthEstimates_200ResponseGrowthEstimatesSchema = z
       .float64()
       .exactOptional()
       .openapi({
-        description: 'Projected growth of the next year in percentage (%)',
+        description:
+          'Estimated EPS growth for the next fiscal year vs a year ago, as a decimal (0.1 = 10%)',
         examples: [0.055999998],
         'x-go-name': 'NextYear',
         'x-order': 40,
@@ -17285,7 +17802,8 @@ const GetGrowthEstimates_200ResponseGrowthEstimatesSchema = z
       .float64()
       .exactOptional()
       .openapi({
-        description: 'Projected growth during the next 5 years in percentage (%) per annum',
+        description:
+          "Estimated annual EPS growth over the next 5 years, as a decimal (0.1 = 10%). Derived from consensus EPS estimates for the current and next fiscal year, converging to the company's historical 5-year growth; not a separate long-term analyst consensus. `null` if fewer than 3 analysts cover the company.",
         examples: [0.094799995],
         'x-go-name': 'Next5YearsPA',
         'x-order': 50,
@@ -17294,7 +17812,7 @@ const GetGrowthEstimates_200ResponseGrowthEstimatesSchema = z
       .float64()
       .exactOptional()
       .openapi({
-        description: 'Actual growth over the last 5 years in percentage (%) per annum',
+        description: 'Annual EPS growth over the past 5 years, as a decimal (0.1 = 10%)',
         examples: [0.23867],
         'x-go-name': 'Past5YearsPA',
         'x-order': 60,
@@ -17344,12 +17862,31 @@ const GetTimeSeriesHeikinashiCandles_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesHeikinashiCandles_200ResponseMetaIndicator')
 
 const GetTimeSeriesHeikinashiCandles_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({
-      indicator: GetTimeSeriesHeikinashiCandles_200ResponseMetaIndicatorSchema.exactOptional(),
-    })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        indicator: GetTimeSeriesHeikinashiCandles_200ResponseMetaIndicatorSchema.exactOptional(),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -17495,10 +18032,29 @@ const GetTimeSeriesHlc3_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesHlc3_200ResponseMetaIndicator')
 
 const GetTimeSeriesHlc3_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesHlc3_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: GetTimeSeriesHlc3_200ResponseMetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -17628,10 +18184,29 @@ const GetTimeSeriesHtDcPeriod_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesHtDcPeriod_200ResponseMetaIndicator')
 
 const GetTimeSeriesHtDcPeriod_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesHtDcPeriod_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: GetTimeSeriesHtDcPeriod_200ResponseMetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -17761,10 +18336,29 @@ const GetTimeSeriesHtDcPhase_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesHtDcPhase_200ResponseMetaIndicator')
 
 const GetTimeSeriesHtDcPhase_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesHtDcPhase_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: GetTimeSeriesHtDcPhase_200ResponseMetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -17894,10 +18488,29 @@ const GetTimeSeriesHtPhasor_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesHtPhasor_200ResponseMetaIndicator')
 
 const GetTimeSeriesHtPhasor_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesHtPhasor_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: GetTimeSeriesHtPhasor_200ResponseMetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -18035,10 +18648,29 @@ const GetTimeSeriesHtSine_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesHtSine_200ResponseMetaIndicator')
 
 const GetTimeSeriesHtSine_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesHtSine_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: GetTimeSeriesHtSine_200ResponseMetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -18176,10 +18808,31 @@ const GetTimeSeriesHtTrendline_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesHtTrendline_200ResponseMetaIndicator')
 
 const GetTimeSeriesHtTrendline_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesHtTrendline_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        indicator: GetTimeSeriesHtTrendline_200ResponseMetaIndicatorSchema.exactOptional(),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -18309,10 +18962,31 @@ const GetTimeSeriesHtTrendMode_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesHtTrendMode_200ResponseMetaIndicator')
 
 const GetTimeSeriesHtTrendMode_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesHtTrendMode_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        indicator: GetTimeSeriesHtTrendMode_200ResponseMetaIndicatorSchema.exactOptional(),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -18521,10 +19195,29 @@ const GetTimeSeriesIchimoku_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesIchimoku_200ResponseMetaIndicator')
 
 const GetTimeSeriesIchimoku_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesIchimoku_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: GetTimeSeriesIchimoku_200ResponseMetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -19106,10 +19799,29 @@ const GetTimeSeriesKama_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesKama_200ResponseMetaIndicator')
 
 const GetTimeSeriesKama_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesKama_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: GetTimeSeriesKama_200ResponseMetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -19301,10 +20013,29 @@ const GetTimeSeriesKeltner_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesKeltner_200ResponseMetaIndicator')
 
 const GetTimeSeriesKeltner_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesKeltner_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: GetTimeSeriesKeltner_200ResponseMetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -19769,10 +20500,29 @@ const GetTimeSeriesKst_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesKst_200ResponseMetaIndicator')
 
 const GetTimeSeriesKst_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesKst_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: GetTimeSeriesKst_200ResponseMetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -19989,10 +20739,29 @@ const GetTimeSeriesLinearReg_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesLinearReg_200ResponseMetaIndicator')
 
 const GetTimeSeriesLinearReg_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesLinearReg_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: GetTimeSeriesLinearReg_200ResponseMetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -20140,12 +20909,31 @@ const GetTimeSeriesLinearRegAngle_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesLinearRegAngle_200ResponseMetaIndicator')
 
 const GetTimeSeriesLinearRegAngle_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({
-      indicator: GetTimeSeriesLinearRegAngle_200ResponseMetaIndicatorSchema.exactOptional(),
-    })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        indicator: GetTimeSeriesLinearRegAngle_200ResponseMetaIndicatorSchema.exactOptional(),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -20293,12 +21081,31 @@ const GetTimeSeriesLinearRegIntercept_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesLinearRegIntercept_200ResponseMetaIndicator')
 
 const GetTimeSeriesLinearRegIntercept_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({
-      indicator: GetTimeSeriesLinearRegIntercept_200ResponseMetaIndicatorSchema.exactOptional(),
-    })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        indicator: GetTimeSeriesLinearRegIntercept_200ResponseMetaIndicatorSchema.exactOptional(),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -20446,12 +21253,31 @@ const GetTimeSeriesLinearRegSlope_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesLinearRegSlope_200ResponseMetaIndicator')
 
 const GetTimeSeriesLinearRegSlope_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({
-      indicator: GetTimeSeriesLinearRegSlope_200ResponseMetaIndicatorSchema.exactOptional(),
-    })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        indicator: GetTimeSeriesLinearRegSlope_200ResponseMetaIndicatorSchema.exactOptional(),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -20581,10 +21407,29 @@ const GetTimeSeriesLn_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesLn_200ResponseMetaIndicator')
 
 const GetTimeSeriesLn_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesLn_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: GetTimeSeriesLn_200ResponseMetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -20714,10 +21559,29 @@ const GetTimeSeriesLog10_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesLog10_200ResponseMetaIndicator')
 
 const GetTimeSeriesLog10_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesLog10_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: GetTimeSeriesLog10_200ResponseMetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -20935,10 +21799,29 @@ const GetTimeSeriesMa_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesMa_200ResponseMetaIndicator')
 
 const GetTimeSeriesMa_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesMa_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: GetTimeSeriesMa_200ResponseMetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -21122,10 +22005,29 @@ const GetTimeSeriesMacd_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesMacd_200ResponseMetaIndicator')
 
 const GetTimeSeriesMacd_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesMacd_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: GetTimeSeriesMacd_200ResponseMetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -21343,10 +22245,29 @@ const GetTimeSeriesMacdSlope_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesMacdSlope_200ResponseMetaIndicator')
 
 const GetTimeSeriesMacdSlope_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesMacdSlope_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: GetTimeSeriesMacdSlope_200ResponseMetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -21579,10 +22500,29 @@ const GetTimeSeriesMacdExt_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesMacdExt_200ResponseMetaIndicator')
 
 const GetTimeSeriesMacdExt_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesMacdExt_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: GetTimeSeriesMacdExt_200ResponseMetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -21744,10 +22684,29 @@ const GetTimeSeriesMama_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesMama_200ResponseMetaIndicator')
 
 const GetTimeSeriesMama_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesMama_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: GetTimeSeriesMama_200ResponseMetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -22013,10 +22972,29 @@ const GetTimeSeriesMax_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesMax_200ResponseMetaIndicator')
 
 const GetTimeSeriesMax_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesMax_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: GetTimeSeriesMax_200ResponseMetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -22164,10 +23142,29 @@ const GetTimeSeriesMaxIndex_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesMaxIndex_200ResponseMetaIndicator')
 
 const GetTimeSeriesMaxIndex_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesMaxIndex_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: GetTimeSeriesMaxIndex_200ResponseMetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -22307,12 +23304,31 @@ const GetTimeSeriesMcGinleyDynamic_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesMcGinleyDynamic_200ResponseMetaIndicator')
 
 const GetTimeSeriesMcGinleyDynamic_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({
-      indicator: GetTimeSeriesMcGinleyDynamic_200ResponseMetaIndicatorSchema.exactOptional(),
-    })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        indicator: GetTimeSeriesMcGinleyDynamic_200ResponseMetaIndicatorSchema.exactOptional(),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -22434,10 +23450,29 @@ const GetTimeSeriesMedPrice_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesMedPrice_200ResponseMetaIndicator')
 
 const GetTimeSeriesMedPrice_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesMedPrice_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: GetTimeSeriesMedPrice_200ResponseMetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -22577,10 +23612,29 @@ const GetTimeSeriesMfi_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesMfi_200ResponseMetaIndicator')
 
 const GetTimeSeriesMfi_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesMfi_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: GetTimeSeriesMfi_200ResponseMetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -22728,10 +23782,29 @@ const GetTimeSeriesMidPoint_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesMidPoint_200ResponseMetaIndicator')
 
 const GetTimeSeriesMidPoint_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesMidPoint_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: GetTimeSeriesMidPoint_200ResponseMetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -22871,10 +23944,29 @@ const GetTimeSeriesMidPrice_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesMidPrice_200ResponseMetaIndicator')
 
 const GetTimeSeriesMidPrice_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesMidPrice_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: GetTimeSeriesMidPrice_200ResponseMetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -23022,10 +24114,29 @@ const GetTimeSeriesMin_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesMin_200ResponseMetaIndicator')
 
 const GetTimeSeriesMin_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesMin_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: GetTimeSeriesMin_200ResponseMetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -23173,10 +24284,29 @@ const GetTimeSeriesMinIndex_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesMinIndex_200ResponseMetaIndicator')
 
 const GetTimeSeriesMinIndex_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesMinIndex_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: GetTimeSeriesMinIndex_200ResponseMetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -23324,10 +24454,29 @@ const GetTimeSeriesMinMax_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesMinMax_200ResponseMetaIndicator')
 
 const GetTimeSeriesMinMax_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesMinMax_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: GetTimeSeriesMinMax_200ResponseMetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -23483,10 +24632,31 @@ const GetTimeSeriesMinMaxIndex_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesMinMaxIndex_200ResponseMetaIndicator')
 
 const GetTimeSeriesMinMaxIndex_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesMinMaxIndex_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        indicator: GetTimeSeriesMinMaxIndex_200ResponseMetaIndicatorSchema.exactOptional(),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -23634,10 +24804,29 @@ const GetTimeSeriesMinusDI_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesMinusDI_200ResponseMetaIndicator')
 
 const GetTimeSeriesMinusDI_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesMinusDI_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: GetTimeSeriesMinusDI_200ResponseMetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -23777,10 +24966,29 @@ const GetTimeSeriesMinusDM_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesMinusDM_200ResponseMetaIndicator')
 
 const GetTimeSeriesMinusDM_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesMinusDM_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: GetTimeSeriesMinusDM_200ResponseMetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -23928,10 +25136,29 @@ const GetTimeSeriesMom_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesMom_200ResponseMetaIndicator')
 
 const GetTimeSeriesMom_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesMom_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: GetTimeSeriesMom_200ResponseMetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -24155,10 +25382,29 @@ const GetTimeSeriesMult_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesMult_200ResponseMetaIndicator')
 
 const GetTimeSeriesMult_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesMult_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: GetTimeSeriesMult_200ResponseMetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -25023,10 +26269,29 @@ const GetTimeSeriesNatr_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesNatr_200ResponseMetaIndicator')
 
 const GetTimeSeriesNatr_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesNatr_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: GetTimeSeriesNatr_200ResponseMetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -25156,10 +26421,29 @@ const GetTimeSeriesObv_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesObv_200ResponseMetaIndicator')
 
 const GetTimeSeriesObv_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesObv_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: GetTimeSeriesObv_200ResponseMetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -25323,10 +26607,29 @@ const GetTimeSeriesPercentB_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesPercentB_200ResponseMetaIndicator')
 
 const GetTimeSeriesPercentB_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesPercentB_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: GetTimeSeriesPercentB_200ResponseMetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -25466,12 +26769,31 @@ const GetTimeSeriesPivotPointsHL_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesPivotPointsHL_200ResponseMetaIndicator')
 
 const GetTimeSeriesPivotPointsHL_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({
-      indicator: GetTimeSeriesPivotPointsHL_200ResponseMetaIndicatorSchema.exactOptional(),
-    })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        indicator: GetTimeSeriesPivotPointsHL_200ResponseMetaIndicatorSchema.exactOptional(),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -25639,10 +26961,29 @@ const GetTimeSeriesPlusDI_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesPlusDI_200ResponseMetaIndicator')
 
 const GetTimeSeriesPlusDI_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesPlusDI_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: GetTimeSeriesPlusDI_200ResponseMetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -25782,10 +27123,29 @@ const GetTimeSeriesPlusDM_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesPlusDM_200ResponseMetaIndicator')
 
 const GetTimeSeriesPlusDM_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesPlusDM_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: GetTimeSeriesPlusDM_200ResponseMetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -25959,10 +27319,29 @@ const GetTimeSeriesPpo_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesPpo_200ResponseMetaIndicator')
 
 const GetTimeSeriesPpo_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesPpo_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: GetTimeSeriesPpo_200ResponseMetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -27460,10 +28839,29 @@ const GetTimeSeriesRoc_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesRoc_200ResponseMetaIndicator')
 
 const GetTimeSeriesRoc_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesRoc_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: GetTimeSeriesRoc_200ResponseMetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -27611,10 +29009,29 @@ const GetTimeSeriesRocp_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesRocp_200ResponseMetaIndicator')
 
 const GetTimeSeriesRocp_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesRocp_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: GetTimeSeriesRocp_200ResponseMetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -27762,10 +29179,29 @@ const GetTimeSeriesRocr_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesRocr_200ResponseMetaIndicator')
 
 const GetTimeSeriesRocr_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesRocr_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: GetTimeSeriesRocr_200ResponseMetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -27913,10 +29349,29 @@ const GetTimeSeriesRocr100_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesRocr100_200ResponseMetaIndicator')
 
 const GetTimeSeriesRocr100_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesRocr100_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: GetTimeSeriesRocr100_200ResponseMetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -28064,10 +29519,29 @@ const GetTimeSeriesRsi_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesRsi_200ResponseMetaIndicator')
 
 const GetTimeSeriesRsi_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesRsi_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: GetTimeSeriesRsi_200ResponseMetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -28207,10 +29681,29 @@ const GetTimeSeriesRvol_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesRvol_200ResponseMetaIndicator')
 
 const GetTimeSeriesRvol_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesRvol_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: GetTimeSeriesRvol_200ResponseMetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -28387,10 +29880,29 @@ const GetTimeSeriesSar_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesSar_200ResponseMetaIndicator')
 
 const GetTimeSeriesSar_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesSar_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: GetTimeSeriesSar_200ResponseMetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -28586,10 +30098,29 @@ const GetTimeSeriesSarExt_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesSarExt_200ResponseMetaIndicator')
 
 const GetTimeSeriesSarExt_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesSarExt_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: GetTimeSeriesSarExt_200ResponseMetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -28737,10 +30268,29 @@ const GetTimeSeriesSma_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesSma_200ResponseMetaIndicator')
 
 const GetTimeSeriesSma_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesSma_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: GetTimeSeriesSma_200ResponseMetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -28985,10 +30535,29 @@ const GetTimeSeriesSqrt_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesSqrt_200ResponseMetaIndicator')
 
 const GetTimeSeriesSqrt_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesSqrt_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: GetTimeSeriesSqrt_200ResponseMetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -29892,10 +31461,29 @@ const GetTimeSeriesStdDev_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesStdDev_200ResponseMetaIndicator')
 
 const GetTimeSeriesStdDev_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesStdDev_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: GetTimeSeriesStdDev_200ResponseMetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -30094,10 +31682,29 @@ const GetTimeSeriesStoch_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesStoch_200ResponseMetaIndicator')
 
 const GetTimeSeriesStoch_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesStoch_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: GetTimeSeriesStoch_200ResponseMetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -30271,10 +31878,29 @@ const GetTimeSeriesStochF_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesStochF_200ResponseMetaIndicator')
 
 const GetTimeSeriesStochF_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesStochF_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: GetTimeSeriesStochF_200ResponseMetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -30484,10 +32110,29 @@ const GetTimeSeriesStochRsi_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesStochRsi_200ResponseMetaIndicator')
 
 const GetTimeSeriesStochRsi_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesStochRsi_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: GetTimeSeriesStochRsi_200ResponseMetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -30652,10 +32297,29 @@ const GetTimeSeriesSub_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesSub_200ResponseMetaIndicator')
 
 const GetTimeSeriesSub_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesSub_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: GetTimeSeriesSub_200ResponseMetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -30803,10 +32467,29 @@ const GetTimeSeriesSum_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesSum_200ResponseMetaIndicator')
 
 const GetTimeSeriesSum_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesSum_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: GetTimeSeriesSum_200ResponseMetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -30964,10 +32647,29 @@ const GetTimeSeriesSuperTrend_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesSuperTrend_200ResponseMetaIndicator')
 
 const GetTimeSeriesSuperTrend_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesSuperTrend_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: GetTimeSeriesSuperTrend_200ResponseMetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -31126,13 +32828,32 @@ const GetTimeSeriesSuperTrendHeikinAshiCandles_200ResponseMetaIndicatorSchema = 
 
 const GetTimeSeriesSuperTrendHeikinAshiCandles_200ResponseMetaSchema =
   TimeSeriesIndicatorMetaSchema.and(
-    z
-      .object({
-        indicator:
-          GetTimeSeriesSuperTrendHeikinAshiCandles_200ResponseMetaIndicatorSchema.exactOptional(),
-      })
-      .openapi({ required: [] }),
+    z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
   )
+    .superRefine((val, ctx) => {
+      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+        if (!Object.hasOwn(val, 'indicator')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+        if (!Object.hasOwn(val, 'interval')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+        if (!Object.hasOwn(val, 'symbol')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+        if (!Object.hasOwn(val, 'type')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+      }
+    })
+    .and(
+      z
+        .object({
+          indicator:
+            GetTimeSeriesSuperTrendHeikinAshiCandles_200ResponseMetaIndicatorSchema.exactOptional(),
+        })
+        .openapi({ required: [] }),
+    )
     .openapi({
       description: 'Json object with request general information',
       required: ['indicator', 'interval', 'symbol', 'type'],
@@ -31350,10 +33071,29 @@ const GetTimeSeriesT3ma_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesT3ma_200ResponseMetaIndicator')
 
 const GetTimeSeriesT3ma_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesT3ma_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: GetTimeSeriesT3ma_200ResponseMetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -31657,10 +33397,29 @@ const GetTimeSeriesTema_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesTema_200ResponseMetaIndicator')
 
 const GetTimeSeriesTema_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesTema_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: GetTimeSeriesTema_200ResponseMetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -31886,10 +33645,29 @@ const GetTimeSeriesTRange_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesTRange_200ResponseMetaIndicator')
 
 const GetTimeSeriesTRange_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesTRange_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: GetTimeSeriesTRange_200ResponseMetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -32037,10 +33815,29 @@ const GetTimeSeriesTrima_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesTrima_200ResponseMetaIndicator')
 
 const GetTimeSeriesTrima_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesTrima_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: GetTimeSeriesTrima_200ResponseMetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -32188,10 +33985,29 @@ const GetTimeSeriesTsf_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesTsf_200ResponseMetaIndicator')
 
 const GetTimeSeriesTsf_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesTsf_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: GetTimeSeriesTsf_200ResponseMetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -32313,10 +34129,29 @@ const GetTimeSeriesTypPrice_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesTypPrice_200ResponseMetaIndicator')
 
 const GetTimeSeriesTypPrice_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesTypPrice_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: GetTimeSeriesTypPrice_200ResponseMetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -32492,10 +34327,29 @@ const GetTimeSeriesUltOsc_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesUltOsc_200ResponseMetaIndicator')
 
 const GetTimeSeriesUltOsc_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesUltOsc_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: GetTimeSeriesUltOsc_200ResponseMetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -32643,10 +34497,29 @@ const GetTimeSeriesVar_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesVar_200ResponseMetaIndicator')
 
 const GetTimeSeriesVar_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesVar_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: GetTimeSeriesVar_200ResponseMetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -32794,10 +34667,29 @@ const GetTimeSeriesVwap_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesVwap_200ResponseMetaIndicator')
 
 const GetTimeSeriesVwap_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesVwap_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: GetTimeSeriesVwap_200ResponseMetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -32889,10 +34781,29 @@ const GetTimeSeriesWclPrice_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesWclPrice_200ResponseMetaIndicator')
 
 const GetTimeSeriesWclPrice_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesWclPrice_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: GetTimeSeriesWclPrice_200ResponseMetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -33032,10 +34943,29 @@ const GetTimeSeriesWillR_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesWillR_200ResponseMetaIndicator')
 
 const GetTimeSeriesWillR_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesWillR_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: GetTimeSeriesWillR_200ResponseMetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -33183,10 +35113,29 @@ const GetTimeSeriesWma_200ResponseMetaIndicatorSchema = z
   .openapi('GetTimeSeriesWma_200ResponseMetaIndicator')
 
 const GetTimeSeriesWma_200ResponseMetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: GetTimeSeriesWma_200ResponseMetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: GetTimeSeriesWma_200ResponseMetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -33351,7 +35300,7 @@ const InlineObject_2MinimumsSchema = z
       .exactOptional()
       .openapi({ type: 'integer', format: 'int64', 'x-go-name': 'AdditionalInvestment' }),
     additional_ira_investment: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ 'x-go-name': 'AdditionalIraInvestment' }),
     initial_investment: z
@@ -33367,7 +35316,7 @@ const InlineObject_2MinimumsSchema = z
       .exactOptional()
       .openapi({ type: 'integer', format: 'int64', 'x-go-name': 'InitialInvestment' }),
     initial_ira_investment: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ 'x-go-name': 'InitialIraInvestment' }),
   })
@@ -33514,10 +35463,29 @@ const InlineObject_8MetaIndicatorSchema = z
   .openapi('InlineObject_8MetaIndicator')
 
 const InlineObject_8MetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: InlineObject_8MetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: InlineObject_8MetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -33647,10 +35615,29 @@ const InlineObject_9MetaIndicatorSchema = z
   .openapi('InlineObject_9MetaIndicator')
 
 const InlineObject_9MetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: InlineObject_9MetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: InlineObject_9MetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -33780,10 +35767,29 @@ const InlineObject_10MetaIndicatorSchema = z
   .openapi('InlineObject_10MetaIndicator')
 
 const InlineObject_10MetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: InlineObject_10MetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: InlineObject_10MetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -33913,10 +35919,29 @@ const InlineObject_11MetaIndicatorSchema = z
   .openapi('InlineObject_11MetaIndicator')
 
 const InlineObject_11MetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: InlineObject_11MetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: InlineObject_11MetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -34046,10 +36071,29 @@ const InlineObject_12MetaIndicatorSchema = z
   .openapi('InlineObject_12MetaIndicator')
 
 const InlineObject_12MetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: InlineObject_12MetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: InlineObject_12MetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -34201,10 +36245,26 @@ const InlineObject_13MetaIndicatorSchema = z
   .openapi('InlineObject_13MetaIndicator')
 
 const InlineObject_13MetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: InlineObject_13MetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: InlineObject_13MetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({ required: ['interval', 'symbol', 'type'], 'x-go-name': 'Meta' })
   .openapi('InlineObject_13Meta')
 
@@ -34303,10 +36363,29 @@ const InlineObject_14MetaIndicatorSchema = z
   .openapi('InlineObject_14MetaIndicator')
 
 const InlineObject_14MetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: InlineObject_14MetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: InlineObject_14MetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -34436,10 +36515,29 @@ const InlineObject_15MetaIndicatorSchema = z
   .openapi('InlineObject_15MetaIndicator')
 
 const InlineObject_15MetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: InlineObject_15MetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: InlineObject_15MetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -34569,10 +36667,29 @@ const InlineObject_16MetaIndicatorSchema = z
   .openapi('InlineObject_16MetaIndicator')
 
 const InlineObject_16MetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: InlineObject_16MetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: InlineObject_16MetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -34702,10 +36819,29 @@ const InlineObject_17MetaIndicatorSchema = z
   .openapi('InlineObject_17MetaIndicator')
 
 const InlineObject_17MetaSchema = TimeSeriesIndicatorMetaSchema.and(
-  z
-    .object({ indicator: InlineObject_17MetaIndicatorSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['indicator', 'interval', 'symbol', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'indicator')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'interval')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'symbol')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ indicator: InlineObject_17MetaIndicatorSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'Json object with request general information',
     required: ['indicator', 'interval', 'symbol', 'type'],
@@ -35139,137 +37275,104 @@ const MarketMoversResponseValueResponse = {
   description: '',
   content: {},
   headers: z.object({
-    volume: {
-      description: 'The trading volume of the symbol today',
-      schema: z
-        .preprocess(
-          (val) =>
-            typeof val === 'number' && Number.isSafeInteger(val)
+    volume: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
-              : typeof val === 'string' && /^-?\d+$/.test(val)
-                ? BigInt(val)
-                : val,
-          z.int64(),
-        )
-        .exactOptional()
-        .openapi({
-          description: 'The trading volume of the symbol today',
-          param: { required: false },
-          type: 'integer',
-          format: 'int64',
-          examples: [108297],
-        }),
-    },
-    symbol: {
-      description: 'The exchange symbol ticker',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'The exchange symbol ticker',
-          param: { required: false },
-          examples: ['BSET'],
-        }),
-    },
-    datetime: {
-      description: 'The last updated datetime timestamp',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'The last updated datetime timestamp',
-          param: { required: false },
-          examples: ['2023-10-01 12:00:00Z'],
-        }),
-    },
-    high: {
-      description: 'The highest price for the symbol today',
-      schema: z
-        .float64()
-        .exactOptional()
-        .openapi({
-          description: 'The highest price for the symbol today',
-          param: { required: false },
-          examples: [18],
-        }),
-    },
-    mic_code: {
-      description: 'Market identifier code (MIC) under ISO 10383 standard',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Market identifier code (MIC) under ISO 10383 standard',
-          param: { required: false },
-          examples: ['XNAS'],
-        }),
-    },
-    last: {
-      description: 'The latest available price for the symbol today',
-      schema: z
-        .float64()
-        .exactOptional()
-        .openapi({
-          description: 'The latest available price for the symbol today',
-          param: { required: false },
-          examples: [17.25],
-        }),
-    },
-    low: {
-      description: 'The lowest price for the symbol today',
-      schema: z
-        .float64()
-        .exactOptional()
-        .openapi({
-          description: 'The lowest price for the symbol today',
-          param: { required: false },
-          examples: [16.5],
-        }),
-    },
-    change: {
-      description: 'The value of the change since the previous day',
-      schema: z
-        .float64()
-        .exactOptional()
-        .openapi({
-          description: 'The value of the change since the previous day',
-          param: { required: false },
-          examples: [3.31],
-        }),
-    },
-    name: {
-      description: 'The official name of the instrument',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'The official name of the instrument',
-          param: { required: false },
-          examples: ['Bassett Furniture Industries Inc'],
-        }),
-    },
-    exchange: {
-      description: 'Exchange where instrument is traded',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Exchange where instrument is traded',
-          param: { required: false },
-          examples: ['NASDAQ'],
-        }),
-    },
-    percent_change: {
-      description: 'The percentage change since the previous day',
-      schema: z
-        .float64()
-        .exactOptional()
-        .openapi({
-          description: 'The percentage change since the previous day',
-          param: { required: false },
-          examples: [23.74462],
-        }),
-    },
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        description: 'The trading volume of the symbol today',
+        param: { required: false },
+        type: 'integer',
+        format: 'int64',
+        examples: [108297],
+      }),
+    symbol: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The exchange symbol ticker',
+        param: { required: false },
+        examples: ['BSET'],
+      }),
+    datetime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The last updated datetime timestamp',
+        param: { required: false },
+        examples: ['2023-10-01 12:00:00Z'],
+      }),
+    high: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description: 'The highest price for the symbol today',
+        param: { required: false },
+        examples: [18],
+      }),
+    mic_code: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Market identifier code (MIC) under ISO 10383 standard',
+        param: { required: false },
+        examples: ['XNAS'],
+      }),
+    last: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description: 'The latest available price for the symbol today',
+        param: { required: false },
+        examples: [17.25],
+      }),
+    low: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description: 'The lowest price for the symbol today',
+        param: { required: false },
+        examples: [16.5],
+      }),
+    change: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description: 'The value of the change since the previous day',
+        param: { required: false },
+        examples: [3.31],
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The official name of the instrument',
+        param: { required: false },
+        examples: ['Bassett Furniture Industries Inc'],
+      }),
+    exchange: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Exchange where instrument is traded',
+        param: { required: false },
+        examples: ['NASDAQ'],
+      }),
+    percent_change: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description: 'The percentage change since the previous day',
+        param: { required: false },
+        examples: [23.74462],
+      }),
   }),
 }
 
@@ -36223,7 +38326,7 @@ export const getAdRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -36273,7 +38376,7 @@ export const getAdRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -36696,7 +38799,7 @@ export const getAddRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -36746,7 +38849,7 @@ export const getAddRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -37191,7 +39294,7 @@ export const getAdoscRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -37241,7 +39344,7 @@ export const getAdoscRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -37724,7 +39827,7 @@ export const getAdxRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -37774,7 +39877,7 @@ export const getAdxRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -38227,7 +40330,7 @@ export const getAdxrRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -38277,7 +40380,7 @@ export const getAdxrRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -38755,7 +40858,7 @@ export const getAnalystRatingsLightRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -38780,7 +40883,7 @@ export const getAnalystRatingsLightRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -38994,7 +41097,7 @@ export const getAnalystRatingsUsEquitiesRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -39019,7 +41122,7 @@ export const getAnalystRatingsUsEquitiesRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -39157,7 +41260,7 @@ export const getApiUsageRoute = createRoute({
   tags: ['advanced'],
   summary: 'API usage',
   description:
-    'The API Usage endpoint provides detailed information on your current API usage statistics. It returns data such as the number of requests made, remaining requests, and the reset time for your usage limits. This endpoint is essential for monitoring and managing your API consumption to ensure you stay within your allocated limits.',
+    "The API Usage endpoint returns your API credit usage for the current minute (`current_usage`) and your plan's per-minute limit (`plan_limit`). API credits are counted per minute on every plan. Only the Basic plan has a daily cap of 800 API credits, which resets at midnight UTC. Paid plans have no daily limit, so `daily_usage` and `plan_daily_limit` are returned only on the Basic plan. Use this endpoint to check how close you are to your limit before sending more requests.",
   operationId: 'GetApiUsage',
   request: {
     query: z.object({
@@ -39285,7 +41388,7 @@ export const getApoRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -39335,7 +41438,7 @@ export const getApoRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -39840,7 +41943,7 @@ export const getAroonRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -39890,7 +41993,7 @@ export const getAroonRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -40343,7 +42446,7 @@ export const getAroonoscRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -40393,7 +42496,7 @@ export const getAroonoscRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -40846,7 +42949,7 @@ export const getAtrRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -40896,7 +42999,7 @@ export const getAtrRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -41349,7 +43452,7 @@ export const getAvgRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -41399,7 +43502,7 @@ export const getAvgRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -41863,7 +43966,7 @@ export const getAvgpriceRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -41913,7 +44016,7 @@ export const getAvgpriceRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -42362,7 +44465,7 @@ export const getBalanceSheetRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -42387,7 +44490,7 @@ export const getBalanceSheetRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -42637,7 +44740,7 @@ export const getBalanceSheetConsolidatedRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -42662,7 +44765,7 @@ export const getBalanceSheetConsolidatedRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -42937,7 +45040,7 @@ export const getBbandsRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -42987,7 +45090,7 @@ export const getBbandsRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -43493,7 +45596,7 @@ export const getBetaRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -43543,7 +45646,7 @@ export const getBetaRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -44209,7 +46312,7 @@ export const getBopRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -44259,7 +46362,7 @@ export const getBopRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -44708,7 +46811,7 @@ export const getCashFlowRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -44733,7 +46836,7 @@ export const getCashFlowRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -44983,7 +47086,7 @@ export const getCashFlowConsolidatedRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -45008,7 +47111,7 @@ export const getCashFlowConsolidatedRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -45232,7 +47335,7 @@ export const getCciRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -45282,7 +47385,7 @@ export const getCciRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -45735,7 +47838,7 @@ export const getCeilRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -45785,7 +47888,7 @@ export const getCeilRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -46219,7 +48322,7 @@ export const getCmoRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -46269,7 +48372,7 @@ export const getCmoRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -46896,7 +48999,7 @@ export const getCoppockRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -46946,7 +49049,7 @@ export const getCoppockRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -47470,7 +49573,7 @@ export const getCorrelRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -47520,7 +49623,7 @@ export const getCorrelRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -48154,7 +50257,7 @@ export const getCrsiRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -48204,7 +50307,7 @@ export const getCrsiRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -49164,7 +51267,7 @@ export const getDemaRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -49214,7 +51317,7 @@ export const getDemaRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -49704,7 +51807,7 @@ export const getDirectHoldersRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -49729,7 +51832,7 @@ export const getDirectHoldersRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -49877,7 +51980,7 @@ export const getDivRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -49927,7 +52030,7 @@ export const getDivRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -50398,7 +52501,7 @@ export const getDividendsRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -50423,7 +52526,7 @@ export const getDividendsRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -50648,7 +52751,7 @@ export const getDividendsCalendarRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: { type: 'string', 'x-go-name': 'Isin', 'x-order': '3' },
@@ -50666,7 +52769,7 @@ export const getDividendsCalendarRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: { type: 'string', 'x-go-name': 'Cusip', 'x-order': '4' },
@@ -50902,7 +53005,7 @@ export const getDpoRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -50952,7 +53055,7 @@ export const getDpoRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -51433,7 +53536,7 @@ export const getDxRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -51483,7 +53586,7 @@ export const getDxRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -51961,7 +54064,7 @@ export const getEarliestTimestampRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -51986,7 +54089,7 @@ export const getEarliestTimestampRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -52171,7 +54274,7 @@ export const getEarningsRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -52196,7 +54299,7 @@ export const getEarningsRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -52710,7 +54813,7 @@ export const getEarningsEstimateRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -52735,7 +54838,7 @@ export const getEarningsEstimateRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -52910,7 +55013,7 @@ export const getEdgarFilingsArchiveRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -52935,7 +55038,7 @@ export const getEdgarFilingsArchiveRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -53192,7 +55295,7 @@ export const getEmaRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -53242,7 +55345,7 @@ export const getEmaRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -53731,7 +55834,7 @@ export const getEodRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -53756,7 +55859,7 @@ export const getEodRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -54003,7 +56106,7 @@ export const getEpsRevisionsRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -54028,7 +56131,7 @@ export const getEpsRevisionsRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -54202,7 +56305,7 @@ export const getEpsTrendRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -54227,7 +56330,7 @@ export const getEpsTrendRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -54383,7 +56486,7 @@ export const getEtfsRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: { type: 'string', 'x-go-name': 'Isin' },
@@ -54399,7 +56502,7 @@ export const getEtfsRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: { type: 'string', 'x-go-name': 'Cusip' },
@@ -54731,7 +56834,7 @@ export const getEtfsListRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: { type: 'string', 'x-go-name': 'Isin' },
@@ -54747,7 +56850,7 @@ export const getEtfsListRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: { type: 'string', 'x-go-name': 'Cusip' },
@@ -55090,7 +57193,7 @@ export const getEtfsWorldRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -55115,7 +57218,7 @@ export const getEtfsWorldRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -55284,7 +57387,7 @@ export const getEtfsWorldCompositionRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -55309,7 +57412,7 @@ export const getEtfsWorldCompositionRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -55478,7 +57581,7 @@ export const getEtfsWorldPerformanceRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -55503,7 +57606,7 @@ export const getEtfsWorldPerformanceRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -55672,7 +57775,7 @@ export const getEtfsWorldRiskRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -55697,7 +57800,7 @@ export const getEtfsWorldRiskRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -55866,7 +57969,7 @@ export const getEtfsWorldSummaryRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -55891,7 +57994,7 @@ export const getEtfsWorldSummaryRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -56467,7 +58570,7 @@ export const getExpRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -56517,7 +58620,7 @@ export const getExpRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -56951,7 +59054,7 @@ export const getFloorRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -57001,7 +59104,7 @@ export const getFloorRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -57622,7 +59725,7 @@ export const getFundHoldersRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -57647,7 +59750,7 @@ export const getFundHoldersRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -57802,7 +59905,7 @@ export const getFundsRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: { type: 'string', 'x-go-name': 'Isin' },
@@ -57818,7 +59921,7 @@ export const getFundsRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: { type: 'string', 'x-go-name': 'Cusip' },
@@ -58015,7 +60118,7 @@ export const getGrowthEstimatesRoute = createRoute({
   tags: ['analysis'],
   summary: 'Growth estimates',
   description:
-    "The growth estimates endpoint provides consensus analyst projections on a company's growth rates over various timeframes. It aggregates and averages estimates from multiple analysts, focusing on key financial metrics such as earnings per share and revenue. This endpoint is useful for obtaining a comprehensive view of expected company performance based on expert analysis.",
+    'Consensus analyst estimates of EPS growth (adjusted, diluted) for the current and next quarter, current and next year, and the next 5 years, plus actual growth over the past 5 years.',
   operationId: 'GetGrowthEstimates',
   request: {
     query: z.object({
@@ -58074,7 +60177,7 @@ export const getGrowthEstimatesRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -58099,7 +60202,7 @@ export const getGrowthEstimatesRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -58249,7 +60352,7 @@ export const getHeikinashicandlesRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -58299,7 +60402,7 @@ export const getHeikinashicandlesRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -58722,7 +60825,7 @@ export const getHlc3Route = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -58772,7 +60875,7 @@ export const getHlc3Route = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -59195,7 +61298,7 @@ export const getHtDcperiodRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -59245,7 +61348,7 @@ export const getHtDcperiodRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -59679,7 +61782,7 @@ export const getHtDcphaseRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -59729,7 +61832,7 @@ export const getHtDcphaseRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -60163,7 +62266,7 @@ export const getHtPhasorRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -60213,7 +62316,7 @@ export const getHtPhasorRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -60647,7 +62750,7 @@ export const getHtSineRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -60697,7 +62800,7 @@ export const getHtSineRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -61131,7 +63234,7 @@ export const getHtTrendlineRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -61181,7 +63284,7 @@ export const getHtTrendlineRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -61615,7 +63718,7 @@ export const getHtTrendmodeRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -61665,7 +63768,7 @@ export const getHtTrendmodeRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -62099,7 +64202,7 @@ export const getIchimokuRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -62149,7 +64252,7 @@ export const getIchimokuRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -62740,7 +64843,7 @@ export const getIncomeStatementRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -62765,7 +64868,7 @@ export const getIncomeStatementRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -63016,7 +65119,7 @@ export const getIncomeStatementConsolidatedRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -63041,7 +65144,7 @@ export const getIncomeStatementConsolidatedRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -63291,7 +65394,7 @@ export const getInsiderTransactionsRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -63316,7 +65419,7 @@ export const getInsiderTransactionsRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -63490,7 +65593,7 @@ export const getInstitutionalHoldersRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -63515,7 +65618,7 @@ export const getInstitutionalHoldersRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -63888,7 +65991,7 @@ export const getKamaRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -63938,7 +66041,7 @@ export const getKamaRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -64402,7 +66505,7 @@ export const getKeltnerRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -64452,7 +66555,7 @@ export const getKeltnerRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -65012,7 +67115,7 @@ export const getKeyExecutivesRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -65037,7 +67140,7 @@ export const getKeyExecutivesRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -65185,7 +67288,7 @@ export const getKstRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -65235,7 +67338,7 @@ export const getKstRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -66125,7 +68228,7 @@ export const getLinearregRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -66175,7 +68278,7 @@ export const getLinearregRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -66639,7 +68742,7 @@ export const getLinearregangleRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -66689,7 +68792,7 @@ export const getLinearregangleRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -67153,7 +69256,7 @@ export const getLinearreginterceptRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -67203,7 +69306,7 @@ export const getLinearreginterceptRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -67669,7 +69772,7 @@ export const getLinearregslopeRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -67719,7 +69822,7 @@ export const getLinearregslopeRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -68183,7 +70286,7 @@ export const getLnRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -68233,7 +70336,7 @@ export const getLnRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -68667,7 +70770,7 @@ export const getLog10Route = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -68717,7 +70820,7 @@ export const getLog10Route = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -69269,7 +71372,7 @@ export const getMaRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -69319,7 +71422,7 @@ export const getMaRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -69794,7 +71897,7 @@ export const getMacdRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -69844,7 +71947,7 @@ export const getMacdRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -70367,7 +72470,7 @@ export const getMacdSlopeRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -70417,7 +72520,7 @@ export const getMacdSlopeRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -70970,7 +73073,7 @@ export const getMacdextRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -71020,7 +73123,7 @@ export const getMacdextRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -71576,7 +73679,7 @@ export const getMamaRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -71626,7 +73729,7 @@ export const getMamaRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -72147,7 +74250,7 @@ export const getMarketCapRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -72172,7 +74275,7 @@ export const getMarketCapRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -72679,7 +74782,7 @@ export const getMaxRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -72729,7 +74832,7 @@ export const getMaxRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -73193,7 +75296,7 @@ export const getMaxindexRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -73243,7 +75346,7 @@ export const getMaxindexRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -73707,7 +75810,7 @@ export const getMcginleyDynamicRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -73757,7 +75860,7 @@ export const getMcginleyDynamicRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -74210,7 +76313,7 @@ export const getMedpriceRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -74260,7 +76363,7 @@ export const getMedpriceRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -74683,7 +76786,7 @@ export const getMfiRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -74733,7 +76836,7 @@ export const getMfiRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -75186,7 +77289,7 @@ export const getMidpointRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -75236,7 +77339,7 @@ export const getMidpointRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -75700,7 +77803,7 @@ export const getMidpriceRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -75750,7 +77853,7 @@ export const getMidpriceRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -76203,7 +78306,7 @@ export const getMinRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -76253,7 +78356,7 @@ export const getMinRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -76717,7 +78820,7 @@ export const getMinindexRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -76767,7 +78870,7 @@ export const getMinindexRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -77231,7 +79334,7 @@ export const getMinmaxRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -77281,7 +79384,7 @@ export const getMinmaxRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -77745,7 +79848,7 @@ export const getMinmaxindexRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -77795,7 +79898,7 @@ export const getMinmaxindexRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -78259,7 +80362,7 @@ export const getMinusDiRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -78309,7 +80412,7 @@ export const getMinusDiRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -78762,7 +80865,7 @@ export const getMinusDmRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -78812,7 +80915,7 @@ export const getMinusDmRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -79265,7 +81368,7 @@ export const getMomRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -79315,7 +81418,7 @@ export const getMomRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -79955,7 +82058,7 @@ export const getMoneyMarketFundsWorldRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -80081,7 +82184,7 @@ export const getMultRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -80131,7 +82234,7 @@ export const getMultRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -80669,7 +82772,7 @@ export const getMutualFundsListRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: { type: 'string', 'x-go-name': 'Isin', 'x-order': '25' },
@@ -80687,7 +82790,7 @@ export const getMutualFundsListRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: { type: 'string', 'x-go-name': 'Cusip', 'x-order': '26' },
@@ -81123,7 +83226,7 @@ export const getMutualFundsWorldRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -81148,7 +83251,7 @@ export const getMutualFundsWorldRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -81317,7 +83420,7 @@ export const getMutualFundsWorldCompositionRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -81342,7 +83445,7 @@ export const getMutualFundsWorldCompositionRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -81511,7 +83614,7 @@ export const getMutualFundsWorldPerformanceRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -81536,7 +83639,7 @@ export const getMutualFundsWorldPerformanceRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -81705,7 +83808,7 @@ export const getMutualFundsWorldPurchaseInfoRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -81730,7 +83833,7 @@ export const getMutualFundsWorldPurchaseInfoRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -81901,7 +84004,7 @@ export const getMutualFundsWorldRatingsRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -81926,7 +84029,7 @@ export const getMutualFundsWorldRatingsRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -82095,7 +84198,7 @@ export const getMutualFundsWorldRiskRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -82120,7 +84223,7 @@ export const getMutualFundsWorldRiskRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -82289,7 +84392,7 @@ export const getMutualFundsWorldSummaryRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -82314,7 +84417,7 @@ export const getMutualFundsWorldSummaryRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -82483,7 +84586,7 @@ export const getMutualFundsWorldSustainabilityRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -82508,7 +84611,7 @@ export const getMutualFundsWorldSustainabilityRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -82654,7 +84757,7 @@ export const getNatrRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -82704,7 +84807,7 @@ export const getNatrRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -83157,7 +85260,7 @@ export const getObvRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -83207,7 +85310,7 @@ export const getObvRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -83641,7 +85744,7 @@ export const getPercentBRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -83691,7 +85794,7 @@ export const getPercentBRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -84197,7 +86300,7 @@ export const getPivotPointsHlRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -84247,7 +86350,7 @@ export const getPivotPointsHlRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -84700,7 +86803,7 @@ export const getPlusDiRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -84750,7 +86853,7 @@ export const getPlusDiRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -85203,7 +87306,7 @@ export const getPlusDmRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -85253,7 +87356,7 @@ export const getPlusDmRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -85706,7 +87809,7 @@ export const getPpoRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -85756,7 +87859,7 @@ export const getPpoRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -86287,7 +88390,7 @@ export const getPressReleasesRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -86312,7 +88415,7 @@ export const getPressReleasesRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -86600,7 +88703,7 @@ export const getPriceRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -86625,7 +88728,7 @@ export const getPriceRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -86886,7 +88989,7 @@ export const getPriceTargetRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -86911,7 +89014,7 @@ export const getPriceTargetRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -87086,7 +89189,7 @@ export const getProfileRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -87111,7 +89214,7 @@ export const getProfileRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -87284,7 +89387,7 @@ export const getQuoteRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -87309,7 +89412,7 @@ export const getQuoteRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -87680,7 +89783,7 @@ export const getRecommendationsRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -87705,7 +89808,7 @@ export const getRecommendationsRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -87880,7 +89983,7 @@ export const getRevenueEstimateRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -87905,7 +90008,7 @@ export const getRevenueEstimateRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -88084,7 +90187,7 @@ export const getRocRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -88134,7 +90237,7 @@ export const getRocRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -88598,7 +90701,7 @@ export const getRocpRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -88648,7 +90751,7 @@ export const getRocpRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -89112,7 +91215,7 @@ export const getRocrRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -89162,7 +91265,7 @@ export const getRocrRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -89626,7 +91729,7 @@ export const getRocr100Route = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -89676,7 +91779,7 @@ export const getRocr100Route = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -90140,7 +92243,7 @@ export const getRsiRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -90190,7 +92293,7 @@ export const getRsiRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -90654,7 +92757,7 @@ export const getRvolRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -90704,7 +92807,7 @@ export const getRvolRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -91216,7 +93319,7 @@ export const getSarRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -91266,7 +93369,7 @@ export const getSarRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -91751,7 +93854,7 @@ export const getSarextRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -91801,7 +93904,7 @@ export const getSarextRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -92472,7 +94575,7 @@ export const getSmaRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -92522,7 +94625,7 @@ export const getSmaRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -93012,7 +95115,7 @@ export const getSplitsRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -93037,7 +95140,7 @@ export const getSplitsRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -93196,7 +95299,7 @@ export const getSplitsCalendarRoute = createRoute({
   tags: ['fundamentals'],
   summary: 'Splits calendar',
   description:
-    'The splits calendar endpoint provides a detailed calendar of stock split events within a specified date range. By setting the `start_date` and `end_date` parameters, users can retrieve a list of upcoming or past stock splits, including the company name, split ratio, and effective date. This endpoint is useful for tracking changes in stock structure and planning investment strategies around these events.',
+    'The splits calendar endpoint provides a detailed calendar of past stock split events within a specified date range. By setting the `start_date` and `end_date` parameters, users can retrieve a list of stock splits, including the company name, split ratio, and effective date. This endpoint is useful for tracking changes in stock structure and analyzing how past splits affected stock prices.',
   operationId: 'GetSplitsCalendar',
   request: {
     query: z.object({
@@ -93242,7 +95345,7 @@ export const getSplitsCalendarRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: { type: 'string', 'x-go-name': 'Isin', 'x-order': '3' },
@@ -93260,7 +95363,7 @@ export const getSplitsCalendarRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: { type: 'string', 'x-go-name': 'Cusip', 'x-order': '4' },
@@ -93484,7 +95587,7 @@ export const getSqrtRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -93534,7 +95637,7 @@ export const getSqrtRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -93994,7 +96097,7 @@ export const getStatisticsRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -94019,7 +96122,7 @@ export const getStatisticsRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -94167,7 +96270,7 @@ export const getStddevRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -94217,7 +96320,7 @@ export const getStddevRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -94712,7 +96815,7 @@ export const getStochRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -94762,7 +96865,7 @@ export const getStochRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -95297,7 +97400,7 @@ export const getStochfRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -95347,7 +97450,7 @@ export const getStochfRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -95841,7 +97944,7 @@ export const getStochrsiRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -95891,7 +97994,7 @@ export const getStochrsiRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -96478,7 +98581,7 @@ export const getStocksRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: { type: 'string', 'x-go-name': 'Isin' },
@@ -96494,7 +98597,7 @@ export const getStocksRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: { type: 'string', 'x-go-name': 'Cusip' },
@@ -96751,7 +98854,7 @@ export const getSubRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -96801,7 +98904,7 @@ export const getSubRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -97246,7 +99349,7 @@ export const getSumRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -97296,7 +99399,7 @@ export const getSumRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -97760,7 +99863,7 @@ export const getSupertrendRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -97810,7 +99913,7 @@ export const getSupertrendRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -98292,7 +100395,7 @@ export const getSupertrendHeikinashicandlesRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -98342,7 +100445,7 @@ export const getSupertrendHeikinashicandlesRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -98801,7 +100904,7 @@ export const getSymbolSearchRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Symbol to search. Supports:\n<ul>\n<li>Ticker symbol of instrument.</li>\n<li>International securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section</li>\n<li>The FIGI (Financial Instrument Global Identifier) parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.</li>\n<li>Composite FIGI parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.</li>\n<li>Share Class FIGI parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.</li>\n</ul>',
+              'Symbol to search. Supports:\n<ul>\n<li>Ticker symbol of instrument.</li>\n<li>Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.</li>\n<li>The FIGI (Financial Instrument Global Identifier) parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.</li>\n<li>Composite FIGI parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.</li>\n<li>Share Class FIGI parameter is available on the <a href="https://twelvedata.com/pricing">Ultra</a> plan (individual) and <a href="https://twelvedata.com/pricing-business">Enterprise</a> plan (business) and above.</li>\n</ul>',
             in: 'query',
             name: 'symbol',
             required: true,
@@ -98938,7 +101041,7 @@ export const getT3maRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -98988,7 +101091,7 @@ export const getT3maRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -99485,7 +101588,7 @@ export const getTaxInfoRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -99535,7 +101638,7 @@ export const getTaxInfoRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -99712,7 +101815,7 @@ export const getTemaRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -99762,7 +101865,7 @@ export const getTemaRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -100225,7 +102328,7 @@ export const getTimeSeriesRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -100275,7 +102378,7 @@ export const getTimeSeriesRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -101002,7 +103105,7 @@ export const getTrangeRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -101052,7 +103155,7 @@ export const getTrangeRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -101475,7 +103578,7 @@ export const getTrimaRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -101525,7 +103628,7 @@ export const getTrimaRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -101989,7 +104092,7 @@ export const getTsfRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -102039,7 +104142,7 @@ export const getTsfRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -102503,7 +104606,7 @@ export const getTyppriceRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -102553,7 +104656,7 @@ export const getTyppriceRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -102976,7 +105079,7 @@ export const getUltoscRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -103026,7 +105129,7 @@ export const getUltoscRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -103539,7 +105642,7 @@ export const getVarRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -103589,7 +105692,7 @@ export const getVarRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -104053,7 +106156,7 @@ export const getVwapRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -104103,7 +106206,7 @@ export const getVwapRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -104588,7 +106691,7 @@ export const getWclpriceRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -104638,7 +106741,7 @@ export const getWclpriceRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -105061,7 +107164,7 @@ export const getWillrRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -105111,7 +107214,7 @@ export const getWillrRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {
@@ -105564,7 +107667,7 @@ export const getWmaRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Filter by international securities identification number (ISIN). ISIN access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its International Securities Identification Number (ISIN). Available on all plans. Returning ISIN values in responses requires the <a href="https://twelvedata.com/account/add-ons">ISIN Data add-on</a>.',
             in: 'query',
             name: 'isin',
             schema: {
@@ -105614,7 +107717,7 @@ export const getWmaRoute = createRoute({
         .openapi({
           param: {
             description:
-              'The CUSIP of an instrument for which data is requested. CUSIP access is activating in the <a href="https://twelvedata.com/account/add-ons">Data add-ons</a> section',
+              'Look up an instrument by its Committee on Uniform Securities Identification Procedures (CUSIP) number. Available on all plans. Returning CUSIP values in responses requires the <a href="https://twelvedata.com/account/add-ons">CUSIP Data add-on</a>.',
             in: 'query',
             name: 'cusip',
             schema: {

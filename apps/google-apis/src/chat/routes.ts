@@ -1,5 +1,222 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const ActionStatusSchema = z
+  .object({
+    statusCode: z
+      .enum([
+        'OK',
+        'CANCELLED',
+        'UNKNOWN',
+        'INVALID_ARGUMENT',
+        'DEADLINE_EXCEEDED',
+        'NOT_FOUND',
+        'ALREADY_EXISTS',
+        'PERMISSION_DENIED',
+        'UNAUTHENTICATED',
+        'RESOURCE_EXHAUSTED',
+        'FAILED_PRECONDITION',
+        'ABORTED',
+        'OUT_OF_RANGE',
+        'UNIMPLEMENTED',
+        'INTERNAL',
+        'UNAVAILABLE',
+        'DATA_LOSS',
+      ])
+      .exactOptional()
+      .openapi({ description: 'The status code.' }),
+    userFacingMessage: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The message to send users about the status of their request. If unset, a generic message based on the `status_code` is sent.',
+      }),
+  })
+  .openapi({
+    description:
+      'Represents the status for a request to either invoke or submit a [dialog](https://developers.google.com/chat/how-tos/dialogs).',
+    required: [],
+  })
+  .openapi('ActionStatus')
+
+const GoogleAppsCardV1CardSchema: z.ZodType<GoogleAppsCardV1CardType> = z
+  .lazy(() =>
+    z
+      .object({
+        cardActions: z
+          .array(GoogleAppsCardV1CardActionSchema)
+          .exactOptional()
+          .openapi({
+            description:
+              'The card\'s actions. Actions are added to the card\'s toolbar menu. [Google Workspace Add-ons](https://developers.google.com/workspace/add-ons): For example, the following JSON constructs a card action menu with `Settings` and `Send Feedback` options: ``` "card_actions": [ { "actionLabel": "Settings", "onClick": { "action": { "functionName": "goToView", "parameters": [ { "key": "viewType", "value": "SETTING" } ], "loadIndicator": "LoadIndicator.SPINNER" } } }, { "actionLabel": "Send Feedback", "onClick": { "openLink": { "url": "https://example.com/feedback" } } } ] ```',
+          }),
+        displayStyle: z
+          .enum(['DISPLAY_STYLE_UNSPECIFIED', 'PEEK', 'REPLACE'])
+          .exactOptional()
+          .openapi({
+            description:
+              'In Google Workspace Add-ons, sets the display properties of the `peekCardHeader`. [Google Workspace Add-ons](https://developers.google.com/workspace/add-ons):',
+          }),
+        fixedFooter: GoogleAppsCardV1CardFixedFooterSchema.exactOptional().openapi({
+          description:
+            'The fixed footer shown at the bottom of this card. Setting `fixedFooter` without specifying a `primaryButton` or a `secondaryButton` causes an error. For Chat apps, you can use fixed footers in [dialogs](https://developers.google.com/chat/how-tos/dialogs), but not [card messages](https://developers.google.com/chat/api/guides/v1/messages/create#create). [Google Workspace Add-ons and Chat apps](https://developers.google.com/workspace/extend):',
+        }),
+        header: GoogleAppsCardV1CardHeaderSchema.exactOptional().openapi({
+          description:
+            'The header of the card. A header usually contains a leading image and a title. Headers always appear at the top of a card.',
+        }),
+        name: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Name of the card. Used as a card identifier in card navigation. [Google Workspace Add-ons](https://developers.google.com/workspace/add-ons):',
+          }),
+        peekCardHeader: GoogleAppsCardV1CardHeaderSchema.exactOptional().openapi({
+          description:
+            'When displaying contextual content, the peek card header acts as a placeholder so that the user can navigate forward between the homepage cards and the contextual cards. [Google Workspace Add-ons](https://developers.google.com/workspace/add-ons):',
+        }),
+        sectionDividerStyle: z
+          .enum(['DIVIDER_STYLE_UNSPECIFIED', 'SOLID_DIVIDER', 'NO_DIVIDER'])
+          .exactOptional()
+          .openapi({ description: 'The divider style between sections.' }),
+        sections: z
+          .array(GoogleAppsCardV1SectionSchema)
+          .exactOptional()
+          .openapi({
+            description:
+              'Contains a collection of widgets. Each section has its own, optional header. Sections are visually separated by a line divider. For an example in Google Chat apps, see [Card section](https://developers.google.com/chat/ui/widgets/card-section).',
+          }),
+      })
+      .openapi({
+        description:
+          'A card interface displayed in a Google Chat message or Google Workspace Add-on. Cards support a defined layout, interactive UI elements like buttons, and rich media like images. Use cards to present detailed information, gather information from users, and guide users to take a next step. [Card builder](https://addons.gsuite.google.com/uikit/builder) To learn how to build cards, see the following documentation: * For Google Chat apps, see [Design dynamic, interactive, and consistent UIs with cards](https://developers.google.com/chat/ui). * For Google Workspace Add-ons, see [Card-based interfaces](https://developers.google.com/apps-script/add-ons/concepts/cards). **Example: Card message for a Google Chat app** ![Example contact card](https://developers.google.com/chat/images/card_api_reference.png) To create the sample card message in Google Chat, use the following JSON: ``` { "cardsV2": [ { "cardId": "unique-card-id", "card": { "header": { "title": "Sasha", "subtitle": "Software Engineer", "imageUrl": "https://developers.google.com/chat/images/quickstart-app-avatar.png", "imageType": "CIRCLE", "imageAltText": "Avatar for Sasha", }, "sections": [ { "header": "Contact Info", "collapsible": true, "uncollapsibleWidgetsCount": 1, "widgets": [ { "decoratedText": { "startIcon": { "knownIcon": "EMAIL", }, "text": "sasha@example.com", } }, { "decoratedText": { "startIcon": { "knownIcon": "PERSON", }, "text": "Online", }, }, { "decoratedText": { "startIcon": { "knownIcon": "PHONE", }, "text": "+1 (555) 555-1234", } }, { "buttonList": { "buttons": [ { "text": "Share", "onClick": { "openLink": { "url": "https://example.com/share", } } }, { "text": "Edit", "onClick": { "action": { "function": "goToView", "parameters": [ { "key": "viewType", "value": "EDIT", } ], } } }, ], } }, ], }, ], }, } ], } ```',
+        required: [],
+      }),
+  )
+  .openapi('GoogleAppsCardV1Card')
+
+type DialogType = { body?: z.infer<typeof GoogleAppsCardV1CardSchema> }
+
+const DialogSchema: z.ZodType<DialogType> = z
+  .object({
+    body: GoogleAppsCardV1CardSchema.exactOptional().openapi({
+      description:
+        "Input only. Body of the dialog, which is rendered in a modal. Google Chat apps don't support the following card entities: `DateTimePicker`, `OnChangeAction`.",
+    }),
+  })
+  .openapi({ description: 'Wrapper around the card body of the dialog.', required: [] })
+  .openapi('Dialog')
+
+type DialogActionType = {
+  actionStatus?: z.infer<typeof ActionStatusSchema>
+  dialog?: z.infer<typeof DialogSchema>
+}
+
+const DialogActionSchema: z.ZodType<DialogActionType> = z
+  .object({
+    actionStatus: ActionStatusSchema.exactOptional().openapi({
+      description:
+        'Input only. Status for a request to either invoke or submit a [dialog](https://developers.google.com/chat/how-tos/dialogs). Displays a status and message to users, if necessary. For example, in case of an error or success.',
+    }),
+    dialog: DialogSchema.exactOptional().openapi({
+      description:
+        'Input only. [Dialog](https://developers.google.com/chat/how-tos/dialogs) for the request.',
+    }),
+  })
+  .openapi({
+    description:
+      'Contains a [dialog](https://developers.google.com/chat/how-tos/dialogs) and request status code.',
+    required: [],
+  })
+  .openapi('DialogAction')
+
+const GoogleAppsCardV1SelectionItemSchema = z
+  .object({
+    bottomText: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "For multiselect menus, a text description or label that's displayed below the item's `text` field.",
+      }),
+    selected: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether the item is selected by default. If the selection input only accepts one value (such as for radio buttons or a dropdown menu), only set this field for one item.',
+      }),
+    startIconUri: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "For multiselect menus, the URL for the icon displayed next to the item's `text` field. Supports PNG and JPEG files. Must be an `HTTPS` URL. For example, `https://developers.google.com/chat/images/quickstart-app-avatar.png`.",
+      }),
+    text: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The text that identifies or describes the item to users.' }),
+    value: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The value associated with this item. The client should use this as a form input value. For details about working with form inputs, see [Receive form data](https://developers.google.com/chat/ui/read-form-data).',
+      }),
+  })
+  .openapi({
+    description:
+      'An item that users can select in a selection input, such as a checkbox or switch. [Google Workspace Add-ons and Chat apps](https://developers.google.com/workspace/extend):',
+    required: [],
+  })
+  .openapi('GoogleAppsCardV1SelectionItem')
+
+const SelectionItemsSchema = z
+  .object({
+    items: z
+      .array(GoogleAppsCardV1SelectionItemSchema)
+      .exactOptional()
+      .openapi({ description: 'An array of the SelectionItem objects.' }),
+  })
+  .openapi({ description: 'List of widget autocomplete results.', required: [] })
+  .openapi('SelectionItems')
+
+const UpdatedWidgetSchema = z
+  .object({
+    suggestions: SelectionItemsSchema.exactOptional().openapi({
+      description: 'List of widget autocomplete results',
+    }),
+    widget: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The ID of the updated widget. The ID must match the one for the widget that triggered the update request.',
+      }),
+  })
+  .openapi({
+    description:
+      'The response of the updated widget. Used to provide autocomplete options for a widget.',
+    required: [],
+  })
+  .openapi('UpdatedWidget')
+
+type ActionResponseType = {
+  dialogAction?: z.infer<typeof DialogActionSchema>
+  type?:
+    | 'TYPE_UNSPECIFIED'
+    | 'NEW_MESSAGE'
+    | 'UPDATE_MESSAGE'
+    | 'UPDATE_USER_MESSAGE_CARDS'
+    | 'REQUEST_CONFIG'
+    | 'DIALOG'
+    | 'UPDATE_WIDGET'
+  updatedWidget?: z.infer<typeof UpdatedWidgetSchema>
+  url?: string
+}
+
 const ActionParameterSchema = z
   .object({
     key: z
@@ -52,6 +269,50 @@ const OnClickSchema = z
   })
   .openapi({ description: 'An `onclick` action (for example, open a link).', required: [] })
   .openapi('OnClick')
+
+const CardActionSchema = z
+  .object({
+    actionLabel: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The label used to be displayed in the action menu item.' }),
+    onClick: OnClickSchema.exactOptional().openapi({
+      description: 'The onclick action for this action item.',
+    }),
+  })
+  .openapi({
+    description:
+      'A card action is the action associated with the card. For an invoice card, a typical action would be: delete invoice, email invoice or open the invoice in browser. Not supported by Google Chat apps.',
+    required: [],
+  })
+  .openapi('CardAction')
+
+const CardHeaderSchema = z
+  .object({
+    imageStyle: z
+      .enum(['IMAGE_STYLE_UNSPECIFIED', 'IMAGE', 'AVATAR'])
+      .exactOptional()
+      .openapi({
+        description: "The image's type (for example, square border or circular border).",
+      }),
+    imageUrl: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The URL of the image in the card header.' }),
+    subtitle: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The subtitle of the card header.' }),
+    title: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The title must be specified. The header has a fixed height: if both a title and subtitle is specified, each takes up one line. If only the title is specified, it takes up both lines.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('CardHeader')
 
 const ImageButtonSchema = z
   .object({
@@ -117,12 +378,660 @@ const TextButtonSchema = z
   .openapi({ description: 'A button with text and `onclick` action.', required: [] })
   .openapi('TextButton')
 
-type ButtonType = {
-  imageButton?: z.infer<typeof ImageButtonSchema>
-  textButton?: z.infer<typeof TextButtonSchema>
+const ButtonSchema = z
+  .object({
+    imageButton: ImageButtonSchema.exactOptional().openapi({
+      description: 'A button with image and `onclick` action.',
+    }),
+    textButton: TextButtonSchema.exactOptional().openapi({
+      description: 'A button with text and `onclick` action.',
+    }),
+  })
+  .openapi({ description: 'A button. Can be a text button or an image button.', required: [] })
+  .openapi('Button')
+
+const ImageSchema = z
+  .object({
+    aspectRatio: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description:
+          "The aspect ratio of this image (width and height). This field lets you reserve the right height for the image while waiting for it to load. It's not meant to override the built-in aspect ratio of the image. If unset, the server fills it by prefetching the image.",
+      }),
+    imageUrl: z.string().exactOptional().openapi({ description: 'The URL of the image.' }),
+    onClick: OnClickSchema.exactOptional().openapi({ description: 'The `onclick` action.' }),
+  })
+  .openapi({
+    description: "An image that's specified by a URL and can have an `onclick` action.",
+    required: [],
+  })
+  .openapi('Image')
+
+const KeyValueSchema = z
+  .object({
+    bottomLabel: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The text of the bottom label. Formatted text supported. For more information about formatting text, see [Formatting text in Google Chat apps](https://developers.google.com/chat/format-messages#card-formatting) and [Formatting text in Google Workspace Add-ons](https://developers.google.com/apps-script/add-ons/concepts/widgets#text_formatting).',
+      }),
+    button: ButtonSchema.exactOptional().openapi({
+      description: 'A button that can be clicked to trigger an action.',
+    }),
+    content: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The text of the content. Formatted text supported and always required. For more information about formatting text, see [Formatting text in Google Chat apps](https://developers.google.com/chat/format-messages#card-formatting) and [Formatting text in Google Workspace Add-ons](https://developers.google.com/apps-script/add-ons/concepts/widgets#text_formatting).',
+      }),
+    contentMultiline: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'If the content should be multiline.' }),
+    icon: z
+      .enum([
+        'ICON_UNSPECIFIED',
+        'AIRPLANE',
+        'BOOKMARK',
+        'BUS',
+        'CAR',
+        'CLOCK',
+        'CONFIRMATION_NUMBER_ICON',
+        'DOLLAR',
+        'DESCRIPTION',
+        'EMAIL',
+        'EVENT_PERFORMER',
+        'EVENT_SEAT',
+        'FLIGHT_ARRIVAL',
+        'FLIGHT_DEPARTURE',
+        'HOTEL',
+        'HOTEL_ROOM_TYPE',
+        'INVITE',
+        'MAP_PIN',
+        'MEMBERSHIP',
+        'MULTIPLE_PEOPLE',
+        'OFFER',
+        'PERSON',
+        'PHONE',
+        'RESTAURANT_ICON',
+        'SHOPPING_CART',
+        'STAR',
+        'STORE',
+        'TICKET',
+        'TRAIN',
+        'VIDEO_CAMERA',
+        'VIDEO_PLAY',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          "An enum value that's replaced by the Chat API with the corresponding icon image.",
+      }),
+    iconUrl: z.string().exactOptional().openapi({ description: 'The icon specified by a URL.' }),
+    onClick: OnClickSchema.exactOptional().openapi({
+      description:
+        'The `onclick` action. Only the top label, bottom label, and content region are clickable.',
+    }),
+    topLabel: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The text of the top label. Formatted text supported. For more information about formatting text, see [Formatting text in Google Chat apps](https://developers.google.com/chat/format-messages#card-formatting) and [Formatting text in Google Workspace Add-ons](https://developers.google.com/apps-script/add-ons/concepts/widgets#text_formatting).',
+      }),
+  })
+  .openapi({
+    description:
+      'A UI element contains a key (label) and a value (content). This element can also contain some actions such as `onclick` button.',
+    required: [],
+  })
+  .openapi('KeyValue')
+
+const TextParagraphSchema = z
+  .object({ text: z.string().exactOptional() })
+  .openapi({
+    description:
+      'A paragraph of text. Formatted text supported. For more information about formatting text, see [Formatting text in Google Chat apps](https://developers.google.com/chat/format-messages#card-formatting) and [Formatting text in Google Workspace Add-ons](https://developers.google.com/apps-script/add-ons/concepts/widgets#text_formatting).',
+    required: [],
+  })
+  .openapi('TextParagraph')
+
+type WidgetMarkupType = {
+  buttons?: z.infer<typeof ButtonSchema>[]
+  image?: z.infer<typeof ImageSchema>
+  keyValue?: z.infer<typeof KeyValueSchema>
+  textParagraph?: z.infer<typeof TextParagraphSchema>
 }
 
+const WidgetMarkupSchema: z.ZodType<WidgetMarkupType> = z
+  .object({
+    buttons: z
+      .array(ButtonSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'A list of buttons. Buttons is also `oneof data` and only one of these fields should be set.',
+      }),
+    image: ImageSchema.exactOptional().openapi({ description: 'Display an image in this widget.' }),
+    keyValue: KeyValueSchema.exactOptional().openapi({
+      description: 'Display a key value item in this widget.',
+    }),
+    textParagraph: TextParagraphSchema.exactOptional().openapi({
+      description: 'Display a text paragraph in this widget.',
+    }),
+  })
+  .openapi({ description: 'A widget is a UI element that presents text and images.', required: [] })
+  .openapi('WidgetMarkup')
+
+type SectionType = { header?: string; widgets?: z.infer<typeof WidgetMarkupSchema>[] }
+
+const SectionSchema: z.ZodType<SectionType> = z
+  .object({
+    header: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The header of the section. Formatted text is supported. For more information about formatting text, see [Formatting text in Google Chat apps](https://developers.google.com/chat/format-messages#card-formatting) and [Formatting text in Google Workspace Add-ons](https://developers.google.com/apps-script/add-ons/concepts/widgets#text_formatting).',
+      }),
+    widgets: z
+      .array(WidgetMarkupSchema)
+      .exactOptional()
+      .openapi({ description: 'A section must contain at least one widget.' }),
+  })
+  .openapi({
+    description:
+      "A section contains a collection of widgets that are rendered (vertically) in the order that they are specified. Across all platforms, cards have a narrow fixed width, so there's currently no need for layout properties (for example, float).",
+    required: [],
+  })
+  .openapi('Section')
+
+type CardType = {
+  cardActions?: z.infer<typeof CardActionSchema>[]
+  header?: z.infer<typeof CardHeaderSchema>
+  name?: string
+  sections?: z.infer<typeof SectionSchema>[]
+}
+
+type CardWithIdType = { card?: z.infer<typeof GoogleAppsCardV1CardSchema>; cardId?: string }
+
 type ColorType = { alpha?: number; blue?: number; green?: number; red?: number }
+
+const DateInputSchema = z
+  .object({
+    msSinceEpoch: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Time since epoch time, in milliseconds.' }),
+  })
+  .openapi({ description: 'Date input values.', required: [] })
+  .openapi('DateInput')
+
+const DateTimeInputSchema = z
+  .object({
+    hasDate: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether the `datetime` input includes a calendar date.' }),
+    hasTime: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether the `datetime` input includes a timestamp.' }),
+    msSinceEpoch: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Time since epoch time, in milliseconds.' }),
+  })
+  .openapi({ description: 'Date and time input values.', required: [] })
+  .openapi('DateTimeInput')
+
+const StringInputsSchema = z
+  .object({
+    value: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'An list of strings entered by the user.' }),
+  })
+  .openapi({
+    description:
+      'Input parameter for regular widgets. For single-valued widgets, it is a single value list. For multi-valued widgets, such as checkbox, all the values are presented.',
+    required: [],
+  })
+  .openapi('StringInputs')
+
+const TimeInputSchema = z
+  .object({
+    hours: z.int32().exactOptional().openapi({ description: 'The hour on a 24-hour clock.' }),
+    minutes: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'The number of minutes past the hour. Valid values are 0 to 59.' }),
+  })
+  .openapi({ description: 'Time input values.', required: [] })
+  .openapi('TimeInput')
+
+const InputsSchema = z
+  .object({
+    dateInput: DateInputSchema.exactOptional().openapi({
+      description:
+        'Date input values from a [`DateTimePicker`](https://developers.google.com/chat/api/reference/rest/v1/cards#DateTimePicker) widget that only accepts date values.',
+    }),
+    dateTimeInput: DateTimeInputSchema.exactOptional().openapi({
+      description:
+        'Date and time input values from a [`DateTimePicker`](https://developers.google.com/chat/api/reference/rest/v1/cards#DateTimePicker) widget that accepts both a date and time.',
+    }),
+    stringInputs: StringInputsSchema.exactOptional().openapi({
+      description:
+        'A list of strings that represent the values that the user inputs in a widget. If the widget only accepts one value, such as a [`TextInput`](https://developers.google.com/chat/api/reference/rest/v1/cards#TextInput) widget, the list contains one string object. If the widget accepts multiple values, such as a [`SelectionInput`](https://developers.google.com/chat/api/reference/rest/v1/cards#selectioninput) widget of checkboxes, the list contains a string object for each value that the user inputs or selects.',
+    }),
+    timeInput: TimeInputSchema.exactOptional().openapi({
+      description:
+        'Time input values from a [`DateTimePicker`](https://developers.google.com/chat/api/reference/rest/v1/cards#DateTimePicker) widget that only accepts time values.',
+    }),
+  })
+  .openapi({
+    description:
+      'Types of data that users can [input on cards or dialogs](https://developers.google.com/chat/ui/read-form-data). The input type depends on the type of values that the widget accepts.',
+    required: [],
+  })
+  .openapi('Inputs')
+
+const TimeZoneSchema = z
+  .object({
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The [IANA TZ](https://www.iana.org/time-zones) time zone database code, such as "America/Toronto".',
+      }),
+    offset: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The user timezone offset, in milliseconds, from Coordinated Universal Time (UTC).',
+      }),
+  })
+  .openapi({
+    description:
+      'The timezone ID and offset from Coordinated Universal Time (UTC). Only supported for the event types [`CARD_CLICKED`](https://developers.google.com/chat/api/reference/rest/v1/EventType#ENUM_VALUES.CARD_CLICKED) and [`SUBMIT_DIALOG`](https://developers.google.com/chat/api/reference/rest/v1/DialogEventType#ENUM_VALUES.SUBMIT_DIALOG).',
+    required: [],
+  })
+  .openapi('TimeZone')
+
+const CommonEventObjectSchema = z
+  .object({
+    formInputs: z
+      .record(z.string(), InputsSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'A map containing the values that a user inputs in a widget from a card or dialog. The map keys are the string IDs assigned to each widget, and the values represent inputs to the widget. For details, see [Process information inputted by users](https://developers.google.com/chat/ui/read-form-data).',
+      }),
+    hostApp: z
+      .enum([
+        'UNSPECIFIED_HOST_APP',
+        'GMAIL',
+        'CALENDAR',
+        'DRIVE',
+        'DEMO',
+        'DOCS',
+        'MEET',
+        'SHEETS',
+        'SLIDES',
+        'DRAWINGS',
+        'CHAT',
+        'CHAT_IN_GMAIL',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'The hostApp enum which indicates the app the add-on is invoked from. Always `CHAT` for Chat apps.',
+      }),
+    invokedFunction: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Name of the invoked function associated with the widget. Only set for Chat apps.',
+      }),
+    parameters: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Custom [parameters](/chat/api/reference/rest/v1/cards#ActionParameter) passed to the invoked function. Both keys and values must be strings.',
+      }),
+    platform: z
+      .enum(['UNKNOWN_PLATFORM', 'WEB', 'IOS', 'ANDROID'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The platform enum which indicates the platform where the event originates (`WEB`, `IOS`, or `ANDROID`). Not supported by Chat apps.',
+      }),
+    timeZone: TimeZoneSchema.exactOptional().openapi({
+      description:
+        'The timezone ID and offset from Coordinated Universal Time (UTC). Only supported for the event types [`CARD_CLICKED`](https://developers.google.com/chat/api/reference/rest/v1/EventType#ENUM_VALUES.CARD_CLICKED) and [`SUBMIT_DIALOG`](https://developers.google.com/chat/api/reference/rest/v1/DialogEventType#ENUM_VALUES.SUBMIT_DIALOG).',
+    }),
+    userLocale: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The full `locale.displayName` in the format of [ISO 639 language code]-[ISO 3166 country/region code] such as "en-US".',
+      }),
+  })
+  .openapi({
+    description:
+      "Represents information about the user's client, such as locale, host app, and platform. For Chat apps, `CommonEventObject` includes data submitted by users interacting with cards, like data entered in [dialogs](https://developers.google.com/chat/how-tos/dialogs).",
+    required: [],
+  })
+  .openapi('CommonEventObject')
+
+const ActionResponseSchema: z.ZodType<ActionResponseType> = z
+  .object({
+    dialogAction: DialogActionSchema.exactOptional().openapi({
+      description:
+        'Input only. A response to an interaction event related to a [dialog](https://developers.google.com/chat/how-tos/dialogs). Must be accompanied by `ResponseType.Dialog`.',
+    }),
+    type: z
+      .enum([
+        'TYPE_UNSPECIFIED',
+        'NEW_MESSAGE',
+        'UPDATE_MESSAGE',
+        'UPDATE_USER_MESSAGE_CARDS',
+        'REQUEST_CONFIG',
+        'DIALOG',
+        'UPDATE_WIDGET',
+      ])
+      .exactOptional()
+      .openapi({ description: 'Input only. The type of Chat app response.' }),
+    updatedWidget: UpdatedWidgetSchema.exactOptional().openapi({
+      description: 'Input only. The response of the updated widget.',
+    }),
+    url: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Input only. URL for users to authenticate or configure. (Only for `REQUEST_CONFIG` response types.)',
+      }),
+  })
+  .openapi({
+    description: 'Parameters that a Chat app can use to configure how its response is posted.',
+    required: [],
+  })
+  .openapi('ActionResponse')
+
+const UserSchema = z
+  .object({
+    displayName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "Output only. The user's display name.", readOnly: true }),
+    domainId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "Unique identifier of the user's Google Workspace domain." }),
+    isAnonymous: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. When `true`, the user is deleted or their profile is not visible.',
+        readOnly: true,
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Resource name for a Google Chat user. Format: `users/{user}`. `users/app` can be used as an alias for the calling app bot user. For human users, `{user}` is the same user identifier as: - the `id` for the [Person](https://developers.google.com/people/api/rest/v1/people) in the People API. For example, `users/123456789` in Chat API represents the same person as the `123456789` Person profile ID in People API. - the `id` for a [user](https://developers.google.com/admin-sdk/directory/reference/rest/v1/users) in the Admin SDK Directory API. - the user's email address can be used as an alias for `{user}` in API requests. For example, if the People API Person profile ID for `user@example.com` is `123456789`, you can use `users/user@example.com` as an alias to reference `users/123456789`. Only the canonical resource name (for example `users/123456789`) will be returned from the API.",
+      }),
+    type: z
+      .enum(['TYPE_UNSPECIFIED', 'HUMAN', 'BOT'])
+      .exactOptional()
+      .openapi({ description: 'User type.' }),
+  })
+  .openapi({
+    description:
+      "A user in Google Chat. When returned as an output from a request, if your Chat app [authenticates as a user](https://developers.google.com/chat/api/guides/auth/users), the output for a `User` resource only populates the user's `name` and `type`.",
+    required: [],
+  })
+  .openapi('User')
+
+const SlashCommandMetadataSchema = z
+  .object({
+    bot: UserSchema.exactOptional().openapi({
+      description: 'The Chat app whose command was invoked.',
+    }),
+    commandId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The command ID of the invoked slash command.' }),
+    commandName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the invoked slash command.' }),
+    triggersDialog: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates whether the slash command is for a dialog.' }),
+    type: z
+      .enum(['TYPE_UNSPECIFIED', 'ADD', 'INVOKE'])
+      .exactOptional()
+      .openapi({ description: 'The type of slash command.' }),
+  })
+  .openapi({ description: 'Annotation metadata for slash commands (/).', required: [] })
+  .openapi('SlashCommandMetadata')
+
+const UserMentionMetadataSchema = z
+  .object({
+    type: z
+      .enum(['TYPE_UNSPECIFIED', 'ADD', 'MENTION'])
+      .exactOptional()
+      .openapi({ description: 'The type of user mention.' }),
+    user: UserSchema.exactOptional().openapi({ description: 'The user mentioned.' }),
+  })
+  .openapi({ description: 'Annotation metadata for user mentions (@).', required: [] })
+  .openapi('UserMentionMetadata')
+
+const AnnotationSchema = z
+  .object({
+    length: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Length of the substring in the plain-text message body this annotation corresponds to.',
+      }),
+    slashCommand: SlashCommandMetadataSchema.exactOptional().openapi({
+      description: 'The metadata for a slash command.',
+    }),
+    startIndex: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Start index (0-based, inclusive) in the plain-text message body this annotation corresponds to.',
+      }),
+    type: z
+      .enum(['ANNOTATION_TYPE_UNSPECIFIED', 'USER_MENTION', 'SLASH_COMMAND'])
+      .exactOptional()
+      .openapi({ description: 'The type of this annotation.' }),
+    userMention: UserMentionMetadataSchema.exactOptional().openapi({
+      description: 'The metadata of user mention.',
+    }),
+  })
+  .openapi({
+    description:
+      'Output only. Annotations associated with the plain-text body of the message. To add basic formatting to a text message, see [Format text messages](https://developers.google.com/chat/format-messages). Example plain-text message body: ``` Hello @FooBot how are you!" ``` The corresponding annotations metadata: ``` "annotations":[{ "type":"USER_MENTION", "startIndex":6, "length":7, "userMention": { "user": { "name":"users/{user}", "displayName":"FooBot", "avatarUrl":"https://goo.gl/aeDtrS", "type":"BOT" }, "type":"MENTION" } }] ```',
+    required: [],
+  })
+  .openapi('Annotation')
+
+const AttachedGifSchema = z
+  .object({
+    uri: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. The URL that hosts the GIF image.', readOnly: true }),
+  })
+  .openapi({ description: "A GIF image that's specified by a URL.", required: [] })
+  .openapi('AttachedGif')
+
+const AttachmentDataRefSchema = z
+  .object({
+    attachmentUploadToken: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Opaque token containing a reference to an uploaded attachment. Treated by clients as an opaque string and used to create or update Chat messages with attachments.',
+      }),
+    resourceName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The resource name of the attachment data. This field is used with the media API to download the attachment data.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('AttachmentDataRef')
+
+const DriveDataRefSchema = z
+  .object({
+    driveFileId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The ID for the drive file. Use with the Drive API.' }),
+  })
+  .openapi({ description: 'A reference to the data of a drive attachment.', required: [] })
+  .openapi('DriveDataRef')
+
+const AttachmentSchema = z
+  .object({
+    attachmentDataRef: AttachmentDataRefSchema.exactOptional().openapi({
+      description:
+        'A reference to the attachment data. This field is used with the media API to download the attachment data.',
+    }),
+    contentName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The original file name for the content, not the full path.',
+        readOnly: true,
+      }),
+    contentType: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The content type (MIME type) of the file.',
+        readOnly: true,
+      }),
+    downloadUri: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Output only. The download URL which should be used to allow a human user to download the attachment. Chat apps shouldn't use this URL to download attachment content.",
+        readOnly: true,
+      }),
+    driveDataRef: DriveDataRefSchema.exactOptional().openapi({
+      description:
+        'Output only. A reference to the Google Drive attachment. This field is used with the Google Drive API.',
+      readOnly: true,
+    }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Resource name of the attachment, in the form `spaces/*/messages/*/attachments/*`.',
+      }),
+    source: z
+      .enum(['SOURCE_UNSPECIFIED', 'DRIVE_FILE', 'UPLOADED_CONTENT'])
+      .exactOptional()
+      .openapi({ description: 'Output only. The source of the attachment.', readOnly: true }),
+    thumbnailUri: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Output only. The thumbnail URL which should be used to preview the attachment to a human user. Chat apps shouldn't use this URL to download attachment content.",
+        readOnly: true,
+      }),
+  })
+  .openapi({ description: 'An attachment in Google Chat.', required: [] })
+  .openapi('Attachment')
+
+const CardSchema: z.ZodType<CardType> = z
+  .object({
+    cardActions: z
+      .array(CardActionSchema)
+      .exactOptional()
+      .openapi({ description: 'The actions of this card.' }),
+    header: CardHeaderSchema.exactOptional().openapi({
+      description: 'The header of the card. A header usually contains a title and an image.',
+    }),
+    name: z.string().exactOptional().openapi({ description: 'Name of the card.' }),
+    sections: z
+      .array(SectionSchema)
+      .exactOptional()
+      .openapi({ description: 'Sections are separated by a line divider.' }),
+  })
+  .openapi({
+    description: 'A card is a UI element that can contain UI widgets such as text and images.',
+    required: [],
+  })
+  .openapi('Card')
+
+const CardWithIdSchema: z.ZodType<CardWithIdType> = z
+  .object({
+    card: GoogleAppsCardV1CardSchema.exactOptional().openapi({
+      description: 'A card. Maximum size is 32 KB.',
+    }),
+    cardId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required if the message contains multiple cards. A unique identifier for a card in a message.',
+      }),
+  })
+  .openapi({
+    description:
+      "A [card](https://developers.google.com/chat/api/reference/rest/v1/cards) in a Google Chat message. Only Chat apps can create cards. If your Chat app [authenticates as a user](https://developers.google.com/chat/api/guides/auth/users), the message can't contain cards. [Card builder](https://addons.gsuite.google.com/uikit/builder)",
+    required: [],
+  })
+  .openapi('CardWithId')
+
+const DeletionMetadataSchema = z
+  .object({
+    deletionType: z
+      .enum([
+        'DELETION_TYPE_UNSPECIFIED',
+        'CREATOR',
+        'SPACE_OWNER',
+        'ADMIN',
+        'APP_MESSAGE_EXPIRY',
+        'CREATOR_VIA_APP',
+        'SPACE_OWNER_VIA_APP',
+      ])
+      .exactOptional()
+      .openapi({ description: 'Indicates who deleted the message.' }),
+  })
+  .openapi({
+    description:
+      'Information about a deleted message. A message is deleted when `delete_time` is set.',
+    required: [],
+  })
+  .openapi('DeletionMetadata')
 
 const CustomEmojiSchema = z
   .object({
@@ -134,7 +1043,443 @@ const CustomEmojiSchema = z
   .openapi({ description: 'Represents a custom emoji.', required: [] })
   .openapi('CustomEmoji')
 
-type EmojiType = { customEmoji?: z.infer<typeof CustomEmojiSchema>; unicode?: string }
+const EmojiSchema = z
+  .object({
+    customEmoji: CustomEmojiSchema.exactOptional().openapi({
+      description: 'Output only. A custom emoji.',
+      readOnly: true,
+    }),
+    unicode: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'A basic emoji represented by a unicode string.' }),
+  })
+  .openapi({ description: 'An emoji that is used as a reaction to a message.', required: [] })
+  .openapi('Emoji')
+
+const EmojiReactionSummarySchema = z
+  .object({
+    emoji: EmojiSchema.exactOptional().openapi({
+      description: 'Emoji associated with the reactions.',
+    }),
+    reactionCount: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'The total number of reactions using the associated emoji.' }),
+  })
+  .openapi({
+    description: 'The number of people who reacted to a message with a specific emoji.',
+    required: [],
+  })
+  .openapi('EmojiReactionSummary')
+
+const MatchedUrlSchema = z
+  .object({
+    url: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. The URL that was matched.', readOnly: true }),
+  })
+  .openapi({
+    description:
+      'A matched URL in a Chat message. Chat apps can preview matched URLs. For more information, see [Preview links](https://developers.google.com/chat/how-tos/preview-links).',
+    required: [],
+  })
+  .openapi('MatchedUrl')
+
+const QuotedMessageMetadataSchema = z
+  .object({
+    lastUpdateTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The timestamp when the quoted message was created or when the quoted message was last updated.',
+        readOnly: true,
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. Resource name of the quoted message. Format: `spaces/{space}/messages/{message}`',
+        readOnly: true,
+      }),
+  })
+  .openapi({ description: 'Information about a quoted message.', required: [] })
+  .openapi('QuotedMessageMetadata')
+
+const SlashCommandSchema = z
+  .object({
+    commandId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The ID of the slash command invoked.' }),
+  })
+  .openapi({
+    description:
+      'A [slash command](https://developers.google.com/chat/how-tos/slash-commands) in Google Chat.',
+    required: [],
+  })
+  .openapi('SlashCommand')
+
+const SpaceDetailsSchema = z
+  .object({
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Optional. A description of the space. For example, describe the space's discussion topic, functional purpose, or participants. Supports up to 150 characters.",
+      }),
+    guidelines: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Optional. The space's rules, expectations, and etiquette. Supports up to 5,000 characters.",
+      }),
+  })
+  .openapi({
+    description: 'Details about the space including description and rules.',
+    required: [],
+  })
+  .openapi('SpaceDetails')
+
+const SpaceSchema = z
+  .object({
+    adminInstalled: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. Whether the Chat app was installed by a Google Workspace administrator. Administrators can install a Chat app for their domain, organizational unit, or a group of users. Administrators can only install Chat apps for direct messaging between users and the app. To support admin install, your app must feature direct messaging.',
+        readOnly: true,
+      }),
+    createTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Immutable. For spaces created in Chat, the time the space was created. This field is output only, except when used in import mode spaces. For import mode spaces, set this field to the historical timestamp at which the space was created in the source in order to preserve the original creation time. Only populated in the output when `spaceType` is `GROUP_CHAT` or `SPACE`.',
+      }),
+    displayName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The space's display name. Required when [creating a space](https://developers.google.com/chat/api/reference/rest/v1/spaces/create). If you receive the error message `ALREADY_EXISTS` when creating a space or updating the `displayName`, try a different `displayName`. An existing space within the Google Workspace organization might already use this display name. For direct messages, this field might be empty. Supports up to 128 characters.",
+      }),
+    externalUserAllowed: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Immutable. Whether this space permits any Google Chat user as a member. Input when creating a space in a Google Workspace organization. Omit this field when creating spaces in the following conditions: * The authenticated user uses a Google Account. By default, the space permits any Google Chat user. * The space is used to [import data to Google Chat] (https://developers.google.com/chat/api/guides/import-data-overview). Import mode spaces must only permit members from the same Google Workspace organization. For existing spaces, this field is output only.',
+      }),
+    importMode: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          "Optional. Whether this space is created in `Import Mode` as part of a data migration into Google Workspace. While spaces are being imported, they aren't visible to users until the import is complete.",
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Resource name of the space. Format: `spaces/{space}`' }),
+    singleUserBotDm: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Optional. Whether the space is a DM between a Chat app and a single human.',
+      }),
+    spaceDetails: SpaceDetailsSchema.exactOptional().openapi({
+      description: 'Details about the space including description and rules.',
+    }),
+    spaceHistoryState: z
+      .enum(['HISTORY_STATE_UNSPECIFIED', 'HISTORY_OFF', 'HISTORY_ON'])
+      .exactOptional()
+      .openapi({
+        description: 'The message history state for messages and threads in this space.',
+      }),
+    spaceThreadingState: z
+      .enum([
+        'SPACE_THREADING_STATE_UNSPECIFIED',
+        'THREADED_MESSAGES',
+        'GROUPED_MESSAGES',
+        'UNTHREADED_MESSAGES',
+      ])
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The threading state in the Chat space.',
+        readOnly: true,
+      }),
+    spaceType: z
+      .enum(['SPACE_TYPE_UNSPECIFIED', 'SPACE', 'GROUP_CHAT', 'DIRECT_MESSAGE'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The type of space. Required when creating a space or updating the space type of a space. Output only for other usage.',
+      }),
+    threaded: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          'Output only. Deprecated: Use `spaceThreadingState` instead. Whether messages are threaded in this space.',
+        readOnly: true,
+      }),
+    type: z
+      .enum(['TYPE_UNSPECIFIED', 'ROOM', 'DM'])
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description: 'Output only. Deprecated: Use `space_type` instead. The type of a space.',
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    description:
+      'A space in Google Chat. Spaces are conversations between two or more users or 1:1 messages between a user and a Chat app.',
+    required: [],
+  })
+  .openapi('Space')
+
+const ThreadSchema = z
+  .object({
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. Resource name of the thread. Example: `spaces/{space}/threads/{thread}`',
+      }),
+    threadKey: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Input for creating or updating a thread. Otherwise, output only. ID for the thread. Supports up to 4000 characters. This ID is unique to the Chat app that sets it. For example, if multiple Chat apps create a message using the same thread key, the messages are posted in different threads. To reply in a thread created by a person or another Chat app, specify the thread `name` field instead.',
+      }),
+  })
+  .openapi({
+    description:
+      'A thread in a Google Chat space. For example usage, see [Start or reply to a message thread](https://developers.google.com/chat/api/guides/v1/messages/create#create-message-thread). If you specify a thread when creating a message, you can set the [`messageReplyOption`](https://developers.google.com/chat/api/reference/rest/v1/spaces.messages/create#messagereplyoption) field to determine what happens if no matching thread is found.',
+    required: [],
+  })
+  .openapi('Thread')
+
+type MessageType = {
+  actionResponse?: z.infer<typeof ActionResponseSchema>
+  annotations?: z.infer<typeof AnnotationSchema>[]
+  argumentText?: string
+  attachedGifs?: z.infer<typeof AttachedGifSchema>[]
+  attachment?: z.infer<typeof AttachmentSchema>[]
+  cards?: z.infer<typeof CardSchema>[]
+  cardsV2?: z.infer<typeof CardWithIdSchema>[]
+  clientAssignedMessageId?: string
+  createTime?: string
+  deleteTime?: string
+  deletionMetadata?: z.infer<typeof DeletionMetadataSchema>
+  emojiReactionSummaries?: z.infer<typeof EmojiReactionSummarySchema>[]
+  fallbackText?: string
+  formattedText?: string
+  lastUpdateTime?: string
+  matchedUrl?: z.infer<typeof MatchedUrlSchema>
+  name?: string
+  privateMessageViewer?: z.infer<typeof UserSchema>
+  quotedMessageMetadata?: z.infer<typeof QuotedMessageMetadataSchema>
+  sender?: z.infer<typeof UserSchema>
+  slashCommand?: z.infer<typeof SlashCommandSchema>
+  space?: z.infer<typeof SpaceSchema>
+  text?: string
+  thread?: z.infer<typeof ThreadSchema>
+  threadReply?: boolean
+}
+
+const MessageSchema: z.ZodType<MessageType> = z
+  .object({
+    actionResponse: ActionResponseSchema.exactOptional().openapi({
+      description:
+        'Input only. Parameters that a Chat app can use to configure how its response is posted.',
+    }),
+    annotations: z
+      .array(AnnotationSchema)
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Annotations associated with the `text` in this message.',
+        readOnly: true,
+      }),
+    argumentText: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. Plain-text body of the message with all Chat app mentions stripped out.',
+        readOnly: true,
+      }),
+    attachedGifs: z
+      .array(AttachedGifSchema)
+      .exactOptional()
+      .openapi({
+        description: 'Output only. GIF images that are attached to the message.',
+        readOnly: true,
+      }),
+    attachment: z
+      .array(AttachmentSchema)
+      .exactOptional()
+      .openapi({ description: 'User-uploaded attachment.' }),
+    cards: z
+      .array(CardSchema)
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          'Deprecated: Use `cards_v2` instead. Rich, formatted, and interactive cards that you can use to display UI elements such as: formatted texts, buttons, and clickable images. Cards are normally displayed below the plain-text body of the message. `cards` and `cards_v2` can have a maximum size of 32 KB.',
+      }),
+    cardsV2: z
+      .array(CardWithIdSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          "An array of [cards](https://developers.google.com/chat/api/reference/rest/v1/cards). Only Chat apps can create cards. If your Chat app [authenticates as a user](https://developers.google.com/chat/api/guides/auth/users), the messages can't contain cards. To learn about cards and how to create them, see [Design dynamic, interactive, and consistent UIs with cards](https://developers.google.com/chat/ui). [Card builder](https://addons.gsuite.google.com/uikit/builder)",
+      }),
+    clientAssignedMessageId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. A custom ID for the message. You can use field to identify a message, or to get, delete, or update a message. To set a custom ID, specify the [`messageId`](https://developers.google.com/chat/api/reference/rest/v1/spaces.messages/create#body.QUERY_PARAMETERS.message_id) field when you create the message. For details, see [Name a message](https://developers.google.com/chat/api/guides/v1/messages/create#name_a_created_message).',
+      }),
+    createTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Immutable. For spaces created in Chat, the time at which the message was created. This field is output only, except when used in import mode spaces. For import mode spaces, set this field to the historical timestamp at which the message was created in the source in order to preserve the original creation time.',
+      }),
+    deleteTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The time at which the message was deleted in Google Chat. If the message is never deleted, this field is empty.',
+        readOnly: true,
+      }),
+    deletionMetadata: DeletionMetadataSchema.exactOptional().openapi({
+      description:
+        'Output only. Information about a deleted message. A message is deleted when `delete_time` is set.',
+      readOnly: true,
+    }),
+    emojiReactionSummaries: z
+      .array(EmojiReactionSummarySchema)
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The list of emoji reaction summaries on the message.',
+        readOnly: true,
+      }),
+    fallbackText: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "A plain-text description of the message's cards, used when the actual cards can't be displayed—for example, mobile notifications.",
+      }),
+    formattedText: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Output only. Contains the message `text` with markups added to communicate formatting. This field might not capture all formatting visible in the UI, but includes the following: * [Markup syntax](https://developers.google.com/chat/format-messages) for bold, italic, strikethrough, monospace, and monospace block. * [User mentions](https://developers.google.com/chat/format-messages#messages-@mention) using the format ``. * Custom hyperlinks using the format `<{url}|{rendered_text}>` where the first string is the URL and the second is the rendered text—for example, ``. * Custom emoji using the format `:{emoji_name}:`—for example, `:smile:`. This doesn't apply to Unicode emoji, such as `U+1F600` for a grinning face emoji. For more information, see [View text formatting sent in a message](https://developers.google.com/chat/format-messages#view_text_formatting_sent_in_a_message)",
+        readOnly: true,
+      }),
+    lastUpdateTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The time at which the message was last edited by a user. If the message has never been edited, this field is empty.',
+        readOnly: true,
+      }),
+    matchedUrl: MatchedUrlSchema.exactOptional().openapi({
+      description:
+        'Output only. A URL in `spaces.messages.text` that matches a link preview pattern. For more information, see [Preview links](https://developers.google.com/chat/how-tos/preview-links).',
+      readOnly: true,
+    }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Resource name of the message. Format: `spaces/{space}/messages/{message}` Where `{space}` is the ID of the space where the message is posted and `{message}` is a system-assigned ID for the message. For example, `spaces/AAAAAAAAAAA/messages/BBBBBBBBBBB.BBBBBBBBBBB`. If you set a custom ID when you create a message, you can use this ID to specify the message in a request by replacing `{message}` with the value from the `clientAssignedMessageId` field. For example, `spaces/AAAAAAAAAAA/messages/client-custom-name`. For details, see [Name a message](https://developers.google.com/chat/api/guides/v1/messages/create#name_a_created_message).',
+      }),
+    privateMessageViewer: UserSchema.exactOptional().openapi({
+      description:
+        "Immutable. Input for creating a message, otherwise output only. The user that can view the message. When set, the message is private and only visible to the specified user and the Chat app. Link previews and attachments aren't supported for private messages. Only Chat apps can send private messages. If your Chat app [authenticates as a user](https://developers.google.com/chat/api/guides/auth/users) to send a message, the message can't be private and must omit this field. For details, see [Send private messages to Google Chat users](https://developers.google.com/chat/api/guides/v1/messages/private).",
+    }),
+    quotedMessageMetadata: QuotedMessageMetadataSchema.exactOptional().openapi({
+      description:
+        "Output only. Information about a message that's quoted by a Google Chat user in a space. Google Chat users can quote a message to reply to it.",
+      readOnly: true,
+    }),
+    sender: UserSchema.exactOptional().openapi({
+      description:
+        'Output only. The user who created the message. If your Chat app [authenticates as a user](https://developers.google.com/chat/api/guides/auth/users), the output populates the [user](https://developers.google.com/chat/api/reference/rest/v1/User) `name` and `type`.',
+      readOnly: true,
+    }),
+    slashCommand: SlashCommandSchema.exactOptional().openapi({
+      description: 'Output only. Slash command information, if applicable.',
+      readOnly: true,
+    }),
+    space: SpaceSchema.exactOptional().openapi({
+      description:
+        'If your Chat app [authenticates as a user](https://developers.google.com/chat/api/guides/auth/users), the output populates the [space](https://developers.google.com/chat/api/reference/rest/v1/spaces) `name`.',
+    }),
+    text: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Plain-text body of the message. The first link to an image, video, or web page generates a [preview chip](https://developers.google.com/chat/how-tos/preview-links). You can also [@mention a Google Chat user](https://developers.google.com/chat/format-messages#messages-@mention), or everyone in the space. To learn about creating text messages, see [Send a text message](https://developers.google.com/chat/api/guides/v1/messages/create#create-text-messages).',
+      }),
+    thread: ThreadSchema.exactOptional().openapi({
+      description:
+        'The thread the message belongs to. For example usage, see [Start or reply to a message thread](https://developers.google.com/chat/api/guides/v1/messages/create#create-message-thread).',
+    }),
+    threadReply: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          "Output only. When `true`, the message is a response in a reply thread. When `false`, the message is visible in the space's top-level conversation as either the first message of a thread or a message with no threaded replies. If the space doesn't support reply in threads, this field is always `false`.",
+        readOnly: true,
+      }),
+  })
+  .openapi({ description: 'A message in a Google Chat space.', required: [] })
+  .openapi('Message')
+
+type DeprecatedEventType = {
+  action?: z.infer<typeof FormActionSchema>
+  common?: z.infer<typeof CommonEventObjectSchema>
+  configCompleteRedirectUrl?: string
+  dialogEventType?: 'TYPE_UNSPECIFIED' | 'REQUEST_DIALOG' | 'SUBMIT_DIALOG' | 'CANCEL_DIALOG'
+  eventTime?: string
+  isDialogEvent?: boolean
+  message?: z.infer<typeof MessageSchema>
+  space?: z.infer<typeof SpaceSchema>
+  threadKey?: string
+  token?: string
+  type?:
+    | 'UNSPECIFIED'
+    | 'MESSAGE'
+    | 'ADDED_TO_SPACE'
+    | 'REMOVED_FROM_SPACE'
+    | 'CARD_CLICKED'
+    | 'WIDGET_UPDATED'
+  user?: z.infer<typeof UserSchema>
+}
 
 const GoogleAppsCardV1ActionParameterSchema = z
   .object({
@@ -793,63 +2138,6 @@ type GoogleAppsCardV1ImageType = {
   onClick?: z.infer<typeof GoogleAppsCardV1OnClickSchema>
 }
 
-const GoogleAppsCardV1CardSchema: z.ZodType<GoogleAppsCardV1CardType> = z
-  .lazy(() =>
-    z
-      .object({
-        cardActions: z
-          .array(GoogleAppsCardV1CardActionSchema)
-          .exactOptional()
-          .openapi({
-            description:
-              'The card\'s actions. Actions are added to the card\'s toolbar menu. [Google Workspace Add-ons](https://developers.google.com/workspace/add-ons): For example, the following JSON constructs a card action menu with `Settings` and `Send Feedback` options: ``` "card_actions": [ { "actionLabel": "Settings", "onClick": { "action": { "functionName": "goToView", "parameters": [ { "key": "viewType", "value": "SETTING" } ], "loadIndicator": "LoadIndicator.SPINNER" } } }, { "actionLabel": "Send Feedback", "onClick": { "openLink": { "url": "https://example.com/feedback" } } } ] ```',
-          }),
-        displayStyle: z
-          .enum(['DISPLAY_STYLE_UNSPECIFIED', 'PEEK', 'REPLACE'])
-          .exactOptional()
-          .openapi({
-            description:
-              'In Google Workspace Add-ons, sets the display properties of the `peekCardHeader`. [Google Workspace Add-ons](https://developers.google.com/workspace/add-ons):',
-          }),
-        fixedFooter: GoogleAppsCardV1CardFixedFooterSchema.exactOptional().openapi({
-          description:
-            'The fixed footer shown at the bottom of this card. Setting `fixedFooter` without specifying a `primaryButton` or a `secondaryButton` causes an error. For Chat apps, you can use fixed footers in [dialogs](https://developers.google.com/chat/how-tos/dialogs), but not [card messages](https://developers.google.com/chat/api/guides/v1/messages/create#create). [Google Workspace Add-ons and Chat apps](https://developers.google.com/workspace/extend):',
-        }),
-        header: GoogleAppsCardV1CardHeaderSchema.exactOptional().openapi({
-          description:
-            'The header of the card. A header usually contains a leading image and a title. Headers always appear at the top of a card.',
-        }),
-        name: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Name of the card. Used as a card identifier in card navigation. [Google Workspace Add-ons](https://developers.google.com/workspace/add-ons):',
-          }),
-        peekCardHeader: GoogleAppsCardV1CardHeaderSchema.exactOptional().openapi({
-          description:
-            'When displaying contextual content, the peek card header acts as a placeholder so that the user can navigate forward between the homepage cards and the contextual cards. [Google Workspace Add-ons](https://developers.google.com/workspace/add-ons):',
-        }),
-        sectionDividerStyle: z
-          .enum(['DIVIDER_STYLE_UNSPECIFIED', 'SOLID_DIVIDER', 'NO_DIVIDER'])
-          .exactOptional()
-          .openapi({ description: 'The divider style between sections.' }),
-        sections: z
-          .array(GoogleAppsCardV1SectionSchema)
-          .exactOptional()
-          .openapi({
-            description:
-              'Contains a collection of widgets. Each section has its own, optional header. Sections are visually separated by a line divider. For an example in Google Chat apps, see [Card section](https://developers.google.com/chat/ui/widgets/card-section).',
-          }),
-      })
-      .openapi({
-        description:
-          'A card interface displayed in a Google Chat message or Google Workspace Add-on. Cards support a defined layout, interactive UI elements like buttons, and rich media like images. Use cards to present detailed information, gather information from users, and guide users to take a next step. [Card builder](https://addons.gsuite.google.com/uikit/builder) To learn how to build cards, see the following documentation: * For Google Chat apps, see [Design dynamic, interactive, and consistent UIs with cards](https://developers.google.com/chat/ui). * For Google Workspace Add-ons, see [Card-based interfaces](https://developers.google.com/apps-script/add-ons/concepts/cards). **Example: Card message for a Google Chat app** ![Example contact card](https://developers.google.com/chat/images/card_api_reference.png) To create the sample card message in Google Chat, use the following JSON: ``` { "cardsV2": [ { "cardId": "unique-card-id", "card": { "header": { "title": "Sasha", "subtitle": "Software Engineer", "imageUrl": "https://developers.google.com/chat/images/quickstart-app-avatar.png", "imageType": "CIRCLE", "imageAltText": "Avatar for Sasha", }, "sections": [ { "header": "Contact Info", "collapsible": true, "uncollapsibleWidgetsCount": 1, "widgets": [ { "decoratedText": { "startIcon": { "knownIcon": "EMAIL", }, "text": "sasha@example.com", } }, { "decoratedText": { "startIcon": { "knownIcon": "PERSON", }, "text": "Online", }, }, { "decoratedText": { "startIcon": { "knownIcon": "PHONE", }, "text": "+1 (555) 555-1234", } }, { "buttonList": { "buttons": [ { "text": "Share", "onClick": { "openLink": { "url": "https://example.com/share", } } }, { "text": "Edit", "onClick": { "action": { "function": "goToView", "parameters": [ { "key": "viewType", "value": "EDIT", } ], } } }, ], } }, ], }, ], }, } ], } ```',
-        required: [],
-      }),
-  )
-  .openapi('GoogleAppsCardV1Card')
-
 type GoogleAppsCardV1OpenLinkType = {
   onClose?: 'NOTHING' | 'RELOAD'
   openAs?: 'FULL_SIZE' | 'OVERLAY'
@@ -954,48 +2242,6 @@ type GoogleAppsCardV1SectionType = {
   uncollapsibleWidgetsCount?: number
   widgets?: z.infer<typeof GoogleAppsCardV1WidgetSchema>[]
 }
-
-const GoogleAppsCardV1SelectionItemSchema = z
-  .object({
-    bottomText: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "For multiselect menus, a text description or label that's displayed below the item's `text` field.",
-      }),
-    selected: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether the item is selected by default. If the selection input only accepts one value (such as for radio buttons or a dropdown menu), only set this field for one item.',
-      }),
-    startIconUri: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "For multiselect menus, the URL for the icon displayed next to the item's `text` field. Supports PNG and JPEG files. Must be an `HTTPS` URL. For example, `https://developers.google.com/chat/images/quickstart-app-avatar.png`.",
-      }),
-    text: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The text that identifies or describes the item to users.' }),
-    value: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The value associated with this item. The client should use this as a form input value. For details about working with form inputs, see [Receive form data](https://developers.google.com/chat/ui/read-form-data).',
-      }),
-  })
-  .openapi({
-    description:
-      'An item that users can select in a selection input, such as a checkbox or switch. [Google Workspace Add-ons and Chat apps](https://developers.google.com/workspace/extend):',
-    required: [],
-  })
-  .openapi('GoogleAppsCardV1SelectionItem')
 
 const SpaceDataSourceSchema = z
   .object({
@@ -1263,7 +2509,7 @@ const GoogleAppsCardV1DecoratedTextSchema: z.ZodType<GoogleAppsCardV1DecoratedTe
   .openapi('GoogleAppsCardV1DecoratedText')
 
 const GoogleAppsCardV1DividerSchema: z.ZodType<GoogleAppsCardV1DividerType> = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'Displays a divider between widgets as a horizontal line. For an example in Google Chat apps, see [Divider](https://developers.google.com/chat/ui/widgets/divider). [Google Workspace Add-ons and Chat apps](https://developers.google.com/workspace/extend): For example, the following JSON creates a divider: ``` "divider": {} ```',
@@ -1498,650 +2744,10 @@ type GoogleAppsCardV1WidgetsType = {
   textParagraph?: z.infer<typeof GoogleAppsCardV1TextParagraphSchema>
 }
 
-const DateInputSchema = z
-  .object({
-    msSinceEpoch: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Time since epoch time, in milliseconds.' }),
-  })
-  .openapi({ description: 'Date input values.', required: [] })
-  .openapi('DateInput')
-
-const DateTimeInputSchema = z
-  .object({
-    hasDate: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether the `datetime` input includes a calendar date.' }),
-    hasTime: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether the `datetime` input includes a timestamp.' }),
-    msSinceEpoch: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Time since epoch time, in milliseconds.' }),
-  })
-  .openapi({ description: 'Date and time input values.', required: [] })
-  .openapi('DateTimeInput')
-
-const StringInputsSchema = z
-  .object({
-    value: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'An list of strings entered by the user.' }),
-  })
-  .openapi({
-    description:
-      'Input parameter for regular widgets. For single-valued widgets, it is a single value list. For multi-valued widgets, such as checkbox, all the values are presented.',
-    required: [],
-  })
-  .openapi('StringInputs')
-
-const TimeInputSchema = z
-  .object({
-    hours: z.int32().exactOptional().openapi({ description: 'The hour on a 24-hour clock.' }),
-    minutes: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'The number of minutes past the hour. Valid values are 0 to 59.' }),
-  })
-  .openapi({ description: 'Time input values.', required: [] })
-  .openapi('TimeInput')
-
-type InputsType = {
-  dateInput?: z.infer<typeof DateInputSchema>
-  dateTimeInput?: z.infer<typeof DateTimeInputSchema>
-  stringInputs?: z.infer<typeof StringInputsSchema>
-  timeInput?: z.infer<typeof TimeInputSchema>
+type ListMessagesResponseType = {
+  messages?: z.infer<typeof MessageSchema>[]
+  nextPageToken?: string
 }
-
-const ActionStatusSchema = z
-  .object({
-    statusCode: z
-      .enum([
-        'OK',
-        'CANCELLED',
-        'UNKNOWN',
-        'INVALID_ARGUMENT',
-        'DEADLINE_EXCEEDED',
-        'NOT_FOUND',
-        'ALREADY_EXISTS',
-        'PERMISSION_DENIED',
-        'UNAUTHENTICATED',
-        'RESOURCE_EXHAUSTED',
-        'FAILED_PRECONDITION',
-        'ABORTED',
-        'OUT_OF_RANGE',
-        'UNIMPLEMENTED',
-        'INTERNAL',
-        'UNAVAILABLE',
-        'DATA_LOSS',
-      ])
-      .exactOptional()
-      .openapi({ description: 'The status code.' }),
-    userFacingMessage: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The message to send users about the status of their request. If unset, a generic message based on the `status_code` is sent.',
-      }),
-  })
-  .openapi({
-    description:
-      'Represents the status for a request to either invoke or submit a [dialog](https://developers.google.com/chat/how-tos/dialogs).',
-    required: [],
-  })
-  .openapi('ActionStatus')
-
-const DialogSchema = z
-  .object({
-    body: GoogleAppsCardV1CardSchema.exactOptional().openapi({
-      description:
-        "Input only. Body of the dialog, which is rendered in a modal. Google Chat apps don't support the following card entities: `DateTimePicker`, `OnChangeAction`.",
-    }),
-  })
-  .openapi({ description: 'Wrapper around the card body of the dialog.', required: [] })
-  .openapi('Dialog')
-
-const DialogActionSchema = z
-  .object({
-    actionStatus: ActionStatusSchema.exactOptional().openapi({
-      description:
-        'Input only. Status for a request to either invoke or submit a [dialog](https://developers.google.com/chat/how-tos/dialogs). Displays a status and message to users, if necessary. For example, in case of an error or success.',
-    }),
-    dialog: DialogSchema.exactOptional().openapi({
-      description:
-        'Input only. [Dialog](https://developers.google.com/chat/how-tos/dialogs) for the request.',
-    }),
-  })
-  .openapi({
-    description:
-      'Contains a [dialog](https://developers.google.com/chat/how-tos/dialogs) and request status code.',
-    required: [],
-  })
-  .openapi('DialogAction')
-
-const SelectionItemsSchema = z
-  .object({
-    items: z
-      .array(GoogleAppsCardV1SelectionItemSchema)
-      .exactOptional()
-      .openapi({ description: 'An array of the SelectionItem objects.' }),
-  })
-  .openapi({ description: 'List of widget autocomplete results.', required: [] })
-  .openapi('SelectionItems')
-
-const UpdatedWidgetSchema = z
-  .object({
-    suggestions: SelectionItemsSchema.exactOptional().openapi({
-      description: 'List of widget autocomplete results',
-    }),
-    widget: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The ID of the updated widget. The ID must match the one for the widget that triggered the update request.',
-      }),
-  })
-  .openapi({
-    description:
-      'The response of the updated widget. Used to provide autocomplete options for a widget.',
-    required: [],
-  })
-  .openapi('UpdatedWidget')
-
-const ActionResponseSchema = z
-  .object({
-    dialogAction: DialogActionSchema.exactOptional().openapi({
-      description:
-        'Input only. A response to an interaction event related to a [dialog](https://developers.google.com/chat/how-tos/dialogs). Must be accompanied by `ResponseType.Dialog`.',
-    }),
-    type: z
-      .enum([
-        'TYPE_UNSPECIFIED',
-        'NEW_MESSAGE',
-        'UPDATE_MESSAGE',
-        'UPDATE_USER_MESSAGE_CARDS',
-        'REQUEST_CONFIG',
-        'DIALOG',
-        'UPDATE_WIDGET',
-      ])
-      .exactOptional()
-      .openapi({ description: 'Input only. The type of Chat app response.' }),
-    updatedWidget: UpdatedWidgetSchema.exactOptional().openapi({
-      description: 'Input only. The response of the updated widget.',
-    }),
-    url: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Input only. URL for users to authenticate or configure. (Only for `REQUEST_CONFIG` response types.)',
-      }),
-  })
-  .openapi({
-    description: 'Parameters that a Chat app can use to configure how its response is posted.',
-    required: [],
-  })
-  .openapi('ActionResponse')
-
-const UserSchema = z
-  .object({
-    displayName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "Output only. The user's display name.", readOnly: true }),
-    domainId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "Unique identifier of the user's Google Workspace domain." }),
-    isAnonymous: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. When `true`, the user is deleted or their profile is not visible.',
-        readOnly: true,
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Resource name for a Google Chat user. Format: `users/{user}`. `users/app` can be used as an alias for the calling app bot user. For human users, `{user}` is the same user identifier as: - the `id` for the [Person](https://developers.google.com/people/api/rest/v1/people) in the People API. For example, `users/123456789` in Chat API represents the same person as the `123456789` Person profile ID in People API. - the `id` for a [user](https://developers.google.com/admin-sdk/directory/reference/rest/v1/users) in the Admin SDK Directory API. - the user's email address can be used as an alias for `{user}` in API requests. For example, if the People API Person profile ID for `user@example.com` is `123456789`, you can use `users/user@example.com` as an alias to reference `users/123456789`. Only the canonical resource name (for example `users/123456789`) will be returned from the API.",
-      }),
-    type: z
-      .enum(['TYPE_UNSPECIFIED', 'HUMAN', 'BOT'])
-      .exactOptional()
-      .openapi({ description: 'User type.' }),
-  })
-  .openapi({
-    description:
-      "A user in Google Chat. When returned as an output from a request, if your Chat app [authenticates as a user](https://developers.google.com/chat/api/guides/auth/users), the output for a `User` resource only populates the user's `name` and `type`.",
-    required: [],
-  })
-  .openapi('User')
-
-const SlashCommandMetadataSchema = z
-  .object({
-    bot: UserSchema.exactOptional().openapi({
-      description: 'The Chat app whose command was invoked.',
-    }),
-    commandId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The command ID of the invoked slash command.' }),
-    commandName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The name of the invoked slash command.' }),
-    triggersDialog: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Indicates whether the slash command is for a dialog.' }),
-    type: z
-      .enum(['TYPE_UNSPECIFIED', 'ADD', 'INVOKE'])
-      .exactOptional()
-      .openapi({ description: 'The type of slash command.' }),
-  })
-  .openapi({ description: 'Annotation metadata for slash commands (/).', required: [] })
-  .openapi('SlashCommandMetadata')
-
-const UserMentionMetadataSchema = z
-  .object({
-    type: z
-      .enum(['TYPE_UNSPECIFIED', 'ADD', 'MENTION'])
-      .exactOptional()
-      .openapi({ description: 'The type of user mention.' }),
-    user: UserSchema.exactOptional().openapi({ description: 'The user mentioned.' }),
-  })
-  .openapi({ description: 'Annotation metadata for user mentions (@).', required: [] })
-  .openapi('UserMentionMetadata')
-
-const AnnotationSchema = z
-  .object({
-    length: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Length of the substring in the plain-text message body this annotation corresponds to.',
-      }),
-    slashCommand: SlashCommandMetadataSchema.exactOptional().openapi({
-      description: 'The metadata for a slash command.',
-    }),
-    startIndex: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Start index (0-based, inclusive) in the plain-text message body this annotation corresponds to.',
-      }),
-    type: z
-      .enum(['ANNOTATION_TYPE_UNSPECIFIED', 'USER_MENTION', 'SLASH_COMMAND'])
-      .exactOptional()
-      .openapi({ description: 'The type of this annotation.' }),
-    userMention: UserMentionMetadataSchema.exactOptional().openapi({
-      description: 'The metadata of user mention.',
-    }),
-  })
-  .openapi({
-    description:
-      'Output only. Annotations associated with the plain-text body of the message. To add basic formatting to a text message, see [Format text messages](https://developers.google.com/chat/format-messages). Example plain-text message body: ``` Hello @FooBot how are you!" ``` The corresponding annotations metadata: ``` "annotations":[{ "type":"USER_MENTION", "startIndex":6, "length":7, "userMention": { "user": { "name":"users/{user}", "displayName":"FooBot", "avatarUrl":"https://goo.gl/aeDtrS", "type":"BOT" }, "type":"MENTION" } }] ```',
-    required: [],
-  })
-  .openapi('Annotation')
-
-const AttachedGifSchema = z
-  .object({
-    uri: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. The URL that hosts the GIF image.', readOnly: true }),
-  })
-  .openapi({ description: "A GIF image that's specified by a URL.", required: [] })
-  .openapi('AttachedGif')
-
-const AttachmentDataRefSchema = z
-  .object({
-    attachmentUploadToken: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Opaque token containing a reference to an uploaded attachment. Treated by clients as an opaque string and used to create or update Chat messages with attachments.',
-      }),
-    resourceName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The resource name of the attachment data. This field is used with the media API to download the attachment data.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('AttachmentDataRef')
-
-const DriveDataRefSchema = z
-  .object({
-    driveFileId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The ID for the drive file. Use with the Drive API.' }),
-  })
-  .openapi({ description: 'A reference to the data of a drive attachment.', required: [] })
-  .openapi('DriveDataRef')
-
-const AttachmentSchema = z
-  .object({
-    attachmentDataRef: AttachmentDataRefSchema.exactOptional().openapi({
-      description:
-        'A reference to the attachment data. This field is used with the media API to download the attachment data.',
-    }),
-    contentName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The original file name for the content, not the full path.',
-        readOnly: true,
-      }),
-    contentType: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The content type (MIME type) of the file.',
-        readOnly: true,
-      }),
-    downloadUri: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Output only. The download URL which should be used to allow a human user to download the attachment. Chat apps shouldn't use this URL to download attachment content.",
-        readOnly: true,
-      }),
-    driveDataRef: DriveDataRefSchema.exactOptional().openapi({
-      description:
-        'Output only. A reference to the Google Drive attachment. This field is used with the Google Drive API.',
-      readOnly: true,
-    }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Resource name of the attachment, in the form `spaces/*/messages/*/attachments/*`.',
-      }),
-    source: z
-      .enum(['SOURCE_UNSPECIFIED', 'DRIVE_FILE', 'UPLOADED_CONTENT'])
-      .exactOptional()
-      .openapi({ description: 'Output only. The source of the attachment.', readOnly: true }),
-    thumbnailUri: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Output only. The thumbnail URL which should be used to preview the attachment to a human user. Chat apps shouldn't use this URL to download attachment content.",
-        readOnly: true,
-      }),
-  })
-  .openapi({ description: 'An attachment in Google Chat.', required: [] })
-  .openapi('Attachment')
-
-const ButtonSchema: z.ZodType<ButtonType> = z
-  .lazy(() =>
-    z
-      .object({
-        imageButton: ImageButtonSchema.exactOptional().openapi({
-          description: 'A button with image and `onclick` action.',
-        }),
-        textButton: TextButtonSchema.exactOptional().openapi({
-          description: 'A button with text and `onclick` action.',
-        }),
-      })
-      .openapi({ description: 'A button. Can be a text button or an image button.', required: [] }),
-  )
-  .openapi('Button')
-
-const CardActionSchema = z
-  .object({
-    actionLabel: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The label used to be displayed in the action menu item.' }),
-    onClick: OnClickSchema.exactOptional().openapi({
-      description: 'The onclick action for this action item.',
-    }),
-  })
-  .openapi({
-    description:
-      'A card action is the action associated with the card. For an invoice card, a typical action would be: delete invoice, email invoice or open the invoice in browser. Not supported by Google Chat apps.',
-    required: [],
-  })
-  .openapi('CardAction')
-
-const CardHeaderSchema = z
-  .object({
-    imageStyle: z
-      .enum(['IMAGE_STYLE_UNSPECIFIED', 'IMAGE', 'AVATAR'])
-      .exactOptional()
-      .openapi({
-        description: "The image's type (for example, square border or circular border).",
-      }),
-    imageUrl: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The URL of the image in the card header.' }),
-    subtitle: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The subtitle of the card header.' }),
-    title: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The title must be specified. The header has a fixed height: if both a title and subtitle is specified, each takes up one line. If only the title is specified, it takes up both lines.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('CardHeader')
-
-const ImageSchema = z
-  .object({
-    aspectRatio: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description:
-          "The aspect ratio of this image (width and height). This field lets you reserve the right height for the image while waiting for it to load. It's not meant to override the built-in aspect ratio of the image. If unset, the server fills it by prefetching the image.",
-      }),
-    imageUrl: z.string().exactOptional().openapi({ description: 'The URL of the image.' }),
-    onClick: OnClickSchema.exactOptional().openapi({ description: 'The `onclick` action.' }),
-  })
-  .openapi({
-    description: "An image that's specified by a URL and can have an `onclick` action.",
-    required: [],
-  })
-  .openapi('Image')
-
-const KeyValueSchema = z
-  .object({
-    bottomLabel: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The text of the bottom label. Formatted text supported. For more information about formatting text, see [Formatting text in Google Chat apps](https://developers.google.com/chat/format-messages#card-formatting) and [Formatting text in Google Workspace Add-ons](https://developers.google.com/apps-script/add-ons/concepts/widgets#text_formatting).',
-      }),
-    button: ButtonSchema.exactOptional().openapi({
-      description: 'A button that can be clicked to trigger an action.',
-    }),
-    content: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The text of the content. Formatted text supported and always required. For more information about formatting text, see [Formatting text in Google Chat apps](https://developers.google.com/chat/format-messages#card-formatting) and [Formatting text in Google Workspace Add-ons](https://developers.google.com/apps-script/add-ons/concepts/widgets#text_formatting).',
-      }),
-    contentMultiline: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'If the content should be multiline.' }),
-    icon: z
-      .enum([
-        'ICON_UNSPECIFIED',
-        'AIRPLANE',
-        'BOOKMARK',
-        'BUS',
-        'CAR',
-        'CLOCK',
-        'CONFIRMATION_NUMBER_ICON',
-        'DOLLAR',
-        'DESCRIPTION',
-        'EMAIL',
-        'EVENT_PERFORMER',
-        'EVENT_SEAT',
-        'FLIGHT_ARRIVAL',
-        'FLIGHT_DEPARTURE',
-        'HOTEL',
-        'HOTEL_ROOM_TYPE',
-        'INVITE',
-        'MAP_PIN',
-        'MEMBERSHIP',
-        'MULTIPLE_PEOPLE',
-        'OFFER',
-        'PERSON',
-        'PHONE',
-        'RESTAURANT_ICON',
-        'SHOPPING_CART',
-        'STAR',
-        'STORE',
-        'TICKET',
-        'TRAIN',
-        'VIDEO_CAMERA',
-        'VIDEO_PLAY',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          "An enum value that's replaced by the Chat API with the corresponding icon image.",
-      }),
-    iconUrl: z.string().exactOptional().openapi({ description: 'The icon specified by a URL.' }),
-    onClick: OnClickSchema.exactOptional().openapi({
-      description:
-        'The `onclick` action. Only the top label, bottom label, and content region are clickable.',
-    }),
-    topLabel: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The text of the top label. Formatted text supported. For more information about formatting text, see [Formatting text in Google Chat apps](https://developers.google.com/chat/format-messages#card-formatting) and [Formatting text in Google Workspace Add-ons](https://developers.google.com/apps-script/add-ons/concepts/widgets#text_formatting).',
-      }),
-  })
-  .openapi({
-    description:
-      'A UI element contains a key (label) and a value (content). This element can also contain some actions such as `onclick` button.',
-    required: [],
-  })
-  .openapi('KeyValue')
-
-const TextParagraphSchema = z
-  .object({ text: z.string().exactOptional() })
-  .openapi({
-    description:
-      'A paragraph of text. Formatted text supported. For more information about formatting text, see [Formatting text in Google Chat apps](https://developers.google.com/chat/format-messages#card-formatting) and [Formatting text in Google Workspace Add-ons](https://developers.google.com/apps-script/add-ons/concepts/widgets#text_formatting).',
-    required: [],
-  })
-  .openapi('TextParagraph')
-
-const WidgetMarkupSchema = z
-  .object({
-    buttons: z
-      .array(ButtonSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'A list of buttons. Buttons is also `oneof data` and only one of these fields should be set.',
-      }),
-    image: ImageSchema.exactOptional().openapi({ description: 'Display an image in this widget.' }),
-    keyValue: KeyValueSchema.exactOptional().openapi({
-      description: 'Display a key value item in this widget.',
-    }),
-    textParagraph: TextParagraphSchema.exactOptional().openapi({
-      description: 'Display a text paragraph in this widget.',
-    }),
-  })
-  .openapi({ description: 'A widget is a UI element that presents text and images.', required: [] })
-  .openapi('WidgetMarkup')
-
-const SectionSchema = z
-  .object({
-    header: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The header of the section. Formatted text is supported. For more information about formatting text, see [Formatting text in Google Chat apps](https://developers.google.com/chat/format-messages#card-formatting) and [Formatting text in Google Workspace Add-ons](https://developers.google.com/apps-script/add-ons/concepts/widgets#text_formatting).',
-      }),
-    widgets: z
-      .array(WidgetMarkupSchema)
-      .exactOptional()
-      .openapi({ description: 'A section must contain at least one widget.' }),
-  })
-  .openapi({
-    description:
-      "A section contains a collection of widgets that are rendered (vertically) in the order that they are specified. Across all platforms, cards have a narrow fixed width, so there's currently no need for layout properties (for example, float).",
-    required: [],
-  })
-  .openapi('Section')
-
-const CardSchema = z
-  .object({
-    cardActions: z
-      .array(CardActionSchema)
-      .exactOptional()
-      .openapi({ description: 'The actions of this card.' }),
-    header: CardHeaderSchema.exactOptional().openapi({
-      description: 'The header of the card. A header usually contains a title and an image.',
-    }),
-    name: z.string().exactOptional().openapi({ description: 'Name of the card.' }),
-    sections: z
-      .array(SectionSchema)
-      .exactOptional()
-      .openapi({ description: 'Sections are separated by a line divider.' }),
-  })
-  .openapi({
-    description: 'A card is a UI element that can contain UI widgets such as text and images.',
-    required: [],
-  })
-  .openapi('Card')
-
-const CardWithIdSchema = z
-  .object({
-    card: GoogleAppsCardV1CardSchema.exactOptional().openapi({
-      description: 'A card. Maximum size is 32 KB.',
-    }),
-    cardId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required if the message contains multiple cards. A unique identifier for a card in a message.',
-      }),
-  })
-  .openapi({
-    description:
-      "A [card](https://developers.google.com/chat/api/reference/rest/v1/cards) in a Google Chat message. Only Chat apps can create cards. If your Chat app [authenticates as a user](https://developers.google.com/chat/api/guides/auth/users), the message can't contain cards. [Card builder](https://addons.gsuite.google.com/uikit/builder)",
-    required: [],
-  })
-  .openapi('CardWithId')
 
 const StatusSchema = z
   .object({
@@ -2207,553 +2813,17 @@ const ChatAppLogEntrySchema = z
   })
   .openapi('ChatAppLogEntry')
 
-const InputsSchema: z.ZodType<InputsType> = z
-  .lazy(() =>
-    z
-      .object({
-        dateInput: DateInputSchema.exactOptional().openapi({
-          description:
-            'Date input values from a [`DateTimePicker`](https://developers.google.com/chat/api/reference/rest/v1/cards#DateTimePicker) widget that only accepts date values.',
-        }),
-        dateTimeInput: DateTimeInputSchema.exactOptional().openapi({
-          description:
-            'Date and time input values from a [`DateTimePicker`](https://developers.google.com/chat/api/reference/rest/v1/cards#DateTimePicker) widget that accepts both a date and time.',
-        }),
-        stringInputs: StringInputsSchema.exactOptional().openapi({
-          description:
-            'A list of strings that represent the values that the user inputs in a widget. If the widget only accepts one value, such as a [`TextInput`](https://developers.google.com/chat/api/reference/rest/v1/cards#TextInput) widget, the list contains one string object. If the widget accepts multiple values, such as a [`SelectionInput`](https://developers.google.com/chat/api/reference/rest/v1/cards#selectioninput) widget of checkboxes, the list contains a string object for each value that the user inputs or selects.',
-        }),
-        timeInput: TimeInputSchema.exactOptional().openapi({
-          description:
-            'Time input values from a [`DateTimePicker`](https://developers.google.com/chat/api/reference/rest/v1/cards#DateTimePicker) widget that only accepts time values.',
-        }),
-      })
-      .openapi({
-        description:
-          'Types of data that users can [input on cards or dialogs](https://developers.google.com/chat/ui/read-form-data). The input type depends on the type of values that the widget accepts.',
-        required: [],
-      }),
-  )
-  .openapi('Inputs')
-
-const TimeZoneSchema = z
-  .object({
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The [IANA TZ](https://www.iana.org/time-zones) time zone database code, such as "America/Toronto".',
-      }),
-    offset: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'The user timezone offset, in milliseconds, from Coordinated Universal Time (UTC).',
-      }),
-  })
-  .openapi({
-    description:
-      'The timezone ID and offset from Coordinated Universal Time (UTC). Only supported for the event types [`CARD_CLICKED`](https://developers.google.com/chat/api/reference/rest/v1/EventType#ENUM_VALUES.CARD_CLICKED) and [`SUBMIT_DIALOG`](https://developers.google.com/chat/api/reference/rest/v1/DialogEventType#ENUM_VALUES.SUBMIT_DIALOG).',
-    required: [],
-  })
-  .openapi('TimeZone')
-
-const CommonEventObjectSchema = z
-  .object({
-    formInputs: z
-      .record(z.string(), InputsSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'A map containing the values that a user inputs in a widget from a card or dialog. The map keys are the string IDs assigned to each widget, and the values represent inputs to the widget. For details, see [Process information inputted by users](https://developers.google.com/chat/ui/read-form-data).',
-      }),
-    hostApp: z
-      .enum([
-        'UNSPECIFIED_HOST_APP',
-        'GMAIL',
-        'CALENDAR',
-        'DRIVE',
-        'DEMO',
-        'DOCS',
-        'MEET',
-        'SHEETS',
-        'SLIDES',
-        'DRAWINGS',
-        'CHAT',
-        'CHAT_IN_GMAIL',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'The hostApp enum which indicates the app the add-on is invoked from. Always `CHAT` for Chat apps.',
-      }),
-    invokedFunction: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Name of the invoked function associated with the widget. Only set for Chat apps.',
-      }),
-    parameters: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Custom [parameters](/chat/api/reference/rest/v1/cards#ActionParameter) passed to the invoked function. Both keys and values must be strings.',
-      }),
-    platform: z
-      .enum(['UNKNOWN_PLATFORM', 'WEB', 'IOS', 'ANDROID'])
-      .exactOptional()
-      .openapi({
-        description:
-          'The platform enum which indicates the platform where the event originates (`WEB`, `IOS`, or `ANDROID`). Not supported by Chat apps.',
-      }),
-    timeZone: TimeZoneSchema.exactOptional().openapi({
-      description:
-        'The timezone ID and offset from Coordinated Universal Time (UTC). Only supported for the event types [`CARD_CLICKED`](https://developers.google.com/chat/api/reference/rest/v1/EventType#ENUM_VALUES.CARD_CLICKED) and [`SUBMIT_DIALOG`](https://developers.google.com/chat/api/reference/rest/v1/DialogEventType#ENUM_VALUES.SUBMIT_DIALOG).',
-    }),
-    userLocale: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The full `locale.displayName` in the format of [ISO 639 language code]-[ISO 3166 country/region code] such as "en-US".',
-      }),
-  })
-  .openapi({
-    description:
-      "Represents information about the user's client, such as locale, host app, and platform. For Chat apps, `CommonEventObject` includes data submitted by users interacting with cards, like data entered in [dialogs](https://developers.google.com/chat/how-tos/dialogs).",
-    required: [],
-  })
-  .openapi('CommonEventObject')
-
 const CompleteImportSpaceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Request message for completing the import process for a space.' })
   .openapi('CompleteImportSpaceRequest')
-
-const SpaceDetailsSchema = z
-  .object({
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Optional. A description of the space. For example, describe the space's discussion topic, functional purpose, or participants. Supports up to 150 characters.",
-      }),
-    guidelines: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Optional. The space's rules, expectations, and etiquette. Supports up to 5,000 characters.",
-      }),
-  })
-  .openapi({
-    description: 'Details about the space including description and rules.',
-    required: [],
-  })
-  .openapi('SpaceDetails')
-
-const SpaceSchema = z
-  .object({
-    adminInstalled: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. Whether the Chat app was installed by a Google Workspace administrator. Administrators can install a Chat app for their domain, organizational unit, or a group of users. Administrators can only install Chat apps for direct messaging between users and the app. To support admin install, your app must feature direct messaging.',
-        readOnly: true,
-      }),
-    createTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Immutable. For spaces created in Chat, the time the space was created. This field is output only, except when used in import mode spaces. For import mode spaces, set this field to the historical timestamp at which the space was created in the source in order to preserve the original creation time. Only populated in the output when `spaceType` is `GROUP_CHAT` or `SPACE`.',
-      }),
-    displayName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The space's display name. Required when [creating a space](https://developers.google.com/chat/api/reference/rest/v1/spaces/create). If you receive the error message `ALREADY_EXISTS` when creating a space or updating the `displayName`, try a different `displayName`. An existing space within the Google Workspace organization might already use this display name. For direct messages, this field might be empty. Supports up to 128 characters.",
-      }),
-    externalUserAllowed: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Immutable. Whether this space permits any Google Chat user as a member. Input when creating a space in a Google Workspace organization. Omit this field when creating spaces in the following conditions: * The authenticated user uses a Google Account. By default, the space permits any Google Chat user. * The space is used to [import data to Google Chat] (https://developers.google.com/chat/api/guides/import-data-overview). Import mode spaces must only permit members from the same Google Workspace organization. For existing spaces, this field is output only.',
-      }),
-    importMode: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          "Optional. Whether this space is created in `Import Mode` as part of a data migration into Google Workspace. While spaces are being imported, they aren't visible to users until the import is complete.",
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Resource name of the space. Format: `spaces/{space}`' }),
-    singleUserBotDm: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Optional. Whether the space is a DM between a Chat app and a single human.',
-      }),
-    spaceDetails: SpaceDetailsSchema.exactOptional().openapi({
-      description: 'Details about the space including description and rules.',
-    }),
-    spaceHistoryState: z
-      .enum(['HISTORY_STATE_UNSPECIFIED', 'HISTORY_OFF', 'HISTORY_ON'])
-      .exactOptional()
-      .openapi({
-        description: 'The message history state for messages and threads in this space.',
-      }),
-    spaceThreadingState: z
-      .enum([
-        'SPACE_THREADING_STATE_UNSPECIFIED',
-        'THREADED_MESSAGES',
-        'GROUPED_MESSAGES',
-        'UNTHREADED_MESSAGES',
-      ])
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The threading state in the Chat space.',
-        readOnly: true,
-      }),
-    spaceType: z
-      .enum(['SPACE_TYPE_UNSPECIFIED', 'SPACE', 'GROUP_CHAT', 'DIRECT_MESSAGE'])
-      .exactOptional()
-      .openapi({
-        description:
-          'The type of space. Required when creating a space or updating the space type of a space. Output only for other usage.',
-      }),
-    threaded: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        deprecated: true,
-        description:
-          'Output only. Deprecated: Use `spaceThreadingState` instead. Whether messages are threaded in this space.',
-        readOnly: true,
-      }),
-    type: z
-      .enum(['TYPE_UNSPECIFIED', 'ROOM', 'DM'])
-      .exactOptional()
-      .openapi({
-        deprecated: true,
-        description: 'Output only. Deprecated: Use `space_type` instead. The type of a space.',
-        readOnly: true,
-      }),
-  })
-  .openapi({
-    description:
-      'A space in Google Chat. Spaces are conversations between two or more users or 1:1 messages between a user and a Chat app.',
-    required: [],
-  })
-  .openapi('Space')
 
 const CompleteImportSpaceResponseSchema = z
   .object({ space: SpaceSchema.exactOptional().openapi({ description: 'The import mode space.' }) })
   .openapi({ required: [] })
   .openapi('CompleteImportSpaceResponse')
 
-const DeletionMetadataSchema = z
-  .object({
-    deletionType: z
-      .enum([
-        'DELETION_TYPE_UNSPECIFIED',
-        'CREATOR',
-        'SPACE_OWNER',
-        'ADMIN',
-        'APP_MESSAGE_EXPIRY',
-        'CREATOR_VIA_APP',
-        'SPACE_OWNER_VIA_APP',
-      ])
-      .exactOptional()
-      .openapi({ description: 'Indicates who deleted the message.' }),
-  })
-  .openapi({
-    description:
-      'Information about a deleted message. A message is deleted when `delete_time` is set.',
-    required: [],
-  })
-  .openapi('DeletionMetadata')
-
-const EmojiSchema: z.ZodType<EmojiType> = z
-  .lazy(() =>
-    z
-      .object({
-        customEmoji: CustomEmojiSchema.exactOptional().openapi({
-          description: 'Output only. A custom emoji.',
-          readOnly: true,
-        }),
-        unicode: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'A basic emoji represented by a unicode string.' }),
-      })
-      .openapi({ description: 'An emoji that is used as a reaction to a message.', required: [] }),
-  )
-  .openapi('Emoji')
-
-const EmojiReactionSummarySchema = z
-  .object({
-    emoji: EmojiSchema.exactOptional().openapi({
-      description: 'Emoji associated with the reactions.',
-    }),
-    reactionCount: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'The total number of reactions using the associated emoji.' }),
-  })
-  .openapi({
-    description: 'The number of people who reacted to a message with a specific emoji.',
-    required: [],
-  })
-  .openapi('EmojiReactionSummary')
-
-const MatchedUrlSchema = z
-  .object({
-    url: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. The URL that was matched.', readOnly: true }),
-  })
-  .openapi({
-    description:
-      'A matched URL in a Chat message. Chat apps can preview matched URLs. For more information, see [Preview links](https://developers.google.com/chat/how-tos/preview-links).',
-    required: [],
-  })
-  .openapi('MatchedUrl')
-
-const QuotedMessageMetadataSchema = z
-  .object({
-    lastUpdateTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The timestamp when the quoted message was created or when the quoted message was last updated.',
-        readOnly: true,
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. Resource name of the quoted message. Format: `spaces/{space}/messages/{message}`',
-        readOnly: true,
-      }),
-  })
-  .openapi({ description: 'Information about a quoted message.', required: [] })
-  .openapi('QuotedMessageMetadata')
-
-const SlashCommandSchema = z
-  .object({
-    commandId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The ID of the slash command invoked.' }),
-  })
-  .openapi({
-    description:
-      'A [slash command](https://developers.google.com/chat/how-tos/slash-commands) in Google Chat.',
-    required: [],
-  })
-  .openapi('SlashCommand')
-
-const ThreadSchema = z
-  .object({
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. Resource name of the thread. Example: `spaces/{space}/threads/{thread}`',
-      }),
-    threadKey: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Input for creating or updating a thread. Otherwise, output only. ID for the thread. Supports up to 4000 characters. This ID is unique to the Chat app that sets it. For example, if multiple Chat apps create a message using the same thread key, the messages are posted in different threads. To reply in a thread created by a person or another Chat app, specify the thread `name` field instead.',
-      }),
-  })
-  .openapi({
-    description:
-      'A thread in a Google Chat space. For example usage, see [Start or reply to a message thread](https://developers.google.com/chat/api/guides/v1/messages/create#create-message-thread). If you specify a thread when creating a message, you can set the [`messageReplyOption`](https://developers.google.com/chat/api/reference/rest/v1/spaces.messages/create#messagereplyoption) field to determine what happens if no matching thread is found.',
-    required: [],
-  })
-  .openapi('Thread')
-
-const MessageSchema = z
-  .object({
-    actionResponse: ActionResponseSchema.exactOptional().openapi({
-      description:
-        'Input only. Parameters that a Chat app can use to configure how its response is posted.',
-    }),
-    annotations: z
-      .array(AnnotationSchema)
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Annotations associated with the `text` in this message.',
-        readOnly: true,
-      }),
-    argumentText: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. Plain-text body of the message with all Chat app mentions stripped out.',
-        readOnly: true,
-      }),
-    attachedGifs: z
-      .array(AttachedGifSchema)
-      .exactOptional()
-      .openapi({
-        description: 'Output only. GIF images that are attached to the message.',
-        readOnly: true,
-      }),
-    attachment: z
-      .array(AttachmentSchema)
-      .exactOptional()
-      .openapi({ description: 'User-uploaded attachment.' }),
-    cards: z
-      .array(CardSchema)
-      .exactOptional()
-      .openapi({
-        deprecated: true,
-        description:
-          'Deprecated: Use `cards_v2` instead. Rich, formatted, and interactive cards that you can use to display UI elements such as: formatted texts, buttons, and clickable images. Cards are normally displayed below the plain-text body of the message. `cards` and `cards_v2` can have a maximum size of 32 KB.',
-      }),
-    cardsV2: z
-      .array(CardWithIdSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          "An array of [cards](https://developers.google.com/chat/api/reference/rest/v1/cards). Only Chat apps can create cards. If your Chat app [authenticates as a user](https://developers.google.com/chat/api/guides/auth/users), the messages can't contain cards. To learn about cards and how to create them, see [Design dynamic, interactive, and consistent UIs with cards](https://developers.google.com/chat/ui). [Card builder](https://addons.gsuite.google.com/uikit/builder)",
-      }),
-    clientAssignedMessageId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. A custom ID for the message. You can use field to identify a message, or to get, delete, or update a message. To set a custom ID, specify the [`messageId`](https://developers.google.com/chat/api/reference/rest/v1/spaces.messages/create#body.QUERY_PARAMETERS.message_id) field when you create the message. For details, see [Name a message](https://developers.google.com/chat/api/guides/v1/messages/create#name_a_created_message).',
-      }),
-    createTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Immutable. For spaces created in Chat, the time at which the message was created. This field is output only, except when used in import mode spaces. For import mode spaces, set this field to the historical timestamp at which the message was created in the source in order to preserve the original creation time.',
-      }),
-    deleteTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The time at which the message was deleted in Google Chat. If the message is never deleted, this field is empty.',
-        readOnly: true,
-      }),
-    deletionMetadata: DeletionMetadataSchema.exactOptional().openapi({
-      description:
-        'Output only. Information about a deleted message. A message is deleted when `delete_time` is set.',
-      readOnly: true,
-    }),
-    emojiReactionSummaries: z
-      .array(EmojiReactionSummarySchema)
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The list of emoji reaction summaries on the message.',
-        readOnly: true,
-      }),
-    fallbackText: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "A plain-text description of the message's cards, used when the actual cards can't be displayed—for example, mobile notifications.",
-      }),
-    formattedText: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Output only. Contains the message `text` with markups added to communicate formatting. This field might not capture all formatting visible in the UI, but includes the following: * [Markup syntax](https://developers.google.com/chat/format-messages) for bold, italic, strikethrough, monospace, and monospace block. * [User mentions](https://developers.google.com/chat/format-messages#messages-@mention) using the format ``. * Custom hyperlinks using the format `<{url}|{rendered_text}>` where the first string is the URL and the second is the rendered text—for example, ``. * Custom emoji using the format `:{emoji_name}:`—for example, `:smile:`. This doesn't apply to Unicode emoji, such as `U+1F600` for a grinning face emoji. For more information, see [View text formatting sent in a message](https://developers.google.com/chat/format-messages#view_text_formatting_sent_in_a_message)",
-        readOnly: true,
-      }),
-    lastUpdateTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The time at which the message was last edited by a user. If the message has never been edited, this field is empty.',
-        readOnly: true,
-      }),
-    matchedUrl: MatchedUrlSchema.exactOptional().openapi({
-      description:
-        'Output only. A URL in `spaces.messages.text` that matches a link preview pattern. For more information, see [Preview links](https://developers.google.com/chat/how-tos/preview-links).',
-      readOnly: true,
-    }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Resource name of the message. Format: `spaces/{space}/messages/{message}` Where `{space}` is the ID of the space where the message is posted and `{message}` is a system-assigned ID for the message. For example, `spaces/AAAAAAAAAAA/messages/BBBBBBBBBBB.BBBBBBBBBBB`. If you set a custom ID when you create a message, you can use this ID to specify the message in a request by replacing `{message}` with the value from the `clientAssignedMessageId` field. For example, `spaces/AAAAAAAAAAA/messages/client-custom-name`. For details, see [Name a message](https://developers.google.com/chat/api/guides/v1/messages/create#name_a_created_message).',
-      }),
-    privateMessageViewer: UserSchema.exactOptional().openapi({
-      description:
-        "Immutable. Input for creating a message, otherwise output only. The user that can view the message. When set, the message is private and only visible to the specified user and the Chat app. Link previews and attachments aren't supported for private messages. Only Chat apps can send private messages. If your Chat app [authenticates as a user](https://developers.google.com/chat/api/guides/auth/users) to send a message, the message can't be private and must omit this field. For details, see [Send private messages to Google Chat users](https://developers.google.com/chat/api/guides/v1/messages/private).",
-    }),
-    quotedMessageMetadata: QuotedMessageMetadataSchema.exactOptional().openapi({
-      description:
-        "Output only. Information about a message that's quoted by a Google Chat user in a space. Google Chat users can quote a message to reply to it.",
-      readOnly: true,
-    }),
-    sender: UserSchema.exactOptional().openapi({
-      description:
-        'Output only. The user who created the message. If your Chat app [authenticates as a user](https://developers.google.com/chat/api/guides/auth/users), the output populates the [user](https://developers.google.com/chat/api/reference/rest/v1/User) `name` and `type`.',
-      readOnly: true,
-    }),
-    slashCommand: SlashCommandSchema.exactOptional().openapi({
-      description: 'Output only. Slash command information, if applicable.',
-      readOnly: true,
-    }),
-    space: SpaceSchema.exactOptional().openapi({
-      description:
-        'If your Chat app [authenticates as a user](https://developers.google.com/chat/api/guides/auth/users), the output populates the [space](https://developers.google.com/chat/api/reference/rest/v1/spaces) `name`.',
-    }),
-    text: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Plain-text body of the message. The first link to an image, video, or web page generates a [preview chip](https://developers.google.com/chat/how-tos/preview-links). You can also [@mention a Google Chat user](https://developers.google.com/chat/format-messages#messages-@mention), or everyone in the space. To learn about creating text messages, see [Send a text message](https://developers.google.com/chat/api/guides/v1/messages/create#create-text-messages).',
-      }),
-    thread: ThreadSchema.exactOptional().openapi({
-      description:
-        'The thread the message belongs to. For example usage, see [Start or reply to a message thread](https://developers.google.com/chat/api/guides/v1/messages/create#create-message-thread).',
-    }),
-    threadReply: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          "Output only. When `true`, the message is a response in a reply thread. When `false`, the message is visible in the space's top-level conversation as either the first message of a thread or a message with no threaded replies. If the space doesn't support reply in threads, this field is always `false`.",
-        readOnly: true,
-      }),
-  })
-  .openapi({ description: 'A message in a Google Chat space.', required: [] })
-  .openapi('Message')
-
-const DeprecatedEventSchema = z
+const DeprecatedEventSchema: z.ZodType<DeprecatedEventType> = z
   .object({
     action: FormActionSchema.exactOptional().openapi({
       description:
@@ -2834,7 +2904,7 @@ const DeprecatedEventSchema = z
   .openapi('DeprecatedEvent')
 
 const EmptySchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',
@@ -2923,7 +2993,7 @@ const ListMembershipsResponseSchema = z
   .openapi({ required: [] })
   .openapi('ListMembershipsResponse')
 
-const ListMessagesResponseSchema = z
+const ListMessagesResponseSchema: z.ZodType<ListMessagesResponseType> = z
   .object({
     messages: z.array(MessageSchema).exactOptional().openapi({ description: 'List of messages.' }),
     nextPageToken: z

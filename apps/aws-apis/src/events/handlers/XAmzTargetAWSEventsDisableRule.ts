@@ -1,0 +1,9 @@
+import { OpenAPIHono } from '@hono/zod-openapi'
+import { postXAmzTargetAWSEventsDisableRuleRoute } from '../routes'
+
+const app = new OpenAPIHono()
+
+export const XAmzTargetAWSEventsDisableRuleHandler = app.openapi(
+  postXAmzTargetAWSEventsDisableRuleRoute,
+  (c) => {},
+)
